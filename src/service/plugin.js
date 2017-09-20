@@ -155,7 +155,7 @@ var BatteryPlugin = new Lang.Class({
      */
     update: function () {
         if (this.device.connected && this.device.paired) {
-            let packet = new Protocol.BasePacket();
+            let packet = new Protocol.Packet();
             packet.type = "kdeconnect.battery.request";
             packet.body = { request: true };
             
@@ -204,7 +204,7 @@ var FindMyPhonePlugin = new Lang.Class({
     
     ring: function () {
         if (this.device.connected && this.device.paired) {
-            let packet = new Protocol.BasePacket();
+            let packet = new Protocol.Packet();
             packet.type = "kdeconnect.findmyphone.request";
             
             this.device._channel.send(packet);
@@ -295,6 +295,7 @@ var NotificationsPlugin = new Lang.Class({
     // TODO: kdeconnect.notification.request packet?
     notifications: function () {
         if (this.device.connected && this.device.paired) {
+            let packet = new Protocol.Packet();
             return [];
         }
     }
@@ -347,7 +348,7 @@ var PingPlugin = new Lang.Class({
     
     ping: function () {
         if (this.device.connected && this.device.paired) {
-            let packet = new Protocol.BasePacket();
+            let packet = new Protocol.Packet();
             packet.type = "kdeconnect.ping";
             
             this.device._channel.send(packet);
@@ -431,7 +432,7 @@ var SharePlugin = new Lang.Class({
     
     shareUrl: function () {
         if (this.device.connected && this.device.paired) {
-            let packet = new Protocol.BasePacket();
+            let packet = new Protocol.Packet();
             packet.type = "kdeconnect.share.request";
             
             this.device._channel.send(packet);
@@ -514,15 +515,17 @@ var TelephonyPlugin = new Lang.Class({
     
     // TODO: test, but how? no one calls me!
     mute: function () {
-        let packet = new Protocol.BasePacket();
-        packet.type = "kdeconnect.telephony.request"
-        packet.body = { action: "mute" };
-        this.device._channel.send(packet);
+        if (this.device.connected && this.device.paired) {
+            let packet = new Protocol.Packet();
+            packet.type = "kdeconnect.telephony.request"
+            packet.body = { action: "mute" };
+            this.device._channel.send(packet);
+        }
     },
     
     sms: function (phoneNumber, messageBody) {
         if (this.device.connected && this.device.paired) {
-            let packet = new Protocol.BasePacket();
+            let packet = new Protocol.Packet();
             packet.type = "kdeconnect.sms.request";
             
             packet.body = {

@@ -205,7 +205,7 @@ var Daemon = new Lang.Class({
         // Ignore local broadcasts
         if (addr.address.to_string() === "127.0.0.1") { return true; }
         
-        let packet = new Protocol.BasePacket(data);
+        let packet = new Protocol.Packet(data);
         
         if (packet.type !== Protocol.TYPE_IDENTITY) {
             log("Unexpected packet type: " + packet.type);
@@ -276,7 +276,7 @@ var Daemon = new Lang.Class({
         
         // Load cached devices
         for (let identity of Config.read_device_cache()) {
-            let packet = new Protocol.BasePacket(identity);
+            let packet = new Protocol.Packet(identity);
             let device = new Device.Device(this, packet);
             this._devices.set(packet.body.deviceId, device);
         }

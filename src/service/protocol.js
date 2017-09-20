@@ -15,6 +15,124 @@ var TYPE_ENCRYPTED = "kdeconnect.encrypted";
 
 
 /**
+ * Packets
+ */
+var Packet = new Lang.Class({
+    Name: "GSConnectPacket",
+    Extends: GObject.Object,
+    
+    _init: function (data=false) {
+        // TODO
+        this.parent();
+        
+        this.id = Date.now();
+        this.type = "";
+        this.body = {};
+        
+        if (data) {
+            this.fromData(data);
+        }
+    },
+    
+    fromData: function (data) {
+        let json;
+        
+        try {
+            json = JSON.parse(data);
+        } catch (e) {
+            log(e);
+            log("Data: '%s'".format(data));
+            return;
+        }
+        
+        if (!json.hasOwnProperty("type")) {
+            throw Error("packet is missing 'type' field");
+        } else if (!json.hasOwnProperty("body")) {
+            throw Error("packet is missing 'body' field");
+        } else if (!json.hasOwnProperty("id")) {
+            throw Error("packet is missing 'id' field");
+        } else {
+            Object.assign(this, json);
+        }
+    },
+    
+    toData: function () {
+        this.id = Date.now();
+        return JSON.stringify(this) + "\n";
+    },
+    
+    toString: function () {
+        return JSON.stringify(this);
+    }
+});
+
+
+var IdentityPacket = new Lang.Class({
+    Name: "GSConnectIdentityPacket",
+    Extends: Packet,
+    
+    _init: function (daemon=false) {
+        this.parent();
+        
+        this.type = TYPE_IDENTITY;
+        this.body = {
+            deviceId: "",
+            deviceName: "",
+            deviceType: "",
+            incomingCapabilities: [],
+            outgoingCapabilities: [],
+            tcpPort: 0,
+            protocolVersion: 7
+        };
+        
+        if (daemon) {
+            this.fromDaemon(daemon);
+        }
+    },
+    
+    fromDaemon: function (daemon) {
+        Object.assign(this, {
+            id: Date.now(), //FIXME
+            type: TYPE_IDENTITY,
+            body: JSON.parse(JSON.stringify(daemon.identity.body))
+        });
+    }
+});
+
+
+var PairPacket = new Lang.Class({
+    Name: "GSConnectPairPacket",
+    Extends: Packet,
+    
+    _init: function (daemon=null) {
+        this.parent();
+        
+        this.type = TYPE_PAIR;
+        this.body = {
+            pair: false,
+            publicKey: ""
+        };
+        
+        if (daemon !== null) {
+            this.fromDaemon(daemon);
+        }
+    },
+    
+    fromDaemon: function (daemon) {
+        // TODO
+        Object.assign(this, {
+            id: Date.now(), //FIXME
+            type: TYPE_PAIR,
+            body: {
+                pair: true,
+                publicKey: JSON.parse(JSON.stringify(daemon.publicKey))
+            }
+        });
+    }
+});
+
+
+/**
  * Data Channels
  */
 var LanChannel = new Lang.Class({
@@ -224,127 +342,10 @@ var LanChannel = new Lang.Class({
         
         // TODO: error checking wrt packet
         //       encrypted packets?
-        packet = new BasePacket(data);
+        packet = new Packet(data);
         this.emit("received", packet);
         
         return true;
-    }
-});
-
-
-/**
- * Packets
- */
-var BasePacket = new Lang.Class({
-    Name: "GSConnectPacket",
-    Extends: GObject.Object,
-    
-    _init: function (data=false) {
-        // TODO
-        this.parent();
-        
-        this.id = Date.now();
-        this.type = "";
-        this.body = {};
-        
-        if (data) {
-            this.fromData(data);
-        }
-    },
-    
-    fromData: function (data) {
-        let json;
-        
-        try {
-            json = JSON.parse(data);
-        } catch (e) {
-            log(e);
-            log("Data: '%s'".format(data));
-            return;
-        }
-        
-        if (!json.hasOwnProperty("type")) {
-            throw Error("packet is missing 'type' field");
-        } else if (!json.hasOwnProperty("body")) {
-            throw Error("packet is missing 'body' field");
-        } else if (!json.hasOwnProperty("id")) {
-            throw Error("packet is missing 'id' field");
-        } else {
-            Object.assign(this, json);
-        }
-    },
-    
-    toData: function () {
-        return JSON.stringify(this) + "\n";
-    },
-    
-    toString: function () {
-        return JSON.stringify(this);
-    }
-});
-
-
-var IdentityPacket = new Lang.Class({
-    Name: "GSConnectIdentityPacket",
-    Extends: BasePacket,
-    
-    _init: function (daemon=false) {
-        this.parent();
-        
-        this.type = TYPE_IDENTITY;
-        this.body = {
-            deviceId: "",
-            deviceName: "",
-            deviceType: "",
-            incomingCapabilities: [],
-            outgoingCapabilities: [],
-            tcpPort: 0,
-            protocolVersion: 7
-        };
-        
-        if (daemon) {
-            this.fromDaemon(daemon);
-        }
-    },
-    
-    fromDaemon: function (daemon) {
-        Object.assign(this, {
-            id: Date.now(), //FIXME
-            type: TYPE_IDENTITY,
-            body: JSON.parse(JSON.stringify(daemon.identity.body))
-        });
-    }
-});
-
-
-var PairPacket = new Lang.Class({
-    Name: "GSConnectPairPacket",
-    Extends: BasePacket,
-    
-    _init: function (daemon=null) {
-        this.parent();
-        
-        this.type = TYPE_PAIR;
-        this.body = {
-            pair: false,
-            publicKey: ""
-        };
-        
-        if (daemon !== null) {
-            this.fromDaemon(daemon);
-        }
-    },
-    
-    fromDaemon: function (daemon) {
-        // TODO
-        Object.assign(this, {
-            id: Date.now(), //FIXME
-            type: TYPE_PAIR,
-            body: {
-                pair: true,
-                publicKey: JSON.parse(JSON.stringify(daemon.publicKey))
-            }
-        });
     }
 });
 
