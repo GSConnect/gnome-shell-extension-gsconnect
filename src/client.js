@@ -197,6 +197,105 @@ var Battery = new Lang.Class({
     get level () { return this._get("level"); }
 });
 
+
+/** A base class for backend Telephony implementations */
+var Telephony = new Lang.Class({
+    Name: "Telephony",
+    Extends: ProxyBase,
+    Signals: {
+        "missedCall": {
+            flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED,
+            param_types: [
+                GObject.TYPE_STRING,    // phoneNumber
+                GObject.TYPE_STRING,    // contactName
+                GObject.TYPE_STRING,    // messageBody
+                GObject.TYPE_STRING     // phoneThumbnail
+            ]
+        },
+        "ringing": {
+            flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED,
+            param_types: [
+                GObject.TYPE_STRING,    // phoneNumber
+                GObject.TYPE_STRING,    // contactName
+                GObject.TYPE_STRING,    // messageBody
+                GObject.TYPE_STRING     // phoneThumbnail
+            ]
+        },
+        "sms": {
+            flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED,
+            param_types: [
+                GObject.TYPE_STRING,    // phoneNumber
+                GObject.TYPE_STRING,    // contactName
+                GObject.TYPE_STRING,    // messageBody
+                GObject.TYPE_STRING     // phoneThumbnail
+            ]
+        },
+        "talking": {
+            flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED,
+            param_types: [
+                GObject.TYPE_STRING,    // phoneNumber
+                GObject.TYPE_STRING,    // contactName
+                GObject.TYPE_STRING,    // messageBody
+                GObject.TYPE_STRING     // phoneThumbnail
+            ]
+        }
+    },
+    
+    _init: function (dbusPath) {
+        this.parent(
+            DeviceNode.lookup_interface("org.gnome.shell.extensions.gsconnect.telephony"),
+            dbusPath
+        );
+        
+        this.connect("g-signal", (proxy, sender, name, parameters) => {
+            parameters = parameters.deep_unpack();
+            
+            log("signal name: " + name);
+            log("signal typeof name: " + typeof name);
+            log("signal params: " + parameters);
+            
+            if (name === "missedCall") {
+                this.emit("missedCall",
+                    parameters[0],
+                    parameters[1],
+                    parameters[2],
+                    parameters[3]
+                );
+            } else if (name === "ringing") {
+                this.emit("ringing",
+                    parameters[0],
+                    parameters[1],
+                    parameters[2],
+                    parameters[3]
+                );
+            } else if (name === "sms") {
+                this.emit("sms",
+                    parameters[0],
+                    parameters[1],
+                    parameters[2],
+                    parameters[3]
+                );
+            } else if (name === "talking") {
+                this.emit("talking",
+                    parameters[0],
+                    parameters[1],
+                    parameters[2],
+                    parameters[3]
+                );
+            }
+        });
+    },
+    
+    mute: function () {
+        return this._call("mute", true);
+    },
+    
+    sms: function (phoneNumber, messageBody) {
+        this._call("sms", true, phoneNumber, messageBody);
+    },
+});
+
+
 /** A base class for backend Device implementations */
 var Device = new Lang.Class({
     Name: "Device",
@@ -348,10 +447,7 @@ var Device = new Lang.Class({
         }
         
         if (plugins.indexOf("telephony") > -1 && this.paired) {
-            this.telephony = new ProxyBase(
-                DeviceNode.lookup_interface("org.gnome.shell.extensions.gsconnect.telephony"),
-                this.gObjectPath
-            );
+            this.telephony = new Telephony(this.gObjectPath);
         } else if (this.hasOwnProperty("telephony")) {
             this.telephony.destroy();
             delete this.telephony;
