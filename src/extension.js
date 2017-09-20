@@ -262,6 +262,7 @@ var ActionButton = new Lang.Class({
         
         if (typeof params.tooltip_text === "string") {
             this.tooltip = new ActionTooltip(params.tooltip_text, this);
+            this.connect("destroy", () => { this.tooltip.destroy(); });
         }
     }
 });
@@ -475,7 +476,7 @@ var DeviceMenu = new Lang.Class({
     },
     
     _statusChanged: function (device, state) {
-        debug("extension.DeviceMenu._statusChanged(" + this.device.gObjectPath + ")");
+        debug("extension.DeviceMenu._statusChanged(" + this.device.id + ")");
         
         let { connected, paired } = this.device;
         
