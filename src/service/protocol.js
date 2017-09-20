@@ -433,22 +433,9 @@ var TransferChannel = new Lang.Class({
     _write: function (bytes) {
         log("Transfer._write()");
         log(bytes);
-    }
-});
-
-
-var Transfer = new Lang.Class({
-    Name: "GSConnectTransfer",
-    Extends: GObject.Object,
-    
-    _init: function (inStream, outStream) {
-        this.parent();
-        
-        this.inStream = inStream;
-        this.outStream = outStream;
     },
     
-    start: function (size) {
+    old_func: function (size) {
         let chunk_size = 4096;
         let bytes_written = 0;
         
@@ -481,30 +468,6 @@ var Transfer = new Lang.Class({
 //        }
 //        
 //        return true;
-    },
-    
-    _read: function () {
-        log("Transfer._read()");
-        this.inStream.read_bytes_async(
-            4096,
-            GLib.PRIORITY_DEFAULT,
-            null,
-            (source, res) => {
-                log("callback");
-                let bytes = source.read_bytes_finish(res);
-                log("bytes read: " + bytes);
-                
-                if (bytes.length) {
-                    log("bytes read: " + bytes);
-                    this._write(bytes);
-                    this._read(stream);
-                }
-            }
-        );
-    },
-    
-    _write: function (bytes) {
-        log(bytes);
     }
 });
 
