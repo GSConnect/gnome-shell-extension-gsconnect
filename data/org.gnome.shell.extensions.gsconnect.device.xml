@@ -69,6 +69,14 @@
       <arg name="messageBody" type="s" direction="in"/>
     </method>
     <!-- Signals -->
-    <signal name="telephony"/>
+    <signal name="missedCall"/>
+    <signal name="ringing"/>
+    <signal name="sms">
+      <arg name="phoneNumber" type="s"/>
+      <arg name="contactName" type="s"/>
+      <arg name="messageBody" type="s"/>
+      <arg name="phoneThumbnail" type="s"/>
+    </signal>
+    <signal name="talking"/>
   </interface>
 </node>
