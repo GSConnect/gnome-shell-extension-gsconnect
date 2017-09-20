@@ -414,7 +414,7 @@ var ApplicationWindow = new Lang.Class({
         // Contact Entry
         this.contactEntry = new ContactEntry();
         this.device.bind_property(
-            "reachable",
+            "connected",
             this.contactEntry,
             "sensitive",
             GObject.BindingFlags.DEFAULT
@@ -448,7 +448,7 @@ var ApplicationWindow = new Lang.Class({
         );
         
         // Content -> Conversation View
-        // TODO: intercept notifications to fake a two-way conversation
+        // TODO: use a listbox/bubbles to indicate msg direction
         let scrolledWindow = new Gtk.ScrolledWindow({
             can_focus: false,
             hexpand: true,
@@ -471,7 +471,7 @@ var ApplicationWindow = new Lang.Class({
         });
         
         this.device.bind_property(
-            "reachable",
+            "connected",
             conversationView,
             "sensitive",
             GObject.BindingFlags.DEFAULT
@@ -500,7 +500,7 @@ var ApplicationWindow = new Lang.Class({
         });
         
         this.device.bind_property(
-            "reachable",
+            "connected",
             this.messageEntry,
             "sensitive",
             GObject.BindingFlags.DEFAULT
@@ -510,22 +510,22 @@ var ApplicationWindow = new Lang.Class({
         
         // Device Status
         // See: https://bugzilla.gnome.org/show_bug.cgi?id=710888
-        this.device.connect("notify::reachable", () => {
-            if (!this.device.reachable) {
+        this.device.connect("notify::connected", () => {
+            if (!this.device.connected) {
                 this.layout.add(this.infoBar);
                 this.layout.reorder_child(this.infoBar, 0);
                 this.infoBar.show_all();
-            } else if (this.device.reachable) {
+            } else if (this.device.connected) {
                 this.infoBar.hide();
                 this.layout.remove(this.infoBar);
             }
         });
         
         // Connect to notifications
-        if (this.device.hasOwnProperty("notifications")) {
-            this.device.notifications.connect(
-                "notification::posted",
-                Lang.bind(this, this._catch_notification)
+        if (this.device.hasOwnProperty("telephony")) {
+            this.device.telephony.connect(
+                "sms",
+                Lang.bind(this, this._catch_message)
             );
         }
         
@@ -534,52 +534,31 @@ var ApplicationWindow = new Lang.Class({
         this.has_focus = true;
     },
     
-    _catch_notification: function (plugin, nid) {
-        let note;
+    _catch_message: function (plugin, phoneNumber, contactName, messageBody, phoneThumbnail) {
+        log("SMS phoneNumber: " + phoneNumber);
+        log("SMS contactName: " + contactName);
+        log("SMS messageBody: " + messageBody);
+        log("SMS phoneThumbnail: " + phoneThumbnail);
+        let recipients = this._get_recipients();
         
-        // TODO: two-way sms not supported yet
-        return;
-            
-        log("Notification DBus ID: " + nid);
-        log("Notification App Name: \"" + note.name + "\"");
-        log("Notification ID: \"" + note.id + "\"");
-        log("Notification: \"" + note.content + "\"");
-        if (note.id.indexOf(":sms:") > -1) {
-            let recipients = this._get_recipients();
-            // string between sender and message:
-            //    bin: 00100000 10000000010000 00100000
-            //    hex: 20201020
-            //    url: %20%E2%80%90%20
-            let [sender, message] = note.content.split(" ‐ ");
-            
-            log("SMS Sender: \"" + sender + "\"");
-            log("SMS Message: \"" + message + "\"");
-            
-            // Check for a verbatim match
-            if (recipients.has(sender)) {
-                log("Matched incoming sender");
-                this._log_message(sender, message);
-                this.urgency_hint = true;
-                note.dismiss();
-            // Might be just a number, strip both and check
-            } else {
-                for (let [name, number] of recipients.entries()) {
-                    let local_num = number.replace(/\D/g, "");
-                    let remote_num = sender.replace(/\D/g, "");
-                    log("Local Number: \"" + local_num + "\"");
-                    log("Incoming Number: \"" + remote_num + "\"");
-                    
-                    if (local_num === remote_num) {
-                        log("Matched incoming number");
-                        this._log_message(name, message);
-                        this.urgency_hint = true;
-                        note.dismiss();
-                    }
+        // Check for a verbatim match
+        if (recipients.has(contactName)) {
+            log("Matched incoming sender");
+            this._log_message(contactName, messageBody);
+            this.urgency_hint = true;
+        // Might be just a number, strip both down to digits and check
+        } else {
+            for (let [name, number] of recipients.entries()) {
+                let local_num = number.replace(/\D/g, "");
+                let remote_num = phoneNumber.replace(/\D/g, "");
+                
+                if (local_num === remote_num) {
+                    log("Matched incoming number");
+                    this._log_message(name, messageBody);
+                    this.urgency_hint = true;
                 }
             }
         }
-        
-        note.destroy();
     },
     
     _get_recipients: function () {
@@ -735,7 +714,7 @@ var Application = new Lang.Class({
         }
         
         if (device === undefined) {
-            throw Error("Device is unreachable or doesn't support sending SMS");
+            throw Error("Device is unconnected or doesn't support sending SMS");
         }
         
         let windows = this.get_windows();
