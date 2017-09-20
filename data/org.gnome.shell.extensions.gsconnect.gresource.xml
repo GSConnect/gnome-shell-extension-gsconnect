@@ -21,4 +21,8 @@
     <!-- Device Menu Icons -->
     <file alias="sms-symbolic.svg" compressed="true" preprocess="xml-stripblanks">sms-symbolic.svg</file>
   </gresource>
+  <gresource prefix="/dbus">
+    <file compressed="true" preprocess="xml-stripblanks">org.gnome.shell.extensions.gsconnect.daemon.xml</file>
+    <file compressed="true" preprocess="xml-stripblanks">org.gnome.shell.extensions.gsconnect.device.xml</file>
+  </gresource>
 </gresources>

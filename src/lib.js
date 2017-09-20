@@ -42,8 +42,25 @@ var Settings = new Gio.Settings({
 var Schema = Settings.settings_schema;
 
 /** Init GResource for fallback icons */
-var Resources = Gio.resource_load(Me.path + "/org.gnome.shell.extensions.mconnect.gresource");
+var Resources = Gio.resource_load(Me.path + "/org.gnome.shell.extensions.gsconnect.gresource");
 Resources._register();
+
+//
+var DBusInfo = {
+    daemon: new Gio.DBusNodeInfo.new_for_xml(
+        Resources.lookup_data(
+            "/dbus/org.gnome.shell.extensions.gsconnect.daemon.xml", 0
+        ).unref_to_array().toString()
+    ),
+    device: new Gio.DBusNodeInfo.new_for_xml(
+        Resources.lookup_data(
+            "/dbus/org.gnome.shell.extensions.gsconnect.device.xml", 0
+        ).unref_to_array().toString()
+    )
+};
+
+DBusInfo.daemon.nodes.forEach((ifaceInfo) => { ifaceInfo.cache_build(); });
+DBusInfo.device.nodes.forEach((ifaceInfo) => { ifaceInfo.cache_build(); });
 
 /** Initialize Gettext for metadata['gettext-domain'] */
 function initTranslations() {

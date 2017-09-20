@@ -1,5 +1,5 @@
 """
-nautilus-send-mconnect.py - A Nautilus extension for sending files via
+nautilus-send-gsconnect.py - A Nautilus extension for sending files via
                             MConnect/KDE Connect.
 
 A great deal of credit and appreciation is owed to the indicator-kdeconnect
@@ -19,8 +19,8 @@ import subprocess
 
 _ = gettext.gettext
 
-LOCALE_DIR = os.path.expanduser("~/.local/share/gnome-shell/extensions/mconnect@andyholmes.github.io/locale")
-CLI_PATH = os.path.expanduser("~/.local/share/gnome-shell/extensions/mconnect@andyholmes.github.io/share.js")
+LOCALE_DIR = os.path.expanduser("~/.local/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/locale")
+CLI_PATH = os.path.expanduser("~/.local/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/share.js")
 
 
 class MConnectShareExtension(GObject.GObject, Nautilus.MenuProvider):
@@ -32,10 +32,10 @@ class MConnectShareExtension(GObject.GObject, Nautilus.MenuProvider):
         try:
             locale.setlocale(locale.LC_ALL, '')
             gettext.bindtextdomain(
-                'gnome-shell-extension-mconnect',
+                'gnome-shell-extension-gsconnect',
                 LOCALE_DIR
             )
-            gettext.textdomain('gnome-shell-extension-mconnect')
+            gettext.textdomain('gnome-shell-extension-gsconnect')
         except:
             pass
 

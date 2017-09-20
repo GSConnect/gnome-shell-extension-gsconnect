@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<schemalist gettext-domain="gnome-shell-extension-mconnect">
-  <enum id="org.gnome.shell.extensions.mconnect.ServiceProvider">
+<schemalist gettext-domain="gnome-shell-extension-gsconnect">
+  <enum id="org.gnome.shell.extensions.gsconnect.ServiceProvider">
     <value nick="MCONNECT" value="0"/>
     <value nick="KDECONNECT" value="1"/>
   </enum>
-  <flags id="org.gnome.shell.extensions.mconnect.DeviceVisibility">
+  <flags id="org.gnome.shell.extensions.gsconnect.DeviceVisibility">
     <value nick="OFFLINE" value="1"/>
     <value nick="UNPAIRED" value="2"/>
   </flags>
-  <schema path="/org/gnome/shell/extensions/mconnect/" id="org.gnome.shell.extensions.mconnect">
+  <schema path="/org/gnome/shell/extensions/gsconnect/" id="org.gnome.shell.extensions.gsconnect">
     <key name="debug" type="b">
       <default>false</default>
       <summary>Debug mode</summary>
@@ -24,16 +24,18 @@
       <summary>Device Indicators</summary>
       <description>Controls available via Indicators or the User Menu</description>
     </key>
-    <key name="device-visibility" flags="org.gnome.shell.extensions.mconnect.DeviceVisibility">
+    <key name="device-visibility" flags="org.gnome.shell.extensions.gsconnect.DeviceVisibility">
       <default>["OFFLINE", "UNPAIRED"]</default>
       <summary>Device Visibility</summary>
       <description>Display devices in offline and unpaired states</description>
     </key>
+    <!-- TODO: use string of JSON -->
     <key name="device-keybindings" type="a{sv}">
       <default><![CDATA[{"": <{"name": <"">, "bindings": <['','','','','','']>}>}]]></default>
       <summary>Device Actions</summary>
       <description>Configure shortcuts for device functions</description>
     </key>
+    <!-- TODO: use string of JSON -->
     <key name="extension-keybindings" type="as">
       <default><![CDATA[['','','','']]]></default>
       <summary>Extension Actions</summary>
@@ -49,15 +51,11 @@
       <summary>Persistent Discovery</summary>
       <description>Constantly probe the network for devices</description>
     </key>
+    <!-- TODO: probably won't need this -->
     <key name="service-autostart" type="b">
       <default>false</default>
       <summary>Service Auto-Start</summary>
       <description>Start the service automatically and restart if stopped</description>
-    </key>
-    <key name="service-provider" enum="org.gnome.shell.extensions.mconnect.ServiceProvider">
-      <default>'KDECONNECT'</default>
-      <summary>Service Provider</summary>
-      <description>The service providing devices</description>
     </key>
   </schema>
 </schemalist>

@@ -1,7 +1,7 @@
 "use strict";
 
 // Imports
-const Gettext = imports.gettext.domain("gnome-shell-extension-mconnect");
+const Gettext = imports.gettext.domain("gnome-shell-extension-gsconnect");
 const _ = Gettext.gettext;
 const Lang = imports.lang;
 const Mainloop = imports.mainloop;
@@ -24,8 +24,7 @@ const Tweener = imports.ui.tweener;
 // Local Imports
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 const { log, debug, initTranslations, Resources, Settings } = Me.imports.lib;
-const MConnect = Me.imports.mconnect;
-const KDEConnect = Me.imports.kdeconnect;
+const Client = Me.imports.client;
 
 // Externally Available Constants
 var DeviceVisibility = {
@@ -36,11 +35,6 @@ var DeviceVisibility = {
 var DeviceVisibilityNames = {
     OFFLINE: _("OFFLINE"),
     UNPAIRED: _("UNPAIRED")
-};
-
-var ServiceProvider = {
-    MCONNECT: 0,
-    KDECONNECT: 1
 };
 
 
@@ -387,11 +381,11 @@ var DeviceMenu = new Lang.Class({
         
         // Status signals
         device.connect(
-            "notify::reachable",
+            "notify::connected",
             Lang.bind(this, this._statusChanged)
         );
         device.connect(
-            "notify::trusted",
+            "notify::paired",
             Lang.bind(this, this._statusChanged)
         );
         
@@ -466,7 +460,7 @@ var DeviceMenu = new Lang.Class({
         }
         
         // Battery Plugin
-        if (device.trusted && device.hasOwnProperty("battery")) {
+        if (device.paired && device.hasOwnProperty("battery")) {
             this._batteryChanged(
                 device,
                 new GLib.Variant(
@@ -483,17 +477,17 @@ var DeviceMenu = new Lang.Class({
     _statusChanged: function (device, state) {
         debug("extension.DeviceMenu._statusChanged(" + this.device.gObjectPath + ")");
         
-        let { reachable, trusted } = this.device;
+        let { connected, paired } = this.device;
         
-        this.pluginBar.actor.visible = (reachable && trusted);
-        this.statusBar.actor.visible = (!reachable || !trusted);
-        this.batteryIcon.visible = (reachable && trusted);
+        this.pluginBar.actor.visible = (connected && paired);
+        this.statusBar.actor.visible = (!connected || !paired);
+        this.batteryIcon.visible = (connected && paired);
         
-        if (!trusted) {
+        if (!paired) {
             this.statusButton.child.icon_name = "channel-insecure-symbolic";
             this.statusButton.tooltip.title = _("Request Pair");
             this.statusLabel.text = _("Device is unpaired");
-        } else if (!reachable) {
+        } else if (!connected) {
             this.statusButton.child.icon_name = "view-refresh-symbolic";
             this.statusButton.tooltip.title = _("Attempt Reconnection");
         
@@ -580,7 +574,7 @@ var DeviceMenu = new Lang.Class({
     _statusAction: function (button) {
         debug("extension.DeviceMenu._statusAction()");
         
-        if (this.device.trusted) {
+        if (this.device.paired) {
             this.manager.scan(this.device.id, 2);
         } else {
             this.device.pair();
@@ -619,8 +613,8 @@ var DeviceIndicator = new Lang.Class({
             this._sync();
         });
         
-        device.connect("notify::reachable", () => { this._sync(); });
-        device.connect("notify::trusted", () => { this._sync(); });
+        device.connect("notify::connected", () => { this._sync(); });
+        device.connect("notify::paired", () => { this._sync(); });
         
         // Sync
         this._sync(device);
@@ -631,14 +625,14 @@ var DeviceIndicator = new Lang.Class({
         debug("extension.DeviceIndicator._sync()");
         
         let flags = Settings.get_flags("device-visibility");
-        let { reachable, trusted, type } = this.device;
+        let { connected, paired, type } = this.device;
         
         // Device Visibility
         if (!Settings.get_boolean("device-indicators")) {
             this.actor.visible = false;
-        } else if (!(flags & DeviceVisibility.UNPAIRED) && !trusted) {
+        } else if (!(flags & DeviceVisibility.UNPAIRED) && !paired) {
             this.actor.visible = false;
-        } else if (!(flags & DeviceVisibility.OFFLINE) && !reachable) {
+        } else if (!(flags & DeviceVisibility.OFFLINE) && !connected) {
             this.actor.visible = false;
         } else {
             this.actor.visible = true;
@@ -647,10 +641,10 @@ var DeviceIndicator = new Lang.Class({
         // Indicator Icon
         let icon = (type === "phone") ? "smartphone" : type;
         
-        if (trusted && reachable) {
+        if (paired && connected) {
             this.icon.icon_name = icon + "-connected";
-        } else if (trusted) {
-            this.icon.icon_name = icon + "-trusted";
+        } else if (paired) {
+            this.icon.icon_name = icon + "-paired";
         } else {
             this.icon.icon_name = icon + "-disconnected";
         }
@@ -687,13 +681,6 @@ var SystemIndicator = new Lang.Class({
             Lang.bind(this, this._integrateNautilus)
         );
         
-        // Select the backend service
-        if (Settings.get_enum("service-provider") === ServiceProvider.MCONNECT) {
-            this._backend = MConnect;
-        } else {
-            this._backend = KDEConnect;
-        }
-        
         // System Indicator
         this.extensionIndicator = this._addIndicator();
         this.extensionIndicator.icon_name = "device-link-symbolic";
@@ -720,7 +707,7 @@ var SystemIndicator = new Lang.Class({
         // Extension Menu -> [ Enable Item ]
         this.enableItem = this.extensionMenu.menu.addAction(
             _("Enable"),
-            this._backend.startService
+            Client.startService
         );
         
         // Extension Menu -> Mobile Settings Item
@@ -735,16 +722,17 @@ var SystemIndicator = new Lang.Class({
         // Watch for DBus service
         this._watchdog = Gio.bus_watch_name(
             Gio.BusType.SESSION,
-            this._backend.BUS_NAME,
+            Client.BUS_NAME,
             Gio.BusNameWatcherFlags.NONE,
             Lang.bind(this, this._serviceAppeared),
             Lang.bind(this, this._serviceVanished)
         );
         
+        // FIXME FIXME FIXME
         // Watch "service-autostart" setting
         Settings.connect("changed::service-autostart", (settings, key) => {
             if (Settings.get_boolean(key) && !this.manager) {
-                this._backend.startService();
+                Client.startService();
             }
         });
         
@@ -766,7 +754,7 @@ var SystemIndicator = new Lang.Class({
     _serviceAppeared: function (conn, name, name_owner, cb_data) {
         debug("extension.SystemIndicator._serviceAppeared()");
         
-        this.manager = new this._backend.DeviceManager();
+        this.manager = new Client.DeviceManager();
         this.enableItem.actor.visible = !(this.manager);
         this.extensionIndicator.visible = (this.manager);
         
@@ -825,7 +813,7 @@ var SystemIndicator = new Lang.Class({
         
         // Start the service or wait for it to start
         if (Settings.get_boolean("service-autostart")) {
-            this._backend.startService();
+            Client.startService();
         } else {
             log("waiting for service");
         }
@@ -870,7 +858,7 @@ var SystemIndicator = new Lang.Class({
             this._keybindings.push(
                 this.keybindingManager.add(
                     bindings[3],
-                    Lang.bind(this, this._backend.startSettings)
+                    Lang.bind(this, Client.startSettings)
                 )
             );
         }
@@ -999,7 +987,7 @@ var SystemIndicator = new Lang.Class({
     
     _openPrefs: function () {
         GLib.spawn_command_line_async(
-            "gnome-shell-extension-prefs mconnect@andyholmes.github.io"
+            "gnome-shell-extension-prefs gsconnect@andyholmes.github.io"
         );
     },
     
@@ -1017,10 +1005,10 @@ var SystemIndicator = new Lang.Class({
         let menu = new DeviceMenu(device, manager);
         this._menus[dbusPath] = menu;
         
-        device.connect("notify::reachable", () => {
+        device.connect("notify::connected", () => {
             this._deviceMenuVisibility(menu);
         });
-        device.connect("notify::trusted", () => {
+        device.connect("notify::paired", () => {
             this._deviceMenuVisibility(menu);
         });
         
@@ -1048,11 +1036,11 @@ var SystemIndicator = new Lang.Class({
     
     _deviceMenuVisibility: function (menu){
         let flags = Settings.get_flags("device-visibility");
-        let { reachable, trusted } = menu.device;
+        let { connected, paired } = menu.device;
         
-        if (!(flags & DeviceVisibility.UNPAIRED) && !trusted) {
+        if (!(flags & DeviceVisibility.UNPAIRED) && !paired) {
             menu.actor.visible = false;
-        } else if (!(flags & DeviceVisibility.OFFLINE) && !reachable) {
+        } else if (!(flags & DeviceVisibility.OFFLINE) && !connected) {
             menu.actor.visible = false;
         } else {
             menu.actor.visible = true;
@@ -1081,7 +1069,7 @@ var SystemIndicator = new Lang.Class({
     _integrateNautilus: function () {
         let path = GLib.get_user_data_dir() + "/nautilus-python/extensions";
         let dir = Gio.File.new_for_path(path);
-        let script = dir.get_child("nautilus-send-mconnect.py");
+        let script = dir.get_child("nautilus-send-gsconnect.py");
         let scriptExists = script.query_exists(null);
         let integrate = Settings.get_boolean("nautilus-integration");
         
@@ -1091,7 +1079,7 @@ var SystemIndicator = new Lang.Class({
             }
             
             script.make_symbolic_link(
-                Me.path + "/nautilus-send-mconnect.py",
+                Me.path + "/nautilus-send-gsconnect.py",
                 null,
                 null
             );
@@ -1138,10 +1126,10 @@ function enable() {
     
     systemIndicator = new SystemIndicator();
     
-    Settings.connect("changed::service-provider", () => {
-        systemIndicator.destroy();
-        systemIndicator = new SystemIndicator();
-    });
+//    Settings.connect("changed::service-provider", () => {
+//        systemIndicator.destroy();
+//        systemIndicator = new SystemIndicator();
+//    });
 }
 
 function disable() {

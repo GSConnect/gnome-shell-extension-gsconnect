@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=GSConnect
+Exec=~/.local/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/daemon.js
+Terminal=false
+Icon=phone
+Categories=Network;
+DBusActivatable=true
+
+

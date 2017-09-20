@@ -11,23 +11,31 @@ Description = 'KDE Connect protocol implementation and integration for Gnome She
 ExtensionId = meson.project_name().split('gnome-shell-extension-')[1]
 UUID = ExtensionId + '@' + 'andyholmes.github.io'
 URL = 'https://github.com/andyholmes/gnome-shell-extension-gsconnect'
-Shell = [ '3.18', '3.20', '3.22', '3.24', '3.26' ]
+Shell = [ '3.24', '3.26' ]
 
 # A list of files to be copied to the extension directory without modification.
-Files = files(
+extension_source = files(
   # standard files
   'src/extension.js',
   'src/prefs.js',
   'data/stylesheet.css',
   # non-standard files
+  'src/client.js',
   'src/lib.js',
-  'src/kdeconnect.js',
-  'src/mconnect.js',
   'src/share.js',
   'src/sms.js',
   # non-GJS files
-  'src/nautilus-send-mconnect.py',
+  'src/nautilus-send-gsconnect.py',
   'src/folks.py'
+)
+
+service_source = files(
+  # service
+  'src/service/config.js',
+  'src/service/daemon.js',
+  'src/service/device.js',
+  'src/service/plugin.js',
+  'src/service/protocol.js'
 )
 
 
@@ -43,8 +51,15 @@ run_target('install-zip', command: ['meson/zip.sh', UUID, 'install'])
 
 # Extension Source
 install_data(
-  Files,
+  extension_source,
   install_dir: extdatadir,
+  install_mode: 'rw-r--r--'
+)
+
+# Service Source
+install_data(
+  service_source,
+  install_dir: join_paths(extdatadir, 'service'),
   install_mode: 'rw-r--r--'
 )
 

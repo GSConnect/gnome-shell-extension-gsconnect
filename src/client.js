@@ -7,83 +7,23 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 
+// Local Imports
+function getPath() {
+    // Diced from: https://github.com/optimisme/gjs-examples/
+    let m = new RegExp("@(.+):\\d+").exec((new Error()).stack.split("\n")[1]);
+    return Gio.File.new_for_path(m[1]).get_parent().get_path();
+}
+
+imports.searchPath.push(getPath());
+
+const { initTranslations, Me, DBusInfo, Settings } = imports.lib;
+
 
 // DBus Constants
-var BUS_NAME = "org.mconnect";
+var BUS_NAME = "org.gnome.shell.extensions.gsconnect.daemon";
 
-const DeviceNode = new Gio.DBusNodeInfo.new_for_xml('\
-<node> \
-  <interface name="org.freedesktop.DBus.Properties"> \
-    <method name="Get"> \
-      <arg type="s" name="interface_name" direction="in"/> \
-      <arg type="s" name="property_name" direction="in"/> \
-      <arg type="v" name="value" direction="out"/> \
-    </method> \
-    <method name="GetAll"> \
-      <arg type="s" name="interface_name" direction="in"/> \
-      <arg type="a{sv}" name="properties" direction="out"/> \
-    </method> \
-    <method name="Set"> \
-      <arg type="s" name="interface_name" direction="in"/> \
-      <arg type="s" name="property_name" direction="in"/> \
-      <arg type="v" name="value" direction="in"/> \
-    </method> \
-    <signal name="PropertiesChanged"> \
-      <arg type="s" name="interface_name"/> \
-      <arg type="a{sv}" name="changed_properties"/> \
-      <arg type="as" name="invalidated_properties"/> \
-    </signal> \
-  </interface> \
-  <interface name="org.mconnect.Device"> \
-    <property type="s" name="Id" access="readwrite"/> \
-    <property type="s" name="Name" access="readwrite"/> \
-    <property type="s" name="DeviceType" access="readwrite"/> \
-    <property type="u" name="ProtocolVersion" access="readwrite"/> \
-    <property type="s" name="Address" access="readwrite"/> \
-    <property type="b" name="IsPaired" access="readwrite"/> \
-    <property type="b" name="Allowed" access="readwrite"/> \
-    <property type="b" name="IsActive" access="readwrite"/> \
-    <property type="b" name="IsConnected" access="readwrite"/> \
-    <property type="as" name="IncomingCapabilities" access="readwrite"/> \
-    <property type="as" name="OutgoingCapabilities" access="readwrite"/> \
-  </interface> \
-  <interface name="org.mconnect.Device.Battery"> \
-    <property type="u" name="Level" access="readwrite"/> \
-    <property type="b" name="Charging" access="readwrite"/> \
-  </interface> \
-  <interface name="org.mconnect.Device.Ping"> \
-    <signal name="Ping"> \
-    </signal> \
-  </interface> \
-</node> \
-');
-
-DeviceNode.nodes.forEach((nodeInfo) => { nodeInfo.cache_build(); });
-
-
-const ManagerNode = new Gio.DBusNodeInfo.new_for_xml('\
-<node> \
-  <interface name="org.mconnect.DeviceManager"> \
-    <method name="AllowDevice"> \
-      <arg type="s" name="path" direction="in"/> \
-    </method> \
-    <method name="DisallowDevice"> \
-      <arg type="s" name="path" direction="in"/> \
-    </method> \
-    <method name="ListDevices"> \
-      <arg type="ao" name="result" direction="out"/> \
-    </method> \
-    <signal name="DeviceAdded"> \
-      <arg type="s" name="path" direction="out"/> \
-    </signal> \
-    <signal name="DeviceRemoved"> \
-      <arg type="s" name="path" direction="out"/> \
-    </signal> \
-  </interface> \
-</node> \
-');
-
-ManagerNode.nodes.forEach((nodeInfo) => { nodeInfo.cache_build(); });
+const DeviceNode = DBusInfo.device;
+const ManagerNode = DBusInfo.daemon;
 
 
 // Start the service backend
@@ -234,24 +174,27 @@ var Battery = new Lang.Class({
     },
     
     _init: function (dbusPath) {
-        this.parent(DeviceNode.interfaces[2], dbusPath);
+        this.parent(
+            DeviceNode.lookup_interface("org.gnome.shell.extensions.gsconnect.battery"),
+            dbusPath
+        );
         
         //
         this.connect("g-properties-changed", (proxy, properties) => {
             properties = properties.deep_unpack();
             
-            if (properties.hasOwnProperty("Charging")) {
+            if (properties.hasOwnProperty("charging")) {
                 this.notify("charging");
             }
             
-            if (properties.hasOwnProperty("Level")) {
+            if (properties.hasOwnProperty("level")) {
                 this.notify("level");
             }
         });
     },
     
-    get charging () { return this._get("Charging"); },
-    get level () { return this._get("Level"); }
+    get charging () { return this._get("charging"); },
+    get level () { return this._get("level"); }
 });
 
 /** A base class for backend Device implementations */
@@ -273,17 +216,17 @@ var Device = new Lang.Class({
             GObject.ParamFlags.READABLE,
             ""
         ),
-        "reachable": GObject.ParamSpec.boolean(
-            "reachable",
+        "connected": GObject.ParamSpec.boolean(
+            "connected",
             "DeviceReachable",
-            "Whether the device is reachable/online",
+            "Whether the device is connected/online",
             GObject.ParamFlags.READABLE,
             false
         ),
-        "trusted": GObject.ParamSpec.boolean(
-            "trusted",
+        "paired": GObject.ParamSpec.boolean(
+            "paired",
             "DeviceTrusted",
-            "Whether the device is trusted or not",
+            "Whether the device is paired or not",
             GObject.ParamFlags.READABLE,
             false
         ),
@@ -304,7 +247,10 @@ var Device = new Lang.Class({
     },
     
     _init: function (manager, dbusPath) {
-        this.parent(DeviceNode.interfaces[1], dbusPath);
+        this.parent(
+            DeviceNode.lookup_interface("org.gnome.shell.extensions.gsconnect.device"),
+            dbusPath
+        );
         
         this._manager = manager;
         
@@ -313,15 +259,15 @@ var Device = new Lang.Class({
             properties = properties.deep_unpack();
             
             for (let name in properties) {
-                if (name === "Id") {
+                if (name === "id") {
                     this.notify("id");
-                } else if (name === "Name") {
+                } else if (name === "name") {
                     this.notify("name");
-                } else if (name === "IsActive" || name === "IsConnected") {
-                    this.notify("reachable");
-                } else if (name === "Allowed" || name === "IsPaired") {
-                    this.notify("trusted");
-                } else if (name === "DeviceType") {
+                } else if (name === "connected") {
+                    this.notify("connected");
+                } else if (name === "paired") {
+                    this.notify("paired");
+                } else if (name === "type") {
                     this.notify("type");
                 }
             }
@@ -333,44 +279,31 @@ var Device = new Lang.Class({
     },
     
     // Properties
-    get id () { return this._get("Id"); },
-    get mounted () { return false; }, // Unsupported
-    set mounted (bool) { return; }, // Unsupported
-    get name () { return this._get("Name"); },
-    get reachable () {
-        return (this._get("IsActive") || this._get("IsConnected")) === true;
-    },
-    get trusted () { return this._get("Allowed") === true; },
-    get type () { return this._get("DeviceType"); },
+    get id () { return this._get("id"); },
+    get mounted () { return false; }, // TODO: Unsupported
+    set mounted (bool) { return; }, // TODO: Unsupported
+    get name () { return this._get("name"); },
+    get connected () { return this._get("connected") === true; },
+    get paired () { return this._get("paired") === true; },
+    get type () { return this._get("type"); },
     
     // Methods
     mount: function () { throw Error("Not Implemented"); },
-    pair: function () {
-        this._manager._call(
-            "AllowDevice",
-            new GLib.Variant("(s)", [this.gObjectPath]),
-            true
-        );
-    },
+    pair: function () { this._call("pair", true); },
     ping: function () { throw Error("Not Implemented"); },
-    ring: function () { throw Error("Not Implemented"); },
-    sms: function (number, message) { throw Error("Not Implemented"); },
-    shareURI: function (uri) { throw Error("Not Implemented"); },
-    unpair: function () {
-        this._manager._call(
-            "DisallowDevice",
-            new GLib.Variant("(s)", [this.gObjectPath]),
-            true
-        );
+    ring: function () { this.findmyphone._call("ring", true); },
+    sms: function (number, message) {
+        this.telephony._call("sms", true, number, message);
     },
+    shareURI: function (uri) { throw Error("Not Implemented"); },
+    unpair: function () { this._call("unpair", true); },
     
     //
     _reloadPlugins: function () {
         // FIXME: when Device has gone inactive
-        let incoming = this._get("IncomingCapabilities");
-        let outgoing = this._get("OutgoingCapabilities");
+        let plugins = this._get("plugins");
         
-        if (outgoing.indexOf("kdeconnect.battery") > -1 && this.trusted) {
+        if (plugins.indexOf("battery") > -1 && this.paired) {
             this.battery = new Battery(this.gObjectPath);
             
             this.battery.connect("notify", (battery) => {
@@ -394,14 +327,34 @@ var Device = new Lang.Class({
             delete this.battery;
         }
         
-        if (outgoing.indexOf("kdeconnect.ping") > -1 && this.trusted) {
+        if (plugins.indexOf("findmyphone") > -1 && this.paired) {
+            this.findmyphone = new ProxyBase(
+                DeviceNode.lookup_interface("org.gnome.shell.extensions.gsconnect.findmyphone"),
+                this.gObjectPath
+            );
+        } else if (this.hasOwnProperty("findmyphone")) {
+            this.findmyphone.destroy();
+            delete this.findmyphone;
+        }
+        
+        if (plugins.indexOf("ping") > -1 && this.paired) {
             this.ping = new ProxyBase(
-                DeviceNode.interfaces[3],
+                DeviceNode.lookup_interface("org.gnome.shell.extensions.gsconnect.ping"),
                 this.gObjectPath
             );
         } else if (this.hasOwnProperty("ping")) {
             this.ping.destroy();
             delete this.ping;
+        }
+        
+        if (plugins.indexOf("telephony") > -1 && this.paired) {
+            this.telephony = new ProxyBase(
+                DeviceNode.lookup_interface("org.gnome.shell.extensions.gsconnect.telephony"),
+                this.gObjectPath
+            );
+        } else if (this.hasOwnProperty("telephony")) {
+            this.telephony.destroy();
+            delete this.telephony;
         }
         
         this.emit("changed::plugins", new GLib.Variant("()", ""));
@@ -452,7 +405,7 @@ var DeviceManager = new Lang.Class({
     },
     
     _init: function () {
-        this.parent(ManagerNode.interfaces[0], "/org/mconnect/manager");
+        this.parent(ManagerNode.interfaces[0], "/org/gnome/shell/extensions/gsconnect/daemon");
         
         // Track our device proxies, DBus path as key
         this.devices = new Map();
@@ -471,7 +424,8 @@ var DeviceManager = new Lang.Class({
         });
         
         // Add currently managed devices
-        this._call("ListDevices", false).forEach((dbusPath) => {
+        this._get("devices").forEach((id) => {
+            let dbusPath = "/org/gnome/shell/extensions/gsconnect/device/" + id;
             this._deviceAdded(this, dbusPath);
         });
     },

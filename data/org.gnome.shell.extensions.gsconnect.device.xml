@@ -1,0 +1,74 @@
+<node>
+  <!-- Device -->
+  <interface name="org.gnome.shell.extensions.gsconnect.device">
+    <property type="b" name="connected" access="readwrite"/>
+    <property type="s" name="id" access="readwrite"/>
+    <property type="s" name="name" access="readwrite"/>
+    <property type="b" name="paired" access="readwrite"/>
+    <property type="as" name="plugins" access="readwrite"/>
+    <property type="s" name="type" access="readwrite"/>
+    
+    <method name="pair"/>
+    <method name="unpair"/>
+    <method name="acceptPair"/>
+    <method name="rejectPair"/>
+    <method name="enablePlugin">
+      <arg name="pluginName" type="s" direction="in"/>
+      <arg name="success" type="b" direction="out"/>
+    </method>
+    <method name="disablePlugin">
+      <arg name="pluginName" type="s" direction="in"/>
+      <arg name="success" type="b" direction="out"/>
+    </method>
+    
+    <signal name="pairRequest">
+      <arg name="publicKey" type="s" direction="out"/>
+    </signal>
+  </interface>
+  
+  <!-- Battery -->
+  <interface name="org.gnome.shell.extensions.gsconnect.battery">
+    <property type="b" name="charging" access="readwrite"/>
+    <property type="i" name="level" access="readwrite"/>
+    <method name="update"/>
+  </interface>
+  
+  <!-- FindMyPhone -->
+  <interface name="org.gnome.shell.extensions.gsconnect.findmyphone">
+    <method name="ring"/>
+  </interface>
+  
+  <!-- Notification -->
+  <interface name="org.gnome.shell.extensions.gsconnect.notifications">
+    <method name="notifications"/>
+    <!-- Signals -->
+    <signal name="notificationReceived"/>
+    <signal name="notificationDismissed"/>
+    <signal name="notificationsDismissed"/>
+  </interface>
+  <interface name="org.gnome.shell.extensions.gsconnect.ping">
+    <!-- Methods -->
+    <method name="ping"/>
+    <!-- Signals -->
+    <signal name="ping"/>
+  </interface>
+  
+  <interface name="org.gnome.shell.extensions.gsconnect.share">
+    <!-- Methods -->
+    <method name="shareUrl">
+      <arg name="url" type="s" direction="in"/>
+    </method>
+    <!-- Signals -->
+    <signal name="share"/>
+  </interface>
+  
+  <interface name="org.gnome.shell.extensions.gsconnect.telephony">
+    <!-- Methods -->
+    <method name="sms">
+      <arg name="phoneNumber" type="s" direction="in"/>
+      <arg name="messageBody" type="s" direction="in"/>
+    </method>
+    <!-- Signals -->
+    <signal name="telephony"/>
+  </interface>
+</node>

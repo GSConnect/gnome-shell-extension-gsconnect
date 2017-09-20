@@ -10,7 +10,7 @@
 
 const Lang = imports.lang;
 const System = imports.system;
-const Gettext = imports.gettext.domain("gnome-shell-extension-mconnect");
+const Gettext = imports.gettext.domain("gnome-shell-extension-gsconnect");
 const _ = Gettext.gettext;
 const GdkPixbuf = imports.gi.GdkPixbuf;
 const Gio = imports.gi.Gio;
@@ -54,14 +54,8 @@ function getPath() {
 
 imports.searchPath.push(getPath());
 
-const KDEConnect = imports.kdeconnect;
-const MConnect = imports.mconnect;
+const Client = imports.client;
 const { initTranslations, Me, Resources, Settings } = imports.lib;
-
-var ServiceProvider = {
-    MCONNECT: 0,
-    KDECONNECT: 1
-};
 
 initTranslations();
 
@@ -543,14 +537,9 @@ var ApplicationWindow = new Lang.Class({
     _catch_notification: function (plugin, nid) {
         let note;
         
-        if (Settings.get_enum("service-provider") === ServiceProvider.MCONNECT) {
-            // TODO: two-way sms not supported for MConnect, yet
-            return;
-        } else {
-            note = new KDEConnect.Notification(
-                this.device.gObjectPath + "/notifications/" + nid
-            );
-        }
+        // TODO: two-way sms not supported yet
+        return;
+            
         log("Notification DBus ID: " + nid);
         log("Notification App Name: \"" + note.name + "\"");
         log("Notification ID: \"" + note.id + "\"");
@@ -706,7 +695,7 @@ var Application = new Lang.Class({
 
     _init: function() {
         this.parent({
-            application_id: "org.gnome.shell.extensions.mconnect.sms",
+            application_id: "org.gnome.shell.extensions.gsconnect.sms",
             flags: Gio.ApplicationFlags.FLAGS_NONE
         });
         
@@ -733,11 +722,7 @@ var Application = new Lang.Class({
         
         Gtk.IconTheme.get_default().add_resource_path("/icons");
         
-        if (Settings.get_enum("service-provider") === ServiceProvider.MCONNECT) {
-            this.manager = new MConnect.DeviceManager();
-        } else {
-            this.manager = new KDEConnect.DeviceManager();
-        }
+        this.manager = new Client.DeviceManager();
     },
 
     vfunc_activate: function() {

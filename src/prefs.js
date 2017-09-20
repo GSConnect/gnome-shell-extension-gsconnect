@@ -2,7 +2,7 @@
 
 const Lang = imports.lang;
 const Mainloop = imports.mainloop;
-const Gettext = imports.gettext.domain('gnome-shell-extension-mconnect');
+const Gettext = imports.gettext.domain('gnome-shell-extension-gsconnect');
 const _ = Gettext.gettext;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
@@ -11,14 +11,8 @@ const Gtk = imports.gi.Gtk;
 
 // Local Imports
 const Me = imports.misc.extensionUtils.getCurrentExtension();
-const MConnect = Me.imports.mconnect;
-const KDEConnect = Me.imports.kdeconnect;
+const Client = Me.imports.client;
 const { initTranslations, Settings, Schema } = Me.imports.lib;
-
-var ServiceProvider = {
-    MCONNECT: 0,
-    KDECONNECT: 1
-};
 
 
 /** A Gtk.Switch subclass for boolean GSettings. */
@@ -402,46 +396,21 @@ var KeybindingProfileBox = new Lang.Class({
         this.manager = false;
         this.profiles = {};
         
-        // Select the backend service
-        if (Settings.get_enum("service-provider") === ServiceProvider.MCONNECT) {
-            this._backend = MConnect;
-        } else {
-            this._backend = KDEConnect;
-        }
-        
         // Watch for Service Provider
         this._watchdog = Gio.bus_watch_name(
             Gio.BusType.SESSION,
-            this._backend.BUS_NAME,
+            Client.BUS_NAME,
             Gio.BusNameWatcherFlags.NONE,
             Lang.bind(this, this._serviceAppeared),
             Lang.bind(this, this._serviceVanished)
         );
-        
-        Settings.connect("changed::service-provider", () => {
-            Gio.bus_unwatch_name(this._watchdog);
-            
-            if (Settings.get_enum("service-provider") === ServiceProvider.MCONNECT) {
-                this._backend = MConnect;
-            } else {
-                this._backend = KDEConnect;
-            }
-            
-            this._watchdog = Gio.bus_watch_name(
-                Gio.BusType.SESSION,
-                this._backend.BUS_NAME,
-                Gio.BusNameWatcherFlags.NONE,
-                Lang.bind(this, this._serviceAppeared),
-                Lang.bind(this, this._serviceVanished)
-            );
-        });
         
         this.append("0", _("Select a device"));
         this._refresh();
     },
     
     _serviceAppeared: function (conn, name, name_owner, cb_data) {
-        this.manager = new this._backend.DeviceManager();
+        this.manager = new Client.DeviceManager();
         
         this.manager.connect("device::added", (manager, dbusPath) => {
             this._refresh();
@@ -1084,25 +1053,9 @@ function buildPrefsWidget() {
     let advancedPage = prefsWidget.add_page("advanced", _("Advanced"));
     
     let serviceSection = advancedPage.add_section(_("Service"));
-    advancedPage.add_setting(serviceSection, "service-provider");
-    advancedPage.add_setting(serviceSection, "service-autostart");
+        // FIXME FIXME FIXME
+//    advancedPage.add_setting(serviceSection, "service-autostart");
     advancedPage.add_setting(serviceSection, "persistent-discovery");
-    let serviceSettings = new ButtonSetting({
-        icon_name: "preferences-system-symbolic",
-        callback: (button) => {
-            if (Settings.get_enum("service-provider") === ServiceProvider.MCONNECT) {
-                Me.imports.mconnect.startSettings();
-            } else {
-                Me.imports.kdeconnect.startSettings();
-            }
-        }
-    });
-    advancedPage.add_item(
-        serviceSection,
-        _("Service Settings"),
-        _("Open the settings for the current service"),
-        serviceSettings
-    );
     
     let develSection = advancedPage.add_section(_("Development"));
     advancedPage.add_setting(develSection, "debug");
