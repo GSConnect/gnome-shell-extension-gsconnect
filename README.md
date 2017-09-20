@@ -1,2 +1,3 @@
 # gnome-shell-extension-gsconnect
-KDE Connect integration for Gnome Shell
+
+Not for public consumption, don't use this.
