@@ -168,6 +168,10 @@ var Device = new Lang.Class({
         this._channel.connect("connected", () => {
             log("Connected to: " + this.id);
             this._connected = true;
+            this._dbus.emit_property_changed(
+                "connected",
+                new GLib.Variant("b", this._connected)
+            );
         });
         this._channel.connect("disconnected", () => {
             log("Disconnected from: " + this.id);
@@ -178,6 +182,10 @@ var Device = new Lang.Class({
             }
             
             this._connected = false;
+            this._dbus.emit_property_changed(
+                "connected",
+                new GLib.Variant("b", this._connected)
+            );
         });
 		this._channel.connect("received", Lang.bind(this, this._received));
         
@@ -307,6 +315,12 @@ var Device = new Lang.Class({
             // Save Configuration
             //this._write_config();
             
+            // emit
+            this._dbus.emit_property_changed(
+                "plugins",
+                new GLib.Variant("as", Array.from(this._plugins.keys()))
+            );
+            
             return true;
         } else {
             return false;
@@ -326,6 +340,12 @@ var Device = new Lang.Class({
             
             // Save Coniguration
             //this._write_config();
+            
+            // emit
+            this._dbus.emit_property_changed(
+                "plugins",
+                new GLib.Variant("as", Array.from(this._plugins.keys()))
+            );
             return true;
         } else {
             return false;
