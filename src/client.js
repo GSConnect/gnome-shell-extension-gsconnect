@@ -168,7 +168,7 @@ var Battery = new Lang.Class({
             "BatteryLevel",
             "The battery level",
             GObject.ParamFlags.READABLE,
-            0, 100,
+            -1, 100,
             0
         )
     },
@@ -309,7 +309,7 @@ var Device = new Lang.Class({
             this.battery.connect("notify", (battery) => {
                 this.emit("changed::battery",
                     new GLib.Variant(
-                        "(bu)",
+                        "(bi)",
                         [this.battery.charging, this.battery.level]
                     )
                 );
@@ -318,7 +318,7 @@ var Device = new Lang.Class({
             // Kickstart the plugin
             this.emit("changed::battery",
                 new GLib.Variant(
-                    "(bu)",
+                    "(bi)",
                     [this.battery.charging, this.battery.level]
                 )
             );
