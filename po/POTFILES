@@ -1,0 +1,7 @@
+src/extension.js
+src/prefs.js
+src/share.js
+src/sms.js
+src/nautilus-send-mconnect.py
+data/org.gnome.shell.extensions.mconnect.gschema.xml
+

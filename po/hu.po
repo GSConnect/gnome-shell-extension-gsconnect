@@ -1,0 +1,333 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the gnome-shell-extension-mconnect package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-shell-extension-mconnect\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-09-16 15:41-0700\n"
+"PO-Revision-Date: 2017-09-06 16:01+0200\n"
+"Last-Translator: Báthory Péter <bathory86p@gmail.com>\n"
+"Language-Team: \n"
+"Language: hu\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 2.0.1\n"
+
+#: src/extension.js:37
+msgid "OFFLINE"
+msgstr "OFFLINE"
+
+#: src/extension.js:38
+msgid "UNPAIRED"
+msgstr "NINCS PÁROSÍTVA"
+
+#: src/extension.js:313 src/prefs.js:715
+msgid "Send SMS"
+msgstr "SMS küldése"
+
+#: src/extension.js:320 src/prefs.js:716
+msgid "Locate Device"
+msgstr "Eszköz keresése"
+
+#: src/extension.js:328 src/prefs.js:717
+msgid "Browse Files"
+msgstr "Fájlrendszer böngészése"
+
+#: src/extension.js:335 src/prefs.js:718
+msgid "Send Files"
+msgstr "Fájlok küldése"
+
+#: src/extension.js:494
+msgid "Request Pair"
+msgstr "Párosítás kérése"
+
+#: src/extension.js:495
+msgid "Device is unpaired"
+msgstr "Az eszköz nincs párosítva"
+
+#: src/extension.js:498
+msgid "Attempt Reconnection"
+msgstr "Újracsatlakozási kísérlet"
+
+#: src/extension.js:501
+msgid "Attempting to reconnect..."
+msgstr "Újracsatlakozás megkísérlése…"
+
+#: src/extension.js:507
+msgid "Device is disconnected"
+msgstr "Az eszköz nincs csatlakoztatva"
+
+#: src/extension.js:550
+msgid "Failed to mount device filesystem"
+msgstr "Nem sikerült csatolni az eszköz fájlrendszerét"
+
+#: src/extension.js:704
+msgid "Mobile Devices"
+msgstr "Mobil eszközök"
+
+#: src/extension.js:722
+msgid "Enable"
+msgstr "Engedélyezés"
+
+#: src/extension.js:728
+msgid "Mobile Settings"
+msgstr "Mobil beállítások"
+
+#: src/extension.js:780
+msgid "Stop Discovering Devices"
+msgstr "Eszközfelderítés leállítása"
+
+#: src/extension.js:782 src/prefs.js:653
+msgid "Discover Devices"
+msgstr "Eszközök felderítése"
+
+#: src/extension.js:1068
+msgid "Nautilus extensions changed"
+msgstr "A Nautilus bővítmény módosult"
+
+#: src/extension.js:1069
+msgid "Restart Nautilus to apply changes"
+msgstr "A módosítások alkalmazásához indítsa újra a Nautilust"
+
+#: src/extension.js:1074
+msgid "Restart"
+msgstr "Újraindítás"
+
+#: src/prefs.js:155
+msgid "Nothing"
+msgstr "Semmi"
+
+#: src/prefs.js:168
+msgid "True"
+msgstr "Igaz"
+
+#: src/prefs.js:181
+msgid "False"
+msgstr "Hamis"
+
+#: src/prefs.js:439
+msgid "Select a device"
+msgstr "Eszköz kiválasztása"
+
+#: src/prefs.js:652
+msgid "Open extension menu"
+msgstr "Bővítmények menü megnyitása"
+
+#: src/prefs.js:654
+msgid "Open extension preferences"
+msgstr "Bővítmény beállításainak megnyitása"
+
+#: src/prefs.js:655
+msgid "Open service settings"
+msgstr "Szolgáltatás beállításainak megnyitása"
+
+#: src/prefs.js:714
+msgid "Open device menu"
+msgstr "Eszköz menü megnyitása"
+
+#: src/prefs.js:719
+msgid "Pair/Reconnect"
+msgstr "Párosítás/Újracsatlakozás"
+
+#: src/prefs.js:723
+msgid "Remove"
+msgstr "Eltávolítás"
+
+#: src/prefs.js:724
+msgid "Remove the shortcuts for a defunct device."
+msgstr "Nemlétező eszköz parancsikonjának eltávolítása."
+
+#: src/prefs.js:816
+msgid "Keyboard Shortcut Unavailable"
+msgstr "Gyorsbillentyű nem érhető el"
+
+#: src/prefs.js:817
+msgid ""
+"The requested keyboard shortcut is in use by another application and can't "
+"be overridden."
+msgstr ""
+"A kívánt gyorsbillentyűt egy másik alkalmazás már használja, amit nem lehet "
+"felülbírálni."
+
+#. Preferences Page
+#: src/prefs.js:1065
+msgid "General"
+msgstr "Általános"
+
+#: src/prefs.js:1067
+msgid "Appearance"
+msgstr "Megjelenítés"
+
+#: src/prefs.js:1071
+msgid "Files"
+msgstr "Fájlok"
+
+#. Keyboard Shortcuts Page
+#: src/prefs.js:1076
+msgid "Keyboard"
+msgstr "Billentyűzet"
+
+#: src/prefs.js:1078
+msgid "Keyboard Shortcuts"
+msgstr "Gyorsbillentyűk"
+
+#. Advanced Page
+#: src/prefs.js:1084
+msgid "Advanced"
+msgstr "Haladó"
+
+#: src/prefs.js:1086
+msgid "Service"
+msgstr "Szolgáltatás"
+
+#: src/prefs.js:1102
+msgid "Service Settings"
+msgstr "Szolgáltatás beállításai"
+
+#: src/prefs.js:1103
+msgid "Open the settings for the current service"
+msgstr "A jelenlegi szolgáltató beállításainak megnyitása"
+
+#: src/prefs.js:1107
+msgid "Development"
+msgstr "Fejlesztés"
+
+#: src/share.js:44
+#, javascript-format
+msgid "Send files to %s"
+msgstr "Fájlok küldése ide: %s"
+
+#: src/share.js:51
+msgid "Cancel"
+msgstr "Mégsem"
+
+#: src/share.js:52
+msgid "Send"
+msgstr "Küldés"
+
+#: src/share.js:69
+msgid "MConnect File Share"
+msgstr "MConnect fájlmegosztás"
+
+#: src/share.js:143
+#, javascript-format
+msgid "Sending %d file"
+msgid_plural "Sending %d files"
+msgstr[0] "%d fájl küldése"
+msgstr[1] "%d fájl küldése"
+
+#: src/sms.js:349
+msgid "Type a phone number"
+msgstr "Adjon meg egy telefonszámot"
+
+#: src/sms.js:358
+msgid "Type a phone number or name"
+msgstr "Adjon meg egy telefonszámot vagy nevet"
+
+#: src/sms.js:453
+msgid "Device is offline"
+msgstr "Az eszköz offline"
+
+#: src/sms.js:490
+msgid "Type an SMS message"
+msgstr "Írja be az SMS üzenetet"
+
+#. Log the sent message in the Conversation View and clear the entry
+#: src/sms.js:698
+msgid "You"
+msgstr "Ön"
+
+#: src/sms.js:713
+msgid "MConnect SMS"
+msgstr "MConnect SMS"
+
+#: src/nautilus-send-mconnect.py:87
+msgid "Send To Mobile Device"
+msgstr "Küldés mobil eszközre"
+
+#: data/org.gnome.shell.extensions.mconnect.gschema.xml:14
+msgid "Debug mode"
+msgstr "Hibakeresési mód"
+
+#: data/org.gnome.shell.extensions.mconnect.gschema.xml:15
+msgid "Enable debug features and logging"
+msgstr "Hibakeresési lehetőségek és naplózás engedélyezése"
+
+#: data/org.gnome.shell.extensions.mconnect.gschema.xml:19
+msgid "Device Auto-Mount"
+msgstr "Eszköz automatikus csatolása"
+
+#: data/org.gnome.shell.extensions.mconnect.gschema.xml:20
+msgid "Automatically mount devices that support it"
+msgstr "Az azt támogató eszközök automatikus csatolása"
+
+#: data/org.gnome.shell.extensions.mconnect.gschema.xml:24
+msgid "Device Indicators"
+msgstr "Eszköz indikátorok"
+
+#: data/org.gnome.shell.extensions.mconnect.gschema.xml:25
+msgid "Controls available via Indicators or the User Menu"
+msgstr ""
+"A kezelés indikátoron keresztül vagy a felhasználói menüben legyen elérhető"
+
+#: data/org.gnome.shell.extensions.mconnect.gschema.xml:29
+msgid "Device Visibility"
+msgstr "Eszköz láthatóság"
+
+#: data/org.gnome.shell.extensions.mconnect.gschema.xml:30
+msgid "Display devices in offline and unpaired states"
+msgstr "Offline és párosítatlan állapotú eszközök megjelenítése"
+
+#: data/org.gnome.shell.extensions.mconnect.gschema.xml:34
+msgid "Device Actions"
+msgstr "Eszközműveletek"
+
+#: data/org.gnome.shell.extensions.mconnect.gschema.xml:35
+msgid "Configure shortcuts for device functions"
+msgstr "Gyorsbillentyűk konfigurálása az eszköz funkcióihoz"
+
+#: data/org.gnome.shell.extensions.mconnect.gschema.xml:39
+msgid "Extension Actions"
+msgstr "Bővítmény műveletek"
+
+#: data/org.gnome.shell.extensions.mconnect.gschema.xml:40
+msgid "Configure shortcuts for extension functions"
+msgstr "Gyorsbillentyűk konfigurálása a bővítmény funkcióihoz"
+
+#: data/org.gnome.shell.extensions.mconnect.gschema.xml:44
+msgid "Nautilus Integration"
+msgstr "Nautlius integráció"
+
+#: data/org.gnome.shell.extensions.mconnect.gschema.xml:45
+msgid "Send files from the file browser context menu"
+msgstr "Fájlok küldése a fájlkezelő helyi menüjéből"
+
+#: data/org.gnome.shell.extensions.mconnect.gschema.xml:49
+msgid "Persistent Discovery"
+msgstr ""
+
+#: data/org.gnome.shell.extensions.mconnect.gschema.xml:50
+msgid "Constantly probe the network for devices"
+msgstr ""
+
+#: data/org.gnome.shell.extensions.mconnect.gschema.xml:54
+msgid "Service Auto-Start"
+msgstr "Szolgáltatás auto-start"
+
+#: data/org.gnome.shell.extensions.mconnect.gschema.xml:55
+msgid "Start the service automatically and restart if stopped"
+msgstr "Szolgáltatás indítása automatikusan és újraindítása, ha leállt"
+
+#: data/org.gnome.shell.extensions.mconnect.gschema.xml:59
+msgid "Service Provider"
+msgstr "Szolgáltató"
+
+#: data/org.gnome.shell.extensions.mconnect.gschema.xml:60
+#, fuzzy
+msgid "The service providing devices"
+msgstr "A szolgáltatás, amin keresztül az eszközt el lehet érni."

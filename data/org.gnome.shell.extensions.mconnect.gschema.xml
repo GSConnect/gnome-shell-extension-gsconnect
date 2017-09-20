@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist gettext-domain="gnome-shell-extension-mconnect">
+  <enum id="org.gnome.shell.extensions.mconnect.ServiceProvider">
+    <value nick="MCONNECT" value="0"/>
+    <value nick="KDECONNECT" value="1"/>
+  </enum>
+  <flags id="org.gnome.shell.extensions.mconnect.DeviceVisibility">
+    <value nick="OFFLINE" value="1"/>
+    <value nick="UNPAIRED" value="2"/>
+  </flags>
+  <schema path="/org/gnome/shell/extensions/mconnect/" id="org.gnome.shell.extensions.mconnect">
+    <key name="debug" type="b">
+      <default>false</default>
+      <summary>Debug mode</summary>
+      <description>Enable debug features and logging</description>
+    </key>
+    <key name="device-automount" type="b">
+      <default>false</default>
+      <summary>Device Auto-Mount</summary>
+      <description>Automatically mount devices that support it</description>
+    </key>
+    <key name="device-indicators" type="b">
+      <default>true</default>
+      <summary>Device Indicators</summary>
+      <description>Controls available via Indicators or the User Menu</description>
+    </key>
+    <key name="device-visibility" flags="org.gnome.shell.extensions.mconnect.DeviceVisibility">
+      <default>["OFFLINE", "UNPAIRED"]</default>
+      <summary>Device Visibility</summary>
+      <description>Display devices in offline and unpaired states</description>
+    </key>
+    <key name="device-keybindings" type="a{sv}">
+      <default><![CDATA[{"": <{"name": <"">, "bindings": <['','','','','','']>}>}]]></default>
+      <summary>Device Actions</summary>
+      <description>Configure shortcuts for device functions</description>
+    </key>
+    <key name="extension-keybindings" type="as">
+      <default><![CDATA[['','','','']]]></default>
+      <summary>Extension Actions</summary>
+      <description>Configure shortcuts for extension functions</description>
+    </key>
+    <key name="nautilus-integration" type="b">
+      <default>false</default>
+      <summary>Nautilus Integration</summary>
+      <description>Send files from the file browser context menu</description>
+    </key>
+    <key name="persistent-discovery" type="b">
+      <default>false</default>
+      <summary>Persistent Discovery</summary>
+      <description>Constantly probe the network for devices</description>
+    </key>
+    <key name="service-autostart" type="b">
+      <default>false</default>
+      <summary>Service Auto-Start</summary>
+      <description>Start the service automatically and restart if stopped</description>
+    </key>
+    <key name="service-provider" enum="org.gnome.shell.extensions.mconnect.ServiceProvider">
+      <default>'KDECONNECT'</default>
+      <summary>Service Provider</summary>
+      <description>The service providing devices</description>
+    </key>
+  </schema>
+</schemalist>

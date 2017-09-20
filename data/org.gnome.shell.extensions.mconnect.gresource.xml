@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/icons">
+    <file alias="device-link-symbolic.svg" compressed="true" preprocess="xml-stripblanks">device-link-symbolic.svg</file>
+    <!-- Status Icon Fallbacks c/o Numix -->
+    <file alias="laptop-connected.svg" compressed="true" preprocess="xml-stripblanks">laptop-connected.svg</file>
+    <file alias="laptop-disconnected.svg" compressed="true" preprocess="xml-stripblanks">laptop-disconnected.svg</file>
+    <file alias="laptop-trusted.svg" compressed="true" preprocess="xml-stripblanks">laptop-trusted.svg</file>
+    <file alias="smartphone-connected.svg" compressed="true" preprocess="xml-stripblanks">smartphone-connected.svg</file>
+    <file alias="smartphone-disconnected.svg" compressed="true" preprocess="xml-stripblanks">smartphone-disconnected.svg</file>
+    <file alias="smartphone-trusted.svg" compressed="true" preprocess="xml-stripblanks">smartphone-trusted.svg</file>
+    <file alias="tablet-connected.svg" compressed="true" preprocess="xml-stripblanks">tablet-connected.svg</file>
+    <file alias="tablet-disconnected.svg" compressed="true" preprocess="xml-stripblanks">tablet-disconnected.svg</file>
+    <file alias="tablet-trusted.svg" compressed="true" preprocess="xml-stripblanks">tablet-trusted.svg</file>
+    <!-- SMS Application Icons c/o Google -->
+    <file alias="phone-number-default.svg" compressed="true" preprocess="xml-stripblanks">phone-number-default.svg</file>
+    <file alias="phone-number-home.svg" compressed="true" preprocess="xml-stripblanks">phone-number-home.svg</file>
+    <file alias="phone-number-mobile.svg" compressed="true" preprocess="xml-stripblanks">phone-number-mobile.svg</file>
+    <file alias="phone-number-work.svg" compressed="true" preprocess="xml-stripblanks">phone-number-work.svg</file>
+    <file alias="sms-send.svg" compressed="true" preprocess="xml-stripblanks">sms-send.svg</file>
+    <!-- Device Menu Icons -->
+    <file alias="sms-symbolic.svg" compressed="true" preprocess="xml-stripblanks">sms-symbolic.svg</file>
+  </gresource>
+</gresources>

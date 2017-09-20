@@ -1,0 +1,11 @@
+{
+"extension-id": "@EXTENSION_ID@",
+"uuid": "@UUID@",
+"gschema-id": "@GSCHEMA_ID@",
+"gettext-domain": "@GETTEXT_DOMAIN@",
+"name": "@NAME@",
+"description": "@DESCRIPTION@",
+"version": "@VERSION@",
+"shell-version": @SHELL_VERSION@,
+"url": "@URL@"
+}
