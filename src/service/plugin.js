@@ -52,6 +52,24 @@ var PluginBase = new Lang.Class({
         )
     },
     
+    _init: function (device) {
+        this.parent();
+        this.device = device;
+    },
+    
+    export_interface: function (name) {
+        // Export DBus
+        let iface = "org.gnome.shell.extensions.gsconnect." + name;
+        this._dbus = Gio.DBusExportedObject.wrapJSObject(
+            DBusInfo.device.lookup_interface(iface),
+            this
+        );
+        this._dbus.export(
+            Gio.DBus.session,
+            "/org/gnome/shell/extensions/gsconnect/device/" + this.device.id
+        );
+    },
+    
     get incomingPackets() {
         throw Error("Not implemented");
     },
@@ -91,24 +109,13 @@ var BatteryPlugin = new Lang.Class({
     },
     
     _init: function (device) {
-        this.parent();
-        
-        this.device = device;
+        this.parent(device);
         
         this._charging = false;
         this._level = -1;
         this._threshold = 0;
         
-        // Export DBus
-        let iface = "org.gnome.shell.extensions.gsconnect.battery";
-        this._dbus = Gio.DBusExportedObject.wrapJSObject(
-            DBusInfo.device.lookup_interface(iface),
-            this
-        );
-        this._dbus.export(
-            Gio.DBus.session,
-            "/org/gnome/shell/extensions/gsconnect/device/" + this.device.id
-        );
+        this.export_interface("battery");
     },
     
     get incomingPackets() {
@@ -174,20 +181,9 @@ var FindMyPhonePlugin = new Lang.Class({
     Extends: PluginBase,
     
     _init: function (device) {
-        this.parent();
+        this.parent(device);
         
-        this.device = device;
-        
-        // Export DBus
-        let iface = "org.gnome.shell.extensions.gsconnect.findmyphone";
-        this._dbus = Gio.DBusExportedObject.wrapJSObject(
-            DBusInfo.device.lookup_interface(iface),
-            this
-        );
-        this._dbus.export(
-            Gio.DBus.session,
-            "/org/gnome/shell/extensions/gsconnect/device/" + this.device.id
-        );
+        this.export_interface("findmyphone");
     },
     
     get incomingPackets() {
@@ -237,22 +233,11 @@ var NotificationsPlugin = new Lang.Class({
     },
     
     _init: function (device) {
-        this.parent();
-        
-        this.device = device;
+        this.parent(device);
         
         this._notifications = new Map();
         
-        // Export DBus
-        let iface = "org.gnome.shell.extensions.gsconnect.notifications";
-        this._dbus = Gio.DBusExportedObject.wrapJSObject(
-            DBusInfo.device.lookup_interface(iface),
-            this
-        );
-        this._dbus.export(
-            Gio.DBus.session,
-            "/org/gnome/shell/extensions/gsconnect/device/" + this.device.id
-        );
+        this.export_interface("notifications");
     },
     
     get incomingPackets() {
@@ -283,13 +268,15 @@ var NotificationsPlugin = new Lang.Class({
 //        });
 //        
 //        note.show();
-        let note = new Gio.Notification();
-        note.set_title(packet.body.appName);
-        note.set_body(packet.body.ticker);
-        this.device.daemon.send_notification(packet.body.id, note);
-        
+        if (packet.body.hasOwnProperty("time")) {
+            let note = new Gio.Notification();
+            note.set_title(packet.body.appName);
+            note.set_body(packet.body.ticker);
+            this.device.daemon.send_notification(packet.body.id, note);
         // Dismissed
         // {"id":"0|org.kde.kdeconnect_tp|-1672895215|null|10114","isCancel":true}
+        } else {
+        }
     },
     
     // TODO: kdeconnect.notification.request packet?
@@ -316,20 +303,9 @@ var PingPlugin = new Lang.Class({
     },
     
     _init: function (device) {
-        this.parent();
+        this.parent(device);
         
-        this.device = device;
-        
-        // Export DBus
-        let iface = "org.gnome.shell.extensions.gsconnect.ping";
-        this._dbus = Gio.DBusExportedObject.wrapJSObject(
-            DBusInfo.device.lookup_interface(iface),
-            this
-        );
-        this._dbus.export(
-            Gio.DBus.session,
-            "/org/gnome/shell/extensions/gsconnect/device/" + this.device.id
-        );
+        this.export_interface("ping");
     },
     
     get incomingPackets() {
@@ -371,20 +347,9 @@ var SharePlugin = new Lang.Class({
     },
     
     _init: function (device) {
-        this.parent();
+        this.parent(device);
         
-        this.device = device;
-        
-        // Export DBus
-        let iface = "org.gnome.shell.extensions.gsconnect.share";
-        this._dbus = Gio.DBusExportedObject.wrapJSObject(
-            DBusInfo.device.lookup_interface(iface),
-            this
-        );
-        this._dbus.export(
-            Gio.DBus.session,
-            "/org/gnome/shell/extensions/gsconnect/device/" + this.device.id
-        );
+        this.export_interface("share");
     },
     
     get incomingPackets() {
@@ -449,26 +414,48 @@ var TelephonyPlugin = new Lang.Class({
     Name: "GSConnectTelephonyPlugin",
     Extends: PluginBase,
     Signals: {
-        "telephony": {
-            flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED
+        "missedCall": {
+            flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED,
+            param_types: [
+                GObject.TYPE_STRING,    // phoneNumber
+                GObject.TYPE_STRING,    // contactName
+                GObject.TYPE_STRING,    // messageBody
+                GObject.TYPE_STRING     // phoneThumbnail
+            ]
+        },
+        "ringing": {
+            flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED,
+            param_types: [
+                GObject.TYPE_STRING,    // phoneNumber
+                GObject.TYPE_STRING,    // contactName
+                GObject.TYPE_STRING,    // messageBody
+                GObject.TYPE_STRING     // phoneThumbnail
+            ]
+        },
+        "sms": {
+            flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED,
+            param_types: [
+                GObject.TYPE_STRING,    // phoneNumber
+                GObject.TYPE_STRING,    // contactName
+                GObject.TYPE_STRING,    // messageBody
+                GObject.TYPE_STRING     // phoneThumbnail
+            ]
+        },
+        "talking": {
+            flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED,
+            param_types: [
+                GObject.TYPE_STRING,    // phoneNumber
+                GObject.TYPE_STRING,    // contactName
+                GObject.TYPE_STRING,    // messageBody
+                GObject.TYPE_STRING     // phoneThumbnail
+            ]
         }
     },
     
     _init: function (device) {
-        this.parent();
+        this.parent(device);
         
-        this.device = device;
-        
-        // Export DBus
-        let iface = "org.gnome.shell.extensions.gsconnect.telephony";
-        this._dbus = Gio.DBusExportedObject.wrapJSObject(
-            DBusInfo.device.lookup_interface(iface),
-            this
-        );
-        this._dbus.export(
-            Gio.DBus.session,
-            "/org/gnome/shell/extensions/gsconnect/device/" + this.device.id
-        );
+        this.export_interface("telephony");
     },
     
     get incomingPackets() {
@@ -481,33 +468,40 @@ var TelephonyPlugin = new Lang.Class({
     
     // TODO
     handle_packet: function (packet) {
-        this.emit("telephony");
-        log("IMPLEMENT: " + packet.toString());
-        
-        // Apparently there are six possible variables:
-        //    * "event"             Always present
-        //    * "phoneNumber"       Always present? (Could contain contactName?)
-        //    * "contactName"       Not seen yet
-        //    * "messageBody"       SMS only, I think
-        //    * "phoneThumbnail"    Not seen yet, base64 encoded ByteArray (Pixmap?)
+        // There are six possible variables:
+        //    * "event"             missedCall, ringing, sms or talking
+        //    * "phoneNumber"       Always present?
+        //    * "contactName"       Always present? (may be empty)
+        //    * "messageBody"       SMS only?
+        //    * "phoneThumbnail"    base64 ByteArray/Pixmap (may be empty)
         //    * "isCancel"          If set to true, the package should be ignored
         if (packet.body.hasOwnProperty("isCancel") && packet.body.isCancel) {
             return;
         } else if (packet.body.event === "missedCall") {
-            log("Missed Call...");
+            log("IMPLEMENT: missedCall" + packet.toString());
         } else if (packet.body.event === "ringing") {
-            log("Ringing...");
+            log("IMPLEMENT: ringing: " + packet.toString());
             // It's possible to reply with a "mute" packet
             //this.mute();
         } else if (packet.body.event === "sms") {
             log("SMS Received:");
             log("    phoneNumber => " + packet.body.phoneNumber);
             log("    messageBody => " + packet.body.messageBody);
-            //log("    contactName => " + packet.body.contactName);
-            //log("    phoneThumbnail => " + packet.body.phoneThumbnail);
+            log("    contactName => " + packet.body.contactName);
+            log("    phoneThumbnail => " + packet.body.phoneThumbnail);
+            
+            this._dbus.emit_signal("sms",
+                new GLib.Variant(
+                    "(ssss)",
+                    [packet.body.phoneNumber,
+                    packet.body.contactName,
+                    packet.body.messageBody,
+                    packet.body.phoneThumbnail] // FIXME: bytearray.pixmap
+                )
+            );
             
         } else if (packet.body.event === "talking") {
-            log("Talking...");
+            log("IMPLEMENT: talking: " + packet.toString());
         } else {
             log("Unknown telephony event: " + packet.body.event);
         }
