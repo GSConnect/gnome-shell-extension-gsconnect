@@ -188,12 +188,21 @@ var LanChannel = new Lang.Class({
         this._connection.socket.set_option(6, 6, 3);
     },
     
-    // Wrap *connection* in TlsServerConnection and handshake
-    _initTls: function (connection) {
-        this._connection = Gio.TlsServerConnection.new(
-            this._connection,
-            this.device.daemon.certificate
-        );
+    // Wrap connection in TlsServerConnection and handshake
+    _initTls: function (mode="server") {
+        if (mode === "server") {
+            this._connection = Gio.TlsServerConnection.new(
+                this._connection,
+                this.device.daemon.certificate
+            );
+        } else if (mode === "client") {
+            this._connection = Gio.TlsClientConnection.new(
+                this._connection,
+                this._connection.socket.remote_address
+            );
+            this._connection.set_certificate(this.device.daemon.certificate);
+        }
+        
         this._connection.validation_flags = 0;
         this._connection.authentication_mode = 1;
         
@@ -357,26 +366,25 @@ var TransferChannel = new Lang.Class({
     Name: "GSConnectTransferChannel",
     Extends: LanChannel,
     
-    _init: function (device, port, srcStream=null, destStream=null) {
+    _init: function (device, port, srcStream=null, destStream=null, size) {
         this.parent(device, port);
         
         this.srcStream = srcStream;
         this.destStream = destStream;
+        this.bytesWritten = 0;
+        this.size = size;
     },
     
-    _initMonitor: function () {
+    _initTransfer: function () {
         // Download
         if (this.srcStream === null) {
-            this.srcStream = this._in;
-            this._monitor = this._in.base_stream.create_source(null);
+            this._initTls("client");
+            this.srcStream = this._connection.get_input_stream();
         // Upload
         } else {
-            this.destStream = this._out;
-            this._monitor = this._out.base_stream.create_source(null);
+            this._initTls("server");
+            this.destStream = this._connection.get_output_stream();
         }
-        // Listen for packets
-        this._monitor.set_callback(Lang.bind(this, this.transfer));
-        this._monitor.attach(null);
         
         return true;
     },
@@ -387,14 +395,9 @@ var TransferChannel = new Lang.Class({
         try {
             this._connection = client.connect_finish(res);
             log("connected");
-            //this._initSocket();
-            this._connection.socket.set_keepalive(true);
+            this._initSocket();
             log("socket configured");
-            this._initTls();
-            log("tls handshook");
-            this._initStreams();
-            log("streams initted");
-            this._initMonitor();
+            this._initTransfer();
         } catch (e) {
             log("Error connecting: " + e);
             
@@ -403,7 +406,7 @@ var TransferChannel = new Lang.Class({
         }
         
         this.emit("connected");
-        
+        this.transfer();
         return true;
     },
     
@@ -418,13 +421,12 @@ var TransferChannel = new Lang.Class({
             GLib.PRIORITY_DEFAULT,
             null,
             (source, res) => {
-                log("callback");
                 let bytes = source.read_bytes_finish(res);
-                log("bytes read: " + bytes);
                 
-                if (bytes.length) {
+                if (bytes.get_size()) {
                     this._write(bytes);
-                    this._read(stream);
+                } else {
+                    this.close()
                 }
             }
         );
@@ -432,42 +434,16 @@ var TransferChannel = new Lang.Class({
     
     _write: function (bytes) {
         log("Transfer._write()");
-        log(bytes);
-    },
-    
-    old_func: function (size) {
-        let chunk_size = 4096;
-        let bytes_written = 0;
-        
-        this._read();
-        
-//        this._monitor = this.inStream.create_source(null);
-//        this._monitor.set_callback((condition) => {
-//            this._read();
-//        });
-//        this._monitor.attach(null);
-        
-//        while (bytes_written < size) {
-//            this.inStream.read_bytes_async(
-//                chunk_size,
-//                GLib.PRIORITY_DEFAULT,
-//                null,
-//                (stream, res) => {
-//                    let bytes = stream.read_bytes_finish(res);
-//                    
-//                    this.outStream.write_bytes_async(
-//                        bytes,
-//                        GLib.PRIORITY_DEFAULT,
-//                        null,
-//                        (stream, res) => {
-//                            bytes_written += stream.write_bytes_finish(res);
-//                        }
-//                    );
-//                }
-//            );
-//        }
-//        
-//        return true;
+        this.destStream.write_bytes_async(
+            bytes,
+            GLib.PRIORITY_DEFAULT,
+            null,
+            (source, res) => {
+                this.bytesWritten += source.write_bytes_finish(res);
+                log("bytes written: " + this.bytesWritten);
+                this._read();
+            }
+        );
     }
 });
 

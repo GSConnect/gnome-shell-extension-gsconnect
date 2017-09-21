@@ -369,7 +369,7 @@ var SharePlugin = new Lang.Class({
             log("receiving file");
             //"payloadSize":648,"payloadTransferInfo":{"port":1740}
             
-            let path = "/home/andrew/test.download.txt";
+            let path = "/home/andrew/Downloads/" + packet.body.filename;
             
             this.localFile = Gio.File.new_for_path(path);
             this.fStream = this.localFile.replace(
@@ -383,7 +383,8 @@ var SharePlugin = new Lang.Class({
                 this.device,
                 packet.payloadTransferInfo.port,
                 null,
-                this.fStream
+                this.fStream,
+                packet.payloadSize
             );
             
             channel.open();
@@ -391,14 +392,21 @@ var SharePlugin = new Lang.Class({
             log("receiving text: '" + packet.body.text + "'");
         } else if (packet.body.hasOwnProperty("url")) {
             log("receiving url");
-            GLib.spawn_command_line_async("xdg-open " + packet.body.url);
+            Gio.AppInfo.launch_default_for_uri(packet.body.url, null);
         }
     },
     
-    shareUrl: function () {
+    share: function (uri) {
         if (this.device.connected && this.device.paired) {
             let packet = new Protocol.Packet();
             packet.type = "kdeconnect.share.request";
+            
+            if (uri.startsWith("file://")) {
+                packet.body = {
+                };
+            } else {
+                packet.body = { url: uri };
+            }
             
             this.device._channel.send(packet);
         }
