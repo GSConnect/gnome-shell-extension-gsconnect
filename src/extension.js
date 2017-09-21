@@ -645,7 +645,7 @@ var DeviceIndicator = new Lang.Class({
         if (paired && connected) {
             this.icon.icon_name = icon + "-connected";
         } else if (paired) {
-            this.icon.icon_name = icon + "-paired";
+            this.icon.icon_name = icon + "-trusted";
         } else {
             this.icon.icon_name = icon + "-disconnected";
         }
