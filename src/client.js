@@ -329,6 +329,14 @@ var Device = new Lang.Class({
             GObject.ParamFlags.READABLE,
             false
         ),
+        "plugins": GObject.param_spec_variant(
+            "plugins",
+            "PluginsList", 
+            "A list of enabled plugins",
+            new GLib.VariantType("as"),
+            null,
+            GObject.ParamFlags.READABLE
+        ),
         "type": GObject.ParamSpec.string(
             "type",
             "DeviceType",
@@ -366,6 +374,8 @@ var Device = new Lang.Class({
                     this.notify("connected");
                 } else if (name === "paired") {
                     this.notify("paired");
+                } else if (name === "plugins") {
+                    this.notify("plugins");
                 } else if (name === "type") {
                     this.notify("type");
                 }
@@ -384,25 +394,26 @@ var Device = new Lang.Class({
     get name () { return this._get("name"); },
     get connected () { return this._get("connected") === true; },
     get paired () { return this._get("paired") === true; },
+    get plugins () {
+        let plugins = this._get("plugins");
+        return (plugins !== null) ? plugins : [];
+    }, // TODO: returns null sometimes?
     get type () { return this._get("type"); },
     
     // Methods
-    mount: function () { throw Error("Not Implemented"); },
+    mount: function () { throw Error("Not Implemented"); }, // TODO: Unsupported
     pair: function () { this._call("pair", true); },
-    ping: function () { throw Error("Not Implemented"); },
+    ping: function () { this._call("ping", true); },
     ring: function () { this.findmyphone._call("ring", true); },
     sms: function (number, message) {
         this.telephony._call("sms", true, number, message);
     },
-    shareURI: function (uri) { throw Error("Not Implemented"); },
+    shareURI: function (uri) { this.findmyphone._call("share", true, uri); },
     unpair: function () { this._call("unpair", true); },
     
     //
     _reloadPlugins: function () {
-        // FIXME: when Device has gone inactive
-        let plugins = this._get("plugins");
-        
-        if (plugins.indexOf("battery") > -1 && this.paired) {
+        if (this.plugins.indexOf("battery") > -1 && this.paired) {
             this.battery = new Battery(this.gObjectPath);
             
             this.battery.connect("notify", (battery) => {
@@ -426,7 +437,7 @@ var Device = new Lang.Class({
             delete this.battery;
         }
         
-        if (plugins.indexOf("findmyphone") > -1 && this.paired) {
+        if (this.plugins.indexOf("findmyphone") > -1 && this.paired) {
             this.findmyphone = new ProxyBase(
                 DeviceNode.lookup_interface("org.gnome.shell.extensions.gsconnect.findmyphone"),
                 this.gObjectPath
@@ -436,7 +447,7 @@ var Device = new Lang.Class({
             delete this.findmyphone;
         }
         
-        if (plugins.indexOf("ping") > -1 && this.paired) {
+        if (this.plugins.indexOf("ping") > -1 && this.paired) {
             this.ping = new ProxyBase(
                 DeviceNode.lookup_interface("org.gnome.shell.extensions.gsconnect.ping"),
                 this.gObjectPath
@@ -446,7 +457,17 @@ var Device = new Lang.Class({
             delete this.ping;
         }
         
-        if (plugins.indexOf("telephony") > -1 && this.paired) {
+        if (this.plugins.indexOf("share") > -1 && this.paired) {
+            this.share = new ProxyBase(
+                DeviceNode.lookup_interface("org.gnome.shell.extensions.gsconnect.share"),
+                this.gObjectPath
+            );
+        } else if (this.hasOwnProperty("share")) {
+            this.share.destroy();
+            delete this.share;
+        }
+        
+        if (this.plugins.indexOf("telephony") > -1 && this.paired) {
             this.telephony = new Telephony(this.gObjectPath);
         } else if (this.hasOwnProperty("telephony")) {
             this.telephony.destroy();

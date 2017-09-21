@@ -234,15 +234,21 @@ var Device = new Lang.Class({
             }
         } else {
             GLib.unlink(this.config_cert);
+            this._dbus.emit_property_changed(
+                "paired",
+                new GLib.Variant("b", this.paired)
+            );
         }
     },
     
+    // FIXME
     pair: function () {
         log("Device.pair(" + this.id + ")");
         let pairPacket = new Protocol.PairPacket(this.daemon);
         this._channel.send(pairPacket);
     },
     
+    // FIXME
     unpair: function () {
         log("Device.unpair(" + this.id + ")");
         
@@ -252,8 +258,13 @@ var Device = new Lang.Class({
         }
         
         GLib.unlink(this.config_cert);
+        this._dbus.emit_property_changed(
+            "paired",
+            new GLib.Variant("b", this.paired)
+        );
     },
     
+    // FIXME
     acceptPair: function () {
         log("Device.acceptPair(" + this.id + ")");
         
@@ -263,6 +274,10 @@ var Device = new Lang.Class({
                 this._channel._peer_cert.certificate_pem,
                 this._channel._peer_cert.certificate_pem.length,
                 null
+            );
+            this._dbus.emit_property_changed(
+                "paired",
+                new GLib.Variant("b", this.paired)
             );
         } else {
             log("Failed to accept pair: no certificate stashed");
@@ -286,40 +301,42 @@ var Device = new Lang.Class({
         this.config = JSON.parse(config);
         
         for (let plugin of this.config.plugins) {
-            this.enablePlugin(plugin);
+            this.enablePlugin(plugin, false);
         }
     },
     
     // FIXME: check
     _write_config: function () {
+        this.config.plugins = this.plugins;
         GLib.file_set_contents(
             this.config_device,
             JSON.stringify(this.config)
         );
     },
     
-    enablePlugin: function (name) {
+    enablePlugin: function (name, write=true) {
+        log("Device.enablePlugin(" + name + ", " + write + ")");
+    
         if (Plugin.PluginMap.has(name) && !this._plugins.has(name)) {
-            // Actually enable & export over dbus
+            // Enable
             let handlerClass = Plugin.PluginMap.get(name);
             let plugin = new handlerClass(this);
             
+            // Register packet handlers
             for (let packetType of plugin.incomingPackets) {
                 this._handlers.set(packetType, plugin);
             }
             
-            // Add to enabled plugins var
-            // TODO: export
+            // Register as enabled
             this._plugins.set(name, plugin);
             
-            // Save Configuration
-            //this._write_config();
-            
-            // emit
             this._dbus.emit_property_changed(
                 "plugins",
                 new GLib.Variant("as", Array.from(this._plugins.keys()))
             );
+            
+            // Save config, if requested
+            if (write) { this._write_config(); }
             
             return true;
         } else {
@@ -327,25 +344,29 @@ var Device = new Lang.Class({
         }
     },
     
-    disablePlugin: function (name) {
+    disablePlugin: function (name, write=true) {
+        log("Device.disablePlugin(" + name + ", " + write + ")");
+        
         if (Plugin.PluginMap.has(name) && this._plugins.has(name)) {
-            // Remove from JSON
-            // TODO: sort incoming vs outgoing :/
-            //this.identity.body.incomingCapabilities.append(name);
-            //this.identity.body.outgoingCapabilities.append(name);
+            let plugin = this._plugins.get(name);
             
-            // Actually disable
+            // Unregister handlers
+            for (let packetType of plugin.incomingPackets) {
+                this._handlers.delete(packetType);
+            }
             
-            // unexport debus
+            // Register as disabled
+            plugin.destroy();
+            this._plugins.delete(name);
             
-            // Save Coniguration
-            //this._write_config();
-            
-            // emit
             this._dbus.emit_property_changed(
                 "plugins",
                 new GLib.Variant("as", Array.from(this._plugins.keys()))
             );
+            
+            // Save config, if requested
+            if (write) { this._write_config(); }
+            
             return true;
         } else {
             return false;
