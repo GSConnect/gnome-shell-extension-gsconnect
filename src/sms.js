@@ -55,7 +55,7 @@ function getPath() {
 imports.searchPath.push(getPath());
 
 const Client = imports.client;
-const { initTranslations, Me, Resources, Settings } = imports.lib;
+const { initTranslations, Me, Resources, Settings } = imports.common;
 
 initTranslations();
 

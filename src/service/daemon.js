@@ -3,8 +3,7 @@
 "use strict";
 
 // Imports
-const ByteArray = imports.byteArray;
-const Gettext = imports.gettext.domain("gsconnect");
+const Gettext = imports.gettext.domain("org.gnome.shell.extensions.gsconnect");
 const _ = Gettext.gettext;
 const Lang = imports.lang;
 const Mainloop = imports.mainloop;
@@ -23,12 +22,11 @@ function getPath() {
 }
 
 imports.searchPath.push(getPath());
-imports.searchPath.push(getPath() + "/service");
 
-const Config = imports.config;
-const Device = imports.device;
-const Protocol = imports.protocol;
-const { initTranslations, Me, DBusInfo, Settings } = imports.lib;
+const Config = imports.service.config;
+const Device = imports.service.device;
+const Protocol = imports.service.protocol;
+const { initTranslations, Me, DBusInfo, Settings } = imports.common;
 
 
 var Daemon = new Lang.Class({

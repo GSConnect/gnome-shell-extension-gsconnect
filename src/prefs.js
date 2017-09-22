@@ -12,7 +12,8 @@ const Gtk = imports.gi.Gtk;
 // Local Imports
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 const Client = Me.imports.client;
-const { initTranslations, Settings, Schema } = Me.imports.lib;
+const Plugin = Me.imports.service.plugin;
+const { initTranslations, Settings, Schema } = Me.imports.common;
 
 
 /** A Gtk.Switch subclass for boolean GSettings. */

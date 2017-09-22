@@ -21,7 +21,7 @@ extension_source = files(
   'data/stylesheet.css',
   # non-standard files
   'src/client.js',
-  'src/lib.js',
+  'src/common.js',
   'src/share.js',
   'src/sms.js',
   # non-GJS files

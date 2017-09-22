@@ -2,6 +2,8 @@
 
 // Imports
 const Lang = imports.lang;
+const Gettext = imports.gettext.domain("org.gnome.shell.extensions.gsconnect");
+const _ = Gettext.gettext;
 
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
@@ -15,12 +17,11 @@ function getPath() {
 }
 
 imports.searchPath.push(getPath());
-imports.searchPath.push(getPath() + "/service");
 
-const Config = imports.config;
-const Plugin = imports.plugin;
-const Protocol = imports.protocol;
-const { initTranslations, Me, DBusInfo, Settings } = imports.lib;
+const Config = imports.service.config;
+const Plugin = imports.service.plugin;
+const Protocol = imports.service.protocol;
+const { initTranslations, Me, DBusInfo, Settings } = imports.common;
 
 
 var Device = new Lang.Class({

@@ -16,7 +16,7 @@ function getPath() {
 
 imports.searchPath.push(getPath());
 
-const { initTranslations, Me, DBusInfo, Settings } = imports.lib;
+const { initTranslations, Me, DBusInfo, Settings } = imports.common;
 
 
 // DBus Constants

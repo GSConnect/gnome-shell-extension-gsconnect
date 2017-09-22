@@ -7,11 +7,21 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 
+// Local Imports
+function getPath() {
+    // Diced from: https://github.com/optimisme/gjs-examples/
+    let m = new RegExp("@(.+):\\d+").exec((new Error()).stack.split("\n")[1]);
+    return Gio.File.new_for_path(m[1]).get_parent().get_parent().get_path();
+}
+
+imports.searchPath.push(getPath());
+
+const Common = imports.common;
+
 
 // Packet Types
 var TYPE_IDENTITY = "kdeconnect.identity";
 var TYPE_PAIR = "kdeconnect.pair";
-var TYPE_ENCRYPTED = "kdeconnect.encrypted";
 
 
 /**
