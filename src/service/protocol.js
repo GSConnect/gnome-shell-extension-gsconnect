@@ -126,12 +126,22 @@ var LanChannel = new Lang.Class({
         }
     },
     
-    _init: function (device, port=null) {
+    _init: function (device, addr=null) {
         this.parent();
         this.device = device;
-        this.host = device.identity.body.tcpHost;
-        this.port = (port === null) ? device.identity.body.tcpPort : port;
         
+        if (addr) {
+            this.addr = addr;
+        } else {
+            this.addr = new Gio.InetSocketAddress({
+                address: Gio.InetAddress.new_from_string(
+                    device.identity.body.tcpHost
+                ),
+                port: device.identity.body.tcpPort
+            });
+        }
+        
+        this._listener = null;
         this._connection = null;
         this._in = null;
         this._out = null;
@@ -141,7 +151,7 @@ var LanChannel = new Lang.Class({
     
     // Send identity packet, indicating we're about ready for a handshake
     _sendIdent: function () {
-        let ident = new IdentityPacket(this.device.daemon);
+        let ident = new Packet(this.device.daemon.identity);
         let _out = new Gio.DataOutputStream({
             base_stream: new Gio.UnixOutputStream({
                 fd: this._connection.socket.fd,
@@ -164,40 +174,47 @@ var LanChannel = new Lang.Class({
     },
     
     // Wrap connection in TlsServerConnection and handshake
-    _initTls: function (mode="server") {
-        if (mode === "server") {
-            this._connection = Gio.TlsServerConnection.new(
-                this._connection,
-                this.device.daemon.certificate
-            );
-        } else if (mode === "client") {
+    _initTls: function (client=false) {
+        if (client) {
             this._connection = Gio.TlsClientConnection.new(
                 this._connection,
                 this._connection.socket.remote_address
             );
             this._connection.set_certificate(this.device.daemon.certificate);
+        } else {
+            this._connection = Gio.TlsServerConnection.new(
+                this._connection,
+                this.device.daemon.certificate
+            );
         }
         
         this._connection.validation_flags = 0;
         this._connection.authentication_mode = 1;
         
-        // TODO: move to discrete function and handle errors/failures
-        this._connection.connect("accept-certificate", (conn, peer_cert, flags) => {
-            if (this.device.paired) {
-                log("verifying certificate...");
-                let paired_cert = Gio.TlsCertificate.new_from_file(
-                    this.device.config_cert
-                );
-                
-                return (paired_cert.verify(null, peer_cert) === 0);
-            } else {
-                log("delaying certificate verification...");
-                this._peer_cert = peer_cert;
-                return true;
-            }
-        });
+        this._connection.connect(
+            "accept-certificate",
+            Lang.bind(this, this._accept_certificate)
+        );
         
         this._connection.handshake(null);
+    },
+    
+    // Negotitate certificate/pairing
+    // TODO: handle errors
+    _accept_certificate: function (conn, peer_cert, flags) {
+        if (this.device.paired) {
+            log("verifying certificate...");
+            let paired_cert = Gio.TlsCertificate.new_from_file(
+                this.device.config_cert
+            );
+            this._peer_cert = peer_cert;
+            
+            return (paired_cert.verify(null, peer_cert) === 0);
+        } else {
+            log("delaying certificate verification...");
+            this._peer_cert = peer_cert;
+            return true;
+        }
     },
     
     // Open input/output streams
@@ -212,13 +229,12 @@ var LanChannel = new Lang.Class({
         });
     },
     
-    // Init a condition monitor
+    // Monitor the input stream for packets
     _initMonitor: function () {
-        // Listen for packets
         this._monitor = this._in.base_stream.create_source(null);
         this._monitor.set_callback((condition) => {
             let result = this.receive();
-            if (!result) { this.emit("disconnected"); }
+            if (!result) { this.close(); }
             return result;
         });
         this._monitor.attach(null);
@@ -226,16 +242,54 @@ var LanChannel = new Lang.Class({
         return true;
     },
     
+    /**
+     * Transfer Functions
+     */
+    _transferRead: function () {
+        log("LanChannel._transferRead()");
+        this.srcStream.read_bytes_async(
+            4096,
+            GLib.PRIORITY_DEFAULT,
+            null,
+            (source, res) => {
+                let bytes = source.read_bytes_finish(res);
+                
+                if (bytes.get_size()) {
+                    this._transferWrite(bytes);
+                } else {
+                    this.close();
+                    
+                    // FIXME: better
+                    if (this.bytesWritten < this.size) {
+                        throw Error("Failed to complete transfer");
+                    }
+                }
+            }
+        );
+    },
+    
+    _transferWrite: function (bytes) {
+        log("LanChannel._transferWrite()");
+        this.destStream.write_bytes_async(
+            bytes,
+            GLib.PRIORITY_DEFAULT,
+            null,
+            (source, res) => {
+                this.bytesWritten += source.write_bytes_finish(res);
+                log("bytes written: " + this.bytesWritten);
+                this._transferRead();
+            }
+        );
+    },
+    
+    /**
+     * Public Methods
+     */
     open: function () {
         log("LanChannel.open(" + this.device.id + ")");
         
         let client = new Gio.SocketClient();
-        let addr = new Gio.InetSocketAddress({
-            address: Gio.InetAddress.new_from_string(this.host),
-            port: this.port
-        });
-        
-        client.connect_async(addr, null, Lang.bind(this, this.opened));
+        client.connect_async(this.addr, null, Lang.bind(this, this.opened));
     },
     
     opened: function (client, res) {
@@ -250,13 +304,10 @@ var LanChannel = new Lang.Class({
             this._initMonitor();
         } catch (e) {
             log("Error connecting: " + e);
-            
-            this.emit("disconnected");
-            return false;
+            this.close();
         }
         
         this.emit("connected");
-        
         return true;
     },
     
@@ -292,9 +343,20 @@ var LanChannel = new Lang.Class({
             log("error closing connection: " + e);
         }
         
+        try {
+            if (this._listener !== null) {
+                this._listener.close(null);
+            }
+        } catch (e) {
+            log("error closing listener: " + e);
+        }
+        
         this._in = null;
         this._out = null;
         this._connection = null;
+        this._listener = null;
+        
+        this.emit("disconnected");
     },
     
     send: function (packet) {
@@ -315,9 +377,10 @@ var LanChannel = new Lang.Class({
         
         try {
             [data, len] = this._in.read_line(null);
+            log("Device received: " + data);
         } catch (e) {
             log("Failed to receive packet: " + e);
-            this.emit("disconnected");
+            return false;
         }
         
         if (data === null || data === undefined || !data.length) {
@@ -326,99 +389,97 @@ var LanChannel = new Lang.Class({
         
         // TODO: error checking wrt packet
         //       encrypted packets?
-        packet = new Packet(data);
+        packet = new Packet(data.toString());
         this.emit("received", packet);
         
         return true;
+    },
+    
+    transfer: function () {
+        this._transferRead();
     }
 });
 
 
 /**
  * File Transfers
+ * TODO: signals
+ *       errors
  */
-var TransferChannel = new Lang.Class({
-    Name: "GSConnectTransferChannel",
+var LanDownloadChannel = new Lang.Class({
+    Name: "GSConnectLanDownloadChannel",
     Extends: LanChannel,
     
-    _init: function (device, port, srcStream=null, destStream=null, size) {
-        this.parent(device, port);
+    MIN_PORT: 1739,
+    MAX_PORT: 1764,
+    
+    _init: function (device, addr, destStream, size) {
+        this.parent(device, addr);
         
-        this.srcStream = srcStream;
         this.destStream = destStream;
         this.bytesWritten = 0;
         this.size = size;
     },
     
-    _initTransfer: function () {
-        // Download
-        if (this.srcStream === null) {
-            this._initTls("client");
-            this.srcStream = this._connection.get_input_stream();
-        // Upload
-        } else {
-            this._initTls("server");
-            this.destStream = this._connection.get_output_stream();
-        }
-        
-        return true;
-    },
-    
+    // FIXME: port range
     opened: function (client, res) {
         log("TransferChannel.opened(" + this.device.id + ")");
         
         try {
             this._connection = client.connect_finish(res);
-            log("connected");
             this._initSocket();
-            log("socket configured");
-            this._initTransfer();
+            this._initTls(true);
+            this.srcStream = this._connection.get_input_stream();
         } catch (e) {
             log("Error connecting: " + e);
-            
-            this.emit("disconnected");
-            return false;
+            this.close();
         }
         
         this.emit("connected");
         this.transfer();
-        return true;
+    }
+});
+
+
+var LanUploadChannel = new Lang.Class({
+    Name: "GSConnectLanUploadChannel",
+    Extends: LanChannel,
+    
+    MIN_PORT: 1739,
+    MAX_PORT: 1764,
+    
+    _init: function (device, addr, srcStream, size) {
+        this.parent(device, addr);
+        
+        this.srcStream = srcStream;
+        this.bytesWritten = 0;
+        this.size = size;
     },
     
-    transfer: function () {
-        this._read();
+    // FIXME: port range
+    open: function () {
+        this._listener = new Gio.SocketListener();
+        let success = this._listener.add_inet_port(this.addr.port, null);
+        
+        this._listener.accept_async(null, Lang.bind(this, this.opened));
     },
     
-    _read: function () {
-        log("Transfer._read()");
-        this.srcStream.read_bytes_async(
-            4096,
-            GLib.PRIORITY_DEFAULT,
-            null,
-            (source, res) => {
-                let bytes = source.read_bytes_finish(res);
-                
-                if (bytes.get_size()) {
-                    this._write(bytes);
-                } else {
-                    this.close()
-                }
-            }
-        );
-    },
-    
-    _write: function (bytes) {
-        log("Transfer._write()");
-        this.destStream.write_bytes_async(
-            bytes,
-            GLib.PRIORITY_DEFAULT,
-            null,
-            (source, res) => {
-                this.bytesWritten += source.write_bytes_finish(res);
-                log("bytes written: " + this.bytesWritten);
-                this._read();
-            }
-        );
+    opened: function (listener, res) {
+        log("TransferChannel.opened(" + this.device.id + ")");
+        
+        try {
+            let src;
+            [this._connection, src] = this._listener.accept_finish(res);
+            this._initSocket();
+            this._initTls();
+            this.destStream = this._connection.get_output_stream();
+        } catch (e) {
+            log("Error connecting: " + e);
+            this.close();
+        }
+        
+        this.emit("connected");
+        this.transfer();
     }
 });
 

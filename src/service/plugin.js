@@ -81,7 +81,12 @@ var PluginBase = new Lang.Class({
     
     handle_packet: function (packet) {
         throw Error("Not implemented");
-    }
+    },
+    
+    destroy: function () {
+        this._dbus.unexport();
+        delete this._dbus;
+    },
 });
 
 
@@ -253,29 +258,37 @@ var NotificationsPlugin = new Lang.Class({
     handle_packet: function (packet) {
         log("IMPLEMENT: " + packet.toString());
         
-        // Active
-        // {"silent":true,
-        //  "requestAnswer":true,
-        //  "id":"0|org.kde.kdeconnect_tp|-1672895215|null|10114",
-        //  "appName":"KDE Connect",
-        //  "isClearable":true,
-        //  "ticker":"Failed to send file to Gnome Shell ‐ exject2 (11)",
-        //  "time":"1505860630584"}
-//        let note = new Notify.Notification({
-//            id: packet.body.time / 1000,
-//            summary: packet.body.appName,
-//            body: packet.body.ticker,
-//            icon_name: "phone-symbolic"
-//        });
-//        
-//        note.show();
-        if (packet.body.hasOwnProperty("time")) {
-            let note = new Gio.Notification();
-            note.set_title(packet.body.appName);
-            note.set_body(packet.body.ticker);
-            this.device.daemon.send_notification(packet.body.id, note);
-        // Dismissed
-        // {"id":"0|org.kde.kdeconnect_tp|-1672895215|null|10114","isCancel":true}
+        
+        if (packet.body.isCancel && this._notifications.has(packet.body.id)) {
+            // Dismissed
+            // {"id":"0|org.kde.kdeconnect_tp|-1672895215|null|10114","isCancel":true}
+            this._notifications.get(packet.body.id).close();
+            this._notifications.delete(packet.body.id);
+        
+        } else if (packet.body.hasOwnProperty("time")) {
+            // Active
+            // {"silent":true,
+            //  "requestAnswer":true,
+            //  "id":"0|org.kde.kdeconnect_tp|-1672895215|null|10114",
+            //  "appName":"KDE Connect",
+            //  "isClearable":true,
+            //  "ticker":"Failed to send file to Gnome Shell ‐ exject2 (11)",
+            //  "time":"1505860630584"}
+            let note = new Notify.Notification({
+                app_name: "GSConnect",
+                id: packet.body.time / 1000,
+                summary: packet.body.appName,
+                body: packet.body.ticker,
+                icon_name: "phone-symbolic"
+            });
+            
+            this._notifications.set(packet.body.id, note);
+            
+            this._notifications.get(packet.body.id).show();
+//            let note = new Gio.Notification();
+//            note.set_title(packet.body.appName);
+//            note.set_body(packet.body.ticker);
+//            this.device.daemon.send_notification(packet.body.id, note);
         } else {
         }
     },
@@ -335,6 +348,50 @@ var PingPlugin = new Lang.Class({
 
 
 /**
+ * RunCommand Plugin
+ * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/ping
+ */
+var RunCommandPlugin = new Lang.Class({
+    Name: "GSConnectRunCommandPlugin",
+    Extends: PluginBase,
+    Signals: {
+        "runcommand": {
+            flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED
+        }
+    },
+    
+    _init: function (device) {
+        this.parent(device);
+        
+        this.export_interface("ping");
+    },
+    
+    get incomingPackets() {
+        return ["kdeconnect.runcommand.request"];
+    },
+    
+    get outgoingPackets() {
+        return ["kdeconnect.runcommand"];
+    },
+    
+    // TODO
+    handle_packet: function (packet) {
+        this.emit("runcommand");
+        log("IMPLEMENT: " + packet.toString());
+    },
+    
+    runcommand: function () {
+        if (this.device.connected && this.device.paired) {
+            let packet = new Protocol.Packet();
+            packet.type = "kdeconnect.runcommand";
+            
+            this.device._channel.send(packet);
+        }
+    }
+});
+
+
+/**
  * Share Plugin
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/share
  */
@@ -346,6 +403,9 @@ var SharePlugin = new Lang.Class({
             flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED
         }
     },
+    
+    MIN_PORT: 1739,
+    MAX_PORT: 1764,
     
     _init: function (device) {
         this.parent(device);
@@ -361,38 +421,32 @@ var SharePlugin = new Lang.Class({
         return ["kdeconnect.share.request"];
     },
     
-    // TODO
     handle_packet: function (packet) {
-        this.emit("share");
-        log("IMPLEMENT: " + packet.toString());
-        
+        // TODO: error checking, filename suggestions, stream closing
+        //       channel/file closing, signals... :(
         if (packet.body.hasOwnProperty("filename")) {
-            log("receiving file");
-            //"payloadSize":648,"payloadTransferInfo":{"port":1740}
-            
             let path = "/home/andrew/Downloads/" + packet.body.filename;
             
-            this.localFile = Gio.File.new_for_path(path);
-            this.fStream = this.localFile.replace(
-                null,
-                false,
-                Gio.FileCreateFlags.NONE,
-                null
-            );
+            let file = Gio.File.new_for_path(path);
+            let addr = new Gio.InetSocketAddress({
+                address: Gio.InetAddress.new_from_string(
+                    this.device.identity.body.tcpHost
+                ),
+                port: packet.payloadTransferInfo.port
+            });
             
-            let channel = new Protocol.TransferChannel(
+            let channel = new Protocol.LanDownloadChannel(
                 this.device,
-                packet.payloadTransferInfo.port,
-                null,
-                this.fStream,
+                addr,
+                file.replace(null, false, Gio.FileCreateFlags.NONE, null),
                 packet.payloadSize
             );
             
             channel.open();
         } else if (packet.body.hasOwnProperty("text")) {
+        log("IMPLEMENT: " + packet.toString());
             log("receiving text: '" + packet.body.text + "'");
         } else if (packet.body.hasOwnProperty("url")) {
-            log("receiving url");
             Gio.AppInfo.launch_default_for_uri(packet.body.url, null);
         }
     },
@@ -403,8 +457,27 @@ var SharePlugin = new Lang.Class({
             packet.type = "kdeconnect.share.request";
             
             if (uri.startsWith("file://")) {
-                packet.body = {
-                };
+            
+                let file = Gio.File.new_for_uri(uri);
+                let info = file.query_info("standard::size", 0, null);
+                
+                packet.body = { filename: file.get_basename() };
+                packet.payloadSize = info.get_size();
+                packet.payloadTransferInfo = { port: 1741 };
+                
+                let addr = new Gio.InetSocketAddress({
+                    address: Gio.InetAddress.new_any(Gio.SocketFamily.IPV4),
+                    port: packet.payloadTransferInfo.port
+                });
+                
+                let channel = new Protocol.LanUploadChannel(
+                    this.device,
+                    addr,
+                    file.read(null),
+                    packet.payloadSize
+                );
+                
+                channel.open();
             } else {
                 packet.body = { url: uri };
             }
