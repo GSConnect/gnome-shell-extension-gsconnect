@@ -23,17 +23,17 @@ function generate_encryption (force=false) {
         GLib.FileTest.EXISTS
     );
     
-    let hasPublicKey = GLib.file_test(
-        CONFIG_PATH + "/public.pem",
-        GLib.FileTest.EXISTS
-    );
+//    let hasPublicKey = GLib.file_test(
+//        CONFIG_PATH + "/public.pem",
+//        GLib.FileTest.EXISTS
+//    );
     
     let hasCertificate = GLib.file_test(
         CONFIG_PATH + "/certificate.pem",
         GLib.FileTest.EXISTS
     );
     
-    if (force || (!hasPrivateKey || !hasPublicKey || !hasCertificate)) {
+    if (force || (!hasPrivateKey || !hasCertificate)) {
         let cmd = [
             "openssl", "req", "-new", "-x509", "-sha256", "-newkey",
             "rsa:2048", "-nodes", "-keyout", "private.pem", "-days", "3650",
@@ -49,13 +49,13 @@ function generate_encryption (force=false) {
             null // child_setup
         );
         
-        [res, stdout, stderr, exit_status] = GLib.spawn_sync(
-            CONFIG_PATH, // working dir
-            ["openssl", "rsa", "-in", "private.pem", "-pubout", "-out", "public.pem"], // argv
-            null, // envp
-            GLib.SpawnFlags.SEARCH_PATH, // flags,
-            null // child_setup
-        );
+//        [res, stdout, stderr, exit_status] = GLib.spawn_sync(
+//            CONFIG_PATH, // working dir
+//            ["openssl", "rsa", "-in", "private.pem", "-pubout", "-out", "public.pem"], // argv
+//            null, // envp
+//            GLib.SpawnFlags.SEARCH_PATH, // flags,
+//            null // child_setup
+//        );
     }
 };
 
@@ -98,7 +98,9 @@ function read_device_cache () {
         
         if (GLib.file_test(identPath, GLib.FileTest.EXISTS)) {
             let [success, data] = GLib.file_get_contents(identPath);
-            devices.push(data);
+            log(data);
+            log(typeof data);
+            devices.push(JSON.parse(data));
         }
     }
     
@@ -129,6 +131,43 @@ function write_device_cache (daemon, deviceId=false) {
             write_device_cache(daemon, device.deviceId);
         }
     }
+};
+
+
+// FIXME: error handling
+function read_device_config (deviceId) {
+    let device_path = CONFIG_PATH + "/" + deviceId;
+    let device_config = device_path + "/config.json";
+    
+    // Init Config
+    if (!GLib.file_test(device_path, GLib.FileTest.IS_DIR)) {
+        GLib.mkdir_with_parents(device_path, 493);
+    }
+        
+    if (!GLib.file_test(device_config, GLib.FileTest.EXISTS)) {
+        GLib.file_set_contents(
+            device_config,
+            '{"plugins": {}}'
+        );
+    }
+
+    let config = GLib.file_get_contents(device_config)[1].toString();
+    return JSON.parse(config);
+};
+
+
+// FIXME: error handling
+function write_device_config (deviceId, config) {
+    let device_config = CONFIG_PATH + "/" + deviceId + "/config.json";
+
+    GLib.file_set_contents(
+        device_config + "/config.json",
+        JSON.stringify(config),
+        JSON.stringify(config).length,
+        null
+    );
+    
+    return;
 };
 
 
