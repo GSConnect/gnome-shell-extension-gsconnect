@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist gettext-domain="gnome-shell-extension-gsconnect">
-  <enum id="org.gnome.shell.extensions.gsconnect.ServiceProvider">
-    <value nick="MCONNECT" value="0"/>
-    <value nick="KDECONNECT" value="1"/>
-  </enum>
+  <!-- TODO: better names this time -->
   <flags id="org.gnome.shell.extensions.gsconnect.DeviceVisibility">
     <value nick="OFFLINE" value="1"/>
     <value nick="UNPAIRED" value="2"/>
@@ -24,18 +21,19 @@
       <summary>Device Indicators</summary>
       <description>Controls available via Indicators or the User Menu</description>
     </key>
+    <!-- TODO: better names this time -->
     <key name="device-visibility" flags="org.gnome.shell.extensions.gsconnect.DeviceVisibility">
       <default>["OFFLINE", "UNPAIRED"]</default>
       <summary>Device Visibility</summary>
       <description>Display devices in offline and unpaired states</description>
     </key>
-    <!-- TODO: use string of JSON -->
+    <!-- TODO: use string of JSON? -->
     <key name="device-keybindings" type="a{sv}">
       <default><![CDATA[{"": <{"name": <"">, "bindings": <['','','','','','']>}>}]]></default>
       <summary>Device Actions</summary>
       <description>Configure shortcuts for device functions</description>
     </key>
-    <!-- TODO: use string of JSON -->
+    <!-- TODO: use string of JSON? -->
     <key name="extension-keybindings" type="as">
       <default><![CDATA[['','','','']]]></default>
       <summary>Extension Actions</summary>
