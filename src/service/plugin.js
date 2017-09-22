@@ -546,13 +546,49 @@ var TelephonyPlugin = new Lang.Class({
 /**
  * Plugin handlers, mapped to incoming packet types (remote outgoingCapabilities)
  */
-var PluginMap = new Map([
-    ["battery", BatteryPlugin],
-    ["findmyphone", FindMyPhonePlugin],
-    ["notifications", NotificationsPlugin],
-    ["ping", PingPlugin],
-    ["share", SharePlugin],
-    ["telephony", TelephonyPlugin]
+var PluginInfo = new Map([
+    ["battery", {
+        handler: BatteryPlugin,
+        summary: _("Battery"),
+        description: _("Monitor battery level and charging state"),
+        settings: false
+    }],
+    ["findmyphone", {
+        handler: FindMyPhonePlugin,
+        summary: _("Find My Phone"),
+        description: _("Locate device by ringing"),
+        settings: false
+    }],
+    ["notifications", {
+        handler: NotificationsPlugin,
+        summary: _("Receive Notifications"),
+        description: _("Receive notifications from other devices"),
+        settings: true
+    }],
+    ["ping", {
+        handler: PingPlugin,
+        summary: _("Ping"),
+        description: _("Send and receive pings"),
+        settings: false
+    }],
+    ["runcommand", {
+        handler: RunCommandPlugin,
+        summary: _("Run Commands"),
+        description: _("Run local commands from remote devices"),
+        settings: true
+    }],
+    ["share", {
+        handler: SharePlugin,
+        summary: _("Share"),
+        description: _("Send and receive files and URLs"),
+        settings: true
+    }],
+    ["telephony", {
+        handler: TelephonyPlugin,
+        summary: _("Telephony"),
+        description: _("Send and receive SMS and be notified of phone calls"),
+        settings: false
+    }]
 ]);
 
 
