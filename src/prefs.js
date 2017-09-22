@@ -383,109 +383,35 @@ var ButtonSetting = new Lang.Class({
 });
 
 
-/**
- * A custom Gtk.ComboBox for selecting and initializing keybinding profiles for
- * devices.
- */
-var KeybindingProfileBox = new Lang.Class({
-    Name: "KeybindingProfileBox",
-    Extends: Gtk.ComboBoxText,
+/** Gtk.Button subclass for launching dialogs or external programs */
+var PluginSetting = new Lang.Class({
+    Name: "PluginSetting",
+    Extends: Gtk.Box,
     
-    _init: function () {
-        this.parent();
-        
-        this.manager = false;
-        this.profiles = {};
-        
-        // Watch for Service Provider
-        this._watchdog = Gio.bus_watch_name(
-            Gio.BusType.SESSION,
-            Client.BUS_NAME,
-            Gio.BusNameWatcherFlags.NONE,
-            Lang.bind(this, this._serviceAppeared),
-            Lang.bind(this, this._serviceVanished)
-        );
-        
-        this.append("0", _("Select a device"));
-        this._refresh();
-    },
-    
-    _serviceAppeared: function (conn, name, name_owner, cb_data) {
-        this.manager = new Client.DeviceManager();
-        
-        this.manager.connect("device::added", (manager, dbusPath) => {
-            this._refresh();
+    _init: function (device, plugin) {
+        this.parent({
+            orientation: Gtk.Orientation.HORIZONTAL,
+            spacing: 12
         });
         
-        this._refresh();
-    },
-    
-    _serviceVanished: function (conn, name, name_owner, cb_data) {
-        if (this.manager) {
-            this.manager.destroy();
-            this.manager = false;
-        }
-    },
-    
-    _get_profiles: function () {
-        this.profiles = Settings.get_value("device-keybindings").deep_unpack();
+        this.device = device;
+        this.plugin = plugin;
+        this.pluginInfo = Plugin.PluginInfo.get(this.plugin);
         
-        for (let id in this.profiles) {
-            this.profiles[id] = this.profiles[id].deep_unpack();
-            this.profiles[id].name = this.profiles[id].name.deep_unpack();
-            this.profiles[id].bindings = this.profiles[id].bindings.deep_unpack();
+        if (this.pluginInfo.settings) {
+            this.settingButton = new ButtonSetting({
+                icon_name: "open-menu-symbolic"
+            });
+            this.add(this.settingButton);
         }
         
-        if (this.manager) {
-            for (let device of this.manager.devices.values()) {
-                // Add an empty keybinding profile for new devices
-                if (!this.profiles.hasOwnProperty(device.id)) {
-                    this.profiles[device.id] = {
-                        name: device.name,
-                        bindings: ["", "", "", "", "", ""]
-                    };
-                // Update device names for existing profiles
-                } else {
-                    this.profiles[device.id].name = device.name;
-                }
-            }
-        }
-        
-        this._set_profiles();
-    },
-    
-    _set_profiles: function () {
-        let profiles = JSON.parse(JSON.stringify(this.profiles));
-    
-        for (let id in profiles) {
-            profiles[id].name = new GLib.Variant("s", profiles[id].name);
-            profiles[id].bindings = new GLib.Variant("as", profiles[id].bindings);
-            profiles[id] = new GLib.Variant("a{sv}", profiles[id]);
-        }
-        
-        Settings.set_value(
-            "device-keybindings",
-            new GLib.Variant("a{sv}", profiles)
-        );
-    },
-    
-    _refresh: function () {
-        this._get_profiles();
-        
-        for (let id in this.profiles) {
-            let found = false;
-            
-            if (id.length) {
-                this.model.foreach((model, path, iter) => {
-                    found = (model.get_value(iter, this.id_column) === id);
-                    return found;
-                });
-                
-                if (!found) {
-                    this.append(id, this.profiles[id].name);
-                }
-            }
-        }
+        this.enableSwitch = new Gtk.Switch({
+            visible: true,
+            can_focus: true,
+            halign: Gtk.Align.END,
+            valign: Gtk.Align.CENTER
+        });
+        this.add(this.enableSwitch);
     }
 });
 
@@ -654,114 +580,9 @@ var KeybindingWidget = new Lang.Class({
         
         this._extKeys = Settings.get_strv("extension-keybindings");
         this.extView.load_profile(this._extKeys);
-        
-        // Device Keybindings
-        let devSchema = Schema.get_key("device-keybindings");
-        let devSummary = new Gtk.Label({
-            visible: true,
-            can_focus: false,
-            xalign: 0,
-            hexpand: true,
-            label: devSchema.get_summary()
-        });
-        this.grid.attach(devSummary, 0, 3, 1, 1);
-        
-        let devDesc = new Gtk.Label({
-            visible: true,
-            can_focus: false,
-            xalign: 0,
-            hexpand: true,
-            label: devSchema.get_description(),
-            wrap: true
-        });
-        devDesc.get_style_context().add_class("dim-label");
-        this.grid.attach(devDesc, 0, 4, 1, 1);
-        
-        this.keyBox = new KeybindingProfileBox();
-        this.grid.attach(this.keyBox, 1, 3, 1, 2);
-        
-        this.devView = new KeybindingView();
-        this.devView.add_accel(0, _("Open device menu"), 0, 0);
-        this.devView.add_accel(1, _("Send SMS"), 0, 0);
-        this.devView.add_accel(2, _("Locate Device"), 0, 0);
-        this.devView.add_accel(3, _("Browse Files"), 0, 0);
-        this.devView.add_accel(4, _("Send Files"), 0, 0);
-        this.devView.add_accel(5, _("Pair/Reconnect"), 0, 0);
-        this.grid.attach(this.devView, 0, 5, 2, 1);
-        
-        this.removeButton = new Gtk.Button({
-            label: _("Remove"),
-            tooltip_text: _("Remove the shortcuts for a defunct device."),
-            halign: Gtk.Align.END
-        });
-        this.removeButton.get_style_context().add_class("destructive-action");
-        this.removeButton.connect("clicked", () => {
-            let old_id = new Number(this.keyBox.active.valueOf());
-            delete this.keyBox.profiles[this.keyBox.active_id];
-            this._devKeys = {};
-            this.keyBox.active = 0;
-            this.keyBox.remove(old_id);
-            this.keyBox._set_profiles();
-            this.keyBox._refresh();
-        });
-        this.grid.attach(this.removeButton, 1, 6, 1, 1);
-        
-        this.devView.accelCell.connect("accel-edited", (renderer, path, key, mods) => {
-            let [success, iter] = this.devView.model.get_iter_from_string(path);
-            
-            if (success && mods > 0) {
-                let index = this.devView.model.get_value(iter, 0);
-                let binding = Gtk.accelerator_name(key, mods);
-                
-                // Check for existing instance of binding
-                if (this._check(binding)) {
-                    this._devKeys.bindings[index] = binding;
-                    this.keyBox._set_profiles();
-                    this.devView.load_profile(this._devKeys.bindings);
-                }
-            }
-        });
-
-        this.devView.accelCell.connect("accel-cleared", (renderer, path) => {
-            let [success, iter] = this.devView.model.get_iter_from_string(path);
-            
-            if (success) {
-                let index = this.devView.model.get_value(iter, 0);
-                this.devView.model.set(iter, [2, 3], [0, 0]);
-                this._devKeys.bindings[index] = "";
-                this.keyBox._set_profiles();
-            }
-        });
-        
-        this.keyBox.connect("changed", (combobox, user_data) => {
-            if (this.keyBox.active === 0) {
-                this.devView.load_profile(undefined);
-                this.devView.sensitive = false;
-                this.removeButton.sensitive = false;
-            } else {
-                this._devKeys = this.keyBox.profiles[this.keyBox.active_id];
-                this.devView.load_profile(this._devKeys.bindings);
-                this.devView.sensitive = true;
-                this.removeButton.sensitive = true;
-            }
-        });
-        
-        this.keyBox.active = 0;
     },
     
     _check: function (binding) {
-        // Check we aren't already using the binding
-        for (let id in this.keyBox.profiles) {
-            let index = this.keyBox.profiles[id].bindings.indexOf(binding);
-        
-            if (index > -1) {
-                this.keyBox.profiles[id].bindings[index] = "";
-                this.keyBox._set_profiles();
-                this.devView.load_profile(this._devKeys.bindings);
-                return true;
-            }
-        }
-        
         if (this._extKeys.indexOf(binding) > -1) {
             this._extKeys[this._extKeys.indexOf(binding)] = "";
             Settings.set_strv("extension-keybindings", this._extKeys);
@@ -992,6 +813,90 @@ var PrefsPage = new Lang.Class({
 });
 
 
+var DevicesPage = new Lang.Class({
+    Name: "DevicesPage",
+    Extends: Gtk.Grid,
+    
+    _init: function (params={}) {
+        this.parent({
+            halign: Gtk.Align.FILL,
+            valign: Gtk.Align.FILL,
+            hexpand: true,
+            vexpand: true
+        });
+        
+        this.stack = new Gtk.Stack({
+            transition_type: Gtk.StackTransitionType.SLIDE_UP_DOWN,
+            halign: Gtk.Align.FILL,
+            valign: Gtk.Align.FILL,
+            hexpand: true,
+            vexpand: true
+        });
+        
+        this.sidebar = new Gtk.ListBox();
+        
+        this.attach(this.sidebar, 0, 0, 1, 1);
+        this.attach(this.stack, 1, 0, 1, 1);
+    },
+    
+    add_device: function (device) {
+        // Device Sidebar Entry
+        let row = new Gtk.ListBoxRow({
+            visible: true,
+            can_focus: true
+        });
+        row.device = device;
+        
+        row.grid = new Gtk.Grid({
+            visible: true,
+            can_focus: false,
+            column_spacing: 16,
+            row_spacing: 0,
+            margin_left: 12,
+            margin_top: 6,
+            margin_bottom: 6,
+            margin_right: 12
+        });
+        row.add(row.grid);
+        
+        let icon = Gtk.Image.new_from_icon_name("phone", Gtk.IconSize.LARGE_TOOLBAR);
+        row.grid.attach(icon, 0, 0, 1, 2);
+        let nameLabel = new Gtk.Label({ label: device.name });
+        row.grid.attach(nameLabel, 1, 0, 1, 1);
+        let statusLabel = new Gtk.Label({ label: device.type });
+        row.grid.attach(statusLabel, 1, 1, 1, 1);
+        statusLabel.get_style_context().add_class("dim-label");
+        this.sidebar.add(row);
+        
+        this.sidebar.connect("row-selected", (listbox, row) => {
+            this.stack.set_visible_child_name(row.device.id);
+        });
+        
+        // Device Page
+        let page = new PrefsPage();
+        let pluginsSection = page.add_section(_("Plugins"));
+        
+        for (let [pluginName, pluginInfo] of Plugin.PluginInfo.entries()) {
+            let pluginWidget = new PluginSetting(device, pluginName);
+            
+            page.add_item(
+                pluginsSection,
+                pluginInfo.summary,
+                pluginInfo.description,
+                pluginWidget
+            );
+        }
+        
+        let keySection = page.add_section(_("Keyboard Shortcuts"));
+        
+        page.show_all();
+        this.stack.add_titled(page, device.id, device.name);
+        
+        row.show_all();
+    }
+});
+
+
 /** A GtkStack subclass with a pre-attached GtkStackSwitcher */
 var PrefsWidget = new Lang.Class({
     Name: "PrefsWidget",
@@ -1003,12 +908,24 @@ var PrefsWidget = new Lang.Class({
         }, params);
         
         this.parent(params);
+        this.manager = false;
         
         this.switcher = new Gtk.StackSwitcher({
             halign: Gtk.Align.CENTER,
             stack: this
         });
         this.switcher.show_all();
+        
+        this._build();
+        
+        // Watch for Service Provider
+        this._watchdog = Gio.bus_watch_name(
+            Gio.BusType.SESSION,
+            Client.BUS_NAME,
+            Gio.BusNameWatcherFlags.NONE,
+            Lang.bind(this, this._serviceAppeared),
+            Lang.bind(this, this._serviceVanished)
+        );
     },
     
     add_page: function (id, title) {
@@ -1019,7 +936,54 @@ var PrefsWidget = new Lang.Class({
     
     remove_page: function (id) {
         throw Error("Not implemented, use PrefsWidget.remove(" + id + ")")
-    }
+    },
+    
+    _build: function () {
+        // General Page
+        let generalPage = this.add_page("general", _("General"));
+        
+        let appearanceSection = generalPage.add_section(_("Appearance"));
+        generalPage.add_setting(appearanceSection, "device-indicators");
+        generalPage.add_setting(appearanceSection, "device-visibility");
+        
+        let filesSection = generalPage.add_section(_("Files"));
+        generalPage.add_setting(filesSection, "device-automount");
+        generalPage.add_setting(filesSection, "nautilus-integration");
+        
+        let keySection = generalPage.add_section(_("Keyboard Shortcuts"));
+        let keyRow = new KeybindingWidget();
+        keySection.list.add(keyRow);
+        
+        // Devices Page
+        this.devicesWidget = new DevicesPage();
+        let devicesPage = this.add_titled(this.devicesWidget, "devices", _("Devices"));
+        
+        // Advanced Page
+        let advancedPage = this.add_page("advanced", _("Advanced"));
+        
+        let serviceSection = advancedPage.add_section(_("Service"));
+            // FIXME FIXME FIXME
+    //    advancedPage.add_setting(serviceSection, "service-autostart");
+        advancedPage.add_setting(serviceSection, "persistent-discovery");
+        
+        let develSection = advancedPage.add_section(_("Development"));
+        advancedPage.add_setting(develSection, "debug");
+    },
+    
+    _serviceAppeared: function (conn, name, name_owner, cb_data) {
+        this.manager = new Client.DeviceManager();
+        
+        for (let device of this.manager.devices.values()) {
+            this.devicesWidget.add_device(device);
+        }
+    },
+    
+    _serviceVanished: function (conn, name, name_owner, cb_data) {
+        if (this.manager) {
+            this.manager.destroy();
+            this.manager = false;
+        }
+    },
 });
 
 
@@ -1030,36 +994,6 @@ function init() {
 // Extension Preferences
 function buildPrefsWidget() {
     let prefsWidget = new PrefsWidget();
-
-    // Preferences Page
-    let generalPage = prefsWidget.add_page("prefs", _("General"));
-    
-    let appearanceSection = generalPage.add_section(_("Appearance"));
-    generalPage.add_setting(appearanceSection, "device-indicators");
-    generalPage.add_setting(appearanceSection, "device-visibility");
-    
-    let filesSection = generalPage.add_section(_("Files"));
-    generalPage.add_setting(filesSection, "device-automount");
-    generalPage.add_setting(filesSection, "nautilus-integration");
-    
-    // Keyboard Shortcuts Page
-    let keyPage = prefsWidget.add_page("kb", _("Keyboard"));
-    
-    let keySection = keyPage.add_section(_("Keyboard Shortcuts"));
-    
-    let keyRow = new KeybindingWidget();
-    keySection.list.add(keyRow);
-    
-    // Advanced Page
-    let advancedPage = prefsWidget.add_page("advanced", _("Advanced"));
-    
-    let serviceSection = advancedPage.add_section(_("Service"));
-        // FIXME FIXME FIXME
-//    advancedPage.add_setting(serviceSection, "service-autostart");
-    advancedPage.add_setting(serviceSection, "persistent-discovery");
-    
-    let develSection = advancedPage.add_section(_("Development"));
-    advancedPage.add_setting(develSection, "debug");
     
     // HeaderBar
     Mainloop.timeout_add(0, () => {
