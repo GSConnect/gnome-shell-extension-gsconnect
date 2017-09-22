@@ -39,9 +39,31 @@ var Packet = new Lang.Class({
         this.type = "";
         this.body = {};
         
-        if (data) {
+        if (data === false) {
+            return;
+        } else if (typeof data === "string") {
             this.fromData(data);
+        } else if (typeof data === "object") {
+            this.fromPacket(data);
+        } else {
+            log("unsupported packet source: " + typeof data);
+            log("unsupported packet source: " + data);
         }
+    },
+    
+    _check: function (obj) {
+        if (!obj.hasOwnProperty("type")) {
+            log("packet is missing 'type' field");
+            return false;
+        } else if (!obj.hasOwnProperty("body")) {
+            log("packet is missing 'body' field");
+            return false;
+        } else if (!obj.hasOwnProperty("id")) {
+            log("packet is missing 'id' field");
+            return false;
+        }
+        
+        return true;
     },
     
     fromData: function (data) {
@@ -55,14 +77,22 @@ var Packet = new Lang.Class({
             return;
         }
         
-        if (!json.hasOwnProperty("type")) {
-            throw Error("packet is missing 'type' field");
-        } else if (!json.hasOwnProperty("body")) {
-            throw Error("packet is missing 'body' field");
-        } else if (!json.hasOwnProperty("id")) {
-            throw Error("packet is missing 'id' field");
-        } else {
+        if (this._check(json)) {
             Object.assign(this, json);
+        } else {
+            throw Error("Packet.fromData(): Malformed packet");
+        }
+    },
+    
+    fromPacket: function (packet) {
+        if (this._check(packet)) {
+            Object.assign(this, {
+                id: Date.now(), //FIXME
+                type: packet.type,
+                body: JSON.parse(JSON.stringify(packet.body))
+            });
+        } else {
+            throw Error("Packet.fromPacket(): Malformed packet");
         }
     },
     
@@ -73,71 +103,6 @@ var Packet = new Lang.Class({
     
     toString: function () {
         return JSON.stringify(this);
-    }
-});
-
-
-var IdentityPacket = new Lang.Class({
-    Name: "GSConnectIdentityPacket",
-    Extends: Packet,
-    
-    _init: function (daemon=false) {
-        this.parent();
-        
-        this.type = TYPE_IDENTITY;
-        this.body = {
-            deviceId: "",
-            deviceName: "",
-            deviceType: "",
-            incomingCapabilities: [],
-            outgoingCapabilities: [],
-            tcpPort: 0,
-            protocolVersion: 7
-        };
-        
-        if (daemon) {
-            this.fromDaemon(daemon);
-        }
-    },
-    
-    fromDaemon: function (daemon) {
-        Object.assign(this, {
-            id: Date.now(), //FIXME
-            type: TYPE_IDENTITY,
-            body: JSON.parse(JSON.stringify(daemon.identity.body))
-        });
-    }
-});
-
-
-var PairPacket = new Lang.Class({
-    Name: "GSConnectPairPacket",
-    Extends: Packet,
-    
-    _init: function (daemon=null) {
-        this.parent();
-        
-        this.type = TYPE_PAIR;
-        this.body = {
-            pair: false,
-            publicKey: ""
-        };
-        
-        if (daemon !== null) {
-            this.fromDaemon(daemon);
-        }
-    },
-    
-    fromDaemon: function (daemon) {
-        // TODO
-        Object.assign(this, {
-            id: Date.now(), //FIXME
-            type: TYPE_PAIR,
-            body: {
-                pair: true,
-                publicKey: JSON.parse(JSON.stringify(daemon.publicKey))
-            }
-        });
     }
 });
 

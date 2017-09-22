@@ -54,13 +54,6 @@ var Daemon = new Lang.Class({
             new GLib.VariantType('as'),
             null,
             GObject.ParamFlags.READABLE
-        ),
-        "publicKey": GObject.ParamSpec.string(
-            "publicKey",
-            "RsaPublicKey",
-            "The local RSA Public Key",
-            GObject.ParamFlags.READABLE,
-            ""
         )
     },
     // FIXME: this is emitted when a device is "discovered", with a device obj
@@ -107,19 +100,13 @@ var Daemon = new Lang.Class({
         );
     },
     
-    get publicKey() {
-        return GLib.file_get_contents(
-            Config.CONFIG_PATH + "/public.pem"
-        )[1].toString();
-    },
-    
     get name() {
         return this.identity.body.deviceName;
     },
     
     set name(name) {
         this.identity.body.deviceName = name;
-        this._write_config();
+        Config.write_daemon_config(this);
     },
     
     get devices() {
@@ -130,14 +117,14 @@ var Daemon = new Lang.Class({
     broadcast: function () {
         log("Daemon.broadcast()");
         
-        let ident = new Protocol.IdentityPacket(this);
+        let ident = new Protocol.Packet(this.identity);
         this._socket.send_to(this._broadcastAddr, ident.toData(), null);
     },
     
     /**
      * Start listening for incoming broadcast packets
      *
-     * TODO: support a range of ports
+     * TODO: TCP Listener that supports a range of ports (1716-1764)
      */
     listen: function () {
         this._socket = new Gio.Socket({
@@ -196,6 +183,7 @@ var Daemon = new Lang.Class({
                 null
             );
             [data, size] = this._in.read_line(null);
+            log("Daemon received: " + data);
         } catch (e) {
             log("error reading data: " + e);
         }
@@ -203,7 +191,7 @@ var Daemon = new Lang.Class({
         // Ignore local broadcasts
         if (addr.address.to_string() === "127.0.0.1") { return true; }
         
-        let packet = new Protocol.Packet(data);
+        let packet = new Protocol.Packet(data.toString());
         
         if (packet.type !== Protocol.TYPE_IDENTITY) {
             log("Unexpected packet type: " + packet.type);
@@ -243,11 +231,15 @@ var Daemon = new Lang.Class({
         this._socket = null;
         this._in = null;
         
-        this.identity = new Protocol.IdentityPacket();
+        this.identity = new Protocol.Packet({
+            id: Date.now(),
+            type: Protocol.TYPE_IDENTITY,
+            body: {}
+        });
         Config.init_config(this);
         
         // Notifications
-        //Notify.init("gnome-shell-extension-gsconnect.daemon");
+        Notify.init("org.gnome.shell.extensions.gsconnect.daemon");
         
         // Debug Mode
         if (this._debug_mode) {

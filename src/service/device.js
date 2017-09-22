@@ -87,8 +87,7 @@ var Device = new Lang.Class({
         this._channel = null;
         this._connected = false;
         
-        this.identity = new Protocol.IdentityPacket();
-        this.fromPacket(packet);
+        this.identity = new Protocol.Packet(packet);
         
         // Plugins
         this._plugins = new Map();
@@ -106,37 +105,17 @@ var Device = new Lang.Class({
         );
         
         // Init config
-        this._init_config();
-    },
-    
-    /**
-     * Device Configuration
-     */
-    _init_config: function () {
-        this.config_dir = Config.CONFIG_PATH + "/" + this.id;
-        this.config_cert = this.config_dir + "/certificate.pem";
-        this.config_device = this.config_dir + "/config.json";
-        
-        // Plugins
-        if (!GLib.file_test(this.config_dir, GLib.FileTest.IS_DIR)) {
-            GLib.mkdir_with_parents(this.config_dir, 493);
-        }
-        
-        if (!GLib.file_test(this.config_device, GLib.FileTest.EXISTS)) {
-            GLib.file_set_contents(
-                this.config_device,
-                '{"plugins":[]}'
-            );
-        }
-        
+        this.config_cert = Config.CONFIG_PATH + "/" + this.id + "/certificate.pem";
         this._read_config();
+        
+        //
+        this.activate();
     },
     
-    // Device Properties
+    /** Device Properties */
     get connected () { return this._connected; },
     get id () { return this.identity.body.deviceId; },
     get name () { return this.identity.body.deviceName; },
-    
     get paired () {
         return GLib.file_test(this.config_cert, GLib.FileTest.EXISTS);
     },
@@ -148,7 +127,7 @@ var Device = new Lang.Class({
         log("Device.fromPacket(" + this.id + ")");
         
         if (packet.type === Protocol.TYPE_IDENTITY) {
-            Object.assign(this.identity, packet);
+            this.identity.fromPacket(packet);
         } else {
             throw Error("devices can only be created from identity packets");
         }
@@ -196,7 +175,6 @@ var Device = new Lang.Class({
     /**
      * Packet Handling
      */
-    
     // TODO
     _received: function (channel, packet) {
         log("Device._received(" + this.id + ")");
@@ -245,8 +223,13 @@ var Device = new Lang.Class({
     // FIXME
     pair: function () {
         log("Device.pair(" + this.id + ")");
-        let pairPacket = new Protocol.PairPacket(this.daemon);
-        this._channel.send(pairPacket);
+        
+        let packet = new Protocol.Packet({
+            id: Date.now(),
+            type: Protocol.TYPE_PAIR,
+            body: { pair: true }
+        });
+        this._channel.send(packet);
     },
     
     // FIXME
@@ -254,8 +237,12 @@ var Device = new Lang.Class({
         log("Device.unpair(" + this.id + ")");
         
         if (this._channel !== null) {
-            let unpairPacket = new Protocol.PairPacket();
-            this._channel.send(unpairPacket);
+            let packet = new Protocol.Packet({
+                id: Date.now(),
+                type: Protocol.TYPE_PAIR,
+                body: { pair: false }
+            });
+            this._channel.send(packet);
         }
         
         GLib.unlink(this.config_cert);
@@ -288,9 +275,12 @@ var Device = new Lang.Class({
     // FIXME
     rejectPair: function () {
         log("Device.rejectPair(" + this.id + ")");
-        if (this._channel._peer_cert !== null) {
-            this._channel._peer_cert = null;
-        }
+        
+        this.unpair();
+        
+//        if (this._channel._peer_cert !== null) {
+//            this._channel._peer_cert = null;
+//        }
     },
     
     /**
@@ -298,8 +288,7 @@ var Device = new Lang.Class({
      */
      // FIXME: check
     _read_config: function () {
-        let config = GLib.file_get_contents(this.config_device)[1].toString();
-        this.config = JSON.parse(config);
+        this.config = Config.read_device_config(this.id);
         
         for (let plugin of this.config.plugins) {
             this.enablePlugin(plugin, false);
@@ -309,18 +298,16 @@ var Device = new Lang.Class({
     // FIXME: check
     _write_config: function () {
         this.config.plugins = this.plugins;
-        GLib.file_set_contents(
-            this.config_device,
-            JSON.stringify(this.config)
-        );
+        
+        Config.write_device_config(this.id, this.config);
     },
     
     enablePlugin: function (name, write=true) {
         log("Device.enablePlugin(" + name + ", " + write + ")");
     
-        if (Plugin.PluginMap.has(name) && !this._plugins.has(name)) {
+        if (Plugin.PluginInfo.has(name) && !this._plugins.has(name)) {
             // Enable
-            let handlerClass = Plugin.PluginMap.get(name);
+            let handlerClass = Plugin.PluginInfo.get(name).handler;
             let plugin = new handlerClass(this);
             
             // Register packet handlers
@@ -348,7 +335,7 @@ var Device = new Lang.Class({
     disablePlugin: function (name, write=true) {
         log("Device.disablePlugin(" + name + ", " + write + ")");
         
-        if (Plugin.PluginMap.has(name) && this._plugins.has(name)) {
+        if (Plugin.PluginInfo.has(name) && this._plugins.has(name)) {
             let plugin = this._plugins.get(name);
             
             // Unregister handlers
