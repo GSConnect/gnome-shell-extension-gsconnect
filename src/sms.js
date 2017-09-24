@@ -1,5 +1,5 @@
 /**
- * sms.js - A simple dialog for sending SMS messages with MConnect/KDE Connect
+ * sms.js - A simple dialog for sending SMS messages with GSConnect/KDE Connect
  * with (optional) Google Contacts auto-completion via Gnome Online Accounts.
  *
  * A great deal of credit and appreciation is owed to the indicator-kdeconnect
@@ -337,7 +337,7 @@ var ContactEntry = new Lang.Class({
     Name: "ContactEntry",
     Extends: Gtk.SearchEntry,
     
-    _init: function () {
+    _init: function (completion) {
         this.parent({
             hexpand: true,
             placeholder_text: _("Type a phone number"),
@@ -345,9 +345,10 @@ var ContactEntry = new Lang.Class({
             primary_icon_activatable: false,
             primary_icon_sensitive: true,
             input_purpose: Gtk.InputPurpose.PHONE,
-            completion: new ContactCompletion()
+            completion: completion
         });
         
+        // FIXME: might already be setup
         this.completion.connect("notify::provider", (completion) => {
             this.placeholder_text = _("Type a phone number or name");
             this.primary_icon_name = this.completion.provider;
@@ -403,7 +404,7 @@ var ApplicationWindow = new Lang.Class({
     _init: function(application, device) {
         this.parent({
             application: application,
-            title: "MConnect",
+            title: "GSConnect",
             default_width: 300,
             default_height: 300,
             icon_name: "phone"
@@ -412,7 +413,7 @@ var ApplicationWindow = new Lang.Class({
         this.device = device;
         
         // Contact Entry
-        this.contactEntry = new ContactEntry();
+        this.contactEntry = new ContactEntry(application.completion);
         this.device.bind_property(
             "connected",
             this.contactEntry,
@@ -534,6 +535,7 @@ var ApplicationWindow = new Lang.Class({
         this.has_focus = true;
     },
     
+    // FIXME:
     _catch_message: function (plugin, phoneNumber, contactName, messageBody, phoneThumbnail) {
         log("SMS phoneNumber: " + phoneNumber);
         log("SMS contactName: " + contactName);
@@ -675,15 +677,20 @@ var Application = new Lang.Class({
     _init: function() {
         this.parent({
             application_id: "org.gnome.shell.extensions.gsconnect.sms",
-            flags: Gio.ApplicationFlags.FLAGS_NONE
+//            flags: Gio.ApplicationFlags.NONE
+            flags: Gio.ApplicationFlags.HANDLES_COMMAND_LINE
         });
         
-        let application_name = _("MConnect SMS");
+        let application_name = _("GSConnect SMS");
 
         GLib.set_prgname(application_name);
         GLib.set_application_name(application_name);
         
         this._id = null;
+        this._reply = false;
+        this._name = null;
+        this._number = null;
+        this._message = null;
         
         // Options
         this.add_main_option(
@@ -694,6 +701,35 @@ var Application = new Lang.Class({
             "Device ID",
             "<device-id>"
         );
+        
+        this.add_main_option(
+            "reply-name",
+            "n".charCodeAt(0),
+            GLib.OptionFlags.NONE,
+            GLib.OptionArg.STRING,
+            "Sender Name to reply to",
+            "<sender-name>"
+        );
+        
+        this.add_main_option(
+            "reply-number",
+            "p".charCodeAt(0),
+            GLib.OptionFlags.NONE,
+            GLib.OptionArg.STRING,
+            "Phone Number to reply to",
+            "<sender-number>"
+        );
+        
+        this.add_main_option(
+            "reply-message",
+            "m".charCodeAt(0),
+            GLib.OptionFlags.NONE,
+            GLib.OptionArg.STRING,
+            "Message to reply to",
+            "<message-body>"
+        );
+        
+        this.register(null);
     },
 
     vfunc_startup: function() {
@@ -702,9 +738,23 @@ var Application = new Lang.Class({
         Gtk.IconTheme.get_default().add_resource_path("/icons");
         
         this.manager = new Client.DeviceManager();
+        this.completion = new ContactCompletion();
+        
+        // Actions
+        let replyAction = new Gio.SimpleAction({
+            name: "reply",
+            parameter_type: null
+        });
+        replyAction.connect(
+            "activate",
+            Lang.bind(this, this.reply)
+        );
+        this.add_action(replyAction);
     },
-
+    
+    // FIXME
     vfunc_activate: function() {
+        // Check the specified device is connected and support telephony
         let device;
         
         for (let dev of this.manager.devices.values()) {
@@ -717,28 +767,106 @@ var Application = new Lang.Class({
             throw Error("Device is unconnected or doesn't support sending SMS");
         }
         
+        //
         let windows = this.get_windows();
         let window = false;
-        
-        for (let index_ in windows) {
-            if (device.id === windows[index_].device.id) {
-                window = windows[index_];
+            
+        // We're replying to an incoming message
+        if (this._reply) {
+            // Look for an open window that will already be catching messages
+            for (let index_ in windows) {
+                for (let number of windows[index_]._get_numbers()) {
+                    if (number === this._number) {
+                        window = windows[index_];
+                        break;
+                    }
+                }
+                
+                if (window !== false) { break; }
+            }
+            
+            // None found, open a new one, add the contact and log the message
+            if (!window) {
+                window = new ApplicationWindow(this, device);
+                
+                if (this._name !== null) {
+                    window.contactEntry.text = this._name + " <" + this._number + ">; ";
+                    window._log_message(this._name, this._message);
+                } else {
+                    window.contactEntry.text = this._number + "; ";
+                    window._log_message(this._number, this._message);
+                }
+            }
+            
+            // Reset the reply variables
+            this._reply = false;
+            this._name = null;
+            this._number = null;
+            this._message = null;
+            
+            // Present the window and bail
+            window.present();
+            return;
+            
+        // Check if there's one with no contact entered yet we can use
+        } else {
+            for (let index_ in windows) {
+                if (!windows[index_]._get_numbers().length) {
+                    window = windows[index_];
+                    break;
+                }
             }
         }
         
+        // Okay, fine
         if (!window) { window = new ApplicationWindow(this, device); }
         
         window.present();
     },
     
-    vfunc_handle_local_options: function(options) {
+//    vfunc_handle_local_options: function(options) {
+//        if (options.contains("device")) {
+//            this._id = options.lookup_value("device", null).deep_unpack();
+//        } else {
+//            throw Error("Device ID not specified");
+//            return 1;
+//        }
+//        
+//        if (options.contains("reply-number") && options.contains("reply-message")) {
+//            this._reply = true;
+//            this._number = options.lookup_value("reply-number", null).deep_unpack();
+//            this._message = options.lookup_value("reply-message", null).deep_unpack();
+//            
+//            if (options.contains("reply-name")) {
+//                this._name = options.lookup_value("reply-name", null).deep_unpack();
+//            }
+//        }
+//        
+//        return -1;
+//    },
+    
+    vfunc_command_line: function (command_line, user_data) {
+        let options = command_line.get_options_dict();
+        
         if (options.contains("device")) {
             this._id = options.lookup_value("device", null).deep_unpack();
-            return -1;
+        } else {
+            throw Error("Device ID not specified");
+            return 1;
         }
         
-        throw Error("Device ID not specified");
-        return 1;
+        if (options.contains("reply-number") && options.contains("reply-message")) {
+            this._reply = true;
+            this._number = options.lookup_value("reply-number", null).deep_unpack();
+            this._message = options.lookup_value("reply-message", null).deep_unpack();
+            
+            if (options.contains("reply-name")) {
+                this._name = options.lookup_value("reply-name", null).deep_unpack();
+            }
+        }
+        
+        this.emit("activate");
+        return -1;
     },
 
     vfunc_shutdown: function() {
@@ -746,6 +874,37 @@ var Application = new Lang.Class({
         
         this.manager.destroy();
         delete this.manager;
+    },
+    
+    reply: function () {
+        // Look for an open window that will already be catching messages
+        for (let index_ in windows) {
+            for (let number of windows[index_]._get_numbers()) {
+                if (number === this._number) {
+                    window = windows[index_];
+                    break;
+                }
+            }
+            
+            if (window !== false) { break; }
+        }
+        
+        // None found, open a new one, add the contact and log the message
+        if (!window) {
+            window = new ApplicationWindow(this, device);
+            
+            if (this._name !== null) {
+                window.contactEntry.text = this._name + " <" + this._number + ">; ";
+                window._log_message(this._name, this._message);
+            } else {
+                window.contactEntry.text = this._number + "; ";
+                window._log_message(this._number, this._message);
+            }
+        }
+        
+        // Present the window and bail
+        window.present();
+        return;
     }
 });
 

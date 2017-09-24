@@ -4,6 +4,18 @@ const Lang = imports.lang;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 
+// Local Imports
+function getPath() {
+    // Diced from: https://github.com/optimisme/gjs-examples/
+    let m = new RegExp("@(.+):\\d+").exec((new Error()).stack.split("\n")[1]);
+    return Gio.File.new_for_path(m[1]).get_parent().get_parent().get_path();
+}
+
+imports.searchPath.push(getPath());
+
+const Common = imports.common;
+const Plugin = imports.service.plugin;
+
 
 var CONFIG_PATH = GLib.get_user_config_dir() + "/gnome-shell-extension-gsconnect";
 
@@ -12,6 +24,8 @@ var CONFIG_PATH = GLib.get_user_config_dir() + "/gnome-shell-extension-gsconnect
  * Generate a Private/Public Key pair and TLS Certificate
  *
  * @param {Boolean} force - Force generation even if already created
+ *
+ * TODO: file permissions
  */
 function generate_encryption (force=false) {
     if (!GLib.file_test(CONFIG_PATH, GLib.FileTest.IS_DIR)) {
@@ -138,21 +152,39 @@ function write_device_cache (daemon, deviceId=false) {
 function read_device_config (deviceId) {
     let device_path = CONFIG_PATH + "/" + deviceId;
     let device_config = device_path + "/config.json";
+    let config = { plugins: {} };
+    let default_config = { plugins: {} };
     
-    // Init Config
+    // Init Config Dir
     if (!GLib.file_test(device_path, GLib.FileTest.IS_DIR)) {
         GLib.mkdir_with_parents(device_path, 493);
     }
-        
-    if (!GLib.file_test(device_config, GLib.FileTest.EXISTS)) {
-        GLib.file_set_contents(
-            device_config,
-            '{"plugins": {}}'
-        );
+    
+    // Load Config if it exists
+    if (GLib.file_test(device_config, GLib.FileTest.EXISTS)) {
+        try {
+            config = JSON.parse(
+                GLib.file_get_contents(device_config)[1].toString()
+            );
+        } catch (e) {
+            log("Error loading device configuration: " + e);
+            config = { plugins: {} };
+        }
     }
-
-    let config = GLib.file_get_contents(device_config)[1].toString();
-    return JSON.parse(config);
+    
+    // Load default config
+    for (let [pluginName, pluginInfo] of Plugin.PluginInfo.entries()) {
+        default_config.plugins[pluginName] = { enabled: false };
+        
+        if (pluginInfo.hasOwnProperty("settings")) {
+            default_config.plugins[pluginName].settings = pluginInfo.settings;
+        }
+    }
+        
+    // Update config with (possibly new) defaults
+    write_device_config(deviceId, Common.mergeDeep(default_config, config));
+    
+    return config;
 };
 
 
@@ -161,7 +193,7 @@ function write_device_config (deviceId, config) {
     let device_config = CONFIG_PATH + "/" + deviceId + "/config.json";
 
     GLib.file_set_contents(
-        device_config + "/config.json",
+        device_config,
         JSON.stringify(config),
         JSON.stringify(config).length,
         null

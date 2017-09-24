@@ -21,7 +21,7 @@ imports.searchPath.push(getPath());
 
 const Config = imports.service.config;
 const Protocol = imports.service.protocol;
-const { initTranslations, Me, DBusInfo, Settings } = imports.service.common;
+const { initTranslations, Me, DBusInfo, Settings } = imports.common;
 
 
 /**
@@ -53,14 +53,21 @@ var PluginBase = new Lang.Class({
         )
     },
     
-    _init: function (device) {
+    _init: function (device, name) {
         this.parent();
         this.device = device;
+        this.name = name;
+        
+        this.export_interface();
+        
+        if (PluginInfo.get(this.name).hasOwnProperty("settings")) {
+            this.settings = this.device.config.plugins[this.name].settings;
+        }
     },
     
-    export_interface: function (name) {
+    export_interface: function () {
         // Export DBus
-        let iface = "org.gnome.shell.extensions.gsconnect." + name;
+        let iface = "org.gnome.shell.extensions.gsconnect." + this.name;
         this._dbus = Gio.DBusExportedObject.wrapJSObject(
             DBusInfo.device.lookup_interface(iface),
             this
@@ -71,21 +78,15 @@ var PluginBase = new Lang.Class({
         );
     },
     
-    get incomingPackets() {
-        throw Error("Not implemented");
-    },
+    get incomingPackets() { throw Error("Not implemented"); },
+    get outgoingPackets() { throw Error("Not implemented"); },
     
-    get outgoingPackets() {
-        throw Error("Not implemented");
-    },
-    
-    handle_packet: function (packet) {
-        throw Error("Not implemented");
-    },
+    handle_packet: function (packet) { throw Error("Not implemented"); },
     
     destroy: function () {
         this._dbus.unexport();
         delete this._dbus;
+        // FIXME: signal handlers?
     },
 });
 
@@ -111,17 +112,22 @@ var BatteryPlugin = new Lang.Class({
             "Whether the device is charging",
             GObject.ParamFlags.READABLE,
             -1
+        ),
+        "threshold": GObject.ParamSpec.int(
+            "threshold",
+            "isCharging",
+            "Whether the battery has reached the warning level",
+            GObject.ParamFlags.READABLE,
+            -1
         )
     },
     
     _init: function (device) {
-        this.parent(device);
+        this.parent(device, "battery");
         
         this._charging = false;
         this._level = -1;
         this._threshold = 0;
-        
-        this.export_interface("battery");
     },
     
     get incomingPackets() {
@@ -132,13 +138,9 @@ var BatteryPlugin = new Lang.Class({
         return ["kdeconnect.battery.request"];
     },
     
-    get charging() {
-        return this._charging;
-    },
-    
-    get level() {
-        return this._level;
-    },
+    get charging() { return this._charging; },
+    get level() { return this._level; },
+    get threshold() { return this._threshold; },
     
     handle_packet: function (packet) {
         this._charging = packet.body.isCharging;
@@ -155,11 +157,24 @@ var BatteryPlugin = new Lang.Class({
             new GLib.Variant("i", packet.body.currentCharge)
         );
         
-        // TODO: thresholdEvent {int} means that a battery threshold event was
-        //       fired on the remote device:
-        //           0 := no event. generally not transmitted.
-        //           1 := battery entered in low state
-        //this._threshold = packet.body.thresholdEvent;
+        // FIXME: settings
+        //        note clearing...
+        this._threshold = packet.body.thresholdEvent;
+        this._dbus.emit_property_changed(
+            "threshold",
+            new GLib.Variant("i", packet.body.thresholdEvent)
+        );
+        
+        if (this.settings.threshold_notification) {
+            let note = new Notify.Notification({
+                app_name: "GSConnect",
+                id: packet.id / 1000,
+                summary: _("%s - Low Battery Warning").format(this.device.name),
+                body: _("Battery level is %d").format(this.level), // FIXME % in format strings
+                icon_name: "phone-symbolic"
+            });
+        } else if (this.level <= this.settings.threshold_level) {
+        }
     },
     
     /**
@@ -187,9 +202,7 @@ var FindMyPhonePlugin = new Lang.Class({
     Extends: PluginBase,
     
     _init: function (device) {
-        this.parent(device);
-        
-        this.export_interface("findmyphone");
+        this.parent(device, "findmyphone");
     },
     
     get incomingPackets() {
@@ -219,7 +232,6 @@ var FindMyPhonePlugin = new Lang.Class({
  * Notification Plugin
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/notification
  *
- * TODO: pretty much all of it
  */
 var NotificationsPlugin = new Lang.Class({
     Name: "GSConnectNotificationsPlugin",
@@ -239,11 +251,10 @@ var NotificationsPlugin = new Lang.Class({
     },
     
     _init: function (device) {
-        this.parent(device);
+        this.parent(device, "notifications");
         
+        this._freeze = false;
         this._notifications = new Map();
-        
-        this.export_interface("notifications");
     },
     
     get incomingPackets() {
@@ -251,20 +262,21 @@ var NotificationsPlugin = new Lang.Class({
     },
     
     get outgoingPackets() {
-        return ["kdeconnect.notification.request"];
+        return [
+            "kdeconnect.notification.request",
+            "kdeconnect.notification.reply"
+        ];
     },
     
     // TODO: consider option for notifications allowing clients to handle them
     handle_packet: function (packet) {
         log("IMPLEMENT: " + packet.toString());
         
-        
         if (packet.body.isCancel && this._notifications.has(packet.body.id)) {
             // Dismissed
             // {"id":"0|org.kde.kdeconnect_tp|-1672895215|null|10114","isCancel":true}
             this._notifications.get(packet.body.id).close();
             this._notifications.delete(packet.body.id);
-        
         } else if (packet.body.hasOwnProperty("time")) {
             // Active
             // {"silent":true,
@@ -284,21 +296,39 @@ var NotificationsPlugin = new Lang.Class({
             
             this._notifications.set(packet.body.id, note);
             
-            this._notifications.get(packet.body.id).show();
-//            let note = new Gio.Notification();
-//            note.set_title(packet.body.appName);
-//            note.set_body(packet.body.ticker);
-//            this.device.daemon.send_notification(packet.body.id, note);
+            note.connect("closed", Lang.bind(this, this.close, packet.body.id));
+            
+            note.show();
         } else {
         }
     },
     
-    // TODO: kdeconnect.notification.request packet?
-    notifications: function () {
-        if (this.device.connected && this.device.paired) {
+    close: function (notification, notificationId) {
+        if (!this._freeze) {
             let packet = new Protocol.Packet();
-            return [];
+            packet.type = "kdeconnect.notification.request";
+            packet.body = { cancel: notificationId };
+            
+            this.device._channel.send(packet);
         }
+    },
+    
+    // TODO: ???
+    reply: function () {
+    },
+    
+    // TODO: request notifications
+    update: function () {
+    },
+    
+    destroy: function () {
+        this._freeze = true;
+        
+        for (let note of this._notifications.values()) {
+            note.close();
+        }
+    
+        PluginBase.prototype.destroy.call(this);
     }
 });
 
@@ -317,9 +347,7 @@ var PingPlugin = new Lang.Class({
     },
     
     _init: function (device) {
-        this.parent(device);
-        
-        this.export_interface("ping");
+        this.parent(device, "ping");
     },
     
     get incomingPackets() {
@@ -336,6 +364,7 @@ var PingPlugin = new Lang.Class({
         log("IMPLEMENT: " + packet.toString());
     },
     
+    // TODO: support pings with messages
     ping: function () {
         if (this.device.connected && this.device.paired) {
             let packet = new Protocol.Packet();
@@ -349,7 +378,9 @@ var PingPlugin = new Lang.Class({
 
 /**
  * RunCommand Plugin
- * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/ping
+ * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/remotecommand
+ *
+ * TODO: some new stuff was added to git
  */
 var RunCommandPlugin = new Lang.Class({
     Name: "GSConnectRunCommandPlugin",
@@ -361,9 +392,8 @@ var RunCommandPlugin = new Lang.Class({
     },
     
     _init: function (device) {
-        this.parent(device);
-        
-        this.export_interface("ping");
+        this.parent(device, "remotecommand");
+        //GLib.uuid_string_random();
     },
     
     get incomingPackets() {
@@ -408,9 +438,7 @@ var SharePlugin = new Lang.Class({
     MAX_PORT: 1764,
     
     _init: function (device) {
-        this.parent(device);
-        
-        this.export_interface("share");
+        this.parent(device, "share");
     },
     
     get incomingPackets() {
@@ -422,12 +450,10 @@ var SharePlugin = new Lang.Class({
     },
     
     handle_packet: function (packet) {
-        // TODO: error checking, filename suggestions, stream closing
-        //       channel/file closing, signals... :(
+        // TODO: error checking, re-test
         if (packet.body.hasOwnProperty("filename")) {
-            let path = "/home/andrew/Downloads/" + packet.body.filename;
-            
-            let file = Gio.File.new_for_path(path);
+            let filepath = this.get_filepath(packet.body.filename);
+            let file = Gio.File.new_for_path(filepath);
             let addr = new Gio.InetSocketAddress({
                 address: Gio.InetAddress.new_from_string(
                     this.device.identity.body.tcpHost
@@ -444,11 +470,38 @@ var SharePlugin = new Lang.Class({
             
             channel.open();
         } else if (packet.body.hasOwnProperty("text")) {
-        log("IMPLEMENT: " + packet.toString());
+            log("IMPLEMENT: " + packet.toString());
             log("receiving text: '" + packet.body.text + "'");
         } else if (packet.body.hasOwnProperty("url")) {
             Gio.AppInfo.launch_default_for_uri(packet.body.url, null);
         }
+    },
+    
+    get_filepath: function (filename) {
+            let path = this.settings.download_directory
+            
+            if (this.settings.download_subdirs) {
+                path = GLib.build_pathv("/", [
+                    this.settings.download_directory,
+                    this.device.id
+                ]);
+            }
+            
+            if (!GLib.file_test(path, GLib.FileTest.IS_DIR)) {
+                GLib.mkdir_with_parents(path, 493);
+            }
+            
+            path = GLib.build_filenamev([path, filename]);
+            
+            let filepath = path.toString();
+            let copyNum = 0;
+            
+            while (GLib.file_test(filepath, GLib.FileTest.EXISTS)) {
+                copyNum += 1;
+                filepath = path + " (" + copyNum + ")";
+            }
+            
+            return filepath;
     },
     
     share: function (uri) {
@@ -457,7 +510,6 @@ var SharePlugin = new Lang.Class({
             packet.type = "kdeconnect.share.request";
             
             if (uri.startsWith("file://")) {
-            
                 let file = Gio.File.new_for_uri(uri);
                 let info = file.query_info("standard::size", 0, null);
                 
@@ -501,8 +553,6 @@ var TelephonyPlugin = new Lang.Class({
             param_types: [
                 GObject.TYPE_STRING,    // phoneNumber
                 GObject.TYPE_STRING,    // contactName
-                GObject.TYPE_STRING,    // messageBody
-                GObject.TYPE_STRING     // phoneThumbnail
             ]
         },
         "ringing": {
@@ -510,8 +560,6 @@ var TelephonyPlugin = new Lang.Class({
             param_types: [
                 GObject.TYPE_STRING,    // phoneNumber
                 GObject.TYPE_STRING,    // contactName
-                GObject.TYPE_STRING,    // messageBody
-                GObject.TYPE_STRING     // phoneThumbnail
             ]
         },
         "sms": {
@@ -528,16 +576,12 @@ var TelephonyPlugin = new Lang.Class({
             param_types: [
                 GObject.TYPE_STRING,    // phoneNumber
                 GObject.TYPE_STRING,    // contactName
-                GObject.TYPE_STRING,    // messageBody
-                GObject.TYPE_STRING     // phoneThumbnail
             ]
         }
     },
     
     _init: function (device) {
-        this.parent(device);
-        
-        this.export_interface("telephony");
+        this.parent(device, "telephony");
     },
     
     get incomingPackets() {
@@ -556,22 +600,76 @@ var TelephonyPlugin = new Lang.Class({
         //    * "contactName"       Always present? (may be empty)
         //    * "messageBody"       SMS only?
         //    * "phoneThumbnail"    base64 ByteArray/Pixmap (may be empty)
-        //    * "isCancel"          If set to true, the package should be ignored
+        //    * "isCancel"          If true the packet should be ignored
+        
+        let sender, note;
+        
+         // FIXME: not sure what to do here...
+//        if (!packet.body.phoneNumber.length) {
+//            packet.body.phoneNumber = _("Unknown Number");
+//        }
+//        
+//        if (packet.body.contactName === "") {
+//            packet.body.contactName = _("Unknown Contact");
+//        }
+                
+        if (packet.body.contactName.length) {
+            sender = packet.body.contactName;
+        } else {
+            sender = packet.body.phoneNumber;
+        }
+        
+        // Event handling
         if (packet.body.hasOwnProperty("isCancel") && packet.body.isCancel) {
             return;
         } else if (packet.body.event === "missedCall") {
-            log("IMPLEMENT: missedCall" + packet.toString());
-        } else if (packet.body.event === "ringing") {
-            log("IMPLEMENT: ringing: " + packet.toString());
-            // It's possible to reply with a "mute" packet
-            //this.mute();
-        } else if (packet.body.event === "sms") {
-            log("SMS Received:");
-            log("    phoneNumber => " + packet.body.phoneNumber);
-            log("    messageBody => " + packet.body.messageBody);
-            log("    contactName => " + packet.body.contactName);
-            log("    phoneThumbnail => " + packet.body.phoneThumbnail);
+            this._dbus.emit_signal("missedCall",
+                new GLib.Variant(
+                    "(ss)",
+                    [packet.body.phoneNumber,
+                    packet.body.contactName]
+                )
+            );
             
+            if (this.settings.notify_missedCall) {
+                note = new Notify.Notification({
+                    app_name: "GSConnect",
+                    id: packet.id / 1000,
+                    summary: _("%s - Missed Call").format(this.device.name),
+                    body: _("Missed call from %s").format(sender),
+                    icon_name: "call-missed-symbolic"
+                });
+                
+                note.show();
+            }
+        } else if (packet.body.event === "ringing") {
+            this._dbus.emit_signal("ringing",
+                new GLib.Variant(
+                    "(ss)",
+                    [packet.body.phoneNumber,
+                    packet.body.contactName]
+                )
+            );
+            
+            if (this.settings.notify_ringing) {
+                let note = new Notify.Notification({
+                    app_name: "GSConnect",
+                    id: packet.id / 1000,
+                    summary: _("%s Ringing").format(this.device.name),
+                    body: _("Incoming call from %s").format(sender),
+                    icon_name: "call-start-symbolic"
+                });
+                
+                note.add_action(
+                    "notify_sms",
+                    _("Mute"),
+                    Lang.bind(this, this.mute)
+                );
+                
+                note.show();
+            }
+        // TODO: not really complete
+        } else if (packet.body.event === "sms") {
             this._dbus.emit_signal("sms",
                 new GLib.Variant(
                     "(ssss)",
@@ -582,8 +680,57 @@ var TelephonyPlugin = new Lang.Class({
                 )
             );
             
+            // FIXME: check for open window
+            //        urgency
+            //        block matching notification somehow?
+            if (this.settings.autoreply_sms) {
+                this.reply(null, "autoreply_sms", packet.body);
+            } else if (this.settings.notify_sms) {
+                let sender;
+                
+                if (packet.body.contactName !== "") {
+                    sender = packet.body.contactName;
+                } else {
+                    sender = packet.body.phoneNumber;
+                }
+            
+                let note = new Notify.Notification({
+                    app_name: "GSConnect",
+                    id: packet.id / 1000,
+                    summary: sender,
+                    body: packet.body.messageBody,
+                    icon_name: "phone-symbolic"
+                });
+                
+                note.add_action(
+                    "notify_sms", // action char
+                    _("Reply"), // label
+                    Lang.bind(this, this.reply, packet.body)
+                );
+                
+                note.show();
+            }
+            
         } else if (packet.body.event === "talking") {
-            log("IMPLEMENT: talking: " + packet.toString());
+            this._dbus.emit_signal("talking",
+                new GLib.Variant(
+                    "(ss)",
+                    [packet.body.phoneNumber,
+                    packet.body.contactName]
+                )
+            );
+            
+            if (this.settings.notify_talking) {
+                note = new Notify.Notification({
+                    app_name: "GSConnect",
+                    id: packet.id / 1000,
+                    summary: _("%s - Talking").format(this.device.name),
+                    body: _("Call in progress with %s").format(sender),
+                    icon_name: "call-start-symbolic"
+                });
+                
+                note.show();
+            }
         } else {
             log("Unknown telephony event: " + packet.body.event);
         }
@@ -597,6 +744,13 @@ var TelephonyPlugin = new Lang.Class({
             packet.body = { action: "mute" };
             this.device._channel.send(packet);
         }
+    },
+    
+    reply: function (notification, action, user_data) {
+        log("TelephonyPlugin._open_sms()");
+        GLib.spawn_command_line_async(
+            "gjs " + Me.path + "/sms.js --device=" + this.device.id
+        );
     },
     
     sms: function (phoneNumber, messageBody) {
@@ -617,50 +771,52 @@ var TelephonyPlugin = new Lang.Class({
 
 
 /**
- * Plugin handlers, mapped to incoming packet types (remote outgoingCapabilities)
+ * Plugin handlers, mapped to plugin names with default settings
+ *
+ * FIXME: this stuff should all be programmatic like KDE Connect
  */
 var PluginInfo = new Map([
     ["battery", {
         handler: BatteryPlugin,
-        summary: _("Battery"),
-        description: _("Monitor battery level and charging state"),
-        settings: false
+        settings: {
+            threshold_notification: true,
+            threshold_level: -2
+        }
     }],
     ["findmyphone", {
-        handler: FindMyPhonePlugin,
-        summary: _("Find My Phone"),
-        description: _("Locate device by ringing"),
-        settings: false
+        handler: FindMyPhonePlugin
     }],
     ["notifications", {
         handler: NotificationsPlugin,
-        summary: _("Receive Notifications"),
-        description: _("Receive notifications from other devices"),
-        settings: true
+        settings: {}
     }],
     ["ping", {
-        handler: PingPlugin,
-        summary: _("Ping"),
-        description: _("Send and receive pings"),
-        settings: false
+        handler: PingPlugin
     }],
     ["runcommand", {
         handler: RunCommandPlugin,
-        summary: _("Run Commands"),
-        description: _("Run local commands from remote devices"),
-        settings: true
+        settings: {
+            commands: {}
+        }
     }],
     ["share", {
         handler: SharePlugin,
-        summary: _("Share"),
-        description: _("Send and receive files and URLs"),
-        settings: true
+        settings: {
+            download_directory: GLib.get_user_special_dir(
+                GLib.UserDirectory.DIRECTORY_DOWNLOAD
+            ),
+            download_subdirs: false
+        }
     }],
     ["telephony", {
         handler: TelephonyPlugin,
-        summary: _("Telephony"),
-        description: _("Send and receive SMS and be notified of phone calls"),
-        settings: false
+        settings: {
+            notify_missedCall: true,
+            notify_ringing: true,
+            notify_sms: true,
+            autoreply_sms: false,
+            notify_talking: true
+        }
     }]
 ]);
 

@@ -49,7 +49,7 @@ function startSettings() {
 
 
 var ProxyBase = new Lang.Class({
-    Name: "ProxyBase",
+    Name: "GSConnectProxyBase",
     Extends: Gio.DBusProxy,
     Signals: {
         "received": {
@@ -153,7 +153,7 @@ var ProxyBase = new Lang.Class({
 
 /** A base class for backend Battery implementations */
 var Battery = new Lang.Class({
-    Name: "Battery",
+    Name: "GSConnectBatteryProxy",
     Extends: ProxyBase,
     Properties: {
         "charging": GObject.ParamSpec.boolean(
@@ -200,7 +200,7 @@ var Battery = new Lang.Class({
 
 /** A base class for backend Telephony implementations */
 var Telephony = new Lang.Class({
-    Name: "Telephony",
+    Name: "GSConnectTelephonyProxy",
     Extends: ProxyBase,
     Signals: {
         "missedCall": {
@@ -257,16 +257,12 @@ var Telephony = new Lang.Class({
             if (name === "missedCall") {
                 this.emit("missedCall",
                     parameters[0],
-                    parameters[1],
-                    parameters[2],
-                    parameters[3]
+                    parameters[1]
                 );
             } else if (name === "ringing") {
                 this.emit("ringing",
                     parameters[0],
-                    parameters[1],
-                    parameters[2],
-                    parameters[3]
+                    parameters[1]
                 );
             } else if (name === "sms") {
                 this.emit("sms",
@@ -298,7 +294,7 @@ var Telephony = new Lang.Class({
 
 /** A base class for backend Device implementations */
 var Device = new Lang.Class({
-    Name: "Device",
+    Name: "GSConnectDeviceProxy",
     Extends: ProxyBase,
     Properties: {
         "id": GObject.ParamSpec.string(
@@ -394,10 +390,11 @@ var Device = new Lang.Class({
     get name () { return this._get("name"); },
     get connected () { return this._get("connected") === true; },
     get paired () { return this._get("paired") === true; },
+    // FIXME: returns null sometimes?
     get plugins () {
         let plugins = this._get("plugins");
         return (plugins !== null) ? plugins : [];
-    }, // TODO: returns null sometimes?
+    },
     get type () { return this._get("type"); },
     
     // Methods
@@ -408,14 +405,24 @@ var Device = new Lang.Class({
     sms: function (number, message) {
         this.telephony._call("sms", true, number, message);
     },
-    shareURI: function (uri) { this.findmyphone._call("share", true, uri); },
+    shareURI: function (uri) { this.share._call("share", true, uri); },
     unpair: function () { this._call("unpair", true); },
+    enablePlugin: function (name) {
+        return this._call("enablePlugin", false, name);
+    },
+    disablePlugin: function (name) {
+        return this._call("disablePlugin", false, name);
+    },
+    configurePlugin: function (name, obj) {
+        return this._call("configurePlugin", false, name, JSON.stringify(obj));
+    },
     
     //
     _reloadPlugins: function () {
         if (this.plugins.indexOf("battery") > -1 && this.paired) {
             this.battery = new Battery(this.gObjectPath);
             
+            // FIXME: JS ERROR: TypeError: this.battery is undefined
             this.battery.connect("notify", (battery) => {
                 this.emit("changed::battery",
                     new GLib.Variant(
@@ -496,7 +503,7 @@ var Device = new Lang.Class({
 
 // A DBus Interface wrapper for a device manager
 var DeviceManager = new Lang.Class({
-    Name: "DeviceManager",
+    Name: "GSConnectDeviceManagerProxy",
     Extends: ProxyBase,
     Properties: {
         "name": GObject.ParamSpec.string(

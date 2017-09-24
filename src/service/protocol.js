@@ -247,7 +247,7 @@ var LanChannel = new Lang.Class({
      */
     _transferRead: function () {
         log("LanChannel._transferRead()");
-        this.srcStream.read_bytes_async(
+        this._in.read_bytes_async(
             4096,
             GLib.PRIORITY_DEFAULT,
             null,
@@ -270,13 +270,12 @@ var LanChannel = new Lang.Class({
     
     _transferWrite: function (bytes) {
         log("LanChannel._transferWrite()");
-        this.destStream.write_bytes_async(
+        this._out.write_bytes_async(
             bytes,
             GLib.PRIORITY_DEFAULT,
             null,
             (source, res) => {
                 this.bytesWritten += source.write_bytes_finish(res);
-                log("bytes written: " + this.bytesWritten);
                 this._transferRead();
             }
         );
@@ -305,6 +304,7 @@ var LanChannel = new Lang.Class({
         } catch (e) {
             log("Error connecting: " + e);
             this.close();
+            return false;
         }
         
         this.emit("connected");
@@ -391,7 +391,6 @@ var LanChannel = new Lang.Class({
         //       encrypted packets?
         packet = new Packet(data.toString());
         this.emit("received", packet);
-        
         return true;
     },
     
@@ -416,7 +415,7 @@ var LanDownloadChannel = new Lang.Class({
     _init: function (device, addr, destStream, size) {
         this.parent(device, addr);
         
-        this.destStream = destStream;
+        this._out = destStream;
         this.bytesWritten = 0;
         this.size = size;
     },
@@ -429,10 +428,11 @@ var LanDownloadChannel = new Lang.Class({
             this._connection = client.connect_finish(res);
             this._initSocket();
             this._initTls(true);
-            this.srcStream = this._connection.get_input_stream();
+            this._in = this._connection.get_input_stream();
         } catch (e) {
             log("Error connecting: " + e);
             this.close();
+            return false;
         }
         
         this.emit("connected");
@@ -451,7 +451,7 @@ var LanUploadChannel = new Lang.Class({
     _init: function (device, addr, srcStream, size) {
         this.parent(device, addr);
         
-        this.srcStream = srcStream;
+        this._in = srcStream;
         this.bytesWritten = 0;
         this.size = size;
     },
@@ -472,10 +472,11 @@ var LanUploadChannel = new Lang.Class({
             [this._connection, src] = this._listener.accept_finish(res);
             this._initSocket();
             this._initTls();
-            this.destStream = this._connection.get_output_stream();
+            this._out = this._connection.get_output_stream();
         } catch (e) {
             log("Error connecting: " + e);
             this.close();
+            return false;
         }
         
         this.emit("connected");

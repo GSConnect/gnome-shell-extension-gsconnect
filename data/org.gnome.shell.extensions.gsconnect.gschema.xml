@@ -49,11 +49,5 @@
       <summary>Persistent Discovery</summary>
       <description>Constantly probe the network for devices</description>
     </key>
-    <!-- TODO: probably won't need this -->
-    <key name="service-autostart" type="b">
-      <default>false</default>
-      <summary>Service Auto-Start</summary>
-      <description>Start the service automatically and restart if stopped</description>
-    </key>
   </schema>
 </schemalist>

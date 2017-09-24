@@ -3,7 +3,7 @@
 const Format = imports.format;
 const Lang = imports.lang;
 const System = imports.system;
-const Gettext = imports.gettext.domain('gnome-shell-extension-mconnect');
+const Gettext = imports.gettext.domain('org.gnome.shell.extensions.gsconnect');
 const _ = Gettext.gettext;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
@@ -20,18 +20,12 @@ function getPath() {
 
 imports.searchPath.push(getPath());
 
-const MConnect = imports.mconnect;
-const KDEConnect = imports.kdeconnect;
-const { initTranslations, Settings } = imports.lib;
+const Client = imports.client;
+const { initTranslations, Settings } = imports.common;
 
-var ServiceProvider = {
-    MCONNECT: 0,
-    KDECONNECT: 1
-};
 
 // Gettext
 initTranslations();
-String.prototype.format = Format.format;
 
 
 /** A simple FileChooserDialog for sharing files */
@@ -44,8 +38,7 @@ var ShareDialog = new Lang.Class({
             title: _("Send files to %s").format(name),
             action: Gtk.FileChooserAction.OPEN,
             select_multiple: true,
-            icon_name: "document-send",
-            modal: true
+            icon_name: "document-send"
         });
     
         this.add_button(_("Cancel"), Gtk.ResponseType.CANCEL);
@@ -58,11 +51,11 @@ var ShareDialog = new Lang.Class({
 
 var Application = new Lang.Class({
     Name: "Application",
-    Extends: Gio.Application,
+    Extends: Gtk.Application,
 
     _init: function() {
         this.parent({
-            application_id: 'org.gnome.shell.extensions.mconnect.share',
+            application_id: 'org.gnome.shell.extensions.gsconnect.share',
             flags: Gio.ApplicationFlags.FLAGS_NONE
         });
         
@@ -70,7 +63,7 @@ var Application = new Lang.Class({
 
         GLib.set_prgname(application_name);
         GLib.set_application_name(application_name);
-        Notify.init("gnome-shell-extension-mconnect");
+        Notify.init("org.gnome.shell.extensions.gsconnect");
         
         //
         this._cmd = null;
@@ -94,24 +87,6 @@ var Application = new Lang.Class({
             GLib.OptionArg.FILENAME_ARRAY,
             "Share a local (eg. file:///...) or remote uri with <device-id>",
             "<uri>"
-        );
-        
-        this.add_main_option(
-            "list-devices",
-            "l".charCodeAt(0),
-            GLib.OptionFlags.NONE,
-            GLib.OptionArg.NONE,
-            "List all devices",
-            null
-        );
-        
-        this.add_main_option(
-            "list-available",
-            "a".charCodeAt(0),
-            GLib.OptionFlags.NONE,
-            GLib.OptionArg.NONE,
-            "List available (paired and reachable) devices",
-            null
         );
         
         this.register(null);
@@ -150,43 +125,13 @@ var Application = new Lang.Class({
     vfunc_startup: function() {
         this.parent();
         
-        if (Settings.get_enum("service-provider") === ServiceProvider.MCONNECT) {
-            this.manager = new MConnect.DeviceManager();
-        } else {
-            this.manager = new KDEConnect.DeviceManager();
-        }
+        this.manager = new Client.DeviceManager();
     },
 
     vfunc_activate: function() {
-        if (this._cmd === "list-devices") {
-            this.manager.scan("list-devices");
-            GLib.usleep(2000000) // 2 seconds
-            this.manager.scan("list-devices");
-            
-            let status;
-            
-            for (let device of this.manager.devices.values()) {
-                if (device.reachable && device.trusted) {
-                    status = " (paired and reachable)";
-                } else if (device.reachable) {
-                    status = " (reachable)";
-                } else if (device.trusted) {
-                    status = " (paired)";
-                }
-                
-                print(device.name + ": " + device.id + status);
-            }
-        } else if (this._cmd === "list-available") {
-            for (let device of this.manager.devices.values()) {
-                if (device.reachable && device.trusted) {
-                    print(device.name + ": " + device.id);
-                }
-            }
-        } else if (this._cmd === "share" && this._id) {
+        if (this._cmd === "share" && this._id) {
             this.share();
         } else if (this._id) {
-            Gtk.init(null);
-            
             let name;
             
             for (device of this.manager.devices.values()) {
@@ -221,11 +166,7 @@ var Application = new Lang.Class({
             this._id = options.lookup_value("device", null).deep_unpack();
         }
         
-        if (options.contains("list-devices")) {
-            this._cmd = "list-devices";
-        } else if (options.contains("list-available")) {
-            this._cmd = "list-available";
-        } else if (options.contains("share")) {
+        if (options.contains("share")) {
             this._cmd = "share";
             this._uris = options.lookup_value("share", null).deep_unpack();
         }

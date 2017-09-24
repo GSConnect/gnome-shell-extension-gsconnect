@@ -2,7 +2,7 @@
 
 const Lang = imports.lang;
 const Mainloop = imports.mainloop;
-const Gettext = imports.gettext.domain('gnome-shell-extension-gsconnect');
+const Gettext = imports.gettext.domain("org.gnome.shell.extensions.gsconnect");
 const _ = Gettext.gettext;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
@@ -11,353 +11,15 @@ const Gtk = imports.gi.Gtk;
 
 // Local Imports
 const Me = imports.misc.extensionUtils.getCurrentExtension();
+const GSettingsWidget = Me.imports.gsettingsWidget;
 const Client = Me.imports.client;
-const Plugin = Me.imports.service.plugin;
-const { initTranslations, Settings, Schema } = Me.imports.common;
-
-
-/** A Gtk.Switch subclass for boolean GSettings. */
-var BoolSetting = new Lang.Class({
-    Name: "BoolSetting",
-    Extends: Gtk.Switch,
-    
-    _init: function (setting) {
-        this.parent({
-            visible: true,
-            can_focus: true,
-            halign: Gtk.Align.END,
-            valign: Gtk.Align.CENTER
-        });
-    
-        Settings.bind(setting, this, "active", Gio.SettingsBindFlags.DEFAULT);
-    }
-});
-
-/** A Gtk.ComboBoxText subclass for GSetting choices and enumerations */
-var EnumSetting = new Lang.Class({
-    Name: "EnumSetting",
-    Extends: Gtk.ComboBoxText,
-    
-    _init: function (setting) {
-        this.parent({
-            visible: true,
-            can_focus: true,
-            width_request: 160,
-            halign: Gtk.Align.END,
-            valign: Gtk.Align.CENTER,
-            expand: true
-        });
-        
-        let key = Schema.get_key(setting);
-        let enums = key.get_range().deep_unpack()[1].deep_unpack();
-        
-        enums.forEach((enum_nick) => {
-            this.append(enum_nick, _(enum_nick)); // TODO: better
-        });
-        
-        this.active_id = Settings.get_string(setting);
-        
-        this.connect("changed", (widget) => {
-            Settings.set_string(setting, widget.get_active_id());
-        });
-    }
-});
-
-/** A Gtk.MenuButton subclass for GSetting flags */
-var FlagsSetting = new Lang.Class({
-    Name: "FlagsSetting",
-    Extends: Gtk.MenuButton,
-    
-    _init: function (setting, params={}) {
-        if (!params.icon) {
-            params.icon = Gtk.Image.new_from_icon_name(
-                "checkbox-checked-symbolic",
-                Gtk.IconSize.BUTTON
-            );
-        }
-        
-        this.parent({
-            image: params.icon,
-            visible: true,
-            can_focus: true,
-            halign: Gtk.Align.END,
-            valign: Gtk.Align.CENTER,
-            popover: new Gtk.Popover()
-        });
-        this.get_style_context().add_class("circular");
-        
-        this.box = new Gtk.Box({
-            orientation: Gtk.Orientation.VERTICAL,
-            visible: true,
-            margin: 8
-        });
-        this.popover.add(this.box);
-        
-        let flag;
-        let key = Schema.get_key(setting);
-        let flags = key.get_range().deep_unpack()[1].deep_unpack();
-        let old_flags = Settings.get_value(setting).deep_unpack();
-        
-        flags.forEach((flagNick) => {
-            flag = new Gtk.CheckButton({
-                label: _(flagNick),
-                visible: true,
-                active: (old_flags.indexOf(flagNick) > -1)
-            });
-            
-            flag.connect("toggled", (button) => {
-                let new_flags = Settings.get_value(setting).deep_unpack();
-                
-                if (button.active) {
-                    new_flags.push(flagNick);
-                } else {
-                    new_flags.splice(new_flags.indexOf(flagNick), 1);
-                }
-                
-                Settings.set_value(setting, new GLib.Variant("as", new_flags));
-            });
-            
-            this.box.add(flag);
-        });
-    }
-});
-
-/** A Gtk.Button/Popover subclass for GSetting nullable booleans (maybe) */
-var MaybeSetting = new Lang.Class({
-    Name: "MaybeSetting",
-    Extends: Gtk.Button,
-    
-    _init: function (setting) {
-        this.parent({
-            visible: true,
-            can_focus: true,
-            width_request: 120,
-            halign: Gtk.Align.END,
-            valign: Gtk.Align.CENTER,
-            margin_right: 12
-        });
-        
-        this.popover = new Gtk.Popover({ relative_to: this });
-        
-        this.box = new Gtk.Box({
-            orientation: Gtk.Orientation.VERTICAL,
-            visible: true,
-            margin: 8
-        });
-        this.popover.add(this.box);
-        
-        let nothingButton = new Gtk.RadioButton({
-            label: _("Nothing"),
-            visible: true,
-            active: false
-        });
-        nothingButton.connect("toggled", (button) => {
-            if (button.active) {
-                Settings.set_value(setting, new GLib.Variant("mb", null));
-                this.label = button.label;
-            }
-        });
-        this.box.add(nothingButton);
-        
-        let trueButton = new Gtk.RadioButton({
-            label: _("True"),
-            visible: true
-        });
-        trueButton.join_group(nothingButton);
-        trueButton.connect("toggled", (button) => {
-            if (button.active) {
-                Settings.set_value(setting, new GLib.Variant("mb", true));
-                this.label = button.label;
-            }
-        });
-        this.box.add(trueButton);
-        
-        let falseButton = new Gtk.RadioButton({
-            label: _("False"),
-            visible: true
-        });
-        falseButton.join_group(nothingButton);
-        falseButton.connect("toggled", (button) => {
-            if (button.active) {
-                Settings.set_value(setting, new GLib.Variant("mb", false));
-                this.label = button.label;
-            }
-        });
-        this.box.add(falseButton);
-        
-        this.connect("clicked", () => { this.popover.show_all(); });
-        
-        let val = Settings.get_value(setting).deep_unpack();
-        
-        if (val === true) {
-            trueButton.active = true;
-            this.label = trueButton.label;
-        } else if (val === false) {
-            falseButton.active = true;
-            this.label = falseButton.label;
-        } else {
-            nothingButton.active = true;
-            this.label = nothingButton.label;
-        }
-    }
-});
-
-/** A Gtk.SpinButton subclass for unranged integer GSettings */
-var NumberSetting = new Lang.Class({
-    Name: "NumberSetting",
-    Extends: Gtk.SpinButton,
-    
-    _init: function (setting, type) {
-        this.parent({
-            climb_rate: 1.0,
-            digits: (type === "d") ? 2 : 0,
-            //snap_to_ticks: true,
-            input_purpose: Gtk.InputPurpose.NUMBER,
-            visible: true,
-            can_focus: true,
-            width_request: 160,
-            halign: Gtk.Align.END,
-            valign: Gtk.Align.CENTER
-        });
-        
-        let lower, upper;
-        
-        // FIXME: definitely not working
-        if (type === "y") {
-            [lower, upper] = [0, 255];
-        } else if (type === "q") {
-            [lower, upper] = [0, GLib.MAXUINT16];
-        } else if (type === "i" || type === "h") {
-            [lower, upper] = [GLib.MININT32, GLib.MAXINT32];
-        } else if (type === "u") {
-            [lower, upper] = [0, GLib.MAXUINT32];
-        } else if (type === "x") {
-            [lower, upper] = [GLib.MININT64, GLib.MAXINT64];
-        } else if (type === "t") {
-            [lower, upper] = [0, GLib.MAXUINT64];
-        // TODO: not sure this is working
-        } else if (type === "d") {
-            [lower, upper] = [2.3E-308, 1.7E+308];
-        } else if (type === "n") {
-            [lower, upper] = [GLib.MININT16, GLib.MAXINT16];
-        }
-    
-        this.adjustment = new Gtk.Adjustment({
-            lower: lower,
-            upper: upper,
-            step_increment: 1
-        });
-    
-        Settings.bind(
-            setting,
-            this.adjustment,
-            "value",
-            Gio.SettingsBindFlags.DEFAULT
-        );
-    }
-});
-
-/** A Gtk.Scale subclass for ranged integer GSettings */
-var RangeSetting = new Lang.Class({
-    Name: "RangeSetting",
-    Extends: Gtk.Scale,
-    
-    _init: function (setting) {
-        this.parent({
-            orientation: Gtk.Orientation.HORIZONTAL,
-            draw_value: false,
-            visible: true,
-            can_focus: true,
-            width_request: 160,
-            halign: Gtk.Align.END,
-            valign: Gtk.Align.CENTER,
-            expand: true
-        });
-        
-        let key = Schema.get_key(setting);
-        let range = key.get_range().deep_unpack()[1].deep_unpack();
-    
-        this.adjustment = new Gtk.Adjustment({
-            lower: range[0],
-            upper: range[1],
-            step_increment: 1
-        });
-    
-        Settings.bind(
-            setting,
-            this.adjustment,
-            "value",
-            Gio.SettingsBindFlags.DEFAULT
-        );
-    }
-});
-
-/** A Gtk.Entry subclass for string GSettings */
-var StringSetting = new Lang.Class({
-    Name: "StringSetting",
-    Extends: Gtk.Entry,
-    
-    _init: function (setting) {
-        this.parent({
-            text: Settings.get_string(setting),
-            visible: true,
-            can_focus: true,
-            width_request: 160,
-            halign: Gtk.Align.END,
-            valign: Gtk.Align.CENTER,
-            expand: true
-        });
-    
-        Settings.bind(setting, this, "text", Gio.SettingsBindFlags.DEFAULT);
-    }
-});
-
-/** A Gtk.Entry subclass for all other GSettings */
-var OtherSetting = new Lang.Class({
-    Name: "OtherSetting",
-    Extends: Gtk.Entry,
-    
-    _init: function (setting) {
-        this.parent({
-            text: Settings.get_value(setting).deep_unpack().toSource(),
-            visible: true,
-            can_focus: true,
-            width_request: 160,
-            halign: Gtk.Align.END,
-            valign: Gtk.Align.CENTER,
-            expand: true
-        });
-        
-        this._setting = setting;
-        this._type = Schema.get_key(setting).get_value_type().dup_string();
-
-        Settings.connect("changed::" + this._setting, () => {
-            this.text = Settings.get_value(setting).deep_unpack().toSource();
-        });
-        
-        this.connect("notify::text", (entry) => {
-            let styleContext = entry.get_style_context();
-            
-            try {
-                let variant = new GLib.Variant(entry._type, eval(entry.text));
-                Settings.set_value(entry._setting, variant);
-                
-                if (styleContext.has_class("error")) {
-                    styleContext.remove_class("error");
-                }
-            } catch (e) {
-                if (!styleContext.has_class("error")) {
-                    styleContext.add_class("error");
-                }
-            }
-        });
-    }
-});
+const Config = Me.imports.service.config;
+const { initTranslations, Resources, Settings, Schema } = Me.imports.common;
 
 
 /** Gtk.Button subclass for launching dialogs or external programs */
-var ButtonSetting = new Lang.Class({
-    Name: "ButtonSetting",
+var CallbackButton = new Lang.Class({
+    Name: "CallbackButton",
     Extends: Gtk.Button,
     
     _init: function (params={}) {
@@ -379,39 +41,6 @@ var ButtonSetting = new Lang.Class({
         
         this.get_style_context().add_class("circular");
         this.connect("clicked", params.callback);
-    }
-});
-
-
-/** Gtk.Button subclass for launching dialogs or external programs */
-var PluginSetting = new Lang.Class({
-    Name: "PluginSetting",
-    Extends: Gtk.Box,
-    
-    _init: function (device, plugin) {
-        this.parent({
-            orientation: Gtk.Orientation.HORIZONTAL,
-            spacing: 12
-        });
-        
-        this.device = device;
-        this.plugin = plugin;
-        this.pluginInfo = Plugin.PluginInfo.get(this.plugin);
-        
-        if (this.pluginInfo.settings) {
-            this.settingButton = new ButtonSetting({
-                icon_name: "open-menu-symbolic"
-            });
-            this.add(this.settingButton);
-        }
-        
-        this.enableSwitch = new Gtk.Switch({
-            visible: true,
-            can_focus: true,
-            halign: Gtk.Align.END,
-            valign: Gtk.Align.CENTER
-        });
-        this.add(this.enableSwitch);
     }
 });
 
@@ -571,7 +200,7 @@ var KeybindingWidget = new Lang.Class({
             let [success, iter] = this.extView.model.get_iter_from_string(path);
             
             if (success) {
-                let index = this.devView.model.get_value(iter, 0);
+                let index = this.extView.model.get_value(iter, 0);
                 this.extView.model.set(iter, [2, 3], [0, 0]);
                 this._extKeys[index] = "";
                 Settings.set_strv("extension-keybindings", this._extKeys);
@@ -631,11 +260,12 @@ var PrefsPage = new Lang.Class({
     Extends: Gtk.ScrolledWindow,
     
     _init: function (params={}) {
-        this.parent({
+        params = Object.assign({
             height_request: 400,
             can_focus: true,
             hscrollbar_policy: Gtk.PolicyType.NEVER
-        });
+        }, params);
+        this.parent(params);
         
         this.box = new Gtk.Box({
             visible: true,
@@ -773,34 +403,34 @@ var PrefsPage = new Lang.Class({
      * @widget is given which will have @setting passed to it's constructor.
      *
      * @param {Gtk.Frame} section - The section widget to attach to
-     * @param {String} setting - A short summary for the item
-     * @param {Gtk.Widget} widget - A short description for the item
+     * @param {String} keyName - The GSettings key name
+     * @param {Gtk.Widget} widget - An override widget
      * @return {Gtk.ListBoxRow} row - The new row
      */
-    add_setting: function (section, setting, widget) {
-        let key = Schema.get_key(setting);
+    add_setting: function (section, keyName, widget) {
+        let key = Schema.get_key(keyName);
         let range = key.get_range().deep_unpack()[0];
         let type = key.get_value_type().dup_string();
         type = (range !== "type") ? range : type;
         
         if (widget !== undefined) {
-            widget = new widget(setting);
+            widget = new widget(Settings, keyName);
         } else if (type === "b") {
-            widget = new BoolSetting(setting);
+            widget = new GSettingsWidget.BoolSetting(Settings, keyName);
         } else if (type === "enum") {
-            widget = new EnumSetting(setting);
+            widget = new GSettingsWidget.EnumSetting(Settings, keyName);
         } else if (type === "flags") {
-            widget = new FlagsSetting(setting);
+            widget = new GSettingsWidget.FlagsSetting(Settings, keyName);
         } else if (type === "mb") {
-            widget = new MaybeSetting(setting);
+            widget = new GSettingsWidget.MaybeSetting(Settings, keyName);
         } else if (type.length === 1 && "ynqiuxthd".indexOf(type) > -1) {
-            widget = new NumberSetting(setting, type);
+            widget = new GSettingsWidget.NumberSetting(Settings, keyName, type);
         } else if (type === "range") {
-            widget = new RangeSetting(setting);
+            widget = new GSettingsWidget.RangeSetting(Settings, keyName);
         } else if (type.length === 1 && "sog".indexOf(type) > -1) {
-            widget = new StringSetting(setting);
+            widget = new GSettingsWidget.StringSetting(Settings, keyName);
         } else {
-            widget = new OtherSetting(setting);
+            widget = new GSettingsWidget.OtherSetting(Settings, keyName);
         }
         
         return this.add_item(
@@ -811,6 +441,11 @@ var PrefsPage = new Lang.Class({
         );
     }
 });
+
+
+/**
+ * Plugin stuff FIXME: move to discrete file?
+ */
 
 
 var DevicesPage = new Lang.Class({
@@ -835,7 +470,13 @@ var DevicesPage = new Lang.Class({
         
         this.sidebar = new Gtk.ListBox();
         
-        this.attach(this.sidebar, 0, 0, 1, 1);
+        let sidebarScrolledWindow = new Gtk.ScrolledWindow({
+            can_focus: true,
+            hscrollbar_policy: Gtk.PolicyType.NEVER
+        });
+        sidebarScrolledWindow.add(this.sidebar);
+        
+        this.attach(sidebarScrolledWindow, 0, 0, 1, 1);
         this.attach(this.stack, 1, 0, 1, 1);
     },
     
@@ -859,7 +500,7 @@ var DevicesPage = new Lang.Class({
         });
         row.add(row.grid);
         
-        let icon = Gtk.Image.new_from_icon_name("phone", Gtk.IconSize.LARGE_TOOLBAR);
+        let icon = Gtk.Image.new_from_icon_name(device.type, Gtk.IconSize.LARGE_TOOLBAR);
         row.grid.attach(icon, 0, 0, 1, 2);
         let nameLabel = new Gtk.Label({ label: device.name });
         row.grid.attach(nameLabel, 1, 0, 1, 1);
@@ -873,13 +514,33 @@ var DevicesPage = new Lang.Class({
         });
         
         // Device Page
-        let page = new PrefsPage();
-        let pluginsSection = page.add_section(_("Plugins"));
+        let page = new DevicePage(device);
+        this.stack.add_titled(page, device.id, device.name);
         
-        for (let [pluginName, pluginInfo] of Plugin.PluginInfo.entries()) {
-            let pluginWidget = new PluginSetting(device, pluginName);
+        row.show_all();
+    }
+});
+
+
+var DevicePage = new Lang.Class({
+    Name: "DevicePage",
+    Extends: PrefsPage,
+    
+    _init: function (device, params={}) {
+        this.parent(params);
+        this.box.margin_left = 40;
+        this.box.margin_right = 40;
+        
+        this.device = device;
+        this._config = Config.read_device_config(device.id);
+        
+        // Plugins
+        let pluginsSection = this.add_section(_("Plugins"));
+        
+        for (let [pluginName, pluginInfo] of PluginMetadata.entries()) {
+            let pluginWidget = new PluginSetting(this, pluginName);
             
-            page.add_item(
+            this.add_item(
                 pluginsSection,
                 pluginInfo.summary,
                 pluginInfo.description,
@@ -887,14 +548,368 @@ var DevicesPage = new Lang.Class({
             );
         }
         
-        let keySection = page.add_section(_("Keyboard Shortcuts"));
+        // Keybdinings
+        // TODO: fix widget
+        let keySection = this.add_section(_("Keyboard Shortcuts"));
         
-        page.show_all();
-        this.stack.add_titled(page, device.id, device.name);
-        
-        row.show_all();
+        this.show_all();
+    },
+    
+    _refresh: function () {
+        this._config = Config.read_device_config(this.device.id);
     }
 });
+
+
+/** Gtk widget for plugin enabling/disabling */
+var PluginSetting = new Lang.Class({
+    Name: "PluginSetting",
+    Extends: Gtk.Box,
+    
+    _init: function (devicePage, pluginName) {
+        this.parent({
+            orientation: Gtk.Orientation.HORIZONTAL,
+            spacing: 12
+        });
+        
+        this._page = devicePage;
+        this._name = pluginName;
+        this._info = PluginMetadata.get(this._name);
+        this._freeze = false;
+        
+        if (this._info.hasOwnProperty("settings")) {
+            this.settingButton = new CallbackButton({
+                icon_name: "open-menu-symbolic",
+                callback: Lang.bind(this, this._show_settings)
+            });
+            this.add(this.settingButton);
+        }
+        
+        this.enableSwitch = new Gtk.Switch({
+            visible: true,
+            can_focus: true,
+            halign: Gtk.Align.END,
+            valign: Gtk.Align.CENTER
+        });
+        this.enableSwitch.connect("notify::active", Lang.bind(this, this._toggle));
+        this.add(this.enableSwitch);
+        
+        //
+        this._refresh();
+    },
+    
+    _refresh: function () {
+        this._freeze = true;
+        
+        this.enableSwitch.active = this._page._config.plugins[this._name].enabled;
+        
+        this._freeze = false;
+    },
+    
+    _toggle: function (widget) {
+        if (this._freeze) { return; }
+        
+        let success;
+        
+        if (this.enableSwitch.active) {
+            success = this._page.device.enablePlugin(this._name);
+        } else {
+            success = this._page.device.disablePlugin(this._name);
+        }
+        
+        if (!success) {
+            this._refresh();
+            return;
+        }
+        
+        this._page._refresh();
+    },
+    
+    _show_settings: function () {
+        let dialog = new this._info.settings(
+            this._page,
+            this._name,
+            this._info,
+            this.get_toplevel()
+        );
+        
+        if (dialog.run() === Gtk.ResponseType.APPLY) {
+            log("settings: " + JSON.stringify(dialog._settings));
+            this._apply_settings(dialog._settings);
+        }
+        
+        dialog.close();
+    },
+    
+    _apply_settings: function (obj) {
+        if (this._page.device.configurePlugin(this._name, obj)) {
+            this._page._refresh();
+        }
+    }
+});
+
+
+var PluginDialog = new Lang.Class({
+    Name: "PluginDialog",
+    Extends: Gtk.Dialog,
+    
+    _init: function (devicePage, pluginName, pluginInfo, win) {
+        this.parent({
+            title: _("FIXME pluginInfo"),
+            use_header_bar: true,
+            transient_for: win,
+            default_height: 200,
+            default_width: 200
+        });
+        
+        let headerBar = this.get_header_bar();
+        headerBar.title = pluginInfo.summary;
+        headerBar.subtitle = pluginInfo.description;
+        headerBar.show_close_button = false;
+        
+        this.add_button(_("Apply"), Gtk.ResponseType.APPLY);
+        this.add_button(_("Cancel"), Gtk.ResponseType.CANCEL);
+        
+        this._page = devicePage;
+        this._name = pluginName;
+        this._info = pluginInfo;
+        this._settings = {};
+        
+        this.content = new PrefsPage({
+            height_request: -1,
+            valign: Gtk.Align.FILL,
+            vexpand: true
+        });
+        this.content.box.margin_left = 40;
+        this.content.box.margin_right = 40;
+        this.get_content_area().add(this.content);
+    }
+});
+
+
+var BatteryPluginDialog = new Lang.Class({
+    Name: "BatteryPluginDialog",
+    Extends: PluginDialog,
+    
+    _init: function (devicePage, pluginName, pluginInfo, win) {
+        this.parent(devicePage, pluginName, pluginInfo, win);
+        
+        this.section = this.content.add_section(_("Receiving"));
+    }
+});
+
+
+var NotificationsPluginDialog = new Lang.Class({
+    Name: "NotificationsPluginDialog",
+    Extends: PluginDialog,
+    
+    _init: function (devicePage, pluginName, pluginInfo, win) {
+        this.parent(devicePage, pluginName, pluginInfo, win);
+        
+        this.section = this.content.add_section(_("Receiving"));
+    }
+});
+
+
+var RunCommandPluginDialog = new Lang.Class({
+    Name: "RunCommandPluginDialog",
+    Extends: PluginDialog,
+    
+    _init: function (devicePage, pluginName, pluginInfo, win) {
+        this.parent(devicePage, pluginName, pluginInfo, win);
+        
+        this.section = this.content.add_section(_("Receiving"));
+    }
+});
+
+
+var SharePluginDialog = new Lang.Class({
+    Name: "SharePluginDialog",
+    Extends: PluginDialog,
+    
+    _init: function (devicePage, pluginName, pluginInfo, win) {
+        this.parent(devicePage, pluginName, pluginInfo, win);
+        
+        let settings = this._page._config.plugins[this._name].settings;
+        let receivingSection = this.content.add_section(_("Receiving"));
+        
+        let fbutton = new Gtk.FileChooserButton({
+            action: Gtk.FileChooserAction.SELECT_FOLDER,
+            halign: Gtk.Align.END,
+            valign: Gtk.Align.CENTER
+        });
+        fbutton.set_current_folder(settings.download_directory);
+        fbutton.connect("current-folder-changed", (button) => {
+            this._settings.download_directory = fbutton.get_current_folder();
+        });
+        this.content.add_item(
+            receivingSection,
+            _("Download location"),
+            _("Choose a location to save received files"),
+            fbutton
+        );
+        
+        let subdirsSwitch = new Gtk.Switch({
+            visible: true,
+            can_focus: true,
+            halign: Gtk.Align.END,
+            valign: Gtk.Align.CENTER,
+            active: settings.download_subdirs
+        });
+        subdirsSwitch.connect("notify::active", (widget) => {
+            this._settings.download_subdirs = subdirsSwitch.active;
+        });
+        this.content.add_item(
+            receivingSection,
+            _("Subdirectories"),
+            _("Save files in device subdirectories"),
+            subdirsSwitch
+        );
+        
+        this.content.show_all();
+    }
+});
+
+
+var TelephonyPluginDialog = new Lang.Class({
+    Name: "TelephonyPluginDialog",
+    Extends: PluginDialog,
+    
+    _init: function (devicePage, pluginName, pluginInfo, win) {
+        this.parent(devicePage, pluginName, pluginInfo, win);
+        let settings = this._page._config.plugins[this._name].settings;
+        
+        // Phone Calls
+        let callsSection = this.content.add_section(_("Phone Calls"));
+        
+        let notifyMissedCallSwitch = new Gtk.Switch({
+            visible: true,
+            can_focus: true,
+            halign: Gtk.Align.END,
+            valign: Gtk.Align.CENTER,
+            active: settings.notify_missedCall
+        });
+        notifyMissedCallSwitch.connect("notify::active", (widget) => {
+            this._settings.notify_missedCall = notifyMissedCallSwitch.active;
+        });
+        this.content.add_item(
+            callsSection,
+            _("Missed call notification"),
+            _("Show a notification for missed calls"),
+            notifyMissedCallSwitch
+        );
+        
+        let notifyRingingSwitch = new Gtk.Switch({
+            visible: true,
+            can_focus: true,
+            halign: Gtk.Align.END,
+            valign: Gtk.Align.CENTER,
+            active: settings.notify_ringing
+        });
+        notifyRingingSwitch.connect("notify::active", (widget) => {
+            this._settings.notify_ringing = notifyRingingSwitch.active;
+        });
+        this.content.add_item(
+            callsSection,
+            _("Ringing notification"),
+            _("Show a notification when the phone is ringing"),
+            notifyRingingSwitch
+        );
+        
+        let notifyTalkingSwitch = new Gtk.Switch({
+            visible: true,
+            can_focus: true,
+            halign: Gtk.Align.END,
+            valign: Gtk.Align.CENTER,
+            active: settings.notify_talking
+        });
+        notifyTalkingSwitch.connect("notify::active", (widget) => {
+            this._settings.notify_talking = notifyTalkingSwitch.active;
+        });
+        this.content.add_item(
+            callsSection,
+            _("Talking notification"),
+            _("Show a notification when talking on the phone"),
+            notifyTalkingSwitch
+        );
+        
+        // SMS
+        let smsSection = this.content.add_section(_("SMS"));
+        
+        let notifySMSSwitch = new Gtk.Switch({
+            visible: true,
+            can_focus: true,
+            halign: Gtk.Align.END,
+            valign: Gtk.Align.CENTER,
+            active: settings.notify_sms
+        });
+        notifySMSSwitch.connect("notify::active", (widget) => {
+            this._settings.notify_sms = notifySMSSwitch.active;
+        });
+        this.content.add_item(
+            smsSection,
+            _("SMS notification"),
+            _("Show a notification when an SMS is received"),
+            notifySMSSwitch
+        );
+        
+        let autoreplySMSSwitch = new Gtk.Switch({
+            visible: true,
+            can_focus: true,
+            halign: Gtk.Align.END,
+            valign: Gtk.Align.CENTER,
+            active: settings.autoreply_sms
+        });
+        autoreplySMSSwitch.connect("notify::active", (widget) => {
+            this._settings.autoreply_sms = autoreplySMSSwitch.active;
+        });
+        this.content.add_item(
+            smsSection,
+            _("Autoreply to SMS"),
+            _("Open a new SMS window when an SMS is received"),
+            autoreplySMSSwitch
+        );
+        
+        this.content.show_all();
+    }
+});
+
+
+var PluginMetadata = new Map([
+    ["battery", {
+        summary: _("Battery"),
+        description: _("Monitor battery level and charging state"),
+        settings: BatteryPluginDialog
+    }],
+    ["findmyphone", {
+        summary: _("Find My Phone"),
+        description: _("Locate device by ringing")
+    }],
+    ["notifications", {
+        summary: _("Receive Notifications"),
+        description: _("Receive notifications from other devices"),
+        settings: NotificationsPluginDialog
+    }],
+    ["ping", {
+        summary: _("Ping"),
+        description: _("Send and receive pings")
+    }],
+    ["runcommand", {
+        summary: _("Run Commands"),
+        description: _("Run local commands from remote devices"),
+        settings: RunCommandPluginDialog
+    }],
+    ["share", {
+        summary: _("Share"),
+        description: _("Send and receive files and URLs"),
+        settings: SharePluginDialog
+    }],
+    ["telephony", {
+        summary: _("Telephony"),
+        description: _("Send and receive SMS and be notified of phone calls"),
+        settings: TelephonyPluginDialog
+    }]
+]);
 
 
 /** A GtkStack subclass with a pre-attached GtkStackSwitcher */
@@ -919,13 +934,11 @@ var PrefsWidget = new Lang.Class({
         this._build();
         
         // Watch for Service Provider
-        this._watchdog = Gio.bus_watch_name(
-            Gio.BusType.SESSION,
-            Client.BUS_NAME,
-            Gio.BusNameWatcherFlags.NONE,
-            Lang.bind(this, this._serviceAppeared),
-            Lang.bind(this, this._serviceVanished)
-        );
+        this.manager = new Client.DeviceManager();
+        
+        for (let device of this.manager.devices.values()) {
+            this.devicesWidget.add_device(device);
+        }
     },
     
     add_page: function (id, title) {
@@ -958,32 +971,16 @@ var PrefsWidget = new Lang.Class({
         this.devicesWidget = new DevicesPage();
         let devicesPage = this.add_titled(this.devicesWidget, "devices", _("Devices"));
         
-        // Advanced Page
+        // Service Page
+        let servicePage = this.add_page("service", _("Service"));
+        let serviceSection = servicePage.add_section(_("Service"));
+        servicePage.add_setting(serviceSection, "persistent-discovery");
+        
+        // About/Advanced
         let advancedPage = this.add_page("advanced", _("Advanced"));
-        
-        let serviceSection = advancedPage.add_section(_("Service"));
-            // FIXME FIXME FIXME
-    //    advancedPage.add_setting(serviceSection, "service-autostart");
-        advancedPage.add_setting(serviceSection, "persistent-discovery");
-        
         let develSection = advancedPage.add_section(_("Development"));
         advancedPage.add_setting(develSection, "debug");
-    },
-    
-    _serviceAppeared: function (conn, name, name_owner, cb_data) {
-        this.manager = new Client.DeviceManager();
-        
-        for (let device of this.manager.devices.values()) {
-            this.devicesWidget.add_device(device);
-        }
-    },
-    
-    _serviceVanished: function (conn, name, name_owner, cb_data) {
-        if (this.manager) {
-            this.manager.destroy();
-            this.manager = false;
-        }
-    },
+    }
 });
 
 

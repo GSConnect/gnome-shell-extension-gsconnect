@@ -1,8 +1,9 @@
 [Desktop Entry]
 Type=Application
 Name=GSConnect
-Exec=~/.local/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/daemon.js
+Exec=/bin/sh -c "gjs ~/.local/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/daemon.js"
 Terminal=false
+Hidden=true
 Icon=phone
 Categories=Network;
 DBusActivatable=true

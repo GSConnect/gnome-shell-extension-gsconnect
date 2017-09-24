@@ -22,6 +22,7 @@ extension_source = files(
   # non-standard files
   'src/client.js',
   'src/common.js',
+  'src/gsettingsWidget.js',
   'src/share.js',
   'src/sms.js',
   # non-GJS files
@@ -73,7 +74,7 @@ ext_metadata.set('VERSION', meson.project_version())
 ext_metadata.set('URL', URL)
 ext_metadata.set('SHELL_VERSION', '[ "' + '", "'.join(Shell) + '" ]')
 ext_metadata.set('GSCHEMA_ID', 'org.gnome.shell.extensions.' + ExtensionId)
-ext_metadata.set('GETTEXT_DOMAIN', meson.project_name())
+ext_metadata.set('GETTEXT_DOMAIN', 'org.gnome.shell.extensions.' + ExtensionId)
 
 metadata_json = configure_file(
   input: 'data/metadata.json.in',

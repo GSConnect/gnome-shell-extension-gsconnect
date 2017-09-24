@@ -20,6 +20,11 @@
       <arg name="pluginName" type="s" direction="in"/>
       <arg name="success" type="b" direction="out"/>
     </method>
+    <method name="configurePlugin">
+      <arg name="pluginName" type="s" direction="in"/>
+      <arg name="JSON" type="s" direction="in"/>
+      <arg name="success" type="b" direction="out"/>
+    </method>
     
     <signal name="pairRequest">
       <arg name="publicKey" type="s" direction="out"/>
@@ -74,14 +79,23 @@
       <arg name="messageBody" type="s" direction="in"/>
     </method>
     <!-- Signals -->
-    <signal name="missedCall"/>
-    <signal name="ringing"/>
+    <signal name="missedCall">
+      <arg name="phoneNumber" type="s"/>
+      <arg name="contactName" type="s"/>
+    </signal>
+    <signal name="ringing">
+      <arg name="phoneNumber" type="s"/>
+      <arg name="contactName" type="s"/>
+    </signal>
     <signal name="sms">
       <arg name="phoneNumber" type="s"/>
       <arg name="contactName" type="s"/>
       <arg name="messageBody" type="s"/>
       <arg name="phoneThumbnail" type="s"/>
     </signal>
-    <signal name="talking"/>
+    <signal name="talking">
+      <arg name="phoneNumber" type="s"/>
+      <arg name="contactName" type="s"/>
+    </signal>
   </interface>
 </node>

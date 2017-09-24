@@ -4,6 +4,7 @@
 */
 
 const Lang = imports.lang;
+const Format = imports.format
 const Gettext = imports.gettext;
 const Gio = imports.gi.Gio;
 
@@ -89,18 +90,21 @@ function debug(msg) {
     }
 }
 
+
 /**
  * Polyfills for older versions of GJS:
  *
  *     Object.assign()
  */
-if (typeof Object.assign != 'function') {
+String.prototype.format = Format.format;
+
+if (typeof Object.assign != "function") {
   // Must be writable: true, enumerable: false, configurable: true
   Object.defineProperty(Object, "assign", {
     value: function assign(target, varArgs) { // .length of function is 2
       'use strict';
       if (target == null) { // TypeError if undefined or null
-        throw new TypeError('Cannot convert undefined or null to object');
+        throw new TypeError("Cannot convert undefined or null to object");
       }
 
       var to = Object(target);
@@ -122,5 +126,27 @@ if (typeof Object.assign != 'function') {
     writable: true,
     configurable: true
   });
+}
+
+/** https://stackoverflow.com/a/37164538/1108697 */
+function isObject(item) {
+  return (item && typeof item === "object" && !Array.isArray(item));
+}
+
+function mergeDeep(target, source) {
+  let output = Object.assign({}, target);
+  if (isObject(target) && isObject(source)) {
+    Object.keys(source).forEach(key => {
+      if (isObject(source[key])) {
+        if (!(key in target))
+          Object.assign(output, { [key]: source[key] });
+        else
+          output[key] = mergeDeep(target[key], source[key]);
+      } else {
+        Object.assign(output, { [key]: source[key] });
+      }
+    });
+  }
+  return output;
 }
 
