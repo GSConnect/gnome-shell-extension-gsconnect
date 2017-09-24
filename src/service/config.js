@@ -14,7 +14,6 @@ function getPath() {
 imports.searchPath.push(getPath());
 
 const Common = imports.common;
-const Plugin = imports.service.plugin;
 
 
 var CONFIG_PATH = GLib.get_user_config_dir() + "/gnome-shell-extension-gsconnect";
@@ -70,6 +69,36 @@ function generate_encryption (force=false) {
 //            GLib.SpawnFlags.SEARCH_PATH, // flags,
 //            null // child_setup
 //        );
+    }
+};
+
+
+// FIXME
+function install_service_files (force=false) {
+    let svc_dir = GLib.get_user_data_dir() + "/dbus-1/services";
+    let svc_name = "/org.gnome.shell.extensions.gsconnect.daemon.service";
+    
+    if (!GLib.file_test(svc_dir + svc_name, GLib.FileTest.EXISTS)) {
+        GLib.mkdir_with_parents(svc_dir, 493);
+    
+        let svc_bytes = Common.Resources.lookup_data(
+            "/dbus" + svc_name, 0
+        ).unref_to_array().toString();
+        
+        GLib.file_set_contents(svc_dir + svc_name, svc_bytes);
+    }
+        
+    let app_dir = GLib.get_user_data_dir() + "/applications";
+    let app_name = "/org.gnome.shell.extensions.gsconnect.daemon.desktop";
+    
+    if (!GLib.file_test(app_dir + app_name, GLib.FileTest.EXISTS)) {
+        GLib.mkdir_with_parents(app_dir, 493);
+    
+        let app_bytes = Common.Resources.lookup_data(
+            "/dbus" + app_name, 0
+        ).unref_to_array().toString();
+        
+        GLib.file_set_contents(app_dir + app_name, app_bytes);
     }
 };
 
@@ -172,16 +201,15 @@ function read_device_config (deviceId) {
         }
     }
     
-    // Load default config
-    for (let [pluginName, pluginInfo] of Plugin.PluginInfo.entries()) {
+    // Load defaults and pdate config with (possibly new) settings
+    for (let [pluginName, pluginInfo] of PluginInfo.entries()) {
         default_config.plugins[pluginName] = { enabled: false };
         
         if (pluginInfo.hasOwnProperty("settings")) {
             default_config.plugins[pluginName].settings = pluginInfo.settings;
         }
     }
-        
-    // Update config with (possibly new) defaults
+    
     write_device_config(deviceId, Common.mergeDeep(default_config, config));
     
     return config;
@@ -205,10 +233,55 @@ function write_device_config (deviceId, config) {
 
 function init_config (daemon) {
     generate_encryption(false);
+    install_service_files(false);
     
     if (GLib.file_test(CONFIG_PATH + "/config.json", GLib.FileTest.EXISTS)) {
         read_daemon_config(daemon);
     } else {
     }
 };
+
+
+/**
+ * Plugin handlers, mapped to plugin names with default settings
+ *
+ * FIXME: this stuff should all be programmatic like KDE Connect
+ */
+var PluginInfo = new Map([
+    ["battery", {
+        settings: {
+            threshold_notification: true,
+            threshold_level: -2
+        }
+    }],
+    ["findmyphone", {
+    }],
+    ["notifications", {
+        settings: {}
+    }],
+    ["ping", {
+    }],
+    ["runcommand", {
+        settings: {
+            commands: {}
+        }
+    }],
+    ["share", {
+        settings: {
+            download_directory: GLib.get_user_special_dir(
+                GLib.UserDirectory.DIRECTORY_DOWNLOAD
+            ),
+            download_subdirs: false
+        }
+    }],
+    ["telephony", {
+        settings: {
+            notify_missedCall: true,
+            notify_ringing: true,
+            notify_sms: true,
+            autoreply_sms: false,
+            notify_talking: true
+        }
+    }]
+]);
 

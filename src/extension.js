@@ -729,14 +729,6 @@ var SystemIndicator = new Lang.Class({
             Lang.bind(this, this._serviceVanished)
         );
         
-        // FIXME FIXME FIXME
-        // Watch "service-autostart" setting
-        Settings.connect("changed::service-autostart", (settings, key) => {
-            if (Settings.get_boolean(key) && !this.manager) {
-                Client.startService();
-            }
-        });
-        
         // Keybindings
         this._extensionKeybindings();
         
@@ -811,13 +803,6 @@ var SystemIndicator = new Lang.Class({
         
         this.enableItem.actor.visible = !(this.manager);
         this.extensionIndicator.visible = (this.manager);
-        
-        // Start the service or wait for it to start
-        if (Settings.get_boolean("service-autostart")) {
-            Client.startService();
-        } else {
-            log("waiting for service");
-        }
     },
     
     _extensionKeybindings: function () {

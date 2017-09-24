@@ -13,7 +13,7 @@ UUID = ExtensionId + '@' + 'andyholmes.github.io'
 URL = 'https://github.com/andyholmes/gnome-shell-extension-gsconnect'
 Shell = [ '3.24', '3.26' ]
 
-# A list of files to be copied to the extension directory without modification.
+# Extension
 extension_source = files(
   # standard files
   'src/extension.js',
@@ -30,13 +30,24 @@ extension_source = files(
   'src/folks.py'
 )
 
+# Service
 service_source = files(
-  # service
   'src/service/config.js',
   'src/service/daemon.js',
   'src/service/device.js',
-  'src/service/plugin.js',
   'src/service/protocol.js'
+)
+
+# Plugins
+plugins_source = files(
+  'src/plugins/base.js',
+  'src/plugins/battery.js',
+  'src/plugins/findmyphone.js',
+  'src/plugins/notifications.js',
+  'src/plugins/ping.js',
+  'src/plugins/runcommand.js',
+  'src/plugins/share.js',
+  'src/plugins/telephony.js',
 )
 
 
@@ -61,6 +72,13 @@ install_data(
 install_data(
   service_source,
   install_dir: join_paths(extdatadir, 'service'),
+  install_mode: 'rw-r--r--'
+)
+
+# Plugins Source
+install_data(
+  plugins_source,
+  install_dir: join_paths(extdatadir, 'plugins'),
   install_mode: 'rw-r--r--'
 )
 

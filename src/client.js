@@ -207,18 +207,14 @@ var Telephony = new Lang.Class({
             flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED,
             param_types: [
                 GObject.TYPE_STRING,    // phoneNumber
-                GObject.TYPE_STRING,    // contactName
-                GObject.TYPE_STRING,    // messageBody
-                GObject.TYPE_STRING     // phoneThumbnail
+                GObject.TYPE_STRING     // contactName
             ]
         },
         "ringing": {
             flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED,
             param_types: [
                 GObject.TYPE_STRING,    // phoneNumber
-                GObject.TYPE_STRING,    // contactName
-                GObject.TYPE_STRING,    // messageBody
-                GObject.TYPE_STRING     // phoneThumbnail
+                GObject.TYPE_STRING    // contactName
             ]
         },
         "sms": {
@@ -234,9 +230,7 @@ var Telephony = new Lang.Class({
             flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED,
             param_types: [
                 GObject.TYPE_STRING,    // phoneNumber
-                GObject.TYPE_STRING,    // contactName
-                GObject.TYPE_STRING,    // messageBody
-                GObject.TYPE_STRING     // phoneThumbnail
+                GObject.TYPE_STRING     // contactName
             ]
         }
     },
@@ -274,9 +268,7 @@ var Telephony = new Lang.Class({
             } else if (name === "talking") {
                 this.emit("talking",
                     parameters[0],
-                    parameters[1],
-                    parameters[2],
-                    parameters[3]
+                    parameters[1]
                 );
             }
         });

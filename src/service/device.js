@@ -17,9 +17,18 @@ function getPath() {
 imports.searchPath.push(getPath());
 
 const Config = imports.service.config;
-const Plugin = imports.service.plugin;
+//const Plugin = imports.service.plugin;
 const Protocol = imports.service.protocol;
 const { initTranslations, mergeDeep, DBusInfo, Settings } = imports.common;
+
+const PluginBase = imports.plugins.base;
+const Battery = imports.plugins.battery;
+const FindMyPhone = imports.plugins.findmyphone;
+const Notifications = imports.plugins.notifications;
+const Ping = imports.plugins.ping;
+const RunCommand = imports.plugins.runcommand;
+const Share = imports.plugins.share;
+const Telephony = imports.plugins.telephony;
 
 
 var Device = new Lang.Class({
@@ -293,13 +302,14 @@ var Device = new Lang.Class({
     enablePlugin: function (name, write=true) {
         log("Device.enablePlugin(" + name + ", " + write + ")");
     
-        if (Plugin.PluginInfo.has(name)) {
-            let info = Plugin.PluginInfo.get(name);
+        if (PacketHandlers.has(name)) {
+            let handler = PacketHandlers.get(name);
+            let info = handler.METADATA;
         
             // Running instance
             if (this.connected && !this._plugins.has(name)) {
                 // Enable
-                let plugin = new info.handler(this);
+                let plugin = new handler.Plugin(this);
                 
                 // Register packet handlers
                 for (let packetType of plugin.incomingPackets) {
@@ -330,7 +340,7 @@ var Device = new Lang.Class({
     disablePlugin: function (name, write=true) {
         log("Device.disablePlugin(" + name + ", " + write + ")");
         
-        if (Plugin.PluginInfo.has(name)) {
+        if (PacketHandlers.has(name)) {
             // Running instance
             if (this.connected && this._plugins.has(name)) {
                 let plugin = this._plugins.get(name);
@@ -366,8 +376,9 @@ var Device = new Lang.Class({
     configurePlugin: function (name, settings) {
         log("Device.configurePlugin(" + name + ", " + settings + ")");
         
-        if (Plugin.PluginInfo.has(name)) {
-            let info = Plugin.PluginInfo.get(name);
+        if (PacketHandlers.has(name)) {
+            let handler = PacketHandlers.get(name);
+            let info = handler.METADATA;
             
             try {
                 settings = JSON.parse(settings);
@@ -393,15 +404,17 @@ var Device = new Lang.Class({
         } else {
             return false;
         }
-    },
-    
-    // TODO: necessary?
-    reloadPlugins: function () {
-            
-        this._dbus.emit_property_changed(
-            "plugins",
-            new GLib.Variant("as", Array.from(this._plugins.keys()))
-        );
     }
 });
+
+
+var PacketHandlers = new Map([
+    ["battery", Battery],
+    ["findmyphone", FindMyPhone],
+    ["notifications", Notifications],
+    ["ping", Ping],
+    ["runcommand", RunCommand],
+    ["share", Share],
+    ["telephony", Telephony]
+]);
 
