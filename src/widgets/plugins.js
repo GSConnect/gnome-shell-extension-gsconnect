@@ -80,15 +80,12 @@ var PluginPage = new Lang.Class({
     },
     
     /**
-     * Add a new row to @section and return the row. @summary will be placed on
-     * top of @description (dimmed) on the left, @widget to the right of them. 
+     * Add and return new row with a Gtk.Grid child
      *
      * @param {Gtk.Frame} section - The section widget to attach to
-     * @param {String} summary - A short summary for the item
-     * @param {String} description - A short description for the item
      * @return {Gtk.ListBoxRow} row - The new row
      */
-    addOption: function (section, summary, description, widget) {
+    addRow: function (section) {
         // Row
         let row = new Gtk.ListBoxRow({
             visible: true,
@@ -110,6 +107,21 @@ var PluginPage = new Lang.Class({
             margin_right: 12
         });
         row.add(row.grid);
+        
+        return row;
+    },
+    
+    /**
+     * Add a new row to @section and return the row. @summary will be placed on
+     * top of @description (dimmed) on the left, @widget to the right of them. 
+     *
+     * @param {Gtk.Frame} section - The section widget to attach to
+     * @param {String} summary - A short summary for the item
+     * @param {String} description - A short description for the item
+     * @return {Gtk.ListBoxRow} row - The new row
+     */
+    addOption: function (section, summary, description, widget) {
+        let row = this.addRow(section);
         
         // Setting Summary
         let summaryLabel = new Gtk.Label({
@@ -226,9 +238,8 @@ var PluginSetting = new Lang.Class({
         );
         
         if (dialog.run() === Gtk.ResponseType.APPLY) {
-            if (this._page.device.configurePlugin(this._name, obj)) {
-                this._page._refresh();
-            }
+            this._page.device.configurePlugin(this._name, dialog._settings);
+            this._page._refresh();
         }
         
         dialog.close();
@@ -260,7 +271,7 @@ var PluginDialog = new Lang.Class({
         this._page = devicePage;
         this._name = pluginName;
         this._info = pluginInfo;
-        this._settings = {};
+        this._settings = this._page._config.plugins[this._name].settings;
         
         this.content = new PluginPage();
         this.content.box.margin_left = 40;
@@ -302,8 +313,7 @@ var RunCommandPluginDialog = new Lang.Class({
         this.parent(devicePage, pluginName, pluginInfo, win);
         
         let commandsSection = this.content.addSection(_("Commands"));
-        //GLib.uuid_string_random();
-        
+        // TreeView/Model
         this.treeview = new Gtk.TreeView({
             enable_grid_lines: true,
             headers_visible: true,
@@ -321,19 +331,21 @@ var RunCommandPluginDialog = new Lang.Class({
         ]);
         this.treeview.model = listStore;
         
-        // Description column.
-        let nameCell = new Gtk.CellRendererText({ editable: true });
+        // Name column.
+        this.nameCell = new Gtk.CellRendererText({ editable: true });
         let nameCol = new Gtk.TreeViewColumn({ expand: true, clickable: false });
-        nameCol.pack_start(nameCell, true);
-        nameCol.add_attribute(nameCell, "text", 1);
+        nameCol.pack_start(this.nameCell, true);
+        nameCol.add_attribute(this.nameCell, "text", 1);
         this.treeview.append_column(nameCol);
+        this.nameCell.connect("edited", Lang.bind(this, this._editName));
         
-        // Description column.
-        let cmdCell = new Gtk.CellRendererText({ editable: true });
+        // Command column.
+        this.cmdCell = new Gtk.CellRendererText({ editable: true });
         let cmdCol = new Gtk.TreeViewColumn({ expand: true, clickable: false });
-        cmdCol.pack_start(cmdCell, true);
-        cmdCol.add_attribute(cmdCell, "text", 2);
+        cmdCol.pack_start(this.cmdCell, true);
+        cmdCol.add_attribute(this.cmdCell, "text", 2);
         this.treeview.append_column(cmdCol);
+        this.cmdCell.connect("edited", Lang.bind(this, this._editCmd));
         
         this.content.addOption(
             commandsSection,
@@ -342,16 +354,18 @@ var RunCommandPluginDialog = new Lang.Class({
             new Gtk.Label({ label: "foo" })
         );
         
+        let commandRow = this.content.addRow(commandsSection);
+        
         let treeScroll = new Gtk.ScrolledWindow({
             height_request: 150,
             can_focus: true,
             hscrollbar_policy: Gtk.PolicyType.NEVER
         });
         treeScroll.add(this.treeview);
-        this.content.box.add(treeScroll);
+        commandRow.grid.attach(treeScroll, 0, 0, 1, 1);
         
         let buttonBox = new Gtk.ButtonBox();
-        this.content.box.add(buttonBox);
+        commandRow.grid.attach(buttonBox, 0, 1, 1, 1);
         
         let removeButton = new Gtk.Button({ label: _("Remove") });
         removeButton.connect("clicked", Lang.bind(this, this._remove));
@@ -367,7 +381,10 @@ var RunCommandPluginDialog = new Lang.Class({
     },
     
     _add: function (button, row) {
-        if (!row) { row = [GLib.uuid_string_random(), "foo", "bar"]; }
+        if (row === false) {
+            row = ["{" + GLib.uuid_string_random() + "}", _("New command"), ""];
+            this._settings.commands[row[0]] = { name: row[1], command: row[2]};
+        }
         
         this.treeview.model.set(this.treeview.model.append(), [0, 1, 2], row);
     },
@@ -376,17 +393,42 @@ var RunCommandPluginDialog = new Lang.Class({
         //
         let [has, model, iter] = this.treeview.get_selection().get_selected();
         
-        if (has) { this.treeview.model.remove(iter); }
+        if (has) {
+            let uuid = this.treeview.model.get_value(iter, 0);
+            delete this._settings.commands[uuid];
+            this.treeview.model.remove(iter);
+        }
+    },
+    
+    _editName: function (renderer, path, new_text, user_data) {
+        path = Gtk.TreePath.new_from_string(path);
+        let [success, iter] = this.treeview.model.get_iter(path);
+        
+        if (success) {
+            this.treeview.model.set_value(iter, 1, new_text);
+            let uuid = this.treeview.model.get_value(iter, 0);
+            this._settings.commands[uuid].name = new_text;
+        }
+    },
+    
+    _editCmd: function (renderer, path, new_text, user_data) {
+        path = Gtk.TreePath.new_from_string(path);
+        let [success, iter] = this.treeview.model.get_iter(path);
+        
+        if (success) {
+            this.treeview.model.set_value(iter, 2, new_text);
+            let uuid = this.treeview.model.get_value(iter, 0);
+            this._settings.commands[uuid].command = new_text;
+        }
     },
     
     _populate: function () {
-        let settings = this._page._config.plugins[this._name].settings;
-        
-        for (let uuid in settings.commands) {
-            this._add([
+        for (let uuid in this._settings.commands) {
+        log("settings: " + JSON.stringify(this._settings.commands[uuid]));
+            this._add(null, [
                 uuid,
-                settings.commands[uuid].name,
-                settings.commands[uuid].command
+                this._settings.commands[uuid].name,
+                this._settings.commands[uuid].command
             ]);
         }
     }
