@@ -15,16 +15,16 @@ const Notify = imports.gi.Notify;
 function getPath() {
     // Diced from: https://github.com/optimisme/gjs-examples/
     let m = new RegExp("@(.+):\\d+").exec((new Error()).stack.split("\n")[1]);
-    return Gio.File.new_for_path(m[1]).get_parent().get_parent().get_path();
+    let p = Gio.File.new_for_path(m[1]).get_parent().get_parent().get_parent();
+    return p.get_path();
 }
 
 imports.searchPath.push(getPath());
 
-const PluginsBase = imports.plugins.base;
-
+const { initTranslations, Me, DBusInfo, Settings } = imports.common;
 const Config = imports.service.config;
 const Protocol = imports.service.protocol;
-const { initTranslations, Me, DBusInfo, Settings } = imports.common;
+const PluginsBase = imports.service.plugins.base;
 
 
 var METADATA = {
@@ -81,14 +81,6 @@ var Plugin = new Lang.Class({
         }
     },
     
-    get incomingPackets() {
-        return ["kdeconnect.battery"];
-    },
-    
-    get outgoingPackets() {
-        return ["kdeconnect.battery.request"];
-    },
-    
     get charging() { return this._charging; },
     get level() { return this._level; },
     get threshold() { return this._threshold; },
@@ -140,18 +132,6 @@ var Plugin = new Lang.Class({
             
             this.device._channel.send(packet);
         }
-    }
-});
-
-
-var SettingsDialog = new Lang.Class({
-    Name: "BatterySettingsDialog",
-    Extends: PluginsBase.SettingsDialog,
-    
-    _init: function (devicePage, pluginName, pluginInfo, win) {
-        this.parent(devicePage, pluginName, pluginInfo, win);
-        
-        this.section = this.content.add_section(_("Receiving"));
     }
 });
 

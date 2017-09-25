@@ -59,8 +59,7 @@
   
   <!-- Ping -->
   <interface name="org.gnome.shell.extensions.gsconnect.runcommand">
-    <method name="runcommand"/>
-    <signal name="runcommand"/>
+    <method name="sendCommandList"/>
   </interface>
   
   <!-- Share -->

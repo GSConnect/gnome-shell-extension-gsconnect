@@ -15,70 +15,56 @@ const Notify = imports.gi.Notify;
 function getPath() {
     // Diced from: https://github.com/optimisme/gjs-examples/
     let m = new RegExp("@(.+):\\d+").exec((new Error()).stack.split("\n")[1]);
-    return Gio.File.new_for_path(m[1]).get_parent().get_parent().get_path();
+    let p = Gio.File.new_for_path(m[1]).get_parent().get_parent().get_parent();
+    return p.get_path();
 }
 
 imports.searchPath.push(getPath());
 
-const PluginsBase = imports.plugins.base;
-
+const { initTranslations, Me, DBusInfo, Settings } = imports.common;
 const Config = imports.service.config;
 const Protocol = imports.service.protocol;
-const { initTranslations, Me, DBusInfo, Settings } = imports.common;
+const PluginsBase = imports.service.plugins.base;
 
 
 var METADATA = {
-    name: "runcommand",
-    incomingPackets: ["kdeconnect.runcommand"],
-    outgoingPackets: ["kdeconnect.runcommand.request"],
-    settings: { commands: {} }
+    name: "ping",
+    incomingPackets: ["kdeconnect.ping"],
+    outgoingPackets: ["kdeconnect.ping"]
 };
 
 
 /**
- * RunCommand Plugin
- * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/remotecommand
- *
- * TODO: some new stuff was added to git
+ * Ping Plugin
+ * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/ping
  */
 var Plugin = new Lang.Class({
-    Name: "GSConnectRunCommandPlugin",
+    Name: "GSConnectPingPlugin",
     Extends: PluginsBase.Plugin,
     Signals: {
-        "runcommand": {
+        "ping": {
             flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED
         }
     },
     
     _init: function (device) {
-        this.parent(device, "remotecommand");
-        //GLib.uuid_string_random();
-        
-        if (METADATA.hasOwnProperty("settings")) {
-            this.settings = this.device.config.plugins[this.name].settings;
-        }
+        this.parent(device, "ping");
     },
     
-    get incomingPackets() {
-        return ["kdeconnect.runcommand.request"];
-    },
-    
-    get outgoingPackets() {
-        return ["kdeconnect.runcommand"];
-    },
-    
-    // TODO
+    // TODO: support pings with messages
     handle_packet: function (packet) {
-        this.emit("runcommand");
+        this.emit("ping");
         log("IMPLEMENT: " + packet.toString());
     },
     
-    runcommand: function () {
+    // TODO: support pings with messages
+    ping: function () {
         if (this.device.connected && this.device.paired) {
             let packet = new Protocol.Packet();
-            packet.type = "kdeconnect.runcommand";
+            packet.type = "kdeconnect.ping";
             
             this.device._channel.send(packet);
         }
     }
 });
+

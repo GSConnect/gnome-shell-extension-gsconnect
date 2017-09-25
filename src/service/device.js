@@ -17,18 +17,16 @@ function getPath() {
 imports.searchPath.push(getPath());
 
 const Config = imports.service.config;
-//const Plugin = imports.service.plugin;
 const Protocol = imports.service.protocol;
 const { initTranslations, mergeDeep, DBusInfo, Settings } = imports.common;
 
-const PluginBase = imports.plugins.base;
-const Battery = imports.plugins.battery;
-const FindMyPhone = imports.plugins.findmyphone;
-const Notifications = imports.plugins.notifications;
-const Ping = imports.plugins.ping;
-const RunCommand = imports.plugins.runcommand;
-const Share = imports.plugins.share;
-const Telephony = imports.plugins.telephony;
+const Battery = imports.service.plugins.battery;
+const FindMyPhone = imports.service.plugins.findmyphone;
+const Notifications = imports.service.plugins.notifications;
+const Ping = imports.service.plugins.ping;
+const RunCommand = imports.service.plugins.runcommand;
+const Share = imports.service.plugins.share;
+const Telephony = imports.service.plugins.telephony;
 
 
 var Device = new Lang.Class({
@@ -113,7 +111,7 @@ var Device = new Lang.Class({
         
         // Init config
         this.config_cert = Config.CONFIG_PATH + "/" + this.id + "/certificate.pem";
-        this._read_config();
+        this.config = Config.read_device_config(this.id);
         
         //
         this.activate();
@@ -156,7 +154,7 @@ var Device = new Lang.Class({
             log("Connected to: " + this.id);
             
             this._connected = true;
-            this._read_config();
+            this._load_plugins();
             
             this._dbus.emit_property_changed(
                 "connected",
@@ -172,6 +170,7 @@ var Device = new Lang.Class({
             }
             
             this._connected = false;
+            this._unload_plugins();
             
             this._dbus.emit_property_changed(
                 "connected",
@@ -288,14 +287,19 @@ var Device = new Lang.Class({
     /**
      * Plugin Capabilities
      */
-     // FIXME: check
-    _read_config: function () {
-        this.config = Config.read_device_config(this.id);
-        
+    // FIXME: check
+    _load_plugins: function () {
         for (let name in this.config.plugins) {
             if (this.config.plugins[name].enabled) {
                 this.enablePlugin(name, false);
             }
+        }
+    },
+    
+    // FIXME: check
+    _unload_plugins: function () {
+        for (let name in this.plugins) {
+            this.disablePlugin(name, false);
         }
     },
     
@@ -304,7 +308,6 @@ var Device = new Lang.Class({
     
         if (PacketHandlers.has(name)) {
             let handler = PacketHandlers.get(name);
-            let info = handler.METADATA;
         
             // Running instance
             if (this.connected && !this._plugins.has(name)) {
@@ -312,7 +315,7 @@ var Device = new Lang.Class({
                 let plugin = new handler.Plugin(this);
                 
                 // Register packet handlers
-                for (let packetType of plugin.incomingPackets) {
+                for (let packetType of handler.METADATA.incomingPackets) {
                     this._handlers.set(packetType, plugin);
                 }
                 
@@ -343,10 +346,11 @@ var Device = new Lang.Class({
         if (PacketHandlers.has(name)) {
             // Running instance
             if (this.connected && this._plugins.has(name)) {
+                let handler = PacketHandlers.get(name);
                 let plugin = this._plugins.get(name);
                 
                 // Unregister handlers
-                for (let packetType of plugin.incomingPackets) {
+                for (let packetType of handler.METADATA.incomingPackets) {
                     this._handlers.delete(packetType);
                 }
                 
@@ -378,13 +382,12 @@ var Device = new Lang.Class({
         
         if (PacketHandlers.has(name)) {
             let handler = PacketHandlers.get(name);
-            let info = handler.METADATA;
             
             try {
                 settings = JSON.parse(settings);
                 
                 for (let option in settings) {
-                    if (!info.settings.hasOwnProperty(option)) {
+                    if (!handler.METADATA.settings.hasOwnProperty(option)) {
                         throw Error("Unknown option: " + option);
                     }
                 }

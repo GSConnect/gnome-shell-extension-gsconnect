@@ -22,32 +22,11 @@ extension_source = files(
   # non-standard files
   'src/client.js',
   'src/common.js',
-  'src/gsettingsWidget.js',
   'src/share.js',
   'src/sms.js',
   # non-GJS files
   'src/nautilus-send-gsconnect.py',
   'src/folks.py'
-)
-
-# Service
-service_source = files(
-  'src/service/config.js',
-  'src/service/daemon.js',
-  'src/service/device.js',
-  'src/service/protocol.js'
-)
-
-# Plugins
-plugins_source = files(
-  'src/plugins/base.js',
-  'src/plugins/battery.js',
-  'src/plugins/findmyphone.js',
-  'src/plugins/notifications.js',
-  'src/plugins/ping.js',
-  'src/plugins/runcommand.js',
-  'src/plugins/share.js',
-  'src/plugins/telephony.js',
 )
 
 
@@ -69,18 +48,8 @@ install_data(
 )
 
 # Service Source
-install_data(
-  service_source,
-  install_dir: join_paths(extdatadir, 'service'),
-  install_mode: 'rw-r--r--'
-)
-
-# Plugins Source
-install_data(
-  plugins_source,
-  install_dir: join_paths(extdatadir, 'plugins'),
-  install_mode: 'rw-r--r--'
-)
+install_subdir('src/service', install_dir: extdatadir)
+install_subdir('src/widgets', install_dir: extdatadir)
 
 # metadata.json
 ext_metadata = configuration_data()

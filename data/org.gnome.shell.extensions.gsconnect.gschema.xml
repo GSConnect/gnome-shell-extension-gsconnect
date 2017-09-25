@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<schemalist gettext-domain="gnome-shell-extension-gsconnect">
+<schemalist gettext-domain="org.gnome.shell.extensions.gsconnect">
   <!-- TODO: better names this time -->
   <flags id="org.gnome.shell.extensions.gsconnect.DeviceVisibility">
     <value nick="OFFLINE" value="1"/>

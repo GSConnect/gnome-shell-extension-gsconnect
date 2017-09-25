@@ -10,12 +10,6 @@ const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
 
-/**
- * GSettings Widgets
- *
- * TODO: Currently these rely on a global "Settings" object being present.
- */
-
 /** A Gtk.Switch subclass for boolean GSettings. */
 var BoolSetting = new Lang.Class({
     Name: "BoolSetting",

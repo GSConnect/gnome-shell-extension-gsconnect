@@ -15,16 +15,16 @@ const Notify = imports.gi.Notify;
 function getPath() {
     // Diced from: https://github.com/optimisme/gjs-examples/
     let m = new RegExp("@(.+):\\d+").exec((new Error()).stack.split("\n")[1]);
-    return Gio.File.new_for_path(m[1]).get_parent().get_parent().get_path();
+    let p = Gio.File.new_for_path(m[1]).get_parent().get_parent().get_parent();
+    return p.get_path();
 }
 
 imports.searchPath.push(getPath());
 
-const PluginsBase = imports.plugins.base;
-
+const { initTranslations, Me, DBusInfo, Settings } = imports.common;
 const Config = imports.service.config;
 const Protocol = imports.service.protocol;
-const { initTranslations, Me, DBusInfo, Settings } = imports.common;
+const PluginsBase = imports.service.plugins.base;
 
 
 var METADATA = {
@@ -69,17 +69,6 @@ var Plugin = new Lang.Class({
         if (METADATA.hasOwnProperty("settings")) {
             this.settings = this.device.config.plugins[this.name].settings;
         }
-    },
-    
-    get incomingPackets() {
-        return ["kdeconnect.notification"];
-    },
-    
-    get outgoingPackets() {
-        return [
-            "kdeconnect.notification.request",
-            "kdeconnect.notification.reply"
-        ];
     },
     
     // TODO: consider option for notifications allowing clients to handle them
@@ -145,3 +134,4 @@ var Plugin = new Lang.Class({
         PluginBase.prototype.destroy.call(this);
     }
 });
+
