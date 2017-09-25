@@ -298,7 +298,7 @@ var Device = new Lang.Class({
     
     // FIXME: check
     _unload_plugins: function () {
-        for (let name in this.plugins) {
+        for (let name of this.plugins) {
             this.disablePlugin(name, false);
         }
     },
