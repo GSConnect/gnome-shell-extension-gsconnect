@@ -256,8 +256,8 @@ var PluginDialog = new Lang.Class({
             title: _("FIXME pluginInfo"),
             use_header_bar: true,
             transient_for: win,
-            default_height: 200,
-            default_width: 200
+            default_height: 320,
+            default_width: 480
         });
         
         let headerBar = this.get_header_bar();
@@ -347,13 +347,6 @@ var RunCommandPluginDialog = new Lang.Class({
         this.treeview.append_column(cmdCol);
         this.cmdCell.connect("edited", Lang.bind(this, this._editCmd));
         
-        this.content.addOption(
-            commandsSection,
-            _("Subdirectories"),
-            _("Save files in device subdirectories"),
-            new Gtk.Label({ label: "foo" })
-        );
-        
         let commandRow = this.content.addRow(commandsSection);
         
         let treeScroll = new Gtk.ScrolledWindow({
@@ -424,7 +417,6 @@ var RunCommandPluginDialog = new Lang.Class({
     
     _populate: function () {
         for (let uuid in this._settings.commands) {
-        log("settings: " + JSON.stringify(this._settings.commands[uuid]));
             this._add(null, [
                 uuid,
                 this._settings.commands[uuid].name,

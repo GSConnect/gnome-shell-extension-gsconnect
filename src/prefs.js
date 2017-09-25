@@ -157,7 +157,6 @@ var PrefsPage = new Lang.Class({
      * @return {Gtk.ListBoxRow} row - The new row
      */
     add_item: function (section, summary, description, widget) {
-        
         let row = this.add_row(section);
         
         // Setting Summary
