@@ -395,11 +395,7 @@ var Device = new Lang.Class({
                 return false;
             }
             
-            let newSettings = mergeDeep(
-                this.config.plugins[name].settings,
-                settings
-            );
-            this.config.plugins[name].settings = newSettings;
+            Object.assign(this.config.plugins[name].settings, settings);
             Config.write_device_config(this.id, this.config);
 
             return true;

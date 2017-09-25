@@ -400,7 +400,6 @@ var SharePluginDialog = new Lang.Class({
     _init: function (devicePage, pluginName, pluginInfo, win) {
         this.parent(devicePage, pluginName, pluginInfo, win);
         
-        let settings = this._page._config.plugins[this._name].settings;
         let receivingSection = this.content.addSection(_("Receiving"));
         
         let fbutton = new Gtk.FileChooserButton({
@@ -408,7 +407,7 @@ var SharePluginDialog = new Lang.Class({
             halign: Gtk.Align.END,
             valign: Gtk.Align.CENTER
         });
-        fbutton.set_current_folder(settings.download_directory);
+        fbutton.set_current_folder(this._settings.download_directory);
         fbutton.connect("current-folder-changed", (button) => {
             this._settings.download_directory = fbutton.get_current_folder();
         });
@@ -424,7 +423,7 @@ var SharePluginDialog = new Lang.Class({
             can_focus: true,
             halign: Gtk.Align.END,
             valign: Gtk.Align.CENTER,
-            active: settings.download_subdirs
+            active: this._settings.download_subdirs
         });
         subdirsSwitch.connect("notify::active", (widget) => {
             this._settings.download_subdirs = subdirsSwitch.active;
@@ -447,7 +446,6 @@ var TelephonyPluginDialog = new Lang.Class({
     
     _init: function (devicePage, pluginName, pluginInfo, win) {
         this.parent(devicePage, pluginName, pluginInfo, win);
-        let settings = this._page._config.plugins[this._name].settings;
         
         // Phone Calls
         let callsSection = this.content.addSection(_("Phone Calls"));
@@ -457,7 +455,7 @@ var TelephonyPluginDialog = new Lang.Class({
             can_focus: true,
             halign: Gtk.Align.END,
             valign: Gtk.Align.CENTER,
-            active: settings.notify_missedCall
+            active: this._settings.notify_missedCall
         });
         notifyMissedCallSwitch.connect("notify::active", (widget) => {
             this._settings.notify_missedCall = notifyMissedCallSwitch.active;
@@ -474,7 +472,7 @@ var TelephonyPluginDialog = new Lang.Class({
             can_focus: true,
             halign: Gtk.Align.END,
             valign: Gtk.Align.CENTER,
-            active: settings.notify_ringing
+            active: this._settings.notify_ringing
         });
         notifyRingingSwitch.connect("notify::active", (widget) => {
             this._settings.notify_ringing = notifyRingingSwitch.active;
@@ -491,7 +489,7 @@ var TelephonyPluginDialog = new Lang.Class({
             can_focus: true,
             halign: Gtk.Align.END,
             valign: Gtk.Align.CENTER,
-            active: settings.notify_talking
+            active: this._settings.notify_talking
         });
         notifyTalkingSwitch.connect("notify::active", (widget) => {
             this._settings.notify_talking = notifyTalkingSwitch.active;
@@ -511,7 +509,7 @@ var TelephonyPluginDialog = new Lang.Class({
             can_focus: true,
             halign: Gtk.Align.END,
             valign: Gtk.Align.CENTER,
-            active: settings.notify_sms
+            active: this._settings.notify_sms
         });
         notifySMSSwitch.connect("notify::active", (widget) => {
             this._settings.notify_sms = notifySMSSwitch.active;
@@ -528,7 +526,7 @@ var TelephonyPluginDialog = new Lang.Class({
             can_focus: true,
             halign: Gtk.Align.END,
             valign: Gtk.Align.CENTER,
-            active: settings.autoreply_sms
+            active: this._settings.autoreply_sms
         });
         autoreplySMSSwitch.connect("notify::active", (widget) => {
             this._settings.autoreply_sms = autoreplySMSSwitch.active;
