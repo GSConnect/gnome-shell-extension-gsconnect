@@ -287,7 +287,6 @@ var Device = new Lang.Class({
     /**
      * Plugin Capabilities
      */
-    // FIXME: check
     _load_plugins: function () {
         for (let name in this.config.plugins) {
             if (this.config.plugins[name].enabled) {
@@ -296,7 +295,6 @@ var Device = new Lang.Class({
         }
     },
     
-    // FIXME: check
     _unload_plugins: function () {
         for (let name of this.plugins) {
             this.disablePlugin(name, false);
@@ -377,6 +375,7 @@ var Device = new Lang.Class({
     },
     
     // TODO: check
+    // FIXME: some plugins require sending updated info (eg. runcommand)
     configurePlugin: function (name, settings) {
         log("Device.configurePlugin(" + name + ", " + settings + ")");
         

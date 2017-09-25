@@ -39,7 +39,7 @@ var METADATA = {
  * RunCommand Plugin
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/remotecommand
  *
- * TODO: some new stuff was added to git
+ * TODO: a PR for some new stuff was submitted
  */
 var Plugin = new Lang.Class({
     Name: "GSConnectRunCommandPlugin",
@@ -51,7 +51,7 @@ var Plugin = new Lang.Class({
         this.settings = this.device.config.plugins[this.name].settings;
     },
     
-    // TODO
+    // TODO: double-check
     handle_packet: function (packet) {
         if (packet.body.hasOwnProperty("requestCommandList")) {
             this.sendCommandList();
