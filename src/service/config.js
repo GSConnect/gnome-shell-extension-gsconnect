@@ -257,7 +257,15 @@ var PluginInfo = new Map([
     ["findmyphone", {
     }],
     ["notifications", {
-        settings: {}
+        settings: {
+            receive: {
+                enabled: false
+            },
+            send: {
+                enabled: false,
+                applications: {}
+            }
+        }
     }],
     ["ping", {
     }],
