@@ -358,13 +358,37 @@ var DevicePage = new Lang.Class({
         this.device = device;
         this._config = Config.read_device_config(device.id);
         
-        // Plugins
+        // Status Section FIXME
+        let statusSection = this.add_section();
+        let statusRow = this.addRow(statusSection);
+        statusRow.grid.halign = Gtk.Align.START;
+        
+        let deviceIcon = Gtk.Image.new_from_icon_name(
+            device.type,
+            Gtk.IconSize.DIALOG
+        );
+        statusRow.grid.attach(deviceIcon, 0, 0, 1, 2);
+        
+        let deviceName = new Gtk.Label({ label: device.name });
+        statusRow.grid.attach(deviceName, 1, 0, 1, 1);
+        let deviceType = new Gtk.Label({ label: device.type });
+        statusRow.grid.attach(deviceType, 1, 1, 1, 1);
+        
+        let deviceControls = new Gtk.ButtonBox({ hexpand: true, halign: Gtk.Align.END });
+        statusRow.grid.attach(deviceControls, 0, 2, 2, 1);
+        
+        let pairButton = new Gtk.Button({ label: _("Pair") });
+        deviceControls.add(pairButton);
+        let pingButton = new Gtk.Button({ label: _("Ping") });
+        deviceControls.add(pingButton);
+        
+        // Plugins Section
         let pluginsSection = this.add_section(_("Plugins"));
         
         for (let [pluginName, pluginInfo] of PluginsWidget.PluginMetadata.entries()) {
             let pluginWidget = new PluginsWidget.PluginSetting(this, pluginName);
             
-            this.add_item(
+            this.addItem(
                 pluginsSection,
                 pluginInfo.summary,
                 pluginInfo.description,
@@ -372,7 +396,7 @@ var DevicePage = new Lang.Class({
             );
         }
         
-        // Keybdinings
+        // Keybinding Section
         // TODO: fix widget
         let keySection = this.add_section(_("Keyboard Shortcuts"));
         
