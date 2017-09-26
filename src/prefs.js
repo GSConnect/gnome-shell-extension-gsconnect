@@ -239,8 +239,8 @@ var PrefsPage = new Lang.Class({
 /**
  * Plugin stuff FIXME: move to discrete file?
  */
-var DevicesPage = new Lang.Class({
-    Name: "DevicesPage",
+var DevicesStack = new Lang.Class({
+    Name: "DevicesStack",
     Extends: Gtk.Grid,
     
     _init: function (params={}) {
@@ -269,6 +269,39 @@ var DevicesPage = new Lang.Class({
         
         this.attach(sidebarScrolledWindow, 0, 0, 1, 1);
         this.attach(this.stack, 1, 0, 1, 1);
+        
+        // Default Page
+        let page = new Gtk.Box({
+            visible: true,
+            can_focus: true,
+            margin_left: 12,
+            margin_top: 12,
+            margin_bottom: 12,
+            margin_right: 12,
+            spacing: 12,
+            valign: Gtk.Align.CENTER,
+            orientation: Gtk.Orientation.VERTICAL
+        });
+        
+        let label1 = new Gtk.Label({
+            label: _("Ensure that devices are connected on the same local network with ports 1714 to 1764 open. If you wish to connect an Android device, install the KDE Connect Android app <a href=\"https://play.google.com/store/apps/details?id=org.kde.kdeconnect_tp\">Google Play Store</a> or <a href=\"https://f-droid.org/repository/browse/?fdid=org.kde.kdeconnect_tp\">F-Droid</a>."),
+            wrap: true,
+            use_markup: true,
+            vexpand: true,
+            xalign: 0
+        });
+        page.add(label1);
+        //https://community.kde.org/KDEConnect
+        let label2 = new Gtk.Label({
+            label: _("If you are having trouble with this extension, please see the <a href=\"https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki\">Wiki</a> for help or <a href =\"https://github.com/andyholmes/gnome-shell-extension-gsconnect/issues\">open an issue</a> on Github to report a problem."),
+            wrap: true,
+            use_markup: true,
+            vexpand: true,
+            xalign: 0
+        });
+        page.add(label2);
+        
+        this.stack.add_titled(page, "default", "Default");
     },
     
     add_device: function (device) {
@@ -304,11 +337,11 @@ var DevicesPage = new Lang.Class({
             this.stack.set_visible_child_name(row.device.id);
         });
         
+        row.show_all();
+        
         // Device Page
         let page = new DevicePage(device);
         this.stack.add_titled(page, device.id, device.name);
-        
-        row.show_all();
     }
 });
 
