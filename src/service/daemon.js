@@ -205,7 +205,7 @@ var Daemon = new Lang.Class({
             log("updating device");
             
             let device = this._devices.get(packet.body.deviceId);
-            device.fromPacket(packet);
+            device.handlePacket(packet);
         } else {
             log("creating device");
             
