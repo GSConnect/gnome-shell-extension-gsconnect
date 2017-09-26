@@ -434,8 +434,10 @@ var PrefsWidget = new Lang.Class({
         this.manager = new Client.DeviceManager();
         
         for (let device of this.manager.devices.values()) {
-            this.devicesWidget.add_device(device);
+            this.devicesStack.add_device(device);
         }
+        
+        //this.devicesStack.stack.set_visible_child_name("default");
     },
     
     add_page: function (id, title) {
@@ -453,12 +455,12 @@ var PrefsWidget = new Lang.Class({
         let generalPage = this.add_page("general", _("General"));
         
         let appearanceSection = generalPage.add_section(_("Appearance"));
-        generalPage.add_setting(appearanceSection, "device-indicators");
-        generalPage.add_setting(appearanceSection, "device-visibility");
+        generalPage.addSetting(appearanceSection, "device-indicators");
+        generalPage.addSetting(appearanceSection, "device-visibility");
         
         let filesSection = generalPage.add_section(_("Files"));
-        generalPage.add_setting(filesSection, "device-automount");
-        generalPage.add_setting(filesSection, "nautilus-integration");
+        generalPage.addSetting(filesSection, "device-automount");
+        generalPage.addSetting(filesSection, "nautilus-integration");
         
         // FIXME
         //let keySection = generalPage.add_section(_("Keyboard Shortcuts"));
@@ -466,18 +468,18 @@ var PrefsWidget = new Lang.Class({
         //keySection.list.add(keyRow);
         
         // Devices Page
-        this.devicesWidget = new DevicesPage();
-        let devicesPage = this.add_titled(this.devicesWidget, "devices", _("Devices"));
+        this.devicesStack = new DevicesStack();
+        let devicesPage = this.add_titled(this.devicesStack, "devices", _("Devices"));
         
         // Service Page
         let servicePage = this.add_page("service", _("Service"));
         let serviceSection = servicePage.add_section(_("Service"));
-        servicePage.add_setting(serviceSection, "persistent-discovery");
+        servicePage.addSetting(serviceSection, "persistent-discovery");
         
         // About/Advanced
         let advancedPage = this.add_page("advanced", _("Advanced"));
         let develSection = advancedPage.add_section(_("Development"));
-        advancedPage.add_setting(develSection, "debug");
+        advancedPage.addSetting(develSection, "debug");
     }
 });
 
