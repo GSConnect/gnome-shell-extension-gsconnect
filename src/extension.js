@@ -684,7 +684,7 @@ var SystemIndicator = new Lang.Class({
         
         // System Indicator
         this.extensionIndicator = this._addIndicator();
-        this.extensionIndicator.icon_name = "device-link-symbolic";
+        this.extensionIndicator.icon_name = "gsconnect-symbolic";
         let userMenuTray = Main.panel.statusArea.aggregateMenu._indicators;
         userMenuTray.insert_child_at_index(this.indicators, 0);
         
