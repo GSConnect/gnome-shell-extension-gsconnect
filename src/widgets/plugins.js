@@ -478,7 +478,10 @@ var RunCommandPluginDialog = new Lang.Class({
         
         // Name column.
         this.nameCell = new Gtk.CellRendererText({ editable: true });
-        let nameCol = new Gtk.TreeViewColumn({ expand: true, clickable: false });
+        let nameCol = new Gtk.TreeViewColumn({
+            title: _("Name"),
+            expand: true
+        });
         nameCol.pack_start(this.nameCell, true);
         nameCol.add_attribute(this.nameCell, "text", 1);
         this.treeview.append_column(nameCol);
@@ -486,7 +489,10 @@ var RunCommandPluginDialog = new Lang.Class({
         
         // Command column.
         this.cmdCell = new Gtk.CellRendererText({ editable: true });
-        let cmdCol = new Gtk.TreeViewColumn({ expand: true, clickable: false });
+        let cmdCol = new Gtk.TreeViewColumn({
+            title: _("Command"),
+            expand: true
+        });
         cmdCol.pack_start(this.cmdCell, true);
         cmdCol.add_attribute(this.cmdCell, "text", 2);
         this.treeview.append_column(cmdCol);
@@ -502,6 +508,7 @@ var RunCommandPluginDialog = new Lang.Class({
         treeScroll.add(this.treeview);
         commandRow.grid.attach(treeScroll, 0, 0, 1, 1);
         
+        // Buttons
         let buttonBox = new Gtk.ButtonBox();
         commandRow.grid.attach(buttonBox, 0, 1, 1, 1);
         
