@@ -58,16 +58,12 @@ var Plugin = new Lang.Class({
     
     _init: function (device) {
         this.parent(device, "share");
-        
-        if (METADATA.hasOwnProperty("settings")) {
-            this.settings = this.device.config.plugins[this.name].settings;
-        }
     },
     
     // TODO: error checking
     //       re-test
     //       notify?
-    handle_packet: function (packet) {
+    handlePacket: function (packet) {
         // TODO: error checking, re-test
         if (packet.body.hasOwnProperty("filename")) {
             let filepath = this.get_filepath(packet.body.filename);

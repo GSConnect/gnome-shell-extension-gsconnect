@@ -52,7 +52,7 @@ var Plugin = new Lang.Class({
     },
     
     // TODO: support pings with messages
-    handle_packet: function (packet) {
+    handlePacket: function (packet) {
         this.emit("ping");
         log("IMPLEMENT: " + packet.toString());
     },

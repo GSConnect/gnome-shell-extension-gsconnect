@@ -75,17 +75,13 @@ var Plugin = new Lang.Class({
         this._charging = false;
         this._level = -1;
         this._threshold = 0;
-        
-        if (METADATA.hasOwnProperty("settings")) {
-            this.settings = this.device.config.plugins[this.name].settings;
-        }
     },
     
     get charging() { return this._charging; },
     get level() { return this._level; },
     get threshold() { return this._threshold; },
     
-    handle_packet: function (packet) {
+    handlePacket: function (packet) {
         this._charging = packet.body.isCharging;
         this.notify("charging");
         this._dbus.emit_property_changed(

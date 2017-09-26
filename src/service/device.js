@@ -2,10 +2,13 @@
 
 // Imports
 const Lang = imports.lang;
+const Gettext = imports.gettext.domain("org.gnome.shell.extensions.gsconnect");
+const _ = Gettext.gettext;
 
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
+const Notify = imports.gi.Notify;
 
 // Local Imports
 function getPath() {
@@ -128,13 +131,17 @@ var Device = new Lang.Class({
     get type () { return this.identity.body.deviceType; },
     
     //
-    fromPacket: function (packet) {
+    handlePacket: function (packet) {
         log("Device.fromPacket(" + this.id + ")");
         
         if (packet.type === Protocol.TYPE_IDENTITY) {
             this.identity.fromPacket(packet);
+        } else if (packet.type === Protocol.TYPE_PAIR) {
+	        this._handlePair(packet);
+	    } else if (this._handlers.has(packet.type)) {
+            this._handlers.get(packet.type).handlePacket(packet);
         } else {
-            throw Error("devices can only be created from identity packets");
+            log("Received unsupported packet type: " + packet.toString());
         }
         
         this.activate();
@@ -150,92 +157,117 @@ var Device = new Lang.Class({
         
         this._channel = new Protocol.LanChannel(this);
         
-        this._channel.connect("connected", (channel) => {
-            log("Connected to: " + this.id);
-            
-            this._connected = true;
-            this._load_plugins();
-            
-            this._dbus.emit_property_changed(
-                "connected",
-                new GLib.Variant("b", this.connected)
-            );
-        });
-        
-        this._channel.connect("disconnected", (channel) => {
-            log("Disconnected from: " + this.id);
-            
-            if (this._channel !== null) {
-                this._channel = null;
-            }
-            
-            this._connected = false;
-            this._unload_plugins();
-            
-            this._dbus.emit_property_changed(
-                "connected",
-                new GLib.Variant("b", this.connected)
-            );
-        });
+        this._channel.connect("connected", Lang.bind(this, this._onConnected));
+        this._channel.connect("disconnected", Lang.bind(this, this._onDisconnected));
 		this._channel.connect("received", (channel, packet) => {
             log("Device._received(" + this.id + ")");
             
-            if (packet.type === Protocol.TYPE_PAIR) {
-		        this._handle_pair(packet);
-		    } else if (this._handlers.has(packet.type)) {
-	            this._handlers.get(packet.type).handle_packet(packet);
-	        } else {
-	            log("Received unsupported packet type: " + packet.toString());
-	        }
+            this.handlePacket(packet);
 		});
         
         this._channel.open();
     },
     
+    _onConnected: function (channel) {
+        log("Connected to: " + this.id);
+        
+        this._connected = true;
+        this._loadPlugins();
+        
+        this._dbus.emit_property_changed(
+            "connected",
+            new GLib.Variant("b", this.connected)
+        );
+    },
+    
+    _onDisconnected: function (channel) {
+        log("Disconnected from: " + this.id);
+        
+        if (this._channel !== null) {
+            this._channel = null;
+        }
+        
+        this._connected = false;
+        this._unloadPlugins();
+        
+        this._dbus.emit_property_changed(
+            "connected",
+            new GLib.Variant("b", this.connected)
+        );
+    },
+    
     /**
      * Pairing Functions
+     *
+     * TODO: set timeout for outgoing pair request
      */
-    _handle_pair: function (packet) {
+    _handlePair: function (packet) {
         if (packet.body.pair) {
+            log("Pair request: " + this.name + " (" + this.id + ")");
+            
             if (this.paired) {
-                log("already paired?");
                 this.pair();
             } else {
-                log("not paired?");
-                
-                // FIXME: notify user now
-                log("FIXME: emitting pairRequest signal");
-                this.emit("pairRequest", this.id); // FIXME: no publicKey?
-                
-                // FIXME: we're auto-accepting right now
-                log("FIXME: auto-accepting pair request");
-                this.acceptPair();
-                this.pair();
+                this._pairNotify(packet);
             }
         } else {
-            GLib.unlink(this.config_cert);
-            this._dbus.emit_property_changed(
-                "paired",
-                new GLib.Variant("b", this.paired)
-            );
+            this.unpair();
         }
     },
     
-    // FIXME
+    _pairNotify: function (packet) {
+        this.emit("pairRequest", this.id); // FIXME: no publicKey?
+        
+        let note = new Notify.Notification({
+            app_name: "GSConnect",
+            id: packet.id / 1000,
+            summary: _("Pair Request"),
+            body: _("%s is requesting pairing").format(this.name),
+            icon_name: "channel-insecure-symbolic"
+        });
+        
+        note.add_action(
+            "rejectPair",
+            _("Reject"),
+            Lang.bind(this, this.rejectPair)
+        );
+        
+        note.add_action(
+            "acceptPair",
+            _("Accept"),
+            Lang.bind(this, this.acceptPair)
+        );
+        
+        note.show();
+        
+        GLib.timeout_add_seconds(
+            GLib.PRIORITY_DEFAULT,
+            30,
+            Lang.bind(this, this._pairTimeout, note)
+        );
+    },
+    
+    _pairTimeout: function (note) {
+        try {
+            note.close();
+        } catch (e) {
+        }
+        return false;
+    },
+    
     pair: function () {
-        log("Device.pair(" + this.id + ")");
+        log("Device.pair(" + this.name + ")");
         
         let packet = new Protocol.Packet({
             id: Date.now(),
             type: Protocol.TYPE_PAIR,
-            body: { pair: true }
+            body: { pair: true } // FIXME: no publicKey?
         });
         this._channel.send(packet);
     },
     
-    // FIXME
     unpair: function () {
-        log("Device.unpair(" + this.id + ")");
+        log("Device.unpair(" + this.name + ")");
         
         if (this._channel !== null) {
             let packet = new Protocol.Packet({
@@ -249,76 +281,90 @@ var Device = new Lang.Class({
         GLib.unlink(this.config_cert);
         this._dbus.emit_property_changed(
             "paired",
-            new GLib.Variant("b", this.paired)
+            new GLib.Variant("b", false)
         );
+        
+        this._unloadPlugins();
     },
     
-    // FIXME
     acceptPair: function () {
         log("Device.acceptPair(" + this.id + ")");
         
-        if (this._channel._peer_cert !== null) {
-            GLib.file_set_contents(
-                this.config_cert,
-                this._channel._peer_cert.certificate_pem,
-                this._channel._peer_cert.certificate_pem.length,
-                null
-            );
-            this._dbus.emit_property_changed(
-                "paired",
-                new GLib.Variant("b", this.paired)
-            );
-        } else {
-            log("Failed to accept pair: no certificate stashed");
-        }
+        GLib.file_set_contents(
+            this.config_cert,
+            this._channel._peer_cert.certificate_pem
+        );
+        this._dbus.emit_property_changed(
+            "paired",
+            new GLib.Variant("b", this.paired)
+        );
+        
+        this._loadPlugins();
+        
+        this.pair();
     },
     
-    // FIXME
     rejectPair: function () {
         log("Device.rejectPair(" + this.id + ")");
         
         this.unpair();
-        
-//        if (this._channel._peer_cert !== null) {
-//            this._channel._peer_cert = null;
-//        }
     },
     
     /**
      * Plugin Capabilities
      */
-    _load_plugins: function () {
+    _loadPlugins: function () {
         for (let name in this.config.plugins) {
             if (this.config.plugins[name].enabled) {
                 this.enablePlugin(name, false);
             }
         }
+                
+        this._dbus.emit_property_changed(
+            "plugins",
+            new GLib.Variant("as", Array.from(this._plugins.keys()))
+        );
     },
     
-    _unload_plugins: function () {
+    _unloadPlugins: function () {
         for (let name of this.plugins) {
             this.disablePlugin(name, false);
         }
+                
+        this._dbus.emit_property_changed(
+            "plugins",
+            new GLib.Variant("as", Array.from(this._plugins.keys()))
+        );
     },
     
     enablePlugin: function (name, write=true) {
         log("Device.enablePlugin(" + name + ", " + write + ")");
     
-        if (PacketHandlers.has(name)) {
+        try {
             let handler = PacketHandlers.get(name);
         
             // Running instance
-            if (this.connected && !this._plugins.has(name)) {
+            if (this.connected && this.paired) {
                 // Enable
                 let plugin = new handler.Plugin(this);
                 
                 // Register packet handlers
                 for (let packetType of handler.METADATA.incomingPackets) {
-                    this._handlers.set(packetType, plugin);
+                    if (!this._handlers.has(packetType)) {
+                        this._handlers.set(packetType, plugin);
+                    }
                 }
                 
                 // Register as enabled
-                this._plugins.set(name, plugin);
+                if (!this._plugins.has(name)) {
+                    this._plugins.set(name, plugin);
+                }
+            }
+            
+            // Save config and notify, if requested
+            if (write) {
+                this.config.plugins[name].enabled = true;
+                Config.write_device_config(this.id, this.config);
                 
                 this._dbus.emit_property_changed(
                     "plugins",
@@ -326,14 +372,9 @@ var Device = new Lang.Class({
                 );
             }
             
-            // Save config, if requested
-            if (write) {
-                this.config.plugins[name].enabled = true;
-                Config.write_device_config(this.id, this.config);
-            }
-            
             return true;
-        } else {
+        } catch (e) {
+            log("Error enabling plugin '" + name + "': " + e);
             return false;
         }
     },
@@ -341,9 +382,9 @@ var Device = new Lang.Class({
     disablePlugin: function (name, write=true) {
         log("Device.disablePlugin(" + name + ", " + write + ")");
         
-        if (PacketHandlers.has(name)) {
+        try {
             // Running instance
-            if (this.connected && this._plugins.has(name)) {
+            if (this.connected) {
                 let handler = PacketHandlers.get(name);
                 let plugin = this._plugins.get(name);
                 
@@ -355,6 +396,12 @@ var Device = new Lang.Class({
                 // Register as disabled
                 plugin.destroy();
                 this._plugins.delete(name);
+            }
+            
+            // Save config and notify, if requested
+            if (write) {
+                this.config.plugins[name].enabled = false;
+                Config.write_device_config(this.id, this.config);
                 
                 this._dbus.emit_property_changed(
                     "plugins",
@@ -362,46 +409,47 @@ var Device = new Lang.Class({
                 );
             }
             
-            // Save config, if requested
-            if (write) {
-                this.config.plugins[name].enabled = false;
-                Config.write_device_config(this.id, this.config);
-            }
-            
             return true;
-        } else {
+        } catch (e) {
+            log("Error disabling plugin '" + name + "': " + e);
             return false;
         }
     },
     
-    // TODO: check
-    // FIXME: some plugins require sending updated info (eg. runcommand)
     configurePlugin: function (name, settings) {
         log("Device.configurePlugin(" + name + ", " + settings + ")");
         
-        if (PacketHandlers.has(name)) {
+        try {
             let handler = PacketHandlers.get(name);
             
-            try {
-                settings = JSON.parse(settings);
-                
-                for (let option in settings) {
-                    if (!handler.METADATA.settings.hasOwnProperty(option)) {
-                        throw Error("Unknown option: " + option);
-                    }
+            settings = JSON.parse(settings);
+            
+            // Check for invalid options
+            for (let option in settings) {
+                if (!handler.METADATA.settings.hasOwnProperty(option)) {
+                    throw Error("Unknown option: " + option);
                 }
-            } catch (e) {
-                log("Error configuring plugin: " + e);
-                return false;
             }
             
+            // Write the new configuration
             Object.assign(this.config.plugins[name].settings, settings);
             Config.write_device_config(this.id, this.config);
+            
+            // Update the device with the new configuration
+            if (this.connected && this.paired && this._plugins.has(name)) {
+                this._plugins.get(name).reconfigure();
+            }
 
             return true;
-        } else {
+        } catch (e) {
+            log("Error configuring plugin '" + name + "': " + e);
             return false;
         }
+    },
+    
+    reloadPlugins: function () {
+        this._unloadPlugins();
+        this._loadPlugins();
     }
 });
 

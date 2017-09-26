@@ -77,14 +77,10 @@ var Plugin = new Lang.Class({
     
     _init: function (device) {
         this.parent(device, "telephony");
-        
-        if (METADATA.hasOwnProperty("settings")) {
-            this.settings = this.device.config.plugins[this.name].settings;
-        }
     },
     
     // TODO
-    handle_packet: function (packet) {
+    handlePacket: function (packet) {
         // There are six possible variables:
         //    * "event"             missedCall, ringing, sms or talking
         //    * "phoneNumber"       Always present?

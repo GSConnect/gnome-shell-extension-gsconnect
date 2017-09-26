@@ -39,7 +39,8 @@ var METADATA = {
  * RunCommand Plugin
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/remotecommand
  *
- * TODO: a PR for some new stuff was submitted
+ * TODO: expose commands over DBus
+ *       a PR for some new stuff was submitted
  */
 var Plugin = new Lang.Class({
     Name: "GSConnectRunCommandPlugin",
@@ -47,12 +48,9 @@ var Plugin = new Lang.Class({
     
     _init: function (device) {
         this.parent(device, "runcommand");
-        
-        this.settings = this.device.config.plugins[this.name].settings;
     },
     
-    // TODO: double-check
-    handle_packet: function (packet) {
+    handlePacket: function (packet) {
         if (packet.body.hasOwnProperty("requestCommandList")) {
             this.sendCommandList();
         } else if (packet.body.hasOwnProperty("key")) {
@@ -62,6 +60,10 @@ var Plugin = new Lang.Class({
                 );
             }
         }
+    },
+    
+    reconfigure: function () {
+        this.sendCommandList();
     },
     
     sendCommandList: function () {

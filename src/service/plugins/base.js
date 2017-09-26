@@ -29,8 +29,7 @@ const { initTranslations, Me, DBusInfo, Settings } = imports.common;
 /**
  * Base class for plugins
  *
- * TODO: common functions for export/unexport dbus
- *       auto-call PropertiesChanged?
+ * TODO: auto-call PropertiesChanged?
  *       make more "introspectable"?
  */
 var Plugin = new Lang.Class({
@@ -43,6 +42,10 @@ var Plugin = new Lang.Class({
         this.name = name;
         
         this.export_interface();
+        
+        if (this.device.config.plugins.hasOwnProperty(this.name)) {
+            this.settings = this.device.config.plugins[this.name].settings;
+        }
     },
     
     export_interface: function () {
@@ -58,7 +61,9 @@ var Plugin = new Lang.Class({
         );
     },
     
-    handle_packet: function (packet) { throw Error("Not implemented"); },
+    handlePacket: function (packet) { throw Error("Not implemented"); },
+    
+    reconfigure: function () {},
     
     destroy: function () {
         this._dbus.unexport();

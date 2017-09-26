@@ -46,7 +46,7 @@ var Plugin = new Lang.Class({
         this.parent(device, "findmyphone");
     },
     
-    handle_packet: function (packet) {
+    handlePacket: function (packet) {
         log("This should never be called since there is no incoming packet");
     },
     

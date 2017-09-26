@@ -25,6 +25,7 @@
       <arg name="JSON" type="s" direction="in"/>
       <arg name="success" type="b" direction="out"/>
     </method>
+    <method name="reloadPlugins"/>
     
     <signal name="pairRequest">
       <arg name="publicKey" type="s" direction="out"/>
