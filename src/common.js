@@ -57,11 +57,17 @@ var DBusInfo = {
         Resources.lookup_data(
             "/dbus/org.gnome.shell.extensions.gsconnect.device.xml", 0
         ).unref_to_array().toString()
+    ),
+    freedesktop: new Gio.DBusNodeInfo.new_for_xml(
+        Resources.lookup_data(
+            "/dbus/org.freedesktop.Notifications.xml", 0
+        ).unref_to_array().toString()
     )
 };
 
 DBusInfo.daemon.nodes.forEach((ifaceInfo) => { ifaceInfo.cache_build(); });
 DBusInfo.device.nodes.forEach((ifaceInfo) => { ifaceInfo.cache_build(); });
+DBusInfo.freedesktop.nodes.forEach((ifaceInfo) => { ifaceInfo.cache_build(); });
 
 /** Initialize Gettext for metadata['gettext-domain'] */
 function initTranslations() {
