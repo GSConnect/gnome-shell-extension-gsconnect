@@ -56,6 +56,7 @@ var PrefsPage = new Lang.Class({
         params = Object.assign({
             height_request: 400,
             can_focus: true,
+            visible: true,
             hscrollbar_policy: Gtk.PolicyType.NEVER
         }, params);
         this.parent(params);
@@ -121,7 +122,7 @@ var PrefsPage = new Lang.Class({
      * @param {Gtk.Frame} section - The section widget to attach to
      * @return {Gtk.ListBoxRow} row - The new row
      */
-    add_row: function (section) {
+    addRow: function (section) {
         // Row
         let row = new Gtk.ListBoxRow({
             visible: true,
@@ -156,8 +157,8 @@ var PrefsPage = new Lang.Class({
      * @param {String} description - A short description for the item
      * @return {Gtk.ListBoxRow} row - The new row
      */
-    add_item: function (section, summary, description, widget) {
-        let row = this.add_row(section);
+    addItem: function (section, summary, description, widget) {
+        let row = this.addRow(section);
         
         // Setting Summary
         let summaryLabel = new Gtk.Label({
@@ -199,7 +200,7 @@ var PrefsPage = new Lang.Class({
      * @param {Gtk.Widget} widget - An override widget
      * @return {Gtk.ListBoxRow} row - The new row
      */
-    add_setting: function (section, keyName, widget) {
+    addSetting: function (section, keyName, widget) {
         let key = Schema.get_key(keyName);
         let range = key.get_range().deep_unpack()[0];
         let type = key.get_value_type().dup_string();
@@ -225,7 +226,7 @@ var PrefsPage = new Lang.Class({
             widget = new GSettingsWidget.OtherSetting(Settings, keyName);
         }
         
-        return this.add_item(
+        return this.addItem(
             section,
             key.get_summary(),
             key.get_description(),
