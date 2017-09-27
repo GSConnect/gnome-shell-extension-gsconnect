@@ -282,18 +282,6 @@ var PluginDialog = new Lang.Class({
 });
 
 
-var BatteryPluginDialog = new Lang.Class({
-    Name: "GSConnectBatteryPluginDialog",
-    Extends: PluginDialog,
-    
-    _init: function (devicePage, pluginName, pluginInfo, win) {
-        this.parent(devicePage, pluginName, pluginInfo, win);
-        
-        this.section = this.content.addSection(_("Receiving"));
-    }
-});
-
-
 var NotificationsPluginDialog = new Lang.Class({
     Name: "GSConnectNotificationsPluginDialog",
     Extends: PluginDialog,
@@ -763,8 +751,7 @@ var TelephonyPluginDialog = new Lang.Class({
 var PluginMetadata = new Map([
     ["battery", {
         summary: _("Battery"),
-        description: _("Monitor battery level and charging state"),
-        settings: BatteryPluginDialog
+        description: _("Monitor battery level and charging state")
     }],
     ["findmyphone", {
         summary: _("Find My Phone"),
