@@ -132,34 +132,25 @@ var Plugin = new Lang.Class({
                 iconName: iconName,
                 enabled: true
             };
-//            this.device.configurePlugin(
-//                this.name,
-//                JSON.stringify(this.settings)
-//            );
+            
             Config.write_device_config(this.device.id, this.device.config);
         }
         
         if (this.settings.send.enabled) {
             if (this.settings.send.applications[appName].enabled) {
-                // FIXME: forward note here
-                // {"silent":true,
-                //  "requestAnswer":true,
-                //  "id":"0|org.kde.kdeconnect_tp|-1672895215|null|10114",
-                //  "appName":"KDE Connect",
-                //  "isClearable":true,
-                //  "ticker":"Failed to send file to Gnome Shell ‐ exject2 (11)",
-                //  "time":"1505860630584"}
-                let packet = new Protocol.Packet();
-                packet.type = "kdeconnect.notification";
-                packet.body = {
-                    silent: true,
-                    requestAnswer: true,
-                    id: replacesId.toString(),
-                    appName: appName,
-                    isClearable: true,
-                    ticker: body,
-                    time: Date.now()
-                };
+                let packet = new Protocol.Packet({
+                    id: Date.now(),
+                    type: "kdeconnect.notification",
+                    body: {
+                        silent: true,               // TODO
+                        requestAnswer: false,       // for answering requests
+                        id: replacesId.toString(),  // TODO
+                        appName: appName,
+                        isClearable: true,          // TODO
+                        ticker: body,
+                        time: Date.now()
+                    }
+                });
                 
                 this.device._channel.send(packet);
             }
@@ -168,34 +159,23 @@ var Plugin = new Lang.Class({
     
     // TODO: consider option for notifications allowing clients to handle them
     handlePacket: function (packet) {
-        log("IMPLEMENT: " + packet.toString());
-        
         if (packet.type === "kdeconnect.notification" && this.settings.receive.enabled) {
             this._receiveNotification(packet);
+        // TODO: KDE Connect says this is unused??
         } else if (packet.type === "kdeconnect.notification.request" && this.settings.send.enabled) {
             this._sendNotifications(packet);
         }
     },
     
     _receiveNotification: function (packet) {
-        // {"id":"0|org.kde.kdeconnect_tp|-1672895215|null|10114","isCancel":true}
         if (packet.body.isCancel && this._notifications.has(packet.body.id)) {
             this._notifications.get(packet.body.id).close();
             this._notifications.delete(packet.body.id);
-            
-        // {"silent":true,
-        //  "requestAnswer":true,
-        //  "id":"0|org.kde.kdeconnect_tp|-1672895215|null|10114",
-        //  "appName":"KDE Connect",
-        //  "isClearable":true,
-        //  "ticker":"Failed to send file to Gnome Shell ‐ exject2 (11)",
-        //  "time":"1505860630584"}
+        // TODO: update existing notes by id
         } else if (packet.body.hasOwnProperty("time")) {
-            let noteId = Number(packet.body.time.toString().slice(2))
-            
             let note = new Notify.Notification({
                 app_name: "GSConnect",
-                id: noteId,
+                id: Number(packet.body.time.toString().slice(2)),
                 summary: packet.body.appName,
                 body: packet.body.ticker,
                 icon_name: "phone-symbolic"
@@ -215,6 +195,7 @@ var Plugin = new Lang.Class({
             
             this._notifications.set(packet.body.id, note);
             
+            // FIXME: this is causing a hang for some reason
             note.show();
         }
     },
@@ -254,7 +235,7 @@ var Plugin = new Lang.Class({
         this._proxy.call_sync("RemoveMatch", this._match, 0, -1, null);
         Gio.DBus.session.signal_unsubscribe(this._callback);
     
-        PluginBase.prototype.destroy.call(this);
+        PluginsBase.Plugin.prototype.destroy.call(this);
     }
 });
 
