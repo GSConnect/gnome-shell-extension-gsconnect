@@ -7,6 +7,7 @@ const Lang = imports.lang;
 const Format = imports.format
 const Gettext = imports.gettext;
 const Gio = imports.gi.Gio;
+const GLib = imports.gi.GLib;
 
 
 /** Return an extension object for GJS apps not privy to Gnome Shell imports */
@@ -95,6 +96,36 @@ function debug(msg) {
         log("DEBUG: " + msg);
     }
 }
+
+
+/**
+ *
+ */
+function get_fingerprint (pem) {
+    let args = ["openssl", "x509", "-noout", "-fingerprint", "-sha1", "-inform", "pem"];
+    
+    let proc = GLib.spawn_async_with_pipes(
+        null,                                   // working dir
+        args,                                   // argv
+        null,                                   // envp
+        GLib.SpawnFlags.SEARCH_PATH,            // enables PATH
+        null                                    // child_setup (func)
+    );
+    
+    let stdin = new Gio.DataOutputStream({
+        base_stream: new Gio.UnixOutputStream({ fd: proc[2] })
+    });
+    stdin.put_string(pem, null);
+    stdin.close(null);
+    
+    let stdout = new Gio.DataInputStream({
+        base_stream: new Gio.UnixInputStream({ fd: proc[3] })
+    });
+    let fingerprint = stdout.read_line(null)[0].toString().split("=")[1];
+    stdout.close(null);
+    
+    return fingerprint;
+};
 
 
 /**

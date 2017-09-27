@@ -21,6 +21,7 @@ imports.searchPath.push(getPath());
 
 const Config = imports.service.config;
 const Protocol = imports.service.protocol;
+const Common = imports.common;
 const { initTranslations, mergeDeep, DBusInfo, Settings } = imports.common;
 
 const Battery = imports.service.plugins.battery;
@@ -37,6 +38,20 @@ var Device = new Lang.Class({
     Name: "GSConnectDevice",
     Extends: GObject.Object,
     Properties: {
+        "connected": GObject.ParamSpec.boolean(
+            "connected",
+            "deviceConnected",
+            "Whether the device is connected",
+            GObject.ParamFlags.READABLE,
+            false
+        ),
+        "fingerprint": GObject.ParamSpec.string(
+            "fingerprint",
+            "deviceFingerprint",
+            "SHA1 fingerprint for the device certificate",
+            GObject.ParamFlags.READABLE,
+            ""
+        ),
         "id": GObject.ParamSpec.string(
             "id",
             "deviceId",
@@ -66,13 +81,6 @@ var Device = new Lang.Class({
             null,
             GObject.ParamFlags.READABLE
         ),
-        "connected": GObject.ParamSpec.boolean(
-            "connected",
-            "deviceConnected",
-            "Whether the device is connected",
-            GObject.ParamFlags.READABLE,
-            false
-        ),
         "type": GObject.ParamSpec.string(
             "type",
             "deviceType",
@@ -89,12 +97,12 @@ var Device = new Lang.Class({
     },
     
     _init: function (daemon, packet) {
-        // TODO
         this.parent();
         
         this.daemon = daemon;
         this._channel = null;
         this._connected = false;
+        this._fingerprint = "";
         
         this._incomingPairRequest = false;
         this._outgoingPairRequest = false;
@@ -126,6 +134,7 @@ var Device = new Lang.Class({
     
     /** Device Properties */
     get connected () { return this._connected; },
+    get fingerprint () { return this._fingerprint; },
     get id () { return this.identity.body.deviceId; },
     get name () { return this.identity.body.deviceName; },
     get paired () {
@@ -180,11 +189,20 @@ var Device = new Lang.Class({
     },
     
     _onConnected: function (channel) {
-        log("Connected to: " + this.id);
+        log("Connected to '" + this.name + "'");
         
         this._connected = true;
         
         this._loadPlugins();
+        
+        this._fingerprint = Common.get_fingerprint(
+            this._channel._peer_cert.certificate_pem
+        );
+        
+        this._dbus.emit_property_changed(
+            "fingerprint",
+            new GLib.Variant("s", this._fingerprint)
+        );
         
         this._dbus.emit_property_changed(
             "connected",
@@ -193,7 +211,7 @@ var Device = new Lang.Class({
     },
     
     _onDisconnected: function (channel) {
-        log("Disconnected from: " + this.id);
+        log("Disconnected from '" + this.name + "'");
         
         if (this._channel !== null) {
             this._channel = null;
@@ -201,6 +219,13 @@ var Device = new Lang.Class({
         
         this._connected = false;
         this._unloadPlugins();
+        
+        this._fingerprint = "";
+        
+        this._dbus.emit_property_changed(
+            "fingerprint",
+            new GLib.Variant("s", this._fingerprint)
+        );
         
         this._dbus.emit_property_changed(
             "connected",

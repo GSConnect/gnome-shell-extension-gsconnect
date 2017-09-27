@@ -2,6 +2,7 @@
   <!-- Device -->
   <interface name="org.gnome.shell.extensions.gsconnect.device">
     <property type="b" name="connected" access="read"/>
+    <property type="s" name="fingerprint" access="read"/>
     <property type="s" name="id" access="read"/>
     <property type="s" name="name" access="read"/>
     <property type="b" name="paired" access="read"/>
