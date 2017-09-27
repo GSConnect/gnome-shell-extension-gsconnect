@@ -1,7 +1,6 @@
 <node>
   <interface name="org.freedesktop.Notifications">
     <method name="Notify">
-      <arg type="s" direction="out"/>
       <arg name="appName" type="s" direction="in"/>
       <arg name="replacesId" type="u" direction="in"/>
       <arg name="iconName" type="s" direction="in"/>
