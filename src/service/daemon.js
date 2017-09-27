@@ -37,7 +37,7 @@ var Daemon = new Lang.Class({
             "name",
             "DeviceName",
             "The name announced to the network",
-            GObject.ParamFlags.READABLE,
+            GObject.ParamFlags.READWRITE,
             "Gnome Shell"
         ),
         "certificate": GObject.ParamSpec.object(
