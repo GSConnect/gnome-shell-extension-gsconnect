@@ -361,26 +361,43 @@ var DevicePage = new Lang.Class({
         // Status Section FIXME
         let statusSection = this.add_section();
         let statusRow = this.addRow(statusSection);
-        statusRow.grid.halign = Gtk.Align.START;
         
         let deviceIcon = Gtk.Image.new_from_icon_name(
             device.type,
             Gtk.IconSize.DIALOG
         );
+        deviceIcon.xalign = 0;
         statusRow.grid.attach(deviceIcon, 0, 0, 1, 2);
         
-        let deviceName = new Gtk.Label({ label: device.name });
+        let deviceName = new Gtk.Label({ label: device.name, xalign: 0 });
         statusRow.grid.attach(deviceName, 1, 0, 1, 1);
-        let deviceType = new Gtk.Label({ label: device.type });
+        let deviceType = new Gtk.Label({ label: device.type, xalign: 0 });
         statusRow.grid.attach(deviceType, 1, 1, 1, 1);
         
-        let deviceControls = new Gtk.ButtonBox({ hexpand: true, halign: Gtk.Align.END });
-        statusRow.grid.attach(deviceControls, 0, 2, 2, 1);
+        let deviceControls = new Gtk.ButtonBox({
+            halign: Gtk.Align.END,
+            hexpand: true,
+            spacing: 12
+        });
+        statusRow.grid.attach(deviceControls, 2, 0, 1, 2);
         
-        let pairButton = new Gtk.Button({ label: _("Pair") });
+        let pairButton = new Gtk.Button({ label: "" });
+        pairButton.connect("clicked", () => {
+            if (this.device.paired) {
+                this.device.unpair();
+            } else {
+                this.device.pair();
+            }
+        });
+        this.device.connect("notify::paired", () => {
+            if (this.device.paired) {
+                pairButton.label = _("Unpair");
+            } else {
+                pairButton.label = _("Pair");
+            }
+        });
+        this.device.notify("paired");
         deviceControls.add(pairButton);
-        let pingButton = new Gtk.Button({ label: _("Ping") });
-        deviceControls.add(pingButton);
         
         // Plugins Section
         let pluginsSection = this.add_section(_("Plugins"));
@@ -436,8 +453,6 @@ var PrefsWidget = new Lang.Class({
         for (let device of this.manager.devices.values()) {
             this.devicesStack.add_device(device);
         }
-        
-        //this.devicesStack.stack.set_visible_child_name("default");
     },
     
     add_page: function (id, title) {
@@ -459,7 +474,6 @@ var PrefsWidget = new Lang.Class({
         generalPage.addSetting(appearanceSection, "device-visibility");
         
         let filesSection = generalPage.add_section(_("Files"));
-        generalPage.addSetting(filesSection, "device-automount");
         generalPage.addSetting(filesSection, "nautilus-integration");
         
         // FIXME
