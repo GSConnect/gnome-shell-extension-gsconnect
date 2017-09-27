@@ -55,7 +55,7 @@ var Device = new Lang.Class({
             "paired",
             "devicePaired",
             "Whether the device is paired",
-            GObject.ParamFlags.READABLE,
+            GObject.ParamFlags.READWRITE,
             false
         ),
         "plugins": GObject.param_spec_variant(
@@ -96,6 +96,9 @@ var Device = new Lang.Class({
         this._channel = null;
         this._connected = false;
         
+        this._incomingPairRequest = false;
+        this._outgoingPairRequest = false;
+        
         this.identity = new Protocol.Packet(packet);
         
         // Plugins
@@ -128,6 +131,18 @@ var Device = new Lang.Class({
     get paired () {
         return GLib.file_test(this.config_cert, GLib.FileTest.EXISTS);
     },
+    set paired (bool) {
+        if (bool) {
+            GLib.file_set_contents(
+                this.config_cert,
+                this._channel._peer_cert.certificate_pem
+            );
+        } else {
+            GLib.unlink(this.config_cert);
+        }
+        
+        this._dbus.emit_property_changed("paired", new GLib.Variant("b", bool));
+    },
     get plugins () { return Array.from(this._plugins.keys()); },
     get type () { return this.identity.body.deviceType; },
     
@@ -137,6 +152,7 @@ var Device = new Lang.Class({
         
         if (packet.type === Protocol.TYPE_IDENTITY) {
             this.identity.fromPacket(packet);
+            this.activate();
         } else if (packet.type === Protocol.TYPE_PAIR) {
 	        this._handlePair(packet);
 	    } else if (this._handlers.has(packet.type)) {
@@ -144,8 +160,6 @@ var Device = new Lang.Class({
         } else {
             log("Received unsupported packet type: " + packet.toString());
         }
-        
-        this.activate();
     },
     
     activate: function () {
@@ -160,11 +174,7 @@ var Device = new Lang.Class({
         
         this._channel.connect("connected", Lang.bind(this, this._onConnected));
         this._channel.connect("disconnected", Lang.bind(this, this._onDisconnected));
-		this._channel.connect("received", (channel, packet) => {
-            log("Device._received(" + this.id + ")");
-            
-            this.handlePacket(packet);
-		});
+		this._channel.connect("received", Lang.bind(this, this._onReceived));
         
         this._channel.open();
     },
@@ -173,6 +183,7 @@ var Device = new Lang.Class({
         log("Connected to: " + this.id);
         
         this._connected = true;
+        
         this._loadPlugins();
         
         this._dbus.emit_property_changed(
@@ -197,26 +208,42 @@ var Device = new Lang.Class({
         );
     },
     
+    _onReceived: function (channel, packet) {
+        log("Received from: " + this.id + ")");
+        
+        this.handlePacket(packet);
+    },
+    
     /**
      * Pairing Functions
      *
      * TODO: set timeout for outgoing pair request
      */
     _handlePair: function (packet) {
+        log("Pair request: " + this.name + " (" + this.id + ")");
+        
+        // A pair has been requested
         if (packet.body.pair) {
-            log("Pair request: " + this.name + " (" + this.id + ")");
-            
-            if (this.paired) {
+            // The device is responding to our request
+            if (this._outgoingPairRequest) {
+                this._outgoingPairRequest = false;
+                this.paired = true;
+                this._loadPlugins();
+            // We're already paired, inform the device
+            } else if (this.paired) {
                 this.pair();
+            // This is a new pair request, inform the user
             } else {
-                this._pairNotify(packet);
+                this._incomingPairRequest = true;
+                this._notifyPair(packet);
             }
+        // Device has requested unpairing
         } else {
             this.unpair();
         }
     },
     
-    _pairNotify: function (packet) {
+    _notifyPair: function (packet) {
         this.emit("pairRequest", this.id); // FIXME: no publicKey?
         
         let note = new Notify.Notification({
@@ -241,15 +268,18 @@ var Device = new Lang.Class({
         
         note.show();
         
+        // Start a 30s countdown
         GLib.timeout_add_seconds(
             GLib.PRIORITY_DEFAULT,
             30,
-            Lang.bind(this, this._pairTimeout, note)
+            Lang.bind(this, this._cancelPair, note)
         );
     },
     
-    _pairTimeout: function (note) {
+    _cancelPair: function (note) {
         try {
+            this._incomingPairRequest = false;
+            this._outgoingPairRequest = false;
             note.close();
         } catch (e) {
         }
@@ -259,10 +289,22 @@ var Device = new Lang.Class({
     pair: function () {
         log("Device.pair(" + this.name + ")");
         
+        // We're initiating an outgoing request
+        if (!this.paired) {
+            this._outgoingPairRequest = true;
+        
+            GLib.timeout_add_seconds(
+                GLib.PRIORITY_DEFAULT,
+                30,
+                Lang.bind(this, this._cancelPair)
+            );
+        }
+        
+        // Send a pair packet
         let packet = new Protocol.Packet({
             id: Date.now(),
             type: Protocol.TYPE_PAIR,
-            body: { pair: true } // FIXME: no publicKey?
+            body: { pair: true }
         });
         this._channel.send(packet);
     },
@@ -279,11 +321,7 @@ var Device = new Lang.Class({
             this._channel.send(packet);
         }
         
-        GLib.unlink(this.config_cert);
-        this._dbus.emit_property_changed(
-            "paired",
-            new GLib.Variant("b", false)
-        );
+        this.paired = false;
         
         this._unloadPlugins();
     },
@@ -291,17 +329,8 @@ var Device = new Lang.Class({
     acceptPair: function () {
         log("Device.acceptPair(" + this.id + ")");
         
-        GLib.file_set_contents(
-            this.config_cert,
-            this._channel._peer_cert.certificate_pem
-        );
-        this._dbus.emit_property_changed(
-            "paired",
-            new GLib.Variant("b", this.paired)
-        );
-        
+        this.paired = true;
         this._loadPlugins();
-        
         this.pair();
     },
     
