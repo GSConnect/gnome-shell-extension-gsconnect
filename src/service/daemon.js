@@ -6,7 +6,6 @@
 const Gettext = imports.gettext.domain("org.gnome.shell.extensions.gsconnect");
 const _ = Gettext.gettext;
 const Lang = imports.lang;
-const Mainloop = imports.mainloop;
 const System = imports.system;
 
 const Gio = imports.gi.Gio;
@@ -56,14 +55,6 @@ var Daemon = new Lang.Class({
             GObject.ParamFlags.READABLE
         )
     },
-    // FIXME: this is emitted when a device is "discovered", with a device obj
-    // TODO: magical DBus notification
-    Signals: {
-        "device": {
-            flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED,
-            param_types: [ GObject.TYPE_STRING ]
-        }
-    },
 
     _init: function() {
         this.parent({
@@ -107,6 +98,7 @@ var Daemon = new Lang.Class({
     set name(name) {
         this.identity.body.deviceName = name;
         Config.write_daemon_config(this);
+        // FIXME: rebroadcast name??
     },
     
     get devices() {
@@ -121,12 +113,39 @@ var Daemon = new Lang.Class({
         this._socket.send_to(this._broadcastAddr, ident.toData(), null);
     },
     
+    // FIXME: like acquireDiscoveryMode
+    discover: function (name, timeout=-1) {
+    },
+    
+    _addDevice: function (packet) {
+        let devObjPath = "/org/gnome/shell/extensions/gsconnect/device/";
+        
+        if (this._devices.has(devObjPath + packet.body.deviceId)) {
+            log("updating device");
+            
+            let device = this._devices.get(devObjPath + packet.body.deviceId);
+            device.handlePacket(packet);
+        } else {
+            log("creating device");
+            
+            let device = new Device.Device(this, packet)
+            this._devices.set(devObjPath + packet.body.deviceId, device);
+            
+            this._dbus.emit_property_changed(
+                "devices",
+                new GLib.Variant("as", this.devices)
+            );
+        }
+        
+        Config.write_device_cache(this, packet.body.deviceId);
+    },
+    
     /**
      * Start listening for incoming broadcast packets
      *
      * TODO: TCP Listener that supports a range of ports (1716-1764)
      */
-    listen: function () {
+    _listen: function () {
         this._socket = new Gio.Socket({
             family: Gio.SocketFamily.IPV4,
             type: Gio.SocketType.DATAGRAM,
@@ -177,6 +196,7 @@ var Daemon = new Lang.Class({
         let addr, data, flags, size;
         
         try {
+            // "Peek" the incoming address
             [size, addr, data, flags] = this._socket.receive_message(
                 [],
                 Gio.SocketMsgFlags.PEEK,
@@ -201,20 +221,7 @@ var Daemon = new Lang.Class({
         packet.body.tcpHost = addr.address.to_string();
         
         // Init device
-        if (this._devices.has(packet.body.deviceId)) {
-            log("updating device");
-            
-            let device = this._devices.get(packet.body.deviceId);
-            device.handlePacket(packet);
-        } else {
-            log("creating device");
-            
-            let device = new Device.Device(this, packet)
-            this._devices.set(packet.body.deviceId, device);
-        }
-        
-        // update cache
-        Config.write_device_cache(this, packet.body.deviceId);
+        this._addDevice(packet);
         
         return true;
     },
@@ -259,16 +266,17 @@ var Daemon = new Lang.Class({
         
         // Listen for new devices
         try {
-            this.listen();
+            this._listen();
         } catch (e) {
             log("error listening: " + e);
         }
         
         // Load cached devices
+        let devObjPath = "/org/gnome/shell/extensions/gsconnect/device/";
+        
         for (let identity of Config.read_device_cache()) {
             let packet = new Protocol.Packet(identity);
-            let device = new Device.Device(this, packet);
-            this._devices.set(packet.body.deviceId, device);
+            this._addDevice(packet);
         }
         log(this._devices.size + " devices loaded from cache");
     },

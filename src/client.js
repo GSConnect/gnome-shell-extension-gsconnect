@@ -326,32 +326,39 @@ var Device = new Lang.Class({
     Name: "GSConnectDeviceProxy",
     Extends: ProxyBase,
     Properties: {
+        "connected": GObject.ParamSpec.boolean(
+            "connected",
+            "deviceConnected",
+            "Whether the device is connected",
+            GObject.ParamFlags.READABLE,
+            false
+        ),
+        "fingerprint": GObject.ParamSpec.string(
+            "fingerprint",
+            "deviceFingerprint",
+            "SHA1 fingerprint for the device certificate",
+            GObject.ParamFlags.READABLE,
+            ""
+        ),
         "id": GObject.ParamSpec.string(
             "id",
-            "DeviceId",
-            "The device Id",
+            "deviceId",
+            "The device id/hostname",
             GObject.ParamFlags.READABLE,
             ""
         ),
         "name": GObject.ParamSpec.string(
             "name",
-            "DeviceName",
+            "deviceName",
             "The device name",
             GObject.ParamFlags.READABLE,
             ""
         ),
-        "connected": GObject.ParamSpec.boolean(
-            "connected",
-            "DeviceReachable",
-            "Whether the device is connected/online",
-            GObject.ParamFlags.READABLE,
-            false
-        ),
         "paired": GObject.ParamSpec.boolean(
             "paired",
-            "DeviceTrusted",
-            "Whether the device is paired or not",
-            GObject.ParamFlags.READABLE,
+            "devicePaired",
+            "Whether the device is paired",
+            GObject.ParamFlags.READWRITE,
             false
         ),
         "plugins": GObject.param_spec_variant(
@@ -364,25 +371,10 @@ var Device = new Lang.Class({
         ),
         "type": GObject.ParamSpec.string(
             "type",
-            "DeviceType",
+            "deviceType",
             "The device type",
             GObject.ParamFlags.READABLE,
-            "unknown"
-        ),
-        "mounted": GObject.ParamSpec.boolean(
-            "mounted",
-            "DeviceMounted",
-            "Whether the device is mounted or not",
-            GObject.ParamFlags.READABLE,
-            false
-        ),
-        "mounts": GObject.param_spec_variant(
-            "mounts",
-            "mountedDirectories",
-            "Directories on the mounted device",
-            new GLib.VariantType("a{sv}"),
-            null,
-            GObject.ParamFlags.READABLE
+            ""
         )
     },
     
@@ -555,7 +547,10 @@ var DeviceManager = new Lang.Class({
     },
     
     _init: function () {
-        this.parent(ManagerNode.interfaces[0], "/org/gnome/shell/extensions/gsconnect/daemon");
+        this.parent(
+            ManagerNode.lookup_interface("org.gnome.shell.extensions.gsconnect.daemon"),
+            "/org/gnome/shell/extensions/gsconnect/daemon"
+        );
         
         // Track our device proxies, DBus path as key
         this.devices = new Map();
@@ -563,37 +558,48 @@ var DeviceManager = new Lang.Class({
         // Track scan request ID's
         this._scans = new Map();
         
-        this.connect("g-signal", (proxy, sender, name, parameters) => {
-            parameters = parameters.deep_unpack();
+        // Connect to PropertiesChanged
+        this.connect("g-properties-changed", (proxy, properties) => {
+            for (let name in properties.deep_unpack()) {
+                this.notify(name);
+            }
+        });
+        
+        // Watch for new and removed devices
+        this.connect("notify::devices", () => {
+            let managedDevices = this._get("devices");
             
-            if (name === "DeviceAdded") {
-                this._deviceAdded(this, parameters[0]);
-            } else if (name === "DeviceRemoved") {
-                this._deviceRemoved(this, parameters[0]);
+            for (let dbusPath of managedDevices) {
+                if (!this.devices.has(dbusPath)) {
+                    this._deviceAdded(this, dbusPath);
+                }
+            }
+            
+            for (let dbusPath of this.devices.keys()) {
+                if (managedDevices.indexOf(dbusPath) < 0) {
+                    this._deviceRemoved(this, dbusPath);
+                }
             }
         });
         
         // Add currently managed devices
-        this._get("devices").forEach((id) => {
-            let dbusPath = "/org/gnome/shell/extensions/gsconnect/device/" + id;
+        for (let dbusPath of this._get("devices")) {
             this._deviceAdded(this, dbusPath);
-        });
+        }
     },
     
-    // MConnect always reports username@hostname
+    // MConnect always reports username@hostname // FIXME
     get name () { return GLib.get_user_name() + "@" + GLib.get_host_name(); },
     set name (name) { log("Not implemented"); },
     get scanning () { return (this._scans.length > 0); },
     
     // Callbacks
     _deviceAdded: function (manager, dbusPath) {
-        // NOTE: not actually a signal yet
         this.devices.set(dbusPath, new Device(this, dbusPath));
         this.emit("device::added", dbusPath);
     },
     
     _deviceRemoved: function (manager, dbusPath) {
-        // NOTE: not actually a signal yet
         this.devices.get(dbusPath).destroy();
         this.devices.delete(dbusPath);
         this.emit("device::removed", dbusPath);

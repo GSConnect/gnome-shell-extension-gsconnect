@@ -154,7 +154,8 @@ function write_device_cache (daemon, deviceId=false) {
     if (deviceId) {
         log("updating cache for: " + deviceId);
         
-        let device = daemon._devices.get(deviceId);
+        let devObjPath = "/org/gnome/shell/extensions/gsconnect/device/";
+        let device = daemon._devices.get(devObjPath + deviceId);
         
         let deviceDir = CONFIG_PATH + "/" + deviceId;
         
