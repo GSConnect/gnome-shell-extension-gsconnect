@@ -87,7 +87,7 @@ var Packet = new Lang.Class({
     fromPacket: function (packet) {
         if (this._check(packet)) {
             Object.assign(this, {
-                id: Date.now(), //FIXME
+                id: Date.now(),
                 type: packet.type,
                 body: JSON.parse(JSON.stringify(packet.body))
             });
@@ -196,11 +196,14 @@ var LanChannel = new Lang.Class({
             Lang.bind(this, this._accept_certificate)
         );
         
-        this._connection.handshake(null);
+        this._connection.handshake_async(
+            GLib.PRIORITY_DEFAULT,
+            null,
+            Lang.bind(this, this.opened)
+        );
     },
     
     // Negotitate certificate/pairing
-    // TODO: handle errors
     _accept_certificate: function (conn, peer_cert, flags) {
         if (this.device.paired) {
             log("verifying certificate...");
@@ -285,20 +288,31 @@ var LanChannel = new Lang.Class({
      * Public Methods
      */
     open: function () {
-        log("LanChannel.open(" + this.device.id + ")");
+        log("Connecting to '" + this.device.name + "'");
         
         let client = new Gio.SocketClient();
-        client.connect_async(this.addr, null, Lang.bind(this, this.opened));
+        client.connect_async(this.addr, null, Lang.bind(this, this.auth));
     },
     
-    opened: function (client, res) {
-        log("LanChannel.opened(" + this.device.id + ")");
+    auth: function (client, res) {
+        log("Authenticating '" + this.device.name + "'");
         
         try {
             this._connection = client.connect_finish(res);
             this._initSocket();
             this._sendIdent();
+            log("HANG 4");
             this._initTls();
+        } catch (e) {
+            log("Error connecting: " + e);
+            this.close();
+            return false;
+        }
+    },
+    
+    opened: function (connection, res) {
+        try {
+            this._connection.handshake_finish(res);
             this._initStreams();
             this._initMonitor();
         } catch (e) {
@@ -312,8 +326,6 @@ var LanChannel = new Lang.Class({
     },
     
     close: function () {
-        log("LanChannel.close(" + this.device.id + ")");
-        
         if (this._monitor > 0) {
             Gio.Source.remove(this._monitor);
             this._monitor = 0;
@@ -409,25 +421,30 @@ var LanDownloadChannel = new Lang.Class({
     Name: "GSConnectLanDownloadChannel",
     Extends: LanChannel,
     
-    MIN_PORT: 1739,
-    MAX_PORT: 1764,
-    
-    _init: function (device, addr, destStream, size) {
+    _init: function (device, addr, fileStream, size) {
         this.parent(device, addr);
         
-        this._out = destStream;
+        this._out = fileStream;
         this.bytesWritten = 0;
         this.size = size;
     },
     
-    // FIXME: port range
-    opened: function (client, res) {
-        log("TransferChannel.opened(" + this.device.id + ")");
-        
+    auth: function (client, res) {
         try {
             this._connection = client.connect_finish(res);
             this._initSocket();
             this._initTls(true);
+        } catch (e) {
+            log("Error connecting: " + e);
+            this.close();
+            return false;
+        }
+    },
+    
+    opened: function (connection, res) {
+        log("TransferChannel.opened(" + this.device.id + ")");
+        
+        try {
             this._in = this._connection.get_input_stream();
         } catch (e) {
             log("Error connecting: " + e);
@@ -461,10 +478,10 @@ var LanUploadChannel = new Lang.Class({
         this._listener = new Gio.SocketListener();
         let success = this._listener.add_inet_port(this.addr.port, null);
         
-        this._listener.accept_async(null, Lang.bind(this, this.opened));
+        this._listener.accept_async(null, Lang.bind(this, this.auth));
     },
     
-    opened: function (listener, res) {
+    auth: function (listener, res) {
         log("TransferChannel.opened(" + this.device.id + ")");
         
         try {
@@ -472,6 +489,16 @@ var LanUploadChannel = new Lang.Class({
             [this._connection, src] = this._listener.accept_finish(res);
             this._initSocket();
             this._initTls();
+        } catch (e) {
+            log("Error connecting: " + e);
+            this.close();
+            return false;
+        }
+    },
+    
+    opened: function (connection, res) {
+        try {
+            this._connection.handshake_finish(res);
             this._out = this._connection.get_output_stream();
         } catch (e) {
             log("Error connecting: " + e);
