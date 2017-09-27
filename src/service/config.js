@@ -248,12 +248,7 @@ function init_config (daemon) {
  * FIXME: this stuff should all be programmatic like KDE Connect
  */
 var PluginInfo = new Map([
-    ["battery", {
-        settings: {
-            threshold_notification: true,
-            threshold_level: -2
-        }
-    }],
+    ["battery", {}],
     ["findmyphone", {
     }],
     ["notifications", {
@@ -263,12 +258,16 @@ var PluginInfo = new Map([
             },
             send: {
                 enabled: false,
-                applications: {}
+                applications: {
+                    GSConnect: {
+                        iconName: "phone",
+                        enabled: false
+                    }
+                }
             }
         }
     }],
-    ["ping", {
-    }],
+    ["ping", {}],
     ["runcommand", {
         settings: {
             commands: {}
