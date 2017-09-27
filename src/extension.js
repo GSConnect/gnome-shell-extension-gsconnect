@@ -338,12 +338,6 @@ var DeviceMenu = new Lang.Class({
         });
         this.browseBar.actor.style_class = "popup-sub-menu";
         this.browseBar.actor.visible = false;
-        this.browseButton.bind_property(
-            "checked",
-            this.browseBar.actor,
-            "visible",
-            GObject.BindingFlags.DEFAULT
-        );
         this.addMenuItem(this.browseBar);
         
         // Status Bar
@@ -376,7 +370,7 @@ var DeviceMenu = new Lang.Class({
             Lang.bind(this, this._nameChanged)
         );
         device.connect(
-            "changed::plugins",
+            "notify::plugins",
             Lang.bind(this, this._pluginsChanged)
         );
         
@@ -454,10 +448,6 @@ var DeviceMenu = new Lang.Class({
             buttons[name].reactive = sensitive;
             buttons[name].track_hover = sensitive;
             buttons[name].opacity = sensitive ? 255 : 128;
-            
-            if (sensitive && name === "sftp") {
-                device.mounted = Settings.get_boolean("device-automount");
-            }
         }
         
         // Battery Plugin
@@ -518,36 +508,53 @@ var DeviceMenu = new Lang.Class({
             button.add_style_pseudo_class("active");
         } else {
             button.remove_style_pseudo_class("active");
+            this.browseBar.actor.visible = false;
             return;
         }
         
-        if (this.device.mount()) {
-            this.browseBar.actor.destroy_all_children();
-            
-            for (let path in this.device.mounts) {
-                let mountItem = new PopupMenu.PopupMenuItem(
-                    this.device.mounts[path]
-                );
-                mountItem.path = path;
-                
-                mountItem.connect("activate", (item) => {
-                    button.checked = false;
-                    button.remove_style_pseudo_class("active");
-                    item._getTopMenu().close(true);
-                    GLib.spawn_command_line_async("xdg-open " + item.path);
-                });
-                
-                this.browseBar.addMenuItem(mountItem);
-            }
+        if (this.device.sftp.mounted) {
+            this._browseOpen();
         } else {
-            Main.notifyError(
-                this.device.name,
-                _("Failed to mount device filesystem")
-            );
-            
-            this.browseButton.checked = false;
-            this.browseButton.remove_style_pseudo_class("active");
+            this._browseNotify = this.device.sftp.connect("notify::mounted", () => {
+                if (this.device.sftp.mounted) {
+                    this._browseOpen();
+                } else {
+                        Main.notifyError(
+                            this.device.name,
+                            _("Failed to mount device filesystem")
+                        );
+                        
+                        this.browseButton.checked = false;
+                        this.browseButton.remove_style_pseudo_class("active");
+                }
+                
+                this.device.sftp.disconnect(this._browseNotify);
+            });
+        
+            this.device.sftp.mount();
         }
+    },
+    
+    _browseOpen: function () {
+        debug("extension.DeviceMenu._browseOpen()");
+        
+        this.browseBar.actor.destroy_all_children();
+        
+        for (let name in this.device.sftp.directories) {
+            let mountItem = new PopupMenu.PopupMenuItem(name);
+            mountItem.path = this.device.sftp.directories[name];
+            
+            mountItem.connect("activate", (item) => {
+                this.browseButton.checked = false;
+                this.browseButton.remove_style_pseudo_class("active");
+                item._getTopMenu().close(true);
+                GLib.spawn_command_line_async("xdg-open " + item.path);
+            });
+            
+            this.browseBar.addMenuItem(mountItem);
+        }
+        
+        this.browseBar.actor.visible = true;
     },
     
     _findAction: function (button) {

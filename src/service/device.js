@@ -29,6 +29,7 @@ const Notifications = imports.service.plugins.notifications;
 const Ping = imports.service.plugins.ping;
 const RunCommand = imports.service.plugins.runcommand;
 const Share = imports.service.plugins.share;
+const SFTP = imports.service.plugins.sftp;
 const Telephony = imports.service.plugins.telephony;
 
 
@@ -460,6 +461,7 @@ var PacketHandlers = new Map([
     ["notifications", Notifications],
     ["ping", Ping],
     ["runcommand", RunCommand],
+    ["sftp", SFTP],
     ["share", Share],
     ["telephony", Telephony]
 ]);

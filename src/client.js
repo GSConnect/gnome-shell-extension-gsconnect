@@ -181,20 +181,57 @@ var Battery = new Lang.Class({
         
         //
         this.connect("g-properties-changed", (proxy, properties) => {
-            properties = properties.deep_unpack();
-            
-            if (properties.hasOwnProperty("charging")) {
-                this.notify("charging");
-            }
-            
-            if (properties.hasOwnProperty("level")) {
-                this.notify("level");
+            for (let name in properties.deep_unpack()) {
+                this.notify(name);
             }
         });
     },
     
     get charging () { return this._get("charging"); },
     get level () { return this._get("level"); }
+});
+
+
+/** A base class for backend Battery implementations */
+var SFTP = new Lang.Class({
+    Name: "GSConnectSFTPProxy",
+    Extends: ProxyBase,
+    Properties: {
+        "directories": GObject.param_spec_variant(
+            "directories",
+            "mountedDirectories",
+            "Directories on the mounted device",
+            new GLib.VariantType("a{sv}"),
+            null,
+            GObject.ParamFlags.READABLE
+        ),
+        "mounted": GObject.ParamSpec.boolean(
+            "mounted",
+            "deviceMounted",
+            "Whether the device is mounted",
+            GObject.ParamFlags.READABLE,
+            false
+        )
+    },
+    
+    _init: function (dbusPath) {
+        this.parent(
+            DeviceNode.lookup_interface("org.gnome.shell.extensions.gsconnect.sftp"),
+            dbusPath
+        );
+        
+        //
+        this.connect("g-properties-changed", (proxy, properties) => {
+            for (let name in properties.deep_unpack()) {
+                this.notify(name);
+            }
+        });
+    },
+    
+    get directories () { return this._get("directories"); },
+    get mounted () { return this._get("mounted") === true; },
+    
+    mount: function () { this._call("mount", true); }
 });
 
 
@@ -336,8 +373,16 @@ var Device = new Lang.Class({
             "mounted",
             "DeviceMounted",
             "Whether the device is mounted or not",
-            GObject.ParamFlags.READWRITE,
+            GObject.ParamFlags.READABLE,
             false
+        ),
+        "mounts": GObject.param_spec_variant(
+            "mounts",
+            "mountedDirectories",
+            "Directories on the mounted device",
+            new GLib.VariantType("a{sv}"),
+            null,
+            GObject.ParamFlags.READABLE
         )
     },
     
@@ -351,25 +396,13 @@ var Device = new Lang.Class({
         
         // Connect to PropertiesChanged
         this.connect("g-properties-changed", (proxy, properties) => {
-            properties = properties.deep_unpack();
-            
-            for (let name in properties) {
-                if (name === "id") {
-                    this.notify("id");
-                } else if (name === "name") {
-                    this.notify("name");
-                } else if (name === "connected") {
-                    this.notify("connected");
-                } else if (name === "paired") {
-                    this.notify("paired");
-                } else if (name === "plugins") {
-                    this.notify("plugins");
-                } else if (name === "type") {
-                    this.notify("type");
+            for (let name in properties.deep_unpack()) {
+                if (name === "plugins") {
+                    this._reloadPlugins();
+                } else {
+                    this.notify(name);
                 }
             }
-            
-            this._reloadPlugins();
         });
         
         this._reloadPlugins();
@@ -377,8 +410,6 @@ var Device = new Lang.Class({
     
     // Properties
     get id () { return this._get("id"); },
-    get mounted () { return false; }, // TODO: Unsupported
-    set mounted (bool) { return; }, // TODO: Unsupported
     get name () { return this._get("name"); },
     get connected () { return this._get("connected") === true; },
     get paired () { return this._get("paired") === true; },
@@ -390,7 +421,6 @@ var Device = new Lang.Class({
     get type () { return this._get("type"); },
     
     // Methods
-    mount: function () { throw Error("Not Implemented"); }, // TODO: Unsupported
     pair: function () { this._call("pair", true); },
     ping: function () { this._call("ping", true); },
     ring: function () { this.findmyphone._call("ring", true); },
@@ -408,21 +438,16 @@ var Device = new Lang.Class({
     configurePlugin: function (name, obj) {
         return this._call("configurePlugin", false, name, JSON.stringify(obj));
     },
+    reloadPlugins: function () {
+        return this._call("reloadPlugins", true);
+    },
     
     //
     _reloadPlugins: function () {
-        if (this.plugins.indexOf("battery") > -1 && this.paired) {
+        if (this.plugins.indexOf("battery") > -1) {
             this.battery = new Battery(this.gObjectPath);
             
             // FIXME: JS ERROR: TypeError: this.battery is undefined
-            this.battery.connect("notify", (battery) => {
-                this.emit("changed::battery",
-                    new GLib.Variant(
-                        "(bi)",
-                        [this.battery.charging, this.battery.level]
-                    )
-                );
-            });
             
             // Kickstart the plugin
             this.emit("changed::battery",
@@ -436,7 +461,7 @@ var Device = new Lang.Class({
             delete this.battery;
         }
         
-        if (this.plugins.indexOf("findmyphone") > -1 && this.paired) {
+        if (this.plugins.indexOf("findmyphone") > -1) {
             this.findmyphone = new ProxyBase(
                 DeviceNode.lookup_interface("org.gnome.shell.extensions.gsconnect.findmyphone"),
                 this.gObjectPath
@@ -446,7 +471,7 @@ var Device = new Lang.Class({
             delete this.findmyphone;
         }
         
-        if (this.plugins.indexOf("ping") > -1 && this.paired) {
+        if (this.plugins.indexOf("ping") > -1) {
             this.ping = new ProxyBase(
                 DeviceNode.lookup_interface("org.gnome.shell.extensions.gsconnect.ping"),
                 this.gObjectPath
@@ -456,7 +481,15 @@ var Device = new Lang.Class({
             delete this.ping;
         }
         
-        if (this.plugins.indexOf("share") > -1 && this.paired) {
+        // TODO: test
+        if (this.plugins.indexOf("sftp") > -1) {
+            this.sftp = new SFTP(this.gObjectPath);
+        } else if (this.hasOwnProperty("sftp")) {
+            this.sftp.destroy();
+            delete this.share;
+        }
+        
+        if (this.plugins.indexOf("share") > -1) {
             this.share = new ProxyBase(
                 DeviceNode.lookup_interface("org.gnome.shell.extensions.gsconnect.share"),
                 this.gObjectPath
@@ -466,14 +499,14 @@ var Device = new Lang.Class({
             delete this.share;
         }
         
-        if (this.plugins.indexOf("telephony") > -1 && this.paired) {
+        if (this.plugins.indexOf("telephony") > -1) {
             this.telephony = new Telephony(this.gObjectPath);
         } else if (this.hasOwnProperty("telephony")) {
             this.telephony.destroy();
             delete this.telephony;
         }
         
-        this.emit("changed::plugins", new GLib.Variant("()", ""));
+        this.notify("plugins");
     },
     
     // Override Methods
@@ -481,6 +514,7 @@ var Device = new Lang.Class({
         ["battery",
         "findmyphone",
         "ping",
+        "sftp",
         "share",
         "telephony"].forEach((plugin) => {
             if (this.hasOwnProperty(plugin)) {

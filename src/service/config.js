@@ -274,6 +274,11 @@ var PluginInfo = new Map([
             commands: {}
         }
     }],
+    ["sftp", {
+        settings: {
+            automount: false
+        }
+    }],
     ["share", {
         settings: {
             download_directory: GLib.get_user_special_dir(

@@ -11,11 +11,6 @@
       <summary>Debug mode</summary>
       <description>Enable debug features and logging</description>
     </key>
-    <key name="device-automount" type="b">
-      <default>false</default>
-      <summary>Device Auto-Mount</summary>
-      <description>Automatically mount devices that support it</description>
-    </key>
     <key name="device-indicators" type="b">
       <default>true</default>
       <summary>Device Indicators</summary>

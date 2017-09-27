@@ -5,7 +5,7 @@
     <property type="s" name="id" access="read"/>
     <property type="s" name="name" access="read"/>
     <property type="b" name="paired" access="read"/>
-    <property type="as" name="plugins" access="read"/> <!-- read/write? -->
+    <property type="as" name="plugins" access="read"/>
     <property type="s" name="type" access="read"/>
     
     <method name="pair"/>
@@ -58,9 +58,18 @@
     <signal name="ping"/>
   </interface>
   
-  <!-- Ping -->
+  <!-- Run Commands -->
   <interface name="org.gnome.shell.extensions.gsconnect.runcommand">
     <method name="sendCommandList"/>
+  </interface>
+  
+  <!-- SFTP -->
+  <interface name="org.gnome.shell.extensions.gsconnect.sftp">
+    <property type="b" name="mounted" access="read"/> <!-- TODO: read/write? -->
+    <property type="a{ss}" name="directories" access="read"/>
+    
+    <method name="mount"/>
+    <method name="unmount"/>
   </interface>
   
   <!-- Share -->
@@ -73,12 +82,11 @@
   
   <!-- Telephony -->
   <interface name="org.gnome.shell.extensions.gsconnect.telephony">
-    <!-- Methods -->
     <method name="sms">
       <arg name="phoneNumber" type="s" direction="in"/>
       <arg name="messageBody" type="s" direction="in"/>
     </method>
-    <!-- Signals -->
+    
     <signal name="missedCall">
       <arg name="phoneNumber" type="s"/>
       <arg name="contactName" type="s"/>

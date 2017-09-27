@@ -579,6 +579,37 @@ var RunCommandPluginDialog = new Lang.Class({
 });
 
 
+var SFTPPluginDialog = new Lang.Class({
+    Name: "GSConnectSFTPPluginDialog",
+    Extends: PluginDialog,
+    
+    _init: function (devicePage, pluginName, pluginInfo, win) {
+        this.parent(devicePage, pluginName, pluginInfo, win);
+        
+        let generalSection = this.content.addSection(_("General"));
+        
+        let automountSwitch = new Gtk.Switch({
+            visible: true,
+            can_focus: true,
+            halign: Gtk.Align.END,
+            valign: Gtk.Align.CENTER,
+            active: this._settings.automount
+        });
+        automountSwitch.connect("notify::active", (widget) => {
+            this._settings.automount = automountSwitch.automount;
+        });
+        this.content.addOption(
+            generalSection,
+            _("Auto-mount"),
+            _("Attempt to mount the device as soon as it connects"),
+            automountSwitch
+        );
+        
+        this.content.show_all();
+    }
+});
+
+
 var SharePluginDialog = new Lang.Class({
     Name: "GSConnectSharePluginDialog",
     Extends: PluginDialog,
@@ -752,6 +783,11 @@ var PluginMetadata = new Map([
         summary: _("Run Commands"),
         description: _("Run local commands from remote devices"),
         settings: RunCommandPluginDialog
+    }],
+    ["sftp", {
+        summary: _("SFTP"),
+        description: _("Browse remote devices"),
+        settings: SFTPPluginDialog
     }],
     ["share", {
         summary: _("Share"),
