@@ -59,13 +59,6 @@ var Plugin = new Lang.Class({
             "Whether the device is charging",
             GObject.ParamFlags.READABLE,
             -1
-        ),
-        "threshold": GObject.ParamSpec.int(
-            "threshold",
-            "isCharging",
-            "Whether the battery has reached the warning level",
-            GObject.ParamFlags.READABLE,
-            -1
         )
     },
     
@@ -74,12 +67,10 @@ var Plugin = new Lang.Class({
         
         this._charging = false;
         this._level = -1;
-        this._threshold = 0;
     },
     
     get charging() { return this._charging; },
     get level() { return this._level; },
-    get threshold() { return this._threshold; },
     
     handlePacket: function (packet) {
         this._charging = packet.body.isCharging;
@@ -96,23 +87,27 @@ var Plugin = new Lang.Class({
             new GLib.Variant("i", packet.body.currentCharge)
         );
         
-        // FIXME: settings
-        //        note clearing...
-        this._threshold = packet.body.thresholdEvent;
-        this._dbus.emit_property_changed(
-            "threshold",
-            new GLib.Variant("i", packet.body.thresholdEvent)
-        );
-        
-        if (this.settings.threshold_notification) {
+        // FIXME: note clearing...
+        if (packet.body.thresholdEvent > 0) {
             let note = new Notify.Notification({
                 app_name: "GSConnect",
-                id: packet.id / 1000,
+                id: Number(packet.body.time.toString().slice(2)),
                 summary: _("%s - Low Battery Warning").format(this.device.name),
                 body: _("Battery level is %d").format(this.level), // FIXME % in format strings
                 icon_name: "phone-symbolic"
             });
-        } else if (this.level <= this.settings.threshold_level) {
+            
+            if (this.device._plugins.has("findmyphone")) {
+                let plugin = this.device._plugins.get("findmyphone");
+                
+                note.add_action(
+                    "findMyPhone",
+                    _("Locate"),
+                    Lang.bind(plugin, plugin.ring)
+                );
+            }
+            
+            note.show();
         }
     },
     
