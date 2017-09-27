@@ -75,7 +75,6 @@ var Plugin = new Lang.Class({
         
         this._proc = null;
         this._stdin = null;
-        this._stdout = null;
         this._stderr = null;
         
         if (this.settings.automount) {
@@ -166,10 +165,6 @@ var Plugin = new Lang.Class({
             base_stream: new Gio.UnixOutputStream({ fd: this._proc[2] })
         });
         
-        this._stdout = new Gio.DataInputStream({
-            base_stream: new Gio.UnixInputStream({ fd: this._proc[3] })
-        });
-        
         this._stderr = new Gio.DataInputStream({
             base_stream: new Gio.UnixInputStream({ fd: this._proc[4] })
         });
@@ -245,14 +240,6 @@ var Plugin = new Lang.Class({
             log("SFTP: Error closing stdin: " + e);
         }
         
-        try {
-            if (this._stdout !== null) {
-                this._stdout.close(null);
-            }
-        } catch (e) {
-            log("SFTP: Error closing stdout: " + e);
-        }
-        
         // FIXME: Gio.IOErrorEnum: Stream has outstanding operation
         try {
             if (this._stderr !== null) {
@@ -264,7 +251,6 @@ var Plugin = new Lang.Class({
         
         this._proc = null;
         this._stdin = null;
-        this._stdout = null;
         this._stderr = null;
         
         this._directories = {};
