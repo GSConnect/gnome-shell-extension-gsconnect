@@ -29,7 +29,7 @@
     <method name="reloadPlugins"/>
     
     <signal name="pairRequest">
-      <arg name="publicKey" type="s" direction="out"/>
+      <arg name="publicKey" type="s"/>
     </signal>
   </interface>
   
