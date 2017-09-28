@@ -578,8 +578,8 @@ var DeviceManager = new Lang.Class({
     get scanning () { return (this._scans.length > 0); },
     
     // Callbacks
-    _devicesChanged: function (dbusPaths) {
-        for (let dbusPath of dbusPaths) {
+    _devicesChanged: function (managedDevices) {
+        for (let dbusPath of managedDevices) {
             if (!this.devices.has(dbusPath)) {
                 this._deviceAdded(this, dbusPath);
             }
