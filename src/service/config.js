@@ -24,7 +24,7 @@ var CONFIG_PATH = GLib.get_user_config_dir() + "/gnome-shell-extension-gsconnect
  *
  * @param {Boolean} force - Force generation even if already created
  *
- * TODO: file permissions
+ * FIXME: file permissions
  */
 function generate_encryption (force=false) {
     if (!GLib.file_test(CONFIG_PATH, GLib.FileTest.IS_DIR)) {
@@ -249,7 +249,7 @@ var DaemonDefaults = {
         deviceId: "GSConnect@" + GLib.get_host_name(),
         deviceName: "GSConnect",
         deviceType: "laptop",
-        tcpPort: 1714,
+        tcpPort: 1715,
         protocolVersion: 7,
         incomingCapabilities: [
             "kdeconnect.ping",
