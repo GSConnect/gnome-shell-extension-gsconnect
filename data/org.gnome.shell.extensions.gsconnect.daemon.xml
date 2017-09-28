@@ -1,9 +1,8 @@
 <node>
   <interface name="org.gnome.shell.extensions.gsconnect.daemon">
-    <!-- Properties -->
     <property type="s" name="name" access="readwrite"/>
     <property type="as" name="devices" access="read"/>
-    <!-- Methods -->
+    
     <method name="broadcast"/>
   </interface>
 </node>
