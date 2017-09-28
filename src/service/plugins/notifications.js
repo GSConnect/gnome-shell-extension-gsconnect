@@ -167,9 +167,11 @@ var Plugin = new Lang.Class({
     },
     
     _receiveNotification: function (packet) {
-        if (packet.body.isCancel && this._notifications.has(packet.body.id)) {
-            this._notifications.get(packet.body.id).close();
-            this._notifications.delete(packet.body.id);
+        if (packet.body.isCancel) {
+            if (this._notifications.has(packet.body.id)) {
+                this._notifications.get(packet.body.id).close();
+                this._notifications.delete(packet.body.id);
+            }
         } else {
             let note;
             
