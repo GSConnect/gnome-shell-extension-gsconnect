@@ -104,20 +104,28 @@ function install_service_files (force=false) {
 
 
 function read_daemon_config(daemon) {
-    let config = GLib.file_get_contents(
-        CONFIG_PATH + "/config.json"
-    )[1].toString();
+    let identPath = CONFIG_PATH + "/identity.json"
+    let config;
+        
+    if (GLib.file_test(identPath, GLib.FileTest.EXISTS)) {
+        try {
+            config = JSON.parse(
+                GLib.file_get_contents(identPath)[1].toString()
+            );
+        } catch (e) {
+            log("Error loading daemon configuration: " + e);
+            config = {};
+        }
+    }
     
-    Object.assign(daemon.identity.body, JSON.parse(config));
+    daemon.identity.fromPacket(Common.mergeDeep(DaemonDefaults, config));
 };
 
 
 function write_daemon_config(daemon) {
     GLib.file_set_contents(
-        CONFIG_PATH + "/config.json",
-        JSON.stringify(daemon.identity.body),
-        JSON.stringify(daemon.identity.body).length,
-        null
+        CONFIG_PATH + "/identity.json",
+        daemon.identity.toString()
     );
 };
 
@@ -141,8 +149,6 @@ function read_device_cache () {
         
         if (GLib.file_test(identPath, GLib.FileTest.EXISTS)) {
             let [success, data] = GLib.file_get_contents(identPath);
-            log(data);
-            log(typeof data);
             devices.push(JSON.parse(data));
         }
     }
@@ -180,10 +186,9 @@ function write_device_cache (daemon, deviceId=false) {
 
 // FIXME: error handling
 function read_device_config (deviceId) {
+    let config;
     let device_path = CONFIG_PATH + "/" + deviceId;
     let device_config = device_path + "/config.json";
-    let config = { plugins: {} };
-    let default_config = { plugins: {} };
     
     // Init Config Dir
     if (!GLib.file_test(device_path, GLib.FileTest.IS_DIR)) {
@@ -198,20 +203,12 @@ function read_device_config (deviceId) {
             );
         } catch (e) {
             log("Error loading device configuration: " + e);
-            config = { plugins: {} };
+            config = {};
         }
     }
     
-    // Load defaults and pdate config with (possibly new) settings
-    for (let [pluginName, pluginInfo] of PluginInfo.entries()) {
-        default_config.plugins[pluginName] = { enabled: false };
-        
-        if (pluginInfo.hasOwnProperty("settings")) {
-            default_config.plugins[pluginName].settings = pluginInfo.settings;
-        }
-    }
-    
-    write_device_config(deviceId, Common.mergeDeep(default_config, config));
+    // Merge loaded config with defaults and save
+    write_device_config(deviceId, Common.mergeDeep(DeviceDefaults, config));
     
     return config;
 };
@@ -235,66 +232,103 @@ function write_device_config (deviceId, config) {
 function init_config (daemon) {
     generate_encryption(false);
     install_service_files(false);
-    
-    if (GLib.file_test(CONFIG_PATH + "/config.json", GLib.FileTest.EXISTS)) {
-        read_daemon_config(daemon);
-    } else {
-    }
+    read_daemon_config(daemon);
+    write_daemon_config(daemon);
 };
 
 
 /**
- * Plugin handlers, mapped to plugin names with default settings
+ * Configuration Defaults
  *
- * FIXME: this stuff should all be programmatic like KDE Connect
+ * TODO: this stuff should all be programmatic like KDE Connect
  */
-var PluginInfo = new Map([
-    ["battery", {}],
-    ["findmyphone", {
-    }],
-    ["notifications", {
-        settings: {
-            receive: {
-                enabled: false
-            },
-            send: {
-                enabled: false,
-                applications: {
-                    GSConnect: {
-                        iconName: "phone",
-                        enabled: false
+var DaemonDefaults = {
+    id: Date.now(),
+    type: "kdeconnect.identity",
+    body: {
+        deviceId: "GSConnect@" + GLib.get_host_name(),
+        deviceName: "GSConnect",
+        deviceType: "laptop",
+        tcpPort: 1714,
+        protocolVersion: 7,
+        incomingCapabilities: [
+            "kdeconnect.ping",
+            "kdeconnect.notification",
+            "kdeconnect.notification.request",
+            "kdeconnect.runcommand.request",
+            "kdeconnect.sftp",
+            "kdeconnect.share.request",
+            "kdeconnect.telephony",
+            "kdeconnect.battery"
+        ],
+        outgoingCapabilities: [
+            "kdeconnect.battery.request",
+            "kdeconnect.findmyphone.request",
+            "kdeconnect.notification",
+            "kdeconnect.notification.request",
+            "kdeconnect.ping",
+            "kdeconnect.runcommand",
+            "kdeconnect.sftp.request",
+            "kdeconnect.share.request",
+            "kdeconnect.sms.request",
+            "kdeconnect.telephony.request"
+        ]
+    }
+};
+ 
+var DeviceDefaults = {
+    plugins: {
+        battery: {
+            enabled: false
+        },
+        findmyphone: {
+            enabled: false
+        },
+        notifications: {
+            enabled: false,
+            settings: {
+                receive: {
+                    enabled: false
+                },
+                send: {
+                    enabled: false,
+                    applications: {
+                        GSConnect: {
+                            iconName: "phone",
+                            enabled: false
+                        }
                     }
                 }
             }
+        },
+        ping: {
+            enabled: false
+        },
+        sftp: {
+            enabled: false,
+            settings: {
+                automount: false
+            }
+        },
+        share: {
+            enabled: false,
+            settings: {
+                download_directory: GLib.get_user_special_dir(
+                    GLib.UserDirectory.DIRECTORY_DOWNLOAD
+                ),
+                download_subdirs: false
+            }
+        },
+        telephony: {
+            enabled: false,
+            settings: {
+                notify_missedCall: true,
+                notify_ringing: true,
+                notify_sms: true,
+                autoreply_sms: false,
+                notify_talking: true
+            }
         }
-    }],
-    ["ping", {}],
-    ["runcommand", {
-        settings: {
-            commands: {}
-        }
-    }],
-    ["sftp", {
-        settings: {
-            automount: false
-        }
-    }],
-    ["share", {
-        settings: {
-            download_directory: GLib.get_user_special_dir(
-                GLib.UserDirectory.DIRECTORY_DOWNLOAD
-            ),
-            download_subdirs: false
-        }
-    }],
-    ["telephony", {
-        settings: {
-            notify_missedCall: true,
-            notify_ringing: true,
-            notify_sms: true,
-            autoreply_sms: false,
-            notify_talking: true
-        }
-    }]
-]);
+    }
+};
 
