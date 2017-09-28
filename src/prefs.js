@@ -445,10 +445,10 @@ var PrefsWidget = new Lang.Class({
         });
         this.switcher.show_all();
         
-        this._build();
-        
         // Watch for Service Provider
         this.manager = new Client.DeviceManager();
+        
+        this._build();
         
         for (let device of this.manager.devices.values()) {
             this.devicesStack.add_device(device);
@@ -488,6 +488,45 @@ var PrefsWidget = new Lang.Class({
         // Service Page
         let servicePage = this.add_page("service", _("Service"));
         let serviceSection = servicePage.add_section(_("Service"));
+        
+        let nameEntry = new Gtk.Entry({
+            placeholder_text: this.manager.name,
+            valign: Gtk.Align.CENTER
+        });
+        nameEntry.connect("activate", (entry) => {
+            this.manager.name = entry.text
+            entry.text = "";
+            this.get_toplevel().set_focus(null);
+        });
+        nameEntry.connect("changed", (entry) => {
+            if (entry.text.length) {
+                entry.secondary_icon_name = "edit-undo-symbolic";
+            } else {
+                entry.text = "";
+                entry.secondary_icon_name = "";
+                this.get_toplevel().set_focus(null);
+            }
+        });
+        nameEntry.connect("icon-release", (entry) => {
+            entry.text = "";
+            entry.secondary_icon_name = "";
+            this.get_toplevel().set_focus(null);
+        });
+        
+        this.manager.bind_property(
+            "name",
+            nameEntry,
+            "placeholder_text",
+            GObject.BindingFlags.DEFAULT
+        );
+        
+        servicePage.addItem(
+            serviceSection,
+            _("Public Name"),
+            _("The name broadcast to other devices"),
+            nameEntry
+        );
+        
         servicePage.addSetting(serviceSection, "persistent-discovery");
         
         // About/Advanced
