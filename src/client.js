@@ -559,7 +559,7 @@ var DeviceManager = new Lang.Class({
             for (let name in properties.deep_unpack()) {
                 // Watch for new and removed devices
                 if (name === "devices") {
-                    this._devicesChanged(this._get("devices"));
+                    this._devicesChanged();
                 } else {
                     this.notify(name);
                 }
@@ -572,13 +572,15 @@ var DeviceManager = new Lang.Class({
         }
     },
     
-    // MConnect always reports username@hostname // FIXME
-    get name () { return GLib.get_user_name() + "@" + GLib.get_host_name(); },
-    set name (name) { log("Not implemented"); },
+    get name () { return this._get("name"); },
+    set name (name) { this._set("name", name); },
     get scanning () { return (this._scans.length > 0); },
     
     // Callbacks
     _devicesChanged: function (managedDevices) {
+        let managedDevices = this._get("devices");
+        managedDevice = (managedDevices === null) ? [] : managedDevices;
+        
         for (let dbusPath of managedDevices) {
             if (!this.devices.has(dbusPath)) {
                 this._deviceAdded(this, dbusPath);
