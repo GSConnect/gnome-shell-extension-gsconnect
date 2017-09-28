@@ -161,9 +161,8 @@ var Plugin = new Lang.Class({
     handlePacket: function (packet) {
         if (packet.type === "kdeconnect.notification" && this.settings.receive.enabled) {
             this._receiveNotification(packet);
-        // TODO: KDE Connect says this is unused??
-        } else if (packet.type === "kdeconnect.notification.request" && this.settings.send.enabled) {
-            this._sendNotifications(packet);
+        } else if (packet.type === "kdeconnect.notification.request") {
+            // TODO: KDE Connect says this is unused??
         }
     },
     
@@ -171,37 +170,48 @@ var Plugin = new Lang.Class({
         if (packet.body.isCancel && this._notifications.has(packet.body.id)) {
             this._notifications.get(packet.body.id).close();
             this._notifications.delete(packet.body.id);
-        // TODO: update existing notes by id
-        } else if (packet.body.hasOwnProperty("time")) {
-            let note = new Notify.Notification({
-                app_name: "GSConnect",
-                id: Number(packet.body.time.toString().slice(2)),
-                summary: packet.body.appName,
-                body: packet.body.ticker,
-                icon_name: "phone-symbolic"
-            });
+        } else {
+            let note;
             
+            if (this._notifications.has(packet.body.id)) {
+                note = this._notifications.get(packet.body.id);
+                
+                note.update(
+                    packet.body.appName,
+                    packet.body.ticker,
+                    "phone-symbolic"
+                );
+            } else {
+                note = new Notify.Notification({
+                    app_name: "GSConnect",
+                    id: Number(packet.body.time.toString().slice(2)),
+                    summary: packet.body.appName,
+                    body: packet.body.ticker,
+                    icon_name: "phone-symbolic"
+                });
+            
+                if (packet.body.isClearable) {
+                    note.connect(
+                        "closed",
+                        Lang.bind(this, this.close, packet.body.id)
+                    );
+                }
+                
+                this._notifications.set(packet.body.id, note);
+            }
+            
+            // TODO: play a sound
             if (!packet.body.silent) {
-                log("IMPLEMENT: incoming notification sound?");
+                log("IMPLEMENT: incoming notification sound");
             }
             
             if (packet.body.requestAnswer) {
                 log("IMPLEMENT: our request is being answered");
             }
             
-            if (packet.body.isClearable) {
-                note.connect("closed", Lang.bind(this, this.close, packet.body.id));
-            }
-            
-            this._notifications.set(packet.body.id, note);
-            
-            // FIXME: this is causing a hang for some reason
+            // FIXME: this is causing a hang (sometimes) (I think)
             note.show();
         }
-    },
-    
-    _sendNotifications: function (packet) {
-        // Not used...?
     },
     
     close: function (notification, notificationId) {
