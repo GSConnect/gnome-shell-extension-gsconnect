@@ -55,6 +55,13 @@ var METADATA = {
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/notifications
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/sendnotifications
  *
+ * TODO: play sounds when requested
+ *       download/upload icons
+ *       GNotification?
+ *       requestAnswer usage?
+ *       urgency filter (outgoing)?
+ *       weird hang? maye stopped happening?
+ *
  */
 var Plugin = new Lang.Class({
     Name: "GSConnectNotificationsPlugin",
