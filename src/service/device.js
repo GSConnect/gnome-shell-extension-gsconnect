@@ -217,16 +217,18 @@ var Device = new Lang.Class({
             this._channel = null;
         }
         
-        this._connected = false;
+        // This must be done before "connected" is updated
         this._unloadPlugins();
         
+        // Remove fingerprint
         this._fingerprint = "";
-        
         this._dbus.emit_property_changed(
             "fingerprint",
             new GLib.Variant("s", this._fingerprint)
         );
         
+        // Notify disconnected
+        this._connected = false;
         this._dbus.emit_property_changed(
             "connected",
             new GLib.Variant("b", this.connected)
