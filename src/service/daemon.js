@@ -98,7 +98,8 @@ var Daemon = new Lang.Class({
     set name(name) {
         this.identity.body.deviceName = name;
         Config.write_daemon_config(this);
-        // FIXME: rebroadcast name??
+        this._dbus.emit_property_changed("name", new GLib.Variant("s", name));
+        this.broadcast();
     },
     
     get devices() {
@@ -109,8 +110,11 @@ var Daemon = new Lang.Class({
     broadcast: function () {
         log("Daemon.broadcast()");
         
-        let ident = new Protocol.Packet(this.identity);
-        this._socket.send_to(this._broadcastAddr, ident.toData(), null);
+        this._socket.send_to(
+            this._broadcastAddr,
+            this.identity.toData(),
+            null
+        );
     },
     
     // FIXME: like acquireDiscoveryMode
@@ -149,7 +153,8 @@ var Daemon = new Lang.Class({
         this._socket = new Gio.Socket({
             family: Gio.SocketFamily.IPV4,
             type: Gio.SocketType.DATAGRAM,
-            protocol: Gio.SocketProtocol.UDP
+            protocol: Gio.SocketProtocol.UDP,
+            broadcast: true
         });
         
         // TODO: support a range of ports
@@ -159,7 +164,7 @@ var Daemon = new Lang.Class({
         });
         
         this._broadcastAddr = new Gio.InetSocketAddress({
-            address: Gio.InetAddress.new_from_string("0.0.0.0"),
+            address: Gio.InetAddress.new_from_string("255.255.255.255"),
             port: this.identity.body.tcpPort
         });
         
@@ -181,13 +186,7 @@ var Daemon = new Lang.Class({
         source.set_callback(Lang.bind(this, this._received));
         source.attach(null);
         
-        log(
-            "GSConnect: listening for new devices on: " +
-            this._listenAddr.address.to_string() + ":" +
-            this._listenAddr.port
-        );
-        
-        this.broadcast();
+        log("listening for new devices on '0.0.0.0:" + this._listenAddr.port);
     },
     
     _received: function (socket, condition) {
@@ -208,13 +207,13 @@ var Daemon = new Lang.Class({
             log("error reading data: " + e);
         }
         
-        // Ignore local broadcasts
-        if (addr.address.to_string() === "127.0.0.1") { return true; }
-        
         let packet = new Protocol.Packet(data.toString());
         
         if (packet.type !== Protocol.TYPE_IDENTITY) {
             log("Unexpected packet type: " + packet.type);
+            return true;
+        } else if (packet.body.deviceId === this.identity.body.deviceId) {
+            log("Ignoring self-broadcast");
             return true;
         }
         
@@ -238,11 +237,7 @@ var Daemon = new Lang.Class({
         this._socket = null;
         this._in = null;
         
-        this.identity = new Protocol.Packet({
-            id: Date.now(),
-            type: Protocol.TYPE_IDENTITY,
-            body: {}
-        });
+        this.identity = new Protocol.Packet();
         Config.init_config(this);
         
         // Notifications
@@ -272,13 +267,13 @@ var Daemon = new Lang.Class({
         }
         
         // Load cached devices
-        let devObjPath = "/org/gnome/shell/extensions/gsconnect/device/";
-        
         for (let identity of Config.read_device_cache()) {
             let packet = new Protocol.Packet(identity);
             this._addDevice(packet);
         }
         log(this._devices.size + " devices loaded from cache");
+        
+        this.broadcast();
     },
 
     vfunc_activate: function() {
