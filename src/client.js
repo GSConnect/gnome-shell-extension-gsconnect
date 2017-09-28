@@ -567,9 +567,10 @@ var DeviceManager = new Lang.Class({
         });
         
         // Add currently managed devices
-        for (let dbusPath of this._get("devices")) {
-            this._deviceAdded(this, dbusPath);
-        }
+        this._devicesChanged();
+//        for (let dbusPath of this._get("devices")) {
+//            this._deviceAdded(this, dbusPath);
+//        }
     },
     
     get name () { return this._get("name"); },
@@ -577,9 +578,9 @@ var DeviceManager = new Lang.Class({
     get scanning () { return (this._scans.length > 0); },
     
     // Callbacks
-    _devicesChanged: function (managedDevices) {
+    _devicesChanged: function () {
         let managedDevices = this._get("devices");
-        managedDevice = (managedDevices === null) ? [] : managedDevices;
+        managedDevices = (managedDevices === null) ? [] : managedDevices;
         
         for (let dbusPath of managedDevices) {
             if (!this.devices.has(dbusPath)) {
