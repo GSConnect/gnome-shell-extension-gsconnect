@@ -331,6 +331,7 @@ var NotificationsPluginDialog = new Lang.Class({
         
         // Applications TreeView/Model
         let appRow = this.content.addRow(sendingSection);
+        appRow.grid.row_spacing = 12;
         
         this.treeview = new Gtk.TreeView({
             enable_grid_lines: true,
@@ -381,7 +382,7 @@ var NotificationsPluginDialog = new Lang.Class({
         appRow.grid.attach(treeScroll, 0, 0, 1, 1);
         
         // Buttons
-        let buttonBox = new Gtk.ButtonBox();
+        let buttonBox = new Gtk.ButtonBox({ halign: Gtk.Align.END });
         appRow.grid.attach(buttonBox, 0, 1, 1, 1);
         
         let removeButton = new Gtk.Button({ label: _("Remove") });
@@ -487,6 +488,7 @@ var RunCommandPluginDialog = new Lang.Class({
         this.cmdCell.connect("edited", Lang.bind(this, this._editCmd));
         
         let commandRow = this.content.addRow(commandsSection);
+        commandRow.grid.row_spacing = 12;
         
         let treeScroll = new Gtk.ScrolledWindow({
             height_request: 150,
@@ -497,7 +499,10 @@ var RunCommandPluginDialog = new Lang.Class({
         commandRow.grid.attach(treeScroll, 0, 0, 1, 1);
         
         // Buttons
-        let buttonBox = new Gtk.ButtonBox();
+        let buttonBox = new Gtk.ButtonBox({
+            halign: Gtk.Align.END,
+            spacing: 12
+        });
         commandRow.grid.attach(buttonBox, 0, 1, 1, 1);
         
         let removeButton = new Gtk.Button({ label: _("Remove") });
