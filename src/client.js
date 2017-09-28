@@ -52,10 +52,6 @@ var ProxyBase = new Lang.Class({
     Name: "GSConnectProxyBase",
     Extends: Gio.DBusProxy,
     Signals: {
-        "received": {
-            flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED,
-            param_types: [ GObject.TYPE_VARIANT ]
-        },
         "changed": {
             flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED,
             param_types: [ GObject.TYPE_VARIANT ]
@@ -220,7 +216,6 @@ var SFTP = new Lang.Class({
             dbusPath
         );
         
-        //
         this.connect("g-properties-changed", (proxy, properties) => {
             for (let name in properties.deep_unpack()) {
                 this.notify(name);
