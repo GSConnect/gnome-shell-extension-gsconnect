@@ -561,23 +561,11 @@ var DeviceManager = new Lang.Class({
         // Connect to PropertiesChanged
         this.connect("g-properties-changed", (proxy, properties) => {
             for (let name in properties.deep_unpack()) {
-                this.notify(name);
-            }
-        });
-        
-        // Watch for new and removed devices
-        this.connect("notify::devices", () => {
-            let managedDevices = this._get("devices");
-            
-            for (let dbusPath of managedDevices) {
-                if (!this.devices.has(dbusPath)) {
-                    this._deviceAdded(this, dbusPath);
-                }
-            }
-            
-            for (let dbusPath of this.devices.keys()) {
-                if (managedDevices.indexOf(dbusPath) < 0) {
-                    this._deviceRemoved(this, dbusPath);
+                // Watch for new and removed devices
+                if (name === "devices") {
+                    this._devicesChanged(this._get("devices"));
+                } else {
+                    this.notify(name);
                 }
             }
         });
@@ -594,6 +582,20 @@ var DeviceManager = new Lang.Class({
     get scanning () { return (this._scans.length > 0); },
     
     // Callbacks
+    _devicesChanged: function (dbusPaths) {
+        for (let dbusPath of dbusPaths) {
+            if (!this.devices.has(dbusPath)) {
+                this._deviceAdded(this, dbusPath);
+            }
+        }
+        
+        for (let dbusPath of this.devices.keys()) {
+            if (managedDevices.indexOf(dbusPath) < 0) {
+                this._deviceRemoved(this, dbusPath);
+            }
+        }
+    },
+    
     _deviceAdded: function (manager, dbusPath) {
         this.devices.set(dbusPath, new Device(this, dbusPath));
         this.emit("device::added", dbusPath);
