@@ -401,6 +401,7 @@ var Device = new Lang.Class({
     },
     
     // Properties
+    get fingerprint () { return this._get("fingerprint"); },
     get id () { return this._get("id"); },
     get name () { return this._get("name"); },
     get connected () { return this._get("connected") === true; },
