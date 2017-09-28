@@ -401,10 +401,10 @@ var Device = new Lang.Class({
     },
     
     // Properties
+    get connected () { return this._get("connected") === true; },
     get fingerprint () { return this._get("fingerprint"); },
     get id () { return this._get("id"); },
     get name () { return this._get("name"); },
-    get connected () { return this._get("connected") === true; },
     get paired () { return this._get("paired") === true; },
     // FIXME: returns null sometimes?
     get plugins () {
