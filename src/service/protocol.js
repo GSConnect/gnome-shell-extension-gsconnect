@@ -301,7 +301,6 @@ var LanChannel = new Lang.Class({
             this._connection = client.connect_finish(res);
             this._initSocket();
             this._sendIdent();
-            log("HANG 4");
             this._initTls();
         } catch (e) {
             log("Error connecting: " + e);
