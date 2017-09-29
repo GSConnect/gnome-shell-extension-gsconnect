@@ -49,7 +49,10 @@
     <method name="ring"/>
   </interface>
   
-  <!-- Notifications (Receive) -->
+  <!-- MPRIS -->
+  <interface name="org.gnome.shell.extensions.gsconnect.mpris"/>
+  
+  <!-- Notifications -->
   <interface name="org.gnome.shell.extensions.gsconnect.notifications">
     <method name="notifications"/>
     <signal name="notificationReceived"/>

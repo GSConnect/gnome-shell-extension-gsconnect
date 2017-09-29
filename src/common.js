@@ -70,6 +70,19 @@ DBusInfo.daemon.nodes.forEach((ifaceInfo) => { ifaceInfo.cache_build(); });
 DBusInfo.device.nodes.forEach((ifaceInfo) => { ifaceInfo.cache_build(); });
 DBusInfo.freedesktop.nodes.forEach((ifaceInfo) => { ifaceInfo.cache_build(); });
 
+var DBusProxy = {
+    mpris: new Gio.DBusProxy.makeProxyWrapper(
+        Resources.lookup_data(
+            "/dbus/org.mpris.MediaPlayer2.xml", 0
+        ).unref_to_array().toString()
+    ),
+    mprisPlayer: new Gio.DBusProxy.makeProxyWrapper(
+        Resources.lookup_data(
+            "/dbus/org.mpris.MediaPlayer2.Player.xml", 0
+        ).unref_to_array().toString()
+    )
+};
+
 /** Initialize Gettext for metadata['gettext-domain'] */
 function initTranslations() {
     Gettext.bindtextdomain(

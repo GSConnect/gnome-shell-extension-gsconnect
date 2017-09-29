@@ -254,6 +254,7 @@ var DaemonDefaults = {
         incomingCapabilities: [
             "kdeconnect.clipboard",
             "kdeconnect.battery",
+            "kdeconnect.mpris.request",
             "kdeconnect.notification",
             "kdeconnect.notification.request",
             "kdeconnect.ping",
@@ -266,6 +267,7 @@ var DaemonDefaults = {
             "kdeconnect.battery.request",
             "kdeconnect.clipboard",
             "kdeconnect.findmyphone.request",
+            "kdeconnect.mpris",
             "kdeconnect.notification",
             "kdeconnect.notification.request",
             "kdeconnect.ping",
@@ -287,6 +289,9 @@ var DeviceDefaults = {
             enabled: false
         },
         findmyphone: {
+            enabled: false
+        },
+        mpris: {
             enabled: false
         },
         notifications: {

@@ -27,6 +27,7 @@ const { initTranslations, mergeDeep, DBusInfo, Settings } = imports.common;
 const BatteryPlugin = imports.service.plugins.battery;
 const ClipboardPlugin = imports.service.plugins.clipboard;
 const FindMyPhonePlugin = imports.service.plugins.findmyphone;
+const MPRISPlugin = imports.service.plugins.mpris;
 const NotificationsPlugin = imports.service.plugins.notifications;
 const PingPlugin = imports.service.plugins.ping;
 const RunCommandPlugin = imports.service.plugins.runcommand;
@@ -516,6 +517,7 @@ var PacketHandlers = new Map([
     ["battery", BatteryPlugin],
     ["clipboard", ClipboardPlugin],
     ["findmyphone", FindMyPhonePlugin],
+    ["mpris", MPRISPlugin],
     ["notifications", NotificationsPlugin],
     ["ping", PingPlugin],
     ["runcommand", RunCommandPlugin],

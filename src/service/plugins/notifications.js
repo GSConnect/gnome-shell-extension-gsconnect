@@ -115,7 +115,7 @@ var Plugin = new Lang.Class({
         this._proxy = new Gio.DBusProxy({
             gConnection: Gio.DBus.session,
             gName: "org.freedesktop.DBus",
-            gObjectPath: "/org/freedesktop/DBus",
+            gObjectPath: "/",
             gInterfaceName: "org.freedesktop.DBus"
         });
         

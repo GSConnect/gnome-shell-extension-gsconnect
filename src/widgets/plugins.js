@@ -766,6 +766,10 @@ var PluginMetadata = new Map([
         summary: _("Find My Phone"),
         description: _("Locate device by ringing")
     }],
+    ["mpris", {
+        summary: _("MPRIS"),
+        description: _("Control music players from your device")
+    }],
     ["notifications", {
         summary: _("Notifications"),
         description: _("Sync notifications with other devices"),

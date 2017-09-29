@@ -27,5 +27,7 @@
     <file compressed="true" preprocess="xml-stripblanks">org.freedesktop.Notifications.xml</file>
     <file compressed="true" preprocess="xml-stripblanks">org.gnome.shell.extensions.gsconnect.daemon.xml</file>
     <file compressed="true" preprocess="xml-stripblanks">org.gnome.shell.extensions.gsconnect.device.xml</file>
+    <file compressed="true" preprocess="xml-stripblanks">org.mpris.MediaPlayer2.xml</file>
+    <file compressed="true" preprocess="xml-stripblanks">org.mpris.MediaPlayer2.Player.xml</file>
   </gresource>
 </gresources>
