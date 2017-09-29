@@ -68,7 +68,7 @@ var Plugin = new Lang.Class({
     destroy: function () {
         this._dbus.unexport();
         delete this._dbus;
-        // FIXME: signal handlers?
+        GObject.signal_handlers_destroy(this);
     },
 });
 

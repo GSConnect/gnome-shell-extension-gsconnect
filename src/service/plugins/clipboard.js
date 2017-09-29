@@ -38,8 +38,6 @@ var METADATA = {
 /**
  * Clipboard Plugin
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/clipboard
- *
- * TODO: that seemed too easy...
  */
 var Plugin = new Lang.Class({
     Name: "GSConnectClipboardPlugin",
@@ -70,6 +68,12 @@ var Plugin = new Lang.Class({
         });
         
         this.device._channel.send(packet);
+    },
+    
+    destroy: function () {
+        GObject.signal_handlers_destroy(this._clipboard);
+    
+        PluginsBase.Plugin.prototype.destroy.call(this);
     }
 });
 
