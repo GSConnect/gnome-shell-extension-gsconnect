@@ -38,7 +38,7 @@ var Daemon = new Lang.Class({
             "DeviceName",
             "The name announced to the network",
             GObject.ParamFlags.READWRITE,
-            "Gnome Shell"
+            "GSConnect"
         ),
         "certificate": GObject.ParamSpec.object(
             "certificate",
@@ -47,11 +47,11 @@ var Daemon = new Lang.Class({
             GObject.ParamFlags.READABLE,
             GObject.Object
         ),
-        'devices': GObject.param_spec_variant(
-            'devices',
-            'DevicesList', 
-            'A list of known devices',
-            new GLib.VariantType('as'),
+        "devices": GObject.param_spec_variant(
+            "devices",
+            "DevicesList", 
+            "A list of known devices",
+            new GLib.VariantType("as"),
             null,
             GObject.ParamFlags.READABLE
         )
@@ -59,7 +59,7 @@ var Daemon = new Lang.Class({
 
     _init: function() {
         this.parent({
-            application_id: 'org.gnome.shell.extensions.gsconnect.daemon',
+            application_id: "org.gnome.shell.extensions.gsconnect.daemon",
             flags: Gio.ApplicationFlags.FLAGS_NONE
         });
         
@@ -249,7 +249,7 @@ var Daemon = new Lang.Class({
         source.set_callback(Lang.bind(this, this._received));
         source.attach(null);
         
-        log("listening for new devices on '0.0.0.0:" + this._listenAddr.port);
+        log("listening for new devices on 0.0.0.0:" + this._listenAddr.port);
     },
     
     _received: function (socket, condition) {
@@ -265,7 +265,6 @@ var Daemon = new Lang.Class({
                 null
             );
             [data, size] = this._in.read_line(null);
-            log("Daemon received: " + data);
         } catch (e) {
             log("error reading data: " + e);
         }
@@ -278,6 +277,8 @@ var Daemon = new Lang.Class({
         } else if (packet.body.deviceId === this.identity.body.deviceId) {
             log("Ignoring self-broadcast");
             return true;
+        } else {
+            log("Daemon received: " + data);
         }
         
         packet.body.tcpHost = addr.address.to_string();

@@ -247,7 +247,6 @@ var LanChannel = new Lang.Class({
      * Transfer Functions
      */
     _transferRead: function () {
-        log("LanChannel._transferRead()");
         this._in.read_bytes_async(
             4096,
             GLib.PRIORITY_DEFAULT,
@@ -263,6 +262,8 @@ var LanChannel = new Lang.Class({
                     // FIXME: better
                     if (this.bytesWritten < this.size) {
                         throw Error("Failed to complete transfer");
+                    } else {
+                        log("Completed transfer of " + this.size + " bytes");
                     }
                 }
             }
@@ -270,7 +271,6 @@ var LanChannel = new Lang.Class({
     },
     
     _transferWrite: function (bytes) {
-        log("LanChannel._transferWrite()");
         this._out.write_bytes_async(
             bytes,
             GLib.PRIORITY_DEFAULT,
@@ -396,8 +396,6 @@ var LanChannel = new Lang.Class({
             return false;
         }
         
-        // TODO: error checking wrt packet
-        //       encrypted packets?
         packet = new Packet(data.toString());
         this.emit("received", packet);
         return true;
