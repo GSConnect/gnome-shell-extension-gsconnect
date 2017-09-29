@@ -130,7 +130,7 @@ var Plugin = new Lang.Class({
         log("summary: " + summary);
         log("body: " + body);
         log("actions: " + actions);
-        log("hints: " + hints);
+        log("hints: " + JSON.stringify(hints));
         log("timeout: " + timeout);
         
         // New application
