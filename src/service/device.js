@@ -24,14 +24,15 @@ const Protocol = imports.service.protocol;
 const Common = imports.common;
 const { initTranslations, mergeDeep, DBusInfo, Settings } = imports.common;
 
-const Battery = imports.service.plugins.battery;
-const FindMyPhone = imports.service.plugins.findmyphone;
-const Notifications = imports.service.plugins.notifications;
-const Ping = imports.service.plugins.ping;
-const RunCommand = imports.service.plugins.runcommand;
-const Share = imports.service.plugins.share;
-const SFTP = imports.service.plugins.sftp;
-const Telephony = imports.service.plugins.telephony;
+const BatteryPlugin = imports.service.plugins.battery;
+const ClipboardPlugin = imports.service.plugins.clipboard;
+const FindMyPhonePlugin = imports.service.plugins.findmyphone;
+const NotificationsPlugin = imports.service.plugins.notifications;
+const PingPlugin = imports.service.plugins.ping;
+const RunCommandPlugin = imports.service.plugins.runcommand;
+const SharePlugin = imports.service.plugins.share;
+const SFTPPlugin = imports.service.plugins.sftp;
+const TelephonyPlugin = imports.service.plugins.telephony;
 
 
 var Device = new Lang.Class({
@@ -512,13 +513,14 @@ var Device = new Lang.Class({
 
 
 var PacketHandlers = new Map([
-    ["battery", Battery],
-    ["findmyphone", FindMyPhone],
-    ["notifications", Notifications],
-    ["ping", Ping],
-    ["runcommand", RunCommand],
-    ["sftp", SFTP],
-    ["share", Share],
-    ["telephony", Telephony]
+    ["battery", BatteryPlugin],
+    ["clipboard", ClipboardPlugin],
+    ["findmyphone", FindMyPhonePlugin],
+    ["notifications", NotificationsPlugin],
+    ["ping", PingPlugin],
+    ["runcommand", RunCommandPlugin],
+    ["sftp", SFTPPlugin],
+    ["share", SharePlugin],
+    ["telephony", TelephonyPlugin]
 ]);
 

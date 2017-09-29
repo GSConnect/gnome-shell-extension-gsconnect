@@ -41,6 +41,9 @@
     <method name="update"/>
   </interface>
   
+  <!-- Clipboard -->
+  <interface name="org.gnome.shell.extensions.gsconnect.clipboard"/>
+  
   <!-- FindMyPhone -->
   <interface name="org.gnome.shell.extensions.gsconnect.findmyphone">
     <method name="ring"/>

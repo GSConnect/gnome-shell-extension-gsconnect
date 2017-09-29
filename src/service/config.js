@@ -252,17 +252,19 @@ var DaemonDefaults = {
         tcpPort: 1715,
         protocolVersion: 7,
         incomingCapabilities: [
-            "kdeconnect.ping",
+            "kdeconnect.clipboard",
+            "kdeconnect.battery",
             "kdeconnect.notification",
             "kdeconnect.notification.request",
+            "kdeconnect.ping",
             "kdeconnect.runcommand.request",
             "kdeconnect.sftp",
             "kdeconnect.share.request",
-            "kdeconnect.telephony",
-            "kdeconnect.battery"
+            "kdeconnect.telephony"
         ],
         outgoingCapabilities: [
             "kdeconnect.battery.request",
+            "kdeconnect.clipboard",
             "kdeconnect.findmyphone.request",
             "kdeconnect.notification",
             "kdeconnect.notification.request",
@@ -279,6 +281,9 @@ var DaemonDefaults = {
 var DeviceDefaults = {
     plugins: {
         battery: {
+            enabled: false
+        },
+        clipboard: {
             enabled: false
         },
         findmyphone: {

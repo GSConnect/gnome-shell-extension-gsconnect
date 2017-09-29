@@ -758,6 +758,10 @@ var PluginMetadata = new Map([
         summary: _("Battery"),
         description: _("Monitor battery level and charging state")
     }],
+    ["clipboard", {
+        summary: _("Clipboard"),
+        description: _("Sync the clipboard between devices")
+    }],
     ["findmyphone", {
         summary: _("Find My Phone"),
         description: _("Locate device by ringing")
