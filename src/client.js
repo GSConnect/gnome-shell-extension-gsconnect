@@ -16,20 +16,21 @@ function getPath() {
 
 imports.searchPath.push(getPath());
 
-const { initTranslations, Me, DBusInfo, Settings } = imports.common;
+const Common = imports.common;
 
 
 // DBus Constants
 var BUS_NAME = "org.gnome.shell.extensions.gsconnect.daemon";
 
-const DeviceNode = DBusInfo.device;
-const ManagerNode = DBusInfo.daemon;
+const DeviceNode = Common.DBusInfo.device;
+const ManagerNode = Common.DBusInfo.daemon;
 
 
+// FIXME FIXME FIXME
 // Start the service backend
 function startService() {
     try {
-        GLib.spawn_command_line_async("mconnect -d");
+        //GLib.spawn_command_line_async("mconnect -d");
     } catch (e) {
         log("Error spawning MConnect daemon: " + e);
     }
@@ -51,12 +52,6 @@ function startSettings() {
 var ProxyBase = new Lang.Class({
     Name: "GSConnectProxyBase",
     Extends: Gio.DBusProxy,
-    Signals: {
-        "changed": {
-            flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED,
-            param_types: [ GObject.TYPE_VARIANT ]
-        }
-    },
     
     _init: function (iface, dbusPath) {
         this.parent({
@@ -276,10 +271,6 @@ var Telephony = new Lang.Class({
         this.connect("g-signal", (proxy, sender, name, parameters) => {
             parameters = parameters.deep_unpack();
             
-            log("signal name: " + name);
-            log("signal typeof name: " + typeof name);
-            log("signal params: " + parameters);
-            
             if (name === "missedCall") {
                 this.emit("missedCall",
                     parameters[0],
@@ -373,17 +364,16 @@ var Device = new Lang.Class({
         )
     },
     
-    _init: function (manager, dbusPath) {
+    _init: function (dbusPath) {
         this.parent(
             DeviceNode.lookup_interface("org.gnome.shell.extensions.gsconnect.device"),
             dbusPath
         );
         
-        this._manager = manager;
-        
         // Connect to PropertiesChanged
         this.connect("g-properties-changed", (proxy, properties) => {
             for (let name in properties.deep_unpack()) {
+                // We'll call notify() later for our own plugins property
                 if (name === "plugins") {
                     this._reloadPlugins();
                 } else {
@@ -435,16 +425,6 @@ var Device = new Lang.Class({
     _reloadPlugins: function () {
         if (this.plugins.indexOf("battery") > -1) {
             this.battery = new Battery(this.gObjectPath);
-            
-            // FIXME: JS ERROR: TypeError: this.battery is undefined
-            
-            // Kickstart the plugin
-            this.emit("changed::battery",
-                new GLib.Variant(
-                    "(bi)",
-                    [this.battery.charging, this.battery.level]
-                )
-            );
         } else if (this.hasOwnProperty("battery")) {
             this.battery.destroy();
             delete this.battery;
@@ -497,7 +477,6 @@ var Device = new Lang.Class({
         this.notify("plugins");
     },
     
-    // Override Methods
     destroy: function () {
         ["battery",
         "findmyphone",
@@ -582,7 +561,7 @@ var DeviceManager = new Lang.Class({
     },
     
     _deviceAdded: function (manager, dbusPath) {
-        this.devices.set(dbusPath, new Device(this, dbusPath));
+        this.devices.set(dbusPath, new Device(dbusPath));
         this.emit("device::added", dbusPath);
     },
     

@@ -102,7 +102,7 @@ var KeybindingManager = new Lang.Class({
     
     destroy: function () {
         this.removeAll();
-        global.display.disconnect(this._handler);
+        GObject.signal_handler_disconnect(global.display, this._handler);
     }
 });
 
@@ -362,10 +362,6 @@ var DeviceMenu = new Lang.Class({
         
         // Property signals
         device.connect(
-            "changed::battery",
-            Lang.bind(this, this._batteryChanged)
-        );
-        device.connect(
             "notify::name",
             Lang.bind(this, this._nameChanged)
         );
@@ -389,10 +385,10 @@ var DeviceMenu = new Lang.Class({
     },
     
     // Callbacks
-    _batteryChanged: function (device, variant) {
-        debug("extension.DeviceMenu._batteryChanged(" + variant.deep_unpack() + ")");
+    _batteryChanged: function (battery) {
+        debug("extension.DeviceMenu._batteryChanged()");
         
-        let [charging, level] = variant.deep_unpack();
+        let {charging, level} = this.device.battery;
         let icon = "battery";
         
         if (level < 3) {
@@ -446,14 +442,12 @@ var DeviceMenu = new Lang.Class({
         }
         
         // Battery Plugin
-        if (device.paired && device.hasOwnProperty("battery")) {
-            this._batteryChanged(
-                device,
-                new GLib.Variant(
-                    "(bi)",
-                    [device.battery.charging, device.battery.level]
-                )
+        if (device.hasOwnProperty("battery")) {
+            this.device.battery.connect(
+                "notify",
+                Lang.bind(this, this._batteryChanged)
             );
+            this.device.battery.notify("level");
         } else {
             this.batteryIcon.icon_name = "battery-missing-symbolic";
             this.batteryLabel.text = "";
@@ -510,7 +504,10 @@ var DeviceMenu = new Lang.Class({
                         this.browseButton.remove_style_pseudo_class("active");
                 }
                 
-                this.device.sftp.disconnect(this._browseNotify);
+                GObject.signal_handler_disconnect(
+                    this.device.sftp,
+                    this._browseNotify
+                );
             });
         
             this.device.sftp.mount();
@@ -1047,7 +1044,7 @@ var SystemIndicator = new Lang.Class({
     _integrateNautilus: function () {
         let path = GLib.get_user_data_dir() + "/nautilus-python/extensions";
         let dir = Gio.File.new_for_path(path);
-        let script = dir.get_child("nautilus-send-gsconnect.py");
+        let script = dir.get_child("nautilus-gsconnect.py");
         let scriptExists = script.query_exists(null);
         let integrate = Settings.get_boolean("nautilus-integration");
         
@@ -1057,7 +1054,7 @@ var SystemIndicator = new Lang.Class({
             }
             
             script.make_symbolic_link(
-                Me.path + "/nautilus-send-gsconnect.py",
+                Me.path + "/nautilus-gsconnect.py",
                 null,
                 null
             );
