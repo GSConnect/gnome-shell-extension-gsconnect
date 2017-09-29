@@ -206,7 +206,6 @@ var LanChannel = new Lang.Class({
     // Negotitate certificate/pairing
     _accept_certificate: function (conn, peer_cert, flags) {
         if (this.device.paired) {
-            log("verifying certificate...");
             let paired_cert = Gio.TlsCertificate.new_from_file(
                 this.device.config_cert
             );
@@ -214,7 +213,6 @@ var LanChannel = new Lang.Class({
             
             return (paired_cert.verify(null, peer_cert) === 0);
         } else {
-            log("delaying certificate verification...");
             this._peer_cert = peer_cert;
             return true;
         }
