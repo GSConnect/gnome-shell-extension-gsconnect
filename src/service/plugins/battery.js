@@ -91,7 +91,7 @@ var Plugin = new Lang.Class({
         if (packet.body.thresholdEvent > 0) {
             let note = new Notify.Notification({
                 app_name: "GSConnect",
-                id: Number(packet.body.time.toString().slice(2)),
+                id: Number(packet.id.toString().slice(2)),
                 summary: _("%s - Low Battery Warning").format(this.device.name),
                 body: _("Battery level is %d").format(this.level), // FIXME % in format strings
                 icon_name: "phone-symbolic"
@@ -116,13 +116,13 @@ var Plugin = new Lang.Class({
      * TODO: test/check this works
      */
     update: function () {
-        if (this.device.connected && this.device.paired) {
-            let packet = new Protocol.Packet();
-            packet.type = "kdeconnect.battery.request";
-            packet.body = { request: true };
-            
-            this.device._channel.send(packet);
-        }
+        let packet = new Protocol.Packet({
+            id: 0,
+            type: "kdeconnect.battery.request",
+            body: { request: true };
+        });
+        
+        this.device._channel.send(packet);
     }
 });
 
