@@ -119,7 +119,7 @@ var Plugin = new Lang.Class({
         let packet = new Protocol.Packet({
             id: 0,
             type: "kdeconnect.battery.request",
-            body: { request: true };
+            body: { request: true }
         });
         
         this.device._channel.send(packet);
