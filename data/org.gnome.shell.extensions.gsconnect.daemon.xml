@@ -3,6 +3,9 @@
     <property type="s" name="name" access="readwrite"/>
     <property type="as" name="devices" access="read"/>
     
-    <method name="broadcast"/>
+    <method name="discover">
+      <arg name="name" type="s" direction="in"/>
+      <arg name="timeout" type="i" direction="in"/>
+    </method>
   </interface>
 </node>

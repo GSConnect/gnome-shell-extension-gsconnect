@@ -9,6 +9,7 @@
     <property type="as" name="plugins" access="read"/>
     <property type="s" name="type" access="read"/>
     
+    <method name="activate"/>
     <method name="pair"/>
     <method name="unpair"/>
     <method name="acceptPair"/>

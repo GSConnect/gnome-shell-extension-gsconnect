@@ -409,6 +409,7 @@ var Device = new Lang.Class({
     get type () { return this._get("type"); },
     
     // Methods
+    activate: function () { this._call("activate", true); },
     pair: function () { this._call("pair", true); },
     ping: function () { this._call("ping", true); },
     ring: function () { this.findmyphone._call("ring", true); },
@@ -469,7 +470,6 @@ var Device = new Lang.Class({
             delete this.ping;
         }
         
-        // TODO: test
         if (this.plugins.indexOf("sftp") > -1) {
             this.sftp = new SFTP(this.gObjectPath);
         } else if (this.hasOwnProperty("sftp")) {
@@ -526,13 +526,6 @@ var DeviceManager = new Lang.Class({
             "The host's device name",
             GObject.ParamFlags.READABLE,
             ""
-        ),
-        "scanning": GObject.ParamSpec.boolean(
-            "scanning",
-            "ScanningDevices",
-            "Whether scanning for devices is in progress",
-            GObject.ParamFlags.READABLE,
-            false
         )
     },
     Signals: {
@@ -551,9 +544,6 @@ var DeviceManager = new Lang.Class({
         // Track our device proxies, DBus path as key
         this.devices = new Map();
         
-        // Track scan request ID's
-        this._scans = new Map();
-        
         // Connect to PropertiesChanged
         this.connect("g-properties-changed", (proxy, properties) => {
             for (let name in properties.deep_unpack()) {
@@ -568,14 +558,10 @@ var DeviceManager = new Lang.Class({
         
         // Add currently managed devices
         this._devicesChanged();
-//        for (let dbusPath of this._get("devices")) {
-//            this._deviceAdded(this, dbusPath);
-//        }
     },
     
     get name () { return this._get("name"); },
     set name (name) { this._set("name", name); },
-    get scanning () { return (this._scans.length > 0); },
     
     // Callbacks
     _devicesChanged: function () {
@@ -607,45 +593,13 @@ var DeviceManager = new Lang.Class({
     },
     
     // Public Methods
-    scan: function (requestId="manager", timeout=15) {
-        if (this._scans.has(requestId)) {
-            log("Not implemented");
-            
-            if (this._scans.get(requestId) > 0) {
-                GLib.source_remove(this._scans.get(requestId));
-            }
-            
-            this._scans.delete(requestId)
-            this.notify("scanning");
-            return false;
-        } else {
-            log("Not implemented");
-            
-            if (timeout > 0) {
-                this._scans.set(
-                    requestId,
-                    Mainloop.timeout_add_seconds(
-                        timeout, 
-                        Lang.bind(this, this.scan, requestId),
-                        GLib.PRIORITY_DEFAULT
-                    )
-                );
-            } else {
-                this._scans.set(requestId, timeout);
-            }
-            
-            this.notify("scanning");
-            return true;
-        }
+    discover: function (requestId="manager", timeout=15) {
+        this._call("discover", true, requestId, timeout);
     },
     
     destroy: function () {
         for (let dbusPath of this.devices.keys()) {
             this._deviceRemoved(this, dbusPath);
-        }
-        
-        for (let requestId of this._scans.keys()) {
-            this.scan(requestId);
         }
         
         ProxyBase.prototype.destroy.call(this);

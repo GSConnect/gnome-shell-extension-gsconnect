@@ -384,11 +384,6 @@ var DeviceMenu = new Lang.Class({
             Lang.bind(this, this._statusChanged)
         );
         
-        manager.connect(
-            "notify::scanning",
-            Lang.bind(this, this._statusChanged)
-        );
-        
         // TODO: MConnect doesn't call PropertiesChanged on cached devices?
         this._statusChanged(device);
     },
@@ -481,20 +476,7 @@ var DeviceMenu = new Lang.Class({
         } else if (!connected) {
             this.statusButton.child.icon_name = "view-refresh-symbolic";
             this.statusButton.tooltip.title = _("Attempt Reconnection");
-        
-            if (this.manager._scans.has(this.device.id)) {
-                this.statusLabel.text = _("Attempting to reconnect...");
-                this.statusButton.can_focus = false;
-                this.statusButton.reactive = false;
-                this.statusButton.track_hover = false;
-                this.statusButton.opacity = 128;
-            } else {
-                this.statusLabel.text = _("Device is disconnected");
-                this.statusButton.can_focus = true;
-                this.statusButton.reactive = true;
-                this.statusButton.track_hover = true;
-                this.statusButton.opacity = 255;
-            }
+            this.statusLabel.text = _("Device is disconnected");
         }
         
         this._pluginsChanged(this.device);
@@ -579,11 +561,12 @@ var DeviceMenu = new Lang.Class({
         );
     },
     
+    // FIXME
     _statusAction: function (button) {
         debug("extension.DeviceMenu._statusAction()");
         
         if (this.device.paired) {
-            this.manager.scan(this.device.id, 2);
+            this.device.activate();
         } else {
             this.device.pair();
         }
@@ -759,18 +742,19 @@ var SystemIndicator = new Lang.Class({
         this.extensionIndicator.visible = (this.manager);
         
         // Extension Menu -> (Stop) Discover Devices Item
-        this.scanItem = this.extensionMenu.menu.addAction(
-            "", () => { this.manager.scan(); }
-        );
-        this.extensionMenu.menu.box.set_child_at_index(this.scanItem.actor, 1);
-        this.manager.connect("notify::scanning", () => {
-            if (this.manager._scans.has("manager")) {
-                this.scanItem.label.text = _("Stop Discovering Devices");
-            } else {
+        this.scanItem = this.extensionMenu.menu.addAction(_("Discover Devices"), () => {
+            this.manager.discover("manager", 15);
+            this.scanItem.label.text = _("Discovering Devices");
+            this.scanItem.actor.reactive = false;
+            
+            GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, 15, () => {
                 this.scanItem.label.text = _("Discover Devices");
-            }
+                this.scanItem.actor.reactive = true;
+                
+                return false;
+            });
         });
-        this.manager.notify("scanning");
+        this.extensionMenu.menu.box.set_child_at_index(this.scanItem.actor, 1);
         
         // Add currently managed devices
         for (let dbusPath of this.manager.devices.keys()) {
@@ -788,13 +772,14 @@ var SystemIndicator = new Lang.Class({
             Lang.bind(this, this._deviceRemoved)
         );
         
-        // Persistent Scanning
-        Settings.connect(
-            "changed::persistent-discovery",
-            Lang.bind(this, this._persistentDiscovery)
-        );
-        
-        this._persistentDiscovery();
+        // FIXME
+//        // Persistent Scanning
+//        Settings.connect(
+//            "changed::persistent-discovery",
+//            Lang.bind(this, this._persistentDiscovery)
+//        );
+//        
+//        this._persistentDiscovery();
     },
     
     // The DBus interface has vanished

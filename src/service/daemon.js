@@ -70,6 +70,10 @@ var Daemon = new Lang.Class({
         //
         this._debug_mode = null;
         
+        // FIXME
+        this._discovery = 0
+        this._discoverers = [];
+        
         // Options
         this.add_main_option(
             "debug",
@@ -117,8 +121,53 @@ var Daemon = new Lang.Class({
         );
     },
     
-    // FIXME: like acquireDiscoveryMode
-    discover: function (name, timeout=-1) {
+    // FIXME: this is all pretty complicated
+    discover: function (name, timeout=0) {
+        let index_ = this._discoverers.indexOf(name);
+        
+        // We're removing a request
+        if (index_ > -1) {
+            this._discoverers.splice(index_, 1);
+        // We're adding a request
+        } else {
+            // If there's a timeout we'll add a loop for that
+            if (timeout > 0) {
+                GLib.timeout_add_seconds(
+                    GLib.PRIORITY_DEFAULT,
+                    timeout,
+                    () => {
+                        let index_ = this._discoverers.indexOf(name);
+                        
+                        if (index_ > -1) {
+                            this._discoverers.splice(index_, 1);
+                        }
+                        
+                        return false;
+                    }
+                );
+            }
+        
+            // Add it to the list of discoverers
+            this._discoverers.push(name);
+            
+            // Only run one source at a time
+            if (this._discovery <= 0) {
+                this._discovery = GLib.timeout_add_seconds(
+                    GLib.PRIORITY_DEFAULT,
+                    1,
+                    () => {
+                        if (this._discoverers.length) {
+                            this.broadcast();
+                            return true;
+                        }
+                        
+                        GLib.source_remove(this._discovery);
+                        this._discovery = 0;
+                        return false;
+                    }
+                );
+            }
+        }
     },
     
     _addDevice: function (packet) {
