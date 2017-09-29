@@ -171,6 +171,19 @@ var Daemon = new Lang.Class({
         }
     },
     
+    // Special method to accomodate nautilus-send-gsconnect.py
+    getShareable: function () {
+        let shareable = {};
+        
+        for (let [busPath, device] of this._devices.entries()) {
+            if (device.connected && device._plugins.has("share")) {
+                shareable[device.name] = device.id;
+            }
+        }
+        
+        return shareable;
+    },
+    
     _addDevice: function (packet) {
         let devObjPath = "/org/gnome/shell/extensions/gsconnect/device/";
         

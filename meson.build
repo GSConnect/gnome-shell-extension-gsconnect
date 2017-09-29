@@ -18,13 +18,12 @@ extension_source = files(
   # standard files
   'src/extension.js',
   'src/prefs.js',
-  'data/stylesheet.css',
   # non-standard files
   'src/client.js',
   'src/common.js',
   'src/share.js',
   # non-GJS files
-  'src/nautilus-send-gsconnect.py',
+  'src/nautilus-gsconnect.py',
   'src/folks.py'
 )
 
