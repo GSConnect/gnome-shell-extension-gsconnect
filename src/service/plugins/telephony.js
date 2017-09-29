@@ -25,6 +25,7 @@ const { initTranslations, Me, DBusInfo, Settings } = imports.common;
 const Config = imports.service.config;
 const Protocol = imports.service.protocol;
 const PluginsBase = imports.service.plugins.base;
+const SMS = imports.service.plugins.sms;
 
 
 var METADATA = {
@@ -45,17 +46,13 @@ var Plugin = new Lang.Class({
     Signals: {
         "missedCall": {
             flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED,
-            param_types: [
-                GObject.TYPE_STRING,    // phoneNumber
-                GObject.TYPE_STRING,    // contactName
-            ]
+            // phoneNumber, contactName
+            param_types: [GObject.TYPE_STRING, GObject.TYPE_STRING]
         },
         "ringing": {
             flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED,
-            param_types: [
-                GObject.TYPE_STRING,    // phoneNumber
-                GObject.TYPE_STRING,    // contactName
-            ]
+            // phoneNumber, contactName
+            param_types: [GObject.TYPE_STRING, GObject.TYPE_STRING]
         },
         "sms": {
             flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED,
@@ -68,15 +65,15 @@ var Plugin = new Lang.Class({
         },
         "talking": {
             flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED,
-            param_types: [
-                GObject.TYPE_STRING,    // phoneNumber
-                GObject.TYPE_STRING,    // contactName
-            ]
+            // phoneNumber, contactName
+            param_types: [GObject.TYPE_STRING, GObject.TYPE_STRING]
         }
     },
     
     _init: function (device) {
         this.parent(device, "telephony");
+        
+        Gtk.IconTheme.get_default().add_resource_path("/icons");
     },
     
     // TODO
@@ -129,6 +126,8 @@ var Plugin = new Lang.Class({
                 
                 note.show();
             }
+            
+        // TODO: music pause, etc
         } else if (packet.body.event === "ringing") {
             this._dbus.emit_signal("ringing",
                 new GLib.Variant(
@@ -167,8 +166,15 @@ var Plugin = new Lang.Class({
                 )
             );
             
-            // FIXME: check for open window
-            //        urgency
+            this.emit(
+                "sms",
+                packet.body.phoneNumber,
+                packet.body.contactName,
+                packet.body.messageBody,
+                packet.body.phoneThumbnail
+            );
+            
+            // FIXME: urgency
             //        block matching notification somehow?
             if (this.settings.autoreply_sms) {
                 this.reply(null, "autoreply_sms", packet.body);
@@ -197,7 +203,8 @@ var Plugin = new Lang.Class({
                 
                 note.show();
             }
-            
+        
+        // TODO: music pause, etc
         } else if (packet.body.event === "talking") {
             this._dbus.emit_signal("talking",
                 new GLib.Variant(
@@ -233,26 +240,57 @@ var Plugin = new Lang.Class({
         }
     },
     
-    reply: function (notification, action, user_data) {
+    reply: function (notification, action, args) {
         log("TelephonyPlugin._open_sms()");
-        GLib.spawn_command_line_async(
-            "gjs " + Me.path + "/sms.js --device=" + this.device.id
-        );
+        
+        log("REPLY ARGS: " + JSON.stringify(args));
+        
+        //
+        let windows = this.device.daemon.get_windows();
+        let window = false;
+        
+        // Look for an open window that will already be catching messages
+        for (let index_ in windows) {
+            for (let number of windows[index_]._get_numbers()) {
+                if (number === args.phoneNumber) {
+                    window = windows[index_];
+                    break;
+                }
+            }
+            
+            if (window !== false) { break; }
+        }
+        
+        // None found, open a new one, add the contact and log the message
+        if (!window) {
+            window = new SMS.ApplicationWindow(this.device.daemon, this.device);
+            
+            if (args.contactName.length) {
+                window.contactEntry.text = args.contactName + " <" + args.phoneNumber + ">; ";
+                window._log_message(args.contactName, args.messageBody);
+            } else {
+                window.contactEntry.text = args.phoneNumber + "; ";
+                window._log_message(args.phoneNumber, args.messageBody);
+            }
+        }
+        
+        // Present the window and bail
+        window.present();
+        return;
     },
     
     sms: function (phoneNumber, messageBody) {
-        if (this.device.connected && this.device.paired) {
-            let packet = new Protocol.Packet();
-            packet.type = "kdeconnect.sms.request";
-            
-            packet.body = {
+        let packet = new Protocol.Packet({
+            id: Date.now(),
+            type: "kdeconnect.sms.request",
+            body: {
                 sendSms: true,
                 phoneNumber: phoneNumber,
                 messageBody: messageBody
-            };
-            
-            this.device._channel.send(packet);
-        }
+            }
+        });
+        
+        this.device._channel.send(packet);
     }
 });
 

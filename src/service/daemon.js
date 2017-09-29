@@ -11,6 +11,7 @@ const System = imports.system;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
+const Gtk = imports.gi.Gtk;
 const Notify = imports.gi.Notify;
 
 // Local Imports
@@ -30,7 +31,7 @@ const { initTranslations, Me, DBusInfo, Settings } = imports.common;
 
 var Daemon = new Lang.Class({
     Name: "GSConnectDaemon",
-    Extends: Gio.Application,
+    Extends: Gtk.Application,
     Properties: {
         "name": GObject.ParamSpec.string(
             "name",

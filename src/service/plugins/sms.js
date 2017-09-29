@@ -49,7 +49,8 @@ const SUPPORTED_NUMBER_TYPES = [
 function getPath() {
     // Diced from: https://github.com/optimisme/gjs-examples/
     let m = new RegExp("@(.+):\\d+").exec((new Error()).stack.split("\n")[1]);
-    return Gio.File.new_for_path(m[1]).get_parent().get_path();
+    let p = Gio.File.new_for_path(m[1]).get_parent().get_parent().get_parent();
+    return p.get_path();
 }
 
 imports.searchPath.push(getPath());
@@ -332,6 +333,7 @@ var ContactCompletion = new Lang.Class({
     }
 });
 
+
 /** A Gtk.Entry subclass for contact names and phone numbers */
 var ContactEntry = new Lang.Class({
     Name: "ContactEntry",
@@ -396,6 +398,7 @@ var ContactEntry = new Lang.Class({
     }
 });
 
+
 /** SMS Window */
 var ApplicationWindow = new Lang.Class({
     Name: "ApplicationWindow",
@@ -411,9 +414,10 @@ var ApplicationWindow = new Lang.Class({
         });
         
         this.device = device;
+        this.plugin = this.device._plugins.get("telephony");
         
         // Contact Entry
-        this.contactEntry = new ContactEntry(application.completion);
+        this.contactEntry = new ContactEntry(new ContactCompletion());
         this.device.bind_property(
             "connected",
             this.contactEntry,
@@ -523,12 +527,7 @@ var ApplicationWindow = new Lang.Class({
         });
         
         // Connect to notifications
-        if (this.device.hasOwnProperty("telephony")) {
-            this.device.telephony.connect(
-                "sms",
-                Lang.bind(this, this._catch_message)
-            );
-        }
+        this.plugin.connect("sms", Lang.bind(this, this._catch_message));
         
         // Finish initing
         this.show_all();
@@ -661,7 +660,7 @@ var ApplicationWindow = new Lang.Class({
         
         // Send to each number
         for (let number of numbers) {
-            this.device.sms(number, entry.text);
+            this.plugin.sms(number, entry.text);
         }
         
         // Log the sent message in the Conversation View and clear the entry
@@ -669,244 +668,4 @@ var ApplicationWindow = new Lang.Class({
         entry.text = "";
     }
 });
-
-var Application = new Lang.Class({
-    Name: "Application",
-    Extends: Gtk.Application,
-
-    _init: function() {
-        this.parent({
-            application_id: "org.gnome.shell.extensions.gsconnect.sms",
-//            flags: Gio.ApplicationFlags.NONE
-            flags: Gio.ApplicationFlags.HANDLES_COMMAND_LINE
-        });
-        
-        let application_name = _("GSConnect SMS");
-
-        GLib.set_prgname(application_name);
-        GLib.set_application_name(application_name);
-        
-        this._id = null;
-        this._reply = false;
-        this._name = null;
-        this._number = null;
-        this._message = null;
-        
-        // Options
-        this.add_main_option(
-            "device",
-            "d".charCodeAt(0),
-            GLib.OptionFlags.NONE,
-            GLib.OptionArg.STRING,
-            "Device ID",
-            "<device-id>"
-        );
-        
-        this.add_main_option(
-            "reply-name",
-            "n".charCodeAt(0),
-            GLib.OptionFlags.NONE,
-            GLib.OptionArg.STRING,
-            "Sender Name to reply to",
-            "<sender-name>"
-        );
-        
-        this.add_main_option(
-            "reply-number",
-            "p".charCodeAt(0),
-            GLib.OptionFlags.NONE,
-            GLib.OptionArg.STRING,
-            "Phone Number to reply to",
-            "<sender-number>"
-        );
-        
-        this.add_main_option(
-            "reply-message",
-            "m".charCodeAt(0),
-            GLib.OptionFlags.NONE,
-            GLib.OptionArg.STRING,
-            "Message to reply to",
-            "<message-body>"
-        );
-        
-        this.register(null);
-    },
-
-    vfunc_startup: function() {
-        this.parent();
-        
-        Gtk.IconTheme.get_default().add_resource_path("/icons");
-        
-        this.manager = new Client.DeviceManager();
-        this.completion = new ContactCompletion();
-        
-        // Actions
-        let replyAction = new Gio.SimpleAction({
-            name: "reply",
-            parameter_type: null
-        });
-        replyAction.connect(
-            "activate",
-            Lang.bind(this, this.reply)
-        );
-        this.add_action(replyAction);
-    },
-    
-    // FIXME
-    vfunc_activate: function() {
-        // Check the specified device is connected and support telephony
-        let device;
-        
-        for (let dev of this.manager.devices.values()) {
-            if (dev.id === this._id && dev.hasOwnProperty("telephony")) {
-                device = dev;
-            }
-        }
-        
-        if (device === undefined) {
-            throw Error("Device is unconnected or doesn't support sending SMS");
-        }
-        
-        //
-        let windows = this.get_windows();
-        let window = false;
-            
-        // We're replying to an incoming message
-        if (this._reply) {
-            // Look for an open window that will already be catching messages
-            for (let index_ in windows) {
-                for (let number of windows[index_]._get_numbers()) {
-                    if (number === this._number) {
-                        window = windows[index_];
-                        break;
-                    }
-                }
-                
-                if (window !== false) { break; }
-            }
-            
-            // None found, open a new one, add the contact and log the message
-            if (!window) {
-                window = new ApplicationWindow(this, device);
-                
-                if (this._name !== null) {
-                    window.contactEntry.text = this._name + " <" + this._number + ">; ";
-                    window._log_message(this._name, this._message);
-                } else {
-                    window.contactEntry.text = this._number + "; ";
-                    window._log_message(this._number, this._message);
-                }
-            }
-            
-            // Reset the reply variables
-            this._reply = false;
-            this._name = null;
-            this._number = null;
-            this._message = null;
-            
-            // Present the window and bail
-            window.present();
-            return;
-            
-        // Check if there's one with no contact entered yet we can use
-        } else {
-            for (let index_ in windows) {
-                if (!windows[index_]._get_numbers().length) {
-                    window = windows[index_];
-                    break;
-                }
-            }
-        }
-        
-        // Okay, fine
-        if (!window) { window = new ApplicationWindow(this, device); }
-        
-        window.present();
-    },
-    
-//    vfunc_handle_local_options: function(options) {
-//        if (options.contains("device")) {
-//            this._id = options.lookup_value("device", null).deep_unpack();
-//        } else {
-//            throw Error("Device ID not specified");
-//            return 1;
-//        }
-//        
-//        if (options.contains("reply-number") && options.contains("reply-message")) {
-//            this._reply = true;
-//            this._number = options.lookup_value("reply-number", null).deep_unpack();
-//            this._message = options.lookup_value("reply-message", null).deep_unpack();
-//            
-//            if (options.contains("reply-name")) {
-//                this._name = options.lookup_value("reply-name", null).deep_unpack();
-//            }
-//        }
-//        
-//        return -1;
-//    },
-    
-    vfunc_command_line: function (command_line, user_data) {
-        let options = command_line.get_options_dict();
-        
-        if (options.contains("device")) {
-            this._id = options.lookup_value("device", null).deep_unpack();
-        } else {
-            throw Error("Device ID not specified");
-            return 1;
-        }
-        
-        if (options.contains("reply-number") && options.contains("reply-message")) {
-            this._reply = true;
-            this._number = options.lookup_value("reply-number", null).deep_unpack();
-            this._message = options.lookup_value("reply-message", null).deep_unpack();
-            
-            if (options.contains("reply-name")) {
-                this._name = options.lookup_value("reply-name", null).deep_unpack();
-            }
-        }
-        
-        this.emit("activate");
-        return -1;
-    },
-
-    vfunc_shutdown: function() {
-        this.parent();
-        
-        this.manager.destroy();
-        delete this.manager;
-    },
-    
-    reply: function () {
-        // Look for an open window that will already be catching messages
-        for (let index_ in windows) {
-            for (let number of windows[index_]._get_numbers()) {
-                if (number === this._number) {
-                    window = windows[index_];
-                    break;
-                }
-            }
-            
-            if (window !== false) { break; }
-        }
-        
-        // None found, open a new one, add the contact and log the message
-        if (!window) {
-            window = new ApplicationWindow(this, device);
-            
-            if (this._name !== null) {
-                window.contactEntry.text = this._name + " <" + this._number + ">; ";
-                window._log_message(this._name, this._message);
-            } else {
-                window.contactEntry.text = this._number + "; ";
-                window._log_message(this._number, this._message);
-            }
-        }
-        
-        // Present the window and bail
-        window.present();
-        return;
-    }
-});
-
-(new Application()).run([System.programInvocationName].concat(ARGV));
 
