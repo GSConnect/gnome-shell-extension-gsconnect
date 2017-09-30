@@ -174,8 +174,8 @@ function generateEncryption (force=false) {
         );
     }
     
-    GLib.chmod(CONFIG_PATH + "/private.pem", 384);
-    GLib.chmod(CONFIG_PATH + "/certificate.pem", 384);
+    GLib.spawn_command_line_async("chmod 0600 " + CONFIG_PATH + "/private.pem");
+    GLib.spawn_command_line_async("chmod 0600 " + CONFIG_PATH + "/certificat.pem");
 };
 
 
