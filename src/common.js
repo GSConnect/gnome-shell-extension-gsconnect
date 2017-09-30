@@ -143,7 +143,7 @@ var CONFIG_PATH = GLib.get_user_config_dir() + "/gnome-shell-extension-gsconnect
  *
  * FIXME: file permissions
  */
-function generate_encryption (force=false) {
+function generateEncryption (force=false) {
     if (!GLib.file_test(CONFIG_PATH, GLib.FileTest.IS_DIR)) {
         GLib.mkdir_with_parents(CONFIG_PATH, 493);
     }
@@ -178,7 +178,7 @@ function generate_encryption (force=false) {
 
 
 // FIXME
-function install_service_files (force=false) {
+function installService (force=false) {
     let svc_dir = GLib.get_user_data_dir() + "/dbus-1/services";
     let svc_name = "/org.gnome.shell.extensions.gsconnect.daemon.service";
     
@@ -207,7 +207,13 @@ function install_service_files (force=false) {
 };
 
 
-function read_daemon_config(daemon) {
+function initConfiguration() {
+    generateEncryption(false);
+    installService(false);
+};
+
+
+function readDaemonConfiguration(daemon) {
     let identPath = CONFIG_PATH + "/identity.json"
     let config;
         
@@ -226,11 +232,18 @@ function read_daemon_config(daemon) {
 };
 
 
-function write_daemon_config(daemon) {
+function writeDaemonConfiguration(daemon) {
     GLib.file_set_contents(
         CONFIG_PATH + "/identity.json",
         daemon.identity.toString()
     );
+};
+
+
+function initDaemonConfiguration (daemon) {
+    initConfiguration();
+    readDaemonConfiguration(daemon);
+    writeDaemonConfiguration(daemon);
 };
 
 
@@ -330,14 +343,6 @@ function write_device_config (deviceId, config) {
     );
     
     return;
-};
-
-
-function init_config (daemon) {
-    generate_encryption(false);
-    install_service_files(false);
-    read_daemon_config(daemon);
-    write_daemon_config(daemon);
 };
 
 

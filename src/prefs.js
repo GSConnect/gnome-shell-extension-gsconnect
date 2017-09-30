@@ -16,7 +16,7 @@ const KeybindingsWidget = Me.imports.widgets.keybindings;
 const PluginsWidget = Me.imports.widgets.plugins;
 const Client = Me.imports.client;
 const Common = imports.common;
-const { initTranslations, Resources, Settings, Schema } = Me.imports.common;
+const { Settings, Schema } = Me.imports.common;
 
 
 /** Gtk.Button subclass for launching dialogs or external programs */
@@ -538,7 +538,8 @@ var PrefsWidget = new Lang.Class({
 
 
 function init() {
-    initTranslations();
+    Common.initConfiguration();
+    Common.initTranslations();
 }
 
 // Extension Preferences

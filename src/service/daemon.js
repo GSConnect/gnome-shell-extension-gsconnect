@@ -101,7 +101,7 @@ var Daemon = new Lang.Class({
     
     set name(name) {
         this.identity.body.deviceName = name;
-        Common.write_daemon_config(this);
+        Common.writeDaemonConfiguration(this);
         this._dbus.emit_property_changed("name", new GLib.Variant("s", name));
         this.broadcast();
     },
@@ -301,7 +301,7 @@ var Daemon = new Lang.Class({
         this._in = null;
         
         this.identity = new Protocol.Packet();
-        Common.init_config(this);
+        Common.initDaemonConfiguration(this);
         
         // Notifications
         Notify.init("org.gnome.shell.extensions.gsconnect.daemon");
@@ -346,6 +346,8 @@ var Daemon = new Lang.Class({
 
     vfunc_shutdown: function() {
         this.parent();
+        
+        Common.writeDaemonConfiguration(this);
         
         if (this._socket !== null) {
             this._socket.close();
