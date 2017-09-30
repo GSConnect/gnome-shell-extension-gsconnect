@@ -554,7 +554,6 @@ var DeviceMenu = new Lang.Class({
         this.device.telephony.openSms();
     },
     
-    // FIXME
     _statusAction: function (button) {
         debug("extension.DeviceMenu._statusAction()");
         
