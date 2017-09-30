@@ -44,11 +44,6 @@ var METADATA = {
 var Plugin = new Lang.Class({
     Name: "GSConnectMPRISPlugin",
     Extends: PluginsBase.Plugin,
-    Signals: {
-        "mpris": {
-            flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED
-        }
-    },
     
     _init: function (device) {
         this.parent(device, "mpris");
