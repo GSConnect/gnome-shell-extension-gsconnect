@@ -205,13 +205,14 @@ var Dialog = new Lang.Class({
             hexpand: true,
             visible: true
         });
-        this.webEntry.connect("activate", Lang.bind(this, this.sendLink));
+        this.webEntry.connect("activate", Lang.bind(this, this._sendLink));
         
         this.webButton = new Gtk.ToggleButton({
             image: Gtk.Image.new_from_icon_name(
                 "web-browser-symbolic",
                 Gtk.IconSize.BUTTON
             ),
+            // FIXME: better tooltip
             tooltip_text: _("Send a link (should start with 'http://' or 'https://)"),
             visible: true
         });
@@ -225,7 +226,7 @@ var Dialog = new Lang.Class({
     
         this.add_button(_("Cancel"), Gtk.ResponseType.CANCEL);
         let sendButton = this.add_button(_("Send"), Gtk.ResponseType.OK);
-        sendButton.connect("clicked", Lang.bind(this, this.sendLink));
+        sendButton.connect("clicked", Lang.bind(this, this._sendLink));
         
         
         this.get_header_bar().pack_end(this.webButton);
