@@ -402,6 +402,9 @@ var DeviceDefaults = {
         findmyphone: {
             enabled: false
         },
+        mousepad: {
+            enabled: false
+        },
         mpris: {
             enabled: false
         },

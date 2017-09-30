@@ -49,6 +49,9 @@
     <method name="ring"/>
   </interface>
   
+  <!-- Mousepad -->
+  <interface name="org.gnome.shell.extensions.gsconnect.mousepad"/>
+  
   <!-- MPRIS -->
   <interface name="org.gnome.shell.extensions.gsconnect.mpris"/>
   

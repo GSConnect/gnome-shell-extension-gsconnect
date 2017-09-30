@@ -770,6 +770,10 @@ var PluginMetadata = new Map([
         summary: _("Find My Phone"),
         description: _("Locate device by ringing")
     }],
+    ["mousepad", {
+        summary: _("Remote Input"),
+        description: _("Control the mouse and keyboard from your device")
+    }],
     ["mpris", {
         summary: _("MPRIS"),
         description: _("Control music players from your device")
