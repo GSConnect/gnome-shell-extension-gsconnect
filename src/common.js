@@ -161,11 +161,6 @@ function generate_encryption (force=false) {
         GLib.FileTest.EXISTS
     );
     
-//    let hasPublicKey = GLib.file_test(
-//        CONFIG_PATH + "/public.pem",
-//        GLib.FileTest.EXISTS
-//    );
-    
     let hasCertificate = GLib.file_test(
         CONFIG_PATH + "/certificate.pem",
         GLib.FileTest.EXISTS
@@ -186,14 +181,6 @@ function generate_encryption (force=false) {
             GLib.SpawnFlags.SEARCH_PATH, // flags,
             null // child_setup
         );
-        
-//        [res, stdout, stderr, exit_status] = GLib.spawn_sync(
-//            CONFIG_PATH, // working dir
-//            ["openssl", "rsa", "-in", "private.pem", "-pubout", "-out", "public.pem"], // argv
-//            null, // envp
-//            GLib.SpawnFlags.SEARCH_PATH, // flags,
-//            null // child_setup
-//        );
     }
 };
 
