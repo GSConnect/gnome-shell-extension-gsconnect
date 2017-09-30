@@ -55,10 +55,9 @@ function getPath() {
 
 imports.searchPath.push(getPath());
 
-const Client = imports.client;
-const { initTranslations, Me, Resources, Settings } = imports.common;
+const Common = imports.common;
 
-initTranslations();
+Common.initTranslations();
 
 /** Phone Number types that support receiving texts */
 
@@ -121,11 +120,11 @@ var ContactCompletion = new Lang.Class({
         envp.push("FOLKS_BACKENDS_DISABLED=telepathy")
         
         let [res, pid, in_fd, out_fd, err_fd] = GLib.spawn_async_with_pipes(
-            null,                                   // working dir
-            ["python3", Me.path + "/folks.py"],     // argv
-            envp,                                   // envp
-            GLib.SpawnFlags.SEARCH_PATH,            // enables PATH
-            null                                    // child_setup (func)
+            null,                                       // working dir
+            ["python3", Common.Me.path + "/folks.py"],  // argv
+            envp,                                       // envp
+            GLib.SpawnFlags.SEARCH_PATH,                // enables PATH
+            null                                        // child_setup (func)
         );
         
         this._check_folks(err_fd, out_fd);

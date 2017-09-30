@@ -15,7 +15,7 @@ const GSettingsWidget = Me.imports.widgets.gsettings;
 const KeybindingsWidget = Me.imports.widgets.keybindings;
 const PluginsWidget = Me.imports.widgets.plugins;
 const Client = Me.imports.client;
-const Config = Me.imports.service.config;
+const Common = imports.common;
 const { initTranslations, Resources, Settings, Schema } = Me.imports.common;
 
 
@@ -356,7 +356,7 @@ var DevicePage = new Lang.Class({
         this.box.margin_right = 40;
         
         this.device = device;
-        this._config = Config.read_device_config(device.id);
+        this._config = Common.read_device_config(device.id);
         
         // Status Section FIXME
         let statusSection = this.add_section();
@@ -421,7 +421,7 @@ var DevicePage = new Lang.Class({
     },
     
     _refresh: function () {
-        this._config = Config.read_device_config(this.device.id);
+        this._config = Common.read_device_config(this.device.id);
     }
 });
 

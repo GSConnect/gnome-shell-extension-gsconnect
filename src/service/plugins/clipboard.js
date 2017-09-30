@@ -22,8 +22,7 @@ function getPath() {
 
 imports.searchPath.push(getPath());
 
-const { initTranslations, Me, DBusInfo, Settings } = imports.common;
-const Config = imports.service.config;
+const Common = imports.common;
 const Protocol = imports.service.protocol;
 const PluginsBase = imports.service.plugins.base;
 

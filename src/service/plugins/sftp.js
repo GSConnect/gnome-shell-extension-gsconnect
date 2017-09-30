@@ -21,8 +21,7 @@ function getPath() {
 
 imports.searchPath.push(getPath());
 
-const { initTranslations, Me, DBusInfo, Settings } = imports.common;
-const Config = imports.service.config;
+const Common = imports.common;
 const Protocol = imports.service.protocol;
 const PluginsBase = imports.service.plugins.base;
 
@@ -86,7 +85,7 @@ var Plugin = new Lang.Class({
     get directories () { return this._directories; },
     
     _prepare: function () {
-        this._path = Config.CONFIG_PATH + "/" + this.device.id + "/sftp";
+        this._path = Common.CONFIG_PATH + "/" + this.device.id + "/sftp";
         
         if (!GLib.file_test(this._path, GLib.FileTest.IS_DIR)) {
             GLib.mkdir_with_parents(this._path, 493);
@@ -129,7 +128,7 @@ var Plugin = new Lang.Class({
             // Do not use ~/.ssh/config
             "-F", "/dev/null",
             // Sketchy?
-            "-o", "IdentityFile=" + Config.CONFIG_PATH + "/private.pem",
+            "-o", "IdentityFile=" + Common.CONFIG_PATH + "/private.pem",
             // Don't prompt for new host confirmation (we know the host)
             "-o", "StrictHostKeyChecking=no",
             // Prevent storing as a known host

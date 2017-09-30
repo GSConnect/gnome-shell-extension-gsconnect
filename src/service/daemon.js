@@ -23,10 +23,9 @@ function getPath() {
 
 imports.searchPath.push(getPath());
 
-const Config = imports.service.config;
+const Common = imports.common;
 const Device = imports.service.device;
 const Protocol = imports.service.protocol;
-const { initTranslations, Me, DBusInfo, Settings } = imports.common;
 
 
 var Daemon = new Lang.Class({
@@ -91,8 +90,8 @@ var Daemon = new Lang.Class({
     // Properties
     get certificate () {
         return Gio.TlsCertificate.new_from_files(
-            Config.CONFIG_PATH + "/certificate.pem",
-            Config.CONFIG_PATH + "/private.pem"
+            Common.CONFIG_PATH + "/certificate.pem",
+            Common.CONFIG_PATH + "/private.pem"
         );
     },
     
@@ -102,7 +101,7 @@ var Daemon = new Lang.Class({
     
     set name(name) {
         this.identity.body.deviceName = name;
-        Config.write_daemon_config(this);
+        Common.write_daemon_config(this);
         this._dbus.emit_property_changed("name", new GLib.Variant("s", name));
         this.broadcast();
     },
@@ -204,7 +203,7 @@ var Daemon = new Lang.Class({
             );
         }
         
-        Config.write_device_cache(this, packet.body.deviceId);
+        Common.write_device_cache(this, packet.body.deviceId);
     },
     
     /**
@@ -302,7 +301,7 @@ var Daemon = new Lang.Class({
         this._in = null;
         
         this.identity = new Protocol.Packet();
-        Config.init_config(this);
+        Common.init_config(this);
         
         // Notifications
         Notify.init("org.gnome.shell.extensions.gsconnect.daemon");
@@ -315,7 +314,7 @@ var Daemon = new Lang.Class({
         // Export DBus
         let iface = "org.gnome.shell.extensions.gsconnect.daemon";
         this._dbus = Gio.DBusExportedObject.wrapJSObject(
-            DBusInfo.daemon.lookup_interface(iface),
+            Common.DBusInfo.daemon.lookup_interface(iface),
             this
         );
         this._dbus.export(
@@ -331,7 +330,7 @@ var Daemon = new Lang.Class({
         }
         
         // Load cached devices
-        for (let identity of Config.read_device_cache()) {
+        for (let identity of Common.read_device_cache()) {
             let packet = new Protocol.Packet(identity);
             this._addDevice(packet);
         }

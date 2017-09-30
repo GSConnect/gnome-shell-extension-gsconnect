@@ -21,8 +21,7 @@ function getPath() {
 
 imports.searchPath.push(getPath());
 
-const { initTranslations, Me, DBusInfo, Resources, Settings } = imports.common;
-const Config = imports.service.config;
+const Common = imports.common;
 const Protocol = imports.service.protocol;
 const PluginsBase = imports.service.plugins.base;
 
@@ -93,7 +92,7 @@ var Plugin = new Lang.Class({
         // org.freedesktop.Notifications interface; needed to catch signals
         let iface = "org.freedesktop.Notifications";
         this._ndbus = Gio.DBusExportedObject.wrapJSObject(
-            DBusInfo.freedesktop.lookup_interface(iface),
+            Common.DBusInfo.freedesktop.lookup_interface(iface),
             this
         );
         this._ndbus.export(Gio.DBus.session, "/org/freedesktop/Notifications");

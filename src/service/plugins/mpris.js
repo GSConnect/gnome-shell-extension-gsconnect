@@ -21,8 +21,7 @@ function getPath() {
 
 imports.searchPath.push(getPath());
 
-const { DBusInfo, DBusProxy, Resources, Settings } = imports.common;
-const Config = imports.service.config;
+const Common = imports.common;
 const Protocol = imports.service.protocol;
 const PluginsBase = imports.service.plugins.base;
 
@@ -90,14 +89,14 @@ var Plugin = new Lang.Class({
     
     _addPlayers: function () {
         for (let name of this._listPlayers()) {
-            let mpris = new DBusProxy.mpris(
+            let mpris = new Common.DBusProxy.mpris(
                 Gio.DBus.session,
                 name,
                 "/org/mpris/MediaPlayer2" 
             );
             
             if (!this._players.has(mpris.Identity)) {
-                let player = new DBusProxy.mprisPlayer(
+                let player = new Common.DBusProxy.mprisPlayer(
                     Gio.DBus.session,
                     name,
                     "/org/mpris/MediaPlayer2" 

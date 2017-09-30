@@ -21,9 +21,8 @@ function getPath() {
 
 imports.searchPath.push(getPath());
 
-const Config = imports.service.config;
+const Common = imports.common;
 const Protocol = imports.service.protocol;
-const { initTranslations, Me, DBusInfo, Settings } = imports.common;
 
 
 /**
@@ -52,7 +51,7 @@ var Plugin = new Lang.Class({
         // Export DBus
         let iface = "org.gnome.shell.extensions.gsconnect." + this.name;
         this._dbus = Gio.DBusExportedObject.wrapJSObject(
-            DBusInfo.device.lookup_interface(iface),
+            Common.DBusInfo.device.lookup_interface(iface),
             this
         );
         this._dbus.export(

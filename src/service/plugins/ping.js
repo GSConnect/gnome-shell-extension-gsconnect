@@ -21,8 +21,7 @@ function getPath() {
 
 imports.searchPath.push(getPath());
 
-const { initTranslations, Me, DBusInfo, Settings } = imports.common;
-const Config = imports.service.config;
+const Common = imports.common;
 const Protocol = imports.service.protocol;
 const PluginsBase = imports.service.plugins.base;
 
@@ -52,6 +51,7 @@ var Plugin = new Lang.Class({
     },
     
     // TODO: support pings with messages
+    //       notification
     handlePacket: function (packet) {
         this.emit("ping");
         log("IMPLEMENT: " + packet.toString());
