@@ -59,12 +59,10 @@ var Plugin = new Lang.Class({
     
     // TODO: support pings with messages
     ping: function () {
-        if (this.device.connected && this.device.paired) {
-            let packet = new Protocol.Packet();
-            packet.type = "kdeconnect.ping";
-            
-            this.device._channel.send(packet);
-        }
+        let packet = new Protocol.Packet();
+        packet.type = "kdeconnect.ping";
+        
+        this.device._channel.send(packet);
     }
 });
 
