@@ -115,7 +115,7 @@ var Device = new Lang.Class({
         
         // Init config
         this.config_cert = Common.CONFIG_PATH + "/" + this.id + "/certificate.pem";
-        this.config = Common.read_device_config(this.id);
+        this.config = Common.readDeviceConfiguration(this.id);
         
         //
         this.activate();
@@ -414,7 +414,7 @@ var Device = new Lang.Class({
             // Save config and notify, if requested
             if (write) {
                 this.config.plugins[name].enabled = true;
-                Common.write_device_config(this.id, this.config);
+                Common.writeDeviceConfiguration(this.id, this.config);
                 
                 this._dbus.emit_property_changed(
                     "plugins",
@@ -451,7 +451,7 @@ var Device = new Lang.Class({
             // Save config and notify, if requested
             if (write) {
                 this.config.plugins[name].enabled = false;
-                Common.write_device_config(this.id, this.config);
+                Common.writeDeviceConfiguration(this.id, this.config);
                 
                 this._dbus.emit_property_changed(
                     "plugins",
@@ -483,7 +483,7 @@ var Device = new Lang.Class({
             
             // Write the new configuration
             Object.assign(this.config.plugins[name].settings, settings);
-            Common.write_device_config(this.id, this.config);
+            Common.writeDeviceConfiguration(this.id, this.config);
             
             // Update the device with the new configuration
             if (this.connected && this.paired && this._plugins.has(name)) {

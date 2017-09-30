@@ -356,7 +356,7 @@ var DevicePage = new Lang.Class({
         this.box.margin_right = 40;
         
         this.device = device;
-        this._config = Common.read_device_config(device.id);
+        this._config = Common.readDeviceConfiguration(device.id);
         
         // Status Section FIXME
         let statusSection = this.add_section();
@@ -421,7 +421,7 @@ var DevicePage = new Lang.Class({
     },
     
     _refresh: function () {
-        this._config = Common.read_device_config(this.device.id);
+        this._config = Common.readDeviceConfiguration(this.device.id);
     }
 });
 

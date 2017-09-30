@@ -304,7 +304,7 @@ function write_device_cache (daemon, deviceId=false) {
 
 
 // FIXME: error handling
-function read_device_config (deviceId) {
+function readDeviceConfiguration (deviceId) {
     let config;
     let device_path = CONFIG_PATH + "/" + deviceId;
     let device_config = device_path + "/config.json";
@@ -327,14 +327,14 @@ function read_device_config (deviceId) {
     }
     
     // Merge loaded config with defaults and save
-    write_device_config(deviceId, mergeDeep(DeviceDefaults, config));
+    writeDeviceConfiguration(deviceId, mergeDeep(DeviceDefaults, config));
     
     return config;
 };
 
 
 // FIXME: error handling
-function write_device_config (deviceId, config) {
+function writeDeviceConfiguration (deviceId, config) {
     let device_config = CONFIG_PATH + "/" + deviceId + "/config.json";
 
     GLib.file_set_contents(
