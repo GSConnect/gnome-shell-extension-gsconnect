@@ -19,21 +19,9 @@ function getPath() {
 
 imports.searchPath.push(getPath());
 
+const Common = imports.common;
 const Config = imports.service.config;
 const Protocol = imports.service.protocol;
-const Common = imports.common;
-const { initTranslations, mergeDeep, DBusInfo, Settings } = imports.common;
-
-const BatteryPlugin = imports.service.plugins.battery;
-const ClipboardPlugin = imports.service.plugins.clipboard;
-const FindMyPhonePlugin = imports.service.plugins.findmyphone;
-const MPRISPlugin = imports.service.plugins.mpris;
-const NotificationsPlugin = imports.service.plugins.notifications;
-const PingPlugin = imports.service.plugins.ping;
-const RunCommandPlugin = imports.service.plugins.runcommand;
-const SharePlugin = imports.service.plugins.share;
-const SFTPPlugin = imports.service.plugins.sftp;
-const TelephonyPlugin = imports.service.plugins.telephony;
 
 
 var Device = new Lang.Class({
@@ -118,7 +106,7 @@ var Device = new Lang.Class({
         // Export DBus
         let iface = "org.gnome.shell.extensions.gsconnect.device";
         this._dbus = Gio.DBusExportedObject.wrapJSObject(
-            DBusInfo.device.lookup_interface(iface),
+            Common.DBusInfo.device.lookup_interface(iface),
             this
         );
         this._dbus.export(
@@ -400,7 +388,7 @@ var Device = new Lang.Class({
         log("Device.enablePlugin(" + name + ", " + write + ")");
     
         try {
-            let handler = PacketHandlers.get(name);
+            let handler = imports.service.plugins[name];
         
             // Running instance
             if (this.connected && this.paired) {
@@ -479,7 +467,7 @@ var Device = new Lang.Class({
         log("Device.configurePlugin(" + name + ", " + settings + ")");
         
         try {
-            let handler = PacketHandlers.get(name);
+            let handler = imports.service.plugins[name];
             
             settings = JSON.parse(settings);
             
@@ -511,18 +499,4 @@ var Device = new Lang.Class({
         this._loadPlugins();
     }
 });
-
-
-var PacketHandlers = new Map([
-    ["battery", BatteryPlugin],
-    ["clipboard", ClipboardPlugin],
-    ["findmyphone", FindMyPhonePlugin],
-    ["mpris", MPRISPlugin],
-    ["notifications", NotificationsPlugin],
-    ["ping", PingPlugin],
-    ["runcommand", RunCommandPlugin],
-    ["sftp", SFTPPlugin],
-    ["share", SharePlugin],
-    ["telephony", TelephonyPlugin]
-]);
 
