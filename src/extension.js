@@ -23,7 +23,7 @@ const Tweener = imports.ui.tweener;
 
 // Local Imports
 const Me = imports.misc.extensionUtils.getCurrentExtension();
-const { log, debug, initTranslations, Resources, Settings } = Me.imports.common;
+const { debug, initTranslations, Resources, Settings } = Me.imports.common;
 const Client = Me.imports.client;
 
 // Externally Available Constants

@@ -92,21 +92,13 @@ function initTranslations() {
 }
 
 /**
- * Print a message to the log, prepended with the UUID of the extension
- * @param {String} msg - the message
- */
-//function log(msg) {
-//    global.log("[" + Me.metadata.uuid + "]: " + msg);
-//}
-
-/**
- * Print a message to the log, prepended with the UUID of the extension and
- * "DEBUG".
+ * Print a message to the log, prepended with the UUID of the extension, only
+ * if the "debug" settings is enabled in GSettings.
  * @param {String} msg - the debugging message
  */
 function debug(msg) {
     if (Settings.get_boolean("debug")) {
-        log("DEBUG: " + msg);
+        log("[" + Me.metadata.uuid + "]: " + msg);
     }
 }
 
