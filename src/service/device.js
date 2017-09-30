@@ -435,7 +435,7 @@ var Device = new Lang.Class({
         try {
             // Running instance
             if (this.connected) {
-                let handler = PacketHandlers.get(name);
+                let handler = imports.service.plugins[name];
                 let plugin = this._plugins.get(name);
                 
                 // Unregister handlers
