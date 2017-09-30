@@ -141,7 +141,6 @@ var CONFIG_PATH = GLib.get_user_config_dir() + "/gnome-shell-extension-gsconnect
  *
  * @param {Boolean} force - Force generation even if already created
  *
- * FIXME: file permissions
  */
 function generateEncryption (force=false) {
     if (!GLib.file_test(CONFIG_PATH, GLib.FileTest.IS_DIR)) {
@@ -174,6 +173,9 @@ function generateEncryption (force=false) {
             null // child_setup
         );
     }
+    
+    GLib.chmod(CONFIG_PATH + "/private.pem", 384);
+    GLib.chmod(CONFIG_PATH + "/certificate.pem", 384);
 };
 
 
