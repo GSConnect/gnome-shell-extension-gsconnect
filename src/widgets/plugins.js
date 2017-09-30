@@ -409,11 +409,15 @@ var NotificationsPluginDialog = new Lang.Class({
         let theme = Gtk.IconTheme.get_default()
         
         for (let name in this._settings.send.applications) {
-            let pixbuf = theme.load_icon(
-                this._settings.send.applications[name].iconName,
-                0,
-                0
-            );
+            let pixbuf;
+            
+            try {
+                pixbuf = theme.load_icon(
+                    this._settings.send.applications[name].iconName, 0, 0
+                );
+            } catch (e) {
+                pixbuf = theme.load_icon("application-x-executable", 0, 0);
+            }
         
             this.treeview.model.set(
                 this.treeview.model.append(),
