@@ -119,8 +119,9 @@ var Plugin = new Lang.Class({
     
     shareDialog: function () {
         let dialog = new Dialog(this.device.daemon, this.device.name);
+        let response = dialog.run()
         
-        if (dialog.run() === Gtk.ResponseType.OK) {
+        if (response === Gtk.ResponseType.OK) {
             let uris = dialog.get_uris();
             
             for (let uri of uris) {
@@ -128,13 +129,14 @@ var Plugin = new Lang.Class({
             }
             
             this._notifyShare(uris.length);
+        } else if (response === 1) {
+            this.shareUri(dialog.webEntry.text);
         }
         
         dialog.destroy();
     },
     
     _notifyShare: function (num) {
-        // FIXME: this closes immediately after opening in the extension
         let note = new Notify.Notification({
             app_name: "GSConnect",
             summary: this.device.name,
@@ -172,6 +174,10 @@ var Plugin = new Lang.Class({
                 
                 channel.open();
             } else {
+                if (!uri.startsWith("http://") && !uri.startsWith("https://")) {
+                    uri = "https://" + uri;
+                }
+                
                 packet.body = { url: uri };
             }
             
@@ -193,11 +199,46 @@ var Dialog = new Lang.Class({
             select_multiple: true,
             icon_name: "document-send"
         });
+        
+        this.webEntry = new Gtk.Entry({
+            placeholder_text: _("Enter link address"),
+            hexpand: true,
+            visible: true
+        });
+        this.webEntry.connect("activate", Lang.bind(this, this.sendLink));
+        
+        this.webButton = new Gtk.ToggleButton({
+            image: Gtk.Image.new_from_icon_name(
+                "web-browser-symbolic",
+                Gtk.IconSize.BUTTON
+            ),
+            tooltip_text: _("Send a link (should start with 'http://' or 'https://)"),
+            visible: true
+        });
+        this.webButton.connect("toggled", () => {
+            if (this.webButton.active) {
+                this.get_header_bar().set_custom_title(this.webEntry);
+            } else {
+                this.get_header_bar().set_custom_title(null);
+            }
+        });
     
         this.add_button(_("Cancel"), Gtk.ResponseType.CANCEL);
-        this.add_button(_("Send"), Gtk.ResponseType.OK);
+        let sendButton = this.add_button(_("Send"), Gtk.ResponseType.OK);
+        sendButton.connect("clicked", Lang.bind(this, this.sendLink));
+        
+        
+        this.get_header_bar().pack_end(this.webButton);
         this.set_default_response(Gtk.ResponseType.OK);
-        this.connect("delete-event", application.vfunc_shutdown);
+        this.connect("delete-event", () => {
+            this.emit("response", Gtk.ResponseType.CANCEL);
+        });
+    },
+    
+    _sendLink: function (widget) {
+        if (this.webButton.active && this.webEntry.text.length) {
+            this.emit("response", 1);
+        }
     }
 });
 
