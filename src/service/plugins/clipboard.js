@@ -45,7 +45,6 @@ var Plugin = new Lang.Class({
     _init: function (device) {
         this.parent(device, "clipboard");
         
-        Gtk.init(null);
         this._clipboard = Gtk.Clipboard.get_default(Gdk.Display.get_default());
         
         this._clipboard.connect("owner-change", () => {
