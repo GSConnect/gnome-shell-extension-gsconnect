@@ -90,7 +90,10 @@
   
   <!-- Telephony -->
   <interface name="org.gnome.shell.extensions.gsconnect.telephony">
-    <method name="sms">
+    <method name="muteCall"/>
+    <method name="openSms"/>
+    <method name="replySms"/> <!-- TODO -->
+    <method name="sendSms">
       <arg name="phoneNumber" type="s" direction="in"/>
       <arg name="messageBody" type="s" direction="in"/>
     </method>

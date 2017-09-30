@@ -297,12 +297,21 @@ var Telephony = new Lang.Class({
         });
     },
     
-    mute: function () {
-        return this._call("mute", true);
+    muteCall: function () {
+        return this._call("muteCall", true);
     },
     
-    sms: function (phoneNumber, messageBody) {
-        this._call("sms", true, phoneNumber, messageBody);
+    openSms: function () {
+        return this._call("openSms", true);
+    },
+    
+    // TODO
+    replySms: function () {
+        return this._call("replySms", true);
+    },
+    
+    sendSms: function (phoneNumber, messageBody) {
+        this._call("sendSms", true, phoneNumber, messageBody);
     },
 });
 

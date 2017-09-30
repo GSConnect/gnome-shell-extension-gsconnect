@@ -660,7 +660,7 @@ var ApplicationWindow = new Lang.Class({
         
         // Send to each number
         for (let number of numbers) {
-            this.plugin.sms(number, entry.text);
+            this.plugin.sendSms(number, entry.text);
         }
         
         // Log the sent message in the Conversation View and clear the entry

@@ -553,9 +553,7 @@ var DeviceMenu = new Lang.Class({
     _smsAction: function (button) {
         debug("extension.DeviceMenu._smsAction()");
         this._getTopMenu().close(true);
-        GLib.spawn_command_line_async(
-            "gjs " + Me.path + "/sms.js --device=" + this.device.id
-        );
+        this.device.telephony.openSms();
     },
     
     // FIXME

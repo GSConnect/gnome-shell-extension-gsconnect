@@ -195,9 +195,8 @@ var Plugin = new Lang.Class({
         // FIXME: urgency
         //        block matching notification somehow?
         if (this.settings.autoreply_sms) {
-            this.reply(null, "autoreply_sms", packet.body);
+            this.replySms(null, "autoreply_sms", packet.body);
         } else if (this.settings.notify_sms) {
-        
             let note = new Notify.Notification({
                 app_name: "GSConnect",
                 id: Number(packet.id.toString().slice(2)),
@@ -209,7 +208,7 @@ var Plugin = new Lang.Class({
             note.add_action(
                 "notify_sms", // action char
                 _("Reply"), // label
-                Lang.bind(this, this.reply, packet.body)
+                Lang.bind(this, this.replySms, packet.body)
             );
             
             note.show();
@@ -239,19 +238,20 @@ var Plugin = new Lang.Class({
         }
     },
     
-    // TODO: test, but how? no one calls me!
-    mute: function () {
-        if (this.device.connected && this.device.paired) {
-            let packet = new Protocol.Packet();
-            packet.type = "kdeconnect.telephony.request"
-            packet.body = { action: "mute" };
-            this.device._channel.send(packet);
-        }
+    // TODO: test
+    muteCall: function () {
+        let packet = new Protocol.Packet();
+        packet.type = "kdeconnect.telephony.request"
+        packet.body = { action: "mute" };
+        this.device._channel.send(packet);
     },
     
-    reply: function (notification, action, args) {
-        log("TelephonyPlugin.reply()");
-        
+    openSms: function () {
+        let win = new SMS.ApplicationWindow(this.device.daemon, this.device);
+        win.present();
+    },
+    
+    replySms: function (notification, action, args) {
         // Get the current open windows
         let windows = this.device.daemon.get_windows();
         let window = false;
@@ -283,10 +283,9 @@ var Plugin = new Lang.Class({
         
         // Present the window and bail
         window.present();
-        return;
     },
     
-    sms: function (phoneNumber, messageBody) {
+    sendSms: function (phoneNumber, messageBody) {
         let packet = new Protocol.Packet({
             id: Date.now(),
             type: "kdeconnect.sms.request",
