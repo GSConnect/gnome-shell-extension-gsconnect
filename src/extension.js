@@ -388,6 +388,9 @@ var DeviceMenu = new Lang.Class({
     _batteryChanged: function (battery) {
         debug("extension.DeviceMenu._batteryChanged()");
         
+        // Fix for "JS ERROR: TypeError: this.device.battery is undefined"
+        if (this.device.battery === undefined) { return; }
+        
         let {charging, level} = this.device.battery;
         let icon = "battery";
         
