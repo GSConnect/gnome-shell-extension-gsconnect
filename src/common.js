@@ -249,7 +249,7 @@ function initDaemonConfiguration (daemon) {
 };
 
 
-function read_device_cache () {
+function readDeviceCache () {
     let config_dir = Gio.File.new_for_path(CONFIG_PATH);
     
     let fenum = config_dir.enumerate_children(
@@ -275,7 +275,7 @@ function read_device_cache () {
     return devices;
 };
 
-function write_device_cache (daemon, deviceId=false) {
+function writeDeviceCache (daemon, deviceId=false) {
     if (deviceId) {
         log("updating cache for: " + deviceId);
         
@@ -297,7 +297,7 @@ function write_device_cache (daemon, deviceId=false) {
         );
     } else {
         for (let device of daemon._devices.values()) {
-            write_device_cache(daemon, device.deviceId);
+            writeDeviceCache(daemon, device.deviceId);
         }
     }
 };

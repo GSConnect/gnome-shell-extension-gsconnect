@@ -203,7 +203,7 @@ var Daemon = new Lang.Class({
             );
         }
         
-        Common.write_device_cache(this, packet.body.deviceId);
+        Common.writeDeviceCache(this, packet.body.deviceId);
     },
     
     /**
@@ -330,7 +330,7 @@ var Daemon = new Lang.Class({
         }
         
         // Load cached devices
-        for (let identity of Common.read_device_cache()) {
+        for (let identity of Common.readDeviceCache()) {
             let packet = new Protocol.Packet(identity);
             this._addDevice(packet);
         }
