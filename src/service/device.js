@@ -59,7 +59,7 @@ var Device = new Lang.Class({
             "paired",
             "devicePaired",
             "Whether the device is paired",
-            GObject.ParamFlags.READWRITE,
+            GObject.ParamFlags.READABLE,
             false
         ),
         "plugins": GObject.param_spec_variant(
@@ -128,18 +128,6 @@ var Device = new Lang.Class({
     get name () { return this.identity.body.deviceName; },
     get paired () {
         return GLib.file_test(this.config_cert, GLib.FileTest.EXISTS);
-    },
-    set paired (bool) {
-        if (bool) {
-            GLib.file_set_contents(
-                this.config_cert,
-                this._channel._peer_cert.certificate_pem
-            );
-        } else {
-            GLib.unlink(this.config_cert);
-        }
-        
-        this._dbus.emit_property_changed("paired", new GLib.Variant("b", bool));
     },
     get plugins () { return Array.from(this._plugins.keys()); },
     get type () { return this.identity.body.deviceType; },
@@ -243,7 +231,7 @@ var Device = new Lang.Class({
             // The device is responding to our request
             if (this._outgoingPairRequest) {
                 this._outgoingPairRequest = false;
-                this.paired = true;
+                this._setPaired(true);
                 this._loadPlugins();
             // We're already paired, inform the device
             } else if (this.paired) {
@@ -257,6 +245,16 @@ var Device = new Lang.Class({
         } else {
             this.unpair();
         }
+    },
+    
+    _cancelPair: function (note) {
+        try {
+            this._incomingPairRequest = false;
+            this._outgoingPairRequest = false;
+            note.close();
+        } catch (e) {
+        }
+        return false;
     },
     
     _notifyPair: function (packet) {
@@ -292,14 +290,20 @@ var Device = new Lang.Class({
         );
     },
     
-    _cancelPair: function (note) {
-        try {
-            this._incomingPairRequest = false;
-            this._outgoingPairRequest = false;
-            note.close();
-        } catch (e) {
+    _setPaired: function (bool) {
+        this._incomingPairRequest = false;
+        this._outgoingPairRequest = false;
+        
+        if (bool) {
+            GLib.file_set_contents(
+                this.config_cert,
+                this._channel._peer_cert.certificate_pem
+            );
+        } else {
+            GLib.unlink(this.config_cert);
         }
-        return false;
+        
+        this._dbus.emit_property_changed("paired", new GLib.Variant("b", bool));
     },
     
     pair: function () {
@@ -337,7 +341,7 @@ var Device = new Lang.Class({
             this._channel.send(packet);
         }
         
-        this.paired = false;
+        this._setPaired(false);
         
         this._unloadPlugins();
     },
@@ -345,9 +349,9 @@ var Device = new Lang.Class({
     acceptPair: function () {
         log("Device.acceptPair(" + this.id + ")");
         
-        this.paired = true;
-        this._loadPlugins();
+        this._setPaired(true);
         this.pair();
+        this._loadPlugins();
     },
     
     rejectPair: function () {
