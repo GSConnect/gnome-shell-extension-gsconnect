@@ -82,7 +82,8 @@
   
   <!-- Share -->
   <interface name="org.gnome.shell.extensions.gsconnect.share">
-    <method name="share">
+    <method name="shareDialog"/>
+    <method name="shareUri">
       <arg name="uri" type="s" direction="in"/>
     </method>
     <signal name="share"/>

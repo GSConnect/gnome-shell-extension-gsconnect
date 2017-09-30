@@ -415,7 +415,8 @@ var Device = new Lang.Class({
     sms: function (number, message) {
         this.telephony._call("sms", true, number, message);
     },
-    shareURI: function (uri) { this.share._call("share", true, uri); },
+    shareDialog: function () { this.share._call("shareDialog", true); },
+    shareUri: function (uri) { this.share._call("shareUri", true, uri); },
     unpair: function () { this._call("unpair", true); },
     enablePlugin: function (name) {
         return this._call("enablePlugin", false, name);

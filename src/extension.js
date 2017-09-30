@@ -545,9 +545,7 @@ var DeviceMenu = new Lang.Class({
     _shareAction: function (button) {
         debug("extension.DeviceMenu._shareAction()");
         this._getTopMenu().close(true);
-        GLib.spawn_command_line_async(
-            "gjs " + Me.path + "/share.js --device=" + this.device.id
-        );
+        this.device.shareDialog();
     },
     
     _smsAction: function (button) {

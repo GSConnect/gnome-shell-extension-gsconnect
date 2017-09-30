@@ -118,7 +118,35 @@ var Plugin = new Lang.Class({
             return filepath;
     },
     
-    share: function (uri) {
+    shareDialog: function () {
+        let dialog = new Dialog(this.device.daemon, this.device.name);
+        
+        if (dialog.run() === Gtk.ResponseType.OK) {
+            let uris = dialog.get_uris();
+            
+            for (let uri of uris) {
+                this.shareUri(uri.toString());
+            }
+            
+            this._notifyShare(uris.length);
+        }
+        
+        dialog.destroy();
+    },
+    
+    _notifyShare: function (num) {
+        // FIXME: this closes immediately after opening in the extension
+        let note = new Notify.Notification({
+            app_name: "GSConnect",
+            summary: this.device.name,
+            body: Gettext.ngettext("Sending %d file", "Sending %d files", num).format(num),
+            icon_name: "send-to-symbolic"
+        });
+        
+        note.show()
+    },
+    
+    shareUri: function (uri) {
         if (this.device.connected && this.device.paired) {
             let packet = new Protocol.Packet();
             packet.type = "kdeconnect.share.request";
@@ -150,6 +178,27 @@ var Plugin = new Lang.Class({
             
             this.device._channel.send(packet);
         }
+    }
+});
+
+
+/** A simple FileChooserDialog for sharing files */
+var Dialog = new Lang.Class({
+    Name: "ShareDialog",
+    Extends: Gtk.FileChooserDialog,
+    
+    _init: function (application, name) {
+        this.parent({
+            title: _("Send files to %s").format(name),
+            action: Gtk.FileChooserAction.OPEN,
+            select_multiple: true,
+            icon_name: "document-send"
+        });
+    
+        this.add_button(_("Cancel"), Gtk.ResponseType.CANCEL);
+        this.add_button(_("Send"), Gtk.ResponseType.OK);
+        this.set_default_response(Gtk.ResponseType.OK);
+        this.connect("delete-event", application.vfunc_shutdown);
     }
 });
 

@@ -72,7 +72,7 @@ class GSConnectShareExtension(GObject.GObject, Nautilus.MenuProvider):
         
         for file in files:
             variant = GLib.Variant("(s)", (file.get_uri(),))
-            dev_dbus.call_sync("share", variant, 0, -1, None)
+            dev_dbus.call_sync("shareUri", variant, 0, -1, None)
 
     def get_file_items(self, window, files):
         """Return a list of select files to be sent"""
