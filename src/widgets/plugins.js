@@ -206,7 +206,7 @@ var PluginSetting = new Lang.Class({
     _refresh: function () {
         this._freeze = true;
         
-        this.pluginSwitch.active = this._page._config.plugins[this._name].enabled;
+        this.pluginSwitch.active = this._page.config.plugins[this._name].enabled;
         
         this._freeze = false;
     },
@@ -272,7 +272,7 @@ var PluginDialog = new Lang.Class({
         this._page = devicePage;
         this._name = pluginName;
         this._info = pluginInfo;
-        this._settings = this._page._config.plugins[this._name].settings;
+        this._settings = this._page.config.plugins[this._name].settings;
         
         this.content = new PluginPage();
         this.content.box.margin_left = 40;
