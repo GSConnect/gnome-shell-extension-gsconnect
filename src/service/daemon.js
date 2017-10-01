@@ -210,6 +210,7 @@ var Daemon = new Lang.Class({
      * Start listening for incoming broadcast packets
      *
      * TODO: TCP Listener
+     *       conflicts with running KDE Connect, for some reason
      */
     _listen: function (port=1716) {
         this._listener = new Gio.Socket({
@@ -348,6 +349,8 @@ var Daemon = new Lang.Class({
             this._addDevice(packet);
         }
         log(this._devices.size + " devices loaded from cache");
+        
+        this.discover("daemon", 15)
     },
 
     vfunc_activate: function() {
