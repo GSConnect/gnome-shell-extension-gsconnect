@@ -43,7 +43,14 @@ var Plugin = new Lang.Class({
     _init: function (device) {
         this.parent(device, "clipboard");
         
-        this._clipboard = Gtk.Clipboard.get_default(Gdk.Display.get_default());
+        this._display = Gdk.Display.get_default();
+        
+        if (this._display === null) {
+            this.destroy();
+            throw Error("Clipboard: Error initializing Gdk.Display");
+        }
+        
+        this._clipboard = Gtk.Clipboard.get_default(this._display);
         
         this._clipboard.connect("owner-change", () => {
             this._clipboard.request_text(Lang.bind(this, this.update));
