@@ -22,17 +22,15 @@
       <summary>Device Visibility</summary>
       <description>Display devices in offline and unpaired states</description>
     </key>
-    <!-- TODO: use string of JSON? -->
-    <key name="device-keybindings" type="a{sv}">
-      <default><![CDATA[{"": <{"name": <"">, "bindings": <['','','','','','']>}>}]]></default>
-      <summary>Device Actions</summary>
-      <description>Configure shortcuts for device functions</description>
+    <key name="device-keybindings" type="s">
+      <default>"{}"</default>
+      <summary>Device Shortcuts</summary>
+      <description>Keyboard shortcuts for device functions</description>
     </key>
-    <!-- TODO: use string of JSON? -->
-    <key name="extension-keybindings" type="as">
-      <default><![CDATA[['','','','']]]></default>
-      <summary>Extension Actions</summary>
-      <description>Configure shortcuts for extension functions</description>
+    <key name="extension-keybindings" type="s">
+      <default>"{}"</default>
+      <summary>Extension Shortcuts</summary>
+      <description>Keyboard shortcuts for extension functions</description>
     </key>
     <key name="nautilus-integration" type="b">
       <default>false</default>
