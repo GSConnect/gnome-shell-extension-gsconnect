@@ -8,9 +8,6 @@ const _ = Gettext.gettext;
 const Atspi = imports.gi.Atspi;
 const Gdk = imports.gi.Gdk;
 const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
-const GObject = imports.gi.GObject;
-const Gtk = imports.gi.Gtk;
 const Notify = imports.gi.Notify;
 
 // Local Imports
