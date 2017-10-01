@@ -450,7 +450,8 @@ var DeviceDefaults = {
             enabled: false
         },
         runcommand: {
-            enabled: true
+            enabled: false,
+            commands: {}
         },
         sftp: {
             enabled: false,
