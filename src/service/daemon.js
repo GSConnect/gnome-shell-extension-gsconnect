@@ -170,7 +170,7 @@ var Daemon = new Lang.Class({
         }
     },
     
-    // Special method to accomodate nautilus-send-gsconnect.py
+    // Special method to accomodate nautilus-gsconnect.py
     getShareable: function () {
         let shareable = {};
         
