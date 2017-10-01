@@ -26,29 +26,6 @@ const DeviceNode = Common.DBusInfo.device;
 const ManagerNode = Common.DBusInfo.daemon;
 
 
-// FIXME FIXME FIXME
-// Start the service backend
-function startService() {
-    try {
-        //GLib.spawn_command_line_async("mconnect -d");
-    } catch (e) {
-        log("Error spawning MConnect daemon: " + e);
-    }
-}
-
-
-// Open the extension preferences window
-function startSettings() {
-    try {
-        GLib.spawn_command_line_async(
-            "xdg-open " + GLib.get_user_config_dir() + "/mconnect/mconnect.conf"
-        );
-    } catch (e) {
-        log("Error spawning MConnect settings: " + e);
-    }
-}
-
-
 var ProxyBase = new Lang.Class({
     Name: "GSConnectProxyBase",
     Extends: Gio.DBusProxy,
