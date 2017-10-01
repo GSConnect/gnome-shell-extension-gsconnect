@@ -324,7 +324,7 @@ function writeDeviceCache (daemon, deviceId=false) {
 
 // FIXME: error handling
 function readDeviceConfiguration (deviceId) {
-    let config;
+    let config = {};
     let device_path = CONFIG_PATH + "/" + deviceId;
     let device_config = device_path + "/config.json";
     
@@ -346,7 +346,8 @@ function readDeviceConfiguration (deviceId) {
     }
     
     // Merge loaded config with defaults and save
-    writeDeviceConfiguration(deviceId, mergeDeep(DeviceDefaults, config));
+    config = mergeDeep(DeviceDefaults, config)
+    writeDeviceConfiguration(deviceId, config);
     
     return config;
 };
@@ -447,6 +448,9 @@ var DeviceDefaults = {
         },
         ping: {
             enabled: false
+        },
+        runcommand: {
+            enabled: true
         },
         sftp: {
             enabled: false,
