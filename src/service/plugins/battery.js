@@ -65,6 +65,8 @@ var Plugin = new Lang.Class({
         
         this._charging = false;
         this._level = -1;
+        
+        this.update();
     },
     
     get charging() { return this._charging; },
