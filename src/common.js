@@ -365,6 +365,7 @@ var DaemonDefaults = {
         incomingCapabilities: [
             "kdeconnect.clipboard",
             "kdeconnect.battery",
+            "kdeconnect.mousepad.request",
             "kdeconnect.mpris.request",
             "kdeconnect.notification",
             "kdeconnect.notification.request",
