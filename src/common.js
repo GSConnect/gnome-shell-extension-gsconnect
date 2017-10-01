@@ -10,6 +10,18 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 
 
+// Open the extension preferences window
+function startPreferences() {
+    try {
+        GLib.spawn_command_line_async(
+            "gnome-shell-extension-prefs gsconnect@andyholmes.github.io"
+        );
+    } catch (e) {
+        log("Error spawning GSConnect settings: " + e);
+    }
+}
+
+
 /** Return an extension object for GJS apps not privy to Gnome Shell imports */
 function getCurrentExtension() {
     // Diced from: https://github.com/optimisme/gjs-examples/
