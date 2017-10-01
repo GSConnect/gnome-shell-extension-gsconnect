@@ -67,7 +67,7 @@ var Plugin = new Lang.Class({
         
         // TODO: error checking, re-test
         if (packet.body.hasOwnProperty("filename")) {
-            let filepath = this.get_filepath(packet.body.filename);
+            let filepath = this.getFilepath(packet.body.filename);
             let file = Gio.File.new_for_path(filepath);
             let addr = new Gio.InetSocketAddress({
                 address: Gio.InetAddress.new_from_string(
@@ -92,31 +92,33 @@ var Plugin = new Lang.Class({
         }
     },
     
-    get_filepath: function (filename) {
-            let path = this.settings.download_directory
-            
-            if (this.settings.download_subdirs) {
-                path = GLib.build_pathv("/", [
-                    this.settings.download_directory,
-                    this.device.id
-                ]);
-            }
-            
-            if (!GLib.file_test(path, GLib.FileTest.IS_DIR)) {
-                GLib.mkdir_with_parents(path, 493);
-            }
-            
-            path = GLib.build_filenamev([path, filename]);
-            
-            let filepath = path.toString();
-            let copyNum = 0;
-            
-            while (GLib.file_test(filepath, GLib.FileTest.EXISTS)) {
-                copyNum += 1;
-                filepath = path + " (" + copyNum + ")";
-            }
-            
-            return filepath;
+    getFilepath: function (filename) {
+        Common.debug("Share: getFilepath(" + filename + ")");
+        
+        let path = this.settings.download_directory
+        
+        if (this.settings.download_subdirs) {
+            path = GLib.build_pathv("/", [
+                this.settings.download_directory,
+                this.device.id
+            ]);
+        }
+        
+        if (!GLib.file_test(path, GLib.FileTest.IS_DIR)) {
+            GLib.mkdir_with_parents(path, 493);
+        }
+        
+        path = GLib.build_filenamev([path, filename]);
+        
+        let filepath = path.toString();
+        let copyNum = 0;
+        
+        while (GLib.file_test(filepath, GLib.FileTest.EXISTS)) {
+            copyNum += 1;
+            filepath = path + " (" + copyNum + ")";
+        }
+        
+        return filepath;
     },
     
     shareDialog: function () {
