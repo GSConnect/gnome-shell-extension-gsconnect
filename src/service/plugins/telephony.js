@@ -136,7 +136,6 @@ var Plugin = new Lang.Class({
         if (this.settings.notify_missedCall) {
             let note = new Notify.Notification({
                 app_name: "GSConnect",
-                id: Number(packet.id.toString().slice(2)),
                 summary: _("%s - Missed Call").format(this.device.name),
                 body: _("Missed call from %s").format(sender),
                 icon_name: "call-missed-symbolic"
@@ -161,7 +160,6 @@ var Plugin = new Lang.Class({
         if (this.settings.notify_ringing) {
             let note = new Notify.Notification({
                 app_name: "GSConnect",
-                id: Number(packet.id.toString().slice(2)),
                 summary: _("%s Ringing").format(this.device.name),
                 body: _("Incoming call from %s").format(sender),
                 icon_name: "call-start-symbolic"
@@ -206,7 +204,6 @@ var Plugin = new Lang.Class({
         } else if (this.settings.notify_sms) {
             let note = new Notify.Notification({
                 app_name: "GSConnect",
-                id: Number(packet.id.toString().slice(2)),
                 summary: sender,
                 body: packet.body.messageBody,
                 icon_name: "phone-symbolic"
@@ -237,7 +234,6 @@ var Plugin = new Lang.Class({
         if (this.settings.notify_talking) {
             note = new Notify.Notification({
                 app_name: "GSConnect",
-                id: Number(packet.id.toString().slice(2)),
                 summary: _("%s - Talking").format(this.device.name),
                 body: _("Call in progress with %s").format(sender),
                 icon_name: "call-start-symbolic"

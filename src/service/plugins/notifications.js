@@ -199,7 +199,6 @@ var Plugin = new Lang.Class({
             } else {
                 note = new Notify.Notification({
                     app_name: "GSConnect",
-                    id: Number(packet.body.time.toString().slice(2)),
                     summary: packet.body.appName,
                     body: packet.body.ticker,
                     icon_name: "phone-symbolic"
