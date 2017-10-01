@@ -242,13 +242,15 @@ var DevicesStack = new Lang.Class({
     Name: "DevicesStack",
     Extends: Gtk.Grid,
     
-    _init: function (params={}) {
+    _init: function () {
         this.parent({
             halign: Gtk.Align.FILL,
             valign: Gtk.Align.FILL,
             hexpand: true,
             vexpand: true
         });
+        
+        this.devices = new Map();
         
         this.stack = new Gtk.Stack({
             transition_type: Gtk.StackTransitionType.SLIDE_UP_DOWN,
@@ -301,9 +303,19 @@ var DevicesStack = new Lang.Class({
         page.add(label2);
         
         this.stack.add_titled(page, "default", "Default");
+        
+        this.sidebar.connect("row-selected", (listbox, row) => {
+            if (row === null) {
+                this.stack.set_visible_child_name("default");
+            } else {
+                this.stack.set_visible_child_name(row.device.id);
+            }
+        });
     },
     
-    add_device: function (device) {
+    addDevice: function (manager, dbusPath) {
+        let device = manager.devices.get(dbusPath);
+        
         // Device Sidebar Entry
         let row = new Gtk.ListBoxRow({
             visible: true,
@@ -332,15 +344,26 @@ var DevicesStack = new Lang.Class({
         statusLabel.get_style_context().add_class("dim-label");
         this.sidebar.add(row);
         
-        this.sidebar.connect("row-selected", (listbox, row) => {
-            this.stack.set_visible_child_name(row.device.id);
-        });
-        
         row.show_all();
         
         // Device Page
         let page = new DevicePage(device);
         this.stack.add_titled(page, device.id, device.name);
+        
+        // Tracking
+        this.devices.set(dbusPath, [row, page]);
+    },
+    
+    removeDevice: function (manager, dbusPath) {
+        let device = this.devices.get(dbusPath);
+        
+        this.sidebar.remove(device[0]);
+        device[0].destroy();
+        
+        this.stack.remove(device[1]);
+        device[1].destroy();
+        
+        this.devices.delete(dbusPath);
     }
 });
 
@@ -449,8 +472,57 @@ var PrefsWidget = new Lang.Class({
         
         this._build();
         
-        for (let device of this.manager.devices.values()) {
-            this.devicesStack.add_device(device);
+        this._watchdog = Gio.bus_watch_name(
+            Gio.BusType.SESSION,
+            Client.BUS_NAME,
+            Gio.BusNameWatcherFlags.NONE,
+            Lang.bind(this, this._serviceAppeared),
+            Lang.bind(this, this._serviceVanished)
+        );
+    },
+    
+    // The DBus interface has appeared
+    _serviceAppeared: function (conn, name, name_owner, cb_data) {
+        Common.debug("extension.SystemIndicator._serviceAppeared()");
+        
+        if (!this.manager) {
+            this.manager = new Client.DeviceManager();
+        }
+        
+        for (let dbusPath of this.manager.devices.keys()) {
+            this.devicesStack.addDevice(this.manager, dbusPath);
+        }
+        
+        // Watch for new and removed devices
+        this.manager.connect(
+            "device::added",
+            Lang.bind(this.devicesStack, this.devicesStack.addDevice)
+        );
+        
+        this.manager.connect(
+            "device::removed",
+            Lang.bind(this.devicesStack, this.devicesStack.removeDevice)
+        );
+        
+        this.manager.bind_property(
+            "name",
+            this.nameEntry,
+            "placeholder_text",
+            GObject.BindingFlags.DEFAULT
+        );
+    },
+    
+    // The DBus interface has vanished
+    _serviceVanished: function (conn, name, name_owner, cb_data) {
+        Common.debug("extension.SystemIndicator._serviceVanished()");
+        
+        if (this.manager) {
+            this.manager.destroy();
+            this.manager = false;
+        }
+        
+        if (!Settings.get_boolean("debug")) {
+            this.manager = new Client.DeviceManager();
         }
     },
     
@@ -488,16 +560,16 @@ var PrefsWidget = new Lang.Class({
         let servicePage = this.add_page("service", _("Service"));
         let serviceSection = servicePage.add_section(_("Service"));
         
-        let nameEntry = new Gtk.Entry({
+        this.nameEntry = new Gtk.Entry({
             placeholder_text: this.manager.name,
             valign: Gtk.Align.CENTER
         });
-        nameEntry.connect("activate", (entry) => {
+        this.nameEntry.connect("activate", (entry) => {
             this.manager.name = entry.text
             entry.text = "";
             this.get_toplevel().set_focus(null);
         });
-        nameEntry.connect("changed", (entry) => {
+        this.nameEntry.connect("changed", (entry) => {
             if (entry.text.length) {
                 entry.secondary_icon_name = "edit-undo-symbolic";
             } else {
@@ -506,24 +578,17 @@ var PrefsWidget = new Lang.Class({
                 this.get_toplevel().set_focus(null);
             }
         });
-        nameEntry.connect("icon-release", (entry) => {
+        this.nameEntry.connect("icon-release", (entry) => {
             entry.text = "";
             entry.secondary_icon_name = "";
             this.get_toplevel().set_focus(null);
         });
         
-        this.manager.bind_property(
-            "name",
-            nameEntry,
-            "placeholder_text",
-            GObject.BindingFlags.DEFAULT
-        );
-        
         servicePage.addItem(
             serviceSection,
             _("Public Name"),
             _("The name broadcast to other devices"),
-            nameEntry
+            this.nameEntry
         );
         
         servicePage.addSetting(serviceSection, "persistent-discovery");

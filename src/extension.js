@@ -655,7 +655,7 @@ var SystemIndicator = new Lang.Class({
     _init: function () {
         this.parent();
         
-        this.manager = false;
+        this.manager = new Client.DeviceManager();
         this._indicators = {};
         this._menus = {};
         this.keybindingManager = new KeybindingManager();
@@ -727,7 +727,10 @@ var SystemIndicator = new Lang.Class({
     _serviceAppeared: function (conn, name, name_owner, cb_data) {
         Common.debug("extension.SystemIndicator._serviceAppeared()");
         
-        this.manager = new Client.DeviceManager();
+        if (!this.manager) {
+            this.manager = new Client.DeviceManager();
+        }
+        
         this.extensionIndicator.visible = (this.manager);
         
         // Extension Menu -> (Stop) Discover Devices Item
@@ -783,6 +786,10 @@ var SystemIndicator = new Lang.Class({
         if (this.scanItem) { this.scanItem.destroy(); }
         
         this.extensionIndicator.visible = (this.manager);
+        
+        if (!Settings.get_boolean("debug")) {
+            this.manager = new Client.DeviceManager();
+        }
     },
     
     _extensionKeybindings: function () {
