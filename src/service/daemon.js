@@ -114,7 +114,7 @@ var Daemon = new Lang.Class({
     broadcast: function () {
         log("Daemon.broadcast()");
         
-        this._socket.send_to(
+        this._listener.send_to(
             this._broadcastAddr,
             this.identity.toData(),
             null
@@ -209,46 +209,57 @@ var Daemon = new Lang.Class({
     /**
      * Start listening for incoming broadcast packets
      *
-     * TODO: TCP Listener that supports a range of ports (1716-1764)
+     * TODO: TCP Listener
      */
-    _listen: function () {
-        this._socket = new Gio.Socket({
+    _listen: function (port=1716) {
+        this._listener = new Gio.Socket({
             family: Gio.SocketFamily.IPV4,
             type: Gio.SocketType.DATAGRAM,
             protocol: Gio.SocketProtocol.UDP,
             broadcast: true
         });
+        this._listener.init(null);
+
+        while (true) {
+            let addr = new Gio.InetSocketAddress({
+                address: Gio.InetAddress.new_any(Gio.SocketFamily.IPV4),
+                port: port
+            });
         
-        // TODO: support a range of ports
-        this._listenAddr = new Gio.InetSocketAddress({
-            address: Gio.InetAddress.new_any(Gio.SocketFamily.IPV4),
-            port: this.identity.body.tcpPort
-        });
+            try {
+                this._listener.bind(addr, false);
+            } catch (e) {
+                log("failed to bind to port: " + port);
+                
+                if (port < 1764) {
+                    port += 1;
+                } else {
+                    this._listener.close();
+                    throw Error("Unable to bind listener");
+                }
+            }
+            
+            break;
+        }
         
+        this.identity.body.tcpPort = port;
+        
+        // Broadcast Address
         this._broadcastAddr = new Gio.InetSocketAddress({
             address: Gio.InetAddress.new_from_string("255.255.255.255"),
             port: this.identity.body.tcpPort
         });
         
         this._in = new Gio.DataInputStream({
-            base_stream: new Gio.UnixInputStream({ fd: this._socket.fd })
+            base_stream: new Gio.UnixInputStream({ fd: this._listener.fd })
         });
-
-        try {
-            this._socket.init(null);
-            this._socket.bind(this._listenAddr, false);
-        } catch (e) {
-            this._socket.close();
-            this._socket = null;
-            throw e;
-        }
         
         // Watch for incoming packets
-        let source = this._socket.create_source(GLib.IOCondition.IN, null);
+        let source = this._listener.create_source(GLib.IOCondition.IN, null);
         source.set_callback(Lang.bind(this, this._received));
         source.attach(null);
         
-        log("listening for new devices on 0.0.0.0:" + this._listenAddr.port);
+        log("listening for new devices on 0.0.0.0:" + port);
     },
     
     _received: function (socket, condition) {
@@ -258,7 +269,7 @@ var Daemon = new Lang.Class({
         
         try {
             // "Peek" the incoming address
-            [size, addr, data, flags] = this._socket.receive_message(
+            [size, addr, data, flags] = this._listener.receive_message(
                 [],
                 Gio.SocketMsgFlags.PEEK,
                 null
@@ -266,6 +277,7 @@ var Daemon = new Lang.Class({
             [data, size] = this._in.read_line(null);
         } catch (e) {
             log("error reading data: " + e);
+            return;
         }
         
         let packet = new Protocol.Packet(data.toString());
@@ -297,7 +309,7 @@ var Daemon = new Lang.Class({
         
         // Manager setup
         this._devices = new Map();
-        this._socket = null;
+        this._listener = null;
         this._in = null;
         
         this.identity = new Protocol.Packet();
@@ -327,6 +339,7 @@ var Daemon = new Lang.Class({
             this._listen();
         } catch (e) {
             log("error listening: " + e);
+            this.vfunc_shutdown();
         }
         
         // Load cached devices
@@ -335,8 +348,6 @@ var Daemon = new Lang.Class({
             this._addDevice(packet);
         }
         log(this._devices.size + " devices loaded from cache");
-        
-        this.broadcast();
     },
 
     vfunc_activate: function() {
@@ -349,8 +360,8 @@ var Daemon = new Lang.Class({
         
         Common.writeDaemonConfiguration(this);
         
-        if (this._socket !== null) {
-            this._socket.close();
+        if (this._listener !== null) {
+            this._listener.close();
         }
         
         Notify.uninit();
