@@ -58,7 +58,7 @@ var METADATA = {
  *       GNotification?
  *       requestAnswer usage?
  *       urgency filter (outgoing)?
- *       weird hang? maye stopped happening?
+ *       weird hang? maybe stopped happening?
  *
  */
 var Plugin = new Lang.Class({
@@ -88,6 +88,8 @@ var Plugin = new Lang.Class({
     },
     
     _initListener: function () {
+        Common.debug("Notifications: _initListener()");
+        
         // org.freedesktop.Notifications interface; needed to catch signals
         let iface = "org.freedesktop.Notifications";
         this._ndbus = Gio.DBusExportedObject.wrapJSObject(
@@ -121,15 +123,17 @@ var Plugin = new Lang.Class({
     },
     
     Notify: function (appName, replacesId, iconName, summary, body, actions, hints, timeout) {
+        Common.debug("Notifications: Notify()");
+        
         // Signature: str,     uint,       str,      str,     str,  array,   obj,   uint
-        log("appName: " + appName);
-        log("replacesId: " + replacesId);
-        log("iconName: " + iconName);
-        log("summary: " + summary);
-        log("body: " + body);
-        log("actions: " + actions);
-        log("hints: " + JSON.stringify(hints));
-        log("timeout: " + timeout);
+        Common.debug("appName: " + appName);
+        Common.debug("replacesId: " + replacesId);
+        Common.debug("iconName: " + iconName);
+        Common.debug("summary: " + summary);
+        Common.debug("body: " + body);
+        Common.debug("actions: " + actions);
+        Common.debug("hints: " + JSON.stringify(hints));
+        Common.debug("timeout: " + timeout);
         
         // New application
         if (!this.settings.send.applications.hasOwnProperty(appName)) {
@@ -164,6 +168,8 @@ var Plugin = new Lang.Class({
     
     // TODO: consider option for notifications allowing clients to handle them
     handlePacket: function (packet) {
+        Common.debug("Notifications: handlePacket()");
+        
         if (packet.type === "kdeconnect.notification" && this.settings.receive.enabled) {
             this._receiveNotification(packet);
         } else if (packet.type === "kdeconnect.notification.request") {
@@ -172,6 +178,8 @@ var Plugin = new Lang.Class({
     },
     
     _receiveNotification: function (packet) {
+        Common.debug("Notifications: _receiveNotification()");
+        
         if (packet.body.isCancel) {
             if (this._notifications.has(packet.body.id)) {
                 this._notifications.get(packet.body.id).close();
@@ -209,11 +217,11 @@ var Plugin = new Lang.Class({
             
             // TODO: play a sound
             if (!packet.body.silent) {
-                log("IMPLEMENT: incoming notification sound");
+                Common.debug("Notifications: incoming notification sound");
             }
             
             if (packet.body.requestAnswer) {
-                log("IMPLEMENT: our request is being answered");
+                Common.debug("Notifications: our request is being answered");
             }
             
             // FIXME: this is causing a hang (sometimes) (I think)

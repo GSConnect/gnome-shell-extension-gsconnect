@@ -46,20 +46,19 @@ var Packet = new Lang.Class({
         } else if (typeof data === "object") {
             this.fromPacket(data);
         } else {
-            log("unsupported packet source: " + typeof data);
-            log("unsupported packet source: " + data);
+            log("Error: unsupported packet source: " + typeof data);
         }
     },
     
     _check: function (obj) {
         if (!obj.hasOwnProperty("type")) {
-            log("packet is missing 'type' field");
+            Common.debug("Packet: missing 'type' field");
             return false;
         } else if (!obj.hasOwnProperty("body")) {
-            log("packet is missing 'body' field");
+            Common.debug("Packet: missing 'body' field");
             return false;
         } else if (!obj.hasOwnProperty("id")) {
-            log("packet is missing 'id' field");
+            Common.debug("Packet: missing 'id' field");
             return false;
         }
         
@@ -247,6 +246,8 @@ var LanChannel = new Lang.Class({
      * Transfer Functions
      */
     _transferRead: function () {
+        Common.debug("LanChannel: _transferRead()");
+        
         this._in.read_bytes_async(
             4096,
             GLib.PRIORITY_DEFAULT,
@@ -271,6 +272,8 @@ var LanChannel = new Lang.Class({
     },
     
     _transferWrite: function (bytes) {
+        Common.debug("LanChannel: _transferRead()");
+        
         this._out.write_bytes_async(
             bytes,
             GLib.PRIORITY_DEFAULT,
@@ -369,7 +372,7 @@ var LanChannel = new Lang.Class({
     },
     
     send: function (packet) {
-        log("LanChannel.send(" + packet.toString() + ")");
+        Common.debug("LanChannel.send(" + packet.toString() + ")");
     
         try {
             this._out.put_string(packet.toData(), null);
@@ -380,13 +383,13 @@ var LanChannel = new Lang.Class({
     },
     
     receive: function () {
-        log("LanChannel.receive(" + this.device.id + ")");
+        Common.debug("LanChannel.receive(" + this.device.id + ")");
         
         let data, len, packet;
         
         try {
             [data, len] = this._in.read_line(null);
-            log("Device received: " + data);
+            Common.debug("Device received: " + data);
         } catch (e) {
             log("Failed to receive packet: " + e);
             return false;
@@ -437,7 +440,7 @@ var LanDownloadChannel = new Lang.Class({
     },
     
     opened: function (connection, res) {
-        log("TransferChannel.opened(" + this.device.id + ")");
+        Common.debug("TransferChannel.opened(" + this.device.id + ")");
         
         try {
             this._in = this._connection.get_input_stream();
@@ -477,7 +480,7 @@ var LanUploadChannel = new Lang.Class({
     },
     
     auth: function (listener, res) {
-        log("TransferChannel.opened(" + this.device.id + ")");
+        Common.debug("TransferChannel.opened(" + this.device.id + ")");
         
         try {
             let src;

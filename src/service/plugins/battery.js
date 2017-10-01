@@ -73,6 +73,8 @@ var Plugin = new Lang.Class({
     get level() { return this._level; },
     
     handlePacket: function (packet) {
+        Common.debug("Battery: handlePacket()");
+    
         this._charging = packet.body.isCharging;
         this.notify("charging");
         this._dbus.emit_property_changed(
@@ -116,6 +118,8 @@ var Plugin = new Lang.Class({
      * TODO: test/check this works
      */
     update: function () {
+        Common.debug("Battery: update()");
+        
         let packet = new Protocol.Packet({
             id: 0,
             type: "kdeconnect.battery.request",

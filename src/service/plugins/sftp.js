@@ -82,6 +82,8 @@ var Plugin = new Lang.Class({
     get directories () { return this._directories; },
     
     _prepare: function () {
+        Common.debug("SFTP: _prepare()");
+        
         this._path = Common.CONFIG_PATH + "/" + this.device.id + "/sftp";
         
         if (!GLib.file_test(this._path, GLib.FileTest.IS_DIR)) {
@@ -96,6 +98,7 @@ var Plugin = new Lang.Class({
     },
     
     handlePacket: function (packet) {
+        Common.debug("SFTP: handlePacket()");
         //"ip":"192.168.1.69",
         //"port":1739,
         //"user":"kdeconnect",
@@ -209,6 +212,8 @@ var Plugin = new Lang.Class({
     },
     
     mount: function () {
+        Common.debug("SFTP: mount()");
+        
         let packet = new Protocol.Packet();
         packet.type = "kdeconnect.sftp.request";
         packet.body = { startBrowsing: true };
@@ -217,6 +222,8 @@ var Plugin = new Lang.Class({
     },
     
     unmount: function () {
+        Common.debug("SFTP: unmount()");
+    
         try {
             if (this._proc !== null) {
                GLib.spawn_command_line_async("kill -9 " + this._proc[1]);

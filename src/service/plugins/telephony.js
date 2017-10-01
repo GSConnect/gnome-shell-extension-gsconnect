@@ -79,6 +79,8 @@ var Plugin = new Lang.Class({
     //       music pause, etc
     //       
     handlePacket: function (packet) {
+        Common.debug("Telephony: handlePacket()");
+        
         // There are six possible variables:
         //    * "event"             missedCall, ringing, sms or talking
         //    * "phoneNumber"       Always present?
@@ -121,6 +123,8 @@ var Plugin = new Lang.Class({
     },
     
     handleMissedCall: function (sender, packet) {
+        Common.debug("Telephony: handleMissedCall()");
+        
         this._dbus.emit_signal("missedCall",
             new GLib.Variant(
                 "(ss)",
@@ -143,6 +147,8 @@ var Plugin = new Lang.Class({
     },
     
     handleRinging: function (sender, packet) {
+        Common.debug("Telephony: handleRinging()");
+        
         // TODO: music pause, etc
         this._dbus.emit_signal("ringing",
             new GLib.Variant(
@@ -172,6 +178,8 @@ var Plugin = new Lang.Class({
     },
     
     handleSMS: function (sender, packet) {
+        Common.debug("Telephony: handleSMS()");
+        
         // TODO: not really complete
         this._dbus.emit_signal("sms",
             new GLib.Variant(
@@ -215,6 +223,8 @@ var Plugin = new Lang.Class({
     },
     
     handleTalking: function (sender, packet) {
+        Common.debug("Telephony: handleTalking()");
+        
         // TODO: music pause, etc
         this._dbus.emit_signal("talking",
             new GLib.Variant(
@@ -239,6 +249,8 @@ var Plugin = new Lang.Class({
     
     // TODO: test
     muteCall: function () {
+        Common.debug("Telephony: muteCall()");
+        
         let packet = new Protocol.Packet();
         packet.type = "kdeconnect.telephony.request"
         packet.body = { action: "mute" };
@@ -246,11 +258,16 @@ var Plugin = new Lang.Class({
     },
     
     openSms: function () {
+        Common.debug("Telephony: openSms()");
+        
         let win = new SMS.ApplicationWindow(this.device.daemon, this.device);
         win.present();
     },
     
+    // FIXME: number formatting
     replySms: function (notification, action, args) {
+        Common.debug("Telephony: replySms()");
+        
         // Get the current open windows
         let windows = this.device.daemon.get_windows();
         let window = false;
@@ -285,6 +302,8 @@ var Plugin = new Lang.Class({
     },
     
     sendSms: function (phoneNumber, messageBody) {
+        Common.debug("Telephony: sendSms(" + phoneNumber + ", " + messageBody + ")");
+        
         let packet = new Protocol.Packet({
             id: Date.now(),
             type: "kdeconnect.sms.request",

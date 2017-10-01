@@ -63,6 +63,8 @@ var Plugin = new Lang.Class({
     //       re-test
     //       notify?
     handlePacket: function (packet) {
+        Common.debug("Share: handlePacket()");
+        
         // TODO: error checking, re-test
         if (packet.body.hasOwnProperty("filename")) {
             let filepath = this.get_filepath(packet.body.filename);
@@ -118,6 +120,8 @@ var Plugin = new Lang.Class({
     },
     
     shareDialog: function () {
+        Common.debug("Share: shareDialog()");
+        
         let dialog = new Dialog(this.device.daemon, this.device.name);
         let response = dialog.run()
         
@@ -137,6 +141,8 @@ var Plugin = new Lang.Class({
     },
     
     _notifyShare: function (num) {
+        Common.debug("Share: _notifyShare()");
+        
         let note = new Notify.Notification({
             app_name: "GSConnect",
             summary: this.device.name,
@@ -148,41 +154,41 @@ var Plugin = new Lang.Class({
     },
     
     shareUri: function (uri) {
-        if (this.device.connected && this.device.paired) {
-            let packet = new Protocol.Packet();
-            packet.type = "kdeconnect.share.request";
+        Common.debug("Share: shareUri()");
+        
+        let packet = new Protocol.Packet();
+        packet.type = "kdeconnect.share.request";
+        
+        if (uri.startsWith("file://")) {
+            let file = Gio.File.new_for_uri(uri);
+            let info = file.query_info("standard::size", 0, null);
             
-            if (uri.startsWith("file://")) {
-                let file = Gio.File.new_for_uri(uri);
-                let info = file.query_info("standard::size", 0, null);
-                
-                packet.body = { filename: file.get_basename() };
-                packet.payloadSize = info.get_size();
-                packet.payloadTransferInfo = { port: 1741 };
-                
-                let addr = new Gio.InetSocketAddress({
-                    address: Gio.InetAddress.new_any(Gio.SocketFamily.IPV4),
-                    port: packet.payloadTransferInfo.port
-                });
-                
-                let channel = new Protocol.LanUploadChannel(
-                    this.device,
-                    addr,
-                    file.read(null),
-                    packet.payloadSize
-                );
-                
-                channel.open();
-            } else {
-                if (!uri.startsWith("http://") && !uri.startsWith("https://")) {
-                    uri = "https://" + uri;
-                }
-                
-                packet.body = { url: uri };
+            packet.body = { filename: file.get_basename() };
+            packet.payloadSize = info.get_size();
+            packet.payloadTransferInfo = { port: 1741 }; // FIXME
+            
+            let addr = new Gio.InetSocketAddress({
+                address: Gio.InetAddress.new_any(Gio.SocketFamily.IPV4),
+                port: packet.payloadTransferInfo.port
+            });
+            
+            let channel = new Protocol.LanUploadChannel(
+                this.device,
+                addr,
+                file.read(null),
+                packet.payloadSize
+            );
+            
+            channel.open();
+        } else {
+            if (!uri.startsWith("http://") && !uri.startsWith("https://")) {
+                uri = "https://" + uri;
             }
             
-            this.device._channel.send(packet);
+            packet.body = { url: uri };
         }
+        
+        this.device._channel.send(packet);
     }
 });
 

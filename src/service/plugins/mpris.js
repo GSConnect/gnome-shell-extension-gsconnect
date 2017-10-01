@@ -54,9 +54,9 @@ var Plugin = new Lang.Class({
         this._proxy.connect("g-signal", (proxy, sender, name, parameters) => {
             parameters = parameters.deep_unpack();
             
-            log("signal name: " + name);
-            log("signal typeof name: " + typeof name);
-            log("signal params: " + parameters);
+            Common.debug("MPRIS: signal name: " + name);
+            Common.debug("MPRIS: signal typeof name: " + typeof name);
+            Common.debug("MPRIS: signal params: " + parameters);
         });
         
         this._players = new Map();
@@ -65,6 +65,8 @@ var Plugin = new Lang.Class({
     },
     
     _listPlayers: function () {
+        Common.debug("MPRIS: _listPlayers()");
+        
         let players = [];
         let names = this._proxy.call_sync("ListNames", null, 0, -1, null);
         
@@ -78,6 +80,8 @@ var Plugin = new Lang.Class({
     },
     
     _addPlayers: function () {
+        Common.debug("MPRIS: _addPlayers()");
+        
         for (let name of this._listPlayers()) {
             let mpris = new Common.DBusProxy.mpris(
                 Gio.DBus.session,
@@ -112,6 +116,8 @@ var Plugin = new Lang.Class({
     },
     
     _removePlayers: function () {
+        Common.debug("MPRIS: _removePlayers()");
+        
         let players = this._listPlayers();
         
         for (let [name, proxy] of this._players.entries()) {
@@ -123,14 +129,15 @@ var Plugin = new Lang.Class({
     },
     
     _updatePlayers: function () {
+        Common.debug("MPRIS: _updatePlayers()");
+        
         this._addPlayers();
         this._removePlayers();
         this.sendPlayerList();
     },
     
-    // TODO
     handlePacket: function (packet) {
-        log("IMPLEMENT: " + packet.toString());
+        Common.debug("MPRIS: handlePacket()");
         
         if (packet.body.hasOwnProperty("requestPlayerList")) {
             this.sendPlayerList();
@@ -144,6 +151,8 @@ var Plugin = new Lang.Class({
     },
     
     sendPlayerList: function () {
+        Common.debug("MPRIS: sendPlayerList()");
+        
         let packet = new Protocol.Packet({
             id: Date.now(),
             type: "kdeconnect.mpris",
@@ -155,6 +164,8 @@ var Plugin = new Lang.Class({
     
     // TODO: OpenUri
     handleCommand: function (packet) {
+        Common.debug("MPRIS: handleCommand()");
+        
         let player = this._players.get(packet.body.player);
         
         // Player Commands
@@ -206,7 +217,6 @@ var Plugin = new Lang.Class({
             
             response.body = {
                 nowPlaying: nowPlaying,
-                // FIXME: returns float
                 pos: Math.round(player.Position / 1000),
                 isPlaying: (player.PlaybackStatus === "Playing"),
                 canPause: (player.CanPause === true),

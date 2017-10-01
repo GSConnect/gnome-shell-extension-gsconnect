@@ -40,10 +40,14 @@ var Plugin = new Lang.Class({
     },
     
     handlePacket: function (packet) {
+        Common.debug("FindMyPhone: handlePacket()");
+        
         log("This should never be called since there is no incoming packet");
     },
     
     ring: function () {
+        Common.debug("FindMyPhone: ring()");
+        
         if (this.device.connected && this.device.paired) {
             let packet = new Protocol.Packet();
             packet.type = "kdeconnect.findmyphone.request";

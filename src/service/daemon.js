@@ -112,7 +112,7 @@ var Daemon = new Lang.Class({
     
     // Methods
     broadcast: function () {
-        log("Daemon.broadcast()");
+        Common.debug("Daemon.broadcast()");
         
         this._listener.send_to(
             this._broadcastAddr,
@@ -187,12 +187,12 @@ var Daemon = new Lang.Class({
         let devObjPath = "/org/gnome/shell/extensions/gsconnect/device/";
         
         if (this._devices.has(devObjPath + packet.body.deviceId)) {
-            log("updating device");
+            Common.debug("updating device");
             
             let device = this._devices.get(devObjPath + packet.body.deviceId);
             device.handlePacket(packet);
         } else {
-            log("creating device");
+            Common.debug("creating device");
             
             let device = new Device.Device(this, packet)
             this._devices.set(devObjPath + packet.body.deviceId, device);
@@ -230,7 +230,7 @@ var Daemon = new Lang.Class({
             try {
                 this._listener.bind(addr, false);
             } catch (e) {
-                log("failed to bind to port: " + port);
+                Common.debug("failed to bind to port: " + port);
                 
                 if (port < 1764) {
                     port += 1;
@@ -264,7 +264,7 @@ var Daemon = new Lang.Class({
     },
     
     _received: function (socket, condition) {
-        log("Daemon._received()");
+        Common.debug("Daemon._received()");
         
         let addr, data, flags, size;
         
@@ -284,13 +284,13 @@ var Daemon = new Lang.Class({
         let packet = new Protocol.Packet(data.toString());
         
         if (packet.type !== Protocol.TYPE_IDENTITY) {
-            log("Unexpected packet type: " + packet.type);
+            Common.debug("Unexpected packet type: " + packet.type);
             return true;
         } else if (packet.body.deviceId === this.identity.body.deviceId) {
-            log("Ignoring self-broadcast");
+            Common.debug("Ignoring self-broadcast");
             return true;
         } else {
-            log("Daemon received: " + data);
+            Common.debug("Daemon received: " + data);
         }
         
         packet.body.tcpHost = addr.address.to_string();

@@ -63,6 +63,8 @@ var Plugin = new Lang.Class({
     },
     
     handlePacket: function (packet) {
+        Common.debug("Mousepad: handlePacket()");
+        
         if (packet.body.hasOwnProperty("singleclick")) {
             this.clickPointer(1);
         } else if (packet.body.hasOwnProperty("doubleclick")) {
@@ -81,6 +83,8 @@ var Plugin = new Lang.Class({
     },
     
     clickPointer: function (button, double=false) {
+        Common.debug("Mousepad: clickPointer(" + button + ", " + double + ")");
+        
         let event;
         
         if (button === 1) {
@@ -103,6 +107,8 @@ var Plugin = new Lang.Class({
     },
     
     movePointer: function (dx, dy) {
+        Common.debug("Mousepad: movePointer(" + dx + ", " + dy + ")");
+        
         try {
             Atspi.generate_mouse_event(dx, dy, "rel");
             // TODO: it *is* possible to move the pointer in plain Gdk
@@ -118,6 +124,8 @@ var Plugin = new Lang.Class({
     //       then:
     //           {"shift":true,"key":"Q"}
     pressKey: function (key) {
+        Common.debug("Mousepad: pressKey(" + key + ")");
+        
         try {
             Atspi.generate_keyboard_event(0, key, Atspi.KeySynthType.STRING);
         } catch (e) {
@@ -127,6 +135,8 @@ var Plugin = new Lang.Class({
     
     // TODO: test
     pressSpecialKey: function (key) {
+        Common.debug("Mousepad: pressSpecialKey(" + key + ")");
+        
         try {
             if (!KeyMap.has(key) || key === 0) {
                 throw Error("Unknown/invalid key");

@@ -134,7 +134,7 @@ var Device = new Lang.Class({
     
     //
     handlePacket: function (packet) {
-        log("Device.fromPacket(" + this.id + ")");
+        Common.debug("Device.fromPacket(" + this.id + ")");
         
         if (packet.type === Protocol.TYPE_IDENTITY) {
             this.identity.fromPacket(packet);
@@ -149,10 +149,10 @@ var Device = new Lang.Class({
     },
     
     activate: function () {
-        log("Device.activate(" + this.id + ")");
+        Common.debug("Device.activate(" + this.id + ")");
         
 		if (this._channel !== null) {
-			log("device already active");
+			Common.debug("device already active");
 			return;
 		}
         
@@ -213,7 +213,7 @@ var Device = new Lang.Class({
     },
     
     _onReceived: function (channel, packet) {
-        log("Received from: " + this.id + ")");
+        log("Received from: " + this.id);
         
         this.handlePacket(packet);
     },
@@ -307,7 +307,7 @@ var Device = new Lang.Class({
     },
     
     pair: function () {
-        log("Device.pair(" + this.name + ")");
+        Common.debug("Device.pair(" + this.name + ")");
         
         // We're initiating an outgoing request
         if (!this.paired) {
@@ -330,7 +330,7 @@ var Device = new Lang.Class({
     },
     
     unpair: function () {
-        log("Device.unpair(" + this.name + ")");
+        Common.debug("Device.unpair(" + this.name + ")");
         
         if (this._channel !== null) {
             let packet = new Protocol.Packet({
@@ -347,7 +347,7 @@ var Device = new Lang.Class({
     },
     
     acceptPair: function () {
-        log("Device.acceptPair(" + this.id + ")");
+        Common.debug("Device.acceptPair(" + this.id + ")");
         
         this._setPaired(true);
         this.pair();
@@ -355,7 +355,7 @@ var Device = new Lang.Class({
     },
     
     rejectPair: function () {
-        log("Device.rejectPair(" + this.id + ")");
+        Common.debug("Device.rejectPair(" + this.id + ")");
         
         this.unpair();
     },
@@ -388,7 +388,7 @@ var Device = new Lang.Class({
     },
     
     enablePlugin: function (name, write=true) {
-        log("Device.enablePlugin(" + name + ", " + write + ")");
+        Common.debug("Device.enablePlugin(" + name + ", " + write + ")");
     
         try {
             let handler = imports.service.plugins[name];
@@ -430,7 +430,7 @@ var Device = new Lang.Class({
     },
     
     disablePlugin: function (name, write=true) {
-        log("Device.disablePlugin(" + name + ", " + write + ")");
+        Common.debug("Device.disablePlugin(" + name + ", " + write + ")");
         
         try {
             // Running instance
@@ -467,7 +467,7 @@ var Device = new Lang.Class({
     },
     
     configurePlugin: function (name, settings) {
-        log("Device.configurePlugin(" + name + ", " + settings + ")");
+        Common.debug("Device.configurePlugin(" + name + ", " + settings + ")");
         
         try {
             let handler = imports.service.plugins[name];

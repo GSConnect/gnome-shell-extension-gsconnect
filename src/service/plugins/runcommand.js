@@ -45,6 +45,8 @@ var Plugin = new Lang.Class({
     },
     
     handlePacket: function (packet) {
+        Common.debug("RunCommand: handlePacket()");
+        
         if (packet.body.hasOwnProperty("requestCommandList")) {
             this.sendCommandList();
         } else if (packet.body.hasOwnProperty("key")) {

@@ -51,6 +51,8 @@ var Plugin = new Lang.Class({
     // TODO: support pings with messages
     //       notification
     handlePacket: function (packet) {
+        Common.debug("Ping: handlePacket()");
+        
         this.emit("ping");
         log("IMPLEMENT: " + packet.toString());
     },

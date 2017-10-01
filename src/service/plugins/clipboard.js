@@ -58,12 +58,16 @@ var Plugin = new Lang.Class({
     },
     
     handlePacket: function (packet) {
+        Common.debug("Clipboard: handlePacket()");
+        
         if (packet.body.hasOwnProperty("content")) {
             this._clipboard.set_text(packet.body.content, -1);
         }
     },
     
     update: function (clipboard, text) {
+        Common.debug("Clipboard: update()");
+        
         let packet = new Protocol.Packet({
             id: Date.now(),
             type: "kdeconnect.clipboard",

@@ -350,7 +350,7 @@ var ContactEntry = new Lang.Class({
             completion: completion
         });
         
-        // FIXME: might already be setup
+        // TODO: make singleton?
         this.completion.connect("notify::provider", (completion) => {
             this.placeholder_text = _("Type a phone number or name");
             this.primary_icon_name = this.completion.provider;
@@ -536,15 +536,15 @@ var ApplicationWindow = new Lang.Class({
     
     // FIXME:
     _catch_message: function (plugin, phoneNumber, contactName, messageBody, phoneThumbnail) {
-        log("SMS phoneNumber: " + phoneNumber);
-        log("SMS contactName: " + contactName);
-        log("SMS messageBody: " + messageBody);
-        log("SMS phoneThumbnail: " + phoneThumbnail);
+        Common.debug("SMS phoneNumber: " + phoneNumber);
+        Common.debug("SMS contactName: " + contactName);
+        Common.debug("SMS messageBody: " + messageBody);
+        Common.debug("SMS phoneThumbnail: " + phoneThumbnail);
         let recipients = this._get_recipients();
         
         // Check for a verbatim match
         if (recipients.has(contactName)) {
-            log("Matched incoming sender");
+            Common.debug("Matched incoming sender");
             this._log_message(contactName, messageBody);
             this.urgency_hint = true;
         // Might be just a number, strip both down to digits and check
@@ -554,7 +554,7 @@ var ApplicationWindow = new Lang.Class({
                 let remote_num = phoneNumber.replace(/\D/g, "");
                 
                 if (local_num === remote_num) {
-                    log("Matched incoming number");
+                    Common.debug("Matched incoming number");
                     this._log_message(name, messageBody);
                     this.urgency_hint = true;
                 }
@@ -580,8 +580,8 @@ var ApplicationWindow = new Lang.Class({
                         model.get_value(tree_iter, 1),
                         model.get_value(tree_iter, 2)
                     ];
-                    log("found recipient (name): \"" + contact[0] + "\"");
-                    log("found recipient (num): \"" + contact[1] + "\"");
+                    Common.debug("found recipient (name): \"" + contact[0] + "\"");
+                    Common.debug("found recipient (num): \"" + contact[1] + "\"");
                     return true;
                 }
                 
