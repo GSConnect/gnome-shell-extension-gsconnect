@@ -408,8 +408,36 @@ var DevicePage = new Lang.Class({
         }
         
         // Keybinding Section
-        // TODO: fix widget
         let keySection = this.add_section(_("Keyboard Shortcuts"));
+        let keyRow = this.addRow(keySection);
+        let keyView = new KeybindingsWidget.TreeView();
+        keyView.addAccel("menu", _("Open Device Menu"), 0, 0);
+        keyView.addAccel("sms", _("Open SMS Window"), 0, 0);
+        keyView.addAccel("find", _("Locate Device"), 0, 0);
+        keyView.addAccel("browse", _("Browse Device"), 0, 0);
+        keyView.addAccel("share", _("Share File/URL"), 0, 0);
+        
+        let deviceAccels = JSON.parse(
+            Common.Settings.get_string("device-keybindings")
+        );
+        
+        if (!deviceAccels.hasOwnProperty(this.device.id)) {
+            deviceAccels[this.device.id] = {};
+            Common.Settings.set_string(
+                "device-keybindings",
+                JSON.stringify(deviceAccels)
+            );
+        }
+        
+        keyView.setAccels(deviceAccels[this.device.id]);
+        keyView.setCallback((profile) => {
+            deviceAccels[this.device.id] = profile;
+            Common.Settings.set_string(
+                "device-keybindings",
+                JSON.stringify(deviceAccels)
+            );
+        });
+        keyRow.grid.attach(keyView, 0, 0, 1, 1);
         
         this.show_all();
     },
@@ -498,38 +526,57 @@ var PrefsWidget = new Lang.Class({
         }
     },
     
-    add_page: function (id, title) {
+    addPage: function (id, title) {
         let page = new PrefsPage();
         this.add_titled(page, id, title);
         return page;
     },
     
-    remove_page: function (id) {
-        throw Error("Not implemented, use PrefsWidget.remove(" + id + ")")
+    removePage: function (id) {
+        let page = this.get_child_by_name(id);
+        this.remove(page);
+        page.destroy();
     },
     
     _build: function () {
         // General Page
-        let generalPage = this.add_page("general", _("General"));
+        let generalPage = this.addPage("general", _("General"));
         
+        // Appearance
         let appearanceSection = generalPage.add_section(_("Appearance"));
         generalPage.addSetting(appearanceSection, "device-indicators");
         generalPage.addSetting(appearanceSection, "device-visibility");
         
+        // Files
         let filesSection = generalPage.add_section(_("Files"));
         generalPage.addSetting(filesSection, "nautilus-integration");
         
-        // FIXME
-        //let keySection = generalPage.add_section(_("Keyboard Shortcuts"));
-        //let keyRow = new KeybindingsWidget.KeybindingWidget();
-        //keySection.list.add(keyRow);
+        // Keyboard Shortcuts
+        let keySection = generalPage.add_section(_("Keyboard Shortcuts"));
+        let keyRow = generalPage.addRow(keySection);
+        let keyView = new KeybindingsWidget.TreeView();
+        keyView.addAccel("menu", _("Open Extension Menu"), 0, 0);
+        keyView.addAccel("discover", _("Discover Devices"), 0, 0);
+        keyView.addAccel("settings", _("Open Extension Settings"), 0, 0);
+        keyView.setAccels(
+            JSON.parse(
+                Common.Settings.get_string("extension-keybindings")
+            )
+        );
+        keyView.setCallback((profile) => {
+            Common.Settings.set_string(
+                "extension-keybindings",
+                JSON.stringify(profile)
+            );
+        });
+        keyRow.grid.attach(keyView, 0, 0, 1, 1);
         
         // Devices Page
         this.devicesStack = new DevicesStack();
         let devicesPage = this.add_titled(this.devicesStack, "devices", _("Devices"));
         
         // Service Page
-        let servicePage = this.add_page("service", _("Service"));
+        let servicePage = this.addPage("service", _("Service"));
         let serviceSection = servicePage.add_section(_("Service"));
         
         this.nameEntry = new Gtk.Entry({
@@ -566,7 +613,7 @@ var PrefsWidget = new Lang.Class({
         servicePage.addSetting(serviceSection, "persistent-discovery");
         
         // About/Advanced
-        let advancedPage = this.add_page("advanced", _("Advanced"));
+        let advancedPage = this.addPage("advanced", _("Advanced"));
         let develSection = advancedPage.add_section(_("Development"));
         advancedPage.addSetting(develSection, "debug");
     }
