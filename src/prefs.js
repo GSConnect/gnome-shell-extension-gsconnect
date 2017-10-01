@@ -18,34 +18,6 @@ const Client = Me.imports.client;
 const Common = imports.common;
 
 
-/** Gtk.Button subclass for launching dialogs or external programs */
-var CallbackButton = new Lang.Class({
-    Name: "CallbackButton",
-    Extends: Gtk.Button,
-    
-    _init: function (params={}) {
-        params = Object.assign({
-            icon_name: "system-run-symbolic",
-            callback: () => {}
-        }, params);
-        
-        this.parent({
-            image: Gtk.Image.new_from_icon_name(
-                params.icon_name,
-                Gtk.IconSize.BUTTON
-            ),
-            visible: true,
-            can_focus: true,
-            halign: Gtk.Align.END,
-            valign: Gtk.Align.CENTER
-        });
-        
-        this.get_style_context().add_class("circular");
-        this.connect("clicked", params.callback);
-    }
-});
-
-
 /** A composite widget resembling A Gnome Control Center panel. */
 var PrefsPage = new Lang.Class({
     Name: "PrefsPage",
