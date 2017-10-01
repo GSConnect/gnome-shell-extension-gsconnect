@@ -138,7 +138,7 @@ var Plugin = new Lang.Class({
                 enabled: true
             };
             
-            Config.write_device_config(this.device.id, this.device.config);
+            Common.writeDeviceConfiguration(this.device.id, this.device.config);
         }
         
         if (this.settings.send.enabled) {
