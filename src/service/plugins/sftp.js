@@ -34,8 +34,9 @@ var METADATA = {
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/sftp
  *
  * TODO: mountWait() and timeout
- *       umount vs fusermount
+ *       umount vs fusermount vs -autounmount switch
  *       stderr checking
+ *       plugin not being marked as unregistered in client.js
  */
 var Plugin = new Lang.Class({
     Name: "GSConnectSFTPPlugin",
@@ -265,6 +266,7 @@ var Plugin = new Lang.Class({
     
     destroy: function () {
         this.unmount();
+        this._dbus.flush();
         
         PluginsBase.Plugin.prototype.destroy.call(this);
     }
