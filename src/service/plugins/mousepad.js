@@ -58,7 +58,7 @@ var Plugin = new Lang.Class({
         } else {
             this._seat = this._display.get_default_seat();
             this._pointer = this._seat.get_pointer();
-            this._keyboard = this._seat.get_keyboard();
+            //this._keyboard = this._seat.get_keyboard();
         }
     },
     
