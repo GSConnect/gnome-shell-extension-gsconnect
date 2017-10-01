@@ -89,28 +89,34 @@ var Plugin = new Lang.Class({
             new GLib.Variant("i", packet.body.currentCharge)
         );
         
-        // FIXME: note clearing...
         if (packet.body.thresholdEvent > 0) {
-            let note = new Notify.Notification({
-                app_name: "GSConnect",
-                id: Number(packet.id.toString().slice(2)),
-                summary: _("%s - Low Battery Warning").format(this.device.name),
-                body: _("Battery level is %d").format(this.level), // FIXME % in format strings
-                icon_name: "phone-symbolic"
-            });
-            
-            if (this.device._plugins.has("findmyphone")) {
-                let plugin = this.device._plugins.get("findmyphone");
-                
-                note.add_action(
-                    "findMyPhone",
-                    _("Locate"),
-                    Lang.bind(plugin, plugin.ring)
-                );
-            }
-            
-            note.show();
+            this.threshold();
         }
+    },
+    
+    threshold: function () {
+        Common.debug("Battery: threshold()");
+        
+        let note = new Notify.Notification({
+            app_name: _("GSConnect"),
+            summary: _("%s - Low Battery Warning").format(this.device.name),
+            body: _("Battery level is %d").format(this.level), // FIXME % in format strings
+            icon_name: "battery-caution-symbolic"
+        });
+        
+        if (this.device._plugins.has("findmyphone")) {
+            Common.debug("Battery: has findmyphone plugin; enabling action");
+        
+            let plugin = this.device._plugins.get("findmyphone");
+            
+            note.add_action(
+                "findMyPhone",
+                _("Locate"),
+                Lang.bind(plugin, plugin.ring)
+            );
+        }
+        
+        note.show();
     },
     
     /**
