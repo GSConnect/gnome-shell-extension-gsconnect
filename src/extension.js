@@ -798,39 +798,31 @@ var SystemIndicator = new Lang.Class({
         }
         this._keybindings = [];
     
-        let bindings = Settings.get_strv("extension-keybindings");
+        let accels = Settings.get_string("extension-keybindings");
+        accels = JSON.parse(accels);
         
-        if (bindings[0].length) {
+        if (accels.hasOwnProperty("menu") && accels.menu.length) {
             this._keybindings.push(
                 this.keybindingManager.add(
-                    bindings[0],
+                    accels.menu,
                     Lang.bind(this, this._openMenu)
                 )
             );
         }
         
-        if (bindings[1].length) {
+        if (accels.hasOwnProperty("discover") && accels.discover.length) {
             this._keybindings.push(
                 this.keybindingManager.add(
-                    bindings[1],
+                    accels.discover,
                     Lang.bind(this, this._discoverDevices)
                 )
             );
         }
         
-        if (bindings[2].length) {
+        if (accels.hasOwnProperty("settings") && accels.settings.length) {
             this._keybindings.push(
                 this.keybindingManager.add(
-                    bindings[2],
-                    Lang.bind(this, Common.startPreferences)
-                )
-            );
-        }
-        
-        if (bindings[3].length) {
-            this._keybindings.push(
-                this.keybindingManager.add(
-                    bindings[3],
+                    accels.settings,
                     Lang.bind(this, Common.startPreferences)
                 )
             );
@@ -839,7 +831,8 @@ var SystemIndicator = new Lang.Class({
     
     _deviceKeybindings: function (indicator) {
         let menu = indicator.deviceMenu;
-        let profiles = Settings.get_value("device-keybindings").deep_unpack();
+        let profiles = Settings.get_string("device-keybindings");
+        profiles = JSON.parse(profiles);
         
         for (let binding of menu._keybindings) {
             this.keybindingManager.remove(binding);
@@ -847,58 +840,57 @@ var SystemIndicator = new Lang.Class({
         menu._keybindings = [];
         
         if (profiles.hasOwnProperty(menu.device.id)) {
-            let profile = profiles[menu.device.id].deep_unpack();
-            let bindings = profile.bindings.deep_unpack();
+            let accels = profiles[menu.device.id];
         
-            if (bindings[0].length) {
+            if (accels.hasOwnProperty("menu") && accels.menu.length) {
                 menu._keybindings.push(
                     this.keybindingManager.add(
-                        bindings[0],
+                        accels.menu,
                         Lang.bind(this, this._openDeviceMenu, indicator)
                     )
                 );
             }
             
-            if (bindings[1].length) {
+            if (accels.hasOwnProperty("sms") && accels.sms.length) {
                 menu._keybindings.push(
                     this.keybindingManager.add(
-                        bindings[1], 
+                        accels.sms, 
                         Lang.bind(menu, menu._smsAction)
                     )
                 );
             }
             
-            if (bindings[2].length) {
+            if (accels.hasOwnProperty("find") && accels.find.length) {
                 menu._keybindings.push(
                     this.keybindingManager.add(
-                        bindings[2], 
+                        accels.find, 
                         Lang.bind(menu, menu._findAction)
                     )
                 );
             }
             
-            if (bindings[3].length) {
+            if (accels.hasOwnProperty("browse") && accels.browse.length) {
                 menu._keybindings.push(
                     this.keybindingManager.add(
-                        bindings[3],
+                        accels.browse,
                         Lang.bind(this, this._browseDevice, indicator)
                     )
                 );
             }
             
-            if (bindings[4].length) {
+            if (accels.hasOwnProperty("share") && accels.share.length) {
                 menu._keybindings.push(
                     this.keybindingManager.add(
-                        bindings[4],
+                        accels.share,
                         Lang.bind(menu, menu._shareAction)
                     )
                 );
             }
             
-            if (bindings[5].length) {
+            if (accels.hasOwnProperty("status") && accels.status.length) {
                 menu._keybindings.push(
                     this.keybindingManager.add(
-                        bindings[5],
+                        accels.status,
                         Lang.bind(menu, menu._statusAction)
                     )
                 );
