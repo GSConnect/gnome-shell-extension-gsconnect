@@ -472,6 +472,7 @@ var Device = new Lang.Class({
         "share",
         "telephony"].forEach((plugin) => {
             if (this.hasOwnProperty(plugin)) {
+                this[plugin].destroy();
                 delete this[plugin];
             }
         });
