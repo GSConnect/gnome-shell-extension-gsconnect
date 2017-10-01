@@ -65,8 +65,10 @@
   
   <!-- Ping -->
   <interface name="org.gnome.shell.extensions.gsconnect.ping">
-    <method name="ping"/>
-    <signal name="ping"/>
+    <method name="ping">
+      <arg name="message" type="s"/>
+    </method>
+    <signal name="ping"/> <!-- TODO: message arg -->
   </interface>
   
   <!-- Run Commands -->
