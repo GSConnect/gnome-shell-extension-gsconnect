@@ -60,6 +60,7 @@ var Plugin = new Lang.Class({
     reconfigure: function () {},
     
     destroy: function () {
+        this._dbus.flush();
         this._dbus.unexport();
         delete this._dbus;
         GObject.signal_handlers_destroy(this);

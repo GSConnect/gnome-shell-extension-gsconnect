@@ -273,7 +273,6 @@ var Plugin = new Lang.Class({
     
     destroy: function () {
         this.unmount();
-        this._dbus.flush();
         
         PluginsBase.Plugin.prototype.destroy.call(this);
     }
