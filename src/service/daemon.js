@@ -313,7 +313,7 @@ var Daemon = new Lang.Class({
         this._in = null;
         
         this.identity = new Protocol.Packet();
-        Common.initDaemonConfiguration(this);
+        if (!Common.initDaemonConfiguration(this)) { this.vfunc_shutdown(); }
         
         // Notifications
         Notify.init("org.gnome.shell.extensions.gsconnect.daemon");

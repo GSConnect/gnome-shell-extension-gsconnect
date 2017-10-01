@@ -255,9 +255,16 @@ function writeDaemonConfiguration(daemon) {
 
 
 function initDaemonConfiguration (daemon) {
-    initConfiguration();
-    readDaemonConfiguration(daemon);
-    writeDaemonConfiguration(daemon);
+    try {
+        initConfiguration();
+        readDaemonConfiguration(daemon);
+        writeDaemonConfiguration(daemon);
+    } catch (e) {
+        log("Error initializing daemon configuration: " + e);
+        return false;
+    }
+    
+    return true;
 };
 
 
