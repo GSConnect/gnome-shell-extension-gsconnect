@@ -35,6 +35,8 @@ var METADATA = {
 /**
  * Mousepad Plugin
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/mousepad
+ *
+ * TODO: configuration option for notifying user
  */
 var Plugin = new Lang.Class({
     Name: "GSConnectMousepadPlugin",
@@ -60,10 +62,7 @@ var Plugin = new Lang.Class({
         }
     },
     
-    // TODO
     handlePacket: function (packet) {
-        log("IMPLEMENT: " + packet.toString());
-        
         if (packet.body.hasOwnProperty("singleclick")) {
             this.clickPointer(1);
         } else if (packet.body.hasOwnProperty("doubleclick")) {
