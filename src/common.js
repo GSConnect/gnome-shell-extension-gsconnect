@@ -174,15 +174,15 @@ function generateEncryption (force=false) {
             "openssl", "req", "-new", "-x509", "-sha256", "-newkey",
             "rsa:2048", "-nodes", "-keyout", "private.pem", "-days", "3650",
             "-out", "certificate.pem", "-subj",
-            "/O=KDE/OU=KDE Connect/CN=_e6e29ad4_2b31_4b6d_8f7a_9872dbaa9095_" // FIXME: uuid
+            "/CN=" + GLib.uuid_string_random()
         ];
         
         let [res, stdout, stderr, exit_status] = GLib.spawn_sync(
-            CONFIG_PATH, // working dir
-            cmd, // argv
-            null, // envp
-            GLib.SpawnFlags.SEARCH_PATH, // flags,
-            null // child_setup
+            CONFIG_PATH,
+            cmd,
+            null,
+            GLib.SpawnFlags.SEARCH_PATH,
+            null
         );
     }
     
