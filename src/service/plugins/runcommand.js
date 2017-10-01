@@ -59,19 +59,23 @@ var Plugin = new Lang.Class({
     },
     
     reconfigure: function () {
-        this.sendCommandList();
+        Common.debug("RunCommand: reconfigure()");
+        
+        if (this.device.paired && this.device.connected) {
+            this.sendCommandList();
+        }
     },
     
     sendCommandList: function () {
-        if (this.device.connected && this.device.paired) {
-            let packet = new Protocol.Packet();
-            packet.type = "kdeconnect.runcommand";
-            packet.body = {
-                commandList: JSON.stringify(this.settings.commands)
-            };
-            
-            this.device._channel.send(packet);
-        }
+        Common.debug("RunCommand: sendCommandList()");
+        
+        let packet = new Protocol.Packet();
+        packet.type = "kdeconnect.runcommand";
+        packet.body = {
+            commandList: JSON.stringify(this.settings.commands)
+        };
+        
+        this.device._channel.send(packet);
     }
 });
 
