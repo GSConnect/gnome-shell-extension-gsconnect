@@ -691,16 +691,10 @@ var SystemIndicator = new Lang.Class({
         );
         this.extensionMenu.menu.addMenuItem(this.devicesSection);
         
-        // Extension Menu -> [ Enable Item ]
-        this.enableItem = this.extensionMenu.menu.addAction(
-            _("Enable"),
-            Client.startService
-        );
-        
         // Extension Menu -> Mobile Settings Item
         this.extensionMenu.menu.addAction(
             _("Mobile Settings"), 
-            this._openPrefs
+            Common.startPreferences
         );
         
         //
@@ -734,7 +728,6 @@ var SystemIndicator = new Lang.Class({
         debug("extension.SystemIndicator._serviceAppeared()");
         
         this.manager = new Client.DeviceManager();
-        this.enableItem.actor.visible = !(this.manager);
         this.extensionIndicator.visible = (this.manager);
         
         // Extension Menu -> (Stop) Discover Devices Item
@@ -789,7 +782,6 @@ var SystemIndicator = new Lang.Class({
         
         if (this.scanItem) { this.scanItem.destroy(); }
         
-        this.enableItem.actor.visible = !(this.manager);
         this.extensionIndicator.visible = (this.manager);
     },
     
@@ -823,7 +815,7 @@ var SystemIndicator = new Lang.Class({
             this._keybindings.push(
                 this.keybindingManager.add(
                     bindings[2],
-                    Lang.bind(this, this._openPrefs)
+                    Lang.bind(this, Common.startPreferences)
                 )
             );
         }
@@ -832,7 +824,7 @@ var SystemIndicator = new Lang.Class({
             this._keybindings.push(
                 this.keybindingManager.add(
                     bindings[3],
-                    Lang.bind(this, Client.startSettings)
+                    Lang.bind(this, Common.startPreferences)
                 )
             );
         }
@@ -947,9 +939,6 @@ var SystemIndicator = new Lang.Class({
             indicator.menu.toggle();
         } else {
             this._openMenu();
-//            Main.panel._toggleMenu(Main.panel.statusArea.aggregateMenu);
-//            this.extensionMenu.menu.toggle();
-//            indicator.deviceMenu.actor.grab_key_focus();
         }
     },
     
@@ -957,12 +946,6 @@ var SystemIndicator = new Lang.Class({
         Main.panel._toggleMenu(Main.panel.statusArea.aggregateMenu);
         this.extensionMenu.menu.toggle();
         this.extensionMenu.actor.grab_key_focus();
-    },
-    
-    _openPrefs: function () {
-        GLib.spawn_command_line_async(
-            "gnome-shell-extension-prefs gsconnect@andyholmes.github.io"
-        );
     },
     
     _deviceAdded: function (manager, dbusPath) {
