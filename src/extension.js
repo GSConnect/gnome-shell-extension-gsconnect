@@ -24,7 +24,7 @@ const Tweener = imports.ui.tweener;
 // Local Imports
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 const Common = Me.imports.common;
-const { debug, Resources, Settings } = Me.imports.common;
+const { Resources, Settings } = Me.imports.common;
 const Client = Me.imports.client;
 
 // Externally Available Constants
@@ -64,7 +64,7 @@ var KeybindingManager = new Lang.Class({
     },
 
     add: function(accelerator, callback){
-        debug("KeybindingManager.add(" + accelerator + ")");
+        Common.debug("KeybindingManager.add(" + accelerator + ")");
         
         let action = global.display.grab_accelerator(accelerator);
 
@@ -387,7 +387,7 @@ var DeviceMenu = new Lang.Class({
     
     // Callbacks
     _batteryChanged: function (battery) {
-        debug("extension.DeviceMenu._batteryChanged()");
+        Common.debug("extension.DeviceMenu._batteryChanged()");
         
         // Fix for "JS ERROR: TypeError: this.device.battery is undefined"
         if (this.device.battery === undefined) { return; }
@@ -419,14 +419,14 @@ var DeviceMenu = new Lang.Class({
     },
     
     _nameChanged: function (device, name) {
-        debug("extension.DeviceMenu._nameChanged()");
+        Common.debug("extension.DeviceMenu._nameChanged()");
         
         name = name.deep_unpack();
         this.nameLabel.label.text = (name === "string") ? name : device.name;
     },
     
     _pluginsChanged: function (device, plugins) {
-        debug("extension.DeviceMenu._pluginsChanged()");
+        Common.debug("extension.DeviceMenu._pluginsChanged()");
         
         // Plugin Buttons
         let buttons = {
@@ -459,7 +459,7 @@ var DeviceMenu = new Lang.Class({
     },
     
     _statusChanged: function (device, state) {
-        debug("extension.DeviceMenu._statusChanged(" + this.device.id + ")");
+        Common.debug("extension.DeviceMenu._statusChanged(" + this.device.id + ")");
         
         let { connected, paired } = this.device;
         
@@ -482,7 +482,7 @@ var DeviceMenu = new Lang.Class({
     
     // Plugin Callbacks
     _browseAction: function (button) {
-        debug("extension.DeviceMenu._browseAction()");
+        Common.debug("extension.DeviceMenu._browseAction()");
         
         if (button.checked) {
             button.add_style_pseudo_class("active");
@@ -519,7 +519,7 @@ var DeviceMenu = new Lang.Class({
     },
     
     _browseOpen: function () {
-        debug("extension.DeviceMenu._browseOpen()");
+        Common.debug("extension.DeviceMenu._browseOpen()");
         
         this.browseBar.actor.destroy_all_children();
         
@@ -541,25 +541,25 @@ var DeviceMenu = new Lang.Class({
     },
     
     _findAction: function (button) {
-        debug("extension.DeviceMenu._findAction()");
+        Common.debug("extension.DeviceMenu._findAction()");
         this._getTopMenu().close(true);
         this.device.ring();
     },
     
     _shareAction: function (button) {
-        debug("extension.DeviceMenu._shareAction()");
+        Common.debug("extension.DeviceMenu._shareAction()");
         this._getTopMenu().close(true);
         this.device.shareDialog();
     },
     
     _smsAction: function (button) {
-        debug("extension.DeviceMenu._smsAction()");
+        Common.debug("extension.DeviceMenu._smsAction()");
         this._getTopMenu().close(true);
         this.device.telephony.openSms();
     },
     
     _statusAction: function (button) {
-        debug("extension.DeviceMenu._statusAction()");
+        Common.debug("extension.DeviceMenu._statusAction()");
         
         if (this.device.paired) {
             this.device.activate();
@@ -609,7 +609,7 @@ var DeviceIndicator = new Lang.Class({
     
     // Callbacks
     _sync: function (sender, cb_data) {
-        debug("extension.DeviceIndicator._sync()");
+        Common.debug("extension.DeviceIndicator._sync()");
         
         let flags = Settings.get_flags("device-visibility");
         let { connected, paired, type } = this.device;
@@ -725,7 +725,7 @@ var SystemIndicator = new Lang.Class({
     
     // The DBus interface has appeared
     _serviceAppeared: function (conn, name, name_owner, cb_data) {
-        debug("extension.SystemIndicator._serviceAppeared()");
+        Common.debug("extension.SystemIndicator._serviceAppeared()");
         
         this.manager = new Client.DeviceManager();
         this.extensionIndicator.visible = (this.manager);
@@ -773,7 +773,7 @@ var SystemIndicator = new Lang.Class({
     
     // The DBus interface has vanished
     _serviceVanished: function (conn, name, name_owner, cb_data) {
-        debug("extension.SystemIndicator._serviceVanished()");
+        Common.debug("extension.SystemIndicator._serviceVanished()");
         
         if (this.manager) {
             this.manager.destroy();
@@ -949,7 +949,7 @@ var SystemIndicator = new Lang.Class({
     },
     
     _deviceAdded: function (manager, dbusPath) {
-        debug("extension.SystemIndicator._deviceAdded(" + dbusPath + ")");
+        Common.debug("extension.SystemIndicator._deviceAdded(" + dbusPath + ")");
         
         let device = this.manager.devices.get(dbusPath);
         
@@ -977,7 +977,7 @@ var SystemIndicator = new Lang.Class({
     },
     
     _deviceRemoved: function (manager, dbusPath) {
-        debug("extension.SystemIndicator._deviceRemoved(" + dbusPath + ")");
+        Common.debug("extension.SystemIndicator._deviceRemoved(" + dbusPath + ")");
         
         for (let binding of this._indicators[dbusPath].deviceMenu._keybindings) {
             this.keybindingManager.remove(binding);
@@ -1072,7 +1072,7 @@ var SystemIndicator = new Lang.Class({
 var systemIndicator;
 
 function init() {
-    debug("initializing extension");
+    Common.debug("initializing extension");
     
     Common.initConfiguration();
     Common.initTranslations();
@@ -1080,7 +1080,7 @@ function init() {
 }
 
 function enable() {
-    debug("enabling extension");
+    Common.debug("enabling extension");
     
     systemIndicator = new SystemIndicator();
     
@@ -1091,7 +1091,7 @@ function enable() {
 }
 
 function disable() {
-    debug("disabling extension");
+    Common.debug("disabling extension");
     
     GObject.signal_handlers_destroy(Settings);
     systemIndicator.destroy();
