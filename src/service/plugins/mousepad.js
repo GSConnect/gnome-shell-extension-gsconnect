@@ -96,7 +96,7 @@ var Plugin = new Lang.Class({
             Atspi.generate_mouse_event(x, y, event);
             if (double) { Atspi.generate_mouse_event(x, y, event); }
             // TODO: it *may* be possible to simulate clicks in plain Gdk
-            //this._keyboard.set_key(0, Gdk.POINTER_Button1);
+            //this._keyboard.set_key(0, Gdk.KEY_POINTER_Button1, 0);
         } catch (e) {
             log("Mousepad: Error simulating mouse click: " + e);
         }
