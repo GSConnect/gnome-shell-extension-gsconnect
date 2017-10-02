@@ -6,6 +6,7 @@ const Gettext = imports.gettext.domain("org.gnome.shell.extensions.gsconnect");
 const _ = Gettext.gettext;
 
 const Gio = imports.gi.Gio;
+const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Notify = imports.gi.Notify;
 
@@ -40,7 +41,8 @@ var Plugin = new Lang.Class({
     Extends: PluginsBase.Plugin,
     Signals: {
         "ping": {
-            flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED
+            flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED,
+            param_types: [ GObject.TYPE_STRING ]
         }
     },
     
@@ -48,19 +50,50 @@ var Plugin = new Lang.Class({
         this.parent(device, "ping");
     },
     
-    // TODO: support pings with messages
-    //       notification
+    // TODO: play sound?
     handlePacket: function (packet) {
         Common.debug("Ping: handlePacket()");
         
-        this.emit("ping");
-        log("IMPLEMENT: " + packet.toString());
+        if (!packet.body.hasOwnProperty("message")) {
+            packet.body.message = "";
+        }
+        
+        this.emit("ping", packet.body.message);
+        this._dbus.emit_signal(
+            "ping",
+            new GLib.Variant("(s)", [packet.body.message])
+        );
+        
+        let body;
+        
+        if (packet.body.message.length) {
+            body = _("Ping: %s").format(packet.body.message);
+        } else {
+            body = _("Ping");
+        }
+        
+        let note = new Notify.Notification({
+            app_name: "GSConnect",
+            summary: this.device.name,
+            body: body,
+            icon_name: "phone-symbolic"
+        });
+        
+        note.show();
     },
     
-    // TODO: support pings with messages
-    ping: function () {
-        let packet = new Protocol.Packet();
-        packet.type = "kdeconnect.ping";
+    ping: function (message="") {
+        Common.debug("Ping: ping(" + message + ")");
+        
+        let packet = new Protocol.Packet({
+            id: 0,
+            type: "kdeconnect.ping",
+            body: {}
+        });
+        
+        if (message.length) {
+            packet.body.message = message;
+        }
         
         this.device._channel.send(packet);
     }
