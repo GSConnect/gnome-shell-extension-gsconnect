@@ -540,29 +540,34 @@ var ApplicationWindow = new Lang.Class({
         Common.debug("SMS contactName: " + contactName);
         Common.debug("SMS messageBody: " + messageBody);
         Common.debug("SMS phoneThumbnail: " + phoneThumbnail);
-        let recipients = this._get_recipients();
         
-        // Check for a verbatim match
-        if (recipients.has(contactName)) {
-            Common.debug("Matched incoming sender");
-            this._log_message(contactName, messageBody);
-            this.urgency_hint = true;
-        // Might be just a number, strip both down to digits and check
-        } else {
-            for (let [name, number] of recipients.entries()) {
-                let local_num = number.replace(/\D/g, "");
-                let remote_num = phoneNumber.replace(/\D/g, "");
-                
-                if (local_num === remote_num) {
-                    Common.debug("Matched incoming number");
-                    this._log_message(name, messageBody);
-                    this.urgency_hint = true;
-                }
+        for (let [name, number] of this.getRecipients().entries()) {
+            let local_num = number.replace(/\D/g, "");
+            let remote_num = phoneNumber.replace(/\D/g, "");
+            
+            if (local_num === remote_num) {
+                Common.debug("Matched incoming number");
+                this._log_message(name, messageBody);
+                this.urgency_hint = true;
             }
         }
     },
     
-    _get_recipients: function () {
+    /**
+     * Search the contact entry and return a Map object
+     *
+     * If a match is found in the completion (list of imported contacts), it
+     * will be added to the Map with the contact name as key, phone number as
+     * value. Otherwise, the item will be added as-is as both key and value:
+     *
+     *     Map([
+     *         ["Name", "(555) 555-5555"], <= known contact
+     *         ["555-5555", "555-5555"]    <= unknown contact
+     *     ])
+     *
+     * TODO: make this a property??
+     */
+    getRecipients: function () {
         let contactItems = this.contactEntry.text.split(";").filter((s) => {
             return /\S/.test(s);
         });
@@ -573,23 +578,25 @@ var ApplicationWindow = new Lang.Class({
             item = item.trim();
             let contact = false;
             
-            // Search the completion for a matching 
+            // Search the completion for a matching known contact
             model.foreach((model, path, tree_iter) => {
                 if (item === model.get_value(tree_iter, 0)) {
                     contact = [
-                        model.get_value(tree_iter, 1),
-                        model.get_value(tree_iter, 2)
+                        model.get_value(tree_iter, 1), // Name
+                        model.get_value(tree_iter, 2) // Phone Number
                     ];
-                    Common.debug("found recipient (name): \"" + contact[0] + "\"");
-                    Common.debug("found recipient (num): \"" + contact[1] + "\"");
+                    Common.debug("found recipient (name): '" + contact[0] + "'");
+                    Common.debug("found recipient (num): '" + contact[1] + "'");
                     return true;
                 }
                 
                 contact = false;
             });
             
+            // Found a matching known contact
             if (contact) {
                 recipients.set(contact[0], contact[1]);
+            // Just return the contact "item" as is
             } else {
                 recipients.set(item, item);
             }
@@ -610,7 +617,7 @@ var ApplicationWindow = new Lang.Class({
     
     /** Return a list of phone numbers that the SMS will be sent to */
     send: function (entry, signal_id, event) {
-        let numbers = Array.from(this._get_recipients().values());
+        let numbers = Array.from(this.getRecipients().values());
         
         // Check a number/contact has been provided
         if (!numbers.length) {
