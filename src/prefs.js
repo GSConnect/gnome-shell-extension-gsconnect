@@ -352,7 +352,9 @@ var DevicePage = new Lang.Class({
         this.device = device;
         this.config = Common.readDeviceConfiguration(device.id);
         
-        // Status Section FIXME
+        // Status
+        // TODO: fingerprint
+        //       remove device
         let statusSection = this.add_section();
         let statusRow = this.addRow(statusSection);
         
@@ -393,7 +395,7 @@ var DevicePage = new Lang.Class({
         this.device.notify("paired");
         deviceControls.add(pairButton);
         
-        // Plugins Section
+        // Plugins
         let pluginsSection = this.add_section(_("Plugins"));
         
         for (let [pluginName, pluginInfo] of PluginsWidget.PluginMetadata.entries()) {
@@ -407,7 +409,7 @@ var DevicePage = new Lang.Class({
             );
         }
         
-        // Keybinding Section
+        // Keyboard Shortcuts
         let keySection = this.add_section(_("Keyboard Shortcuts"));
         let keyRow = this.addRow(keySection);
         let keyView = new KeybindingsWidget.TreeView();
