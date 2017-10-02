@@ -34,8 +34,25 @@ var METADATA = {
  *
  * See also:
  *     https://specifications.freedesktop.org/mpris-spec/latest/
+ *     https://github.com/GNOME/gnome-shell/blob/master/js/ui/mpris.js
  *     https://github.com/JasonLG1979/gnome-shell-extensions-mediaplayer/wiki/Known-Player-Bugs
  */
+
+const DBusIface = '<node> \
+<interface name="org.freedesktop.DBus"> \
+  <method name="ListNames"> \
+    <arg type="as" direction="out" name="names" /> \
+  </method> \
+  <signal name="NameOwnerChanged"> \
+    <arg type="s" direction="out" name="name" /> \
+    <arg type="s" direction="out" name="oldOwner" /> \
+    <arg type="s" direction="out" name="newOwner" /> \
+  </signal> \
+</interface> \
+</node>';
+const DBusProxy = Gio.DBusProxy.makeProxyWrapper(DBusIface);
+
+
 var Plugin = new Lang.Class({
     Name: "GSConnectMPRISPlugin",
     Extends: PluginsBase.Plugin,
@@ -43,34 +60,40 @@ var Plugin = new Lang.Class({
     _init: function (device) {
         this.parent(device, "mpris");
         
-        this._proxy = new Gio.DBusProxy({
-            gConnection: Gio.DBus.session,
-            gName: "org.freedesktop.DBus",
-            gObjectPath: "/org/freedesktop/DBus",
-            gInterfaceName: "org.freedesktop.DBus"
-        });
-        
-        // FIXME: not firing?
-        this._proxy.connect("g-signal", (proxy, sender, name, parameters) => {
-            parameters = parameters.deep_unpack();
-            
-            Common.debug("MPRIS: signal name: " + name);
-            Common.debug("MPRIS: signal typeof name: " + typeof name);
-            Common.debug("MPRIS: signal params: " + parameters);
-        });
+        this._listener = new DBusProxy(
+            Gio.DBus.session,
+            'org.freedesktop.DBus',
+            '/org/freedesktop/DBus',
+            Lang.bind(this, this._onDBusReady)
+        );
         
         this._players = new Map();
-        
+    },
+
+    _onDBusReady: function() {
         this._updatePlayers();
+        
+        this._listener.connectSignal(
+            'NameOwnerChanged',
+            Lang.bind(this, this._onNameOwnerChanged)
+        );
+    },
+
+    _onNameOwnerChanged: function(proxy, sender, [name, oldOwner, newOwner]) {
+        Common.debug("MPRIS: _onNameOwnerChanged()");
+        
+        if (name.startsWith("org.mpris.MediaPlayer2")) {
+            this._updatePlayers();
+        }
     },
     
     _listPlayers: function () {
         Common.debug("MPRIS: _listPlayers()");
         
         let players = [];
-        let names = this._proxy.call_sync("ListNames", null, 0, -1, null);
         
-        for (let name of names.deep_unpack()[0]) {
+        for (let name of this._listener.ListNamesSync()[0]) {
+            
             if (name.indexOf("org.mpris.MediaPlayer2") > -1) {
                 players.push(name);
             }
@@ -79,10 +102,13 @@ var Plugin = new Lang.Class({
         return players;
     },
     
-    _addPlayers: function () {
-        Common.debug("MPRIS: _addPlayers()");
+    _updatePlayers: function () {
+        Common.debug("MPRIS: _updatePlayers()");
         
-        for (let name of this._listPlayers()) {
+        let players = this._listPlayers();
+        
+        // Add new players
+        for (let name of players) {
             let mpris = new Common.DBusProxy.mpris(
                 Gio.DBus.session,
                 name,
@@ -96,6 +122,8 @@ var Plugin = new Lang.Class({
                     "/org/mpris/MediaPlayer2" 
                 );
                 
+                // TODO: this is pretty lazy, we just resend everything if
+                //       anything changes
                 player.connect("g-properties-changed", () => {
                     let packet = new Protocol.Packet({
                         id: Date.now(),
@@ -113,26 +141,15 @@ var Plugin = new Lang.Class({
                 this._players.set(mpris.Identity, player);
             }
         }
-    },
-    
-    _removePlayers: function () {
-        Common.debug("MPRIS: _removePlayers()");
         
-        let players = this._listPlayers();
-        
+        // Remove old players
         for (let [name, proxy] of this._players.entries()) {
             if (players.indexOf(proxy.gName) < 0) {
                 GObject.signal_handlers_destroy(proxy);
                 this._players.delete(name);
             }
         }
-    },
-    
-    _updatePlayers: function () {
-        Common.debug("MPRIS: _updatePlayers()");
         
-        this._addPlayers();
-        this._removePlayers();
         this.sendPlayerList();
     },
     
@@ -162,7 +179,7 @@ var Plugin = new Lang.Class({
         this.device._channel.send(packet);
     },
     
-    // TODO: OpenUri
+    // TODO: OpenUri ???
     handleCommand: function (packet) {
         Common.debug("MPRIS: handleCommand()");
         
