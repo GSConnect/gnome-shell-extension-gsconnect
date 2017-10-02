@@ -433,10 +433,10 @@ var DeviceDefaults = {
             enabled: false,
             settings: {
                 receive: {
-                    enabled: false
+                    enabled: true
                 },
                 send: {
-                    enabled: false,
+                    enabled: true,
                     applications: {
                         GSConnect: {
                             iconName: "phone",
