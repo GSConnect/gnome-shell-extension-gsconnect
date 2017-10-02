@@ -815,8 +815,7 @@ var SystemIndicator = new Lang.Class({
     
     _deviceKeybindings: function (indicator) {
         let menu = indicator.deviceMenu;
-        let profiles = Settings.get_string("device-keybindings");
-        profiles = JSON.parse(profiles);
+        let profiles = JSON.parse(Settings.get_string("device-keybindings"));
         
         for (let binding of menu._keybindings) {
             this.keybindingManager.remove(binding);
