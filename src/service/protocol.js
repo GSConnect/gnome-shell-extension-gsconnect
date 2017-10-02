@@ -125,20 +125,16 @@ var LanChannel = new Lang.Class({
         }
     },
     
-    _init: function (device, addr=null) {
+    _init: function (device, port=false) {
         this.parent();
         this.device = device;
         
-        if (addr) {
-            this.addr = addr;
-        } else {
-            this.addr = new Gio.InetSocketAddress({
-                address: Gio.InetAddress.new_from_string(
-                    device.identity.body.tcpHost
-                ),
-                port: device.identity.body.tcpPort
-            });
-        }
+        this.addr = new Gio.InetSocketAddress({
+            address: Gio.InetAddress.new_from_string(
+                device.identity.body.tcpHost
+            ),
+            port: (port) ? port : device.identity.body.tcpPort
+        });
         
         this._listener = null;
         this._connection = null;
@@ -240,49 +236,6 @@ var LanChannel = new Lang.Class({
         this._monitor.attach(null);
         
         return true;
-    },
-    
-    /**
-     * Transfer Functions
-     */
-    _transferRead: function () {
-        Common.debug("LanChannel: _transferRead()");
-        
-        this._in.read_bytes_async(
-            4096,
-            GLib.PRIORITY_DEFAULT,
-            null,
-            (source, res) => {
-                let bytes = source.read_bytes_finish(res);
-                
-                if (bytes.get_size()) {
-                    this._transferWrite(bytes);
-                } else {
-                    this.close();
-                    
-                    // FIXME: better
-                    if (this.bytesWritten < this.size) {
-                        throw Error("Failed to complete transfer");
-                    } else {
-                        log("Completed transfer of " + this.size + " bytes");
-                    }
-                }
-            }
-        );
-    },
-    
-    _transferWrite: function (bytes) {
-        Common.debug("LanChannel: _transferRead()");
-        
-        this._out.write_bytes_async(
-            bytes,
-            GLib.PRIORITY_DEFAULT,
-            null,
-            (source, res) => {
-                this.bytesWritten += source.write_bytes_finish(res);
-                this._transferRead();
-            }
-        );
     },
     
     /**
@@ -415,16 +368,105 @@ var LanChannel = new Lang.Class({
  * TODO: signals
  *       errors
  */
+var Transfer = new Lang.Class({
+    Name: "GSConnectTransfer",
+    Extends: GObject.Object,
+    Signals: {
+        "started": {
+            flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED
+        },
+        "progress": {
+            flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED,
+            param_types: [ GObject.TYPE_INT ]
+        },
+        "cancelled": {
+            flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED
+        },
+        "failed": {
+            flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED,
+            param_types: [ GObject.TYPE_STRING ]
+        },
+        "succeeded": {
+            flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED
+        }
+    },
+    
+    _init: function (srcStream, destStream, size) {
+        this.parent();
+        
+        this._in = srcStream;
+        this._out = destStream;
+        this._cancellable = new Gio.Cancellable();
+        
+        this.size = size;
+        this.bytesWritten = 0;
+    },
+    
+    _read: function () {
+        Common.debug("Transfer: _read()");
+        
+        if (this._cancellable.is_cancelled()) { return; }
+        
+        this._in.read_bytes_async(
+            4096,
+            GLib.PRIORITY_DEFAULT,
+            this._cancellable,
+            (source, res) => {
+                let bytes = source.read_bytes_finish(res);
+                
+                if (bytes.get_size()) {
+                    this._write(bytes);
+                } else {
+                    
+                    // FIXME: better
+                    if (this.bytesWritten < this.size) {
+                        this.emit("failed", "Failed to complete transfer");
+                    } else {
+                        this.emit("succeeded");
+                        log("Completed transfer of " + this.size + " bytes");
+                    }
+                }
+            }
+        );
+    },
+    
+    _write: function (bytes) {
+        Common.debug("LanChannel: _write()");
+        
+        if (this._cancellable.is_cancelled()) { return; }
+        
+        this._out.write_bytes_async(
+            bytes,
+            GLib.PRIORITY_DEFAULT,
+            this._cancellable,
+            (source, res) => {
+                this.bytesWritten += source.write_bytes_finish(res);
+                this.emit("progress", (this.bytesWritten / this.size) * 100);
+                this._read();
+            }
+        );
+    },
+    
+    start: function () {
+        this.emit("started");
+        this._read();
+    },
+    
+    cancel: function () {
+        this._cancellable.cancel();
+        this.emit("cancelled");
+    }
+});
+
+
 var LanDownloadChannel = new Lang.Class({
     Name: "GSConnectLanDownloadChannel",
     Extends: LanChannel,
     
-    _init: function (device, addr, fileStream, size) {
-        this.parent(device, addr);
+    _init: function (device, port, fileStream) {
+        this.parent(device, port);
         
         this._out = fileStream;
-        this.bytesWritten = 0;
-        this.size = size;
     },
     
     auth: function (client, res) {
@@ -451,7 +493,6 @@ var LanDownloadChannel = new Lang.Class({
         }
         
         this.emit("connected");
-        this.transfer();
     }
 });
 
@@ -459,24 +500,39 @@ var LanDownloadChannel = new Lang.Class({
 var LanUploadChannel = new Lang.Class({
     Name: "GSConnectLanUploadChannel",
     Extends: LanChannel,
-    
-    MIN_PORT: 1739,
-    MAX_PORT: 1764,
-    
-    _init: function (device, addr, srcStream, size) {
-        this.parent(device, addr);
-        
-        this._in = srcStream;
-        this.bytesWritten = 0;
-        this.size = size;
+    Signals: {
+        "listening": {
+            flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED
+        }
     },
     
-    // FIXME: port range
+    _init: function (device, port, srcStream) {
+        this.parent(device, port);
+        
+        this._in = srcStream;
+        this._port = port;
+    },
+    
     open: function () {
         this._listener = new Gio.SocketListener();
-        let success = this._listener.add_inet_port(this.addr.port, null);
+        
+        while (true) {
+            try {
+                this._listener.add_inet_port(this._port, null);
+            } catch (e) {
+                if (this._port < 1764) {
+                    this._port += 1;
+                } else {
+                    throw Error("Failed to open port");
+                }
+            }
+            
+            break;
+        }
         
         this._listener.accept_async(null, Lang.bind(this, this.auth));
+        
+        this.emit("listening");
     },
     
     auth: function (listener, res) {
@@ -505,7 +561,6 @@ var LanUploadChannel = new Lang.Class({
         }
         
         this.emit("connected");
-        this.transfer();
     }
 });
 
