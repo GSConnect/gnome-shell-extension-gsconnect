@@ -73,6 +73,33 @@ var Plugin = new Lang.Class({
         this.parent(device, "telephony");
         
         Gtk.IconTheme.get_default().add_resource_path("/icons");
+        
+        this._smsNotifications = new Map();
+    },
+    
+    _hasWindow: function (query) {
+        Common.debug("Telephony: _hasWindow(" + query + ")");
+        
+        // Get the current open windows
+        let windows = this.device.daemon.get_windows();
+        let window = false;
+        
+        // Look for an open window that will already be catching messages
+        for (let index_ in windows) {
+            for (let number of windows[index_].getRecipients().values()) {
+                let incomingNumber = query.replace(/\D/g, "");
+                let windowNumber = number.replace(/\D/g, "");
+                
+                if (incomingNumber === windowNumber) {
+                    window = windows[index_];
+                    break;
+                }
+            }
+            
+            if (window !== false) { break; }
+        }
+        
+        return window;
     },
     
     // TODO: try and block incoming sms "notifications"
@@ -134,14 +161,14 @@ var Plugin = new Lang.Class({
         );
         
         if (this.settings.notify_missedCall) {
-            let note = new Notify.Notification({
+            let notif = new Notify.Notification({
                 app_name: "GSConnect",
                 summary: _("%s - Missed Call").format(this.device.name),
                 body: _("Missed call from %s").format(sender),
                 icon_name: "call-missed-symbolic"
             });
             
-            note.show();
+            notif.show();
         }
     },
     
@@ -158,34 +185,33 @@ var Plugin = new Lang.Class({
         );
         
         if (this.settings.notify_ringing) {
-            let note = new Notify.Notification({
+            let notif = new Notify.Notification({
                 app_name: "GSConnect",
                 summary: _("%s Ringing").format(this.device.name),
                 body: _("Incoming call from %s").format(sender),
                 icon_name: "call-start-symbolic"
             });
             
-            note.add_action(
+            notif.add_action(
                 "notify_sms",
                 _("Mute"),
                 Lang.bind(this, this.mute)
             );
             
-            note.show();
+            notif.show();
         }
     },
     
     handleSMS: function (sender, packet) {
         Common.debug("Telephony: handleSMS()");
         
-        // TODO: not really complete
         this._dbus.emit_signal("sms",
             new GLib.Variant(
                 "(ssss)",
                 [packet.body.phoneNumber,
                 packet.body.contactName,
                 packet.body.messageBody,
-                packet.body.phoneThumbnail] // FIXME: bytearray.pixmap
+                packet.body.phoneThumbnail] // FIXME: bytearray.pixmap ???
             )
         );
         
@@ -199,23 +225,25 @@ var Plugin = new Lang.Class({
         
         // FIXME: urgency
         //        block matching notification somehow?
+        //        category...?
+        //        track notifs, append new messages to unclosed..
         if (this.settings.autoreply_sms) {
             this.replySms(null, "autoreply_sms", packet.body);
         } else if (this.settings.notify_sms) {
-            let note = new Notify.Notification({
+            let notif = new Notify.Notification({
                 app_name: "GSConnect",
                 summary: sender,
                 body: packet.body.messageBody,
                 icon_name: "phone-symbolic"
             });
             
-            note.add_action(
+            notif.add_action(
                 "notify_sms", // action char
                 _("Reply"), // label
                 Lang.bind(this, this.replySms, packet.body)
             );
             
-            note.show();
+            notif.show();
         }
     },
     
@@ -232,14 +260,14 @@ var Plugin = new Lang.Class({
         );
         
         if (this.settings.notify_talking) {
-            note = new Notify.Notification({
+            notif = new Notify.Notification({
                 app_name: "GSConnect",
                 summary: _("%s - Talking").format(this.device.name),
                 body: _("Call in progress with %s").format(sender),
                 icon_name: "call-start-symbolic"
             });
             
-            note.show();
+            notif.show();
         }
     },
     
@@ -260,25 +288,12 @@ var Plugin = new Lang.Class({
         win.present();
     },
     
-    // FIXME: number formatting
+    // FIXME: check this over
     replySms: function (notification, action, args) {
         Common.debug("Telephony: replySms()");
         
-        // Get the current open windows
-        let windows = this.device.daemon.get_windows();
-        let window = false;
-        
-        // Look for an open window that will already be catching messages
-        for (let index_ in windows) {
-            for (let number of windows[index_]._get_numbers()) {
-                if (number === args.phoneNumber) {
-                    window = windows[index_];
-                    break;
-                }
-            }
-            
-            if (window !== false) { break; }
-        }
+        // Check for an extant window
+        let window = this._hasWindow(args.phoneNumber);
         
         // None found, open a new one, add the contact and log the message
         if (!window) {
