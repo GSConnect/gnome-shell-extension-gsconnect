@@ -598,39 +598,6 @@ var ApplicationWindow = new Lang.Class({
         return recipients;
     },
     
-    _get_numbers: function () {
-        let contactItems = this.contactEntry.text.split(";").filter((s) => {
-            return /\S/.test(s);
-        });
-        let numbers = [];
-        let model = this.contactEntry.get_completion().get_model();
-        
-        for (let item of contactItems) {
-            item = item.trim();
-            let number = false;
-            
-            // Search the completion for an exact contact match
-            model.foreach((model, path, tree_iter) => {
-                if (item === model.get_value(tree_iter, 0)) {
-                    number = model.get_value(tree_iter, 2);
-                    return true;
-                }
-                
-                number = false;
-            });
-            
-            // Found a matching Contact
-            if (number) {
-                numbers.push(number);
-            // Anything else can be handled by the device (libphonenumber)
-            } else {
-                numbers.push(item);
-            }
-        }
-        
-        return numbers;
-    },
-    
     _log_message: function (name, message) {
         let item = "<b>" + name + ":</b> " + message + "\n";
         
@@ -643,7 +610,7 @@ var ApplicationWindow = new Lang.Class({
     
     /** Return a list of phone numbers that the SMS will be sent to */
     send: function (entry, signal_id, event) {
-        let numbers = this._get_numbers();
+        let numbers = Array.from(this._get_recipients().values());
         
         // Check a number/contact has been provided
         if (!numbers.length) {
