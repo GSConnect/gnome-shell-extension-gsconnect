@@ -891,12 +891,6 @@ var SystemIndicator = new Lang.Class({
         }
     },
     
-    _discoverDevices: function () {
-        if (this.manager) {
-            this.manager.scan();
-        }
-    },
-    
     _browseDevice: function (indicator) {
         let menu;
         
@@ -1064,11 +1058,6 @@ function enable() {
     Common.debug("enabling extension");
     
     systemIndicator = new SystemIndicator();
-    
-//    Settings.connect("changed::service-provider", () => {
-//        systemIndicator.destroy();
-//        systemIndicator = new SystemIndicator();
-//    });
 }
 
 function disable() {
