@@ -94,7 +94,12 @@
     <method name="shareUri">
       <arg name="uri" type="s" direction="in"/>
     </method>
-    <signal name="share"/>
+    <signal name="received">
+      <arg name="uri" type="s"/>
+    </signal>
+    <signal name="sent">
+      <arg name="uri" type="s"/>
+    </signal>
   </interface>
   
   <!-- Telephony -->

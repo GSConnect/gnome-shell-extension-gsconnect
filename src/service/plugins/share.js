@@ -47,13 +47,15 @@ var Plugin = new Lang.Class({
     Name: "GSConnectSharePlugin",
     Extends: PluginsBase.Plugin,
     Signals: {
-        "share": {
-            flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED
+        "sent": {
+            flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED,
+            param_types: [ GObject.TYPE_STRING ]
+        },
+        "received": {
+            flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED,
+            param_types: [ GObject.TYPE_STRING ]
         }
     },
-    
-    MIN_PORT: 1739,
-    MAX_PORT: 1764,
     
     _init: function (device) {
         this.parent(device, "share");
@@ -69,19 +71,147 @@ var Plugin = new Lang.Class({
         if (packet.body.hasOwnProperty("filename")) {
             let filepath = this.getFilepath(packet.body.filename);
             let file = Gio.File.new_for_path(filepath);
-            let addr = new Gio.InetSocketAddress({
-                address: Gio.InetAddress.new_from_string(
-                    this.device.identity.body.tcpHost
-                ),
-                port: packet.payloadTransferInfo.port
-            });
             
             let channel = new Protocol.LanDownloadChannel(
                 this.device,
-                addr,
-                file.replace(null, false, Gio.FileCreateFlags.NONE, null),
-                packet.payloadSize
+                packet.payloadTransferInfo.port,
+                file.replace(null, false, Gio.FileCreateFlags.NONE, null)
             );
+            
+            channel.connect("connected", (channel) => {
+                let transfer = new Protocol.Transfer(
+                    channel._in,
+                    channel._out,
+                    packet.payloadSize
+                );
+                
+                transfer.connect("started", (transfer) => {
+                    transfer.notif = new Notify.Notification({
+                        app_name: _("GSConnect"),
+                        summary: _("Starting transfer"),
+                        body: _("Receiving %s from %s").format(
+                            packet.body.filename,
+                            this.device.name
+                        ),
+                        icon_name: "send-to-symbolic"
+                    });
+                    
+                    transfer.notif.set_category("transfer");
+        
+                    transfer.notif.add_action(
+                        "share_cancel",
+                        _("Cancel"),
+                        Lang.bind(transfer, transfer.cancel)
+                    );
+                    
+                    transfer.notif.connect("closed", (notification) => {
+                        delete transfer.notif;
+                    });
+                    
+                    transfer.notif.show();
+                });
+                
+                // TODO: progress updates happen so fast you can't click "cancel"
+                transfer.connect("progress", (transfer, percent) => {
+                    if (transfer.hasOwnProperty("notif")) {
+                        transfer.notif.update(
+                            _("Receiving %s from %s").format(
+                                packet.body.filename,
+                                this.device.name
+                            ),
+                            _("Transfer is %d%% complete").format(percent),
+                            "send-to-symbolic"
+                        );
+                        //transfer.notif.show();
+                    }
+                });
+                
+                transfer.connect("succeeded", (transfer) => {
+                    let summary = _("Transfer successful");
+                    let body = _("Received %s from %s").format(
+                        packet.body.filename,
+                        this.device.name
+                    );
+                    
+                    if (transfer.hasOwnProperty("notif")) {
+                        transfer.notif.update(
+                            summary,
+                            body,
+                            "send-to-symbolic"
+                        );
+                    } else {
+                        transfer.notif = new Notify.Notification({
+                            app_name: _("GSConnect"),
+                            summary: summary,
+                            body: body,
+                            icon_name: "send-to-symbolic"
+                        });
+                    }
+                    
+                    // TODO: view/open file
+                    
+                    transfer.notif.show();
+                    channel.close();
+                });
+                
+                transfer.connect("failed", (transfer, error) => {
+                    let summary = _("Transfer failed");
+                    let body = _("Failed to receive %s from %s: %s").format(
+                        file.get_basename(),
+                        this.device.name, error
+                    );
+                    
+                    if (transfer.hasOwnProperty("notif")) {
+                        transfer.notif.update(
+                            summary,
+                            body,
+                            "send-to-symbolic"
+                        );
+                    } else {
+                        transfer.notif = new Notify.Notification({
+                            app_name: _("GSConnect"),
+                            summary: summary,
+                            body: body,
+                            icon_name: "send-to-symbolic"
+                        });
+                    }
+                    
+                    // TODO: remove file
+                    
+                    transfer.notif.show();
+                    channel.close();
+                });
+                
+                transfer.connect("cancelled", (transfer) => {
+                    let summary = _("Transfer cancelled");
+                    let body = _("Cancelled receiving %s from %s").format(
+                        packet.body.filename,
+                        this.device.name
+                    );
+                    
+                    if (transfer.hasOwnProperty("notif")) {
+                        transfer.notif.update(
+                            summary,
+                            body,
+                            "send-to-symbolic"
+                        );
+                    } else {
+                        transfer.notif = new Notify.Notification({
+                            app_name: _("GSConnect"),
+                            summary: summary,
+                            body: body,
+                            icon_name: "send-to-symbolic"
+                        });
+                    }
+                    
+                    // TODO: remove file
+                    
+                    transfer.notif.show();
+                    channel.close();
+                });
+                
+                transfer.start();
+            });
             
             channel.open();
         } else if (packet.body.hasOwnProperty("text")) {
@@ -133,8 +263,6 @@ var Plugin = new Lang.Class({
             for (let uri of uris) {
                 this.shareUri(uri.toString());
             }
-            
-            this._notifyShare(uris.length);
         } else if (response === 1) {
             this.shareUri(dialog.webEntry.text);
         }
@@ -142,44 +270,168 @@ var Plugin = new Lang.Class({
         dialog.destroy();
     },
     
-    _notifyShare: function (num) {
-        Common.debug("Share: _notifyShare()");
-        
-        let note = new Notify.Notification({
-            app_name: "GSConnect",
-            summary: this.device.name,
-            body: Gettext.ngettext("Sending %d file", "Sending %d files", num).format(num),
-            icon_name: "send-to-symbolic"
-        });
-        
-        note.show()
+    _shareOpen: function (filepath) {
+        Gio.AppInfo.launch_default_for_uri(filepath, null);
+    },
+    
+    _shareView: function (dirpath) {
+        Gio.AppInfo.launch_default_for_uri(dirpath, null);
     },
     
     shareUri: function (uri) {
         Common.debug("Share: shareUri()");
         
-        let packet = new Protocol.Packet();
-        packet.type = "kdeconnect.share.request";
-        
         if (uri.startsWith("file://")) {
             let file = Gio.File.new_for_uri(uri);
             let info = file.query_info("standard::size", 0, null);
             
-            packet.body = { filename: file.get_basename() };
-            packet.payloadSize = info.get_size();
-            packet.payloadTransferInfo = { port: 1741 }; // FIXME
-            
-            let addr = new Gio.InetSocketAddress({
-                address: Gio.InetAddress.new_any(Gio.SocketFamily.IPV4),
-                port: packet.payloadTransferInfo.port
-            });
-            
             let channel = new Protocol.LanUploadChannel(
                 this.device,
-                addr,
-                file.read(null),
-                packet.payloadSize
+                1739,
+                file.read(null)
             );
+            
+            channel.connect("listening", (channel) => {
+                let packet = new Protocol.Packet({
+                    id: 0,
+                    type: "kdeconnect.share.request",
+                    body: { filename: file.get_basename() }
+                });
+                
+                packet.payloadSize = info.get_size();
+                packet.payloadTransferInfo = { port: channel._port };
+                
+                this.device._channel.send(packet);
+            });
+            
+            channel.connect("connected", (channel) => {
+                let transfer = new Protocol.Transfer(
+                    channel._in,
+                    channel._out,
+                    info.get_size()
+                );
+                
+                transfer.connect("started", (transfer) => {
+                    transfer.notif = new Notify.Notification({
+                        app_name: _("GSConnect"),
+                        summary: _("Starting transfer"),
+                        body: _("Sending %s to %s").format(
+                            file.get_basename(),
+                            this.device.name
+                        ),
+                        icon_name: "send-to-symbolic"
+                    });
+                    
+                    transfer.notif.set_category("transfer");
+        
+                    transfer.notif.add_action(
+                        "share_cancel",
+                        _("Cancel"),
+                        Lang.bind(transfer, transfer.cancel)
+                    );
+                    
+                    transfer.notif.connect("closed", (notification) => {
+                        delete transfer.notif;
+                    });
+                    
+                    transfer.notif.show();
+                });
+                
+                // TODO: progress updates happen so fast you can't click "cancel"
+                transfer.connect("progress", (transfer, percent) => {
+                    if (transfer.hasOwnProperty("notif")) {
+                        transfer.notif.update(
+                            _("Sending %s to %s").format(
+                                file.get_basename(),
+                                this.device.name
+                            ),
+                            _("Transfer is %d%% complete").format(percent),
+                            "send-to-symbolic"
+                        );
+                        //transfer.notif.show();
+                    }
+                });
+                
+                transfer.connect("succeeded", (transfer) => {
+                    let summary = _("Transfer successful");
+                    let body = _("Sent %s to %s").format(
+                        file.get_basename(),
+                        this.device.name
+                    );
+                    
+                    if (transfer.hasOwnProperty("notif")) {
+                        transfer.notif.update(
+                            summary,
+                            body,
+                            "send-to-symbolic"
+                        );
+                    } else {
+                        transfer.notif = new Notify.Notification({
+                            app_name: _("GSConnect"),
+                            summary: summary,
+                            body: body,
+                            icon_name: "send-to-symbolic"
+                        });
+                    }
+                    
+                    transfer.notif.show();
+                    channel.close();
+                });
+                
+                transfer.connect("failed", (transfer, error) => {
+                    let summary = _("Transfer failed");
+                    let body = _("Failed to send %s to %s: %s").format(
+                        file.get_basename(),
+                        this.device.name, error
+                    );
+                    
+                    if (transfer.hasOwnProperty("notif")) {
+                        transfer.notif.update(
+                            summary,
+                            body,
+                            "send-to-symbolic"
+                        );
+                    } else {
+                        transfer.notif = new Notify.Notification({
+                            app_name: _("GSConnect"),
+                            summary: summary,
+                            body: body,
+                            icon_name: "send-to-symbolic"
+                        });
+                    }
+                    
+                    transfer.notif.show();
+                    channel.close();
+                });
+                
+                transfer.connect("cancelled", (transfer) => {
+                    let summary = _("Transfer cancelled");
+                    let body = _("Cancelled sending %s to %s").format(
+                        file.get_basename(),
+                        this.device.name
+                    );
+                    
+                    if (transfer.hasOwnProperty("notif")) {
+                        transfer.notif.update(
+                            summary,
+                            body,
+                            "send-to-symbolic"
+                        );
+                    } else {
+                        transfer.notif = new Notify.Notification({
+                            app_name: _("GSConnect"),
+                            summary: summary,
+                            body: body,
+                            icon_name: "send-to-symbolic"
+                        });
+                    }
+                    
+                    transfer.notif.show();
+                    channel.close();
+                });
+                
+                transfer.start();
+            });
             
             channel.open();
         } else {
@@ -187,10 +439,14 @@ var Plugin = new Lang.Class({
                 uri = "https://" + uri;
             }
             
-            packet.body = { url: uri };
-        }
+            let packet = new Protocol.Packet({
+                id: 0,
+                type: "kdeconnect.share.request",
+                body: { url: uri }
+            });
         
-        this.device._channel.send(packet);
+            this.device._channel.send(packet);
+        }
     }
 });
 
