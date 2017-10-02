@@ -1,26 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist gettext-domain="org.gnome.shell.extensions.gsconnect">
-  <!-- TODO: better names this time -->
-  <flags id="org.gnome.shell.extensions.gsconnect.DeviceVisibility">
-    <value nick="OFFLINE" value="1"/>
-    <value nick="UNPAIRED" value="2"/>
-  </flags>
   <schema path="/org/gnome/shell/extensions/gsconnect/" id="org.gnome.shell.extensions.gsconnect">
     <key name="debug" type="b">
       <default>false</default>
       <summary>Debug mode</summary>
       <description>Enable debug features and logging</description>
     </key>
-    <key name="device-indicators" type="b">
-      <default>true</default>
-      <summary>Device Indicators</summary>
-      <description>Controls available via Indicators or the User Menu</description>
+    <key name="show-indicators" type="b">
+      <default>false</default>
+      <summary>Show Indicators</summary>
+      <description>Display devices as Indicators instead of in the User Menu</description>
     </key>
-    <!-- TODO: better names this time -->
-    <key name="device-visibility" flags="org.gnome.shell.extensions.gsconnect.DeviceVisibility">
-      <default>["OFFLINE", "UNPAIRED"]</default>
-      <summary>Device Visibility</summary>
-      <description>Display devices in offline and unpaired states</description>
+    <key name="show-offline" type="b">
+      <default>true</default>
+      <summary>Show Offline</summary>
+      <description>Display devices even if offline</description>
+    </key>
+    <key name="show-unpaired" type="b">
+      <default>true</default>
+      <summary>Show Unpaired</summary>
+      <description>Display devices even if unpaired</description>
     </key>
     <key name="device-keybindings" type="s">
       <default>"{}"</default>

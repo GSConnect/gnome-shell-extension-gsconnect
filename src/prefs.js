@@ -544,8 +544,9 @@ var PrefsWidget = new Lang.Class({
         
         // Appearance
         let appearanceSection = generalPage.add_section(_("Appearance"));
-        generalPage.addSetting(appearanceSection, "device-indicators");
-        generalPage.addSetting(appearanceSection, "device-visibility");
+        generalPage.addSetting(appearanceSection, "show-indicators");
+        generalPage.addSetting(appearanceSection, "show-offline");
+        generalPage.addSetting(appearanceSection, "show-unpaired");
         
         // Files
         let filesSection = generalPage.add_section(_("Files"));

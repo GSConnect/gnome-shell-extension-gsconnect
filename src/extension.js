@@ -27,17 +27,6 @@ const Common = Me.imports.common;
 const { Resources, Settings } = Me.imports.common;
 const Client = Me.imports.client;
 
-// Externally Available Constants
-var DeviceVisibility = {
-    OFFLINE: 1,
-    UNPAIRED: 2
-};
-
-var DeviceVisibilityNames = {
-    OFFLINE: _("OFFLINE"),
-    UNPAIRED: _("UNPAIRED")
-};
-
 
 /**
  * Keyboard shortcuts
@@ -592,16 +581,12 @@ var DeviceIndicator = new Lang.Class({
         this.menu.addMenuItem(this.deviceMenu);
         
         // Signals
-        Settings.connect("changed::device-visibility", () => {
-            this._sync();
-        });
+        Settings.connect("changed::show-indicators", Lang.bind(this, this._sync));
+        Settings.connect("changed::show-offline", Lang.bind(this, this._sync));
+        Settings.connect("changed::show-unpaired", Lang.bind(this, this._sync));
         
-        Settings.connect("changed::device-indicators", () => {
-            this._sync();
-        });
-        
-        device.connect("notify::connected", () => { this._sync(); });
-        device.connect("notify::paired", () => { this._sync(); });
+        device.connect("notify::connected", Lang.bind(this, this._sync));
+        device.connect("notify::paired", Lang.bind(this, this._sync));
         
         // Sync
         this._sync(device);
@@ -611,15 +596,14 @@ var DeviceIndicator = new Lang.Class({
     _sync: function (sender, cb_data) {
         Common.debug("extension.DeviceIndicator._sync()");
         
-        let flags = Settings.get_flags("device-visibility");
         let { connected, paired, type } = this.device;
         
         // Device Visibility
-        if (!Settings.get_boolean("device-indicators")) {
+        if (!Settings.get_boolean("show-indicators")) {
             this.actor.visible = false;
-        } else if (!(flags & DeviceVisibility.UNPAIRED) && !paired) {
+        } else if (!paired && !Setting.get_boolean("show-unpaired")) {
             this.actor.visible = false;
-        } else if (!(flags & DeviceVisibility.OFFLINE) && !connected) {
+        } else if (!connected && !Setting.get_boolean("show-offline")) {
             this.actor.visible = false;
         } else {
             this.actor.visible = true;
@@ -684,7 +668,7 @@ var SystemIndicator = new Lang.Class({
         // Extension Menu -> [ Devices Section ]
         this.devicesSection = new PopupMenu.PopupMenuSection();
         Settings.bind(
-            "device-indicators",
+            "show-indicators",
             this.devicesSection.actor,
             "visible",
             Gio.SettingsBindFlags.INVERT_BOOLEAN
@@ -917,7 +901,7 @@ var SystemIndicator = new Lang.Class({
     _browseDevice: function (indicator) {
         let menu;
         
-        if (Settings.get_boolean("device-indicators")) {
+        if (Settings.get_boolean("show-indicators")) {
             indicator.menu.toggle();
             menu = indicator.deviceMenu;
         } else {
@@ -934,7 +918,7 @@ var SystemIndicator = new Lang.Class({
     },
     
     _openDeviceMenu: function (indicator) {
-        if (Settings.get_boolean("device-indicators")) {
+        if (Settings.get_boolean("show-indicators")) {
             indicator.menu.toggle();
         } else {
             this._openMenu();
@@ -991,12 +975,11 @@ var SystemIndicator = new Lang.Class({
     },
     
     _deviceMenuVisibility: function (menu){
-        let flags = Settings.get_flags("device-visibility");
         let { connected, paired } = menu.device;
         
-        if (!(flags & DeviceVisibility.UNPAIRED) && !paired) {
+        if (!paired && !Settings.get_boolean("show-unpaired")) {
             menu.actor.visible = false;
-        } else if (!(flags & DeviceVisibility.OFFLINE) && !connected) {
+        } else if (!connected && !Settings.get_boolean("show-offline")) {
             menu.actor.visible = false;
         } else {
             menu.actor.visible = true;
