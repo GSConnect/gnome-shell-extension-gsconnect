@@ -124,6 +124,7 @@ var Plugin = new Lang.Class({
                 
                 // TODO: this is pretty lazy, we just resend everything if
                 //       anything changes
+                //       position is not updating (might not matter though)
                 player.connect("g-properties-changed", () => {
                     let packet = new Protocol.Packet({
                         id: Date.now(),
