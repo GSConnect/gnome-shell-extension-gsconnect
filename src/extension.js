@@ -601,9 +601,9 @@ var DeviceIndicator = new Lang.Class({
         // Device Visibility
         if (!Settings.get_boolean("show-indicators")) {
             this.actor.visible = false;
-        } else if (!paired && !Setting.get_boolean("show-unpaired")) {
+        } else if (!paired && !Settings.get_boolean("show-unpaired")) {
             this.actor.visible = false;
-        } else if (!connected && !Setting.get_boolean("show-offline")) {
+        } else if (!connected && !Settings.get_boolean("show-offline")) {
             this.actor.visible = false;
         } else {
             this.actor.visible = true;
