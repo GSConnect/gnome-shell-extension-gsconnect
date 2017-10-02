@@ -798,7 +798,7 @@ var SystemIndicator = new Lang.Class({
             this._keybindings.push(
                 this.keybindingManager.add(
                     accels.discover,
-                    Lang.bind(this, this._discoverDevices)
+                    Lang.bind(this.manager, this.manager.discover, "key", 15)
                 )
             );
         }
