@@ -38,6 +38,10 @@ var METADATA = {
 /**
  * Telephony Plugin
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/telephony
+ *
+ * TODO: try and block duplicate "notifications" that match incoming SMS
+ *       notifications
+ *       pause music
  */
 var Plugin = new Lang.Class({
     Name: "GSConnectTelephonyPlugin",
@@ -102,9 +106,6 @@ var Plugin = new Lang.Class({
         return window;
     },
     
-    // TODO: try and block incoming sms "notifications"
-    //       music pause, etc
-    //       
     handlePacket: function (packet) {
         Common.debug("Telephony: handlePacket()");
         
@@ -288,8 +289,14 @@ var Plugin = new Lang.Class({
         win.present();
     },
     
-    // FIXME: check this over
-    replySms: function (notification, action, args) {
+    /**
+     * Either open a new SMS window for the sender or reuse an existing one
+     *
+     * @param {Notify.Notification} notif - The notification that called this
+     * @param {string} action - The notification action that called this
+     * @param {object} args - The body of the received packet that called this
+     */
+    replySms: function (notif, action, args) {
         Common.debug("Telephony: replySms()");
         
         // Check for an extant window
@@ -308,10 +315,16 @@ var Plugin = new Lang.Class({
             }
         }
         
-        // Present the window and bail
+        // Present the window
         window.present();
     },
     
+    /**
+     * Send an SMS message
+     *
+     * @param {string} phoneNumber - The phone number to send the message to
+     * @param {string} messageBody - The message to send
+     */
     sendSms: function (phoneNumber, messageBody) {
         Common.debug("Telephony: sendSms(" + phoneNumber + ", " + messageBody + ")");
         

@@ -534,7 +534,7 @@ var ApplicationWindow = new Lang.Class({
         this.has_focus = true;
     },
     
-    // FIXME:
+    // TODO: maybe this should just be done in telephony.js
     _catch_message: function (plugin, phoneNumber, contactName, messageBody, phoneThumbnail) {
         Common.debug("SMS phoneNumber: " + phoneNumber);
         Common.debug("SMS contactName: " + contactName);
