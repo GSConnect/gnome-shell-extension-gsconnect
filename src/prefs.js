@@ -81,7 +81,7 @@ var PrefsWidget = new Lang.Class({
             this.manager = false;
         }
         
-        if (!Settings.get_boolean("debug")) {
+        if (!Common.Settings.get_boolean("debug")) {
             this.manager = new Client.DeviceManager();
         }
     },
