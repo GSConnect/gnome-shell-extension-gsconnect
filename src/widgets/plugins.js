@@ -5,155 +5,13 @@ const Gettext = imports.gettext.domain("org.gnome.shell.extensions.gsconnect");
 const _ = Gettext.gettext; // FIXME
 
 const GdkPixbuf = imports.gi.GdkPixbuf;
-const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
-
-/** A composite widget resembling A Gnome Control Center panel. */
-var PluginPage = new Lang.Class({
-    Name: "GSConnectPluginPage",
-    Extends: Gtk.ScrolledWindow,
-    
-    _init: function () {
-        this.parent({
-            height_request: -1,
-            valign: Gtk.Align.FILL,
-            vexpand: true,
-            can_focus: true,
-            hscrollbar_policy: Gtk.PolicyType.NEVER
-        });
-        
-        this.box = new Gtk.Box({
-            visible: true,
-            can_focus: false,
-            margin_left: 40,
-            margin_right: 40,
-            margin_top: 18,
-            margin_bottom: 18,
-            orientation: Gtk.Orientation.VERTICAL,
-            spacing: 18
-        });
-        this.add(this.box);
-    },
-    
-    /**
-     * Add and return a new section widget. If @title is given, a bold title
-     * will be placed above the section.
-     *
-     * @param {String} title - Optional bold label placed above the section
-     * @return {Gtk.Frame} section - The new Section object.
-     */
-    addSection: function (title) {
-        if (title) {
-            let label = new Gtk.Label({
-                visible: true,
-                can_focus: false,
-                margin_start: 3,
-                xalign: 0,
-                use_markup: true,
-                label: "<b>" + title + "</b>"
-            });
-            this.box.pack_start(label, false, true, 0);
-        }
-        
-        let section = new Gtk.Frame({
-            visible: true,
-            can_focus: false,
-            margin_bottom: 12,
-            hexpand: true,
-            label_xalign: 0,
-            shadow_type: Gtk.ShadowType.IN
-        });
-        this.box.add(section);
-        
-        section.list = new Gtk.ListBox({
-            visible: true,
-            can_focus: false,
-            hexpand: true,
-            selection_mode: Gtk.SelectionMode.NONE,
-            activate_on_single_click: false
-        });
-        section.add(section.list);
-        
-        return section;
-    },
-    
-    /**
-     * Add and return new row with a Gtk.Grid child
-     *
-     * @param {Gtk.Frame} section - The section widget to attach to
-     * @return {Gtk.ListBoxRow} row - The new row
-     */
-    addRow: function (section) {
-        // Row
-        let row = new Gtk.ListBoxRow({
-            visible: true,
-            can_focus: true,
-            activatable: false,
-            selectable: false
-        });
-        section.list.add(row);
-        
-        // Row Layout
-        row.grid = new Gtk.Grid({
-            visible: true,
-            can_focus: false,
-            column_spacing: 16,
-            row_spacing: 0,
-            margin_left: 12,
-            margin_top: 6,
-            margin_bottom: 6,
-            margin_right: 12
-        });
-        row.add(row.grid);
-        
-        return row;
-    },
-    
-    /**
-     * Add a new row to @section and return the row. @summary will be placed on
-     * top of @description (dimmed) on the left, @widget to the right of them. 
-     *
-     * @param {Gtk.Frame} section - The section widget to attach to
-     * @param {String} summary - A short summary for the item
-     * @param {String} description - A short description for the item
-     * @return {Gtk.ListBoxRow} row - The new row
-     */
-    addOption: function (section, summary, description, widget) {
-        let row = this.addRow(section);
-        
-        // Setting Summary
-        let summaryLabel = new Gtk.Label({
-            visible: true,
-            can_focus: false,
-            xalign: 0,
-            hexpand: true,
-            label: summary
-        });
-        row.grid.attach(summaryLabel, 0, 0, 1, 1);
-        
-        // Setting Description
-        if (description !== undefined) {
-            let descriptionLabel = new Gtk.Label({
-                visible: true,
-                can_focus: false,
-                xalign: 0,
-                hexpand: true,
-                label: description,
-                wrap: true
-            });
-            descriptionLabel.get_style_context().add_class("dim-label");
-            row.grid.attach(descriptionLabel, 0, 1, 1, 1);
-        }
-        
-        let widgetHeight = (description !== null) ? 2 : 1;
-        row.grid.attach(widget, 1, 0, 1, widgetHeight);
-        
-        return row;
-    }
-});
+const Me = imports.misc.extensionUtils.getCurrentExtension();
+const Common = Me.imports.common;
+const PreferencesWidget = Me.imports.widgets.preferences;
 
 
 /** Gtk widget for plugin enabling/disabling */
@@ -274,7 +132,13 @@ var PluginDialog = new Lang.Class({
         this._info = pluginInfo;
         this._settings = this._page.config.plugins[this._name].settings;
         
-        this.content = new PluginPage();
+        this.content = new PreferencesWidget.Page({
+            height_request: -1,
+            valign: Gtk.Align.FILL,
+            vexpand: true,
+            can_focus: true,
+            hscrollbar_policy: Gtk.PolicyType.NEVER
+        });
         this.content.box.margin_left = 40;
         this.content.box.margin_right = 40;
         this.get_content_area().add(this.content);
@@ -302,7 +166,7 @@ var NotificationsPluginDialog = new Lang.Class({
         receiveSwitch.connect("notify::active", (widget) => {
             this._settings.receive.enabled = receiveSwitch.active;
         });
-        this.content.addOption(
+        this.content.addItem(
             receivingSection,
             _("Receive notifications"),
             _("Enable to receive notifications from other devices"),
@@ -322,7 +186,7 @@ var NotificationsPluginDialog = new Lang.Class({
         sendSwitch.connect("notify::active", (widget) => {
             this._settings.send.enabled = sendSwitch.active;
         });
-        this.content.addOption(
+        this.content.addItem(
             sendingSection,
             _("Send notifications"),
             _("Enable to send notifications to other devices"),
@@ -595,7 +459,7 @@ var SFTPPluginDialog = new Lang.Class({
         automountSwitch.connect("notify::active", (widget) => {
             this._settings.automount = automountSwitch.automount;
         });
-        this.content.addOption(
+        this.content.addItem(
             generalSection,
             _("Auto-mount"),
             _("Attempt to mount the device as soon as it connects"),
@@ -625,7 +489,7 @@ var SharePluginDialog = new Lang.Class({
         fbutton.connect("current-folder-changed", (button) => {
             this._settings.download_directory = fbutton.get_current_folder();
         });
-        this.content.addOption(
+        this.content.addItem(
             receivingSection,
             _("Download location"),
             _("Choose a location to save received files"),
@@ -642,7 +506,7 @@ var SharePluginDialog = new Lang.Class({
         subdirsSwitch.connect("notify::active", (widget) => {
             this._settings.download_subdirs = subdirsSwitch.active;
         });
-        this.content.addOption(
+        this.content.addItem(
             receivingSection,
             _("Subdirectories"),
             _("Save files in device subdirectories"),
@@ -674,7 +538,7 @@ var TelephonyPluginDialog = new Lang.Class({
         notifyMissedCallSwitch.connect("notify::active", (widget) => {
             this._settings.notify_missedCall = notifyMissedCallSwitch.active;
         });
-        this.content.addOption(
+        this.content.addItem(
             callsSection,
             _("Missed call notification"),
             _("Show a notification for missed calls"),
@@ -691,7 +555,7 @@ var TelephonyPluginDialog = new Lang.Class({
         notifyRingingSwitch.connect("notify::active", (widget) => {
             this._settings.notify_ringing = notifyRingingSwitch.active;
         });
-        this.content.addOption(
+        this.content.addItem(
             callsSection,
             _("Ringing notification"),
             _("Show a notification when the phone is ringing"),
@@ -708,7 +572,7 @@ var TelephonyPluginDialog = new Lang.Class({
         notifyTalkingSwitch.connect("notify::active", (widget) => {
             this._settings.notify_talking = notifyTalkingSwitch.active;
         });
-        this.content.addOption(
+        this.content.addItem(
             callsSection,
             _("Talking notification"),
             _("Show a notification when talking on the phone"),
@@ -728,7 +592,7 @@ var TelephonyPluginDialog = new Lang.Class({
         notifySMSSwitch.connect("notify::active", (widget) => {
             this._settings.notify_sms = notifySMSSwitch.active;
         });
-        this.content.addOption(
+        this.content.addItem(
             smsSection,
             _("SMS notification"),
             _("Show a notification when an SMS is received"),
@@ -745,7 +609,7 @@ var TelephonyPluginDialog = new Lang.Class({
         autoreplySMSSwitch.connect("notify::active", (widget) => {
             this._settings.autoreply_sms = autoreplySMSSwitch.active;
         });
-        this.content.addOption(
+        this.content.addItem(
             smsSection,
             _("Autoreply to SMS"),
             _("Open a new SMS window when an SMS is received"),
