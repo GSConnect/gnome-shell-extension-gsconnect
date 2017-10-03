@@ -5,18 +5,16 @@ const Mainloop = imports.mainloop;
 const Gettext = imports.gettext.domain("org.gnome.shell.extensions.gsconnect");
 const _ = Gettext.gettext;
 const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
 // Local Imports
 const Me = imports.misc.extensionUtils.getCurrentExtension();
-const KeybindingsWidget = Me.imports.widgets.keybindings;
-const PluginsWidget = Me.imports.widgets.plugins;
 const Client = Me.imports.client;
 const Common = Me.imports.common;
-const PreferencesWidget = Me.imports.widgets.preferences;
 const DeviceWidget = Me.imports.widgets.device;
+const KeybindingsWidget = Me.imports.widgets.keybindings;
+const PreferencesWidget = Me.imports.widgets.preferences;
 
 
 /** A GtkStack subclass with a pre-attached GtkStackSwitcher */
