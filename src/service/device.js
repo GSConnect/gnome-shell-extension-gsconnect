@@ -375,6 +375,7 @@ var Device = new Lang.Class({
             }
         }
                 
+        this.notify("plugins");
         this._dbus.emit_property_changed(
             "plugins",
             new GLib.Variant("as", Array.from(this._plugins.keys()))
@@ -385,7 +386,8 @@ var Device = new Lang.Class({
         for (let name of this.plugins) {
             this.disablePlugin(name, false);
         }
-                
+        
+        this.notify("plugins");
         this._dbus.emit_property_changed(
             "plugins",
             new GLib.Variant("as", Array.from(this._plugins.keys()))
@@ -421,6 +423,7 @@ var Device = new Lang.Class({
                 this.config.plugins[name].enabled = true;
                 Common.writeDeviceConfiguration(this.id, this.config);
                 
+                this.notify("plugins");
                 this._dbus.emit_property_changed(
                     "plugins",
                     new GLib.Variant("as", Array.from(this._plugins.keys()))
@@ -458,6 +461,7 @@ var Device = new Lang.Class({
                 this.config.plugins[name].enabled = false;
                 Common.writeDeviceConfiguration(this.id, this.config);
                 
+                this.notify("plugins");
                 this._dbus.emit_property_changed(
                     "plugins",
                     new GLib.Variant("as", Array.from(this._plugins.keys()))
