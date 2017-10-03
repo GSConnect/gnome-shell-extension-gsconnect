@@ -294,6 +294,7 @@ function readDeviceCache () {
     return devices;
 };
 
+
 function writeDeviceCache (daemon, deviceId=false) {
     if (deviceId) {
         log("updating cache for: " + deviceId);
@@ -322,7 +323,6 @@ function writeDeviceCache (daemon, deviceId=false) {
 };
 
 
-// FIXME: error handling
 function readDeviceConfiguration (deviceId) {
     let config = {};
     let device_path = CONFIG_PATH + "/" + deviceId;
