@@ -120,7 +120,11 @@ var PrefsWidget = new Lang.Class({
         
         // Devices Page
         this.devicesStack = new DeviceWidget.Stack();
-        let devicesPage = this.add_titled(this.devicesStack, "devices", _("Devices"));
+        let devicesPage = this.add_titled(
+            this.devicesStack,
+            "devices", 
+            _("Devices")
+        );
         
         // Service Page
         let servicePage = this.addPage("service", _("Service"));
