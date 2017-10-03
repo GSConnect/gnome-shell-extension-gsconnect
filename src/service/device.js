@@ -341,9 +341,9 @@ var Device = new Lang.Class({
             this._channel.send(packet);
         }
         
-        this._setPaired(false);
-        
         this._unloadPlugins();
+        
+        this._setPaired(false);
     },
     
     acceptPair: function () {
@@ -434,7 +434,7 @@ var Device = new Lang.Class({
         
         try {
             // Running instance
-            if (this.connected) {
+            if (this.connected && this.paired) {
                 let handler = imports.service.plugins[name];
                 let plugin = this._plugins.get(name);
                 
