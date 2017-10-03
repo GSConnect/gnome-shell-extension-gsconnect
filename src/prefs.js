@@ -344,8 +344,8 @@ var DevicePage = new Lang.Class({
     Name: "DevicePage",
     Extends: PrefsPage,
     
-    _init: function (device, params={}) {
-        this.parent(params);
+    _init: function (device) {
+        this.parent();
         this.box.margin_left = 40;
         this.box.margin_right = 40;
         
@@ -377,6 +377,7 @@ var DevicePage = new Lang.Class({
         });
         statusRow.grid.attach(deviceControls, 2, 0, 1, 2);
         
+        // Pair/Unpair Button
         let pairButton = new Gtk.Button({ label: "" });
         pairButton.connect("clicked", () => {
             if (this.device.paired) {
@@ -393,6 +394,13 @@ var DevicePage = new Lang.Class({
             }
         });
         this.device.notify("paired");
+        this.device.bind_property(
+            "connected",
+            pairButton,
+            "sensitive",
+            GObject.BindingFlags.DEFAULT
+        );
+        this.device.notify("connected");  
         deviceControls.add(pairButton);
         
         // Plugins
