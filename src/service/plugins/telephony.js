@@ -153,6 +153,11 @@ var Plugin = new Lang.Class({
     handleMissedCall: function (sender, packet) {
         Common.debug("Telephony: handleMissedCall()");
         
+        this.emit(
+            "missedCall",
+            packet.body.phoneNumber,
+            packet.body.contactName
+        );
         this._dbus.emit_signal("missedCall",
             new GLib.Variant(
                 "(ss)",
@@ -176,7 +181,11 @@ var Plugin = new Lang.Class({
     handleRinging: function (sender, packet) {
         Common.debug("Telephony: handleRinging()");
         
-        // TODO: music pause, etc
+        this.emit(
+            "ringing",  
+            packet.body.phoneNumber,    
+            packet.body.contactName
+        );
         this._dbus.emit_signal("ringing",
             new GLib.Variant(
                 "(ss)",
@@ -185,6 +194,7 @@ var Plugin = new Lang.Class({
             )
         );
         
+        // TODO: music pause, etc
         if (this.settings.notify_ringing) {
             let notif = new Notify.Notification({
                 app_name: "GSConnect",
@@ -194,7 +204,7 @@ var Plugin = new Lang.Class({
             });
             
             notif.add_action(
-                "notify_sms",
+                "notify_ringing",
                 _("Mute"),
                 Lang.bind(this, this.mute)
             );
@@ -206,6 +216,14 @@ var Plugin = new Lang.Class({
     handleSMS: function (sender, packet) {
         Common.debug("Telephony: handleSMS()");
         
+        this.emit(
+            "sms",
+            packet.body.phoneNumber,
+            packet.body.contactName,
+            packet.body.messageBody,
+            packet.body.phoneThumbnail
+        );
+        
         this._dbus.emit_signal("sms",
             new GLib.Variant(
                 "(ssss)",
@@ -214,14 +232,6 @@ var Plugin = new Lang.Class({
                 packet.body.messageBody,
                 packet.body.phoneThumbnail] // FIXME: bytearray.pixmap ???
             )
-        );
-        
-        this.emit(
-            "sms",
-            packet.body.phoneNumber,
-            packet.body.contactName,
-            packet.body.messageBody,
-            packet.body.phoneThumbnail
         );
         
         // FIXME: urgency
@@ -252,6 +262,11 @@ var Plugin = new Lang.Class({
         Common.debug("Telephony: handleTalking()");
         
         // TODO: music pause, etc
+        this.emit(
+            "talking",
+            packet.body.phoneNumber,
+            packet.body.contactName
+        );
         this._dbus.emit_signal("talking",
             new GLib.Variant(
                 "(ss)",
@@ -282,6 +297,9 @@ var Plugin = new Lang.Class({
         this.device._channel.send(packet);
     },
     
+    /**
+     * Open and present a new SMS window
+     */
     openSms: function () {
         Common.debug("Telephony: openSms()");
         
