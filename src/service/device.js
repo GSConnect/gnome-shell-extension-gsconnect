@@ -213,7 +213,7 @@ var Device = new Lang.Class({
     },
     
     _onReceived: function (channel, packet) {
-        log("Received from: " + this.id);
+        Common.debug("Received from '" + this.name + "'");
         
         this.handlePacket(packet);
     },
@@ -247,20 +247,25 @@ var Device = new Lang.Class({
         }
     },
     
-    _cancelPair: function (note) {
+    _cancelPair: function (notif) {
         try {
             this._incomingPairRequest = false;
             this._outgoingPairRequest = false;
-            note.close();
+            notif.close();
         } catch (e) {
         }
         return false;
     },
     
     _notifyPair: function (packet) {
-        this.emit("pairRequest", this.id); // FIXME: no publicKey?
+        // FIXME: no publicKey?
+        this.emit("pairRequest", this.id);
+        this._dbus.emit_signal(
+            "pairRequest",
+            new GLib.Variant("(s)", [this.id])
+        );
         
-        let note = new Notify.Notification({
+        let notif = new Notify.Notification({
             app_name: "GSConnect",
             id: packet.id / 1000,
             summary: _("Pair Request"),
@@ -268,25 +273,25 @@ var Device = new Lang.Class({
             icon_name: "channel-insecure-symbolic"
         });
         
-        note.add_action(
+        notif.add_action(
             "rejectPair",
             _("Reject"),
             Lang.bind(this, this.rejectPair)
         );
         
-        note.add_action(
+        notif.add_action(
             "acceptPair",
             _("Accept"),
             Lang.bind(this, this.acceptPair)
         );
         
-        note.show();
+        notif.show();
         
         // Start a 30s countdown
         GLib.timeout_add_seconds(
             GLib.PRIORITY_DEFAULT,
             30,
-            Lang.bind(this, this._cancelPair, note)
+            Lang.bind(this, this._cancelPair, notif)
         );
     },
     
@@ -307,7 +312,7 @@ var Device = new Lang.Class({
     },
     
     pair: function () {
-        Common.debug("Device.pair(" + this.name + ")");
+        Common.debug("Device.pair(" + this.id + ")");
         
         // We're initiating an outgoing request
         if (!this.paired) {
@@ -330,7 +335,7 @@ var Device = new Lang.Class({
     },
     
     unpair: function () {
-        Common.debug("Device.unpair(" + this.name + ")");
+        Common.debug("Device.unpair(" + this.id + ")");
         
         if (this._channel !== null) {
             let packet = new Protocol.Packet({
