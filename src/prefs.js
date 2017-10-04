@@ -9,12 +9,19 @@ const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
 // Local Imports
-const Me = imports.misc.extensionUtils.getCurrentExtension();
-const Client = Me.imports.client;
-const Common = Me.imports.common;
-const DeviceWidget = Me.imports.widgets.device;
-const KeybindingsWidget = Me.imports.widgets.keybindings;
-const PreferencesWidget = Me.imports.widgets.preferences;
+function getPath() {
+    // Diced from: https://github.com/optimisme/gjs-examples/
+    let m = new RegExp("@(.+):\\d+").exec((new Error()).stack.split("\n")[1]);
+    return Gio.File.new_for_path(m[1]).get_parent().get_path();
+}
+
+imports.searchPath.push(getPath());
+
+const Client = imports.client;
+const Common = imports.common;
+const DeviceWidget = imports.widgets.device;
+const KeybindingsWidget = imports.widgets.keybindings;
+const PreferencesWidget = imports.widgets.preferences;
 
 
 /** A GtkStack subclass with a pre-attached GtkStackSwitcher */
