@@ -99,7 +99,6 @@ var Device = new Lang.Class({
         this.daemon = daemon;
         this._channel = null;
         this._connected = false;
-        this._fingerprint = "";
         
         this._incomingPairRequest = false;
         this._outgoingPairRequest = false;
@@ -128,7 +127,19 @@ var Device = new Lang.Class({
     
     /** Device Properties */
     get connected () { return this._connected; },
-    get fingerprint () { return this._fingerprint; },
+    get fingerprint () {
+        if (this.connected) {
+            return Common.getFingerprint(
+                this._channel._peer_cert.certificate_pem
+            );
+        } else if (this.paired) {
+            return Common.getFingerprint(
+                GLib.file_get_contents(this.config_cert)[1].toString()
+            );
+        }
+        
+        return "";
+    },
     get id () { return this.identity.body.deviceId; },
     get name () { return this.identity.body.deviceName; },
     get paired () {
@@ -206,15 +217,6 @@ var Device = new Lang.Class({
         
         this._loadPlugins();
         
-        this._fingerprint = Common.get_fingerprint(
-            this._channel._peer_cert.certificate_pem
-        );
-        
-        this._dbus.emit_property_changed(
-            "fingerprint",
-            new GLib.Variant("s", this._fingerprint)
-        );
-        
         this._dbus.emit_property_changed(
             "connected",
             new GLib.Variant("b", this.connected)
@@ -230,13 +232,6 @@ var Device = new Lang.Class({
         
         // This must be done before "connected" is updated
         this._unloadPlugins();
-        
-        // Remove fingerprint
-        this._fingerprint = "";
-        this._dbus.emit_property_changed(
-            "fingerprint",
-            new GLib.Variant("s", this._fingerprint)
-        );
         
         // Notify disconnected
         this._connected = false;
