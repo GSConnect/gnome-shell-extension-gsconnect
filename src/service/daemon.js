@@ -375,7 +375,7 @@ var Daemon = new Lang.Class({
         this._netmonitor = Gio.NetworkMonitor.get_default();
         this._netmonitor.connect("network-changed", (monitor, available) => {
             if (available) {
-                this.discover("network-changed", 5);
+                this.broadcast();
             }
         });
         
@@ -386,7 +386,7 @@ var Daemon = new Lang.Class({
         }
         log(this._devices.size + " devices loaded from cache");
         
-        this.discover("daemon", 15)
+        this.discover("daemon", 5)
     },
 
     vfunc_activate: function() {
