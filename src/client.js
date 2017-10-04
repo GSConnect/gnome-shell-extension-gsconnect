@@ -341,6 +341,14 @@ var Device = new Lang.Class({
             null,
             GObject.ParamFlags.READABLE
         ),
+        "supportedPlugins": GObject.param_spec_variant(
+            "supportedPlugins",
+            "SupportedPluginsList", 
+            "A list of supported plugins",
+            new GLib.VariantType("as"),
+            null,
+            GObject.ParamFlags.READABLE
+        ),
         "type": GObject.ParamSpec.string(
             "type",
             "deviceType",
@@ -382,6 +390,7 @@ var Device = new Lang.Class({
         let plugins = this._get("plugins");
         return (plugins !== null) ? plugins : [];
     },
+    get supportedPlugins () { return this._get("supportedPlugins"); },
     get type () { return this._get("type"); },
     
     // Device Connection/Pairing

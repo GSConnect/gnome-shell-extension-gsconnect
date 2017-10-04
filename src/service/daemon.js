@@ -110,7 +110,30 @@ var Daemon = new Lang.Class({
         return Array.from(this._devices.keys());
     },
     
-    // Methods
+    /**
+     * Special method to accomodate nautilus-gsconnect.py
+     *
+     * FIXME: it's ugly!
+     */
+    getShareable: function () {
+        let shareable = {};
+        
+        for (let [busPath, device] of this._devices.entries()) {
+            if (device.connected && device._plugins.has("share")) {
+                shareable[device.name] = device.id;
+            }
+        }
+        
+        return shareable;
+    },
+    
+    /**
+     * Discovery Methods
+     *
+     * TODO: cleanup discover()
+     *       export a "discovering" property
+     *       error check broadcast()?
+     */
     broadcast: function () {
         Common.debug("Daemon.broadcast()");
         
@@ -121,7 +144,6 @@ var Daemon = new Lang.Class({
         );
     },
     
-    // FIXME: this is all pretty complicated
     discover: function (name, timeout=0) {
         let index_ = this._discoverers.indexOf(name);
         
@@ -170,19 +192,36 @@ var Daemon = new Lang.Class({
         }
     },
     
-    // Special method to accomodate nautilus-gsconnect.py
-    getShareable: function () {
-        let shareable = {};
+    /**
+     * Plugin Methods
+     */
+    _readPlugins: function () {
+        let pluginDir = Gio.File.new_for_path(getPath() + "/service/plugins");
         
-        for (let [busPath, device] of this._devices.entries()) {
-            if (device.connected && device._plugins.has("share")) {
-                shareable[device.name] = device.id;
+        let fenum = pluginDir.enumerate_children(
+            "standard::name,standard::type,standard::size",
+            Gio.FileQueryInfoFlags.NONE,
+            null
+        );
+    
+        let item, info;
+        let plugins = [];
+    
+        while ((info = fenum.next_file(null))) {
+            let file = fenum.get_child(info);
+            let name = file.get_basename().slice(0, -3);
+            
+            if (imports.service.plugins[name].hasOwnProperty("METADATA")) {
+                plugins.push(imports.service.plugins[name].METADATA.name);
             }
         }
         
-        return shareable;
+        return plugins.sort();
     },
     
+    /**
+     * Device Methods
+     */
     _addDevice: function (packet) {
         let devObjPath = "/org/gnome/shell/extensions/gsconnect/device/";
         

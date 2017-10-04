@@ -70,6 +70,14 @@ var Device = new Lang.Class({
             null,
             GObject.ParamFlags.READABLE
         ),
+        "supportedPlugins": GObject.param_spec_variant(
+            "supportedPlugins",
+            "SupportedPluginsList", 
+            "A list of supported plugins",
+            new GLib.VariantType("as"),
+            null,
+            GObject.ParamFlags.READABLE
+        ),
         "type": GObject.ParamSpec.string(
             "type",
             "deviceType",
@@ -130,6 +138,35 @@ var Device = new Lang.Class({
         return GLib.file_test(this.config_cert, GLib.FileTest.EXISTS);
     },
     get plugins () { return Array.from(this._plugins.keys()); },
+    get supportedPlugins () {
+        let plugins = [];
+        
+        for (let name of this.daemon._readPlugins()) {
+            let incoming = this.identity.body.incomingCapabilities;
+            let outgoing = this.identity.body.outgoingCapabilities;
+            let metadata = imports.service.plugins[name].METADATA;
+            let supported = false;
+            
+            for (let packetType of metadata.incomingPackets) {
+                if (outgoing.indexOf(packetType > -1)) {
+                    plugins.push(name);
+                    supported = true;
+                    break;
+                }
+            }
+            
+            if (supported) { continue; }
+            
+            for (let packetType of metadata.outgoingPackets) {
+                if (incoming.indexOf(packetType > -1)) {
+                    plugins.push(name);
+                    break;
+                }
+            }
+        }
+        
+        return plugins.sort();
+    },
     get type () { return this.identity.body.deviceType; },
     
     //
@@ -258,7 +295,7 @@ var Device = new Lang.Class({
     },
     
     _notifyPair: function (packet) {
-        // FIXME: no publicKey?
+        // TODO: no publicKey?
         this.emit("pairRequest", this.id);
         this._dbus.emit_signal(
             "pairRequest",
