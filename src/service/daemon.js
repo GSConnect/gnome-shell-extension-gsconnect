@@ -67,22 +67,9 @@ var Daemon = new Lang.Class({
         GLib.set_prgname(application_name);
         GLib.set_application_name(application_name);
         
-        //
-        this._debug_mode = null;
-        
         // FIXME
         this._discovery = 0
         this._discoverers = [];
-        
-        // Options
-        this.add_main_option(
-            "debug",
-            "d".charCodeAt(0),
-            GLib.OptionFlags.NONE,
-            GLib.OptionArg.NONE,
-            "Debug Mode",
-            null
-        );
         
         this.register(null);
     },
@@ -406,14 +393,6 @@ var Daemon = new Lang.Class({
         }
         
         Notify.uninit();
-    },
-    
-    vfunc_handle_local_options: function(options) {
-        if (options.contains("debug")) {
-            this._debug_mode = true;
-        }
-        
-        return -1;
     }
 });
 
