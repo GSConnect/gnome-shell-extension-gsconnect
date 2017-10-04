@@ -219,7 +219,7 @@ function generateEncryption (force=false) {
 };
 
 
-function installService (force=false) {
+function installService () {
     let svc_dir = GLib.get_user_data_dir() + "/dbus-1/services";
     let svc_name = "/org.gnome.shell.extensions.gsconnect.daemon.service";
     
@@ -251,7 +251,7 @@ function installService (force=false) {
 function initConfiguration() {
     try {
         generateEncryption(false);
-        installService(false);
+        installService();
     } catch (e) {
         log("Error initializing configuration: " + e);
         return false;
