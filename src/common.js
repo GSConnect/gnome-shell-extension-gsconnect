@@ -222,45 +222,11 @@ function installService (force=false) {
 
 
 function initConfiguration() {
-    generateEncryption(false);
-    installService(false);
-};
-
-
-function readDaemonConfiguration(daemon) {
-    let identPath = CONFIG_PATH + "/identity.json"
-    let config;
-        
-    if (GLib.file_test(identPath, GLib.FileTest.EXISTS)) {
-        try {
-            config = JSON.parse(
-                GLib.file_get_contents(identPath)[1].toString()
-            );
-        } catch (e) {
-            log("Error loading daemon configuration: " + e);
-            config = {};
-        }
-    }
-    
-    daemon.identity.fromPacket(mergeDeep(DaemonDefaults, config));
-};
-
-
-function writeDaemonConfiguration(daemon) {
-    GLib.file_set_contents(
-        CONFIG_PATH + "/identity.json",
-        daemon.identity.toString()
-    );
-};
-
-
-function initDaemonConfiguration (daemon) {
     try {
-        initConfiguration();
-        readDaemonConfiguration(daemon);
-        writeDaemonConfiguration(daemon);
+        generateEncryption(false);
+        installService(false);
     } catch (e) {
-        log("Error initializing daemon configuration: " + e);
+        log("Error initializing configuration: " + e);
         return false;
     }
     
@@ -373,45 +339,6 @@ function writeDeviceConfiguration (deviceId, config) {
  *
  * TODO: this stuff should all be programmatic like KDE Connect
  */
-var DaemonDefaults = {
-    id: 0,
-    type: "kdeconnect.identity",
-    body: {
-        deviceId: "GSConnect@" + GLib.get_host_name(),
-        deviceName: "GSConnect",
-        deviceType: "laptop",
-        tcpPort: 1715,
-        protocolVersion: 7,
-        incomingCapabilities: [
-            "kdeconnect.clipboard",
-            "kdeconnect.battery",
-            "kdeconnect.mousepad.request",
-            "kdeconnect.mpris.request",
-            "kdeconnect.notification",
-            "kdeconnect.notification.request",
-            "kdeconnect.ping",
-            "kdeconnect.runcommand.request",
-            "kdeconnect.sftp",
-            "kdeconnect.share.request",
-            "kdeconnect.telephony"
-        ],
-        outgoingCapabilities: [
-            "kdeconnect.battery.request",
-            "kdeconnect.clipboard",
-            "kdeconnect.findmyphone.request",
-            "kdeconnect.mpris",
-            "kdeconnect.notification",
-            "kdeconnect.notification.request",
-            "kdeconnect.ping",
-            "kdeconnect.runcommand",
-            "kdeconnect.sftp.request",
-            "kdeconnect.share.request",
-            "kdeconnect.sms.request",
-            "kdeconnect.telephony.request"
-        ]
-    }
-};
- 
 var DeviceDefaults = {
     plugins: {
         battery: {

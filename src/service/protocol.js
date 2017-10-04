@@ -146,14 +146,13 @@ var LanChannel = new Lang.Class({
     
     // Send identity packet, indicating we're about ready for a handshake
     _sendIdent: function () {
-        let ident = new Packet(this.device.daemon.identity);
         let _out = new Gio.DataOutputStream({
             base_stream: new Gio.UnixOutputStream({
                 fd: this._connection.socket.fd,
                 close_fd: false
             })
         });
-        _out.put_string(ident.toData(), null);
+        _out.put_string(this.device.daemon.identity.toData(), null);
         _out.close(null);
     },
     

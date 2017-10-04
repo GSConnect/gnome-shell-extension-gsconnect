@@ -96,12 +96,11 @@ var Daemon = new Lang.Class({
     },
     
     get name() {
-        return this.identity.body.deviceName;
+        return Common.Settings.get_string("service-name");
     },
     
     set name(name) {
-        this.identity.body.deviceName = name;
-        Common.writeDaemonConfiguration(this);
+        Common.Settings.set_string("service-name", name);
         this._dbus.emit_property_changed("name", new GLib.Variant("s", name));
         this.broadcast();
     },
@@ -282,12 +281,10 @@ var Daemon = new Lang.Class({
             break;
         }
         
-        this.identity.body.tcpPort = port;
-        
         // Broadcast Address
         this._broadcastAddr = new Gio.InetSocketAddress({
             address: Gio.InetAddress.new_from_string("255.255.255.255"),
-            port: this.identity.body.tcpPort
+            port: port
         });
         
         this._in = new Gio.DataInputStream({
@@ -352,8 +349,39 @@ var Daemon = new Lang.Class({
         this._listener = null;
         this._in = null;
         
-        this.identity = new Protocol.Packet();
-        if (!Common.initDaemonConfiguration(this)) { this.vfunc_shutdown(); }
+        if (!Common.initConfiguration()) { this.vfunc_shutdown(); }
+        
+        Object.defineProperty(this, "identity", {
+            get: function () {
+                let packet = new Protocol.Packet({
+                    id: 0,
+                    type: Protocol.TYPE_IDENTITY,
+                    body: {
+                        deviceId: "GSConnect@" + GLib.get_host_name(),
+                        deviceName: this.name,
+                        deviceType: "laptop", // FIXME: but how?
+                        tcpPort: this._listener.local_address.port,
+                        protocolVersion: 7,
+                        incomingCapabilities: [],
+                        outgoingCapabilities: []
+                    }
+                });
+                
+                for (let name of this._readPlugins()) {
+                    let metadata = imports.service.plugins[name].METADATA;
+                    
+                    for (let packetType of metadata.incomingPackets) {
+                        packet.body.incomingCapabilities.push(packetType);
+                    }
+                    
+                    for (let packetType of metadata.outgoingPackets) {
+                        packet.body.outgoingCapabilities.push(packetType);
+                    }
+                }
+                
+                return packet;
+            }
+        });
         
         // Notifications
         Notify.init("org.gnome.shell.extensions.gsconnect.daemon");
@@ -399,8 +427,6 @@ var Daemon = new Lang.Class({
 
     vfunc_shutdown: function() {
         this.parent();
-        
-        Common.writeDaemonConfiguration(this);
         
         if (this._listener !== null) {
             this._listener.close();
