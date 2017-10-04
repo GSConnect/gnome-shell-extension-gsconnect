@@ -306,9 +306,10 @@ var Daemon = new Lang.Class({
         
         // Manager setup
         this._devices = new Map();
-        this._listener = null;
         this._in = null;
+        this._listener = null;
         
+        // Intitialize configuration and choke hard if it fails
         if (!Common.initConfiguration()) { this.vfunc_shutdown(); }
         
         Object.defineProperty(this, "identity", {
@@ -387,6 +388,10 @@ var Daemon = new Lang.Class({
 
     vfunc_shutdown: function() {
         this.parent();
+        
+        if (this._in !== null) {
+            this._in.close();
+        }
         
         if (this._listener !== null) {
             this._listener.close();
