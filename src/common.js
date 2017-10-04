@@ -345,8 +345,21 @@ function readDeviceConfiguration (deviceId) {
         }
     }
     
+    // Create a default config
+    let defaultConfiguration = { plugins: {} };
+    
+    for (let name of findPlugins()) {
+        let metadata = imports.service.plugins[name].METADATA;
+        
+        defaultConfiguration.plugins[name] = { enabled: false };
+        
+        if (metadata.hasOwnProperty("settings")) {
+            defaultConfiguration.plugins[name].settings = metadata.settings;
+        }
+    }
+    
     // Merge loaded config with defaults and save
-    config = mergeDeep(DeviceDefaults, config)
+    config = mergeDeep(defaultConfiguration, config)
     writeDeviceConfiguration(deviceId, config);
     
     return config;
@@ -365,83 +378,6 @@ function writeDeviceConfiguration (deviceId, config) {
     );
     
     return;
-};
-
-
-/**
- * Configuration Defaults
- *
- * TODO: this stuff should all be programmatic like KDE Connect
- */
-var DeviceDefaults = {
-    plugins: {
-        battery: {
-            enabled: false
-        },
-        clipboard: {
-            enabled: false
-        },
-        findmyphone: {
-            enabled: false
-        },
-        mousepad: {
-            enabled: false
-        },
-        mpris: {
-            enabled: false
-        },
-        notifications: {
-            enabled: false,
-            settings: {
-                receive: {
-                    enabled: true
-                },
-                send: {
-                    enabled: true,
-                    applications: {
-                        GSConnect: {
-                            iconName: "phone",
-                            enabled: false
-                        }
-                    }
-                }
-            }
-        },
-        ping: {
-            enabled: false
-        },
-        runcommand: {
-            enabled: false,
-            settings: {
-                commands: {}
-            }
-        },
-        sftp: {
-            enabled: false,
-            settings: {
-                automount: false
-            }
-        },
-        share: {
-            enabled: false,
-            settings: {
-                download_directory: GLib.get_user_special_dir(
-                    GLib.UserDirectory.DIRECTORY_DOWNLOAD
-                ),
-                download_subdirs: false
-            }
-        },
-        telephony: {
-            enabled: false,
-            settings: {
-                notify_missedCall: true,
-                notify_ringing: true,
-                notify_sms: true,
-                autoreply_sms: false,
-                notify_talking: true
-            }
-        }
-    }
 };
 
 
