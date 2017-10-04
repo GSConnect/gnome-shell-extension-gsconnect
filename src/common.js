@@ -376,18 +376,19 @@ function readDeviceConfiguration (deviceId) {
 };
 
 
-// FIXME: error handling
 function writeDeviceConfiguration (deviceId, config) {
     let device_config = CONFIG_PATH + "/" + deviceId + "/config.json";
 
-    GLib.file_set_contents(
-        device_config,
-        JSON.stringify(config),
-        JSON.stringify(config).length,
-        null
-    );
-    
-    return;
+    try {
+        GLib.file_set_contents(
+            device_config,
+            JSON.stringify(config),
+            JSON.stringify(config).length,
+            null
+        );
+    } catch (e) {
+        log("Error saving device configuration: " + e);
+    }
 };
 
 
