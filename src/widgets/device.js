@@ -298,12 +298,20 @@ var Page = new Lang.Class({
             }
         });
         this.device.notify("paired");
-        this.device.bind_property(
-            "connected",
-            pairButton,
-            "sensitive",
-            GObject.BindingFlags.DEFAULT
-        );
+        
+        this.device.connect("notify::connected", () => {
+            if (this.device.connected) {
+                pairButton.sensitive = true;
+                pairButton.set_tooltip_markup(
+                    _("<b>SHA1 Fingerprint:</b>\n%s").format(this.device.fingerprint)
+                );
+            } else {
+                pairButton.sensitive = false;
+                pairButton.set_tooltip_markup(
+                    _("Device is disconnected")
+                );
+            }
+        });
         this.device.notify("connected");  
         deviceControls.add(pairButton);
         
