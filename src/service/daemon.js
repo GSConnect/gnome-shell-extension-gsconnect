@@ -83,11 +83,11 @@ var Daemon = new Lang.Class({
     },
     
     get name() {
-        return Common.Settings.get_string("service-name");
+        return Common.Settings.get_string("public-name");
     },
     
     set name(name) {
-        Common.Settings.set_string("service-name", name);
+        Common.Settings.set_string("public-name", name);
         this._dbus.emit_property_changed("name", new GLib.Variant("s", name));
         this.broadcast();
     },

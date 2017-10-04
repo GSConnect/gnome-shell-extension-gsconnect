@@ -41,10 +41,10 @@
       <summary>Persistent Discovery</summary>
       <description>Constantly probe the network for devices</description>
     </key>
-    <key name="service-name" type="s">
+    <key name="public-name" type="s">
       <default>"GSConnect"</default>
-      <summary>Service Name</summary>
-      <description>The public name broadcast to other devices</description>
+      <summary>Public Name</summary>
+      <description>The name broadcast to other devices</description>
     </key>
   </schema>
 </schemalist>

@@ -46,7 +46,6 @@ var PrefsWidget = new Lang.Class({
         );
     },
     
-    // The DBus interface has appeared
     _serviceAppeared: function (conn, name, name_owner, cb_data) {
         Common.debug("extension.SystemIndicator._serviceAppeared()");
         
@@ -70,7 +69,6 @@ var PrefsWidget = new Lang.Class({
         );
     },
     
-    // The DBus interface has vanished
     _serviceVanished: function (conn, name, name_owner, cb_data) {
         Common.debug("extension.SystemIndicator._serviceVanished()");
         
@@ -129,7 +127,7 @@ var PrefsWidget = new Lang.Class({
         // Service Page
         let servicePage = this.addPage("service", _("Service"));
         let serviceSection = servicePage.addSection(_("Service"));
-        servicePage.addSetting(serviceSection, "service-name");
+        servicePage.addSetting(serviceSection, "public-name");
         servicePage.addSetting(serviceSection, "persistent-discovery");
         
         // About/Advanced
