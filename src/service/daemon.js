@@ -114,6 +114,64 @@ var Daemon = new Lang.Class({
     },
     
     /**
+     * Get the local device type from "chassis_type"
+     */
+    _getDeviceType: function () {
+        let proc = GLib.spawn_async_with_pipes(
+            null,                                       // working dir
+            ["cat", "/sys/class/dmi/id/chassis_type"],  // argv
+            null,                                       // envp
+            GLib.SpawnFlags.SEARCH_PATH,                // enables PATH
+            null                                        // child_setup (func)
+        );
+        
+        let stdout = new Gio.DataInputStream({
+            base_stream: new Gio.UnixInputStream({ fd: proc[3] })
+        });
+        let chassisInt = stdout.read_line(null)[0].toString();
+        stdout.close(null);
+        
+        if (["8", "9", "10", "14"].indexOf(chassisInt) > -1) {
+            return "laptop";
+        } else {
+            return "desktop";
+        }
+    },
+    
+    /**
+     * Programmatically build an identity packet
+     */
+    _getIdentityPacket: function () {
+        let packet = new Protocol.Packet({
+            id: 0,
+            type: Protocol.TYPE_IDENTITY,
+            body: {
+                deviceId: "GSConnect@" + GLib.get_host_name(),
+                deviceName: this.name,
+                deviceType: this._getDeviceType(),
+                tcpPort: this._listener.local_address.port,
+                protocolVersion: 7,
+                incomingCapabilities: [],
+                outgoingCapabilities: []
+            }
+        });
+        
+        for (let name of Common.findPlugins()) {
+            let metadata = imports.service.plugins[name].METADATA;
+            
+            for (let packetType of metadata.incomingPackets) {
+                packet.body.incomingCapabilities.push(packetType);
+            }
+            
+            for (let packetType of metadata.outgoingPackets) {
+                packet.body.outgoingCapabilities.push(packetType);
+            }
+        }
+        
+        return packet;
+    },
+    
+    /**
      * Discovery Methods
      *
      * TODO: cleanup discover()
@@ -282,7 +340,6 @@ var Daemon = new Lang.Class({
         if (packet.type !== Protocol.TYPE_IDENTITY) {
             Common.debug("Daemon: Unexpected packet type: " + packet.type);
             return true;
-        // FIXME: this is a bit costly
         } else if (packet.body.deviceId === this.identity.body.deviceId) {
             return true;
         } else {
@@ -312,38 +369,6 @@ var Daemon = new Lang.Class({
         // Intitialize configuration and choke hard if it fails
         if (!Common.initConfiguration()) { this.vfunc_shutdown(); }
         
-        Object.defineProperty(this, "identity", {
-            get: function () {
-                let packet = new Protocol.Packet({
-                    id: 0,
-                    type: Protocol.TYPE_IDENTITY,
-                    body: {
-                        deviceId: "GSConnect@" + GLib.get_host_name(),
-                        deviceName: this.name,
-                        deviceType: "laptop", // FIXME: but how?
-                        tcpPort: this._listener.local_address.port,
-                        protocolVersion: 7,
-                        incomingCapabilities: [],
-                        outgoingCapabilities: []
-                    }
-                });
-                
-                for (let name of Common.findPlugins()) {
-                    let metadata = imports.service.plugins[name].METADATA;
-                    
-                    for (let packetType of metadata.incomingPackets) {
-                        packet.body.incomingCapabilities.push(packetType);
-                    }
-                    
-                    for (let packetType of metadata.outgoingPackets) {
-                        packet.body.outgoingCapabilities.push(packetType);
-                    }
-                }
-                
-                return packet;
-            }
-        });
-        
         // Notifications
         Notify.init("org.gnome.shell.extensions.gsconnect.daemon");
         
@@ -370,6 +395,8 @@ var Daemon = new Lang.Class({
             log("Error starting listener: " + e);
             this.vfunc_shutdown();
         }
+        
+        this.identity = this._getIdentityPacket();
         
         // Monitor network changes
         this._netmonitor = Gio.NetworkMonitor.get_default();
