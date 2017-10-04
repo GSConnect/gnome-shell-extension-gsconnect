@@ -267,7 +267,7 @@ var DeviceMenu = new Lang.Class({
         this.parent();
 
         this.device = device;
-        this.manager = manager;
+        this.daemon = manager;
         this._keybindings = [];
         
         // Info Bar
@@ -568,7 +568,7 @@ var DeviceIndicator = new Lang.Class({
         this.parent(null, device.name + " Indicator", false);
         
         this.device = device;
-        this.manager = manager;
+        this.daemon = manager;
         
         // Device Icon
         this.icon = new St.Icon({
@@ -639,7 +639,7 @@ var SystemIndicator = new Lang.Class({
     _init: function () {
         this.parent();
         
-        this.manager = new Client.DeviceManager();
+        this.daemon = new Client.Daemon();
         this._indicators = {};
         this._menus = {};
         this.keybindingManager = new KeybindingManager();
@@ -711,15 +711,15 @@ var SystemIndicator = new Lang.Class({
     _serviceAppeared: function (conn, name, name_owner, cb_data) {
         Common.debug("extension.SystemIndicator._serviceAppeared()");
         
-        if (!this.manager) {
-            this.manager = new Client.DeviceManager();
+        if (!this.daemon) {
+            this.daemon = new Client.Daemon();
         }
         
-        this.extensionIndicator.visible = (this.manager);
+        this.extensionIndicator.visible = (this.daemon);
         
         // Extension Menu -> (Stop) Discover Devices Item
         this.scanItem = this.extensionMenu.menu.addAction(_("Discover Devices"), () => {
-            this.manager.discover("manager", 15);
+            this.daemon.discover("manager", 15);
             this.scanItem.label.text = _("Discovering Devices");
             this.scanItem.actor.reactive = false;
             
@@ -733,17 +733,17 @@ var SystemIndicator = new Lang.Class({
         this.extensionMenu.menu.box.set_child_at_index(this.scanItem.actor, 1);
         
         // Add currently managed devices
-        for (let dbusPath of this.manager.devices.keys()) {
-            this._deviceAdded(this.manager, dbusPath);
+        for (let dbusPath of this.daemon.devices.keys()) {
+            this._deviceAdded(this.daemon, dbusPath);
         }
         
         // Watch for new and removed devices
-        this.manager.connect(
+        this.daemon.connect(
             "device::added",
             Lang.bind(this, this._deviceAdded)
         );
         
-        this.manager.connect(
+        this.daemon.connect(
             "device::removed",
             Lang.bind(this, this._deviceRemoved)
         );
@@ -762,17 +762,17 @@ var SystemIndicator = new Lang.Class({
     _serviceVanished: function (conn, name, name_owner, cb_data) {
         Common.debug("extension.SystemIndicator._serviceVanished()");
         
-        if (this.manager) {
-            this.manager.destroy();
-            this.manager = false;
+        if (this.daemon) {
+            this.daemon.destroy();
+            this.daemon = false;
         }
         
         if (this.scanItem) { this.scanItem.destroy(); }
         
-        this.extensionIndicator.visible = (this.manager);
+        this.extensionIndicator.visible = (this.daemon);
         
         if (!Settings.get_boolean("debug")) {
-            this.manager = new Client.DeviceManager();
+            this.daemon = new Client.Daemon();
         }
     },
     
@@ -798,7 +798,7 @@ var SystemIndicator = new Lang.Class({
             this._keybindings.push(
                 this.keybindingManager.add(
                     accels.discover,
-                    Lang.bind(this.manager, this.manager.discover, "key", 15)
+                    Lang.bind(this.daemon, this.daemon.discover, "key", 15)
                 )
             );
         }
@@ -884,10 +884,10 @@ var SystemIndicator = new Lang.Class({
     _persistentDiscovery: function () {
         let persist = Settings.get_boolean("persistent-discovery");
     
-        if (persist && !this.manager._scans.has("persistent")) {
-            this.manager.scan("persistent", 0);
-        } else if (!persist && this.manager._scans.has("persistent")) {
-            this.manager.scan("persistent", 0);
+        if (persist && !this.daemon._scans.has("persistent")) {
+            this.daemon.scan("persistent", 0);
+        } else if (!persist && this.daemon._scans.has("persistent")) {
+            this.daemon.scan("persistent", 0);
         }
     },
     
@@ -927,7 +927,7 @@ var SystemIndicator = new Lang.Class({
     _deviceAdded: function (manager, dbusPath) {
         Common.debug("extension.SystemIndicator._deviceAdded(" + dbusPath + ")");
         
-        let device = this.manager.devices.get(dbusPath);
+        let device = this.daemon.devices.get(dbusPath);
         
         // Status Area -> [ Device Indicator ]
         let indicator = new DeviceIndicator(device, manager);
@@ -1023,13 +1023,13 @@ var SystemIndicator = new Lang.Class({
     },
     
     destroy: function () {
-        if (this.manager) {
-            this.manager.destroy();
-            this.manager = false;
+        if (this.daemon) {
+            this.daemon.destroy();
+            this.daemon = false;
         }
         
         for (let dbusPath in this._indicators) {
-            this._deviceRemoved(this.manager, dbusPath);
+            this._deviceRemoved(this.daemon, dbusPath);
         }
         
         this.keybindingManager.destroy();

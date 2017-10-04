@@ -492,8 +492,8 @@ var Device = new Lang.Class({
 
 
 // A DBus Interface wrapper for a device manager
-var DeviceManager = new Lang.Class({
-    Name: "GSConnectDeviceManagerProxy",
+var Daemon = new Lang.Class({
+    Name: "GSConnectDaemonProxy",
     Extends: ProxyBase,
     Properties: {
         "name": GObject.ParamSpec.string(

@@ -33,7 +33,7 @@ var PrefsWidget = new Lang.Class({
         this.parent();
         
         // Watch for Service Provider
-        this.manager = new Client.DeviceManager();
+        this.daemon = new Client.Daemon();
         
         this._build();
         
@@ -49,21 +49,21 @@ var PrefsWidget = new Lang.Class({
     _serviceAppeared: function (conn, name, name_owner, cb_data) {
         Common.debug("extension.SystemIndicator._serviceAppeared()");
         
-        if (!this.manager) {
-            this.manager = new Client.DeviceManager();
+        if (!this.daemon) {
+            this.daemon = new Client.Daemon();
         }
         
-        for (let dbusPath of this.manager.devices.keys()) {
-            this.devicesStack.addDevice(this.manager, dbusPath);
+        for (let dbusPath of this.daemon.devices.keys()) {
+            this.devicesStack.addDevice(this.daemon, dbusPath);
         }
         
         // Watch for new and removed devices
-        this.manager.connect(
+        this.daemon.connect(
             "device::added",
             Lang.bind(this.devicesStack, this.devicesStack.addDevice)
         );
         
-        this.manager.connect(
+        this.daemon.connect(
             "device::removed",
             Lang.bind(this.devicesStack, this.devicesStack.removeDevice)
         );
@@ -72,13 +72,13 @@ var PrefsWidget = new Lang.Class({
     _serviceVanished: function (conn, name, name_owner, cb_data) {
         Common.debug("extension.SystemIndicator._serviceVanished()");
         
-        if (this.manager) {
-            this.manager.destroy();
-            this.manager = false;
+        if (this.daemon) {
+            this.daemon.destroy();
+            this.daemon = false;
         }
         
         if (!Common.Settings.get_boolean("debug")) {
-            this.manager = new Client.DeviceManager();
+            this.daemon = new Client.Daemon();
         }
     },
     
