@@ -20,7 +20,7 @@ imports.searchPath.push(getPath());
 
 
 // Open the extension preferences window
-function startPreferences() {
+function startPreferences () {
     try {
         GLib.spawn_command_line_async(
             "gnome-shell-extension-prefs gsconnect@andyholmes.github.io"
@@ -28,7 +28,18 @@ function startPreferences() {
     } catch (e) {
         log("Error spawning GSConnect settings: " + e);
     }
-}
+};
+
+
+function stopService () {
+    try {
+        GLib.spawn_command_line_async(
+            "bash -c \"kill $(ps aux | grep 'gsconnect@andyholmes.github.io/service/[d]aemon.js' | awk '{print $2}')\""
+        );
+    } catch (e) {
+        log("Error stopping GSConnect service: " + e);
+    }
+};
 
 
 /**
