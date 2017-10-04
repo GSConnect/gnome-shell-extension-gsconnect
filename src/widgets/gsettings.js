@@ -293,7 +293,7 @@ var StringSetting = new Lang.Class({
     
     _init: function (settings, keyName) {
         this.parent({
-            text: settings.get_string(keyName),
+            placeholder_text: settings.get_string(keyName),
             visible: true,
             can_focus: true,
             width_request: 160,
@@ -301,8 +301,35 @@ var StringSetting = new Lang.Class({
             valign: Gtk.Align.CENTER,
             expand: true
         });
+        
+        this.connect("activate", (entry) => {
+            settings.set_string(keyName, entry.text);
+            entry.text = "";
+            this.get_toplevel().set_focus(null);
+        });
+        
+        this.connect("changed", (entry) => {
+            if (entry.text.length) {
+                entry.secondary_icon_name = "edit-undo-symbolic";
+            } else {
+                entry.text = "";
+                entry.secondary_icon_name = "";
+                this.get_toplevel().set_focus(null);
+            }
+        });
+        
+        this.connect("icon-release", (entry) => {
+            entry.text = "";
+            entry.secondary_icon_name = "";
+            this.get_toplevel().set_focus(null);
+        });
     
-        settings.bind(keyName, this, "text", Gio.SettingsBindFlags.DEFAULT);
+        settings.bind(
+            keyName,
+            this,
+            "placeholder_text",
+            Gio.SettingsBindFlags.DEFAULT
+        );
     }
 });
 

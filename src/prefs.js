@@ -68,13 +68,6 @@ var PrefsWidget = new Lang.Class({
             "device::removed",
             Lang.bind(this.devicesStack, this.devicesStack.removeDevice)
         );
-        
-        this.manager.bind_property(
-            "name",
-            this.nameEntry,
-            "placeholder_text",
-            GObject.BindingFlags.DEFAULT
-        );
     },
     
     // The DBus interface has vanished
@@ -136,38 +129,7 @@ var PrefsWidget = new Lang.Class({
         // Service Page
         let servicePage = this.addPage("service", _("Service"));
         let serviceSection = servicePage.addSection(_("Service"));
-        
-        this.nameEntry = new Gtk.Entry({
-            placeholder_text: this.manager.name,
-            valign: Gtk.Align.CENTER
-        });
-        this.nameEntry.connect("activate", (entry) => {
-            this.manager.name = entry.text
-            entry.text = "";
-            this.get_toplevel().set_focus(null);
-        });
-        this.nameEntry.connect("changed", (entry) => {
-            if (entry.text.length) {
-                entry.secondary_icon_name = "edit-undo-symbolic";
-            } else {
-                entry.text = "";
-                entry.secondary_icon_name = "";
-                this.get_toplevel().set_focus(null);
-            }
-        });
-        this.nameEntry.connect("icon-release", (entry) => {
-            entry.text = "";
-            entry.secondary_icon_name = "";
-            this.get_toplevel().set_focus(null);
-        });
-        
-        servicePage.addItem(
-            serviceSection,
-            _("Public Name"),
-            _("The name broadcast to other devices"),
-            this.nameEntry
-        );
-        
+        servicePage.addSetting(serviceSection, "service-name");
         servicePage.addSetting(serviceSection, "persistent-discovery");
         
         // About/Advanced
