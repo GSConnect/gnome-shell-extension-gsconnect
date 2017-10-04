@@ -456,15 +456,15 @@ var DeviceMenu = new Lang.Class({
         this.statusBar.actor.visible = (!connected || !paired);
         this.batteryIcon.visible = (connected && paired);
         
-        if (!paired) {
-            this.statusButton.child.icon_name = "channel-insecure-symbolic";
-            this.statusButton.tooltip.title = _("Request Pair");
-            this.statusLabel.text = _("Device is unpaired");
-        } else if (!connected) {
+        if (!connected) {
             this.statusButton.child.icon_name = "view-refresh-symbolic";
             this.statusButton.tooltip.title = _("Attempt Reconnection");
             this.statusLabel.text = _("Device is disconnected");
-        }
+        } else if (!paired) {
+            this.statusButton.child.icon_name = "channel-insecure-symbolic";
+            this.statusButton.tooltip.title = _("Request Pair");
+            this.statusLabel.text = _("Device is unpaired");
+        } 
         
         this._pluginsChanged(this.device);
     },
