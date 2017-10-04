@@ -310,9 +310,6 @@ var Page = new Lang.Class({
         // Plugins
         let pluginsSection = this.addSection(_("Plugins"));
         
-        // FIXME: supported plugins property
-        log("Name: " + this.device.name);
-        log("Supported Plugins: " + this.device.supportedPlugins);
         for (let name of this.device.supportedPlugins) {
             let metadata = imports.service.plugins[name].METADATA;
             
