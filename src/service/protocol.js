@@ -32,7 +32,6 @@ var Packet = new Lang.Class({
     Extends: GObject.Object,
     
     _init: function (data=false) {
-        // TODO
         this.parent();
         
         this.id = Date.now();
