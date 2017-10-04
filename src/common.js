@@ -374,7 +374,7 @@ function writeDeviceConfiguration (deviceId, config) {
  * TODO: this stuff should all be programmatic like KDE Connect
  */
 var DaemonDefaults = {
-    id: Date.now(),
+    id: 0,
     type: "kdeconnect.identity",
     body: {
         deviceId: "GSConnect@" + GLib.get_host_name(),
