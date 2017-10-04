@@ -367,9 +367,17 @@ var Daemon = new Lang.Class({
         try {
             this._listen();
         } catch (e) {
-            log("error listening: " + e);
+            log("Error starting listener: " + e);
             this.vfunc_shutdown();
         }
+        
+        // Monitor network changes
+        this._netmonitor = Gio.NetworkMonitor.get_default();
+        this._netmonitor.connect("network-changed", (monitor, available) => {
+            if (available) {
+                this.discover("network-changed", 5);
+            }
+        });
         
         // Load cached devices
         for (let identity of Common.readDeviceCache()) {
