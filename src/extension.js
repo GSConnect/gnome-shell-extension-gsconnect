@@ -550,10 +550,10 @@ var DeviceMenu = new Lang.Class({
     _statusAction: function (button) {
         Common.debug("extension.DeviceMenu._statusAction()");
         
-        if (this.device.paired) {
-            this.device.activate();
-        } else {
+        if (this.device.connected && !this.device.paired) {
             this.device.pair();
+        } else {
+            this.device.activate();
         }
     }
 });
