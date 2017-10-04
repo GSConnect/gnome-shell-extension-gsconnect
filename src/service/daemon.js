@@ -182,18 +182,18 @@ var Daemon = new Lang.Class({
      * Device Methods
      */
     _addDevice: function (packet) {
-        let devObjPath = "/org/gnome/shell/extensions/gsconnect/device/";
+        let devObjPath = Common.dbusPathFromId(packet.body.deviceId);
         
-        if (this._devices.has(devObjPath + packet.body.deviceId)) {
+        if (this._devices.has(devObjPath)) {
             Common.debug("updating device");
             
-            let device = this._devices.get(devObjPath + packet.body.deviceId);
+            let device = this._devices.get(devObjPath);
             device.handlePacket(packet);
         } else {
             Common.debug("creating device");
             
             let device = new Device.Device(this, packet)
-            this._devices.set(devObjPath + packet.body.deviceId, device);
+            this._devices.set(devObjPath, device);
             
             this._dbus.emit_property_changed(
                 "devices",

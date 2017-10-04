@@ -84,8 +84,9 @@ function initTranslations() {
 var Resources = Gio.resource_load(Me.path + "/org.gnome.shell.extensions.gsconnect.gresource");
 Resources._register();
 
+
 /**
- * Common DBus Interface Nodes and Proxies
+ * Common DBus Interface Nodes/Proxies and functions
  */
 var DBusInfo = {
     daemon: new Gio.DBusNodeInfo.new_for_xml(
@@ -120,6 +121,14 @@ var DBusProxy = {
             "/dbus/org.mpris.MediaPlayer2.Player.xml", 0
         ).unref_to_array().toString()
     )
+};
+
+
+function dbusPathFromId (id) {
+    let basePath = "/org/gnome/shell/extensions/gsconnect/device/";
+    let dbusPath = basePath + id.replace("/W+/g", "_");
+    
+    return dbusPath;
 };
 
 
@@ -172,7 +181,6 @@ var CONFIG_PATH = GLib.get_user_config_dir() + "/gnome-shell-extension-gsconnect
  * Generate a Private/Public Key pair and TLS Certificate
  *
  * @param {Boolean} force - Force generation even if already created
- *
  */
 function generateEncryption (force=false) {
     if (!GLib.file_test(CONFIG_PATH, GLib.FileTest.IS_DIR)) {

@@ -116,10 +116,7 @@ var Device = new Lang.Class({
             Common.DBusInfo.device.lookup_interface(iface),
             this
         );
-        this._dbus.export(
-            Gio.DBus.session,
-            "/org/gnome/shell/extensions/gsconnect/device/" + this.id
-        );
+        this._dbus.export(Gio.DBus.session, Common.dbusPathFromId(this.id));
         
         // Init config
         this.config_cert = Common.CONFIG_PATH + "/" + this.id + "/certificate.pem";

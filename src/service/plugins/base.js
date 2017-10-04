@@ -53,10 +53,7 @@ var Plugin = new Lang.Class({
             Common.DBusInfo.device.lookup_interface(iface),
             this
         );
-        this._dbus.export(
-            Gio.DBus.session,
-            "/org/gnome/shell/extensions/gsconnect/device/" + this.device.id
-        );
+        this._dbus.export(Gio.DBus.session, this.device._dbus.get_object_path());
     },
     
     handlePacket: function (packet) { throw Error("Not implemented"); },
