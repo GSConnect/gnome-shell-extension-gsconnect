@@ -53,6 +53,13 @@ var Daemon = new Lang.Class({
             new GLib.VariantType("as"),
             null,
             GObject.ParamFlags.READABLE
+        ),
+        "fingerprint": GObject.ParamSpec.string(
+            "fingerprint",
+            "deviceFingerprint",
+            "SHA1 fingerprint for the device certificate",
+            GObject.ParamFlags.READABLE,
+            ""
         )
     },
 
@@ -82,6 +89,18 @@ var Daemon = new Lang.Class({
         );
     },
     
+    get devices() {
+        return Array.from(this._devices.keys());
+    },
+    
+    get fingerprint () {
+        return Common.getFingerprint(
+            GLib.file_get_contents(
+                Common.CONFIG_PATH + "/certificate.pem"
+            )[1].toString()
+        );
+    },
+    
     get name() {
         return Common.Settings.get_string("public-name");
     },
@@ -90,10 +109,6 @@ var Daemon = new Lang.Class({
         Common.Settings.set_string("public-name", name);
         this._dbus.emit_property_changed("name", new GLib.Variant("s", name));
         this.broadcast();
-    },
-    
-    get devices() {
-        return Array.from(this._devices.keys());
     },
     
     /**
@@ -175,8 +190,8 @@ var Daemon = new Lang.Class({
      * Discovery Methods
      *
      * TODO: cleanup discover()
-     *       export a "discovering" property
-     *       error check broadcast()?
+     * TODO: export a "discovering" property
+     * TODO: error check broadcast()?
      */
     broadcast: function () {
         Common.debug("Daemon.broadcast()");
@@ -265,8 +280,8 @@ var Daemon = new Lang.Class({
     /**
      * Start listening for incoming broadcast packets
      *
+     * FIXME: conflicts with running KDE Connect, for some reason
      * TODO: TCP Listener
-     *       conflicts with running KDE Connect, for some reason
      */
     _listen: function (port=1716) {
         this._listener = new Gio.Socket({
