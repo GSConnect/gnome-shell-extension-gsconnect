@@ -68,7 +68,8 @@ var METADATA = {
  *       requestAnswer usage?
  *       urgency filter (outgoing)?
  *       weird hang? maybe stopped happening?
- *
+ *       make "shared" notifications clearable
+ *       consider option for notifications allowing clients to handle them
  */
 var Plugin = new Lang.Class({
     Name: "GSConnectNotificationsPlugin",
@@ -232,7 +233,7 @@ var Plugin = new Lang.Class({
                 Common.debug("Notifications: our request is being answered");
             }
             
-            // FIXME: this is causing a hang (sometimes) (I think)
+            // FIXME: this is causing a hang at daemon startup (sometimes)
             note.show();
         }
     },
