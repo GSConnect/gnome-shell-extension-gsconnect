@@ -257,7 +257,7 @@ var Daemon = new Lang.Class({
         // Broadcast Address
         this._broadcastAddr = new Gio.InetSocketAddress({
             address: Gio.InetAddress.new_from_string("255.255.255.255"),
-            port: port
+            port: this._listener.local_address.port
         });
         
         this._in = new Gio.DataInputStream({
@@ -286,17 +286,17 @@ var Daemon = new Lang.Class({
             );
             [data, size] = this._in.read_line(null);
         } catch (e) {
-            log("error reading data: " + e);
+            log("Daemon: Error reading data: " + e);
             return;
         }
         
         let packet = new Protocol.Packet(data.toString());
         
         if (packet.type !== Protocol.TYPE_IDENTITY) {
-            Common.debug("Unexpected packet type: " + packet.type);
+            Common.debug("Daemon: Unexpected packet type: " + packet.type);
             return true;
+        // FIXME: this is a bit costly
         } else if (packet.body.deviceId === this.identity.body.deviceId) {
-            Common.debug("Ignoring self-broadcast");
             return true;
         } else {
             Common.debug("Daemon received: " + data);
