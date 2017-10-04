@@ -348,7 +348,7 @@ var Daemon = new Lang.Class({
         Notify.init("org.gnome.shell.extensions.gsconnect.daemon");
         
         // Debug Mode
-        if (this._debug_mode) {
+        if (Common.Settings.get_boolean("debug")) {
             GLib.setenv("G_MESSAGES_DEBUG", "all", true);
         }
         
