@@ -31,7 +31,9 @@ function startPreferences() {
 }
 
 
-/** Return an extension object for GJS apps not privy to Gnome Shell imports */
+/**
+ * Return an extension object for GJS apps not privy to Gnome Shell imports
+ */
 function getCurrentExtension() {
     // Diced from: https://github.com/optimisme/gjs-examples/
     let m = new RegExp("@(.+):\\d+").exec((new Error()).stack.split("\n")[1]);
@@ -52,7 +54,10 @@ function getCurrentExtension() {
 
 var Me = getCurrentExtension();
 
-/** Init GSettings for Me.metadata['gschema-id'] */
+
+/**
+ * Init GSettings for Me.metadata['gschema-id']
+ */
 let schemaSrc = Gio.SettingsSchemaSource.new_from_directory(
     Me.dir.get_child('schemas').get_path(),
     Gio.SettingsSchemaSource.get_default(),
@@ -64,11 +69,24 @@ var Settings = new Gio.Settings({
 });
 var Schema = Settings.settings_schema;
 
+
+/**
+ * Initialize Gettext for metadata['gettext-domain']
+ */
+function initTranslations() {
+    Gettext.bindtextdomain(
+        Me.metadata['gettext-domain'],
+        Me.dir.get_child('locale').get_path()
+    );
+}
+
 /** Init GResource for fallback icons */
 var Resources = Gio.resource_load(Me.path + "/org.gnome.shell.extensions.gsconnect.gresource");
 Resources._register();
 
-//
+/**
+ * Common DBus Interface Nodes and Proxies
+ */
 var DBusInfo = {
     daemon: new Gio.DBusNodeInfo.new_for_xml(
         Resources.lookup_data(
@@ -104,13 +122,6 @@ var DBusProxy = {
     )
 };
 
-/** Initialize Gettext for metadata['gettext-domain'] */
-function initTranslations() {
-    Gettext.bindtextdomain(
-        Me.metadata['gettext-domain'],
-        Me.dir.get_child('locale').get_path()
-    );
-}
 
 /**
  * Print a message to the log, prepended with the UUID of the extension, only
@@ -200,7 +211,6 @@ function generateEncryption (force=false) {
 };
 
 
-// FIXME
 function installService (force=false) {
     let svc_dir = GLib.get_user_data_dir() + "/dbus-1/services";
     let svc_name = "/org.gnome.shell.extensions.gsconnect.daemon.service";
