@@ -3,15 +3,23 @@
 const Lang = imports.lang;
 const Gettext = imports.gettext.domain("org.gnome.shell.extensions.gsconnect");
 const _ = Gettext.gettext;
+
+const Gio = imports.gi.Gio;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
 // Local Imports
-const Me = imports.misc.extensionUtils.getCurrentExtension();
-const KeybindingsWidget = Me.imports.widgets.keybindings;
-const PluginsWidget = Me.imports.widgets.plugins;
-const PreferencesWidget = Me.imports.widgets.preferences;
-const Common = Me.imports.common;
+function getPath() {
+    // Diced from: https://github.com/optimisme/gjs-examples/
+    let m = new RegExp("@(.+):\\d+").exec((new Error()).stack.split("\n")[1]);
+    return Gio.File.new_for_path(m[1]).get_parent().get_parent().get_path();
+}
+
+imports.searchPath.push(getPath());
+
+const KeybindingsWidget = imports.widgets.keybindings;
+const PreferencesWidget = imports.widgets.preferences;
+const Common = imports.common;
 
 
 /** Gtk widget for plugin enabling/disabling */
@@ -19,15 +27,15 @@ var PluginControl = new Lang.Class({
     Name: "GSConnectPluginControl",
     Extends: Gtk.Box,
     
-    _init: function (devicePage, pluginName) {
+    _init: function (page, name) {
         this.parent({
             orientation: Gtk.Orientation.HORIZONTAL,
             spacing: 12
         });
         
-        this._page = devicePage;
-        this._name = pluginName;
-        this._info = PluginsWidget.PluginMetadata.get(this._name);
+        this._page = page;
+        this._name = name;
+        this._info = imports.service.plugins[this._name].METADATA; // FIXME
         this._freeze = false;
         
         if (this._info.hasOwnProperty("settings")) {
@@ -89,7 +97,7 @@ var PluginControl = new Lang.Class({
     },
     
     _configure: function () {
-        let dialog = new this._info.settings(
+        let dialog = new imports.service.plugins[this._name].SettingsDialog(
             this._page,
             this._name,
             this._info,
@@ -302,14 +310,17 @@ var Page = new Lang.Class({
         // Plugins
         let pluginsSection = this.addSection(_("Plugins"));
         
-        for (let [pluginName, pluginInfo] of PluginsWidget.PluginMetadata.entries()) {
-            let pluginWidget = new PluginControl(this, pluginName);
+        // FIXME: supported plugins property
+        log("Name: " + this.device.name);
+        log("Supported Plugins: " + this.device.supportedPlugins);
+        for (let name of this.device.supportedPlugins) {
+            let metadata = imports.service.plugins[name].METADATA;
             
             this.addItem(
                 pluginsSection,
-                pluginInfo.summary,
-                pluginInfo.description,
-                pluginWidget
+                metadata.summary,
+                metadata.description,
+                new PluginControl(this, name)
             );
         }
         

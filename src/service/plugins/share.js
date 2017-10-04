@@ -28,6 +28,8 @@ const PluginsBase = imports.service.plugins.base;
 
 var METADATA = {
     name: "share",
+    summary: _("Share"),
+    description: _("Send and receive files and URLs"),
     incomingPackets: ["kdeconnect.share.request"],
     outgoingPackets: ["kdeconnect.share.request"],
     settings: {
@@ -504,6 +506,53 @@ var Dialog = new Lang.Class({
         if (this.webButton.active && this.webEntry.text.length) {
             this.emit("response", 1);
         }
+    }
+});
+
+
+var SettingsDialog = new Lang.Class({
+    Name: "GSConnectShareSettingsDialog",
+    Extends: PluginsBase.SettingsDialog,
+    
+    _init: function (devicePage, pluginName, pluginInfo, win) {
+        this.parent(devicePage, pluginName, pluginInfo, win);
+        
+        let receivingSection = this.content.addSection(_("Receiving"));
+        
+        let fbutton = new Gtk.FileChooserButton({
+            action: Gtk.FileChooserAction.SELECT_FOLDER,
+            halign: Gtk.Align.END,
+            valign: Gtk.Align.CENTER
+        });
+        fbutton.set_current_folder(this._settings.download_directory);
+        fbutton.connect("current-folder-changed", (button) => {
+            this._settings.download_directory = fbutton.get_current_folder();
+        });
+        this.content.addItem(
+            receivingSection,
+            _("Download location"),
+            _("Choose a location to save received files"),
+            fbutton
+        );
+        
+        let subdirsSwitch = new Gtk.Switch({
+            visible: true,
+            can_focus: true,
+            halign: Gtk.Align.END,
+            valign: Gtk.Align.CENTER,
+            active: this._settings.download_subdirs
+        });
+        subdirsSwitch.connect("notify::active", (widget) => {
+            this._settings.download_subdirs = subdirsSwitch.active;
+        });
+        this.content.addItem(
+            receivingSection,
+            _("Subdirectories"),
+            _("Save files in device subdirectories"),
+            subdirsSwitch
+        );
+        
+        this.content.show_all();
     }
 });
 

@@ -27,6 +27,8 @@ const PluginsBase = imports.service.plugins.base;
 
 var METADATA = {
     name: "ping",
+    summary: _("Ping"),
+    description: _("Send and receive pings"),
     incomingPackets: ["kdeconnect.ping"],
     outgoingPackets: ["kdeconnect.ping"]
 };

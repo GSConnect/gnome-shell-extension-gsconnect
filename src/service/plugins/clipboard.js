@@ -27,6 +27,8 @@ const PluginsBase = imports.service.plugins.base;
 
 var METADATA = {
     name: "clipboard",
+    summary: _("Clipboard"),
+    description: _("Sync the clipboard between devices"),
     incomingPackets: ["kdeconnect.clipboard"],
     outgoingPackets: ["kdeconnect.clipboard"]
 };

@@ -29,9 +29,17 @@ const SMS = imports.service.plugins.sms;
 
 var METADATA = {
     name: "telephony",
+    summary: _("Telephony"),
+    description: _("Send and receive SMS and be notified of phone calls"),
     incomingPackets: ["kdeconnect.telephony"],
     outgoingPackets: ["kdeconnect.telephony.request", "kdeconnect.sms.request"],
-    settings: {}
+    settings: {
+        notify_missedCall: true,
+        notify_ringing: true,
+        notify_sms: true,
+        autoreply_sms: false,
+        notify_talking: true
+    }
 };
 
 
@@ -357,6 +365,109 @@ var Plugin = new Lang.Class({
         });
         
         this.device._channel.send(packet);
+    }
+});
+
+
+var SettingsDialog = new Lang.Class({
+    Name: "GSConnectTelephonySettingsDialog",
+    Extends: PluginsBase.SettingsDialog,
+    
+    _init: function (devicePage, pluginName, pluginInfo, win) {
+        this.parent(devicePage, pluginName, pluginInfo, win);
+        
+        // Phone Calls
+        let callsSection = this.content.addSection(_("Phone Calls"));
+        
+        let notifyMissedCallSwitch = new Gtk.Switch({
+            visible: true,
+            can_focus: true,
+            halign: Gtk.Align.END,
+            valign: Gtk.Align.CENTER,
+            active: this._settings.notify_missedCall
+        });
+        notifyMissedCallSwitch.connect("notify::active", (widget) => {
+            this._settings.notify_missedCall = notifyMissedCallSwitch.active;
+        });
+        this.content.addItem(
+            callsSection,
+            _("Missed call notification"),
+            _("Show a notification for missed calls"),
+            notifyMissedCallSwitch
+        );
+        
+        let notifyRingingSwitch = new Gtk.Switch({
+            visible: true,
+            can_focus: true,
+            halign: Gtk.Align.END,
+            valign: Gtk.Align.CENTER,
+            active: this._settings.notify_ringing
+        });
+        notifyRingingSwitch.connect("notify::active", (widget) => {
+            this._settings.notify_ringing = notifyRingingSwitch.active;
+        });
+        this.content.addItem(
+            callsSection,
+            _("Ringing notification"),
+            _("Show a notification when the phone is ringing"),
+            notifyRingingSwitch
+        );
+        
+        let notifyTalkingSwitch = new Gtk.Switch({
+            visible: true,
+            can_focus: true,
+            halign: Gtk.Align.END,
+            valign: Gtk.Align.CENTER,
+            active: this._settings.notify_talking
+        });
+        notifyTalkingSwitch.connect("notify::active", (widget) => {
+            this._settings.notify_talking = notifyTalkingSwitch.active;
+        });
+        this.content.addItem(
+            callsSection,
+            _("Talking notification"),
+            _("Show a notification when talking on the phone"),
+            notifyTalkingSwitch
+        );
+        
+        // SMS
+        let smsSection = this.content.addSection(_("SMS"));
+        
+        let notifySMSSwitch = new Gtk.Switch({
+            visible: true,
+            can_focus: true,
+            halign: Gtk.Align.END,
+            valign: Gtk.Align.CENTER,
+            active: this._settings.notify_sms
+        });
+        notifySMSSwitch.connect("notify::active", (widget) => {
+            this._settings.notify_sms = notifySMSSwitch.active;
+        });
+        this.content.addItem(
+            smsSection,
+            _("SMS notification"),
+            _("Show a notification when an SMS is received"),
+            notifySMSSwitch
+        );
+        
+        let autoreplySMSSwitch = new Gtk.Switch({
+            visible: true,
+            can_focus: true,
+            halign: Gtk.Align.END,
+            valign: Gtk.Align.CENTER,
+            active: this._settings.autoreply_sms
+        });
+        autoreplySMSSwitch.connect("notify::active", (widget) => {
+            this._settings.autoreply_sms = autoreplySMSSwitch.active;
+        });
+        this.content.addItem(
+            smsSection,
+            _("Autoreply to SMS"),
+            _("Open a new SMS window when an SMS is received"),
+            autoreplySMSSwitch
+        );
+        
+        this.content.show_all();
     }
 });
 

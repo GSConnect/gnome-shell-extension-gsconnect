@@ -2,9 +2,12 @@
 
 // Imports
 const Lang = imports.lang;
+const Gettext = imports.gettext.domain("org.gnome.shell.extensions.gsconnect");
+const _ = Gettext.gettext;
 
 const Gio = imports.gi.Gio;
 const GObject = imports.gi.GObject;
+const Gtk = imports.gi.Gtk;
 
 // Local Imports
 function getPath() {
@@ -18,6 +21,7 @@ imports.searchPath.push(getPath());
 
 const Common = imports.common;
 const Protocol = imports.service.protocol;
+const PreferencesWidget = imports.widgets.preferences;
 
 
 /**
@@ -65,5 +69,45 @@ var Plugin = new Lang.Class({
         delete this._dbus;
         GObject.signal_handlers_destroy(this);
     },
+});
+
+
+var SettingsDialog = new Lang.Class({
+    Name: "GSConnectPluginSettingsDialog",
+    Extends: Gtk.Dialog,
+    
+    _init: function (devicePage, pluginName, pluginInfo, win) {
+        this.parent({
+            title: _("FIXME pluginInfo"),
+            use_header_bar: true,
+            transient_for: win,
+            default_height: 320,
+            default_width: 480
+        });
+        
+        let headerBar = this.get_header_bar();
+        headerBar.title = pluginInfo.summary;
+        headerBar.subtitle = pluginInfo.description;
+        headerBar.show_close_button = false;
+        
+        this.add_button(_("Apply"), Gtk.ResponseType.APPLY);
+        this.add_button(_("Cancel"), Gtk.ResponseType.CANCEL);
+        
+        this._page = devicePage;
+        this._name = pluginName;
+        this._info = pluginInfo;
+        this._settings = this._page.config.plugins[this._name].settings;
+        
+        this.content = new PreferencesWidget.Page({
+            height_request: -1,
+            valign: Gtk.Align.FILL,
+            vexpand: true,
+            can_focus: true,
+            hscrollbar_policy: Gtk.PolicyType.NEVER
+        });
+        this.content.box.margin_left = 40;
+        this.content.box.margin_right = 40;
+        this.get_content_area().add(this.content);
+    }
 });
 

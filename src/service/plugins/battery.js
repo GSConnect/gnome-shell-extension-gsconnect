@@ -27,12 +27,10 @@ const PluginsBase = imports.service.plugins.base;
 
 var METADATA = {
     name: "battery",
+    summary: _("Battery"),
+    description: _("Monitor battery level and charging state"),
     incomingPackets: ["kdeconnect.battery"],
-    outgoingPackets: ["kdeconnect.battery.request"],
-    settings: {
-        threshold_notification: true,
-        threshold_level: -2
-    }
+    outgoingPackets: ["kdeconnect.battery.request"]
 };
 
 

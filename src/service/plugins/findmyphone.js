@@ -2,6 +2,8 @@
 
 // Imports
 const Lang = imports.lang;
+const Gettext = imports.gettext.domain("org.gnome.shell.extensions.gsconnect");
+const _ = Gettext.gettext;
 
 const Gio = imports.gi.Gio;
 
@@ -22,6 +24,8 @@ const PluginsBase = imports.service.plugins.base;
 
 var METADATA = {
     name: "findmyphone",
+    summary: _("Find My Phone"),
+    description: _("Locate device by ringing"),
     incomingPackets: [],
     outgoingPackets: ["kdeconnect.findmyphone.request"]
 };

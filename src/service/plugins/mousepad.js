@@ -27,6 +27,8 @@ const PluginsBase = imports.service.plugins.base;
 
 var METADATA = {
     name: "mousepad",
+    summary: _("Remote Input"),
+    description: _("Control the mouse and keyboard from your device"),
     incomingPackets: ["kdeconnect.mousepad.request"],
     outgoingPackets: []
 };

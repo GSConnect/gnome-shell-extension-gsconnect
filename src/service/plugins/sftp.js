@@ -2,10 +2,13 @@
 
 // Imports
 const Lang = imports.lang;
+const Gettext = imports.gettext.domain("org.gnome.shell.extensions.gsconnect");
+const _ = Gettext.gettext;
 
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
+const Gtk = imports.gi.Gtk;
 
 // Local Imports
 function getPath() {
@@ -24,8 +27,13 @@ const PluginsBase = imports.service.plugins.base;
 
 var METADATA = {
     name: "sftp",
+    summary: _("SFTP"),
+    description: _("Browse remote devices"),
     incomingPackets: ["kdeconnect.sftp"],
-    outgoingPackets: ["kdeconnect.sftp.request"]
+    outgoingPackets: ["kdeconnect.sftp.request"],
+    settings: {
+        automount: false
+    }
 };
 
 
@@ -275,6 +283,37 @@ var Plugin = new Lang.Class({
         this.unmount();
         
         PluginsBase.Plugin.prototype.destroy.call(this);
+    }
+});
+
+
+var SettingsDialog = new Lang.Class({
+    Name: "GSConnectSFTPSettingsDialog",
+    Extends: PluginsBase.SettingsDialog,
+    
+    _init: function (devicePage, pluginName, pluginInfo, win) {
+        this.parent(devicePage, pluginName, pluginInfo, win);
+        
+        let generalSection = this.content.addSection(_("General"));
+        
+        let automountSwitch = new Gtk.Switch({
+            visible: true,
+            can_focus: true,
+            halign: Gtk.Align.END,
+            valign: Gtk.Align.CENTER,
+            active: this._settings.automount
+        });
+        automountSwitch.connect("notify::active", (widget) => {
+            this._settings.automount = automountSwitch.automount;
+        });
+        this.content.addItem(
+            generalSection,
+            _("Auto-mount"),
+            _("Attempt to mount the device as soon as it connects"),
+            automountSwitch
+        );
+        
+        this.content.show_all();
     }
 });
 
