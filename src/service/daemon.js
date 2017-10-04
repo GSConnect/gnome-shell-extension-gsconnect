@@ -192,33 +192,6 @@ var Daemon = new Lang.Class({
     },
     
     /**
-     * Plugin Methods
-     */
-    _readPlugins: function () {
-        let pluginDir = Gio.File.new_for_path(getPath() + "/service/plugins");
-        
-        let fenum = pluginDir.enumerate_children(
-            "standard::name,standard::type,standard::size",
-            Gio.FileQueryInfoFlags.NONE,
-            null
-        );
-    
-        let item, info;
-        let plugins = [];
-    
-        while ((info = fenum.next_file(null))) {
-            let file = fenum.get_child(info);
-            let name = file.get_basename().slice(0, -3);
-            
-            if (imports.service.plugins[name].hasOwnProperty("METADATA")) {
-                plugins.push(imports.service.plugins[name].METADATA.name);
-            }
-        }
-        
-        return plugins.sort();
-    },
-    
-    /**
      * Device Methods
      */
     _addDevice: function (packet) {
@@ -367,7 +340,7 @@ var Daemon = new Lang.Class({
                     }
                 });
                 
-                for (let name of this._readPlugins()) {
+                for (let name of Common.findPlugins()) {
                     let metadata = imports.service.plugins[name].METADATA;
                     
                     for (let packetType of metadata.incomingPackets) {

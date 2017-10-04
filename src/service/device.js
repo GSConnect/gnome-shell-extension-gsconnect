@@ -141,7 +141,7 @@ var Device = new Lang.Class({
     get supportedPlugins () {
         let plugins = [];
         
-        for (let name of this.daemon._readPlugins()) {
+        for (let name of Common.findPlugins()) {
             let incoming = this.identity.body.incomingCapabilities;
             let outgoing = this.identity.body.outgoingCapabilities;
             let metadata = imports.service.plugins[name].METADATA;

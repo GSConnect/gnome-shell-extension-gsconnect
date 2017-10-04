@@ -9,6 +9,15 @@ const Gettext = imports.gettext;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 
+// Local Imports
+function getPath() {
+    // Diced from: https://github.com/optimisme/gjs-examples/
+    let m = new RegExp("@(.+):\\d+").exec((new Error()).stack.split("\n")[1]);
+    return Gio.File.new_for_path(m[1]).get_parent().get_path();
+}
+
+imports.searchPath.push(getPath());
+
 
 // Open the extension preferences window
 function startPreferences() {
@@ -286,6 +295,31 @@ function writeDeviceCache (daemon, deviceId=false) {
             writeDeviceCache(daemon, device.deviceId);
         }
     }
+};
+
+
+function findPlugins () {
+    let pluginDir = Gio.File.new_for_path(getPath() + "/service/plugins");
+    
+    let fenum = pluginDir.enumerate_children(
+        "standard::name,standard::type,standard::size",
+        Gio.FileQueryInfoFlags.NONE,
+        null
+    );
+
+    let item, info;
+    let plugins = [];
+
+    while ((info = fenum.next_file(null))) {
+        let file = fenum.get_child(info);
+        let name = file.get_basename().slice(0, -3);
+        
+        if (imports.service.plugins[name].hasOwnProperty("METADATA")) {
+            plugins.push(imports.service.plugins[name].METADATA.name);
+        }
+    }
+    
+    return plugins.sort();
 };
 
 
