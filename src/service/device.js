@@ -297,8 +297,8 @@ var Device = new Lang.Class({
         let notif = new Notify.Notification({
             app_name: "GSConnect",
             id: packet.id / 1000,
-            summary: _("Pair Request"),
-            body: _("%s is requesting pairing").format(this.name),
+            summary: _("Pair Request from %s").format(this.name),
+            body: _("<b>SHA1 Fingerprint:</b>\n%s").format(this.fingerprint),
             icon_name: "channel-insecure-symbolic"
         });
         
