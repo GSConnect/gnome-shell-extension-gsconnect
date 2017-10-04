@@ -133,8 +133,8 @@ function dbusPathFromId (id) {
 
 
 /**
- * Print a message to the log, prepended with the UUID of the extension, only
- * if the "debug" settings is enabled in GSettings.
+ * If "debug" is enabled in GSettings, Print a message to the log, prepended
+ * with the UUID of the extension.
  * @param {String} msg - the debugging message
  */
 function debug(msg) {
@@ -142,36 +142,6 @@ function debug(msg) {
         log("[" + Me.metadata.uuid + "]: " + msg);
     }
 }
-
-
-/**
- *
- */
-function get_fingerprint (pem) {
-    let args = ["openssl", "x509", "-noout", "-fingerprint", "-sha1", "-inform", "pem"];
-    
-    let proc = GLib.spawn_async_with_pipes(
-        null,                                   // working dir
-        args,                                   // argv
-        null,                                   // envp
-        GLib.SpawnFlags.SEARCH_PATH,            // enables PATH
-        null                                    // child_setup (func)
-    );
-    
-    let stdin = new Gio.DataOutputStream({
-        base_stream: new Gio.UnixOutputStream({ fd: proc[2] })
-    });
-    stdin.put_string(pem, null);
-    stdin.close(null);
-    
-    let stdout = new Gio.DataInputStream({
-        base_stream: new Gio.UnixInputStream({ fd: proc[3] })
-    });
-    let fingerprint = stdout.read_line(null)[0].toString().split("=")[1];
-    stdout.close(null);
-    
-    return fingerprint;
-};
 
 
 var CONFIG_PATH = GLib.get_user_config_dir() + "/gnome-shell-extension-gsconnect";
@@ -216,6 +186,39 @@ function generateEncryption (force=false) {
     
     GLib.spawn_command_line_async("chmod 0600 " + CONFIG_PATH + "/private.pem");
     GLib.spawn_command_line_async("chmod 0600 " + CONFIG_PATH + "/certificate.pem");
+};
+
+
+/**
+ * Get a SHA1 fingerprint for a TLS Certificate
+ *
+ * @param {string} pem - A TLS Certificate in PEM format
+ * @return {string} - A SHA1 fingerprint
+ */
+function getFingerprint (pem) {
+    let args = ["openssl", "x509", "-noout", "-fingerprint", "-sha1", "-inform", "pem"];
+    
+    let proc = GLib.spawn_async_with_pipes(
+        null,                                   // working dir
+        args,                                   // argv
+        null,                                   // envp
+        GLib.SpawnFlags.SEARCH_PATH,            // enables PATH
+        null                                    // child_setup (func)
+    );
+    
+    let stdin = new Gio.DataOutputStream({
+        base_stream: new Gio.UnixOutputStream({ fd: proc[2] })
+    });
+    stdin.put_string(pem, null);
+    stdin.close(null);
+    
+    let stdout = new Gio.DataInputStream({
+        base_stream: new Gio.UnixInputStream({ fd: proc[3] })
+    });
+    let fingerprint = stdout.read_line(null)[0].toString().split("=")[1];
+    stdout.close(null);
+    
+    return fingerprint;
 };
 
 
