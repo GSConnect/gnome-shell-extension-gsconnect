@@ -118,29 +118,31 @@ var ContactCompletion = new Lang.Class({
         let envp = GLib.get_environ();
         envp.push("FOLKS_BACKENDS_DISABLED=telepathy")
         
-        let [res, pid, in_fd, out_fd, err_fd] = GLib.spawn_async_with_pipes(
-            null,                                       // working dir
-            ["python3", Common.Me.path + "/folks.py"],  // argv
-            envp,                                       // envp
-            GLib.SpawnFlags.SEARCH_PATH,                // enables PATH
-            null                                        // child_setup (func)
+        let proc = GLib.spawn_async_with_pipes(
+            null,                                   // working dir
+            ["python3", getPath() + "/folks.py"],   // argv
+            envp,                                   // envp
+            GLib.SpawnFlags.SEARCH_PATH,            // enables PATH
+            null                                    // child_setup (func)
         );
         
-        this._check_folks(err_fd, out_fd);
+        this._check_folks(proc);
     },
     
     /** Check spawned folks.py for errors on stderr */
-    _check_folks: function (err_fd, out_fd) {
+    _check_folks: function (proc) {
         let errstream = new Gio.DataInputStream({
-            base_stream: new Gio.UnixInputStream({ fd: err_fd })
+            base_stream: new Gio.UnixInputStream({ fd: proc[4] })
         });
+        
+        GLib.spawn_close_pid(proc[1]);
     
         errstream.read_line_async(GLib.PRIORITY_LOW, null, (source, res) => {
             let [errline, length] = source.read_line_finish(res);
             
             if (errline === null) {
                 let stream = new Gio.DataInputStream({
-                    base_stream: new Gio.UnixInputStream({ fd: out_fd })
+                    base_stream: new Gio.UnixInputStream({ fd: proc[3] })
                 });
                 
                 this.provider = "avatar-default-symbolic";
@@ -148,7 +150,7 @@ var ContactCompletion = new Lang.Class({
                 
                 this._read_folk(stream)
             } else {
-                log("Folks: " + errline);
+                Common.debug("SMS: Error reading folks.py: " + errline);
                 
                 try {
                     for (let account in this._get_google_accounts()) {
@@ -157,7 +159,7 @@ var ContactCompletion = new Lang.Class({
                         this.notify("provider");
                     }
                 } catch (e) {
-                    log("Google: " + e.message);
+                    Common.debug("SMS: Error reading Google Contacts: " + e);
                 }
             }
         });
