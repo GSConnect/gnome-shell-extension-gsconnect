@@ -322,15 +322,17 @@ var Daemon = new Lang.Class({
     },
     
     _addDevice: function (packet) {
+        Common.debug("Daemon._addDevice(" + packet.body.deviceId + ")");
+        
         let devObjPath = Common.dbusPathFromId(packet.body.deviceId);
         
         if (this._devices.has(devObjPath)) {
-            Common.debug("updating device");
+            Common.debug("Daemon: Updating device");
             
             let device = this._devices.get(devObjPath);
             device.handlePacket(packet);
         } else {
-            Common.debug("creating device");
+            Common.debug("Daemon: Adding device");
             
             let device = new Device.Device(this, packet)
             this._devices.set(devObjPath, device);
