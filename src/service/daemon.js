@@ -304,6 +304,23 @@ var Daemon = new Lang.Class({
         }
     },
     
+    _watchCache: function () {
+        let cacheDir = Gio.File.new_for_path(Common.CONFIG_PATH);
+        this.cacheMonitor = cacheDir.monitor_directory(
+            Gio.FileMonitorFlags.WATCH_MOVES,
+            null
+        );
+        this.cacheMonitor.connect("changed", (monitor, file, ofile, event) => {
+            let dbusPath = Common.dbusPathFromId(file.get_basename());
+            
+            if (this._devices.has(dbusPath) && (event === 2 || event === 10)) {
+                this._removeDevice(dbusPath);
+            } else if (event === 3 || event === 9) {
+                this._readCache();
+            }
+        });
+    },
+    
     _addDevice: function (packet) {
         let devObjPath = Common.dbusPathFromId(packet.body.deviceId);
         
@@ -468,6 +485,8 @@ var Daemon = new Lang.Class({
                 this.broadcast();
             }
         });
+        
+        this._watchCache();
         
         // Load cached devices
         for (let identity of this._readCache()) {
