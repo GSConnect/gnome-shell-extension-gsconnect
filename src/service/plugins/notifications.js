@@ -233,8 +233,9 @@ var Plugin = new Lang.Class({
                 Common.debug("Notifications: our request is being answered");
             }
             
-            // FIXME: this is causing a hang at daemon startup (sometimes)
-            note.show();
+            if (Notify.is_initted()) {
+                note.show();
+            }
         }
     },
     
