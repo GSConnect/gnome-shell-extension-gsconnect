@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+ <rect width="14" height="30.01" x="17" y="8.993" rx="2.069" style="fill:#5aa9e1;fill-opacity:1;stroke:none"/>
+ <path d="m 20 37 8 -26 3 0 0 26 z" style="fill:#fdf6e3;fill-opacity:0.189;stroke:none"/>
+ <rect width="4" height="2" x="22" y="37" rx="1" style="fill:#002b36;fill-opacity:1;stroke:none"/>
+ <rect width="8" height="3" x="20" y="9" rx="1" style="fill:#002b36;fill-opacity:1;stroke:none"/>
+ <g transform="translate(0 -1004.3622)" style="fill:#073642">
+  <path d="m 18.625 8 c -1.434 0 -2.625 1.159 -2.625 2.594 l 0 26.781 c 0 1.434 1.191 2.625 2.625 2.625 l 10.75 0 c 1.434 0 2.625 -1.191 2.625 -2.625 l 0 -26.781 c 0 -1.435 -1.191 -2.594 -2.625 -2.594 l -10.75 0 z m 3.875 2 l 3 0 c 0.277 0 0.5 0.223 0.5 0.5 c 0 0.277 -0.223 0.5 -0.5 0.5 l -3 0 c -0.277 0 -0.5 -0.223 -0.5 -0.5 c 0 -0.277 0.223 -0.5 0.5 -0.5 z m -4.5 2 l 12 0 l 0 24 l -12 0 l 0 -24 z m 6 25 c 0.552 0 1 0.448 1 1 c 0 0.552 -0.448 1 -1 1 c -0.552 0 -1 -0.448 -1 -1 c 0 -0.552 0.448 -1 1 -1 z" transform="translate(0 1004.3622)" style="color:#000"/>
+ </g>
+ <rect width="2" height="32" x="28" y="8" style="fill:#eee8d5;fill-opacity:0.149;stroke:none"/>
+</svg>
