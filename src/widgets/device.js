@@ -128,14 +128,36 @@ var Stack = new Lang.Class({
         
         this.devices = new Map();
         
-        this.stack = new Gtk.Stack({
-            transition_type: Gtk.StackTransitionType.SLIDE_UP_DOWN,
-            halign: Gtk.Align.FILL,
-            valign: Gtk.Align.FILL,
-            hexpand: true,
-            vexpand: true
+        // InfoBar
+        this.deleted = null;
+        
+        this.infoBar = new Gtk.InfoBar({
+            message_type: Gtk.MessageType.INFO,
+            show_close_button: true
+        });
+        this.infoBar.get_content_area().add(
+            new Gtk.Image({ icon_name: "dialog-info-symbolic" })
+        );
+        this.infoBar.label = new Gtk.Label({ label: "" });
+        this.infoBar.get_content_area().add(this.infoBar.label);
+        this.infoBar.add_button(_("Undo"), 1);
+        
+        this.infoBar.connect("response", (widget, response) => {
+            if (response === 1 && this.deleted !== null) {
+                this.deleted[0].move(
+                    this.deleted[1],
+                    Gio.FileCopyFlags.NONE,
+                    null,
+                    null
+                );
+            }
+            
+            this.deleted = null;
+            this.infoBar.hide();
+            this.remove(this.infoBar);
         });
         
+        // Page Switcher
         this.sidebar = new Gtk.ListBox();
         
         let sidebarScrolledWindow = new Gtk.ScrolledWindow({
@@ -144,8 +166,17 @@ var Stack = new Lang.Class({
         });
         sidebarScrolledWindow.add(this.sidebar);
         
-        this.attach(sidebarScrolledWindow, 0, 0, 1, 1);
-        this.attach(this.stack, 1, 0, 1, 1);
+        this.attach(sidebarScrolledWindow, 0, 1, 1, 1);
+        
+        // Page Stack
+        this.stack = new Gtk.Stack({
+            transition_type: Gtk.StackTransitionType.SLIDE_UP_DOWN,
+            halign: Gtk.Align.FILL,
+            valign: Gtk.Align.FILL,
+            hexpand: true,
+            vexpand: true
+        });
+        this.attach(this.stack, 1, 1, 1, 1);
         
         // Default Page
         let page = new Gtk.Box({
@@ -223,7 +254,7 @@ var Stack = new Lang.Class({
         row.show_all();
         
         // Device Page
-        let page = new Page(device);
+        let page = new Page(device, this);
         this.stack.add_titled(page, device.id, device.name);
         
         // Tracking
@@ -248,17 +279,17 @@ var Page = new Lang.Class({
     Name: "GSConnectDevicePage",
     Extends: PreferencesWidget.Page,
     
-    _init: function (device) {
+    _init: function (device, stack) {
         this.parent();
         this.box.margin_left = 40;
         this.box.margin_right = 40;
+        
+        this.stack = stack;
         
         this.device = device;
         this.config = Common.readDeviceConfiguration(device.id);
         
         // Status
-        // TODO: fingerprint
-        //       remove device
         let statusSection = this.addSection();
         let statusRow = this.addRow(statusSection);
         
@@ -314,6 +345,45 @@ var Page = new Lang.Class({
         });
         this.device.notify("connected");  
         deviceControls.add(pairButton);
+        
+        // Remove Button
+        let removeButton = new Gtk.Button({
+            image: Gtk.Image.new_from_icon_name(
+                "user-trash-symbolic",
+                Gtk.IconSize.BUTTON
+            )
+        });
+        
+        // See: https://bugzilla.gnome.org/show_bug.cgi?id=710888
+        removeButton.connect("clicked", () => {
+            // Watch trash so we can catch the dir
+            let trash = Gio.File.new_for_uri("trash://")
+            let monitor = trash.monitor_directory(0, null);
+            let deviceDir = Gio.File.new_for_path(
+                Common.CONFIG_PATH + "/" + this.device.id
+            );
+            
+            monitor.connect("changed", (monitor, trashedDir, event_type) => {
+                let info = trashedDir.query_info("trash::*", 0, null);
+                let path = info.get_attribute_byte_string("trash::orig-path");
+                
+                if (path === deviceDir.get_path()) {
+                    this.stack.deleted = [trashedDir, deviceDir];
+                    monitor.cancel();
+                }
+            });
+            
+            deviceDir.trash(null);
+            
+            // Show the infobar
+            this.stack.infoBar.label.set_label(
+                _("Deleted '%s'").format(this.device.name)
+            );
+            this.stack.attach(this.stack.infoBar, 0, 0, 2, 1);
+            this.stack.infoBar.show_all();
+        });
+        deviceControls.add(removeButton);
+        deviceControls.set_child_non_homogeneous(removeButton, true);
         
         // Plugins
         let pluginsSection = this.addSection(_("Plugins"));
