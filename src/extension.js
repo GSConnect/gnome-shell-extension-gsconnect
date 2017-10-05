@@ -720,16 +720,17 @@ var SystemIndicator = new Lang.Class({
         // Extension Menu -> (Stop) Discover Devices Item
         this.scanItem = this.extensionMenu.menu.addAction(_("Discover Devices"), () => {
             this.daemon.discover("manager", 15);
-            this.scanItem.label.text = _("Discovering Devices");
-            this.scanItem.actor.reactive = false;
-            
-            GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, 15, () => {
-                this.scanItem.label.text = _("Discover Devices");
-                this.scanItem.actor.reactive = true;
-                
-                return false;
-            });
         });
+        this.daemon.connect("notify::discovering", () => {
+            if (this.daemon.discovering) {
+                this.scanItem.actor.reactive = false;
+                this.scanItem.label.text = _("Discovering Devices");
+            } else {
+                this.scanItem.actor.reactive = true;
+                this.scanItem.label.text = _("Discover Devices");
+            }
+        });
+        this.daemon.notify("discovering");
         this.extensionMenu.menu.box.set_child_at_index(this.scanItem.actor, 1);
         
         // Add currently managed devices
