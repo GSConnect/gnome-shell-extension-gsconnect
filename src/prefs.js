@@ -154,6 +154,7 @@ var PrefsWidget = new Lang.Class({
 function init() {
     Common.initConfiguration();
     Common.initTranslations();
+    Gtk.IconTheme.get_default().add_resource_path("/icons");
 }
 
 // Extension Preferences
