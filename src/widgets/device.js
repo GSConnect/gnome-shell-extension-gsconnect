@@ -432,9 +432,6 @@ var Page = new Lang.Class({
         keyRow.grid.attach(keyView, 0, 0, 1, 1);
         
         this.show_all();
-        
-        // Remove etc
-        let deleteSection = this.addSection(_("Management"));
     },
     
     _refresh: function () {
