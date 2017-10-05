@@ -387,6 +387,9 @@ var Daemon = new Lang.Class({
         // Notifications
         Notify.init("org.gnome.shell.extensions.gsconnect.daemon");
         
+        // Icon Fallbacks
+        Gtk.IconTheme.get_default().add_resource_path("/icons");
+        
         // Debug Mode
         if (Common.Settings.get_boolean("debug")) {
             GLib.setenv("G_MESSAGES_DEBUG", "all", true);

@@ -57,34 +57,29 @@ var Plugin = new Lang.Class({
     Signals: {
         "missedCall": {
             flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED,
-            // phoneNumber, contactName
             param_types: [GObject.TYPE_STRING, GObject.TYPE_STRING]
         },
         "ringing": {
             flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED,
-            // phoneNumber, contactName
             param_types: [GObject.TYPE_STRING, GObject.TYPE_STRING]
         },
         "sms": {
             flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED,
             param_types: [
-                GObject.TYPE_STRING,    // phoneNumber
-                GObject.TYPE_STRING,    // contactName
-                GObject.TYPE_STRING,    // messageBody
-                GObject.TYPE_STRING     // phoneThumbnail
+                GObject.TYPE_STRING,
+                GObject.TYPE_STRING,
+                GObject.TYPE_STRING,
+                GObject.TYPE_STRING
             ]
         },
         "talking": {
             flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED,
-            // phoneNumber, contactName
             param_types: [GObject.TYPE_STRING, GObject.TYPE_STRING]
         }
     },
     
     _init: function (device) {
         this.parent(device, "telephony");
-        
-        Gtk.IconTheme.get_default().add_resource_path("/icons");
         
         this._smsNotifications = new Map();
     },
