@@ -83,7 +83,7 @@ var ContactCompletion = new Lang.Class({
         this._last = null;
         
         // Phone number icons
-        let theme = Gtk.IconTheme.get_default()
+        let theme = Gtk.IconTheme.get_default();
         this.phone_number_default = theme.load_icon("phone-number-default", 0, 0);
         this.phone_number_home = theme.load_icon("phone-number-home", 0, 0);
         this.phone_number_mobile = theme.load_icon("phone-number-mobile", 0, 0);
