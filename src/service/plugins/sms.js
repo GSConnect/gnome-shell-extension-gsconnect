@@ -9,8 +9,7 @@
  */
 
 const Lang = imports.lang;
-const System = imports.system;
-const Gettext = imports.gettext.domain("gnome-shell-extension-gsconnect");
+const Gettext = imports.gettext.domain("org.gnome.shell.extensions.gsconnect");
 const _ = Gettext.gettext;
 
 const GdkPixbuf = imports.gi.GdkPixbuf;
