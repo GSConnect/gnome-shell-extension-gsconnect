@@ -57,7 +57,6 @@ imports.searchPath.push(getPath());
 
 const Common = imports.common;
 
-Common.initTranslations();
 
 /** Phone Number types that support receiving texts */
 
