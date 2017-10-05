@@ -346,6 +346,24 @@ var Daemon = new Lang.Class({
         this._writeCache(packet.body.deviceId);
     },
     
+    // TODO: block reconnects somehow?
+    _removeDevice: function (dbusPath) {
+        Common.debug("Daemon._removeDevice(" + dbusPath + ")");
+        
+        if (this._devices.has(dbusPath)) {
+            let device = this._devices.get(dbusPath);
+            
+            // Remove from devices
+            device.destroy();
+            this._devices.delete(dbusPath);
+        
+            this._dbus.emit_property_changed(
+                "devices",
+                new GLib.Variant("as", this.devices)
+            );
+        }
+    },
+    
     /**
      * Start listening for incoming broadcast packets
      *
