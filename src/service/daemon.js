@@ -54,6 +54,13 @@ var Daemon = new Lang.Class({
             null,
             GObject.ParamFlags.READABLE
         ),
+        "discovering": GObject.ParamSpec.boolean(
+            "discovering",
+            "DiscoveringDevices",
+            "Whether the daemon is discovering devices",
+            GObject.ParamFlags.READABLE,
+            false
+        ),
         "fingerprint": GObject.ParamSpec.string(
             "fingerprint",
             "deviceFingerprint",
@@ -75,7 +82,7 @@ var Daemon = new Lang.Class({
         GLib.set_application_name(application_name);
         
         // FIXME
-        this._discovery = 0
+        this._discovering = 0
         this._discoverers = [];
         
         this.register(null);
@@ -89,8 +96,12 @@ var Daemon = new Lang.Class({
         );
     },
     
-    get devices() {
+    get devices () {
         return Array.from(this._devices.keys());
+    },
+    
+    get discovering () {
+        return (this._discovering > 0);
     },
     
     get fingerprint () {
@@ -232,8 +243,8 @@ var Daemon = new Lang.Class({
             this._discoverers.push(name);
             
             // Only run one source at a time
-            if (this._discovery <= 0) {
-                this._discovery = GLib.timeout_add_seconds(
+            if (this._discovering <= 0) {
+                this._discovering = GLib.timeout_add_seconds(
                     GLib.PRIORITY_DEFAULT,
                     1,
                     () => {
@@ -242,10 +253,23 @@ var Daemon = new Lang.Class({
                             return true;
                         }
                         
-                        GLib.source_remove(this._discovery);
-                        this._discovery = 0;
+                        GLib.source_remove(this._discovering);
+                        this._discovering = 0;
+                
+                        this.notify("discovering");
+                        this._dbus.emit_property_changed(
+                            "discovering",
+                            new GLib.Variant("b", false)
+                        );
+                        
                         return false;
                     }
+                );
+                
+                this.notify("discovering");
+                this._dbus.emit_property_changed(
+                    "discovering",
+                    new GLib.Variant("b", true)
                 );
             }
         }
