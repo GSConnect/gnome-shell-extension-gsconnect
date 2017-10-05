@@ -496,6 +496,13 @@ var Daemon = new Lang.Class({
     Name: "GSConnectDaemonProxy",
     Extends: ProxyBase,
     Properties: {
+        "fingerprint": GObject.ParamSpec.string(
+            "fingerprint",
+            "daemonFingerprint",
+            "SHA1 fingerprint for the device certificate",
+            GObject.ParamFlags.READABLE,
+            ""
+        ),
         "name": GObject.ParamSpec.string(
             "name",
             "DeviceName",
