@@ -254,6 +254,56 @@ var Daemon = new Lang.Class({
     /**
      * Device Methods
      */
+    _readCache: function () {
+        let config_dir = Gio.File.new_for_path(Common.CONFIG_PATH);
+        
+        let fenum = config_dir.enumerate_children(
+            "standard::name,standard::type,standard::size",
+            Gio.FileQueryInfoFlags.NONE,
+            null
+        );
+        
+        let item, info;
+        let devices = [];
+        
+        while ((info = fenum.next_file(null))) {
+            let file = fenum.get_child(info);
+            
+            let identPath = file.get_path() + "/identity.json"
+            
+            if (GLib.file_test(identPath, GLib.FileTest.EXISTS)) {
+                let [success, data] = GLib.file_get_contents(identPath);
+                devices.push(JSON.parse(data));
+            }
+        }
+        
+        return devices;
+    },
+    
+    _writeCache: function (deviceId=false) {
+        if (deviceId) {
+            Common.debug("Daemon: Updating cache for: " + deviceId);
+            
+            let device = this._devices.get(Common.dbusPathFromId(deviceId));
+            
+            let deviceDir = Common.CONFIG_PATH + "/" + device.id;
+            
+            if (!GLib.file_test(deviceDir, GLib.FileTest.IS_DIR)) {
+                GLib.mkdir_with_parents(deviceDir, 493);
+            }
+            
+            // Identity
+            GLib.file_set_contents(
+                deviceDir + "/identity.json",
+                JSON.stringify(device.identity)
+            );
+        } else {
+            for (let device of this._devices.values()) {
+                this._writeCache(device.deviceId);
+            }
+        }
+    },
+    
     _addDevice: function (packet) {
         let devObjPath = Common.dbusPathFromId(packet.body.deviceId);
         
@@ -274,7 +324,7 @@ var Daemon = new Lang.Class({
             );
         }
         
-        Common.writeDeviceCache(this, packet.body.deviceId);
+        this._writeCache(packet.body.deviceId);
     },
     
     /**
@@ -420,7 +470,7 @@ var Daemon = new Lang.Class({
         });
         
         // Load cached devices
-        for (let identity of Common.readDeviceCache()) {
+        for (let identity of this._readCache()) {
             let packet = new Protocol.Packet(identity);
             this._addDevice(packet);
         }

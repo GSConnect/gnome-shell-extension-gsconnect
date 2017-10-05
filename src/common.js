@@ -280,60 +280,6 @@ function initConfiguration() {
 };
 
 
-function readDeviceCache () {
-    let config_dir = Gio.File.new_for_path(CONFIG_PATH);
-    
-    let fenum = config_dir.enumerate_children(
-        "standard::name,standard::type,standard::size",
-        Gio.FileQueryInfoFlags.NONE,
-        null
-    );
-    
-    let item, info;
-    let devices = [];
-    
-    while ((info = fenum.next_file(null))) {
-        let file = fenum.get_child(info);
-        
-        let identPath = file.get_path() + "/identity.json"
-        
-        if (GLib.file_test(identPath, GLib.FileTest.EXISTS)) {
-            let [success, data] = GLib.file_get_contents(identPath);
-            devices.push(JSON.parse(data));
-        }
-    }
-    
-    return devices;
-};
-
-
-function writeDeviceCache (daemon, deviceId=false) {
-    if (deviceId) {
-        log("updating cache for: " + deviceId);
-        
-        let device = daemon._devices.get(dbusPathFromId(deviceId));
-        
-        let deviceDir = CONFIG_PATH + "/" + deviceId;
-        
-        if (!GLib.file_test(deviceDir, GLib.FileTest.IS_DIR)) {
-            GLib.mkdir_with_parents(deviceDir, 493);
-        }
-        
-        // Identity
-        GLib.file_set_contents(
-            deviceDir + "/identity.json",
-            JSON.stringify(device.identity),
-            JSON.stringify(device.identity).length,
-            null
-        );
-    } else {
-        for (let device of daemon._devices.values()) {
-            writeDeviceCache(daemon, device.deviceId);
-        }
-    }
-};
-
-
 function findPlugins () {
     let pluginDir = Gio.File.new_for_path(getPath() + "/service/plugins");
     
