@@ -47,7 +47,7 @@ var PrefsWidget = new Lang.Class({
     },
     
     _serviceAppeared: function (conn, name, name_owner, cb_data) {
-        Common.debug("extension.SystemIndicator._serviceAppeared()");
+        Common.debug("PrefsWidget._serviceAppeared()");
         
         if (!this.daemon) {
             this.daemon = new Client.Daemon();
@@ -70,7 +70,7 @@ var PrefsWidget = new Lang.Class({
     },
     
     _serviceVanished: function (conn, name, name_owner, cb_data) {
-        Common.debug("extension.SystemIndicator._serviceVanished()");
+        Common.debug("PrefsWidget._serviceVanished()");
         
         if (this.daemon) {
             this.daemon.destroy();
