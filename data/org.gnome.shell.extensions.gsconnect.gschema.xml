@@ -36,11 +36,6 @@
       <summary>Nautilus Integration</summary>
       <description>Send files from the file browser context menu</description>
     </key>
-    <key name="persistent-discovery" type="b">
-      <default>false</default>
-      <summary>Persistent Discovery</summary>
-      <description>Constantly probe the network for devices</description>
-    </key>
     <key name="public-name" type="s">
       <default>"GSConnect"</default>
       <summary>Public Name</summary>

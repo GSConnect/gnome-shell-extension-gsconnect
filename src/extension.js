@@ -748,15 +748,6 @@ var SystemIndicator = new Lang.Class({
             "device::removed",
             Lang.bind(this, this._deviceRemoved)
         );
-        
-        // FIXME
-//        // Persistent Scanning
-//        Settings.connect(
-//            "changed::persistent-discovery",
-//            Lang.bind(this, this._persistentDiscovery)
-//        );
-//        
-//        this._persistentDiscovery();
     },
     
     // The DBus interface has vanished
@@ -879,16 +870,6 @@ var SystemIndicator = new Lang.Class({
                     )
                 );
             }
-        }
-    },
-    
-    _persistentDiscovery: function () {
-        let persist = Settings.get_boolean("persistent-discovery");
-    
-        if (persist && !this.daemon._scans.has("persistent")) {
-            this.daemon.scan("persistent", 0);
-        } else if (!persist && this.daemon._scans.has("persistent")) {
-            this.daemon.scan("persistent", 0);
         }
     },
     

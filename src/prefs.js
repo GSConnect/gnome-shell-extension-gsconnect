@@ -128,7 +128,6 @@ var PrefsWidget = new Lang.Class({
         let servicePage = this.addPage("service", _("Service"));
         let serviceSection = servicePage.addSection(_("Service"));
         servicePage.addSetting(serviceSection, "public-name");
-        servicePage.addSetting(serviceSection, "persistent-discovery");
         
         let restartButton = new Gtk.Button({
             label: _("Restart"),
