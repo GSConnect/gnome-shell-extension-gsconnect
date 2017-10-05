@@ -496,6 +496,13 @@ var Daemon = new Lang.Class({
     Name: "GSConnectDaemonProxy",
     Extends: ProxyBase,
     Properties: {
+        "discovering": GObject.ParamSpec.boolean(
+            "discovering",
+            "DiscoveringDevices",
+            "Whether the daemon is discovering devices",
+            GObject.ParamFlags.READABLE,
+            false
+        ),
         "fingerprint": GObject.ParamSpec.string(
             "fingerprint",
             "daemonFingerprint",
@@ -543,6 +550,7 @@ var Daemon = new Lang.Class({
         this._devicesChanged();
     },
     
+    get discovering () { return this._get("discovering"); },
     get fingerprint () { return this._get("fingerprint"); },
     get name () { return this._get("name"); },
     set name (name) { this._set("name", name); },
