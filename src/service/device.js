@@ -539,6 +539,16 @@ var Device = new Lang.Class({
     reloadPlugins: function () {
         this._unloadPlugins();
         this._loadPlugins();
+    },
+    
+    destroy: function () {
+        if (this._channel !== null) {
+            this._channel.close();
+        }
+        
+        this._dbus.flush();
+        this._dbus.unexport();
+        delete this._dbus;
     }
 });
 
