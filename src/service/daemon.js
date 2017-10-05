@@ -426,7 +426,7 @@ var Daemon = new Lang.Class({
         }
         log(this._devices.size + " devices loaded from cache");
         
-        this.discover("daemon", 5)
+        this.broadcast();
     },
 
     vfunc_activate: function() {
