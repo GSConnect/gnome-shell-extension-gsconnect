@@ -146,12 +146,13 @@ var Device = new Lang.Class({
         return GLib.file_test(this.config_cert, GLib.FileTest.EXISTS);
     },
     get plugins () { return Array.from(this._plugins.keys()); },
+    // FIXME: still reporting all
     get supportedPlugins () {
         let plugins = [];
+        let incoming = this.identity.body.incomingCapabilities;
+        let outgoing = this.identity.body.outgoingCapabilities;
         
         for (let name of Common.findPlugins()) {
-            let incoming = this.identity.body.incomingCapabilities;
-            let outgoing = this.identity.body.outgoingCapabilities;
             let metadata = imports.service.plugins[name].METADATA;
             let supported = false;
             
