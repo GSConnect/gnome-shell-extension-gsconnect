@@ -130,6 +130,19 @@ var PrefsWidget = new Lang.Class({
         servicePage.addSetting(serviceSection, "public-name");
         servicePage.addSetting(serviceSection, "persistent-discovery");
         
+        let restartButton = new Gtk.Button({
+            label: _("Restart"),
+            halign: Gtk.Align.END,
+            valign: Gtk.Align.CENTER
+        });
+        restartButton.connect("clicked", Common.stopService);
+        servicePage.addItem(
+            serviceSection,
+            _("Restart Service"),
+            _("Stop the service and let the extension restart it"),
+            restartButton
+        );
+        
         // About/Advanced
         let advancedPage = this.addPage("advanced", _("Advanced"));
         let develSection = advancedPage.addSection(_("Development"));
