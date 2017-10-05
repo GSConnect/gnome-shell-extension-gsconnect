@@ -549,6 +549,7 @@ var Device = new Lang.Class({
         this._dbus.flush();
         this._dbus.unexport();
         delete this._dbus;
+        GObject.signal_handlers_destroy(this);
     }
 });
 
