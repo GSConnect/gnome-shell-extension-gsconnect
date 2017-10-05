@@ -543,6 +543,7 @@ var Daemon = new Lang.Class({
         this._devicesChanged();
     },
     
+    get fingerprint () { return this._get("fingerprint"); },
     get name () { return this._get("name"); },
     set name (name) { this._set("name", name); },
     
