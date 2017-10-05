@@ -254,6 +254,7 @@ var Daemon = new Lang.Class({
     /**
      * Device Methods
      */
+    // FIXME: error checking
     _readCache: function () {
         let config_dir = Gio.File.new_for_path(Common.CONFIG_PATH);
         
@@ -273,11 +274,10 @@ var Daemon = new Lang.Class({
             
             if (GLib.file_test(identPath, GLib.FileTest.EXISTS)) {
                 let [success, data] = GLib.file_get_contents(identPath);
-                devices.push(JSON.parse(data));
+                let packet = new Protocol.Packet(data.toString());
+                this._addDevice(packet);
             }
         }
-        
-        return devices;
     },
     
     _writeCache: function (deviceId=false) {
@@ -489,10 +489,7 @@ var Daemon = new Lang.Class({
         this._watchCache();
         
         // Load cached devices
-        for (let identity of this._readCache()) {
-            let packet = new Protocol.Packet(identity);
-            this._addDevice(packet);
-        }
+        this._readCache();
         log(this._devices.size + " devices loaded from cache");
         
         this.broadcast();
