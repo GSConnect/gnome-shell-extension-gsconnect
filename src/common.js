@@ -19,7 +19,9 @@ function getPath() {
 imports.searchPath.push(getPath());
 
 
-// Open the extension preferences window
+/**
+ * Open the extension preferences window
+ */
 function startPreferences () {
     try {
         GLib.spawn_command_line_async(
@@ -31,6 +33,9 @@ function startPreferences () {
 };
 
 
+/**
+ * Kill the service daemon
+ */
 function stopService () {
     try {
         GLib.spawn_command_line_async(
