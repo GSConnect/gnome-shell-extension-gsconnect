@@ -84,8 +84,6 @@ var Plugin = new Lang.Class({
     },
 
     _onNameOwnerChanged: function(proxy, sender, [name, oldOwner, newOwner]) {
-        Common.debug("MPRIS: _onNameOwnerChanged()");
-        
         if (name.startsWith("org.mpris.MediaPlayer2")) {
             this._updatePlayers();
         }
