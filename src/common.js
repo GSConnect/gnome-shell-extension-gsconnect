@@ -137,7 +137,7 @@ var DBusProxy = {
 
 function dbusPathFromId (id) {
     let basePath = "/org/gnome/shell/extensions/gsconnect/device/";
-    let dbusPath = basePath + id.replace("/W+/g", "_");
+    let dbusPath = basePath + id.replace(/\W+/g, "_");
     
     return dbusPath;
 };
@@ -306,8 +306,7 @@ function writeDeviceCache (daemon, deviceId=false) {
     if (deviceId) {
         log("updating cache for: " + deviceId);
         
-        let devObjPath = "/org/gnome/shell/extensions/gsconnect/device/";
-        let device = daemon._devices.get(devObjPath + deviceId);
+        let device = daemon._devices.get(dbusPathFromId(deviceId));
         
         let deviceDir = CONFIG_PATH + "/" + deviceId;
         
