@@ -81,7 +81,5 @@ gnome.compile_resources(
 )
 
 # Gettext Translations
-if run_command('[', '-e', 'po/meson.build', ']').returncode() == 0
-    subdir('po')
-endif
+subdir('po')
 

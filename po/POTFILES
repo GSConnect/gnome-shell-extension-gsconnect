@@ -1,7 +1,23 @@
 src/extension.js
+src/nautilus-gsconnect.py
 src/prefs.js
-src/share.js
-src/sms.js
-src/nautilus-send-mconnect.py
-data/org.gnome.shell.extensions.mconnect.gschema.xml
+src/service/daemon.js
+src/service/device.js
+src/service/plugins/base.js
+src/service/plugins/battery.js
+src/service/plugins/clipboard.js
+src/service/plugins/findmyphone.js
+src/service/plugins/mousepad.js
+src/service/plugins/mpris.js
+src/service/plugins/notifications.js
+src/service/plugins/ping.js
+src/service/plugins/runcommand.js
+src/service/plugins/sftp.js
+src/service/plugins/share.js
+src/service/plugins/sms.js
+src/service/plugins/telephony.js
+src/widgets/device.js
+src/widgets/gsettings.js
+src/widgets/keybindings.js
+data/org.gnome.shell.extensions.gsconnect.gschema.xml
 
