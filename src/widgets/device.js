@@ -377,7 +377,7 @@ var Page = new Lang.Class({
             );
             
             monitor.connect("changed", (monitor, trashedDir, event_type) => {
-                let info = trashedDir.query_info("trash::*", 0, null);
+                let info = trashedDir.query_info("trash::orig-path", 0, null);
                 let path = info.get_attribute_byte_string("trash::orig-path");
                 
                 if (path === deviceDir.get_path()) {
