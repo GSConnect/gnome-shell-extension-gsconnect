@@ -196,18 +196,18 @@ var Plugin = new Lang.Class({
                 this._notifications.delete(packet.body.id);
             }
         } else {
-            let note;
+            let notif;
             
             if (this._notifications.has(packet.body.id)) {
-                note = this._notifications.get(packet.body.id);
+                notif = this._notifications.get(packet.body.id);
                 
-                note.update(
+                notif.update(
                     packet.body.appName,
                     packet.body.ticker,
                     "phone-symbolic"
                 );
             } else {
-                note = new Notify.Notification({
+                notif = new Notify.Notification({
                     app_name: "GSConnect",
                     summary: packet.body.appName,
                     body: packet.body.ticker,
@@ -215,13 +215,13 @@ var Plugin = new Lang.Class({
                 });
             
                 if (packet.body.isClearable) {
-                    note.connect(
+                    notif.connect(
                         "closed",
                         Lang.bind(this, this.close, packet.body.id)
                     );
                 }
                 
-                this._notifications.set(packet.body.id, note);
+                this._notifications.set(packet.body.id, notif);
             }
             
             // TODO: play a sound
@@ -233,9 +233,10 @@ var Plugin = new Lang.Class({
                 Common.debug("Notifications: our request is being answered");
             }
             
-            if (Notify.is_initted()) {
-                note.show();
-            }
+            // FIXME: this is causing a hang and eventual error:
+            //            Gio.IOErrorEnum: Timeout was reached
+            //        something to do with libnotify...
+            notif.show();
         }
     },
     
@@ -261,8 +262,8 @@ var Plugin = new Lang.Class({
         // Clear notifications
         this._freeze = true;
         
-        for (let note of this._notifications.values()) {
-            note.close();
+        for (let notif of this._notifications.values()) {
+            notif.close();
         }
         
         // Shutdown listener
