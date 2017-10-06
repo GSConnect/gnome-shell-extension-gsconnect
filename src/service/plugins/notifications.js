@@ -158,7 +158,7 @@ var Plugin = new Lang.Class({
         if (this.settings.send.enabled) {
             if (this.settings.send.applications[appName].enabled) {
                 let packet = new Protocol.Packet({
-                    id: Date.now(),
+                    id: 0,
                     type: "kdeconnect.notification",
                     body: {
                         silent: true,               // TODO
