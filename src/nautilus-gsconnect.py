@@ -19,7 +19,6 @@ import subprocess
 _ = gettext.gettext
 
 LOCALE_DIR = os.path.expanduser("~/.local/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/locale")
-CLI_PATH = os.path.expanduser("~/.local/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/share.js")
 
 
 class GSConnectShareExtension(GObject.GObject, Nautilus.MenuProvider):
@@ -31,7 +30,6 @@ class GSConnectShareExtension(GObject.GObject, Nautilus.MenuProvider):
         try:
             locale.setlocale(locale.LC_ALL, '')
             gettext.bindtextdomain('gsconnect', LOCALE_DIR)
-            gettext.textdomain('gsconnect')
         except:
             pass
         
