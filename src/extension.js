@@ -223,7 +223,7 @@ var ActionTooltip = new Lang.Class({
     },
     
     destroy: function () {
-        // TODO check this is done proper & signal handlers
+        // TODO: check this is done proper & signal handlers
         this.leave();
     }
 });
@@ -370,7 +370,7 @@ var DeviceMenu = new Lang.Class({
             Lang.bind(this, this._statusChanged)
         );
         
-        // TODO: MConnect doesn't call PropertiesChanged on cached devices?
+        // TODO: still need this?
         this._statusChanged(device);
     },
     
