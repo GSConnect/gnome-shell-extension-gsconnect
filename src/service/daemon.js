@@ -3,7 +3,7 @@
 "use strict";
 
 // Imports
-const Gettext = imports.gettext.domain("org.gnome.shell.extensions.gsconnect");
+const Gettext = imports.gettext.domain("gsconnect");
 const _ = Gettext.gettext;
 const Lang = imports.lang;
 const System = imports.system;
@@ -201,7 +201,6 @@ var Daemon = new Lang.Class({
      * Discovery Methods
      *
      * TODO: cleanup discover()
-     * TODO: export a "discovering" property
      * TODO: error check broadcast()?
      */
     broadcast: function () {
@@ -367,7 +366,6 @@ var Daemon = new Lang.Class({
         this._writeCache(packet.body.deviceId);
     },
     
-    // TODO: block reconnects somehow?
     _removeDevice: function (dbusPath) {
         Common.debug("Daemon._removeDevice(" + dbusPath + ")");
         

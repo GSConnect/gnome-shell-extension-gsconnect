@@ -1,7 +1,7 @@
 "use strict";
 
 // Imports
-const Gettext = imports.gettext.domain("gnome-shell-extension-gsconnect");
+const Gettext = imports.gettext.domain("gsconnect");
 const _ = Gettext.gettext;
 const Lang = imports.lang;
 const Mainloop = imports.mainloop;
@@ -317,7 +317,7 @@ var DeviceMenu = new Lang.Class({
         this.shareButton = new ActionButton({
             icon_name: "send-to-symbolic",
             callback: Lang.bind(this, this._shareAction),
-            tooltip_text: _("Send Files")
+            tooltip_text: _("Share File/URL")
         });
         this.pluginBar.actor.add(this.shareButton, { expand: true, x_fill: false });
         
@@ -1048,5 +1048,6 @@ function disable() {
     
     GObject.signal_handlers_destroy(Settings);
     systemIndicator.destroy();
+    // TODO: uninitConfiguration()
 }
 

@@ -2,7 +2,7 @@
 
 const Lang = imports.lang;
 const Mainloop = imports.mainloop;
-const Gettext = imports.gettext.domain("org.gnome.shell.extensions.gsconnect");
+const Gettext = imports.gettext.domain("gsconnect");
 const _ = Gettext.gettext;
 const Gio = imports.gi.Gio;
 const GObject = imports.gi.GObject;

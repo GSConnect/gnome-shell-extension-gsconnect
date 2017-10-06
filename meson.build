@@ -1,15 +1,9 @@
-project(
-  'gnome-shell-extension-gsconnect',
-  'c',
-  version: '1',
-  meson_version: '>= 0.40.1',
-)
+project('gsconnect', 'c', version: '1', meson_version: '>= 0.40.1')
 
 # User Definable Variables
 Name = 'GSConnect'
 Description = 'KDE Connect protocol implementation and integration for Gnome Shell'
-ExtensionId = meson.project_name().split('gnome-shell-extension-')[1]
-UUID = ExtensionId + '@' + 'andyholmes.github.io'
+UUID = meson.project_name() + '@andyholmes.github.io'
 URL = 'https://github.com/andyholmes/gnome-shell-extension-gsconnect'
 Shell = [ '3.24', '3.26' ]
 
@@ -52,13 +46,12 @@ install_subdir('src/widgets', install_dir: extdatadir)
 ext_metadata = configuration_data()
 ext_metadata.set('NAME', Name)
 ext_metadata.set('DESCRIPTION', Description)
-ext_metadata.set('EXTENSION_ID', ExtensionId)
+ext_metadata.set('EXTENSION_ID', meson.project_name())
 ext_metadata.set('UUID', UUID)
 ext_metadata.set('VERSION', meson.project_version())
 ext_metadata.set('URL', URL)
 ext_metadata.set('SHELL_VERSION', '[ "' + '", "'.join(Shell) + '" ]')
-ext_metadata.set('GSCHEMA_ID', 'org.gnome.shell.extensions.' + ExtensionId)
-ext_metadata.set('GETTEXT_DOMAIN', 'org.gnome.shell.extensions.' + ExtensionId)
+ext_metadata.set('APP_ID', 'org.gnome.shell.extensions.' + meson.project_name())
 
 metadata_json = configure_file(
   input: 'data/metadata.json.in',
@@ -73,14 +66,14 @@ install_data(
 
 # GSettings
 install_data(
-    join_paths('data', ext_metadata.get('GSCHEMA_ID') + '.gschema.xml'),
+    join_paths('data', ext_metadata.get('APP_ID') + '.gschema.xml'),
     install_dir: join_paths(extdatadir, 'schemas')
 )
 
 # GResource
 gnome.compile_resources(
-  ext_metadata.get('GSCHEMA_ID'),
-  join_paths('data', ext_metadata.get('GSCHEMA_ID') + '.gresource.xml'),
+  ext_metadata.get('APP_ID'),
+  join_paths('data', ext_metadata.get('APP_ID') + '.gresource.xml'),
   source_dir: 'data',
   gresource_bundle: true,
   install: true,

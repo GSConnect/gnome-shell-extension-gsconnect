@@ -72,7 +72,7 @@ var Me = getCurrentExtension();
 
 
 /**
- * Init GSettings for Me.metadata['gschema-id']
+ * Init GSettings
  */
 let schemaSrc = Gio.SettingsSchemaSource.new_from_directory(
     Me.dir.get_child('schemas').get_path(),
@@ -81,7 +81,7 @@ let schemaSrc = Gio.SettingsSchemaSource.new_from_directory(
 );
 
 var Settings = new Gio.Settings({
-    settings_schema: schemaSrc.lookup(Me.metadata['gschema-id'], true)
+    settings_schema: schemaSrc.lookup(Me.metadata['app-id'], true)
 });
 var Schema = Settings.settings_schema;
 
@@ -91,7 +91,7 @@ var Schema = Settings.settings_schema;
  */
 function initTranslations() {
     Gettext.bindtextdomain(
-        Me.metadata['gettext-domain'],
+        Me.metadata['extension-id'],
         Me.dir.get_child('locale').get_path()
     );
 }
@@ -282,14 +282,9 @@ function initConfiguration() {
 
 function findPlugins () {
     let pluginDir = Gio.File.new_for_path(getPath() + "/service/plugins");
-    
-    let fenum = pluginDir.enumerate_children(
-        "standard::name,standard::type,standard::size",
-        Gio.FileQueryInfoFlags.NONE,
-        null
-    );
+    let fenum = pluginDir.enumerate_children("standard::*", 0, null);
 
-    let item, info;
+    let info;
     let plugins = [];
 
     while ((info = fenum.next_file(null))) {

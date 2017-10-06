@@ -1,14 +1,14 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the gnome-shell-extension-gsconnect package.
+# This file is distributed under the same license as the gsconnect package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-shell-extension-gsconnect\n"
+"Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-10-06 14:28-0700\n"
+"POT-Creation-Date: 2017-10-06 15:35-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,11 +17,11 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/extension.js:298 src/widgets/device.js:436
+#: src/extension.js:298 src/widgets/device.js:437
 msgid "Send SMS"
 msgstr ""
 
-#: src/extension.js:305 src/widgets/device.js:437
+#: src/extension.js:305 src/widgets/device.js:438
 msgid "Locate Device"
 msgstr ""
 
@@ -29,11 +29,11 @@ msgstr ""
 msgid "Browse Files"
 msgstr ""
 
-#: src/extension.js:320 src/widgets/device.js:439
+#: src/extension.js:320 src/widgets/device.js:440
 msgid "Share File/URL"
 msgstr ""
 
-#: src/extension.js:461 src/widgets/device.js:368
+#: src/extension.js:461 src/widgets/device.js:369
 msgid "Attempt Reconnection"
 msgstr ""
 
@@ -82,7 +82,7 @@ msgstr ""
 msgid "Restart"
 msgstr ""
 
-#: src/nautilus-gsconnect.py:98
+#: src/nautilus-gsconnect.py:95
 msgid "Send To Mobile Device"
 msgstr ""
 
@@ -102,7 +102,7 @@ msgid "Files"
 msgstr ""
 
 #. Keyboard Shortcuts
-#: src/prefs.js:100 src/widgets/device.js:432
+#: src/prefs.js:100 src/widgets/device.js:433
 msgid "Keyboard Shortcuts"
 msgstr ""
 
@@ -564,18 +564,19 @@ msgstr ""
 msgid "Open a new SMS window when an SMS is received"
 msgstr ""
 
-#: src/widgets/device.js:143
+#. TRANSLATORS: Undo device removal
+#: src/widgets/device.js:144
 msgid "Undo"
 msgstr ""
 
-#: src/widgets/device.js:196
+#: src/widgets/device.js:197
 msgid ""
 "Ensure that devices are connected on the same local network. Ports between "
 "1716 and 1764 can be used for device connections and ports 1739 to 1764 for "
 "file transfers."
 msgstr ""
 
-#: src/widgets/device.js:205
+#: src/widgets/device.js:206
 msgid ""
 "To connect an Android device, install the KDE Connect Android app from the "
 "<a href=\"https://play.google.com/store/apps/details?id=org.kde.kdeconnect_tp"
@@ -583,7 +584,7 @@ msgid ""
 "fdid=org.kde.kdeconnect_tp\">F-Droid</a>."
 msgstr ""
 
-#: src/widgets/device.js:215
+#: src/widgets/device.js:216
 msgid ""
 "Please see the <a href=\"https://github.com/andyholmes/gnome-shell-extension-"
 "gsconnect/wiki\">Wiki</a> for help or <a href =\"https://github.com/"
@@ -591,23 +592,23 @@ msgid ""
 "Github to report a problem."
 msgstr ""
 
-#: src/widgets/device.js:354
+#: src/widgets/device.js:355
 msgid "Unpair"
 msgstr ""
 
 #. TRANSLATORS: Unpair <b>Device Name</b> Device Type
 #. (eg. "Unpair <b>Google Pixel</b> Smartphone")
-#: src/widgets/device.js:358
+#: src/widgets/device.js:359
 #, javascript-format
 msgid "Unpair <b>%s</b> %s"
 msgstr ""
 
-#: src/widgets/device.js:361
+#: src/widgets/device.js:362
 msgid "Pair"
 msgstr ""
 
 #. TRANSLATORS: FIXME
-#: src/widgets/device.js:364
+#: src/widgets/device.js:365
 #, javascript-format
 msgid ""
 "Pair <b>%s</b> %s\n"
@@ -616,52 +617,52 @@ msgid ""
 "%s"
 msgstr ""
 
-#: src/widgets/device.js:367
+#: src/widgets/device.js:368
 msgid "Connect"
 msgstr ""
 
 #. TRANSLATORS: FIXME
-#: src/widgets/device.js:381
+#: src/widgets/device.js:382
 #, javascript-format
 msgid "Remove <b>%s</b> and its configuration"
 msgstr ""
 
 #. TRANSLATORS: FIXME
-#: src/widgets/device.js:409
+#: src/widgets/device.js:410
 #, javascript-format
 msgid "Removed <b>%s</b> and its configuration"
 msgstr ""
 
 #. Plugins
-#: src/widgets/device.js:418
+#: src/widgets/device.js:419
 msgid "Plugins"
 msgstr ""
 
-#: src/widgets/device.js:435
+#: src/widgets/device.js:436
 msgid "Open Device Menu"
 msgstr ""
 
-#: src/widgets/device.js:438
+#: src/widgets/device.js:439
 msgid "Browse Device"
 msgstr ""
 
-#: src/widgets/device.js:474
+#: src/widgets/device.js:475
 msgid "Desktop"
 msgstr ""
 
-#: src/widgets/device.js:479
+#: src/widgets/device.js:480
 msgid "Laptop"
 msgstr ""
 
-#: src/widgets/device.js:484
+#: src/widgets/device.js:485
 msgid "Smartphone"
 msgstr ""
 
-#: src/widgets/device.js:489
+#: src/widgets/device.js:490
 msgid "Tablet"
 msgstr ""
 
-#: src/widgets/device.js:494
+#: src/widgets/device.js:495
 msgid "Unknown"
 msgstr ""
 
