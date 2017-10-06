@@ -1033,8 +1033,6 @@ function init() {
     Common.debug("initializing extension");
     
     Common.initConfiguration();
-    Common.initTranslations();
-    Gtk.IconTheme.get_default().add_resource_path("/icons");
 }
 
 function enable() {

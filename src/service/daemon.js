@@ -493,9 +493,6 @@ var Daemon = new Lang.Class({
         // Notifications
         Notify.init("org.gnome.shell.extensions.gsconnect.daemon");
         
-        // Icon Fallbacks
-        Gtk.IconTheme.get_default().add_resource_path("/icons");
-        
         // Export DBus
         let iface = "org.gnome.shell.extensions.gsconnect.daemon";
         this._dbus = Gio.DBusExportedObject.wrapJSObject(
