@@ -27,7 +27,6 @@ var Page = new Lang.Class({
     
     _init: function (params={}) {
         params = Object.assign({
-            height_request: 400,
             can_focus: true,
             visible: true,
             hscrollbar_policy: Gtk.PolicyType.NEVER
@@ -99,7 +98,7 @@ var Page = new Lang.Class({
         // Row
         let row = new Gtk.ListBoxRow({
             visible: true,
-            can_focus: true,
+            can_focus: false,
             activatable: false,
             selectable: false
         });
