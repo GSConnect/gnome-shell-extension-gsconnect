@@ -73,11 +73,11 @@ var SettingsDialog = new Lang.Class({
     Name: "GSConnectPluginSettingsDialog",
     Extends: Gtk.Dialog,
     
-    _init: function (devicePage, pluginName, pluginInfo, win) {
+    _init: function (devicePage, pluginName, pluginInfo, parentWindow) {
         this.parent({
-            title: _("FIXME pluginInfo"),
+            title: pluginInfo.summary,
             use_header_bar: true,
-            transient_for: win,
+            transient_for: parentWindow,
             default_height: 320,
             default_width: 480
         });
