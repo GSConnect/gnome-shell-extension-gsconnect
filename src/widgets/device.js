@@ -192,7 +192,7 @@ var Stack = new Lang.Class({
         });
         
         let label1 = new Gtk.Label({
-            label: _("Ensure that devices are connected on the same local network with ports 1714 to 1764 open. If you wish to connect an Android device, install the KDE Connect Android app <a href=\"https://play.google.com/store/apps/details?id=org.kde.kdeconnect_tp\">Google Play Store</a> or <a href=\"https://f-droid.org/repository/browse/?fdid=org.kde.kdeconnect_tp\">F-Droid</a>."),
+            label: _("Ensure that devices are connected on the same local network with ports 1716 to 1764 open. If you wish to connect an Android device, install the KDE Connect Android app <a href=\"https://play.google.com/store/apps/details?id=org.kde.kdeconnect_tp\">Google Play Store</a> or <a href=\"https://f-droid.org/repository/browse/?fdid=org.kde.kdeconnect_tp\">F-Droid</a>."),
             wrap: true,
             use_markup: true,
             vexpand: true,
