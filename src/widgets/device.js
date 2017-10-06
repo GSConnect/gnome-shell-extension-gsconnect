@@ -162,7 +162,8 @@ var Stack = new Lang.Class({
         
         let sidebarScrolledWindow = new Gtk.ScrolledWindow({
             can_focus: true,
-            hscrollbar_policy: Gtk.PolicyType.NEVER
+            hscrollbar_policy: Gtk.PolicyType.NEVER,
+            shadow_type: Gtk.ShadowType.IN
         });
         sidebarScrolledWindow.add(this.sidebar);
         
@@ -388,7 +389,7 @@ var Page = new Lang.Class({
             
             deviceDir.trash(null);
             
-            // Show the infobar
+            // EAFP!
             this.stack.infobar.label.set_label(
                 _("Removed <b>%s</b> and its configuration").format(this.device.name)
             );
@@ -475,3 +476,4 @@ var DeviceType = new Map([
         symbolic_icon: "tablet-symbolic"
     }],
 ]);
+
