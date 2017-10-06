@@ -546,8 +546,12 @@ var Device = new Lang.Class({
     },
     
     destroy: function () {
-        if (this._channel !== null) {
+        if (this.connected) {
             this._channel.close();
+        }
+        
+        for (let [name, plugin] of this._plugins) {
+            plugin.destroy();
         }
         
         this._dbus.flush();
