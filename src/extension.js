@@ -611,6 +611,7 @@ var DeviceIndicator = new Lang.Class({
         
         // Indicator Icon
         let icon = (type === "phone") ? "smartphone" : type;
+        icon = (type === "desktop") ? "computer" : icon;
         
         if (paired && connected) {
             this.icon.icon_name = icon + "-connected";
