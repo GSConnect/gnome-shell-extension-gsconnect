@@ -182,10 +182,10 @@ var Stack = new Lang.Class({
         let page = new Gtk.Box({
             visible: true,
             can_focus: true,
-            margin_left: 12,
-            margin_top: 12,
-            margin_bottom: 12,
-            margin_right: 12,
+            margin_left: 24,
+            margin_top: 24,
+            margin_bottom: 24,
+            margin_right: 24,
             spacing: 12,
             valign: Gtk.Align.CENTER,
             orientation: Gtk.Orientation.VERTICAL
@@ -242,13 +242,15 @@ var Stack = new Lang.Class({
         });
         row.add(row.grid);
         
-        let icon = Gtk.Image.new_from_icon_name(device.type, Gtk.IconSize.LARGE_TOOLBAR);
-        row.grid.attach(icon, 0, 0, 1, 2);
+        let metadata = DeviceType.get(device.type);
+        
+        let icon = Gtk.Image.new_from_icon_name(
+            metadata.icon,
+            Gtk.IconSize.LARGE_TOOLBAR
+        );
+        row.grid.attach(icon, 0, 0, 1, 1);
         let nameLabel = new Gtk.Label({ label: device.name });
         row.grid.attach(nameLabel, 1, 0, 1, 1);
-        let statusLabel = new Gtk.Label({ label: device.type });
-        row.grid.attach(statusLabel, 1, 1, 1, 1);
-        statusLabel.get_style_context().add_class("dim-label");
         this.sidebar.add(row);
         
         row.show_all();
@@ -289,21 +291,34 @@ var Page = new Lang.Class({
         this.device = device;
         this.config = Common.readDeviceConfiguration(device.id);
         
-        // Status
-        let statusSection = this.addSection();
-        let statusRow = this.addRow(statusSection);
+        // Info Section
+        let metadata = DeviceType.get(device.type);
         
-        let deviceIcon = Gtk.Image.new_from_icon_name(
-            device.type,
+        let infoSection = this.addSection();
+        let statusRow = this.addRow(infoSection);
+        
+        // Info Section // Type Icon
+        let typeIcon = Gtk.Image.new_from_icon_name(
+            metadata.icon,
             Gtk.IconSize.DIALOG
         );
-        deviceIcon.xalign = 0;
-        statusRow.grid.attach(deviceIcon, 0, 0, 1, 2);
+        typeIcon.xalign = 0;
+        statusRow.grid.attach(typeIcon, 0, 0, 1, 2);
         
-        let deviceName = new Gtk.Label({ label: device.name, xalign: 0 });
-        statusRow.grid.attach(deviceName, 1, 0, 1, 1);
-        let deviceType = new Gtk.Label({ label: device.type, xalign: 0 });
-        statusRow.grid.attach(deviceType, 1, 1, 1, 1);
+        // Info Section // Name and Type Labels
+        let nameLabel = new Gtk.Label({
+            label: device.name,
+            xalign: 0,
+            yalign: 0.75
+        });
+        statusRow.grid.attach(nameLabel, 1, 0, 1, 1);
+        let typeLabel = new Gtk.Label({
+            label: metadata.type,
+            xalign: 0,
+            yalign: 0.25
+        });
+        typeLabel.get_style_context().add_class("dim-label");
+        statusRow.grid.attach(typeLabel, 1, 1, 1, 1);
         
         let deviceControls = new Gtk.ButtonBox({
             halign: Gtk.Align.END,
