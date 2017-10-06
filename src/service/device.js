@@ -217,6 +217,7 @@ var Device = new Lang.Class({
         );
     },
     
+    // TODO: see destroy()
     _onDisconnected: function (channel) {
         log("Disconnected from '" + this.name + "'");
         
@@ -543,10 +544,13 @@ var Device = new Lang.Class({
             this._channel.close();
         }
         
+        // TODO: it would be nice not to have to do this here
         for (let [name, plugin] of this._plugins) {
             plugin.destroy();
         }
         
+        // TODO: this is causing errors to be thrown in _onDisconnected()
+        //       because it gets called before the channel fully closes
         this._dbus.flush();
         this._dbus.unexport();
         delete this._dbus;
