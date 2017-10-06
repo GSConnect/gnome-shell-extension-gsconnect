@@ -42,7 +42,8 @@ var METADATA = {
     ],
     settings: {
         receive: {
-            enabled: true
+            enabled: true,
+            sound: false
         },
         send: {
             enabled: true,
@@ -198,6 +199,7 @@ var Plugin = new Lang.Class({
         } else {
             let notif;
             
+            // This is an update
             if (this._notifications.has(packet.body.id)) {
                 notif = this._notifications.get(packet.body.id);
                 
@@ -206,6 +208,7 @@ var Plugin = new Lang.Class({
                     packet.body.ticker,
                     "phone-symbolic"
                 );
+            // This is a new notification
             } else {
                 notif = new Notify.Notification({
                     app_name: "GSConnect",
@@ -220,23 +223,30 @@ var Plugin = new Lang.Class({
                         Lang.bind(this, this.close, packet.body.id)
                     );
                 }
+            
+                if (this.settings.receive.sound) {
+                    notif.set_hint(
+                        "sound-name",
+                        new GLib.Variant("s", "dialog-information")
+                    );
+                }
                 
                 this._notifications.set(packet.body.id, notif);
             }
             
-            // TODO: play a sound
-            if (!packet.body.silent) {
-                Common.debug("Notifications: incoming notification sound");
-            }
-            
             if (packet.body.requestAnswer) {
-                Common.debug("Notifications: our request is being answered");
+                Common.debug("Notifications: this is an answer to a request");
             }
             
-            // FIXME: this is causing a hang and eventual error:
-            //            Gio.IOErrorEnum: Timeout was reached
-            //        something to do with libnotify...
-            notif.show();
+            /** 
+             * Apparently "silent" means don't show the notification...?
+             *
+             * FIXME: this is sometimes causing a hang and eventual error when
+             *        the daemon is starting: Gio.IOErrorEnum: Timeout was reached
+             */
+            if (!packet.body.silent) {
+                notif.show();
+            }
         }
     },
     
@@ -301,6 +311,23 @@ var SettingsDialog = new Lang.Class({
             _("Receive notifications"),
             _("Enable to receive notifications from other devices"),
             receiveSwitch
+        );
+        
+        let soundSwitch = new Gtk.Switch({
+            visible: true,
+            can_focus: true,
+            halign: Gtk.Align.END,
+            valign: Gtk.Align.CENTER,
+            active: this._settings.receive.sound
+        });
+        soundSwitch.connect("notify::active", (widget) => {
+            this._settings.receive.sound = receiveSwitch.active;
+        });
+        this.content.addItem(
+            receivingSection,
+            _("Notification Sounds"),
+            _("Play a sound when a notification is received"),
+            soundSwitch
         );
         
         // Sending
