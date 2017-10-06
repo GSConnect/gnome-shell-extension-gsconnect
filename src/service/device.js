@@ -227,19 +227,23 @@ var Device = new Lang.Class({
     _onDisconnected: function (channel) {
         log("Disconnected from '" + this.name + "'");
         
-        if (this._channel !== null) {
-            this._channel = null;
+        try {
+            if (this._channel !== null) {
+                this._channel = null;
+            }
+            
+            // This must be done before "connected" is updated
+            this._unloadPlugins();
+        
+            // Notify disconnected
+            this._connected = false;
+            this._dbus.emit_property_changed(
+                "connected",
+                new GLib.Variant("b", this.connected)
+            );
+        } catch (e) {
+            Common.debug("Device: error disconnecting: " + e);
         }
-        
-        // This must be done before "connected" is updated
-        this._unloadPlugins();
-        
-        // Notify disconnected
-        this._connected = false;
-        this._dbus.emit_property_changed(
-            "connected",
-            new GLib.Variant("b", this.connected)
-        );
     },
     
     _onReceived: function (channel, packet) {
