@@ -41,7 +41,7 @@ var PluginControl = new Lang.Class({
         if (this._info.hasOwnProperty("settings")) {
             let settingButton = new Gtk.Button({
                 image: Gtk.Image.new_from_icon_name(
-                    "open-menu-symbolic",
+                    "emblem-system-symbolic",
                     Gtk.IconSize.BUTTON
                 ),
                 visible: true,
