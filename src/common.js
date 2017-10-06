@@ -8,6 +8,7 @@ const Format = imports.format
 const Gettext = imports.gettext;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
+const Gtk = imports.gi.Gtk;
 
 // Local Imports
 function getPath() {
@@ -68,7 +69,11 @@ function getCurrentExtension() {
     };
 }
 
+/**
+ * Some useful constants
+ */
 var Me = getCurrentExtension();
+var CONFIG_PATH = GLib.get_user_config_dir() + "/gnome-shell-extension-gsconnect";
 
 
 /**
@@ -160,9 +165,6 @@ function debug(msg) {
 }
 
 
-var CONFIG_PATH = GLib.get_user_config_dir() + "/gnome-shell-extension-gsconnect";
-
-
 /**
  * Generate a Private/Public Key pair and TLS Certificate
  *
@@ -239,30 +241,32 @@ function getFingerprint (pem) {
 
 
 function installService () {
-    let svc_dir = GLib.get_user_data_dir() + "/dbus-1/services";
-    let svc_name = "/org.gnome.shell.extensions.gsconnect.daemon.service";
+    // DBus service file
+    let serviceDir = GLib.get_user_data_dir() + "/dbus-1/services";
+    let serviceFile = "/org.gnome.shell.extensions.gsconnect.daemon.service";
     
-    if (!GLib.file_test(svc_dir + svc_name, GLib.FileTest.EXISTS)) {
-        GLib.mkdir_with_parents(svc_dir, 493);
+    if (!GLib.file_test(serviceDir + serviceFile, GLib.FileTest.EXISTS)) {
+        GLib.mkdir_with_parents(serviceDir, 493);
     
-        let svc_bytes = Resources.lookup_data(
-            "/dbus" + svc_name, 0
+        let serviceBytes = Resources.lookup_data(
+            "/dbus" + serviceFile, 0
         ).unref_to_array().toString();
         
-        GLib.file_set_contents(svc_dir + svc_name, svc_bytes);
+        GLib.file_set_contents(serviceDir + serviceFile, serviceBytes);
     }
-        
-    let app_dir = GLib.get_user_data_dir() + "/applications";
-    let app_name = "/org.gnome.shell.extensions.gsconnect.daemon.desktop";
     
-    if (!GLib.file_test(app_dir + app_name, GLib.FileTest.EXISTS)) {
-        GLib.mkdir_with_parents(app_dir, 493);
+    // Application desktop file
+    let appDir = GLib.get_user_data_dir() + "/applications";
+    let appFile = "/org.gnome.shell.extensions.gsconnect.daemon.desktop";
     
-        let app_bytes = Resources.lookup_data(
-            "/dbus" + app_name, 0
+    if (!GLib.file_test(appDir + appFile, GLib.FileTest.EXISTS)) {
+        GLib.mkdir_with_parents(appDir, 493);
+    
+        let appBytes = Resources.lookup_data(
+            "/dbus" + appFile, 0
         ).unref_to_array().toString();
         
-        GLib.file_set_contents(app_dir + app_name, app_bytes);
+        GLib.file_set_contents(appDir + appFile, appBytes);
     }
 };
 
@@ -271,6 +275,8 @@ function initConfiguration() {
     try {
         generateEncryption(false);
         installService();
+        initTranslations();
+        Gtk.IconTheme.get_default().add_resource_path("/icons");
     } catch (e) {
         log("Error initializing configuration: " + e);
         return false;
@@ -302,19 +308,19 @@ function findPlugins () {
 
 function readDeviceConfiguration (deviceId) {
     let config = {};
-    let device_path = CONFIG_PATH + "/" + deviceId;
-    let device_config = device_path + "/config.json";
+    let devicePath = CONFIG_PATH + "/" + deviceId;
+    let deviceConfig = devicePath + "/config.json";
     
     // Init Config Dir
-    if (!GLib.file_test(device_path, GLib.FileTest.IS_DIR)) {
-        GLib.mkdir_with_parents(device_path, 493);
+    if (!GLib.file_test(devicePath, GLib.FileTest.IS_DIR)) {
+        GLib.mkdir_with_parents(devicePath, 493);
     }
     
     // Load Config if it exists
-    if (GLib.file_test(device_config, GLib.FileTest.EXISTS)) {
+    if (GLib.file_test(deviceConfig, GLib.FileTest.EXISTS)) {
         try {
             config = JSON.parse(
-                GLib.file_get_contents(device_config)[1].toString()
+                GLib.file_get_contents(deviceConfig)[1].toString()
             );
         } catch (e) {
             log("Error loading device configuration: " + e);
@@ -344,11 +350,11 @@ function readDeviceConfiguration (deviceId) {
 
 
 function writeDeviceConfiguration (deviceId, config) {
-    let device_config = CONFIG_PATH + "/" + deviceId + "/config.json";
+    let deviceConfig = CONFIG_PATH + "/" + deviceId + "/config.json";
 
     try {
         GLib.file_set_contents(
-            device_config,
+            deviceConfig,
             JSON.stringify(config),
             JSON.stringify(config).length,
             null
