@@ -278,28 +278,25 @@ var Daemon = new Lang.Class({
     /**
      * Device Methods
      */
-    // FIXME: error checking
     _readCache: function () {
-        let config_dir = Gio.File.new_for_path(Common.CONFIG_PATH);
+        let cacheDir = Gio.File.new_for_path(Common.CONFIG_PATH);
+        let fenum = cacheDir.enumerate_children("standard::*", 0, null);
         
-        let fenum = config_dir.enumerate_children(
-            "standard::name,standard::type,standard::size",
-            Gio.FileQueryInfoFlags.NONE,
-            null
-        );
-        
-        let item, info;
+        let info;
         let devices = [];
         
         while ((info = fenum.next_file(null))) {
-            let file = fenum.get_child(info);
+            let deviceDir = fenum.get_child(info);
+            let identPath = deviceDir.get_path() + "/identity.json"
             
-            let identPath = file.get_path() + "/identity.json"
-            
-            if (GLib.file_test(identPath, GLib.FileTest.EXISTS)) {
-                let [success, data] = GLib.file_get_contents(identPath);
-                let packet = new Protocol.Packet(data.toString());
-                this._addDevice(packet);
+            try {
+                if (GLib.file_test(identPath, GLib.FileTest.EXISTS)) {
+                    let [success, data] = GLib.file_get_contents(identPath);
+                    let packet = new Protocol.Packet(data.toString());
+                    this._addDevice(packet);
+                }
+            } catch (e) {
+                Common.debug("Daemon: Error loading device from cache: " + e);
             }
         }
     },
