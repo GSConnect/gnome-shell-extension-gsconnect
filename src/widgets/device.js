@@ -131,18 +131,18 @@ var Stack = new Lang.Class({
         // InfoBar
         this.deleted = null;
         
-        this.infoBar = new Gtk.InfoBar({
+        this.infobar = new Gtk.InfoBar({
             message_type: Gtk.MessageType.INFO,
             show_close_button: true
         });
-        this.infoBar.get_content_area().add(
-            new Gtk.Image({ icon_name: "dialog-info-symbolic" })
+        this.infobar.get_content_area().add(
+            new Gtk.Image({ icon_name: "user-trash-symbolic" })
         );
-        this.infoBar.label = new Gtk.Label({ label: "" });
-        this.infoBar.get_content_area().add(this.infoBar.label);
-        this.infoBar.add_button(_("Undo"), 1);
+        this.infobar.label = new Gtk.Label({ label: "", use_markup: true });
+        this.infobar.get_content_area().add(this.infobar.label);
+        this.infobar.add_button(_("Undo"), 1);
         
-        this.infoBar.connect("response", (widget, response) => {
+        this.infobar.connect("response", (widget, response) => {
             if (response === 1 && this.deleted !== null) {
                 this.deleted[0].move(
                     this.deleted[1],
@@ -153,8 +153,8 @@ var Stack = new Lang.Class({
             }
             
             this.deleted = null;
-            this.infoBar.hide();
-            this.remove(this.infoBar);
+            this.infobar.hide();
+            this.remove(this.infobar);
         });
         
         // Page Switcher
@@ -351,7 +351,9 @@ var Page = new Lang.Class({
             image: Gtk.Image.new_from_icon_name(
                 "user-trash-symbolic",
                 Gtk.IconSize.BUTTON
-            )
+            ),
+            tooltip_markup: _("Remove <b>%s</b> and its configuration").format(this.device.name),
+            always_show_image: true
         });
         
         // See: https://bugzilla.gnome.org/show_bug.cgi?id=710888
@@ -376,11 +378,11 @@ var Page = new Lang.Class({
             deviceDir.trash(null);
             
             // Show the infobar
-            this.stack.infoBar.label.set_label(
-                _("Deleted '%s'").format(this.device.name)
+            this.stack.infobar.label.set_label(
+                _("Removed <b>%s</b> and its configuration").format(this.device.name)
             );
-            this.stack.attach(this.stack.infoBar, 0, 0, 2, 1);
-            this.stack.infoBar.show_all();
+            this.stack.attach(this.stack.infobar, 0, 0, 2, 1);
+            this.stack.infobar.show_all();
         });
         deviceControls.add(removeButton);
         deviceControls.set_child_non_homogeneous(removeButton, true);
