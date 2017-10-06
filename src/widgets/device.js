@@ -441,3 +441,26 @@ var Page = new Lang.Class({
     }
 });
 
+
+var DeviceType = new Map([
+    ["desktop", {
+        type: _("Desktop"),
+        icon: "computer",
+        symbolic_icon: "computer-symbolic"
+    }],
+    ["laptop", {
+        type: _("Laptop"),
+        icon: "computer",
+        symbolic_icon: "laptop-symbolic"
+    }],
+    ["phone", {
+        type: _("Smartphone"),
+        icon: "phone",
+        symbolic_icon: "smartphone-symbolic"
+    }],
+    ["tablet", {
+        type: _("Tablet"),
+        icon: "tablet",
+        symbolic_icon: "tablet-symbolic"
+    }],
+]);
