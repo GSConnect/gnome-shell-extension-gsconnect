@@ -151,11 +151,15 @@ var PrefsWidget = new Lang.Class({
 
 
 function init() {
+    Common.debug("initializing extension preferences");
+    
     Common.initConfiguration();
 }
 
 // Extension Preferences
 function buildPrefsWidget() {
+    Common.debug("Prefs: buildPrefsWidget()");
+    
     let prefsWidget = new PrefsWidget();
     
     // HeaderBar
