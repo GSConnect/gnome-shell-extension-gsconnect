@@ -146,7 +146,6 @@ var Device = new Lang.Class({
         return GLib.file_test(this.config_cert, GLib.FileTest.EXISTS);
     },
     get plugins () { return Array.from(this._plugins.keys()); },
-    // FIXME: still reporting all
     get supportedPlugins () {
         let plugins = [];
         let incoming = this.identity.body.incomingCapabilities;
@@ -156,21 +155,15 @@ var Device = new Lang.Class({
             let metadata = imports.service.plugins[name].METADATA;
             let supported = false;
             
-            for (let packetType of metadata.incomingPackets) {
-                if (outgoing.indexOf(packetType > -1)) {
-                    plugins.push(name);
-                    supported = true;
-                    break;
-                }
+            if (metadata.incomingPackets.some(v => outgoing.indexOf(v) >= 0)) {
+                plugins.push(name);
+                supported = true;
             }
             
             if (supported) { continue; }
             
-            for (let packetType of metadata.outgoingPackets) {
-                if (incoming.indexOf(packetType > -1)) {
-                    plugins.push(name);
-                    break;
-                }
+            if (metadata.outgoingPackets.some(v => incoming.indexOf(v) >= 0)) {
+                plugins.push(name);
             }
         }
         
