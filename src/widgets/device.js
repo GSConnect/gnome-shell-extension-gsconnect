@@ -327,41 +327,37 @@ var Page = new Lang.Class({
         });
         statusRow.grid.attach(deviceControls, 2, 0, 1, 2);
         
-        // Pair/Unpair Button
-        let pairButton = new Gtk.Button({ label: "" });
-        pairButton.connect("clicked", () => {
-            if (this.device.paired) {
+        // Info Section // State Button (Pair/Unpair/Connect)
+        let stateButton = new Gtk.Button({ label: "" });
+        stateButton.connect("clicked", () => {
+            if (this.device.connected && this.device.paired) {
                 this.device.unpair();
-            } else {
+            } else if (this.device.connected && !this.device.paired) {
                 this.device.pair();
+            } else {
+                this.device.activate();
             }
         });
-        this.device.connect("notify::paired", () => {
-            if (this.device.paired) {
-                pairButton.label = _("Unpair");
+        this.device.connect("notify", () => {
+            if (this.device.connected && this.device.paired) {
+                stateButton.label = _("Unpair");
+                stateButton.set_tooltip_markup(
+                    _("Unpair <b>%s</b> %s").format(this.device.name, metadata.type)
+                );
+            } else if (this.device.connected && !this.device.paired) {
+                stateButton.label = _("Pair");
+                stateButton.set_tooltip_markup(
+                    _("Pair <b>%s</b> %s\n\n<b>Device Fingerprint:</b>\n%s").format(this.device.name, metadata.type, this.device.fingerprint)
+                );
             } else {
-                pairButton.label = _("Pair");
+                stateButton.label = _("Connect");
+                stateButton.set_tooltip_markup(_("Attempt Reconnection"));
             }
         });
         this.device.notify("paired");
+        deviceControls.add(stateButton);
         
-        this.device.connect("notify::connected", () => {
-            if (this.device.connected) {
-                pairButton.sensitive = true;
-                pairButton.set_tooltip_markup(
-                    _("<b>SHA1 Fingerprint:</b>\n%s").format(this.device.fingerprint)
-                );
-            } else {
-                pairButton.sensitive = false;
-                pairButton.set_tooltip_markup(
-                    _("Device is disconnected")
-                );
-            }
-        });
-        this.device.notify("connected");  
-        deviceControls.add(pairButton);
-        
-        // Remove Button
+        // Info Section // Remove Button
         let removeButton = new Gtk.Button({
             image: Gtk.Image.new_from_icon_name(
                 "user-trash-symbolic",
