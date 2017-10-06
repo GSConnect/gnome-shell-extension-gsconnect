@@ -67,7 +67,7 @@ var Device = new Lang.Class({
             "PluginsList", 
             "A list of enabled plugins",
             new GLib.VariantType("as"),
-            null,
+            new GLib.Variant("as", []),
             GObject.ParamFlags.READABLE
         ),
         "supportedPlugins": GObject.param_spec_variant(
