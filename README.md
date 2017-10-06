@@ -12,14 +12,12 @@ Connect Android app, either from the [Google Play Store][google-play] or
 
 ### Installation
 
-The extension is currently in an **alpha** stage of development. Pre-releases
-can be downloaded from the [releases page][releases] but are not guaranteed to
-be stable, functional, secure or bug free and all features are subject to
-change. In particular, the extension is known to clash with running instances
-of KDE Connect, and possibly MConnect as well.
+The extension is currently in a **beta** stage of development. There are a few
+*known* non-critical bugs, features are still subject to drastic change and
+there are no translations and sparse instructions. In particular, the extension
+is known to clash with running instances of KDE Connect and possibly MConnect.
 
-Installation may require you to later delete configuration files, reset dconf
-settings and other tasks manually.
+Pre-releases can be downloaded from the [releases page][releases].
 
 **You have been warned**
 
@@ -74,5 +72,6 @@ Gnome Shell theme with the [Numix Circle][numix] icon theme.
 [vimix]: https://github.com/vinceliuice/vimix-gtk-themes
 [numix]: https://numixproject.org/
 [material]: https://material.io/
+
 
 
