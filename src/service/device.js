@@ -511,13 +511,6 @@ var Device = new Lang.Class({
             
             settings = JSON.parse(settings);
             
-            // Check for invalid options
-            for (let option in settings) {
-                if (!handler.METADATA.settings.hasOwnProperty(option)) {
-                    throw Error("Unknown option: " + option);
-                }
-            }
-            
             // Write the new configuration
             Object.assign(this.config.plugins[name].settings, settings);
             Common.writeDeviceConfiguration(this.id, this.config);
