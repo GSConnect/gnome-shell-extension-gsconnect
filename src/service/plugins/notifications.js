@@ -63,14 +63,29 @@ var METADATA = {
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/notifications
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/sendnotifications
  *
+ * Incoming Notifications
+ *
+ * There are several possible variables for an incoming notification:
+ *
+ *    id {string} - This is supposedly and "internal" Android Id, such as:
+ *                      "0|org.kde.kdeconnect_tp|-256692160|null|10114"
+ *    isCancel {boolean} - If true, the notification "id" was closed by the peer
+ *    isClearable {boolean} - If true, we can reply with "isCancel"
+ *    appName {string} - The notifying application, just like libnotify
+ *    ticker {string} - The actual message, like libnotify's "body"
+ *    silent {boolean} - KDE Connect seems to indicate this means "don't show"
+ *    requestAnswer {boolean} - This is an answer to a "request"
+ *    request {boolean} - If true, we're being asked to send a list of notifs
+ *
+ * FIXME: weird hang, only happens at daemon startup
  * TODO: play sounds when requested
  *       download/upload icons
  *       GNotification?
  *       requestAnswer usage?
  *       urgency filter (outgoing)?
- *       weird hang? maybe stopped happening?
  *       make "shared" notifications clearable
  *       consider option for notifications allowing clients to handle them
+ *       use signals
  */
 var Plugin = new Lang.Class({
     Name: "GSConnectNotificationsPlugin",
@@ -94,43 +109,6 @@ var Plugin = new Lang.Class({
         
         this._freeze = false;
         this._notifications = new Map();
-        
-        this._initListener();
-    },
-    
-    _initListener: function () {
-        Common.debug("Notifications: _initListener()");
-        
-        // org.freedesktop.Notifications interface; needed to catch signals
-        let iface = "org.freedesktop.Notifications";
-        this._ndbus = Gio.DBusExportedObject.wrapJSObject(
-            Common.DBusInfo.freedesktop.lookup_interface(iface),
-            this
-        );
-        this._ndbus.export(Gio.DBus.session, "/org/freedesktop/Notifications");
-        
-        // Subscribe to Notify notifications
-        this._callback = Gio.DBus.session.signal_subscribe(
-            null,
-            "org.freedesktop.Notifications",
-            "Notify",
-            null,
-            null,
-            Gio.DBusSignalFlags.NONE,
-            Lang.bind(this, this.Notify)
-        );
-        
-        // Match all notifications
-        this._match = new GLib.Variant("(s)", ["interface='org.freedesktop.Notifications',member='Notify',type='method_call',eavesdrop='true'"])
-        
-        this._proxy = new Gio.DBusProxy({
-            gConnection: Gio.DBus.session,
-            gName: "org.freedesktop.DBus",
-            gObjectPath: "/org/freedesktop/DBus",
-            gInterfaceName: "org.freedesktop.DBus"
-        });
-        
-        this._proxy.call_sync("AddMatch", this._match, 0, -1, null);
     },
     
     Notify: function (appName, replacesId, iconName, summary, body, actions, hints, timeout) {
@@ -199,7 +177,7 @@ var Plugin = new Lang.Class({
         } else {
             let notif;
             
-            // This is an update
+            // This is an update to a notification
             if (this._notifications.has(packet.body.id)) {
                 notif = this._notifications.get(packet.body.id);
                 
@@ -275,11 +253,6 @@ var Plugin = new Lang.Class({
         for (let notif of this._notifications.values()) {
             notif.close();
         }
-        
-        // Shutdown listener
-        this._ndbus.unexport();
-        this._proxy.call_sync("RemoveMatch", this._match, 0, -1, null);
-        Gio.DBus.session.signal_unsubscribe(this._callback);
     
         PluginsBase.Plugin.prototype.destroy.call(this);
     }

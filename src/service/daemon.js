@@ -140,7 +140,7 @@ var Daemon = new Lang.Class({
     },
     
     /**
-     * Get the local device type from "chassis_type"
+     * Identity functions
      */
     _getDeviceType: function () {
         let proc = GLib.spawn_async_with_pipes(
@@ -164,9 +164,6 @@ var Daemon = new Lang.Class({
         }
     },
     
-    /**
-     * Programmatically build an identity packet
-     */
     _getIdentityPacket: function () {
         let packet = new Protocol.Packet({
             id: 0,
@@ -384,6 +381,43 @@ var Daemon = new Lang.Class({
     },
     
     /**
+     * Notifications listener
+     */
+    _initNotificationsListener: function () {
+        // org.freedesktop.Notifications interface; needed to catch signals
+        let iface = "org.freedesktop.Notifications";
+        this._ndbus = Gio.DBusExportedObject.wrapJSObject(
+            Common.DBusInfo.freedesktop.lookup_interface(iface),
+            this
+        );
+        this._ndbus.export(Gio.DBus.session, "/org/freedesktop/Notifications");
+        
+        // Match all notifications
+        this._match = new GLib.Variant("(s)", ["interface='org.freedesktop.Notifications',member='Notify',type='method_call',eavesdrop='true'"])
+        
+        this._proxy = new Gio.DBusProxy({
+            gConnection: Gio.DBus.session,
+            gName: "org.freedesktop.DBus",
+            gObjectPath: "/org/freedesktop/DBus",
+            gInterfaceName: "org.freedesktop.DBus"
+        });
+        
+        this._proxy.call_sync("AddMatch", this._match, 0, -1, null);
+    },
+    
+    Notify: function (appName, replacesId, iconName, summary, body, actions, hints, timeout) {
+        Common.debug("Daemon: Notify()");
+        
+        for (let device of this._devices.values()) {
+            if (device._plugins.has("notifications")) {
+                let plugin = device._plugins.get("notifications");
+                // TODO: avoid spread operator if possible
+                plugin.Notify(...Array.from(arguments));
+            }
+        }
+    },
+    
+    /**
      * Start listening for incoming broadcast packets
      *
      * FIXME: conflicts with running KDE Connect, for some reason
@@ -492,6 +526,7 @@ var Daemon = new Lang.Class({
         
         // Notifications
         Notify.init("org.gnome.shell.extensions.gsconnect.daemon");
+        this._initNotificationsListener();
         
         // Export DBus
         let iface = "org.gnome.shell.extensions.gsconnect.daemon";
@@ -546,6 +581,10 @@ var Daemon = new Lang.Class({
         if (this._listener !== null) {
             this._listener.close();
         }
+        
+        this._dbus.unexport();
+        this._ndbus.uexport();
+        this._proxy.call_sync("RemoveMatch", this._match, 0, -1, null);
         
         Notify.uninit();
     }
