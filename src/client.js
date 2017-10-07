@@ -597,6 +597,10 @@ var Daemon = new Lang.Class({
         this._call("discover", true, requestId, timeout);
     },
     
+    quit: function () {
+        this._call("quit", true);
+    },
+    
     destroy: function () {
         for (let dbusPath of this.devices.keys()) {
             this._deviceRemoved(this, dbusPath);
