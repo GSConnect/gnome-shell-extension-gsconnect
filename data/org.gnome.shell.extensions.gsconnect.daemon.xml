@@ -4,6 +4,7 @@
     <property type="as" name="devices" access="read"/>
     <property type="b" name="discovering" access="read"/>
     <property type="s" name="fingerprint" access="read"/>
+    <property type="i" name="version" access="read"/>
     
     <method name="discover">
       <arg name="name" type="s" direction="in"/>

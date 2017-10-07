@@ -63,10 +63,17 @@ var Daemon = new Lang.Class({
         ),
         "fingerprint": GObject.ParamSpec.string(
             "fingerprint",
-            "deviceFingerprint",
-            "SHA1 fingerprint for the device certificate",
+            "LocalFingerprint",
+            "SHA1 fingerprint for the local certificate",
             GObject.ParamFlags.READABLE,
             ""
+        ),
+        "version": GObject.ParamSpec.int(
+            "version",
+            "DaemonVersion",
+            "The version of the running daemon",
+            GObject.ParamFlags.READABLE,
+            0
         )
     },
 
@@ -120,6 +127,10 @@ var Daemon = new Lang.Class({
         Common.Settings.set_string("public-name", name);
         this._dbus.emit_property_changed("name", new GLib.Variant("s", name));
         this.broadcast();
+    },
+    
+    get version () {
+        return Common.Me.metadata['version'];
     },
     
     /**
