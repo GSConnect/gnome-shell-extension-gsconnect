@@ -560,7 +560,7 @@ var SettingsDialog = new Lang.Class({
         this.content.addItem(
             receivingSection,
             _("Download Location"),
-            _("Choose a location to save received files"),
+            _("Directory to save received files"),
             fbutton
         );
         
@@ -576,8 +576,9 @@ var SettingsDialog = new Lang.Class({
         });
         this.content.addItem(
             receivingSection,
-            _("Subdirectories"),
-            _("Save files in device subdirectories"),
+            _("Subdirectory"),
+            // TRANSLATORS: eg. Save files in a subdirectory named Google Pixel
+            _("Save files in a subdirectory named %s").format(this._page.device.name),
             subdirsSwitch
         );
         
