@@ -48,6 +48,7 @@ var METADATA = {
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/telephony
  *
  * TODO: try and block duplicate "notifications" that match incoming SMS
+ *       phoneThumbnail field
  *       notifications
  *       pause music
  */
@@ -173,6 +174,7 @@ var Plugin = new Lang.Class({
             let notif = new Notify.Notification({
                 app_name: "GSConnect",
                 summary: _("%s - Missed Call").format(this.device.name),
+                // TRANSLATORS: eg. Missed call from John Smith
                 body: _("Missed call from %s").format(sender),
                 icon_name: "call-missed-symbolic"
             });
@@ -202,12 +204,14 @@ var Plugin = new Lang.Class({
             let notif = new Notify.Notification({
                 app_name: "GSConnect",
                 summary: _("%s Ringing").format(this.device.name),
+                // TRANSLATORS: eg. Incoming call from John Smith
                 body: _("Incoming call from %s").format(sender),
                 icon_name: "call-start-symbolic"
             });
             
             notif.add_action(
                 "notify_ringing",
+                // TRANSLATORS: Silence an incoming call
                 _("Mute"),
                 Lang.bind(this, this.mute)
             );
@@ -233,7 +237,7 @@ var Plugin = new Lang.Class({
                 [packet.body.phoneNumber,
                 packet.body.contactName,
                 packet.body.messageBody,
-                packet.body.phoneThumbnail] // FIXME: bytearray.pixmap ???
+                packet.body.phoneThumbnail]
             )
         );
         
@@ -253,6 +257,7 @@ var Plugin = new Lang.Class({
             
             notif.add_action(
                 "notify_sms", // action char
+                // TRANSLATORS: Reply to an incoming SMS message
                 _("Reply"), // label
                 Lang.bind(this, this.replySms, packet.body)
             );
@@ -282,6 +287,7 @@ var Plugin = new Lang.Class({
             notif = new Notify.Notification({
                 app_name: "GSConnect",
                 summary: _("%s - Talking").format(this.device.name),
+                // TRANSLATORS: eg. Call in progress with John Smith
                 body: _("Call in progress with %s").format(sender),
                 icon_name: "call-start-symbolic"
             });
@@ -290,7 +296,6 @@ var Plugin = new Lang.Class({
         }
     },
     
-    // TODO: test
     muteCall: function () {
         Common.debug("Telephony: muteCall()");
         
@@ -386,7 +391,7 @@ var SettingsDialog = new Lang.Class({
         });
         this.content.addItem(
             callsSection,
-            _("Missed call notification"),
+            _("Missed Call Notification"),
             _("Show a notification for missed calls"),
             notifyMissedCallSwitch
         );
@@ -403,8 +408,8 @@ var SettingsDialog = new Lang.Class({
         });
         this.content.addItem(
             callsSection,
-            _("Ringing notification"),
-            _("Show a notification when the phone is ringing"),
+            _("Ringing Notification"),
+            _("Show a notification for incoming calls"),
             notifyRingingSwitch
         );
         
@@ -420,7 +425,7 @@ var SettingsDialog = new Lang.Class({
         });
         this.content.addItem(
             callsSection,
-            _("Talking notification"),
+            _("Talking Notification"),
             _("Show a notification when talking on the phone"),
             notifyTalkingSwitch
         );
@@ -440,8 +445,8 @@ var SettingsDialog = new Lang.Class({
         });
         this.content.addItem(
             smsSection,
-            _("SMS notification"),
-            _("Show a notification when an SMS is received"),
+            _("SMS Notification"),
+            _("Show a notification when an SMS message is received"),
             notifySMSSwitch
         );
         

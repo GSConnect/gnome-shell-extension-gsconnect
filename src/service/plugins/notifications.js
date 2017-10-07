@@ -30,7 +30,7 @@ const PluginsBase = imports.service.plugins.base;
 var METADATA = {
     name: "notifications",
     summary: _("Notifications"),
-    description: _("Sync notifications with other devices"),
+    description: _("Sync notifications between devices"),
     incomingPackets: [
         "kdeconnect.notification",
         "kdeconnect.notification.request"
@@ -155,7 +155,6 @@ var Plugin = new Lang.Class({
         }
     },
     
-    // TODO: consider option for notifications allowing clients to handle them
     handlePacket: function (packet) {
         Common.debug("Notifications: handlePacket()");
         
@@ -281,8 +280,8 @@ var SettingsDialog = new Lang.Class({
         });
         this.content.addItem(
             receivingSection,
-            _("Receive notifications"),
-            _("Enable to receive notifications from other devices"),
+            _("Receive Notifications"),
+            _("Enable to receive notifications from %s").format(this._page.device.name),
             receiveSwitch
         );
         
@@ -318,8 +317,8 @@ var SettingsDialog = new Lang.Class({
         });
         this.content.addItem(
             sendingSection,
-            _("Send notifications"),
-            _("Enable to send notifications to other devices"),
+            _("Send Notifications"),
+            _("Enable to send notifications to %s").format(this._page.device.name),
             sendSwitch
         );
         

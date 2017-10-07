@@ -100,8 +100,10 @@ var Plugin = new Lang.Class({
         
         let note = new Notify.Notification({
             app_name: _("GSConnect"),
+            // TRANSLATORS: eg. Google Pixel - Low Battery Warning
             summary: _("%s - Low Battery Warning").format(this.device.name),
-            body: _("Battery level is %d").format(this.level), // FIXME % in format strings
+            // TRANSLATORS: eg. Battery level is 15%
+            body: _("Battery level is %d%%").format(this.level),
             icon_name: "battery-caution-symbolic"
         });
         
@@ -112,6 +114,7 @@ var Plugin = new Lang.Class({
             
             note.add_action(
                 "findMyPhone",
+                // TRANSLATORS: FIXME
                 _("Locate"),
                 Lang.bind(plugin, plugin.ring)
             );

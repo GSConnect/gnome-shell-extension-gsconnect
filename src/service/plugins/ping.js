@@ -37,6 +37,8 @@ var METADATA = {
 /**
  * Ping Plugin
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/ping
+ *
+ * TODO: sound option? maybe should be a global option for plugins
  */
 var Plugin = new Lang.Class({
     Name: "GSConnectPingPlugin",
@@ -52,7 +54,6 @@ var Plugin = new Lang.Class({
         this.parent(device, "ping");
     },
     
-    // TODO: play sound?
     handlePacket: function (packet) {
         Common.debug("Ping: handlePacket()");
         

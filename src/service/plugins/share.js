@@ -91,6 +91,7 @@ var Plugin = new Lang.Class({
                     transfer.notif = new Notify.Notification({
                         app_name: _("GSConnect"),
                         summary: _("Starting transfer"),
+                        // TRANSLATORS: eg. Receiving book.pdf from Google Pixel
                         body: _("Receiving %s from %s").format(
                             packet.body.filename,
                             this.device.name
@@ -117,10 +118,12 @@ var Plugin = new Lang.Class({
                 transfer.connect("progress", (transfer, percent) => {
                     if (transfer.hasOwnProperty("notif")) {
                         transfer.notif.update(
+                            // TRANSLATORS: eg. Receiving book.pdf from Google Pixel
                             _("Receiving %s from %s").format(
                                 packet.body.filename,
                                 this.device.name
                             ),
+                            // TRANSLATORS: eg. Transfer is 42% complete
                             _("Transfer is %d%% complete").format(percent),
                             "send-to-symbolic"
                         );
@@ -129,28 +132,42 @@ var Plugin = new Lang.Class({
                 });
                 
                 transfer.connect("succeeded", (transfer) => {
-                    let summary = _("Transfer successful");
-                    let body = _("Received %s from %s").format(
-                        packet.body.filename,
-                        this.device.name
-                    );
-                    
                     if (transfer.hasOwnProperty("notif")) {
-                        transfer.notif.update(
-                            summary,
-                            body,
-                            "send-to-symbolic"
-                        );
-                    } else {
-                        transfer.notif = new Notify.Notification({
-                            app_name: _("GSConnect"),
-                            summary: summary,
-                            body: body,
-                            icon_name: "send-to-symbolic"
-                        });
+                        transfer.notif.close();
                     }
                     
-                    // TODO: view/open file
+                    transfer.notif = new Notify.Notification({
+                        app_name: _("GSConnect"),
+                        summary: _("Transfer successful"),
+                        // TRANSLATORS: eg. Received book.pdf from Google Pixel
+                        body: _("Received %s from %s").format(
+                            packet.body.filename,
+                            this.device.name
+                        ),
+                        icon_name: "send-to-symbolic"
+                    });
+                    
+                    transfer.notif.add_action(
+                        "share_view",
+                        _("View in Folder"),
+                        () => {
+                            Gio.AppInfo.launch_default_for_uri(
+                                file.get_parent().get_uri(),
+                                null
+                            );
+                        }
+                    );
+                    
+                    transfer.notif.add_action(
+                        "share_open",
+                        _("Open"),
+                        () => {
+                            Gio.AppInfo.launch_default_for_uri(
+                                file.get_uri(),
+                                null
+                            );
+                        }
+                    );
                     
                     transfer.notif.show();
                     channel.close();
@@ -158,6 +175,7 @@ var Plugin = new Lang.Class({
                 
                 transfer.connect("failed", (transfer, error) => {
                     let summary = _("Transfer failed");
+                    // TRANSLATORS: eg. Failed to receive book.pdf from Google Pixel: Some error
                     let body = _("Failed to receive %s from %s: %s").format(
                         file.get_basename(),
                         this.device.name, error
@@ -178,15 +196,17 @@ var Plugin = new Lang.Class({
                         });
                     }
                     
-                    // TODO: remove file
-                    
+                    // TODO: optional?
+                    GLib.unlink(filepath);
+                    transfer.notif.clear_actions();
                     transfer.notif.show();
                     channel.close();
                 });
                 
                 transfer.connect("cancelled", (transfer) => {
                     let summary = _("Transfer cancelled");
-                    let body = _("Cancelled receiving %s from %s").format(
+                    // TRANSLATORS: eg. Cancelled transfer of book.pdf from Google Pixel
+                    let body = _("Cancelled transfer of %s from %s").format(
                         packet.body.filename,
                         this.device.name
                     );
@@ -206,8 +226,9 @@ var Plugin = new Lang.Class({
                         });
                     }
                     
-                    // TODO: remove file
-                    
+                    // TODO: optional?
+                    GLib.unlink(filepath);
+                    transfer.notif.clear_actions();
                     transfer.notif.show();
                     channel.close();
                 });
@@ -232,7 +253,7 @@ var Plugin = new Lang.Class({
         if (this.settings.download_subdirs) {
             path = GLib.build_pathv("/", [
                 this.settings.download_directory,
-                this.device.id
+                this.device.name
             ]);
         }
         
@@ -317,6 +338,7 @@ var Plugin = new Lang.Class({
                     transfer.notif = new Notify.Notification({
                         app_name: _("GSConnect"),
                         summary: _("Starting transfer"),
+                        // TRANSLATORS: eg. Sending book.pdf to Google Pixel
                         body: _("Sending %s to %s").format(
                             file.get_basename(),
                             this.device.name
@@ -343,10 +365,12 @@ var Plugin = new Lang.Class({
                 transfer.connect("progress", (transfer, percent) => {
                     if (transfer.hasOwnProperty("notif")) {
                         transfer.notif.update(
+                            // TRANSLATORS: eg. Sending book.pdf to Google Pixel
                             _("Sending %s to %s").format(
                                 file.get_basename(),
                                 this.device.name
                             ),
+                            // TRANSLATORS: eg. Transfer is 42% complete
                             _("Transfer is %d%% complete").format(percent),
                             "send-to-symbolic"
                         );
@@ -356,6 +380,7 @@ var Plugin = new Lang.Class({
                 
                 transfer.connect("succeeded", (transfer) => {
                     let summary = _("Transfer successful");
+                    // TRANSLATORS: eg. Sent book.pdf to Google Pixel
                     let body = _("Sent %s to %s").format(
                         file.get_basename(),
                         this.device.name
@@ -382,6 +407,7 @@ var Plugin = new Lang.Class({
                 
                 transfer.connect("failed", (transfer, error) => {
                     let summary = _("Transfer failed");
+                    // TRANSLATORS: eg. Failed to send book.pdf to Google Pixel: Some error
                     let body = _("Failed to send %s to %s: %s").format(
                         file.get_basename(),
                         this.device.name, error
@@ -408,7 +434,8 @@ var Plugin = new Lang.Class({
                 
                 transfer.connect("cancelled", (transfer) => {
                     let summary = _("Transfer cancelled");
-                    let body = _("Cancelled sending %s to %s").format(
+                    // TRANSLATORS: eg. Cancelled transfer of book.pdf to Google Pixel
+                    let body = _("Cancelled transfer of %s to %s").format(
                         file.get_basename(),
                         this.device.name
                     );
@@ -428,6 +455,7 @@ var Plugin = new Lang.Class({
                         });
                     }
                     
+                    transfer.notif.clear_actions();
                     transfer.notif.show();
                     channel.close();
                 });
@@ -460,6 +488,7 @@ var Dialog = new Lang.Class({
     
     _init: function (application, name) {
         this.parent({
+            // TRANSLATORS: eg. Send files to Google Pixel
             title: _("Send files to %s").format(name),
             action: Gtk.FileChooserAction.OPEN,
             select_multiple: true,
@@ -467,7 +496,7 @@ var Dialog = new Lang.Class({
         });
         
         this.webEntry = new Gtk.Entry({
-            placeholder_text: _("Enter link address"),
+            placeholder_text: "https://",
             hexpand: true,
             visible: true
         });
@@ -478,8 +507,8 @@ var Dialog = new Lang.Class({
                 "web-browser-symbolic",
                 Gtk.IconSize.BUTTON
             ),
-            // FIXME: better tooltip
-            tooltip_text: _("Send a link (should start with 'http://' or 'https://)"),
+            // TRANSLATORS: eg. Send a link to Google Pixel
+            tooltip_text: _("Send a link to %s").format(name),
             visible: true
         });
         this.webButton.connect("toggled", () => {
@@ -530,7 +559,7 @@ var SettingsDialog = new Lang.Class({
         });
         this.content.addItem(
             receivingSection,
-            _("Download location"),
+            _("Download Location"),
             _("Choose a location to save received files"),
             fbutton
         );

@@ -28,7 +28,7 @@ const PluginsBase = imports.service.plugins.base;
 var METADATA = {
     name: "runcommand",
     summary: _("Run Commands"),
-    description: _("Run local commands from remote devices"),
+    description: _("Execute local commands remotely"),
     incomingPackets: ["kdeconnect.runcommand.request"],
     outgoingPackets: ["kdeconnect.runcommand"],
     settings: {
@@ -128,6 +128,7 @@ var SettingsDialog = new Lang.Class({
         // Command column.
         this.cmdCell = new Gtk.CellRendererText({ editable: true });
         let cmdCol = new Gtk.TreeViewColumn({
+            // TRANSLATORS: A command to be executed remotely
             title: _("Command"),
             expand: true
         });
@@ -169,7 +170,9 @@ var SettingsDialog = new Lang.Class({
     
     _add: function (button, row) {
         if (row === false) {
-            row = ["{" + GLib.uuid_string_random() + "}", _("New command"), ""];
+            // TRANSLATORS: A placeholder for a new command name
+            let commandName = _("[New command]")
+            row = ["{" + GLib.uuid_string_random() + "}", commandName, ""];
             this._settings.commands[row[0]] = { name: row[1], command: row[2]};
         }
         

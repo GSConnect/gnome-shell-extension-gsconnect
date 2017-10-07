@@ -25,8 +25,8 @@ const PluginsBase = imports.service.plugins.base;
 
 var METADATA = {
     name: "mpris",
-    summary: _("MPRIS"),
-    description: _("Control music players from your device"),
+    summary: _("Media Player Control"),
+    description: _("Control MPRIS2 media players on your desktop"),
     incomingPackets: ["kdeconnect.mpris.request"],
     outgoingPackets: ["kdeconnect.mpris"]
 };
@@ -40,6 +40,9 @@ var METADATA = {
  *     https://specifications.freedesktop.org/mpris-spec/latest/
  *     https://github.com/GNOME/gnome-shell/blob/master/js/ui/mpris.js
  *     https://github.com/JasonLG1979/gnome-shell-extensions-mediaplayer/wiki/Known-Player-Bugs
+ *
+ * TODO: It's probably possible to grab a remote MPRIS2 player and mirror it
+ *       over DBus locally...
  */
 
 const DBusIface = '<node> \

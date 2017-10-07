@@ -27,8 +27,8 @@ const PluginsBase = imports.service.plugins.base;
 
 var METADATA = {
     name: "sftp",
-    summary: _("SFTP"),
-    description: _("Browse remote devices"),
+    summary: _("SSHFS"),
+    description: _("Mount and browse device filesystems"),
     incomingPackets: ["kdeconnect.sftp"],
     outgoingPackets: ["kdeconnect.sftp.request"],
     settings: {
@@ -251,7 +251,7 @@ var Plugin = new Lang.Class({
             log("SFTP: Error closing stdin: " + e);
         }
         
-        // FIXME: Gio.IOErrorEnum: Stream has outstanding operation
+        // TODO: Gio.IOErrorEnum: Stream has outstanding operation
         try {
             if (this._stderr !== null) {
                 this._stderr.close(null);
@@ -308,8 +308,8 @@ var SettingsDialog = new Lang.Class({
         });
         this.content.addItem(
             generalSection,
-            _("Auto-mount"),
-            _("Attempt to mount the device as soon as it connects"),
+            _("Automount"),
+            _("Attempt to mount %s as soon as it connects").format(this._page.device.name),
             automountSwitch
         );
         

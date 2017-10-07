@@ -140,6 +140,7 @@ var Stack = new Lang.Class({
         );
         this.infobar.label = new Gtk.Label({ label: "", use_markup: true });
         this.infobar.get_content_area().add(this.infobar.label);
+        // TRANSLATORS: Undo device removal
         this.infobar.add_button(_("Undo"), 1);
         
         this.infobar.connect("response", (widget, response) => {
@@ -193,22 +194,32 @@ var Stack = new Lang.Class({
         });
         
         let label1 = new Gtk.Label({
-            label: _("Ensure that devices are connected on the same local network with ports 1716 to 1764 open. If you wish to connect an Android device, install the KDE Connect Android app <a href=\"https://play.google.com/store/apps/details?id=org.kde.kdeconnect_tp\">Google Play Store</a> or <a href=\"https://f-droid.org/repository/browse/?fdid=org.kde.kdeconnect_tp\">F-Droid</a>."),
+            label: _("Ensure that devices are connected on the same local network. Ports between 1716 and 1764 can be used for device connections and ports 1739 to 1764 for file transfers."),
             wrap: true,
             use_markup: true,
             vexpand: true,
             xalign: 0
         });
         page.add(label1);
-        //https://community.kde.org/KDEConnect
+        
         let label2 = new Gtk.Label({
-            label: _("If you are having trouble with this extension, please see the <a href=\"https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki\">Wiki</a> for help or <a href =\"https://github.com/andyholmes/gnome-shell-extension-gsconnect/issues\">open an issue</a> on Github to report a problem."),
+            label: _("To connect an Android device, install the KDE Connect Android app from the <a href=\"https://play.google.com/store/apps/details?id=org.kde.kdeconnect_tp\">Google Play Store</a> or <a href=\"https://f-droid.org/repository/browse/?fdid=org.kde.kdeconnect_tp\">F-Droid</a>."),
             wrap: true,
             use_markup: true,
             vexpand: true,
             xalign: 0
         });
         page.add(label2);
+        //https://community.kde.org/KDEConnect
+        //https://play.google.com/apps/testing/org.kde.kdeconnect_tp/join
+        let label3 = new Gtk.Label({
+            label: _("Please see the <a href=\"https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki\">Wiki</a> for help or <a href =\"https://github.com/andyholmes/gnome-shell-extension-gsconnect/issues\">open an issue</a> on Github to report a problem."),
+            wrap: true,
+            use_markup: true,
+            vexpand: true,
+            xalign: 0
+        });
+        page.add(label3);
         
         this.stack.add_titled(page, "default", "Default");
         
@@ -221,8 +232,8 @@ var Stack = new Lang.Class({
         });
     },
     
-    addDevice: function (manager, dbusPath) {
-        let device = manager.devices.get(dbusPath);
+    addDevice: function (daemon, dbusPath) {
+        let device = daemon.devices.get(dbusPath);
         
         // Device Sidebar Entry
         let row = new Gtk.ListBoxRow({
@@ -257,14 +268,14 @@ var Stack = new Lang.Class({
         row.show_all();
         
         // Device Page
-        let page = new Page(device, this);
+        let page = new Page(daemon, device, this);
         this.stack.add_titled(page, device.id, device.name);
         
         // Tracking
         this.devices.set(dbusPath, [row, page]);
     },
     
-    removeDevice: function (manager, dbusPath) {
+    removeDevice: function (daemon, dbusPath) {
         let device = this.devices.get(dbusPath);
         
         this.sidebar.remove(device[0]);
@@ -282,13 +293,14 @@ var Page = new Lang.Class({
     Name: "GSConnectDevicePage",
     Extends: PreferencesWidget.Page,
     
-    _init: function (device, stack) {
+    _init: function (daemon, device, stack) {
         this.parent();
         this.box.margin_left = 40;
         this.box.margin_right = 40;
         
         this.stack = stack;
         
+        this.daemon = daemon;
         this.device = device;
         this.config = Common.readDeviceConfiguration(device.id);
         
@@ -343,12 +355,15 @@ var Page = new Lang.Class({
             if (this.device.connected && this.device.paired) {
                 stateButton.label = _("Unpair");
                 stateButton.set_tooltip_markup(
+                    // TRANSLATORS: Unpair <b>Device Name</b> Device Type
+                    // (eg. "Unpair <b>Google Pixel</b> Smartphone")
                     _("Unpair <b>%s</b> %s").format(this.device.name, metadata.type)
                 );
             } else if (this.device.connected && !this.device.paired) {
                 stateButton.label = _("Pair");
                 stateButton.set_tooltip_markup(
-                    _("Pair <b>%s</b> %s\n\n<b>Device Fingerprint:</b>\n%s").format(this.device.name, metadata.type, this.device.fingerprint)
+                    // TRANSLATORS: FIXME
+                    _("Request Pair\n\n<b>%s Fingerprint:</b>\n%s\n\n<b>Local Fingerprint:</b>\n%s").format(this.device.name, this.device.fingerprint, this.daemon.fingerprint)
                 );
             } else {
                 stateButton.label = _("Connect");
@@ -364,6 +379,7 @@ var Page = new Lang.Class({
                 "user-trash-symbolic",
                 Gtk.IconSize.BUTTON
             ),
+            // TRANSLATORS: FIXME
             tooltip_markup: _("Remove <b>%s</b> and its configuration").format(this.device.name),
             always_show_image: true
         });
@@ -391,6 +407,7 @@ var Page = new Lang.Class({
             
             // EAFP!
             this.stack.infobar.label.set_label(
+                // TRANSLATORS: FIXME
                 _("Removed <b>%s</b> and its configuration").format(this.device.name)
             );
             this.stack.attach(this.stack.infobar, 0, 0, 2, 1);
@@ -418,9 +435,9 @@ var Page = new Lang.Class({
         let keyRow = this.addRow(keySection);
         let keyView = new KeybindingsWidget.TreeView();
         keyView.addAccel("menu", _("Open Device Menu"), 0, 0);
-        keyView.addAccel("sms", _("Open SMS Window"), 0, 0);
-        keyView.addAccel("find", _("Locate Device"), 0, 0);
-        keyView.addAccel("browse", _("Browse Device"), 0, 0);
+        keyView.addAccel("sms", _("Send SMS"), 0, 0);
+        keyView.addAccel("find", _("Locate"), 0, 0);
+        keyView.addAccel("browse", _("Browse Files"), 0, 0);
         keyView.addAccel("share", _("Share File/URL"), 0, 0);
         
         let deviceAccels = JSON.parse(
@@ -475,5 +492,10 @@ var DeviceType = new Map([
         icon: "tablet",
         symbolic_icon: "tablet-symbolic"
     }],
+    ["unknown", {
+        type: _("Unknown"),
+        icon: "computer",
+        symbolic_icon: "computer-symbolic"
+    }]
 ]);
 

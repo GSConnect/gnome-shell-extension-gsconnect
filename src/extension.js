@@ -124,12 +124,14 @@ var ActionTooltip = new Lang.Class({
     show: function () {
         if (!this.bin) {
             this.label = new St.Label({
-                style: "font-weight: normal;",
+                // TODO: rtl
+                style: "font-weight: normal; text-align: left;",
                 text: this.title
             });
             this.label.clutter_text.line_wrap = true;
             this.label.clutter_text.line_wrap_mode = Pango.WrapMode.WORD;
             this.label.clutter_text.ellipsize = Pango.EllipsizeMode.NONE;
+            this.label.clutter_text.use_markup = true;
             
             this.bin = new St.Bin({
                 style_class: "osd-window",
@@ -263,11 +265,11 @@ var DeviceMenu = new Lang.Class({
     Name: "DeviceMenu",
     Extends: PopupMenu.PopupMenuSection,
 
-    _init: function (device, manager) {
+    _init: function (daemon, device) {
         this.parent();
 
         this.device = device;
-        this.daemon = manager;
+        this.daemon = daemon;
         this._keybindings = [];
         
         // Info Bar
@@ -302,7 +304,7 @@ var DeviceMenu = new Lang.Class({
         this.findButton = new ActionButton({
             icon_name: "find-location-symbolic",
             callback: Lang.bind(this, this._findAction),
-            tooltip_text: _("Locate Device")
+            tooltip_text: _("Locate")
         });
         this.pluginBar.actor.add(this.findButton, { expand: true, x_fill: false });
         
@@ -462,7 +464,7 @@ var DeviceMenu = new Lang.Class({
             this.statusLabel.text = _("Device is disconnected");
         } else if (!paired) {
             this.statusButton.child.icon_name = "channel-insecure-symbolic";
-            this.statusButton.tooltip.title = _("Request Pair");
+            this.statusButton.tooltip.title = _("Request Pair\n\n<b>%s Fingerprint:</b>\n%s\n\n<b>Local Fingerprint:</b>\n%s").format(this.device.name, this.device.fingerprint, this.daemon.fingerprint);
             this.statusLabel.text = _("Device is unpaired");
         } 
         
@@ -564,11 +566,11 @@ var DeviceIndicator = new Lang.Class({
     Name: "DeviceIndicator",
     Extends: PanelMenu.Button,
     
-    _init: function (device, manager) {
+    _init: function (daemon, device) {
         this.parent(null, device.name + " Indicator", false);
         
+        this.daemon = daemon;
         this.device = device;
-        this.daemon = manager;
         
         // Device Icon
         this.icon = new St.Icon({
@@ -577,7 +579,7 @@ var DeviceIndicator = new Lang.Class({
         });
         this.actor.add_actor(this.icon);
         
-        this.deviceMenu = new DeviceMenu(device, manager);
+        this.deviceMenu = new DeviceMenu(daemon, device);
         this.menu.addMenuItem(this.deviceMenu);
         
         // Signals
@@ -907,18 +909,18 @@ var SystemIndicator = new Lang.Class({
         this.extensionMenu.actor.grab_key_focus();
     },
     
-    _deviceAdded: function (manager, dbusPath) {
+    _deviceAdded: function (daemon, dbusPath) {
         Common.debug("extension.SystemIndicator._deviceAdded(" + dbusPath + ")");
         
         let device = this.daemon.devices.get(dbusPath);
         
         // Status Area -> [ Device Indicator ]
-        let indicator = new DeviceIndicator(device, manager);
+        let indicator = new DeviceIndicator(daemon, device);
         this._indicators[dbusPath] = indicator;
         Main.panel.addToStatusArea(dbusPath, indicator);
         
         // Extension Menu -> [ Devices Section ] -> Device Menu
-        let menu = new DeviceMenu(device, manager);
+        let menu = new DeviceMenu(daemon, device);
         this._menus[dbusPath] = menu;
         
         device.connect("notify::connected", () => {
@@ -935,7 +937,7 @@ var SystemIndicator = new Lang.Class({
         this._deviceKeybindings(indicator);
     },
     
-    _deviceRemoved: function (manager, dbusPath) {
+    _deviceRemoved: function (daemon, dbusPath) {
         Common.debug("extension.SystemIndicator._deviceRemoved(" + dbusPath + ")");
         
         for (let binding of this._indicators[dbusPath].deviceMenu._keybindings) {
