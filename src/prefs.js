@@ -100,7 +100,7 @@ var PrefsWidget = new Lang.Class({
         let keySection = generalPage.addSection(_("Keyboard Shortcuts"));
         let keyRow = generalPage.addRow(keySection);
         let keyView = new KeybindingsWidget.TreeView();
-        keyView.addAccel("menu", _("Open Extension Menu"), 0, 0);
+        keyView.addAccel("menu", _("Open Menu"), 0, 0);
         keyView.addAccel("discover", _("Discover Devices"), 0, 0);
         keyView.addAccel("settings", _("Open Extension Settings"), 0, 0);
         keyView.setAccels(

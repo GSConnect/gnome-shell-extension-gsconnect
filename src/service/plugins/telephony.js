@@ -173,6 +173,7 @@ var Plugin = new Lang.Class({
         if (this.settings.notify_missedCall) {
             let notif = new Notify.Notification({
                 app_name: "GSConnect",
+                // TRANSLATORS: eg. Google Pixel - Missed Call
                 summary: _("%s - Missed Call").format(this.device.name),
                 // TRANSLATORS: eg. Missed call from John Smith
                 body: _("Missed call from %s").format(sender),
@@ -203,7 +204,8 @@ var Plugin = new Lang.Class({
         if (this.settings.notify_ringing) {
             let notif = new Notify.Notification({
                 app_name: "GSConnect",
-                summary: _("%s Ringing").format(this.device.name),
+                // TRANSLATORS: eg. Google Pixel - Ringing
+                summary: _("%s - Ringing").format(this.device.name),
                 // TRANSLATORS: eg. Incoming call from John Smith
                 body: _("Incoming call from %s").format(sender),
                 icon_name: "call-start-symbolic"
@@ -256,9 +258,9 @@ var Plugin = new Lang.Class({
             });
             
             notif.add_action(
-                "notify_sms", // action char
+                "notify_sms",
                 // TRANSLATORS: Reply to an incoming SMS message
-                _("Reply"), // label
+                _("Reply"),
                 Lang.bind(this, this.replySms, packet.body)
             );
             
@@ -286,6 +288,7 @@ var Plugin = new Lang.Class({
         if (this.settings.notify_talking) {
             notif = new Notify.Notification({
                 app_name: "GSConnect",
+                // TRANSLATORS: eg. Google Pixel - Talking
                 summary: _("%s - Talking").format(this.device.name),
                 // TRANSLATORS: eg. Call in progress with John Smith
                 body: _("Call in progress with %s").format(sender),
@@ -355,7 +358,7 @@ var Plugin = new Lang.Class({
         Common.debug("Telephony: sendSms(" + phoneNumber + ", " + messageBody + ")");
         
         let packet = new Protocol.Packet({
-            id: Date.now(),
+            id: 0,
             type: "kdeconnect.sms.request",
             body: {
                 sendSms: true,

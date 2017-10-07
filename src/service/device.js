@@ -294,10 +294,11 @@ var Device = new Lang.Class({
         );
         
         let notif = new Notify.Notification({
-            app_name: "GSConnect",
+            app_name: _("GSConnect"),
             id: packet.id / 1000,
+            // TRANSLATORS: eg. Pair Request from Google Pixel
             summary: _("Pair Request from %s").format(this.name),
-            body: _("<b>SHA1 Fingerprint:</b>\n%s").format(this.fingerprint),
+            body: _("<b>%s Fingerprint:</b>\n%s\n\n<b>Local Fingerprint:</b>\n%s").format(this.name, this.fingerprint, this.daemon.fingerprint),
             icon_name: "channel-insecure-symbolic"
         });
         
@@ -355,7 +356,7 @@ var Device = new Lang.Class({
         
         // Send a pair packet
         let packet = new Protocol.Packet({
-            id: Date.now(),
+            id: 0,
             type: Protocol.TYPE_PAIR,
             body: { pair: true }
         });
@@ -367,7 +368,7 @@ var Device = new Lang.Class({
         
         if (this._channel !== null) {
             let packet = new Protocol.Packet({
-                id: Date.now(),
+                id: 0,
                 type: Protocol.TYPE_PAIR,
                 body: { pair: false }
             });

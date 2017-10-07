@@ -637,7 +637,8 @@ var ApplicationWindow = new Lang.Class({
             this.plugin.sendSms(number, entry.text);
         }
         
-        // Log the sent message in the Conversation View and clear the entry
+        // TRANSLATORS: A prefix for sent SMS messages
+        // eg. You: Hello from me!
         this._log_message(_("You"), entry.text);
         entry.text = "";
     }

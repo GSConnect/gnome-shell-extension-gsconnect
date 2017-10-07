@@ -309,7 +309,8 @@ var SettingsDialog = new Lang.Class({
         this.content.addItem(
             generalSection,
             _("Automount"),
-            _("Attempt to mount %s as soon as it connects").format(this._page.device.name),
+            // TRANSLATORS: eg. Attempt to mount Google Pixel when it connects
+            _("Attempt to mount %s when it connects").format(this._page.device.name),
             automountSwitch
         );
         

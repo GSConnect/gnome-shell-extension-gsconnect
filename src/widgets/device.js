@@ -193,33 +193,16 @@ var Stack = new Lang.Class({
             orientation: Gtk.Orientation.VERTICAL
         });
         
-        let label1 = new Gtk.Label({
-            label: _("Ensure that devices are connected on the same local network. Ports between 1716 and 1764 can be used for device connections and ports 1739 to 1764 for file transfers."),
+        let defaultPageLabel = new Gtk.Label({
+            label: _("Ensure that devices are connected on the same local network and ports 1716 to 1764 are open for TCP and UDP connections.\n\n") +
+                   _("To connect an Android device, install the KDE Connect Android app from the <a href=\"https://play.google.com/store/apps/details?id=org.kde.kdeconnect_tp\">Google Play Store</a> or <a href=\"https://f-droid.org/repository/browse/?fdid=org.kde.kdeconnect_tp\">F-Droid</a>.\n\n") +
+                   _("Please see the <a href=\"https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki\">Wiki</a> for help or <a href =\"https://github.com/andyholmes/gnome-shell-extension-gsconnect/issues\">open an issue</a> on Github to report a problem."),
             wrap: true,
             use_markup: true,
             vexpand: true,
             xalign: 0
         });
-        page.add(label1);
-        
-        let label2 = new Gtk.Label({
-            label: _("To connect an Android device, install the KDE Connect Android app from the <a href=\"https://play.google.com/store/apps/details?id=org.kde.kdeconnect_tp\">Google Play Store</a> or <a href=\"https://f-droid.org/repository/browse/?fdid=org.kde.kdeconnect_tp\">F-Droid</a>."),
-            wrap: true,
-            use_markup: true,
-            vexpand: true,
-            xalign: 0
-        });
-        page.add(label2);
-        //https://community.kde.org/KDEConnect
-        //https://play.google.com/apps/testing/org.kde.kdeconnect_tp/join
-        let label3 = new Gtk.Label({
-            label: _("Please see the <a href=\"https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki\">Wiki</a> for help or <a href =\"https://github.com/andyholmes/gnome-shell-extension-gsconnect/issues\">open an issue</a> on Github to report a problem."),
-            wrap: true,
-            use_markup: true,
-            vexpand: true,
-            xalign: 0
-        });
-        page.add(label3);
+        page.add(defaultPageLabel);
         
         this.stack.add_titled(page, "default", "Default");
         
@@ -355,15 +338,26 @@ var Page = new Lang.Class({
             if (this.device.connected && this.device.paired) {
                 stateButton.label = _("Unpair");
                 stateButton.set_tooltip_markup(
-                    // TRANSLATORS: Unpair <b>Device Name</b> Device Type
-                    // (eg. "Unpair <b>Google Pixel</b> Smartphone")
+                    // TRANSLATORS: eg. Unpair <b>Google Pixel</b> Smartphone
                     _("Unpair <b>%s</b> %s").format(this.device.name, metadata.type)
                 );
             } else if (this.device.connected && !this.device.paired) {
                 stateButton.label = _("Pair");
                 stateButton.set_tooltip_markup(
-                    // TRANSLATORS: FIXME
-                    _("Request Pair\n\n<b>%s Fingerprint:</b>\n%s\n\n<b>Local Fingerprint:</b>\n%s").format(this.device.name, this.device.fingerprint, this.daemon.fingerprint)
+                    // TRANSLATORS: Request pairing with a device. Goes on top of a "fingerprint" string
+                    // PLEASE KEEP NEWLINE CHARACTERS (\n)
+                    _("Request Pair\n\n") +
+                    // TRANSLATORS: Remote and local TLS Certificate fingerprint
+                    // PLEASE KEEP NEWLINE CHARACTERS (\n)
+                    //
+                    // Example:
+                    //
+                    // <b>Google Pixel Fingerprint:</b>
+                    // 00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
+                    //
+                    // <b>Local Fingerprint:</b>
+                    // 00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
+                    _("<b>%s Fingerprint:</b>\n%s\n\n<b>Local Fingerprint:</b>\n%s").format(this.device.name, this.device.fingerprint, this.daemon.fingerprint)
                 );
             } else {
                 stateButton.label = _("Connect");
@@ -379,7 +373,7 @@ var Page = new Lang.Class({
                 "user-trash-symbolic",
                 Gtk.IconSize.BUTTON
             ),
-            // TRANSLATORS: FIXME
+            // TRANSLATORS: eg. Remove <b>Google Pixel</b> and its configuration
             tooltip_markup: _("Remove <b>%s</b> and its configuration").format(this.device.name),
             always_show_image: true
         });
@@ -407,7 +401,8 @@ var Page = new Lang.Class({
             
             // EAFP!
             this.stack.infobar.label.set_label(
-                // TRANSLATORS: FIXME
+                // TRANSLATORS: Show in an InfoBar after a device is removed with its configuration
+                // eg. Removed <b>Google Pixel</b> and its configuration
                 _("Removed <b>%s</b> and its configuration").format(this.device.name)
             );
             this.stack.attach(this.stack.infobar, 0, 0, 2, 1);
@@ -434,7 +429,7 @@ var Page = new Lang.Class({
         let keySection = this.addSection(_("Keyboard Shortcuts"));
         let keyRow = this.addRow(keySection);
         let keyView = new KeybindingsWidget.TreeView();
-        keyView.addAccel("menu", _("Open Device Menu"), 0, 0);
+        keyView.addAccel("menu", _("Open Menu"), 0, 0);
         keyView.addAccel("sms", _("Send SMS"), 0, 0);
         keyView.addAccel("find", _("Locate"), 0, 0);
         keyView.addAccel("browse", _("Browse Files"), 0, 0);

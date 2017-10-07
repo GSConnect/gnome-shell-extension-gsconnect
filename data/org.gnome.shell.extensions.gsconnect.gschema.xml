@@ -3,7 +3,7 @@
   <schema path="/org/gnome/shell/extensions/gsconnect/" id="org.gnome.shell.extensions.gsconnect">
     <key name="debug" type="b">
       <default>false</default>
-      <summary>Debug mode</summary>
+      <summary>Debug Mode</summary>
       <description>Enable debug features and logging</description>
     </key>
     <key name="show-indicators" type="b">

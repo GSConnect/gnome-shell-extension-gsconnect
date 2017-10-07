@@ -281,6 +281,7 @@ var SettingsDialog = new Lang.Class({
         this.content.addItem(
             receivingSection,
             _("Receive Notifications"),
+            // TRANSLATORS: eg. Enable to receive notifications from Google Pixel
             _("Enable to receive notifications from %s").format(this._page.device.name),
             receiveSwitch
         );
@@ -318,6 +319,7 @@ var SettingsDialog = new Lang.Class({
         this.content.addItem(
             sendingSection,
             _("Send Notifications"),
+            // TRANSLATORS: eg. Enable to send notifications to Google Pixel
             _("Enable to send notifications to %s").format(this._page.device.name),
             sendSwitch
         );
