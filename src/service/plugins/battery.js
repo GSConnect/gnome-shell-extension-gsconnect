@@ -114,7 +114,6 @@ var Plugin = new Lang.Class({
             
             note.add_action(
                 "findMyPhone",
-                // TRANSLATORS: FIXME
                 _("Locate"),
                 Lang.bind(plugin, plugin.ring)
             );
