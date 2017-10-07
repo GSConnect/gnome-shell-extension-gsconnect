@@ -574,12 +574,20 @@ var Daemon = new Lang.Class({
     vfunc_shutdown: function() {
         this.parent();
         
-        if (this._in !== null) {
-            this._in.close();
+        try {
+            if (this._in !== null) {
+                this._in.close(null);
+            }
+        } catch (e) {
+            log("error closing data input: " + e);
         }
         
-        if (this._listener !== null) {
-            this._listener.close();
+        try {
+            if (this._listener !== null) {
+                this._listener.close(null);
+            }
+        } catch (e) {
+            log("error closing UDP listener: " + e);
         }
         
         this._dbus.unexport();
