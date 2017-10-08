@@ -457,10 +457,15 @@ var Page = new Lang.Class({
         let keySection = this.addSection(_("Keyboard Shortcuts"));
         let keyRow = this.addRow(keySection);
         let keyView = new KeybindingsWidget.TreeView();
+        // TRANSLATORS: Open the device menu
         keyView.addAccel("menu", _("Open Menu"), 0, 0);
+        // TRANSLATORS: Open a new SMS window
         keyView.addAccel("sms", _("Send SMS"), 0, 0);
-        keyView.addAccel("find", _("Locate"), 0, 0);
+        // TRANSLATORS: eg. Locate Google Pixel
+        keyView.addAccel("find", _("Locate %s").format(this.device.name), 0, 0);
+        // TRANSLATORS: Open the device's list of browseable directories
         keyView.addAccel("browse", _("Browse Files"), 0, 0);
+        // TRANSLATORS: Open the file chooser for sending files/links
         keyView.addAccel("share", _("Share File/URL"), 0, 0);
         
         let deviceAccels = JSON.parse(

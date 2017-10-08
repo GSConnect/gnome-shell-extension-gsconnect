@@ -304,7 +304,7 @@ var DeviceMenu = new Lang.Class({
         this.findButton = new ActionButton({
             icon_name: "find-location-symbolic",
             callback: Lang.bind(this, this._findAction),
-            tooltip_text: _("Locate")
+            tooltip_text: _("Locate %s").format(this.device.name)
         });
         this.pluginBar.actor.add(this.findButton, { expand: true, x_fill: false });
         
@@ -449,7 +449,7 @@ var DeviceMenu = new Lang.Class({
     },
     
     _statusChanged: function (device, state) {
-        Common.debug("extension.DeviceMenu._statusChanged(" + this.device.id + ")");
+        Common.debug("extension.DeviceMenu._statusChanged(" + this.device.name + ")");
         
         let { connected, paired } = this.device;
         
@@ -724,7 +724,6 @@ var SystemIndicator = new Lang.Class({
         
         this.extensionIndicator.visible = (this.daemon);
         
-        // Extension Menu -> (Stop) Discover Devices Item
         this.scanItem = this.extensionMenu.menu.addAction(
             _("Discover Devices"),
             Lang.bind(this.daemon, this.daemon.discover, "manager", 15)
