@@ -394,8 +394,11 @@ var Page = new Lang.Class({
                 "user-trash-symbolic",
                 Gtk.IconSize.BUTTON
             ),
-            // TRANSLATORS: eg. Remove <b>Google Pixel</b> and its configuration
-            tooltip_markup: _("Remove <b>%s</b> and its configuration").format(this.device.name),
+            // TRANSLATORS: eg. Remove <b>Google Pixel</b> Smartphone
+            tooltip_markup: _("Remove <b>%s</b> %s").format(
+                this.device.name,
+                metadata.type
+            ),
             always_show_image: true,
             visible: true,
             can_focus: true,
