@@ -42,17 +42,6 @@ class GSConnectShareExtension(GObject.GObject, Nautilus.MenuProvider):
 			'org.gnome.shell.extensions.gsconnect.daemon',
 			None)
 
-    def get_reachable_devices(self):
-        """Return a list of reachable, trusted devices"""
-        
-        print self.dbus.call_sync("getShareable", None, 0, -1, None)
-        
-        devices = self.dbus.call_sync("getShareable", None, 0, -1, None)
-        
-#        for device in filter(None, out.decode('utf-8').split("\n")):
-#            device_name, device_id = device.split(': ')
-#            devices.append({ 'name': device_name, 'id': device_id })
-
     def send_files(self, menu, files, device):
         """Send *files* to *device_id*"""
         
