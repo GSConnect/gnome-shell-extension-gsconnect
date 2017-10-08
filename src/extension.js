@@ -37,7 +37,7 @@ const Client = Me.imports.client;
  *
  */
 var KeybindingManager = new Lang.Class({
-    Name: "KeybindingManager",
+    Name: "GSConnectKeybindingManager",
 
     _init: function (devices) {
         this.bindings = new Map();
@@ -103,7 +103,7 @@ var KeybindingManager = new Lang.Class({
  * Adapted from: https://github.com/RaphaelRochet/applications-overview-tooltip
  */
 var ActionTooltip = new Lang.Class({
-    Name: "ActionTooltip",
+    Name: "GSConnectActionTooltip",
     
     _init: function (title, parent) {
         this._parent = parent;
@@ -233,7 +233,7 @@ var ActionTooltip = new Lang.Class({
 
 /** An St.Button subclass for buttons with an image and an action */
 var ActionButton = new Lang.Class({
-    Name: "ActionButton",
+    Name: "GSConnectActionButton",
     Extends: St.Button,
     
     _init: function (params) {
@@ -262,7 +262,7 @@ var ActionButton = new Lang.Class({
 
 /** A PopupMenu used as an information and control center for a device */
 var DeviceMenu = new Lang.Class({
-    Name: "DeviceMenu",
+    Name: "GSConnectDeviceMenu",
     Extends: PopupMenu.PopupMenuSection,
 
     _init: function (daemon, device) {
@@ -563,7 +563,7 @@ var DeviceMenu = new Lang.Class({
 
 /** An indicator representing a Device in the Status Area */
 var DeviceIndicator = new Lang.Class({
-    Name: "DeviceIndicator",
+    Name: "GSConnectDeviceIndicator",
     Extends: PanelMenu.Button,
     
     _init: function (daemon, device) {
@@ -590,17 +590,15 @@ var DeviceIndicator = new Lang.Class({
         device.connect("notify::connected", Lang.bind(this, this._sync));
         device.connect("notify::paired", Lang.bind(this, this._sync));
         
-        // Sync
         this._sync(device);
     },
     
-    // Callbacks
     _sync: function (sender, cb_data) {
         Common.debug("extension.DeviceIndicator._sync()");
         
         let { connected, paired, type } = this.device;
         
-        // Device Visibility
+        // Device Indicator Visibility
         if (!Settings.get_boolean("show-indicators")) {
             this.actor.visible = false;
         } else if (!paired && !Settings.get_boolean("show-unpaired")) {
@@ -636,7 +634,7 @@ var DeviceIndicator = new Lang.Class({
  * indicating that the extension is active when there are none.
  */
 var SystemIndicator = new Lang.Class({
-    Name: "SystemIndicator",
+    Name: "GSConnectSystemIndicator",
     Extends: PanelMenu.SystemIndicator,
     
     _init: function () {
