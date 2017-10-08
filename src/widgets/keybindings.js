@@ -185,7 +185,7 @@ var TreeView = new Lang.Class({
                 buttons: Gtk.ButtonsType.CLOSE,
                 transient_for: this.get_toplevel(),
                 text: _("Keyboard Shortcut Unavailable"),
-                secondary_text: _("The requested keyboard shortcut is in use by another application and can't be overridden.")
+                secondary_text: _("The requested keyboard shortcut is already in use and can't be overridden.")
             });
             
             dialog.run();
