@@ -607,9 +607,9 @@ var Daemon = new Lang.Class({
             log("error closing UDP listener: " + e);
         }
         
-        this._dbus.unexport();
-        this._ndbus.unexport();
         this._proxy.call_sync("RemoveMatch", this._match, 0, -1, null);
+        this._ndbus.unexport();
+        this._dbus.unexport();
         
         Notify.uninit();
     }
