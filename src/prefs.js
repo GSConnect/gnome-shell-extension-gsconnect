@@ -138,7 +138,10 @@ var PrefsWidget = new Lang.Class({
             halign: Gtk.Align.END,
             valign: Gtk.Align.CENTER
         });
-        restartButton.connect("clicked", Common.stopService);
+        restartButton.connect(
+            "clicked",
+            Lang.bind(this.daemon, this.daemon.quit)
+        );
         servicePage.addItem(
             serviceSection,
             _("Restart Service"),

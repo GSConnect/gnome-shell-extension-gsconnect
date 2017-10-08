@@ -35,20 +35,6 @@ function startPreferences () {
 
 
 /**
- * Kill the service daemon
- */
-function stopService () {
-    try {
-        GLib.spawn_command_line_async(
-            "bash -c \"kill $(ps aux | grep 'gsconnect@andyholmes.github.io/service/[d]aemon.js' | awk '{print $2}')\""
-        );
-    } catch (e) {
-        log("Error stopping GSConnect service: " + e);
-    }
-};
-
-
-/**
  * Return an extension object for GJS apps not privy to Gnome Shell imports
  */
 function getCurrentExtension() {
