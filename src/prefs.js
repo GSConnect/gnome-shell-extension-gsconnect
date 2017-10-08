@@ -104,9 +104,12 @@ var PrefsWidget = new Lang.Class({
         let keySection = generalPage.addSection(_("Keyboard Shortcuts"));
         let keyRow = generalPage.addRow(keySection);
         let keyView = new KeybindingsWidget.TreeView();
+        // TRANSLATORS: Opens the extension sub-menu in the Gnome Shell User Menu
         keyView.addAccel("menu", _("Open Menu"), 0, 0);
+        // TRANSLATORS: Starts a 15 second broadcast of this computer's identity
         keyView.addAccel("discover", _("Discover Devices"), 0, 0);
-        keyView.addAccel("settings", _("Open Extension Settings"), 0, 0);
+        // TRANSLATORS: Opens the extension preferences dialog
+        keyView.addAccel("settings", _("Mobile Settings"), 0, 0);
         keyView.setAccels(
             JSON.parse(
                 Common.Settings.get_string("extension-keybindings")
