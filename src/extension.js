@@ -711,7 +711,6 @@ var SystemIndicator = new Lang.Class({
         });
     },
     
-    // The DBus interface has appeared
     _serviceAppeared: function (conn, name, name_owner, cb_data) {
         Common.debug("extension.SystemIndicator._serviceAppeared()");
         
@@ -759,7 +758,6 @@ var SystemIndicator = new Lang.Class({
         );
     },
     
-    // The DBus interface has vanished
     _serviceVanished: function (conn, name, name_owner, cb_data) {
         Common.debug("extension.SystemIndicator._serviceVanished()");
         
