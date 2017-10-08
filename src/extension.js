@@ -1002,7 +1002,6 @@ var SystemIndicator = new Lang.Class({
             
             script.make_symbolic_link(
                 Me.path + "/nautilus-gsconnect.py",
-                null,
                 null
             );
             this._notifyNautilus();
