@@ -412,8 +412,7 @@ var DeviceMenu = new Lang.Class({
     _nameChanged: function (device, name) {
         Common.debug("extension.DeviceMenu._nameChanged()");
         
-        name = name.deep_unpack();
-        this.nameLabel.label.text = (name === "string") ? name : device.name;
+        this.nameLabel.label.text = device.name;
     },
     
     _pluginsChanged: function (device, plugins) {
