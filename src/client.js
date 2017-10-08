@@ -209,17 +209,11 @@ var Telephony = new Lang.Class({
     Signals: {
         "missedCall": {
             flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED,
-            param_types: [
-                GObject.TYPE_STRING,    // phoneNumber
-                GObject.TYPE_STRING     // contactName
-            ]
+            param_types: [GObject.TYPE_STRING, GObject.TYPE_STRING]
         },
         "ringing": {
             flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED,
-            param_types: [
-                GObject.TYPE_STRING,    // phoneNumber
-                GObject.TYPE_STRING    // contactName
-            ]
+            param_types: [GObject.TYPE_STRING, GObject.TYPE_STRING]
         },
         "sms": {
             flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED,
@@ -232,10 +226,7 @@ var Telephony = new Lang.Class({
         },
         "talking": {
             flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED,
-            param_types: [
-                GObject.TYPE_STRING,    // phoneNumber
-                GObject.TYPE_STRING     // contactName
-            ]
+            param_types: [GObject.TYPE_STRING, GObject.TYPE_STRING]
         }
     },
     
@@ -369,14 +360,14 @@ var Device = new Lang.Class({
             for (let name in properties.deep_unpack()) {
                 // We'll call notify() later for our own plugins property
                 if (name === "plugins") {
-                    this._reloadPlugins();
+                    this._pluginsChanged();
                 } else {
                     this.notify(name);
                 }
             }
         });
         
-        this._reloadPlugins();
+        this._pluginsChanged();
     },
     
     // Properties
@@ -418,7 +409,7 @@ var Device = new Lang.Class({
     },
     
     //
-    _reloadPlugins: function () {
+    _pluginsChanged: function () {
         if (this.plugins.indexOf("battery") > -1) {
             this.battery = new Battery(this.gObjectPath);
         } else if (this.hasOwnProperty("battery")) {
