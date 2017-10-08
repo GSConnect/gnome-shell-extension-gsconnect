@@ -24,12 +24,12 @@
     <key name="device-keybindings" type="s">
       <default>"{}"</default>
       <summary>Device Shortcuts</summary>
-      <description>Keyboard shortcuts for device functions</description>
+      <description>Keyboard shortcuts for device actions</description>
     </key>
     <key name="extension-keybindings" type="s">
       <default>"{}"</default>
       <summary>Extension Shortcuts</summary>
-      <description>Keyboard shortcuts for extension functions</description>
+      <description>Keyboard shortcuts for extension actions</description>
     </key>
     <key name="nautilus-integration" type="b">
       <default>false</default>
