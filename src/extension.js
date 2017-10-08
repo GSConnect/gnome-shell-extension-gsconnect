@@ -522,7 +522,10 @@ var DeviceMenu = new Lang.Class({
                 this.browseButton.checked = false;
                 this.browseButton.remove_style_pseudo_class("active");
                 item._getTopMenu().close(true);
-                GLib.spawn_command_line_async("xdg-open " + item.path);
+                Gio.AppInfo.launch_default_for_uri(
+                    "file://" + item.path,
+                    null
+                );
             });
             
             this.browseBar.addMenuItem(mountItem);
