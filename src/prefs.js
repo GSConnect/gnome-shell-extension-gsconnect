@@ -137,10 +137,16 @@ var PrefsWidget = new Lang.Class({
         servicePage.addSetting(serviceSection, "public-name");
         
         let restartButton = new Gtk.Button({
-            label: _("Restart"),
+            image: Gtk.Image.new_from_icon_name(
+                "view-refresh-symbolic",
+                Gtk.IconSize.BUTTON
+            ),
+            visible: true,
+            can_focus: true,
             halign: Gtk.Align.END,
             valign: Gtk.Align.CENTER
         });
+        restartButton.get_style_context().add_class("circular");
         restartButton.connect(
             "clicked",
             Lang.bind(this.daemon, this.daemon.quit)
