@@ -149,7 +149,7 @@ var Plugin = new Lang.Class({
                     
                     transfer.notif.add_action(
                         "share_view",
-                        _("View in Folder"),
+                        _("Open Folder"),
                         () => {
                             Gio.AppInfo.launch_default_for_uri(
                                 file.get_parent().get_uri(),
@@ -160,7 +160,7 @@ var Plugin = new Lang.Class({
                     
                     transfer.notif.add_action(
                         "share_open",
-                        _("Open"),
+                        _("Open File"),
                         () => {
                             Gio.AppInfo.launch_default_for_uri(
                                 file.get_uri(),
