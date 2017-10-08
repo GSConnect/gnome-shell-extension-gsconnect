@@ -521,6 +521,7 @@ var DeviceMenu = new Lang.Class({
             mountItem.connect("activate", (item) => {
                 this.browseButton.checked = false;
                 this.browseButton.remove_style_pseudo_class("active");
+                this.browseBar.actor.visible = false;
                 item._getTopMenu().close(true);
                 Gio.AppInfo.launch_default_for_uri(
                     "file://" + item.path,
