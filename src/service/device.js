@@ -215,6 +215,12 @@ var Device = new Lang.Class({
             "connected",
             new GLib.Variant("b", this.connected)
         );
+        
+        // Ensure fingerprint is available right away
+        this._dbus.emit_property_changed(
+            "fingerprint",
+            new GLib.Variant("s", this.fingerprint)
+        );
     },
     
     // TODO: see destroy()

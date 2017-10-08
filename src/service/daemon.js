@@ -550,6 +550,12 @@ var Daemon = new Lang.Class({
             "/org/gnome/shell/extensions/gsconnect/daemon"
         );
         
+        // Ensure fingerprint is available right away
+        this._dbus.emit_property_changed(
+            "fingerprint",
+            new GLib.Variant("s", this.fingerprint)
+        );
+        
         // Listen for new devices
         try {
             this._listen();
