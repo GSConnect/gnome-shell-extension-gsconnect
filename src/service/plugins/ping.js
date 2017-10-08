@@ -70,7 +70,7 @@ var Plugin = new Lang.Class({
         let body;
         
         if (packet.body.message.length) {
-            // TRANSLATORS: An option message accompanying a ping, rarely if ever used
+            // TRANSLATORS: An optional message accompanying a ping, rarely if ever used
             // eg. Ping: A message sent with ping
             body = _("Ping: %s").format(packet.body.message);
         } else {
