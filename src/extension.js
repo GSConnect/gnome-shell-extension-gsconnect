@@ -142,7 +142,7 @@ var ActionTooltip = new Lang.Class({
             Main.layoutManager.uiGroup.add_actor(this.bin);
             Main.layoutManager.uiGroup.set_child_above_sibling(this.bin, null);
         } else {
-            this.label.text = this.title;
+            this.label.clutter_text.text = this.title;
         }
         
         let [x, y] = this._parent.get_transformed_position();
