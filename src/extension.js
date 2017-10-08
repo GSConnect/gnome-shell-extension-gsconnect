@@ -1037,13 +1037,12 @@ var systemIndicator;
 
 function init() {
     Common.debug("initializing extension");
-    
-    Common.initConfiguration();
 }
 
 function enable() {
     Common.debug("enabling extension");
     
+    Common.initConfiguration();
     systemIndicator = new SystemIndicator();
 }
 
@@ -1052,6 +1051,6 @@ function disable() {
     
     GObject.signal_handlers_destroy(Settings);
     systemIndicator.destroy();
-    // TODO: uninitConfiguration()
+    Common.uninitConfiguration()
 }
 

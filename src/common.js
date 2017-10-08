@@ -271,7 +271,7 @@ function installService () {
 };
 
 
-function initConfiguration() {
+function initConfiguration () {
     try {
         generateEncryption(false);
         installService();
@@ -283,6 +283,19 @@ function initConfiguration() {
     }
     
     return true;
+};
+
+
+function uninitConfiguration () {
+    // DBus service file
+    let serviceDir = GLib.get_user_data_dir() + "/dbus-1/services";
+    let serviceFile = "/org.gnome.shell.extensions.gsconnect.daemon.service";
+    GLib.unlink(serviceDir + serviceFile);
+    
+    // Application desktop file
+    let appDir = GLib.get_user_data_dir() + "/applications";
+    let appFile = "/org.gnome.shell.extensions.gsconnect.daemon.desktop";
+    GLib.unlink(appDir + appFile);
 };
 
 
