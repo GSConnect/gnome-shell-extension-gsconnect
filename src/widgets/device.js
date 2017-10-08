@@ -430,7 +430,7 @@ var Page = new Lang.Class({
             
             // EAFP!
             this.stack.infobar.label.set_label(
-                // TRANSLATORS: Show in an InfoBar after a device is removed with its configuration
+                // TRANSLATORS: Shown in an InfoBar after a device is removed
                 // eg. Removed <b>Google Pixel</b> and its configuration
                 _("Removed <b>%s</b> and its configuration").format(this.device.name)
             );
