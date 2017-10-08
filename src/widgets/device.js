@@ -304,12 +304,14 @@ var Page = new Lang.Class({
         // Info Section // Name and Type Labels
         let nameLabel = new Gtk.Label({
             label: device.name,
+            hexpand: true,
             xalign: 0,
             yalign: 0.75
         });
         statusRow.grid.attach(nameLabel, 1, 0, 1, 1);
         let typeLabel = new Gtk.Label({
             label: metadata.type,
+            hexpand: true,
             xalign: 0,
             yalign: 0.25
         });
@@ -321,10 +323,20 @@ var Page = new Lang.Class({
             hexpand: true,
             spacing: 12
         });
-        statusRow.grid.attach(deviceControls, 2, 0, 1, 2);
         
         // Info Section // State Button (Pair/Unpair/Connect)
-        let stateButton = new Gtk.Button({ label: "" });
+        let stateButton = new Gtk.Button({
+            image: Gtk.Image.new_from_icon_name(
+                "view-refresh-symbolic", // FIXME
+                Gtk.IconSize.BUTTON
+            ),
+            always_show_image: true,
+            visible: true,
+            can_focus: true,
+            halign: Gtk.Align.END,
+            valign: Gtk.Align.CENTER
+        });
+        stateButton.get_style_context().add_class("circular");
         stateButton.connect("clicked", () => {
             if (this.device.connected && this.device.paired) {
                 this.device.unpair();
@@ -336,13 +348,19 @@ var Page = new Lang.Class({
         });
         this.device.connect("notify", () => {
             if (this.device.connected && this.device.paired) {
-                stateButton.label = _("Unpair");
+                stateButton.image = Gtk.Image.new_from_icon_name(
+                    "channel-secure-symbolic", // FIXME
+                    Gtk.IconSize.BUTTON
+                );
                 stateButton.set_tooltip_markup(
                     // TRANSLATORS: eg. Unpair <b>Google Pixel</b> Smartphone
                     _("Unpair <b>%s</b> %s").format(this.device.name, metadata.type)
                 );
             } else if (this.device.connected && !this.device.paired) {
-                stateButton.label = _("Pair");
+                stateButton.image = Gtk.Image.new_from_icon_name(
+                    "channel-insecure-symbolic", // FIXME
+                    Gtk.IconSize.BUTTON
+                );
                 stateButton.set_tooltip_markup(
                     // TRANSLATORS: Request pairing with a device. Goes on top of a "fingerprint" string
                     // PLEASE KEEP NEWLINE CHARACTERS (\n)
@@ -360,12 +378,15 @@ var Page = new Lang.Class({
                     _("<b>%s Fingerprint:</b>\n%s\n\n<b>Local Fingerprint:</b>\n%s").format(this.device.name, this.device.fingerprint, this.daemon.fingerprint)
                 );
             } else {
-                stateButton.label = _("Connect");
+                stateButton.image = Gtk.Image.new_from_icon_name(
+                    "view-refresh-symbolic", // FIXME
+                    Gtk.IconSize.BUTTON
+                );
                 stateButton.set_tooltip_markup(_("Attempt Reconnection"));
             }
         });
         this.device.notify("paired");
-        deviceControls.add(stateButton);
+        statusRow.grid.attach(stateButton, 2, 0, 1, 2);
         
         // Info Section // Remove Button
         let removeButton = new Gtk.Button({
@@ -375,8 +396,13 @@ var Page = new Lang.Class({
             ),
             // TRANSLATORS: eg. Remove <b>Google Pixel</b> and its configuration
             tooltip_markup: _("Remove <b>%s</b> and its configuration").format(this.device.name),
-            always_show_image: true
+            always_show_image: true,
+            visible: true,
+            can_focus: true,
+            halign: Gtk.Align.END,
+            valign: Gtk.Align.CENTER
         });
+        removeButton.get_style_context().add_class("circular");
         
         // See: https://bugzilla.gnome.org/show_bug.cgi?id=710888
         removeButton.connect("clicked", () => {
@@ -408,8 +434,7 @@ var Page = new Lang.Class({
             this.stack.attach(this.stack.infobar, 0, 0, 2, 1);
             this.stack.infobar.show_all();
         });
-        deviceControls.add(removeButton);
-        deviceControls.set_child_non_homogeneous(removeButton, true);
+        statusRow.grid.attach(removeButton, 3, 0, 1, 2);
         
         // Plugins
         let pluginsSection = this.addSection(_("Plugins"));
