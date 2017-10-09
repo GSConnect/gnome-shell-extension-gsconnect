@@ -486,14 +486,12 @@ var SystemIndicator = new Lang.Class({
         this.keybindingManager = new KeybindingManager();
         this._keybindings = [];
         
-        // Notifications
         this._integrateNautilus();
         Settings.connect(
             "changed::nautilus-integration",
             Lang.bind(this, this._integrateNautilus)
         );
         
-        // System Indicator
         this.extensionIndicator = this._addIndicator();
         this.extensionIndicator.icon_name = "gsconnect-symbolic";
         let userMenuTray = Main.panel.statusArea.aggregateMenu._indicators;
@@ -506,7 +504,6 @@ var SystemIndicator = new Lang.Class({
         this.extensionMenu.icon.icon_name = this.extensionIndicator.icon_name;
         this.menu.addMenuItem(this.extensionMenu);
         
-        // Extension Menu -> [ Devices Section ]
         this.devicesSection = new PopupMenu.PopupMenuSection();
         Settings.bind(
             "show-indicators",
@@ -516,23 +513,12 @@ var SystemIndicator = new Lang.Class({
         );
         this.extensionMenu.menu.addMenuItem(this.devicesSection);
         
-        // Extension Menu -> Mobile Settings Item
         this.extensionMenu.menu.addAction(
             _("Mobile Settings"), 
             Common.startPreferences
         );
         
-        //
         Main.panel.statusArea.aggregateMenu.menu.addMenuItem(this.menu, 4);
-        
-        // Watch for DBus service
-        this._watchdog = Gio.bus_watch_name(
-            Gio.BusType.SESSION,
-            Client.BUS_NAME,
-            Gio.BusNameWatcherFlags.NONE,
-            Lang.bind(this, this._serviceAppeared),
-            Lang.bind(this, this._serviceVanished)
-        );
         
         // Keybindings
         this._extensionKeybindings();
@@ -546,6 +532,15 @@ var SystemIndicator = new Lang.Class({
         Settings.connect("changed::extension-keybindings", () => {
             this._extensionKeybindings();
         });
+        
+        // Watch for DBus service
+        this._watchdog = Gio.bus_watch_name(
+            Gio.BusType.SESSION,
+            Client.BUS_NAME,
+            Gio.BusNameWatcherFlags.NONE,
+            Lang.bind(this, this._serviceAppeared),
+            Lang.bind(this, this._serviceVanished)
+        );
     },
     
     _serviceAppeared: function (conn, name, name_owner, cb_data) {
