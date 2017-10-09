@@ -296,13 +296,13 @@ var DeviceMenu = new Lang.Class({
         
         if (!connected) {
             this.statusButton.child.icon_name = "view-refresh-symbolic";
-            this.statusButton.tooltip.title = _("Attempt Reconnection");
+            this.statusButton.tooltip.title = _("Reconnect <b>%s</b>").format(this.device.name);
             this.statusLabel.text = _("Device is disconnected");
         } else if (!paired) {
             this.statusButton.child.icon_name = "channel-insecure-symbolic";
-            this.statusButton.tooltip.title = _("Request Pair\n\n") + _("<b>%s Fingerprint:</b>\n%s\n\n<b>Local Fingerprint:</b>\n%s").format(this.device.name, this.device.fingerprint, this.daemon.fingerprint);
+            this.statusButton.tooltip.title = _("Pair <b>%s</b>\n\n").format(this.device.name) + _("<b>%s Fingerprint:</b>\n%s\n\n<b>Local Fingerprint:</b>\n%s").format(this.device.name, this.device.fingerprint, this.daemon.fingerprint);
             this.statusLabel.text = _("Device is unpaired");
-        } 
+        }
         
         this._pluginsChanged(this.device);
     },
@@ -451,7 +451,8 @@ var DeviceIndicator = new Lang.Class({
         
         // Indicator Icon
         let icon = (type === "phone") ? "smartphone" : type;
-        icon = (type === "desktop") ? "computer" : icon;
+        icon = (type === "desktop") ? "laptop" : icon;
+        icon = (type === "unknown") ? "laptop" : icon;
         
         if (paired && connected) {
             this.icon.icon_name = icon + "-connected";
