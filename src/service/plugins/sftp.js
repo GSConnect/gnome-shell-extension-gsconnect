@@ -27,7 +27,7 @@ const PluginsBase = imports.service.plugins.base;
 
 var METADATA = {
     name: "sftp",
-    summary: _("SSHFS"),
+    summary: _("Browse Files"),
     description: _("Mount and browse device filesystems"),
     incomingPackets: ["kdeconnect.sftp"],
     outgoingPackets: ["kdeconnect.sftp.request"],

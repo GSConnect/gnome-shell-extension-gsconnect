@@ -85,6 +85,7 @@ var Plugin = new Lang.Class({
         this._smsNotifications = new Map();
     },
     
+    // FIXME: not always working...?
     _hasWindow: function (query) {
         Common.debug("Telephony: _hasWindow(" + query + ")");
         
@@ -170,13 +171,17 @@ var Plugin = new Lang.Class({
             )
         );
         
+        // TODO: time of missed call?
         if (this.settings.notify_missedCall) {
             let notif = new Notify.Notification({
-                app_name: "GSConnect",
-                // TRANSLATORS: eg. Google Pixel - Missed Call
-                summary: _("%s - Missed Call").format(this.device.name),
-                // TRANSLATORS: eg. Missed call from John Smith
-                body: _("Missed call from %s").format(sender),
+                app_name: _("GSConnect"),
+                // TRANSLATORS: Missed Call
+                summary: _("Missed Call"),
+                // TRANSLATORS: eg. Missed call from <b>John Smith</b> on <b>Google Pixel</b>
+                body: _("Missed call from <b>%s</b> on <b>%s</b>").format(
+                    sender,
+                    this.device.name
+                ),
                 icon_name: "call-missed-symbolic"
             });
             
@@ -203,11 +208,14 @@ var Plugin = new Lang.Class({
         // TODO: music pause, etc
         if (this.settings.notify_ringing) {
             let notif = new Notify.Notification({
-                app_name: "GSConnect",
-                // TRANSLATORS: eg. Google Pixel - Ringing
-                summary: _("%s - Ringing").format(this.device.name),
-                // TRANSLATORS: eg. Incoming call from John Smith
-                body: _("Incoming call from %s").format(sender),
+                app_name: _("GSConnect"),
+                // TRANSLATORS: Incoming Call
+                summary: _("Incoming Call").format(this.device.name),
+                // TRANSLATORS: eg. Incoming call from <b>John Smith</b> on <b>Google Pixel</b>
+                body: _("Incoming call from <b>%s</b> on <b>%s</b>").format(
+                    sender,
+                    this.device.name
+                ),
                 icon_name: "call-start-symbolic"
             });
             
@@ -251,7 +259,7 @@ var Plugin = new Lang.Class({
             this.replySms(null, "autoreply_sms", packet.body);
         } else if (this.settings.notify_sms) {
             let notif = new Notify.Notification({
-                app_name: "GSConnect",
+                app_name: _("GSConnect"),
                 summary: sender,
                 body: packet.body.messageBody,
                 icon_name: "phone-symbolic"
@@ -287,11 +295,14 @@ var Plugin = new Lang.Class({
         
         if (this.settings.notify_talking) {
             notif = new Notify.Notification({
-                app_name: "GSConnect",
-                // TRANSLATORS: eg. Google Pixel - Talking
-                summary: _("%s - Talking").format(this.device.name),
-                // TRANSLATORS: eg. Call in progress with John Smith
-                body: _("Call in progress with %s").format(sender),
+                app_name: _("GSConnect"),
+                // TRANSLATORS: Call In Progress
+                summary: _("Call In Progress"),
+                // TRANSLATORS: eg. Call in progress with <b>John Smith</b> on <b>Google Pixel</b>
+                body: _("Call in progress with <b>%s</b> on <b>%s</b>").format(
+                    sender,
+                    this.device.name
+                ),
                 icon_name: "call-start-symbolic"
             });
             

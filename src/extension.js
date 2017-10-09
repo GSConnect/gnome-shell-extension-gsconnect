@@ -328,7 +328,8 @@ var DeviceMenu = new Lang.Class({
                 } else {
                         Main.notifyError(
                             this.device.name,
-                            _("Failed to mount device filesystem")
+                            // TRANSLATORS: eg. Failed to mount Google Pixel
+                            _("Failed to mount %s").format(this.device.name)
                         );
                         
                         this.browseButton.checked = false;

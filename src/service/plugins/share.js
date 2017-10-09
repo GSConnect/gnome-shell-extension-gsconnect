@@ -90,9 +90,9 @@ var Plugin = new Lang.Class({
                 transfer.connect("started", (transfer) => {
                     transfer.notif = new Notify.Notification({
                         app_name: _("GSConnect"),
-                        summary: _("Starting transfer"),
-                        // TRANSLATORS: eg. Receiving book.pdf from Google Pixel
-                        body: _("Receiving %s from %s").format(
+                        summary: _("Starting Transfer"),
+                        // TRANSLATORS: eg. Receiving <b>book.pdf</b> from <b>Google Pixel</b>
+                        body: _("Receiving <b>%s</b> from <b>%s</b>").format(
                             packet.body.filename,
                             this.device.name
                         ),
@@ -118,13 +118,17 @@ var Plugin = new Lang.Class({
                 transfer.connect("progress", (transfer, percent) => {
                     if (transfer.hasOwnProperty("notif")) {
                         transfer.notif.update(
-                            // TRANSLATORS: eg. Receiving book.pdf from Google Pixel
-                            _("Receiving %s from %s").format(
+                            // TRANSLATORS: Transfer In Progress
+                            _("Transfer In Progress").format(
                                 packet.body.filename,
                                 this.device.name
                             ),
-                            // TRANSLATORS: eg. Transfer is 42% complete
-                            _("Transfer is %d%% complete").format(percent),
+                            // TRANSLATORS: eg. Transfer of <b>book.pdf</b> from <b>Google Pixel</b> is 42% complete
+                            _("Transfer of <b>%s</b> from <b>%s</b> is %d%% complete").format(
+                                percent,
+                                packet.body.filename,
+                                this.device.name
+                            ),
                             "send-to-symbolic"
                         );
                         //transfer.notif.show();
@@ -138,9 +142,9 @@ var Plugin = new Lang.Class({
                     
                     transfer.notif = new Notify.Notification({
                         app_name: _("GSConnect"),
-                        summary: _("Transfer successful"),
-                        // TRANSLATORS: eg. Received book.pdf from Google Pixel
-                        body: _("Received %s from %s").format(
+                        summary: _("Transfer Successful"),
+                        // TRANSLATORS: eg. Received <b>book.pdf</b> from <b>Google Pixel</b>
+                        body: _("Received <b>%s</b> from <b>%s</b>").format(
                             packet.body.filename,
                             this.device.name
                         ),
@@ -174,9 +178,9 @@ var Plugin = new Lang.Class({
                 });
                 
                 transfer.connect("failed", (transfer, error) => {
-                    let summary = _("Transfer failed");
-                    // TRANSLATORS: eg. Failed to receive book.pdf from Google Pixel: Some error
-                    let body = _("Failed to receive %s from %s: %s").format(
+                    let summary = _("Transfer Failed");
+                    // TRANSLATORS: eg. Failed to receive <b>book.pdf</b> from <b>Google Pixel</b>: Some error
+                    let body = _("Failed to receive <b>%s</b> from <b>%s</b>: %s").format(
                         file.get_basename(),
                         this.device.name, error
                     );
@@ -204,9 +208,9 @@ var Plugin = new Lang.Class({
                 });
                 
                 transfer.connect("cancelled", (transfer) => {
-                    let summary = _("Transfer cancelled");
-                    // TRANSLATORS: eg. Cancelled transfer of book.pdf from Google Pixel
-                    let body = _("Cancelled transfer of %s from %s").format(
+                    let summary = _("Transfer Cancelled");
+                    // TRANSLATORS: eg. Cancelled transfer of <b>book.pdf</b> from <b>Google Pixel</b>
+                    let body = _("Cancelled transfer of <b>%s</b> from <b>%s</b>").format(
                         packet.body.filename,
                         this.device.name
                     );
@@ -337,9 +341,9 @@ var Plugin = new Lang.Class({
                 transfer.connect("started", (transfer) => {
                     transfer.notif = new Notify.Notification({
                         app_name: _("GSConnect"),
-                        summary: _("Starting transfer"),
-                        // TRANSLATORS: eg. Sending book.pdf to Google Pixel
-                        body: _("Sending %s to %s").format(
+                        summary: _("Starting Transfer"),
+                        // TRANSLATORS: eg. Sending <b>book.pdf</b> to <b>Google Pixel</b>
+                        body: _("Sending <b>%s</b> to <b>%s</b>").format(
                             file.get_basename(),
                             this.device.name
                         ),
@@ -365,13 +369,17 @@ var Plugin = new Lang.Class({
                 transfer.connect("progress", (transfer, percent) => {
                     if (transfer.hasOwnProperty("notif")) {
                         transfer.notif.update(
-                            // TRANSLATORS: eg. Sending book.pdf to Google Pixel
-                            _("Sending %s to %s").format(
-                                file.get_basename(),
+                            // TRANSLATORS: Transfer In Progress
+                            _("Transfer In Progress").format(
+                                packet.body.filename,
                                 this.device.name
                             ),
-                            // TRANSLATORS: eg. Transfer is 42% complete
-                            _("Transfer is %d%% complete").format(percent),
+                            // TRANSLATORS: eg. Transfer of <b>book.pdf</b> to <b>Google Pixel</b> is 42% complete
+                            _("Transfer of <b>%s</b> to <b>%s</b> is %d%% complete").format(
+                                percent,
+                                packet.body.filename,
+                                this.device.name
+                            ),
                             "send-to-symbolic"
                         );
                         //transfer.notif.show();
@@ -379,9 +387,9 @@ var Plugin = new Lang.Class({
                 });
                 
                 transfer.connect("succeeded", (transfer) => {
-                    let summary = _("Transfer successful");
-                    // TRANSLATORS: eg. Sent book.pdf to Google Pixel
-                    let body = _("Sent %s to %s").format(
+                    let summary = _("Transfer Successful");
+                    // TRANSLATORS: eg. Sent <b>book.pdf</b> to <b>Google Pixel</b>
+                    let body = _("Sent <b>%s</b> to <b>%s</b>").format(
                         file.get_basename(),
                         this.device.name
                     );
@@ -406,9 +414,9 @@ var Plugin = new Lang.Class({
                 });
                 
                 transfer.connect("failed", (transfer, error) => {
-                    let summary = _("Transfer failed");
-                    // TRANSLATORS: eg. Failed to send book.pdf to Google Pixel: Some error
-                    let body = _("Failed to send %s to %s: %s").format(
+                    let summary = _("Transfer Failed");
+                    // TRANSLATORS: eg. Failed to send <b>book.pdf</b> to <b>Google Pixel</b>: Some error
+                    let body = _("Failed to send <b>%s</b> to <b>%s</b>: %s").format(
                         file.get_basename(),
                         this.device.name, error
                     );
@@ -433,9 +441,9 @@ var Plugin = new Lang.Class({
                 });
                 
                 transfer.connect("cancelled", (transfer) => {
-                    let summary = _("Transfer cancelled");
-                    // TRANSLATORS: eg. Cancelled transfer of book.pdf to Google Pixel
-                    let body = _("Cancelled transfer of %s to %s").format(
+                    let summary = _("Transfer Cancelled");
+                    // TRANSLATORS: eg. Cancelled transfer of <b>book.pdf</b> to <b>Google Pixel</b>
+                    let body = _("Cancelled transfer of <b>%s</b> to <b>%s</b>").format(
                         file.get_basename(),
                         this.device.name
                     );

@@ -24,8 +24,8 @@ const PluginsBase = imports.service.plugins.base;
 
 var METADATA = {
     name: "findmyphone",
-    summary: _("Find My Phone"),
-    description: _("Locate the device by making it ring"),
+    summary: _("Locate Device"),
+    description: _("Locate a device by making it ring"),
     incomingPackets: [],
     outgoingPackets: ["kdeconnect.findmyphone.request"]
 };
