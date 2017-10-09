@@ -4,7 +4,7 @@
 */
 
 const Lang = imports.lang;
-const Format = imports.format
+const Format = imports.format;
 const Gettext = imports.gettext;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
