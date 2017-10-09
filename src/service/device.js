@@ -255,7 +255,6 @@ var Device = new Lang.Class({
     /**
      * Pairing Functions
      *
-     * TODO: set timeout for outgoing pair request
      */
     _handlePair: function (packet) {
         log("Pair request: " + this.name + " (" + this.id + ")");
@@ -286,6 +285,7 @@ var Device = new Lang.Class({
             this._incomingPairRequest = false;
             this._outgoingPairRequest = false;
             notif.close();
+            this.unpair();
         } catch (e) {
         }
         return false;
@@ -301,7 +301,6 @@ var Device = new Lang.Class({
         
         let notif = new Notify.Notification({
             app_name: _("GSConnect"),
-            id: packet.id / 1000,
             // TRANSLATORS: eg. Pair Request from Google Pixel
             summary: _("Pair Request from %s").format(this.name),
             body: _("<b>%s Fingerprint:</b>\n%s\n\n<b>Local Fingerprint:</b>\n%s").format(this.name, this.fingerprint, this.daemon.fingerprint),
