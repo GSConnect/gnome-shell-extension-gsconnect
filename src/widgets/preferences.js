@@ -34,8 +34,8 @@ var Page = new Lang.Class({
         this.box = new Gtk.Box({
             visible: true,
             can_focus: false,
-            margin_left: 80,
-            margin_right: 80,
+            margin_left: 72,
+            margin_right: 72,
             margin_top: 18,
             margin_bottom: 18,
             orientation: Gtk.Orientation.VERTICAL,
