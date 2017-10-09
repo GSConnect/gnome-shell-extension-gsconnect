@@ -171,3 +171,4 @@ var Button = new Lang.Class({
         }
     }
 });
+
