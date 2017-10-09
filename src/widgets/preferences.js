@@ -106,7 +106,7 @@ var Page = new Lang.Class({
         row.grid = new Gtk.Grid({
             visible: true,
             can_focus: false,
-            column_spacing: 16,
+            column_spacing: 12,
             row_spacing: 0,
             margin_left: 12,
             margin_top: 6,
