@@ -370,14 +370,11 @@ var Plugin = new Lang.Class({
                     if (transfer.hasOwnProperty("notif")) {
                         transfer.notif.update(
                             // TRANSLATORS: Transfer In Progress
-                            _("Transfer In Progress").format(
-                                packet.body.filename,
-                                this.device.name
-                            ),
+                            _("Transfer In Progress"),
                             // TRANSLATORS: eg. Transfer of <b>book.pdf</b> to <b>Google Pixel</b> is 42% complete
                             _("Transfer of <b>%s</b> to <b>%s</b> is %d%% complete").format(
                                 percent,
-                                packet.body.filename,
+                                file.get_basename(),
                                 this.device.name
                             ),
                             "send-to-symbolic"
