@@ -188,6 +188,7 @@ function generateEncryption (force=false) {
         );
     }
     
+    // Ensure permissions are restrictive
     GLib.spawn_command_line_async("chmod 0600 " + CONFIG_PATH + "/private.pem");
     GLib.spawn_command_line_async("chmod 0600 " + CONFIG_PATH + "/certificate.pem");
 };
