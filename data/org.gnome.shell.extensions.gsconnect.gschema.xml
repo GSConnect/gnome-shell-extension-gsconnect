@@ -39,7 +39,7 @@
     <key name="public-name" type="s">
       <default>"GSConnect"</default>
       <summary>Public Name</summary>
-      <description>The name broadcast to other devices</description>
+      <description>The name visible to other devices</description>
     </key>
   </schema>
 </schemalist>
