@@ -44,6 +44,11 @@ var METADATA = {
 /**
  * Share Plugin
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/share
+ *
+ * FIXME: transfer progress
+ * TODO: receiving "text"
+ *       expand signals to cover Protocol.Transfer signals
+ *       emit signals (and export over DBus)
  */
 var Plugin = new Lang.Class({
     Name: "GSConnectSharePlugin",
@@ -63,13 +68,9 @@ var Plugin = new Lang.Class({
         this.parent(device, "share");
     },
     
-    // TODO: error checking
-    //       re-test
-    //       notify?
     handlePacket: function (packet) {
         Common.debug("Share: handlePacket()");
         
-        // TODO: error checking, re-test
         if (packet.body.hasOwnProperty("filename")) {
             let filepath = this.getFilepath(packet.body.filename);
             let file = Gio.File.new_for_path(filepath);
@@ -200,7 +201,6 @@ var Plugin = new Lang.Class({
                         });
                     }
                     
-                    // TODO: optional?
                     GLib.unlink(filepath);
                     transfer.notif.clear_actions();
                     transfer.notif.show();
@@ -230,7 +230,6 @@ var Plugin = new Lang.Class({
                         });
                     }
                     
-                    // TODO: optional?
                     GLib.unlink(filepath);
                     transfer.notif.clear_actions();
                     transfer.notif.show();
