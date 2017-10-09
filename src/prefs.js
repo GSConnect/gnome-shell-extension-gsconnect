@@ -131,10 +131,10 @@ var PrefsWidget = new Lang.Class({
             _("Devices")
         );
         
-        // Service Page
-        let servicePage = this.addPage("service", _("Service"));
-        let serviceSection = servicePage.addSection(_("Service"));
-        servicePage.addSetting(serviceSection, "public-name");
+        // About/Advanced
+        let advancedPage = this.addPage("advanced", _("Advanced"));
+        let develSection = advancedPage.addSection(_("Development"));
+        advancedPage.addSetting(develSection, "debug");
         
         let restartButton = new Gtk.Button({
             image: Gtk.Image.new_from_icon_name(
@@ -151,17 +151,12 @@ var PrefsWidget = new Lang.Class({
             "clicked",
             Lang.bind(this.daemon, this.daemon.quit)
         );
-        servicePage.addItem(
-            serviceSection,
+        advancedPage.addItem(
+            develSection,
             _("Restart Service"),
             _("Stop the service and let the extension restart it"),
             restartButton
         );
-        
-        // About/Advanced
-        let advancedPage = this.addPage("advanced", _("Advanced"));
-        let develSection = advancedPage.addSection(_("Development"));
-        advancedPage.addSetting(develSection, "debug");
     }
 });
 

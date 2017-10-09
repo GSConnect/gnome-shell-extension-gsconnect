@@ -160,7 +160,6 @@ var Stack = new Lang.Class({
         
         // Page Switcher
         this.sidebar = new Gtk.ListBox();
-        
         let sidebarScrolledWindow = new Gtk.ScrolledWindow({
             can_focus: true,
             hscrollbar_policy: Gtk.PolicyType.NEVER,
@@ -180,39 +179,87 @@ var Stack = new Lang.Class({
         });
         this.attach(this.stack, 1, 1, 1, 1);
         
-        // Default Page
-        let page = new Gtk.Box({
-            visible: true,
-            can_focus: true,
-            margin_left: 24,
-            margin_top: 24,
-            margin_bottom: 24,
-            margin_right: 24,
-            spacing: 12,
-            valign: Gtk.Align.CENTER,
-            orientation: Gtk.Orientation.VERTICAL
-        });
+        this._addDefault();
         
+        this.sidebar.connect("row-selected", (listbox, row) => {
+            if (row === null) {
+                this.sidebar.select_row(this.defaultRow);
+            } else {
+                this.stack.set_visible_child_name(row.device.id);
+            }
+        });
+    },
+    
+    _addDefault: function () {
+        // Default Sidebar Entry
+        this.defaultRow = new Gtk.ListBoxRow({
+            visible: true,
+            can_focus: true
+        });
+        this.defaultRow.device = { id: "default" };
+        
+        this.defaultRow.grid = new Gtk.Grid({
+            visible: true,
+            can_focus: false,
+            column_spacing: 16,
+            row_spacing: 0,
+            margin_left: 12,
+            margin_top: 6,
+            margin_bottom: 6,
+            margin_right: 18
+        });
+        this.defaultRow.add(this.defaultRow.grid);
+        
+        let icon = Gtk.Image.new_from_icon_name(
+            "computer",
+            Gtk.IconSize.LARGE_TOOLBAR
+        );
+        this.defaultRow.grid.attach(icon, 0, 0, 1, 1);
+        let nameLabel = new Gtk.Label({ label: "" });
+        Common.Settings.bind(
+            "public-name",
+            nameLabel,
+            "label",
+            Gio.SettingsBindFlags.DEFAULT
+        );
+        this.defaultRow.grid.attach(nameLabel, 1, 0, 1, 1);
+        this.sidebar.add(this.defaultRow);
+        
+        this.defaultRow.show_all();
+        
+        let separatorRow = new Gtk.ListBoxRow({
+            visible: true,
+            can_focus: false,
+            activatable: false,
+            selectable: false
+        });
+        separatorRow.add(new Gtk.Separator());
+        this.sidebar.add(separatorRow);
+        
+        // Default Page
+        let page = new PreferencesWidget.Page();
+        page.box.margin_left = 36;
+        page.box.margin_right = 36;
+        
+        let serviceSection = page.addSection();
+        page.addSetting(serviceSection, "public-name");
+        
+        let helpSection = page.addSection(_("Connecting Devices"));
         let defaultPageLabel = new Gtk.Label({
-            label: _("Ensure that devices are connected on the same local network and ports 1716 to 1764 are open for TCP and UDP connections.\n\n") +
+            label: _("Ensure that devices are on the same local network with ports 1716 to 1764 open for TCP and UDP connections.\n\n") +
                    _("To connect an Android device, install the KDE Connect Android app from the <a href=\"https://play.google.com/store/apps/details?id=org.kde.kdeconnect_tp\">Google Play Store</a> or <a href=\"https://f-droid.org/repository/browse/?fdid=org.kde.kdeconnect_tp\">F-Droid</a>.\n\n") +
-                   _("Please see the <a href=\"https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki\">Wiki</a> for help or <a href =\"https://github.com/andyholmes/gnome-shell-extension-gsconnect/issues\">open an issue</a> on Github to report a problem."),
+                   _("Please see the <a href=\"https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki\">Wiki</a> for more help or <a href =\"https://github.com/andyholmes/gnome-shell-extension-gsconnect/issues\">open an issue</a> on Github to report a problem."),
             wrap: true,
             use_markup: true,
             vexpand: true,
             xalign: 0
         });
-        page.add(defaultPageLabel);
+        let helpRow = page.addRow(helpSection);
+        helpRow.grid.attach(defaultPageLabel, 0, 0, 1, 1);
         
         this.stack.add_titled(page, "default", "Default");
         
-        this.sidebar.connect("row-selected", (listbox, row) => {
-            if (row === null) {
-                this.stack.set_visible_child_name("default");
-            } else {
-                this.stack.set_visible_child_name(row.device.id);
-            }
-        });
+        this.sidebar.select_row(this.defaultRow);
     },
     
     addDevice: function (daemon, dbusPath) {
