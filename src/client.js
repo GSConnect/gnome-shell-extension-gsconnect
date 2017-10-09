@@ -408,7 +408,6 @@ var Device = new Lang.Class({
         return this._call("reloadPlugins", true);
     },
     
-    //
     _pluginsChanged: function () {
         if (this.plugins.indexOf("battery") > -1) {
             this.battery = new Battery(this.gObjectPath);
@@ -482,7 +481,6 @@ var Device = new Lang.Class({
 });
 
 
-// A DBus Interface wrapper for a device manager
 var Daemon = new Lang.Class({
     Name: "GSConnectDaemonProxy",
     Extends: ProxyBase,
@@ -572,19 +570,19 @@ var Daemon = new Lang.Class({
         }
     },
     
-    _deviceAdded: function (manager, dbusPath) {
+    _deviceAdded: function (daemon, dbusPath) {
         this.devices.set(dbusPath, new Device(dbusPath));
         this.emit("device::added", dbusPath);
     },
     
-    _deviceRemoved: function (manager, dbusPath) {
+    _deviceRemoved: function (daemon, dbusPath) {
         this.devices.get(dbusPath).destroy();
         this.devices.delete(dbusPath);
         this.emit("device::removed", dbusPath);
     },
     
     // Public Methods
-    discover: function (requestId="manager", timeout=15) {
+    discover: function (requestId="daemon", timeout=15) {
         this._call("discover", true, requestId, timeout);
     },
     
