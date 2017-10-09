@@ -32,7 +32,6 @@ var PrefsWidget = new Lang.Class({
     _init: function () {
         this.parent();
         
-        // Watch for Service Provider
         this.daemon = new Client.Daemon();
         
         this._build();
