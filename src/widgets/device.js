@@ -284,7 +284,7 @@ var Stack = new Lang.Class({
         });
         row.add(row.grid);
         
-        let metadata = DeviceType.get(device.type);
+        let metadata = DeviceMetadata[device.type];
         
         let icon = Gtk.Image.new_from_icon_name(
             metadata.icon,
@@ -335,7 +335,7 @@ var Page = new Lang.Class({
         this.config = Common.readDeviceConfiguration(device.id);
         
         // Info Section
-        let metadata = DeviceType.get(device.type);
+        let metadata = DeviceMetadata[device.type];
         
         let infoSection = this.addSection();
         let statusRow = this.addRow(infoSection);
@@ -400,8 +400,8 @@ var Page = new Lang.Class({
                     Gtk.IconSize.BUTTON
                 );
                 stateButton.set_tooltip_markup(
-                    // TRANSLATORS: eg. Unpair <b>Google Pixel</b> Smartphone
-                    _("Unpair <b>%s</b> %s").format(this.device.name, metadata.type)
+                    // TRANSLATORS: eg. Unpair <b>Google Pixel</b>
+                    _("Unpair <b>%s</b>").format(this.device.name)
                 );
             } else if (this.device.connected && !this.device.paired) {
                 stateButton.image = Gtk.Image.new_from_icon_name(
@@ -409,9 +409,9 @@ var Page = new Lang.Class({
                     Gtk.IconSize.BUTTON
                 );
                 stateButton.set_tooltip_markup(
-                    // TRANSLATORS: Request pairing with a device. Goes on top of a "fingerprint" string
+                    // TRANSLATORS: eg. Pair <b>Google Pixel</b>
                     // PLEASE KEEP NEWLINE CHARACTERS (\n)
-                    _("Request Pair\n\n") +
+                    _("Pair <b>%s</b>\n\n").format(this.device.name) +
                     // TRANSLATORS: Remote and local TLS Certificate fingerprint
                     // PLEASE KEEP NEWLINE CHARACTERS (\n)
                     //
@@ -429,7 +429,10 @@ var Page = new Lang.Class({
                     "view-refresh-symbolic",
                     Gtk.IconSize.BUTTON
                 );
-                stateButton.set_tooltip_markup(_("Attempt Reconnection"));
+                stateButton.set_tooltip_markup(
+                    // TRANSLATORS: eg. Reconnect <b>Google Pixel</b>
+                    _("Reconnect <b>%s</b>").format(this.device.name)
+                );
             }
         });
         this.device.notify("paired");
@@ -442,10 +445,7 @@ var Page = new Lang.Class({
                 Gtk.IconSize.BUTTON
             ),
             // TRANSLATORS: eg. Remove <b>Google Pixel</b> Smartphone
-            tooltip_markup: _("Remove <b>%s</b> %s").format(
-                this.device.name,
-                metadata.type
-            ),
+            tooltip_markup: _("Remove <b>%s</b>").format(this.device.name),
             always_show_image: true,
             visible: true,
             can_focus: true,
@@ -546,31 +546,26 @@ var Page = new Lang.Class({
 });
 
 
-var DeviceType = new Map([
-    ["desktop", {
+var DeviceMetadata = {
+    desktop: {
         type: _("Desktop"),
-        icon: "computer",
-        symbolic_icon: "computer-symbolic"
-    }],
-    ["laptop", {
+        icon: "computer"
+    },
+    laptop: {
         type: _("Laptop"),
-        icon: "computer",
-        symbolic_icon: "laptop-symbolic"
-    }],
-    ["phone", {
+        icon: "computer"
+    },
+    phone: {
         type: _("Smartphone"),
-        icon: "phone",
-        symbolic_icon: "smartphone-symbolic"
-    }],
-    ["tablet", {
+        icon: "phone"
+    },
+    tablet: {
         type: _("Tablet"),
-        icon: "tablet",
-        symbolic_icon: "tablet-symbolic"
-    }],
-    ["unknown", {
+        icon: "tablet"
+    },
+    unknown: {
         type: _("Unknown"),
-        icon: "computer",
-        symbolic_icon: "computer-symbolic"
-    }]
-]);
+        icon: "computer"
+    }
+};
 
