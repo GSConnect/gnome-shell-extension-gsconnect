@@ -278,8 +278,8 @@ var Page = new Lang.Class({
     
     _init: function (daemon, device, stack) {
         this.parent();
-        this.box.margin_left = 40;
-        this.box.margin_right = 40;
+        this.box.margin_left = 36;
+        this.box.margin_right = 36;
         
         this.stack = stack;
         
