@@ -296,10 +296,8 @@ var StringSetting = new Lang.Class({
             placeholder_text: settings.get_string(keyName),
             visible: true,
             can_focus: true,
-            width_request: 160,
             halign: Gtk.Align.END,
-            valign: Gtk.Align.CENTER,
-            expand: true
+            valign: Gtk.Align.CENTER
         });
         
         this.connect("activate", (entry) => {
