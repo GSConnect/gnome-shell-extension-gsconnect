@@ -179,7 +179,7 @@ var Stack = new Lang.Class({
         });
         this.attach(this.stack, 1, 1, 1, 1);
         
-        this._addDefault();
+        this._addDaemon();
         
         this.sidebar.connect("row-selected", (listbox, row) => {
             if (row === null) {
@@ -190,7 +190,7 @@ var Stack = new Lang.Class({
         });
     },
     
-    _addDefault: function () {
+    _addDaemon: function () {
         // Default Sidebar Entry
         this.defaultRow = new Gtk.ListBoxRow({
             visible: true,
@@ -201,7 +201,7 @@ var Stack = new Lang.Class({
         this.defaultRow.grid = new Gtk.Grid({
             visible: true,
             can_focus: false,
-            column_spacing: 16,
+            column_spacing: 12,
             row_spacing: 0,
             margin_left: 12,
             margin_top: 6,
@@ -275,7 +275,7 @@ var Stack = new Lang.Class({
         row.grid = new Gtk.Grid({
             visible: true,
             can_focus: false,
-            column_spacing: 16,
+            column_spacing: 12,
             row_spacing: 0,
             margin_left: 12,
             margin_top: 6,
@@ -374,7 +374,7 @@ var Page = new Lang.Class({
         // Info Section // State Button (Pair/Unpair/Connect)
         let stateButton = new Gtk.Button({
             image: Gtk.Image.new_from_icon_name(
-                "view-refresh-symbolic", // FIXME
+                "view-refresh-symbolic",
                 Gtk.IconSize.BUTTON
             ),
             always_show_image: true,
@@ -396,7 +396,7 @@ var Page = new Lang.Class({
         this.device.connect("notify", () => {
             if (this.device.connected && this.device.paired) {
                 stateButton.image = Gtk.Image.new_from_icon_name(
-                    "channel-secure-symbolic", // FIXME
+                    "channel-secure-symbolic",
                     Gtk.IconSize.BUTTON
                 );
                 stateButton.set_tooltip_markup(
@@ -405,7 +405,7 @@ var Page = new Lang.Class({
                 );
             } else if (this.device.connected && !this.device.paired) {
                 stateButton.image = Gtk.Image.new_from_icon_name(
-                    "channel-insecure-symbolic", // FIXME
+                    "channel-insecure-symbolic",
                     Gtk.IconSize.BUTTON
                 );
                 stateButton.set_tooltip_markup(
@@ -426,7 +426,7 @@ var Page = new Lang.Class({
                 );
             } else {
                 stateButton.image = Gtk.Image.new_from_icon_name(
-                    "view-refresh-symbolic", // FIXME
+                    "view-refresh-symbolic",
                     Gtk.IconSize.BUTTON
                 );
                 stateButton.set_tooltip_markup(_("Attempt Reconnection"));
