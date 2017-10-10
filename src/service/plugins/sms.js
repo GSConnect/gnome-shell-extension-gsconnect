@@ -421,13 +421,14 @@ var ConversationMessage = new Lang.Class({
             margin_left: (direction === 0) ? 6 : 24,
             margin_top: 6,
             margin_bottom: 6,
-            margin_right: (direction === 0) ? 24 : 6,
+            margin_right: (direction === 0) ? 24 : 6
         });
         this.add(this.grid);
         
         let contactLabel = new Gtk.Label({
             label: "<b>" + contact + "</b>",
             use_markup: true,
+            hexpand: true,
             visible: true,
             xalign: direction
         });
