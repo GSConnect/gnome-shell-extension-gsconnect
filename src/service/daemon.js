@@ -283,6 +283,98 @@ var Daemon = new Lang.Class({
     },
     
     /**
+     * Start UDP listener for incoming broadcast packets
+     *
+     * FIXME: conflicts with running KDE Connect, for some reason
+     * TODO: TCP Listener
+     */
+    _listen: function (port=1716) {
+        this._listener = new Gio.Socket({
+            family: Gio.SocketFamily.IPV4,
+            type: Gio.SocketType.DATAGRAM,
+            protocol: Gio.SocketProtocol.UDP,
+            broadcast: true
+        });
+        this._listener.init(null);
+
+        while (true) {
+            let addr = new Gio.InetSocketAddress({
+                address: Gio.InetAddress.new_any(Gio.SocketFamily.IPV4),
+                port: port
+            });
+        
+            try {
+                this._listener.bind(addr, false);
+            } catch (e) {
+                Common.debug("failed to bind to port: " + port);
+                
+                if (port < 1764) {
+                    port += 1;
+                } else {
+                    this._listener.close();
+                    throw Error("Unable to bind listener");
+                }
+            }
+            
+            break;
+        }
+        
+        // Broadcast Address
+        this._broadcastAddr = new Gio.InetSocketAddress({
+            address: Gio.InetAddress.new_from_string("255.255.255.255"),
+            port: this._listener.local_address.port
+        });
+        
+        this._in = new Gio.DataInputStream({
+            base_stream: new Gio.UnixInputStream({ fd: this._listener.fd })
+        });
+        
+        // Watch for incoming packets
+        let source = this._listener.create_source(GLib.IOCondition.IN, null);
+        source.set_callback(Lang.bind(this, this._received));
+        source.attach(null);
+        
+        log("listening for new devices on 0.0.0.0:" + port);
+    },
+    
+    _received: function (socket, condition) {
+        Common.debug("Daemon._received()");
+        
+        let addr, data, flags, size;
+        
+        try {
+            // "Peek" the incoming address
+            [size, addr, data, flags] = this._listener.receive_message(
+                [],
+                Gio.SocketMsgFlags.PEEK,
+                null
+            );
+            [data, size] = this._in.read_line(null);
+        } catch (e) {
+            log("Daemon: Error reading data: " + e);
+            return;
+        }
+        
+        let packet = new Protocol.Packet(data.toString());
+        
+        if (packet.type !== Protocol.TYPE_IDENTITY) {
+            Common.debug("Daemon: Unexpected packet type: " + packet.type);
+            return true;
+        } else if (packet.body.deviceId === this.identity.body.deviceId) {
+            return true;
+        } else {
+            Common.debug("Daemon received: " + data);
+        }
+        
+        packet.body.tcpHost = addr.address.to_string();
+        
+        // Init device
+        this._addDevice(packet);
+        
+        return true;
+    },
+    
+    /**
      * Device Methods
      */
     _readCache: function () {
@@ -393,6 +485,9 @@ var Daemon = new Lang.Class({
     
     /**
      * Notifications listener
+     *
+     * This has to be a singleton since more than one device might want to
+     * receive our notifications, but we only have one Bus to work with.
      */
     _initNotificationsListener: function () {
         // org.freedesktop.Notifications interface; needed to catch signals
@@ -427,99 +522,6 @@ var Daemon = new Lang.Class({
             }
         }
     },
-    
-    /**
-     * Start listening for incoming broadcast packets
-     *
-     * FIXME: conflicts with running KDE Connect, for some reason
-     * TODO: TCP Listener
-     */
-    _listen: function (port=1716) {
-        this._listener = new Gio.Socket({
-            family: Gio.SocketFamily.IPV4,
-            type: Gio.SocketType.DATAGRAM,
-            protocol: Gio.SocketProtocol.UDP,
-            broadcast: true
-        });
-        this._listener.init(null);
-
-        while (true) {
-            let addr = new Gio.InetSocketAddress({
-                address: Gio.InetAddress.new_any(Gio.SocketFamily.IPV4),
-                port: port
-            });
-        
-            try {
-                this._listener.bind(addr, false);
-            } catch (e) {
-                Common.debug("failed to bind to port: " + port);
-                
-                if (port < 1764) {
-                    port += 1;
-                } else {
-                    this._listener.close();
-                    throw Error("Unable to bind listener");
-                }
-            }
-            
-            break;
-        }
-        
-        // Broadcast Address
-        this._broadcastAddr = new Gio.InetSocketAddress({
-            address: Gio.InetAddress.new_from_string("255.255.255.255"),
-            port: this._listener.local_address.port
-        });
-        
-        this._in = new Gio.DataInputStream({
-            base_stream: new Gio.UnixInputStream({ fd: this._listener.fd })
-        });
-        
-        // Watch for incoming packets
-        let source = this._listener.create_source(GLib.IOCondition.IN, null);
-        source.set_callback(Lang.bind(this, this._received));
-        source.attach(null);
-        
-        log("listening for new devices on 0.0.0.0:" + port);
-    },
-    
-    _received: function (socket, condition) {
-        Common.debug("Daemon._received()");
-        
-        let addr, data, flags, size;
-        
-        try {
-            // "Peek" the incoming address
-            [size, addr, data, flags] = this._listener.receive_message(
-                [],
-                Gio.SocketMsgFlags.PEEK,
-                null
-            );
-            [data, size] = this._in.read_line(null);
-        } catch (e) {
-            log("Daemon: Error reading data: " + e);
-            return;
-        }
-        
-        let packet = new Protocol.Packet(data.toString());
-        
-        if (packet.type !== Protocol.TYPE_IDENTITY) {
-            Common.debug("Daemon: Unexpected packet type: " + packet.type);
-            return true;
-        } else if (packet.body.deviceId === this.identity.body.deviceId) {
-            return true;
-        } else {
-            Common.debug("Daemon received: " + data);
-        }
-        
-        packet.body.tcpHost = addr.address.to_string();
-        
-        // Init device
-        this._addDevice(packet);
-        
-        return true;
-    },
-
 
     /**
      * GApplication functions
