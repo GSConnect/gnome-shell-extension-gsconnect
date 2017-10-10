@@ -348,10 +348,10 @@ var Plugin = new Lang.Class({
             
             if (args.contactName.length) {
                 window.contactEntry.text = args.contactName + " <" + args.phoneNumber + ">; ";
-                window._log_message(args.contactName, args.messageBody);
+                window._logIncoming(args.contactName, args.messageBody);
             } else {
                 window.contactEntry.text = args.phoneNumber + "; ";
-                window._log_message(args.phoneNumber, args.messageBody);
+                window._logIncoming(args.phoneNumber, args.messageBody);
             }
         }
         

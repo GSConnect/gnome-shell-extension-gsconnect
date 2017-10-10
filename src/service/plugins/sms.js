@@ -398,9 +398,55 @@ var ContactEntry = new Lang.Class({
     }
 });
 
+/**
+ * A Gtk.ListBoxRow for SMS conversation messages
+ */
+var ConversationMessage = new Lang.Class({
+    Name: "GSConnectConversationMessage",
+    Extends: Gtk.ListBoxRow,
+    
+    _init: function (contact, message, direction) {
+        this.parent({
+            activatable: false,
+            selectable: false,
+            visible: true
+        });
+        
+        // Message Layout
+        this.grid = new Gtk.Grid({
+            visible: true,
+            can_focus: false,
+            column_spacing: 12,
+            row_spacing: 0,
+            margin_left: (direction === 0) ? 6 : 24,
+            margin_top: 6,
+            margin_bottom: 6,
+            margin_right: (direction === 0) ? 24 : 6,
+        });
+        this.add(this.grid);
+        
+        let contactLabel = new Gtk.Label({
+            label: "<b>" + contact + "</b>",
+            use_markup: true,
+            visible: true,
+            xalign: direction
+        });
+        this.grid.attach(contactLabel, 0, 0, 1, 1);
+        
+        let messageLabel = new Gtk.Label({
+            label: message,
+            selectable: true,
+            visible: true,
+            wrap: true,
+            xalign: direction
+        });
+        this.grid.attach(messageLabel, 0, 1, 1, 1);
+    }
+});
+
 
 /**
- * A Gtk.ApplicationWindow for SMS Conversations
+ * A Gtk.ApplicationWindow for SMS conversations
  */
 var ConversationWindow = new Lang.Class({
     Name: "GSConnectConversationWindow",
@@ -455,7 +501,6 @@ var ConversationWindow = new Lang.Class({
         );
         
         // Content -> Conversation View
-        // TODO: use a listbox/bubbles to indicate msg direction
         let scrolledWindow = new Gtk.ScrolledWindow({
             can_focus: false,
             hexpand: true,
@@ -466,24 +511,17 @@ var ConversationWindow = new Lang.Class({
         let conversationFrame = new Gtk.Frame();
         scrolledWindow.add(conversationFrame);
         
-        this.conversationBuffer = new Gtk.TextBuffer();
-        
-        let conversationView = new Gtk.TextView({
-            hexpand: true,
-            vexpand: true,
-            cursor_visible: false,
-            editable: false,
-            wrap_mode: Gtk.WrapMode.WORD,
-            buffer: this.conversationBuffer
+        this.conversationView = new Gtk.ListBox({
+            visible: true
         });
         
         this.device.bind_property(
             "connected",
-            conversationView,
+            this.conversationView,
             "sensitive",
             GObject.BindingFlags.DEFAULT
         );
-        conversationFrame.add(conversationView);
+        conversationFrame.add(this.conversationView);
         
         // Content -> Message Entry
         this.messageEntry = new Gtk.Entry({
@@ -536,6 +574,16 @@ var ConversationWindow = new Lang.Class({
         this.has_focus = true;
     },
     
+    _logIncoming: function (name, message) {
+        let row = new ConversationMessage(name, message, 1);
+        this.conversationView.add(row);
+    },
+    
+    _logOutgoing: function (message) {
+        let row = new ConversationMessage(_("You"), message, 0);
+        this.conversationView.add(row);
+    },
+    
     // TODO: maybe this should just be done in telephony.js
     _catch_message: function (plugin, phoneNumber, contactName, messageBody, phoneThumbnail) {
         Common.debug("SMS phoneNumber: " + phoneNumber);
@@ -549,7 +597,7 @@ var ConversationWindow = new Lang.Class({
             
             if (local_num === remote_num) {
                 Common.debug("Matched incoming number");
-                this._log_message(name, messageBody);
+                this._logIncoming(name, messageBody);
                 this.urgency_hint = true;
             }
         }
@@ -566,8 +614,6 @@ var ConversationWindow = new Lang.Class({
      *         ["Name", "(555) 555-5555"], <= known contact
      *         ["555-5555", "555-5555"]    <= unknown contact
      *     ])
-     *
-     * TODO: make this a property??
      */
     getRecipients: function () {
         let contactItems = this.contactEntry.text.split(";").filter((s) => {
@@ -607,16 +653,6 @@ var ConversationWindow = new Lang.Class({
         return recipients;
     },
     
-    _log_message: function (name, message) {
-        let item = "<b>" + name + ":</b> " + message + "\n";
-        
-        this.conversationBuffer.insert_markup(
-            this.conversationBuffer.get_end_iter(),
-            item,
-            item.length
-        );
-    },
-    
     /** Return a list of phone numbers that the SMS will be sent to */
     send: function (entry, signal_id, event) {
         let numbers = Array.from(this.getRecipients().values());
@@ -641,7 +677,7 @@ var ConversationWindow = new Lang.Class({
         
         // TRANSLATORS: A prefix for sent SMS messages
         // eg. You: Hello from me!
-        this._log_message(_("You"), entry.text);
+        this._logOutgoing(entry.text);
         entry.text = "";
     }
 });
