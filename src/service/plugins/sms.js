@@ -26,6 +26,22 @@ try {
     var Goa = undefined;
 }
 
+// Local Imports
+function getPath() {
+    // Diced from: https://github.com/optimisme/gjs-examples/
+    let m = new RegExp("@(.+):\\d+").exec((new Error()).stack.split("\n")[1]);
+    let p = Gio.File.new_for_path(m[1]).get_parent().get_parent().get_parent();
+    return p.get_path();
+}
+
+imports.searchPath.push(getPath());
+
+const Common = imports.common;
+
+
+/**
+ * Phone Number types that support receiving texts
+ */
 const SUPPORTED_NUMBER_TYPES = [
     // GData: https://developers.google.com/gdata/docs/2.0/elements#rel-values_71
     "http://schemas.google.com/g/2005#home",
@@ -45,20 +61,13 @@ const SUPPORTED_NUMBER_TYPES = [
     "voice"     // Sometimes mapped from GData#work
 ];
 
-// Local Imports
-function getPath() {
-    // Diced from: https://github.com/optimisme/gjs-examples/
-    let m = new RegExp("@(.+):\\d+").exec((new Error()).stack.split("\n")[1]);
-    let p = Gio.File.new_for_path(m[1]).get_parent().get_parent().get_parent();
-    return p.get_path();
-}
-
-imports.searchPath.push(getPath());
-
-const Common = imports.common;
-
-
-/** Phone Number types that support receiving texts */
+/**
+ * SMS Message direction
+ */
+var MessageDirection = {
+    OUT: 0,
+    IN: 1
+};
 
 /** A Gtk.EntryCompletion subclass for Google Contacts */
 var ContactCompletion = new Lang.Class({
