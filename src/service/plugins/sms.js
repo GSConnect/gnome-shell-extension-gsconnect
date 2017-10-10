@@ -62,7 +62,7 @@ const Common = imports.common;
 
 /** A Gtk.EntryCompletion subclass for Google Contacts */
 var ContactCompletion = new Lang.Class({
-    Name: "ContactCompletion",
+    Name: "GSConnectContactCompletion",
     Extends: Gtk.EntryCompletion,
     Properties: {
         "provider": GObject.ParamSpec.string(
@@ -336,7 +336,7 @@ var ContactCompletion = new Lang.Class({
 
 /** A Gtk.Entry subclass for contact names and phone numbers */
 var ContactEntry = new Lang.Class({
-    Name: "ContactEntry",
+    Name: "GSConnectContactEntry",
     Extends: Gtk.SearchEntry,
     
     _init: function (completion) {
@@ -399,9 +399,11 @@ var ContactEntry = new Lang.Class({
 });
 
 
-/** SMS Window */
-var ApplicationWindow = new Lang.Class({
-    Name: "ApplicationWindow",
+/**
+ * A Gtk.ApplicationWindow for SMS Conversations
+ */
+var ConversationWindow = new Lang.Class({
+    Name: "GSConnectConversationWindow",
     Extends: Gtk.ApplicationWindow,
     
     _init: function(application, device) {

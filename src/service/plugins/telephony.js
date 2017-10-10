@@ -325,7 +325,7 @@ var Plugin = new Lang.Class({
     openSms: function () {
         Common.debug("Telephony: openSms()");
         
-        let win = new SMS.ApplicationWindow(this.device.daemon, this.device);
+        let win = new SMS.ConversationWindow(this.device.daemon, this.device);
         win.present();
     },
     
@@ -344,7 +344,7 @@ var Plugin = new Lang.Class({
         
         // None found, open a new one, add the contact and log the message
         if (!window) {
-            window = new SMS.ApplicationWindow(this.device.daemon, this.device);
+            window = new SMS.ConversationWindow(this.device.daemon, this.device);
             
             if (args.contactName.length) {
                 window.contactEntry.text = args.contactName + " <" + args.phoneNumber + ">; ";
