@@ -418,6 +418,7 @@ var ConversationMessage = new Lang.Class({
         this.parent({
             activatable: false,
             selectable: false,
+            hexpand: true,
             visible: true
         });
         
@@ -425,32 +426,51 @@ var ConversationMessage = new Lang.Class({
         this.grid = new Gtk.Grid({
             visible: true,
             can_focus: false,
-            column_spacing: 12,
-            row_spacing: 0,
-            margin_left: (direction === 0) ? 6 : 24,
-            margin_top: 6,
-            margin_bottom: 6,
-            margin_right: (direction === 0) ? 24 : 6
+            margin: 6
         });
         this.add(this.grid);
         
         let contactLabel = new Gtk.Label({
             label: "<b>" + contact + "</b>",
             use_markup: true,
-            hexpand: true,
+            margin_bottom: 6,
+            margin_right: 6,
+            margin_left: 6,
             visible: true,
             xalign: direction
         });
         this.grid.attach(contactLabel, 0, 0, 1, 1);
         
+        let messageBox = new Gtk.Box({ visible: true });
+        let provider = new Gtk.CssProvider();
+        //provider.load_from_resource("/style/sms.css");
+        provider.load_from_data(".incoming-message { color: #FFFFFF; background-color: #2196F3; border-radius: 1em; } .outgoing-message { color: #FFFFFF; background-color: #4CAF50; border-radius: 1em; }");
+        let style = messageBox.get_style_context();
+        style.add_provider(provider, 0);
+        this.grid.attach(messageBox, 0, 1, 1, 1);
+        
         let messageLabel = new Gtk.Label({
             label: message,
+            margin_top: 6,
+            margin_bottom: 6,
+            margin_right: 12,
+            margin_left: 12,
             selectable: true,
             visible: true,
             wrap: true,
             xalign: direction
         });
-        this.grid.attach(messageLabel, 0, 1, 1, 1);
+        messageBox.add(messageLabel);
+        
+        if (direction === MessageDirection.IN) {
+            this.grid.halign = Gtk.Align.RIGHT;
+            this.grid.margin_left = 32;
+            style.add_class("incoming-message");
+        } else if (direction === MessageDirection.OUT) {
+            this.grid.halign = Gtk.Align.LEFT;
+            this.grid.margin_right = 32;
+            style.add_class("outgoing-message");
+        }
     }
 });
 
