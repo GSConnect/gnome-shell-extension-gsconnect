@@ -10,7 +10,6 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
-const Notify = imports.gi.Notify;
 
 // Local Imports
 function getPath() {
@@ -178,28 +177,22 @@ var Plugin = new Lang.Class({
             // This is an update to a notification
             if (this._notifications.has(packet.body.id)) {
                 notif = this._notifications.get(packet.body.id);
-                
-                notif.update(
-                    packet.body.appName,
-                    packet.body.ticker,
-                    "phone-symbolic"
-                );
+                notif.set_title(packet.body.appName);
+                notif.set_body(packet.body.ticker);
+                notif.set_icon(new Gio.ThemedIcon({ name: "phone-symbolic" }));
             // This is a new notification
             } else {
-                notif = new Notify.Notification({
-                    app_name: "GSConnect",
-                    summary: packet.body.appName,
-                    body: packet.body.ticker,
-                    icon_name: "phone-symbolic"
-                });
-            
-                if (packet.body.isClearable) {
-                    notif.connect(
-                        "closed",
-                        Lang.bind(this, this.close, packet.body.id)
-                    );
-                }
-            
+                notif = new Gio.Notification();
+                notif.set_title(packet.body.appName);
+                notif.set_body(packet.body.ticker);
+                notif.set_icon(new Gio.ThemedIcon({ name: "phone-symbolic" }));
+                notif.set_default_action(
+                    "app.closeNotification(('" +
+                    this.device.id +
+                    "','" +
+                    packet.body.id +
+                    "'))"
+                );
                 
                 this._notifications.set(packet.body.id, notif);
             }
@@ -210,24 +203,23 @@ var Plugin = new Lang.Class({
             
             /** 
              * Apparently "silent" means don't show the notification...?
-             *
-             * FIXME: this is sometimes causing a hang and eventual error when
-             *        the daemon is starting: Gio.IOErrorEnum: Timeout was reached
              */
-            if (!packet.body.silent) {
-                notif.show();
-            }
+            //if (!packet.body.silent) {
+                this.device.daemon.send_notification(packet.body.id, notif);
+            //}
         }
     },
     
-    close: function (notification, notificationId) {
-        if (!this._freeze) {
-            let packet = new Protocol.Packet();
-            packet.type = "kdeconnect.notification.request";
-            packet.body = { cancel: notificationId };
-            
-            this.device._channel.send(packet);
-        }
+    // TODO: make sure it's notification?
+    close: function (id) {
+        let packet = new Protocol.Packet({
+            id: 0,
+            type: "kdeconnect.notification.request",
+            body: { cancel: id }
+        });
+        
+        this.device._channel.send(packet);
+        this._notifications.delete(id);
     },
     
     // TODO: ???
@@ -236,17 +228,6 @@ var Plugin = new Lang.Class({
     
     // TODO: request notifications
     update: function () {
-    },
-    
-    destroy: function () {
-        // Clear notifications
-        this._freeze = true;
-        
-        for (let notif of this._notifications.values()) {
-            notif.close();
-        }
-    
-        PluginsBase.Plugin.prototype.destroy.call(this);
     }
 });
 
