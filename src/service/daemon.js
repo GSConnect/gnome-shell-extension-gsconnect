@@ -516,6 +516,34 @@ var Daemon = new Lang.Class({
         }
     },
     
+    _closeNotificationAction: function (action, param) {
+        param = param.deep_unpack();
+        
+        let dbusPath = Common.dbusPathFromId(param["0"]);
+        
+        if (this._devices.has(dbusPath)) {
+            let device = this._devices.get(dbusPath);
+            
+            if (device._plugins.has("notifications")) {
+                let plugin = device._plugins.get("notifications");
+                
+                plugin.close(param["1"]);
+            }
+        }
+    },
+    
+    _initNotificationActions: function () {
+        let closeNotification = new Gio.SimpleAction({
+            name: "closeNotification",
+            parameter_type: new GLib.VariantType("(ss)")
+        });
+        closeNotification.connect(
+            "activate",
+            Lang.bind(this, this._closeNotificationAction)
+        );
+        this.add_action(closeNotification);
+    },
+    
     /**
      * Watch 'daemon.js' in case the extension is uninstalled
      */
@@ -553,6 +581,7 @@ var Daemon = new Lang.Class({
         
         // Notifications
         Notify.init("org.gnome.shell.extensions.gsconnect.daemon");
+        this._initNotificationActions();
         this._initNotificationListener();
         
         // Export DBus
