@@ -8,7 +8,6 @@ const _ = Gettext.gettext;
 const Atspi = imports.gi.Atspi;
 const Gdk = imports.gi.Gdk;
 const Gio = imports.gi.Gio;
-const Notify = imports.gi.Notify;
 
 // Local Imports
 function getPath() {
@@ -37,8 +36,6 @@ var METADATA = {
 /**
  * Mousepad Plugin
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/mousepad
- *
- * TODO: configuration option for notifying user
  */
 var Plugin = new Lang.Class({
     Name: "GSConnectMousepadPlugin",
