@@ -12,7 +12,6 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
-const Notify = imports.gi.Notify;
 
 // Local Imports
 function getPath() {
@@ -716,7 +715,6 @@ var Daemon = new Lang.Class({
     vfunc_startup: function() {
         this.parent();
         
-        // Manager setup
         this._devices = new Map();
         this._in = null;
         this._listener = null;
@@ -724,14 +722,8 @@ var Daemon = new Lang.Class({
         // Intitialize configuration and choke hard if it fails
         if (!Common.initConfiguration()) { this.vfunc_shutdown(); }
         
-        // Watch 'daemon.js' for uninstalls
         this._watchDaemon();
-        
-        // Notifications
-        Notify.init("org.gnome.shell.extensions.gsconnect.daemon");
         this._initNotificationListener();
-        
-        // Actions
         this._initActions();
         
         // Export DBus
@@ -809,8 +801,6 @@ var Daemon = new Lang.Class({
         this._proxy.call_sync("RemoveMatch", this._match, 0, -1, null);
         this._ndbus.unexport();
         this._dbus.unexport();
-        
-        Notify.uninit();
     }
 });
 
