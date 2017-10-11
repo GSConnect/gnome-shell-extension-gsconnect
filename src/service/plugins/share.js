@@ -9,7 +9,6 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
-const Notify = imports.gi.Notify;
 
 // Local Imports
 function getPath() {
@@ -66,6 +65,8 @@ var Plugin = new Lang.Class({
     
     _init: function (device) {
         this.parent(device, "share");
+        
+        this.transfers = new Map();
     },
     
     handlePacket: function (packet) {
@@ -87,152 +88,143 @@ var Plugin = new Lang.Class({
                     channel._out,
                     packet.payloadSize
                 );
+                this.transfers.set(transfer.id, transfer);
                 
                 transfer.connect("started", (transfer) => {
-                    transfer.notif = new Notify.Notification({
-                        app_name: _("GSConnect"),
-                        summary: _("Starting Transfer"),
-                        // TRANSLATORS: eg. Receiving <b>book.pdf</b> from <b>Google Pixel</b>
-                        body: _("Receiving <b>%s</b> from <b>%s</b>").format(
+                    transfer.notif = new Gio.Notification();
+                    transfer.notif.set_title(_("Starting Transfer"));
+                    transfer.notif.set_body(
+                        // TRANSLATORS: eg. Receiving "book.pdf" from Google Pixel
+                        _("Receiving \"%s\" from %s").format(
                             packet.body.filename,
                             this.device.name
-                        ),
-                        icon_name: "send-to-symbolic"
-                    });
-                    
-                    transfer.notif.set_category("transfer");
+                        )
+                    );
+                    transfer.notif.set_icon(
+                        new Gio.ThemedIcon({ name: "send-to-symbolic" })
+                    );
         
-                    transfer.notif.add_action(
-                        "share_cancel",
+                    transfer.notif.add_button(
                         _("Cancel"),
-                        Lang.bind(transfer, transfer.cancel)
+                        "app.cancelTransfer(('" +
+                        this.device._dbus.get_object_path() +
+                        "','" +
+                        transfer.id +
+                        "'))"
                     );
                     
-                    transfer.notif.connect("closed", (notification) => {
-                        delete transfer.notif;
-                    });
-                    
-                    transfer.notif.show();
+                    this.device.daemon.send_notification(
+                        transfer.id,
+                        transfer.notif
+                    );
                 });
                 
                 // TODO: progress updates happen so fast you can't click "cancel"
                 transfer.connect("progress", (transfer, percent) => {
-                    if (transfer.hasOwnProperty("notif")) {
-                        transfer.notif.update(
-                            // TRANSLATORS: Transfer In Progress
-                            _("Transfer In Progress").format(
-                                packet.body.filename,
-                                this.device.name
-                            ),
-                            // TRANSLATORS: eg. Transfer of <b>book.pdf</b> from <b>Google Pixel</b> is 42% complete
-                            _("Transfer of <b>%s</b> from <b>%s</b> is %d%% complete").format(
-                                percent,
-                                packet.body.filename,
-                                this.device.name
-                            ),
-                            "send-to-symbolic"
-                        );
-                        //transfer.notif.show();
-                    }
+                    transfer.notif.set_title(_("Transfer In Progress"));
+                    transfer.notif.set_body(
+                        // TRANSLATORS: eg. Transfer of "book.pdf" from Google Pixel is 42% complete
+                        _("Transfer of \"%s\" from %s is %d%% complete").format(
+                            percent,
+                            packet.body.filename,
+                            this.device.name
+                        )
+                    );
+                    transfer.notif.set_icon(
+                        new Gio.ThemedIcon({ name: "send-to-symbolic" })
+                    );
+                    
+                    //this.device.daemon.send_notification(
+                    //    transfer.id,
+                    //    transfer.notif
+                    //);
                 });
                 
                 transfer.connect("succeeded", (transfer) => {
-                    if (transfer.hasOwnProperty("notif")) {
-                        transfer.notif.close();
-                    }
-                    
-                    transfer.notif = new Notify.Notification({
-                        app_name: _("GSConnect"),
-                        summary: _("Transfer Successful"),
-                        // TRANSLATORS: eg. Received <b>book.pdf</b> from <b>Google Pixel</b>
-                        body: _("Received <b>%s</b> from <b>%s</b>").format(
+                    this.device.daemon.withdraw_notification(transfer.id);
+                
+                    transfer.notif = new Gio.Notification();
+                    transfer.notif.set_title(_("Transfer Successful"));
+                    transfer.notif.set_body(
+                        // TRANSLATORS: eg. Received "book.pdf" from Google Pixel
+                        _("Received \"%s\" from %s").format(
                             packet.body.filename,
                             this.device.name
-                        ),
-                        icon_name: "send-to-symbolic"
-                    });
-                    
-                    transfer.notif.add_action(
-                        "share_view",
+                        )
+                    );
+                    transfer.notif.set_icon(
+                        new Gio.ThemedIcon({ name: "send-to-symbolic" })
+                    );
+        
+                    transfer.notif.add_button(
                         _("Open Folder"),
-                        () => {
-                            Gio.AppInfo.launch_default_for_uri(
-                                file.get_parent().get_uri(),
-                                null
-                            );
-                        }
+                        "app.openTransfer('" + file.get_parent().get_uri() + "')"
                     );
-                    
-                    transfer.notif.add_action(
-                        "share_open",
+        
+                    transfer.notif.add_button(
                         _("Open File"),
-                        () => {
-                            Gio.AppInfo.launch_default_for_uri(
-                                file.get_uri(),
-                                null
-                            );
-                        }
+                        "app.openTransfer('" + file.get_uri() + "')"
                     );
                     
-                    transfer.notif.show();
+                    this.device.daemon.send_notification(
+                        transfer.id,
+                        transfer.notif
+                    );
+                    
+                    this.transfers.delete(transfer.id);
                     channel.close();
                 });
                 
                 transfer.connect("failed", (transfer, error) => {
-                    let summary = _("Transfer Failed");
-                    // TRANSLATORS: eg. Failed to receive <b>book.pdf</b> from <b>Google Pixel</b>: Some error
-                    let body = _("Failed to receive <b>%s</b> from <b>%s</b>: %s").format(
-                        file.get_basename(),
-                        this.device.name, error
+                    this.device.daemon.withdraw_notification(transfer.id);
+                
+                    transfer.notif = new Gio.Notification();
+                    transfer.notif.set_title(_("Transfer Failed"));
+                    transfer.notif.set_body(
+                        // TRANSLATORS: eg. Failed to receive "book.pdf" from Google Pixel: Some error
+                        _("Failed to receive \"%s\" from %s: %s").format(
+                            packet.body.filename,
+                            this.device.name,
+                            error
+                        )
+                    );
+                    transfer.notif.set_icon(
+                        new Gio.ThemedIcon({ name: "send-to-symbolic" })
                     );
                     
-                    if (transfer.hasOwnProperty("notif")) {
-                        transfer.notif.update(
-                            summary,
-                            body,
-                            "send-to-symbolic"
-                        );
-                    } else {
-                        transfer.notif = new Notify.Notification({
-                            app_name: _("GSConnect"),
-                            summary: summary,
-                            body: body,
-                            icon_name: "send-to-symbolic"
-                        });
-                    }
+                    this.device.daemon.send_notification(
+                        transfer.id,
+                        transfer.notif
+                    );
                     
                     GLib.unlink(filepath);
-                    transfer.notif.clear_actions();
-                    transfer.notif.show();
+                    this.transfers.delete(transfer.id);
                     channel.close();
                 });
                 
                 transfer.connect("cancelled", (transfer) => {
-                    let summary = _("Transfer Cancelled");
-                    // TRANSLATORS: eg. Cancelled transfer of <b>book.pdf</b> from <b>Google Pixel</b>
-                    let body = _("Cancelled transfer of <b>%s</b> from <b>%s</b>").format(
-                        packet.body.filename,
-                        this.device.name
+                    this.device.daemon.withdraw_notification(transfer.id);
+                
+                    transfer.notif = new Gio.Notification();
+                    transfer.notif.set_title(_("Transfer Cancelled"));
+                    transfer.notif.set_body(
+                        // TRANSLATORS: eg. Cancelled transfer of "book.pdf" from Google Pixel
+                        _("Cancelled transfer of \"%s\" from %s").format(
+                            packet.body.filename,
+                            this.device.name
+                        )
+                    );
+                    transfer.notif.set_icon(
+                        new Gio.ThemedIcon({ name: "send-to-symbolic" })
                     );
                     
-                    if (transfer.hasOwnProperty("notif")) {
-                        transfer.notif.update(
-                            summary,
-                            body,
-                            "send-to-symbolic"
-                        );
-                    } else {
-                        transfer.notif = new Notify.Notification({
-                            app_name: _("GSConnect"),
-                            summary: summary,
-                            body: body,
-                            icon_name: "send-to-symbolic"
-                        });
-                    }
+                    this.device.daemon.send_notification(
+                        transfer.id,
+                        transfer.notif
+                    );
                     
                     GLib.unlink(filepath);
-                    transfer.notif.clear_actions();
-                    transfer.notif.show();
+                    this.transfers.delete(transfer.id);
                     channel.close();
                 });
                 
@@ -336,131 +328,131 @@ var Plugin = new Lang.Class({
                     channel._out,
                     info.get_size()
                 );
+                this.transfers.set(transfer.id, transfer);
                 
                 transfer.connect("started", (transfer) => {
-                    transfer.notif = new Notify.Notification({
-                        app_name: _("GSConnect"),
-                        summary: _("Starting Transfer"),
-                        // TRANSLATORS: eg. Sending <b>book.pdf</b> to <b>Google Pixel</b>
-                        body: _("Sending <b>%s</b> to <b>%s</b>").format(
+                    transfer.notif = new Gio.Notification();
+                    transfer.notif.set_title(_("Starting Transfer"));
+                    transfer.notif.set_body(
+                        // TRANSLATORS: eg. Sending "book.pdf" to Google Pixel
+                        _("Sending \"%s\" to %s").format(
                             file.get_basename(),
                             this.device.name
-                        ),
-                        icon_name: "send-to-symbolic"
-                    });
-                    
-                    transfer.notif.set_category("transfer");
+                        )
+                    );
+                    transfer.notif.set_icon(
+                        new Gio.ThemedIcon({ name: "send-to-symbolic" })
+                    );
         
-                    transfer.notif.add_action(
-                        "share_cancel",
+                    transfer.notif.add_button(
                         _("Cancel"),
-                        Lang.bind(transfer, transfer.cancel)
+                        "app.cancelTransfer(('" +
+                        this.device._dbus.get_object_path() +
+                        "','" +
+                        transfer.id +
+                        "'))"
                     );
                     
-                    transfer.notif.connect("closed", (notification) => {
-                        delete transfer.notif;
-                    });
-                    
-                    transfer.notif.show();
+                    this.device.daemon.send_notification(
+                        transfer.id,
+                        transfer.notif
+                    );
                 });
                 
                 // TODO: progress updates happen so fast you can't click "cancel"
                 transfer.connect("progress", (transfer, percent) => {
-                    if (transfer.hasOwnProperty("notif")) {
-                        transfer.notif.update(
-                            // TRANSLATORS: Transfer In Progress
-                            _("Transfer In Progress"),
-                            // TRANSLATORS: eg. Transfer of <b>book.pdf</b> to <b>Google Pixel</b> is 42% complete
-                            _("Transfer of <b>%s</b> to <b>%s</b> is %d%% complete").format(
-                                percent,
-                                file.get_basename(),
-                                this.device.name
-                            ),
-                            "send-to-symbolic"
-                        );
-                        //transfer.notif.show();
-                    }
+                    transfer.notif.set_title(_("Transfer In Progress"));
+                    transfer.notif.set_body(
+                        // TRANSLATORS: eg. Transfer of "book.pdf" to Google Pixel is 42% complete
+                        _("Transfer of \"%s\" to %s is %d%% complete").format(
+                            percent,
+                            file.get_basename(),
+                            this.device.name
+                        )
+                    );
+                    transfer.notif.set_icon(
+                        new Gio.ThemedIcon({ name: "send-to-symbolic" })
+                    );
+                    
+                    //this.device.daemon.send_notification(
+                    //    transfer.id,
+                    //    transfer.notif
+                    //);
                 });
                 
                 transfer.connect("succeeded", (transfer) => {
-                    let summary = _("Transfer Successful");
-                    // TRANSLATORS: eg. Sent <b>book.pdf</b> to <b>Google Pixel</b>
-                    let body = _("Sent <b>%s</b> to <b>%s</b>").format(
-                        file.get_basename(),
-                        this.device.name
+                    this.device.daemon.withdraw_notification(transfer.id);
+                
+                    transfer.notif = new Gio.Notification();
+                    transfer.notif.set_title(_("Transfer Successful"));
+                    transfer.notif.set_body(
+                        // TRANSLATORS: eg. Send "book.pdf" to Google Pixel
+                        _("Sent \"%s\" to %s").format(
+                            file.get_basename(),
+                            this.device.name
+                        )
+                    );
+                    transfer.notif.set_icon(
+                        new Gio.ThemedIcon({ name: "send-to-symbolic" })
                     );
                     
-                    if (transfer.hasOwnProperty("notif")) {
-                        transfer.notif.update(
-                            summary,
-                            body,
-                            "send-to-symbolic"
-                        );
-                    } else {
-                        transfer.notif = new Notify.Notification({
-                            app_name: _("GSConnect"),
-                            summary: summary,
-                            body: body,
-                            icon_name: "send-to-symbolic"
-                        });
-                    }
+                    this.device.daemon.send_notification(
+                        transfer.id,
+                        transfer.notif
+                    );
                     
-                    transfer.notif.show();
+                    this.transfers.delete(transfer.id);
                     channel.close();
                 });
                 
                 transfer.connect("failed", (transfer, error) => {
-                    let summary = _("Transfer Failed");
-                    // TRANSLATORS: eg. Failed to send <b>book.pdf</b> to <b>Google Pixel</b>: Some error
-                    let body = _("Failed to send <b>%s</b> to <b>%s</b>: %s").format(
-                        file.get_basename(),
-                        this.device.name, error
+                    this.device.daemon.withdraw_notification(transfer.id);
+                
+                    transfer.notif = new Gio.Notification();
+                    transfer.notif.set_title(_("Transfer Failed"));
+                    transfer.notif.set_body(
+                        // TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel: Some error
+                        _("Failed to send \"%s\" to %s: %s").format(
+                            file.get_basename(),
+                            this.device.name,
+                            error
+                        )
+                    );
+                    transfer.notif.set_icon(
+                        new Gio.ThemedIcon({ name: "send-to-symbolic" })
                     );
                     
-                    if (transfer.hasOwnProperty("notif")) {
-                        transfer.notif.update(
-                            summary,
-                            body,
-                            "send-to-symbolic"
-                        );
-                    } else {
-                        transfer.notif = new Notify.Notification({
-                            app_name: _("GSConnect"),
-                            summary: summary,
-                            body: body,
-                            icon_name: "send-to-symbolic"
-                        });
-                    }
+                    this.device.daemon.send_notification(
+                        transfer.id,
+                        transfer.notif
+                    );
                     
-                    transfer.notif.show();
+                    this.transfers.delete(transfer.id);
                     channel.close();
                 });
                 
                 transfer.connect("cancelled", (transfer) => {
-                    let summary = _("Transfer Cancelled");
-                    // TRANSLATORS: eg. Cancelled transfer of <b>book.pdf</b> to <b>Google Pixel</b>
-                    let body = _("Cancelled transfer of <b>%s</b> to <b>%s</b>").format(
-                        file.get_basename(),
-                        this.device.name
+                    this.device.daemon.withdraw_notification(transfer.id);
+                
+                    transfer.notif = new Gio.Notification();
+                    transfer.notif.set_title(_("Transfer Cancelled"));
+                    transfer.notif.set_body(
+                        // TRANSLATORS: eg. Cancelled transfer of "book.pdf" to Google Pixel
+                        _("Cancelled transfer of \"%s\" to %s").format(
+                            file.get_basename(),
+                            this.device.name
+                        )
+                    );
+                    transfer.notif.set_icon(
+                        new Gio.ThemedIcon({ name: "send-to-symbolic" })
                     );
                     
-                    if (transfer.hasOwnProperty("notif")) {
-                        transfer.notif.update(
-                            summary,
-                            body,
-                            "send-to-symbolic"
-                        );
-                    } else {
-                        transfer.notif = new Notify.Notification({
-                            app_name: _("GSConnect"),
-                            summary: summary,
-                            body: body,
-                            icon_name: "send-to-symbolic"
-                        });
-                    }
+                    this.device.daemon.send_notification(
+                        transfer.id,
+                        transfer.notif
+                    );
                     
-                    transfer.notif.clear_actions();
-                    transfer.notif.show();
+                    this.transfers.delete(transfer.id);
                     channel.close();
                 });
                 

@@ -363,8 +363,7 @@ var LanChannel = new Lang.Class({
 
 /**
  * File Transfers
- * TODO: signals
- *       errors
+ * TODO: errors
  */
 var Transfer = new Lang.Class({
     Name: "GSConnectTransfer",
@@ -396,6 +395,7 @@ var Transfer = new Lang.Class({
         this._out = destStream;
         this._cancellable = new Gio.Cancellable();
         
+        this.id = GLib.uuid_string_random();
         this.size = size;
         this.bytesWritten = 0;
     },

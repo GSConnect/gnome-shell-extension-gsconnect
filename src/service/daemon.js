@@ -516,13 +516,34 @@ var Daemon = new Lang.Class({
         }
     },
     
+    _cancelTransferAction: function (action, param) {
+        param = param.deep_unpack();
+        
+        if (this._devices.has(param["0"])) {
+            let device = this._devices.get(param["0"]);
+            
+            if (device._plugins.has("share")) {
+                let plugin = device._plugins.get("share");
+                
+                if (plugin.transfers.has(param["1"])) {
+                    plugin.transfers.get(param["1"]).cancel();
+                }
+            }
+        }
+    },
+    
+    // TODO: check it's still a file?
+    _openTransferAction: function (action, param) {
+        let path = param.deep_unpack().toString();
+        
+        Gio.AppInfo.launch_default_for_uri(path, null);
+    },
+    
     _closeNotificationAction: function (action, param) {
         param = param.deep_unpack();
         
-        let dbusPath = Common.dbusPathFromId(param["0"]);
-        
-        if (this._devices.has(dbusPath)) {
-            let device = this._devices.get(dbusPath);
+        if (this._devices.has(param["0"])) {
+            let device = this._devices.get(param["0"]);
             
             if (device._plugins.has("notifications")) {
                 let plugin = device._plugins.get("notifications");
@@ -533,6 +554,26 @@ var Daemon = new Lang.Class({
     },
     
     _initNotificationActions: function () {
+        let cancelTransfer = new Gio.SimpleAction({
+            name: "cancelTransfer",
+            parameter_type: new GLib.VariantType("(ss)")
+        });
+        cancelTransfer.connect(
+            "activate",
+            Lang.bind(this, this._cancelTransferAction)
+        );
+        this.add_action(cancelTransfer);
+        
+        let openTransfer = new Gio.SimpleAction({
+            name: "openTransfer",
+            parameter_type: new GLib.VariantType("s")
+        });
+        openTransfer.connect(
+            "activate",
+            Lang.bind(this, this._openTransferAction)
+        );
+        this.add_action(openTransfer);
+        
         let closeNotification = new Gio.SimpleAction({
             name: "closeNotification",
             parameter_type: new GLib.VariantType("(ss)")
