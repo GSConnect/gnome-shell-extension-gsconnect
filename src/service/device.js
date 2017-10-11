@@ -279,15 +279,15 @@ var Device = new Lang.Class({
         }
     },
     
-    // FIXME: doesn't this always happen then?
     _cancelPair: function () {
-        try {
-            this._incomingPairRequest = false;
-            this._outgoingPairRequest = false;
+        this._incomingPairRequest = false;
+        this._outgoingPairRequest = false;
+            
+        if (!paired) {
             this.daemon.withdraw_notification("pair-request");
             this.unpair();
-        } catch (e) {
         }
+        
         return false;
     },
     
