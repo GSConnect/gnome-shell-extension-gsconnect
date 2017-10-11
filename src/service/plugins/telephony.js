@@ -38,7 +38,8 @@ var METADATA = {
         notify_ringing: true,
         notify_sms: true,
         autoreply_sms: false,
-        notify_talking: true
+        notify_talking: true,
+        pause_music: "never"
     }
 };
 
@@ -82,80 +83,12 @@ var Plugin = new Lang.Class({
     _init: function (device) {
         this.parent(device, "telephony");
         
-        this._smsNotifications = new Map();
+        this._notifications = new Map();
+        
+        this._pausedPlayer = false;
     },
     
-    // FIXME: not always working...?
-    _hasWindow: function (query) {
-        Common.debug("Telephony: _hasWindow(" + query + ")");
-        
-        // Get the current open windows
-        let windows = this.device.daemon.get_windows();
-        let window = false;
-        
-        // Look for an open window that will already be catching messages
-        for (let index_ in windows) {
-            for (let number of windows[index_].getRecipients().values()) {
-                let incomingNumber = query.replace(/\D/g, "");
-                let windowNumber = number.replace(/\D/g, "");
-                
-                if (incomingNumber === windowNumber) {
-                    window = windows[index_];
-                    break;
-                }
-            }
-            
-            if (window !== false) { break; }
-        }
-        
-        return window;
-    },
-    
-    handlePacket: function (packet) {
-        Common.debug("Telephony: handlePacket()");
-        
-        // There are six possible variables:
-        //    * "event"             missedCall, ringing, sms or talking
-        //    * "phoneNumber"       Always present?
-        //    * "contactName"       Always present? (may be empty)
-        //    * "messageBody"       SMS only?
-        //    * "phoneThumbnail"    base64 ByteArray/Pixmap (may be empty)
-        //    * "isCancel"          If true the packet should be ignored
-        
-        let sender;
-        
-         // FIXME: not sure what to do here...
-//        if (!packet.body.phoneNumber.length) {
-//            packet.body.phoneNumber = _("Unknown Number");
-//        }
-//        
-//        if (packet.body.contactName === "") {
-//            packet.body.contactName = _("Unknown Contact");
-//        }
-                
-        if (packet.body.contactName.length) {
-            sender = packet.body.contactName;
-        } else {
-            sender = packet.body.phoneNumber;
-        }
-        
-        // Event handling
-        if (packet.body.hasOwnProperty("isCancel") && packet.body.isCancel) {
-            return;
-        } else if (packet.body.event === "missedCall") {
-            this.handleMissedCall(sender, packet);
-        } else if (packet.body.event === "ringing") {
-            this.handleRinging(sender, packet);
-        } else if (packet.body.event === "sms") {
-            this.handleSMS(sender, packet);
-        } else if (packet.body.event === "talking") {
-            this.handleTalking(sender, packet);
-        } else {
-            log("Unknown telephony event: " + packet.body.event);
-        }
-    },
-    
-    handleMissedCall: function (sender, packet) {
+    _handleMissedCall: function (sender, packet) {
         Common.debug("Telephony: handleMissedCall()");
         
         this.emit(
@@ -171,7 +104,6 @@ var Plugin = new Lang.Class({
             )
         );
         
-        // TODO: time of missed call?
         if (this.settings.notify_missedCall) {
             let notif = new Notify.Notification({
                 app_name: _("GSConnect"),
@@ -189,8 +121,8 @@ var Plugin = new Lang.Class({
         }
     },
     
-    handleRinging: function (sender, packet) {
-        Common.debug("Telephony: handleRinging()");
+    _handleRinging: function (sender, packet) {
+        Common.debug("Telephony: _handleRinging()");
         
         this.emit(
             "ringing",  
@@ -205,7 +137,6 @@ var Plugin = new Lang.Class({
             )
         );
         
-        // TODO: music pause, etc
         if (this.settings.notify_ringing) {
             let notif = new Notify.Notification({
                 app_name: _("GSConnect"),
@@ -228,10 +159,14 @@ var Plugin = new Lang.Class({
             
             notif.show();
         }
+        
+        if (this.settings.pause_music === "ringing") {
+            this._pauseMusic();
+        }
     },
     
-    handleSMS: function (sender, packet) {
-        Common.debug("Telephony: handleSMS()");
+    _handleSMS: function (sender, packet) {
+        Common.debug("Telephony: _handleSMS()");
         
         this.emit(
             "sms",
@@ -276,10 +211,9 @@ var Plugin = new Lang.Class({
         }
     },
     
-    handleTalking: function (sender, packet) {
-        Common.debug("Telephony: handleTalking()");
+    _handleTalking: function (sender, packet) {
+        Common.debug("Telephony: _handleTalking()");
         
-        // TODO: music pause, etc
         this.emit(
             "talking",
             packet.body.phoneNumber,
@@ -307,6 +241,103 @@ var Plugin = new Lang.Class({
             });
             
             notif.show();
+        }
+        
+        if (settings.pause_music === "talking") {
+            this._pauseMusic();
+        }
+    },
+    
+    // FIXME: not always working...?
+    _hasWindow: function (query) {
+        Common.debug("Telephony: _hasWindow(" + query + ")");
+        
+        // Get the current open windows
+        let windows = this.device.daemon.get_windows();
+        let window = false;
+        
+        // Look for an open window that will already be catching messages
+        for (let index_ in windows) {
+            for (let number of windows[index_].getRecipients().values()) {
+                let incomingNumber = query.replace(/\D/g, "");
+                let windowNumber = number.replace(/\D/g, "");
+                
+                if (incomingNumber === windowNumber) {
+                    window = windows[index_];
+                    break;
+                }
+            }
+            
+            if (window !== false) { break; }
+        }
+        
+        return window;
+    },
+    
+    _pauseMusic: function () {
+        Common.debug("Telephony: _pauseMusic()");
+        
+        if (this.device._plugins.has("mpris")) {
+            let plugin = this.device._plugins.get("mpris");
+            
+            for (let player of plugin._players.values()) {
+                if (player.PlaybackStatus === "Playing" && player.CanPause) {
+                    player.PauseSync();
+                    
+                    this._pausedPlayer = player;
+                }
+            }
+        }
+    },
+    
+    _unpauseMusic: function () {
+        if (this._pausedPlayer) {
+            this._pausedPlayer.PlaySync();
+            this._pausedPlayer = false;
+        }
+    },
+    
+    handlePacket: function (packet) {
+        Common.debug("Telephony: handlePacket()");
+        
+        // There are six possible variables:
+        //    * "event"             missedCall, ringing, sms or talking
+        //    * "phoneNumber"       Always present?
+        //    * "contactName"       Always present? (may be empty)
+        //    * "messageBody"       SMS only?
+        //    * "phoneThumbnail"    base64 ByteArray/Pixmap (may be empty)
+        //    * "isCancel"          If true the packet should be ignored
+        
+        let sender;
+        
+         // FIXME: not sure what to do here...
+//        if (!packet.body.phoneNumber.length) {
+//            packet.body.phoneNumber = _("Unknown Number");
+//        }
+//        
+//        if (packet.body.contactName === "") {
+//            packet.body.contactName = _("Unknown Contact");
+//        }
+                
+        if (packet.body.contactName.length) {
+            sender = packet.body.contactName;
+        } else {
+            sender = packet.body.phoneNumber;
+        }
+        
+        // Event handling
+        if (packet.body.hasOwnProperty("isCancel") && packet.body.isCancel) {
+            this._unpauseMusic();
+        } else if (packet.body.event === "missedCall") {
+            this._handleMissedCall(sender, packet);
+        } else if (packet.body.event === "ringing") {
+            this._handleRinging(sender, packet);
+        } else if (packet.body.event === "sms") {
+            this._handleSMS(sender, packet);
+        } else if (packet.body.event === "talking") {
+            this._handleTalking(sender, packet);
+        } else {
+            log("Unknown telephony event: " + packet.body.event);
         }
     },
     
@@ -443,6 +474,32 @@ var SettingsDialog = new Lang.Class({
             _("Show a notification when talking on the phone"),
             notifyTalkingSwitch
         );
+        
+        let pauseMusicComboBox = new Gtk.ComboBoxText({
+            visible: true,
+            can_focus: true,
+            halign: Gtk.Align.END,
+            valign: Gtk.Align.CENTER
+        });
+        pauseMusicComboBox.append("never", _("Never"));
+        pauseMusicComboBox.append("ringing", _("Incoming"));
+        pauseMusicComboBox.append("talking", _("In Progress"));
+        pauseMusicComboBox.active_id = this._settings.pause_music;
+        pauseMusicComboBox.connect("changed", (widget) => {
+            this._settings.pause_music = pauseMusicComboBox.active_id;
+        });
+        this.content.addItem(
+            callsSection,
+            _("Pause Music"),
+            _("Pause music for incoming or in progress calls"),
+            pauseMusicComboBox
+        );
+        if (this._page.device.plugins.indexOf("mpris") < 0) {
+            pauseMusicComboBox.sensitive = false;
+            pauseMusicComboBox.set_tooltip_markup(
+                _("The <b>Media Player Control</b> plugin must be enabled to pause music")
+            );
+        }
         
         // SMS
         let smsSection = this.content.addSection(_("SMS"));
