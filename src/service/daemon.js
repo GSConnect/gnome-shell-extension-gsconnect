@@ -484,12 +484,12 @@ var Daemon = new Lang.Class({
     },
     
     /**
-     * Notifications listener
+     * Notification listener
      *
      * This has to be a singleton since more than one device might want to
      * receive our notifications, but we only have one Bus to work with.
      */
-    _initNotificationsListener: function () {
+    _initNotificationListener: function () {
         // org.freedesktop.Notifications interface; needed to catch signals
         let iface = "org.freedesktop.Notifications";
         this._ndbus = Gio.DBusExportedObject.wrapJSObject(
@@ -539,7 +539,7 @@ var Daemon = new Lang.Class({
         
         // Notifications
         Notify.init("org.gnome.shell.extensions.gsconnect.daemon");
-        this._initNotificationsListener();
+        this._initNotificationListener();
         
         // Export DBus
         let iface = "org.gnome.shell.extensions.gsconnect.daemon";
