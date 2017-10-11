@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-10-11 02:43-0700\n"
+"POT-Creation-Date: 2017-10-11 02:56-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -169,7 +169,7 @@ msgstr ""
 msgid "Stop the service and let the extension restart it"
 msgstr ""
 
-#: src/service/daemon.js:79
+#: src/service/daemon.js:78
 msgid "GSConnect"
 msgstr ""
 
@@ -245,11 +245,11 @@ msgstr ""
 msgid "Locate a device by making it ring"
 msgstr ""
 
-#: src/service/plugins/mousepad.js:30
+#: src/service/plugins/mousepad.js:29
 msgid "Remote Input"
 msgstr ""
 
-#: src/service/plugins/mousepad.js:31
+#: src/service/plugins/mousepad.js:30
 msgid "Control the mouse and keyboard remotely"
 msgstr ""
 
