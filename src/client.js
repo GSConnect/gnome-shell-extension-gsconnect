@@ -273,9 +273,15 @@ var Telephony = new Lang.Class({
         return this._call("openSms", true);
     },
     
-    // TODO
-    replySms: function () {
-        return this._call("replySms", true);
+    replySms: function (phoneNumber, contactName, messageBody, phoneThumbnail) {
+        return this._call(
+            "replySms",
+            true,
+            phoneNumber,
+            contactName,
+            messageBody,
+            phoneThumbnail
+        );
     },
     
     sendSms: function (phoneNumber, messageBody) {
@@ -505,7 +511,7 @@ var Daemon = new Lang.Class({
             "The host's device name",
             GObject.ParamFlags.READABLE,
             ""
-        ),
+        )
     },
     Signals: {
         "device": {
@@ -574,8 +580,8 @@ var Daemon = new Lang.Class({
     },
     
     // Public Methods
-    discover: function (requestId="daemon", timeout=15) {
-        this._call("discover", true, requestId, timeout);
+    discover: function (name="daemon", timeout=15) {
+        this._call("discover", true, name, timeout);
     },
     
     quit: function () {
