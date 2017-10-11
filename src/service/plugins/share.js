@@ -107,7 +107,7 @@ var Plugin = new Lang.Class({
                     transfer.notif.add_button(
                         _("Cancel"),
                         "app.cancelTransfer(('" +
-                        this.device._dbus.get_object_path() +
+                        this._dbus.get_object_path() +
                         "','" +
                         transfer.id +
                         "'))"
@@ -347,7 +347,7 @@ var Plugin = new Lang.Class({
                     transfer.notif.add_button(
                         _("Cancel"),
                         "app.cancelTransfer(('" +
-                        this.device._dbus.get_object_path() +
+                        this._dbus.get_object_path() +
                         "','" +
                         transfer.id +
                         "'))"
