@@ -8,7 +8,6 @@ const _ = Gettext.gettext;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
-const Notify = imports.gi.Notify;
 
 // Local Imports
 function getPath() {
@@ -98,28 +97,25 @@ var Plugin = new Lang.Class({
     threshold: function () {
         Common.debug("Battery: threshold()");
         
-        let note = new Notify.Notification({
-            app_name: _("GSConnect"),
-            // TRANSLATORS: eg. Google Pixel - Low Battery Warning
-            summary: _("%s - Low Battery Warning").format(this.device.name),
-            // TRANSLATORS: eg. Battery level is 15%
-            body: _("Battery level is %d%%").format(this.level),
-            icon_name: "battery-caution-symbolic"
-        });
+        let notif = new Gio.Notification();
+        // TRANSLATORS: Low Battery Warning
+        notif.set_title(_("Low Battery Warning"));
+        notif.set_body(
+            // TRANSLATORS: eg. Google Pixel's battery level is 15%
+            _("%s's battery level is %d%%").format(this.level, this.device.name)
+        );
+        notif.set_icon(new Gio.ThemedIcon({ name: "battery-caution-symbolic" }));
         
         if (this.device._plugins.has("findmyphone")) {
             Common.debug("Battery: has findmyphone plugin; enabling action");
-        
-            let plugin = this.device._plugins.get("findmyphone");
             
-            note.add_action(
-                "findMyPhone",
+            notif.add_button(
                 _("Locate"),
-                Lang.bind(plugin, plugin.ring)
+                "app.batteryWarning('" + this._dbus.get_object_path() + "')"
             );
         }
         
-        note.show();
+        this.device.daemon.send_notification("battery-warning", notif);
     },
     
     /**

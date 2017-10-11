@@ -8,7 +8,6 @@ const _ = Gettext.gettext;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
-const Notify = imports.gi.Notify;
 
 // Local Imports
 function getPath() {
@@ -280,11 +279,12 @@ var Device = new Lang.Class({
         }
     },
     
-    _cancelPair: function (notif) {
+    // FIXME: doesn't this always happen then?
+    _cancelPair: function () {
         try {
             this._incomingPairRequest = false;
             this._outgoingPairRequest = false;
-            notif.close();
+            this.daemon.withdraw_notification("pair-request");
             this.unpair();
         } catch (e) {
         }
@@ -299,33 +299,34 @@ var Device = new Lang.Class({
             new GLib.Variant("(s)", [this.id])
         );
         
-        let notif = new Notify.Notification({
-            app_name: _("GSConnect"),
-            // TRANSLATORS: eg. Pair Request from Google Pixel
-            summary: _("Pair Request from %s").format(this.name),
-            body: _("<b>%s Fingerprint:</b>\n%s\n\n<b>Local Fingerprint:</b>\n%s").format(this.name, this.fingerprint, this.daemon.fingerprint),
-            icon_name: "channel-insecure-symbolic"
-        });
+        let notif = new Gio.Notification();
+        // TRANSLATORS: eg. Pair Request from Google Pixel
+        notif.set_title(_("Pair Request from %s").format(this.name));
+        notif.set_body(
+            _("%s Fingerprint:\n%s\n\nLocal Fingerprint:\n%s").format(
+                this.name,
+                this.fingerprint,
+                this.daemon.fingerprint
+            )
+        );
+        notif.set_icon(new Gio.ThemedIcon({ name: "channel-insecure-symbolic" }));
         
-        notif.add_action(
-            "rejectPair",
+        notif.add_button(
             _("Reject"),
-            Lang.bind(this, this.rejectPair)
+            "app.pairAction(('" + this._dbus.get_object_path() + "','reject'))"
         );
-        
-        notif.add_action(
-            "acceptPair",
+        notif.add_button(
             _("Accept"),
-            Lang.bind(this, this.acceptPair)
+            "app.pairAction(('" + this._dbus.get_object_path() + "','accept'))"
         );
         
-        notif.show();
+        this.daemon.send_notification("pair-request", notif);
         
         // Start a 30s countdown
         GLib.timeout_add_seconds(
             GLib.PRIORITY_DEFAULT,
             30,
-            Lang.bind(this, this._cancelPair, notif)
+            Lang.bind(this, this._cancelPair)
         );
     },
     

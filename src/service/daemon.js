@@ -516,6 +516,24 @@ var Daemon = new Lang.Class({
         }
     },
     
+    
+    /**
+     * App Actions
+     */
+    _batteryWarningAction: function (action, param) {
+        dbusPath = param.deep_unpack().toString();
+        
+        if (this._devices.has(dbusPath)) {
+            let device = this._devices.get(dbusPath);
+            
+            if (device._plugins.has("findmyphone")) {
+                let plugin = device._plugins.get("findmyphone");
+                
+                plugin.ring();
+            }
+        }
+    },
+    
     _cancelTransferAction: function (action, param) {
         param = param.deep_unpack();
         
@@ -586,7 +604,43 @@ var Daemon = new Lang.Class({
         }
     },
     
-    _initNotificationActions: function () {
+    _pairAction: function (action, parameter) {
+        parameter = parameter.deep_unpack();
+        let dbusPath = parameter["0"];
+        let pairAction = parameter["1"];
+        
+        if (this._devices.has(dbusPath)) {
+            let device = this._devices.get(dbusPath);
+            
+            if (pairAction === "accept") {
+                device.acceptPair();
+            } else if (pairAction === "reject") {
+                device.rejectPair();
+            }
+        }
+    },
+    
+    _initActions: function () {
+        let pairAction = new Gio.SimpleAction({
+            name: "pairAction",
+            parameter_type: new GLib.VariantType("(ss)")
+        });
+        pairAction.connect(
+            "activate",
+            Lang.bind(this, this._pairAction)
+        );
+        this.add_action(pairAction);
+        
+        let batteryWarning = new Gio.SimpleAction({
+            name: "batteryWarning",
+            parameter_type: new GLib.VariantType("s")
+        });
+        batteryWarning.connect(
+            "activate",
+            Lang.bind(this, this._batteryWarningAction)
+        );
+        this.add_action(batteryWarning);
+        
         let cancelTransfer = new Gio.SimpleAction({
             name: "cancelTransfer",
             parameter_type: new GLib.VariantType("(ss)")
@@ -675,8 +729,10 @@ var Daemon = new Lang.Class({
         
         // Notifications
         Notify.init("org.gnome.shell.extensions.gsconnect.daemon");
-        this._initNotificationActions();
         this._initNotificationListener();
+        
+        // Actions
+        this._initActions();
         
         // Export DBus
         let iface = "org.gnome.shell.extensions.gsconnect.daemon";
