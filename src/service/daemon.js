@@ -175,7 +175,7 @@ var Daemon = new Lang.Class({
                 deviceId: "GSConnect@" + GLib.get_host_name(),
                 deviceName: this.name,
                 deviceType: this._getDeviceType(),
-                tcpPort: this._listener.local_address.port,
+                tcpPort: this.udpServer.socket.local_address.port,
                 protocolVersion: 7,
                 incomingCapabilities: [],
                 outgoingCapabilities: []
@@ -206,11 +206,7 @@ var Daemon = new Lang.Class({
     broadcast: function () {
         Common.debug("Daemon.broadcast()");
         
-        this._listener.send_to(
-            this._broadcastAddr,
-            this.identity.toData(),
-            null
-        );
+        this.udpServer.send(this.identity);
     },
     
     discover: function (name, timeout=0) {
@@ -272,98 +268,6 @@ var Daemon = new Lang.Class({
                 );
             }
         }
-    },
-    
-    /**
-     * Start UDP listener for incoming broadcast packets
-     *
-     * FIXME: conflicts with running KDE Connect, for some reason
-     * TODO: TCP Listener
-     */
-    _listen: function (port=1716) {
-        this._listener = new Gio.Socket({
-            family: Gio.SocketFamily.IPV4,
-            type: Gio.SocketType.DATAGRAM,
-            protocol: Gio.SocketProtocol.UDP,
-            broadcast: true
-        });
-        this._listener.init(null);
-
-        while (true) {
-            let addr = new Gio.InetSocketAddress({
-                address: Gio.InetAddress.new_any(Gio.SocketFamily.IPV4),
-                port: port
-            });
-        
-            try {
-                this._listener.bind(addr, false);
-            } catch (e) {
-                Common.debug("failed to bind to port: " + port);
-                
-                if (port < 1764) {
-                    port += 1;
-                } else {
-                    this._listener.close();
-                    throw Error("Unable to bind listener");
-                }
-            }
-            
-            break;
-        }
-        
-        // Broadcast Address
-        this._broadcastAddr = new Gio.InetSocketAddress({
-            address: Gio.InetAddress.new_from_string("255.255.255.255"),
-            port: this._listener.local_address.port
-        });
-        
-        this._in = new Gio.DataInputStream({
-            base_stream: new Gio.UnixInputStream({ fd: this._listener.fd })
-        });
-        
-        // Watch for incoming packets
-        let source = this._listener.create_source(GLib.IOCondition.IN, null);
-        source.set_callback(Lang.bind(this, this._received));
-        source.attach(null);
-        
-        log("listening for new devices on 0.0.0.0:" + port);
-    },
-    
-    _received: function (socket, condition) {
-        Common.debug("Daemon._received()");
-        
-        let addr, data, flags, size;
-        
-        try {
-            // "Peek" the incoming address
-            [size, addr, data, flags] = this._listener.receive_message(
-                [],
-                Gio.SocketMsgFlags.PEEK,
-                null
-            );
-            [data, size] = this._in.read_line(null);
-        } catch (e) {
-            log("Daemon: Error reading data: " + e);
-            return;
-        }
-        
-        let packet = new Protocol.Packet(data.toString());
-        
-        if (packet.type !== Protocol.TYPE_IDENTITY) {
-            Common.debug("Daemon: Unexpected packet type: " + packet.type);
-            return true;
-        } else if (packet.body.deviceId === this.identity.body.deviceId) {
-            return true;
-        } else {
-            Common.debug("Daemon received: " + data);
-        }
-        
-        packet.body.tcpHost = addr.address.to_string();
-        
-        // Init device
-        this._addDevice(packet);
-        
-        return true;
     },
     
     /**
@@ -435,6 +339,10 @@ var Daemon = new Lang.Class({
     
     _addDevice: function (packet) {
         Common.debug("Daemon._addDevice(" + packet.body.deviceId + ")");
+        
+        if (packet.body.deviceId === this.identity.body.deviceId) {
+            return;
+        }
         
         let devObjPath = Common.dbusPathFromId(packet.body.deviceId);
         
@@ -745,9 +653,12 @@ var Daemon = new Lang.Class({
         
         // Listen for new devices
         try {
-            this._listen();
+            this.udpServer = new Protocol.UDPServer();
+            this.udpServer.connect("received", (server, packet) => {
+                this._addDevice(packet);
+            });
         } catch (e) {
-            log("Error starting listener: " + e);
+            log("Error starting UDP listener: " + e);
             this.vfunc_shutdown();
         }
         
@@ -778,21 +689,7 @@ var Daemon = new Lang.Class({
     vfunc_shutdown: function() {
         this.parent();
         
-        try {
-            if (this._in !== null) {
-                this._in.close(null);
-            }
-        } catch (e) {
-            log("error closing data input: " + e);
-        }
-        
-        try {
-            if (this._listener !== null) {
-                this._listener.close(null);
-            }
-        } catch (e) {
-            log("error closing UDP listener: " + e);
-        }
+        this.udpServer.destroy();
         
         for (let device of this._devices.values()) {
             device.destroy();

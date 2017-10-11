@@ -106,6 +106,143 @@ var Packet = new Lang.Class({
 
 
 /**
+ * Listeners
+ */
+var UDPServer = new Lang.Class({
+    Name: "GSConnectUDPServer",
+    Extends: GObject.Object,
+    Signals: {
+        "listening": {
+            flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED
+        },
+        "disconnected": {
+            flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED
+        },
+        "received": {
+            flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED,
+            param_types: [ GObject.TYPE_OBJECT ]
+        }
+    },
+    
+    _init: function (port=1716) {
+        this.parent();
+    
+        this.socket = new Gio.Socket({
+            family: Gio.SocketFamily.IPV4,
+            type: Gio.SocketType.DATAGRAM,
+            protocol: Gio.SocketProtocol.UDP,
+            broadcast: true
+        });
+        this.socket.init(null);
+
+        while (true) {
+            let addr = new Gio.InetSocketAddress({
+                address: Gio.InetAddress.new_any(Gio.SocketFamily.IPV4),
+                port: port
+            });
+        
+            try {
+                this.socket.bind(addr, false);
+            } catch (e) {
+                Common.debug("failed to bind to port: " + port);
+                
+                if (port < 1764) {
+                    port += 1;
+                } else {
+                    this.socket.close();
+                    throw Error("Unable to bind listener");
+                }
+            }
+            
+            break;
+        }
+        
+        // Broadcast Address
+        this._broadcastAddr = new Gio.InetSocketAddress({
+            address: Gio.InetAddress.new_from_string("255.255.255.255"),
+            port: this.socket.local_address.port
+        });
+        
+        this._in = new Gio.DataInputStream({
+            base_stream: new Gio.UnixInputStream({ fd: this.socket.fd })
+        });
+        
+        // Watch for incoming packets
+        let source = this.socket.create_source(GLib.IOCondition.IN, null);
+        source.set_callback(Lang.bind(this, this.receive));
+        source.attach(null);
+        
+        this.emit("listening");
+        
+        log("listening for new devices on 0.0.0.0:" + port);
+    },
+    
+    send: function (packet) {
+        Common.debug("UDPServer.send()");
+        
+        this.socket.send_to(
+            this._broadcastAddr,
+            packet.toData(),
+            null
+        );
+    },
+    
+    receive: function () {
+        Common.debug("UDPServer.receive()");
+        
+        let addr, data, flags, size;
+        
+        try {
+            // "Peek" the incoming address
+            [size, addr, data, flags] = this.socket.receive_message(
+                [],
+                Gio.SocketMsgFlags.PEEK,
+                null
+            );
+            [data, size] = this._in.read_line(null);
+        } catch (e) {
+            log("Daemon: Error reading data: " + e);
+            return;
+        }
+        
+        let packet = new Packet(data.toString());
+        
+        if (packet.type !== TYPE_IDENTITY) {
+            Common.debug("UDP Listener: Unexpected packet type: " + packet.type);
+            return true;
+        } else {
+            Common.debug("UDP Listener received: " + data);
+        }
+        
+        packet.body.tcpHost = addr.address.to_string();
+        
+        // Init device
+        this.emit("received", packet);
+        
+        return true;
+    },
+    
+    destroy: function () {
+        try {
+            if (this._in !== null) {
+                this._in.close(null);
+            }
+        } catch (e) {
+            log("error closing data input: " + e);
+        }
+        
+        try {
+            if (this.socket !== null) {
+                this.socket.close(null);
+            }
+        } catch (e) {
+            log("error closing UDP listener: " + e);
+        }
+    }
+});
+
+
+/**
  * Data Channels
  */
 var LanChannel = new Lang.Class({
