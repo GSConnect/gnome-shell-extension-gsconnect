@@ -556,7 +556,7 @@ var SystemIndicator = new Lang.Class({
         
         this.scanItem = this.extensionMenu.menu.addAction(
             _("Discover Devices"),
-            Lang.bind(this.daemon, this.daemon.discover, "manager", 15)
+            () => { this.daemon.discover("extension", 15); }
         );
         this.daemon.connect("notify::discovering", () => {
             if (this.daemon.discovering) {
