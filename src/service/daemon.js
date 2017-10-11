@@ -81,7 +81,7 @@ var Daemon = new Lang.Class({
         GLib.set_prgname(application_name);
         GLib.set_application_name(application_name);
         
-        // FIXME
+        // TODO: clean this up with discover()
         this._discovering = 0
         this._discoverers = [];
         
