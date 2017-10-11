@@ -553,6 +553,39 @@ var Daemon = new Lang.Class({
         }
     },
     
+    _muteCallAction: function (action, param) {
+        dbusPath = param.deep_unpack().toString();
+        
+        if (this._devices.has(dbusPath)) {
+            let device = this._devices.get(dbusPath);
+            
+            if (device._plugins.has("telephony")) {
+                let plugin = device._plugins.get("telephony");
+                
+                plugin.muteCall();
+            }
+        }
+    },
+    
+    _replySmsAction: function (action, param) {
+        param = param.deep_unpack();
+        
+        if (this._devices.has(param["0"])) {
+            let device = this._devices.get(param["0"]);
+            
+            if (device._plugins.has("telephony")) {
+                let plugin = device._plugins.get("telephony");
+                
+                plugin.replySms(
+                    param["1"],
+                    param["2"],
+                    param["3"],
+                    param["4"]
+                );
+            }
+        }
+    },
+    
     _initNotificationActions: function () {
         let cancelTransfer = new Gio.SimpleAction({
             name: "cancelTransfer",
@@ -573,6 +606,26 @@ var Daemon = new Lang.Class({
             Lang.bind(this, this._openTransferAction)
         );
         this.add_action(openTransfer);
+        
+        let muteCall = new Gio.SimpleAction({
+            name: "muteCall",
+            parameter_type: new GLib.VariantType("s")
+        });
+        muteCall.connect(
+            "activate",
+            Lang.bind(this, this._muteCallAction)
+        );
+        this.add_action(muteCall);
+        
+        let replySms = new Gio.SimpleAction({
+            name: "replySms",
+            parameter_type: new GLib.VariantType("(sssss)")
+        });
+        replySms.connect(
+            "activate",
+            Lang.bind(this, this._replySmsAction)
+        );
+        this.add_action(replySms);
         
         let closeNotification = new Gio.SimpleAction({
             name: "closeNotification",

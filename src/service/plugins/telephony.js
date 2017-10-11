@@ -9,7 +9,6 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
-const Notify = imports.gi.Notify;
 
 // Local Imports
 function getPath() {
@@ -105,19 +104,18 @@ var Plugin = new Lang.Class({
         );
         
         if (this.settings.notify_missedCall) {
-            let notif = new Notify.Notification({
-                app_name: _("GSConnect"),
-                // TRANSLATORS: Missed Call
-                summary: _("Missed Call"),
-                // TRANSLATORS: eg. Missed call from <b>John Smith</b> on <b>Google Pixel</b>
-                body: _("Missed call from <b>%s</b> on <b>%s</b>").format(
+            let notif = new Gio.Notification();
+            // TRANSLATORS: Missed Call
+            notif.set_title(_("Missed Call"));
+            notif.set_body(
+                // TRANSLATORS: eg. Missed call from "John Smith" on Google Pixel
+                _("Missed call from \"%s\" on %s").format(
                     sender,
                     this.device.name
-                ),
-                icon_name: "call-missed-symbolic"
-            });
-            
-            notif.show();
+                )
+            );
+            notif.set_icon(new Gio.ThemedIcon({ name: "call-missed-symbolic" }));
+            this.device.daemon.send_notification(packet.id.toString(), notif);
         }
     },
     
@@ -138,26 +136,25 @@ var Plugin = new Lang.Class({
         );
         
         if (this.settings.notify_ringing) {
-            let notif = new Notify.Notification({
-                app_name: _("GSConnect"),
-                // TRANSLATORS: Incoming Call
-                summary: _("Incoming Call").format(this.device.name),
-                // TRANSLATORS: eg. Incoming call from <b>John Smith</b> on <b>Google Pixel</b>
-                body: _("Incoming call from <b>%s</b> on <b>%s</b>").format(
+            let notif = new Gio.Notification();
+            // TRANSLATORS: Incoming Call
+            notif.set_title(_("Incoming Call"));
+            notif.set_body(
+                // TRANSLATORS: eg. Incoming call from "John Smith" on Google Pixel
+                _("Incoming call from \"%s\" on %s").format(
                     sender,
                     this.device.name
-                ),
-                icon_name: "call-start-symbolic"
-            });
+                )
+            );
+            notif.set_icon(new Gio.ThemedIcon({ name: "call-start-symbolic" }));
             
-            notif.add_action(
-                "notify_ringing",
+            notif.add_button(
                 // TRANSLATORS: Silence an incoming call
                 _("Mute"),
-                Lang.bind(this, this.muteCall)
+                "app.muteCall('" + this._dbus.get_object_path() + "')"
             );
             
-            notif.show();
+            this.device.daemon.send_notification(packet.id.toString(), notif);
         }
         
         if (this.settings.pause_music === "ringing") {
@@ -188,26 +185,38 @@ var Plugin = new Lang.Class({
         
         // FIXME: urgency
         //        block matching notification somehow?
-        //        category...?
         //        track notifs, append new messages to unclosed..
         if (this.settings.autoreply_sms) {
-            this.replySms(null, "autoreply_sms", packet.body);
+            this.replySms(
+                packet.body.phoneNumber,
+                packet.body.contactName,
+                packet.body.messageBody,
+                packet.body.phoneThumbnail
+            );
         } else if (this.settings.notify_sms) {
-            let notif = new Notify.Notification({
-                app_name: _("GSConnect"),
-                summary: sender,
-                body: packet.body.messageBody,
-                icon_name: "phone-symbolic"
-            });
+            let notif = new Gio.Notification();
+            // TRANSLATORS: Incoming Call
+            notif.set_title(sender);
+            notif.set_body(packet.body.messageBody);
+            notif.set_icon(new Gio.ThemedIcon({ name: "sms-symbolic" }));
             
-            notif.add_action(
-                "notify_sms",
-                // TRANSLATORS: Reply to an incoming SMS message
+            notif.add_button(
+                // TRANSLATORS: Silence an incoming call
                 _("Reply"),
-                Lang.bind(this, this.replySms, packet.body)
+                "app.replySms(('" +
+                this._dbus.get_object_path() +
+                "','" +
+                packet.body.phoneNumber +
+                "','" +
+                packet.body.contactName +
+                "','" +
+                packet.body.messageBody +
+                "','" +
+                packet.body.phoneThumbnail +
+                "'))"
             );
             
-            notif.show();
+            this.device.daemon.send_notification(packet.id.toString(), notif);
         }
     },
     
@@ -228,19 +237,18 @@ var Plugin = new Lang.Class({
         );
         
         if (this.settings.notify_talking) {
-            notif = new Notify.Notification({
-                app_name: _("GSConnect"),
-                // TRANSLATORS: Call In Progress
-                summary: _("Call In Progress"),
-                // TRANSLATORS: eg. Call in progress with <b>John Smith</b> on <b>Google Pixel</b>
-                body: _("Call in progress with <b>%s</b> on <b>%s</b>").format(
+            let notif = new Gio.Notification();
+            // TRANSLATORS: Talking on the phone
+            notif.set_title(_("Call In Progress"));
+            notif.set_body(
+                // TRANSLATORS: eg. Call in progress with John Smith on Google Pixel
+                _("Call in progress with %s on %s").format(
                     sender,
                     this.device.name
-                ),
-                icon_name: "call-start-symbolic"
-            });
-            
-            notif.show();
+                )
+            );
+            notif.set_icon(new Gio.ThemedIcon({ name: "call-start-symbolic" }));
+            this.device.daemon.send_notification(packet.id.toString(), notif);
         }
         
         if (settings.pause_music === "talking") {
@@ -306,7 +314,7 @@ var Plugin = new Lang.Class({
         //    * "contactName"       Always present? (may be empty)
         //    * "messageBody"       SMS only?
         //    * "phoneThumbnail"    base64 ByteArray/Pixmap (may be empty)
-        //    * "isCancel"          If true the packet should be ignored
+        //    * "isCancel"          The event has been cancelled
         
         let sender;
         
@@ -341,12 +349,17 @@ var Plugin = new Lang.Class({
         }
     },
     
+    /**
+     * Silence an incoming call
+     */
     muteCall: function () {
         Common.debug("Telephony: muteCall()");
         
-        let packet = new Protocol.Packet();
-        packet.type = "kdeconnect.telephony.request"
-        packet.body = { action: "mute" };
+        let packet = new Protocol.Packet({
+            id: 0,
+            type: "kdeconnect.telephony.request",
+            body: { action: "mute" }
+        });
         this.device._channel.send(packet);
     },
     
@@ -363,26 +376,27 @@ var Plugin = new Lang.Class({
     /**
      * Either open a new SMS window for the sender or reuse an existing one
      *
-     * @param {Notify.Notification} notif - The notification that called this
-     * @param {string} action - The notification action that called this
-     * @param {object} args - The body of the received packet that called this
+     * @param {string} phoneNumber - The sender's phone number
+     * @param {string} contactName - The sender's name
+     * @param {string} messageBody - The SMS message
+     * @param {string} phoneThumbnail - The sender's avatar (pixmap bytearray)
      */
-    replySms: function (notif, action, args) {
+    replySms: function (phoneNumber, contactName, messageBody, phoneThumbnail) {
         Common.debug("Telephony: replySms()");
         
         // Check for an extant window
-        let window = this._hasWindow(args.phoneNumber);
+        let window = this._hasWindow(phoneNumber);
         
         // None found, open a new one, add the contact and log the message
         if (!window) {
             window = new SMS.ConversationWindow(this.device.daemon, this.device);
             
-            if (args.contactName.length) {
-                window.contactEntry.text = args.contactName + " <" + args.phoneNumber + ">; ";
-                window._logIncoming(args.contactName, args.messageBody);
+            if (contactName.length) {
+                window.contactEntry.text = contactName + " <" + phoneNumber + ">; ";
+                window._logIncoming(contactName, messageBody);
             } else {
-                window.contactEntry.text = args.phoneNumber + "; ";
-                window._logIncoming(args.phoneNumber, args.messageBody);
+                window.contactEntry.text = phoneNumber + "; ";
+                window._logIncoming(phoneNumber, messageBody);
             }
         }
         
