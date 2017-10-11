@@ -166,9 +166,10 @@ var Plugin = new Lang.Class({
     _receiveNotification: function (packet) {
         Common.debug("Notifications: _receiveNotification()");
         
+        // TODO: check this over
         if (packet.body.isCancel) {
             if (this._notifications.has(packet.body.id)) {
-                this._notifications.get(packet.body.id).close();
+                this.close(packet.body.id);
                 this._notifications.delete(packet.body.id);
             }
         } else {
@@ -219,7 +220,10 @@ var Plugin = new Lang.Class({
         });
         
         this.device._channel.send(packet);
-        this._notifications.delete(id);
+        
+        if (this._notifications.has(id)) {
+            this._notifications.delete(id);
+        }
     },
     
     // TODO: ???
