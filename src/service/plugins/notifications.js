@@ -189,7 +189,7 @@ var Plugin = new Lang.Class({
                 notif.set_icon(new Gio.ThemedIcon({ name: "phone-symbolic" }));
                 notif.set_default_action(
                     "app.closeNotification(('" +
-                    this.device._dbus.get_object_path() +
+                    this._dbus.get_object_path() +
                     "','" +
                     packet.body.id +
                     "'))"
