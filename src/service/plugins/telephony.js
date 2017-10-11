@@ -108,8 +108,8 @@ var Plugin = new Lang.Class({
             // TRANSLATORS: Missed Call
             notif.set_title(_("Missed Call"));
             notif.set_body(
-                // TRANSLATORS: eg. Missed call from "John Smith" on Google Pixel
-                _("Missed call from \"%s\" on %s").format(
+                // TRANSLATORS: eg. Missed call from John Smith on Google Pixel
+                _("Missed call from %s on %s").format(
                     sender,
                     this.device.name
                 )
@@ -140,8 +140,8 @@ var Plugin = new Lang.Class({
             // TRANSLATORS: Incoming Call
             notif.set_title(_("Incoming Call"));
             notif.set_body(
-                // TRANSLATORS: eg. Incoming call from "John Smith" on Google Pixel
-                _("Incoming call from \"%s\" on %s").format(
+                // TRANSLATORS: eg. Incoming call from John Smith on Google Pixel
+                _("Incoming call from %s on %s").format(
                     sender,
                     this.device.name
                 )
