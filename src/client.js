@@ -506,13 +506,6 @@ var Daemon = new Lang.Class({
             GObject.ParamFlags.READABLE,
             ""
         ),
-        "version": GObject.ParamSpec.int(
-            "version",
-            "DaemonVersion",
-            "The version of the running daemon",
-            GObject.ParamFlags.READABLE,
-            0
-        )
     },
     Signals: {
         "device": {
@@ -550,7 +543,6 @@ var Daemon = new Lang.Class({
     get fingerprint () { return this._get("fingerprint"); },
     get name () { return this._get("name"); },
     set name (name) { this._set("name", name); },
-    get version () { return this._get("version"); },
     
     // Callbacks
     _devicesChanged: function () {

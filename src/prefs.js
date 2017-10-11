@@ -52,10 +52,6 @@ var PrefsWidget = new Lang.Class({
             this.daemon = new Client.Daemon();
         }
         
-        if (this.daemon.version < Common.Me.metadata['version']) {
-            this.daemon.quit();
-        }
-        
         for (let dbusPath of this.daemon.devices.keys()) {
             this.devicesStack.addDevice(this.daemon, dbusPath);
         }

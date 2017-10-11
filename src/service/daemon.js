@@ -67,13 +67,6 @@ var Daemon = new Lang.Class({
             "SHA1 fingerprint for the local certificate",
             GObject.ParamFlags.READABLE,
             ""
-        ),
-        "version": GObject.ParamSpec.int(
-            "version",
-            "DaemonVersion",
-            "The version of the running daemon",
-            GObject.ParamFlags.READABLE,
-            0
         )
     },
 
@@ -522,6 +515,24 @@ var Daemon = new Lang.Class({
             }
         }
     },
+    
+    /**
+     * Watch 'daemon.js' in case the extension is uninstalled
+     */
+    _watchDaemon: function () {
+        let daemonFile = Gio.File.new_for_path(
+            Common.Me.path + "/service/daemon.js"
+        );
+        this.daemonMonitor = daemonFile.monitor(
+            Gio.FileMonitorFlags.WATCH_MOVES,
+            null
+        );
+        this.daemonMonitor.connect("changed", (monitor, file, ofile, event) => {
+            if (event === 2 || event === 10) {
+                this.quit();
+            }
+        });
+    },
 
     /**
      * GApplication functions
@@ -536,6 +547,9 @@ var Daemon = new Lang.Class({
         
         // Intitialize configuration and choke hard if it fails
         if (!Common.initConfiguration()) { this.vfunc_shutdown(); }
+        
+        // Watch 'daemon.js' for uninstalls
+        this._watchDaemon();
         
         // Notifications
         Notify.init("org.gnome.shell.extensions.gsconnect.daemon");

@@ -552,10 +552,6 @@ var SystemIndicator = new Lang.Class({
             this.daemon = new Client.Daemon();
         }
         
-        if (this.daemon.version < Common.Me.metadata['version']) {
-            this.daemon.quit();
-        }
-        
         this.extensionIndicator.visible = (this.daemon);
         
         this.scanItem = this.extensionMenu.menu.addAction(
