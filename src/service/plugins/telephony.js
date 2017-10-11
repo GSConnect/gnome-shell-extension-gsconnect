@@ -422,8 +422,8 @@ var SettingsDialog = new Lang.Class({
         });
         this.content.addItem(
             callsSection,
-            _("Ringing Notification"),
-            _("Show a notification for incoming calls"),
+            _("Incoming Call Notification"),
+            _("Show a notification when the phone is ringing"),
             notifyRingingSwitch
         );
         
@@ -439,7 +439,7 @@ var SettingsDialog = new Lang.Class({
         });
         this.content.addItem(
             callsSection,
-            _("Talking Notification"),
+            _("Call In Progress Notification"),
             _("Show a notification when talking on the phone"),
             notifyTalkingSwitch
         );
