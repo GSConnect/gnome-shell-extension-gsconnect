@@ -8,7 +8,6 @@ const _ = Gettext.gettext;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
-const Notify = imports.gi.Notify;
 
 // Local Imports
 function getPath() {
@@ -77,14 +76,11 @@ var Plugin = new Lang.Class({
             body = _("Ping");
         }
         
-        let note = new Notify.Notification({
-            app_name: "GSConnect",
-            summary: this.device.name,
-            body: body,
-            icon_name: "phone-symbolic"
-        });
-        
-        note.show();
+        let notif = new Gio.Notification();
+        notif.set_title(this.device.name);
+        notif.set_body(body);
+        notif.set_icon(new Gio.ThemedIcon({ name: "phone-symbolic" }));
+        this.device.daemon.send_notification("ping", notif);
     },
     
     ping: function (message="") {
