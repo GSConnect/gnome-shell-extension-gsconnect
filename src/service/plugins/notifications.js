@@ -42,8 +42,7 @@ var METADATA = {
     ],
     settings: {
         receive: {
-            enabled: true,
-            sound: false
+            enabled: true
         },
         send: {
             enabled: true,
@@ -101,7 +100,7 @@ var Plugin = new Lang.Class({
         },
         "notificationsDismissed": {
             flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED
-        },
+        }
     },
     
     _init: function (device) {
@@ -201,12 +200,6 @@ var Plugin = new Lang.Class({
                     );
                 }
             
-                if (this.settings.receive.sound) {
-                    notif.set_hint(
-                        "sound-name",
-                        new GLib.Variant("s", "dialog-information")
-                    );
-                }
                 
                 this._notifications.set(packet.body.id, notif);
             }
@@ -284,23 +277,6 @@ var SettingsDialog = new Lang.Class({
             // TRANSLATORS: eg. Enable to receive notifications from Google Pixel
             _("Enable to receive notifications from %s").format(this._page.device.name),
             receiveSwitch
-        );
-        
-        let soundSwitch = new Gtk.Switch({
-            visible: true,
-            can_focus: true,
-            halign: Gtk.Align.END,
-            valign: Gtk.Align.CENTER,
-            active: this._settings.receive.sound
-        });
-        soundSwitch.connect("notify::active", (widget) => {
-            this._settings.receive.sound = receiveSwitch.active;
-        });
-        this.content.addItem(
-            receivingSection,
-            _("Notification Sounds"),
-            _("Play a sound when a notification is received"),
-            soundSwitch
         );
         
         // Sending
