@@ -223,7 +223,7 @@ var Plugin = new Lang.Class({
                 "notify_ringing",
                 // TRANSLATORS: Silence an incoming call
                 _("Mute"),
-                Lang.bind(this, this.mute)
+                Lang.bind(this, this.muteCall)
             );
             
             notif.show();
