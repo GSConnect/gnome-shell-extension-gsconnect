@@ -227,6 +227,24 @@ function getFingerprint (pem) {
 };
 
 
+function getCertificate (id=false) {
+    if (id) {
+        let path = CONFIG_PATH + "/" + id + "/certificate.pem";
+        
+        if (GLib.file_test(path, GLib.FileTest.EXISTS)) {
+            return Gio.TlsCertificate.new_from_file(path);
+        }
+    } else {
+        return Gio.TlsCertificate.new_from_files(
+            CONFIG_PATH + "/certificate.pem",
+            CONFIG_PATH + "/private.pem"
+        );
+    }
+    
+    return false;
+};
+
+
 function installService () {
     // DBus service file
     let serviceDir = GLib.get_user_data_dir() + "/dbus-1/services";

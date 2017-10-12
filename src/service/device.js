@@ -117,7 +117,6 @@ var Device = new Lang.Class({
         this._dbus.export(Gio.DBus.session, Common.dbusPathFromId(this.id));
         
         // Init config
-        this.config_cert = Common.CONFIG_PATH + "/" + this.id + "/certificate.pem";
         this.config = Common.readDeviceConfiguration(this.id);
         
         //
@@ -133,7 +132,7 @@ var Device = new Lang.Class({
             );
         } else if (this.paired) {
             return Common.getFingerprint(
-                GLib.file_get_contents(this.config_cert)[1].toString()
+                Common.getCertificate(this.id).certificate_pem
             );
         }
         
@@ -142,7 +141,7 @@ var Device = new Lang.Class({
     get id () { return this.identity.body.deviceId; },
     get name () { return this.identity.body.deviceName; },
     get paired () {
-        return GLib.file_test(this.config_cert, GLib.FileTest.EXISTS);
+        return Common.getCertificate(this.id);
     },
     get plugins () { return Array.from(this._plugins.keys()); },
     get supportedPlugins () {
@@ -334,13 +333,15 @@ var Device = new Lang.Class({
         this._incomingPairRequest = false;
         this._outgoingPairRequest = false;
         
+        let path = Common.CONFIG_PATH + "/" + this.id + "/certificate.pem";
+        
         if (bool) {
             GLib.file_set_contents(
-                this.config_cert,
+                path,
                 this._channel._peer_cert.certificate_pem
             );
         } else {
-            GLib.unlink(this.config_cert);
+            GLib.unlink(path);
         }
         
         this._dbus.emit_property_changed("paired", new GLib.Variant("b", bool));

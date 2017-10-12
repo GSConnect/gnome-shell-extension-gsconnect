@@ -89,10 +89,7 @@ var Daemon = new Lang.Class({
     
     // Properties
     get certificate () {
-        return Gio.TlsCertificate.new_from_files(
-            Common.CONFIG_PATH + "/certificate.pem",
-            Common.CONFIG_PATH + "/private.pem"
-        );
+        return Common.getCertificate();
     },
     
     get devices () {
