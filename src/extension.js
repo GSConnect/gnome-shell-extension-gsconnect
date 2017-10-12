@@ -556,18 +556,8 @@ var SystemIndicator = new Lang.Class({
         
         this.scanItem = this.extensionMenu.menu.addAction(
             _("Discover Devices"),
-            () => { this.daemon.discover("extension", 15); }
+            () => { this.daemon.discover(); }
         );
-        this.daemon.connect("notify::discovering", () => {
-            if (this.daemon.discovering) {
-                this.scanItem.actor.reactive = false;
-                this.scanItem.label.text = _("Discovering Devices");
-            } else {
-                this.scanItem.actor.reactive = true;
-                this.scanItem.label.text = _("Discover Devices");
-            }
-        });
-        this.daemon.notify("discovering");
         this.extensionMenu.menu.box.set_child_at_index(this.scanItem.actor, 1);
         
         // Add currently managed devices
@@ -626,7 +616,7 @@ var SystemIndicator = new Lang.Class({
             this._keybindings.push(
                 this.keybindingManager.add(
                     accels.discover,
-                    Lang.bind(this.daemon, this.daemon.discover, "key", 15)
+                    Lang.bind(this.daemon, this.daemon.discover)
                 )
             );
         }

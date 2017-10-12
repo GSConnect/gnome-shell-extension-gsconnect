@@ -53,13 +53,6 @@ var Daemon = new Lang.Class({
             null,
             GObject.ParamFlags.READABLE
         ),
-        "discovering": GObject.ParamSpec.boolean(
-            "discovering",
-            "DiscoveringDevices",
-            "Whether the daemon is discovering devices",
-            GObject.ParamFlags.READABLE,
-            false
-        ),
         "fingerprint": GObject.ParamSpec.string(
             "fingerprint",
             "LocalFingerprint",
@@ -80,10 +73,6 @@ var Daemon = new Lang.Class({
         GLib.set_prgname(application_name);
         GLib.set_application_name(application_name);
         
-        // TODO: clean this up with discover()
-        this._discovering = 0
-        this._discoverers = [];
-        
         this.register(null);
     },
     
@@ -94,10 +83,6 @@ var Daemon = new Lang.Class({
     
     get devices () {
         return Array.from(this._devices.keys());
-    },
-    
-    get discovering () {
-        return (this._discovering > 0);
     },
     
     get fingerprint () {
@@ -199,65 +184,8 @@ var Daemon = new Lang.Class({
      *
      * TODO: cleanup discover()
      */
-    discover: function (name, timeout=0) {
-        let index_ = this._discoverers.indexOf(name);
-        
-        // We're removing a request
-        if (index_ > -1) {
-            this._discoverers.splice(index_, 1);
-        // We're adding a request
-        } else {
-            // If there's a timeout we'll add a loop for that
-            if (timeout > 0) {
-                GLib.timeout_add_seconds(
-                    GLib.PRIORITY_DEFAULT,
-                    timeout,
-                    () => {
-                        let index_ = this._discoverers.indexOf(name);
-                        
-                        if (index_ > -1) {
-                            this._discoverers.splice(index_, 1);
-                        }
-                        
-                        return false;
-                    }
-                );
-            }
-        
-            // Add it to the list of discoverers
-            this._discoverers.push(name);
-            
-            // Only run one source at a time
-            if (this._discovering <= 0) {
-                this._discovering = GLib.timeout_add_seconds(
-                    GLib.PRIORITY_DEFAULT,
-                    1,
-                    () => {
-                        if (this._discoverers.length) {
-                            this.udpListener.send(this.identity);
-                            return true;
-                        }
-                        
-                        GLib.source_remove(this._discovering);
-                        this._discovering = 0;
-                
-                        this.notify("discovering");
-                        this._dbus.emit_property_changed(
-                            "discovering",
-                            new GLib.Variant("b", false)
-                        );
-                        
-                        return false;
-                    }
-                );
-                
-                this.notify("discovering");
-                this._dbus.emit_property_changed(
-                    "discovering",
-                    new GLib.Variant("b", true)
-                );
-            }
-        }
+    discover: function () {
+        this.udpListener.send(this.identity);
     },
     
     /**
@@ -328,7 +256,7 @@ var Daemon = new Lang.Class({
     },
     
     _addDevice: function (packet, channel=null) {
-        Common.debug("Daemon._addDevice(" + packet.body.deviceId + ")");
+        Common.debug("Daemon._addDevice(" + packet.body.deviceName + ")");
         
         if (packet.body.deviceId === this.identity.body.deviceId) {
             return;
@@ -337,12 +265,12 @@ var Daemon = new Lang.Class({
         let devObjPath = Common.dbusPathFromId(packet.body.deviceId);
         
         if (this._devices.has(devObjPath)) {
-            Common.debug("Daemon: Updating device");
+            log("Daemon: Updating device");
             
             let device = this._devices.get(devObjPath);
             device.update(packet, channel);
         } else {
-            Common.debug("Daemon: Adding device");
+            log("Daemon: Adding device");
             
             let device = new Device.Device(this, packet, channel)
             this._devices.set(devObjPath, device);
@@ -360,9 +288,10 @@ var Daemon = new Lang.Class({
         Common.debug("Daemon._removeDevice(" + dbusPath + ")");
         
         if (this._devices.has(dbusPath)) {
+            log("Daemon: Removing device");
+            
             let device = this._devices.get(dbusPath);
             
-            // Remove from devices
             device.destroy();
             this._devices.delete(dbusPath);
         
@@ -675,7 +604,7 @@ var Daemon = new Lang.Class({
         this._netmonitor = Gio.NetworkMonitor.get_default();
         this._netmonitor.connect("network-changed", (monitor, available) => {
             if (available) {
-                this.udpListener.send(this.identity);
+                this.discover();
             }
         });
         
@@ -685,7 +614,7 @@ var Daemon = new Lang.Class({
         this._readCache();
         log(this._devices.size + " devices loaded from cache");
         
-        this.udpListener.send(this.identity);
+        this.discover();
     },
 
     vfunc_activate: function() {
