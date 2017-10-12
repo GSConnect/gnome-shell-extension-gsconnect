@@ -53,6 +53,13 @@ var Daemon = new Lang.Class({
             null,
             GObject.ParamFlags.READABLE
         ),
+        "discovering": GObject.ParamSpec.boolean(
+            "discovering",
+            "discoveringDevices",
+            "Whether the daemon is discovering new devices",
+            GObject.ParamFlags.READWRITE,
+            false
+        ),
         "fingerprint": GObject.ParamSpec.string(
             "fingerprint",
             "LocalFingerprint",
@@ -83,6 +90,18 @@ var Daemon = new Lang.Class({
     
     get devices () {
         return Array.from(this._devices.keys());
+    },
+    
+    get discovering () {
+        return this.tcpListener.active;
+    },
+    
+    set discovering (bool) {
+        if (bool) {
+            this.tcpListener.start();
+        } else {
+            this.tcpListener.stop();
+        }
     },
     
     get fingerprint () {
@@ -182,9 +201,9 @@ var Daemon = new Lang.Class({
     /**
      * Discovery Methods
      *
-     * TODO: cleanup discover()
+     * TODO: cleanup broadcast()
      */
-    discover: function () {
+    broadcast: function () {
         this.udpListener.send(this.identity);
     },
     
@@ -591,6 +610,13 @@ var Daemon = new Lang.Class({
                 });
                 channel.accept(connection);
             });
+            this.tcpListener.connect("notify::active", () => {
+                this._dbus.emit_property_changed(
+                    "discovering",
+                    new GLib.Variant("b", this.discovering)
+                );
+            });
+            this.tcpListener.stop();
         } catch (e) {
             log("Error starting TCP listener: " + e);
             this.vfunc_shutdown();
@@ -602,7 +628,7 @@ var Daemon = new Lang.Class({
         this._netmonitor = Gio.NetworkMonitor.get_default();
         this._netmonitor.connect("network-changed", (monitor, available) => {
             if (available) {
-                this.discover();
+                this.broadcast();
             }
         });
         
@@ -612,7 +638,7 @@ var Daemon = new Lang.Class({
         this._readCache();
         log(this._devices.size + " devices loaded from cache");
         
-        this.discover();
+        this.broadcast();
     },
 
     vfunc_activate: function() {

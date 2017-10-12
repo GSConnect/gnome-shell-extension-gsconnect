@@ -545,6 +545,8 @@ var Daemon = new Lang.Class({
         this._devicesChanged();
     },
     
+    get discovering () { return this._get("discovering") === true; },
+    set discovering (bool) { this._set("discovering", bool); },
     get fingerprint () { return this._get("fingerprint"); },
     get name () { return this._get("name"); },
     set name (name) { this._set("name", name); },
@@ -579,8 +581,8 @@ var Daemon = new Lang.Class({
     },
     
     // Public Methods
-    discover: function () {
-        this._call("discover", true);
+    broadcast: function () {
+        this._call("broadcast", true);
     },
     
     quit: function () {

@@ -4,7 +4,6 @@
 const Gettext = imports.gettext.domain("gsconnect");
 const _ = Gettext.gettext;
 const Lang = imports.lang;
-const Mainloop = imports.mainloop;
 const Clutter = imports.gi.Clutter;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
@@ -554,10 +553,32 @@ var SystemIndicator = new Lang.Class({
         
         this.extensionIndicator.visible = (this.daemon);
         
-        this.scanItem = this.extensionMenu.menu.addAction(
-            _("Discover Devices"),
-            () => { this.daemon.discover(); }
-        );
+        this.scanItem = this.extensionMenu.menu.addAction("", () => {
+            this.daemon.discovering = true;
+            this.daemon.broadcast();
+            let times = 2;
+            
+            GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, 5, () => {
+                if (times > 0) {
+                    this.daemon.broadcast();
+                    times -= 1;
+                    return this.daemon.discovering;
+                }
+                
+                this.daemon.discovering = false;
+                return false;
+            });
+        });
+        this.daemon.connect("notify::discovering", () => {
+            if (this.daemon.discovering) {
+                this.scanItem.actor.reactive = false;
+                this.scanItem.label.text = _("Discovering Devices");
+            } else {
+                this.scanItem.actor.reactive = true;
+                this.scanItem.label.text = _("Discover Devices");
+            }
+        });
+        this.daemon.notify("discovering");
         this.extensionMenu.menu.box.set_child_at_index(this.scanItem.actor, 1);
         
         // Add currently managed devices

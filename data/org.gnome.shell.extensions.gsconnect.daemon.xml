@@ -2,9 +2,10 @@
   <interface name="org.gnome.shell.extensions.gsconnect.daemon">
     <property type="s" name="name" access="readwrite"/>
     <property type="as" name="devices" access="read"/>
+    <property type="b" name="discovering" access="readwrite"/>
     <property type="s" name="fingerprint" access="read"/>
     
-    <method name="discover"/>
+    <method name="broadcast"/>
     <method name="getShareable">
       <arg name="shareable" type="a{ss}" direction="out"/>
     </method>
