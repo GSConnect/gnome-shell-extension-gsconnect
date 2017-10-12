@@ -623,6 +623,7 @@ var Daemon = new Lang.Class({
     vfunc_shutdown: function() {
         this.parent();
         
+        this.tcpListener.destroy();
         this.udpListener.destroy();
         
         for (let device of this._devices.values()) {

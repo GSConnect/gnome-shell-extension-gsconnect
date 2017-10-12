@@ -122,8 +122,6 @@ var Packet = new Lang.Class({
 /**
  * Listeners
  */
-
-// TODO TODO TODO
 var TcpListener = new Lang.Class({
     Name: "GSConnectTcpListener",
     Extends: GObject.Object,
@@ -171,6 +169,7 @@ var TcpListener = new Lang.Class({
     
     destroy: function () {
         this.service.stop();
+        this.service.close();
     }
 });
 
