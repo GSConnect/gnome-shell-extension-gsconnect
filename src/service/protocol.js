@@ -731,7 +731,8 @@ var LanUploadChannel = new Lang.Class({
     Extends: LanChannel,
     Signals: {
         "listening": {
-            flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED
+            flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED,
+            param_types: [ GObject.TYPE_INT ]
         }
     },
     
@@ -756,14 +757,12 @@ var LanUploadChannel = new Lang.Class({
                 }
             }
             
-            this._port = port;
-            
             break;
         }
         
         this._listener.accept_async(null, Lang.bind(this, this.auth));
         
-        this.emit("listening");
+        this.emit("listening", port);
     },
     
     auth: function (listener, res) {
