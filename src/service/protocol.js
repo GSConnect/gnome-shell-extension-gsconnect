@@ -163,8 +163,6 @@ var TcpListener = new Lang.Class({
         }
         
         this.service.connect("incoming", (service, connection, source) => {
-            Common.debug("ADDR: " + connection.socket.remote_address.address.to_string());
-            
             this.emit("received", connection);
         });
         
@@ -190,7 +188,7 @@ var UdpListener = new Lang.Class({
         }
     },
     
-    _init: function (port=TcpPort.MIN) {
+    _init: function (port=1716) {
         this.parent();
     
         this.socket = new Gio.Socket({
@@ -212,7 +210,7 @@ var UdpListener = new Lang.Class({
             } catch (e) {
                 Common.debug("UdpListener: failed to bind to port " + port + ": " + e);
                 
-                if (port < TcpPort.MAX) {
+                if (port < 1764) {
                     port += 1;
                     continue;
                 } else {
@@ -332,6 +330,8 @@ var LanChannel = new Lang.Class({
         
         this.daemon = daemon;
         this.identity = identity;
+        
+        this._monitor = 0;
     },
     
     // Receive an identity packet
@@ -408,7 +408,7 @@ var LanChannel = new Lang.Class({
     // Negotitate certificate/pairing
     _accept_certificate: function (conn, peer_cert, flags) {
         log("Authenticating '" + this.identity.body.deviceName + "'");
-        log("PEER CERT: '" + peer_cert + "'");
+        
         this._peer_cert = peer_cert;
         let cert = Common.getCertificate(this.identity.body.deviceId);
         
@@ -478,7 +478,6 @@ var LanChannel = new Lang.Class({
     
     // Accept a channel (incoming connection)
     accept: function (connection) {
-        
         this._connection = connection;
         
         try {
@@ -495,6 +494,7 @@ var LanChannel = new Lang.Class({
     opened: function (connection, res) {
         try {
             this._connection.handshake_finish(res);
+            // FIXME: check if null?
             this._peer_cert = this._connection.get_peer_certificate();
             this._initStreams();
         } catch (e) {
@@ -509,11 +509,9 @@ var LanChannel = new Lang.Class({
     
     close: function () {
         try {
-            if (this._monitor) {
-                if (this._monitor > 0) {
-                    GLib.Source.remove(this._monitor);
-                    delete this._monitor;
-                }
+            if (this._monitor > 0) {
+                GLib.Source.remove(this._monitor);
+                this._monitor = 0;
             }
         } catch (e) {
             log("error removing monitor: " + e);
@@ -694,15 +692,16 @@ var LanDownloadChannel = new Lang.Class({
     Name: "GSConnectLanDownloadChannel",
     Extends: LanChannel,
     
-    _init: function (device, fileStream) {
-        this.parent(device);
+    _init: function (device, identity, fileStream) {
+        this.parent(device, identity);
         
         this._out = fileStream;
     },
     
-    auth: function (client, res) {
+    request: function (connection) {
+        this._connection = connection;
+        
         try {
-            this._connection = client.connect_finish(res);
             this._initSocket();
             this._initTls(true);
         } catch (e) {
@@ -713,7 +712,7 @@ var LanDownloadChannel = new Lang.Class({
     },
     
     opened: function (connection, res) {
-        Common.debug("TransferChannel.opened(" + this.device.id + ")");
+        Common.debug("TransferChannel.opened(" + this.identity.body.deviceName + ")");
         
         try {
             this._in = this._connection.get_input_stream();
@@ -737,8 +736,8 @@ var LanUploadChannel = new Lang.Class({
         }
     },
     
-    _init: function (device, srcStream) {
-        this.parent(device);
+    _init: function (device, identity, srcStream) {
+        this.parent(device, identity);
         
         this._in = srcStream;
     },
@@ -750,7 +749,7 @@ var LanUploadChannel = new Lang.Class({
             try {
                 this._listener.add_inet_port(port, null);
             } catch (e) {
-                if (port < TransferPort.MAX) {
+                if (port < 1764) {
                     port += 1;
                     continue;
                 } else {
