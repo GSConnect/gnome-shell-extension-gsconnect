@@ -344,10 +344,8 @@ var LanChannel = new Lang.Class({
         let [data, len] = _in.read_line(null);
         this.identity = new Packet(data.toString());
         this.identity.body.tcpHost = this._connection.socket.remote_address.address.to_string();
-        log("PORT: " + this._connection.socket.remote_address.port);
-        log("PORT: " + this._connection.socket.local_address.port);
-        
-        this.identity.body.tcpPort = this._connection.socket.local_address.port;
+        // We can't use the remote port later so use a reasonable default
+        this.identity.body.tcpPort = 1716;
         _in.close(null);
     },
     
