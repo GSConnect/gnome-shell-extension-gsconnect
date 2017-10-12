@@ -329,48 +329,28 @@ var Daemon = new Lang.Class({
     
     _addDevice: function (packet, channel=null) {
         Common.debug("Daemon._addDevice(" + packet.body.deviceId + ")");
+        
+        if (packet.body.deviceId === this.identity.body.deviceId) {
+            return;
+        }
             
         let devObjPath = Common.dbusPathFromId(packet.body.deviceId);
         
-        if (channel) {
-            if (this._devices.has(devObjPath)) {
-                Common.debug("Daemon: Updating device channel");
-                
-                let device = this._devices.get(devObjPath);
-                device._channel = channel;
-                //device.handlePacket(packet);
-            } else {
-                Common.debug("Daemon: Adding device with channel");
-                
-                let device = new Device.Device(this, packet, channel)
-                this._devices.set(devObjPath, device);
-                
-                this._dbus.emit_property_changed(
-                    "devices",
-                    new GLib.Variant("as", this.devices)
-                );
-            }
-        } else {
-            if (packet.body.deviceId === this.identity.body.deviceId) {
-                return;
-            }
+        if (this._devices.has(devObjPath)) {
+            Common.debug("Daemon: Updating device");
             
-            if (this._devices.has(devObjPath)) {
-                Common.debug("Daemon: Updating device");
-                
-                let device = this._devices.get(devObjPath);
-                device.handlePacket(packet);
-            } else {
-                Common.debug("Daemon: Adding device");
-                
-                let device = new Device.Device(this, packet)
-                this._devices.set(devObjPath, device);
-                
-                this._dbus.emit_property_changed(
-                    "devices",
-                    new GLib.Variant("as", this.devices)
-                );
-            }
+            let device = this._devices.get(devObjPath);
+            device.update(packet, channel);
+        } else {
+            Common.debug("Daemon: Adding device");
+            
+            let device = new Device.Device(this, packet, channel)
+            this._devices.set(devObjPath, device);
+            
+            this._dbus.emit_property_changed(
+                "devices",
+                new GLib.Variant("as", this.devices)
+            );
         }
         
         this._writeCache(packet.body.deviceId);
@@ -677,20 +657,9 @@ var Daemon = new Lang.Class({
             this.tcpListener.connect("received", (listener, connection) => {
                 let address = connection.socket.remote_address.address.to_string();
                 
-                for (let device of this._devices.values()) {
-                    if (device.connected) {
-                        if (device.identity.body.tcpHost === address) {
-                            log("already connected");
-                            connection.close(null);
-                            return;
-                        }
-                    }
-                }
-                
                 let channel = new Protocol.LanChannel(this);
                 let conn = channel.connect("connected", (channel) => {
                     GObject.signal_handler_disconnect(channel, conn);
-                    //channel.close();
                     this._addDevice(channel.identity, channel);
                 });
                 channel.accept(connection);
