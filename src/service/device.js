@@ -180,13 +180,19 @@ var Device = new Lang.Class({
     
     update: function (packet, channel=null) {
         if (channel) {
+            this.identity.fromPacket(packet);
+            
             if (this._channel !== null) {
                 GObject.signal_handlers_destroy(this._channel);
-                
-                this._channel = channel;
-                this._channel.connect("connected", Lang.bind(this, this._onConnected));
-                this._channel.connect("disconnected", Lang.bind(this, this._onDisconnected));
-		        this._channel.connect("received", Lang.bind(this, this._onReceived));
+            }
+            
+            this._channel = channel;
+            this._channel.connect("connected", Lang.bind(this, this._onConnected));
+            this._channel.connect("disconnected", Lang.bind(this, this._onDisconnected));
+            this._channel.connect("received", Lang.bind(this, this._onReceived));
+            
+            if (!this.connected) {
+                this._channel.emit("connected");
             }
         } else {
             this.handlePacket(packet);
