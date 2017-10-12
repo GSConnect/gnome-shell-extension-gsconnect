@@ -316,17 +316,15 @@ var Plugin = new Lang.Class({
                 file.read(null)
             );
             
-            channel.connect("listening", (channel) => {
+            channel.connect("listening", (channel, port) => {
                 let packet = new Protocol.Packet({
                     id: 0,
                     type: "kdeconnect.share.request",
-                    body: { filename: file.get_basename() },
-                    packetSize: info.get_size(),
-                    payloadTransferInfo: { port: channel._port }
+                    body: { filename: file.get_basename() }
                 });
                 
-                packet.packetSize = info.get_size();
-                packet.payloadTransferInfo = { port: channel._port };
+                packet.payloadSize = info.get_size();
+                packet.payloadTransferInfo = { port: port };
                 
                 this.device._channel.send(packet);
             });
