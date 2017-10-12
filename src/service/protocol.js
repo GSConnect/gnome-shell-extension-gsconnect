@@ -460,7 +460,7 @@ var LanChannel = new Lang.Class({
     
     // Request a channel (outgoing connection)
     request: function (connection) {
-        log("Authenticating '" + this.identity.body.deviceName + "'");
+        this._connection = connection;
         
         try {
             this._initSocket();
