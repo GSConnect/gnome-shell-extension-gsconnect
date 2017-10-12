@@ -50,7 +50,8 @@ var METADATA = {
  * TODO: try and block duplicate "notifications" that match incoming SMS
  *       phoneThumbnail field
  *       notifications
- *       pause music
+ *       mute: pactl set-sink-mute @DEFAULT_SINK@ 1
+ *       unmute: pactl set-sink-mute @DEFAULT_SINK@ 1
  */
 var Plugin = new Lang.Class({
     Name: "GSConnectTelephonyPlugin",
