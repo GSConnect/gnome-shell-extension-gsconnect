@@ -758,6 +758,9 @@ var SystemIndicator = new Lang.Class({
         
         // Keybindings
         this._deviceKeybindings(indicator);
+        
+        // Try activating the device
+        device.activate();
     },
     
     _deviceRemoved: function (daemon, dbusPath) {
