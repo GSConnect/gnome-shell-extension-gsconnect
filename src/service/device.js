@@ -283,7 +283,7 @@ var Device = new Lang.Class({
         this._incomingPairRequest = false;
         this._outgoingPairRequest = false;
             
-        if (!paired) {
+        if (!this.paired) {
             this.daemon.withdraw_notification("pair-request");
             this.unpair();
         }
