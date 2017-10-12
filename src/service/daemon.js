@@ -115,7 +115,7 @@ var Daemon = new Lang.Class({
     set name(name) {
         Common.Settings.set_string("public-name", name);
         this._dbus.emit_property_changed("name", new GLib.Variant("s", name));
-        this.broadcast();
+        this.udpListener.send(this.identity);
     },
     
     get version () {
@@ -172,7 +172,7 @@ var Daemon = new Lang.Class({
                 deviceId: "GSConnect@" + GLib.get_host_name(),
                 deviceName: this.name,
                 deviceType: this._getDeviceType(),
-                tcpPort: this.udpServer.socket.local_address.port,
+                tcpPort: this.udpListener.socket.local_address.port,
                 protocolVersion: 7,
                 incomingCapabilities: [],
                 outgoingCapabilities: []
@@ -198,14 +198,7 @@ var Daemon = new Lang.Class({
      * Discovery Methods
      *
      * TODO: cleanup discover()
-     * TODO: error check broadcast()?
      */
-    broadcast: function () {
-        Common.debug("Daemon.broadcast()");
-        
-        this.udpServer.send(this.identity);
-    },
-    
     discover: function (name, timeout=0) {
         let index_ = this._discoverers.indexOf(name);
         
@@ -241,7 +234,7 @@ var Daemon = new Lang.Class({
                     1,
                     () => {
                         if (this._discoverers.length) {
-                            this.broadcast();
+                            this.udpListener.send(this.identity);
                             return true;
                         }
                         
@@ -334,30 +327,50 @@ var Daemon = new Lang.Class({
         });
     },
     
-    _addDevice: function (packet) {
+    _addDevice: function (packet, channel=null) {
         Common.debug("Daemon._addDevice(" + packet.body.deviceId + ")");
-        
-        if (packet.body.deviceId === this.identity.body.deviceId) {
-            return;
-        }
-        
+            
         let devObjPath = Common.dbusPathFromId(packet.body.deviceId);
         
-        if (this._devices.has(devObjPath)) {
-            Common.debug("Daemon: Updating device");
-            
-            let device = this._devices.get(devObjPath);
-            device.handlePacket(packet);
+        if (channel) {
+            if (this._devices.has(devObjPath)) {
+                Common.debug("Daemon: Updating device channel");
+                
+                let device = this._devices.get(devObjPath);
+                device._channel = channel;
+                //device.handlePacket(packet);
+            } else {
+                Common.debug("Daemon: Adding device with channel");
+                
+                let device = new Device.Device(this, packet, channel)
+                this._devices.set(devObjPath, device);
+                
+                this._dbus.emit_property_changed(
+                    "devices",
+                    new GLib.Variant("as", this.devices)
+                );
+            }
         } else {
-            Common.debug("Daemon: Adding device");
+            if (packet.body.deviceId === this.identity.body.deviceId) {
+                return;
+            }
             
-            let device = new Device.Device(this, packet)
-            this._devices.set(devObjPath, device);
-            
-            this._dbus.emit_property_changed(
-                "devices",
-                new GLib.Variant("as", this.devices)
-            );
+            if (this._devices.has(devObjPath)) {
+                Common.debug("Daemon: Updating device");
+                
+                let device = this._devices.get(devObjPath);
+                device.handlePacket(packet);
+            } else {
+                Common.debug("Daemon: Adding device");
+                
+                let device = new Device.Device(this, packet)
+                this._devices.set(devObjPath, device);
+                
+                this._dbus.emit_property_changed(
+                    "devices",
+                    new GLib.Variant("as", this.devices)
+                );
+            }
         }
         
         this._writeCache(packet.body.deviceId);
@@ -650,12 +663,40 @@ var Daemon = new Lang.Class({
         
         // Listen for new devices
         try {
-            this.udpServer = new Protocol.UDPServer();
-            this.udpServer.connect("received", (server, packet) => {
+            this.udpListener = new Protocol.UdpListener();
+            this.udpListener.connect("received", (server, packet) => {
                 this._addDevice(packet);
             });
         } catch (e) {
             log("Error starting UDP listener: " + e);
+            this.vfunc_shutdown();
+        }
+        
+        try {
+            this.tcpListener = new Protocol.TcpListener();
+            this.tcpListener.connect("received", (listener, connection) => {
+                let address = connection.socket.remote_address.address.to_string();
+                
+                for (let device of this._devices.values()) {
+                    if (device.connected) {
+                        if (device.identity.body.tcpHost === address) {
+                            log("already connected");
+                            connection.close(null);
+                            return;
+                        }
+                    }
+                }
+                
+                let channel = new Protocol.LanChannel(this);
+                let conn = channel.connect("connected", (channel) => {
+                    GObject.signal_handler_disconnect(channel, conn);
+                    //channel.close();
+                    this._addDevice(channel.identity, channel);
+                });
+                channel.accept(connection);
+            });
+        } catch (e) {
+            log("Error starting TCP listener: " + e);
             this.vfunc_shutdown();
         }
         
@@ -665,7 +706,7 @@ var Daemon = new Lang.Class({
         this._netmonitor = Gio.NetworkMonitor.get_default();
         this._netmonitor.connect("network-changed", (monitor, available) => {
             if (available) {
-                this.broadcast();
+                this.udpListener.send(this.identity);
             }
         });
         
@@ -675,7 +716,7 @@ var Daemon = new Lang.Class({
         this._readCache();
         log(this._devices.size + " devices loaded from cache");
         
-        this.broadcast();
+        this.udpListener.send(this.identity);
     },
 
     vfunc_activate: function() {
@@ -686,7 +727,7 @@ var Daemon = new Lang.Class({
     vfunc_shutdown: function() {
         this.parent();
         
-        this.udpServer.destroy();
+        this.udpListener.destroy();
         
         for (let device of this._devices.values()) {
             device.destroy();

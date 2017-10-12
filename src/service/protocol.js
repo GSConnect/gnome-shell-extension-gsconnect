@@ -23,6 +23,20 @@ const Common = imports.common;
 var TYPE_IDENTITY = "kdeconnect.identity";
 var TYPE_PAIR = "kdeconnect.pair";
 
+// Port Ranges
+var MIN_TCP_PORT = 1716;
+var MAX_TCP_PORT = 1764;
+
+var TcpPort = {
+    MIN: 1716,
+    MAX: 1764
+};
+
+var TransferPort = {
+    MIN: 1739,
+    MAX: 1764
+};
+
 
 /**
  * Packets
@@ -108,14 +122,13 @@ var Packet = new Lang.Class({
 /**
  * Listeners
  */
-var UDPServer = new Lang.Class({
-    Name: "GSConnectUDPServer",
+
+// TODO TODO TODO
+var TcpListener = new Lang.Class({
+    Name: "GSConnectTcpListener",
     Extends: GObject.Object,
     Signals: {
         "listening": {
-            flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED
-        },
-        "disconnected": {
             flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED
         },
         "received": {
@@ -124,7 +137,60 @@ var UDPServer = new Lang.Class({
         }
     },
     
-    _init: function (port=1716) {
+    _init: function (port=TcpPort.MIN) {
+        this.parent();
+        
+        this.service = new Gio.SocketService();
+        
+        while (true) {
+            try {
+                this.service.add_inet_port(port, null);
+            } catch (e) {
+                Common.debug("TcpListener: failed to bind to port " + port + ": " + e);
+                
+                if (port < TcpPort.MAX) {
+                    port += 1;
+                    continue;
+                } else {
+                    this.service.stop();
+                    throw Error("TcpListener: Unable to open port");
+                }
+            }
+            
+            if (this.service.active) {
+                break;
+            }
+        }
+        
+        this.service.connect("incoming", (service, connection, source) => {
+            Common.debug("ADDR: " + connection.socket.remote_address.address.to_string());
+            
+            this.emit("received", connection);
+        });
+        
+        this.emit("listening");
+    },
+    
+    destroy: function () {
+        this.service.stop();
+    }
+});
+
+
+var UdpListener = new Lang.Class({
+    Name: "GSConnectUdpListener",
+    Extends: GObject.Object,
+    Signals: {
+        "listening": {
+            flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED
+        },
+        "received": {
+            flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED,
+            param_types: [ GObject.TYPE_OBJECT ]
+        }
+    },
+    
+    _init: function (port=TcpPort.MIN) {
         this.parent();
     
         this.socket = new Gio.Socket({
@@ -144,13 +210,14 @@ var UDPServer = new Lang.Class({
             try {
                 this.socket.bind(addr, false);
             } catch (e) {
-                Common.debug("failed to bind to port: " + port);
+                Common.debug("UdpListener: failed to bind to port " + port + ": " + e);
                 
-                if (port < 1764) {
+                if (port < TcpPort.MAX) {
                     port += 1;
+                    continue;
                 } else {
                     this.socket.close();
-                    throw Error("Unable to bind listener");
+                    throw Error("UdpListener: Unable to bind socket");
                 }
             }
             
@@ -178,7 +245,7 @@ var UDPServer = new Lang.Class({
     },
     
     send: function (packet) {
-        Common.debug("UDPServer.send()");
+        Common.debug("UdpListener.send()");
         
         this.socket.send_to(
             this._broadcastAddr,
@@ -188,7 +255,7 @@ var UDPServer = new Lang.Class({
     },
     
     receive: function () {
-        Common.debug("UDPServer.receive()");
+        Common.debug("UdpListener.receive()");
         
         let addr, data, flags, size;
         
@@ -216,7 +283,6 @@ var UDPServer = new Lang.Class({
         
         packet.body.tcpHost = addr.address.to_string();
         
-        // Init device
         this.emit("received", packet);
         
         return true;
@@ -261,23 +327,29 @@ var LanChannel = new Lang.Class({
         }
     },
     
-    _init: function (device, port=false) {
+    _init: function (daemon, identity=null) {
         this.parent();
-        this.device = device;
         
-        this.addr = new Gio.InetSocketAddress({
-            address: Gio.InetAddress.new_from_string(
-                device.identity.body.tcpHost
-            ),
-            port: (port) ? port : device.identity.body.tcpPort
+        this.daemon = daemon;
+        this.identity = identity;
+    },
+    
+    // Receive an identity packet
+    _receiveIdent: function () {
+        let _in = new Gio.DataInputStream({
+            base_stream: new Gio.UnixInputStream({
+                fd: this._connection.socket.fd,
+                close_fd: false
+            })
         });
+        let [data, len] = _in.read_line(null);
+        this.identity = new Packet(data.toString());
+        this.identity.body.tcpHost = this._connection.socket.remote_address.address.to_string();
+        log("PORT: " + this._connection.socket.remote_address.port);
+        log("PORT: " + this._connection.socket.local_address.port);
         
-        this._listener = null;
-        this._connection = null;
-        this._in = null;
-        this._out = null;
-        this._monitor = 0;
-        this._peer_cert = null;
+        this.identity.body.tcpPort = this._connection.socket.local_address.port;
+        _in.close(null);
     },
     
     // Send identity packet, indicating we're about ready for a handshake
@@ -288,7 +360,7 @@ var LanChannel = new Lang.Class({
                 close_fd: false
             })
         });
-        _out.put_string(this.device.daemon.identity.toData(), null);
+        _out.put_string(this.daemon.identity.toData(), null);
         _out.close(null);
     },
     
@@ -310,11 +382,11 @@ var LanChannel = new Lang.Class({
                 this._connection,
                 this._connection.socket.remote_address
             );
-            this._connection.set_certificate(this.device.daemon.certificate);
+            this._connection.set_certificate(this.daemon.certificate);
         } else {
             this._connection = Gio.TlsServerConnection.new(
                 this._connection,
-                this.device.daemon.certificate
+                this.daemon.certificate
             );
         }
         
@@ -335,20 +407,19 @@ var LanChannel = new Lang.Class({
     
     // Negotitate certificate/pairing
     _accept_certificate: function (conn, peer_cert, flags) {
-        if (this.device.paired) {
-            let paired_cert = Gio.TlsCertificate.new_from_file(
-                this.device.config_cert
-            );
-            this._peer_cert = peer_cert;
-            
-            return (paired_cert.verify(null, peer_cert) === 0);
-        } else {
-            this._peer_cert = peer_cert;
-            return true;
+        log("Authenticating '" + this.identity.body.deviceName + "'");
+        log("PEER CERT: '" + peer_cert + "'");
+        this._peer_cert = peer_cert;
+        let cert = Common.getCertificate(this.identity.body.deviceId);
+        
+        if (cert) {
+            return (cert.verify(null, peer_cert) === 0);
         }
+        
+        return true;
     },
     
-    // Open input/output streams
+    // Open input/output streams and monitor the input stream for packets
     _initStreams: function () {
         this._in = new Gio.DataInputStream({
             base_stream: this._connection.input_stream,
@@ -358,10 +429,7 @@ var LanChannel = new Lang.Class({
         this._out = new Gio.DataOutputStream({
             base_stream: this._connection.output_stream
         });
-    },
-    
-    // Monitor the input stream for packets
-    _initMonitor: function () {
+        
         this._monitor = this._in.base_stream.create_source(null);
         this._monitor.set_callback((condition) => {
             let result = this.receive();
@@ -376,18 +444,28 @@ var LanChannel = new Lang.Class({
     /**
      * Public Methods
      */
-    open: function () {
-        log("Connecting to '" + this.device.name + "'");
+    open: function (addr) {
+        log("Connecting to '" + this.identity.body.deviceName + "'");
         
         let client = new Gio.SocketClient();
-        client.connect_async(this.addr, null, Lang.bind(this, this.auth));
+        client.connect_async(addr, null, (client, res) => {
+            try {
+                this._connection = client.connect_finish(res);
+            } catch (e) {
+                log("Error connecting: " + e);
+                this.close();
+                return false;
+            }
+            
+            this.request(this._connection);
+        });
     },
     
-    auth: function (client, res) {
-        log("Authenticating '" + this.device.name + "'");
+    // Request a channel (outgoing connection)
+    request: function (connection) {
+        log("Authenticating '" + this.identity.body.deviceName + "'");
         
         try {
-            this._connection = client.connect_finish(res);
             this._initSocket();
             this._sendIdent();
             this._initTls();
@@ -398,11 +476,27 @@ var LanChannel = new Lang.Class({
         }
     },
     
+    // Accept a channel (incoming connection)
+    accept: function (connection) {
+        
+        this._connection = connection;
+        
+        try {
+            this._initSocket();
+            this._receiveIdent();
+            this._initTls(true); // client=true
+        } catch (e) {
+            log("Error connecting: " + e);
+            this.close();
+            return false;
+        }
+    },
+    
     opened: function (connection, res) {
         try {
             this._connection.handshake_finish(res);
+            this._peer_cert = this._connection.get_peer_certificate();
             this._initStreams();
-            this._initMonitor();
         } catch (e) {
             log("Error connecting: " + e);
             this.close();
@@ -414,13 +508,19 @@ var LanChannel = new Lang.Class({
     },
     
     close: function () {
-        if (this._monitor > 0) {
-            Gio.Source.remove(this._monitor);
-            this._monitor = 0;
+        try {
+            if (this._monitor) {
+                if (this._monitor > 0) {
+                    GLib.Source.remove(this._monitor);
+                    delete this._monitor;
+                }
+            }
+        } catch (e) {
+            log("error removing monitor: " + e);
         }
         
         try {
-            if (this._in !== null) {
+            if (this._in) {
                 this._in.close(null);
             }
         } catch (e) {
@@ -428,7 +528,7 @@ var LanChannel = new Lang.Class({
         }
         
         try {
-            if (this._out !== null) {
+            if (this._out) {
                 this._out.close(null);
             }
         } catch (e) {
@@ -436,7 +536,7 @@ var LanChannel = new Lang.Class({
         }
         
         try {
-            if (this._connection !== null) {
+            if (this._connection) {
                 this._connection.close(null);
             }
         } catch (e) {
@@ -444,17 +544,17 @@ var LanChannel = new Lang.Class({
         }
         
         try {
-            if (this._listener !== null) {
+            if (this._listener) {
                 this._listener.close(null);
             }
         } catch (e) {
             log("error closing listener: " + e);
         }
         
-        this._in = null;
-        this._out = null;
-        this._connection = null;
-        this._listener = null;
+        delete this._in;
+        delete this._out;
+        delete this._connection;
+        delete this._listener;
         
         this.emit("disconnected");
     },
@@ -471,7 +571,7 @@ var LanChannel = new Lang.Class({
     },
     
     receive: function () {
-        Common.debug("LanChannel.receive(" + this.device.id + ")");
+        Common.debug("LanChannel.receive(" + this.identity.body.deviceName + ")");
         
         let data, len, packet;
         
@@ -490,10 +590,6 @@ var LanChannel = new Lang.Class({
         packet = new Packet(data.toString());
         this.emit("received", packet);
         return true;
-    },
-    
-    transfer: function () {
-        this._transferRead();
     }
 });
 
@@ -598,8 +694,8 @@ var LanDownloadChannel = new Lang.Class({
     Name: "GSConnectLanDownloadChannel",
     Extends: LanChannel,
     
-    _init: function (device, port, fileStream) {
-        this.parent(device, port);
+    _init: function (device, fileStream) {
+        this.parent(device);
         
         this._out = fileStream;
     },
@@ -641,26 +737,28 @@ var LanUploadChannel = new Lang.Class({
         }
     },
     
-    _init: function (device, port, srcStream) {
-        this.parent(device, port);
+    _init: function (device, srcStream) {
+        this.parent(device);
         
         this._in = srcStream;
-        this._port = port;
     },
     
-    open: function () {
+    open: function (port=1739) {
         this._listener = new Gio.SocketListener();
         
         while (true) {
             try {
-                this._listener.add_inet_port(this._port, null);
+                this._listener.add_inet_port(port, null);
             } catch (e) {
-                if (this._port < 1764) {
-                    this._port += 1;
+                if (port < TransferPort.MAX) {
+                    port += 1;
+                    continue;
                 } else {
                     throw Error("Failed to open port");
                 }
             }
+            
+            this._port = port;
             
             break;
         }
@@ -671,7 +769,7 @@ var LanUploadChannel = new Lang.Class({
     },
     
     auth: function (listener, res) {
-        Common.debug("TransferChannel.opened(" + this.device.id + ")");
+        Common.debug("TransferChannel.opened(" + this.identity.body.deviceName + ")");
         
         try {
             let src;

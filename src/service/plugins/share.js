@@ -78,7 +78,6 @@ var Plugin = new Lang.Class({
             
             let channel = new Protocol.LanDownloadChannel(
                 this.device,
-                packet.payloadTransferInfo.port,
                 file.replace(null, false, Gio.FileCreateFlags.NONE, null)
             );
             
@@ -231,7 +230,14 @@ var Plugin = new Lang.Class({
                 transfer.start();
             });
             
-            channel.open();
+            let addr = new Gio.InetSocketAddress({
+                address: Gio.InetAddress.new_from_string(
+                    this.device.identity.body.tcpHost
+                ),
+                port: packet.payloadTransferInfo.port
+            });
+            
+            channel.open(addr);
         } else if (packet.body.hasOwnProperty("text")) {
             log("IMPLEMENT: " + packet.toString());
             log("receiving text: '" + packet.body.text + "'");
@@ -305,7 +311,6 @@ var Plugin = new Lang.Class({
             
             let channel = new Protocol.LanUploadChannel(
                 this.device,
-                1739,
                 file.read(null)
             );
             
@@ -313,11 +318,10 @@ var Plugin = new Lang.Class({
                 let packet = new Protocol.Packet({
                     id: 0,
                     type: "kdeconnect.share.request",
-                    body: { filename: file.get_basename() }
+                    body: { filename: file.get_basename() },
+                    packetSize: info.get_size(),
+                    payloadTransferInfo: { port: channel._port }
                 });
-                
-                packet.payloadSize = info.get_size();
-                packet.payloadTransferInfo = { port: channel._port };
                 
                 this.device._channel.send(packet);
             });

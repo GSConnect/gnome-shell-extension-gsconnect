@@ -92,7 +92,7 @@ var Device = new Lang.Class({
         }
     },
     
-    _init: function (daemon, packet) {
+    _init: function (daemon, packet, channel=null) {
         this.parent();
         
         this.daemon = daemon;
@@ -102,12 +102,12 @@ var Device = new Lang.Class({
         this._incomingPairRequest = false;
         this._outgoingPairRequest = false;
         
-        this.identity = new Protocol.Packet(packet);
-        
         // Plugins
         this._plugins = new Map();
         this._handlers = new Map();
         
+        this.identity = new Protocol.Packet(packet);
+        this.config = Common.readDeviceConfiguration(this.id);
         // Export DBus
         let iface = "org.gnome.shell.extensions.gsconnect.device";
         this._dbus = Gio.DBusExportedObject.wrapJSObject(
@@ -116,11 +116,20 @@ var Device = new Lang.Class({
         );
         this._dbus.export(Gio.DBus.session, Common.dbusPathFromId(this.id));
         
-        // Init config
-        this.config = Common.readDeviceConfiguration(this.id);
+        // A TCP Connection
+        // FIXME: need to validate certificate...?
+        if (channel) {
+            this._channel = channel;
         
-        //
-        this.activate();
+            this._channel.connect("connected", Lang.bind(this, this._onConnected));
+            this._channel.connect("disconnected", Lang.bind(this, this._onDisconnected));
+		    this._channel.connect("received", Lang.bind(this, this._onReceived));
+		    
+		    this._channel.emit("connected");
+        // A UDP Connection
+        } else {
+            this.activate();
+        }
     },
     
     /** Device Properties */
@@ -193,17 +202,26 @@ var Device = new Lang.Class({
 			return;
 		}
         
-        this._channel = new Protocol.LanChannel(this);
+        this._channel = new Protocol.LanChannel(this.daemon, this.identity);
         
         this._channel.connect("connected", Lang.bind(this, this._onConnected));
         this._channel.connect("disconnected", Lang.bind(this, this._onDisconnected));
 		this._channel.connect("received", Lang.bind(this, this._onReceived));
+		
+		let addr = new Gio.InetSocketAddress({
+            address: Gio.InetAddress.new_from_string(
+                this.identity.body.tcpHost
+            ),
+            port: this.identity.body.tcpPort
+        });
         
-        this._channel.open();
+        this._channel.open(addr);
     },
     
     _onConnected: function (channel) {
         log("Connected to '" + this.name + "'");
+        
+        this.config = Common.readDeviceConfiguration(this.id);
         
         this._connected = true;
         
