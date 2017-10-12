@@ -124,52 +124,36 @@ var Packet = new Lang.Class({
  */
 var TcpListener = new Lang.Class({
     Name: "GSConnectTcpListener",
-    Extends: GObject.Object,
-    Signals: {
-        "listening": {
-            flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED
-        },
-        "received": {
-            flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED,
-            param_types: [ GObject.TYPE_OBJECT ]
-        }
-    },
+    Extends: Gio.SocketService,
     
-    _init: function (port=TcpPort.MIN) {
+    _init: function (port=1716) {
         this.parent();
-        
-        this.service = new Gio.SocketService();
         
         while (true) {
             try {
-                this.service.add_inet_port(port, null);
+                this.add_inet_port(port, null);
             } catch (e) {
                 Common.debug("TcpListener: failed to bind to port " + port + ": " + e);
                 
-                if (port < TcpPort.MAX) {
+                if (port < 1764) {
                     port += 1;
                     continue;
                 } else {
-                    this.service.stop();
+                    this.stop();
+                    this.close();
                     throw Error("TcpListener: Unable to open port");
                 }
             }
             
-            if (this.service.active) {
+            if (this.active) {
                 break;
             }
         }
-        
-        this.service.connect("incoming", (service, connection, source) => {
-            this.emit("received", connection);
-        });
-        
-        this.emit("listening");
     },
     
     destroy: function () {
-        this.service.stop();
-        this.service.close();
+        this.stop();
+        this.close();
     }
 });
 
@@ -178,9 +162,6 @@ var UdpListener = new Lang.Class({
     Name: "GSConnectUdpListener",
     Extends: GObject.Object,
     Signals: {
-        "listening": {
-            flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED
-        },
         "received": {
             flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED,
             param_types: [ GObject.TYPE_OBJECT ]
@@ -235,8 +216,6 @@ var UdpListener = new Lang.Class({
         let source = this.socket.create_source(GLib.IOCondition.IN, null);
         source.set_callback(Lang.bind(this, this.receive));
         source.attach(null);
-        
-        this.emit("listening");
         
         log("listening for new devices on 0.0.0.0:" + port);
     },

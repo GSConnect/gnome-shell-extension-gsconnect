@@ -583,7 +583,7 @@ var Daemon = new Lang.Class({
         
         try {
             this.tcpListener = new Protocol.TcpListener();
-            this.tcpListener.connect("received", (listener, connection) => {
+            this.tcpListener.connect("incoming", (listener, connection) => {
                 let channel = new Protocol.LanChannel(this);
                 let conn = channel.connect("connected", (channel) => {
                     GObject.signal_handler_disconnect(channel, conn);
