@@ -584,8 +584,6 @@ var Daemon = new Lang.Class({
         try {
             this.tcpListener = new Protocol.TcpListener();
             this.tcpListener.connect("received", (listener, connection) => {
-                let address = connection.socket.remote_address.address.to_string();
-                
                 let channel = new Protocol.LanChannel(this);
                 let conn = channel.connect("connected", (channel) => {
                     GObject.signal_handler_disconnect(channel, conn);
