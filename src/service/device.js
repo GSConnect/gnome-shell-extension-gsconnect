@@ -178,6 +178,21 @@ var Device = new Lang.Class({
     },
     get type () { return this.identity.body.deviceType; },
     
+    update: function (packet, channel=null) {
+        if (channel) {
+            if (this._channel !== null) {
+                GObject.signal_handlers_destroy(this._channel);
+                
+                this._channel = channel;
+                this._channel.connect("connected", Lang.bind(this, this._onConnected));
+                this._channel.connect("disconnected", Lang.bind(this, this._onDisconnected));
+		        this._channel.connect("received", Lang.bind(this, this._onReceived));
+            }
+        } else {
+            this.handlePacket(packet);
+        }
+    },
+    
     //
     handlePacket: function (packet) {
         Common.debug("Device.fromPacket(" + this.id + ")");
