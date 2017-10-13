@@ -327,7 +327,7 @@ var Device = new Lang.Class({
             "paired",
             "devicePaired",
             "Whether the device is paired",
-            GObject.ParamFlags.READWRITE,
+            GObject.ParamFlags.READABLE,
             false
         ),
         "plugins": GObject.param_spec_variant(
@@ -335,7 +335,7 @@ var Device = new Lang.Class({
             "PluginsList", 
             "A list of enabled plugins",
             new GLib.VariantType("as"),
-            null,
+            new GLib.Variant("as", []),
             GObject.ParamFlags.READABLE
         ),
         "supportedPlugins": GObject.param_spec_variant(
@@ -343,7 +343,7 @@ var Device = new Lang.Class({
             "SupportedPluginsList", 
             "A list of supported plugins",
             new GLib.VariantType("as"),
-            null,
+            new GLib.Variant("as", []),
             GObject.ParamFlags.READABLE
         ),
         "type": GObject.ParamSpec.string(
