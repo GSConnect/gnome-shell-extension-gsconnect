@@ -408,7 +408,7 @@ var Daemon = new Lang.Class({
         }
     },
     
-    // TODO: check it's still a file?
+    // TODO: check file existence, since it could have been moved/deleted
     _openTransferAction: function (action, param) {
         let path = param.deep_unpack().toString();
         
