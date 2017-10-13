@@ -35,7 +35,8 @@ var PluginControl = new Lang.Class({
         
         this._page = page;
         this._name = name;
-        this._info = imports.service.plugins[this._name].METADATA; // FIXME
+        // FIXME: what was I going to fix, again?
+        this._info = imports.service.plugins[this._name].METADATA;
         this._freeze = false;
         
         if (this._info.hasOwnProperty("settings")) {
