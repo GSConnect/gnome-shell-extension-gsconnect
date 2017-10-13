@@ -106,11 +106,7 @@ var Daemon = new Lang.Class({
     },
     
     get fingerprint () {
-        return Common.getFingerprint(
-            GLib.file_get_contents(
-                Common.CONFIG_PATH + "/certificate.pem"
-            )[1].toString()
-        );
+        return Common.getFingerprint(Common.getCertificate().certificate_pem);
     },
     
     get name() {
