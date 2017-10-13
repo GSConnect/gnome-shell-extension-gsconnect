@@ -134,26 +134,27 @@ var PrefsWidget = new Lang.Class({
         let develSection = advancedPage.addSection(_("Development"));
         advancedPage.addSetting(develSection, "debug");
         
-        let restartButton = new Gtk.Button({
+        let stopButton = new Gtk.Button({
             image: Gtk.Image.new_from_icon_name(
-                "view-refresh-symbolic",
+                "process-stop-symbolic",
                 Gtk.IconSize.BUTTON
             ),
+            always_show_image: true,
             visible: true,
             can_focus: true,
             halign: Gtk.Align.END,
             valign: Gtk.Align.CENTER
         });
-        restartButton.get_style_context().add_class("circular");
-        restartButton.connect(
+        stopButton.get_style_context().add_class("circular");
+        stopButton.connect(
             "clicked",
             Lang.bind(this.daemon, this.daemon.quit)
         );
         advancedPage.addItem(
             develSection,
-            _("Restart Service"),
-            _("Stop the service and let the extension restart it"),
-            restartButton
+            _("Stop Service"),
+            _("Instruct the daemon to quit"),
+            stopButton
         );
     }
 });
