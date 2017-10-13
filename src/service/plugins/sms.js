@@ -419,18 +419,22 @@ var ConversationMessage = new Lang.Class({
             activatable: false,
             selectable: false,
             hexpand: true,
+            halign: Gtk.Align.FILL,
             visible: true
         });
         
         // Message Layout
-        this.grid = new Gtk.Grid({
+        messageLayout = new Gtk.Box({
             visible: true,
             can_focus: false,
-            margin: 6
+            margin_top: 6,
+            margin_right: 6,
+            margin_left: 6,
+            orientation: Gtk.Orientation.VERTICAL
         });
-        this.add(this.grid);
+        this.add(messageLayout);
         
-        let contactLabel = new Gtk.Label({
+        let messageSender = new Gtk.Label({
             label: "<b>" + contact + "</b>",
             use_markup: true,
             margin_bottom: 6,
@@ -439,17 +443,21 @@ var ConversationMessage = new Lang.Class({
             visible: true,
             xalign: direction
         });
-        this.grid.attach(contactLabel, 0, 0, 1, 1);
+        messageLayout.add(messageSender);
         
-        let messageBox = new Gtk.Box({ visible: true });
+        // FIXME FIXME needs major love
+        let messageBubble = new Gtk.Box({
+            visible: true
+        });
         let provider = new Gtk.CssProvider();
         //provider.load_from_resource("/style/sms.css");
-        provider.load_from_data(".incoming-message { color: #FFFFFF; background-color: #2196F3; border-radius: 1em; } .outgoing-message { color: #FFFFFF; background-color: #4CAF50; border-radius: 1em; }");
-        let style = messageBox.get_style_context();
+        provider.load_from_data(".message-bubble { border-radius: 1em; } .incoming-message { color: #FFFFFF; background-color: #2196F3; } .outgoing-message { color: #FFFFFF; background-color: #4CAF50; }");
+        let style = messageBubble.get_style_context();
         style.add_provider(provider, 0);
-        this.grid.attach(messageBox, 0, 1, 1, 1);
+        style.add_class("message-bubble");
+        messageLayout.add(messageBubble);
         
-        let messageLabel = new Gtk.Label({
+        let messageContent = new Gtk.Label({
             label: message,
             margin_top: 6,
             margin_bottom: 6,
@@ -460,15 +468,15 @@ var ConversationMessage = new Lang.Class({
             wrap: true,
             xalign: direction
         });
-        messageBox.add(messageLabel);
+        messageBubble.add(messageContent);
         
         if (direction === MessageDirection.IN) {
-            this.grid.halign = Gtk.Align.RIGHT;
-            this.grid.margin_left = 32;
+            messageBubble.halign = Gtk.Align.END;
+            messageLayout.margin_left = 32;
             style.add_class("incoming-message");
         } else if (direction === MessageDirection.OUT) {
-            this.grid.halign = Gtk.Align.LEFT;
-            this.grid.margin_right = 32;
+            messageBubble.halign = Gtk.Align.START;
+            messageLayout.margin_right = 32;
             style.add_class("outgoing-message");
         }
     }
@@ -542,7 +550,8 @@ var ConversationWindow = new Lang.Class({
         scrolledWindow.add(conversationFrame);
         
         this.conversationView = new Gtk.ListBox({
-            visible: true
+            visible: true,
+            halign: Gtk.Align.FILL
         });
         
         this.device.bind_property(
