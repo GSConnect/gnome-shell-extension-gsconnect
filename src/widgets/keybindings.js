@@ -126,7 +126,6 @@ var TreeView = new Lang.Class({
                 profile[id] = "";
             } else {
                 profile[id] = Gtk.accelerator_name(key, mods);
-                log("ACCEL: " + Gtk.accelerator_name(key, mods));
             }
         });
         
