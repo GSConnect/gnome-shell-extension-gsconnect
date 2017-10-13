@@ -151,7 +151,7 @@ var Button = new Lang.Class({
     
     _init: function (params) {
         params = Object.assign({
-            icon_name: null,
+            icon_name: "application-x-executable",
             callback: () => {},
             toggle_mode: false,
             tooltip_text: false
@@ -163,7 +163,12 @@ var Button = new Lang.Class({
             child: new St.Icon({ icon_name: params.icon_name }),
             toggle_mode: params.toggle_mode
         });
-        this.connect("clicked", params.callback);
+        
+        this.callback = params.callback;
+        
+        this.connect("clicked", () => {
+            this.callback()
+        });
         
         if (typeof params.tooltip_text === "string") {
             this.tooltip = new Tooltip(params.tooltip_text, this);
