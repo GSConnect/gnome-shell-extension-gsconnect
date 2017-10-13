@@ -117,13 +117,17 @@ var Device = new Lang.Class({
         this._dbus.export(Gio.DBus.session, Common.dbusPathFromId(this.id));
         
         // A TCP Connection
-        // FIXME: need to validate certificate...?
         if (channel) {
             this._channel = channel;
         
             this._channel.connect("connected", Lang.bind(this, this._onConnected));
             this._channel.connect("disconnected", Lang.bind(this, this._onDisconnected));
 		    this._channel.connect("received", Lang.bind(this, this._onReceived));
+            
+            // Verify the certificate since it was TOFU'd by the listener
+            if (!this.verify()) {
+                return;
+            }
 		    
 		    this._channel.emit("connected");
         // A UDP Connection
