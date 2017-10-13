@@ -1,11 +1,10 @@
-/*
-  Inspired by, but not derived from, the venerable 'convenience.js' which is:
-  Copyright (c) 2011-2012, Giovanni Campagna <scampa.giovanni@gmail.com>
-*/
+"use strict";
 
+// Imports
 const Lang = imports.lang;
 const Format = imports.format;
 const Gettext = imports.gettext;
+
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const Gtk = imports.gi.Gtk;
