@@ -178,27 +178,6 @@ var Device = new Lang.Class({
     },
     get type () { return this.identity.body.deviceType; },
     
-    update: function (packet, channel=null) {
-        if (channel) {
-            this.identity.fromPacket(packet);
-            
-            if (this._channel !== null) {
-                GObject.signal_handlers_destroy(this._channel);
-            }
-            
-            this._channel = channel;
-            this._channel.connect("connected", Lang.bind(this, this._onConnected));
-            this._channel.connect("disconnected", Lang.bind(this, this._onDisconnected));
-            this._channel.connect("received", Lang.bind(this, this._onReceived));
-            
-            if (!this.connected) {
-                this._channel.emit("connected");
-            }
-        } else {
-            this.handlePacket(packet);
-        }
-    },
-    
     //
     handlePacket: function (packet) {
         Common.debug("Device.fromPacket(" + this.id + ")");
@@ -237,6 +216,48 @@ var Device = new Lang.Class({
         });
         
         this._channel.open(addr);
+    },
+    
+    update: function (packet, channel=null) {
+        if (channel) {
+            this.identity.fromPacket(packet);
+            
+            if (this._channel !== null) {
+                GObject.signal_handlers_destroy(this._channel);
+            }
+            
+            this._channel = channel;
+            this._channel.connect("connected", Lang.bind(this, this._onConnected));
+            this._channel.connect("disconnected", Lang.bind(this, this._onDisconnected));
+            this._channel.connect("received", Lang.bind(this, this._onReceived));
+            
+            // Verify the certificate since it was TOFU'd by the listener
+            if (!this.verify()) {
+                return;
+            }
+            
+            if (!this.connected) {
+                this._channel.emit("connected");
+            }
+        } else {
+            this.handlePacket(packet);
+        }
+    },
+    
+    verify: function () {
+        let cert = Common.getCertificate(this.id);
+            
+        if (cert) {
+            log("Authenticating '" + this.name + "'");
+            
+            if (cert.verify(null, this._channel._peer_cert) > 0) {
+                log("Authentication failure: '" + this.name + "'");
+                this._channel.emit("disconnected");
+                return false;
+            }
+        }
+        
+        return true;
     },
     
     _onConnected: function (channel) {
