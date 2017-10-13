@@ -110,17 +110,14 @@ var Daemon = new Lang.Class({
     },
     
     get name() {
-        return Common.Settings.get_string("public-name");
+        return this.identity.body.deviceName;
     },
     
     set name(name) {
-        Common.Settings.set_string("public-name", name);
+        this.identity.body.deviceName = name;
+        this.notify("name");
         this._dbus.emit_property_changed("name", new GLib.Variant("s", name));
-        this.udpListener.send(this.identity);
-    },
-    
-    get version () {
-        return Common.Me.metadata['version'];
+        this.broadcast();
     },
     
     /**
@@ -192,7 +189,7 @@ var Daemon = new Lang.Class({
             type: Protocol.TYPE_IDENTITY,
             body: {
                 deviceId: this._getUuid(),
-                deviceName: this.name,
+                deviceName: Common.Settings.get_string("public-name"),
                 deviceType: this._getDeviceType(),
                 tcpPort: this.udpListener.socket.local_address.port,
                 protocolVersion: 7,
@@ -639,6 +636,12 @@ var Daemon = new Lang.Class({
         }
         
         this.identity = this._getIdentityPacket();
+        Common.Settings.bind(
+            "public-name",
+            this,
+            "name",
+            Gio.SettingsBindFlags.DEFAULT
+        );
         
         // Monitor network changes
         this._netmonitor = Gio.NetworkMonitor.get_default();
