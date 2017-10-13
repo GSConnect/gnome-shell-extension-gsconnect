@@ -122,7 +122,7 @@ var PrefsWidget = new Lang.Class({
         keyRow.grid.attach(keyView, 0, 0, 1, 1);
         
         // Devices Page
-        this.devicesStack = new DeviceWidget.Stack();
+        this.devicesStack = new DeviceWidget.Stack(this);
         let devicesPage = this.add_titled(
             this.devicesStack,
             "devices", 

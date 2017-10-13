@@ -118,7 +118,7 @@ var Stack = new Lang.Class({
     Name: "GSConnectDeviceStack",
     Extends: Gtk.Grid,
     
-    _init: function () {
+    _init: function (prefsWidget) {
         this.parent({
             halign: Gtk.Align.FILL,
             valign: Gtk.Align.FILL,
@@ -126,6 +126,7 @@ var Stack = new Lang.Class({
             vexpand: true
         });
         
+        this._parent = prefsWidget;
         this.devices = new Map();
         
         // InfoBar
