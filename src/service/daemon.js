@@ -99,6 +99,7 @@ var Daemon = new Lang.Class({
     set discovering (bool) {
         if (bool) {
             this.tcpListener.start();
+            this.broadcast();
         } else {
             this.tcpListener.stop();
         }
