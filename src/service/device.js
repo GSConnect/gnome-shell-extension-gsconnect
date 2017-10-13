@@ -269,6 +269,7 @@ var Device = new Lang.Class({
         
         this._loadPlugins();
         
+        this.notify("connected");
         this._dbus.emit_property_changed(
             "connected",
             new GLib.Variant("b", this.connected)
@@ -295,6 +296,7 @@ var Device = new Lang.Class({
         
             // Notify disconnected
             this._connected = false;
+            this.notify("connected");
             this._dbus.emit_property_changed(
                 "connected",
                 new GLib.Variant("b", this.connected)
@@ -432,7 +434,7 @@ var Device = new Lang.Class({
     },
     
     unpair: function () {
-        Common.debug("Device.unpair(" + this.id + ")");
+        Common.debug("Device.unpair(" + this.name + ")");
         
         if (this._channel !== null) {
             let packet = new Protocol.Packet({
@@ -449,7 +451,7 @@ var Device = new Lang.Class({
     },
     
     acceptPair: function () {
-        Common.debug("Device.acceptPair(" + this.id + ")");
+        Common.debug("Device.acceptPair(" + this.name + ")");
         
         this._setPaired(true);
         this.pair();
@@ -457,7 +459,7 @@ var Device = new Lang.Class({
     },
     
     rejectPair: function () {
-        Common.debug("Device.rejectPair(" + this.id + ")");
+        Common.debug("Device.rejectPair(" + this.name + ")");
         
         this.unpair();
     },
