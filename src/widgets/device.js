@@ -159,8 +159,8 @@ var Stack = new Lang.Class({
             this.remove(this.infobar);
         });
         
-        // Page Switcher
-        this.sidebar = new Gtk.ListBox();
+        // Device Switcher
+        this.sidebar = new Gtk.ListBox({ vexpand: true });
         let sidebarScrolledWindow = new Gtk.ScrolledWindow({
             can_focus: true,
             hscrollbar_policy: Gtk.PolicyType.NEVER,
@@ -170,7 +170,19 @@ var Stack = new Lang.Class({
         
         this.attach(sidebarScrolledWindow, 0, 1, 1, 1);
         
-        // Page Stack
+        // Refresh Button
+        let refreshButton = new Gtk.Button({
+            label: _("Refresh"),
+            vexpand: false,
+            valign: Gtk.Align.END,
+            visible: true
+        });
+        refreshButton.connect("clicked", () => {
+            this._parent.daemon.discovering = true;
+        });
+        this.attach(refreshButton, 0, 2, 1, 1);
+        
+        // Device Stack
         this.stack = new Gtk.Stack({
             transition_type: Gtk.StackTransitionType.SLIDE_UP_DOWN,
             halign: Gtk.Align.FILL,
@@ -178,7 +190,7 @@ var Stack = new Lang.Class({
             hexpand: true,
             vexpand: true
         });
-        this.attach(this.stack, 1, 1, 1, 1);
+        this.attach(this.stack, 1, 1, 1, 2);
         
         this._addDaemon();
         
