@@ -478,7 +478,7 @@ var Daemon = new Lang.Class({
         }
     },
     
-    _initActions: function () {
+    _initNotificationActions: function () {
         let pairAction = new Gio.SimpleAction({
             name: "pairAction",
             parameter_type: new GLib.VariantType("(ss)")
@@ -583,7 +583,7 @@ var Daemon = new Lang.Class({
         
         this._watchDaemon();
         this._initNotificationListener();
-        this._initActions();
+        this._initNotificationActions();
         
         // Export DBus
         let iface = "org.gnome.shell.extensions.gsconnect.daemon";
