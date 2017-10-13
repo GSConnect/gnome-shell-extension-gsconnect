@@ -248,7 +248,7 @@ var DeviceMenu = new Lang.Class({
     _nameChanged: function (device, name) {
         Common.debug("extension.DeviceMenu._nameChanged()");
         
-        this.nameLabel.label.text = device.name;
+        this.nameLabel.label.text = this.device.name;
     },
     
     _pluginsChanged: function (device, plugins) {
@@ -264,7 +264,7 @@ var DeviceMenu = new Lang.Class({
         let sensitive;
         
         for (let name in buttons) {
-            sensitive = (device.hasOwnProperty(name));
+            sensitive = (this.device.hasOwnProperty(name));
             buttons[name].can_focus = sensitive;
             buttons[name].reactive = sensitive;
             buttons[name].track_hover = sensitive;
@@ -272,7 +272,7 @@ var DeviceMenu = new Lang.Class({
         }
         
         // Battery Plugin
-        if (device.hasOwnProperty("battery")) {
+        if (this.device.hasOwnProperty("battery")) {
             this.device.battery.connect(
                 "notify",
                 Lang.bind(this, this._batteryChanged)
