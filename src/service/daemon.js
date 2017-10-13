@@ -200,8 +200,6 @@ var Daemon = new Lang.Class({
     
     /**
      * Discovery Methods
-     *
-     * TODO: cleanup broadcast()
      */
     broadcast: function () {
         this.udpListener.send(this.identity);
