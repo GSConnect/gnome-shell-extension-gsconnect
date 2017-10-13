@@ -172,7 +172,6 @@ function buildPrefsWidget() {
     
     let prefsWidget = new PrefsWidget();
     
-    // HeaderBar
     Mainloop.timeout_add(0, () => {
         let prefsWindow = prefsWidget.get_toplevel()
         prefsWindow.get_titlebar().custom_title = prefsWidget.switcher;
