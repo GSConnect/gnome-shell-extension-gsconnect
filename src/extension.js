@@ -183,10 +183,27 @@ var DeviceMenu = new Lang.Class({
         this.statusBar.actor.add(this.statusButton, { x_fill: false });
         
         this.statusLabel = new St.Label({
-            text: "",
+            text: "", // placeholder, strings in this._statusChanged()
             y_align: Clutter.ActorAlign.CENTER
         });
         this.statusBar.actor.add(this.statusLabel, { x_expand: true });
+        
+        // Help Bar
+        this.helpBar = new PopupMenu.PopupBaseMenuItem({
+            reactive: false,
+            can_focus: false
+        });
+        this.helpBar.actor.visible = false;
+        this.addMenuItem(this.helpBar);
+        
+        this.helpButton = new ShellWidget.Button({ tooltip_text: "" });
+        this.helpBar.actor.add(this.helpButton, { x_fill: false });
+        
+        this.helpLabel = new St.Label({
+            text: "", // placeholder, set by enabling function
+            y_align: Clutter.ActorAlign.CENTER
+        });
+        this.helpBar.actor.add(this.helpLabel, { x_expand: true });
         
         // Property signals
         device.connect(
@@ -197,8 +214,6 @@ var DeviceMenu = new Lang.Class({
             "notify::plugins",
             Lang.bind(this, this._pluginsChanged)
         );
-        
-        // Status signals
         device.connect(
             "notify::connected",
             Lang.bind(this, this._statusChanged)
@@ -208,7 +223,6 @@ var DeviceMenu = new Lang.Class({
             Lang.bind(this, this._statusChanged)
         );
         
-        // TODO: still need this?
         this._statusChanged(device);
     },
     
@@ -251,8 +265,20 @@ var DeviceMenu = new Lang.Class({
         this.nameLabel.label.text = this.device.name;
     },
     
-    _pluginsChanged: function (device, plugins) {
+    _pluginsChanged: function (device) {
         Common.debug("extension.DeviceMenu._pluginsChanged()");
+        
+        let { connected, paired, plugins } = this.device;
+        
+        if (!plugins.length && connected && paired) {
+            this.helpBar.actor.visible = true;
+            this.helpButton.child.icon_name = "preferences-other-symbolic";
+            this.helpButton.tooltip.title = _("Mobile Settings");
+            this.helpButton.callback = Common.startPreferences;
+            this.helpLabel.text = _("No plugins enabled");
+        } else {
+            this.helpBar.actor.visible = false;
+        }
         
         // Plugin Buttons
         let buttons = {
