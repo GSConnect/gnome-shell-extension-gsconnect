@@ -165,12 +165,33 @@ var Daemon = new Lang.Class({
         }
     },
     
+    _getUuid: function () {
+        let args = ["openssl", "x509", "-noout", "-subject", "-in",
+                    Common.CONFIG_PATH + "/certificate.pem"];
+        
+        let proc = GLib.spawn_async_with_pipes(
+            null,                                   // working dir
+            args,                                   // argv
+            null,                                   // envp
+            GLib.SpawnFlags.SEARCH_PATH,            // enables PATH
+            null                                    // child_setup (func)
+        );
+        
+        let stdout = new Gio.DataInputStream({
+            base_stream: new Gio.UnixInputStream({ fd: proc[3] })
+        });
+        let uuid = stdout.read_line(null)[0].toString().split("/CN=")[1];
+        stdout.close(null);
+        
+        return uuid;
+    },
+    
     _getIdentityPacket: function () {
         let packet = new Protocol.Packet({
             id: 0,
             type: Protocol.TYPE_IDENTITY,
             body: {
-                deviceId: "GSConnect@" + GLib.get_host_name(),
+                deviceId: this._getUuid(),
                 deviceName: this.name,
                 deviceType: this._getDeviceType(),
                 tcpPort: this.udpListener.socket.local_address.port,
