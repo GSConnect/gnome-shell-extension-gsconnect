@@ -21,9 +21,9 @@ const PopupMenu = imports.ui.popupMenu;
 
 // Local Imports
 const Me = imports.misc.extensionUtils.getCurrentExtension();
+const Client = Me.imports.client;
 const Common = Me.imports.common;
 const { Resources, Settings } = Me.imports.common;
-const Client = Me.imports.client;
 const ShellWidget = Me.imports.widgets.shell;
 
 
