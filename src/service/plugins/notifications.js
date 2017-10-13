@@ -78,7 +78,6 @@ var METADATA = {
  * FIXME: weird hang, only happens at daemon startup
  * TODO: play sounds when requested
  *       download/upload icons
- *       GNotification?
  *       requestAnswer usage?
  *       urgency filter (outgoing)?
  *       make "shared" notifications clearable
