@@ -33,6 +33,7 @@ var PrefsWidget = new Lang.Class({
         this.parent();
         
         this.daemon = new Client.Daemon();
+        this.daemon.discovering = true;
         
         this._build();
         
@@ -50,6 +51,7 @@ var PrefsWidget = new Lang.Class({
         
         if (!this.daemon) {
             this.daemon = new Client.Daemon();
+            this.daemon.discovering = true;
         }
         
         for (let dbusPath of this.daemon.devices.keys()) {
@@ -78,6 +80,7 @@ var PrefsWidget = new Lang.Class({
         
         if (!Common.Settings.get_boolean("debug")) {
             this.daemon = new Client.Daemon();
+            this.daemon.discovering = true;
         }
     },
     
@@ -170,8 +173,11 @@ function buildPrefsWidget() {
     
     // HeaderBar
     Mainloop.timeout_add(0, () => {
-        let headerBar = prefsWidget.get_toplevel().get_titlebar();
-        headerBar.custom_title = prefsWidget.switcher;
+        let prefsWindow = prefsWidget.get_toplevel()
+        prefsWindow.get_titlebar().custom_title = prefsWidget.switcher;
+        prefsWindow.connect("destroy", () => {
+            prefsWidget.daemon.discovering = false;
+        });
         return false;
     });
     
