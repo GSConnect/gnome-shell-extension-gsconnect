@@ -379,6 +379,7 @@ var Device = new Lang.Class({
                 path,
                 this._channel._peer_cert.certificate_pem
             );
+            GLib.spawn_command_line_async("chmod 0600 " + path);
         } else {
             GLib.unlink(path);
         }
