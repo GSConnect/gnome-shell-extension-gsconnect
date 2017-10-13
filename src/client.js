@@ -446,7 +446,7 @@ var Device = new Lang.Class({
             this.sftp = new SFTP(this.gObjectPath);
         } else if (this.hasOwnProperty("sftp")) {
             this.sftp.destroy();
-            delete this.share;
+            delete this.sftp;
         }
         
         if (this.plugins.indexOf("share") > -1) {
