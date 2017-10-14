@@ -16,8 +16,9 @@ but is considered generally stable. There is still much work to be done,
 however, it is quite possible to use this as replacement for KDE Connect.
 
 Stable releases are available on the [releases page][releases] and instructions
-for building from Git can be found in the [Wiki](wiki/Installation). Please
-read the [FAQ](wiki/Frequently-Asked-Questions) before opening an issue.
+for building from Git can be found in the [Wiki](../../wiki/Installation).
+Please read the [FAQ](../../wiki/Frequently-Asked-Questions) before opening an
+issue.
 
     
 ## Credits and Acknowledgements
