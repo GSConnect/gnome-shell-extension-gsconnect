@@ -75,7 +75,6 @@ var METADATA = {
  *    requestAnswer {boolean} - This is an answer to a "request"
  *    request {boolean} - If true, we're being asked to send a list of notifs
  *
- * FIXME: weird hang, only happens at daemon startup
  * TODO: play sounds when requested
  *       download/upload icons
  *       requestAnswer usage?
