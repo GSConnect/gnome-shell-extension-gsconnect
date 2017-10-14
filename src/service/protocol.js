@@ -48,7 +48,7 @@ var Packet = new Lang.Class({
     _init: function (data=false) {
         this.parent();
         
-        this.id = Date.now();
+        this.id = 0;
         this.type = "";
         this.body = {};
         
@@ -96,10 +96,11 @@ var Packet = new Lang.Class({
         }
     },
     
+    // TODO: better merging than this
     fromPacket: function (packet) {
         if (this._check(packet)) {
             Object.assign(this, {
-                id: Date.now(),
+                id: 0,
                 type: packet.type,
                 body: JSON.parse(JSON.stringify(packet.body))
             });
