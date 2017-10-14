@@ -77,7 +77,7 @@ var MessageDirection = {
  *      http://leaverou.github.io/contrast-ratio/
  */
 var MessageStyle = new Gtk.CssProvider();
-//MessageStyle.load_from_resource("/style/sms.css");
+// TODO: MessageStyle.load_from_resource("/style/sms.css");
 MessageStyle.load_from_data(
     ".message-bubble { border-radius: 1em; } " +
     
