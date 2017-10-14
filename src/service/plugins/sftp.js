@@ -44,7 +44,6 @@ var METADATA = {
  * TODO: mountWait() and timeout
  *       umount vs fusermount vs -autounmount switch
  *       stderr checking
- *       plugin not being marked as unregistered in client.js
  */
 var Plugin = new Lang.Class({
     Name: "GSConnectSFTPPlugin",
