@@ -5,21 +5,19 @@
 This extension is a [KDE Connect][kde-connect] protocol implementation written
 in (almost) pure [GJS][gjs] that integrates with Gnome Shell and Nautilus.
 
-In order to communicate with an Android device, you must first install the KDE
-Connect Android app, either from the [Google Play Store][google-play] or
-[F-Droid][f-droid].
+To connect an Android device, you must first install the KDE Connect Android
+app, either from the [Google Play Store][google-play] or [F-Droid][f-droid].
 
 
 ### Installation
 
-The extension is currently in a **beta** stage of development. There are a few
-*known* non-critical bugs, features are still subject to drastic change and
-there are no translations and sparse instructions. In particular, the extension
-is known to clash with running instances of KDE Connect and possibly MConnect.
+This extension has not yet been reviewed on the official extensions website,
+but is considered generally stable. There is still much work to be done,
+however, it is quite possible to use this as replacement for KDE Connect.
 
-Pre-releases can be downloaded from the [releases page][releases].
-
-**You have been warned**
+Stable releases are available on the [releases page][releases] and instructions
+for building from Git can be found in the [Wiki](wiki/Installation). Please
+read the [FAQ](wiki/Frequently-Asked-Questions) before opening an issue.
 
     
 ## Credits and Acknowledgements
