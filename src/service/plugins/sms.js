@@ -442,6 +442,8 @@ var ConversationList = new Lang.Class({
         this.parent({ visible: true, halign: Gtk.Align.FILL });
     },
     
+    // TODO: this should probably be broken off into a separate class
+    //       use alternating colors for different contacts
     logMessage: function (sender, message, direction) {
         let nrows = this.get_children().length;
         let row;
@@ -505,11 +507,11 @@ var ConversationList = new Lang.Class({
         if (direction === MessageDirection.IN) {
             messageBubble.halign = Gtk.Align.END;
             row.messageLayout.margin_left = 32;
-            style.add_class("message-bubble-green");
+            style.add_class("message-bubble-orange");
         } else if (direction === MessageDirection.OUT) {
             messageBubble.halign = Gtk.Align.START;
             row.messageLayout.margin_right = 32;
-            style.add_class("message-bubble-yellow");
+            style.add_class("message-bubble-grey");
         }
     }
 });
@@ -649,8 +651,7 @@ var ConversationWindow = new Lang.Class({
     },
     
     _logOutgoing: function (message) {
-        let name = _("You");
-        this.conversationView.logMessage(name, message, MessageDirection.OUT);
+        this.conversationView.logMessage(_("You"), message, MessageDirection.OUT);
     },
     
     // TODO: maybe this should just be done in telephony.js
