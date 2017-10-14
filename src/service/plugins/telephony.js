@@ -196,13 +196,12 @@ var Plugin = new Lang.Class({
             );
         } else if (this.settings.notify_sms) {
             let notif = new Gio.Notification();
-            // TRANSLATORS: Incoming Call
             notif.set_title(sender);
             notif.set_body(packet.body.messageBody);
             notif.set_icon(new Gio.ThemedIcon({ name: "sms-symbolic" }));
             
             notif.add_button(
-                // TRANSLATORS: Silence an incoming call
+                // TRANSLATORS: Reply to an received SMS message
                 _("Reply"),
                 "app.replySms(('" +
                 this._dbus.get_object_path() +
