@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-10-13 21:24-0700\n"
+"POT-Creation-Date: 2017-10-14 01:03-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -312,7 +312,7 @@ msgid "Enabled"
 msgstr ""
 
 #: src/service/plugins/notifications.js:342
-#: src/service/plugins/runcommand.js:158
+#: src/service/plugins/runcommand.js:162
 msgid "Remove"
 msgstr ""
 
@@ -339,25 +339,25 @@ msgstr ""
 msgid "Execute local commands remotely"
 msgstr ""
 
-#: src/service/plugins/runcommand.js:98
+#: src/service/plugins/runcommand.js:102
 msgid "Commands"
 msgstr ""
 
-#: src/service/plugins/runcommand.js:120
+#: src/service/plugins/runcommand.js:124
 msgid "Name"
 msgstr ""
 
 #. TRANSLATORS: A command to be executed remotely
-#: src/service/plugins/runcommand.js:132
+#: src/service/plugins/runcommand.js:136
 msgid "Command"
 msgstr ""
 
-#: src/service/plugins/runcommand.js:162
+#: src/service/plugins/runcommand.js:166
 msgid "Add"
 msgstr ""
 
 #. TRANSLATORS: A placeholder for a new command name
-#: src/service/plugins/runcommand.js:174
+#: src/service/plugins/runcommand.js:178
 msgid "[New command]"
 msgstr ""
 
