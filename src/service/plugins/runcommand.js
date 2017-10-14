@@ -59,8 +59,12 @@ var Plugin = new Lang.Class({
             this.sendCommandList();
         } else if (packet.body.hasOwnProperty("key")) {
             if (this.settings.commands.hasOwnProperty(packet.body.key)) {
-                GLib.spawn_command_line_async(
-                    "/bin/sh -c " + this.settings.commands[packet.body.key].command
+                GLib.spawn_async(
+                    null, // working_dir
+                    ["/bin/sh", "-c", this.settings.commands[packet.body.key].command],
+                    null, // envp
+                    GLib.SpawnFlags.DEFAULT, // flags
+                    null // GLib.SpawnChildSetupFunc
                 );
             }
         }
