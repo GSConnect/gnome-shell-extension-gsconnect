@@ -336,10 +336,10 @@ var DeviceMenu = new Lang.Class({
     _browseAction: function (button) {
         Common.debug("extension.DeviceMenu._browseAction()");
         
-        if (button.checked) {
-            button.add_style_pseudo_class("active");
+        if (this.browseButton.checked) {
+            this.browseButton.add_style_pseudo_class("active");
         } else {
-            button.remove_style_pseudo_class("active");
+            this.browseButton.remove_style_pseudo_class("active");
             this.browseBar.actor.visible = false;
             return;
         }
