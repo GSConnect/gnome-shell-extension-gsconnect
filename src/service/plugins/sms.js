@@ -69,6 +69,29 @@ var MessageDirection = {
     IN: 1
 };
 
+
+/**
+ * Message Bubble Colours
+ * See: https://developer.gnome.org/hig/stable/icons-and-artwork.html
+ *      http://tango.freedesktop.org/Tango_Icon_Theme_Guidelines#Color_Palette
+ *      http://leaverou.github.io/contrast-ratio/
+ */
+var MessageStyle = new Gtk.CssProvider();
+//MessageStyle.load_from_resource("/style/sms.css");
+MessageStyle.load_from_data(
+    ".message-bubble { border-radius: 1em; } " +
+    
+    ".message-bubble-red { color: #ffffff; background-color: #cc0000; }" +
+    ".message-bubble-orange { color: #000000; background-color: #f57900; }" +
+    ".message-bubble-yellow { color: #000000; background-color: #edd440; }" +
+    ".message-bubble-green { color: #ffffff; background-color: #4e9a06; }" +
+    ".message-bubble-blue { color: #ffffff; background-color: #204a87; }" +
+    ".message-bubble-purple { color: #ffffff; background-color: #5c3566; }" +
+    ".message-bubble-brown { color: #ffffff; background-color: #8f5902; }" +
+    ".message-bubble-grey { color: #000000; background-color: #d3d7cf; }"
+);
+        
+        
 /** A Gtk.EntryCompletion subclass for Google Contacts */
 var ContactCompletion = new Lang.Class({
     Name: "GSConnectContactCompletion",
@@ -407,55 +430,64 @@ var ContactEntry = new Lang.Class({
     }
 });
 
+
 /**
- * A Gtk.ListBoxRow for SMS conversation messages
+ * Conversation List
  */
-var ConversationMessage = new Lang.Class({
-    Name: "GSConnectConversationMessage",
-    Extends: Gtk.ListBoxRow,
+var ConversationList = new Lang.Class({
+    Name: "GSConnectConversationList",
+    Extends: Gtk.ListBox,
     
-    _init: function (contact, message, direction) {
-        this.parent({
-            activatable: false,
-            selectable: false,
-            hexpand: true,
-            halign: Gtk.Align.FILL,
-            visible: true
-        });
+    _init: function () {
+        this.parent({ visible: true, halign: Gtk.Align.FILL });
+    },
+    
+    logMessage: function (sender, message, direction) {
+        let nrows = this.get_children().length;
+        let row;
         
-        // Message Layout
-        messageLayout = new Gtk.Box({
-            visible: true,
-            can_focus: false,
-            margin_top: 6,
-            margin_right: 6,
-            margin_left: 6,
-            orientation: Gtk.Orientation.VERTICAL
-        });
-        this.add(messageLayout);
+        if (nrows) {
+            let prevRow = this.get_row_at_index(nrows - 1);
+            
+            if (prevRow.messageSender.label === "<b>" + sender + "</b>") {
+                row = prevRow;
+            }
+        }
         
-        let messageSender = new Gtk.Label({
-            label: "<b>" + contact + "</b>",
-            use_markup: true,
-            margin_bottom: 6,
-            margin_right: 6,
-            margin_left: 6,
-            visible: true,
-            xalign: direction
-        });
-        messageLayout.add(messageSender);
+        if (!row) {
+            row = new Gtk.ListBoxRow({
+                activatable: false,
+                selectable: false,
+                hexpand: true,
+                halign: Gtk.Align.FILL,
+                visible: true,
+                margin: 6
+            });
+            this.add(row);
+            
+            row.messageLayout = new Gtk.Box({
+                visible: true,
+                can_focus: false,
+                orientation: Gtk.Orientation.VERTICAL,
+                spacing: 3
+            });
+            row.add(row.messageLayout);
+            
+            row.messageSender = new Gtk.Label({
+                label: "<b>" + sender + "</b>",
+                use_markup: true,
+                margin_bottom: 6,
+                visible: true,
+                xalign: direction
+            });
+            row.messageLayout.add(row.messageSender);
+        }
         
-        // FIXME FIXME needs major love
-        let messageBubble = new Gtk.Box({
-            visible: true
-        });
-        let provider = new Gtk.CssProvider();
-        //provider.load_from_resource("/style/sms.css");
-        provider.load_from_data(".message-bubble { border-radius: 1em; } .incoming-message { color: #FFFFFF; background-color: #2196F3; } .outgoing-message { color: #FFFFFF; background-color: #4CAF50; }");
+        let messageBubble = new Gtk.Box({ visible: true });
         let style = messageBubble.get_style_context();
-        style.add_provider(provider, 0);
+        style.add_provider(MessageStyle, 0);
         style.add_class("message-bubble");
-        messageLayout.add(messageBubble);
+        row.messageLayout.add(messageBubble);
         
         let messageContent = new Gtk.Label({
             label: message,
@@ -472,12 +504,12 @@ var ConversationMessage = new Lang.Class({
         
         if (direction === MessageDirection.IN) {
             messageBubble.halign = Gtk.Align.END;
-            messageLayout.margin_left = 32;
-            style.add_class("incoming-message");
+            row.messageLayout.margin_left = 32;
+            style.add_class("message-bubble-green");
         } else if (direction === MessageDirection.OUT) {
             messageBubble.halign = Gtk.Align.START;
-            messageLayout.margin_right = 32;
-            style.add_class("outgoing-message");
+            row.messageLayout.margin_right = 32;
+            style.add_class("message-bubble-yellow");
         }
     }
 });
@@ -549,10 +581,7 @@ var ConversationWindow = new Lang.Class({
         let conversationFrame = new Gtk.Frame();
         scrolledWindow.add(conversationFrame);
         
-        this.conversationView = new Gtk.ListBox({
-            visible: true,
-            halign: Gtk.Align.FILL
-        });
+        this.conversationView = new ConversationList();
         
         this.device.bind_property(
             "connected",
@@ -605,6 +634,8 @@ var ConversationWindow = new Lang.Class({
             }
         });
         
+        // FIXME: probably should connect to notify::plugins as well
+        
         // Connect to notifications
         this.plugin.connect("sms", Lang.bind(this, this._catch_message));
         
@@ -614,13 +645,12 @@ var ConversationWindow = new Lang.Class({
     },
     
     _logIncoming: function (name, message) {
-        let row = new ConversationMessage(name, message, 1);
-        this.conversationView.add(row);
+        this.conversationView.logMessage(name, message, MessageDirection.IN);
     },
     
     _logOutgoing: function (message) {
-        let row = new ConversationMessage(_("You"), message, 0);
-        this.conversationView.add(row);
+        let name = _("You");
+        this.conversationView.logMessage(name, message, MessageDirection.OUT);
     },
     
     // TODO: maybe this should just be done in telephony.js
