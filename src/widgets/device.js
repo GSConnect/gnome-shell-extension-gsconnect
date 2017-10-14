@@ -251,6 +251,7 @@ var Stack = new Lang.Class({
         this.sidebar.add(separatorRow);
         
         // Default Page
+        // TODO: this could be much better
         let page = new PreferencesWidget.Page();
         page.box.margin_left = 36;
         page.box.margin_right = 36;
