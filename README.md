@@ -49,7 +49,7 @@ Bugzilla.
 The screenshot of the extension features the [Vimix Dark Laptop][vimix] Gtk &
 Gnome Shell theme with the [Numix Circle][numix] icon theme.
 
-[screenshot]: https://raw.githubusercontent.com/andyholmes/gnome-shell-extension-mconnect/master/extra/screenshot.png
+[screenshot]: https://raw.githubusercontent.com/andyholmes/gnome-shell-extension-gsconnect/master/extra/screenshot.png
 [kde-connect]: https://community.kde.org/KDEConnect
 [gjs]: https://wiki.gnome.org/Projects/Gjs
 [google-play]: https://play.google.com/store/apps/details?id=org.kde.kdeconnect_tp
