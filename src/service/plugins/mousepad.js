@@ -8,6 +8,7 @@ const _ = Gettext.gettext;
 const Atspi = imports.gi.Atspi;
 const Gdk = imports.gi.Gdk;
 const Gio = imports.gi.Gio;
+const GLib = imports.gi.GLib;
 
 // Local Imports
 function getPath() {
@@ -43,6 +44,12 @@ var Plugin = new Lang.Class({
     
     _init: function (device) {
         this.parent(device, "mousepad");
+        
+        if (GLib.getenv("XDG_SESSION_TYPE") === "wayland") {
+            this.device.config.plugins.mousepad.enabled = false;
+            Common.writeDeviceConfiguration(this.device.id, this.device.config);
+            throw Error("Mousepad: Can't run under Wayland");
+        }
         
         if (Atspi.init() > 0) {
             this.destroy();
