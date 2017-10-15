@@ -57,7 +57,6 @@ var Plugin = new Lang.Class({
         } else {
             this._seat = this._display.get_default_seat();
             this._pointer = this._seat.get_pointer();
-            //this._keyboard = this._seat.get_keyboard();
         }
     },
     
@@ -98,8 +97,6 @@ var Plugin = new Lang.Class({
             let [screen, x, y] = this._pointer.get_position();
             Atspi.generate_mouse_event(x, y, event);
             if (double) { Atspi.generate_mouse_event(x, y, event); }
-            // TODO: it *may* be possible to simulate clicks in plain Gdk
-            //this._keyboard.set_key(0, Gdk.KEY_POINTER_Button1, 0);
         } catch (e) {
             log("Mousepad: Error simulating mouse click: " + e);
         }
@@ -110,9 +107,6 @@ var Plugin = new Lang.Class({
         
         try {
             Atspi.generate_mouse_event(dx, dy, "rel");
-            // TODO: it *is* possible to move the pointer in plain Gdk
-            //let [screen, x, y] = this._pointer.get_position();
-            //this._pointer.warp(screen, x + dx, y + dy);
         } catch (e) {
             log("Mousepad: Error simulating mouse movement: " + e);
         }
@@ -132,7 +126,6 @@ var Plugin = new Lang.Class({
         }
     },
     
-    // TODO: test
     pressSpecialKey: function (key) {
         Common.debug("Mousepad: pressSpecialKey(" + key + ")");
         
