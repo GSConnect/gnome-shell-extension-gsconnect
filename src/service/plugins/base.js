@@ -74,8 +74,10 @@ var SettingsDialog = new Lang.Class({
     Extends: Gtk.Dialog,
     
     _init: function (devicePage, pluginName, window) {
+        let metadata = imports.service.plugins[pluginName].METADATA;
+        
         this.parent({
-            title: METADATA.summary,
+            title: metadata.summary,
             use_header_bar: true,
             transient_for: window,
             default_height: 320,
@@ -83,8 +85,8 @@ var SettingsDialog = new Lang.Class({
         });
         
         let headerBar = this.get_header_bar();
-        headerBar.title = METADATA.summary;
-        headerBar.subtitle = METADATA.description;
+        headerBar.title = metadata.summary;
+        headerBar.subtitle = metadata.description;
         headerBar.show_close_button = false;
         
         this.add_button(_("Apply"), Gtk.ResponseType.APPLY);
