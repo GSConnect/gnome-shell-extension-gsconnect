@@ -138,7 +138,7 @@ var Plugin = new Lang.Class({
         
         try {
             if (!KeyMap.has(key) || key === 0) {
-                throw Error("Unknown/invalid key");
+                log("Mousepad: Unknown/invalid key");
             }
             
             Atspi.generate_keyboard_event(
