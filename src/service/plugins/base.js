@@ -92,7 +92,7 @@ var SettingsDialog = new Lang.Class({
         
         this._page = devicePage;
         this._name = pluginName;
-        this._settings = this._page.config.plugins[this._name].settings;
+        this.settings = this._page.config.plugins[this._name].settings;
         
         this.content = new PreferencesWidget.Page({
             height_request: -1,

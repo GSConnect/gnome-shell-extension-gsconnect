@@ -300,10 +300,10 @@ var SettingsDialog = new Lang.Class({
             can_focus: true,
             halign: Gtk.Align.END,
             valign: Gtk.Align.CENTER,
-            active: this._settings.automount
+            active: this.settings.automount
         });
         automountSwitch.connect("notify::active", (widget) => {
-            this._settings.automount = automountSwitch.automount;
+            this.settings.automount = automountSwitch.automount;
         });
         this.content.addItem(
             generalSection,

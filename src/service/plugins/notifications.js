@@ -249,10 +249,10 @@ var SettingsDialog = new Lang.Class({
             can_focus: true,
             halign: Gtk.Align.END,
             valign: Gtk.Align.CENTER,
-            active: this._settings.receive.enabled
+            active: this.settings.receive.enabled
         });
         receiveSwitch.connect("notify::active", (widget) => {
-            this._settings.receive.enabled = receiveSwitch.active;
+            this.settings.receive.enabled = receiveSwitch.active;
         });
         this.content.addItem(
             receivingSection,
@@ -270,10 +270,10 @@ var SettingsDialog = new Lang.Class({
             can_focus: true,
             halign: Gtk.Align.END,
             valign: Gtk.Align.CENTER,
-            active: this._settings.send.enabled
+            active: this.settings.send.enabled
         });
         sendSwitch.connect("notify::active", (widget) => {
-            this._settings.send.enabled = sendSwitch.active;
+            this.settings.send.enabled = sendSwitch.active;
         });
         this.content.addItem(
             sendingSection,
@@ -354,7 +354,7 @@ var SettingsDialog = new Lang.Class({
         
         if (has) {
             let name = this.treeview.model.get_value(iter, 1);
-            delete this._settings.send.applications[name];
+            delete this.settings.send.applications[name];
             this.treeview.model.remove(iter);
         }
     },
@@ -362,12 +362,12 @@ var SettingsDialog = new Lang.Class({
     _populate: function () {
         let theme = Gtk.IconTheme.get_default()
         
-        for (let name in this._settings.send.applications) {
+        for (let name in this.settings.send.applications) {
             let pixbuf;
             
             try {
                 pixbuf = theme.load_icon(
-                    this._settings.send.applications[name].iconName, 0, 0
+                    this.settings.send.applications[name].iconName, 0, 0
                 );
             } catch (e) {
                 pixbuf = theme.load_icon("application-x-executable", 0, 0);
@@ -378,7 +378,7 @@ var SettingsDialog = new Lang.Class({
                 [0, 1, 2], 
                 [pixbuf,
                 name,
-                this._settings.send.applications[name].enabled]
+                this.settings.send.applications[name].enabled]
             );
         }
     },
@@ -391,7 +391,7 @@ var SettingsDialog = new Lang.Class({
             let enabled = this.treeview.model.get_value(iter, 2);
             this.treeview.model.set_value(iter, 2, !enabled);
             let name = this.treeview.model.get_value(iter, 1);
-            this._settings.send.applications[name].enabled = !enabled;
+            this.settings.send.applications[name].enabled = !enabled;
         }
     }
 });

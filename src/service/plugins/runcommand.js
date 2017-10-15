@@ -177,7 +177,7 @@ var SettingsDialog = new Lang.Class({
             // TRANSLATORS: A placeholder for a new command name
             let commandName = _("[New command]")
             row = ["{" + GLib.uuid_string_random() + "}", commandName, ""];
-            this._settings.commands[row[0]] = { name: row[1], command: row[2]};
+            this.settings.commands[row[0]] = { name: row[1], command: row[2]};
         }
         
         this.treeview.model.set(this.treeview.model.append(), [0, 1, 2], row);
@@ -189,7 +189,7 @@ var SettingsDialog = new Lang.Class({
         
         if (has) {
             let uuid = this.treeview.model.get_value(iter, 0);
-            delete this._settings.commands[uuid];
+            delete this.settings.commands[uuid];
             this.treeview.model.remove(iter);
         }
     },
@@ -201,7 +201,7 @@ var SettingsDialog = new Lang.Class({
         if (success) {
             this.treeview.model.set_value(iter, 1, new_text);
             let uuid = this.treeview.model.get_value(iter, 0);
-            this._settings.commands[uuid].name = new_text;
+            this.settings.commands[uuid].name = new_text;
         }
     },
     
@@ -212,16 +212,16 @@ var SettingsDialog = new Lang.Class({
         if (success) {
             this.treeview.model.set_value(iter, 2, new_text);
             let uuid = this.treeview.model.get_value(iter, 0);
-            this._settings.commands[uuid].command = new_text;
+            this.settings.commands[uuid].command = new_text;
         }
     },
     
     _populate: function () {
-        for (let uuid in this._settings.commands) {
+        for (let uuid in this.settings.commands) {
             this._add(null, [
                 uuid,
-                this._settings.commands[uuid].name,
-                this._settings.commands[uuid].command
+                this.settings.commands[uuid].name,
+                this.settings.commands[uuid].command
             ]);
         }
     }

@@ -556,9 +556,9 @@ var SettingsDialog = new Lang.Class({
             halign: Gtk.Align.END,
             valign: Gtk.Align.CENTER
         });
-        fbutton.set_current_folder(this._settings.download_directory);
+        fbutton.set_current_folder(this.settings.download_directory);
         fbutton.connect("current-folder-changed", (button) => {
-            this._settings.download_directory = fbutton.get_current_folder();
+            this.settings.download_directory = fbutton.get_current_folder();
         });
         this.content.addItem(
             receivingSection,
@@ -572,10 +572,10 @@ var SettingsDialog = new Lang.Class({
             can_focus: true,
             halign: Gtk.Align.END,
             valign: Gtk.Align.CENTER,
-            active: this._settings.download_subdirs
+            active: this.settings.download_subdirs
         });
         subdirsSwitch.connect("notify::active", (widget) => {
-            this._settings.download_subdirs = subdirsSwitch.active;
+            this.settings.download_subdirs = subdirsSwitch.active;
         });
         this.content.addItem(
             receivingSection,

@@ -443,10 +443,10 @@ var SettingsDialog = new Lang.Class({
             can_focus: true,
             halign: Gtk.Align.END,
             valign: Gtk.Align.CENTER,
-            active: this._settings.notify_missedCall
+            active: this.settings.notify_missedCall
         });
         notifyMissedCallSwitch.connect("notify::active", (widget) => {
-            this._settings.notify_missedCall = notifyMissedCallSwitch.active;
+            this.settings.notify_missedCall = notifyMissedCallSwitch.active;
         });
         this.content.addItem(
             callsSection,
@@ -460,10 +460,10 @@ var SettingsDialog = new Lang.Class({
             can_focus: true,
             halign: Gtk.Align.END,
             valign: Gtk.Align.CENTER,
-            active: this._settings.notify_ringing
+            active: this.settings.notify_ringing
         });
         notifyRingingSwitch.connect("notify::active", (widget) => {
-            this._settings.notify_ringing = notifyRingingSwitch.active;
+            this.settings.notify_ringing = notifyRingingSwitch.active;
         });
         this.content.addItem(
             callsSection,
@@ -477,10 +477,10 @@ var SettingsDialog = new Lang.Class({
             can_focus: true,
             halign: Gtk.Align.END,
             valign: Gtk.Align.CENTER,
-            active: this._settings.notify_talking
+            active: this.settings.notify_talking
         });
         notifyTalkingSwitch.connect("notify::active", (widget) => {
-            this._settings.notify_talking = notifyTalkingSwitch.active;
+            this.settings.notify_talking = notifyTalkingSwitch.active;
         });
         this.content.addItem(
             callsSection,
@@ -498,9 +498,9 @@ var SettingsDialog = new Lang.Class({
         pauseMusicComboBox.append("never", _("Never"));
         pauseMusicComboBox.append("ringing", _("Incoming"));
         pauseMusicComboBox.append("talking", _("In Progress"));
-        pauseMusicComboBox.active_id = this._settings.pause_music;
+        pauseMusicComboBox.active_id = this.settings.pause_music;
         pauseMusicComboBox.connect("changed", (widget) => {
-            this._settings.pause_music = pauseMusicComboBox.active_id;
+            this.settings.pause_music = pauseMusicComboBox.active_id;
         });
         this.content.addItem(
             callsSection,
@@ -523,10 +523,10 @@ var SettingsDialog = new Lang.Class({
             can_focus: true,
             halign: Gtk.Align.END,
             valign: Gtk.Align.CENTER,
-            active: this._settings.notify_sms
+            active: this.settings.notify_sms
         });
         notifySMSSwitch.connect("notify::active", (widget) => {
-            this._settings.notify_sms = notifySMSSwitch.active;
+            this.settings.notify_sms = notifySMSSwitch.active;
         });
         this.content.addItem(
             smsSection,
@@ -540,10 +540,10 @@ var SettingsDialog = new Lang.Class({
             can_focus: true,
             halign: Gtk.Align.END,
             valign: Gtk.Align.CENTER,
-            active: this._settings.autoreply_sms
+            active: this.settings.autoreply_sms
         });
         autoreplySMSSwitch.connect("notify::active", (widget) => {
-            this._settings.autoreply_sms = autoreplySMSSwitch.active;
+            this.settings.autoreply_sms = autoreplySMSSwitch.active;
         });
         this.content.addItem(
             smsSection,
