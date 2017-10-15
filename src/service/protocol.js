@@ -142,7 +142,7 @@ var TcpListener = new Lang.Class({
                 } else {
                     this.stop();
                     this.close();
-                    throw Error("TcpListener: Unable to open port");
+                    throw Error("TcpListener: Unable to find open port");
                 }
             }
             
@@ -150,6 +150,8 @@ var TcpListener = new Lang.Class({
                 break;
             }
         }
+        
+        log("TcpListener: using port " + port);
     },
     
     destroy: function () {
@@ -196,7 +198,7 @@ var UdpListener = new Lang.Class({
                     continue;
                 } else {
                     this.socket.close();
-                    throw Error("UdpListener: Unable to bind socket");
+                    throw Error("UdpListener: Unable to find open port");
                 }
             }
             
@@ -218,7 +220,7 @@ var UdpListener = new Lang.Class({
         source.set_callback(Lang.bind(this, this.receive));
         source.attach(null);
         
-        log("listening for new devices on 0.0.0.0:" + port);
+        log("UdpListener: using port " + port);
     },
     
     send: function (packet) {
