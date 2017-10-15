@@ -73,18 +73,18 @@ var SettingsDialog = new Lang.Class({
     Name: "GSConnectPluginSettingsDialog",
     Extends: Gtk.Dialog,
     
-    _init: function (devicePage, pluginName, pluginInfo, parentWindow) {
+    _init: function (devicePage, pluginName, window) {
         this.parent({
-            title: pluginInfo.summary,
+            title: METADATA.summary,
             use_header_bar: true,
-            transient_for: parentWindow,
+            transient_for: window,
             default_height: 320,
             default_width: 480
         });
         
         let headerBar = this.get_header_bar();
-        headerBar.title = pluginInfo.summary;
-        headerBar.subtitle = pluginInfo.description;
+        headerBar.title = METADATA.summary;
+        headerBar.subtitle = METADATA.description;
         headerBar.show_close_button = false;
         
         this.add_button(_("Apply"), Gtk.ResponseType.APPLY);
@@ -92,7 +92,6 @@ var SettingsDialog = new Lang.Class({
         
         this._page = devicePage;
         this._name = pluginName;
-        this._info = pluginInfo;
         this._settings = this._page.config.plugins[this._name].settings;
         
         this.content = new PreferencesWidget.Page({
@@ -102,8 +101,8 @@ var SettingsDialog = new Lang.Class({
             can_focus: true,
             hscrollbar_policy: Gtk.PolicyType.NEVER
         });
-        this.content.box.margin_left = 40;
-        this.content.box.margin_right = 40;
+        this.content.box.margin_left = 36;
+        this.content.box.margin_right = 36;
         this.get_content_area().add(this.content);
     }
 });

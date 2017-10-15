@@ -290,8 +290,8 @@ var SettingsDialog = new Lang.Class({
     Name: "GSConnectSFTPSettingsDialog",
     Extends: PluginsBase.SettingsDialog,
     
-    _init: function (devicePage, pluginName, pluginInfo, win) {
-        this.parent(devicePage, pluginName, pluginInfo, win);
+    _init: function (devicePage, pluginName, window) {
+        this.parent(devicePage, pluginName, window);
         
         let generalSection = this.content.addSection(_("General"));
         

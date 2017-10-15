@@ -238,8 +238,8 @@ var SettingsDialog = new Lang.Class({
     Name: "GSConnectNotificationsSettingsDialog",
     Extends: PluginsBase.SettingsDialog,
     
-    _init: function (devicePage, pluginName, pluginInfo, win) {
-        this.parent(devicePage, pluginName, pluginInfo, win);
+    _init: function (devicePage, pluginName, window) {
+        this.parent(devicePage, pluginName, window);
         
         // Receiving
         let receivingSection = this.content.addSection(_("Receiving"));

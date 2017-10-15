@@ -432,8 +432,8 @@ var SettingsDialog = new Lang.Class({
     Name: "GSConnectTelephonySettingsDialog",
     Extends: PluginsBase.SettingsDialog,
     
-    _init: function (devicePage, pluginName, pluginInfo, win) {
-        this.parent(devicePage, pluginName, pluginInfo, win);
+    _init: function (devicePage, pluginName, window) {
+        this.parent(devicePage, pluginName, window);
         
         // Phone Calls
         let callsSection = this.content.addSection(_("Phone Calls"));

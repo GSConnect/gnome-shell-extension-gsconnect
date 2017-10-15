@@ -35,11 +35,11 @@ var PluginControl = new Lang.Class({
         
         this._page = page;
         this._name = name;
-        // FIXME: what was I going to fix, again?
-        this._info = imports.service.plugins[this._name].METADATA;
         this._freeze = false;
+        // FIXME: what was I going to fix, again?
+        let metadata = imports.service.plugins[this._name].METADATA;
         
-        if (this._info.hasOwnProperty("settings")) {
+        if (metadata.hasOwnProperty("settings")) {
             let settingButton = new Gtk.Button({
                 image: Gtk.Image.new_from_icon_name(
                     "emblem-system-symbolic",
@@ -101,7 +101,6 @@ var PluginControl = new Lang.Class({
         let dialog = new imports.service.plugins[this._name].SettingsDialog(
             this._page,
             this._name,
-            this._info,
             this.get_toplevel()
         );
         
