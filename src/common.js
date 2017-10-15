@@ -193,38 +193,6 @@ function generateEncryption (force=false) {
 };
 
 
-/**
- * Extend Gio.TlsCertificate with a SHA1 fingerprint function
- *
- * @return {string} - A SHA1 fingerprint
- */
-Gio.TlsCertificate.prototype.fingerprint = function getFingerprint () {
-    let args = ["openssl", "x509", "-noout", "-fingerprint", "-sha1", "-inform", "pem"];
-    
-    let proc = GLib.spawn_async_with_pipes(
-        null,                                   // working dir
-        args,                                   // argv
-        null,                                   // envp
-        GLib.SpawnFlags.SEARCH_PATH,            // enables PATH
-        null                                    // child_setup (func)
-    );
-    
-    let stdin = new Gio.DataOutputStream({
-        base_stream: new Gio.UnixOutputStream({ fd: proc[2] })
-    });
-    stdin.put_string(this.certificate_pem, null);
-    stdin.close(null);
-    
-    let stdout = new Gio.DataInputStream({
-        base_stream: new Gio.UnixInputStream({ fd: proc[3] })
-    });
-    let fingerprint = stdout.read_line(null)[0].toString().split("=")[1];
-    stdout.close(null);
-    
-    return fingerprint;
-};
-
-
 function getCertificate (id=false) {
     if (id) {
         let path = CONFIG_PATH + "/" + id + "/certificate.pem";
@@ -378,6 +346,75 @@ function writeDeviceConfiguration (deviceId, config) {
     } catch (e) {
         log("Error saving device configuration: " + e);
     }
+};
+
+
+/**
+ * GLib "polyfills" for extra functions
+ */
+
+/**
+ * Extend Gio.TlsCertificate with a function to retreive the Common Name
+ *
+ * @return {string} - The common name of the certificate issuer
+ */
+Gio.TlsCertificate.prototype.get_common_name = function () {
+    let args = ["openssl", "x509", "-noout", "-subject", "-inform", "pem"];
+    
+    let proc = GLib.spawn_async_with_pipes(
+        null,                                   // working dir
+        args,                                   // argv
+        null,                                   // envp
+        GLib.SpawnFlags.SEARCH_PATH,            // enables PATH
+        null                                    // child_setup (func)
+    );
+    
+    let stdin = new Gio.DataOutputStream({
+        base_stream: new Gio.UnixOutputStream({ fd: proc[2] })
+    });
+    stdin.put_string(this.certificate_pem, null);
+    stdin.close(null);
+    
+    let stdout = new Gio.DataInputStream({
+        base_stream: new Gio.UnixInputStream({ fd: proc[3] })
+    });
+    let uuid = stdout.read_line(null)[0].toString().split("/CN=")[1];
+    stdout.close(null);
+    
+    return uuid;
+};
+
+
+/**
+ * Extend Gio.TlsCertificate with a SHA1 fingerprint function
+ * See: https://bugzilla.gnome.org/show_bug.cgi?id=788315
+ *
+ * @return {string} - A SHA1 fingerprint
+ */
+Gio.TlsCertificate.prototype.fingerprint = function () {
+    let args = ["openssl", "x509", "-noout", "-fingerprint", "-sha1", "-inform", "pem"];
+    
+    let proc = GLib.spawn_async_with_pipes(
+        null,                                   // working dir
+        args,                                   // argv
+        null,                                   // envp
+        GLib.SpawnFlags.SEARCH_PATH,            // enables PATH
+        null                                    // child_setup (func)
+    );
+    
+    let stdin = new Gio.DataOutputStream({
+        base_stream: new Gio.UnixOutputStream({ fd: proc[2] })
+    });
+    stdin.put_string(this.certificate_pem, null);
+    stdin.close(null);
+    
+    let stdout = new Gio.DataInputStream({
+        base_stream: new Gio.UnixInputStream({ fd: proc[3] })
+    });
+    let fingerprint = stdout.read_line(null)[0].toString().split("=")[1];
+    stdout.close(null);
+    
+    return fingerprint;
 };
 
 
