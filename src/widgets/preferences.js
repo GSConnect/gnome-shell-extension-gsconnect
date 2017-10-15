@@ -130,19 +130,19 @@ var Page = new Lang.Class({
     addItem: function (section, summary, description, widget) {
         let row = this.addRow(section);
         
-        // Setting Summary
-        let summaryLabel = new Gtk.Label({
+        // Summary Label
+        row.summary = new Gtk.Label({
             visible: true,
             can_focus: false,
             xalign: 0,
             hexpand: true,
             label: summary
         });
-        row.grid.attach(summaryLabel, 0, 0, 1, 1);
+        row.grid.attach(row.summary, 0, 0, 1, 1);
         
-        // Setting Description
-        if (description !== undefined) {
-            let descriptionLabel = new Gtk.Label({
+        // Description Label
+        if (description) {
+            row.description = new Gtk.Label({
                 visible: true,
                 can_focus: false,
                 xalign: 0,
@@ -150,12 +150,13 @@ var Page = new Lang.Class({
                 label: description,
                 wrap: true
             });
-            descriptionLabel.get_style_context().add_class("dim-label");
-            row.grid.attach(descriptionLabel, 0, 1, 1, 1);
+            row.description.get_style_context().add_class("dim-label");
+            row.grid.attach(row.description, 0, 1, 1, 1);
         }
         
         let widgetHeight = (description !== null) ? 2 : 1;
-        row.grid.attach(widget, 1, 0, 1, widgetHeight);
+        row.widget = widget;
+        row.grid.attach(row.widget, 1, 0, 1, widgetHeight);
         
         return row;
     },
