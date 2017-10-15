@@ -140,13 +140,9 @@ var Device = new Lang.Class({
     get connected () { return this._connected; },
     get fingerprint () {
         if (this.connected) {
-            return Common.getFingerprint(
-                this._channel._peer_cert.certificate_pem
-            );
+            return this._channel._peer_cert.fingerprint();
         } else if (this.paired) {
-            return Common.getFingerprint(
-                Common.getCertificate(this.id).certificate_pem
-            );
+            return Common.getCertificate(this.id).fingerprint();
         }
         
         return "";

@@ -106,7 +106,7 @@ var Daemon = new Lang.Class({
     },
     
     get fingerprint () {
-        return Common.getFingerprint(Common.getCertificate().certificate_pem);
+        return Common.getCertificate().fingerprint()
     },
     
     get name() {

@@ -194,12 +194,11 @@ function generateEncryption (force=false) {
 
 
 /**
- * Get a SHA1 fingerprint for a TLS Certificate
+ * Extend Gio.TlsCertificate with a SHA1 fingerprint function
  *
- * @param {string} pem - A TLS Certificate in PEM format
  * @return {string} - A SHA1 fingerprint
  */
-function getFingerprint (pem) {
+Gio.TlsCertificate.prototype.fingerprint = function getFingerprint () {
     let args = ["openssl", "x509", "-noout", "-fingerprint", "-sha1", "-inform", "pem"];
     
     let proc = GLib.spawn_async_with_pipes(
@@ -213,7 +212,7 @@ function getFingerprint (pem) {
     let stdin = new Gio.DataOutputStream({
         base_stream: new Gio.UnixOutputStream({ fd: proc[2] })
     });
-    stdin.put_string(pem, null);
+    stdin.put_string(this.certificate_pem, null);
     stdin.close(null);
     
     let stdout = new Gio.DataInputStream({
