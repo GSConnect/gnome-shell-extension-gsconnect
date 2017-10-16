@@ -232,7 +232,7 @@ var Plugin = new Lang.Class({
         Common.debug("SFTP: unmount()");
     
         try {
-            if (this._proc !== null) {
+            if (this._proc) {
                GLib.spawn_command_line_async("kill -9 " + this._proc[1]);
             }
         } catch (e) {
@@ -243,7 +243,7 @@ var Plugin = new Lang.Class({
         GLib.spawn_command_line_async("fusermount -uz " + this._path);
         
         try {
-            if (this._stdin !== null) {
+            if (this._stdin) {
                 this._stdin.close(null);
             }
         } catch (e) {
@@ -252,7 +252,7 @@ var Plugin = new Lang.Class({
         
         // TODO: Gio.IOErrorEnum: Stream has outstanding operation
         try {
-            if (this._stderr !== null) {
+            if (this._stderr) {
                 this._stderr.close(null);
             }
         } catch (e) {
