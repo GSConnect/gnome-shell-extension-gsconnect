@@ -178,7 +178,7 @@ function generateEncryption (force=false) {
             "/CN=" + GLib.uuid_string_random()
         ];
         
-        let [res, stdout, stderr, exit_status] = GLib.spawn_sync(
+        let proc = GLib.spawn_sync(
             CONFIG_PATH,
             cmd,
             null,
@@ -359,14 +359,12 @@ function writeDeviceConfiguration (deviceId, config) {
  * @return {string} - The common name of the certificate issuer
  */
 Gio.TlsCertificate.prototype.get_common_name = function () {
-    let args = ["openssl", "x509", "-noout", "-subject", "-inform", "pem"];
-    
     let proc = GLib.spawn_async_with_pipes(
-        null,                                   // working dir
-        args,                                   // argv
-        null,                                   // envp
-        GLib.SpawnFlags.SEARCH_PATH,            // enables PATH
-        null                                    // child_setup (func)
+        null,
+        ["openssl", "x509", "-noout", "-subject", "-inform", "pem"],
+        null,
+        GLib.SpawnFlags.SEARCH_PATH,
+        null
     );
     
     let stdin = new Gio.DataOutputStream({
@@ -392,14 +390,12 @@ Gio.TlsCertificate.prototype.get_common_name = function () {
  * @return {string} - A SHA1 fingerprint
  */
 Gio.TlsCertificate.prototype.fingerprint = function () {
-    let args = ["openssl", "x509", "-noout", "-fingerprint", "-sha1", "-inform", "pem"];
-    
     let proc = GLib.spawn_async_with_pipes(
-        null,                                   // working dir
-        args,                                   // argv
-        null,                                   // envp
-        GLib.SpawnFlags.SEARCH_PATH,            // enables PATH
-        null                                    // child_setup (func)
+        null,
+        ["openssl", "x509", "-noout", "-fingerprint", "-sha1", "-inform", "pem"],
+        null,
+        GLib.SpawnFlags.SEARCH_PATH,
+        null
     );
     
     let stdin = new Gio.DataOutputStream({
