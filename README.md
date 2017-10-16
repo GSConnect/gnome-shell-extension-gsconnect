@@ -72,5 +72,3 @@ Gnome Shell theme with the [Numix Circle][numix] icon theme.
 [numix]: https://numixproject.org/
 [material]: https://material.io/
 
-
-
