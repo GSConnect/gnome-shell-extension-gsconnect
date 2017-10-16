@@ -36,11 +36,10 @@ var PluginControl = new Lang.Class({
         this._page = page;
         this._name = name;
         this._freeze = false;
-        // FIXME: what was I going to fix, again?
         let metadata = imports.service.plugins[this._name].METADATA;
         
         if (metadata.hasOwnProperty("settings")) {
-            let settingButton = new Gtk.Button({
+            this.settingButton = new Gtk.Button({
                 image: Gtk.Image.new_from_icon_name(
                     "emblem-system-symbolic",
                     Gtk.IconSize.BUTTON
@@ -52,10 +51,10 @@ var PluginControl = new Lang.Class({
                 valign: Gtk.Align.CENTER
             });
             
-            settingButton.get_style_context().add_class("circular");
-            settingButton.connect("clicked", Lang.bind(this, this._configure));
+            this.settingButton.get_style_context().add_class("circular");
+            this.settingButton.connect("clicked", Lang.bind(this, this._configure));
             
-            this.add(settingButton);
+            this.add(this.settingButton);
         }
         
         this.pluginSwitch = new Gtk.Switch({
@@ -67,7 +66,12 @@ var PluginControl = new Lang.Class({
         this.pluginSwitch.connect("notify::active", Lang.bind(this, this._toggle));
         this.add(this.pluginSwitch);
         
-        //
+        this.errorImage = Gtk.Image.new_from_icon_name(
+            "dialog-warning",
+            Gtk.IconSize.LARGE_TOOLBAR
+        );
+        this.errorImage.visible = true;
+        
         this._refresh();
     },
     
@@ -81,17 +85,29 @@ var PluginControl = new Lang.Class({
     
     _toggle: function (widget) {
         if (!this._freeze) {
-            let success;
+            let result, success, error;
             
             if (this.pluginSwitch.active) {
-                success = this._page.device.enablePlugin(this._name);
+                result = this._page.device.enablePlugin(this._name);
+                success = result["0"];
+                error = result["1"];
+                
+                if (!success) {
+                    if (this.settingButton) {
+                        this.remove(this.settingButton);
+                    }
+                    this.remove(this.pluginSwitch);
+                    this.add(this.errorImage);
+                    this.errorImage.set_tooltip_markup(
+                        _("Error: %s").format(error)
+                    );
+                    
+                    this._refresh();
+                    return;
+                }
             } else {
-                success = this._page.device.disablePlugin(this._name);
-            }
-            
-            if (!success) {
-                this._refresh();
-                return;
+                // TODO: notify user of failures?
+                this._page.device.disablePlugin(this._name);
             }
             
             this._page._refresh();
