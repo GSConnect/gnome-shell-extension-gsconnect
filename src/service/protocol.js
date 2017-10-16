@@ -23,20 +23,6 @@ const Common = imports.common;
 var TYPE_IDENTITY = "kdeconnect.identity";
 var TYPE_PAIR = "kdeconnect.pair";
 
-// Port Ranges
-var MIN_TCP_PORT = 1716;
-var MAX_TCP_PORT = 1764;
-
-var TcpPort = {
-    MIN: 1716,
-    MAX: 1764
-};
-
-var TransferPort = {
-    MIN: 1739,
-    MAX: 1764
-};
-
 
 /**
  * Packets
@@ -247,17 +233,17 @@ var UdpListener = new Lang.Class({
             );
             [data, size] = this._in.read_line(null);
         } catch (e) {
-            log("Daemon: Error reading data: " + e);
+            log("UdpListener: Error reading data: " + e);
             return;
         }
         
         let packet = new Packet(data.toString());
         
         if (packet.type !== TYPE_IDENTITY) {
-            Common.debug("UDP Listener: Unexpected packet type: " + packet.type);
+            Common.debug("UdpListener: Unexpected packet type: " + packet.type);
             return true;
         } else {
-            Common.debug("UDP Listener received: " + data);
+            Common.debug("UdpListener received: " + data);
         }
         
         packet.body.tcpHost = addr.address.to_string();
@@ -678,6 +664,8 @@ var LanDownloadChannel = new Lang.Class({
     },
     
     request: function (connection) {
+        Common.debug("LanDownloadChannel.request(" + this.identity.body.deviceName + ")");
+        
         this._connection = connection;
         
         try {
@@ -691,7 +679,7 @@ var LanDownloadChannel = new Lang.Class({
     },
     
     opened: function (connection, res) {
-        Common.debug("TransferChannel.opened(" + this.identity.body.deviceName + ")");
+        Common.debug("LanDownloadChannel.opened(" + this.identity.body.deviceName + ")");
         
         try {
             this._in = this._connection.get_input_stream();
@@ -723,6 +711,8 @@ var LanUploadChannel = new Lang.Class({
     },
     
     open: function (port=1739) {
+        Common.debug("LanUploadChannel.open(" + this.identity.body.deviceName + ")");
+        
         this._listener = new Gio.SocketListener();
         
         while (true) {
@@ -740,13 +730,13 @@ var LanUploadChannel = new Lang.Class({
             break;
         }
         
-        this._listener.accept_async(null, Lang.bind(this, this.auth));
+        this._listener.accept_async(null, Lang.bind(this, this.accept));
         
         this.emit("listening", port);
     },
     
-    auth: function (listener, res) {
-        Common.debug("TransferChannel.opened(" + this.identity.body.deviceName + ")");
+    accept: function (listener, res) {
+        Common.debug("LanUploadChannel.accept(" + this.identity.body.deviceName + ")");
         
         try {
             let src;
@@ -761,6 +751,8 @@ var LanUploadChannel = new Lang.Class({
     },
     
     opened: function (connection, res) {
+        Common.debug("LanUploadChannel.opened(" + this.identity.body.deviceName + ")");
+        
         try {
             this._connection.handshake_finish(res);
             this._out = this._connection.get_output_stream();
