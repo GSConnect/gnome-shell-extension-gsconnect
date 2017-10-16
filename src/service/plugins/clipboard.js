@@ -77,7 +77,7 @@ var Plugin = new Lang.Class({
         Common.debug("Clipboard: update()");
         
         let packet = new Protocol.Packet({
-            id: Date.now(),
+            id: 0,
             type: "kdeconnect.clipboard",
             body: { content: text }
         });
