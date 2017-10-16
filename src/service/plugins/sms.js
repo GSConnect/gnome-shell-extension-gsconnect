@@ -636,11 +636,6 @@ var ConversationWindow = new Lang.Class({
             }
         });
         
-        // FIXME: probably should connect to notify::plugins as well
-        
-        // Connect to notifications
-        this.plugin.connect("sms", Lang.bind(this, this._catch_message));
-        
         // Finish initing
         this.show_all();
         this.has_focus = true;
@@ -652,25 +647,6 @@ var ConversationWindow = new Lang.Class({
     
     _logOutgoing: function (message) {
         this.conversationView.logMessage(_("You"), message, MessageDirection.OUT);
-    },
-    
-    // TODO: maybe this should just be done in telephony.js
-    _catch_message: function (plugin, phoneNumber, contactName, messageBody, phoneThumbnail) {
-        Common.debug("SMS phoneNumber: " + phoneNumber);
-        Common.debug("SMS contactName: " + contactName);
-        Common.debug("SMS messageBody: " + messageBody);
-        Common.debug("SMS phoneThumbnail: " + phoneThumbnail);
-        
-        for (let [name, number] of this.getRecipients().entries()) {
-            let local_num = number.replace(/\D/g, "");
-            let remote_num = phoneNumber.replace(/\D/g, "");
-            
-            if (local_num === remote_num) {
-                Common.debug("Matched incoming number");
-                this._logIncoming(name, messageBody);
-                this.urgency_hint = true;
-            }
-        }
     },
     
     /**

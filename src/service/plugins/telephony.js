@@ -185,8 +185,17 @@ var Plugin = new Lang.Class({
             )
         );
         
+        // Log the incoming message if a window is open
+        let window = this._hasWindow(packet.body.phoneNumber);
+        
+        if (window) {
+            // TODO: there could be discontinuity between @sender and the
+            //       contact name in the ConversationWindow
+            window._logIncoming(sender, packet.body.messageBody);
+            window.urgency_hint = true;
+        }
+        
         // FIXME: urgency
-        //        block matching notification somehow?
         //        track notifs, append new messages to unclosed..
         if (this.settings.autoreply_sms) {
             this.replySms(
