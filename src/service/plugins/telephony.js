@@ -211,7 +211,7 @@ var Plugin = new Lang.Class({
             notif.set_icon(new Gio.ThemedIcon({ name: "sms-symbolic" }));
             
             notif.add_button(
-                // TRANSLATORS: Reply to an received SMS message
+                // TRANSLATORS: Reply to a received SMS message
                 _("Reply"),
                 "app.replySms(('" +
                 this._dbus.get_object_path() +
@@ -225,6 +225,11 @@ var Plugin = new Lang.Class({
                 packet.body.phoneThumbnail +
                 "'))"
             );
+            
+            if (this.device._plugins.has("notifications")) {
+                let plugin = this.device._plugins.get("notifications");
+                plugin._ignore.set(sender, packet.body.messageBody);
+            }
             
             this.device.daemon.send_notification(packet.id.toString(), notif);
         }

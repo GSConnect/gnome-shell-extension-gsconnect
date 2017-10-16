@@ -106,6 +106,7 @@ var Plugin = new Lang.Class({
         
         this._freeze = false;
         this._notifications = new Map();
+        this._ignore = new Map();
     },
     
     Notify: function (appName, replacesId, iconName, summary, body, actions, hints, timeout) {
@@ -201,12 +202,33 @@ var Plugin = new Lang.Class({
                 Common.debug("Notifications: this is an answer to a request");
             }
             
-            /** 
-             * Apparently "silent" means don't show the notification...?
-             */
+            // Check for SMS to ignore (we'll still track the notif, though)
+            let ignore;
+            
+            if (packet.body.id.indexOf("sms") > -1) {
+                let sender, messageBody;
+                
+                // KDE Connect Android 1.7+ only
+                if (packet.body.hasOwnProperty("title")) {
+                    sender = packet.body.title;
+                    messageBody = packet.body.text;
+                } else {
+                    [sender, messageBody] = packet.body.ticker.split(": ");
+                }
+                
+                if (this._ignore.has(sender)) {
+                    if (this._ignore.get(sender) === messageBody) {
+                        ignore = true;
+                        this._ignore.delete(sender);
+                    }
+                }
+            }
+            
+            // TODO: Apparently "silent" means don't show the notification...?
             //if (!packet.body.silent) {
+            if (!ignore) {
                 this.device.daemon.send_notification(packet.body.id, notif);
-            //}
+            }
         }
     },
     
