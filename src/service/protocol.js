@@ -85,11 +85,7 @@ var Packet = new Lang.Class({
     // TODO: better merging than this
     fromPacket: function (packet) {
         if (this._check(packet)) {
-            Object.assign(this, {
-                id: 0,
-                type: packet.type,
-                body: JSON.parse(JSON.stringify(packet.body))
-            });
+            Object.assign(this, JSON.parse(JSON.stringify(packet)));
         } else {
             throw Error("Packet.fromPacket(): Malformed packet");
         }
