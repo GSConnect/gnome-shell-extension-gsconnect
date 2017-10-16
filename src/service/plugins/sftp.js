@@ -72,14 +72,6 @@ var Plugin = new Lang.Class({
         this._mounted = false;
         this._directories = {};
         
-        this._path = null;
-        this._uid = null;
-        this._gid = null;
-        
-        this._proc = null;
-        this._stdin = null;
-        this._stderr = null;
-        
         if (this.settings.automount) {
             this.mount();
         }
@@ -178,7 +170,7 @@ var Plugin = new Lang.Class({
         // Send session password
         this._stdin.put_string(packet.body.password + "\n", null);
         
-        // set the directories
+        // Set the directories and notify (client.js needs this before mounted)
         for (let index in packet.body.pathNames) {
             let name = packet.body.pathNames[index];
             let path = packet.body.multiPaths[index].replace(packet.body.path, "");
@@ -187,16 +179,19 @@ var Plugin = new Lang.Class({
             this._directories[name] = this._path + path;
         }
         
+        this.notify("directories");
         this._dbus.emit_property_changed(
             "directories",
             new GLib.Variant("a{ss}", this._directories)
         );
         
+        // Set "mounted" and notify
         this._mounted = true;
         
+        this.notify("mounted");
         this._dbus.emit_property_changed(
             "mounted",
-            new GLib.Variant("b", true)
+            new GLib.Variant("b", this._mounted)
         );
         
         this._read_stderr();
@@ -240,7 +235,12 @@ var Plugin = new Lang.Class({
         }
         
         // See: https://stackoverflow.com/q/24966676/1108697
-        GLib.spawn_command_line_async("fusermount -uz " + this._path);
+        if (this._path) {
+            GLib.spawn_command_line_async("fusermount -uz " + this._path);
+            delete this._path;
+            delete this._uid;
+            delete this._gid;
+        }
         
         try {
             if (this._stdin) {
@@ -259,9 +259,9 @@ var Plugin = new Lang.Class({
             log("SFTP: Error closing stderr: " + e);
         }
         
-        this._proc = null;
-        this._stdin = null;
-        this._stderr = null;
+        delete this._proc;
+        delete this._stdin;
+        delete this._stderr;
         
         this._directories = {};
         
