@@ -59,6 +59,7 @@ var Tooltip = new Lang.Class({
             this.label.clutter_text.text = this.title;
         }
         
+        // FIXME: if tooltip is too big it can overshoot the screen edge
         let [x, y] = this._parent.get_transformed_position();
         y = y + 12;
         x = (x + (this._parent.width/2)) - Math.round(this.bin.width/2);
