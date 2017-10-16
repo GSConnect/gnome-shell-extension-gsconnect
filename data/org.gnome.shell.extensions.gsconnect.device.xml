@@ -18,15 +18,18 @@
     <method name="enablePlugin">
       <arg name="pluginName" type="s" direction="in"/>
       <arg name="success" type="b" direction="out"/>
+      <arg name="error" type="s" direction="out"/>
     </method>
     <method name="disablePlugin">
       <arg name="pluginName" type="s" direction="in"/>
       <arg name="success" type="b" direction="out"/>
+      <arg name="error" type="s" direction="out"/>
     </method>
     <method name="configurePlugin">
       <arg name="pluginName" type="s" direction="in"/>
       <arg name="JSON" type="s" direction="in"/>
       <arg name="success" type="b" direction="out"/>
+      <arg name="error" type="s" direction="out"/>
     </method>
     <method name="reloadPlugins"/>
     

@@ -529,10 +529,12 @@ var Device = new Lang.Class({
                 );
             }
             
-            return true;
+            return [true, ""];
         } catch (e) {
-            log("Error enabling plugin '" + name + "': " + e);
-            return false;
+            this.config.plugins[name].enabled = false;
+            Common.writeDeviceConfiguration(this.id, this.config);
+            log("Error enabling plugin '" + name + "': " + e.message);
+            return [false, e.message];
         }
     },
     
@@ -567,10 +569,10 @@ var Device = new Lang.Class({
                 );
             }
             
-            return true;
+            return [true, ""];
         } catch (e) {
-            log("Error disabling plugin '" + name + "': " + e);
-            return false;
+            log("Error disabling plugin '" + name + "': " + e.message);
+            return [false, e.message];
         }
     },
     
@@ -591,10 +593,10 @@ var Device = new Lang.Class({
                 this._plugins.get(name).reconfigure();
             }
 
-            return true;
+            return [true, ""];
         } catch (e) {
-            log("Error configuring plugin '" + name + "': " + e);
-            return false;
+            log("Error configuring plugin '" + name + "': " + e.message);
+            return [false, e.message];
         }
     },
     
