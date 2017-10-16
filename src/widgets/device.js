@@ -45,6 +45,7 @@ var PluginControl = new Lang.Class({
                     "emblem-system-symbolic",
                     Gtk.IconSize.BUTTON
                 ),
+                always_show_image: true,
                 visible: true,
                 can_focus: true,
                 halign: Gtk.Align.END,
