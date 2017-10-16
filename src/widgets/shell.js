@@ -61,7 +61,7 @@ var Tooltip = new Lang.Class({
         
         let [x, y] = this._parent.get_transformed_position();
         y = y + 12;
-        x = x - Math.round(this.bin.get_width()/2.5);
+        x = (x + (this._parent.width/2)) - Math.round(this.bin.width/2);
         
         if (this._showing) {
             Tweener.addTween(this.bin, {
