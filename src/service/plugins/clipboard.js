@@ -50,10 +50,15 @@ var Plugin = new Lang.Class({
         
         if (this._display === null) {
             this.destroy();
-            throw Error("Clipboard: Error initializing Gdk.Display");
+            throw Error(_("Failed to get Gdk.Display"));
         }
         
         this._clipboard = Gtk.Clipboard.get_default(this._display);
+        
+        if (this._clipboard === null) {
+            this.destroy();
+            throw Error(_("Failed to get Clipboard"));
+        }
         
         this._clipboard.connect("owner-change", () => {
             this._clipboard.request_text(Lang.bind(this, this.update));
