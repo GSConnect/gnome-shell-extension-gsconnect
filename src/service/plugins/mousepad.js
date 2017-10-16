@@ -47,21 +47,20 @@ var Plugin = new Lang.Class({
         this.parent(device, "mousepad");
         
         if (GLib.getenv("XDG_SESSION_TYPE") === "wayland") {
-            this.device.config.plugins.mousepad.enabled = false;
-            Common.writeDeviceConfiguration(this.device.id, this.device.config);
-            throw Error("Mousepad: Can't run under Wayland");
+            this.destroy();
+            throw Error(_("Can't run in Wayland session"));
         }
         
         if (Atspi.init() > 0) {
             this.destroy();
-            throw Error("Mousepad: Error initializing Atspi");
+            throw Error(_("Failed to initialize Atspi"));
         }
         
         this._display = Gdk.Display.get_default();
         
         if (this._display === null) {
             this.destroy();
-            throw Error("Mousepad: Error initializing Gdk.Display");
+            throw Error(_("Failed to get Gdk.Display"));
         } else {
             this._seat = this._display.get_default_seat();
             this._pointer = this._seat.get_pointer();
