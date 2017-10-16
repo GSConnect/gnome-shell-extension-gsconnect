@@ -321,11 +321,10 @@ var Plugin = new Lang.Class({
                 let packet = new Protocol.Packet({
                     id: 0,
                     type: "kdeconnect.share.request",
-                    body: { filename: file.get_basename() }
+                    body: { filename: file.get_basename() },
+                    payloadSize: info.get_size(),
+                    payloadTransferInfo: { port: port }
                 });
-                
-                packet.payloadSize = info.get_size();
-                packet.payloadTransferInfo = { port: port };
                 
                 this.device._channel.send(packet);
             });

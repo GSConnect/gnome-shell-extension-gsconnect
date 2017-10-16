@@ -245,9 +245,11 @@ var Plugin = new Lang.Class({
     mount: function () {
         Common.debug("SFTP: mount()");
         
-        let packet = new Protocol.Packet();
-        packet.type = "kdeconnect.sftp.request";
-        packet.body = { startBrowsing: true };
+        let packet = new Protocol.Packet({
+            id: 0,
+            type: "kdeconnect.sftp.request",
+            body: { startBrowsing: true }
+        });
         
         this.device._channel.send(packet);
     },

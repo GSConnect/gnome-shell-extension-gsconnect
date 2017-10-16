@@ -54,8 +54,11 @@ var Plugin = new Lang.Class({
         Common.debug("FindMyPhone: ring()");
         
         if (this.device.connected && this.device.paired) {
-            let packet = new Protocol.Packet();
-            packet.type = "kdeconnect.findmyphone.request";
+            let packet = new Protocol.Packet({
+                id: 0,
+                type: "kdeconnect.findmyphone.request",
+                body: {}
+            });
             
             this.device._channel.send(packet);
         }

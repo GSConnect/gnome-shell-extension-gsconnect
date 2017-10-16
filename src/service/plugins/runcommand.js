@@ -82,11 +82,11 @@ var Plugin = new Lang.Class({
     sendCommandList: function () {
         Common.debug("RunCommand: sendCommandList()");
         
-        let packet = new Protocol.Packet();
-        packet.type = "kdeconnect.runcommand";
-        packet.body = {
-            commandList: JSON.stringify(this.settings.commands)
-        };
+        let packet = new Protocol.Packet({
+            id: 0,
+            type: "kdeconnect.runcommand",
+            body: { commandList: JSON.stringify(this.settings.commands) }
+        });
         
         this.device._channel.send(packet);
     }
