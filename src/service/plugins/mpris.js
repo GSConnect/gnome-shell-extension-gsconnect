@@ -133,7 +133,7 @@ var Plugin = new Lang.Class({
                 //       position is not updating (might not matter though)
                 player.connect("g-properties-changed", () => {
                     let packet = new Protocol.Packet({
-                        id: Date.now(),
+                        id: 0,
                         type: "kdeconnect.mpris.request",
                         body: {
                             player: mpris.Identity,
@@ -178,7 +178,7 @@ var Plugin = new Lang.Class({
         Common.debug("MPRIS: sendPlayerList()");
         
         let packet = new Protocol.Packet({
-            id: Date.now(),
+            id: 0,
             type: "kdeconnect.mpris",
             body: { playerList: Array.from(this._players.keys()) }
         });
