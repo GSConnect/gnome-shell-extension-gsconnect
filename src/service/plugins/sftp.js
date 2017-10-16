@@ -29,6 +29,7 @@ var METADATA = {
     name: "sftp",
     summary: _("Browse Files"),
     description: _("Mount and browse device filesystems"),
+    wiki: "https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Browse-Files-Plugin",
     incomingPackets: ["kdeconnect.sftp"],
     outgoingPackets: ["kdeconnect.sftp.request"],
     settings: {
@@ -69,6 +70,11 @@ var Plugin = new Lang.Class({
     _init: function (device) {
         this.parent(device, "sftp");
         
+        if (!this._check_sshfs()) {
+            this.destroy();
+            throw Error(_("SSHFS not installed"));
+        }
+        
         this._mounted = false;
         this._directories = {};
         
@@ -79,6 +85,29 @@ var Plugin = new Lang.Class({
     
     get mounted () { return this._mounted },
     get directories () { return this._directories; },
+    
+    _check_sshfs: function () {
+        let proc = GLib.spawn_async_with_pipes(
+            null,                                   // working dir
+            ["which", "sshfs"],                     // argv
+            null,                                   // envp
+            GLib.SpawnFlags.SEARCH_PATH,            // enables PATH
+            null                                    // child_setup (func)
+        );
+        
+        let stdout = new Gio.DataInputStream({
+            base_stream: new Gio.UnixInputStream({ fd: proc[3] })
+        });
+        let [result, length] = stdout.read_line(null);
+        stdout.close(null);
+        
+        if (result === null) {
+            return false;
+        } else {
+            log("result: '" + result.toString() + "'");
+            return true;
+        }
+    },
     
     _prepare: function () {
         Common.debug("SFTP: _prepare()");

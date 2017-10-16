@@ -29,6 +29,7 @@ var METADATA = {
     name: "clipboard",
     summary: _("Clipboard"),
     description: _("Sync the clipboard between devices"),
+    wiki: "https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Clipboard-Plugin",
     incomingPackets: ["kdeconnect.clipboard"],
     outgoingPackets: ["kdeconnect.clipboard"]
 };

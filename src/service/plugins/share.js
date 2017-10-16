@@ -29,6 +29,7 @@ var METADATA = {
     name: "share",
     summary: _("Share"),
     description: _("Send and receive files and URLs"),
+    wiki: "https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Share-Plugin",
     incomingPackets: ["kdeconnect.share.request"],
     outgoingPackets: ["kdeconnect.share.request"],
     settings: {

@@ -29,6 +29,7 @@ var METADATA = {
     name: "mousepad",
     summary: _("Remote Input"),
     description: _("Control the mouse and keyboard remotely"),
+    wiki: "https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Remote-Input-Plugin",
     incomingPackets: ["kdeconnect.mousepad.request"],
     outgoingPackets: []
 };

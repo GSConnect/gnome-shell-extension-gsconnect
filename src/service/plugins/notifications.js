@@ -30,6 +30,7 @@ var METADATA = {
     name: "notifications",
     summary: _("Notifications"),
     description: _("Sync notifications between devices"),
+    wiki: "https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Notifications-Plugin",
     incomingPackets: [
         "kdeconnect.notification",
         "kdeconnect.notification.request"

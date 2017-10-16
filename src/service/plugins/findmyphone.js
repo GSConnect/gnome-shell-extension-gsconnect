@@ -26,6 +26,7 @@ var METADATA = {
     name: "findmyphone",
     summary: _("Locate Device"),
     description: _("Find a device by making it ring"),
+    wiki: "https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Locate-Device-Plugin",
     incomingPackets: [],
     outgoingPackets: ["kdeconnect.findmyphone.request"]
 };

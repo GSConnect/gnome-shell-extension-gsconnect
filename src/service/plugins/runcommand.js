@@ -29,6 +29,7 @@ var METADATA = {
     name: "runcommand",
     summary: _("Run Commands"),
     description: _("Execute local commands remotely"),
+    wiki: "https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Run-Commands-Plugin",
     incomingPackets: ["kdeconnect.runcommand.request"],
     outgoingPackets: ["kdeconnect.runcommand"],
     settings: {
