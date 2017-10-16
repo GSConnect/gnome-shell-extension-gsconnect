@@ -167,7 +167,7 @@ var Button = new Lang.Class({
         this.callback = params.callback;
         
         this.connect("clicked", () => {
-            this.callback()
+            this.callback(this)
         });
         
         if (typeof params.tooltip_text === "string") {
