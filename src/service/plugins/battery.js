@@ -103,7 +103,7 @@ var Plugin = new Lang.Class({
         notif.set_title(_("Low Battery Warning"));
         notif.set_body(
             // TRANSLATORS: eg. Google Pixel's battery level is 15%
-            _("%s's battery level is %d%%").format(this.level, this.device.name)
+            _("%s's battery level is %d%%").format(this.device.name, this.level)
         );
         notif.set_icon(new Gio.ThemedIcon({ name: "battery-caution-symbolic" }));
         
