@@ -184,26 +184,22 @@ var Plugin = new Lang.Class({
             )
         );
         
-        // Log the incoming message if a window is open
+        // Check for an extant window
         let window = this._hasWindow(packet.body.phoneNumber);
         
         if (window) {
-            // TODO: there could be discontinuity between @sender and the
-            //       contact name in the ConversationWindow
             window._logIncoming(sender, packet.body.messageBody);
             window.urgency_hint = true;
+            
+            // Tell the notifications plugin to mark any duplicate read
+            if (this.device._plugins.has("notifications")) {
+                this.device._plugins.get("notifications").markReadSms(
+                    sender + ": " + packet.body.messageBody
+                );
+            }
         }
         
-        // FIXME: urgency
-        //        track notifs, append new messages to unclosed..
-        if (this.settings.autoreply_sms) {
-            this.replySms(
-                packet.body.phoneNumber,
-                packet.body.contactName,
-                packet.body.messageBody,
-                packet.body.phoneThumbnail
-            );
-        } else if (this.settings.notify_sms) {
+        if (this.settings.notify_sms) {
             let notif = new Gio.Notification();
             notif.set_title(sender);
             notif.set_body(packet.body.messageBody);
@@ -225,9 +221,11 @@ var Plugin = new Lang.Class({
                 "'))"
             );
             
+            // Tell the notifications plugin to "silence" any duplicate
             if (this.device._plugins.has("notifications")) {
-                let plugin = this.device._plugins.get("notifications");
-                plugin._ignore.set(sender, packet.body.messageBody);
+                this.device._plugins.get("notifications").silenceSms(
+                    sender + ": " + packet.body.messageBody
+                );
             }
             
             this.device.daemon.send_notification(packet.id.toString(), notif);
@@ -401,10 +399,10 @@ var Plugin = new Lang.Class({
         // Check for an extant window
         let window = this._hasWindow(phoneNumber);
         
-        // None found, open a new one, add the contact and log the message
+        // None found; open one, add the contact, log the message, mark it read
         if (!window) {
             window = new SMS.ConversationWindow(this.device.daemon, this.device);
-            
+        
             if (contactName.length) {
                 window.contactEntry.text = contactName + " <" + phoneNumber + ">; ";
                 window._logIncoming(contactName, messageBody);
@@ -412,9 +410,19 @@ var Plugin = new Lang.Class({
                 window.contactEntry.text = phoneNumber + "; ";
                 window._logIncoming(phoneNumber, messageBody);
             }
+            
+            window.urgency_hint = true;
+            
+            // Tell the notifications plugin to mark any duplicate read
+            let sender = (contactName.length) ? contactName : phoneNumber;
+            
+            if (this.device._plugins.has("notifications")) {
+                this.device._plugins.get("notifications").markReadSms(
+                    sender + ": " + messageBody
+                );
+            }
         }
         
-        // Present the window
         window.present();
     },
     

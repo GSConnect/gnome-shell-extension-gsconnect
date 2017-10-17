@@ -106,13 +106,13 @@ var Plugin = new Lang.Class({
         
         this._freeze = false;
         this._notifications = new Map();
-        this._ignore = new Map();
+        this._sms = new Map();
     },
     
     Notify: function (appName, replacesId, iconName, summary, body, actions, hints, timeout) {
+        // Signature: str,     uint,       str,      str,     str,  array,   obj,   uint
         Common.debug("Notifications: Notify()");
         
-        // Signature: str,     uint,       str,      str,     str,  array,   obj,   uint
         Common.debug("appName: " + appName);
         Common.debug("replacesId: " + replacesId);
         Common.debug("iconName: " + iconName);
@@ -163,6 +163,28 @@ var Plugin = new Lang.Class({
         }
     },
     
+    markReadSms: function (smsString) {
+        if (this._sms.has(smsString)) {
+            let duplicate = this._sms.get(smsString);
+                
+            if (duplicate.id) {
+                this.close(duplicate.id);
+            } else {
+                duplicate.mark_read = true;
+            }
+        } else {
+            this._sms.set(smsString, { mark_read: true });
+        }
+    },
+    
+    silenceSms: function (smsString) {
+        if (this._sms.has(smsString)) {
+            this._sms.get(smsString).silence = true;
+        } else {
+            this._sms.set(smsString, { silence: true });
+        }
+    },
+    
     _receiveNotification: function (packet) {
         Common.debug("Notifications: _receiveNotification()");
         
@@ -202,37 +224,41 @@ var Plugin = new Lang.Class({
                 Common.debug("Notifications: this is an answer to a request");
             }
             
-            // Check for SMS to ignore (we'll still track the notif, though)
-            let ignore;
-            
+            // If this is an SMS we should check if it's a duplicate
             if (packet.body.id.indexOf("sms") > -1) {
-                let sender, messageBody;
+                let smsString
                 
                 // KDE Connect Android 1.7+ only
                 if (packet.body.hasOwnProperty("title")) {
-                    sender = packet.body.title;
-                    messageBody = packet.body.text;
+                    smsString = packet.body.title + ": " + packet.body.text;
                 } else {
-                    [sender, messageBody] = packet.body.ticker.split(": ");
+                    smsString = packet.body.ticker;
                 }
                 
-                if (this._ignore.has(sender)) {
-                    if (this._ignore.get(sender) === messageBody) {
-                        ignore = true;
-                        this._ignore.delete(sender);
+                if (this._sms.has(smsString)) {
+                    let duplicate = this._sms.get(smsString);
+                    
+                    // We've been asked to mark this read (we'll close it)
+                    if (duplicate.mark_read) {
+                        this.close(packet.body.id);
+                        this._sms.delete(smsString);
+                    // We've been asked to silence this (we'll still track it)
+                    } else if (duplicate.silence) {
+                        duplicate.id = packet.body.id;
                     }
+                // We can show this as normal
+                } else {
+                    this.device.daemon.send_notification(packet.body.id, notif);
                 }
-            }
-            
-            // TODO: Apparently "silent" means don't show the notification...?
-            //if (!packet.body.silent) {
-            if (!ignore) {
+            // TODO: Apparently "silent" means don't show the notification, or
+            //       maybe it just means "don't present" (aka low urgency)
+            //} else if (!packet.body.silent) {
+            } else {
                 this.device.daemon.send_notification(packet.body.id, notif);
             }
         }
     },
     
-    // TODO: make sure it's notification?
     close: function (id) {
         let packet = new Protocol.Packet({
             id: 0,
