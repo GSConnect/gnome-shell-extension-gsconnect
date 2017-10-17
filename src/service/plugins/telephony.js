@@ -47,9 +47,9 @@ var METADATA = {
  * Telephony Plugin
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/telephony
  *
- * TODO: try and block duplicate "notifications" that match incoming SMS
- *       phoneThumbnail field
- *       notifications
+ * TODO: phoneThumbnail field
+ *       notification urgency
+ *       track notifs, append new messages to unclosed..?
  *       mute: pactl set-sink-mute @DEFAULT_SINK@ 1
  *       unmute: pactl set-sink-mute @DEFAULT_SINK@ 1
  */
@@ -82,8 +82,6 @@ var Plugin = new Lang.Class({
     
     _init: function (device) {
         this.parent(device, "telephony");
-        
-        this._notifications = new Map();
         
         this._pausedPlayer = false;
     },
@@ -330,7 +328,8 @@ var Plugin = new Lang.Class({
         
         let sender;
         
-         // FIXME: not sure what to do here...
+         // FIXME: not sure what to do here; this complicates all the other
+         //        logic performed on these variables
 //        if (!packet.body.phoneNumber.length) {
 //            packet.body.phoneNumber = _("Unknown Number");
 //        }
