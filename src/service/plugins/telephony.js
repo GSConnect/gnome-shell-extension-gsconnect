@@ -114,6 +114,8 @@ var Plugin = new Lang.Class({
                 )
             );
             notif.set_icon(new Gio.ThemedIcon({ name: "call-missed-symbolic" }));
+            notif.set_priority(Gio.NotificationPriority.NORMAL);
+            
             this.device.daemon.send_notification(packet.id.toString(), notif);
         }
     },
@@ -146,6 +148,7 @@ var Plugin = new Lang.Class({
                 )
             );
             notif.set_icon(new Gio.ThemedIcon({ name: "call-start-symbolic" }));
+            notif.set_priority(Gio.NotificationPriority.URGENT);
             
             notif.add_button(
                 // TRANSLATORS: Silence an incoming call
@@ -202,6 +205,7 @@ var Plugin = new Lang.Class({
             notif.set_title(sender);
             notif.set_body(packet.body.messageBody);
             notif.set_icon(new Gio.ThemedIcon({ name: "sms-symbolic" }));
+            notif.set_priority(Gio.NotificationPriority.HIGH);
             
             notif.add_button(
                 // TRANSLATORS: Reply to a received SMS message
@@ -258,6 +262,8 @@ var Plugin = new Lang.Class({
                 )
             );
             notif.set_icon(new Gio.ThemedIcon({ name: "call-start-symbolic" }));
+            notif.set_priority(Gio.NotificationPriority.NORMAL);
+            
             this.device.daemon.send_notification(packet.id.toString(), notif);
         }
         
