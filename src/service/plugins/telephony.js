@@ -47,11 +47,9 @@ var METADATA = {
  * Telephony Plugin
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/telephony
  *
- * TODO: phoneThumbnail field
- *       notification urgency
- *       track notifs, append new messages to unclosed..?
- *       mute: pactl set-sink-mute @DEFAULT_SINK@ 1
- *       unmute: pactl set-sink-mute @DEFAULT_SINK@ 1
+ * TODO: phoneThumbnail's are super small in notifications :(
+ *       track notifs: isCancel events, append new messages to unacknowledged?
+ *       mute/unmute: pactl set-sink-mute @DEFAULT_SINK@ 1/0
  */
 var Plugin = new Lang.Class({
     Name: "GSConnectTelephonyPlugin",
