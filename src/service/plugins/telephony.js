@@ -113,7 +113,12 @@ var Plugin = new Lang.Class({
                     this.device.name
                 )
             );
-            notif.set_icon(new Gio.ThemedIcon({ name: "call-missed-symbolic" }));
+            if (packet.body.phoneThumbnail) {
+                let bytes = GLib.base64_decode(packet.body.phoneThumbnail);
+                notif.set_icon(Gio.BytesIcon.new(bytes));
+            } else {
+                notif.set_icon(new Gio.ThemedIcon({ name: "call-missed-symbolic" }));
+            }
             notif.set_priority(Gio.NotificationPriority.NORMAL);
             
             this.device.daemon.send_notification(packet.id.toString(), notif);
@@ -147,7 +152,12 @@ var Plugin = new Lang.Class({
                     this.device.name
                 )
             );
-            notif.set_icon(new Gio.ThemedIcon({ name: "call-start-symbolic" }));
+            if (packet.body.phoneThumbnail) {
+                let bytes = GLib.base64_decode(packet.body.phoneThumbnail);
+                notif.set_icon(Gio.BytesIcon.new(bytes));
+            } else {
+                notif.set_icon(new Gio.ThemedIcon({ name: "call-start-symbolic" }));
+            }
             notif.set_priority(Gio.NotificationPriority.URGENT);
             
             notif.add_button(
@@ -204,7 +214,12 @@ var Plugin = new Lang.Class({
             let notif = new Gio.Notification();
             notif.set_title(sender);
             notif.set_body(packet.body.messageBody);
-            notif.set_icon(new Gio.ThemedIcon({ name: "sms-symbolic" }));
+            if (packet.body.phoneThumbnail) {
+                let bytes = GLib.base64_decode(packet.body.phoneThumbnail);
+                notif.set_icon(Gio.BytesIcon.new(bytes));
+            } else {
+                notif.set_icon(new Gio.ThemedIcon({ name: "sms-symbolic" }));
+            }
             notif.set_priority(Gio.NotificationPriority.HIGH);
             
             notif.add_button(
@@ -261,7 +276,12 @@ var Plugin = new Lang.Class({
                     this.device.name
                 )
             );
-            notif.set_icon(new Gio.ThemedIcon({ name: "call-start-symbolic" }));
+            if (packet.body.phoneThumbnail) {
+                let bytes = GLib.base64_decode(packet.body.phoneThumbnail);
+                notif.set_icon(Gio.BytesIcon.new(bytes));
+            } else {
+                notif.set_icon(new Gio.ThemedIcon({ name: "call-start-symbolic" }));
+            }
             notif.set_priority(Gio.NotificationPriority.NORMAL);
             
             this.device.daemon.send_notification(packet.id.toString(), notif);
