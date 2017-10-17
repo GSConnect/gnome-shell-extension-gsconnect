@@ -37,7 +37,6 @@ var METADATA = {
         notify_missedCall: true,
         notify_ringing: true,
         notify_sms: true,
-        autoreply_sms: false,
         notify_talking: true,
         pause_music: "never"
     }
@@ -548,23 +547,6 @@ var SettingsDialog = new Lang.Class({
             _("SMS Notification"),
             _("Show a notification when an SMS message is received"),
             notifySMSSwitch
-        );
-        
-        let autoreplySMSSwitch = new Gtk.Switch({
-            visible: true,
-            can_focus: true,
-            halign: Gtk.Align.END,
-            valign: Gtk.Align.CENTER,
-            active: this.settings.autoreply_sms
-        });
-        autoreplySMSSwitch.connect("notify::active", (widget) => {
-            this.settings.autoreply_sms = autoreplySMSSwitch.active;
-        });
-        this.content.addItem(
-            smsSection,
-            _("Autoreply to SMS"),
-            _("Open a new SMS window when an SMS is received"),
-            autoreplySMSSwitch
         );
         
         this.content.show_all();
