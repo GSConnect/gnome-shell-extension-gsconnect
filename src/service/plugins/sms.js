@@ -634,7 +634,11 @@ var ConversationWindow = new Lang.Class({
             new Gtk.Image({ icon_name: "dialog-warning-symbolic" })
         );
         this.infoBar.get_content_area().add(
-            new Gtk.Label({ label: _("Device is offline") })
+            new Gtk.Label({
+                // TRANSLATORS: eg. <b>Google Pixel</b> is disconnected
+                label: _("<b>%s</b> is disconnected").format(this.device.name),
+                use_markup: true
+            })
         );
         
         // Content -> Conversation View
