@@ -444,14 +444,14 @@ var ConversationList = new Lang.Class({
     
     // TODO: this should probably be broken off into a separate class
     //       use alternating colors for different contacts
-    logMessage: function (sender, message, direction) {
+    logMessage: function (sender, message, photo, direction) {
         let nrows = this.get_children().length;
         let row;
         
         if (nrows) {
             let prevRow = this.get_row_at_index(nrows - 1);
             
-            if (prevRow.messageSender.label === "<b>" + sender + "</b>") {
+            if (prevRow.contactPhoto.tooltip_text === sender) {
                 row = prevRow;
             }
         }
@@ -467,28 +467,44 @@ var ConversationList = new Lang.Class({
             });
             this.add(row);
             
+            row.threadLayout = new Gtk.Box({
+                visible: true,
+                can_focus: false,
+                hexpand: true,
+                spacing: 3
+            });
+            row.add(row.threadLayout);
+            
+            // Photo
+            if (photo) {
+                row.contactPhoto = Gtk.Image.new_from_gicon(
+                    Gio.BytesIcon.new(GLib.base64_decode(photo)),
+                    Gtk.IconSize.DND
+                );
+            } else {
+                row.contactPhoto = Gtk.Image.new_from_icon_name(
+                    "avatar-default-symbolic",
+                    Gtk.IconSize.DND
+                );
+            }
+            row.contactPhoto.tooltip_text = sender;
+            row.contactPhoto.visible = direction;
+            row.threadLayout.add(row.contactPhoto);
+            
+            // Messages
             row.messageLayout = new Gtk.Box({
                 visible: true,
                 can_focus: false,
                 orientation: Gtk.Orientation.VERTICAL,
                 spacing: 3
             });
-            row.add(row.messageLayout);
-            
-            row.messageSender = new Gtk.Label({
-                label: "<b>" + sender + "</b>",
-                use_markup: true,
-                margin_bottom: 6,
-                visible: true,
-                xalign: direction
-            });
-            row.messageLayout.add(row.messageSender);
+            row.threadLayout.add(row.messageLayout);
         }
         
         let messageBubble = new Gtk.Box({ visible: true });
-        let style = messageBubble.get_style_context();
-        style.add_provider(MessageStyle, 0);
-        style.add_class("message-bubble");
+        let messageBubbleStyle = messageBubble.get_style_context();
+        messageBubbleStyle.add_provider(MessageStyle, 0);
+        messageBubbleStyle.add_class("message-bubble");
         row.messageLayout.add(messageBubble);
         
         let messageContent = new Gtk.Label({
@@ -505,13 +521,17 @@ var ConversationList = new Lang.Class({
         messageBubble.add(messageContent);
         
         if (direction === MessageDirection.IN) {
-            messageBubble.halign = Gtk.Align.END;
-            row.messageLayout.margin_left = 32;
-            style.add_class("message-bubble-orange");
-        } else if (direction === MessageDirection.OUT) {
             messageBubble.halign = Gtk.Align.START;
+            row.threadLayout.halign = Gtk.Align.START;
+            row.messageLayout.halign = Gtk.Align.START;
             row.messageLayout.margin_right = 32;
-            style.add_class("message-bubble-grey");
+            messageBubbleStyle.add_class("message-bubble-orange");
+        } else if (direction === MessageDirection.OUT) {
+            messageBubble.halign = Gtk.Align.END;
+            row.threadLayout.halign = Gtk.Align.END;
+            row.messageLayout.halign = Gtk.Align.END;
+            row.messageLayout.margin_left = 32;
+            messageBubbleStyle.add_class("message-bubble-grey");
         }
     }
 });
@@ -641,12 +661,22 @@ var ConversationWindow = new Lang.Class({
         this.has_focus = true;
     },
     
-    _logIncoming: function (name, message) {
-        this.conversationView.logMessage(name, message, MessageDirection.IN);
+    _logIncoming: function (name, message, photo=null) {
+        this.conversationView.logMessage(
+            name,
+            message,
+            photo,
+            MessageDirection.IN
+        );
     },
     
     _logOutgoing: function (message) {
-        this.conversationView.logMessage(_("You"), message, MessageDirection.OUT);
+        this.conversationView.logMessage(
+            _("You"),
+            message,
+            null,
+            MessageDirection.OUT
+        );
     },
     
     /**

@@ -197,7 +197,11 @@ var Plugin = new Lang.Class({
         let window = this._hasWindow(packet.body.phoneNumber);
         
         if (window) {
-            window._logIncoming(sender, packet.body.messageBody);
+            window._logIncoming(
+                sender,
+                packet.body.messageBody,
+                packet.body.phoneThumbnail
+            );
             window.urgency_hint = true;
             
             // Tell the notifications plugin to mark any duplicate read
@@ -344,10 +348,10 @@ var Plugin = new Lang.Class({
         
         // There are six possible variables:
         //    * "event"             missedCall, ringing, sms or talking
-        //    * "phoneNumber"       Always present?
-        //    * "contactName"       Always present? (may be empty)
+        //    * "phoneNumber"       Always present
+        //    * "contactName"       Always present (may be empty)
         //    * "messageBody"       SMS only?
-        //    * "phoneThumbnail"    base64 ByteArray/Pixmap (may be empty)
+        //    * "phoneThumbnail"    base64 ByteArray JPEG (may be empty)
         //    * "isCancel"          The event has been cancelled
         
         let sender;
@@ -425,13 +429,13 @@ var Plugin = new Lang.Class({
         // None found; open one, add the contact, log the message, mark it read
         if (!window) {
             window = new SMS.ConversationWindow(this.device.daemon, this.device);
-        
+            
             if (contactName.length) {
                 window.contactEntry.text = contactName + " <" + phoneNumber + ">; ";
-                window._logIncoming(contactName, messageBody);
+                window._logIncoming(contactName, messageBody, phoneThumbnail);
             } else {
                 window.contactEntry.text = phoneNumber + "; ";
-                window._logIncoming(phoneNumber, messageBody);
+                window._logIncoming(phoneNumber, messageBody, phoneThumbnail);
             }
             
             window.urgency_hint = true;
