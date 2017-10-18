@@ -533,6 +533,7 @@ var ConversationList = new Lang.Class({
                 );
             }
             row.contactPhoto.tooltip_text = sender;
+            row.contactPhoto.valign = Gtk.Align.END;
             row.contactPhoto.visible = direction;
             row.threadLayout.add(row.contactPhoto);
             
