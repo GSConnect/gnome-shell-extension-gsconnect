@@ -37,8 +37,6 @@ var METADATA = {
 /**
  * Ping Plugin
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/ping
- *
- * TODO: sound option? maybe should be a global option for plugins
  */
 var Plugin = new Lang.Class({
     Name: "GSConnectPingPlugin",

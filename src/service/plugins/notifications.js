@@ -87,11 +87,10 @@ var METADATA = {
  *    payloadTransferInfo {object} - Just like regular (with a property 'port')
  *    payloadHash {string} - A hash of the payload data
  *
- * TODO: play sounds when requested
- *       download/upload icons
+ * TODO: download/upload icons
  *       requestAnswer usage?
  *       urgency filter (outgoing)?
- *       make "shared" notifications clearable
+ *       make "shared" notifications clearable (Can KDE Connect even do this?)
  *       consider option for notifications allowing clients to handle them
  *       use signals
  */
@@ -199,7 +198,6 @@ var Plugin = new Lang.Class({
     _receiveNotification: function (packet) {
         Common.debug("Notifications: _receiveNotification()");
         
-        // TODO: check this over
         if (packet.body.isCancel) {
             if (this._notifications.has(packet.body.id)) {
                 this.close(packet.body.id);

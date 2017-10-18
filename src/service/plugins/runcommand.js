@@ -43,7 +43,7 @@ var METADATA = {
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/remotecommand
  *
  * TODO: expose commands over DBus
- *       a PR for some new stuff was submitted
+ *       add commands from remote device (seems like a really bad idea)
  */
 var Plugin = new Lang.Class({
     Name: "GSConnectRunCommandPlugin",
