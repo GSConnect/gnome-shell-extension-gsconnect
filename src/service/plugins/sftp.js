@@ -103,12 +103,7 @@ var Plugin = new Lang.Class({
         let [result, length] = stdout.read_line(null);
         stdout.close(null);
         
-        if (result === null) {
-            return false;
-        } else {
-            log("result: '" + result.toString() + "'");
-            return true;
-        }
+        return (result !== null);
     },
     
     _prepare: function () {
@@ -120,7 +115,6 @@ var Plugin = new Lang.Class({
             GLib.mkdir_with_parents(this._path, 493);
         }
         
-        // TODO: better way to get this?
         let dir = Gio.File.new_for_path(this._path);
         let info = dir.query_info("unix::uid,unix::gid", 0, null);
         this._uid = info.get_attribute_uint32("unix::uid").toString();
@@ -228,7 +222,7 @@ var Plugin = new Lang.Class({
         this._read_stderr();
     },
     
-    // FIXME: seems super sketch
+    // FIXME: there's no way this covers all the bases
     _read_stderr: function () {
         this._stderr.read_line_async(GLib.PRIORITY_DEFAULT, null, (source, res) => {
             let [data, len] = source.read_line_finish(res);
