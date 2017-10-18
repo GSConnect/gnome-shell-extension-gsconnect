@@ -475,25 +475,90 @@ var ContactAvatar = new Lang.Class({
 });
 
 
-/**
- * Conversation List
- */
-var ConversationList = new Lang.Class({
-    Name: "GSConnectConversationList",
-    Extends: Gtk.ListBox,
+var MessageList = new Lang.Class({
+    Name: "GSConnectMessageList",
+    Extends: Gtk.ScrolledWindow,
     
     _init: function () {
-        this.parent({ visible: true, halign: Gtk.Align.FILL });
+        this.parent({
+            can_focus: false,
+            hexpand: true,
+            vexpand: true
+        });
+        
+        let frame = new Gtk.Frame();
+        this.add(frame);
+        
+        this.list = new Gtk.ListBox({
+            visible: true,
+            halign: Gtk.Align.FILL
+        });
+        this.list.connect("size-allocate", (widget) => {
+            let vadj = this.get_vadjustment();
+            vadj.set_value(vadj.get_upper() - vadj.get_page_size());
+        });
+        frame.add(this.list);
     },
     
-    // TODO: this should probably be broken off into a separate class
-    //       use alternating colors for different contacts
-    logMessage: function (sender, message, photo, direction) {
-        let nrows = this.get_children().length;
+    addThread: function (sender, photo, direction) {
+        row = new Gtk.ListBoxRow({
+            activatable: false,
+            selectable: false,
+            hexpand: true,
+            halign: Gtk.Align.FILL,
+            visible: true,
+            margin: 6
+        });
+        this.list.add(row);
+        
+        row.threadLayout = new Gtk.Box({
+            visible: true,
+            can_focus: false,
+            hexpand: true,
+            spacing: 3,
+            halign: (direction) ? Gtk.Align.START : Gtk.Align.END
+        });
+        row.add(row.threadLayout);
+        
+        // Photo
+        if (photo) {
+            row.contactPhoto = new ContactAvatar(
+                photo,
+                this.get_toplevel(),
+                32
+            );
+        } else {
+            row.contactPhoto = Gtk.Image.new_from_icon_name(
+                "avatar-default-symbolic",
+                Gtk.IconSize.DND
+            );
+        }
+        row.contactPhoto.tooltip_text = sender;
+        row.contactPhoto.valign = Gtk.Align.END;
+        row.contactPhoto.visible = direction;
+        row.threadLayout.add(row.contactPhoto);
+        
+        // Messages
+        row.messageLayout = new Gtk.Box({
+            visible: true,
+            can_focus: false,
+            orientation: Gtk.Orientation.VERTICAL,
+            spacing: 3,
+            halign: (direction) ? Gtk.Align.START : Gtk.Align.END,
+            margin_right: (direction) ? 32 : 0,
+            margin_left: (direction) ? 0: 32
+        });
+        row.threadLayout.add(row.messageLayout);
+        
+        return row;
+    },
+    
+    addMessage: function (sender, message, photo, direction) {
+        let nrows = this.list.get_children().length;
         let row;
         
         if (nrows) {
-            let prevRow = this.get_row_at_index(nrows - 1);
+            let prevRow = this.list.get_row_at_index(nrows - 1);
             
             if (prevRow.contactPhoto.tooltip_text === sender) {
                 row = prevRow;
@@ -501,53 +566,13 @@ var ConversationList = new Lang.Class({
         }
         
         if (!row) {
-            row = new Gtk.ListBoxRow({
-                activatable: false,
-                selectable: false,
-                hexpand: true,
-                halign: Gtk.Align.FILL,
-                visible: true,
-                margin: 6
-            });
-            this.add(row);
-            
-            row.threadLayout = new Gtk.Box({
-                visible: true,
-                can_focus: false,
-                hexpand: true,
-                spacing: 3
-            });
-            row.add(row.threadLayout);
-            
-            // Photo
-            if (photo) {
-                row.contactPhoto = new ContactAvatar(
-                    photo,
-                    this.get_toplevel(),
-                    32
-                );
-            } else {
-                row.contactPhoto = Gtk.Image.new_from_icon_name(
-                    "avatar-default-symbolic",
-                    Gtk.IconSize.DND
-                );
-            }
-            row.contactPhoto.tooltip_text = sender;
-            row.contactPhoto.valign = Gtk.Align.END;
-            row.contactPhoto.visible = direction;
-            row.threadLayout.add(row.contactPhoto);
-            
-            // Messages
-            row.messageLayout = new Gtk.Box({
-                visible: true,
-                can_focus: false,
-                orientation: Gtk.Orientation.VERTICAL,
-                spacing: 3
-            });
-            row.threadLayout.add(row.messageLayout);
+            row = this.addThread(sender, photo, direction);
         }
         
-        let messageBubble = new Gtk.Box({ visible: true });
+        let messageBubble = new Gtk.Box({
+            visible: true,
+            halign: (direction) ? Gtk.Align.START : Gtk.Align.END
+        });
         let messageBubbleStyle = messageBubble.get_style_context();
         messageBubbleStyle.add_provider(MessageStyle, 0);
         messageBubbleStyle.add_class("message-bubble");
@@ -567,16 +592,8 @@ var ConversationList = new Lang.Class({
         messageBubble.add(messageContent);
         
         if (direction === MessageDirection.IN) {
-            messageBubble.halign = Gtk.Align.START;
-            row.threadLayout.halign = Gtk.Align.START;
-            row.messageLayout.halign = Gtk.Align.START;
-            row.messageLayout.margin_right = 32;
             messageBubbleStyle.add_class("message-bubble-orange");
         } else if (direction === MessageDirection.OUT) {
-            messageBubble.halign = Gtk.Align.END;
-            row.threadLayout.halign = Gtk.Align.END;
-            row.messageLayout.halign = Gtk.Align.END;
-            row.messageLayout.margin_left = 32;
             messageBubbleStyle.add_class("message-bubble-grey");
         }
     }
@@ -643,25 +660,15 @@ var ConversationWindow = new Lang.Class({
         );
         
         // Content -> Conversation View
-        let scrolledWindow = new Gtk.ScrolledWindow({
-            can_focus: false,
-            hexpand: true,
-            vexpand: true
-        });
-        this.layout.add(scrolledWindow);
-        
-        let conversationFrame = new Gtk.Frame();
-        scrolledWindow.add(conversationFrame);
-        
-        this.conversationView = new ConversationList();
+        this.messageList = new MessageList();
         
         this.device.bind_property(
             "connected",
-            this.conversationView,
+            this.messageList,
             "sensitive",
             GObject.BindingFlags.DEFAULT
         );
-        conversationFrame.add(this.conversationView);
+        this.layout.add(this.messageList);
         
         // Content -> Message Entry
         this.messageEntry = new Gtk.Entry({
@@ -712,7 +719,7 @@ var ConversationWindow = new Lang.Class({
     },
     
     _logIncoming: function (name, message, photo=null) {
-        this.conversationView.logMessage(
+        this.messageList.addMessage(
             name,
             message,
             photo,
@@ -721,7 +728,7 @@ var ConversationWindow = new Lang.Class({
     },
     
     _logOutgoing: function (message) {
-        this.conversationView.logMessage(
+        this.messageList.addMessage(
             _("You"),
             message,
             null,
