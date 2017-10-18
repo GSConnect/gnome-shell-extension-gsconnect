@@ -12,6 +12,7 @@ const Lang = imports.lang;
 const Gettext = imports.gettext.domain("gsconnect");
 const _ = Gettext.gettext;
 
+const Gdk = imports.gi.Gdk;
 const GdkPixbuf = imports.gi.GdkPixbuf;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
@@ -431,6 +432,49 @@ var ContactEntry = new Lang.Class({
 });
 
 
+var ContactAvatar = new Lang.Class({
+    Name: "GSConnectContactAvatar",
+    Extends: Gtk.DrawingArea,
+    
+    _init: function (phoneThumbnail, win, size) {
+        this.parent({
+            height_request: size,
+            width_request: size
+        });
+        
+        this.size = size;
+        
+        let image_stream = Gio.MemoryInputStream.new_from_data(
+            GLib.base64_decode(phoneThumbnail),
+            GLib.free
+        );
+        
+        this._pixbuf = GdkPixbuf.Pixbuf.new_from_stream(
+            image_stream,
+            null
+        ).scale_simple(this.size, this.size, GdkPixbuf.InterpType.HYPER);
+        
+        this._surface = Gdk.cairo_surface_create_from_pixbuf(
+            this._pixbuf,
+            0,
+            win.get_window()
+        );
+        
+        this.connect("draw", (widget, cr) => {
+            this._draw(widget, cr);
+            return false;
+        });
+    },
+    
+    _draw: function (widget, cr) {
+        cr.setSourceSurface(this._surface, 0, 0);
+        cr.arc(this.size/2, this.size/2, this.size/2, 0, 2*Math.PI);
+        cr.clip();
+        cr.paint();
+    }
+});
+
+
 /**
  * Conversation List
  */
@@ -477,9 +521,10 @@ var ConversationList = new Lang.Class({
             
             // Photo
             if (photo) {
-                row.contactPhoto = Gtk.Image.new_from_gicon(
-                    Gio.BytesIcon.new(GLib.base64_decode(photo)),
-                    Gtk.IconSize.DND
+                row.contactPhoto = new ContactAvatar(
+                    photo,
+                    this.get_toplevel(),
+                    32
                 );
             } else {
                 row.contactPhoto = Gtk.Image.new_from_icon_name(
