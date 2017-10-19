@@ -321,24 +321,14 @@ var ContactCompletion = new Lang.Class({
     },
     
     /** Add selected auto-complete entry to list of contacts in the entry */
-    // FIXME: cleanup oldContact crap
     _select: function (completion, model, tree_iter) {
         let entry = completion.get_entry();
-        let currentContacts = entry.text.split(";").slice(0, -1);
-        let selectedContact = model.get_value(tree_iter, 0);
         
-        // Return if this contact is already in the current list
-        if (currentContacts.indexOf(selectedContact) > -1) { return; }
-        
-        entry.set_text(
-            currentContacts.join("; ")
-            + ((currentContacts.length) ? "; " : "")
-            + selectedContact + "; "
-        );
-        
+        entry.set_text(model.get_value(tree_iter, 0) + "; ");
         entry.set_position(-1);
         this._matched = [];
-            
+        
+        // TODO: use a signal instead?
         entry.notify("recipients");
         
         return true;
@@ -427,25 +417,14 @@ var ContactEntry = new Lang.Class({
         });
     },
     
-    // FIXME: cleanup oldContact crap
     _select: function (entry) {
         let completion = entry.get_completion();
         
         if (completion._matched.length > 0) {
             let iter_path = completion._matched["0"];
             let [b, iter] = completion.model.get_iter_from_string(iter_path);
-            let oldContacts = entry.text.split(";").slice(0, -1);
-            let newContact = completion.model.get_value(iter, 0);
         
-            // Ignore duplicate selections
-            if (oldContacts.indexOf(newContact) > -1) { return; }
-        
-            entry.set_text(
-                oldContacts.join("; ")
-                + ((oldContacts.length) ? "; " : "")
-                + newContact + "; "
-            );
-        
+            entry.set_text(completion.model.get_value(iter, 0) + "; ");
             entry.set_position(-1);
             completion._matched = [];
             
