@@ -321,6 +321,7 @@ var ContactCompletion = new Lang.Class({
     },
     
     /** Add selected auto-complete entry to list of contacts in the entry */
+    // FIXME: cleanup oldContact crap
     _select: function (completion, model, tree_iter) {
         let entry = completion.get_entry();
         let currentContacts = entry.text.split(";").slice(0, -1);
@@ -337,6 +338,8 @@ var ContactCompletion = new Lang.Class({
         
         entry.set_position(-1);
         this._matched = [];
+            
+        entry.notify("recipients");
         
         return true;
     },
