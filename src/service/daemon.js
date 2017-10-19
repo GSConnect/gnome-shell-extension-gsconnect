@@ -358,7 +358,7 @@ var Daemon = new Lang.Class({
      * App Actions
      */
     _batteryWarningAction: function (action, param) {
-        dbusPath = param.deep_unpack().toString();
+        let dbusPath = param.deep_unpack().toString();
         
         if (this._devices.has(dbusPath)) {
             let device = this._devices.get(dbusPath);
@@ -409,7 +409,7 @@ var Daemon = new Lang.Class({
     },
     
     _muteCallAction: function (action, param) {
-        dbusPath = param.deep_unpack().toString();
+        let dbusPath = param.deep_unpack().toString();
         
         if (this._devices.has(dbusPath)) {
             let device = this._devices.get(dbusPath);
