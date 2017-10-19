@@ -667,6 +667,10 @@ var RecipientList = new Lang.Class({
 });
 
 
+/**
+ * A Gtk.ScrolledWindow with Gtk.ListBox for storing threads of messages
+ */
+var MessageList = new Lang.Class({
     Name: "GSConnectMessageList",
     Extends: Gtk.ScrolledWindow,
     
@@ -691,7 +695,7 @@ var RecipientList = new Lang.Class({
         frame.add(this.list);
     },
     
-*
+    /**
      * Add a new thread, which includes a single instance of the sender's
      * avatar and a series of sequential messages from one user.
      *
@@ -703,33 +707,33 @@ var RecipientList = new Lang.Class({
      */
     addThread: function (sender, phoneThumbnail, direction) {
         let thread = new Gtk.ListBoxRow({
-                  activatable: false,
+            activatable: false,
             selectable: false,
             hexpand: true,
             halign: Gtk.Align.FILL,
             visible: true,
             margin: 6
         });
-  this.list.add(thread);
-              
-  thread.layout = new Gtk.Box({
-                  visible: true,
+        this.list.add(thread);
+        
+        thread.layout = new Gtk.Box({
+            visible: true,
             can_focus: false,
             hexpand: true,
             spacing: 3,
             halign: (direction) ? Gtk.Align.START : Gtk.Align.END
         });
-  thread.add(thread.layout);
-              
-  // Contact Avatar
+        thread.add(thread.layout);
+        
+        // Contact Avatar
         // TODO: GdkPixbuf chokes hard on non-fatally corrupted images
         try {
             thread.avatar = new ContactAvatar(
                 phoneThumbnail,
-                      this.get_toplevel(),
+                this.get_toplevel(),
                 32
             );
-  } catch (e) {
+        } catch (e) {
             Common.debug("Error creating avatar: " + e);
         
             thread.avatar = new Gtk.Box({
@@ -738,25 +742,25 @@ var RecipientList = new Lang.Class({
             });
             let avatarStyle = thread.avatar.get_style_context();
             avatarStyle.add_provider(MessageStyle, 0);
-            avatarStyle.add_class("thread-avatar");
+            avatarStyle.add_class("contact-avatar");
             avatarStyle.add_class("contact-color-orange");
             
             let defaultAvatar = Gtk.Image.new_from_icon_name(
-                      "avatar-default-symbolic",
-          Gtk.IconSize.LARGE_TOOLBAR
-                  );
-      defaultAvatar.visible = true;
+                "avatar-default-symbolic",
+                Gtk.IconSize.LARGE_TOOLBAR
+            );
+            defaultAvatar.visible = true;
             defaultAvatar.margin = 4;
             thread.avatar.add(defaultAvatar);
-              }
-  thread.avatar.tooltip_text = sender;
+        }
+        thread.avatar.tooltip_text = sender;
         thread.avatar.valign = Gtk.Align.END;
         thread.avatar.visible = direction;
         thread.layout.add(thread.avatar);
-              
+        
         // Messages
-  thread.messages = new Gtk.Box({
-                  visible: true,
+        thread.messages = new Gtk.Box({
+            visible: true,
             can_focus: false,
             orientation: Gtk.Orientation.VERTICAL,
             spacing: 3,
@@ -764,12 +768,12 @@ var RecipientList = new Lang.Class({
             margin_right: (direction) ? 32 : 0,
             margin_left: (direction) ? 0: 32
         });
-  thread.layout.add(thread.messages);
-              
-  return thread;
-    },    },
+        thread.layout.add(thread.messages);
+        
+        return thread;
+    },
     
-*
+    /**
      * Add a new message, calling addThread() if necessary to create a new
      * thread.
      *
@@ -783,19 +787,18 @@ var RecipientList = new Lang.Class({
     addMessage: function (sender, messageBody, phoneThumbnail, direction) {
         let nthreads = this.list.get_children().length;
         let thread, currentThread;
-              
-  if (nthreads) {
+        
+        if (nthreads) {
             let currentThread = this.list.get_row_at_index(nthreads - 1);
-                  
-      if (currentThread.avatar.tooltip_text === sender) {
+            
+            if (currentThread.avatar.tooltip_text === sender) {
                 thread = currentThread;
-                  }
+            }
         }
         
-  if (!thread) {
+        if (!thread) {
             thread = this.addThread(sender, phoneThumbnail, direction);
         }
-           }
         
         let messageBubble = new Gtk.Box({
             visible: true,
@@ -804,12 +807,11 @@ var RecipientList = new Lang.Class({
         let messageBubbleStyle = messageBubble.get_style_context();
         messageBubbleStyle.add_provider(MessageStyle, 0);
         messageBubbleStyle.add_class("message-bubble");
-d.messages.add(messageBubble);
+        thread.messages.add(messageBubble);
         
-            
         let messageContent = new Gtk.Label({
-abel: messageBody,
-            m            margin_top: 6,
+            label: messageBody,
+            margin_top: 6,
             margin_bottom: 6,
             margin_right: 12,
             margin_left: 12,
@@ -821,11 +823,14 @@ abel: messageBody,
         messageBubble.add(messageContent);
         
         if (direction === MessageDirection.IN) {
-essageBubbleStyle.add_class("contact-color-orange");
-        } els        } else if (direction === MessageDirection.OUT) {
-essageBubbleStyle.add_class("contact-color-grey");
+            messageBubbleStyle.add_class("contact-color-orange");
+        } else if (direction === MessageDirection.OUT) {
+            messageBubbleStyle.add_class("contact-color-grey");
         }
-           }
+    }
+});
+
+
     }
 });
 
