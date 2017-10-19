@@ -562,11 +562,7 @@ var RecipientList = new Lang.Class({
             visible: true,
             can_focus: false,
             column_spacing: 12,
-            row_spacing: 0,
-            margin_left: 12,
-            margin_top: 6,
-            margin_bottom: 6,
-            margin_right: 12
+            row_spacing: 0
         });
         recipient.add(recipient.layout);
         
@@ -616,6 +612,7 @@ var RecipientList = new Lang.Class({
             xalign: 0,
             hexpand: true
         });
+        recipient.phone.get_style_context().add_class("dim-label");
         recipient.layout.attach(recipient.phone, 1, 1, 1, 1);
         
         let removeButton = new Gtk.Button({
@@ -1088,7 +1085,6 @@ var ConversationWindow = new Lang.Class({
         
         if (this._recipients.has(strippedNumber)) {
             this._recipients.delete(strippedNumber);
-            this.recipientList.removeRecipient(strippedNumber);
             this.notify("recipients");
         }
     },
