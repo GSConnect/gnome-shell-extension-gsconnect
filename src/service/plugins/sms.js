@@ -884,13 +884,7 @@ var ConversationWindow = new Lang.Class({
             tooltip_text: _("Add or remove contacts")
         });
         this.contactButton.connect("clicked", () => {
-            this.headerBar.custom_title = this.contactEntry;
-            this.contactEntry.has_focus = true;
-            this.contactEntry.set_position(-1);
-            this.recipientList.visible = true;
-            
-            this.contactButton.visible = false;
-            this.messageList.visible = false;
+            this._showRecipients();
         });
         this.headerBar.pack_start(this.contactButton);
         
@@ -904,11 +898,7 @@ var ConversationWindow = new Lang.Class({
             }
             entry.text = "";
             
-            this.headerBar.custom_title = null;
-            this.recipientList.visible = false;
-            
-            this.contactButton.visible = true;
-            this.messageList.visible = true;
+            this._showMessages();
         });
         this.device.bind_property(
             "connected",
@@ -964,8 +954,7 @@ var ConversationWindow = new Lang.Class({
         
         // Recipient List
         this.recipientList = new RecipientList();
-        this.recipientList.connect("remove-recipient", (widget, phoneNumber) => {
-            log("REMOVING: " + phoneNumber);
+        this.recipientList.connect("recipient-removed", (widget, phoneNumber) => {
             this.removeRecipient(phoneNumber);
         });
         this.device.bind_property(
@@ -1010,6 +999,23 @@ var ConversationWindow = new Lang.Class({
         this.contactButton.visible = false;
         this.messageList.visible = false;
         this.has_focus = true;
+    },
+    
+    _showRecipients: function () {
+        this.headerBar.custom_title = this.contactEntry;
+        this.contactEntry.has_focus = true;
+        this.recipientList.visible = true;
+        
+        this.contactButton.visible = false;
+        this.messageList.visible = false;
+    },
+    
+    _showMessages: function () {
+        this.headerBar.custom_title = null;
+        this.recipientList.visible = false;
+        
+        this.contactButton.visible = true;
+        this.messageList.visible = true;
     },
     
     get recipients () {
