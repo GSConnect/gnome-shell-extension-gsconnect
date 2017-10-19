@@ -80,7 +80,7 @@ var MessageDirection = {
 var MessageStyle = new Gtk.CssProvider();
 // TODO: MessageStyle.load_from_resource("/style/sms.css");
 MessageStyle.load_from_data(
-    ".thread-avatar { border-radius: 16px; } " +
+    ".contact-avatar { border-radius: 16px; } " +
     ".message-bubble { border-radius: 1em; } " +
     
     ".contact-color-red { color: #ffffff; background-color: #cc0000; } " +
