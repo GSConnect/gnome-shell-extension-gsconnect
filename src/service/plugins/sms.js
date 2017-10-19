@@ -403,7 +403,7 @@ var ContactEntry = new Lang.Class({
         this.connect("changed", (entry) => {
             let styleContext = entry.get_style_context();
             
-            if (entry.text === "") {
+            if (!entry.text.length) {
                 let completion = entry.get_completion();
                 completion._matched = [];
                 completion._last = null;
@@ -810,6 +810,12 @@ var MessageList = new Lang.Class({
 });
 
 
+/** */
+var MessageEntry = new Lang.Class({
+    Name: "GSConnectMessageEntry",
+    Extends: Gtk.TextView,
+    
+    _init: function () {
     }
 });
 
@@ -1027,14 +1033,13 @@ var ConversationWindow = new Lang.Class({
      * @return {object} - Object of {contactName, phoneNumber} or {}
      */
     getContact: function (phoneNumber) {
-        let contact, strippedContact;
-        let strippedNumber = phoneNumber.replace(/\D/g, "");
+        let contact, strippedNumber;
         let model = this.contactEntry.get_completion().get_model();
         
         model.foreach((model, path, tree_iter) => {
-            strippedContact = model.get_value(tree_iter, 2).replace(/\D/g, "");
+            strippedNumber = model.get_value(tree_iter, 2).replace(/\D/g, "");
             
-            if (strippedNumber === strippedContact) {
+            if (phoneNumber === strippedNumber) {
                 contact = {
                     contactName: model.get_value(tree_iter, 1),
                     phoneNumber: model.get_value(tree_iter, 2)
@@ -1053,11 +1058,11 @@ var ConversationWindow = new Lang.Class({
         let strippedNumber = phoneNumber.replace(/\D/g, "");
         
         // Prefer data from the ContactCompletion
-        let newRecipient = Object.assign({
+        let recipient = Object.assign({
             phoneNumber: phoneNumber,
             contactName: contactName,
             phoneThumbnail: phoneThumbnail
-        }, this.getContact(phoneNumber));
+        }, this.getContact(strippedNumber));
         
         // This is an extant recipient
         if (this._recipients.has(strippedNumber)) {
@@ -1066,16 +1071,16 @@ var ConversationWindow = new Lang.Class({
                 strippedNumber,
                 Object.assign(
                     this._recipients.get(strippedNumber),
-                    newRecipient
+                    recipient
                 )
             );
         // This is a new recipient
         } else {
-            this._recipients.set(strippedNumber, newRecipient);
+            this._recipients.set(strippedNumber, recipient);
             this.recipientList.addRecipient(
-                newRecipient.phoneNumber,
-                newRecipient.contactName,
-                newRecipient.phoneThubnail
+                recipient.phoneNumber,
+                recipient.contactName,
+                recipient.phoneThumbnail
             );
         }
         
