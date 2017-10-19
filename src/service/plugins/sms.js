@@ -524,7 +524,7 @@ var RecipientList = new Lang.Class({
     Name: "GSConnectRecipientList",
     Extends: Gtk.ScrolledWindow,
     Signals: {
-        "remove-recipient": {
+        "recipient-removed": {
             flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED,
             param_types: [ GObject.TYPE_STRING ]
         }
@@ -629,19 +629,12 @@ var RecipientList = new Lang.Class({
         });
         removeButton.get_style_context().add_class("circular");
         removeButton.connect("clicked", () => {
-            this.emit("remove-recipient", phoneNumber.replace(/\D/g, ""));
+            this.emit("recipient-removed", phoneNumber.replace(/\D/g, ""));
+            this.list.remove(recipient);
         });
         recipient.layout.attach(removeButton, 2, 0, 1, 2);
         
         recipient.show_all();
-    },
-    
-    removeRecipient: function (phoneNumber) {
-        this.list.foreach((row) => {
-            if (row.phone.label.replace(/\D/g, "") === phoneNumber) {
-                this.list.remove(row);
-            }
-        });
     }
 });
 
