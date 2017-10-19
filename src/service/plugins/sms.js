@@ -368,10 +368,22 @@ var ContactCompletion = new Lang.Class({
 });
 
 
-/** A Gtk.Entry subclass for contact names and phone numbers */
+/**
+ * A Gtk.Entry subclass for contact names and phone numbers
+ */
 var ContactEntry = new Lang.Class({
     Name: "GSConnectContactEntry",
-    Extends: Gtk.SearchEntry,
+    Extends: Gtk.Entry,
+    Properties: {
+        "recipients": GObject.param_spec_variant(
+            "recipients",
+            "RecipientList", 
+            "A list of target recipient phone numbers",
+            new GLib.VariantType("as"),
+            new GLib.Variant("as", []),
+            GObject.ParamFlags.READABLE
+        )
+    },
     
     _init: function (completion) {
         this.parent({
@@ -406,8 +418,13 @@ var ContactEntry = new Lang.Class({
                 styleContext.remove_class("error");
             }
         });
+        
+        this.connect("activate", () => {
+            this.notify("recipients");
+        });
     },
     
+    // FIXME: cleanup oldContact crap
     _select: function (entry) {
         let completion = entry.get_completion();
         
@@ -428,11 +445,53 @@ var ContactEntry = new Lang.Class({
         
             entry.set_position(-1);
             completion._matched = [];
+            
+            this.notify("recipients");
         }
+    },
+    
+    get recipients () {
+        let contactItems = this.text.split(";").filter((s) => {
+            return /\S/.test(s);
+        });
+        let recipients = new Map();
+        let model = this.get_completion().get_model();
+        
+        for (let item of contactItems) {
+            item = item.trim();
+            let contact = false;
+            
+            // Search the completion for a matching known contact
+            model.foreach((model, path, tree_iter) => {
+                if (item === model.get_value(tree_iter, 0)) {
+                    contact = [
+                        model.get_value(tree_iter, 1), // Name
+                        model.get_value(tree_iter, 2) // Phone Number
+                    ];
+                    
+                    return true;
+                }
+                
+                contact = false;
+            });
+            
+            // Found a matching known contact
+            if (contact) {
+                recipients.set(contact[0], contact[1]);
+            // Just return the contact "item" as is
+            } else {
+                recipients.set(item, item);
+            }
+        }
+        
+        return recipients;
     }
 });
 
 
+/**
+ * Contact Avatar
+ */
 var ContactAvatar = new Lang.Class({
     Name: "GSConnectContactAvatar",
     Extends: Gtk.DrawingArea,
