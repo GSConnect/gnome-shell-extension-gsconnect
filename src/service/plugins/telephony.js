@@ -197,7 +197,7 @@ var Plugin = new Lang.Class({
         let window = this._hasWindow(packet.body.phoneNumber);
         
         if (window) {
-            window._logIncoming(
+            window.receive(
                 sender,
                 packet.body.messageBody,
                 packet.body.phoneThumbnail
@@ -304,9 +304,8 @@ var Plugin = new Lang.Class({
         
         // Look for an open window that will already be catching messages
         for (let index_ in windows) {
-            for (let number of windows[index_].getRecipients().values()) {
+            for (let windowNumber of windows[index_].recipients) {
                 let incomingNumber = query.replace(/\D/g, "");
-                let windowNumber = number.replace(/\D/g, "");
                 
                 if (incomingNumber === windowNumber) {
                     window = windows[index_];
@@ -429,13 +428,12 @@ var Plugin = new Lang.Class({
         // None found; open one, add the contact, log the message, mark it read
         if (!window) {
             window = new SMS.ConversationWindow(this.device.daemon, this.device);
+            window.addRecipient(phoneNumber, contactName, phoneThumbnail);
             
             if (contactName.length) {
-                window.contactEntry.text = contactName + " <" + phoneNumber + ">; ";
-                window._logIncoming(contactName, messageBody, phoneThumbnail);
+                window.receive(contactName, messageBody, phoneThumbnail);
             } else {
-                window.contactEntry.text = phoneNumber + "; ";
-                window._logIncoming(phoneNumber, messageBody, phoneThumbnail);
+                window.receive(phoneNumber, messageBody, phoneThumbnail);
             }
             
             window.urgency_hint = true;

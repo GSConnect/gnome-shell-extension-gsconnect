@@ -841,11 +841,21 @@ var MessageList = new Lang.Class({
 var ConversationWindow = new Lang.Class({
     Name: "GSConnectConversationWindow",
     Extends: Gtk.ApplicationWindow,
+    Properties: {
+        "recipients": GObject.param_spec_variant(
+            "recipients",
+            "RecipientList", 
+            "A list of target recipient phone numbers",
+            new GLib.VariantType("as"),
+            new GLib.Variant("as", []),
+            GObject.ParamFlags.READABLE
+        )
+    },
     
     _init: function(application, device) {
         this.parent({
             application: application,
-            title: "GSConnect",
+            title: _("SMS Conversation"),
             default_width: 300,
             default_height: 300,
             icon_name: "phone"
@@ -853,25 +863,87 @@ var ConversationWindow = new Lang.Class({
         
         this.device = device;
         this.plugin = this.device._plugins.get("telephony");
+        this._recipients = new Map();
+        
+        // Header Bar
+        this.headerBar = new Gtk.HeaderBar({
+            show_close_button: true,
+            title: _("New SMS Conversation")
+        });
+        this.connect("notify::recipients", () => {
+            if (this._recipients.size) {
+                let firstRecipient = this._recipients.values().next().value;
+                
+                if (firstRecipient.contactName) {
+                    this.headerBar.set_title(firstRecipient.contactName);
+                    this.headerBar.set_subtitle(firstRecipient.phoneNumber);
+                } else {
+                    this.headerBar.set_title(firstRecipient.phoneNumber);
+                }
+                
+                if (this._recipients.size > 1) {
+                    let num = this._recipients.size - 1;
+                    
+                    this.headerBar.set_subtitle(
+                        Gettext.ngettext(
+                            "And one other contact",
+                            "And %d other contacts",
+                            num
+                        ).format(num)
+                    );
+                }
+            } else {
+                // TODO: ???
+            }
+        });
+        this.set_titlebar(this.headerBar);
+        
+        // FIXME: Contact Button
+        this.contactButton = new Gtk.Button({
+            image: Gtk.Image.new_from_icon_name(
+                "contact-new-symbolic",
+                Gtk.IconSize.BUTTON
+            ),
+            always_show_image: true,
+            // TRANSLATORS: eg. Send a link to Google Pixel
+            tooltip_text: _("Add or remove contacts")
+        });
+        this.contactButton.connect("clicked", () => {
+            this.headerBar.custom_title = this.contactEntry;
+            this.contactEntry.has_focus = true;
+            this.contactEntry.set_position(-1);
+            this.recipientList.visible = true;
+            
+            this.contactButton.visible = false;
+            this.messageList.visible = false;
+        });
+        this.headerBar.pack_start(this.contactButton);
         
         // Contact Entry
         this.contactEntry = new ContactEntry(new ContactCompletion());
+        this.contactEntry.connect("notify::recipients", (entry) => {
+            log("RECIPIENTS CHANGED: " + Array.from(entry.recipients.values()));
+            
+            for (let contact of Array.from(entry.recipients.values())) {
+                this.addRecipient(contact);
+            }
+            entry.text = "";
+            
+            this.headerBar.custom_title = null;
+            this.recipientList.visible = false;
+            
+            this.contactButton.visible = true;
+            this.messageList.visible = true;
+        });
         this.device.bind_property(
             "connected",
             this.contactEntry,
             "sensitive",
             GObject.BindingFlags.DEFAULT
         );
+        this.headerBar.custom_title = this.contactEntry;
         
-        // HeaderBar
-        this.set_titlebar(
-            new Gtk.HeaderBar({
-                custom_title: this.contactEntry,
-                show_close_button: true
-            })
-        );
-        
-        // Content
+        // Content Layout
         this.layout = new Gtk.Box({
             orientation: Gtk.Orientation.VERTICAL,
             margin: 6,
@@ -893,10 +965,20 @@ var ConversationWindow = new Lang.Class({
                 use_markup: true
             })
         );
+        // See: https://bugzilla.gnome.org/show_bug.cgi?id=710888
+        this.device.connect("notify::connected", () => {
+            if (!this.device.connected) {
+                this.layout.add(this.infoBar);
+                this.layout.reorder_child(this.infoBar, 0);
+                this.infoBar.show_all();
+            } else if (this.device.connected) {
+                this.infoBar.hide();
+                this.layout.remove(this.infoBar);
+            }
+        });
         
-        // Content -> Conversation View
+        // Message List
         this.messageList = new MessageList();
-        
         this.device.bind_property(
             "connected",
             this.messageList,
@@ -946,101 +1028,108 @@ var ConversationWindow = new Lang.Class({
             "sensitive",
             GObject.BindingFlags.DEFAULT
         );
-        
         this.layout.add(this.messageEntry);
-        
-        // Device Status
-        // See: https://bugzilla.gnome.org/show_bug.cgi?id=710888
-        this.device.connect("notify::connected", () => {
-            if (!this.device.connected) {
-                this.layout.add(this.infoBar);
-                this.layout.reorder_child(this.infoBar, 0);
-                this.infoBar.show_all();
-            } else if (this.device.connected) {
-                this.infoBar.hide();
-                this.layout.remove(this.infoBar);
-            }
-        });
         
         // Finish initing
         this.show_all();
+        this.contactButton.visible = false;
+        this.messageList.visible = false;
         this.has_focus = true;
     },
     
-    _logIncoming: function (name, message, photo=null) {
+    get recipients () {
+        return Array.from(this._recipients.keys());
+    },
+    
+    /**
+     * Search the completion model for a matching phone number
+     *
+     * @param {string} phoneNumber - A phone number
+     * @return {object} - Object of {contactName, phoneNumber} or {}
+     */
+    getContact: function (phoneNumber) {
+        let contact, strippedContact;
+        let strippedNumber = phoneNumber.replace(/\D/g, "");
+        let model = this.contactEntry.get_completion().get_model();
+        
+        model.foreach((model, path, tree_iter) => {
+            strippedContact = model.get_value(tree_iter, 2).replace(/\D/g, "");
+            
+            if (strippedNumber === strippedContact) {
+                contact = {
+                    contactName: model.get_value(tree_iter, 1),
+                    phoneNumber: model.get_value(tree_iter, 2)
+                };
+            }
+        });
+        
+        return (contact) ? contact : {};
+    },
+    
+    /**
+     * Add a contact, or phone number to the list of recipients
+     *
+     */
+    addRecipient: function (phoneNumber, contactName, phoneThumbnail) {
+        let strippedNumber = phoneNumber.replace(/\D/g, "");
+        
+        // Prefer data from the ContactCompletion
+        let newRecipient = Object.assign({
+            phoneNumber: phoneNumber,
+            contactName: contactName,
+            phoneThumbnail: phoneThumbnail
+        }, this.getContact(phoneNumber));
+        
+        // This is an extant recipient
+        if (this._recipients.has(strippedNumber)) {
+            // TODO: is the set() call necessary?
+            this._recipients.set(
+                strippedNumber,
+                Object.assign(
+                    this._recipients.get(strippedNumber),
+                    newRecipient
+                )
+            );
+        // This is a new recipient
+        } else {
+            this._recipients.set(strippedNumber, newRecipient);
+            this.recipientList.addRecipient(
+                newRecipient.phoneNumber,
+                newRecipient.contactName,
+                newRecipient.phoneThubnail
+            );
+        }
+        
+        this.notify("recipients");
+    },
+    
+    /**
+     * Remove a contact by phone number from the list of recipients
+     */
+    removeRecipient: function (phoneNumber) {
+        let strippedNumber = phoneNumber.replace(/\D/g, "");
+        
+        if (this._recipients.has(strippedNumber)) {
+            this._recipients.delete(strippedNumber);
+            this.recipientList.removeRecipient(strippedNumber);
+            this.notify("recipients");
+        }
+    },
+    
+    /** Log an incoming message in the MessageList */
+    receive: function (sender, messageBody, phoneThumbnail=false) {
         this.messageList.addMessage(
-            name,
-            message,
-            photo,
+            sender,
+            messageBody,
+            phoneThumbnail,
             MessageDirection.IN
         );
     },
     
-    _logOutgoing: function (message) {
-        this.messageList.addMessage(
-            _("You"),
-            message,
-            null,
-            MessageDirection.OUT
-        );
-    },
-    
-    /**
-     * Search the contact entry and return a Map object
-     *
-     * If a match is found in the completion (list of imported contacts), it
-     * will be added to the Map with the contact name as key, phone number as
-     * value. Otherwise, the item will be added as-is as both key and value:
-     *
-     *     Map([
-     *         ["Name", "(555) 555-5555"], <= known contact
-     *         ["555-5555", "555-5555"]    <= unknown contact
-     *     ])
-     */
-    getRecipients: function () {
-        let contactItems = this.contactEntry.text.split(";").filter((s) => {
-            return /\S/.test(s);
-        });
-        let recipients = new Map();
-        let model = this.contactEntry.get_completion().get_model();
-        
-        for (let item of contactItems) {
-            item = item.trim();
-            let contact = false;
-            
-            // Search the completion for a matching known contact
-            model.foreach((model, path, tree_iter) => {
-                if (item === model.get_value(tree_iter, 0)) {
-                    contact = [
-                        model.get_value(tree_iter, 1), // Name
-                        model.get_value(tree_iter, 2) // Phone Number
-                    ];
-                    Common.debug("found recipient (name): '" + contact[0] + "'");
-                    Common.debug("found recipient (num): '" + contact[1] + "'");
-                    return true;
-                }
-                
-                contact = false;
-            });
-            
-            // Found a matching known contact
-            if (contact) {
-                recipients.set(contact[0], contact[1]);
-            // Just return the contact "item" as is
-            } else {
-                recipients.set(item, item);
-            }
-        }
-        
-        return recipients;
-    },
-    
-    /** Return a list of phone numbers that the SMS will be sent to */
+    /** Send the contents of ContactEntry to each recipient */
     send: function (entry, signal_id, event) {
-        let numbers = Array.from(this.getRecipients().values());
-        
         // Check a number/contact has been provided
-        if (!numbers.length) {
+        if (!this.recipients.length) {
             this.contactEntry.has_focus = true;
             this.contactEntry.secondary_icon_name = "dialog-error-symbolic";
             let styleContext = this.contactEntry.get_style_context();
@@ -1053,13 +1142,20 @@ var ConversationWindow = new Lang.Class({
         }
         
         // Send to each number
-        for (let number of numbers) {
+        for (let number of this.recipients) {
             this.plugin.sendSms(number, entry.text);
         }
         
-        // TRANSLATORS: A prefix for sent SMS messages
-        // eg. You: Hello from me!
-        this._logOutgoing(entry.text);
+        // Log the outgoing message
+        this.messageList.addMessage(
+            // TRANSLATORS: A prefix for sent SMS messages
+            // eg. You: Hello from me!
+            // FIXME: unnecessary, never shown
+            _("You"),
+            entry.text,
+            null,
+            MessageDirection.OUT
+        );
         entry.text = "";
     }
 });
