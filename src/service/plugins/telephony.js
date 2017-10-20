@@ -295,8 +295,10 @@ var Plugin = new Lang.Class({
     },
     
     // FIXME: not always working...?
-    _hasWindow: function (query) {
-        Common.debug("Telephony: _hasWindow(" + query + ")");
+    _hasWindow: function (phoneNumber) {
+        Common.debug("Telephony: _hasWindow(" + phoneNumber + ")");
+        
+        let incomingNumber = phoneNumber.replace(/\D/g, "");
         
         // Get the current open windows
         let windows = this.device.daemon.get_windows();
@@ -305,7 +307,6 @@ var Plugin = new Lang.Class({
         // Look for an open window that will already be catching messages
         for (let index_ in windows) {
             for (let windowNumber of windows[index_].recipients) {
-                let incomingNumber = query.replace(/\D/g, "");
                 
                 if (incomingNumber === windowNumber) {
                     window = windows[index_];
@@ -428,7 +429,8 @@ var Plugin = new Lang.Class({
         // None found; open one, add the contact, log the message, mark it read
         if (!window) {
             window = new SMS.ConversationWindow(this.device.daemon, this.device);
-            window.addRecipient(phoneNumber, contactName, phoneThumbnail);
+            // FIXME: this causes a segfault :(
+            //window.addRecipient(phoneNumber, contactName, phoneThumbnail);
             
             if (contactName.length) {
                 window.receive(contactName, messageBody, phoneThumbnail);
@@ -448,6 +450,7 @@ var Plugin = new Lang.Class({
             }
         }
         
+        window._showMessages();
         window.present();
     },
     
