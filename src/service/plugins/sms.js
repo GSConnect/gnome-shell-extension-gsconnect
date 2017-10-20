@@ -847,7 +847,7 @@ var ConversationWindow = new Lang.Class({
         });
         this.set_titlebar(this.headerBar);
         
-        // FIXME: Contact Button
+        // Contact Button
         this.contactButton = new Gtk.Button({
             image: Gtk.Image.new_from_icon_name(
                 "contact-new-symbolic",
@@ -860,6 +860,12 @@ var ConversationWindow = new Lang.Class({
         this.contactButton.connect("clicked", () => {
             this._showRecipients();
         });
+        this.device.bind_property(
+            "connected",
+            this.contactButton,
+            "sensitive",
+            GObject.BindingFlags.DEFAULT
+        );
         this.headerBar.pack_start(this.contactButton);
         
         // Contact Entry
