@@ -391,6 +391,13 @@ var ContactEntry = new Lang.Class({
         this.connect("activate", (entry) => {
             this._select(this);
         });
+        
+        this.connect("key-press-event", (entry, event, user_data) => {
+            if (event.get_keyval()[1] === Gdk.KEY_Escape) {
+                entry.text = "";
+                this._select(this);
+            }
+        });
     },
     
     _select: function (entry) {
@@ -402,15 +409,13 @@ var ContactEntry = new Lang.Class({
             
             completion._matched = [];
             
-            log("_select(): _matched > 0");
             this._parent.addRecipient(completion.model.get_value(iter, 2));
             entry.text = "";
         } else if (entry.text.length) {
-            log("_select(): _matched <= 0");
             this._parent.addRecipient(entry.text);
             entry.text = "";
-        } else {    
-            this._parent._showMessages();
+        } else {
+            this._parent.notify("recipients");
         }
     }
 });
@@ -436,13 +441,13 @@ var ContactAvatar = new Lang.Class({
             GLib.free
         );
         
-        this._pixbuf = GdkPixbuf.Pixbuf.new_from_stream(
+        let pixbuf = GdkPixbuf.Pixbuf.new_from_stream(
             image_stream,
             null
         ).scale_simple(this.size, this.size, GdkPixbuf.InterpType.HYPER);
         
         this._surface = Gdk.cairo_surface_create_from_pixbuf(
-            this._pixbuf,
+            pixbuf,
             0,
             win.get_window()
         );
@@ -462,31 +467,23 @@ var ContactAvatar = new Lang.Class({
 });
 
 
-var ConversationStack = new Lang.Class({
-    Name: "GSConnectConversationStack",
-    Extends: Gtk.Stack,
+var RecipientList = new Lang.Class({
+    Name: "GSConnectRecipientList",
+    Extends: Gtk.ScrolledWindow,
     
     _init: function (window) {
         this.parent({
-            transition_type: Gtk.StackTransitionType.SLIDE_UP_DOWN,
-            halign: Gtk.Align.FILL,
-            valign: Gtk.Align.FILL,
+            can_focus: false,
             hexpand: true,
-            vexpand: true
+            vexpand: true,
+            hscrollbar_policy: Gtk.PolicyType.NEVER,
+            margin: 6
         });
         
         this._parent = window;
         
-        // Recipient List
-        this.recipientWindow = new Gtk.ScrolledWindow({
-            can_focus: false,
-            hexpand: true,
-            vexpand: true,
-            hscrollbar_policy: Gtk.PolicyType.NEVER
-        });
-        
         let recipientFrame = new Gtk.Frame();
-        this.recipientWindow.add(recipientFrame);
+        this.add(recipientFrame);
         
         this.recipients = new Gtk.ListBox({
             visible: true,
@@ -494,70 +491,36 @@ var ConversationStack = new Lang.Class({
         });
         recipientFrame.add(this.recipients);
         
-        let placeholderLabel = new Gtk.Label({
-            label: _("<b>Choose recipients using the entry</b>"),
+        let box = new Gtk.Box({
+            orientation: Gtk.Orientation.VERTICAL,
             visible: true,
-            use_markup: true
+            hexpand: true,
+            halign: Gtk.Align.CENTER,
+            vexpand: true,
+            valign: Gtk.Align.CENTER,
+            margin: 12,
+            spacing: 12
+        });
+        
+        let placeholderImage = Gtk.Image.new_from_icon_name(
+            "contact-new-symbolic",
+            Gtk.IconSize.DIALOG
+        );
+        placeholderImage.get_style_context().add_class("dim-label");
+        placeholderImage.visible = true;
+        box.add(placeholderImage);
+        
+        let placeholderLabel = new Gtk.Label({
+            label: _("<b>Add people to start a conversation</b>"),
+            visible: true,
+            use_markup: true,
+            wrap: true,
+            justify: Gtk.Justification.CENTER
         });
         placeholderLabel.get_style_context().add_class("dim-label");
-        this.recipients.set_placeholder(placeholderLabel);
-        this.add_named(this.recipientWindow, "recipients");
         
-        // Messages List
-        this.threadWindow = new Gtk.ScrolledWindow({
-            can_focus: false,
-            hexpand: true,
-            vexpand: true,
-            hscrollbar_policy: Gtk.PolicyType.NEVER
-        });
-        
-        let threadFrame = new Gtk.Frame();
-        this.threadWindow.add(threadFrame);
-        
-        this.threads = new Gtk.ListBox({
-            visible: true,
-            halign: Gtk.Align.FILL
-        });
-        this.threads.connect("size-allocate", (widget) => {
-            let vadj = this.threadWindow.get_vadjustment();
-            vadj.set_value(vadj.get_upper() - vadj.get_page_size());
-        });
-        threadFrame.add(this.threads);
-        this.add_named(this.threadWindow, "threads");
-    },
-    
-    _getAvatar: function (phoneThumbnail) {
-        // TODO: GdkPixbuf chokes hard on non-fatally corrupted images
-        let avatar;
-        
-        try {
-            avatar = new ContactAvatar(
-                phoneThumbnail,
-                this.get_toplevel(),
-                32
-            );
-        } catch (e) {
-            Common.debug("Error creating avatar: " + e);
-        
-            avatar = new Gtk.Box({
-                width_request: 32,
-                height_request: 32
-            });
-            let avatarStyle = avatar.get_style_context();
-            avatarStyle.add_provider(MessageStyle, 0);
-            avatarStyle.add_class("contact-avatar");
-            avatarStyle.add_class("contact-color-orange");
-            
-            let defaultAvatar = Gtk.Image.new_from_icon_name(
-                "avatar-default-symbolic",
-                Gtk.IconSize.LARGE_TOOLBAR
-            );
-            defaultAvatar.visible = true;
-            defaultAvatar.margin = 4;
-            avatar.add(defaultAvatar);
-        }
-        
-        return avatar;
+        box.add(placeholderLabel);
+        this.recipients.set_placeholder(box);
     },
     
     /**
@@ -567,7 +530,7 @@ var ConversationStack = new Lang.Class({
      * @param {string} contactName - The contact name
      * @param {string} phoneThumbnail - A base64 encoded bytearray of a JPEG
      */
-    addRecipient: function (phoneNumber, contactName, phoneThumbnail) {
+    addRecipient: function (phoneNumber, contactName, phoneThumbnail, avatar) {
         let recipient = new Gtk.ListBoxRow({
             activatable: false,
             selectable: false,
@@ -586,8 +549,8 @@ var ConversationStack = new Lang.Class({
         });
         recipient.add(recipient.layout);
         
-        // Contact Avatar
-        recipient.avatar = this._getAvatar(phoneThumbnail);
+        // ContactAvatar
+        recipient.avatar = avatar;
         recipient.layout.attach(recipient.avatar, 0, 0, 1, 2);
         
         // contactName
@@ -628,6 +591,73 @@ var ConversationStack = new Lang.Class({
         recipient.layout.attach(removeButton, 2, 0, 1, 2);
         
         recipient.show_all();
+    }
+});
+
+
+var MessageView = new Lang.Class({
+    Name: "GSConnectMessageView",
+    Extends: Gtk.Box,
+    
+    _init: function (window) {
+        this.parent({
+            orientation: Gtk.Orientation.VERTICAL,
+            margin: 6,
+            spacing: 6
+        });
+        
+        this._parent = window;
+        
+        // Messages List
+        let threadFrame = new Gtk.Frame();
+        this.add(threadFrame);
+        
+        this.threadWindow = new Gtk.ScrolledWindow({
+            can_focus: false,
+            hexpand: true,
+            vexpand: true,
+            hscrollbar_policy: Gtk.PolicyType.NEVER
+        });
+        threadFrame.add(this.threadWindow);
+        
+        this.threads = new Gtk.ListBox({
+            visible: true,
+            halign: Gtk.Align.FILL
+        });
+        this.threads.connect("size-allocate", (widget) => {
+            let vadj = this.threadWindow.get_vadjustment();
+            vadj.set_value(vadj.get_upper() - vadj.get_page_size());
+        });
+        this.threadWindow.add(this.threads);
+        
+        // Message Entry
+        this.messageEntry = new Gtk.Entry({
+            hexpand: true,
+            placeholder_text: _("Type an SMS message"),
+            secondary_icon_name: "sms-send",
+            secondary_icon_activatable: true,
+            secondary_icon_sensitive: false
+        });
+        
+        this.messageEntry.connect("changed", (entry, signal_id, data) => {
+            entry.secondary_icon_sensitive = (entry.text.length);
+        });
+        
+        this.messageEntry.connect("activate", (entry, signal_id, data) => {
+            this._parent.send(entry, signal_id, data);
+        });
+        
+        this.messageEntry.connect("icon-release", (entry, signal_id, data) => {
+            this._parent.send(entry, signal_id, data);
+        });
+        
+        this._parent.device.bind_property(
+            "connected",
+            this.messageEntry,
+            "sensitive",
+            GObject.BindingFlags.DEFAULT
+        );
+        this.add(this.messageEntry);
     },
     
     /**
@@ -640,7 +670,7 @@ var ConversationStack = new Lang.Class({
      *     MessageDirection enums (either OUT [0] or IN [1])
      * @return {Gtk.ListBoxRow} - The new thread
      */
-    addThread: function (sender, phoneThumbnail, direction) {
+    addThread: function (phoneNumber, contactName, phoneThumbnail, direction) {
         let thread = new Gtk.ListBoxRow({
             activatable: false,
             selectable: false,
@@ -661,8 +691,8 @@ var ConversationStack = new Lang.Class({
         thread.add(thread.layout);
         
         // Contact Avatar
-        thread.avatar = this._getAvatar(phoneThumbnail);
-        thread.avatar.tooltip_text = sender;
+        thread.avatar = this._parent._getAvatar(phoneThumbnail);
+        thread.avatar.tooltip_text = (contactName) ? contactName : phoneNumber;
         thread.avatar.valign = Gtk.Align.END;
         thread.avatar.visible = direction;
         thread.layout.add(thread.avatar);
@@ -693,7 +723,8 @@ var ConversationStack = new Lang.Class({
      *     MessageDirection enums (either OUT [0] or IN [1])
      * @return {Gtk.ListBoxRow} - The new thread
      */
-    addMessage: function (sender, messageBody, phoneThumbnail, direction) {
+    addMessage: function (phoneNumber, contactName, messageBody, phoneThumbnail, direction) {
+        let sender = (contactName) ? contactName : phoneNumber;
         let nthreads = this.threads.get_children().length;
         let thread, currentThread;
         
@@ -706,7 +737,7 @@ var ConversationStack = new Lang.Class({
         }
         
         if (!thread) {
-            thread = this.addThread(sender, phoneThumbnail, direction);
+            thread = this.addThread(phoneNumber, contactName, phoneThumbnail, direction);
         }
         
         let messageBubble = new Gtk.Box({
@@ -803,13 +834,17 @@ var ConversationWindow = new Lang.Class({
                     
                     this.headerBar.set_subtitle(
                         Gettext.ngettext(
-                            "%s and one other contact",
-                            "%s and %d other contacts",
+                            "%s and one other person",
+                            "%s and %d other people",
                             num
                         ).format(sender, num)
                     );
                 }
+                
+                this._showMessages();
             } else {
+                this._showRecipients();
+                this.headerBar.set_subtitle(_("No contacts"));
                 // TODO: ???
             }
         });
@@ -822,7 +857,7 @@ var ConversationWindow = new Lang.Class({
                 Gtk.IconSize.BUTTON
             ),
             always_show_image: true,
-            // TRANSLATORS: eg. Send a link to Google Pixel
+            // TRANSLATORS: Tooltip for a button to add/remove people from a conversation
             tooltip_text: _("Add and remove people")
         });
         this.contactButton.connect("clicked", () => {
@@ -841,11 +876,7 @@ var ConversationWindow = new Lang.Class({
         this.headerBar.custom_title = this.contactEntry;
         
         // Content Layout
-        this.layout = new Gtk.Box({
-            orientation: Gtk.Orientation.VERTICAL,
-            margin: 6,
-            spacing: 6
-        });
+        this.layout = new Gtk.Box({ orientation: Gtk.Orientation.VERTICAL });
         this.add(this.layout);
         
         // InfoBar
@@ -875,67 +906,95 @@ var ConversationWindow = new Lang.Class({
         });
 
         // Conversation Stack (Recipients/Threads)
-        this.conversationStack = new ConversationStack(this);
-        this.device.bind_property(
-            "connected",
-            this.conversationStack,
-            "sensitive",
-            GObject.BindingFlags.DEFAULT
-        );
-        this.layout.add(this.conversationStack);
-        
-        // Message Entry
-        this.messageEntry = new Gtk.Entry({
+        this.stack = new Gtk.Stack({
+            transition_type: Gtk.StackTransitionType.SLIDE_UP_DOWN,
+            halign: Gtk.Align.FILL,
+            valign: Gtk.Align.FILL,
             hexpand: true,
-            placeholder_text: _("Type an SMS message"),
-            secondary_icon_name: "sms-send",
-            secondary_icon_activatable: true,
-            secondary_icon_sensitive: false
+            vexpand: true
         });
-        
-        this.messageEntry.connect("changed", (entry, signal_id, data) => {
-            entry.secondary_icon_sensitive = (entry.text.length);
-        });
-        
-        this.messageEntry.connect("activate", (entry, signal_id, data) => {
-            this.send(entry, signal_id, data);
-        });
-        
-        this.messageEntry.connect("icon-release", (entry, signal_id, data) => {
-            this.send(entry, signal_id, data);
-        });
-        
         this.device.bind_property(
             "connected",
-            this.messageEntry,
+            this.stack,
             "sensitive",
             GObject.BindingFlags.DEFAULT
         );
-        this.layout.add(this.messageEntry);
+        this.layout.add(this.stack);
+        
+        // Recipient List
+        this.recipientList = new RecipientList(this);
+        this.stack.add_named(this.recipientList, "recipients");
+        
+        // MessageView
+        this.messageView = new MessageView(this);
+        this.stack.add_named(this.messageView, "messages");
         
         // Finish initing
         this.show_all();
-        this._showRecipients();
         this.has_focus = true;
+        this.notify("recipients");
     },
     
     _showRecipients: function () {
         this.headerBar.custom_title = this.contactEntry;
         this.contactEntry.has_focus = true;
-        this.conversationStack.set_visible_child_name("recipients");
         
         this.contactButton.visible = false;
+        this.stack.set_visible_child_name("recipients");
     },
     
     _showMessages: function () {
         this.headerBar.custom_title = null;
         
         this.contactButton.visible = true;
-        this.conversationStack.set_visible_child_name("threads");
+        this.stack.set_visible_child_name("messages");
     },
     
     get recipients () {
         return Array.from(this._recipients.keys());
+    },
+    
+    _getAvatar: function (phoneThumbnail) {
+        // TODO: GdkPixbuf chokes hard on non-fatally corrupted images
+        let avatar;
+        
+        try {
+            // TODO: on hold until it stops segfaulting
+            //avatar = new ContactAvatar(
+            //    phoneThumbnail,
+            //    this.get_toplevel(),
+            //    32
+            //);
+            
+            let bytes = GLib.base64_decode(phoneThumbnail);
+            avatar = Gtk.Image.new_from_gicon(
+                Gio.BytesIcon.new(bytes),
+                Gtk.IconSize.DND
+            );
+            avatar.height_request = 32;
+            avatar.width_request = 32;
+        } catch (e) {
+            Common.debug("Error creating avatar: " + e);
+        
+            avatar = new Gtk.Box({
+                width_request: 32,
+                height_request: 32
+            });
+            let avatarStyle = avatar.get_style_context();
+            avatarStyle.add_provider(MessageStyle, 0);
+            avatarStyle.add_class("contact-avatar");
+            avatarStyle.add_class("contact-color-grey");
+            
+            let defaultAvatar = Gtk.Image.new_from_icon_name(
+                "avatar-default-symbolic",
+                Gtk.IconSize.LARGE_TOOLBAR
+            );
+            defaultAvatar.visible = true;
+            defaultAvatar.margin = 4;
+            avatar.add(defaultAvatar);
+        }
+        
+        return avatar;
     },
     
     /**
@@ -973,7 +1032,8 @@ var ConversationWindow = new Lang.Class({
         let recipient = Object.assign({
             phoneNumber: phoneNumber,
             contactName: contactName,
-            phoneThumbnail: phoneThumbnail
+            phoneThumbnail: phoneThumbnail,
+            avatar: this._getAvatar(phoneThumbnail)
         }, this.getCompletionContact(strippedNumber));
         
         // This is an extant recipient
@@ -989,15 +1049,15 @@ var ConversationWindow = new Lang.Class({
         // This is a new recipient
         } else {
             this._recipients.set(strippedNumber, recipient);
-            this.conversationStack.addRecipient(
+            this.recipientList.addRecipient(
                 recipient.phoneNumber,
                 recipient.contactName,
-                recipient.phoneThumbnail
+                recipient.phoneThumbnail,
+                recipient.avatar
             );
         }
         
         this.notify("recipients");
-        this._showMessages();
     },
     
     /**
@@ -1013,9 +1073,18 @@ var ConversationWindow = new Lang.Class({
     },
     
     /** Log an incoming message in the MessageList */
-    receive: function (sender, messageBody, phoneThumbnail=false) {
-        this.conversationStack.addMessage(
-            sender,
+    receive: function (phoneNumber, contactName, messageBody, phoneThumbnail=false) {
+        // This is causing a segfault *if* it's the first time a window has
+        // been opened...
+        this.addRecipient(
+            phoneNumber,
+            contactName,
+            phoneThumbnail
+        );
+    
+        this.messageView.addMessage(
+            phoneNumber,
+            contactName,
             messageBody,
             phoneThumbnail,
             MessageDirection.IN
@@ -1030,7 +1099,8 @@ var ConversationWindow = new Lang.Class({
         }
         
         // Log the outgoing message
-        this.conversationStack.addMessage(
+        this.messageView.addMessage(
+            "0",
             // TRANSLATORS: A prefix for sent SMS messages
             // eg. You: Hello from me!
             // FIXME: unnecessary, never shown
