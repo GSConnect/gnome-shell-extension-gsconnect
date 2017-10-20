@@ -355,6 +355,7 @@ var ContactEntry = new Lang.Class({
         this.parent({
             hexpand: true,
             placeholder_text: _("Type a phone number"),
+            tooltip_text: _("Type a phone number"),
             primary_icon_name: "call-start-symbolic",
             primary_icon_activatable: false,
             primary_icon_sensitive: true,
@@ -367,6 +368,7 @@ var ContactEntry = new Lang.Class({
         // TODO: make singleton?
         this.completion.connect("notify::provider", (completion) => {
             this.placeholder_text = _("Type a phone number or name");
+            this.tooltip_text = _("Type a phone number or name");
             this.primary_icon_name = this.completion.provider;
             this.input_purpose = Gtk.InputPurpose.FREE_FORM;
         });
