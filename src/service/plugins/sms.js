@@ -280,17 +280,12 @@ var ContactCompletion = new Lang.Class({
     /** Multi-recipient capable match function */
     _match: function (completion, key, tree_iter) {
         let model = completion.get_model();
-        let title = model.get_value(tree_iter, 0).toLowerCase();
         let name = model.get_value(tree_iter, 1).toLowerCase();
         let number = model.get_value(tree_iter, 2);
+        let recipients = this.get_entry()._parent._recipients;
         
-        let currentContacts = key.split(";").slice(0, -1);
-        
-        // Set key to the last or only search item, trimmed of whitespace
-        if (key.indexOf(";") > -1) { key = key.split(";").pop().trim(); }
-        
-        // Return if the possible match is in the current list
-        if (currentContacts.indexOf(title) > -1) { return false; }
+        // Return if the possible match is in the current recipients
+        if (recipients.has(number.replace(/\D/g, ""))) { return false; }
         
         // Clear current matches, reset last key and return if the key is empty
         if (!key.length) {
