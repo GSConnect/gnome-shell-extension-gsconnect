@@ -315,13 +315,9 @@ var ContactCompletion = new Lang.Class({
     /** Add selected auto-complete entry to list of contacts in the entry */
     _select: function (completion, model, tree_iter) {
         let entry = completion.get_entry();
-        
-        entry.set_text(model.get_value(tree_iter, 0) + "; ");
-        entry.set_position(-1);
         this._matched = [];
-        
-        // TODO: use a signal instead?
-        entry.notify("recipients");
+        entry._parent.addRecipient(model.get_value(tree_iter, 2));
+        entry.text = "";
         
         return true;
     },
@@ -359,18 +355,8 @@ var ContactCompletion = new Lang.Class({
 var ContactEntry = new Lang.Class({
     Name: "GSConnectContactEntry",
     Extends: Gtk.Entry,
-    Properties: {
-        "recipients": GObject.param_spec_variant(
-            "recipients",
-            "RecipientList", 
-            "A list of target recipient phone numbers",
-            new GLib.VariantType("as"),
-            new GLib.Variant("as", []),
-            GObject.ParamFlags.READABLE
-        )
-    },
     
-    _init: function (completion) {
+    _init: function (window, completion) {
         this.parent({
             hexpand: true,
             placeholder_text: _("Type a phone number"),
@@ -380,6 +366,8 @@ var ContactEntry = new Lang.Class({
             input_purpose: Gtk.InputPurpose.PHONE,
             completion: completion
         });
+        
+        this._parent = window;
         
         // TODO: make singleton?
         this.completion.connect("notify::provider", (completion) => {
@@ -404,8 +392,9 @@ var ContactEntry = new Lang.Class({
             }
         });
         
-        this.connect("activate", () => {
-            this.notify("recipients");
+        this.connect("activate", (entry) => {
+            log("activate calling _select()");
+            this._select(this);
         });
     },
     
@@ -415,50 +404,19 @@ var ContactEntry = new Lang.Class({
         if (completion._matched.length > 0) {
             let iter_path = completion._matched["0"];
             let [b, iter] = completion.model.get_iter_from_string(iter_path);
-        
-            entry.set_text(completion.model.get_value(iter, 0) + "; ");
-            entry.set_position(-1);
+            
             completion._matched = [];
             
-            this.notify("recipients");
+            log("_select(): _matched > 0");
+            this._parent.addRecipient(completion.model.get_value(iter, 2));
+            entry.text = "";
+        } else if (entry.text.length) {
+            log("_select(): _matched <= 0");
+            this._parent.addRecipient(entry.text);
+            entry.text = "";
+        } else {    
+            this._parent._showMessages();
         }
-    },
-    
-    get recipients () {
-        let contactItems = this.text.split(";").filter((s) => {
-            return /\S/.test(s);
-        });
-        let recipients = new Map();
-        let model = this.get_completion().get_model();
-        
-        for (let item of contactItems) {
-            item = item.trim();
-            let contact = false;
-            
-            // Search the completion for a matching known contact
-            model.foreach((model, path, tree_iter) => {
-                if (item === model.get_value(tree_iter, 0)) {
-                    contact = [
-                        model.get_value(tree_iter, 1), // Name
-                        model.get_value(tree_iter, 2) // Phone Number
-                    ];
-                    
-                    return true;
-                }
-                
-                contact = false;
-            });
-            
-            // Found a matching known contact
-            if (contact) {
-                recipients.set(contact[0], contact[1]);
-            // Just return the contact "item" as is
-            } else {
-                recipients.set(item, item);
-            }
-        }
-        
-        return recipients;
     }
 });
 
@@ -881,17 +839,7 @@ var ConversationWindow = new Lang.Class({
         this.headerBar.pack_start(this.contactButton);
         
         // Contact Entry
-        this.contactEntry = new ContactEntry(new ContactCompletion());
-        this.contactEntry.connect("notify::recipients", (entry) => {
-            log("RECIPIENTS CHANGED: " + Array.from(entry.recipients.values()));
-            
-            for (let contact of Array.from(entry.recipients.values())) {
-                this.addRecipient(contact);
-            }
-            entry.text = "";
-            
-            this._showMessages();
-        });
+        this.contactEntry = new ContactEntry(this, new ContactCompletion());
         this.device.bind_property(
             "connected",
             this.contactEntry,
