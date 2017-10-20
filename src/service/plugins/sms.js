@@ -467,59 +467,76 @@ var ContactAvatar = new Lang.Class({
 });
 
 
-/**
- * A Gtk.ScrolledWindow with Gtk.ListBox for storing current recipients
- */
-var RecipientList = new Lang.Class({
-    Name: "GSConnectRecipientList",
-    Extends: Gtk.ScrolledWindow,
-    Signals: {
-        "recipient-removed": {
-            flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED,
-            param_types: [ GObject.TYPE_STRING ]
-        }
-    },
+var ConversationStack = new Lang.Class({
+    Name: "GSConnectConversationStack",
+    Extends: Gtk.Stack,
     
-    _init: function () {
+    _init: function (window) {
         this.parent({
-            can_focus: false,
+            transition_type: Gtk.StackTransitionType.SLIDE_UP_DOWN,
+            halign: Gtk.Align.FILL,
+            valign: Gtk.Align.FILL,
             hexpand: true,
             vexpand: true
         });
         
-        let frame = new Gtk.Frame();
-        this.add(frame);
+        this._parent = window;
         
-        this.list = new Gtk.ListBox({
+        // Recipient List
+        this.recipientWindow = new Gtk.ScrolledWindow({
+            can_focus: false,
+            hexpand: true,
+            vexpand: true,
+            hscrollbar_policy: Gtk.PolicyType.NEVER
+        });
+        
+        let recipientFrame = new Gtk.Frame();
+        this.recipientWindow.add(recipientFrame);
+        
+        this.recipients = new Gtk.ListBox({
             visible: true,
             halign: Gtk.Align.FILL
         });
-        frame.add(this.list);
+        recipientFrame.add(this.recipients);
+        
+        let placeholderLabel = new Gtk.Label({
+            label: _("<b>Choose recipients using the entry</b>"),
+            visible: true,
+            use_markup: true
+        });
+        placeholderLabel.get_style_context().add_class("dim-label");
+        this.recipients.set_placeholder(placeholderLabel);
+        this.add_named(this.recipientWindow, "recipients");
+        
+        // Messages List
+        this.threadWindow = new Gtk.ScrolledWindow({
+            can_focus: false,
+            hexpand: true,
+            vexpand: true,
+            hscrollbar_policy: Gtk.PolicyType.NEVER
+        });
+        
+        let threadFrame = new Gtk.Frame();
+        this.threadWindow.add(threadFrame);
+        
+        this.threads = new Gtk.ListBox({
+            visible: true,
+            halign: Gtk.Align.FILL
+        });
+        this.threads.connect("size-allocate", (widget) => {
+            let vadj = this.threadWindow.get_vadjustment();
+            vadj.set_value(vadj.get_upper() - vadj.get_page_size());
+        });
+        threadFrame.add(this.threads);
+        this.add_named(this.threadWindow, "threads");
     },
     
-    addRecipient: function (phoneNumber, contactName, phoneThumbnail) {
-        let recipient = new Gtk.ListBoxRow({
-            activatable: false,
-            selectable: false,
-            hexpand: true,
-            halign: Gtk.Align.FILL,
-            visible: true,
-            margin: 6
-        });
-        this.list.add(recipient);
-        
-        recipient.layout = new Gtk.Grid({
-            visible: true,
-            can_focus: false,
-            column_spacing: 12,
-            row_spacing: 0
-        });
-        recipient.add(recipient.layout);
-        
-        // Contact Avatar
+    _getAvatar: function (phoneThumbnail) {
         // TODO: GdkPixbuf chokes hard on non-fatally corrupted images
+        let avatar;
+        
         try {
-            recipient.avatar = new ContactAvatar(
+            avatar = new ContactAvatar(
                 phoneThumbnail,
                 this.get_toplevel(),
                 32
@@ -527,11 +544,11 @@ var RecipientList = new Lang.Class({
         } catch (e) {
             Common.debug("Error creating avatar: " + e);
         
-            recipient.avatar = new Gtk.Box({
+            avatar = new Gtk.Box({
                 width_request: 32,
                 height_request: 32
             });
-            let avatarStyle = recipient.avatar.get_style_context();
+            let avatarStyle = avatar.get_style_context();
             avatarStyle.add_provider(MessageStyle, 0);
             avatarStyle.add_class("contact-avatar");
             avatarStyle.add_class("contact-color-orange");
@@ -542,10 +559,43 @@ var RecipientList = new Lang.Class({
             );
             defaultAvatar.visible = true;
             defaultAvatar.margin = 4;
-            recipient.avatar.add(defaultAvatar);
+            avatar.add(defaultAvatar);
         }
+        
+        return avatar;
+    },
+    
+    /**
+     * Add a new recipient, ...
+     *
+     * @param {string} phoneNumber - The contact phone number
+     * @param {string} contactName - The contact name
+     * @param {string} phoneThumbnail - A base64 encoded bytearray of a JPEG
+     */
+    addRecipient: function (phoneNumber, contactName, phoneThumbnail) {
+        let recipient = new Gtk.ListBoxRow({
+            activatable: false,
+            selectable: false,
+            hexpand: true,
+            halign: Gtk.Align.FILL,
+            visible: true,
+            margin: 6
+        });
+        this.recipients.add(recipient);
+        
+        recipient.layout = new Gtk.Grid({
+            visible: true,
+            can_focus: false,
+            column_spacing: 12,
+            row_spacing: 0
+        });
+        recipient.add(recipient.layout);
+        
+        // Contact Avatar
+        recipient.avatar = this._getAvatar(phoneThumbnail);
         recipient.layout.attach(recipient.avatar, 0, 0, 1, 2);
         
+        // contactName
         recipient.contact = new Gtk.Label({
             label: (contactName) ? contactName : _("Unknown Contact"),
             visible: true,
@@ -555,6 +605,7 @@ var RecipientList = new Lang.Class({
         });
         recipient.layout.attach(recipient.contact, 1, 0, 1, 1);
         
+        // phoneNumber
         recipient.phone = new Gtk.Label({
             label: phoneNumber,
             visible: true,
@@ -576,42 +627,12 @@ var RecipientList = new Lang.Class({
         });
         removeButton.get_style_context().add_class("circular");
         removeButton.connect("clicked", () => {
-            this.emit("recipient-removed", phoneNumber.replace(/\D/g, ""));
-            this.list.remove(recipient);
+            this._parent.removeRecipient(phoneNumber.replace(/\D/g, ""));
+            this.recipients.remove(recipient);
         });
         recipient.layout.attach(removeButton, 2, 0, 1, 2);
         
         recipient.show_all();
-    }
-});
-
-
-/**
- * A Gtk.ScrolledWindow with Gtk.ListBox for storing threads of messages
- */
-var MessageList = new Lang.Class({
-    Name: "GSConnectMessageList",
-    Extends: Gtk.ScrolledWindow,
-    
-    _init: function () {
-        this.parent({
-            can_focus: false,
-            hexpand: true,
-            vexpand: true
-        });
-        
-        let frame = new Gtk.Frame();
-        this.add(frame);
-        
-        this.list = new Gtk.ListBox({
-            visible: true,
-            halign: Gtk.Align.FILL
-        });
-        this.list.connect("size-allocate", (widget) => {
-            let vadj = this.get_vadjustment();
-            vadj.set_value(vadj.get_upper() - vadj.get_page_size());
-        });
-        frame.add(this.list);
     },
     
     /**
@@ -633,7 +654,7 @@ var MessageList = new Lang.Class({
             visible: true,
             margin: 6
         });
-        this.list.add(thread);
+        this.threads.add(thread);
         
         thread.layout = new Gtk.Box({
             visible: true,
@@ -645,33 +666,7 @@ var MessageList = new Lang.Class({
         thread.add(thread.layout);
         
         // Contact Avatar
-        // TODO: GdkPixbuf chokes hard on non-fatally corrupted images
-        try {
-            thread.avatar = new ContactAvatar(
-                phoneThumbnail,
-                this.get_toplevel(),
-                32
-            );
-        } catch (e) {
-            Common.debug("Error creating avatar: " + e);
-        
-            thread.avatar = new Gtk.Box({
-                width_request: 32,
-                height_request: 32
-            });
-            let avatarStyle = thread.avatar.get_style_context();
-            avatarStyle.add_provider(MessageStyle, 0);
-            avatarStyle.add_class("contact-avatar");
-            avatarStyle.add_class("contact-color-orange");
-            
-            let defaultAvatar = Gtk.Image.new_from_icon_name(
-                "avatar-default-symbolic",
-                Gtk.IconSize.LARGE_TOOLBAR
-            );
-            defaultAvatar.visible = true;
-            defaultAvatar.margin = 4;
-            thread.avatar.add(defaultAvatar);
-        }
+        thread.avatar = this._getAvatar(phoneThumbnail);
         thread.avatar.tooltip_text = sender;
         thread.avatar.valign = Gtk.Align.END;
         thread.avatar.visible = direction;
@@ -704,11 +699,11 @@ var MessageList = new Lang.Class({
      * @return {Gtk.ListBoxRow} - The new thread
      */
     addMessage: function (sender, messageBody, phoneThumbnail, direction) {
-        let nthreads = this.list.get_children().length;
+        let nthreads = this.threads.get_children().length;
         let thread, currentThread;
         
         if (nthreads) {
-            let currentThread = this.list.get_row_at_index(nthreads - 1);
+            let currentThread = this.threads.get_row_at_index(nthreads - 1);
             
             if (currentThread.avatar.tooltip_text === sender) {
                 thread = currentThread;
@@ -793,28 +788,30 @@ var ConversationWindow = new Lang.Class({
         // Header Bar
         this.headerBar = new Gtk.HeaderBar({
             show_close_button: true,
-            title: _("New SMS Conversation")
+            title: _("SMS Conversation")
         });
         this.connect("notify::recipients", () => {
             if (this._recipients.size) {
                 let firstRecipient = this._recipients.values().next().value;
+                let sender;
                 
                 if (firstRecipient.contactName) {
-                    this.headerBar.set_title(firstRecipient.contactName);
-                    this.headerBar.set_subtitle(firstRecipient.phoneNumber);
+                    sender = firstRecipient.contactName;
                 } else {
-                    this.headerBar.set_title(firstRecipient.phoneNumber);
+                    sender = firstRecipient.phoneNumber;
                 }
+                
+                this.headerBar.set_subtitle(sender);
                 
                 if (this._recipients.size > 1) {
                     let num = this._recipients.size - 1;
                     
                     this.headerBar.set_subtitle(
                         Gettext.ngettext(
-                            "And one other contact",
-                            "And %d other contacts",
+                            "%s and one other contact",
+                            "%s and %d other contacts",
                             num
-                        ).format(num)
+                        ).format(sender, num)
                     );
                 }
             } else {
@@ -831,7 +828,7 @@ var ConversationWindow = new Lang.Class({
             ),
             always_show_image: true,
             // TRANSLATORS: eg. Send a link to Google Pixel
-            tooltip_text: _("Add or remove contacts")
+            tooltip_text: _("Add and remove people")
         });
         this.contactButton.connect("clicked", () => {
             this._showRecipients();
@@ -881,29 +878,16 @@ var ConversationWindow = new Lang.Class({
                 this.layout.remove(this.infoBar);
             }
         });
-        
-        // Message List
-        this.messageList = new MessageList();
+
+        // Conversation Stack (Recipients/Threads)
+        this.conversationStack = new ConversationStack(this);
         this.device.bind_property(
             "connected",
-            this.messageList,
+            this.conversationStack,
             "sensitive",
             GObject.BindingFlags.DEFAULT
         );
-        this.layout.add(this.messageList);
-        
-        // Recipient List
-        this.recipientList = new RecipientList();
-        this.recipientList.connect("recipient-removed", (widget, phoneNumber) => {
-            this.removeRecipient(phoneNumber);
-        });
-        this.device.bind_property(
-            "connected",
-            this.recipientList,
-            "sensitive",
-            GObject.BindingFlags.DEFAULT
-        );
-        this.layout.add(this.recipientList);
+        this.layout.add(this.conversationStack);
         
         // Message Entry
         this.messageEntry = new Gtk.Entry({
@@ -915,7 +899,7 @@ var ConversationWindow = new Lang.Class({
         });
         
         this.messageEntry.connect("changed", (entry, signal_id, data) => {
-            entry.secondary_icon_sensitive = (entry.text.length) ? true : false;
+            entry.secondary_icon_sensitive = (entry.text.length);
         });
         
         this.messageEntry.connect("activate", (entry, signal_id, data) => {
@@ -936,26 +920,23 @@ var ConversationWindow = new Lang.Class({
         
         // Finish initing
         this.show_all();
-        this.contactButton.visible = false;
-        this.messageList.visible = false;
+        this._showRecipients();
         this.has_focus = true;
     },
     
     _showRecipients: function () {
         this.headerBar.custom_title = this.contactEntry;
         this.contactEntry.has_focus = true;
-        this.recipientList.visible = true;
+        this.conversationStack.set_visible_child_name("recipients");
         
         this.contactButton.visible = false;
-        this.messageList.visible = false;
     },
     
     _showMessages: function () {
         this.headerBar.custom_title = null;
-        this.recipientList.visible = false;
         
         this.contactButton.visible = true;
-        this.messageList.visible = true;
+        this.conversationStack.set_visible_child_name("threads");
     },
     
     get recipients () {
@@ -1013,7 +994,7 @@ var ConversationWindow = new Lang.Class({
         // This is a new recipient
         } else {
             this._recipients.set(strippedNumber, recipient);
-            this.recipientList.addRecipient(
+            this.conversationStack.addRecipient(
                 recipient.phoneNumber,
                 recipient.contactName,
                 recipient.phoneThumbnail
@@ -1021,6 +1002,7 @@ var ConversationWindow = new Lang.Class({
         }
         
         this.notify("recipients");
+        this._showMessages();
     },
     
     /**
@@ -1037,7 +1019,7 @@ var ConversationWindow = new Lang.Class({
     
     /** Log an incoming message in the MessageList */
     receive: function (sender, messageBody, phoneThumbnail=false) {
-        this.messageList.addMessage(
+        this.conversationStack.addMessage(
             sender,
             messageBody,
             phoneThumbnail,
@@ -1066,7 +1048,7 @@ var ConversationWindow = new Lang.Class({
         }
         
         // Log the outgoing message
-        this.messageList.addMessage(
+        this.conversationStack.addMessage(
             // TRANSLATORS: A prefix for sent SMS messages
             // eg. You: Hello from me!
             // FIXME: unnecessary, never shown
