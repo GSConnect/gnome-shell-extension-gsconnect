@@ -198,7 +198,8 @@ var Plugin = new Lang.Class({
         
         if (window) {
             window.receive(
-                sender,
+                packet.body.phoneNumber,
+                packet.body.contactName,
                 packet.body.messageBody,
                 packet.body.phoneThumbnail
             );
@@ -230,11 +231,11 @@ var Plugin = new Lang.Class({
                 "app.replySms(('" +
                 this._dbus.get_object_path() +
                 "','" +
-                packet.body.phoneNumber +
+                escape(packet.body.phoneNumber) +
                 "','" +
-                packet.body.contactName +
+                escape(packet.body.contactName) +
                 "','" +
-                packet.body.messageBody +
+                escape(packet.body.messageBody) +
                 "','" +
                 packet.body.phoneThumbnail +
                 "'))"
@@ -429,14 +430,13 @@ var Plugin = new Lang.Class({
         // None found; open one, add the contact, log the message, mark it read
         if (!window) {
             window = new SMS.ConversationWindow(this.device.daemon, this.device);
-            // FIXME: this causes a segfault :(
-            //window.addRecipient(phoneNumber, contactName, phoneThumbnail);
             
-            if (contactName.length) {
-                window.receive(contactName, messageBody, phoneThumbnail);
-            } else {
-                window.receive(phoneNumber, messageBody, phoneThumbnail);
-            }
+            window.receive(
+                unescape(phoneNumber),
+                unescape(contactName),
+                unescape(messageBody),
+                phoneThumbnail
+            );
             
             window.urgency_hint = true;
             
