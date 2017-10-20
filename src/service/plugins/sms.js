@@ -949,7 +949,7 @@ var ConversationWindow = new Lang.Class({
      * @param {string} phoneNumber - A phone number
      * @return {object} - Object of {contactName, phoneNumber} or {}
      */
-    getContact: function (phoneNumber) {
+    getCompletionContact: function (phoneNumber) {
         let contact, strippedNumber;
         let model = this.contactEntry.get_completion().get_model();
         
@@ -979,7 +979,7 @@ var ConversationWindow = new Lang.Class({
             phoneNumber: phoneNumber,
             contactName: contactName,
             phoneThumbnail: phoneThumbnail
-        }, this.getContact(strippedNumber));
+        }, this.getCompletionContact(strippedNumber));
         
         // This is an extant recipient
         if (this._recipients.has(strippedNumber)) {
