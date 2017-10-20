@@ -1,12 +1,4 @@
-/**
- * sms.js - A simple dialog for sending SMS messages with GSConnect/KDE Connect
- * with (optional) Google Contacts auto-completion via Gnome Online Accounts.
- *
- * A great deal of credit and appreciation is owed to the indicator-kdeconnect
- * developers for the sister Python script 'Sms.py':
- * 
- * https://github.com/Bajoja/indicator-kdeconnect/blob/master/src/sms/Sms.py
- */
+"use strict";
 
 const Lang = imports.lang;
 const Gettext = imports.gettext.domain("gsconnect");
