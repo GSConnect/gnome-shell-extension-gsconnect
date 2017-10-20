@@ -811,42 +811,8 @@ var ConversationWindow = new Lang.Class({
         this._recipients = new Map();
         
         // Header Bar
-        this.headerBar = new Gtk.HeaderBar({
-            show_close_button: true,
-            title: _("SMS Conversation")
-        });
-        this.connect("notify::recipients", () => {
-            if (this._recipients.size) {
-                let firstRecipient = this._recipients.values().next().value;
-                let sender;
-                
-                if (firstRecipient.contactName) {
-                    sender = firstRecipient.contactName;
-                } else {
-                    sender = firstRecipient.phoneNumber;
-                }
-                
-                this.headerBar.set_subtitle(sender);
-                
-                if (this._recipients.size > 1) {
-                    let num = this._recipients.size - 1;
-                    
-                    this.headerBar.set_subtitle(
-                        Gettext.ngettext(
-                            "%s and one other person",
-                            "%s and %d other people",
-                            num
-                        ).format(sender, num)
-                    );
-                }
-                
-                this._showMessages();
-            } else {
-                this._showRecipients();
-                this.headerBar.set_subtitle(_("No contacts"));
-                // TODO: ???
-            }
-        });
+        this.headerBar = new Gtk.HeaderBar({ show_close_button: true });
+        this.connect("notify::recipients", () => { this._setHeaderBar(); });
         this.set_titlebar(this.headerBar);
         
         // Contact Button
@@ -869,6 +835,26 @@ var ConversationWindow = new Lang.Class({
             GObject.BindingFlags.DEFAULT
         );
         this.headerBar.pack_start(this.contactButton);
+        
+        // Messages Button
+        this.messagesButton = new Gtk.Button({
+            image: Gtk.Image.new_from_icon_name(
+                "go-previous-symbolic",
+                Gtk.IconSize.BUTTON
+            ),
+            always_show_image: true
+        });
+        this.messagesButton.connect("clicked", () => {
+            this.contactEntry.text = "";
+            this._showMessages();
+        });
+        this.device.bind_property(
+            "connected",
+            this.messagesButton,
+            "sensitive",
+            GObject.BindingFlags.DEFAULT
+        );
+        this.headerBar.pack_start(this.messagesButton);
         
         // Contact Entry
         this.contactEntry = new ContactEntry(this, new ContactCompletion());
@@ -939,10 +925,59 @@ var ConversationWindow = new Lang.Class({
         this.notify("recipients");
     },
     
+    _setHeaderBar: function () {
+        if (this._recipients.size) {
+            let firstRecipient = this._recipients.values().next().value;
+            
+            if (firstRecipient.contactName) {
+                this.headerBar.set_title(firstRecipient.contactName);
+            } else {
+                this.headerBar.set_title(firstRecipient.phoneNumber);
+            }
+            
+            if (this._recipients.size > 1) {
+                let num = this._recipients.size - 1;
+                
+                this.headerBar.set_subtitle(
+                    Gettext.ngettext(
+                        "And one other person",
+                        "And %d other people",
+                        num
+                    ).format(num)
+                );
+            } else {
+                this.headerBar.set_subtitle(null);
+            }
+                
+            let people = [];
+            
+            for (let recipient of this._recipients.values()) {
+                if (recipient.contactName) {
+                    people.push(recipient.contactName);
+                } else {
+                    people.push(recipient.phoneNumber);
+                }
+            }
+            
+            this.headerBar.set_tooltip_text(
+                // TRANSLATORS: eg. SMS Conversation with John, Paul, George, Ringo
+                _("SMS Conversation with %s").format(people.join(", "))
+            );
+            
+            this._showMessages();
+        } else {
+            this.headerBar.set_title(_("New SMS Conversation"));
+            this.headerBar.set_subtitle(null);
+            this.headerBar.set_tooltip_text("");
+            this._showRecipients();
+        }
+    },
+    
     _showRecipients: function () {
         this.headerBar.custom_title = this.contactEntry;
         this.contactEntry.has_focus = true;
         
+        this.messagesButton.visible = (this._recipients.size);
         this.contactButton.visible = false;
         this.stack.set_visible_child_name("recipients");
     },
@@ -950,6 +985,7 @@ var ConversationWindow = new Lang.Class({
     _showMessages: function () {
         this.headerBar.custom_title = null;
         
+        this.messagesButton.visible = false;
         this.contactButton.visible = true;
         this.stack.set_visible_child_name("messages");
     },
