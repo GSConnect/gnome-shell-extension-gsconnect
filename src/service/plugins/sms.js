@@ -879,7 +879,7 @@ var ConversationWindow = new Lang.Class({
         this.headerBar.custom_title = this.contactEntry;
         
         // Content Layout
-        this.layout = new Gtk.Box({ orientation: Gtk.Orientation.VERTICAL });
+        this.layout = new Gtk.Grid();
         this.add(this.layout);
         
         // InfoBar
@@ -899,8 +899,7 @@ var ConversationWindow = new Lang.Class({
         // See: https://bugzilla.gnome.org/show_bug.cgi?id=710888
         this.device.connect("notify::connected", () => {
             if (!this.device.connected) {
-                this.layout.add(this.infoBar);
-                this.layout.reorder_child(this.infoBar, 0);
+                this.layout.attach(this.infoBar, 0, 0, 1, 1);
                 this.infoBar.show_all();
             } else if (this.device.connected) {
                 this.infoBar.hide();
@@ -922,7 +921,7 @@ var ConversationWindow = new Lang.Class({
             "sensitive",
             GObject.BindingFlags.DEFAULT
         );
-        this.layout.add(this.stack);
+        this.layout.attach(this.stack, 0, 1, 1, 1);
         
         // Recipient List
         this.recipientList = new RecipientList(this);
