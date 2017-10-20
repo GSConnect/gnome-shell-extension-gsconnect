@@ -381,19 +381,14 @@ var ContactEntry = new Lang.Class({
         
         // Workaround for empty searches not calling CompletionMatchFunc
         this.connect("changed", (entry) => {
-            let styleContext = entry.get_style_context();
-            
             if (!entry.text.length) {
                 let completion = entry.get_completion();
                 completion._matched = [];
                 completion._last = null;
-            } else if (styleContext.has_class("error")) {
-                styleContext.remove_class("error");
             }
         });
         
         this.connect("activate", (entry) => {
-            log("activate calling _select()");
             this._select(this);
         });
     },
@@ -1029,19 +1024,6 @@ var ConversationWindow = new Lang.Class({
     
     /** Send the contents of ContactEntry to each recipient */
     send: function (entry, signal_id, event) {
-        // Check a number/contact has been provided
-        if (!this.recipients.length) {
-            this.contactEntry.has_focus = true;
-            this.contactEntry.secondary_icon_name = "dialog-error-symbolic";
-            let styleContext = this.contactEntry.get_style_context();
-            
-            if (!styleContext.has_class("error")) {
-                styleContext.add_class("error");
-            }
-            
-            return false;
-        }
-        
         // Send to each number
         for (let number of this.recipients) {
             this.plugin.sendSms(number, entry.text);
