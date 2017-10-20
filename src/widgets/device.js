@@ -25,12 +25,12 @@ const Common = imports.common;
 /** Gtk widget for plugin enabling/disabling */
 var PluginControl = new Lang.Class({
     Name: "GSConnectPluginControl",
-    Extends: Gtk.Box,
+    Extends: Gtk.Grid,
     
     _init: function (page, name) {
         this.parent({
             orientation: Gtk.Orientation.HORIZONTAL,
-            spacing: 12
+            column_spacing: 12
         });
         
         this._page = page;
@@ -54,7 +54,7 @@ var PluginControl = new Lang.Class({
             this.settingButton.get_style_context().add_class("circular");
             this.settingButton.connect("clicked", Lang.bind(this, this._configure));
             
-            this.add(this.settingButton);
+            this.attach(this.settingButton, 1, 0, 1, 1);
         }
         
         this.pluginSwitch = new Gtk.Switch({
@@ -64,7 +64,7 @@ var PluginControl = new Lang.Class({
             valign: Gtk.Align.CENTER
         });
         this.pluginSwitch.connect("notify::active", Lang.bind(this, this._toggle));
-        this.add(this.pluginSwitch);
+        this.attach(this.pluginSwitch, 2, 0, 1, 1);
         
         this.errorImage = Gtk.Image.new_from_icon_name(
             "dialog-warning",
@@ -93,20 +93,20 @@ var PluginControl = new Lang.Class({
                 error = result["1"];
                 
                 if (!success) {
-                    if (this.settingButton) {
-                        this.remove(this.settingButton);
+                    if (!this.get_child_at(0, 0)) {
+                        this.attach(this.errorImage, 0, 0, 1, 1);
                     }
-                    this.remove(this.pluginSwitch);
-                    this.add(this.errorImage);
+                    
                     this.errorImage.set_tooltip_markup(
                         _("Error: %s").format(error)
                     );
                     
                     this._refresh();
                     return;
+                } else if (this.get_child_at(0, 0)) {
+                    this.remove(this.errorImage);
                 }
             } else {
-                // TODO: notify user of failures?
                 this._page.device.disablePlugin(this._name);
             }
             
