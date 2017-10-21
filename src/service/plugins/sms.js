@@ -998,7 +998,6 @@ var ConversationWindow = new Lang.Class({
     _getAvatar: function (recipient) {
         // TODO: GdkPixbuf chokes hard on non-fatally corrupted images
         //       fix ContactAvatar() segfaults
-        //       arg for randomly chosen contact-color CSS class
         let avatar;
         
         try {
@@ -1064,8 +1063,12 @@ var ConversationWindow = new Lang.Class({
     },
     
     /**
-     * Add a contact, or phone number to the list of recipients
+     * Add a contact to the list of recipients
      *
+     * @param {string} phoneNumber - The contact's phone number
+     * @param {string} [contactName] - The contact's name
+     * @param {string} [phoneThumbnail] - A base64 encoded JPEG bytearray
+     * @return {object} - The recipient object
      */
     addRecipient: function (phoneNumber, contactName, phoneThumbnail) {
         let strippedNumber = phoneNumber.replace(/\D/g, "");

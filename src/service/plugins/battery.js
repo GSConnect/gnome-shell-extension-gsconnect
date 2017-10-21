@@ -121,7 +121,6 @@ var Plugin = new Lang.Class({
     
     /**
      * Request an update
-     * TODO: test/check this works
      */
     update: function () {
         Common.debug("Battery: update()");

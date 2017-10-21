@@ -44,6 +44,7 @@ var METADATA = {
  *
  * TODO: It's probably possible to grab a remote MPRIS2 player and mirror it
  *       over DBus locally...
+ *       File bug on KDE Connect bug tracker about OpenURI wrt share plugin
  */
 
 const DBusIface = '<node> \
@@ -186,7 +187,6 @@ var Plugin = new Lang.Class({
         this.device._channel.send(packet);
     },
     
-    // TODO: OpenUri ???
     handleCommand: function (packet) {
         Common.debug("MPRIS: handleCommand()");
         

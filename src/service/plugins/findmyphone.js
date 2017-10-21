@@ -46,8 +46,7 @@ var Plugin = new Lang.Class({
     
     handlePacket: function (packet) {
         Common.debug("FindMyPhone: handlePacket()");
-        
-        log("This should never be called since there is no incoming packet");
+        // This should never be called since there is no incoming packet
     },
     
     ring: function () {

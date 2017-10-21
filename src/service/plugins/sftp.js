@@ -42,11 +42,10 @@ var METADATA = {
  * SFTP Plugin
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/sftp
  *
- * TODO: mountWait() and timeout
- *       umount vs fusermount vs -autounmount switch
+ * TODO: umount vs fusermount vs -autounmount switch
  *       stderr checking
- *       there's a comment in the Android app source that says:
- *           SSHFS 3.0 and 3.2 cause data corruption...
+ *       there's a comment in the Android app source that says SSHFS 3.0 and
+ *       3.2 cause data corruption...
  */
 var Plugin = new Lang.Class({
     Name: "GSConnectSFTPPlugin",
