@@ -781,16 +781,6 @@ var MessageView = new Lang.Class({
 });
 
 
-/** */
-var MessageEntry = new Lang.Class({
-    Name: "GSConnectMessageEntry",
-    Extends: Gtk.TextView,
-    
-    _init: function () {
-    }
-});
-
-
 /**
  * A Gtk.ApplicationWindow for SMS conversations
  */
