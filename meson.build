@@ -1,4 +1,4 @@
-project('gsconnect', 'c', version: '1', meson_version: '>= 0.40.1')
+project('gsconnect', 'c', version: '2', meson_version: '>= 0.40.1')
 
 # User Definable Variables
 Name = 'GSConnect'
