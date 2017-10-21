@@ -45,10 +45,10 @@ var METADATA = {
  * Share Plugin
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/share
  *
- * FIXME: transfer progress
  * TODO: receiving "text"
  *       expand signals to cover Protocol.Transfer signals
  *       emit signals (and export over DBus)
+ *       see if there's a way to do progress bar in the notification...
  */
 var Plugin = new Lang.Class({
     Name: "GSConnectSharePlugin",
@@ -118,27 +118,6 @@ var Plugin = new Lang.Class({
                         transfer.id,
                         transfer.notif
                     );
-                });
-                
-                // TODO: progress updates happen so fast you can't click "cancel"
-                transfer.connect("progress", (transfer, percent) => {
-                    transfer.notif.set_title(_("Transfer In Progress"));
-                    transfer.notif.set_body(
-                        // TRANSLATORS: eg. Transfer of "book.pdf" from Google Pixel is 42% complete
-                        _("Transfer of \"%s\" from %s is %d%% complete").format(
-                            percent,
-                            packet.body.filename,
-                            this.device.name
-                        )
-                    );
-                    transfer.notif.set_icon(
-                        new Gio.ThemedIcon({ name: "send-to-symbolic" })
-                    );
-                    
-                    //this.device.daemon.send_notification(
-                    //    transfer.id,
-                    //    transfer.notif
-                    //);
                 });
                 
                 transfer.connect("succeeded", (transfer) => {
@@ -368,27 +347,6 @@ var Plugin = new Lang.Class({
                         transfer.id,
                         transfer.notif
                     );
-                });
-                
-                // TODO: progress updates happen so fast you can't click "cancel"
-                transfer.connect("progress", (transfer, percent) => {
-                    transfer.notif.set_title(_("Transfer In Progress"));
-                    transfer.notif.set_body(
-                        // TRANSLATORS: eg. Transfer of "book.pdf" to Google Pixel is 42% complete
-                        _("Transfer of \"%s\" to %s is %d%% complete").format(
-                            percent,
-                            file.get_basename(),
-                            this.device.name
-                        )
-                    );
-                    transfer.notif.set_icon(
-                        new Gio.ThemedIcon({ name: "send-to-symbolic" })
-                    );
-                    
-                    //this.device.daemon.send_notification(
-                    //    transfer.id,
-                    //    transfer.notif
-                    //);
                 });
                 
                 transfer.connect("succeeded", (transfer) => {
