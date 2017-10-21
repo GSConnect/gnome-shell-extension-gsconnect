@@ -350,6 +350,31 @@ function writeDeviceConfiguration (deviceId, config) {
 
 
 /**
+ * A rarely repeating array shuffler
+ * See: https://stackoverflow.com/a/17891411/1108697
+ *
+ * @param {array} - An array to shuffle
+ * @return {*} - The shuffled array item
+ */
+Object.defineProperty(Array, "shuffler", {
+    value: function (array) {
+        "use strict";
+        if (!array) { array = this; }
+        var copy = array.slice(0);
+        return function () {
+            if (copy.length < 1) { copy = array.slice(0); }
+            var index = Math.floor(Math.random() * copy.length);
+            var item = copy[index];
+            copy.splice(index, 1);
+            return item;
+        };
+    },
+    writable: true,
+    configurable: true
+});
+
+
+/**
  * GLib "polyfills" for extra functions
  */
 
