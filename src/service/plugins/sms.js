@@ -942,8 +942,10 @@ var ConversationWindow = new Lang.Class({
             
             if (firstRecipient.contactName) {
                 this.headerBar.set_title(firstRecipient.contactName);
+                this.headerBar.set_subtitle(firstRecipient.phoneNumber);
             } else {
                 this.headerBar.set_title(firstRecipient.phoneNumber);
+                this.headerBar.set_subtitle(null);
             }
             
             if (this._recipients.size > 1) {
@@ -956,8 +958,6 @@ var ConversationWindow = new Lang.Class({
                         num
                     ).format(num)
                 );
-            } else {
-                this.headerBar.set_subtitle(null);
             }
                 
             let people = [];
