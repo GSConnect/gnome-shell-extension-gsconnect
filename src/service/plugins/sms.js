@@ -84,6 +84,17 @@ MessageStyle.load_from_data(
     ".contact-color-brown { color: #ffffff; background-color: #8f5902; } " +
     ".contact-color-grey { color: #000000; background-color: #d3d7cf; } "
 );
+
+
+var shuffleColor = Array.shuffler([
+    "contact-color-red",
+    "contact-color-orange",
+    "contact-color-yellow",
+    "contact-color-green",
+    "contact-color-blue",
+    "contact-color-purple",
+    "contact-color-brown"
+]);
         
         
 /** A Gtk.EntryCompletion subclass for Google Contacts */
@@ -1088,6 +1099,7 @@ var ConversationWindow = new Lang.Class({
             );
         // This is a new recipient
         } else {
+            recipient.color = shuffleColor(); // Only do this once per recipient
             this._recipients.set(strippedNumber, recipient);
             this.recipientList.addRecipient(
                 recipient.phoneNumber,
