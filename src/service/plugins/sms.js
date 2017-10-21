@@ -538,8 +538,8 @@ var RecipientList = new Lang.Class({
      * @param {string} contactName - The contact name
      * @param {string} phoneThumbnail - A base64 encoded bytearray of a JPEG
      */
-    addRecipient: function (phoneNumber, contactName, phoneThumbnail, avatar) {
-        let recipient = new Gtk.ListBoxRow({
+    addRecipient: function (recipient) {
+        let entry = new Gtk.ListBoxRow({
             activatable: false,
             selectable: false,
             hexpand: true,
@@ -547,40 +547,40 @@ var RecipientList = new Lang.Class({
             visible: true,
             margin: 6
         });
-        this.recipients.add(recipient);
+        this.recipients.add(entry);
         
-        recipient.layout = new Gtk.Grid({
+        entry.layout = new Gtk.Grid({
             visible: true,
             can_focus: false,
             column_spacing: 12,
             row_spacing: 0
         });
-        recipient.add(recipient.layout);
+        entry.add(entry.layout);
         
         // ContactAvatar
-        recipient.avatar = avatar;
-        recipient.layout.attach(recipient.avatar, 0, 0, 1, 2);
+        entry.avatar = this._parent._getAvatar(recipient);
+        entry.layout.attach(entry.avatar, 0, 0, 1, 2);
         
         // contactName
-        recipient.contact = new Gtk.Label({
-            label: (contactName) ? contactName : _("Unknown Contact"),
+        entry.contact = new Gtk.Label({
+            label: (recipient.contactName) ? recipient.contactName : _("Unknown Contact"),
             visible: true,
             can_focus: false,
             xalign: 0,
             hexpand: true
         });
-        recipient.layout.attach(recipient.contact, 1, 0, 1, 1);
+        entry.layout.attach(entry.contact, 1, 0, 1, 1);
         
         // phoneNumber
-        recipient.phone = new Gtk.Label({
-            label: phoneNumber,
+        entry.phone = new Gtk.Label({
+            label: recipient.phoneNumber,
             visible: true,
             can_focus: false,
             xalign: 0,
             hexpand: true
         });
-        recipient.phone.get_style_context().add_class("dim-label");
-        recipient.layout.attach(recipient.phone, 1, 1, 1, 1);
+        entry.phone.get_style_context().add_class("dim-label");
+        entry.layout.attach(entry.phone, 1, 1, 1, 1);
         
         let removeButton = new Gtk.Button({
             image: Gtk.Image.new_from_icon_name(
@@ -593,12 +593,12 @@ var RecipientList = new Lang.Class({
         });
         removeButton.get_style_context().add_class("circular");
         removeButton.connect("clicked", () => {
-            this._parent.removeRecipient(phoneNumber.replace(/\D/g, ""));
-            this.recipients.remove(recipient);
+            this._parent.removeRecipient(recipient.phoneNumber.replace(/\D/g, ""));
+            this.recipients.remove(entry);
         });
-        recipient.layout.attach(removeButton, 2, 0, 1, 2);
+        entry.layout.attach(removeButton, 2, 0, 1, 2);
         
-        recipient.show_all();
+        entry.show_all();
     }
 });
 
@@ -679,7 +679,7 @@ var MessageView = new Lang.Class({
      *     MessageDirection enums (either OUT [0] or IN [1])
      * @return {Gtk.ListBoxRow} - The new thread
      */
-    addThread: function (phoneNumber, contactName, phoneThumbnail, direction) {
+    addThread: function (recipient, direction) {
         let thread = new Gtk.ListBoxRow({
             activatable: false,
             selectable: false,
@@ -700,8 +700,8 @@ var MessageView = new Lang.Class({
         thread.add(thread.layout);
         
         // Contact Avatar
-        thread.avatar = this._parent._getAvatar(phoneThumbnail);
-        thread.avatar.tooltip_text = (contactName) ? contactName : phoneNumber;
+        thread.avatar = this._parent._getAvatar(recipient);
+        thread.avatar.tooltip_text = (recipient.contactName) ? recipient.contactName : recipient.phoneNumber;
         thread.avatar.valign = Gtk.Align.END;
         thread.avatar.visible = direction;
         thread.layout.add(thread.avatar);
@@ -733,8 +733,8 @@ var MessageView = new Lang.Class({
      *     MessageDirection enums (either OUT [0] or IN [1])
      * @return {Gtk.ListBoxRow} - The new thread
      */
-    addMessage: function (phoneNumber, contactName, messageBody, phoneThumbnail, direction) {
-        let sender = (contactName) ? contactName : phoneNumber;
+    addMessage: function (recipient, messageBody, direction) {
+        let sender = (recipient.contactName) ? recipient.contactName : recipient.phoneNumber;
         let nthreads = this.threads.get_children().length;
         let thread, currentThread;
         
@@ -747,7 +747,7 @@ var MessageView = new Lang.Class({
         }
         
         if (!thread) {
-            thread = this.addThread(phoneNumber, contactName, phoneThumbnail, direction);
+            thread = this.addThread(recipient, direction);
         }
         
         let messageBubble = new Gtk.Box({
@@ -773,7 +773,7 @@ var MessageView = new Lang.Class({
         messageBubble.add(messageContent);
         
         if (direction === MessageDirection.IN) {
-            messageBubbleStyle.add_class("contact-color-orange");
+            messageBubbleStyle.add_class(recipient.color);
         } else if (direction === MessageDirection.OUT) {
             messageBubbleStyle.add_class("contact-color-grey");
         }
@@ -1005,19 +1005,20 @@ var ConversationWindow = new Lang.Class({
         return Array.from(this._recipients.keys());
     },
     
-    _getAvatar: function (phoneThumbnail) {
+    _getAvatar: function (recipient) {
         // TODO: GdkPixbuf chokes hard on non-fatally corrupted images
+        //       fix ContactAvatar() segfaults
+        //       arg for randomly chosen contact-color CSS class
         let avatar;
         
         try {
-            // TODO: on hold until it stops segfaulting
             //avatar = new ContactAvatar(
             //    phoneThumbnail,
             //    this.get_toplevel(),
             //    32
             //);
             
-            let bytes = GLib.base64_decode(phoneThumbnail);
+            let bytes = GLib.base64_decode(recipient.phoneThumbnail);
             avatar = Gtk.Image.new_from_gicon(
                 Gio.BytesIcon.new(bytes),
                 Gtk.IconSize.DND
@@ -1034,7 +1035,7 @@ var ConversationWindow = new Lang.Class({
             let avatarStyle = avatar.get_style_context();
             avatarStyle.add_provider(MessageStyle, 0);
             avatarStyle.add_class("contact-avatar");
-            avatarStyle.add_class("contact-color-grey");
+            avatarStyle.add_class(recipient.color);
             
             let defaultAvatar = Gtk.Image.new_from_icon_name(
                 "avatar-default-symbolic",
@@ -1083,33 +1084,26 @@ var ConversationWindow = new Lang.Class({
         let recipient = Object.assign({
             phoneNumber: phoneNumber,
             contactName: contactName,
-            phoneThumbnail: phoneThumbnail,
-            avatar: this._getAvatar(phoneThumbnail)
+            phoneThumbnail: phoneThumbnail
         }, this.getCompletionContact(strippedNumber));
         
         // This is an extant recipient
         if (this._recipients.has(strippedNumber)) {
-            // TODO: is the set() call necessary?
-            this._recipients.set(
-                strippedNumber,
-                Object.assign(
-                    this._recipients.get(strippedNumber),
-                    recipient
-                )
+            recipient = Object.assign(
+                this._recipients.get(strippedNumber),
+                recipient
             );
+            
+            this._recipients.set(strippedNumber, recipient);
         // This is a new recipient
         } else {
             recipient.color = shuffleColor(); // Only do this once per recipient
             this._recipients.set(strippedNumber, recipient);
-            this.recipientList.addRecipient(
-                recipient.phoneNumber,
-                recipient.contactName,
-                recipient.phoneThumbnail,
-                recipient.avatar
-            );
+            this.recipientList.addRecipient(recipient);
         }
         
         this.notify("recipients");
+        return recipient;
     },
     
     /**
@@ -1126,19 +1120,15 @@ var ConversationWindow = new Lang.Class({
     
     /** Log an incoming message in the MessageList */
     receive: function (phoneNumber, contactName, messageBody, phoneThumbnail=false) {
-        // This is causing a segfault *if* it's the first time a window has
-        // been opened...
-        this.addRecipient(
+        let recipient = this.addRecipient(
             phoneNumber,
             contactName,
             phoneThumbnail
         );
     
         this.messageView.addMessage(
-            phoneNumber,
-            contactName,
+            recipient,
             messageBody,
-            phoneThumbnail,
             MessageDirection.IN
         );
     },
@@ -1152,13 +1142,8 @@ var ConversationWindow = new Lang.Class({
         
         // Log the outgoing message
         this.messageView.addMessage(
-            "0",
-            // TRANSLATORS: A prefix for sent SMS messages
-            // eg. You: Hello from me!
-            // FIXME: unnecessary, never shown
-            _("You"),
+            { phoneNumber: "0", color: "contact-color-grey" },
             entry.text,
-            null,
             MessageDirection.OUT
         );
         entry.text = "";
