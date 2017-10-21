@@ -169,7 +169,7 @@ var Plugin = new Lang.Class({
         if (packet.type === "kdeconnect.notification" && this.settings.receive.enabled) {
             this._receiveNotification(packet);
         } else if (packet.type === "kdeconnect.notification.request") {
-            // TODO: KDE Connect says this is unused??
+            // TODO: KDE Connect says this is unused...
         }
     },
     
@@ -222,7 +222,7 @@ var Plugin = new Lang.Class({
                     "app.closeNotification(('" +
                     this._dbus.get_object_path() +
                     "','" +
-                    packet.body.id +
+                    escape(packet.body.id) +
                     "'))"
                 );
                 

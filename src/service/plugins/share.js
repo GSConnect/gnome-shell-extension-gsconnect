@@ -159,12 +159,16 @@ var Plugin = new Lang.Class({
         
                     transfer.notif.add_button(
                         _("Open Folder"),
-                        "app.openTransfer('" + file.get_parent().get_uri() + "')"
+                        "app.openTransfer('" +
+                        escape(file.get_parent().get_uri()) +
+                        "')"
                     );
         
                     transfer.notif.add_button(
                         _("Open File"),
-                        "app.openTransfer('" + file.get_uri() + "')"
+                        "app.openTransfer('" +
+                        escape(file.get_uri()) +
+                        "')"
                     );
                     
                     this.device.daemon.send_notification(

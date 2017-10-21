@@ -387,11 +387,12 @@ var Daemon = new Lang.Class({
         }
     },
     
-    // TODO: check file existence, since it could have been moved/deleted
+    // TODO: check file existence, since the notification will persist while
+    //       the file could be moved/deleted
     _openTransferAction: function (action, param) {
         let path = param.deep_unpack().toString();
         
-        Gio.AppInfo.launch_default_for_uri(path, null);
+        Gio.AppInfo.launch_default_for_uri(unescape(path), null);
     },
     
     _closeNotificationAction: function (action, param) {
@@ -403,7 +404,7 @@ var Daemon = new Lang.Class({
             if (device._plugins.has("notifications")) {
                 let plugin = device._plugins.get("notifications");
                 
-                plugin.close(param["1"]);
+                plugin.close(unescape(param["1"]));
             }
         }
     },
