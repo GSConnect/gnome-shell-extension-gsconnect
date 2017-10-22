@@ -266,13 +266,11 @@ var Plugin = new Lang.Class({
                 notif = this._notifications.get(packet.body.id);
                 notif.set_title(packet.body.appName);
                 notif.set_body(packet.body.ticker);
-                notif.set_icon(new Gio.ThemedIcon({ name: "phone-symbolic" }));
             // This is a new notification
             } else {
                 notif = new Gio.Notification();
                 notif.set_title(packet.body.appName);
                 notif.set_body(packet.body.ticker);
-                notif.set_icon(new Gio.ThemedIcon({ name: "phone-symbolic" }));
                 notif.set_default_action(
                     "app.closeNotification(('" +
                     this._dbus.get_object_path() +
@@ -282,6 +280,49 @@ var Plugin = new Lang.Class({
                 );
                 
                 this._notifications.set(packet.body.id, notif);
+            }
+            
+            if (packet.payloadSize) {
+                let iconStream = Gio.MemoryOutputStream.new_resizable();
+                
+                let channel = new Protocol.LanDownloadChannel(
+                    this.device.daemon,
+                    this.device.identity,
+                    iconStream
+                );
+                
+                channel.connect("connected", (channel) => {
+                    let transfer = new Protocol.Transfer(
+                        channel._in,
+                        channel._out,
+                        packet.payloadSize
+                    );
+                    
+                    transfer.connect("failed", (transfer) => {
+                        channel.close();
+                    });
+                    
+                    transfer.connect("succeeded", (transfer) => {
+                        channel.close();
+                        iconStream.close(null);
+                        notif.set_icon(
+                            Gio.BytesIcon.new(iconStream.steal_as_bytes())
+                        );
+                    });
+                    
+                    transfer.start();
+                });
+            
+                let addr = new Gio.InetSocketAddress({
+                    address: Gio.InetAddress.new_from_string(
+                        this.device.identity.body.tcpHost
+                    ),
+                    port: packet.payloadTransferInfo.port
+                });
+                
+                channel.open(addr);
+            } else {
+                notif.set_icon(new Gio.ThemedIcon({ name: "phone-symbolic" }));
             }
             
             if (packet.body.requestAnswer) {
