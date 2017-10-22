@@ -46,6 +46,7 @@ var METADATA = {
         },
         send: {
             enabled: true,
+            icons: true,
             applications: {
                 GSConnect: {
                     iconName: "phone",
@@ -119,6 +120,17 @@ var Plugin = new Lang.Class({
         this._sms = new Map();
     },
     
+    _getIconInfo: function (iconName) {
+        let theme = Gtk.IconTheme.get_default();
+        let sizes = theme.get_icon_sizes(iconName);
+        
+        return theme.lookup_icon(
+            iconName,
+            Math.max.apply(null, sizes),
+            Gtk.IconLookupFlags.NO_SVG
+        );
+    },
+    
     Notify: function (appName, replacesId, iconName, summary, body, actions, hints, timeout) {
         // Signature: str,     uint,       str,      str,     str,  array,   obj,   uint
         Common.debug("Notifications: Notify()");
@@ -145,20 +157,63 @@ var Plugin = new Lang.Class({
         if (this.settings.send.enabled) {
             if (this.settings.send.applications[appName].enabled) {
                 let packet = new Protocol.Packet({
-                    id: 0,
+                    id: Date.now(),
                     type: "kdeconnect.notification",
                     body: {
-                        silent: true,               // TODO
-                        requestAnswer: false,       // for answering requests
-                        id: replacesId.toString(),  // TODO
                         appName: appName,
-                        isClearable: true,          // TODO
-                        ticker: body,
-                        time: Date.now()
+                        id: replacesId.toString(),  // TODO: clearable if !0?
+                        isClearable: false,
+                        ticker: body
                     }
                 });
                 
-                this.device._channel.send(packet);
+                let iconInfo;
+                
+                if (this.settings.send.icons) {
+                    iconInfo = this._getIconInfo(iconName);
+                }
+                
+                if (iconInfo) {
+                    Common.debug("Icon Filename: " + iconInfo.get_filename());
+                    
+                    let file = Gio.File.new_for_path(iconInfo.get_filename());
+                    let info = file.query_info("standard::size", 0, null);
+                    
+                    let channel = new Protocol.LanUploadChannel(
+                        this.device.daemon,
+                        this.device.identity,
+                        file.read(null)
+                    );
+            
+                    channel.connect("listening", (channel, port) => {
+                        packet.payloadSize = info.get_size();
+                        packet.payloadTransferInfo = { port: port };
+                        
+                        this.device._channel.send(packet);
+                    });
+                    
+                    channel.connect("connected", (channel) => {
+                        let transfer = new Protocol.Transfer(
+                            channel._in,
+                            channel._out,
+                            info.get_size()
+                        );
+                        
+                        transfer.connect("failed", (transfer) => {
+                            channel.close();
+                        });
+                    
+                        transfer.connect("succeeded", (transfer) => {
+                            channel.close();
+                        });
+                
+                        transfer.start();
+                    });
+            
+                    channel.open();
+                } else {
+                    this.device._channel.send(packet);
+                }
             }
         }
     },
@@ -339,6 +394,23 @@ var SettingsDialog = new Lang.Class({
             // TRANSLATORS: eg. Enable to send notifications to Google Pixel
             _("Enable to send notifications to %s").format(this._page.device.name),
             sendSwitch
+        );
+        
+        let iconsSwitch = new Gtk.Switch({
+            visible: true,
+            can_focus: true,
+            halign: Gtk.Align.END,
+            valign: Gtk.Align.CENTER,
+            active: this.settings.send.icons
+        });
+        iconsSwitch.connect("notify::active", (widget) => {
+            this.settings.send.icons = iconsSwitch.active;
+        });
+        this.content.addItem(
+            sendingSection,
+            _("Send Icons"),
+            _("Include icons in notifications"),
+            iconsSwitch
         );
         
         // Applications TreeView/Model
