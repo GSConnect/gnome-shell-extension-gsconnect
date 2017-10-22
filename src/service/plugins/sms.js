@@ -436,7 +436,7 @@ var ContactAvatar = new Lang.Class({
     Name: "GSConnectContactAvatar",
     Extends: Gtk.DrawingArea,
     
-    _init: function (phoneThumbnail, win, size) {
+    _init: function (phoneThumbnail, size) {
         this.parent({
             height_request: size,
             width_request: size
@@ -493,11 +493,11 @@ var RecipientList = new Lang.Class({
         let recipientFrame = new Gtk.Frame();
         this.add(recipientFrame);
         
-        this.recipients = new Gtk.ListBox({
+        this.list = new Gtk.ListBox({
             visible: true,
             halign: Gtk.Align.FILL
         });
-        recipientFrame.add(this.recipients);
+        recipientFrame.add(this.list);
         
         let box = new Gtk.Box({
             orientation: Gtk.Orientation.VERTICAL,
@@ -528,18 +528,16 @@ var RecipientList = new Lang.Class({
         placeholderLabel.get_style_context().add_class("dim-label");
         
         box.add(placeholderLabel);
-        this.recipients.set_placeholder(box);
+        this.list.set_placeholder(box);
     },
     
     /**
      * Add a new recipient, ...
      *
-     * @param {string} phoneNumber - The contact phone number
-     * @param {string} contactName - The contact name
-     * @param {string} phoneThumbnail - A base64 encoded bytearray of a JPEG
+     * @param {object} recipient - The recipient object for this person
      */
     addRecipient: function (recipient) {
-        let entry = new Gtk.ListBoxRow({
+        let row = new Gtk.ListBoxRow({
             activatable: false,
             selectable: false,
             hexpand: true,
@@ -547,40 +545,40 @@ var RecipientList = new Lang.Class({
             visible: true,
             margin: 6
         });
-        this.recipients.add(entry);
+        this.list.add(row);
         
-        entry.layout = new Gtk.Grid({
+        row.layout = new Gtk.Grid({
             visible: true,
             can_focus: false,
             column_spacing: 12,
             row_spacing: 0
         });
-        entry.add(entry.layout);
+        row.add(row.layout);
         
         // ContactAvatar
-        entry.avatar = this._parent._getAvatar(recipient);
-        entry.layout.attach(entry.avatar, 0, 0, 1, 2);
+        row.avatar = this._parent._getAvatar(recipient);
+        row.layout.attach(row.avatar, 0, 0, 1, 2);
         
         // contactName
-        entry.contact = new Gtk.Label({
-            label: (recipient.contactName) ? recipient.contactName : _("Unknown Contact"),
+        row.contact = new Gtk.Label({
+            label: recipient.contactName || _("Unknown Contact"),
             visible: true,
             can_focus: false,
             xalign: 0,
             hexpand: true
         });
-        entry.layout.attach(entry.contact, 1, 0, 1, 1);
+        row.layout.attach(row.contact, 1, 0, 1, 1);
         
         // phoneNumber
-        entry.phone = new Gtk.Label({
-            label: recipient.phoneNumber,
+        row.phone = new Gtk.Label({
+            label: recipient.phoneNumber || _("Unknown Number"),
             visible: true,
             can_focus: false,
             xalign: 0,
             hexpand: true
         });
-        entry.phone.get_style_context().add_class("dim-label");
-        entry.layout.attach(entry.phone, 1, 1, 1, 1);
+        row.phone.get_style_context().add_class("dim-label");
+        row.layout.attach(row.phone, 1, 1, 1, 1);
         
         let removeButton = new Gtk.Button({
             image: Gtk.Image.new_from_icon_name(
@@ -594,11 +592,11 @@ var RecipientList = new Lang.Class({
         removeButton.get_style_context().add_class("circular");
         removeButton.connect("clicked", () => {
             this._parent.removeRecipient(recipient.phoneNumber.replace(/\D/g, ""));
-            this.recipients.remove(entry);
+            this.list.remove(row);
         });
-        entry.layout.attach(removeButton, 2, 0, 1, 2);
+        row.layout.attach(removeButton, 2, 0, 1, 2);
         
-        entry.show_all();
+        row.show_all();
     }
 });
 
@@ -617,8 +615,8 @@ var MessageView = new Lang.Class({
         this._parent = window;
         
         // Messages List
-        let threadFrame = new Gtk.Frame();
-        this.add(threadFrame);
+        let frame = new Gtk.Frame();
+        this.add(frame);
         
         this.threadWindow = new Gtk.ScrolledWindow({
             can_focus: false,
@@ -626,17 +624,17 @@ var MessageView = new Lang.Class({
             vexpand: true,
             hscrollbar_policy: Gtk.PolicyType.NEVER
         });
-        threadFrame.add(this.threadWindow);
+        frame.add(this.threadWindow);
         
-        this.threads = new Gtk.ListBox({
+        this.list = new Gtk.ListBox({
             visible: true,
             halign: Gtk.Align.FILL
         });
-        this.threads.connect("size-allocate", (widget) => {
+        this.list.connect("size-allocate", (widget) => {
             let vadj = this.threadWindow.get_vadjustment();
             vadj.set_value(vadj.get_upper() - vadj.get_page_size());
         });
-        this.threadWindow.add(this.threads);
+        this.threadWindow.add(this.list);
         
         // Message Entry
         this.messageEntry = new Gtk.Entry({
@@ -680,7 +678,7 @@ var MessageView = new Lang.Class({
      * @return {Gtk.ListBoxRow} - The new thread
      */
     addThread: function (recipient, direction) {
-        let thread = new Gtk.ListBoxRow({
+        let row = new Gtk.ListBoxRow({
             activatable: false,
             selectable: false,
             hexpand: true,
@@ -688,26 +686,26 @@ var MessageView = new Lang.Class({
             visible: true,
             margin: 6
         });
-        this.threads.add(thread);
+        this.list.add(row);
         
-        thread.layout = new Gtk.Box({
+        row.layout = new Gtk.Box({
             visible: true,
             can_focus: false,
             hexpand: true,
             spacing: 3,
             halign: (direction) ? Gtk.Align.START : Gtk.Align.END
         });
-        thread.add(thread.layout);
+        row.add(row.layout);
         
         // Contact Avatar
-        thread.avatar = this._parent._getAvatar(recipient);
-        thread.avatar.tooltip_text = (recipient.contactName) ? recipient.contactName : recipient.phoneNumber;
-        thread.avatar.valign = Gtk.Align.END;
-        thread.avatar.visible = direction;
-        thread.layout.add(thread.avatar);
+        row.avatar = this._parent._getAvatar(recipient);
+        row.avatar.tooltip_text = recipient.contactName || recipient.phoneNumber;
+        row.avatar.valign = Gtk.Align.END;
+        row.avatar.visible = direction;
+        row.layout.add(row.avatar);
         
         // Messages
-        thread.messages = new Gtk.Box({
+        row.messages = new Gtk.Box({
             visible: true,
             can_focus: false,
             orientation: Gtk.Orientation.VERTICAL,
@@ -716,9 +714,9 @@ var MessageView = new Lang.Class({
             margin_right: (direction) ? 32 : 0,
             margin_left: (direction) ? 0: 32
         });
-        thread.layout.add(thread.messages);
+        row.layout.add(row.messages);
         
-        return thread;
+        return row;
     },
     
     /**
@@ -734,20 +732,20 @@ var MessageView = new Lang.Class({
      * @return {Gtk.ListBoxRow} - The new thread
      */
     addMessage: function (recipient, messageBody, direction) {
-        let sender = (recipient.contactName) ? recipient.contactName : recipient.phoneNumber;
-        let nthreads = this.threads.get_children().length;
-        let thread, currentThread;
+        let sender = recipient.contactName || recipient.phoneNumber;
+        let nrows = this.list.get_children().length;
+        let row, currentThread;
         
-        if (nthreads) {
-            let currentThread = this.threads.get_row_at_index(nthreads - 1);
+        if (nrows) {
+            let currentThread = this.list.get_row_at_index(nrows - 1);
             
             if (currentThread.avatar.tooltip_text === sender) {
-                thread = currentThread;
+                row = currentThread;
             }
         }
         
-        if (!thread) {
-            thread = this.addThread(recipient, direction);
+        if (!row) {
+            row = this.addThread(recipient, direction);
         }
         
         let messageBubble = new Gtk.Box({
@@ -757,7 +755,7 @@ var MessageView = new Lang.Class({
         let messageBubbleStyle = messageBubble.get_style_context();
         messageBubbleStyle.add_provider(MessageStyle, 0);
         messageBubbleStyle.add_class("message-bubble");
-        thread.messages.add(messageBubble);
+        row.messages.add(messageBubble);
         
         let messageContent = new Gtk.Label({
             label: messageBody,
@@ -1003,7 +1001,6 @@ var ConversationWindow = new Lang.Class({
         try {
             //avatar = new ContactAvatar(
             //    phoneThumbnail,
-            //    this.get_toplevel(),
             //    32
             //);
             
