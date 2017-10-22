@@ -29,13 +29,17 @@ var Section = new Lang.Class({
     Name: "GSConnectPreferencesSection",
     Extends: Gtk.Frame,
     
-    _init: function () {
+    _init: function (params={}) {
+        params = Object.assign({
+            width_request: 460,
+            selection_mode: Gtk.SelectionMode.NONE
+        }, params);
+    
         this.parent({
             visible: true,
             can_focus: false,
-            margin_bottom: 12,
+            margin_bottom: 32,
             hexpand: true,
-            label_xalign: 0,
             shadow_type: Gtk.ShadowType.IN
         });
         
@@ -43,10 +47,21 @@ var Section = new Lang.Class({
             visible: true,
             can_focus: false,
             hexpand: true,
-            selection_mode: Gtk.SelectionMode.NONE,
-            activate_on_single_click: false
+            activate_on_single_click: false,
+            selection_mode: params.selection_mode,
+            width_request: params.width_request
         });
         this.add(this.list);
+        
+        this.list.set_header_func(this._header_func);
+    },
+    
+    _header_func: function (row, before) {
+        if (before) {
+            row.set_header(
+                new Gtk.Separator({ orientation: Gtk.Orientation.HORIZONTAL })
+            );
+        }
     }
 });
 
@@ -55,12 +70,17 @@ var Row = new Lang.Class({
     Name: "GSConnectPreferencesRow",
     Extends: Gtk.ListBoxRow,
     
-    _init: function () {
+    _init: function (params={}) {
+        params = Object.assign({
+            height_request: 32
+        }, params);
+    
         this.parent({
             visible: true,
             can_focus: false,
             activatable: false,
-            selectable: false
+            selectable: false,
+            height_request: params.height_request
         });
         
         // Row Layout
@@ -70,9 +90,11 @@ var Row = new Lang.Class({
             column_spacing: 12,
             row_spacing: 0,
             margin_left: 12,
-            margin_top: 6,
-            margin_bottom: 6,
-            margin_right: 12
+            margin_top: 8,
+            margin_bottom: 8,
+            margin_right: 12,
+            vexpand: true,
+            valign: Gtk.Align.CENTER
         });
         this.add(this.grid);
     }
@@ -84,7 +106,7 @@ var Setting = new Lang.Class({
     Extends: Row,
     
     _init: function (summary, description, widget) {
-        this.parent();
+        this.parent({ height_request: 40 });
         
         // Summary Label
         this.summary = new Gtk.Label({
@@ -92,7 +114,7 @@ var Setting = new Lang.Class({
             can_focus: false,
             xalign: 0,
             hexpand: true,
-            label: summary
+            label: summary,
         });
         this.grid.attach(this.summary, 0, 0, 1, 1);
         
@@ -137,8 +159,7 @@ var Page = new Lang.Class({
             margin_right: 72,
             margin_top: 18,
             margin_bottom: 18,
-            orientation: Gtk.Orientation.VERTICAL,
-            spacing: 18
+            orientation: Gtk.Orientation.VERTICAL
         });
         this.add(this.box);
     },
@@ -151,12 +172,12 @@ var Page = new Lang.Class({
      * @param {Gtk.ListBoxRow} [row] - The row to add, or null to create new
      * @return {Gtk.Frame} section - The new Section object.
      */
-    addSection: function (title, section) {
+    addSection: function (title, section, params={}) {
         if (title) {
             let label = new Gtk.Label({
                 visible: true,
                 can_focus: false,
-                margin_start: 3,
+                margin_bottom: 12,
                 xalign: 0,
                 use_markup: true,
                 label: "<b>" + title + "</b>"
@@ -164,7 +185,7 @@ var Page = new Lang.Class({
             this.box.pack_start(label, false, true, 0);
         }
         
-        if (!section) { section = new Section(); }
+        if (!section) { section = new Section(params); }
         this.box.add(section);
         return section;
     },
