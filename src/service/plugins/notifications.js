@@ -67,28 +67,29 @@ var METADATA = {
  *
  * There are several possible variables for an incoming notification:
  *
- *    id {string} - This is supposedly and "internal" Android Id, such as:
+ *    body.id {string} - This is supposedly and "internal" Android Id, such as:
  *                      "0|org.kde.kdeconnect_tp|-256692160|null|10114"
- *    isCancel {boolean} - If true, the notification "id" was closed by the peer
- *    isClearable {boolean} - If true, we can reply with "cancel: <id>"
- *    appName {string} - The notifying application, just like libnotify
- *    ticker {string} - Like libnotify's "body", unless there's a summary (such
- *        as with an SMS where the summary would be the sender's name) the
- *        value would be "summary: body"
- *    silent {boolean} - KDE Connect seems to indicate this means "don't show"
- *    requestAnswer {boolean} - This is an answer to a "request"
- *    request {boolean} - If true, we're being asked to send a list of notifs
+ *    body.isCancel {boolean} - If true, the notification "id" was closed by the peer
+ *    body.isClearable {boolean} - If true, we can reply with "cancel: <id>"
+ *    body.appName {string} - The notifying application, just like libnotify
+ *    body.ticker {string} - Like libnotify's "body", unless there's a summary
+ *        (such as with an SMS where the summary would be the sender's name)
+ *        the value would be "summary: body"
+ *    body.silent {boolean} - KDE Connect seems to indicate this means "don't show"
+ *    body.requestAnswer {boolean} - This is an answer to a "request"
+ *    body.request {boolean} - If true, we're being asked to send a list of notifs
+ * For icon syncing:
+ *    body.payloadHash {string} - An MD5 hash of the payload data
+ *    payloadSize {number} - the notification icon size in bytes
+ *    payloadTransferInfo {object} - Just like regular (with a property 'port')
  *
  * The current beta seems to also send:
  *
  *    requestReplyId {string} - a UUID for replying (?)
  *    title {string} - The remote's title of the notification
  *    text {string} - The remote's body of the notification
- *    payloadSize {number} - the notification icon size in bytes
- *    payloadTransferInfo {object} - Just like regular (with a property 'port')
- *    payloadHash {string} - A hash of the payload data
  *
- * TODO: download/upload icons
+ * TODO: convert themed SVG->PNG for icon uploads
  *       requestAnswer usage?
  *       urgency filter (outgoing)?
  *       make "shared" notifications clearable (Can KDE Connect even do this?)
