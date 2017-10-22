@@ -452,11 +452,9 @@ var Plugin = new Lang.Class({
             
             // Tell the notifications plugin to mark any duplicate read
             // TODO: check exactly what kdeconnect-android returns
-            let sender = (contactName.length) ? contactName : phoneNumber;
-            
             if (this.device._plugins.has("notifications")) {
                 this.device._plugins.get("notifications").markReadSms(
-                    sender + ": " + messageBody
+                    contactName || phoneNumber + ": " + messageBody
                 );
             }
         }
