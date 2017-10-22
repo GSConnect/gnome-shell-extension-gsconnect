@@ -534,6 +534,7 @@ var Page = new Lang.Class({
         // Keyboard Shortcuts
         let keySection = this.addSection(_("Keyboard Shortcuts"));
         let keyRow = this.addRow(keySection);
+        keyRow.grid.margin = 0;
         let keyView = new KeybindingsWidget.TreeView();
         // TRANSLATORS: Open the device menu
         keyView.addAccel("menu", _("Open Menu"), 0, 0);

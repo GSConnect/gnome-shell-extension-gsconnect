@@ -20,7 +20,8 @@ var TreeView = new Lang.Class({
     _init: function () {
         this.parent({
             headers_visible: false,
-            hexpand: true
+            hexpand: true,
+            activate_on_single_click: true
         });
         
         this._callback = undefined;
@@ -42,7 +43,7 @@ var TreeView = new Lang.Class({
         this.model = listStore;
 
         // Description column.
-        let descCell = new Gtk.CellRendererText({ xpad: 6, ypad: 12 });
+        let descCell = new Gtk.CellRendererText({ xpad: 12, ypad: 12 });
         let descCol = new Gtk.TreeViewColumn({ expand: true, clickable: false });
         descCol.pack_start(descCell, true);
         descCol.add_attribute(descCell, "text", 1);
@@ -53,7 +54,7 @@ var TreeView = new Lang.Class({
             accel_mode: Gtk.CellRendererAccelMode.GTK,
             editable: true,
             xalign: 1,
-            xpad: 6,
+            xpad: 12,
             ypad: 12
         });
 
@@ -138,7 +139,6 @@ var TreeView = new Lang.Class({
      * @param {object} profile - An object with the structure:
      *
      *     { <accel-id>: <accel-string>, ... }
-     *
      */
     setAccels: function (profile) {
         if (profile === undefined) {

@@ -18,6 +18,105 @@ const Common = imports.common;
 const GSettingsWidget = imports.widgets.gsettings;
 
 
+/**
+ * Convenience classes for widgets similar to Gnome Control Center
+ *
+ * TODO: https://bugzilla.gnome.org/show_bug.cgi?id=786384
+ */
+
+
+var Section = new Lang.Class({
+    Name: "GSConnectPreferencesSection",
+    Extends: Gtk.Frame,
+    
+    _init: function () {
+        this.parent({
+            visible: true,
+            can_focus: false,
+            margin_bottom: 12,
+            hexpand: true,
+            label_xalign: 0,
+            shadow_type: Gtk.ShadowType.IN
+        });
+        
+        this.list = new Gtk.ListBox({
+            visible: true,
+            can_focus: false,
+            hexpand: true,
+            selection_mode: Gtk.SelectionMode.NONE,
+            activate_on_single_click: false
+        });
+        this.add(this.list);
+    }
+});
+
+
+var Row = new Lang.Class({
+    Name: "GSConnectPreferencesRow",
+    Extends: Gtk.ListBoxRow,
+    
+    _init: function () {
+        this.parent({
+            visible: true,
+            can_focus: false,
+            activatable: false,
+            selectable: false
+        });
+        
+        // Row Layout
+        this.grid = new Gtk.Grid({
+            visible: true,
+            can_focus: false,
+            column_spacing: 12,
+            row_spacing: 0,
+            margin_left: 12,
+            margin_top: 6,
+            margin_bottom: 6,
+            margin_right: 12
+        });
+        this.add(this.grid);
+    }
+});
+
+
+var Setting = new Lang.Class({
+    Name: "GSConnectPreferencesSetting",
+    Extends: Row,
+    
+    _init: function (summary, description, widget) {
+        this.parent();
+        
+        // Summary Label
+        this.summary = new Gtk.Label({
+            visible: true,
+            can_focus: false,
+            xalign: 0,
+            hexpand: true,
+            label: summary
+        });
+        this.grid.attach(this.summary, 0, 0, 1, 1);
+        
+        // Description Label
+        if (description) {
+            this.description = new Gtk.Label({
+                visible: true,
+                can_focus: false,
+                xalign: 0,
+                hexpand: true,
+                label: description,
+                wrap: true
+            });
+            this.description.get_style_context().add_class("dim-label");
+            this.grid.attach(this.description, 0, 1, 1, 1);
+        }
+        
+        // Control Widget
+        this.widget = widget;
+        this.grid.attach(this.widget, 1, 0, 1, (description) ? 2 : 1);
+    }
+});
+
+
 /** A composite widget resembling A Gnome Control Center panel. */
 var Page = new Lang.Class({
     Name: "GSConnectPreferencesPage",
@@ -49,9 +148,10 @@ var Page = new Lang.Class({
      * will be placed above the section.
      *
      * @param {String} title - Optional bold label placed above the section
+     * @param {Gtk.ListBoxRow} [row] - The row to add, or null to create new
      * @return {Gtk.Frame} section - The new Section object.
      */
-    addSection: function (title) {
+    addSection: function (title, section) {
         if (title) {
             let label = new Gtk.Label({
                 visible: true,
@@ -64,25 +164,8 @@ var Page = new Lang.Class({
             this.box.pack_start(label, false, true, 0);
         }
         
-        let section = new Gtk.Frame({
-            visible: true,
-            can_focus: false,
-            margin_bottom: 12,
-            hexpand: true,
-            label_xalign: 0,
-            shadow_type: Gtk.ShadowType.IN
-        });
+        if (!section) { section = new Section(); }
         this.box.add(section);
-        
-        section.list = new Gtk.ListBox({
-            visible: true,
-            can_focus: false,
-            hexpand: true,
-            selection_mode: Gtk.SelectionMode.NONE,
-            activate_on_single_click: false
-        });
-        section.add(section.list);
-        
         return section;
     },
     
@@ -90,31 +173,12 @@ var Page = new Lang.Class({
      * Add and return new row with a Gtk.Grid child
      *
      * @param {Gtk.Frame} section - The section widget to attach to
+     * @param {Gtk.ListBoxRow|Row} [row] - The row to add, null to create new
      * @return {Gtk.ListBoxRow} row - The new row
      */
-    addRow: function (section) {
-        // Row
-        let row = new Gtk.ListBoxRow({
-            visible: true,
-            can_focus: false,
-            activatable: false,
-            selectable: false
-        });
+    addRow: function (section, row) {
+        if (!row) { row = new Row();}
         section.list.add(row);
-        
-        // Row Layout
-        row.grid = new Gtk.Grid({
-            visible: true,
-            can_focus: false,
-            column_spacing: 12,
-            row_spacing: 0,
-            margin_left: 12,
-            margin_top: 6,
-            margin_bottom: 6,
-            margin_right: 12
-        });
-        row.add(row.grid);
-        
         return row;
     },
     
@@ -128,36 +192,8 @@ var Page = new Lang.Class({
      * @return {Gtk.ListBoxRow} row - The new row
      */
     addItem: function (section, summary, description, widget) {
-        let row = this.addRow(section);
-        
-        // Summary Label
-        row.summary = new Gtk.Label({
-            visible: true,
-            can_focus: false,
-            xalign: 0,
-            hexpand: true,
-            label: summary
-        });
-        row.grid.attach(row.summary, 0, 0, 1, 1);
-        
-        // Description Label
-        if (description) {
-            row.description = new Gtk.Label({
-                visible: true,
-                can_focus: false,
-                xalign: 0,
-                hexpand: true,
-                label: description,
-                wrap: true
-            });
-            row.description.get_style_context().add_class("dim-label");
-            row.grid.attach(row.description, 0, 1, 1, 1);
-        }
-        
-        let widgetHeight = (description !== null) ? 2 : 1;
-        row.widget = widget;
-        row.grid.attach(row.widget, 1, 0, 1, widgetHeight);
-        
+        let setting = new Setting(summary, description, widget);
+        let row = this.addRow(section, setting);
         return row;
     },
     
