@@ -1121,6 +1121,15 @@ var ConversationWindow = new Lang.Class({
             messageBody,
             MessageDirection.IN
         );
+            
+        this.recipientList.list.foreach((row) => {
+            if (row.phone.label === recipient.phoneNumber) {
+                row.layout.remove(row.avatar);
+                row.avatar = this._getAvatar(recipient);
+                row.avatar.visible = true;
+                row.layout.attach(row.avatar, 0, 0, 1, 2);
+            }
+        });
     },
     
     /** Send the contents of ContactEntry to each recipient */
