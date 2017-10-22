@@ -33,7 +33,6 @@ var PrefsWidget = new Lang.Class({
         this.parent();
         
         this.daemon = new Client.Daemon();
-        this.daemon.discovering = true;
         
         this._build();
         
@@ -51,8 +50,9 @@ var PrefsWidget = new Lang.Class({
         
         if (!this.daemon) {
             this.daemon = new Client.Daemon();
-            this.daemon.discovering = true;
         }
+        
+        this.daemon.discovering = true;
         
         for (let dbusPath of this.daemon.devices.keys()) {
             this.devicesStack.addDevice(this.daemon, dbusPath);
@@ -101,6 +101,7 @@ var PrefsWidget = new Lang.Class({
         // Keyboard Shortcuts
         let keySection = generalPage.addSection(_("Keyboard Shortcuts"));
         let keyRow = generalPage.addRow(keySection);
+        keyRow.grid.margin = 0;
         let keyView = new KeybindingsWidget.TreeView();
         // TRANSLATORS: Opens the extension sub-menu in the Gnome Shell User Menu
         keyView.addAccel("menu", _("Open Menu"), 0, 0);
