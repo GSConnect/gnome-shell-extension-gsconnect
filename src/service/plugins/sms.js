@@ -637,7 +637,7 @@ var MessageView = new Lang.Class({
         this.threadWindow.add(this.list);
         
         // Message Entry
-        this.messageEntry = new Gtk.Entry({
+        this.entry = new Gtk.Entry({
             hexpand: true,
             placeholder_text: _("Type an SMS message"),
             secondary_icon_name: "sms-send",
@@ -645,25 +645,25 @@ var MessageView = new Lang.Class({
             secondary_icon_sensitive: false
         });
         
-        this.messageEntry.connect("changed", (entry, signal_id, data) => {
+        this.entry.connect("changed", (entry, signal_id, data) => {
             entry.secondary_icon_sensitive = (entry.text.length);
         });
         
-        this.messageEntry.connect("activate", (entry, signal_id, data) => {
+        this.entry.connect("activate", (entry, signal_id, data) => {
             this._parent.send(entry, signal_id, data);
         });
         
-        this.messageEntry.connect("icon-release", (entry, signal_id, data) => {
+        this.entry.connect("icon-release", (entry, signal_id, data) => {
             this._parent.send(entry, signal_id, data);
         });
         
         this._parent.device.bind_property(
             "connected",
-            this.messageEntry,
+            this.entry,
             "sensitive",
             GObject.BindingFlags.DEFAULT
         );
-        this.add(this.messageEntry);
+        this.add(this.entry);
     },
     
     /**
@@ -987,6 +987,7 @@ var ConversationWindow = new Lang.Class({
         this.messagesButton.visible = false;
         this.contactButton.visible = true;
         this.stack.set_visible_child_name("messages");
+        this.messageView.entry.has_focus = true;
     },
     
     get recipients () {
