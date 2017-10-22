@@ -374,21 +374,13 @@ var Plugin = new Lang.Class({
         //    * "isCancel"          The event has been cancelled
         
         let sender;
-        
-         // FIXME: not sure what to do here; this complicates all the other
-         //        logic performed on these variables
-//        if (!packet.body.phoneNumber.length) {
-//            packet.body.phoneNumber = _("Unknown Number");
-//        }
-//        
-//        if (packet.body.contactName === "") {
-//            packet.body.contactName = _("Unknown Contact");
-//        }
                 
-        if (packet.body.contactName.length) {
+        if (packet.body.contactName) {
             sender = packet.body.contactName;
-        } else {
+        } else if (packet.body.phoneNumber) {
             sender = packet.body.phoneNumber;
+        } else {
+            sender = _("Unknown Number");
         }
         
         // Event handling
@@ -459,6 +451,7 @@ var Plugin = new Lang.Class({
             window.urgency_hint = true;
             
             // Tell the notifications plugin to mark any duplicate read
+            // TODO: check exactly what kdeconnect-android returns
             let sender = (contactName.length) ? contactName : phoneNumber;
             
             if (this.device._plugins.has("notifications")) {
