@@ -986,8 +986,8 @@ var ConversationWindow = new Lang.Class({
         
         this.messagesButton.visible = false;
         this.contactButton.visible = true;
-        this.stack.set_visible_child_name("messages");
         this.messageView.entry.has_focus = true;
+        this.stack.set_visible_child_name("messages");
     },
     
     get recipients () {
