@@ -291,11 +291,15 @@ var Plugin = new Lang.Class({
                 channel.connect("connected", (channel) => {
                     let transfer = new Protocol.Transfer(
                         channel,
-                        packet.payloadSize
+                        packet.payloadSize,
+                        packet.body.payloadHash
                     );
                     
                     transfer.connect("failed", (transfer) => {
                         channel.close();
+                        notif.set_icon(
+                            new Gio.ThemedIcon({ name: "phone-symbolic" })
+                        );
                     });
                     
                     transfer.connect("succeeded", (transfer) => {
