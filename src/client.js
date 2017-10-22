@@ -209,24 +209,36 @@ var Telephony = new Lang.Class({
     Signals: {
         "missedCall": {
             flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED,
-            param_types: [GObject.TYPE_STRING, GObject.TYPE_STRING]
+            param_types: [
+                GObject.TYPE_STRING,
+                GObject.TYPE_STRING,
+                GObject.TYPE_STRING
+            ]
         },
         "ringing": {
             flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED,
-            param_types: [GObject.TYPE_STRING, GObject.TYPE_STRING]
+            param_types: [
+                GObject.TYPE_STRING,
+                GObject.TYPE_STRING,
+                GObject.TYPE_STRING
+            ]
         },
         "sms": {
             flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED,
             param_types: [
-                GObject.TYPE_STRING,    // phoneNumber
-                GObject.TYPE_STRING,    // contactName
-                GObject.TYPE_STRING,    // messageBody
-                GObject.TYPE_STRING     // FIXME: phoneThumbnail
+                GObject.TYPE_STRING,
+                GObject.TYPE_STRING,
+                GObject.TYPE_STRING,
+                GObject.TYPE_STRING
             ]
         },
         "talking": {
             flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED,
-            param_types: [GObject.TYPE_STRING, GObject.TYPE_STRING]
+            param_types: [
+                GObject.TYPE_STRING,
+                GObject.TYPE_STRING,
+                GObject.TYPE_STRING
+            ]
         }
     },
     

@@ -57,11 +57,19 @@ var Plugin = new Lang.Class({
     Signals: {
         "missedCall": {
             flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED,
-            param_types: [GObject.TYPE_STRING, GObject.TYPE_STRING]
+            param_types: [
+                GObject.TYPE_STRING,
+                GObject.TYPE_STRING,
+                GObject.TYPE_STRING
+            ]
         },
         "ringing": {
             flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED,
-            param_types: [GObject.TYPE_STRING, GObject.TYPE_STRING]
+            param_types: [
+                GObject.TYPE_STRING,
+                GObject.TYPE_STRING,
+                GObject.TYPE_STRING
+            ]
         },
         "sms": {
             flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED,
@@ -74,7 +82,11 @@ var Plugin = new Lang.Class({
         },
         "talking": {
             flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED,
-            param_types: [GObject.TYPE_STRING, GObject.TYPE_STRING]
+            param_types: [
+                GObject.TYPE_STRING,
+                GObject.TYPE_STRING,
+                GObject.TYPE_STRING
+            ]
         }
     },
     
@@ -90,13 +102,15 @@ var Plugin = new Lang.Class({
         this.emit(
             "missedCall",
             packet.body.phoneNumber,
-            packet.body.contactName
+            packet.body.contactName,
+            packet.body.phoneThumbnail
         );
         this._dbus.emit_signal("missedCall",
             new GLib.Variant(
-                "(ss)",
+                "(sss)",
                 [packet.body.phoneNumber,
-                packet.body.contactName]
+                packet.body.contactName,
+                packet.body.phoneThumbnail]
             )
         );
         
@@ -129,13 +143,15 @@ var Plugin = new Lang.Class({
         this.emit(
             "ringing",  
             packet.body.phoneNumber,    
-            packet.body.contactName
+            packet.body.contactName,
+            packet.body.phoneThumbnail
         );
         this._dbus.emit_signal("ringing",
             new GLib.Variant(
-                "(ss)",
+                "(sss)",
                 [packet.body.phoneNumber,
-                packet.body.contactName]
+                packet.body.contactName,
+                packet.body.phoneThumbnail]
             )
         );
         
@@ -258,13 +274,15 @@ var Plugin = new Lang.Class({
         this.emit(
             "talking",
             packet.body.phoneNumber,
-            packet.body.contactName
+            packet.body.contactName,
+            packet.body.phoneThumbnail
         );
         this._dbus.emit_signal("talking",
             new GLib.Variant(
-                "(ss)",
+                "(sss)",
                 [packet.body.phoneNumber,
-                packet.body.contactName]
+                packet.body.contactName,
+                packet.body.phoneThumbnail]
             )
         );
         
