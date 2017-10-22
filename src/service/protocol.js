@@ -580,16 +580,20 @@ var Transfer = new Lang.Class({
         }
     },
     
-    _init: function (channel, size) {
+    _init: function (channel, size, checksum) {
         this.parent();
+        
+        this.id = GLib.uuid_string_random();
         
         this._in = channel._in;
         this._out = channel._out;
         this._cancellable = new Gio.Cancellable();
         
-        this.id = GLib.uuid_string_random();
         this.size = size;
-        this.bytesWritten = 0;
+        this.written = 0;
+        
+        this.checksum = checksum;
+        this._checksum = new GLib.Checksum(GLib.ChecksumType.MD5);
     },
     
     _read: function () {
@@ -604,16 +608,25 @@ var Transfer = new Lang.Class({
             (source, res) => {
                 let bytes = source.read_bytes_finish(res);
                 
+                // Data to write
                 if (bytes.get_size()) {
                     this._write(bytes);
-                } else {
-                    // FIXME: better
-                    if (this.bytesWritten < this.size) {
-                        this.emit("failed", "Failed to complete transfer");
+                    this._checksum.update(bytes.unref_to_array());
+                // Expected more data
+                } else if (this.size > this.written) {
+                    this.emit("failed", "Incomplete transfer");
+                // Data should match the checksum
+                } else if (this.checksum) {
+                    if (this.checksum !== this._checksum.get_string()) {
+                        this.emit("failed", "Checksum mismatch");
                     } else {
+                        Common.debug("Completed transfer of " + this.size + " bytes");
                         this.emit("succeeded");
-                        log("Completed transfer of " + this.size + " bytes");
                     }
+                // All done
+                } else {
+                    Common.debug("Completed transfer of " + this.size + " bytes");
+                    this.emit("succeeded");
                 }
             }
         );
@@ -629,8 +642,8 @@ var Transfer = new Lang.Class({
             GLib.PRIORITY_DEFAULT,
             this._cancellable,
             (source, res) => {
-                this.bytesWritten += source.write_bytes_finish(res);
-                this.emit("progress", (this.bytesWritten / this.size) * 100);
+                this.written += source.write_bytes_finish(res);
+                this.emit("progress", (this.written / this.size) * 100);
                 this._read();
             }
         );
