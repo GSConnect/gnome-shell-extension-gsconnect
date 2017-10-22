@@ -580,11 +580,11 @@ var Transfer = new Lang.Class({
         }
     },
     
-    _init: function (srcStream, destStream, size) {
+    _init: function (channel, size) {
         this.parent();
         
-        this._in = srcStream;
-        this._out = destStream;
+        this._in = channel._in;
+        this._out = channel._out;
         this._cancellable = new Gio.Cancellable();
         
         this.id = GLib.uuid_string_random();
@@ -607,7 +607,6 @@ var Transfer = new Lang.Class({
                 if (bytes.get_size()) {
                     this._write(bytes);
                 } else {
-                    
                     // FIXME: better
                     if (this.bytesWritten < this.size) {
                         this.emit("failed", "Failed to complete transfer");

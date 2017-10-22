@@ -85,8 +85,7 @@ var Plugin = new Lang.Class({
             
             channel.connect("connected", (channel) => {
                 let transfer = new Protocol.Transfer(
-                    channel._in,
-                    channel._out,
+                    channel,
                     packet.payloadSize
                 );
                 this.transfers.set(transfer.id, transfer);
@@ -314,8 +313,7 @@ var Plugin = new Lang.Class({
             
             channel.connect("connected", (channel) => {
                 let transfer = new Protocol.Transfer(
-                    channel._in,
-                    channel._out,
+                    channel,
                     info.get_size()
                 );
                 this.transfers.set(transfer.id, transfer);
