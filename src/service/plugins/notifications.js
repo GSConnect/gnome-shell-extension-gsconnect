@@ -89,7 +89,8 @@ var METADATA = {
  *    title {string} - The remote's title of the notification
  *    text {string} - The remote's body of the notification
  *
- * TODO: convert themed SVG->PNG for icon uploads
+ * TODO: support payloadHash for uploaded icons
+ *       convert themed SVG->PNG for icon uploads?
  *       requestAnswer usage?
  *       urgency filter (outgoing)?
  *       make "shared" notifications clearable (Can KDE Connect even do this?)
@@ -100,16 +101,13 @@ var Plugin = new Lang.Class({
     Name: "GSConnectNotificationsPlugin",
     Extends: PluginsBase.Plugin,
     Signals: {
-        "notificationReceived": {
+        "received": {
             flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED,
             param_types: [ GObject.TYPE_STRING ]
         },
-        "notificationDismissed": {
+        "dismissed": {
             flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED,
             param_types: [ GObject.TYPE_STRING ]
-        },
-        "notificationsDismissed": {
-            flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED
         }
     },
     
@@ -333,7 +331,7 @@ var Plugin = new Lang.Class({
             if (packet.body.id.indexOf("sms") > -1) {
                 let smsString
                 
-                // KDE Connect Android 1.7+ only
+                // kdeconnect-android 1.7+ only
                 if (packet.body.hasOwnProperty("title")) {
                     smsString = packet.body.title + ": " + packet.body.text;
                 } else {
