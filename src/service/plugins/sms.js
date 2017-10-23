@@ -1085,13 +1085,19 @@ var ConversationWindow = new Lang.Class({
      */
     addRecipient: function (phoneNumber, contactName, phoneThumbnail) {
         let strippedNumber = phoneNumber.replace(/\D/g, "");
-        
-        // Prefer data from the ContactCompletion
-        let recipient = Object.assign({
+        let recipient = {
             phoneNumber: phoneNumber,
             contactName: contactName,
             phoneThumbnail: phoneThumbnail
-        }, this.getCompletionContact(strippedNumber));
+        };
+        
+        // Get data from the ContactCompletion if contactName is absent
+        if (!contactName) {
+            recipient = Object.assign(
+                recipient,
+                this.getCompletionContact(strippedNumber)
+            );
+        }
         
         // This is an extant recipient
         if (this._recipients.has(strippedNumber)) {
