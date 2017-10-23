@@ -517,7 +517,7 @@ var RecipientList = new Lang.Class({
         });
         
         let placeholderImage = Gtk.Image.new_from_icon_name(
-            "contact-new-symbolic",
+            "avatar-default-symbolic",
             Gtk.IconSize.DIALOG
         );
         placeholderImage.get_style_context().add_class("dim-label");
