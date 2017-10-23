@@ -393,10 +393,8 @@ var SettingsDialog = new Lang.Class({
     _init: function (devicePage, pluginName, window) {
         this.parent(devicePage, pluginName, window);
         
-        this._query()
-        
         // Receiving
-        let directionSection = this.content.addSection(
+        let generalSection = this.content.addSection(
             null,
             null,
             { width_request: -1 }
@@ -412,8 +410,7 @@ var SettingsDialog = new Lang.Class({
         receiveSwitch.connect("notify::active", (widget) => {
             this.settings.receive.enabled = receiveSwitch.active;
         });
-        this.content.addItem(
-            directionSection,
+        generalSection.addSetting(
             _("Receive Notifications"),
             null,
             receiveSwitch
@@ -430,8 +427,7 @@ var SettingsDialog = new Lang.Class({
         sendSwitch.connect("notify::active", (widget) => {
             this.settings.send.enabled = sendSwitch.active;
         });
-        this.content.addItem(
-            directionSection,
+        generalSection.addSetting(
             _("Send Notifications"),
             null,
             sendSwitch
@@ -447,10 +443,9 @@ var SettingsDialog = new Lang.Class({
         iconsSwitch.connect("notify::active", (widget) => {
             this.settings.send.icons = iconsSwitch.active;
         });
-        let iconsRow = this.content.addItem(
-            directionSection,
-            _("Send Icons"),
-            _("Include icons in notifications"),
+        let iconsRow = generalSection.addSetting(
+            _("Send Icons With Notifications"),
+            null,
             iconsSwitch
         );
         sendSwitch.bind_property(
@@ -463,12 +458,45 @@ var SettingsDialog = new Lang.Class({
         this.appSection = this.content.addSection(
             _("Applications"),
             null,
-            { selection_mode: Gtk.SelectionMode.SINGLE, width_request: -1 }
+            {
+                margin_bottom: 0,
+                selection_mode: Gtk.SelectionMode.SINGLE,
+                width_request: -1
+            }
         );
         
+        this._populate();
+        
+        let removeRow = this.appSection.addRow();
+        removeRow.activatable = true;
+        removeRow.grid.margin = 0;
+        removeRow.grid.hexpand = true;
+        removeRow.grid.halign = Gtk.Align.CENTER;
+        removeRow.image = Gtk.Image.new_from_icon_name(
+            "list-remove-symbolic",
+            Gtk.IconSize.BUTTON
+        );
+        removeRow.grid.attach(removeRow.image, 0, 0, 1, 1);
+        
+        this.appSection.list.set_sort_func((row1, row2) => {
+            if (row2.hasOwnProperty("image")) { return -1; }
+            return row1.appName.label.localeCompare(row2.appName.label);
+        });
+        
+        this.appSection.list.connect("row-activated", (listbox, row) => {
+            this.appSection.list.selected_foreach((listbox, row) => {
+                this._remove(row);
+            });
+        });
+        
+        this.content.show_all();
+    },
+    
+    _populate: function () {
+        this._query();
+    
         for (let name in this.settings.send.applications) {
-            let row = this.content.addRow(
-                this.appSection,
+            let row = this.appSection.addRow(
                 null,
                 { selectable: true }
             );
@@ -501,30 +529,6 @@ var SettingsDialog = new Lang.Class({
             });
             row.grid.attach(row.switch, 2, 0, 1, 1);
         }
-        
-        let removeRow = this.content.addRow(this.appSection);
-        removeRow.activatable = true;
-        removeRow.grid.margin = 0;
-        removeRow.grid.hexpand = true;
-        removeRow.grid.halign = Gtk.Align.CENTER;
-        removeRow.image = Gtk.Image.new_from_icon_name(
-            "list-remove-symbolic",
-            Gtk.IconSize.BUTTON
-        );
-        removeRow.grid.attach(removeRow.image, 0, 0, 1, 1);
-        
-        this.appSection.list.set_sort_func((row1, row2) => {
-            if (row2.hasOwnProperty("image")) { return -1; }
-            return row1.appName.label.localeCompare(row2.appName.label);
-        });
-        
-        this.appSection.list.connect("row-activated", (listbox, row) => {
-            this.appSection.list.selected_foreach((listbox, row) => {
-                this._remove(row);
-            });
-        });
-        
-        this.content.show_all();
     },
     
     _query: function () {

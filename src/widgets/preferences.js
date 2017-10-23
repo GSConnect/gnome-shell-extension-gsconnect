@@ -25,47 +25,6 @@ const GSettingsWidget = imports.widgets.gsettings;
  */
 
 
-var Section = new Lang.Class({
-    Name: "GSConnectPreferencesSection",
-    Extends: Gtk.Frame,
-    
-    _init: function (params={}) {
-        params = Object.assign({
-            width_request: 460,
-            selection_mode: Gtk.SelectionMode.NONE
-        }, params);
-    
-        this.parent({
-            visible: true,
-            can_focus: false,
-            margin_bottom: 32,
-            hexpand: true,
-            shadow_type: Gtk.ShadowType.IN
-        });
-        
-        this.list = new Gtk.ListBox({
-            visible: true,
-            can_focus: false,
-            hexpand: true,
-            activate_on_single_click: true,
-            selection_mode: params.selection_mode,
-            width_request: params.width_request
-        });
-        this.add(this.list);
-        
-        this.list.set_header_func(this._header_func);
-    },
-    
-    _header_func: function (row, before) {
-        if (before) {
-            row.set_header(
-                new Gtk.Separator({ orientation: Gtk.Orientation.HORIZONTAL })
-            );
-        }
-    }
-});
-
-
 var Row = new Lang.Class({
     Name: "GSConnectPreferencesRow",
     Extends: Gtk.ListBoxRow,
@@ -143,68 +102,55 @@ var Setting = new Lang.Class({
 });
 
 
-/** A composite widget resembling A Gnome Control Center panel. */
-var Page = new Lang.Class({
-    Name: "GSConnectPreferencesPage",
-    Extends: Gtk.ScrolledWindow,
+var Section = new Lang.Class({
+    Name: "GSConnectPreferencesSection",
+    Extends: Gtk.Frame,
     
     _init: function (params={}) {
         params = Object.assign({
-            can_focus: true,
-            visible: true,
-            hscrollbar_policy: Gtk.PolicyType.NEVER
+            width_request: 460,
+            selection_mode: Gtk.SelectionMode.NONE,
+            margin_bottom: 32
         }, params);
-        this.parent(params);
-        
-        this.box = new Gtk.Box({
+    
+        this.parent({
             visible: true,
             can_focus: false,
-            margin_left: 72,
-            margin_right: 72,
-            margin_top: 18,
-            margin_bottom: 18,
-            orientation: Gtk.Orientation.VERTICAL
+            margin_bottom: params.margin_bottom,
+            hexpand: true,
+            shadow_type: Gtk.ShadowType.IN
         });
-        this.add(this.box);
+        
+        this.list = new Gtk.ListBox({
+            visible: true,
+            can_focus: false,
+            hexpand: true,
+            activate_on_single_click: true,
+            selection_mode: params.selection_mode,
+            width_request: params.width_request
+        });
+        this.add(this.list);
+        
+        this.list.set_header_func(this._header_func);
     },
     
-    /**
-     * Add and return a new section widget. If @title is given, a bold title
-     * will be placed above the section.
-     *
-     * @param {String} title - Optional bold label placed above the section
-     * @param {Gtk.ListBoxRow} [row] - The row to add, or null to create new
-     * @return {Gtk.Frame} section - The new Section object.
-     */
-    addSection: function (title, section, params={}) {
-        if (title) {
-            let label = new Gtk.Label({
-                visible: true,
-                can_focus: false,
-                margin_bottom: 12,
-                margin_start: 3,
-                xalign: 0,
-                use_markup: true,
-                label: "<b>" + title + "</b>"
-            });
-            this.box.pack_start(label, false, true, 0);
+    _header_func: function (row, before) {
+        if (before) {
+            row.set_header(
+                new Gtk.Separator({ orientation: Gtk.Orientation.HORIZONTAL })
+            );
         }
-        
-        if (!section) { section = new Section(params); }
-        this.box.add(section);
-        return section;
     },
     
     /**
      * Add and return new row with a Gtk.Grid child
      *
-     * @param {Gtk.Frame} section - The section widget to attach to
      * @param {Gtk.ListBoxRow|Row} [row] - The row to add, null to create new
      * @return {Gtk.ListBoxRow} row - The new row
      */
-    addRow: function (section, row, params={}) {
+    addRow: function (row, params={}) {
         if (!row) { row = new Row(params);}
-        section.list.add(row);
+        this.list.add(row);
         return row;
     },
     
@@ -212,14 +158,13 @@ var Page = new Lang.Class({
      * Add a new row to @section and return the row. @summary will be placed on
      * top of @description (dimmed) on the left, @widget to the right of them. 
      *
-     * @param {Gtk.Frame} section - The section widget to attach to
      * @param {String} summary - A short summary for the item
      * @param {String} description - A short description for the item
      * @return {Gtk.ListBoxRow} row - The new row
      */
-    addItem: function (section, summary, description, widget) {
+    addSetting: function (summary, description, widget) {
         let setting = new Setting(summary, description, widget);
-        let row = this.addRow(section, setting);
+        let row = this.addRow(setting);
         return row;
     },
     
@@ -228,12 +173,11 @@ var Page = new Lang.Class({
      * Gtk.Widget will be chosen for @setting based on it's type, unless
      * @widget is given which will have @setting passed to it's constructor.
      *
-     * @param {Gtk.Frame} section - The section widget to attach to
      * @param {String} keyName - The GSettings key name
      * @param {Gtk.Widget} widget - An override widget
      * @return {Gtk.ListBoxRow} row - The new row
      */
-    addSetting: function (section, keyName, widget) {
+    addGSetting: function (keyName, widget) {
         let key = Common.Settings.settings_schema.get_key(keyName);
         let range = key.get_range().deep_unpack()[0];
         let type = key.get_value_type().dup_string();
@@ -259,12 +203,65 @@ var Page = new Lang.Class({
             widget = new GSettingsWidget.OtherSetting(Common.Settings, keyName);
         }
         
-        return this.addItem(
-            section,
+        return this.addSetting(
             key.get_summary(),
             key.get_description(),
             widget
         );
+    }
+});
+
+
+/** A composite widget resembling A Gnome Control Center panel. */
+var Page = new Lang.Class({
+    Name: "GSConnectPreferencesPage",
+    Extends: Gtk.ScrolledWindow,
+    
+    _init: function (params={}) {
+        params = Object.assign({
+            can_focus: true,
+            visible: true,
+            hscrollbar_policy: Gtk.PolicyType.NEVER
+        }, params);
+        this.parent(params);
+        
+        this.box = new Gtk.Box({
+            visible: true,
+            can_focus: false,
+            margin_left: 72,
+            margin_right: 72,
+            margin_top: 32,
+            margin_bottom: 32,
+            orientation: Gtk.Orientation.VERTICAL
+        });
+        this.add(this.box);
+    },
+    
+    /**
+     * Add and return a new section widget. If @title is given, a bold title
+     * will be placed above the section.
+     *
+     * @param {string} [title] - Optional title for the section
+     * @param {Section} [section] - The section to add, or null to create new
+     * @return {Gtk.Frame} section - The new Section object.
+     */
+    addSection: function (title, section, params={}) {
+        if (title) {
+            let label = new Gtk.Label({
+                visible: true,
+                can_focus: false,
+                margin_bottom: 12,
+                margin_start: 3,
+                xalign: 0,
+                use_markup: true,
+                label: "<b>" + title + "</b>"
+            });
+            this.box.pack_start(label, false, true, 0);
+        }
+        
+        if (!section) { section = new Section(params); }
+        this.box.add(section);
+        return section;
     }
 });
 

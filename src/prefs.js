@@ -90,17 +90,18 @@ var PrefsWidget = new Lang.Class({
         
         // Appearance
         let appearanceSection = generalPage.addSection(_("Appearance"));
-        generalPage.addSetting(appearanceSection, "show-indicators");
-        generalPage.addSetting(appearanceSection, "show-offline");
-        generalPage.addSetting(appearanceSection, "show-unpaired");
+        appearanceSection.addGSetting("show-indicators");
+        appearanceSection.addGSetting("show-offline");
+        appearanceSection.addGSetting("show-unpaired");
         
         // Files
         let filesSection = generalPage.addSection(_("Files"));
-        generalPage.addSetting(filesSection, "nautilus-integration");
+        filesSection.addGSetting("nautilus-integration");
         
         // Keyboard Shortcuts
         let keySection = generalPage.addSection(_("Keyboard Shortcuts"));
-        let keyRow = generalPage.addRow(keySection);
+        keySection.margin_bottom = 0;
+        let keyRow = keySection.addRow();
         keyRow.grid.margin = 0;
         let keyView = new KeybindingsWidget.TreeView();
         // TRANSLATORS: Opens the extension sub-menu in the Gnome Shell User Menu
@@ -132,8 +133,12 @@ var PrefsWidget = new Lang.Class({
         
         // About/Advanced
         let advancedPage = this.addPage("advanced", _("Advanced"));
-        let develSection = advancedPage.addSection(_("Development"));
-        advancedPage.addSetting(develSection, "debug");
+        let develSection = advancedPage.addSection(
+            _("Development"),
+            null,
+            { margin_bottom: 32 }
+        );
+        develSection.addGSetting("debug");
         
         let stopButton = new Gtk.Button({
             image: Gtk.Image.new_from_icon_name(
@@ -151,8 +156,7 @@ var PrefsWidget = new Lang.Class({
             "clicked",
             Lang.bind(this.daemon, this.daemon.quit)
         );
-        advancedPage.addItem(
-            develSection,
+        develSection.addSetting(
             _("Stop Service"),
             _("Instruct the daemon to quit"),
             stopButton

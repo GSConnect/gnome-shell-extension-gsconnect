@@ -512,7 +512,7 @@ var SettingsDialog = new Lang.Class({
         let receivingSection = this.content.addSection(
             _("Receiving"),
             null,
-            { width_request: -1 }
+            { margin_bottom: 0, width_request: -1 }
         );
         
         let fbutton = new Gtk.FileChooserButton({
@@ -524,8 +524,7 @@ var SettingsDialog = new Lang.Class({
         fbutton.connect("current-folder-changed", (button) => {
             this.settings.download_directory = fbutton.get_current_folder();
         });
-        this.content.addItem(
-            receivingSection,
+        receivingSection.addSetting(
             _("Download Location"),
             null,
             fbutton
@@ -541,8 +540,7 @@ var SettingsDialog = new Lang.Class({
         subdirsSwitch.connect("notify::active", (widget) => {
             this.settings.download_subdirs = subdirsSwitch.active;
         });
-        this.content.addItem(
-            receivingSection,
+        receivingSection.addSetting(
             // TRANSLATORS: eg. Use a subdirectory named <b>Google Pixel<b>
             _("Use a subdirectory named <b>%s</b>").format(this._page.device.name),
             null,

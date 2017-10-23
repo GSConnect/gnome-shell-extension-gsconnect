@@ -514,8 +514,7 @@ var SettingsDialog = new Lang.Class({
         notifySMSSwitch.connect("notify::active", (widget) => {
             this.settings.notify_sms = notifySMSSwitch.active;
         });
-        this.content.addItem(
-            notificationSection,
+        notificationSection.addSetting(
             _("SMS Messages"),
             null,
             notifySMSSwitch
@@ -531,8 +530,7 @@ var SettingsDialog = new Lang.Class({
         notifyMissedCallSwitch.connect("notify::active", (widget) => {
             this.settings.notify_missedCall = notifyMissedCallSwitch.active;
         });
-        this.content.addItem(
-            notificationSection,
+        notificationSection.addSetting(
             _("Missed Calls"),
             null,
             notifyMissedCallSwitch
@@ -548,8 +546,7 @@ var SettingsDialog = new Lang.Class({
         notifyRingingSwitch.connect("notify::active", (widget) => {
             this.settings.notify_ringing = notifyRingingSwitch.active;
         });
-        this.content.addItem(
-            notificationSection,
+        notificationSection.addSetting(
             _("Incoming Calls"),
             null,
             notifyRingingSwitch
@@ -565,8 +562,7 @@ var SettingsDialog = new Lang.Class({
         notifyTalkingSwitch.connect("notify::active", (widget) => {
             this.settings.notify_talking = notifyTalkingSwitch.active;
         });
-        this.content.addItem(
-            notificationSection,
+        notificationSection.addSetting(
             _("In Progress Calls"),
             null,
             notifyTalkingSwitch
@@ -576,7 +572,7 @@ var SettingsDialog = new Lang.Class({
         let mediaSection = this.content.addSection(
             _("Media"),
             null,
-            { width_request: -1 }
+            { margin_bottom: 0, width_request: -1 }
         );
         
         let pauseMusicComboBox = new Gtk.ComboBoxText({
@@ -592,12 +588,8 @@ var SettingsDialog = new Lang.Class({
         pauseMusicComboBox.connect("changed", (widget) => {
             this.settings.pause_music = pauseMusicComboBox.active_id;
         });
-        this.content.addItem(
-            mediaSection,
-            _("Pause Music"),
-            null,
-            pauseMusicComboBox
-        );
+        mediaSection.addSetting(_("Pause Music"), null, pauseMusicComboBox);
+        
         if (this._page.device.plugins.indexOf("mpris") < 0) {
             pauseMusicComboBox.sensitive = false;
             pauseMusicComboBox.set_tooltip_markup(

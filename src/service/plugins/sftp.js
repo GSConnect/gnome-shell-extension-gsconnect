@@ -320,9 +320,9 @@ var SettingsDialog = new Lang.Class({
         this.parent(devicePage, pluginName, window);
         
         let generalSection = this.content.addSection(
+            _("General"),
             null,
-            null,
-            { width_request: -1 }
+            { margin_bottom: 0, width_request: -1 }
         );
         
         let automountSwitch = new Gtk.Switch({
@@ -335,8 +335,7 @@ var SettingsDialog = new Lang.Class({
         automountSwitch.connect("notify::active", (widget) => {
             this.settings.automount = automountSwitch.automount;
         });
-        this.content.addItem(
-            generalSection,
+        generalSection.addSetting(
             _("Automatically Mount"),
             null,
             automountSwitch

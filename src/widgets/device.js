@@ -273,7 +273,7 @@ var Stack = new Lang.Class({
         page.box.margin_right = 36;
         
         let serviceSection = page.addSection(null, null, { width_request: -1 });
-        page.addSetting(serviceSection, "public-name");
+        serviceSection.addGSetting("public-name");
         
         let helpSection = page.addSection(_("Connecting Devices"), null, { width_request: -1 });
         let defaultPageLabel = new Gtk.Label({
@@ -285,7 +285,7 @@ var Stack = new Lang.Class({
             vexpand: true,
             xalign: 0
         });
-        let helpRow = page.addRow(helpSection);
+        let helpRow = helpSection.addRow();
         helpRow.grid.attach(defaultPageLabel, 0, 0, 1, 1);
         
         this.stack.add_titled(page, "default", "Default");
@@ -369,7 +369,7 @@ var Page = new Lang.Class({
         let metadata = DeviceMetadata[device.type];
         
         let infoSection = this.addSection(null, null, { width_request: -1 });
-        let statusRow = this.addRow(infoSection);
+        let statusRow = infoSection.addRow();
         
         // Info Section // Type Icon
         let typeIcon = Gtk.Image.new_from_icon_name(
@@ -518,13 +518,16 @@ var Page = new Lang.Class({
         statusRow.grid.attach(removeButton, 3, 0, 1, 2);
         
         // Plugins
-        let pluginsSection = this.addSection(_("Plugins"), null, { width_request: -1 });
+        let pluginsSection = this.addSection(
+            _("Plugins"),
+            null, 
+            { width_request: -1 }
+        );
         
         for (let name of this.device.supportedPlugins) {
             let metadata = imports.service.plugins[name].METADATA;
             
-            this.addItem(
-                pluginsSection,
+            pluginsSection.addSetting(
                 metadata.summary,
                 metadata.description,
                 new PluginControl(this, name)
@@ -536,8 +539,12 @@ var Page = new Lang.Class({
         });
         
         // Keyboard Shortcuts
-        let keySection = this.addSection(_("Keyboard Shortcuts"), null, { width_request: -1 });
-        let keyRow = this.addRow(keySection);
+        let keySection = this.addSection(
+            _("Keyboard Shortcuts"),
+            null,
+            { margin_bottom: 0, width_request: -1 }
+        );
+        let keyRow = keySection.addRow();
         keyRow.grid.margin = 0;
         let keyView = new KeybindingsWidget.TreeView();
         // TRANSLATORS: Open the device menu

@@ -103,7 +103,7 @@ var SettingsDialog = new Lang.Class({
         let commandsSection = this.content.addSection(
             _("Commands"),
             null,
-            { width_request: -1 }
+            { margin_bottom: 0, width_request: -1 }
         );
         
         // TreeView/Model
@@ -154,7 +154,7 @@ var SettingsDialog = new Lang.Class({
         this.treeview.append_column(cmdCol);
         this.cmdCell.connect("edited", Lang.bind(this, this._editCmd));
         
-        let commandRow = this.content.addRow(commandsSection);
+        let commandRow = commandsSection.addRow();
         commandRow.grid.row_spacing = 12;
         commandRow.grid.margin = 0;
         
