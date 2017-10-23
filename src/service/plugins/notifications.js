@@ -473,10 +473,17 @@ var SettingsDialog = new Lang.Class({
                 { selectable: true }
             );
             
-            row.icon = Gtk.Image.new_from_icon_name(
-                this.settings.send.applications[name].iconName,
-                Gtk.IconSize.DND
-            );
+            try {
+                row.icon = Gtk.Image.new_from_icon_name(
+                    this.settings.send.applications[name].iconName,
+                    Gtk.IconSize.DND
+                );
+            } catch (e) {
+                row.icon = Gtk.Image.new_from_icon_name(
+                    "application-x-executable",
+                    Gtk.IconSize.DND
+                );
+            }
             row.grid.attach(row.icon, 0, 0, 1, 1);
             
             row.appName = new Gtk.Label({
