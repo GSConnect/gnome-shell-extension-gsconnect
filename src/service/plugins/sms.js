@@ -814,6 +814,7 @@ var ConversationWindow = new Lang.Class({
         this.device = device;
         this.plugin = this.device._plugins.get("telephony");
         this._recipients = new Map();
+        this._notifications = [];
         
         // Header Bar
         this.headerBar = new Gtk.HeaderBar({ show_close_button: true });
@@ -924,9 +925,17 @@ var ConversationWindow = new Lang.Class({
         this.messageView = new MessageView(this);
         this.stack.add_named(this.messageView, "messages");
         
+        // Clear pending notifications on focus
+        this.messageView.entry.connect("notify::has-focus", () => {
+            while (this._notifications.length) {
+                this.application.withdraw_notification(
+                    this._notifications.pop()
+                );  
+            }
+        });
+        
         // Finish initing
         this.show_all();
-        this.has_focus = true;
         this.notify("recipients");
     },
     

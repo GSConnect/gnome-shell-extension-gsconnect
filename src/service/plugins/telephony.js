@@ -264,6 +264,10 @@ var Plugin = new Lang.Class({
             }
             
             this.device.daemon.send_notification(packet.id.toString(), notif);
+            
+            if (window) {
+                window._notifications.push(packet.id.toString();)
+            }
         }
     },
     
