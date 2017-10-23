@@ -582,8 +582,8 @@ var SettingsDialog = new Lang.Class({
             valign: Gtk.Align.CENTER
         });
         pauseMusicComboBox.append("never", _("Never"));
-        pauseMusicComboBox.append("ringing", _("Call Incoming").format(this._page.device.name));
-        pauseMusicComboBox.append("talking", _("Call In Progress").format(this._page.device.name));
+        pauseMusicComboBox.append("ringing", _("Incoming Calls"));
+        pauseMusicComboBox.append("talking", _("In Progress Calls"));
         pauseMusicComboBox.active_id = this.settings.pause_music;
         pauseMusicComboBox.connect("changed", (widget) => {
             this.settings.pause_music = pauseMusicComboBox.active_id;
