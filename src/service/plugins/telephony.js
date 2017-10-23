@@ -256,6 +256,7 @@ var Plugin = new Lang.Class({
             );
             
             // Tell the notifications plugin to "silence" any duplicate
+            // TODO: check exactly what kdeconnect-android sends
             if (this.device._plugins.has("notifications")) {
                 this.device._plugins.get("notifications").silenceSms(
                     sender + ": " + packet.body.messageBody
@@ -581,8 +582,8 @@ var SettingsDialog = new Lang.Class({
             valign: Gtk.Align.CENTER
         });
         pauseMusicComboBox.append("never", _("Never"));
-        pauseMusicComboBox.append("ringing", _("Incoming"));
-        pauseMusicComboBox.append("talking", _("In Progress"));
+        pauseMusicComboBox.append("ringing", _("Call Incoming").format(this._page.device.name));
+        pauseMusicComboBox.append("talking", _("Call In Progress").format(this._page.device.name));
         pauseMusicComboBox.active_id = this.settings.pause_music;
         pauseMusicComboBox.connect("changed", (widget) => {
             this.settings.pause_music = pauseMusicComboBox.active_id;
@@ -596,7 +597,7 @@ var SettingsDialog = new Lang.Class({
         if (this._page.device.plugins.indexOf("mpris") < 0) {
             pauseMusicComboBox.sensitive = false;
             pauseMusicComboBox.set_tooltip_markup(
-                _("The <b>Media Player Control</b> plugin must be enabled to pause music")
+                _("The <b>Media Player Control</b> plugin must be enabled")
             );
         }
         
