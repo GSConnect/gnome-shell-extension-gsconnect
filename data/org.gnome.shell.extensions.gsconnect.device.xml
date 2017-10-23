@@ -125,10 +125,12 @@
     <signal name="missedCall">
       <arg name="phoneNumber" type="s"/>
       <arg name="contactName" type="s"/>
+      <arg name="phoneThumbnail" type="s"/>
     </signal>
     <signal name="ringing">
       <arg name="phoneNumber" type="s"/>
       <arg name="contactName" type="s"/>
+      <arg name="phoneThumbnail" type="s"/>
     </signal>
     <signal name="sms">
       <arg name="phoneNumber" type="s"/>
@@ -139,6 +141,7 @@
     <signal name="talking">
       <arg name="phoneNumber" type="s"/>
       <arg name="contactName" type="s"/>
+      <arg name="phoneThumbnail" type="s"/>
     </signal>
   </interface>
 </node>
