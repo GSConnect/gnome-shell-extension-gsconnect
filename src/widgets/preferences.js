@@ -47,7 +47,7 @@ var Section = new Lang.Class({
             visible: true,
             can_focus: false,
             hexpand: true,
-            activate_on_single_click: false,
+            activate_on_single_click: true,
             selection_mode: params.selection_mode,
             width_request: params.width_request
         });
@@ -72,14 +72,16 @@ var Row = new Lang.Class({
     
     _init: function (params={}) {
         params = Object.assign({
+            activatable: false,
+            selectable: false,
             height_request: 32
         }, params);
     
         this.parent({
             visible: true,
             can_focus: false,
-            activatable: false,
-            selectable: false,
+            activatable: params.activatable,
+            selectable: params.selectable,
             height_request: params.height_request
         });
         
@@ -115,6 +117,7 @@ var Setting = new Lang.Class({
             xalign: 0,
             hexpand: true,
             label: summary,
+            use_markup: true
         });
         this.grid.attach(this.summary, 0, 0, 1, 1);
         
@@ -126,6 +129,7 @@ var Setting = new Lang.Class({
                 xalign: 0,
                 hexpand: true,
                 label: description,
+                use_markup: true,
                 wrap: true
             });
             this.description.get_style_context().add_class("dim-label");
@@ -178,6 +182,7 @@ var Page = new Lang.Class({
                 visible: true,
                 can_focus: false,
                 margin_bottom: 12,
+                margin_start: 3,
                 xalign: 0,
                 use_markup: true,
                 label: "<b>" + title + "</b>"
@@ -197,8 +202,8 @@ var Page = new Lang.Class({
      * @param {Gtk.ListBoxRow|Row} [row] - The row to add, null to create new
      * @return {Gtk.ListBoxRow} row - The new row
      */
-    addRow: function (section, row) {
-        if (!row) { row = new Row();}
+    addRow: function (section, row, params={}) {
+        if (!row) { row = new Row(params);}
         section.list.add(row);
         return row;
     },

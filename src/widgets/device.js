@@ -241,8 +241,8 @@ var Stack = new Lang.Class({
         this.defaultRow.add(this.defaultRow.grid);
         
         let icon = Gtk.Image.new_from_icon_name(
-            "computer",
-            Gtk.IconSize.LARGE_TOOLBAR
+            "computer-symbolic",
+            Gtk.IconSize.SMALL_TOOLBAR
         );
         this.defaultRow.grid.attach(icon, 0, 0, 1, 1);
         let nameLabel = new Gtk.Label({ label: "" });
@@ -272,10 +272,10 @@ var Stack = new Lang.Class({
         page.box.margin_left = 36;
         page.box.margin_right = 36;
         
-        let serviceSection = page.addSection();
+        let serviceSection = page.addSection(null, null, { width_request: -1 });
         page.addSetting(serviceSection, "public-name");
         
-        let helpSection = page.addSection(_("Connecting Devices"));
+        let helpSection = page.addSection(_("Connecting Devices"), null, { width_request: -1 });
         let defaultPageLabel = new Gtk.Label({
             label: _("Ensure that devices are on the same local network with ports 1716 to 1764 open for TCP and UDP connections.\n\n") +
                    _("To connect an Android device, install the KDE Connect Android app from the <a href=\"https://play.google.com/store/apps/details?id=org.kde.kdeconnect_tp\">Google Play Store</a> or <a href=\"https://f-droid.org/repository/browse/?fdid=org.kde.kdeconnect_tp\">F-Droid</a>.\n\n") +
@@ -318,8 +318,8 @@ var Stack = new Lang.Class({
         let metadata = DeviceMetadata[device.type];
         
         let icon = Gtk.Image.new_from_icon_name(
-            metadata.icon,
-            Gtk.IconSize.LARGE_TOOLBAR
+            metadata.symbolic_icon,
+            Gtk.IconSize.SMALL_TOOLBAR
         );
         row.grid.attach(icon, 0, 0, 1, 1);
         let nameLabel = new Gtk.Label({ label: device.name });
@@ -368,7 +368,7 @@ var Page = new Lang.Class({
         // Info Section
         let metadata = DeviceMetadata[device.type];
         
-        let infoSection = this.addSection();
+        let infoSection = this.addSection(null, null, { width_request: -1 });
         let statusRow = this.addRow(infoSection);
         
         // Info Section // Type Icon
@@ -518,7 +518,7 @@ var Page = new Lang.Class({
         statusRow.grid.attach(removeButton, 3, 0, 1, 2);
         
         // Plugins
-        let pluginsSection = this.addSection(_("Plugins"));
+        let pluginsSection = this.addSection(_("Plugins"), null, { width_request: -1 });
         
         for (let name of this.device.supportedPlugins) {
             let metadata = imports.service.plugins[name].METADATA;
@@ -531,8 +531,12 @@ var Page = new Lang.Class({
             );
         }
         
+        pluginsSection.list.set_sort_func((row1, row2) => {
+            return row1.summary.label.localeCompare(row2.summary.label);
+        });
+        
         // Keyboard Shortcuts
-        let keySection = this.addSection(_("Keyboard Shortcuts"));
+        let keySection = this.addSection(_("Keyboard Shortcuts"), null, { width_request: -1 });
         let keyRow = this.addRow(keySection);
         keyRow.grid.margin = 0;
         let keyView = new KeybindingsWidget.TreeView();
@@ -581,23 +585,28 @@ var Page = new Lang.Class({
 var DeviceMetadata = {
     desktop: {
         type: _("Desktop"),
-        icon: "computer"
+        icon: "computer",
+        symbolic_icon: "computer-symbolic"
     },
     laptop: {
         type: _("Laptop"),
-        icon: "computer"
+        icon: "computer",
+        symbolic_icon: "laptop-symbolic"
     },
     phone: {
         type: _("Smartphone"),
-        icon: "phone"
+        icon: "phone",
+        symbolic_icon: "smartphone-symbolic"
     },
     tablet: {
         type: _("Tablet"),
-        icon: "tablet"
+        icon: "tablet",
+        symbolic_icon: "tablet-symbolic"
     },
     unknown: {
         type: _("Unknown"),
-        icon: "computer"
+        icon: "computer",
+        symbolic_icon: "computer-symbolic"
     }
 };
 

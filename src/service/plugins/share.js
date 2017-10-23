@@ -509,7 +509,11 @@ var SettingsDialog = new Lang.Class({
     _init: function (devicePage, pluginName, window) {
         this.parent(devicePage, pluginName, window);
         
-        let receivingSection = this.content.addSection(_("Receiving"));
+        let receivingSection = this.content.addSection(
+            _("Receiving"),
+            null,
+            { width_request: -1 }
+        );
         
         let fbutton = new Gtk.FileChooserButton({
             action: Gtk.FileChooserAction.SELECT_FOLDER,
@@ -523,7 +527,7 @@ var SettingsDialog = new Lang.Class({
         this.content.addItem(
             receivingSection,
             _("Download Location"),
-            _("Directory to save received files"),
+            null,
             fbutton
         );
         
@@ -539,9 +543,9 @@ var SettingsDialog = new Lang.Class({
         });
         this.content.addItem(
             receivingSection,
-            _("Subdirectory"),
-            // TRANSLATORS: eg. Save files in a subdirectory named Google Pixel
-            _("Save files in a subdirectory named %s").format(this._page.device.name),
+            // TRANSLATORS: eg. Use a subdirectory named <b>Google Pixel<b>
+            _("Use a subdirectory named <b>%s</b>").format(this._page.device.name),
+            null,
             subdirsSwitch
         );
         

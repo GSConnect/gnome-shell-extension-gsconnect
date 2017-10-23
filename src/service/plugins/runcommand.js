@@ -100,14 +100,18 @@ var SettingsDialog = new Lang.Class({
     _init: function (devicePage, pluginName, window) {
         this.parent(devicePage, pluginName, window);
         
-        let commandsSection = this.content.addSection(_("Commands"));
+        let commandsSection = this.content.addSection(
+            _("Commands"),
+            null,
+            { width_request: -1 }
+        );
+        
         // TreeView/Model
         this.treeview = new Gtk.TreeView({
             enable_grid_lines: true,
             headers_visible: true,
             hexpand: true,
             vexpand: true,
-            margin_top: 6,
             height_request: 100
         });
         
@@ -120,7 +124,11 @@ var SettingsDialog = new Lang.Class({
         this.treeview.model = listStore;
         
         // Name column.
-        this.nameCell = new Gtk.CellRendererText({ editable: true });
+        this.nameCell = new Gtk.CellRendererText({
+            editable: true,
+            xpad: 6,
+            ypad: 6
+        });
         let nameCol = new Gtk.TreeViewColumn({
             title: _("Name"),
             expand: true
@@ -131,7 +139,11 @@ var SettingsDialog = new Lang.Class({
         this.nameCell.connect("edited", Lang.bind(this, this._editName));
         
         // Command column.
-        this.cmdCell = new Gtk.CellRendererText({ editable: true });
+        this.cmdCell = new Gtk.CellRendererText({
+            editable: true,
+            xpad: 6,
+            ypad: 6
+        });
         let cmdCol = new Gtk.TreeViewColumn({
             // TRANSLATORS: A command to be executed remotely
             title: _("Command"),
@@ -144,6 +156,7 @@ var SettingsDialog = new Lang.Class({
         
         let commandRow = this.content.addRow(commandsSection);
         commandRow.grid.row_spacing = 12;
+        commandRow.grid.margin = 0;
         
         let treeScroll = new Gtk.ScrolledWindow({
             height_request: 150,
@@ -154,17 +167,33 @@ var SettingsDialog = new Lang.Class({
         commandRow.grid.attach(treeScroll, 0, 0, 1, 1);
         
         // Buttons
-        let buttonBox = new Gtk.ButtonBox({
+        let buttonBox = new Gtk.Box({
+            hexpand: true,
             halign: Gtk.Align.END,
-            spacing: 12
+            margin: 6
         });
+        buttonBox.get_style_context().add_class("linked");
         commandRow.grid.attach(buttonBox, 0, 1, 1, 1);
         
-        let removeButton = new Gtk.Button({ label: _("Remove") });
+        let removeButton = new Gtk.Button({
+            image: Gtk.Image.new_from_icon_name(
+                "list-remove-symbolic",
+                Gtk.IconSize.BUTTON
+            ),
+            always_show_image: true,
+            hexpand: false
+        });
         removeButton.connect("clicked", Lang.bind(this, this._remove));
         buttonBox.add(removeButton);
         
-        let addButton = new Gtk.Button({ label: _("Add") });
+        let addButton = new Gtk.Button({
+            image: Gtk.Image.new_from_icon_name(
+                "list-add-symbolic",
+                Gtk.IconSize.BUTTON
+            ),
+            always_show_image: true,
+            hexpand: false
+        });
         addButton.connect("clicked", Lang.bind(this, this._add, false));
         buttonBox.add(addButton);
         

@@ -319,7 +319,11 @@ var SettingsDialog = new Lang.Class({
     _init: function (devicePage, pluginName, window) {
         this.parent(devicePage, pluginName, window);
         
-        let generalSection = this.content.addSection(_("General"));
+        let generalSection = this.content.addSection(
+            null,
+            null,
+            { width_request: -1 }
+        );
         
         let automountSwitch = new Gtk.Switch({
             visible: true,
@@ -333,9 +337,8 @@ var SettingsDialog = new Lang.Class({
         });
         this.content.addItem(
             generalSection,
-            _("Automount"),
-            // TRANSLATORS: eg. Attempt to mount Google Pixel when it connects
-            _("Attempt to mount %s when it connects").format(this._page.device.name),
+            _("Automatically Mount"),
+            null,
             automountSwitch
         );
         

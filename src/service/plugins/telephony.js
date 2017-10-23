@@ -29,7 +29,7 @@ const SMS = imports.service.plugins.sms;
 var METADATA = {
     name: "telephony",
     summary: _("Telephony"),
-    description: _("Send and receive SMS and be notified of phone calls"),
+    description: _("Call notification and SMS messaging"),
     wiki: "https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Telephony-Plugin",
     incomingPackets: ["kdeconnect.telephony"],
     outgoingPackets: ["kdeconnect.telephony.request", "kdeconnect.sms.request"],
@@ -241,9 +241,7 @@ var Plugin = new Lang.Class({
             }
             notif.set_priority(Gio.NotificationPriority.HIGH);
             
-            notif.add_button(
-                // TRANSLATORS: Reply to a received SMS message
-                _("Reply"),
+            notif.set_default_action(
                 "app.replySms(('" +
                 this._dbus.get_object_path() +
                 "','" +
@@ -495,7 +493,28 @@ var SettingsDialog = new Lang.Class({
         this.parent(devicePage, pluginName, window);
         
         // Phone Calls
-        let callsSection = this.content.addSection(_("Phone Calls"));
+        let notificationSection = this.content.addSection(
+            _("Notifications"),
+            null,
+            { width_request: -1 }
+        );
+        
+        let notifySMSSwitch = new Gtk.Switch({
+            visible: true,
+            can_focus: true,
+            halign: Gtk.Align.END,
+            valign: Gtk.Align.CENTER,
+            active: this.settings.notify_sms
+        });
+        notifySMSSwitch.connect("notify::active", (widget) => {
+            this.settings.notify_sms = notifySMSSwitch.active;
+        });
+        this.content.addItem(
+            notificationSection,
+            _("SMS Messages"),
+            null,
+            notifySMSSwitch
+        );
         
         let notifyMissedCallSwitch = new Gtk.Switch({
             visible: true,
@@ -508,9 +527,9 @@ var SettingsDialog = new Lang.Class({
             this.settings.notify_missedCall = notifyMissedCallSwitch.active;
         });
         this.content.addItem(
-            callsSection,
-            _("Missed Call Notification"),
-            _("Show a notification for missed calls"),
+            notificationSection,
+            _("Missed Calls"),
+            null,
             notifyMissedCallSwitch
         );
         
@@ -525,9 +544,9 @@ var SettingsDialog = new Lang.Class({
             this.settings.notify_ringing = notifyRingingSwitch.active;
         });
         this.content.addItem(
-            callsSection,
-            _("Incoming Call Notification"),
-            _("Show a notification when the phone is ringing"),
+            notificationSection,
+            _("Incoming Calls"),
+            null,
             notifyRingingSwitch
         );
         
@@ -542,10 +561,17 @@ var SettingsDialog = new Lang.Class({
             this.settings.notify_talking = notifyTalkingSwitch.active;
         });
         this.content.addItem(
-            callsSection,
-            _("Call In Progress Notification"),
-            _("Show a notification when talking on the phone"),
+            notificationSection,
+            _("In Progress Calls"),
+            null,
             notifyTalkingSwitch
+        );
+        
+        // SMS
+        let mediaSection = this.content.addSection(
+            _("Media"),
+            null,
+            { width_request: -1 }
         );
         
         let pauseMusicComboBox = new Gtk.ComboBoxText({
@@ -562,9 +588,9 @@ var SettingsDialog = new Lang.Class({
             this.settings.pause_music = pauseMusicComboBox.active_id;
         });
         this.content.addItem(
-            callsSection,
+            mediaSection,
             _("Pause Music"),
-            _("Pause music for incoming or in progress calls"),
+            null,
             pauseMusicComboBox
         );
         if (this._page.device.plugins.indexOf("mpris") < 0) {
@@ -573,26 +599,6 @@ var SettingsDialog = new Lang.Class({
                 _("The <b>Media Player Control</b> plugin must be enabled to pause music")
             );
         }
-        
-        // SMS
-        let smsSection = this.content.addSection(_("SMS"));
-        
-        let notifySMSSwitch = new Gtk.Switch({
-            visible: true,
-            can_focus: true,
-            halign: Gtk.Align.END,
-            valign: Gtk.Align.CENTER,
-            active: this.settings.notify_sms
-        });
-        notifySMSSwitch.connect("notify::active", (widget) => {
-            this.settings.notify_sms = notifySMSSwitch.active;
-        });
-        this.content.addItem(
-            smsSection,
-            _("SMS Notification"),
-            _("Show a notification when an SMS message is received"),
-            notifySMSSwitch
-        );
         
         this.content.show_all();
     }
