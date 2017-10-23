@@ -322,7 +322,10 @@ var ContactCompletion = new Lang.Class({
     _select: function (completion, model, tree_iter) {
         let entry = completion.get_entry();
         this._matched = [];
-        entry._parent.addRecipient(model.get_value(tree_iter, 2));
+        entry._parent.addRecipient(
+            model.get_value(tree_iter, 2),
+            model.get_value(tree_iter, 1)
+        );
         entry.text = "";
         
         return true;
@@ -417,7 +420,10 @@ var ContactEntry = new Lang.Class({
             
             completion._matched = [];
             
-            this._parent.addRecipient(completion.model.get_value(iter, 2));
+            this._parent.addRecipient(
+                completion.model.get_value(iter, 2),
+                completion.model.get_value(iter, 1)
+            );
             entry.text = "";
         } else if (entry.text.length) {
             this._parent.addRecipient(entry.text);
@@ -1057,7 +1063,7 @@ var ConversationWindow = new Lang.Class({
             }
         });
         
-        return (contact) ? contact : {};
+        return contact || {};
     },
     
     /**
