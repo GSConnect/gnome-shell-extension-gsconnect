@@ -1131,7 +1131,7 @@ var ConversationWindow = new Lang.Class({
     },
     
     /** Log an incoming message in the MessageList */
-    receive: function (phoneNumber, contactName, messageBody, phoneThumbnail=false) {
+    receive: function (phoneNumber, contactName, messageBody, phoneThumbnail) {
         let recipient = this.addRecipient(
             phoneNumber,
             contactName,
