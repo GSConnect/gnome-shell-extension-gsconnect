@@ -26,7 +26,7 @@ const PluginsBase = imports.service.plugins.base;
 var METADATA = {
     name: "mpris",
     summary: _("Media Player Control"),
-    description: _("Control MPRIS2 media players on your desktop"),
+    description: _("Control MPRIS2 enabled media players"),
     wiki: "https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Media-Player-Control-Plugin",
     incomingPackets: ["kdeconnect.mpris.request"],
     outgoingPackets: ["kdeconnect.mpris"]
