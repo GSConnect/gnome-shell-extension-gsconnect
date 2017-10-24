@@ -75,8 +75,9 @@ var METADATA = {
  *    body.ticker {string} - Like libnotify's "body", unless there's a summary
  *        (such as with an SMS where the summary would be the sender's name)
  *        the value would be "summary: body"
- *    body.silent {boolean} - KDE Connect seems to indicate this means "don't show"
+ *    body.silent {boolean} - This either means "don't show" or "low urgency"
  *    body.requestAnswer {boolean} - This is an answer to a "request"
+ *       kdeconnect-android also uses this for clients not supporting "silent"
  *    body.request {boolean} - If true, we're being asked to send a list of notifs
  * For icon syncing:
  *    body.payloadHash {string} - An MD5 hash of the payload data
@@ -116,7 +117,7 @@ var Plugin = new Lang.Class({
         
         this._freeze = false;
         this._notifications = new Map();
-        this._sms = new Map();
+        this._duplicates = new Map();
     },
     
     _getIconInfo: function (iconName) {
@@ -128,6 +129,126 @@ var Plugin = new Lang.Class({
             Math.max.apply(null, sizes),
             Gtk.IconLookupFlags.NO_SVG
         );
+    },
+    
+    _handleDuplicate: function (packet, notif) {
+        let matchString
+        
+        // kdeconnect-android 1.7+ only
+        if (packet.body.hasOwnProperty("title")) {
+            matchString = packet.body.title + ": " + packet.body.text;
+        } else {
+            matchString = packet.body.ticker;
+        }
+        
+        if (this._duplicates.has(matchString)) {
+            let duplicate = this._duplicates.get(matchString);
+            
+            // We've been asked to close this
+            if (duplicate.mark_read) {
+                this.close(packet.body.id);
+                this._duplicates.delete(matchString);
+            // We've been asked to silence this (we'll still track it)
+            } else if (duplicate.silence) {
+                duplicate.id = packet.body.id;
+            }
+        // We can show this as normal
+        } else {
+            this.device.daemon.send_notification(packet.body.id, notif);
+        }
+    },
+    
+    _handleNotification: function (packet) {
+        Common.debug("Notifications: _handleNotification()");
+        
+        if (packet.body.isCancel) {
+            this.close(packet.body.id);
+        // Ignore GroupSummary notifications
+        } else if (packet.body.id.indexOf("GroupSummary") > -1) {
+            Common.debug("Notifications: ignoring GroupSummary notification");
+            return;
+        } else {
+            let notif;
+            
+            // This is an update to a notification
+            if (this._notifications.has(packet.body.id)) {
+                notif = this._notifications.get(packet.body.id);
+                notif.set_title(packet.body.appName);
+                notif.set_body(packet.body.ticker);
+            // This is a new notification
+            } else {
+                notif = new Gio.Notification();
+                notif.set_title(packet.body.appName);
+                notif.set_body(packet.body.ticker);
+                notif.set_default_action(
+                    "app.closeNotification(('" +
+                    this._dbus.get_object_path() +
+                    "','" +
+                    escape(packet.body.id) +
+                    "'))"
+                );
+                
+                this._notifications.set(packet.body.id, notif);
+            }
+            
+            if (packet.payloadSize) {
+                let iconStream = Gio.MemoryOutputStream.new_resizable();
+                
+                let channel = new Protocol.LanDownloadChannel(
+                    this.device.daemon,
+                    this.device.identity,
+                    iconStream
+                );
+                
+                channel.connect("connected", (channel) => {
+                    let transfer = new Protocol.Transfer(
+                        channel,
+                        packet.payloadSize,
+                        packet.body.payloadHash
+                    );
+                    
+                    transfer.connect("failed", (transfer) => {
+                        channel.close();
+                        notif.set_icon(
+                            new Gio.ThemedIcon({ name: "phone-symbolic" })
+                        );
+                        this._handleDuplicate(packet, notif);
+                    });
+                    
+                    transfer.connect("succeeded", (transfer) => {
+                        channel.close();
+                        iconStream.close(null);
+                        notif.set_icon(
+                            Gio.BytesIcon.new(iconStream.steal_as_bytes())
+                        );
+                        this._handleDuplicate(packet, notif);
+                    });
+                    
+                    transfer.start();
+                });
+            
+                let addr = new Gio.InetSocketAddress({
+                    address: Gio.InetAddress.new_from_string(
+                        this.device.identity.body.tcpHost
+                    ),
+                    port: packet.payloadTransferInfo.port
+                });
+                
+                channel.open(addr);
+            // If this is an SMS use an SMS icon
+            } else if (packet.body.id.indexOf("sms") > -1) {
+                notif.set_icon(new Gio.ThemedIcon({ name: "sms-symbolic" }));
+                this._handleDuplicate(packet, notif);
+            } else {
+                notif.set_icon(new Gio.ThemedIcon({ name: "phone-symbolic" }));
+                this._handleDuplicate(packet, notif);
+            }
+            
+            // FIXME
+            if (packet.body.requestAnswer) {
+                Common.debug("Notifications: this is an answer to a request");
+            }
+        }
     },
     
     Notify: function (appName, replacesId, iconName, summary, body, actions, hints, timeout) {
@@ -220,15 +341,15 @@ var Plugin = new Lang.Class({
         Common.debug("Notifications: handlePacket()");
         
         if (packet.type === "kdeconnect.notification" && this.settings.receive.enabled) {
-            this._receiveNotification(packet);
+            this._handleNotification(packet);
         } else if (packet.type === "kdeconnect.notification.request") {
             // TODO: KDE Connect says this is unused...
         }
     },
     
-    markReadSms: function (smsString) {
-        if (this._sms.has(smsString)) {
-            let duplicate = this._sms.get(smsString);
+    closeDuplicate: function (matchString) {
+        if (this._duplicates.has(matchString)) {
+            let duplicate = this._duplicates.get(matchString);
                 
             if (duplicate.id) {
                 this.close(duplicate.id);
@@ -236,129 +357,15 @@ var Plugin = new Lang.Class({
                 duplicate.mark_read = true;
             }
         } else {
-            this._sms.set(smsString, { mark_read: true });
+            this._duplicates.set(matchString, { mark_read: true });
         }
     },
     
-    silenceSms: function (smsString) {
-        if (this._sms.has(smsString)) {
-            this._sms.get(smsString).silence = true;
+    silenceDuplicate: function (matchString) {
+        if (this._duplicates.has(matchString)) {
+            this._duplicates.get(matchString).silence = true;
         } else {
-            this._sms.set(smsString, { silence: true });
-        }
-    },
-    
-    _receiveNotification: function (packet) {
-        Common.debug("Notifications: _receiveNotification()");
-        
-        if (packet.body.isCancel) {
-            this.close(packet.body.id);
-        } else {
-            let notif;
-            
-            // This is an update to a notification
-            if (this._notifications.has(packet.body.id)) {
-                notif = this._notifications.get(packet.body.id);
-                notif.set_title(packet.body.appName);
-                notif.set_body(packet.body.ticker);
-            // This is a new notification
-            } else {
-                notif = new Gio.Notification();
-                notif.set_title(packet.body.appName);
-                notif.set_body(packet.body.ticker);
-                notif.set_default_action(
-                    "app.closeNotification(('" +
-                    this._dbus.get_object_path() +
-                    "','" +
-                    escape(packet.body.id) +
-                    "'))"
-                );
-                
-                this._notifications.set(packet.body.id, notif);
-            }
-            
-            if (packet.payloadSize) {
-                let iconStream = Gio.MemoryOutputStream.new_resizable();
-                
-                let channel = new Protocol.LanDownloadChannel(
-                    this.device.daemon,
-                    this.device.identity,
-                    iconStream
-                );
-                
-                channel.connect("connected", (channel) => {
-                    let transfer = new Protocol.Transfer(
-                        channel,
-                        packet.payloadSize,
-                        packet.body.payloadHash
-                    );
-                    
-                    transfer.connect("failed", (transfer) => {
-                        channel.close();
-                        notif.set_icon(
-                            new Gio.ThemedIcon({ name: "phone-symbolic" })
-                        );
-                    });
-                    
-                    transfer.connect("succeeded", (transfer) => {
-                        channel.close();
-                        iconStream.close(null);
-                        notif.set_icon(
-                            Gio.BytesIcon.new(iconStream.steal_as_bytes())
-                        );
-                    });
-                    
-                    transfer.start();
-                });
-            
-                let addr = new Gio.InetSocketAddress({
-                    address: Gio.InetAddress.new_from_string(
-                        this.device.identity.body.tcpHost
-                    ),
-                    port: packet.payloadTransferInfo.port
-                });
-                
-                channel.open(addr);
-            } else {
-                notif.set_icon(new Gio.ThemedIcon({ name: "phone-symbolic" }));
-            }
-            
-            if (packet.body.requestAnswer) {
-                Common.debug("Notifications: this is an answer to a request");
-            }
-            
-            // If this is an SMS we should check if it's a duplicate
-            if (packet.body.id.indexOf("sms") > -1) {
-                let smsString
-                
-                // kdeconnect-android 1.7+ only
-                if (packet.body.hasOwnProperty("title")) {
-                    smsString = packet.body.title + ": " + packet.body.text;
-                } else {
-                    smsString = packet.body.ticker;
-                }
-                
-                if (this._sms.has(smsString)) {
-                    let duplicate = this._sms.get(smsString);
-                    
-                    // We've been asked to mark this read (we'll close it)
-                    if (duplicate.mark_read) {
-                        this.close(packet.body.id);
-                        this._sms.delete(smsString);
-                    // We've been asked to silence this (we'll still track it)
-                    } else if (duplicate.silence) {
-                        duplicate.id = packet.body.id;
-                    }
-                // We can show this as normal
-                } else {
-                    this.device.daemon.send_notification(packet.body.id, notif);
-                }
-            // TODO: Apparently "silent" means don't show the notification, or
-            //       maybe it just means "don't present" (aka low urgency)
-            //} else if (!packet.body.silent) {
-            } else {
-                this.device.daemon.send_notification(packet.body.id, notif);
-            }
+            this._duplicates.set(matchString, { silence: true });
         }
     },
     
@@ -467,8 +474,7 @@ var SettingsDialog = new Lang.Class({
         
         this._populate();
         
-        let removeRow = this.appSection.addRow();
-        removeRow.activatable = true;
+        let removeRow = this.appSection.addRow(null, { activatable: true });
         removeRow.grid.margin = 0;
         removeRow.grid.hexpand = true;
         removeRow.grid.halign = Gtk.Align.CENTER;
@@ -479,7 +485,7 @@ var SettingsDialog = new Lang.Class({
         removeRow.grid.attach(removeRow.image, 0, 0, 1, 1);
         
         this.appSection.list.set_sort_func((row1, row2) => {
-            if (row2.hasOwnProperty("image")) { return -1; }
+            if (row2.image) { return -1; }
             return row1.appName.label.localeCompare(row2.appName.label);
         });
         
