@@ -1132,6 +1132,8 @@ var ConversationWindow = new Lang.Class({
     
     /** Log an incoming message in the MessageList */
     receive: function (phoneNumber, contactName, messageBody, phoneThumbnail) {
+        let strippedNumber = phoneNumber.replace(/\D/g, "");
+        
         let recipient = this.addRecipient(
             phoneNumber,
             contactName,
@@ -1145,7 +1147,7 @@ var ConversationWindow = new Lang.Class({
         );
             
         this.recipientList.list.foreach((row) => {
-            if (row.phone.label === recipient.phoneNumber) {
+            if (row.phone.label.replace(/\D/g, "") === strippedNumber) {
                 row.layout.remove(row.avatar);
                 row.avatar = this._getAvatar(recipient);
                 row.avatar.visible = true;
