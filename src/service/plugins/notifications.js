@@ -143,7 +143,7 @@ var Plugin = new Lang.Class({
             let duplicate = this._duplicates.get(matchString);
             
             // We've been asked to close this
-            if (duplicate.mark_read) {
+            if (duplicate.close) {
                 this.close(packet.body.id);
                 this._duplicates.delete(matchString);
             // We've been asked to silence this (we'll still track it)
@@ -340,10 +340,10 @@ var Plugin = new Lang.Class({
             if (duplicate.id) {
                 this.close(duplicate.id);
             } else {
-                duplicate.mark_read = true;
+                duplicate.close = true;
             }
         } else {
-            this._duplicates.set(matchString, { mark_read: true });
+            this._duplicates.set(matchString, { close: true });
         }
     },
     
