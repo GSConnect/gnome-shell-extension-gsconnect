@@ -496,7 +496,6 @@ var Plugin = new Lang.Class({
             }
         }
         
-        window._showMessages();
         window.present();
     },
     
@@ -539,7 +538,6 @@ var Plugin = new Lang.Class({
             }
         }
         
-        window._showMessages();
         window.present();
     },
     
