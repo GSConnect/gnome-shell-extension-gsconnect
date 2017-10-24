@@ -196,7 +196,10 @@ var Plugin = new Lang.Class({
                 "app.muteCall('" + this._dbus.get_object_path() + "')"
             );
             
-            this.device.daemon.send_notification(packet.id.toString(), notif);
+            this.device.daemon.send_notification(
+                packet.body.event + ":" + packet.body.phoneNumber,
+                notif
+            );
         }
         
         if (this.settings.pause_music === "ringing") {
@@ -324,7 +327,10 @@ var Plugin = new Lang.Class({
             }
             notif.set_priority(Gio.NotificationPriority.NORMAL);
             
-            this.device.daemon.send_notification(packet.id.toString(), notif);
+            this.device.daemon.send_notification(
+                packet.body.event + ":" + packet.body.phoneNumber,
+                notif
+            );
         }
         
         if (settings.pause_music === "talking") {
