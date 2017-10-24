@@ -160,7 +160,7 @@ var Plugin = new Lang.Class({
         Common.debug("Notifications: _handleNotification()");
         
         if (packet.body.isCancel) {
-            this.close(packet.body.id);
+            this.device.daemon.withdraw_notification(packet.body.id);
         // Ignore GroupSummary notifications
         } else if (packet.body.id.indexOf("GroupSummary") > -1) {
             Common.debug("Notifications: ignoring GroupSummary notification");
