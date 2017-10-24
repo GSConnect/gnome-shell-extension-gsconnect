@@ -63,9 +63,8 @@
   <!-- Notifications -->
   <interface name="org.gnome.shell.extensions.gsconnect.notifications">
     <method name="notifications"/>
-    <signal name="notificationReceived"/>
-    <signal name="notificationDismissed"/>
-    <signal name="notificationsDismissed"/>
+    <signal name="received"/>
+    <signal name="dismissed"/>
   </interface>
   
   <!-- Ping -->
