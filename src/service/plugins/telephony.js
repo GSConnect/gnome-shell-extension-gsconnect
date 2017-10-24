@@ -419,8 +419,11 @@ var Plugin = new Lang.Class({
         }
         
         // Event handling
-        if (packet.body.hasOwnProperty("isCancel") && packet.body.isCancel) {
+        if (packet.body.isCancel) {
             this._unpauseMusic();
+            this.device.daemon.withdraw_notification(
+                packet.body.event + ":" + packet.body.phoneNumber
+            );
         } else if (packet.body.event === "missedCall") {
             this._handleMissedCall(sender, packet);
         } else if (packet.body.event === "ringing") {
