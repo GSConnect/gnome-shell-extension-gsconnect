@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-10-20 21:25-0700\n"
+"POT-Creation-Date: 2017-10-24 11:05-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,29 +19,29 @@ msgstr ""
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
 #. TRANSLATORS: Open a new SMS window
-#: src/extension.js:136 src/widgets/device.js:541
+#: src/extension.js:136 src/widgets/device.js:553
 msgid "Send SMS"
 msgstr ""
 
 #. TRANSLATORS: eg. Locate Google Pixel
-#: src/extension.js:143 src/widgets/device.js:543
+#: src/extension.js:143 src/widgets/device.js:555
 #, javascript-format
 msgid "Locate %s"
 msgstr ""
 
 #. TRANSLATORS: Open the device's list of browseable directories
 #: src/extension.js:151 src/service/plugins/sftp.js:30
-#: src/widgets/device.js:545
+#: src/widgets/device.js:557
 msgid "Browse Files"
 msgstr ""
 
 #. TRANSLATORS: Open the file chooser for sending files/links
-#: src/extension.js:158 src/widgets/device.js:547
+#: src/extension.js:158 src/widgets/device.js:559
 msgid "Share File/URL"
 msgstr ""
 
 #. TRANSLATORS: Opens the extension preferences dialog
-#: src/extension.js:276 src/extension.js:544 src/prefs.js:110
+#: src/extension.js:276 src/extension.js:544 src/prefs.js:112
 msgid "Mobile Settings"
 msgstr ""
 
@@ -107,7 +107,7 @@ msgid "Discovering Devices"
 msgstr ""
 
 #. TRANSLATORS: Starts a 15 second broadcast of this computer's identity
-#: src/extension.js:591 src/prefs.js:108
+#: src/extension.js:591 src/prefs.js:110
 msgid "Discover Devices"
 msgstr ""
 
@@ -128,7 +128,7 @@ msgid "Send To Mobile Device"
 msgstr ""
 
 #. General Page
-#: src/prefs.js:89 src/service/plugins/sftp.js:322
+#: src/prefs.js:89 src/service/plugins/sftp.js:323
 msgid "General"
 msgstr ""
 
@@ -143,34 +143,34 @@ msgid "Files"
 msgstr ""
 
 #. Keyboard Shortcuts
-#: src/prefs.js:102 src/widgets/device.js:535
+#: src/prefs.js:102 src/widgets/device.js:543
 msgid "Keyboard Shortcuts"
 msgstr ""
 
 #. TRANSLATORS: Opens the extension sub-menu in the Gnome Shell User Menu
 #. TRANSLATORS: Open the device menu
-#: src/prefs.js:106 src/widgets/device.js:539
+#: src/prefs.js:108 src/widgets/device.js:551
 msgid "Open Menu"
 msgstr ""
 
-#: src/prefs.js:129
+#: src/prefs.js:131
 msgid "Devices"
 msgstr ""
 
 #. About/Advanced
-#: src/prefs.js:133
+#: src/prefs.js:135
 msgid "Advanced"
 msgstr ""
 
-#: src/prefs.js:134
+#: src/prefs.js:137
 msgid "Development"
 msgstr ""
 
-#: src/prefs.js:155
+#: src/prefs.js:160
 msgid "Stop Service"
 msgstr ""
 
-#: src/prefs.js:156
+#: src/prefs.js:161
 msgid "Instruct the daemon to quit"
 msgstr ""
 
@@ -206,8 +206,8 @@ msgstr ""
 msgid "Apply"
 msgstr ""
 
-#: src/service/plugins/base.js:93 src/service/plugins/share.js:109
-#: src/service/plugins/share.js:338 src/service/plugins/share.js:487
+#: src/service/plugins/base.js:93 src/service/plugins/share.js:108
+#: src/service/plugins/share.js:336 src/service/plugins/share.js:485
 msgid "Cancel"
 msgstr ""
 
@@ -279,10 +279,10 @@ msgid "Media Player Control"
 msgstr ""
 
 #: src/service/plugins/mpris.js:29
-msgid "Control MPRIS2 media players on your desktop"
+msgid "Control MPRIS2 enabled media players"
 msgstr ""
 
-#: src/service/plugins/notifications.js:31
+#: src/service/plugins/notifications.js:31 src/service/plugins/telephony.js:577
 msgid "Notifications"
 msgstr ""
 
@@ -290,47 +290,20 @@ msgstr ""
 msgid "Sync notifications between devices"
 msgstr ""
 
-#. Receiving
-#: src/service/plugins/notifications.js:303 src/service/plugins/share.js:514
-msgid "Receiving"
-msgstr ""
-
-#: src/service/plugins/notifications.js:317
+#: src/service/plugins/notifications.js:406
 msgid "Receive Notifications"
 msgstr ""
 
-#. TRANSLATORS: eg. Enable to receive notifications from Google Pixel
-#: src/service/plugins/notifications.js:319
-#, javascript-format
-msgid "Enable to receive notifications from %s"
-msgstr ""
-
-#. Sending
-#: src/service/plugins/notifications.js:324
-msgid "Sending"
-msgstr ""
-
-#: src/service/plugins/notifications.js:338
+#: src/service/plugins/notifications.js:423
 msgid "Send Notifications"
 msgstr ""
 
-#. TRANSLATORS: eg. Enable to send notifications to Google Pixel
-#: src/service/plugins/notifications.js:340
-#, javascript-format
-msgid "Enable to send notifications to %s"
+#: src/service/plugins/notifications.js:439
+msgid "Send Icons With Notifications"
 msgstr ""
 
-#: src/service/plugins/notifications.js:368
-msgid "Application"
-msgstr ""
-
-#: src/service/plugins/notifications.js:382
-msgid "Enabled"
-msgstr ""
-
-#: src/service/plugins/notifications.js:400
-#: src/service/plugins/runcommand.js:163
-msgid "Remove"
+#: src/service/plugins/notifications.js:451
+msgid "Applications"
 msgstr ""
 
 #: src/service/plugins/ping.js:29 src/service/plugins/ping.js:75
@@ -356,25 +329,21 @@ msgstr ""
 msgid "Execute local commands remotely"
 msgstr ""
 
-#: src/service/plugins/runcommand.js:103
+#: src/service/plugins/runcommand.js:104
 msgid "Commands"
 msgstr ""
 
-#: src/service/plugins/runcommand.js:125
+#: src/service/plugins/runcommand.js:133
 msgid "Name"
 msgstr ""
 
 #. TRANSLATORS: A command to be executed remotely
-#: src/service/plugins/runcommand.js:137
+#: src/service/plugins/runcommand.js:149
 msgid "Command"
 msgstr ""
 
-#: src/service/plugins/runcommand.js:167
-msgid "Add"
-msgstr ""
-
 #. TRANSLATORS: A placeholder for a new command name
-#: src/service/plugins/runcommand.js:179
+#: src/service/plugins/runcommand.js:208
 msgid "[New command]"
 msgstr ""
 
@@ -386,14 +355,8 @@ msgstr ""
 msgid "SSHFS not installed"
 msgstr ""
 
-#: src/service/plugins/sftp.js:336
-msgid "Automount"
-msgstr ""
-
-#. TRANSLATORS: eg. Attempt to mount Google Pixel when it connects
-#: src/service/plugins/sftp.js:338
-#, javascript-format
-msgid "Attempt to mount %s when it connects"
+#: src/service/plugins/sftp.js:339
+msgid "Automatically Mount"
 msgstr ""
 
 #: src/service/plugins/share.js:30
@@ -404,148 +367,148 @@ msgstr ""
 msgid "Send and receive files and URLs"
 msgstr ""
 
-#: src/service/plugins/share.js:96 src/service/plugins/share.js:325
+#: src/service/plugins/share.js:95 src/service/plugins/share.js:323
 msgid "Starting Transfer"
 msgstr ""
 
 #. TRANSLATORS: eg. Receiving "book.pdf" from Google Pixel
-#: src/service/plugins/share.js:99
+#: src/service/plugins/share.js:98
 #, javascript-format
 msgid "Receiving \"%s\" from %s"
 msgstr ""
 
-#: src/service/plugins/share.js:127 src/service/plugins/share.js:356
+#: src/service/plugins/share.js:126 src/service/plugins/share.js:354
 msgid "Transfer Successful"
 msgstr ""
 
 #. TRANSLATORS: eg. Received "book.pdf" from Google Pixel
-#: src/service/plugins/share.js:130
+#: src/service/plugins/share.js:129
 #, javascript-format
 msgid "Received \"%s\" from %s"
 msgstr ""
 
-#: src/service/plugins/share.js:140
+#: src/service/plugins/share.js:139
 msgid "Open Folder"
 msgstr ""
 
-#: src/service/plugins/share.js:147
+#: src/service/plugins/share.js:146
 msgid "Open File"
 msgstr ""
 
-#: src/service/plugins/share.js:166 src/service/plugins/share.js:381
+#: src/service/plugins/share.js:165 src/service/plugins/share.js:379
 msgid "Transfer Failed"
 msgstr ""
 
 #. TRANSLATORS: eg. Failed to receive "book.pdf" from Google Pixel: Some error
-#: src/service/plugins/share.js:169
+#: src/service/plugins/share.js:168
 #, javascript-format
 msgid "Failed to receive \"%s\" from %s: %s"
 msgstr ""
 
-#: src/service/plugins/share.js:193 src/service/plugins/share.js:407
+#: src/service/plugins/share.js:192 src/service/plugins/share.js:405
 msgid "Transfer Cancelled"
 msgstr ""
 
 #. TRANSLATORS: eg. Cancelled transfer of "book.pdf" from Google Pixel
-#: src/service/plugins/share.js:196
+#: src/service/plugins/share.js:195
 #, javascript-format
 msgid "Cancelled transfer of \"%s\" from %s"
 msgstr ""
 
 #. TRANSLATORS: eg. Sending "book.pdf" to Google Pixel
-#: src/service/plugins/share.js:328
+#: src/service/plugins/share.js:326
 #, javascript-format
 msgid "Sending \"%s\" to %s"
 msgstr ""
 
 #. TRANSLATORS: eg. Send "book.pdf" to Google Pixel
-#: src/service/plugins/share.js:359
+#: src/service/plugins/share.js:357
 #, javascript-format
 msgid "Sent \"%s\" to %s"
 msgstr ""
 
 #. TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel: Some error
-#: src/service/plugins/share.js:384
+#: src/service/plugins/share.js:382
 #, javascript-format
 msgid "Failed to send \"%s\" to %s: %s"
 msgstr ""
 
 #. TRANSLATORS: eg. Cancelled transfer of "book.pdf" to Google Pixel
-#: src/service/plugins/share.js:410
+#: src/service/plugins/share.js:408
 #, javascript-format
 msgid "Cancelled transfer of \"%s\" to %s"
 msgstr ""
 
 #. TRANSLATORS: eg. Send files to Google Pixel
-#: src/service/plugins/share.js:457
+#: src/service/plugins/share.js:455
 #, javascript-format
 msgid "Send files to %s"
 msgstr ""
 
 #. TRANSLATORS: eg. Send a link to Google Pixel
-#: src/service/plugins/share.js:476
+#: src/service/plugins/share.js:474
 #, javascript-format
 msgid "Send a link to %s"
 msgstr ""
 
-#: src/service/plugins/share.js:488
+#: src/service/plugins/share.js:486
 msgid "Send"
 msgstr ""
 
-#: src/service/plugins/share.js:527
-msgid "Download Location"
+#: src/service/plugins/share.js:513
+msgid "Receiving"
 msgstr ""
 
 #: src/service/plugins/share.js:528
-msgid "Directory to save received files"
+msgid "Download Location"
 msgstr ""
 
-#: src/service/plugins/share.js:544
-msgid "Subdirectory"
-msgstr ""
-
-#. TRANSLATORS: eg. Save files in a subdirectory named Google Pixel
-#: src/service/plugins/share.js:546
+#. TRANSLATORS: eg. Use a subdirectory named <b>Google Pixel<b>
+#: src/service/plugins/share.js:545
 #, javascript-format
-msgid "Save files in a subdirectory named %s"
+msgid "Use a subdirectory named <b>%s</b>"
 msgstr ""
 
-#: src/service/plugins/sms.js:368 src/service/plugins/sms.js:369
+#: src/service/plugins/sms.js:373 src/service/plugins/sms.js:374
 msgid "Type a phone number"
 msgstr ""
 
-#: src/service/plugins/sms.js:381 src/service/plugins/sms.js:382
+#: src/service/plugins/sms.js:386 src/service/plugins/sms.js:387
 msgid "Type a phone number or name"
 msgstr ""
 
-#: src/service/plugins/sms.js:522
+#: src/service/plugins/sms.js:530
 msgid "<b>Add people to start a conversation</b>"
 msgstr ""
 
-#: src/service/plugins/sms.js:566
+#: src/service/plugins/sms.js:572
 msgid "Unknown Contact"
 msgstr ""
 
-#: src/service/plugins/sms.js:644
+#: src/service/plugins/sms.js:582 src/service/plugins/telephony.js:417
+msgid "Unknown Number"
+msgstr ""
+
+#: src/service/plugins/sms.js:650
 msgid "Type an SMS message"
 msgstr ""
 
-#: src/service/plugins/sms.js:804
+#: src/service/plugins/sms.js:810
 msgid "SMS Conversation"
 msgstr ""
 
 #. TRANSLATORS: Tooltip for a button to add/remove people from a conversation
-#: src/service/plugins/sms.js:827
+#: src/service/plugins/sms.js:834
 msgid "Add and remove people"
 msgstr ""
 
 #. TRANSLATORS: eg. <b>Google Pixel</b> is disconnected
-#: src/service/plugins/sms.js:884
+#: src/service/plugins/sms.js:891
 #, javascript-format
 msgid "<b>%s</b> is disconnected"
 msgstr ""
 
-#: src/service/plugins/sms.js:946
+#: src/service/plugins/sms.js:961
 #, javascript-format
 msgid "And one other person"
 msgid_plural "And %d other people"
@@ -553,12 +516,12 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. TRANSLATORS: eg. SMS Conversation with John, Paul, George, Ringo
-#: src/service/plugins/sms.js:965
+#: src/service/plugins/sms.js:980
 #, javascript-format
 msgid "SMS Conversation with %s"
 msgstr ""
 
-#: src/service/plugins/sms.js:970
+#: src/service/plugins/sms.js:985
 msgid "New SMS Conversation"
 msgstr ""
 
@@ -567,116 +530,89 @@ msgid "Telephony"
 msgstr ""
 
 #: src/service/plugins/telephony.js:32
-msgid "Send and receive SMS and be notified of phone calls"
+msgid "Call notification and SMS messaging"
 msgstr ""
 
 #. TRANSLATORS: Missed Call
-#: src/service/plugins/telephony.js:106
+#: src/service/plugins/telephony.js:120
 msgid "Missed Call"
 msgstr ""
 
 #. TRANSLATORS: eg. Missed call from John Smith on Google Pixel
-#: src/service/plugins/telephony.js:109
+#: src/service/plugins/telephony.js:123
 #, javascript-format
 msgid "Missed call from %s on %s"
 msgstr ""
 
+#. TRANSLATORS: Reply to a missed call by SMS
+#: src/service/plugins/telephony.js:138
+msgid "Message"
+msgstr ""
+
+#. TRANSLATORS: This is specifically for matching missed call notifications on Android.
+#. You should translate this (or not) to match the string on your phone that in english looks like "Missed call: John Lennon"
+#: src/service/plugins/telephony.js:155 src/service/plugins/telephony.js:160
+#: src/service/plugins/telephony.js:494
+msgid "Missed call"
+msgstr ""
+
 #. TRANSLATORS: Incoming Call
-#: src/service/plugins/telephony.js:145
+#: src/service/plugins/telephony.js:187
 msgid "Incoming Call"
 msgstr ""
 
 #. TRANSLATORS: eg. Incoming call from John Smith on Google Pixel
-#: src/service/plugins/telephony.js:148
+#: src/service/plugins/telephony.js:190
 #, javascript-format
 msgid "Incoming call from %s on %s"
 msgstr ""
 
 #. TRANSLATORS: Silence an incoming call
-#: src/service/plugins/telephony.js:163
+#: src/service/plugins/telephony.js:205
 msgid "Mute"
 msgstr ""
 
-#. TRANSLATORS: Reply to a received SMS message
-#: src/service/plugins/telephony.js:230
-msgid "Reply"
-msgstr ""
-
 #. TRANSLATORS: Talking on the phone
-#: src/service/plugins/telephony.js:274
+#: src/service/plugins/telephony.js:323
 msgid "Call In Progress"
 msgstr ""
 
 #. TRANSLATORS: eg. Call in progress with John Smith on Google Pixel
-#: src/service/plugins/telephony.js:277
+#: src/service/plugins/telephony.js:326
 #, javascript-format
 msgid "Call in progress with %s on %s"
 msgstr ""
 
-#. Phone Calls
-#: src/service/plugins/telephony.js:489
-msgid "Phone Calls"
+#: src/service/plugins/telephony.js:593
+msgid "SMS Messages"
 msgstr ""
 
-#: src/service/plugins/telephony.js:503
-msgid "Missed Call Notification"
+#: src/service/plugins/telephony.js:609
+msgid "Missed Calls"
 msgstr ""
 
-#: src/service/plugins/telephony.js:504
-msgid "Show a notification for missed calls"
+#: src/service/plugins/telephony.js:625 src/service/plugins/telephony.js:660
+msgid "Incoming Calls"
 msgstr ""
 
-#: src/service/plugins/telephony.js:520
-msgid "Incoming Call Notification"
+#: src/service/plugins/telephony.js:641 src/service/plugins/telephony.js:661
+msgid "In Progress Calls"
 msgstr ""
 
-#: src/service/plugins/telephony.js:521
-msgid "Show a notification when the phone is ringing"
+#: src/service/plugins/telephony.js:648
+msgid "Media"
 msgstr ""
 
-#: src/service/plugins/telephony.js:537
-msgid "Call In Progress Notification"
-msgstr ""
-
-#: src/service/plugins/telephony.js:538
-msgid "Show a notification when talking on the phone"
-msgstr ""
-
-#: src/service/plugins/telephony.js:548
+#: src/service/plugins/telephony.js:659
 msgid "Never"
 msgstr ""
 
-#: src/service/plugins/telephony.js:549
-msgid "Incoming"
-msgstr ""
-
-#: src/service/plugins/telephony.js:550
-msgid "In Progress"
-msgstr ""
-
-#: src/service/plugins/telephony.js:557
+#: src/service/plugins/telephony.js:666
 msgid "Pause Music"
 msgstr ""
 
-#: src/service/plugins/telephony.js:558
-msgid "Pause music for incoming or in progress calls"
-msgstr ""
-
-#: src/service/plugins/telephony.js:564
-msgid "The <b>Media Player Control</b> plugin must be enabled to pause music"
-msgstr ""
-
-#. SMS
-#: src/service/plugins/telephony.js:569
-msgid "SMS"
-msgstr ""
-
-#: src/service/plugins/telephony.js:583
-msgid "SMS Notification"
-msgstr ""
-
-#: src/service/plugins/telephony.js:584
-msgid "Show a notification when an SMS message is received"
+#: src/service/plugins/telephony.js:671
+msgid "The <b>Media Player Control</b> plugin must be enabled"
 msgstr ""
 
 #: src/widgets/device.js:101
@@ -740,28 +676,27 @@ msgstr ""
 msgid "Removed <b>%s</b> and its configuration"
 msgstr ""
 
-#. Plugins
-#: src/widgets/device.js:521
+#: src/widgets/device.js:522
 msgid "Plugins"
 msgstr ""
 
-#: src/widgets/device.js:582
+#: src/widgets/device.js:594
 msgid "Desktop"
 msgstr ""
 
-#: src/widgets/device.js:586
+#: src/widgets/device.js:599
 msgid "Laptop"
 msgstr ""
 
-#: src/widgets/device.js:590
+#: src/widgets/device.js:604
 msgid "Smartphone"
 msgstr ""
 
-#: src/widgets/device.js:594
+#: src/widgets/device.js:609
 msgid "Tablet"
 msgstr ""
 
-#: src/widgets/device.js:598
+#: src/widgets/device.js:614
 msgid "Unknown"
 msgstr ""
 
