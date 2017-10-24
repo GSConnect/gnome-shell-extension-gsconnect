@@ -238,8 +238,6 @@ var UdpListener = new Lang.Class({
         if (packet.type !== TYPE_IDENTITY) {
             Common.debug("UdpListener: Unexpected packet type: " + packet.type);
             return true;
-        } else {
-            Common.debug("UdpListener received: " + data);
         }
         
         packet.body.tcpHost = addr.address.to_string();
@@ -597,8 +595,6 @@ var Transfer = new Lang.Class({
     },
     
     _read: function () {
-        Common.debug("Transfer: _read()");
-        
         if (this._cancellable.is_cancelled()) { return; }
         
         this._in.read_bytes_async(
@@ -633,8 +629,6 @@ var Transfer = new Lang.Class({
     },
     
     _write: function (bytes) {
-        Common.debug("LanChannel: _write()");
-        
         if (this._cancellable.is_cancelled()) { return; }
         
         this._out.write_bytes_async(
