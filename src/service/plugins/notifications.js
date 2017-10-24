@@ -115,8 +115,6 @@ var Plugin = new Lang.Class({
     _init: function (device) {
         this.parent(device, "notifications");
         
-        this._freeze = false;
-        this._notifications = new Map();
         this._duplicates = new Map();
     },
     
@@ -168,28 +166,16 @@ var Plugin = new Lang.Class({
             Common.debug("Notifications: ignoring GroupSummary notification");
             return;
         } else {
-            let notif;
-            
-            // This is an update to a notification
-            if (this._notifications.has(packet.body.id)) {
-                notif = this._notifications.get(packet.body.id);
-                notif.set_title(packet.body.appName);
-                notif.set_body(packet.body.ticker);
-            // This is a new notification
-            } else {
-                notif = new Gio.Notification();
-                notif.set_title(packet.body.appName);
-                notif.set_body(packet.body.ticker);
-                notif.set_default_action(
-                    "app.closeNotification(('" +
-                    this._dbus.get_object_path() +
-                    "','" +
-                    escape(packet.body.id) +
-                    "'))"
-                );
-                
-                this._notifications.set(packet.body.id, notif);
-            }
+            let notif = new Gio.Notification();
+            notif.set_title(packet.body.appName);
+            notif.set_body(packet.body.ticker);
+            notif.set_default_action(
+                "app.closeNotification(('" +
+                this._dbus.get_object_path() +
+                "','" +
+                escape(packet.body.id) +
+                "'))"
+            );
             
             if (packet.payloadSize) {
                 let iconStream = Gio.MemoryOutputStream.new_resizable();
@@ -377,10 +363,6 @@ var Plugin = new Lang.Class({
         });
         
         this.device._channel.send(packet);
-        
-        if (this._notifications.has(id)) {
-            this._notifications.delete(id);
-        }
     },
     
     // TODO: ???
