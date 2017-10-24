@@ -82,8 +82,8 @@ MessageStyle.load_from_data(
     ".contact-color-blue { color: #ffffff; background-color: #204a87; } " +
     ".contact-color-purple { color: #ffffff; background-color: #5c3566; } " +
     ".contact-color-brown { color: #ffffff; background-color: #8f5902; } " +
-    ".contact-color-steel { color: #ffffff; background-color: #2e3436; } " +
-    ".contact-color-grey { color: #000000; background-color: #d3d7cf; } "
+    ".contact-color-grey { color: #ffffff; background-color: #2e3436; } " +
+    ".contact-color-outgoing { color: #000000; background-color: #d3d7cf; } "
 );
 
 
@@ -95,7 +95,7 @@ var shuffleColor = Array.shuffler([
     "contact-color-blue",
     "contact-color-purple",
     "contact-color-brown",
-    "contact-color-steel"
+    "contact-color-grey"
 ]);
         
         
@@ -781,7 +781,7 @@ var MessageView = new Lang.Class({
         if (direction === MessageDirection.IN) {
             messageBubbleStyle.add_class(recipient.color);
         } else if (direction === MessageDirection.OUT) {
-            messageBubbleStyle.add_class("contact-color-grey");
+            messageBubbleStyle.add_class("contact-color-outgoing");
         }
     }
 });
