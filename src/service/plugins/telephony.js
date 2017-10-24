@@ -459,6 +459,10 @@ var Plugin = new Lang.Class({
     replySms: function (phoneNumber, contactName, messageBody, phoneThumbnail) {
         Common.debug("Telephony: replySms()");
         
+        phoneNumber = unescape(phoneNumber);
+        contactName = unescape(contactName);
+        messageBody = unescape(messageBody);
+        
         // Check for an extant window
         let window = this._hasWindow(phoneNumber);
         
@@ -467,9 +471,9 @@ var Plugin = new Lang.Class({
             window = new SMS.ConversationWindow(this.device.daemon, this.device);
             
             window.receive(
-                unescape(phoneNumber),
-                unescape(contactName),
-                unescape(messageBody),
+                phoneNumber,
+                contactName,
+                messageBody,
                 phoneThumbnail
             );
             
