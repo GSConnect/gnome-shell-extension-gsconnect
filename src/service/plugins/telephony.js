@@ -285,7 +285,6 @@ var Plugin = new Lang.Class({
             );
             
             // Tell the notifications plugin to "silence" any duplicate
-            // TODO: check exactly what kdeconnect-android sends
             if (this.device._plugins.has("notifications")) {
                 this.device._plugins.get("notifications").silenceDuplicate(
                     sender + ": " + packet.body.messageBody
@@ -403,10 +402,10 @@ var Plugin = new Lang.Class({
         // There are six possible variables:
         //    * "event"             missedCall, ringing, sms or talking
         //    * "phoneNumber"       Always present
-        //    * "contactName"       Always present (may be empty)
-        //    * "messageBody"       SMS only?
-        //    * "phoneThumbnail"    base64 ByteArray JPEG (may be empty)
-        //    * "isCancel"          The event has been cancelled
+        //    * "contactName"       May be absent or empty
+        //    * "messageBody"       SMS only
+        //    * "phoneThumbnail"    May be absent or empty (base64 ByteArray JPEG)
+        //    * "isCancel"          "ringing" or "talking" has ceased
         
         let sender;
                 
@@ -419,6 +418,7 @@ var Plugin = new Lang.Class({
         }
         
         // Event handling
+        // FIXME: unpause for correct event
         if (packet.body.isCancel) {
             this._unpauseMusic();
             this.device.daemon.withdraw_notification(
