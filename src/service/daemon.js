@@ -423,6 +423,24 @@ var Daemon = new Lang.Class({
         }
     },
     
+    _replyMissedCallAction: function (action, param) {
+        param = param.deep_unpack();
+        
+        if (this._devices.has(param["0"])) {
+            let device = this._devices.get(param["0"]);
+            
+            if (device._plugins.has("telephony")) {
+                let plugin = device._plugins.get("telephony");
+                
+                plugin.replyMissedCall(
+                    param["1"],
+                    param["2"],
+                    param["3"]
+                );
+            }
+        }
+    },
+    
     _replySmsAction: function (action, param) {
         param = param.deep_unpack();
         
@@ -508,6 +526,16 @@ var Daemon = new Lang.Class({
             Lang.bind(this, this._muteCallAction)
         );
         this.add_action(muteCall);
+        
+        let replyMissedCall = new Gio.SimpleAction({
+            name: "replyMissedCall",
+            parameter_type: new GLib.VariantType("(ssss)")
+        });
+        replyMissedCall.connect(
+            "activate",
+            Lang.bind(this, this._replyMissedCallAction)
+        );
+        this.add_action(replyMissedCall);
         
         let replySms = new Gio.SimpleAction({
             name: "replySms",

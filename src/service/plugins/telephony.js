@@ -136,20 +136,30 @@ var Plugin = new Lang.Class({
             notif.add_button(
                 // TRANSLATORS: Reply to a missed call by SMS
                 _("Message"),
-                "app.replySms(('" +
+                "app.replyMissedCall(('" +
                 this._dbus.get_object_path() +
                 "','" +
                 escape(packet.body.phoneNumber) +
                 "','" +
                 escape(packet.body.contactName) +
                 "','" +
-                escape(_("Missed Call at %s").format(new Date(packet.id))) +
-                "','" +
                 packet.body.phoneThumbnail +
                 "'))"
             );
             
-            this.device.daemon.send_notification(packet.id.toString(), notif);
+            // Tell the notifications plugin to "silence" any duplicate
+            if (this.device._plugins.has("notifications")) {
+                this.device._plugins.get("notifications").silenceDuplicate(
+                    // TRANSLATORS: This is specifically for matching missed call notifications on Android.
+                    // You should translate this (or not) to match the string on your phone that in english looks like "Missed call: John Lennon"
+                    _("Missed call") + ": " + sender
+                );
+            }
+            
+            this.device.daemon.send_notification(
+                _("Missed call") + ": " + sender,
+                notif
+            );
         }
     },
     
@@ -449,6 +459,45 @@ var Plugin = new Lang.Class({
     },
     
     /**
+     * Either open a new SMS window for the caller or reuse an existing one
+     *
+     * @param {string} phoneNumber - The sender's phone number
+     * @param {string} contactName - The sender's name
+     * @param {string} phoneThumbnail - The sender's avatar (pixmap bytearray)
+     */
+    replyMissedCall: function (phoneNumber, contactName, phoneThumbnail) {
+        Common.debug("Telephony: replyMissedCall()");
+        
+        phoneNumber = unescape(phoneNumber);
+        contactName = unescape(contactName);
+        
+        // Check for an extant window
+        let window = this._hasWindow(phoneNumber);
+        
+        // None found; open one, add the contact, log the message, mark it read
+        if (!window) {
+            window = new SMS.ConversationWindow(this.device.daemon, this.device);
+            window.addRecipient(
+                phoneNumber,
+                contactName,
+                phoneThumbnail
+            );
+            
+            window.urgency_hint = true;
+            
+            // Tell the notifications plugin to mark any duplicate read
+            if (this.device._plugins.has("notifications")) {
+                this.device._plugins.get("notifications").closeDuplicate(
+                    _("Missed call") + ": " + contactName || phoneNumber
+                );
+            }
+        }
+        
+        window._showMessages();
+        window.present();
+    },
+    
+    /**
      * Either open a new SMS window for the sender or reuse an existing one
      *
      * @param {string} phoneNumber - The sender's phone number
@@ -480,7 +529,6 @@ var Plugin = new Lang.Class({
             window.urgency_hint = true;
             
             // Tell the notifications plugin to mark any duplicate read
-            // TODO: check exactly what kdeconnect-android returns
             if (this.device._plugins.has("notifications")) {
                 this.device._plugins.get("notifications").closeDuplicate(
                     contactName || phoneNumber + ": " + messageBody
