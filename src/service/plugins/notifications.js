@@ -130,11 +130,14 @@ var Plugin = new Lang.Class({
     },
     
     _handleDuplicate: function (packet, notif) {
-        let matchString
+        let matchString;
         
-        // kdeconnect-android 1.7+ only
+        // kdeconnect-android 1.7+ only (also Android Kit-Kat+)
         if (packet.body.hasOwnProperty("title")) {
             matchString = packet.body.title + ": " + packet.body.text;
+        // kdeconnect-android 1.6.6 (hex: 20 e2 80 90 20)
+        } else if (packet.body.ticker.indexOf(" ‐ ") > -1) {
+            matchString = packet.body.ticker.replace(" ‐ ", ": ");
         } else {
             matchString = packet.body.ticker;
         }
