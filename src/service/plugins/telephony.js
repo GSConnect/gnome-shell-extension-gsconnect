@@ -239,7 +239,7 @@ var Plugin = new Lang.Class({
             
             // Tell the notifications plugin to mark any duplicate read
             if (this.device._plugins.has("notifications")) {
-                this.device._plugins.get("notifications").markReadSms(
+                this.device._plugins.get("notifications").closeDuplicate(
                     sender + ": " + packet.body.messageBody
                 );
             }
@@ -274,7 +274,7 @@ var Plugin = new Lang.Class({
             // Tell the notifications plugin to "silence" any duplicate
             // TODO: check exactly what kdeconnect-android sends
             if (this.device._plugins.has("notifications")) {
-                this.device._plugins.get("notifications").silenceSms(
+                this.device._plugins.get("notifications").silenceDuplicate(
                     sender + ": " + packet.body.messageBody
                 );
             }
@@ -472,7 +472,7 @@ var Plugin = new Lang.Class({
             // Tell the notifications plugin to mark any duplicate read
             // TODO: check exactly what kdeconnect-android returns
             if (this.device._plugins.has("notifications")) {
-                this.device._plugins.get("notifications").markReadSms(
+                this.device._plugins.get("notifications").closeDuplicate(
                     contactName || phoneNumber + ": " + messageBody
                 );
             }
