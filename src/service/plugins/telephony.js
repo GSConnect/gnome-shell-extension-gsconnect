@@ -133,6 +133,22 @@ var Plugin = new Lang.Class({
             }
             notif.set_priority(Gio.NotificationPriority.NORMAL);
             
+            notif.add_button(
+                // TRANSLATORS: Reply to a missed call by SMS
+                _("Message"),
+                "app.replySms(('" +
+                this._dbus.get_object_path() +
+                "','" +
+                escape(packet.body.phoneNumber) +
+                "','" +
+                escape(packet.body.contactName) +
+                "','" +
+                escape(_("Missed Call at %s").format(new Date(packet.id))) +
+                "','" +
+                packet.body.phoneThumbnail +
+                "'))"
+            );
+            
             this.device.daemon.send_notification(packet.id.toString(), notif);
         }
     },
