@@ -23,7 +23,7 @@ imports.searchPath.push(getPath());
 const Common = imports.common;
 const Protocol = imports.service.protocol;
 const PluginsBase = imports.service.plugins.base;
-const SMS = imports.widgets.sms;
+const TelephonyWidget = imports.widgets.telephony;
 
 
 var METADATA = {
@@ -457,8 +457,11 @@ var Plugin = new Lang.Class({
     openSms: function () {
         Common.debug("Telephony: openSms()");
         
-        let win = new SMS.ConversationWindow(this.device.daemon, this.device);
-        win.present();
+        let window = new TelephonyWidget.ConversationWindow(
+            this.device.daemon,
+            this.device
+        );
+        window.present();
     },
     
     /**
@@ -479,7 +482,10 @@ var Plugin = new Lang.Class({
         
         // None found; open one, add the contact, log the message, mark it read
         if (!window) {
-            window = new SMS.ConversationWindow(this.device.daemon, this.device);
+            window = new TelephonyWidget.ConversationWindow(
+                this.device.daemon,
+                this.device
+            );
             window.addRecipient(
                 phoneNumber,
                 contactName,
@@ -519,7 +525,10 @@ var Plugin = new Lang.Class({
         
         // None found; open one, add the contact, log the message, mark it read
         if (!window) {
-            window = new SMS.ConversationWindow(this.device.daemon, this.device);
+            window = new TelephonyWidget.ConversationWindow(
+                this.device.daemon,
+                this.device
+            );
             
             window.receive(
                 phoneNumber,
