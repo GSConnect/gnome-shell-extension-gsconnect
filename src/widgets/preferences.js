@@ -34,7 +34,7 @@ var Row = new Lang.Class({
             activatable: false,
             can_focus: false,
             selectable: false,
-            height_request: 32
+            height_request: 48
         }, params);
     
         this.parent({
@@ -66,7 +66,7 @@ var Setting = new Lang.Class({
     Extends: Row,
     
     _init: function (summary, description, widget) {
-        this.parent({ height_request: 40 });
+        this.parent({ height_request: 56 });
         
         // Summary Label
         this.summary = new Gtk.Label({
