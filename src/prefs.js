@@ -146,7 +146,6 @@ var PrefsWidget = new Lang.Class({
                 Gtk.IconSize.BUTTON
             ),
             always_show_image: true,
-            visible: true,
             can_focus: true,
             halign: Gtk.Align.END,
             valign: Gtk.Align.CENTER

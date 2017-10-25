@@ -32,13 +32,13 @@ var Row = new Lang.Class({
     _init: function (params={}) {
         params = Object.assign({
             activatable: false,
+            can_focus: false,
             selectable: false,
             height_request: 32
         }, params);
     
         this.parent({
-            visible: true,
-            can_focus: false,
+            can_focus: params.can_focus,
             activatable: params.activatable,
             selectable: params.selectable,
             height_request: params.height_request
@@ -46,7 +46,6 @@ var Row = new Lang.Class({
         
         // Row Layout
         this.grid = new Gtk.Grid({
-            visible: true,
             can_focus: false,
             column_spacing: 12,
             row_spacing: 0,
@@ -71,7 +70,6 @@ var Setting = new Lang.Class({
         
         // Summary Label
         this.summary = new Gtk.Label({
-            visible: true,
             can_focus: false,
             xalign: 0,
             hexpand: true,
@@ -83,7 +81,6 @@ var Setting = new Lang.Class({
         // Description Label
         if (description) {
             this.description = new Gtk.Label({
-                visible: true,
                 can_focus: false,
                 xalign: 0,
                 hexpand: true,
@@ -114,7 +111,6 @@ var Section = new Lang.Class({
         }, params);
     
         this.parent({
-            visible: true,
             can_focus: false,
             margin_bottom: params.margin_bottom,
             hexpand: true,
@@ -122,7 +118,6 @@ var Section = new Lang.Class({
         });
         
         this.list = new Gtk.ListBox({
-            visible: true,
             can_focus: false,
             hexpand: true,
             activate_on_single_click: true,
@@ -220,13 +215,11 @@ var Page = new Lang.Class({
     _init: function (params={}) {
         params = Object.assign({
             can_focus: true,
-            visible: true,
             hscrollbar_policy: Gtk.PolicyType.NEVER
         }, params);
         this.parent(params);
         
         this.box = new Gtk.Box({
-            visible: true,
             can_focus: false,
             margin_left: 72,
             margin_right: 72,
@@ -248,7 +241,6 @@ var Page = new Lang.Class({
     addSection: function (title, section, params={}) {
         if (title) {
             let label = new Gtk.Label({
-                visible: true,
                 can_focus: false,
                 margin_bottom: 12,
                 margin_start: 3,

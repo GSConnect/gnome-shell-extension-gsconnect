@@ -45,7 +45,6 @@ var PluginControl = new Lang.Class({
                     Gtk.IconSize.BUTTON
                 ),
                 always_show_image: true,
-                visible: true,
                 can_focus: true,
                 halign: Gtk.Align.END,
                 valign: Gtk.Align.CENTER
@@ -58,7 +57,6 @@ var PluginControl = new Lang.Class({
         }
         
         this.pluginSwitch = new Gtk.Switch({
-            visible: true,
             can_focus: true,
             halign: Gtk.Align.END,
             valign: Gtk.Align.CENTER
@@ -191,8 +189,7 @@ var Stack = new Lang.Class({
         let refreshButton = new Gtk.Button({
             label: _("Refresh"),
             vexpand: false,
-            valign: Gtk.Align.END,
-            visible: true
+            valign: Gtk.Align.END
         });
         refreshButton.connect("clicked", () => {
             this._parent.daemon.discovering = true;
@@ -243,7 +240,6 @@ var Stack = new Lang.Class({
         this.defaultRow.show_all();
         
         let separatorRow = new Gtk.ListBoxRow({
-            visible: true,
             can_focus: false,
             activatable: false,
             selectable: false
@@ -379,7 +375,6 @@ var Page = new Lang.Class({
                 Gtk.IconSize.BUTTON
             ),
             always_show_image: true,
-            visible: true,
             can_focus: true,
             halign: Gtk.Align.END,
             valign: Gtk.Align.CENTER
@@ -448,7 +443,6 @@ var Page = new Lang.Class({
             // TRANSLATORS: eg. Remove <b>Google Pixel</b> Smartphone
             tooltip_markup: _("Remove <b>%s</b>").format(this.device.name),
             always_show_image: true,
-            visible: true,
             can_focus: true,
             halign: Gtk.Align.END,
             valign: Gtk.Align.CENTER

@@ -17,7 +17,6 @@ var BoolSetting = new Lang.Class({
     
     _init: function (settings, keyName) {
         this.parent({
-            visible: true,
             can_focus: true,
             halign: Gtk.Align.END,
             valign: Gtk.Align.CENTER
@@ -34,7 +33,6 @@ var EnumSetting = new Lang.Class({
     
     _init: function (settings, keyName) {
         this.parent({
-            visible: true,
             can_focus: true,
             width_request: 160,
             halign: Gtk.Align.END,
@@ -72,7 +70,6 @@ var FlagsSetting = new Lang.Class({
         
         this.parent({
             image: params.icon,
-            visible: true,
             can_focus: true,
             halign: Gtk.Align.END,
             valign: Gtk.Align.CENTER,
@@ -82,7 +79,6 @@ var FlagsSetting = new Lang.Class({
         
         this.box = new Gtk.Box({
             orientation: Gtk.Orientation.VERTICAL,
-            visible: true,
             margin: 8
         });
         this.popover.add(this.box);
@@ -95,7 +91,6 @@ var FlagsSetting = new Lang.Class({
         flags.forEach((flagNick) => {
             flag = new Gtk.CheckButton({
                 label: _(flagNick),
-                visible: true,
                 active: (old_flags.indexOf(flagNick) > -1)
             });
             
@@ -123,7 +118,6 @@ var MaybeSetting = new Lang.Class({
     
     _init: function (settings, keyName) {
         this.parent({
-            visible: true,
             can_focus: true,
             width_request: 120,
             halign: Gtk.Align.END,
@@ -135,14 +129,12 @@ var MaybeSetting = new Lang.Class({
         
         this.box = new Gtk.Box({
             orientation: Gtk.Orientation.VERTICAL,
-            visible: true,
             margin: 8
         });
         this.popover.add(this.box);
         
         let nothingButton = new Gtk.RadioButton({
             label: _("Nothing"),
-            visible: true,
             active: false
         });
         nothingButton.connect("toggled", (button) => {
@@ -154,8 +146,7 @@ var MaybeSetting = new Lang.Class({
         this.box.add(nothingButton);
         
         let trueButton = new Gtk.RadioButton({
-            label: _("True"),
-            visible: true
+            label: _("True")
         });
         trueButton.join_group(nothingButton);
         trueButton.connect("toggled", (button) => {
@@ -167,8 +158,7 @@ var MaybeSetting = new Lang.Class({
         this.box.add(trueButton);
         
         let falseButton = new Gtk.RadioButton({
-            label: _("False"),
-            visible: true
+            label: _("False")
         });
         falseButton.join_group(nothingButton);
         falseButton.connect("toggled", (button) => {
@@ -207,7 +197,6 @@ var NumberSetting = new Lang.Class({
             digits: (type === "d") ? 2 : 0,
             //snap_to_ticks: true,
             input_purpose: Gtk.InputPurpose.NUMBER,
-            visible: true,
             can_focus: true,
             width_request: 160,
             halign: Gtk.Align.END,
@@ -260,7 +249,6 @@ var RangeSetting = new Lang.Class({
         this.parent({
             orientation: Gtk.Orientation.HORIZONTAL,
             draw_value: false,
-            visible: true,
             can_focus: true,
             width_request: 160,
             halign: Gtk.Align.END,
@@ -294,7 +282,6 @@ var StringSetting = new Lang.Class({
     _init: function (settings, keyName) {
         this.parent({
             placeholder_text: settings.get_string(keyName),
-            visible: true,
             can_focus: true,
             halign: Gtk.Align.END,
             valign: Gtk.Align.CENTER
@@ -339,7 +326,6 @@ var OtherSetting = new Lang.Class({
     _init: function (settings, keyName) {
         this.parent({
             text: settings.get_value(keyName).deep_unpack().toSource(),
-            visible: true,
             can_focus: true,
             width_request: 160,
             halign: Gtk.Align.END,
