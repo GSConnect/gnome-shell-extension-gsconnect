@@ -270,8 +270,8 @@ var Plugin = new Lang.Class({
                     type: "kdeconnect.notification",
                     body: {
                         appName: appName,
-                        id: replacesId.toString(),  // TODO: clearable if !0?
-                        isClearable: false,
+                        id: replacesId.toString(),
+                        isClearable: (replacesId),
                         ticker: body
                     }
                 });
@@ -368,7 +368,7 @@ var Plugin = new Lang.Class({
         this.device._channel.send(packet);
     },
     
-    // TODO: ???
+    // TODO: kdeconnect-android 1.7+
     reply: function () {
     },
     
