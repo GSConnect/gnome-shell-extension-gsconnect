@@ -23,7 +23,7 @@ imports.searchPath.push(getPath());
 const Common = imports.common;
 const Protocol = imports.service.protocol;
 const PluginsBase = imports.service.plugins.base;
-const SMS = imports.service.plugins.sms;
+const SMS = imports.widgets.sms;
 
 
 var METADATA = {
