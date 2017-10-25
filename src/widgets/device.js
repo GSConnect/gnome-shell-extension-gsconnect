@@ -222,23 +222,8 @@ var Stack = new Lang.Class({
     
     _addDaemon: function () {
         // Default Sidebar Entry
-        this.defaultRow = new Gtk.ListBoxRow({
-            visible: true,
-            can_focus: true
-        });
+        this.defaultRow = new PreferencesWidget.Row({ selectable: true });
         this.defaultRow.device = { id: "default" };
-        
-        this.defaultRow.grid = new Gtk.Grid({
-            visible: true,
-            can_focus: false,
-            column_spacing: 12,
-            row_spacing: 0,
-            margin_left: 12,
-            margin_top: 6,
-            margin_bottom: 6,
-            margin_right: 18
-        });
-        this.defaultRow.add(this.defaultRow.grid);
         
         let icon = Gtk.Image.new_from_icon_name(
             "computer-symbolic",
@@ -297,23 +282,8 @@ var Stack = new Lang.Class({
         let device = daemon.devices.get(dbusPath);
         
         // Device Sidebar Entry
-        let row = new Gtk.ListBoxRow({
-            visible: true,
-            can_focus: true
-        });
+        let row = new PreferencesWidget.Row({ selectable: true });
         row.device = device;
-        
-        row.grid = new Gtk.Grid({
-            visible: true,
-            can_focus: false,
-            column_spacing: 12,
-            row_spacing: 0,
-            margin_left: 12,
-            margin_top: 6,
-            margin_bottom: 6,
-            margin_right: 12
-        });
-        row.add(row.grid);
         
         let metadata = DeviceMetadata[device.type];
         
