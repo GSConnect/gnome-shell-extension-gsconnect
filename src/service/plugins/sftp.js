@@ -333,7 +333,7 @@ var SettingsDialog = new Lang.Class({
             active: this.settings.automount
         });
         automountSwitch.connect("notify::active", (widget) => {
-            this.settings.automount = automountSwitch.automount;
+            this.settings.automount = automountSwitch.active;
         });
         generalSection.addSetting(
             _("Automatically Mount"),
