@@ -121,9 +121,9 @@ var PluginControl = new Lang.Class({
         
         if (dialog.run() === Gtk.ResponseType.APPLY) {
             this._page.device.configurePlugin(this._name, dialog.settings);
-            this._page._refresh();
         }
         
+        this._page._refresh();
         dialog.close();
     }
 });
