@@ -440,6 +440,7 @@ var SettingsDialog = new Lang.Class({
             null,
             iconsSwitch
         );
+        iconsRow.sensitive = sendSwitch.active;
         sendSwitch.bind_property(
             "active",
             iconsRow,
@@ -452,11 +453,17 @@ var SettingsDialog = new Lang.Class({
             null,
             { margin_bottom: 0, width_request: -1 }
         );
+        this.appSection.sensitive = sendSwitch.active;
+        sendSwitch.bind_property(
+            "active",
+            this.appSection,
+            "sensitive",
+            GObject.BindingFlags.DEFAULT
+        );
         
         this._populate();
         
         this.appSection.list.set_sort_func((row1, row2) => {
-            if (row2.image) { return -1; }
             return row1.appName.label.localeCompare(row2.appName.label);
         });
         
@@ -470,15 +477,15 @@ var SettingsDialog = new Lang.Class({
             let row = this.appSection.addRow(null, { height_request: 24 });
             
             try {
-                row.icon = Gtk.Image.new_from_icon_name(
-                    this.settings.send.applications[name].iconName,
-                    Gtk.IconSize.DND
-                );
+                row.icon = new Gtk.Image({
+                    icon_name: this.settings.send.applications[name].iconName,
+                    icon_size: Gtk.IconSize.DND
+                });
             } catch (e) {
-                row.icon = Gtk.Image.new_from_icon_name(
-                    "application-x-executable",
-                    Gtk.IconSize.DND
-                );
+                row.icon = new Gtk.Image({
+                    icon_name: "application-x-executable",
+                    icon_size: Gtk.IconSize.DND
+                });
             }
             row.grid.attach(row.icon, 0, 0, 1, 1);
             
@@ -490,7 +497,9 @@ var SettingsDialog = new Lang.Class({
             row.grid.attach(row.appName, 1, 0, 1, 1);
             
             row.switch = new Gtk.Switch({
-                active: this.settings.send.applications[name].enabled
+                active: this.settings.send.applications[name].enabled,
+                vexpand: true,
+                valign: Gtk.Align.CENTER
             });
             row.switch.connect("notify::active", (widget) => {
                 this.settings.send.applications[name].enabled = row.switch.active;
