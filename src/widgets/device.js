@@ -30,7 +30,9 @@ var PluginControl = new Lang.Class({
     _init: function (page, name) {
         this.parent({
             orientation: Gtk.Orientation.HORIZONTAL,
-            column_spacing: 12
+            column_spacing: 12,
+            vexpand: true,
+            valign: Gtk.Align.CENTER
         });
         
         this._page = page;
@@ -219,7 +221,10 @@ var Stack = new Lang.Class({
     
     _addDaemon: function () {
         // Default Sidebar Entry
-        this.defaultRow = new PreferencesWidget.Row({ selectable: true });
+        this.defaultRow = new PreferencesWidget.Row({
+            height_request: -1,
+            selectable: true
+        });
         this.defaultRow.device = { id: "default" };
         
         let icon = new Gtk.Image({
@@ -276,7 +281,10 @@ var Stack = new Lang.Class({
         let device = daemon.devices.get(dbusPath);
         
         // Device Sidebar Entry
-        let row = new PreferencesWidget.Row({ selectable: true });
+        let row = new PreferencesWidget.Row({
+            height_request: -1,
+            selectable: true
+        });
         row.device = device;
         
         let metadata = DeviceMetadata[device.type];
