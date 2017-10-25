@@ -215,7 +215,9 @@ var Page = new Lang.Class({
     _init: function (params={}) {
         params = Object.assign({
             can_focus: true,
-            hscrollbar_policy: Gtk.PolicyType.NEVER
+            hscrollbar_policy: Gtk.PolicyType.NEVER,
+            valign: Gtk.Align.FILL,
+            vexpand: true,
         }, params);
         this.parent(params);
         

@@ -96,13 +96,7 @@ var SettingsDialog = new Lang.Class({
         this._name = pluginName;
         this.settings = this._page.config.plugins[this._name].settings;
         
-        this.content = new PreferencesWidget.Page({
-            height_request: -1,
-            valign: Gtk.Align.FILL,
-            vexpand: true,
-            can_focus: true,
-            hscrollbar_policy: Gtk.PolicyType.NEVER
-        });
+        this.content = new PreferencesWidget.Page();
         this.content.box.margin_left = 36;
         this.content.box.margin_right = 36;
         this.get_content_area().add(this.content);
