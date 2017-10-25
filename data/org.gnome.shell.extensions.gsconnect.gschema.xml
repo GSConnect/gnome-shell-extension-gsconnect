@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<schemalist gettext-domain="org.gnome.shell.extensions.gsconnect">
+<schemalist gettext-domain="gsconnect">
   <schema path="/org/gnome/shell/extensions/gsconnect/" id="org.gnome.shell.extensions.gsconnect">
     <key name="debug" type="b">
       <default>false</default>
