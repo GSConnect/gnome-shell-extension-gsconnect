@@ -176,10 +176,10 @@ var SettingsDialog = new Lang.Class({
         commandRow.grid.attach(buttonBox, 0, 1, 1, 1);
         
         let removeButton = new Gtk.Button({
-            image: Gtk.Image.new_from_icon_name(
-                "list-remove-symbolic",
-                Gtk.IconSize.BUTTON
-            ),
+            image: new Gtk.Image({
+                icon_name: "list-remove-symbolic",
+                icon_size: Gtk.IconSize.BUTTON
+            }),
             always_show_image: true,
             hexpand: false
         });
@@ -187,10 +187,10 @@ var SettingsDialog = new Lang.Class({
         buttonBox.add(removeButton);
         
         let addButton = new Gtk.Button({
-            image: Gtk.Image.new_from_icon_name(
-                "list-add-symbolic",
-                Gtk.IconSize.BUTTON
-            ),
+            image: new Gtk.Image({
+                icon_name: "list-add-symbolic",
+                icon_size: Gtk.IconSize.BUTTON
+            }),
             always_show_image: true,
             hexpand: false
         });

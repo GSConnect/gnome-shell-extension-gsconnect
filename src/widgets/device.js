@@ -40,10 +40,10 @@ var PluginControl = new Lang.Class({
         
         if (metadata.hasOwnProperty("settings")) {
             this.settingButton = new Gtk.Button({
-                image: Gtk.Image.new_from_icon_name(
-                    "emblem-system-symbolic",
-                    Gtk.IconSize.BUTTON
-                ),
+                image: new Gtk.Image({
+                    icon_name: "emblem-system-symbolic",
+                    icon_size: Gtk.IconSize.BUTTON
+                }),
                 always_show_image: true,
                 can_focus: true,
                 halign: Gtk.Align.END,
@@ -64,11 +64,11 @@ var PluginControl = new Lang.Class({
         this.pluginSwitch.connect("notify::active", Lang.bind(this, this._toggle));
         this.attach(this.pluginSwitch, 2, 0, 1, 1);
         
-        this.errorImage = Gtk.Image.new_from_icon_name(
-            "dialog-warning",
-            Gtk.IconSize.LARGE_TOOLBAR
-        );
-        this.errorImage.visible = true;
+        this.errorImage = new Gtk.Image({
+            icon_name: "dialog-warning",
+            icon_size: Gtk.IconSize.LARGE_TOOLBAR,
+            visible: true
+        });
         
         this._refresh();
     },
@@ -222,10 +222,10 @@ var Stack = new Lang.Class({
         this.defaultRow = new PreferencesWidget.Row({ selectable: true });
         this.defaultRow.device = { id: "default" };
         
-        let icon = Gtk.Image.new_from_icon_name(
-            "computer-symbolic",
-            Gtk.IconSize.SMALL_TOOLBAR
-        );
+        let icon = new Gtk.Image({
+            icon_name: "computer-symbolic",
+            icon_size: Gtk.IconSize.SMALL_TOOLBAR
+        });
         this.defaultRow.grid.attach(icon, 0, 0, 1, 1);
         let nameLabel = new Gtk.Label({ label: "" });
         Common.Settings.bind(
@@ -281,10 +281,10 @@ var Stack = new Lang.Class({
         
         let metadata = DeviceMetadata[device.type];
         
-        let icon = Gtk.Image.new_from_icon_name(
-            metadata.symbolic_icon,
-            Gtk.IconSize.SMALL_TOOLBAR
-        );
+        let icon = new Gtk.Image({
+            icon_name: metadata.symbolic_icon,
+            icon_size: Gtk.IconSize.SMALL_TOOLBAR
+        });
         row.grid.attach(icon, 0, 0, 1, 1);
         let nameLabel = new Gtk.Label({ label: device.name });
         row.grid.attach(nameLabel, 1, 0, 1, 1);
@@ -336,11 +336,11 @@ var Page = new Lang.Class({
         let statusRow = infoSection.addRow();
         
         // Info Section // Type Icon
-        let typeIcon = Gtk.Image.new_from_icon_name(
-            metadata.icon,
-            Gtk.IconSize.DIALOG
-        );
-        typeIcon.xalign = 0;
+        let typeIcon = new Gtk.Image({
+            icon_name: metadata.icon,
+            icon_size: Gtk.IconSize.DIALOG,
+            xalign: 0
+        });
         statusRow.grid.attach(typeIcon, 0, 0, 1, 2);
         
         // Info Section // Name and Type Labels
@@ -368,10 +368,10 @@ var Page = new Lang.Class({
         
         // Info Section // State Button (Pair/Unpair/Connect)
         let stateButton = new Gtk.Button({
-            image: Gtk.Image.new_from_icon_name(
-                "view-refresh-symbolic",
-                Gtk.IconSize.BUTTON
-            ),
+            image: new Gtk.Image({
+                icon_name: "view-refresh-symbolic",
+                icon_size: Gtk.IconSize.BUTTON
+            }),
             always_show_image: true,
             can_focus: true,
             halign: Gtk.Align.END,
@@ -389,20 +389,17 @@ var Page = new Lang.Class({
         });
         this.device.connect("notify", () => {
             if (this.device.connected && this.device.paired) {
-                stateButton.image = Gtk.Image.new_from_icon_name(
-                    "channel-secure-symbolic",
-                    Gtk.IconSize.BUTTON
-                );
-                stateButton.set_tooltip_markup(
+                stateButton.image = new Gtk.Image({
+                    icon_name: "channel-secure-symbolic",
+                    icon_size: Gtk.IconSize.BUTTON,
                     // TRANSLATORS: eg. Unpair <b>Google Pixel</b>
-                    _("Unpair <b>%s</b>").format(this.device.name)
-                );
+                    tooltip_markup: _("Unpair <b>%s</b>").format(this.device.name)
+                });
             } else if (this.device.connected && !this.device.paired) {
-                stateButton.image = Gtk.Image.new_from_icon_name(
-                    "channel-insecure-symbolic",
-                    Gtk.IconSize.BUTTON
-                );
-                stateButton.set_tooltip_markup(
+                stateButton.image = new Gtk.Image({
+                    icon_name: "channel-insecure-symbolic",
+                    icon_size: Gtk.IconSize.BUTTON,
+                    tooltip_markup:
                     // TRANSLATORS: eg. Pair <b>Google Pixel</b>
                     // PLEASE KEEP NEWLINE CHARACTERS (\n)
                     _("Pair <b>%s</b>\n\n").format(this.device.name) +
@@ -417,16 +414,14 @@ var Page = new Lang.Class({
                     // <b>Local Fingerprint:</b>
                     // 00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
                     _("<b>%s Fingerprint:</b>\n%s\n\n<b>Local Fingerprint:</b>\n%s").format(this.device.name, this.device.fingerprint, this.daemon.fingerprint)
-                );
+                });
             } else {
-                stateButton.image = Gtk.Image.new_from_icon_name(
-                    "view-refresh-symbolic",
-                    Gtk.IconSize.BUTTON
-                );
-                stateButton.set_tooltip_markup(
+                stateButton.image = new Gtk.Image({
+                    icon_name: "view-refresh-symbolic",
+                    icon_size: Gtk.IconSize.BUTTON,
                     // TRANSLATORS: eg. Reconnect <b>Google Pixel</b>
-                    _("Reconnect <b>%s</b>").format(this.device.name)
-                );
+                    tooltip_markup: _("Reconnect <b>%s</b>").format(this.device.name)
+                });
             }
         });
         this.device.notify("paired");
@@ -434,10 +429,10 @@ var Page = new Lang.Class({
         
         // Info Section // Remove Button
         let removeButton = new Gtk.Button({
-            image: Gtk.Image.new_from_icon_name(
-                "user-trash-symbolic",
-                Gtk.IconSize.BUTTON
-            ),
+            image: new Gtk.Image({
+                icon_name: "user-trash-symbolic",
+                icon_size: Gtk.IconSize.BUTTON
+            }),
             // TRANSLATORS: eg. Remove <b>Google Pixel</b> Smartphone
             tooltip_markup: _("Remove <b>%s</b>").format(this.device.name),
             always_show_image: true,

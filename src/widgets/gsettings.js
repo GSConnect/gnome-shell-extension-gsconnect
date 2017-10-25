@@ -62,10 +62,10 @@ var FlagsSetting = new Lang.Class({
     
     _init: function (settings, keyName, params={}) {
         if (!params.icon) {
-            params.icon = Gtk.Image.new_from_icon_name(
-                "checkbox-checked-symbolic",
-                Gtk.IconSize.BUTTON
-            );
+            params.icon = new Gtk.Image({
+                icon_name: "checkbox-checked-symbolic",
+                icon_size: Gtk.IconSize.BUTTON
+            });
         }
         
         this.parent({

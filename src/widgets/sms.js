@@ -23,7 +23,7 @@ try {
 function getPath() {
     // Diced from: https://github.com/optimisme/gjs-examples/
     let m = new RegExp("@(.+):\\d+").exec((new Error()).stack.split("\n")[1]);
-    let p = Gio.File.new_for_path(m[1]).get_parent().get_parent().get_parent();
+    let p = Gio.File.new_for_path(m[1]).get_parent().get_parent();
     return p.get_path();
 }
 
@@ -518,12 +518,12 @@ var RecipientList = new Lang.Class({
             spacing: 12
         });
         
-        let placeholderImage = Gtk.Image.new_from_icon_name(
-            "avatar-default-symbolic",
-            Gtk.IconSize.DIALOG
-        );
+        let placeholderImage = new Gtk.Image({
+            icon_name: "avatar-default-symbolic",
+            icon_size: Gtk.IconSize.DIALOG,
+            visible: true
+        });
         placeholderImage.get_style_context().add_class("dim-label");
-        placeholderImage.visible = true;
         box.add(placeholderImage);
         
         let placeholderLabel = new Gtk.Label({
@@ -589,10 +589,10 @@ var RecipientList = new Lang.Class({
         row.layout.attach(row.phone, 1, 1, 1, 1);
         
         let removeButton = new Gtk.Button({
-            image: Gtk.Image.new_from_icon_name(
-                "edit-delete-symbolic",
-                Gtk.IconSize.BUTTON
-            ),
+            image: new Gtk.Image({
+                icon_name: "edit-delete-symbolic",
+                icon_size: Gtk.IconSize.BUTTON
+            }),
             always_show_image: true,
             halign: Gtk.Align.END,
             valign: Gtk.Align.CENTER
@@ -825,10 +825,10 @@ var ConversationWindow = new Lang.Class({
         
         // Contact Button
         this.contactButton = new Gtk.Button({
-            image: Gtk.Image.new_from_icon_name(
-                "contact-new-symbolic",
-                Gtk.IconSize.BUTTON
-            ),
+            image: new Gtk.Image({
+                icon_name: "contact-new-symbolic",
+                icon_size: Gtk.IconSize.BUTTON
+            }),
             always_show_image: true,
             // TRANSLATORS: Tooltip for a button to add/remove people from a conversation
             tooltip_text: _("Add and remove people")
@@ -846,10 +846,10 @@ var ConversationWindow = new Lang.Class({
         
         // Messages Button
         this.messagesButton = new Gtk.Button({
-            image: Gtk.Image.new_from_icon_name(
-                "go-previous-symbolic",
-                Gtk.IconSize.BUTTON
-            ),
+            image: new Gtk.Image({
+                icon_name: "go-previous-symbolic",
+                icon_size: Gtk.IconSize.BUTTON
+            }),
             always_show_image: true
         });
         this.messagesButton.connect("clicked", () => {
@@ -1023,12 +1023,12 @@ var ConversationWindow = new Lang.Class({
             //);
             
             let bytes = GLib.base64_decode(recipient.phoneThumbnail);
-            avatar = Gtk.Image.new_from_gicon(
-                Gio.BytesIcon.new(bytes),
-                Gtk.IconSize.DND
-            );
-            avatar.height_request = 32;
-            avatar.width_request = 32;
+            avatar = new Gtk.Image({
+                gicon: Gio.BytesIcon.new(bytes),
+                icon_size: Gtk.IconSize.DND,
+                height_request: 32,
+                width_request: 32
+            });
         } catch (e) {
             Common.debug("Error creating avatar: " + e);
         
@@ -1041,12 +1041,12 @@ var ConversationWindow = new Lang.Class({
             avatarStyle.add_class("contact-avatar");
             avatarStyle.add_class(recipient.color);
             
-            let defaultAvatar = Gtk.Image.new_from_icon_name(
-                "avatar-default-symbolic",
-                Gtk.IconSize.LARGE_TOOLBAR
-            );
-            defaultAvatar.visible = true;
-            defaultAvatar.margin = 4;
+            let defaultAvatar = new Gtk.Image({
+                icon_name: "avatar-default-symbolic",
+                icon_size: Gtk.IconSize.LARGE_TOOLBAR,
+                margin: 4,
+                visible: true
+            });
             avatar.add(defaultAvatar);
         }
         
