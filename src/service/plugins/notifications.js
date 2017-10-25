@@ -450,34 +450,14 @@ var SettingsDialog = new Lang.Class({
         this.appSection = this.content.addSection(
             _("Applications"),
             null,
-            {
-                margin_bottom: 0,
-                selection_mode: Gtk.SelectionMode.SINGLE,
-                width_request: -1
-            }
+            { margin_bottom: 0, width_request: -1 }
         );
         
         this._populate();
         
-        let removeRow = this.appSection.addRow(null, { activatable: true });
-        removeRow.grid.margin = 0;
-        removeRow.grid.hexpand = true;
-        removeRow.grid.halign = Gtk.Align.CENTER;
-        removeRow.image = Gtk.Image.new_from_icon_name(
-            "list-remove-symbolic",
-            Gtk.IconSize.BUTTON
-        );
-        removeRow.grid.attach(removeRow.image, 0, 0, 1, 1);
-        
         this.appSection.list.set_sort_func((row1, row2) => {
             if (row2.image) { return -1; }
             return row1.appName.label.localeCompare(row2.appName.label);
-        });
-        
-        this.appSection.list.connect("row-activated", (listbox, row) => {
-            this.appSection.list.selected_foreach((listbox, row) => {
-                this._remove(row);
-            });
         });
         
         this.content.show_all();
@@ -487,10 +467,7 @@ var SettingsDialog = new Lang.Class({
         this._query();
     
         for (let name in this.settings.send.applications) {
-            let row = this.appSection.addRow(
-                null,
-                { selectable: true }
-            );
+            let row = this.appSection.addRow(null, { height_request: 24 });
             
             try {
                 row.icon = Gtk.Image.new_from_icon_name(
@@ -563,13 +540,6 @@ var SettingsDialog = new Lang.Class({
                 }
             }
         }
-    },
-    
-    _remove: function (row) {
-        if (this.settings.send.applications.hasOwnProperty(row.appName.label)) {
-            delete this.settings.send.applications[row.appName.label];
-        }
-        this.appSection.list.remove(row);
     }
 });
 
