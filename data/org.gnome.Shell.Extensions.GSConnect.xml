@@ -1,5 +1,5 @@
 <node>
-  <interface name="org.gnome.shell.extensions.gsconnect.daemon">
+  <interface name="org.gnome.Shell.Extensions.GSConnect">
     <property type="s" name="name" access="readwrite"/>
     <property type="as" name="devices" access="read"/>
     <property type="b" name="discovering" access="readwrite"/>

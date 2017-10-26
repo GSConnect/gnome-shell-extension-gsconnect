@@ -48,9 +48,9 @@ var Plugin = new Lang.Class({
     
     export_interface: function () {
         // Export DBus
-        let iface = "org.gnome.shell.extensions.gsconnect." + this.name;
+        let iface = "org.gnome.Shell.Extensions.GSConnect." + this.name;
         this._dbus = Gio.DBusExportedObject.wrapJSObject(
-            Common.DBusInfo.device.lookup_interface(iface),
+            Common.DBusInfo.Device.lookup_interface(iface),
             this
         );
         this._dbus.export(Gio.DBus.session, this.device._dbus.get_object_path());

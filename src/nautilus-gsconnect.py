@@ -37,9 +37,9 @@ class GSConnectShareExtension(GObject.GObject, Nautilus.MenuProvider):
 			Gio.BusType.SESSION,
 			Gio.DBusProxyFlags.NONE,
 			None,
-			'org.gnome.shell.extensions.gsconnect.daemon',
-			'/org/gnome/shell/extensions/gsconnect/daemon',
-			'org.gnome.shell.extensions.gsconnect.daemon',
+			'org.gnome.Shell.Extensions.GSConnect',
+			'/org/gnome/Shell/Extensions/GSConnect',
+			'org.gnome.Shell.Extensions.GSConnect',
 			None)
 
     def send_files(self, menu, files, device):
@@ -49,9 +49,9 @@ class GSConnectShareExtension(GObject.GObject, Nautilus.MenuProvider):
 			Gio.BusType.SESSION,
 			Gio.DBusProxyFlags.NONE,
 			None,
-			'org.gnome.shell.extensions.gsconnect.daemon',
-			'/org/gnome/shell/extensions/gsconnect/device/' + device.values()[0],
-			'org.gnome.shell.extensions.gsconnect.share',
+			'org.gnome.Shell.Extensions.GSConnect',
+			'/org/gnome/Shell/Extensions/GSConnect/Device/' + device.values()[0],
+			'org.gnome.Shell.Extensions.GSConnect.share',
 			None)
         
         for file in files:

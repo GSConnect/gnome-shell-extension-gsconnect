@@ -71,7 +71,7 @@ var Daemon = new Lang.Class({
 
     _init: function() {
         this.parent({
-            application_id: "org.gnome.shell.extensions.gsconnect.daemon",
+            application_id: "org.gnome.Shell.Extensions.GSConnect",
             flags: Gio.ApplicationFlags.FLAGS_NONE
         });
         
@@ -594,14 +594,14 @@ var Daemon = new Lang.Class({
         this._initNotificationActions();
         
         // Export DBus
-        let iface = "org.gnome.shell.extensions.gsconnect.daemon";
+        let iface = "org.gnome.Shell.Extensions.GSConnect";
         this._dbus = Gio.DBusExportedObject.wrapJSObject(
-            Common.DBusInfo.daemon.lookup_interface(iface),
+            Common.DBusInfo.Daemon.lookup_interface(iface),
             this
         );
         this._dbus.export(
             Gio.DBus.session,
-            "/org/gnome/shell/extensions/gsconnect/daemon"
+            "/org/gnome/Shell/Extensions/GSConnect"
         );
         
         // Ensure fingerprint is available right away

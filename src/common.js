@@ -64,16 +64,15 @@ var CONFIG_PATH = GLib.get_user_config_dir() + "/gnome-shell-extension-gsconnect
 /**
  * Init GSettings
  */
-let schemaSrc = Gio.SettingsSchemaSource.new_from_directory(
+var SchemaSource = Gio.SettingsSchemaSource.new_from_directory(
     Me.dir.get_child('schemas').get_path(),
     Gio.SettingsSchemaSource.get_default(),
     false
 );
 
 var Settings = new Gio.Settings({
-    settings_schema: schemaSrc.lookup(Me.metadata['app-id'], true)
+    settings_schema: SchemaSource.lookup(Me.metadata['app-id'], true)
 });
-var Schema = Settings.settings_schema;
 
 
 /**
@@ -95,14 +94,14 @@ Resources._register();
  * Common DBus Interface Nodes/Proxies and functions
  */
 var DBusInfo = {
-    daemon: new Gio.DBusNodeInfo.new_for_xml(
+    Daemon: new Gio.DBusNodeInfo.new_for_xml(
         Resources.lookup_data(
-            "/dbus/org.gnome.shell.extensions.gsconnect.daemon.xml", 0
+            "/dbus/org.gnome.Shell.Extensions.GSConnect.xml", 0
         ).unref_to_array().toString()
     ),
-    device: new Gio.DBusNodeInfo.new_for_xml(
+    Device: new Gio.DBusNodeInfo.new_for_xml(
         Resources.lookup_data(
-            "/dbus/org.gnome.shell.extensions.gsconnect.device.xml", 0
+            "/dbus/org.gnome.Shell.Extensions.GSConnect.Device.xml", 0
         ).unref_to_array().toString()
     ),
     freedesktop: new Gio.DBusNodeInfo.new_for_xml(
@@ -112,8 +111,8 @@ var DBusInfo = {
     )
 };
 
-DBusInfo.daemon.nodes.forEach((ifaceInfo) => { ifaceInfo.cache_build(); });
-DBusInfo.device.nodes.forEach((ifaceInfo) => { ifaceInfo.cache_build(); });
+DBusInfo.Daemon.nodes.forEach((ifaceInfo) => { ifaceInfo.cache_build(); });
+DBusInfo.Device.nodes.forEach((ifaceInfo) => { ifaceInfo.cache_build(); });
 DBusInfo.freedesktop.nodes.forEach((ifaceInfo) => { ifaceInfo.cache_build(); });
 
 var DBusProxy = {
@@ -131,7 +130,7 @@ var DBusProxy = {
 
 
 function dbusPathFromId (id) {
-    let basePath = "/org/gnome/shell/extensions/gsconnect/device/";
+    let basePath = "/org/gnome/Shell/Extensions/GSConnect/Device/";
     let dbusPath = basePath + id.replace(/\W+/g, "_");
     
     return dbusPath;
@@ -214,7 +213,7 @@ function getCertificate (id=false) {
 function installService () {
     // DBus service file
     let serviceDir = GLib.get_user_data_dir() + "/dbus-1/services";
-    let serviceFile = "/org.gnome.shell.extensions.gsconnect.daemon.service";
+    let serviceFile = "/org.gnome.Shell.Extensions.GSConnect.service";
     
     if (!GLib.file_test(serviceDir + serviceFile, GLib.FileTest.EXISTS)) {
         GLib.mkdir_with_parents(serviceDir, 493);
@@ -228,7 +227,7 @@ function installService () {
     
     // Application desktop file
     let appDir = GLib.get_user_data_dir() + "/applications";
-    let appFile = "/org.gnome.shell.extensions.gsconnect.daemon.desktop";
+    let appFile = "/org.gnome.Shell.Extensions.GSConnect.desktop";
     
     if (!GLib.file_test(appDir + appFile, GLib.FileTest.EXISTS)) {
         GLib.mkdir_with_parents(appDir, 493);
@@ -260,12 +259,12 @@ function initConfiguration () {
 function uninitConfiguration () {
     // DBus service file
     let serviceDir = GLib.get_user_data_dir() + "/dbus-1/services";
-    let serviceFile = "/org.gnome.shell.extensions.gsconnect.daemon.service";
+    let serviceFile = "/org.gnome.Shell.Extensions.GSConnect.service";
     GLib.unlink(serviceDir + serviceFile);
     
     // Application desktop file
     let appDir = GLib.get_user_data_dir() + "/applications";
-    let appFile = "/org.gnome.shell.extensions.gsconnect.daemon.desktop";
+    let appFile = "/org.gnome.Shell.Extensions.GSConnect.desktop";
     GLib.unlink(appDir + appFile);
 };
 

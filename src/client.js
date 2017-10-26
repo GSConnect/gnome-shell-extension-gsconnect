@@ -20,10 +20,10 @@ const Common = imports.common;
 
 
 // DBus Constants
-var BUS_NAME = "org.gnome.shell.extensions.gsconnect.daemon";
+var BUS_NAME = "org.gnome.Shell.Extensions.GSConnect";
 
-const DeviceNode = Common.DBusInfo.device;
-const ManagerNode = Common.DBusInfo.daemon;
+const DeviceNode = Common.DBusInfo.Device;
+const DaemonNode = Common.DBusInfo.Daemon;
 
 
 var ProxyBase = new Lang.Class({
@@ -143,7 +143,7 @@ var Battery = new Lang.Class({
     
     _init: function (dbusPath) {
         this.parent(
-            DeviceNode.lookup_interface("org.gnome.shell.extensions.gsconnect.battery"),
+            DeviceNode.lookup_interface("org.gnome.Shell.Extensions.GSConnect.battery"),
             dbusPath
         );
         
@@ -184,7 +184,7 @@ var SFTP = new Lang.Class({
     
     _init: function (dbusPath) {
         this.parent(
-            DeviceNode.lookup_interface("org.gnome.shell.extensions.gsconnect.sftp"),
+            DeviceNode.lookup_interface("org.gnome.Shell.Extensions.GSConnect.sftp"),
             dbusPath
         );
         
@@ -244,7 +244,7 @@ var Telephony = new Lang.Class({
     
     _init: function (dbusPath) {
         this.parent(
-            DeviceNode.lookup_interface("org.gnome.shell.extensions.gsconnect.telephony"),
+            DeviceNode.lookup_interface("org.gnome.Shell.Extensions.GSConnect.telephony"),
             dbusPath
         );
         
@@ -369,7 +369,7 @@ var Device = new Lang.Class({
     
     _init: function (dbusPath) {
         this.parent(
-            DeviceNode.lookup_interface("org.gnome.shell.extensions.gsconnect.device"),
+            DeviceNode.lookup_interface("org.gnome.Shell.Extensions.GSConnect.Device"),
             dbusPath
         );
         
@@ -436,7 +436,7 @@ var Device = new Lang.Class({
         
         if (this.plugins.indexOf("findmyphone") > -1) {
             this.findmyphone = new ProxyBase(
-                DeviceNode.lookup_interface("org.gnome.shell.extensions.gsconnect.findmyphone"),
+                DeviceNode.lookup_interface("org.gnome.Shell.Extensions.GSConnect.findmyphone"),
                 this.gObjectPath
             );
         } else if (this.hasOwnProperty("findmyphone")) {
@@ -446,7 +446,7 @@ var Device = new Lang.Class({
         
         if (this.plugins.indexOf("ping") > -1) {
             this.ping = new ProxyBase(
-                DeviceNode.lookup_interface("org.gnome.shell.extensions.gsconnect.ping"),
+                DeviceNode.lookup_interface("org.gnome.Shell.Extensions.GSConnect.ping"),
                 this.gObjectPath
             );
         } else if (this.hasOwnProperty("ping")) {
@@ -463,7 +463,7 @@ var Device = new Lang.Class({
         
         if (this.plugins.indexOf("share") > -1) {
             this.share = new ProxyBase(
-                DeviceNode.lookup_interface("org.gnome.shell.extensions.gsconnect.share"),
+                DeviceNode.lookup_interface("org.gnome.Shell.Extensions.GSConnect.share"),
                 this.gObjectPath
             );
         } else if (this.hasOwnProperty("share")) {
@@ -534,8 +534,8 @@ var Daemon = new Lang.Class({
     
     _init: function () {
         this.parent(
-            ManagerNode.lookup_interface("org.gnome.shell.extensions.gsconnect.daemon"),
-            "/org/gnome/shell/extensions/gsconnect/daemon"
+            DaemonNode.lookup_interface("org.gnome.Shell.Extensions.GSConnect"),
+            "/org/gnome/Shell/Extensions/GSConnect"
         );
         
         // Track our device proxies, DBus path as key

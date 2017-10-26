@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
   <gresource prefix="/dbus">
-    <file compressed="true">org.gnome.shell.extensions.gsconnect.daemon.desktop</file>
-    <file compressed="true">org.gnome.shell.extensions.gsconnect.daemon.service</file>
+    <file compressed="true">org.gnome.Shell.Extensions.GSConnect.desktop</file>
+    <file compressed="true">org.gnome.Shell.Extensions.GSConnect.service</file>
     <file compressed="true" preprocess="xml-stripblanks">org.freedesktop.Notifications.xml</file>
-    <file compressed="true" preprocess="xml-stripblanks">org.gnome.shell.extensions.gsconnect.daemon.xml</file>
-    <file compressed="true" preprocess="xml-stripblanks">org.gnome.shell.extensions.gsconnect.device.xml</file>
+    <file compressed="true" preprocess="xml-stripblanks">org.gnome.Shell.Extensions.GSConnect.xml</file>
+    <file compressed="true" preprocess="xml-stripblanks">org.gnome.Shell.Extensions.GSConnect.Device.xml</file>
     <file compressed="true" preprocess="xml-stripblanks">org.mpris.MediaPlayer2.xml</file>
     <file compressed="true" preprocess="xml-stripblanks">org.mpris.MediaPlayer2.Player.xml</file>
   </gresource>

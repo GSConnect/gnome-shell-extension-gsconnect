@@ -109,9 +109,9 @@ var Device = new Lang.Class({
         this.identity = new Protocol.Packet(packet);
         this.config = Common.readDeviceConfiguration(this.id);
         // Export DBus
-        let iface = "org.gnome.shell.extensions.gsconnect.device";
+        let iface = "org.gnome.Shell.Extensions.GSConnect.Device";
         this._dbus = Gio.DBusExportedObject.wrapJSObject(
-            Common.DBusInfo.device.lookup_interface(iface),
+            Common.DBusInfo.Device.lookup_interface(iface),
             this
         );
         this._dbus.export(Gio.DBus.session, Common.dbusPathFromId(this.id));

@@ -1,6 +1,6 @@
 <node>
   <!-- Device -->
-  <interface name="org.gnome.shell.extensions.gsconnect.device">
+  <interface name="org.gnome.Shell.Extensions.GSConnect.Device">
     <property type="b" name="connected" access="read"/>
     <property type="s" name="fingerprint" access="read"/>
     <property type="s" name="id" access="read"/>
@@ -40,35 +40,35 @@
   </interface>
   
   <!-- Battery -->
-  <interface name="org.gnome.shell.extensions.gsconnect.battery">
+  <interface name="org.gnome.Shell.Extensions.GSConnect.battery">
     <property type="b" name="charging" access="read"/>
     <property type="i" name="level" access="read"/>
     <method name="update"/>
   </interface>
   
   <!-- Clipboard -->
-  <interface name="org.gnome.shell.extensions.gsconnect.clipboard"/>
+  <interface name="org.gnome.Shell.Extensions.GSConnect.clipboard"/>
   
   <!-- FindMyPhone -->
-  <interface name="org.gnome.shell.extensions.gsconnect.findmyphone">
+  <interface name="org.gnome.Shell.Extensions.GSConnect.findmyphone">
     <method name="ring"/>
   </interface>
   
   <!-- Mousepad -->
-  <interface name="org.gnome.shell.extensions.gsconnect.mousepad"/>
+  <interface name="org.gnome.Shell.Extensions.GSConnect.mousepad"/>
   
   <!-- MPRIS -->
-  <interface name="org.gnome.shell.extensions.gsconnect.mpris"/>
+  <interface name="org.gnome.Shell.Extensions.GSConnect.mpris"/>
   
   <!-- Notifications -->
-  <interface name="org.gnome.shell.extensions.gsconnect.notifications">
+  <interface name="org.gnome.Shell.Extensions.GSConnect.notifications">
     <method name="notifications"/>
     <signal name="received"/>
     <signal name="dismissed"/>
   </interface>
   
   <!-- Ping -->
-  <interface name="org.gnome.shell.extensions.gsconnect.ping">
+  <interface name="org.gnome.Shell.Extensions.GSConnect.ping">
     <method name="ping">
       <arg name="message" type="s" direction="in"/>
     </method>
@@ -79,12 +79,12 @@
   </interface>
   
   <!-- Run Commands -->
-  <interface name="org.gnome.shell.extensions.gsconnect.runcommand">
+  <interface name="org.gnome.Shell.Extensions.GSConnect.runcommand">
     <method name="sendCommandList"/>
   </interface>
   
   <!-- SFTP -->
-  <interface name="org.gnome.shell.extensions.gsconnect.sftp">
+  <interface name="org.gnome.Shell.Extensions.GSConnect.sftp">
     <property type="b" name="mounted" access="read"/> <!-- TODO: read/write? -->
     <property type="a{ss}" name="directories" access="read"/>
     
@@ -93,7 +93,7 @@
   </interface>
   
   <!-- Share -->
-  <interface name="org.gnome.shell.extensions.gsconnect.share">
+  <interface name="org.gnome.Shell.Extensions.GSConnect.share">
     <method name="shareDialog"/>
     <method name="shareUri">
       <arg name="uri" type="s" direction="in"/>
@@ -107,7 +107,7 @@
   </interface>
   
   <!-- Telephony -->
-  <interface name="org.gnome.shell.extensions.gsconnect.telephony">
+  <interface name="org.gnome.Shell.Extensions.GSConnect.telephony">
     <method name="muteCall"/>
     <method name="openSms"/>
     <method name="replySms">
