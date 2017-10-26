@@ -8,4 +8,5 @@ NoDisplay=true
 Icon=phone
 Categories=Network;
 DBusActivatable=true
+X-GNOME-UsesNotifications=true
 
