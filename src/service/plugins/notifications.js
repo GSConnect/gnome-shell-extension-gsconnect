@@ -90,8 +90,7 @@ var METADATA = {
  *    title {string} - The remote's title of the notification
  *    text {string} - The remote's body of the notification
  *
- * TODO: support payloadHash for uploaded icons
- *       convert themed SVG->PNG for icon uploads?
+ * TODO: convert themed SVG->PNG for icon uploads?
  *       requestAnswer usage?
  *       urgency filter (outgoing)?
  *       make "shared" notifications clearable (Can KDE Connect even do this?)
@@ -297,6 +296,10 @@ var Plugin = new Lang.Class({
                     channel.connect("listening", (channel, port) => {
                         packet.payloadSize = info.get_size();
                         packet.payloadTransferInfo = { port: port };
+                        packet.body.payloadHash = GLib.compute_checksum_for_bytes(
+                            GLib.ChecksumType.MD5,
+                            file.load_contents(null)[1]
+                        );
                         
                         this.device._channel.send(packet);
                     });
