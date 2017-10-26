@@ -510,15 +510,15 @@ var SettingsDialog = new Lang.Class({
     
     _query: function () {
         // Query Gnome's notification settings
-        let settings = new Gio.Settings({
+        let desktopSettings = new Gio.Settings({
             schema_id: "org.gnome.desktop.notifications"
         });
         
-        for (let app of settings.get_strv("application-children")) {
-            let appSettings = Gio.Settings.new_with_path(
-                "org.gnome.desktop.notifications.application",
-                "/org/gnome/desktop/notifications/application/" + app + "/"
-            );
+        for (let app of desktopSettings.get_strv("application-children")) {
+            let appSettings = new Gio.Settings({
+                schema_id: "org.gnome.desktop.notifications.application",
+                path: "/org/gnome/desktop/notifications/application/" + app + "/"
+            });
             
             let appInfo = Gio.DesktopAppInfo.new(
                 appSettings.get_string("application-id")
