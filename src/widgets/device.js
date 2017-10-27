@@ -38,9 +38,8 @@ var PluginControl = new Lang.Class({
         this._page = page;
         this._name = name;
         this._freeze = false;
-        let metadata = imports.service.plugins[this._name].METADATA;
         
-        if (metadata.hasOwnProperty("settings")) {
+        if (imports.service.plugins[this._name].SettingsDialog) {
             this.settingButton = new Gtk.Button({
                 image: new Gtk.Image({
                     icon_name: "emblem-system-symbolic",
