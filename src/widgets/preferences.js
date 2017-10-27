@@ -20,11 +20,7 @@ const GSettingsWidget = imports.widgets.gsettings;
 
 /**
  * Convenience classes for widgets similar to Gnome Control Center
- *
- * TODO: https://bugzilla.gnome.org/show_bug.cgi?id=786384
  */
-
-
 var Row = new Lang.Class({
     Name: "GSConnectPreferencesRow",
     Extends: Gtk.ListBoxRow,
@@ -44,11 +40,9 @@ var Row = new Lang.Class({
             height_request: params.height_request
         });
         
-        // Row Layout
         this.grid = new Gtk.Grid({
             can_focus: false,
             column_spacing: 12,
-            row_spacing: 0,
             margin_left: 12,
             margin_top: 8,
             margin_bottom: 8,
@@ -68,7 +62,6 @@ var Setting = new Lang.Class({
     _init: function (summary, description, widget) {
         this.parent({ height_request: 56 });
         
-        // Summary Label
         this.summary = new Gtk.Label({
             can_focus: false,
             xalign: 0,
@@ -78,10 +71,8 @@ var Setting = new Lang.Class({
         });
         this.grid.attach(this.summary, 0, 0, 1, 1);
         
-        // Description Label
         if (description) {
             this.description = new Gtk.Label({
-                can_focus: false,
                 xalign: 0,
                 hexpand: true,
                 label: description,
@@ -92,7 +83,6 @@ var Setting = new Lang.Class({
             this.grid.attach(this.description, 0, 1, 1, 1);
         }
         
-        // Control Widget
         this.widget = widget;
         this.grid.attach(this.widget, 1, 0, 1, (description) ? 2 : 1);
     }
