@@ -74,15 +74,16 @@ var SettingsDialog = new Lang.Class({
     Extends: Gtk.Dialog,
     
     _init: function (devicePage, pluginName, window) {
-        let metadata = imports.service.plugins[pluginName].METADATA;
-        
         this.parent({
-            title: metadata.summary,
             use_header_bar: true,
             transient_for: window,
             default_height: 320,
             default_width: 480
         });
+        
+        let metadata = imports.service.plugins[pluginName].METADATA;
+        this._page = devicePage;
+        this.settings = this._page.config.plugins[pluginName].settings;
         
         let headerBar = this.get_header_bar();
         headerBar.title = metadata.summary;
@@ -91,10 +92,7 @@ var SettingsDialog = new Lang.Class({
         
         this.add_button(_("Apply"), Gtk.ResponseType.APPLY);
         this.add_button(_("Cancel"), Gtk.ResponseType.CANCEL);
-        
-        this._page = devicePage;
-        this._name = pluginName;
-        this.settings = this._page.config.plugins[this._name].settings;
+        this.set_default_response(Gtk.ResponseType.APPLY);
         
         this.content = new PreferencesWidget.Page();
         this.content.box.margin_left = 36;
