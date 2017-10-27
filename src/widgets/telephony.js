@@ -657,9 +657,7 @@ var MessageView = new Lang.Class({
      * Add a new thread, which is a series of sequential messages from one user
      * with a single instance of the sender's avatar.
      *
-     * @param {string} phoneNumber - The sender's phone number
-     * @param {string} contactName - The sender's name (could be empty)
-     * @param {string} phoneThumbnail - A base64 encoded bytearray of a JPEG
+     * @param {object} recipient - The recipient object
      * @param {MessageDirection} - The direction of the message; one of the
      *     MessageDirection enums (either OUT [0] or IN [1])
      * @return {Gtk.ListBoxRow} - The new thread
@@ -710,10 +708,8 @@ var MessageView = new Lang.Class({
      * Add a new message, calling addThread() if necessary to create a new
      * thread.
      *
-     * @param {string} phoneNumber - The sender's phone number
-     * @param {string} contactName - The sender's name (could be empty)
+     * @param {string} recipient - The recipient object
      * @param {string} messageBody - The message content
-     * @param {string} phoneThumbnail - A base64 encoded bytearray of a JPEG
      * @param {MessageDirection} - The direction of the message; one of the
      *     MessageDirection enums (either OUT [0] or IN [1])
      * @return {Gtk.ListBoxRow} - The new thread
