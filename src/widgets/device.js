@@ -28,7 +28,7 @@ var PluginControl = new Lang.Class({
     Name: "GSConnectPluginControl",
     Extends: Gtk.Grid,
     
-    _init: function (page, name) {
+    _init: function (device, name) {
         this.parent({
             orientation: Gtk.Orientation.HORIZONTAL,
             column_spacing: 12,
@@ -36,11 +36,11 @@ var PluginControl = new Lang.Class({
             valign: Gtk.Align.CENTER
         });
         
-        this._page = page;
-        this._name = name;
+        this.device = device;
+        this.name = name;
         this._freeze = false;
         
-        if (imports.service.plugins[this._name].SettingsDialog) {
+        if (imports.service.plugins[this.name].SettingsDialog) {
             this.settingButton = new Gtk.Button({
                 image: new Gtk.Image({
                     icon_name: "emblem-system-symbolic",
@@ -78,7 +78,7 @@ var PluginControl = new Lang.Class({
     _refresh: function () {
         this._freeze = true;
         
-        if (this._page.settings.get_strv("enabled-plugins").indexOf(this._name) > -1) {
+        if (this.device.settings.get_strv("enabled-plugins").indexOf(this.name) > -1) {
             this.pluginSwitch.active = true;
         } else {
             this.pluginSwitch.active = false;
@@ -92,7 +92,7 @@ var PluginControl = new Lang.Class({
             let result, success, error;
             
             if (this.pluginSwitch.active) {
-                result = this._page.device.enablePlugin(this._name);
+                result = this.device.enablePlugin(this.name);
                 success = result["0"];
                 error = result["1"];
                 
@@ -111,15 +111,15 @@ var PluginControl = new Lang.Class({
                     this.remove(this.errorImage);
                 }
             } else {
-                this._page.device.disablePlugin(this._name);
+                this.device.disablePlugin(this.name);
             }
         }
     },
     
     _configure: function () {
-        let dialog = new imports.service.plugins[this._name].SettingsDialog(
-            this._page,
-            this._name,
+        let dialog = new imports.service.plugins[this.name].SettingsDialog(
+            this.device,
+            this.name,
             this.get_toplevel()
         );
         
@@ -341,14 +341,6 @@ var Page = new Lang.Class({
         this.daemon = daemon;
         this.device = device;
         
-        this.settings = new Gio.Settings({
-            settings_schema: Common.SchemaSource.lookup(
-                "org.gnome.shell.extensions.gsconnect.device",
-                true
-            ),
-            path: "/org/gnome/shell/extensions/gsconnect/device/" + device.id + "/"
-        });
-        
         // Info Section
         let metadata = DeviceMetadata[device.type];
         
@@ -497,7 +489,7 @@ var Page = new Lang.Class({
             pluginsSection.addSetting(
                 metadata.summary,
                 metadata.description,
-                new PluginControl(this, name)
+                new PluginControl(this.device, name)
             );
         }
         

@@ -91,8 +91,8 @@ var SettingsDialog = new Lang.Class({
     Name: "GSConnectRunCommandSettingsDialog",
     Extends: PluginsBase.SettingsDialog,
     
-    _init: function (devicePage, pluginName, window) {
-        this.parent(devicePage, pluginName, window);
+    _init: function (device, name, window) {
+        this.parent(device, name, window);
         
         let commandsSection = this.content.addSection(
             _("Commands"),

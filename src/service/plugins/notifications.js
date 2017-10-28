@@ -372,10 +372,8 @@ var SettingsDialog = new Lang.Class({
     Name: "GSConnectNotificationsSettingsDialog",
     Extends: PluginsBase.SettingsDialog,
     
-    _init: function (devicePage, pluginName, window) {
-        this.parent(devicePage, pluginName, window);
-        
-        this._page = devicePage;
+    _init: function (device, name, window) {
+        this.parent(device, name, window);
         
         let generalSection = this.content.addSection(
             null,
@@ -401,7 +399,7 @@ var SettingsDialog = new Lang.Class({
         );
         this.settings.bind(
             "send-notifications",
-            iconsRow,
+            this.appSection,
             "sensitive",
             Gio.SettingsBindFlags.DEFAULT
         );

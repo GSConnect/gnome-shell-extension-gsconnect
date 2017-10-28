@@ -508,10 +508,8 @@ var SettingsDialog = new Lang.Class({
     Name: "GSConnectShareSettingsDialog",
     Extends: PluginsBase.SettingsDialog,
     
-    _init: function (devicePage, pluginName, window) {
-        this.parent(devicePage, pluginName, window);
-        
-        this._page = devicePage;
+    _init: function (device, name, window) {
+        this.parent(device, name, window);
         
         let receivingSection = this.content.addSection(
             _("Receiving"),
@@ -534,7 +532,7 @@ var SettingsDialog = new Lang.Class({
         
         receivingSection.addSetting(
             // TRANSLATORS: eg. Use a subdirectory named <b>Google Pixel<b>
-            _("Use a subdirectory named <b>%s</b>").format(this._page.device.name),
+            _("Use a subdirectory named <b>%s</b>").format(this.device.name),
             null,
             new GSettingsWidget.BoolSetting(this.settings,"download-subdirectory")
         );

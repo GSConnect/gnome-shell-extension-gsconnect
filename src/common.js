@@ -150,11 +150,11 @@ function debug(msg) {
 
 
 /**
- * Generate a Private/Public Key pair and TLS Certificate
+ * Generate a PrivateKey and TLS Certificate
  *
  * @param {Boolean} force - Force generation even if already created
  */
-function generateEncryption (force=false) {
+function generateEncryption () {
     if (!GLib.file_test(CONFIG_PATH, GLib.FileTest.IS_DIR)) {
         GLib.mkdir_with_parents(CONFIG_PATH, 493);
     }
@@ -169,7 +169,7 @@ function generateEncryption (force=false) {
         GLib.FileTest.EXISTS
     );
     
-    if (force || (!hasPrivateKey || !hasCertificate)) {
+    if (!hasPrivateKey || !hasCertificate) {
         let cmd = [
             "openssl", "req", "-new", "-x509", "-sha256", "-newkey",
             "rsa:2048", "-nodes", "-keyout", "private.pem", "-days", "3650",
@@ -195,7 +195,10 @@ function generateEncryption (force=false) {
 function getCertificate (id=false) {
     if (id) {
         let settings = new Gio.Settings({
-            settings_schema: SchemaSource.lookup("org.gnome.shell.extensions.gsconnect.device", true),
+            settings_schema: SchemaSource.lookup(
+                "org.gnome.shell.extensions.gsconnect.device",
+                true
+            ),
             path: "/org/gnome/shell/extensions/gsconnect/device/" + id + "/"
         });
         

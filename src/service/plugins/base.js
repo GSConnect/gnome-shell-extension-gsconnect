@@ -82,7 +82,7 @@ var SettingsDialog = new Lang.Class({
     Name: "GSConnectPluginSettingsDialog",
     Extends: Gtk.Dialog,
     
-    _init: function (devicePage, pluginName, window) {
+    _init: function (device, name, window) {
         this.parent({
             use_header_bar: true,
             transient_for: window,
@@ -90,16 +90,16 @@ var SettingsDialog = new Lang.Class({
             default_width: 480
         });
         
-        let metadata = imports.service.plugins[pluginName].METADATA;
-        this._page = devicePage;
+        this.device = device;
+        let metadata = imports.service.plugins[name].METADATA;
         
         this.settings = new Gio.Settings({
             settings_schema: Common.SchemaSource.lookup(
-                "org.gnome.shell.extensions.gsconnect.plugin." + pluginName,
+                "org.gnome.shell.extensions.gsconnect.plugin." + name,
                 -1
             ),
             path: ["/org/gnome/shell/extensions/gsconnect/device/",
-                   devicePage.device.id, "/plugin/", pluginName, "/"].join("")
+                   this.device.id, "/plugin/", name, "/"].join("")
         });
         this.settings.delay();
         

@@ -40,6 +40,7 @@ var METADATA = {
  * Telephony Plugin
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/telephony
  *
+ * FIXME: signals during missing/null params
  * TODO: phoneThumbnail's are super small in notifications :(
  *       track notifs: isCancel events, append new messages to unacknowledged?
  *       mute/unmute: pactl set-sink-mute @DEFAULT_SINK@ 1/0
@@ -94,9 +95,9 @@ var Plugin = new Lang.Class({
         
         this.emit(
             "missedCall",
-            packet.body.phoneNumber,
-            packet.body.contactName,
-            packet.body.phoneThumbnail
+            packet.body.phoneNumber || "",
+            packet.body.contactName || "",
+            packet.body.phoneThumbnail || ""
         );
         this._dbus.emit_signal("missedCall",
             new GLib.Variant(
@@ -571,12 +572,9 @@ var SettingsDialog = new Lang.Class({
     Name: "GSConnectTelephonySettingsDialog",
     Extends: PluginsBase.SettingsDialog,
     
-    _init: function (devicePage, pluginName, window) {
-        this.parent(devicePage, pluginName, window);
+    _init: function (device, name, window) {
+        this.parent(device, name, window);
         
-        this._page = devicePage;
-        
-        // Phone Calls
         let notificationSection = this.content.addSection(
             _("Notifications"),
             null,
@@ -588,7 +586,6 @@ var SettingsDialog = new Lang.Class({
         notificationSection.addGSetting(this.settings, "talking-notification");
         notificationSection.addGSetting(this.settings, "sms-notification");
         
-        // SMS
         let mediaSection = this.content.addSection(
             _("Media"),
             null,
@@ -612,7 +609,7 @@ var SettingsDialog = new Lang.Class({
         );
         mediaSection.addSetting(_("Pause Music"), null, pauseMusicComboBox);
         
-        if (this._page.device.plugins.indexOf("mpris") < 0) {
+        if (this.device.plugins.indexOf("mpris") < 0) {
             pauseMusicComboBox.sensitive = false;
             pauseMusicComboBox.set_tooltip_markup(
                 _("The <b>Media Player Control</b> plugin must be enabled")
