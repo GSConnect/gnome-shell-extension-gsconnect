@@ -203,65 +203,42 @@ var Daemon = new Lang.Class({
      * Device Methods
      */
     _readCache: function () {
-        let cacheDir = Gio.File.new_for_path(Common.CONFIG_PATH);
-        let fenum = cacheDir.enumerate_children("standard::*", 0, null);
-        
-        let info;
-        let devices = [];
-        
-        while ((info = fenum.next_file(null))) {
-            let deviceDir = fenum.get_child(info);
-            let identPath = deviceDir.get_path() + "/identity.json"
-            
-            try {
-                if (GLib.file_test(identPath, GLib.FileTest.EXISTS)) {
-                    let [success, data] = GLib.file_get_contents(identPath);
-                    let packet = new Protocol.Packet(data.toString());
-                    this._addDevice(packet);
-                }
-            } catch (e) {
-                Common.debug("Daemon: Error loading device from cache: " + e);
-            }
+        for (let deviceId of Common.Settings.get_strv("devices")) {
+            let devObjPath = Common.dbusPathFromId(deviceId);
+            let device = new Device.Device({ daemon: this, id: deviceId});
+            this._devices.set(devObjPath, device);
         }
-    },
-    
-    _writeCache: function (deviceId=false) {
-        if (deviceId) {
-            Common.debug("Daemon: Updating cache for: " + deviceId);
             
-            let device = this._devices.get(Common.dbusPathFromId(deviceId));
-            
-            let deviceDir = Common.CONFIG_PATH + "/" + device.id;
-            
-            if (!GLib.file_test(deviceDir, GLib.FileTest.IS_DIR)) {
-                GLib.mkdir_with_parents(deviceDir, 493);
-            }
-            
-            // Identity
-            GLib.file_set_contents(
-                deviceDir + "/identity.json",
-                JSON.stringify(device.identity)
-            );
-        } else {
-            for (let device of this._devices.values()) {
-                this._writeCache(device.deviceId);
-            }
-        }
+        this._dbus.emit_property_changed(
+            "devices",
+            new GLib.Variant("as", this.devices)
+        );
     },
     
     _watchCache: function () {
-        let cacheDir = Gio.File.new_for_path(Common.CONFIG_PATH);
-        this.cacheMonitor = cacheDir.monitor_directory(
-            Gio.FileMonitorFlags.WATCH_MOVES,
-            null
-        );
-        this.cacheMonitor.connect("changed", (monitor, file, ofile, event) => {
-            let dbusPath = Common.dbusPathFromId(file.get_basename());
+        Common.Settings.connect("changed::devices", () => {
+            //
+            for (let id of Common.Settings.get_strv("devices")) {
+                let devObjPath = Common.dbusPathFromId(id);
+                
+                if (!this._devices.has(devObjPath)) {
+                    let device = new Device.Device({ daemon: this, id: id})
+                    this._devices.set(devObjPath, device);
             
-            if (this._devices.has(dbusPath) && (event === 2 || event === 10)) {
-                this._removeDevice(dbusPath);
-            } else if (event === 3 || event === 9) {
-                this._readCache();
+                    this._dbus.emit_property_changed(
+                        "devices",
+                        new GLib.Variant("as", this.devices)
+                    );
+                }
+            }
+            
+            //
+            let devices = Common.Settings.get_strv("devices");
+            
+            for (let [devObjPath, device] of this._devices.entries()) {
+                if (devices.indexOf(device.id) < 0) {
+                    this._removeDevice(devObjPath);
+                }
             }
         });
     },
@@ -269,9 +246,7 @@ var Daemon = new Lang.Class({
     _addDevice: function (packet, channel=null) {
         Common.debug("Daemon._addDevice(" + packet.body.deviceName + ")");
         
-        if (packet.body.deviceId === this.identity.body.deviceId) {
-            return;
-        }
+        if (packet.body.deviceId === this.identity.body.deviceId) { return; }
             
         let devObjPath = Common.dbusPathFromId(packet.body.deviceId);
         
@@ -283,16 +258,25 @@ var Daemon = new Lang.Class({
         } else {
             log("Daemon: Adding device");
             
-            let device = new Device.Device(this, packet, channel)
+            let device = new Device.Device({
+                daemon: this,
+                packet: packet,
+                channel: channel
+            });
             this._devices.set(devObjPath, device);
+            
+            let knownDevices = Common.Settings.get_strv("devices");
+            
+            if (knownDevices.indexOf(device.id) < 0) {
+                knownDevices.push(device.id);
+                Common.Settings.set_strv("devices", knownDevices);
+            }
             
             this._dbus.emit_property_changed(
                 "devices",
                 new GLib.Variant("as", this.devices)
             );
         }
-        
-        this._writeCache(packet.body.deviceId);
     },
     
     _removeDevice: function (dbusPath) {
@@ -353,9 +337,8 @@ var Daemon = new Lang.Class({
         }
     },
     
-    
     /**
-     * App Actions
+     * Notification Actions
      */
     _batteryWarningAction: function (action, param) {
         let dbusPath = param.deep_unpack().toString();
@@ -596,7 +579,7 @@ var Daemon = new Lang.Class({
         // Export DBus
         let iface = "org.gnome.Shell.Extensions.GSConnect";
         this._dbus = Gio.DBusExportedObject.wrapJSObject(
-            Common.DBusInfo.Daemon.lookup_interface(iface),
+            Common.DBusInfo.GSConnect.lookup_interface(iface),
             this
         );
         this._dbus.export(

@@ -32,14 +32,7 @@ var METADATA = {
     description: _("Call notification and SMS messaging"),
     wiki: "https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Telephony-Plugin",
     incomingPackets: ["kdeconnect.telephony"],
-    outgoingPackets: ["kdeconnect.telephony.request", "kdeconnect.sms.request"],
-    settings: {
-        notify_missedCall: true,
-        notify_ringing: true,
-        notify_sms: true,
-        notify_talking: true,
-        pause_music: "never"
-    }
+    outgoingPackets: ["kdeconnect.telephony.request", "kdeconnect.sms.request"]
 };
 
 
@@ -114,7 +107,7 @@ var Plugin = new Lang.Class({
             )
         );
         
-        if (this.settings.notify_missedCall) {
+        if (this.settings.get("missed-call-notification")) {
             let notif = new Gio.Notification();
             // TRANSLATORS: Missed Call
             notif.set_title(_("Missed Call"));
@@ -181,7 +174,7 @@ var Plugin = new Lang.Class({
             )
         );
         
-        if (this.settings.notify_ringing) {
+        if (this.settings.get("ringing-notification")) {
             let notif = new Gio.Notification();
             // TRANSLATORS: Incoming Call
             notif.set_title(_("Incoming Call"));
@@ -212,7 +205,7 @@ var Plugin = new Lang.Class({
             );
         }
         
-        if (this.settings.pause_music === "ringing") {
+        if (this.settings.get_string("pause-music") === "ringing") {
             this._pauseMusic();
         }
     },
@@ -258,7 +251,7 @@ var Plugin = new Lang.Class({
             }
         }
         
-        if (this.settings.notify_sms) {
+        if (this.settings.get("sms-notification")) {
             let notif = new Gio.Notification();
             notif.set_title(sender);
             notif.set_body(packet.body.messageBody);
@@ -317,7 +310,7 @@ var Plugin = new Lang.Class({
             )
         );
         
-        if (this.settings.notify_talking) {
+        if (this.settings.get("talking-notification")) {
             let notif = new Gio.Notification();
             // TRANSLATORS: Talking on the phone
             notif.set_title(_("Call In Progress"));
@@ -342,7 +335,7 @@ var Plugin = new Lang.Class({
             );
         }
         
-        if (settings.pause_music === "talking") {
+        if (this.settings.get_string("pause-music") === "talking") {
             this._pauseMusic();
         }
     },
@@ -581,6 +574,8 @@ var SettingsDialog = new Lang.Class({
     _init: function (devicePage, pluginName, window) {
         this.parent(devicePage, pluginName, window);
         
+        this._page = devicePage;
+        
         // Phone Calls
         let notificationSection = this.content.addSection(
             _("Notifications"),
@@ -588,69 +583,10 @@ var SettingsDialog = new Lang.Class({
             { width_request: -1 }
         );
         
-        let notifySMSSwitch = new Gtk.Switch({
-            visible: true,
-            can_focus: true,
-            halign: Gtk.Align.END,
-            valign: Gtk.Align.CENTER,
-            active: this.settings.notify_sms
-        });
-        notifySMSSwitch.connect("notify::active", (widget) => {
-            this.settings.notify_sms = notifySMSSwitch.active;
-        });
-        notificationSection.addSetting(
-            _("SMS Messages"),
-            null,
-            notifySMSSwitch
-        );
-        
-        let notifyMissedCallSwitch = new Gtk.Switch({
-            visible: true,
-            can_focus: true,
-            halign: Gtk.Align.END,
-            valign: Gtk.Align.CENTER,
-            active: this.settings.notify_missedCall
-        });
-        notifyMissedCallSwitch.connect("notify::active", (widget) => {
-            this.settings.notify_missedCall = notifyMissedCallSwitch.active;
-        });
-        notificationSection.addSetting(
-            _("Missed Calls"),
-            null,
-            notifyMissedCallSwitch
-        );
-        
-        let notifyRingingSwitch = new Gtk.Switch({
-            visible: true,
-            can_focus: true,
-            halign: Gtk.Align.END,
-            valign: Gtk.Align.CENTER,
-            active: this.settings.notify_ringing
-        });
-        notifyRingingSwitch.connect("notify::active", (widget) => {
-            this.settings.notify_ringing = notifyRingingSwitch.active;
-        });
-        notificationSection.addSetting(
-            _("Incoming Calls"),
-            null,
-            notifyRingingSwitch
-        );
-        
-        let notifyTalkingSwitch = new Gtk.Switch({
-            visible: true,
-            can_focus: true,
-            halign: Gtk.Align.END,
-            valign: Gtk.Align.CENTER,
-            active: this.settings.notify_talking
-        });
-        notifyTalkingSwitch.connect("notify::active", (widget) => {
-            this.settings.notify_talking = notifyTalkingSwitch.active;
-        });
-        notificationSection.addSetting(
-            _("In Progress Calls"),
-            null,
-            notifyTalkingSwitch
-        );
+        notificationSection.addGSetting(this.settings, "missed-call-notification");
+        notificationSection.addGSetting(this.settings, "ringing-notification");
+        notificationSection.addGSetting(this.settings, "talking-notification");
+        notificationSection.addGSetting(this.settings, "sms-notification");
         
         // SMS
         let mediaSection = this.content.addSection(
@@ -668,10 +604,12 @@ var SettingsDialog = new Lang.Class({
         pauseMusicComboBox.append("never", _("Never"));
         pauseMusicComboBox.append("ringing", _("Incoming Calls"));
         pauseMusicComboBox.append("talking", _("In Progress Calls"));
-        pauseMusicComboBox.active_id = this.settings.pause_music;
-        pauseMusicComboBox.connect("changed", (widget) => {
-            this.settings.pause_music = pauseMusicComboBox.active_id;
-        });
+        this.settings.bind(
+            "pause-music",
+            pauseMusicComboBox,
+            "active-id",
+            Gio.SettingsBindFlags.DEFAULT
+        );
         mediaSection.addSetting(_("Pause Music"), null, pauseMusicComboBox);
         
         if (this._page.device.plugins.indexOf("mpris") < 0) {

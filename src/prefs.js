@@ -90,13 +90,13 @@ var PrefsWidget = new Lang.Class({
         
         // Appearance
         let appearanceSection = generalPage.addSection(_("Appearance"));
-        appearanceSection.addGSetting("show-indicators");
-        appearanceSection.addGSetting("show-offline");
-        appearanceSection.addGSetting("show-unpaired");
+        appearanceSection.addGSetting(Common.Settings, "show-indicators");
+        appearanceSection.addGSetting(Common.Settings, "show-offline");
+        appearanceSection.addGSetting(Common.Settings, "show-unpaired");
         
         // Files
         let filesSection = generalPage.addSection(_("Files"));
-        filesSection.addGSetting("nautilus-integration");
+        filesSection.addGSetting(Common.Settings, "nautilus-integration");
         
         // Keyboard Shortcuts
         let keySection = generalPage.addSection(_("Keyboard Shortcuts"));
@@ -111,15 +111,10 @@ var PrefsWidget = new Lang.Class({
         // TRANSLATORS: Opens the extension preferences dialog
         keyView.addAccel("settings", _("Mobile Settings"), 0, 0);
         keyView.setAccels(
-            JSON.parse(
-                Common.Settings.get_string("extension-keybindings")
-            )
+            JSON.parse(Common.Settings.get_string("keybindings"))
         );
         keyView.setCallback((profile) => {
-            Common.Settings.set_string(
-                "extension-keybindings",
-                JSON.stringify(profile)
-            );
+            Common.Settings.set_string("keybindings", JSON.stringify(profile));
         });
         keyRow.grid.attach(keyView, 0, 0, 1, 1);
         
@@ -138,7 +133,7 @@ var PrefsWidget = new Lang.Class({
             null,
             { margin_bottom: 32 }
         );
-        develSection.addGSetting("debug");
+        develSection.addGSetting(Common.Settings, "debug");
         
         let stopButton = new Gtk.Button({
             image: Gtk.Image.new_from_icon_name(

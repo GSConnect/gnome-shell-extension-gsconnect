@@ -550,13 +550,7 @@ var SystemIndicator = new Lang.Class({
         // Keybindings
         this._extensionKeybindings();
         
-        Settings.connect("changed::device-keybindings", () => {
-            for (let dbusPath in this._indicators) {
-                this._deviceKeybindings(this._indicators[dbusPath]);
-            }
-        });
-        
-        Settings.connect("changed::extension-keybindings", () => {
+        Settings.connect("changed::keybindings", () => {
             this._extensionKeybindings();
         });
         
@@ -634,10 +628,10 @@ var SystemIndicator = new Lang.Class({
         }
         this._keybindings = [];
     
-        let accels = Settings.get_string("extension-keybindings");
+        let accels = Settings.get_string("keybindings");
         accels = JSON.parse(accels);
         
-        if (accels.hasOwnProperty("menu") && accels.menu.length) {
+        if (accels.menu) {
             this._keybindings.push(
                 this.keybindingManager.add(
                     accels.menu,
@@ -646,7 +640,7 @@ var SystemIndicator = new Lang.Class({
             );
         }
         
-        if (accels.hasOwnProperty("discover") && accels.discover.length) {
+        if (accels.discover) {
             this._keybindings.push(
                 this.keybindingManager.add(
                     accels.discover,
@@ -655,7 +649,7 @@ var SystemIndicator = new Lang.Class({
             );
         }
         
-        if (accels.hasOwnProperty("settings") && accels.settings.length) {
+        if (accels.settings) {
             this._keybindings.push(
                 this.keybindingManager.add(
                     accels.settings,
@@ -667,69 +661,66 @@ var SystemIndicator = new Lang.Class({
     
     _deviceKeybindings: function (indicator) {
         let menu = indicator.deviceMenu;
-        let profiles = JSON.parse(Settings.get_string("device-keybindings"));
         
         for (let binding of menu._keybindings) {
             this.keybindingManager.remove(binding);
         }
         menu._keybindings = [];
         
-        if (profiles.hasOwnProperty(menu.device.id)) {
-            let accels = profiles[menu.device.id];
+        let accels = JSON.parse(menu.device.settings.get_string("keybindings"));
         
-            if (accels.hasOwnProperty("menu") && accels.menu.length) {
-                menu._keybindings.push(
-                    this.keybindingManager.add(
-                        accels.menu,
-                        Lang.bind(this, this._openDeviceMenu, indicator)
-                    )
-                );
-            }
-            
-            if (accels.hasOwnProperty("sms") && accels.sms.length) {
-                menu._keybindings.push(
-                    this.keybindingManager.add(
-                        accels.sms, 
-                        Lang.bind(menu, menu._smsAction)
-                    )
-                );
-            }
-            
-            if (accels.hasOwnProperty("find") && accels.find.length) {
-                menu._keybindings.push(
-                    this.keybindingManager.add(
-                        accels.find, 
-                        Lang.bind(menu, menu._findAction)
-                    )
-                );
-            }
-            
-            if (accels.hasOwnProperty("browse") && accels.browse.length) {
-                menu._keybindings.push(
-                    this.keybindingManager.add(
-                        accels.browse,
-                        Lang.bind(this, this._browseDevice, indicator)
-                    )
-                );
-            }
-            
-            if (accels.hasOwnProperty("share") && accels.share.length) {
-                menu._keybindings.push(
-                    this.keybindingManager.add(
-                        accels.share,
-                        Lang.bind(menu, menu._shareAction)
-                    )
-                );
-            }
-            
-            if (accels.hasOwnProperty("status") && accels.status.length) {
-                menu._keybindings.push(
-                    this.keybindingManager.add(
-                        accels.status,
-                        Lang.bind(menu, menu._statusAction)
-                    )
-                );
-            }
+        if (accels.menu) {
+            menu._keybindings.push(
+                this.keybindingManager.add(
+                    accels.menu,
+                    Lang.bind(this, this._openDeviceMenu, indicator)
+                )
+            );
+        }
+        
+        if (accels.sms) {
+            menu._keybindings.push(
+                this.keybindingManager.add(
+                    accels.sms, 
+                    Lang.bind(menu, menu._smsAction)
+                )
+            );
+        }
+        
+        if (accels.find) {
+            menu._keybindings.push(
+                this.keybindingManager.add(
+                    accels.find, 
+                    Lang.bind(menu, menu._findAction)
+                )
+            );
+        }
+        
+        if (accels.browse) {
+            menu._keybindings.push(
+                this.keybindingManager.add(
+                    accels.browse,
+                    Lang.bind(this, this._browseDevice, indicator)
+                )
+            );
+        }
+        
+        if (accels.share) {
+            menu._keybindings.push(
+                this.keybindingManager.add(
+                    accels.share,
+                    Lang.bind(menu, menu._shareAction)
+                )
+            );
+        }
+        
+        if (accels.status) {
+            menu._keybindings.push(
+                this.keybindingManager.add(
+                    accels.status,
+                    Lang.bind(menu, menu._statusAction)
+                )
+            );
         }
     },
     
@@ -811,6 +802,9 @@ var SystemIndicator = new Lang.Class({
         this._deviceMenuVisibility(menu);
         
         // Keybindings
+        device.settings.connect("changed::keybindings", () => {
+            this._deviceKeybindings(indicator);
+        });
         this._deviceKeybindings(indicator);
         
         // Try activating the device

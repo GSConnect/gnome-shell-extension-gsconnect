@@ -23,6 +23,9 @@ const Common = imports.common;
 const Protocol = imports.service.protocol;
 const PreferencesWidget = imports.widgets.preferences;
 
+const SCHEMA_PREFIX = "org.gnome.shell.extensions.gsconnect.plugin.";
+const SCHEMA_PATH = "/org/gnome/shell/extensions/gsconnect/device/";
+
 
 /**
  * Base class for plugins
@@ -41,16 +44,22 @@ var Plugin = new Lang.Class({
         
         this.export_interface();
         
-        if (this.device.config.plugins.hasOwnProperty(this.name)) {
-            this.settings = this.device.config.plugins[this.name].settings;
+        if (imports.service.plugins[name].SettingsDialog) {
+            this.settings = new Gio.Settings({
+                settings_schema: Common.SchemaSource.lookup(
+                    SCHEMA_PREFIX + name,
+                    -1
+                ),
+                path: SCHEMA_PATH + device.id + "/plugin/" + name + "/"
+            });
         }
     },
     
     export_interface: function () {
         // Export DBus
-        let iface = "org.gnome.Shell.Extensions.GSConnect." + this.name;
+        let iface = "org.gnome.Shell.Extensions.GSConnect.Plugin." + this.name;
         this._dbus = Gio.DBusExportedObject.wrapJSObject(
-            Common.DBusInfo.Device.lookup_interface(iface),
+            Common.DBusInfo.GSConnect.lookup_interface(iface),
             this
         );
         this._dbus.export(Gio.DBus.session, this.device._dbus.get_object_path());
@@ -83,7 +92,16 @@ var SettingsDialog = new Lang.Class({
         
         let metadata = imports.service.plugins[pluginName].METADATA;
         this._page = devicePage;
-        this.settings = this._page.config.plugins[pluginName].settings;
+        
+        this.settings = new Gio.Settings({
+            settings_schema: Common.SchemaSource.lookup(
+                "org.gnome.shell.extensions.gsconnect.plugin." + pluginName,
+                -1
+            ),
+            path: ["/org/gnome/shell/extensions/gsconnect/device/",
+                   devicePage.device.id, "/plugin/", pluginName, "/"].join("")
+        });
+        this.settings.delay();
         
         let headerBar = this.get_header_bar();
         headerBar.title = metadata.summary;

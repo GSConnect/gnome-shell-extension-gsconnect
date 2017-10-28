@@ -162,30 +162,30 @@ var Section = new Lang.Class({
      * @param {Gtk.Widget} widget - An override widget
      * @return {Gtk.ListBoxRow} row - The new row
      */
-    addGSetting: function (keyName, widget) {
-        let key = Common.Settings.settings_schema.get_key(keyName);
+    addGSetting: function (settings, keyName, widget) {
+        let key = settings.settings_schema.get_key(keyName);
         let range = key.get_range().deep_unpack()[0];
         let type = key.get_value_type().dup_string();
         type = (range !== "type") ? range : type;
         
         if (widget !== undefined) {
-            widget = new widget(Common.Settings, keyName);
+            widget = new widget(settings, keyName);
         } else if (type === "b") {
-            widget = new GSettingsWidget.BoolSetting(Common.Settings, keyName);
+            widget = new GSettingsWidget.BoolSetting(settings, keyName);
         } else if (type === "enum") {
-            widget = new GSettingsWidget.EnumSetting(Common.Settings, keyName);
+            widget = new GSettingsWidget.EnumSetting(settings, keyName);
         } else if (type === "flags") {
-            widget = new GSettingsWidget.FlagsSetting(Common.Settings, keyName);
+            widget = new GSettingsWidget.FlagsSetting(settings, keyName);
         } else if (type === "mb") {
-            widget = new GSettingsWidget.MaybeSetting(Common.Settings, keyName);
+            widget = new GSettingsWidget.MaybeSetting(settings, keyName);
         } else if (type.length === 1 && "ynqiuxthd".indexOf(type) > -1) {
-            widget = new GSettingsWidget.NumberSetting(Common.Settings, keyName, type);
+            widget = new GSettingsWidget.NumberSetting(settings, keyName, type);
         } else if (type === "range") {
-            widget = new GSettingsWidget.RangeSetting(Common.Settings, keyName);
+            widget = new GSettingsWidget.RangeSetting(settings, keyName);
         } else if (type.length === 1 && "sog".indexOf(type) > -1) {
-            widget = new GSettingsWidget.StringSetting(Common.Settings, keyName);
+            widget = new GSettingsWidget.StringSetting(settings, keyName);
         } else {
-            widget = new GSettingsWidget.OtherSetting(Common.Settings, keyName);
+            widget = new GSettingsWidget.OtherSetting(settings, keyName);
         }
         
         return this.addSetting(

@@ -194,10 +194,16 @@ function generateEncryption (force=false) {
 
 function getCertificate (id=false) {
     if (id) {
-        let path = CONFIG_PATH + "/" + id + "/certificate.pem";
+        let settings = new Gio.Settings({
+            settings_schema: SchemaSource.lookup("org.gnome.shell.extensions.gsconnect.device", true),
+            path: "/org/gnome/shell/extensions/gsconnect/device/" + id + "/"
+        });
         
-        if (GLib.file_test(path, GLib.FileTest.EXISTS)) {
-            return Gio.TlsCertificate.new_from_file(path);
+        if (settings.get_string("certificate-pem")) {
+            return Gio.TlsCertificate.new_from_pem(
+                settings.get_string("certificate-pem"),
+                -1
+            );
         }
     } else {
         return Gio.TlsCertificate.new_from_files(
@@ -289,94 +295,6 @@ function findPlugins () {
 };
 
 
-function readDeviceConfiguration (deviceId) {
-    let config = {};
-    let devicePath = CONFIG_PATH + "/" + deviceId;
-    let deviceConfig = devicePath + "/config.json";
-    
-    // Init Config Dir
-    if (!GLib.file_test(devicePath, GLib.FileTest.IS_DIR)) {
-        GLib.mkdir_with_parents(devicePath, 493);
-    }
-    
-    // Load Config if it exists
-    if (GLib.file_test(deviceConfig, GLib.FileTest.EXISTS)) {
-        try {
-            config = JSON.parse(
-                GLib.file_get_contents(deviceConfig)[1].toString()
-            );
-        } catch (e) {
-            log("Error loading device configuration: " + e);
-            config = {};
-        }
-    }
-    
-    // Create a default config
-    let defaultConfiguration = { plugins: {} };
-    
-    for (let name of findPlugins()) {
-        let metadata = imports.service.plugins[name].METADATA;
-        
-        defaultConfiguration.plugins[name] = { enabled: false };
-        
-        if (metadata.hasOwnProperty("settings")) {
-            defaultConfiguration.plugins[name].settings = metadata.settings;
-        }
-    }
-    
-    // Merge loaded config with defaults and save
-    config = mergeDeep(defaultConfiguration, config)
-    writeDeviceConfiguration(deviceId, config);
-    
-    return config;
-};
-
-
-function writeDeviceConfiguration (deviceId, config) {
-    let deviceConfig = CONFIG_PATH + "/" + deviceId + "/config.json";
-
-    try {
-        GLib.file_set_contents(
-            deviceConfig,
-            JSON.stringify(config),
-            JSON.stringify(config).length,
-            null
-        );
-    } catch (e) {
-        log("Error saving device configuration: " + e);
-    }
-};
-
-
-/**
- * A rarely repeating array shuffler
- * See: https://stackoverflow.com/a/17891411/1108697
- *
- * @param {array} - An array to shuffle
- * @return {*} - The shuffled array item
- */
-Object.defineProperty(Array, "shuffler", {
-    value: function (array) {
-        "use strict";
-        if (!array) { array = this; }
-        var copy = array.slice(0);
-        return function () {
-            if (copy.length < 1) { copy = array.slice(0); }
-            var index = Math.floor(Math.random() * copy.length);
-            var item = copy[index];
-            copy.splice(index, 1);
-            return item;
-        };
-    },
-    writable: true,
-    configurable: true
-});
-
-
-/**
- * GLib "polyfills" for extra functions
- */
-
 /**
  * Extend Gio.TlsCertificate with a function to retreive the Common Name
  *
@@ -439,7 +357,8 @@ Gio.TlsCertificate.prototype.fingerprint = function () {
 
 
 /**
- * Polyfills for older versions of GJS:
+ * FIXME: organize
+ * Javascript Polyfills for older versions of GJS:
  *
  *     Object.assign()
  */
@@ -474,6 +393,32 @@ if (typeof Object.assign != "function") {
     configurable: true
   });
 }
+
+
+/**
+ * A rarely repeating array shuffler
+ * See: https://stackoverflow.com/a/17891411/1108697
+ *
+ * @param {array} - An array to shuffle
+ * @return {*} - The shuffled array item
+ */
+Object.defineProperty(Array, "shuffler", {
+    value: function (array) {
+        "use strict";
+        if (!array) { array = this; }
+        var copy = array.slice(0);
+        return function () {
+            if (copy.length < 1) { copy = array.slice(0); }
+            var index = Math.floor(Math.random() * copy.length);
+            var item = copy[index];
+            copy.splice(index, 1);
+            return item;
+        };
+    },
+    writable: true,
+    configurable: true
+});
+
 
 /** https://stackoverflow.com/a/37164538/1108697 */
 function isObject(item) {

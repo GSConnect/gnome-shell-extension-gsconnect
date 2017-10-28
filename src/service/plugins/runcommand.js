@@ -31,10 +31,7 @@ var METADATA = {
     description: _("Execute local commands remotely"),
     wiki: "https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Run-Commands-Plugin",
     incomingPackets: ["kdeconnect.runcommand.request"],
-    outgoingPackets: ["kdeconnect.runcommand"],
-    settings: {
-        commands: {}
-    }
+    outgoingPackets: ["kdeconnect.runcommand"]
 };
 
 
@@ -51,6 +48,10 @@ var Plugin = new Lang.Class({
     
     _init: function (device) {
         this.parent(device, "runcommand");
+        
+        this.settings.connect("changed::command-list", () => {
+            this.sendCommandList();
+        });
     },
     
     handlePacket: function (packet) {
@@ -59,23 +60,16 @@ var Plugin = new Lang.Class({
         if (packet.body.hasOwnProperty("requestCommandList")) {
             this.sendCommandList();
         } else if (packet.body.hasOwnProperty("key")) {
-            if (this.settings.commands.hasOwnProperty(packet.body.key)) {
+            let commands = JSON.parse(this.settings.get_string("command-list"));
+            if (commands.hasOwnProperty(packet.body.key)) {
                 GLib.spawn_async(
                     null, // working_dir
-                    ["/bin/sh", "-c", this.settings.commands[packet.body.key].command],
+                    ["/bin/sh", "-c", commands[packet.body.key].command],
                     null, // envp
                     GLib.SpawnFlags.DEFAULT, // flags
                     null // GLib.SpawnChildSetupFunc
                 );
             }
-        }
-    },
-    
-    reconfigure: function () {
-        Common.debug("RunCommand: reconfigure()");
-        
-        if (this.device.paired && this.device.connected) {
-            this.sendCommandList();
         }
     },
     
@@ -85,7 +79,7 @@ var Plugin = new Lang.Class({
         let packet = new Protocol.Packet({
             id: 0,
             type: "kdeconnect.runcommand",
-            body: { commandList: JSON.stringify(this.settings.commands) }
+            body: { commandList: this.settings.get_string("command-list") }
         });
         
         this.device._channel.send(packet);
@@ -111,8 +105,7 @@ var SettingsDialog = new Lang.Class({
             enable_grid_lines: true,
             headers_visible: true,
             hexpand: true,
-            vexpand: true,
-            height_request: 100
+            vexpand: true
         });
         
         let listStore = new Gtk.ListStore();
@@ -197,7 +190,14 @@ var SettingsDialog = new Lang.Class({
         addButton.connect("clicked", Lang.bind(this, this._add, false));
         buttonBox.add(addButton);
         
-        this._populate();
+        this._commands = JSON.parse(this.settings.get_string("command-list"));
+        for (let uuid in this._commands) {
+            this._add(null, [
+                uuid,
+                this._commands[uuid].name,
+                this._commands[uuid].command
+            ]);
+        }
         
         this.content.show_all();
     },
@@ -205,21 +205,29 @@ var SettingsDialog = new Lang.Class({
     _add: function (button, row) {
         if (row === false) {
             // TRANSLATORS: A placeholder for a new command name
-            let commandName = _("[New command]")
+            let commandName = _("[New command]");
             row = ["{" + GLib.uuid_string_random() + "}", commandName, ""];
-            this.settings.commands[row[0]] = { name: row[1], command: row[2]};
+            this._commands[row[0]] = { name: row[1], command: row[2]};
+            
+            this.settings.set_string(
+                "command-list",
+                JSON.stringify(this._commands)
+            );
         }
         
         this.treeview.model.set(this.treeview.model.append(), [0, 1, 2], row);
     },
     
     _remove: function (button) {
-        //
         let [has, model, iter] = this.treeview.get_selection().get_selected();
         
         if (has) {
             let uuid = this.treeview.model.get_value(iter, 0);
-            delete this.settings.commands[uuid];
+            delete this._commands[uuid];
+            this.settings.set_string(
+                "command-list",
+                JSON.stringify(this._commands)
+            );
             this.treeview.model.remove(iter);
         }
     },
@@ -231,28 +239,27 @@ var SettingsDialog = new Lang.Class({
         if (success) {
             this.treeview.model.set_value(iter, 1, new_text);
             let uuid = this.treeview.model.get_value(iter, 0);
-            this.settings.commands[uuid].name = new_text;
+            this._commands[uuid].name = new_text;
+            this.settings.set_string(
+                "command-list",
+                JSON.stringify(this._commands)
+            );
         }
     },
     
     _editCmd: function (renderer, path, new_text, user_data) {
+        let commands = JSON.parse(this.settings.get_string("command-list"));
         path = Gtk.TreePath.new_from_string(path);
         let [success, iter] = this.treeview.model.get_iter(path);
         
         if (success) {
             this.treeview.model.set_value(iter, 2, new_text);
             let uuid = this.treeview.model.get_value(iter, 0);
-            this.settings.commands[uuid].command = new_text;
-        }
-    },
-    
-    _populate: function () {
-        for (let uuid in this.settings.commands) {
-            this._add(null, [
-                uuid,
-                this.settings.commands[uuid].name,
-                this.settings.commands[uuid].command
-            ]);
+            this._commands[uuid].command = new_text;
+            this.settings.set_string(
+                "command-list",
+                JSON.stringify(this._commands)
+            );
         }
     }
 });

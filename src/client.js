@@ -373,6 +373,14 @@ var Device = new Lang.Class({
             dbusPath
         );
         
+        this.settings = new Gio.Settings({
+            settings_schema: Common.SchemaSource.lookup(
+                "org.gnome.shell.extensions.gsconnect.device",
+                true
+            ),
+            path: "/org/gnome/shell/extensions/gsconnect/device/" + this.id + "/"
+        });
+        
         // Connect to PropertiesChanged
         this.connect("g-properties-changed", (proxy, properties) => {
             for (let name in properties.deep_unpack()) {

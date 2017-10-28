@@ -24,6 +24,7 @@ imports.searchPath.push(getPath());
 const Common = imports.common;
 const Protocol = imports.service.protocol;
 const PluginsBase = imports.service.plugins.base;
+const GSettingsWidget = imports.widgets.gsettings;
 
 
 var METADATA = {
@@ -39,22 +40,7 @@ var METADATA = {
         "kdeconnect.notification",
         "kdeconnect.notification.reply",
         "kdeconnect.notification.request"
-    ],
-    settings: {
-        receive: {
-            enabled: true
-        },
-        send: {
-            enabled: true,
-            icons: true,
-            applications: {
-                GSConnect: {
-                    iconName: "phone",
-                    enabled: false
-                }
-            }
-        }
-    }
+    ]
 };
 
 
@@ -217,7 +203,7 @@ var Plugin = new Lang.Class({
             
                 let addr = new Gio.InetSocketAddress({
                     address: Gio.InetAddress.new_from_string(
-                        this.device.identity.body.tcpHost
+                        this.device.settings.get_string("tcp-host")
                     ),
                     port: packet.payloadTransferInfo.port
                 });
@@ -252,18 +238,19 @@ var Plugin = new Lang.Class({
         Common.debug("hints: " + JSON.stringify(hints));
         Common.debug("timeout: " + timeout);
         
+        let applications = JSON.parse(this.settings.get_string("send-applications"));
+        
         // New application
-        if (!this.settings.send.applications.hasOwnProperty(appName)) {
-            this.settings.send.applications[appName] = {
-                iconName: iconName,
-                enabled: true
-            };
-            
-            Common.writeDeviceConfiguration(this.device.id, this.device.config);
+        if (!applications.hasOwnProperty(appName)) {
+            applications[appName] = { iconName: iconName, enabled: true };
+            this.settings.set_string(
+                "send-applications",
+                JSON.stringify(applications)
+            );
         }
         
-        if (this.settings.send.enabled) {
-            if (this.settings.send.applications[appName].enabled) {
+        if (this.settings.get_boolean("send-notifications")) {
+            if (applications[appName].enabled) {
                 let packet = new Protocol.Packet({
                     id: Date.now(),
                     type: "kdeconnect.notification",
@@ -277,7 +264,7 @@ var Plugin = new Lang.Class({
                 
                 let iconInfo;
                 
-                if (this.settings.send.icons) {
+                if (this.settings.get_boolean("send-icons")) {
                     iconInfo = this._getIconInfo(iconName);
                 }
                 
@@ -332,7 +319,7 @@ var Plugin = new Lang.Class({
     handlePacket: function (packet) {
         Common.debug("Notifications: handlePacket()");
         
-        if (packet.type === "kdeconnect.notification" && this.settings.receive.enabled) {
+        if (packet.type === "kdeconnect.notification" && this.settings.get_boolean("receive-notifications")) {
             this._handleNotification(packet);
         } else if (packet.type === "kdeconnect.notification.request") {
             // TODO: KDE Connect says this is unused...
@@ -388,67 +375,23 @@ var SettingsDialog = new Lang.Class({
     _init: function (devicePage, pluginName, window) {
         this.parent(devicePage, pluginName, window);
         
-        // Receiving
+        this._page = devicePage;
+        
         let generalSection = this.content.addSection(
             null,
             null,
             { width_request: -1 }
         );
         
-        let receiveSwitch = new Gtk.Switch({
-            visible: true,
-            can_focus: true,
-            halign: Gtk.Align.END,
-            valign: Gtk.Align.CENTER,
-            active: this.settings.receive.enabled
-        });
-        receiveSwitch.connect("notify::active", (widget) => {
-            this.settings.receive.enabled = receiveSwitch.active;
-        });
-        generalSection.addSetting(
-            _("Receive Notifications"),
-            null,
-            receiveSwitch
-        );
+        generalSection.addGSetting(this.settings, "receive-notifications");
+        generalSection.addGSetting(this.settings, "send-notifications");
+        let iconsRow = generalSection.addGSetting(this.settings, "send-icons");
         
-        // Sending
-        let sendSwitch = new Gtk.Switch({
-            visible: true,
-            can_focus: true,
-            halign: Gtk.Align.END,
-            valign: Gtk.Align.CENTER,
-            active: this.settings.send.enabled
-        });
-        sendSwitch.connect("notify::active", (widget) => {
-            this.settings.send.enabled = sendSwitch.active;
-        });
-        generalSection.addSetting(
-            _("Send Notifications"),
-            null,
-            sendSwitch
-        );
-        
-        let iconsSwitch = new Gtk.Switch({
-            visible: true,
-            can_focus: true,
-            halign: Gtk.Align.END,
-            valign: Gtk.Align.CENTER,
-            active: this.settings.send.icons
-        });
-        iconsSwitch.connect("notify::active", (widget) => {
-            this.settings.send.icons = iconsSwitch.active;
-        });
-        let iconsRow = generalSection.addSetting(
-            _("Send Icons With Notifications"),
-            null,
-            iconsSwitch
-        );
-        iconsRow.sensitive = sendSwitch.active;
-        sendSwitch.bind_property(
-            "active",
+        this.settings.bind(
+            "send-notifications",
             iconsRow,
             "sensitive",
-            GObject.BindingFlags.DEFAULT
+            Gio.SettingsBindFlags.DEFAULT
         );
         
         this.appSection = this.content.addSection(
@@ -456,14 +399,14 @@ var SettingsDialog = new Lang.Class({
             null,
             { margin_bottom: 0, width_request: -1 }
         );
-        this.appSection.sensitive = sendSwitch.active;
-        sendSwitch.bind_property(
-            "active",
-            this.appSection,
+        this.settings.bind(
+            "send-notifications",
+            iconsRow,
             "sensitive",
-            GObject.BindingFlags.DEFAULT
+            Gio.SettingsBindFlags.DEFAULT
         );
         
+        this._applications = JSON.parse(this.settings.get_string("send-applications"));
         this._populate();
         
         this.appSection.list.set_sort_func((row1, row2) => {
@@ -476,12 +419,12 @@ var SettingsDialog = new Lang.Class({
     _populate: function () {
         this._query();
     
-        for (let name in this.settings.send.applications) {
-            let row = this.appSection.addRow(null, { height_request: 24 });
+        for (let name in this._applications) {
+            let row = this.appSection.addRow();
             
             try {
                 row.icon = new Gtk.Image({
-                    icon_name: this.settings.send.applications[name].iconName,
+                    icon_name: this._applications[name].iconName,
                     icon_size: Gtk.IconSize.DND
                 });
             } catch (e) {
@@ -500,12 +443,16 @@ var SettingsDialog = new Lang.Class({
             row.grid.attach(row.appName, 1, 0, 1, 1);
             
             row.switch = new Gtk.Switch({
-                active: this.settings.send.applications[name].enabled,
-                vexpand: true,
+                active: this._applications[name].enabled,
+                halign: Gtk.Align.END,
                 valign: Gtk.Align.CENTER
             });
             row.switch.connect("notify::active", (widget) => {
-                this.settings.send.applications[name].enabled = row.switch.active;
+                this._applications[name].enabled = row.switch.active;
+                this.settings.set_string(
+                    "send-applications", 
+                    JSON.stringify(this._applications)
+                );
             });
             row.grid.attach(row.switch, 2, 0, 1, 1);
         }
@@ -530,8 +477,8 @@ var SettingsDialog = new Lang.Class({
             if (appInfo) {
                 let name = appInfo.get_name();
                 
-                if (!this.settings.send.applications.hasOwnProperty(name)) {
-                    this.settings.send.applications[name] = {
+                if (!this._applications[name]) {
+                    this._applications[name] = {
                         iconName: appInfo.get_icon().to_string(),
                         enabled: true
                     };
@@ -544,14 +491,19 @@ var SettingsDialog = new Lang.Class({
             if (appInfo.get_boolean("X-GNOME-UsesNotifications")) {
                 let name = appInfo.get_name();
                 
-                if (!this.settings.send.applications.hasOwnProperty(name)) {
-                    this.settings.send.applications[name] = {
+                if (!this._applications[name]) {
+                    this._applications[name] = {
                         iconName: appInfo.get_icon().to_string(),
                         enabled: true
                     };
                 }
             }
         }
+        
+        this.settings.set_string(
+            "send-applications",
+            JSON.stringify(this._applications)
+        );
     }
 });
 

@@ -92,10 +92,10 @@ var Device = new Lang.Class({
         }
     },
     
-    _init: function (daemon, packet, channel=null) {
+    _init: function (params) {
         this.parent();
         
-        this.daemon = daemon;
+        this.daemon = params.daemon;
         this._channel = null;
         this._connected = false;
         
@@ -106,8 +106,22 @@ var Device = new Lang.Class({
         this._plugins = new Map();
         this._handlers = new Map();
         
-        this.identity = new Protocol.Packet(packet);
-        this.config = Common.readDeviceConfiguration(this.id);
+        // Param parsing
+        let deviceId = params.id || params.packet.body.deviceId;
+        
+        // GSettings
+        this.settings = new Gio.Settings({
+            settings_schema: Common.SchemaSource.lookup(
+                "org.gnome.shell.extensions.gsconnect.device",
+                true
+            ),
+            path: "/org/gnome/shell/extensions/gsconnect/device/" + deviceId + "/"
+        });
+        
+        if (params.packet) {
+            this._handleIdentity(params.packet);
+        }
+        
         // Export DBus
         let iface = "org.gnome.Shell.Extensions.GSConnect.Device";
         this._dbus = Gio.DBusExportedObject.wrapJSObject(
@@ -117,8 +131,8 @@ var Device = new Lang.Class({
         this._dbus.export(Gio.DBus.session, Common.dbusPathFromId(this.id));
         
         // A TCP Connection
-        if (channel) {
-            this._channel = channel;
+        if (params.channel) {
+            this._channel = params.channel;
         
             this._channel.connect("connected", Lang.bind(this, this._onConnected));
             this._channel.connect("disconnected", Lang.bind(this, this._onDisconnected));
@@ -142,21 +156,30 @@ var Device = new Lang.Class({
         if (this.connected) {
             return this._channel._peer_cert.fingerprint();
         } else if (this.paired) {
-            return Common.getCertificate(this.id).fingerprint();
+            let cert = Gio.TlsCertificate.new_from_pem(
+                this.settings.get_string("certificate-pem"),
+                -1
+            );
+            return cert.fingerprint();
         }
         
         return "";
     },
-    get id () { return this.identity.body.deviceId; },
-    get name () { return this.identity.body.deviceName; },
-    get paired () {
-        return Common.getCertificate(this.id);
-    },
+    get id () { return this.settings.get_string("id"); },
+    get name () { return this.settings.get_string("name"); },
+    get paired () { return (this.settings.get_string("certificate-pem")); },
     get plugins () { return Array.from(this._plugins.keys()); },
-    get supportedPlugins () {
+    get supportedPlugins () { return this.settings.get_strv("supported-plugins"); },
+    get type () { return this.settings.get_string("type"); },
+    
+    _handleIdentity: function (packet) {
+        this.settings.set_string("id", packet.body.deviceId);
+        this.settings.set_string("name", packet.body.deviceName);
+        this.settings.set_string("type", packet.body.deviceType);
+        
         let plugins = [];
-        let incoming = this.identity.body.incomingCapabilities;
-        let outgoing = this.identity.body.outgoingCapabilities;
+        let incoming = packet.body.incomingCapabilities;
+        let outgoing = packet.body.outgoingCapabilities;
         
         for (let name of Common.findPlugins()) {
             let metadata = imports.service.plugins[name].METADATA;
@@ -174,16 +197,18 @@ var Device = new Lang.Class({
             }
         }
         
-        return plugins.sort();
+        this.settings.set_strv("supported-plugins", plugins.sort());
+        
+        this.settings.set_string("tcp-host", packet.body.tcpHost);
+        this.settings.set_uint("tcp-port", packet.body.tcpPort);
     },
-    get type () { return this.identity.body.deviceType; },
     
     //
     handlePacket: function (packet) {
         Common.debug("Device.fromPacket(" + this.id + ")");
         
         if (packet.type === Protocol.TYPE_IDENTITY) {
-            this.identity.fromPacket(packet);
+            this._handleIdentity(packet);
             this.activate();
         } else if (packet.type === Protocol.TYPE_PAIR) {
 	        this._handlePair(packet);
@@ -202,7 +227,7 @@ var Device = new Lang.Class({
 			return;
 		}
         
-        this._channel = new Protocol.LanChannel(this.daemon, this.identity);
+        this._channel = new Protocol.LanChannel(this.daemon, this.id);
         
         this._channel.connect("connected", Lang.bind(this, this._onConnected));
         this._channel.connect("disconnected", Lang.bind(this, this._onDisconnected));
@@ -210,9 +235,9 @@ var Device = new Lang.Class({
 		
 		let addr = new Gio.InetSocketAddress({
             address: Gio.InetAddress.new_from_string(
-                this.identity.body.tcpHost
+                this.settings.get_string("tcp-host")
             ),
-            port: this.identity.body.tcpPort
+            port: this.settings.get_uint("tcp-port")
         });
         
         this._channel.open(addr);
@@ -220,7 +245,7 @@ var Device = new Lang.Class({
     
     update: function (packet, channel=null) {
         if (channel) {
-            this.identity.fromPacket(packet);
+            this._handleIdentity(packet);
             
             if (this._channel !== null) {
                 GObject.signal_handlers_destroy(this._channel);
@@ -240,6 +265,7 @@ var Device = new Lang.Class({
                 this._channel.emit("connected");
             }
         } else {
+            this._handleIdentity(packet);
             this.handlePacket(packet);
         }
     },
@@ -262,8 +288,6 @@ var Device = new Lang.Class({
     
     _onConnected: function (channel) {
         log("Connected to '" + this.name + "'");
-        
-        this.config = Common.readDeviceConfiguration(this.id);
         
         this._connected = true;
         
@@ -395,16 +419,13 @@ var Device = new Lang.Class({
         this._incomingPairRequest = false;
         this._outgoingPairRequest = false;
         
-        let path = Common.CONFIG_PATH + "/" + this.id + "/certificate.pem";
-        
         if (bool) {
-            GLib.file_set_contents(
-                path,
+            this.settings.set_string(
+                "certificate-pem",
                 this._channel._peer_cert.certificate_pem
             );
-            GLib.spawn_command_line_async("chmod 0600 " + path);
         } else {
-            GLib.unlink(path);
+            this.settings.reset("certificate-pem");
         }
         
         this._dbus.emit_property_changed("paired", new GLib.Variant("b", bool));
@@ -468,10 +489,8 @@ var Device = new Lang.Class({
      * Plugin Capabilities
      */
     _loadPlugins: function () {
-        for (let name in this.config.plugins) {
-            if (this.config.plugins[name].enabled) {
-                this.enablePlugin(name, false);
-            }
+        for (let name of this.settings.get_strv("enabled-plugins")) {
+            this.enablePlugin(name, false);
         }
                 
         this.notify("plugins");
@@ -519,8 +538,12 @@ var Device = new Lang.Class({
             
             // Save config and notify, if requested
             if (write) {
-                this.config.plugins[name].enabled = true;
-                Common.writeDeviceConfiguration(this.id, this.config);
+                let enabledPlugins = this.settings.get_strv("enabled-plugins");
+                
+                if (enabledPlugins.indexOf(name) < 0) {
+                    enabledPlugins.push(name);
+                    this.settings.set_strv("enabled-plugins", enabledPlugins);
+                }
                 
                 this.notify("plugins");
                 this._dbus.emit_property_changed(
@@ -531,8 +554,13 @@ var Device = new Lang.Class({
             
             return [true, ""];
         } catch (e) {
-            this.config.plugins[name].enabled = false;
-            Common.writeDeviceConfiguration(this.id, this.config);
+            let enabledPlugins = this.settings.get_strv("enabled-plugins");
+            
+            if (enabledPlugins.indexOf(name) > -1) {
+                enabledPlugins.pop(name);
+                this.settings.set_strv("enabled-plugins", enabledPlugins);
+            }
+            
             log("Error enabling plugin '" + name + "': " + e.message);
             return [false, e.message];
         }
@@ -559,8 +587,12 @@ var Device = new Lang.Class({
             
             // Save config and notify, if requested
             if (write) {
-                this.config.plugins[name].enabled = false;
-                Common.writeDeviceConfiguration(this.id, this.config);
+                let enabledPlugins = this.settings.get_strv("enabled-plugins");
+                
+                if (enabledPlugins.indexOf(name) > -1) {
+                    enabledPlugins.pop(name);
+                    this.settings.set_strv("enabled-plugins", enabledPlugins);
+                }
                 
                 this.notify("plugins");
                 this._dbus.emit_property_changed(
@@ -572,30 +604,6 @@ var Device = new Lang.Class({
             return [true, ""];
         } catch (e) {
             log("Error disabling plugin '" + name + "': " + e.message);
-            return [false, e.message];
-        }
-    },
-    
-    configurePlugin: function (name, settings) {
-        Common.debug("Device.configurePlugin(" + name + ", " + settings + ")");
-        
-        try {
-            let handler = imports.service.plugins[name];
-            
-            settings = JSON.parse(settings);
-            
-            // Write the new configuration
-            Object.assign(this.config.plugins[name].settings, settings);
-            Common.writeDeviceConfiguration(this.id, this.config);
-            
-            // Update the device with the new configuration
-            if (this.connected && this.paired && this._plugins.has(name)) {
-                this._plugins.get(name).reconfigure();
-            }
-
-            return [true, ""];
-        } catch (e) {
-            log("Error configuring plugin '" + name + "': " + e.message);
             return [false, e.message];
         }
     },

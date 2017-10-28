@@ -23,6 +23,7 @@ imports.searchPath.push(getPath());
 const Common = imports.common;
 const Protocol = imports.service.protocol;
 const PluginsBase = imports.service.plugins.base;
+const GSettingsWidget = imports.widgets.gsettings;
 
 
 var METADATA = {
@@ -31,13 +32,7 @@ var METADATA = {
     description: _("Send and receive files and URLs"),
     wiki: "https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Share-Plugin",
     incomingPackets: ["kdeconnect.share.request"],
-    outgoingPackets: ["kdeconnect.share.request"],
-    settings: {
-        download_directory: GLib.get_user_special_dir(
-            GLib.UserDirectory.DIRECTORY_DOWNLOAD
-        ),
-        download_subdirs: false
-    }
+    outgoingPackets: ["kdeconnect.share.request"]
 };
 
 
@@ -67,6 +62,13 @@ var Plugin = new Lang.Class({
     _init: function (device) {
         this.parent(device, "share");
         
+        if (!this.settings.get_string("download-directory")) {
+            this.settings.set_string(
+                "download-directory",
+                GLib.get_user_special_dir(GLib.UserDirectory.DIRECTORY_DOWNLOAD)
+            );
+        }
+        
         this.transfers = new Map();
     },
     
@@ -79,7 +81,7 @@ var Plugin = new Lang.Class({
             
             let channel = new Protocol.LanDownloadChannel(
                 this.device.daemon,
-                this.device.identity,
+                this.device.id,
                 file.replace(null, false, Gio.FileCreateFlags.NONE, null)
             );
             
@@ -216,7 +218,7 @@ var Plugin = new Lang.Class({
             
             let addr = new Gio.InetSocketAddress({
                 address: Gio.InetAddress.new_from_string(
-                    this.device.identity.body.tcpHost
+                    this.device.settings.get_string("tcp-host")
                 ),
                 port: packet.payloadTransferInfo.port
             });
@@ -295,7 +297,7 @@ var Plugin = new Lang.Class({
             
             let channel = new Protocol.LanUploadChannel(
                 this.device.daemon,
-                this.device.identity,
+                this.device.id,
                 file.read(null)
             );
             
@@ -509,42 +511,32 @@ var SettingsDialog = new Lang.Class({
     _init: function (devicePage, pluginName, window) {
         this.parent(devicePage, pluginName, window);
         
+        this._page = devicePage;
+        
         let receivingSection = this.content.addSection(
             _("Receiving"),
             null,
             { margin_bottom: 0, width_request: -1 }
         );
         
-        let fbutton = new Gtk.FileChooserButton({
-            action: Gtk.FileChooserAction.SELECT_FOLDER,
-            halign: Gtk.Align.END,
-            valign: Gtk.Align.CENTER
-        });
-        fbutton.set_current_folder(this.settings.download_directory);
-        fbutton.connect("current-folder-changed", (button) => {
-            this.settings.download_directory = fbutton.get_current_folder();
-        });
-        receivingSection.addSetting(
-            _("Download Location"),
-            null,
-            fbutton
+        if (!this.settings.get_string("download-directory")) {
+            this.settings.set_string(
+                "download-directory",
+                GLib.get_user_special_dir(GLib.UserDirectory.DIRECTORY_DOWNLOAD)
+            );
+        }
+        
+        receivingSection.addGSetting(
+            this.settings,
+            "download-directory",
+            GSettingsWidget.FolderSetting
         );
         
-        let subdirsSwitch = new Gtk.Switch({
-            visible: true,
-            can_focus: true,
-            halign: Gtk.Align.END,
-            valign: Gtk.Align.CENTER,
-            active: this.settings.download_subdirs
-        });
-        subdirsSwitch.connect("notify::active", (widget) => {
-            this.settings.download_subdirs = subdirsSwitch.active;
-        });
         receivingSection.addSetting(
             // TRANSLATORS: eg. Use a subdirectory named <b>Google Pixel<b>
             _("Use a subdirectory named <b>%s</b>").format(this._page.device.name),
             null,
-            subdirsSwitch
+            new GSettingsWidget.BoolSetting(this.settings,"download-subdirectory")
         );
         
         this.content.show_all();

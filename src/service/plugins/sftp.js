@@ -31,10 +31,7 @@ var METADATA = {
     description: _("Mount and browse device filesystems"),
     wiki: "https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Browse-Files-Plugin",
     incomingPackets: ["kdeconnect.sftp"],
-    outgoingPackets: ["kdeconnect.sftp.request"],
-    settings: {
-        automount: false
-    }
+    outgoingPackets: ["kdeconnect.sftp.request"]
 };
 
 
@@ -79,7 +76,7 @@ var Plugin = new Lang.Class({
         this._mounted = false;
         this._directories = {};
         
-        if (this.settings.automount) {
+        if (this.settings.get_boolean("automount")) {
             this.mount();
         }
     },
@@ -324,22 +321,7 @@ var SettingsDialog = new Lang.Class({
             null,
             { margin_bottom: 0, width_request: -1 }
         );
-        
-        let automountSwitch = new Gtk.Switch({
-            visible: true,
-            can_focus: true,
-            halign: Gtk.Align.END,
-            valign: Gtk.Align.CENTER,
-            active: this.settings.automount
-        });
-        automountSwitch.connect("notify::active", (widget) => {
-            this.settings.automount = automountSwitch.active;
-        });
-        generalSection.addSetting(
-            _("Automatically Mount"),
-            null,
-            automountSwitch
-        );
+        generalSection.addGSetting(this.settings, "automount");
         
         this.content.show_all();
     }

@@ -318,6 +318,25 @@ var StringSetting = new Lang.Class({
     }
 });
 
+var FolderSetting = new Lang.Class({
+    Name: "FolderSetting",
+    Extends: Gtk.FileChooserButton,
+    
+    _init: function (settings, keyName) {
+        this.parent({
+            action: Gtk.FileChooserAction.SELECT_FOLDER,
+            can_focus: true,
+            halign: Gtk.Align.END,
+            valign: Gtk.Align.CENTER
+        });
+        
+        this.set_current_folder(settings.get_string(keyName));
+        this.connect("current-folder-changed", (button) => {
+            settings.get_string(keyName, this.get_current_folder());
+        });
+    }
+});
+
 /** A Gtk.Entry subclass for all other GSettings */
 var OtherSetting = new Lang.Class({
     Name: "OtherSetting",

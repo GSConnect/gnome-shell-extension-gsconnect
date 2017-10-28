@@ -5,6 +5,7 @@ const Gettext = imports.gettext.domain("gsconnect");
 const _ = Gettext.gettext;
 
 const Gio = imports.gi.Gio;
+const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
@@ -77,7 +78,11 @@ var PluginControl = new Lang.Class({
     _refresh: function () {
         this._freeze = true;
         
-        this.pluginSwitch.active = this._page.config.plugins[this._name].enabled;
+        if (this._page.settings.get_strv("enabled-plugins").indexOf(this._name) > -1) {
+            this.pluginSwitch.active = true;
+        } else {
+            this.pluginSwitch.active = false;
+        }
         
         this._freeze = false;
     },
@@ -108,8 +113,6 @@ var PluginControl = new Lang.Class({
             } else {
                 this._page.device.disablePlugin(this._name);
             }
-            
-            this._page._refresh();
         }
     },
     
@@ -121,10 +124,9 @@ var PluginControl = new Lang.Class({
         );
         
         if (dialog.run() === Gtk.ResponseType.APPLY) {
-            this._page.device.configurePlugin(this._name, dialog.settings);
+            dialog.settings.apply();
         }
         
-        this._page._refresh();
         dialog.close();
     }
 });
@@ -162,11 +164,15 @@ var Stack = new Lang.Class({
         
         this.infobar.connect("response", (widget, response) => {
             if (response === 1 && this.deleted !== null) {
-                this.deleted[0].move(
-                    this.deleted[1],
-                    Gio.FileCopyFlags.NONE,
-                    null,
-                    null
+                let devices = Common.Settings.get_strv("devices");
+                
+                if (devices.indexOf(this.deleted[0]) < 0) {
+                    devices.push(this.deleted[0]);
+                    Common.Settings.set_strv("devices", devices);
+                }
+            } else if (response === Gtk.ResponseType.CLOSE) {
+                GLib.spawn_command_line_async(
+                "dconf reset -f " + this.deleted[1]
                 );
             }
             
@@ -256,7 +262,7 @@ var Stack = new Lang.Class({
         page.box.margin_right = 36;
         
         let serviceSection = page.addSection(null, null, { width_request: -1 });
-        serviceSection.addGSetting("public-name");
+        serviceSection.addGSetting(Common.Settings, "public-name");
         
         let helpSection = page.addSection(_("Connecting Devices"), null, { width_request: -1 });
         let defaultPageLabel = new Gtk.Label({
@@ -334,7 +340,14 @@ var Page = new Lang.Class({
         
         this.daemon = daemon;
         this.device = device;
-        this.config = Common.readDeviceConfiguration(device.id);
+        
+        this.settings = new Gio.Settings({
+            settings_schema: Common.SchemaSource.lookup(
+                "org.gnome.shell.extensions.gsconnect.device",
+                true
+            ),
+            path: "/org/gnome/shell/extensions/gsconnect/device/" + device.id + "/"
+        });
         
         // Info Section
         let metadata = DeviceMetadata[device.type];
@@ -451,24 +464,14 @@ var Page = new Lang.Class({
         
         // See: https://bugzilla.gnome.org/show_bug.cgi?id=710888
         removeButton.connect("clicked", () => {
-            // Watch trash so we can catch the dir
-            let trash = Gio.File.new_for_uri("trash://")
-            let monitor = trash.monitor_directory(0, null);
-            let deviceDir = Gio.File.new_for_path(
-                Common.CONFIG_PATH + "/" + this.device.id
-            );
+            this.stack.deleted = [
+                this.device.id, 
+                "/org/gnome/shell/extensions/gsconnect/device/" + this.device.id + "/"
+            ];
             
-            monitor.connect("changed", (monitor, trashedDir, event_type) => {
-                let info = trashedDir.query_info("trash::orig-path", 0, null);
-                let path = info.get_attribute_byte_string("trash::orig-path");
-                
-                if (path === deviceDir.get_path()) {
-                    this.stack.deleted = [trashedDir, deviceDir];
-                    monitor.cancel();
-                }
-            });
-            
-            deviceDir.trash(null);
+            let knownDevices = Common.Settings.get_strv("devices");
+            knownDevices.splice(knownDevices.indexOf(this.device.id), 1);
+            Common.Settings.set_strv("devices", knownDevices);
             
             // EAFP!
             this.stack.infobar.label.set_label(
@@ -522,33 +525,15 @@ var Page = new Lang.Class({
         // TRANSLATORS: Open the file chooser for sending files/links
         keyView.addAccel("share", _("Share File/URL"), 0, 0);
         
-        let deviceAccels = JSON.parse(
-            Common.Settings.get_string("device-keybindings")
+        keyView.setAccels(
+            JSON.parse(this.device.settings.get_string("keybindings"))
         );
-        
-        if (!deviceAccels.hasOwnProperty(this.device.id)) {
-            deviceAccels[this.device.id] = {};
-            Common.Settings.set_string(
-                "device-keybindings",
-                JSON.stringify(deviceAccels)
-            );
-        }
-        
-        keyView.setAccels(deviceAccels[this.device.id]);
-        keyView.setCallback((profile) => {
-            deviceAccels[this.device.id] = profile;
-            Common.Settings.set_string(
-                "device-keybindings",
-                JSON.stringify(deviceAccels)
-            );
+        keyView.setCallback((accels) => {
+            this.device.settings.set_string("keybindings", JSON.stringify(accels));
         });
         keyRow.grid.attach(keyView, 0, 0, 1, 1);
         
         this.show_all();
-    },
-    
-    _refresh: function () {
-        this.config = Common.readDeviceConfiguration(this.device.id);
     }
 });
 
