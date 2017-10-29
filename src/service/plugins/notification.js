@@ -170,7 +170,7 @@ var Plugin = new Lang.Class({
                 
                 let channel = new Protocol.LanDownloadChannel(
                     this.device.daemon,
-                    this.device.identity,
+                    this.device.id,
                     iconStream
                 );
                 
@@ -276,7 +276,7 @@ var Plugin = new Lang.Class({
                     
                     let channel = new Protocol.LanUploadChannel(
                         this.device.daemon,
-                        this.device.identity,
+                        this.device.id,
                         file.read(null)
                     );
             
