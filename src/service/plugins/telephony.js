@@ -141,9 +141,9 @@ var Plugin = new Lang.Class({
                 "'))"
             );
             
-            // Tell the notifications plugin to "silence" any duplicate
-            if (this.device._plugins.has("notifications")) {
-                this.device._plugins.get("notifications").silenceDuplicate(
+            // Tell the notification plugin to "silence" any duplicate
+            if (this.device._plugins.has("notification")) {
+                this.device._plugins.get("notification").silenceDuplicate(
                     // TRANSLATORS: This is specifically for matching missed call notifications on Android.
                     // You should translate this (or not) to match the string on your phone that in english looks like "Missed call: John Lennon"
                     _("Missed call") + ": " + sender
@@ -244,9 +244,9 @@ var Plugin = new Lang.Class({
             );
             window.urgency_hint = true;
             
-            // Tell the notifications plugin to mark any duplicate read
-            if (this.device._plugins.has("notifications")) {
-                this.device._plugins.get("notifications").closeDuplicate(
+            // Tell the notification plugin to mark any duplicate read
+            if (this.device._plugins.has("notification")) {
+                this.device._plugins.get("notification").closeDuplicate(
                     sender + ": " + packet.body.messageBody
                 );
             }
@@ -278,9 +278,9 @@ var Plugin = new Lang.Class({
                 "'))"
             );
             
-            // Tell the notifications plugin to "silence" any duplicate
-            if (this.device._plugins.has("notifications")) {
-                this.device._plugins.get("notifications").silenceDuplicate(
+            // Tell the notification plugin to "silence" any duplicate
+            if (this.device._plugins.has("notification")) {
+                this.device._plugins.get("notification").silenceDuplicate(
                     sender + ": " + packet.body.messageBody
                 );
             }
@@ -488,9 +488,9 @@ var Plugin = new Lang.Class({
             
             window.urgency_hint = true;
             
-            // Tell the notifications plugin to mark any duplicate read
-            if (this.device._plugins.has("notifications")) {
-                this.device._plugins.get("notifications").closeDuplicate(
+            // Tell the notification plugin to mark any duplicate read
+            if (this.device._plugins.has("notification")) {
+                this.device._plugins.get("notification").closeDuplicate(
                     _("Missed call") + ": " + contactName || phoneNumber
                 );
             }
@@ -533,9 +533,9 @@ var Plugin = new Lang.Class({
             
             window.urgency_hint = true;
             
-            // Tell the notifications plugin to mark any duplicate read
-            if (this.device._plugins.has("notifications")) {
-                this.device._plugins.get("notifications").closeDuplicate(
+            // Tell the notification plugin to mark any duplicate read
+            if (this.device._plugins.has("notification")) {
+                this.device._plugins.get("notification").closeDuplicate(
                     contactName || phoneNumber + ": " + messageBody
                 );
             }

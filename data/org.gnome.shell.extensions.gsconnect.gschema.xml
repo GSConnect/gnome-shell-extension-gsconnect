@@ -89,7 +89,7 @@
       <description>The last know port of the device</description>
     </key>
   </schema>
-  <schema id="org.gnome.shell.extensions.gsconnect.plugin.notifications">
+  <schema id="org.gnome.shell.extensions.gsconnect.plugin.notification">
     <key name="receive-notifications" type="b">
       <default>true</default>
       <summary>Receive Notifications</summary>
@@ -121,41 +121,41 @@
   <schema id="org.gnome.shell.extensions.gsconnect.plugin.sftp">
     <key name="automount" type="b">
       <default>false</default>
-      <summary>Automatically mount</summary>
+      <summary>Automatically Mount</summary>
       <description></description>
     </key>
   </schema>
   <schema id="org.gnome.shell.extensions.gsconnect.plugin.share">
     <key name="download-directory" type="s">
       <default>""</default>
-      <summary>Automatically mount</summary>
+      <summary>Download Directory</summary>
       <description></description>
     </key>
     <key name="download-subdirectory" type="b">
       <default>false</default>
-      <summary>Automatically mount</summary>
+      <summary>Use Sudirectory</summary>
       <description></description>
     </key>
   </schema>
   <schema id="org.gnome.shell.extensions.gsconnect.plugin.telephony">
     <key name="missed-call-notification" type="b">
       <default>true</default>
-      <summary>Missed Call Notifications</summary>
+      <summary>Missed Calls</summary>
       <description></description>
     </key>
     <key name="ringing-notification" type="b">
       <default>true</default>
-      <summary>Missed Call Notifications</summary>
+      <summary>Incoming Calls</summary>
       <description></description>
     </key>
     <key name="sms-notification" type="b">
       <default>true</default>
-      <summary>SMS Notifications</summary>
+      <summary>SMS Messages</summary>
       <description></description>
     </key>
     <key name="talking-notification" type="b">
       <default>true</default>
-      <summary>Call In Progress Notifications</summary>
+      <summary>In Progress Calls</summary>
       <description></description>
     </key>
     <key name="pause-music" type="s">

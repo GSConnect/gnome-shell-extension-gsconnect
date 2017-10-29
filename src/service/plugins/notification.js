@@ -28,10 +28,9 @@ const GSettingsWidget = imports.widgets.gsettings;
 
 
 var METADATA = {
-    name: "notifications",
     summary: _("Notifications"),
     description: _("Sync notifications between devices"),
-    wiki: "https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Notifications-Plugin",
+    dbusInterface: "org.gnome.Shell.Extensions.GSConnect.Plugin.Notification",
     incomingPackets: [
         "kdeconnect.notification",
         "kdeconnect.notification.request"
@@ -98,7 +97,7 @@ var Plugin = new Lang.Class({
     },
     
     _init: function (device) {
-        this.parent(device, "notifications");
+        this.parent(device, "notification");
         
         this._duplicates = new Map();
     },

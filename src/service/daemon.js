@@ -320,8 +320,8 @@ var Daemon = new Lang.Class({
         Common.debug("Daemon: Notify()");
         
         for (let device of this._devices.values()) {
-            if (device._plugins.has("notifications")) {
-                let plugin = device._plugins.get("notifications");
+            if (device._plugins.has("notification")) {
+                let plugin = device._plugins.get("notification");
                 // TODO: avoid spread operator if possible
                 plugin.Notify(...Array.from(arguments));
             }
@@ -375,8 +375,8 @@ var Daemon = new Lang.Class({
         if (this._devices.has(param["0"])) {
             let device = this._devices.get(param["0"]);
             
-            if (device._plugins.has("notifications")) {
-                let plugin = device._plugins.get("notifications");
+            if (device._plugins.has("notification")) {
+                let plugin = device._plugins.get("notification");
                 
                 plugin.close(unescape(param["1"]));
             }
