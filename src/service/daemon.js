@@ -177,15 +177,17 @@ var Daemon = new Lang.Class({
             }
         });
         
-        for (let name of Common.findPlugins()) {
-            let metadata = imports.service.plugins[name].METADATA;
-            
-            for (let packetType of metadata.incomingPackets) {
-                packet.body.incomingCapabilities.push(packetType);
-            }
-            
-            for (let packetType of metadata.outgoingPackets) {
-                packet.body.outgoingCapabilities.push(packetType);
+        for (let name in imports.service.plugins) {
+            if (imports.service.plugins[name].METADATA) {
+                let metadata = imports.service.plugins[name].METADATA;
+                
+                for (let packetType of metadata.incomingPackets) {
+                    packet.body.incomingCapabilities.push(packetType);
+                }
+                
+                for (let packetType of metadata.outgoingPackets) {
+                    packet.body.outgoingCapabilities.push(packetType);
+                }
             }
         }
         
@@ -202,20 +204,7 @@ var Daemon = new Lang.Class({
     /**
      * Device Methods
      */
-    _readCache: function () {
-        for (let deviceId of Common.Settings.get_strv("devices")) {
-            let devObjPath = Common.dbusPathFromId(deviceId);
-            let device = new Device.Device({ daemon: this, id: deviceId});
-            this._devices.set(devObjPath, device);
-        }
-            
-        this._dbus.emit_property_changed(
-            "devices",
-            new GLib.Variant("as", this.devices)
-        );
-    },
-    
-    _watchCache: function () {
+    _watchDevices: function () {
         Common.Settings.connect("changed::devices", () => {
             //
             for (let id of Common.Settings.get_strv("devices")) {
@@ -241,6 +230,8 @@ var Daemon = new Lang.Class({
                 }
             }
         });
+        
+        Common.Settings.emit("changed::devices", "devices");
     },
     
     _addDevice: function (packet, channel=null) {
@@ -642,10 +633,8 @@ var Daemon = new Lang.Class({
             }
         });
         
-        this._watchCache();
-        
-        // Load cached devices
-        this._readCache();
+        // Load cached devices and watch for changes
+        this._watchDevices();
         log(this._devices.size + " devices loaded from cache");
         
         this.broadcast();

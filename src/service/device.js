@@ -181,7 +181,9 @@ var Device = new Lang.Class({
         let incoming = packet.body.incomingCapabilities;
         let outgoing = packet.body.outgoingCapabilities;
         
-        for (let name of Common.findPlugins()) {
+        for (let name in imports.service.plugins) {
+            if (!imports.service.plugins[name].METADATA) { continue; }
+            
             let metadata = imports.service.plugins[name].METADATA;
             let supported = false;
             
@@ -557,7 +559,7 @@ var Device = new Lang.Class({
             let enabledPlugins = this.settings.get_strv("enabled-plugins");
             
             if (enabledPlugins.indexOf(name) > -1) {
-                enabledPlugins.pop(name);
+                enabledPlugins.splice(enabledPlugins.indexOf(name), 1);
                 this.settings.set_strv("enabled-plugins", enabledPlugins);
             }
             
@@ -590,7 +592,7 @@ var Device = new Lang.Class({
                 let enabledPlugins = this.settings.get_strv("enabled-plugins");
                 
                 if (enabledPlugins.indexOf(name) > -1) {
-                    enabledPlugins.pop(name);
+                    enabledPlugins.splice(enabledPlugins.indexOf(name), 1);
                     this.settings.set_strv("enabled-plugins", enabledPlugins);
                 }
                 

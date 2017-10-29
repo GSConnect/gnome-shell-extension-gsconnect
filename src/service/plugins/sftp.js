@@ -119,13 +119,6 @@ var Plugin = new Lang.Class({
     
     handlePacket: function (packet) {
         Common.debug("SFTP: handlePacket()");
-        //"ip":"192.168.1.69",
-        //"port":1739,
-        //"user":"kdeconnect",
-        //"password":"uNoMxe1ZsaFTssdaP3T0zDVMo2D5",
-        //"path":"/storage/emulated/0",
-        //"multiPaths":["/storage/emulated/0","/storage/emulated/0/DCIM/Camera"],
-        //"pathNames":["All files","Camera pictures"]
         
         try {
             this._prepare();

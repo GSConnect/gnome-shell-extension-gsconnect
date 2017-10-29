@@ -267,34 +267,14 @@ function initConfiguration () {
 
 function uninitConfiguration () {
     // DBus service file
-    let serviceDir = GLib.get_user_data_dir() + "/dbus-1/services";
-    let serviceFile = "/org.gnome.Shell.Extensions.GSConnect.service";
+    let serviceDir = GLib.get_user_data_dir() + "/dbus-1/services/";
+    let serviceFile = "org.gnome.Shell.Extensions.GSConnect.service";
     GLib.unlink(serviceDir + serviceFile);
     
     // Application desktop file
-    let appDir = GLib.get_user_data_dir() + "/applications";
-    let appFile = "/org.gnome.Shell.Extensions.GSConnect.desktop";
+    let appDir = GLib.get_user_data_dir() + "/applications/";
+    let appFile = "org.gnome.Shell.Extensions.GSConnect.desktop";
     GLib.unlink(appDir + appFile);
-};
-
-
-function findPlugins () {
-    let pluginDir = Gio.File.new_for_path(getPath() + "/service/plugins");
-    let fenum = pluginDir.enumerate_children("standard::*", 0, null);
-
-    let info;
-    let plugins = [];
-
-    while ((info = fenum.next_file(null))) {
-        let file = fenum.get_child(info);
-        let name = file.get_basename().slice(0, -3);
-        
-        if (imports.service.plugins[name].hasOwnProperty("METADATA")) {
-            plugins.push(imports.service.plugins[name].METADATA.name);
-        }
-    }
-    
-    return plugins.sort();
 };
 
 
