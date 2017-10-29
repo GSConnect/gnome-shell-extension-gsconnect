@@ -108,7 +108,7 @@ var Plugin = new Lang.Class({
             )
         );
         
-        if (this.settings.get("missed-call-notification")) {
+        if (this.settings.get_boolean("missed-call-notification")) {
             let notif = new Gio.Notification();
             // TRANSLATORS: Missed Call
             notif.set_title(_("Missed Call"));
@@ -175,7 +175,7 @@ var Plugin = new Lang.Class({
             )
         );
         
-        if (this.settings.get("ringing-notification")) {
+        if (this.settings.get_boolean("ringing-notification")) {
             let notif = new Gio.Notification();
             // TRANSLATORS: Incoming Call
             notif.set_title(_("Incoming Call"));
@@ -252,7 +252,7 @@ var Plugin = new Lang.Class({
             }
         }
         
-        if (this.settings.get("sms-notification")) {
+        if (this.settings.get_boolean("sms-notification")) {
             let notif = new Gio.Notification();
             notif.set_title(sender);
             notif.set_body(packet.body.messageBody);
@@ -311,7 +311,7 @@ var Plugin = new Lang.Class({
             )
         );
         
-        if (this.settings.get("talking-notification")) {
+        if (this.settings.get_boolean("talking-notification")) {
             let notif = new Gio.Notification();
             // TRANSLATORS: Talking on the phone
             notif.set_title(_("Call In Progress"));
