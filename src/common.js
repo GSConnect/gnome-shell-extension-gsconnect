@@ -58,7 +58,7 @@ function getCurrentExtension() {
  * Some useful constants
  */
 var Me = getCurrentExtension();
-var CONFIG_PATH = GLib.get_user_config_dir() + "/gnome-shell-extension-gsconnect";
+var CONFIG_PATH = GLib.get_user_config_dir() + "/gsconnect";
 
 
 /**
