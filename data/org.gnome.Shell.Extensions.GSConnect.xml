@@ -1,4 +1,5 @@
 <node>
+  <!-- Daemon -->
   <interface name="org.gnome.Shell.Extensions.GSConnect">
     <property type="s" name="name" access="readwrite"/>
     <property type="as" name="devices" access="read"/>
@@ -10,5 +11,144 @@
       <arg name="shareable" type="a{ss}" direction="out"/>
     </method>
     <method name="quit"/>
+  </interface>
+  
+  <!-- Device -->
+  <interface name="org.gnome.Shell.Extensions.GSConnect.Device">
+    <property type="b" name="connected" access="read"/>
+    <property type="s" name="fingerprint" access="read"/>
+    <property type="s" name="id" access="read"/>
+    <property type="s" name="name" access="read"/>
+    <property type="b" name="paired" access="read"/>
+    <property type="as" name="plugins" access="read"/>
+    <property type="as" name="supportedPlugins" access="read"/>
+    <property type="s" name="type" access="read"/>
+    
+    <method name="activate"/>
+    <method name="pair"/>
+    <method name="unpair"/>
+    <method name="acceptPair"/>
+    <method name="rejectPair"/>
+    <method name="enablePlugin">
+      <arg name="pluginName" type="s" direction="in"/>
+      <arg name="success" type="b" direction="out"/>
+      <arg name="error" type="s" direction="out"/>
+    </method>
+    <method name="disablePlugin">
+      <arg name="pluginName" type="s" direction="in"/>
+      <arg name="success" type="b" direction="out"/>
+      <arg name="error" type="s" direction="out"/>
+    </method>
+    <method name="reloadPlugins"/>
+    
+    <signal name="pairRequest">
+      <!-- TODO: We're actually emitting the device Id -->
+      <arg name="publicKey" type="s"/>
+    </signal>
+  </interface>
+  
+  <!-- Battery -->
+  <interface name="org.gnome.Shell.Extensions.GSConnect.Plugin.battery">
+    <property type="b" name="charging" access="read"/>
+    <property type="i" name="level" access="read"/>
+    <method name="update"/>
+  </interface>
+  
+  <!-- Clipboard -->
+  <interface name="org.gnome.Shell.Extensions.GSConnect.Plugin.clipboard"/>
+  
+  <!-- FindMyPhone -->
+  <interface name="org.gnome.Shell.Extensions.GSConnect.Plugin.findmyphone">
+    <method name="ring"/>
+  </interface>
+  
+  <!-- Mousepad -->
+  <interface name="org.gnome.Shell.Extensions.GSConnect.Plugin.mousepad"/>
+  
+  <!-- MPRIS -->
+  <interface name="org.gnome.Shell.Extensions.GSConnect.Plugin.mpris"/>
+  
+  <!-- Notifications -->
+  <interface name="org.gnome.Shell.Extensions.GSConnect.Plugin.notifications">
+    <method name="notifications"/>
+    <signal name="received"/>
+    <signal name="dismissed"/>
+  </interface>
+  
+  <!-- Ping -->
+  <interface name="org.gnome.Shell.Extensions.GSConnect.Plugin.ping">
+    <method name="ping">
+      <arg name="message" type="s" direction="in"/>
+    </method>
+    
+    <signal name="ping">
+      <arg name="message" type="s"/>
+    </signal>
+  </interface>
+  
+  <!-- Run Commands -->
+  <interface name="org.gnome.Shell.Extensions.GSConnect.Plugin.runcommand">
+    <method name="sendCommandList"/>
+  </interface>
+  
+  <!-- SFTP -->
+  <interface name="org.gnome.Shell.Extensions.GSConnect.Plugin.sftp">
+    <property type="b" name="mounted" access="read"/> <!-- TODO: read/write? -->
+    <property type="a{ss}" name="directories" access="read"/>
+    
+    <method name="mount"/>
+    <method name="unmount"/>
+  </interface>
+  
+  <!-- Share -->
+  <interface name="org.gnome.Shell.Extensions.GSConnect.Plugin.share">
+    <method name="shareDialog"/>
+    <method name="shareUri">
+      <arg name="uri" type="s" direction="in"/>
+    </method>
+    <signal name="received">
+      <arg name="uri" type="s"/>
+    </signal>
+    <signal name="sent">
+      <arg name="uri" type="s"/>
+    </signal>
+  </interface>
+  
+  <!-- Telephony -->
+  <interface name="org.gnome.Shell.Extensions.GSConnect.Plugin.telephony">
+    <method name="muteCall"/>
+    <method name="openSms"/>
+    <method name="replySms">
+      <arg name="phoneNumber" type="s" direction="in"/>
+      <arg name="contactName" type="s" direction="in"/>
+      <arg name="messageBody" type="s" direction="in"/>
+      <arg name="phoneThumbnail" type="s" direction="in"/>
+    </method>
+    <method name="sendSms">
+      <arg name="phoneNumber" type="s" direction="in"/>
+      <arg name="messageBody" type="s" direction="in"/>
+    </method>
+    
+    <signal name="missedCall">
+      <arg name="phoneNumber" type="s"/>
+      <arg name="contactName" type="s"/>
+      <arg name="phoneThumbnail" type="s"/>
+    </signal>
+    <signal name="ringing">
+      <arg name="phoneNumber" type="s"/>
+      <arg name="contactName" type="s"/>
+      <arg name="phoneThumbnail" type="s"/>
+    </signal>
+    <signal name="sms">
+      <arg name="phoneNumber" type="s"/>
+      <arg name="contactName" type="s"/>
+      <arg name="messageBody" type="s"/>
+      <arg name="phoneThumbnail" type="s"/>
+    </signal>
+    <signal name="talking">
+      <arg name="phoneNumber" type="s"/>
+      <arg name="contactName" type="s"/>
+      <arg name="phoneThumbnail" type="s"/>
+    </signal>
   </interface>
 </node>

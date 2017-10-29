@@ -94,14 +94,9 @@ Resources._register();
  * Common DBus Interface Nodes/Proxies and functions
  */
 var DBusInfo = {
-    Daemon: new Gio.DBusNodeInfo.new_for_xml(
+    GSConnect: new Gio.DBusNodeInfo.new_for_xml(
         Resources.lookup_data(
             "/dbus/org.gnome.Shell.Extensions.GSConnect.xml", 0
-        ).unref_to_array().toString()
-    ),
-    Device: new Gio.DBusNodeInfo.new_for_xml(
-        Resources.lookup_data(
-            "/dbus/org.gnome.Shell.Extensions.GSConnect.Device.xml", 0
         ).unref_to_array().toString()
     ),
     freedesktop: new Gio.DBusNodeInfo.new_for_xml(
@@ -111,8 +106,7 @@ var DBusInfo = {
     )
 };
 
-DBusInfo.Daemon.nodes.forEach((ifaceInfo) => { ifaceInfo.cache_build(); });
-DBusInfo.Device.nodes.forEach((ifaceInfo) => { ifaceInfo.cache_build(); });
+DBusInfo.GSConnect.nodes.forEach((ifaceInfo) => { ifaceInfo.cache_build(); });
 DBusInfo.freedesktop.nodes.forEach((ifaceInfo) => { ifaceInfo.cache_build(); });
 
 var DBusProxy = {

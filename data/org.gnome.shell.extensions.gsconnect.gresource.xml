@@ -5,7 +5,6 @@
     <file compressed="true">org.gnome.Shell.Extensions.GSConnect.service</file>
     <file compressed="true" preprocess="xml-stripblanks">org.freedesktop.Notifications.xml</file>
     <file compressed="true" preprocess="xml-stripblanks">org.gnome.Shell.Extensions.GSConnect.xml</file>
-    <file compressed="true" preprocess="xml-stripblanks">org.gnome.Shell.Extensions.GSConnect.Device.xml</file>
     <file compressed="true" preprocess="xml-stripblanks">org.mpris.MediaPlayer2.xml</file>
     <file compressed="true" preprocess="xml-stripblanks">org.mpris.MediaPlayer2.Player.xml</file>
   </gresource>
