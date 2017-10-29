@@ -93,7 +93,7 @@
   
   <!-- SFTP -->
   <interface name="org.gnome.Shell.Extensions.GSConnect.Plugin.sftp">
-    <property type="b" name="mounted" access="read"/> <!-- TODO: read/write? -->
+    <property type="b" name="mounted" access="read"/>
     <property type="a{ss}" name="directories" access="read"/>
     
     <method name="mount"/>
