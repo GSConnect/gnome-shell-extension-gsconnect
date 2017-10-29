@@ -51,7 +51,9 @@ var Plugin = new Lang.Class({
             throw Error(_("Can't run in Wayland session"));
         }
         
-        if (Atspi.init() > 0) {
+        let ret = Atspi.init();
+        
+        if (ret !== 0 && ret !== 1) {
             this.destroy();
             throw Error(_("Failed to initialize Atspi"));
         }
