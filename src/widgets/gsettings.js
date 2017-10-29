@@ -330,9 +330,9 @@ var FolderSetting = new Lang.Class({
             valign: Gtk.Align.CENTER
         });
         
-        this.set_current_folder(settings.get_string(keyName));
-        this.connect("current-folder-changed", (button) => {
-            settings.get_string(keyName, this.get_current_folder());
+        this.set_filename(settings.get_string(keyName));
+        this.connect("file-set", (button) => {
+            settings.set_string(keyName, this.get_filename());
         });
     }
 });

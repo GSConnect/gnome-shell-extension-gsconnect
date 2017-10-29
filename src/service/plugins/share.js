@@ -234,13 +234,10 @@ var Plugin = new Lang.Class({
     getFilepath: function (filename) {
         Common.debug("Share: getFilepath(" + filename + ")");
         
-        let path = this.settings.download_directory
+        let path = this.settings.get_string("download-directory");
         
-        if (this.settings.download_subdirs) {
-            path = GLib.build_pathv("/", [
-                this.settings.download_directory,
-                this.device.name
-            ]);
+        if (this.settings.get_boolean("download-subdirectory")) {
+            path = GLib.build_pathv("/", [path, this.device.name]);
         }
         
         if (!GLib.file_test(path, GLib.FileTest.IS_DIR)) {
