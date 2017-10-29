@@ -39,8 +39,8 @@ var METADATA = {
  * SFTP Plugin
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/sftp
  *
- * TODO: umount vs fusermount vs -autounmount switch
- *       stderr checking
+ * TODO: umount vs fusermount vs -autounmount switch (apparently there's no
+ *       fusermount on BSD)
  *       there's a comment in the Android app source that says SSHFS 3.0 and
  *       3.2 cause data corruption...
  */

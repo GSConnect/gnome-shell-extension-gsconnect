@@ -40,7 +40,6 @@ var METADATA = {
  * Telephony Plugin
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/telephony
  *
- * FIXME: signals during missing/null params
  * TODO: phoneThumbnail's are super small in notifications :(
  *       track notifs: isCancel events, append new messages to unacknowledged?
  *       mute/unmute: pactl set-sink-mute @DEFAULT_SINK@ 1/0
