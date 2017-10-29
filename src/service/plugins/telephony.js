@@ -95,9 +95,9 @@ var Plugin = new Lang.Class({
         
         this.emit(
             "missedCall",
-            packet.body.phoneNumber || "",
-            packet.body.contactName || "",
-            packet.body.phoneThumbnail || ""
+            packet.body.phoneNumber,
+            packet.body.contactName,
+            packet.body.phoneThumbnail
         );
         this._dbus.emit_signal("missedCall",
             new GLib.Variant(
@@ -393,13 +393,10 @@ var Plugin = new Lang.Class({
     handlePacket: function (packet) {
         Common.debug("Telephony: handlePacket()");
         
-        // There are six possible variables:
-        //    * "event"             missedCall, ringing, sms or talking
-        //    * "phoneNumber"       Always present
-        //    * "contactName"       May be absent or empty
-        //    * "messageBody"       SMS only
-        //    * "phoneThumbnail"    May be absent or empty (base64 ByteArray JPEG)
-        //    * "isCancel"          "ringing" or "talking" has ceased
+        // Ensure our signal emissions don't choke, but leave them falsey
+        packet.body.contactName = packet.body.contactName || "";
+        packet.body.phoneNumber = packet.body.phoneNumber || "";
+        packet.body.phoneThumbnail = packet.body.phoneThumbnail || "";
         
         let sender;
                 
