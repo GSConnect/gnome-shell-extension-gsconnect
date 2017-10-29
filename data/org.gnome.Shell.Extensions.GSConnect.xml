@@ -58,7 +58,7 @@
   <interface name="org.gnome.Shell.Extensions.GSConnect.Plugin.Clipboard"/>
   
   <!-- FindMyPhone -->
-  <interface name="org.gnome.Shell.Extensions.GSConnect.Plugin.Findmyphone">
+  <interface name="org.gnome.Shell.Extensions.GSConnect.Plugin.FindMyPhone">
     <method name="ring"/>
   </interface>
   
