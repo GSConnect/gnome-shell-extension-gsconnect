@@ -26,6 +26,7 @@ var METADATA = {
     summary: _("Locate Device"),
     description: _("Find a device by making it ring"),
     dbusInterface: "org.gnome.Shell.Extensions.GSConnect.Plugin.FindMyPhone",
+    schemaId: "org.gnome.shell.extensions.gsconnect.plugin.findmyphone",
     incomingPackets: [],
     outgoingPackets: ["kdeconnect.findmyphone.request"]
 };

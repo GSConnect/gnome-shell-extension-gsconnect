@@ -28,6 +28,7 @@ var METADATA = {
     summary: _("Ping"),
     description: _("Send and receive pings"),
     dbusInterface: "org.gnome.Shell.Extensions.GSConnect.Plugin.Ping",
+    schemaId: "org.gnome.shell.extensions.gsconnect.plugin.ping",
     incomingPackets: ["kdeconnect.ping"],
     outgoingPackets: ["kdeconnect.ping"]
 };

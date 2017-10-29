@@ -28,6 +28,7 @@ var METADATA = {
     summary: _("Battery"),
     description: _("Monitor battery level and charging state"),
     dbusInterface: "org.gnome.Shell.Extensions.GSConnect.Plugin.Battery",
+    schemaId: "org.gnome.shell.extensions.gsconnect.plugin.battery",
     incomingPackets: ["kdeconnect.battery"],
     outgoingPackets: ["kdeconnect.battery.request"]
 };

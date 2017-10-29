@@ -23,15 +23,11 @@ const Common = imports.common;
 const Protocol = imports.service.protocol;
 const PreferencesWidget = imports.widgets.preferences;
 
-const SCHEMA_PREFIX = "org.gnome.shell.extensions.gsconnect.plugin.";
 const SCHEMA_PATH = "/org/gnome/shell/extensions/gsconnect/device/";
 
 
 /**
  * Base class for plugins
- *
- * TODO: auto-call PropertiesChanged?
- *       make more "introspectable"?
  */
 var Plugin = new Lang.Class({
     Name: "GSConnectPlugin",
@@ -39,13 +35,13 @@ var Plugin = new Lang.Class({
     
     _init: function (device, name) {
         this.parent();
+        
         this.device = device;
+        let metadata = imports.service.plugins[name].METADATA;
         
         // Export DBus
         this._dbus = Gio.DBusExportedObject.wrapJSObject(
-            Common.DBusInfo.GSConnect.lookup_interface(
-                imports.service.plugins[name].METADATA.dbusInterface
-            ),
+            Common.DBusInfo.GSConnect.lookup_interface(metadata.dbusInterface),
             this
         );
         this._dbus.export(Gio.DBus.session, device._dbus.get_object_path());
@@ -53,10 +49,7 @@ var Plugin = new Lang.Class({
         // Init GSettings
         if (imports.service.plugins[name].SettingsDialog) {
             this.settings = new Gio.Settings({
-                settings_schema: Common.SchemaSource.lookup(
-                    SCHEMA_PREFIX + name,
-                    -1
-                ),
+                settings_schema: Common.SchemaSource.lookup(metadata.schemaId, -1),
                 path: SCHEMA_PATH + device.id + "/plugin/" + name + "/"
             });
         }
@@ -73,6 +66,9 @@ var Plugin = new Lang.Class({
 });
 
 
+/**
+ * Base class for plugin settings dialogs
+ */
 var SettingsDialog = new Lang.Class({
     Name: "GSConnectPluginSettingsDialog",
     Extends: Gtk.Dialog,
@@ -89,10 +85,7 @@ var SettingsDialog = new Lang.Class({
         let metadata = imports.service.plugins[name].METADATA;
         
         this.settings = new Gio.Settings({
-            settings_schema: Common.SchemaSource.lookup(
-                "org.gnome.shell.extensions.gsconnect.plugin." + name,
-                -1
-            ),
+            settings_schema: Common.SchemaSource.lookup(metadata.schemaId, -1),
             path: ["/org/gnome/shell/extensions/gsconnect/device/",
                    this.device.id, "/plugin/", name, "/"].join("")
         });

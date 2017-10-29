@@ -29,6 +29,7 @@ var METADATA = {
     summary: _("Browse Files"),
     description: _("Mount and browse device filesystems"),
     dbusInterface: "org.gnome.Shell.Extensions.GSConnect.Plugin.SFTP",
+    schemaId: "org.gnome.shell.extensions.gsconnect.plugin.sftp",
     incomingPackets: ["kdeconnect.sftp"],
     outgoingPackets: ["kdeconnect.sftp.request"]
 };

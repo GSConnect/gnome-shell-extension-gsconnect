@@ -29,6 +29,7 @@ var METADATA = {
     summary: _("Clipboard"),
     description: _("Sync the clipboard between devices"),
     dbusInterface: "org.gnome.Shell.Extensions.GSConnect.Plugin.Clipboard",
+    schemaId: "org.gnome.shell.extensions.gsconnect.plugin.clipboard",
     incomingPackets: ["kdeconnect.clipboard"],
     outgoingPackets: ["kdeconnect.clipboard"]
 };

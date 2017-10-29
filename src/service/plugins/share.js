@@ -30,6 +30,7 @@ var METADATA = {
     summary: _("Share"),
     description: _("Send and receive files and URLs"),
     dbusInterface: "org.gnome.Shell.Extensions.GSConnect.Plugin.Share",
+    schemaId: "org.gnome.shell.extensions.gsconnect.plugin.share",
     incomingPackets: ["kdeconnect.share.request"],
     outgoingPackets: ["kdeconnect.share.request"]
 };
@@ -530,7 +531,10 @@ var SettingsDialog = new Lang.Class({
             // TRANSLATORS: eg. Use a subdirectory named <b>Google Pixel<b>
             _("Use a subdirectory named <b>%s</b>").format(this.device.name),
             null,
-            new GSettingsWidget.BoolSetting(this.settings,"download-subdirectory")
+            new GSettingsWidget.BoolSetting(    
+                this.settings,
+                "download-subdirectory"
+            )
         );
         
         this.content.show_all();
