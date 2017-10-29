@@ -537,7 +537,7 @@ var Daemon = new Lang.Class({
      */
     _watchDaemon: function () {
         let daemonFile = Gio.File.new_for_path(
-            Common.Me.path + "/service/daemon.js"
+            getPath() + "/service/daemon.js"
         );
         this.daemonMonitor = daemonFile.monitor(
             Gio.FileMonitorFlags.WATCH_MOVES,
