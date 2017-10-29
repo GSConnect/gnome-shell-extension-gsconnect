@@ -38,7 +38,8 @@ var METADATA = {
  * Battery Plugin
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/battery
  *
- * TODO: It's possible to report battery stats if deviceType is "laptop", see:
+ * TODO: Clear threshold notification, when event "ends"
+ *       It's possible to report battery stats if deviceType is "laptop", see:
  *       https://github.com/GNOME/gnome-shell/blob/master/js/ui/status/power.js
  */
 var Plugin = new Lang.Class({
