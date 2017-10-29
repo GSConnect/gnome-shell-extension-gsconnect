@@ -30,6 +30,7 @@ var METADATA = {
     summary: _("Browse Files"),
     description: _("Mount and browse device filesystems"),
     wiki: "https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Browse-Files-Plugin",
+    dbusInterface: "org.gnome.Shell.Extensions.GSConnect.Plugin.SFTP",
     incomingPackets: ["kdeconnect.sftp"],
     outgoingPackets: ["kdeconnect.sftp.request"]
 };

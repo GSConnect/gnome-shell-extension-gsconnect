@@ -28,6 +28,7 @@ var METADATA = {
     summary: _("Media Player Control"),
     description: _("Control MPRIS2 enabled media players"),
     wiki: "https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Media-Player-Control-Plugin",
+    dbusInterface: "org.gnome.Shell.Extensions.GSConnect.Plugin.MPRIS",
     incomingPackets: ["kdeconnect.mpris.request"],
     outgoingPackets: ["kdeconnect.mpris"]
 };

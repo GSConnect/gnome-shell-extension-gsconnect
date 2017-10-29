@@ -40,10 +40,17 @@ var Plugin = new Lang.Class({
     _init: function (device, name) {
         this.parent();
         this.device = device;
-        this.name = name;
         
-        this.export_interface();
+        // Export DBus
+        this._dbus = Gio.DBusExportedObject.wrapJSObject(
+            Common.DBusInfo.GSConnect.lookup_interface(
+                imports.service.plugins[name].METADATA.dbusInterface
+            ),
+            this
+        );
+        this._dbus.export(Gio.DBus.session, device._dbus.get_object_path());
         
+        // Init GSettings
         if (imports.service.plugins[name].SettingsDialog) {
             this.settings = new Gio.Settings({
                 settings_schema: Common.SchemaSource.lookup(
@@ -55,19 +62,7 @@ var Plugin = new Lang.Class({
         }
     },
     
-    export_interface: function () {
-        // Export DBus
-        let iface = "org.gnome.Shell.Extensions.GSConnect.Plugin." + this.name;
-        this._dbus = Gio.DBusExportedObject.wrapJSObject(
-            Common.DBusInfo.GSConnect.lookup_interface(iface),
-            this
-        );
-        this._dbus.export(Gio.DBus.session, this.device._dbus.get_object_path());
-    },
-    
     handlePacket: function (packet) { throw Error("Not implemented"); },
-    
-    reconfigure: function () {},
     
     destroy: function () {
         this._dbus.flush();

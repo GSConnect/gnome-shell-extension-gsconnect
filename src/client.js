@@ -140,7 +140,9 @@ var Battery = new Lang.Class({
     
     _init: function (dbusPath) {
         this.parent(
-            Common.DbusInfo.GSConnectlookup_interface("org.gnome.Shell.Extensions.GSConnect.Plugin.battery"),
+            Common.DBusInfo.GSConnect.lookup_interface(
+                "org.gnome.Shell.Extensions.GSConnect.Plugin.Battery"
+            ),
             dbusPath
         );
         
@@ -181,7 +183,9 @@ var SFTP = new Lang.Class({
     
     _init: function (dbusPath) {
         this.parent(
-            Common.DbusInfo.GSConnectlookup_interface("org.gnome.Shell.Extensions.GSConnect.Plugin.sftp"),
+            Common.DBusInfo.GSConnect.lookup_interface(
+                "org.gnome.Shell.Extensions.GSConnect.Plugin.SFTP"
+            ),
             dbusPath
         );
         
@@ -241,7 +245,9 @@ var Telephony = new Lang.Class({
     
     _init: function (dbusPath) {
         this.parent(
-            Common.DbusInfo.GSConnectlookup_interface("org.gnome.Shell.Extensions.GSConnect.Plugin.telephony"),
+            Common.DBusInfo.GSConnect.lookup_interface(
+                "org.gnome.Shell.Extensions.GSConnect.Plugin.Telephony"
+            ),
             dbusPath
         );
         
@@ -366,7 +372,9 @@ var Device = new Lang.Class({
     
     _init: function (dbusPath) {
         this.parent(
-            Common.DbusInfo.GSConnectlookup_interface("org.gnome.Shell.Extensions.GSConnect.Device"),
+            Common.DBusInfo.GSConnect.lookup_interface(
+                "org.gnome.Shell.Extensions.GSConnect.Device"
+            ),
             dbusPath
         );
         
@@ -412,7 +420,7 @@ var Device = new Lang.Class({
     pair: function () { this._call("pair", true); },
     unpair: function () { this._call("unpair", true); },
     
-    ping: function () { this._call("ping", true); },
+    ping: function () { this.ping._call("ping", true); },
     ring: function () { this.findmyphone._call("ring", true); },
     shareDialog: function () { this.share._call("shareDialog", true); },
     shareUri: function (uri) { this.share._call("shareUri", true, uri); },
@@ -423,12 +431,6 @@ var Device = new Lang.Class({
     },
     disablePlugin: function (name) {
         return this._call("disablePlugin", false, name);
-    },
-    configurePlugin: function (name, obj) {
-        return this._call("configurePlugin", false, name, JSON.stringify(obj));
-    },
-    reloadPlugins: function () {
-        return this._call("reloadPlugins", true);
     },
     
     _pluginsChanged: function () {
@@ -441,7 +443,9 @@ var Device = new Lang.Class({
         
         if (this.plugins.indexOf("findmyphone") > -1) {
             this.findmyphone = new ProxyBase(
-                Common.DbusInfo.GSConnectlookup_interface("org.gnome.Shell.Extensions.GSConnect.Plugin.findmyphone"),
+                Common.DBusInfo.GSConnect.lookup_interface(
+                    "org.gnome.Shell.Extensions.GSConnect.Plugin.FindMyPhone"
+                ),
                 this.gObjectPath
             );
         } else if (this.hasOwnProperty("findmyphone")) {
@@ -451,7 +455,9 @@ var Device = new Lang.Class({
         
         if (this.plugins.indexOf("ping") > -1) {
             this.ping = new ProxyBase(
-                Common.DbusInfo.GSConnectlookup_interface("org.gnome.Shell.Extensions.GSConnect.Plugin.ping"),
+                Common.DBusInfo.GSConnect.lookup_interface(
+                    "org.gnome.Shell.Extensions.GSConnect.Plugin.Ping"
+                ),
                 this.gObjectPath
             );
         } else if (this.hasOwnProperty("ping")) {
@@ -468,7 +474,9 @@ var Device = new Lang.Class({
         
         if (this.plugins.indexOf("share") > -1) {
             this.share = new ProxyBase(
-                Common.DbusInfo.GSConnectlookup_interface("org.gnome.Shell.Extensions.GSConnect.Plugin.share"),
+                Common.DBusInfo.GSConnect.lookup_interface(
+                    "org.gnome.Shell.Extensions.GSConnect.Plugin.Share"
+                ),
                 this.gObjectPath
             );
         } else if (this.hasOwnProperty("share")) {
@@ -539,7 +547,9 @@ var Daemon = new Lang.Class({
     
     _init: function () {
         this.parent(
-            Common.DbusInfo.GSConnectlookup_interface("org.gnome.Shell.Extensions.GSConnect"),
+            Common.DBusInfo.GSConnect.lookup_interface(
+                "org.gnome.Shell.Extensions.GSConnect"
+            ),
             "/org/gnome/Shell/Extensions/GSConnect"
         );
         

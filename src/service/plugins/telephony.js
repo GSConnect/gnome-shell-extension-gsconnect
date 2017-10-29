@@ -31,6 +31,7 @@ var METADATA = {
     summary: _("Telephony"),
     description: _("Call notification and SMS messaging"),
     wiki: "https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Telephony-Plugin",
+    dbusInterface: "org.gnome.Shell.Extensions.GSConnect.Plugin.Telephony",
     incomingPackets: ["kdeconnect.telephony"],
     outgoingPackets: ["kdeconnect.telephony.request", "kdeconnect.sms.request"]
 };
