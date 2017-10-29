@@ -27,10 +27,8 @@ const GSettingsWidget = imports.widgets.gsettings;
 
 
 var METADATA = {
-    name: "share",
     summary: _("Share"),
     description: _("Send and receive files and URLs"),
-    wiki: "https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Share-Plugin",
     dbusInterface: "org.gnome.Shell.Extensions.GSConnect.Plugin.Share",
     incomingPackets: ["kdeconnect.share.request"],
     outgoingPackets: ["kdeconnect.share.request"]

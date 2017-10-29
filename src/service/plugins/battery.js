@@ -25,10 +25,8 @@ const PluginsBase = imports.service.plugins.base;
 
 
 var METADATA = {
-    name: "battery",
     summary: _("Battery"),
     description: _("Monitor battery level and charging state"),
-    wiki: "https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Battery-Plugin",
     dbusInterface: "org.gnome.Shell.Extensions.GSConnect.Plugin.Battery",
     incomingPackets: ["kdeconnect.battery"],
     outgoingPackets: ["kdeconnect.battery.request"]

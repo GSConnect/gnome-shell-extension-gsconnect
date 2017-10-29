@@ -26,10 +26,8 @@ const PluginsBase = imports.service.plugins.base;
 
 
 var METADATA = {
-    name: "mousepad",
     summary: _("Remote Input"),
     description: _("Control the mouse and keyboard remotely"),
-    wiki: "https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Remote-Input-Plugin",
     dbusInterface: "org.gnome.Shell.Extensions.GSConnect.Plugin.Mousepad",
     incomingPackets: ["kdeconnect.mousepad.request"],
     outgoingPackets: []

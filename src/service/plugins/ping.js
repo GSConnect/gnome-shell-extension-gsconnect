@@ -25,10 +25,8 @@ const PluginsBase = imports.service.plugins.base;
 
 
 var METADATA = {
-    name: "ping",
     summary: _("Ping"),
     description: _("Send and receive pings"),
-    wiki: "https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Ping-Plugin",
     dbusInterface: "org.gnome.Shell.Extensions.GSConnect.Plugin.Ping",
     incomingPackets: ["kdeconnect.ping"],
     outgoingPackets: ["kdeconnect.ping"]

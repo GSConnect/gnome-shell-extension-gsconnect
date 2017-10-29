@@ -26,10 +26,8 @@ const PluginsBase = imports.service.plugins.base;
 
 
 var METADATA = {
-    name: "clipboard",
     summary: _("Clipboard"),
     description: _("Sync the clipboard between devices"),
-    wiki: "https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Clipboard-Plugin",
     dbusInterface: "org.gnome.Shell.Extensions.GSConnect.Plugin.Clipboard",
     incomingPackets: ["kdeconnect.clipboard"],
     outgoingPackets: ["kdeconnect.clipboard"]

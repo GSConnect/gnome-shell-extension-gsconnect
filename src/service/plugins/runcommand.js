@@ -26,10 +26,8 @@ const PluginsBase = imports.service.plugins.base;
 
 
 var METADATA = {
-    name: "runcommand",
     summary: _("Run Commands"),
     description: _("Execute local commands remotely"),
-    wiki: "https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Run-Commands-Plugin",
     dbusInterface: "org.gnome.Shell.Extensions.GSConnect.Plugin.RunCommand",
     incomingPackets: ["kdeconnect.runcommand.request"],
     outgoingPackets: ["kdeconnect.runcommand"]
