@@ -421,17 +421,17 @@ var SettingsDialog = new Lang.Class({
             let row = this.appSection.addRow();
             
             try {
-                row.icon = new Gtk.Image({
+                row.appIcon = new Gtk.Image({
                     icon_name: this._applications[name].iconName,
                     icon_size: Gtk.IconSize.DND
                 });
             } catch (e) {
-                row.icon = new Gtk.Image({
+                row.appIcon = new Gtk.Image({
                     icon_name: "application-x-executable",
                     icon_size: Gtk.IconSize.DND
                 });
             }
-            row.grid.attach(row.icon, 0, 0, 1, 1);
+            row.grid.attach(row.appIcon, 0, 0, 1, 1);
             
             row.appName = new Gtk.Label({
                 label: name,
@@ -440,19 +440,19 @@ var SettingsDialog = new Lang.Class({
             });
             row.grid.attach(row.appName, 1, 0, 1, 1);
             
-            row.switch = new Gtk.Switch({
+            row.appSwitch = new Gtk.Switch({
                 active: this._applications[name].enabled,
                 halign: Gtk.Align.END,
                 valign: Gtk.Align.CENTER
             });
-            row.switch.connect("notify::active", (widget) => {
-                this._applications[name].enabled = row.switch.active;
+            row.appSwitch.connect("notify::active", (widget) => {
+                this._applications[row.appName.label].enabled = row.appSwitch.active;
                 this.settings.set_string(
                     "send-applications", 
                     JSON.stringify(this._applications)
                 );
             });
-            row.grid.attach(row.switch, 2, 0, 1, 1);
+            row.grid.attach(row.appSwitch, 2, 0, 1, 1);
         }
     },
     
