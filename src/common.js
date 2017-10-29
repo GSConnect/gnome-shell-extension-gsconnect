@@ -18,6 +18,9 @@ function getPath() {
 
 imports.searchPath.push(getPath());
 
+var CONFIG_PATH = GLib.get_user_config_dir() + "/gsconnect";
+var METADATA = JSON.parse(GLib.file_get_contents(getPath() + "/metadata.json")[1]);
+
 
 /**
  * Open the extension preferences window
@@ -34,64 +37,30 @@ function startPreferences () {
 
 
 /**
- * Return an extension object for GJS apps not privy to Gnome Shell imports
- */
-function getCurrentExtension() {
-    // Diced from: https://github.com/optimisme/gjs-examples/
-    let m = new RegExp("@(.+):\\d+").exec((new Error()).stack.split("\n")[1]);
-    let dir = Gio.File.new_for_path(m[1]).get_parent();
-    
-    let [s, meta, tag] = dir.get_child("metadata.json").load_contents(null);
-    
-    return {
-        metadata: JSON.parse(meta),
-        uuid: this.uuid,
-        type: 2,
-        dir: dir,
-        path: dir.get_path(),
-        error: "",
-        hasPrefs: dir.get_child("prefs.js").query_exists(null)
-    };
-}
-
-/**
- * Some useful constants
- */
-var Me = getCurrentExtension();
-var CONFIG_PATH = GLib.get_user_config_dir() + "/gsconnect";
-
-
-/**
  * Init GSettings
  */
 var SchemaSource = Gio.SettingsSchemaSource.new_from_directory(
-    Me.dir.get_child('schemas').get_path(),
+    getPath() + "/schemas",
     Gio.SettingsSchemaSource.get_default(),
     false
 );
 
 var Settings = new Gio.Settings({
-    settings_schema: SchemaSource.lookup(Me.metadata['app-id'], true)
+    settings_schema: SchemaSource.lookup(METADATA['app-id'], true)
 });
 
 
 /**
- * Initialize Gettext for metadata['gettext-domain']
+ * Init GResources
  */
-function initTranslations() {
-    Gettext.bindtextdomain(
-        Me.metadata['extension-id'],
-        Me.dir.get_child('locale').get_path()
-    );
-}
-
-/** Init GResource for fallback icons */
-var Resources = Gio.resource_load(Me.path + "/org.gnome.shell.extensions.gsconnect.gresource");
+var Resources = Gio.resource_load(
+    getPath() + "/org.gnome.shell.extensions.gsconnect.gresource"
+);
 Resources._register();
 
 
 /**
- * Common DBus Interface Nodes/Proxies and functions
+ * Common DBus Interface Nodes, Proxies and functions
  */
 var DBusInfo = {
     GSConnect: new Gio.DBusNodeInfo.new_for_xml(
@@ -138,15 +107,13 @@ function dbusPathFromId (id) {
  */
 function debug(msg) {
     if (Settings.get_boolean("debug")) {
-        log("[" + Me.metadata.uuid + "]: " + msg);
+        log("[" + METADATA.uuid + "]: " + msg);
     }
 }
 
 
 /**
- * Generate a PrivateKey and TLS Certificate
- *
- * @param {Boolean} force - Force generation even if already created
+ * Generate a Private Key and TLS Certificate
  */
 function generateEncryption () {
     if (!GLib.file_test(CONFIG_PATH, GLib.FileTest.IS_DIR)) {
@@ -186,6 +153,11 @@ function generateEncryption () {
 };
 
 
+/**
+ * Return a Gio.TlsCertificate object, for @id if given, or false if none
+ *
+ * @param {string} [id] - A device Id
+ */
 function getCertificate (id=false) {
     if (id) {
         let settings = new Gio.Settings({
@@ -213,6 +185,9 @@ function getCertificate (id=false) {
 };
 
 
+/**
+ * Install a .desktop file and DBus service file for GSConnect
+ */
 function installService () {
     // DBus service file
     let serviceDir = GLib.get_user_data_dir() + "/dbus-1/services";
@@ -244,22 +219,10 @@ function installService () {
 };
 
 
-function initConfiguration () {
-    try {
-        generateEncryption(false);
-        installService();
-        initTranslations();
-        Gtk.IconTheme.get_default().add_resource_path("/icons");
-    } catch (e) {
-        log("Error initializing configuration: " + e);
-        return false;
-    }
-    
-    return true;
-};
-
-
-function uninitConfiguration () {
+/**
+ * Uninstall the .desktop file and DBus service file
+ */
+function uninstallService () {
     // DBus service file
     let serviceDir = GLib.get_user_data_dir() + "/dbus-1/services/";
     let serviceFile = "org.gnome.Shell.Extensions.GSConnect.service";
@@ -269,6 +232,24 @@ function uninitConfiguration () {
     let appDir = GLib.get_user_data_dir() + "/applications/";
     let appFile = "org.gnome.Shell.Extensions.GSConnect.desktop";
     GLib.unlink(appDir + appFile);
+};
+
+
+/**
+ * Init the configuration
+ */
+function initConfiguration () {
+    try {
+        generateEncryption();
+        installService();
+        Gettext.bindtextdomain("gsconnect", getPath() + "/locale");
+        Gtk.IconTheme.get_default().add_resource_path("/icons");
+    } catch (e) {
+        log("Error initializing configuration: " + e);
+        return false;
+    }
+    
+    return true;
 };
 
 
@@ -334,13 +315,37 @@ Gio.TlsCertificate.prototype.fingerprint = function () {
 
 
 /**
- * FIXME: organize
- * Javascript Polyfills for older versions of GJS:
- *
- *     Object.assign()
+ * String.format API supporting %s, %d, %x and %f
+ * See: https://github.com/GNOME/gjs/blob/master/modules/format.js
  */
 String.prototype.format = Format.format;
 
+
+/**
+ * A rarely repeating array shuffler
+ * See: https://stackoverflow.com/a/17891411/1108697
+ */
+Object.defineProperty(Array, "shuffler", {
+    value: function (array) {
+        "use strict";
+        if (!array) { array = this; }
+        var copy = array.slice(0);
+        return function () {
+            if (copy.length < 1) { copy = array.slice(0); }
+            var index = Math.floor(Math.random() * copy.length);
+            var item = copy[index];
+            copy.splice(index, 1);
+            return item;
+        };
+    },
+    writable: true,
+    configurable: true
+});
+
+
+/**
+ * Object.assign() Polyfill
+ */
 if (typeof Object.assign != "function") {
   // Must be writable: true, enumerable: false, configurable: true
   Object.defineProperty(Object, "assign", {
@@ -369,53 +374,5 @@ if (typeof Object.assign != "function") {
     writable: true,
     configurable: true
   });
-}
-
-
-/**
- * A rarely repeating array shuffler
- * See: https://stackoverflow.com/a/17891411/1108697
- *
- * @param {array} - An array to shuffle
- * @return {*} - The shuffled array item
- */
-Object.defineProperty(Array, "shuffler", {
-    value: function (array) {
-        "use strict";
-        if (!array) { array = this; }
-        var copy = array.slice(0);
-        return function () {
-            if (copy.length < 1) { copy = array.slice(0); }
-            var index = Math.floor(Math.random() * copy.length);
-            var item = copy[index];
-            copy.splice(index, 1);
-            return item;
-        };
-    },
-    writable: true,
-    configurable: true
-});
-
-
-/** https://stackoverflow.com/a/37164538/1108697 */
-function isObject(item) {
-  return (item && typeof item === "object" && !Array.isArray(item));
-}
-
-function mergeDeep(target, source) {
-  let output = Object.assign({}, target);
-  if (isObject(target) && isObject(source)) {
-    Object.keys(source).forEach(key => {
-      if (isObject(source[key])) {
-        if (!(key in target))
-          Object.assign(output, { [key]: source[key] });
-        else
-          output[key] = mergeDeep(target[key], source[key]);
-      } else {
-        Object.assign(output, { [key]: source[key] });
-      }
-    });
-  }
-  return output;
 }
 
