@@ -86,8 +86,7 @@ var SettingsDialog = new Lang.Class({
         
         this.settings = new Gio.Settings({
             settings_schema: Common.SchemaSource.lookup(metadata.schemaId, -1),
-            path: ["/org/gnome/shell/extensions/gsconnect/device/",
-                   this.device.id, "/plugin/", name, "/"].join("")
+            path: SCHEMA_PATH + device.id + "/plugin/" + name + "/"
         });
         this.settings.delay();
         
