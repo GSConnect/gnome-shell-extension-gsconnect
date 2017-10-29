@@ -131,27 +131,11 @@ var PrefsWidget = new Lang.Class({
             { margin_bottom: 32 }
         );
         develSection.addGSetting(Common.Settings, "debug");
-        
-        let stopButton = new Gtk.Button({
-            image: Gtk.Image.new_from_icon_name(
-                "process-stop-symbolic",
-                Gtk.IconSize.BUTTON
-            ),
-            always_show_image: true,
-            can_focus: true,
-            halign: Gtk.Align.END,
-            valign: Gtk.Align.CENTER
+        Common.Settings.connect("changed::debug", () => {
+            if (Common.Settings.get_boolean("debug")) {
+                this.daemon.quit();
+            }
         });
-        stopButton.get_style_context().add_class("circular");
-        stopButton.connect(
-            "clicked",
-            Lang.bind(this.daemon, this.daemon.quit)
-        );
-        develSection.addSetting(
-            _("Stop Service"),
-            _("Instruct the daemon to quit"),
-            stopButton
-        );
     }
 });
 
