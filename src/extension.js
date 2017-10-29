@@ -920,6 +920,6 @@ function disable() {
     
     GObject.signal_handlers_destroy(Settings);
     systemIndicator.destroy();
-    Common.uninitConfiguration()
+    Common.uninstallService()
 }
 
