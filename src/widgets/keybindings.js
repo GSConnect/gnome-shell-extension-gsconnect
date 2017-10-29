@@ -17,14 +17,15 @@ var TreeView = new Lang.Class({
     Name: "GSConnectKeybindingsTreeView",
     Extends: Gtk.TreeView,
     
-    _init: function () {
+    _init: function (settings, keyName) {
         this.parent({
             headers_visible: false,
             hexpand: true,
             activate_on_single_click: true
         });
         
-        this._callback = undefined;
+        this.settings = settings;
+        this.keyName = keyName;
         
         this.shellBus = new Gio.DBusProxy({
             gConnection: Gio.DBus.session,
@@ -35,27 +36,27 @@ var TreeView = new Lang.Class({
         
         let listStore = new Gtk.ListStore();
         listStore.set_column_types([
-            GObject.TYPE_STRING,    // ID
+            GObject.TYPE_STRING,    // Name
             GObject.TYPE_STRING,    // Description
             GObject.TYPE_INT,       // Key
             GObject.TYPE_INT        // Modifiers
         ]);
         this.model = listStore;
 
-        // Description column.
-        let descCell = new Gtk.CellRendererText({ xpad: 12, ypad: 12 });
+        // Description column
+        let descCell = new Gtk.CellRendererText({ xpad: 6, ypad: 8 });
         let descCol = new Gtk.TreeViewColumn({ expand: true, clickable: false });
         descCol.pack_start(descCell, true);
         descCol.add_attribute(descCell, "text", 1);
         this.append_column(descCol);
 
-        // Key binding column.
+        // Keybinding column
         this.accelCell = new Gtk.CellRendererAccel({
             accel_mode: Gtk.CellRendererAccelMode.GTK,
             editable: true,
             xalign: 1,
-            xpad: 12,
-            ypad: 12
+            xpad: 6,
+            ypad: 8
         });
 
         let accelCol = new Gtk.TreeViewColumn();
@@ -69,18 +70,19 @@ var TreeView = new Lang.Class({
             let [success, iter] = this.model.get_iter_from_string(path);
             
             if (success && mods > 0) {
-                let id = this.model.get_value(iter, 0);
+                let name = this.model.get_value(iter, 0);
                 let binding = Gtk.accelerator_name(key, mods);
                 
                 // Check for existing instance of binding
                 if (this._check(binding)) {
                     let accels = this.getAccels();
-                    accels[id] = binding;
+                    accels[name] = binding;
                     this.setAccels(accels);
                     
-                    if (typeof this._callback === "function") {
-                        this._callback(this.getAccels());
-                    }
+                    this.settings.set_string(
+                        this.keyName,
+                        JSON.stringify(this.getAccels())
+                    );
                 }
             }
         });
@@ -92,9 +94,10 @@ var TreeView = new Lang.Class({
                 let index = this.model.get_value(iter, 0);
                 this.model.set(iter, [2, 3], [0, 0]);
                 
-                if (typeof this._callback === "function") {
-                    this._callback(this.getAccels());
-                }
+                this.settings.set_string(
+                    this.keyName,
+                    JSON.stringify(this.getAccels())
+                );
             }
         });
     },
@@ -102,16 +105,16 @@ var TreeView = new Lang.Class({
     /**
      * Add an accelerator to configure
      *
-     * @param {string} id - a text id
+     * @param {string} name - a text id
      * @param {string} description - A description of the accelerator's purpose
      * @param {number} key - keyval
      * @param {number} mods - mod mask
      */
-    addAccel: function (id, description, key, mods) {
+    addAccel: function (name, description, key, mods) {
         this.model.set(
             this.model.append(),
             [0, 1, 2, 3],
-            [id, description, key, mods]
+            [name, description, key, mods]
         );
     },
     
@@ -119,14 +122,14 @@ var TreeView = new Lang.Class({
         let profile = {};
         
         this.model.foreach((model, path, iter, user_data) => {
-            let id = model.get_value(iter, 0);
+            let name = model.get_value(iter, 0);
             let key = model.get_value(iter, 2);
             let mods = model.get_value(iter, 3);
             
             if (key === 0 || mods === 0) {
-                profile[id] = "";
+                profile[name] = "";
             } else {
-                profile[id] = Gtk.accelerator_name(key, mods);
+                profile[name] = Gtk.accelerator_name(key, mods);
             }
         });
         
@@ -138,34 +141,16 @@ var TreeView = new Lang.Class({
      *
      * @param {object} profile - An object with the structure:
      *
-     *     { <accel-id>: <accel-string>, ... }
+     *     { <accel-name>: <accel-string>, ... }
      */
     setAccels: function (profile) {
-        if (profile === undefined) {
-            this.model.foreach((model, path, iter, user_data) => {
-                model.set(iter, [2, 3], [0, 0]);
-            });
-        } else {
-            this.model.foreach((model, path, iter, user_data) => {
-                let id = model.get_value(iter, 0);
-                
-                if (profile.hasOwnProperty(id)) {
-                    model.set(
-                        iter,
-                        [2, 3],
-                        Gtk.accelerator_parse(profile[id])
-                    );
-                }
-            });
-        }
-    },
-    
-    setCallback: function (callback) {
-        if (typeof callback === "function") {
-            this._callback = callback;
-        } else {
-            throw Error("arg 'callback' must be a function");
-        }
+        this.model.foreach((model, path, iter, user_data) => {
+            let name = model.get_value(iter, 0);
+            
+            if (profile.hasOwnProperty(name)) {
+                model.set(iter, [2, 3], Gtk.accelerator_parse(profile[name]));
+            }
+        });
     },
     
     _check: function (binding) {

@@ -103,7 +103,7 @@ var PrefsWidget = new Lang.Class({
         keySection.margin_bottom = 0;
         let keyRow = keySection.addRow();
         keyRow.grid.margin = 0;
-        let keyView = new KeybindingsWidget.TreeView();
+        let keyView = new KeybindingsWidget.TreeView(Common.Settings, "keybindings");
         // TRANSLATORS: Opens the extension sub-menu in the Gnome Shell User Menu
         keyView.addAccel("menu", _("Open Menu"), 0, 0);
         // TRANSLATORS: Starts a 15 second broadcast of this computer's identity
@@ -113,9 +113,6 @@ var PrefsWidget = new Lang.Class({
         keyView.setAccels(
             JSON.parse(Common.Settings.get_string("keybindings"))
         );
-        keyView.setCallback((profile) => {
-            Common.Settings.set_string("keybindings", JSON.stringify(profile));
-        });
         keyRow.grid.attach(keyView, 0, 0, 1, 1);
         
         // Devices Page

@@ -505,7 +505,7 @@ var Page = new Lang.Class({
         );
         let keyRow = keySection.addRow();
         keyRow.grid.margin = 0;
-        let keyView = new KeybindingsWidget.TreeView();
+        let keyView = new KeybindingsWidget.TreeView(this.device.settings, "keybindings");
         // TRANSLATORS: Open the device menu
         keyView.addAccel("menu", _("Open Menu"), 0, 0);
         // TRANSLATORS: Open a new SMS window
@@ -520,9 +520,6 @@ var Page = new Lang.Class({
         keyView.setAccels(
             JSON.parse(this.device.settings.get_string("keybindings"))
         );
-        keyView.setCallback((accels) => {
-            this.device.settings.set_string("keybindings", JSON.stringify(accels));
-        });
         keyRow.grid.attach(keyView, 0, 0, 1, 1);
         
         this.show_all();
