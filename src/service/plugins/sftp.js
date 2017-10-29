@@ -105,11 +105,7 @@ var Plugin = new Lang.Class({
     _prepare: function () {
         Common.debug("SFTP: _prepare()");
         
-        this._path = Common.CONFIG_PATH + "/" + this.device.id + "/sftp";
-        
-        if (!GLib.file_test(this._path, GLib.FileTest.IS_DIR)) {
-            GLib.mkdir_with_parents(this._path, 493);
-        }
+        this._path = GLib.Dir.make_tmp(null);
         
         let dir = Gio.File.new_for_path(this._path);
         let info = dir.query_info("unix::uid,unix::gid", 0, null);
