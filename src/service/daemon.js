@@ -208,11 +208,11 @@ var Daemon = new Lang.Class({
         Common.Settings.connect("changed::devices", () => {
             //
             for (let id of Common.Settings.get_strv("devices")) {
-                let devObjPath = Common.dbusPathFromId(id);
+                let dbusPath = Common.dbusPathFromId(id);
                 
-                if (!this._devices.has(devObjPath)) {
+                if (!this._devices.has(dbusPath)) {
                     let device = new Device.Device({ daemon: this, id: id})
-                    this._devices.set(devObjPath, device);
+                    this._devices.set(dbusPath, device);
             
                     this._dbus.emit_property_changed(
                         "devices",
@@ -224,9 +224,9 @@ var Daemon = new Lang.Class({
             //
             let devices = Common.Settings.get_strv("devices");
             
-            for (let [devObjPath, device] of this._devices.entries()) {
+            for (let [dbusPath, device] of this._devices.entries()) {
                 if (devices.indexOf(device.id) < 0) {
-                    this._removeDevice(devObjPath);
+                    this._removeDevice(dbusPath);
                 }
             }
         });
@@ -239,12 +239,12 @@ var Daemon = new Lang.Class({
         
         if (packet.body.deviceId === this.identity.body.deviceId) { return; }
             
-        let devObjPath = Common.dbusPathFromId(packet.body.deviceId);
+        let dbusPath = Common.dbusPathFromId(packet.body.deviceId);
         
-        if (this._devices.has(devObjPath)) {
+        if (this._devices.has(dbusPath)) {
             log("Daemon: Updating device");
             
-            let device = this._devices.get(devObjPath);
+            let device = this._devices.get(dbusPath);
             device.update(packet, channel);
         } else {
             log("Daemon: Adding device");
@@ -254,7 +254,7 @@ var Daemon = new Lang.Class({
                 packet: packet,
                 channel: channel
             });
-            this._devices.set(devObjPath, device);
+            this._devices.set(dbusPath, device);
             
             let knownDevices = Common.Settings.get_strv("devices");
             
