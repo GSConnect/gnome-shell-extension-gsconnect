@@ -165,7 +165,7 @@ var Plugin = new Lang.Class({
                 "'))"
             );
             
-            if (packet.payloadSize) {
+            if (packet.payloadSize && this.settings.get_boolean("sync-icons")) {
                 let iconStream = Gio.MemoryOutputStream.new_resizable();
                 
                 let channel = new Protocol.LanDownloadChannel(
@@ -238,13 +238,13 @@ var Plugin = new Lang.Class({
         Common.debug("hints: " + JSON.stringify(hints));
         Common.debug("timeout: " + timeout);
         
-        let applications = JSON.parse(this.settings.get_string("send-applications"));
+        let applications = JSON.parse(this.settings.get_string("applications"));
         
         // New application
         if (!applications.hasOwnProperty(appName)) {
             applications[appName] = { iconName: iconName, enabled: true };
             this.settings.set_string(
-                "send-applications",
+                "applications",
                 JSON.stringify(applications)
             );
         }
@@ -264,7 +264,7 @@ var Plugin = new Lang.Class({
                 
                 let iconInfo;
                 
-                if (this.settings.get_boolean("send-icons")) {
+                if (this.settings.get_boolean("sync-icons")) {
                     iconInfo = this._getIconInfo(iconName);
                 }
                 
@@ -383,14 +383,7 @@ var SettingsDialog = new Lang.Class({
         
         generalSection.addGSetting(this.settings, "receive-notifications");
         generalSection.addGSetting(this.settings, "send-notifications");
-        let iconsRow = generalSection.addGSetting(this.settings, "send-icons");
-        
-        this.settings.bind(
-            "send-notifications",
-            iconsRow,
-            "sensitive",
-            Gio.SettingsBindFlags.DEFAULT
-        );
+        generalSection.addGSetting(this.settings, "sync-icons");
         
         this.appSection = this.content.addSection(
             _("Applications"),
@@ -404,7 +397,7 @@ var SettingsDialog = new Lang.Class({
             Gio.SettingsBindFlags.DEFAULT
         );
         
-        this._applications = JSON.parse(this.settings.get_string("send-applications"));
+        this._applications = JSON.parse(this.settings.get_string("applications"));
         this._populate();
         
         this.appSection.list.set_sort_func((row1, row2) => {
@@ -448,7 +441,7 @@ var SettingsDialog = new Lang.Class({
             row.appSwitch.connect("notify::active", (widget) => {
                 this._applications[row.appName.label].enabled = row.appSwitch.active;
                 this.settings.set_string(
-                    "send-applications", 
+                    "applications", 
                     JSON.stringify(this._applications)
                 );
             });
@@ -499,7 +492,7 @@ var SettingsDialog = new Lang.Class({
         }
         
         this.settings.set_string(
-            "send-applications",
+            "applications",
             JSON.stringify(this._applications)
         );
     }

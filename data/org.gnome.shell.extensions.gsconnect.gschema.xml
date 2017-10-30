@@ -100,15 +100,15 @@
       <summary>Send Notifications</summary>
       <description>Sync local notifications</description>
     </key>
-    <key name="send-icons" type="b">
+    <key name="sync-icons" type="b">
       <default>true</default>
-      <summary>Send Application Icons</summary>
+      <summary>Sync Icons</summary>
       <description></description>
     </key>
-    <key name="send-applications" type="s">
+    <key name="applications" type="s">
       <default>'{"GSConnect":{"iconName":"phone","enabled":false}}'</default>
       <summary>Applications</summary>
-      <description>Sync remote notifications</description>
+      <description>A list of applications to sync notifications for</description>
     </key>
   </schema>
   <schema id="org.gnome.shell.extensions.gsconnect.plugin.runcommand">
