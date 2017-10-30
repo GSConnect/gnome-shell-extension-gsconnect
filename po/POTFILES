@@ -14,10 +14,10 @@ src/service/plugins/ping.js
 src/service/plugins/runcommand.js
 src/service/plugins/sftp.js
 src/service/plugins/share.js
-src/service/plugins/sms.js
 src/service/plugins/telephony.js
 src/widgets/device.js
 src/widgets/gsettings.js
 src/widgets/keybindings.js
+src/widgets/telephony.js
 data/org.gnome.shell.extensions.gsconnect.gschema.xml
 
