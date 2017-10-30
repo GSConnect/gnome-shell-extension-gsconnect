@@ -467,7 +467,7 @@ var Dialog = new Lang.Class({
         this.webButton = new Gtk.ToggleButton({
             image: new Gtk.Image({
                 icon_name: "web-browser-symbolic",
-                icon_size: Gtk.IconSize.BUTTON
+                pixel_size: 16
             }),
             // TRANSLATORS: eg. Send a link to Google Pixel
             tooltip_text: _("Send a link to %s").format(name),

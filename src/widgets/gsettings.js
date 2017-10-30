@@ -64,7 +64,7 @@ var FlagsSetting = new Lang.Class({
         if (!params.icon) {
             params.icon = new Gtk.Image({
                 icon_name: "checkbox-checked-symbolic",
-                icon_size: Gtk.IconSize.BUTTON
+                pixel_size: 16
             });
         }
         

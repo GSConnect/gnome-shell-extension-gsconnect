@@ -499,7 +499,7 @@ var RecipientList = new Lang.Class({
         
         let placeholderImage = new Gtk.Image({
             icon_name: "avatar-default-symbolic",
-            icon_size: Gtk.IconSize.DIALOG,
+            pixel_size: 48,
             visible: true
         });
         placeholderImage.get_style_context().add_class("dim-label");
@@ -570,7 +570,7 @@ var RecipientList = new Lang.Class({
         let removeButton = new Gtk.Button({
             image: new Gtk.Image({
                 icon_name: "edit-delete-symbolic",
-                icon_size: Gtk.IconSize.BUTTON
+                pixel_size: 16
             }),
             always_show_image: true,
             halign: Gtk.Align.END,
@@ -802,7 +802,7 @@ var ConversationWindow = new Lang.Class({
         this.contactButton = new Gtk.Button({
             image: new Gtk.Image({
                 icon_name: "contact-new-symbolic",
-                icon_size: Gtk.IconSize.BUTTON
+                pixel_size: 16
             }),
             always_show_image: true,
             // TRANSLATORS: Tooltip for a button to add/remove people from a conversation
@@ -823,7 +823,7 @@ var ConversationWindow = new Lang.Class({
         this.messagesButton = new Gtk.Button({
             image: new Gtk.Image({
                 icon_name: "go-previous-symbolic",
-                icon_size: Gtk.IconSize.BUTTON
+                pixel_size: 16
             }),
             always_show_image: true
         });
@@ -1000,9 +1000,7 @@ var ConversationWindow = new Lang.Class({
             let bytes = GLib.base64_decode(recipient.phoneThumbnail);
             avatar = new Gtk.Image({
                 gicon: Gio.BytesIcon.new(bytes),
-                icon_size: Gtk.IconSize.DND,
-                height_request: 32,
-                width_request: 32
+                pixel_size: 32
             });
         } catch (e) {
             Common.debug("Error creating avatar: " + e);
@@ -1018,7 +1016,7 @@ var ConversationWindow = new Lang.Class({
             
             let defaultAvatar = new Gtk.Image({
                 icon_name: "avatar-default-symbolic",
-                icon_size: Gtk.IconSize.LARGE_TOOLBAR,
+                pixel_size: 24,
                 margin: 4,
                 visible: true
             });

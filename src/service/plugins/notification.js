@@ -423,12 +423,12 @@ var SettingsDialog = new Lang.Class({
             try {
                 row.appIcon = new Gtk.Image({
                     icon_name: this._applications[name].iconName,
-                    icon_size: Gtk.IconSize.DND
+                    pixel_size: 32
                 });
             } catch (e) {
                 row.appIcon = new Gtk.Image({
                     icon_name: "application-x-executable",
-                    icon_size: Gtk.IconSize.DND
+                    pixel_size: 32
                 });
             }
             row.grid.attach(row.appIcon, 0, 0, 1, 1);

@@ -171,7 +171,7 @@ var SettingsDialog = new Lang.Class({
         let removeButton = new Gtk.Button({
             image: new Gtk.Image({
                 icon_name: "list-remove-symbolic",
-                icon_size: Gtk.IconSize.BUTTON
+                pixel_size: 16
             }),
             always_show_image: true,
             hexpand: false
@@ -182,7 +182,7 @@ var SettingsDialog = new Lang.Class({
         let addButton = new Gtk.Button({
             image: new Gtk.Image({
                 icon_name: "list-add-symbolic",
-                icon_size: Gtk.IconSize.BUTTON
+                pixel_size: 16
             }),
             always_show_image: true,
             hexpand: false
