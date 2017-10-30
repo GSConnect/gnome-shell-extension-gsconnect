@@ -107,53 +107,51 @@ var Plugin = new Lang.Class({
             )
         );
         
-        if (this.settings.get_boolean("missed-call-notification")) {
-            let notif = new Gio.Notification();
-            // TRANSLATORS: Missed Call
-            notif.set_title(_("Missed Call"));
-            notif.set_body(
-                // TRANSLATORS: eg. Missed call from John Smith on Google Pixel
-                _("Missed call from %s on %s").format(
-                    sender,
-                    this.device.name
-                )
-            );
-            if (packet.body.phoneThumbnail) {
-                let bytes = GLib.base64_decode(packet.body.phoneThumbnail);
-                notif.set_icon(Gio.BytesIcon.new(bytes));
-            } else {
-                notif.set_icon(new Gio.ThemedIcon({ name: "call-missed-symbolic" }));
-            }
-            notif.set_priority(Gio.NotificationPriority.NORMAL);
-            
-            notif.add_button(
-                // TRANSLATORS: Reply to a missed call by SMS
-                _("Message"),
-                "app.replyMissedCall(('" +
-                this._dbus.get_object_path() +
-                "','" +
-                escape(packet.body.phoneNumber) +
-                "','" +
-                escape(packet.body.contactName) +
-                "','" +
-                packet.body.phoneThumbnail +
-                "'))"
-            );
-            
-            // Tell the notification plugin to "silence" any duplicate
-            if (this.device._plugins.has("notification")) {
-                this.device._plugins.get("notification").silenceDuplicate(
-                    // TRANSLATORS: This is specifically for matching missed call notifications on Android.
-                    // You should translate this (or not) to match the string on your phone that in english looks like "Missed call: John Lennon"
-                    _("Missed call") + ": " + sender
-                );
-            }
-            
-            this.device.daemon.send_notification(
-                _("Missed call") + ": " + sender,
-                notif
+        let notif = new Gio.Notification();
+        // TRANSLATORS: Missed Call
+        notif.set_title(_("Missed Call"));
+        notif.set_body(
+            // TRANSLATORS: eg. Missed call from John Smith on Google Pixel
+            _("Missed call from %s on %s").format(
+                sender,
+                this.device.name
+            )
+        );
+        if (packet.body.phoneThumbnail) {
+            let bytes = GLib.base64_decode(packet.body.phoneThumbnail);
+            notif.set_icon(Gio.BytesIcon.new(bytes));
+        } else {
+            notif.set_icon(new Gio.ThemedIcon({ name: "call-missed-symbolic" }));
+        }
+        notif.set_priority(Gio.NotificationPriority.NORMAL);
+        
+        notif.add_button(
+            // TRANSLATORS: Reply to a missed call by SMS
+            _("Message"),
+            "app.replyMissedCall(('" +
+            this._dbus.get_object_path() +
+            "','" +
+            escape(packet.body.phoneNumber) +
+            "','" +
+            escape(packet.body.contactName) +
+            "','" +
+            packet.body.phoneThumbnail +
+            "'))"
+        );
+        
+        // Tell the notification plugin to "silence" any duplicate
+        if (this.device._plugins.has("notification")) {
+            this.device._plugins.get("notification").silenceDuplicate(
+                // TRANSLATORS: This is specifically for matching missed call notifications on Android.
+                // You should translate this (or not) to match the string on your phone that in english looks like "Missed call: John Lennon"
+                _("Missed call") + ": " + sender
             );
         }
+        
+        this.device.daemon.send_notification(
+            _("Missed call") + ": " + sender,
+            notif
+        );
     },
     
     _handleRinging: function (sender, packet) {
@@ -174,36 +172,34 @@ var Plugin = new Lang.Class({
             )
         );
         
-        if (this.settings.get_boolean("ringing-notification")) {
-            let notif = new Gio.Notification();
-            // TRANSLATORS: Incoming Call
-            notif.set_title(_("Incoming Call"));
-            notif.set_body(
-                // TRANSLATORS: eg. Incoming call from John Smith on Google Pixel
-                _("Incoming call from %s on %s").format(
-                    sender,
-                    this.device.name
-                )
-            );
-            if (packet.body.phoneThumbnail) {
-                let bytes = GLib.base64_decode(packet.body.phoneThumbnail);
-                notif.set_icon(Gio.BytesIcon.new(bytes));
-            } else {
-                notif.set_icon(new Gio.ThemedIcon({ name: "call-start-symbolic" }));
-            }
-            notif.set_priority(Gio.NotificationPriority.URGENT);
-            
-            notif.add_button(
-                // TRANSLATORS: Silence an incoming call
-                _("Mute"),
-                "app.muteCall('" + this._dbus.get_object_path() + "')"
-            );
-            
-            this.device.daemon.send_notification(
-                this.device.id + ":" + packet.body.event + ":" + packet.body.phoneNumber,
-                notif
-            );
+        let notif = new Gio.Notification();
+        // TRANSLATORS: Incoming Call
+        notif.set_title(_("Incoming Call"));
+        notif.set_body(
+            // TRANSLATORS: eg. Incoming call from John Smith on Google Pixel
+            _("Incoming call from %s on %s").format(
+                sender,
+                this.device.name
+            )
+        );
+        if (packet.body.phoneThumbnail) {
+            let bytes = GLib.base64_decode(packet.body.phoneThumbnail);
+            notif.set_icon(Gio.BytesIcon.new(bytes));
+        } else {
+            notif.set_icon(new Gio.ThemedIcon({ name: "call-start-symbolic" }));
         }
+        notif.set_priority(Gio.NotificationPriority.URGENT);
+        
+        notif.add_button(
+            // TRANSLATORS: Silence an incoming call
+            _("Mute"),
+            "app.muteCall('" + this._dbus.get_object_path() + "')"
+        );
+        
+        this.device.daemon.send_notification(
+            this.device.id + ":" + packet.body.event + ":" + packet.body.phoneNumber,
+            notif
+        );
         
         if (this.settings.get_string("pause-music") === "ringing") {
             this._pauseMusic();
@@ -251,44 +247,42 @@ var Plugin = new Lang.Class({
             }
         }
         
-        if (this.settings.get_boolean("sms-notification")) {
-            let notif = new Gio.Notification();
-            notif.set_title(sender);
-            notif.set_body(packet.body.messageBody);
-            if (packet.body.phoneThumbnail) {
-                let bytes = GLib.base64_decode(packet.body.phoneThumbnail);
-                notif.set_icon(Gio.BytesIcon.new(bytes));
-            } else {
-                notif.set_icon(new Gio.ThemedIcon({ name: "sms-symbolic" }));
-            }
-            notif.set_priority(Gio.NotificationPriority.HIGH);
-            
-            notif.set_default_action(
-                "app.replySms(('" +
-                this._dbus.get_object_path() +
-                "','" +
-                escape(packet.body.phoneNumber) +
-                "','" +
-                escape(packet.body.contactName) +
-                "','" +
-                escape(packet.body.messageBody) +
-                "','" +
-                packet.body.phoneThumbnail +
-                "'))"
+        let notif = new Gio.Notification();
+        notif.set_title(sender);
+        notif.set_body(packet.body.messageBody);
+        if (packet.body.phoneThumbnail) {
+            let bytes = GLib.base64_decode(packet.body.phoneThumbnail);
+            notif.set_icon(Gio.BytesIcon.new(bytes));
+        } else {
+            notif.set_icon(new Gio.ThemedIcon({ name: "sms-symbolic" }));
+        }
+        notif.set_priority(Gio.NotificationPriority.HIGH);
+        
+        notif.set_default_action(
+            "app.replySms(('" +
+            this._dbus.get_object_path() +
+            "','" +
+            escape(packet.body.phoneNumber) +
+            "','" +
+            escape(packet.body.contactName) +
+            "','" +
+            escape(packet.body.messageBody) +
+            "','" +
+            packet.body.phoneThumbnail +
+            "'))"
+        );
+        
+        // Tell the notification plugin to "silence" any duplicate
+        if (this.device._plugins.has("notification")) {
+            this.device._plugins.get("notification").silenceDuplicate(
+                sender + ": " + packet.body.messageBody
             );
-            
-            // Tell the notification plugin to "silence" any duplicate
-            if (this.device._plugins.has("notification")) {
-                this.device._plugins.get("notification").silenceDuplicate(
-                    sender + ": " + packet.body.messageBody
-                );
-            }
-            
-            this.device.daemon.send_notification(packet.id.toString(), notif);
-            
-            if (window) {
-                window._notifications.push(packet.id.toString());
-            }
+        }
+        
+        this.device.daemon.send_notification(packet.id.toString(), notif);
+        
+        if (window) {
+            window._notifications.push(packet.id.toString());
         }
     },
     
@@ -310,30 +304,28 @@ var Plugin = new Lang.Class({
             )
         );
         
-        if (this.settings.get_boolean("talking-notification")) {
-            let notif = new Gio.Notification();
-            // TRANSLATORS: Talking on the phone
-            notif.set_title(_("Call In Progress"));
-            notif.set_body(
-                // TRANSLATORS: eg. Call in progress with John Smith on Google Pixel
-                _("Call in progress with %s on %s").format(
-                    sender,
-                    this.device.name
-                )
-            );
-            if (packet.body.phoneThumbnail) {
-                let bytes = GLib.base64_decode(packet.body.phoneThumbnail);
-                notif.set_icon(Gio.BytesIcon.new(bytes));
-            } else {
-                notif.set_icon(new Gio.ThemedIcon({ name: "call-start-symbolic" }));
-            }
-            notif.set_priority(Gio.NotificationPriority.NORMAL);
-            
-            this.device.daemon.send_notification(
-                this.device.id + ":" + packet.body.event + ":" + packet.body.phoneNumber,
-                notif
-            );
+        let notif = new Gio.Notification();
+        // TRANSLATORS: Talking on the phone
+        notif.set_title(_("Call In Progress"));
+        notif.set_body(
+            // TRANSLATORS: eg. Call in progress with John Smith on Google Pixel
+            _("Call in progress with %s on %s").format(
+                sender,
+                this.device.name
+            )
+        );
+        if (packet.body.phoneThumbnail) {
+            let bytes = GLib.base64_decode(packet.body.phoneThumbnail);
+            notif.set_icon(Gio.BytesIcon.new(bytes));
+        } else {
+            notif.set_icon(new Gio.ThemedIcon({ name: "call-start-symbolic" }));
         }
+        notif.set_priority(Gio.NotificationPriority.NORMAL);
+        
+        this.device.daemon.send_notification(
+            this.device.id + ":" + packet.body.event + ":" + packet.body.phoneNumber,
+            notif
+        );
         
         if (this.settings.get_string("pause-music") === "talking") {
             this._pauseMusic();
@@ -570,17 +562,6 @@ var SettingsDialog = new Lang.Class({
     
     _init: function (device, name, window) {
         this.parent(device, name, window);
-        
-        let notificationSection = this.content.addSection(
-            _("Notifications"),
-            null,
-            { width_request: -1 }
-        );
-        
-        notificationSection.addGSetting(this.settings, "missed-call-notification");
-        notificationSection.addGSetting(this.settings, "ringing-notification");
-        notificationSection.addGSetting(this.settings, "talking-notification");
-        notificationSection.addGSetting(this.settings, "sms-notification");
         
         let mediaSection = this.content.addSection(
             _("Media"),

@@ -138,26 +138,6 @@
     </key>
   </schema>
   <schema id="org.gnome.shell.extensions.gsconnect.plugin.telephony">
-    <key name="missed-call-notification" type="b">
-      <default>true</default>
-      <summary>Missed Calls</summary>
-      <description></description>
-    </key>
-    <key name="ringing-notification" type="b">
-      <default>true</default>
-      <summary>Incoming Calls</summary>
-      <description></description>
-    </key>
-    <key name="sms-notification" type="b">
-      <default>true</default>
-      <summary>SMS Messages</summary>
-      <description></description>
-    </key>
-    <key name="talking-notification" type="b">
-      <default>true</default>
-      <summary>In Progress Calls</summary>
-      <description></description>
-    </key>
     <key name="pause-music" type="s">
       <default>"never"</default>
       <summary>Pause Music</summary>
