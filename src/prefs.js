@@ -80,7 +80,6 @@ var PrefsWidget = new Lang.Class({
         
         if (!Common.Settings.get_boolean("debug")) {
             this.daemon = new Client.Daemon();
-            this.daemon.discovering = true;
         }
     },
     
