@@ -210,7 +210,7 @@ var Plugin = new Lang.Class({
         }
     },
     
-    _handleSMS: function (sender, packet) {
+    _handleSms: function (sender, packet) {
         Common.debug("Telephony: _handleSMS()");
         
         this.emit(
@@ -419,7 +419,7 @@ var Plugin = new Lang.Class({
         } else if (packet.body.event === "ringing") {
             this._handleRinging(sender, packet);
         } else if (packet.body.event === "sms") {
-            this._handleSMS(sender, packet);
+            this._handleSms(sender, packet);
         } else if (packet.body.event === "talking") {
             this._handleTalking(sender, packet);
         } else {
