@@ -95,7 +95,7 @@ var SettingsDialog = new Lang.Class({
         this.parent(device, name, window);
         
         let commandsSection = this.content.addSection(
-            _("Commands"),
+            null,
             null,
             { margin_bottom: 0, width_request: -1 }
         );
@@ -117,42 +117,42 @@ var SettingsDialog = new Lang.Class({
         this.treeview.model = listStore;
         
         // Name column.
-        this.nameCell = new Gtk.CellRendererText({
+        let nameCell = new Gtk.CellRendererText({
             editable: true,
             xpad: 6,
             ypad: 6
         });
-        let nameCol = new Gtk.TreeViewColumn({
+        let nameColumn = new Gtk.TreeViewColumn({
+            // TRANSLATORS: Column header for RunCommand command list
             title: _("Name"),
             expand: true
         });
-        nameCol.pack_start(this.nameCell, true);
-        nameCol.add_attribute(this.nameCell, "text", 1);
-        this.treeview.append_column(nameCol);
-        this.nameCell.connect("edited", Lang.bind(this, this._editName));
+        nameColumn.pack_start(nameCell, true);
+        nameColumn.add_attribute(nameCell, "text", 1);
+        this.treeview.append_column(nameColumn);
+        nameCell.connect("edited", Lang.bind(this, this._editName));
         
         // Command column.
-        this.cmdCell = new Gtk.CellRendererText({
+        let commandCell = new Gtk.CellRendererText({
             editable: true,
             xpad: 6,
             ypad: 6
         });
-        let cmdCol = new Gtk.TreeViewColumn({
-            // TRANSLATORS: A command to be executed remotely
+        let commandColumn = new Gtk.TreeViewColumn({
+            // TRANSLATORS: Column header for RunCommand command list
             title: _("Command"),
             expand: true
         });
-        cmdCol.pack_start(this.cmdCell, true);
-        cmdCol.add_attribute(this.cmdCell, "text", 2);
-        this.treeview.append_column(cmdCol);
-        this.cmdCell.connect("edited", Lang.bind(this, this._editCmd));
+        commandColumn.pack_start(commandCell, true);
+        commandColumn.add_attribute(commandCell, "text", 2);
+        this.treeview.append_column(commandColumn);
+        commandCell.connect("edited", Lang.bind(this, this._editCommand));
         
         let commandRow = commandsSection.addRow();
-        commandRow.grid.row_spacing = 12;
         commandRow.grid.margin = 0;
         
         let treeScroll = new Gtk.ScrolledWindow({
-            height_request: 150,
+            height_request: 192,
             can_focus: true,
             hscrollbar_policy: Gtk.PolicyType.NEVER
         });
@@ -187,35 +187,32 @@ var SettingsDialog = new Lang.Class({
             always_show_image: true,
             hexpand: false
         });
-        addButton.connect("clicked", Lang.bind(this, this._add, false));
+        addButton.connect("clicked", Lang.bind(this, this._add));
         buttonBox.add(addButton);
         
         this._commands = JSON.parse(this.settings.get_string("command-list"));
-        for (let uuid in this._commands) {
-            this._add(null, [
-                uuid,
-                this._commands[uuid].name,
-                this._commands[uuid].command
-            ]);
-        }
+        this._populate();
         
         this.content.show_all();
     },
     
-    _add: function (button, row) {
-        if (row === false) {
-            // TRANSLATORS: A placeholder for a new command name
-            let commandName = _("[New command]");
-            row = ["{" + GLib.uuid_string_random() + "}", commandName, ""];
-            this._commands[row[0]] = { name: row[1], command: row[2]};
-            
-            this.settings.set_string(
-                "command-list",
-                JSON.stringify(this._commands)
-            );
-        }
+    _add: function (button) {
+        let row = ["{" + GLib.uuid_string_random() + "}", "", ""];
+        this._commands[row[0]] = { name: row[1], command: row[2]};
         
-        this.treeview.model.set(this.treeview.model.append(), [0, 1, 2], row);
+        this.settings.set_string(
+            "command-list",
+            JSON.stringify(this._commands)
+        );
+        
+        let iter = this.treeview.model.append();
+        this.treeview.model.set(iter, [0, 1, 2], row);
+        this.treeview.set_cursor(
+            this.treeview.model.get_path(iter),
+            this.treeview.get_column(0),
+            true
+        );
+        
     },
     
     _remove: function (button) {
@@ -232,7 +229,17 @@ var SettingsDialog = new Lang.Class({
         }
     },
     
-    _editName: function (renderer, path, new_text, user_data) {
+    _populate: function () {
+        for (let uuid in this._commands) {
+            this.treeview.model.set(
+                this.treeview.model.append(),
+                [0, 1, 2],
+                [uuid, this._commands[uuid].name, this._commands[uuid].command]
+            );
+        }
+    },
+    
+    _editName: function (renderer, path, new_text) {
         path = Gtk.TreePath.new_from_string(path);
         let [success, iter] = this.treeview.model.get_iter(path);
         
@@ -247,8 +254,7 @@ var SettingsDialog = new Lang.Class({
         }
     },
     
-    _editCmd: function (renderer, path, new_text, user_data) {
-        let commands = JSON.parse(this.settings.get_string("command-list"));
+    _editCommand: function (renderer, path, new_text) {
         path = Gtk.TreePath.new_from_string(path);
         let [success, iter] = this.treeview.model.get_iter(path);
         
