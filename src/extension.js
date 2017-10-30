@@ -271,13 +271,18 @@ var DeviceMenu = new Lang.Class({
         let { connected, paired, plugins } = this.device;
         
         if (!plugins.length && connected && paired) {
+            this.pluginBar.actor.visible = false;
             this.helpBar.actor.visible = true;
             this.helpButton.child.icon_name = "preferences-other-symbolic";
             this.helpButton.tooltip.title = _("Mobile Settings");
             this.helpButton.callback = Common.startPreferences;
             this.helpLabel.text = _("No plugins enabled");
+        } else if (connected && paired) {
+            this.helpBar.actor.visible = false;
+            this.pluginBar.actor.visible = true;
         } else {
             this.helpBar.actor.visible = false;
+            this.pluginBar.actor.visible = false;
         }
         
         // Plugin Buttons
