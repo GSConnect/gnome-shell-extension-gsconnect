@@ -336,10 +336,9 @@ var Page = new Lang.Class({
         this.box.margin_left = 36;
         this.box.margin_right = 36;
         
-        this.stack = stack;
-        
         this.daemon = daemon;
         this.device = device;
+        this.stack = stack;
         
         // Info Section
         let metadata = DeviceMetadata[device.type];
@@ -350,7 +349,7 @@ var Page = new Lang.Class({
         // Info Section // Type Icon
         let typeIcon = new Gtk.Image({
             icon_name: metadata.icon,
-            icon_size: Gtk.IconSize.DIALOG,
+            pixel_size: 48,
             xalign: 0
         });
         statusRow.grid.attach(typeIcon, 0, 0, 1, 2);
@@ -403,15 +402,18 @@ var Page = new Lang.Class({
             if (this.device.connected && this.device.paired) {
                 stateButton.image = new Gtk.Image({
                     icon_name: "channel-secure-symbolic",
-                    pixel_size: 16,
-                    // TRANSLATORS: eg. Unpair <b>Google Pixel</b>
-                    tooltip_markup: _("Unpair <b>%s</b>").format(this.device.name)
+                    pixel_size: 16
                 });
+                stateButton.set_tooltip_markup(
+                    // TRANSLATORS: eg. Unpair <b>Google Pixel</b>
+                    _("Unpair <b>%s</b>").format(this.device.name)
+                );
             } else if (this.device.connected && !this.device.paired) {
                 stateButton.image = new Gtk.Image({
                     icon_name: "channel-insecure-symbolic",
-                    pixel_size: 16,
-                    tooltip_markup:
+                    pixel_size: 16
+                });
+                stateButton.set_tooltip_markup(
                     // TRANSLATORS: eg. Pair <b>Google Pixel</b>
                     // PLEASE KEEP NEWLINE CHARACTERS (\n)
                     _("Pair <b>%s</b>\n\n").format(this.device.name) +
@@ -426,14 +428,16 @@ var Page = new Lang.Class({
                     // <b>Local Fingerprint:</b>
                     // 00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
                     _("<b>%s Fingerprint:</b>\n%s\n\n<b>Local Fingerprint:</b>\n%s").format(this.device.name, this.device.fingerprint, this.daemon.fingerprint)
-                });
+                );
             } else {
                 stateButton.image = new Gtk.Image({
                     icon_name: "view-refresh-symbolic",
-                    pixel_size: 16,
-                    // TRANSLATORS: eg. Reconnect <b>Google Pixel</b>
-                    tooltip_markup: _("Reconnect <b>%s</b>").format(this.device.name)
+                    pixel_size: 16
                 });
+                stateButton.set_tooltip_markup(
+                    // TRANSLATORS: eg. Reconnect <b>Google Pixel</b>
+                    _("Reconnect <b>%s</b>").format(this.device.name)
+                );
             }
         });
         this.device.notify("paired");
