@@ -290,7 +290,7 @@ var LanChannel = new Lang.Class({
         this.parent();
         
         this.daemon = daemon;
-        this.deviceId = deviceId;
+        this.identity = { body: { deviceId: deviceId } };
         
         this._monitor = 0;
     },
@@ -366,10 +366,10 @@ var LanChannel = new Lang.Class({
     
     // Negotitate certificate/pairing
     _accept_certificate: function (conn, peer_cert, flags) {
-        log("Authenticating '" + "FIXME" + "'");
+        log("Authenticating '" + this.identity.body.deviceId + "'");
         
         this._peer_cert = peer_cert;
-        let cert = Common.getCertificate(this.deviceId);
+        let cert = Common.getCertificate(this.identity.body.deviceId);
         
         if (cert) {
             return (cert.verify(null, peer_cert) === 0);
@@ -404,7 +404,7 @@ var LanChannel = new Lang.Class({
      * Public Methods
      */
     open: function (addr) {
-        log("Connecting to '" + "FIXME" + "'");
+        log("Connecting to '" + this.identity.body.deviceId + "'");
         
         let client = new Gio.SocketClient();
         client.connect_async(addr, null, (client, res) => {
@@ -528,7 +528,7 @@ var LanChannel = new Lang.Class({
     },
     
     receive: function () {
-        Common.debug("LanChannel.receive(" + "FIXME" + ")");
+        Common.debug("LanChannel.receive(" + this.identity.body.deviceId + ")");
         
         let data, len, packet;
         
@@ -666,7 +666,7 @@ var LanDownloadChannel = new Lang.Class({
     },
     
     request: function (connection) {
-        Common.debug("LanDownloadChannel.request(" + "FIXME" + ")");
+        Common.debug("LanDownloadChannel.request(" + this.identity.body.deviceId + ")");
         
         this._connection = connection;
         
@@ -681,7 +681,7 @@ var LanDownloadChannel = new Lang.Class({
     },
     
     opened: function (connection, res) {
-        Common.debug("LanDownloadChannel.opened(" + "FIXME" + ")");
+        Common.debug("LanDownloadChannel.opened(" + this.identity.body.deviceId + ")");
         
         try {
             this._in = this._connection.get_input_stream();
@@ -713,7 +713,7 @@ var LanUploadChannel = new Lang.Class({
     },
     
     open: function (port=1739) {
-        Common.debug("LanUploadChannel.open(" + "FIXME" + ")");
+        Common.debug("LanUploadChannel.open(" + this.identity.body.deviceId + ")");
         
         this._listener = new Gio.SocketListener();
         
@@ -738,7 +738,7 @@ var LanUploadChannel = new Lang.Class({
     },
     
     accept: function (listener, res) {
-        Common.debug("LanUploadChannel.accept(" + "FIXME" + ")");
+        Common.debug("LanUploadChannel.accept(" + this.identity.body.deviceId + ")");
         
         try {
             let src;
@@ -753,7 +753,7 @@ var LanUploadChannel = new Lang.Class({
     },
     
     opened: function (connection, res) {
-        Common.debug("LanUploadChannel.opened(" + "FIXME" + ")");
+        Common.debug("LanUploadChannel.opened(" + this.identity.body.deviceId + ")");
         
         try {
             this._connection.handshake_finish(res);
