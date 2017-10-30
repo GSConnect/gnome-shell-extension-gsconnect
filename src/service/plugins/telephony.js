@@ -200,7 +200,7 @@ var Plugin = new Lang.Class({
             );
             
             this.device.daemon.send_notification(
-                packet.body.event + ":" + packet.body.phoneNumber,
+                this.device.id + ":" + packet.body.event + ":" + packet.body.phoneNumber,
                 notif
             );
         }
@@ -330,7 +330,7 @@ var Plugin = new Lang.Class({
             notif.set_priority(Gio.NotificationPriority.NORMAL);
             
             this.device.daemon.send_notification(
-                packet.body.event + ":" + packet.body.phoneNumber,
+                this.device.id + ":" + packet.body.event + ":" + packet.body.phoneNumber,
                 notif
             );
         }
@@ -412,7 +412,7 @@ var Plugin = new Lang.Class({
         if (packet.body.isCancel) {
             this._unpauseMusic();
             this.device.daemon.withdraw_notification(
-                packet.body.event + ":" + packet.body.phoneNumber
+                this.device.id + ":" + packet.body.event + ":" + packet.body.phoneNumber
             );
         } else if (packet.body.event === "missedCall") {
             this._handleMissedCall(sender, packet);
