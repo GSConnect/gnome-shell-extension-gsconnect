@@ -277,7 +277,7 @@ var Stack = new Lang.Class({
         let helpRow = helpSection.addRow();
         helpRow.grid.attach(defaultPageLabel, 0, 0, 1, 1);
         
-        this.stack.add_titled(page, "default", "Default");
+        this.stack.add_named(page, "default");
         
         this.sidebar.select_row(this.defaultRow);
     },
@@ -307,7 +307,7 @@ var Stack = new Lang.Class({
         
         // Device Page
         let page = new Page(daemon, device, this);
-        this.stack.add_titled(page, device.id, device.name);
+        this.stack.add_named(page, device.id);
         
         // Tracking
         this.devices.set(dbusPath, [row, page]);
