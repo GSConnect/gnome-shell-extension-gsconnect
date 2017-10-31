@@ -407,11 +407,7 @@ var Device = new Lang.Class({
     get id () { return this._get("id"); },
     get name () { return this._get("name"); },
     get paired () { return this._get("paired") === true; },
-    // FIXME: returns null sometimes?
-    get plugins () {
-        let plugins = this._get("plugins");
-        return (plugins !== null) ? plugins : [];
-    },
+    get plugins () { return this._get("plugins") || []; },
     get supportedPlugins () { return this._get("supportedPlugins"); },
     get type () { return this._get("type"); },
     

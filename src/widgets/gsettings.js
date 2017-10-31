@@ -2,7 +2,7 @@
 
 const Lang = imports.lang;
 const Gettext = imports.gettext.domain("gsconnect");
-const _ = Gettext.gettext; // FIXME
+const _ = Gettext.gettext;
 
 const Gdk = imports.gi.Gdk;
 const Gio = imports.gi.Gio;

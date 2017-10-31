@@ -124,7 +124,7 @@ var Daemon = new Lang.Class({
     /**
      * Special method to accomodate nautilus-gsconnect.py
      *
-     * FIXME: it's ugly!
+     * TODO: it's ugly!
      */
     getShareable: function () {
         let shareable = {};

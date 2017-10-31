@@ -207,7 +207,7 @@ var Plugin = new Lang.Class({
         this._read_stderr();
     },
     
-    // FIXME: there's no way this covers all the bases
+    // TODO: there's no way this covers all the bases
     _read_stderr: function () {
         this._stderr.read_line_async(GLib.PRIORITY_DEFAULT, null, (source, res) => {
             let [data, len] = source.read_line_finish(res);

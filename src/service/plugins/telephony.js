@@ -332,7 +332,6 @@ var Plugin = new Lang.Class({
         }
     },
     
-    // FIXME: not always working...?
     _hasWindow: function (phoneNumber) {
         Common.debug("Telephony: _hasWindow(" + phoneNumber + ")");
         
@@ -400,7 +399,7 @@ var Plugin = new Lang.Class({
         }
         
         // Event handling
-        // FIXME: unpause for correct event
+        // TODO: unpause for correct event (see what kdeconnect does)
         if (packet.body.isCancel) {
             this._unpauseMusic();
             this.device.daemon.withdraw_notification(

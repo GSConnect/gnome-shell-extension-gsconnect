@@ -218,7 +218,7 @@ var Plugin = new Lang.Class({
                 this._handleDuplicate(packet, notif);
             }
             
-            // FIXME
+            // TODO: this usually used for backwards compatibility, I think
             if (packet.body.requestAnswer) {
                 Common.debug("Notifications: this is an answer to a request");
             }
