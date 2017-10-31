@@ -24,9 +24,73 @@ const KeybindingsWidget = imports.widgets.keybindings;
 const PreferencesWidget = imports.widgets.preferences;
 
 
+var AboutWidget = new Lang.Class({
+    Name: "AboutWidget",
+    Extends: Gtk.Grid,
+    
+    _init: function () {
+        
+        this.parent({
+            margin_bottom: 18,
+            row_spacing: 8,
+            hexpand: true,
+            halign: Gtk.Align.CENTER,
+            orientation: Gtk.Orientation.VERTICAL
+        });
+        
+        let aboutIcon = new Gtk.Image({
+            icon_name: "phone",
+            pixel_size: 128
+        });
+        this.add(aboutIcon);
+        
+        let aboutName = new Gtk.Label({
+            label: "<b>" + _("GSConnect") + "</b>",
+            use_markup: true
+        });
+        this.add(aboutName);
+        
+        let aboutVersion = new Gtk.Label({
+            label: Common.METADATA.version.toString()
+        });
+        this.add(aboutVersion);
+        
+        let aboutDescription = new Gtk.Label({
+            label: _("KDE Connect implementation with Gnome Shell integration")
+        });
+        this.add(aboutDescription);
+        
+        let aboutWebsite = new Gtk.Label({
+            label: '<a href="%s">%s</a>'.format(
+                Common.METADATA.url,
+                _("GSConnect Website")
+            ),
+            use_markup: true
+        });
+        this.add(aboutWebsite);
+        
+        let aboutCopyright = new Gtk.Label({
+            label: "<small>" + _("Copyright © 2017 Andy Holmes") + "</small>",
+            use_markup: true
+        });
+        this.add(aboutCopyright);
+        
+        let aboutLicense = new Gtk.Label({
+            label: "<small>" +
+            _("This program comes with absolutely no warranty.") + "\n" +
+            _('See the <a href="https://www.gnu.org/licenses/old-licenses/gpl-2.0.html">GNU General Public License, version 2 or later</a> for details.') +
+            "</small>",
+            use_markup: true,
+            justify: Gtk.Justification.CENTER
+        });
+        this.add(aboutLicense);
+    }
+});
+
+
 /** A GtkStack subclass with a pre-attached GtkStackSwitcher */
 var PrefsWidget = new Lang.Class({
-    Name: "PrefsWidget",
+    Name: "GSConnectPrefsWidget",
     Extends: PreferencesWidget.Stack,
     
     _init: function () {
@@ -92,12 +156,12 @@ var PrefsWidget = new Lang.Class({
         appearanceSection.addGSetting(Common.Settings, "show-offline");
         appearanceSection.addGSetting(Common.Settings, "show-unpaired");
         
-        let filesSection = generalPage.addSection(
-            _("Files"),
+        let desktopSection = generalPage.addSection(
+            _("Desktop"),
             null,
             { margin_bottom: 0 }
         );
-        filesSection.addGSetting(Common.Settings, "nautilus-integration");
+        desktopSection.addGSetting(Common.Settings, "nautilus-integration");
         
         // Devices Page
         this.devicesStack = new DeviceWidget.Stack(this);
@@ -107,12 +171,15 @@ var PrefsWidget = new Lang.Class({
             _("Devices")
         );
         
-        // About/Advanced
-        let advancedPage = this.addPage("advanced", _("Advanced"));
-        let develSection = advancedPage.addSection(
-            _("Development"),
+        // About Page
+        let aboutPage = this.addPage("about", _("About"));
+        aboutPage.box.add(new AboutWidget());
+        aboutPage.box.margin_top = 18;
+        
+        let develSection = aboutPage.addSection(
             null,
-            { margin_bottom: 32 }
+            null,
+            { margin_bottom: 0 }
         );
         develSection.addGSetting(Common.Settings, "debug");
         Common.Settings.connect("changed::debug", () => {
