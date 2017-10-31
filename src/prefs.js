@@ -94,8 +94,45 @@ var PrefsWidget = new Lang.Class({
         this.parent();
         
         this.daemon = new Client.Daemon();
+        // Devices Page
+        this.devicesStack = new DeviceWidget.Stack(this);
+        let devicesPage = this.add_titled(
+            this.devicesStack,
+            "devices", 
+            _("Devices")
+        );
         
-        this._build();
+        // Preferences Page
+        let preferencesPage = this.addPage("preferences", _("Preferences"));
+        
+        let appearanceSection = preferencesPage.addSection(_("Appearance"));
+        appearanceSection.addGSetting(Common.Settings, "show-indicators");
+        appearanceSection.addGSetting(Common.Settings, "show-offline");
+        appearanceSection.addGSetting(Common.Settings, "show-unpaired");
+        
+        let desktopSection = preferencesPage.addSection(
+            _("Desktop"),
+            null,
+            { margin_bottom: 0 }
+        );
+        desktopSection.addGSetting(Common.Settings, "nautilus-integration");
+        
+        // About Page
+        let aboutPage = this.addPage("about", _("About"));
+        aboutPage.box.add(new AboutWidget());
+        aboutPage.box.margin_top = 18;
+        
+        let develSection = aboutPage.addSection(
+            null,
+            null,
+            { margin_bottom: 0 }
+        );
+        develSection.addGSetting(Common.Settings, "debug");
+        Common.Settings.connect("changed::debug", () => {
+            if (Common.Settings.get_boolean("debug")) {
+                this.daemon.quit();
+            }
+        });
         
         this._watchdog = Gio.bus_watch_name(
             Gio.BusType.SESSION,
@@ -142,48 +179,6 @@ var PrefsWidget = new Lang.Class({
         if (!Common.Settings.get_boolean("debug")) {
             this.daemon = new Client.Daemon();
         }
-    },
-    
-    _build: function () {
-        // General Page
-        let generalPage = this.addPage("general", _("General"));
-        
-        let appearanceSection = generalPage.addSection(_("Appearance"));
-        appearanceSection.addGSetting(Common.Settings, "show-indicators");
-        appearanceSection.addGSetting(Common.Settings, "show-offline");
-        appearanceSection.addGSetting(Common.Settings, "show-unpaired");
-        
-        let desktopSection = generalPage.addSection(
-            _("Desktop"),
-            null,
-            { margin_bottom: 0 }
-        );
-        desktopSection.addGSetting(Common.Settings, "nautilus-integration");
-        
-        // Devices Page
-        this.devicesStack = new DeviceWidget.Stack(this);
-        let devicesPage = this.add_titled(
-            this.devicesStack,
-            "devices", 
-            _("Devices")
-        );
-        
-        // About Page
-        let aboutPage = this.addPage("about", _("About"));
-        aboutPage.box.add(new AboutWidget());
-        aboutPage.box.margin_top = 18;
-        
-        let develSection = aboutPage.addSection(
-            null,
-            null,
-            { margin_bottom: 0 }
-        );
-        develSection.addGSetting(Common.Settings, "debug");
-        Common.Settings.connect("changed::debug", () => {
-            if (Common.Settings.get_boolean("debug")) {
-                this.daemon.quit();
-            }
-        });
     }
 });
 

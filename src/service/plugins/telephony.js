@@ -564,7 +564,7 @@ var SettingsDialog = new Lang.Class({
         this.parent(device, name, window);
         
         let mediaSection = this.content.addSection(
-            _("Media"),
+            null,
             null,
             { margin_bottom: 0, width_request: -1 }
         );

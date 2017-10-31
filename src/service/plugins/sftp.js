@@ -306,7 +306,7 @@ var SettingsDialog = new Lang.Class({
         this.parent(device, name, window);
         
         let generalSection = this.content.addSection(
-            _("General"),
+            null,
             null,
             { margin_bottom: 0, width_request: -1 }
         );

@@ -509,7 +509,7 @@ var SettingsDialog = new Lang.Class({
         this.parent(device, name, window);
         
         let receivingSection = this.content.addSection(
-            _("Receiving"),
+            null,
             null,
             { margin_bottom: 0, width_request: -1 }
         );
