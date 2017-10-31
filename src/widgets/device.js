@@ -388,8 +388,7 @@ var Page = new Lang.Class({
                 });
                 stateButton.set_tooltip_markup(
                     // TRANSLATORS: eg. Pair <b>Google Pixel</b>
-                    // PLEASE KEEP NEWLINE CHARACTERS (\n)
-                    _("Pair <b>%s</b>\n\n").format(this.device.name) +
+                    _("Pair <b>%s</b>").format(this.device.name) + "\n\n" +
                     // TRANSLATORS: Remote and local TLS Certificate fingerprint
                     // PLEASE KEEP NEWLINE CHARACTERS (\n)
                     //

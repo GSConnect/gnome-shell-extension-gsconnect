@@ -330,7 +330,7 @@ var DeviceMenu = new Lang.Class({
             this.statusLabel.text = _("Device is disconnected");
         } else if (!paired) {
             this.statusButton.child.icon_name = "channel-insecure-symbolic";
-            this.statusButton.tooltip.title = _("Pair <b>%s</b>\n\n").format(this.device.name) + _("<b>%s Fingerprint:</b>\n%s\n\n<b>Local Fingerprint:</b>\n%s").format(this.device.name, this.device.fingerprint, this.daemon.fingerprint);
+            this.statusButton.tooltip.title = _("Pair <b>%s</b>").format(this.device.name) + "\n\n" + _("<b>%s Fingerprint:</b>\n%s\n\n<b>Local Fingerprint:</b>\n%s").format(this.device.name, this.device.fingerprint, this.daemon.fingerprint);
             this.statusLabel.text = _("Device is unpaired");
         }
         
