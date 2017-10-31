@@ -393,6 +393,16 @@ var Device = new Lang.Class({
         // TRANSLATORS: eg. Pair Request from Google Pixel
         notif.set_title(_("Pair Request from %s").format(this.name));
         notif.set_body(
+            // TRANSLATORS: Remote and local TLS Certificate fingerprint
+            // PLEASE KEEP NEWLINE CHARACTERS (\n)
+            //
+            // Example:
+            //
+            // Google Pixel Fingerprint:
+            // 00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
+            //
+            // Local Fingerprint:
+            // 00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
             _("%s Fingerprint:\n%s\n\nLocal Fingerprint:\n%s").format(
                 this.name,
                 this.fingerprint,

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-10-31 10:27-0700\n"
+"POT-Creation-Date: 2017-10-31 10:49-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -176,7 +176,17 @@ msgstr ""
 msgid "Pair Request from %s"
 msgstr ""
 
-#: src/service/device.js:396
+#. TRANSLATORS: Remote and local TLS Certificate fingerprint
+#. PLEASE KEEP NEWLINE CHARACTERS (\n)
+#.
+#. Example:
+#.
+#. Google Pixel Fingerprint:
+#. 00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
+#.
+#. Local Fingerprint:
+#. 00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
+#: src/service/device.js:406
 #, javascript-format
 msgid ""
 "%s Fingerprint:\n"
@@ -186,11 +196,11 @@ msgid ""
 "%s"
 msgstr ""
 
-#: src/service/device.js:405
+#: src/service/device.js:415
 msgid "Reject"
 msgstr ""
 
-#: src/service/device.js:409
+#: src/service/device.js:419
 msgid "Accept"
 msgstr ""
 
