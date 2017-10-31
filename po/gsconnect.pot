@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-10-31 10:49-0700\n"
+"POT-Creation-Date: 2017-10-31 11:20-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,24 +19,24 @@ msgstr ""
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
 #. TRANSLATORS: Open a new SMS window
-#: src/extension.js:136 src/widgets/device.js:451
+#: src/extension.js:136 src/widgets/device.js:466
 msgid "Send SMS"
 msgstr ""
 
 #. TRANSLATORS: eg. Locate Google Pixel
-#: src/extension.js:143 src/widgets/device.js:453
+#: src/extension.js:143 src/widgets/device.js:468
 #, javascript-format
 msgid "Locate %s"
 msgstr ""
 
 #. TRANSLATORS: Open the device's list of browseable directories
 #: src/extension.js:151 src/service/plugins/sftp.js:29
-#: src/widgets/device.js:455
+#: src/widgets/device.js:470
 msgid "Browse Files"
 msgstr ""
 
 #. TRANSLATORS: Open the file chooser for sending files/links
-#: src/extension.js:158 src/widgets/device.js:457
+#: src/extension.js:158 src/widgets/device.js:472
 msgid "Share File/URL"
 msgstr ""
 
@@ -49,7 +49,7 @@ msgid "No plugins enabled"
 msgstr ""
 
 #. TRANSLATORS: eg. Reconnect <b>Google Pixel</b>
-#: src/extension.js:329 src/widgets/device.js:411
+#: src/extension.js:329 src/widgets/device.js:361
 #, javascript-format
 msgid "Reconnect <b>%s</b>"
 msgstr ""
@@ -59,7 +59,7 @@ msgid "Device is disconnected"
 msgstr ""
 
 #. TRANSLATORS: eg. Pair <b>Google Pixel</b>
-#: src/extension.js:333 src/widgets/device.js:391
+#: src/extension.js:333 src/widgets/device.js:404
 #, javascript-format
 msgid "Pair <b>%s</b>"
 msgstr ""
@@ -74,7 +74,7 @@ msgstr ""
 #.
 #. <b>Local Fingerprint:</b>
 #. 00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
-#: src/extension.js:333 src/widgets/device.js:402
+#: src/extension.js:333 src/widgets/device.js:415
 #, javascript-format
 msgid ""
 "<b>%s Fingerprint:</b>\n"
@@ -161,7 +161,7 @@ msgstr ""
 msgid "Appearance"
 msgstr ""
 
-#: src/prefs.js:114 src/widgets/device.js:471
+#: src/prefs.js:114 src/widgets/device.js:487
 msgid "Desktop"
 msgstr ""
 
@@ -466,7 +466,7 @@ msgstr ""
 #. TRANSLATORS: This is specifically for matching missed call notifications on Android.
 #. You should translate this (or not) to match the string on your phone that in english looks like "Missed call: John Lennon"
 #: src/service/plugins/telephony.js:147 src/service/plugins/telephony.js:152
-#: src/service/plugins/telephony.js:482
+#: src/service/plugins/telephony.js:481
 msgid "Missed call"
 msgstr ""
 
@@ -497,28 +497,28 @@ msgstr ""
 msgid "Call in progress with %s on %s"
 msgstr ""
 
-#: src/service/plugins/telephony.js:399 src/widgets/telephony.js:561
+#: src/service/plugins/telephony.js:398 src/widgets/telephony.js:561
 msgid "Unknown Number"
 msgstr ""
 
-#: src/service/plugins/telephony.js:578
+#: src/service/plugins/telephony.js:577
 msgid "Never"
 msgstr ""
 
-#: src/service/plugins/telephony.js:579
+#: src/service/plugins/telephony.js:578
 msgid "Incoming Calls"
 msgstr ""
 
-#: src/service/plugins/telephony.js:580
+#: src/service/plugins/telephony.js:579
 msgid "In Progress Calls"
 msgstr ""
 
-#: src/service/plugins/telephony.js:587
+#: src/service/plugins/telephony.js:586
 #: data/org.gnome.shell.extensions.gsconnect.gschema.xml:114
 msgid "Pause Music"
 msgstr ""
 
-#: src/service/plugins/telephony.js:592
+#: src/service/plugins/telephony.js:591
 msgid "The <b>Media Player Control</b> plugin must be enabled"
 msgstr ""
 
@@ -560,37 +560,37 @@ msgid ""
 msgstr ""
 
 #. TRANSLATORS: eg. Unpair <b>Google Pixel</b>
-#: src/widgets/device.js:382
+#: src/widgets/device.js:424
 #, javascript-format
 msgid "Unpair <b>%s</b>"
 msgstr ""
 
-#: src/widgets/device.js:420
+#: src/widgets/device.js:435
 msgid "Plugins"
 msgstr ""
 
-#: src/widgets/device.js:441
+#: src/widgets/device.js:456
 msgid "Keyboard Shortcuts"
 msgstr ""
 
 #. TRANSLATORS: Open the device menu
-#: src/widgets/device.js:449
+#: src/widgets/device.js:464
 msgid "Open Menu"
 msgstr ""
 
-#: src/widgets/device.js:477
+#: src/widgets/device.js:493
 msgid "Laptop"
 msgstr ""
 
-#: src/widgets/device.js:483
+#: src/widgets/device.js:499
 msgid "Smartphone"
 msgstr ""
 
-#: src/widgets/device.js:489
+#: src/widgets/device.js:505
 msgid "Tablet"
 msgstr ""
 
-#: src/widgets/device.js:495
+#: src/widgets/device.js:511
 msgid "Unknown"
 msgstr ""
 
