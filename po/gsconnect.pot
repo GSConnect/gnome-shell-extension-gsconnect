@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-10-31 11:20-0700\n"
+"POT-Creation-Date: 2017-10-31 11:28-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,24 +19,24 @@ msgstr ""
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
 #. TRANSLATORS: Open a new SMS window
-#: src/extension.js:136 src/widgets/device.js:466
+#: src/extension.js:136 src/widgets/device.js:464
 msgid "Send SMS"
 msgstr ""
 
 #. TRANSLATORS: eg. Locate Google Pixel
-#: src/extension.js:143 src/widgets/device.js:468
+#: src/extension.js:143 src/widgets/device.js:466
 #, javascript-format
 msgid "Locate %s"
 msgstr ""
 
 #. TRANSLATORS: Open the device's list of browseable directories
 #: src/extension.js:151 src/service/plugins/sftp.js:29
-#: src/widgets/device.js:470
+#: src/widgets/device.js:468
 msgid "Browse Files"
 msgstr ""
 
 #. TRANSLATORS: Open the file chooser for sending files/links
-#: src/extension.js:158 src/widgets/device.js:472
+#: src/extension.js:158 src/widgets/device.js:470
 msgid "Share File/URL"
 msgstr ""
 
@@ -161,7 +161,7 @@ msgstr ""
 msgid "Appearance"
 msgstr ""
 
-#: src/prefs.js:114 src/widgets/device.js:487
+#: src/prefs.js:114 src/widgets/device.js:485
 msgid "Desktop"
 msgstr ""
 
@@ -565,32 +565,32 @@ msgstr ""
 msgid "Unpair <b>%s</b>"
 msgstr ""
 
-#: src/widgets/device.js:435
+#: src/widgets/device.js:433
 msgid "Plugins"
 msgstr ""
 
-#: src/widgets/device.js:456
+#: src/widgets/device.js:454
 msgid "Keyboard Shortcuts"
 msgstr ""
 
 #. TRANSLATORS: Open the device menu
-#: src/widgets/device.js:464
+#: src/widgets/device.js:462
 msgid "Open Menu"
 msgstr ""
 
-#: src/widgets/device.js:493
+#: src/widgets/device.js:491
 msgid "Laptop"
 msgstr ""
 
-#: src/widgets/device.js:499
+#: src/widgets/device.js:497
 msgid "Smartphone"
 msgstr ""
 
-#: src/widgets/device.js:505
+#: src/widgets/device.js:503
 msgid "Tablet"
 msgstr ""
 
-#: src/widgets/device.js:511
+#: src/widgets/device.js:509
 msgid "Unknown"
 msgstr ""
 

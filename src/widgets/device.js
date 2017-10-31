@@ -423,8 +423,6 @@ var Page = new Lang.Class({
                     // TRANSLATORS: eg. Unpair <b>Google Pixel</b>
                     _("Unpair <b>%s</b>").format(this.device.name)
                 );
-            } else {
-                pairButton.sensitive = false;
             }
         });
         this.device.notify("paired");
