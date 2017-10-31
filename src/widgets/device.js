@@ -264,6 +264,13 @@ var Stack = new Lang.Class({
             icon_name: metadata.symbolic_icon,
             pixel_size: 16
         });
+        device.connect("notify::paired", () => {
+            if (device.paired) {
+                icon.icon_name = metadata.symbolic_icon;
+            } else {
+                icon.icon_name = metadata.unpaired_icon;
+            }
+        });
         row.grid.attach(icon, 0, 0, 1, 1);
         let nameLabel = new Gtk.Label({ label: device.name });
         row.grid.attach(nameLabel, 1, 0, 1, 1);
@@ -464,27 +471,32 @@ var DeviceMetadata = {
     desktop: {
         type: _("Desktop"),
         icon: "computer",
-        symbolic_icon: "computer-symbolic"
+        symbolic_icon: "computer-symbolic",
+        unpaired_icon: "computer-disconnected"
     },
     laptop: {
         type: _("Laptop"),
         icon: "computer",
-        symbolic_icon: "laptop-symbolic"
+        symbolic_icon: "laptop-symbolic",
+        unpaired_icon: "laptop-disconnected"
     },
     phone: {
         type: _("Smartphone"),
         icon: "phone",
-        symbolic_icon: "smartphone-symbolic"
+        symbolic_icon: "smartphone-symbolic",
+        unpaired_icon: "smartphone-disconnected"
     },
     tablet: {
         type: _("Tablet"),
         icon: "tablet",
-        symbolic_icon: "tablet-symbolic"
+        symbolic_icon: "tablet-symbolic",
+        unpaired_icon: "tablet-disconnected"
     },
     unknown: {
         type: _("Unknown"),
         icon: "computer",
-        symbolic_icon: "computer-symbolic"
+        symbolic_icon: "computer-symbolic",
+        unpaired_icon: "computer-disconnected"
     }
 };
 
