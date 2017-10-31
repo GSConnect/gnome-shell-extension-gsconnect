@@ -48,7 +48,7 @@ var Row = new Lang.Class({
             margin_bottom: 8,
             margin_right: 12,
             vexpand: true,
-            valign: Gtk.Align.CENTER
+            valign: Gtk.Align.FILL
         });
         this.add(this.grid);
     }
@@ -66,6 +66,8 @@ var Setting = new Lang.Class({
             can_focus: false,
             xalign: 0,
             hexpand: true,
+            valign: Gtk.Align.CENTER,
+            vexpand: true,
             label: summary,
             use_markup: true
         });
@@ -75,6 +77,8 @@ var Setting = new Lang.Class({
             this.description = new Gtk.Label({
                 xalign: 0,
                 hexpand: true,
+                valign: Gtk.Align.CENTER,
+                vexpand: true,
                 label: description,
                 use_markup: true,
                 wrap: true
