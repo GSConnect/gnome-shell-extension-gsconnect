@@ -331,6 +331,8 @@ var Device = new Lang.Class({
         } catch (e) {
             Common.debug("Device: error disconnecting: " + e);
         }
+        
+        this.daemon._pruneDevices();
     },
     
     _onReceived: function (channel, packet) {

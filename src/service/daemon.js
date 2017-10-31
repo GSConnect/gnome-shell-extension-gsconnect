@@ -102,6 +102,7 @@ var Daemon = new Lang.Class({
             this.broadcast();
         } else {
             this.tcpListener.stop();
+            this._pruneDevices();
         }
     },
     
@@ -232,6 +233,17 @@ var Daemon = new Lang.Class({
         });
         
         Common.Settings.emit("changed::devices", "devices");
+    },
+    
+    _pruneDevices: function () {
+        let devices = Common.Settings.get_strv("devices");
+        
+        for (let device of this._devices.values()) {
+            if (!device.connected && !device.paired) {
+                devices.splice(devices.indexOf(device.id), 1);
+                Common.Settings.set_strv("devices", devices);
+            }
+        }
     },
     
     _addDevice: function (packet, channel=null) {
