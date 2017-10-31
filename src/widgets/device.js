@@ -351,7 +351,29 @@ var Page = new Lang.Class({
         });
         
         // Info Section // State Button (Pair/Unpair/Connect)
-        let stateButton = new Gtk.Button({
+        let connectButton = new Gtk.Button({
+            image: new Gtk.Image({
+                icon_name: "view-refresh-symbolic",
+                pixel_size: 16
+            }),
+            always_show_image: true,
+            // TRANSLATORS: eg. Reconnect <b>Google Pixel</b>
+            tooltip_markup: _("Reconnect <b>%s</b>").format(this.device.name),
+            can_focus: true,
+            halign: Gtk.Align.END,
+            valign: Gtk.Align.CENTER
+        });
+        connectButton.get_style_context().add_class("circular");
+        connectButton.connect("clicked", () => { this.device.activate(); });
+        this.device.bind_property(
+            "connected",
+            connectButton,
+            "visible",
+            GObject.BindingFlags.INVERT_BOOLEAN
+        );
+        statusRow.grid.attach(connectButton, 2, 0, 1, 2);
+        
+        let pairButton = new Gtk.Button({
             image: new Gtk.Image({
                 icon_name: "view-refresh-symbolic",
                 pixel_size: 16
@@ -361,8 +383,8 @@ var Page = new Lang.Class({
             halign: Gtk.Align.END,
             valign: Gtk.Align.CENTER
         });
-        stateButton.get_style_context().add_class("circular");
-        stateButton.connect("clicked", () => {
+        pairButton.get_style_context().add_class("circular");
+        pairButton.connect("clicked", () => {
             if (this.device.connected && this.device.paired) {
                 this.device.unpair();
             } else if (this.device.connected && !this.device.paired) {
@@ -372,21 +394,12 @@ var Page = new Lang.Class({
             }
         });
         this.device.connect("notify", () => {
-            if (this.device.connected && this.device.paired) {
-                stateButton.image = new Gtk.Image({
-                    icon_name: "channel-secure-symbolic",
-                    pixel_size: 16
-                });
-                stateButton.set_tooltip_markup(
-                    // TRANSLATORS: eg. Unpair <b>Google Pixel</b>
-                    _("Unpair <b>%s</b>").format(this.device.name)
-                );
-            } else if (this.device.connected && !this.device.paired) {
-                stateButton.image = new Gtk.Image({
+            if (this.device.connected && !this.device.paired) {
+                pairButton.image = new Gtk.Image({
                     icon_name: "channel-insecure-symbolic",
                     pixel_size: 16
                 });
-                stateButton.set_tooltip_markup(
+                pairButton.set_tooltip_markup(
                     // TRANSLATORS: eg. Pair <b>Google Pixel</b>
                     _("Pair <b>%s</b>").format(this.device.name) + "\n\n" +
                     // TRANSLATORS: Remote and local TLS Certificate fingerprint
@@ -401,19 +414,21 @@ var Page = new Lang.Class({
                     // 00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
                     _("<b>%s Fingerprint:</b>\n%s\n\n<b>Local Fingerprint:</b>\n%s").format(this.device.name, this.device.fingerprint, this.daemon.fingerprint)
                 );
-            } else {
-                stateButton.image = new Gtk.Image({
-                    icon_name: "view-refresh-symbolic",
+            } else if (this.device.paired) {
+                pairButton.image = new Gtk.Image({
+                    icon_name: "channel-secure-symbolic",
                     pixel_size: 16
                 });
-                stateButton.set_tooltip_markup(
-                    // TRANSLATORS: eg. Reconnect <b>Google Pixel</b>
-                    _("Reconnect <b>%s</b>").format(this.device.name)
+                pairButton.set_tooltip_markup(
+                    // TRANSLATORS: eg. Unpair <b>Google Pixel</b>
+                    _("Unpair <b>%s</b>").format(this.device.name)
                 );
+            } else {
+                pairButton.sensitive = false;
             }
         });
         this.device.notify("paired");
-        statusRow.grid.attach(stateButton, 2, 0, 1, 2);
+        statusRow.grid.attach(pairButton, 3, 0, 1, 2);
         
         // Plugins
         let pluginsSection = this.addSection(
@@ -462,6 +477,7 @@ var Page = new Lang.Class({
         keyRow.grid.attach(keyView, 0, 0, 1, 1);
         
         this.show_all();
+        connectButton.visible = !this.device.connected;
     }
 });
 
