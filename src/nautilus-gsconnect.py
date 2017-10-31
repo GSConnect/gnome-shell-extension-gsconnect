@@ -51,7 +51,7 @@ class GSConnectShareExtension(GObject.GObject, Nautilus.MenuProvider):
 			None,
 			'org.gnome.Shell.Extensions.GSConnect',
 			'/org/gnome/Shell/Extensions/GSConnect/Device/' + device.values()[0],
-			'org.gnome.Shell.Extensions.GSConnect.share',
+			'org.gnome.Shell.Extensions.GSConnect.Plugin.Share',
 			None)
         
         for file in files:
