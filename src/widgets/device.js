@@ -350,7 +350,7 @@ var Page = new Lang.Class({
         let typeIcon = new Gtk.Image({
             icon_name: metadata.icon,
             pixel_size: 48,
-            xalign: 0
+            halign: Gtk.Align.START
         });
         statusRow.grid.attach(typeIcon, 0, 0, 1, 2);
         
