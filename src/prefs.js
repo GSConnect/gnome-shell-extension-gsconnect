@@ -29,7 +29,6 @@ var AboutWidget = new Lang.Class({
     Extends: Gtk.Grid,
     
     _init: function () {
-        
         this.parent({
             margin_bottom: 18,
             row_spacing: 8,
@@ -50,9 +49,7 @@ var AboutWidget = new Lang.Class({
         });
         this.add(aboutName);
         
-        let aboutVersion = new Gtk.Label({
-            label: Common.METADATA.version.toString()
-        });
+        let aboutVersion = new Gtk.Label({ label: Common.METADATA.version });
         this.add(aboutVersion);
         
         let aboutDescription = new Gtk.Label({

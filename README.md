@@ -1,4 +1,4 @@
-# KDE Connect protocol implementation and integration for Gnome Shell
+# KDE Connect implementation with Gnome Shell integration
 
 ## Overview
 
