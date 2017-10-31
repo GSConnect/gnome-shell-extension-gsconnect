@@ -1,10 +1,9 @@
 {
-"extension-id": "@EXTENSION_ID@",
-"uuid": "@UUID@",
-"app-id": "@APP_ID@",
-"name": "@NAME@",
-"description": "@DESCRIPTION@",
+"extension-id": "gsconnect",
+"uuid": "gsconnect@andyholmes.github.io",
+"name": "GSConnect",
+"description": "KDE Connect protocol implementation and integration",
 "version": "@VERSION@",
-"shell-version": @SHELL_VERSION@,
-"url": "@URL@"
+"shell-version": [ "3.24", "3.26" ],
+"url": "https://github.com/andyholmes/gnome-shell-extension-gsconnect"
 }

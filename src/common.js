@@ -47,7 +47,10 @@ var SchemaSource = Gio.SettingsSchemaSource.new_from_directory(
 );
 
 var Settings = new Gio.Settings({
-    settings_schema: SchemaSource.lookup(METADATA['app-id'], true)
+    settings_schema: SchemaSource.lookup(
+        "org.gnome.shell.extensions.gsconnect",
+        true
+    )
 });
 
 
