@@ -2,7 +2,7 @@
 "extension-id": "gsconnect",
 "uuid": "gsconnect@andyholmes.github.io",
 "name": "GSConnect",
-"description": "KDE Connect protocol implementation and integration",
+"description": "KDE Connect implementation with Gnome Shell integration",
 "version": "@VERSION@",
 "shell-version": [ "3.24", "3.26" ],
 "url": "https://github.com/andyholmes/gnome-shell-extension-gsconnect"
