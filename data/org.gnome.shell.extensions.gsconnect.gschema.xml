@@ -23,8 +23,6 @@
     </key>
     <key name="devices" type="as">
       <default>[]</default>
-      <summary>Enabled Devices</summary>
-      <description></description>
     </key>
     <key name="nautilus-integration" type="b">
       <default>false</default>
@@ -40,60 +38,42 @@
   <schema id="org.gnome.shell.extensions.gsconnect.device">
     <key name="certificate-pem" type="s">
       <default>""</default>
-      <summary>TLS Certificate</summary>
-      <description>The TLS certificate for the device in PEM format</description>
     </key>
     <key name="id" type="s">
       <default>""</default>
-      <summary>Device Id</summary>
-      <description>The device Id (usually the hostname)</description>
     </key>
     <key name="keybindings" type="s">
       <default>"{}"</default>
-      <summary>Device Shortcuts</summary>
-      <description>Keyboard shortcuts for device actions</description>
     </key>
     <key name="name" type="s">
       <default>""</default>
-      <summary>Device Name</summary>
-      <description>The device name</description>
     </key>
     <key name="type" type="s">
       <default>"unknown"</default>
-      <summary>Device Type</summary>
-      <description>The device type</description>
     </key>
     <key name="enabled-plugins" type="as">
       <default>[]</default>
-      <summary>Enabled Plugins</summary>
-      <description>The plugins marked as enabled</description>
     </key>
     <key name="supported-plugins" type="as">
       <default>[]</default>
-      <summary>Supported Plugins</summary>
-      <description>The plugins the device supports</description>
     </key>
     <key name="tcp-host" type="s">
       <default>""</default>
-      <summary>TCP Host</summary>
-      <description>The last known address of the device</description>
     </key>
     <key name="tcp-port" type="u">
       <default>1716</default>
-      <summary>TCP Port</summary>
-      <description>The last know port of the device</description>
     </key>
   </schema>
   <schema id="org.gnome.shell.extensions.gsconnect.plugin.notification">
     <key name="receive-notifications" type="b">
       <default>true</default>
       <summary>Receive Notifications</summary>
-      <description>Sync remote notifications</description>
+      <description></description>
     </key>
     <key name="send-notifications" type="b">
       <default>true</default>
       <summary>Send Notifications</summary>
-      <description>Sync local notifications</description>
+      <description></description>
     </key>
     <key name="sync-icons" type="b">
       <default>true</default>
@@ -102,15 +82,11 @@
     </key>
     <key name="applications" type="s">
       <default>'{"GSConnect":{"iconName":"phone","enabled":false}}'</default>
-      <summary>Applications</summary>
-      <description>A list of applications to sync notifications for</description>
     </key>
   </schema>
   <schema id="org.gnome.shell.extensions.gsconnect.plugin.runcommand">
     <key name="command-list" type="s">
       <default>"{}"</default>
-      <summary>Commands</summary>
-      <description>Executable commands</description>
     </key>
   </schema>
   <schema id="org.gnome.shell.extensions.gsconnect.plugin.sftp">
@@ -128,7 +104,7 @@
     </key>
     <key name="download-subdirectory" type="b">
       <default>false</default>
-      <summary>Use Sudirectory</summary>
+      <summary>Use Subdirectory</summary>
       <description></description>
     </key>
   </schema>
