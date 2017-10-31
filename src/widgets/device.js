@@ -147,40 +147,6 @@ var Stack = new Lang.Class({
         this._parent = prefsWidget;
         this.devices = new Map();
         
-        // InfoBar
-        this.deleted = null;
-        
-        this.infobar = new Gtk.InfoBar({
-            message_type: Gtk.MessageType.INFO,
-            show_close_button: true
-        });
-        this.infobar.get_content_area().add(
-            new Gtk.Image({ icon_name: "user-trash-symbolic" })
-        );
-        this.infobar.label = new Gtk.Label({ label: "", use_markup: true });
-        this.infobar.get_content_area().add(this.infobar.label);
-        // TRANSLATORS: Undo device removal
-        this.infobar.add_button(_("Undo"), 1);
-        
-        this.infobar.connect("response", (widget, response) => {
-            if (response === 1 && this.deleted !== null) {
-                let devices = Common.Settings.get_strv("devices");
-                
-                if (devices.indexOf(this.deleted[0]) < 0) {
-                    devices.push(this.deleted[0]);
-                    Common.Settings.set_strv("devices", devices);
-                }
-            } else if (response === Gtk.ResponseType.CLOSE) {
-                GLib.spawn_command_line_async(
-                "dconf reset -f " + this.deleted[1]
-                );
-            }
-            
-            this.deleted = null;
-            this.infobar.hide();
-            this.remove(this.infobar);
-        });
-        
         // Device Switcher
         this.sidebar = new Gtk.ListBox({ vexpand: true });
         let sidebarScrolledWindow = new Gtk.ScrolledWindow({
@@ -442,43 +408,6 @@ var Page = new Lang.Class({
         });
         this.device.notify("paired");
         statusRow.grid.attach(stateButton, 2, 0, 1, 2);
-        
-        // Info Section // Remove Button
-        let removeButton = new Gtk.Button({
-            image: new Gtk.Image({
-                icon_name: "user-trash-symbolic",
-                pixel_size: 16
-            }),
-            // TRANSLATORS: eg. Remove <b>Google Pixel</b> Smartphone
-            tooltip_markup: _("Remove <b>%s</b>").format(this.device.name),
-            always_show_image: true,
-            can_focus: true,
-            halign: Gtk.Align.END,
-            valign: Gtk.Align.CENTER
-        });
-        removeButton.get_style_context().add_class("circular");
-        
-        // See: https://bugzilla.gnome.org/show_bug.cgi?id=710888
-        removeButton.connect("clicked", () => {
-            this.stack.deleted = [
-                this.device.id, 
-                "/org/gnome/shell/extensions/gsconnect/device/" + this.device.id + "/"
-            ];
-            
-            let knownDevices = Common.Settings.get_strv("devices");
-            knownDevices.splice(knownDevices.indexOf(this.device.id), 1);
-            Common.Settings.set_strv("devices", knownDevices);
-            
-            // EAFP!
-            this.stack.infobar.label.set_label(
-                // TRANSLATORS: Shown in an InfoBar after a device is removed
-                // eg. Removed <b>Google Pixel</b> and its configuration
-                _("Removed <b>%s</b> and its configuration").format(this.device.name)
-            );
-            this.stack.attach(this.stack.infobar, 0, 0, 2, 1);
-            this.stack.infobar.show_all();
-        });
-        statusRow.grid.attach(removeButton, 3, 0, 1, 2);
         
         // Plugins
         let pluginsSection = this.addSection(
