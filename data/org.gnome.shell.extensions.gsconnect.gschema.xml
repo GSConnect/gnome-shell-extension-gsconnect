@@ -26,11 +26,6 @@
       <summary>Enabled Devices</summary>
       <description></description>
     </key>
-    <key name="keybindings" type="s">
-      <default>"{}"</default>
-      <summary>Extension Shortcuts</summary>
-      <description>Keyboard shortcuts for extension actions</description>
-    </key>
     <key name="nautilus-integration" type="b">
       <default>false</default>
       <summary>Nautilus Integration</summary>

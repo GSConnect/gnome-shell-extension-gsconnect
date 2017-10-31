@@ -516,7 +516,6 @@ var SystemIndicator = new Lang.Class({
         this._indicators = {};
         this._menus = {};
         this.keybindingManager = new KeybindingManager();
-        this._keybindings = [];
         
         this._integrateNautilus();
         Settings.connect(
@@ -551,13 +550,6 @@ var SystemIndicator = new Lang.Class({
         );
         
         Main.panel.statusArea.aggregateMenu.menu.addMenuItem(this.menu, 4);
-        
-        // Keybindings
-        this._extensionKeybindings();
-        
-        Settings.connect("changed::keybindings", () => {
-            this._extensionKeybindings();
-        });
         
         // Watch for DBus service
         this._watchdog = Gio.bus_watch_name(
@@ -627,43 +619,6 @@ var SystemIndicator = new Lang.Class({
         }
     },
     
-    _extensionKeybindings: function () {
-        for (let binding of this._keybindings) {
-            this.keybindingManager.remove(binding);
-        }
-        this._keybindings = [];
-    
-        let accels = Settings.get_string("keybindings");
-        accels = JSON.parse(accels);
-        
-        if (accels.menu) {
-            this._keybindings.push(
-                this.keybindingManager.add(
-                    accels.menu,
-                    Lang.bind(this, this._openMenu)
-                )
-            );
-        }
-        
-        if (accels.discover) {
-            this._keybindings.push(
-                this.keybindingManager.add(
-                    accels.discover,
-                    Lang.bind(this, this._discoverDevices)
-                )
-            );
-        }
-        
-        if (accels.settings) {
-            this._keybindings.push(
-                this.keybindingManager.add(
-                    accels.settings,
-                    Lang.bind(this, Common.startPreferences)
-                )
-            );
-        }
-    },
-    
     _deviceKeybindings: function (indicator) {
         let menu = indicator.deviceMenu;
         
@@ -718,15 +673,6 @@ var SystemIndicator = new Lang.Class({
                 )
             );
         }
-        
-        if (accels.status) {
-            menu._keybindings.push(
-                this.keybindingManager.add(
-                    accels.status,
-                    Lang.bind(menu, menu._statusAction)
-                )
-            );
-        }
     },
     
     _browseDevice: function (indicator) {
@@ -772,14 +718,10 @@ var SystemIndicator = new Lang.Class({
         if (Settings.get_boolean("show-indicators")) {
             indicator.menu.toggle();
         } else {
-            this._openMenu();
+            Main.panel._toggleMenu(Main.panel.statusArea.aggregateMenu);
+            this.extensionMenu.menu.toggle();
+            this.extensionMenu.actor.grab_key_focus();
         }
-    },
-    
-    _openMenu: function () {
-        Main.panel._toggleMenu(Main.panel.statusArea.aggregateMenu);
-        this.extensionMenu.menu.toggle();
-        this.extensionMenu.actor.grab_key_focus();
     },
     
     _deviceAdded: function (daemon, dbusPath) {

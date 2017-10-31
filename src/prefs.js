@@ -87,32 +87,17 @@ var PrefsWidget = new Lang.Class({
         // General Page
         let generalPage = this.addPage("general", _("General"));
         
-        // Appearance
         let appearanceSection = generalPage.addSection(_("Appearance"));
         appearanceSection.addGSetting(Common.Settings, "show-indicators");
         appearanceSection.addGSetting(Common.Settings, "show-offline");
         appearanceSection.addGSetting(Common.Settings, "show-unpaired");
         
-        // Files
-        let filesSection = generalPage.addSection(_("Files"));
-        filesSection.addGSetting(Common.Settings, "nautilus-integration");
-        
-        // Keyboard Shortcuts
-        let keySection = generalPage.addSection(_("Keyboard Shortcuts"));
-        keySection.margin_bottom = 0;
-        let keyRow = keySection.addRow();
-        keyRow.grid.margin = 0;
-        let keyView = new KeybindingsWidget.TreeView(Common.Settings, "keybindings");
-        // TRANSLATORS: Opens the extension sub-menu in the Gnome Shell User Menu
-        keyView.addAccel("menu", _("Open Menu"), 0, 0);
-        // TRANSLATORS: Starts a 15 second broadcast of this computer's identity
-        keyView.addAccel("discover", _("Discover Devices"), 0, 0);
-        // TRANSLATORS: Opens the extension preferences dialog
-        keyView.addAccel("settings", _("Mobile Settings"), 0, 0);
-        keyView.setAccels(
-            JSON.parse(Common.Settings.get_string("keybindings"))
+        let filesSection = generalPage.addSection(
+            _("Files"),
+            null,
+            { margin_bottom: 0 }
         );
-        keyRow.grid.attach(keyView, 0, 0, 1, 1);
+        filesSection.addGSetting(Common.Settings, "nautilus-integration");
         
         // Devices Page
         this.devicesStack = new DeviceWidget.Stack(this);
