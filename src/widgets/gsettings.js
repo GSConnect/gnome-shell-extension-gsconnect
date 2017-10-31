@@ -4,6 +4,7 @@ const Lang = imports.lang;
 const Gettext = imports.gettext.domain("gsconnect");
 const _ = Gettext.gettext; // FIXME
 
+const Gdk = imports.gi.Gdk;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
@@ -281,40 +282,42 @@ var StringSetting = new Lang.Class({
     
     _init: function (settings, keyName) {
         this.parent({
-            placeholder_text: settings.get_string(keyName),
             can_focus: true,
             halign: Gtk.Align.END,
-            valign: Gtk.Align.CENTER
+            valign: Gtk.Align.CENTER,
+            text: settings.get_string(keyName),
+            width_chars: 16
         });
         
         this.connect("activate", (entry) => {
-            settings.set_string(keyName, entry.text);
-            entry.text = "";
+            if (entry.text !== settings.get_string(keyName)) {
+                settings.set_string(keyName, entry.text);
+                entry.secondary_icon_name = "";
+            }
             this.get_toplevel().set_focus(null);
         });
         
         this.connect("changed", (entry) => {
-            if (entry.text.length) {
-                entry.secondary_icon_name = "edit-undo-symbolic";
-            } else {
-                entry.text = "";
-                entry.secondary_icon_name = "";
-                this.get_toplevel().set_focus(null);
+            if (entry.text !== settings.get_string(keyName)) {
+                entry.secondary_icon_name = "emblem-ok-symbolic";
             }
         });
         
         this.connect("icon-release", (entry) => {
-            entry.text = "";
-            entry.secondary_icon_name = "";
+            if (entry.text !== settings.get_string(keyName)) {
+                settings.set_string(keyName, entry.text);
+                entry.secondary_icon_name = "";
+            }
             this.get_toplevel().set_focus(null);
         });
-    
-        settings.bind(
-            keyName,
-            this,
-            "placeholder_text",
-            Gio.SettingsBindFlags.DEFAULT
-        );
+        
+        this.connect("key-press-event", (entry, event, user_data) => {
+            if (event.get_keyval()[1] === Gdk.KEY_Escape) {
+                entry.text = settings.get_string(keyName);
+                entry.secondary_icon_name = "";
+                this.get_toplevel().set_focus(null);
+            }
+        });
     }
 });
 
