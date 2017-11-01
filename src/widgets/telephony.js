@@ -146,7 +146,7 @@ var ContactCompletion = new Lang.Class({
         this.pack_start(typeCell, false);
         this.add_attribute(typeCell, "pixbuf", 3);
         
-        this.set_match_func(Lang.bind(this, this._match), null, null);
+        this.set_match_func(Lang.bind(this, this._match));
         this.connect("match-selected", Lang.bind(this, this._select));
         
         this._get_contacts();
@@ -220,7 +220,7 @@ var ContactCompletion = new Lang.Class({
     
     /** Get all google accounts in Goa */
     _get_google_accounts: function () {
-        let goaClient = Goa.Client.new_sync(null, null);
+        let goaClient = Goa.Client.new_sync(null);
         let goaAccounts = goaClient.get_accounts();
         
         for (let goaAccount in goaAccounts) {
@@ -253,8 +253,7 @@ var ContactCompletion = new Lang.Class({
                             phoneNumber.relation_type
                         );
                     }
-                },
-                null
+                }
             );
             
             count += feed.items_per_page;
