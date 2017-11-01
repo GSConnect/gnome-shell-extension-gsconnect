@@ -428,35 +428,29 @@ var ContactAvatar = new Lang.Class({
             width_request: size
         });
         
-        this.size = size;
-        
-        let image_stream = Gio.MemoryInputStream.new_from_data(
-            GLib.base64_decode(phoneThumbnail),
-            GLib.free
+        let image_stream = Gio.MemoryInputStream.new_from_bytes(
+            GLib.base64_decode(phoneThumbnail).toGBytes()
         );
         
         let pixbuf = GdkPixbuf.Pixbuf.new_from_stream(
             image_stream,
             null
-        ).scale_simple(this.size, this.size, GdkPixbuf.InterpType.HYPER);
+        ).scale_simple(size, size, GdkPixbuf.InterpType.HYPER);
         
-        this._surface = Gdk.cairo_surface_create_from_pixbuf(
+        let surface = Gdk.cairo_surface_create_from_pixbuf(
             pixbuf,
             0,
             this.get_window()
         );
         
         this.connect("draw", (widget, cr) => {
-            this._draw(widget, cr);
+            cr.setSourceSurface(surface, 0, 0);
+            cr.arc(size/2, size/2, size/2, 0, 2*Math.PI);
+            cr.clip();
+            cr.paint();
+            cr.$dispose();
             return false;
         });
-    },
-    
-    _draw: function (widget, cr) {
-        cr.setSourceSurface(this._surface, 0, 0);
-        cr.arc(this.size/2, this.size/2, this.size/2, 0, 2*Math.PI);
-        cr.clip();
-        cr.paint();
     }
 });
 
@@ -987,27 +981,14 @@ var ConversationWindow = new Lang.Class({
     
     _getAvatar: function (recipient) {
         // TODO: GdkPixbuf chokes hard on non-fatally corrupted images
-        //       fix ContactAvatar() segfaults
         let avatar;
         
         try {
-//            avatar = new ContactAvatar(
-//                recipient.phoneThumbnail,
-//                32
-//            );
-            
-            let bytes = GLib.base64_decode(recipient.phoneThumbnail);
-            avatar = new Gtk.Image({
-                gicon: Gio.BytesIcon.new(bytes),
-                pixel_size: 32
-            });
+            avatar = new ContactAvatar(recipient.phoneThumbnail, 32);
         } catch (e) {
             Common.debug("Error creating avatar: " + e);
         
-            avatar = new Gtk.Box({
-                width_request: 32,
-                height_request: 32
-            });
+            avatar = new Gtk.Box({ width_request: 32, height_request: 32 });
             let avatarStyle = avatar.get_style_context();
             avatarStyle.add_provider(MessageStyle, 0);
             avatarStyle.add_class("contact-avatar");
