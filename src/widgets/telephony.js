@@ -238,7 +238,7 @@ var ContactCompletion = new Lang.Class({
     
     /** Query google contacts via GData */
     _get_google_contacts: function (account) {
-        let query = new GData.Query({ q: "" });
+        let query = new GData.ContactsQuery({ q: "" });
         let count = 0;
         
         while (true) {
