@@ -506,7 +506,7 @@ var RecipientList = new Lang.Class({
         box.add(placeholderImage);
         
         let placeholderLabel = new Gtk.Label({
-            label: "<b" + _("Add people to start a conversation") + "</b>",
+            label: "<b>" + _("Add people to start a conversation") + "</b>",
             visible: true,
             use_markup: true,
             wrap: true,
