@@ -422,20 +422,33 @@ var ContactAvatar = new Lang.Class({
     Name: "GSConnectContactAvatar",
     Extends: Gtk.DrawingArea,
     
-    _init: function (phoneThumbnail, size) {
+    _init: function (params) {
+        params = Object.assign({
+            base64: null,
+            path: null,
+            size: 32
+        }, params);
+        
         this.parent({
-            height_request: size,
-            width_request: size
+            height_request: params.size,
+            width_request: params.size
         });
+
+        let loader = new GdkPixbuf.PixbufLoader();
+        loader.write(GLib.base64_decode(params.base64));
         
-        let image_stream = Gio.MemoryInputStream.new_from_bytes(
-            GLib.base64_decode(phoneThumbnail).toGBytes()
+        // Consider errors at this point to be warnings
+        try {
+            loader.close();
+        } catch (e) {
+            Common.debug("Warning: " + e.message);
+        }
+        
+        let pixbuf = loader.get_pixbuf().scale_simple(
+            params.size,
+            params.size,
+            GdkPixbuf.InterpType.HYPER
         );
-        
-        let pixbuf = GdkPixbuf.Pixbuf.new_from_stream(
-            image_stream,
-            null
-        ).scale_simple(size, size, GdkPixbuf.InterpType.HYPER);
         
         let surface = Gdk.cairo_surface_create_from_pixbuf(
             pixbuf,
@@ -445,7 +458,7 @@ var ContactAvatar = new Lang.Class({
         
         this.connect("draw", (widget, cr) => {
             cr.setSourceSurface(surface, 0, 0);
-            cr.arc(size/2, size/2, size/2, 0, 2*Math.PI);
+            cr.arc(params.size/2, params.size/2, params.size/2, 0, 2*Math.PI);
             cr.clip();
             cr.paint();
             cr.$dispose();
@@ -984,7 +997,7 @@ var ConversationWindow = new Lang.Class({
         let avatar;
         
         try {
-            avatar = new ContactAvatar(recipient.phoneThumbnail, 32);
+            avatar = new ContactAvatar({ base64: recipient.phoneThumbnail });
         } catch (e) {
             Common.debug("Error creating avatar: " + e);
         
