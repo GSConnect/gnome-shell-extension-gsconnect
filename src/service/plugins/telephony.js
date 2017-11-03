@@ -5,6 +5,7 @@ const Lang = imports.lang;
 const Gettext = imports.gettext.domain("gsconnect");
 const _ = Gettext.gettext;
 
+const GdkPixbuf = imports.gi.GdkPixbuf;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
@@ -40,8 +41,7 @@ var METADATA = {
  * Telephony Plugin
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/telephony
  *
- * TODO: phoneThumbnail's are super small in notifications :(
- *       track notifs: isCancel events, append new messages to unacknowledged?
+ * TODO: track notifs: isCancel events, append new messages to unacknowledged?
  *       mute/unmute: pactl set-sink-mute @DEFAULT_SINK@ 1/0
  */
 var Plugin = new Lang.Class({
@@ -89,6 +89,19 @@ var Plugin = new Lang.Class({
         this._pausedPlayer = false;
     },
     
+    _getPixbuf: function (phoneThumbnail) {
+        let loader = new GdkPixbuf.PixbufLoader();
+        loader.write(GLib.base64_decode(phoneThumbnail));
+        
+        try {
+            loader.close();
+        } catch (e) {
+            Common.debug("Warning: " + e.message);
+        }
+        
+        return loader.get_pixbuf();
+    },
+    
     _handleMissedCall: function (sender, packet) {
         Common.debug("Telephony: handleMissedCall()");
         
@@ -112,14 +125,10 @@ var Plugin = new Lang.Class({
         notif.set_title(_("Missed Call"));
         notif.set_body(
             // TRANSLATORS: eg. Missed call from John Smith on Google Pixel
-            _("Missed call from %s on %s").format(
-                sender,
-                this.device.name
-            )
+            _("Missed call from %s on %s").format(sender, this.device.name)
         );
         if (packet.body.phoneThumbnail) {
-            let bytes = GLib.base64_decode(packet.body.phoneThumbnail);
-            notif.set_icon(Gio.BytesIcon.new(bytes));
+            notif.set_icon(this._getPixbuf(packet.body.phoneThumbnail));
         } else {
             notif.set_icon(new Gio.ThemedIcon({ name: "call-missed-symbolic" }));
         }
@@ -183,8 +192,7 @@ var Plugin = new Lang.Class({
             )
         );
         if (packet.body.phoneThumbnail) {
-            let bytes = GLib.base64_decode(packet.body.phoneThumbnail);
-            notif.set_icon(Gio.BytesIcon.new(bytes));
+            notif.set_icon(this._getPixbuf(packet.body.phoneThumbnail));
         } else {
             notif.set_icon(new Gio.ThemedIcon({ name: "call-start-symbolic" }));
         }
@@ -251,8 +259,7 @@ var Plugin = new Lang.Class({
         notif.set_title(sender);
         notif.set_body(packet.body.messageBody);
         if (packet.body.phoneThumbnail) {
-            let bytes = GLib.base64_decode(packet.body.phoneThumbnail);
-            notif.set_icon(Gio.BytesIcon.new(bytes));
+            notif.set_icon(this._getPixbuf(packet.body.phoneThumbnail));
         } else {
             notif.set_icon(new Gio.ThemedIcon({ name: "sms-symbolic" }));
         }
@@ -315,8 +322,7 @@ var Plugin = new Lang.Class({
             )
         );
         if (packet.body.phoneThumbnail) {
-            let bytes = GLib.base64_decode(packet.body.phoneThumbnail);
-            notif.set_icon(Gio.BytesIcon.new(bytes));
+            notif.set_icon(this._getPixbuf(packet.body.phoneThumbnail));
         } else {
             notif.set_icon(new Gio.ThemedIcon({ name: "call-start-symbolic" }));
         }
@@ -341,10 +347,9 @@ var Plugin = new Lang.Class({
         let windows = this.device.daemon.get_windows();
         let window = false;
         
-        // Look for an open window that will already be catching messages
+        // Look for an open window with this contact
         for (let index_ in windows) {
             for (let windowNumber of windows[index_].recipients) {
-                
                 if (incomingNumber === windowNumber) {
                     window = windows[index_];
                     break;
