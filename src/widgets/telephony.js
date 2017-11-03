@@ -755,7 +755,7 @@ var MessageView = new Lang.Class({
             selectable: true,
             visible: true,
             wrap: true,
-            xalign: direction
+            xalign: (direction) ? 0 : 1;
         });
         messageBubble.add(messageContent);
         
