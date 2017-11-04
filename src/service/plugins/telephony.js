@@ -156,10 +156,7 @@ var Plugin = new Lang.Class({
         notif.set_title(_("Incoming Call"));
         notif.set_body(
             // TRANSLATORS: eg. Incoming call from John Smith on Google Pixel
-            _("Incoming call from %s on %s").format(
-                sender,
-                this.device.name
-            )
+            _("Incoming call from %s on %s").format(sender, this.device.name)
         );
         if (packet.body.phoneThumbnail) {
             notif.set_icon(this._getPixbuf(packet.body.phoneThumbnail));
@@ -253,10 +250,7 @@ var Plugin = new Lang.Class({
         notif.set_title(_("Call In Progress"));
         notif.set_body(
             // TRANSLATORS: eg. Call in progress with John Smith on Google Pixel
-            _("Call in progress with %s on %s").format(
-                sender,
-                this.device.name
-            )
+            _("Call in progress with %s on %s").format(sender, this.device.name)
         );
         if (packet.body.phoneThumbnail) {
             notif.set_icon(this._getPixbuf(packet.body.phoneThumbnail));
