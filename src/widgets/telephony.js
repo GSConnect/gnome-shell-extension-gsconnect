@@ -256,7 +256,7 @@ var ContactCompletion = new Lang.Class({
                 }
             );
             
-            count += feed.items_per_page;
+            count += feed.get_entries().length;
             query.start_index = count;
             
             if (count > feed.total_results) { break; }
