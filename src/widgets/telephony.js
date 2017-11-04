@@ -991,25 +991,34 @@ var ConversationWindow = new Lang.Class({
         // TODO: GdkPixbuf chokes hard on non-fatally corrupted images
         let avatar;
         
-        try {
-            avatar = new ContactAvatar({ base64: recipient.phoneThumbnail });
-        } catch (e) {
-            Common.debug("Error creating avatar: " + e);
-        
-            avatar = new Gtk.Box({ width_request: 32, height_request: 32 });
-            let avatarStyle = avatar.get_style_context();
-            avatarStyle.add_provider(MessageStyle, 0);
-            avatarStyle.add_class("contact-avatar");
-            avatarStyle.add_class(recipient.color);
-            
-            let defaultAvatar = new Gtk.Image({
-                icon_name: "avatar-default-symbolic",
-                pixel_size: 24,
-                margin: 4,
-                visible: true
-            });
-            avatar.add(defaultAvatar);
+        if (recipient.phoneThumbnail) {
+            try {
+                avatar = new ContactAvatar({ base64: recipient.phoneThumbnail });
+            } catch (e) {
+                Common.debug("Error creating avatar: " + e);
+                avatar = this._getDefaultAvatar(recipient);
+            }
+        } else {
+            avatar = this._getDefaultAvatar(recipient);
         }
+        
+        return avatar;
+    },
+    
+    _getDefaultAvatar: function (recipient) {
+        let avatar = new Gtk.Box({ width_request: 32, height_request: 32 });
+        let avatarStyle = avatar.get_style_context();
+        avatarStyle.add_provider(MessageStyle, 0);
+        avatarStyle.add_class("contact-avatar");
+        avatarStyle.add_class(recipient.color);
+        
+        let defaultAvatar = new Gtk.Image({
+            icon_name: "avatar-default-symbolic",
+            pixel_size: 24,
+            margin: 4,
+            visible: true
+        });
+        avatar.add(defaultAvatar);
         
         return avatar;
     },
