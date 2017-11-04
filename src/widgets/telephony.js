@@ -744,6 +744,7 @@ var MessageView = new Lang.Class({
         let messageBubbleStyle = messageBubble.get_style_context();
         messageBubbleStyle.add_provider(MessageStyle, 0);
         messageBubbleStyle.add_class("message-bubble");
+        messageBubbleStyle.add_class((direction) ? recipient.color : "contact-color-outgoing");
         row.messages.add(messageBubble);
         
         let messageContent = new Gtk.Label({
@@ -755,15 +756,9 @@ var MessageView = new Lang.Class({
             selectable: true,
             visible: true,
             wrap: true,
-            xalign: (direction) ? 0 : 1;
+            xalign: (direction) ? 0 : 1
         });
         messageBubble.add(messageContent);
-        
-        if (direction === MessageDirection.IN) {
-            messageBubbleStyle.add_class(recipient.color);
-        } else if (direction === MessageDirection.OUT) {
-            messageBubbleStyle.add_class("contact-color-outgoing");
-        }
     }
 });
 
