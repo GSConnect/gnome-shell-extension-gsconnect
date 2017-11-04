@@ -105,21 +105,6 @@ var Plugin = new Lang.Class({
     _handleMissedCall: function (sender, packet) {
         Common.debug("Telephony: handleMissedCall()");
         
-        this.emit(
-            "missedCall",
-            packet.body.phoneNumber,
-            packet.body.contactName,
-            packet.body.phoneThumbnail
-        );
-        this._dbus.emit_signal("missedCall",
-            new GLib.Variant(
-                "(sss)",
-                [packet.body.phoneNumber,
-                packet.body.contactName,
-                packet.body.phoneThumbnail]
-            )
-        );
-        
         let notif = new Gio.Notification();
         // TRANSLATORS: Missed Call
         notif.set_title(_("Missed Call"));
@@ -166,21 +151,6 @@ var Plugin = new Lang.Class({
     _handleRinging: function (sender, packet) {
         Common.debug("Telephony: _handleRinging()");
         
-        this.emit(
-            "ringing",  
-            packet.body.phoneNumber,    
-            packet.body.contactName,
-            packet.body.phoneThumbnail
-        );
-        this._dbus.emit_signal("ringing",
-            new GLib.Variant(
-                "(sss)",
-                [packet.body.phoneNumber,
-                packet.body.contactName,
-                packet.body.phoneThumbnail]
-            )
-        );
-        
         let notif = new Gio.Notification();
         // TRANSLATORS: Incoming Call
         notif.set_title(_("Incoming Call"));
@@ -216,24 +186,6 @@ var Plugin = new Lang.Class({
     
     _handleSms: function (sender, packet) {
         Common.debug("Telephony: _handleSMS()");
-        
-        this.emit(
-            "sms",
-            packet.body.phoneNumber,
-            packet.body.contactName,
-            packet.body.messageBody,
-            packet.body.phoneThumbnail
-        );
-        
-        this._dbus.emit_signal("sms",
-            new GLib.Variant(
-                "(ssss)",
-                [packet.body.phoneNumber,
-                packet.body.contactName,
-                packet.body.messageBody,
-                packet.body.phoneThumbnail]
-            )
-        );
         
         // Check for an extant window
         let window = this._hasWindow(packet.body.phoneNumber);
@@ -295,21 +247,6 @@ var Plugin = new Lang.Class({
     
     _handleTalking: function (sender, packet) {
         Common.debug("Telephony: _handleTalking()");
-        
-        this.emit(
-            "talking",
-            packet.body.phoneNumber,
-            packet.body.contactName,
-            packet.body.phoneThumbnail
-        );
-        this._dbus.emit_signal("talking",
-            new GLib.Variant(
-                "(sss)",
-                [packet.body.phoneNumber,
-                packet.body.contactName,
-                packet.body.phoneThumbnail]
-            )
-        );
         
         let notif = new Gio.Notification();
         // TRANSLATORS: Talking on the phone
@@ -410,16 +347,51 @@ var Plugin = new Lang.Class({
             this.device.daemon.withdraw_notification(
                 this.device.id + ":" + packet.body.event + ":" + packet.body.phoneNumber
             );
-        } else if (packet.body.event === "missedCall") {
-            this._handleMissedCall(sender, packet);
-        } else if (packet.body.event === "ringing") {
-            this._handleRinging(sender, packet);
-        } else if (packet.body.event === "sms") {
-            this._handleSms(sender, packet);
-        } else if (packet.body.event === "talking") {
-            this._handleTalking(sender, packet);
         } else {
-            log("Unknown telephony event: " + packet.body.event);
+            if (packet.body.event === "sms") {
+                this.emit(
+                    "sms",
+                    packet.body.phoneNumber,
+                    packet.body.contactName,
+                    packet.body.messageBody,
+                    packet.body.phoneThumbnail
+                );
+                
+                this._dbus.emit_signal("sms",
+                    new GLib.Variant(
+                        "(ssss)",
+                        [packet.body.phoneNumber,
+                        packet.body.contactName,
+                        packet.body.messageBody,
+                        packet.body.phoneThumbnail]
+                    )
+                );
+            } else {
+                this.emit(
+                    packet.body.event,
+                    packet.body.phoneNumber,
+                    packet.body.contactName,
+                    packet.body.phoneThumbnail
+                );
+                this._dbus.emit_signal(packet.body.event,
+                    new GLib.Variant(
+                        "(sss)",
+                        [packet.body.phoneNumber,
+                        packet.body.contactName,
+                        packet.body.phoneThumbnail]
+                    )
+                );
+            }
+        
+            if (packet.body.event === "missedCall") {
+                this._handleMissedCall(sender, packet);
+            } else if (packet.body.event === "ringing") {
+                this._handleRinging(sender, packet);
+            } else if (packet.body.event === "sms") {
+                this._handleSms(sender, packet);
+            } else if (packet.body.event === "talking") {
+                this._handleTalking(sender, packet);
+            }
         }
     },
     
