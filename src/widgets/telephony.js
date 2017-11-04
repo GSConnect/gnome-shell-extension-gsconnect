@@ -97,6 +97,8 @@ var shuffleColor = Array.shuffler([
     "contact-color-brown",
     "contact-color-grey"
 ]);
+
+var LINK_REGEX = /\b((?:https?:\/\/|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))/gi;
         
         
 /** A Gtk.EntryCompletion subclass for Google Contacts */
@@ -748,15 +750,24 @@ var MessageView = new Lang.Class({
         row.messages.add(messageBubble);
         
         let messageContent = new Gtk.Label({
-            label: messageBody,
+            label: messageBody.replace(LINK_REGEX, '<a href="$1">$1</a>'),
             margin_top: 6,
             margin_bottom: 6,
             margin_right: 12,
             margin_left: 12,
             selectable: true,
+            use_markup: true,
             visible: true,
             wrap: true,
             xalign: (direction) ? 0 : 1
+        });
+        messageContent.connect("activate-link", (label, uri) => {
+            Gtk.show_uri_on_window(
+                this.get_toplevel(),
+                (uri.indexOf("://") < 0) ? "http://" + uri : uri,
+                Gdk.CURRENT_TIME
+            );
+            return true;
         });
         messageBubble.add(messageContent);
     }
