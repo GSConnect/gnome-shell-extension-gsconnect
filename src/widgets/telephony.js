@@ -702,8 +702,8 @@ var MessageView = new Lang.Class({
             orientation: Gtk.Orientation.VERTICAL,
             spacing: 3,
             halign: (direction) ? Gtk.Align.START : Gtk.Align.END,
-            margin_right: (direction) ? 32 : 0,
-            margin_left: (direction) ? 0: 32
+            margin_right: (direction) ? 38 : 0,
+            margin_left: (direction) ? 0: 38
         });
         row.layout.add(row.messages);
         
@@ -737,7 +737,7 @@ var MessageView = new Lang.Class({
             row = this.addThread(recipient, direction);
         }
         
-        let messageBubble = new Gtk.Box({
+        let messageBubble = new Gtk.Grid({
             visible: true,
             halign: (direction) ? Gtk.Align.START : Gtk.Align.END
         });
