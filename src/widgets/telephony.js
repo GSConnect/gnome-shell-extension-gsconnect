@@ -12,14 +12,6 @@ const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 const Pango = imports.gi.Pango;
 
-try {
-    var GData = imports.gi.GData;
-    var Goa = imports.gi.Goa;
-} catch (e) {
-    var GData = undefined;
-    var Goa = undefined;
-}
-
 // Local Imports
 function getPath() {
     // Diced from: https://github.com/optimisme/gjs-examples/
@@ -158,7 +150,9 @@ var ContactCompletion = new Lang.Class({
     /** Add contact */
     _add_contact: function (contact) {
         // Only include types that could possibly support SMS
-        if (SUPPORTED_NUMBER_TYPES.indexOf(contact.type) < 0) { return; }
+        if (contact.type && SUPPORTED_NUMBER_TYPES.indexOf(contact.type) < 0) {
+            return; 
+        }
     
         // Append the number to the title column
         let title = contact.name + " <" + contact.number + ">";

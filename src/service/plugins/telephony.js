@@ -475,12 +475,15 @@ var Plugin = new Lang.Class({
         // Check for an extant window
         let window = this._hasWindow(phoneNumber);
         
-        // None found; open one, add the contact, log the message, mark it read
+        // None found
         if (!window) {
+            // Open a new window
             window = new TelephonyWidget.ConversationWindow(
                 this.device.daemon,
                 this.device
             );
+            
+            // Log the message
             window.receive(phoneNumber, contactName, messageBody);
             window.urgency_hint = true;
             
@@ -610,6 +613,8 @@ var ContactsCache = new Lang.Class({
         
         contact.name = packet.body.contactName;
         contact.number = packet.body.phoneNumber;
+        contact.type = "cell";
+        contact.origin = "kdeconnect";
         
         if (packet.body.phoneThumbnail && !contact.avatar) {
             Common.debug("Telephony: updating avatar for " + contact.name);
@@ -742,7 +747,7 @@ var ContactsCache = new Lang.Class({
         }
         
         this.write();
-    },
+    }
 });
 
 
