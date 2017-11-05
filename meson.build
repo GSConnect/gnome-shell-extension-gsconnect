@@ -18,7 +18,7 @@ extension_source = files(
   'src/common.js',
   # non-GJS files
   'src/nautilus-gsconnect.py',
-  'src/folks.py'
+  'src/folks-cache.py'
 )
 
 install_data(

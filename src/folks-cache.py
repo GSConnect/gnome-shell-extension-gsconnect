@@ -3,6 +3,10 @@
 
 import gi
 gi.require_version('Folks', '0.6')
+import itertools
+import json
+import os.path
+import re
 import ctypes as pyc
 from ctypes import pythonapi
 from gi.repository import Folks, GObject
@@ -19,7 +23,6 @@ pythonapi.PyCapsule_GetPointer.argtypes = (pyc.py_object, pyc.c_char_p)
 ###############################################################################
 # GObject
 ###############################################################################
-
 
 class _PyGObject_Functions(pyc.Structure):
     _fields_ = [
@@ -63,7 +66,6 @@ class _PyGO_CAPI(object):
 ###############################################################################
 # GType
 ###############################################################################
-
 
 INT, ADDRESS, NONE, NOT_IMPLEMENTED = range(4)
 
@@ -168,7 +170,6 @@ def c_to_py(value, gtype_id):
 # GeeIterator
 ###############################################################################
 
-
 class _GeeIterator(object):
     def __init__(self, obj, it):
         self.it = it
@@ -188,8 +189,10 @@ class _GeeIterator(object):
 class GeeListIterator(_GeeIterator):
     def __init__(self, obj):
         _GeeIterator.__init__(self, obj, obj.iterator())
+        
         self.key_type = GObject.GType.from_name('gint')
         self.value_type = None
+        
         if hasattr(obj, 'get_element_type'):
             self.value_type = obj.get_element_type()
 
@@ -197,8 +200,10 @@ class GeeListIterator(_GeeIterator):
         i = 0
         for it in _GeeIterator.__iter__(self):
             value = it.get()
+            
             if self.value_type:
                 value = c_to_py(value, self.value_type)
+                
             yield i, value
             i += 1
 
@@ -206,21 +211,27 @@ class GeeListIterator(_GeeIterator):
 class GeeMapIterator(_GeeIterator):
     def __init__(self, obj):
         _GeeIterator.__init__(self, obj, obj.map_iterator())
-        self.value_type = None
-        if hasattr(obj, 'get_value_type'):
-            self.value_type = obj.get_value_type()
+        
         self.key_type = None
+        self.value_type = None
+            
         if hasattr(obj, 'get_key_type'):
             self.key_type = obj.get_key_type()
+        
+        if hasattr(obj, 'get_value_type'):
+            self.value_type = obj.get_value_type()
 
     def __iter__(self):
         for it in _GeeIterator.__iter__(self):
-            value = it.get_value()
             key = it.get_key()
-            if self.value_type:
-                value = c_to_py(value, self.value_type)
+            value = it.get_value()
+            
             if self.key_type:
                 key = c_to_py(key, self.key_type)
+            
+            if self.value_type:
+                value = c_to_py(value, self.value_type)
+                
             yield key, value
 
 
@@ -236,21 +247,6 @@ def get_iterator(obj):
 # Folks
 ###############################################################################
 
-
-_CHANGED = 'individuals_changed_detailed'
-
-
-class FolksListener(object):
-    def __init__(self, on_ready):
-        self.aggregator = Folks.IndividualAggregator.dup()
-        self.on_ready = on_ready
-        self.aggregator.connect('notify::is-quiescent', self._on_quiescent)
-        self.aggregator.prepare()
-
-    def _on_quiescent(self, *args):
-        self.on_ready(self.aggregator)
-        
-
 class PhoneFieldDetailsWrapper(object):
     def __init__(self, obj):
         self.field_details = obj
@@ -265,18 +261,82 @@ class PhoneFieldDetailsWrapper(object):
             self.parameters[key] = value
 
 
-def get_folks(aggregator):
-    individuals = aggregator.get_individuals()
-    
-    for uid, folk in get_iterator(individuals):
-        yield folk
+class FolksListener(object):
+    def __init__(self, loop):
+        self.loop = loop
+        self.cache_path = os.path.expanduser("~/.cache/gsconnect/contacts/contacts.json")
+        
+        try:
+            with open(self.cache_path, 'r') as cache_file:
+                self.cache = json.load(cache_file);
+        except:
+            self.cache = []
+        
+        self.aggregator = Folks.IndividualAggregator.dup()
+        self.aggregator.connect('notify::is-quiescent', self._on_quiescent)
+        self.aggregator.prepare()
 
-
-def get_phone_numbers(folk):
-    phone_numbers = folk.get_phone_numbers()
+    def _on_quiescent(self, *args):
+        new_cache = []
     
-    for key, details in get_iterator(phone_numbers):
-        yield PhoneFieldDetailsWrapper(details)
+        for folk in self.get_folks():
+            for phone_number in self.get_phone_numbers(folk):
+                new_contact = {
+                    'name': folk.get_display_name(),
+                    'number': phone_number.value,
+                    'type': phone_number.parameters.get('type', 'unknown'),
+                    'origin': 'folks'
+                }
+                
+                avatar = folk.get_avatar()
+                
+                if avatar != None:
+                    new_contact['avatar'] = avatar.get_file().get_path()
+                    
+                new_cache.append(new_contact)
+                    
+        self.write(new_cache)
+        self.loop.quit()
+
+    def get_folks(self):
+        individuals = self.aggregator.get_individuals()
+        
+        for uid, folk in get_iterator(individuals):
+            yield folk
+            
+    def get_phone_numbers(self, folk):
+        phone_numbers = folk.get_phone_numbers()
+        
+        for key, details in get_iterator(phone_numbers):
+            yield PhoneFieldDetailsWrapper(details)
+    
+    def write(self, new_cache):
+        # update contacts
+        new_diffs = list(itertools.filterfalse(lambda x: x in self.cache, new_cache))
+        
+        for old_item in self.cache:
+            old_num = ''.join(re.findall(r'\d+', old_item['number']))
+            
+            for new_item in new_diffs:
+                new_num = ''.join(re.findall(r'\d+', new_item['number']))
+                
+                if old_item['name'] in ('', new_item['name']) and old_num == new_num:
+                    self.cache[self.cache.index(old_item)].update(new_item)
+                    new_diffs.remove(new_item)
+                    
+        # remove old folks
+        old_diffs = list(itertools.filterfalse(lambda x: x in new_cache, self.cache))
+        
+        for old_item in old_diffs:
+            if old_item['origin'] != 'kdeconnect':
+                self.cache.remove(old_item);
+                
+        # add new folks
+        for new_item in new_diffs:
+            self.cache.append(new_item)
+        
+        with open(self.cache_path, 'w') as cache_file:
+            json.dump(new_cache, cache_file)
 
 
 ###############################################################################
@@ -284,19 +344,9 @@ def get_phone_numbers(folk):
 ###############################################################################
 
 if __name__ == '__main__':
-    m = GObject.MainLoop()
-
-    def ready(aggregator, *args):
-        for folk in get_folks(aggregator):
-            for phone_number in get_phone_numbers(folk):
-                output = [
-                    folk.get_display_name(),
-                    phone_number.value,
-                    phone_number.parameters.get('type', 'unknown')
-                ]
-                print('\t'.join(output))
-                
-        m.quit()
+    loop = GObject.MainLoop()
         
-    FolksListener(ready)
-    m.run()
+    FolksListener(loop)
+    
+    loop.run()
+    
