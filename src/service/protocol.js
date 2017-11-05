@@ -258,7 +258,7 @@ var UdpListener = new Lang.Class({
         
         try {
             if (this.socket !== null) {
-                this.socket.close(null);
+                this.socket.close();
             }
         } catch (e) {
             log("error closing UDP listener: " + e);
