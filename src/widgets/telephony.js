@@ -10,6 +10,7 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
+const Pango = imports.gi.Pango;
 
 try {
     var GData = imports.gi.GData;
@@ -650,6 +651,7 @@ var MessageView = new Lang.Class({
             use_markup: true,
             visible: true,
             wrap: true,
+            wrap_mode: Pango.WrapMode.WORD_CHAR,
             xalign: (direction) ? 0 : 1
         });
         messageContent.connect("activate-link", (label, uri) => {
