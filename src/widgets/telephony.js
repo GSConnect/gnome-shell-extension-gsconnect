@@ -436,17 +436,22 @@ var ContactAvatar = new Lang.Class({
             width_request: params.size
         });
 
-        let loader = new GdkPixbuf.PixbufLoader();
-        loader.write(GLib.base64_decode(params.base64));
+        this.loader = new GdkPixbuf.PixbufLoader();
+        
+        if (params.base64) {
+            this.loader.write(GLib.base64_decode(params.base64));
+        } else if (params.path) {
+            this.loader.write(GLib.file_get_contents(params.path)[1]);
+        }
         
         // Consider errors at this point to be warnings
         try {
-            loader.close();
+            this.loader.close();
         } catch (e) {
             Common.debug("Warning: " + e.message);
         }
         
-        let pixbuf = loader.get_pixbuf().scale_simple(
+        let pixbuf = this.loader.get_pixbuf().scale_simple(
             params.size,
             params.size,
             GdkPixbuf.InterpType.HYPER
