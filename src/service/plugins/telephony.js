@@ -441,7 +441,10 @@ var Plugin = new Lang.Class({
                 this.device.daemon,
                 this.device
             );
-            window.addRecipient(phoneNumber, contactName);
+            window.addRecipient({
+                number: phoneNumber, 
+                name: contactName
+            });
             window.urgency_hint = true;
             
             // Tell the notification plugin to mark any duplicate read

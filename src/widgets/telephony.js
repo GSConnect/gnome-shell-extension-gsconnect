@@ -217,10 +217,10 @@ var ContactCompletion = new Lang.Class({
     _select: function (completion, model, tree_iter) {
         let entry = completion.get_entry();
         this._matched = [];
-        entry._parent.addRecipient(
-            model.get_value(tree_iter, 2),
-            model.get_value(tree_iter, 1)
-        );
+        entry._parent.addRecipient({
+            number: model.get_value(tree_iter, 2),
+            name: model.get_value(tree_iter, 1)
+        });
         entry.text = "";
         
         return true;
@@ -292,13 +292,13 @@ var ContactEntry = new Lang.Class({
             
             completion._matched = [];
             
-            this._parent.addRecipient(
-                completion.model.get_value(iter, 2),
-                completion.model.get_value(iter, 1)
-            );
+            this._parent.addRecipient({
+                number: completion.model.get_value(iter, 2),
+                name: completion.model.get_value(iter, 1)
+            });
             entry.text = "";
         } else if (entry.text.length) {
-            this._parent.addRecipient(entry.text);
+            this._parent.addRecipient({ number: entry.text });
             entry.text = "";
         } else {
             this._parent.notify("recipients");
@@ -478,7 +478,7 @@ var RecipientList = new Lang.Class({
         });
         removeButton.get_style_context().add_class("circular");
         removeButton.connect("clicked", () => {
-            this._parent.removeRecipient(recipient.number.replace(/\D/g, ""));
+            this._parent.removeRecipient(recipient);
             this.list.remove(row);
         });
         row.layout.attach(removeButton, 2, 0, 1, 2);
@@ -933,21 +933,16 @@ var ConversationWindow = new Lang.Class({
     /**
      * Add a contact to the list of recipients
      *
-     * @param {string} phoneNumber - The contact's phone number
-     * @param {string} [contactName] - The contact's name
+     * @param {object} contact - An object in the form of ContactsCache contacts
      * @return {object} - The recipient object
      */
-    addRecipient: function (phoneNumber, contactName) {
-        let strippedNumber = phoneNumber.replace(/\D/g, "");
-        let recipient = {
-            number: phoneNumber,
-            name: contactName
-        };
+    addRecipient: function (contact) {
+        let strippedNumber = contact.number.replace(/\D/g, "");
         
         // Get data from the cache
-        recipient = Object.assign(
-            recipient,
-            this.plugin._cache.getContact(strippedNumber, recipient.name)
+        let recipient = Object.assign(
+            contact,
+            this.plugin._cache.getContact(strippedNumber, contact.name || "")
         );
         
         // This is an extant recipient
@@ -970,8 +965,8 @@ var ConversationWindow = new Lang.Class({
     },
     
     /** Remove a contact by phone number from the list of recipients */
-    removeRecipient: function (phoneNumber) {
-        let strippedNumber = phoneNumber.replace(/\D/g, "");
+    removeRecipient: function (recipient) {
+        let strippedNumber = recipient.number.replace(/\D/g, "");
         
         if (this._recipients.has(strippedNumber)) {
             this._recipients.delete(strippedNumber);
@@ -981,27 +976,16 @@ var ConversationWindow = new Lang.Class({
     
     /** Log an incoming message in the MessageList */
     receive: function (phoneNumber, contactName, messageBody) {
-        let strippedNumber = phoneNumber.replace(/\D/g, "");
-        
-        let recipient = this.addRecipient(
-            phoneNumber,
-            contactName
-        );
+        let recipient = this.addRecipient({
+            number: phoneNumber,
+            name: contactName
+        });
     
         this.messageView.addMessage(
             recipient,
             messageBody,
             MessageDirection.IN
         );
-            
-        this.recipientList.list.foreach((row) => {
-            if (row.phone.label.replace(/\D/g, "") === strippedNumber) {
-                row.layout.remove(row.avatar);
-                row.avatar = this._getAvatar(recipient);
-                row.avatar.visible = true;
-                row.layout.attach(row.avatar, 0, 0, 1, 2);
-            }
-        });
     },
     
     /** Send the contents of ContactEntry to each recipient */
