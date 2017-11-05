@@ -105,18 +105,11 @@ var LINK_REGEX = /\b((?:https?:\/\/|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?
 var ContactCompletion = new Lang.Class({
     Name: "GSConnectContactCompletion",
     Extends: Gtk.EntryCompletion,
-    Properties: {
-        "provider": GObject.ParamSpec.string(
-            "provider",
-            "ContactsProvider",
-            "The provider for contacts",
-            GObject.ParamFlags.READWRITE,
-            "none"
-        )
-    },
     
-    _init: function () {
+    _init: function (cache) {
         this.parent();
+        
+        this._cache = cache;
         
         // Track suggested completions
         this._matched = [];
@@ -151,143 +144,41 @@ var ContactCompletion = new Lang.Class({
         this.set_match_func(Lang.bind(this, this._match));
         this.connect("match-selected", Lang.bind(this, this._select));
         
-        this._get_contacts();
+        this._read_cache();
     },
     
     /** Spawn folks.py */
-    _get_contacts: function () {
-        let envp = GLib.get_environ();
-        envp.push("FOLKS_BACKENDS_DISABLED=telepathy")
-        
-        let proc = GLib.spawn_async_with_pipes(
-            null,                                   // working dir
-            ["python3", getPath() + "/folks.py"],   // argv
-            envp,                                   // envp
-            GLib.SpawnFlags.SEARCH_PATH,            // enables PATH
-            null                                    // child_setup (func)
-        );
-        
-        this._check_folks(proc);
-    },
-    
-    /** Check spawned folks.py for errors on stderr */
-    _check_folks: function (proc) {
-        let errstream = new Gio.DataInputStream({
-            base_stream: new Gio.UnixInputStream({ fd: proc[4] })
-        });
-        
-        GLib.spawn_close_pid(proc[1]);
-    
-        errstream.read_line_async(GLib.PRIORITY_LOW, null, (source, res) => {
-            let [errline, length] = source.read_line_finish(res);
-            
-            if (errline === null) {
-                let stream = new Gio.DataInputStream({
-                    base_stream: new Gio.UnixInputStream({ fd: proc[3] })
-                });
-                
-                this.provider = "avatar-default-symbolic";
-                this.notify("provider");
-                
-                this._read_folk(stream)
-            } else {
-                Common.debug("SMS: Error reading folks.py: " + errline);
-                
-                try {
-                    for (let account in this._get_google_accounts()) {
-                        this._get_google_contacts(account);
-                        this.provider = "goa-account-google";
-                        this.notify("provider");
-                    }
-                } catch (e) {
-                    Common.debug("SMS: Error reading Google Contacts: " + e);
-                }
-            }
-        });
-        
-    },
-    
-    /** Read a folk from folks.py output */
-    _read_folk: function (stream) {
-        stream.read_line_async(GLib.PRIORITY_LOW, null, (source, res) => {
-            let [contact, length] = source.read_line_finish(res);
-            
-            if (contact !== null) {
-                let [name, number, type] = contact.toString().split("\t");
-                this._add_contact(name, number, type);
-                this._read_folk(stream);
-            }
-        });
-    },
-    
-    /** Get all google accounts in Goa */
-    _get_google_accounts: function () {
-        let goaClient = Goa.Client.new_sync(null);
-        let goaAccounts = goaClient.get_accounts();
-        
-        for (let goaAccount in goaAccounts) {
-            let acct = goaAccounts[goaAccount].get_account();
-            
-            if (acct.provider_type === "google") {
-                yield new GData.ContactsService({
-                    authorizer: new GData.GoaAuthorizer({
-                        goa_object: goaClient.lookup_by_id(acct.id)
-                    })
-                })
-            }
-        }
-    },
-    
-    /** Query google contacts via GData */
-    _get_google_contacts: function (account) {
-        let query = new GData.ContactsQuery({ q: "" });
-        let count = 0;
-        
-        while (true) {
-            let feed = account.query_contacts(
-                query, // query,
-                null, // cancellable
-                (contact) => {
-                    for (let phoneNumber of contact.get_phone_numbers()) {
-                        this._add_contact(
-                            contact.title,
-                            phoneNumber.number,
-                            phoneNumber.relation_type
-                        );
-                    }
-                }
-            );
-            
-            count += feed.get_entries().length;
-            query.start_index = count;
-            
-            if (count > feed.total_results) { break; }
+    _read_cache: function () {
+        for (let contact of this._cache.contacts) {
+            this._add_contact(contact);
         }
     },
     
     /** Add contact */
-    _add_contact: function (name, number, type) {
+    _add_contact: function (contact) {
         // Only include types that could possibly support SMS
-        if (SUPPORTED_NUMBER_TYPES.indexOf(type) < 0) { return; }
+        if (SUPPORTED_NUMBER_TYPES.indexOf(contact.type) < 0) { return; }
     
         // Append the number to the title column
-        let title = name + " <" + number + ">";
+        let title = contact.name + " <" + contact.number + ">";
         
         // Phone Type Icon
-        if (type.indexOf("home") > -1) {
-            type = this.phone_number_home;
-        } else if (type.indexOf("cell") > -1 || type.indexOf("mobile") > -1) {
-            type = this.phone_number_mobile;
-        } else if (type.indexOf("work") > -1 || type.indexOf("voice") > -1) {
-            type = this.phone_number_work;
+        let icon;
+        
+        if (contact.type.indexOf("home") > -1) {
+            icon = this.phone_number_home;
+        } else if (contact.type.indexOf("cell") > -1 || contact.type.indexOf("mobile") > -1) {
+            icon = this.phone_number_mobile;
+        } else if (contact.type.indexOf("work") > -1 || contact.type.indexOf("voice") > -1) {
+            icon = this.phone_number_work;
         } else {
-            type = this.phone_number_default;
+            icon = this.phone_number_default;
         }
     
         this.model.set(
             this.model.append(),
             [0, 1, 2, 3],
-            [title, name, number, type]
+            [title, contact.name, contact.number, icon]
         );
     },
     
@@ -350,8 +241,8 @@ var ContactEntry = new Lang.Class({
     _init: function (window, completion) {
         this.parent({
             hexpand: true,
-            placeholder_text: _("Type a phone number"),
-            tooltip_text: _("Type a phone number"),
+            placeholder_text: _("Type a phone number or name"),
+            tooltip_text: _("Type a phone number or name"),
             primary_icon_name: "call-start-symbolic",
             primary_icon_activatable: false,
             primary_icon_sensitive: true,
@@ -360,14 +251,12 @@ var ContactEntry = new Lang.Class({
         });
         
         this._parent = window;
-        
-        // TODO: make singleton?
-        this.completion.connect("notify::provider", (completion) => {
-            this.placeholder_text = _("Type a phone number or name");
-            this.tooltip_text = _("Type a phone number or name");
-            this.primary_icon_name = this.completion.provider;
-            this.input_purpose = Gtk.InputPurpose.FREE_FORM;
-        });
+        this._parent.plugin._cache.bind_property(
+            "provider",
+            this,
+            "primary-icon-name",
+            GObject.BindingFlags.SYNC_CREATE
+        );
     
         // Select the first completion suggestion on "activate"
         this.connect("activate", () => { this._select(this); });
@@ -426,7 +315,6 @@ var ContactAvatar = new Lang.Class({
     
     _init: function (params) {
         params = Object.assign({
-            base64: null,
             path: null,
             size: 32
         }, params);
@@ -438,9 +326,7 @@ var ContactAvatar = new Lang.Class({
 
         this.loader = new GdkPixbuf.PixbufLoader();
         
-        if (params.base64) {
-            this.loader.write(GLib.base64_decode(params.base64));
-        } else if (params.path) {
+        if (params.path) {
             this.loader.write(GLib.file_get_contents(params.path)[1]);
         }
         
@@ -561,7 +447,7 @@ var RecipientList = new Lang.Class({
         
         // contactName
         row.contact = new Gtk.Label({
-            label: recipient.contactName || _("Unknown Contact"),
+            label: recipient.name || _("Unknown Contact"),
             visible: true,
             can_focus: false,
             xalign: 0,
@@ -571,7 +457,7 @@ var RecipientList = new Lang.Class({
         
         // phoneNumber
         row.phone = new Gtk.Label({
-            label: recipient.phoneNumber || _("Unknown Number"),
+            label: recipient.number || _("Unknown Number"),
             visible: true,
             can_focus: false,
             xalign: 0,
@@ -591,7 +477,7 @@ var RecipientList = new Lang.Class({
         });
         removeButton.get_style_context().add_class("circular");
         removeButton.connect("clicked", () => {
-            this._parent.removeRecipient(recipient.phoneNumber.replace(/\D/g, ""));
+            this._parent.removeRecipient(recipient.number.replace(/\D/g, ""));
             this.list.remove(row);
         });
         row.layout.attach(removeButton, 2, 0, 1, 2);
@@ -697,7 +583,7 @@ var MessageView = new Lang.Class({
         
         // Contact Avatar
         row.avatar = this._parent._getAvatar(recipient);
-        row.avatar.tooltip_text = recipient.contactName || recipient.phoneNumber;
+        row.avatar.tooltip_text = recipient.name || recipient.number;
         row.avatar.valign = Gtk.Align.END;
         row.avatar.visible = direction;
         row.layout.add(row.avatar);
@@ -728,7 +614,7 @@ var MessageView = new Lang.Class({
      * @return {Gtk.ListBoxRow} - The new thread
      */
     addMessage: function (recipient, messageBody, direction) {
-        let sender = recipient.contactName || recipient.phoneNumber;
+        let sender = recipient.name || recipient.number;
         let nrows = this.list.get_children().length;
         let row, currentThread;
         
@@ -857,7 +743,10 @@ var ConversationWindow = new Lang.Class({
         this.headerBar.pack_start(this.messagesButton);
         
         // Contact Entry
-        this.contactEntry = new ContactEntry(this, new ContactCompletion());
+        this.contactEntry = new ContactEntry(
+            this,
+            new ContactCompletion(this.plugin._cache)
+        );
         this.device.bind_property(
             "connected",
             this.contactEntry,
@@ -937,11 +826,11 @@ var ConversationWindow = new Lang.Class({
         if (this._recipients.size) {
             let firstRecipient = this._recipients.values().next().value;
             
-            if (firstRecipient.contactName) {
-                this.headerBar.set_title(firstRecipient.contactName);
-                this.headerBar.set_subtitle(firstRecipient.phoneNumber);
+            if (firstRecipient.name) {
+                this.headerBar.set_title(firstRecipient.name);
+                this.headerBar.set_subtitle(firstRecipient.number);
             } else {
-                this.headerBar.set_title(firstRecipient.phoneNumber);
+                this.headerBar.set_title(firstRecipient.number);
                 this.headerBar.set_subtitle(null);
             }
             
@@ -960,10 +849,10 @@ var ConversationWindow = new Lang.Class({
             let people = [];
             
             for (let recipient of this._recipients.values()) {
-                if (recipient.contactName) {
-                    people.push(recipient.contactName);
+                if (recipient.name) {
+                    people.push(recipient.name);
                 } else {
-                    people.push(recipient.phoneNumber);
+                    people.push(recipient.number);
                 }
             }
             
@@ -1007,9 +896,9 @@ var ConversationWindow = new Lang.Class({
         // TODO: GdkPixbuf chokes hard on non-fatally corrupted images
         let avatar;
         
-        if (recipient.phoneThumbnail) {
+        if (recipient.avatar) {
             try {
-                avatar = new ContactAvatar({ base64: recipient.phoneThumbnail });
+                avatar = new ContactAvatar({ path: recipient.avatar });
             } catch (e) {
                 Common.debug("Error creating avatar: " + e);
                 avatar = this._getDefaultAvatar(recipient);
@@ -1040,52 +929,24 @@ var ConversationWindow = new Lang.Class({
     },
     
     /**
-     * Search the completion model for a matching phone number
-     *
-     * @param {string} phoneNumber - A phone number
-     * @return {object} - Object of {contactName, phoneNumber} or {}
-     */
-    getCompletionContact: function (phoneNumber) {
-        let contact, strippedNumber;
-        let model = this.contactEntry.get_completion().get_model();
-        
-        model.foreach((model, path, tree_iter) => {
-            strippedNumber = model.get_value(tree_iter, 2).replace(/\D/g, "");
-            
-            if (phoneNumber === strippedNumber) {
-                contact = {
-                    contactName: model.get_value(tree_iter, 1),
-                    phoneNumber: model.get_value(tree_iter, 2)
-                };
-            }
-        });
-        
-        return contact || {};
-    },
-    
-    /**
      * Add a contact to the list of recipients
      *
      * @param {string} phoneNumber - The contact's phone number
      * @param {string} [contactName] - The contact's name
-     * @param {string} [phoneThumbnail] - A base64 encoded JPEG bytearray
      * @return {object} - The recipient object
      */
-    addRecipient: function (phoneNumber, contactName, phoneThumbnail) {
+    addRecipient: function (phoneNumber, contactName) {
         let strippedNumber = phoneNumber.replace(/\D/g, "");
         let recipient = {
-            phoneNumber: phoneNumber,
-            contactName: contactName,
-            phoneThumbnail: phoneThumbnail
+            number: phoneNumber,
+            name: contactName
         };
         
-        // Get data from the ContactCompletion if contactName is absent
-        if (!contactName) {
-            recipient = Object.assign(
-                recipient,
-                this.getCompletionContact(strippedNumber)
-            );
-        }
+        // Get data from the cache
+        recipient = Object.assign(
+            recipient,
+            this.plugin._cache.getContact(strippedNumber, recipient.name)
+        );
         
         // This is an extant recipient
         if (this._recipients.has(strippedNumber)) {
@@ -1106,9 +967,7 @@ var ConversationWindow = new Lang.Class({
         return recipient;
     },
     
-    /**
-     * Remove a contact by phone number from the list of recipients
-     */
+    /** Remove a contact by phone number from the list of recipients */
     removeRecipient: function (phoneNumber) {
         let strippedNumber = phoneNumber.replace(/\D/g, "");
         
@@ -1119,13 +978,12 @@ var ConversationWindow = new Lang.Class({
     },
     
     /** Log an incoming message in the MessageList */
-    receive: function (phoneNumber, contactName, messageBody, phoneThumbnail) {
+    receive: function (phoneNumber, contactName, messageBody) {
         let strippedNumber = phoneNumber.replace(/\D/g, "");
         
         let recipient = this.addRecipient(
             phoneNumber,
-            contactName,
-            phoneThumbnail
+            contactName
         );
     
         this.messageView.addMessage(
@@ -1153,7 +1011,7 @@ var ConversationWindow = new Lang.Class({
         
         // Log the outgoing message
         this.messageView.addMessage(
-            { phoneNumber: "0", color: "contact-color-grey" },
+            { number: "0", color: "contact-color-grey" },
             entry.text,
             MessageDirection.OUT
         );
