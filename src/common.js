@@ -19,6 +19,7 @@ function getPath() {
 imports.searchPath.push(getPath());
 
 
+var CACHE_PATH = GLib.get_user_cache_dir() + "/gsconnect";
 var CONFIG_PATH = GLib.get_user_config_dir() + "/gsconnect";
 var METADATA = JSON.parse(GLib.file_get_contents(getPath() + "/metadata.json")[1]);
 

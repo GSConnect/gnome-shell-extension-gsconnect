@@ -11,6 +11,14 @@ const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
+try {
+    var GData = imports.gi.GData;
+    var Goa = imports.gi.Goa;
+} catch (e) {
+    var GData = undefined;
+    var Goa = undefined;
+}
+
 // Local Imports
 function getPath() {
     // Diced from: https://github.com/optimisme/gjs-examples/
@@ -86,20 +94,35 @@ var Plugin = new Lang.Class({
     _init: function (device) {
         this.parent(device, "telephony");
         
+        this._cache = new ContactsCache();
+        
         this._pausedPlayer = false;
     },
     
-    _getPixbuf: function (phoneThumbnail) {
-        let loader = new GdkPixbuf.PixbufLoader();
-        loader.write(GLib.base64_decode(phoneThumbnail));
+    _getIcon: function (packet) {
+        let contact = this._cache.getContact(
+            packet.body.phoneNumber,
+            packet.body.contactName
+        );
         
-        try {
-            loader.close();
-        } catch (e) {
-            Common.debug("Warning: " + e.message);
+        if (contact.avatar) {
+            let loader = new GdkPixbuf.PixbufLoader();
+            loader.write(GLib.file_get_contents(contact.avatar)[1]);
+            
+            try {
+                loader.close();
+            } catch (e) {
+                Common.debug("Warning: " + e.message);
+            }
+            
+            return loader.get_pixbuf();
+        } else if (packet.body.event === "missedCall") {
+            return new Gio.ThemedIcon({ name: "call-missed-symbolic" });
+        } else if (["ringing", "talking"].indexOf(packet.body.event) > -1) {
+            return new Gio.ThemedIcon({ name: "call-start-symbolic" });
+        } else if (packet.body.event === "sms") {
+            return new Gio.ThemedIcon({ name: "sms-symbolic" });
         }
-        
-        return loader.get_pixbuf();
     },
     
     _handleMissedCall: function (sender, packet) {
@@ -112,11 +135,7 @@ var Plugin = new Lang.Class({
             // TRANSLATORS: eg. Missed call from John Smith on Google Pixel
             _("Missed call from %s on %s").format(sender, this.device.name)
         );
-        if (packet.body.phoneThumbnail) {
-            notif.set_icon(this._getPixbuf(packet.body.phoneThumbnail));
-        } else {
-            notif.set_icon(new Gio.ThemedIcon({ name: "call-missed-symbolic" }));
-        }
+        notif.set_icon(this._getIcon(packet));
         notif.set_priority(Gio.NotificationPriority.NORMAL);
         
         notif.add_button(
@@ -158,11 +177,7 @@ var Plugin = new Lang.Class({
             // TRANSLATORS: eg. Incoming call from John Smith on Google Pixel
             _("Incoming call from %s on %s").format(sender, this.device.name)
         );
-        if (packet.body.phoneThumbnail) {
-            notif.set_icon(this._getPixbuf(packet.body.phoneThumbnail));
-        } else {
-            notif.set_icon(new Gio.ThemedIcon({ name: "call-start-symbolic" }));
-        }
+        notif.set_icon(this._getIcon(packet));
         notif.set_priority(Gio.NotificationPriority.URGENT);
         
         notif.add_button(
@@ -207,11 +222,7 @@ var Plugin = new Lang.Class({
         let notif = new Gio.Notification();
         notif.set_title(sender);
         notif.set_body(packet.body.messageBody);
-        if (packet.body.phoneThumbnail) {
-            notif.set_icon(this._getPixbuf(packet.body.phoneThumbnail));
-        } else {
-            notif.set_icon(new Gio.ThemedIcon({ name: "sms-symbolic" }));
-        }
+        notif.set_icon(this._getIcon(packet));
         notif.set_priority(Gio.NotificationPriority.HIGH);
         
         notif.set_default_action(
@@ -252,11 +263,7 @@ var Plugin = new Lang.Class({
             // TRANSLATORS: eg. Call in progress with John Smith on Google Pixel
             _("Call in progress with %s on %s").format(sender, this.device.name)
         );
-        if (packet.body.phoneThumbnail) {
-            notif.set_icon(this._getPixbuf(packet.body.phoneThumbnail));
-        } else {
-            notif.set_icon(new Gio.ThemedIcon({ name: "call-start-symbolic" }));
-        }
+        notif.set_icon(this._getIcon(packet));
         notif.set_priority(Gio.NotificationPriority.NORMAL);
         
         this.device.daemon.send_notification(
@@ -323,6 +330,8 @@ var Plugin = new Lang.Class({
         packet.body.contactName = packet.body.contactName || "";
         packet.body.phoneNumber = packet.body.phoneNumber || "";
         packet.body.phoneThumbnail = packet.body.phoneThumbnail || "";
+        
+        this._cache.parsePacket(packet);
         
         let sender;
                 
@@ -523,6 +532,233 @@ var Plugin = new Lang.Class({
         
         this.device._channel.send(packet);
     }
+});
+
+
+var ContactsCache = new Lang.Class({
+    Name: "GSConnectContactsCache",
+    Extends: GObject.Object,
+    Properties: {
+        "contacts": GObject.param_spec_variant(
+            "contacts",
+            "ContactsList", 
+            "A list of cached contacts",
+            new GLib.VariantType("as"),
+            new GLib.Variant("as", []),
+            GObject.ParamFlags.READABLE
+        ),
+        "provider": GObject.ParamSpec.string(
+            "provider",
+            "ContactsProvider",
+            "The provider for contacts",
+            GObject.ParamFlags.READWRITE,
+            "call-start-symbolic"
+        )
+    },
+    
+    _init: function () {
+        this.parent();
+        
+        this.provider = "call-start-symbolic";
+    
+        this._dir =  Common.CACHE_PATH + "/contacts";
+        this._file = Gio.File.new_for_path(this._dir + "/contacts.json");
+        
+        if (!GLib.file_test(this._dir, GLib.FileTest.IS_DIR)) {
+            GLib.mkdir_with_parents(this._dir, 493);
+        }
+        
+        this.contacts = [];
+        this.read();
+        
+        this._monitor = this._file.monitor(Gio.FileMonitorFlags.NONE, null);
+        this._monitor.connect("changed", (monitor, file, ofile, event) => {
+            if (event === Gio.FileMonitorEvent.CHANGED) {
+                this.notify("contacts");
+                Common.debug("CONTACTS CACHE CHANGED"); // FIXME remove
+            }
+        });
+        
+        this.update();
+    },
+    
+    getContact: function (number, name) {
+        number = number.replace(/\D/g, "");
+        
+        for (let contact of this.contacts) {
+            if (contact.number.replace(/\D/g, "") === number) {
+                if (!name || ["", name].indexOf(contact.name) > -1) {
+                    return contact;
+                }
+            }
+        }
+        
+        return {};
+    },
+    
+    // FIXME: check
+    hasContact: function (number, name) {
+        return (this.getContact() !== {});
+    },
+    
+    setContact: function (newContact, write=true) {
+        let number = newContact.number.replace(/\D/g, "");
+        
+        for (let contact of this.contacts) {
+            if (contact.number.replace(/\D/g, "") === number) {
+                if (["", newContact.name].indexOf(contact.name) > -1) {
+                    Object.assign(contact, newContact);
+                    if (write) { this.write(); }
+                    return;
+                }
+            }
+        }
+        
+        this.contacts.push(newContact);
+        if (write) { this.write(); }
+    },
+    
+    parsePacket: function (packet) {
+        let contact = this.getContact(
+            packet.body.phoneNumber,
+            packet.body.contactName
+        );
+        
+        contact.name = packet.body.contactName;
+        contact.number = packet.body.phoneNumber;
+        
+        if (packet.body.phoneThumbnail && !contact.avatar) {
+            Common.debug("Telephony: updating avatar for " + contact.name);
+            
+            let path = this._dir + "/" + GLib.uuid_string_random() + ".jpeg";
+            GLib.file_set_contents(
+                path,
+                GLib.base64_decode(packet.body.phoneThumbnail)
+            );
+            contact.avatar = path;
+        }
+        
+        this.setContact(contact);
+    },
+    
+    read: function () {
+        try {
+            let contents = this._file.load_contents(null)[1];
+            let contacts = JSON.parse(contents);
+            this.contacts = contacts;
+            this.notify("contacts");
+        } catch (e) {
+            Common.debug("Telephony: Error reading contacts cache: " + e);
+        }
+    },
+    
+    write: function () {
+        try {
+            this._file.replace_contents(
+                JSON.stringify(this.contacts),
+                null,
+                false,
+                Gio.FileCreateFlags.REPLACE_DESTINATION,
+                null
+            );
+        } catch (e) {
+            Common.debug("Telephony: Error writing contacts cache: " + e);
+        }
+    },
+    
+    update: function () {
+        let envp = GLib.get_environ();
+        envp.push("FOLKS_BACKENDS_DISABLED=telepathy")
+        
+        let proc = GLib.spawn_async_with_pipes(
+            null,                                       // working dir
+            ["python3", getPath() + "/folks-cache.py"], // argv
+            envp,                                       // envp
+            GLib.SpawnFlags.SEARCH_PATH,                // enables PATH
+            null                                        // child_setup (func)
+        );
+        
+        this._check_folks(proc);
+    },
+    
+    /** Check spawned folks.py for errors on stderr */
+    _check_folks: function (proc) {
+        let errstream = new Gio.DataInputStream({
+            base_stream: new Gio.UnixInputStream({ fd: proc[4] })
+        });
+        
+        GLib.spawn_close_pid(proc[1]);
+    
+        errstream.read_line_async(GLib.PRIORITY_LOW, null, (source, res) => {
+            let [errline, length] = source.read_line_finish(res);
+            
+            if (errline === null) {
+                this.provider = "avatar-default-symbolic";
+                this.notify("provider");
+            } else {
+                Common.debug("Telephony: Error reading folks-cache.py: " + errline);
+                
+                try {
+                    for (let account in this._getGoogleAccounts()) {
+                        this._getGoogleContacts(account);
+                        this.provider = "goa-account-google";
+                        this.notify("provider");
+                    }
+                } catch (e) {
+                    Common.debug("Telephony: Error reading Google Contacts: " + e);
+                }
+            }
+        });
+        
+    },
+    
+    /** Get all google accounts in Goa */
+    _getGoogleAccounts: function () {
+        let goaClient = Goa.Client.new_sync(null);
+        let goaAccounts = goaClient.get_accounts();
+        
+        for (let goaAccount in goaAccounts) {
+            let acct = goaAccounts[goaAccount].get_account();
+            
+            if (acct.provider_type === "google") {
+                yield new GData.ContactsService({
+                    authorizer: new GData.GoaAuthorizer({
+                        goa_object: goaClient.lookup_by_id(acct.id)
+                    })
+                })
+            }
+        }
+    },
+    
+    /** Query google contacts via GData */
+    _getGoogleContacts: function (account) {
+        let query = new GData.ContactsQuery({ q: "" });
+        let count = 0;
+        
+        while (true) {
+            let feed = account.query_contacts(
+                query, // query,
+                null, // cancellable
+                (contact) => {
+                    for (let phoneNumber of contact.get_phone_numbers()) {
+                        this.setContact({
+                            name: contact.title,
+                            number: phoneNumber.number,
+                            type: phoneNumber.relation_type,
+                            origin: "google"
+                        }, false);
+                    }
+                }
+            );
+            
+            count += feed.get_entries().length;
+            query.start_index = count;
+            
+            if (count >= feed.total_results) { break; }
+        }
+        
+        this.write();
+    },
 });
 
 
