@@ -127,6 +127,8 @@ var Plugin = new Lang.Class({
             matchString = packet.body.ticker;
         }
         
+        Common.debug("Notification: _handleDuplicate('" + matchString + "')");
+        
         if (this._duplicates.has(matchString)) {
             let duplicate = this._duplicates.get(matchString);
             
@@ -145,13 +147,13 @@ var Plugin = new Lang.Class({
     },
     
     _handleNotification: function (packet) {
-        Common.debug("Notifications: _handleNotification()");
+        Common.debug("Notification: _handleNotification()");
         
         if (packet.body.isCancel) {
             this.device.daemon.withdraw_notification(packet.body.id);
         // Ignore GroupSummary notifications
         } else if (packet.body.id.indexOf("GroupSummary") > -1) {
-            Common.debug("Notifications: ignoring GroupSummary notification");
+            Common.debug("Notification: ignoring GroupSummary notification");
             return;
         } else {
             let notif = new Gio.Notification();
@@ -220,14 +222,14 @@ var Plugin = new Lang.Class({
             
             // TODO: this usually used for backwards compatibility, I think
             if (packet.body.requestAnswer) {
-                Common.debug("Notifications: this is an answer to a request");
+                Common.debug("Notification: this is an answer to a request");
             }
         }
     },
     
     Notify: function (appName, replacesId, iconName, summary, body, actions, hints, timeout) {
         // Signature: str,     uint,       str,      str,     str,  array,   obj,   uint
-        Common.debug("Notifications: Notify()");
+        Common.debug("Notification: Notify()");
         
         Common.debug("appName: " + appName);
         Common.debug("replacesId: " + replacesId);
@@ -269,8 +271,6 @@ var Plugin = new Lang.Class({
                 }
                 
                 if (iconInfo) {
-                    Common.debug("Icon Filename: " + iconInfo.get_filename());
-                    
                     let file = Gio.File.new_for_path(iconInfo.get_filename());
                     let info = file.query_info("standard::size", 0, null);
                     
@@ -317,7 +317,7 @@ var Plugin = new Lang.Class({
     },
     
     handlePacket: function (packet) {
-        Common.debug("Notifications: handlePacket()");
+        Common.debug("Notification: handlePacket()");
         
         if (packet.type === "kdeconnect.notification" && this.settings.get_boolean("receive-notifications")) {
             this._handleNotification(packet);
@@ -327,6 +327,8 @@ var Plugin = new Lang.Class({
     },
     
     closeDuplicate: function (matchString) {
+        Common.debug("Notification: closeDuplicate('" + matchString + "')");
+        
         if (this._duplicates.has(matchString)) {
             let duplicate = this._duplicates.get(matchString);
                 
@@ -341,6 +343,8 @@ var Plugin = new Lang.Class({
     },
     
     silenceDuplicate: function (matchString) {
+        Common.debug("Notification: silenceDuplicate('" + matchString + "')");
+        
         if (this._duplicates.has(matchString)) {
             this._duplicates.get(matchString).silence = true;
         } else {
@@ -369,7 +373,7 @@ var Plugin = new Lang.Class({
 
 
 var SettingsDialog = new Lang.Class({
-    Name: "GSConnectNotificationsSettingsDialog",
+    Name: "GSConnectNotificationSettingsDialog",
     Extends: PluginsBase.SettingsDialog,
     
     _init: function (device, name, window) {
