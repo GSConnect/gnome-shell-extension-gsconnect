@@ -377,7 +377,6 @@ var Daemon = new Lang.Class({
     //       the file could be moved/deleted
     _openTransferAction: function (action, param) {
         let path = param.deep_unpack().toString();
-        
         Gio.AppInfo.launch_default_for_uri(unescape(path), null);
     },
     
@@ -389,7 +388,6 @@ var Daemon = new Lang.Class({
             
             if (device._plugins.has("notification")) {
                 let plugin = device._plugins.get("notification");
-                
                 plugin.close(unescape(param["1"]));
             }
         }
@@ -403,7 +401,6 @@ var Daemon = new Lang.Class({
             
             if (device._plugins.has("telephony")) {
                 let plugin = device._plugins.get("telephony");
-                
                 plugin.muteCall();
             }
         }
@@ -417,12 +414,7 @@ var Daemon = new Lang.Class({
             
             if (device._plugins.has("telephony")) {
                 let plugin = device._plugins.get("telephony");
-                
-                plugin.replyMissedCall(
-                    param["1"],
-                    param["2"],
-                    param["3"]
-                );
+                plugin.replyMissedCall(param["1"],param["2"]);
             }
         }
     },
@@ -435,13 +427,7 @@ var Daemon = new Lang.Class({
             
             if (device._plugins.has("telephony")) {
                 let plugin = device._plugins.get("telephony");
-                
-                plugin.replySms(
-                    param["1"],
-                    param["2"],
-                    param["3"],
-                    param["4"]
-                );
+                plugin.replySms(param["1"], param["2"], param["3"]);
             }
         }
     },
@@ -515,7 +501,7 @@ var Daemon = new Lang.Class({
         
         let replyMissedCall = new Gio.SimpleAction({
             name: "replyMissedCall",
-            parameter_type: new GLib.VariantType("(ssss)")
+            parameter_type: new GLib.VariantType("(sss)")
         });
         replyMissedCall.connect(
             "activate",
@@ -525,7 +511,7 @@ var Daemon = new Lang.Class({
         
         let replySms = new Gio.SimpleAction({
             name: "replySms",
-            parameter_type: new GLib.VariantType("(sssss)")
+            parameter_type: new GLib.VariantType("(ssss)")
         });
         replySms.connect(
             "activate",

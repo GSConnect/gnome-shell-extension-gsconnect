@@ -147,8 +147,6 @@ var Plugin = new Lang.Class({
             escape(packet.body.phoneNumber) +
             "','" +
             escape(packet.body.contactName) +
-            "','" +
-            packet.body.phoneThumbnail +
             "'))"
         );
         
@@ -206,8 +204,7 @@ var Plugin = new Lang.Class({
             window.receive(
                 packet.body.phoneNumber,
                 packet.body.contactName,
-                packet.body.messageBody,
-                packet.body.phoneThumbnail
+                packet.body.messageBody
             );
             window.urgency_hint = true;
             
@@ -234,8 +231,6 @@ var Plugin = new Lang.Class({
             escape(packet.body.contactName) +
             "','" +
             escape(packet.body.messageBody) +
-            "','" +
-            packet.body.phoneThumbnail +
             "'))"
         );
         
@@ -430,9 +425,8 @@ var Plugin = new Lang.Class({
      *
      * @param {string} phoneNumber - The sender's phone number
      * @param {string} contactName - The sender's name
-     * @param {string} phoneThumbnail - The sender's avatar (pixmap bytearray)
      */
-    replyMissedCall: function (phoneNumber, contactName, phoneThumbnail) {
+    replyMissedCall: function (phoneNumber, contactName) {
         Common.debug("Telephony: replyMissedCall()");
         
         phoneNumber = unescape(phoneNumber);
@@ -447,12 +441,7 @@ var Plugin = new Lang.Class({
                 this.device.daemon,
                 this.device
             );
-            window.addRecipient(
-                phoneNumber,
-                contactName,
-                phoneThumbnail
-            );
-            
+            window.addRecipient(phoneNumber, contactName);
             window.urgency_hint = true;
             
             // Tell the notification plugin to mark any duplicate read
@@ -472,9 +461,8 @@ var Plugin = new Lang.Class({
      * @param {string} phoneNumber - The sender's phone number
      * @param {string} contactName - The sender's name
      * @param {string} messageBody - The SMS message
-     * @param {string} phoneThumbnail - The sender's avatar (pixmap bytearray)
      */
-    replySms: function (phoneNumber, contactName, messageBody, phoneThumbnail) {
+    replySms: function (phoneNumber, contactName, messageBody) {
         Common.debug("Telephony: replySms()");
         
         phoneNumber = unescape(phoneNumber);
@@ -490,14 +478,7 @@ var Plugin = new Lang.Class({
                 this.device.daemon,
                 this.device
             );
-            
-            window.receive(
-                phoneNumber,
-                contactName,
-                messageBody,
-                phoneThumbnail
-            );
-            
+            window.receive(phoneNumber, contactName, messageBody);
             window.urgency_hint = true;
             
             // Tell the notification plugin to mark any duplicate read
