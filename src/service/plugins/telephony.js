@@ -562,11 +562,11 @@ var ContactsCache = new Lang.Class({
         this.contacts = [];
         this.read();
         
+        // TODO:  better monitoring
         this._monitor = this._file.monitor(Gio.FileMonitorFlags.NONE, null);
         this._monitor.connect("changed", (monitor, file, ofile, event) => {
             if (event === Gio.FileMonitorEvent.CHANGED) {
                 this.notify("contacts");
-                Common.debug("CONTACTS CACHE CHANGED"); // FIXME remove
             }
         });
         
@@ -587,7 +587,7 @@ var ContactsCache = new Lang.Class({
         return {};
     },
     
-    // FIXME: check
+    // TODO: need this?
     hasContact: function (number, name) {
         return (this.getContact() !== {});
     },
@@ -607,6 +607,32 @@ var ContactsCache = new Lang.Class({
         
         this.contacts.push(newContact);
         if (write) { this.write(); }
+    },
+    
+    // TODO: maybe return an array and let caller deal with multiple matches
+    //       optimize
+    searchContact: function (query) {
+        let matches = [];
+        let strippedNumber = query.replace(/\D/g, "");
+        
+        // Try searching by number
+        if (strippedNumber.length) {
+            for (let contact of this.contacts) {
+                if (contact.number.replace(/\D/g, "") === strippedNumber) {
+                    matches.push(contact);
+                }
+            }
+        // Maybe it's a name
+        } else {
+            for (let contact of this.contacts) {
+                if (contact.name === query) {
+                    matches.push(contact);
+                }
+            }
+        }
+        
+        // Only return if there's a single match
+        return (matches.length === 1) ? matches[0] : false;
     },
     
     parsePacket: function (packet) {
