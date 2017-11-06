@@ -128,6 +128,8 @@ var Plugin = new Lang.Class({
             [title, text] = packet.body.ticker.split(": ");
         }
         
+        let matchString = title + ": " + text;
+        
         // The defacto notification setup
         let notif = new Gio.Notification();
         notif.set_title(packet.body.appName);
@@ -186,6 +188,13 @@ var Plugin = new Lang.Class({
                         "'))"
                     );
                     notif.set_priority(Gio.NotificationPriority.HIGH);
+                    
+                    if (this._duplicates.has(matchString)) {
+                        let duplicate = this._duplicates.get(matchString);
+                        duplicate.id = packet.body.id;
+                    } else {
+                        this._duplicates.set(matchString, { id: packet.body.id });
+                    }
                 }
             }
         }
@@ -202,7 +211,6 @@ var Plugin = new Lang.Class({
         
         notif.set_icon(icon);
         
-        let matchString = title + ": " + text;
         this._sendNotification(packet, notif, matchString);
     },
     
@@ -264,6 +272,9 @@ var Plugin = new Lang.Class({
             // We've been asked to silence this (we'll still track it)
             } else if (duplicate.silence) {
                 duplicate.id = packet.body.id;
+            // This is a telephonized notification
+            } else {
+                this.device.daemon.send_notification(packet.body.id, notif);
             }
         // We can show this as normal
         } else {
@@ -393,6 +404,7 @@ var Plugin = new Lang.Class({
                 
             if (duplicate.id) {
                 this.close(duplicate.id);
+                this._duplicates.delete(matchString);
             } else {
                 duplicate.close = true;
             }
