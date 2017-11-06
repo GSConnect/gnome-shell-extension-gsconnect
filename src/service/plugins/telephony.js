@@ -610,24 +610,15 @@ var ContactsCache = new Lang.Class({
     },
     
     // TODO: maybe return an array and let caller deal with multiple matches
-    //       optimize
     searchContact: function (query) {
         let matches = [];
         let strippedNumber = query.replace(/\D/g, "");
         
-        // Try searching by number
-        if (strippedNumber.length) {
-            for (let contact of this.contacts) {
-                if (contact.number.replace(/\D/g, "") === strippedNumber) {
-                    matches.push(contact);
-                }
-            }
-        // Maybe it's a name
-        } else {
-            for (let contact of this.contacts) {
-                if (contact.name === query) {
-                    matches.push(contact);
-                }
+        for (let contact of this.contacts) {
+            if (contact.number.replace(/\D/g, "") === strippedNumber) {
+                matches.push(contact);
+            } else if (contact.name === query) {
+                matches.push(contact);
             }
         }
         
