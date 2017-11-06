@@ -140,7 +140,8 @@ var ContactCompletion = new Lang.Class({
         this._read_cache();
     },
     
-    /** Spawn folks.py */
+    /** Read cached contacts */
+    // TODO: reload on notify::contacts
     _read_cache: function () {
         for (let contact of this._cache.contacts) {
             this._add_contact(contact);

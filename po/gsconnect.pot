@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-11-05 22:35-0800\n"
+"POT-Creation-Date: 2017-11-05 22:53-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -502,24 +502,24 @@ msgstr ""
 msgid "Unknown Number"
 msgstr ""
 
-#: src/service/plugins/telephony.js:804
+#: src/service/plugins/telephony.js:803
 msgid "Never"
 msgstr ""
 
-#: src/service/plugins/telephony.js:805
+#: src/service/plugins/telephony.js:804
 msgid "Incoming Calls"
 msgstr ""
 
-#: src/service/plugins/telephony.js:806
+#: src/service/plugins/telephony.js:805
 msgid "In Progress Calls"
 msgstr ""
 
-#: src/service/plugins/telephony.js:813
+#: src/service/plugins/telephony.js:812
 #: data/org.gnome.shell.extensions.gsconnect.gschema.xml:114
 msgid "Pause Music"
 msgstr ""
 
-#: src/service/plugins/telephony.js:818
+#: src/service/plugins/telephony.js:817
 msgid "The <b>Media Player Control</b> plugin must be enabled"
 msgstr ""
 
