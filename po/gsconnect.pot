@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-11-05 22:53-0800\n"
+"POT-Creation-Date: 2017-11-06 00:05-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -498,28 +498,28 @@ msgstr ""
 msgid "Call in progress with %s on %s"
 msgstr ""
 
-#: src/service/plugins/telephony.js:342 src/widgets/telephony.js:456
+#: src/service/plugins/telephony.js:342 src/widgets/telephony.js:455
 msgid "Unknown Number"
 msgstr ""
 
-#: src/service/plugins/telephony.js:803
+#: src/service/plugins/telephony.js:794
 msgid "Never"
 msgstr ""
 
-#: src/service/plugins/telephony.js:804
+#: src/service/plugins/telephony.js:795
 msgid "Incoming Calls"
 msgstr ""
 
-#: src/service/plugins/telephony.js:805
+#: src/service/plugins/telephony.js:796
 msgid "In Progress Calls"
 msgstr ""
 
-#: src/service/plugins/telephony.js:812
+#: src/service/plugins/telephony.js:803
 #: data/org.gnome.shell.extensions.gsconnect.gschema.xml:114
 msgid "Pause Music"
 msgstr ""
 
-#: src/service/plugins/telephony.js:817
+#: src/service/plugins/telephony.js:808
 msgid "The <b>Media Player Control</b> plugin must be enabled"
 msgstr ""
 
@@ -616,11 +616,11 @@ msgid ""
 "The requested keyboard shortcut is already in use and can't be overridden."
 msgstr ""
 
-#: src/widgets/telephony.js:240 src/widgets/telephony.js:241
+#: src/widgets/telephony.js:242 src/widgets/telephony.js:243
 msgid "Type a phone number or name"
 msgstr ""
 
-#: src/widgets/telephony.js:404
+#: src/widgets/telephony.js:406
 msgid "Add people to start a conversation"
 msgstr ""
 
@@ -628,26 +628,26 @@ msgstr ""
 msgid "Unknown Contact"
 msgstr ""
 
-#: src/widgets/telephony.js:524
+#: src/widgets/telephony.js:523
 msgid "Type an SMS message"
 msgstr ""
 
-#: src/widgets/telephony.js:685
+#: src/widgets/telephony.js:684
 msgid "SMS Conversation"
 msgstr ""
 
 #. TRANSLATORS: Tooltip for a button to add/remove people from a conversation
-#: src/widgets/telephony.js:709
+#: src/widgets/telephony.js:708
 msgid "Add and remove people"
 msgstr ""
 
 #. TRANSLATORS: eg. <b>Google Pixel</b> is disconnected
-#: src/widgets/telephony.js:769
+#: src/widgets/telephony.js:768
 #, javascript-format
 msgid "<b>%s</b> is disconnected"
 msgstr ""
 
-#: src/widgets/telephony.js:839
+#: src/widgets/telephony.js:838
 #, javascript-format
 msgid "And one other person"
 msgid_plural "And %d other people"
@@ -655,12 +655,12 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. TRANSLATORS: eg. SMS Conversation with John, Paul, George, Ringo
-#: src/widgets/telephony.js:858
+#: src/widgets/telephony.js:857
 #, javascript-format
 msgid "SMS Conversation with %s"
 msgstr ""
 
-#: src/widgets/telephony.js:863
+#: src/widgets/telephony.js:862
 msgid "New SMS Conversation"
 msgstr ""
 

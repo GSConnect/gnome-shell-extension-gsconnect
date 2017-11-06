@@ -94,7 +94,7 @@ var shuffleColor = Array.shuffler([
 var LINK_REGEX = /\b((?:https?:\/\/|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))/gi;
         
         
-/** A Gtk.EntryCompletion subclass for Google Contacts */
+/** A Gtk.EntryCompletion subclass for Contacts */
 var ContactCompletion = new Lang.Class({
     Name: "GSConnectContactCompletion",
     Extends: Gtk.EntryCompletion,
@@ -889,7 +889,6 @@ var ConversationWindow = new Lang.Class({
     },
     
     _getAvatar: function (recipient) {
-        // TODO: GdkPixbuf chokes hard on non-fatally corrupted images
         let avatar;
         
         if (recipient.avatar) {
@@ -982,7 +981,7 @@ var ConversationWindow = new Lang.Class({
         );
     },
     
-    /** Send the contents of ContactEntry to each recipient */
+    /** Send the contents of MessageView.entry to each recipient */
     send: function (entry, signal_id, event) {
         // Send to each number
         for (let number of this.recipients) {
