@@ -147,9 +147,7 @@ var Plugin = new Lang.Class({
             let plugin = this.device._plugins.get("telephony");
             
             if (title === _("Missed call")) {
-                contact = plugin._cache.searchContact(text);
-                
-                if (contact) {
+                if ((contact = plugin._cache.searchContact(text))) {
                     if (contact.avatar && !icon) {
                         icon = plugin._getPixbuf(contact.avatar);
                     }
@@ -169,9 +167,7 @@ var Plugin = new Lang.Class({
                     );
                 }
             } else {
-                contact = plugin._cache.searchContact(title);
-                
-                if (contact) {
+                if ((contact = plugin._cache.searchContact(title))) {
                     if (contact.avatar && !icon) {
                         icon = plugin._getPixbuf(contact.avatar);
                     }
