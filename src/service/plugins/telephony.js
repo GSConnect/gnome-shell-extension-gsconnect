@@ -99,6 +99,19 @@ var Plugin = new Lang.Class({
         this._pausedPlayer = false;
     },
     
+    _getPixbuf: function (path) {
+        let loader = new GdkPixbuf.PixbufLoader();
+        loader.write(GLib.file_get_contents(path)[1]);
+        
+        try {
+            loader.close();
+        } catch (e) {
+            Common.debug("Warning: " + e.message);
+        }
+        
+        return loader.get_pixbuf();
+    },
+    
     _getIcon: function (packet) {
         let contact = this._cache.getContact(
             packet.body.phoneNumber,
@@ -106,16 +119,7 @@ var Plugin = new Lang.Class({
         );
         
         if (contact.avatar) {
-            let loader = new GdkPixbuf.PixbufLoader();
-            loader.write(GLib.file_get_contents(contact.avatar)[1]);
-            
-            try {
-                loader.close();
-            } catch (e) {
-                Common.debug("Warning: " + e.message);
-            }
-            
-            return loader.get_pixbuf();
+            return this._getPixbuf(contact.avatar);
         } else if (packet.body.event === "missedCall") {
             return new Gio.ThemedIcon({ name: "call-missed-symbolic" });
         } else if (["ringing", "talking"].indexOf(packet.body.event) > -1) {
