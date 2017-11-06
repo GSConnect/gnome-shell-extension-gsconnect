@@ -453,8 +453,9 @@ var Plugin = new Lang.Class({
             
             // Tell the notification plugin to mark any duplicate read
             if (this.device._plugins.has("notification")) {
+                let sender = contactName || phoneNumber;
                 this.device._plugins.get("notification").closeDuplicate(
-                    _("Missed call") + ": " + contactName || phoneNumber
+                    _("Missed call") + ": " + sender
                 );
             }
         }
@@ -493,8 +494,9 @@ var Plugin = new Lang.Class({
             
             // Tell the notification plugin to mark any duplicate read
             if (this.device._plugins.has("notification")) {
+                let sender = contactName || phoneNumber;
                 this.device._plugins.get("notification").closeDuplicate(
-                    contactName || phoneNumber + ": " + messageBody
+                    sender + ": " + messageBody
                 );
             }
         }
