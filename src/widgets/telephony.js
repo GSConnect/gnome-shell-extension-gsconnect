@@ -137,19 +137,22 @@ var ContactCompletion = new Lang.Class({
         this.set_match_func(Lang.bind(this, this._match));
         this.connect("match-selected", Lang.bind(this, this._select));
         
-        this._read_cache();
+        this._cache.connect("notify::contacts", () => {
+            this._populate();
+        });
+        
+        this._populate();
     },
     
-    /** Read cached contacts */
-    // TODO: reload on notify::contacts
-    _read_cache: function () {
+    _populate: function () {
+        this.model.clear();
+        
         for (let contact of this._cache.contacts) {
-            this._add_contact(contact);
+            this._add(contact);
         }
     },
     
-    /** Add contact */
-    _add_contact: function (contact) {
+    _add: function (contact) {
         // Only include types that could possibly support SMS
         if (contact.type && SUPPORTED_NUMBER_TYPES.indexOf(contact.type) < 0) {
             return; 
@@ -178,11 +181,9 @@ var ContactCompletion = new Lang.Class({
         );
     },
     
-    /** Multi-recipient capable match function */
     _match: function (completion, key, tree_iter) {
-        let model = completion.get_model();
-        let name = model.get_value(tree_iter, 1).toLowerCase();
-        let number = model.get_value(tree_iter, 2);
+        let name = this.model.get_value(tree_iter, 1).toLowerCase();
+        let number = this.model.get_value(tree_iter, 2);
         let recipients = this.get_entry()._parent._recipients;
         
         // Return if the possible match is in the current recipients
@@ -199,11 +200,12 @@ var ContactCompletion = new Lang.Class({
             this._last = key;
         }
         
+        // Limit the matches to 20
         if (this._matched.length >= 20) { return false; }
         
         // Match name or number
         if (name.indexOf(key) > -1 || number.indexOf(key) > -1) {
-            this._matched.push(model.get_string_from_iter(tree_iter));
+            this._matched.push(this.model.get_string_from_iter(tree_iter));
             return true;
         }
     },
@@ -424,13 +426,11 @@ var RecipientList = new Lang.Class({
             selectable: false,
             hexpand: true,
             halign: Gtk.Align.FILL,
-            visible: true,
             margin: 6
         });
         this.list.add(row);
         
         row.layout = new Gtk.Grid({
-            visible: true,
             can_focus: false,
             column_spacing: 12,
             row_spacing: 0
@@ -444,7 +444,6 @@ var RecipientList = new Lang.Class({
         // contactName
         row.contact = new Gtk.Label({
             label: recipient.name || _("Unknown Contact"),
-            visible: true,
             can_focus: false,
             xalign: 0,
             hexpand: true
