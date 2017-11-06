@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-10-31 11:37-0700\n"
+"POT-Creation-Date: 2017-11-05 22:35-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -292,7 +292,20 @@ msgstr ""
 msgid "Sync notifications between devices"
 msgstr ""
 
-#: src/service/plugins/notification.js:389
+#. TRANSLATORS: This is specifically for matching missed call notifications on Android.
+#. You should translate this (or not) to match the string on your phone that in english looks like "Missed call: John Lennon"
+#: src/service/plugins/notification.js:149
+#: src/service/plugins/notification.js:200 src/service/plugins/telephony.js:162
+#: src/service/plugins/telephony.js:167 src/service/plugins/telephony.js:457
+msgid "Missed call"
+msgstr ""
+
+#. TRANSLATORS: Reply to a missed call by SMS
+#: src/service/plugins/notification.js:161 src/service/plugins/telephony.js:147
+msgid "Message"
+msgstr ""
+
+#: src/service/plugins/notification.js:456
 msgid "Applications"
 msgstr ""
 
@@ -439,35 +452,23 @@ msgstr ""
 msgid "Use a subdirectory named <b>%s</b>"
 msgstr ""
 
-#: src/service/plugins/telephony.js:30
+#: src/service/plugins/telephony.js:39
 msgid "Telephony"
 msgstr ""
 
-#: src/service/plugins/telephony.js:31
+#: src/service/plugins/telephony.js:40
 msgid "Call notification and SMS messaging"
 msgstr ""
 
 #. TRANSLATORS: Missed Call
-#: src/service/plugins/telephony.js:112
+#: src/service/plugins/telephony.js:137
 msgid "Missed Call"
 msgstr ""
 
 #. TRANSLATORS: eg. Missed call from John Smith on Google Pixel
-#: src/service/plugins/telephony.js:115
+#: src/service/plugins/telephony.js:140
 #, javascript-format
 msgid "Missed call from %s on %s"
-msgstr ""
-
-#. TRANSLATORS: Reply to a missed call by SMS
-#: src/service/plugins/telephony.js:130
-msgid "Message"
-msgstr ""
-
-#. TRANSLATORS: This is specifically for matching missed call notifications on Android.
-#. You should translate this (or not) to match the string on your phone that in english looks like "Missed call: John Lennon"
-#: src/service/plugins/telephony.js:147 src/service/plugins/telephony.js:152
-#: src/service/plugins/telephony.js:481
-msgid "Missed call"
 msgstr ""
 
 #. TRANSLATORS: Incoming Call
@@ -482,43 +483,43 @@ msgid "Incoming call from %s on %s"
 msgstr ""
 
 #. TRANSLATORS: Silence an incoming call
-#: src/service/plugins/telephony.js:195
+#: src/service/plugins/telephony.js:187
 msgid "Mute"
 msgstr ""
 
 #. TRANSLATORS: Talking on the phone
-#: src/service/plugins/telephony.js:309
+#: src/service/plugins/telephony.js:260
 msgid "Call In Progress"
 msgstr ""
 
 #. TRANSLATORS: eg. Call in progress with John Smith on Google Pixel
-#: src/service/plugins/telephony.js:312
+#: src/service/plugins/telephony.js:263
 #, javascript-format
 msgid "Call in progress with %s on %s"
 msgstr ""
 
-#: src/service/plugins/telephony.js:398 src/widgets/telephony.js:561
+#: src/service/plugins/telephony.js:342 src/widgets/telephony.js:456
 msgid "Unknown Number"
 msgstr ""
 
-#: src/service/plugins/telephony.js:577
+#: src/service/plugins/telephony.js:804
 msgid "Never"
 msgstr ""
 
-#: src/service/plugins/telephony.js:578
+#: src/service/plugins/telephony.js:805
 msgid "Incoming Calls"
 msgstr ""
 
-#: src/service/plugins/telephony.js:579
+#: src/service/plugins/telephony.js:806
 msgid "In Progress Calls"
 msgstr ""
 
-#: src/service/plugins/telephony.js:586
+#: src/service/plugins/telephony.js:813
 #: data/org.gnome.shell.extensions.gsconnect.gschema.xml:114
 msgid "Pause Music"
 msgstr ""
 
-#: src/service/plugins/telephony.js:591
+#: src/service/plugins/telephony.js:818
 msgid "The <b>Media Player Control</b> plugin must be enabled"
 msgstr ""
 
@@ -615,42 +616,38 @@ msgid ""
 "The requested keyboard shortcut is already in use and can't be overridden."
 msgstr ""
 
-#: src/widgets/telephony.js:352 src/widgets/telephony.js:353
-msgid "Type a phone number"
-msgstr ""
-
-#: src/widgets/telephony.js:365 src/widgets/telephony.js:366
+#: src/widgets/telephony.js:240 src/widgets/telephony.js:241
 msgid "Type a phone number or name"
 msgstr ""
 
-#: src/widgets/telephony.js:509
+#: src/widgets/telephony.js:404
 msgid "Add people to start a conversation"
 msgstr ""
 
-#: src/widgets/telephony.js:551
+#: src/widgets/telephony.js:446
 msgid "Unknown Contact"
 msgstr ""
 
-#: src/widgets/telephony.js:629
+#: src/widgets/telephony.js:524
 msgid "Type an SMS message"
 msgstr ""
 
-#: src/widgets/telephony.js:785
+#: src/widgets/telephony.js:685
 msgid "SMS Conversation"
 msgstr ""
 
 #. TRANSLATORS: Tooltip for a button to add/remove people from a conversation
-#: src/widgets/telephony.js:809
+#: src/widgets/telephony.js:709
 msgid "Add and remove people"
 msgstr ""
 
 #. TRANSLATORS: eg. <b>Google Pixel</b> is disconnected
-#: src/widgets/telephony.js:866
+#: src/widgets/telephony.js:769
 #, javascript-format
 msgid "<b>%s</b> is disconnected"
 msgstr ""
 
-#: src/widgets/telephony.js:936
+#: src/widgets/telephony.js:839
 #, javascript-format
 msgid "And one other person"
 msgid_plural "And %d other people"
@@ -658,12 +655,12 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. TRANSLATORS: eg. SMS Conversation with John, Paul, George, Ringo
-#: src/widgets/telephony.js:955
+#: src/widgets/telephony.js:858
 #, javascript-format
 msgid "SMS Conversation with %s"
 msgstr ""
 
-#: src/widgets/telephony.js:960
+#: src/widgets/telephony.js:863
 msgid "New SMS Conversation"
 msgstr ""
 
