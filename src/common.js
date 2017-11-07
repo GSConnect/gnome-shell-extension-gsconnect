@@ -19,9 +19,16 @@ function getPath() {
 imports.searchPath.push(getPath());
 
 
-var CACHE_PATH = GLib.get_user_cache_dir() + "/gsconnect";
-var CONFIG_PATH = GLib.get_user_config_dir() + "/gsconnect";
 var METADATA = JSON.parse(GLib.file_get_contents(getPath() + "/metadata.json")[1]);
+var CACHE_DIR = GLib.get_user_cache_dir() + "/gsconnect";
+var CONFIG_DIR = GLib.get_user_config_dir() + "/gsconnect";
+var RUNTIME_DIR = GLib.get_user_runtime_dir() + "/gsconnect";
+
+for (let path of [CACHE_DIR, CONFIG_DIR, RUNTIME_DIR]) {
+    if (!GLib.file_test(path, GLib.FileTest.IS_DIR)) {
+        GLib.mkdir_with_parents(path, 493);
+    }
+}
 
 
 /**
@@ -122,17 +129,13 @@ function debug(msg) {
  * Generate a Private Key and TLS Certificate
  */
 function generateEncryption () {
-    if (!GLib.file_test(CONFIG_PATH, GLib.FileTest.IS_DIR)) {
-        GLib.mkdir_with_parents(CONFIG_PATH, 493);
-    }
-    
     let hasPrivateKey = GLib.file_test(
-        CONFIG_PATH + "/private.pem",
+        CONFIG_DIR + "/private.pem",
         GLib.FileTest.EXISTS
     );
     
     let hasCertificate = GLib.file_test(
-        CONFIG_PATH + "/certificate.pem",
+        CONFIG_DIR + "/certificate.pem",
         GLib.FileTest.EXISTS
     );
     
@@ -145,7 +148,7 @@ function generateEncryption () {
         ];
         
         let proc = GLib.spawn_sync(
-            CONFIG_PATH,
+            CONFIG_DIR,
             cmd,
             null,
             GLib.SpawnFlags.SEARCH_PATH,
@@ -154,8 +157,8 @@ function generateEncryption () {
     }
     
     // Ensure permissions are restrictive
-    GLib.spawn_command_line_async("chmod 0600 " + CONFIG_PATH + "/private.pem");
-    GLib.spawn_command_line_async("chmod 0600 " + CONFIG_PATH + "/certificate.pem");
+    GLib.spawn_command_line_async("chmod 0600 " + CONFIG_DIR + "/private.pem");
+    GLib.spawn_command_line_async("chmod 0600 " + CONFIG_DIR + "/certificate.pem");
 };
 
 
@@ -182,8 +185,8 @@ function getCertificate (id=false) {
         }
     } else {
         return Gio.TlsCertificate.new_from_files(
-            CONFIG_PATH + "/certificate.pem",
-            CONFIG_PATH + "/private.pem"
+            CONFIG_DIR + "/certificate.pem",
+            CONFIG_DIR + "/private.pem"
         );
     }
     

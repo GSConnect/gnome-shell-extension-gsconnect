@@ -554,7 +554,7 @@ var ContactsCache = new Lang.Class({
         
         this.provider = "call-start-symbolic";
     
-        this._dir =  Common.CACHE_PATH + "/contacts";
+        this._dir =  Common.CACHE_DIR + "/contacts";
         this._file = Gio.File.new_for_path(this._dir + "/contacts.json");
         
         if (!GLib.file_test(this._dir, GLib.FileTest.IS_DIR)) {

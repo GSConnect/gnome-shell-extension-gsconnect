@@ -137,7 +137,7 @@ var Plugin = new Lang.Class({
             // Do not use ~/.ssh/config
             "-F", "/dev/null",
             // Sketchy?
-            "-o", "IdentityFile=" + Common.CONFIG_PATH + "/private.pem",
+            "-o", "IdentityFile=" + Common.CONFIG_DIR + "/private.pem",
             // Don't prompt for new host confirmation (we know the host)
             "-o", "StrictHostKeyChecking=no",
             // Prevent storing as a known host
