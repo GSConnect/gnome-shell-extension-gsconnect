@@ -52,7 +52,7 @@ var Plugin = new Lang.Class({
         ),
         "level": GObject.ParamSpec.int(
             "level",
-            "isCharging",
+            "currentCharge",
             "Whether the device is charging",
             GObject.ParamFlags.READABLE,
             -1
@@ -65,7 +65,29 @@ var Plugin = new Lang.Class({
         this._charging = false;
         this._level = -1;
         
-        this.request();
+        if (this.settings.get_boolean("receive-statistics")) {
+            this.request();
+        }
+        
+        this.settings.connect("changed::receive-statistics", () => {
+            if (this.settings.get_boolean("receive-statistics")) {
+                this.request();
+            } else {
+                this._charging = false;
+                this.notify("charging");
+                this._dbus.emit_property_changed(
+                    "charging",
+                    new GLib.Variant("b", this._charging)
+                );
+                
+                this._level = -1;
+                this.notify("level");
+                this._dbus.emit_property_changed(
+                    "level",
+                    new GLib.Variant("i", this._level)
+                );
+            }
+        });
         
         if (this.settings.get_boolean("send-statistics") && this.device.daemon.type === "laptop") {
             this._monitor();
