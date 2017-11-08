@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-11-06 00:05-0800\n"
+"POT-Creation-Date: 2017-11-07 19:37-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -294,9 +294,9 @@ msgstr ""
 
 #. TRANSLATORS: This is specifically for matching missed call notifications on Android.
 #. You should translate this (or not) to match the string on your phone that in english looks like "Missed call: John Lennon"
-#: src/service/plugins/notification.js:149
-#: src/service/plugins/notification.js:200 src/service/plugins/telephony.js:162
-#: src/service/plugins/telephony.js:167 src/service/plugins/telephony.js:457
+#: src/service/plugins/notification.js:151
+#: src/service/plugins/notification.js:205 src/service/plugins/telephony.js:162
+#: src/service/plugins/telephony.js:167 src/service/plugins/telephony.js:458
 msgid "Missed call"
 msgstr ""
 
@@ -305,7 +305,7 @@ msgstr ""
 msgid "Message"
 msgstr ""
 
-#: src/service/plugins/notification.js:456
+#: src/service/plugins/notification.js:464
 msgid "Applications"
 msgstr ""
 
@@ -346,7 +346,7 @@ msgstr ""
 msgid "Mount and browse device filesystems"
 msgstr ""
 
-#: src/service/plugins/sftp.js:73
+#: src/service/plugins/sftp.js:71
 msgid "SSHFS not installed"
 msgstr ""
 
@@ -502,24 +502,24 @@ msgstr ""
 msgid "Unknown Number"
 msgstr ""
 
-#: src/service/plugins/telephony.js:794
+#: src/service/plugins/telephony.js:796
 msgid "Never"
 msgstr ""
 
-#: src/service/plugins/telephony.js:795
+#: src/service/plugins/telephony.js:797
 msgid "Incoming Calls"
 msgstr ""
 
-#: src/service/plugins/telephony.js:796
+#: src/service/plugins/telephony.js:798
 msgid "In Progress Calls"
 msgstr ""
 
-#: src/service/plugins/telephony.js:803
+#: src/service/plugins/telephony.js:805
 #: data/org.gnome.shell.extensions.gsconnect.gschema.xml:114
 msgid "Pause Music"
 msgstr ""
 
-#: src/service/plugins/telephony.js:808
+#: src/service/plugins/telephony.js:810
 msgid "The <b>Media Player Control</b> plugin must be enabled"
 msgstr ""
 
