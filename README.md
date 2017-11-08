@@ -26,7 +26,7 @@ of [dependencies][wiki-depends].
 ### Credits
 
 Code from [python-folks][python-folks] by [@hugosenari][hugosenari] was adapted
-to provide libfolks.
+to provide libfolks integration.
 
 Code from [application-overview-tooltip][tooltips] by
 [@RaphaelRochet][RaphaelRochet] was adapted to provide tooltips.
