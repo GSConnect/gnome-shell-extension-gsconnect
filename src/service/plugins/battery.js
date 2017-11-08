@@ -8,6 +8,7 @@ const _ = Gettext.gettext;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
+const UPower = imports.gi.UPowerGlib;
 
 // Local Imports
 function getPath() {
@@ -26,20 +27,17 @@ const PluginsBase = imports.service.plugins.base;
 
 var METADATA = {
     summary: _("Battery"),
-    description: _("Monitor battery level and charging state"),
+    description: _("Send and receive battery statistics"),
     dbusInterface: "org.gnome.Shell.Extensions.GSConnect.Plugin.Battery",
     schemaId: "org.gnome.shell.extensions.gsconnect.plugin.battery",
-    incomingPackets: ["kdeconnect.battery"],
-    outgoingPackets: ["kdeconnect.battery.request"]
+    incomingPackets: ["kdeconnect.battery", "kdeconnect.battery.request"],
+    outgoingPackets: ["kdeconnect.battery", "kdeconnect.battery.request"]
 };
 
 
 /**
  * Battery Plugin
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/battery
- *
- * TODO: It's possible to report battery stats if deviceType is "laptop", see:
- *       https://github.com/GNOME/gnome-shell/blob/master/js/ui/status/power.js
  */
 var Plugin = new Lang.Class({
     Name: "GSConnectBatteryPlugin",
@@ -67,7 +65,49 @@ var Plugin = new Lang.Class({
         this._charging = false;
         this._level = -1;
         
-        this.update();
+        this.request();
+        
+        if (this.settings.get_boolean("send-statistics") && this.device.daemon.type === "laptop") {
+            this._monitor();
+        }
+        
+        this.settings.connect("changed::send-statistics", () => {
+            if (this.settings.get_boolean("send-statistics") && !this._battery) {
+                this._monitor();
+            } else if (!this.settings.get_boolean("send-statistics") && this._battery) {
+                GObject.signal_handlers_destroy(this._battery);
+                delete this._battery;
+                delete this._gsd;
+            }
+        });
+    },
+    
+    _monitor: function () {
+        this._battery = new UPower.Device();
+        
+        try {
+            this._battery.set_object_path_sync(
+                "/org/freedesktop/UPower/devices/DisplayDevice",
+                null
+            );
+            
+            for (let property of ["percentage", "state", "warning_level"]) {
+                this._battery.connect("notify::" + property, () => {
+                    this.send();
+                });
+            }
+            
+            this._gsd = new Gio.Settings({
+                schema_id: "org.gnome.settings-daemon.plugins.power"
+            });
+        } catch(e) {
+            Common.debug("Battery: Failed to initialize UPower: " + e);
+            GObject.signal_handlers_destroy(this._battery);
+            delete this._battery;
+            delete this._gsd;
+        }
+        
+        this.send();
     },
     
     get charging() { return this._charging; },
@@ -75,6 +115,19 @@ var Plugin = new Lang.Class({
     
     handlePacket: function (packet) {
         Common.debug("Battery: handlePacket()");
+        
+        if (packet.type === "kdeconnect.battery" && this.settings.get_boolean("receive-statistics")) {
+            this.receive(packet);
+        } else if (packet.type === "kdeconnect.battery.request" && this._battery) {
+            this.send(packet);
+        }
+    },
+    
+    /**
+     * Receive a remote battery update and disseminate the statistics
+     */
+    receive: function (packet) {
+        Common.debug("Battery: receive()");
     
         this._charging = packet.body.isCharging;
         this.notify("charging");
@@ -95,6 +148,49 @@ var Plugin = new Lang.Class({
         }
     },
     
+    /**
+     * Request the remote battery statistics
+     */
+    request: function () {
+        Common.debug("Battery: request()");
+        
+        let packet = new Protocol.Packet({
+            id: 0,
+            type: "kdeconnect.battery.request",
+            body: { request: true }
+        });
+        
+        this.device._channel.send(packet);
+    },
+    
+    /**
+     * Report the local battery statistics to the device
+     */
+    send: function () {
+        Common.debug("Battery: send()");
+        
+        let packet = new Protocol.Packet({
+            id: 0,
+            type: "kdeconnect.battery",
+            body: {
+                currentCharge: this._battery.percentage,
+                isCharging: (this._battery.state !== UPower.DeviceState.DISCHARGING),
+                thresholdEvent: 0
+            }
+        });
+        
+        if (this._battery.percentage === this._gsd.get_int("percentage-low")) {
+            if (!packet.body.isCharging) {
+                packet.body.thresholdEvent = 1;
+            }
+        }
+        
+        this.device._channel.send(packet);
+    },
+    
+    /**
+     * Notify about a remote threshold event (low battery level)
+     */
     threshold: function () {
         Common.debug("Battery: threshold()");
         
@@ -108,8 +204,6 @@ var Plugin = new Lang.Class({
         notif.set_icon(new Gio.ThemedIcon({ name: "battery-caution-symbolic" }));
         
         if (this.device._plugins.has("findmyphone")) {
-            Common.debug("Battery: has findmyphone plugin; enabling action");
-            
             notif.add_button(
                 _("Locate"),
                 "app.batteryWarning('" + this._dbus.get_object_path() + "')"
@@ -119,19 +213,35 @@ var Plugin = new Lang.Class({
         this.device.daemon.send_notification("battery-warning", notif);
     },
     
-    /**
-     * Request an update
-     */
-    update: function () {
-        Common.debug("Battery: update()");
+    destroy: function () {
+        if (this._battery) {
+            GObject.signal_handlers_destroy(this._battery);
+            delete this._battery;
+        }
         
-        let packet = new Protocol.Packet({
-            id: 0,
-            type: "kdeconnect.battery.request",
-            body: { request: true }
-        });
+        PluginsBase.Plugin.prototype.destroy.call(this);
+    }
+});
+
+
+var SettingsDialog = new Lang.Class({
+    Name: "GSConnectBatterySettingsDialog",
+    Extends: PluginsBase.SettingsDialog,
+    
+    _init: function (device, name, window) {
+        this.parent(device, name, window);
         
-        this.device._channel.send(packet);
+        let generalSection = this.content.addSection(
+            null,
+            null,
+            { margin_bottom: 0, width_request: -1 }
+        );
+        generalSection.addGSetting(this.settings, "receive-statistics");
+        let send = generalSection.addGSetting(this.settings, "send-statistics");
+        
+        send.sensitive = (this.device.daemon.type === "laptop");
+        
+        this.content.show_all();
     }
 });
 
