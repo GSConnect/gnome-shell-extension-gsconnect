@@ -25,14 +25,14 @@ of [dependencies][wiki-depends].
     
 ### Credits
 
-Code from the Python shim for libgee by [@hugosenari][hugosenari] was adapted
-to allow integration of libfolks.
+Code from [python-folks][python-folks] by [@hugosenari][hugosenari] was adapted
+to provide libfolks.
 
-Code from the [application-overview-tooltip][tooltips] Gnome Shell extension by
+Code from [application-overview-tooltip][tooltips] by
 [@RaphaelRochet][RaphaelRochet] was adapted to provide tooltips.
 
 Icons from the [Numix][numix] project and Google's [Material Design][material]
-project are included as fallbacks and supplements to icon themes.
+project are included to provide fallbacks and supplement icon themes.
 
 
 ### Related Projects
@@ -69,6 +69,7 @@ Joe Sneddon of [OMG! Ubuntu][omgubuntu] for his interest, support and articles.
 
 [albertvaka]: https://github.com/albertvaka
 [hugosenari]: https://github.com/hugosenari
+[python-folks]: https://github.com/hugosenari/folks
 [RaphaelRochet]: https://github.com/RaphaelRochet
 [tooltips]: https://github.com/RaphaelRochet/applications-overview-tooltip
 [numix]: https://numixproject.org/
