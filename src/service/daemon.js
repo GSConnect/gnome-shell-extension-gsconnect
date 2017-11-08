@@ -66,6 +66,13 @@ var Daemon = new Lang.Class({
             "SHA1 fingerprint for the local certificate",
             GObject.ParamFlags.READABLE,
             ""
+        ),
+        "type": GObject.ParamSpec.string(
+            "type",
+            "DeviceType",
+            "The host's device type",
+            GObject.ParamFlags.READABLE,
+            "desktop"
         )
     },
 
@@ -119,6 +126,10 @@ var Daemon = new Lang.Class({
         this.notify("name");
         this._dbus.emit_property_changed("name", new GLib.Variant("s", name));
         this.broadcast();
+    },
+    
+    get type () {
+        return this.identity.body.deviceType;
     },
     
     /**

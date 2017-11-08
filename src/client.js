@@ -301,7 +301,7 @@ var Telephony = new Lang.Class({
     
     sendSms: function (phoneNumber, messageBody) {
         this._call("sendSms", true, phoneNumber, messageBody);
-    },
+    }
 });
 
 
@@ -532,6 +532,13 @@ var Daemon = new Lang.Class({
             "The host's device name",
             GObject.ParamFlags.READABLE,
             ""
+        ),
+        "type": GObject.ParamSpec.string(
+            "type",
+            "DeviceType",
+            "The host's device type",
+            GObject.ParamFlags.READABLE,
+            ""
         )
     },
     Signals: {
@@ -573,6 +580,7 @@ var Daemon = new Lang.Class({
     get fingerprint () { return this._get("fingerprint"); },
     get name () { return this._get("name"); },
     set name (name) { this._set("name", name); },
+    get type () { return this._get("type"); },
     
     // Callbacks
     _devicesChanged: function () {
