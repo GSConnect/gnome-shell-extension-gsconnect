@@ -370,13 +370,15 @@ var Device = new Lang.Class({
         )
     },
     
-    _init: function (dbusPath) {
+    _init: function (dbusPath, daemon) {
         this.parent(
             Common.DBusInfo.GSConnect.lookup_interface(
                 "org.gnome.Shell.Extensions.GSConnect.Device"
             ),
             dbusPath
         );
+        
+        this.daemon = daemon;
         
         this.settings = new Gio.Settings({
             settings_schema: Common.SchemaSource.lookup(
@@ -601,7 +603,7 @@ var Daemon = new Lang.Class({
     },
     
     _deviceAdded: function (daemon, dbusPath) {
-        this.devices.set(dbusPath, new Device(dbusPath));
+        this.devices.set(dbusPath, new Device(dbusPath, daemon));
         this.emit("device::added", dbusPath);
     },
     
