@@ -69,14 +69,14 @@ var Tooltip = new Lang.Class({
                 x: x,
                 y: y,
                 time: 15/100,
-                transition: "easeOutQuad",
+                transition: "easeOutQuad"
             });
         } else {
             this.bin.set_position(x, y);
             Tweener.addTween(this.bin, {
                 opacity: 255,
                 time: 15/100,
-                transition: "easeOutQuad",
+                transition: "easeOutQuad"
             });
             
             this._showing = true;
