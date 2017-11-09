@@ -66,7 +66,7 @@ var Plugin = new Lang.Class({
     _init: function (device) {
         this.parent(device, "sftp");
         
-        if (!this._check_sshfs()) {
+        if (!Common.checkCommand("sshfs")) {
             this.destroy();
             throw Error(_("SSHFS not installed"));
         }
@@ -81,24 +81,6 @@ var Plugin = new Lang.Class({
     
     get mounted () { return this._mounted },
     get directories () { return this._directories; },
-    
-    _check_sshfs: function () {
-        let proc = GLib.spawn_async_with_pipes(
-            null,                                   // working dir
-            ["which", "sshfs"],                     // argv
-            null,                                   // envp
-            GLib.SpawnFlags.SEARCH_PATH,            // enables PATH
-            null                                    // child_setup (func)
-        );
-        
-        let stdout = new Gio.DataInputStream({
-            base_stream: new Gio.UnixInputStream({ fd: proc[3] })
-        });
-        let [result, length] = stdout.read_line(null);
-        stdout.close(null);
-        
-        return (result !== null);
-    },
     
     _prepare: function () {
         Common.debug("SFTP: _prepare()");

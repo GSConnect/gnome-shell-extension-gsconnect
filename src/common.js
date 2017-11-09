@@ -126,6 +126,28 @@ function debug(msg) {
 
 
 /**
+ * Common command-line programs
+ */
+function checkCommand (name) {
+    let proc = GLib.spawn_async_with_pipes(
+        null,                           // working dir
+        ["which", name],                // argv
+        null,                           // envp
+        GLib.SpawnFlags.SEARCH_PATH,    // enables PATH
+        null                            // child_setup (func)
+    );
+    
+    let stdout = new Gio.DataInputStream({
+        base_stream: new Gio.UnixInputStream({ fd: proc[3] })
+    });
+    let [result, length] = stdout.read_line(null);
+    stdout.close(null);
+    
+    return (result !== null);
+};
+
+
+/**
  * Generate a Private Key and TLS Certificate
  */
 function generateEncryption () {
