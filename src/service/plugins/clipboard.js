@@ -61,20 +61,22 @@ var Plugin = new Lang.Class({
         }
         
         this._clipboard.connect("owner-change", () => {
-            this._clipboard.request_text(Lang.bind(this, this.update));
+            if (this.settings.get_boolean("send-content")) {
+                this._clipboard.request_text(Lang.bind(this, this.send));
+            }
         });
     },
     
     handlePacket: function (packet) {
         Common.debug("Clipboard: handlePacket()");
         
-        if (packet.body.hasOwnProperty("content")) {
+        if (packet.body.content && this.settings.get_boolean("receive-content")) {
             this._clipboard.set_text(packet.body.content, -1);
         }
     },
     
-    update: function (clipboard, text) {
-        Common.debug("Clipboard: update()");
+    send: function (clipboard, text) {
+        Common.debug("Clipboard: send()");
         
         let packet = new Protocol.Packet({
             id: 0,
@@ -89,6 +91,26 @@ var Plugin = new Lang.Class({
         GObject.signal_handlers_destroy(this._clipboard);
     
         PluginsBase.Plugin.prototype.destroy.call(this);
+    }
+});
+
+
+var SettingsDialog = new Lang.Class({
+    Name: "GSConnectClipboardSettingsDialog",
+    Extends: PluginsBase.SettingsDialog,
+    
+    _init: function (device, name, window) {
+        this.parent(device, name, window);
+        
+        let generalSection = this.content.addSection(
+            null,
+            null,
+            { margin_bottom: 0, width_request: -1 }
+        );
+        generalSection.addGSetting(this.settings, "receive-content");
+        generalSection.addGSetting(this.settings, "send-content");
+        
+        this.content.show_all();
     }
 });
 

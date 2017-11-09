@@ -76,6 +76,18 @@
       <description></description>
     </key>
   </schema>
+  <schema id="org.gnome.shell.extensions.gsconnect.plugin.clipboard">
+    <key name="receive-content" type="b">
+      <default>true</default>
+      <summary>Receive Content</summary>
+      <description></description>
+    </key>
+    <key name="send-content" type="b">
+      <default>true</default>
+      <summary>Send Content</summary>
+      <description></description>
+    </key>
+  </schema>
   <schema id="org.gnome.shell.extensions.gsconnect.plugin.notification">
     <key name="receive-notifications" type="b">
       <default>true</default>
