@@ -100,22 +100,6 @@ var Stream = new Lang.Class({
 var Mixer = new Lang.Class({
     Name: "GSConnectSoundMixer",
     Extends: GObject.Object,
-    Properties: {
-        "muted": GObject.ParamSpec.boolean(
-            "muted",
-            "SinkMuted",
-            "Default Sink Muted",
-            GObject.ParamFlags.READWRITE,
-            false
-        ),
-        "volume": GObject.ParamSpec.int(
-            "volume",
-            "SinkVolume",
-            "Default Sink Volume",
-            GObject.ParamFlags.READABLE,
-            0
-        )
-    },
     
     _init: function () {
         this.parent();
