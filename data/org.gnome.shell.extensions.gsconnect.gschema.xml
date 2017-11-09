@@ -133,6 +133,16 @@
     </key>
   </schema>
   <schema id="org.gnome.shell.extensions.gsconnect.plugin.telephony">
+    <key name="volume-action" type="s">
+      <default>"fade"</default>
+      <summary>Adjust Volume</summary>
+      <description></description>
+    </key>
+    <key name="volume-event" type="s">
+      <default>"ringing"</default>
+      <summary>Adjust Volume</summary>
+      <description></description>
+    </key>
     <key name="pause-music" type="s">
       <default>"never"</default>
       <summary>Pause Music</summary>

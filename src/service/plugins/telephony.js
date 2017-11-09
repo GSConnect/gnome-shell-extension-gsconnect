@@ -30,6 +30,7 @@ function getPath() {
 imports.searchPath.push(getPath());
 
 const Common = imports.common;
+const Sound = imports.sound;
 const Protocol = imports.service.protocol;
 const PluginsBase = imports.service.plugins.base;
 const TelephonyWidget = imports.widgets.telephony;
@@ -50,7 +51,6 @@ var METADATA = {
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/telephony
  *
  * TODO: track notifs: isCancel events, append new messages to unacknowledged?
- *       mute/unmute: pactl set-sink-mute @DEFAULT_SINK@ 1/0
  */
 var Plugin = new Lang.Class({
     Name: "GSConnectTelephonyPlugin",
@@ -96,6 +96,8 @@ var Plugin = new Lang.Class({
         
         this._cache = new ContactsCache();
         
+        this._mixer = new Sound.Mixer();
+        this._lastVolume = 0;
         this._pausedPlayer = false;
     },
     
@@ -193,8 +195,12 @@ var Plugin = new Lang.Class({
             notif
         );
         
-        if (this.settings.get_string("pause-music") === "ringing") {
+        if (this.settings.get_string("pause-music") === packet.body.event) {
             this._pauseMusic();
+        }
+        
+        if (this.settings.get_string("volume-event") === packet.body.event) {
+            this._adjustVolume();
         }
     },
     
@@ -270,8 +276,12 @@ var Plugin = new Lang.Class({
             notif
         );
         
-        if (this.settings.get_string("pause-music") === "talking") {
+        if (this.settings.get_string("pause-music") === packet.body.event) {
             this._pauseMusic();
+        }
+        
+        if (this.settings.get_string("volume-event") === packet.body.event) {
+            this._adjustVolume();
         }
     },
     
@@ -299,6 +309,24 @@ var Plugin = new Lang.Class({
         return window;
     },
     
+    _adjustVolume: function () {
+        if (this.settings.get_string("volume-action") === "fade") {
+            this._lastVolume = Number(this._mixer.output.volume);
+            this._mixer.output.lower(0.15);
+        } else {
+            this._mixer.output.muted = true;
+        }
+    },
+    
+    _restoreVolume: function () {
+        if (this.settings.get_string("volume-action") === "fade") {
+            this._mixer.output.raise(this._lastVolume);
+            this._lastVolume = 0;
+        } else {
+            this._mixer.output.muted = false;
+        }
+    },
+    
     _pauseMusic: function () {
         Common.debug("Telephony: _pauseMusic()");
         
@@ -308,7 +336,6 @@ var Plugin = new Lang.Class({
             for (let player of plugin._players.values()) {
                 if (player.PlaybackStatus === "Playing" && player.CanPause) {
                     player.PauseSync();
-                    
                     this._pausedPlayer = player;
                 }
             }
@@ -346,6 +373,7 @@ var Plugin = new Lang.Class({
         // TODO: unpause for correct event (see what kdeconnect does)
         if (packet.body.isCancel) {
             this._unpauseMusic();
+            this._restoreVolume();
             this.device.daemon.withdraw_notification(
                 this.device.id + ":" + packet.body.event + ":" + packet.body.phoneNumber
             );
@@ -786,6 +814,51 @@ var SettingsDialog = new Lang.Class({
             null,
             { margin_bottom: 0, width_request: -1 }
         );
+        
+        let volumeRow = mediaSection.addRow();
+        
+        let volumeLabel = new Gtk.Label({
+            label: _("Adjust Volume"),
+            can_focus: false,
+            xalign: 0,
+            hexpand: true,
+            valign: Gtk.Align.CENTER,
+            vexpand: true
+        });
+        volumeRow.grid.attach(volumeLabel, 0, 0, 1, 1);
+        
+        let volumeActionComboBox = new Gtk.ComboBoxText({
+            visible: true,
+            can_focus: true,
+            halign: Gtk.Align.END,
+            valign: Gtk.Align.CENTER
+        });
+        volumeActionComboBox.append("fade", _("Fade"));
+        volumeActionComboBox.append("mute", _("Mute"));
+        this.settings.bind(
+            "volume-action",
+            volumeActionComboBox,
+            "active-id",
+            Gio.SettingsBindFlags.DEFAULT
+        );
+        volumeRow.grid.attach(volumeActionComboBox, 1, 0, 1, 1);
+        
+        let volumeEventComboBox = new Gtk.ComboBoxText({
+            visible: true,
+            can_focus: true,
+            halign: Gtk.Align.END,
+            valign: Gtk.Align.CENTER
+        });
+        volumeEventComboBox.append("never", _("Never"));
+        volumeEventComboBox.append("ringing", _("Incoming Calls"));
+        volumeEventComboBox.append("talking", _("In Progress Calls"));
+        this.settings.bind(
+            "volume-event",
+            volumeEventComboBox,
+            "active-id",
+            Gio.SettingsBindFlags.DEFAULT
+        );
+        volumeRow.grid.attach(volumeEventComboBox, 2, 0, 1, 1);
         
         let pauseMusicComboBox = new Gtk.ComboBoxText({
             visible: true,
