@@ -16,6 +16,7 @@ extension_source = files(
   # non-standard files
   'src/client.js',
   'src/common.js',
+  'src/sound.js',
   # non-GJS files
   'src/nautilus-gsconnect.py',
   'src/folks-cache.py'
