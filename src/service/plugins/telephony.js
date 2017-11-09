@@ -784,7 +784,7 @@ var ContactsCache = new Lang.Class({
                         this.setContact({
                             name: contact.title,
                             number: phoneNumber.number,
-                            type: phoneNumber.relation_type,
+                            type: phoneNumber.relation_type || "unknown",
                             origin: "google"
                         }, false);
                     }
