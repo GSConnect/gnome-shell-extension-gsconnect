@@ -76,12 +76,10 @@ var METADATA = {
  *    title {string} - The remote's title of the notification
  *    text {string} - The remote's body of the notification
  *
- * TODO: convert themed SVG->PNG for icon uploads?
- *       requestAnswer usage?
+ * TODO: consider allowing clients to handle notifications/use signals
  *       urgency filter (outgoing)?
+ *       convert themed SVG->PNG for icon uploads?
  *       make "shared" notifications clearable (Can KDE Connect even do this?)
- *       consider option for notifications allowing clients to handle them
- *       use signals
  */
 var Plugin = new Lang.Class({
     Name: "GSConnectNotificationsPlugin",
