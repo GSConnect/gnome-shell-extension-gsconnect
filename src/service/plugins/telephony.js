@@ -97,7 +97,9 @@ var Plugin = new Lang.Class({
         this._cache = new ContactsCache();
         
         this._mixer = new Sound.Mixer();
-        this._lastVolume = 0;
+        this._prevVolume = 0;
+        this._prevMute = false;
+        this._prevMicrophone = false;
         this._pausedPlayer = false;
     },
     
@@ -195,13 +197,8 @@ var Plugin = new Lang.Class({
             notif
         );
         
-        if (this.settings.get_string("pause-music") === packet.body.event) {
-            this._pauseMusic();
-        }
-        
-        if (this.settings.get_string("volume-event") === packet.body.event) {
-            this._adjustVolume();
-        }
+        this._adjustVolume(this.settings.get_string("ringing-volume"));
+        this._pauseMedia(this.settings.get_boolean("ringing-pause"));
     },
     
     _handleSms: function (sender, packet) {
@@ -261,6 +258,10 @@ var Plugin = new Lang.Class({
     _handleTalking: function (sender, packet) {
         Common.debug("Telephony: _handleTalking()");
         
+        this.device.daemon.withdraw_notification(
+            this.device.id + ":ringing:" + packet.body.phoneNumber
+        );
+        
         let notif = new Gio.Notification();
         // TRANSLATORS: Talking on the phone
         notif.set_title(_("Call In Progress"));
@@ -276,13 +277,9 @@ var Plugin = new Lang.Class({
             notif
         );
         
-        if (this.settings.get_string("pause-music") === packet.body.event) {
-            this._pauseMusic();
-        }
-        
-        if (this.settings.get_string("volume-event") === packet.body.event) {
-            this._adjustVolume();
-        }
+        this._adjustVolume(this.settings.get_string("talking-volume"));
+        this._muteMicrophone(this.settings.get_boolean("talking-microphone"));
+        this._pauseMedia(this.settings.get_boolean("talking-pause"));
     },
     
     _hasWindow: function (phoneNumber) {
@@ -309,28 +306,56 @@ var Plugin = new Lang.Class({
         return window;
     },
     
-    _adjustVolume: function () {
-        if (this.settings.get_string("volume-action") === "fade") {
-            this._lastVolume = Number(this._mixer.output.volume);
-            this._mixer.output.lower(0.15);
-        } else {
+    _adjustVolume: function (action) {
+        Common.debug("Telephony: _adjustVolume()");
+        
+        if (action === "lower" && !this._prevVolume) {
+            if (this._mixer.output.volume > 0.15) {
+                this._prevVolume = Number(this._mixer.output.volume);
+                this._mixer.output.lower(0.15);
+            }
+        } else if (action === "mute" && !this._mixer.output.muted) {
             this._mixer.output.muted = true;
+            this._prevMute = true;
         }
     },
     
     _restoreVolume: function () {
-        if (this.settings.get_string("volume-action") === "fade") {
-            this._mixer.output.raise(this._lastVolume);
-            this._lastVolume = 0;
-        } else {
+        Common.debug("Telephony: _restoreVolume()");
+        
+        if (this._prevMute) {
             this._mixer.output.muted = false;
+            this._prevMute = false;
+        }
+        
+        if (this._prevVolume > 0) {
+            this._mixer.output.raise(this._prevVolume);
+            this._prevVolume = 0;
         }
     },
     
-    _pauseMusic: function () {
-        Common.debug("Telephony: _pauseMusic()");
+    _muteMicrophone: function (mute) {
+        Common.debug("Telephony: _muteMicrophone()");
         
-        if (this.device._plugins.has("mpris")) {
+        if (mute && !this._mixer.input.muted) {
+            this._mixer.input.muted = true;
+            this._prevMicrophone = true;
+        }
+    },
+    
+    _unmuteMicrophone: function () {
+        Common.debug("Telephony: _unmuteMicrophone()");
+        
+        if (this._prevMicrophone) {
+            this._mixer.input.muted = false;
+            this._prevMicrophone = false;
+        }
+    },
+    
+    _pauseMedia: function (pause) {
+        Common.debug("Telephony: _pauseMedia()");
+        
+        if (pause && this.device._plugins.has("mpris")) {
             let plugin = this.device._plugins.get("mpris");
             
             for (let player of plugin._players.values()) {
@@ -342,7 +367,9 @@ var Plugin = new Lang.Class({
         }
     },
     
-    _unpauseMusic: function () {
+    _resumeMedia: function () {
+        Common.debug("Telephony: _resumeMedia()");
+        
         if (this._pausedPlayer) {
             this._pausedPlayer.PlaySync();
             this._pausedPlayer = false;
@@ -370,9 +397,9 @@ var Plugin = new Lang.Class({
         }
         
         // Event handling
-        // TODO: unpause for correct event (see what kdeconnect does)
         if (packet.body.isCancel) {
-            this._unpauseMusic();
+            this._resumeMedia();
+            this._unmuteMicrophone();
             this._restoreVolume();
             this.device.daemon.withdraw_notification(
                 this.device.id + ":" + packet.body.event + ":" + packet.body.phoneNumber
@@ -809,77 +836,65 @@ var SettingsDialog = new Lang.Class({
     _init: function (device, name, window) {
         this.parent(device, name, window);
         
-        let mediaSection = this.content.addSection(
+        let ringingSection = this.content.addSection(
+            _("Incoming Calls"),
             null,
+            { width_request: -1 }
+        );
+        
+        let ringingVolume = new Gtk.ComboBoxText({
+            visible: true,
+            can_focus: true,
+            halign: Gtk.Align.END,
+            valign: Gtk.Align.CENTER
+        });
+        ringingVolume.append("nothing", _("Nothing"));
+        ringingVolume.append("lower", _("Lower"));
+        ringingVolume.append("mute", _("Mute"));
+        this.settings.bind(
+            "ringing-volume",
+            ringingVolume,
+            "active-id",
+            Gio.SettingsBindFlags.DEFAULT
+        );
+        ringingSection.addSetting(_("System Volume"), null, ringingVolume);
+        let ringingMedia = ringingSection.addGSetting(this.settings, "ringing-pause");
+        
+        let talkingSection = this.content.addSection(
+            _("In Progress Calls"),
             null,
             { margin_bottom: 0, width_request: -1 }
         );
         
-        let volumeRow = mediaSection.addRow();
-        
-        let volumeLabel = new Gtk.Label({
-            label: _("Adjust Volume"),
-            can_focus: false,
-            xalign: 0,
-            hexpand: true,
-            valign: Gtk.Align.CENTER,
-            vexpand: true
-        });
-        volumeRow.grid.attach(volumeLabel, 0, 0, 1, 1);
-        
-        let volumeActionComboBox = new Gtk.ComboBoxText({
+        let talkingVolume = new Gtk.ComboBoxText({
             visible: true,
             can_focus: true,
             halign: Gtk.Align.END,
             valign: Gtk.Align.CENTER
         });
-        volumeActionComboBox.append("fade", _("Fade"));
-        volumeActionComboBox.append("mute", _("Mute"));
+        talkingVolume.append("nothing", _("Nothing"));
+        talkingVolume.append("lower", _("Lower"));
+        talkingVolume.append("mute", _("Mute"));
         this.settings.bind(
-            "volume-action",
-            volumeActionComboBox,
+            "talking-volume",
+            talkingVolume,
             "active-id",
             Gio.SettingsBindFlags.DEFAULT
         );
-        volumeRow.grid.attach(volumeActionComboBox, 1, 0, 1, 1);
+        talkingSection.addSetting(_("System Volume"), null, talkingVolume);
         
-        let volumeEventComboBox = new Gtk.ComboBoxText({
-            visible: true,
-            can_focus: true,
-            halign: Gtk.Align.END,
-            valign: Gtk.Align.CENTER
-        });
-        volumeEventComboBox.append("never", _("Never"));
-        volumeEventComboBox.append("ringing", _("Incoming Calls"));
-        volumeEventComboBox.append("talking", _("In Progress Calls"));
-        this.settings.bind(
-            "volume-event",
-            volumeEventComboBox,
-            "active-id",
-            Gio.SettingsBindFlags.DEFAULT
-        );
-        volumeRow.grid.attach(volumeEventComboBox, 2, 0, 1, 1);
+        talkingSection.addGSetting(this.settings, "talking-microphone");
+        let talkingMedia = talkingSection.addGSetting(this.settings, "talking-pause");
         
-        let pauseMusicComboBox = new Gtk.ComboBoxText({
-            visible: true,
-            can_focus: true,
-            halign: Gtk.Align.END,
-            valign: Gtk.Align.CENTER
-        });
-        pauseMusicComboBox.append("never", _("Never"));
-        pauseMusicComboBox.append("ringing", _("Incoming Calls"));
-        pauseMusicComboBox.append("talking", _("In Progress Calls"));
-        this.settings.bind(
-            "pause-music",
-            pauseMusicComboBox,
-            "active-id",
-            Gio.SettingsBindFlags.DEFAULT
-        );
-        mediaSection.addSetting(_("Pause Music"), null, pauseMusicComboBox);
-        
+        //
         if (this.device.plugins.indexOf("mpris") < 0) {
-            pauseMusicComboBox.sensitive = false;
-            pauseMusicComboBox.set_tooltip_markup(
+            ringingMedia.sensitive = false;
+            ringingMedia.set_tooltip_markup(
+                _("The <b>Media Player Control</b> plugin must be enabled")
+            );
+            
+            talkingMedia.sensitive = false;
+            talkingMedia.set_tooltip_markup(
                 _("The <b>Media Player Control</b> plugin must be enabled")
             );
         }
