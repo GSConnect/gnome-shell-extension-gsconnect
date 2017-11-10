@@ -25,10 +25,10 @@ imports.searchPath.push(getPath());
 const Common = imports.common;
 
 
-// Each Gvc.MixerControl is a connection to PulseAudio,
-// so it's better to make it a singleton
-var MIXER = new Gvc.MixerControl({ name: 'GSConnect' });
-MIXER.open();
+// Gvc.MixerControl singleton
+var _mixerControl = new Gvc.MixerControl({ name: "GSConnect" });
+_mixerControl.open();
+
 // GSound.Context singleton
 try {
     var GSound = imports.gi.GSound;
@@ -108,7 +108,7 @@ var Stream = new Lang.Class({
     _init: function (stream) {
         this.parent();
         
-        this._max = MIXER.get_vol_max_norm()
+        this._max = _mixerControl.get_vol_max_norm()
         this._stream = stream;
     },
     
@@ -153,12 +153,9 @@ var Stream = new Lang.Class({
 
 var Mixer = new Lang.Class({
     Name: "GSConnectSoundMixer",
-    Extends: GObject.Object,
     
     _init: function () {
-        this.parent();
-        
-        this._control = MIXER;
+        this._control = _mixerControl;
         
         this._control.connect("default-sink-changed", () => {
             this.output = new Stream(this._control.get_default_sink());
@@ -166,6 +163,13 @@ var Mixer = new Lang.Class({
         
         this._control.connect("default-source-changed", () => {
             this.input = new Stream(this._control.get_default_source());
+        });
+        
+        this._control.connect("state-changed", () => {
+            if (this._control.get_state() == Gvc.MixerControlState.READY) {
+                this.output = new Stream(this._control.get_default_sink());
+                this.input = new Stream(this._control.get_default_source());
+            }
         });
         
         this.output = new Stream(this._control.get_default_sink());
