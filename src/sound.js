@@ -4,6 +4,7 @@
 const Lang = imports.lang;
 
 const Gio = imports.gi.Gio;
+const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Tweener = imports.tweener.tweener;
 
@@ -28,6 +29,60 @@ const Common = imports.common;
 // so it's better to make it a singleton
 var MIXER = new Gvc.MixerControl({ name: 'GSConnect' });
 MIXER.open();
+// GSound.Context singleton
+try {
+    var GSound = imports.gi.GSound;
+    var _gsoundContext = new GSound.Context();
+    _gsoundContext.init(null);
+} catch (e) {
+    Common.debug("Sound: failed to initialize GSound: " + e);
+    var _gsoundContext = undefined;
+}
+
+
+function playThemeSound (name) {
+    if (_gsoundContext) {
+        _gsoundContext.play_simple({ "event.id" : name }, null);
+        return true;
+    } else if (Common.checkCommand("canberra-gtk-play")) {
+        GLib.spawn_command_line_async("canberra-gtk-play -i " + name);
+        return true;
+    }
+    
+    return false;
+};
+
+
+function loopThemeSound (name, cancellable) {
+    if (_gsoundContext) {
+        _gsoundContext.play_full(
+            { "event.id" : name },
+            cancellable,
+            (source, res) => {
+                try {
+                    source.play_full_finish(res);
+                    loopThemeSound(name, cancellable);
+                } catch (e) {
+                }
+            }
+        );
+    } else if (Common.checkCommand("canberra-gtk-play")) {
+        let [ok, pid] = GLib.spawn_async(
+            null,
+            ["canberra-gtk-play", "-i", name],
+            null,
+            GLib.SpawnFlags.SEARCH_PATH | GLib.SpawnFlags.DO_NOT_REAP_CHILD,
+            null
+        );
+        GLib.child_watch_add(GLib.PRIORITY_DEFAULT, pid, () => {
+            if (!cancellable.is_cancelled()) {
+                loopThemeSound(name, cancellable);
+            }
+        });
+    }
+    
+    return false;
+};
 
 
 var Stream = new Lang.Class({
