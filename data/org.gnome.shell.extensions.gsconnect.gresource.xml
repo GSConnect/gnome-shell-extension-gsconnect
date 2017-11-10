@@ -12,6 +12,7 @@
     <file compressed="true" preprocess="xml-stripblanks">gsconnect-symbolic.svg</file>
     <!-- Status Icon Fallbacks c/o Numix -->
     <file compressed="true" preprocess="xml-stripblanks">computer.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks">laptop.svg</file>
     <file compressed="true" preprocess="xml-stripblanks">laptop-connected.svg</file>
     <file compressed="true" preprocess="xml-stripblanks">laptop-disconnected.svg</file>
     <file compressed="true" preprocess="xml-stripblanks">laptop-symbolic.svg</file>

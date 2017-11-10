@@ -489,7 +489,7 @@ var DeviceMetadata = {
     },
     laptop: {
         type: _("Laptop"),
-        icon: "computer",
+        icon: "laptop",
         symbolic_icon: "laptop-symbolic",
         unpaired_icon: "laptop-disconnected"
     },
