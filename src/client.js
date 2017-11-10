@@ -419,7 +419,7 @@ var Device = new Lang.Class({
     unpair: function () { this._call("unpair", true); },
     
     ping: function () { this.ping._call("ping", true); },
-    ring: function () { this.findmyphone._call("ring", true); },
+    find: function () { this.findmyphone._call("find", true); },
     shareDialog: function () { this.share._call("shareDialog", true); },
     shareUri: function (uri) { this.share._call("shareUri", true, uri); },
     

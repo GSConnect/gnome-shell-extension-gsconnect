@@ -49,7 +49,7 @@ var Plugin = new Lang.Class({
         // This should never be called since there is no incoming packet
     },
     
-    ring: function () {
+    find: function () {
         Common.debug("FindMyPhone: ring()");
         
         if (this.device.connected && this.device.paired) {

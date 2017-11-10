@@ -361,9 +361,7 @@ var Daemon = new Lang.Class({
             let device = this._devices.get(dbusPath);
             
             if (device._plugins.has("findmyphone")) {
-                let plugin = device._plugins.get("findmyphone");
-                
-                plugin.ring();
+                device._plugins.get("findmyphone").find();
             }
         }
     },

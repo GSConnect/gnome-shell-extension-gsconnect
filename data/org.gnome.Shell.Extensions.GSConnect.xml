@@ -60,7 +60,7 @@
   
   <!-- FindMyPhone -->
   <interface name="org.gnome.Shell.Extensions.GSConnect.Plugin.FindMyPhone">
-    <method name="ring"/>
+    <method name="find"/>
   </interface>
   
   <!-- Mousepad -->

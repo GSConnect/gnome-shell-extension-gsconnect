@@ -405,7 +405,7 @@ var DeviceMenu = new Lang.Class({
     _findAction: function (button) {
         Common.debug("extension.DeviceMenu._findAction()");
         this._getTopMenu().close(true);
-        this.device.ring();
+        this.device.find();
     },
     
     _shareAction: function (button) {
