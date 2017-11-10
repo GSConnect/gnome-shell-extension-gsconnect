@@ -5,7 +5,9 @@ const Lang = imports.lang;
 const Gettext = imports.gettext.domain("gsconnect");
 const _ = Gettext.gettext;
 
+const Gdk = imports.gi.Gdk;
 const Gio = imports.gi.Gio;
+const Gtk = imports.gi.Gtk;
 
 // Local Imports
 function getPath() {
@@ -18,6 +20,7 @@ function getPath() {
 imports.searchPath.push(getPath());
 
 const Common = imports.common;
+const Sound = imports.sound;
 const Protocol = imports.service.protocol;
 const PluginsBase = imports.service.plugins.base;
 
@@ -27,7 +30,7 @@ var METADATA = {
     description: _("Find a device by making it ring"),
     dbusInterface: "org.gnome.Shell.Extensions.GSConnect.Plugin.FindMyPhone",
     schemaId: "org.gnome.shell.extensions.gsconnect.plugin.findmyphone",
-    incomingPackets: [],
+    incomingPackets: ["kdeconnect.findmyphone.request"],
     outgoingPackets: ["kdeconnect.findmyphone.request"]
 };
 
@@ -42,11 +45,53 @@ var Plugin = new Lang.Class({
     
     _init: function (device) {
         this.parent(device, "findmyphone");
+        
+        this._cancellable = null;
+        this._dialog = null;
+    },
+    
+    _ring: function () {
+        Common.debug("FindMyPhone: _ring()");
+        
+        if (this._cancellable || this._dialog) { return; }
+        
+        this._cancellable = new Gio.Cancellable();
+        Sound.loopThemeSound("phone-incoming-call", this._cancellable);
+        
+        this._dialog = new Gtk.MessageDialog({
+            text: _("Locate Device"),
+            secondary_text: _("%s asked to locate this device").format(this.device.name),
+            urgency_hint: true,
+            window_position: Gtk.WindowPosition.CENTER_ALWAYS,
+            application: this.device.daemon,
+            skip_pager_hint: true,
+            skip_taskbar_hint: true
+        });
+        this._dialog.connect("delete-event", () => { this._closeDialog(); });
+        this._dialog.connect("key-press-event", (dialog, event, user_data) => {
+            if (event.get_keyval()[1] === Gdk.KEY_Escape) {
+                this._closeDialog();
+            }
+        });
+        this._dialog.add_button(_("Found"), -4).connect("clicked", () => {
+            this._closeDialog();
+        });
+        this._dialog.set_keep_above(true);
+        this._dialog.show();
+        this._dialog.present();
+    },
+    
+    _closeDialog: function () {
+        this._cancellable.cancel();
+        this._cancellable = null;
+        this._dialog.destroy()
+        this._dialog = null;
     },
     
     handlePacket: function (packet) {
         Common.debug("FindMyPhone: handlePacket()");
-        // This should never be called since there is no incoming packet
+        
+        this._ring();
     },
     
     find: function () {
@@ -61,6 +106,14 @@ var Plugin = new Lang.Class({
             
             this.device._channel.send(packet);
         }
+    },
+    
+    destroy: function () {
+        if (this._cancellable || this._dialog) {
+            this._closeDialog();
+        }
+        
+        PluginsBase.Plugin.prototype.destroy.call(this);
     }
 });
 
