@@ -150,30 +150,8 @@ var Daemon = new Lang.Class({
     },
     
     /**
-     * Identity functions
+     * Build and return an identity packet for the local device
      */
-    _getDeviceType: function () {
-        let proc = GLib.spawn_async_with_pipes(
-            null,                                       // working dir
-            ["cat", "/sys/class/dmi/id/chassis_type"],  // argv
-            null,                                       // envp
-            GLib.SpawnFlags.SEARCH_PATH,                // enables PATH
-            null                                        // child_setup (func)
-        );
-        
-        let stdout = new Gio.DataInputStream({
-            base_stream: new Gio.UnixInputStream({ fd: proc[3] })
-        });
-        let chassisInt = stdout.read_line(null)[0].toString();
-        stdout.close(null);
-        
-        if (["8", "9", "10", "14"].indexOf(chassisInt) > -1) {
-            return "laptop";
-        } else {
-            return "desktop";
-        }
-    },
-    
     _getIdentityPacket: function () {
         let packet = new Protocol.Packet({
             id: 0,
@@ -181,7 +159,7 @@ var Daemon = new Lang.Class({
             body: {
                 deviceId: this.certificate.get_common_name(),
                 deviceName: Common.Settings.get_string("public-name"),
-                deviceType: this._getDeviceType(),
+                deviceType: Common.getDeviceType(),
                 tcpPort: this.udpListener.socket.local_address.port,
                 protocolVersion: 7,
                 incomingCapabilities: [],

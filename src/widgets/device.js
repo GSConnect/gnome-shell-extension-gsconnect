@@ -77,13 +77,8 @@ var PluginControl = new Lang.Class({
     
     _refresh: function () {
         this._freeze = true;
-        
-        if (this.device.settings.get_strv("enabled-plugins").indexOf(this.name) > -1) {
-            this.pluginSwitch.active = true;
-        } else {
-            this.pluginSwitch.active = false;
-        }
-        
+        let enabledPlugins = this.device.settings.get_strv("enabled-plugins");
+        this.pluginSwitch.active = (enabledPlugins.indexOf(this.name) > -1);
         this._freeze = false;
     },
     
@@ -191,6 +186,8 @@ var Stack = new Lang.Class({
     },
     
     _addDaemon: function () {
+        let metadata = DeviceMetadata[Common.getDeviceType()];
+        
         // Default Sidebar Entry
         this.defaultRow = new PreferencesWidget.Row({
             height_request: -1,
@@ -199,7 +196,7 @@ var Stack = new Lang.Class({
         this.defaultRow.device = { id: "default" };
         
         let icon = new Gtk.Image({
-            icon_name: "computer-symbolic",
+            icon_name: metadata.symbolic_icon,
             pixel_size: 16
         });
         this.defaultRow.grid.attach(icon, 0, 0, 1, 1);
@@ -485,7 +482,7 @@ var DeviceMetadata = {
         type: _("Desktop"),
         icon: "computer",
         symbolic_icon: "computer-symbolic",
-        unpaired_icon: "computer-disconnected"
+        unpaired_icon: "desktop-disconnected"
     },
     laptop: {
         type: _("Laptop"),
@@ -509,7 +506,7 @@ var DeviceMetadata = {
         type: _("Unknown"),
         icon: "computer",
         symbolic_icon: "computer-symbolic",
-        unpaired_icon: "computer-disconnected"
+        unpaired_icon: "desktop-disconnected"
     }
 };
 

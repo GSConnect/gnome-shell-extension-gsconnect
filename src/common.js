@@ -126,7 +126,8 @@ function debug(msg) {
 
 
 /**
- * Common command-line programs
+ * Check if a command is in the PATH
+ * @param {string} name - the name of the command
  */
 function checkCommand (name) {
     let proc = GLib.spawn_async_with_pipes(
@@ -144,6 +145,32 @@ function checkCommand (name) {
     stdout.close(null);
     
     return (result !== null);
+};
+
+
+/**
+ * Return whether the local devices is a laptop or desktop
+ */
+function getDeviceType () {
+    let proc = GLib.spawn_async_with_pipes(
+        null,                                       // working dir
+        ["cat", "/sys/class/dmi/id/chassis_type"],  // argv
+        null,                                       // envp
+        GLib.SpawnFlags.SEARCH_PATH,                // enables PATH
+        null                                        // child_setup (func)
+    );
+    
+    let stdout = new Gio.DataInputStream({
+        base_stream: new Gio.UnixInputStream({ fd: proc[3] })
+    });
+    let chassisInt = stdout.read_line(null)[0].toString();
+    stdout.close(null);
+    
+    if (["8", "9", "10", "14"].indexOf(chassisInt) > -1) {
+        return "laptop";
+    } else {
+        return "desktop";
+    }
 };
 
 
