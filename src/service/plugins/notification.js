@@ -198,10 +198,14 @@ var Plugin = new Lang.Class({
         }
         
         if (!icon) {
+            let name = packet.body.appName.toLowerCase().replace(" ", "-");
+                
             if (packet.body.id.indexOf("sms") > -1) {
                 icon = new Gio.ThemedIcon({ name: "sms-symbolic" });
             } else if (title === _("Missed call")) {
                 icon = new Gio.ThemedIcon({ name: "call-missed-symbolic" });
+            } else if (Gtk.IconTheme.get_default().has_icon(name)) {
+                icon = new Gio.ThemedIcon({ name: name });
             } else {
                 icon = new Gio.ThemedIcon({ name: "phone-symbolic" });
             }
