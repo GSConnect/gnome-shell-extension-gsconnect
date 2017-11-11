@@ -332,17 +332,18 @@ var Page = new Lang.Class({
         
         // Info Section // Name and Type Labels
         let nameLabel = new Gtk.Label({
-            label: device.name,
+            label: "<b><big>" + device.name + "</big></b>",
             hexpand: true,
-            xalign: 0,
-            yalign: 0.75
+            use_markup: true,
+            valign: Gtk.Align.END,
+            xalign: 0
         });
         statusRow.grid.attach(nameLabel, 1, 0, 1, 1);
         let typeLabel = new Gtk.Label({
             label: metadata.type,
             hexpand: true,
-            xalign: 0,
-            yalign: 0.25
+            valign: Gtk.Align.START,
+            xalign: 0
         });
         typeLabel.get_style_context().add_class("dim-label");
         statusRow.grid.attach(typeLabel, 1, 1, 1, 1);
