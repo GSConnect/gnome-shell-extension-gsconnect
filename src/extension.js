@@ -481,8 +481,8 @@ var DeviceIndicator = new Lang.Class({
         }
         
         // Indicator Icon
+        // TODO: desktop-* icons not rendering, fallback being used
         let icon = (type === "phone") ? "smartphone" : type;
-        icon = (type === "desktop") ? "laptop" : icon;
         icon = (type === "unknown") ? "laptop" : icon;
         
         if (paired && connected) {
