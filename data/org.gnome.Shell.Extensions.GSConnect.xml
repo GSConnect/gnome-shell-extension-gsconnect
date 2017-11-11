@@ -4,7 +4,6 @@
     <property type="as" name="devices" access="read"/>
     <property type="b" name="discovering" access="readwrite"/>
     <property type="s" name="fingerprint" access="read"/>
-    <property type="s" name="name" access="readwrite"/>
     <property type="s" name="type" access="read"/>
     
     <method name="broadcast"/>

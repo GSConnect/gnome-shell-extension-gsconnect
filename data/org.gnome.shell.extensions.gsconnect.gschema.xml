@@ -29,11 +29,6 @@
       <summary>Nautilus Integration</summary>
       <description>Send files from the file browser context menu</description>
     </key>
-    <key name="public-name" type="s">
-      <default>"GSConnect"</default>
-      <summary>Public Name</summary>
-      <description>The name visible to other devices</description>
-    </key>
   </schema>
   <schema id="org.gnome.shell.extensions.gsconnect.device">
     <key name="certificate-pem" type="s">
