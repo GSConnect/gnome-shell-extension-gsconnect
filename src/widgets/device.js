@@ -227,11 +227,17 @@ var Stack = new Lang.Class({
         let serviceSection = page.addSection(null, null, { width_request: -1 });
         serviceSection.addGSetting(Common.Settings, "public-name");
         
-        let helpSection = page.addSection(_("Connecting Devices"), null, { width_request: -1 });
+        let helpSection = page.addSection(
+            _("Connecting Devices"),
+            null,
+            { margin_bottom: 0, width_request: -1 }
+        );
         let defaultPageLabel = new Gtk.Label({
-            label: _("Ensure that devices are on the same local network with ports 1716 to 1764 open for TCP and UDP connections.\n\n") +
-                   _("To connect an Android device, install the KDE Connect Android app from the <a href=\"https://play.google.com/store/apps/details?id=org.kde.kdeconnect_tp\">Google Play Store</a> or <a href=\"https://f-droid.org/repository/browse/?fdid=org.kde.kdeconnect_tp\">F-Droid</a>.\n\n") +
-                   _("Please see the <a href=\"https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki\">Wiki</a> for more help or <a href =\"https://github.com/andyholmes/gnome-shell-extension-gsconnect/issues\">open an issue</a> on Github to report a problem."),
+            label: _("Ensure that devices are on the same local network with ports 1716 to 1764 open for TCP and UDP connections.") +
+                   "\n\n" +
+                   _('To connect an Android device, install the KDE Connect Android app from the <a href="https://play.google.com/store/apps/details?id=org.kde.kdeconnect_tp">Google Play Store</a> or <a href="https://f-droid.org/repository/browse/?fdid=org.kde.kdeconnect_tp">F-Droid</a>.') +
+                   "\n\n" +
+                   _('Please see the <a href="https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki">Wiki</a> for more help or <a href="https://github.com/andyholmes/gnome-shell-extension-gsconnect/issues">open an issue</a> on Github to report a problem.'),
             wrap: true,
             use_markup: true,
             vexpand: true,
