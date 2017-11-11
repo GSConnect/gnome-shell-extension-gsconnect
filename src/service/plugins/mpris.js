@@ -129,9 +129,7 @@ var Plugin = new Lang.Class({
                     "/org/mpris/MediaPlayer2" 
                 );
                 
-                // TODO: this is pretty lazy, we just resend everything if
-                //       anything changes
-                //       position is not updating (might not matter though)
+                // TODO: resending everything if anything changes
                 player.connect("g-properties-changed", () => {
                     let packet = new Protocol.Packet({
                         id: 0,
@@ -210,7 +208,6 @@ var Plugin = new Lang.Class({
             player.SeekSync(packet.body.Seek);
         }
         
-        // TODO: how to check this?
         if (packet.body.hasOwnProperty("SetPosition")) {
             let position = (packet.body.SetPosition * 1000) - player.Position;
             player.SeekSync(position);
