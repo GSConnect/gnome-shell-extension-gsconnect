@@ -502,7 +502,7 @@ var LanChannel = new Lang.Class({
         
         try {
             if (this._listener) {
-                this._listener.close(null);
+                this._listener.close();
             }
         } catch (e) {
             log("error closing listener: " + e);
