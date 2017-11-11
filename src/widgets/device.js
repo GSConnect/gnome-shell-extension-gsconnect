@@ -200,7 +200,13 @@ var Stack = new Lang.Class({
             pixel_size: 16
         });
         this.defaultRow.grid.attach(icon, 0, 0, 1, 1);
-        let nameLabel = new Gtk.Label({ label: GLib.get_host_name() });
+        let nameLabel = new Gtk.Label({ label: "" });
+        Common.Settings.bind(
+            "public-name",
+            nameLabel,
+            "label",
+            Gio.SettingsBindFlags.DEFAULT
+        );
         this.defaultRow.grid.attach(nameLabel, 1, 0, 1, 1);
         this.sidebar.add(this.defaultRow);
         
@@ -217,6 +223,9 @@ var Stack = new Lang.Class({
         let page = new PreferencesWidget.Page();
         page.box.margin_left = 36;
         page.box.margin_right = 36;
+        
+        let serviceSection = page.addSection(null, null, { width_request: -1 });
+        serviceSection.addGSetting(Common.Settings, "public-name");
         
         let helpSection = page.addSection(
             _("Connecting Devices"),

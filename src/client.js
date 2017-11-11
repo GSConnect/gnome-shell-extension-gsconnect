@@ -528,6 +528,13 @@ var Daemon = new Lang.Class({
             GObject.ParamFlags.READABLE,
             ""
         ),
+        "name": GObject.ParamSpec.string(
+            "name",
+            "DeviceName",
+            "The host's device name",
+            GObject.ParamFlags.READABLE,
+            ""
+        ),
         "type": GObject.ParamSpec.string(
             "type",
             "DeviceType",
@@ -573,6 +580,8 @@ var Daemon = new Lang.Class({
     get discovering () { return this._get("discovering") === true; },
     set discovering (bool) { this._set("discovering", bool); },
     get fingerprint () { return this._get("fingerprint"); },
+    get name () { return this._get("name"); },
+    set name (name) { this._set("name", name); },
     get type () { return this._get("type"); },
     
     // Callbacks

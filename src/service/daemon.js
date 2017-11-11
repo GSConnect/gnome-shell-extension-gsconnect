@@ -31,6 +31,13 @@ var Daemon = new Lang.Class({
     Name: "GSConnectDaemon",
     Extends: Gtk.Application,
     Properties: {
+        "name": GObject.ParamSpec.string(
+            "name",
+            "DeviceName",
+            "The name announced to the network",
+            GObject.ParamFlags.READWRITE,
+            "GSConnect"
+        ),
         "certificate": GObject.ParamSpec.object(
             "certificate",
             "TlsCertificate",
@@ -110,6 +117,17 @@ var Daemon = new Lang.Class({
         return this.certificate.fingerprint()
     },
     
+    get name() {
+        return this.identity.body.deviceName;
+    },
+    
+    set name(name) {
+        this.identity.body.deviceName = name;
+        this.notify("name");
+        this._dbus.emit_property_changed("name", new GLib.Variant("s", name));
+        this.broadcast();
+    },
+    
     get type () {
         return this.identity.body.deviceType;
     },
@@ -140,7 +158,7 @@ var Daemon = new Lang.Class({
             type: Protocol.TYPE_IDENTITY,
             body: {
                 deviceId: this.certificate.get_common_name(),
-                deviceName: GLib.get_host_name(),
+                deviceName: Common.Settings.get_string("public-name"),
                 deviceType: Common.getDeviceType(),
                 tcpPort: this.udpListener.socket.local_address.port,
                 protocolVersion: 7,
@@ -585,6 +603,12 @@ var Daemon = new Lang.Class({
         }
         
         this.identity = this._getIdentityPacket();
+        Common.Settings.bind(
+            "public-name",
+            this,
+            "name",
+            Gio.SettingsBindFlags.DEFAULT
+        );
         
         // Monitor network changes
         this._netmonitor = Gio.NetworkMonitor.get_default();
