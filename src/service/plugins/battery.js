@@ -191,6 +191,8 @@ var Plugin = new Lang.Class({
     send: function () {
         Common.debug("Battery: send()");
         
+        if (!this._battery) { return; }
+        
         let packet = new Protocol.Packet({
             id: 0,
             type: "kdeconnect.battery",
