@@ -300,7 +300,7 @@ var Plugin = new Lang.Class({
         let applications = JSON.parse(this.settings.get_string("applications"));
         
         // New application
-        if (!applications.hasOwnProperty(appName)) {
+        if (appName && !applications.hasOwnProperty(appName)) {
             applications[appName] = { iconName: iconName, enabled: true };
             this.settings.set_string(
                 "applications",
