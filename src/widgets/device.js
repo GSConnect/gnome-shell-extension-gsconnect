@@ -389,16 +389,23 @@ var Page = new Lang.Class({
         });
         pairButton.get_style_context().add_class("circular");
         pairButton.connect("clicked", () => {
-            if (this.device.connected && this.device.paired) {
+            if (this.device.paired) {
                 this.device.unpair();
-            } else if (this.device.connected && !this.device.paired) {
-                this.device.pair();
             } else {
-                this.device.activate();
+                this.device.pair();
             }
         });
         this.device.connect("notify", () => {
-            if (this.device.connected && !this.device.paired) {
+            if (this.device.paired) {
+                pairButton.image = new Gtk.Image({
+                    icon_name: "channel-secure-symbolic",
+                    pixel_size: 16
+                });
+                pairButton.set_tooltip_markup(
+                    // TRANSLATORS: eg. Unpair <b>Google Pixel</b>
+                    _("Unpair <b>%s</b>").format(this.device.name)
+                );
+            } else {
                 pairButton.image = new Gtk.Image({
                     icon_name: "channel-insecure-symbolic",
                     pixel_size: 16
@@ -418,15 +425,7 @@ var Page = new Lang.Class({
                     // 00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
                     _("<b>%s Fingerprint:</b>\n%s\n\n<b>Local Fingerprint:</b>\n%s").format(this.device.name, this.device.fingerprint, this.daemon.fingerprint)
                 );
-            } else if (this.device.paired) {
-                pairButton.image = new Gtk.Image({
-                    icon_name: "channel-secure-symbolic",
-                    pixel_size: 16
-                });
-                pairButton.set_tooltip_markup(
-                    // TRANSLATORS: eg. Unpair <b>Google Pixel</b>
-                    _("Unpair <b>%s</b>").format(this.device.name)
-                );
+                pairButton.sensitive = this.device.connected;
             }
         });
         this.device.notify("paired");
