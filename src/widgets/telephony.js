@@ -16,8 +16,7 @@ const Pango = imports.gi.Pango;
 function getPath() {
     // Diced from: https://github.com/optimisme/gjs-examples/
     let m = new RegExp("@(.+):\\d+").exec((new Error()).stack.split("\n")[1]);
-    let p = Gio.File.new_for_path(m[1]).get_parent().get_parent();
-    return p.get_path();
+    return Gio.File.new_for_path(m[1]).get_parent().get_parent().get_path();
 }
 
 imports.searchPath.push(getPath());
@@ -471,6 +470,7 @@ var RecipientList = new Lang.Class({
             valign: Gtk.Align.CENTER
         });
         removeButton.get_style_context().add_class("circular");
+        removeButton.get_style_context().add_class("flat");
         removeButton.connect("clicked", () => {
             this._parent.removeRecipient(recipient);
             this.list.remove(row);
