@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-11-13 00:55-0800\n"
+"POT-Creation-Date: 2017-11-13 08:22-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -347,7 +347,7 @@ msgstr ""
 msgid "Mount and browse device filesystems"
 msgstr ""
 
-#: src/service/plugins/sftp.js:71
+#: src/service/plugins/sftp.js:70
 msgid "SSHFS not installed"
 msgstr ""
 

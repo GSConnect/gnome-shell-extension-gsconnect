@@ -39,8 +39,7 @@ var METADATA = {
  * SFTP Plugin
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/sftp
  *
- * TODO: umount vs fusermount vs -autounmount switch (no fusermount on BSD)
- *       the Android app source that says SSHFS 3.x and causes data corruption
+ * TODO: the Android app source that says SSHFS 3.x and causes data corruption
  */
 var Plugin = new Lang.Class({
     Name: "GSConnectSFTPPlugin",
@@ -230,9 +229,13 @@ var Plugin = new Lang.Class({
             log("SFTP: Error killing sshfs: " + e);
         }
         
-        // See: https://stackoverflow.com/q/24966676/1108697
         if (this._path) {
-            GLib.spawn_command_line_async("fusermount -uz " + this._path);
+            if (Common.checkCommand("fusermount")) {
+                GLib.spawn_command_line_async("fusermount -uz " + this._path);
+            } else {
+                GLib.spawn_command_line_async("umount " + this._path);
+            }
+            
             delete this._path;
             delete this._uid;
             delete this._gid;
