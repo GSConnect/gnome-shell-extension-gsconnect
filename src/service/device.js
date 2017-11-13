@@ -281,7 +281,7 @@ var Device = new Lang.Class({
             
             if (cert.verify(null, this._channel._peer_cert) > 0) {
                 log("Authentication failure: '" + this.name + "'");
-                this._channel.emit("disconnected");
+                this._channel.close();
                 return false;
             }
         }
