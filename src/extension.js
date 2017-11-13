@@ -570,21 +570,6 @@ var SystemIndicator = new Lang.Class({
         
         this.extensionIndicator.visible = (this.daemon);
         
-        this.scanItem = this.extensionMenu.menu.addAction("", () => {
-            this._discoverDevices();
-        });
-        this.daemon.connect("notify::discovering", () => {
-            if (this.daemon.discovering) {
-                this.scanItem.actor.reactive = false;
-                this.scanItem.label.text = _("Discovering Devices");
-            } else {
-                this.scanItem.actor.reactive = true;
-                this.scanItem.label.text = _("Discover Devices");
-            }
-        });
-        this.daemon.notify("discovering");
-        this.extensionMenu.menu.box.set_child_at_index(this.scanItem.actor, 1);
-        
         // Add currently managed devices
         for (let dbusPath of this.daemon.devices.keys()) {
             this._deviceAdded(this.daemon, dbusPath);
@@ -609,8 +594,6 @@ var SystemIndicator = new Lang.Class({
             this.daemon.destroy();
             this.daemon = false;
         }
-        
-        if (this.scanItem) { this.scanItem.destroy(); }
         
         this.extensionIndicator.visible = (this.daemon);
         
@@ -692,26 +675,6 @@ var SystemIndicator = new Lang.Class({
         
         menu.browseButton.checked = !menu.browseButton.checked;
         menu.browseButton.emit("clicked", menu.browseButton);
-    },
-    
-    _discoverDevices: function () {
-        if (this.daemon.discovering) {
-            this.daemon.broadcast();
-        } else {
-            this.daemon.discovering = true;
-            let times = 2;
-            
-            GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, 5, () => {
-                if (times > 0) {
-                    this.daemon.broadcast();
-                    times -= 1;
-                    return this.daemon.discovering;
-                }
-                
-                this.daemon.discovering = false;
-                return false;
-            });
-        }
     },
     
     _openDeviceMenu: function (indicator) {
