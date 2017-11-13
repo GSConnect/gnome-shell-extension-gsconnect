@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-11-11 15:56-0800\n"
+"POT-Creation-Date: 2017-11-13 00:55-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,24 +19,24 @@ msgstr ""
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
 #. TRANSLATORS: Open a new SMS window
-#: src/extension.js:136 src/widgets/device.js:468
+#: src/extension.js:136 src/widgets/device.js:467
 msgid "Send SMS"
 msgstr ""
 
 #. TRANSLATORS: eg. Locate Google Pixel
-#: src/extension.js:143 src/widgets/device.js:470
+#: src/extension.js:143 src/widgets/device.js:469
 #, javascript-format
 msgid "Locate %s"
 msgstr ""
 
 #. TRANSLATORS: Open the device's list of browseable directories
 #: src/extension.js:151 src/service/plugins/sftp.js:29
-#: src/widgets/device.js:472
+#: src/widgets/device.js:471
 msgid "Browse Files"
 msgstr ""
 
 #. TRANSLATORS: Open the file chooser for sending files/links
-#: src/extension.js:158 src/widgets/device.js:474
+#: src/extension.js:158 src/widgets/device.js:473
 msgid "Share File/URL"
 msgstr ""
 
@@ -59,7 +59,7 @@ msgid "Device is disconnected"
 msgstr ""
 
 #. TRANSLATORS: eg. Pair <b>Google Pixel</b>
-#: src/extension.js:333 src/widgets/device.js:408
+#: src/extension.js:333 src/widgets/device.js:415
 #, javascript-format
 msgid "Pair <b>%s</b>"
 msgstr ""
@@ -74,7 +74,7 @@ msgstr ""
 #.
 #. <b>Local Fingerprint:</b>
 #. 00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
-#: src/extension.js:333 src/widgets/device.js:419
+#: src/extension.js:333 src/widgets/device.js:426
 #, javascript-format
 msgid ""
 "<b>%s Fingerprint:</b>\n"
@@ -98,23 +98,15 @@ msgstr ""
 msgid "Mobile Devices"
 msgstr ""
 
-#: src/extension.js:579
-msgid "Discovering Devices"
-msgstr ""
-
-#: src/extension.js:582
-msgid "Discover Devices"
-msgstr ""
-
-#: src/extension.js:794
+#: src/extension.js:757
 msgid "Nautilus extensions changed"
 msgstr ""
 
-#: src/extension.js:795
+#: src/extension.js:758
 msgid "Restart Nautilus to apply changes"
 msgstr ""
 
-#: src/extension.js:800
+#: src/extension.js:763
 msgid "Restart"
 msgstr ""
 
@@ -161,7 +153,7 @@ msgstr ""
 msgid "Appearance"
 msgstr ""
 
-#: src/prefs.js:114 src/widgets/device.js:489
+#: src/prefs.js:114 src/widgets/device.js:488
 msgid "Desktop"
 msgstr ""
 
@@ -508,7 +500,7 @@ msgstr ""
 msgid "Call in progress with %s on %s"
 msgstr ""
 
-#: src/service/plugins/telephony.js:396 src/widgets/telephony.js:455
+#: src/service/plugins/telephony.js:396 src/widgets/telephony.js:454
 msgid "Unknown Number"
 msgstr ""
 
@@ -575,37 +567,37 @@ msgid ""
 msgstr ""
 
 #. TRANSLATORS: eg. Unpair <b>Google Pixel</b>
-#: src/widgets/device.js:428
+#: src/widgets/device.js:406
 #, javascript-format
 msgid "Unpair <b>%s</b>"
 msgstr ""
 
-#: src/widgets/device.js:437
+#: src/widgets/device.js:436
 msgid "Plugins"
 msgstr ""
 
-#: src/widgets/device.js:458
+#: src/widgets/device.js:457
 msgid "Keyboard Shortcuts"
 msgstr ""
 
 #. TRANSLATORS: Open the device menu
-#: src/widgets/device.js:466
+#: src/widgets/device.js:465
 msgid "Open Menu"
 msgstr ""
 
-#: src/widgets/device.js:495
+#: src/widgets/device.js:494
 msgid "Laptop"
 msgstr ""
 
-#: src/widgets/device.js:501
+#: src/widgets/device.js:500
 msgid "Smartphone"
 msgstr ""
 
-#: src/widgets/device.js:507
+#: src/widgets/device.js:506
 msgid "Tablet"
 msgstr ""
 
-#: src/widgets/device.js:513
+#: src/widgets/device.js:512
 msgid "Unknown"
 msgstr ""
 
@@ -626,15 +618,15 @@ msgid ""
 "The requested keyboard shortcut is already in use and can't be overridden."
 msgstr ""
 
-#: src/widgets/telephony.js:242 src/widgets/telephony.js:243
+#: src/widgets/telephony.js:241 src/widgets/telephony.js:242
 msgid "Type a phone number or name"
 msgstr ""
 
-#: src/widgets/telephony.js:406
+#: src/widgets/telephony.js:405
 msgid "Add people to start a conversation"
 msgstr ""
 
-#: src/widgets/telephony.js:446
+#: src/widgets/telephony.js:445
 msgid "Unknown Contact"
 msgstr ""
 
