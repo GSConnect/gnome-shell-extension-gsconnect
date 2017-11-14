@@ -114,10 +114,12 @@
       <arg name="uri" type="s" direction="in"/>
     </method>
     <signal name="received">
-      <arg name="uri" type="s"/>
+      <arg name="type" type="s"/>
+      <arg name="content" type="s"/>
     </signal>
     <signal name="sent">
-      <arg name="uri" type="s"/>
+      <arg name="type" type="s"/>
+      <arg name="content" type="s"/>
     </signal>
   </interface>
   

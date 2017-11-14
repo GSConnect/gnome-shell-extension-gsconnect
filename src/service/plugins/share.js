@@ -42,20 +42,18 @@ var METADATA = {
  *
  * TODO: receiving "text"
  *       expand signals to cover Protocol.Transfer signals
- *       emit signals (and export over DBus)
- *       see if there's a way to do progress bar in the notification...
  */
 var Plugin = new Lang.Class({
     Name: "GSConnectSharePlugin",
     Extends: PluginsBase.Plugin,
     Signals: {
         "sent": {
-            flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED,
-            param_types: [ GObject.TYPE_STRING ]
+            flags: GObject.SignalFlags.RUN_FIRST,
+            param_types: [ GObject.TYPE_STRING, GObject.TYPE_STRING ]
         },
         "received": {
-            flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED,
-            param_types: [ GObject.TYPE_STRING ]
+            flags: GObject.SignalFlags.RUN_FIRST,
+            param_types: [ GObject.TYPE_STRING, GObject.TYPE_STRING ]
         }
     },
     
@@ -156,6 +154,12 @@ var Plugin = new Lang.Class({
                         transfer.notif
                     );
                     
+                    this.emit("received", "file", file.get_uri());
+                    this._dbus.emit_signal(
+                        "received",
+                        new GLib.Variant("(ss)", ["file", file.get_uri()])
+                    );
+                    
                     this.transfers.delete(transfer.id);
                     channel.close();
                 });
@@ -227,8 +231,20 @@ var Plugin = new Lang.Class({
         } else if (packet.body.hasOwnProperty("text")) {
             log("IMPLEMENT: " + packet.toString());
             log("receiving text: '" + packet.body.text + "'");
+                    
+            this.emit("received", "text", packet.body.text);
+            this._dbus.emit_signal(
+                "received",
+                new GLib.Variant("(ss)", ["text", packet.body.text])
+            );
         } else if (packet.body.hasOwnProperty("url")) {
             Gio.AppInfo.launch_default_for_uri(packet.body.url, null);
+                    
+            this.emit("received", "url", packet.body.url);
+            this._dbus.emit_signal(
+                "received",
+                new GLib.Variant("(ss)", ["url", packet.body.url])
+            );
         }
     },
     
@@ -367,6 +383,12 @@ var Plugin = new Lang.Class({
                         transfer.notif
                     );
                     
+                    this.emit("sent", "file", file.get_basename());
+                    this._dbus.emit_signal(
+                        "sent",
+                        new GLib.Variant("(ss)", ["file", file.get_basename()])
+                    );
+                    
                     this.transfers.delete(transfer.id);
                     channel.close();
                 });
@@ -438,6 +460,12 @@ var Plugin = new Lang.Class({
             });
         
             this.device._channel.send(packet);
+                    
+            this.emit("sent", "url", uri);
+            this._dbus.emit_signal(
+                "sent",
+                new GLib.Variant("(ss)", ["url", uri])
+            );
         }
     }
 });
