@@ -62,9 +62,12 @@ var Plugin = new Lang.Class({
             "org.gnome.ScreenSaver",
             "/org/gnome/ScreenSaver"
         );
-        this._screensaver.connectSignal("ActiveChanged", (proxy, sender, [bool]) => {
-            this._response(bool);
-        });
+        this._active = this._screensaver.connectSignal(
+            "ActiveChanged",
+            (proxy, sender, [bool]) => {
+                this._response(bool);
+            }
+        );
     },
     
     get locked () {
@@ -124,6 +127,12 @@ var Plugin = new Lang.Class({
                 new GLib.Variant("b", this._locked)
             );
         }
+    },
+    
+    destroy: function () {
+        this._screensaver.disconnectSignal(this._active);
+        
+        PluginsBase.Plugin.prototype.destroy.call(this);
     }
 });
 
