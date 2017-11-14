@@ -183,6 +183,16 @@ var Stack = new Lang.Class({
                 this.stack.set_visible_child_name(row.device.id);
             }
         });
+        
+        this.sidebar.set_header_func((row, before) => {
+            if (row.get_index() === 1) {
+                row.set_header(
+                    new Gtk.Separator({
+                        orientation: Gtk.Orientation.HORIZONTAL
+                    })
+                );
+            }
+        });
     },
     
     _addDaemon: function () {
@@ -191,6 +201,8 @@ var Stack = new Lang.Class({
         // Default Sidebar Entry
         this.defaultRow = new PreferencesWidget.Row({
             height_request: -1,
+            margin_bottom: 12,
+            margin_top: 12,
             selectable: true
         });
         this.defaultRow.device = { id: "default" };
@@ -209,14 +221,6 @@ var Stack = new Lang.Class({
         );
         this.defaultRow.grid.attach(nameLabel, 1, 0, 1, 1);
         this.sidebar.add(this.defaultRow);
-        
-        let separatorRow = new Gtk.ListBoxRow({
-            can_focus: false,
-            activatable: false,
-            selectable: false
-        });
-        separatorRow.add(new Gtk.Separator());
-        this.sidebar.add(separatorRow);
         
         // Default Page
         // TODO: this could be much better
@@ -257,6 +261,8 @@ var Stack = new Lang.Class({
         // Device Sidebar Entry
         let row = new PreferencesWidget.Row({
             height_request: -1,
+            margin_bottom: 12,
+            margin_top: 12,
             selectable: true
         });
         row.device = device;
