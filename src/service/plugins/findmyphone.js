@@ -53,7 +53,9 @@ var Plugin = new Lang.Class({
     _ring: function () {
         Common.debug("FindMyPhone: _ring()");
         
-        if (this._cancellable || this._dialog) { return; }
+        if (this._cancellable || this._dialog) { 
+            this._closeDialog();
+        }
         
         this._cancellable = new Gio.Cancellable();
         Sound.loopThemeSound("phone-incoming-call", this._cancellable);
