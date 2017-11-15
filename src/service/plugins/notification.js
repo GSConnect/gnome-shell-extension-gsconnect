@@ -213,7 +213,9 @@ var Plugin = new Lang.Class({
             } else if (Gtk.IconTheme.get_default().has_icon(name)) {
                 icon = new Gio.ThemedIcon({ name: name });
             } else {
-                icon = new Gio.ThemedIcon({ name: "phone-symbolic" });
+                icon = new Gio.ThemedIcon({
+                    name: this.device.type + "-symbolic"
+                });
             }
         }
         
