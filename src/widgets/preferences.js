@@ -30,7 +30,11 @@ var Row = new Lang.Class({
             activatable: false,
             can_focus: false,
             selectable: false,
-            height_request: 48
+            height_request: 48,
+            margin_left: 12,
+            margin_top: 8,
+            margin_bottom: 8,
+            margin_right: 12,
         }, params);
     
         this.parent({
@@ -43,10 +47,10 @@ var Row = new Lang.Class({
         this.grid = new Gtk.Grid({
             can_focus: false,
             column_spacing: 12,
-            margin_left: 12,
-            margin_top: 8,
-            margin_bottom: 8,
-            margin_right: 12,
+            margin_left: params.margin_left,
+            margin_top: params.margin_top,
+            margin_bottom: params.margin_bottom,
+            margin_right: params.margin_right,
             vexpand: true,
             valign: Gtk.Align.FILL
         });
