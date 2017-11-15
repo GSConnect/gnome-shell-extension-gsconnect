@@ -77,6 +77,10 @@ var Plugin = new Lang.Class({
         this.parent(device, "notification");
         
         this._duplicates = new Map();
+        
+        if (this.settings.get_boolean("receive-notifications")) {
+            this.request();
+        }
     },
     
     _getIconInfo: function (iconName) {
