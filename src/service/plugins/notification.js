@@ -396,6 +396,11 @@ var Plugin = new Lang.Class({
         }
     },
     
+    /**
+     * Mark a notification to be closed if received (not shown locally and
+     * closed remotely)
+     * @param {string} matchString - The notification's expected content
+     */
     closeDuplicate: function (matchString) {
         Common.debug("Notification: closeDuplicate('" + matchString + "')");
         
@@ -413,6 +418,10 @@ var Plugin = new Lang.Class({
         }
     },
     
+    /**
+     * Mark a notification to be silenced if received (not shown locally)
+     * @param {string} matchString - The notification's expected content
+     */
     silenceDuplicate: function (matchString) {
         Common.debug("Notification: silenceDuplicate('" + matchString + "')");
         
@@ -423,6 +432,10 @@ var Plugin = new Lang.Class({
         }
     },
     
+    /**
+     * Close a remote notification
+     * @param {string} id - The notification id
+     */
     close: function (id) {
         let packet = new Protocol.Packet({
             id: 0,
@@ -433,12 +446,16 @@ var Plugin = new Lang.Class({
         this.device._channel.send(packet);
     },
     
-    // TODO: kdeconnect-android 1.7+
+    /**
+     * Reply to a notification sent with a requestReplyId UUID
+     * TODO: kdeconnect-android 1.7+
+     */
     reply: function () {
     },
     
-    // TODO: request notifications
-    update: function () {
+    /**
+     * Request the remote notifications be sent
+     */
     }
 });
 
