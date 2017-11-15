@@ -159,6 +159,13 @@ var Plugin = new Lang.Class({
                     escape(contact.name) +
                     "'))"
                 );
+                
+                if (this._duplicates.has(matchString)) {
+                    let duplicate = this._duplicates.get(matchString);
+                    duplicate.id = packet.body.id;
+                } else {
+                    this._duplicates.set(matchString, { id: packet.body.id });
+                }
             }
         } else if (plugin && packet.body.id.indexOf("sms") > -1) {
             if ((contact = plugin._cache.searchContact(title))) {
