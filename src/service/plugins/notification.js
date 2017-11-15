@@ -169,7 +169,7 @@ var Plugin = new Lang.Class({
                     icon = plugin._getPixbuf(contact.avatar);
                 }
             
-                notif.set_title(contact.name);
+                notif.set_title(contact.name || contact.number);
                 notif.set_body(text);
                 notif.set_default_action(
                     "app.replySms(('" +
