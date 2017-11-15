@@ -130,8 +130,16 @@ var Plugin = new Lang.Class({
         
         // The defacto notification setup
         let notif = new Gio.Notification();
-        notif.set_title(packet.body.appName);
-        notif.set_body(packet.body.ticker);
+        
+        // Try to correct duplicate appName/title situations
+        if (packet.body.appName === title) {
+            notif.set_title(title);
+            notif.set_body(text);
+        } else {
+            notif.set_title(packet.body.appName);
+            notif.set_body(packet.body.ticker);
+        }
+        
         notif.set_default_action(
             "app.closeNotification(('" +
             this._dbus.get_object_path() +
