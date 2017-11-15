@@ -373,6 +373,10 @@ var Plugin = new Lang.Class({
             } else if (packet.body.id.indexOf("GroupSummary") > -1) {
                 Common.debug("Notification: ignoring GroupSummary notification");
                 return;
+            // Ignore grouped SMS notifications
+            } else if (packet.body.id.indexOf(":sms|") > -1) {
+                Common.debug("Notification: ignoring grouped SMS notification");
+                return;
             } else if (packet.payloadSize && this.settings.get_boolean("sync-icons")) {
                 this._handlePayload(packet);
             } else {
