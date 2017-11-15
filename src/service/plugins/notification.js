@@ -456,6 +456,14 @@ var Plugin = new Lang.Class({
     /**
      * Request the remote notifications be sent
      */
+    request: function () {
+        let packet = new Protocol.Packet({
+            id: 0,
+            type: "kdeconnect.notification.request",
+            body: { request: true }
+        });
+        
+        this.device._channel.send(packet);
     }
 });
 
