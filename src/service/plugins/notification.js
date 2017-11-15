@@ -142,57 +142,55 @@ var Plugin = new Lang.Class({
         notif.set_priority(Gio.NotificationPriority.NORMAL);
         
         // We might make this a repliable notification and even find an avatar
-        if (this.device._plugins.has("telephony")) {
-            let contact;
-            let plugin = this.device._plugins.get("telephony");
+        let contact;
+        let plugin = this.device._plugins.get("telephony");
             
-            if (title === _("Missed call")) {
-                if ((contact = plugin._cache.searchContact(text))) {
-                    if (contact.avatar && !icon) {
-                        icon = plugin._getPixbuf(contact.avatar);
-                    }
-        
-                    notif.set_title(contact.name);
-                    notif.set_body(text);
-                    notif.add_button(
-                        // TRANSLATORS: Reply to a missed call by SMS
-                        _("Message"),
-                        "app.replyMissedCall(('" +
-                        this._dbus.get_object_path() +
-                        "','" +
-                        escape(contact.number) +
-                        "','" +
-                        escape(contact.name) +
-                        "'))"
-                    );
+        if (plugin && title === _("Missed call")) {
+            if ((contact = plugin._cache.searchContact(text))) {
+                if (contact.avatar && !icon) {
+                    icon = plugin._getPixbuf(contact.avatar);
                 }
-            } else {
-                if ((contact = plugin._cache.searchContact(title))) {
-                    if (contact.avatar && !icon) {
-                        icon = plugin._getPixbuf(contact.avatar);
-                    }
+    
+                notif.set_title(contact.name);
+                notif.set_body(text);
+                notif.add_button(
+                    // TRANSLATORS: Reply to a missed call by SMS
+                    _("Message"),
+                    "app.replyMissedCall(('" +
+                    this._dbus.get_object_path() +
+                    "','" +
+                    escape(contact.number) +
+                    "','" +
+                    escape(contact.name) +
+                    "'))"
+                );
+            }
+        } else if (plugin && packet.body.id.indexOf("sms") > -1) {
+            if ((contact = plugin._cache.searchContact(title))) {
+                if (contact.avatar && !icon) {
+                    icon = plugin._getPixbuf(contact.avatar);
+                }
+            
+                notif.set_title(contact.name);
+                notif.set_body(text);
+                notif.set_default_action(
+                    "app.replySms(('" +
+                    this._dbus.get_object_path() +
+                    "','" +
+                    escape(contact.number) +
+                    "','" +
+                    escape(contact.name) +
+                    "','" +
+                    escape(text) +
+                    "'))"
+                );
+                notif.set_priority(Gio.NotificationPriority.HIGH);
                 
-                    notif.set_title(contact.name);
-                    notif.set_body(text);
-                    notif.set_default_action(
-                        "app.replySms(('" +
-                        this._dbus.get_object_path() +
-                        "','" +
-                        escape(contact.number) +
-                        "','" +
-                        escape(contact.name) +
-                        "','" +
-                        escape(text) +
-                        "'))"
-                    );
-                    notif.set_priority(Gio.NotificationPriority.HIGH);
-                    
-                    if (this._duplicates.has(matchString)) {
-                        let duplicate = this._duplicates.get(matchString);
-                        duplicate.id = packet.body.id;
-                    } else {
-                        this._duplicates.set(matchString, { id: packet.body.id });
-                    }
+                if (this._duplicates.has(matchString)) {
+                    let duplicate = this._duplicates.get(matchString);
+                    duplicate.id = packet.body.id;
+                } else {
+                    this._duplicates.set(matchString, { id: packet.body.id });
                 }
             }
         }
