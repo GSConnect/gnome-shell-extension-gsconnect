@@ -134,7 +134,10 @@ var Plugin = new Lang.Class({
             
         if (plugin && title === _("Missed call")) {
             if ((contact = plugin._cache.searchContact(text))) {
-                if (contact.avatar && !icon) {
+                if (!contact.avatar && icon) {
+                    let path = plugin._cache._dir + "/" + GLib.uuid_string_random() + ".jpeg";
+                    GLib.file_set_contents(path, icon.get_bytes());
+                } else if (contact.avatar && !icon) {
                     icon = plugin._getPixbuf(contact.avatar);
                 }
     
@@ -159,7 +162,10 @@ var Plugin = new Lang.Class({
             }
         } else if (plugin && packet.body.id.indexOf("sms") > -1) {
             if ((contact = plugin._cache.searchContact(title))) {
-                if (contact.avatar && !icon) {
+                if (!contact.avatar && icon) {
+                    let path = plugin._cache._dir + "/" + GLib.uuid_string_random() + ".jpeg";
+                    GLib.file_set_contents(path, icon.get_bytes());
+                } else if (contact.avatar && !icon) {
                     icon = plugin._getPixbuf(contact.avatar);
                 }
             
