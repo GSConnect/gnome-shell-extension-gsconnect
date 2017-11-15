@@ -138,8 +138,13 @@ var Plugin = new Lang.Class({
                     icon = plugin._getPixbuf(contact.avatar);
                 }
     
-                notif.set_title(contact.name);
-                notif.set_body(text);
+                notif.set_title(_("Missed Call"));
+                notif.set_body(
+                    _("Missed call from %s on %s").format(
+                        contact.name || contact.number,
+                        this.device.name
+                    )
+                );
                 notif.add_button(
                     // TRANSLATORS: Reply to a missed call by SMS
                     _("Message"),
