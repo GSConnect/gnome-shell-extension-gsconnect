@@ -51,35 +51,13 @@ var METADATA = {
  *
  * Incoming Notifications
  *
- * There are several possible variables for an incoming notification:
- *
- *    body.id {string} - This is supposedly and "internal" Android Id, such as:
- *                      "0|org.kde.kdeconnect_tp|-256692160|null|10114"
- *    body.isCancel {boolean} - If true, the notification "id" was closed by the peer
- *    body.isClearable {boolean} - If true, we can reply with "cancel: <id>"
- *    body.appName {string} - The notifying application, just like libnotify
- *    body.ticker {string} - Like libnotify's "body", unless there's a summary
- *        (such as with an SMS where the summary would be the sender's name)
- *        the value would be "summary: body"
- *    body.silent {boolean} - This either means "don't show" or "low urgency"
- *    body.requestAnswer {boolean} - This is an answer to a "request"
- *       kdeconnect-android also uses this for clients not supporting "silent"
- *    body.request {boolean} - If true, we're being asked to send a list of notifs
- * For icon syncing:
- *    body.payloadHash {string} - An MD5 hash of the payload data
- *    payloadSize {number} - the notification icon size in bytes
- *    payloadTransferInfo {object} - Just like regular (with a property 'port')
- *
- * The current beta seems to also send:
- *
- *    requestReplyId {string} - a UUID for replying (?)
- *    title {string} - The remote's title of the notification
- *    text {string} - The remote's body of the notification
  *
  * TODO: consider allowing clients to handle notifications/use signals
- *       urgency filter (outgoing)?
- *       convert themed SVG->PNG for icon uploads?
- *       make "shared" notifications clearable (Can KDE Connect even do this?)
+ *       make local notifications closeable (serial/reply_serial)
+ *       The current beta supports:
+ *           requestReplyId {string} - a UUID for replying (?)
+ *           title {string} - The remote's title of the notification
+ *           text {string} - The remote's body of the notification
  */
 var Plugin = new Lang.Class({
     Name: "GSConnectNotificationsPlugin",
@@ -122,6 +100,7 @@ var Plugin = new Lang.Class({
         // kdeconnect-android 1.6.6 (hex: 20 e2 80 90 20)
         } else if (packet.body.ticker.indexOf(" ‐ ") > -1) {
             [title, text] = packet.body.ticker.split(" ‐ ");
+        // kdeconnect-android 1.7+ only (probably never happens)
         } else {
             [title, text] = packet.body.ticker.split(": ");
         }
@@ -293,17 +272,7 @@ var Plugin = new Lang.Class({
     },
     
     Notify: function (appName, replacesId, iconName, summary, body, actions, hints, timeout) {
-        // Signature: str,     uint,       str,      str,     str,  array,   obj,   uint
         Common.debug("Notification: Notify()");
-        
-        Common.debug("appName: " + appName);
-        Common.debug("replacesId: " + replacesId);
-        Common.debug("iconName: " + iconName);
-        Common.debug("summary: " + summary);
-        Common.debug("body: " + body);
-        Common.debug("actions: " + actions);
-        Common.debug("hints: " + JSON.stringify(hints));
-        Common.debug("timeout: " + timeout);
         
         let applications = JSON.parse(this.settings.get_string("applications"));
         
@@ -397,11 +366,6 @@ var Plugin = new Lang.Class({
                 this._handlePayload(packet);
             } else {
                 this._handleNotification(packet);
-            }
-                
-            // TODO: this usually used for backwards compatibility, I think
-            if (packet.body.requestAnswer) {
-                Common.debug("Notification: this is an answer to a request");
             }
         }
     },
