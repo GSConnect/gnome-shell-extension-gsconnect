@@ -116,7 +116,7 @@ var ProxyBase = new Lang.Class({
     }
 });
 
-/** A base class for backend Battery implementations */
+/** A wrapper for the Battery plugin */
 var Battery = new Lang.Class({
     Name: "GSConnectBatteryProxy",
     Extends: ProxyBase,
@@ -240,7 +240,7 @@ var SFTP = new Lang.Class({
 });
 
 
-/** A base class for backend Telephony implementations */
+/** A wrapper for the Telephony plugin */
 var Telephony = new Lang.Class({
     Name: "GSConnectTelephonyProxy",
     Extends: ProxyBase,
@@ -323,17 +323,6 @@ var Telephony = new Lang.Class({
     
     openSms: function () {
         return this._call("openSms", true);
-    },
-    
-    replySms: function (phoneNumber, contactName, messageBody, phoneThumbnail) {
-        return this._call(
-            "replySms",
-            true,
-            phoneNumber,
-            contactName,
-            messageBody,
-            phoneThumbnail
-        );
     },
     
     sendSms: function (phoneNumber, messageBody) {
