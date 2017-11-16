@@ -159,7 +159,44 @@ var Battery = new Lang.Class({
 });
 
 
-/** A base class for backend Battery implementations */
+/** A wrapper for the RunCommand plugin */
+var RunCommand = new Lang.Class({
+    Name: "GSConnectRunCommandProxy",
+    Extends: ProxyBase,
+    Properties: {
+        "commands": GObject.ParamSpec.string(
+            "commands",
+            "CommandList",
+            "A string of JSON containing the remote commands",
+            GObject.ParamFlags.READABLE,
+            "{}"
+        )
+    },
+    
+    _init: function (dbusPath) {
+        this.parent(
+            Common.DBusInfo.GSConnect.lookup_interface(
+                "org.gnome.Shell.Extensions.GSConnect.Plugin.RunCommand"
+            ),
+            dbusPath
+        );
+        
+        //
+        this.connect("g-properties-changed", (proxy, properties) => {
+            for (let name in properties.deep_unpack()) {
+                this.notify(name);
+            }
+        });
+    },
+    
+    get commands () { return this._get("commands"); },
+    
+    request: function () { this._call("request", true); },
+    run: function (key) { this._call("run", true, key); }
+});
+
+
+/** A wrapper for the SFTP plugin */
 var SFTP = new Lang.Class({
     Name: "GSConnectSFTPProxy",
     Extends: ProxyBase,
@@ -470,6 +507,13 @@ var Device = new Lang.Class({
             delete this.sftp;
         }
         
+        if (this.plugins.indexOf("runcommand") > -1) {
+            this.runcommand = new RunCommand(this.gObjectPath);
+        } else if (this.hasOwnProperty("runcommand")) {
+            this.runcommand.destroy();
+            delete this.runcommand;
+        }
+        
         if (this.plugins.indexOf("share") > -1) {
             this.share = new ProxyBase(
                 Common.DBusInfo.GSConnect.lookup_interface(
@@ -497,6 +541,7 @@ var Device = new Lang.Class({
         "findmyphone",
         "ping",
         "sftp",
+        "runcommand",
         "share",
         "telephony"].forEach((plugin) => {
             if (this.hasOwnProperty(plugin)) {
