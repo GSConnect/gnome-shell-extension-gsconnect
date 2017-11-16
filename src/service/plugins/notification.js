@@ -448,9 +448,29 @@ var Plugin = new Lang.Class({
     
     /**
      * Reply to a notification sent with a requestReplyId UUID
-     * TODO: kdeconnect-android 1.7+
+     * TODO: kdeconnect-android 1.7+ only, this is untested and not used yet
      */
-    reply: function () {
+    reply: function (id, appName, title, text) {
+        let dialog = new ReplyDialog(this.device, appName, title, text);
+        dialog.connect("delete-event", dialog.destroy);
+        dialog.connect("response", (dialog, response) => {
+            if (response === Gtk.ResponseType.OK) {
+                let packet = new Protocol.Packet({
+                    id: 0,
+                    type: "kdeconnect.notification.reply",
+                    body: {
+                        replyId: id,
+                        messageBody: dialog.entry.buffer.text
+                    }
+                });
+                
+                this.device._channel.send(packet);
+            }
+        
+            dialog.destroy();
+        });
+        
+        dialog.show_all();
     },
     
     /**
@@ -464,6 +484,74 @@ var Plugin = new Lang.Class({
         });
         
         this.device._channel.send(packet);
+    }
+});
+
+
+var ReplyDialog = Lang.Class({
+    Extends: Gtk.Dialog,
+    Name: "GSConnectNotificationReplyDialog",
+    
+    _init: function (device, appName, title, text) {
+        this.parent({
+            use_header_bar: true,
+            application: device.daemon,
+            default_height: 300,
+            default_width: 300
+        });
+        
+        let headerBar = this.get_header_bar();
+        headerBar.title = appName;
+        headerBar.subtitle = device.name;
+        headerBar.show_close_button = false;
+        
+        let sendButton = this.add_button(_("Send"), Gtk.ResponseType.OK);
+        sendButton.sensitive = false;
+        this.add_button(_("Cancel"), Gtk.ResponseType.CANCEL);
+        this.set_default_response(Gtk.ResponseType.OK);
+        
+        let content = this.get_content_area();
+        content.border_width = 6;
+        content.spacing = 12
+        
+        let messageFrame = new Gtk.Frame({
+            label_widget: new Gtk.Label({
+                label: "<b>" + title + "</b>",
+                use_markup: true
+            }),
+            label_xalign: 0.02
+        });
+        content.add(messageFrame);
+        
+        let textLabel = new Gtk.Label({
+            label: text,
+            margin: 6,
+            xalign: 0
+        });
+        messageFrame.add(textLabel);
+        
+        let frame = new Gtk.Frame();
+        content.add(frame);
+        
+        let scrolledWindow = new Gtk.ScrolledWindow({
+            can_focus: true,
+            hscrollbar_policy: Gtk.PolicyType.NEVER
+        });
+        frame.add(scrolledWindow);
+        
+        this.entry = new Gtk.TextView({
+            border_width: 6,
+            halign: Gtk.Align.FILL,
+            hexpand: true,
+            valign: Gtk.Align.FILL,
+            vexpand: true,
+            wrap_mode: Gtk.WrapMode.WORD_CHAR
+        });
+        scrolledWindow.add(this.entry);
+        
+        this.entry.buffer.connect("changed", (buffer) => {
+            sendButton.sensitive = (buffer.text.trim());
+        });
     }
 });
 
