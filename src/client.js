@@ -236,7 +236,8 @@ var SFTP = new Lang.Class({
     get directories () { return this._get("directories"); },
     get mounted () { return this._get("mounted") === true; },
     
-    mount: function () { this._call("mount", true); }
+    mount: function () { this._call("mount", true); },
+    unmount: function () { this._call("mount", true); }
 });
 
 
