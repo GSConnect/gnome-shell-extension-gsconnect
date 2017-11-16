@@ -77,7 +77,6 @@
   
   <!-- Notifications -->
   <interface name="org.gnome.Shell.Extensions.GSConnect.Plugin.Notification">
-    <method name="notifications"/>
     <signal name="received"/>
     <signal name="dismissed"/>
   </interface>
