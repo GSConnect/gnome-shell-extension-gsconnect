@@ -133,7 +133,7 @@ var Plugin = new Lang.Class({
         notif.set_priority(Gio.NotificationPriority.NORMAL);
         
         // We might make this a repliable notification and even find an avatar
-        let contact;
+        let contact, duplicate;
         let plugin = this.device._plugins.get("telephony");
             
         if (plugin && title === _("Missed call")) {
@@ -164,8 +164,8 @@ var Plugin = new Lang.Class({
                     "'))"
                 );
                 
-                if (this._duplicates.has(matchString)) {
-                    let duplicate = this._duplicates.get(matchString);
+                // We need to track this now so the action can close it later
+                if ((duplicate === this._duplicates.has(matchString))) {
                     duplicate.id = packet.body.id;
                 } else {
                     this._duplicates.set(matchString, { id: packet.body.id });
@@ -195,8 +195,8 @@ var Plugin = new Lang.Class({
                 );
                 notif.set_priority(Gio.NotificationPriority.HIGH);
                 
-                if (this._duplicates.has(matchString)) {
-                    let duplicate = this._duplicates.get(matchString);
+                // We need to track this now so the action can close it later
+                if ((duplicate === this._duplicates.get(matchString))) {
                     duplicate.id = packet.body.id;
                 } else {
                     this._duplicates.set(matchString, { id: packet.body.id });
@@ -273,9 +273,9 @@ var Plugin = new Lang.Class({
     _sendNotification: function (packet, notif, matchString) {
         Common.debug("Notification: _sendNotification('" + matchString + "')");
         
-        if (this._duplicates.has(matchString)) {
-            let duplicate = this._duplicates.get(matchString);
-            
+        let duplicate;
+        
+        if ((duplicate = this._duplicates.get(matchString))) {
             // We've been asked to close this
             if (duplicate.close) {
                 this.close(packet.body.id);
