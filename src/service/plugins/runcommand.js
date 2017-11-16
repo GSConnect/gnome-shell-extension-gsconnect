@@ -30,50 +30,108 @@ var METADATA = {
     description: _("Execute local commands remotely"),
     dbusInterface: "org.gnome.Shell.Extensions.GSConnect.Plugin.RunCommand",
     schemaId: "org.gnome.shell.extensions.gsconnect.plugin.runcommand",
-    incomingPackets: ["kdeconnect.runcommand.request"],
-    outgoingPackets: ["kdeconnect.runcommand"]
+    incomingPackets: ["kdeconnect.runcommand", "kdeconnect.runcommand.request"],
+    outgoingPackets: ["kdeconnect.runcommand", "kdeconnect.runcommand.request"]
 };
 
 
 /**
  * RunCommand Plugin
- * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/remotecommand
- *
- * TODO: expose commands over DBus
- *       add commands from remote device (seems like a really bad idea)
+ * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/remotecommands
+ * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/runcommand
  */
 var Plugin = new Lang.Class({
     Name: "GSConnectRunCommandPlugin",
     Extends: PluginsBase.Plugin,
+    Properties: {
+        "commands": GObject.ParamSpec.string(
+            "commands",
+            "CommandList",
+            "A string of JSON containing the remote commands",
+            GObject.ParamFlags.READABLE,
+            "{}"
+        )
+    },
     
     _init: function (device) {
         this.parent(device, "runcommand");
         
         this.settings.connect("changed::command-list", () => {
-            this.sendCommandList();
+            this.send();
         });
+        
+        this._commands = "{}";
+        this.notify("commands");
+        this._dbus.emit_property_changed(
+            "commands",
+            new GLib.Variant("(s)", [this._commands])
+        );
+        this.request();
+    },
+    
+    get commands () {
+        return this._commands;
     },
     
     handlePacket: function (packet) {
         Common.debug("RunCommand: handlePacket()");
         
-        if (packet.body.hasOwnProperty("requestCommandList")) {
-            this.sendCommandList();
-        } else if (packet.body.hasOwnProperty("key")) {
-            let commands = JSON.parse(this.settings.get_string("command-list"));
-            if (commands.hasOwnProperty(packet.body.key)) {
-                GLib.spawn_async(
-                    null, // working_dir
-                    ["/bin/sh", "-c", commands[packet.body.key].command],
-                    null, // envp
-                    GLib.SpawnFlags.DEFAULT, // flags
-                    null // GLib.SpawnChildSetupFunc
-                );
+        if (packet.type === "kdeconnect.runcommand.request") {
+            if (packet.body.hasOwnProperty("requestCommandList")) {
+                this.send();
+            } else if (packet.body.hasOwnProperty("key")) {
+                let commands = JSON.parse(this.settings.get_string("command-list"));
+                if (commands.hasOwnProperty(packet.body.key)) {
+                    GLib.spawn_async(
+                        null, // working_dir
+                        ["/bin/sh", "-c", commands[packet.body.key].command],
+                        null, // envp
+                        GLib.SpawnFlags.DEFAULT, // flags
+                        null // GLib.SpawnChildSetupFunc
+                    );
+                }
             }
+        } else if (packet.type === "kdeconnect.runcommand") {
+            this._commands = packet.body.commandList;
+            this.notify("commands");
+            this._dbus.emit_property_changed(
+                "commands",
+                new GLib.Variant("(s)", [this._commands])
+            );
         }
     },
     
-    sendCommandList: function () {
+    /**
+     * Request the list of remote commands
+     */
+    request: function () {
+        let packet = new Protocol.Packet({
+            id: 0,
+            type: "kdeconnect.runcommand.request",
+            body: { requestCommandList: true }
+        });
+        
+        this.device._channel.send(packet);
+    },
+    
+    /**
+     * Run the remote command @key
+     * @param {string} key - The key of the remote command
+     */
+    run: function (key) {
+        let packet = new Protocol.Packet({
+            id: 0,
+            type: "kdeconnect.runcommand.request",
+            body: { key: key }
+        });
+        
+        this.device._channel.send(packet);
+    },
+    
+    /**
+     * Send the list of local command
+     */
+    send: function () {
         Common.debug("RunCommand: sendCommandList()");
         
         let packet = new Protocol.Packet({

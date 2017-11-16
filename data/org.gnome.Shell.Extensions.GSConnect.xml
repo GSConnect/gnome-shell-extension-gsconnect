@@ -94,7 +94,11 @@
   
   <!-- Run Commands -->
   <interface name="org.gnome.Shell.Extensions.GSConnect.Plugin.RunCommand">
-    <method name="sendCommandList"/>
+    <property type="s" name="commands" access="read"/>
+    <method name="request"/>
+    <method name="run">
+      <arg name="key" type="s" direction="in"/>
+    </method>
   </interface>
   
   <!-- SFTP -->
