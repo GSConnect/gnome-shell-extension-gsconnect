@@ -196,23 +196,6 @@ var DeviceMenu = new Lang.Class({
         });
         this.statusBar.actor.add(this.statusLabel, { x_expand: true });
         
-        // Help Bar
-        this.helpBar = new PopupMenu.PopupBaseMenuItem({
-            reactive: false,
-            can_focus: false
-        });
-        this.helpBar.actor.visible = false;
-        this.addMenuItem(this.helpBar);
-        
-        this.helpButton = new ShellWidget.Button({ tooltip_text: "" });
-        this.helpBar.actor.add(this.helpButton, { x_fill: false });
-        
-        this.helpLabel = new St.Label({
-            text: "", // placeholder, set by enabling function
-            y_align: Clutter.ActorAlign.CENTER
-        });
-        this.helpBar.actor.add(this.helpLabel, { x_expand: true });
-        
         // Property signals
         device.connect(
             "notify::name",
@@ -280,17 +263,14 @@ var DeviceMenu = new Lang.Class({
         
         if (!plugins.length && connected && paired) {
             this.pluginBar.actor.visible = false;
-            this.helpBar.actor.visible = true;
-            this.helpButton.child.icon_name = "preferences-other-symbolic";
-            this.helpButton.tooltip.title = _("Mobile Settings");
-            this.helpButton.callback = Common.startPreferences;
-            this.helpLabel.text = _("No plugins enabled");
-        } else if (connected && paired) {
-            this.helpBar.actor.visible = false;
-            this.pluginBar.actor.visible = true;
+            this.statusBar.actor.visible = true;
+            this.statusButton.child.icon_name = "preferences-other-symbolic";
+            this.statusButton.tooltip.title = _("Mobile Settings");
+            this.statusButton.callback = Common.startPreferences;
+            this.statusLabel.text = _("No plugins enabled");
         } else {
-            this.helpBar.actor.visible = false;
-            this.pluginBar.actor.visible = false;
+            this.statusBar.actor.visible = false;
+            this.pluginBar.actor.visible = true;
         }
         
         // Plugin Buttons
