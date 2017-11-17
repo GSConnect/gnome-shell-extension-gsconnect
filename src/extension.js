@@ -292,14 +292,9 @@ var DeviceMenu = new Lang.Class({
             share: this.shareButton,
             telephony: this.smsButton
         };
-        let sensitive;
         
         for (let name in buttons) {
-            sensitive = (this.device.hasOwnProperty(name));
-            buttons[name].can_focus = sensitive;
-            buttons[name].reactive = sensitive;
-            buttons[name].track_hover = sensitive;
-            buttons[name].opacity = sensitive ? 255 : 128;
+            buttons[name].visible = (this.device.hasOwnProperty(name));
         }
         
         // Battery Plugin
