@@ -171,6 +171,14 @@ var Button = new Lang.Class({
             this.callback(this)
         });
         
+        this.connect("notify::checked", () => {
+            if (this.checked) {
+                this.add_style_pseudo_class("active");
+            } else {
+                this.remove_style_pseudo_class("active");
+            }
+        });
+        
         if (typeof params.tooltip_text === "string") {
             this.tooltip = new Tooltip(params.tooltip_text, this);
             this.connect("destroy", () => { this.tooltip.destroy(); });
