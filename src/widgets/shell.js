@@ -55,7 +55,8 @@ var Tooltip = new Lang.Class({
             
             this.bin = new St.Bin({
                 style_class: "osd-window",
-                style: "min-width: 0; min-height: 0; padding: 6px; border-radius: 2px;"
+                style: "min-width: 0; min-height: 0; padding: 6px; border-radius: 2px;",
+                opacity: 232
             });
             this.bin.child = this.label;
             
@@ -67,7 +68,6 @@ var Tooltip = new Lang.Class({
         
         // TODO: if tooltip is too big it can overshoot the screen edge
         let [x, y] = this._parent.get_transformed_position();
-        y = y + 12;
         x = (x + (this._parent.width/2)) - Math.round(this.bin.width/2);
         
         if (this._showing) {
@@ -80,7 +80,7 @@ var Tooltip = new Lang.Class({
         } else {
             this.bin.set_position(x, y);
             Tweener.addTween(this.bin, {
-                opacity: 255,
+                opacity: 232,
                 time: 15/100,
                 transition: "easeOutQuad"
             });
