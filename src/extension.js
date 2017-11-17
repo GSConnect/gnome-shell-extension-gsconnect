@@ -168,6 +168,13 @@ var DeviceMenu = new Lang.Class({
         this.listPanel.actor.style_class = "popup-sub-menu";
         this.listPanel.actor.visible = false;
         this.addMenuItem(this.listPanel);
+        this.listPanel._getTopMenu().connect("open-state-changed", (actor, open) => {
+            if (!open) {
+                this.browseButton.checked = false;
+                this.runButton.checked = false;
+                this.listPanel.actor.visible = false;
+            }
+        });
         
         // Status Bar
         this.statusBar = new PopupMenu.PopupBaseMenuItem({
@@ -253,7 +260,7 @@ var DeviceMenu = new Lang.Class({
         this.batteryIcon.icon_name = icon + "-symbolic";
         this.batteryLabel.text = level + "%";
         
-        // KDE Connect: "false, -1" if remote plugin is disabled but not local
+        // "false, -1" if no data or remote plugin is disabled but not local
         if (level === -1) {
             this.batteryIcon.icon_name = "battery-missing-symbolic";
             this.batteryLabel.text = "";
@@ -311,7 +318,7 @@ var DeviceMenu = new Lang.Class({
         }
     },
     
-    _statusChanged: function (device, state) {
+    _statusChanged: function (device) {
         Common.debug("extension.DeviceMenu._statusChanged(" + this.device.name + ")");
         
         let { connected, paired } = this.device;
@@ -380,9 +387,6 @@ var DeviceMenu = new Lang.Class({
             mountItem.path = this.device.sftp.directories[name];
             
             mountItem.connect("activate", (item) => {
-                this.browseButton.checked = false;
-                this.browseButton.remove_style_pseudo_class("active");
-                this.listPanel.actor.visible = false;
                 item._getTopMenu().close(true);
                 Gio.AppInfo.launch_default_for_uri(
                     "file://" + item.path,
