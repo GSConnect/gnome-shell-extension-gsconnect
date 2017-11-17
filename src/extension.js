@@ -111,7 +111,7 @@ var DeviceMenu = new Lang.Class({
         // Info Bar
         this.infoBar = new PopupMenu.PopupSeparatorMenuItem(device.name);
         this.infoBar.label.clutter_text.ellipsize = Pango.EllipsizeMode.NONE;
-        this.infoBar._separator.style = "margin-left: 6px; margin-right: 6px";
+        this.infoBar._separator.style = "margin-left: 6px; margin-right: 6px;";
         this.addMenuItem(this.infoBar);
         
         this.batteryLabel = new St.Label();
@@ -302,9 +302,9 @@ var DeviceMenu = new Lang.Class({
         
         let { connected, paired } = this.device;
         
+        this.batteryIcon.visible = (connected && paired);
         this.pluginBar.actor.visible = (connected && paired);
         this.statusBar.actor.visible = (!connected || !paired);
-        this.batteryIcon.visible = (connected && paired);
         
         if (!connected) {
             this.statusButton.child.icon_name = "view-refresh-symbolic";
@@ -326,6 +326,8 @@ var DeviceMenu = new Lang.Class({
         Common.debug("extension.DeviceMenu._browseAction()");
         
         if (button.checked) {
+            this.runButton.checked = false;
+            this.listPanel.actor.destroy_all_children();
         } else {
             this.listPanel.actor.visible = false;
             return;
@@ -360,8 +362,6 @@ var DeviceMenu = new Lang.Class({
     
     _browseList: function () {
         Common.debug("extension.DeviceMenu._browseList()");
-        
-        this.listPanel.actor.destroy_all_children();
         
         for (let name in this.device.sftp.directories) {
             let mountItem = new PopupMenu.PopupMenuItem(name);
