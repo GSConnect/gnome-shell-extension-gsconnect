@@ -159,14 +159,14 @@ var DeviceMenu = new Lang.Class({
         });
         this.pluginBar.actor.add(this.shareButton, { expand: true, x_fill: false });
         
-        // Browse Bar
-        this.browseBar = new PopupMenu.PopupMenuSection({
+        // List Panel
+        this.listPanel = new PopupMenu.PopupMenuSection({
             reactive: false,
             can_focus: false
         });
-        this.browseBar.actor.style_class = "popup-sub-menu";
-        this.browseBar.actor.visible = false;
-        this.addMenuItem(this.browseBar);
+        this.listPanel.actor.style_class = "popup-sub-menu";
+        this.listPanel.actor.visible = false;
+        this.addMenuItem(this.listPanel);
         
         // Status Bar
         this.statusBar = new PopupMenu.PopupBaseMenuItem({
@@ -343,15 +343,16 @@ var DeviceMenu = new Lang.Class({
         
         if (button.checked) {
         } else {
+            this.listPanel.actor.visible = false;
             return;
         }
         
         if (this.device.sftp.mounted) {
-            this._browseOpen();
+            this._browseList();
         } else {
             this._browseNotify = this.device.sftp.connect("notify::mounted", () => {
                 if (this.device.sftp.mounted) {
-                    this._browseOpen();
+                    this._browseList();
                 } else {
                     Main.notifyError(
                         this.device.name,
@@ -373,10 +374,10 @@ var DeviceMenu = new Lang.Class({
         }
     },
     
-    _browseOpen: function () {
-        Common.debug("extension.DeviceMenu._browseOpen()");
+    _browseList: function () {
+        Common.debug("extension.DeviceMenu._browseList()");
         
-        this.browseBar.actor.destroy_all_children();
+        this.listPanel.actor.destroy_all_children();
         
         for (let name in this.device.sftp.directories) {
             let mountItem = new PopupMenu.PopupMenuItem(name);
@@ -385,7 +386,7 @@ var DeviceMenu = new Lang.Class({
             mountItem.connect("activate", (item) => {
                 this.browseButton.checked = false;
                 this.browseButton.remove_style_pseudo_class("active");
-                this.browseBar.actor.visible = false;
+                this.listPanel.actor.visible = false;
                 item._getTopMenu().close(true);
                 Gio.AppInfo.launch_default_for_uri(
                     "file://" + item.path,
@@ -393,10 +394,10 @@ var DeviceMenu = new Lang.Class({
                 );
             });
             
-            this.browseBar.addMenuItem(mountItem);
+            this.listPanel.addMenuItem(mountItem);
         }
         
-        this.browseBar.actor.visible = true;
+        this.listPanel.actor.visible = true;
     },
     
     _findAction: function (button) {
