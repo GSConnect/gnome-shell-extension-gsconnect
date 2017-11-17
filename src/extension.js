@@ -634,7 +634,7 @@ var SystemIndicator = new Lang.Class({
             indicator.menu.toggle();
             menu = indicator.deviceMenu;
         } else {
-            this._openMenu();
+            this._openDeviceMenu();
             for (let dbusPath in this._menus) {
                 if (this._menus[dbusPath].device.id === indicator.device.id) {
                     menu = this._menus[dbusPath];
