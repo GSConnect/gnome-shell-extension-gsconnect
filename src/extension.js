@@ -185,7 +185,6 @@ var DeviceMenu = new Lang.Class({
         
         this.statusButton = new ShellWidget.Button({
             icon_name: "channel-insecure-symbolic",
-            callback: Lang.bind(this, this._statusAction),
             tooltip_text: "" // placeholder, strings in this._statusChanged()
         });
         this.statusBar.actor.add(this.statusButton, { x_fill: false });
@@ -310,10 +309,12 @@ var DeviceMenu = new Lang.Class({
         if (!connected) {
             this.statusButton.child.icon_name = "view-refresh-symbolic";
             this.statusButton.tooltip.title = _("Reconnect <b>%s</b>").format(this.device.name);
+            this.statusButton.callback = this.device.activate;
             this.statusLabel.text = _("Device is disconnected");
         } else if (!paired) {
             this.statusButton.child.icon_name = "channel-insecure-symbolic";
             this.statusButton.tooltip.title = _("Pair <b>%s</b>").format(this.device.name) + "\n\n" + _("<b>%s Fingerprint:</b>\n%s\n\n<b>Local Fingerprint:</b>\n%s").format(this.device.name, this.device.fingerprint, this.daemon.fingerprint);
+            this.statusButton.callback = this.device.pair;
             this.statusLabel.text = _("Device is unpaired");
         }
         
@@ -396,16 +397,6 @@ var DeviceMenu = new Lang.Class({
         Common.debug("extension.DeviceMenu._smsAction()");
         this._getTopMenu().close(true);
         this.device.telephony.openSms();
-    },
-    
-    _statusAction: function (button) {
-        Common.debug("extension.DeviceMenu._statusAction()");
-        
-        if (this.device.connected && !this.device.paired) {
-            this.device.pair();
-        } else {
-            this.device.activate();
-        }
     }
 });
 
