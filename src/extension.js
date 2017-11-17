@@ -160,6 +160,14 @@ var DeviceMenu = new Lang.Class({
         });
         this.pluginBar.actor.add(this.shareButton, { expand: true, x_fill: false });
         
+        this.runButton = new ShellWidget.Button({
+            icon_name: "system-run-symbolic",
+            callback: Lang.bind(this, this._runAction),
+            toggle_mode: true,
+            tooltip_text: _("Run Commands")
+        });
+        this.pluginBar.actor.add(this.runButton, { expand: true, x_fill: false });
+        
         // List Panel
         this.listPanel = new PopupMenu.PopupMenuSection({
             reactive: false,
@@ -275,6 +283,7 @@ var DeviceMenu = new Lang.Class({
         // Plugin Buttons
         let buttons = {
             findmyphone: this.findButton,
+            runcommand: this.runButton,
             sftp: this.browseButton,
             share: this.shareButton,
             telephony: this.smsButton
@@ -282,6 +291,12 @@ var DeviceMenu = new Lang.Class({
         
         for (let name in buttons) {
             buttons[name].visible = (this.device.hasOwnProperty(name));
+        }
+        
+        // Run Button
+        if (this.device.hasOwnProperty("runcommand")) {
+            let commands = JSON.parse(this.device.runcommand.commands);
+            this.runButton.visible = (Object.keys(commands).length);
         }
         
         // Battery Plugin
@@ -385,6 +400,50 @@ var DeviceMenu = new Lang.Class({
         Common.debug("extension.DeviceMenu._findAction()");
         this._getTopMenu().close(true);
         this.device.find();
+    },
+    
+    _runAction: function (button) {
+        Common.debug("extension.DeviceMenu._runAction()");
+        
+        if (button.checked) {
+            this.browseButton.checked = false;
+            this.listPanel.actor.destroy_all_children();
+        } else {
+            this.listPanel.actor.visible = false;
+            return;
+        }
+        
+        this._runList();
+    },
+    
+    _runList: function () {
+        Common.debug("extension.DeviceMenu._runList()");
+        
+        let commands = JSON.parse(this.device.runcommand.commands);
+        
+        for (let key in commands) {
+            let commandItem = new PopupMenu.PopupMenuItem(commands[key].name);
+            let icon = new St.Icon({
+                icon_name: commands[key].name.toLowerCase().replace(" ", "-"),
+                fallback_icon_name: "system-run-symbolic",
+                style_class: "popup-menu-icon"
+            });
+            commandItem.actor.insert_child_at_index(icon, 1);
+            commandItem.tooltip = new ShellWidget.Tooltip(
+                commands[key].command,
+                commandItem
+            );
+            commandItem.key = key;
+            
+            commandItem.connect("activate", (item) => {
+                item._getTopMenu().close(true);
+                this.device.runcommand.run(item.key);
+            });
+            
+            this.listPanel.addMenuItem(commandItem);
+        }
+        
+        this.listPanel.actor.visible = true;
     },
     
     _shareAction: function (button) {
