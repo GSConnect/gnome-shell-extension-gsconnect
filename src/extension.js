@@ -111,6 +111,7 @@ var DeviceMenu = new Lang.Class({
         // Info Bar
         this.infoBar = new PopupMenu.PopupSeparatorMenuItem(device.name);
         this.infoBar.label.clutter_text.ellipsize = Pango.EllipsizeMode.NONE;
+        this.infoBar._separator.style = "margin-left: 6px; margin-right: 6px";
         this.addMenuItem(this.infoBar);
         
         this.batteryLabel = new St.Label();
