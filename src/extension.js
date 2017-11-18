@@ -324,12 +324,12 @@ var DeviceMenu = new Lang.Class({
         if (!connected) {
             this.statusButton.child.icon_name = "view-refresh-symbolic";
             this.statusButton.tooltip.title = _("Reconnect <b>%s</b>").format(this.device.name);
-            this.statusButton.callback = this.device.activate;
+            this.statusButton.callback = () => { this.device.activate(); };
             this.statusLabel.text = _("Device is disconnected");
         } else if (!paired) {
             this.statusButton.child.icon_name = "channel-insecure-symbolic";
             this.statusButton.tooltip.title = _("Pair <b>%s</b>").format(this.device.name) + "\n\n" + _("<b>%s Fingerprint:</b>\n%s\n\n<b>Local Fingerprint:</b>\n%s").format(this.device.name, this.device.fingerprint, this.daemon.fingerprint);
-            this.statusButton.callback = this.device.pair;
+            this.statusButton.callback = () => { this.device.pair(); };
             this.statusLabel.text = _("Device is unpaired");
         }
         
