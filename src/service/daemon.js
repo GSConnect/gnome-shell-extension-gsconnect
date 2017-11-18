@@ -203,7 +203,8 @@ var Daemon = new Lang.Class({
                 if (!this._devices.has(dbusPath)) {
                     let device = new Device.Device({ daemon: this, id: id})
                     this._devices.set(dbusPath, device);
-            
+                    
+                    this.notify("devices");
                     this._dbus.emit_property_changed(
                         "devices",
                         new GLib.Variant("as", this.devices)
@@ -264,6 +265,7 @@ var Daemon = new Lang.Class({
                 Common.Settings.set_strv("devices", knownDevices);
             }
             
+            this.notify("devices");
             this._dbus.emit_property_changed(
                 "devices",
                 new GLib.Variant("as", this.devices)
@@ -281,7 +283,8 @@ var Daemon = new Lang.Class({
             
             device.destroy();
             this._devices.delete(dbusPath);
-        
+            
+            this.notify("devices");
             this._dbus.emit_property_changed(
                 "devices",
                 new GLib.Variant("as", this.devices)

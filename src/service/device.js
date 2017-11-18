@@ -346,7 +346,6 @@ var Device = new Lang.Class({
         if (packet.body.pair) {
             // The device is responding to our request
             if (this._outgoingPairRequest) {
-                this._outgoingPairRequest = false;
                 this._setPaired(true);
                 this._loadPlugins();
             // We're already paired, inform the device
@@ -430,6 +429,7 @@ var Device = new Lang.Class({
             this.settings.reset("certificate-pem");
         }
         
+        this.notify("paired");
         this._dbus.emit_property_changed("paired", new GLib.Variant("b", bool));
     },
     
