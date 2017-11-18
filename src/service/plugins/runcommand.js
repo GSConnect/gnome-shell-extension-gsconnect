@@ -64,7 +64,7 @@ var Plugin = new Lang.Class({
         this.notify("commands");
         this._dbus.emit_property_changed(
             "commands",
-            new GLib.Variant("(s)", [this._commands])
+            new GLib.Variant("s", this._commands)
         );
         this.request();
     },
