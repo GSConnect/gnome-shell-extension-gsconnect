@@ -40,12 +40,6 @@
       <arg name="success" type="b" direction="out"/>
       <arg name="error" type="s" direction="out"/>
     </method>
-    <method name="reloadPlugins"/>
-    
-    <signal name="pairRequest">
-      <!-- TODO: We're actually emitting the device Id -->
-      <arg name="publicKey" type="s"/>
-    </signal>
   </interface>
   
   <!-- Battery -->

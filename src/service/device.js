@@ -85,12 +85,6 @@ var Device = new Lang.Class({
             ""
         )
     },
-    Signals: {
-        "pairRequest": {
-            flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED,
-            param_types: [ GObject.TYPE_STRING ]
-        }
-    },
     
     _init: function (params) {
         this.parent();
@@ -382,13 +376,6 @@ var Device = new Lang.Class({
     },
     
     _notifyPair: function (packet) {
-        // TODO: no publicKey?
-        this.emit("pairRequest", this.id);
-        this._dbus.emit_signal(
-            "pairRequest",
-            new GLib.Variant("(s)", [this.id])
-        );
-        
         let notif = new Gio.Notification();
         // TRANSLATORS: eg. Pair Request from Google Pixel
         notif.set_title(_("Pair Request from %s").format(this.name));
@@ -621,11 +608,6 @@ var Device = new Lang.Class({
             log("Error disabling plugin '" + name + "': " + e.message);
             return [false, e.message];
         }
-    },
-    
-    reloadPlugins: function () {
-        this._unloadPlugins();
-        this._loadPlugins();
     },
     
     destroy: function () {
