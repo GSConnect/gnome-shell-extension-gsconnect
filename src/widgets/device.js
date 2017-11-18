@@ -23,6 +23,30 @@ const PreferencesWidget = imports.widgets.preferences;
 const Common = imports.common;
 
 
+var HelpSection = new Lang.Class({
+    Name: "GSConnectHelpSection",
+    Extends: PreferencesWidget.Section,
+    
+    _init: function () {
+        this.parent({ margin_bottom: 0, width_request: -1 });
+        
+        let label = new Gtk.Label({
+            label: _("Ensure that devices are on the same local network with ports 1716 to 1764 open for TCP and UDP connections.") +
+                   "\n\n" +
+                   _('To connect an Android device, install the KDE Connect Android app from the <a href="https://play.google.com/store/apps/details?id=org.kde.kdeconnect_tp">Google Play Store</a> or <a href="https://f-droid.org/repository/browse/?fdid=org.kde.kdeconnect_tp">F-Droid</a>.') +
+                   "\n\n" +
+                   _('Please see the <a href="https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki">Wiki</a> for more help or <a href="https://github.com/andyholmes/gnome-shell-extension-gsconnect/issues">open an issue</a> on Github to report a problem.'),
+            wrap: true,
+            use_markup: true,
+            vexpand: true,
+            xalign: 0
+        });
+        
+        this.addRow().grid.attach(label, 0, 0, 1, 1);
+    }
+});
+
+
 /** Gtk widget for plugin enabling/disabling */
 var PluginControl = new Lang.Class({
     Name: "GSConnectPluginControl",
@@ -123,6 +147,32 @@ var PluginControl = new Lang.Class({
         }
         
         dialog.close();
+    }
+});
+
+
+var PluginSection = new Lang.Class({
+    Name: "GSConnectPluginSection",
+    Extends: PreferencesWidget.Section,
+    
+    _init: function (device) {
+        this.parent({ width_request: -1 });
+        
+        this.device = device;
+        
+        for (let name of this.device.supportedPlugins) {
+            let metadata = imports.service.plugins[name].METADATA;
+            
+            this.addSetting(
+                metadata.summary,
+                metadata.description,
+                new PluginControl(this.device, name)
+            );
+        }
+        
+        this.list.set_sort_func((row1, row2) => {
+            return row1.summary.label.localeCompare(row2.summary.label);
+        });
     }
 });
 
@@ -231,24 +281,7 @@ var Stack = new Lang.Class({
         let serviceSection = page.addSection(null, null, { width_request: -1 });
         serviceSection.addGSetting(Common.Settings, "public-name");
         
-        let helpSection = page.addSection(
-            _("Connecting Devices"),
-            null,
-            { margin_bottom: 0, width_request: -1 }
-        );
-        let defaultPageLabel = new Gtk.Label({
-            label: _("Ensure that devices are on the same local network with ports 1716 to 1764 open for TCP and UDP connections.") +
-                   "\n\n" +
-                   _('To connect an Android device, install the KDE Connect Android app from the <a href="https://play.google.com/store/apps/details?id=org.kde.kdeconnect_tp">Google Play Store</a> or <a href="https://f-droid.org/repository/browse/?fdid=org.kde.kdeconnect_tp">F-Droid</a>.') +
-                   "\n\n" +
-                   _('Please see the <a href="https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki">Wiki</a> for more help or <a href="https://github.com/andyholmes/gnome-shell-extension-gsconnect/issues">open an issue</a> on Github to report a problem.'),
-            wrap: true,
-            use_markup: true,
-            vexpand: true,
-            xalign: 0
-        });
-        let helpRow = helpSection.addRow();
-        helpRow.grid.attach(defaultPageLabel, 0, 0, 1, 1);
+        page.addSection(_("Connecting Devices"), new HelpSection());
         
         this.stack.add_named(page, "default");
         
@@ -438,25 +471,7 @@ var Page = new Lang.Class({
         statusRow.grid.attach(pairButton, 3, 0, 1, 2);
         
         // Plugins
-        let pluginsSection = this.addSection(
-            _("Plugins"),
-            null, 
-            { width_request: -1 }
-        );
-        
-        for (let name of this.device.supportedPlugins) {
-            let metadata = imports.service.plugins[name].METADATA;
-            
-            pluginsSection.addSetting(
-                metadata.summary,
-                metadata.description,
-                new PluginControl(this.device, name)
-            );
-        }
-        
-        pluginsSection.list.set_sort_func((row1, row2) => {
-            return row1.summary.label.localeCompare(row2.summary.label);
-        });
+        this.addSection(_("Plugins"), new PluginSection(this.device));
         
         // Keyboard Shortcuts
         let keySection = this.addSection(
