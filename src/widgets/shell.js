@@ -32,13 +32,10 @@ var Tooltip = new Lang.Class({
         
         this._parent.connect("clicked", Lang.bind(this, this.hover));
         this._parent.connect("destroy", Lang.bind(this, this.destroy));
-        try {
-            this._parent.actor.connect("notify::hover", Lang.bind(this, this.hover));
-            this._parent = this._parent.actor;
-            this._offset = 0;
-        } catch (e) {
-            this._parent.connect("notify::hover", Lang.bind(this, this.hover));
-        }
+        
+        // TODO: oddly fuzzy on menu items, sometimes
+        if (this._parent.actor) { this._parent = this._parent.actor; }
+        this._parent.connect("notify::hover", Lang.bind(this, this.hover));
     },
     
     show: function () {
