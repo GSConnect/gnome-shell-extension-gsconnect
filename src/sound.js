@@ -11,6 +11,8 @@ const Tweener = imports.tweener.tweener;
 const GIRepository = imports.gi.GIRepository;
 GIRepository.Repository.prepend_search_path("/usr/lib/gnome-shell");
 GIRepository.Repository.prepend_library_path("/usr/lib/gnome-shell");
+GIRepository.Repository.prepend_search_path("/usr/lib64/gnome-shell");
+GIRepository.Repository.prepend_library_path("/usr/lib64/gnome-shell");
 const Gvc = imports.gi.Gvc;
 
 // Local Imports
