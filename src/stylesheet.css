@@ -1,0 +1,96 @@
+
+/*
+Device Menu Hierarchy
+---------------------
+
+.gsconnect-device-box [ PopupMenu.PopupBaseMenuItem ]
+    .gsconnect-device-button [ StButton ]
+        StDrawingArea
+    .gsconnect-control-box [ StBoxLayout ]
+        .gsconnect-title-bar [ StBoxLayout ]
+            .gsconnect-device-name [ StLabel ]
+            .gsconnect-title-separator [ StWidget ]
+            .gsconnect-device-battery [ StBoxLayout ]
+                StLabel
+                StIcon
+        .gsconnect-plugin-bar [ StBoxLayout ]
+            .gsconnect-plugin-button [ StButton ]
+                StIcon
+        .gsconnect-status-bar [ StBoxLayout ]
+*/
+
+.gsconnect-device-box {
+    padding: 0.5em 1em;
+    spacing: 0.5em;
+}
+
+.gsconnect-device-button {
+    border: none;
+    border-radius: 24px;
+    padding: 0px;
+}
+
+.gsconnect-device-button:hover, .gsconnect-device-button:focus {
+    border: none;
+    border-radius: 48px;
+    padding: 0px;
+}
+
+.gsconnect-control-box {
+    spacing: 0.5em;
+}
+
+.gsconnect-title-bar {
+    spacing: 0.75em;
+}
+
+.gsconnect-device-name {
+    font-weight: bold;
+}
+
+.gsconnect-title-separator {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.gsconnect-device-battery {
+    spacing: 0.25em;
+}
+
+.gsconnect-plugin-bar {
+    spacing: 0.5em;
+}
+
+.gsconnect-plugin-button {
+    border: none;
+    border-radius: 16px;
+    padding: 8px;
+}
+
+.gsconnect-plugin-button:hover, .gsconnect-plugin-button:focus {
+    border: none;
+    padding: 8px;
+}
+
+.gsconnect-status-bar {
+    height: 32px;
+    spacing: 0.5em;
+}
+
+/* Tooltip */
+.gsconnect-tooltip {
+    border-radius: 2px;
+    min-width: 0;
+    min-height: 0;
+    padding: 6px;
+}
+
+.gsconnect-tooltip-text {
+    font-weight: normal;
+    text-align: left;
+}
+
+.gsconnect-tooltip-text:rtl {
+    text-align: right;
+}
+

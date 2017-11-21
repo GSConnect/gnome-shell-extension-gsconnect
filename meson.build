@@ -13,6 +13,7 @@ extension_source = files(
   # standard files
   'src/extension.js',
   'src/prefs.js',
+  'src/stylesheet.css',
   # non-standard files
   'src/client.js',
   'src/common.js',
