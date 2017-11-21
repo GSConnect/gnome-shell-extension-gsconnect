@@ -42,9 +42,8 @@ var METADATA = {
  *     https://github.com/GNOME/gnome-shell/blob/master/js/ui/mpris.js
  *     https://github.com/JasonLG1979/gnome-shell-extensions-mediaplayer/wiki/Known-Player-Bugs
  *
- * TODO: It's probably possible to grab a remote MPRIS2 player and mirror it
- *       over DBus locally...
- *       File bug on KDE Connect bug tracker about OpenURI wrt share plugin
+ * TODO: It's probably possible to mirror a remote MPRIS2 player on local DBus
+ *       https://github.com/KDE/kdeconnect-kde/commit/9e0d4874c072646f1018ad413d59d1f43e590777
  */
 
 const DBusIface = '<node> \
