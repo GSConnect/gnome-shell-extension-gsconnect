@@ -149,8 +149,8 @@ var Tooltip = new Lang.Class({
 
 
 /** An St.Button subclass for buttons with an image and an action */
-var Button = new Lang.Class({
-    Name: "GSConnectShellButton",
+var PluginButton = new Lang.Class({
+    Name: "GSConnectShellPluginButton",
     Extends: St.Button,
     
     _init: function (params) {
@@ -162,16 +162,16 @@ var Button = new Lang.Class({
         }, params);
     
         this.parent({
-            style_class: "system-menu-action",
-            style: "padding: 8px;",
+            style_class: "system-menu-action gsconnect-plugin-button",
             child: new St.Icon({ icon_name: params.icon_name }),
-            toggle_mode: params.toggle_mode
+            toggle_mode: params.toggle_mode,
+            can_focus: true
         });
         
         this.callback = params.callback;
         
         this.connect("clicked", () => {
-            this.callback(this)
+            this.callback(this);
         });
         
         this.connect("notify::checked", () => {
@@ -183,7 +183,10 @@ var Button = new Lang.Class({
         });
         
         if (typeof params.tooltip_text === "string") {
-            this.tooltip = new Tooltip(params.tooltip_text, this);
+            this.tooltip = new Tooltip({
+                parent: this,
+                title: params.tooltip_text
+            });
             this.connect("destroy", () => { this.tooltip.destroy(); });
         }
     }
