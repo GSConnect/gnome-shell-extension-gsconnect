@@ -239,6 +239,7 @@ var Daemon = new Lang.Class({
     _addDevice: function (packet, channel=null) {
         Common.debug("Daemon._addDevice(" + packet.body.deviceName + ")");
         
+        if (!this.identity) { return; }
         if (packet.body.deviceId === this.identity.body.deviceId) { return; }
             
         let dbusPath = Common.dbusPathFromId(packet.body.deviceId);
