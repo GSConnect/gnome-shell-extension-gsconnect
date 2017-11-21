@@ -162,9 +162,10 @@ var Section = new Lang.Class({
     },
     
     /**
-     * Add a new row to @section, populated from the Schema for @setting. An
-     * Gtk.Widget will be chosen for @setting based on it's type, unless
-     * @widget is given which will have @setting passed to it's constructor.
+     * Add a new row to @section, populated from the Schema for @settings and
+     * the key @keyName. A Gtk.Widget will be chosen for @keyName based on it's
+     * type, unless @widget is given which will have @settings and @keyName
+     * passed to its constructor.
      *
      * @param {String} keyName - The GSettings key name
      * @param {Gtk.Widget} widget - An override widget
