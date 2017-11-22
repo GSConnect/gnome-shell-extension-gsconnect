@@ -21,6 +21,11 @@
       <summary>Show Unpaired</summary>
       <description>Display devices even if unpaired</description>
     </key>
+    <key name="show-battery" type="b">
+      <default>false</default>
+      <summary>Show Battery Indicator</summary>
+      <description>Display a simple battery icon with a percentage</description>
+    </key>
     <key name="devices" type="as">
       <default>[]</default>
     </key>
