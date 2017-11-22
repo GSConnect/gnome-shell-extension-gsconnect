@@ -98,7 +98,7 @@ var KeybindingManager = new Lang.Class({
 
 /** A PopupMenu used as an information and control center for a device */
 var DeviceMenu = new Lang.Class({
-    Name: "GSConnectDeviceMenu",
+    Name: "GSConnectShellDeviceMenu",
     Extends: PopupMenu.PopupMenuSection,
 
     _init: function (daemon, device) {
@@ -108,240 +108,193 @@ var DeviceMenu = new Lang.Class({
         this.daemon = daemon;
         this._keybindings = [];
         
-        // Info Bar
-        this.infoBar = new PopupMenu.PopupSeparatorMenuItem(device.name);
-        this.infoBar.label.clutter_text.ellipsize = Pango.EllipsizeMode.NONE;
-        this.infoBar._separator.style = "margin-left: 6px; margin-right: 6px;";
-        this.addMenuItem(this.infoBar);
-        
-        this.batteryLabel = new St.Label();
-        this.batteryLabel.clutter_text.ellipsize = Pango.EllipsizeMode.NONE;
-        this.infoBar.actor.add(this.batteryLabel);
-        
-        this.batteryIcon = new St.Icon({
-            icon_name: "battery-missing-symbolic",
-            style_class: "popup-menu-icon"
+        // Device Box
+        this.deviceBox = new PopupMenu.PopupBaseMenuItem({
+            can_focus: false,
+            reactive: false,
+            style_class: "popup-menu-item gsconnect-device-box"
         });
-        this.infoBar.actor.add(this.batteryIcon);
+        this.deviceBox.actor.remove_child(this.deviceBox._ornamentLabel);
+        this.deviceBox.actor.vertical = false;
+        this.addMenuItem(this.deviceBox);
+        
+        this.deviceButton = new ShellWidget.DeviceButton(this.device);
+        this.deviceBox.actor.add_child(this.deviceButton);
+        
+        this.controlBox = new St.BoxLayout({
+            style_class: "gsconnect-control-box",
+            vertical: true,
+            x_expand: true
+        });
+        this.deviceBox.actor.add_child(this.controlBox);
+        
+        // Title Bar
+        this.nameBar = new St.BoxLayout({
+            style_class: "gsconnect-title-bar"
+        });
+        this.controlBox.add_child(this.nameBar);
+        
+        this.nameLabel = new St.Label({
+            style_class: "gsconnect-device-name",
+            text: this.device.name
+        });
+        this.nameBar.add_child(this.nameLabel);
+        
+        let nameSeparator = new St.Widget({
+            style_class: "popup-separator-menu-item gsconnect-title-separator",
+            x_expand: true,
+            y_expand: true,
+            y_align: Clutter.ActorAlign.CENTER
+        });
+        this.nameBar.add_child(nameSeparator);
+        
+        this.deviceBattery = new ShellWidget.DeviceBattery(this.device);
+        this.nameBar.add_child(this.deviceBattery);
         
         // Plugin Bar
-        this.pluginBar = new PopupMenu.PopupBaseMenuItem({
-            reactive: false,
-            can_focus: false
-        }); 
-        this.addMenuItem(this.pluginBar);
+        this.pluginBar = new St.BoxLayout({
+            style_class: "gsconnect-plugin-bar"
+        });
+        this.controlBox.add_child(this.pluginBar);
         
-        this.smsButton = new ShellWidget.Button({
+        this.telephonyButton = new ShellWidget.PluginButton({
             icon_name: "sms-symbolic",
-            callback: Lang.bind(this, this._smsAction),
+            callback: Lang.bind(this, this._telephonyAction),
             tooltip_text: _("Send SMS")
         });
-        this.pluginBar.actor.add(this.smsButton, { expand: true, x_fill: false });
+        this.pluginBar.add_child(this.telephonyButton);
         
-        this.findButton = new ShellWidget.Button({
+        this.findmyphoneButton = new ShellWidget.PluginButton({
             icon_name: "find-location-symbolic",
-            callback: Lang.bind(this, this._findAction),
+            callback: Lang.bind(this, this._findmyphoneAction),
             tooltip_text: _("Locate %s").format(this.device.name)
         });
-        this.pluginBar.actor.add(this.findButton, { expand: true, x_fill: false });
+        this.pluginBar.add_child(this.findmyphoneButton);
         
-        this.browseButton = new ShellWidget.Button({
+        this.sftpButton = new ShellWidget.PluginButton({
             icon_name: "folder-remote-symbolic",
-            callback: Lang.bind(this, this._browseAction),
+            callback: Lang.bind(this, this._sftpAction),
             toggle_mode: true,
             tooltip_text: _("Browse Files")
         });
-        this.pluginBar.actor.add(this.browseButton, { expand: true, x_fill: false });
+        this.pluginBar.add_child(this.sftpButton);
         
-        this.shareButton = new ShellWidget.Button({
+        this.shareButton = new ShellWidget.PluginButton({
             icon_name: "send-to-symbolic",
             callback: Lang.bind(this, this._shareAction),
             tooltip_text: _("Share File/URL")
         });
-        this.pluginBar.actor.add(this.shareButton, { expand: true, x_fill: false });
+        this.pluginBar.add_child(this.shareButton);
         
-        this.runButton = new ShellWidget.Button({
+        this.runcommandButton = new ShellWidget.PluginButton({
             icon_name: "system-run-symbolic",
-            callback: Lang.bind(this, this._runAction),
+            callback: Lang.bind(this, this._runcommandAction),
             toggle_mode: true,
             tooltip_text: _("Run Commands")
         });
-        this.pluginBar.actor.add(this.runButton, { expand: true, x_fill: false });
+        this.pluginBar.add_child(this.runcommandButton);
+        
+        this.mousepadButton = new ShellWidget.PluginButton({
+            icon_name: "input-keyboard-symbolic",
+            callback: Lang.bind(this, this._runcommandAction),
+            toggle_mode: true,
+            tooltip_text: _("Remote Input")
+        });
+        this.pluginBar.add_child(this.mousepadButton);
+        
+        // Status Bar
+        this.statusBar = new St.BoxLayout({
+            style_class: "gsconnect-status-bar"
+        });
+        this.controlBox.add_child(this.statusBar);
+        
+        this.statusLabel = new St.Label({
+            text: "",
+            y_align: Clutter.ActorAlign.START,
+            y_expand: true
+        });
+        this.statusBar.add_child(this.statusLabel);
         
         // List Panel
-        this.listPanel = new PopupMenu.PopupMenuSection({
-            reactive: false,
-            can_focus: false
-        });
+        this.listPanel = new PopupMenu.PopupMenuSection();
         this.listPanel.actor.style_class = "popup-sub-menu";
         this.listPanel.actor.visible = false;
-        this.addMenuItem(this.listPanel);
         this.listPanel._getTopMenu().connect("open-state-changed", (actor, open) => {
             if (!open) {
-                this.browseButton.checked = false;
-                this.runButton.checked = false;
+                this.sftpButton.checked = false;
+                this.runcommandButton.checked = false;
                 this.listPanel.actor.visible = false;
             }
         });
+        this.addMenuItem(this.listPanel);
         
-        // Status Bar
-        this.statusBar = new PopupMenu.PopupBaseMenuItem({
-            reactive: false,
-            can_focus: false
-        });
-        this.addMenuItem(this.statusBar);
+        // Properties
+        device.connect("notify::name", Lang.bind(this, this._sync));
+        device.connect("notify::plugins", Lang.bind(this, this._sync));
+        device.connect("notify::connected", Lang.bind(this, this._sync));
+        device.connect("notify::paired", Lang.bind(this, this._sync));
         
-        this.statusButton = new ShellWidget.Button({
-            icon_name: "channel-insecure-symbolic",
-            tooltip_text: "" // placeholder, strings in this._statusChanged()
-        });
-        this.statusBar.actor.add(this.statusButton, { x_fill: false });
+        Settings.connect("changed", Lang.bind(this, this._sync));
         
-        this.statusLabel = new St.Label({
-            text: "", // placeholder, strings in this._statusChanged()
-            y_align: Clutter.ActorAlign.CENTER
-        });
-        this.statusBar.actor.add(this.statusLabel, { x_expand: true });
-        
-        // Property signals
-        device.connect(
-            "notify::name",
-            Lang.bind(this, this._nameChanged)
-        );
-        device.connect(
-            "notify::plugins",
-            Lang.bind(this, this._pluginsChanged)
-        );
-        device.connect(
-            "notify::connected",
-            Lang.bind(this, this._statusChanged)
-        );
-        device.connect(
-            "notify::paired",
-            Lang.bind(this, this._statusChanged)
-        );
-        
-        this._statusChanged(device);
+        this._sync(device);
     },
     
-    // Callbacks
-    _batteryChanged: function (battery) {
-        Common.debug("extension.DeviceMenu._batteryChanged()");
-        
-        // Fix for "JS ERROR: TypeError: this.device.battery is undefined"
-        if (this.device.battery === undefined) { return; }
-        
-        let {charging, level} = this.device.battery;
-        let icon = "battery";
-        
-        if (level < 3) {
-            icon += "-empty";
-        } else if (level < 10) {
-            icon += "-caution";
-        } else if (level < 30) {
-            icon += "-low";
-        } else if (level < 60) {
-            icon += "-good";
-        } else if (level >= 60) {
-            icon += "-full";
-        }
-        
-        icon = (charging) ? icon + "-charging" : icon;
-        this.batteryIcon.icon_name = icon + "-symbolic";
-        this.batteryLabel.text = level + "%";
-        
-        // "false, -1" if no data or remote plugin is disabled but not local
-        if (level === -1) {
-            this.batteryIcon.icon_name = "battery-missing-symbolic";
-            this.batteryLabel.text = "";
-        }
-    },
-    
-    _nameChanged: function (device, name) {
-        Common.debug("extension.DeviceMenu._nameChanged()");
-        
-        this.nameLabel.label.text = this.device.name;
-    },
-    
-    _pluginsChanged: function (device) {
-        Common.debug("extension.DeviceMenu._pluginsChanged()");
+    _sync: function (device) {
+        Common.debug("extension.DeviceMenu._sync()");
         
         let { connected, paired, plugins } = this.device;
         
-        if (!plugins.length && connected && paired) {
-            this.pluginBar.actor.visible = false;
-            this.statusBar.actor.visible = true;
-            this.statusButton.child.icon_name = "preferences-other-symbolic";
-            this.statusButton.tooltip.title = _("Mobile Settings");
-            this.statusButton.callback = Common.startPreferences;
+        this.nameLabel.text = this.device.name;
+        this.deviceBattery.visible = (connected && paired); // TODO setting
+        
+        this.pluginBar.visible = (connected && paired && plugins.length);
+        this.statusBar.visible = (!connected || !paired || !plugins.length);
+        
+        if (!connected) {
+            this.statusLabel.text = _("Device is disconnected");
+        } else if (!paired) {
+            this.statusLabel.text = _("Device is unpaired");
+        } else if (!plugins.length) {
             this.statusLabel.text = _("No plugins enabled");
-        } else {
-            this.statusBar.actor.visible = false;
-            this.pluginBar.actor.visible = true;
+            //this.statusButton.child.icon_name = "preferences-other-symbolic";
+            //this.statusButton.tooltip.title = _("Mobile Settings");
         }
         
         // Plugin Buttons
         let buttons = {
-            findmyphone: this.findButton,
-            runcommand: this.runButton,
-            sftp: this.browseButton,
+            findmyphone: this.findmyphoneButton,
+            mousepad: this.mousepadButton,
+            runcommand: this.runcommandButton,
+            sftp: this.sftpButton,
             share: this.shareButton,
-            telephony: this.smsButton
+            telephony: this.telephonyButton
         };
         
         for (let name in buttons) {
             buttons[name].visible = (this.device.hasOwnProperty(name));
         }
         
+        // Battery
+        if (connected && paired && Settings.get_boolean("show-battery")) {
+            this.deviceBattery.visible = true;
+            this.deviceBattery.update();
+        } else {
+            this.deviceBattery.visible = false;
+        }
+        
         // Run Button
         if (this.device.hasOwnProperty("runcommand")) {
             let commands = JSON.parse(this.device.runcommand.commands);
-            this.runButton.visible = (Object.keys(commands).length);
+            this.runcommandButton.visible = (Object.keys(commands).length);
         }
-        
-        // Battery Plugin
-        if (this.device.hasOwnProperty("battery")) {
-            this.device.battery.connect(
-                "notify",
-                Lang.bind(this, this._batteryChanged)
-            );
-            this.device.battery.notify("level");
-        } else {
-            this.batteryIcon.icon_name = "battery-missing-symbolic";
-            this.batteryLabel.text = "";
-        }
-    },
-    
-    _statusChanged: function (device) {
-        Common.debug("extension.DeviceMenu._statusChanged(" + this.device.name + ")");
-        
-        let { connected, paired } = this.device;
-        
-        this.batteryIcon.visible = (connected && paired);
-        this.pluginBar.actor.visible = (connected && paired);
-        this.statusBar.actor.visible = (!connected || !paired);
-        
-        if (!connected) {
-            this.statusButton.child.icon_name = "view-refresh-symbolic";
-            this.statusButton.tooltip.title = _("Reconnect <b>%s</b>").format(this.device.name);
-            this.statusButton.callback = () => { this.device.activate(); };
-            this.statusLabel.text = _("Device is disconnected");
-        } else if (!paired) {
-            this.statusButton.child.icon_name = "channel-insecure-symbolic";
-            this.statusButton.tooltip.title = _("Pair <b>%s</b>").format(this.device.name) + "\n\n" + _("<b>%s Fingerprint:</b>\n%s\n\n<b>Local Fingerprint:</b>\n%s").format(this.device.name, this.device.fingerprint, this.daemon.fingerprint);
-            this.statusButton.callback = () => { this.device.pair(); };
-            this.statusLabel.text = _("Device is unpaired");
-        }
-        
-        this._pluginsChanged(this.device);
     },
     
     // Plugin Callbacks
-    _browseAction: function (button) {
-        Common.debug("extension.DeviceMenu._browseAction()");
+    _sftpAction: function (button) {
+        Common.debug("extension.DeviceMenu._sftpAction()");
         
         if (button.checked) {
-            this.runButton.checked = false;
+            this.runcommandButton.checked = false;
             this.listPanel.actor.destroy_all_children();
         } else {
             this.listPanel.actor.visible = false;
@@ -349,11 +302,11 @@ var DeviceMenu = new Lang.Class({
         }
         
         if (this.device.sftp.mounted) {
-            this._browseList();
+            this._sftpList();
         } else {
-            this._browseNotify = this.device.sftp.connect("notify::mounted", () => {
+            this._sftpNotify = this.device.sftp.connect("notify::mounted", () => {
                 if (this.device.sftp.mounted) {
-                    this._browseList();
+                    this._sftpList();
                 } else {
                     Main.notifyError(
                         this.device.name,
@@ -372,8 +325,8 @@ var DeviceMenu = new Lang.Class({
         }
     },
     
-    _browseList: function () {
-        Common.debug("extension.DeviceMenu._browseList()");
+    _sftpList: function () {
+        Common.debug("extension.DeviceMenu._sftpList()");
         
         for (let name in this.device.sftp.directories) {
             let mountItem = new PopupMenu.PopupMenuItem(name);
@@ -393,28 +346,28 @@ var DeviceMenu = new Lang.Class({
         this.listPanel.actor.visible = true;
     },
     
-    _findAction: function (button) {
-        Common.debug("extension.DeviceMenu._findAction()");
+    _findmyphoneAction: function (button) {
+        Common.debug("extension.DeviceMenu._findmyphoneAction()");
         this._getTopMenu().close(true);
         this.device.find();
     },
     
-    _runAction: function (button) {
-        Common.debug("extension.DeviceMenu._runAction()");
+    _runcommandAction: function (button) {
+        Common.debug("extension.DeviceMenu._runcommandAction()");
         
         if (button.checked) {
-            this.browseButton.checked = false;
+            this.sftpButton.checked = false;
             this.listPanel.actor.destroy_all_children();
         } else {
             this.listPanel.actor.visible = false;
             return;
         }
         
-        this._runList();
+        this._runcommandList();
     },
     
-    _runList: function () {
-        Common.debug("extension.DeviceMenu._runList()");
+    _runcommandList: function () {
+        Common.debug("extension.DeviceMenu._runcommandList()");
         
         let commands = JSON.parse(this.device.runcommand.commands);
         
@@ -426,10 +379,10 @@ var DeviceMenu = new Lang.Class({
                 style_class: "popup-menu-icon"
             });
             commandItem.actor.insert_child_at_index(icon, 1);
-            commandItem.tooltip = new ShellWidget.Tooltip(
-                commands[key].command,
-                commandItem
-            );
+            commandItem.tooltip = new ShellWidget.Tooltip({
+                parent: commandItem,
+                title: commands[key].command
+            });
             commandItem.key = key;
             
             commandItem.connect("activate", (item) => {
@@ -449,8 +402,8 @@ var DeviceMenu = new Lang.Class({
         this.device.shareDialog();
     },
     
-    _smsAction: function (button) {
-        Common.debug("extension.DeviceMenu._smsAction()");
+    _telephonyAction: function (button) {
+        Common.debug("extension.DeviceMenu._telephonyAction()");
         this._getTopMenu().close(true);
         this.device.telephony.openSms();
     }
