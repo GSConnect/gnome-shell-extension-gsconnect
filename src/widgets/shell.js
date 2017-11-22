@@ -243,6 +243,85 @@ var PluginButton = new Lang.Class({
 });
 
 
+var DeviceBattery = new Lang.Class({
+    Name: "GSConnectShellDeviceBattery",
+    Extends: St.BoxLayout,
+    
+    _init: function (device) {
+        this.parent({
+            reactive: false,
+            style_class: "gsconnect-device-battery"
+        });
+        
+        this.device = device;
+        
+        this.label = new St.Label({ text: "" });
+        this.add_child(this.label);
+        
+        this.icon = new St.Icon({
+            icon_name: "battery-missing-symbolic",
+            icon_size: 16
+        });
+        this.add_child(this.icon);
+        
+        if (this.device.battery) {
+            this._battery = this.device.battery.connect("notify", () => {
+                this.update();
+            });
+        }
+        
+        this.device.connect("notify::plugins", () => {
+            if (this.device.battery && !this._battery) {
+                this._battery = this.device.battery.connect("notify", () => {
+                    this.update();
+                });
+                this.update();
+            } else if (!this.device.battery && this._battery) {
+                delete this._battery;
+            }
+        });
+        
+        this.update();
+    },
+    
+    update: function () {
+        if (!this.visible) { return; }
+        
+        // Fix for "JS ERROR: TypeError: this.device.battery is undefined"
+        if (this.device.battery === undefined) {
+            this.icon.icon_name = "battery-missing-symbolic";
+            this.label.text = "";
+            return;
+        }
+        
+        let {charging, level} = this.device.battery;
+        let icon = "battery";
+        
+        if (level < 3) {
+            icon += "-empty";
+        } else if (level < 10) {
+            icon += "-caution";
+        } else if (level < 30) {
+            icon += "-low";
+        } else if (level < 60) {
+            icon += "-good";
+        } else if (level >= 60) {
+            icon += "-full";
+        }
+        
+        icon = (charging) ? icon + "-charging" : icon;
+        this.icon.icon_name = icon + "-symbolic";
+        this.label.text = level + "%";
+        
+        // "false, -1" if no data or remote plugin is disabled but not local
+        if (level === -1) {
+            this.icon.icon_name = "battery-missing-symbolic";
+            this.label.text = "";
+        }
+    },
+});
+
+
 /**
  * A Device Icon
  */
