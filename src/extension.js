@@ -204,14 +204,15 @@ var DeviceMenu = new Lang.Class({
         
         // Status Bar
         this.statusBar = new St.BoxLayout({
-            style_class: "gsconnect-status-bar"
+            style_class: "gsconnect-status-bar",
+            y_align: Clutter.ActorAlign.FILL,
+            y_expand: true
         });
         this.controlBox.add_child(this.statusBar);
         
         this.statusLabel = new St.Label({
             text: "",
-            y_align: Clutter.ActorAlign.START,
-            y_expand: true
+            y_align: Clutter.ActorAlign.CENTER
         });
         this.statusBar.add_child(this.statusLabel);
         
@@ -256,8 +257,6 @@ var DeviceMenu = new Lang.Class({
             this.statusLabel.text = _("Device is unpaired");
         } else if (!plugins.length) {
             this.statusLabel.text = _("No plugins enabled");
-            //this.statusButton.child.icon_name = "preferences-other-symbolic";
-            //this.statusButton.tooltip.title = _("Mobile Settings");
         }
         
         // Plugin Buttons
