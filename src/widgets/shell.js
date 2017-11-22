@@ -1,15 +1,31 @@
 "use strict";
 
 // Imports
+const Gettext = imports.gettext.domain("gsconnect");
+const _ = Gettext.gettext;
 const Lang = imports.lang;
 const Mainloop = imports.mainloop;
+
+const Cairo = imports.cairo;
 const Clutter = imports.gi.Clutter;
+const Gio = imports.gi.Gio;
+const Gtk = imports.gi.Gtk;
 const Pango = imports.gi.Pango;
 const St = imports.gi.St;
 
 const Main = imports.ui.main;
 const Tweener = imports.ui.tweener;
 
+// Local Imports
+function getPath() {
+    // Diced from: https://github.com/optimisme/gjs-examples/
+    let m = new RegExp("@(.+):\\d+").exec((new Error()).stack.split("\n")[1]);
+    return Gio.File.new_for_path(m[1]).get_parent().get_parent().get_path();
+}
+
+imports.searchPath.push(getPath());
+
+const Common = imports.common;
 
 /** 
  * A Tooltip for ActionButton
@@ -223,6 +239,231 @@ var PluginButton = new Lang.Class({
             });
             this.connect("destroy", () => { this.tooltip.destroy(); });
         }
+    }
+});
+
+
+/**
+ * A Device Icon
+ */
+var DeviceIcon = new Lang.Class({
+    Name: "GSConnectShellDeviceIcon",
+    Extends: St.DrawingArea,
+    
+    _init: function (device) {
+        this.parent({
+            width: 48,
+            height: 48,
+            reactive: true,
+            track_hover: true,
+            y_align: Clutter.ActorAlign.START,
+            y_expand: false
+        });
+        
+        this.device = device;
+        
+        this.tooltip = new Tooltip({
+            parent: this,
+            title: this.device.name,
+            y_offset: 16
+        });
+        
+        this._theme = Gtk.IconTheme.get_default();
+        
+        this.icon = this._theme.load_surface(this.device.type, 32, 1, null, 0);
+        this._emblem = {
+            pair: this._theme.load_surface("channel-insecure-symbolic", 16, 1, null, 0),
+            reconnect: this._theme.load_surface("view-refresh-symbolic", 16, 1, null, 0)
+        };
+        
+        this._themeSignal = this._theme.connect("changed", () => {
+            this.icon = this._theme.load_surface(this.device.type, 32, 1, null, 0);
+            this._emblem = {
+                pair: this._theme.load_surface("channel-insecure-symbolic", 16, 1, null, 0),
+                reconnect: this._theme.load_surface("view-refresh-symbolic", 16, 1, null, 0)
+            };
+            this.queue_repaint();
+        });
+        
+        this.connect("repaint", Lang.bind(this, this._draw));
+        device.connect("notify::connected", () => { this.queue_repaint(); });
+        device.connect("notify::paired", () => { this.queue_repaint(); });
+        
+        // Battery Plugin
+        if (this.device.battery) {
+            this._battery = this.device.battery.connect("notify", () => {
+                this.queue_repaint();
+            });
+        }
+        
+        this.device.connect("notify::plugins", () => {
+            if (this.device.battery && !this._battery) {
+                this._battery = this.device.battery.connect("notify", () => {
+                    this.queue_repaint();
+                });
+                this.queue_repaint();
+            } else if (!this.device.battery && this._battery) {
+                delete this._battery;
+            }
+        });
+        
+        this.connect("destroy", () => {
+            this._theme.disconnect(this._themeSignal);
+            return true;
+        });
+    },
+    
+    _hsv2rgb: function (h, s, v) {
+        let r, g, b;
+        
+        h = h / 360;
+        s = s / 100;
+        v = v / 100;
+
+        let i = Math.floor(h * 6);
+        let f = h * 6 - i;
+        let p = v * (1 - s);
+        let q = v * (1 - f * s);
+        let t = v * (1 - (1 - f) * s);
+
+        switch (i % 6) {
+            case 0: r = v, g = t, b = p; break;
+            case 1: r = q, g = v, b = p; break;
+            case 2: r = p, g = v, b = t; break;
+            case 3: r = p, g = q, b = v; break;
+            case 4: r = t, g = p, b = v; break;
+            case 5: r = v, g = p, b = q; break;
+        }
+        
+        return [r, g, b];
+    },
+    
+    _interpolate: function (high, low, progress) {
+        return this._hsv2rgb(this.device.battery.level / 100 * 120, 100, 85);
+    },
+    
+    _draw: function () {
+        if (!this.visible) { return; }
+        
+        let [width, height] = this.get_surface_size();
+        let xc = width / 2;
+        let yc = height / 2;
+        let rc = Math.min(xc, yc);
+        
+        let cr = this.get_context();
+        let thickness = 3;
+        let r = rc - (thickness / 2);
+        cr.setLineWidth(thickness);
+        
+        if (this.device.battery) {
+            if (this.device.battery.charging) {
+                cr.setSourceRGBA(0.43, 0.85, 0.0, 0.25); // green
+                cr.arc(xc, yc, r, 0, 2 * Math.PI);
+                cr.fill();
+            }
+        }
+        
+        // Icon
+        cr.setSourceSurface(this.icon, xc - 16, yc - 16);
+        cr.paint();
+        
+        if (!this.device.connected) {
+            cr.setSourceSurface(this.icon, xc - 16, yc - 16);
+            cr.setOperator(Cairo.Operator.EXCLUSION);
+            cr.paint();
+        
+            this.tooltip.title = _("Reconnect <b>%s</b>").format(this.device.name);
+            cr.setSourceRGB(0.8, 0.8, 0.8);
+            cr.setOperator(Cairo.Operator.OVER);
+            cr.setDash([6, 6], 0); 
+            cr.arc(xc, yc, r, 0, 2 * Math.PI);
+            cr.stroke();
+            
+            cr.setSourceSurface(this._emblem.reconnect, xc, yc);
+            cr.paint();
+        } else if (!this.device.paired) {
+            this.tooltip.title = _("Pair <b>%s</b>").format(this.device.name) + "\n\n" + _("<b>%s Fingerprint:</b>\n%s\n\n<b>Local Fingerprint:</b>\n%s").format(this.device.name, this.device.fingerprint, this.device.daemon.fingerprint);
+            cr.setSourceRGB(0.96, 0.48, 0.0); // orange
+            cr.setDash([6, 6], 0); 
+            cr.arc(xc, yc, r, 0, 2 * Math.PI);
+            cr.stroke();
+            
+            cr.setSourceSurface(this._emblem.pair, xc, yc);
+            cr.paint();
+        } else if (this.device.battery) {
+            // Capacity arc
+            cr.setSourceRGB(0.8, 0.8, 0.8);
+            
+            if (this.device.battery.level < 1) {
+                cr.arc(xc, yc, r, 0, 2 * Math.PI);
+            } else if (this.device.battery.level < 100) {
+                let end = (this.device.battery.level / 50 * Math.PI) + 1.5 * Math.PI;
+                cr.arcNegative(xc, yc, r, 1.5 * Math.PI, end);
+            }
+            cr.stroke();
+            
+            // Remaining arc
+            cr.setSourceRGB(...this._interpolate());
+            
+            if (this.device.battery.level === 100) {
+                cr.arc(xc, yc, r, 0, 2 * Math.PI);
+                this.tooltip.title = _("Fully Charged");
+            } else if (this.device.battery.level > 0) {
+                let end = (this.device.battery.level / 50 * Math.PI) + 1.5 * Math.PI;
+                cr.arc(xc, yc, r, 1.5 * Math.PI, end);
+                
+                if (this.device.battery.charging) {
+                    this.tooltip.title = _("%d%% (Charging)").format(
+                        this.device.battery.level
+                    );
+                } else {
+                    this.tooltip.title = _("%d%% (Discharging)").format(
+                        this.device.battery.level
+                    );
+                }
+            }
+            cr.stroke();
+        } else {
+            this.tooltip.title = this.device.name;
+            cr.setSourceRGB(0.8, 0.8, 0.8);
+            cr.arc(xc, yc, r, 0, 2 * Math.PI);
+            cr.stroke();
+        }
+        
+        cr.$dispose();
+    }
+});
+
+
+/** An St.Button subclass for buttons with an image and an action */
+var DeviceButton = new Lang.Class({
+    Name: "GSConnectShellDeviceButton",
+    Extends: St.Button,
+    
+    _init: function (device) {
+        this.parent({
+            style_class: "system-menu-action gsconnect-device-button",
+            child: new DeviceIcon(device),
+            can_focus: true,
+            track_hover: true,
+            x_expand: false,
+            y_align: St.Align.START,
+            y_fill: false,
+            y_expand: false
+        });
+        this.set_y_align(Clutter.ActorAlign.START);
+        
+        this.device = device;
+        
+        this.connect("clicked", () => {
+            if (!this.device.connected) {
+                this.device.activate();
+            } else if (!this.device.paired) {
+                this.device.pair();
+            } else {
+                Common.startPreferences();
+            }
+        });
     }
 });
 
