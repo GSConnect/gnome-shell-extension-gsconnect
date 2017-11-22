@@ -36,7 +36,7 @@ const ShellWidget = Me.imports.widgets.shell;
  *
  */
 var KeybindingManager = new Lang.Class({
-    Name: "GSConnectKeybindingManager",
+    Name: "GSConnectShellKeybindingManager",
 
     _init: function (devices) {
         this.bindings = new Map();
