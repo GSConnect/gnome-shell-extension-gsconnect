@@ -481,7 +481,7 @@ var DeviceIndicator = new Lang.Class({
  * indicating that the extension is active when there are none.
  */
 var SystemIndicator = new Lang.Class({
-    Name: "GSConnectSystemIndicator",
+    Name: "GSConnectShellSystemIndicator",
     Extends: PanelMenu.SystemIndicator,
     
     _init: function () {
@@ -600,7 +600,7 @@ var SystemIndicator = new Lang.Class({
             menu._keybindings.push(
                 this.keybindingManager.add(
                     accels.sms, 
-                    Lang.bind(menu, menu._smsAction)
+                    Lang.bind(menu, menu._telephonyAction)
                 )
             );
         }
@@ -609,7 +609,7 @@ var SystemIndicator = new Lang.Class({
             menu._keybindings.push(
                 this.keybindingManager.add(
                     accels.find, 
-                    Lang.bind(menu, menu._findAction)
+                    Lang.bind(menu, menu._findmyphoneAction)
                 )
             );
         }
@@ -618,7 +618,7 @@ var SystemIndicator = new Lang.Class({
             menu._keybindings.push(
                 this.keybindingManager.add(
                     accels.browse,
-                    Lang.bind(this, this._browseDevice, indicator)
+                    Lang.bind(this, this._sftpDevice, indicator)
                 )
             );
         }
@@ -648,8 +648,8 @@ var SystemIndicator = new Lang.Class({
             }
         }
         
-        menu.browseButton.checked = !menu.browseButton.checked;
-        menu.browseButton.emit("clicked", menu.browseButton);
+        menu.sftpButton.checked = !menu.sftpButton.checked;
+        menu.sftpButton.emit("clicked", menu.sftpButton);
     },
     
     _openDeviceMenu: function (indicator) {
