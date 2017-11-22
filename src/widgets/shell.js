@@ -426,14 +426,6 @@ var DeviceIcon = new Lang.Class({
         let r = rc - (thickness / 2);
         cr.setLineWidth(thickness);
         
-        if (this.device.battery) {
-            if (this.device.battery.charging) {
-                cr.setSourceRGBA(0.43, 0.85, 0.0, 0.25); // green
-                cr.arc(xc, yc, r, 0, 2 * Math.PI);
-                cr.fill();
-            }
-        }
-        
         // Icon
         cr.setSourceSurface(this.icon, xc - 16, yc - 16);
         cr.paint();
@@ -494,6 +486,13 @@ var DeviceIcon = new Lang.Class({
                 }
             }
             cr.stroke();
+            
+            if (this.device.battery.charging) {
+                cr.setOperator(Cairo.Operator.DEST_OVER);
+                cr.setSourceRGBA(0.43, 0.85, 0.0, 0.25); // green
+                cr.arc(xc, yc, r, 0, 2 * Math.PI);
+                cr.fill();
+            }
         } else {
             this.tooltip.title = this.device.name;
             cr.setSourceRGB(0.8, 0.8, 0.8);
