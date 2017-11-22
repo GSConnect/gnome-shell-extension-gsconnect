@@ -96,7 +96,10 @@ var Plugin = new Lang.Class({
         
         this._cache = new ContactsCache();
         
-        this._mixer = new Sound.Mixer();
+        if (Sound._mixerControl) {
+            this._mixer = new Sound.Mixer();
+        }
+        
         this._prevVolume = 0;
         this._prevMute = false;
         this._prevMicrophone = false;
@@ -309,6 +312,8 @@ var Plugin = new Lang.Class({
     _adjustVolume: function (action) {
         Common.debug("Telephony: _adjustVolume()");
         
+        if (!this._mixer) { return; }
+        
         if (action === "lower" && !this._prevVolume) {
             if (this._mixer.output.volume > 0.15) {
                 this._prevVolume = Number(this._mixer.output.volume);
@@ -336,6 +341,8 @@ var Plugin = new Lang.Class({
     
     _muteMicrophone: function (mute) {
         Common.debug("Telephony: _muteMicrophone()");
+        
+        if (!this._mixer) { return; }
         
         if (mute && !this._mixer.input.muted) {
             this._mixer.input.muted = true;

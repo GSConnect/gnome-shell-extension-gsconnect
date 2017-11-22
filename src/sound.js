@@ -13,7 +13,6 @@ GIRepository.Repository.prepend_search_path("/usr/lib/gnome-shell");
 GIRepository.Repository.prepend_library_path("/usr/lib/gnome-shell");
 GIRepository.Repository.prepend_search_path("/usr/lib64/gnome-shell");
 GIRepository.Repository.prepend_library_path("/usr/lib64/gnome-shell");
-const Gvc = imports.gi.Gvc;
 
 // Local Imports
 function getPath() {
@@ -28,8 +27,14 @@ const Common = imports.common;
 
 
 // Gvc.MixerControl singleton
-var _mixerControl = new Gvc.MixerControl({ name: "GSConnect" });
-_mixerControl.open();
+try {
+    var Gvc = imports.gi.Gvc;
+    var _mixerControl = new Gvc.MixerControl({ name: "GSConnect" });
+    _mixerControl.open();
+} catch (e) {
+    Common.debug("Warning: failed to initialize Gvc: " + e);
+    var _mixerControl = undefined;
+}
 
 // GSound.Context singleton
 try {
@@ -37,7 +42,7 @@ try {
     var _gsoundContext = new GSound.Context();
     _gsoundContext.init(null);
 } catch (e) {
-    Common.debug("Sound: failed to initialize GSound: " + e);
+    Common.debug("Warning: failed to initialize GSound: " + e);
     var _gsoundContext = undefined;
 }
 
