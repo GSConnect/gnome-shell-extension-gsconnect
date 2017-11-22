@@ -412,7 +412,7 @@ var DeviceMenu = new Lang.Class({
 
 /** An indicator representing a Device in the Status Area */
 var DeviceIndicator = new Lang.Class({
-    Name: "GSConnectDeviceIndicator",
+    Name: "GSConnectShellDeviceIndicator",
     Extends: PanelMenu.Button,
     
     _init: function (daemon, device) {
@@ -432,10 +432,7 @@ var DeviceIndicator = new Lang.Class({
         this.menu.addMenuItem(this.deviceMenu);
         
         // Signals
-        Settings.connect("changed::show-indicators", Lang.bind(this, this._sync));
-        Settings.connect("changed::show-offline", Lang.bind(this, this._sync));
-        Settings.connect("changed::show-unpaired", Lang.bind(this, this._sync));
-        
+        Settings.connect("changed", Lang.bind(this, this._sync));
         device.connect("notify::connected", Lang.bind(this, this._sync));
         device.connect("notify::paired", Lang.bind(this, this._sync));
         
