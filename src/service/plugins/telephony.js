@@ -611,10 +611,7 @@ var ContactsCache = new Lang.Class({
     
         this._dir =  Common.CACHE_DIR + "/contacts";
         this._file = Gio.File.new_for_path(this._dir + "/contacts.json");
-        
-        if (!GLib.file_test(this._dir, GLib.FileTest.IS_DIR)) {
-            GLib.mkdir_with_parents(this._dir, 493);
-        }
+        GLib.mkdir_with_parents(this._dir, 493);
         
         this.contacts = [];
         this.read();

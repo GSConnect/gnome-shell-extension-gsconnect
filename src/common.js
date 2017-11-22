@@ -25,9 +25,7 @@ var CONFIG_DIR = GLib.get_user_config_dir() + "/gsconnect";
 var RUNTIME_DIR = GLib.get_user_runtime_dir() + "/gsconnect";
 
 for (let path of [CACHE_DIR, CONFIG_DIR, RUNTIME_DIR]) {
-    if (!GLib.file_test(path, GLib.FileTest.IS_DIR)) {
-        GLib.mkdir_with_parents(path, 493);
-    }
+    GLib.mkdir_with_parents(path, 493);
 }
 
 
