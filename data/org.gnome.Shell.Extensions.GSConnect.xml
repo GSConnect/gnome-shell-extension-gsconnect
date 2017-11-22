@@ -130,25 +130,25 @@
     </method>
     
     <signal name="missedCall">
-      <arg name="phoneNumber" type="s"/>
-      <arg name="contactName" type="s"/>
-      <arg name="phoneThumbnail" type="s"/>
+      <arg name="number" type="s"/>
+      <arg name="name" type="s"/>
+      <arg name="avatar" type="s"/>
     </signal>
     <signal name="ringing">
-      <arg name="phoneNumber" type="s"/>
-      <arg name="contactName" type="s"/>
-      <arg name="phoneThumbnail" type="s"/>
+      <arg name="number" type="s"/>
+      <arg name="name" type="s"/>
+      <arg name="avatar" type="s"/>
     </signal>
     <signal name="sms">
-      <arg name="phoneNumber" type="s"/>
-      <arg name="contactName" type="s"/>
-      <arg name="messageBody" type="s"/>
-      <arg name="phoneThumbnail" type="s"/>
+      <arg name="number" type="s"/>
+      <arg name="name" type="s"/>
+      <arg name="message" type="s"/>
+      <arg name="avatar" type="s"/>
     </signal>
     <signal name="talking">
-      <arg name="phoneNumber" type="s"/>
-      <arg name="contactName" type="s"/>
-      <arg name="phoneThumbnail" type="s"/>
+      <arg name="number" type="s"/>
+      <arg name="name" type="s"/>
+      <arg name="avatar" type="s"/>
     </signal>
   </interface>
 </node>
