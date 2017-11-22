@@ -28,9 +28,10 @@ imports.searchPath.push(getPath());
 const Common = imports.common;
 
 /** 
- * A Tooltip for ActionButton
+ * An  StTooltip for ClutterActors
  * 
  * Adapted from: https://github.com/RaphaelRochet/applications-overview-tooltip
+ * See also: https://github.com/GNOME/gtk/blob/master/gtk/gtktooltip.c
  */
 var TOOLTIP_BROWSE_ID = 0;
 var TOOLTIP_BROWSE_MODE = false;
@@ -55,26 +56,25 @@ var Tooltip = new Lang.Class({
             throw Error(this.Name + ": arg parent must not be null");
         }
         
-        this._hoverTimeout = 0;
+        this._hoverTimeoutId = 0;
         this._showing = false;
         
         this.bin = null;
         this.label = null;
         
-        try {
-            this._parent.connect("clicked", Lang.bind(this, this.hover));
-        } catch (e) {
-            this._parent.connect("button-release-event", Lang.bind(this, this.hover));
-        }
-        
-        this._parent.connect("destroy", Lang.bind(this, this.destroy));
-        
         // TODO: oddly fuzzy on menu items, sometimes
         if (this._parent.actor) { this._parent = this._parent.actor; }
-        this._parent.connect("notify::hover", Lang.bind(this, this.hover));
+        this._parent.connect("notify::hover", Lang.bind(this, this._hover));
+        this._parent.connect("button-press-event", Lang.bind(this, this._hide));
+        this._parent.connect("destroy", Lang.bind(this, this._hide));
     },
     
-    show: function () {
+    _show: function () {
+        if (!this.title) {
+            this._hide();
+            return;
+        }
+        
         if (!this.bin) {
             this.bin = new St.Bin({
                 style_class: "osd-window gsconnect-tooltip",
@@ -97,7 +97,6 @@ var Tooltip = new Lang.Class({
             this.label.clutter_text.text = this.title;
         }
         
-        // TODO: if tooltip is too big it can overshoot the screen edge
         let [x, y] = this._parent.get_transformed_position();
         x = (x + (this._parent.width/2)) - Math.round(this.bin.width/2);
         
@@ -135,7 +134,7 @@ var Tooltip = new Lang.Class({
         }
     },
     
-    hide: function () {
+    _hide: function () {
         if (this.bin) {
             Tweener.addTween(this.bin, {
                 opacity: 0,
@@ -151,49 +150,43 @@ var Tooltip = new Lang.Class({
             });
         }
         
-        if (this._hoverTimeoutId > 0){
-            Mainloop.source_remove(this._hoverTimeoutId);
-            this._hoverTimeoutId = 0;
-        }
-        
         TOOLTIP_BROWSE_ID = Mainloop.timeout_add(500, () => {
             TOOLTIP_BROWSE_MODE = false;
             TOOLTIP_BROWSE_ID = 0;
             return false;
         });
         
-        if (this._showing) {
-            this._showing = false;
+        if (this._hoverTimeoutId) {
+            Mainloop.source_remove(this._hoverTimeoutId);
             this._hoverTimeoutId = 0;
         }
+        
+        this._showing = false;
+        this._hoverTimeoutId = 0;
     },
     
-    hover: function () {
+    _hover: function () {
         if (this._parent.hover) {
             if (!this._hoverTimeoutId) {
                 if (this._showing) {
-                    this.show();
+                    this._show();
                 } else if (TOOLTIP_BROWSE_MODE) {
                     this._hoverTimeoutId = Mainloop.timeout_add(60, () => {
-                        this.show();
+                        this._show();
                         this._hoverTimeoutId = 0;
                         return false;
                     });
                 } else {
                     this._hoverTimeoutId = Mainloop.timeout_add(500, () => {
-                        this.show();
+                        this._show();
                         this._hoverTimeoutId = 0;
                         return false;
                     });
                 }
             }
         } else {
-            this.hide();
+            this._hide();
         }
-    },
-    
-    destroy: function () {
-        this.hide();
     }
 });
 
