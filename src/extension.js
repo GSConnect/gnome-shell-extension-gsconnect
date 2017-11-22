@@ -365,10 +365,7 @@ var DeviceMenu = new Lang.Class({
                     button.remove_style_pseudo_class("active");
                 }
                 
-                GObject.signal_handler_disconnect(
-                    this.device.sftp,
-                    this._browseNotify
-                );
+                this.device.sftp.disconnect(this._sftpNotify);
             });
         
             this.device.sftp.mount();
