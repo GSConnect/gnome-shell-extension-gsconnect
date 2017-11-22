@@ -230,7 +230,6 @@ var PluginButton = new Lang.Class({
                 parent: this,
                 title: params.tooltip_text
             });
-            this.connect("destroy", () => { this.tooltip.destroy(); });
         }
     }
 });
