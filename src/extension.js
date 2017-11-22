@@ -373,7 +373,7 @@ var DeviceMenu = new Lang.Class({
         for (let key in commands) {
             let commandItem = new PopupMenu.PopupMenuItem(commands[key].name);
             let icon = new St.Icon({
-                icon_name: commands[key].name.toLowerCase().replace(" ", "-"),
+                icon_name: GLib.path_get_basename(commands[key].command),
                 fallback_icon_name: "system-run-symbolic",
                 style_class: "popup-menu-icon"
             });
