@@ -235,6 +235,7 @@ var DeviceMenu = new Lang.Class({
         device.connect("notify::connected", Lang.bind(this, this._sync));
         device.connect("notify::paired", Lang.bind(this, this._sync));
         
+        this.actor.connect("notify::visible", Lang.bind(this, this._sync));
         Settings.connect("changed", Lang.bind(this, this._sync));
         
         this._sync(device);
@@ -243,10 +244,13 @@ var DeviceMenu = new Lang.Class({
     _sync: function (device) {
         Common.debug("extension.DeviceMenu._sync()");
         
+        if (!this.actor.visible) { return; }
+        
         let { connected, paired, plugins } = this.device;
         
         // Title Bar
-        this.nameLabel.text = this.device.name;
+        // Fix for "st_label_set_text: assertion 'text != NULL' failed"
+        this.nameLabel.text = this.device.name || "";
         
         if (connected && paired && Settings.get_boolean("show-battery")) {
             this.deviceBattery.visible = true;
