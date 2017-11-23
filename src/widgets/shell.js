@@ -28,7 +28,7 @@ imports.searchPath.push(getPath());
 const Common = imports.common;
 
 /** 
- * An  StTooltip for ClutterActors
+ * An StTooltip for ClutterActors
  * 
  * Adapted from: https://github.com/RaphaelRochet/applications-overview-tooltip
  * See also: https://github.com/GNOME/gtk/blob/master/gtk/gtktooltip.c
@@ -40,37 +40,96 @@ var Tooltip = new Lang.Class({
     Name: "GSConnectShellTooltip",
     
     _init: function (params) {
-        params = Object.assign({
-            parent: null,
-            title: "",
-            x_offset: 0,
-            y_offset: 0
-        }, params);
-    
-        this._parent = params.parent;
-        this.title = params.title;
-        this.x_offset = params.x_offset;
-        this.y_offset = params.y_offset;
+        // Properties
+        Object.defineProperties(this, {
+            "custom": {
+                get: () => { return this._custom || false; },
+                set: (actor) => {
+                    this._custom = actor;
+                    this._markup = null;
+                    this._text = null;
+                    this._update();
+                }
+            },
+            "markup": {
+                get: () => { return this._markup || false; },
+                set: (value) => {
+                    this._markup = value;
+                    this._text = null;
+                    this._update();
+                }
+            },
+            "text": {
+                get: () => { return this._text || false; },
+                set: (value) => {
+                    this._markup = value;
+                    this._text = null;
+                    this._update();
+                }
+            },
+            "icon_name": {
+                get: () => { return this._gicon.name; },
+                set: (icon_name) => {
+                    if (!icon_name) {
+                        this.gicon = null;
+                    } else {
+                        this.gicon = new Gio.ThemedIcon({
+                            name: icon_name
+                        });
+                    }
+                }
+            },
+            "gicon": {
+                get: () => { return this._gicon || false; },
+                set: (gicon) => {
+                    this._gicon = gicon;
+                    this._update();
+                }
+            },
+            "x_offset": {
+                get: () => {
+                    return (this._x_offset === undefined) ? 0 : this._x_offset;
+                },
+                set: (offset) => {
+                    this._x_offset = (Number.isInteger(offset)) ? offset : 0;
+                }
+            },
+            "y_offset": {
+                get: () => {
+                    return (this._x_offset === undefined) ? 0 : this._x_offset;
+                },
+                set: (offset) => {
+                    this._x_offset = (Number.isInteger(offset)) ? offset : 0;
+                }
+            }
+        });
         
-        if (!this._parent) {
-            throw Error(this.Name + ": arg parent must not be null");
+        this._parent = params.parent;
+        
+        for (let param in params) {
+            if (param !== "parent") {
+                this[param] = params[param];
+            }
         }
         
         this._hoverTimeoutId = 0;
         this._showing = false;
         
-        this.bin = null;
-        this.label = null;
-        
         // TODO: oddly fuzzy on menu items, sometimes
         if (this._parent.actor) { this._parent = this._parent.actor; }
         this._parent.connect("notify::hover", Lang.bind(this, this._hover));
         this._parent.connect("button-press-event", Lang.bind(this, this._hide));
-        this._parent.connect("destroy", Lang.bind(this, this._hide));
+        this._parent.connect("destroy", Lang.bind(this, this.destroy));
+    },
+    
+    _update: function () {
+        if (this._showing) {
+            this._show();
+        }
     },
     
     _show: function () {
-        if (!this.title) {
+        if (!this.text && !this.markup) {
             this._hide();
             return;
         }
@@ -81,28 +140,58 @@ var Tooltip = new Lang.Class({
                 opacity: 232
             });
             
-            this.label = new St.Label({
-                style_class: "gsconnect-tooltip-text",
-                text: this.title
-            });
-            this.label.clutter_text.line_wrap = true;
-            this.label.clutter_text.line_wrap_mode = Pango.WrapMode.WORD;
-            this.label.clutter_text.ellipsize = Pango.EllipsizeMode.NONE;
-            this.label.clutter_text.use_markup = true;
-            this.bin.child = this.label;
+            if (this.custom) {
+                this.bin.child = this.custom;
+            } else {
+                this.bin.child = new St.BoxLayout({ vertical: false });
+                
+                if (this.gicon) {
+                    this.bin.child.icon = new St.Icon({
+                        gicon: this.gicon,
+                        icon_size: 16
+                    });
+                    this.bin.child.add_child(this.bin.child.icon);
+                }
+                
+                this.label = new St.Label({
+                    style_class: "gsconnect-tooltip-text",
+                    text: this.markup || this.text
+                });
+                this.label.clutter_text.line_wrap = true;
+                this.label.clutter_text.line_wrap_mode = Pango.WrapMode.WORD;
+                this.label.clutter_text.ellipsize = Pango.EllipsizeMode.NONE;
+                this.label.clutter_text.use_markup = (this.markup);
+                this.bin.child.add_child(this.label);
+            }
             
             Main.layoutManager.uiGroup.add_actor(this.bin);
             Main.layoutManager.uiGroup.set_child_above_sibling(this.bin, null);
+        } else if (this.custom) {
+            this.bin.child = this.custom;
         } else {
-            this.label.clutter_text.text = this.title;
+            if (this.bin.child.icon) { this.bin.child.icon.destroy(); }
+            
+            if (this.gicon) {
+                this.bin.child.icon = new St.Icon({
+                    gicon: this.gicon,
+                    icon_size: 16,
+                    style_class: "gsconnect-tooltip-icon"
+                });
+                this.bin.child.insert_child_at_index(this.bin.child.icon, 0);
+            }
+            
+            this.label.clutter_text.text = this.markup || this.text;
+            this.label.clutter_text.use_markup = (this.markup);
         }
         
+        // Position tooltip
         let [x, y] = this._parent.get_transformed_position();
         x = (x + (this._parent.width/2)) - Math.round(this.bin.width/2);
         
         x += this.x_offset;
         y += this.y_offset;
         
+        // Show tooltip
         if (this._showing) {
             Tweener.addTween(this.bin, {
                 x: x,
@@ -121,6 +210,7 @@ var Tooltip = new Lang.Class({
             this._showing = true;
         }
         
+        // Enable browse mode
         TOOLTIP_BROWSE_MODE = true;
         
         if (TOOLTIP_BROWSE_ID) {
@@ -142,10 +232,13 @@ var Tooltip = new Lang.Class({
                 transition: 'easeOutQuad',
                 onComplete: () => {
                     Main.layoutManager.uiGroup.remove_actor(this.bin);
+                    
+                    if (this.custom) {
+                        this.bin.remove_child(this.custom);
+                    }
+                    
                     this.bin.destroy();
                     this.bin = null;
-                    this.label.destroy();
-                    this.label = null;
                 }
             });
         }
@@ -168,16 +261,12 @@ var Tooltip = new Lang.Class({
     _hover: function () {
         if (this._parent.hover) {
             if (!this._hoverTimeoutId) {
+                let timeout = (TOOLTIP_BROWSE_MODE) ? 60 : 500;
+                
                 if (this._showing) {
                     this._show();
-                } else if (TOOLTIP_BROWSE_MODE) {
-                    this._hoverTimeoutId = Mainloop.timeout_add(60, () => {
-                        this._show();
-                        this._hoverTimeoutId = 0;
-                        return false;
-                    });
                 } else {
-                    this._hoverTimeoutId = Mainloop.timeout_add(500, () => {
+                    this._hoverTimeoutId = Mainloop.timeout_add(timeout, () => {
                         this._show();
                         this._hoverTimeoutId = 0;
                         return false;
@@ -187,11 +276,18 @@ var Tooltip = new Lang.Class({
         } else {
             this._hide();
         }
+    },
+    
+    destroy: function () {
+        this._hide();
+        if (this.custom) {
+            this.custom.destroy();
+        }
     }
 });
 
 
-/** An St.Button subclass for buttons with an image and an action */
+/** St.Button subclass for plugin buttons with an image, action and tooltip */
 var PluginButton = new Lang.Class({
     Name: "GSConnectShellPluginButton",
     Extends: St.Button,
@@ -201,6 +297,7 @@ var PluginButton = new Lang.Class({
             icon_name: "application-x-executable",
             callback: () => {},
             toggle_mode: false,
+            tooltip_markup: false,
             tooltip_text: false
         }, params);
     
@@ -225,16 +322,18 @@ var PluginButton = new Lang.Class({
             }
         });
         
-        if (typeof params.tooltip_text === "string") {
-            this.tooltip = new Tooltip({
-                parent: this,
-                title: params.tooltip_text
-            });
+        this.tooltip = new Tooltip({ parent: this });
+        
+        if (params.tooltip_markup) {
+            this.tooltip.markup = params.tooltip_markup;
+        } else if (params.tooltip_text) {
+            this.tooltip.text = params.tooltip_text;
         }
     }
 });
 
 
+/** St.BoxLayout subclass for a battery icon with text percentage */
 var DeviceBattery = new Lang.Class({
     Name: "GSConnectShellDeviceBattery",
     Extends: St.BoxLayout,
@@ -335,7 +434,7 @@ var DeviceIcon = new Lang.Class({
         
         this.tooltip = new Tooltip({
             parent: this,
-            title: this.device.name,
+            markup: this.device.name,
             y_offset: 16
         });
         
@@ -435,7 +534,9 @@ var DeviceIcon = new Lang.Class({
             cr.setOperator(Cairo.Operator.EXCLUSION);
             cr.paint();
         
-            this.tooltip.title = _("Reconnect <b>%s</b>").format(this.device.name);
+            this.tooltip.markup = _("Reconnect <b>%s</b>").format(this.device.name);
+            this.tooltip.icon_name = "view-refresh-symbolic";
+            
             cr.setSourceRGB(0.8, 0.8, 0.8);
             cr.setOperator(Cairo.Operator.OVER);
             cr.setDash([6, 6], 0); 
@@ -445,9 +546,11 @@ var DeviceIcon = new Lang.Class({
             cr.setSourceSurface(this._emblem.reconnect, xc, yc);
             cr.paint();
         } else if (!this.device.paired) {
-            this.tooltip.title = _("Pair <b>%s</b>").format(this.device.name) + "\n\n" + _("<b>%s Fingerprint:</b>\n%s\n\n<b>Local Fingerprint:</b>\n%s").format(this.device.name, this.device.fingerprint, this.device.daemon.fingerprint);
             cr.setSourceRGB(0.96, 0.48, 0.0); // orange
             cr.setDash([6, 6], 0); 
+            this.tooltip.markup = _("Pair <b>%s</b>").format(this.device.name) + "\n\n" + _("<b>%s Fingerprint:</b>\n%s\n\n<b>Local Fingerprint:</b>\n%s").format(this.device.name, this.device.fingerprint, this.device.daemon.fingerprint);
+            this.tooltip.icon_name = null;
+            
             cr.arc(xc, yc, r, 0, 2 * Math.PI);
             cr.stroke();
             
@@ -470,17 +573,17 @@ var DeviceIcon = new Lang.Class({
             
             if (this.device.battery.level === 100) {
                 cr.arc(xc, yc, r, 0, 2 * Math.PI);
-                this.tooltip.title = _("Fully Charged");
+                this.tooltip.markup = _("Fully Charged");
             } else if (this.device.battery.level > 0) {
                 let end = (this.device.battery.level / 50 * Math.PI) + 1.5 * Math.PI;
                 cr.arc(xc, yc, r, 1.5 * Math.PI, end);
                 
                 if (this.device.battery.charging) {
-                    this.tooltip.title = _("%d%% (Charging)").format(
+                    this.tooltip.markup = _("%d%% (Charging)").format(
                         this.device.battery.level
                     );
                 } else {
-                    this.tooltip.title = _("%d%% (Discharging)").format(
+                    this.tooltip.markup = _("%d%% (Discharging)").format(
                         this.device.battery.level
                     );
                 }
@@ -494,7 +597,7 @@ var DeviceIcon = new Lang.Class({
                 cr.fill();
             }
         } else {
-            this.tooltip.title = this.device.name;
+            this.tooltip.markup = this.device.name;
             cr.setSourceRGB(0.8, 0.8, 0.8);
             cr.arc(xc, yc, r, 0, 2 * Math.PI);
             cr.stroke();

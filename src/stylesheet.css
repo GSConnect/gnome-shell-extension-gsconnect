@@ -77,12 +77,25 @@ Device Menu Hierarchy
     spacing: 0.5em;
 }
 
-/* Tooltip */
+/* Tooltip
+
+StBin.gsconnect-tooltip (inherits from .osd-window)
+    StBoxLayout || [ Custom ClutterActor ]
+        StIcon.gsconnect-tooltip-icon
+        StLabel.gsconnect-tooltip-text
+*/
 .gsconnect-tooltip {
     border-radius: 2px;
     min-width: 0;
     min-height: 0;
-    padding: 6px;
+    padding: 0.5em;
+}
+
+.gsconnect-tooltip > StBoxLayout {
+    spacing: 0.25em;
+}
+
+.gsconnect-tooltip-icon {
 }
 
 .gsconnect-tooltip-text {
