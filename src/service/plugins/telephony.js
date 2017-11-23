@@ -648,11 +648,6 @@ var ContactsCache = new Lang.Class({
         return {};
     },
     
-    // TODO: need this?
-    hasContact: function (number, name) {
-        return (this.getContact() !== {});
-    },
-    
     setContact: function (newContact, write=true) {
         let number = newContact.number.replace(/\D/g, "");
         
