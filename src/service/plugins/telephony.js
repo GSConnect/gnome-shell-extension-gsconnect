@@ -882,7 +882,7 @@ var SettingsDialog = new Lang.Class({
         );
         talkingSection.addSetting(_("System Volume"), null, talkingVolume);
         
-        talkingSection.addGSetting(this.settings, "talking-microphone");
+        let talkingMicrophone = talkingSection.addGSetting(this.settings, "talking-microphone");
         let talkingMedia = talkingSection.addGSetting(this.settings, "talking-pause");
         
         //
@@ -896,6 +896,18 @@ var SettingsDialog = new Lang.Class({
             talkingMedia.set_tooltip_markup(
                 _("The <b>Media Player Control</b> plugin must be enabled")
             );
+        }
+        
+        //
+        if (!Sound._mixerControl) {
+            ringingVolume.sensitive = false;
+            ringingVolume.set_tooltip_markup(_("Gvc not available"));
+            
+            talkingVolume.sensitive = false;
+            talkingVolume.set_tooltip_markup(_("Gvc not available"));
+            
+            talkingMicrophone.sensitive = false;
+            talkingMicrophone.set_tooltip_markup(_("Gvc not available"));
         }
         
         this.content.show_all();
