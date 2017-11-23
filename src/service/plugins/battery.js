@@ -56,6 +56,13 @@ var Plugin = new Lang.Class({
             "Whether the device is charging",
             GObject.ParamFlags.READABLE,
             -1
+        ),
+        "time": GObject.ParamSpec.int(
+            "time",
+            "timeRemaining",
+            "Seconds until full or depleted",
+            GObject.ParamFlags.READABLE,
+            0
         )
     },
     
@@ -64,6 +71,8 @@ var Plugin = new Lang.Class({
         
         this._charging = false;
         this._level = -1;
+        this._time = 0;
+        this._stats = [];
         
         if (this.settings.get_boolean("receive-statistics")) {
             this.request();
@@ -71,6 +80,7 @@ var Plugin = new Lang.Class({
         
         this.settings.connect("changed::receive-statistics", () => {
             if (this.settings.get_boolean("receive-statistics")) {
+                this._stats = [];
                 this.request();
             } else {
                 this._charging = false;
@@ -85,6 +95,13 @@ var Plugin = new Lang.Class({
                 this._dbus.emit_property_changed(
                     "level",
                     new GLib.Variant("i", this._level)
+                );
+                
+                this._time = 0;
+                this.notify("time");
+                this._dbus.emit_property_changed(
+                    "level",
+                    new GLib.Variant("i", this._time)
                 );
             }
         });
@@ -132,8 +149,51 @@ var Plugin = new Lang.Class({
         this.send();
     },
     
+    _interpolate: function (time, level) {
+        this._stats.push({ time: time, level: level });
+        
+        // Limit sample size to 5
+        if (this._stats.length > 5) { this._stats.shift(); }
+        
+        // Limit extraneous time-deltas to 5 minutes
+        while (this._stats.length > 2) {
+            let tdelta = this._stats[1].time - this._stats[0].time;
+            
+            if ((tdelta / 1000 / 60) > 5) {
+                this._stats.shift();
+            } else {
+                break;
+            }
+        }
+        
+        this._time = 0;
+        
+        if (this._stats.length > 1) {
+            let last = this._stats.length - 1;
+            let tdelta = this._stats[last].time - this._stats[0].time;
+            let ldelta, time;
+            
+            if (this.charging) {
+                ldelta = this._stats[last].level - this._stats[0].level;
+                time = (tdelta/ldelta) * (100 - this.level);
+            } else {
+                ldelta = this._stats[0].level - this._stats[last].level;
+                time = (tdelta/ldelta) * this.level;
+            }
+            
+            this._time = (time === NaN) ? 0 : Math.floor(time / 1000);
+        }
+        
+        this.notify("time");
+        this._dbus.emit_property_changed(
+            "time",
+            new GLib.Variant("i", this._time)
+        );
+    },
+    
     get charging() { return this._charging; },
     get level() { return this._level; },
+    get time() { return this._time; },
     
     handlePacket: function (packet) {
         Common.debug("Battery: handlePacket()");
@@ -150,13 +210,20 @@ var Plugin = new Lang.Class({
      */
     receive: function (packet) {
         Common.debug("Battery: receive()");
+        
+        if (packet.body.thresholdEvent > 0) {
+            this.threshold();
+        }
     
-        this._charging = packet.body.isCharging;
-        this.notify("charging");
-        this._dbus.emit_property_changed(
-            "charging",
-            new GLib.Variant("b", packet.body.isCharging)
-        );
+        if (this._charging !== packet.body.isCharging) {
+            this._charging = packet.body.isCharging;
+            this.notify("charging");
+            this._dbus.emit_property_changed(
+                "charging",
+                new GLib.Variant("b", packet.body.isCharging)
+            );
+            this._stats = [];
+        }
         
         this._level = packet.body.currentCharge;
         this.notify("level");
@@ -165,9 +232,7 @@ var Plugin = new Lang.Class({
             new GLib.Variant("i", packet.body.currentCharge)
         );
         
-        if (packet.body.thresholdEvent > 0) {
-            this.threshold();
-        }
+        this._interpolate(Date.now(), this._level);
     },
     
     /**

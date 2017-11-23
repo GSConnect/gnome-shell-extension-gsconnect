@@ -135,6 +135,13 @@ var Battery = new Lang.Class({
             GObject.ParamFlags.READABLE,
             -1, 100,
             0
+        ),
+        "time": GObject.ParamSpec.int(
+            "time",
+            "timeRemaining",
+            "Seconds until full or depleted",
+            GObject.ParamFlags.READABLE,
+            -1
         )
     },
     
@@ -155,7 +162,8 @@ var Battery = new Lang.Class({
     },
     
     get charging () { return this._get("charging"); },
-    get level () { return this._get("level"); }
+    get level () { return this._get("level"); },
+    get time () { return this._get("time"); }
 });
 
 

@@ -46,6 +46,7 @@
   <interface name="org.gnome.Shell.Extensions.GSConnect.Plugin.Battery">
     <property type="b" name="charging" access="read"/>
     <property type="i" name="level" access="read"/>
+    <property type="i" name="time" access="read"/>
     <method name="request"/>
     <method name="send"/>
   </interface>

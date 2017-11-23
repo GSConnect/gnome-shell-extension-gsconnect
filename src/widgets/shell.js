@@ -402,8 +402,8 @@ var DeviceBattery = new Lang.Class({
             icon += "-full";
         }
         
-        icon = (charging) ? icon + "-charging" : icon;
-        this.icon.icon_name = icon + "-symbolic";
+        icon += (charging) ? "-charging-symbolic" : "-symbolic";
+        this.icon.icon_name = icon;
         this.label.text = level + "%";
         
         // "false, -1" if no data or remote plugin is disabled but not local
@@ -478,31 +478,6 @@ var DeviceIcon = new Lang.Class({
         });
     },
     
-    _hsv2rgb: function (h, s, v) {
-        let r, g, b;
-        
-        h = h / 360;
-        s = s / 100;
-        v = v / 100;
-
-        let i = Math.floor(h * 6);
-        let f = h * 6 - i;
-        let p = v * (1 - s);
-        let q = v * (1 - f * s);
-        let t = v * (1 - (1 - f) * s);
-
-        switch (i % 6) {
-            case 0: r = v, g = t, b = p; break;
-            case 1: r = q, g = v, b = p; break;
-            case 2: r = p, g = v, b = t; break;
-            case 3: r = p, g = q, b = v; break;
-            case 4: r = t, g = p, b = v; break;
-            case 5: r = v, g = p, b = q; break;
-        }
-        
-        return [r, g, b];
-    },
-    
     _batteryIcon: function () {
         let {charging, level} = this.device.battery;
         let icon = "battery";
@@ -526,6 +501,61 @@ var DeviceIcon = new Lang.Class({
         icon += (charging) ? "-charging-symbolic" : "-symbolic";
         
         return icon;
+    },
+    
+    _batteryRemaining: function () {
+        if (this.device.battery.level === 100) {
+            // TRANSLATORS: Fully Charged
+            return _("Fully Charged");
+        } else if (this.device.battery.time === 0) {
+            // TRANSLATORS: <percentage> (Estimating…)
+            return _("%d%% (Estimating…)").format(this.device.battery.level);
+        }
+        
+        let time = this.device.battery.time / 60;
+        let minutes = time % 60;
+        let hours = Math.floor(time / 60);
+        
+        if (this.device.battery.charging) {
+            // TRANSLATORS: <percentage> (<hours>:<minutes> Until Full)
+            return _("%d%% (%d\u2236%02d Until Full)").format(
+                this.device.battery.level,
+                hours,
+                minutes
+            );
+        } else {
+            // TRANSLATORS: <percentage> (<hours>:<minutes> Remaining)
+            return _("%d%% (%d\u2236%02d Remaining)").format(
+                this.device.battery.level,
+                hours,
+                minutes
+            );
+        }
+    },
+    
+    _hsv2rgb: function (h, s, v) {
+        let r, g, b;
+        
+        h = h / 360;
+        s = s / 100;
+        v = v / 100;
+
+        let i = Math.floor(h * 6);
+        let f = h * 6 - i;
+        let p = v * (1 - s);
+        let q = v * (1 - f * s);
+        let t = v * (1 - (1 - f) * s);
+
+        switch (i % 6) {
+            case 0: r = v, g = t, b = p; break;
+            case 1: r = q, g = v, b = p; break;
+            case 2: r = p, g = v, b = t; break;
+            case 3: r = p, g = q, b = v; break;
+            case 4: r = t, g = p, b = v; break;
+            case 5: r = v, g = p, b = q; break;
+        }
+        
+        return [r, g, b];
     },
     
     _interpolate: function (high, low, progress) {
@@ -593,24 +623,15 @@ var DeviceIcon = new Lang.Class({
             
             if (this.device.battery.level === 100) {
                 cr.arc(xc, yc, r, 0, 2 * Math.PI);
-                this.tooltip.markup = _("Fully Charged");
             } else if (this.device.battery.level > 0) {
                 let end = (this.device.battery.level / 50 * Math.PI) + 1.5 * Math.PI;
                 cr.arc(xc, yc, r, 1.5 * Math.PI, end);
-                
-                if (this.device.battery.charging) {
-                    this.tooltip.markup = _("%d%% (Charging)").format(
-                        this.device.battery.level
-                    );
-                } else {
-                    this.tooltip.markup = _("%d%% (Discharging)").format(
-                        this.device.battery.level
-                    );
-                }
             }
+            this.tooltip.markup = this._batteryRemaining();
             this.tooltip.icon_name = this._batteryIcon();
             cr.stroke();
             
+            // Charging highlight
             if (this.device.battery.charging) {
                 cr.setOperator(Cairo.Operator.DEST_OVER);
                 cr.setSourceRGBA(0.43, 0.85, 0.0, 0.25); // green
