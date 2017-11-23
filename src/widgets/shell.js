@@ -409,7 +409,7 @@ var DeviceBattery = new Lang.Class({
             this.icon.icon_name = "battery-missing-symbolic";
             this.label.text = "";
         }
-    },
+    }
 });
 
 
@@ -438,26 +438,14 @@ var DeviceIcon = new Lang.Class({
             y_offset: 16
         });
         
+        // Device Type
         this._theme = Gtk.IconTheme.get_default();
-        
         this.icon = this._theme.load_surface(this.device.type, 32, 1, null, 0);
-        this._emblem = {
-            pair: this._theme.load_surface("channel-insecure-symbolic", 16, 1, null, 0),
-            reconnect: this._theme.load_surface("view-refresh-symbolic", 16, 1, null, 0)
-        };
         
         this._themeSignal = this._theme.connect("changed", () => {
             this.icon = this._theme.load_surface(this.device.type, 32, 1, null, 0);
-            this._emblem = {
-                pair: this._theme.load_surface("channel-insecure-symbolic", 16, 1, null, 0),
-                reconnect: this._theme.load_surface("view-refresh-symbolic", 16, 1, null, 0)
-            };
             this.queue_repaint();
         });
-        
-        this.connect("repaint", Lang.bind(this, this._draw));
-        device.connect("notify::connected", () => { this.queue_repaint(); });
-        device.connect("notify::paired", () => { this.queue_repaint(); });
         
         // Battery Plugin
         if (this.device.battery) {
@@ -477,6 +465,11 @@ var DeviceIcon = new Lang.Class({
             }
         });
         
+        // Device Status
+        device.connect("notify::connected", () => { this.queue_repaint(); });
+        device.connect("notify::paired", () => { this.queue_repaint(); });
+        
+        this.connect("repaint", Lang.bind(this, this._draw));
         this.connect("destroy", () => {
             this._theme.disconnect(this._themeSignal);
             return true;
@@ -508,8 +501,37 @@ var DeviceIcon = new Lang.Class({
         return [r, g, b];
     },
     
+    _batteryIcon: function () {
+        let {charging, level} = this.device.battery;
+        let icon = "battery";
+        
+        if (level < 0) {
+            return "battery-missing-symbolic";
+        } else if (level === 100) {
+            return "battery-full-charged";
+        } else if (level < 3) {
+            icon += "-empty";
+        } else if (level < 10) {
+            icon += "-caution";
+        } else if (level < 30) {
+            icon += "-low";
+        } else if (level < 60) {
+            icon += "-good";
+        } else if (level >= 60) {
+            icon += "-full";
+        }
+        
+        icon += (charging) ? "-charging-symbolic" : "-symbolic";
+        
+        return icon;
+    },
+    
     _interpolate: function (high, low, progress) {
-        return this._hsv2rgb(this.device.battery.level / 100 * 120, 100, 85);
+        return this._hsv2rgb(
+            this.device.battery.level / 100 * 120,
+            100,
+            100 - (this.device.battery.level / 100 * 15)
+        );
     },
     
     _draw: function () {
@@ -542,20 +564,16 @@ var DeviceIcon = new Lang.Class({
             cr.setDash([6, 6], 0); 
             cr.arc(xc, yc, r, 0, 2 * Math.PI);
             cr.stroke();
-            
-            cr.setSourceSurface(this._emblem.reconnect, xc, yc);
-            cr.paint();
         } else if (!this.device.paired) {
-            cr.setSourceRGB(0.96, 0.48, 0.0); // orange
-            cr.setDash([6, 6], 0); 
             this.tooltip.markup = _("Pair <b>%s</b>").format(this.device.name) + "\n\n" + _("<b>%s Fingerprint:</b>\n%s\n\n<b>Local Fingerprint:</b>\n%s").format(this.device.name, this.device.fingerprint, this.device.daemon.fingerprint);
             this.tooltip.icon_name = null;
             
+            cr.setSourceRGB(0.95, 0.0, 0.0); // red
+            //cr.setSourceRGB(0.96, 0.48, 0.0); // orange
+            cr.setLineCap(Cairo.LineCap.ROUND);
+            cr.setDash([3, 7], 0);
             cr.arc(xc, yc, r, 0, 2 * Math.PI);
             cr.stroke();
-            
-            cr.setSourceSurface(this._emblem.pair, xc, yc);
-            cr.paint();
         } else if (this.device.battery) {
             // Capacity arc
             cr.setSourceRGB(0.8, 0.8, 0.8);
@@ -588,6 +606,7 @@ var DeviceIcon = new Lang.Class({
                     );
                 }
             }
+            this.tooltip.icon_name = this._batteryIcon();
             cr.stroke();
             
             if (this.device.battery.charging) {
@@ -598,6 +617,7 @@ var DeviceIcon = new Lang.Class({
             }
         } else {
             this.tooltip.markup = this.device.name;
+            this.tooltip.icon_name = null;
             cr.setSourceRGB(0.8, 0.8, 0.8);
             cr.arc(xc, yc, r, 0, 2 * Math.PI);
             cr.stroke();
