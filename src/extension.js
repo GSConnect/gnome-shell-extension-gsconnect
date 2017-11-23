@@ -245,21 +245,19 @@ var DeviceMenu = new Lang.Class({
         
         let { connected, paired, plugins } = this.device;
         
+        // Title Bar
         this.nameLabel.text = this.device.name;
-        this.deviceBattery.visible = (connected && paired); // TODO setting
         
-        this.pluginBar.visible = (connected && paired && plugins.length);
-        this.statusBar.visible = (!connected || !paired || !plugins.length);
-        
-        if (!connected) {
-            this.statusLabel.text = _("Device is disconnected");
-        } else if (!paired) {
-            this.statusLabel.text = _("Device is unpaired");
-        } else if (!plugins.length) {
-            this.statusLabel.text = _("No plugins enabled");
+        if (connected && paired && Settings.get_boolean("show-battery")) {
+            this.deviceBattery.visible = true;
+            this.deviceBattery.update();
+        } else {
+            this.deviceBattery.visible = false;
         }
         
-        // Plugin Buttons
+        // Plugin Bar
+        this.pluginBar.visible = (connected && paired && plugins.length);
+        
         let buttons = {
             findmyphone: this.findmyphoneButton,
             mousepad: this.mousepadButton,
@@ -273,22 +271,74 @@ var DeviceMenu = new Lang.Class({
             buttons[name].visible = (this.device.hasOwnProperty(name));
         }
         
-        // Battery
-        if (connected && paired && Settings.get_boolean("show-battery")) {
-            this.deviceBattery.visible = true;
-            this.deviceBattery.update();
-        } else {
-            this.deviceBattery.visible = false;
-        }
-        
-        // Run Button
         if (this.device.hasOwnProperty("runcommand")) {
             let commands = JSON.parse(this.device.runcommand.commands);
             this.runcommandButton.visible = (Object.keys(commands).length);
         }
+        
+        // Status Bar
+        this.statusBar.visible = (!connected || !paired || !plugins.length);
+        
+        if (!connected) {
+            this.statusLabel.text = _("Device is disconnected");
+        } else if (!paired) {
+            this.statusLabel.text = _("Device is unpaired");
+        } else if (!plugins.length) {
+            this.statusLabel.text = _("No plugins enabled");
+        }
     },
     
     // Plugin Callbacks
+    _findmyphoneAction: function (button) {
+        Common.debug("extension.DeviceMenu._findmyphoneAction()");
+        this._getTopMenu().close(true);
+        this.device.find();
+    },
+    
+    _runcommandAction: function (button) {
+        Common.debug("extension.DeviceMenu._runcommandAction()");
+        
+        if (button.checked) {
+            this.sftpButton.checked = false;
+            this.listPanel.actor.destroy_all_children();
+        } else {
+            this.listPanel.actor.visible = false;
+            return;
+        }
+        
+        this._runcommandList();
+    },
+    
+    _runcommandList: function () {
+        Common.debug("extension.DeviceMenu._runcommandList()");
+        
+        let commands = JSON.parse(this.device.runcommand.commands);
+        
+        for (let key in commands) {
+            let commandItem = new PopupMenu.PopupMenuItem(commands[key].name);
+            let icon = new St.Icon({
+                icon_name: GLib.path_get_basename(commands[key].command),
+                fallback_icon_name: "system-run-symbolic",
+                style_class: "popup-menu-icon"
+            });
+            commandItem.actor.insert_child_at_index(icon, 1);
+            commandItem.tooltip = new ShellWidget.Tooltip({
+                parent: commandItem,
+                markup: commands[key].command
+            });
+            commandItem.key = key;
+            
+            commandItem.connect("activate", (item) => {
+                item._getTopMenu().close(true);
+                this.device.runcommand.run(item.key);
+            });
+            
+            this.listPanel.addMenuItem(commandItem);
+        }
+        
+        this.listPanel.actor.visible = true;
+    },
+    
     _sftpAction: function (button) {
         Common.debug("extension.DeviceMenu._sftpAction()");
         
@@ -340,56 +390,6 @@ var DeviceMenu = new Lang.Class({
             });
             
             this.listPanel.addMenuItem(mountItem);
-        }
-        
-        this.listPanel.actor.visible = true;
-    },
-    
-    _findmyphoneAction: function (button) {
-        Common.debug("extension.DeviceMenu._findmyphoneAction()");
-        this._getTopMenu().close(true);
-        this.device.find();
-    },
-    
-    _runcommandAction: function (button) {
-        Common.debug("extension.DeviceMenu._runcommandAction()");
-        
-        if (button.checked) {
-            this.sftpButton.checked = false;
-            this.listPanel.actor.destroy_all_children();
-        } else {
-            this.listPanel.actor.visible = false;
-            return;
-        }
-        
-        this._runcommandList();
-    },
-    
-    _runcommandList: function () {
-        Common.debug("extension.DeviceMenu._runcommandList()");
-        
-        let commands = JSON.parse(this.device.runcommand.commands);
-        
-        for (let key in commands) {
-            let commandItem = new PopupMenu.PopupMenuItem(commands[key].name);
-            let icon = new St.Icon({
-                icon_name: GLib.path_get_basename(commands[key].command),
-                fallback_icon_name: "system-run-symbolic",
-                style_class: "popup-menu-icon"
-            });
-            commandItem.actor.insert_child_at_index(icon, 1);
-            commandItem.tooltip = new ShellWidget.Tooltip({
-                parent: commandItem,
-                title: commands[key].command
-            });
-            commandItem.key = key;
-            
-            commandItem.connect("activate", (item) => {
-                item._getTopMenu().close(true);
-                this.device.runcommand.run(item.key);
-            });
-            
-            this.listPanel.addMenuItem(commandItem);
         }
         
         this.listPanel.actor.visible = true;
