@@ -165,7 +165,7 @@ var Plugin = new Lang.Class({
                 );
                 
                 // We need to track this now so the action can close it later
-                if ((duplicate === this._duplicates.has(matchString))) {
+                if ((duplicate = this._duplicates.has(matchString))) {
                     duplicate.id = packet.body.id;
                 } else {
                     this._duplicates.set(matchString, { id: packet.body.id });
@@ -196,7 +196,7 @@ var Plugin = new Lang.Class({
                 notif.set_priority(Gio.NotificationPriority.HIGH);
                 
                 // We need to track this now so the action can close it later
-                if ((duplicate === this._duplicates.get(matchString))) {
+                if ((duplicate = this._duplicates.get(matchString))) {
                     duplicate.id = packet.body.id;
                 } else {
                     this._duplicates.set(matchString, { id: packet.body.id });
