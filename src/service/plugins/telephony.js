@@ -385,7 +385,7 @@ var Plugin = new Lang.Class({
         packet.body.phoneNumber = packet.body.phoneNumber || "";
         packet.body.phoneThumbnail = packet.body.phoneThumbnail || "";
         
-        this._cache.parsePacket(packet);
+        let contact = this._cache.parsePacket(packet);
         
         let sender;
                 
@@ -650,13 +650,14 @@ var ContactsCache = new Lang.Class({
                 if (["", newContact.name].indexOf(contact.name) > -1) {
                     Object.assign(contact, newContact);
                     if (write) { this.write(); }
-                    return;
+                    return contact;
                 }
             }
         }
         
         this.contacts.push(newContact);
         if (write) { this.write(); }
+        return newContact;
     },
     
     // TODO: maybe return an array and let caller deal with multiple matches
@@ -698,7 +699,7 @@ var ContactsCache = new Lang.Class({
             contact.avatar = path;
         }
         
-        this.setContact(contact);
+        return this.setContact(contact);
     },
     
     read: function () {
