@@ -162,12 +162,11 @@ var Plugin = new Lang.Class({
         );
         
         // Tell the notification plugin to "silence" any duplicate
-        if (this.device._plugins.has("notification")) {
-            this.device._plugins.get("notification").silenceDuplicate(
-                // TRANSLATORS: This is specifically for matching missed call notifications on Android.
-                // You should translate this (or not) to match the string on your phone that in english looks like "Missed call: John Lennon"
-                _("Missed call") + ": " + sender
-            );
+        let plugin = this.device._plugins.get("notification");
+        if (plugin) {
+            // TRANSLATORS: This is specifically for matching missed call notifications on Android.
+            // You should translate this (or not) to match the string on your phone that in english looks like "Missed call: John Lennon"
+            plugin.silenceDuplicate(_("Missed call") + ": " + sender);
         }
         
         this.device.daemon.send_notification(
@@ -207,6 +206,8 @@ var Plugin = new Lang.Class({
     _handleSms: function (sender, packet) {
         Common.debug("Telephony: _handleSMS()");
         
+        let plugin = this.device._plugins.get("notification");
+        
         // Check for an extant window
         let window = this._hasWindow(packet.body.phoneNumber);
         
@@ -217,12 +218,11 @@ var Plugin = new Lang.Class({
                 packet.body.messageBody
             );
             window.urgency_hint = true;
+            window._notifications.push(packet.id.toString());
             
             // Tell the notification plugin to mark any duplicate read
-            if (this.device._plugins.has("notification")) {
-                this.device._plugins.get("notification").closeDuplicate(
-                    sender + ": " + packet.body.messageBody
-                );
+            if (plugin) {
+                plugin.closeDuplicate(sender + ": " + packet.body.messageBody);
             }
         }
         
@@ -245,17 +245,11 @@ var Plugin = new Lang.Class({
         );
         
         // Tell the notification plugin to "silence" any duplicate
-        if (this.device._plugins.has("notification")) {
-            this.device._plugins.get("notification").silenceDuplicate(
-                sender + ": " + packet.body.messageBody
-            );
+        if (plugin) {
+            plugin.silenceDuplicate(sender + ": " + packet.body.messageBody);
         }
         
         this.device.daemon.send_notification(packet.id.toString(), notif);
-        
-        if (window) {
-            window._notifications.push(packet.id.toString());
-        }
     },
     
     _handleTalking: function (sender, packet) {
