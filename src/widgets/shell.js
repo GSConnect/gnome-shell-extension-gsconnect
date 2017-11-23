@@ -148,8 +148,10 @@ var Tooltip = new Lang.Class({
                 if (this.gicon) {
                     this.bin.child.icon = new St.Icon({
                         gicon: this.gicon,
-                        icon_size: 16
+                        icon_size: 16,
+                        y_align: St.Align.START
                     });
+                    this.bin.child.icon.set_y_align(Clutter.ActorAlign.START);
                     this.bin.child.add_child(this.bin.child.icon);
                 }
                 
