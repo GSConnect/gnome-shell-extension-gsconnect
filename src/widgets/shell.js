@@ -485,7 +485,7 @@ var DeviceIcon = new Lang.Class({
         if (level < 0) {
             return "battery-missing-symbolic";
         } else if (level === 100) {
-            return "battery-full-charged";
+            return "battery-full-charged-symbolic";
         } else if (level < 3) {
             icon += "-empty";
         } else if (level < 10) {
@@ -601,7 +601,7 @@ var DeviceIcon = new Lang.Class({
             this.tooltip.icon_name = null;
             
             cr.setSourceRGB(0.95, 0.0, 0.0); // red
-            //cr.setSourceRGB(0.96, 0.48, 0.0); // orange
+            //cr.setSourceRGB(0.95, 0.50, 0.0); // orange
             cr.setLineCap(Cairo.LineCap.ROUND);
             cr.setDash([3, 7], 0);
             cr.arc(xc, yc, r, 0, 2 * Math.PI);
