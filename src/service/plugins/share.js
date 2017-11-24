@@ -42,6 +42,7 @@ var METADATA = {
  *
  * TODO: receiving "text"
  *       expand signals to cover Protocol.Transfer signals
+ *       https://github.com/KDE/kdeconnect-kde/commit/28f11bd5c9a717fb9fbb3f02ddd6cea62021d055
  */
 var Plugin = new Lang.Class({
     Name: "GSConnectSharePlugin",
