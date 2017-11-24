@@ -52,7 +52,8 @@ var METADATA = {
  * Incoming Notifications
  *
  *
- * TODO: consider allowing clients to handle notifications/use signals
+ * TODO: GNotification seems to set a limit of 3 notifications in a short period
+ *       consider allowing clients to handle notifications/use signals
  *       make local notifications closeable (serial/reply_serial)
  *       The current beta supports:
  *           requestReplyId {string} - a UUID for replying (?)
