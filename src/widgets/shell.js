@@ -240,7 +240,7 @@ var Tooltip = new Lang.Class({
                     }
                     
                     this.bin.destroy();
-                    this.bin = null;
+                    delete this.bin;
                 }
             });
         }
@@ -281,9 +281,18 @@ var Tooltip = new Lang.Class({
     },
     
     destroy: function () {
-        this._hide();
         if (this.custom) {
             this.custom.destroy();
+        }
+        
+        if (this.bin) {
+            Main.layoutManager.uiGroup.remove_actor(this.bin);
+            this.bin.destroy();
+        }
+        
+        if (this._hoverTimeoutId) {
+            Mainloop.source_remove(this._hoverTimeoutId);
+            this._hoverTimeoutId = 0;
         }
     }
 });
