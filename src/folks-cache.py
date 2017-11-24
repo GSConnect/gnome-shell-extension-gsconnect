@@ -9,7 +9,7 @@ import os.path
 import re
 import ctypes as pyc
 from ctypes import pythonapi
-from gi.repository import Folks, GObject
+from gi.repository import Folks, GLib, GObject
 pyc.cdll.LoadLibrary('libgobject-2.0.so')
 lego = pyc.CDLL('libgobject-2.0.so')
 lego.g_type_name.restype = pyc.c_char_p
@@ -264,7 +264,8 @@ class PhoneFieldDetailsWrapper(object):
 class FolksListener(object):
     def __init__(self, loop):
         self.loop = loop
-        self.cache_path = os.path.expanduser("~/.cache/gsconnect/contacts/contacts.json")
+        self.cache_dir = os.path.expanduser("~/.cache/gsconnect/contacts/")
+        self.cache_path = os.path.join(self.cache_dir, "contacts.json")
         
         try:
             with open(self.cache_path, 'r') as cache_file:
@@ -291,7 +292,17 @@ class FolksListener(object):
                 avatar = folk.get_avatar()
                 
                 if avatar != None:
-                    new_contact['avatar'] = avatar.get_file().get_path()
+                    if hasattr(avatar, 'get_file'):
+                        new_contact['avatar'] = avatar.get_file().get_path()
+                    elif hasattr(avatar, 'get_bytes'):
+                        path = os.path.join(
+                            self.cache_dir, 
+                            GLib.uuid_string_random() + ".jpeg"
+                        )
+                        with open(path, 'w') as fobj:
+                            fobj.write(avatar.get_bytes().unref_to_data())
+                            
+                        new_contact['avatar'] = path
                     
                 new_cache.append(new_contact)
                     
