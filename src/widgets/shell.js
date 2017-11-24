@@ -630,7 +630,7 @@ var DeviceIcon = new Lang.Class({
             cr.stroke();
             
             // Remaining arc
-            cr.setSourceRGB(...this._interpolate());
+            cr.setSourceRGB(...this._batteryColor());
             
             if (this.device.battery.level === 100) {
                 cr.arc(xc, yc, r, 0, 2 * Math.PI);
