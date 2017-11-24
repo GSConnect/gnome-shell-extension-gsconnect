@@ -487,6 +487,39 @@ var DeviceIcon = new Lang.Class({
         });
     },
     
+    _hsv2rgb: function (h, s, v) {
+        let r, g, b;
+        
+        h = h / 360;
+        s = s / 100;
+        v = v / 100;
+
+        let i = Math.floor(h * 6);
+        let f = h * 6 - i;
+        let p = v * (1 - s);
+        let q = v * (1 - f * s);
+        let t = v * (1 - (1 - f) * s);
+
+        switch (i % 6) {
+            case 0: r = v, g = t, b = p; break;
+            case 1: r = q, g = v, b = p; break;
+            case 2: r = p, g = v, b = t; break;
+            case 3: r = p, g = q, b = v; break;
+            case 4: r = t, g = p, b = v; break;
+            case 5: r = v, g = p, b = q; break;
+        }
+        
+        return [r, g, b];
+    },
+    
+    _batteryColor: function () {
+        return this._hsv2rgb(
+            this.device.battery.level / 100 * 120,
+            100,
+            100 - (this.device.battery.level / 100 * 15)
+        );
+    },
+    
     _batteryIcon: function () {
         let {charging, level} = this.device.battery;
         let icon = "battery";
@@ -542,39 +575,6 @@ var DeviceIcon = new Lang.Class({
         }
     },
     
-    _hsv2rgb: function (h, s, v) {
-        let r, g, b;
-        
-        h = h / 360;
-        s = s / 100;
-        v = v / 100;
-
-        let i = Math.floor(h * 6);
-        let f = h * 6 - i;
-        let p = v * (1 - s);
-        let q = v * (1 - f * s);
-        let t = v * (1 - (1 - f) * s);
-
-        switch (i % 6) {
-            case 0: r = v, g = t, b = p; break;
-            case 1: r = q, g = v, b = p; break;
-            case 2: r = p, g = v, b = t; break;
-            case 3: r = p, g = q, b = v; break;
-            case 4: r = t, g = p, b = v; break;
-            case 5: r = v, g = p, b = q; break;
-        }
-        
-        return [r, g, b];
-    },
-    
-    _interpolate: function (high, low, progress) {
-        return this._hsv2rgb(
-            this.device.battery.level / 100 * 120,
-            100,
-            100 - (this.device.battery.level / 100 * 15)
-        );
-    },
-    
     _draw: function () {
         if (!this.visible) { return; }
         
@@ -593,27 +593,29 @@ var DeviceIcon = new Lang.Class({
         cr.paint();
         
         if (!this.device.connected) {
-            cr.setSourceSurface(this.icon, xc - 16, yc - 16);
-            cr.setOperator(Cairo.Operator.EXCLUSION);
-            cr.paint();
+            cr.setOperator(Cairo.Operator.HSL_SATURATION);
+            cr.setSourceRGB(1, 1, 1);
+            cr.maskSurface(this.icon, xc - 16, yc - 16);
+            cr.fill();
         
             this.tooltip.markup = _("Reconnect <b>%s</b>").format(this.device.name);
             this.tooltip.icon_name = "view-refresh-symbolic";
             
             cr.setSourceRGB(0.8, 0.8, 0.8);
             cr.setOperator(Cairo.Operator.OVER);
-            cr.setDash([6, 6], 0); 
-            cr.arc(xc, yc, r, 0, 2 * Math.PI);
+            cr.setLineCap(Cairo.LineCap.ROUND);
+            cr.setDash([3, 7], 0);
+            cr.arc(xc, yc, r, 1.48 * Math.PI, 1.47 * Math.PI);
             cr.stroke();
         } else if (!this.device.paired) {
             this.tooltip.markup = _("Pair <b>%s</b>").format(this.device.name) + "\n\n" + _("<b>%s Fingerprint:</b>\n%s\n\n<b>Local Fingerprint:</b>\n%s").format(this.device.name, this.device.fingerprint, this.device.daemon.fingerprint);
-            this.tooltip.icon_name = null;
+            this.tooltip.icon_name = "channel-insecure-symbolic";
             
-            cr.setSourceRGB(0.95, 0.0, 0.0); // red
-            //cr.setSourceRGB(0.95, 0.50, 0.0); // orange
+            cr.setSourceRGB(0.95, 0.0, 0.0);
+            cr.setOperator(Cairo.Operator.OVER);
             cr.setLineCap(Cairo.LineCap.ROUND);
             cr.setDash([3, 7], 0);
-            cr.arc(xc, yc, r, 0, 2 * Math.PI);
+            cr.arc(xc, yc, r, 1.48 * Math.PI, 1.47 * Math.PI);
             cr.stroke();
         } else if (this.device.battery) {
             // Capacity arc
