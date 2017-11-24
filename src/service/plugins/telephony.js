@@ -409,34 +409,34 @@ var Plugin = new Lang.Class({
             if (packet.body.event === "sms") {
                 this.emit(
                     "sms",
-                    packet.body.phoneNumber,
-                    packet.body.contactName,
+                    contact.number,
+                    contact.name,
                     packet.body.messageBody,
-                    packet.body.phoneThumbnail
+                    contact.avatar || ""
                 );
                 
                 this._dbus.emit_signal("sms",
                     new GLib.Variant(
                         "(ssss)",
-                        [packet.body.phoneNumber,
-                        packet.body.contactName,
+                        [contact.number,
+                        contact.name,
                         packet.body.messageBody,
-                        packet.body.phoneThumbnail]
+                        contact.avatar || ""]
                     )
                 );
             } else {
                 this.emit(
                     packet.body.event,
-                    packet.body.phoneNumber,
-                    packet.body.contactName,
-                    packet.body.phoneThumbnail
+                    contact.number,
+                    contact.name,
+                    contact.avatar || ""
                 );
                 this._dbus.emit_signal(packet.body.event,
                     new GLib.Variant(
                         "(sss)",
-                        [packet.body.phoneNumber,
-                        packet.body.contactName,
-                        packet.body.phoneThumbnail]
+                        [contact.number,
+                        contact.name,
+                        contact.avatar || ""]
                     )
                 );
             }
