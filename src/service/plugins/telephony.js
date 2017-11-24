@@ -683,10 +683,10 @@ var ContactsCache = new Lang.Class({
             packet.body.contactName
         );
         
-        contact.name = packet.body.contactName;
-        contact.number = packet.body.phoneNumber;
-        contact.type = "cell";
-        contact.origin = "kdeconnect";
+        contact.name = contact.name || packet.body.contactName;
+        contact.number = contact.number || packet.body.phoneNumber;
+        contact.type = contact.type || "cell";
+        contact.origin = contact.origin || "kdeconnect";
         
         if (packet.body.phoneThumbnail && !contact.avatar) {
             Common.debug("Telephony: updating avatar for " + contact.name);
