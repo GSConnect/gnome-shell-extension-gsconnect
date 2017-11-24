@@ -196,7 +196,7 @@ var DeviceMenu = new Lang.Class({
         
         this.mousepadButton = new ShellWidget.PluginButton({
             icon_name: "input-keyboard-symbolic",
-            callback: Lang.bind(this, this._runcommandAction),
+            callback: Lang.bind(this, this._mousepadAction),
             toggle_mode: true,
             tooltip_text: _("Remote Input")
         });
@@ -297,6 +297,11 @@ var DeviceMenu = new Lang.Class({
         Common.debug("extension.DeviceMenu._findmyphoneAction()");
         this._getTopMenu().close(true);
         this.device.find();
+    },
+    
+    _mousepadAction: function (button) {
+        Common.debug("extension.DeviceMenu._mousepadAction()");
+        this._getTopMenu().close(true);
     },
     
     _runcommandAction: function (button) {
