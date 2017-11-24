@@ -594,7 +594,7 @@ var DeviceIcon = new Lang.Class({
         
         if (!this.device.connected) {
             cr.setOperator(Cairo.Operator.HSL_SATURATION);
-            cr.setSourceRGB(1, 1, 1);
+            cr.setSourceRGB(0, 0, 0);
             cr.maskSurface(this.icon, xc - 16, yc - 16);
             cr.fill();
         
