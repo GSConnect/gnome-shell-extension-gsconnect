@@ -290,6 +290,8 @@ var Plugin = new Lang.Class({
         
         // Look for an open window with this contact
         for (let index_ in windows) {
+            if (!windows[index_].hasOwnProperty("recipients")) { continue; }
+            
             for (let windowNumber of windows[index_].recipients) {
                 if (incomingNumber === windowNumber) {
                     window = windows[index_];
