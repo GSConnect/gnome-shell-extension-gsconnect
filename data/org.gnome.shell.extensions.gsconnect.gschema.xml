@@ -9,7 +9,7 @@
     <key name="show-indicators" type="b">
       <default>false</default>
       <summary>Show Indicators</summary>
-      <description>Display devices as Indicators instead of in the User Menu</description>
+      <description>Display devices in the panel instead of the User Menu</description>
     </key>
     <key name="show-offline" type="b">
       <default>true</default>
