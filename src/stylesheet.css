@@ -53,11 +53,11 @@
 }
 
 .gsconnect-device-battery {
-    spacing: 0.25em;
+    spacing: 3px;
 }
 
 .gsconnect-plugin-bar {
-    spacing: 0.5em;
+    spacing: 6px;
 }
 
 .gsconnect-plugin-button {
@@ -82,14 +82,14 @@ StBin.gsconnect-tooltip (inherits from .osd-window)
         StLabel.gsconnect-tooltip-text
 */
 .gsconnect-tooltip {
-    border-radius: 2px;
+    border-radius: 3px;
     min-width: 0;
     min-height: 0;
-    padding: 0.5em;
+    padding: 6px;
 }
 
 .gsconnect-tooltip > StBoxLayout {
-    spacing: 0.25em;
+    spacing: 6px;
 }
 
 .gsconnect-tooltip-icon {
