@@ -255,7 +255,7 @@ var Telephony = new Lang.Class({
     Extends: ProxyBase,
     Signals: {
         "missedCall": {
-            flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED,
+            flags: GObject.SignalFlags.RUN_FIRST,
             param_types: [
                 GObject.TYPE_STRING,
                 GObject.TYPE_STRING,
@@ -263,7 +263,7 @@ var Telephony = new Lang.Class({
             ]
         },
         "ringing": {
-            flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED,
+            flags: GObject.SignalFlags.RUN_FIRST,
             param_types: [
                 GObject.TYPE_STRING,
                 GObject.TYPE_STRING,
@@ -271,7 +271,7 @@ var Telephony = new Lang.Class({
             ]
         },
         "sms": {
-            flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED,
+            flags: GObject.SignalFlags.RUN_FIRST,
             param_types: [
                 GObject.TYPE_STRING,
                 GObject.TYPE_STRING,
@@ -280,7 +280,7 @@ var Telephony = new Lang.Class({
             ]
         },
         "talking": {
-            flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED,
+            flags: GObject.SignalFlags.RUN_FIRST,
             param_types: [
                 GObject.TYPE_STRING,
                 GObject.TYPE_STRING,
@@ -303,12 +303,14 @@ var Telephony = new Lang.Class({
             if (name === "missedCall") {
                 this.emit("missedCall",
                     parameters[0],
-                    parameters[1]
+                    parameters[1],
+                    parameters[2]
                 );
             } else if (name === "ringing") {
                 this.emit("ringing",
                     parameters[0],
-                    parameters[1]
+                    parameters[1],
+                    parameters[2]
                 );
             } else if (name === "sms") {
                 this.emit("sms",
@@ -320,7 +322,8 @@ var Telephony = new Lang.Class({
             } else if (name === "talking") {
                 this.emit("talking",
                     parameters[0],
-                    parameters[1]
+                    parameters[1],
+                    parameters[2]
                 );
             }
         });
