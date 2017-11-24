@@ -236,7 +236,7 @@ var DeviceMenu = new Lang.Class({
         device.connect("notify::paired", Lang.bind(this, this._sync));
         
         this.actor.connect("notify::visible", Lang.bind(this, this._sync));
-        Settings.connect("changed", Lang.bind(this, this._sync));
+        this._settingsChanged = Settings.connect("changed", Lang.bind(this, this._sync));
         
         this._sync(device);
     },
@@ -409,6 +409,11 @@ var DeviceMenu = new Lang.Class({
         Common.debug("extension.DeviceMenu._telephonyAction()");
         this._getTopMenu().close(true);
         this.device.telephony.openSms();
+    },
+    
+    destroy: function () {
+        Settings.disconnect(this._settingsChanged);
+        PopupMenu.PopupMenuSection.prototype.destroy.call(this);
     }
 });
 
@@ -435,7 +440,7 @@ var DeviceIndicator = new Lang.Class({
         this.menu.addMenuItem(this.deviceMenu);
         
         // Signals
-        Settings.connect("changed", Lang.bind(this, this._sync));
+        this._settingsChanged = Settings.connect("changed", Lang.bind(this, this._sync));
         device.connect("notify::connected", Lang.bind(this, this._sync));
         device.connect("notify::paired", Lang.bind(this, this._sync));
         
@@ -473,6 +478,7 @@ var DeviceIndicator = new Lang.Class({
     },
     
     destroy: function () {
+        Settings.disconnect(this._settingsChanged);
         this.deviceMenu.destroy();
         delete this.deviceMenu;
         PanelMenu.Button.prototype.destroy.call(this);
