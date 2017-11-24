@@ -149,21 +149,19 @@ var Plugin = new Lang.Class({
         this.send();
     },
     
-    _interpolate: function (time, level) {
-        this._stats.push({ time: time, level: level });
+    _extrapolate: function (time, level) {
+        this._stats.push({
+            time: Math.floor(Date.now() / 1000),
+            level: this._level
+        });
         
-        // Limit sample size to 5
-        if (this._stats.length > 5) { this._stats.shift(); }
-        
-        // Limit extraneous time-deltas to 5 minutes
+        // Limit extraneous samples to a relative age of 5 minutes
         while (this._stats.length > 2) {
-            let tdelta = this._stats[1].time - this._stats[0].time;
-            
-            if ((tdelta / 1000 / 60) > 5) {
-                this._stats.shift();
-            } else {
+            if ((this._stats[1].time - this._stats[0].time) < 300) {
                 break;
             }
+            
+            this._stats.shift();
         }
         
         this._time = 0;
@@ -181,7 +179,7 @@ var Plugin = new Lang.Class({
                 time = (tdelta/ldelta) * this.level;
             }
             
-            this._time = (time === NaN) ? 0 : Math.floor(time / 1000);
+            this._time = (time === NaN) ? 0 : time;
         }
         
         this.notify("time");
@@ -232,7 +230,7 @@ var Plugin = new Lang.Class({
             new GLib.Variant("i", packet.body.currentCharge)
         );
         
-        this._interpolate(Date.now(), this._level);
+        this._extrapolate();
     },
     
     /**
