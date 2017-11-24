@@ -195,12 +195,13 @@ var Plugin = new Lang.Class({
         this._stderr.read_line_async(GLib.PRIORITY_DEFAULT, null, (source, res) => {
             let [data, len] = source.read_line_finish(res);
             
-            if (data.toString() === "remote host has disconnected") {
+            if (data === null) {
+                return;
+            } else if (data.toString() === "remote host has disconnected") {
                 log("SFTP Error: remote host has disconnected");
                 this.unmount();
-            } else if (data !== null) {
+            } else {
                 log("SFTP stderr: " + data);
-            
                 this._read_stderr();
             }
         });
