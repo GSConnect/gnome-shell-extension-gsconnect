@@ -38,6 +38,9 @@ var METADATA = {
 /**
  * Mousepad Plugin
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/mousepad
+ *
+ * TODO: support outgoing mouse/keyboard events?
+ *       kdeconnect-android 1.7+ supposedly supports keyboard events
  */
 var Plugin = new Lang.Class({
     Name: "GSConnectMousepadPlugin",
