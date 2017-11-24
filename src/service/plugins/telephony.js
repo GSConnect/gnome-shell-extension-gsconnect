@@ -730,18 +730,24 @@ var ContactsCache = new Lang.Class({
     },
     
     update: function () {
-        let envp = GLib.get_environ();
-        envp.push("FOLKS_BACKENDS_DISABLED=telepathy")
-        
-        let proc = GLib.spawn_async_with_pipes(
-            null,                                       // working dir
-            ["python3", getPath() + "/folks-cache.py"], // argv
-            envp,                                       // envp
-            GLib.SpawnFlags.SEARCH_PATH,                // enables PATH
-            null                                        // child_setup (func)
-        );
-        
-        this._check_folks(proc);
+        try {
+            let envp = GLib.get_environ();
+            envp.push("FOLKS_BACKENDS_DISABLED=telepathy")
+            
+            let proc = GLib.spawn_async_with_pipes(
+                null,                                       // working dir
+                ["python3", getPath() + "/folks-cache.py"], // argv
+                envp,                                       // envp
+                GLib.SpawnFlags.SEARCH_PATH,                // enables PATH
+                null                                        // child_setup (func)
+            );
+            
+            this._check_folks(proc);
+        } catch (e) {
+            Common.debug("Telephony: Error reading folks-cache.py: " + e.message);
+            
+            this._cacheGoogleContacts();
+        }
     },
     
     /** Check spawned folks.py for errors on stderr */
@@ -761,15 +767,7 @@ var ContactsCache = new Lang.Class({
             } else {
                 Common.debug("Telephony: Error reading folks-cache.py: " + errline);
                 
-                try {
-                    for (let account in this._getGoogleAccounts()) {
-                        this._getGoogleContacts(account);
-                        this.provider = "goa-account-google";
-                        this.notify("provider");
-                    }
-                } catch (e) {
-                    Common.debug("Telephony: Error reading Google Contacts: " + e);
-                }
+                this._cacheGoogleContacts();
             }
         });
         
@@ -821,6 +819,18 @@ var ContactsCache = new Lang.Class({
         }
         
         this.write();
+    },
+    
+    _cacheGoogleContacts: function () {
+        try {
+            for (let account in this._getGoogleAccounts()) {
+                this._getGoogleContacts(account);
+                this.provider = "goa-account-google";
+                this.notify("provider");
+            }
+        } catch (e) {
+            Common.debug("Telephony: Error reading Google Contacts: " + e);
+        }
     }
 });
 
