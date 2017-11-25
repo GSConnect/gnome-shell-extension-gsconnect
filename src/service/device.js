@@ -8,6 +8,7 @@ const _ = Gettext.gettext;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
+const Gtk = imports.gi.Gtk;
 
 // Local Imports
 function getPath() {
@@ -20,6 +21,7 @@ imports.searchPath.push(getPath());
 
 const Common = imports.common;
 const Protocol = imports.service.protocol;
+const DeviceWidget = imports.widgets.device;
 
 
 var Device = new Lang.Class({
@@ -608,6 +610,37 @@ var Device = new Lang.Class({
             log("Error disabling plugin '" + name + "': " + e.message);
             return [false, e.message];
         }
+    },
+    
+    openSettings: function () {
+        if (!this._window) {
+            this._window = new Gtk.ApplicationWindow({
+                application: this.daemon,
+                title: this.name,
+                default_width: 560,
+                default_height: 400,
+                icon_name: this.type
+            });
+            
+            this._window.connect("delete-event", () => {
+                delete this._window;
+            });
+            
+            this._window.set_titlebar(
+                new Gtk.HeaderBar({
+                    title: this.name,
+                    show_close_button: true,
+                    visible: true
+                })
+            );
+            
+            let page = new DeviceWidget.Page(this.daemon, this);
+            page.box.margin_left = 72;
+            page.box.margin_right = 72
+            this._window.add(page);
+        }
+        
+        this._window.present();
     },
     
     destroy: function () {

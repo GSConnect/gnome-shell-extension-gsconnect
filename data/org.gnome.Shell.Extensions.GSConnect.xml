@@ -40,6 +40,7 @@
       <arg name="success" type="b" direction="out"/>
       <arg name="error" type="s" direction="out"/>
     </method>
+    <method name="openSettings"/>
   </interface>
   
   <!-- Battery -->

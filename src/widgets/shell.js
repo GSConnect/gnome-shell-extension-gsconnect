@@ -688,8 +688,8 @@ var DeviceButton = new Lang.Class({
             } else if (!this.device.paired) {
                 this.device.pair();
             } else {
-                Common.startPreferences();
                 this.get_parent()._delegate._getTopMenu().close(true);
+                this.device.openSettings();
             }
         });
     }

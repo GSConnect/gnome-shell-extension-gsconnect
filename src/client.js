@@ -468,6 +468,9 @@ var Device = new Lang.Class({
     disablePlugin: function (name) {
         return this._call("disablePlugin", false, name);
     },
+    openSettings: function () {
+        this._call("openSettings", true);
+    },
     
     _pluginsChanged: function () {
         if (this.plugins.indexOf("battery") > -1) {
