@@ -325,7 +325,7 @@ var Stack = new Lang.Class({
         row.show_all();
         
         // Device Page
-        let page = new Page(daemon, device, this);
+        let page = new Page(daemon, device);
         this.stack.add_named(page, device.id);
         
         // Tracking
@@ -350,14 +350,13 @@ var Page = new Lang.Class({
     Name: "GSConnectDevicePage",
     Extends: PreferencesWidget.Page,
     
-    _init: function (daemon, device, stack) {
+    _init: function (daemon, device) {
         this.parent();
         this.box.margin_left = 36;
         this.box.margin_right = 36;
         
         this.daemon = daemon;
         this.device = device;
-        this.stack = stack;
         
         // Info Section
         let metadata = DeviceMetadata[device.type];
