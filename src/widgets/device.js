@@ -96,6 +96,10 @@ var PluginControl = new Lang.Class({
             visible: true
         });
         
+        this.device.settings.connect("changed::enabled-plugins", () => {
+            this._refresh();
+        });
+        
         this._refresh();
     },
     
