@@ -650,8 +650,8 @@ var DeviceIcon = new Lang.Class({
                 cr.fill();
             }
         } else {
-            this.tooltip.markup = this.device.name;
-            this.tooltip.icon_name = null;
+            this.tooltip.markup = _("Configure <b>%s</b>").format(this.device.name);
+            this.tooltip.icon_name = "preferences-other-symbolic";
             cr.setSourceRGB(0.8, 0.8, 0.8);
             cr.arc(xc, yc, r, 0, 2 * Math.PI);
             cr.stroke();
