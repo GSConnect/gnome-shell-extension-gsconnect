@@ -5,6 +5,7 @@ const Mainloop = imports.mainloop;
 const Gettext = imports.gettext.domain("gsconnect");
 const _ = Gettext.gettext;
 const Gio = imports.gi.Gio;
+const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
@@ -130,7 +131,9 @@ var PrefsWidget = new Lang.Class({
         develSection.addGSetting(Common.Settings, "debug");
         Common.Settings.connect("changed::debug", () => {
             if (Common.Settings.get_boolean("debug")) {
-                this.daemon.quit();
+                GLib.spawn_command_line_async(
+                    'gnome-terminal --tab --title "Daemon" --command "journalctl -f -o cat /usr/bin/gjs" --tab --title "Extension" --command "journalctl -f -o cat GNOME_SHELL_EXTENSION_UUID=gsconnect@andyholmes.github.io"'
+                );
             }
         });
         
@@ -143,7 +146,7 @@ var PrefsWidget = new Lang.Class({
         );
     },
     
-    _serviceAppeared: function (conn, name, name_owner, cb_data) {
+    _serviceAppeared: function (conn, name, name_owner) {
         Common.debug("PrefsWidget._serviceAppeared()");
         
         if (!this.daemon) {
@@ -168,7 +171,7 @@ var PrefsWidget = new Lang.Class({
         );
     },
     
-    _serviceVanished: function (conn, name, name_owner, cb_data) {
+    _serviceVanished: function (conn, name) {
         Common.debug("PrefsWidget._serviceVanished()");
         
         if (this.daemon) {
