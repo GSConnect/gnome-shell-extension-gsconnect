@@ -181,6 +181,37 @@ var PluginSection = new Lang.Class({
 });
 
 
+var KeybindingsSection = new Lang.Class({
+    Name: "GSConnectKeybindingsSection",
+    Extends: PreferencesWidget.Section,
+    
+    _init: function (device) {
+        this.parent({ margin_bottom: 0, width_request: -1 });
+        
+        this.device = device;
+        
+        let keyRow = this.addRow();
+        keyRow.grid.margin = 0;
+        let keyView = new KeybindingsWidget.TreeView(this.device.settings, "keybindings");
+        // TRANSLATORS: Open the device menu
+        keyView.addAccel("menu", _("Open Menu"), 0, 0);
+        // TRANSLATORS: Open a new SMS window
+        keyView.addAccel("sms", _("Send SMS"), 0, 0);
+        // TRANSLATORS: eg. Locate Google Pixel
+        keyView.addAccel("find", _("Locate %s").format(this.device.name), 0, 0);
+        // TRANSLATORS: Open the device's list of browseable directories
+        keyView.addAccel("browse", _("Browse Files"), 0, 0);
+        // TRANSLATORS: Open the file chooser for sending files/links
+        keyView.addAccel("share", _("Share File/URL"), 0, 0);
+        
+        keyView.setAccels(
+            JSON.parse(this.device.settings.get_string("keybindings"))
+        );
+        keyRow.grid.attach(keyView, 0, 0, 1, 1);
+    }
+});
+
+
 var Stack = new Lang.Class({
     Name: "GSConnectDeviceStack",
     Extends: Gtk.Grid,
@@ -477,29 +508,7 @@ var Page = new Lang.Class({
         this.addSection(_("Plugins"), new PluginSection(this.device));
         
         // Keyboard Shortcuts
-        let keySection = this.addSection(
-            _("Keyboard Shortcuts"),
-            null,
-            { margin_bottom: 0, width_request: -1 }
-        );
-        let keyRow = keySection.addRow();
-        keyRow.grid.margin = 0;
-        let keyView = new KeybindingsWidget.TreeView(this.device.settings, "keybindings");
-        // TRANSLATORS: Open the device menu
-        keyView.addAccel("menu", _("Open Menu"), 0, 0);
-        // TRANSLATORS: Open a new SMS window
-        keyView.addAccel("sms", _("Send SMS"), 0, 0);
-        // TRANSLATORS: eg. Locate Google Pixel
-        keyView.addAccel("find", _("Locate %s").format(this.device.name), 0, 0);
-        // TRANSLATORS: Open the device's list of browseable directories
-        keyView.addAccel("browse", _("Browse Files"), 0, 0);
-        // TRANSLATORS: Open the file chooser for sending files/links
-        keyView.addAccel("share", _("Share File/URL"), 0, 0);
-        
-        keyView.setAccels(
-            JSON.parse(this.device.settings.get_string("keybindings"))
-        );
-        keyRow.grid.attach(keyView, 0, 0, 1, 1);
+        this.addSection(_("Keyboard Shortcuts"), new KeybindingsSection(this.device));
         
         this.show_all();
         connectButton.visible = !this.device.connected;
