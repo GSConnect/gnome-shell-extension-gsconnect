@@ -689,6 +689,7 @@ var DeviceButton = new Lang.Class({
                 this.device.pair();
             } else {
                 Common.startPreferences();
+                this.get_parent()._delegate._getTopMenu().close(true);
             }
         });
     }

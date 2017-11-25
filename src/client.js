@@ -637,7 +637,7 @@ var Daemon = new Lang.Class({
         
         for (let dbusPath of managedDevices) {
             if (!this.devices.has(dbusPath)) {
-                this.devices.set(dbusPath, new Device(dbusPath, daemon));
+                this.devices.set(dbusPath, new Device(dbusPath, this));
                 this.emit("device::added", dbusPath);
             }
         }
@@ -662,7 +662,9 @@ var Daemon = new Lang.Class({
     
     destroy: function () {
         for (let dbusPath of this.devices.keys()) {
-            this._deviceRemoved(this, dbusPath);
+            this.devices.get(dbusPath).destroy();
+            this.devices.delete(dbusPath);
+            this.emit("device::removed", dbusPath);
         }
         
         ProxyBase.prototype.destroy.call(this);

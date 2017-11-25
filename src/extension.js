@@ -576,7 +576,7 @@ var SystemIndicator = new Lang.Class({
         );
     },
     
-    _serviceVanished: function (conn, name, name_owner, cb_data) {
+    _serviceVanished: function (conn, name, cb_data) {
         Common.debug("extension.SystemIndicator._serviceVanished()");
         
         if (this.daemon) {
