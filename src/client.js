@@ -637,26 +637,18 @@ var Daemon = new Lang.Class({
         
         for (let dbusPath of managedDevices) {
             if (!this.devices.has(dbusPath)) {
-                this._deviceAdded(this, dbusPath);
+                this.devices.set(dbusPath, new Device(dbusPath, daemon));
+                this.emit("device::added", dbusPath);
             }
         }
         
         for (let dbusPath of this.devices.keys()) {
             if (managedDevices.indexOf(dbusPath) < 0) {
-                this._deviceRemoved(this, dbusPath);
+                this.devices.get(dbusPath).destroy();
+                this.devices.delete(dbusPath);
+                this.emit("device::removed", dbusPath);
             }
         }
-    },
-    
-    _deviceAdded: function (daemon, dbusPath) {
-        this.devices.set(dbusPath, new Device(dbusPath, daemon));
-        this.emit("device::added", dbusPath);
-    },
-    
-    _deviceRemoved: function (daemon, dbusPath) {
-        this.devices.get(dbusPath).destroy();
-        this.devices.delete(dbusPath);
-        this.emit("device::removed", dbusPath);
     },
     
     // Public Methods
