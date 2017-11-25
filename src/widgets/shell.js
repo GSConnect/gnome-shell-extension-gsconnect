@@ -645,7 +645,7 @@ var DeviceIcon = new Lang.Class({
             // Charging highlight
             if (this.device.battery.charging) {
                 cr.setOperator(Cairo.Operator.DEST_OVER);
-                cr.setSourceRGBA(0.43, 0.85, 0.0, 0.25); // green
+                cr.setSourceRGBA(...this._batteryColor(), 0.25);
                 cr.arc(xc, yc, r, 0, 2 * Math.PI);
                 cr.fill();
             }
