@@ -91,21 +91,25 @@ var shuffleColor = Array.shuffler([
 ]);
 
 var LINK_REGEX = /\b((?:https?:\/\/|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))/gi;
-        
-        
-/** A Gtk.EntryCompletion subclass for Contacts */
-var ContactCompletion = new Lang.Class({
-    Name: "GSConnectContactCompletion",
-    Extends: Gtk.EntryCompletion,
+
+
+var ContactStore = new Lang.Class({
+    Name: "GSConnectContactStore",
+    Extends: Gtk.ListStore,
     
     _init: function (cache) {
         this.parent();
         
         this._cache = cache;
         
-        // Track suggested completions
-        this._matched = [];
-        this._last = null;
+        this.set_column_types([
+            GObject.TYPE_STRING,    // Title ("Name <Phone Number>")
+            GObject.TYPE_STRING,    // Name
+            GObject.TYPE_STRING,    // Phone Number
+            GdkPixbuf.Pixbuf        // Type Icon
+        ]);
+        this.set_sort_column_id(0, Gtk.SortType.ASCENDING);
+        this.set_sort_func(0, this._sort);
         
         // Phone number icons
         let theme = Gtk.IconTheme.get_default();
@@ -113,28 +117,6 @@ var ContactCompletion = new Lang.Class({
         this.phone_number_home = theme.load_icon("phone-number-home", 0, 0);
         this.phone_number_mobile = theme.load_icon("phone-number-mobile", 0, 0);
         this.phone_number_work = theme.load_icon("phone-number-work", 0, 0);
-        
-        // Define a completion model
-        let listStore = new Gtk.ListStore();
-        listStore.set_column_types([
-            GObject.TYPE_STRING,    // Title ("Name <Phone Number>")
-            GObject.TYPE_STRING,    // Name
-            GObject.TYPE_STRING,    // Phone Number
-            GdkPixbuf.Pixbuf        // Type Icon
-        ]);
-        listStore.set_sort_column_id(0, Gtk.SortType.ASCENDING);
-        listStore.set_sort_func(0, this._sort);
-        this.set_model(listStore);
-        
-        // Title
-        this.set_text_column(0);
-        // Type Icon
-        let typeCell = new Gtk.CellRendererPixbuf();
-        this.pack_start(typeCell, false);
-        this.add_attribute(typeCell, "pixbuf", 3);
-        
-        this.set_match_func(Lang.bind(this, this._match));
-        this.connect("match-selected", Lang.bind(this, this._select));
         
         this._cache.connect("notify::contacts", () => {
             this._populate();
@@ -144,7 +126,7 @@ var ContactCompletion = new Lang.Class({
     },
     
     _populate: function () {
-        this.model.clear();
+        this.clear();
         
         for (let contact of this._cache.contacts) {
             this._add(contact);
@@ -173,11 +155,42 @@ var ContactCompletion = new Lang.Class({
             icon = this.phone_number_default;
         }
     
-        this.model.set(
-            this.model.append(),
+        this.set(
+            this.append(),
             [0, 1, 2, 3],
             [title, contact.name, contact.number, icon]
         );
+    },
+    
+    _sort: function (model, a, b, user_data) {
+        return model.get_value(a, 0).localeCompare(model.get_value(b, 0));
+    }
+});
+
+        
+/** A Gtk.EntryCompletion subclass for Contacts */
+var ContactCompletion = new Lang.Class({
+    Name: "GSConnectContactCompletion",
+    Extends: Gtk.EntryCompletion,
+    
+    _init: function (cache) {
+        this.parent();
+        
+        // Track suggested completions
+        this._matched = [];
+        this._last = null;
+        
+        this.set_model(new ContactStore(cache));
+        
+        // Title
+        this.set_text_column(0);
+        // Type Icon
+        let typeCell = new Gtk.CellRendererPixbuf();
+        this.pack_start(typeCell, false);
+        this.add_attribute(typeCell, "pixbuf", 3);
+        
+        this.set_match_func(Lang.bind(this, this._match));
+        this.connect("match-selected", Lang.bind(this, this._select));
     },
     
     _match: function (completion, key, tree_iter) {
@@ -220,10 +233,6 @@ var ContactCompletion = new Lang.Class({
         entry.text = "";
         
         return true;
-    },
-    
-    _sort: function (model, a, b, user_data) {
-        return model.get_value(a, 0).localeCompare(model.get_value(b, 0));
     }
 });
 
