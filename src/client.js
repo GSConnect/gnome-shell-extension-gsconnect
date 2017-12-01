@@ -249,6 +249,40 @@ var SFTP = new Lang.Class({
 });
 
 
+/** A wrapper for the Share plugin */
+var Share = new Lang.Class({
+    Name: "GSConnectShareProxy",
+    Extends: ProxyBase,
+    Signals: {
+        "received": {
+            flags: GObject.SignalFlags.RUN_FIRST,
+            param_types: [GObject.TYPE_STRING, GObject.TYPE_STRING]
+        },
+        "sent": {
+            flags: GObject.SignalFlags.RUN_FIRST,
+            param_types: [GObject.TYPE_STRING, GObject.TYPE_STRING]
+        }
+    },
+    
+    _init: function (dbusPath) {
+        this.parent(
+            Common.DBusInfo.GSConnect.lookup_interface(
+                "org.gnome.Shell.Extensions.GSConnect.Plugin.Share"
+            ),
+            dbusPath
+        );
+        
+        this.connect("g-signal", (proxy, sender, name, parameters) => {
+            parameters = parameters.deep_unpack();
+            this.emit(name, parameters[0], parameters[1]);
+        });
+    },
+    
+    shareDialog: function () { this._call("shareDialog", true); },
+    shareUri: function (uri) { this._call("shareUri", true, uri); }
+});
+
+
 /** A wrapper for the Telephony plugin */
 var Telephony = new Lang.Class({
     Name: "GSConnectTelephonyProxy",
@@ -458,8 +492,6 @@ var Device = new Lang.Class({
     
     ping: function () { this.ping._call("ping", true); },
     find: function () { this.findmyphone._call("find", true); },
-    shareDialog: function () { this.share._call("shareDialog", true); },
-    shareUri: function (uri) { this.share._call("shareUri", true, uri); },
     
     // Plugin Control
     enablePlugin: function (name) {
@@ -519,12 +551,7 @@ var Device = new Lang.Class({
         }
         
         if (this.plugins.indexOf("share") > -1) {
-            this.share = new ProxyBase(
-                Common.DBusInfo.GSConnect.lookup_interface(
-                    "org.gnome.Shell.Extensions.GSConnect.Plugin.Share"
-                ),
-                this.gObjectPath
-            );
+            this.share = new Share(this.gObjectPath);
         } else if (this.hasOwnProperty("share")) {
             this.share.destroy();
             delete this.share;

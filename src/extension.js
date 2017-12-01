@@ -407,7 +407,7 @@ var DeviceMenu = new Lang.Class({
     _shareAction: function (button) {
         Common.debug("extension.DeviceMenu._shareAction()");
         this._getTopMenu().close(true);
-        this.device.shareDialog();
+        this.device.share.shareDialog();
     },
     
     _telephonyAction: function (button) {
