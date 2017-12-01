@@ -295,12 +295,11 @@ class FolksListener(object):
                     if hasattr(avatar, 'get_file'):
                         new_contact['avatar'] = avatar.get_file().get_path()
                     elif hasattr(avatar, 'get_bytes'):
-                        path = os.path.join(
-                            self.cache_dir, 
-                            GLib.uuid_string_random() + ".jpeg"
-                        )
-                        with open(path, 'w') as fobj:
-                            fobj.write(avatar.get_bytes().unref_to_data())
+                        folk_id = folk.get_id() or GLib.uuid_string_random()
+                        path = os.path.join(self.cache_dir, folk_id + ".jpeg")
+                        
+                        with open(path, 'wb') as fobj:
+                            fobj.write(avatar.get_bytes().get_data())
                             
                         new_contact['avatar'] = path
                     
