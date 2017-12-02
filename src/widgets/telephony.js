@@ -939,12 +939,13 @@ var ConversationWindow = new Lang.Class({
      * @return {object} - The recipient object
      */
     addRecipient: function (contact) {
+        let plugin = this.device._plugins.get("telephony");
         let strippedNumber = contact.number.replace(/\D/g, "");
         
         // Get data from the cache
         let recipient = Object.assign(
             contact,
-            this.plugin._cache.getContact(strippedNumber, contact.name || "")
+            plugin._cache.getContact(strippedNumber, contact.name || "")
         );
         
         // This is an extant recipient
@@ -992,9 +993,11 @@ var ConversationWindow = new Lang.Class({
     
     /** Send the contents of MessageView.entry to each recipient */
     send: function (entry, signal_id, event) {
+        let plugin = this.device._plugins.get("telephony");
+        
         // Send to each number
         for (let number of this.recipients) {
-            this.plugin.sendSms(number, entry.text);
+            plugin.sendSms(number, entry.text);
         }
         
         // Log the outgoing message
