@@ -210,8 +210,6 @@ var ContactList = new Lang.Class({
         
         this._parent = params.parent;
         this.contacts = params.contacts;
-        //this.cache.connect("notify::contacts", () => { this._populate(); });
-        
         this.entry = params.entry;
         this.entry.connect("changed", () => { this._changed(); });
         
