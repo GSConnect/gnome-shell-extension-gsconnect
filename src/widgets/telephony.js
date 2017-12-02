@@ -189,9 +189,9 @@ var ContactList = new Lang.Class({
     Name: "GSConnectContactList",
     Extends: Gtk.ScrolledWindow,
     Properties: {
-        "recipients": GObject.param_spec_variant(
-            "recipients",
-            "RecipientList", 
+        "numbers": GObject.param_spec_variant(
+            "numbers",
+            "RecipientNumberList", 
             "A list of target recipient phone numbers",
             new GLib.VariantType("as"),
             new GLib.Variant("as", []),
@@ -258,21 +258,22 @@ var ContactList = new Lang.Class({
         this.list.unselect_all();
     },
     
-    get recipients () {
+    get numbers () {
         let recipients = [];
         
-        this.list.foreach((row) => {
-            if (row.recipient.active) {
-                recipients.push(row.contact.number);
+        for (let row of this.list.get_children) {
+            for (let numRow of row.numbers.get_children()) {
+                if (numRow.recipient.active) {
+                    recipients.push(numRow.contact.number);
+                }
             }
-        });
+        }
         
         return recipients;
     },
     
     _add: function (contact) {
         let row = new Gtk.ListBoxRow();
-        row.contact = contact;
         
         let grid = new Gtk.Grid({
             margin: 6,
@@ -289,58 +290,85 @@ var ContactList = new Lang.Class({
         });
         grid.attach(row._name, 1, 0, 1, 1);
         
-        row._number = new Gtk.Label({
-            label: contact.number || _("Unknown Number"),
-            halign: Gtk.Align.START,
-            hexpand: true
-        });
-        row._number.get_style_context().add_class("dim-label");
-        grid.attach(row._number, 1, 1, 1, 1);
-        
-        //
-        row._type = new Gtk.Image({
-            icon_name: "phone-number-default",
-            pixel_size: 16
-        });
-        
-        if (!contact.type) {
-            row._type.icon_name = "phone-number-default";
-        } else if (contact.type.indexOf("home") > -1) {
-            row._type.icon_name = "phone-number-home";
-        } else if (contact.type.indexOf("cell") > -1 || contact.type.indexOf("mobile") > -1) {
-            row._type.icon_name = "phone-number-mobile";
-        } else if (contact.type.indexOf("work") > -1 || contact.type.indexOf("voice") > -1) {
-            row._type.icon_name = "phone-number-work";
-        }
-        grid.attach(row._type, 2, 0, 1, 2);
-        
-        row.recipient = new Gtk.CheckButton({
-            active: false,
-            margin_right: 12
-        });
-        row.recipient.connect("toggled", () => { this._toggle(row); });
-        grid.attach(row.recipient, 3, 0, 1, 2);
-        
-        row.show_all();
+        row.numbers = new Gtk.Box({ orientation: Gtk.Orientation.VERTICAL });
+        grid.attach(row.numbers, 1, 1, 1, 1);
         
         this.list.add(row);
         
         return row;
     },
     
+    _addNumber: function (contact) {
+        let contactRow = false;
+        
+        for (let row of this.list.get_children()) {
+            if (contact.name !== _("Unknown Contact") && contact.name === row._name.label) {
+                contactRow = row;
+                break;
+            }
+        }
+        
+        if (!contactRow) {
+            contactRow = this._add(contact);
+        }
+        
+        let box = new Gtk.Box();
+        box.contact = contact;
+        contactRow.numbers.add(box);
+        
+        box._number = new Gtk.Label({
+            label: contact.number || _("Unknown Number"),
+            halign: Gtk.Align.START,
+            hexpand: true
+        });
+        box._number.get_style_context().add_class("dim-label");
+        box.add(box._number);
+        
+        //
+        box._type = new Gtk.Image({
+            icon_name: "phone-number-default",
+            pixel_size: 16
+        });
+        
+        if (!contact.type) {
+            box._type.icon_name = "phone-number-default";
+        } else if (contact.type.indexOf("home") > -1) {
+            box._type.icon_name = "phone-number-home";
+        } else if (contact.type.indexOf("cell") > -1 || contact.type.indexOf("mobile") > -1) {
+            box._type.icon_name = "phone-number-mobile";
+        } else if (contact.type.indexOf("work") > -1 || contact.type.indexOf("voice") > -1) {
+            box._type.icon_name = "phone-number-work";
+        }
+        box.add(box._type);
+        
+        box.recipient = new Gtk.CheckButton({
+            active: false,
+            margin_right: 12
+        });
+        box.recipient.connect("toggled", () => {
+            this._toggle(contactRow, box);
+        });
+        box.add(box.recipient);
+        
+        contactRow.show_all();
+        
+        return contactRow;
+    },
+    
     _changed: function (entry) {
         if (this.entry.text.replace(/\D/g, "").length > 2) {
             if (this._dynamic) {
-                this._dynamic._name.label = _("Send to %d").format(this.entry.text);
-                this._dynamic._number.label = this.entry.text;
-                this._dynamic.contact.number = this.entry.text;
+                this._dynamic._name.label = _("Send to %s").format(this.entry.text);
+                let num = this._dynamic.numbers.get_children()[0];
+                num._number.label = this.entry.text;
+                num.contact.number = this.entry.text;
             } else {
-                this._dynamic = this._add({
-                    name: _("Send to %d").format(this.entry.text),
-                    number: this.entry.text,
-                    dynamic: true
+                this._dynamic = this._addNumber({
+                    name: _("Unknown Contact"),
+                    number: this.entry.text
                 });
-                this._dynamic.contact.name = _("Unknown Contact");
+                this._dynamic._name.label = _("Send to %d").format(this.entry.text);
+                this._dynamic.dynamic = true;
             }
         } else if (this._dynamic) {
             this._dynamic.destroy();
@@ -352,18 +380,28 @@ var ContactList = new Lang.Class({
     },
     
     _filter: function (row) {
-        if (!this.entry) { return true; }
-        
-        let name = row.contact.name.toLowerCase();
-        let number = row.contact.number.replace(/\D/g, "");
+        let name = row._name.label.toLowerCase();
         let filterNumber = this.entry.text.replace(/\D/g, "");
         
-        if (row.contact.dynamic) {
+        if (row.dynamic) {
             return true;
-        } else if (name.indexOf(this.entry.text) > -1) {
+        } else if (name.indexOf(this.entry.text.toLowerCase()) > -1) {
+            row.show_all();
             return true;
-        } else if (filterNumber.length && number.indexOf(filterNumber) > -1) {
-            return true;
+        } else if (filterNumber.length) {
+            let matched = false
+            
+            for (let num of row.numbers.get_children()) {
+                let number = num.contact.number.replace(/\D/g, "");
+                if (number.indexOf(filterNumber) > -1) {
+                    num.visible = true;
+                    matched = true;
+                } else {
+                    num.visible = false;
+                }
+            }
+            
+            return matched;
         }
         
         return false;
@@ -373,41 +411,60 @@ var ContactList = new Lang.Class({
         this.list.foreach((child) => { child.destroy(); });
         
         for (let contact of this.contacts) {
-            this._add(contact);
+            this._addNumber(contact);
         }
     },
     
     _sort: function (row1, row2) {
-        if (row1.contact.dynamic) {
+        if (row1.dynamic) {
             return -1;
-        } else if (row2.contact.dynamic) {
+        } else if (row2.dynamic) {
             return 1;
-        } else if (row1.recipient.active && !row2.recipient.active) {
-            return -1;
-        } else if (!row1.recipient.active && row2.recipient.active) {
-            return 1;
+        } else {
+            let row1active, row2active;
+            
+            for (let num of row1.numbers.get_children()) {
+                if (num.recipient.active) {
+                    row1active = true;
+                    break;
+                }
+            }
+            
+            for (let num of row2.numbers.get_children()) {
+                if (num.recipient.active) {
+                    row2active = true;
+                    break;
+                }
+            }
+            
+            if (row1active && !row2active) {
+                return -1;
+            } else if (!row1active && row2active) {
+                return 1;
+            }
         }
         
-        return row1.contact.name.localeCompare(row2.contact.name);
+        return row1._name.label.localeCompare(row2._name.label);
     },
     
-    _toggle: function (row) {
-        if (row.recipient.active) {
-            if (row.contact.dynamic) {
-                row._name.label = row.contact.name;
+    // FIXME
+    _toggle: function (row, box) {
+        if (box.recipient.active) {
+            if (row.dynamic) {
+                row._name.label = box.contact.name;
                 delete this._dynamic;
             }
-            this._parent.addRecipient(row.contact);
+            this._parent.addRecipient(box.contact);
         } else {
-            this._parent.removeRecipient(row.contact);
-            if (row.contact.dynamic) {
+            this._parent.removeRecipient(box.contact);
+            if (row.dynamic) {
                 row.destroy();
             }
         }
         
         this.entry.text = "";
         this.list.invalidate_sort();
-        this.notify("recipients");
+        this.notify("numbers");
     }
 });
 
@@ -864,16 +921,20 @@ var ConversationWindow = new Lang.Class({
             
             // TODO: cleanup
             let found = false;
-            this.contactList.list.foreach((row) => {
-                if (row.contact.name === recipient.name &&
-                    row.contact.number.replace(/\D/g, "") === strippedNumber) {
-                    row.recipient.active = true;
-                    found = true;
+            
+            for (let row of this.contactList.list.get_children()) {
+                if (row._name.label === recipient.name) {
+                    for (let numRow of row.numbers.get_children()) {
+                        if (numRow.contact.number.replace(/\D/g, "") === strippedNumber) {
+                            numRow.recipient.active = true;
+                            found = true;
+                        }
+                    }
                 }
-            });
+            }
             
             if (!found) {
-                this.contactList._add(recipient);
+                this.contactList._addNumber(recipient);
             }
         }
         
