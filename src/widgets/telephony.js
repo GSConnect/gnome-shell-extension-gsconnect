@@ -62,32 +62,34 @@ var MessageDirection = {
  *      http://leaverou.github.io/contrast-ratio/
  */
 var MessageStyle = new Gtk.CssProvider();
-// TODO: MessageStyle.load_from_resource("/style/sms.css");
+//MessageStyle.load_from_resource("/style/telephony.css");
 MessageStyle.load_from_data(
-    ".contact-avatar { border-radius: 16px; } " +
-    ".message-bubble { border-radius: 1em; } " +
-    
-    ".contact-color-red { color: #ffffff; background-color: #cc0000; } " +
-    ".contact-color-orange { color: #000000; background-color: #f57900; } " +
-    ".contact-color-yellow { color: #000000; background-color: #edd440; } " +
-    ".contact-color-green { color: #ffffff; background-color: #4e9a06; } " +
-    ".contact-color-blue { color: #ffffff; background-color: #204a87; } " +
-    ".contact-color-purple { color: #ffffff; background-color: #5c3566; } " +
-    ".contact-color-brown { color: #ffffff; background-color: #8f5902; } " +
-    ".contact-color-grey { color: #ffffff; background-color: #2e3436; } " +
-    ".contact-color-outgoing { color: #000000; background-color: #d3d7cf; } "
+    Common.Resources.lookup_data("/style/telephony.css", 0).toArray().toString()
 );
 
 
 var shuffleColor = Array.shuffler([
-    "contact-color-red",
-    "contact-color-orange",
-    "contact-color-yellow",
-    "contact-color-green",
-    "contact-color-blue",
-    "contact-color-purple",
-    "contact-color-brown",
-    "contact-color-grey"
+    "contact-color-butter1",
+    "contact-color-butter2",
+    "contact-color-butter3",
+    "contact-color-orange1",
+    "contact-color-orange2",
+    "contact-color-orange3",
+    "contact-color-chocolate1",
+    "contact-color-chocolate2",
+    "contact-color-chocolate3",
+    "contact-color-chameleon1",
+    "contact-color-chameleon2",
+    "contact-color-chameleon3",
+    "contact-color-skyblue1",
+    "contact-color-skyblue2",
+    "contact-color-skyblue3",
+    "contact-color-plum1",
+    "contact-color-plum2",
+    "contact-color-plum3",
+    "contact-color-aluminium1",
+    "contact-color-aluminium2",
+    "contact-color-aluminium3"
 ]);
 
 var LINK_REGEX = /\b((?:https?:\/\/|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))/gi;

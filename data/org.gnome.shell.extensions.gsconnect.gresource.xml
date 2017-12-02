@@ -41,4 +41,7 @@
     <!-- Device Menu Icons -->
     <file compressed="true" preprocess="xml-stripblanks">sms-symbolic.svg</file>
   </gresource>
+  <gresource prefix="/style">
+    <file compressed="true">telephony.css</file>
+  </gresource>
 </gresources>
