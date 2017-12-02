@@ -93,225 +93,6 @@ var shuffleColor = Array.shuffler([
 var LINK_REGEX = /\b((?:https?:\/\/|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))/gi;
 
 
-var ContactStore = new Lang.Class({
-    Name: "GSConnectContactStore",
-    Extends: Gtk.ListStore,
-    
-    _init: function (cache) {
-        this.parent();
-        
-        this._cache = cache;
-        
-        this.set_column_types([
-            GObject.TYPE_STRING,    // Title ("Name <Phone Number>")
-            GObject.TYPE_STRING,    // Name
-            GObject.TYPE_STRING,    // Phone Number
-            GdkPixbuf.Pixbuf        // Type Icon
-        ]);
-        this.set_sort_column_id(0, Gtk.SortType.ASCENDING);
-        this.set_sort_func(0, this._sort);
-        
-        // Phone number icons
-        let theme = Gtk.IconTheme.get_default();
-        this.phone_number_default = theme.load_icon("phone-number-default", 0, 0);
-        this.phone_number_home = theme.load_icon("phone-number-home", 0, 0);
-        this.phone_number_mobile = theme.load_icon("phone-number-mobile", 0, 0);
-        this.phone_number_work = theme.load_icon("phone-number-work", 0, 0);
-        
-        this._cache.connect("notify::contacts", () => {
-            this._populate();
-        });
-        
-        this._populate();
-    },
-    
-    _populate: function () {
-        this.clear();
-        
-        for (let contact of this._cache.contacts) {
-            this._add(contact);
-        }
-    },
-    
-    _add: function (contact) {
-        // Only include types that could possibly support SMS
-        if (contact.type && SUPPORTED_NUMBER_TYPES.indexOf(contact.type) < 0) {
-            return; 
-        }
-    
-        // Append the number to the title column
-        let title = contact.name + " <" + contact.number + ">";
-        
-        // Phone Type Icon
-        let icon;
-        
-        if (contact.type.indexOf("home") > -1) {
-            icon = this.phone_number_home;
-        } else if (contact.type.indexOf("cell") > -1 || contact.type.indexOf("mobile") > -1) {
-            icon = this.phone_number_mobile;
-        } else if (contact.type.indexOf("work") > -1 || contact.type.indexOf("voice") > -1) {
-            icon = this.phone_number_work;
-        } else {
-            icon = this.phone_number_default;
-        }
-    
-        this.set(
-            this.append(),
-            [0, 1, 2, 3],
-            [title, contact.name, contact.number, icon]
-        );
-    },
-    
-    _sort: function (model, a, b, user_data) {
-        return model.get_value(a, 0).localeCompare(model.get_value(b, 0));
-    }
-});
-
-        
-/** A Gtk.EntryCompletion subclass for Contacts */
-var ContactCompletion = new Lang.Class({
-    Name: "GSConnectContactCompletion",
-    Extends: Gtk.EntryCompletion,
-    
-    _init: function (cache) {
-        this.parent();
-        
-        // Track suggested completions
-        this._matched = [];
-        this._last = null;
-        
-        this.set_model(new ContactStore(cache));
-        
-        // Title
-        this.set_text_column(0);
-        // Type Icon
-        let typeCell = new Gtk.CellRendererPixbuf();
-        this.pack_start(typeCell, false);
-        this.add_attribute(typeCell, "pixbuf", 3);
-        
-        this.set_match_func(Lang.bind(this, this._match));
-        this.connect("match-selected", Lang.bind(this, this._select));
-    },
-    
-    _match: function (completion, key, tree_iter) {
-        let name = this.model.get_value(tree_iter, 1).toLowerCase();
-        let number = this.model.get_value(tree_iter, 2);
-        let recipients = this.get_entry()._parent._recipients;
-        
-        // Return if the possible match is in the current recipients
-        if (recipients.has(number.replace(/\D/g, ""))) { return false; }
-        
-        // Clear current matches, reset last key and return if the key is empty
-        if (!key.length) {
-            this._matched = [];
-            this._last = null;
-            return;
-        // Clear current matches and reset last key if the key has changed
-        } else if (key !== this._last) {
-            this._matched = [];
-            this._last = key;
-        }
-        
-        // Limit the matches to 20
-        if (this._matched.length >= 20) { return false; }
-        
-        // Match name or number
-        if (name.indexOf(key) > -1 || number.indexOf(key) > -1) {
-            this._matched.push(this.model.get_string_from_iter(tree_iter));
-            return true;
-        }
-    },
-    
-    /** Add selected auto-complete entry to list of contacts in the entry */
-    _select: function (completion, model, tree_iter) {
-        let entry = completion.get_entry();
-        this._matched = [];
-        entry._parent.addRecipient({
-            number: model.get_value(tree_iter, 2),
-            name: model.get_value(tree_iter, 1)
-        });
-        entry.text = "";
-        
-        return true;
-    }
-});
-
-
-/**
- * A Gtk.Entry subclass for contact names and phone numbers
- */
-var ContactEntry = new Lang.Class({
-    Name: "GSConnectContactEntry",
-    Extends: Gtk.Entry,
-    
-    _init: function (window, completion) {
-        this.parent({
-            hexpand: true,
-            placeholder_text: _("Type a phone number or name"),
-            tooltip_text: _("Type a phone number or name"),
-            primary_icon_name: "call-start-symbolic",
-            primary_icon_activatable: false,
-            primary_icon_sensitive: true,
-            input_purpose: Gtk.InputPurpose.PHONE,
-            completion: completion
-        });
-        
-        this._parent = window;
-        this._parent.plugin._cache.bind_property(
-            "provider",
-            this,
-            "primary-icon-name",
-            GObject.BindingFlags.SYNC_CREATE
-        );
-    
-        // Select the first completion suggestion on "activate"
-        this.connect("activate", () => { this._select(this); });
-        
-        // Workaround for empty searches not calling CompletionMatchFunc
-        this.connect("changed", (entry) => {
-            if (!entry.text.length) {
-                let completion = entry.get_completion();
-                completion._matched = [];
-                completion._last = null;
-            }
-        });
-        
-        this.connect("activate", (entry) => {
-            this._select(this);
-        });
-        
-        this.connect("key-press-event", (entry, event, user_data) => {
-            if (event.get_keyval()[1] === Gdk.KEY_Escape) {
-                entry.text = "";
-                this._select(this);
-            }
-        });
-    },
-    
-    _select: function (entry) {
-        let completion = entry.get_completion();
-        
-        if (completion._matched.length > 0) {
-            let iter_path = completion._matched["0"];
-            let [b, iter] = completion.model.get_iter_from_string(iter_path);
-            
-            completion._matched = [];
-            
-            this._parent.addRecipient({
-                number: completion.model.get_value(iter, 2),
-                name: completion.model.get_value(iter, 1)
-            });
-            entry.text = "";
-        } else if (entry.text.length) {
-            this._parent.addRecipient({ number: entry.text });
-            entry.text = "";
-        } else {
-            this._parent.notify("recipients");
-        }
-    }
-});
-
-
 /**
  * Contact Avatar
  */
@@ -366,31 +147,81 @@ var ContactAvatar = new Lang.Class({
     }
 });
 
-
-var RecipientList = new Lang.Class({
-    Name: "GSConnectRecipientList",
-    Extends: Gtk.ScrolledWindow,
     
-    _init: function (window) {
+function getAvatar (recipient) {
+    let avatar;
+    
+    if (recipient.avatar) {
+        try {
+            avatar = new ContactAvatar({ path: recipient.avatar });
+        } catch (e) {
+            Common.debug("Error creating avatar: " + e);
+            avatar = getDefaultAvatar(recipient);
+        }
+    } else {
+        avatar = getDefaultAvatar(recipient);
+    }
+    
+    return avatar;
+};
+
+
+function getDefaultAvatar (recipient) {
+    let avatar = new Gtk.Box({ width_request: 32, height_request: 32 });
+    let avatarStyle = avatar.get_style_context();
+    avatarStyle.add_provider(MessageStyle, 0);
+    avatarStyle.add_class("contact-avatar");
+    avatarStyle.add_class(recipient.color || shuffleColor());
+    
+    let defaultAvatar = new Gtk.Image({
+        icon_name: "avatar-default-symbolic",
+        pixel_size: 24,
+        margin: 4,
+        visible: true
+    });
+    avatar.add(defaultAvatar);
+    
+    return avatar;
+};
+
+
+var ContactList = new Lang.Class({
+    Name: "GSConnectContactList",
+    Extends: Gtk.ScrolledWindow,
+    Properties: {
+        "recipients": GObject.param_spec_variant(
+            "recipients",
+            "RecipientList", 
+            "A list of target recipient phone numbers",
+            new GLib.VariantType("as"),
+            new GLib.Variant("as", []),
+            GObject.ParamFlags.READABLE
+        )
+    },
+    
+    _init: function (params) {
         this.parent({
             can_focus: false,
             hexpand: true,
             vexpand: true,
             hscrollbar_policy: Gtk.PolicyType.NEVER,
-            margin: 6
+            shadow_type: Gtk.ShadowType.IN
         });
         
-        this._parent = window;
+        this._parent = params.parent;
+        this.contacts = params.contacts;
+        //this.cache.connect("notify::contacts", () => { this._populate(); });
         
-        let recipientFrame = new Gtk.Frame();
-        this.add(recipientFrame);
+        this.entry = params.entry;
+        this.entry.connect("changed", () => { this._changed(); });
         
-        this.list = new Gtk.ListBox({
-            visible: true,
-            halign: Gtk.Align.FILL
-        });
-        recipientFrame.add(this.list);
+        // ListBox
+        this.list = new Gtk.ListBox({ selection_mode: Gtk.SelectionMode.NONE });
+        this.list.set_filter_func(Lang.bind(this, this._filter));
+        this.list.set_sort_func(Lang.bind(this, this._sort));
+        this.add(this.list);
         
+        // Placeholder
         let box = new Gtk.Box({
             orientation: Gtk.Orientation.VERTICAL,
             visible: true,
@@ -421,72 +252,164 @@ var RecipientList = new Lang.Class({
         
         box.add(placeholderLabel);
         this.list.set_placeholder(box);
+        
+        // Populate and setup
+        this._populate();
+        this.show_all();
+        this.entry.has_focus = true;
+        this.list.unselect_all();
     },
     
-    /**
-     * Add a new recipient, ...
-     *
-     * @param {object} recipient - The recipient object for this person
-     */
-    addRecipient: function (recipient) {
-        let row = new Gtk.ListBoxRow({
-            activatable: false,
-            selectable: false,
-            hexpand: true,
-            halign: Gtk.Align.FILL,
-            margin: 6
+    get recipients () {
+        let recipients = [];
+        
+        this.list.foreach((row) => {
+            if (row.recipient.active) {
+                recipients.push(row.contact.number);
+            }
         });
-        this.list.add(row);
         
-        row.layout = new Gtk.Grid({
-            can_focus: false,
-            column_spacing: 12,
-            row_spacing: 0
+        return recipients;
+    },
+    
+    _add: function (contact) {
+        let row = new Gtk.ListBoxRow();
+        row.contact = contact;
+        
+        let grid = new Gtk.Grid({
+            margin: 6,
+            column_spacing: 6
         });
-        row.add(row.layout);
+        row.add(grid);
         
-        // ContactAvatar
-        row.avatar = this._parent._getAvatar(recipient);
-        row.layout.attach(row.avatar, 0, 0, 1, 2);
+        grid.attach(getAvatar(contact), 0, 0, 1, 2);
         
-        // contactName
-        row.contact = new Gtk.Label({
-            label: recipient.name || _("Unknown Contact"),
-            can_focus: false,
-            xalign: 0,
+        row._name = new Gtk.Label({
+            label: contact.name || _("Unknown Contact"),
+            halign: Gtk.Align.START,
             hexpand: true
         });
-        row.layout.attach(row.contact, 1, 0, 1, 1);
+        grid.attach(row._name, 1, 0, 1, 1);
         
-        // phoneNumber
-        row.phone = new Gtk.Label({
-            label: recipient.number || _("Unknown Number"),
-            visible: true,
-            can_focus: false,
-            xalign: 0,
+        row._number = new Gtk.Label({
+            label: contact.number || _("Unknown Number"),
+            halign: Gtk.Align.START,
             hexpand: true
         });
-        row.phone.get_style_context().add_class("dim-label");
-        row.layout.attach(row.phone, 1, 1, 1, 1);
+        row._number.get_style_context().add_class("dim-label");
+        grid.attach(row._number, 1, 1, 1, 1);
         
-        let removeButton = new Gtk.Button({
-            image: new Gtk.Image({
-                icon_name: "edit-delete-symbolic",
-                pixel_size: 16
-            }),
-            always_show_image: true,
-            halign: Gtk.Align.END,
-            valign: Gtk.Align.CENTER
+        //
+        row._type = new Gtk.Image({
+            icon_name: "phone-number-default",
+            pixel_size: 16
         });
-        removeButton.get_style_context().add_class("circular");
-        removeButton.get_style_context().add_class("flat");
-        removeButton.connect("clicked", () => {
-            this._parent.removeRecipient(recipient);
-            this.list.remove(row);
+        
+        if (!contact.type) {
+            row._type.icon_name = "phone-number-default";
+        } else if (contact.type.indexOf("home") > -1) {
+            row._type.icon_name = "phone-number-home";
+        } else if (contact.type.indexOf("cell") > -1 || contact.type.indexOf("mobile") > -1) {
+            row._type.icon_name = "phone-number-mobile";
+        } else if (contact.type.indexOf("work") > -1 || contact.type.indexOf("voice") > -1) {
+            row._type.icon_name = "phone-number-work";
+        }
+        grid.attach(row._type, 2, 0, 1, 2);
+        
+        row.recipient = new Gtk.CheckButton({
+            active: false,
+            margin_right: 12
         });
-        row.layout.attach(removeButton, 2, 0, 1, 2);
+        row.recipient.connect("toggled", () => { this._toggle(row); });
+        grid.attach(row.recipient, 3, 0, 1, 2);
         
         row.show_all();
+        
+        this.list.add(row);
+        
+        return row;
+    },
+    
+    _changed: function (entry) {
+        if (this.entry.text.replace(/\D/g, "").length > 2) {
+            if (this._dynamic) {
+                this._dynamic._name.label = _("Send to %d").format(this.entry.text);
+                this._dynamic._number.label = this.entry.text;
+                this._dynamic.contact.number = this.entry.text;
+            } else {
+                this._dynamic = this._add({
+                    name: _("Send to %d").format(this.entry.text),
+                    number: this.entry.text,
+                    dynamic: true
+                });
+                this._dynamic.contact.name = _("Unknown Contact");
+            }
+        } else if (this._dynamic) {
+            this._dynamic.destroy();
+            delete this._dynamic;
+        }
+        
+        this.list.invalidate_sort();
+        this.list.invalidate_filter();
+    },
+    
+    _filter: function (row) {
+        if (!this.entry) { return true; }
+        
+        let name = row.contact.name.toLowerCase();
+        let number = row.contact.number.replace(/\D/g, "");
+        let filterNumber = this.entry.text.replace(/\D/g, "");
+        
+        if (row.contact.dynamic) {
+            return true;
+        } else if (name.indexOf(this.entry.text) > -1) {
+            return true;
+        } else if (filterNumber.length && number.indexOf(filterNumber) > -1) {
+            return true;
+        }
+        
+        return false;
+    },
+    
+    _populate: function () {
+        this.list.foreach((child) => { child.destroy(); });
+        
+        for (let contact of this.contacts) {
+            this._add(contact);
+        }
+    },
+    
+    _sort: function (row1, row2) {
+        if (row1.contact.dynamic) {
+            return -1;
+        } else if (row2.contact.dynamic) {
+            return 1;
+        } else if (row1.recipient.active && !row2.recipient.active) {
+            return -1;
+        } else if (!row1.recipient.active && row2.recipient.active) {
+            return 1;
+        }
+        
+        return row1.contact.name.localeCompare(row2.contact.name);
+    },
+    
+    _toggle: function (row) {
+        if (row.recipient.active) {
+            if (row.contact.dynamic) {
+                row._name.label = row.contact.name;
+                delete this._dynamic;
+            }
+            this._parent.addRecipient(row.contact);
+        } else {
+            this._parent.removeRecipient(row.contact);
+            if (row.contact.dynamic) {
+                row.destroy();
+            }
+        }
+        
+        this.entry.text = "";
+        this.list.invalidate_sort();
+        this.notify("recipients");
     }
 });
 
@@ -586,7 +509,7 @@ var MessageView = new Lang.Class({
         row.add(row.layout);
         
         // Contact Avatar
-        row.avatar = this._parent._getAvatar(recipient);
+        row.avatar = getAvatar(recipient);
         row.avatar.tooltip_text = recipient.name || recipient.number;
         row.avatar.valign = Gtk.Align.END;
         row.avatar.visible = direction;
@@ -697,7 +620,6 @@ var ConversationWindow = new Lang.Class({
         });
         
         this.device = device;
-        this.plugin = this.device._plugins.get("telephony");
         this._recipients = new Map();
         this._notifications = [];
         
@@ -716,9 +638,7 @@ var ConversationWindow = new Lang.Class({
             // TRANSLATORS: Tooltip for a button to add/remove people from a conversation
             tooltip_text: _("Add and remove people")
         });
-        this.contactButton.connect("clicked", () => {
-            this._showRecipients();
-        });
+        this.contactButton.connect("clicked", () => { this._showContacts(); });
         this.device.bind_property(
             "connected",
             this.contactButton,
@@ -747,10 +667,21 @@ var ConversationWindow = new Lang.Class({
         );
         this.headerBar.pack_start(this.messagesButton);
         
-        // Contact Entry
-        this.contactEntry = new ContactEntry(
-            this,
-            new ContactCompletion(this.plugin._cache)
+        // Contact Entry // TODO: separate
+        this.contactEntry = new Gtk.Entry({
+            hexpand: true,
+            placeholder_text: _("Type a phone number or name"),
+            tooltip_text: _("Type a phone number or name"),
+            primary_icon_name: "call-start-symbolic",
+            primary_icon_activatable: false,
+            primary_icon_sensitive: true,
+            input_purpose: Gtk.InputPurpose.PHONE
+        });
+        this.device._plugins.get("telephony")._cache.bind_property(
+            "provider",
+            this.contactEntry,
+            "primary-icon-name",
+            GObject.BindingFlags.SYNC_CREATE
         );
         this.device.bind_property(
             "connected",
@@ -805,9 +736,16 @@ var ConversationWindow = new Lang.Class({
         );
         this.layout.attach(this.stack, 0, 1, 1, 1);
         
-        // Recipient List
-        this.recipientList = new RecipientList(this);
-        this.stack.add_named(this.recipientList, "recipients");
+        // Contact List
+        this.contactList = new ContactList({
+            parent: this,
+            contacts: this.device._plugins.get("telephony")._cache.contacts,
+            entry: this.contactEntry
+        });
+        this.contactList.connect("notify::recipients", () => {
+            this._setHeaderBar();
+        });
+        this.stack.add_named(this.contactList, "contacts");
         
         // MessageView
         this.messageView = new MessageView(this);
@@ -871,17 +809,17 @@ var ConversationWindow = new Lang.Class({
             this.headerBar.set_title(_("New SMS Conversation"));
             this.headerBar.set_subtitle(null);
             this.headerBar.set_tooltip_text("");
-            this._showRecipients();
+            this._showContacts();
         }
     },
     
-    _showRecipients: function () {
+    _showContacts: function () {
         this.headerBar.custom_title = this.contactEntry;
         this.contactEntry.has_focus = true;
         
         this.messagesButton.visible = (this._recipients.size);
         this.contactButton.visible = false;
-        this.stack.set_visible_child_name("recipients");
+        this.stack.set_visible_child_name("contacts");
     },
     
     _showMessages: function () {
@@ -895,41 +833,6 @@ var ConversationWindow = new Lang.Class({
     
     get recipients () {
         return Array.from(this._recipients.keys());
-    },
-    
-    _getAvatar: function (recipient) {
-        let avatar;
-        
-        if (recipient.avatar) {
-            try {
-                avatar = new ContactAvatar({ path: recipient.avatar });
-            } catch (e) {
-                Common.debug("Error creating avatar: " + e);
-                avatar = this._getDefaultAvatar(recipient);
-            }
-        } else {
-            avatar = this._getDefaultAvatar(recipient);
-        }
-        
-        return avatar;
-    },
-    
-    _getDefaultAvatar: function (recipient) {
-        let avatar = new Gtk.Box({ width_request: 32, height_request: 32 });
-        let avatarStyle = avatar.get_style_context();
-        avatarStyle.add_provider(MessageStyle, 0);
-        avatarStyle.add_class("contact-avatar");
-        avatarStyle.add_class(recipient.color);
-        
-        let defaultAvatar = new Gtk.Image({
-            icon_name: "avatar-default-symbolic",
-            pixel_size: 24,
-            margin: 4,
-            visible: true
-        });
-        avatar.add(defaultAvatar);
-        
-        return avatar;
     },
     
     /**
@@ -960,7 +863,20 @@ var ConversationWindow = new Lang.Class({
         } else {
             recipient.color = shuffleColor(); // Only do this once per recipient
             this._recipients.set(strippedNumber, recipient);
-            this.recipientList.addRecipient(recipient);
+            
+            // TODO: cleanup
+            let found = false;
+            this.contactList.list.foreach((row) => {
+                if (row.contact.name === recipient.name &&
+                    row.contact.number.replace(/\D/g, "") === strippedNumber) {
+                    row.recipient.active = true;
+                    found = true;
+                }
+            });
+            
+            if (!found) {
+                this.contactList._add(recipient);
+            }
         }
         
         this.notify("recipients");
