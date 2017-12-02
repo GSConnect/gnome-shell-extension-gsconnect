@@ -188,16 +188,6 @@ function getDefaultAvatar (recipient) {
 var ContactList = new Lang.Class({
     Name: "GSConnectContactList",
     Extends: Gtk.ScrolledWindow,
-    Properties: {
-        "numbers": GObject.param_spec_variant(
-            "numbers",
-            "RecipientNumberList", 
-            "A list of target recipient phone numbers",
-            new GLib.VariantType("as"),
-            new GLib.Variant("as", []),
-            GObject.ParamFlags.READABLE
-        )
-    },
     
     _init: function (params) {
         this.parent({
@@ -258,21 +248,7 @@ var ContactList = new Lang.Class({
         this.list.unselect_all();
     },
     
-    get numbers () {
-        let recipients = [];
-        
-        for (let row of this.list.get_children) {
-            for (let numRow of row.numbers.get_children()) {
-                if (numRow.recipient.active) {
-                    recipients.push(numRow.contact.number);
-                }
-            }
-        }
-        
-        return recipients;
-    },
-    
-    _add: function (contact) {
+    addContact: function (contact) {
         let row = new Gtk.ListBoxRow();
         
         let grid = new Gtk.Grid({
@@ -298,7 +274,7 @@ var ContactList = new Lang.Class({
         return row;
     },
     
-    _addNumber: function (contact) {
+    addNumber: function (contact) {
         let contactRow = false;
         
         for (let row of this.list.get_children()) {
@@ -309,7 +285,7 @@ var ContactList = new Lang.Class({
         }
         
         if (!contactRow) {
-            contactRow = this._add(contact);
+            contactRow = this.addContact(contact);
         }
         
         let box = new Gtk.Box();
@@ -363,7 +339,7 @@ var ContactList = new Lang.Class({
                 num._number.label = this.entry.text;
                 num.contact.number = this.entry.text;
             } else {
-                this._dynamic = this._addNumber({
+                this._dynamic = this.addNumber({
                     name: _("Unknown Contact"),
                     number: this.entry.text
                 });
@@ -411,7 +387,7 @@ var ContactList = new Lang.Class({
         this.list.foreach((child) => { child.destroy(); });
         
         for (let contact of this.contacts) {
-            this._addNumber(contact);
+            this.addNumber(contact);
         }
     },
     
@@ -464,7 +440,6 @@ var ContactList = new Lang.Class({
         
         this.entry.text = "";
         this.list.invalidate_sort();
-        this.notify("numbers");
     }
 });
 
@@ -483,16 +458,14 @@ var MessageView = new Lang.Class({
         this._parent = window;
         
         // Messages List
-        let frame = new Gtk.Frame();
-        this.add(frame);
-        
         this.threadWindow = new Gtk.ScrolledWindow({
             can_focus: false,
             hexpand: true,
             vexpand: true,
-            hscrollbar_policy: Gtk.PolicyType.NEVER
+            hscrollbar_policy: Gtk.PolicyType.NEVER,
+            shadow_type: Gtk.ShadowType.IN
         });
-        frame.add(this.threadWindow);
+        this.add(this.threadWindow);
         
         this.list = new Gtk.ListBox({
             visible: true,
@@ -619,7 +592,7 @@ var MessageView = new Lang.Class({
         let messageBubbleStyle = messageBubble.get_style_context();
         messageBubbleStyle.add_provider(MessageStyle, 0);
         messageBubbleStyle.add_class("message-bubble");
-        messageBubbleStyle.add_class((direction) ? recipient.color : "contact-color-outgoing");
+        messageBubbleStyle.add_class(recipient.color);
         row.messages.add(messageBubble);
         
         let messageContent = new Gtk.Label({
@@ -797,9 +770,6 @@ var ConversationWindow = new Lang.Class({
             contacts: this.device._plugins.get("telephony")._cache.contacts,
             entry: this.contactEntry
         });
-        this.contactList.connect("notify::recipients", () => {
-            this._setHeaderBar();
-        });
         this.stack.add_named(this.contactList, "contacts");
         
         // MessageView
@@ -934,7 +904,7 @@ var ConversationWindow = new Lang.Class({
             }
             
             if (!found) {
-                this.contactList._addNumber(recipient);
+                this.contactList.addNumber(recipient);
             }
         }
         
@@ -977,7 +947,7 @@ var ConversationWindow = new Lang.Class({
         
         // Log the outgoing message
         this.messageView.addMessage(
-            { number: "0", color: "contact-color-grey" },
+            { number: "0", color: "contact-color-outgoing" },
             entry.text,
             MessageDirection.OUT
         );
