@@ -39,7 +39,7 @@ var AboutWidget = new Lang.Class({
         });
         
         let aboutIcon = new Gtk.Image({
-            icon_name: "phone",
+            icon_name: "org.gnome.Shell.Extensions.GSConnect",
             pixel_size: 128
         });
         this.add(aboutIcon);

@@ -513,7 +513,7 @@ var SystemIndicator = new Lang.Class({
         );
         
         this.extensionIndicator = this._addIndicator();
-        this.extensionIndicator.icon_name = "gsconnect-symbolic";
+        this.extensionIndicator.icon_name = "org.gnome.Shell.Extensions.GSConnect-symbolic";
         let userMenuTray = Main.panel.statusArea.aggregateMenu._indicators;
         userMenuTray.insert_child_at_index(this.indicators, 0);
         

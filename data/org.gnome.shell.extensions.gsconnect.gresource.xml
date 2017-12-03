@@ -10,7 +10,8 @@
     <file compressed="true" preprocess="xml-stripblanks">org.mpris.MediaPlayer2.Player.xml</file>
   </gresource>
   <gresource prefix="/icons">
-    <file compressed="true" preprocess="xml-stripblanks">gsconnect-symbolic.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks">org.gnome.Shell.Extensions.GSConnect.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks">org.gnome.Shell.Extensions.GSConnect-symbolic.svg</file>
     <!-- Status Icon Fallbacks c/o Numix -->
     <file compressed="true" preprocess="xml-stripblanks">computer.svg</file>
     <file compressed="true" preprocess="xml-stripblanks">desktop-connected.svg</file>
