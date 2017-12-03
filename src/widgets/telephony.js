@@ -87,6 +87,9 @@ var shuffleColor = Array.shuffler([
     "contact-color-plum1",
     "contact-color-plum2",
     "contact-color-plum3",
+    "contact-color-scarletred1",
+    "contact-color-scarletred2",
+    "contact-color-scarletred3",
     "contact-color-aluminium1",
     "contact-color-aluminium2",
     "contact-color-aluminium3"
