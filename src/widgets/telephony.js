@@ -1054,7 +1054,7 @@ var ShareWindow = new Lang.Class({
             label: _("New Message")
         });
         this.newButton.connect("clicked", () => {
-            let window = new TelephonyWidget.ConversationWindow(this.device);
+            let window = new ConversationWindow(this.device);
             window.setEntry(url);
             this.destroy();
             window.present();
