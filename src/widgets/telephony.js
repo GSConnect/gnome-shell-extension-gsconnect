@@ -169,7 +169,11 @@ function getAvatar (recipient) {
 
 
 function getDefaultAvatar (recipient) {
-    let avatar = new Gtk.Box({ width_request: 32, height_request: 32 });
+    let avatar = new Gtk.Box({
+        width_request: 32,
+        height_request: 32,
+        valign: Gtk.Align.START
+    });
     let avatarStyle = avatar.get_style_context();
     avatarStyle.add_provider(MessageStyle, 0);
     avatarStyle.add_class("contact-avatar");
@@ -251,7 +255,9 @@ var ContactList = new Lang.Class({
     },
     
     addContact: function (contact) {
-        let row = new Gtk.ListBoxRow();
+        let row = new Gtk.ListBoxRow({
+            activatable: false
+        });
         
         let grid = new Gtk.Grid({
             margin: 6,
@@ -268,7 +274,10 @@ var ContactList = new Lang.Class({
         });
         grid.attach(row._name, 1, 0, 1, 1);
         
-        row.numbers = new Gtk.Box({ orientation: Gtk.Orientation.VERTICAL });
+        row.numbers = new Gtk.Box({
+            orientation: Gtk.Orientation.VERTICAL,
+            spacing: 3
+        });
         grid.attach(row.numbers, 1, 1, 1, 1);
         
         this.list.add(row);
@@ -305,7 +314,8 @@ var ContactList = new Lang.Class({
         //
         box._type = new Gtk.Image({
             icon_name: "phone-number-default",
-            pixel_size: 16
+            pixel_size: 16,
+            margin_right: 3
         });
         
         if (!contact.type) {
