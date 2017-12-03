@@ -119,7 +119,11 @@ var PrefsWidget = new Lang.Class({
         desktopSection.addGSetting(Common.Settings, "nautilus-integration");
         
         // About Page
-        let aboutPage = this.addPage("about", _("About"));
+        let aboutPage = this.addPage(
+            "about",
+            _("About"),
+            { vscrollbar_policy: Gtk.PolicyType.NEVER }
+        );
         aboutPage.box.add(new AboutWidget());
         aboutPage.box.margin_top = 18;
         

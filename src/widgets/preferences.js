@@ -278,8 +278,8 @@ var Stack = new Lang.Class({
         this.switcher.show_all();
     },
     
-    addPage: function (id, title) {
-        let page = new Page();
+    addPage: function (id, title, params={}) {
+        let page = new Page(params);
         this.add_titled(page, id, title);
         return page;
     },
