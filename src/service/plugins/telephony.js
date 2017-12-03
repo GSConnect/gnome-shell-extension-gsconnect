@@ -292,7 +292,7 @@ var Plugin = new Lang.Class({
         for (let index_ in windows) {
             let win = windows[index_];
             
-            if (win.deviceId !== this.device.id || !win.numbers) {
+            if (win.deviceId !== this.device.id || !win.numbers.length) {
                 continue;
             }
             
@@ -587,7 +587,7 @@ var Plugin = new Lang.Class({
         for (let index_ in windows) {
             let window = windows[index_];
             
-            if (window.deviceId === this.device.id && window.numbers) {
+            if (window.deviceId === this.device.id && window.numbers.length) {
                 hasConversations = true;
                 break;
             }
