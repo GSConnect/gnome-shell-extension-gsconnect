@@ -577,6 +577,32 @@ var Plugin = new Lang.Class({
         });
         
         this.device._channel.send(packet);
+    },
+    
+    shareUri: function (url) {
+        // Get the current open windows
+        let windows = this.device.daemon.get_windows();
+        let hasConversations = false;
+        
+        for (let index_ in windows) {
+            let window = windows[index_];
+            
+            if (window.deviceId === this.device.id && window.numbers) {
+                hasConversations = true;
+                break;
+            }
+        }
+        
+        let window;
+        
+        if (hasConversations) {
+            window = new TelephonyWidget.ShareWindow(this.device, url);
+        } else {
+            window = new TelephonyWidget.ConversationWindow(this.device);
+            window.setEntry(url);
+        }
+        
+        window.present();
     }
 });
 

@@ -976,3 +976,132 @@ var ConversationWindow = new Lang.Class({
     }
 });
 
+
+/**
+ * A Gtk.ApplicationWindow for sharing links via SMS
+ */
+var ShareWindow = new Lang.Class({
+    Name: "GSConnectContactShareWindow",
+    Extends: Gtk.ApplicationWindow,
+    
+    _init: function (device, url) {
+        this.parent({
+            application: device.daemon,
+            title: _("Share Link"),
+            default_width: 300,
+            default_height: 200,
+            icon_name: "phone"
+        });
+        this.set_keep_above(true);
+        
+        this.device = device;
+        this.url = url;
+        
+        // HeaderBar
+        this.set_titlebar(
+            new Gtk.HeaderBar({
+                title: _("Share Link"),
+                subtitle: url,
+                show_close_button: true,
+                tooltip_text: url
+            })
+        );
+        
+        let grid = new Gtk.Grid({
+            margin: 6,
+            orientation: Gtk.Orientation.VERTICAL,
+            column_homogeneous: true,
+            column_spacing: 6,
+            row_spacing: 6
+        });
+        this.add(grid);
+        
+        // Conversations
+        let scrolledWindow = new Gtk.ScrolledWindow({
+            can_focus: false,
+            hexpand: true,
+            vexpand: true,
+            hscrollbar_policy: Gtk.PolicyType.NEVER,
+            shadow_type: Gtk.ShadowType.IN
+        });
+        grid.attach(scrolledWindow, 0, 0, 2, 1);
+        
+        this.list = new Gtk.ListBox();
+        this.list.connect("selected-rows-changed", () => {
+            if (this.list.get_selected_rows().length) {
+                this.sendButton.sensitive = true;
+            } else {
+                this.sendButton.sensitive = false;
+            }
+        });
+        scrolledWindow.add(this.list);
+        
+        // New
+        this.newButton = new Gtk.Button({
+            label: _("New Message")
+        });
+        this.newButton.connect("clicked", () => {
+            let window = new TelephonyWidget.ConversationWindow(this.device);
+            window.setEntry(url);
+            this.destroy();
+            window.present();
+        });
+        grid.attach(this.newButton, 0, 1, 1, 1);
+        
+        // Send
+        this.sendButton = new Gtk.Button({
+            label: _("Send"),
+            sensitive: false
+        });
+        this.sendButton.connect("clicked",() => {
+            let window = this.list.get_selected_row().window_;
+            window.setEntry(url);
+            this.destroy();
+            window.present();
+        });
+        grid.attach(this.sendButton, 1, 1, 1, 1);
+        
+        // Filter Setup
+        this._addWindows();
+        this.show_all();
+    },
+    
+    _addWindows: function () {
+        let windows = this.device.daemon.get_windows();
+        
+        for (let index_ in windows) {
+            let window = windows[index_];
+            
+            if (window.deviceId === this.device.id && window.numbers) {
+                let recipients = window.getRecipients();
+                let firstRecipient = recipients.values().next().value;
+                
+                let row = new Gtk.ListBoxRow();
+                row.window_ = window;
+                this.list.add(row);
+                
+                let grid = new Gtk.Grid({
+                    margin: 6,
+                    column_spacing: 6
+                });
+                row.add(grid);
+                
+                grid.attach(getAvatar(firstRecipient), 0, 0, 1, 2);
+                
+                let name = new Gtk.Label({
+                    label: firstRecipient.name,
+                    halign: Gtk.Align.START
+                });
+                grid.attach(name, 1, 0, 1, 1);
+                
+                let number = new Gtk.Label({
+                    label: firstRecipient.number,
+                    halign: Gtk.Align.START
+                });
+                number.get_style_context().add_class("dim-label");
+                grid.attach(number, 1, 1, 1, 1);
+            }
+        }
+    }
+});
+
