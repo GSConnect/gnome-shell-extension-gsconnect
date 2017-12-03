@@ -640,11 +640,10 @@ var ContactsCache = new Lang.Class({
         this.contacts = [];
         this.read();
         
-        // TODO:  better monitoring
         this._monitor = this._file.monitor(Gio.FileMonitorFlags.NONE, null);
         this._monitor.connect("changed", (monitor, file, ofile, event) => {
-            if (event === Gio.FileMonitorEvent.CHANGED) {
-                this.notify("contacts");
+            if (event === Gio.FileMonitorEvent.CHANGES_DONE_HINT) {
+                this.read();
             }
         });
         
