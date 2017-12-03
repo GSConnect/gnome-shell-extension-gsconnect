@@ -373,6 +373,10 @@ var Telephony = new Lang.Class({
     
     sendSms: function (phoneNumber, messageBody) {
         this._call("sendSms", true, phoneNumber, messageBody);
+    },
+    
+    shareUri: function (url) {
+        this._call("shareUri", true, url);
     }
 });
 

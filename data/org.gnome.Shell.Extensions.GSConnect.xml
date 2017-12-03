@@ -130,6 +130,9 @@
       <arg name="phoneNumber" type="s" direction="in"/>
       <arg name="messageBody" type="s" direction="in"/>
     </method>
+    <method name="shareUri">
+      <arg name="url" type="s" direction="in"/>
+    </method>
     
     <signal name="missedCall">
       <arg name="number" type="s"/>
