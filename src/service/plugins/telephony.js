@@ -290,9 +290,13 @@ var Plugin = new Lang.Class({
         
         // Look for an open window with this contact
         for (let index_ in windows) {
-            if (!windows[index_].recipients) { continue; }
+            let win = windows[index_];
             
-            for (let windowNumber of windows[index_].recipients) {
+            if (win.deviceId !== this.device.id || !win.numbers) {
+                continue;
+            }
+            
+            for (let windowNumber of windows[index_].numbers) {
                 if (incomingNumber === windowNumber) {
                     window = windows[index_];
                     break;
@@ -475,10 +479,7 @@ var Plugin = new Lang.Class({
     openSms: function () {
         Common.debug("Telephony: openSms()");
         
-        let window = new TelephonyWidget.ConversationWindow(
-            this.device.daemon,
-            this.device
-        );
+        let window = new TelephonyWidget.ConversationWindow(this.device);
         window.present();
     },
     
@@ -499,10 +500,7 @@ var Plugin = new Lang.Class({
         
         // None found; open one, add the contact, log the message, mark it read
         if (!window) {
-            window = new TelephonyWidget.ConversationWindow(
-                this.device.daemon,
-                this.device
-            );
+            window = new TelephonyWidget.ConversationWindow(this.device);
             window.addRecipient({
                 number: phoneNumber, 
                 name: contactName
@@ -541,10 +539,7 @@ var Plugin = new Lang.Class({
         // None found
         if (!window) {
             // Open a new window
-            window = new TelephonyWidget.ConversationWindow(
-                this.device.daemon,
-                this.device
-            );
+            window = new TelephonyWidget.ConversationWindow(this.device);
             
             // Log the message
             window.receive(phoneNumber, contactName, messageBody);

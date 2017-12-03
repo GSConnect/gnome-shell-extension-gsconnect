@@ -630,9 +630,16 @@ var ConversationWindow = new Lang.Class({
     Name: "GSConnectConversationWindow",
     Extends: Gtk.ApplicationWindow,
     Properties: {
-        "recipients": GObject.param_spec_variant(
-            "recipients",
-            "RecipientList", 
+        "deviceId": GObject.ParamSpec.string(
+            "deviceId",
+            "deviceId",
+            "The device associated with this window",
+            GObject.ParamFlags.READABLE,
+            ""
+        ),
+        "numbers": GObject.param_spec_variant(
+            "numbers",
+            "NumberList", 
             "A list of target recipient phone numbers",
             new GLib.VariantType("as"),
             new GLib.Variant("as", []),
@@ -640,9 +647,9 @@ var ConversationWindow = new Lang.Class({
         )
     },
     
-    _init: function(application, device) {
+    _init: function (device) {
         this.parent({
-            application: application,
+            application: device.daemon,
             title: _("SMS Conversation"),
             default_width: 300,
             default_height: 300,
@@ -650,12 +657,12 @@ var ConversationWindow = new Lang.Class({
         });
         
         this.device = device;
-        this._recipients = new Map();
+        this.recipients = new Map();
         this._notifications = [];
         
         // Header Bar
         this.headerBar = new Gtk.HeaderBar({ show_close_button: true });
-        this.connect("notify::recipients", () => { this._setHeaderBar(); });
+        this.connect("notify::numbers", () => { this._setHeaderBar(); });
         this.set_titlebar(this.headerBar);
         
         // Contact Button
@@ -789,12 +796,20 @@ var ConversationWindow = new Lang.Class({
         
         // Finish initing
         this.show_all();
-        this.notify("recipients");
+        this.notify("numbers");
+    },
+    
+    get deviceId () {
+        return this.device.id;
+    },
+    
+    get numbers () {
+        return Array.from(this.recipients.keys());
     },
     
     _setHeaderBar: function () {
-        if (this._recipients.size) {
-            let firstRecipient = this._recipients.values().next().value;
+        if (this.recipients.size) {
+            let firstRecipient = this.recipients.values().next().value;
             
             if (firstRecipient.name) {
                 this.headerBar.set_title(firstRecipient.name);
@@ -804,8 +819,8 @@ var ConversationWindow = new Lang.Class({
                 this.headerBar.set_subtitle(null);
             }
             
-            if (this._recipients.size > 1) {
-                let num = this._recipients.size - 1;
+            if (this.recipients.size > 1) {
+                let num = this.recipients.size - 1;
                 
                 this.headerBar.set_subtitle(
                     Gettext.ngettext(
@@ -818,7 +833,7 @@ var ConversationWindow = new Lang.Class({
                 
             let people = [];
             
-            for (let recipient of this._recipients.values()) {
+            for (let recipient of this.recipients.values()) {
                 if (recipient.name) {
                     people.push(recipient.name);
                 } else {
@@ -844,7 +859,7 @@ var ConversationWindow = new Lang.Class({
         this.headerBar.custom_title = this.contactEntry;
         this.contactEntry.has_focus = true;
         
-        this.messagesButton.visible = (this._recipients.size);
+        this.messagesButton.visible = (this.recipients.size);
         this.contactButton.visible = false;
         this.stack.set_visible_child_name("contacts");
     },
@@ -856,10 +871,6 @@ var ConversationWindow = new Lang.Class({
         this.contactButton.visible = true;
         this.messageView.entry.has_focus = true;
         this.stack.set_visible_child_name("messages");
-    },
-    
-    get recipients () {
-        return Array.from(this._recipients.keys());
     },
     
     /**
@@ -879,17 +890,17 @@ var ConversationWindow = new Lang.Class({
         );
         
         // This is an extant recipient
-        if (this._recipients.has(strippedNumber)) {
+        if (this.recipients.has(strippedNumber)) {
             recipient = Object.assign(
-                this._recipients.get(strippedNumber),
+                this.recipients.get(strippedNumber),
                 recipient
             );
             
-            this._recipients.set(strippedNumber, recipient);
+            this.recipients.set(strippedNumber, recipient);
         // This is a new recipient
         } else {
             recipient.color = shuffleColor(); // Only do this once per recipient
-            this._recipients.set(strippedNumber, recipient);
+            this.recipients.set(strippedNumber, recipient);
             
             // TODO: cleanup
             let found = false;
@@ -910,7 +921,7 @@ var ConversationWindow = new Lang.Class({
             }
         }
         
-        this.notify("recipients");
+        this.notify("numbers");
         return recipient;
     },
     
@@ -918,10 +929,14 @@ var ConversationWindow = new Lang.Class({
     removeRecipient: function (recipient) {
         let strippedNumber = recipient.number.replace(/\D/g, "");
         
-        if (this._recipients.has(strippedNumber)) {
-            this._recipients.delete(strippedNumber);
+        if (this.recipients.has(strippedNumber)) {
+            this.recipients.delete(strippedNumber);
             this.notify("recipients");
         }
+    },
+    
+    getRecipients: function () {
+        return this.recipients;
     },
     
     /** Log an incoming message in the MessageList */
@@ -943,7 +958,7 @@ var ConversationWindow = new Lang.Class({
         let plugin = this.device._plugins.get("telephony");
         
         // Send to each number
-        for (let number of this.recipients) {
+        for (let number of this.numbers) {
             plugin.sendSms(number, entry.text);
         }
         
@@ -954,6 +969,10 @@ var ConversationWindow = new Lang.Class({
             MessageDirection.OUT
         );
         entry.text = "";
+    },
+    
+    setEntry: function (text) {
+        this.messageView.entry.text = text;
     }
 });
 
