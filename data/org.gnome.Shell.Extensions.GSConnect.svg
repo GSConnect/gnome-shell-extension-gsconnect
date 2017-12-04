@@ -1,47 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Inkscape (http://www.inkscape.org/) -->
-
 <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
    xmlns:cc="http://creativecommons.org/ns#"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="32px"
    height="32px"
    viewBox="0 0 32 32"
    version="1.1"
-   id="SVGRoot"
-   inkscape:version="0.92.2 (5c3e80d, 2017-08-06)"
-   sodipodi:docname="org.gnome.Shell.Extensions.GSConnect.svg"
-   inkscape:export-filename="/home/andrew/Projects/gnome-shell-extension-gsconnect/webextension/images/gsconnect-256.png"
-   inkscape:export-xdpi="768"
-   inkscape:export-ydpi="768">
-  <sodipodi:namedview
-     id="base"
-     pagecolor="#ffffff"
-     bordercolor="#666666"
-     borderopacity="1.0"
-     inkscape:pageopacity="0.0"
-     inkscape:pageshadow="2"
-     inkscape:zoom="181.01934"
-     inkscape:cx="27.97288"
-     inkscape:cy="26.926586"
-     inkscape:document-units="px"
-     inkscape:current-layer="layer1"
-     showgrid="true"
-     inkscape:window-width="1366"
-     inkscape:window-height="740"
-     inkscape:window-x="0"
-     inkscape:window-y="28"
-     inkscape:window-maximized="1"
-     inkscape:grid-bbox="true">
-    <inkscape:grid
-       type="xygrid"
-       id="grid6168" />
-  </sodipodi:namedview>
+   id="SVGRoot">
   <defs
      id="defs6152" />
   <metadata
@@ -58,8 +26,6 @@
   </metadata>
   <g
      id="layer1"
-     inkscape:groupmode="layer"
-     inkscape:label="laptop"
      style="display:inline">
     <rect
        rx="1"
@@ -78,28 +44,20 @@
        width="22"
        id="rect3751" />
     <path
-       inkscape:connector-curvature="0"
        d="M 3,22 1,24 H 31 L 29,22 Z"
        style="fill:#888a85;fill-opacity:1;stroke:none;stroke-width:0.32499966"
-       id="path3755"
-       sodipodi:nodetypes="ccccc" />
+       id="path3755" />
     <path
-       inkscape:connector-curvature="0"
        d="m 1,24 h 30 c 0,1 -1,2 -2,2 H 3 C 2,26 1,25 1,24 Z"
        style="fill:#555753;fill-opacity:1;stroke:none;stroke-width:0.4976353"
-       id="path3753"
-       sodipodi:nodetypes="ccccc" />
+       id="path3753" />
     <path
        d="M 16,20 22,6 h 5 v 14"
        style="fill:#ffffff;fill-opacity:0.1882353;fill-rule:nonzero;stroke:none;stroke-width:0.63332039"
-       id="path3701-7"
-       inkscape:connector-curvature="0"
-       sodipodi:nodetypes="cccc" />
+       id="path3701-7" />
   </g>
   <g
-     inkscape:groupmode="layer"
      id="layer2"
-     inkscape:label="phone"
      style="display:inline">
     <rect
        rx="1"
@@ -119,8 +77,6 @@
     <path
        d="m 23,25 6,-14 h 1 v 14"
        style="display:inline;fill:#ffffff;fill-opacity:0.1882353;fill-rule:nonzero;stroke:none;stroke-width:0.37690103"
-       id="path3701"
-       inkscape:connector-curvature="0"
-       sodipodi:nodetypes="cccc" />
+       id="path3701" />
   </g>
 </svg>
