@@ -289,22 +289,22 @@ var ContactList = new Lang.Class({
     },
     
     addNumber: function (contact) {
-        let contactRow = false;
+        let row = false;
         
-        for (let row of this.list.get_children()) {
-            if (contact.name !== _("Unknown Contact") && contact.name === row._name.label) {
-                contactRow = row;
+        for (let child of this.list.get_children()) {
+            if (contact.name !== _("Unknown Contact") && contact.name === child._name.label) {
+                row = child;
                 break;
             }
         }
         
-        if (!contactRow) {
-            contactRow = this.addContact(contact);
+        if (!row) {
+            row = this.addContact(contact);
         }
         
         let box = new Gtk.Box();
         box.contact = contact;
-        contactRow.numbers.add(box);
+        row.numbers.add(box);
         
         box._number = new Gtk.Label({
             label: contact.number || _("Unknown Number"),
