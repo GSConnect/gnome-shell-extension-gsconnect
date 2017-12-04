@@ -337,13 +337,13 @@ var ContactList = new Lang.Class({
             margin_right: 12
         });
         box.recipient.connect("toggled", () => {
-            this._toggle(contactRow, box);
+            this._toggle(row, box);
         });
         box.add(box.recipient);
         
-        contactRow.show_all();
+        row.show_all();
         
-        return contactRow;
+        return row;
     },
     
     _changed: function (entry) {
@@ -665,8 +665,7 @@ var ConversationWindow = new Lang.Class({
             application: device.daemon,
             title: _("SMS Conversation"),
             default_width: 300,
-            default_height: 300,
-            icon_name: "phone"
+            default_height: 300
         });
         
         this.device = device;
