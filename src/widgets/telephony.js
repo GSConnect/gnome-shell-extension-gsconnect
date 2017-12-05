@@ -23,29 +23,6 @@ imports.searchPath.push(getPath());
 
 const Common = imports.common;
 
-
-/**
- * Phone Number types that support receiving texts
- */
-const SUPPORTED_NUMBER_TYPES = [
-    // GData: https://developers.google.com/gdata/docs/2.0/elements#rel-values_71
-    "http://schemas.google.com/g/2005#home",
-    "http://schemas.google.com/g/2005#main",
-    "http://schemas.google.com/g/2005#mobile",
-    "http://schemas.google.com/g/2005#other",
-    "http://schemas.google.com/g/2005#pager",
-    "http://schemas.google.com/g/2005#work",
-    "http://schemas.google.com/g/2005#work_mobile",
-    "http://schemas.google.com/g/2005#work_pager",
-    // Folks: http://www.ietf.org/rfc/rfc2426.txt
-    "home",
-    "cell",     // Equal to GData->mobile
-    "pager",
-    "pref",     // Equal to GData->main
-    "work",
-    "voice"     // Sometimes mapped from GData#work
-];
-
 /**
  * SMS Message direction
  */
@@ -317,22 +294,12 @@ var ContactList = new Lang.Class({
         box._number.get_style_context().add_class("dim-label");
         box.add(box._number);
         
-        //
-        box._type = new Gtk.Image({
-            icon_name: "phone-number-default",
-            pixel_size: 16,
-            margin_right: 3
+        box._type = new Gtk.Label({
+            label: this._localizeType(contact.type),
+            margin_right: 12,
+            use_markup: true
         });
-        
-        if (!contact.type) {
-            box._type.icon_name = "phone-number-default";
-        } else if (contact.type.indexOf("home") > -1) {
-            box._type.icon_name = "phone-number-home";
-        } else if (contact.type.indexOf("cell") > -1 || contact.type.indexOf("mobile") > -1) {
-            box._type.icon_name = "phone-number-mobile";
-        } else if (contact.type.indexOf("work") > -1 || contact.type.indexOf("voice") > -1) {
-            box._type.icon_name = "phone-number-work";
-        }
+        box._type.get_style_context().add_class("dim-label");
         box.add(box._type);
         
         box.recipient = new Gtk.CheckButton({
@@ -399,6 +366,34 @@ var ContactList = new Lang.Class({
         }
         
         return false;
+    },
+    
+    /**
+     * Return a localized string for a phone number type
+     *
+     * See: https://developers.google.com/gdata/docs/2.0/elements#rel-values_71
+     *      http://www.ietf.org/rfc/rfc2426.txt
+     */
+    _localizeType: function (type) {
+        if (!type) { return _("Other"); }
+        
+        if (type.indexOf("fax") > -1) {
+            // TRANSLATORS: A phone number type
+            return _("Fax");
+        // Sometimes libfolks->voice === GData->work
+        } else if (type.indexOf("work") > -1 || type.indexOf("voice") > -1) {
+            // TRANSLATORS: A phone number type
+            return _("Work");
+        } else if (type.indexOf("cell") > -1 || type.indexOf("mobile") > -1) {
+            // TRANSLATORS: A phone number type
+            return _("Mobile");
+        } else if (type.indexOf("home") > -1 ) {
+            // TRANSLATORS: A phone number type
+            return _("Home");
+        } else {
+            // TRANSLATORS: A phone number type
+            return _("Other");
+        }
     },
     
     _populate: function () {

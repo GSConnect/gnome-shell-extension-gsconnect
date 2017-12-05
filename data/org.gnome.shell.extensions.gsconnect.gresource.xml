@@ -33,13 +33,8 @@
     <file compressed="true" preprocess="xml-stripblanks">tablet-disconnected.svg</file>
     <file compressed="true" preprocess="xml-stripblanks">tablet-symbolic.svg</file>
     <file compressed="true" preprocess="xml-stripblanks">tablet-trusted.svg</file>
-    <!-- SMS Application Icons c/o Google -->
-    <file compressed="true" preprocess="xml-stripblanks">phone-number-default.svg</file>
-    <file compressed="true" preprocess="xml-stripblanks">phone-number-home.svg</file>
-    <file compressed="true" preprocess="xml-stripblanks">phone-number-mobile.svg</file>
-    <file compressed="true" preprocess="xml-stripblanks">phone-number-work.svg</file>
+    <!-- SMS Icons -->
     <file compressed="true" preprocess="xml-stripblanks">sms-send.svg</file>
-    <!-- Device Menu Icons -->
     <file compressed="true" preprocess="xml-stripblanks">sms-symbolic.svg</file>
   </gresource>
   <gresource prefix="/style">
