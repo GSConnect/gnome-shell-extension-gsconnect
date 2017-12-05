@@ -23,6 +23,7 @@ imports.searchPath.push(getPath());
 
 const Common = imports.common;
 
+
 /**
  * SMS Message direction
  */
@@ -130,25 +131,25 @@ var ContactAvatar = new Lang.Class({
 });
 
     
-function getAvatar (recipient) {
+function getAvatar (contact) {
     let avatar;
     
-    if (recipient.avatar) {
+    if (contact.avatar) {
         try {
-            avatar = new ContactAvatar({ path: recipient.avatar });
+            avatar = new ContactAvatar({ path: contact.avatar });
         } catch (e) {
             Common.debug("Error creating avatar: " + e);
-            avatar = getDefaultAvatar(recipient);
+            avatar = getDefaultAvatar(contact);
         }
     } else {
-        avatar = getDefaultAvatar(recipient);
+        avatar = getDefaultAvatar(contact);
     }
     
     return avatar;
 };
 
 
-function getDefaultAvatar (recipient) {
+function getDefaultAvatar (contact) {
     let avatar = new Gtk.Box({
         width_request: 32,
         height_request: 32,
@@ -157,7 +158,7 @@ function getDefaultAvatar (recipient) {
     let avatarStyle = avatar.get_style_context();
     avatarStyle.add_provider(MessageStyle, 0);
     avatarStyle.add_class("contact-avatar");
-    avatarStyle.add_class(recipient.color || shuffleColor());
+    avatarStyle.add_class(contact.color || shuffleColor());
     
     let defaultAvatar = new Gtk.Image({
         icon_name: "avatar-default-symbolic",
@@ -524,12 +525,12 @@ var MessageView = new Lang.Class({
      * Add a new thread, which is a series of sequential messages from one user
      * with a single instance of the sender's avatar.
      *
-     * @param {object} recipient - The recipient object
+     * @param {object} contact - The contact object
      * @param {MessageDirection} - The direction of the message; one of the
      *     MessageDirection enums (either OUT [0] or IN [1])
      * @return {Gtk.ListBoxRow} - The new thread
      */
-    addThread: function (recipient, direction) {
+    addThread: function (contact, direction) {
         let row = new Gtk.ListBoxRow({
             activatable: false,
             selectable: false,
@@ -550,8 +551,8 @@ var MessageView = new Lang.Class({
         row.add(row.layout);
         
         // Contact Avatar
-        row.avatar = getAvatar(recipient);
-        row.avatar.tooltip_text = recipient.name || recipient.number;
+        row.avatar = getAvatar(contact);
+        row.avatar.tooltip_text = contact.name || contact.number;
         row.avatar.valign = Gtk.Align.END;
         row.avatar.visible = direction;
         row.layout.add(row.avatar);
@@ -575,14 +576,14 @@ var MessageView = new Lang.Class({
      * Add a new message, calling addThread() if necessary to create a new
      * thread.
      *
-     * @param {string} recipient - The recipient object
+     * @param {string} contact - The contact object
      * @param {string} messageBody - The message content
      * @param {MessageDirection} - The direction of the message; one of the
      *     MessageDirection enums (either OUT [0] or IN [1])
      * @return {Gtk.ListBoxRow} - The new thread
      */
-    addMessage: function (recipient, messageBody, direction) {
-        let sender = recipient.name || recipient.number;
+    addMessage: function (contact, messageBody, direction) {
+        let sender = contact.name || contact.number;
         let nrows = this.list.get_children().length;
         let row, currentThread;
         
@@ -595,7 +596,7 @@ var MessageView = new Lang.Class({
         }
         
         if (!row) {
-            row = this.addThread(recipient, direction);
+            row = this.addThread(contact, direction);
         }
         
         let messageBubble = new Gtk.Grid({
@@ -605,7 +606,7 @@ var MessageView = new Lang.Class({
         let messageBubbleStyle = messageBubble.get_style_context();
         messageBubbleStyle.add_provider(MessageStyle, 0);
         messageBubbleStyle.add_class("message-bubble");
-        messageBubbleStyle.add_class(recipient.color);
+        messageBubbleStyle.add_class(contact.color);
         row.messages.add(messageBubble);
         
         let messageContent = new Gtk.Label({
@@ -884,7 +885,7 @@ var ConversationWindow = new Lang.Class({
     },
     
     /**
-     * Add a contact to the list of recipients
+     * Add a contact to the list of message recipients
      *
      * @param {object} contact - An object in the form of ContactsCache contacts
      * @return {object} - The recipient object
@@ -896,7 +897,7 @@ var ConversationWindow = new Lang.Class({
         // Get data from the cache
         let recipient = Object.assign(
             contact,
-            plugin._cache.getContact(strippedNumber, contact.name || "")
+            plugin._cache.getContact(contact.number, contact.name || "")
         );
         
         // This is an extant recipient
@@ -934,16 +935,23 @@ var ConversationWindow = new Lang.Class({
         return recipient;
     },
     
-    /** Remove a contact by phone number from the list of recipients */
-    removeRecipient: function (recipient) {
-        let strippedNumber = recipient.number.replace(/\D/g, "");
+    /**
+     * Remove a contact from the list of message recipients
+     *
+     * @param {object} contact - A contact object with at least a number
+     */
+    removeRecipient: function (contact) {
+        let strippedNumber = contact.number.replace(/\D/g, "");
         
         if (this.recipients.has(strippedNumber)) {
             this.recipients.delete(strippedNumber);
-            this.notify("recipients");
+            this.notify("numbers");
         }
     },
     
+    /**
+     * Return the Map() of current recipients
+     */
     getRecipients: function () {
         return this.recipients;
     },
