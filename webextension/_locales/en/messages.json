@@ -1,0 +1,44 @@
+{
+    "extensionName": {
+        "message": "GSConnect",
+        "description": "The extension name"
+    },
+    "extensionDescription": {
+        "message": "Share links by SMS or open in browser with GSConnect devices.",
+        "description": "The extension description"
+    },
+    "contextMenuMultipleDevices": {
+        "message": "Send To Mobile Device",
+        "description": "The root context menu item for selecting devices"
+    },
+    "contextMenuSinglePlugin": {
+        "message": "$NAME$ ($PLUGIN$)",
+        "description": "Message shown when no devices are connected",
+        "placeholders": {
+            "name": {
+                "content": "$1",
+                "example": "Nexus 4"
+            },
+            "plugin": {
+                "content": "$2",
+                "example": "Open in Browser"
+            }
+        }
+    },
+    "popupMenuDisconnected": {
+        "message": "Disconnected from GSConnect.",
+        "description": "Message shown when disconnected from GSConnect"
+    },
+    "popupMenuNoDevices": {
+        "message": "No devices found...",
+        "description": "Message shown when no devices are connected"
+    },
+    "shareMessage": {
+        "message": "Open in Browser",
+        "description": "Open the link in the device's web browser"
+    },
+    "telephonyMessage": {
+        "message": "Send SMS",
+        "description": "Share the link in an SMS message"
+    }
+}
