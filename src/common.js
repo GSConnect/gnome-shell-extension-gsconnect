@@ -307,7 +307,7 @@ function installNativeMessagingHost () {
         "description": "Native messaging host for GSConnect WebExtension",
         "path": nmhPath,
         "type": "stdio",
-        "allowed_origins": [ "chrome-extension://jefieenehpanbfhmeodnhcaoeachbbal/" ]
+        "allowed_origins": [ "chrome-extension://jfnifeihccihocjbfcfhicmmgpjicaec/" ]
     };
     
     let mozilla = {
