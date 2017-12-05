@@ -110,9 +110,7 @@ var NativeMessagingHost = new Lang.Class({
         
         Common.debug("WebExtension: receive: " + JSON.stringify(message));
         
-        if (message.type === "version") {
-            this.send({ type: "version", data: "1" });
-        } else if (message.type === "devices") {
+        if (message.type === "devices") {
             this.sendDeviceList();
         } else if (message.type === "share") {
             for (let device of this.daemon.devices.values()) {
@@ -139,24 +137,21 @@ var NativeMessagingHost = new Lang.Class({
     },
     
     sendDeviceList: function () {
-        let devices = {};
+        let devices = [];
         
         for (let device of this.daemon.devices.values()) {
             if (device.connected && device.paired && (device.share || device.telephony)) {
-                devices[device.id] = {
+                devices.push({
                     id: device.id,
                     name: device.name,
                     type: device.type,
                     share: (device.share),
                     telephony: (device.telephony)
-                };
+                });
             }
         }
     
-        this.send({
-            type: "devices",
-            data: devices
-        });
+        this.send({ type: "devices", data: devices });
     },
     
     _serviceAppeared: function (conn, name, name_owner) {
@@ -180,11 +175,13 @@ var NativeMessagingHost = new Lang.Class({
         
         this.daemon.connect("device::removed", () => { this.sendDeviceList(); });
         
-        this.sendDeviceList();
+        this.send({ type: "connected", data: true });
     },
     
     _serviceVanished: function (conn, name) {
         Common.debug("WebExtension._serviceVanished()");
+        
+        this.send({ type: "connected", data: false });
         
         if (this.daemon) {
             this.daemon.destroy();
