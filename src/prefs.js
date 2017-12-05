@@ -110,6 +110,7 @@ var PrefsWidget = new Lang.Class({
         appearanceSection.addGSetting(Common.Settings, "show-indicators");
         appearanceSection.addGSetting(Common.Settings, "show-offline");
         appearanceSection.addGSetting(Common.Settings, "show-unpaired");
+        appearanceSection.addGSetting(Common.Settings, "show-battery");
         
         let desktopSection = preferencesPage.addSection(
             _("Desktop"),

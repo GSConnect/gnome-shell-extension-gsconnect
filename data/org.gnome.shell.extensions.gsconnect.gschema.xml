@@ -24,7 +24,7 @@
     <key name="show-battery" type="b">
       <default>false</default>
       <summary>Show Battery Indicator</summary>
-      <description>Display a icon and percentage in the Device Menu</description>
+      <description>Display an icon with percentage in the Device Menu</description>
     </key>
     <key name="devices" type="as">
       <default>[]</default>
