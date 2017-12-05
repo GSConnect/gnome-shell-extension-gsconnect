@@ -261,6 +261,7 @@ var ContactList = new Lang.Class({
         let row = new Gtk.ListBoxRow({
             activatable: false
         });
+        row.color = shuffleColor();
         
         let grid = new Gtk.Grid({
             margin: 6,
@@ -301,6 +302,8 @@ var ContactList = new Lang.Class({
         if (!row) {
             row = this.addContact(contact);
         }
+        
+        contact.color = row.color;
         
         let box = new Gtk.Box();
         box.contact = contact;
@@ -911,7 +914,6 @@ var ConversationWindow = new Lang.Class({
             this.recipients.set(strippedNumber, recipient);
         // This is a new recipient
         } else {
-            recipient.color = shuffleColor(); // Only do this once per recipient
             this.recipients.set(strippedNumber, recipient);
             
             // TODO: cleanup
