@@ -33,9 +33,15 @@ var HelpSection = new Lang.Class({
         let label = new Gtk.Label({
             label: _("Ensure that devices are on the same local network with ports 1716 to 1764 open for TCP and UDP connections.") +
                    "\n\n" +
-                   _('To connect an Android device, install the KDE Connect Android app from the <a href="https://play.google.com/store/apps/details?id=org.kde.kdeconnect_tp">Google Play Store</a> or <a href="https://f-droid.org/repository/browse/?fdid=org.kde.kdeconnect_tp">F-Droid</a>.') +
+                   _('To connect an Android device, install the KDE Connect Android app from the <a href="%s">Google Play Store</a> or <a href="%s">F-Droid</a>.').format(
+                       "https://play.google.com/store/apps/details?id=org.kde.kdeconnect_tp",
+                       "https://f-droid.org/repository/browse/?fdid=org.kde.kdeconnect_tp"
+                   ) +
                    "\n\n" +
-                   _('Please see the <a href="https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki">Wiki</a> for more help or <a href="https://github.com/andyholmes/gnome-shell-extension-gsconnect/issues">open an issue</a> on Github to report a problem.'),
+                   _('Please see the <a href="%s">Wiki</a> for more help or <a href="%s">open an issue</a> on Github to report a problem.').format(
+                       "https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki",
+                       "https://github.com/andyholmes/gnome-shell-extension-gsconnect/issues"
+                   ),
             wrap: true,
             use_markup: true,
             vexpand: true,
