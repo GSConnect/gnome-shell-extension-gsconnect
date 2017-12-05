@@ -512,12 +512,6 @@ var MessageView = new Lang.Class({
             this._parent.send(entry, signal_id, data);
         });
         
-        this._parent.device.bind_property(
-            "connected",
-            this.entry,
-            "sensitive",
-            GObject.BindingFlags.DEFAULT
-        );
         this.add(this.entry);
     },
     
@@ -687,12 +681,6 @@ var ConversationWindow = new Lang.Class({
             tooltip_text: _("Add and remove people")
         });
         this.contactButton.connect("clicked", () => { this._showContacts(); });
-        this.device.bind_property(
-            "connected",
-            this.contactButton,
-            "sensitive",
-            GObject.BindingFlags.DEFAULT
-        );
         this.headerBar.pack_start(this.contactButton);
         
         // Messages Button
@@ -707,36 +695,22 @@ var ConversationWindow = new Lang.Class({
             this.contactEntry.text = "";
             this._showMessages();
         });
-        this.device.bind_property(
-            "connected",
-            this.messagesButton,
-            "sensitive",
-            GObject.BindingFlags.DEFAULT
-        );
         this.headerBar.pack_start(this.messagesButton);
         
-        // Contact Entry // TODO: separate
+        // Contact Entry
+        let contactsCache = this.device._plugins.get("telephony")._cache;
         this.contactEntry = new Gtk.Entry({
             hexpand: true,
             placeholder_text: _("Type a phone number or name"),
             tooltip_text: _("Type a phone number or name"),
-            primary_icon_name: "call-start-symbolic",
+            primary_icon_name: contactsCache.provider,
             primary_icon_activatable: false,
             primary_icon_sensitive: true,
             input_purpose: Gtk.InputPurpose.PHONE
         });
-        this.device._plugins.get("telephony")._cache.bind_property(
-            "provider",
-            this.contactEntry,
-            "primary-icon-name",
-            GObject.BindingFlags.SYNC_CREATE
-        );
-        this.device.bind_property(
-            "connected",
-            this.contactEntry,
-            "sensitive",
-            GObject.BindingFlags.DEFAULT
-        );
+        contactsCache.connect("notify::provider", () => {
+            this.contactEntry.primary_icon_name = contactsCache.provider;
+        });
         this.headerBar.custom_title = this.contactEntry;
         
         // Content Layout
@@ -760,9 +734,19 @@ var ConversationWindow = new Lang.Class({
         // See: https://bugzilla.gnome.org/show_bug.cgi?id=710888
         this.device.connect("notify::connected", () => {
             if (!this.device.connected) {
+                this.contactButton.sensitive = false;
+                this.messagesButton.sensitive = false;
+                this.contactEntry.sensitive = false;
+                this.stack.sensitive = false;
+                
                 this.layout.attach(this.infoBar, 0, 0, 1, 1);
                 this.infoBar.show_all();
             } else if (this.device.connected) {
+                this.contactButton.sensitive = true;
+                this.messagesButton.sensitive = true;
+                this.contactEntry.sensitive = true;
+                this.stack.sensitive = true;
+                
                 this.infoBar.hide();
                 this.layout.remove(this.infoBar);
             }
@@ -776,12 +760,6 @@ var ConversationWindow = new Lang.Class({
             hexpand: true,
             vexpand: true
         });
-        this.device.bind_property(
-            "connected",
-            this.stack,
-            "sensitive",
-            GObject.BindingFlags.DEFAULT
-        );
         this.layout.attach(this.stack, 0, 1, 1, 1);
         
         // Contact List
