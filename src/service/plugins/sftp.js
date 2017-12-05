@@ -149,7 +149,6 @@ var Plugin = new Lang.Class({
             this.unmount();
             return;
         }
-            
         
         // Initialize streams
         this._stdin = new Gio.DataOutputStream({
@@ -196,7 +195,8 @@ var Plugin = new Lang.Class({
             let [data, len] = source.read_line_finish(res);
             
             if (data === null) {
-                return;
+                log("SFTP Error: pipe closed");
+                this.unmount();
             } else if (data.toString() === "remote host has disconnected") {
                 log("SFTP Error: remote host has disconnected");
                 this.unmount();
