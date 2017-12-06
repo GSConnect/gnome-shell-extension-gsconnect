@@ -614,6 +614,19 @@ var Daemon = new Lang.Class({
             Gio.SettingsBindFlags.DEFAULT
         );
         
+        Common.Settings.connect("changed::webbrowser-integration", () => {
+            if (Common.Settings.get_boolean("webbrowser-integration")) {
+                Common.installNativeMessagingHost();
+            } else {
+                Common.uninstallNativeMessagingHost();
+            }
+        });
+        if (Common.Settings.get_boolean("webbrowser-integration")) {
+            Common.installNativeMessagingHost();
+        } else {
+            Common.uninstallNativeMessagingHost();
+        }
+        
         // Monitor network changes
         this._netmonitor = Gio.NetworkMonitor.get_default();
         this._netmonitor.connect("network-changed", (monitor, available) => {
