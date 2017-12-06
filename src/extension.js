@@ -401,6 +401,14 @@ var DeviceMenu = new Lang.Class({
             this.listPanel.addMenuItem(mountItem);
         }
         
+        let unmountItem = new PopupMenu.PopupMenuItem(_("Unmount"));
+        unmountItem._ornamentLabel.text = "\u23CF";
+        unmountItem.connect("activate", (item) => {
+            item._getTopMenu().close(true);
+            this.device.sftp.unmount();
+        });
+        this.listPanel.addMenuItem(unmountItem);
+        
         this.listPanel.actor.visible = true;
     },
     
