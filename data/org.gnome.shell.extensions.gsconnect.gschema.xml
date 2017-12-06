@@ -34,6 +34,11 @@
       <summary>Nautilus Integration</summary>
       <description>Send files from the file browser context menu</description>
     </key>
+    <key name="webbrowser-integration" type="b">
+      <default>false</default>
+      <summary>Web Browser Integration</summary>
+      <description>Share links with devices and contacts from the web browser</description>
+    </key>
     <key name="public-name" type="s">
       <default>"GSConnect"</default>
       <summary>Public Name</summary>

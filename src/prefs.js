@@ -21,6 +21,7 @@ imports.searchPath.push(getPath());
 const Client = imports.client;
 const Common = imports.common;
 const DeviceWidget = imports.widgets.device;
+const GSettingsWidget = imports.widgets.gsettings;
 const KeybindingsWidget = imports.widgets.keybindings;
 const PreferencesWidget = imports.widgets.preferences;
 
@@ -112,12 +113,23 @@ var PrefsWidget = new Lang.Class({
         appearanceSection.addGSetting(Common.Settings, "show-unpaired");
         appearanceSection.addGSetting(Common.Settings, "show-battery");
         
-        let desktopSection = preferencesPage.addSection(
-            _("Desktop"),
+        let extensionsSection = preferencesPage.addSection(
+            _("Extensions"),
             null,
             { margin_bottom: 0 }
         );
-        desktopSection.addGSetting(Common.Settings, "nautilus-integration");
+        extensionsSection.addGSetting(Common.Settings, "nautilus-integration");
+        
+        let chromeUrl = "https://chrome.google.com/webstore/detail/gsconnect/jfnifeihccihocjbfcfhicmmgpjicaec";
+        let firefoxUrl = "https://addons.mozilla.org/en-US/firefox/addon/gsconnect/";
+        extensionsSection.addSetting(
+            _("Web Browser Integration"),
+            _('Requires <a href="%s">Chrome Extension</a> or <a href="%s">Firefox Add-On</a>').format(
+                "https://chrome.google.com/webstore/detail/gsconnect/jfnifeihccihocjbfcfhicmmgpjicaec",
+                "https://addons.mozilla.org"
+            ),
+            new GSettingsWidget.BoolSetting(Common.Settings, "webbrowser-integration")
+        );
         
         // About Page
         let aboutPage = this.addPage(
