@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-11-25 12:28-0800\n"
+"POT-Creation-Date: 2017-12-06 14:40-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,24 +19,24 @@ msgstr ""
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
 #. TRANSLATORS: Open a new SMS window
-#: src/extension.js:163 src/widgets/device.js:199
+#: src/extension.js:163 src/widgets/device.js:205
 msgid "Send SMS"
 msgstr ""
 
 #. TRANSLATORS: eg. Locate Google Pixel
-#: src/extension.js:170 src/widgets/device.js:201
+#: src/extension.js:170 src/widgets/device.js:207
 #, javascript-format
 msgid "Locate %s"
 msgstr ""
 
 #. TRANSLATORS: Open the device's list of browseable directories
 #: src/extension.js:178 src/service/plugins/sftp.js:29
-#: src/widgets/device.js:203
+#: src/widgets/device.js:209
 msgid "Browse Files"
 msgstr ""
 
 #. TRANSLATORS: Open the file chooser for sending files/links
-#: src/extension.js:185 src/widgets/device.js:205
+#: src/extension.js:185 src/widgets/device.js:211
 msgid "Share File/URL"
 msgstr ""
 
@@ -66,23 +66,27 @@ msgstr ""
 msgid "Failed to mount %s"
 msgstr ""
 
-#: src/extension.js:521
+#: src/extension.js:404
+msgid "Unmount"
+msgstr ""
+
+#: src/extension.js:529
 msgid "Mobile Devices"
 msgstr ""
 
-#: src/extension.js:537
+#: src/extension.js:545
 msgid "Mobile Settings"
 msgstr ""
 
-#: src/extension.js:746
+#: src/extension.js:754
 msgid "Nautilus extensions changed"
 msgstr ""
 
-#: src/extension.js:747
+#: src/extension.js:755
 msgid "Restart Nautilus to apply changes"
 msgstr ""
 
-#: src/extension.js:752
+#: src/extension.js:760
 msgid "Restart"
 msgstr ""
 
@@ -90,51 +94,61 @@ msgstr ""
 msgid "Send To Mobile Device"
 msgstr ""
 
-#: src/prefs.js:48 src/service/daemon.js:85
+#: src/prefs.js:49 src/service/daemon.js:85
 msgid "GSConnect"
 msgstr ""
 
-#: src/prefs.js:57
+#: src/prefs.js:58
 msgid "KDE Connect implementation with Gnome Shell integration"
 msgstr ""
 
-#: src/prefs.js:64
+#: src/prefs.js:65
 msgid "GSConnect Website"
 msgstr ""
 
-#: src/prefs.js:71
+#: src/prefs.js:72
 msgid "Copyright © 2017 Andy Holmes"
 msgstr ""
 
-#: src/prefs.js:78
+#: src/prefs.js:79
 msgid "This program comes with absolutely no warranty."
 msgstr ""
 
-#: src/prefs.js:79
+#: src/prefs.js:80
 msgid ""
 "See the <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html"
 "\">GNU General Public License, version 2 or later</a> for details."
 msgstr ""
 
-#: src/prefs.js:103
+#: src/prefs.js:104
 msgid "Devices"
 msgstr ""
 
 #. Preferences Page
-#: src/prefs.js:107
+#: src/prefs.js:108
 msgid "Preferences"
 msgstr ""
 
-#: src/prefs.js:109
+#: src/prefs.js:110
 msgid "Appearance"
 msgstr ""
 
-#: src/prefs.js:115 src/widgets/device.js:521
-msgid "Desktop"
+#: src/prefs.js:117
+msgid "Extensions"
 msgstr ""
 
-#. About Page
-#: src/prefs.js:122
+#: src/prefs.js:126 data/org.gnome.shell.extensions.gsconnect.gschema.xml:39
+msgid "Web Browser Integration"
+msgstr ""
+
+#: src/prefs.js:127
+#, javascript-format
+msgid ""
+"Requires <a href=\"%s\">Chrome Extension</a> or <a href=\"%s\">Firefox Add-"
+"On</a>"
+msgstr ""
+
+#: src/prefs.js:137
 msgid "About"
 msgstr ""
 
@@ -270,7 +284,7 @@ msgstr ""
 #. You should translate this (or not) to match the string on your phone that in english looks like "Missed call: John Lennon"
 #: src/service/plugins/notification.js:140
 #: src/service/plugins/notification.js:213 src/service/plugins/telephony.js:169
-#: src/service/plugins/telephony.js:173 src/service/plugins/telephony.js:516
+#: src/service/plugins/telephony.js:173 src/service/plugins/telephony.js:514
 msgid "Missed call"
 msgstr ""
 
@@ -291,6 +305,7 @@ msgid "Message"
 msgstr ""
 
 #: src/service/plugins/notification.js:509 src/service/plugins/share.js:514
+#: src/widgets/telephony.js:1048
 msgid "Send"
 msgstr ""
 
@@ -453,8 +468,8 @@ msgid "Incoming call from %s on %s"
 msgstr ""
 
 #. TRANSLATORS: Silence an incoming call
-#: src/service/plugins/telephony.js:193 src/service/plugins/telephony.js:859
-#: src/service/plugins/telephony.js:883
+#: src/service/plugins/telephony.js:193 src/service/plugins/telephony.js:918
+#: src/service/plugins/telephony.js:942
 msgid "Mute"
 msgstr ""
 
@@ -469,39 +484,39 @@ msgstr ""
 msgid "Call in progress with %s on %s"
 msgstr ""
 
-#: src/service/plugins/telephony.js:399 src/widgets/telephony.js:454
+#: src/service/plugins/telephony.js:403 src/widgets/telephony.js:291
 msgid "Unknown Number"
 msgstr ""
 
-#: src/service/plugins/telephony.js:846
+#: src/service/plugins/telephony.js:905
 msgid "Incoming Calls"
 msgstr ""
 
-#: src/service/plugins/telephony.js:857 src/service/plugins/telephony.js:881
+#: src/service/plugins/telephony.js:916 src/service/plugins/telephony.js:940
 #: src/widgets/gsettings.js:138
 msgid "Nothing"
 msgstr ""
 
-#: src/service/plugins/telephony.js:858 src/service/plugins/telephony.js:882
+#: src/service/plugins/telephony.js:917 src/service/plugins/telephony.js:941
 msgid "Lower"
 msgstr ""
 
-#: src/service/plugins/telephony.js:866 src/service/plugins/telephony.js:890
-#: data/org.gnome.shell.extensions.gsconnect.gschema.xml:143
-#: data/org.gnome.shell.extensions.gsconnect.gschema.xml:153
+#: src/service/plugins/telephony.js:925 src/service/plugins/telephony.js:949
+#: data/org.gnome.shell.extensions.gsconnect.gschema.xml:148
+#: data/org.gnome.shell.extensions.gsconnect.gschema.xml:158
 msgid "System Volume"
 msgstr ""
 
-#: src/service/plugins/telephony.js:870
+#: src/service/plugins/telephony.js:929
 msgid "In Progress Calls"
 msgstr ""
 
-#: src/service/plugins/telephony.js:899 src/service/plugins/telephony.js:904
+#: src/service/plugins/telephony.js:958 src/service/plugins/telephony.js:963
 msgid "The <b>Media Player Control</b> plugin must be enabled"
 msgstr ""
 
-#: src/service/plugins/telephony.js:911 src/service/plugins/telephony.js:914
-#: src/service/plugins/telephony.js:917
+#: src/service/plugins/telephony.js:970 src/service/plugins/telephony.js:973
+#: src/service/plugins/telephony.js:976
 msgid "Gvc not available"
 msgstr ""
 
@@ -512,53 +527,51 @@ msgid ""
 msgstr ""
 
 #: src/widgets/device.js:36
+#, javascript-format
 msgid ""
 "To connect an Android device, install the KDE Connect Android app from the "
-"<a href=\"https://play.google.com/store/apps/details?id=org.kde.kdeconnect_tp"
-"\">Google Play Store</a> or <a href=\"https://f-droid.org/repository/browse/?"
-"fdid=org.kde.kdeconnect_tp\">F-Droid</a>."
+"<a href=\"%s\">Google Play Store</a> or <a href=\"%s\">F-Droid</a>."
 msgstr ""
 
-#: src/widgets/device.js:38
+#: src/widgets/device.js:41
+#, javascript-format
 msgid ""
-"Please see the <a href=\"https://github.com/andyholmes/gnome-shell-extension-"
-"gsconnect/wiki\">Wiki</a> for more help or <a href=\"https://github.com/"
-"andyholmes/gnome-shell-extension-gsconnect/issues\">open an issue</a> on "
-"Github to report a problem."
+"Please see the <a href=\"%s\">Wiki</a> for more help or <a href=\"%s\">open "
+"an issue</a> on Github to report a problem."
 msgstr ""
 
-#: src/widgets/device.js:128
+#: src/widgets/device.js:134
 #, javascript-format
 msgid "Error: %s"
 msgstr ""
 
 #. TRANSLATORS: Open the device menu
-#: src/widgets/device.js:197
+#: src/widgets/device.js:203
 msgid "Open Menu"
 msgstr ""
 
-#: src/widgets/device.js:243
+#: src/widgets/device.js:249
 msgid "Refresh"
 msgstr ""
 
-#: src/widgets/device.js:319
+#: src/widgets/device.js:325
 msgid "Connecting Devices"
 msgstr ""
 
 #. TRANSLATORS: eg. Reconnect <b>Google Pixel</b>
-#: src/widgets/device.js:438
+#: src/widgets/device.js:444
 #, javascript-format
 msgid "Reconnect <b>%s</b>"
 msgstr ""
 
 #. TRANSLATORS: eg. Unpair <b>Google Pixel</b>
-#: src/widgets/device.js:479
+#: src/widgets/device.js:485
 #, javascript-format
 msgid "Unpair <b>%s</b>"
 msgstr ""
 
 #. TRANSLATORS: eg. Pair <b>Google Pixel</b>
-#: src/widgets/device.js:488
+#: src/widgets/device.js:494
 #, javascript-format
 msgid "Pair <b>%s</b>"
 msgstr ""
@@ -573,7 +586,7 @@ msgstr ""
 #.
 #. <b>Local Fingerprint:</b>
 #. 00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
-#: src/widgets/device.js:499
+#: src/widgets/device.js:505
 #, javascript-format
 msgid ""
 "<b>%s Fingerprint:</b>\n"
@@ -584,28 +597,32 @@ msgid ""
 msgstr ""
 
 #. Plugins
-#: src/widgets/device.js:508
+#: src/widgets/device.js:514
 msgid "Plugins"
 msgstr ""
 
 #. Keyboard Shortcuts
-#: src/widgets/device.js:511
+#: src/widgets/device.js:517
 msgid "Keyboard Shortcuts"
 msgstr ""
 
 #: src/widgets/device.js:527
-msgid "Laptop"
+msgid "Desktop"
 msgstr ""
 
 #: src/widgets/device.js:533
-msgid "Smartphone"
+msgid "Laptop"
 msgstr ""
 
 #: src/widgets/device.js:539
-msgid "Tablet"
+msgid "Smartphone"
 msgstr ""
 
 #: src/widgets/device.js:545
+msgid "Tablet"
+msgstr ""
+
+#: src/widgets/device.js:551
 msgid "Unknown"
 msgstr ""
 
@@ -626,38 +643,74 @@ msgid ""
 "The requested keyboard shortcut is already in use and can't be overridden."
 msgstr ""
 
-#: src/widgets/telephony.js:241 src/widgets/telephony.js:242
-msgid "Type a phone number or name"
-msgstr ""
-
-#: src/widgets/telephony.js:405
+#: src/widgets/telephony.js:220
 msgid "Add people to start a conversation"
 msgstr ""
 
-#: src/widgets/telephony.js:445
+#: src/widgets/telephony.js:253 src/widgets/telephony.js:274
+#: src/widgets/telephony.js:329
 msgid "Unknown Contact"
 msgstr ""
 
-#: src/widgets/telephony.js:523
+#: src/widgets/telephony.js:323
+#, javascript-format
+msgid "Send to %s"
+msgstr ""
+
+#: src/widgets/telephony.js:332
+#, javascript-format
+msgid "Send to %d"
+msgstr ""
+
+#. TRANSLATORS: A phone number type
+#: src/widgets/telephony.js:379 src/widgets/telephony.js:396
+msgid "Other"
+msgstr ""
+
+#. TRANSLATORS: A phone number type
+#: src/widgets/telephony.js:383
+msgid "Fax"
+msgstr ""
+
+#. TRANSLATORS: A phone number type
+#: src/widgets/telephony.js:387
+msgid "Work"
+msgstr ""
+
+#. TRANSLATORS: A phone number type
+#: src/widgets/telephony.js:390
+msgid "Mobile"
+msgstr ""
+
+#. TRANSLATORS: A phone number type
+#: src/widgets/telephony.js:393
+msgid "Home"
+msgstr ""
+
+#: src/widgets/telephony.js:497
 msgid "Type an SMS message"
 msgstr ""
 
-#: src/widgets/telephony.js:684
+#: src/widgets/telephony.js:659
 msgid "SMS Conversation"
 msgstr ""
 
 #. TRANSLATORS: Tooltip for a button to add/remove people from a conversation
-#: src/widgets/telephony.js:708
+#: src/widgets/telephony.js:681
 msgid "Add and remove people"
 msgstr ""
 
+#: src/widgets/telephony.js:704 src/widgets/telephony.js:705
+msgid "Type a phone number or name"
+msgstr ""
+
 #. TRANSLATORS: eg. <b>Google Pixel</b> is disconnected
-#: src/widgets/telephony.js:768
+#: src/widgets/telephony.js:730
 #, javascript-format
 msgid "<b>%s</b> is disconnected"
 msgstr ""
 
-#: src/widgets/telephony.js:838
+#: src/widgets/telephony.js:816
 #, javascript-format
 msgid "And one other person"
 msgid_plural "And %d other people"
@@ -665,13 +718,21 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. TRANSLATORS: eg. SMS Conversation with John, Paul, George, Ringo
-#: src/widgets/telephony.js:857
+#: src/widgets/telephony.js:835
 #, javascript-format
 msgid "SMS Conversation with %s"
 msgstr ""
 
-#: src/widgets/telephony.js:862
+#: src/widgets/telephony.js:840
 msgid "New SMS Conversation"
+msgstr ""
+
+#: src/widgets/telephony.js:985 src/widgets/telephony.js:998
+msgid "Share Link"
+msgstr ""
+
+#: src/widgets/telephony.js:1036
+msgid "New Message"
 msgstr ""
 
 #: data/org.gnome.shell.extensions.gsconnect.gschema.xml:6
@@ -707,11 +768,11 @@ msgid "Display devices even if unpaired"
 msgstr ""
 
 #: data/org.gnome.shell.extensions.gsconnect.gschema.xml:26
-msgid "Show Battery Indicator"
+msgid "Show Battery Icon"
 msgstr ""
 
 #: data/org.gnome.shell.extensions.gsconnect.gschema.xml:27
-msgid "Display a icon and percentage in the Device Menu"
+msgid "Display an icon with percentage in the Device Menu"
 msgstr ""
 
 #: data/org.gnome.shell.extensions.gsconnect.gschema.xml:34
@@ -722,59 +783,63 @@ msgstr ""
 msgid "Send files from the file browser context menu"
 msgstr ""
 
-#: data/org.gnome.shell.extensions.gsconnect.gschema.xml:39
+#: data/org.gnome.shell.extensions.gsconnect.gschema.xml:40
+msgid "Share links with devices and contacts from the web browser"
+msgstr ""
+
+#: data/org.gnome.shell.extensions.gsconnect.gschema.xml:44
 msgid "Public Name"
 msgstr ""
 
-#: data/org.gnome.shell.extensions.gsconnect.gschema.xml:40
+#: data/org.gnome.shell.extensions.gsconnect.gschema.xml:45
 msgid "The name visible to other devices"
 msgstr ""
 
-#: data/org.gnome.shell.extensions.gsconnect.gschema.xml:75
+#: data/org.gnome.shell.extensions.gsconnect.gschema.xml:80
 msgid "Receive Statistics"
 msgstr ""
 
-#: data/org.gnome.shell.extensions.gsconnect.gschema.xml:80
+#: data/org.gnome.shell.extensions.gsconnect.gschema.xml:85
 msgid "Send Statistics"
 msgstr ""
 
-#: data/org.gnome.shell.extensions.gsconnect.gschema.xml:87
+#: data/org.gnome.shell.extensions.gsconnect.gschema.xml:92
 msgid "Receive Content"
 msgstr ""
 
-#: data/org.gnome.shell.extensions.gsconnect.gschema.xml:92
+#: data/org.gnome.shell.extensions.gsconnect.gschema.xml:97
 msgid "Send Content"
 msgstr ""
 
-#: data/org.gnome.shell.extensions.gsconnect.gschema.xml:99
+#: data/org.gnome.shell.extensions.gsconnect.gschema.xml:104
 msgid "Receive Notifications"
 msgstr ""
 
-#: data/org.gnome.shell.extensions.gsconnect.gschema.xml:104
+#: data/org.gnome.shell.extensions.gsconnect.gschema.xml:109
 msgid "Send Notifications"
 msgstr ""
 
-#: data/org.gnome.shell.extensions.gsconnect.gschema.xml:109
+#: data/org.gnome.shell.extensions.gsconnect.gschema.xml:114
 msgid "Sync Icons"
 msgstr ""
 
-#: data/org.gnome.shell.extensions.gsconnect.gschema.xml:124
+#: data/org.gnome.shell.extensions.gsconnect.gschema.xml:129
 msgid "Automatically Mount"
 msgstr ""
 
-#: data/org.gnome.shell.extensions.gsconnect.gschema.xml:131
+#: data/org.gnome.shell.extensions.gsconnect.gschema.xml:136
 msgid "Download Directory"
 msgstr ""
 
-#: data/org.gnome.shell.extensions.gsconnect.gschema.xml:136
+#: data/org.gnome.shell.extensions.gsconnect.gschema.xml:141
 msgid "Use Subdirectory"
 msgstr ""
 
-#: data/org.gnome.shell.extensions.gsconnect.gschema.xml:148
-#: data/org.gnome.shell.extensions.gsconnect.gschema.xml:163
+#: data/org.gnome.shell.extensions.gsconnect.gschema.xml:153
+#: data/org.gnome.shell.extensions.gsconnect.gschema.xml:168
 msgid "Pause Media"
 msgstr ""
 
-#: data/org.gnome.shell.extensions.gsconnect.gschema.xml:158
+#: data/org.gnome.shell.extensions.gsconnect.gschema.xml:163
 msgid "Mute Microphone"
 msgstr ""
