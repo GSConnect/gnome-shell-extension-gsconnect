@@ -579,6 +579,11 @@ var Plugin = new Lang.Class({
         this.device._channel.send(packet);
     },
     
+    /**
+     * Share a link by SMS message
+     *
+     * @param {string} url - The link to be shared
+     */
     shareUri: function (url) {
         // Get the current open windows
         let windows = this.device.daemon.get_windows();
@@ -607,6 +612,12 @@ var Plugin = new Lang.Class({
 });
 
 
+/**
+ * A simple queriable contact cache, using a JSON file to store cache between
+ * instances. File are in $HOME/.cache/gsconnnect/contacts for now.
+ *
+ * See also: https://phabricator.kde.org/T4678
+ */
 var ContactsCache = new Lang.Class({
     Name: "GSConnectContactsCache",
     Extends: GObject.Object,
@@ -650,6 +661,13 @@ var ContactsCache = new Lang.Class({
         this.update();
     },
     
+    /**
+     * Return a contact object if @number (and @name if given) is matched
+     *
+     * @param {string} number - A phone number to be matched by digits only
+     * @param {string} [name] - A contact name to be matched exactly (optional)
+     * @return {object} - A populated contact object or {}
+     */
     getContact: function (number, name) {
         number = number.replace(/\D/g, "");
         
@@ -664,6 +682,12 @@ var ContactsCache = new Lang.Class({
         return {};
     },
     
+    /**
+     * Add or update a contact (update if @number and @name is matched)
+     *
+     * @param {object} newContact - A contact object with at least a number
+     * @param {boolean} [write] - Write the cache to disk, if true
+     */
     setContact: function (newContact, write=true) {
         let number = newContact.number.replace(/\D/g, "");
         
@@ -682,7 +706,15 @@ var ContactsCache = new Lang.Class({
         return newContact;
     },
     
-    // TODO: maybe return an array and let caller deal with multiple matches
+    /**
+     * Search the cache for contact name or number matching @query. If a number
+     * or name with one phone number matching @query is found return a contact
+     * object. If no match or a contact with more than one number is found
+     * return false.
+     *
+     * @param {string} query - A contact name or phone number to search for
+     * @return {object|false} = A contact object or false.
+     */
     searchContact: function (query) {
         let matches = [];
         let strippedNumber = query.replace(/\D/g, "");
@@ -699,6 +731,13 @@ var ContactsCache = new Lang.Class({
         return (matches.length === 1) ? matches[0] : false;
     },
     
+    /**
+     * Parse an telephony event packet and return a contact object, updating
+     * the cache if appropriate.
+     *
+     * @param {object} packet - A telephony event packet
+     * @return {object} - A contact object
+     */
     parsePacket: function (packet) {
         let contact = this.getContact(
             packet.body.phoneNumber,
