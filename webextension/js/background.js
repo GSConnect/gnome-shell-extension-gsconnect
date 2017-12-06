@@ -88,13 +88,19 @@ function contextMenuCallback(info, tab) {
 };
 
 
-function createContextMenus() {
+function createContextMenus(tab) {
     browser.contextMenus.removeAll().then(() => {
-        if (devices.length > 1) {
+        let contexts = ["page", "frame", "link", "image", "video", "audio"];
+    
+        // This is page we don't want the context menu on
+        if (tab.url.indexOf("chrome://") > -1 || tab.url.indexOf("about:") > -1) {
+            return;
+        // There's multiple devices
+        } else if (devices.length > 1) {
             browser.contextMenus.create({
                 id: "contextMenuMultipleDevices",
                 title: browser.i18n.getMessage("contextMenuMultipleDevices"),
-                contexts: ["page", "frame", "link", "image", "video", "audio"]
+                contexts: contexts
             });
             
             for (let device of devices) {
@@ -109,7 +115,7 @@ function createContextMenus() {
                         id: device.id + ":share",
                         title: browser.i18n.getMessage("shareMessage"),
                         parentId: device.id,
-                        contexts: ["page", "frame", "link", "image", "video", "audio"],
+                        contexts: contexts,
                         onclick: contextMenuCallback,
                     });
                     
@@ -117,7 +123,7 @@ function createContextMenus() {
                         id: device.id + ":telephony",
                         title: browser.i18n.getMessage("telephonyMessage"),
                         parentId: device.id,
-                        contexts: ["page", "frame", "link", "image", "video", "audio"],
+                        contexts: contexts,
                         onclick: contextMenuCallback,
                     });
                 } else {
@@ -138,11 +144,12 @@ function createContextMenus() {
                             [device.name, pluginName]
                         ),
                         parentId: "contextMenuMultipleDevices",
-                        contexts: ["page", "frame", "link", "image", "video", "audio"],
+                        contexts: contexts,
                         onclick: contextMenuCallback,
                     });
                 }
             }
+        // There's only one device
         } else if (devices.length) {
             let device = devices[0];
                 
@@ -150,14 +157,14 @@ function createContextMenus() {
                 browser.contextMenus.create({
                     id: device.id,
                     title: device.name,
-                    contexts: ["page", "frame", "link", "image", "video", "audio"]
+                    contexts: contexts
                 });
                 
                 browser.contextMenus.create({
                     id: device.id + ":share",
                     title: browser.i18n.getMessage("shareMessage"),
                     parentId: device.id,
-                    contexts: ["page", "frame", "link", "image", "video", "audio"],
+                    contexts: contexts,
                     onclick: contextMenuCallback,
                 });
                 
@@ -165,7 +172,7 @@ function createContextMenus() {
                     id: device.id + ":telephony",
                     title: browser.i18n.getMessage("telephonyMessage"),
                     parentId: device.id,
-                    contexts: ["page", "frame", "link", "image", "video", "audio"],
+                    contexts: contexts,
                     onclick: contextMenuCallback,
                 });
             } else {
@@ -185,11 +192,12 @@ function createContextMenus() {
                         "contextMenuSinglePlugin",
                         [device.name, pluginName]
                     ),
-                    contexts: ["page", "frame", "link", "image", "video", "audio"],
+                    contexts: contexts,
                     onclick: contextMenuCallback,
                 });
             }
         }
+        
     });
 };
 
@@ -206,14 +214,18 @@ function onPortMessage(message) {
         
         if (connected) {
             postMessage({ type: "devices" });
+        } else {
+            devices = [];
         }
-    // We're being sent a list of devices
+    // We're being sent a list of devices (so the NMH must be connected)
     } else if (message.type === "devices") {
         connected = true;
         devices = message.data;
     }
     
-    createContextMenus();
+    browser.tabs.query({ active: true, currentWindow: true}).then((tabs) => {
+        createContextMenus(tabs[0]);
+    });
     
     // Forward the message to popup.html
     sendMessage(message);
@@ -270,7 +282,7 @@ function connect() {
     sendMessage({ type: "connected", data: false });
     
     // Reset the back-off delay if we stay connected
-    reconnectResetTimer = window.setTimeout(function () {
+    reconnectResetTimer = window.setTimeout(() => {
         reconnectDelay = 100;
     }, reconnectDelay * 0.9);
 
@@ -285,13 +297,21 @@ connect();
 
 browser.runtime.onMessage.addListener(onMessage);
 
-
+// browserAction
 browser.tabs.onActivated.addListener((info) => {
     browser.tabs.get(info.tabId).then(toggleAction);
 });
 
-
 browser.tabs.onUpdated.addListener((tabId, change, tab) => {
     toggleAction(tab);
+});
+
+// contextMenu
+browser.tabs.onActivated.addListener((info) => {
+    browser.tabs.get(info.tabId).then(createContextMenus);
+});
+
+browser.tabs.onUpdated.addListener((tabId, change, tab) => {
+    createContextMenus(tab);
 });
 
