@@ -159,6 +159,10 @@ var Plugin = new Lang.Class({
             base_stream: new Gio.UnixInputStream({ fd: this._proc[4] })
         });
         
+        let source = this._stderr.base_stream.create_source(null);
+        source.set_callback(Lang.bind(this, this._read_stderr));
+        source.attach(null);
+        
         // Send session password
         this._stdin.put_string(packet.body.password + "\n", null);
         
@@ -185,15 +189,16 @@ var Plugin = new Lang.Class({
             "mounted",
             new GLib.Variant("b", this._mounted)
         );
-        
-        this._read_stderr();
     },
     
-    // TODO: there's no way this covers all the bases
     _read_stderr: function () {
+        // unmount() was called with data in the queue
+        if (!this._stderr) { return; }
+        
         this._stderr.read_line_async(GLib.PRIORITY_DEFAULT, null, (source, res) => {
             let [data, len] = source.read_line_finish(res);
             
+            // TODO: there's no way this covers all the bases
             if (data === null) {
                 log("SFTP Error: pipe closed");
                 this.unmount();
@@ -201,8 +206,7 @@ var Plugin = new Lang.Class({
                 log("SFTP Error: remote host has disconnected");
                 this.unmount();
             } else {
-                log("SFTP stderr: " + data);
-                this._read_stderr();
+                log("SFTP stderr: " + data.toString());
             }
         });
     },
@@ -250,7 +254,6 @@ var Plugin = new Lang.Class({
             log("SFTP: Error closing stdin: " + e);
         }
         
-        // TODO: Gio.IOErrorEnum: Stream has outstanding operation
         try {
             if (this._stderr) {
                 this._stderr.close(null);
