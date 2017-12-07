@@ -437,7 +437,6 @@ var ContactList = new Lang.Class({
         return row1._name.label.localeCompare(row2._name.label);
     },
     
-    // FIXME
     _toggle: function (row, box) {
         if (box.recipient.active) {
             if (row.dynamic) {
@@ -616,6 +615,11 @@ var MessageView = new Lang.Class({
             wrap_mode: Pango.WrapMode.WORD_CHAR,
             xalign: (direction) ? 0 : 1
         });
+        let messageContentStyle = messageContent.get_style_context();
+        messageContentStyle.add_provider(
+            MessageStyle,
+            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+        );
         messageContent.connect("activate-link", (label, uri) => {
             Gtk.show_uri_on_window(
                 this.get_toplevel(),

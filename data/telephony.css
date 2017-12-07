@@ -7,6 +7,9 @@
     border-radius: 1em;
 }
 
+*:link { color: inherit; }
+*:visited { color: inherit; }
+
 .contact-color-outgoing { color: #101010; background-color: #d3d7cf; }
 
 .contact-color-butter1 { color: #101010; background-color: #fce94f; }
