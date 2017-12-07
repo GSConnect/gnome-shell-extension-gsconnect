@@ -73,7 +73,33 @@ var shuffleColor = Array.shuffler([
     "contact-color-aluminium3"
 ]);
 
-var LINK_REGEX = /\b((?:https?:\/\/|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))/gi;
+
+// http://daringfireball.net/2010/07/improved_regex_for_matching_urls
+const _balancedParens = '\\((?:[^\\s()<>]+|(?:\\(?:[^\\s()<>]+\\)))*\\)';
+const _leadingJunk = '[\\s`(\\[{\'\\"<\u00AB\u201C\u2018]';
+const _notTrailingJunk = '[^\\s`!()\\[\\]{};:\'\\".,<>?\u00AB\u00BB\u201C\u201D\u2018\u2019]';
+
+const _urlRegexp = new RegExp(
+    '(^|' + _leadingJunk + ')' +
+    '(' +
+        '(?:' +
+            '(?:http|https|ftp)://' +             // scheme://
+            '|' +
+            'www\\d{0,3}[.]' +                    // www.
+            '|' +
+            '[a-z0-9.\\-]+[.][a-z]{2,4}/' +       // foo.xx/
+        ')' +
+        '(?:' +                                   // one or more:
+            '[^\\s()<>]+' +                       // run of non-space non-()
+            '|' +                                 // or
+            _balancedParens +                     // balanced parens
+        ')+' +
+        '(?:' +                                   // end with:
+            _balancedParens +                     // balanced parens
+            '|' +                                 // or
+            _notTrailingJunk +                    // last non-junk char
+        ')' +
+    ')', 'gi');
 
 
 /**
@@ -515,6 +541,22 @@ var MessageView = new Lang.Class({
     },
     
     /**
+     * Return a string with URLs couched in link tags, parseable by Pango and
+     * using the same RegExp as Gnome Shell.
+     *
+     * @param {string} text - The string to be modified
+     */
+    _linkify: function (text) {
+        return text.replace(
+            _urlRegexp,
+            '<a href="$2">$2</a>'
+        ).replace(
+            /&(?!amp;)/g,
+            "&amp;"
+        );
+    },
+    
+    /**
      * Add a new thread, which is a series of sequential messages from one user
      * with a single instance of the sender's avatar.
      *
@@ -603,7 +645,7 @@ var MessageView = new Lang.Class({
         row.messages.add(messageBubble);
         
         let messageContent = new Gtk.Label({
-            label: messageBody.replace(LINK_REGEX, '<a href="$1">$1</a>'),
+            label: this._linkify(messageBody),
             margin_top: 6,
             margin_bottom: 6,
             margin_right: 12,
