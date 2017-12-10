@@ -148,7 +148,7 @@ var UdpListener = new Lang.Class({
     Extends: GObject.Object,
     Signals: {
         "received": {
-            flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED,
+            flags: GObject.SignalFlags.RUN_FIRST,
             param_types: [ GObject.TYPE_OBJECT ]
         }
     },
@@ -275,13 +275,13 @@ var LanChannel = new Lang.Class({
     Extends: GObject.Object,
     Signals: {
         "connected": {
-            flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED
+            flags: GObject.SignalFlags.RUN_FIRST
         },
         "disconnected": {
-            flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED
+            flags: GObject.SignalFlags.RUN_FIRST
         },
         "received": {
-            flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED,
+            flags: GObject.SignalFlags.RUN_FIRST,
             param_types: [ GObject.TYPE_OBJECT ]
         }
     },
@@ -560,21 +560,21 @@ var Transfer = new Lang.Class({
     Extends: GObject.Object,
     Signals: {
         "started": {
-            flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED
+            flags: GObject.SignalFlags.RUN_FIRST
         },
         "progress": {
-            flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED,
+            flags: GObject.SignalFlags.RUN_FIRST,
             param_types: [ GObject.TYPE_INT ]
         },
         "cancelled": {
-            flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED
+            flags: GObject.SignalFlags.RUN_FIRST
         },
         "failed": {
-            flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED,
+            flags: GObject.SignalFlags.RUN_FIRST,
             param_types: [ GObject.TYPE_STRING ]
         },
         "succeeded": {
-            flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED
+            flags: GObject.SignalFlags.RUN_FIRST
         }
     },
     
@@ -701,7 +701,7 @@ var LanUploadChannel = new Lang.Class({
     Extends: LanChannel,
     Signals: {
         "listening": {
-            flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED,
+            flags: GObject.SignalFlags.RUN_FIRST,
             param_types: [ GObject.TYPE_INT ]
         }
     },
