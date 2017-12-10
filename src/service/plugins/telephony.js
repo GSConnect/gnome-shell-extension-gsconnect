@@ -646,7 +646,7 @@ var ContactsCache = new Lang.Class({
     
         this._dir =  Common.CACHE_DIR + "/contacts";
         this._file = Gio.File.new_for_path(this._dir + "/contacts.json");
-        GLib.mkdir_with_parents(this._dir, 493);
+        GLib.mkdir_with_parents(this._dir, 448);
         
         this.contacts = [];
         this.read();
@@ -766,8 +766,7 @@ var ContactsCache = new Lang.Class({
     read: function () {
         try {
             let contents = this._file.load_contents(null)[1];
-            let contacts = JSON.parse(contents);
-            this.contacts = contacts;
+            this.contacts = JSON.parse(contents);
             this.notify("contacts");
         } catch (e) {
             Common.debug("Telephony: Error reading contacts cache: " + e);
