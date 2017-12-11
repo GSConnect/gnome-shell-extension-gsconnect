@@ -122,9 +122,9 @@ var Plugin = new Lang.Class({
     },
     
     _monitor: function () {
-        this._battery = new UPower.Device();
-        
         try {
+            this._battery = new UPower.Device();
+
             this._battery.set_object_path_sync(
                 "/org/freedesktop/UPower/devices/DisplayDevice",
                 null
@@ -139,14 +139,14 @@ var Plugin = new Lang.Class({
             this._gsd = new Gio.Settings({
                 schema_id: "org.gnome.settings-daemon.plugins.power"
             });
+
+            this.send();
         } catch(e) {
             Common.debug("Battery: Failed to initialize UPower: " + e);
             GObject.signal_handlers_destroy(this._battery);
             delete this._battery;
             delete this._gsd;
         }
-        
-        this.send();
     },
     
     _extrapolate: function (time, level) {
