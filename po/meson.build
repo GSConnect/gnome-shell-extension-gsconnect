@@ -1,9 +1,9 @@
 # build translations in LINGUAS
 
-intl = import('i18n')
+i18n = import('i18n')
 
-intl.gettext(
-  meson.project_name(),
+i18n.gettext(
+  'org.gnome.Shell.Extensions.GSConnect',
   preset: 'glib'
 )
 

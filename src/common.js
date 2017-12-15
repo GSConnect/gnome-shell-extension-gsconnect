@@ -365,7 +365,10 @@ function initConfiguration () {
     try {
         generateEncryption();
         installService();
-        Gettext.bindtextdomain("gsconnect", getPath() + "/locale");
+        Gettext.bindtextdomain(
+            "org.gnome.Shell.Extensions.GSConnect",
+            getPath() + "/locale"
+        );
         Gtk.IconTheme.get_default().add_resource_path("/icons");
     } catch (e) {
         log("Error initializing configuration: " + e);

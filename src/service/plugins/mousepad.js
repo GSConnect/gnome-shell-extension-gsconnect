@@ -2,7 +2,7 @@
 
 // Imports
 const Lang = imports.lang;
-const Gettext = imports.gettext.domain("gsconnect");
+const Gettext = imports.gettext.domain("org.gnome.Shell.Extensions.GSConnect");
 const _ = Gettext.gettext;
 
 const Atspi = imports.gi.Atspi;
