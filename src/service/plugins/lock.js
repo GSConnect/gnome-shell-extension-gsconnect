@@ -50,13 +50,13 @@ var Plugin = new Lang.Class({
             false
         )
     },
-    
+
     _init: function (device) {
         this.parent(device, "lock");
-        
+
         this._locked = false;
         this._request();
-        
+
         this._screensaver = new Common.DBusProxy.screensaver(
             Gio.DBus.session,
             "org.gnome.ScreenSaver",
@@ -69,58 +69,58 @@ var Plugin = new Lang.Class({
             }
         );
     },
-    
+
     get locked () {
         return this._locked;
     },
-    
+
     set locked (bool) {
         let packet = new Protocol.Packet({
             id: 0,
             type: "kdeconnect.lock.request",
             body: { setLocked: bool }
         });
-        
+
         this.device._channel.send(packet);
     },
-    
+
     _request: function () {
         let packet = new Protocol.Packet({
             id: 0,
             type: "kdeconnect.lock.request",
             body: { requestLocked: true }
         });
-        
+
         this.device._channel.send(packet);
     },
-    
+
     _response: function (bool) {
         let packet = new Protocol.Packet({
             id: 0,
             type: "kdeconnect.lock",
             body: { isLocked: bool }
         });
-        
+
         this.device._channel.send(packet);
     },
-    
+
     handlePacket: function (packet) {
         Common.debug("Lock: handlePacket()");
-        
+
         if (packet.type === "kdeconnect.lock.request") {
             let respond = packet.body.hasOwnProperty("requestLocked");
-            
+
             if (packet.body.hasOwnProperty("setLocked")) {
                 this._screensaver.SetActiveSync(packet.body.setLocked);
                 respond = true;
             }
-            
+
             if (respond) {
                 this._response(this._screensaver.GetActiveSync());
             }
         } else if (packet.type === "kdeconnect.lock") {
             this._locked = packet.body.isLocked;
-        
+
             this.notify("locked");
             this._dbus.emit_property_changed(
                 "locked",
@@ -128,10 +128,10 @@ var Plugin = new Lang.Class({
             );
         }
     },
-    
+
     destroy: function () {
         this._screensaver.disconnectSignal(this._active);
-        
+
         PluginsBase.Plugin.prototype.destroy.call(this);
     }
 });

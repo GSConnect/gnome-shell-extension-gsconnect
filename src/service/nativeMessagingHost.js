@@ -27,7 +27,7 @@ const Client = imports.client;
 
 function fromInt32 (byteArray) {
     var value = 0;
-    
+
     for (var i = byteArray.length - 1; i >= 0; i--) {
         value = (value * 256) + byteArray[i];
     }
@@ -51,12 +51,12 @@ function toInt32 (number) {
 var NativeMessagingHost = new Lang.Class({
     Name: "GSConnectNativeMessagingHost",
     Extends: Gio.Application,
-    
+
     _init: function () {
         this.parent({
             application_id: "org.gnome.Shell.Extensions.GSConnect.NativeMessagingHost"
         });
-        
+
         this.register(null);
     },
 
@@ -64,12 +64,12 @@ var NativeMessagingHost = new Lang.Class({
         this.parent();
         this.hold();
     },
-    
+
     vfunc_startup: function() {
         this.parent();
-        
+
         this.daemon = new Client.Daemon();
-        
+
         this._watchdog = Gio.bus_watch_name(
             Gio.BusType.SESSION,
             Client.BUS_NAME,
@@ -77,39 +77,39 @@ var NativeMessagingHost = new Lang.Class({
             Lang.bind(this, this._serviceAppeared),
             Lang.bind(this, this._serviceVanished)
         );
-        
+
         this.stdin = new Gio.DataInputStream({
             base_stream: new Gio.UnixInputStream({ fd: 0 })
         });
-        
+
         let source = this.stdin.base_stream.create_source(null);
         source.set_callback(Lang.bind(this, this.receive));
         source.attach(null);
-        
+
         this.stdout = new Gio.DataOutputStream({
             base_stream: new Gio.UnixOutputStream({ fd: 1 })
         });
     },
-    
+
     receive: function () {
         let message;
-        
+
         try {
             let int32 = this.stdin.read_bytes(4, null).toArray();
-            
+
             if (!int32.length) { this.quit(); }
-            
+
             let length = fromInt32(int32);
             message = this.stdin.read_bytes(length, null).toArray().toString();
-            
+
             message = JSON.parse(message);
         } catch (e) {
             log("Error receiving message: " + e.message);
             return;
         }
-        
+
         Common.debug("WebExtension: receive: " + JSON.stringify(message));
-        
+
         if (message.type === "devices") {
             this.sendDeviceList();
         } else if (message.type === "share") {
@@ -119,15 +119,15 @@ var NativeMessagingHost = new Lang.Class({
                 }
             }
         }
-        
+
         return true;
     },
-    
+
     send: function (message) {
         try {
             let data = JSON.stringify(message);
             Common.debug("WebExtension: send: " + JSON.stringify(message));
-            
+
             let length = toInt32(data.length);
             this.stdout.write(length, null);
             this.stdout.put_string(data, null);
@@ -135,10 +135,10 @@ var NativeMessagingHost = new Lang.Class({
             log("Error sending message: " + e.message);
         }
     },
-    
+
     sendDeviceList: function () {
         let devices = [];
-        
+
         for (let device of this.daemon.devices.values()) {
             if (device.connected && device.paired && (device.share || device.telephony)) {
                 devices.push({
@@ -150,44 +150,44 @@ var NativeMessagingHost = new Lang.Class({
                 });
             }
         }
-    
+
         this.send({ type: "devices", data: devices });
     },
-    
+
     _serviceAppeared: function (conn, name, name_owner) {
         Common.debug("WebExtension._serviceAppeared()");
-        
+
         if (!this.daemon) {
             this.daemon = new Client.Daemon();
         }
-        
+
         // Watch device property changes (connected, paired, plugins, etc)
         for (let device of this.daemon.devices.values()) {
             device.connect("notify", () => { this.sendDeviceList(); });
         }
-        
+
         // Watch for new and removed devices
         this.daemon.connect("device::added", (daemon, dbusPath) => {
             let device = this.daemon.devices.get(dbusPath);
             device.connect("notify", () => { this.sendDeviceList(); });
             this.sendDeviceList();
         });
-        
+
         this.daemon.connect("device::removed", () => { this.sendDeviceList(); });
-        
+
         this.send({ type: "connected", data: true });
     },
-    
+
     _serviceVanished: function (conn, name) {
         Common.debug("WebExtension._serviceVanished()");
-        
+
         this.send({ type: "connected", data: false });
-        
+
         if (this.daemon) {
             this.daemon.destroy();
             this.daemon = false;
         }
-        
+
         this.daemon = new Client.Daemon();
     }
 });

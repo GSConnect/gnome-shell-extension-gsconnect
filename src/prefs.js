@@ -29,7 +29,7 @@ const PreferencesWidget = imports.widgets.preferences;
 var AboutWidget = new Lang.Class({
     Name: "AboutWidget",
     Extends: Gtk.Grid,
-    
+
     _init: function () {
         this.parent({
             margin_bottom: 18,
@@ -38,27 +38,27 @@ var AboutWidget = new Lang.Class({
             halign: Gtk.Align.CENTER,
             orientation: Gtk.Orientation.VERTICAL
         });
-        
+
         let aboutIcon = new Gtk.Image({
             icon_name: "org.gnome.Shell.Extensions.GSConnect",
             pixel_size: 128
         });
         this.add(aboutIcon);
-        
+
         let aboutName = new Gtk.Label({
             label: "<b>" + _("GSConnect") + "</b>",
             use_markup: true
         });
         this.add(aboutName);
-        
+
         let aboutVersion = new Gtk.Label({ label: Common.METADATA.version });
         this.add(aboutVersion);
-        
+
         let aboutDescription = new Gtk.Label({
             label: _("KDE Connect implementation with Gnome Shell integration")
         });
         this.add(aboutDescription);
-        
+
         let aboutWebsite = new Gtk.Label({
             label: '<a href="%s">%s</a>'.format(
                 Common.METADATA.url,
@@ -67,13 +67,13 @@ var AboutWidget = new Lang.Class({
             use_markup: true
         });
         this.add(aboutWebsite);
-        
+
         let aboutCopyright = new Gtk.Label({
             label: "<small>" + _("Copyright © 2017 Andy Holmes") + "</small>",
             use_markup: true
         });
         this.add(aboutCopyright);
-        
+
         let aboutLicense = new Gtk.Label({
             label: "<small>" +
             _("This program comes with absolutely no warranty.") + "\n" +
@@ -91,35 +91,35 @@ var AboutWidget = new Lang.Class({
 var PrefsWidget = new Lang.Class({
     Name: "GSConnectPrefsWidget",
     Extends: PreferencesWidget.Stack,
-    
+
     _init: function () {
         this.parent();
-        
+
         this.daemon = new Client.Daemon();
         // Devices Page
         this.devicesStack = new DeviceWidget.Stack(this);
         let devicesPage = this.add_titled(
             this.devicesStack,
-            "devices", 
+            "devices",
             _("Devices")
         );
-        
+
         // Preferences Page
         let preferencesPage = this.addPage("preferences", _("Preferences"));
-        
+
         let appearanceSection = preferencesPage.addSection(_("Appearance"));
         appearanceSection.addGSetting(Common.Settings, "show-indicators");
         appearanceSection.addGSetting(Common.Settings, "show-offline");
         appearanceSection.addGSetting(Common.Settings, "show-unpaired");
         appearanceSection.addGSetting(Common.Settings, "show-battery");
-        
+
         let extensionsSection = preferencesPage.addSection(
             _("Extensions"),
             null,
             { margin_bottom: 0 }
         );
         extensionsSection.addGSetting(Common.Settings, "nautilus-integration");
-        
+
         let chromeUrl = "https://chrome.google.com/webstore/detail/gsconnect/jfnifeihccihocjbfcfhicmmgpjicaec";
         let firefoxUrl = "https://addons.mozilla.org/en-US/firefox/addon/gsconnect/";
         extensionsSection.addSetting(
@@ -130,7 +130,7 @@ var PrefsWidget = new Lang.Class({
             ),
             new GSettingsWidget.BoolSetting(Common.Settings, "webbrowser-integration")
         );
-        
+
         // About Page
         let aboutPage = this.addPage(
             "about",
@@ -139,7 +139,7 @@ var PrefsWidget = new Lang.Class({
         );
         aboutPage.box.add(new AboutWidget());
         aboutPage.box.margin_top = 18;
-        
+
         let develSection = aboutPage.addSection(
             null,
             null,
@@ -153,7 +153,7 @@ var PrefsWidget = new Lang.Class({
                 );
             }
         });
-        
+
         this._watchdog = Gio.bus_watch_name(
             Gio.BusType.SESSION,
             Client.BUS_NAME,
@@ -162,40 +162,40 @@ var PrefsWidget = new Lang.Class({
             Lang.bind(this, this._serviceVanished)
         );
     },
-    
+
     _serviceAppeared: function (conn, name, name_owner) {
         Common.debug("PrefsWidget._serviceAppeared()");
-        
+
         if (!this.daemon) {
             this.daemon = new Client.Daemon();
         }
-        
+
         this.daemon.discovering = true;
-        
+
         for (let dbusPath of this.daemon.devices.keys()) {
             this.devicesStack.addDevice(this.daemon, dbusPath);
         }
-        
+
         // Watch for new and removed devices
         this.daemon.connect(
             "device::added",
             Lang.bind(this.devicesStack, this.devicesStack.addDevice)
         );
-        
+
         this.daemon.connect(
             "device::removed",
             Lang.bind(this.devicesStack, this.devicesStack.removeDevice)
         );
     },
-    
+
     _serviceVanished: function (conn, name) {
         Common.debug("PrefsWidget._serviceVanished()");
-        
+
         if (this.daemon) {
             this.daemon.destroy();
             this.daemon = false;
         }
-        
+
         if (!Common.Settings.get_boolean("debug")) {
             this.daemon = new Client.Daemon();
         }
@@ -205,16 +205,16 @@ var PrefsWidget = new Lang.Class({
 
 function init() {
     Common.debug("initializing extension preferences");
-    
+
     Common.initConfiguration();
 }
 
 // Extension Preferences
 function buildPrefsWidget() {
     Common.debug("Prefs: buildPrefsWidget()");
-    
+
     let prefsWidget = new PrefsWidget();
-    
+
     Mainloop.timeout_add(0, () => {
         let prefsWindow = prefsWidget.get_toplevel()
         prefsWindow.get_titlebar().custom_title = prefsWidget.switcher;
@@ -223,7 +223,7 @@ function buildPrefsWidget() {
         });
         return false;
     });
-    
+
     prefsWidget.show_all();
     return prefsWidget;
 }

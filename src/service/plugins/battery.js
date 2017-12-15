@@ -65,19 +65,19 @@ var Plugin = new Lang.Class({
             0
         )
     },
-    
+
     _init: function (device) {
         this.parent(device, "battery");
-        
+
         this._charging = false;
         this._level = -1;
         this._time = 0;
         this._stats = [];
-        
+
         if (this.settings.get_boolean("receive-statistics")) {
             this.request();
         }
-        
+
         this.settings.connect("changed::receive-statistics", () => {
             if (this.settings.get_boolean("receive-statistics")) {
                 this._stats = [];
@@ -89,15 +89,15 @@ var Plugin = new Lang.Class({
                     "charging",
                     new GLib.Variant("b", this._charging)
                 );
-                
+
                 this._level = -1;
                 this.notify("level");
                 this._dbus.emit_property_changed(
                     "level",
                     new GLib.Variant("i", this._level)
                 );
-                
                 this._time = 0;
+
                 this.notify("time");
                 this._dbus.emit_property_changed(
                     "level",
@@ -105,11 +105,11 @@ var Plugin = new Lang.Class({
                 );
             }
         });
-        
+
         if (this.settings.get_boolean("send-statistics") && this.device.daemon.type === "laptop") {
             this._monitor();
         }
-        
+
         this.settings.connect("changed::send-statistics", () => {
             if (this.settings.get_boolean("send-statistics") && !this._battery) {
                 this._monitor();
@@ -119,7 +119,7 @@ var Plugin = new Lang.Class({
             }
         });
     },
-    
+
     _monitor: function () {
         try {
             this._battery = new UPower.Device();
@@ -128,7 +128,7 @@ var Plugin = new Lang.Class({
                 "/org/freedesktop/UPower/devices/DisplayDevice",
                 null
             );
-            
+
             for (let property of ["percentage", "state", "warning_level"]) {
                 this._battery.connect("notify::" + property, () => {
                     this.send();
@@ -142,7 +142,6 @@ var Plugin = new Lang.Class({
             delete this._battery;
         }
     },
-    
     _extrapolate: function (time, level) {
         this._stats.push({
             time: Math.floor(Date.now() / 1000),
@@ -183,30 +182,31 @@ var Plugin = new Lang.Class({
         );
     },
     
+
     get charging() { return this._charging; },
     get level() { return this._level; },
     get time() { return this._time; },
-    
+
     handlePacket: function (packet) {
         Common.debug("Battery: handlePacket()");
-        
+
         if (packet.type === "kdeconnect.battery" && this.settings.get_boolean("receive-statistics")) {
             this.receive(packet);
         } else if (packet.type === "kdeconnect.battery.request" && this._battery) {
             this.send(packet);
         }
     },
-    
+
     /**
      * Receive a remote battery update and disseminate the statistics
      */
     receive: function (packet) {
         Common.debug("Battery: receive()");
-        
+
         if (packet.body.thresholdEvent > 0) {
             this.threshold();
         }
-    
+
         if (this._charging !== packet.body.isCharging) {
             this._charging = packet.body.isCharging;
             this.notify("charging");
@@ -216,9 +216,9 @@ var Plugin = new Lang.Class({
             );
             this._stats = [];
         }
-        
         this._level = packet.body.currentCharge;
         this.notify("level");
+
         this._dbus.emit_property_changed(
             "level",
             new GLib.Variant("i", packet.body.currentCharge)
@@ -226,30 +226,30 @@ var Plugin = new Lang.Class({
         
         this._extrapolate();
     },
-    
+
     /**
      * Request the remote battery statistics
      */
     request: function () {
         Common.debug("Battery: request()");
-        
+
         let packet = new Protocol.Packet({
             id: 0,
             type: "kdeconnect.battery.request",
             body: { request: true }
         });
-        
+
         this.device._channel.send(packet);
     },
-    
+
     /**
      * Report the local battery statistics to the device
      */
     send: function () {
         Common.debug("Battery: send()");
-        
+
         if (!this._battery) { return; }
-        
+
         let packet = new Protocol.Packet({
             id: 0,
             type: "kdeconnect.battery",
@@ -265,16 +265,16 @@ var Plugin = new Lang.Class({
                 packet.body.thresholdEvent = 1;
             }
         }
-        
+
         this.device._channel.send(packet);
     },
-    
+
     /**
      * Notify about a remote threshold event (low battery level)
      */
     threshold: function () {
         Common.debug("Battery: threshold()");
-        
+
         let notif = new Gio.Notification();
         // TRANSLATORS: Low Battery Warning
         notif.set_title(_("Low Battery Warning"));
@@ -283,23 +283,23 @@ var Plugin = new Lang.Class({
             _("%s's battery level is %d%%").format(this.device.name, this.level)
         );
         notif.set_icon(new Gio.ThemedIcon({ name: "battery-caution-symbolic" }));
-        
+
         if (this.device._plugins.has("findmyphone")) {
             notif.add_button(
                 _("Locate"),
                 "app.batteryWarning('" + this._dbus.get_object_path() + "')"
             );
         }
-        
+
         this.device.daemon.send_notification("battery-warning", notif);
     },
-    
+
     destroy: function () {
         if (this._battery) {
             GObject.signal_handlers_destroy(this._battery);
             delete this._battery;
         }
-        
+
         PluginsBase.Plugin.prototype.destroy.call(this);
     }
 });
@@ -308,10 +308,10 @@ var Plugin = new Lang.Class({
 var SettingsDialog = new Lang.Class({
     Name: "GSConnectBatterySettingsDialog",
     Extends: PluginsBase.SettingsDialog,
-    
+
     _init: function (device, name, window) {
         this.parent(device, name, window);
-        
+
         let generalSection = this.content.addSection(
             null,
             null,
@@ -319,9 +319,9 @@ var SettingsDialog = new Lang.Class({
         );
         generalSection.addGSetting(this.settings, "receive-statistics");
         let send = generalSection.addGSetting(this.settings, "send-statistics");
-        
+
         send.sensitive = (this.device.daemon.type === "laptop");
-        
+
         this.content.show_all();
     }
 });

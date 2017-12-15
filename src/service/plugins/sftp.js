@@ -61,44 +61,44 @@ var Plugin = new Lang.Class({
             false
         )
     },
-    
+
     _init: function (device) {
         this.parent(device, "sftp");
-        
+
         if (!Common.checkCommand("sshfs")) {
             this.destroy();
             throw Error(_("SSHFS not installed"));
         }
-        
+
         this._mounted = false;
         this._directories = {};
-        
+
         if (this.settings.get_boolean("automount")) {
             this.mount();
         }
     },
-    
+
     get mounted () { return this._mounted },
     get directories () { return this._directories; },
-    
+
     _prepare: function () {
         Common.debug("SFTP: _prepare()");
-        
+
         this._path = Common.RUNTIME_DIR + "/" + this.device.id;
-        
+
         if (!GLib.file_test(this._path, GLib.FileTest.IS_DIR)) {
             GLib.mkdir_with_parents(this._path, 493);
         }
-        
+
         let dir = Gio.File.new_for_path(this._path);
         let info = dir.query_info("unix::uid,unix::gid", 0, null);
         this._uid = info.get_attribute_uint32("unix::uid").toString();
         this._gid = info.get_attribute_uint32("unix::gid").toString();
     },
-    
+
     handlePacket: function (packet) {
         Common.debug("SFTP: handlePacket()");
-        
+
         try {
             this._prepare();
         } catch (e) {
@@ -134,7 +134,7 @@ var Plugin = new Lang.Class({
             // "read password from stdin (only for pam_mount!)"
             "-o", "password_stdin"
         ];
-        
+
         // [res, pid, in_fd, out_fd, err_fd]
         try {
             this._proc = GLib.spawn_async_with_pipes(
@@ -149,55 +149,55 @@ var Plugin = new Lang.Class({
             this.unmount();
             return;
         }
-        
+
         // Initialize streams
         this._stdin = new Gio.DataOutputStream({
             base_stream: new Gio.UnixOutputStream({ fd: this._proc[2] })
         });
-        
+
         this._stderr = new Gio.DataInputStream({
             base_stream: new Gio.UnixInputStream({ fd: this._proc[4] })
         });
-        
+
         let source = this._stderr.base_stream.create_source(null);
         source.set_callback(Lang.bind(this, this._read_stderr));
         source.attach(null);
-        
+
         // Send session password
         this._stdin.put_string(packet.body.password + "\n", null);
-        
+
         // Set the directories and notify (client.js needs this before mounted)
         for (let index in packet.body.pathNames) {
             let name = packet.body.pathNames[index];
             let path = packet.body.multiPaths[index].replace(packet.body.path, "");
             path = path.replace(packet.body.path, "");
-        
+
             this._directories[name] = this._path + path;
         }
-        
+
         this.notify("directories");
         this._dbus.emit_property_changed(
             "directories",
             new GLib.Variant("a{ss}", this._directories)
         );
-        
+
         // Set "mounted" and notify
         this._mounted = true;
-        
+
         this.notify("mounted");
         this._dbus.emit_property_changed(
             "mounted",
             new GLib.Variant("b", this._mounted)
         );
     },
-    
+
     _read_stderr: function () {
         // unmount() was called with data in the queue
         if (!this._stderr) { return; }
-        
+
         this._stderr.read_line_async(GLib.PRIORITY_DEFAULT, null, (source, res) => {
             let [data, len] = source.read_line_finish(res);
-            
+
             // TODO: there's no way this covers all the bases
             if (data === null) {
                 log("SFTP Error: pipe closed");
@@ -210,22 +210,22 @@ var Plugin = new Lang.Class({
             }
         });
     },
-    
+
     mount: function () {
         Common.debug("SFTP: mount()");
-        
+
         let packet = new Protocol.Packet({
             id: 0,
             type: "kdeconnect.sftp.request",
             body: { startBrowsing: true }
         });
-        
+
         this.device._channel.send(packet);
     },
-    
+
     unmount: function () {
         Common.debug("SFTP: unmount()");
-    
+
         try {
             if (this._proc) {
                GLib.spawn_command_line_async("kill -9 " + this._proc[1]);
@@ -233,19 +233,19 @@ var Plugin = new Lang.Class({
         } catch (e) {
             log("SFTP: Error killing sshfs: " + e);
         }
-        
+
         if (this._path) {
             if (Common.checkCommand("fusermount")) {
                 GLib.spawn_command_line_async("fusermount -uz " + this._path);
             } else {
                 GLib.spawn_command_line_async("umount " + this._path);
             }
-            
+
             delete this._path;
             delete this._uid;
             delete this._gid;
         }
-        
+
         try {
             if (this._stdin) {
                 this._stdin.close(null);
@@ -253,7 +253,7 @@ var Plugin = new Lang.Class({
         } catch (e) {
             log("SFTP: Error closing stdin: " + e);
         }
-        
+
         try {
             if (this._stderr) {
                 this._stderr.close(null);
@@ -261,29 +261,29 @@ var Plugin = new Lang.Class({
         } catch (e) {
             log("SFTP: Error closing stderr: " + e);
         }
-        
+
         delete this._proc;
         delete this._stdin;
         delete this._stderr;
-        
+
         this._directories = {};
-        
+
         this._dbus.emit_property_changed(
             "directories",
             new GLib.Variant("a{ss}", this._directories)
         );
-        
+
         this._mounted = false;
-        
+
         this._dbus.emit_property_changed(
             "mounted",
             new GLib.Variant("b", false)
         );
     },
-    
+
     destroy: function () {
         this.unmount();
-        
+
         PluginsBase.Plugin.prototype.destroy.call(this);
     }
 });
@@ -292,17 +292,17 @@ var Plugin = new Lang.Class({
 var SettingsDialog = new Lang.Class({
     Name: "GSConnectSFTPSettingsDialog",
     Extends: PluginsBase.SettingsDialog,
-    
+
     _init: function (device, name, window) {
         this.parent(device, name, window);
-        
+
         let generalSection = this.content.addSection(
             null,
             null,
             { margin_bottom: 0, width_request: -1 }
         );
         generalSection.addGSetting(this.settings, "automount");
-        
+
         this.content.show_all();
     }
 });

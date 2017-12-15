@@ -42,24 +42,24 @@ var METADATA = {
 var Plugin = new Lang.Class({
     Name: "GSConnectFindMyPhonePlugin",
     Extends: PluginsBase.Plugin,
-    
+
     _init: function (device) {
         this.parent(device, "findmyphone");
-        
+
         this._cancellable = null;
         this._dialog = null;
     },
-    
+
     _ring: function () {
         Common.debug("FindMyPhone: _ring()");
-        
-        if (this._cancellable || this._dialog) { 
+
+        if (this._cancellable || this._dialog) {
             this._closeDialog();
         }
-        
+
         this._cancellable = new Gio.Cancellable();
         Sound.loopThemeSound("phone-incoming-call", this._cancellable);
-        
+
         this._dialog = new Gtk.MessageDialog({
             text: _("Locate Device"),
             secondary_text: _("%s asked to locate this device").format(this.device.name),
@@ -82,39 +82,39 @@ var Plugin = new Lang.Class({
         this._dialog.show();
         this._dialog.present();
     },
-    
+
     _closeDialog: function () {
         this._cancellable.cancel();
         this._cancellable = null;
         this._dialog.destroy()
         this._dialog = null;
     },
-    
+
     handlePacket: function (packet) {
         Common.debug("FindMyPhone: handlePacket()");
-        
+
         this._ring();
     },
-    
+
     find: function () {
         Common.debug("FindMyPhone: ring()");
-        
+
         if (this.device.connected && this.device.paired) {
             let packet = new Protocol.Packet({
                 id: 0,
                 type: "kdeconnect.findmyphone.request",
                 body: {}
             });
-            
+
             this.device._channel.send(packet);
         }
     },
-    
+
     destroy: function () {
         if (this._cancellable || this._dialog) {
             this._closeDialog();
         }
-        
+
         PluginsBase.Plugin.prototype.destroy.call(this);
     }
 });

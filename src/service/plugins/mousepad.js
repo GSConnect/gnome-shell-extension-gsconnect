@@ -45,24 +45,24 @@ var METADATA = {
 var Plugin = new Lang.Class({
     Name: "GSConnectMousepadPlugin",
     Extends: PluginsBase.Plugin,
-    
+
     _init: function (device) {
         this.parent(device, "mousepad");
-        
+
         if (GLib.getenv("XDG_SESSION_TYPE") === "wayland") {
             this.destroy();
             throw Error(_("Can't run in Wayland session"));
         }
-        
+
         let ret = Atspi.init();
-        
+
         if (ret !== 0 && ret !== 1) {
             this.destroy();
             throw Error(_("Failed to initialize Atspi"));
         }
-        
+
         this._display = Gdk.Display.get_default();
-        
+
         if (this._display === null) {
             this.destroy();
             throw Error(_("Failed to get Gdk.Display"));
@@ -73,10 +73,10 @@ var Plugin = new Lang.Class({
 
         this._xdotool = Common.checkCommand("xdotool");
     },
-    
+
     handlePacket: function (packet) {
         Common.debug("Mousepad: handlePacket()");
-        
+
         if (packet.body.singleclick) {
             this.clickPointer(1);
         } else if (packet.body.doubleclick) {
@@ -104,12 +104,12 @@ var Plugin = new Lang.Class({
             this.pressSpecialKey(packet.body.specialKey);
         }
     },
-    
+
     clickPointer: function (button, double=false) {
         Common.debug("Mousepad: clickPointer(" + button + ", " + double + ")");
-        
+
         let event;
-        
+
         if (button === 1) {
             event = "b1c";
         } else if (button === 2) {
@@ -117,7 +117,7 @@ var Plugin = new Lang.Class({
         } else if (button === 3) {
             event = "b3c";
         }
-        
+
         try {
             let [screen, x, y] = this._pointer.get_position();
             Atspi.generate_mouse_event(x, y, event);
@@ -126,17 +126,17 @@ var Plugin = new Lang.Class({
             log("Mousepad: Error simulating mouse click: " + e);
         }
     },
-    
+
     movePointer: function (dx, dy) {
         Common.debug("Mousepad: movePointer(" + dx + ", " + dy + ")");
-        
+
         try {
             Atspi.generate_mouse_event(dx, dy, "rel");
         } catch (e) {
             log("Mousepad: Error simulating mouse movement: " + e);
         }
     },
-    
+
     pressPointer: function (button) {
         Common.debug("Mousepad: pressPointer()");
 
@@ -167,22 +167,22 @@ var Plugin = new Lang.Class({
     //           {"shift":true,"key":"Q"}
     pressKey: function (key) {
         Common.debug("Mousepad: pressKey(" + key + ")");
-        
+
         try {
             Atspi.generate_keyboard_event(0, key, Atspi.KeySynthType.STRING);
         } catch (e) {
             log("Mousepad: Error simulating keypress: " + e);
         }
     },
-    
+
     pressSpecialKey: function (key) {
         Common.debug("Mousepad: pressSpecialKey(" + key + ")");
-        
+
         try {
             if (!KeyMap.has(key) || key === 0) {
-                log("Mousepad: Unknown/invalid key");
+                throw Error("Unknown/invalid key");
             }
-            
+
             Atspi.generate_keyboard_event(
                 KeyMap.get(key),
                 null,

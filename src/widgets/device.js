@@ -26,10 +26,10 @@ const Common = imports.common;
 var HelpSection = new Lang.Class({
     Name: "GSConnectHelpSection",
     Extends: PreferencesWidget.Section,
-    
+
     _init: function () {
         this.parent({ margin_bottom: 0, width_request: -1 });
-        
+
         let label = new Gtk.Label({
             label: _("Ensure that devices are on the same local network with ports 1716 to 1764 open for TCP and UDP connections.") +
                    "\n\n" +
@@ -47,7 +47,7 @@ var HelpSection = new Lang.Class({
             vexpand: true,
             xalign: 0
         });
-        
+
         this.addRow().grid.attach(label, 0, 0, 1, 1);
     }
 });
@@ -57,7 +57,7 @@ var HelpSection = new Lang.Class({
 var PluginControl = new Lang.Class({
     Name: "GSConnectPluginControl",
     Extends: Gtk.Grid,
-    
+
     _init: function (device, name) {
         this.parent({
             orientation: Gtk.Orientation.HORIZONTAL,
@@ -65,11 +65,11 @@ var PluginControl = new Lang.Class({
             vexpand: true,
             valign: Gtk.Align.CENTER
         });
-        
+
         this.device = device;
         this.name = name;
         this._freeze = false;
-        
+
         if (imports.service.plugins[this.name].SettingsDialog) {
             this.settingButton = new Gtk.Button({
                 image: new Gtk.Image({
@@ -81,13 +81,13 @@ var PluginControl = new Lang.Class({
                 halign: Gtk.Align.END,
                 valign: Gtk.Align.CENTER
             });
-            
+
             this.settingButton.get_style_context().add_class("circular");
             this.settingButton.connect("clicked", Lang.bind(this, this._configure));
-            
+
             this.attach(this.settingButton, 1, 0, 1, 1);
         }
-        
+
         this.pluginSwitch = new Gtk.Switch({
             can_focus: true,
             halign: Gtk.Align.END,
@@ -95,45 +95,45 @@ var PluginControl = new Lang.Class({
         });
         this.pluginSwitch.connect("notify::active", Lang.bind(this, this._toggle));
         this.attach(this.pluginSwitch, 2, 0, 1, 1);
-        
+
         this.errorImage = new Gtk.Image({
             icon_name: "dialog-warning",
             pixel_size: 24,
             visible: true
         });
-        
+
         this.device.settings.connect("changed::enabled-plugins", () => {
             this._refresh();
         });
-        
+
         this._refresh();
     },
-    
+
     _refresh: function () {
         this._freeze = true;
         let enabledPlugins = this.device.settings.get_strv("enabled-plugins");
         this.pluginSwitch.active = (enabledPlugins.indexOf(this.name) > -1);
         this._freeze = false;
     },
-    
+
     _toggle: function (widget) {
         if (!this._freeze) {
             let result, success, error;
-            
+
             if (this.pluginSwitch.active) {
                 result = this.device.enablePlugin(this.name);
                 success = result["0"];
                 error = result["1"];
-                
+
                 if (!success) {
                     if (!this.get_child_at(0, 0)) {
                         this.attach(this.errorImage, 0, 0, 1, 1);
                     }
-                    
+
                     this.errorImage.set_tooltip_markup(
                         _("Error: %s").format(error)
                     );
-                    
+
                     this._refresh();
                     return;
                 } else if (this.get_child_at(0, 0)) {
@@ -144,18 +144,18 @@ var PluginControl = new Lang.Class({
             }
         }
     },
-    
+
     _configure: function () {
         let dialog = new imports.service.plugins[this.name].SettingsDialog(
             this.device,
             this.name,
             this.get_toplevel()
         );
-        
+
         if (dialog.run() === Gtk.ResponseType.APPLY) {
             dialog.settings.apply();
         }
-        
+
         dialog.close();
     }
 });
@@ -164,22 +164,22 @@ var PluginControl = new Lang.Class({
 var PluginSection = new Lang.Class({
     Name: "GSConnectPluginSection",
     Extends: PreferencesWidget.Section,
-    
+
     _init: function (device) {
         this.parent({ width_request: -1 });
-        
+
         this.device = device;
-        
+
         for (let name of this.device.supportedPlugins) {
             let metadata = imports.service.plugins[name].METADATA;
-            
+
             this.addSetting(
                 metadata.summary,
                 metadata.description,
                 new PluginControl(this.device, name)
             );
         }
-        
+
         this.list.set_sort_func((row1, row2) => {
             return row1.summary.label.localeCompare(row2.summary.label);
         });
@@ -190,12 +190,12 @@ var PluginSection = new Lang.Class({
 var KeybindingsSection = new Lang.Class({
     Name: "GSConnectKeybindingsSection",
     Extends: PreferencesWidget.Section,
-    
+
     _init: function (device) {
         this.parent({ margin_bottom: 0, width_request: -1 });
-        
+
         this.device = device;
-        
+
         let keyRow = this.addRow();
         keyRow.grid.margin = 0;
         let keyView = new KeybindingsWidget.TreeView(this.device.settings, "keybindings");
@@ -209,7 +209,7 @@ var KeybindingsSection = new Lang.Class({
         keyView.addAccel("browse", _("Browse Files"), 0, 0);
         // TRANSLATORS: Open the file chooser for sending files/links
         keyView.addAccel("share", _("Share File/URL"), 0, 0);
-        
+
         keyView.setAccels(
             JSON.parse(this.device.settings.get_string("keybindings"))
         );
@@ -221,7 +221,7 @@ var KeybindingsSection = new Lang.Class({
 var Stack = new Lang.Class({
     Name: "GSConnectDeviceStack",
     Extends: Gtk.Grid,
-    
+
     _init: function (prefsWidget) {
         this.parent({
             halign: Gtk.Align.FILL,
@@ -229,10 +229,10 @@ var Stack = new Lang.Class({
             hexpand: true,
             vexpand: true
         });
-        
+
         this._parent = prefsWidget;
         this.devices = new Map();
-        
+
         // Device Switcher
         this.sidebar = new Gtk.ListBox({ vexpand: true });
         let sidebarScrolledWindow = new Gtk.ScrolledWindow({
@@ -241,9 +241,9 @@ var Stack = new Lang.Class({
             shadow_type: Gtk.ShadowType.IN
         });
         sidebarScrolledWindow.add(this.sidebar);
-        
+
         this.attach(sidebarScrolledWindow, 0, 1, 1, 1);
-        
+
         // Refresh Button
         let refreshButton = new Gtk.Button({
             label: _("Refresh"),
@@ -254,7 +254,7 @@ var Stack = new Lang.Class({
             this._parent.daemon.discovering = true;
         });
         this.attach(refreshButton, 0, 2, 1, 1);
-        
+
         // Device Stack
         this.stack = new Gtk.Stack({
             transition_type: Gtk.StackTransitionType.SLIDE_UP_DOWN,
@@ -264,9 +264,9 @@ var Stack = new Lang.Class({
             vexpand: true
         });
         this.attach(this.stack, 1, 1, 1, 2);
-        
+
         this._addDaemon();
-        
+
         this.sidebar.connect("row-selected", (listbox, row) => {
             if (row === null) {
                 this.sidebar.select_row(this.defaultRow);
@@ -274,7 +274,7 @@ var Stack = new Lang.Class({
                 this.stack.set_visible_child_name(row.device.id);
             }
         });
-        
+
         this.sidebar.set_header_func((row, before) => {
             if (row.get_index() === 1) {
                 row.set_header(
@@ -285,10 +285,10 @@ var Stack = new Lang.Class({
             }
         });
     },
-    
+
     _addDaemon: function () {
         let metadata = DeviceMetadata[Common.getDeviceType()];
-        
+
         // Default Sidebar Entry
         this.defaultRow = new PreferencesWidget.Row({
             height_request: -1,
@@ -297,7 +297,7 @@ var Stack = new Lang.Class({
             selectable: true
         });
         this.defaultRow.device = { id: "default" };
-        
+
         let icon = new Gtk.Image({
             icon_name: metadata.symbolic_icon,
             pixel_size: 16
@@ -312,26 +312,26 @@ var Stack = new Lang.Class({
         );
         this.defaultRow.grid.attach(nameLabel, 1, 0, 1, 1);
         this.sidebar.add(this.defaultRow);
-        
+
         // Default Page
         // TODO: this could be much better
         let page = new PreferencesWidget.Page();
         page.box.margin_left = 36;
         page.box.margin_right = 36;
-        
+
         let serviceSection = page.addSection(null, null, { width_request: -1 });
         serviceSection.addGSetting(Common.Settings, "public-name");
-        
+
         page.addSection(_("Connecting Devices"), new HelpSection());
-        
+
         this.stack.add_named(page, "default");
-        
+
         this.sidebar.select_row(this.defaultRow);
     },
-    
+
     addDevice: function (daemon, dbusPath) {
         let device = daemon.devices.get(dbusPath);
-        
+
         // Device Sidebar Entry
         let row = new PreferencesWidget.Row({
             height_request: -1,
@@ -340,9 +340,9 @@ var Stack = new Lang.Class({
             selectable: true
         });
         row.device = device;
-        
+
         let metadata = DeviceMetadata[device.type];
-        
+
         let icon = new Gtk.Image({
             icon_name: metadata.symbolic_icon,
             pixel_size: 16
@@ -358,26 +358,26 @@ var Stack = new Lang.Class({
         let nameLabel = new Gtk.Label({ label: device.name });
         row.grid.attach(nameLabel, 1, 0, 1, 1);
         this.sidebar.add(row);
-        
+
         row.show_all();
-        
+
         // Device Page
         let page = new Page(daemon, device);
         this.stack.add_named(page, device.id);
-        
+
         // Tracking
         this.devices.set(dbusPath, [row, page]);
     },
-    
+
     removeDevice: function (daemon, dbusPath) {
         let device = this.devices.get(dbusPath);
-        
+
         this.sidebar.remove(device[0]);
         device[0].destroy();
-        
+
         this.stack.remove(device[1]);
         device[1].destroy();
-        
+
         this.devices.delete(dbusPath);
     }
 });
@@ -386,21 +386,21 @@ var Stack = new Lang.Class({
 var Page = new Lang.Class({
     Name: "GSConnectDevicePage",
     Extends: PreferencesWidget.Page,
-    
+
     _init: function (daemon, device) {
         this.parent();
         this.box.margin_left = 36;
         this.box.margin_right = 36;
-        
+
         this.daemon = daemon;
         this.device = device;
-        
+
         // Info Section
         let metadata = DeviceMetadata[device.type];
-        
+
         let infoSection = this.addSection(null, null, { width_request: -1 });
         let statusRow = infoSection.addRow();
-        
+
         // Info Section // Type Icon
         let typeIcon = new Gtk.Image({
             icon_name: metadata.icon,
@@ -408,7 +408,7 @@ var Page = new Lang.Class({
             halign: Gtk.Align.START
         });
         statusRow.grid.attach(typeIcon, 0, 0, 1, 2);
-        
+
         // Info Section // Name and Type Labels
         let nameLabel = new Gtk.Label({
             label: "<b><big>" + device.name + "</big></b>",
@@ -426,13 +426,13 @@ var Page = new Lang.Class({
         });
         typeLabel.get_style_context().add_class("dim-label");
         statusRow.grid.attach(typeLabel, 1, 1, 1, 1);
-        
+
         let deviceControls = new Gtk.ButtonBox({
             halign: Gtk.Align.END,
             hexpand: true,
             spacing: 12
         });
-        
+
         // Info Section // State Button (Pair/Unpair/Connect)
         let connectButton = new Gtk.Button({
             image: new Gtk.Image({
@@ -455,7 +455,7 @@ var Page = new Lang.Class({
             GObject.BindingFlags.INVERT_BOOLEAN
         );
         statusRow.grid.attach(connectButton, 2, 0, 1, 2);
-        
+
         let pairButton = new Gtk.Button({
             image: new Gtk.Image({
                 icon_name: "view-refresh-symbolic",
@@ -509,13 +509,13 @@ var Page = new Lang.Class({
         });
         this.device.notify("paired");
         statusRow.grid.attach(pairButton, 3, 0, 1, 2);
-        
+
         // Plugins
         this.addSection(_("Plugins"), new PluginSection(this.device));
-        
+
         // Keyboard Shortcuts
         this.addSection(_("Keyboard Shortcuts"), new KeybindingsSection(this.device));
-        
+
         this.show_all();
         connectButton.visible = !this.device.connected;
     }

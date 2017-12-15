@@ -26,13 +26,13 @@ class GSConnectShareExtension(GObject.GObject, Nautilus.MenuProvider):
 
     def __init__(self):
         """Initialize translations"""
-        
+
         try:
             locale.setlocale(locale.LC_ALL, '')
             gettext.bindtextdomain('gsconnect', LOCALE_DIR)
         except:
             pass
-        
+
         self.dbus = Gio.DBusProxy.new_for_bus_sync(
 			Gio.BusType.SESSION,
 			Gio.DBusProxyFlags.NONE,
@@ -44,7 +44,7 @@ class GSConnectShareExtension(GObject.GObject, Nautilus.MenuProvider):
 
     def send_files(self, menu, files, device):
         """Send *files* to *device_id*"""
-        
+
         dev_dbus = Gio.DBusProxy.new_for_bus_sync(
 			Gio.BusType.SESSION,
 			Gio.DBusProxyFlags.NONE,
@@ -53,14 +53,14 @@ class GSConnectShareExtension(GObject.GObject, Nautilus.MenuProvider):
 			'/org/gnome/Shell/Extensions/GSConnect/Device/' + device.values()[0],
 			'org.gnome.Shell.Extensions.GSConnect.Plugin.Share',
 			None)
-        
+
         for file in files:
             variant = GLib.Variant("(s)", (file.get_uri(),))
             dev_dbus.call_sync("shareUri", variant, 0, -1, None)
 
     def get_file_items(self, window, files):
         """Return a list of select files to be sent"""
-        
+
         # Try to get devices
         try:
             devices = self.dbus.call_sync("getShareable", None, 0, -1, None)
@@ -75,7 +75,7 @@ class GSConnectShareExtension(GObject.GObject, Nautilus.MenuProvider):
         for uri in files:
             if uri.get_uri_scheme() != 'file' or uri.is_directory():
                 return
-        
+
         # Context Menu Item
         menu = Nautilus.MenuItem(
             name='GSConnectShareExtension::Devices',
@@ -94,10 +94,10 @@ class GSConnectShareExtension(GObject.GObject, Nautilus.MenuProvider):
                 label=device.keys()[0],
                 icon='smartphone-symbolic'
             )
-            
+
             item.connect('activate', self.send_files, files, device)
-            
+
             submenu.append_item(item)
 
         return menu,
-        
+

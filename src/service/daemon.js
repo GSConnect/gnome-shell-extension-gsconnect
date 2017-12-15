@@ -47,7 +47,7 @@ var Daemon = new Lang.Class({
         ),
         "devices": GObject.param_spec_variant(
             "devices",
-            "DevicesList", 
+            "DevicesList",
             "A list of known devices",
             new GLib.VariantType("as"),
             null,
@@ -81,28 +81,28 @@ var Daemon = new Lang.Class({
             application_id: "org.gnome.Shell.Extensions.GSConnect",
             flags: Gio.ApplicationFlags.FLAGS_NONE
         });
-        
+
         let application_name = _("GSConnect");
 
         GLib.set_prgname(application_name);
         GLib.set_application_name(application_name);
-        
+
         this.register(null);
     },
-    
+
     // Properties
     get certificate () {
         return Common.getCertificate();
     },
-    
+
     get devices () {
         return Array.from(this._devices.keys());
     },
-    
+
     get discovering () {
         return this.tcpListener.active;
     },
-    
+
     set discovering (bool) {
         if (bool) {
             this.tcpListener.start();
@@ -112,26 +112,26 @@ var Daemon = new Lang.Class({
             this._pruneDevices();
         }
     },
-    
+
     get fingerprint () {
         return this.certificate.fingerprint()
     },
-    
+
     get name() {
         return this.identity.body.deviceName;
     },
-    
+
     set name(name) {
         this.identity.body.deviceName = name;
         this.notify("name");
         this._dbus.emit_property_changed("name", new GLib.Variant("s", name));
         this.broadcast();
     },
-    
+
     get type () {
         return this.identity.body.deviceType;
     },
-    
+
     /**
      * Special method to accomodate nautilus-gsconnect.py
      *
@@ -139,16 +139,16 @@ var Daemon = new Lang.Class({
      */
     getShareable: function () {
         let shareable = {};
-        
+
         for (let [busPath, device] of this._devices.entries()) {
             if (device.connected && device._plugins.has("share")) {
                 shareable[device.name] = device.id;
             }
         }
-        
+
         return shareable;
     },
-    
+
     /**
      * Build and return an identity packet for the local device
      */
@@ -166,31 +166,31 @@ var Daemon = new Lang.Class({
                 outgoingCapabilities: []
             }
         });
-        
+
         for (let name in imports.service.plugins) {
             if (imports.service.plugins[name].METADATA) {
                 let metadata = imports.service.plugins[name].METADATA;
-                
+
                 for (let packetType of metadata.incomingPackets) {
                     packet.body.incomingCapabilities.push(packetType);
                 }
-                
+
                 for (let packetType of metadata.outgoingPackets) {
                     packet.body.outgoingCapabilities.push(packetType);
                 }
             }
         }
-        
+
         return packet;
     },
-    
+
     /**
      * Discovery Methods
      */
     broadcast: function () {
         this.udpListener.send(this.identity);
     },
-    
+
     /**
      * Device Methods
      */
@@ -199,11 +199,11 @@ var Daemon = new Lang.Class({
             //
             for (let id of Common.Settings.get_strv("devices")) {
                 let dbusPath = Common.dbusPathFromId(id);
-                
+
                 if (!this._devices.has(dbusPath)) {
                     let device = new Device.Device({ daemon: this, id: id})
                     this._devices.set(dbusPath, device);
-                    
+
                     this.notify("devices");
                     this._dbus.emit_property_changed(
                         "devices",
@@ -211,23 +211,23 @@ var Daemon = new Lang.Class({
                     );
                 }
             }
-            
+
             //
             let devices = Common.Settings.get_strv("devices");
-            
+
             for (let [dbusPath, device] of this._devices.entries()) {
                 if (devices.indexOf(device.id) < 0) {
                     this._removeDevice(dbusPath);
                 }
             }
         });
-        
+
         Common.Settings.emit("changed::devices", "devices");
     },
-    
+
     _pruneDevices: function () {
         let devices = Common.Settings.get_strv("devices");
-        
+
         for (let device of this._devices.values()) {
             if (!device.connected && !device.paired) {
                 devices.splice(devices.indexOf(device.id), 1);
@@ -235,37 +235,37 @@ var Daemon = new Lang.Class({
             }
         }
     },
-    
+
     _addDevice: function (packet, channel=null) {
         Common.debug("Daemon._addDevice(" + packet.body.deviceName + ")");
-        
+
         if (!this.identity) { return; }
         if (packet.body.deviceId === this.identity.body.deviceId) { return; }
-            
+
         let dbusPath = Common.dbusPathFromId(packet.body.deviceId);
-        
+
         if (this._devices.has(dbusPath)) {
             log("Daemon: Updating device");
-            
+
             let device = this._devices.get(dbusPath);
             device.update(packet, channel);
         } else {
             log("Daemon: Adding device");
-            
+
             let device = new Device.Device({
                 daemon: this,
                 packet: packet,
                 channel: channel
             });
             this._devices.set(dbusPath, device);
-            
+
             let knownDevices = Common.Settings.get_strv("devices");
-            
+
             if (knownDevices.indexOf(device.id) < 0) {
                 knownDevices.push(device.id);
                 Common.Settings.set_strv("devices", knownDevices);
             }
-            
+
             this.notify("devices");
             this._dbus.emit_property_changed(
                 "devices",
@@ -273,18 +273,18 @@ var Daemon = new Lang.Class({
             );
         }
     },
-    
+
     _removeDevice: function (dbusPath) {
         Common.debug("Daemon._removeDevice(" + dbusPath + ")");
-        
+
         if (this._devices.has(dbusPath)) {
             log("Daemon: Removing device");
-            
+
             let device = this._devices.get(dbusPath);
-            
+
             device.destroy();
             this._devices.delete(dbusPath);
-            
+
             this.notify("devices");
             this._dbus.emit_property_changed(
                 "devices",
@@ -292,7 +292,7 @@ var Daemon = new Lang.Class({
             );
         }
     },
-    
+
     /**
      * Notification listener
      *
@@ -307,23 +307,23 @@ var Daemon = new Lang.Class({
             this
         );
         this._ndbus.export(Gio.DBus.session, "/org/freedesktop/Notifications");
-        
+
         // Match all notifications
         this._match = new GLib.Variant("(s)", ["interface='org.freedesktop.Notifications',member='Notify',type='method_call',eavesdrop='true'"])
-        
+
         this._proxy = new Gio.DBusProxy({
             gConnection: Gio.DBus.session,
             gName: "org.freedesktop.DBus",
             gObjectPath: "/org/freedesktop/DBus",
             gInterfaceName: "org.freedesktop.DBus"
         });
-        
+
         this._proxy.call_sync("AddMatch", this._match, 0, -1, null);
     },
-    
+
     Notify: function (appName, replacesId, iconName, summary, body, actions, hints, timeout) {
         Common.debug("Daemon: Notify()");
-        
+
         for (let device of this._devices.values()) {
             if (device._plugins.has("notification")) {
                 let plugin = device._plugins.get("notification");
@@ -332,105 +332,105 @@ var Daemon = new Lang.Class({
             }
         }
     },
-    
+
     /**
      * Notification Actions
      */
     _batteryWarningAction: function (action, param) {
         let dbusPath = param.deep_unpack().toString();
-        
+
         if (this._devices.has(dbusPath)) {
             let device = this._devices.get(dbusPath);
-            
+
             if (device._plugins.has("findmyphone")) {
                 device._plugins.get("findmyphone").find();
             }
         }
     },
-    
+
     _cancelTransferAction: function (action, param) {
         param = param.deep_unpack();
-        
+
         if (this._devices.has(param["0"])) {
             let device = this._devices.get(param["0"]);
-            
+
             if (device._plugins.has("share")) {
                 let plugin = device._plugins.get("share");
-                
+
                 if (plugin.transfers.has(param["1"])) {
                     plugin.transfers.get(param["1"]).cancel();
                 }
             }
         }
     },
-    
+
     // TODO: check file existence, since the notification will persist while
     //       the file could be moved/deleted
     _openTransferAction: function (action, param) {
         let path = param.deep_unpack().toString();
         Gio.AppInfo.launch_default_for_uri(unescape(path), null);
     },
-    
+
     _closeNotificationAction: function (action, param) {
         param = param.deep_unpack();
-        
+
         if (this._devices.has(param["0"])) {
             let device = this._devices.get(param["0"]);
-            
+
             if (device._plugins.has("notification")) {
                 let plugin = device._plugins.get("notification");
                 plugin.close(unescape(param["1"]));
             }
         }
     },
-    
+
     _muteCallAction: function (action, param) {
         let dbusPath = param.deep_unpack().toString();
-        
+
         if (this._devices.has(dbusPath)) {
             let device = this._devices.get(dbusPath);
-            
+
             if (device._plugins.has("telephony")) {
                 let plugin = device._plugins.get("telephony");
                 plugin.muteCall();
             }
         }
     },
-    
+
     _replyMissedCallAction: function (action, param) {
         param = param.deep_unpack();
-        
+
         if (this._devices.has(param["0"])) {
             let device = this._devices.get(param["0"]);
-            
+
             if (device._plugins.has("telephony")) {
                 let plugin = device._plugins.get("telephony");
                 plugin.replyMissedCall(param["1"],param["2"]);
             }
         }
     },
-    
+
     _replySmsAction: function (action, param) {
         param = param.deep_unpack();
-        
+
         if (this._devices.has(param["0"])) {
             let device = this._devices.get(param["0"]);
-            
+
             if (device._plugins.has("telephony")) {
                 let plugin = device._plugins.get("telephony");
                 plugin.replySms(param["1"], param["2"], param["3"]);
             }
         }
     },
-    
+
     _pairAction: function (action, parameter) {
         parameter = parameter.deep_unpack();
         let dbusPath = parameter["0"];
         let pairAction = parameter["1"];
-        
+
         if (this._devices.has(dbusPath)) {
             let device = this._devices.get(dbusPath);
-            
+
             if (pairAction === "accept") {
                 device.acceptPair();
             } else if (pairAction === "reject") {
@@ -438,7 +438,7 @@ var Daemon = new Lang.Class({
             }
         }
     },
-    
+
     _initNotificationActions: function () {
         let pairAction = new Gio.SimpleAction({
             name: "pairAction",
@@ -449,7 +449,7 @@ var Daemon = new Lang.Class({
             Lang.bind(this, this._pairAction)
         );
         this.add_action(pairAction);
-        
+
         let batteryWarning = new Gio.SimpleAction({
             name: "batteryWarning",
             parameter_type: new GLib.VariantType("s")
@@ -459,7 +459,7 @@ var Daemon = new Lang.Class({
             Lang.bind(this, this._batteryWarningAction)
         );
         this.add_action(batteryWarning);
-        
+
         let cancelTransfer = new Gio.SimpleAction({
             name: "cancelTransfer",
             parameter_type: new GLib.VariantType("(ss)")
@@ -469,7 +469,7 @@ var Daemon = new Lang.Class({
             Lang.bind(this, this._cancelTransferAction)
         );
         this.add_action(cancelTransfer);
-        
+
         let openTransfer = new Gio.SimpleAction({
             name: "openTransfer",
             parameter_type: new GLib.VariantType("s")
@@ -479,7 +479,7 @@ var Daemon = new Lang.Class({
             Lang.bind(this, this._openTransferAction)
         );
         this.add_action(openTransfer);
-        
+
         let muteCall = new Gio.SimpleAction({
             name: "muteCall",
             parameter_type: new GLib.VariantType("s")
@@ -489,7 +489,7 @@ var Daemon = new Lang.Class({
             Lang.bind(this, this._muteCallAction)
         );
         this.add_action(muteCall);
-        
+
         let replyMissedCall = new Gio.SimpleAction({
             name: "replyMissedCall",
             parameter_type: new GLib.VariantType("(sss)")
@@ -499,7 +499,7 @@ var Daemon = new Lang.Class({
             Lang.bind(this, this._replyMissedCallAction)
         );
         this.add_action(replyMissedCall);
-        
+
         let replySms = new Gio.SimpleAction({
             name: "replySms",
             parameter_type: new GLib.VariantType("(ssss)")
@@ -509,7 +509,7 @@ var Daemon = new Lang.Class({
             Lang.bind(this, this._replySmsAction)
         );
         this.add_action(replySms);
-        
+
         let closeNotification = new Gio.SimpleAction({
             name: "closeNotification",
             parameter_type: new GLib.VariantType("(ss)")
@@ -520,7 +520,7 @@ var Daemon = new Lang.Class({
         );
         this.add_action(closeNotification);
     },
-    
+
     /**
      * Watch 'daemon.js' in case the extension is uninstalled
      */
@@ -544,18 +544,18 @@ var Daemon = new Lang.Class({
      */
     vfunc_startup: function() {
         this.parent();
-        
+
         this._devices = new Map();
         this._in = null;
         this._listener = null;
-        
+
         // Intitialize configuration and choke hard if it fails
         if (!Common.initConfiguration()) { this.vfunc_shutdown(); }
-        
+
         this._watchDaemon();
         this._initNotificationListener();
         this._initNotificationActions();
-        
+
         // Export DBus
         let iface = "org.gnome.Shell.Extensions.GSConnect";
         this._dbus = Gio.DBusExportedObject.wrapJSObject(
@@ -566,13 +566,13 @@ var Daemon = new Lang.Class({
             Gio.DBus.session,
             "/org/gnome/Shell/Extensions/GSConnect"
         );
-        
+
         // Ensure fingerprint is available right away
         this._dbus.emit_property_changed(
             "fingerprint",
             new GLib.Variant("s", this.fingerprint)
         );
-        
+
         // Listen for new devices
         try {
             this.udpListener = new Protocol.UdpListener();
@@ -583,7 +583,7 @@ var Daemon = new Lang.Class({
             log("Error starting UDP listener: " + e);
             this.vfunc_shutdown();
         }
-        
+
         try {
             this.tcpListener = new Protocol.TcpListener();
             this.tcpListener.connect("incoming", (listener, connection) => {
@@ -605,7 +605,7 @@ var Daemon = new Lang.Class({
             log("Error starting TCP listener: " + e);
             this.vfunc_shutdown();
         }
-        
+
         this.identity = this._getIdentityPacket();
         Common.Settings.bind(
             "public-name",
@@ -613,7 +613,7 @@ var Daemon = new Lang.Class({
             "name",
             Gio.SettingsBindFlags.DEFAULT
         );
-        
+
         Common.Settings.connect("changed::webbrowser-integration", () => {
             if (Common.Settings.get_boolean("webbrowser-integration")) {
                 Common.installNativeMessagingHost();
@@ -626,7 +626,7 @@ var Daemon = new Lang.Class({
         } else {
             Common.uninstallNativeMessagingHost();
         }
-        
+
         // Monitor network changes
         this._netmonitor = Gio.NetworkMonitor.get_default();
         this._netmonitor.connect("network-changed", (monitor, available) => {
@@ -634,11 +634,11 @@ var Daemon = new Lang.Class({
                 this.broadcast();
             }
         });
-        
+
         // Load cached devices and watch for changes
         this._watchDevices();
         log(this._devices.size + " devices loaded from cache");
-        
+
         this.broadcast();
     },
 
@@ -649,14 +649,14 @@ var Daemon = new Lang.Class({
 
     vfunc_shutdown: function() {
         this.parent();
-        
+
         this.tcpListener.destroy();
         this.udpListener.destroy();
-        
+
         for (let device of this._devices.values()) {
             device.destroy();
         }
-        
+
         this._proxy.call_sync("RemoveMatch", this._match, 0, -1, null);
         this._ndbus.unexport();
         this._dbus.unexport();

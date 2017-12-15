@@ -52,14 +52,14 @@ var Plugin = new Lang.Class({
             "{}"
         )
     },
-    
+
     _init: function (device) {
         this.parent(device, "runcommand");
-        
+
         this.settings.connect("changed::command-list", () => {
             this.send();
         });
-        
+
         this._commands = "{}";
         this.notify("commands");
         this._dbus.emit_property_changed(
@@ -68,14 +68,14 @@ var Plugin = new Lang.Class({
         );
         this.request();
     },
-    
+
     get commands () {
         return this._commands;
     },
-    
+
     handlePacket: function (packet) {
         Common.debug("RunCommand: handlePacket()");
-        
+
         if (packet.type === "kdeconnect.runcommand.request") {
             if (packet.body.hasOwnProperty("requestCommandList")) {
                 this.send();
@@ -100,7 +100,7 @@ var Plugin = new Lang.Class({
             );
         }
     },
-    
+
     /**
      * Request the list of remote commands
      */
@@ -110,10 +110,10 @@ var Plugin = new Lang.Class({
             type: "kdeconnect.runcommand.request",
             body: { requestCommandList: true }
         });
-        
+
         this.device._channel.send(packet);
     },
-    
+
     /**
      * Run the remote command @key
      * @param {string} key - The key of the remote command
@@ -124,22 +124,22 @@ var Plugin = new Lang.Class({
             type: "kdeconnect.runcommand.request",
             body: { key: key }
         });
-        
+
         this.device._channel.send(packet);
     },
-    
+
     /**
      * Send the list of local command
      */
     send: function () {
         Common.debug("RunCommand: sendCommandList()");
-        
+
         let packet = new Protocol.Packet({
             id: 0,
             type: "kdeconnect.runcommand",
             body: { commandList: this.settings.get_string("command-list") }
         });
-        
+
         this.device._channel.send(packet);
     }
 });
@@ -148,16 +148,16 @@ var Plugin = new Lang.Class({
 var SettingsDialog = new Lang.Class({
     Name: "GSConnectRunCommandSettingsDialog",
     Extends: PluginsBase.SettingsDialog,
-    
+
     _init: function (device, name, window) {
         this.parent(device, name, window);
-        
+
         let commandsSection = this.content.addSection(
             null,
             null,
             { margin_bottom: 0, width_request: -1 }
         );
-        
+
         // TreeView/Model
         this.treeview = new Gtk.TreeView({
             enable_grid_lines: true,
@@ -165,7 +165,7 @@ var SettingsDialog = new Lang.Class({
             hexpand: true,
             vexpand: true
         });
-        
+
         let listStore = new Gtk.ListStore();
         listStore.set_column_types([
             GObject.TYPE_STRING,    // UUID
@@ -173,7 +173,7 @@ var SettingsDialog = new Lang.Class({
             GObject.TYPE_STRING     // Command
         ]);
         this.treeview.model = listStore;
-        
+
         // Name column.
         let nameCell = new Gtk.CellRendererText({
             editable: true,
@@ -189,7 +189,7 @@ var SettingsDialog = new Lang.Class({
         nameColumn.add_attribute(nameCell, "text", 1);
         this.treeview.append_column(nameColumn);
         nameCell.connect("edited", Lang.bind(this, this._editName));
-        
+
         // Command column.
         let commandCell = new Gtk.CellRendererText({
             editable: true,
@@ -205,10 +205,10 @@ var SettingsDialog = new Lang.Class({
         commandColumn.add_attribute(commandCell, "text", 2);
         this.treeview.append_column(commandColumn);
         commandCell.connect("edited", Lang.bind(this, this._editCommand));
-        
+
         let commandRow = commandsSection.addRow();
         commandRow.grid.margin = 0;
-        
+
         let treeScroll = new Gtk.ScrolledWindow({
             height_request: 192,
             can_focus: true,
@@ -216,7 +216,7 @@ var SettingsDialog = new Lang.Class({
         });
         treeScroll.add(this.treeview);
         commandRow.grid.attach(treeScroll, 0, 0, 1, 1);
-        
+
         // Buttons
         let buttonBox = new Gtk.Box({
             hexpand: true,
@@ -225,7 +225,7 @@ var SettingsDialog = new Lang.Class({
         });
         buttonBox.get_style_context().add_class("linked");
         commandRow.grid.attach(buttonBox, 0, 1, 1, 1);
-        
+
         let removeButton = new Gtk.Button({
             image: new Gtk.Image({
                 icon_name: "list-remove-symbolic",
@@ -236,7 +236,7 @@ var SettingsDialog = new Lang.Class({
         });
         removeButton.connect("clicked", Lang.bind(this, this._remove));
         buttonBox.add(removeButton);
-        
+
         let addButton = new Gtk.Button({
             image: new Gtk.Image({
                 icon_name: "list-add-symbolic",
@@ -247,22 +247,22 @@ var SettingsDialog = new Lang.Class({
         });
         addButton.connect("clicked", Lang.bind(this, this._add));
         buttonBox.add(addButton);
-        
+
         this._commands = JSON.parse(this.settings.get_string("command-list"));
         this._populate();
-        
+
         this.content.show_all();
     },
-    
+
     _add: function (button) {
         let row = ["{" + GLib.uuid_string_random() + "}", "", ""];
         this._commands[row[0]] = { name: row[1], command: row[2]};
-        
+
         this.settings.set_string(
             "command-list",
             JSON.stringify(this._commands)
         );
-        
+
         let iter = this.treeview.model.append();
         this.treeview.model.set(iter, [0, 1, 2], row);
         this.treeview.set_cursor(
@@ -270,12 +270,12 @@ var SettingsDialog = new Lang.Class({
             this.treeview.get_column(0),
             true
         );
-        
+
     },
-    
+
     _remove: function (button) {
         let [has, model, iter] = this.treeview.get_selection().get_selected();
-        
+
         if (has) {
             let uuid = this.treeview.model.get_value(iter, 0);
             delete this._commands[uuid];
@@ -286,7 +286,7 @@ var SettingsDialog = new Lang.Class({
             this.treeview.model.remove(iter);
         }
     },
-    
+
     _populate: function () {
         for (let uuid in this._commands) {
             this.treeview.model.set(
@@ -296,11 +296,11 @@ var SettingsDialog = new Lang.Class({
             );
         }
     },
-    
+
     _editName: function (renderer, path, new_text) {
         path = Gtk.TreePath.new_from_string(path);
         let [success, iter] = this.treeview.model.get_iter(path);
-        
+
         if (success) {
             this.treeview.model.set_value(iter, 1, new_text);
             let uuid = this.treeview.model.get_value(iter, 0);
@@ -311,11 +311,11 @@ var SettingsDialog = new Lang.Class({
             );
         }
     },
-    
+
     _editCommand: function (renderer, path, new_text) {
         path = Gtk.TreePath.new_from_string(path);
         let [success, iter] = this.treeview.model.get_iter(path);
-        
+
         if (success) {
             this.treeview.model.set_value(iter, 2, new_text);
             let uuid = this.treeview.model.get_value(iter, 0);

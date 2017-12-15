@@ -65,7 +65,7 @@ var Device = new Lang.Class({
         ),
         "plugins": GObject.param_spec_variant(
             "plugins",
-            "PluginsList", 
+            "PluginsList",
             "A list of enabled plugins",
             new GLib.VariantType("as"),
             new GLib.Variant("as", []),
@@ -73,7 +73,7 @@ var Device = new Lang.Class({
         ),
         "supportedPlugins": GObject.param_spec_variant(
             "supportedPlugins",
-            "SupportedPluginsList", 
+            "SupportedPluginsList",
             "A list of supported plugins",
             new GLib.VariantType("as"),
             new GLib.Variant("as", []),
@@ -87,24 +87,24 @@ var Device = new Lang.Class({
             ""
         )
     },
-    
+
     _init: function (params) {
         this.parent();
-        
+
         this.daemon = params.daemon;
         this._channel = null;
         this._connected = false;
-        
+
         this._incomingPairRequest = false;
         this._outgoingPairRequest = false;
-        
+
         // Plugins
         this._plugins = new Map();
         this._handlers = new Map();
-        
+
         // Param parsing
         let deviceId = params.id || params.packet.body.deviceId;
-        
+
         // GSettings
         this.settings = new Gio.Settings({
             settings_schema: Common.SchemaSource.lookup(
@@ -113,11 +113,11 @@ var Device = new Lang.Class({
             ),
             path: "/org/gnome/shell/extensions/gsconnect/device/" + deviceId + "/"
         });
-        
+
         if (params.packet) {
             this._handleIdentity(params.packet);
         }
-        
+
         // Export DBus
         this._dbus = Gio.DBusExportedObject.wrapJSObject(
             Common.DBusInfo.GSConnect.lookup_interface(
@@ -126,27 +126,27 @@ var Device = new Lang.Class({
             this
         );
         this._dbus.export(Gio.DBus.session, Common.dbusPathFromId(this.id));
-        
+
         // A TCP Connection
         if (params.channel) {
             this._channel = params.channel;
-        
+
             this._channel.connect("connected", Lang.bind(this, this._onConnected));
             this._channel.connect("disconnected", Lang.bind(this, this._onDisconnected));
 		    this._channel.connect("received", Lang.bind(this, this._onReceived));
-            
+
             // Verify the certificate since it was TOFU'd by the listener
             if (!this.verify()) {
                 return;
             }
-		    
+
 		    this._channel.emit("connected");
         // A UDP Connection
         } else {
             this.activate();
         }
     },
-    
+
     /** Device Properties */
     get connected () { return this._connected; },
     get fingerprint () {
@@ -159,7 +159,7 @@ var Device = new Lang.Class({
             );
             return cert.fingerprint();
         }
-        
+
         return "";
     },
     get id () { return this.settings.get_string("id"); },
@@ -168,44 +168,44 @@ var Device = new Lang.Class({
     get plugins () { return Array.from(this._plugins.keys()); },
     get supportedPlugins () { return this.settings.get_strv("supported-plugins"); },
     get type () { return this.settings.get_string("type"); },
-    
+
     _handleIdentity: function (packet) {
         this.settings.set_string("id", packet.body.deviceId);
         this.settings.set_string("name", packet.body.deviceName);
         this.settings.set_string("type", packet.body.deviceType);
-        
+
         let plugins = [];
         let incoming = packet.body.incomingCapabilities;
         let outgoing = packet.body.outgoingCapabilities;
-        
+
         for (let name in imports.service.plugins) {
             if (!imports.service.plugins[name].METADATA) { continue; }
-            
+
             let metadata = imports.service.plugins[name].METADATA;
             let supported = false;
-            
+
             if (metadata.incomingPackets.some(v => outgoing.indexOf(v) >= 0)) {
                 plugins.push(name);
                 supported = true;
             }
-            
+
             if (supported) { continue; }
-            
+
             if (metadata.outgoingPackets.some(v => incoming.indexOf(v) >= 0)) {
                 plugins.push(name);
             }
         }
-        
+
         this.settings.set_strv("supported-plugins", plugins.sort());
-        
+
         this.settings.set_string("tcp-host", packet.body.tcpHost);
         this.settings.set_uint("tcp-port", packet.body.tcpPort);
     },
-    
+
     //
     handlePacket: function (packet) {
         Common.debug("Device.fromPacket(" + this.id + ")");
-        
+
         if (packet.type === Protocol.TYPE_IDENTITY) {
             this._handleIdentity(packet);
             this.activate();
@@ -217,49 +217,49 @@ var Device = new Lang.Class({
             log("Received unsupported packet type: " + packet.toString());
         }
     },
-    
+
     activate: function () {
         Common.debug("Device.activate(" + this.id + ")");
-        
+
 		if (this._channel !== null) {
 			Common.debug("device already active");
 			return;
 		}
-        
+
         this._channel = new Protocol.LanChannel(this.daemon, this.id);
-        
+
         this._channel.connect("connected", Lang.bind(this, this._onConnected));
         this._channel.connect("disconnected", Lang.bind(this, this._onDisconnected));
 		this._channel.connect("received", Lang.bind(this, this._onReceived));
-		
+
 		let addr = new Gio.InetSocketAddress({
             address: Gio.InetAddress.new_from_string(
                 this.settings.get_string("tcp-host")
             ),
             port: this.settings.get_uint("tcp-port")
         });
-        
+
         this._channel.open(addr);
     },
-    
+
     update: function (packet, channel=null) {
         if (channel) {
             this._handleIdentity(packet);
-            
+
             if (this._channel !== null) {
                 GObject.signal_handlers_destroy(this._channel);
             }
-            
+
             this._channel = channel;
             this._channel.connect("connected", Lang.bind(this, this._onConnected));
             this._channel.connect("disconnected", Lang.bind(this, this._onDisconnected));
             this._channel.connect("received", Lang.bind(this, this._onReceived));
-            
+
             // Verify the certificate since it was TOFU'd by the listener
             if (!this.verify()) {
                 return;
             }
-            
+
             if (!this.connected) {
                 this._channel.emit("connected");
             }
@@ -268,55 +268,55 @@ var Device = new Lang.Class({
             this.handlePacket(packet);
         }
     },
-    
+
     verify: function () {
         let cert = Common.getCertificate(this.id);
-            
+
         if (cert) {
             log("Authenticating '" + this.name + "'");
-            
+
             if (cert.verify(null, this._channel._peer_cert) > 0) {
                 log("Authentication failure: '" + this.name + "'");
                 this._channel.close();
                 return false;
             }
         }
-        
+
         return true;
     },
-    
+
     _onConnected: function (channel) {
         log("Connected to '" + this.name + "'");
-        
+
         this._connected = true;
-        
+
         this._loadPlugins();
-        
+
         this.notify("connected");
         this._dbus.emit_property_changed(
             "connected",
             new GLib.Variant("b", this.connected)
         );
-        
+
         // Ensure fingerprint is available right away
         this._dbus.emit_property_changed(
             "fingerprint",
             new GLib.Variant("s", this.fingerprint)
         );
     },
-    
+
     // TODO: see destroy()
     _onDisconnected: function (channel) {
         log("Disconnected from '" + this.name + "'");
-        
+
         try {
             if (this._channel !== null) {
                 this._channel = null;
             }
-            
+
             // This must be done before "connected" is updated
             this._unloadPlugins();
-        
+
             // Notify disconnected
             this._connected = false;
             this.notify("connected");
@@ -327,23 +327,23 @@ var Device = new Lang.Class({
         } catch (e) {
             Common.debug("Device: error disconnecting: " + e);
         }
-        
+
         this.daemon._pruneDevices();
     },
-    
+
     _onReceived: function (channel, packet) {
         Common.debug("Received from '" + this.name + "'");
-        
+
         this.handlePacket(packet);
     },
-    
+
     /**
      * Pairing Functions
      *
      */
     _handlePair: function (packet) {
         log("Pair request: " + this.name + " (" + this.id + ")");
-        
+
         // A pair has been requested
         if (packet.body.pair) {
             // The device is responding to our request
@@ -363,19 +363,19 @@ var Device = new Lang.Class({
             this.unpair();
         }
     },
-    
+
     _cancelPair: function () {
         this._incomingPairRequest = false;
         this._outgoingPairRequest = false;
-            
+
         if (!this.paired) {
             this.daemon.withdraw_notification("pair-request");
             this.unpair();
         }
-        
+
         return false;
     },
-    
+
     _notifyPair: function (packet) {
         let notif = new Gio.Notification();
         // TRANSLATORS: eg. Pair Request from Google Pixel
@@ -398,7 +398,7 @@ var Device = new Lang.Class({
             )
         );
         notif.set_icon(new Gio.ThemedIcon({ name: "channel-insecure-symbolic" }));
-        
+
         notif.add_button(
             _("Reject"),
             "app.pairAction(('" + this._dbus.get_object_path() + "','reject'))"
@@ -407,9 +407,9 @@ var Device = new Lang.Class({
             _("Accept"),
             "app.pairAction(('" + this._dbus.get_object_path() + "','accept'))"
         );
-        
+
         this.daemon.send_notification("pair-request", notif);
-        
+
         // Start a 30s countdown
         GLib.timeout_add_seconds(
             GLib.PRIORITY_DEFAULT,
@@ -417,11 +417,11 @@ var Device = new Lang.Class({
             Lang.bind(this, this._cancelPair)
         );
     },
-    
+
     _setPaired: function (bool) {
         this._incomingPairRequest = false;
         this._outgoingPairRequest = false;
-        
+
         if (bool) {
             this.settings.set_string(
                 "certificate-pem",
@@ -430,25 +430,25 @@ var Device = new Lang.Class({
         } else {
             this.settings.reset("certificate-pem");
         }
-        
+
         this.notify("paired");
         this._dbus.emit_property_changed("paired", new GLib.Variant("b", bool));
     },
-    
+
     pair: function () {
         Common.debug("Device.pair(" + this.id + ")");
-        
+
         // We're initiating an outgoing request
         if (!this.paired) {
             this._outgoingPairRequest = true;
-        
+
             GLib.timeout_add_seconds(
                 GLib.PRIORITY_DEFAULT,
                 30,
                 Lang.bind(this, this._cancelPair)
             );
         }
-        
+
         // Send a pair packet
         let packet = new Protocol.Packet({
             id: 0,
@@ -457,10 +457,10 @@ var Device = new Lang.Class({
         });
         this._channel.send(packet);
     },
-    
+
     unpair: function () {
         Common.debug("Device.unpair(" + this.name + ")");
-        
+
         if (this._channel !== null) {
             let packet = new Protocol.Packet({
                 id: 0,
@@ -469,26 +469,26 @@ var Device = new Lang.Class({
             });
             this._channel.send(packet);
         }
-        
+
         this._unloadPlugins();
-        
+
         this._setPaired(false);
     },
-    
+
     acceptPair: function () {
         Common.debug("Device.acceptPair(" + this.name + ")");
-        
+
         this._setPaired(true);
         this.pair();
         this._loadPlugins();
     },
-    
+
     rejectPair: function () {
         Common.debug("Device.rejectPair(" + this.name + ")");
-        
+
         this.unpair();
     },
-    
+
     /**
      * Plugin Capabilities
      */
@@ -496,122 +496,122 @@ var Device = new Lang.Class({
         for (let name of this.settings.get_strv("enabled-plugins")) {
             this.enablePlugin(name, false);
         }
-                
+
         this.notify("plugins");
         this._dbus.emit_property_changed(
             "plugins",
             new GLib.Variant("as", Array.from(this._plugins.keys()))
         );
     },
-    
+
     _unloadPlugins: function () {
         for (let name of this.plugins) {
             this.disablePlugin(name, false);
         }
-        
+
         this.notify("plugins");
         this._dbus.emit_property_changed(
             "plugins",
             new GLib.Variant("as", Array.from(this._plugins.keys()))
         );
     },
-    
+
     enablePlugin: function (name, write=true) {
         Common.debug("Device.enablePlugin(" + name + ", " + write + ")");
-    
+
         try {
             let handler = imports.service.plugins[name];
-        
+
             // Running instance
             if (this.connected && this.paired) {
                 // Enable
                 let plugin = new handler.Plugin(this);
-                
+
                 // Register packet handlers
                 for (let packetType of handler.METADATA.incomingPackets) {
                     if (!this._handlers.has(packetType)) {
                         this._handlers.set(packetType, plugin);
                     }
                 }
-                
+
                 // Register as enabled
                 if (!this._plugins.has(name)) {
                     this._plugins.set(name, plugin);
                 }
             }
-            
+
             // Save config and notify, if requested
             if (write) {
                 let enabledPlugins = this.settings.get_strv("enabled-plugins");
-                
+
                 if (enabledPlugins.indexOf(name) < 0) {
                     enabledPlugins.push(name);
                     this.settings.set_strv("enabled-plugins", enabledPlugins);
                 }
-                
+
                 this.notify("plugins");
                 this._dbus.emit_property_changed(
                     "plugins",
                     new GLib.Variant("as", Array.from(this._plugins.keys()))
                 );
             }
-            
+
             return [true, ""];
         } catch (e) {
             let enabledPlugins = this.settings.get_strv("enabled-plugins");
-            
+
             if (enabledPlugins.indexOf(name) > -1) {
                 enabledPlugins.splice(enabledPlugins.indexOf(name), 1);
                 this.settings.set_strv("enabled-plugins", enabledPlugins);
             }
-            
+
             log("Error enabling plugin '" + name + "': " + e.message);
             return [false, e.message];
         }
     },
-    
+
     disablePlugin: function (name, write=true) {
         Common.debug("Device.disablePlugin(" + name + ", " + write + ")");
-        
+
         try {
             // Running instance
             if (this.connected && this.paired) {
                 let handler = imports.service.plugins[name];
                 let plugin = this._plugins.get(name);
-                
+
                 // Unregister handlers
                 for (let packetType of handler.METADATA.incomingPackets) {
                     this._handlers.delete(packetType);
                 }
-                
+
                 // Register as disabled
                 plugin.destroy();
                 this._plugins.delete(name);
             }
-            
+
             // Save config and notify, if requested
             if (write) {
                 let enabledPlugins = this.settings.get_strv("enabled-plugins");
-                
+
                 if (enabledPlugins.indexOf(name) > -1) {
                     enabledPlugins.splice(enabledPlugins.indexOf(name), 1);
                     this.settings.set_strv("enabled-plugins", enabledPlugins);
                 }
-                
+
                 this.notify("plugins");
                 this._dbus.emit_property_changed(
                     "plugins",
                     new GLib.Variant("as", Array.from(this._plugins.keys()))
                 );
             }
-            
+
             return [true, ""];
         } catch (e) {
             log("Error disabling plugin '" + name + "': " + e.message);
             return [false, e.message];
         }
     },
-    
+
     openSettings: function () {
         if (!this._window) {
             this._window = new Gtk.ApplicationWindow({
@@ -621,11 +621,11 @@ var Device = new Lang.Class({
                 default_height: 400,
                 icon_name: this.type
             });
-            
+
             this._window.connect("delete-event", () => {
                 delete this._window;
             });
-            
+
             this._window.set_titlebar(
                 new Gtk.HeaderBar({
                     title: this.name,
@@ -633,26 +633,26 @@ var Device = new Lang.Class({
                     visible: true
                 })
             );
-            
+
             let page = new DeviceWidget.Page(this.daemon, this);
             page.box.margin_left = 72;
             page.box.margin_right = 72
             this._window.add(page);
         }
-        
+
         this._window.present();
     },
-    
+
     destroy: function () {
         if (this.connected) {
             this._channel.close();
         }
-        
+
         // TODO: it would be nice not to have to do this here
         for (let [name, plugin] of this._plugins) {
             plugin.destroy();
         }
-        
+
         // TODO: this is causing errors to be thrown in _onDisconnected()
         //       because it gets called before the channel fully closes
         this._dbus.flush();

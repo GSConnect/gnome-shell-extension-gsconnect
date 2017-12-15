@@ -32,20 +32,20 @@ const SCHEMA_PATH = "/org/gnome/shell/extensions/gsconnect/device/";
 var Plugin = new Lang.Class({
     Name: "GSConnectPlugin",
     Extends: GObject.Object,
-    
+
     _init: function (device, name) {
         this.parent();
-        
+
         this.device = device;
         let metadata = imports.service.plugins[name].METADATA;
-        
+
         // Export DBus
         this._dbus = Gio.DBusExportedObject.wrapJSObject(
             Common.DBusInfo.GSConnect.lookup_interface(metadata.dbusInterface),
             this
         );
         this._dbus.export(Gio.DBus.session, device._dbus.get_object_path());
-        
+
         // Init GSettings
         if (imports.service.plugins[name].SettingsDialog) {
             this.settings = new Gio.Settings({
@@ -54,9 +54,9 @@ var Plugin = new Lang.Class({
             });
         }
     },
-    
+
     handlePacket: function (packet) { throw Error("Not implemented"); },
-    
+
     destroy: function () {
         this._dbus.flush();
         this._dbus.unexport();
@@ -72,7 +72,7 @@ var Plugin = new Lang.Class({
 var SettingsDialog = new Lang.Class({
     Name: "GSConnectPluginSettingsDialog",
     Extends: Gtk.Dialog,
-    
+
     _init: function (device, name, window) {
         this.parent({
             use_header_bar: true,
@@ -80,25 +80,25 @@ var SettingsDialog = new Lang.Class({
             default_height: 320,
             default_width: 480
         });
-        
+
         this.device = device;
         let metadata = imports.service.plugins[name].METADATA;
-        
+
         this.settings = new Gio.Settings({
             settings_schema: Common.SchemaSource.lookup(metadata.schemaId, -1),
             path: SCHEMA_PATH + device.id + "/plugin/" + name + "/"
         });
         this.settings.delay();
-        
+
         let headerBar = this.get_header_bar();
         headerBar.title = metadata.summary;
         headerBar.subtitle = metadata.description;
         headerBar.show_close_button = false;
-        
+
         this.add_button(_("Apply"), Gtk.ResponseType.APPLY);
         this.add_button(_("Cancel"), Gtk.ResponseType.CANCEL);
         this.set_default_response(Gtk.ResponseType.APPLY);
-        
+
         this.content = new PreferencesWidget.Page();
         this.content.box.margin_left = 36;
         this.content.box.margin_right = 36;

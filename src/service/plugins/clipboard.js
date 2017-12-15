@@ -42,54 +42,54 @@ var METADATA = {
 var Plugin = new Lang.Class({
     Name: "GSConnectClipboardPlugin",
     Extends: PluginsBase.Plugin,
-    
+
     _init: function (device) {
         this.parent(device, "clipboard");
-        
+
         this._display = Gdk.Display.get_default();
-        
+
         if (this._display === null) {
             this.destroy();
             throw Error(_("Failed to get Gdk.Display"));
         }
-        
+
         this._clipboard = Gtk.Clipboard.get_default(this._display);
-        
+
         if (this._clipboard === null) {
             this.destroy();
             throw Error(_("Failed to get Clipboard"));
         }
-        
+
         this._clipboard.connect("owner-change", () => {
             if (this.settings.get_boolean("send-content")) {
                 this._clipboard.request_text(Lang.bind(this, this.send));
             }
         });
     },
-    
+
     handlePacket: function (packet) {
         Common.debug("Clipboard: handlePacket()");
-        
+
         if (packet.body.content && this.settings.get_boolean("receive-content")) {
             this._clipboard.set_text(packet.body.content, -1);
         }
     },
-    
+
     send: function (clipboard, text) {
         Common.debug("Clipboard: send()");
-        
+
         let packet = new Protocol.Packet({
             id: 0,
             type: "kdeconnect.clipboard",
             body: { content: text }
         });
-        
+
         this.device._channel.send(packet);
     },
-    
+
     destroy: function () {
         GObject.signal_handlers_destroy(this._clipboard);
-    
+
         PluginsBase.Plugin.prototype.destroy.call(this);
     }
 });
@@ -98,10 +98,10 @@ var Plugin = new Lang.Class({
 var SettingsDialog = new Lang.Class({
     Name: "GSConnectClipboardSettingsDialog",
     Extends: PluginsBase.SettingsDialog,
-    
+
     _init: function (device, name, window) {
         this.parent(device, name, window);
-        
+
         let generalSection = this.content.addSection(
             null,
             null,
@@ -109,7 +109,7 @@ var SettingsDialog = new Lang.Class({
         );
         generalSection.addGSetting(this.settings, "receive-content");
         generalSection.addGSetting(this.settings, "send-content");
-        
+
         this.content.show_all();
     }
 });
