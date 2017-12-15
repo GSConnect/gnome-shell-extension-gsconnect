@@ -111,7 +111,7 @@ var DBusProxy = {
 function dbusPathFromId (id) {
     let basePath = "/org/gnome/Shell/Extensions/GSConnect/Device/";
     let dbusPath = basePath + id.replace(/\W+/g, "_");
-    
+
     return dbusPath;
 };
 
@@ -140,13 +140,13 @@ function checkCommand (name) {
         GLib.SpawnFlags.SEARCH_PATH,    // enables PATH
         null                            // child_setup (func)
     );
-    
+
     let stdout = new Gio.DataInputStream({
         base_stream: new Gio.UnixInputStream({ fd: proc[3] })
     });
     let [result, length] = stdout.read_line(null);
     stdout.close(null);
-    
+
     return (result !== null);
 };
 
@@ -162,13 +162,13 @@ function getDeviceType () {
         GLib.SpawnFlags.SEARCH_PATH,                // enables PATH
         null                                        // child_setup (func)
     );
-    
+
     let stdout = new Gio.DataInputStream({
         base_stream: new Gio.UnixInputStream({ fd: proc[3] })
     });
     let chassisInt = stdout.read_line(null)[0].toString();
     stdout.close(null);
-    
+
     if (["8", "9", "10", "14"].indexOf(chassisInt) > -1) {
         return "laptop";
     } else {
@@ -185,12 +185,12 @@ function generateEncryption () {
         CONFIG_DIR + "/private.pem",
         GLib.FileTest.EXISTS
     );
-    
+
     let hasCertificate = GLib.file_test(
         CONFIG_DIR + "/certificate.pem",
         GLib.FileTest.EXISTS
     );
-    
+
     if (!hasPrivateKey || !hasCertificate) {
         let cmd = [
             "openssl", "req", "-new", "-x509", "-sha256", "-newkey",
@@ -198,7 +198,7 @@ function generateEncryption () {
             "-out", "certificate.pem", "-subj",
             "/CN=" + GLib.uuid_string_random()
         ];
-        
+
         let proc = GLib.spawn_sync(
             CONFIG_DIR,
             cmd,
@@ -207,7 +207,7 @@ function generateEncryption () {
             null
         );
     }
-    
+
     // Ensure permissions are restrictive
     GLib.spawn_command_line_async("chmod 0600 " + CONFIG_DIR + "/private.pem");
     GLib.spawn_command_line_async("chmod 0600 " + CONFIG_DIR + "/certificate.pem");
@@ -228,7 +228,7 @@ function getCertificate (id=false) {
             ),
             path: "/org/gnome/shell/extensions/gsconnect/device/" + id + "/"
         });
-        
+
         if (settings.get_string("certificate-pem")) {
             return Gio.TlsCertificate.new_from_pem(
                 settings.get_string("certificate-pem"),
@@ -241,7 +241,7 @@ function getCertificate (id=false) {
             CONFIG_DIR + "/private.pem"
         );
     }
-    
+
     return false;
 };
 
@@ -253,28 +253,28 @@ function installService () {
     // DBus service file
     let serviceDir = GLib.get_user_data_dir() + "/dbus-1/services/";
     let serviceFile = "org.gnome.Shell.Extensions.GSConnect.service";
-    
+
     if (!GLib.file_test(serviceDir + serviceFile, GLib.FileTest.EXISTS)) {
         GLib.mkdir_with_parents(serviceDir, 493);
-    
+
         let serviceBytes = Resources.lookup_data(
             "/dbus/" + serviceFile, 0
         ).unref_to_array().toString();
-        
+
         GLib.file_set_contents(serviceDir + serviceFile, serviceBytes);
     }
-    
+
     // Application desktop file
     let appDir = GLib.get_user_data_dir() + "/applications/";
     let appFile = "org.gnome.Shell.Extensions.GSConnect.desktop";
-    
+
     if (!GLib.file_test(appDir + appFile, GLib.FileTest.EXISTS)) {
         GLib.mkdir_with_parents(appDir, 493);
-    
+
         let appBytes = Resources.lookup_data(
             "/dbus/" + appFile, 0
         ).unref_to_array().toString();
-        
+
         GLib.file_set_contents(appDir + appFile, appBytes);
     }
 };
@@ -288,7 +288,7 @@ function uninstallService () {
     let serviceDir = GLib.get_user_data_dir() + "/dbus-1/services/";
     let serviceFile = "org.gnome.Shell.Extensions.GSConnect.service";
     GLib.unlink(serviceDir + serviceFile);
-    
+
     // Application desktop file
     let appDir = GLib.get_user_data_dir() + "/applications/";
     let appFile = "org.gnome.Shell.Extensions.GSConnect.desktop";
@@ -309,7 +309,7 @@ function installNativeMessagingHost () {
         "type": "stdio",
         "allowed_origins": [ "chrome-extension://jfnifeihccihocjbfcfhicmmgpjicaec/" ]
     };
-    
+
     let mozilla = {
         "name": "org.gnome.shell.extensions.gsconnect",
         "description": "Native messaging host for GSConnect WebExtension",
@@ -317,14 +317,14 @@ function installNativeMessagingHost () {
         "type": "stdio",
         "allowed_extensions": [ "gsconnect@andyholmes.github.io" ]
     };
-    
+
     let basename = "org.gnome.shell.extensions.gsconnect.json";
     let browsers = [
         [GLib.get_user_config_dir() + "/chromium/NativeMessagingHosts/", google],
         [GLib.get_user_config_dir() + "/google-chrome/NativeMessagingHosts/", google],
         [GLib.get_home_dir() + "/.mozilla/native-messaging-hosts/", mozilla]
     ];
-    
+
     for (let browser of browsers) {
         if (!GLib.file_test(browser[0] + basename, GLib.FileTest.EXISTS)) {
             GLib.mkdir_with_parents(browser[0], 493);
@@ -334,7 +334,7 @@ function installNativeMessagingHost () {
             );
         }
     }
-    
+
     GLib.spawn_command_line_async("chmod 0755 " + nmhPath);
 };
 
@@ -346,13 +346,13 @@ function uninstallNativeMessagingHost () {
         GLib.get_user_config_dir() + "/google-chrome/NativeMessagingHosts/",
         GLib.get_home_dir() + "/.mozilla/native-messaging-hosts/"
     ];
-    
+
     for (let browser of browsers) {
         if (GLib.file_test(browser + basename, GLib.FileTest.EXISTS)) {
             GLib.unlink(browser + basename);
         }
     }
-    
+
     let nmhPath = getPath() + "/service/nativeMessagingHost.js";
     GLib.spawn_command_line_async("chmod 0744 " + nmhPath);
 };
@@ -371,7 +371,7 @@ function initConfiguration () {
         log("Error initializing configuration: " + e);
         return false;
     }
-    
+
     return true;
 };
 
@@ -389,19 +389,19 @@ Gio.TlsCertificate.prototype.get_common_name = function () {
         GLib.SpawnFlags.SEARCH_PATH,
         null
     );
-    
+
     let stdin = new Gio.DataOutputStream({
         base_stream: new Gio.UnixOutputStream({ fd: proc[2] })
     });
     stdin.put_string(this.certificate_pem, null);
     stdin.close(null);
-    
+
     let stdout = new Gio.DataInputStream({
         base_stream: new Gio.UnixInputStream({ fd: proc[3] })
     });
     let uuid = stdout.read_line(null)[0].toString().split("/CN=")[1];
     stdout.close(null);
-    
+
     return uuid;
 };
 
@@ -420,19 +420,19 @@ Gio.TlsCertificate.prototype.fingerprint = function () {
         GLib.SpawnFlags.SEARCH_PATH,
         null
     );
-    
+
     let stdin = new Gio.DataOutputStream({
         base_stream: new Gio.UnixOutputStream({ fd: proc[2] })
     });
     stdin.put_string(this.certificate_pem, null);
     stdin.close(null);
-    
+
     let stdout = new Gio.DataInputStream({
         base_stream: new Gio.UnixInputStream({ fd: proc[3] })
     });
     let fingerprint = stdout.read_line(null)[0].toString().split("=")[1];
     stdout.close(null);
-    
+
     return fingerprint;
 };
 
@@ -503,8 +503,8 @@ if (typeof Object.assign != "function") {
  * Number.isInteger() Polyfill
  */
 Number.isInteger = Number.isInteger || function(value) {
-  return typeof value === 'number' && 
-    isFinite(value) && 
+  return typeof value === 'number' &&
+    isFinite(value) &&
     Math.floor(value) === value;
 };
 

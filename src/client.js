@@ -26,7 +26,7 @@ var BUS_NAME = "org.gnome.Shell.Extensions.GSConnect";
 var ProxyBase = new Lang.Class({
     Name: "GSConnectProxyBase",
     Extends: Gio.DBusProxy,
-    
+
     _init: function (iface, dbusPath) {
         this.parent({
             gConnection: Gio.DBus.session,
@@ -35,11 +35,11 @@ var ProxyBase = new Lang.Class({
             gObjectPath: dbusPath,
             gInterfaceName: iface.name
         });
-        
+
         this.cancellable = new Gio.Cancellable();
         this.init(null);
     },
-    
+
     // Wrapper functions
     _call: function (name, callback) {
         /* Convert arg_array to a *real* array */
@@ -47,24 +47,24 @@ var ProxyBase = new Lang.Class({
         let methodInfo = this.gInterfaceInfo.lookup_method(name);
         let signature = [];
         let i, ret;
-        
+
         for (i = 0; i < methodInfo.in_args.length; i++) {
             signature.push(methodInfo.in_args[i].signature);
         }
-        
+
         let variant = new GLib.Variant("(" + signature.join("") + ")", args);
-        
+
         if (callback) {
             this.call(name, variant, 0, -1, null, (proxy, result) => {
                 let succeeded = false;
-                
+
                 try {
                     ret = this.call_finish(result);
                     succeeded = true;
                 } catch (e) {
                     log("Error calling " + name + ": " + e.message);
                 }
-                
+
                 if (succeeded && typeof callback === "function") {
                     return callback(ret);
                 }
@@ -72,7 +72,7 @@ var ProxyBase = new Lang.Class({
         } else {
             ret = this.call_sync(name, variant, 0, -1, this.cancellable);
         }
-        
+
         // If return has single arg, only return that
         if (methodInfo.out_args.length === 1) {
             return (ret) ? ret.deep_unpack()[0] : null;
@@ -80,7 +80,7 @@ var ProxyBase = new Lang.Class({
             return (ret) ? ret.deep_unpack() : null;
         }
     },
-    
+
     _get: function (name) {
         let value = this.get_cached_property(name);
         return value ? value.deep_unpack() : null;
@@ -89,7 +89,7 @@ var ProxyBase = new Lang.Class({
     _set: function (name, value) {
         let propertyInfo = this.gInterfaceInfo.lookup_property(name);
         let variant = new GLib.Variant(propertyInfo.signature, value);
-        
+
         // Set the cached property first
         this.set_cached_property(name, variant);
 
@@ -110,7 +110,7 @@ var ProxyBase = new Lang.Class({
             }
         );
     },
-    
+
     destroy: function () {
         GObject.signal_handlers_destroy(this);
     }
@@ -144,7 +144,7 @@ var Battery = new Lang.Class({
             -1
         )
     },
-    
+
     _init: function (dbusPath) {
         this.parent(
             Common.DBusInfo.GSConnect.lookup_interface(
@@ -152,7 +152,7 @@ var Battery = new Lang.Class({
             ),
             dbusPath
         );
-        
+
         //
         this.connect("g-properties-changed", (proxy, properties) => {
             for (let name in properties.deep_unpack()) {
@@ -160,7 +160,7 @@ var Battery = new Lang.Class({
             }
         });
     },
-    
+
     get charging () { return this._get("charging"); },
     get level () { return this._get("level"); },
     get time () { return this._get("time"); }
@@ -180,7 +180,7 @@ var RunCommand = new Lang.Class({
             "{}"
         )
     },
-    
+
     _init: function (dbusPath) {
         this.parent(
             Common.DBusInfo.GSConnect.lookup_interface(
@@ -188,7 +188,7 @@ var RunCommand = new Lang.Class({
             ),
             dbusPath
         );
-        
+
         //
         this.connect("g-properties-changed", (proxy, properties) => {
             for (let name in properties.deep_unpack()) {
@@ -196,9 +196,9 @@ var RunCommand = new Lang.Class({
             }
         });
     },
-    
+
     get commands () { return this._get("commands"); },
-    
+
     request: function () { this._call("request", true); },
     run: function (key) { this._call("run", true, key); }
 });
@@ -225,7 +225,7 @@ var SFTP = new Lang.Class({
             false
         )
     },
-    
+
     _init: function (dbusPath) {
         this.parent(
             Common.DBusInfo.GSConnect.lookup_interface(
@@ -233,17 +233,17 @@ var SFTP = new Lang.Class({
             ),
             dbusPath
         );
-        
+
         this.connect("g-properties-changed", (proxy, properties) => {
             for (let name in properties.deep_unpack()) {
                 this.notify(name);
             }
         });
     },
-    
+
     get directories () { return this._get("directories"); },
     get mounted () { return this._get("mounted") === true; },
-    
+
     mount: function () { this._call("mount", true); },
     unmount: function () { this._call("unmount", true); }
 });
@@ -263,7 +263,7 @@ var Share = new Lang.Class({
             param_types: [GObject.TYPE_STRING, GObject.TYPE_STRING]
         }
     },
-    
+
     _init: function (dbusPath) {
         this.parent(
             Common.DBusInfo.GSConnect.lookup_interface(
@@ -271,13 +271,13 @@ var Share = new Lang.Class({
             ),
             dbusPath
         );
-        
+
         this.connect("g-signal", (proxy, sender, name, parameters) => {
             parameters = parameters.deep_unpack();
             this.emit(name, parameters[0], parameters[1]);
         });
     },
-    
+
     shareDialog: function () { this._call("shareDialog", true); },
     shareUri: function (uri) { this._call("shareUri", true, uri); }
 });
@@ -322,7 +322,7 @@ var Telephony = new Lang.Class({
             ]
         }
     },
-    
+
     _init: function (dbusPath) {
         this.parent(
             Common.DBusInfo.GSConnect.lookup_interface(
@@ -330,10 +330,10 @@ var Telephony = new Lang.Class({
             ),
             dbusPath
         );
-        
+
         this.connect("g-signal", (proxy, sender, name, parameters) => {
             parameters = parameters.deep_unpack();
-            
+
             if (name === "missedCall") {
                 this.emit("missedCall",
                     parameters[0],
@@ -362,19 +362,19 @@ var Telephony = new Lang.Class({
             }
         });
     },
-    
+
     muteCall: function () {
         return this._call("muteCall", true);
     },
-    
+
     openSms: function () {
         return this._call("openSms", true);
     },
-    
+
     sendSms: function (phoneNumber, messageBody) {
         this._call("sendSms", true, phoneNumber, messageBody);
     },
-    
+
     shareUri: function (url) {
         this._call("shareUri", true, url);
     }
@@ -423,7 +423,7 @@ var Device = new Lang.Class({
         ),
         "plugins": GObject.param_spec_variant(
             "plugins",
-            "PluginsList", 
+            "PluginsList",
             "A list of enabled plugins",
             new GLib.VariantType("as"),
             new GLib.Variant("as", []),
@@ -431,7 +431,7 @@ var Device = new Lang.Class({
         ),
         "supportedPlugins": GObject.param_spec_variant(
             "supportedPlugins",
-            "SupportedPluginsList", 
+            "SupportedPluginsList",
             "A list of supported plugins",
             new GLib.VariantType("as"),
             new GLib.Variant("as", []),
@@ -445,7 +445,7 @@ var Device = new Lang.Class({
             ""
         )
     },
-    
+
     _init: function (dbusPath, daemon) {
         this.parent(
             Common.DBusInfo.GSConnect.lookup_interface(
@@ -453,9 +453,9 @@ var Device = new Lang.Class({
             ),
             dbusPath
         );
-        
+
         this.daemon = daemon;
-        
+
         this.settings = new Gio.Settings({
             settings_schema: Common.SchemaSource.lookup(
                 "org.gnome.shell.extensions.gsconnect.device",
@@ -463,7 +463,7 @@ var Device = new Lang.Class({
             ),
             path: "/org/gnome/shell/extensions/gsconnect/device/" + this.id + "/"
         });
-        
+
         // Connect to PropertiesChanged
         this.connect("g-properties-changed", (proxy, properties) => {
             for (let name in properties.deep_unpack()) {
@@ -475,10 +475,10 @@ var Device = new Lang.Class({
                 }
             }
         });
-        
+
         this._pluginsChanged();
     },
-    
+
     // Properties
     get connected () { return this._get("connected") === true; },
     get fingerprint () { return this._get("fingerprint"); },
@@ -488,15 +488,15 @@ var Device = new Lang.Class({
     get plugins () { return this._get("plugins") || []; },
     get supportedPlugins () { return this._get("supportedPlugins"); },
     get type () { return this._get("type"); },
-    
+
     // Device Connection/Pairing
     activate: function () { this._call("activate", true); },
     pair: function () { this._call("pair", true); },
     unpair: function () { this._call("unpair", true); },
-    
+
     ping: function () { this.ping._call("ping", true); },
     find: function () { this.findmyphone._call("find", true); },
-    
+
     // Plugin Control
     enablePlugin: function (name) {
         return this._call("enablePlugin", false, name);
@@ -507,7 +507,7 @@ var Device = new Lang.Class({
     openSettings: function () {
         this._call("openSettings", true);
     },
-    
+
     _pluginsChanged: function () {
         if (this.plugins.indexOf("battery") > -1) {
             this.battery = new Battery(this.gObjectPath);
@@ -515,7 +515,7 @@ var Device = new Lang.Class({
             this.battery.destroy();
             delete this.battery;
         }
-        
+
         if (this.plugins.indexOf("findmyphone") > -1) {
             this.findmyphone = new ProxyBase(
                 Common.DBusInfo.GSConnect.lookup_interface(
@@ -527,7 +527,7 @@ var Device = new Lang.Class({
             this.findmyphone.destroy();
             delete this.findmyphone;
         }
-        
+
         if (this.plugins.indexOf("ping") > -1) {
             this.ping = new ProxyBase(
                 Common.DBusInfo.GSConnect.lookup_interface(
@@ -539,38 +539,38 @@ var Device = new Lang.Class({
             this.ping.destroy();
             delete this.ping;
         }
-        
+
         if (this.plugins.indexOf("sftp") > -1) {
             this.sftp = new SFTP(this.gObjectPath);
         } else if (this.hasOwnProperty("sftp")) {
             this.sftp.destroy();
             delete this.sftp;
         }
-        
+
         if (this.plugins.indexOf("runcommand") > -1) {
             this.runcommand = new RunCommand(this.gObjectPath);
         } else if (this.hasOwnProperty("runcommand")) {
             this.runcommand.destroy();
             delete this.runcommand;
         }
-        
+
         if (this.plugins.indexOf("share") > -1) {
             this.share = new Share(this.gObjectPath);
         } else if (this.hasOwnProperty("share")) {
             this.share.destroy();
             delete this.share;
         }
-        
+
         if (this.plugins.indexOf("telephony") > -1) {
             this.telephony = new Telephony(this.gObjectPath);
         } else if (this.hasOwnProperty("telephony")) {
             this.telephony.destroy();
             delete this.telephony;
         }
-        
+
         this.notify("plugins");
     },
-    
+
     destroy: function () {
         ["battery",
         "findmyphone",
@@ -584,7 +584,7 @@ var Device = new Lang.Class({
                 delete this[plugin];
             }
         });
-        
+
         ProxyBase.prototype.destroy.call(this);
     }
 });
@@ -629,7 +629,7 @@ var Daemon = new Lang.Class({
             param_types: [ GObject.TYPE_STRING ]
         }
     },
-    
+
     _init: function () {
         this.parent(
             Common.DBusInfo.GSConnect.lookup_interface(
@@ -637,10 +637,10 @@ var Daemon = new Lang.Class({
             ),
             "/org/gnome/Shell/Extensions/GSConnect"
         );
-        
+
         // Track our device proxies, DBus path as key
         this.devices = new Map();
-        
+
         // Connect to PropertiesChanged
         this.connect("g-properties-changed", (proxy, properties) => {
             for (let name in properties.deep_unpack()) {
@@ -652,30 +652,30 @@ var Daemon = new Lang.Class({
                 }
             }
         });
-        
+
         // Add currently managed devices
         this._devicesChanged();
     },
-    
+
     get discovering () { return this._get("discovering") === true; },
     set discovering (bool) { this._set("discovering", bool); },
     get fingerprint () { return this._get("fingerprint"); },
     get name () { return this._get("name"); },
     set name (name) { this._set("name", name); },
     get type () { return this._get("type"); },
-    
+
     // Callbacks
     _devicesChanged: function () {
         let managedDevices = this._get("devices");
         managedDevices = (managedDevices === null) ? [] : managedDevices;
-        
+
         for (let dbusPath of managedDevices) {
             if (!this.devices.has(dbusPath)) {
                 this.devices.set(dbusPath, new Device(dbusPath, this));
                 this.emit("device::added", dbusPath);
             }
         }
-        
+
         for (let dbusPath of this.devices.keys()) {
             if (managedDevices.indexOf(dbusPath) < 0) {
                 this.devices.get(dbusPath).destroy();
@@ -684,23 +684,23 @@ var Daemon = new Lang.Class({
             }
         }
     },
-    
+
     // Public Methods
     broadcast: function () {
         this._call("broadcast", true);
     },
-    
+
     quit: function () {
         this._call("quit", true);
     },
-    
+
     destroy: function () {
         for (let dbusPath of this.devices.keys()) {
             this.devices.get(dbusPath).destroy();
             this.devices.delete(dbusPath);
             this.emit("device::removed", dbusPath);
         }
-        
+
         ProxyBase.prototype.destroy.call(this);
     }
 });

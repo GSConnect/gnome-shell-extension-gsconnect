@@ -55,7 +55,7 @@ function playThemeSound (name) {
         GLib.spawn_command_line_async("canberra-gtk-play -i " + name);
         return true;
     }
-    
+
     return false;
 };
 
@@ -87,7 +87,7 @@ function loopThemeSound (name, cancellable) {
             }
         });
     }
-    
+
     return false;
 };
 
@@ -111,31 +111,31 @@ var Stream = new Lang.Class({
             0
         )
     },
-    
+
     _init: function (stream) {
         this.parent();
-        
+
         this._max = _mixerControl.get_vol_max_norm()
         this._stream = stream;
     },
-    
+
     get muted () {
         return this._stream.is_muted;
     },
-    
+
     set muted (bool) {
         this._stream.change_is_muted(bool);
     },
-    
+
     get volume () {
         return Math.round(100 * this._stream.volume / this._max) / 100;
     },
-    
+
     set volume (num) {
         this._stream.volume = num * this._max;
         this._stream.push_volume();
     },
-    
+
     lower: function (value) {
         Tweener.removeTweens(this);
         Tweener.addTween(this, {
@@ -145,7 +145,7 @@ var Stream = new Lang.Class({
             onComplete: () => { Tweener.removeTweens(this); }
         });
     },
-    
+
     raise: function (value) {
         Tweener.removeTweens(this);
         Tweener.addTween(this, {
@@ -160,25 +160,25 @@ var Stream = new Lang.Class({
 
 var Mixer = new Lang.Class({
     Name: "GSConnectSoundMixer",
-    
+
     _init: function () {
         this._control = _mixerControl;
-        
+
         this._control.connect("default-sink-changed", () => {
             this.output = new Stream(this._control.get_default_sink());
         });
-        
+
         this._control.connect("default-source-changed", () => {
             this.input = new Stream(this._control.get_default_source());
         });
-        
+
         this._control.connect("state-changed", () => {
             if (this._control.get_state() == Gvc.MixerControlState.READY) {
                 this.output = new Stream(this._control.get_default_sink());
                 this.input = new Stream(this._control.get_default_source());
             }
         });
-        
+
         this.output = new Stream(this._control.get_default_sink());
         this.input = new Stream(this._control.get_default_source());
     }
