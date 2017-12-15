@@ -999,8 +999,8 @@ var ConversationWindow = new Lang.Class({
         let plugin = this.device._plugins.get("telephony");
         
         // Send to each number
-        for (let number of this.numbers) {
-            plugin.sendSms(number, entry.text);
+        for (let recipient of this.recipients.values()) {
+            plugin.sendSms(recipient.number, entry.text);
         }
         
         // Log the outgoing message
