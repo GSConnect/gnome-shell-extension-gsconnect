@@ -116,7 +116,6 @@ var Plugin = new Lang.Class({
             } else if (!this.settings.get_boolean("send-statistics") && this._battery) {
                 GObject.signal_handlers_destroy(this._battery);
                 delete this._battery;
-                delete this._gsd;
             }
         });
     },
@@ -135,17 +134,12 @@ var Plugin = new Lang.Class({
                     this.send();
                 });
             }
-            
-            this._gsd = new Gio.Settings({
-                schema_id: "org.gnome.settings-daemon.plugins.power"
-            });
 
             this.send();
         } catch(e) {
             Common.debug("Battery: Failed to initialize UPower: " + e);
             GObject.signal_handlers_destroy(this._battery);
             delete this._battery;
-            delete this._gsd;
         }
     },
     
@@ -265,8 +259,8 @@ var Plugin = new Lang.Class({
                 thresholdEvent: 0
             }
         });
-        
-        if (this._battery.percentage === this._gsd.get_int("percentage-low")) {
+
+        if (this._battery.percentage === 15) {
             if (!packet.body.isCharging) {
                 packet.body.thresholdEvent = 1;
             }
