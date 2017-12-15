@@ -70,19 +70,32 @@ var Plugin = new Lang.Class({
             this._seat = this._display.get_default_seat();
             this._pointer = this._seat.get_pointer();
         }
+
+        this._xdotool = Common.checkCommand("xdotool");
     },
     
     handlePacket: function (packet) {
         Common.debug("Mousepad: handlePacket()");
         
-        if (packet.body.hasOwnProperty("singleclick")) {
+        if (packet.body.singleclick) {
             this.clickPointer(1);
-        } else if (packet.body.hasOwnProperty("doubleclick")) {
+        } else if (packet.body.doubleclick) {
             this.clickPointer(1, true);
-        } else if (packet.body.hasOwnProperty("middleclick")) {
+        } else if (packet.body.middleclick) {
             this.clickPointer(2);
-        } else if (packet.body.hasOwnProperty("rightclick")) {
+        } else if (packet.body.rightclick) {
             this.clickPointer(3);
+        } else if (packet.body.singlehold) {
+            this.pressPointer(1);
+        } else if (packet.body.singlerelease) {
+            // This is not used, hold is released with a regular click instead
+            this.releasePointer(1);
+        } else if (packet.body.scroll) {
+            if (packet.body.dy < 0) {
+                this.scroll(Gdk.KEY_ScrollDown);
+            } else if (packet.body.dy > 0) {
+                this.scroll(Gdk.KEY_ScrollUp);
+            }
         } else if (packet.body.hasOwnProperty("dx") && packet.body.hasOwnProperty("dy")) {
             this.movePointer(packet.body.dx, packet.body.dy);
         } else if (packet.body.hasOwnProperty("key")) {
@@ -124,6 +137,30 @@ var Plugin = new Lang.Class({
         }
     },
     
+    pressPointer: function (button) {
+        Common.debug("Mousepad: pressPointer()");
+
+        if (!this._xdotool) {
+            this._xdotool = Common.checkCommand("xdotool");
+        }
+
+        if (this._xdotool) {
+            GLib.spawn_command_line_async("xdotool mousedown " + button);
+        }
+    },
+
+    releasePointer: function (button) {
+        Common.debug("Mousepad: releasePointer()");
+
+        if (!this._xdotool) {
+            this._xdotool = Common.checkCommand("xdotool");
+        }
+
+        if (this._xdotool) {
+            GLib.spawn_command_line_async("xdotool mouseup " + button);
+        }
+    },
+
     // TODO: apparently sends:
     //           {"key":"\u0000"}
     //       then:
@@ -153,6 +190,22 @@ var Plugin = new Lang.Class({
             );
         } catch (e) {
             log("Mousepad: Error simulating special keypress: " + e);
+        }
+    },
+
+    scroll: function (key) {
+        Common.debug("Mousepad: scroll(" + key + ")");
+
+        if (!this._xdotool) {
+            this._xdotool = Common.checkCommand("xdotool");
+        }
+
+        if (this._xdotool) {
+            if (key === Gdk.KEY_ScrollUp) {
+                GLib.spawn_command_line_async("xdotool click 4");
+            } else if (key === Gdk.KEY_ScrollDown) {
+                GLib.spawn_command_line_async("xdotool click 5");
+            }
         }
     }
 });
