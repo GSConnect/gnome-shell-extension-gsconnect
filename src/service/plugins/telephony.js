@@ -792,11 +792,11 @@ var ContactsCache = new Lang.Class({
             envp.push("FOLKS_BACKENDS_DISABLED=telepathy")
 
             let proc = GLib.spawn_async_with_pipes(
-                null,                                       // working dir
-                ["python3", getPath() + "/folks-cache.py"], // argv
-                envp,                                       // envp
-                GLib.SpawnFlags.SEARCH_PATH,                // enables PATH
-                null                                        // child_setup (func)
+                null,
+                ["python3", Common.PREFIX + "/folks-cache.py"],
+                envp,
+                GLib.SpawnFlags.SEARCH_PATH,
+                null
             );
 
             this._check_folks(proc);
