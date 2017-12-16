@@ -97,11 +97,6 @@ var DBusProxy = {
         Resources.lookup_data(
             "/dbus/org.mpris.MediaPlayer2.Player.xml", 0
         ).unref_to_array().toString()
-    ),
-    screensaver: new Gio.DBusProxy.makeProxyWrapper(
-        Resources.lookup_data(
-            "/dbus/org.gnome.ScreenSaver.xml", 0
-        ).unref_to_array().toString()
     )
 };
 

@@ -33,6 +33,27 @@ var METADATA = {
 };
 
 
+const ScreenSaverProxy = new Gio.DBusProxy.makeProxyWrapper(
+'<node> \
+  <interface name="org.gnome.ScreenSaver"> \
+    <method name="Lock"/> \
+    <method name="GetActive"> \
+      <arg name="active" direction="out" type="b"/> \
+    </method> \
+    <method name="SetActive"> \
+      <arg name="value" direction="in" type="b"/> \
+    </method> \
+    <method name="GetActiveTime"> \
+      <arg name="value" direction="out" type="u"/> \
+    </method> \
+    <signal name="ActiveChanged"> \
+      <arg name="new_value" type="b"/> \ \
+    </signal> \
+    <signal name="WakeUpScreen"/> \
+  </interface> \
+</node>');
+
+
 /**
  * Lock Plugin
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/lockdevice
@@ -56,17 +77,26 @@ var Plugin = new Lang.Class({
         this._locked = false;
         this._request();
 
-        this._screensaver = new Common.DBusProxy.screensaver(
-            Gio.DBus.session,
-            "org.gnome.ScreenSaver",
-            "/org/gnome/ScreenSaver"
-        );
-        this._active = this._screensaver.connectSignal(
-            "ActiveChanged",
-            (proxy, sender, [bool]) => {
-                this._response(bool);
-            }
-        );
+        try {
+            this._screensaver = new ScreenSaverProxy(
+                Gio.DBus.session,
+                "org.gnome.ScreenSaver",
+                "/org/gnome/ScreenSaver",
+                (proxy, error) => {
+                    if (error !== null) {
+                        proxy.connectSignal(
+                            "ActiveChanged",
+                            (proxy, sender, [bool]) => {
+                                this._response(bool);
+                            }
+                        );
+                    }
+                }
+            );
+        } catch (e) {
+            this.destroy();
+            throw Error("Lock: " + e.message);
+        }
     },
 
     get locked () {
@@ -129,7 +159,10 @@ var Plugin = new Lang.Class({
     },
 
     destroy: function () {
-        this._screensaver.disconnectSignal(this._active);
+        try {
+            this._screensaver.disconnectAll();
+        } catch (e) {
+        }
 
         PluginsBase.Plugin.prototype.destroy.call(this);
     }
