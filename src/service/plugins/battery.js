@@ -99,8 +99,8 @@ var Plugin = new Lang.Class({
 
                 this.notify("time");
                 this._dbus.emit_property_changed(
-                    "level",
-                    new GLib.Variant("i", this._time)
+                    "time",
+                    new GLib.Variant("i", this.time)
                 );
             }
         });
