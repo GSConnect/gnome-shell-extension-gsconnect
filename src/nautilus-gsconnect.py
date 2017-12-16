@@ -18,7 +18,7 @@ import subprocess
 
 _ = gettext.gettext
 
-LOCALE_DIR = os.path.expanduser("~/.local/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/locale")
+LOCALE_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'locale')
 
 
 class GSConnectShareExtension(GObject.GObject, Nautilus.MenuProvider):
