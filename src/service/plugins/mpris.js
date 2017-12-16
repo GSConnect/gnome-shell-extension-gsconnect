@@ -126,23 +126,28 @@ var Plugin = new Lang.Class({
     _init: function (device) {
         this.parent(device, "mpris");
 
-        this._listener = new DBusProxy(
-            Gio.DBus.session,
-            'org.freedesktop.DBus',
-            '/org/freedesktop/DBus',
-            Lang.bind(this, this._onDBusReady)
-        );
+        try {
+            this._listener = new DBusProxy(
+                Gio.DBus.session,
+                'org.freedesktop.DBus',
+                '/org/freedesktop/DBus',
+                (proxy, error) => {
+                    if (error === null) {
+                        this._updatePlayers();
 
-        this._players = new Map();
-    },
+                        this._nameOwnerChanged = proxy.connectSignal(
+                            'NameOwnerChanged',
+                            Lang.bind(this, this._onNameOwnerChanged)
+                        );
+                    }
+                }
+            );
 
-    _onDBusReady: function() {
-        this._updatePlayers();
-
-        this._listener.connectSignal(
-            'NameOwnerChanged',
-            Lang.bind(this, this._onNameOwnerChanged)
-        );
+            this._players = new Map();
+        } catch (e) {
+            this.destroy();
+            throw Error("MPRIS: " + e.message);
+        }
     },
 
     _onNameOwnerChanged: function(proxy, sender, [name, oldOwner, newOwner]) {
@@ -315,6 +320,22 @@ var Plugin = new Lang.Class({
             response.body.player = packet.body.player;
             this.device._channel.send(response);
         }
+    },
+
+    destroy: function () {
+        try {
+            this._listener.disconnectSignal(this._nameOwnerChanged);
+        } catch (e) {
+        }
+
+        for (let proxy of this._players.values()) {
+            try {
+                GObject.signal_handlers_destroy(proxy);
+            } catch (e) {
+            }
+        }
+
+        PluginsBase.Plugin.prototype.destroy.call(this);
     }
 });
 
