@@ -194,7 +194,10 @@ var UdpListener = new Lang.Class({
         });
 
         this._in = new Gio.DataInputStream({
-            base_stream: new Gio.UnixInputStream({ fd: this.socket.fd })
+            base_stream: new Gio.UnixInputStream({
+                fd: this.socket.fd,
+                close_fd: false
+            })
         });
 
         // Watch for incoming packets
