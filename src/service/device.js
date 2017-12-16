@@ -120,7 +120,7 @@ var Device = new Lang.Class({
 
         // Export DBus
         this._dbus = Gio.DBusExportedObject.wrapJSObject(
-            Common.DBusInfo.GSConnect.lookup_interface(
+            Common.DBusIface.lookup_interface(
                 "org.gnome.Shell.Extensions.GSConnect.Device"
             ),
             this

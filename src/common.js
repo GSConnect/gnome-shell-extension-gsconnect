@@ -70,21 +70,13 @@ Resources._register();
 /**
  * Common DBus Interface Nodes, Proxies and functions
  */
-var DBusInfo = {
-    GSConnect: new Gio.DBusNodeInfo.new_for_xml(
-        Resources.lookup_data(
-            "/dbus/org.gnome.Shell.Extensions.GSConnect.xml", 0
-        ).unref_to_array().toString()
-    ),
-    freedesktop: new Gio.DBusNodeInfo.new_for_xml(
-        Resources.lookup_data(
-            "/dbus/org.freedesktop.Notifications.xml", 0
-        ).unref_to_array().toString()
-    )
-};
+var DBusIface = new Gio.DBusNodeInfo.new_for_xml(
+    Resources.lookup_data(
+        "/dbus/org.gnome.Shell.Extensions.GSConnect.xml", 0
+    ).toArray().toString()
+);
 
-DBusInfo.GSConnect.nodes.forEach((ifaceInfo) => { ifaceInfo.cache_build(); });
-DBusInfo.freedesktop.nodes.forEach((ifaceInfo) => { ifaceInfo.cache_build(); });
+DBusIface.nodes.forEach((ifaceInfo) => { ifaceInfo.cache_build(); });
 
 
 function dbusPathFromId (id) {

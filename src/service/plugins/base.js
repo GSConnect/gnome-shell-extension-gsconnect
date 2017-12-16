@@ -41,7 +41,7 @@ var Plugin = new Lang.Class({
 
         // Export DBus
         this._dbus = Gio.DBusExportedObject.wrapJSObject(
-            Common.DBusInfo.GSConnect.lookup_interface(metadata.uuid),
+            Common.DBusIface.lookup_interface(metadata.uuid),
             this
         );
         this._dbus.export(Gio.DBus.session, device._dbus.get_object_path());

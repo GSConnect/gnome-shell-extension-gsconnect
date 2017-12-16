@@ -3,7 +3,6 @@
   <gresource prefix="/dbus">
     <file compressed="true">org.gnome.Shell.Extensions.GSConnect.desktop</file>
     <file compressed="true">org.gnome.Shell.Extensions.GSConnect.service</file>
-    <file compressed="true" preprocess="xml-stripblanks">org.freedesktop.Notifications.xml</file>
     <file compressed="true" preprocess="xml-stripblanks">org.gnome.Shell.Extensions.GSConnect.xml</file>
   </gresource>
   <gresource prefix="/icons">

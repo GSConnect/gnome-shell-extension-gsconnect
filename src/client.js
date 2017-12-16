@@ -147,7 +147,7 @@ var Battery = new Lang.Class({
 
     _init: function (dbusPath) {
         this.parent(
-            Common.DBusInfo.GSConnect.lookup_interface(
+            Common.DBusIface.lookup_interface(
                 "org.gnome.Shell.Extensions.GSConnect.Plugin.Battery"
             ),
             dbusPath
@@ -183,7 +183,7 @@ var RunCommand = new Lang.Class({
 
     _init: function (dbusPath) {
         this.parent(
-            Common.DBusInfo.GSConnect.lookup_interface(
+            Common.DBusIface.lookup_interface(
                 "org.gnome.Shell.Extensions.GSConnect.Plugin.RunCommand"
             ),
             dbusPath
@@ -228,7 +228,7 @@ var SFTP = new Lang.Class({
 
     _init: function (dbusPath) {
         this.parent(
-            Common.DBusInfo.GSConnect.lookup_interface(
+            Common.DBusIface.lookup_interface(
                 "org.gnome.Shell.Extensions.GSConnect.Plugin.SFTP"
             ),
             dbusPath
@@ -266,7 +266,7 @@ var Share = new Lang.Class({
 
     _init: function (dbusPath) {
         this.parent(
-            Common.DBusInfo.GSConnect.lookup_interface(
+            Common.DBusIface.lookup_interface(
                 "org.gnome.Shell.Extensions.GSConnect.Plugin.Share"
             ),
             dbusPath
@@ -325,7 +325,7 @@ var Telephony = new Lang.Class({
 
     _init: function (dbusPath) {
         this.parent(
-            Common.DBusInfo.GSConnect.lookup_interface(
+            Common.DBusIface.lookup_interface(
                 "org.gnome.Shell.Extensions.GSConnect.Plugin.Telephony"
             ),
             dbusPath
@@ -448,7 +448,7 @@ var Device = new Lang.Class({
 
     _init: function (dbusPath, daemon) {
         this.parent(
-            Common.DBusInfo.GSConnect.lookup_interface(
+            Common.DBusIface.lookup_interface(
                 "org.gnome.Shell.Extensions.GSConnect.Device"
             ),
             dbusPath
@@ -518,7 +518,7 @@ var Device = new Lang.Class({
 
         if (this.plugins.indexOf("findmyphone") > -1) {
             this.findmyphone = new ProxyBase(
-                Common.DBusInfo.GSConnect.lookup_interface(
+                Common.DBusIface.lookup_interface(
                     "org.gnome.Shell.Extensions.GSConnect.Plugin.FindMyPhone"
                 ),
                 this.gObjectPath
@@ -530,7 +530,7 @@ var Device = new Lang.Class({
 
         if (this.plugins.indexOf("ping") > -1) {
             this.ping = new ProxyBase(
-                Common.DBusInfo.GSConnect.lookup_interface(
+                Common.DBusIface.lookup_interface(
                     "org.gnome.Shell.Extensions.GSConnect.Plugin.Ping"
                 ),
                 this.gObjectPath
@@ -632,7 +632,7 @@ var Daemon = new Lang.Class({
 
     _init: function () {
         this.parent(
-            Common.DBusInfo.GSConnect.lookup_interface(
+            Common.DBusIface.lookup_interface(
                 "org.gnome.Shell.Extensions.GSConnect"
             ),
             "/org/gnome/Shell/Extensions/GSConnect"
