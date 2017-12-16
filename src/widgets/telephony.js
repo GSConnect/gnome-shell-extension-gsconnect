@@ -952,9 +952,10 @@ var ConversationWindow = new Lang.Class({
             if (!found) {
                 this.contactList.addNumber(recipient);
             }
+
+            this.notify("numbers");
         }
 
-        this.notify("numbers");
         return recipient;
     },
 
