@@ -27,8 +27,7 @@ const PluginsBase = imports.service.plugins.base;
 var METADATA = {
     summary: _("Screen Lock"),
     description: _("Lock and unlock devices"),
-    dbusInterface: "org.gnome.Shell.Extensions.GSConnect.Plugin.Lock",
-    schemaId: "org.gnome.shell.extensions.gsconnect.plugin.lock",
+    uuid: "org.gnome.Shell.Extensions.GSConnect.Plugin.Lock",
     incomingPackets: ["kdeconnect.lock", "kdeconnect.lock.request"],
     outgoingPackets: ["kdeconnect.lock", "kdeconnect.lock.request"]
 };

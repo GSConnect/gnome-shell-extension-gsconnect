@@ -52,7 +52,7 @@ var SchemaSource = Gio.SettingsSchemaSource.new_from_directory(
 
 var Settings = new Gio.Settings({
     settings_schema: SchemaSource.lookup(
-        "org.gnome.shell.extensions.gsconnect",
+        "org.gnome.Shell.Extensions.GSConnect",
         true
     )
 });
@@ -221,7 +221,7 @@ function getCertificate (id=false) {
     if (id) {
         let settings = new Gio.Settings({
             settings_schema: SchemaSource.lookup(
-                "org.gnome.shell.extensions.gsconnect.device",
+                "org.gnome.Shell.Extensions.GSConnect.Device",
                 true
             ),
             path: "/org/gnome/shell/extensions/gsconnect/device/" + id + "/"

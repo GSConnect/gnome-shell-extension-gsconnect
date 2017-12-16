@@ -23,7 +23,7 @@ const Common = imports.common;
 const Protocol = imports.service.protocol;
 const PreferencesWidget = imports.widgets.preferences;
 
-const SCHEMA_PATH = "/org/gnome/shell/extensions/gsconnect/device/";
+const SCHEMA_PREFIX = "/org/gnome/shell/extensions/gsconnect/device/";
 
 
 /**
@@ -41,7 +41,7 @@ var Plugin = new Lang.Class({
 
         // Export DBus
         this._dbus = Gio.DBusExportedObject.wrapJSObject(
-            Common.DBusInfo.GSConnect.lookup_interface(metadata.dbusInterface),
+            Common.DBusInfo.GSConnect.lookup_interface(metadata.uuid),
             this
         );
         this._dbus.export(Gio.DBus.session, device._dbus.get_object_path());
@@ -49,8 +49,8 @@ var Plugin = new Lang.Class({
         // Init GSettings
         if (imports.service.plugins[name].SettingsDialog) {
             this.settings = new Gio.Settings({
-                settings_schema: Common.SchemaSource.lookup(metadata.schemaId, -1),
-                path: SCHEMA_PATH + device.id + "/plugin/" + name + "/"
+                settings_schema: Common.SchemaSource.lookup(metadata.uuid, -1),
+                path: SCHEMA_PREFIX + device.id + "/plugin/" + name + "/"
             });
         }
     },
@@ -85,8 +85,8 @@ var SettingsDialog = new Lang.Class({
         let metadata = imports.service.plugins[name].METADATA;
 
         this.settings = new Gio.Settings({
-            settings_schema: Common.SchemaSource.lookup(metadata.schemaId, -1),
-            path: SCHEMA_PATH + device.id + "/plugin/" + name + "/"
+            settings_schema: Common.SchemaSource.lookup(metadata.uuid, -1),
+            path: SCHEMA_PREFIX + device.id + "/plugin/" + name + "/"
         });
         this.settings.delay();
 

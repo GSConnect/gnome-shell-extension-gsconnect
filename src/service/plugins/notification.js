@@ -30,8 +30,7 @@ const GSettingsWidget = imports.widgets.gsettings;
 var METADATA = {
     summary: _("Notifications"),
     description: _("Sync notifications between devices"),
-    dbusInterface: "org.gnome.Shell.Extensions.GSConnect.Plugin.Notification",
-    schemaId: "org.gnome.shell.extensions.gsconnect.plugin.notification",
+    uuid: "org.gnome.Shell.Extensions.GSConnect.Plugin.Notification",
     incomingPackets: [
         "kdeconnect.notification",
         "kdeconnect.notification.request"

@@ -28,8 +28,7 @@ const PluginsBase = imports.service.plugins.base;
 var METADATA = {
     summary: _("Battery"),
     description: _("Send and receive battery statistics"),
-    dbusInterface: "org.gnome.Shell.Extensions.GSConnect.Plugin.Battery",
-    schemaId: "org.gnome.shell.extensions.gsconnect.plugin.battery",
+    uuid: "org.gnome.Shell.Extensions.GSConnect.Plugin.Battery",
     incomingPackets: ["kdeconnect.battery", "kdeconnect.battery.request"],
     outgoingPackets: ["kdeconnect.battery", "kdeconnect.battery.request"]
 };

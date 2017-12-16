@@ -26,8 +26,7 @@ const PluginsBase = imports.service.plugins.base;
 var METADATA = {
     summary: _("Media Player Control"),
     description: _("Control MPRIS2 enabled media players"),
-    dbusInterface: "org.gnome.Shell.Extensions.GSConnect.Plugin.MPRIS",
-    schemaId: "org.gnome.shell.extensions.gsconnect.plugin.mpris",
+    uuid: "org.gnome.Shell.Extensions.GSConnect.Plugin.MPRIS",
     incomingPackets: ["kdeconnect.mpris.request"],
     outgoingPackets: ["kdeconnect.mpris"]
 };

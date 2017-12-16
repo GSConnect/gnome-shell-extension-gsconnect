@@ -39,8 +39,7 @@ const TelephonyWidget = imports.widgets.telephony;
 var METADATA = {
     summary: _("Telephony"),
     description: _("Call notification and SMS messaging"),
-    dbusInterface: "org.gnome.Shell.Extensions.GSConnect.Plugin.Telephony",
-    schemaId: "org.gnome.shell.extensions.gsconnect.plugin.telephony",
+    uuid: "org.gnome.Shell.Extensions.GSConnect.Plugin.Telephony",
     incomingPackets: ["kdeconnect.telephony"],
     outgoingPackets: ["kdeconnect.telephony.request", "kdeconnect.sms.request"]
 };

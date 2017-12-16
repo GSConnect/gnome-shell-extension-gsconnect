@@ -458,7 +458,7 @@ var Device = new Lang.Class({
 
         this.settings = new Gio.Settings({
             settings_schema: Common.SchemaSource.lookup(
-                "org.gnome.shell.extensions.gsconnect.device",
+                "org.gnome.Shell.Extensions.GSConnect.Device",
                 true
             ),
             path: "/org/gnome/shell/extensions/gsconnect/device/" + this.id + "/"

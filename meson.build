@@ -49,14 +49,14 @@ install_data(
 
 # GSettings
 install_data(
-    join_paths('data', 'org.gnome.shell.extensions.gsconnect.gschema.xml'),
+    join_paths('data', 'org.gnome.Shell.Extensions.GSConnect.gschema.xml'),
     install_dir: join_paths(extdatadir, 'schemas')
 )
 
 # GResource
 gnome.compile_resources(
-  'org.gnome.shell.extensions.gsconnect',
-  join_paths('data', 'org.gnome.shell.extensions.gsconnect.gresource.xml'),
+  'org.gnome.Shell.Extensions.GSConnect.data',
+  join_paths('data', 'org.gnome.Shell.Extensions.GSConnect.data.gresource.xml'),
   source_dir: 'data',
   gresource_bundle: true,
   install: true,
