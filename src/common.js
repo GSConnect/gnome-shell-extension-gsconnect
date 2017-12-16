@@ -16,8 +16,6 @@ function getPath() {
     return Gio.File.new_for_path(m[1]).get_parent().get_path();
 }
 
-imports.searchPath.push(getPath());
-
 var PREFIX = getPath();
 var METADATA = JSON.parse(GLib.file_get_contents(PREFIX + "/metadata.json")[1]);
 var CACHE_DIR = GLib.get_user_cache_dir() + "/gsconnect";
