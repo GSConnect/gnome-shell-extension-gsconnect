@@ -32,6 +32,81 @@ var METADATA = {
 };
 
 
+const DBusProxy = new Gio.DBusProxy.makeProxyWrapper(
+'<node> \
+<interface name="org.freedesktop.DBus"> \
+  <method name="ListNames"> \
+    <arg type="as" direction="out" name="names" /> \
+  </method> \
+  <signal name="NameOwnerChanged"> \
+    <arg type="s" direction="out" name="name" /> \
+    <arg type="s" direction="out" name="oldOwner" /> \
+    <arg type="s" direction="out" name="newOwner" /> \
+  </signal> \
+</interface> \
+</node>');
+
+
+const MPRISProxy = new Gio.DBusProxy.makeProxyWrapper(
+'<node> \
+  <interface name="org.mpris.MediaPlayer2"> \
+      <method name="Raise" /> \
+      <method name="Quit" /> \
+      <property name="CanQuit" type="b" access="read" /> \
+      <property name="Fullscreen" type="b" access="readwrite" /> \
+      <property name="CanRaise" type="b" access="read" /> \
+      <property name="HasTrackList" type="b" access="read"/> \
+      <property name="Identity" type="s" access="read"/> \
+      <property name="DesktopEntry" type="s" access="read"/> \
+      <property name="SupportedUriSchemes" type="as" access="read"/> \
+      <property name="SupportedMimeTypes" type="as" access="read"/> \
+  </interface> \
+</node>');
+
+
+const MPRISPlayerProxy = new Gio.DBusProxy.makeProxyWrapper(
+'<node> \
+  <interface name="org.mpris.MediaPlayer2.Player"> \
+    <method name="Next"/> \
+    <method name="Previous"/> \
+    <method name="Pause"/> \
+    <method name="PlayPause"/> \
+    <method name="Stop"/> \
+    <method name="Play"/> \
+    <method name="Seek"> \
+      <arg direction="in" type="x" name="Offset"/> \
+    </method> \
+    <method name="SetPosition"> \
+      <arg direction="in" type="o" name="TrackId"/> \
+      <arg direction="in" type="x" name="Position"/> \
+    </method> \
+    <method name="OpenUri"> \
+      <arg direction="in" type="s"/> \
+    </method> \
+    <!-- Signals --> \
+    <signal name="Seeked"> \
+      <arg type="x" name="Position"/> \
+    </signal> \
+    <!-- Properties --> \
+    <property access="read" type="s" name="PlaybackStatus"/> \
+    <property access="readwrite" type="s" name="LoopStatus"/> \
+    <property access="readwrite" type="d" name="Rate"/> \
+    <property access="readwrite" type="b" name="Shuffle"/> \
+    <property access="read" type="a{sv}" name="Metadata"/> \
+    <property access="readwrite" type="d" name="Volume"/> \
+    <property access="read" type="x" name="Position"/> \
+    <property access="read" type="d" name="MinimumRate"/> \
+    <property access="read" type="d" name="MaximumRate"/> \
+    <property access="read" type="b" name="CanGoNext"/> \
+    <property access="read" type="b" name="CanGoPrevious"/> \
+    <property access="read" type="b" name="CanPlay"/> \
+    <property access="read" type="b" name="CanPause"/> \
+    <property access="read" type="b" name="CanSeek"/> \
+    <property access="read" type="b" name="CanControl"/> \
+  </interface> \
+</node>');
+
+
 /**
  * MPRIS Plugin
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/mpriscontrol
@@ -44,22 +119,6 @@ var METADATA = {
  * TODO: It's probably possible to mirror a remote MPRIS2 player on local DBus
  *       https://github.com/KDE/kdeconnect-kde/commit/9e0d4874c072646f1018ad413d59d1f43e590777
  */
-
-const DBusIface = '<node> \
-<interface name="org.freedesktop.DBus"> \
-  <method name="ListNames"> \
-    <arg type="as" direction="out" name="names" /> \
-  </method> \
-  <signal name="NameOwnerChanged"> \
-    <arg type="s" direction="out" name="name" /> \
-    <arg type="s" direction="out" name="oldOwner" /> \
-    <arg type="s" direction="out" name="newOwner" /> \
-  </signal> \
-</interface> \
-</node>';
-const DBusProxy = Gio.DBusProxy.makeProxyWrapper(DBusIface);
-
-
 var Plugin = new Lang.Class({
     Name: "GSConnectMPRISPlugin",
     Extends: PluginsBase.Plugin,
@@ -114,14 +173,14 @@ var Plugin = new Lang.Class({
 
         // Add new players
         for (let name of players) {
-            let mpris = new Common.DBusProxy.mpris(
+            let mpris = MPRISProxy(
                 Gio.DBus.session,
                 name,
                 "/org/mpris/MediaPlayer2"
             );
 
             if (!this._players.has(mpris.Identity)) {
-                let player = new Common.DBusProxy.mprisPlayer(
+                let player = new MPRISPlayerProxy(
                     Gio.DBus.session,
                     name,
                     "/org/mpris/MediaPlayer2"
