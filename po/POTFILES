@@ -7,6 +7,7 @@ src/service/plugins/base.js
 src/service/plugins/battery.js
 src/service/plugins/clipboard.js
 src/service/plugins/findmyphone.js
+src/service/plugins/lock.js
 src/service/plugins/mousepad.js
 src/service/plugins/mpris.js
 src/service/plugins/notification.js
@@ -18,6 +19,7 @@ src/service/plugins/telephony.js
 src/widgets/device.js
 src/widgets/gsettings.js
 src/widgets/keybindings.js
+src/widgets/shell.js
 src/widgets/telephony.js
-data/org.gnome.shell.extensions.gsconnect.gschema.xml
+data/org.gnome.Shell.Extensions.GSConnect.gschema.xml
 
