@@ -29,7 +29,7 @@ class GSConnectShareExtension(GObject.GObject, Nautilus.MenuProvider):
 
         try:
             locale.setlocale(locale.LC_ALL, '')
-            gettext.bindtextdomain('gsconnect', LOCALE_DIR)
+            gettext.bindtextdomain('org.gnome.Shell.Extensions.GSConnect', LOCALE_DIR)
         except:
             pass
 
