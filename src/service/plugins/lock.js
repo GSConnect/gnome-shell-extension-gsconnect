@@ -83,8 +83,8 @@ var Plugin = new Lang.Class({
                 "org.gnome.ScreenSaver",
                 "/org/gnome/ScreenSaver",
                 (proxy, error) => {
-                    if (error !== null) {
-                        proxy.connectSignal(
+                    if (error === null) {
+                        this._activeChanged = proxy.connectSignal(
                             "ActiveChanged",
                             (proxy, sender, [bool]) => {
                                 this._response(bool);
@@ -160,7 +160,7 @@ var Plugin = new Lang.Class({
 
     destroy: function () {
         try {
-            this._screensaver.disconnectAll();
+            this._screensaver.disconnectSignal(this._activeChanged);
         } catch (e) {
         }
 
