@@ -438,85 +438,25 @@ var Daemon = new Lang.Class({
     },
 
     _initNotificationActions: function () {
-        let pairAction = new Gio.SimpleAction({
-            name: "pairAction",
-            parameter_type: new GLib.VariantType("(ss)")
-        });
-        pairAction.connect(
-            "activate",
-            Lang.bind(this, this._pairAction)
-        );
-        this.add_action(pairAction);
+        let entries = [
+            ["pairAction", "(ss)", this._pairAction],
+            ["batteryWarning", "s", this._batteryWarningAction],
+            ["cancelTransfer", "(ss)", this._cancelTransferAction],
+            ["openTransfer", "s", this._openTransferAction],
+            ["muteCall", "s", this._muteCallAction],
+            ["replyMissedCall", "(sss)", this._replyMissedCallAction],
+            ["replySms", "(ssss)", this._replySmsAction],
+            ["closeNotification", "(ss)", this._closeNotificationAction]
+        ];
 
-        let batteryWarning = new Gio.SimpleAction({
-            name: "batteryWarning",
-            parameter_type: new GLib.VariantType("s")
+        entries.forEach((entry) => {
+            let action = new Gio.SimpleAction({
+                name: entry[0],
+                parameter_type: new GLib.VariantType(entry[1])
+            });
+            action.connect('activate', entry[2].bind(this));
+            this.add_action(action);
         });
-        batteryWarning.connect(
-            "activate",
-            Lang.bind(this, this._batteryWarningAction)
-        );
-        this.add_action(batteryWarning);
-
-        let cancelTransfer = new Gio.SimpleAction({
-            name: "cancelTransfer",
-            parameter_type: new GLib.VariantType("(ss)")
-        });
-        cancelTransfer.connect(
-            "activate",
-            Lang.bind(this, this._cancelTransferAction)
-        );
-        this.add_action(cancelTransfer);
-
-        let openTransfer = new Gio.SimpleAction({
-            name: "openTransfer",
-            parameter_type: new GLib.VariantType("s")
-        });
-        openTransfer.connect(
-            "activate",
-            Lang.bind(this, this._openTransferAction)
-        );
-        this.add_action(openTransfer);
-
-        let muteCall = new Gio.SimpleAction({
-            name: "muteCall",
-            parameter_type: new GLib.VariantType("s")
-        });
-        muteCall.connect(
-            "activate",
-            Lang.bind(this, this._muteCallAction)
-        );
-        this.add_action(muteCall);
-
-        let replyMissedCall = new Gio.SimpleAction({
-            name: "replyMissedCall",
-            parameter_type: new GLib.VariantType("(sss)")
-        });
-        replyMissedCall.connect(
-            "activate",
-            Lang.bind(this, this._replyMissedCallAction)
-        );
-        this.add_action(replyMissedCall);
-
-        let replySms = new Gio.SimpleAction({
-            name: "replySms",
-            parameter_type: new GLib.VariantType("(ssss)")
-        });
-        replySms.connect(
-            "activate",
-            Lang.bind(this, this._replySmsAction)
-        );
-        this.add_action(replySms);
-
-        let closeNotification = new Gio.SimpleAction({
-            name: "closeNotification",
-            parameter_type: new GLib.VariantType("(ss)")
-        });
-        closeNotification.connect(
-            "activate",
-            Lang.bind(this, this._closeNotificationAction)
-        );
-        this.add_action(closeNotification);
     },
 
     /**
