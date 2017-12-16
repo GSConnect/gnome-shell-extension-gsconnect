@@ -9,7 +9,7 @@
     
     <method name="broadcast"/>
     <method name="getShareable">
-      <arg name="shareable" type="a{ss}" direction="out"/>
+      <arg name="shareable" type="a(ss)" direction="out"/>
     </method>
     <method name="quit"/>
   </interface>

@@ -42,28 +42,29 @@ class GSConnectShareExtension(GObject.GObject, Nautilus.MenuProvider):
 			'org.gnome.Shell.Extensions.GSConnect',
 			None)
 
-    def send_files(self, menu, files, device):
+    def send_files(self, menu, files, devicePath):
         """Send *files* to *device_id*"""
 
-        dev_dbus = Gio.DBusProxy.new_for_bus_sync(
+        device_proxy = Gio.DBusProxy.new_for_bus_sync(
 			Gio.BusType.SESSION,
 			Gio.DBusProxyFlags.NONE,
 			None,
 			'org.gnome.Shell.Extensions.GSConnect',
-			'/org/gnome/Shell/Extensions/GSConnect/Device/' + device.values()[0],
+			devicePath,
 			'org.gnome.Shell.Extensions.GSConnect.Plugin.Share',
 			None)
 
         for file in files:
-            variant = GLib.Variant("(s)", (file.get_uri(),))
-            dev_dbus.call_sync("shareUri", variant, 0, -1, None)
+            variant = GLib.Variant('(s)', (file.get_uri(),))
+            device_proxy.call_sync('shareUri', variant, 0, -1, None)
 
     def get_file_items(self, window, files):
         """Return a list of select files to be sent"""
 
         # Try to get devices
         try:
-            devices = self.dbus.call_sync("getShareable", None, 0, -1, None)
+            devices = self.dbus.call_sync('getShareable', None, 0, -1, None)
+            devices = devices.unpack()[0]
         except Exception as e:
             raise Exception('Error while getting reachable devices')
 
@@ -88,14 +89,14 @@ class GSConnectShareExtension(GObject.GObject, Nautilus.MenuProvider):
         menu.set_submenu(submenu)
 
         # Context Submenu Items
-        for device in devices:
+        for devicePath, deviceName in devices:
             item = Nautilus.MenuItem(
-                name='GSConnectShareExtension::Device' + device.values()[0],
-                label=device.keys()[0],
+                name='GSConnectShareExtension::Device' + deviceName,
+                label=deviceName,
                 icon='smartphone-symbolic'
             )
 
-            item.connect('activate', self.send_files, files, device)
+            item.connect('activate', self.send_files, files, devicePath)
 
             submenu.append_item(item)
 

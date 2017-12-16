@@ -134,15 +134,13 @@ var Daemon = new Lang.Class({
 
     /**
      * Special method to accomodate nautilus-gsconnect.py
-     *
-     * TODO: it's ugly!
      */
     getShareable: function () {
-        let shareable = {};
+        let shareable = [];
 
         for (let [busPath, device] of this._devices.entries()) {
             if (device.connected && device._plugins.has("share")) {
-                shareable[device.name] = device.id;
+                shareable.push([busPath, device.name]);
             }
         }
 
