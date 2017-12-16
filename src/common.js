@@ -18,8 +18,8 @@ function getPath() {
 
 imports.searchPath.push(getPath());
 
-
-var METADATA = JSON.parse(GLib.file_get_contents(getPath() + "/metadata.json")[1]);
+var PREFIX = getPath();
+var METADATA = JSON.parse(GLib.file_get_contents(PREFIX + "/metadata.json")[1]);
 var CACHE_DIR = GLib.get_user_cache_dir() + "/gsconnect";
 var CONFIG_DIR = GLib.get_user_config_dir() + "/gsconnect";
 var RUNTIME_DIR = GLib.get_user_runtime_dir() + "/gsconnect";
@@ -47,7 +47,7 @@ function startPreferences () {
  * Init GSettings
  */
 var SchemaSource = Gio.SettingsSchemaSource.new_from_directory(
-    getPath() + "/schemas",
+    PREFIX + "/schemas",
     Gio.SettingsSchemaSource.get_default(),
     false
 );
@@ -64,7 +64,7 @@ var Settings = new Gio.Settings({
  * Init GResources
  */
 var Resources = Gio.resource_load(
-    getPath() + "/org.gnome.shell.extensions.gsconnect.gresource"
+    PREFIX + "/org.gnome.Shell.Extensions.GSConnect.data.gresource"
 );
 Resources._register();
 
@@ -300,7 +300,7 @@ function uninstallService () {
  * Install/Uninstall WebExtension Native Messaging Host
  */
 function installNativeMessagingHost () {
-    let nmhPath = getPath() + "/service/nativeMessagingHost.js";
+    let nmhPath = PREFIX + "/service/nativeMessagingHost.js";
 
     let google = {
         "name": "org.gnome.shell.extensions.gsconnect",
@@ -353,7 +353,7 @@ function uninstallNativeMessagingHost () {
         }
     }
 
-    let nmhPath = getPath() + "/service/nativeMessagingHost.js";
+    let nmhPath = PREFIX + "/service/nativeMessagingHost.js";
     GLib.spawn_command_line_async("chmod 0744 " + nmhPath);
 };
 
@@ -367,7 +367,7 @@ function initConfiguration () {
         installService();
         Gettext.bindtextdomain(
             "org.gnome.Shell.Extensions.GSConnect",
-            getPath() + "/locale"
+            PREFIX + "/locale"
         );
         Gtk.IconTheme.get_default().add_resource_path("/icons");
     } catch (e) {
