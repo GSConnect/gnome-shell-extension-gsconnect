@@ -122,18 +122,18 @@ var TcpListener = new Lang.Class({
                     port += 1;
                     continue;
                 } else {
-                    this.stop();
-                    this.close();
+                    this.destroy();
                     throw Error("TcpListener: Unable to find open port");
                 }
             }
 
             if (this.active) {
+                this._port = port;
                 break;
             }
         }
 
-        log("TcpListener: using port " + port);
+        log("TcpListener: using port " + this._port);
     },
 
     destroy: function () {

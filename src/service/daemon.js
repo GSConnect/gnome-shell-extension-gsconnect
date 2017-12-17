@@ -158,7 +158,7 @@ var Daemon = new Lang.Class({
                 deviceId: this.certificate.get_common_name(),
                 deviceName: Common.Settings.get_string("public-name"),
                 deviceType: Common.getDeviceType(),
-                tcpPort: this.udpListener.socket.local_address.port,
+                tcpPort: this.tcpListener._port,
                 protocolVersion: 7,
                 incomingCapabilities: [],
                 outgoingCapabilities: []
@@ -562,7 +562,7 @@ var Daemon = new Lang.Class({
             });
         } catch (e) {
             log("Error starting UDP listener: " + e);
-            this.vfunc_shutdown();
+            this.quit();
         }
 
         try {
@@ -584,7 +584,7 @@ var Daemon = new Lang.Class({
             this.tcpListener.stop();
         } catch (e) {
             log("Error starting TCP listener: " + e);
-            this.vfunc_shutdown();
+            this.quit();
         }
 
         this.identity = this._getIdentityPacket();
