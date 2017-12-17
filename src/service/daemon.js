@@ -332,104 +332,87 @@ var Daemon = new Lang.Class({
     /**
      * Notification Actions
      */
-    _batteryWarningAction: function (action, param) {
-        let dbusPath = param.deep_unpack().toString();
+    _getPlugin: function (devicePath, pluginName) {
+        let device;
 
-        if (this._devices.has(dbusPath)) {
-            let device = this._devices.get(dbusPath);
+        if ((device = this._devices.get(devicePath))) {
+            return device._plugins.get(pluginName);
+        }
 
-            if (device._plugins.has("findmyphone")) {
-                device._plugins.get("findmyphone").find();
-            }
+        return false;
+    },
+
+    _batteryWarningAction: function (action, parameter) {
+        let dbusPath = parameter.deep_unpack().toString();
+        let plugin = this._getPlugin(dbusPath, "findmyphone");
+
+        if (plugin) {
+            plugin.find();
         }
     },
 
-    _cancelTransferAction: function (action, param) {
-        param = param.deep_unpack();
+    _cancelTransferAction: function (action, parameter) {
+        parameter = parameter.deep_unpack();
+        let plugin = this._getPlugin(parameter["0"], "share");
 
-        if (this._devices.has(param["0"])) {
-            let device = this._devices.get(param["0"]);
-
-            if (device._plugins.has("share")) {
-                let plugin = device._plugins.get("share");
-
-                if (plugin.transfers.has(param["1"])) {
-                    plugin.transfers.get(param["1"]).cancel();
-                }
+        if (plugin) {
+            if (plugin.transfers.has(parameter["1"])) {
+                plugin.transfers.get(parameter["1"]).cancel();
             }
         }
     },
 
     // TODO: check file existence, since the notification will persist while
     //       the file could be moved/deleted
-    _openTransferAction: function (action, param) {
-        let path = param.deep_unpack().toString();
+    _openTransferAction: function (action, parameter) {
+        let path = parameter.deep_unpack().toString();
         Gio.AppInfo.launch_default_for_uri(unescape(path), null);
     },
 
-    _closeNotificationAction: function (action, param) {
-        param = param.deep_unpack();
+    _closeNotificationAction: function (action, parameter) {
+        parameter = parameter.deep_unpack();
+        let plugin = this._getPlugin(parameter["0"], "notification");
 
-        if (this._devices.has(param["0"])) {
-            let device = this._devices.get(param["0"]);
-
-            if (device._plugins.has("notification")) {
-                let plugin = device._plugins.get("notification");
-                plugin.close(unescape(param["1"]));
-            }
+        if (plugin) {
+            plugin.close(unescape(parameter["1"]));
         }
     },
 
-    _muteCallAction: function (action, param) {
-        let dbusPath = param.deep_unpack().toString();
+    _muteCallAction: function (action, parameter) {
+        let dbusPath = parameter.deep_unpack().toString();
+        let plugin = this._getPlugin(dbusPath, "telephony");
 
-        if (this._devices.has(dbusPath)) {
-            let device = this._devices.get(dbusPath);
-
-            if (device._plugins.has("telephony")) {
-                let plugin = device._plugins.get("telephony");
-                plugin.muteCall();
-            }
+        if (plugin) {
+            plugin.muteCall();
         }
     },
 
-    _replyMissedCallAction: function (action, param) {
-        param = param.deep_unpack();
+    _replyMissedCallAction: function (action, parameter) {
+        parameter = parameter.deep_unpack();
+        let plugin = this._getPlugin(parameter["0"], "telephony");
 
-        if (this._devices.has(param["0"])) {
-            let device = this._devices.get(param["0"]);
-
-            if (device._plugins.has("telephony")) {
-                let plugin = device._plugins.get("telephony");
-                plugin.replyMissedCall(param["1"],param["2"]);
-            }
+        if (plugin) {
+            plugin.replyMissedCall(parameter["1"], parameter["2"]);
         }
     },
 
-    _replySmsAction: function (action, param) {
-        param = param.deep_unpack();
+    _replySmsAction: function (action, parameter) {
+        parameter = parameter.deep_unpack();
+        let plugin = this._getPlugin(parameter["0"], "telephony");
 
-        if (this._devices.has(param["0"])) {
-            let device = this._devices.get(param["0"]);
-
-            if (device._plugins.has("telephony")) {
-                let plugin = device._plugins.get("telephony");
-                plugin.replySms(param["1"], param["2"], param["3"]);
-            }
+        if (plugin) {
+            plugin.replySms(parameter["1"], parameter["2"], parameter["3"]);
         }
     },
 
     _pairAction: function (action, parameter) {
-        parameter = parameter.deep_unpack();
-        let dbusPath = parameter["0"];
-        let pairAction = parameter["1"];
+        parameter = parametereter.deep_unpack();
+        let device;
 
-        if (this._devices.has(dbusPath)) {
-            let device = this._devices.get(dbusPath);
-
-            if (pairAction === "accept") {
+        if ((device = this._devices.get(parameter["0"]))) {
+            if (parameter["1"] === "accept") {
                 device.acceptPair();
-            } else if (pairAction === "reject") {
+            } else if (parameter["1"] === "reject") {
                 device.rejectPair();
             }
         }
@@ -457,7 +440,7 @@ var Daemon = new Lang.Class({
                 name: entry[0],
                 parameter_type: new GLib.VariantType(entry[1])
             });
-            action.connect('activate', entry[2].bind(this));
+            action.connect("activate", entry[2].bind(this));
             this.add_action(action);
         });
     },
@@ -479,7 +462,7 @@ var Daemon = new Lang.Class({
             "app.restartNautilus('null')"
         );
 
-        this.send_notification("nautilus-extension", notif);
+        this.send_notification("nautilus-integration", notif);
     },
 
     toggleNautilusExtension: function () {
