@@ -225,29 +225,25 @@ function installService () {
     let serviceDir = GLib.get_user_data_dir() + "/dbus-1/services/";
     let serviceFile = "org.gnome.Shell.Extensions.GSConnect.service";
 
-    if (!GLib.file_test(serviceDir + serviceFile, GLib.FileTest.EXISTS)) {
-        GLib.mkdir_with_parents(serviceDir, 493);
+    GLib.mkdir_with_parents(serviceDir, 493);
 
-        let serviceBytes = Resources.lookup_data(
-            "/dbus/" + serviceFile, 0
-        ).unref_to_array().toString();
+    let serviceBytes = Resources.lookup_data(
+        "/dbus/" + serviceFile, 0
+    ).toArray().toString().replace("@PREFIX@", PREFIX);
 
-        GLib.file_set_contents(serviceDir + serviceFile, serviceBytes);
-    }
+    GLib.file_set_contents(serviceDir + serviceFile, serviceBytes);
 
     // Application desktop file
     let appDir = GLib.get_user_data_dir() + "/applications/";
     let appFile = "org.gnome.Shell.Extensions.GSConnect.desktop";
 
-    if (!GLib.file_test(appDir + appFile, GLib.FileTest.EXISTS)) {
-        GLib.mkdir_with_parents(appDir, 493);
+    GLib.mkdir_with_parents(appDir, 493);
 
-        let appBytes = Resources.lookup_data(
-            "/dbus/" + appFile, 0
-        ).unref_to_array().toString();
+    let appBytes = Resources.lookup_data(
+        "/dbus/" + appFile, 0
+    ).toArray().toString().replace("@PREFIX@", PREFIX);
 
-        GLib.file_set_contents(appDir + appFile, appBytes);
-    }
+    GLib.file_set_contents(appDir + appFile, appBytes);
 };
 
 
