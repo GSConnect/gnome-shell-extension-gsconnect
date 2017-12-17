@@ -595,6 +595,11 @@ var Daemon = new Lang.Class({
             Gio.SettingsBindFlags.DEFAULT
         );
 
+        Common.Settings.connect("changed::nautilus-integration", () => {
+            this.toggleNautilusExtension();
+        });
+        this.toggleNautilusExtension();
+
         Common.Settings.connect("changed::webbrowser-integration", () => {
             if (Common.Settings.get_boolean("webbrowser-integration")) {
                 Common.installNativeMessagingHost();
