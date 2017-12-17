@@ -15,7 +15,6 @@ const Shell = imports.gi.Shell;
 const St = imports.gi.St;
 
 const Main = imports.ui.main;
-const MessageTray = imports.ui.messageTray;
 const PanelMenu = imports.ui.panelMenu;
 const PopupMenu = imports.ui.popupMenu;
 
@@ -514,12 +513,6 @@ var SystemIndicator = new Lang.Class({
         this._menus = {};
         this.keybindingManager = new KeybindingManager();
 
-        this._integrateNautilus();
-        Settings.connect(
-            "changed::nautilus-integration",
-            Lang.bind(this, this._integrateNautilus)
-        );
-
         this.extensionIndicator = this._addIndicator();
         this.extensionIndicator.icon_name = "org.gnome.Shell.Extensions.GSConnect-symbolic";
         let userMenuTray = Main.panel.statusArea.aggregateMenu._indicators;
@@ -742,48 +735,6 @@ var SystemIndicator = new Lang.Class({
             menu.actor.visible = false;
         } else {
             menu.actor.visible = true;
-        }
-    },
-
-    _notifyNautilus: function () {
-        let source = new MessageTray.SystemNotificationSource();
-        Main.messageTray.add(source);
-
-        let notification = new MessageTray.Notification(
-            source,
-            _("Nautilus extensions changed"),
-            _("Restart Nautilus to apply changes"),
-            { gicon: new Gio.ThemedIcon({ name: "system-file-manager-symbolic" }) }
-        );
-
-        notification.setTransient(true);
-        notification.addAction(_("Restart"), () => {
-            GLib.spawn_command_line_async("nautilus -q");
-        });
-
-        source.notify(notification);
-    },
-
-    _integrateNautilus: function () {
-        let path = GLib.get_user_data_dir() + "/nautilus-python/extensions";
-        let dir = Gio.File.new_for_path(path);
-        let script = dir.get_child("nautilus-gsconnect.py");
-        let scriptExists = script.query_exists(null);
-        let integrate = Settings.get_boolean("nautilus-integration");
-
-        if (integrate && !scriptExists) {
-            if (!dir.query_exists(null)) {
-                GLib.mkdir_with_parents(path, 493); // 0755 in octal
-            }
-
-            script.make_symbolic_link(
-                Me.path + "/nautilus-gsconnect.py",
-                null
-            );
-            this._notifyNautilus();
-        } else if (!integrate && scriptExists) {
-            script.delete(null);
-            this._notifyNautilus();
         }
     },
 

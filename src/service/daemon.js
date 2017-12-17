@@ -437,6 +437,10 @@ var Daemon = new Lang.Class({
         }
     },
 
+    _restartNautilusAction: function (action, parameter) {
+        GLib.spawn_command_line_async("nautilus -q");
+    },
+
     _initNotificationActions: function () {
         let entries = [
             ["pairAction", "(ss)", this._pairAction],
@@ -446,7 +450,8 @@ var Daemon = new Lang.Class({
             ["muteCall", "s", this._muteCallAction],
             ["replyMissedCall", "(sss)", this._replyMissedCallAction],
             ["replySms", "(ssss)", this._replySmsAction],
-            ["closeNotification", "(ss)", this._closeNotificationAction]
+            ["closeNotification", "(ss)", this._closeNotificationAction],
+            ["restartNautilus", "s", this._restartNautilusAction]
         ];
 
         entries.forEach((entry) => {
@@ -457,6 +462,46 @@ var Daemon = new Lang.Class({
             action.connect('activate', entry[2].bind(this));
             this.add_action(action);
         });
+    },
+
+    /**
+     *
+     */
+    notifyNautilusExtension: function () {
+        // TODO: transience
+        let notif = new Gio.Notification();
+        notif.set_title(_("Nautilus extensions changed"));
+        notif.set_body(_("Restart Nautilus to apply changes"));
+        notif.set_icon(
+            new Gio.ThemedIcon({ name: "system-file-manager-symbolic" })
+        );
+        notif.add_button(
+            // TRANSLATORS: Notification button to restart Nautilus
+            _("Restart"),
+            "app.restartNautilus('null')"
+        );
+
+        this.send_notification("nautilus-extension", notif);
+    },
+
+    toggleNautilusExtension: function () {
+        let path = GLib.get_user_data_dir() + "/nautilus-python/extensions";
+        let script = Gio.File.new_for_path(path).get_child("nautilus-gsconnect.py");
+        let install = Common.Settings.get_boolean("nautilus-integration");
+
+        if (install && !script.query_exists(null)) {
+            GLib.mkdir_with_parents(path, 493); // 0755 in octal
+
+            script.make_symbolic_link(
+                Common.PREFIX + "/nautilus-gsconnect.py",
+                null
+            );
+
+            this.notifyNautilusExtension();
+        } else if (!install && script.query_exists(null)) {
+            script.delete(null);
+            this.notifyNautilusExtension();
+        }
     },
 
     /**
