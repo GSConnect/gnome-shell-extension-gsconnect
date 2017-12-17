@@ -16,6 +16,7 @@ function getPath() {
     return Gio.File.new_for_path(m[1]).get_parent().get_path();
 }
 
+var APP_ID = "org.gnome.Shell.Extensions.GSConnect";
 var PREFIX = getPath();
 var METADATA = JSON.parse(GLib.file_get_contents(PREFIX + "/metadata.json")[1]);
 var CACHE_DIR = GLib.get_user_cache_dir() + "/gsconnect";
@@ -51,19 +52,14 @@ var SchemaSource = Gio.SettingsSchemaSource.new_from_directory(
 );
 
 var Settings = new Gio.Settings({
-    settings_schema: SchemaSource.lookup(
-        "org.gnome.Shell.Extensions.GSConnect",
-        true
-    )
+    settings_schema: SchemaSource.lookup(APP_ID, true)
 });
 
 
 /**
  * Init GResources
  */
-var Resources = Gio.resource_load(
-    PREFIX + "/org.gnome.Shell.Extensions.GSConnect.data.gresource"
-);
+var Resources = Gio.resource_load(PREFIX + "/" + APP_ID + ".data.gresource");
 Resources._register();
 
 
@@ -71,9 +67,7 @@ Resources._register();
  * Common DBus Interface Nodes, Proxies and functions
  */
 var DBusIface = new Gio.DBusNodeInfo.new_for_xml(
-    Resources.lookup_data(
-        "/dbus/org.gnome.Shell.Extensions.GSConnect.xml", 0
-    ).toArray().toString()
+    Resources.lookup_data("/dbus/" + APP_ID + ".xml", 0).toArray().toString()
 );
 
 DBusIface.nodes.forEach((ifaceInfo) => { ifaceInfo.cache_build(); });
@@ -193,10 +187,7 @@ function generateEncryption () {
 function getCertificate (id=false) {
     if (id) {
         let settings = new Gio.Settings({
-            settings_schema: SchemaSource.lookup(
-                "org.gnome.Shell.Extensions.GSConnect.Device",
-                true
-            ),
+            settings_schema: SchemaSource.lookup(APP_ID + ".Device", true),
             path: "/org/gnome/shell/extensions/gsconnect/device/" + id + "/"
         });
 
@@ -218,48 +209,39 @@ function getCertificate (id=false) {
 
 
 /**
- * Install a .desktop file and DBus service file for GSConnect
+ * Install/Uninstall a .desktop file and DBus service file for GSConnect
  */
 function installService () {
     // DBus service file
     let serviceDir = GLib.get_user_data_dir() + "/dbus-1/services/";
-    let serviceFile = "org.gnome.Shell.Extensions.GSConnect.service";
-
-    GLib.mkdir_with_parents(serviceDir, 493);
-
+    let serviceFile = APP_ID + ".service";
     let serviceBytes = Resources.lookup_data(
         "/dbus/" + serviceFile, 0
     ).toArray().toString().replace("@PREFIX@", PREFIX);
 
+    GLib.mkdir_with_parents(serviceDir, 493);
     GLib.file_set_contents(serviceDir + serviceFile, serviceBytes);
 
     // Application desktop file
     let appDir = GLib.get_user_data_dir() + "/applications/";
-    let appFile = "org.gnome.Shell.Extensions.GSConnect.desktop";
-
-    GLib.mkdir_with_parents(appDir, 493);
-
+    let appFile = APP_ID + ".desktop";
     let appBytes = Resources.lookup_data(
         "/dbus/" + appFile, 0
     ).toArray().toString().replace("@PREFIX@", PREFIX);
 
+    GLib.mkdir_with_parents(appDir, 493);
     GLib.file_set_contents(appDir + appFile, appBytes);
 };
 
 
-/**
- * Uninstall the .desktop file and DBus service file
- */
 function uninstallService () {
     // DBus service file
     let serviceDir = GLib.get_user_data_dir() + "/dbus-1/services/";
-    let serviceFile = "org.gnome.Shell.Extensions.GSConnect.service";
-    GLib.unlink(serviceDir + serviceFile);
+    GLib.unlink(serviceDir + APP_ID + ".service");
 
     // Application desktop file
     let appDir = GLib.get_user_data_dir() + "/applications/";
-    let appFile = "org.gnome.Shell.Extensions.GSConnect.desktop";
-    GLib.unlink(appDir + appFile);
+    GLib.unlink(appDir + APP_ID + ".desktop");
 };
 
 
@@ -270,9 +252,7 @@ function initConfiguration () {
     try {
         generateEncryption();
         installService();
-        Gettext.bindtextdomain(
-            "org.gnome.Shell.Extensions.GSConnect",
-            PREFIX + "/locale"
+        Gettext.bindtextdomain(APP_ID, PREFIX + "/locale");
         );
         Gtk.IconTheme.get_default().add_resource_path("/icons");
     } catch (e) {
