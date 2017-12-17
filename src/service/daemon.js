@@ -502,6 +502,53 @@ var Daemon = new Lang.Class({
         }
     },
 
+    toggleWebExtension: function () {
+        let nmhPath = Common.PREFIX + "/service/nativeMessagingHost.js";
+
+        let google = {
+            "name": "org.gnome.shell.extensions.gsconnect",
+            "description": "Native messaging host for GSConnect WebExtension",
+            "path": nmhPath,
+            "type": "stdio",
+            "allowed_origins": [ "chrome-extension://jfnifeihccihocjbfcfhicmmgpjicaec/" ]
+        };
+
+        let mozilla = {
+            "name": "org.gnome.shell.extensions.gsconnect",
+            "description": "Native messaging host for GSConnect WebExtension",
+            "path": nmhPath,
+            "type": "stdio",
+            "allowed_extensions": [ "gsconnect@andyholmes.github.io" ]
+        };
+
+        let basename = "org.gnome.shell.extensions.gsconnect.json";
+        let browsers = [
+            [GLib.get_user_config_dir() + "/chromium/NativeMessagingHosts/", google],
+            [GLib.get_user_config_dir() + "/google-chrome/NativeMessagingHosts/", google],
+            [GLib.get_home_dir() + "/.mozilla/native-messaging-hosts/", mozilla]
+        ];
+
+        let install = Common.Settings.get_boolean("webbrowser-integration");
+
+        if (Common.Settings.get_boolean("webbrowser-integration")) {
+            for (let browser of browsers) {
+                GLib.mkdir_with_parents(browser[0], 493);
+                GLib.file_set_contents(
+                    browser[0] + basename,
+                    JSON.stringify(browser[1])
+                );
+            }
+
+            GLib.spawn_command_line_async("chmod 0755 " + nmhPath);
+        } else {
+            for (let browser of browsers) {
+                GLib.unlink(browser[0] + basename);
+            }
+
+            GLib.spawn_command_line_async("chmod 0744 " + nmhPath);
+        }
+    },
+
     /**
      * Watch 'daemon.js' in case the extension is uninstalled
      */
@@ -595,23 +642,16 @@ var Daemon = new Lang.Class({
             Gio.SettingsBindFlags.DEFAULT
         );
 
+        // Extensions
         Common.Settings.connect("changed::nautilus-integration", () => {
             this.toggleNautilusExtension();
         });
         this.toggleNautilusExtension();
 
         Common.Settings.connect("changed::webbrowser-integration", () => {
-            if (Common.Settings.get_boolean("webbrowser-integration")) {
-                Common.installNativeMessagingHost();
-            } else {
-                Common.uninstallNativeMessagingHost();
-            }
+            this.toggleWebExtension();
         });
-        if (Common.Settings.get_boolean("webbrowser-integration")) {
-            Common.installNativeMessagingHost();
-        } else {
-            Common.uninstallNativeMessagingHost();
-        }
+        this.toggleWebExtension();
 
         // Monitor network changes
         this._netmonitor = Gio.NetworkMonitor.get_default();

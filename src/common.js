@@ -264,68 +264,6 @@ function uninstallService () {
 
 
 /**
- * Install/Uninstall WebExtension Native Messaging Host
- */
-function installNativeMessagingHost () {
-    let nmhPath = PREFIX + "/service/nativeMessagingHost.js";
-
-    let google = {
-        "name": "org.gnome.shell.extensions.gsconnect",
-        "description": "Native messaging host for GSConnect WebExtension",
-        "path": nmhPath,
-        "type": "stdio",
-        "allowed_origins": [ "chrome-extension://jfnifeihccihocjbfcfhicmmgpjicaec/" ]
-    };
-
-    let mozilla = {
-        "name": "org.gnome.shell.extensions.gsconnect",
-        "description": "Native messaging host for GSConnect WebExtension",
-        "path": nmhPath,
-        "type": "stdio",
-        "allowed_extensions": [ "gsconnect@andyholmes.github.io" ]
-    };
-
-    let basename = "org.gnome.shell.extensions.gsconnect.json";
-    let browsers = [
-        [GLib.get_user_config_dir() + "/chromium/NativeMessagingHosts/", google],
-        [GLib.get_user_config_dir() + "/google-chrome/NativeMessagingHosts/", google],
-        [GLib.get_home_dir() + "/.mozilla/native-messaging-hosts/", mozilla]
-    ];
-
-    for (let browser of browsers) {
-        if (!GLib.file_test(browser[0] + basename, GLib.FileTest.EXISTS)) {
-            GLib.mkdir_with_parents(browser[0], 493);
-            GLib.file_set_contents(
-                browser[0] + basename,
-                JSON.stringify(browser[1])
-            );
-        }
-    }
-
-    GLib.spawn_command_line_async("chmod 0755 " + nmhPath);
-};
-
-
-function uninstallNativeMessagingHost () {
-    let basename = "org.gnome.shell.extensions.gsconnect.json";
-    let browsers = [
-        GLib.get_user_config_dir() + "/chromium/NativeMessagingHosts/",
-        GLib.get_user_config_dir() + "/google-chrome/NativeMessagingHosts/",
-        GLib.get_home_dir() + "/.mozilla/native-messaging-hosts/"
-    ];
-
-    for (let browser of browsers) {
-        if (GLib.file_test(browser + basename, GLib.FileTest.EXISTS)) {
-            GLib.unlink(browser + basename);
-        }
-    }
-
-    let nmhPath = PREFIX + "/service/nativeMessagingHost.js";
-    GLib.spawn_command_line_async("chmod 0744 " + nmhPath);
-};
-
-
-/**
  * Init the configuration
  */
 function initConfiguration () {
