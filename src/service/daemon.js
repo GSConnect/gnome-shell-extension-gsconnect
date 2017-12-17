@@ -298,10 +298,8 @@ var Daemon = new Lang.Class({
      * receive our notifications, but we only have one Bus to work with.
      */
     _initNotificationListener: function () {
-        // org.freedesktop.Notifications interface; needed to catch signals
-        let iface = "org.freedesktop.Notifications";
         this._ndbus = Gio.DBusExportedObject.wrapJSObject(
-            Common.DBusIface.lookup_interface(iface),
+            Common.DBusIface.lookup_interface("org.freedesktop.Notifications"),
             this
         );
         this._ndbus.export(Gio.DBus.session, "/org/freedesktop/Notifications");
