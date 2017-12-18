@@ -146,6 +146,42 @@ var Daemon = new Lang.Class({
     },
 
     /**
+     * Generate a Private Key and TLS Certificate
+     */
+    _initEncryption: function () {
+        let hasPrivateKey = GLib.file_test(
+            Common.CONFIG_DIR + "/private.pem",
+            GLib.FileTest.EXISTS
+        );
+
+        let hasCertificate = GLib.file_test(
+            Common.CONFIG_DIR + "/certificate.pem",
+            GLib.FileTest.EXISTS
+        );
+
+        if (!hasPrivateKey || !hasCertificate) {
+            let cmd = [
+                "openssl", "req", "-new", "-x509", "-sha256", "-newkey",
+                "rsa:2048", "-nodes", "-keyout", "private.pem", "-days", "3650",
+                "-out", "certificate.pem", "-subj",
+                "/CN=" + GLib.uuid_string_random()
+            ];
+
+            let proc = GLib.spawn_sync(
+                Common.CONFIG_DIR,
+                cmd,
+                null,
+                GLib.SpawnFlags.SEARCH_PATH,
+                null
+            );
+        }
+
+        // Ensure permissions are restrictive
+        GLib.spawn_command_line_async("chmod 0600 " + Common.CONFIG_DIR + "/private.pem");
+        GLib.spawn_command_line_async("chmod 0600 " + Common.CONFIG_DIR + "/certificate.pem");
+    },
+
+    /**
      * Build and return an identity packet for the local device
      */
     _getIdentityPacket: function () {

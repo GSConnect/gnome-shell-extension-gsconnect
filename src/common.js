@@ -160,43 +160,6 @@ function getDeviceType () {
 
 
 /**
- * Generate a Private Key and TLS Certificate
- */
-function generateEncryption () {
-    let hasPrivateKey = GLib.file_test(
-        CONFIG_DIR + "/private.pem",
-        GLib.FileTest.EXISTS
-    );
-
-    let hasCertificate = GLib.file_test(
-        CONFIG_DIR + "/certificate.pem",
-        GLib.FileTest.EXISTS
-    );
-
-    if (!hasPrivateKey || !hasCertificate) {
-        let cmd = [
-            "openssl", "req", "-new", "-x509", "-sha256", "-newkey",
-            "rsa:2048", "-nodes", "-keyout", "private.pem", "-days", "3650",
-            "-out", "certificate.pem", "-subj",
-            "/CN=" + GLib.uuid_string_random()
-        ];
-
-        let proc = GLib.spawn_sync(
-            CONFIG_DIR,
-            cmd,
-            null,
-            GLib.SpawnFlags.SEARCH_PATH,
-            null
-        );
-    }
-
-    // Ensure permissions are restrictive
-    GLib.spawn_command_line_async("chmod 0600 " + CONFIG_DIR + "/private.pem");
-    GLib.spawn_command_line_async("chmod 0600 " + CONFIG_DIR + "/certificate.pem");
-};
-
-
-/**
  * Return a Gio.TlsCertificate object, for @id if given, or false if none
  *
  * @param {string} [id] - A device Id
