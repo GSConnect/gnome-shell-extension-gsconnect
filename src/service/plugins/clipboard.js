@@ -59,7 +59,7 @@ var Plugin = new Lang.Class({
             throw Error(_("Failed to get Clipboard"));
         }
 
-        this._clipboard.connect("owner-change", () => {
+        this._clipboard.connect("owner-change", (clipboard, event) => {
             if (this.settings.get_boolean("send-content")) {
                 this._clipboard.request_text(Lang.bind(this, this.send));
             }
@@ -70,20 +70,31 @@ var Plugin = new Lang.Class({
         Common.debug("Clipboard: handlePacket()");
 
         if (packet.body.content && this.settings.get_boolean("receive-content")) {
-            this._clipboard.set_text(packet.body.content, -1);
+            this.receive(packet.body.content);
         }
     },
 
+    receive: function (text) {
+        Common.debug("Clipboard: receive('" + text + "')");
+
+        this._currentContent = text;
+        this._clipboard.set_text(text, -1);
+    },
+
     send: function (clipboard, text) {
-        Common.debug("Clipboard: send()");
+        Common.debug("Clipboard: send('" + text + "')");
 
-        let packet = new Protocol.Packet({
-            id: 0,
-            type: "kdeconnect.clipboard",
-            body: { content: text }
-        });
+        if (text !== this._currentContent) {
+            this._currentContent = text;
 
-        this.device._channel.send(packet);
+            let packet = new Protocol.Packet({
+                id: 0,
+                type: "kdeconnect.clipboard",
+                body: { content: text }
+            });
+
+            this.device._channel.send(packet);
+        }
     },
 
     destroy: function () {
