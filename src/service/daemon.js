@@ -5,13 +5,12 @@
 // Imports
 const Gettext = imports.gettext.domain("org.gnome.Shell.Extensions.GSConnect");
 const _ = Gettext.gettext;
-const Lang = imports.lang;
-const System = imports.system;
-
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
+const System = imports.system;
 
 // Local Imports
 function getPath() {
@@ -78,8 +77,7 @@ var Daemon = new Lang.Class({
 
     _init: function() {
         this.parent({
-            application_id: "org.gnome.Shell.Extensions.GSConnect",
-            flags: Gio.ApplicationFlags.FLAGS_NONE
+            application_id: "org.gnome.Shell.Extensions.GSConnect"
         });
 
         let application_name = _("GSConnect");

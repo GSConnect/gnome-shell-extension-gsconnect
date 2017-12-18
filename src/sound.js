@@ -1,11 +1,9 @@
 "use strict";
 
-// Imports
-const Lang = imports.lang;
-
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
+const Lang = imports.lang;
 const Tweener = imports.tweener.tweener;
 
 const GIRepository = imports.gi.GIRepository;

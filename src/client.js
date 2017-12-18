@@ -1,11 +1,10 @@
 "use strict";
 
-// Imports
-const Lang = imports.lang;
-const Mainloop = imports.mainloop;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
+const Lang = imports.lang;
+const Mainloop = imports.mainloop;
 
 // Local Imports
 function getPath() {

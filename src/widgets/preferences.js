@@ -1,9 +1,8 @@
 "use strict";
 
-const Lang = imports.lang;
-
 const Gio = imports.gi.Gio;
 const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
 
 // Local Imports
 function getPath() {
@@ -24,7 +23,7 @@ const GSettingsWidget = imports.widgets.gsettings;
 var Row = new Lang.Class({
     Name: "GSConnectPreferencesRow",
     Extends: Gtk.ListBoxRow,
-    
+
     _init: function (params={}) {
         params = Object.assign({
             activatable: false,
@@ -36,14 +35,14 @@ var Row = new Lang.Class({
             margin_bottom: 8,
             margin_right: 12,
         }, params);
-    
+
         this.parent({
             can_focus: params.can_focus,
             activatable: params.activatable,
             selectable: params.selectable,
             height_request: params.height_request
         });
-        
+
         this.grid = new Gtk.Grid({
             can_focus: false,
             column_spacing: 12,
@@ -62,10 +61,10 @@ var Row = new Lang.Class({
 var Setting = new Lang.Class({
     Name: "GSConnectPreferencesSetting",
     Extends: Row,
-    
+
     _init: function (summary, description, widget) {
         this.parent({ height_request: 56 });
-        
+
         this.summary = new Gtk.Label({
             can_focus: false,
             xalign: 0,
@@ -76,7 +75,7 @@ var Setting = new Lang.Class({
             use_markup: true
         });
         this.grid.attach(this.summary, 0, 0, 1, 1);
-        
+
         if (description) {
             this.description = new Gtk.Label({
                 xalign: 0,
@@ -90,7 +89,7 @@ var Setting = new Lang.Class({
             this.description.get_style_context().add_class("dim-label");
             this.grid.attach(this.description, 0, 1, 1, 1);
         }
-        
+
         this.widget = widget;
         this.grid.attach(this.widget, 1, 0, 1, (description) ? 2 : 1);
     }
@@ -100,21 +99,21 @@ var Setting = new Lang.Class({
 var Section = new Lang.Class({
     Name: "GSConnectPreferencesSection",
     Extends: Gtk.Frame,
-    
+
     _init: function (params={}) {
         params = Object.assign({
             width_request: 460,
             selection_mode: Gtk.SelectionMode.NONE,
             margin_bottom: 32
         }, params);
-    
+
         this.parent({
             can_focus: false,
             margin_bottom: params.margin_bottom,
             hexpand: true,
             shadow_type: Gtk.ShadowType.IN
         });
-        
+
         this.list = new Gtk.ListBox({
             can_focus: false,
             hexpand: true,
@@ -123,10 +122,10 @@ var Section = new Lang.Class({
             width_request: params.width_request
         });
         this.add(this.list);
-        
+
         this.list.set_header_func(this._header_func);
     },
-    
+
     _header_func: function (row, before) {
         if (before) {
             row.set_header(
@@ -134,7 +133,7 @@ var Section = new Lang.Class({
             );
         }
     },
-    
+
     /**
      * Add and return new row with a Gtk.Grid child
      *
@@ -146,10 +145,10 @@ var Section = new Lang.Class({
         this.list.add(row);
         return row;
     },
-    
+
     /**
      * Add a new row to @section and return the row. @summary will be placed on
-     * top of @description (dimmed) on the left, @widget to the right of them. 
+     * top of @description (dimmed) on the left, @widget to the right of them.
      *
      * @param {String} summary - A short summary for the item
      * @param {String} description - A short description for the item
@@ -160,7 +159,7 @@ var Section = new Lang.Class({
         let row = this.addRow(setting);
         return row;
     },
-    
+
     /**
      * Add a new row to @section, populated from the Schema for @settings and
      * the key @keyName. A Gtk.Widget will be chosen for @keyName based on it's
@@ -176,7 +175,7 @@ var Section = new Lang.Class({
         let range = key.get_range().deep_unpack()[0];
         let type = key.get_value_type().dup_string();
         type = (range !== "type") ? range : type;
-        
+
         if (widget !== undefined) {
             widget = new widget(settings, keyName);
         } else if (type === "b") {
@@ -196,7 +195,7 @@ var Section = new Lang.Class({
         } else {
             widget = new GSettingsWidget.OtherSetting(settings, keyName);
         }
-        
+
         return this.addSetting(
             key.get_summary(),
             key.get_description(),
@@ -210,7 +209,7 @@ var Section = new Lang.Class({
 var Page = new Lang.Class({
     Name: "GSConnectPreferencesPage",
     Extends: Gtk.ScrolledWindow,
-    
+
     _init: function (params={}) {
         params = Object.assign({
             can_focus: true,
@@ -219,7 +218,7 @@ var Page = new Lang.Class({
             vexpand: true,
         }, params);
         this.parent(params);
-        
+
         this.box = new Gtk.Box({
             can_focus: false,
             margin_left: 72,
@@ -230,7 +229,7 @@ var Page = new Lang.Class({
         });
         this.add(this.box);
     },
-    
+
     /**
      * Add and return a new section widget. If @title is given, a bold title
      * will be placed above the section.
@@ -251,7 +250,7 @@ var Page = new Lang.Class({
             });
             this.box.pack_start(label, false, true, 0);
         }
-        
+
         if (!section) { section = new Section(params); }
         this.box.add(section);
         return section;
@@ -263,27 +262,27 @@ var Page = new Lang.Class({
 var Stack = new Lang.Class({
     Name: "GSConnectPreferencesStack",
     Extends: Gtk.Stack,
-    
+
     _init: function (params={}) {
         params = Object.assign({
             transition_type: Gtk.StackTransitionType.SLIDE_LEFT_RIGHT
         }, params);
-        
+
         this.parent(params);
-        
+
         this.switcher = new Gtk.StackSwitcher({
             halign: Gtk.Align.CENTER,
             stack: this
         });
         this.switcher.show_all();
     },
-    
+
     addPage: function (id, title, params={}) {
         let page = new Page(params);
         this.add_titled(page, id, title);
         return page;
     },
-    
+
     removePage: function (id) {
         let page = this.get_child_by_name(id);
         this.remove(page);

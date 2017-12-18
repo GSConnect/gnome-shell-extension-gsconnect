@@ -19,6 +19,7 @@ function getPath() {
 var APP_ID = "org.gnome.Shell.Extensions.GSConnect";
 var METADATA = JSON.parse(GLib.file_get_contents(PREFIX + "/metadata.json")[1]);
 var DATADIR = getPath();
+var LOCALEDIR = DATADIR + "/locale";
 var CACHE_DIR = GLib.get_user_cache_dir() + "/gsconnect";
 var CONFIG_DIR = GLib.get_user_config_dir() + "/gsconnect";
 var RUNTIME_DIR = GLib.get_user_runtime_dir() + "/gsconnect";
@@ -39,6 +40,20 @@ function startPreferences () {
     } catch (e) {
         log("Error spawning GSConnect settings: " + e);
     }
+};
+
+
+/**
+ * Init Gettext
+ */
+function initGettext() {
+    Gettext.bindtextdomain(APP_ID, LOCALEDIR);
+    Gettext.textdomain(APP_ID);
+
+    let gettext = imports.gettext;
+    window._ = gettext.gettext;
+    window.C_ = gettext.pgettext;
+    window.N_ = function(x) { return x; }
 };
 
 
@@ -252,7 +267,7 @@ function initConfiguration () {
     try {
         generateEncryption();
         installService();
-        Gettext.bindtextdomain(APP_ID, PREFIX + "/locale");
+        initGettext();
         );
         Gtk.IconTheme.get_default().add_resource_path("/icons");
     } catch (e) {

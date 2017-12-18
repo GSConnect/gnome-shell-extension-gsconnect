@@ -1,14 +1,10 @@
 "use strict";
 
-// Imports
-const Lang = imports.lang;
-const Gettext = imports.gettext.domain("org.gnome.Shell.Extensions.GSConnect");
-const _ = Gettext.gettext;
-
 const Atspi = imports.gi.Atspi;
 const Gdk = imports.gi.Gdk;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
+const Lang = imports.lang;
 
 // Local Imports
 function getPath() {
