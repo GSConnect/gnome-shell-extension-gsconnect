@@ -793,7 +793,7 @@ var ContactsCache = new Lang.Class({
 
             let proc = GLib.spawn_async_with_pipes(
                 null,
-                ["python3", Common.PREFIX + "/folks-cache.py"],
+                ["python3", Common.DATADIR + "/folks-cache.py"],
                 envp,
                 GLib.SpawnFlags.SEARCH_PATH,
                 null

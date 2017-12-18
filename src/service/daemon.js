@@ -474,7 +474,7 @@ var Daemon = new Lang.Class({
             GLib.mkdir_with_parents(path, 493); // 0755 in octal
 
             script.make_symbolic_link(
-                Common.PREFIX + "/nautilus-gsconnect.py",
+                Common.DATADIR + "/nautilus-gsconnect.py",
                 null
             );
 
@@ -486,7 +486,7 @@ var Daemon = new Lang.Class({
     },
 
     toggleWebExtension: function () {
-        let nmhPath = Common.PREFIX + "/service/nativeMessagingHost.js";
+        let nmhPath = Common.DATADIR + "/service/nativeMessagingHost.js";
 
         let google = {
             "name": "org.gnome.shell.extensions.gsconnect",
@@ -537,7 +537,7 @@ var Daemon = new Lang.Class({
      */
     _watchDaemon: function () {
         let daemonFile = Gio.File.new_for_path(
-            Common.PREFIX + "/service/daemon.js"
+            Common.DATADIR + "/service/daemon.js"
         );
         this.daemonMonitor = daemonFile.monitor(
             Gio.FileMonitorFlags.WATCH_MOVES,

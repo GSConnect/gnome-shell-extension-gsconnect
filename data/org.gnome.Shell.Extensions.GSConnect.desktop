@@ -1,7 +1,7 @@
 [Desktop Entry]
 Type=Application
 Name=GSConnect
-Exec=/bin/sh -c "gjs @PREFIX@/service/daemon.js"
+Exec=/bin/sh -c "gjs @DATADIR@/service/daemon.js"
 Terminal=false
 Hidden=false
 NoDisplay=true

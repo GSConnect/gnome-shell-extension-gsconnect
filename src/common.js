@@ -17,8 +17,8 @@ function getPath() {
 }
 
 var APP_ID = "org.gnome.Shell.Extensions.GSConnect";
-var PREFIX = getPath();
 var METADATA = JSON.parse(GLib.file_get_contents(PREFIX + "/metadata.json")[1]);
+var DATADIR = getPath();
 var CACHE_DIR = GLib.get_user_cache_dir() + "/gsconnect";
 var CONFIG_DIR = GLib.get_user_config_dir() + "/gsconnect";
 var RUNTIME_DIR = GLib.get_user_runtime_dir() + "/gsconnect";
@@ -46,7 +46,7 @@ function startPreferences () {
  * Init GSettings
  */
 var SchemaSource = Gio.SettingsSchemaSource.new_from_directory(
-    PREFIX + "/schemas",
+    DATADIR + "/schemas",
     Gio.SettingsSchemaSource.get_default(),
     false
 );
@@ -59,7 +59,7 @@ var Settings = new Gio.Settings({
 /**
  * Init GResources
  */
-var Resources = Gio.resource_load(PREFIX + "/" + APP_ID + ".data.gresource");
+var Resources = Gio.resource_load(DATADIR + "/" + APP_ID + ".data.gresource");
 Resources._register();
 
 
@@ -217,7 +217,7 @@ function installService () {
     let serviceFile = APP_ID + ".service";
     let serviceBytes = Resources.lookup_data(
         "/dbus/" + serviceFile, 0
-    ).toArray().toString().replace("@PREFIX@", PREFIX);
+    ).toArray().toString().replace("@DATADIR@", DATADIR);
 
     GLib.mkdir_with_parents(serviceDir, 493);
     GLib.file_set_contents(serviceDir + serviceFile, serviceBytes);
@@ -227,7 +227,7 @@ function installService () {
     let appFile = APP_ID + ".desktop";
     let appBytes = Resources.lookup_data(
         "/dbus/" + appFile, 0
-    ).toArray().toString().replace("@PREFIX@", PREFIX);
+    ).toArray().toString().replace("@DATADIR@", DATADIR);
 
     GLib.mkdir_with_parents(appDir, 493);
     GLib.file_set_contents(appDir + appFile, appBytes);
