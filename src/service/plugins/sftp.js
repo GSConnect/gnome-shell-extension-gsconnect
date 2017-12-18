@@ -197,11 +197,16 @@ var Plugin = new Lang.Class({
             if (data === null) {
                 log("SFTP Error: pipe closed");
                 this.unmount();
-            } else if (data.toString() === "remote host has disconnected") {
-                log("SFTP Error: remote host has disconnected");
-                this.unmount();
             } else {
-                log("SFTP stderr: " + data.toString());
+                switch (data.toString()) {
+                    case "remote host has disconnected":
+                        Common.debug("Sftp: disconnected");
+                        this.unmount();
+                    case "Timeout waiting for prompt":
+                        this.unmount("Sftp: timeout");
+                    default:
+                        log("Sftp: " + data.toString());
+                }
             }
         });
     },
