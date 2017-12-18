@@ -36,13 +36,6 @@ var MessageDirection = {
  *      http://tango.freedesktop.org/Tango_Icon_Theme_Guidelines#Color_Palette
  *      http://leaverou.github.io/contrast-ratio/
  */
-var MessageStyle = new Gtk.CssProvider();
-//MessageStyle.load_from_resource("/style/telephony.css");
-MessageStyle.load_from_data(
-    Common.Resources.lookup_data("/style/telephony.css", 0).toArray().toString()
-);
-
-
 var shuffleColor = Array.shuffler([
     "contact-color-butter1",
     "contact-color-butter2",
@@ -179,7 +172,6 @@ function getDefaultAvatar (contact) {
         valign: Gtk.Align.START
     });
     let avatarStyle = avatar.get_style_context();
-    avatarStyle.add_provider(MessageStyle, 0);
     avatarStyle.add_class("contact-avatar");
     avatarStyle.add_class(contact.color || shuffleColor());
 
@@ -635,7 +627,6 @@ var MessageView = new Lang.Class({
             halign: (direction) ? Gtk.Align.START : Gtk.Align.END
         });
         let messageBubbleStyle = messageBubble.get_style_context();
-        messageBubbleStyle.add_provider(MessageStyle, 0);
         messageBubbleStyle.add_class("message-bubble");
         messageBubbleStyle.add_class(contact.color);
         row.messages.add(messageBubble);
@@ -653,11 +644,6 @@ var MessageView = new Lang.Class({
             wrap_mode: Pango.WrapMode.WORD_CHAR,
             xalign: (direction) ? 0 : 1
         });
-        let messageContentStyle = messageContent.get_style_context();
-        messageContentStyle.add_provider(
-            MessageStyle,
-            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
-        );
         messageContent.connect("activate-link", (label, uri) => {
             Gtk.show_uri_on_window(
                 this.get_toplevel(),

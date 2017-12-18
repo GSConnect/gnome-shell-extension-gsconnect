@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
-  <gresource prefix="/dbus">
+  <gresource prefix="/org/gnome/Shell/Extensions/GSConnect">
+    <file compressed="true">application.css</file>
+    <!-- DBus Files -->
     <file compressed="true">org.gnome.Shell.Extensions.GSConnect.desktop</file>
     <file compressed="true">org.gnome.Shell.Extensions.GSConnect.service</file>
     <file compressed="true" preprocess="xml-stripblanks">org.gnome.Shell.Extensions.GSConnect.xml</file>
-  </gresource>
-  <gresource prefix="/org/gnome/Shell/Extensions/GSConnect">
+    <!-- Application Icons -->
     <file compressed="true" preprocess="xml-stripblanks">org.gnome.Shell.Extensions.GSConnect.svg</file>
     <file compressed="true" preprocess="xml-stripblanks">org.gnome.Shell.Extensions.GSConnect-symbolic.svg</file>
     <!-- Device Icons c/o Numix -->
@@ -32,8 +33,5 @@
     <!-- SMS Icons -->
     <file compressed="true" preprocess="xml-stripblanks">sms-send.svg</file>
     <file compressed="true" preprocess="xml-stripblanks">sms-symbolic.svg</file>
-  </gresource>
-  <gresource prefix="/style">
-    <file compressed="true">telephony.css</file>
   </gresource>
 </gresources>

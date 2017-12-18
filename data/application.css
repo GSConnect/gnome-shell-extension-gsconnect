@@ -7,8 +7,8 @@
     border-radius: 1em;
 }
 
-*:link { color: inherit; }
-*:visited { color: inherit; }
+.message-bubble *:link { color: inherit; }
+.message-bubble *:visited { color: inherit; }
 
 .contact-color-outgoing { color: #101010; background-color: #d3d7cf; }
 
