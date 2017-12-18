@@ -17,9 +17,11 @@ function getPath() {
 }
 
 var APP_ID = "org.gnome.Shell.Extensions.GSConnect";
-var METADATA = JSON.parse(GLib.file_get_contents(PREFIX + "/metadata.json")[1]);
+var APP_PATH = "/org/gnome/Shell/Extensions/GSConnect";
 var DATADIR = getPath();
 var LOCALEDIR = DATADIR + "/locale";
+
+var METADATA = JSON.parse(GLib.file_get_contents(DATADIR + "/metadata.json")[1]);
 var CACHE_DIR = GLib.get_user_cache_dir() + "/gsconnect";
 var CONFIG_DIR = GLib.get_user_config_dir() + "/gsconnect";
 var RUNTIME_DIR = GLib.get_user_runtime_dir() + "/gsconnect";
@@ -82,9 +84,8 @@ Resources._register();
  * Common DBus Interface Nodes, Proxies and functions
  */
 var DBusIface = new Gio.DBusNodeInfo.new_for_xml(
-    Resources.lookup_data("/dbus/" + APP_ID + ".xml", 0).toArray().toString()
+    Gio.resources_lookup_data(APP_PATH + "/" + APP_ID + ".xml", 0).toArray().toString()
 );
-
 DBusIface.nodes.forEach((ifaceInfo) => { ifaceInfo.cache_build(); });
 
 
@@ -268,8 +269,8 @@ function initConfiguration () {
         generateEncryption();
         installService();
         initGettext();
+        Gtk.IconTheme.get_default().add_resource_path(APP_PATH);
         );
-        Gtk.IconTheme.get_default().add_resource_path("/icons");
     } catch (e) {
         log("Error initializing configuration: " + e);
         return false;

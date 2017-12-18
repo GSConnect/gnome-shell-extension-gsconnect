@@ -5,10 +5,10 @@
     <file compressed="true">org.gnome.Shell.Extensions.GSConnect.service</file>
     <file compressed="true" preprocess="xml-stripblanks">org.gnome.Shell.Extensions.GSConnect.xml</file>
   </gresource>
-  <gresource prefix="/icons">
+  <gresource prefix="/org/gnome/Shell/Extensions/GSConnect">
     <file compressed="true" preprocess="xml-stripblanks">org.gnome.Shell.Extensions.GSConnect.svg</file>
     <file compressed="true" preprocess="xml-stripblanks">org.gnome.Shell.Extensions.GSConnect-symbolic.svg</file>
-    <!-- Status Icon Fallbacks c/o Numix -->
+    <!-- Device Icons c/o Numix -->
     <file compressed="true" preprocess="xml-stripblanks">computer.svg</file>
     <file compressed="true" preprocess="xml-stripblanks">desktop-connected.svg</file>
     <file compressed="true" preprocess="xml-stripblanks">desktop-disconnected.svg</file>
