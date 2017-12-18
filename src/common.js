@@ -233,7 +233,7 @@ function installService () {
     let serviceDir = GLib.get_user_data_dir() + "/dbus-1/services/";
     let serviceFile = APP_ID + ".service";
     let serviceBytes = Resources.lookup_data(
-        "/dbus/" + serviceFile, 0
+        APP_PATH + "/" + serviceFile, 0
     ).toArray().toString().replace("@DATADIR@", DATADIR);
 
     GLib.mkdir_with_parents(serviceDir, 493);
@@ -243,7 +243,7 @@ function installService () {
     let appDir = GLib.get_user_data_dir() + "/applications/";
     let appFile = APP_ID + ".desktop";
     let appBytes = Resources.lookup_data(
-        "/dbus/" + appFile, 0
+        APP_PATH + "/" + appFile, 0
     ).toArray().toString().replace("@DATADIR@", DATADIR);
 
     GLib.mkdir_with_parents(appDir, 493);
