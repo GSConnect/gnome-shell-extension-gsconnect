@@ -233,15 +233,6 @@ function initConfiguration () {
         installService();
         initGettext();
         Gtk.IconTheme.get_default().add_resource_path(APP_PATH);
-        let provider = new Gtk.CssProvider();
-        provider.load_from_file(
-            Gio.File.new_for_uri("resource://" + APP_PATH + "/application.css")
-        );
-        Gtk.StyleContext.add_provider_for_screen(
-            Gdk.Screen.get_default(),
-            provider,
-            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
-        );
     } catch (e) {
         log("Error initializing configuration: " + e);
         return false;

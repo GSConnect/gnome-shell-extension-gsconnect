@@ -5,6 +5,7 @@
 // Imports
 const Gettext = imports.gettext.domain("org.gnome.Shell.Extensions.GSConnect");
 const _ = Gettext.gettext;
+const Gdk = imports.gi.Gdk;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
@@ -179,6 +180,18 @@ var Daemon = new Lang.Class({
         // Ensure permissions are restrictive
         GLib.spawn_command_line_async("chmod 0600 " + Common.CONFIG_DIR + "/private.pem");
         GLib.spawn_command_line_async("chmod 0600 " + Common.CONFIG_DIR + "/certificate.pem");
+    },
+
+    _initCSS: function () {
+        let provider = new Gtk.CssProvider();
+        provider.load_from_file(
+            Gio.File.new_for_uri("resource:///org/gnome/Shell/Extensions/GSConnect/application.css")
+        );
+        Gtk.StyleContext.add_provider_for_screen(
+            Gdk.Screen.get_default(),
+            provider,
+            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+        );
     },
 
     /**
@@ -604,6 +617,8 @@ var Daemon = new Lang.Class({
 
         // Intitialize configuration and choke hard if it fails
         if (!Common.initConfiguration()) { this.vfunc_shutdown(); }
+
+        this._initCSS();
 
         this._watchDaemon();
         this._initNotificationListener();
