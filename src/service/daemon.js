@@ -594,6 +594,14 @@ var Daemon = new Lang.Class({
         this._in = null;
         this._listener = null;
 
+        // Initialize encryption
+        try {
+            this._initEncryption();
+        } catch (e) {
+            log("Error generating TLS Certificate: " + e.message);
+            this.quit();
+        }
+
         // Intitialize configuration and choke hard if it fails
         if (!Common.initConfiguration()) { this.vfunc_shutdown(); }
 

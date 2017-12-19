@@ -230,7 +230,6 @@ function uninstallService () {
  */
 function initConfiguration () {
     try {
-        generateEncryption();
         installService();
         initGettext();
         Gtk.IconTheme.get_default().add_resource_path(APP_PATH);
