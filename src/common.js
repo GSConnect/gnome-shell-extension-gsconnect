@@ -35,15 +35,13 @@ for (let path of [CACHE_DIR, CONFIG_DIR, RUNTIME_DIR]) {
 /**
  * Init Gettext
  */
-function initGettext() {
-    Gettext.bindtextdomain(APP_ID, LOCALEDIR);
-    Gettext.textdomain(APP_ID);
+Gettext.bindtextdomain(APP_ID, LOCALEDIR);
+Gettext.textdomain(APP_ID);
 
-    let gettext = imports.gettext;
-    window._ = gettext.gettext;
-    window.C_ = gettext.pgettext;
-    window.N_ = function(x) { return x; }
-};
+let gettext = imports.gettext;
+window._ = gettext.gettext;
+window.C_ = gettext.pgettext;
+window.N_ = function(x) { return x; }
 
 
 /**
@@ -217,7 +215,6 @@ function uninstallService () {
 function initConfiguration () {
     try {
         installService();
-        initGettext();
         Gtk.IconTheme.get_default().add_resource_path(APP_PATH);
     } catch (e) {
         log("Error initializing configuration: " + e);
