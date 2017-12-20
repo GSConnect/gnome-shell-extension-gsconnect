@@ -14,7 +14,9 @@ function getPath() {
     return Gio.File.new_for_path(m[1]).get_parent().get_path();
 }
 
-imports.searchPath.push(getPath());
+window.ext = { datadir: getPath() };
+
+imports.searchPath.push(ext.datadir);
 
 const Client = imports.client;
 const Common = imports.common;
@@ -49,7 +51,7 @@ var AboutWidget = new Lang.Class({
         });
         this.add(aboutName);
 
-        let aboutVersion = new Gtk.Label({ label: Common.METADATA.version });
+        let aboutVersion = new Gtk.Label({ label: ext.metadata.version });
         this.add(aboutVersion);
 
         let aboutDescription = new Gtk.Label({
@@ -59,7 +61,7 @@ var AboutWidget = new Lang.Class({
 
         let aboutWebsite = new Gtk.Label({
             label: '<a href="%s">%s</a>'.format(
-                Common.METADATA.url,
+                ext.metadata.url,
                 _("GSConnect Website")
             ),
             use_markup: true

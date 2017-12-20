@@ -16,11 +16,15 @@ const PanelMenu = imports.ui.panelMenu;
 const PopupMenu = imports.ui.popupMenu;
 
 // Local Imports
-const Me = imports.misc.extensionUtils.getCurrentExtension();
-const Client = Me.imports.client;
-const Common = Me.imports.common;
-const { Resources, Settings } = Me.imports.common;
-const ShellWidget = Me.imports.widgets.shell;
+window.ext = {
+    datadir: imports.misc.extensionUtils.getCurrentExtension().path
+};
+
+imports.searchPath.push(ext.datadir);
+const Client = imports.client;
+const Common = imports.common;
+const Settings = Common.Settings;
+const ShellWidget = imports.widgets.shell;
 
 
 /**

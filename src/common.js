@@ -1,6 +1,5 @@
 "use strict";
 
-// Imports
 const Lang = imports.lang;
 const Format = imports.format;
 const Gettext = imports.gettext;
@@ -10,24 +9,18 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const Gtk = imports.gi.Gtk;
 
-// Local Imports
-function getPath() {
-    // Diced from: https://github.com/optimisme/gjs-examples/
-    let m = new RegExp("@(.+):\\d+").exec((new Error()).stack.split("\n")[1]);
-    return Gio.File.new_for_path(m[1]).get_parent().get_path();
-}
-
+//
 var APP_ID = "org.gnome.Shell.Extensions.GSConnect";
 var APP_PATH = "/org/gnome/Shell/Extensions/GSConnect";
-var DATADIR = getPath();
-var LOCALEDIR = DATADIR + "/locale";
 
-var METADATA = JSON.parse(GLib.file_get_contents(DATADIR + "/metadata.json")[1]);
-var CACHE_DIR = GLib.get_user_cache_dir() + "/gsconnect";
-var CONFIG_DIR = GLib.get_user_config_dir() + "/gsconnect";
-var RUNTIME_DIR = GLib.get_user_runtime_dir() + "/gsconnect";
+ext.metadata = JSON.parse(GLib.file_get_contents(ext.datadir + "/metadata.json")[1]);
+ext.localedir = GLib.build_filenamev([ext.datadir + "locale"]);
 
-for (let path of [CACHE_DIR, CONFIG_DIR, RUNTIME_DIR]) {
+ext.cachedir = GLib.build_filenamev([GLib.get_user_cache_dir(), "gsconnect"]);
+ext.configdir = GLib.build_filenamev([GLib.get_user_config_dir(), "gsconnect"]);
+ext.runtimedir = GLib.build_filenamev([GLib.get_user_runtime_dir(), "gsconnect"]);
+
+for (let path of [ext.cachedir, ext.configdir, ext.runtimedir]) {
     GLib.mkdir_with_parents(path, 448);
 }
 
@@ -35,7 +28,7 @@ for (let path of [CACHE_DIR, CONFIG_DIR, RUNTIME_DIR]) {
 /**
  * Init Gettext
  */
-Gettext.bindtextdomain(APP_ID, LOCALEDIR);
+Gettext.bindtextdomain(APP_ID, ext.datadir);
 Gettext.textdomain(APP_ID);
 
 let gettext = imports.gettext;
@@ -48,7 +41,7 @@ window.N_ = function(x) { return x; }
  * Init GSettings
  */
 var SchemaSource = Gio.SettingsSchemaSource.new_from_directory(
-    DATADIR + "/schemas",
+    GLib.build_filenamev([ext.datadir, "schemas"]),
     Gio.SettingsSchemaSource.get_default(),
     false
 );
@@ -59,17 +52,22 @@ var Settings = new Gio.Settings({
 
 
 /**
- * Init GResources
+ * Register resources
  */
-var Resources = Gio.resource_load(DATADIR + "/" + APP_ID + ".data.gresource");
-Resources._register();
+var Resource = Gio.Resource.load(
+    GLib.build_filenamev([ext.datadir, APP_ID + ".data.gresource"])
+);
+Resource._register();
 
 
 /**
  * Common DBus Interface Nodes, Proxies and functions
  */
 var DBusIface = new Gio.DBusNodeInfo.new_for_xml(
-    Gio.resources_lookup_data(APP_PATH + "/" + APP_ID + ".xml", 0).toArray().toString()
+    Gio.resources_lookup_data(
+        APP_PATH + "/" + APP_ID + ".xml",
+        0
+    ).toArray().toString()
 );
 DBusIface.nodes.forEach((ifaceInfo) => { ifaceInfo.cache_build(); });
 
@@ -89,7 +87,7 @@ function dbusPathFromId (id) {
  */
 function debug(msg) {
     if (Settings.get_boolean("debug")) {
-        log("[" + METADATA.uuid + "]: " + msg);
+        log("[gsconnect@andyholmes.github.io]: " + msg);
     }
 }
 
@@ -148,23 +146,16 @@ function getDeviceType () {
  *
  * @param {string} [id] - A device Id
  */
-function getCertificate (id=false) {
-    if (id) {
-        let settings = new Gio.Settings({
-            settings_schema: SchemaSource.lookup(APP_ID + ".Device", true),
-            path: "/org/gnome/shell/extensions/gsconnect/device/" + id + "/"
-        });
+function getCertificate (id) {
+    let settings = new Gio.Settings({
+        settings_schema: SchemaSource.lookup(APP_ID + ".Device", true),
+        path: "/org/gnome/shell/extensions/gsconnect/device/" + id + "/"
+    });
 
-        if (settings.get_string("certificate-pem")) {
-            return Gio.TlsCertificate.new_from_pem(
-                settings.get_string("certificate-pem"),
-                -1
-            );
-        }
-    } else {
-        return Gio.TlsCertificate.new_from_files(
-            CONFIG_DIR + "/certificate.pem",
-            CONFIG_DIR + "/private.pem"
+    if (settings.get_string("certificate-pem")) {
+        return Gio.TlsCertificate.new_from_pem(
+            settings.get_string("certificate-pem"),
+            -1
         );
     }
 
@@ -179,9 +170,9 @@ function installService () {
     // DBus service file
     let serviceDir = GLib.get_user_data_dir() + "/dbus-1/services/";
     let serviceFile = APP_ID + ".service";
-    let serviceBytes = Resources.lookup_data(
+    let serviceBytes = Gio.resources_lookup_data(
         APP_PATH + "/" + serviceFile, 0
-    ).toArray().toString().replace("@DATADIR@", DATADIR);
+    ).toArray().toString().replace("@DATADIR@", ext.datadir);
 
     GLib.mkdir_with_parents(serviceDir, 493);
     GLib.file_set_contents(serviceDir + serviceFile, serviceBytes);
@@ -189,9 +180,9 @@ function installService () {
     // Application desktop file
     let appDir = GLib.get_user_data_dir() + "/applications/";
     let appFile = APP_ID + ".desktop";
-    let appBytes = Resources.lookup_data(
+    let appBytes = Gio.resources_lookup_data(
         APP_PATH + "/" + appFile, 0
-    ).toArray().toString().replace("@DATADIR@", DATADIR);
+    ).toArray().toString().replace("@DATADIR@", ext.datadir);
 
     GLib.mkdir_with_parents(appDir, 493);
     GLib.file_set_contents(appDir + appFile, appBytes);

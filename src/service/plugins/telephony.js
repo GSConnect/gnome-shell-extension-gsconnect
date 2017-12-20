@@ -16,14 +16,7 @@ try {
 }
 
 // Local Imports
-function getPath() {
-    // Diced from: https://github.com/optimisme/gjs-examples/
-    let m = new RegExp("@(.+):\\d+").exec((new Error()).stack.split("\n")[1]);
-    let p = Gio.File.new_for_path(m[1]).get_parent().get_parent().get_parent();
-    return p.get_path();
-}
-
-imports.searchPath.push(getPath());
+imports.searchPath.push(ext.datadir);
 
 const Common = imports.common;
 const Sound = imports.sound;
@@ -639,7 +632,7 @@ var ContactsCache = new Lang.Class({
 
         this.provider = "call-start-symbolic";
 
-        this._dir =  Common.CACHE_DIR + "/contacts";
+        this._dir =  ext.cachedir + "/contacts";
         this._file = Gio.File.new_for_path(this._dir + "/contacts.json");
         GLib.mkdir_with_parents(this._dir, 448);
 
@@ -789,7 +782,7 @@ var ContactsCache = new Lang.Class({
 
             let proc = GLib.spawn_async_with_pipes(
                 null,
-                ["python3", Common.DATADIR + "/folks-cache.py"],
+                ["python3", ext.datadir + "/folks-cache.py"],
                 envp,
                 GLib.SpawnFlags.SEARCH_PATH,
                 null

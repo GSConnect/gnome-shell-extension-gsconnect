@@ -17,7 +17,9 @@ function getPath() {
     return Gio.File.new_for_path(m[1]).get_parent().get_parent().get_path();
 }
 
-imports.searchPath.push(getPath());
+window.ext = { datadir: getPath() };
+
+imports.searchPath.push(ext.datadir);
 
 const Common = imports.common;
 const Device = imports.service.device;
@@ -88,7 +90,10 @@ var Daemon = new Lang.Class({
 
     // Properties
     get certificate () {
-        return Common.getCertificate();
+        return Gio.TlsCertificate.new_from_files(
+            ext.configdir + "/certificate.pem",
+            ext.configdir + "/private.pem"
+        );
     },
 
     get devices () {
@@ -148,12 +153,12 @@ var Daemon = new Lang.Class({
      */
     _initEncryption: function () {
         let hasPrivateKey = GLib.file_test(
-            Common.CONFIG_DIR + "/private.pem",
+            ext.configdir + "/private.pem",
             GLib.FileTest.EXISTS
         );
 
         let hasCertificate = GLib.file_test(
-            Common.CONFIG_DIR + "/certificate.pem",
+            ext.configdir + "/certificate.pem",
             GLib.FileTest.EXISTS
         );
 
@@ -166,7 +171,7 @@ var Daemon = new Lang.Class({
             ];
 
             let proc = GLib.spawn_sync(
-                Common.CONFIG_DIR,
+                ext.configdir,
                 cmd,
                 null,
                 GLib.SpawnFlags.SEARCH_PATH,
@@ -175,14 +180,14 @@ var Daemon = new Lang.Class({
         }
 
         // Ensure permissions are restrictive
-        GLib.spawn_command_line_async("chmod 0600 " + Common.CONFIG_DIR + "/private.pem");
-        GLib.spawn_command_line_async("chmod 0600 " + Common.CONFIG_DIR + "/certificate.pem");
+        GLib.spawn_command_line_async("chmod 0600 " + ext.configdir + "/private.pem");
+        GLib.spawn_command_line_async("chmod 0600 " + ext.configdir + "/certificate.pem");
     },
 
     _initCSS: function () {
         let provider = new Gtk.CssProvider();
         provider.load_from_file(
-            Gio.File.new_for_uri("resource:///org/gnome/Shell/Extensions/GSConnect/application.css")
+            Gio.File.new_for_uri("resource://" + Common.APP_PATH + "/application.css")
         );
         Gtk.StyleContext.add_provider_for_screen(
             Gdk.Screen.get_default(),
@@ -518,7 +523,7 @@ var Daemon = new Lang.Class({
             GLib.mkdir_with_parents(path, 493); // 0755 in octal
 
             script.make_symbolic_link(
-                Common.DATADIR + "/nautilus-gsconnect.py",
+                ext.datadir + "/nautilus-gsconnect.py",
                 null
             );
 
@@ -530,7 +535,7 @@ var Daemon = new Lang.Class({
     },
 
     toggleWebExtension: function () {
-        let nmhPath = Common.DATADIR + "/service/nativeMessagingHost.js";
+        let nmhPath = ext.datadir + "/service/nativeMessagingHost.js";
 
         let google = {
             "name": "org.gnome.shell.extensions.gsconnect",
@@ -581,7 +586,7 @@ var Daemon = new Lang.Class({
      */
     _watchDaemon: function () {
         let daemonFile = Gio.File.new_for_path(
-            Common.DATADIR + "/service/daemon.js"
+            ext.datadir + "/service/daemon.js"
         );
         this.daemonMonitor = daemonFile.monitor(
             Gio.FileMonitorFlags.WATCH_MOVES,

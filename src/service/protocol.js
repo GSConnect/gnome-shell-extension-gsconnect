@@ -6,13 +6,7 @@ const GObject = imports.gi.GObject;
 const Lang = imports.lang;
 
 // Local Imports
-function getPath() {
-    // Diced from: https://github.com/optimisme/gjs-examples/
-    let m = new RegExp("@(.+):\\d+").exec((new Error()).stack.split("\n")[1]);
-    return Gio.File.new_for_path(m[1]).get_parent().get_parent().get_path();
-}
-
-imports.searchPath.push(getPath());
+imports.searchPath.push(ext.datadir);
 
 const Common = imports.common;
 

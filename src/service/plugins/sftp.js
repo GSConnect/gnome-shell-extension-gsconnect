@@ -7,14 +7,7 @@ const Gtk = imports.gi.Gtk;
 const Lang = imports.lang;
 
 // Local Imports
-function getPath() {
-    // Diced from: https://github.com/optimisme/gjs-examples/
-    let m = new RegExp("@(.+):\\d+").exec((new Error()).stack.split("\n")[1]);
-    let p = Gio.File.new_for_path(m[1]).get_parent().get_parent().get_parent();
-    return p.get_path();
-}
-
-imports.searchPath.push(getPath());
+imports.searchPath.push(ext.datadir);
 
 const Common = imports.common;
 const Protocol = imports.service.protocol;
@@ -79,11 +72,8 @@ var Plugin = new Lang.Class({
     _prepare: function () {
         Common.debug("SFTP: _prepare()");
 
-        this._path = Common.RUNTIME_DIR + "/" + this.device.id;
-
-        if (!GLib.file_test(this._path, GLib.FileTest.IS_DIR)) {
-            GLib.mkdir_with_parents(this._path, 493);
-        }
+        this._path = ext.runtimedir + "/" + this.device.id;
+        GLib.mkdir_with_parents(this._path, 448);
 
         let dir = Gio.File.new_for_path(this._path);
         let info = dir.query_info("unix::uid,unix::gid", 0, null);
@@ -115,7 +105,7 @@ var Plugin = new Lang.Class({
             // Do not use ~/.ssh/config
             "-F", "/dev/null",
             // Sketchy?
-            "-o", "IdentityFile=" + Common.CONFIG_DIR + "/private.pem",
+            "-o", "IdentityFile=" + ext.configdir + "/private.pem",
             // Don't prompt for new host confirmation (we know the host)
             "-o", "StrictHostKeyChecking=no",
             // Prevent storing as a known host

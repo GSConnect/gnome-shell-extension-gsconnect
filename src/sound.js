@@ -13,13 +13,7 @@ GIRepository.Repository.prepend_search_path("/usr/lib64/gnome-shell");
 GIRepository.Repository.prepend_library_path("/usr/lib64/gnome-shell");
 
 // Local Imports
-function getPath() {
-    // Diced from: https://github.com/optimisme/gjs-examples/
-    let m = new RegExp("@(.+):\\d+").exec((new Error()).stack.split("\n")[1]);
-    return Gio.File.new_for_path(m[1]).get_parent().get_path();
-}
-
-imports.searchPath.push(getPath());
+imports.searchPath.push(ext.datadir);
 
 const Common = imports.common;
 

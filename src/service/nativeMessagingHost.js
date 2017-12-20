@@ -16,7 +16,9 @@ function getPath() {
     return Gio.File.new_for_path(m[1]).get_parent().get_parent().get_path();
 }
 
-imports.searchPath.push(getPath());
+window.ext = { datadir: getPath() };
+
+imports.searchPath.push(ext.datadir);
 
 const Common = imports.common;
 const Client = imports.client;
