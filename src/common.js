@@ -33,20 +33,6 @@ for (let path of [CACHE_DIR, CONFIG_DIR, RUNTIME_DIR]) {
 
 
 /**
- * Open the extension preferences window
- */
-function startPreferences () {
-    try {
-        GLib.spawn_command_line_async(
-            "gnome-shell-extension-prefs gsconnect@andyholmes.github.io"
-        );
-    } catch (e) {
-        log("Error spawning GSConnect settings: " + e);
-    }
-};
-
-
-/**
  * Init Gettext
  */
 function initGettext() {

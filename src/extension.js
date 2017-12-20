@@ -531,10 +531,11 @@ var SystemIndicator = new Lang.Class({
         );
         this.extensionMenu.menu.addMenuItem(this.devicesSection);
 
-        this.extensionMenu.menu.addAction(
-            _("Mobile Settings"),
-            Common.startPreferences
-        );
+        this.extensionMenu.menu.addAction(_("Mobile Settings"), () => {
+            GLib.spawn_command_line_async(
+                "gnome-shell-extension-prefs gsconnect@andyholmes.github.io"
+            );
+        });
 
         Main.panel.statusArea.aggregateMenu.menu.addMenuItem(this.menu, 4);
 
