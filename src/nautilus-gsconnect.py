@@ -9,6 +9,9 @@ https://github.com/Bajoja/indicator-kdeconnect/blob/master/data/extensions/kdeco
 
 import gi
 gi.require_version('Nautilus', '3.0')
+gi.require_version('Gio', '2.0')
+gi.require_version('GLib', '2.0')
+gi.require_version('GObject', '2.0')
 from gi.repository import Nautilus, Gio, GLib, GObject
 
 import gettext
