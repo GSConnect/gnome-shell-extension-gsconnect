@@ -1,12 +1,13 @@
 "use strict";
 
-const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
-const GObject = imports.gi.GObject;
 const Lang = imports.lang;
 const Tweener = imports.tweener.tweener;
 
+const Gio = imports.gi.Gio;
 const GIRepository = imports.gi.GIRepository;
+const GLib = imports.gi.GLib;
+const GObject = imports.gi.GObject;
+
 GIRepository.Repository.prepend_search_path("/usr/lib/gnome-shell");
 GIRepository.Repository.prepend_library_path("/usr/lib/gnome-shell");
 GIRepository.Repository.prepend_search_path("/usr/lib64/gnome-shell");

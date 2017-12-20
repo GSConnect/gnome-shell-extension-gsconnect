@@ -1,8 +1,9 @@
 "use strict";
 
+const Lang = imports.lang;
+
 const Gio = imports.gi.Gio;
 const GObject = imports.gi.GObject;
-const Lang = imports.lang;
 
 // Local Imports
 imports.searchPath.push(ext.datadir);

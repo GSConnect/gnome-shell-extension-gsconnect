@@ -2,13 +2,14 @@
 
 "use strict";
 
+const Lang = imports.lang;
+const System = imports.system;
+
 const Gdk = imports.gi.Gdk;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
-const Lang = imports.lang;
-const System = imports.system;
 
 // Local Imports
 function getPath() {

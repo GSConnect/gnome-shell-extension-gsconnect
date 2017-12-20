@@ -3,11 +3,12 @@
 "use strict";
 
 const ByteArray = imports.byteArray;
+const Lang = imports.lang;
+const System = imports.system;
+
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
-const Lang = imports.lang;
-const System = imports.system;
 
 // Local Imports
 function getPath() {

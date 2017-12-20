@@ -1,10 +1,11 @@
 "use strict";
 
 const Cairo = imports.cairo;
+const Lang = imports.lang;
+
 const Clutter = imports.gi.Clutter;
 const Gio = imports.gi.Gio;
 const Gtk = imports.gi.Gtk;
-const Lang = imports.lang;
 const Mainloop = imports.mainloop;
 const Pango = imports.gi.Pango;
 const St = imports.gi.St;

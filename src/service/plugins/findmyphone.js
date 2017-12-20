@@ -1,9 +1,10 @@
 "use strict";
 
+const Lang = imports.lang;
+
 const Gdk = imports.gi.Gdk;
 const Gio = imports.gi.Gio;
 const Gtk = imports.gi.Gtk;
-const Lang = imports.lang;
 
 // Local Imports
 imports.searchPath.push(ext.datadir);

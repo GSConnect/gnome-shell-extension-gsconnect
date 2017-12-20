@@ -1,11 +1,12 @@
 "use strict";
 
+const Lang = imports.lang;
+
 const GdkPixbuf = imports.gi.GdkPixbuf;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
-const Lang = imports.lang;
 
 try {
     var GData = imports.gi.GData;
