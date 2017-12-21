@@ -9,6 +9,9 @@ const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
 try {
+    imports.gi.versions.GData = "0.0";
+    imports.gi.versions.Goa = "1.0";
+
     var GData = imports.gi.GData;
     var Goa = imports.gi.Goa;
 } catch (e) {
