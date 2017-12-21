@@ -2,6 +2,16 @@
 
 const Lang = imports.lang;
 
+imports.gi.versions.Clutter = "1.0";
+imports.gi.versions.Gio = "2.0";
+imports.gi.versions.GLib = "2.0";
+imports.gi.versions.GObject = "2.0";
+imports.gi.versions.Gtk = "3.0";
+imports.gi.versions.Meta = "1";
+imports.gi.versions.Pango = "1.0";
+imports.gi.versions.Shell = "0.1";
+imports.gi.versions.St = "1.0";
+
 const Clutter = imports.gi.Clutter;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;

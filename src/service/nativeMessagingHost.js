@@ -6,6 +6,11 @@ const ByteArray = imports.byteArray;
 const Lang = imports.lang;
 const System = imports.system;
 
+imports.gi.versions.Gdk = "3.0";
+imports.gi.versions.Gio = "2.0";
+imports.gi.versions.GLib = "2.0";
+imports.gi.versions.GObject = "2.0";
+
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;

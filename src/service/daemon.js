@@ -5,6 +5,17 @@
 const Lang = imports.lang;
 const System = imports.system;
 
+imports.gi.versions.Atspi = "2.0";
+imports.gi.versions.Gdk = "3.0";
+imports.gi.versions.GdkPixbuf = "2.0";
+imports.gi.versions.Gio = "2.0";
+imports.gi.versions.GIRepository = "2.0";
+imports.gi.versions.GLib = "2.0";
+imports.gi.versions.GObject = "2.0";
+imports.gi.versions.Gtk = "3.0";
+imports.gi.versions.Pango = "1.0";
+imports.gi.versions.UPowerGlib = "1.0";
+
 const Gdk = imports.gi.Gdk;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
