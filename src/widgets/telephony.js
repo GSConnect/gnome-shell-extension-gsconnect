@@ -4,7 +4,6 @@ const Lang = imports.lang;
 
 const Gdk = imports.gi.Gdk;
 const GdkPixbuf = imports.gi.GdkPixbuf;
-const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
@@ -85,6 +84,8 @@ const _urlRegexp = new RegExp(
             _notTrailingJunk +                    // last non-junk char
         ')' +
     ')', 'gi');
+
+var LINK_REGEX = /\b((?:https?:\/\/|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))/gi;
 
 
 /**
@@ -532,8 +533,9 @@ var MessageView = new Lang.Class({
      */
     _linkify: function (text) {
         return text.replace(
-            _urlRegexp,
-            '<a href="$2">$2</a>'
+            //_urlRegexp,
+            LINK_REGEX,
+            '<a href="$1">$1</a>'
         ).replace(
             /&(?!amp;)/g,
             "&amp;"

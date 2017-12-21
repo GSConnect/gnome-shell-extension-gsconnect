@@ -3,7 +3,6 @@
 const Lang = imports.lang;
 
 const Gdk = imports.gi.Gdk;
-const Gio = imports.gi.Gio;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 

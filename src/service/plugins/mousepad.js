@@ -4,7 +4,6 @@ const Lang = imports.lang;
 
 const Atspi = imports.gi.Atspi;
 const Gdk = imports.gi.Gdk;
-const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 
 // Local Imports
