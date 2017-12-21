@@ -86,9 +86,12 @@ var Plugin = new Lang.Class({
             }
         } else if (packet.body.hasOwnProperty("dx") && packet.body.hasOwnProperty("dy")) {
             this.movePointer(packet.body.dx, packet.body.dy);
-        } else if (packet.body.hasOwnProperty("key")) {
-            this.pressKey(packet.body.key);
-        } else if (packet.body.hasOwnProperty("specialKey")) {
+        } else if (packet.body.key) {
+            // This is sometimes sent in advance of a specialKey packet
+            if (packet.body.key !== "\u0000") {
+                this.pressKey(packet.body.key);
+            }
+        } else if (packet.body.specialKey) {
             this.pressSpecialKey(packet.body.specialKey);
         }
     },
