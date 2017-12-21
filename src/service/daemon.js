@@ -89,13 +89,11 @@ var Daemon = new Lang.Class({
 
     _init: function() {
         this.parent({
-            application_id: "org.gnome.Shell.Extensions.GSConnect"
+            application_id: ext.app_id
         });
 
-        let application_name = _("GSConnect");
-
-        GLib.set_prgname(application_name);
-        GLib.set_application_name(application_name);
+        GLib.set_prgname(ext.app_id);
+        GLib.set_application_name(_("GSConnect"));
 
         this.register(null);
     },
@@ -199,7 +197,7 @@ var Daemon = new Lang.Class({
     _initCSS: function () {
         let provider = new Gtk.CssProvider();
         provider.load_from_file(
-            Gio.File.new_for_uri("resource://" + Common.APP_PATH + "/application.css")
+            Gio.File.new_for_uri("resource://" + ext.app_path + "/application.css")
         );
         Gtk.StyleContext.add_provider_for_screen(
             Gdk.Screen.get_default(),
@@ -629,10 +627,8 @@ var Daemon = new Lang.Class({
             this.quit();
         }
 
-        // Intitialize configuration and choke hard if it fails
-        if (!Common.initConfiguration()) { this.vfunc_shutdown(); }
-
         this._initCSS();
+        Gtk.IconTheme.get_default().add_resource_path(ext.app_path);
 
         this._watchDaemon();
         this._initNotificationListener();

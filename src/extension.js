@@ -782,7 +782,8 @@ function init() {
 function enable() {
     Common.debug("enabling extension");
 
-    Common.initConfiguration();
+    Common.installService();
+    Gtk.IconTheme.get_default().add_resource_path(ext.app_path);
     systemIndicator = new SystemIndicator();
 }
 

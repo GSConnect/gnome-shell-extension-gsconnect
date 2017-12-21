@@ -206,7 +206,8 @@ var PrefsWidget = new Lang.Class({
 function init() {
     Common.debug("initializing extension preferences");
 
-    Common.initConfiguration();
+    Common.installService();
+    Gtk.IconTheme.get_default().add_resource_path(ext.app_path);
 }
 
 // Extension Preferences

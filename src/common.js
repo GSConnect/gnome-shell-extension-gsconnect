@@ -10,8 +10,8 @@ const GLib = imports.gi.GLib;
 const Gtk = imports.gi.Gtk;
 
 //
-var APP_ID = "org.gnome.Shell.Extensions.GSConnect";
-var APP_PATH = "/org/gnome/Shell/Extensions/GSConnect";
+ext.app_id = "org.gnome.Shell.Extensions.GSConnect";
+ext.app_path = "/org/gnome/Shell/Extensions/GSConnect";
 
 ext.metadata = JSON.parse(GLib.file_get_contents(ext.datadir + "/metadata.json")[1]);
 ext.localedir = GLib.build_filenamev([ext.datadir + "locale"]);
@@ -28,8 +28,8 @@ for (let path of [ext.cachedir, ext.configdir, ext.runtimedir]) {
 /**
  * Init Gettext
  */
-Gettext.bindtextdomain(APP_ID, ext.datadir);
-Gettext.textdomain(APP_ID);
+Gettext.bindtextdomain(ext.app_id, ext.localedir);
+Gettext.textdomain(ext.app_id);
 
 let gettext = imports.gettext;
 window._ = gettext.gettext;
@@ -47,7 +47,7 @@ var SchemaSource = Gio.SettingsSchemaSource.new_from_directory(
 );
 
 var Settings = new Gio.Settings({
-    settings_schema: SchemaSource.lookup(APP_ID, true)
+    settings_schema: SchemaSource.lookup(ext.app_id, true)
 });
 
 
@@ -55,7 +55,7 @@ var Settings = new Gio.Settings({
  * Register resources
  */
 var Resource = Gio.Resource.load(
-    GLib.build_filenamev([ext.datadir, APP_ID + ".data.gresource"])
+    GLib.build_filenamev([ext.datadir, ext.app_id + ".data.gresource"])
 );
 Resource._register();
 
@@ -65,7 +65,7 @@ Resource._register();
  */
 var DBusIface = new Gio.DBusNodeInfo.new_for_xml(
     Gio.resources_lookup_data(
-        APP_PATH + "/" + APP_ID + ".xml",
+        ext.app_path + "/" + ext.app_id + ".xml",
         0
     ).toArray().toString()
 );
@@ -148,7 +148,7 @@ function getDeviceType () {
  */
 function getCertificate (id) {
     let settings = new Gio.Settings({
-        settings_schema: SchemaSource.lookup(APP_ID + ".Device", true),
+        settings_schema: SchemaSource.lookup(ext.app_id + ".Device", true),
         path: "/org/gnome/shell/extensions/gsconnect/device/" + id + "/"
     });
 
@@ -169,9 +169,9 @@ function getCertificate (id) {
 function installService () {
     // DBus service file
     let serviceDir = GLib.get_user_data_dir() + "/dbus-1/services/";
-    let serviceFile = APP_ID + ".service";
+    let serviceFile = ext.app_id + ".service";
     let serviceBytes = Gio.resources_lookup_data(
-        APP_PATH + "/" + serviceFile, 0
+        ext.app_path + "/" + serviceFile, 0
     ).toArray().toString().replace("@DATADIR@", ext.datadir);
 
     GLib.mkdir_with_parents(serviceDir, 493);
@@ -179,9 +179,9 @@ function installService () {
 
     // Application desktop file
     let appDir = GLib.get_user_data_dir() + "/applications/";
-    let appFile = APP_ID + ".desktop";
+    let appFile = ext.app_id + ".desktop";
     let appBytes = Gio.resources_lookup_data(
-        APP_PATH + "/" + appFile, 0
+        ext.app_path + "/" + appFile, 0
     ).toArray().toString().replace("@DATADIR@", ext.datadir);
 
     GLib.mkdir_with_parents(appDir, 493);
@@ -192,27 +192,11 @@ function installService () {
 function uninstallService () {
     // DBus service file
     let serviceDir = GLib.get_user_data_dir() + "/dbus-1/services/";
-    GLib.unlink(serviceDir + APP_ID + ".service");
+    GLib.unlink(serviceDir + ext.app_id + ".service");
 
     // Application desktop file
     let appDir = GLib.get_user_data_dir() + "/applications/";
-    GLib.unlink(appDir + APP_ID + ".desktop");
-};
-
-
-/**
- * Init the configuration
- */
-function initConfiguration () {
-    try {
-        installService();
-        Gtk.IconTheme.get_default().add_resource_path(APP_PATH);
-    } catch (e) {
-        log("Error initializing configuration: " + e);
-        return false;
-    }
-
-    return true;
+    GLib.unlink(appDir + ext.app_id + ".desktop");
 };
 
 
