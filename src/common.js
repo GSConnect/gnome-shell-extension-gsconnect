@@ -108,32 +108,6 @@ function checkCommand (name) {
 
 
 /**
- * Return whether the local devices is a laptop or desktop
- */
-function getDeviceType () {
-    let proc = GLib.spawn_async_with_pipes(
-        null,                                       // working dir
-        ["cat", "/sys/class/dmi/id/chassis_type"],  // argv
-        null,                                       // envp
-        GLib.SpawnFlags.SEARCH_PATH,                // enables PATH
-        null                                        // child_setup (func)
-    );
-
-    let stdout = new Gio.DataInputStream({
-        base_stream: new Gio.UnixInputStream({ fd: proc[3] })
-    });
-    let chassisInt = stdout.read_line(null)[0].toString();
-    stdout.close(null);
-
-    if (["8", "9", "10", "14"].indexOf(chassisInt) > -1) {
-        return "laptop";
-    } else {
-        return "desktop";
-    }
-};
-
-
-/**
  * Return a Gio.TlsCertificate object, for @id if given, or false if none
  *
  * @param {string} [id] - A device Id

@@ -140,7 +140,19 @@ var Daemon = new Lang.Class({
     },
 
     get type () {
-        return this.identity.body.deviceType;
+        try {
+            let type = Number(
+                GLib.file_get_contents("/sys/class/dmi/id/chassis_type")[1]
+            );
+
+            if ([8, 9, 10, 14].indexOf(type) > -1) {
+                return "laptop";
+            }
+        } catch (e) {
+            Common.debug("Error reading chassis_type: " + e);
+        }
+
+        return "desktop";
     },
 
     /**
@@ -216,7 +228,7 @@ var Daemon = new Lang.Class({
             body: {
                 deviceId: this.certificate.get_common_name(),
                 deviceName: Common.Settings.get_string("public-name"),
-                deviceType: Common.getDeviceType(),
+                deviceType: this.type,
                 tcpPort: this.tcpListener._port,
                 protocolVersion: 7,
                 incomingCapabilities: [],

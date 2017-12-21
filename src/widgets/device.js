@@ -279,7 +279,7 @@ var Stack = new Lang.Class({
     },
 
     _addDaemon: function () {
-        let metadata = DeviceMetadata[Common.getDeviceType()];
+        let metadata = DeviceMetadata[this._parent.daemon.type];
 
         // Default Sidebar Entry
         this.defaultRow = new PreferencesWidget.Row({
