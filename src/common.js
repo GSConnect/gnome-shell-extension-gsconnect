@@ -72,14 +72,6 @@ var DBusIface = new Gio.DBusNodeInfo.new_for_xml(
 DBusIface.nodes.forEach((ifaceInfo) => { ifaceInfo.cache_build(); });
 
 
-function dbusPathFromId (id) {
-    let basePath = "/org/gnome/Shell/Extensions/GSConnect/Device/";
-    let dbusPath = basePath + id.replace(/\W+/g, "_");
-
-    return dbusPath;
-};
-
-
 /**
  * If "debug" is enabled in GSettings, Print a message to the log, prepended
  * with the UUID of the extension.

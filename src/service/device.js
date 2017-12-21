@@ -116,7 +116,10 @@ var Device = new Lang.Class({
             ),
             this
         );
-        this._dbus.export(Gio.DBus.session, Common.dbusPathFromId(this.id));
+        this._dbus.export(
+            Gio.DBus.session,
+            ext.app_path + "/Device/" + id.replace(/\W+/g, "_")
+        );
 
         // A TCP Connection
         if (params.channel) {

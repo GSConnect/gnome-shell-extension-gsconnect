@@ -255,7 +255,7 @@ var Daemon = new Lang.Class({
         Common.Settings.connect("changed::devices", () => {
             //
             for (let id of Common.Settings.get_strv("devices")) {
-                let dbusPath = Common.dbusPathFromId(id);
+                let dbusPath = ext.app_path + "/Device/" + id.replace(/\W+/g, "_");
 
                 if (!this._devices.has(dbusPath)) {
                     let device = new Device.Device({ daemon: this, id: id})
@@ -299,7 +299,7 @@ var Daemon = new Lang.Class({
         if (!this.identity) { return; }
         if (packet.body.deviceId === this.identity.body.deviceId) { return; }
 
-        let dbusPath = Common.dbusPathFromId(packet.body.deviceId);
+        let dbusPath = ext.app_path + "/Device/" + id.replace(/\W+/g, "_");
 
         if (this._devices.has(dbusPath)) {
             log("Daemon: Updating device");
