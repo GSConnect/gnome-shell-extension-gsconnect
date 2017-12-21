@@ -837,7 +837,7 @@ var ConversationWindow = new Lang.Class({
                 let num = this.recipients.size - 1;
 
                 this.headerBar.set_subtitle(
-                    Gettext.ngettext(
+                    N_(
                         "And one other person",
                         "And %d other people",
                         num
