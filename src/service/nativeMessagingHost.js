@@ -113,7 +113,7 @@ var NativeMessagingHost = new Lang.Class({
             return;
         }
 
-        Common.debug("WebExtension: receive: " + JSON.stringify(message));
+        debug("WebExtension: receive: " + JSON.stringify(message));
 
         if (message.type === "devices") {
             this.sendDeviceList();
@@ -131,7 +131,7 @@ var NativeMessagingHost = new Lang.Class({
     send: function (message) {
         try {
             let data = JSON.stringify(message);
-            Common.debug("WebExtension: send: " + JSON.stringify(message));
+            debug("WebExtension: send: " + JSON.stringify(message));
 
             let length = toInt32(data.length);
             this.stdout.write(length, null);
@@ -160,7 +160,7 @@ var NativeMessagingHost = new Lang.Class({
     },
 
     _serviceAppeared: function (conn, name, name_owner) {
-        Common.debug("WebExtension._serviceAppeared()");
+        debug("WebExtension._serviceAppeared()");
 
         if (!this.daemon) {
             this.daemon = new Client.Daemon();
@@ -184,7 +184,7 @@ var NativeMessagingHost = new Lang.Class({
     },
 
     _serviceVanished: function (conn, name) {
-        Common.debug("WebExtension._serviceVanished()");
+        debug("WebExtension._serviceVanished()");
 
         this.send({ type: "connected", data: false });
 

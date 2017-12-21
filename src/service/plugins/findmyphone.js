@@ -40,7 +40,7 @@ var Plugin = new Lang.Class({
     },
 
     _ring: function () {
-        Common.debug("FindMyPhone: _ring()");
+        debug("FindMyPhone: _ring()");
 
         if (this._cancellable || this._dialog) {
             this._closeDialog();
@@ -80,13 +80,13 @@ var Plugin = new Lang.Class({
     },
 
     handlePacket: function (packet) {
-        Common.debug("FindMyPhone: handlePacket()");
+        debug("FindMyPhone: handlePacket()");
 
         this._ring();
     },
 
     find: function () {
-        Common.debug("FindMyPhone: ring()");
+        debug("FindMyPhone: ring()");
 
         if (this.device.connected && this.device.paired) {
             let packet = new Protocol.Packet({

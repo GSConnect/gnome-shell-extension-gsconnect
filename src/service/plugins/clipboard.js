@@ -56,7 +56,7 @@ var Plugin = new Lang.Class({
     },
 
     handlePacket: function (packet) {
-        Common.debug("Clipboard: handlePacket()");
+        debug("Clipboard: handlePacket()");
 
         if (packet.body.content && this.settings.get_boolean("receive-content")) {
             this.receive(packet.body.content);
@@ -64,14 +64,14 @@ var Plugin = new Lang.Class({
     },
 
     receive: function (text) {
-        Common.debug("Clipboard: receive('" + text + "')");
+        debug("Clipboard: receive('" + text + "')");
 
         this._currentContent = text;
         this._clipboard.set_text(text, -1);
     },
 
     send: function (clipboard, text) {
-        Common.debug("Clipboard: send('" + text + "')");
+        debug("Clipboard: send('" + text + "')");
 
         if (text !== this._currentContent) {
             this._currentContent = text;

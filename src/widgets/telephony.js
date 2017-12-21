@@ -116,7 +116,7 @@ var ContactAvatar = new Lang.Class({
         try {
             this.loader.close();
         } catch (e) {
-            Common.debug("Warning: " + e.message);
+            debug("Warning: " + e.message);
         }
 
         let pixbuf = this.loader.get_pixbuf().scale_simple(
@@ -150,7 +150,7 @@ function getAvatar (contact) {
         try {
             avatar = new ContactAvatar({ path: contact.avatar });
         } catch (e) {
-            Common.debug("Error creating avatar: " + e);
+            debug("Error creating avatar: " + e);
             avatar = getDefaultAvatar(contact);
         }
     } else {

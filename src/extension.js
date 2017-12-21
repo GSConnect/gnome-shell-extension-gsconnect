@@ -32,6 +32,7 @@ window.ext = {
 };
 
 imports.searchPath.push(ext.datadir);
+
 const Client = imports.client;
 const Common = imports.common;
 const Settings = Common.Settings;
@@ -63,7 +64,7 @@ var KeybindingManager = new Lang.Class({
     },
 
     add: function(accelerator, callback){
-        Common.debug("KeybindingManager.add(" + accelerator + ")");
+        debug("KeybindingManager.add(" + accelerator + ")");
 
         let action = global.display.grab_accelerator(accelerator);
 
@@ -253,7 +254,7 @@ var DeviceMenu = new Lang.Class({
     },
 
     _sync: function (device) {
-        Common.debug("extension.DeviceMenu._sync()");
+        debug("extension.DeviceMenu._sync()");
 
         if (!this.actor.visible) { return; }
 
@@ -305,18 +306,18 @@ var DeviceMenu = new Lang.Class({
 
     // Plugin Callbacks
     _findmyphoneAction: function (button) {
-        Common.debug("extension.DeviceMenu._findmyphoneAction()");
+        debug("extension.DeviceMenu._findmyphoneAction()");
         this._getTopMenu().close(true);
         this.device.find();
     },
 
     _mousepadAction: function (button) {
-        Common.debug("extension.DeviceMenu._mousepadAction()");
+        debug("extension.DeviceMenu._mousepadAction()");
         this._getTopMenu().close(true);
     },
 
     _runcommandAction: function (button) {
-        Common.debug("extension.DeviceMenu._runcommandAction()");
+        debug("extension.DeviceMenu._runcommandAction()");
 
         if (button.checked) {
             this.sftpButton.checked = false;
@@ -330,7 +331,7 @@ var DeviceMenu = new Lang.Class({
     },
 
     _runcommandList: function () {
-        Common.debug("extension.DeviceMenu._runcommandList()");
+        debug("extension.DeviceMenu._runcommandList()");
 
         let commands = JSON.parse(this.device.runcommand.commands);
 
@@ -360,7 +361,7 @@ var DeviceMenu = new Lang.Class({
     },
 
     _sftpAction: function (button) {
-        Common.debug("extension.DeviceMenu._sftpAction()");
+        debug("extension.DeviceMenu._sftpAction()");
 
         if (button.checked) {
             this.runcommandButton.checked = false;
@@ -395,7 +396,7 @@ var DeviceMenu = new Lang.Class({
     },
 
     _sftpList: function () {
-        Common.debug("extension.DeviceMenu._sftpList()");
+        debug("extension.DeviceMenu._sftpList()");
 
         for (let name in this.device.sftp.directories) {
             let mountItem = new PopupMenu.PopupMenuItem(name);
@@ -424,13 +425,13 @@ var DeviceMenu = new Lang.Class({
     },
 
     _shareAction: function (button) {
-        Common.debug("extension.DeviceMenu._shareAction()");
+        debug("extension.DeviceMenu._shareAction()");
         this._getTopMenu().close(true);
         this.device.share.shareDialog();
     },
 
     _telephonyAction: function (button) {
-        Common.debug("extension.DeviceMenu._telephonyAction()");
+        debug("extension.DeviceMenu._telephonyAction()");
         this._getTopMenu().close(true);
         this.device.telephony.openSms();
     },
@@ -472,7 +473,7 @@ var DeviceIndicator = new Lang.Class({
     },
 
     _sync: function (sender, cb_data) {
-        Common.debug("extension.DeviceIndicator._sync()");
+        debug("extension.DeviceIndicator._sync()");
 
         let { connected, paired, type } = this.device;
 
@@ -565,7 +566,7 @@ var SystemIndicator = new Lang.Class({
     },
 
     _serviceAppeared: function (conn, name, name_owner, cb_data) {
-        Common.debug("extension.SystemIndicator._serviceAppeared()");
+        debug("extension.SystemIndicator._serviceAppeared()");
 
         if (!this.daemon) {
             this.daemon = new Client.Daemon();
@@ -591,7 +592,7 @@ var SystemIndicator = new Lang.Class({
     },
 
     _serviceVanished: function (conn, name, cb_data) {
-        Common.debug("extension.SystemIndicator._serviceVanished()");
+        debug("extension.SystemIndicator._serviceVanished()");
 
         if (this.daemon) {
             this.daemon.destroy();
@@ -691,7 +692,7 @@ var SystemIndicator = new Lang.Class({
     },
 
     _deviceAdded: function (daemon, dbusPath) {
-        Common.debug("extension.SystemIndicator._deviceAdded(" + dbusPath + ")");
+        debug("extension.SystemIndicator._deviceAdded(" + dbusPath + ")");
 
         let device = this.daemon.devices.get(dbusPath);
 
@@ -725,7 +726,7 @@ var SystemIndicator = new Lang.Class({
     },
 
     _deviceRemoved: function (daemon, dbusPath) {
-        Common.debug("extension.SystemIndicator._deviceRemoved(" + dbusPath + ")");
+        debug("extension.SystemIndicator._deviceRemoved(" + dbusPath + ")");
 
         for (let binding of this._indicators[dbusPath].deviceMenu._keybindings) {
             this.keybindingManager.remove(binding);
@@ -776,11 +777,11 @@ var SystemIndicator = new Lang.Class({
 var systemIndicator;
 
 function init() {
-    Common.debug("initializing extension");
+    debug("initializing extension");
 }
 
 function enable() {
-    Common.debug("enabling extension");
+    debug("enabling extension");
 
     Common.installService();
     Gtk.IconTheme.get_default().add_resource_path(ext.app_path);
@@ -788,7 +789,7 @@ function enable() {
 }
 
 function disable() {
-    Common.debug("disabling extension");
+    debug("disabling extension");
 
     GObject.signal_handlers_destroy(Settings);
     systemIndicator.destroy();

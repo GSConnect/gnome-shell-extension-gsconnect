@@ -147,7 +147,7 @@ var Plugin = new Lang.Class({
     },
 
     _listPlayers: function () {
-        Common.debug("MPRIS: _listPlayers()");
+        debug("MPRIS: _listPlayers()");
 
         let players = [];
 
@@ -162,7 +162,7 @@ var Plugin = new Lang.Class({
     },
 
     _updatePlayers: function () {
-        Common.debug("MPRIS: _updatePlayers()");
+        debug("MPRIS: _updatePlayers()");
 
         let players = this._listPlayers();
 
@@ -212,7 +212,7 @@ var Plugin = new Lang.Class({
     },
 
     handlePacket: function (packet) {
-        Common.debug("MPRIS: handlePacket()");
+        debug("MPRIS: handlePacket()");
 
         if (packet.body.hasOwnProperty("requestPlayerList")) {
             this.sendPlayerList();
@@ -226,7 +226,7 @@ var Plugin = new Lang.Class({
     },
 
     sendPlayerList: function () {
-        Common.debug("MPRIS: sendPlayerList()");
+        debug("MPRIS: sendPlayerList()");
 
         let packet = new Protocol.Packet({
             id: 0,
@@ -238,7 +238,7 @@ var Plugin = new Lang.Class({
     },
 
     handleCommand: function (packet) {
-        Common.debug("MPRIS: handleCommand()");
+        debug("MPRIS: handleCommand()");
 
         let player = this._players.get(packet.body.player);
 

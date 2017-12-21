@@ -124,7 +124,7 @@ var Plugin = new Lang.Class({
     },
 
     handlePacket: function (packet) {
-        Common.debug("Lock: handlePacket()");
+        debug("Lock: handlePacket()");
 
         if (packet.type === "kdeconnect.lock.request") {
             let respond = packet.body.hasOwnProperty("requestLocked");

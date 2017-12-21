@@ -83,6 +83,8 @@ function debug(msg) {
     }
 }
 
+window.debug = debug;
+
 
 /**
  * Check if a command is in the PATH

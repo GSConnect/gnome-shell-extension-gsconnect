@@ -164,7 +164,7 @@ var PrefsWidget = new Lang.Class({
     },
 
     _serviceAppeared: function (conn, name, name_owner) {
-        Common.debug("PrefsWidget._serviceAppeared()");
+        debug("PrefsWidget._serviceAppeared()");
 
         if (!this.daemon) {
             this.daemon = new Client.Daemon();
@@ -189,7 +189,7 @@ var PrefsWidget = new Lang.Class({
     },
 
     _serviceVanished: function (conn, name) {
-        Common.debug("PrefsWidget._serviceVanished()");
+        debug("PrefsWidget._serviceVanished()");
 
         if (this.daemon) {
             this.daemon.destroy();
@@ -204,7 +204,7 @@ var PrefsWidget = new Lang.Class({
 
 
 function init() {
-    Common.debug("initializing extension preferences");
+    debug("initializing extension preferences");
 
     Common.installService();
     Gtk.IconTheme.get_default().add_resource_path(ext.app_path);
@@ -212,7 +212,7 @@ function init() {
 
 // Extension Preferences
 function buildPrefsWidget() {
-    Common.debug("Prefs: buildPrefsWidget()");
+    debug("Prefs: buildPrefsWidget()");
 
     let prefsWidget = new PrefsWidget();
 

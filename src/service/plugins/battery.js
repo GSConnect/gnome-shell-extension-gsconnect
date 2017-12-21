@@ -126,7 +126,7 @@ var Plugin = new Lang.Class({
 
             this.send();
         } catch(e) {
-            Common.debug("Battery: Failed to initialize UPower: " + e);
+            debug("Battery: Failed to initialize UPower: " + e);
             GObject.signal_handlers_destroy(this._battery);
             delete this._battery;
         }
@@ -177,7 +177,7 @@ var Plugin = new Lang.Class({
     get time() { return this._time; },
 
     handlePacket: function (packet) {
-        Common.debug("Battery: handlePacket()");
+        debug("Battery: handlePacket()");
 
         if (packet.type === "kdeconnect.battery" && this.settings.get_boolean("receive-statistics")) {
             this.receive(packet);
@@ -190,7 +190,7 @@ var Plugin = new Lang.Class({
      * Receive a remote battery update and disseminate the statistics
      */
     receive: function (packet) {
-        Common.debug("Battery: receive()");
+        debug("Battery: receive()");
 
         if (packet.body.thresholdEvent > 0) {
             this.threshold();
@@ -220,7 +220,7 @@ var Plugin = new Lang.Class({
      * Request the remote battery statistics
      */
     request: function () {
-        Common.debug("Battery: request()");
+        debug("Battery: request()");
 
         let packet = new Protocol.Packet({
             id: 0,
@@ -235,7 +235,7 @@ var Plugin = new Lang.Class({
      * Report the local battery statistics to the device
      */
     send: function () {
-        Common.debug("Battery: send()");
+        debug("Battery: send()");
 
         if (!this._battery) { return; }
 
@@ -262,7 +262,7 @@ var Plugin = new Lang.Class({
      * Notify about a remote threshold event (low battery level)
      */
     threshold: function () {
-        Common.debug("Battery: threshold()");
+        debug("Battery: threshold()");
 
         let notif = new Gio.Notification();
         // TRANSLATORS: Low Battery Warning

@@ -61,7 +61,7 @@ var Plugin = new Lang.Class({
     },
 
     handlePacket: function (packet) {
-        Common.debug("Share: handlePacket()");
+        debug("Share: handlePacket()");
 
         if (packet.body.hasOwnProperty("filename")) {
             let filepath = this.getFilepath(packet.body.filename);
@@ -239,7 +239,7 @@ var Plugin = new Lang.Class({
     },
 
     getFilepath: function (filename) {
-        Common.debug("Share: getFilepath(" + filename + ")");
+        debug("Share: getFilepath(" + filename + ")");
 
         let path = this.settings.get_string("download-directory");
 
@@ -265,7 +265,7 @@ var Plugin = new Lang.Class({
     },
 
     shareDialog: function () {
-        Common.debug("Share: shareDialog()");
+        debug("Share: shareDialog()");
 
         let dialog = new Dialog(this.device.daemon, this.device.name);
         let response = dialog.run()
@@ -292,7 +292,7 @@ var Plugin = new Lang.Class({
     },
 
     shareUri: function (uri) {
-        Common.debug("Share: shareUri()");
+        debug("Share: shareUri()");
 
         if (uri.startsWith("file://")) {
             let file = Gio.File.new_for_uri(uri);

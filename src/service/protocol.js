@@ -44,13 +44,13 @@ var Packet = new Lang.Class({
 
     _check: function (obj) {
         if (!obj.hasOwnProperty("type")) {
-            Common.debug("Packet: missing 'type' field");
+            debug("Packet: missing 'type' field");
             return false;
         } else if (!obj.hasOwnProperty("body")) {
-            Common.debug("Packet: missing 'body' field");
+            debug("Packet: missing 'body' field");
             return false;
         } else if (!obj.hasOwnProperty("id")) {
-            Common.debug("Packet: missing 'id' field");
+            debug("Packet: missing 'id' field");
             return false;
         }
 
@@ -109,7 +109,7 @@ var TcpListener = new Lang.Class({
             try {
                 this.add_inet_port(port, null);
             } catch (e) {
-                Common.debug("TcpListener: failed to bind to port " + port + ": " + e);
+                debug("TcpListener: failed to bind to port " + port + ": " + e);
 
                 if (port < 1764) {
                     port += 1;
@@ -166,7 +166,7 @@ var UdpListener = new Lang.Class({
             try {
                 this.socket.bind(addr, false);
             } catch (e) {
-                Common.debug("UdpListener: failed to bind to port " + port + ": " + e);
+                debug("UdpListener: failed to bind to port " + port + ": " + e);
 
                 if (port < 1764) {
                     port += 1;
@@ -202,7 +202,7 @@ var UdpListener = new Lang.Class({
     },
 
     send: function (packet) {
-        Common.debug("UdpListener.send()");
+        debug("UdpListener.send()");
 
         this.socket.send_to(
             this._broadcastAddr,
@@ -212,7 +212,7 @@ var UdpListener = new Lang.Class({
     },
 
     receive: function () {
-        Common.debug("UdpListener.receive()");
+        debug("UdpListener.receive()");
 
         let addr, data, flags, size;
 
@@ -232,7 +232,7 @@ var UdpListener = new Lang.Class({
         let packet = new Packet(data.toString());
 
         if (packet.type !== TYPE_IDENTITY) {
-            Common.debug("UdpListener: Unexpected packet type: " + packet.type);
+            debug("UdpListener: Unexpected packet type: " + packet.type);
             return true;
         }
 
@@ -513,7 +513,7 @@ var LanChannel = new Lang.Class({
     },
 
     send: function (packet) {
-        Common.debug("LanChannel.send(" + packet.toString() + ")");
+        debug("LanChannel.send(" + this.identity.body.deviceId + ", " + packet.toString() + ")");
 
         try {
             this._out.put_string(packet.toData(), null);
@@ -524,13 +524,13 @@ var LanChannel = new Lang.Class({
     },
 
     receive: function () {
-        Common.debug("LanChannel.receive(" + this.identity.body.deviceId + ")");
+        debug("LanChannel.receive(" + this.identity.body.deviceId + ")");
 
         let data, len, packet;
 
         try {
             [data, len] = this._in.read_line(null);
-            Common.debug("Device received: " + data);
+            debug("Device received: " + data);
         } catch (e) {
             log("Failed to receive packet: " + e);
             return false;
@@ -612,12 +612,12 @@ var Transfer = new Lang.Class({
                     if (this.checksum !== this._checksum.get_string()) {
                         this.emit("failed", "Checksum mismatch");
                     } else {
-                        Common.debug("Completed transfer of " + this.size + " bytes");
+                        debug("Completed transfer of " + this.size + " bytes");
                         this.emit("succeeded");
                     }
                 // All done
                 } else {
-                    Common.debug("Completed transfer of " + this.size + " bytes");
+                    debug("Completed transfer of " + this.size + " bytes");
                     this.emit("succeeded");
                 }
             }
@@ -662,7 +662,7 @@ var LanDownloadChannel = new Lang.Class({
     },
 
     request: function (connection) {
-        Common.debug("LanDownloadChannel.request(" + this.identity.body.deviceId + ")");
+        debug("LanDownloadChannel.request(" + this.identity.body.deviceId + ")");
 
         this._connection = connection;
 
@@ -677,7 +677,7 @@ var LanDownloadChannel = new Lang.Class({
     },
 
     opened: function (connection, res) {
-        Common.debug("LanDownloadChannel.opened(" + this.identity.body.deviceId + ")");
+        debug("LanDownloadChannel.opened(" + this.identity.body.deviceId + ")");
 
         try {
             this._in = this._connection.get_input_stream();
@@ -709,7 +709,7 @@ var LanUploadChannel = new Lang.Class({
     },
 
     open: function (port=1739) {
-        Common.debug("LanUploadChannel.open(" + this.identity.body.deviceId + ")");
+        debug("LanUploadChannel.open(" + this.identity.body.deviceId + ")");
 
         this._listener = new Gio.SocketListener();
 
@@ -734,7 +734,7 @@ var LanUploadChannel = new Lang.Class({
     },
 
     accept: function (listener, res) {
-        Common.debug("LanUploadChannel.accept(" + this.identity.body.deviceId + ")");
+        debug("LanUploadChannel.accept(" + this.identity.body.deviceId + ")");
 
         try {
             let src;
@@ -749,7 +749,7 @@ var LanUploadChannel = new Lang.Class({
     },
 
     opened: function (connection, res) {
-        Common.debug("LanUploadChannel.opened(" + this.identity.body.deviceId + ")");
+        debug("LanUploadChannel.opened(" + this.identity.body.deviceId + ")");
 
         try {
             this._connection.handshake_finish(res);

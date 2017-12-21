@@ -62,7 +62,7 @@ var Plugin = new Lang.Class({
     },
 
     handlePacket: function (packet) {
-        Common.debug("RunCommand: handlePacket()");
+        debug("RunCommand: handlePacket()");
 
         if (packet.type === "kdeconnect.runcommand.request") {
             if (packet.body.hasOwnProperty("requestCommandList")) {
@@ -120,7 +120,7 @@ var Plugin = new Lang.Class({
      * Send the list of local command
      */
     send: function () {
-        Common.debug("RunCommand: sendCommandList()");
+        debug("RunCommand: sendCommandList()");
 
         let packet = new Protocol.Packet({
             id: 0,

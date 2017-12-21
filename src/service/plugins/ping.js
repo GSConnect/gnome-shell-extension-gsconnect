@@ -42,7 +42,7 @@ var Plugin = new Lang.Class({
     },
 
     handlePacket: function (packet) {
-        Common.debug("Ping: handlePacket()");
+        debug("Ping: handlePacket()");
 
         if (!packet.body.hasOwnProperty("message")) {
             packet.body.message = "";
@@ -72,7 +72,7 @@ var Plugin = new Lang.Class({
     },
 
     ping: function (message="") {
-        Common.debug("Ping: ping(" + message + ")");
+        debug("Ping: ping(" + message + ")");
 
         let packet = new Protocol.Packet({
             id: 0,

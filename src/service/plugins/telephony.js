@@ -105,7 +105,7 @@ var Plugin = new Lang.Class({
         try {
             loader.close();
         } catch (e) {
-            Common.debug("Warning: " + e.message);
+            debug("Warning: " + e.message);
         }
 
         return loader.get_pixbuf();
@@ -129,7 +129,7 @@ var Plugin = new Lang.Class({
     },
 
     _handleMissedCall: function (sender, packet) {
-        Common.debug("Telephony: handleMissedCall()");
+        debug("Telephony: handleMissedCall()");
 
         let notif = new Gio.Notification();
         // TRANSLATORS: Missed Call
@@ -168,7 +168,7 @@ var Plugin = new Lang.Class({
     },
 
     _handleRinging: function (sender, packet) {
-        Common.debug("Telephony: _handleRinging()");
+        debug("Telephony: _handleRinging()");
 
         let notif = new Gio.Notification();
         // TRANSLATORS: Incoming Call
@@ -196,7 +196,7 @@ var Plugin = new Lang.Class({
     },
 
     _handleSms: function (sender, packet) {
-        Common.debug("Telephony: _handleSMS()");
+        debug("Telephony: _handleSMS()");
 
         let plugin = this.device._plugins.get("notification");
 
@@ -245,7 +245,7 @@ var Plugin = new Lang.Class({
     },
 
     _handleTalking: function (sender, packet) {
-        Common.debug("Telephony: _handleTalking()");
+        debug("Telephony: _handleTalking()");
 
         this.device.daemon.withdraw_notification(
             this.device.id + ":ringing:" + packet.body.phoneNumber
@@ -272,7 +272,7 @@ var Plugin = new Lang.Class({
     },
 
     _hasWindow: function (phoneNumber) {
-        Common.debug("Telephony: _hasWindow(" + phoneNumber + ")");
+        debug("Telephony: _hasWindow(" + phoneNumber + ")");
 
         let incomingNumber = phoneNumber.replace(/\D/g, "");
 
@@ -302,7 +302,7 @@ var Plugin = new Lang.Class({
     },
 
     _adjustVolume: function (action) {
-        Common.debug("Telephony: _adjustVolume()");
+        debug("Telephony: _adjustVolume()");
 
         if (!this._mixer) { return; }
 
@@ -318,7 +318,7 @@ var Plugin = new Lang.Class({
     },
 
     _restoreVolume: function () {
-        Common.debug("Telephony: _restoreVolume()");
+        debug("Telephony: _restoreVolume()");
 
         if (this._prevMute) {
             this._mixer.output.muted = false;
@@ -332,7 +332,7 @@ var Plugin = new Lang.Class({
     },
 
     _muteMicrophone: function (mute) {
-        Common.debug("Telephony: _muteMicrophone()");
+        debug("Telephony: _muteMicrophone()");
 
         if (!this._mixer) { return; }
 
@@ -343,7 +343,7 @@ var Plugin = new Lang.Class({
     },
 
     _unmuteMicrophone: function () {
-        Common.debug("Telephony: _unmuteMicrophone()");
+        debug("Telephony: _unmuteMicrophone()");
 
         if (this._prevMicrophone) {
             this._mixer.input.muted = false;
@@ -352,7 +352,7 @@ var Plugin = new Lang.Class({
     },
 
     _pauseMedia: function (pause) {
-        Common.debug("Telephony: _pauseMedia()");
+        debug("Telephony: _pauseMedia()");
 
         if (pause && this.device._plugins.has("mpris")) {
             let plugin = this.device._plugins.get("mpris");
@@ -367,7 +367,7 @@ var Plugin = new Lang.Class({
     },
 
     _resumeMedia: function () {
-        Common.debug("Telephony: _resumeMedia()");
+        debug("Telephony: _resumeMedia()");
 
         if (this._pausedPlayer) {
             this._pausedPlayer.PlaySync();
@@ -376,7 +376,7 @@ var Plugin = new Lang.Class({
     },
 
     handlePacket: function (packet) {
-        Common.debug("Telephony: handlePacket()");
+        debug("Telephony: handlePacket()");
 
         // Ensure our signal emissions don't choke, but leave them falsey
         packet.body.contactName = packet.body.contactName || "";
@@ -455,7 +455,7 @@ var Plugin = new Lang.Class({
      * Silence an incoming call
      */
     muteCall: function () {
-        Common.debug("Telephony: muteCall()");
+        debug("Telephony: muteCall()");
 
         let packet = new Protocol.Packet({
             id: 0,
@@ -469,7 +469,7 @@ var Plugin = new Lang.Class({
      * Open and present a new SMS window
      */
     openSms: function () {
-        Common.debug("Telephony: openSms()");
+        debug("Telephony: openSms()");
 
         let window = new TelephonyWidget.ConversationWindow(this.device);
         window.present();
@@ -482,7 +482,7 @@ var Plugin = new Lang.Class({
      * @param {string} contactName - The sender's name
      */
     replyMissedCall: function (phoneNumber, contactName) {
-        Common.debug("Telephony: replyMissedCall()");
+        debug("Telephony: replyMissedCall()");
 
         phoneNumber = unescape(phoneNumber);
         contactName = unescape(contactName);
@@ -519,7 +519,7 @@ var Plugin = new Lang.Class({
      * @param {string} messageBody - The SMS message
      */
     replySms: function (phoneNumber, contactName, messageBody) {
-        Common.debug("Telephony: replySms()");
+        debug("Telephony: replySms()");
 
         phoneNumber = unescape(phoneNumber);
         contactName = unescape(contactName);
@@ -556,7 +556,7 @@ var Plugin = new Lang.Class({
      * @param {string} messageBody - The message to send
      */
     sendSms: function (phoneNumber, messageBody) {
-        Common.debug("Telephony: sendSms(" + phoneNumber + ", " + messageBody + ")");
+        debug("Telephony: sendSms(" + phoneNumber + ", " + messageBody + ")");
 
         let packet = new Protocol.Packet({
             id: 0,
@@ -742,7 +742,7 @@ var ContactsCache = new Lang.Class({
         contact.origin = contact.origin || "kdeconnect";
 
         if (packet.body.phoneThumbnail && !contact.avatar) {
-            Common.debug("Telephony: updating avatar for " + contact.name);
+            debug("Telephony: updating avatar for " + contact.name);
 
             let path = this._dir + "/" + GLib.uuid_string_random() + ".jpeg";
             GLib.file_set_contents(
@@ -761,7 +761,7 @@ var ContactsCache = new Lang.Class({
             this.contacts = JSON.parse(contents);
             this.notify("contacts");
         } catch (e) {
-            Common.debug("Telephony: Error reading contacts cache: " + e);
+            debug("Telephony: Error reading contacts cache: " + e);
         }
     },
 
@@ -775,7 +775,7 @@ var ContactsCache = new Lang.Class({
                 null
             );
         } catch (e) {
-            Common.debug("Telephony: Error writing contacts cache: " + e);
+            debug("Telephony: Error writing contacts cache: " + e);
         }
     },
 
@@ -794,7 +794,7 @@ var ContactsCache = new Lang.Class({
 
             this._check_folks(proc);
         } catch (e) {
-            Common.debug("Telephony: Error reading folks-cache.py: " + e.message);
+            debug("Telephony: Error reading folks-cache.py: " + e.message);
 
             this._cacheGoogleContacts();
         }
@@ -815,7 +815,7 @@ var ContactsCache = new Lang.Class({
                 this.provider = "avatar-default-symbolic";
                 this.notify("provider");
             } else {
-                Common.debug("Telephony: Error reading folks-cache.py: " + errline);
+                debug("Telephony: Error reading folks-cache.py: " + errline);
 
                 this._cacheGoogleContacts();
             }
@@ -879,7 +879,7 @@ var ContactsCache = new Lang.Class({
                 this.notify("provider");
             }
         } catch (e) {
-            Common.debug("Telephony: Error reading Google Contacts: " + e);
+            debug("Telephony: Error reading Google Contacts: " + e);
         }
     }
 });

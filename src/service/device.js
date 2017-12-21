@@ -118,7 +118,7 @@ var Device = new Lang.Class({
         );
         this._dbus.export(
             Gio.DBus.session,
-            ext.app_path + "/Device/" + id.replace(/\W+/g, "_")
+            ext.app_path + "/Device/" + deviceId.replace(/\W+/g, "_")
         );
 
         // A TCP Connection
@@ -198,7 +198,7 @@ var Device = new Lang.Class({
 
     //
     handlePacket: function (packet) {
-        Common.debug("Device.fromPacket(" + this.id + ")");
+        debug("Device.fromPacket(" + this.id + ")");
 
         if (packet.type === Protocol.TYPE_IDENTITY) {
             this._handleIdentity(packet);
@@ -213,10 +213,10 @@ var Device = new Lang.Class({
     },
 
     activate: function () {
-        Common.debug("Device.activate(" + this.id + ")");
+        debug("Device.activate(" + this.id + ")");
 
 		if (this._channel !== null) {
-			Common.debug("device already active");
+			debug("device already active");
 			return;
 		}
 
@@ -319,14 +319,14 @@ var Device = new Lang.Class({
                 new GLib.Variant("b", this.connected)
             );
         } catch (e) {
-            Common.debug("Device: error disconnecting: " + e);
+            debug("Device: error disconnecting: " + e);
         }
 
         this.daemon._pruneDevices();
     },
 
     _onReceived: function (channel, packet) {
-        Common.debug("Received from '" + this.name + "'");
+        debug("Received from '" + this.name + "'");
 
         this.handlePacket(packet);
     },
@@ -430,7 +430,7 @@ var Device = new Lang.Class({
     },
 
     pair: function () {
-        Common.debug("Device.pair(" + this.id + ")");
+        debug("Device.pair(" + this.id + ")");
 
         // We're initiating an outgoing request
         if (!this.paired) {
@@ -453,7 +453,7 @@ var Device = new Lang.Class({
     },
 
     unpair: function () {
-        Common.debug("Device.unpair(" + this.name + ")");
+        debug("Device.unpair(" + this.name + ")");
 
         if (this._channel !== null) {
             let packet = new Protocol.Packet({
@@ -470,7 +470,7 @@ var Device = new Lang.Class({
     },
 
     acceptPair: function () {
-        Common.debug("Device.acceptPair(" + this.name + ")");
+        debug("Device.acceptPair(" + this.name + ")");
 
         this._setPaired(true);
         this.pair();
@@ -478,7 +478,7 @@ var Device = new Lang.Class({
     },
 
     rejectPair: function () {
-        Common.debug("Device.rejectPair(" + this.name + ")");
+        debug("Device.rejectPair(" + this.name + ")");
 
         this.unpair();
     },
@@ -511,7 +511,7 @@ var Device = new Lang.Class({
     },
 
     enablePlugin: function (name, write=true) {
-        Common.debug("Device.enablePlugin(" + name + ", " + write + ")");
+        debug("Device.enablePlugin(" + name + ", " + write + ")");
 
         try {
             let handler = imports.service.plugins[name];
@@ -565,7 +565,7 @@ var Device = new Lang.Class({
     },
 
     disablePlugin: function (name, write=true) {
-        Common.debug("Device.disablePlugin(" + name + ", " + write + ")");
+        debug("Device.disablePlugin(" + name + ", " + write + ")");
 
         try {
             // Running instance

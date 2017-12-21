@@ -216,7 +216,7 @@ var Plugin = new Lang.Class({
     },
 
     _handlePayload: function (packet) {
-        Common.debug("Notification: _handlePayload()");
+        debug("Notification: _handlePayload()");
 
         let iconStream = Gio.MemoryOutputStream.new_resizable();
 
@@ -261,7 +261,7 @@ var Plugin = new Lang.Class({
     },
 
     _sendNotification: function (packet, notif, matchString) {
-        Common.debug("Notification: _sendNotification('" + matchString + "')");
+        debug("Notification: _sendNotification('" + matchString + "')");
 
         let duplicate;
 
@@ -284,7 +284,7 @@ var Plugin = new Lang.Class({
     },
 
     Notify: function (appName, replacesId, iconName, summary, body, actions, hints, timeout) {
-        Common.debug("Notification: Notify()");
+        debug("Notification: Notify()");
 
         let applications = JSON.parse(this.settings.get_string("applications"));
 
@@ -363,7 +363,7 @@ var Plugin = new Lang.Class({
     },
 
     handlePacket: function (packet) {
-        Common.debug("Notification: handlePacket()");
+        debug("Notification: handlePacket()");
 
         if (packet.type === "kdeconnect.notification.request") {
             // TODO: KDE Connect says this is unused...
@@ -372,11 +372,11 @@ var Plugin = new Lang.Class({
                 this.device.daemon.withdraw_notification(packet.body.id);
             // Ignore GroupSummary notifications
             } else if (packet.body.id.indexOf("GroupSummary") > -1) {
-                Common.debug("Notification: ignoring GroupSummary notification");
+                debug("Notification: ignoring GroupSummary notification");
                 return;
             // Ignore grouped SMS notifications
             } else if (packet.body.id.indexOf(":sms|") > -1) {
-                Common.debug("Notification: ignoring grouped SMS notification");
+                debug("Notification: ignoring grouped SMS notification");
                 return;
             } else if (packet.payloadSize && this.settings.get_boolean("sync-icons")) {
                 this._handlePayload(packet);
@@ -392,7 +392,7 @@ var Plugin = new Lang.Class({
      * @param {string} matchString - The notification's expected content
      */
     closeDuplicate: function (matchString) {
-        Common.debug("Notification: closeDuplicate('" + matchString + "')");
+        debug("Notification: closeDuplicate('" + matchString + "')");
 
         if (this._duplicates.has(matchString)) {
             let duplicate = this._duplicates.get(matchString);
@@ -413,7 +413,7 @@ var Plugin = new Lang.Class({
      * @param {string} matchString - The notification's expected content
      */
     silenceDuplicate: function (matchString) {
-        Common.debug("Notification: silenceDuplicate('" + matchString + "')");
+        debug("Notification: silenceDuplicate('" + matchString + "')");
 
         if (this._duplicates.has(matchString)) {
             this._duplicates.get(matchString).silence = true;

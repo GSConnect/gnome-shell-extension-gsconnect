@@ -63,7 +63,7 @@ var Plugin = new Lang.Class({
     },
 
     handlePacket: function (packet) {
-        Common.debug("Mousepad: handlePacket()");
+        debug("Mousepad: handlePacket()");
 
         if (packet.body.singleclick) {
             this.clickPointer(1);
@@ -97,7 +97,7 @@ var Plugin = new Lang.Class({
     },
 
     clickPointer: function (button, double=false) {
-        Common.debug("Mousepad: clickPointer(" + button + ", " + double + ")");
+        debug("Mousepad: clickPointer(" + button + ", " + double + ")");
 
         let event;
 
@@ -119,7 +119,7 @@ var Plugin = new Lang.Class({
     },
 
     movePointer: function (dx, dy) {
-        Common.debug("Mousepad: movePointer(" + dx + ", " + dy + ")");
+        debug("Mousepad: movePointer(" + dx + ", " + dy + ")");
 
         try {
             Atspi.generate_mouse_event(dx, dy, "rel");
@@ -129,7 +129,7 @@ var Plugin = new Lang.Class({
     },
 
     pressPointer: function (button) {
-        Common.debug("Mousepad: pressPointer()");
+        debug("Mousepad: pressPointer()");
 
         if (!this._xdotool) {
             this._xdotool = Common.checkCommand("xdotool");
@@ -141,7 +141,7 @@ var Plugin = new Lang.Class({
     },
 
     releasePointer: function (button) {
-        Common.debug("Mousepad: releasePointer()");
+        debug("Mousepad: releasePointer()");
 
         if (!this._xdotool) {
             this._xdotool = Common.checkCommand("xdotool");
@@ -153,7 +153,7 @@ var Plugin = new Lang.Class({
     },
 
     scrollPointer: function (key) {
-        Common.debug("Mousepad: scroll(" + key + ")");
+        debug("Mousepad: scroll(" + key + ")");
 
         if (!this._xdotool) {
             this._xdotool = Common.checkCommand("xdotool");
@@ -169,7 +169,7 @@ var Plugin = new Lang.Class({
     },
 
     pressKey: function (key) {
-        Common.debug("Mousepad: pressKey(" + key + ")");
+        debug("Mousepad: pressKey(" + key + ")");
 
         try {
             Atspi.generate_keyboard_event(0, key, Atspi.KeySynthType.STRING);
@@ -179,7 +179,7 @@ var Plugin = new Lang.Class({
     },
 
     pressSpecialKey: function (key) {
-        Common.debug("Mousepad: pressSpecialKey(" + key + ")");
+        debug("Mousepad: pressSpecialKey(" + key + ")");
 
         try {
             if (!KeyMap.has(key) || key === 0) {

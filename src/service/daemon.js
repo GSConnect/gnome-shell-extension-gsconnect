@@ -149,7 +149,7 @@ var Daemon = new Lang.Class({
                 return "laptop";
             }
         } catch (e) {
-            Common.debug("Error reading chassis_type: " + e);
+            debug("Error reading chassis_type: " + e);
         }
 
         return "desktop";
@@ -306,12 +306,12 @@ var Daemon = new Lang.Class({
     },
 
     _addDevice: function (packet, channel=null) {
-        Common.debug("Daemon._addDevice(" + packet.body.deviceName + ")");
+        debug("Daemon._addDevice(" + packet.body.deviceName + ")");
 
         if (!this.identity) { return; }
         if (packet.body.deviceId === this.identity.body.deviceId) { return; }
 
-        let dbusPath = ext.app_path + "/Device/" + id.replace(/\W+/g, "_");
+        let dbusPath = ext.app_path + "/Device/" + this.identity.body.deviceId.replace(/\W+/g, "_");
 
         if (this._devices.has(dbusPath)) {
             log("Daemon: Updating device");
@@ -344,7 +344,7 @@ var Daemon = new Lang.Class({
     },
 
     _removeDevice: function (dbusPath) {
-        Common.debug("Daemon._removeDevice(" + dbusPath + ")");
+        debug("Daemon._removeDevice(" + dbusPath + ")");
 
         if (this._devices.has(dbusPath)) {
             log("Daemon: Removing device");
@@ -389,7 +389,7 @@ var Daemon = new Lang.Class({
     },
 
     Notify: function (appName, replacesId, iconName, summary, body, actions, hints, timeout) {
-        Common.debug("Daemon: Notify()");
+        debug("Daemon: Notify()");
 
         for (let device of this._devices.values()) {
             if (device._plugins.has("notification")) {
@@ -737,6 +737,8 @@ var Daemon = new Lang.Class({
 
     vfunc_shutdown: function() {
         this.parent();
+
+        log("GSConnect: Shutting down");
 
         this.tcpListener.destroy();
         this.udpListener.destroy();

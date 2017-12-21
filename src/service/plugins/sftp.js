@@ -71,7 +71,7 @@ var Plugin = new Lang.Class({
     get directories () { return this._directories; },
 
     _prepare: function () {
-        Common.debug("SFTP: _prepare()");
+        debug("SFTP: _prepare()");
 
         this._path = ext.runtimedir + "/" + this.device.id;
         GLib.mkdir_with_parents(this._path, 448);
@@ -83,7 +83,7 @@ var Plugin = new Lang.Class({
     },
 
     handlePacket: function (packet) {
-        Common.debug("SFTP: handlePacket()");
+        debug("SFTP: handlePacket()");
 
         try {
             this._prepare();
@@ -191,7 +191,7 @@ var Plugin = new Lang.Class({
             } else {
                 switch (data.toString()) {
                     case "remote host has disconnected":
-                        Common.debug("Sftp: disconnected");
+                        debug("Sftp: disconnected");
                         this.unmount();
                     case "Timeout waiting for prompt":
                         this.unmount("Sftp: timeout");
@@ -203,7 +203,7 @@ var Plugin = new Lang.Class({
     },
 
     mount: function () {
-        Common.debug("SFTP: mount()");
+        debug("SFTP: mount()");
 
         let packet = new Protocol.Packet({
             id: 0,
@@ -215,7 +215,7 @@ var Plugin = new Lang.Class({
     },
 
     unmount: function () {
-        Common.debug("SFTP: unmount()");
+        debug("SFTP: unmount()");
 
         try {
             if (this._proc) {
