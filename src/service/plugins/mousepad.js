@@ -80,9 +80,9 @@ var Plugin = new Lang.Class({
             this.releasePointer(1);
         } else if (packet.body.scroll) {
             if (packet.body.dy < 0) {
-                this.scroll(Gdk.KEY_ScrollDown);
+                this.scrollPointer(Gdk.KEY_ScrollDown);
             } else if (packet.body.dy > 0) {
-                this.scroll(Gdk.KEY_ScrollUp);
+                this.scrollPointer(Gdk.KEY_ScrollUp);
             }
         } else if (packet.body.hasOwnProperty("dx") && packet.body.hasOwnProperty("dy")) {
             this.movePointer(packet.body.dx, packet.body.dy);
@@ -152,10 +152,22 @@ var Plugin = new Lang.Class({
         }
     },
 
-    // TODO: apparently sends:
-    //           {"key":"\u0000"}
-    //       then:
-    //           {"shift":true,"key":"Q"}
+    scrollPointer: function (key) {
+        Common.debug("Mousepad: scroll(" + key + ")");
+
+        if (!this._xdotool) {
+            this._xdotool = Common.checkCommand("xdotool");
+        }
+
+        if (this._xdotool) {
+            if (key === Gdk.KEY_ScrollUp) {
+                GLib.spawn_command_line_async("xdotool click 4");
+            } else if (key === Gdk.KEY_ScrollDown) {
+                GLib.spawn_command_line_async("xdotool click 5");
+            }
+        }
+    },
+
     pressKey: function (key) {
         Common.debug("Mousepad: pressKey(" + key + ")");
 
@@ -181,22 +193,6 @@ var Plugin = new Lang.Class({
             );
         } catch (e) {
             log("Mousepad: Error simulating special keypress: " + e);
-        }
-    },
-
-    scroll: function (key) {
-        Common.debug("Mousepad: scroll(" + key + ")");
-
-        if (!this._xdotool) {
-            this._xdotool = Common.checkCommand("xdotool");
-        }
-
-        if (this._xdotool) {
-            if (key === Gdk.KEY_ScrollUp) {
-                GLib.spawn_command_line_async("xdotool click 4");
-            } else if (key === Gdk.KEY_ScrollDown) {
-                GLib.spawn_command_line_async("xdotool click 5");
-            }
         }
     }
 });
