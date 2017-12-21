@@ -54,10 +54,10 @@ var NativeMessagingHost = new Lang.Class({
 
     _init: function () {
         this.parent({
-            application_id: "org.gnome.Shell.Extensions.GSConnect.NativeMessagingHost"
+            application_id: "org.gnome.Shell.Extensions.GSConnect.NativeMessagingHost",
+            flags: Gio.ApplicationFlags.NON_UNIQUE
         });
 
-        this.register(null);
     },
 
     vfunc_activate: function() {
