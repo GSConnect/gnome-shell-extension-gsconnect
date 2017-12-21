@@ -248,7 +248,7 @@ var DeviceMenu = new Lang.Class({
         device.connect("notify::paired", Lang.bind(this, this._sync));
 
         this.actor.connect("notify::visible", Lang.bind(this, this._sync));
-        this._settingsChanged = Settings.connect("changed", Lang.bind(this, this._sync));
+        this._settingsChanged = Settings.connect("changed", () => this._sync());
 
         this._sync(device);
     },
@@ -465,7 +465,7 @@ var DeviceIndicator = new Lang.Class({
         this.menu.addMenuItem(this.deviceMenu);
 
         // Signals
-        this._settingsChanged = Settings.connect("changed", Lang.bind(this, this._sync));
+        this._settingsChanged = Settings.connect("changed", () => this._sync());
         device.connect("notify::connected", Lang.bind(this, this._sync));
         device.connect("notify::paired", Lang.bind(this, this._sync));
 
@@ -791,7 +791,6 @@ function enable() {
 function disable() {
     debug("disabling extension");
 
-    GObject.signal_handlers_destroy(Settings);
     systemIndicator.destroy();
     Common.uninstallService()
 }
