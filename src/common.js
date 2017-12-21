@@ -34,7 +34,7 @@ Gettext.textdomain(ext.app_id);
 let gettext = imports.gettext;
 window._ = gettext.gettext;
 window.C_ = gettext.pgettext;
-window.N_ = function(x) { return x; }
+window.N_ = gettext.ngettext;
 
 
 /**
