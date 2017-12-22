@@ -520,7 +520,6 @@ var Daemon = new Lang.Class({
      *
      */
     notifyNautilusExtension: function () {
-        // TODO: transience
         let notif = new Gio.Notification();
         notif.set_title(_("Nautilus extensions changed"));
         notif.set_body(_("Restart Nautilus to apply changes"));
@@ -642,9 +641,9 @@ var Daemon = new Lang.Class({
         this._initCSS();
         Gtk.IconTheme.get_default().add_resource_path(ext.app_path);
 
-        this._watchDaemon();
         this._initNotificationListener();
         this._initNotificationActions();
+        this._watchDaemon();
 
         // Export DBus
         let iface = "org.gnome.Shell.Extensions.GSConnect";
