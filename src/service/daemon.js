@@ -370,7 +370,7 @@ var Daemon = new Lang.Class({
      */
     _initNotificationListener: function () {
         this._ndbus = Gio.DBusExportedObject.wrapJSObject(
-            Common.DBusIface.lookup_interface("org.freedesktop.Notifications"),
+            ext.dbusinfo.lookup_interface("org.freedesktop.Notifications"),
             this
         );
         this._ndbus.export(Gio.DBus.session, "/org/freedesktop/Notifications");
@@ -648,7 +648,7 @@ var Daemon = new Lang.Class({
         // Export DBus
         let iface = "org.gnome.Shell.Extensions.GSConnect";
         this._dbus = Gio.DBusExportedObject.wrapJSObject(
-            Common.DBusIface.lookup_interface(iface),
+            ext.dbusinfo.lookup_interface(iface),
             this
         );
         this._dbus.export(

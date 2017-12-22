@@ -61,15 +61,15 @@ Resource._register();
 
 
 /**
- * Common DBus Interface Nodes, Proxies and functions
+ * DBus Interface Introspection
  */
-var DBusIface = new Gio.DBusNodeInfo.new_for_xml(
+ext.dbusinfo = new Gio.DBusNodeInfo.new_for_xml(
     Gio.resources_lookup_data(
         ext.app_path + "/" + ext.app_id + ".xml",
         0
     ).toArray().toString()
 );
-DBusIface.nodes.forEach((ifaceInfo) => { ifaceInfo.cache_build(); });
+ext.dbusinfo.nodes.forEach((ifaceInfo) => { ifaceInfo.cache_build(); });
 
 
 /**

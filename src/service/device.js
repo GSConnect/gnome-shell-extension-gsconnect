@@ -111,7 +111,7 @@ var Device = new Lang.Class({
 
         // Export DBus
         this._dbus = Gio.DBusExportedObject.wrapJSObject(
-            Common.DBusIface.lookup_interface(
+            ext.dbusinfo.lookup_interface(
                 "org.gnome.Shell.Extensions.GSConnect.Device"
             ),
             this
