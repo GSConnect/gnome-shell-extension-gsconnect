@@ -29,24 +29,24 @@ for (let path of [ext.cachedir, ext.configdir, ext.runtimedir]) {
 /**
  * Init GSettings
  */
-var SchemaSource = Gio.SettingsSchemaSource.new_from_directory(
+ext.gschema = Gio.SettingsSchemaSource.new_from_directory(
     GLib.build_filenamev([ext.datadir, "schemas"]),
     Gio.SettingsSchemaSource.get_default(),
     false
 );
 
-    settings_schema: SchemaSource.lookup(ext.app_id, true)
 ext.settings = new Gio.Settings({
+    settings_schema: ext.gschema.lookup(ext.app_id, true)
 });
 
 
 /**
  * Register resources
  */
-var Resource = Gio.Resource.load(
+ext.resource = Gio.Resource.load(
     GLib.build_filenamev([ext.datadir, ext.app_id + ".data.gresource"])
 );
-Resource._register();
+ext.resource._register();
 
 
 /**
@@ -77,10 +77,10 @@ window.debug = function (msg) {
  * Check if a command is in the PATH
  * @param {string} name - the name of the command
  */
-function checkCommand (name) {
+function checkCommand (cmd) {
     let proc = GLib.spawn_async_with_pipes(
         null,                           // working dir
-        ["which", name],                // argv
+        ["which", cmd],                // argv
         null,                           // envp
         GLib.SpawnFlags.SEARCH_PATH,    // enables PATH
         null                            // child_setup (func)
@@ -103,8 +103,8 @@ function checkCommand (name) {
  */
 function getCertificate (id) {
     let settings = new Gio.Settings({
-        settings_schema: SchemaSource.lookup(ext.app_id + ".Device", true),
-        path: "/org/gnome/shell/extensions/gsconnect/device/" + id + "/"
+        settings_schema: ext.gschema.lookup(ext.app_id + ".Device", true),
+        path: ext.settings.path + "device/" + id + "/"
     });
 
     if (settings.get_string("certificate-pem")) {

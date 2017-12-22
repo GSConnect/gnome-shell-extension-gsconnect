@@ -39,7 +39,7 @@ var Plugin = new Lang.Class({
         // Init GSettings
         if (imports.service.plugins[name].SettingsDialog) {
             this.settings = new Gio.Settings({
-                settings_schema: Common.SchemaSource.lookup(metadata.uuid, -1),
+                settings_schema: ext.gschema.lookup(metadata.uuid, -1),
                 path: ext.settings.path + "device/" + device.id + "/plugin/" + name + "/"
             });
         }
@@ -75,7 +75,7 @@ var SettingsDialog = new Lang.Class({
         let metadata = imports.service.plugins[name].METADATA;
 
         this.settings = new Gio.Settings({
-            settings_schema: Common.SchemaSource.lookup(metadata.uuid, -1),
+            settings_schema: ext.gschema.lookup(metadata.uuid, -1),
             path: ext.settings.path + "device/" + device.id + "/plugin/" + name + "/"
         });
         this.settings.delay();

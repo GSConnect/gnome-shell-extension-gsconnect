@@ -450,7 +450,7 @@ var Device = new Lang.Class({
         this.daemon = daemon;
 
         this.settings = new Gio.Settings({
-            settings_schema: Common.SchemaSource.lookup(
+            settings_schema: ext.gschema.lookup(
                 "org.gnome.Shell.Extensions.GSConnect.Device",
                 true
             ),

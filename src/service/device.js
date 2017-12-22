@@ -100,7 +100,7 @@ var Device = new Lang.Class({
 
         // GSettings
         this.settings = new Gio.Settings({
-            settings_schema: Common.SchemaSource.lookup(
+            settings_schema: ext.gschema.lookup(
                 "org.gnome.Shell.Extensions.GSConnect.Device",
                 true
             ),
