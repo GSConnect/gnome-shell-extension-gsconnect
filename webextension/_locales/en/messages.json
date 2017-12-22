@@ -35,10 +35,10 @@
     },
     "shareMessage": {
         "message": "Open in Browser",
-        "description": "Item label for opening a link in the device's web browser"
+        "description": "Context Menu label for opening a link in the device's web browser"
     },
     "telephonyMessage": {
         "message": "Send SMS",
-        "description": "Item label for sharing a link in an SMS message"
+        "description": "Context Menu label for sharing a link in an SMS message"
     }
 }
