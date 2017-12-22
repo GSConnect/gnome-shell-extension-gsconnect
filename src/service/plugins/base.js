@@ -13,8 +13,6 @@ const Common = imports.common;
 const Protocol = imports.service.protocol;
 const PreferencesWidget = imports.widgets.preferences;
 
-const SCHEMA_PREFIX = "/org/gnome/shell/extensions/gsconnect/device/";
-
 
 /**
  * Base class for plugins
@@ -40,7 +38,7 @@ var Plugin = new Lang.Class({
         if (imports.service.plugins[name].SettingsDialog) {
             this.settings = new Gio.Settings({
                 settings_schema: Common.SchemaSource.lookup(metadata.uuid, -1),
-                path: SCHEMA_PREFIX + device.id + "/plugin/" + name + "/"
+                path: ext.settings.path + "device/" + device.id + "/plugin/" + name + "/"
             });
         }
     },
@@ -76,7 +74,7 @@ var SettingsDialog = new Lang.Class({
 
         this.settings = new Gio.Settings({
             settings_schema: Common.SchemaSource.lookup(metadata.uuid, -1),
-            path: SCHEMA_PREFIX + device.id + "/plugin/" + name + "/"
+            path: ext.settings.path + "device/" + device.id + "/plugin/" + name + "/"
         });
         this.settings.delay();
 
