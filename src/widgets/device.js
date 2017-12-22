@@ -1,5 +1,7 @@
 "use strict";
 
+const Gettext = imports.gettext.domain("org.gnome.Shell.Extensions.GSConnect");
+const _ = Gettext.gettext;
 const Lang = imports.lang;
 
 const Gio = imports.gi.Gio;
@@ -10,9 +12,9 @@ const Gtk = imports.gi.Gtk;
 // Local Imports
 imports.searchPath.push(ext.datadir);
 
+const Common = imports.common;
 const KeybindingsWidget = imports.widgets.keybindings;
 const PreferencesWidget = imports.widgets.preferences;
-const Common = imports.common;
 
 
 var HelpSection = new Lang.Class({

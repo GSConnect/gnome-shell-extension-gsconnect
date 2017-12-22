@@ -14,7 +14,8 @@ ext.app_id = "org.gnome.Shell.Extensions.GSConnect";
 ext.app_path = "/org/gnome/Shell/Extensions/GSConnect";
 
 ext.metadata = JSON.parse(GLib.file_get_contents(ext.datadir + "/metadata.json")[1]);
-ext.localedir = GLib.build_filenamev([ext.datadir + "locale"]);
+ext.localedir = GLib.build_filenamev([ext.datadir, "locale"]);
+Gettext.bindtextdomain(ext.app_id, ext.localedir);
 
 ext.cachedir = GLib.build_filenamev([GLib.get_user_cache_dir(), "gsconnect"]);
 ext.configdir = GLib.build_filenamev([GLib.get_user_config_dir(), "gsconnect"]);
@@ -23,18 +24,6 @@ ext.runtimedir = GLib.build_filenamev([GLib.get_user_runtime_dir(), "gsconnect"]
 for (let path of [ext.cachedir, ext.configdir, ext.runtimedir]) {
     GLib.mkdir_with_parents(path, 448);
 }
-
-
-/**
- * Init Gettext
- */
-Gettext.bindtextdomain(ext.app_id, ext.localedir);
-Gettext.textdomain(ext.app_id);
-
-let gettext = imports.gettext;
-window._ = gettext.gettext;
-window.C_ = gettext.pgettext;
-window.N_ = gettext.ngettext;
 
 
 /**

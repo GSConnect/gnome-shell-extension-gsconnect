@@ -1,11 +1,14 @@
 "use strict";
 
+const Gettext = imports.gettext.domain("org.gnome.Shell.Extensions.GSConnect");
+const _ = Gettext.gettext;
+const Lang = imports.lang;
+const Mainloop = imports.mainloop;
+
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
-const Lang = imports.lang;
-const Mainloop = imports.mainloop;
 
 // Local Imports
 function getPath() {

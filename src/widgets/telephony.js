@@ -1,5 +1,8 @@
 "use strict";
 
+const Gettext = imports.gettext.domain("org.gnome.Shell.Extensions.GSConnect");
+const _ = Gettext.gettext;
+const N_ = Gettext.ngettext;
 const Lang = imports.lang;
 
 const Gdk = imports.gi.Gdk;
