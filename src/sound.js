@@ -24,7 +24,7 @@ try {
     var _mixerControl = new Gvc.MixerControl({ name: "GSConnect" });
     _mixerControl.open();
 } catch (e) {
-    Common.debug("Warning: failed to initialize Gvc: " + e);
+    debug("Warning: failed to initialize Gvc: " + e);
     var _mixerControl = undefined;
 }
 
@@ -34,7 +34,7 @@ try {
     var _gsoundContext = new GSound.Context();
     _gsoundContext.init(null);
 } catch (e) {
-    Common.debug("Warning: failed to initialize GSound: " + e);
+    debug("Warning: failed to initialize GSound: " + e);
     var _gsoundContext = undefined;
 }
 
