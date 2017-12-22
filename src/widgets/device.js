@@ -296,7 +296,7 @@ var Stack = new Lang.Class({
         });
         this.defaultRow.grid.attach(icon, 0, 0, 1, 1);
         let nameLabel = new Gtk.Label({ label: "" });
-        Common.Settings.bind(
+        ext.settings.bind(
             "public-name",
             nameLabel,
             "label",
@@ -312,7 +312,7 @@ var Stack = new Lang.Class({
         page.box.margin_right = 36;
 
         let serviceSection = page.addSection(null, null, { width_request: -1 });
-        serviceSection.addGSetting(Common.Settings, "public-name");
+        serviceSection.addGSetting(ext.settings, "public-name");
 
         page.addSection(_("Connecting Devices"), new HelpSection());
 

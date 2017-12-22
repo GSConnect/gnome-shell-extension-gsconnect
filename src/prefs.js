@@ -108,17 +108,17 @@ var PrefsWidget = new Lang.Class({
         let preferencesPage = this.addPage("preferences", _("Preferences"));
 
         let appearanceSection = preferencesPage.addSection(_("Appearance"));
-        appearanceSection.addGSetting(Common.Settings, "show-indicators");
-        appearanceSection.addGSetting(Common.Settings, "show-offline");
-        appearanceSection.addGSetting(Common.Settings, "show-unpaired");
-        appearanceSection.addGSetting(Common.Settings, "show-battery");
+        appearanceSection.addGSetting(ext.settings, "show-indicators");
+        appearanceSection.addGSetting(ext.settings, "show-offline");
+        appearanceSection.addGSetting(ext.settings, "show-unpaired");
+        appearanceSection.addGSetting(ext.settings, "show-battery");
 
         let extensionsSection = preferencesPage.addSection(
             _("Extensions"),
             null,
             { margin_bottom: 0 }
         );
-        extensionsSection.addGSetting(Common.Settings, "nautilus-integration");
+        extensionsSection.addGSetting(ext.settings, "nautilus-integration");
 
         let chromeUrl = "https://chrome.google.com/webstore/detail/gsconnect/jfnifeihccihocjbfcfhicmmgpjicaec";
         let firefoxUrl = "https://addons.mozilla.org/en-US/firefox/addon/gsconnect/";
@@ -128,7 +128,7 @@ var PrefsWidget = new Lang.Class({
                 "https://chrome.google.com/webstore/detail/gsconnect/jfnifeihccihocjbfcfhicmmgpjicaec",
                 "https://addons.mozilla.org"
             ),
-            new GSettingsWidget.BoolSetting(Common.Settings, "webbrowser-integration")
+            new GSettingsWidget.BoolSetting(ext.settings, "webbrowser-integration")
         );
 
         // About Page
@@ -145,9 +145,9 @@ var PrefsWidget = new Lang.Class({
             null,
             { margin_bottom: 0 }
         );
-        develSection.addGSetting(Common.Settings, "debug");
-        Common.Settings.connect("changed::debug", () => {
-            if (Common.Settings.get_boolean("debug")) {
+        develSection.addGSetting(ext.settings, "debug");
+        ext.settings.connect("changed::debug", () => {
+            if (ext.settings.get_boolean("debug")) {
                 GLib.spawn_command_line_async(
                     'gnome-terminal --tab --title "Daemon" --command "journalctl -f -o cat /usr/bin/gjs" --tab --title "Extension" --command "journalctl -f -o cat GNOME_SHELL_EXTENSION_UUID=gsconnect@andyholmes.github.io"'
                 );
@@ -196,7 +196,7 @@ var PrefsWidget = new Lang.Class({
             this.daemon = false;
         }
 
-        if (!Common.Settings.get_boolean("debug")) {
+        if (!ext.settings.get_boolean("debug")) {
             this.daemon = new Client.Daemon();
         }
     }

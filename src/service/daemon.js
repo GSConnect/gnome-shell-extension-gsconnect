@@ -227,7 +227,7 @@ var Daemon = new Lang.Class({
             type: Protocol.TYPE_IDENTITY,
             body: {
                 deviceId: this.certificate.get_common_name(),
-                deviceName: Common.Settings.get_string("public-name"),
+                deviceName: ext.settings.get_string("public-name"),
                 deviceType: this.type,
                 tcpPort: this.tcpListener._port,
                 protocolVersion: 7,
@@ -264,9 +264,9 @@ var Daemon = new Lang.Class({
      * Device Methods
      */
     _watchDevices: function () {
-        Common.Settings.connect("changed::devices", () => {
+        ext.settings.connect("changed::devices", () => {
             //
-            for (let id of Common.Settings.get_strv("devices")) {
+            for (let id of ext.settings.get_strv("devices")) {
                 let dbusPath = ext.app_path + "/Device/" + id.replace(/\W+/g, "_");
 
                 if (!this._devices.has(dbusPath)) {
@@ -282,7 +282,7 @@ var Daemon = new Lang.Class({
             }
 
             //
-            let devices = Common.Settings.get_strv("devices");
+            let devices = ext.settings.get_strv("devices");
 
             for (let [dbusPath, device] of this._devices.entries()) {
                 if (devices.indexOf(device.id) < 0) {
@@ -291,16 +291,16 @@ var Daemon = new Lang.Class({
             }
         });
 
-        Common.Settings.emit("changed::devices", "devices");
+        ext.settings.emit("changed::devices", "devices");
     },
 
     _pruneDevices: function () {
-        let devices = Common.Settings.get_strv("devices");
+        let devices = ext.settings.get_strv("devices");
 
         for (let device of this._devices.values()) {
             if (!device.connected && !device.paired) {
                 devices.splice(devices.indexOf(device.id), 1);
-                Common.Settings.set_strv("devices", devices);
+                ext.settings.set_strv("devices", devices);
             }
         }
     },
@@ -328,11 +328,11 @@ var Daemon = new Lang.Class({
             });
             this._devices.set(dbusPath, device);
 
-            let knownDevices = Common.Settings.get_strv("devices");
+            let knownDevices = ext.settings.get_strv("devices");
 
             if (knownDevices.indexOf(device.id) < 0) {
                 knownDevices.push(device.id);
-                Common.Settings.set_strv("devices", knownDevices);
+                ext.settings.set_strv("devices", knownDevices);
             }
 
             this.notify("devices");
@@ -539,7 +539,7 @@ var Daemon = new Lang.Class({
     toggleNautilusExtension: function () {
         let path = GLib.get_user_data_dir() + "/nautilus-python/extensions";
         let script = Gio.File.new_for_path(path).get_child("nautilus-gsconnect.py");
-        let install = Common.Settings.get_boolean("nautilus-integration");
+        let install = ext.settings.get_boolean("nautilus-integration");
 
         if (install && !script.query_exists(null)) {
             GLib.mkdir_with_parents(path, 493); // 0755 in octal
@@ -582,9 +582,9 @@ var Daemon = new Lang.Class({
             [GLib.get_home_dir() + "/.mozilla/native-messaging-hosts/", mozilla]
         ];
 
-        let install = Common.Settings.get_boolean("webbrowser-integration");
+        let install = ext.settings.get_boolean("webbrowser-integration");
 
-        if (Common.Settings.get_boolean("webbrowser-integration")) {
+        if (ext.settings.get_boolean("webbrowser-integration")) {
             for (let browser of browsers) {
                 GLib.mkdir_with_parents(browser[0], 493);
                 GLib.file_set_contents(
@@ -697,7 +697,7 @@ var Daemon = new Lang.Class({
         }
 
         this.identity = this._getIdentityPacket();
-        Common.Settings.bind(
+        ext.settings.bind(
             "public-name",
             this,
             "name",
@@ -705,12 +705,12 @@ var Daemon = new Lang.Class({
         );
 
         // Extensions
-        Common.Settings.connect("changed::nautilus-integration", () => {
+        ext.settings.connect("changed::nautilus-integration", () => {
             this.toggleNautilusExtension();
         });
         this.toggleNautilusExtension();
 
-        Common.Settings.connect("changed::webbrowser-integration", () => {
+        ext.settings.connect("changed::webbrowser-integration", () => {
             this.toggleWebExtension();
         });
         this.toggleWebExtension();

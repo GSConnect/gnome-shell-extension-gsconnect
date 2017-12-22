@@ -46,8 +46,8 @@ var SchemaSource = Gio.SettingsSchemaSource.new_from_directory(
     false
 );
 
-var Settings = new Gio.Settings({
     settings_schema: SchemaSource.lookup(ext.app_id, true)
+ext.settings = new Gio.Settings({
 });
 
 
@@ -77,13 +77,11 @@ DBusIface.nodes.forEach((ifaceInfo) => { ifaceInfo.cache_build(); });
  * with the UUID of the extension.
  * @param {String} msg - the debugging message
  */
-function debug(msg) {
-    if (Settings.get_boolean("debug")) {
+window.debug = function (msg) {
+    if (ext.settings.get_boolean("debug")) {
         log("[gsconnect@andyholmes.github.io]: " + msg);
     }
-}
-
-window.debug = debug;
+};
 
 
 /**

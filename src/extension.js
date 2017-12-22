@@ -35,7 +35,6 @@ imports.searchPath.push(ext.datadir);
 
 const Client = imports.client;
 const Common = imports.common;
-const Settings = Common.Settings;
 const ShellWidget = imports.widgets.shell;
 
 
@@ -248,7 +247,7 @@ var DeviceMenu = new Lang.Class({
         device.connect("notify::paired", Lang.bind(this, this._sync));
 
         this.actor.connect("notify::visible", Lang.bind(this, this._sync));
-        this._settingsChanged = Settings.connect("changed", () => this._sync());
+        this._settingsChanged = ext.settings.connect("changed", () => this._sync());
 
         this._sync(device);
     },
@@ -264,7 +263,7 @@ var DeviceMenu = new Lang.Class({
         // Fix for "st_label_set_text: assertion 'text != NULL' failed"
         this.nameLabel.text = this.device.name || "";
 
-        if (connected && paired && Settings.get_boolean("show-battery")) {
+        if (connected && paired && ext.settings.get_boolean("show-battery")) {
             this.deviceBattery.visible = true;
             this.deviceBattery.update();
         } else {
@@ -437,7 +436,7 @@ var DeviceMenu = new Lang.Class({
     },
 
     destroy: function () {
-        Settings.disconnect(this._settingsChanged);
+        ext.settings.disconnect(this._settingsChanged);
         PopupMenu.PopupMenuSection.prototype.destroy.call(this);
     }
 });
@@ -465,7 +464,7 @@ var DeviceIndicator = new Lang.Class({
         this.menu.addMenuItem(this.deviceMenu);
 
         // Signals
-        this._settingsChanged = Settings.connect("changed", () => this._sync());
+        this._settingsChanged = ext.settings.connect("changed", () => this._sync());
         device.connect("notify::connected", Lang.bind(this, this._sync));
         device.connect("notify::paired", Lang.bind(this, this._sync));
 
@@ -478,11 +477,11 @@ var DeviceIndicator = new Lang.Class({
         let { connected, paired, type } = this.device;
 
         // Device Indicator Visibility
-        if (!Settings.get_boolean("show-indicators")) {
+        if (!ext.settings.get_boolean("show-indicators")) {
             this.actor.visible = false;
-        } else if (!paired && !Settings.get_boolean("show-unpaired")) {
+        } else if (!paired && !ext.settings.get_boolean("show-unpaired")) {
             this.actor.visible = false;
-        } else if (!connected && !Settings.get_boolean("show-offline")) {
+        } else if (!connected && !ext.settings.get_boolean("show-offline")) {
             this.actor.visible = false;
         } else {
             this.actor.visible = true;
@@ -503,7 +502,7 @@ var DeviceIndicator = new Lang.Class({
     },
 
     destroy: function () {
-        Settings.disconnect(this._settingsChanged);
+        ext.settings.disconnect(this._settingsChanged);
         this.deviceMenu.destroy();
         delete this.deviceMenu;
         PanelMenu.Button.prototype.destroy.call(this);
@@ -539,7 +538,7 @@ var SystemIndicator = new Lang.Class({
         this.menu.addMenuItem(this.extensionMenu);
 
         this.devicesSection = new PopupMenu.PopupMenuSection();
-        Settings.bind(
+        ext.settings.bind(
             "show-indicators",
             this.devicesSection.actor,
             "visible",
@@ -601,7 +600,7 @@ var SystemIndicator = new Lang.Class({
 
         this.extensionIndicator.visible = (this.daemon);
 
-        if (!Settings.get_boolean("debug")) {
+        if (!ext.settings.get_boolean("debug")) {
             this.daemon = new Client.Daemon();
         }
     },
@@ -665,7 +664,7 @@ var SystemIndicator = new Lang.Class({
     _browseDevice: function (indicator) {
         let menu;
 
-        if (Settings.get_boolean("show-indicators")) {
+        if (ext.settings.get_boolean("show-indicators")) {
             indicator.menu.toggle();
             menu = indicator.deviceMenu;
         } else {
@@ -682,7 +681,7 @@ var SystemIndicator = new Lang.Class({
     },
 
     _openDeviceMenu: function (indicator) {
-        if (Settings.get_boolean("show-indicators")) {
+        if (ext.settings.get_boolean("show-indicators")) {
             indicator.menu.toggle();
         } else {
             Main.panel._toggleMenu(Main.panel.statusArea.aggregateMenu);
@@ -743,9 +742,9 @@ var SystemIndicator = new Lang.Class({
     _deviceMenuVisibility: function (menu){
         let { connected, paired } = menu.device;
 
-        if (!paired && !Settings.get_boolean("show-unpaired")) {
+        if (!paired && !ext.settings.get_boolean("show-unpaired")) {
             menu.actor.visible = false;
-        } else if (!connected && !Settings.get_boolean("show-offline")) {
+        } else if (!connected && !ext.settings.get_boolean("show-offline")) {
             menu.actor.visible = false;
         } else {
             menu.actor.visible = true;
