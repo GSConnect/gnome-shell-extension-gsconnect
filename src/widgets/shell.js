@@ -5,8 +5,8 @@ const Lang = imports.lang;
 
 const Clutter = imports.gi.Clutter;
 const Gio = imports.gi.Gio;
+const GLib = imports.gi.GLib;
 const Gtk = imports.gi.Gtk;
-const Mainloop = imports.mainloop;
 const Pango = imports.gi.Pango;
 const St = imports.gi.St;
 
@@ -207,12 +207,12 @@ var Tooltip = new Lang.Class({
         TOOLTIP_BROWSE_MODE = true;
 
         if (TOOLTIP_BROWSE_ID) {
-            Mainloop.source_remove(TOOLTIP_BROWSE_ID);
+            GLib.source_remove(TOOLTIP_BROWSE_ID);
             TOOLTIP_BROWSE_ID = 0;
         }
 
         if (this._hoverTimeoutId) {
-            Mainloop.source_remove(this._hoverTimeoutId);
+            GLib.source_remove(this._hoverTimeoutId);
             this._hoverTimeoutId = 0;
         }
     },
@@ -236,14 +236,14 @@ var Tooltip = new Lang.Class({
             });
         }
 
-        TOOLTIP_BROWSE_ID = Mainloop.timeout_add(500, () => {
+        GLib.timeout_add(GLib.PRIORITY_DEFAULT, 500, () => {
             TOOLTIP_BROWSE_MODE = false;
             TOOLTIP_BROWSE_ID = 0;
             return false;
         });
 
         if (this._hoverTimeoutId) {
-            Mainloop.source_remove(this._hoverTimeoutId);
+            GLib.source_remove(this._hoverTimeoutId);
             this._hoverTimeoutId = 0;
         }
 
@@ -259,11 +259,15 @@ var Tooltip = new Lang.Class({
                 if (this._showing) {
                     this._show();
                 } else {
-                    this._hoverTimeoutId = Mainloop.timeout_add(timeout, () => {
-                        this._show();
-                        this._hoverTimeoutId = 0;
-                        return false;
-                    });
+                    this._hoverTimeoutId = GLib.timeout_add(
+                        GLib.PRIORITY_DEFAULT,
+                        timeout,
+                        () => {
+                            this._show();
+                            this._hoverTimeoutId = 0;
+                            return false;
+                        }
+                    );
                 }
             }
         } else {
@@ -282,7 +286,7 @@ var Tooltip = new Lang.Class({
         }
 
         if (this._hoverTimeoutId) {
-            Mainloop.source_remove(this._hoverTimeoutId);
+            GLib.source_remove(this._hoverTimeoutId);
             this._hoverTimeoutId = 0;
         }
     }
