@@ -321,6 +321,10 @@ class FolksListener(object):
             yield PhoneFieldDetailsWrapper(details)
 
     def write(self, new_cache):
+        # if new_cache is empty goa might not be running, avoid wiping contacts
+        if not new_cache:
+            return
+
         # update contacts
         new_diffs = list(itertools.filterfalse(lambda x: x in self.cache, new_cache))
 
