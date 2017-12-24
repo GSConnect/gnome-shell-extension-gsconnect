@@ -602,9 +602,7 @@ var SystemIndicator = new Lang.Class({
 
         this.extensionIndicator.visible = (this.daemon);
 
-        if (!ext.settings.get_boolean("debug")) {
-            this.daemon = new Client.Daemon();
-        }
+        this.daemon = new Client.Daemon();
     },
 
     _deviceKeybindings: function (indicator) {

@@ -199,9 +199,7 @@ var PrefsWidget = new Lang.Class({
             this.daemon = false;
         }
 
-        if (!ext.settings.get_boolean("debug")) {
-            this.daemon = new Client.Daemon();
-        }
+        this.daemon = new Client.Daemon();
     }
 });
 
