@@ -184,7 +184,7 @@ var Plugin = new Lang.Class({
         if (packet.type === "kdeconnect.battery" && this.settings.get_boolean("receive-statistics")) {
             this.receive(packet);
         } else if (packet.type === "kdeconnect.battery.request" && this._battery) {
-            this.send(packet);
+            this.send();
         }
     },
 
