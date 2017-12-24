@@ -2,7 +2,6 @@
 
 const Gettext = imports.gettext.domain("org.gnome.Shell.Extensions.GSConnect");
 const _ = Gettext.gettext;
-const N_ = Gettext.ngettext;
 const Lang = imports.lang;
 
 const Gdk = imports.gi.Gdk;
@@ -840,7 +839,7 @@ var ConversationWindow = new Lang.Class({
                 let num = this.recipients.size - 1;
 
                 this.headerBar.set_subtitle(
-                    N_(
+                    Gettext.ngettext(
                         "And one other person",
                         "And %d other people",
                         num
