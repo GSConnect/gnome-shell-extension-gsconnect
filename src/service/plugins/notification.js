@@ -16,7 +16,6 @@ imports.searchPath.push(ext.datadir);
 const Common = imports.common;
 const Protocol = imports.service.protocol;
 const PluginsBase = imports.service.plugins.base;
-const GSettingsWidget = imports.widgets.gsettings;
 
 
 var METADATA = {
