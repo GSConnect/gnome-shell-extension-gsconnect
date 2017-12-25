@@ -365,9 +365,18 @@ var LanChannel = new Lang.Class({
         log("Authenticating '" + this.identity.body.deviceId + "'");
 
         this._peer_cert = peer_cert;
-        let cert = Common.getCertificate(this.identity.body.deviceId);
 
-        if (cert) {
+        let settings = new Gio.Settings({
+            settings_schema: ext.gschema.lookup(ext.app_id + ".Device", true),
+            path: ext.settings.path + "device/" + this.identity.body.deviceId + "/"
+        });
+
+        if (settings.get_string("certificate-pem")) {
+            let cert = Gio.TlsCertificate.new_from_pem(
+                settings.get_string("certificate-pem"),
+                -1
+            );
+
             return (cert.verify(null, peer_cert) === 0);
         }
 

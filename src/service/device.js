@@ -266,7 +266,14 @@ var Device = new Lang.Class({
     },
 
     verify: function () {
-        let cert = Common.getCertificate(this.id);
+        let cert;
+
+        if (this.settings.get_string("certificate-pem")) {
+            cert = Gio.TlsCertificate.new_from_pem(
+                this.settings.get_string("certificate-pem"),
+                -1
+            );
+        }
 
         if (cert) {
             log("Authenticating '" + this.name + "'");

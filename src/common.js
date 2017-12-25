@@ -97,28 +97,6 @@ function checkCommand (cmd) {
 
 
 /**
- * Return a Gio.TlsCertificate object, for @id if given, or false if none
- *
- * @param {string} [id] - A device Id
- */
-function getCertificate (id) {
-    let settings = new Gio.Settings({
-        settings_schema: ext.gschema.lookup(ext.app_id + ".Device", true),
-        path: ext.settings.path + "device/" + id + "/"
-    });
-
-    if (settings.get_string("certificate-pem")) {
-        return Gio.TlsCertificate.new_from_pem(
-            settings.get_string("certificate-pem"),
-            -1
-        );
-    }
-
-    return false;
-};
-
-
-/**
  * Install/Uninstall a .desktop file and DBus service file for GSConnect
  */
 function installService () {
