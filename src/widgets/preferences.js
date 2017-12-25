@@ -228,12 +228,12 @@ var Page = new Lang.Class({
      * Add and return a new section widget. If @title is given, a bold title
      * will be placed above the section.
      *
-     * @param {string} [title] - Optional title for the section
+     * @param {string|Gtk.Widget} [title] - Optional title for the section
      * @param {Section} [section] - The section to add, or null to create new
      * @return {Gtk.Frame} section - The new Section object.
      */
     addSection: function (title, section, params={}) {
-        if (title) {
+        if (typeof title === "string") {
             let label = new Gtk.Label({
                 can_focus: false,
                 margin_bottom: 12,
@@ -243,6 +243,8 @@ var Page = new Lang.Class({
                 label: "<b>" + title + "</b>"
             });
             this.box.pack_start(label, false, true, 0);
+        } else if (title instanceof Gtk.Widget) {
+            this.box.pack_start(title, false, true, 0);
         }
 
         if (!section) { section = new Section(params); }
