@@ -55,8 +55,8 @@ var Tooltip = new Lang.Class({
             "text": {
                 get: () => { return this._text || false; },
                 set: (value) => {
-                    this._markup = value;
-                    this._text = null;
+                    this._markup = null;
+                    this._text = value;
                     this._update();
                 }
             },
@@ -89,10 +89,10 @@ var Tooltip = new Lang.Class({
             },
             "y_offset": {
                 get: () => {
-                    return (this._x_offset === undefined) ? 0 : this._x_offset;
+                    return (this._y_offset === undefined) ? 0 : this._y_offset;
                 },
                 set: (offset) => {
-                    this._x_offset = (Number.isInteger(offset)) ? offset : 0;
+                    this._y_offset = (Number.isInteger(offset)) ? offset : 0;
                 }
             }
         });
