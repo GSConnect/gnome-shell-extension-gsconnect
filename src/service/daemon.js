@@ -313,7 +313,7 @@ var Daemon = new Lang.Class({
         if (!this.identity) { return; }
         if (packet.body.deviceId === this.identity.body.deviceId) { return; }
 
-        let dbusPath = ext.app_path + "/Device/" + this.identity.body.deviceId.replace(/\W+/g, "_");
+        let dbusPath = ext.app_path + "/Device/" + packet.body.deviceId.replace(/\W+/g, "_");
 
         if (this._devices.has(dbusPath)) {
             log("Daemon: Updating device");
