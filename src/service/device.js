@@ -198,22 +198,6 @@ var Device = new Lang.Class({
         this.settings.set_uint("tcp-port", packet.body.tcpPort);
     },
 
-    //
-    handlePacket: function (packet) {
-        debug("Device.fromPacket(" + this.id + ")");
-
-        if (packet.type === Protocol.TYPE_IDENTITY) {
-            this._handleIdentity(packet);
-            this.activate();
-        } else if (packet.type === Protocol.TYPE_PAIR) {
-	        this._handlePair(packet);
-	    } else if (this._handlers.has(packet.type)) {
-            this._handlers.get(packet.type).handlePacket(packet);
-        } else {
-            log("Received unsupported packet type: " + packet.toString());
-        }
-    },
-
     activate: function () {
         debug("Device.activate(" + this.id + ")");
 
@@ -335,9 +319,18 @@ var Device = new Lang.Class({
     },
 
     _onReceived: function (channel, packet) {
-        debug("Received from '" + this.name + "'");
+        log("Received from '" + this.name + "'");
 
-        this.handlePacket(packet);
+        if (packet.type === Protocol.TYPE_IDENTITY) {
+            this._handleIdentity(packet);
+            this.activate();
+        } else if (packet.type === Protocol.TYPE_PAIR) {
+	        this._handlePair(packet);
+	    } else if (this._handlers.has(packet.type)) {
+            this._handlers.get(packet.type).handlePacket(packet);
+        } else {
+            log("Received unsupported packet type: " + packet.toString());
+        }
     },
 
     /**
