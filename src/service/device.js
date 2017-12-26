@@ -245,7 +245,7 @@ var Device = new Lang.Class({
             }
         } else {
             this._handleIdentity(packet);
-            this.handlePacket(packet);
+            this._onReceived(this._channel, packet);
         }
     },
 
