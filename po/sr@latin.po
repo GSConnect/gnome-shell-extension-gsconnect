@@ -2,17 +2,17 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-12-23 19:05+0100\n"
+"POT-Creation-Date: 2017-12-26 11:51-0800\n"
 "PO-Revision-Date: 2017-12-24 15:09+0100\n"
+"Last-Translator: Слободан Терзић  <slobodan.terzic@zoho.eu>\n"
 "Language-Team: \n"
+"Language: sr@latin\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 2.0.5\n"
-"Last-Translator: Слободан Терзић  <slobodan.terzic@zoho.eu>\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"Language: sr@latin\n"
 
 #. TRANSLATORS: Open a new SMS window
 #: src/extension.js:176 src/widgets/device.js:199
@@ -26,7 +26,8 @@ msgid "Locate %s"
 msgstr "Pronađi %s"
 
 #. TRANSLATORS: Open the device's list of browseable directories
-#: src/extension.js:191 src/service/plugins/sftp.js:21 src/widgets/device.js:203
+#: src/extension.js:191 src/service/plugins/sftp.js:21
+#: src/widgets/device.js:203
 msgid "Browse Files"
 msgstr "Pregled fajlova"
 
@@ -195,7 +196,7 @@ msgstr "Prihvati"
 msgid "Apply"
 msgstr "Primeni"
 
-#: src/service/plugins/base.js:89 src/service/plugins/notification.js:502
+#: src/service/plugins/base.js:89 src/service/plugins/notification.js:501
 #: src/service/plugins/share.js:100 src/service/plugins/share.js:343
 #: src/service/plugins/share.js:504
 msgid "Cancel"
@@ -285,44 +286,44 @@ msgstr "Upravljanje medijskim plejerima"
 msgid "Control MPRIS2 enabled media players"
 msgstr "Upravljanje uređajima koji podržavaju MPRIS2"
 
-#: src/service/plugins/notification.js:23
+#: src/service/plugins/notification.js:22
 msgid "Notifications"
 msgstr "Obaveštenja"
 
-#: src/service/plugins/notification.js:24
+#: src/service/plugins/notification.js:23
 msgid "Sync notifications between devices"
 msgstr "Sinhronizacija obaveštenja između uređaja"
 
 #. TRANSLATORS: This is specifically for matching missed call notifications on Android.
 #. You should translate this (or not) to match the string on your phone that in english looks like "Missed call: John Lennon"
-#: src/service/plugins/notification.js:131
-#: src/service/plugins/notification.js:204 src/service/plugins/telephony.js:163
+#: src/service/plugins/notification.js:130
+#: src/service/plugins/notification.js:203 src/service/plugins/telephony.js:163
 #: src/service/plugins/telephony.js:167 src/service/plugins/telephony.js:508
 msgid "Missed call"
 msgstr "Propušten poziv"
 
 #. TRANSLATORS: Missed Call
-#: src/service/plugins/notification.js:140 src/service/plugins/telephony.js:138
+#: src/service/plugins/notification.js:139 src/service/plugins/telephony.js:138
 msgid "Missed Call"
 msgstr "Propušten poziv"
 
 #. TRANSLATORS: eg. Missed call from John Smith on Google Pixel
-#: src/service/plugins/notification.js:142 src/service/plugins/telephony.js:141
+#: src/service/plugins/notification.js:141 src/service/plugins/telephony.js:141
 #, javascript-format
 msgid "Missed call from %s on %s"
 msgstr "Propušten poziv od %s na %s"
 
 #. TRANSLATORS: Reply to a missed call by SMS
-#: src/service/plugins/notification.js:149 src/service/plugins/telephony.js:148
+#: src/service/plugins/notification.js:148 src/service/plugins/telephony.js:148
 msgid "Message"
 msgstr "Poruka"
 
-#: src/service/plugins/notification.js:500 src/service/plugins/share.js:505
-#: src/widgets/telephony.js:1077
+#: src/service/plugins/notification.js:499 src/service/plugins/share.js:505
+#: src/widgets/telephony.js:1076
 msgid "Send"
 msgstr "Pošalji"
 
-#: src/service/plugins/notification.js:569
+#: src/service/plugins/notification.js:568
 msgid "Applications"
 msgstr "Programi"
 
@@ -497,7 +498,7 @@ msgstr "Poziv u toku"
 msgid "Call in progress with %s on %s"
 msgstr "U toku je razgovor sa %s na %s"
 
-#: src/service/plugins/telephony.js:397 src/widgets/telephony.js:305
+#: src/service/plugins/telephony.js:397 src/widgets/telephony.js:304
 msgid "Unknown Number"
 msgstr "Nepoznat broj"
 
@@ -544,11 +545,11 @@ msgstr ""
 #: src/widgets/device.js:30
 #, javascript-format
 msgid ""
-"To connect an Android device, install the KDE Connect Android app from the <a "
-"href=\"%s\">Google Play Store</a> or <a href=\"%s\">F-Droid</a>."
+"To connect an Android device, install the KDE Connect Android app from the "
+"<a href=\"%s\">Google Play Store</a> or <a href=\"%s\">F-Droid</a>."
 msgstr ""
-"Da bi se povezali sa Android uređajem, instalirajte KDE Connect aplikaciju za "
-"Android iz <a href=\"%s\">Google Play prodavnice</a> ili <a href=\"%s\">F-"
+"Da bi se povezali sa Android uređajem, instalirajte KDE Connect aplikaciju "
+"za Android iz <a href=\"%s\">Google Play prodavnice</a> ili <a href=\"%s\">F-"
 "Droida</a>."
 
 #: src/widgets/device.js:35
@@ -659,15 +660,16 @@ msgstr "Tačno"
 msgid "False"
 msgstr "Netačno"
 
-#: src/widgets/keybindings.js:171
+#: src/widgets/keybindings.js:170
 msgid "Keyboard Shortcut Unavailable"
 msgstr "Prečica tastature nije dostupna"
 
-#: src/widgets/keybindings.js:172
+#: src/widgets/keybindings.js:171
 msgid ""
 "The requested keyboard shortcut is already in use and can't be overridden."
 msgstr ""
-"Zahtevana prečica tastature je već u upotrebi i ne može biti ponovo dodeljena."
+"Zahtevana prečica tastature je već u upotrebi i ne može biti ponovo "
+"dodeljena."
 
 #. TRANSLATORS: Fully Charged
 #: src/widgets/shell.js:548
@@ -697,92 +699,96 @@ msgstr "%d%% (%d∶%02d preostaje)"
 msgid "Configure <b>%s</b>"
 msgstr "Podesi <b>%s</b>"
 
-#: src/widgets/telephony.js:234
+#: src/widgets/telephony.js:233
 msgid "Add people to start a conversation"
 msgstr "Dodajte osobe da započnete razgovor"
 
-#: src/widgets/telephony.js:267 src/widgets/telephony.js:288
-#: src/widgets/telephony.js:343
+#: src/widgets/telephony.js:266 src/widgets/telephony.js:287
+#: src/widgets/telephony.js:342
 msgid "Unknown Contact"
 msgstr "Nepoznat kontakt"
 
-#: src/widgets/telephony.js:337
+#: src/widgets/telephony.js:336
 #, javascript-format
 msgid "Send to %s"
 msgstr "Pošalji na %s"
 
-#: src/widgets/telephony.js:346
+#: src/widgets/telephony.js:345
 #, javascript-format
 msgid "Send to %d"
 msgstr "Pošalji na %d"
 
 #. TRANSLATORS: A phone number type
-#: src/widgets/telephony.js:393 src/widgets/telephony.js:410
+#: src/widgets/telephony.js:392 src/widgets/telephony.js:409
 msgid "Other"
 msgstr "Drugo"
 
 #. TRANSLATORS: A phone number type
-#: src/widgets/telephony.js:397
+#: src/widgets/telephony.js:396
 msgid "Fax"
 msgstr "Faks"
 
 #. TRANSLATORS: A phone number type
-#: src/widgets/telephony.js:401
+#: src/widgets/telephony.js:400
 msgid "Work"
 msgstr "Posao"
 
 #. TRANSLATORS: A phone number type
-#: src/widgets/telephony.js:404
+#: src/widgets/telephony.js:403
 msgid "Mobile"
 msgstr "Mobilni"
 
 #. TRANSLATORS: A phone number type
-#: src/widgets/telephony.js:407
+#: src/widgets/telephony.js:406
 msgid "Home"
 msgstr "Kućni"
 
-#: src/widgets/telephony.js:510
+#: src/widgets/telephony.js:509
 msgid "Type an SMS message"
 msgstr "Unesite SMS poruku"
 
-#: src/widgets/telephony.js:687
+#: src/widgets/telephony.js:686
 msgid "SMS Conversation"
 msgstr "SMS razgovor"
 
 #. TRANSLATORS: Tooltip for a button to add/remove people from a conversation
-#: src/widgets/telephony.js:709
+#: src/widgets/telephony.js:708
 msgid "Add and remove people"
 msgstr "Dodavanje i uklanjanje osoba"
 
-#: src/widgets/telephony.js:732 src/widgets/telephony.js:733
+#: src/widgets/telephony.js:731 src/widgets/telephony.js:732
 msgid "Type a phone number or name"
 msgstr "Uneite broj telefona ili ime"
 
 #. TRANSLATORS: eg. <b>Google Pixel</b> is disconnected
-#: src/widgets/telephony.js:758
+#: src/widgets/telephony.js:757
 #, javascript-format
 msgid "<b>%s</b> is disconnected"
 msgstr "%s je razvezan"
 
-#: src/widgets/telephony.js:844
+#: src/widgets/telephony.js:843
+#, fuzzy, javascript-format
 msgid "And one other person"
-msgstr "I još jedna osoba"
+msgid_plural "And %d other people"
+msgstr[0] "I još jedna osoba"
+msgstr[1] "I još jedna osoba"
+msgstr[2] "I još jedna osoba"
 
 #. TRANSLATORS: eg. SMS Conversation with John, Paul, George, Ringo
-#: src/widgets/telephony.js:863
+#: src/widgets/telephony.js:862
 #, javascript-format
 msgid "SMS Conversation with %s"
 msgstr "SMS razgovor sa %s"
 
-#: src/widgets/telephony.js:868
+#: src/widgets/telephony.js:867
 msgid "New SMS Conversation"
 msgstr "Novi SMS razgovor"
 
-#: src/widgets/telephony.js:1014 src/widgets/telephony.js:1027
+#: src/widgets/telephony.js:1013 src/widgets/telephony.js:1026
 msgid "Share Link"
 msgstr "Podeli vezu"
 
-#: src/widgets/telephony.js:1065
+#: src/widgets/telephony.js:1064
 msgid "New Message"
 msgstr "Nova poruka"
 
