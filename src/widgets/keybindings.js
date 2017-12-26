@@ -91,7 +91,6 @@ var TreeView = new Lang.Class({
             let [success, iter] = this.model.get_iter_from_string(path);
 
             if (success) {
-                let index = this.model.get_value(iter, 0);
                 this.model.set(iter, [2, 3], [0, 0]);
 
                 this.settings.set_string(
