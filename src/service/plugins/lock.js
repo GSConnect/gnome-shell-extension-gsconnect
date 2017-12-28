@@ -115,11 +115,11 @@ var Plugin = new Lang.Class({
         this.device._channel.send(packet);
     },
 
-    _response: function (bool) {
+    _response: function () {
         let packet = new Protocol.Packet({
             id: 0,
             type: "kdeconnect.lock",
-            body: { isLocked: bool }
+            body: { isLocked: this._screensaver.GetActiveSync() }
         });
 
         this.device._channel.send(packet);
@@ -128,6 +128,7 @@ var Plugin = new Lang.Class({
     handlePacket: function (packet) {
         debug("Lock: handlePacket()");
 
+        // This is a request to change or report the local status
         if (packet.type === "kdeconnect.lock.request") {
             let respond = packet.body.hasOwnProperty("requestLocked");
 
@@ -137,8 +138,9 @@ var Plugin = new Lang.Class({
             }
 
             if (respond) {
-                this._response(this._screensaver.GetActiveSync());
+                this._response();
             }
+        // This is an update about the remote status
         } else if (packet.type === "kdeconnect.lock") {
             this._locked = packet.body.isLocked;
 
