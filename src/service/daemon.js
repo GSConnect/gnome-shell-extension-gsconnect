@@ -102,10 +102,7 @@ var Daemon = new Lang.Class({
 
     // Properties
     get certificate () {
-        return Gio.TlsCertificate.new_from_files(
-            ext.configdir + "/certificate.pem",
-            ext.configdir + "/private.pem"
-        );
+        return this._certificate;
     },
 
     get devices () {
@@ -176,15 +173,11 @@ var Daemon = new Lang.Class({
      * Generate a Private Key and TLS Certificate
      */
     _initEncryption: function () {
-        let hasPrivateKey = GLib.file_test(
-            ext.configdir + "/private.pem",
-            GLib.FileTest.EXISTS
-        );
+        let certPath = ext.configdir + "/certificate.pem";
+        let keyPath = ext.configdir + "/private.pem";
 
-        let hasCertificate = GLib.file_test(
-            ext.configdir + "/certificate.pem",
-            GLib.FileTest.EXISTS
-        );
+        let hasCertificate = GLib.file_test(certPath, GLib.FileTest.EXISTS);
+        let hasPrivateKey = GLib.file_test(keyPath, GLib.FileTest.EXISTS);
 
         if (!hasPrivateKey || !hasCertificate) {
             let cmd = [
@@ -204,8 +197,14 @@ var Daemon = new Lang.Class({
         }
 
         // Ensure permissions are restrictive
-        GLib.spawn_command_line_async("chmod 0600 " + ext.configdir + "/private.pem");
-        GLib.spawn_command_line_async("chmod 0600 " + ext.configdir + "/certificate.pem");
+        GLib.spawn_command_line_async("chmod 0600 " + keyPath);
+        GLib.spawn_command_line_async("chmod 0600 " + certPath);
+
+        // Load the certificate
+        this._certificate = Gio.TlsCertificate.new_from_files(
+            certPath,
+            keyPath
+        );
     },
 
     _initCSS: function () {
