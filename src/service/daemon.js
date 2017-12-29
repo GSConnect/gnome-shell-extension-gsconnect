@@ -577,13 +577,14 @@ var Daemon = new Lang.Class({
         };
 
         let basename = "org.gnome.shell.extensions.gsconnect.json";
+        let userConfDir = GLib.get_user_config_dir();
         let browsers = [
-            [GLib.get_user_config_dir() + "/chromium/NativeMessagingHosts/", google],
-            [GLib.get_user_config_dir() + "/google-chrome/NativeMessagingHosts/", google],
+            [userConfDir + "/chromium/NativeMessagingHosts/", google],
+            [userConfDir + "/google-chrome/NativeMessagingHosts/", google],
+            [userConfDir + "/google-chrome-beta/NativeMessagingHosts/", google],
+            [userConfDir + "/google-chrome-unstable/NativeMessagingHosts/", google],
             [GLib.get_home_dir() + "/.mozilla/native-messaging-hosts/", mozilla]
         ];
-
-        let install = ext.settings.get_boolean("webbrowser-integration");
 
         if (ext.settings.get_boolean("webbrowser-integration")) {
             for (let browser of browsers) {
