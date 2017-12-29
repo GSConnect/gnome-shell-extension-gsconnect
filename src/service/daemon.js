@@ -478,7 +478,7 @@ var Daemon = new Lang.Class({
     },
 
     _pairAction: function (action, parameter) {
-        parameter = parametereter.deep_unpack();
+        parameter = parameter.deep_unpack();
         let device;
 
         if ((device = this._devices.get(parameter["0"]))) {
