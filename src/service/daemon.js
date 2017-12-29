@@ -615,11 +615,7 @@ var Daemon = new Lang.Class({
             Gio.FileMonitorFlags.WATCH_MOVES,
             null
         );
-        this.daemonMonitor.connect("changed", (monitor, file, ofile, event) => {
-            if (event === 2 || event === 10) {
-                this.quit();
-            }
-        });
+        this.daemonMonitor.connect("changed", () => this.quit());
     },
 
     /**
