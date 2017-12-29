@@ -6,7 +6,6 @@ const ByteArray = imports.byteArray;
 const Lang = imports.lang;
 const System = imports.system;
 
-imports.gi.versions.Gdk = "3.0";
 imports.gi.versions.Gio = "2.0";
 imports.gi.versions.GLib = "2.0";
 imports.gi.versions.GObject = "2.0";
@@ -131,7 +130,7 @@ var NativeMessagingHost = new Lang.Class({
     send: function (message) {
         try {
             let data = JSON.stringify(message);
-            debug("WebExtension: send: " + JSON.stringify(message));
+            debug("WebExtension: send: " + data);
 
             let length = toInt32(data.length);
             this.stdout.write(length, null);
@@ -168,17 +167,17 @@ var NativeMessagingHost = new Lang.Class({
 
         // Watch device property changes (connected, paired, plugins, etc)
         for (let device of this.daemon.devices.values()) {
-            device.connect("notify", () => { this.sendDeviceList(); });
+            device.connect("notify", () => this.sendDeviceList());
         }
 
         // Watch for new and removed devices
         this.daemon.connect("device::added", (daemon, dbusPath) => {
             let device = this.daemon.devices.get(dbusPath);
-            device.connect("notify", () => { this.sendDeviceList(); });
+            device.connect("notify", () => this.sendDeviceList());
             this.sendDeviceList();
         });
 
-        this.daemon.connect("device::removed", () => { this.sendDeviceList(); });
+        this.daemon.connect("device::removed", () => this.sendDeviceList());
 
         this.send({ type: "connected", data: true });
     },
