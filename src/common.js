@@ -124,13 +124,10 @@ function installService () {
     GLib.file_set_contents(applicationsDir + desktopFile, desktopBytes);
 
     // sms:// scheme handler
-    try {
-        GLib.spawn_command_line_async(
-            "update-desktop-database " + applicationsDir
-        );
-    } catch (e) {
-        log("Error registering sms scheme handler: " + e.message);
-    }
+    let appinfo = Gio.DesktopAppInfo.new_from_filename(
+        applicationsDir + desktopFile
+    );
+    appinfo.add_supports_type("x-scheme-handler/sms");
 };
 
 
@@ -140,17 +137,8 @@ function uninstallService () {
     GLib.unlink(serviceDir + ext.app_id + ".service");
 
     // Application desktop file
-    let appDir = GLib.get_user_data_dir() + "/applications/";
-    GLib.unlink(appDir + ext.app_id + ".desktop");
-
-    // sms:// scheme handler
-    try {
-        GLib.spawn_command_line_async(
-            "update-desktop-database " + applicationsDir
-        );
-    } catch (e) {
-        log("Error unregistering sms scheme handler: " + e.message);
-    }
+    let applicationsDir = GLib.get_user_data_dir() + "/applications/";
+    GLib.unlink(applicationsDir + ext.app_id + ".desktop");
 };
 
 
