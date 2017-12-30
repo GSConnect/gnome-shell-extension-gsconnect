@@ -97,7 +97,10 @@ function checkCommand (cmd) {
 
 
 /**
- * Install/Uninstall a .desktop file and DBus service file for GSConnect
+ * Install/Uninstall desktop files for user installs
+ *     - XDG .desktop file
+ *     - DBus .service file
+ *     - Register sms:// scheme handler
  */
 function installService () {
     // DBus service file
@@ -111,14 +114,23 @@ function installService () {
     GLib.file_set_contents(serviceDir + serviceFile, serviceBytes);
 
     // Application desktop file
-    let appDir = GLib.get_user_data_dir() + "/applications/";
-    let appFile = ext.app_id + ".desktop";
-    let appBytes = Gio.resources_lookup_data(
-        ext.app_path + "/" + appFile, 0
+    let applicationsDir = GLib.get_user_data_dir() + "/applications/";
+    let desktopFile = ext.app_id + ".desktop";
+    let desktopBytes = Gio.resources_lookup_data(
+        ext.app_path + "/" + desktopFile, 0
     ).toArray().toString().replace("@DATADIR@", ext.datadir);
 
-    GLib.mkdir_with_parents(appDir, 493);
-    GLib.file_set_contents(appDir + appFile, appBytes);
+    GLib.mkdir_with_parents(applicationsDir, 493);
+    GLib.file_set_contents(applicationsDir + desktopFile, desktopBytes);
+
+    // sms:// scheme handler
+    try {
+        GLib.spawn_command_line_async(
+            "update-desktop-database " + applicationsDir
+        );
+    } catch (e) {
+        log("Error registering sms scheme handler: " + e.message);
+    }
 };
 
 
@@ -130,6 +142,15 @@ function uninstallService () {
     // Application desktop file
     let appDir = GLib.get_user_data_dir() + "/applications/";
     GLib.unlink(appDir + ext.app_id + ".desktop");
+
+    // sms:// scheme handler
+    try {
+        GLib.spawn_command_line_async(
+            "update-desktop-database " + applicationsDir
+        );
+    } catch (e) {
+        log("Error unregistering sms scheme handler: " + e.message);
+    }
 };
 
 
