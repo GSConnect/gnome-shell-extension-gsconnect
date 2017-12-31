@@ -273,10 +273,19 @@ var Plugin = new Lang.Class({
         this._pauseMedia(this.settings.get_boolean("talking-pause"));
     },
 
-    _hasWindow: function (phoneNumber) {
-        debug("Telephony: _hasWindow(" + phoneNumber + ")");
+    /**
+     * Check if there's an open conversation for a number(s)
+     *
+     * @param {string|array} phoneNumber - A string phone number or array of
+     */
+    _hasWindow: function (number) {
+        debug("Telephony: _hasWindow(" + number + ")");
 
-        let incomingNumber = phoneNumber.replace(/\D/g, "");
+        if (number instanceof Array) {
+            number = number.map(num => num.replace(/\D/g, "")).sort();
+        } else {
+            number = number.replace(/\D/g, "");
+        }
 
         // Get the current open windows
         let windows = this.device.daemon.get_windows();
@@ -290,10 +299,17 @@ var Plugin = new Lang.Class({
                 continue;
             }
 
-            for (let windowNumber of windows[index_].numbers) {
-                if (incomingNumber === windowNumber) {
-                    window = windows[index_];
+            if (number instanceof Array) {
+                if (JSON.stringify(win.numbers) === JSON.stringify(number)) {
+                    window = win;
                     break;
+                }
+            } else {
+                for (let winNumber of win.numbers) {
+                    if (number === winNumber) {
+                        window = win;
+                        break;
+                    }
                 }
             }
 

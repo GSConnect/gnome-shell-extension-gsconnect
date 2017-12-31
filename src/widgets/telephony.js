@@ -820,7 +820,7 @@ var ConversationWindow = new Lang.Class({
     },
 
     get numbers () {
-        return Array.from(this.recipients.keys());
+        return Array.from(this.recipients.keys()).sort();
     },
 
     _setHeaderBar: function () {
