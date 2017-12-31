@@ -996,6 +996,7 @@ var ConversationWindow = new Lang.Class({
 
     setEntry: function (text) {
         this.messageView.entry.text = text;
+        this.messageView.entry.emit("move-cursor", 0, text.length, false);
     }
 });
 
