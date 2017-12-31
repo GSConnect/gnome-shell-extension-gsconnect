@@ -850,11 +850,7 @@ var ConversationWindow = new Lang.Class({
             let people = [];
 
             for (let recipient of this.recipients.values()) {
-                if (recipient.name) {
-                    people.push(recipient.name);
-                } else {
-                    people.push(recipient.number);
-                }
+                people.push(recipient.name || recipient.number);
             }
 
             this.headerBar.set_tooltip_text(
