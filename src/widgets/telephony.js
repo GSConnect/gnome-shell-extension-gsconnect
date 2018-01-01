@@ -1009,8 +1009,7 @@ var ShareWindow = new Lang.Class({
             application: device.daemon,
             title: _("Share Link"),
             default_width: 300,
-            default_height: 200,
-            icon_name: "phone"
+            default_height: 200
         });
         this.set_keep_above(true);
 
