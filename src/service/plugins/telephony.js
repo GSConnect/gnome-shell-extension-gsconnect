@@ -493,6 +493,40 @@ var Plugin = new Lang.Class({
         window.present();
     },
 
+    openUri: function (uri) {
+        if (!uri instanceof SmsURI) {
+            try {
+                uri = new SmsURI(uri);
+            } catch (e) {
+                debug("Error parsing sms URI: " + e.message);
+                return;
+            }
+        }
+
+        // Check for an extant window
+        let window = this._hasWindow(uri.recipients);
+
+        // None found; open one and add the contact(s)
+        if (!window) {
+            window = new TelephonyWidget.ConversationWindow(this.device);
+
+            for (let recipient of uri.recipients) {
+                window.addRecipient({
+                    number: recipient,
+                    name: ""
+                });
+            }
+            window.urgency_hint = true;
+        }
+
+        // Set the outgoing message if the uri has a body variable
+        if (uri.body) {
+            window.setEntry(uri.body);
+        }
+
+        window.present();
+    },
+
     /**
      * Either open a new SMS window for the caller or reuse an existing one
      *
@@ -899,6 +933,60 @@ var ContactsCache = new Lang.Class({
         } catch (e) {
             debug("Telephony: Error reading Google Contacts: " + e);
         }
+    }
+});
+
+
+/**
+ * A simple parsing class for sms: URI's (https://tools.ietf.org/html/rfc5724)
+ */
+var SmsURI = new Lang.Class({
+    Name: "GSConnectSmsURI",
+
+    _init: function (uri) {
+        // Gio.File returns "scheme:///"
+        let telRegex = /^((?:\+[\d().-]*\d[\d().-]*|[0-9A-F*#().-]*[0-9A-F*#][0-9A-F*#().-]*(?:;[a-z\d-]+(?:=(?:[a-z\d\[\]\/:&+$_!~*'().-]|%[\dA-F]{2})+)?)*;phone-context=(?:\+[\d().-]*\d[\d().-]*|(?:[a-z0-9]\.|[a-z0-9][a-z0-9-]*[a-z0-9]\.)*(?:[a-z]|[a-z][a-z0-9-]*[a-z0-9])))(?:;[a-z\d-]+(?:=(?:[a-z\d\[\]\/:&+$_!~*'().-]|%[\dA-F]{2})+)?)*(?:,(?:\+[\d().-]*\d[\d().-]*|[0-9A-F*#().-]*[0-9A-F*#][0-9A-F*#().-]*(?:;[a-z\d-]+(?:=(?:[a-z\d\[\]\/:&+$_!~*'().-]|%[\dA-F]{2})+)?)*;phone-context=\+[\d().-]*\d[\d().-]*)(?:;[a-z\d-]+(?:=(?:[a-z\d\[\]\/:&+$_!~*'().-]|%[\dA-F]{2})+)?)*)*)$/g;
+        // This is lenient, and allows sms:/// since that's what Gio returns
+        let smsRegex = /^sms:[\/]{0,3}([^/?#]*)(?:\?([^#]*))?[#(.*)]?/g;
+
+        let full, recipients, query;
+
+        try {
+            [full, recipients, query] = smsRegex.exec(uri);
+        } catch (e) {
+            throw URIError("malformed sms URI");
+        }
+
+        if (!recipients) {
+            throw URIError("must have at least one recipient");
+        }
+
+        this.recipients = recipients.split(",").filter((recipient) => {
+            // TODO: using strict tel: format means we can't pass numbers
+            //       straight from folks without using libphonenumber
+            //return telRegex.test(recipient);
+            return (recipient.length);
+        });
+
+        if (query) {
+            for (let field of query.split("&")) {
+                let [key, value] = field.split("=");
+
+                if (key === "body") {
+                    if (this.body) {
+                        throw URIError('duplicate "body" field');
+                    }
+
+                    this.body = (value) ? decodeURIComponent(value) : undefined;
+                }
+            }
+        }
+    },
+
+    toString: function () {
+        let uri = "sms:" + this.recipients.join(",");
+
+        return (this.body) ? uri + "?body=" + escape(this.body) : uri;
     }
 });
 

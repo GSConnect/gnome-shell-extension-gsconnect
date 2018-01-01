@@ -38,6 +38,115 @@ imports.searchPath.push(ext.datadir);
 const Common = imports.common;
 const Device = imports.service.device;
 const Protocol = imports.service.protocol;
+const Telephony = imports.service.plugins.telephony;
+
+
+var DeviceChooser = new Lang.Class({
+    Name: "GSConnectDeviceChooser",
+    Extends: Gtk.ApplicationWindow,
+    Signals: {
+        "selected": {
+            flags: GObject.SignalFlags.RUN_FIRST,
+            param_types: [ GObject.TYPE_OBJECT ]
+        }
+    },
+
+    _init: function (params) {
+        this.parent({
+            application: Gio.Application.get_default(),
+            default_width: 300,
+            default_height: 200
+        });
+        this.set_keep_above(true);
+
+        this.params = params;
+
+        // HeaderBar
+        let headerbar = new Gtk.HeaderBar({
+            title: _("Select a Device"),
+            subtitle: this.params.title,
+            show_close_button: false
+        });
+        this.set_titlebar(headerbar);
+
+        let cancelButton = new Gtk.Button({ label: _("Cancel") });
+        cancelButton.connect("clicked", () => this.destroy());
+        headerbar.pack_start(cancelButton);
+
+        let selectButton = new Gtk.Button({
+            label: _("Select"),
+            sensitive: false
+        });
+        selectButton.get_style_context().add_class("suggested-action");
+        selectButton.connect("clicked", () => {
+            this._select(this.list.get_selected_row().device)
+        });
+        headerbar.pack_end(selectButton);
+
+        // Device List
+        let scrolledWindow = new Gtk.ScrolledWindow({
+            can_focus: false,
+            hexpand: true,
+            vexpand: true,
+            hscrollbar_policy: Gtk.PolicyType.NEVER
+        });
+        this.add(scrolledWindow);
+
+        this.list = new Gtk.ListBox({ activate_on_single_click: false });
+        this.list.connect("row-activated", (list, row) => this._select(row.device));
+        this.list.connect("selected-rows-changed", () => {
+            selectButton.sensitive = (this.list.get_selected_rows().length);
+        });
+        scrolledWindow.add(this.list);
+
+        this.show_all();
+        this._populate();
+    },
+
+    _populate: function () {
+        for (let device of this.application._devices.values()) {
+            if (this.params.filter_func(device)) {
+                let row = new Gtk.ListBoxRow();
+                row.device = device;
+                this.list.add(row);
+
+                let box = new Gtk.Box({
+                    margin: 6,
+                    spacing: 6
+                });
+                row.add(box);
+
+                let icon = new Gtk.Image({
+                    icon_name: device.type,
+                    pixel_size: 32
+                });
+                box.add(icon);
+
+                let name = new Gtk.Label({
+                    label: device.name,
+                    halign: Gtk.Align.START,
+                    hexpand: true
+                });
+                box.add(name);
+
+                row.show_all();
+            }
+        }
+    },
+
+    _select: function (device) {
+        this.emit("selected", device);
+        this.destroy();
+    },
+
+    run: function () {
+        if (this.list.get_children().length === 1) {
+            this._select(this.list.get_children()[0].device);
+        } else if (!this.list.get_children().length) {
+            this.destroy();
+        }
+    }
+});
 
 
 var Daemon = new Lang.Class({
@@ -91,7 +200,8 @@ var Daemon = new Lang.Class({
 
     _init: function() {
         this.parent({
-            application_id: ext.app_id
+            application_id: ext.app_id,
+            flags: Gio.ApplicationFlags.HANDLES_OPEN
         });
 
         GLib.set_prgname(ext.app_id);
@@ -730,6 +840,33 @@ var Daemon = new Lang.Class({
     vfunc_activate: function() {
         this.parent();
         this.hold();
+    },
+
+    vfunc_open: function (files, hint) {
+        this.parent(files, hint);
+
+        for (let file of files) {
+            try {
+                if (file.get_uri_scheme() === "sms") {
+                    let uri = new Telephony.SmsURI(file.get_uri());
+
+                    let win = new DeviceChooser({
+                        title: _("Send SMS"),
+                        filter_func: (device) => {
+                            return device._plugins.has("telephony");
+                        }
+                    });
+
+                    win.connect("selected", (window, device) => {
+                        device._plugins.get("telephony").openUri(uri);
+                    });
+
+                    win.run();
+                }
+            } catch (e) {
+                log("Error opening file/uri: " + e.message);
+            }
+        }
     },
 
     vfunc_shutdown: function() {
