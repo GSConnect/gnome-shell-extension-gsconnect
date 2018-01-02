@@ -41,6 +41,42 @@ var METADATA = {
 
 
 /**
+ * sms/tel URI RegExp (https://tools.ietf.org/html/rfc5724)
+ *
+ * A fairly lenient regexp for sms: URIs that allows tel: numbers with chars
+ * from global-number, local-number (without phone-context) and single spaces,
+ * allowing passing numbers directly from libfolks or GData without
+ * pre-processing. It also makes an allowance for URIs passed from Gio.File
+ * that always come in the form "sms:///".
+ */
+let _smsParam = "[\\w.!~*'()-]+=(?:[\\w.!~*'()-]|%[0-9A-F]{2})*";
+let _telParam = ";[a-zA-Z0-9-]+=(?:[\\w\\[\\]/:&+$.!~*'()-]|%[0-9A-F]{2})+";
+let _lenientDigits = "[+]?(?:[0-9A-F*#().-]| (?! )|%20(?!%20))+";
+let _lenientNumber = _lenientDigits + "(?:" + _telParam + ")*";
+
+var _smsRegex = new RegExp(
+    "^" +
+    "sms:" +                                // scheme
+    "(?:[/]{2,3})?" +                       // Gio.File returns ":///"
+    "(" +                                   // one or more...
+        _lenientNumber +                    // phone numbers
+        "(?:," + _lenientNumber + ")*" +    // separated by commas
+    ")" +
+    "(?:\\?(" +                             // followed by optional...
+        _smsParam +                         // parameters...
+        "(?:&" + _smsParam + ")*" +         // separated by "&" (unescaped)
+    "))?" +
+    "$", "g");                              // fragments (#foo) not allowed
+
+
+var _numberRegex = new RegExp(
+    "^" +
+    "(" + _lenientDigits + ")" +            // phone number digits
+    "((?:" + _telParam + ")*)" +            // followed by optional parameters
+    "$", "g");
+
+
+/**
  * Telephony Plugin
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/telephony
  *
@@ -944,28 +980,33 @@ var SmsURI = new Lang.Class({
     Name: "GSConnectSmsURI",
 
     _init: function (uri) {
-        // Gio.File returns "scheme:///"
-        let telRegex = /^((?:\+[\d().-]*\d[\d().-]*|[0-9A-F*#().-]*[0-9A-F*#][0-9A-F*#().-]*(?:;[a-z\d-]+(?:=(?:[a-z\d\[\]\/:&+$_!~*'().-]|%[\dA-F]{2})+)?)*;phone-context=(?:\+[\d().-]*\d[\d().-]*|(?:[a-z0-9]\.|[a-z0-9][a-z0-9-]*[a-z0-9]\.)*(?:[a-z]|[a-z][a-z0-9-]*[a-z0-9])))(?:;[a-z\d-]+(?:=(?:[a-z\d\[\]\/:&+$_!~*'().-]|%[\dA-F]{2})+)?)*(?:,(?:\+[\d().-]*\d[\d().-]*|[0-9A-F*#().-]*[0-9A-F*#][0-9A-F*#().-]*(?:;[a-z\d-]+(?:=(?:[a-z\d\[\]\/:&+$_!~*'().-]|%[\dA-F]{2})+)?)*;phone-context=\+[\d().-]*\d[\d().-]*)(?:;[a-z\d-]+(?:=(?:[a-z\d\[\]\/:&+$_!~*'().-]|%[\dA-F]{2})+)?)*)*)$/g;
-        // This is lenient, and allows sms:/// since that's what Gio returns
-        let smsRegex = /^sms:[\/]{0,3}([^/?#]*)(?:\?([^#]*))?[#(.*)]?/g;
+        debug("SmsURI: _init(" + uri + ")");
 
         let full, recipients, query;
 
         try {
-            [full, recipients, query] = smsRegex.exec(uri);
+            _smsRegex.lastIndex = 0;
+            [full, recipients, query] = _smsRegex.exec(uri);
         } catch (e) {
             throw URIError("malformed sms URI");
         }
 
-        if (!recipients) {
-            throw URIError("must have at least one recipient");
-        }
+        this.recipients = recipients.split(",").map((recipient) => {
+            _numberRegex.lastIndex = 0;
+            let [full, number, params] = _numberRegex.exec(recipient);
 
-        this.recipients = recipients.split(",").filter((recipient) => {
-            // TODO: using strict tel: format means we can't pass numbers
-            //       straight from folks without using libphonenumber
-            //return telRegex.test(recipient);
-            return (recipient.length);
+            if (params) {
+                for (let param of params.substr(1).split(";")) {
+                    let [key, value] = param.split("=");
+
+                    // add phone-context to beginning of
+                    if (key === "phone-context" && value.startsWith("+")) {
+                        return value + unescape(number);
+                    }
+                }
+            }
+
+            return unescape(number);
         });
 
         if (query) {
