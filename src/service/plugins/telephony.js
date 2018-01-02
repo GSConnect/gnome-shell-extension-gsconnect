@@ -51,7 +51,7 @@ var Plugin = new Lang.Class({
     Extends: PluginsBase.Plugin,
     Signals: {
         "missedCall": {
-            flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED,
+            flags: GObject.SignalFlags.RUN_FIRST,
             param_types: [
                 GObject.TYPE_STRING,
                 GObject.TYPE_STRING,
@@ -59,7 +59,7 @@ var Plugin = new Lang.Class({
             ]
         },
         "ringing": {
-            flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED,
+            flags: GObject.SignalFlags.RUN_FIRST,
             param_types: [
                 GObject.TYPE_STRING,
                 GObject.TYPE_STRING,
@@ -67,7 +67,7 @@ var Plugin = new Lang.Class({
             ]
         },
         "sms": {
-            flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED,
+            flags: GObject.SignalFlags.RUN_FIRST,
             param_types: [
                 GObject.TYPE_STRING,
                 GObject.TYPE_STRING,
@@ -76,7 +76,7 @@ var Plugin = new Lang.Class({
             ]
         },
         "talking": {
-            flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED,
+            flags: GObject.SignalFlags.RUN_FIRST,
             param_types: [
                 GObject.TYPE_STRING,
                 GObject.TYPE_STRING,
