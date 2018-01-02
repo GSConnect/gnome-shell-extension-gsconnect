@@ -974,6 +974,10 @@ var ConversationWindow = new Lang.Class({
 
     /** Send the contents of MessageView.entry to each recipient */
     send: function (entry, signal_id, event) {
+        if (!entry.text.length) {
+            return;
+        }
+
         let plugin = this.device._plugins.get("telephony");
 
         // Send to each number
