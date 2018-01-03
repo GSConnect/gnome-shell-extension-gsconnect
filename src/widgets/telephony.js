@@ -87,8 +87,6 @@ const _urlRegexp = new RegExp(
         ')' +
     ')', 'gi');
 
-var LINK_REGEX = /\b((?:https?:\/\/|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))/gi;
-
 
 /**
  * Contact Avatar
@@ -534,10 +532,10 @@ var MessageView = new Lang.Class({
      * @param {string} text - The string to be modified
      */
     _linkify: function (text) {
+        _urlRegexp.lastIndex = 0;
         return text.replace(
-            //_urlRegexp,
-            LINK_REGEX,
-            '<a href="$1">$1</a>'
+            _urlRegexp,
+            '$1<a href="$2">$2</a>'
         ).replace(
             /&(?!amp;)/g,
             "&amp;"
@@ -647,7 +645,7 @@ var MessageView = new Lang.Class({
             Gtk.show_uri_on_window(
                 this.get_toplevel(),
                 (uri.indexOf("://") < 0) ? "http://" + uri : uri,
-                Gdk.CURRENT_TIME
+                Gdk.get_current_event_time()
             );
             return true;
         });
