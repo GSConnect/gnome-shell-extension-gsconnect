@@ -3,7 +3,6 @@ Type=Application
 Name=GSConnect
 Exec=/bin/sh -c "gjs @DATADIR@/service/daemon.js %u"
 Terminal=false
-Hidden=false
 NoDisplay=true
 Icon=org.gnome.Shell.Extensions.GSConnect
 Categories=Network;
