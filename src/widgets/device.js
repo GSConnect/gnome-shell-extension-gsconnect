@@ -521,31 +521,31 @@ var DeviceMetadata = {
         type: _("Desktop"),
         icon: "computer",
         symbolic_icon: "computer-symbolic",
-        unpaired_icon: "desktop-disconnected"
+        unpaired_icon: "desktopdisconnected"
     },
     laptop: {
         type: _("Laptop"),
         icon: "laptop",
         symbolic_icon: "laptop-symbolic",
-        unpaired_icon: "laptop-disconnected"
+        unpaired_icon: "laptopdisconnected"
     },
     phone: {
         type: _("Smartphone"),
         icon: "phone",
         symbolic_icon: "smartphone-symbolic",
-        unpaired_icon: "smartphone-disconnected"
+        unpaired_icon: "smartphonedisconnected"
     },
     tablet: {
         type: _("Tablet"),
         icon: "tablet",
         symbolic_icon: "tablet-symbolic",
-        unpaired_icon: "tablet-disconnected"
+        unpaired_icon: "tabletdisconnected"
     },
     unknown: {
         type: _("Unknown"),
         icon: "computer",
         symbolic_icon: "computer-symbolic",
-        unpaired_icon: "desktop-disconnected"
+        unpaired_icon: "desktopdisconnected"
     }
 };
 

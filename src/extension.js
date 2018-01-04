@@ -490,16 +490,15 @@ var DeviceIndicator = new Lang.Class({
         }
 
         // Indicator Icon
-        // TODO: desktop-* icons not rendering, fallback being used
         let icon = (type === "phone") ? "smartphone" : type;
         icon = (type === "unknown") ? "laptop" : icon;
 
         if (paired && connected) {
-            this.icon.icon_name = icon + "-connected";
+            this.icon.icon_name = icon + "connected";
         } else if (paired) {
-            this.icon.icon_name = icon + "-trusted";
+            this.icon.icon_name = icon + "trusted";
         } else {
-            this.icon.icon_name = icon + "-disconnected";
+            this.icon.icon_name = icon + "disconnected";
         }
     },
 
