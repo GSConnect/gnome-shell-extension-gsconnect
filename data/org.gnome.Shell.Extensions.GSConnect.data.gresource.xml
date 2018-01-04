@@ -11,25 +11,25 @@
     <file compressed="true" preprocess="xml-stripblanks">org.gnome.Shell.Extensions.GSConnect-symbolic.svg</file>
     <!-- Device Icons c/o Numix -->
     <file compressed="true" preprocess="xml-stripblanks">computer.svg</file>
-    <file compressed="true" preprocess="xml-stripblanks">desktop-connected.svg</file>
-    <file compressed="true" preprocess="xml-stripblanks">desktop-disconnected.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks">desktopconnected.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks">desktopdisconnected.svg</file>
     <!-- <file compressed="true" preprocess="xml-stripblanks">desktop-symbolic.svg</file> -->
-    <file compressed="true" preprocess="xml-stripblanks">desktop-trusted.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks">desktoptrusted.svg</file>
     <file compressed="true" preprocess="xml-stripblanks">laptop.svg</file>
-    <file compressed="true" preprocess="xml-stripblanks">laptop-connected.svg</file>
-    <file compressed="true" preprocess="xml-stripblanks">laptop-disconnected.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks">laptopconnected.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks">laptopdisconnected.svg</file>
     <file compressed="true" preprocess="xml-stripblanks">laptop-symbolic.svg</file>
-    <file compressed="true" preprocess="xml-stripblanks">laptop-trusted.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks">laptoptrusted.svg</file>
     <file compressed="true" preprocess="xml-stripblanks">smartphone.svg</file>
-    <file compressed="true" preprocess="xml-stripblanks">smartphone-connected.svg</file>
-    <file compressed="true" preprocess="xml-stripblanks">smartphone-disconnected.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks">smartphoneconnected.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks">smartphonedisconnected.svg</file>
     <file compressed="true" preprocess="xml-stripblanks">smartphone-symbolic.svg</file>
-    <file compressed="true" preprocess="xml-stripblanks">smartphone-trusted.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks">smartphonetrusted.svg</file>
     <file compressed="true" preprocess="xml-stripblanks">tablet.svg</file>
-    <file compressed="true" preprocess="xml-stripblanks">tablet-connected.svg</file>
-    <file compressed="true" preprocess="xml-stripblanks">tablet-disconnected.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks">tabletconnected.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks">tabletdisconnected.svg</file>
     <file compressed="true" preprocess="xml-stripblanks">tablet-symbolic.svg</file>
-    <file compressed="true" preprocess="xml-stripblanks">tablet-trusted.svg</file>
+    <file compressed="true" preprocess="xml-stripblanks">tablettrusted.svg</file>
     <!-- SMS Icons -->
     <file compressed="true" preprocess="xml-stripblanks">sms-send.svg</file>
     <file compressed="true" preprocess="xml-stripblanks">sms-symbolic.svg</file>
