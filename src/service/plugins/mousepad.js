@@ -60,8 +60,6 @@ var Plugin = new Lang.Class({
             this._seat = this._display.get_default_seat();
             this._pointer = this._seat.get_pointer();
         }
-
-        this._xdotool = Common.checkCommand("xdotool");
     },
 
     handlePacket: function (packet) {
@@ -70,7 +68,7 @@ var Plugin = new Lang.Class({
         if (packet.body.singleclick) {
             this.clickPointer(1);
         } else if (packet.body.doubleclick) {
-            this.clickPointer(1, true);
+            this.doubleclickPointer(1);
         } else if (packet.body.middleclick) {
             this.clickPointer(2);
         } else if (packet.body.rightclick) {
@@ -82,9 +80,9 @@ var Plugin = new Lang.Class({
             this.releasePointer(1);
         } else if (packet.body.scroll) {
             if (packet.body.dy < 0) {
-                this.scrollPointer(Gdk.KEY_ScrollDown);
+                this.clickPointer(5);
             } else if (packet.body.dy > 0) {
-                this.scrollPointer(Gdk.KEY_ScrollUp);
+                this.clickPointer(4);
             }
         } else if (packet.body.hasOwnProperty("dx") && packet.body.hasOwnProperty("dy")) {
             this.movePointer(packet.body.dx, packet.body.dy);
@@ -98,25 +96,29 @@ var Plugin = new Lang.Class({
         }
     },
 
-    clickPointer: function (button, double=false) {
+    clickPointer: function (button) {
         debug("Mousepad: clickPointer(" + button + ", " + double + ")");
 
-        let event;
-
-        if (button === 1) {
-            event = "b1c";
-        } else if (button === 2) {
-            event = "b2c";
-        } else if (button === 3) {
-            event = "b3c";
-        }
+        let event = "b%dc".format(button);
 
         try {
             let [screen, x, y] = this._pointer.get_position();
             Atspi.generate_mouse_event(x, y, event);
-            if (double) { Atspi.generate_mouse_event(x, y, event); }
         } catch (e) {
             log("Mousepad: Error simulating mouse click: " + e);
+        }
+    },
+
+    doubleclickPointer: function (button) {
+        debug("Mousepad: doubleclickPointer(" + button + ")");
+
+        let event = "b%dd".format(button);
+
+        try {
+            let [screen, x, y] = this._pointer.get_position();
+            Atspi.generate_mouse_event(x, y, event);
+        } catch (e) {
+            log("Mousepad: Error simulating mouse double click: " + e);
         }
     },
 
@@ -133,40 +135,26 @@ var Plugin = new Lang.Class({
     pressPointer: function (button) {
         debug("Mousepad: pressPointer()");
 
-        if (!this._xdotool) {
-            this._xdotool = Common.checkCommand("xdotool");
-        }
+        let event = "b%dp".format(button);
 
-        if (this._xdotool) {
-            GLib.spawn_command_line_async("xdotool mousedown " + button);
+        try {
+            let [screen, x, y] = this._pointer.get_position();
+            Atspi.generate_mouse_event(x, y, event);
+        } catch (e) {
+            log("Mousepad: Error simulating mouse press: " + e);
         }
     },
 
     releasePointer: function (button) {
         debug("Mousepad: releasePointer()");
 
-        if (!this._xdotool) {
-            this._xdotool = Common.checkCommand("xdotool");
-        }
+        let event = "b%dr".format(button);
 
-        if (this._xdotool) {
-            GLib.spawn_command_line_async("xdotool mouseup " + button);
-        }
-    },
-
-    scrollPointer: function (key) {
-        debug("Mousepad: scroll(" + key + ")");
-
-        if (!this._xdotool) {
-            this._xdotool = Common.checkCommand("xdotool");
-        }
-
-        if (this._xdotool) {
-            if (key === Gdk.KEY_ScrollUp) {
-                GLib.spawn_command_line_async("xdotool click 4");
-            } else if (key === Gdk.KEY_ScrollDown) {
-                GLib.spawn_command_line_async("xdotool click 5");
-            }
+        try {
+            let [screen, x, y] = this._pointer.get_position();
+            Atspi.generate_mouse_event(x, y, event);
+        } catch (e) {
+            log("Mousepad: Error simulating mouse release: " + e);
         }
     },
 
