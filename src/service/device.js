@@ -88,6 +88,7 @@ var Device = new Lang.Class({
         this._channel = null;
         this._connected = false;
 
+        this._incomingPairRequest = false;
         this._outgoingPairRequest = false;
 
         // Plugins
@@ -347,6 +348,7 @@ var Device = new Lang.Class({
                 this.acceptPair();
             // The device is requesting pairing
             } else {
+                this._incomingPairRequest = true;
                 this._notifyPair(packet);
             }
         // Device is requesting unpairing/rejecting our request
@@ -357,6 +359,7 @@ var Device = new Lang.Class({
     },
 
     _cancelPair: function () {
+        this._incomingPairRequest = false;
         this._outgoingPairRequest = false;
 
         if (!this.paired) {
@@ -409,6 +412,7 @@ var Device = new Lang.Class({
     },
 
     _setPaired: function (bool) {
+        this._incomingPairRequest = false;
         this._outgoingPairRequest = false;
 
         if (bool) {
@@ -426,6 +430,12 @@ var Device = new Lang.Class({
 
     pair: function () {
         debug("Device.pair(" + this.id + ")");
+
+        // The pair button was pressed during and incoming pair request
+        if (this._incomingPairRequest) {
+            this.acceptPair();
+            return;
+        }
 
         // We're initiating an outgoing request
         if (!this.paired) {
