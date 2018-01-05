@@ -380,6 +380,7 @@ var Device = new Lang.Class({
             )
         );
         notif.set_icon(new Gio.ThemedIcon({ name: "channel-insecure-symbolic" }));
+        notif.set_priority(Gio.NotificationPriority.URGENT);
 
         notif.add_button(
             _("Reject"),
