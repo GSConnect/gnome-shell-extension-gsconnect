@@ -348,7 +348,6 @@ var Device = new Lang.Class({
                 this.acceptPair();
             // The device is requesting pairing
             } else {
-                this._incomingPairRequest = true;
                 this._notifyPair(packet);
             }
         // Device is requesting unpairing/rejecting our request
