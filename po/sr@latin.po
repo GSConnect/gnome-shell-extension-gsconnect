@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-01-02 16:09-0800\n"
+"POT-Creation-Date: 2018-01-04 22:49-0800\n"
 "PO-Revision-Date: 2017-12-24 15:09+0100\n"
 "Last-Translator: Слободан Терзић  <slobodan.terzic@zoho.eu>\n"
 "Language-Team: \n"
@@ -15,7 +15,7 @@ msgstr ""
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #. TRANSLATORS: Open a new SMS window
-#: src/extension.js:176 src/service/daemon.js:854 src/widgets/device.js:199
+#: src/extension.js:176 src/service/daemon.js:853 src/widgets/device.js:199
 msgid "Send SMS"
 msgstr "Pošalji SMS"
 
@@ -66,11 +66,11 @@ msgstr "Neuspelo montiranje %s"
 msgid "Unmount"
 msgstr "Demontiraj"
 
-#: src/extension.js:536
+#: src/extension.js:535
 msgid "Mobile Devices"
 msgstr "Mobilni uređaji"
 
-#: src/extension.js:551
+#: src/extension.js:550
 msgid "Mobile Settings"
 msgstr "Podešavanje"
 
@@ -155,21 +155,21 @@ msgstr "Otkaži"
 msgid "Select"
 msgstr ""
 
-#: src/service/daemon.js:635
+#: src/service/daemon.js:634
 msgid "Nautilus extensions changed"
 msgstr "Izmenjena su proširenja Nutilusa"
 
-#: src/service/daemon.js:636
+#: src/service/daemon.js:635
 msgid "Restart Nautilus to apply changes"
 msgstr "Ponovo pokrenite Nautilus da bi primenili izmene"
 
 #. TRANSLATORS: Notification button to restart Nautilus
-#: src/service/daemon.js:642
+#: src/service/daemon.js:641
 msgid "Restart"
 msgstr "Ponovo pokreni"
 
 #. TRANSLATORS: eg. Pair Request from Google Pixel
-#: src/service/device.js:377
+#: src/service/device.js:363
 #, javascript-format
 msgid "Pair Request from %s"
 msgstr "Zahtev za uparivanje od %s"
@@ -184,7 +184,7 @@ msgstr "Zahtev za uparivanje od %s"
 #.
 #. Local Fingerprint:
 #. 00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
-#: src/service/device.js:389
+#: src/service/device.js:375
 #, javascript-format
 msgid ""
 "%s Fingerprint:\n"
@@ -199,11 +199,11 @@ msgstr ""
 "Lokalni otisak:\n"
 "%s"
 
-#: src/service/device.js:398
+#: src/service/device.js:385
 msgid "Reject"
 msgstr "Odbij"
 
-#: src/service/device.js:402
+#: src/service/device.js:389
 msgid "Accept"
 msgstr "Prihvati"
 
@@ -328,7 +328,7 @@ msgid "Message"
 msgstr "Poruka"
 
 #: src/service/plugins/notification.js:499 src/service/plugins/share.js:505
-#: src/widgets/telephony.js:1076
+#: src/widgets/telephony.js:1074
 msgid "Send"
 msgstr "Pošalji"
 
@@ -507,7 +507,7 @@ msgstr "Poziv u toku"
 msgid "Call in progress with %s on %s"
 msgstr "U toku je razgovor sa %s na %s"
 
-#: src/service/plugins/telephony.js:449 src/widgets/telephony.js:304
+#: src/service/plugins/telephony.js:449 src/widgets/telephony.js:302
 msgid "Unknown Number"
 msgstr "Nepoznat broj"
 
@@ -589,7 +589,7 @@ msgid "Connecting Devices"
 msgstr "Povezivanje uređaja"
 
 #. TRANSLATORS: eg. Reconnect <b>Google Pixel</b>
-#: src/widgets/device.js:438 src/widgets/shell.js:598
+#: src/widgets/device.js:438 src/widgets/shell.js:599
 #, javascript-format
 msgid "Reconnect <b>%s</b>"
 msgstr "Ponovo poveži <b>%s</b>"
@@ -601,7 +601,7 @@ msgid "Unpair <b>%s</b>"
 msgstr "Raspari <b>%s</b>"
 
 #. TRANSLATORS: eg. Pair <b>Google Pixel</b>
-#: src/widgets/device.js:488 src/widgets/shell.js:608
+#: src/widgets/device.js:488 src/widgets/shell.js:609
 #, javascript-format
 msgid "Pair <b>%s</b>"
 msgstr "Upari <b>%s</b>"
@@ -616,7 +616,7 @@ msgstr "Upari <b>%s</b>"
 #.
 #. <b>Local Fingerprint:</b>
 #. 00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
-#: src/widgets/device.js:499 src/widgets/shell.js:608
+#: src/widgets/device.js:499 src/widgets/shell.js:609
 #, javascript-format
 msgid ""
 "<b>%s Fingerprint:</b>\n"
@@ -681,101 +681,101 @@ msgstr ""
 "dodeljena."
 
 #. TRANSLATORS: Fully Charged
-#: src/widgets/shell.js:548
+#: src/widgets/shell.js:549
 msgid "Fully Charged"
 msgstr "Potpuno puna"
 
 #. TRANSLATORS: <percentage> (Estimating…)
-#: src/widgets/shell.js:551
+#: src/widgets/shell.js:552
 #, javascript-format
 msgid "%d%% (Estimating…)"
 msgstr "%d%% (Procenjujem…)"
 
 #. TRANSLATORS: <percentage> (<hours>:<minutes> Until Full)
-#: src/widgets/shell.js:560
+#: src/widgets/shell.js:561
 #, javascript-format
 msgid "%d%% (%d∶%02d Until Full)"
 msgstr "%d%% (%d∶%02d do pune)"
 
 #. TRANSLATORS: <percentage> (<hours>:<minutes> Remaining)
-#: src/widgets/shell.js:567
+#: src/widgets/shell.js:568
 #, javascript-format
 msgid "%d%% (%d∶%02d Remaining)"
 msgstr "%d%% (%d∶%02d preostaje)"
 
-#: src/widgets/shell.js:650
+#: src/widgets/shell.js:651
 #, javascript-format
 msgid "Configure <b>%s</b>"
 msgstr "Podesi <b>%s</b>"
 
-#: src/widgets/telephony.js:233
+#: src/widgets/telephony.js:231
 msgid "Add people to start a conversation"
 msgstr "Dodajte osobe da započnete razgovor"
 
-#: src/widgets/telephony.js:266 src/widgets/telephony.js:287
-#: src/widgets/telephony.js:342
+#: src/widgets/telephony.js:264 src/widgets/telephony.js:285
+#: src/widgets/telephony.js:340
 msgid "Unknown Contact"
 msgstr "Nepoznat kontakt"
 
-#: src/widgets/telephony.js:336
+#: src/widgets/telephony.js:334
 #, javascript-format
 msgid "Send to %s"
 msgstr "Pošalji na %s"
 
-#: src/widgets/telephony.js:345
+#: src/widgets/telephony.js:343
 #, javascript-format
 msgid "Send to %d"
 msgstr "Pošalji na %d"
 
 #. TRANSLATORS: A phone number type
-#: src/widgets/telephony.js:392 src/widgets/telephony.js:409
+#: src/widgets/telephony.js:390 src/widgets/telephony.js:407
 msgid "Other"
 msgstr "Drugo"
 
 #. TRANSLATORS: A phone number type
-#: src/widgets/telephony.js:396
+#: src/widgets/telephony.js:394
 msgid "Fax"
 msgstr "Faks"
 
 #. TRANSLATORS: A phone number type
-#: src/widgets/telephony.js:400
+#: src/widgets/telephony.js:398
 msgid "Work"
 msgstr "Posao"
 
 #. TRANSLATORS: A phone number type
-#: src/widgets/telephony.js:403
+#: src/widgets/telephony.js:401
 msgid "Mobile"
 msgstr "Mobilni"
 
 #. TRANSLATORS: A phone number type
-#: src/widgets/telephony.js:406
+#: src/widgets/telephony.js:404
 msgid "Home"
 msgstr "Kućni"
 
-#: src/widgets/telephony.js:509
+#: src/widgets/telephony.js:507
 msgid "Type an SMS message"
 msgstr "Unesite SMS poruku"
 
-#: src/widgets/telephony.js:686
+#: src/widgets/telephony.js:684
 msgid "SMS Conversation"
 msgstr "SMS razgovor"
 
 #. TRANSLATORS: Tooltip for a button to add/remove people from a conversation
-#: src/widgets/telephony.js:708
+#: src/widgets/telephony.js:706
 msgid "Add and remove people"
 msgstr "Dodavanje i uklanjanje osoba"
 
-#: src/widgets/telephony.js:731 src/widgets/telephony.js:732
+#: src/widgets/telephony.js:729 src/widgets/telephony.js:730
 msgid "Type a phone number or name"
 msgstr "Uneite broj telefona ili ime"
 
 #. TRANSLATORS: eg. <b>Google Pixel</b> is disconnected
-#: src/widgets/telephony.js:757
+#: src/widgets/telephony.js:755
 #, javascript-format
 msgid "<b>%s</b> is disconnected"
 msgstr "%s je razvezan"
 
-#: src/widgets/telephony.js:843
+#: src/widgets/telephony.js:841
 #, fuzzy, javascript-format
 msgid "And one other person"
 msgid_plural "And %d other people"
@@ -784,20 +784,20 @@ msgstr[1] "I još jedna osoba"
 msgstr[2] "I još jedna osoba"
 
 #. TRANSLATORS: eg. SMS Conversation with John, Paul, George, Ringo
-#: src/widgets/telephony.js:858
+#: src/widgets/telephony.js:856
 #, javascript-format
 msgid "SMS Conversation with %s"
 msgstr "SMS razgovor sa %s"
 
-#: src/widgets/telephony.js:863
+#: src/widgets/telephony.js:861
 msgid "New SMS Conversation"
 msgstr "Novi SMS razgovor"
 
-#: src/widgets/telephony.js:1014 src/widgets/telephony.js:1026
+#: src/widgets/telephony.js:1012 src/widgets/telephony.js:1024
 msgid "Share Link"
 msgstr "Podeli vezu"
 
-#: src/widgets/telephony.js:1064
+#: src/widgets/telephony.js:1062
 msgid "New Message"
 msgstr "Nova poruka"
 

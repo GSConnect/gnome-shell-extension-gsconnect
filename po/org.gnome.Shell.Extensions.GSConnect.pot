@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-01-02 16:09-0800\n"
+"POT-Creation-Date: 2018-01-04 22:49-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
 #. TRANSLATORS: Open a new SMS window
-#: src/extension.js:176 src/service/daemon.js:854 src/widgets/device.js:199
+#: src/extension.js:176 src/service/daemon.js:853 src/widgets/device.js:199
 msgid "Send SMS"
 msgstr ""
 
@@ -70,11 +70,11 @@ msgstr ""
 msgid "Unmount"
 msgstr ""
 
-#: src/extension.js:536
+#: src/extension.js:535
 msgid "Mobile Devices"
 msgstr ""
 
-#: src/extension.js:551
+#: src/extension.js:550
 msgid "Mobile Settings"
 msgstr ""
 
@@ -154,21 +154,21 @@ msgstr ""
 msgid "Select"
 msgstr ""
 
-#: src/service/daemon.js:635
+#: src/service/daemon.js:634
 msgid "Nautilus extensions changed"
 msgstr ""
 
-#: src/service/daemon.js:636
+#: src/service/daemon.js:635
 msgid "Restart Nautilus to apply changes"
 msgstr ""
 
 #. TRANSLATORS: Notification button to restart Nautilus
-#: src/service/daemon.js:642
+#: src/service/daemon.js:641
 msgid "Restart"
 msgstr ""
 
 #. TRANSLATORS: eg. Pair Request from Google Pixel
-#: src/service/device.js:377
+#: src/service/device.js:363
 #, javascript-format
 msgid "Pair Request from %s"
 msgstr ""
@@ -183,7 +183,7 @@ msgstr ""
 #.
 #. Local Fingerprint:
 #. 00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
-#: src/service/device.js:389
+#: src/service/device.js:375
 #, javascript-format
 msgid ""
 "%s Fingerprint:\n"
@@ -193,11 +193,11 @@ msgid ""
 "%s"
 msgstr ""
 
-#: src/service/device.js:398
+#: src/service/device.js:385
 msgid "Reject"
 msgstr ""
 
-#: src/service/device.js:402
+#: src/service/device.js:389
 msgid "Accept"
 msgstr ""
 
@@ -322,7 +322,7 @@ msgid "Message"
 msgstr ""
 
 #: src/service/plugins/notification.js:499 src/service/plugins/share.js:505
-#: src/widgets/telephony.js:1076
+#: src/widgets/telephony.js:1074
 msgid "Send"
 msgstr ""
 
@@ -501,7 +501,7 @@ msgstr ""
 msgid "Call in progress with %s on %s"
 msgstr ""
 
-#: src/service/plugins/telephony.js:449 src/widgets/telephony.js:304
+#: src/service/plugins/telephony.js:449 src/widgets/telephony.js:302
 msgid "Unknown Number"
 msgstr ""
 
@@ -576,7 +576,7 @@ msgid "Connecting Devices"
 msgstr ""
 
 #. TRANSLATORS: eg. Reconnect <b>Google Pixel</b>
-#: src/widgets/device.js:438 src/widgets/shell.js:598
+#: src/widgets/device.js:438 src/widgets/shell.js:599
 #, javascript-format
 msgid "Reconnect <b>%s</b>"
 msgstr ""
@@ -588,7 +588,7 @@ msgid "Unpair <b>%s</b>"
 msgstr ""
 
 #. TRANSLATORS: eg. Pair <b>Google Pixel</b>
-#: src/widgets/device.js:488 src/widgets/shell.js:608
+#: src/widgets/device.js:488 src/widgets/shell.js:609
 #, javascript-format
 msgid "Pair <b>%s</b>"
 msgstr ""
@@ -603,7 +603,7 @@ msgstr ""
 #.
 #. <b>Local Fingerprint:</b>
 #. 00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
-#: src/widgets/device.js:499 src/widgets/shell.js:608
+#: src/widgets/device.js:499 src/widgets/shell.js:609
 #, javascript-format
 msgid ""
 "<b>%s Fingerprint:</b>\n"
@@ -661,101 +661,101 @@ msgid ""
 msgstr ""
 
 #. TRANSLATORS: Fully Charged
-#: src/widgets/shell.js:548
+#: src/widgets/shell.js:549
 msgid "Fully Charged"
 msgstr ""
 
 #. TRANSLATORS: <percentage> (Estimating…)
-#: src/widgets/shell.js:551
+#: src/widgets/shell.js:552
 #, javascript-format
 msgid "%d%% (Estimating…)"
 msgstr ""
 
 #. TRANSLATORS: <percentage> (<hours>:<minutes> Until Full)
-#: src/widgets/shell.js:560
+#: src/widgets/shell.js:561
 #, javascript-format
 msgid "%d%% (%d∶%02d Until Full)"
 msgstr ""
 
 #. TRANSLATORS: <percentage> (<hours>:<minutes> Remaining)
-#: src/widgets/shell.js:567
+#: src/widgets/shell.js:568
 #, javascript-format
 msgid "%d%% (%d∶%02d Remaining)"
 msgstr ""
 
-#: src/widgets/shell.js:650
+#: src/widgets/shell.js:651
 #, javascript-format
 msgid "Configure <b>%s</b>"
 msgstr ""
 
-#: src/widgets/telephony.js:233
+#: src/widgets/telephony.js:231
 msgid "Add people to start a conversation"
 msgstr ""
 
-#: src/widgets/telephony.js:266 src/widgets/telephony.js:287
-#: src/widgets/telephony.js:342
+#: src/widgets/telephony.js:264 src/widgets/telephony.js:285
+#: src/widgets/telephony.js:340
 msgid "Unknown Contact"
 msgstr ""
 
-#: src/widgets/telephony.js:336
+#: src/widgets/telephony.js:334
 #, javascript-format
 msgid "Send to %s"
 msgstr ""
 
-#: src/widgets/telephony.js:345
+#: src/widgets/telephony.js:343
 #, javascript-format
 msgid "Send to %d"
 msgstr ""
 
 #. TRANSLATORS: A phone number type
-#: src/widgets/telephony.js:392 src/widgets/telephony.js:409
+#: src/widgets/telephony.js:390 src/widgets/telephony.js:407
 msgid "Other"
 msgstr ""
 
 #. TRANSLATORS: A phone number type
-#: src/widgets/telephony.js:396
+#: src/widgets/telephony.js:394
 msgid "Fax"
 msgstr ""
 
 #. TRANSLATORS: A phone number type
-#: src/widgets/telephony.js:400
+#: src/widgets/telephony.js:398
 msgid "Work"
 msgstr ""
 
 #. TRANSLATORS: A phone number type
-#: src/widgets/telephony.js:403
+#: src/widgets/telephony.js:401
 msgid "Mobile"
 msgstr ""
 
 #. TRANSLATORS: A phone number type
-#: src/widgets/telephony.js:406
+#: src/widgets/telephony.js:404
 msgid "Home"
 msgstr ""
 
-#: src/widgets/telephony.js:509
+#: src/widgets/telephony.js:507
 msgid "Type an SMS message"
 msgstr ""
 
-#: src/widgets/telephony.js:686
+#: src/widgets/telephony.js:684
 msgid "SMS Conversation"
 msgstr ""
 
 #. TRANSLATORS: Tooltip for a button to add/remove people from a conversation
-#: src/widgets/telephony.js:708
+#: src/widgets/telephony.js:706
 msgid "Add and remove people"
 msgstr ""
 
-#: src/widgets/telephony.js:731 src/widgets/telephony.js:732
+#: src/widgets/telephony.js:729 src/widgets/telephony.js:730
 msgid "Type a phone number or name"
 msgstr ""
 
 #. TRANSLATORS: eg. <b>Google Pixel</b> is disconnected
-#: src/widgets/telephony.js:757
+#: src/widgets/telephony.js:755
 #, javascript-format
 msgid "<b>%s</b> is disconnected"
 msgstr ""
 
-#: src/widgets/telephony.js:843
+#: src/widgets/telephony.js:841
 #, javascript-format
 msgid "And one other person"
 msgid_plural "And %d other people"
@@ -763,20 +763,20 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. TRANSLATORS: eg. SMS Conversation with John, Paul, George, Ringo
-#: src/widgets/telephony.js:858
+#: src/widgets/telephony.js:856
 #, javascript-format
 msgid "SMS Conversation with %s"
 msgstr ""
 
-#: src/widgets/telephony.js:863
+#: src/widgets/telephony.js:861
 msgid "New SMS Conversation"
 msgstr ""
 
-#: src/widgets/telephony.js:1014 src/widgets/telephony.js:1026
+#: src/widgets/telephony.js:1012 src/widgets/telephony.js:1024
 msgid "Share Link"
 msgstr ""
 
-#: src/widgets/telephony.js:1064
+#: src/widgets/telephony.js:1062
 msgid "New Message"
 msgstr ""
 
