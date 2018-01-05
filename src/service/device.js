@@ -88,7 +88,6 @@ var Device = new Lang.Class({
         this._channel = null;
         this._connected = false;
 
-        this._incomingPairRequest = false;
         this._outgoingPairRequest = false;
 
         // Plugins
@@ -271,6 +270,7 @@ var Device = new Lang.Class({
         return true;
     },
 
+    /** Channel Callbacks */
     _onConnected: function (channel) {
         log("Connected to '" + this.name + "'");
 
@@ -332,40 +332,35 @@ var Device = new Lang.Class({
         }
     },
 
-    /**
-     * Pairing Functions
-     *
-     */
+    /** Pairing Functions */
     _handlePair: function (packet) {
         log("Pair request: " + this.name + " (" + this.id + ")");
 
         // A pair has been requested
         if (packet.body.pair) {
-            // The device is responding to our request
+            // The device is accepting our request
             if (this._outgoingPairRequest) {
                 this._setPaired(true);
                 this._loadPlugins();
-            // We're already paired, inform the device
+            // The device thinks we're unpaired
             } else if (this.paired) {
-                this.pair();
-            // This is a new pair request, inform the user
+                this.acceptPair();
+            // The device is requesting pairing
             } else {
-                this._incomingPairRequest = true;
                 this._notifyPair(packet);
             }
-        // Device has requested unpairing
+        // Device is requesting unpairing/rejecting our request
         } else {
-            this.unpair();
+            this._unloadPlugins();
+            this._setPaired(false);
         }
     },
 
     _cancelPair: function () {
-        this._incomingPairRequest = false;
         this._outgoingPairRequest = false;
 
         if (!this.paired) {
             this.daemon.withdraw_notification("pair-request");
-            this.unpair();
         }
 
         return false;
@@ -414,7 +409,6 @@ var Device = new Lang.Class({
     },
 
     _setPaired: function (bool) {
-        this._incomingPairRequest = false;
         this._outgoingPairRequest = false;
 
         if (bool) {
@@ -456,6 +450,7 @@ var Device = new Lang.Class({
     unpair: function () {
         debug("Device.unpair(" + this.name + ")");
 
+        // Send the unpair packet only if we're connected
         if (this._channel !== null) {
             let packet = new Protocol.Packet({
                 id: 0,
@@ -466,7 +461,6 @@ var Device = new Lang.Class({
         }
 
         this._unloadPlugins();
-
         this._setPaired(false);
     },
 
@@ -484,9 +478,7 @@ var Device = new Lang.Class({
         this.unpair();
     },
 
-    /**
-     * Plugin Capabilities
-     */
+    /** Plugin Functions */
     _loadPlugins: function () {
         for (let name of this.settings.get_strv("enabled-plugins")) {
             this.enablePlugin(name, false);
