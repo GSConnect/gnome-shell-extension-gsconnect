@@ -84,7 +84,7 @@ var Device = new Lang.Class({
     _init: function (params) {
         this.parent();
 
-        this.daemon = params.daemon;
+        this.daemon = Gio.Application.get_default();
         this._channel = null;
         this._connected = false;
 

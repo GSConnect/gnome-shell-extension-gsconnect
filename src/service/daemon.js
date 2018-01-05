@@ -381,7 +381,7 @@ var Daemon = new Lang.Class({
                 let dbusPath = ext.app_path + "/Device/" + id.replace(/\W+/g, "_");
 
                 if (!this._devices.has(dbusPath)) {
-                    let device = new Device.Device({ daemon: this, id: id})
+                    let device = new Device.Device({ id: id})
                     this._devices.set(dbusPath, device);
 
                     this.notify("devices");
@@ -433,7 +433,6 @@ var Daemon = new Lang.Class({
             log("Daemon: Adding device");
 
             let device = new Device.Device({
-                daemon: this,
                 packet: packet,
                 channel: channel
             });
