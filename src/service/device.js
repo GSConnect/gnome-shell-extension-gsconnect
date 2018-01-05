@@ -553,13 +553,6 @@ var Device = new Lang.Class({
 
             return [true, ""];
         } catch (e) {
-            let enabledPlugins = this.settings.get_strv("enabled-plugins");
-
-            if (enabledPlugins.indexOf(name) > -1) {
-                enabledPlugins.splice(enabledPlugins.indexOf(name), 1);
-                this.settings.set_strv("enabled-plugins", enabledPlugins);
-            }
-
             log("Error enabling plugin '" + name + "': " + e.message);
             return [false, e.message];
         }
