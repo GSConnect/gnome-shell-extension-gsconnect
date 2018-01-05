@@ -1121,6 +1121,26 @@ var ShareWindow = new Lang.Class({
                 });
                 number.get_style_context().add_class("dim-label");
                 grid.attach(number, 1, 1, 1, 1);
+
+                if (recipients.size > 1) {
+                    let num = recipients.size - 1;
+
+                    number.label = Gettext.ngettext(
+                        "And one other person",
+                        "And %d other people",
+                        num
+                    ).format(num);
+
+                    let people = [];
+
+                    for (let recipient of recipients.values()) {
+                        people.push(recipient.name || recipient.number);
+                    }
+
+                    row.tooltip_text = _("SMS Conversation with %s").format(people.join(", "))
+                }
+
+                row.show_all();
             }
         }
     }
