@@ -88,8 +88,8 @@ var Device = new Lang.Class({
         this._channel = null;
         this._connected = false;
 
-        this._incomingPairRequest = false;
-        this._outgoingPairRequest = false;
+        this._incomingPairRequest = 0;
+        this._outgoingPairRequest = 0;
 
         // Plugins
         this._plugins = new Map();
@@ -358,17 +358,6 @@ var Device = new Lang.Class({
         }
     },
 
-    _cancelPair: function () {
-        this._incomingPairRequest = false;
-        this._outgoingPairRequest = false;
-
-        if (!this.paired) {
-            this.daemon.withdraw_notification("pair-request");
-        }
-
-        return false;
-    },
-
     _notifyPair: function (packet) {
         let notif = new Gio.Notification();
         // TRANSLATORS: eg. Pair Request from Google Pixel
@@ -404,16 +393,24 @@ var Device = new Lang.Class({
         this.daemon.send_notification("pair-request", notif);
 
         // Start a 30s countdown
-        GLib.timeout_add_seconds(
+        this._incomingPairRequest = GLib.timeout_add_seconds(
             GLib.PRIORITY_DEFAULT,
             30,
-            Lang.bind(this, this._cancelPair)
+            () => this._setPaired(false)
         );
     },
 
     _setPaired: function (bool) {
-        this._incomingPairRequest = false;
-        this._outgoingPairRequest = false;
+        if (this._incomingPairRequest) {
+            this.daemon.withdraw_notification("pair-request");
+            GLib.source_remove(this._incomingPairRequest);
+            this._incomingPairRequest = 0;
+        }
+
+        if (this._outgoingPairRequest) {
+            GLib.source_remove(this._outgoingPairRequest);
+            this._outgoingPairRequest = 0;
+        }
 
         if (bool) {
             this.settings.set_string(
@@ -439,12 +436,10 @@ var Device = new Lang.Class({
 
         // We're initiating an outgoing request
         if (!this.paired) {
-            this._outgoingPairRequest = true;
-
-            GLib.timeout_add_seconds(
+            this._outgoingPairRequest = GLib.timeout_add_seconds(
                 GLib.PRIORITY_DEFAULT,
                 30,
-                Lang.bind(this, this._cancelPair)
+                () => this._setPaired(false)
             );
         }
 
