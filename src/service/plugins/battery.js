@@ -62,8 +62,7 @@ var Plugin = new Lang.Class({
 
         this._charging = false;
         this._level = -1;
-        this._time = 0;
-        this._stats = [];
+        this._cache = new StatisticsCache(this.device);
 
         if (this.settings.get_boolean("receive-statistics")) {
             this.request();
@@ -87,7 +86,6 @@ var Plugin = new Lang.Class({
                     "level",
                     new GLib.Variant("i", this._level)
                 );
-                this._time = 0;
 
                 this.notify("time");
                 this._dbus.emit_property_changed(
@@ -133,50 +131,10 @@ var Plugin = new Lang.Class({
             delete this._battery;
         }
     },
-    _extrapolate: function (time, level) {
-        this._stats.push({
-            time: Math.floor(Date.now() / 1000),
-            level: this._level
-        });
-        
-        // Limit extraneous samples to a relative age of 5 minutes
-        while (this._stats.length > 2) {
-            if ((this._stats[1].time - this._stats[0].time) < 300) {
-                break;
-            }
-            
-            this._stats.shift();
-        }
-        
-        this._time = 0;
-        
-        if (this._stats.length > 1) {
-            let last = this._stats.length - 1;
-            let tdelta = this._stats[last].time - this._stats[0].time;
-            let ldelta, time;
-            
-            if (this.charging) {
-                ldelta = this._stats[last].level - this._stats[0].level;
-                time = (tdelta/ldelta) * (100 - this.level);
-            } else {
-                ldelta = this._stats[0].level - this._stats[last].level;
-                time = (tdelta/ldelta) * this.level;
-            }
-            
-            this._time = (time === NaN) ? 0 : time;
-        }
-        
-        this.notify("time");
-        this._dbus.emit_property_changed(
-            "time",
-            new GLib.Variant("i", this._time)
-        );
-    },
-    
 
     get charging() { return this._charging; },
     get level() { return this._level; },
-    get time() { return this._time; },
+    get time() { return this._cache.getTime(this.charging); },
 
     handlePacket: function (packet) {
         debug("Battery: handlePacket()");
@@ -205,17 +163,30 @@ var Plugin = new Lang.Class({
                 "charging",
                 new GLib.Variant("b", packet.body.isCharging)
             );
-            this._stats = [];
         }
-        this._level = packet.body.currentCharge;
-        this.notify("level");
 
+        if (this._level !== packet.body.currentCharge) {
+            this._level = packet.body.currentCharge;
+            this.notify("level");
+            this._dbus.emit_property_changed(
+                "level",
+                new GLib.Variant("i", packet.body.currentCharge)
+            );
+
+            if (this._level > this._cache.threshold) {
+                this.device.daemon.withdraw_notification(
+                    this.device.id + "-battery-warning"
+                );
+            }
+        }
+
+        this._cache.addStat(packet.body.currentCharge, this.charging);
+
+        this.notify("time");
         this._dbus.emit_property_changed(
-            "level",
-            new GLib.Variant("i", packet.body.currentCharge)
+            "time",
+            new GLib.Variant("i", this.time)
         );
-        
-        this._extrapolate();
     },
 
     /**
@@ -282,7 +253,12 @@ var Plugin = new Lang.Class({
             );
         }
 
-        this.device.daemon.send_notification("battery-warning", notif);
+        this.device.daemon.send_notification(
+            this.device.id + "-battery-warning",
+            notif
+        );
+
+        this._cache.threshold = this.level;
     },
 
     destroy: function () {
@@ -291,7 +267,116 @@ var Plugin = new Lang.Class({
             delete this._battery;
         }
 
+        this._cache.write();
+
         PluginsBase.Plugin.prototype.destroy.call(this);
+    }
+});
+
+
+/**
+ * A simple cache for battery statisitics. A file is created for each device
+ * named $HOME/.cache/gsconnnect/battery/<device-id>.json
+ *
+ * See also: https://android.googlesource.com/platform/frameworks/base/+/master/core/java/android/os/BatteryStats.java#1036
+ */
+var StatisticsCache = new Lang.Class({
+    Name: "GSConnectStatisticsCache",
+
+    _init: function (device) {
+        this._dir =  ext.cachedir + "/battery";
+        this._file = Gio.File.new_for_path(this._dir + "/" + device.id + ".json");
+        GLib.mkdir_with_parents(this._dir, 448);
+
+        this.charging = [];
+        this.discharging = [];
+        this.threshold = 25;
+
+        this.read();
+    },
+
+    addStat: function (level, charging) {
+        // Edge case
+        if (!level) {
+            return;
+        // Reset stats when fully charged
+        } else if (level === 100) {
+            this.charging.length = 0;
+            this.discharging.length = 0;
+        }
+
+        let stats = (charging) ? this.charging : this.discharging;
+        let time = Math.floor(Date.now() / 1000);
+
+        if (!stats.length) {
+            stats.push({ time: time, level: level });
+        } else if (stats[stats.length - 1].level !== level) {
+            stats.push({ time: time, level: level });
+        }
+    },
+
+    getTime: function (charging) {
+        let tdelta, ldelta;
+        let rate = 0;
+        let time = 0;
+
+        let stats = (charging) ? this.charging : this.discharging;
+
+        for (let i = 0; i + 1 <= stats.length - 1; i++) {
+            tdelta = stats[i + 1].time - stats[i].time;
+
+            if (charging) {
+                ldelta = stats[i + 1].level - stats[i].level;
+            } else {
+                ldelta = stats[i].level - stats[i + 1].level;
+            }
+
+            if (ldelta > 0 && rate > 0) {
+                rate = (rate * 0.4) + ((tdelta/ldelta) * 0.6);
+            } else if (ldelta > 0) {
+                rate = tdelta/ldelta;
+            }
+        }
+
+        if (rate && charging) {
+            time = rate * (100 - stats[stats.length - 1].level);
+        } else if (rate && !charging) {
+            time = rate * stats[stats.length - 1].level;
+        }
+
+        return (time === NaN) ? 0 : Math.floor(time);
+    },
+
+    read: function () {
+        try {
+            let contents = this._file.load_contents(null)[1];
+            Object.assign(this, JSON.parse(contents));
+        } catch (e) {
+            debug("Battery: Error reading statistics cache: " + e.message);
+        }
+    },
+
+    write: function () {
+        // Limit stats to 3 days
+        let limit = (Date.now() / 1000) - (3*24*60*60);
+
+        let stats = {
+            charging: this.charging.filter(stat => stat.time > limit),
+            discharging: this.discharging.filter(stat => stat.time > limit),
+            threshold: this.threshold
+        };
+
+        try {
+            this._file.replace_contents(
+                JSON.stringify(stats),
+                null,
+                false,
+                Gio.FileCreateFlags.REPLACE_DESTINATION,
+                null
+            );
+        } catch (e) {
+            debug("Battery: Error writing statistics cache: " + e.message);
+        }
     }
 });
 
