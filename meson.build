@@ -1,4 +1,4 @@
-project('gsconnect', 'c', version: '8', meson_version: '>= 0.40.1')
+project('gsconnect', 'c', version: '9', meson_version: '>= 0.40.1')
 
 gnome = import('gnome')
 extuuid = meson.project_name() + '@andyholmes.github.io'
