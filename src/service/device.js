@@ -485,11 +485,7 @@ var Device = new Lang.Class({
     },
 
     /** Plugin Functions */
-    _loadPlugins: function () {
-        for (let name of this.settings.get_strv("enabled-plugins")) {
-            this.enablePlugin(name, false);
-        }
-
+    _notifyPlugins: function () {
         this.notify("plugins");
         this._dbus.emit_property_changed(
             "plugins",
@@ -497,16 +493,20 @@ var Device = new Lang.Class({
         );
     },
 
+    _loadPlugins: function () {
+        for (let name of this.settings.get_strv("enabled-plugins")) {
+            this.enablePlugin(name, false);
+        }
+
+        this._notifyPlugins();
+    },
+
     _unloadPlugins: function () {
         for (let name of this.plugins) {
             this.disablePlugin(name, false);
         }
 
-        this.notify("plugins");
-        this._dbus.emit_property_changed(
-            "plugins",
-            new GLib.Variant("as", Array.from(this._plugins.keys()))
-        );
+        this._notifyPlugins();
     },
 
     enablePlugin: function (name, write=true) {
@@ -542,11 +542,7 @@ var Device = new Lang.Class({
                     this.settings.set_strv("enabled-plugins", enabledPlugins);
                 }
 
-                this.notify("plugins");
-                this._dbus.emit_property_changed(
-                    "plugins",
-                    new GLib.Variant("as", Array.from(this._plugins.keys()))
-                );
+                this._notifyPlugins();
             }
 
             return [true, ""];
@@ -584,11 +580,7 @@ var Device = new Lang.Class({
                     this.settings.set_strv("enabled-plugins", enabledPlugins);
                 }
 
-                this.notify("plugins");
-                this._dbus.emit_property_changed(
-                    "plugins",
-                    new GLib.Variant("as", Array.from(this._plugins.keys()))
-                );
+                this._notifyPlugins();
             }
 
             return [true, ""];
