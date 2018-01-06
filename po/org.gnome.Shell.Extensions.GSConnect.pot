@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-01-04 22:49-0800\n"
+"POT-Creation-Date: 2018-01-05 18:43-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -168,7 +168,7 @@ msgid "Restart"
 msgstr ""
 
 #. TRANSLATORS: eg. Pair Request from Google Pixel
-#: src/service/device.js:363
+#: src/service/device.js:364
 #, javascript-format
 msgid "Pair Request from %s"
 msgstr ""
@@ -183,7 +183,7 @@ msgstr ""
 #.
 #. Local Fingerprint:
 #. 00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
-#: src/service/device.js:375
+#: src/service/device.js:376
 #, javascript-format
 msgid ""
 "%s Fingerprint:\n"
@@ -193,11 +193,11 @@ msgid ""
 "%s"
 msgstr ""
 
-#: src/service/device.js:385
+#: src/service/device.js:386
 msgid "Reject"
 msgstr ""
 
-#: src/service/device.js:389
+#: src/service/device.js:390
 msgid "Accept"
 msgstr ""
 
@@ -214,17 +214,17 @@ msgid "Send and receive battery statistics"
 msgstr ""
 
 #. TRANSLATORS: Low Battery Warning
-#: src/service/plugins/battery.js:271
+#: src/service/plugins/battery.js:242
 msgid "Low Battery Warning"
 msgstr ""
 
 #. TRANSLATORS: eg. Google Pixel's battery level is 15%
-#: src/service/plugins/battery.js:274
+#: src/service/plugins/battery.js:245
 #, javascript-format
 msgid "%s's battery level is %d%%"
 msgstr ""
 
-#: src/service/plugins/battery.js:280
+#: src/service/plugins/battery.js:251
 msgid "Locate"
 msgstr ""
 
@@ -755,7 +755,7 @@ msgstr ""
 msgid "<b>%s</b> is disconnected"
 msgstr ""
 
-#: src/widgets/telephony.js:841
+#: src/widgets/telephony.js:841 src/widgets/telephony.js:1129
 #, javascript-format
 msgid "And one other person"
 msgid_plural "And %d other people"
@@ -763,7 +763,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. TRANSLATORS: eg. SMS Conversation with John, Paul, George, Ringo
-#: src/widgets/telephony.js:856
+#: src/widgets/telephony.js:856 src/widgets/telephony.js:1140
 #, javascript-format
 msgid "SMS Conversation with %s"
 msgstr ""

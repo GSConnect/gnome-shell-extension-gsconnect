@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-01-04 22:49-0800\n"
+"POT-Creation-Date: 2018-01-05 18:43-0800\n"
 "PO-Revision-Date: 2017-12-24 15:07+0100\n"
 "Last-Translator: Слободан Терзић  <slobodan.terzic@zoho.eu>\n"
 "Language-Team: \n"
@@ -170,7 +170,7 @@ msgid "Restart"
 msgstr "Поново покрени"
 
 #. TRANSLATORS: eg. Pair Request from Google Pixel
-#: src/service/device.js:363
+#: src/service/device.js:364
 #, javascript-format
 msgid "Pair Request from %s"
 msgstr "Захтев за упаривање од %s"
@@ -185,7 +185,7 @@ msgstr "Захтев за упаривање од %s"
 #.
 #. Local Fingerprint:
 #. 00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
-#: src/service/device.js:375
+#: src/service/device.js:376
 #, javascript-format
 msgid ""
 "%s Fingerprint:\n"
@@ -200,11 +200,11 @@ msgstr ""
 "Локални отисак:\n"
 "%s"
 
-#: src/service/device.js:385
+#: src/service/device.js:386
 msgid "Reject"
 msgstr "Одбиј"
 
-#: src/service/device.js:389
+#: src/service/device.js:390
 msgid "Accept"
 msgstr "Прихвати"
 
@@ -221,17 +221,17 @@ msgid "Send and receive battery statistics"
 msgstr "Слање и пријем стања батерије"
 
 #. TRANSLATORS: Low Battery Warning
-#: src/service/plugins/battery.js:271
+#: src/service/plugins/battery.js:242
 msgid "Low Battery Warning"
 msgstr "Упозорење о скоро празној батерији"
 
 #. TRANSLATORS: eg. Google Pixel's battery level is 15%
-#: src/service/plugins/battery.js:274
+#: src/service/plugins/battery.js:245
 #, javascript-format
 msgid "%s's battery level is %d%%"
 msgstr "Ниво батерије за %s је %d%%"
 
-#: src/service/plugins/battery.js:280
+#: src/service/plugins/battery.js:251
 msgid "Locate"
 msgstr "Лоцирај"
 
@@ -775,7 +775,7 @@ msgstr "Унеите број телефона или име"
 msgid "<b>%s</b> is disconnected"
 msgstr "%s је развезан"
 
-#: src/widgets/telephony.js:841
+#: src/widgets/telephony.js:841 src/widgets/telephony.js:1129
 #, fuzzy, javascript-format
 msgid "And one other person"
 msgid_plural "And %d other people"
@@ -784,7 +784,7 @@ msgstr[1] "И још једна особа"
 msgstr[2] "И још једна особа"
 
 #. TRANSLATORS: eg. SMS Conversation with John, Paul, George, Ringo
-#: src/widgets/telephony.js:856
+#: src/widgets/telephony.js:856 src/widgets/telephony.js:1140
 #, javascript-format
 msgid "SMS Conversation with %s"
 msgstr "СМС разговор са %s"
