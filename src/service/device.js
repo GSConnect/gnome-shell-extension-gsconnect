@@ -335,12 +335,11 @@ var Device = new Lang.Class({
 
     /** Pairing Functions */
     _handlePair: function (packet) {
-        log("Pair request: " + this.name + " (" + this.id + ")");
-
         // A pair has been requested
         if (packet.body.pair) {
             // The device is accepting our request
             if (this._outgoingPairRequest) {
+                log("Pair accepted by " + this.name);
                 this._setPaired(true);
                 this._loadPlugins();
             // The device thinks we're unpaired
@@ -348,10 +347,12 @@ var Device = new Lang.Class({
                 this.acceptPair();
             // The device is requesting pairing
             } else {
+                log("Pair request from " + this.name);
                 this._notifyPair(packet);
             }
         // Device is requesting unpairing/rejecting our request
         } else {
+            log("Pair rejected by " + this.name);
             this._unloadPlugins();
             this._setPaired(false);
         }
@@ -426,9 +427,9 @@ var Device = new Lang.Class({
     },
 
     pair: function () {
-        debug("Device.pair(" + this.id + ")");
+        debug("Device.pair(" + this.name + ")");
 
-        // The pair button was pressed during and incoming pair request
+        // The pair button was pressed during an incoming pair request
         if (this._incomingPairRequest) {
             this.acceptPair();
             return;
