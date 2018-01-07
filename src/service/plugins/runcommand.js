@@ -260,7 +260,6 @@ var SettingsDialog = new Lang.Class({
             this.treeview.get_column(0),
             true
         );
-
     },
 
     _remove: function (button) {
