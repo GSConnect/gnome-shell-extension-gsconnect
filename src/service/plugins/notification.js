@@ -311,11 +311,7 @@ var Plugin = new Lang.Class({
                     }
                 });
 
-                let iconInfo;
-
-                if (this.settings.get_boolean("sync-icons")) {
-                    iconInfo = this._getIconInfo(iconName);
-                }
+                let iconInfo = this._getIconInfo(iconName);
 
                 if (iconInfo) {
                     let file = Gio.File.new_for_path(iconInfo.get_filename());
@@ -379,7 +375,7 @@ var Plugin = new Lang.Class({
             } else if (packet.body.id.indexOf(":sms|") > -1) {
                 debug("Notification: ignoring grouped SMS notification");
                 return;
-            } else if (packet.payloadSize && this.settings.get_boolean("sync-icons")) {
+            } else if (packet.payloadSize) {
                 this._handlePayload(packet);
             } else {
                 this._handleNotification(packet);
@@ -562,7 +558,6 @@ var SettingsDialog = new Lang.Class({
 
         generalSection.addGSetting(this.settings, "receive-notifications");
         generalSection.addGSetting(this.settings, "send-notifications");
-        generalSection.addGSetting(this.settings, "sync-icons");
 
         this.appSection = this.content.addSection(
             _("Applications"),

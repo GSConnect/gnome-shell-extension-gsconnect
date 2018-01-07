@@ -109,11 +109,6 @@
       <summary>Send Notifications</summary>
       <description></description>
     </key>
-    <key name="sync-icons" type="b">
-      <default>true</default>
-      <summary>Sync Icons</summary>
-      <description></description>
-    </key>
     <key name="applications" type="s">
       <default>'{"GSConnect":{"iconName":"phone","enabled":false}}'</default>
     </key>
