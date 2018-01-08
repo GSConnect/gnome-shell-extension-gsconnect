@@ -127,7 +127,7 @@ var PrefsWidget = new Lang.Class({
             _("Web Browser Integration"),
             _('Requires <a href="%s">Chrome Extension</a> or <a href="%s">Firefox Add-On</a>').format(
                 "https://chrome.google.com/webstore/detail/gsconnect/jfnifeihccihocjbfcfhicmmgpjicaec",
-                "https://addons.mozilla.org/en-US/firefox/addon/gsconnect/"
+                "https://addons.mozilla.org/firefox/addon/gsconnect/"
             ),
             new GSettingsWidget.BoolSetting(ext.settings, "webbrowser-integration")
         );
