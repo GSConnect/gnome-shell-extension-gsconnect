@@ -105,32 +105,17 @@ var Plugin = new Lang.Class({
         // The defacto notification setup
         let notif = new Gio.Notification();
 
-        // Try to correct duplicate appName/title situations
-        if (packet.body.appName === title) {
-            notif.set_title(title);
-            notif.set_body(text);
-        } else {
-            notif.set_title(packet.body.appName);
-            notif.set_body(packet.body.ticker);
-        }
-
-        notif.set_default_action(
-            "app.closeNotification(('" +
-            this._dbus.get_object_path() +
-            "','" +
-            escape(packet.body.id) +
-            "'))"
-        );
-        notif.set_priority(Gio.NotificationPriority.NORMAL);
-
-        // We might make this a repliable notification and even find an avatar
-        let contact, duplicate;
-        let plugin = this.device._plugins.get("telephony");
+        // Check if this is a missed call or SMS notification
         let isMissedCall = (title === _("Missed call"));
         let isSms = (packet.body.id.indexOf("sms") > -1);
 
-        if (plugin && (isMissedCall || isSms)) {
-            contact = plugin._cache.searchContact(text);
+        // Check if it's from a known contact
+        let contact, plugin;
+
+        if (isMissedCall || isSms) {
+            if ((plugin = this.device._plugins.get("telephony"))) {
+                contact = plugin._cache.searchContact(text);
+            }
         }
 
         if (contact) {
@@ -143,7 +128,7 @@ var Plugin = new Lang.Class({
                 icon = plugin._getPixbuf(contact.avatar);
             }
 
-            // Reformat as a missed call notification
+            // Format as a missed call notification
             if (isMissedCall) {
                 notif.set_title(_("Missed Call"));
                 notif.set_body(
@@ -163,7 +148,7 @@ var Plugin = new Lang.Class({
                     escape(contact.name) +
                     "'))"
                 );
-            // Reformat as an SMS notification
+            // Format as an SMS notification
             } else if (isSms) {
                 notif.set_title(contact.name || contact.number);
                 notif.set_body(text);
@@ -181,12 +166,32 @@ var Plugin = new Lang.Class({
                 notif.set_priority(Gio.NotificationPriority.HIGH);
             }
 
-            // We need to track this now so the action can close it later
+            // Track the notification so the action can close it later
+            let duplicate;
+
             if ((duplicate = this._duplicates.get(matchString))) {
                 duplicate.id = packet.body.id;
             } else {
                 this._duplicates.set(matchString, { id: packet.body.id });
             }
+        } else {
+            // Try to correct duplicate appName/title situations
+            if (packet.body.appName === title) {
+                notif.set_title(title);
+                notif.set_body(text);
+            } else {
+                notif.set_title(packet.body.appName);
+                notif.set_body(packet.body.ticker);
+            }
+
+            notif.set_default_action(
+                "app.closeNotification(('" +
+                this._dbus.get_object_path() +
+                "','" +
+                escape(packet.body.id) +
+                "'))"
+            );
+            notif.set_priority(Gio.NotificationPriority.NORMAL);
         }
 
         // Fallback if we still don't have an icon
@@ -224,7 +229,7 @@ var Plugin = new Lang.Class({
             // We've been asked to silence this (we'll still track it)
             } else if (duplicate.silence) {
                 duplicate.id = packet.body.id;
-            // This is a telephonized notification
+            // This is a missed call/SMS notification
             } else {
                 this.device.daemon.send_notification(packet.body.id, notif);
             }
