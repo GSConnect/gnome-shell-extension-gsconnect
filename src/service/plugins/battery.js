@@ -63,6 +63,7 @@ var Plugin = new Lang.Class({
         this._charging = false;
         this._level = -1;
         this._cache = new StatisticsCache(this.device);
+        this._time = 0;
 
         if (this.settings.get_boolean("receive-statistics")) {
             this.request();
@@ -134,7 +135,7 @@ var Plugin = new Lang.Class({
 
     get charging() { return this._charging; },
     get level() { return this._level; },
-    get time() { return this._cache.getTime(this.charging); },
+    get time() { return this._time; },
 
     handlePacket: function (packet) {
         debug("Battery: handlePacket()");
@@ -182,6 +183,7 @@ var Plugin = new Lang.Class({
 
         this._cache.addStat(packet.body.currentCharge, this.charging);
 
+        this._time = this._cache.getTime(this.charging);
         this.notify("time");
         this._dbus.emit_property_changed(
             "time",
