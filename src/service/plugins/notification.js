@@ -208,11 +208,35 @@ var Plugin = new Lang.Class({
 
         notif.set_icon(icon);
 
-        this._sendNotification(packet, notif, matchString);
+        this._postNotification(packet, notif, matchString);
     },
 
-    _handlePayload: function (packet) {
-        debug("Notification: _handlePayload()");
+    _postNotification: function (packet, notif, matchString) {
+        debug("Notification: _postNotification('" + matchString + "')");
+
+        let duplicate;
+
+        if ((duplicate = this._duplicates.get(matchString))) {
+            // We've been asked to close this
+            if (duplicate.close) {
+                this.close(packet.body.id);
+                this._duplicates.delete(matchString);
+            // We've been asked to silence this (we'll still track it)
+            } else if (duplicate.silence) {
+                duplicate.id = packet.body.id;
+            // This is a telephonized notification
+            } else {
+                this.device.daemon.send_notification(packet.body.id, notif);
+            }
+        // We can show this as normal
+        } else {
+            this.device.daemon.send_notification(packet.body.id, notif);
+        }
+    },
+
+    // Icon transfers
+    _downloadIcon: function (packet) {
+        debug("Notification: _downloadIcon()");
 
         let iconStream = Gio.MemoryOutputStream.new_resizable();
 
@@ -256,27 +280,42 @@ var Plugin = new Lang.Class({
         channel.open(addr);
     },
 
-    _sendNotification: function (packet, notif, matchString) {
-        debug("Notification: _sendNotification('" + matchString + "')");
+    _uploadIcon: function (packet, iconInfo) {
+        debug("Notification: _uploadIcon()");
 
-        let duplicate;
+        let file = Gio.File.new_for_path(iconInfo.get_filename());
+        let info = file.query_info("standard::size", 0, null);
 
-        if ((duplicate = this._duplicates.get(matchString))) {
-            // We've been asked to close this
-            if (duplicate.close) {
-                this.close(packet.body.id);
-                this._duplicates.delete(matchString);
-            // We've been asked to silence this (we'll still track it)
-            } else if (duplicate.silence) {
-                duplicate.id = packet.body.id;
-            // This is a telephonized notification
-            } else {
-                this.device.daemon.send_notification(packet.body.id, notif);
-            }
-        // We can show this as normal
-        } else {
-            this.device.daemon.send_notification(packet.body.id, notif);
-        }
+        let channel = new Protocol.LanUploadChannel(
+            this.device.daemon,
+            this.device.id,
+            file.read(null)
+        );
+
+        channel.connect("listening", (channel, port) => {
+            packet.payloadSize = info.get_size();
+            packet.payloadTransferInfo = { port: port };
+            packet.body.payloadHash = GLib.compute_checksum_for_bytes(
+                GLib.ChecksumType.MD5,
+                file.load_contents(null)[1]
+            );
+
+            this.device._channel.send(packet);
+        });
+
+        channel.connect("connected", (channel) => {
+            let transfer = new Protocol.Transfer(
+                channel,
+                info.get_size()
+            );
+
+            transfer.connect("failed", () => channel.close());
+            transfer.connect("succeeded", () => channel.close());
+
+            transfer.start();
+        });
+
+        channel.open();
     },
 
     Notify: function (appName, replacesId, iconName, summary, body, actions, hints, timeout) {
@@ -309,44 +348,7 @@ var Plugin = new Lang.Class({
                 let iconInfo = this._getIconInfo(iconName);
 
                 if (iconInfo) {
-                    let file = Gio.File.new_for_path(iconInfo.get_filename());
-                    let info = file.query_info("standard::size", 0, null);
-
-                    let channel = new Protocol.LanUploadChannel(
-                        this.device.daemon,
-                        this.device.id,
-                        file.read(null)
-                    );
-
-                    channel.connect("listening", (channel, port) => {
-                        packet.payloadSize = info.get_size();
-                        packet.payloadTransferInfo = { port: port };
-                        packet.body.payloadHash = GLib.compute_checksum_for_bytes(
-                            GLib.ChecksumType.MD5,
-                            file.load_contents(null)[1]
-                        );
-
-                        this.device._channel.send(packet);
-                    });
-
-                    channel.connect("connected", (channel) => {
-                        let transfer = new Protocol.Transfer(
-                            channel,
-                            info.get_size()
-                        );
-
-                        transfer.connect("failed", (transfer) => {
-                            channel.close();
-                        });
-
-                        transfer.connect("succeeded", (transfer) => {
-                            channel.close();
-                        });
-
-                        transfer.start();
-                    });
-
-                    channel.open();
+                    this._uploadIcon(packet, iconInfo);
                 } else {
                     this.device._channel.send(packet);
                 }
@@ -365,13 +367,11 @@ var Plugin = new Lang.Class({
             // Ignore GroupSummary notifications
             } else if (packet.body.id.indexOf("GroupSummary") > -1) {
                 debug("Notification: ignoring GroupSummary notification");
-                return;
             // Ignore grouped SMS notifications
             } else if (packet.body.id.indexOf(":sms|") > -1) {
                 debug("Notification: ignoring grouped SMS notification");
-                return;
             } else if (packet.payloadSize) {
-                this._handlePayload(packet);
+                this._downloadIcon(packet);
             } else {
                 this._createNotification(packet);
             }
