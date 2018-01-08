@@ -85,7 +85,7 @@ var Plugin = new Lang.Class({
         );
     },
 
-    _handleNotification: function (packet, icon) {
+    _createNotification: function (packet, icon) {
         let title, text;
 
         // kdeconnect-android 1.7+ only (also Android Kit-Kat+)
@@ -126,16 +126,25 @@ var Plugin = new Lang.Class({
         // We might make this a repliable notification and even find an avatar
         let contact, duplicate;
         let plugin = this.device._plugins.get("telephony");
+        let isMissedCall = (title === _("Missed call"));
+        let isSms = (packet.body.id.indexOf("sms") > -1);
 
-        if (plugin && title === _("Missed call")) {
-            if ((contact = plugin._cache.searchContact(text))) {
-                if (!contact.avatar && icon) {
-                    let path = plugin._cache._dir + "/" + GLib.uuid_string_random() + ".jpeg";
-                    GLib.file_set_contents(path, icon.get_bytes());
-                } else if (contact.avatar && !icon) {
-                    icon = plugin._getPixbuf(contact.avatar);
-                }
+        if (plugin && (isMissedCall || isSms)) {
+            contact = plugin._cache.searchContact(text);
+        }
 
+        if (contact) {
+            if (!contact.avatar && icon) {
+                // FIXME: not saving cache?
+                let path = plugin._cache._dir + "/" + GLib.uuid_string_random() + ".jpeg";
+                GLib.file_set_contents(path, icon.get_bytes());
+                contact.avatar = path;
+            } else if (contact.avatar && !icon) {
+                icon = plugin._getPixbuf(contact.avatar);
+            }
+
+            // Reformat as a missed call notification
+            if (isMissedCall) {
                 notif.set_title(_("Missed Call"));
                 notif.set_body(
                     _("Missed call from %s on %s").format(
@@ -154,23 +163,8 @@ var Plugin = new Lang.Class({
                     escape(contact.name) +
                     "'))"
                 );
-
-                // We need to track this now so the action can close it later
-                if ((duplicate = this._duplicates.has(matchString))) {
-                    duplicate.id = packet.body.id;
-                } else {
-                    this._duplicates.set(matchString, { id: packet.body.id });
-                }
-            }
-        } else if (plugin && packet.body.id.indexOf("sms") > -1) {
-            if ((contact = plugin._cache.searchContact(title))) {
-                if (!contact.avatar && icon) {
-                    let path = plugin._cache._dir + "/" + GLib.uuid_string_random() + ".jpeg";
-                    GLib.file_set_contents(path, icon.get_bytes());
-                } else if (contact.avatar && !icon) {
-                    icon = plugin._getPixbuf(contact.avatar);
-                }
-
+            // Reformat as an SMS notification
+            } else if (isSms) {
                 notif.set_title(contact.name || contact.number);
                 notif.set_body(text);
                 notif.set_default_action(
@@ -185,23 +179,24 @@ var Plugin = new Lang.Class({
                     "'))"
                 );
                 notif.set_priority(Gio.NotificationPriority.HIGH);
+            }
 
-                // We need to track this now so the action can close it later
-                if ((duplicate = this._duplicates.get(matchString))) {
-                    duplicate.id = packet.body.id;
-                } else {
-                    this._duplicates.set(matchString, { id: packet.body.id });
-                }
+            // We need to track this now so the action can close it later
+            if ((duplicate = this._duplicates.get(matchString))) {
+                duplicate.id = packet.body.id;
+            } else {
+                this._duplicates.set(matchString, { id: packet.body.id });
             }
         }
 
+        // Fallback if we still don't have an icon
         if (!icon) {
             let name = packet.body.appName.toLowerCase().replace(" ", "-");
 
-            if (packet.body.id.indexOf("sms") > -1) {
-                icon = new Gio.ThemedIcon({ name: "sms-symbolic" });
-            } else if (title === _("Missed call")) {
+            if (isMissedCall) {
                 icon = new Gio.ThemedIcon({ name: "call-missed-symbolic" });
+            } else if (isSms) {
+                icon = new Gio.ThemedIcon({ name: "sms-symbolic" });
             } else if (Gtk.IconTheme.get_default().has_icon(name)) {
                 icon = new Gio.ThemedIcon({ name: name });
             } else {
@@ -236,13 +231,13 @@ var Plugin = new Lang.Class({
 
             transfer.connect("failed", (transfer) => {
                 channel.close();
-                this._handleNotification(packet);
+                this._createNotification(packet);
             });
 
             transfer.connect("succeeded", (transfer) => {
                 channel.close();
                 iconStream.close(null);
-                this._handleNotification(
+                this._createNotification(
                     packet,
                     Gio.BytesIcon.new(iconStream.steal_as_bytes())
                 );
@@ -378,7 +373,7 @@ var Plugin = new Lang.Class({
             } else if (packet.payloadSize) {
                 this._handlePayload(packet);
             } else {
-                this._handleNotification(packet);
+                this._createNotification(packet);
             }
         }
     },
