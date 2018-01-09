@@ -692,7 +692,7 @@ var ConversationWindow = new Lang.Class({
 
         // Header Bar
         this.headerBar = new Gtk.HeaderBar({ show_close_button: true });
-        this.connect("notify::numbers", () => { this._setHeaderBar(); });
+        this.connect("notify::numbers", () => this._setHeaderBar());
         this.set_titlebar(this.headerBar);
 
         // Contact Button
@@ -705,7 +705,7 @@ var ConversationWindow = new Lang.Class({
             // TRANSLATORS: Tooltip for a button to add/remove people from a conversation
             tooltip_text: _("Add and remove people")
         });
-        this.contactButton.connect("clicked", () => { this._showContacts(); });
+        this.contactButton.connect("clicked", () => this._showContacts());
         this.headerBar.pack_start(this.contactButton);
 
         // Messages Button
@@ -716,10 +716,7 @@ var ConversationWindow = new Lang.Class({
             }),
             always_show_image: true
         });
-        this.messagesButton.connect("clicked", () => {
-            this.contactEntry.text = "";
-            this._showMessages();
-        });
+        this.messagesButton.connect("clicked", () => this._showMessages());
         this.headerBar.pack_start(this.messagesButton);
 
         // Contact Entry
@@ -876,6 +873,7 @@ var ConversationWindow = new Lang.Class({
 
     _showMessages: function () {
         this.headerBar.custom_title = null;
+        this.contactEntry.text = "";
 
         this.messagesButton.visible = false;
         this.contactButton.visible = true;
