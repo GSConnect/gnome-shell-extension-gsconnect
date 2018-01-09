@@ -15,7 +15,7 @@ imports.searchPath.push(ext.datadir);
 const Common = imports.common;
 const Protocol = imports.service.protocol;
 const PluginsBase = imports.service.plugins.base;
-const GSettingsWidget = imports.widgets.gsettings;
+const PreferencesWidget = imports.widgets.preferences;
 
 
 var METADATA = {
@@ -544,14 +544,14 @@ var SettingsDialog = new Lang.Class({
         receivingSection.addGSetting(
             this.settings,
             "download-directory",
-            GSettingsWidget.FolderSetting
+            PreferencesWidget.FolderSetting
         );
 
         receivingSection.addSetting(
             // TRANSLATORS: eg. Use a subdirectory named <b>Google Pixel<b>
             _("Use a subdirectory named <b>%s</b>").format(this.device.name),
             null,
-            new GSettingsWidget.BoolSetting(
+            new PreferencesWidget.BoolSetting(
                 this.settings,
                 "download-subdirectory"
             )

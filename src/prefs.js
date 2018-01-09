@@ -24,7 +24,6 @@ imports.searchPath.push(ext.datadir);
 const Client = imports.client;
 const Common = imports.common;
 const DeviceWidget = imports.widgets.device;
-const GSettingsWidget = imports.widgets.gsettings;
 const KeybindingsWidget = imports.widgets.keybindings;
 const PreferencesWidget = imports.widgets.preferences;
 
