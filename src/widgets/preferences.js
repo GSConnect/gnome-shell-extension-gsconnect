@@ -571,21 +571,21 @@ var Section = new Lang.Class({
         if (widget !== undefined) {
             widget = new widget(settings, keyName);
         } else if (type === "b") {
-            widget = new GSettingsWidget.BoolSetting(settings, keyName);
+            widget = new BoolSetting(settings, keyName);
         } else if (type === "enum") {
-            widget = new GSettingsWidget.EnumSetting(settings, keyName);
+            widget = new EnumSetting(settings, keyName);
         } else if (type === "flags") {
-            widget = new GSettingsWidget.FlagsSetting(settings, keyName);
+            widget = new FlagsSetting(settings, keyName);
         } else if (type === "mb") {
-            widget = new GSettingsWidget.MaybeSetting(settings, keyName);
+            widget = new MaybeSetting(settings, keyName);
         } else if (type.length === 1 && "ynqiuxthd".indexOf(type) > -1) {
-            widget = new GSettingsWidget.NumberSetting(settings, keyName, type);
+            widget = new NumberSetting(settings, keyName, type);
         } else if (type === "range") {
-            widget = new GSettingsWidget.RangeSetting(settings, keyName);
+            widget = new RangeSetting(settings, keyName);
         } else if (type.length === 1 && "sog".indexOf(type) > -1) {
-            widget = new GSettingsWidget.StringSetting(settings, keyName);
+            widget = new StringSetting(settings, keyName);
         } else {
-            widget = new GSettingsWidget.OtherSetting(settings, keyName);
+            widget = new OtherSetting(settings, keyName);
         }
 
         return this.addSetting(
