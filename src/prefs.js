@@ -128,7 +128,7 @@ var PrefsWidget = new Lang.Class({
                 "https://chrome.google.com/webstore/detail/gsconnect/jfnifeihccihocjbfcfhicmmgpjicaec",
                 "https://addons.mozilla.org/firefox/addon/gsconnect/"
             ),
-            new GSettingsWidget.BoolSetting(ext.settings, "webbrowser-integration")
+            new PreferencesWidget.BoolSetting(ext.settings, "webbrowser-integration")
         );
 
         // About Page
