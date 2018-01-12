@@ -109,7 +109,10 @@ var ProxyBase = new Lang.Class({
     }
 });
 
-/** A wrapper for the Battery plugin */
+
+/**
+ * A DBus Proxy for the Battery plugin
+ */
 var Battery = new Lang.Class({
     Name: "GSConnectBatteryProxy",
     Extends: ProxyBase,
@@ -160,7 +163,52 @@ var Battery = new Lang.Class({
 });
 
 
-/** A wrapper for the RunCommand plugin */
+/**
+ * A DBus Proxy for the Battery plugin
+ */
+var Notification = new Lang.Class({
+    Name: "GSConnectNotificationProxy",
+    Extends: ProxyBase,
+    Signals: {
+        "received": {
+            flags: GObject.SignalFlags.RUN_FIRST,
+            param_types: [ GObject.TYPE_STRING ]
+        },
+        "dismissed": {
+            flags: GObject.SignalFlags.RUN_FIRST,
+            param_types: [ GObject.TYPE_STRING ]
+        }
+    },
+
+    _init: function (dbusPath) {
+        this.parent(
+            ext.dbusinfo.lookup_interface(
+                "org.gnome.Shell.Extensions.GSConnect.Plugin.Notification"
+            ),
+            dbusPath
+        );
+
+        this.connect("g-properties-changed", (proxy, properties) => {
+            for (let name in properties.deep_unpack()) {
+                this.notify(name);
+            }
+        });
+
+        this.connect("g-signal", (proxy, sender, name, parameters) => {
+            parameters = parameters.deep_unpack();
+            this.emit(name, parameters[0]);
+        });
+    },
+
+    close: function (id) {
+        this._call("close", true, id);
+    }
+});
+
+
+/**
+ * A DBus Proxy for the RunCommand plugin
+ */
 var RunCommand = new Lang.Class({
     Name: "GSConnectRunCommandProxy",
     Extends: ProxyBase,
@@ -197,7 +245,9 @@ var RunCommand = new Lang.Class({
 });
 
 
-/** A wrapper for the SFTP plugin */
+/**
+ * A DBus Proxy for the SFTP plugin
+ */
 var SFTP = new Lang.Class({
     Name: "GSConnectSFTPProxy",
     Extends: ProxyBase,
@@ -242,7 +292,9 @@ var SFTP = new Lang.Class({
 });
 
 
-/** A wrapper for the Share plugin */
+/**
+ * A DBus Proxy for the Share plugin
+ */
 var Share = new Lang.Class({
     Name: "GSConnectShareProxy",
     Extends: ProxyBase,
@@ -276,7 +328,9 @@ var Share = new Lang.Class({
 });
 
 
-/** A wrapper for the Telephony plugin */
+/**
+ * A DBus Proxy for the Telephony plugin
+ */
 var Telephony = new Lang.Class({
     Name: "GSConnectTelephonyProxy",
     Extends: ProxyBase,
@@ -374,7 +428,9 @@ var Telephony = new Lang.Class({
 });
 
 
-/** A base class for backend Device implementations */
+/**
+ * A DBus Proxy for Devices
+ */
 var Device = new Lang.Class({
     Name: "GSConnectDeviceProxy",
     Extends: ProxyBase,
@@ -540,6 +596,13 @@ var Device = new Lang.Class({
             delete this.sftp;
         }
 
+        if (this.plugins.indexOf("notification") > -1) {
+            this.notification = new Notification(this.gObjectPath);
+        } else if (this.hasOwnProperty("notification")) {
+            this.notification.destroy();
+            delete this.notification;
+        }
+
         if (this.plugins.indexOf("runcommand") > -1) {
             this.runcommand = new RunCommand(this.gObjectPath);
         } else if (this.hasOwnProperty("runcommand")) {
@@ -583,6 +646,9 @@ var Device = new Lang.Class({
 });
 
 
+/**
+ * A DBus Proxy for the Daemon
+ */
 var Daemon = new Lang.Class({
     Name: "GSConnectDaemonProxy",
     Extends: ProxyBase,
