@@ -175,9 +175,7 @@ var Plugin = new Lang.Class({
             );
 
             if (this._level > this._cache.threshold) {
-                this.device.daemon.withdraw_notification(
-                    this.device.id + "-battery-warning"
-                );
+                this.device.withdraw_notification("battery|threshold");
             }
         }
 
@@ -255,10 +253,7 @@ var Plugin = new Lang.Class({
             );
         }
 
-        this.device.daemon.send_notification(
-            this.device.id + "-battery-warning",
-            notif
-        );
+        this.device.send_notification("battery|threshold", notif);
 
         this._cache.threshold = this.level;
     },

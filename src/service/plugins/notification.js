@@ -370,9 +370,7 @@ var Plugin = new Lang.Class({
             // TODO: KDE Connect says this is unused...
         } else if (this.settings.get_boolean("receive-notifications")) {
             if (packet.body.isCancel) {
-                this.device.daemon.withdraw_notification(
-                    this.device.id + "|" + packet.body.id
-                );
+                this.device.withdraw_notification(packet.body.id);
             // Ignore GroupSummary notifications
             } else if (packet.body.id.indexOf("GroupSummary") > -1) {
                 debug("Notification: ignoring GroupSummary notification");

@@ -333,6 +333,15 @@ var Device = new Lang.Class({
         }
     },
 
+    /** GNotification proxies */
+    send_notification: function (id, notification) {
+        this.daemon.send_notification(this.name + "|" + id, notification);
+    },
+
+    withdraw_notification: function (id, notification) {
+        this.daemon.withdraw_notification(this.name + "|" + id);
+    },
+
     /** Pairing Functions */
     _handlePair: function (packet) {
         // A pair has been requested

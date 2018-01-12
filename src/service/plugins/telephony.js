@@ -199,10 +199,9 @@ var Plugin = new Lang.Class({
             plugin.silenceDuplicate(_("Missed call") + ": " + sender);
         }
 
-        this.device.daemon.send_notification(
-            _("Missed call") + ": " + sender,
-            notif
-        );
+        this.device.send_notification(
+            packet.body.event + "|" + _("Missed call") + ": " + sender,
+            notif);
     },
 
     _handleRinging: function (sender, packet) {
@@ -224,8 +223,8 @@ var Plugin = new Lang.Class({
             "app.muteCall('" + this._dbus.get_object_path() + "')"
         );
 
-        this.device.daemon.send_notification(
-            this.device.id + ":" + packet.body.event + ":" + packet.body.phoneNumber,
+        this.device.send_notification(
+            packet.body.event + "|" + sender,
             notif
         );
 
@@ -279,15 +278,16 @@ var Plugin = new Lang.Class({
             plugin.silenceDuplicate(sender + ": " + packet.body.messageBody);
         }
 
-        this.device.daemon.send_notification(packet.id.toString(), notif);
+        this.device.send_notification(
+            packet.body.event + "|"  + sender + ": " + packet.body.messageBody,
+            notif
+        );
     },
 
     _handleTalking: function (sender, packet) {
         debug("Telephony: _handleTalking()");
 
-        this.device.daemon.withdraw_notification(
-            this.device.id + ":ringing:" + packet.body.phoneNumber
-        );
+        this.device.withdraw_notification("ringing|" + sender);
 
         let notif = new Gio.Notification();
         // TRANSLATORS: Talking on the phone
@@ -299,8 +299,8 @@ var Plugin = new Lang.Class({
         notif.set_icon(this._getIcon(packet));
         notif.set_priority(Gio.NotificationPriority.NORMAL);
 
-        this.device.daemon.send_notification(
-            this.device.id + ":" + packet.body.event + ":" + packet.body.phoneNumber,
+        this.device.send_notification(
+            packet.body.event + "|" + sender,
             notif
         );
 
@@ -454,9 +454,7 @@ var Plugin = new Lang.Class({
             this._resumeMedia();
             this._unmuteMicrophone();
             this._restoreVolume();
-            this.device.daemon.withdraw_notification(
-                this.device.id + ":" + packet.body.event + ":" + packet.body.phoneNumber
-            );
+            this.device.withdraw_notification(packet.body.event + "|" + sender);
         } else {
             if (packet.body.event === "sms") {
                 this.emit(
