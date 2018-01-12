@@ -161,7 +161,7 @@ var Plugin = new Lang.Class({
             }
         } else {
             // Try to correct duplicate appName/title situations
-            if (packet.body.appName === packet.body.title) {
+            if (packet.body.appName === packet.body.title || isSms) {
                 notif.set_title(packet.body.title);
                 notif.set_body(packet.body.text);
             } else {
