@@ -86,27 +86,10 @@ var Plugin = new Lang.Class({
     },
 
     _createNotification: function (packet, icon) {
-        let title, text;
-
-        // kdeconnect-android 1.7+ only (also Android Kit-Kat+)
-        if (packet.body.hasOwnProperty("title")) {
-            title = packet.body.title;
-            text = packet.body.text;
-        // kdeconnect-android 1.6.6 (hex: 20 e2 80 90 20)
-        } else if (packet.body.ticker.indexOf(" ‐ ") > -1) {
-            [title, text] = packet.body.ticker.split(" ‐ ");
-        // kdeconnect-android 1.7+ only (probably never happens)
-        } else {
-            [title, text] = packet.body.ticker.split(": ");
-        }
-
-        let matchString = title + ": " + text;
-
-        // The defacto notification setup
         let notif = new Gio.Notification();
 
         // Check if this is a missed call or SMS notification
-        let isMissedCall = (title === _("Missed call"));
+        let isMissedCall = (packet.body.title === _("Missed call"));
         let isSms = (packet.body.id.indexOf("sms") > -1);
 
         // Check if it's from a known contact
@@ -114,7 +97,9 @@ var Plugin = new Lang.Class({
 
         if (isMissedCall || isSms) {
             if ((plugin = this.device._plugins.get("telephony"))) {
-                contact = plugin._cache.searchContact(text);
+                contact = plugin._cache.searchContact(
+                    (isSms) ? packet.body.title : packet.body.text
+                );
             }
         }
 
@@ -151,7 +136,7 @@ var Plugin = new Lang.Class({
             // Format as an SMS notification
             } else if (isSms) {
                 notif.set_title(contact.name || contact.number);
-                notif.set_body(text);
+                notif.set_body(packet.body.text);
                 notif.set_default_action(
                     "app.replySms(('" +
                     this._dbus.get_object_path() +
@@ -160,7 +145,7 @@ var Plugin = new Lang.Class({
                     "','" +
                     escape(contact.name) +
                     "','" +
-                    escape(text) +
+                    escape(packet.body.text) +
                     "'))"
                 );
                 notif.set_priority(Gio.NotificationPriority.HIGH);
@@ -169,16 +154,16 @@ var Plugin = new Lang.Class({
             // Track the notification so the action can close it later
             let duplicate;
 
-            if ((duplicate = this._duplicates.get(matchString))) {
+            if ((duplicate = this._duplicates.get(packet.body.ticker))) {
                 duplicate.id = packet.body.id;
             } else {
-                this._duplicates.set(matchString, { id: packet.body.id });
+                this._duplicates.set(packet.body.ticker, { id: packet.body.id });
             }
         } else {
             // Try to correct duplicate appName/title situations
-            if (packet.body.appName === title) {
-                notif.set_title(title);
-                notif.set_body(text);
+            if (packet.body.appName === packet.body.title) {
+                notif.set_title(packet.body.title);
+                notif.set_body(packet.body.text);
             } else {
                 notif.set_title(packet.body.appName);
                 notif.set_body(packet.body.ticker);
@@ -213,19 +198,19 @@ var Plugin = new Lang.Class({
 
         notif.set_icon(icon);
 
-        this._postNotification(packet, notif, matchString);
+        this._postNotification(packet, notif, packet.body.ticker);
     },
 
-    _postNotification: function (packet, notif, matchString) {
-        debug("Notification: _postNotification('" + matchString + "')");
+    _postNotification: function (packet, notif) {
+        debug("Notification: _postNotification('" + packet.body.ticker + "')");
 
         let duplicate;
 
-        if ((duplicate = this._duplicates.get(matchString))) {
+        if ((duplicate = this._duplicates.get(packet.body.ticker))) {
             // We've been asked to close this
             if (duplicate.close) {
                 this.close(packet.body.id);
-                this._duplicates.delete(matchString);
+                this._duplicates.delete(packet.body.ticker);
             // We've been asked to silence this (we'll still track it)
             } else if (duplicate.silence) {
                 duplicate.id = packet.body.id;
@@ -361,6 +346,17 @@ var Plugin = new Lang.Class({
         }
     },
 
+    _fixNotification: function (packet) {
+        // kdeconnect-android 1.6.6 (hex: 20 e2 80 90 20)
+        if (packet.body.ticker.indexOf(" ‐ ") > -1) {
+            debug("Notification: fixing legacy notification");
+            [packet.body.title, packet.body.text] = packet.body.ticker.split(" ‐ ");
+            packet.body.ticker = packet.body.ticker.replace(" ‐ ", ": ");
+        }
+
+        return packet;
+    },
+
     handlePacket: function (packet) {
         debug("Notification: handlePacket()");
 
@@ -376,8 +372,10 @@ var Plugin = new Lang.Class({
             } else if (packet.body.id.indexOf(":sms|") > -1) {
                 debug("Notification: ignoring grouped SMS notification");
             } else if (packet.payloadSize) {
+                packet = this._fixNotification(packet);
                 this._downloadIcon(packet);
             } else {
+                packet = this._fixNotification(packet);
                 this._createNotification(packet);
             }
         }
