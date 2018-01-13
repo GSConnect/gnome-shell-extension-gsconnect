@@ -335,11 +335,11 @@ var Device = new Lang.Class({
 
     /** GNotification proxies */
     send_notification: function (id, notification) {
-        this.daemon.send_notification(this.name + "|" + id, notification);
+        this.daemon.send_notification(this.id + "|" + id, notification);
     },
 
     withdraw_notification: function (id, notification) {
-        this.daemon.withdraw_notification(this.name + "|" + id);
+        this.daemon.withdraw_notification(this.id + "|" + id);
     },
 
     /** Pairing Functions */
