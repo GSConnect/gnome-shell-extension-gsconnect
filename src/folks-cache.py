@@ -189,10 +189,10 @@ class _GeeIterator(object):
 class GeeListIterator(_GeeIterator):
     def __init__(self, obj):
         _GeeIterator.__init__(self, obj, obj.iterator())
-        
+
         self.key_type = GObject.GType.from_name('gint')
         self.value_type = None
-        
+
         if hasattr(obj, 'get_element_type'):
             self.value_type = obj.get_element_type()
 
@@ -200,10 +200,10 @@ class GeeListIterator(_GeeIterator):
         i = 0
         for it in _GeeIterator.__iter__(self):
             value = it.get()
-            
+
             if self.value_type:
                 value = c_to_py(value, self.value_type)
-                
+
             yield i, value
             i += 1
 
@@ -211,13 +211,13 @@ class GeeListIterator(_GeeIterator):
 class GeeMapIterator(_GeeIterator):
     def __init__(self, obj):
         _GeeIterator.__init__(self, obj, obj.map_iterator())
-        
+
         self.key_type = None
         self.value_type = None
-            
+
         if hasattr(obj, 'get_key_type'):
             self.key_type = obj.get_key_type()
-        
+
         if hasattr(obj, 'get_value_type'):
             self.value_type = obj.get_value_type()
 
@@ -225,13 +225,13 @@ class GeeMapIterator(_GeeIterator):
         for it in _GeeIterator.__iter__(self):
             key = it.get_key()
             value = it.get_value()
-            
+
             if self.key_type:
                 key = c_to_py(key, self.key_type)
-            
+
             if self.value_type:
                 value = c_to_py(value, self.value_type)
-                
+
             yield key, value
 
 
@@ -254,7 +254,7 @@ class PhoneFieldDetailsWrapper(object):
         self.value = c_to_py(obj.get_value(), self.value_type)
         params = get_iterator(obj.get_parameters())
         self.parameters = {}
-        
+
         while (params.it.next()):
             key = c_to_py(params.it.get_key(), params.key_type)
             value = c_to_py(params.it.get_value(), params.value_type)
@@ -266,20 +266,20 @@ class FolksListener(object):
         self.loop = loop
         self.cache_dir = os.path.expanduser("~/.cache/gsconnect/contacts/")
         self.cache_path = os.path.join(self.cache_dir, "contacts.json")
-        
+
         try:
             with open(self.cache_path, 'r') as cache_file:
                 self.cache = json.load(cache_file);
         except:
             self.cache = []
-        
+
         self.aggregator = Folks.IndividualAggregator.dup()
         self.aggregator.connect('notify::is-quiescent', self._on_quiescent)
         self.aggregator.prepare()
 
     def _on_quiescent(self, *args):
         new_cache = []
-    
+
         for folk in self.get_folks():
             for phone_number in self.get_phone_numbers(folk):
                 new_contact = {
@@ -288,64 +288,67 @@ class FolksListener(object):
                     'type': phone_number.parameters.get('type', 'unknown'),
                     'origin': 'folks'
                 }
-                
+
                 avatar = folk.get_avatar()
-                
+
                 if avatar != None:
                     if hasattr(avatar, 'get_file'):
                         new_contact['avatar'] = avatar.get_file().get_path()
                     elif hasattr(avatar, 'get_bytes'):
-                        path = os.path.join(
-                            self.cache_dir, 
-                            GLib.uuid_string_random() + ".jpeg"
-                        )
-                        with open(path, 'w') as fobj:
-                            fobj.write(avatar.get_bytes().unref_to_data())
-                            
+                        folk_id = folk.get_id() or GLib.uuid_string_random()
+                        path = os.path.join(self.cache_dir, folk_id + ".jpeg")
+
+                        with open(path, 'wb') as fobj:
+                            fobj.write(avatar.get_bytes().get_data())
+
                         new_contact['avatar'] = path
-                    
+
                 new_cache.append(new_contact)
-                    
+
         self.write(new_cache)
         self.loop.quit()
 
     def get_folks(self):
         individuals = self.aggregator.get_individuals()
-        
+
         for uid, folk in get_iterator(individuals):
             yield folk
-            
+
     def get_phone_numbers(self, folk):
         phone_numbers = folk.get_phone_numbers()
-        
+
         for key, details in get_iterator(phone_numbers):
             yield PhoneFieldDetailsWrapper(details)
-    
+
     def write(self, new_cache):
+        # if new_cache is empty goa might not be running, avoid wiping contacts
+        if not new_cache:
+            return
+
         # update contacts
         new_diffs = list(itertools.filterfalse(lambda x: x in self.cache, new_cache))
-        
+
         for old_item in self.cache:
             old_num = ''.join(re.findall(r'\d+', old_item['number']))
-            
+
             for new_item in new_diffs:
                 new_num = ''.join(re.findall(r'\d+', new_item['number']))
-                
+
                 if old_item['name'] in ('', new_item['name']) and old_num == new_num:
                     self.cache[self.cache.index(old_item)].update(new_item)
                     new_diffs.remove(new_item)
-                    
+
         # remove old folks
         old_diffs = list(itertools.filterfalse(lambda x: x in new_cache, self.cache))
-        
+
         for old_item in old_diffs:
             if old_item['origin'] != 'kdeconnect':
                 self.cache.remove(old_item);
-                
+
         # add new folks
         for new_item in new_diffs:
             self.cache.append(new_item)
-        
+
         with open(self.cache_path, 'w') as cache_file:
             json.dump(new_cache, cache_file)
 
@@ -356,8 +359,8 @@ class FolksListener(object):
 
 if __name__ == '__main__':
     loop = GObject.MainLoop()
-        
+
     FolksListener(loop)
-    
+
     loop.run()
-    
+

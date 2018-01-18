@@ -1,8 +1,8 @@
 "use strict";
 
-const Lang = imports.lang;
-const Gettext = imports.gettext.domain("gsconnect");
+const Gettext = imports.gettext.domain("org.gnome.Shell.Extensions.GSConnect");
 const _ = Gettext.gettext;
+const Lang = imports.lang;
 
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
@@ -16,24 +16,24 @@ const Gtk = imports.gi.Gtk;
 var TreeView = new Lang.Class({
     Name: "GSConnectKeybindingsTreeView",
     Extends: Gtk.TreeView,
-    
+
     _init: function (settings, keyName) {
         this.parent({
             headers_visible: false,
             hexpand: true,
             activate_on_single_click: true
         });
-        
+
         this.settings = settings;
         this.keyName = keyName;
-        
+
         this.shellBus = new Gio.DBusProxy({
             gConnection: Gio.DBus.session,
             gName: "org.gnome.Shell",
             gObjectPath: "/org/gnome/Shell",
             gInterfaceName: "org.gnome.Shell"
         });
-        
+
         let listStore = new Gtk.ListStore();
         listStore.set_column_types([
             GObject.TYPE_STRING,    // Name
@@ -64,21 +64,21 @@ var TreeView = new Lang.Class({
         accelCol.add_attribute(this.accelCell, "accel-key", 2);
         accelCol.add_attribute(this.accelCell, "accel-mods", 3);
         this.append_column(accelCol);
-        
+
         //
         this.accelCell.connect("accel-edited", (renderer, path, key, mods) => {
             let [success, iter] = this.model.get_iter_from_string(path);
-            
+
             if (success && mods > 0) {
                 let name = this.model.get_value(iter, 0);
                 let binding = Gtk.accelerator_name(key, mods);
-                
+
                 // Check for existing instance of binding
                 if (this._check(binding)) {
                     let accels = this.getAccels();
                     accels[name] = binding;
                     this.setAccels(accels);
-                    
+
                     this.settings.set_string(
                         this.keyName,
                         JSON.stringify(this.getAccels())
@@ -89,11 +89,10 @@ var TreeView = new Lang.Class({
 
         this.accelCell.connect("accel-cleared", (renderer, path) => {
             let [success, iter] = this.model.get_iter_from_string(path);
-            
+
             if (success) {
-                let index = this.model.get_value(iter, 0);
                 this.model.set(iter, [2, 3], [0, 0]);
-                
+
                 this.settings.set_string(
                     this.keyName,
                     JSON.stringify(this.getAccels())
@@ -101,7 +100,7 @@ var TreeView = new Lang.Class({
             }
         });
     },
-    
+
     /**
      * Add an accelerator to configure
      *
@@ -117,25 +116,25 @@ var TreeView = new Lang.Class({
             [name, description, key, mods]
         );
     },
-    
+
     getAccels: function () {
         let profile = {};
-        
+
         this.model.foreach((model, path, iter, user_data) => {
             let name = model.get_value(iter, 0);
             let key = model.get_value(iter, 2);
             let mods = model.get_value(iter, 3);
-            
+
             if (key === 0 || mods === 0) {
                 profile[name] = "";
             } else {
                 profile[name] = Gtk.accelerator_name(key, mods);
             }
         });
-        
+
         return profile;
     },
-    
+
     /**
      * Load a profile of keybindings
      *
@@ -146,13 +145,13 @@ var TreeView = new Lang.Class({
     setAccels: function (profile) {
         this.model.foreach((model, path, iter, user_data) => {
             let name = model.get_value(iter, 0);
-            
+
             if (profile.hasOwnProperty(name)) {
                 model.set(iter, [2, 3], Gtk.accelerator_parse(profile[name]));
             }
         });
     },
-    
+
     _check: function (binding) {
         // Check someone else isn't already using the binding
         let action = this.shellBus.call_sync(
@@ -162,7 +161,7 @@ var TreeView = new Lang.Class({
             -1,
             null
         ).deep_unpack()[0];
-        
+
         if (action === 0) {
             let dialog = new Gtk.MessageDialog({
                 message_type: Gtk.MessageType.WARNING,
@@ -171,7 +170,7 @@ var TreeView = new Lang.Class({
                 text: _("Keyboard Shortcut Unavailable"),
                 secondary_text: _("The requested keyboard shortcut is already in use and can't be overridden.")
             });
-            
+
             dialog.run();
             dialog.close();
             return false;
@@ -187,5 +186,4 @@ var TreeView = new Lang.Class({
         }
     }
 });
-
 

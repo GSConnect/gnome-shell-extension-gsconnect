@@ -1,6 +1,5 @@
 "use strict";
 
-// Imports
 const Lang = imports.lang;
 
 const Gio = imports.gi.Gio;
@@ -8,13 +7,7 @@ const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 
 // Local Imports
-function getPath() {
-    // Diced from: https://github.com/optimisme/gjs-examples/
-    let m = new RegExp("@(.+):\\d+").exec((new Error()).stack.split("\n")[1]);
-    return Gio.File.new_for_path(m[1]).get_parent().get_parent().get_path();
-}
-
-imports.searchPath.push(getPath());
+imports.searchPath.push(ext.datadir);
 
 const Common = imports.common;
 
@@ -30,14 +23,14 @@ var TYPE_PAIR = "kdeconnect.pair";
 var Packet = new Lang.Class({
     Name: "GSConnectPacket",
     Extends: GObject.Object,
-    
+
     _init: function (data=false) {
         this.parent();
-        
+
         this.id = 0;
         this.type = "";
         this.body = {};
-        
+
         if (data === false) {
             return;
         } else if (typeof data === "string") {
@@ -48,25 +41,25 @@ var Packet = new Lang.Class({
             log("Error: unsupported packet source: " + typeof data);
         }
     },
-    
+
     _check: function (obj) {
         if (!obj.hasOwnProperty("type")) {
-            Common.debug("Packet: missing 'type' field");
+            debug("Packet: missing 'type' field");
             return false;
         } else if (!obj.hasOwnProperty("body")) {
-            Common.debug("Packet: missing 'body' field");
+            debug("Packet: missing 'body' field");
             return false;
         } else if (!obj.hasOwnProperty("id")) {
-            Common.debug("Packet: missing 'id' field");
+            debug("Packet: missing 'id' field");
             return false;
         }
-        
+
         return true;
     },
-    
+
     fromData: function (data) {
         let json;
-        
+
         try {
             json = JSON.parse(data);
         } catch (e) {
@@ -74,14 +67,14 @@ var Packet = new Lang.Class({
             log("Data: '%s'".format(data));
             return;
         }
-        
+
         if (this._check(json)) {
             Object.assign(this, json);
         } else {
             throw Error("Packet.fromData(): Malformed packet");
         }
     },
-    
+
     // TODO: better merging than this
     fromPacket: function (packet) {
         if (this._check(packet)) {
@@ -90,12 +83,12 @@ var Packet = new Lang.Class({
             throw Error("Packet.fromPacket(): Malformed packet");
         }
     },
-    
+
     toData: function () {
         this.id = Date.now();
         return JSON.stringify(this) + "\n";
     },
-    
+
     toString: function () {
         return JSON.stringify(this);
     }
@@ -108,34 +101,34 @@ var Packet = new Lang.Class({
 var TcpListener = new Lang.Class({
     Name: "GSConnectTcpListener",
     Extends: Gio.SocketService,
-    
+
     _init: function (port=1716) {
         this.parent();
-        
+
         while (true) {
             try {
                 this.add_inet_port(port, null);
             } catch (e) {
-                Common.debug("TcpListener: failed to bind to port " + port + ": " + e);
-                
+                debug("TcpListener: failed to bind to port " + port + ": " + e);
+
                 if (port < 1764) {
                     port += 1;
                     continue;
                 } else {
-                    this.stop();
-                    this.close();
+                    this.destroy();
                     throw Error("TcpListener: Unable to find open port");
                 }
             }
-            
+
             if (this.active) {
+                this._port = port;
                 break;
             }
         }
-        
-        log("TcpListener: using port " + port);
+
+        log("TcpListener: using port " + this._port);
     },
-    
+
     destroy: function () {
         this.stop();
         this.close();
@@ -148,14 +141,14 @@ var UdpListener = new Lang.Class({
     Extends: GObject.Object,
     Signals: {
         "received": {
-            flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED,
+            flags: GObject.SignalFlags.RUN_FIRST,
             param_types: [ GObject.TYPE_OBJECT ]
         }
     },
-    
+
     _init: function (port=1716) {
         this.parent();
-    
+
         this.socket = new Gio.Socket({
             family: Gio.SocketFamily.IPV4,
             type: Gio.SocketType.DATAGRAM,
@@ -169,12 +162,12 @@ var UdpListener = new Lang.Class({
                 address: Gio.InetAddress.new_any(Gio.SocketFamily.IPV4),
                 port: port
             });
-        
+
             try {
                 this.socket.bind(addr, false);
             } catch (e) {
-                Common.debug("UdpListener: failed to bind to port " + port + ": " + e);
-                
+                debug("UdpListener: failed to bind to port " + port + ": " + e);
+
                 if (port < 1764) {
                     port += 1;
                     continue;
@@ -183,43 +176,46 @@ var UdpListener = new Lang.Class({
                     throw Error("UdpListener: Unable to find open port");
                 }
             }
-            
+
             break;
         }
-        
+
         // Broadcast Address
         this._broadcastAddr = new Gio.InetSocketAddress({
             address: Gio.InetAddress.new_from_string("255.255.255.255"),
             port: this.socket.local_address.port
         });
-        
+
         this._in = new Gio.DataInputStream({
-            base_stream: new Gio.UnixInputStream({ fd: this.socket.fd })
+            base_stream: new Gio.UnixInputStream({
+                fd: this.socket.fd,
+                close_fd: false
+            })
         });
-        
+
         // Watch for incoming packets
         let source = this.socket.create_source(GLib.IOCondition.IN, null);
         source.set_callback(Lang.bind(this, this.receive));
         source.attach(null);
-        
+
         log("UdpListener: using port " + port);
     },
-    
+
     send: function (packet) {
-        Common.debug("UdpListener.send()");
-        
+        debug("UdpListener.send()");
+
         this.socket.send_to(
             this._broadcastAddr,
             packet.toData(),
             null
         );
     },
-    
+
     receive: function () {
-        Common.debug("UdpListener.receive()");
-        
+        debug("UdpListener.receive()");
+
         let addr, data, flags, size;
-        
+
         try {
             // "Peek" the incoming address
             [size, addr, data, flags] = this.socket.receive_message(
@@ -232,21 +228,21 @@ var UdpListener = new Lang.Class({
             log("UdpListener: Error reading data: " + e);
             return;
         }
-        
+
         let packet = new Packet(data.toString());
-        
+
         if (packet.type !== TYPE_IDENTITY) {
-            Common.debug("UdpListener: Unexpected packet type: " + packet.type);
+            debug("UdpListener: Unexpected packet type: " + packet.type);
             return true;
         }
-        
+
         packet.body.tcpHost = addr.address.to_string();
-        
+
         this.emit("received", packet);
-        
+
         return true;
     },
-    
+
     destroy: function () {
         try {
             if (this._in !== null) {
@@ -255,7 +251,7 @@ var UdpListener = new Lang.Class({
         } catch (e) {
             log("error closing data input: " + e);
         }
-        
+
         try {
             if (this.socket !== null) {
                 this.socket.close();
@@ -275,26 +271,26 @@ var LanChannel = new Lang.Class({
     Extends: GObject.Object,
     Signals: {
         "connected": {
-            flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED
+            flags: GObject.SignalFlags.RUN_FIRST
         },
         "disconnected": {
-            flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED
+            flags: GObject.SignalFlags.RUN_FIRST
         },
         "received": {
-            flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED,
+            flags: GObject.SignalFlags.RUN_FIRST,
             param_types: [ GObject.TYPE_OBJECT ]
         }
     },
-    
+
     _init: function (daemon, deviceId) {
         this.parent();
-        
+
         this.daemon = daemon;
         this.identity = { body: { deviceId: deviceId } };
-        
+
         this._monitor = 0;
     },
-    
+
     // Receive an identity packet
     _receiveIdent: function () {
         let _in = new Gio.DataInputStream({
@@ -310,7 +306,7 @@ var LanChannel = new Lang.Class({
         this.identity.body.tcpPort = 1716;
         _in.close(null);
     },
-    
+
     // Send identity packet, indicating we're about ready for a handshake
     _sendIdent: function () {
         let _out = new Gio.DataOutputStream({
@@ -322,7 +318,7 @@ var LanChannel = new Lang.Class({
         _out.put_string(this.daemon.identity.toData(), null);
         _out.close(null);
     },
-    
+
     // Set socket options
     _initSocket: function () {
         this._connection.socket.set_keepalive(true);
@@ -333,7 +329,7 @@ var LanChannel = new Lang.Class({
         // TCP_KEEPCNT: number of missed keepalive packets before disconnecting
         this._connection.socket.set_option(6, 6, 3);
     },
-    
+
     // Wrap connection in TlsServerConnection and handshake
     _initTls: function (client=false) {
         if (client) {
@@ -348,47 +344,56 @@ var LanChannel = new Lang.Class({
                 this.daemon.certificate
             );
         }
-        
+
         this._connection.validation_flags = 0;
         this._connection.authentication_mode = 1;
-        
+
         this._connection.connect(
             "accept-certificate",
             Lang.bind(this, this._accept_certificate)
         );
-        
+
         this._connection.handshake_async(
             GLib.PRIORITY_DEFAULT,
             null,
             Lang.bind(this, this.opened)
         );
     },
-    
+
     // Negotitate certificate/pairing
     _accept_certificate: function (conn, peer_cert, flags) {
         log("Authenticating '" + this.identity.body.deviceId + "'");
-        
+
         this._peer_cert = peer_cert;
-        let cert = Common.getCertificate(this.identity.body.deviceId);
-        
-        if (cert) {
+
+        let settings = new Gio.Settings({
+            settings_schema: ext.gschema.lookup(ext.app_id + ".Device", true),
+            path: ext.settings.path + "device/" + this.identity.body.deviceId + "/"
+        });
+
+        if (settings.get_string("certificate-pem")) {
+            let cert = Gio.TlsCertificate.new_from_pem(
+                settings.get_string("certificate-pem"),
+                -1
+            );
+
             return (cert.verify(null, peer_cert) === 0);
         }
-        
+
         return true;
     },
-    
+
     // Open input/output streams and monitor the input stream for packets
     _initStreams: function () {
         this._in = new Gio.DataInputStream({
             base_stream: this._connection.input_stream,
             newline_type: Gio.DataStreamNewlineType.LF
         });
-        
+
         this._out = new Gio.DataOutputStream({
             base_stream: this._connection.output_stream
         });
-        
+
         this._monitor = this._in.base_stream.create_source(null);
         this._monitor.set_callback((condition) => {
             let result = this.receive();
@@ -396,16 +401,16 @@ var LanChannel = new Lang.Class({
             return result;
         });
         this._monitor.attach(null);
-        
+
         return true;
     },
-    
+
     /**
      * Public Methods
      */
     open: function (addr) {
         log("Connecting to '" + this.identity.body.deviceId + "'");
-        
+
         let client = new Gio.SocketClient();
         client.connect_async(addr, null, (client, res) => {
             try {
@@ -415,15 +420,15 @@ var LanChannel = new Lang.Class({
                 this.close();
                 return false;
             }
-            
+
             this.request(this._connection);
         });
     },
-    
+
     // Request a channel (outgoing connection)
     request: function (connection) {
         this._connection = connection;
-        
+
         try {
             this._initSocket();
             this._sendIdent();
@@ -434,11 +439,11 @@ var LanChannel = new Lang.Class({
             return false;
         }
     },
-    
+
     // Accept a channel (incoming connection)
     accept: function (connection) {
         this._connection = connection;
-        
+
         try {
             this._initSocket();
             this._receiveIdent();
@@ -449,7 +454,7 @@ var LanChannel = new Lang.Class({
             return false;
         }
     },
-    
+
     opened: function (connection, res) {
         try {
             this._connection.handshake_finish(res);
@@ -461,11 +466,11 @@ var LanChannel = new Lang.Class({
             this.close();
             return false;
         }
-        
+
         this.emit("connected");
         return true;
     },
-    
+
     close: function () {
         try {
             if (this._monitor > 0) {
@@ -475,7 +480,7 @@ var LanChannel = new Lang.Class({
         } catch (e) {
             log("error removing monitor: " + e);
         }
-        
+
         try {
             if (this._in) {
                 this._in.close(null);
@@ -483,7 +488,7 @@ var LanChannel = new Lang.Class({
         } catch (e) {
             log("error closing data input: " + e);
         }
-        
+
         try {
             if (this._out) {
                 this._out.close(null);
@@ -491,7 +496,7 @@ var LanChannel = new Lang.Class({
         } catch (e) {
             log("error closing data output: " + e);
         }
-        
+
         try {
             if (this._connection) {
                 this._connection.close(null);
@@ -499,7 +504,7 @@ var LanChannel = new Lang.Class({
         } catch (e) {
             log("error closing connection: " + e);
         }
-        
+
         try {
             if (this._listener) {
                 this._listener.close();
@@ -507,18 +512,18 @@ var LanChannel = new Lang.Class({
         } catch (e) {
             log("error closing listener: " + e);
         }
-        
+
         delete this._in;
         delete this._out;
         delete this._connection;
         delete this._listener;
-        
+
         this.emit("disconnected");
     },
-    
+
     send: function (packet) {
-        Common.debug("LanChannel.send(" + packet.toString() + ")");
-    
+        debug("LanChannel.send(" + this.identity.body.deviceId + ", " + packet.toString() + ")");
+
         try {
             this._out.put_string(packet.toData(), null);
         } catch (e) {
@@ -526,24 +531,24 @@ var LanChannel = new Lang.Class({
             // TODO: disconnect? check kdeconnect code
         }
     },
-    
+
     receive: function () {
-        Common.debug("LanChannel.receive(" + this.identity.body.deviceId + ")");
-        
+        debug("LanChannel.receive(" + this.identity.body.deviceId + ")");
+
         let data, len, packet;
-        
+
         try {
             [data, len] = this._in.read_line(null);
-            Common.debug("Device received: " + data);
+            debug("Device received: " + data);
         } catch (e) {
             log("Failed to receive packet: " + e);
             return false;
         }
-        
+
         if (data === null || data === undefined || !data.length) {
             return false;
         }
-        
+
         packet = new Packet(data.toString());
         this.emit("received", packet);
         return true;
@@ -560,50 +565,50 @@ var Transfer = new Lang.Class({
     Extends: GObject.Object,
     Signals: {
         "started": {
-            flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED
+            flags: GObject.SignalFlags.RUN_FIRST
         },
         "progress": {
-            flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED,
+            flags: GObject.SignalFlags.RUN_FIRST,
             param_types: [ GObject.TYPE_INT ]
         },
         "cancelled": {
-            flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED
+            flags: GObject.SignalFlags.RUN_FIRST
         },
         "failed": {
-            flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED,
+            flags: GObject.SignalFlags.RUN_FIRST,
             param_types: [ GObject.TYPE_STRING ]
         },
         "succeeded": {
-            flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED
+            flags: GObject.SignalFlags.RUN_FIRST
         }
     },
-    
+
     _init: function (channel, size, checksum) {
         this.parent();
-        
+
         this.id = GLib.uuid_string_random();
-        
+
         this._in = channel._in;
         this._out = channel._out;
         this._cancellable = new Gio.Cancellable();
-        
+
         this.size = size;
         this.written = 0;
-        
+
         this.checksum = checksum;
         this._checksum = new GLib.Checksum(GLib.ChecksumType.MD5);
     },
-    
+
     _read: function () {
         if (this._cancellable.is_cancelled()) { return; }
-        
+
         this._in.read_bytes_async(
             4096,
             GLib.PRIORITY_DEFAULT,
             this._cancellable,
             (source, res) => {
                 let bytes = source.read_bytes_finish(res);
-                
+
                 // Data to write
                 if (bytes.get_size()) {
                     this._write(bytes);
@@ -616,21 +621,21 @@ var Transfer = new Lang.Class({
                     if (this.checksum !== this._checksum.get_string()) {
                         this.emit("failed", "Checksum mismatch");
                     } else {
-                        Common.debug("Completed transfer of " + this.size + " bytes");
+                        debug("Completed transfer of " + this.size + " bytes");
                         this.emit("succeeded");
                     }
                 // All done
                 } else {
-                    Common.debug("Completed transfer of " + this.size + " bytes");
+                    debug("Completed transfer of " + this.size + " bytes");
                     this.emit("succeeded");
                 }
             }
         );
     },
-    
+
     _write: function (bytes) {
         if (this._cancellable.is_cancelled()) { return; }
-        
+
         this._out.write_bytes_async(
             bytes,
             GLib.PRIORITY_DEFAULT,
@@ -642,12 +647,12 @@ var Transfer = new Lang.Class({
             }
         );
     },
-    
+
     start: function () {
         this.emit("started");
         this._read();
     },
-    
+
     cancel: function () {
         this._cancellable.cancel();
         this.emit("cancelled");
@@ -658,18 +663,18 @@ var Transfer = new Lang.Class({
 var LanDownloadChannel = new Lang.Class({
     Name: "GSConnectLanDownloadChannel",
     Extends: LanChannel,
-    
+
     _init: function (device, identity, fileStream) {
         this.parent(device, identity);
-        
+
         this._out = fileStream;
     },
-    
+
     request: function (connection) {
-        Common.debug("LanDownloadChannel.request(" + this.identity.body.deviceId + ")");
-        
+        debug("LanDownloadChannel.request(" + this.identity.body.deviceId + ")");
+
         this._connection = connection;
-        
+
         try {
             this._initSocket();
             this._initTls(true);
@@ -679,10 +684,10 @@ var LanDownloadChannel = new Lang.Class({
             return false;
         }
     },
-    
+
     opened: function (connection, res) {
-        Common.debug("LanDownloadChannel.opened(" + this.identity.body.deviceId + ")");
-        
+        debug("LanDownloadChannel.opened(" + this.identity.body.deviceId + ")");
+
         try {
             this._in = this._connection.get_input_stream();
         } catch (e) {
@@ -690,7 +695,7 @@ var LanDownloadChannel = new Lang.Class({
             this.close();
             return false;
         }
-        
+
         this.emit("connected");
     }
 });
@@ -701,22 +706,22 @@ var LanUploadChannel = new Lang.Class({
     Extends: LanChannel,
     Signals: {
         "listening": {
-            flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED,
+            flags: GObject.SignalFlags.RUN_FIRST,
             param_types: [ GObject.TYPE_INT ]
         }
     },
-    
+
     _init: function (device, identity, srcStream) {
         this.parent(device, identity);
-        
+
         this._in = srcStream;
     },
-    
+
     open: function (port=1739) {
-        Common.debug("LanUploadChannel.open(" + this.identity.body.deviceId + ")");
-        
+        debug("LanUploadChannel.open(" + this.identity.body.deviceId + ")");
+
         this._listener = new Gio.SocketListener();
-        
+
         while (true) {
             try {
                 this._listener.add_inet_port(port, null);
@@ -728,18 +733,18 @@ var LanUploadChannel = new Lang.Class({
                     throw Error("Failed to open port");
                 }
             }
-            
+
             break;
         }
-        
+
         this._listener.accept_async(null, Lang.bind(this, this.accept));
-        
+
         this.emit("listening", port);
     },
-    
+
     accept: function (listener, res) {
-        Common.debug("LanUploadChannel.accept(" + this.identity.body.deviceId + ")");
-        
+        debug("LanUploadChannel.accept(" + this.identity.body.deviceId + ")");
+
         try {
             let src;
             [this._connection, src] = this._listener.accept_finish(res);
@@ -751,10 +756,10 @@ var LanUploadChannel = new Lang.Class({
             return false;
         }
     },
-    
+
     opened: function (connection, res) {
-        Common.debug("LanUploadChannel.opened(" + this.identity.body.deviceId + ")");
-        
+        debug("LanUploadChannel.opened(" + this.identity.body.deviceId + ")");
+
         try {
             this._connection.handshake_finish(res);
             this._out = this._connection.get_output_stream();
@@ -763,9 +768,8 @@ var LanUploadChannel = new Lang.Class({
             this.close();
             return false;
         }
-        
+
         this.emit("connected");
     }
 });
-
 

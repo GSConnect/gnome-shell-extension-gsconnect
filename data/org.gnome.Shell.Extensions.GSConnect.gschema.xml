@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<schemalist gettext-domain="gsconnect">
-  <schema id="org.gnome.shell.extensions.gsconnect" path="/org/gnome/shell/extensions/gsconnect/">
+<schemalist gettext-domain="org.gnome.Shell.Extensions.GSConnect">
+  <schema id="org.gnome.Shell.Extensions.GSConnect" path="/org/gnome/shell/extensions/gsconnect/">
     <key name="debug" type="b">
       <default>false</default>
       <summary>Debug Mode</summary>
@@ -23,8 +23,8 @@
     </key>
     <key name="show-battery" type="b">
       <default>false</default>
-      <summary>Show Battery Indicator</summary>
-      <description>Display a icon and percentage in the Device Menu</description>
+      <summary>Show Battery Icon</summary>
+      <description>Display an icon with percentage in the Device Menu</description>
     </key>
     <key name="devices" type="as">
       <default>[]</default>
@@ -34,13 +34,18 @@
       <summary>Nautilus Integration</summary>
       <description>Send files from the file browser context menu</description>
     </key>
+    <key name="webbrowser-integration" type="b">
+      <default>false</default>
+      <summary>Web Browser Integration</summary>
+      <description>Share links with devices and contacts from the web browser</description>
+    </key>
     <key name="public-name" type="s">
       <default>"GSConnect"</default>
       <summary>Public Name</summary>
       <description>The name visible to other devices</description>
     </key>
   </schema>
-  <schema id="org.gnome.shell.extensions.gsconnect.device">
+  <schema id="org.gnome.Shell.Extensions.GSConnect.Device">
     <key name="certificate-pem" type="s">
       <default>""</default>
     </key>
@@ -69,7 +74,7 @@
       <default>1716</default>
     </key>
   </schema>
-  <schema id="org.gnome.shell.extensions.gsconnect.plugin.battery">
+  <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Battery">
     <key name="receive-statistics" type="b">
       <default>true</default>
       <summary>Receive Statistics</summary>
@@ -81,7 +86,7 @@
       <description></description>
     </key>
   </schema>
-  <schema id="org.gnome.shell.extensions.gsconnect.plugin.clipboard">
+  <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Clipboard">
     <key name="receive-content" type="b">
       <default>true</default>
       <summary>Receive Content</summary>
@@ -93,7 +98,7 @@
       <description></description>
     </key>
   </schema>
-  <schema id="org.gnome.shell.extensions.gsconnect.plugin.notification">
+  <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Notification">
     <key name="receive-notifications" type="b">
       <default>true</default>
       <summary>Receive Notifications</summary>
@@ -104,28 +109,23 @@
       <summary>Send Notifications</summary>
       <description></description>
     </key>
-    <key name="sync-icons" type="b">
-      <default>true</default>
-      <summary>Sync Icons</summary>
-      <description></description>
-    </key>
     <key name="applications" type="s">
       <default>'{"GSConnect":{"iconName":"phone","enabled":false}}'</default>
     </key>
   </schema>
-  <schema id="org.gnome.shell.extensions.gsconnect.plugin.runcommand">
+  <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.RunCommand">
     <key name="command-list" type="s">
       <default>"{}"</default>
     </key>
   </schema>
-  <schema id="org.gnome.shell.extensions.gsconnect.plugin.sftp">
+  <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.SFTP">
     <key name="automount" type="b">
       <default>false</default>
       <summary>Automatically Mount</summary>
       <description></description>
     </key>
   </schema>
-  <schema id="org.gnome.shell.extensions.gsconnect.plugin.share">
+  <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Share">
     <key name="download-directory" type="s">
       <default>""</default>
       <summary>Download Directory</summary>
@@ -137,7 +137,7 @@
       <description></description>
     </key>
   </schema>
-  <schema id="org.gnome.shell.extensions.gsconnect.plugin.telephony">
+  <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Telephony">
     <key name="ringing-volume" type="s">
       <default>"lower"</default>
       <summary>System Volume</summary>

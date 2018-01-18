@@ -6,14 +6,14 @@
     <property type="s" name="fingerprint" access="read"/>
     <property type="s" name="name" access="readwrite"/>
     <property type="s" name="type" access="read"/>
-    
+
     <method name="broadcast"/>
     <method name="getShareable">
-      <arg name="shareable" type="a{ss}" direction="out"/>
+      <arg name="shareable" type="a(ss)" direction="out"/>
     </method>
     <method name="quit"/>
   </interface>
-  
+
   <!-- Device -->
   <interface name="org.gnome.Shell.Extensions.GSConnect.Device">
     <property type="b" name="connected" access="read"/>
@@ -24,7 +24,7 @@
     <property type="as" name="plugins" access="read"/>
     <property type="as" name="supportedPlugins" access="read"/>
     <property type="s" name="type" access="read"/>
-    
+
     <method name="activate"/>
     <method name="pair"/>
     <method name="unpair"/>
@@ -42,7 +42,7 @@
     </method>
     <method name="openSettings"/>
   </interface>
-  
+
   <!-- Battery -->
   <interface name="org.gnome.Shell.Extensions.GSConnect.Plugin.Battery">
     <property type="b" name="charging" access="read"/>
@@ -51,43 +51,43 @@
     <method name="request"/>
     <method name="send"/>
   </interface>
-  
+
   <!-- Clipboard -->
   <interface name="org.gnome.Shell.Extensions.GSConnect.Plugin.Clipboard"/>
-  
+
   <!-- FindMyPhone -->
   <interface name="org.gnome.Shell.Extensions.GSConnect.Plugin.FindMyPhone">
     <method name="find"/>
   </interface>
-  
+
   <!-- Lock -->
   <interface name="org.gnome.Shell.Extensions.GSConnect.Plugin.Lock">
     <property type="b" name="locked" access="readwrite"/>
   </interface>
-  
+
   <!-- Mousepad -->
   <interface name="org.gnome.Shell.Extensions.GSConnect.Plugin.Mousepad"/>
-  
+
   <!-- MPRIS -->
   <interface name="org.gnome.Shell.Extensions.GSConnect.Plugin.MPRIS"/>
-  
+
   <!-- Notifications -->
   <interface name="org.gnome.Shell.Extensions.GSConnect.Plugin.Notification">
     <signal name="received"/>
     <signal name="dismissed"/>
   </interface>
-  
+
   <!-- Ping -->
   <interface name="org.gnome.Shell.Extensions.GSConnect.Plugin.Ping">
     <method name="ping">
       <arg name="message" type="s" direction="in"/>
     </method>
-    
+
     <signal name="ping">
       <arg name="message" type="s"/>
     </signal>
   </interface>
-  
+
   <!-- Run Commands -->
   <interface name="org.gnome.Shell.Extensions.GSConnect.Plugin.RunCommand">
     <property type="s" name="commands" access="read"/>
@@ -96,16 +96,16 @@
       <arg name="key" type="s" direction="in"/>
     </method>
   </interface>
-  
+
   <!-- SFTP -->
   <interface name="org.gnome.Shell.Extensions.GSConnect.Plugin.SFTP">
     <property type="b" name="mounted" access="read"/>
     <property type="a{ss}" name="directories" access="read"/>
-    
+
     <method name="mount"/>
     <method name="unmount"/>
   </interface>
-  
+
   <!-- Share -->
   <interface name="org.gnome.Shell.Extensions.GSConnect.Plugin.Share">
     <method name="shareDialog"/>
@@ -121,7 +121,7 @@
       <arg name="content" type="s"/>
     </signal>
   </interface>
-  
+
   <!-- Telephony -->
   <interface name="org.gnome.Shell.Extensions.GSConnect.Plugin.Telephony">
     <method name="muteCall"/>
@@ -130,7 +130,10 @@
       <arg name="phoneNumber" type="s" direction="in"/>
       <arg name="messageBody" type="s" direction="in"/>
     </method>
-    
+    <method name="shareUri">
+      <arg name="url" type="s" direction="in"/>
+    </method>
+
     <signal name="missedCall">
       <arg name="number" type="s"/>
       <arg name="name" type="s"/>
@@ -153,4 +156,19 @@
       <arg name="avatar" type="s"/>
     </signal>
   </interface>
+
+  <!-- freedesktop.org Notifications Interface -->
+  <interface name="org.freedesktop.Notifications">
+    <method name="Notify">
+      <arg name="appName" type="s" direction="in"/>
+      <arg name="replacesId" type="u" direction="in"/>
+      <arg name="iconName" type="s" direction="in"/>
+      <arg name="summary" type="s" direction="in"/>
+      <arg name="body" type="s" direction="in"/>
+      <arg name="actions" type="as" direction="in"/>
+      <arg name="hints" type="a{sv}" direction="in"/>
+      <arg name="timeout" type="i" direction="in"/>
+    </method>
+  </interface>
 </node>
+

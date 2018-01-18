@@ -1,27 +1,19 @@
 "use strict";
 
-// Imports
 const Lang = imports.lang;
-
-const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
-const GObject = imports.gi.GObject;
 const Tweener = imports.tweener.tweener;
 
 const GIRepository = imports.gi.GIRepository;
+const GLib = imports.gi.GLib;
+const GObject = imports.gi.GObject;
+
 GIRepository.Repository.prepend_search_path("/usr/lib/gnome-shell");
 GIRepository.Repository.prepend_library_path("/usr/lib/gnome-shell");
 GIRepository.Repository.prepend_search_path("/usr/lib64/gnome-shell");
 GIRepository.Repository.prepend_library_path("/usr/lib64/gnome-shell");
 
 // Local Imports
-function getPath() {
-    // Diced from: https://github.com/optimisme/gjs-examples/
-    let m = new RegExp("@(.+):\\d+").exec((new Error()).stack.split("\n")[1]);
-    return Gio.File.new_for_path(m[1]).get_parent().get_path();
-}
-
-imports.searchPath.push(getPath());
+imports.searchPath.push(ext.datadir);
 
 const Common = imports.common;
 
@@ -32,7 +24,7 @@ try {
     var _mixerControl = new Gvc.MixerControl({ name: "GSConnect" });
     _mixerControl.open();
 } catch (e) {
-    Common.debug("Warning: failed to initialize Gvc: " + e);
+    debug("Warning: failed to initialize Gvc: " + e);
     var _mixerControl = undefined;
 }
 
@@ -42,7 +34,7 @@ try {
     var _gsoundContext = new GSound.Context();
     _gsoundContext.init(null);
 } catch (e) {
-    Common.debug("Warning: failed to initialize GSound: " + e);
+    debug("Warning: failed to initialize GSound: " + e);
     var _gsoundContext = undefined;
 }
 
@@ -55,7 +47,7 @@ function playThemeSound (name) {
         GLib.spawn_command_line_async("canberra-gtk-play -i " + name);
         return true;
     }
-    
+
     return false;
 };
 
@@ -87,7 +79,7 @@ function loopThemeSound (name, cancellable) {
             }
         });
     }
-    
+
     return false;
 };
 
@@ -111,31 +103,31 @@ var Stream = new Lang.Class({
             0
         )
     },
-    
+
     _init: function (stream) {
         this.parent();
-        
+
         this._max = _mixerControl.get_vol_max_norm()
         this._stream = stream;
     },
-    
+
     get muted () {
         return this._stream.is_muted;
     },
-    
+
     set muted (bool) {
         this._stream.change_is_muted(bool);
     },
-    
+
     get volume () {
         return Math.round(100 * this._stream.volume / this._max) / 100;
     },
-    
+
     set volume (num) {
         this._stream.volume = num * this._max;
         this._stream.push_volume();
     },
-    
+
     lower: function (value) {
         Tweener.removeTweens(this);
         Tweener.addTween(this, {
@@ -145,7 +137,7 @@ var Stream = new Lang.Class({
             onComplete: () => { Tweener.removeTweens(this); }
         });
     },
-    
+
     raise: function (value) {
         Tweener.removeTweens(this);
         Tweener.addTween(this, {
@@ -160,25 +152,25 @@ var Stream = new Lang.Class({
 
 var Mixer = new Lang.Class({
     Name: "GSConnectSoundMixer",
-    
+
     _init: function () {
         this._control = _mixerControl;
-        
+
         this._control.connect("default-sink-changed", () => {
             this.output = new Stream(this._control.get_default_sink());
         });
-        
+
         this._control.connect("default-source-changed", () => {
             this.input = new Stream(this._control.get_default_source());
         });
-        
+
         this._control.connect("state-changed", () => {
             if (this._control.get_state() == Gvc.MixerControlState.READY) {
                 this.output = new Stream(this._control.get_default_sink());
                 this.input = new Stream(this._control.get_default_source());
             }
         });
-        
+
         this.output = new Stream(this._control.get_default_sink());
         this.input = new Stream(this._control.get_default_source());
     }

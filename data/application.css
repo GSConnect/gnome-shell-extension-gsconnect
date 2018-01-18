@@ -1,0 +1,46 @@
+
+.contact-avatar {
+    border-radius: 16px;
+}
+
+.message-bubble {
+    border-radius: 1em;
+}
+
+.message-bubble *:link { color: inherit; }
+.message-bubble *:visited { color: inherit; }
+
+.contact-color-outgoing { color: #101010; background-color: #d3d7cf; }
+
+.contact-color-butter1 { color: #101010; background-color: #fce94f; }
+.contact-color-butter2 { color: #101010; background-color: #edd400; }
+.contact-color-butter3 { color: #101010; background-color: #c4a000; }
+
+.contact-color-orange1 { color: #101010; background-color: #fcaf3e; }
+.contact-color-orange2 { color: #101010; background-color: #f57900; }
+.contact-color-orange3 { color: #101010; background-color: #ce5c00; }
+
+.contact-color-chocolate1 { color: #101010; background-color: #e9b96e; }
+.contact-color-chocolate2 { color: #101010; background-color: #c17d11; }
+.contact-color-chocolate3 { color: #f0f0f0; background-color: #8f5902; }
+
+.contact-color-chameleon1 { color: #101010; background-color: #8ae234; }
+.contact-color-chameleon2 { color: #101010; background-color: #73d216; }
+.contact-color-chameleon3 { color: #101010; background-color: #4e9a06; }
+
+.contact-color-skyblue1 { color: #101010; background-color: #729fcf; }
+.contact-color-skyblue2 { color: #f0f0f0; background-color: #3465a4; }
+.contact-color-skyblue3 { color: #f0f0f0; background-color: #204a87; }
+
+.contact-color-plum1 { color: #101010; background-color: #ad7fa8; }
+.contact-color-plum2 { color: #f0f0f0; background-color: #75507b; }
+.contact-color-plum3 { color: #f0f0f0; background-color: #5c3566; }
+
+.contact-color-scarletred1 { color: #101010; background-color: #ef2929; }
+.contact-color-scarletred2 { color: #f0f0f0; background-color: #cc0000; }
+.contact-color-scarletred3 { color: #f0f0f0; background-color: #a40000; }
+
+.contact-color-aluminium1 { color: #101010; background-color: #888a85; }
+.contact-color-aluminium2 { color: #f0f0f0; background-color: #555753; }
+.contact-color-aluminium3 { color: #f0f0f0; background-color: #2e3436; }
+
