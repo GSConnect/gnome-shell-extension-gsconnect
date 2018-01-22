@@ -279,38 +279,28 @@ var Device = new Lang.Class({
     _onConnected: function (channel) {
         log("Connected to '" + this.name + "'");
 
-        this._connected = true;
-
-        this._loadPlugins();
-
-        this.notify("connected");
-        this._dbus.emit_property_changed(
-            "connected",
-            new GLib.Variant("b", this.connected)
-        );
+        this._loadPlugins().then((values) => {
+            this._connected = true;
+            this.notify("connected", "b");
+            this.notify("plugins", "as");
+        });
 
         // Ensure fingerprint is available right away
         this.notify("fingerprint", "s");
     },
 
-    // TODO: see destroy()
     _onDisconnected: function (channel) {
         log("Disconnected from '" + this.name + "'");
 
-        try {
-            if (this._channel !== null) {
-                this._channel = null;
-            }
-
-            // This must be done before "connected" is updated
-            this._unloadPlugins();
-
-            // Notify disconnected
-            this._connected = false;
-        } catch (e) {
-            debug("Device: error disconnecting: " + e);
+        if (this._channel !== null) {
+            this._channel = null;
         }
+
+        this._unloadPlugins().then((values) => {
+            this.notify("plugins", "as");
+            this._connected = false;
             this.notify("connected", "b");
+        });
 
         this.daemon._pruneDevices();
     },
@@ -358,7 +348,9 @@ var Device = new Lang.Class({
             if (this._outgoingPairRequest) {
                 log("Pair accepted by " + this.name);
                 this._setPaired(true);
-                this._loadPlugins();
+                this._loadPlugins().then((values) => {
+                    this.notify("plugins", "as");
+                });
             // The device thinks we're unpaired
             } else if (this.paired) {
                 this.acceptPair();
@@ -370,8 +362,10 @@ var Device = new Lang.Class({
         // Device is requesting unpairing/rejecting our request
         } else {
             log("Pair rejected by " + this.name);
-            this._unloadPlugins();
-            this._setPaired(false);
+            this._unloadPlugins().then((values) => {
+                this.notify("plugins", "as");
+                this._setPaired(false);
+            });
         }
     },
 
@@ -482,8 +476,10 @@ var Device = new Lang.Class({
             this._channel.send(packet);
         }
 
-        this._unloadPlugins();
-        this._setPaired(false);
+        this._unloadPlugins().then((values) => {
+            this.notify("plugins", "as");
+            this._setPaired(false);
+        });
     },
 
     acceptPair: function () {
@@ -491,7 +487,9 @@ var Device = new Lang.Class({
 
         this._setPaired(true);
         this.pair();
-        this._loadPlugins();
+        this._loadPlugins().then((values) => {
+            this.notify("plugins", "as");
+        });
     },
 
     rejectPair: function () {
@@ -501,101 +499,76 @@ var Device = new Lang.Class({
     },
 
     /** Plugin Functions */
-    _loadPlugins: function () {
-        for (let name of this.settings.get_strv("enabled-plugins")) {
-            this.enablePlugin(name, false);
-        }
 
-        this._notifyPlugins();
+    _loadPlugin: function (name) {
+        debug(name + " (" + this.name + ")");
+
+        return new Promise((resolve, reject) => {
+            if (!this.paired) {
+                reject([name, "Device not paired"]);
+            }
+
+            // Instantiate the handler
+            let module, plugin;
+
+            try {
+                module = imports.service.plugins[name];
+                plugin = new module.Plugin(this);
+            } catch (e) {
+                reject(e);
+            }
+
+            // Register packet handlers
+            for (let packetType of module.METADATA.incomingPackets) {
+                if (!this._handlers.has(packetType)) {
+                    this._handlers.set(packetType, plugin);
+                }
+            }
+
+            // Register as enabled
+            if (!this._modules.hasOwnProperty(name)) {
+                this._modules[name] = plugin;
+            }
+            if (!this._plugins.has(name)) {
+                this._plugins.set(name, plugin);
+            }
+
+            resolve([name, true]);
+        });
+    },
+
+    _loadPlugins: function () {
+        let promises = this.supportedPlugins.map(name => this._loadPlugin(name));
+        return Promise.all(promises.map(p => p.catch(() => undefined)));
+    },
+
+    _unloadPlugin: function (name) {
+        debug(name + " (" + this.name + ")");
+
+        return new Promise((resolve, reject) => {
+            if (!this.paired) {
+                reject([name, false]);
+            }
+
+            // Unregister handlers
+            let handler = imports.service.plugins[name];
+
+            for (let packetType of handler.METADATA.incomingPackets) {
+                this._handlers.delete(packetType);
+            }
+
+            // Register as disabled
+            this._modules[name].destroy();
+            delete this._modules[name];
+            this._plugins.delete(name);
+
+            resolve([name, true]);
+        });
     },
 
     _unloadPlugins: function () {
-        for (let name of this.plugins) {
-            this.disablePlugin(name, false);
-        }
-
-        this._notifyPlugins();
-    },
-
-    enablePlugin: function (name, write=true) {
-        debug("Device.enablePlugin(" + name + ", " + write + ")");
-
-        try {
-            let handler = imports.service.plugins[name];
-
-            // Running instance
-            if (this.connected && this.paired) {
-                // Enable
-                let plugin = new handler.Plugin(this);
-
-                // Register packet handlers
-                for (let packetType of handler.METADATA.incomingPackets) {
-                    if (!this._handlers.has(packetType)) {
-                        this._handlers.set(packetType, plugin);
-                    }
-                }
-
-                // Register as enabled
-                if (!this._plugins.has(name)) {
-                    this._plugins.set(name, plugin);
-                }
-            }
-
-            // Save config and notify, if requested
-            if (write) {
-                let enabledPlugins = this.settings.get_strv("enabled-plugins");
-
-                if (enabledPlugins.indexOf(name) < 0) {
-                    enabledPlugins.push(name);
-                    this.settings.set_strv("enabled-plugins", enabledPlugins);
-                }
-
-                this._notifyPlugins();
-            }
-
-            return [true, ""];
-        } catch (e) {
-            log("Error enabling plugin '" + name + "': " + e.message);
-            return [false, e.message];
-        }
-    },
-
-    disablePlugin: function (name, write=true) {
-        debug(name + " (" + this.name + ")");
-
-        try {
-            // Running instance
-            if (this.connected && this.paired) {
-                let handler = imports.service.plugins[name];
-                let plugin = this._plugins.get(name);
-
-                // Unregister handlers
-                for (let packetType of handler.METADATA.incomingPackets) {
-                    this._handlers.delete(packetType);
-                }
-
-                // Register as disabled
-                plugin.destroy();
-                this._plugins.delete(name);
-            }
-
-            // Save config and notify, if requested
-            if (write) {
-                let enabledPlugins = this.settings.get_strv("enabled-plugins");
-
-                if (enabledPlugins.indexOf(name) > -1) {
-                    enabledPlugins.splice(enabledPlugins.indexOf(name), 1);
-                    this.settings.set_strv("enabled-plugins", enabledPlugins);
-                }
-
-                this._notifyPlugins();
-            }
-
-            return [true, ""];
-        } catch (e) {
-            log("Error disabling plugin '" + name + "': " + e.message);
-            return [false, e.message];
-        }
+        let promises = this.plugins.map(name => this._unloadPlugin(name));
+        return Promise.all(promises.map(p => p.catch(() => undefined)));
     },
 
     openSettings: function () {
