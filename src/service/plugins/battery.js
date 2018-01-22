@@ -62,8 +62,17 @@ var Plugin = new Lang.Class({
 
         this._charging = false;
         this._level = -1;
-        this._cache = new StatisticsCache(this.device);
         this._time = 0;
+
+        this._chargeStats = [];
+        this._dischargeStats = [];
+        this._thresholdLevel = 25;
+
+        this.initPersistence([
+            "_chargeStats",
+            "_dischargeStats",
+            "_thresholdLevel"
+        ]);
 
         if (this.settings.get_boolean("receive-statistics")) {
             this.request();
@@ -174,14 +183,14 @@ var Plugin = new Lang.Class({
                 new GLib.Variant("i", packet.body.currentCharge)
             );
 
-            if (this._level > this._cache.threshold) {
+            if (this._level > this._thresholdLevel) { // TODO
                 this.device.withdraw_notification("battery|threshold");
             }
         }
 
-        this._cache.addStat(packet.body.currentCharge, this.charging);
+        this.addStat(packet.body.currentCharge, this.charging);
 
-        this._time = this._cache.getTime(this.charging);
+        this._time = this.getTime(this.charging);
         this.notify("time");
         this._dbus.emit_property_changed(
             "time",
@@ -255,54 +264,25 @@ var Plugin = new Lang.Class({
 
         this.device.send_notification("battery|threshold", notif);
 
-        this._cache.threshold = this.level;
+        this._thresholdLevel = this.level;
     },
 
-    destroy: function () {
-        if (this._battery) {
-            GObject.signal_handlers_destroy(this._battery);
-            delete this._battery;
-        }
-
-        this._cache.write();
-
-        PluginsBase.Plugin.prototype.destroy.call(this);
-    }
-});
-
-
-/**
- * A simple cache for battery statisitics. A file is created for each device
- * named $HOME/.cache/gsconnnect/battery/<device-id>.json
- *
- * See also: https://android.googlesource.com/platform/frameworks/base/+/master/core/java/android/os/BatteryStats.java#1036
- */
-var StatisticsCache = new Lang.Class({
-    Name: "GSConnectStatisticsCache",
-
-    _init: function (device) {
-        this._dir =  ext.cachedir + "/battery";
-        this._file = Gio.File.new_for_path(this._dir + "/" + device.id + ".json");
-        GLib.mkdir_with_parents(this._dir, 448);
-
-        this.charging = [];
-        this.discharging = [];
-        this.threshold = 25;
-
-        this.read();
-    },
-
+    /**
+     * Cache methods for battery statistics
+     *
+     * See also: https://android.googlesource.com/platform/frameworks/base/+/master/core/java/android/os/BatteryStats.java#1036
+     */
     addStat: function (level, charging) {
         // Edge case
         if (!level) {
             return;
         // Reset stats when fully charged
         } else if (level === 100) {
-            this.charging.length = 0;
-            this.discharging.length = 0;
+            this._chargeStats.length = 0;
+            this._dischargeStats.length = 0;
         }
 
-        let stats = (charging) ? this.charging : this.discharging;
+        let stats = (charging) ? this._chargeStats : this._dischargeStats;
         let time = Math.floor(Date.now() / 1000);
 
         if (!stats.length) {
@@ -317,7 +297,7 @@ var StatisticsCache = new Lang.Class({
         let rate = 0;
         let time = 0;
 
-        let stats = (charging) ? this.charging : this.discharging;
+        let stats = (charging) ? this._chargeStats : this._dischargeStats;
 
         for (let i = 0; i + 1 <= stats.length - 1; i++) {
             tdelta = stats[i + 1].time - stats[i].time;
@@ -344,36 +324,24 @@ var StatisticsCache = new Lang.Class({
         return (time === NaN) ? 0 : Math.floor(time);
     },
 
-    read: function () {
-        try {
-            let contents = this._file.load_contents(null)[1];
-            Object.assign(this, JSON.parse(contents));
-        } catch (e) {
-            debug("Battery: Error reading statistics cache: " + e.message);
-        }
-    },
-
-    write: function () {
+    _limit_func: function () {
         // Limit stats to 3 days
         let limit = (Date.now() / 1000) - (3*24*60*60);
 
-        let stats = {
-            charging: this.charging.filter(stat => stat.time > limit),
-            discharging: this.discharging.filter(stat => stat.time > limit),
-            threshold: this.threshold
+        return {
+            charging: this._chargeStats.filter(stat => stat.time > limit),
+            discharging: this._dischargeStats.filter(stat => stat.time > limit),
+            threshold: this._thresholdLevel
         };
+    },
 
-        try {
-            this._file.replace_contents(
-                JSON.stringify(stats),
-                null,
-                false,
-                Gio.FileCreateFlags.REPLACE_DESTINATION,
-                null
-            );
-        } catch (e) {
-            debug("Battery: Error writing statistics cache: " + e.message);
+    destroy: function () {
+        if (this._battery) {
+            GObject.signal_handlers_destroy(this._battery);
+            delete this._battery;
         }
+
+        PluginsBase.Plugin.prototype.destroy.call(this);
     }
 });
 
