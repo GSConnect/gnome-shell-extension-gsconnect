@@ -290,10 +290,7 @@ var Device = new Lang.Class({
         );
 
         // Ensure fingerprint is available right away
-        this._dbus.emit_property_changed(
-            "fingerprint",
-            new GLib.Variant("s", this.fingerprint)
-        );
+        this.notify("fingerprint", "s");
     },
 
     // TODO: see destroy()
@@ -310,14 +307,10 @@ var Device = new Lang.Class({
 
             // Notify disconnected
             this._connected = false;
-            this.notify("connected");
-            this._dbus.emit_property_changed(
-                "connected",
-                new GLib.Variant("b", this.connected)
-            );
         } catch (e) {
             debug("Device: error disconnecting: " + e);
         }
+            this.notify("connected", "b");
 
         this.daemon._pruneDevices();
     },
@@ -337,13 +330,24 @@ var Device = new Lang.Class({
         }
     },
 
-    /** GNotification proxies */
+    /** Overrides & utilities */
     send_notification: function (id, notification) {
         this.daemon.send_notification(this.id + "|" + id, notification);
     },
 
     withdraw_notification: function (id) {
         this.daemon.withdraw_notification(this.id + "|" + id);
+    },
+
+    notify: function (name, format=null) {
+        GObject.Object.prototype.notify.call(this, name);
+
+        if (format && this._dbus) {
+            this._dbus.emit_property_changed(
+                name,
+                new GLib.Variant(format, this[name])
+            );
+        }
     },
 
     /** Pairing Functions */
@@ -435,8 +439,7 @@ var Device = new Lang.Class({
             this.settings.reset("certificate-pem");
         }
 
-        this.notify("paired");
-        this._dbus.emit_property_changed("paired", new GLib.Variant("b", bool));
+        this.notify("paired", "b");
     },
 
     pair: function () {
@@ -498,14 +501,6 @@ var Device = new Lang.Class({
     },
 
     /** Plugin Functions */
-    _notifyPlugins: function () {
-        this.notify("plugins");
-        this._dbus.emit_property_changed(
-            "plugins",
-            new GLib.Variant("as", this.plugins)
-        );
-    },
-
     _loadPlugins: function () {
         for (let name of this.settings.get_strv("enabled-plugins")) {
             this.enablePlugin(name, false);
