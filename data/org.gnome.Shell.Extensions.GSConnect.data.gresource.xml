@@ -2,6 +2,9 @@
 <gresources>
   <gresource prefix="/org/gnome/Shell/Extensions/GSConnect">
     <file compressed="true">application.css</file>
+    <file compressed="true" preprocess="xml-stripblanks">device.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">prefs.ui</file>
+
     <!-- DBus Files -->
     <file compressed="true">org.gnome.Shell.Extensions.GSConnect.desktop</file>
     <file compressed="true">org.gnome.Shell.Extensions.GSConnect.service</file>
