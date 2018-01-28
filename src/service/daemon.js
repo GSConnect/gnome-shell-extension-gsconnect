@@ -649,8 +649,19 @@ var Daemon = new Lang.Class({
     },
 
     /**
-     * GApplication functions
+     * Overrides & utilities
      */
+    notify: function (name, format=null) {
+        GObject.Object.prototype.notify.call(this, name);
+
+        if (format && this._dbus) {
+            this._dbus.emit_property_changed(
+                name,
+                new GLib.Variant(format, this[name])
+            );
+        }
+    },
+
     vfunc_startup: function() {
         this.parent();
 
