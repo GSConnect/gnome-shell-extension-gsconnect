@@ -26,40 +26,6 @@ var MessageDirection = {
 };
 
 
-/**
- * Message Bubble Colours
- * See: https://developer.gnome.org/hig/stable/icons-and-artwork.html
- *      http://tango.freedesktop.org/Tango_Icon_Theme_Guidelines#Color_Palette
- *      http://leaverou.github.io/contrast-ratio/
- */
-var shuffleColor = Array.shuffler([
-    "contact-color-butter1",
-    "contact-color-butter2",
-    "contact-color-butter3",
-    "contact-color-orange1",
-    "contact-color-orange2",
-    "contact-color-orange3",
-    "contact-color-chocolate1",
-    "contact-color-chocolate2",
-    "contact-color-chocolate3",
-    "contact-color-chameleon1",
-    "contact-color-chameleon2",
-    "contact-color-chameleon3",
-    "contact-color-skyblue1",
-    "contact-color-skyblue2",
-    "contact-color-skyblue3",
-    "contact-color-plum1",
-    "contact-color-plum2",
-    "contact-color-plum3",
-    "contact-color-scarletred1",
-    "contact-color-scarletred2",
-    "contact-color-scarletred3",
-    "contact-color-aluminium1",
-    "contact-color-aluminium2",
-    "contact-color-aluminium3"
-]);
-
-
 // http://daringfireball.net/2010/07/improved_regex_for_matching_urls
 const _balancedParens = '\\((?:[^\\s()<>]+|(?:\\(?:[^\\s()<>]+\\)))*\\)';
 const _leadingJunk = '[\\s`(\\[{\'\\"<\u00AB\u201C\u2018]';
@@ -1017,72 +983,53 @@ var ShareWindow = new Lang.Class({
         this.url = url;
 
         // HeaderBar
-        this.set_titlebar(
-            new Gtk.HeaderBar({
-                title: _("Share Link"),
-                subtitle: url,
-                show_close_button: true,
-                tooltip_text: url
-            })
-        );
-
-        let grid = new Gtk.Grid({
-            margin: 6,
-            orientation: Gtk.Orientation.VERTICAL,
-            column_homogeneous: true,
-            column_spacing: 6,
-            row_spacing: 6
+        let headerbar = new Gtk.HeaderBar({
+            title: _("Share Link"),
+            subtitle: url,
+            show_close_button: true,
+            tooltip_text: url
         });
-        this.add(grid);
+        this.set_titlebar(headerbar);
+
+        let newButton = new Gtk.Button({
+            image: new Gtk.Image({ icon_name: "list-add-symbolic" }),
+            tooltip_text: _("New Conversation"),
+            always_show_image: true
+        });
+        newButton.connect("clicked", () => {
+            let window = new ConversationWindow(this.device);
+            window.setEntry(url);
+            this.destroy();
+            window.present();
+        });
+        headerbar.pack_start(newButton);
 
         // Conversations
         let scrolledWindow = new Gtk.ScrolledWindow({
             can_focus: false,
             hexpand: true,
             vexpand: true,
-            hscrollbar_policy: Gtk.PolicyType.NEVER,
-            shadow_type: Gtk.ShadowType.IN
+            hscrollbar_policy: Gtk.PolicyType.NEVER
         });
-        grid.attach(scrolledWindow, 0, 0, 2, 1);
+        this.add(scrolledWindow);
 
-        this.list = new Gtk.ListBox();
+        this.list = new Gtk.ListBox({ activate_on_single_click: false });
+        this.list.connect("row-activated", (list, row) => this._select(row.window_));
         this.list.connect("selected-rows-changed", () => {
-            if (this.list.get_selected_rows().length) {
-                this.sendButton.sensitive = true;
-            } else {
-                this.sendButton.sensitive = false;
-            }
+            // TODO: not a button anymore
+            sendButton.sensitive = (this.list.get_selected_rows().length);
         });
         scrolledWindow.add(this.list);
 
-        // New
-        this.newButton = new Gtk.Button({
-            label: _("New Message")
-        });
-        this.newButton.connect("clicked", () => {
-            let window = new ConversationWindow(this.device);
-            window.setEntry(url);
-            this.destroy();
-            window.present();
-        });
-        grid.attach(this.newButton, 0, 1, 1, 1);
-
-        // Send
-        this.sendButton = new Gtk.Button({
-            label: _("Send"),
-            sensitive: false
-        });
-        this.sendButton.connect("clicked",() => {
-            let window = this.list.get_selected_row().window_;
-            window.setEntry(url);
-            this.destroy();
-            window.present();
-        });
-        grid.attach(this.sendButton, 1, 1, 1, 1);
-
         // Filter Setup
-        this._addWindows();
         this.show_all();
+        this._addWindows();
+    },
+
+    _select: function (window) {
+        window.setEntry(this.url);
+        this.destroy();
+        window.present();
     },
 
     _addWindows: function () {
@@ -1091,9 +1038,12 @@ var ShareWindow = new Lang.Class({
         for (let index_ in windows) {
             let window = windows[index_];
 
-            if (window.deviceId === this.device.id && window.numbers.length) {
-                let recipients = window.getRecipients();
-                let firstRecipient = recipients.values().next().value;
+            if (!window.device || window.device.id !== this.device.id) {
+                continue;
+            }
+
+            if (window.number) {
+                let recipient = window.getRecipient();
 
                 let row = new Gtk.ListBoxRow();
                 row.window_ = window;
@@ -1105,38 +1055,20 @@ var ShareWindow = new Lang.Class({
                 });
                 row.add(grid);
 
-                grid.attach(getAvatar(firstRecipient), 0, 0, 1, 2);
+                grid.attach(new ContactAvatar(recipient), 0, 0, 1, 2);
 
                 let name = new Gtk.Label({
-                    label: firstRecipient.name,
+                    label: recipient.name,
                     halign: Gtk.Align.START
                 });
                 grid.attach(name, 1, 0, 1, 1);
 
                 let number = new Gtk.Label({
-                    label: firstRecipient.number,
+                    label: window.number,
                     halign: Gtk.Align.START
                 });
                 number.get_style_context().add_class("dim-label");
                 grid.attach(number, 1, 1, 1, 1);
-
-                if (recipients.size > 1) {
-                    let num = recipients.size - 1;
-
-                    number.label = Gettext.ngettext(
-                        "And one other person",
-                        "And %d other people",
-                        num
-                    ).format(num);
-
-                    let people = [];
-
-                    for (let recipient of recipients.values()) {
-                        people.push(recipient.name || recipient.number);
-                    }
-
-                    row.tooltip_text = _("SMS Conversation with %s").format(people.join(", "))
-                }
 
                 row.show_all();
             }
