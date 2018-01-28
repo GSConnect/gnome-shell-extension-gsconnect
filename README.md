@@ -20,8 +20,9 @@ This extension has not been reviewed on the official extensions website, but is
 considered a stable replacement for KDE Connect on Gnome Shell.
 
 Stable releases are available for download on the [releases page][releases].
-The Wiki contains instructions for [building from Git][wiki-git] and full list
-of [dependencies][wiki-depends].
+The Wiki contains standard [install instructions][wiki-install] for installing 
+the latest stable release and instructions for [building from Git][wiki-git] and
+full list of [dependencies][wiki-depends].
 
 The [Chrome extension][chrome-extension] and [Firefox Add-on][firefox-addon]
 can be installed after [Web Browser Integration][web-browser-integration] has
@@ -64,6 +65,7 @@ Joe Sneddon of [OMG! Ubuntu][omgubuntu] for his interest, support and articles.
 [gjs]: https://wiki.gnome.org/Projects/Gjs
 [releases]: https://github.com/andyholmes/gnome-shell-extension-gsconnect/releases
 [wiki]: https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki
+[wiki-install]: https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Installation
 [wiki-git]: https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Installation#building-from-git
 [wiki-depends]: https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Installation#dependencies
 [web-browser-integration]: https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Preferences#web-browser-integration
