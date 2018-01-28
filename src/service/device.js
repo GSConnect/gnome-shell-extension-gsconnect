@@ -172,7 +172,6 @@ var Device = new Lang.Class({
     get plugins () { return Array.from(this._plugins.keys()); },
     get incomingCapabilities () { return this.settings.get_strv("incoming-capabilities"); },
     get outgoingCapabilities () { return this.settings.get_strv("outgoing-capabilities"); },
-    get supportedPlugins () { return this.settings.get_strv("supported-plugins"); },
     get type () { return this.settings.get_string("type"); },
 
     _handleIdentity: function (packet) {
@@ -189,24 +188,6 @@ var Device = new Lang.Class({
             "outgoing-capabilities",
             packet.body.outgoingCapabilities.sort()
         );
-
-        let plugins = [];
-        let incoming = packet.body.incomingCapabilities;
-        let outgoing = packet.body.outgoingCapabilities;
-
-        for (let name in imports.service.plugins) {
-            if (!imports.service.plugins[name].METADATA) { continue; }
-
-            let metadata = imports.service.plugins[name].METADATA;
-
-            if (metadata.incomingPackets.some(v => outgoing.indexOf(v) >= 0)) {
-                plugins.push(name);
-            } else if (metadata.outgoingPackets.some(v => incoming.indexOf(v) >= 0)) {
-                plugins.push(name);
-            }
-        }
-
-        this.settings.set_strv("supported-plugins", plugins.sort());
 
         this.settings.set_string("tcp-host", packet.body.tcpHost);
         this.settings.set_uint("tcp-port", packet.body.tcpPort);
@@ -551,8 +532,32 @@ var Device = new Lang.Class({
         });
     },
 
+    _supportedPlugins: function () {
+        let supported = [];
+        let incoming = this.incomingCapabilities;
+        let outgoing = this.outgoingCapabilities;
+
+        for (let name in imports.service.plugins) {
+            // Skip base.js
+            if (!imports.service.plugins[name].METADATA) { continue; }
+
+            let metadata = imports.service.plugins[name].METADATA;
+
+            // If it sends packets we can handle
+            if (metadata.incomingPackets.some(v => outgoing.indexOf(v) >= 0)) {
+                supported.push(name);
+            // If it handles packets we can send
+            } else if (metadata.outgoingPackets.some(v => incoming.indexOf(v) >= 0)) {
+                supported.push(name);
+            }
+        }
+
+        return supported.sort();
+    },
+
     _loadPlugins: function () {
-        let promises = this.supportedPlugins.map(name => this._loadPlugin(name));
+        let supported = this._supportedPlugins();
+        let promises = supported.map(name => this._loadPlugin(name));
         return Promise.all(promises.map(p => p.catch(() => undefined)));
     },
 
