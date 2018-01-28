@@ -66,11 +66,26 @@ ext.dbusinfo.nodes.forEach((ifaceInfo) => { ifaceInfo.cache_build(); });
  * with the UUID of the extension.
  * @param {String} msg - the debugging message
  */
-window.debug = function (msg) {
+ext.settings.connect("changed::debug", () => {
     if (ext.settings.get_boolean("debug")) {
-        log("[gsconnect@andyholmes.github.io]: " + msg);
+        window.debug = function (msg) {
+            // Stack regexp
+            let _dbgRegexp = /(?:(?:([^<.]+)<\.)?([^@]+))?@(.+):(\d+):\d+/g;
+            let stackLine = (new Error()).stack.split("\n")[1];
+            let [m, k, f, fn, l] = _dbgRegexp.exec(stackLine);
+            fn = GLib.path_get_basename(fn);
+
+            // fix msg if not string
+            let hdr = [ext.metadata.name, fn, k, f, l].filter(k => (k)).join(":");
+            msg = (typeof msg !== "string") ? JSON.stringify(msg) : msg;
+
+            log("[" + hdr + "]: " + msg);
+        };
+    } else {
+        window.debug = function () { return; };
     }
-};
+});
+ext.settings.emit("changed::debug", "debug");
 
 
 /**
