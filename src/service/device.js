@@ -162,6 +162,8 @@ var Device = new Lang.Class({
     get name () { return this.settings.get_string("name"); },
     get paired () { return (this.settings.get_string("certificate-pem")); },
     get plugins () { return Array.from(this._plugins.keys()); },
+    get incomingCapabilities () { return this.settings.get_strv("incoming-capabilities"); },
+    get outgoingCapabilities () { return this.settings.get_strv("outgoing-capabilities"); },
     get supportedPlugins () { return this.settings.get_strv("supported-plugins"); },
     get type () { return this.settings.get_string("type"); },
 
@@ -169,6 +171,16 @@ var Device = new Lang.Class({
         this.settings.set_string("id", packet.body.deviceId);
         this.settings.set_string("name", packet.body.deviceName);
         this.settings.set_string("type", packet.body.deviceType);
+
+        this.settings.set_strv(
+            "incoming-capabilities",
+            packet.body.incomingCapabilities.sort()
+        );
+
+        this.settings.set_strv(
+            "outgoing-capabilities",
+            packet.body.outgoingCapabilities.sort()
+        );
 
         let plugins = [];
         let incoming = packet.body.incomingCapabilities;

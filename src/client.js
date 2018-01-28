@@ -478,6 +478,22 @@ var Device = new Lang.Class({
             new GLib.Variant("as", []),
             GObject.ParamFlags.READABLE
         ),
+        "incomingCapabilities": GObject.param_spec_variant(
+            "incomingCapabilities",
+            "IncomingCapabilitiesList",
+            "A list of incoming packet types the device can receive",
+            new GLib.VariantType("as"),
+            new GLib.Variant("as", []),
+            GObject.ParamFlags.READABLE
+        ),
+        "outgoingCapabilities": GObject.param_spec_variant(
+            "outgoingCapabilities",
+            "OutgoingCapabilitiesList",
+            "A list of outgoing packet types the device can send",
+            new GLib.VariantType("as"),
+            new GLib.Variant("as", []),
+            GObject.ParamFlags.READABLE
+        ),
         "supportedPlugins": GObject.param_spec_variant(
             "supportedPlugins",
             "SupportedPluginsList",
@@ -536,6 +552,8 @@ var Device = new Lang.Class({
     get paired () { return this._get("paired") === true; },
     get plugins () { return this._get("plugins") || []; },
     get supportedPlugins () { return this._get("supportedPlugins"); },
+    get outgoingCapabilities () { return this._get("outgoingCapabilities") || []; },
+    get supportedPlugins () { return this._get("supportedPlugins") || []; },
     get type () { return this._get("type"); },
 
     // Device Connection/Pairing

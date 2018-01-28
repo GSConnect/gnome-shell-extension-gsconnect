@@ -23,6 +23,8 @@
     <property type="s" name="name" access="read"/>
     <property type="b" name="paired" access="read"/>
     <property type="as" name="plugins" access="read"/>
+    <property type="as" name="incomingCapabilities" access="read"/>
+    <property type="as" name="outgoingCapabilities" access="read"/>
     <property type="as" name="supportedPlugins" access="read"/>
     <property type="s" name="type" access="read"/>
 
