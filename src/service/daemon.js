@@ -136,8 +136,7 @@ var Daemon = new Lang.Class({
 
     set name(name) {
         this.identity.body.deviceName = name;
-        this.notify("name");
-        this._dbus.emit_property_changed("name", new GLib.Variant("s", name));
+        this.notify("name", "s");
         this.broadcast();
     },
 
@@ -276,11 +275,7 @@ var Daemon = new Lang.Class({
                     let device = new Device.Device({ id: id})
                     this._devices.set(dbusPath, device);
 
-                    this.notify("devices");
-                    this._dbus.emit_property_changed(
-                        "devices",
-                        new GLib.Variant("as", this.devices)
-                    );
+                        this.notify("devices", "as");
                 }
             }
 
@@ -337,12 +332,8 @@ var Daemon = new Lang.Class({
                 ext.settings.set_strv("devices", knownDevices);
             }
 
-            this.notify("devices");
-            this._dbus.emit_property_changed(
-                "devices",
-                new GLib.Variant("as", this.devices)
-            );
         }
+                this.notify("devices", "as");
     },
 
     _removeDevice: function (dbusPath) {
@@ -356,11 +347,7 @@ var Daemon = new Lang.Class({
             device.destroy();
             this._devices.delete(dbusPath);
 
-            this.notify("devices");
-            this._dbus.emit_property_changed(
-                "devices",
-                new GLib.Variant("as", this.devices)
-            );
+            this.notify("devices", "as");
         }
     },
 
@@ -696,10 +683,7 @@ var Daemon = new Lang.Class({
         );
 
         // Ensure fingerprint is available right away
-        this._dbus.emit_property_changed(
-            "fingerprint",
-            new GLib.Variant("s", this.fingerprint)
-        );
+        this.notify("fingerprint", "s");
 
         // Listen for new devices
         try {
@@ -723,10 +707,7 @@ var Daemon = new Lang.Class({
                 channel.accept(connection);
             });
             this.tcpListener.connect("notify::active", () => {
-                this._dbus.emit_property_changed(
-                    "discovering",
-                    new GLib.Variant("b", this.discovering)
-                );
+                this.notify("discovering", "b");
             });
             this.tcpListener.stop();
         } catch (e) {
