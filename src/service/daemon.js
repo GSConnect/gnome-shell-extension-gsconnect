@@ -304,36 +304,37 @@ var Daemon = new Lang.Class({
     },
 
     _addDevice: function (packet, channel=null) {
-        debug("Daemon._addDevice(" + packet.body.deviceName + ")");
+        debug(packet);
 
-        if (!this.identity) { return; }
-        if (packet.body.deviceId === this.identity.body.deviceId) { return; }
+        return new Promise((resolve, reject) => {
+            let dbusPath = ext.app_path + "/Device/" + packet.body.deviceId.replace(/\W+/g, "_");
 
-        let dbusPath = ext.app_path + "/Device/" + packet.body.deviceId.replace(/\W+/g, "_");
+            if (this._devices.has(dbusPath)) {
+                log("GSConnect: Updating device");
 
-        if (this._devices.has(dbusPath)) {
-            log("Daemon: Updating device");
+                let device = this._devices.get(dbusPath);
+                device.update(packet, channel);
+                resolve(true);
+            } else {
+                log("GSConnect: Adding device");
 
-            let device = this._devices.get(dbusPath);
-            device.update(packet, channel);
-        } else {
-            log("Daemon: Adding device");
+                let device = new Device.Device({
+                    packet: packet,
+                    channel: channel
+                });
+                this._devices.set(dbusPath, device);
 
-            let device = new Device.Device({
-                packet: packet,
-                channel: channel
-            });
-            this._devices.set(dbusPath, device);
+                let knownDevices = ext.settings.get_strv("devices");
 
-            let knownDevices = ext.settings.get_strv("devices");
+                if (knownDevices.indexOf(device.id) < 0) {
+                    knownDevices.push(device.id);
+                    ext.settings.set_strv("devices", knownDevices);
+                }
 
-            if (knownDevices.indexOf(device.id) < 0) {
-                knownDevices.push(device.id);
-                ext.settings.set_strv("devices", knownDevices);
-            }
-
-        }
                 this.notify("devices", "as");
+                resolve(true);
+            }
+        });
     },
 
     _removeDevice: function (dbusPath) {
@@ -689,6 +690,10 @@ var Daemon = new Lang.Class({
         try {
             this.udpListener = new Protocol.UdpListener();
             this.udpListener.connect("received", (server, packet) => {
+                if (packet.body.deviceId === this.identity.body.deviceId) {
+                    return;
+                }
+
                 this._addDevice(packet);
             });
         } catch (e) {
