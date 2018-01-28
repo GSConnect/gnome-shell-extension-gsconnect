@@ -64,10 +64,18 @@ var Device = new Lang.Class({
             new GLib.Variant("as", []),
             GObject.ParamFlags.READABLE
         ),
-        "supportedPlugins": GObject.param_spec_variant(
-            "supportedPlugins",
-            "SupportedPluginsList",
-            "A list of supported plugins",
+        "incomingCapabilities": GObject.param_spec_variant(
+            "incomingCapabilities",
+            "IncomingCapabilitiesList",
+            "A list of incoming packet types the device can receive",
+            new GLib.VariantType("as"),
+            new GLib.Variant("as", []),
+            GObject.ParamFlags.READABLE
+        ),
+        "outgoingCapabilities": GObject.param_spec_variant(
+            "outgoingCapabilities",
+            "OutgoingCapabilitiesList",
+            "A list of outgoing packet types the device can send",
             new GLib.VariantType("as"),
             new GLib.Variant("as", []),
             GObject.ParamFlags.READABLE
@@ -190,16 +198,10 @@ var Device = new Lang.Class({
             if (!imports.service.plugins[name].METADATA) { continue; }
 
             let metadata = imports.service.plugins[name].METADATA;
-            let supported = false;
 
             if (metadata.incomingPackets.some(v => outgoing.indexOf(v) >= 0)) {
                 plugins.push(name);
-                supported = true;
-            }
-
-            if (supported) { continue; }
-
-            if (metadata.outgoingPackets.some(v => incoming.indexOf(v) >= 0)) {
+            } else if (metadata.outgoingPackets.some(v => incoming.indexOf(v) >= 0)) {
                 plugins.push(name);
             }
         }
