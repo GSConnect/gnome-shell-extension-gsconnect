@@ -177,12 +177,11 @@ var Daemon = new Lang.Class({
      */
     _initEncryption: function () {
         let certPath = ext.configdir + "/certificate.pem";
+        let certExists = GLib.file_test(certPath, GLib.FileTest.EXISTS);
         let keyPath = ext.configdir + "/private.pem";
+        let keyExists = GLib.file_test(keyPath, GLib.FileTest.EXISTS);
 
-        let hasCertificate = GLib.file_test(certPath, GLib.FileTest.EXISTS);
-        let hasPrivateKey = GLib.file_test(keyPath, GLib.FileTest.EXISTS);
-
-        if (!hasPrivateKey || !hasCertificate) {
+        if (!keyExists || !certExists) {
             let cmd = [
                 "openssl", "req", "-new", "-x509", "-sha256", "-newkey",
                 "rsa:2048", "-nodes", "-keyout", "private.pem", "-days", "3650",
