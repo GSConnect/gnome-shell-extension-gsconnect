@@ -99,92 +99,82 @@ var ContactAvatar = new Lang.Class({
     Name: "GSConnectContactAvatar",
     Extends: Gtk.DrawingArea,
 
-    _init: function (params) {
-        params = Object.assign({
-            path: null,
-            size: 32
-        }, params);
-
+    _init: function (contact, size=32) {
         this.parent({
-            height_request: params.size,
-            width_request: params.size
+            height_request: size,
+            width_request: size,
+            vexpand: false,
+            hexpand: false
         });
 
-        this.loader = new GdkPixbuf.PixbufLoader();
+        this.contact = contact;
+        this.size = size;
+        this.center = size/2;
 
-        if (params.path) {
-            this.loader.write(GLib.file_get_contents(params.path)[1]);
+        if (this.contact.avatar) {
+            log("AVATAR: " + contact.avatar); // FIXME
+            let loader = new GdkPixbuf.PixbufLoader();
+            loader.write(GLib.file_get_contents(this.contact.avatar)[1]);
+
+            // Consider errors at this point to be warnings
+            try {
+                loader.close();
+            } catch (e) {
+                debug("Warning: " + e.message);
+            }
+
+            let pixbuf = loader.get_pixbuf().scale_simple(
+                this.size,
+                this.size,
+                GdkPixbuf.InterpType.HYPER
+            );
+
+            this.surface = Gdk.cairo_surface_create_from_pixbuf(
+                pixbuf,
+                0,
+                this.get_window()
+            );
+        } else {
+            let theme = Gtk.IconTheme.get_default();
+            this.surface = theme.load_surface(
+                "avatar-default-symbolic",
+                this.size/1.5,
+                1,
+                null,
+                0
+            );
         }
 
-        // Consider errors at this point to be warnings
-        try {
-            this.loader.close();
-        } catch (e) {
-            debug("Warning: " + e.message);
-        }
+        this.connect("draw", (widget, cr) => this._onDraw(widget, cr));
+    },
 
-        let pixbuf = this.loader.get_pixbuf().scale_simple(
-            params.size,
-            params.size,
-            GdkPixbuf.InterpType.HYPER
-        );
+    _onDraw: function (widget, cr) {
+        let offset = 0;
 
-        let surface = Gdk.cairo_surface_create_from_pixbuf(
-            pixbuf,
-            0,
-            this.get_window()
-        );
+        if (!this.contact.avatar) {
+            offset = (this.size - this.size/1.5) / 2;
 
-        this.connect("draw", (widget, cr) => {
-            cr.setSourceSurface(surface, 0, 0);
-            cr.arc(params.size/2, params.size/2, params.size/2, 0, 2*Math.PI);
+            cr.setSourceRGB(...this.contact.rgb);
+            cr.arc(this.size/2, this.size/2, this.size/2, 0, 2*Math.PI);
+            cr.fill();
+
+            //cr.setOperator(Cairo.Operator.HSL_SATURATION);
+            let fgClass = Color.relativeFgClass(this.contact.rgb);
+            let fgColor = (fgClass === "dark-text") ? 0.06 : 0.94;
+            cr.setSourceRGB(fgColor, fgColor, fgColor);
+            cr.maskSurface(this.surface, offset, offset);
+            cr.fill();
+        } else {
+            cr.setSourceSurface(this.surface, offset, offset);
+            cr.arc(this.size/2, this.size/2, this.size/2, 0, 2*Math.PI);
             cr.clip();
             cr.paint();
-            cr.$dispose();
-            return false;
-        });
+        }
+
+        cr.$dispose();
+        return false;
     }
 });
-
-
-function getAvatar (contact) {
-    let avatar;
-
-    if (contact.avatar) {
-        try {
-            avatar = new ContactAvatar({ path: contact.avatar });
-        } catch (e) {
-            debug("Error creating avatar: " + e);
-            avatar = getDefaultAvatar(contact);
-        }
-    } else {
-        avatar = getDefaultAvatar(contact);
-    }
-
-    return avatar;
-};
-
-
-function getDefaultAvatar (contact) {
-    let avatar = new Gtk.Box({
-        width_request: 32,
-        height_request: 32,
-        valign: Gtk.Align.START
-    });
-    let avatarStyle = avatar.get_style_context();
-    avatarStyle.add_class("contact-avatar");
-    avatarStyle.add_class(contact.color || shuffleColor());
-
-    let defaultAvatar = new Gtk.Image({
-        icon_name: "avatar-default-symbolic",
-        pixel_size: 24,
-        margin: 4,
-        visible: true
-    });
-    avatar.add(defaultAvatar);
-
-    return avatar;
-};
 
 
 var ContactList = new Lang.Class({
@@ -262,7 +252,7 @@ var ContactList = new Lang.Class({
         });
         row.add(grid);
 
-        grid.attach(getAvatar(contact), 0, 0, 1, 2);
+        grid.attach(new ContactAvatar(contact), 0, 0, 1, 2);
 
         row._name = new Gtk.Label({
             label: contact.name || _("Unknown Contact"),
