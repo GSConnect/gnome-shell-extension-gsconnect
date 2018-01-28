@@ -268,22 +268,26 @@ var Daemon = new Lang.Class({
     _watchDevices: function () {
         ext.settings.connect("changed::devices", () => {
             //
-            for (let id of ext.settings.get_strv("devices")) {
+            let knownDevices = ext.settings.get_strv("devices");
+
+            for (let id of knownDevices) {
                 let dbusPath = ext.app_path + "/Device/" + id.replace(/\W+/g, "_");
 
                 if (!this._devices.has(dbusPath)) {
-                    let device = new Device.Device({ id: id})
-                    this._devices.set(dbusPath, device);
-
+                    new Promise((resolve, reject) => {
+                        let device = new Device.Device({ id: id})
+                        this._devices.set(dbusPath, device);
+                        resolve(true);
+                    }).then((result) => {
                         this.notify("devices", "as");
+                    }).catch((e) => {
+                        log("GSConnect: Error adding device: " + e);
+                    });
                 }
             }
 
-            //
-            let devices = ext.settings.get_strv("devices");
-
             for (let [dbusPath, device] of this._devices.entries()) {
-                if (devices.indexOf(device.id) < 0) {
+                if (knownDevices.indexOf(device.id) < 0) {
                     this._removeDevice(dbusPath);
                 }
             }
@@ -293,12 +297,12 @@ var Daemon = new Lang.Class({
     },
 
     _pruneDevices: function () {
-        let devices = ext.settings.get_strv("devices");
+        let knownDevices = ext.settings.get_strv("devices");
 
         for (let device of this._devices.values()) {
             if (!device.connected && !device.paired) {
-                devices.splice(devices.indexOf(device.id), 1);
-                ext.settings.set_strv("devices", devices);
+                knownDevices.splice(knownDevices.indexOf(device.id), 1);
+                ext.settings.set_strv("devices", knownDevices);
             }
         }
     },
