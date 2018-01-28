@@ -493,8 +493,9 @@ var Device = new Lang.Class({
         this.unpair();
     },
 
-    /** Plugin Functions */
-
+    /**
+     * Plugin Functions
+     */
     _loadPlugin: function (name) {
         debug(name + " (" + this.name + ")");
 
@@ -521,9 +522,6 @@ var Device = new Lang.Class({
             }
 
             // Register as enabled
-            if (!this._modules.hasOwnProperty(name)) {
-                this._modules[name] = plugin;
-            }
             if (!this._plugins.has(name)) {
                 this._plugins.set(name, plugin);
             }
@@ -577,8 +575,7 @@ var Device = new Lang.Class({
             }
 
             // Register as disabled
-            this._modules[name].destroy();
-            delete this._modules[name];
+            this._plugins.get(name).destroy();
             this._plugins.delete(name);
 
             resolve([name, true]);
@@ -612,9 +609,7 @@ var Device = new Lang.Class({
                 })
             );
 
-            let page = new DeviceWidget.Page(this.daemon, this);
-            page.box.margin_left = 72;
-            page.box.margin_right = 72
+            let page = new DeviceWidget.Settings(this.daemon, this);
             this._window.add(page);
         }
 
