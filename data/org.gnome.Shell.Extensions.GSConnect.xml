@@ -11,6 +11,7 @@
     <method name="getShareable">
       <arg name="shareable" type="a(ss)" direction="out"/>
     </method>
+    <method name="openSettings"/>
     <method name="quit"/>
   </interface>
 
