@@ -55,6 +55,44 @@ const _urlRegexp = new RegExp(
 
 
 /**
+ * Color functions
+ */
+var Color = {
+    randomRGB: function () {
+        return [Math.random(), Math.random(), Math.random()];
+    },
+
+    // See: https://www.w3.org/TR/2008/REC-WCAG20-20081211/#relativeluminancedef
+    relativeLuminance: function (r, g, b) {
+        if (r instanceof Array) {
+            [r, g, b] = r;
+        }
+
+        let R = (r > 0.03928) ? r / 12.92 : Math.pow(((r + 0.055)/1.055), 2.4);
+        let G = (g > 0.03928) ? g / 12.92 : Math.pow(((g + 0.055)/1.055), 2.4);
+        let B = (b > 0.03928) ? b / 12.92 : Math.pow(((b + 0.055)/1.055), 2.4);
+
+        return 0.2126 * R + 0.7152 * G + 0.0722 * B;
+    },
+
+    relativeFgClass: function (r, g, b) {
+        if (r instanceof Array) {
+            [r, g, b] = r;
+        }
+
+        let bg = this.relativeLuminance(r, g, b);
+        let lfg = this.relativeLuminance(0.94, 0.94, 0.94);
+        let dfg = this.relativeLuminance(0.06, 0.06, 0.06);
+
+        let lcon = (lfg + 0.05) / (bg + 0.05);
+        let dcon = (bg + 0.05) / (dfg + 0.05);
+
+        return (lcon > dcon) ? "light-text" : "dark-text";
+    }
+};
+
+
+/**
  * Contact Avatar
  */
 var ContactAvatar = new Lang.Class({
