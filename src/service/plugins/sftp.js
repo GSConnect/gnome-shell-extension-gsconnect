@@ -85,7 +85,7 @@ var Plugin = new Lang.Class({
     },
 
     handlePacket: function (packet) {
-        debug("SFTP: handlePacket()");
+        debug(packet);
 
         try {
             this._prepare();
@@ -163,20 +163,12 @@ var Plugin = new Lang.Class({
             this._directories[name] = this._path + path;
         }
 
-        this.notify("directories");
-        this._dbus.emit_property_changed(
-            "directories",
-            new GLib.Variant("a{ss}", this._directories)
-        );
+        this.notify("directories", "a{ss}");
 
         // Set "mounted" and notify
         this._mounted = true;
+        this.notify("mounted", "b");
 
-        this.notify("mounted");
-        this._dbus.emit_property_changed(
-            "mounted",
-            new GLib.Variant("b", this._mounted)
-        );
     },
 
     _read_stderr: function () {
@@ -267,11 +259,7 @@ var Plugin = new Lang.Class({
         );
 
         this._mounted = false;
-
-        this._dbus.emit_property_changed(
-            "mounted",
-            new GLib.Variant("b", false)
-        );
+        this.notify("mounted", "b");
     },
 
     destroy: function () {
