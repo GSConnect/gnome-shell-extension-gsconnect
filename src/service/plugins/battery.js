@@ -74,37 +74,16 @@ var Plugin = new Lang.Class({
             "_thresholdLevel"
         ]);
 
-        if (this.settings.get_boolean("receive-statistics")) {
-            this.request();
-        }
+        // Remote Battery
+        this._charging = false;
+        this.notify("charging", "b");
+        this._level = -1;
+        this.notify("level", "i");
+        this._time = -1;
+        this.notify("time", "i");
+        this.request();
 
-        this.settings.connect("changed::receive-statistics", () => {
-            if (this.settings.get_boolean("receive-statistics")) {
-                this._stats = [];
-                this.request();
-            } else {
-                this._charging = false;
-                this.notify("charging");
-                this._dbus.emit_property_changed(
-                    "charging",
-                    new GLib.Variant("b", this._charging)
-                );
-
-                this._level = -1;
-                this.notify("level");
-                this._dbus.emit_property_changed(
-                    "level",
-                    new GLib.Variant("i", this._level)
-                );
-
-                this.notify("time");
-                this._dbus.emit_property_changed(
-                    "time",
-                    new GLib.Variant("i", this.time)
-                );
-            }
-        });
-
+        // Local Battery
         if (this.settings.get_boolean("send-statistics") && this.device.daemon.type === "laptop") {
             this._monitor();
         }
