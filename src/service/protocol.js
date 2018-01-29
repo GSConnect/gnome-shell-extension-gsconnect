@@ -607,7 +607,15 @@ var Transfer = new Lang.Class({
             GLib.PRIORITY_DEFAULT,
             this._cancellable,
             (source, res) => {
-                let bytes = source.read_bytes_finish(res);
+                let bytes;
+
+                try {
+                    bytes = source.read_bytes_finish(res);
+                } catch (e) {
+                    log(e);
+                    this.emit("failed", e.message);
+                    return;
+                }
 
                 // Data to write
                 if (bytes.get_size()) {
@@ -641,7 +649,14 @@ var Transfer = new Lang.Class({
             GLib.PRIORITY_DEFAULT,
             this._cancellable,
             (source, res) => {
-                this.written += source.write_bytes_finish(res);
+                try {
+                    this.written += source.write_bytes_finish(res);
+                } catch (e) {
+                    log(e);
+                    this.emit("failed", e.message);
+                    return;
+                }
+
                 this.emit("progress", (this.written / this.size) * 100);
                 this._read();
             }
