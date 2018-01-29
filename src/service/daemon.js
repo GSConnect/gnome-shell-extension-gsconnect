@@ -587,18 +587,17 @@ var Daemon = new Lang.Class({
         }
     },
 
-    openSettings: function () {
+    openSettings: function (device=null) {
         if (!this._window) {
             this._window = new Gtk.ApplicationWindow({
                 application: this,
                 title: this.name,
-                default_width: 560,
-                default_height: 450,
                 visible: true
             });
 
             this._window.connect("delete-event", () => {
                 delete this._window;
+                this._pruneDevices();
             });
 
             this._window.set_titlebar(
@@ -614,6 +613,15 @@ var Daemon = new Lang.Class({
         }
 
         this._window.present();
+
+        if (device) {
+            this._window.get_child().switcher.foreach((row) => {
+                if (row.get_name() === device) {
+                    this._window.get_child().switcher.select_row(row);
+                    return;
+                }
+            });
+        }
     },
 
     /**

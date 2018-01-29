@@ -588,32 +588,7 @@ var Device = new Lang.Class({
     },
 
     openSettings: function () {
-        if (!this._window) {
-            this._window = new Gtk.ApplicationWindow({
-                application: this.daemon,
-                title: this.name,
-                default_width: 560,
-                default_height: 400,
-                icon_name: this.type
-            });
-
-            this._window.connect("delete-event", () => {
-                delete this._window;
-            });
-
-            this._window.set_titlebar(
-                new Gtk.HeaderBar({
-                    title: this.name,
-                    show_close_button: true,
-                    visible: true
-                })
-            );
-
-            let page = new DeviceWidget.Settings(this.daemon, this);
-            this._window.add(page);
-        }
-
-        this._window.present();
+        this.daemon.openSettings(this._dbus.get_object_path());
     },
 
     destroy: function () {
