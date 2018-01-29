@@ -46,6 +46,7 @@ var Plugin = new Lang.Class({
             "currentCharge",
             "Whether the device is charging",
             GObject.ParamFlags.READABLE,
+            -1, 100,
             -1
         ),
         "time": GObject.ParamSpec.int(
