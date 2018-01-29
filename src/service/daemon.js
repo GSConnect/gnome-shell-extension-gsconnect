@@ -297,6 +297,10 @@ var Daemon = new Lang.Class({
     },
 
     _pruneDevices: function () {
+        if (this._window) {
+            return;
+        }
+
         let knownDevices = ext.settings.get_strv("devices");
 
         for (let device of this._devices.values()) {
