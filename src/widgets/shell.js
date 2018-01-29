@@ -576,6 +576,8 @@ var DeviceIcon = new Lang.Class({
     _draw: function () {
         if (!this.visible) { return; }
 
+        let battery = this.device._plugins.get("battery");
+
         let [width, height] = this.get_surface_size();
         let xc = width / 2;
         let yc = height / 2;
@@ -615,14 +617,14 @@ var DeviceIcon = new Lang.Class({
             cr.setDash([3, 7], 0);
             cr.arc(xc, yc, r, 1.48 * Math.PI, 1.47 * Math.PI);
             cr.stroke();
-        } else if (this.device.battery && this.device.battery.level > -1) {
+        } else if (battery && battery.level > -1) {
             // Capacity arc
             cr.setSourceRGB(0.8, 0.8, 0.8);
 
-            if (this.device.battery.level < 1) {
+            if (battery.level < 1) {
                 cr.arc(xc, yc, r, 0, 2 * Math.PI);
-            } else if (this.device.battery.level < 100) {
-                let end = (this.device.battery.level / 50 * Math.PI) + 1.5 * Math.PI;
+            } else if (battery.level < 100) {
+                let end = (battery.level / 50 * Math.PI) + 1.5 * Math.PI;
                 cr.arcNegative(xc, yc, r, 1.5 * Math.PI, end);
             }
             cr.stroke();
@@ -630,10 +632,10 @@ var DeviceIcon = new Lang.Class({
             // Remaining arc
             cr.setSourceRGB(...this._batteryColor());
 
-            if (this.device.battery.level === 100) {
+            if (battery.level === 100) {
                 cr.arc(xc, yc, r, 0, 2 * Math.PI);
-            } else if (this.device.battery.level > 0) {
-                let end = (this.device.battery.level / 50 * Math.PI) + 1.5 * Math.PI;
+            } else if (battery.level > 0) {
+                let end = (battery.level / 50 * Math.PI) + 1.5 * Math.PI;
                 cr.arc(xc, yc, r, 1.5 * Math.PI, end);
             }
             this.tooltip.markup = this._batteryRemaining();
