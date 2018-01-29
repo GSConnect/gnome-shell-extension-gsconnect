@@ -14,7 +14,7 @@ imports.searchPath.push(ext.datadir);
 
 const Common = imports.common;
 const KeybindingsWidget = imports.widgets.keybindings;
-const Sound = imports.sound;
+const Sound = imports.modules.sound;
 
 
 var SectionRow = new Lang.Class({

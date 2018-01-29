@@ -17,7 +17,6 @@ extension_source = files(
   # non-standard files
   'src/client.js',
   'src/common.js',
-  'src/sound.js',
   # non-GJS files
   'src/nautilus-gsconnect.py',
   'src/folks-cache.py'
@@ -29,6 +28,7 @@ install_data(
   install_mode: 'rw-r--r--'
 )
 
+install_subdir('src/modules', install_dir: extdatadir)
 install_subdir('src/service', install_dir: extdatadir)
 install_subdir('src/widgets', install_dir: extdatadir)
 

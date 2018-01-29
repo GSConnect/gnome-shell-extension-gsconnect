@@ -23,9 +23,7 @@ try {
 
 // Local Imports
 imports.searchPath.push(ext.datadir);
-
-const Common = imports.common;
-const Sound = imports.sound;
+const Sound = imports.modules.sound;
 const Protocol = imports.service.protocol;
 const PluginsBase = imports.service.plugins.base;
 const TelephonyWidget = imports.widgets.telephony;
