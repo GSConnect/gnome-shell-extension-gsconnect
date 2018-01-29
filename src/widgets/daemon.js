@@ -106,7 +106,7 @@ var SidebarRow = new Lang.Class({
         });
 
         this.type = params.type || undefined;
-        this.name = params.name || undefined;
+        this.set_name(params.name);
 
         this.box = new Gtk.Box({
             orientation: Gtk.Orientation.HORIZONTAL,
@@ -184,20 +184,6 @@ var PrefsWidget = Lang.Class({
         });
         this.switcher.select_row(this.switcher.get_row_at_index(0));
 
-        // Broadcasting
-        this.connect("destroy", () => {
-            GLib.source_remove(this._refreshSource);
-        });
-
-        this._refreshSource = GLib.timeout_add_seconds(
-            GLib.PRIORITY_DEFAULT,
-            5,
-            () => {
-                this.daemon.broadcast();
-                return true;
-            }
-        );
-
         // FIXME FIXME
         // Init UI Elements
         this._setHeaderbar();
@@ -223,6 +209,20 @@ var PrefsWidget = Lang.Class({
                 (c, n) => this._serviceVanished(c, n)
             );
         }
+
+        // Broadcasting
+        this.connect("destroy", () => {
+            GLib.source_remove(this._refreshSource);
+        });
+
+        this._refreshSource = GLib.timeout_add_seconds(
+            GLib.PRIORITY_DEFAULT,
+            5,
+            () => {
+                this.daemon.broadcast();
+                return true;
+            }
+        );
     },
 
     _bind_bool: function (settings, key, label) {
@@ -245,6 +245,9 @@ var PrefsWidget = Lang.Class({
         });
     },
 
+    /**
+     * UI Setup and template connecting
+     */
     _setHeaderbar: function () {
         // About Button
         let aboutButton = new Gtk.Button({
@@ -330,8 +333,6 @@ var PrefsWidget = Lang.Class({
     },
 
     _devicesChanged: function () {
-        let managedDevices = this.daemon.devices || [];
-
         for (let dbusPath of this.daemon.devices) {
             if (!this.stack.get_child_by_name(dbusPath)) {
                 this.addDevice(this.daemon, dbusPath);
@@ -340,8 +341,9 @@ var PrefsWidget = Lang.Class({
 
         this.stack.foreach((child) => {
             if (child.row) {
-                if (this.daemon.devices.indexOf(child.row.name) < 0) {
-                    this.stack.get_child_by_name(child.row.name).destroy();
+                let name = child.row.get_name();
+                if (this.daemon.devices.indexOf(name) < 0) {
+                    this.stack.get_child_by_name(name).destroy();
                 }
             }
         });
@@ -349,6 +351,9 @@ var PrefsWidget = Lang.Class({
         this.help.visible = (!this.daemon.devices.length);
     },
 
+    /**
+     * DBus Service Callbacks
+     */
     _serviceAppeared: function (conn, name, name_owner) {
         debug([conn, name, name_owner]);
 
@@ -374,6 +379,9 @@ var PrefsWidget = Lang.Class({
         this.daemon = new Client.Daemon();
     },
 
+    /**
+     * Header Funcs
+     */
     _switcher_separators: function (row, before) {
         if (before && row.type !== before.type) {
             row.set_header(
