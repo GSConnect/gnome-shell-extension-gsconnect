@@ -434,15 +434,6 @@ var Daemon = new Lang.Class({
         Gio.AppInfo.launch_default_for_uri(unescape(path), null);
     },
 
-    _closeNotificationAction: function (action, parameter) {
-        parameter = parameter.deep_unpack();
-        let plugin = this._getPlugin(parameter["0"], "notification");
-
-        if (plugin) {
-            plugin.close(unescape(parameter["1"]));
-        }
-    },
-
     _muteCallAction: function (action, parameter) {
         let dbusPath = parameter.deep_unpack().toString();
         let plugin = this._getPlugin(dbusPath, "telephony");
@@ -496,7 +487,6 @@ var Daemon = new Lang.Class({
             ["muteCall", "s", this._muteCallAction],
             ["replyMissedCall", "(sss)", this._replyMissedCallAction],
             ["replySms", "(ssss)", this._replySmsAction],
-            ["closeNotification", "(ss)", this._closeNotificationAction],
             ["restartNautilus", "s", this._restartNautilusAction]
         ];
 
