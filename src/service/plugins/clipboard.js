@@ -95,23 +95,3 @@ var Plugin = new Lang.Class({
     }
 });
 
-
-var SettingsDialog = new Lang.Class({
-    Name: "GSConnectClipboardSettingsDialog",
-    Extends: PluginsBase.SettingsDialog,
-
-    _init: function (device, name, window) {
-        this.parent(device, name, window);
-
-        let generalSection = this.content.addSection(
-            null,
-            null,
-            { margin_bottom: 0, width_request: -1 }
-        );
-        generalSection.addGSetting(this.settings, "receive-content");
-        generalSection.addGSetting(this.settings, "send-content");
-
-        this.content.show_all();
-    }
-});
-
