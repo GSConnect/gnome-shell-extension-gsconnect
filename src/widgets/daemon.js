@@ -172,7 +172,7 @@ var PrefsWidget = Lang.Class({
         this.switcher.set_header_func(this._switcher_separators);
         this.switcher.connect("row-selected", (box, row) => {
             row = row || this.switcher.get_row_at_index(0);
-            let name = row.name || row.get_name();
+            let name = row.get_name() || null;
 
             this.stack.set_visible_child_name(name);
 
