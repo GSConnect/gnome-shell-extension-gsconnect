@@ -84,7 +84,7 @@ var Plugin = new Lang.Class({
                 body: { content: text }
             });
 
-            this.device._channel.send(packet);
+            this.send(packet);
         }
     },
 
