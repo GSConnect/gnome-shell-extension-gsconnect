@@ -301,17 +301,22 @@ var Device = new Lang.Class({
     },
 
     _onReceived: function (channel, packet) {
-        log("Received from '" + this.name + "'");
-
         if (packet.type === Protocol.TYPE_IDENTITY) {
             this._handleIdentity(packet);
             this.activate();
         } else if (packet.type === Protocol.TYPE_PAIR) {
 	        this._handlePair(packet);
 	    } else if (this._handlers.has(packet.type)) {
-            this._handlers.get(packet.type).handlePacket(packet);
+	        // TODO: then-able resolve()'s
+	        let handler = this._handlers.get(packet.type);
+            handler.handlePacket(packet).then(result => {
+                debug("Packet handled successfully: " + packet.type);
+            }).catch(error => {
+                debug("Error handling packet: " + error);
+                debug(error.stack);
+            });
         } else {
-            log("Received unsupported packet type: " + packet.toString());
+            debug("Received unsupported packet type: " + packet.toString());
         }
     },
 
