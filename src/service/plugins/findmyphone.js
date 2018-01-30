@@ -17,8 +17,6 @@ const PluginsBase = imports.service.plugins.base;
 
 
 var METADATA = {
-    summary: _("Locate Device"),
-    description: _("Find a device by making it ring"),
     uuid: "org.gnome.Shell.Extensions.GSConnect.Plugin.FindMyPhone",
     incomingPackets: ["kdeconnect.findmyphone.request"],
     outgoingPackets: ["kdeconnect.findmyphone.request"]
@@ -40,11 +38,24 @@ var Plugin = new Lang.Class({
         this._dialog = null;
     },
 
-    _ring: function () {
+    handlePacket: function (packet) {
+        debug("FindMyPhone: handlePacket()");
+
+        return new Promise((resolve, reject) => {
+            if (this.settings.get_boolean("allow-locate")) {
+                resolve(this._handleFind());
+            }
+        });
+    },
+
+    /**
+     * Local Methods
+     */
+    _handleFind: function () {
         debug("FindMyPhone: _ring()");
 
         if (this._cancellable || this._dialog) {
-            this._closeDialog();
+            this._endFind();
         }
 
         this._cancellable = new Gio.Cancellable();
@@ -57,52 +68,49 @@ var Plugin = new Lang.Class({
             window_position: Gtk.WindowPosition.CENTER_ALWAYS,
             application: this.device.daemon,
             skip_pager_hint: true,
-            skip_taskbar_hint: true
+            skip_taskbar_hint: true,
+            visible: true
         });
-        this._dialog.connect("delete-event", () => { this._closeDialog(); });
-        this._dialog.connect("key-press-event", (dialog, event, user_data) => {
+        this._dialog.connect("delete-event", () => this._endFind());
+        this._dialog.connect("key-press-event", (dialog, event) => {
             if (event.get_keyval()[1] === Gdk.KEY_Escape) {
-                this._closeDialog();
+                this._endFind();
             }
         });
         this._dialog.add_button(_("Found"), -4).connect("clicked", () => {
-            this._closeDialog();
+            this._endFind();
         });
         this._dialog.set_keep_above(true);
-        this._dialog.show();
         this._dialog.present();
+
+        return true;
     },
 
-    _closeDialog: function () {
+    _endFind: function () {
         this._cancellable.cancel();
         this._cancellable = null;
         this._dialog.destroy()
         this._dialog = null;
     },
 
-    handlePacket: function (packet) {
-        debug("FindMyPhone: handlePacket()");
-
-        this._ring();
-    },
-
+    /**
+     * Remote Methods
+     */
     find: function () {
-        debug("FindMyPhone: ring()");
+        debug(this.device.name);
 
-        if (this.device.connected && this.device.paired) {
-            let packet = new Protocol.Packet({
-                id: 0,
-                type: "kdeconnect.findmyphone.request",
-                body: {}
-            });
+        let packet = new Protocol.Packet({
+            id: 0,
+            type: "kdeconnect.findmyphone.request",
+            body: {}
+        });
 
-            this.device._channel.send(packet);
-        }
+        this.send(packet);
     },
 
     destroy: function () {
         if (this._cancellable || this._dialog) {
-            this._closeDialog();
+            this._endFind();
         }
 
         PluginsBase.Plugin.prototype.destroy.call(this);
