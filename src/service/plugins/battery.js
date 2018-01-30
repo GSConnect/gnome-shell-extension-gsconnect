@@ -54,7 +54,8 @@ var Plugin = new Lang.Class({
             "timeRemaining",
             "Seconds until full or depleted",
             GObject.ParamFlags.READABLE,
-            0
+            -1, GLib.MAXINT32,
+            -1
         )
     },
 
@@ -110,11 +111,11 @@ var Plugin = new Lang.Class({
 
             for (let property of ["percentage", "state", "warning_level"]) {
                 this._battery.connect("notify::" + property, () => {
-                    this.send();
+                    this._provideUpdate();
                 });
             }
 
-            this.send();
+            this._provideUpdate();
         } catch(e) {
             debug("Battery: Failed to initialize UPower: " + e);
             GObject.signal_handlers_destroy(this._battery);
@@ -126,105 +127,56 @@ var Plugin = new Lang.Class({
     get level() { return this._level; },
     get time() { return this._time; },
 
+    /**
+     * Packet dispatch
+     */
     handlePacket: function (packet) {
-        debug("Battery: handlePacket()");
+        debug(packet);
 
-        if (packet.type === "kdeconnect.battery" && this.settings.get_boolean("receive-statistics")) {
-            this.receive(packet);
+        if (packet.type === "kdeconnect.battery") {
+            return this._handleUpdate(packet.body);
         } else if (packet.type === "kdeconnect.battery.request" && this._battery) {
-            this.send();
+            return this._provideUpdate();
         }
     },
 
     /**
-     * Receive a remote battery update and disseminate the statistics
+     * Remote methods
      */
-    receive: function (packet) {
-        debug("Battery: receive()");
+    _handleUpdate: function (update) {
+        debug(update);
 
-        if (packet.body.thresholdEvent > 0) {
-            this.threshold();
-        }
-
-        if (this._charging !== packet.body.isCharging) {
-            this._charging = packet.body.isCharging;
-            this.notify("charging");
-            this._dbus.emit_property_changed(
-                "charging",
-                new GLib.Variant("b", packet.body.isCharging)
-            );
-        }
-
-        if (this._level !== packet.body.currentCharge) {
-            this._level = packet.body.currentCharge;
-            this.notify("level");
-            this._dbus.emit_property_changed(
-                "level",
-                new GLib.Variant("i", packet.body.currentCharge)
-            );
-
-            if (this._level > this._thresholdLevel) { // TODO
-                this.device.withdraw_notification("battery|threshold");
+        // TODO: error handling?
+        return new Promise((resolve, reject) => {
+            if (update.thresholdEvent > 0) {
+                this.threshold();
             }
-        }
 
-        this.addStat(packet.body.currentCharge, this.charging);
+            if (this._charging !== update.isCharging) {
+                this._charging = update.isCharging;
+                this.notify("charging", "b");
+            }
 
-        this._time = this.getTime(this.charging);
-        this.notify("time");
-        this._dbus.emit_property_changed(
-            "time",
-            new GLib.Variant("i", this.time)
-        );
-    },
+            if (this._level !== update.currentCharge) {
+                this._level = update.currentCharge;
+                this.notify("level", "i");
 
-    /**
-     * Request the remote battery statistics
-     */
-    request: function () {
-        debug("Battery: request()");
+                if (this._level > this._thresholdLevel) {
+                    this.device.withdraw_notification("battery|threshold");
+                }
+            }
 
-        let packet = new Protocol.Packet({
-            id: 0,
-            type: "kdeconnect.battery.request",
-            body: { request: true }
+            this.addStat(update.currentCharge, this.charging);
+
+            this._time = this.getTime(this.charging);
+            this.notify("time", "i");
+
+            resolve(true);
         });
-
-        this.device._channel.send(packet);
     },
 
-    /**
-     * Report the local battery statistics to the device
-     */
-    send: function () {
-        debug("Battery: send()");
-
-        if (!this._battery) { return; }
-
-        let packet = new Protocol.Packet({
-            id: 0,
-            type: "kdeconnect.battery",
-            body: {
-                currentCharge: this._battery.percentage,
-                isCharging: (this._battery.state !== UPower.DeviceState.DISCHARGING),
-                thresholdEvent: 0
-            }
-        });
-
-        if (this._battery.percentage === 15) {
-            if (!packet.body.isCharging) {
-                packet.body.thresholdEvent = 1;
-            }
-        }
-
-        this.device._channel.send(packet);
-    },
-
-    /**
-     * Notify about a remote threshold event (low battery level)
-     */
-    threshold: function () {
-        debug("Battery: threshold()");
+    _handleThreshold: function () {
+        debug(this._level);
 
         let notif = new Gio.Notification();
         // TRANSLATORS: Low Battery Warning
@@ -245,6 +197,53 @@ var Plugin = new Lang.Class({
         this.device.send_notification("battery|threshold", notif);
 
         this._thresholdLevel = this.level;
+    },
+
+    /**
+     * Request the remote battery statistics
+     */
+    request: function () {
+        debug("Battery: request()");
+
+        let packet = new Protocol.Packet({
+            id: 0,
+            type: "kdeconnect.battery.request",
+            body: { request: true }
+        });
+
+        this.device._channel.send(packet);
+    },
+
+    /**
+     * Local Methods
+     */
+    _provideUpdate: function () {
+        debug([this._battery.percentage, this._battery.state]);
+
+        if (!this._battery) { return; }
+
+        // TODO: error handling?
+        return new Promise((resolve, reject) => {
+            let packet = new Protocol.Packet({
+                id: 0,
+                type: "kdeconnect.battery",
+                body: {
+                    currentCharge: this._battery.percentage,
+                    isCharging: (this._battery.state !== UPower.DeviceState.DISCHARGING),
+                    thresholdEvent: 0
+                }
+            });
+
+            if (this._battery.percentage === 15) {
+                if (!packet.body.isCharging) {
+                    packet.body.thresholdEvent = 1;
+                }
+            }
+
+            this.device._channel.send(packet);
+
+            resolve(true);
+        });
     },
 
     /**
@@ -324,5 +323,4 @@ var Plugin = new Lang.Class({
         PluginsBase.Plugin.prototype.destroy.call(this);
     }
 });
-
 
