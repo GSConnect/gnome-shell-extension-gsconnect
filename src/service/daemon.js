@@ -270,12 +270,18 @@ var Daemon = new Lang.Class({
             //
             let knownDevices = ext.settings.get_strv("devices");
 
+            // New devices
             for (let id of knownDevices) {
                 let dbusPath = ext.app_path + "/Device/" + id.replace(/\W+/g, "_");
 
                 if (!this._devices.has(dbusPath)) {
                     new Promise((resolve, reject) => {
-                        let device = new Device.Device({ id: id})
+                        let device = new Device.Device({ id: id});
+                        device.connect("notify::connected", (device) => {
+                            if (!device.connected) {
+                                this._pruneDevices();
+                            }
+                        });
                         this._devices.set(dbusPath, device);
                         resolve(true);
                     }).then((result) => {
@@ -286,6 +292,7 @@ var Daemon = new Lang.Class({
                 }
             }
 
+            // Old devices
             for (let [dbusPath, device] of this._devices.entries()) {
                 if (knownDevices.indexOf(device.id) < 0) {
                     this._removeDevice(dbusPath);
@@ -329,6 +336,11 @@ var Daemon = new Lang.Class({
                 let device = new Device.Device({
                     packet: packet,
                     channel: channel
+                });
+                device.connect("notify::connected", (device) => {
+                    if (!device.connected) {
+                        this._pruneDevices();
+                    }
                 });
                 this._devices.set(dbusPath, device);
 

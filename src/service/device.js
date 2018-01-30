@@ -296,8 +296,6 @@ var Device = new Lang.Class({
             this._connected = false;
             this.notify("connected", "b");
         });
-
-        this.daemon._pruneDevices();
     },
 
     _onReceived: function (channel, packet) {
