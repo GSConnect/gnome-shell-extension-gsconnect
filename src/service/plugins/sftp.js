@@ -205,7 +205,7 @@ var Plugin = new Lang.Class({
             body: { startBrowsing: true }
         });
 
-        this.device._channel.send(packet);
+        this.send(packet);
     },
 
     unmount: function () {
