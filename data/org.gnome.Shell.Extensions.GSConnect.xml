@@ -105,9 +105,16 @@
   <!-- Share -->
   <interface name="org.gnome.Shell.Extensions.GSConnect.Plugin.Share">
     <method name="shareDialog"/>
-    <method name="shareUri">
+    <method name="shareFile">
       <arg name="uri" type="s" direction="in"/>
     </method>
+    <method name="shareText">
+      <arg name="text" type="s" direction="in"/>
+    </method>
+    <method name="shareUrl">
+      <arg name="url" type="s" direction="in"/>
+    </method>
+
     <signal name="received">
       <arg name="type" type="s"/>
       <arg name="content" type="s"/>
