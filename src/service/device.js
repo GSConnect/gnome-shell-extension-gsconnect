@@ -347,6 +347,7 @@ var Device = new Lang.Class({
             // The device is accepting our request
             if (this._outgoingPairRequest) {
                 log("Pair accepted by " + this.name);
+
                 this._setPaired(true);
                 this._loadPlugins().then((values) => {
                     this.notify("plugins", "as");
@@ -362,6 +363,7 @@ var Device = new Lang.Class({
         // Device is requesting unpairing/rejecting our request
         } else {
             log("Pair rejected by " + this.name);
+
             this._unloadPlugins().then((values) => {
                 this.notify("plugins", "as");
                 this._setPaired(false);
@@ -501,39 +503,6 @@ var Device = new Lang.Class({
     /**
      * Plugin Functions
      */
-    _loadPlugin: function (name) {
-        debug(name + " (" + this.name + ")");
-
-        return new Promise((resolve, reject) => {
-            if (!this.paired) {
-                reject([name, "Device not paired"]);
-            }
-
-            // Instantiate the handler
-            let module, plugin;
-
-            try {
-                module = imports.service.plugins[name];
-                plugin = new module.Plugin(this);
-            } catch (e) {
-                reject(e);
-            }
-
-            // Register packet handlers
-            for (let packetType of module.METADATA.incomingPackets) {
-                if (!this._handlers.has(packetType)) {
-                    this._handlers.set(packetType, plugin);
-                }
-            }
-
-            // Register as enabled
-            if (!this._plugins.has(name)) {
-                this._plugins.set(name, plugin);
-            }
-
-            resolve([name, true]);
-        });
-    },
 
     _supportedPlugins: function () {
         let supported = [];
@@ -556,6 +525,41 @@ var Device = new Lang.Class({
         }
 
         return supported.sort();
+    },
+
+    _loadPlugin: function (name) {
+        debug(name + " (" + this.name + ")");
+
+        return new Promise((resolve, reject) => {
+            if (!this.paired) {
+                reject([name, "Device not paired"]);
+            }
+
+            // Instantiate the handler
+            let module, plugin;
+
+            try {
+                module = imports.service.plugins[name];
+                plugin = new module.Plugin(this);
+            } catch (e) {
+                debug("Error loading " + name + ": " + e.stack);
+                reject(e);
+            }
+
+            // Register packet handlers
+            for (let packetType of module.METADATA.incomingPackets) {
+                if (!this._handlers.has(packetType)) {
+                    this._handlers.set(packetType, plugin);
+                }
+            }
+
+            // Register as enabled
+            if (!this._plugins.has(name)) {
+                this._plugins.set(name, plugin);
+            }
+
+            resolve([name, true]);
+        });
     },
 
     _loadPlugins: function () {
