@@ -211,7 +211,7 @@ var Plugin = new Lang.Class({
             body: { request: true }
         });
 
-        this.device._channel.send(packet);
+        this.send(packet);
     },
 
     /**
@@ -240,7 +240,7 @@ var Plugin = new Lang.Class({
                 }
             }
 
-            this.device._channel.send(packet);
+            this.send(packet);
 
             resolve(true);
         });
