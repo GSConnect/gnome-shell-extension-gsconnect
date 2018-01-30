@@ -11,14 +11,11 @@ const GObject = imports.gi.GObject;
 // Local Imports
 imports.searchPath.push(ext.datadir);
 
-const Common = imports.common;
 const Protocol = imports.service.protocol;
 const PluginsBase = imports.service.plugins.base;
 
 
 var METADATA = {
-    summary: _("Ping"),
-    description: _("Send and receive pings"),
     uuid: "org.gnome.Shell.Extensions.GSConnect.Plugin.Ping",
     incomingPackets: ["kdeconnect.ping"],
     outgoingPackets: ["kdeconnect.ping"]
@@ -34,7 +31,7 @@ var Plugin = new Lang.Class({
     Extends: PluginsBase.Plugin,
     Signals: {
         "ping": {
-            flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED,
+            flags: GObject.SignalFlags.RUN_FIRST,
             param_types: [ GObject.TYPE_STRING ]
         }
     },
@@ -46,31 +43,37 @@ var Plugin = new Lang.Class({
     handlePacket: function (packet) {
         debug("Ping: handlePacket()");
 
-        if (!packet.body.hasOwnProperty("message")) {
-            packet.body.message = "";
-        }
+        return new Promise((resolve, reject) => {
+            // Ensure DBus signal doesn't fail
+            if (!packet.body.hasOwnProperty("message")) {
+                packet.body.message = "";
+            }
 
-        this.emit("ping", packet.body.message);
-        this._dbus.emit_signal(
-            "ping",
-            new GLib.Variant("(s)", [packet.body.message])
-        );
+            this.emit("ping", packet.body.message);
+            this._dbus.emit_signal(
+                "ping",
+                new GLib.Variant("(s)", [packet.body.message])
+            );
 
-        let body;
+            // Notification
+            let body;
 
-        if (packet.body.message.length) {
-            // TRANSLATORS: An optional message accompanying a ping, rarely if ever used
-            // eg. Ping: A message sent with ping
-            body = _("Ping: %s").format(packet.body.message);
-        } else {
-            body = _("Ping");
-        }
+            if (packet.body.message.length) {
+                // TRANSLATORS: An optional message accompanying a ping, rarely if ever used
+                // eg. Ping: A message sent with ping
+                body = _("Ping: %s").format(packet.body.message);
+            } else {
+                body = _("Ping");
+            }
 
-        let notif = new Gio.Notification();
-        notif.set_title(this.device.name);
-        notif.set_body(body);
-        notif.set_icon(new Gio.ThemedIcon({ name: "phone-symbolic" }));
-        this.device.send_notification("ping", notif);
+            let notif = new Gio.Notification();
+            notif.set_title(this.device.name);
+            notif.set_body(body);
+            notif.set_icon(new Gio.ThemedIcon({ name: "phone-symbolic" }));
+            this.device.send_notification("ping", notif);
+
+            resolve(true);
+        });
     },
 
     ping: function (message="") {
@@ -86,7 +89,7 @@ var Plugin = new Lang.Class({
             packet.body.message = message;
         }
 
-        this.device._channel.send(packet);
+        this.send(packet);
     }
 });
 
