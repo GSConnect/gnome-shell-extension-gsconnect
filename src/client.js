@@ -8,114 +8,46 @@ const GObject = imports.gi.GObject;
 
 // Local Imports
 imports.searchPath.push(ext.datadir);
-
-const Common = imports.common;
-
-
-// DBus Constants
-var BUS_NAME = "org.gnome.Shell.Extensions.GSConnect";
-
-
-var ProxyBase = new Lang.Class({
-    Name: "GSConnectProxyBase",
-    Extends: Gio.DBusProxy,
-
-    _init: function (iface, dbusPath) {
-        this.parent({
-            gConnection: Gio.DBus.session,
-            gInterfaceInfo: iface,
-            gName: BUS_NAME,
-            gObjectPath: dbusPath,
-            gInterfaceName: iface.name
-        });
-
-        this.cancellable = new Gio.Cancellable();
-        this.init(null);
-    },
-
-    // Wrapper functions
-    _call: function (name, callback) {
-        /* Convert arg_array to a *real* array */
-        let args = Array.prototype.slice.call(arguments, 2);
-        let methodInfo = this.gInterfaceInfo.lookup_method(name);
-        let signature = [];
-        let i, ret;
-
-        for (i = 0; i < methodInfo.in_args.length; i++) {
-            signature.push(methodInfo.in_args[i].signature);
-        }
-
-        let variant = new GLib.Variant("(" + signature.join("") + ")", args);
-
-        if (callback) {
-            this.call(name, variant, 0, -1, null, (proxy, result) => {
-                let succeeded = false;
-
-                try {
-                    ret = this.call_finish(result);
-                    succeeded = true;
-                } catch (e) {
-                    log("Error calling " + name + ": " + e.message);
-                }
-
-                if (succeeded && typeof callback === "function") {
-                    return callback(ret);
-                }
-            });
-        } else {
-            ret = this.call_sync(name, variant, 0, -1, this.cancellable);
-        }
-
-        // If return has single arg, only return that
-        if (methodInfo.out_args.length === 1) {
-            return (ret) ? ret.deep_unpack()[0] : null;
-        } else {
-            return (ret) ? ret.deep_unpack() : null;
-        }
-    },
-
-    _get: function (name) {
-        let value = this.get_cached_property(name);
-        return value ? value.deep_unpack() : null;
-    },
-
-    _set: function (name, value) {
-        let propertyInfo = this.gInterfaceInfo.lookup_property(name);
-        let variant = new GLib.Variant(propertyInfo.signature, value);
-
-        // Set the cached property first
-        this.set_cached_property(name, variant);
-
-        this.call(
-            "org.freedesktop.DBus.Properties.Set",
-            new GLib.Variant("(ssv)", [this.gInterfaceName, name, variant]),
-            Gio.DBusCallFlags.NONE,
-            -1,
-            this.cancellable,
-            (proxy, result) => {
-                try {
-                    this.call_finish(result);
-                } catch (e) {
-                    log("Error setting " + name + " on " + this.gObjectPath +
-                        ": " + e.message
-                    );
-                }
-            }
-        );
-    },
-
-    destroy: function () {
-        GObject.signal_handlers_destroy(this);
-    }
-});
+const DBus = imports.modules.dbus;
 
 
 /**
- * A DBus Proxy for the Battery plugin
+ * An base class for Plugin DBus proxies
+ */
+var Plugin = new Lang.Class({
+    Name: "GSConnectPluginProxy",
+    Extends: DBus.ProxyBase,
+
+    _init: function (device, name) {
+        let iface = ext.dbusinfo.lookup_interface(
+            "org.gnome.Shell.Extensions.GSConnect.Plugin." + name
+        );
+        this.parent({
+            g_name: "org.gnome.Shell.Extensions.GSConnect",
+            g_interface_info: iface,
+            g_interface_name: iface.name,
+            g_object_path: device.g_object_path
+        });
+        this.device = device;
+
+        // GSettings
+        this.settings = new Gio.Settings({
+            settings_schema: ext.gschema.lookup(
+                "org.gnome.Shell.Extensions.GSConnect.Plugin." + name,
+                true
+            ),
+            path: "/org/gnome/shell/extensions/gsconnect/device/" +
+                  device.id + "/plugin/" + name.toLowerCase() + "/"
+        });
+    }
+});
+
+/**
+ * A DBus proxy for the Battery plugin
  */
 var Battery = new Lang.Class({
     Name: "GSConnectBatteryProxy",
-    Extends: ProxyBase,
+    Extends: Plugin,
     Properties: {
         "charging": GObject.ParamSpec.boolean(
             "charging",
@@ -126,28 +58,24 @@ var Battery = new Lang.Class({
         ),
         "level": GObject.ParamSpec.int(
             "level",
-            "BatteryLevel",
-            "The battery level",
+            "currentCharge",
+            "Whether the device is charging",
             GObject.ParamFlags.READABLE,
             -1, 100,
-            0
+            -1
         ),
         "time": GObject.ParamSpec.int(
             "time",
             "timeRemaining",
             "Seconds until full or depleted",
             GObject.ParamFlags.READABLE,
+            -1, GLib.MAXINT32,
             -1
         )
     },
 
-    _init: function (dbusPath) {
-        this.parent(
-            ext.dbusinfo.lookup_interface(
-                "org.gnome.Shell.Extensions.GSConnect.Plugin.Battery"
-            ),
-            dbusPath
-        );
+    _init: function (device) {
+        this.parent(device, "Battery");
 
         //
         this.connect("g-properties-changed", (proxy, properties) => {
@@ -158,17 +86,112 @@ var Battery = new Lang.Class({
     },
 
     get charging () { return this._get("charging"); },
-    get level () { return this._get("level"); },
+    get level () { return this._get("level") || -1; },
     get time () { return this._get("time"); }
 });
 
 
 /**
- * A DBus Proxy for the Battery plugin
+ * A DBus Proxy for the Clipboard plugin
+ */
+var Clipboard = new Lang.Class({
+    Name: "GSConnectClipboardProxy",
+    Extends: Plugin,
+
+    _init: function (device) {
+        this.parent(device, "Clipboard");
+    }
+});
+
+
+/**
+ * A DBus Proxy for the Contacts plugin
+ */
+var Contacts = new Lang.Class({
+    Name: "GSConnectContactsProxy",
+    Extends: Plugin,
+
+    _init: function (device) {
+        this.parent(device, "Contacts");
+    }
+});
+
+
+/**
+ * A DBus Proxy for the FindMyPhone plugin
+ */
+var FindMyPhone = new Lang.Class({
+    Name: "GSConnectFindMyPhoneProxy",
+    Extends: Plugin,
+
+    _init: function (device) {
+        this.parent(device, "FindMyPhone");
+
+//        this._wrapObject();
+//    }
+    },
+
+    find: function () {
+        this._call("find");
+    }
+});
+
+
+/**
+ * A DBus Proxy for the Lock plugin
+ */
+var Lock = new Lang.Class({
+    Name: "GSConnectLockProxy",
+    Extends: Plugin,
+
+    _init: function (device) {
+        this.parent(device, "Lock");
+    }
+});
+
+
+/**
+ * A DBus Proxy for the Mousepad plugin
+ */
+var Mousepad = new Lang.Class({
+    Name: "GSConnectMousepadProxy",
+    Extends: Plugin,
+
+    _init: function (device) {
+        this.parent(device, "Mousepad");
+    }
+});
+
+
+/**
+ * A DBus Proxy for the MPRIS plugin
+ */
+var MPRIS = new Lang.Class({
+    Name: "GSConnectMPRISProxy",
+    Extends: Plugin,
+
+    _init: function (device) {
+        this.parent(device, "MPRIS");
+    }
+});
+
+
+/**
+ * A DBus Proxy for the Notification plugin
  */
 var Notification = new Lang.Class({
     Name: "GSConnectNotificationProxy",
-    Extends: ProxyBase,
+    Extends: Plugin,
+    Properties: {
+        "notifications": GObject.param_spec_variant(
+            "notifications",
+            "NotificationList",
+            "A list of active or expected notifications",
+            new GLib.VariantType("aa{sv}"),
+            new GLib.Variant("aa{sv}", []),
+            GObject.ParamFlags.READABLE
+        )
+    },
     Signals: {
         "received": {
             flags: GObject.SignalFlags.RUN_FIRST,
@@ -180,17 +203,16 @@ var Notification = new Lang.Class({
         }
     },
 
-    _init: function (dbusPath) {
-        this.parent(
-            ext.dbusinfo.lookup_interface(
-                "org.gnome.Shell.Extensions.GSConnect.Plugin.Notification"
-            ),
-            dbusPath
-        );
+    _init: function (device) {
+        this.parent(device, "Notification");
+
+//        this._wrapObject({
+//            Notifications: () => { this.notify("notifications") }
+//        });
 
         this.connect("g-properties-changed", (proxy, properties) => {
             for (let name in properties.deep_unpack()) {
-                this.notify(name);
+                this.notify(name.toLowerCase()); // FIXME
             }
         });
 
@@ -200,9 +222,44 @@ var Notification = new Lang.Class({
         });
     },
 
+    get notifications() {
+        return this._get("Notifications").map(notif => Object.fromVariant(notif));
+    },
+
+    // TODO: all the cache stuff
+    clearCache: function () {
+        this._call("ClearCache");
+    },
+
     close: function (id) {
-        this._call("close", true, id);
+        this._call("Close", id);
     }
+});
+
+
+/**
+ * A DBus Proxy for the Ping plugin
+ */
+var Ping = new Lang.Class({
+    Name: "GSConnectPingProxy",
+    Extends: Plugin,
+    Signals: {
+        "ping": {
+            flags: GObject.SignalFlags.RUN_FIRST,
+            param_types: [ GObject.TYPE_STRING ]
+        }
+    },
+
+    _init: function (device) {
+        this.parent(device, "Ping");
+
+        this.connect("g-signal", (proxy, sender, name, parameters) => {
+            parameters = parameters.deep_unpack();
+            this.emit(name, parameters[0]);
+        });
+    },
+
+    ping: function (message=null) { this._call("ping", message); }
 });
 
 
@@ -211,7 +268,7 @@ var Notification = new Lang.Class({
  */
 var RunCommand = new Lang.Class({
     Name: "GSConnectRunCommandProxy",
-    Extends: ProxyBase,
+    Extends: Plugin,
     Properties: {
         "commands": GObject.ParamSpec.string(
             "commands",
@@ -222,13 +279,8 @@ var RunCommand = new Lang.Class({
         )
     },
 
-    _init: function (dbusPath) {
-        this.parent(
-            ext.dbusinfo.lookup_interface(
-                "org.gnome.Shell.Extensions.GSConnect.Plugin.RunCommand"
-            ),
-            dbusPath
-        );
+    _init: function (device) {
+        this.parent(device, "RunCommand");
 
         //
         this.connect("g-properties-changed", (proxy, properties) => {
@@ -240,8 +292,8 @@ var RunCommand = new Lang.Class({
 
     get commands () { return this._get("commands"); },
 
-    request: function () { this._call("request", true); },
-    run: function (key) { this._call("run", true, key); }
+    request: function () { this._call("request"); },
+    run: function (key) { this._call("run", key); }
 });
 
 
@@ -250,7 +302,7 @@ var RunCommand = new Lang.Class({
  */
 var SFTP = new Lang.Class({
     Name: "GSConnectSFTPProxy",
-    Extends: ProxyBase,
+    Extends: Plugin,
     Properties: {
         "directories": GObject.param_spec_variant(
             "directories",
@@ -269,13 +321,8 @@ var SFTP = new Lang.Class({
         )
     },
 
-    _init: function (dbusPath) {
-        this.parent(
-            ext.dbusinfo.lookup_interface(
-                "org.gnome.Shell.Extensions.GSConnect.Plugin.SFTP"
-            ),
-            dbusPath
-        );
+    _init: function (device) {
+        this.parent(device, "SFTP");
 
         this.connect("g-properties-changed", (proxy, properties) => {
             for (let name in properties.deep_unpack()) {
@@ -287,8 +334,8 @@ var SFTP = new Lang.Class({
     get directories () { return this._get("directories"); },
     get mounted () { return this._get("mounted") === true; },
 
-    mount: function () { this._call("mount", true); },
-    unmount: function () { this._call("unmount", true); }
+    mount: function () { this._call("mount"); },
+    unmount: function () { this._call("unmount"); }
 });
 
 
@@ -297,7 +344,7 @@ var SFTP = new Lang.Class({
  */
 var Share = new Lang.Class({
     Name: "GSConnectShareProxy",
-    Extends: ProxyBase,
+    Extends: Plugin,
     Signals: {
         "received": {
             flags: GObject.SignalFlags.RUN_FIRST,
@@ -309,13 +356,8 @@ var Share = new Lang.Class({
         }
     },
 
-    _init: function (dbusPath) {
-        this.parent(
-            ext.dbusinfo.lookup_interface(
-                "org.gnome.Shell.Extensions.GSConnect.Plugin.Share"
-            ),
-            dbusPath
-        );
+    _init: function (device) {
+        this.parent(device, "Share");
 
         this.connect("g-signal", (proxy, sender, name, parameters) => {
             parameters = parameters.deep_unpack();
@@ -323,8 +365,10 @@ var Share = new Lang.Class({
         });
     },
 
-    shareDialog: function () { this._call("shareDialog", true); },
-    shareUri: function (uri) { this._call("shareUri", true, uri); }
+    shareDialog: function () { this._call("shareDialog"); },
+    shareFile: function (uri) { this._call("shareUri", uri); },
+    shareText: function (text) { this._call("shareText", text); },
+    shareUrl: function (url) { this._call("shareUrl", url); }
 });
 
 
@@ -333,7 +377,7 @@ var Share = new Lang.Class({
  */
 var Telephony = new Lang.Class({
     Name: "GSConnectTelephonyProxy",
-    Extends: ProxyBase,
+    Extends: Plugin,
     Signals: {
         "missedCall": {
             flags: GObject.SignalFlags.RUN_FIRST,
@@ -370,13 +414,8 @@ var Telephony = new Lang.Class({
         }
     },
 
-    _init: function (dbusPath) {
-        this.parent(
-            ext.dbusinfo.lookup_interface(
-                "org.gnome.Shell.Extensions.GSConnect.Plugin.Telephony"
-            ),
-            dbusPath
-        );
+    _init: function (device) {
+        this.parent(device, "Telephony");
 
         this.connect("g-signal", (proxy, sender, name, parameters) => {
             parameters = parameters.deep_unpack();
@@ -411,21 +450,38 @@ var Telephony = new Lang.Class({
     },
 
     muteCall: function () {
-        return this._call("muteCall", true);
+        return this._call("muteCall");
     },
 
     openSms: function () {
-        return this._call("openSms", true);
+        return this._call("openSms");
     },
 
     sendSms: function (phoneNumber, messageBody) {
-        this._call("sendSms", true, phoneNumber, messageBody);
+        this._call("sendSms", phoneNumber, messageBody);
     },
 
     shareUri: function (url) {
-        this._call("shareUri", true, url);
+        this._call("shareUri", url);
     }
 });
+
+
+var _PluginMap = {
+    battery: Battery,
+    clipboard: Clipboard,
+    contacts: Contacts,
+    findmyphone: FindMyPhone,
+    lock: Lock,
+    mousepad: Mousepad,
+    mpris: MPRIS,
+    notification: Notification,
+    ping: Ping,
+    runcommand: RunCommand,
+    sftp: SFTP,
+    share: Share,
+    telephony: Telephony
+};
 
 
 /**
@@ -433,7 +489,7 @@ var Telephony = new Lang.Class({
  */
 var Device = new Lang.Class({
     Name: "GSConnectDeviceProxy",
-    Extends: ProxyBase,
+    Extends: DBus.ProxyBase,
     Properties: {
         "connected": GObject.ParamSpec.boolean(
             "connected",
@@ -512,15 +568,18 @@ var Device = new Lang.Class({
     },
 
     _init: function (dbusPath, daemon) {
-        this.parent(
-            ext.dbusinfo.lookup_interface(
-                "org.gnome.Shell.Extensions.GSConnect.Device"
-            ),
-            dbusPath
+        let iface = ext.dbusinfo.lookup_interface(
+            "org.gnome.Shell.Extensions.GSConnect.Device"
         );
-
+        this.parent({
+            g_name: "org.gnome.Shell.Extensions.GSConnect",
+            g_interface_info: iface,
+            g_interface_name: iface.name,
+            g_object_path: dbusPath
+        });
         this.daemon = daemon;
 
+        // GSettings
         this.settings = new Gio.Settings({
             settings_schema: ext.gschema.lookup(
                 "org.gnome.Shell.Extensions.GSConnect.Device",
@@ -541,6 +600,9 @@ var Device = new Lang.Class({
             }
         });
 
+        // Mirror _plugins Map from service.device
+        this._plugins = new Map();
+
         this._pluginsChanged();
     },
 
@@ -550,116 +612,56 @@ var Device = new Lang.Class({
     get id () { return this._get("id"); },
     get name () { return this._get("name"); },
     get paired () { return this._get("paired") === true; },
-    get plugins () { return this._get("plugins") || []; },
-    get supportedPlugins () { return this._get("supportedPlugins"); },
+    get plugins () { return Array.from(this._plugins.keys()) },
+    get incomingCapabilities () { return this._get("incomingCapabilities") || []; },
     get outgoingCapabilities () { return this._get("outgoingCapabilities") || []; },
-    get supportedPlugins () { return this._get("supportedPlugins") || []; },
     get type () { return this._get("type"); },
 
     // Device Connection/Pairing
-    activate: function () { this._call("activate", true); },
-    pair: function () { this._call("pair", true); },
-    unpair: function () { this._call("unpair", true); },
+    activate: function () { this._call("activate"); },
+    pair: function () { this._call("pair"); },
+    unpair: function () { this._call("unpair"); },
 
-    ping: function () { this.ping._call("ping", true); },
-    find: function () { this.findmyphone._call("find", true); },
+    // FIXME
+    find: function () {
+        let plugin = this._plugins.get("findmyphone");
+
+        if (plugin) {
+            plugin._call("find");
+        }
+    },
 
     // Plugin Control
-    enablePlugin: function (name) {
-        return this._call("enablePlugin", false, name);
-    },
-    disablePlugin: function (name) {
-        return this._call("disablePlugin", false, name);
-    },
     openSettings: function () {
-        this._call("openSettings", true);
+        this._call("openSettings");
     },
 
     _pluginsChanged: function () {
-        if (this.plugins.indexOf("battery") > -1) {
-            this.battery = new Battery(this.gObjectPath);
-        } else if (this.hasOwnProperty("battery")) {
-            this.battery.destroy();
-            delete this.battery;
-        }
+        let plugins = this._get("plugins") || [];
 
-        if (this.plugins.indexOf("findmyphone") > -1) {
-            this.findmyphone = new ProxyBase(
-                ext.dbusinfo.lookup_interface(
-                    "org.gnome.Shell.Extensions.GSConnect.Plugin.FindMyPhone"
-                ),
-                this.gObjectPath
-            );
-        } else if (this.hasOwnProperty("findmyphone")) {
-            this.findmyphone.destroy();
-            delete this.findmyphone;
-        }
-
-        if (this.plugins.indexOf("ping") > -1) {
-            this.ping = new ProxyBase(
-                ext.dbusinfo.lookup_interface(
-                    "org.gnome.Shell.Extensions.GSConnect.Plugin.Ping"
-                ),
-                this.gObjectPath
-            );
-        } else if (this.hasOwnProperty("ping")) {
-            this.ping.destroy();
-            delete this.ping;
-        }
-
-        if (this.plugins.indexOf("sftp") > -1) {
-            this.sftp = new SFTP(this.gObjectPath);
-        } else if (this.hasOwnProperty("sftp")) {
-            this.sftp.destroy();
-            delete this.sftp;
-        }
-
-        if (this.plugins.indexOf("notification") > -1) {
-            this.notification = new Notification(this.gObjectPath);
-        } else if (this.hasOwnProperty("notification")) {
-            this.notification.destroy();
-            delete this.notification;
-        }
-
-        if (this.plugins.indexOf("runcommand") > -1) {
-            this.runcommand = new RunCommand(this.gObjectPath);
-        } else if (this.hasOwnProperty("runcommand")) {
-            this.runcommand.destroy();
-            delete this.runcommand;
-        }
-
-        if (this.plugins.indexOf("share") > -1) {
-            this.share = new Share(this.gObjectPath);
-        } else if (this.hasOwnProperty("share")) {
-            this.share.destroy();
-            delete this.share;
-        }
-
-        if (this.plugins.indexOf("telephony") > -1) {
-            this.telephony = new Telephony(this.gObjectPath);
-        } else if (this.hasOwnProperty("telephony")) {
-            this.telephony.destroy();
-            delete this.telephony;
+        for (let name of plugins) {
+            if (this.plugins.indexOf(name) < 0) {
+                this[name] = new _PluginMap[name](this);
+                this._plugins.set(name, this[name]);
+            }
         }
 
         this.notify("plugins");
     },
 
     destroy: function () {
-        ["battery",
-        "findmyphone",
-        "ping",
-        "sftp",
-        "runcommand",
-        "share",
-        "telephony"].forEach((plugin) => {
-            if (this.hasOwnProperty(plugin)) {
-                this[plugin].destroy();
-                delete this[plugin];
+        for (let [key, value] of this._plugins) {
+            if (this.hasOwnProperty(key)) {
+                delete this[key];
             }
-        });
 
-        ProxyBase.prototype.destroy.call(this);
+            this._plugins.get(key).destroy();
+            this._plugins.delete(key);
+        }
+
+        GObject.signal_handlers_destroy(this.settings);
+
+        DBus.ProxyBase.prototype.destroy.call(this);
     }
 });
 
@@ -669,8 +671,16 @@ var Device = new Lang.Class({
  */
 var Daemon = new Lang.Class({
     Name: "GSConnectDaemonProxy",
-    Extends: ProxyBase,
+    Extends: DBus.ProxyBase,
     Properties: {
+        "devices": GObject.param_spec_variant(
+            "devices",
+            "DevicesList",
+            "A list of known devices",
+            new GLib.VariantType("as"),
+            null,
+            GObject.ParamFlags.READABLE
+        ),
         "discovering": GObject.ParamSpec.boolean(
             "discovering",
             "DiscoveringDevices",
@@ -708,15 +718,18 @@ var Daemon = new Lang.Class({
     },
 
     _init: function () {
-        this.parent(
-            ext.dbusinfo.lookup_interface(
-                "org.gnome.Shell.Extensions.GSConnect"
-            ),
-            "/org/gnome/Shell/Extensions/GSConnect"
+        let iface = ext.dbusinfo.lookup_interface(
+            "org.gnome.Shell.Extensions.GSConnect"
         );
+        this.parent({
+            g_name: "org.gnome.Shell.Extensions.GSConnect",
+            g_interface_info: iface,
+            g_interface_name: iface.name,
+            g_object_path: "/org/gnome/Shell/Extensions/GSConnect"
+        });
 
         // Track our device proxies, DBus path as key
-        this.devices = new Map();
+        this._devices = new Map();
 
         // Connect to PropertiesChanged
         this.connect("g-properties-changed", (proxy, properties) => {
@@ -730,10 +743,13 @@ var Daemon = new Lang.Class({
             }
         });
 
+        //this._wrapObject({ devices: this._devicesChanged });
+
         // Add currently managed devices
         this._devicesChanged();
     },
 
+    get devices () { return Array.from(this._devices.keys()); },
     get discovering () { return this._get("discovering") === true; },
     set discovering (bool) { this._set("discovering", bool); },
     get fingerprint () { return this._get("fingerprint"); },
@@ -743,42 +759,47 @@ var Daemon = new Lang.Class({
 
     // Callbacks
     _devicesChanged: function () {
-        let managedDevices = this._get("devices");
-        managedDevices = (managedDevices === null) ? [] : managedDevices;
+        let managedDevices = this._get("devices") || [];
 
         for (let dbusPath of managedDevices) {
-            if (!this.devices.has(dbusPath)) {
-                this.devices.set(dbusPath, new Device(dbusPath, this));
-                this.emit("device::added", dbusPath);
+            if (!this._devices.has(dbusPath)) {
+                this._devices.set(dbusPath, new Device(dbusPath, this));
+                this.notify("devices");
             }
         }
 
-        for (let dbusPath of this.devices.keys()) {
+        for (let dbusPath of this.devices) {
             if (managedDevices.indexOf(dbusPath) < 0) {
-                this.devices.get(dbusPath).destroy();
-                this.devices.delete(dbusPath);
-                this.emit("device::removed", dbusPath);
+                this._devices.get(dbusPath).destroy();
+                this._devices.delete(dbusPath);
+                this.notify("devices");
             }
         }
+
+        //this.notify("devices");
     },
 
     // Public Methods
     broadcast: function () {
-        this._call("broadcast", true);
+        this._call("broadcast");
+    },
+
+    openSettings: function () {
+        this._call("openSettings");
     },
 
     quit: function () {
-        this._call("quit", true);
+        this._call("quit");
     },
 
     destroy: function () {
-        for (let dbusPath of this.devices.keys()) {
-            this.devices.get(dbusPath).destroy();
-            this.devices.delete(dbusPath);
-            this.emit("device::removed", dbusPath);
+        for (let dbusPath of this.devices) {
+            this._devices.get(dbusPath).destroy();
+            this._devices.delete(dbusPath);
+            this.notify("devices");
         }
 
-        ProxyBase.prototype.destroy.call(this);
+        DBus.ProxyBase.prototype.destroy.call(this);
     }
 });
 
