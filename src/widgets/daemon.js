@@ -11,10 +11,8 @@ const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
 // Local Imports
-imports.searchPath.push(ext.datadir);
-
+imports.searchPath.push(gsconnect.datadir);
 const Client = imports.client;
-const Common = imports.common;
 const DeviceWidget = imports.widgets.device;
 
 
@@ -203,7 +201,7 @@ var PrefsWidget = Lang.Class({
 
             this._watchdog = Gio.bus_watch_name(
                 Gio.BusType.SESSION,
-                Client.BUS_NAME,
+                "org.gnome.Shell.Extensions.GSConnect",
                 Gio.BusNameWatcherFlags.NONE,
                 (c, n, o) => this._serviceAppeared(c, n, o),
                 (c, n) => this._serviceVanished(c, n)
@@ -262,16 +260,16 @@ var PrefsWidget = Lang.Class({
         aboutButton.connect("clicked", (button) => {
             let dialog = new Gtk.AboutDialog({
                 authors: [ "Andy Holmes <andrew.g.r.holmes@gmail.com>" ],
-                //logo_icon_name: ext.app_id,
+                //logo_icon_name: gsconnect.app_id,
                 logo: GdkPixbuf.Pixbuf.new_from_resource_at_scale(
-                    ext.app_path + "/" + ext.app_id + ".svg",
+                    gsconnect.app_path + "/" + gsconnect.app_id + ".svg",
                     128,
                     128,
                     true
                 ),
                 program_name: _("GSConnect"),
-                version: ext.metadata.version,
-                website: ext.metadata.url,
+                version: gsconnect.metadata.version,
+                website: gsconnect.metadata.url,
                 license_type: Gtk.License.GPL_2_0,
                 transient_for: this.get_toplevel(),
                 modal: true
@@ -309,19 +307,19 @@ var PrefsWidget = Lang.Class({
 
     _connectTemplate: function () {
         // Shell
-        this._bind_bool(ext.settings, "show-indicators", this.show_indicators);
-        this._bind_bool(ext.settings, "show-offline", this.show_offline);
-        this._bind_bool(ext.settings, "show-unpaired", this.show_unpaired);
-        this._bind_bool(ext.settings, "show-battery", this.show_battery);
+        this._bind_bool(gsconnect.settings, "show-indicators", this.show_indicators);
+        this._bind_bool(gsconnect.settings, "show-offline", this.show_offline);
+        this._bind_bool(gsconnect.settings, "show-unpaired", this.show_unpaired);
+        this._bind_bool(gsconnect.settings, "show-battery", this.show_battery);
         this.shell_list.set_header_func(this._section_separators);
 
         // Extensions
-        this._bind_bool(ext.settings, "nautilus-integration", this.files_integration);
-        this._bind_bool(ext.settings, "webbrowser-integration", this.webbrowser_integration);
+        this._bind_bool(gsconnect.settings, "nautilus-integration", this.files_integration);
+        this._bind_bool(gsconnect.settings, "webbrowser-integration", this.webbrowser_integration);
         this.extensions_list.set_header_func(this._section_separators);
 
         // Application Extensions
-        this._bind_bool(ext.settings, "debug", this.debug_mode);
+        this._bind_bool(gsconnect.settings, "debug", this.debug_mode);
         this.debug_window.connect("clicked", () => {
             GLib.spawn_command_line_async(
                 'gnome-terminal ' +

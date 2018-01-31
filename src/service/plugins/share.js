@@ -10,16 +10,12 @@ const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
 // Local Imports
-imports.searchPath.push(ext.datadir);
-
-const Common = imports.common;
+imports.searchPath.push(gsconnect.datadir);
 const Protocol = imports.service.protocol;
 const PluginsBase = imports.service.plugins.base;
 
 
 var METADATA = {
-    summary: _("Share"),
-    description: _("Send and receive files and URLs"),
     uuid: "org.gnome.Shell.Extensions.GSConnect.Plugin.Share",
     incomingPackets: ["kdeconnect.share.request"],
     outgoingPackets: ["kdeconnect.share.request"]

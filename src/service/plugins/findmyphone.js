@@ -9,7 +9,7 @@ const Gio = imports.gi.Gio;
 const Gtk = imports.gi.Gtk;
 
 // Local Imports
-imports.searchPath.push(ext.datadir);
+imports.searchPath.push(gsconnect.datadir);
 
 const Sound = imports.modules.sound;
 const Protocol = imports.service.protocol;

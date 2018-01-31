@@ -10,18 +10,18 @@ const GLib = imports.gi.GLib;
 const Gtk = imports.gi.Gtk;
 
 //
-ext.app_id = "org.gnome.Shell.Extensions.GSConnect";
-ext.app_path = "/org/gnome/Shell/Extensions/GSConnect";
+gsconnect.app_id = "org.gnome.Shell.Extensions.GSConnect";
+gsconnect.app_path = "/org/gnome/Shell/Extensions/GSConnect";
 
-ext.metadata = JSON.parse(GLib.file_get_contents(ext.datadir + "/metadata.json")[1]);
-ext.localedir = GLib.build_filenamev([ext.datadir, "locale"]);
-Gettext.bindtextdomain(ext.app_id, ext.localedir);
+gsconnect.metadata = JSON.parse(GLib.file_get_contents(gsconnect.datadir + "/metadata.json")[1]);
+gsconnect.localedir = GLib.build_filenamev([gsconnect.datadir, "locale"]);
+Gettext.bindtextdomain(gsconnect.app_id, gsconnect.localedir);
 
-ext.cachedir = GLib.build_filenamev([GLib.get_user_cache_dir(), "gsconnect"]);
-ext.configdir = GLib.build_filenamev([GLib.get_user_config_dir(), "gsconnect"]);
-ext.runtimedir = GLib.build_filenamev([GLib.get_user_runtime_dir(), "gsconnect"]);
+gsconnect.cachedir = GLib.build_filenamev([GLib.get_user_cache_dir(), "gsconnect"]);
+gsconnect.configdir = GLib.build_filenamev([GLib.get_user_config_dir(), "gsconnect"]);
+gsconnect.runtimedir = GLib.build_filenamev([GLib.get_user_runtime_dir(), "gsconnect"]);
 
-for (let path of [ext.cachedir, ext.configdir, ext.runtimedir]) {
+for (let path of [gsconnect.cachedir, gsconnect.configdir, gsconnect.runtimedir]) {
     GLib.mkdir_with_parents(path, 448);
 }
 
@@ -29,36 +29,36 @@ for (let path of [ext.cachedir, ext.configdir, ext.runtimedir]) {
 /**
  * Init GSettings
  */
-ext.gschema = Gio.SettingsSchemaSource.new_from_directory(
-    GLib.build_filenamev([ext.datadir, "schemas"]),
+gsconnect.gschema = Gio.SettingsSchemaSource.new_from_directory(
+    GLib.build_filenamev([gsconnect.datadir, "schemas"]),
     Gio.SettingsSchemaSource.get_default(),
     false
 );
 
-ext.settings = new Gio.Settings({
-    settings_schema: ext.gschema.lookup(ext.app_id, true)
+gsconnect.settings = new Gio.Settings({
+    settings_schema: gsconnect.gschema.lookup(gsconnect.app_id, true)
 });
 
 
 /**
  * Register resources
  */
-ext.resource = Gio.Resource.load(
-    GLib.build_filenamev([ext.datadir, ext.app_id + ".data.gresource"])
+gsconnect.resource = Gio.Resource.load(
+    GLib.build_filenamev([gsconnect.datadir, gsconnect.app_id + ".data.gresource"])
 );
-ext.resource._register();
+gsconnect.resource._register();
 
 
 /**
  * DBus Interface Introspection
  */
-ext.dbusinfo = new Gio.DBusNodeInfo.new_for_xml(
+gsconnect.dbusinfo = new Gio.DBusNodeInfo.new_for_xml(
     Gio.resources_lookup_data(
-        ext.app_path + "/" + ext.app_id + ".xml",
+        gsconnect.app_path + "/" + gsconnect.app_id + ".xml",
         0
     ).toArray().toString()
 );
-ext.dbusinfo.nodes.forEach((ifaceInfo) => { ifaceInfo.cache_build(); });
+gsconnect.dbusinfo.nodes.forEach((ifaceInfo) => { ifaceInfo.cache_build(); });
 
 
 /**
@@ -66,8 +66,8 @@ ext.dbusinfo.nodes.forEach((ifaceInfo) => { ifaceInfo.cache_build(); });
  * with the UUID of the extension.
  * @param {String} msg - the debugging message
  */
-ext.settings.connect("changed::debug", () => {
-    if (ext.settings.get_boolean("debug")) {
+gsconnect.settings.connect("changed::debug", () => {
+    if (gsconnect.settings.get_boolean("debug")) {
         window.debug = function (msg) {
             // Stack regexp
             let _dbgRegexp = /(?:(?:([^<.]+)<\.)?([^@]+))?@(.+):(\d+):\d+/g;
@@ -76,7 +76,7 @@ ext.settings.connect("changed::debug", () => {
             fn = GLib.path_get_basename(fn);
 
             // fix msg if not string
-            let hdr = [ext.metadata.name, fn, k, f, l].filter(k => (k)).join(":");
+            let hdr = [gsconnect.metadata.name, fn, k, f, l].filter(k => (k)).join(":");
             msg = (typeof msg !== "string") ? JSON.stringify(msg) : msg;
 
             log("[" + hdr + "]: " + msg);
@@ -85,14 +85,14 @@ ext.settings.connect("changed::debug", () => {
         window.debug = function () { return; };
     }
 });
-ext.settings.emit("changed::debug", "debug");
+gsconnect.settings.emit("changed::debug", "debug");
 
 
 /**
  * Check if a command is in the PATH
  * @param {string} name - the name of the command
  */
-function checkCommand (cmd) {
+gsconnect.checkCommand = function(cmd) {
     let proc = GLib.spawn_async_with_pipes(
         null,                           // working dir
         ["which", cmd],                // argv
@@ -117,23 +117,23 @@ function checkCommand (cmd) {
  *     - DBus .service file
  *     - Register sms:// scheme handler
  */
-function installService () {
+gsconnect.installService = function() {
     // DBus service file
     let serviceDir = GLib.get_user_data_dir() + "/dbus-1/services/";
-    let serviceFile = ext.app_id + ".service";
+    let serviceFile = gsconnect.app_id + ".service";
     let serviceBytes = Gio.resources_lookup_data(
-        ext.app_path + "/" + serviceFile, 0
-    ).toArray().toString().replace("@DATADIR@", ext.datadir);
+        gsconnect.app_path + "/" + serviceFile, 0
+    ).toArray().toString().replace("@DATADIR@", gsconnect.datadir);
 
     GLib.mkdir_with_parents(serviceDir, 493);
     GLib.file_set_contents(serviceDir + serviceFile, serviceBytes);
 
     // Application desktop file
     let applicationsDir = GLib.get_user_data_dir() + "/applications/";
-    let desktopFile = ext.app_id + ".desktop";
+    let desktopFile = gsconnect.app_id + ".desktop";
     let desktopBytes = Gio.resources_lookup_data(
-        ext.app_path + "/" + desktopFile, 0
-    ).toArray().toString().replace("@DATADIR@", ext.datadir);
+        gsconnect.app_path + "/" + desktopFile, 0
+    ).toArray().toString().replace("@DATADIR@", gsconnect.datadir);
 
     GLib.mkdir_with_parents(applicationsDir, 493);
     GLib.file_set_contents(applicationsDir + desktopFile, desktopBytes);
@@ -146,14 +146,14 @@ function installService () {
 };
 
 
-function uninstallService () {
+gsconnect.uninstallService = function() {
     // DBus service file
     let serviceDir = GLib.get_user_data_dir() + "/dbus-1/services/";
-    GLib.unlink(serviceDir + ext.app_id + ".service");
+    GLib.unlink(serviceDir + gsconnect.app_id + ".service");
 
     // Application desktop file
     let applicationsDir = GLib.get_user_data_dir() + "/applications/";
-    GLib.unlink(applicationsDir + ext.app_id + ".desktop");
+    GLib.unlink(applicationsDir + gsconnect.app_id + ".desktop");
 };
 
 
@@ -224,23 +224,51 @@ Gio.TlsCertificate.prototype.fingerprint = function () {
  */
 String.prototype.format = Format.format;
 
-
-/**
- * A rarely repeating array shuffler
- * See: https://stackoverflow.com/a/17891411/1108697
- */
-Object.defineProperty(Array, "shuffler", {
-    value: function (array) {
+Object.defineProperty(Object, "toVariant", {
+    value: function (obj) {
         "use strict";
-        if (!array) { array = this; }
-        var copy = array.slice(0);
-        return function () {
-            if (copy.length < 1) { copy = array.slice(0); }
-            var index = Math.floor(Math.random() * copy.length);
-            var item = copy[index];
-            copy.splice(index, 1);
-            return item;
-        };
+        if (!obj) { obj = this; }
+
+        let out = {};
+        for (let key in obj) {
+            let val = obj[key];
+            let type;
+            switch (typeof val) {
+                case 'string':
+                    type = 's';
+                    break;
+                case 'number':
+                    type = 'd';
+                    break;
+                case 'boolean':
+                    type = 'b';
+                    break;
+                default:
+                    continue;
+            }
+            out[key] = GLib.Variant.new(type, val);
+        }
+
+        return out;
+    },
+    writable: true,
+    configurable: true
+});
+
+Object.defineProperty(Object, "fromVariant", {
+    value: function (obj) {
+        "use strict";
+        if (!obj) { obj = this; }
+
+        log("UNPACK: " + obj.deep_unpack());
+
+        let out = {};
+
+        for (let key in obj) {
+            out[key] = obj[key].unpack();
+        }
+
+        return out;
     },
     writable: true,
     configurable: true

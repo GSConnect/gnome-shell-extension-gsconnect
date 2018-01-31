@@ -29,14 +29,13 @@ const PanelMenu = imports.ui.panelMenu;
 const PopupMenu = imports.ui.popupMenu;
 
 // Local Imports
-window.ext = {
+window.gsconnect = {
     datadir: imports.misc.extensionUtils.getCurrentExtension().path
 };
 
-imports.searchPath.push(ext.datadir);
-
+imports.searchPath.push(gsconnect.datadir);
+const _bootstrap = imports._bootstrap;
 const Client = imports.client;
-const Common = imports.common;
 const ShellWidget = imports.widgets.shell;
 
 
@@ -249,7 +248,7 @@ var DeviceMenu = new Lang.Class({
         device.connect("notify::paired", Lang.bind(this, this._sync));
 
         this.actor.connect("notify::visible", Lang.bind(this, this._sync));
-        this._settingsChanged = ext.settings.connect("changed", () => this._sync());
+        this._settingsChanged = gsconnect.settings.connect("changed", () => this._sync());
 
         this._sync(device);
     },
@@ -265,7 +264,7 @@ var DeviceMenu = new Lang.Class({
         // Fix for "st_label_set_text: assertion 'text != NULL' failed"
         this.nameLabel.text = this.device.name || "";
 
-        if (connected && paired && ext.settings.get_boolean("show-battery")) {
+        if (connected && paired && gsconnect.settings.get_boolean("show-battery")) {
             this.deviceBattery.visible = true;
             this.deviceBattery.update();
         } else {
@@ -438,7 +437,7 @@ var DeviceMenu = new Lang.Class({
     },
 
     destroy: function () {
-        ext.settings.disconnect(this._settingsChanged);
+        gsconnect.settings.disconnect(this._settingsChanged);
         PopupMenu.PopupMenuSection.prototype.destroy.call(this);
     }
 });
@@ -466,7 +465,7 @@ var DeviceIndicator = new Lang.Class({
         this.menu.addMenuItem(this.deviceMenu);
 
         // Signals
-        this._settingsChanged = ext.settings.connect("changed", () => this._sync());
+        this._settingsChanged = gsconnect.settings.connect("changed", () => this._sync());
         device.connect("notify::connected", Lang.bind(this, this._sync));
         device.connect("notify::paired", Lang.bind(this, this._sync));
 
@@ -479,11 +478,11 @@ var DeviceIndicator = new Lang.Class({
         let { connected, paired, type } = this.device;
 
         // Device Indicator Visibility
-        if (!ext.settings.get_boolean("show-indicators")) {
+        if (!gsconnect.settings.get_boolean("show-indicators")) {
             this.actor.visible = false;
-        } else if (!paired && !ext.settings.get_boolean("show-unpaired")) {
+        } else if (!paired && !gsconnect.settings.get_boolean("show-unpaired")) {
             this.actor.visible = false;
-        } else if (!connected && !ext.settings.get_boolean("show-offline")) {
+        } else if (!connected && !gsconnect.settings.get_boolean("show-offline")) {
             this.actor.visible = false;
         } else {
             this.actor.visible = true;
@@ -503,7 +502,7 @@ var DeviceIndicator = new Lang.Class({
     },
 
     destroy: function () {
-        ext.settings.disconnect(this._settingsChanged);
+        gsconnect.settings.disconnect(this._settingsChanged);
         this.deviceMenu.destroy();
         delete this.deviceMenu;
         PanelMenu.Button.prototype.destroy.call(this);
@@ -526,11 +525,13 @@ var SystemIndicator = new Lang.Class({
         this._menus = {};
         this.keybindingManager = new KeybindingManager();
 
+        // Extension Indicator
         this.extensionIndicator = this._addIndicator();
         this.extensionIndicator.icon_name = "org.gnome.Shell.Extensions.GSConnect-symbolic";
         let userMenuTray = Main.panel.statusArea.aggregateMenu._indicators;
         userMenuTray.insert_child_at_index(this.indicators, 0);
 
+        // Extension Menu
         this.extensionMenu = new PopupMenu.PopupSubMenuMenuItem(
             _("Mobile Devices"),
             true
@@ -538,8 +539,9 @@ var SystemIndicator = new Lang.Class({
         this.extensionMenu.icon.icon_name = this.extensionIndicator.icon_name;
         this.menu.addMenuItem(this.extensionMenu);
 
+        // Devices Section
         this.devicesSection = new PopupMenu.PopupMenuSection();
-        ext.settings.bind(
+        gsconnect.settings.bind(
             "show-indicators",
             this.devicesSection.actor,
             "visible",
@@ -555,18 +557,25 @@ var SystemIndicator = new Lang.Class({
 
         Main.panel.statusArea.aggregateMenu.menu.addMenuItem(this.menu, 4);
 
+        // Menu Visibility
+        this._settingsChanged = gsconnect.settings.connect("changed", () => {
+            for (let dbusPath in this._menus) {
+                this._deviceMenuVisibility(this._menus[dbusPath]);
+            }
+        });
+
         // Watch for DBus service
         this._watchdog = Gio.bus_watch_name(
             Gio.BusType.SESSION,
-            Client.BUS_NAME,
+            "org.gnome.Shell.Extensions.GSConnect",
             Gio.BusNameWatcherFlags.NONE,
-            Lang.bind(this, this._serviceAppeared),
-            Lang.bind(this, this._serviceVanished)
+            () => this._serviceAppeared(),
+            () => this._serviceVanished()
         );
     },
 
-    _serviceAppeared: function (conn, name, name_owner, cb_data) {
-        debug("extension.SystemIndicator._serviceAppeared()");
+    _serviceAppeared: function () {
+        debug("");
 
         if (!this.daemon) {
             this.daemon = new Client.Daemon();
@@ -591,15 +600,15 @@ var SystemIndicator = new Lang.Class({
         );
     },
 
-    _serviceVanished: function (conn, name, cb_data) {
-        debug("extension.SystemIndicator._serviceVanished()");
+    _serviceVanished: function () {
+        debug("");
 
         if (this.daemon) {
             this.daemon.destroy();
             this.daemon = false;
         }
 
-        this.extensionIndicator.visible = (this.daemon);
+        this.extensionIndicator.visible = false;
 
         this.daemon = new Client.Daemon();
     },
@@ -781,8 +790,8 @@ function init() {
 function enable() {
     debug("enabling extension");
 
-    Common.installService();
-    Gtk.IconTheme.get_default().add_resource_path(ext.app_path);
+    gsconnect.installService();
+    Gtk.IconTheme.get_default().add_resource_path(gsconnect.app_path);
     systemIndicator = new SystemIndicator();
 }
 
@@ -790,6 +799,5 @@ function disable() {
     debug("disabling extension");
 
     systemIndicator.destroy();
-    Common.uninstallService()
 }
 

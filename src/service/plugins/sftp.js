@@ -10,16 +10,12 @@ const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
 // Local Imports
-imports.searchPath.push(ext.datadir);
-
-const Common = imports.common;
+imports.searchPath.push(gsconnect.datadir);
 const Protocol = imports.service.protocol;
 const PluginsBase = imports.service.plugins.base;
 
 
 var METADATA = {
-    summary: _("Browse Files"),
-    description: _("Mount and browse device filesystems"),
     uuid: "org.gnome.Shell.Extensions.GSConnect.Plugin.SFTP",
     incomingPackets: ["kdeconnect.sftp"],
     outgoingPackets: ["kdeconnect.sftp.request"]
@@ -56,7 +52,7 @@ var Plugin = new Lang.Class({
     _init: function (device) {
         this.parent(device, "sftp");
 
-        if (!Common.checkCommand("sshfs")) {
+        if (!gsconnect.checkCommand("sshfs")) {
             this.destroy();
             throw Error(_("SSHFS not installed"));
         }
@@ -75,7 +71,7 @@ var Plugin = new Lang.Class({
     _prepare: function () {
         debug("SFTP: _prepare()");
 
-        this._path = ext.runtimedir + "/" + this.device.id;
+        this._path = gsconnect.runtimedir + "/" + this.device.id;
         GLib.mkdir_with_parents(this._path, 448);
 
         let dir = Gio.File.new_for_path(this._path);
@@ -108,7 +104,7 @@ var Plugin = new Lang.Class({
             // Do not use ~/.ssh/config
             "-F", "/dev/null",
             // Sketchy?
-            "-o", "IdentityFile=" + ext.configdir + "/private.pem",
+            "-o", "IdentityFile=" + gsconnect.configdir + "/private.pem",
             // Don't prompt for new host confirmation (we know the host)
             "-o", "StrictHostKeyChecking=no",
             // Prevent storing as a known host
@@ -220,7 +216,7 @@ var Plugin = new Lang.Class({
         }
 
         if (this._path) {
-            if (Common.checkCommand("fusermount")) {
+            if (gsconnect.checkCommand("fusermount")) {
                 GLib.spawn_command_line_async("fusermount -uz " + this._path);
             } else {
                 GLib.spawn_command_line_async("umount " + this._path);

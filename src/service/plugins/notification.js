@@ -11,16 +11,12 @@ const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
 // Local Imports
-imports.searchPath.push(ext.datadir);
-
-const Common = imports.common;
+imports.searchPath.push(gsconnect.datadir);
 const Protocol = imports.service.protocol;
 const PluginsBase = imports.service.plugins.base;
 
 
 var METADATA = {
-    summary: _("Notifications"),
-    description: _("Sync notifications between devices"),
     uuid: "org.gnome.Shell.Extensions.GSConnect.Plugin.Notification",
     incomingPackets: [
         "kdeconnect.notification",
@@ -42,8 +38,7 @@ var METADATA = {
  * Incoming Notifications
  *
  *
- * TODO: GNotification seems to set a limit of 3 notifications in a short period
- *       consider allowing clients to handle notifications/use signals
+ * TODO: consider allowing clients to handle notifications/use signals
  *       make local notifications closeable (serial/reply_serial)
  *       The current beta supports:
  *           requestReplyId {string} - a UUID for replying (?)
@@ -545,5 +540,4 @@ var ReplyDialog = Lang.Class({
         });
     }
 });
-
 

@@ -9,8 +9,7 @@ const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 
 // Local Imports
-imports.searchPath.push(ext.datadir);
-
+imports.searchPath.push(gsconnect.datadir);
 const Protocol = imports.service.protocol;
 const PluginsBase = imports.service.plugins.base;
 

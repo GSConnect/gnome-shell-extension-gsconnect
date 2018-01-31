@@ -8,16 +8,13 @@ const Gio = imports.gi.Gio;
 const GObject = imports.gi.GObject;
 
 // Local Imports
-imports.searchPath.push(ext.datadir);
-
-const Common = imports.common;
+imports.searchPath.push(gsconnect.datadir);
+const MPRIS = imports.modules.mpris;
 const Protocol = imports.service.protocol;
 const PluginsBase = imports.service.plugins.base;
 
 
 var METADATA = {
-    summary: _("Media Player Control"),
-    description: _("Control MPRIS2 enabled media players"),
     uuid: "org.gnome.Shell.Extensions.GSConnect.Plugin.MPRIS",
     incomingPackets: ["kdeconnect.mpris.request"],
     outgoingPackets: ["kdeconnect.mpris"]

@@ -10,16 +10,12 @@ const GObject = imports.gi.GObject;
 const UPower = imports.gi.UPowerGlib;
 
 // Local Imports
-imports.searchPath.push(ext.datadir);
-
-const Common = imports.common;
+imports.searchPath.push(gsconnect.datadir);
 const Protocol = imports.service.protocol;
 const PluginsBase = imports.service.plugins.base;
 
 
 var METADATA = {
-    summary: _("Battery"),
-    description: _("Send and receive battery statistics"),
     uuid: "org.gnome.Shell.Extensions.GSConnect.Plugin.Battery",
     incomingPackets: ["kdeconnect.battery", "kdeconnect.battery.request"],
     outgoingPackets: ["kdeconnect.battery", "kdeconnect.battery.request"]

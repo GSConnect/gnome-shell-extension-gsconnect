@@ -31,11 +31,10 @@ function getPath() {
     return Gio.File.new_for_path(m[1]).get_parent().get_parent().get_path();
 }
 
-window.ext = { datadir: getPath() };
+window.gsconnect = { datadir: getPath() };
+imports.searchPath.push(gsconnect.datadir);
 
-imports.searchPath.push(ext.datadir);
-
-const Common = imports.common;
+const _bootstrap = imports._bootstrap;
 const DaemonWidget = imports.widgets.daemon;
 const Device = imports.service.device;
 const Protocol = imports.service.protocol;
@@ -93,11 +92,11 @@ var Daemon = new Lang.Class({
 
     _init: function() {
         this.parent({
-            application_id: ext.app_id,
+            application_id: gsconnect.app_id,
             flags: Gio.ApplicationFlags.HANDLES_OPEN
         });
 
-        GLib.set_prgname(ext.app_id);
+        GLib.set_prgname(gsconnect.app_id);
         GLib.set_application_name(_("GSConnect"));
 
         this.register(null);
@@ -175,9 +174,9 @@ var Daemon = new Lang.Class({
      * Generate a Private Key and TLS Certificate
      */
     _initEncryption: function () {
-        let certPath = ext.configdir + "/certificate.pem";
+        let certPath = gsconnect.configdir + "/certificate.pem";
         let certExists = GLib.file_test(certPath, GLib.FileTest.EXISTS);
-        let keyPath = ext.configdir + "/private.pem";
+        let keyPath = gsconnect.configdir + "/private.pem";
         let keyExists = GLib.file_test(keyPath, GLib.FileTest.EXISTS);
 
         if (!keyExists || !certExists) {
@@ -189,7 +188,7 @@ var Daemon = new Lang.Class({
             ];
 
             let proc = GLib.spawn_sync(
-                ext.configdir,
+                gsconnect.configdir,
                 cmd,
                 null,
                 GLib.SpawnFlags.SEARCH_PATH,
@@ -211,7 +210,7 @@ var Daemon = new Lang.Class({
     _initCSS: function () {
         let provider = new Gtk.CssProvider();
         provider.load_from_file(
-            Gio.File.new_for_uri("resource://" + ext.app_path + "/application.css")
+            Gio.File.new_for_uri("resource://" + gsconnect.app_path + "/application.css")
         );
         Gtk.StyleContext.add_provider_for_screen(
             Gdk.Screen.get_default(),
@@ -229,7 +228,7 @@ var Daemon = new Lang.Class({
             type: Protocol.TYPE_IDENTITY,
             body: {
                 deviceId: this.certificate.get_common_name(),
-                deviceName: ext.settings.get_string("public-name"),
+                deviceName: gsconnect.settings.get_string("public-name"),
                 deviceType: this.type,
                 tcpPort: this.tcpListener._port,
                 protocolVersion: 7,
@@ -266,13 +265,13 @@ var Daemon = new Lang.Class({
      * Device Methods
      */
     _watchDevices: function () {
-        ext.settings.connect("changed::devices", () => {
+        gsconnect.settings.connect("changed::devices", () => {
             //
-            let knownDevices = ext.settings.get_strv("devices");
+            let knownDevices = gsconnect.settings.get_strv("devices");
 
             // New devices
             for (let id of knownDevices) {
-                let dbusPath = ext.app_path + "/Device/" + id.replace(/\W+/g, "_");
+                let dbusPath = gsconnect.app_path + "/Device/" + id.replace(/\W+/g, "_");
 
                 if (!this._devices.has(dbusPath)) {
                     new Promise((resolve, reject) => {
@@ -300,7 +299,7 @@ var Daemon = new Lang.Class({
             }
         });
 
-        ext.settings.emit("changed::devices", "devices");
+        gsconnect.settings.emit("changed::devices", "devices");
     },
 
     _pruneDevices: function () {
@@ -308,12 +307,12 @@ var Daemon = new Lang.Class({
             return;
         }
 
-        let knownDevices = ext.settings.get_strv("devices");
+        let knownDevices = gsconnect.settings.get_strv("devices");
 
         for (let device of this._devices.values()) {
             if (!device.connected && !device.paired) {
                 knownDevices.splice(knownDevices.indexOf(device.id), 1);
-                ext.settings.set_strv("devices", knownDevices);
+                gsconnect.settings.set_strv("devices", knownDevices);
             }
         }
     },
@@ -322,7 +321,7 @@ var Daemon = new Lang.Class({
         debug(packet);
 
         return new Promise((resolve, reject) => {
-            let dbusPath = ext.app_path + "/Device/" + packet.body.deviceId.replace(/\W+/g, "_");
+            let dbusPath = gsconnect.app_path + "/Device/" + packet.body.deviceId.replace(/\W+/g, "_");
 
             if (this._devices.has(dbusPath)) {
                 log("GSConnect: Updating device");
@@ -344,11 +343,11 @@ var Daemon = new Lang.Class({
                 });
                 this._devices.set(dbusPath, device);
 
-                let knownDevices = ext.settings.get_strv("devices");
+                let knownDevices = gsconnect.settings.get_strv("devices");
 
                 if (knownDevices.indexOf(device.id) < 0) {
                     knownDevices.push(device.id);
-                    ext.settings.set_strv("devices", knownDevices);
+                    gsconnect.settings.set_strv("devices", knownDevices);
                 }
 
                 this.notify("devices", "as");
@@ -380,7 +379,7 @@ var Daemon = new Lang.Class({
      */
     _initNotificationListener: function () {
         this._ndbus = Gio.DBusExportedObject.wrapJSObject(
-            ext.dbusinfo.lookup_interface("org.freedesktop.Notifications"),
+            gsconnect.dbusinfo.lookup_interface("org.freedesktop.Notifications"),
             this
         );
         this._ndbus.export(Gio.DBus.session, "/org/freedesktop/Notifications");
@@ -538,13 +537,13 @@ var Daemon = new Lang.Class({
     toggleNautilusExtension: function () {
         let path = GLib.get_user_data_dir() + "/nautilus-python/extensions";
         let script = Gio.File.new_for_path(path).get_child("nautilus-gsconnect.py");
-        let install = ext.settings.get_boolean("nautilus-integration");
+        let install = gsconnect.settings.get_boolean("nautilus-integration");
 
         if (install && !script.query_exists(null)) {
             GLib.mkdir_with_parents(path, 493); // 0755 in octal
 
             script.make_symbolic_link(
-                ext.datadir + "/nautilus-gsconnect.py",
+                gsconnect.datadir + "/nautilus-gsconnect.py",
                 null
             );
 
@@ -556,7 +555,7 @@ var Daemon = new Lang.Class({
     },
 
     toggleWebExtension: function () {
-        let nmhPath = ext.datadir + "/service/nativeMessagingHost.js";
+        let nmhPath = gsconnect.datadir + "/service/nativeMessagingHost.js";
 
         let google = {
             "name": "org.gnome.shell.extensions.gsconnect",
@@ -584,7 +583,7 @@ var Daemon = new Lang.Class({
             [GLib.get_home_dir() + "/.mozilla/native-messaging-hosts/", mozilla]
         ];
 
-        if (ext.settings.get_boolean("webbrowser-integration")) {
+        if (gsconnect.settings.get_boolean("webbrowser-integration")) {
             for (let browser of browsers) {
                 GLib.mkdir_with_parents(browser[0], 493);
                 GLib.file_set_contents(
@@ -645,7 +644,7 @@ var Daemon = new Lang.Class({
      */
     _watchDaemon: function () {
         let daemonFile = Gio.File.new_for_path(
-            ext.datadir + "/service/daemon.js"
+            gsconnect.datadir + "/service/daemon.js"
         );
         this.daemonMonitor = daemonFile.monitor(
             Gio.FileMonitorFlags.WATCH_MOVES,
@@ -684,7 +683,7 @@ var Daemon = new Lang.Class({
         }
 
         this._initCSS();
-        Gtk.IconTheme.get_default().add_resource_path(ext.app_path);
+        Gtk.IconTheme.get_default().add_resource_path(gsconnect.app_path);
 
         this._initNotificationListener();
         this._initNotificationActions();
@@ -693,7 +692,7 @@ var Daemon = new Lang.Class({
         // Export DBus
         let iface = "org.gnome.Shell.Extensions.GSConnect";
         this._dbus = Gio.DBusExportedObject.wrapJSObject(
-            ext.dbusinfo.lookup_interface(iface),
+            gsconnect.dbusinfo.lookup_interface(iface),
             this
         );
         this._dbus.export(
@@ -739,7 +738,7 @@ var Daemon = new Lang.Class({
         }
 
         this.identity = this._getIdentityPacket();
-        ext.settings.bind(
+        gsconnect.settings.bind(
             "public-name",
             this,
             "name",
@@ -747,12 +746,12 @@ var Daemon = new Lang.Class({
         );
 
         // Extensions
-        ext.settings.connect("changed::nautilus-integration", () => {
+        gsconnect.settings.connect("changed::nautilus-integration", () => {
             this.toggleNautilusExtension();
         });
         this.toggleNautilusExtension();
 
-        ext.settings.connect("changed::webbrowser-integration", () => {
+        gsconnect.settings.connect("changed::webbrowser-integration", () => {
             this.toggleWebExtension();
         });
         this.toggleWebExtension();

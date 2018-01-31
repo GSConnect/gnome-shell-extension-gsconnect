@@ -12,9 +12,7 @@ const Gtk = imports.gi.Gtk;
 const Pango = imports.gi.Pango;
 
 // Local Imports
-imports.searchPath.push(ext.datadir);
-
-const Common = imports.common;
+imports.searchPath.push(gsconnect.datadir);
 
 
 /**

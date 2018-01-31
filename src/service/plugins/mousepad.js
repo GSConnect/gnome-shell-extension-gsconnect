@@ -9,16 +9,12 @@ const Gdk = imports.gi.Gdk;
 const GLib = imports.gi.GLib;
 
 // Local Imports
-imports.searchPath.push(ext.datadir);
-
-const Common = imports.common;
+imports.searchPath.push(gsconnect.datadir);
 const Protocol = imports.service.protocol;
 const PluginsBase = imports.service.plugins.base;
 
 
 var METADATA = {
-    summary: _("Remote Input"),
-    description: _("Control the mouse and keyboard remotely"),
     uuid: "org.gnome.Shell.Extensions.GSConnect.Plugin.Mousepad",
     incomingPackets: ["kdeconnect.mousepad.request"],
     outgoingPackets: []
@@ -29,8 +25,7 @@ var METADATA = {
  * Mousepad Plugin
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/mousepad
  *
- * TODO: support outgoing mouse/keyboard events?
- *       kdeconnect-android 1.7+ supposedly supports keyboard events
+ * TODO: support outgoing mouse/keyboard events
  */
 var Plugin = new Lang.Class({
     Name: "GSConnectMousepadPlugin",

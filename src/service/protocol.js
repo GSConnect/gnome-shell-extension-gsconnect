@@ -7,9 +7,7 @@ const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 
 // Local Imports
-imports.searchPath.push(ext.datadir);
-
-const Common = imports.common;
+imports.searchPath.push(gsconnect.datadir);
 
 
 // Packet Types
@@ -367,8 +365,8 @@ var LanChannel = new Lang.Class({
         this._peer_cert = peer_cert;
 
         let settings = new Gio.Settings({
-            settings_schema: ext.gschema.lookup(ext.app_id + ".Device", true),
-            path: ext.settings.path + "device/" + this.identity.body.deviceId + "/"
+            settings_schema: gsconnect.gschema.lookup(gsconnect.app_id + ".Device", true),
+            path: gsconnect.settings.path + "device/" + this.identity.body.deviceId + "/"
         });
 
         if (settings.get_string("certificate-pem")) {

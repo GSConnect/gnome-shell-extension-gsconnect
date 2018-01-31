@@ -9,16 +9,12 @@ const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
 // Local Imports
-imports.searchPath.push(ext.datadir);
-
-const Common = imports.common;
+imports.searchPath.push(gsconnect.datadir);
 const Protocol = imports.service.protocol;
 const PluginsBase = imports.service.plugins.base;
 
 
 var METADATA = {
-    summary: _("Clipboard"),
-    description: _("Sync the clipboard between devices"),
     uuid: "org.gnome.Shell.Extensions.GSConnect.Plugin.Clipboard",
     incomingPackets: ["kdeconnect.clipboard"],
     outgoingPackets: ["kdeconnect.clipboard"]
@@ -58,7 +54,7 @@ var Plugin = new Lang.Class({
     },
 
     handlePacket: function (packet) {
-        debug("Clipboard: handlePacket()");
+        debug(packet);
 
         if (packet.body.content && this.settings.get_boolean("receive-content")) {
             this.receive(packet.body.content);

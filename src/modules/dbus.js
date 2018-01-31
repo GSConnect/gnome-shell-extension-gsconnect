@@ -6,11 +6,6 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 
-// Local Imports
-imports.searchPath.push(ext.datadir);
-
-const Common = imports.common;
-
 
 var ProxyBase = new Lang.Class({
     Name: "GSConnectDBusProxyBase",

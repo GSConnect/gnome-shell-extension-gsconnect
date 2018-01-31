@@ -16,9 +16,8 @@ const Main = imports.ui.main;
 const Tweener = imports.ui.tweener;
 
 // Local Imports
-imports.searchPath.push(ext.datadir);
+imports.searchPath.push(gsconnect.datadir);
 
-const Common = imports.common;
 
 /**
  * An StTooltip for ClutterActors

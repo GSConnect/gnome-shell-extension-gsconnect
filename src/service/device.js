@@ -10,11 +10,8 @@ const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
 // Local Imports
-imports.searchPath.push(ext.datadir);
-
-const Common = imports.common;
+imports.searchPath.push(gsconnect.datadir);
 const Protocol = imports.service.protocol;
-const DeviceWidget = imports.widgets.device;
 
 
 var Device = new Lang.Class({
@@ -108,7 +105,7 @@ var Device = new Lang.Class({
 
         // GSettings
         this.settings = new Gio.Settings({
-            settings_schema: ext.gschema.lookup(
+            settings_schema: gsconnect.gschema.lookup(
                 "org.gnome.Shell.Extensions.GSConnect.Device",
                 true
             ),
@@ -121,14 +118,14 @@ var Device = new Lang.Class({
 
         // Export DBus
         this._dbus = Gio.DBusExportedObject.wrapJSObject(
-            ext.dbusinfo.lookup_interface(
+            gsconnect.dbusinfo.lookup_interface(
                 "org.gnome.Shell.Extensions.GSConnect.Device"
             ),
             this
         );
         this._dbus.export(
             Gio.DBus.session,
-            ext.app_path + "/Device/" + deviceId.replace(/\W+/g, "_")
+            gsconnect.app_path + "/Device/" + deviceId.replace(/\W+/g, "_")
         );
 
         // A TCP Connection

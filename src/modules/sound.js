@@ -12,11 +12,6 @@ GIRepository.Repository.prepend_library_path("/usr/lib/gnome-shell");
 GIRepository.Repository.prepend_search_path("/usr/lib64/gnome-shell");
 GIRepository.Repository.prepend_library_path("/usr/lib64/gnome-shell");
 
-// Local Imports
-imports.searchPath.push(ext.datadir);
-
-const Common = imports.common;
-
 
 // Gvc.MixerControl singleton
 try {
@@ -43,7 +38,7 @@ function playThemeSound (name) {
     if (_gsoundContext) {
         _gsoundContext.play_simple({ "event.id" : name }, null);
         return true;
-    } else if (Common.checkCommand("canberra-gtk-play")) {
+    } else if (gsconnect.checkCommand("canberra-gtk-play")) {
         GLib.spawn_command_line_async("canberra-gtk-play -i " + name);
         return true;
     }
@@ -65,7 +60,7 @@ function loopThemeSound (name, cancellable) {
                 }
             }
         );
-    } else if (Common.checkCommand("canberra-gtk-play")) {
+    } else if (gsconnect.checkCommand("canberra-gtk-play")) {
         let [ok, pid] = GLib.spawn_async(
             null,
             ["canberra-gtk-play", "-i", name],

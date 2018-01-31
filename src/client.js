@@ -7,19 +7,19 @@ const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 
 // Local Imports
-imports.searchPath.push(ext.datadir);
+imports.searchPath.push(gsconnect.datadir);
 const DBus = imports.modules.dbus;
 
 
 /**
- * An base class for Plugin DBus proxies
+ * A base class for plugin DBus Proxies
  */
 var Plugin = new Lang.Class({
     Name: "GSConnectPluginProxy",
     Extends: DBus.ProxyBase,
 
     _init: function (device, name) {
-        let iface = ext.dbusinfo.lookup_interface(
+        let iface = gsconnect.dbusinfo.lookup_interface(
             "org.gnome.Shell.Extensions.GSConnect.Plugin." + name
         );
         this.parent({
@@ -32,7 +32,7 @@ var Plugin = new Lang.Class({
 
         // GSettings
         this.settings = new Gio.Settings({
-            settings_schema: ext.gschema.lookup(
+            settings_schema: gsconnect.gschema.lookup(
                 "org.gnome.Shell.Extensions.GSConnect.Plugin." + name,
                 true
             ),
@@ -43,7 +43,7 @@ var Plugin = new Lang.Class({
 });
 
 /**
- * A DBus proxy for the Battery plugin
+ * A DBus Proxy for the Battery plugin
  */
 var Battery = new Lang.Class({
     Name: "GSConnectBatteryProxy",
@@ -568,7 +568,7 @@ var Device = new Lang.Class({
     },
 
     _init: function (dbusPath, daemon) {
-        let iface = ext.dbusinfo.lookup_interface(
+        let iface = gsconnect.dbusinfo.lookup_interface(
             "org.gnome.Shell.Extensions.GSConnect.Device"
         );
         this.parent({
@@ -581,7 +581,7 @@ var Device = new Lang.Class({
 
         // GSettings
         this.settings = new Gio.Settings({
-            settings_schema: ext.gschema.lookup(
+            settings_schema: gsconnect.gschema.lookup(
                 "org.gnome.Shell.Extensions.GSConnect.Device",
                 true
             ),
@@ -718,7 +718,7 @@ var Daemon = new Lang.Class({
     },
 
     _init: function () {
-        let iface = ext.dbusinfo.lookup_interface(
+        let iface = gsconnect.dbusinfo.lookup_interface(
             "org.gnome.Shell.Extensions.GSConnect"
         );
         this.parent({

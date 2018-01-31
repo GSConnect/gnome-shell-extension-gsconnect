@@ -9,9 +9,7 @@ const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
 // Local Imports
-imports.searchPath.push(ext.datadir);
-
-const Common = imports.common;
+imports.searchPath.push(gsconnect.datadir);
 const Protocol = imports.service.protocol;
 
 
@@ -30,17 +28,17 @@ var Plugin = new Lang.Class({
 
         // Export DBus
         this._dbus = Gio.DBusExportedObject.wrapJSObject(
-            ext.dbusinfo.lookup_interface(metadata.uuid),
+            gsconnect.dbusinfo.lookup_interface(this._metadata.uuid),
             this
         );
         this._dbus.export(Gio.DBus.session, device._dbus.get_object_path());
 
         // Init GSettings
         if (imports.service.plugins[name].SettingsDialog) {
-            this.settings = new Gio.Settings({
-                settings_schema: ext.gschema.lookup(metadata.uuid, -1),
-                path: ext.settings.path + "device/" + device.id + "/plugin/" + name + "/"
-            });
+        this.settings = new Gio.Settings({
+            settings_schema: gsconnect.gschema.lookup(this._metadata.uuid, -1),
+            path: gsconnect.settings.path + ["device", device.id, "plugin", name, ""].join("/")
+        });
         }
     },
 
@@ -58,7 +56,7 @@ var Plugin = new Lang.Class({
      * @param {array} names - A list of this object's property names to cache
      */
     initPersistence: function (names) {
-        this._cacheDir =  GLib.build_filenamev([ext.cachedir, this.name]);
+        this._cacheDir =  GLib.build_filenamev([gsconnect.cachedir, this.name]);
         GLib.mkdir_with_parents(this._cacheDir, 448);
 
         this._cacheFile = Gio.File.new_for_path(

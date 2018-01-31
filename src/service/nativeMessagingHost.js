@@ -21,11 +21,8 @@ function getPath() {
     return Gio.File.new_for_path(m[1]).get_parent().get_parent().get_path();
 }
 
-window.ext = { datadir: getPath() };
-
-imports.searchPath.push(ext.datadir);
-
-const Common = imports.common;
+window.gsconnect = { datadir: getPath() };
+imports.searchPath.push(gsconnect.datadir);
 const Client = imports.client;
 
 
@@ -61,7 +58,7 @@ var NativeMessagingHost = new Lang.Class({
             application_id: "org.gnome.Shell.Extensions.GSConnect.NativeMessagingHost",
             flags: Gio.ApplicationFlags.NON_UNIQUE
         });
-
+        gsconnect.installService();
     },
 
     vfunc_activate: function() {
@@ -76,10 +73,10 @@ var NativeMessagingHost = new Lang.Class({
 
         this._watchdog = Gio.bus_watch_name(
             Gio.BusType.SESSION,
-            Client.BUS_NAME,
+            "org.gnome.Shell.Extensions.GSConnect",
             Gio.BusNameWatcherFlags.NONE,
-            Lang.bind(this, this._serviceAppeared),
-            Lang.bind(this, this._serviceVanished)
+            () => this._serviceAppeared(),
+            () => this._serviceVanished()
         );
 
         this.stdin = new Gio.DataInputStream({
@@ -119,7 +116,7 @@ var NativeMessagingHost = new Lang.Class({
         } else if (message.type === "share") {
             for (let device of this.daemon.devices.values()) {
                 if (device.id === message.data.device) {
-                    device[message.data.action].shareUri(message.data.url);
+                    device[message.data.action].shareUrl(message.data.url);
                 }
             }
         }
@@ -143,7 +140,7 @@ var NativeMessagingHost = new Lang.Class({
     sendDeviceList: function () {
         let devices = [];
 
-        for (let device of this.daemon.devices.values()) {
+        for (let device of this.daemon._devices.values()) {
             if (device.connected && device.paired && (device.share || device.telephony)) {
                 devices.push({
                     id: device.id,
@@ -158,15 +155,15 @@ var NativeMessagingHost = new Lang.Class({
         this.send({ type: "devices", data: devices });
     },
 
-    _serviceAppeared: function (conn, name, name_owner) {
-        debug("WebExtension._serviceAppeared()");
+    _serviceAppeared: function () {
+        debug("");
 
         if (!this.daemon) {
             this.daemon = new Client.Daemon();
         }
 
         // Watch device property changes (connected, paired, plugins, etc)
-        for (let device of this.daemon.devices.values()) {
+        for (let device of this.daemon._devices.values()) {
             device.connect("notify", () => this.sendDeviceList());
         }
 
@@ -177,13 +174,11 @@ var NativeMessagingHost = new Lang.Class({
             this.sendDeviceList();
         });
 
-        this.daemon.connect("device::removed", () => this.sendDeviceList());
-
         this.send({ type: "connected", data: true });
     },
 
     _serviceVanished: function (conn, name) {
-        debug("WebExtension._serviceVanished()");
+        debug("");
 
         this.send({ type: "connected", data: false });
 
