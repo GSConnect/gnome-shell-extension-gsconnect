@@ -672,7 +672,7 @@ var SystemIndicator = new Lang.Class({
     _browseDevice: function (indicator) {
         let menu;
 
-        if (ext.settings.get_boolean("show-indicators")) {
+        if (gsconnect.settings.get_boolean("show-indicators")) {
             indicator.menu.toggle();
             menu = indicator.deviceMenu;
         } else {
@@ -689,7 +689,7 @@ var SystemIndicator = new Lang.Class({
     },
 
     _openDeviceMenu: function (indicator) {
-        if (ext.settings.get_boolean("show-indicators")) {
+        if (gsconnect.settings.get_boolean("show-indicators")) {
             indicator.menu.toggle();
         } else {
             Main.panel._toggleMenu(Main.panel.statusArea.aggregateMenu);
@@ -750,9 +750,9 @@ var SystemIndicator = new Lang.Class({
     _deviceMenuVisibility: function (menu){
         let { connected, paired } = menu.device;
 
-        if (!paired && !ext.settings.get_boolean("show-unpaired")) {
+        if (!paired && !gsconnect.settings.get_boolean("show-unpaired")) {
             menu.actor.visible = false;
-        } else if (!connected && !ext.settings.get_boolean("show-offline")) {
+        } else if (!connected && !gsconnect.settings.get_boolean("show-offline")) {
             menu.actor.visible = false;
         } else {
             menu.actor.visible = true;
@@ -764,6 +764,8 @@ var SystemIndicator = new Lang.Class({
             this.daemon.destroy();
             this.daemon = false;
         }
+
+        gsconnect.settings.disconnect(this._settingsChanged);
 
         for (let dbusPath in this._indicators) {
             this._deviceRemoved(this.daemon, dbusPath);
