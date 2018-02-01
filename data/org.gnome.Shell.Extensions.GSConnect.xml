@@ -30,16 +30,6 @@
     <method name="unpair"/>
     <method name="acceptPair"/>
     <method name="rejectPair"/>
-    <method name="enablePlugin">
-      <arg name="name" type="s" direction="in"/>
-      <arg name="success" type="b" direction="out"/>
-      <arg name="error" type="s" direction="out"/>
-    </method>
-    <method name="disablePlugin">
-      <arg name="name" type="s" direction="in"/>
-      <arg name="success" type="b" direction="out"/>
-      <arg name="error" type="s" direction="out"/>
-    </method>
     <method name="openSettings"/>
   </interface>
 
@@ -75,6 +65,9 @@
   <interface name="org.gnome.Shell.Extensions.GSConnect.Plugin.Notification">
     <signal name="received"/>
     <signal name="dismissed"/>
+    <method name="close">
+      <arg name="id" type="s" direction="in"/>
+    </method>
   </interface>
 
   <!-- Ping -->

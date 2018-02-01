@@ -47,12 +47,90 @@ var Plugin = new Lang.Class({
 
     handlePacket: function (packet) { throw Error("Not implemented"); },
 
+    /**
+     * Cache JSON parseable properties on this object for persistence. The
+     * filename ~/.cache/gsconnect/<plugin>/<device-id>.json will be used to
+     * store the properties and values.
+     *
+     * Calling initPersistence() opens a JSON cache file and reads any
+     * existing properties and values onto the current instance. When destroy()
+     * is called the properties are automatically stored in the same file.
+     *
+     * @param {array} names - A list of this object's property names to cache
+     */
+    initPersistence: function (names) {
+        this._cacheDir =  GLib.build_filenamev([ext.cachedir, this.name]);
+        GLib.mkdir_with_parents(this._cacheDir, 448);
+
+        this._cacheFile = Gio.File.new_for_path(
+            GLib.build_filenamev([this._cacheDir, this.device.id + ".json"])
+        );
+
+        this._cacheProperties = {};
+
+        for (let name of names) {
+            if (this.hasOwnProperty(name)) {
+                this._cacheProperties[name] = typeof this[name];
+            }
+        }
+
+        this._readCache();
+    },
+
+    // An overridable function that gets called before the cache is written
+    _filterCache: function (names) {
+        return;
+    },
+
+    _readCache: function () {
+        try {
+            let cache = JSON.parse(this._cacheFile.load_contents(null)[1]);
+
+            for (let name in this._cacheProperties) {
+                if (typeof this[name] === typeof cache[name]) {
+                    this[name] = cache[name];
+                }
+            }
+        } catch (e) {
+            debug("Cache: Error reading %s cache: %s".format(this.name, e.message));
+        }
+    },
+
+    _writeCache: function () {
+        this._filterCache(this._cacheProperties);
+
+        let cache = {};
+
+        for (let name in this._cacheProperties) {
+            cache[name] = this[name];
+        }
+
+        try {
+            this._cacheFile.replace_contents(
+                JSON.stringify(cache),
+                null,
+                false,
+                Gio.FileCreateFlags.REPLACE_DESTINATION,
+                null
+            );
+        } catch (e) {
+            debug("Cache: Error writing %s cache: %s".format(this._name, e.message));
+        }
+    },
+
+    /**
+     * The destroy function
+     */
     destroy: function () {
+        if (this._cacheFile) {
+            this._writeCache();
+        }
+
         this._dbus.flush();
         this._dbus.unexport();
         delete this._dbus;
         GObject.signal_handlers_destroy(this);
-    },
+    }
 });
 
 

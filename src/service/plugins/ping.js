@@ -70,7 +70,7 @@ var Plugin = new Lang.Class({
         notif.set_title(this.device.name);
         notif.set_body(body);
         notif.set_icon(new Gio.ThemedIcon({ name: "phone-symbolic" }));
-        this.device.daemon.send_notification("ping", notif);
+        this.device.send_notification("ping", notif);
     },
 
     ping: function (message="") {

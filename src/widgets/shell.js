@@ -615,7 +615,7 @@ var DeviceIcon = new Lang.Class({
             cr.setDash([3, 7], 0);
             cr.arc(xc, yc, r, 1.48 * Math.PI, 1.47 * Math.PI);
             cr.stroke();
-        } else if (this.device.battery) {
+        } else if (this.device.battery && this.device.battery.level > -1) {
             // Capacity arc
             cr.setSourceRGB(0.8, 0.8, 0.8);
 
