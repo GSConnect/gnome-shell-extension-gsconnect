@@ -39,6 +39,23 @@ const DBusProxy = new Gio.DBusProxy.makeProxyWrapper(
 </node>');
 
 
+const PropertiesProxy = new Gio.DBusProxy.makeProxyWrapper(
+'<node> \
+<interface name="org.freedesktop.DBus.Properties"> \
+  <method name="Get"> \
+    <arg direction="in" type="s" name="interface_name" /> \
+    <arg direction="in" type="s" name="property_name" /> \
+    <arg direction="out" type="v" name="value" /> \
+  </method> \
+  <method name="Set"> \
+    <arg direction="in" type="s" name="interface_name" /> \
+    <arg direction="in" type="s" name="property_name" /> \
+    <arg direction="in" type="v" name="value" /> \
+  </method> \
+</interface> \
+</node>');
+
+
 const MPRISProxy = new Gio.DBusProxy.makeProxyWrapper(
 '<node> \
   <interface name="org.mpris.MediaPlayer2"> \
@@ -182,6 +199,11 @@ var Plugin = new Lang.Class({
                     name,
                     "/org/mpris/MediaPlayer2"
                 );
+                let prop = new PropertiesProxy(
+                    Gio.DBus.session,
+                    name,
+                    "/org/mpris/MediaPlayer2"
+                );
 
                 // TODO: resending everything if anything changes
                 player.connect("g-properties-changed", () => {
@@ -198,12 +220,34 @@ var Plugin = new Lang.Class({
                     this.handleCommand(packet);
                 });
 
-                this._players.set(mpris.Identity, player);
+                // Connect Seeked signal
+                player.connect("g-signal", (proxy, sender_name, signal_name, parameters) => {
+                    if (signal_name === "Seeked") {
+                        // TODO: Should use the `parameters` argument but the Variant is not recognized
+                        // Bug with player.Position always returning 0. Must use the cumbersome API
+                        let pos = prop.GetSync("org.mpris.MediaPlayer2.Player", "Position")[0].get_int64();
+                        let response = new Protocol.Packet({
+                            id: 0,
+                            type: "kdeconnect.mpris",
+                            body: {
+                                player: mpris.Identity,
+                                pos: Math.round( pos / 1000),
+                            }
+                        });
+                        this.device._channel.send(response);
+                    }
+                });
+
+                this._players.set(mpris.Identity, {
+                        player: player,
+                        prop: prop
+                });
             }
         }
 
         // Remove old players
-        for (let [name, proxy] of this._players.entries()) {
+        for (let [name, p] of this._players.entries()) {
+            let proxy = p.player;
             if (players.indexOf(proxy.gName) < 0) {
                 GObject.signal_handlers_destroy(proxy);
                 this._players.delete(name);
@@ -242,7 +286,8 @@ var Plugin = new Lang.Class({
     handleCommand: function (packet) {
         debug("MPRIS: handleCommand()");
 
-        let player = this._players.get(packet.body.player);
+        let p = this._players.get(packet.body.player);
+        let player = p.player;
 
         // Player Commands
         if (packet.body.hasOwnProperty("action")) {
@@ -263,7 +308,9 @@ var Plugin = new Lang.Class({
         }
 
         if (packet.body.hasOwnProperty("SetPosition")) {
-            let position = (packet.body.SetPosition * 1000) - player.Position;
+            // Bug with player.Position always returning 0. Must use the cumbersome API
+            let last_pos = p.prop.GetSync("org.mpris.MediaPlayer2.Player", "Position")[0].get_int64();
+            let position = (packet.body.SetPosition * 1000) - last_pos;
             player.SeekSync(position);
         }
 
@@ -289,10 +336,12 @@ var Plugin = new Lang.Class({
             if (Metadata.hasOwnProperty("xesam:artist")) {
                 nowPlaying = Metadata["xesam:artist"] + " - " + nowPlaying;
             }
-
+            
+            // Bug with player.Position always returning 0. Must use the cumbersome API
+            let pos = p.prop.GetSync("org.mpris.MediaPlayer2.Player", "Position")[0].get_int64();
             response.body = {
                 nowPlaying: nowPlaying,
-                pos: Math.round(player.Position / 1000),
+                pos: Math.round( pos / 1000),
                 isPlaying: (player.PlaybackStatus === "Playing"),
                 canPause: (player.CanPause === true),
                 canPlay: (player.CanPlay === true),
@@ -300,6 +349,10 @@ var Plugin = new Lang.Class({
                 canGoPrevious: (player.CanGoPrevious === true),
                 canSeek: (player.CanSeek === true)
             };
+            if (Metadata.hasOwnProperty("mpris:length")) {
+                response.body["length"] = Math.round(Metadata["mpris:length"]/1000);
+            }
+
 
         }
 
@@ -320,7 +373,8 @@ var Plugin = new Lang.Class({
         } catch (e) {
         }
 
-        for (let proxy of this._players.values()) {
+        for (let p of this._players.values()) {
+            let proxy = p.player;
             try {
                 GObject.signal_handlers_destroy(proxy);
             } catch (e) {
