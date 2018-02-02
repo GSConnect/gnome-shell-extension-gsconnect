@@ -156,11 +156,11 @@ var Plugin = new Lang.Class({
 
         // Set the directories and notify (client.js needs this before mounted)
         for (let index in packet.body.pathNames) {
-            let name = packet.body.pathNames[index];
-            let path = packet.body.multiPaths[index].replace(packet.body.path, "");
-            path = path.replace(packet.body.path, "");
-
-            this._directories[name] = this._path + path;
+            if ( packet.body.multiPaths[index].search(packet.body.path) === 0 ) {
+                let name = packet.body.pathNames[index];
+                let path = packet.body.multiPaths[index].replace(packet.body.path, "");
+                this._directories[name] = this._path + path;
+            }
         }
 
         this.notify("directories");
