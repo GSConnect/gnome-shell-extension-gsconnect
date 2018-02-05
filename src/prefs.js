@@ -13,7 +13,7 @@ function getPath() {
 window.gsconnect = { datadir: getPath() };
 imports.searchPath.push(gsconnect.datadir);
 const _bootstrap = imports._bootstrap;
-const DaemonWidget = imports.widgets.daemon;
+const Settings = imports.modules.settings;
 
 
 function init() {
@@ -26,6 +26,6 @@ function init() {
 function buildPrefsWidget() {
     debug("Prefs: buildPrefsWidget()");
 
-    return new DaemonWidget.PrefsWidget();
+    return new Settings.PrefsWidget();
 }
 

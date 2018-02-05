@@ -13,10 +13,79 @@ const Pango = imports.gi.Pango;
 const St = imports.gi.St;
 
 const Main = imports.ui.main;
+const ModalDialog = imports.ui.modalDialog;
 const Tweener = imports.ui.tweener;
 
 // Local Imports
 imports.searchPath.push(gsconnect.datadir);
+const Color = imports.modules.color;
+
+
+/**
+ */
+var Dialog = new Lang.Class({
+    Name: "GSConnectShellDoNotDisturbDialog",
+    Extends: ModalDialog.ModalDialog,
+
+    _init: function (params) {
+        this.parent();
+
+        let headerBar = new St.BoxLayout({
+            style_class: "nm-dialog-header-hbox"
+        });
+        this.contentLayout.add(headerBar);
+
+        this._icon = new St.Icon({
+            style_class: "nm-dialog-header-icon",
+            icon_name: params.icon
+        });
+        headerBar.add(this._icon);
+
+        let titleBox = new St.BoxLayout({ vertical: true });
+        headerBar.add(titleBox);
+
+        this._title = new St.Label({
+            style_class: "nm-dialog-header",
+            text: params.title
+        });
+        titleBox.add(this._title);
+
+        this._subtitle = new St.Label({
+            style_class: "nm-dialog-subheader",
+            text: params.subtitle
+        });
+        titleBox.add(this._subtitle);
+
+        this.contentLayout.style_class = "nm-dialog-content";
+
+        this.content = new St.BoxLayout({ vertical: true });
+        this.contentLayout.add(this.content);
+    },
+
+    get icon () {
+        return this._icon.icon_name;
+    },
+
+    set icon (name) {
+        this._icon.icon_name = name;
+    },
+
+    get title () {
+        return this._title.text;
+    },
+
+    set title (text) {
+        this._title.text = text;
+    },
+
+    get subtitle () {
+        return this._title.text;
+    },
+
+    set subtitle (text) {
+        this._title.text = text;
+    }
+});
 
 
 /**
@@ -294,6 +363,122 @@ var Tooltip = new Lang.Class({
 });
 
 
+var RadioButton = new Lang.Class({
+    Name: "GSConnectShellRadioButton",
+    Extends: St.BoxLayout,
+
+    _init: function (params) {
+        params = Object.assign({
+            text: null,
+            widget: null,
+            group: [],
+            active: false,
+            tooltip_markup: false,
+            tooltip_text: false
+        }, params);
+
+        this.parent({
+            style_class: "radio-button",
+            style: "spacing: 6px;",
+            vertical: false
+        });
+
+        this.button = new St.Button({
+            style_class: "pager-button",
+            child: new St.Icon({ icon_name: "radio-symbolic", icon_size: 16 })
+        });
+        this.add_child(this.button);
+
+        this.add_child(new St.Label());
+
+        if (params.text) {
+            this.text = params.text;
+        } else {
+            this.widget = params.widget;
+        }
+
+        //
+        this.button.connect("clicked", () => {
+            this.active = true;
+        });
+
+        // Group
+        this.group = params.group;
+        this.connect("destroy", () => {
+            this.group.splice(this.group.indexOf(this), 1);
+        });
+
+        this.active = params.active;
+
+        // Tooltip
+        this.tooltip = new Tooltip({ parent: this });
+
+        if (params.tooltip_markup) {
+            this.tooltip.markup = params.tooltip_markup;
+        } else if (params.tooltip_text) {
+            this.tooltip.text = params.tooltip_text;
+        }
+    },
+
+    get active () {
+        return (this.button.child.icon_name === "radio-checked-symbolic");
+    },
+
+    set active (bool) {
+        if (bool) {
+            this.button.child.icon_name = "radio-checked-symbolic";
+
+            for (let radio of this.group) {
+                if (radio !== this) {
+                    radio.button.child.icon_name = "radio-symbolic";
+                }
+            }
+        } else {
+            this.button.child.icon_name = "radio-symbolic";
+        }
+    },
+
+    get group () {
+        return this._group;
+    },
+
+    set group (group) {
+        this._group = group;
+
+        if (this._group.indexOf(this) < 0) {
+            this._group.push(this);
+        }
+
+        this.active = (this.group.length === 1);
+    },
+
+    get text () {
+        if (this.widget instanceof St.Label) {
+            return this.widget.text;
+        }
+
+        return null;
+    },
+
+    set text (text) {
+        if (typeof text === "string") {
+            this.widget = new St.Label({ text: text });
+        }
+    },
+
+    get widget () {
+        return this.get_child_at_index(1);
+    },
+
+    set widget (widget) {
+        if (widget instanceof Clutter.Actor) {
+            widget.y_align = Clutter.ActorAlign.CENTER
+            this.replace_child(this.widget, widget);
+        }
+    }
+});
+
+
 /** St.Button subclass for plugin buttons with an image, action and tooltip */
 var PluginButton = new Lang.Class({
     Name: "GSConnectShellPluginButton",
@@ -356,43 +541,33 @@ var DeviceBattery = new Lang.Class({
         this.label = new St.Label({ text: "" });
         this.add_child(this.label);
 
-        this.icon = new St.Icon({
-            icon_name: "battery-missing-symbolic",
-            icon_size: 16
-        });
+        this.icon = new St.Icon({ icon_size: 16 });
         this.add_child(this.icon);
 
-        if (this.device.battery) {
-            this._battery = this.device.battery.connect("notify", () => {
-                this.update();
-            });
-        }
-
-        this.device.connect("notify::plugins", () => {
-            if (this.device.battery && !this._battery) {
-                this._battery = this.device.battery.connect("notify", () => {
-                    this.update();
-                });
-                this.update();
-            } else if (!this.device.battery && this._battery) {
-                delete this._battery;
-            }
-        });
-
-        this.update();
+        this.device.connect("notify::plugins", () => this._pluginsChanged());
+        this._pluginsChanged();
     },
 
-    update: function () {
-        if (!this.visible) { return; }
+    _pluginsChanged: function () {
+        let battery = this.device._plugins.get("battery");
 
-        // Fix for "JS ERROR: TypeError: this.device.battery is undefined"
-        if (this.device.battery === undefined) {
-            this.icon.icon_name = "battery-missing-symbolic";
-            this.label.text = "";
+        if (battery && !this._battery) {
+            this._battery = battery.connect("notify", (battery) => this.update(battery));
+            this.update(battery);
+        } else if (!battery && this._battery) {
+            delete this._battery;
+        }
+    },
+
+    update: function (battery) {
+        this.icon.visible = (battery && battery.level > -1);
+        this.label.visible = (battery && battery.level > -1);
+
+        if (!this.visible || !battery || !this.icon.visible) {
             return;
         }
 
-        let {charging, level} = this.device.battery;
+        let {charging, level} = battery;
         let icon = "battery";
 
         if (level < 3) {
@@ -410,12 +585,6 @@ var DeviceBattery = new Lang.Class({
         icon += (charging) ? "-charging-symbolic" : "-symbolic";
         this.icon.icon_name = icon;
         this.label.text = level + "%";
-
-        // "false, -1" if no data or remote plugin is disabled but not local
-        if (level === -1) {
-            this.icon.icon_name = "battery-missing-symbolic";
-            this.label.text = "";
-        }
     }
 });
 
@@ -484,33 +653,8 @@ var DeviceIcon = new Lang.Class({
         });
     },
 
-    _hsv2rgb: function (h, s, v) {
-        let r, g, b;
-
-        h = h / 360;
-        s = s / 100;
-        v = v / 100;
-
-        let i = Math.floor(h * 6);
-        let f = h * 6 - i;
-        let p = v * (1 - s);
-        let q = v * (1 - f * s);
-        let t = v * (1 - (1 - f) * s);
-
-        switch (i % 6) {
-            case 0: r = v, g = t, b = p; break;
-            case 1: r = q, g = v, b = p; break;
-            case 2: r = p, g = v, b = t; break;
-            case 3: r = p, g = q, b = v; break;
-            case 4: r = t, g = p, b = v; break;
-            case 5: r = v, g = p, b = q; break;
-        }
-
-        return [r, g, b];
-    },
-
     _batteryColor: function () {
-        return this._hsv2rgb(
+        return Color.hsv2rgb(
             this.device.battery.level / 100 * 120,
             100,
             100 - (this.device.battery.level / 100 * 15)
@@ -521,9 +665,7 @@ var DeviceIcon = new Lang.Class({
         let {charging, level} = this.device.battery;
         let icon = "battery";
 
-        if (level < 0) {
-            return "battery-missing-symbolic";
-        } else if (level === 100) {
+        if (level === 100) {
             return "battery-full-charged-symbolic";
         } else if (level < 3) {
             icon += "-empty";

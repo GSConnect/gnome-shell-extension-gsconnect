@@ -100,7 +100,7 @@ var Plugin = new Lang.Class({
             body: { setLocked: bool }
         });
 
-        this.device._channel.send(packet);
+        this.send(packet);
     },
 
     _request: function () {
@@ -110,7 +110,7 @@ var Plugin = new Lang.Class({
             body: { requestLocked: true }
         });
 
-        this.device._channel.send(packet);
+        this.send(packet);
     },
 
     _response: function () {
@@ -120,34 +120,32 @@ var Plugin = new Lang.Class({
             body: { isLocked: this._screensaver.GetActiveSync() }
         });
 
-        this.device._channel.send(packet);
+        this.send(packet);
     },
 
     handlePacket: function (packet) {
         debug("Lock: handlePacket()");
 
-        // This is a request to change or report the local status
-        if (packet.type === "kdeconnect.lock.request") {
-            let respond = packet.body.hasOwnProperty("requestLocked");
+        return new Promise((resolve, reject) => {
+            // This is a request to change or report the local status
+            if (packet.type === "kdeconnect.lock.request") {
+                let respond = packet.body.hasOwnProperty("requestLocked");
 
-            if (packet.body.hasOwnProperty("setLocked")) {
-                this._screensaver.SetActiveSync(packet.body.setLocked);
-                respond = true;
+                if (packet.body.hasOwnProperty("setLocked")) {
+                    this._screensaver.SetActiveSync(packet.body.setLocked);
+                    respond = true;
+                }
+
+                if (respond) {
+                    this._response();
+                }
+            // This is an update about the remote status
+            } else if (packet.type === "kdeconnect.lock") {
+                this._locked = packet.body.isLocked;
+
+                this.notify("locked", "b");
             }
-
-            if (respond) {
-                this._response();
-            }
-        // This is an update about the remote status
-        } else if (packet.type === "kdeconnect.lock") {
-            this._locked = packet.body.isLocked;
-
-            this.notify("locked");
-            this._dbus.emit_property_changed(
-                "locked",
-                new GLib.Variant("b", this._locked)
-            );
-        }
+        });
     },
 
     destroy: function () {

@@ -10,7 +10,6 @@ const Gtk = imports.gi.Gtk;
 
 // Local Imports
 imports.searchPath.push(gsconnect.datadir);
-const Protocol = imports.service.protocol;
 const PluginsBase = imports.service.plugins.base;
 
 
@@ -82,13 +81,11 @@ var Plugin = new Lang.Class({
     _handleRequest: function () {
         debug("...");
 
-        let packet = new Protocol.Packet({
+        this.sendPacket({
             id: 0,
             type: "kdeconnect.runcommand",
             body: { commandList: this.settings.get_string("command-list") }
         });
-
-        this.send(packet);
     },
 
     _handleExecute: function (key) {
@@ -110,13 +107,11 @@ var Plugin = new Lang.Class({
      * Remote Methods
      */
     request: function () {
-        let packet = new Protocol.Packet({
+        this.sendPacket({
             id: 0,
             type: "kdeconnect.runcommand.request",
             body: { requestCommandList: true }
         });
-
-        this.send(packet);
     },
 
     /**
@@ -124,13 +119,11 @@ var Plugin = new Lang.Class({
      * @param {string} key - The key of the remote command
      */
     run: function (key) {
-        let packet = new Protocol.Packet({
+        this.sendPacket({
             id: 0,
             type: "kdeconnect.runcommand.request",
             body: { key: key }
         });
-
-        this.send(packet);
     }
 });
 

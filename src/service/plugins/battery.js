@@ -11,7 +11,6 @@ const UPower = imports.gi.UPowerGlib;
 
 // Local Imports
 imports.searchPath.push(gsconnect.datadir);
-const Protocol = imports.service.protocol;
 const PluginsBase = imports.service.plugins.base;
 
 
@@ -19,6 +18,41 @@ var METADATA = {
     uuid: "org.gnome.Shell.Extensions.GSConnect.Plugin.Battery",
     incomingPackets: ["kdeconnect.battery", "kdeconnect.battery.request"],
     outgoingPackets: ["kdeconnect.battery", "kdeconnect.battery.request"]
+};
+
+
+var UUID = "org.gnome.Shell.Extensions.GSConnect.Plugin.Battery";
+
+var IncomingPacket = {
+    BATTERY_UPDATE: "kdeconnect.battery",
+    BATTERY_UPDATE_REQUEST: "kdeconnect.battery.request"
+};
+
+var OutgoingPacket = {
+    BATTERY_UPDATE: "kdeconnect.battery",
+    BATTERY_UPDATE_REQUEST: "kdeconnect.battery.request"
+};
+
+var Action = {
+    // Sending an update
+    provideUpdate: {
+        label: _("Provide battery update"),
+        incoming: ["kdeconnect.battery.request"],
+        outgoing: ["kdeconnect.battery"]
+    },
+    // Request an update
+    requestUpdate: {
+        label: _("Request battery update"),
+        incoming: ["kdeconnect.battery"],
+        outgoing: ["kdeconnect.battery.request"]
+    }
+};
+
+var Event = {
+    // Sent an update
+    BATTERY_UPDATE: "kdeconnect.battery",
+    // A request for an update
+    BATTERY_UPDATE_REQUEST: "kdeconnect.battery.request"
 };
 
 
@@ -45,6 +79,14 @@ var Plugin = new Lang.Class({
             -1, 100,
             -1
         ),
+        "threshold": GObject.ParamSpec.int(
+            "theshold",
+            "thresholdLevel",
+            "The level considered critical",
+            GObject.ParamFlags.READABLE,
+            -1, 100,
+            25
+        ),
         "time": GObject.ParamSpec.int(
             "time",
             "timeRemaining",
@@ -66,7 +108,7 @@ var Plugin = new Lang.Class({
         this._dischargeStats = [];
         this._thresholdLevel = 25;
 
-        this.initPersistence([
+        this.cacheProperties([
             "_chargeStats",
             "_dischargeStats",
             "_thresholdLevel"
@@ -79,17 +121,17 @@ var Plugin = new Lang.Class({
         this.notify("level", "i");
         this._time = -1;
         this.notify("time", "i");
-        this.request();
+        this.requestUpdate();
 
         // Local Battery
-        if (this.settings.get_boolean("send-statistics") && this.device.daemon.type === "laptop") {
+        if (this.settings.get_uint("allow") & 2 && this.device.daemon.type === "laptop") {
             this._monitor();
         }
 
-        this.settings.connect("changed::send-statistics", () => {
-            if (this.settings.get_boolean("send-statistics") && !this._battery) {
+        this.settings.connect("changed::allow", () => {
+            if (this.settings.get_uint("allow") & 2 && !this._battery) {
                 this._monitor();
-            } else if (!this.settings.get_boolean("send-statistics") && this._battery) {
+            } else if (!this.settings.get_uint("allow") & 2 && this._battery) {
                 GObject.signal_handlers_destroy(this._battery);
                 delete this._battery;
             }
@@ -97,6 +139,10 @@ var Plugin = new Lang.Class({
     },
 
     _monitor: function () {
+        if (this.device.incomingCapabilities.indexOf("kdeconnect.battery") < 0) {
+            return;
+        }
+
         try {
             this._battery = new UPower.Device();
 
@@ -122,6 +168,7 @@ var Plugin = new Lang.Class({
     get charging() { return this._charging; },
     get level() { return this._level; },
     get time() { return this._time; },
+    get threshold () { return this._thresholdLevel },
 
     /**
      * Packet dispatch
@@ -129,11 +176,45 @@ var Plugin = new Lang.Class({
     handlePacket: function (packet) {
         debug(packet);
 
-        if (packet.type === "kdeconnect.battery") {
+        if (packet.type === "kdeconnect.battery" && this.settings.get_uint("allow") & 4) {
             return this._handleUpdate(packet.body);
         } else if (packet.type === "kdeconnect.battery.request" && this._battery) {
             return this._provideUpdate();
+        } else {
+            return Promise.reject(new Error("Operation not permitted"));
         }
+    },
+
+    /**
+     * Local Methods
+     */
+    _provideUpdate: function () {
+        debug([this._battery.percentage, this._battery.state]);
+
+        if (!this._battery) { return; }
+
+        // TODO: error handling?
+        return new Promise((resolve, reject) => {
+            let packet = {
+                id: 0,
+                type: "kdeconnect.battery",
+                body: {
+                    currentCharge: this._battery.percentage,
+                    isCharging: (this._battery.state !== UPower.DeviceState.DISCHARGING),
+                    thresholdEvent: 0
+                }
+            };
+
+            if (this._battery.percentage === 15) {
+                if (!packet.body.isCharging) {
+                    packet.body.thresholdEvent = 1;
+                }
+            }
+
+            this.sendPacket(packet);
+
+            resolve(true);
+        });
     },
 
     /**
@@ -145,7 +226,7 @@ var Plugin = new Lang.Class({
         // TODO: error handling?
         return new Promise((resolve, reject) => {
             if (update.thresholdEvent > 0) {
-                this.threshold();
+                this._handleThreshold();
             }
 
             if (this._charging !== update.isCharging) {
@@ -164,7 +245,7 @@ var Plugin = new Lang.Class({
 
             this.addStat(update.currentCharge, this.charging);
 
-            this._time = this.getTime(this.charging);
+            this._time = this._extrapolateTime();
             this.notify("time", "i");
 
             resolve(true);
@@ -186,7 +267,13 @@ var Plugin = new Lang.Class({
         if (this.device._plugins.has("findmyphone")) {
             notif.add_button(
                 _("Locate"),
-                "app.batteryWarning('" + this._dbus.get_object_path() + "')"
+                "app.deviceAction(('" +
+                this._dbus.get_object_path() +
+                "','" +
+                "find" +
+                "','" +
+                "{}" +
+                "'))"
             );
         }
 
@@ -198,47 +285,13 @@ var Plugin = new Lang.Class({
     /**
      * Request the remote battery statistics
      */
-    request: function () {
-        debug("Battery: request()");
+    requestUpdate: function () {
+        debug("");
 
-        let packet = new Protocol.Packet({
+        this.sendPacket({
             id: 0,
             type: "kdeconnect.battery.request",
             body: { request: true }
-        });
-
-        this.send(packet);
-    },
-
-    /**
-     * Local Methods
-     */
-    _provideUpdate: function () {
-        debug([this._battery.percentage, this._battery.state]);
-
-        if (!this._battery) { return; }
-
-        // TODO: error handling?
-        return new Promise((resolve, reject) => {
-            let packet = new Protocol.Packet({
-                id: 0,
-                type: "kdeconnect.battery",
-                body: {
-                    currentCharge: this._battery.percentage,
-                    isCharging: (this._battery.state !== UPower.DeviceState.DISCHARGING),
-                    thresholdEvent: 0
-                }
-            });
-
-            if (this._battery.percentage === 15) {
-                if (!packet.body.isCharging) {
-                    packet.body.thresholdEvent = 1;
-                }
-            }
-
-            this.send(packet);
-
-            resolve(true);
         });
     },
 
@@ -267,17 +320,17 @@ var Plugin = new Lang.Class({
         }
     },
 
-    getTime: function (charging) {
+    _extrapolateTime: function () {
         let tdelta, ldelta;
         let rate = 0;
         let time = 0;
 
-        let stats = (charging) ? this._chargeStats : this._dischargeStats;
+        let stats = (this.charging) ? this._chargeStats : this._dischargeStats;
 
         for (let i = 0; i + 1 <= stats.length - 1; i++) {
             tdelta = stats[i + 1].time - stats[i].time;
 
-            if (charging) {
+            if (this.charging) {
                 ldelta = stats[i + 1].level - stats[i].level;
             } else {
                 ldelta = stats[i].level - stats[i + 1].level;
@@ -290,9 +343,9 @@ var Plugin = new Lang.Class({
             }
         }
 
-        if (rate && charging) {
+        if (rate && this.charging) {
             time = rate * (100 - stats[stats.length - 1].level);
-        } else if (rate && !charging) {
+        } else if (rate && !this.charging) {
             time = rate * stats[stats.length - 1].level;
         }
 

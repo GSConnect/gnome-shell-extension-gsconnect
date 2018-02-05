@@ -41,8 +41,8 @@
     <property type="b" name="charging" access="read"/>
     <property type="i" name="level" access="read"/>
     <property type="i" name="time" access="read"/>
-    <method name="request"/>
-    <method name="send"/>
+    <method name="requestUpdate"/>
+    <method name="sendUpdate"/>
   </interface>
 
   <!-- Clipboard -->
@@ -66,9 +66,11 @@
 
   <!-- Notifications -->
   <interface name="org.gnome.Shell.Extensions.GSConnect.Plugin.Notification">
+    <property type="aa{sv}" name="Notifications" access="read"/>
     <signal name="received"/>
     <signal name="dismissed"/>
-    <method name="close">
+    <method name="ClearCache"/>
+    <method name="Close">
       <arg name="id" type="s" direction="in"/>
     </method>
   </interface>
@@ -102,7 +104,7 @@
     <method name="unmount"/>
   </interface>
 
-  <!-- Share -->
+  <!-- FIXME Share -->
   <interface name="org.gnome.Shell.Extensions.GSConnect.Plugin.Share">
     <method name="shareDialog"/>
     <method name="shareFile">

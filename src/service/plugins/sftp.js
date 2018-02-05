@@ -11,7 +11,6 @@ const Gtk = imports.gi.Gtk;
 
 // Local Imports
 imports.searchPath.push(gsconnect.datadir);
-const Protocol = imports.service.protocol;
 const PluginsBase = imports.service.plugins.base;
 
 
@@ -83,12 +82,29 @@ var Plugin = new Lang.Class({
     handlePacket: function (packet) {
         debug(packet);
 
+        // FIXME FIXME FIXME
+        return new Promise((resolve, reject) => {
+            if (packet.type === "kdeconnect.sftp") {
+                let result = this._mount();
+
+                if (result instanceof Error) {
+                    reject(result);
+                } else {
+                    resolve(result);
+                }
+            } else if (false) {
+                reject(new Error("Unknown packet type"));
+            }
+        });
+    },
+
+    _mount: function (packet) {
         try {
             this._prepare();
         } catch (e) {
             log("SFTP: Error preparing to mount '" + this.device.name + "': " + e);
             this.unmount();
-            return;
+            return e;
         }
 
         let args = [
@@ -131,7 +147,7 @@ var Plugin = new Lang.Class({
         } catch (e) {
             log("SFTP: Error mounting '" + this.device.name + "': " + e);
             this.unmount();
-            return;
+            return e;
         }
 
         // Initialize streams
@@ -157,6 +173,13 @@ var Plugin = new Lang.Class({
             path = path.replace(packet.body.path, "");
 
             this._directories[name] = this._path + path;
+
+            // FIXME FIXME FIXME: see #40
+//            if ( packet.body.multiPaths[index].search(packet.body.path) === 0 ) {
+//                let name = packet.body.pathNames[index];
+//                let path = packet.body.multiPaths[index].replace(packet.body.path, "");
+//                this._directories[name] = this._path + path;
+//            }
         }
 
         this.notify("directories", "a{ss}");
@@ -165,6 +188,7 @@ var Plugin = new Lang.Class({
         this._mounted = true;
         this.notify("mounted", "b");
 
+        return true;
     },
 
     _read_stderr: function () {
@@ -195,13 +219,11 @@ var Plugin = new Lang.Class({
     mount: function () {
         debug("SFTP: mount()");
 
-        let packet = new Protocol.Packet({
+        this.sendPacket({
             id: 0,
             type: "kdeconnect.sftp.request",
             body: { startBrowsing: true }
         });
-
-        this.send(packet);
     },
 
     unmount: function () {

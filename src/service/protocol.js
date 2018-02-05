@@ -407,7 +407,7 @@ var LanChannel = new Lang.Class({
      * Public Methods
      */
     open: function (addr) {
-        log("Connecting to '" + this.identity.body.deviceId + "'");
+        log("Connecting to '" + this.identity.body.deviceName + "'");
 
         let client = new Gio.SocketClient();
         client.connect_async(addr, null, (client, res) => {
@@ -531,21 +531,20 @@ var LanChannel = new Lang.Class({
     },
 
     receive: function () {
-        debug("LanChannel.receive(" + this.identity.body.deviceId + ")");
-
         let data, len, packet;
 
         try {
             [data, len] = this._in.read_line(null);
-            debug("Device received: " + data);
         } catch (e) {
-            log("Failed to receive packet: " + e);
+            log("Failed to receive packet from " + this.identity.body.deviceId + ": " + e);
             return false;
         }
 
         if (data === null || data === undefined || !data.length) {
             return false;
         }
+
+        debug(this.identity.body.deviceId + ": " + data.toString());
 
         packet = new Packet(data.toString());
         this.emit("received", packet);

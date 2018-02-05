@@ -3,6 +3,8 @@
 <interface>
   <requires lib="gtk+" version="3.20"/>
   <template class="Gjs_GSConnectPrefsWidget" parent="GtkGrid">
+    <property name="width_request">540</property>
+    <property name="height_request">400</property>
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <child>
@@ -1114,7 +1116,6 @@ Please see the &lt;a href="https://github.com/andyholmes/gnome-shell-extension-g
           </object>
           <packing>
             <property name="name">switcher</property>
-            <property name="title" translatable="yes">SWITCHER</property>
           </packing>
         </child>
       </object>

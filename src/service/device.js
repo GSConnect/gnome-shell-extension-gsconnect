@@ -14,6 +14,59 @@ imports.searchPath.push(gsconnect.datadir);
 const Protocol = imports.service.protocol;
 
 
+/**
+ * A device notification.
+ *
+ * TODO...
+ */
+var Notification = new Lang.Class({
+    Name: "GSConnectDeviceNotification",
+    Extends: GObject.Object,
+    Properties: {
+        "connected": GObject.ParamSpec.boolean(
+            "connected",
+            "deviceConnected",
+            "Whether the device is connected",
+            GObject.ParamFlags.READABLE,
+            false
+        ),
+        "fingerprint": GObject.ParamSpec.string(
+            "fingerprint",
+            "deviceFingerprint",
+            "SHA1 fingerprint for the device certificate",
+            GObject.ParamFlags.READABLE,
+            ""
+        )
+    },
+
+    _init: function (params) {
+    },
+
+    send: function () {
+        let notif = new Gio.Notification();
+
+        notif.set_title(this.title);
+        notif.set_body(this.body);
+        notif.set_icon(this.icon);
+
+        for (let button of this.buttons) {
+            // TODO
+            notif.add_button();
+        }
+
+        if (this.action) {
+            // TODO
+            notif.set_default_action();
+        }
+    }
+});
+
+
+/**
+ * An object representing a remote device.
+ *
+ * TODO...
+ */
 var Device = new Lang.Class({
     Name: "GSConnectDevice",
     Extends: GObject.Object,
@@ -82,8 +135,13 @@ var Device = new Lang.Class({
             "deviceType",
             "The device type",
             GObject.ParamFlags.READABLE,
-            ""
+            "unknown"
         )
+    },
+    Signals: {
+        "destroy": {
+            flags: GObject.SignalFlags.NO_HOOKS
+        }
     },
 
     _init: function (params) {
@@ -146,6 +204,24 @@ var Device = new Lang.Class({
         } else {
             this.activate();
         }
+
+        // TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
+        // Actions
+        this._actions = new Gio.SimpleActionGroup();
+
+        ["acceptPair", "rejectPair"].forEach(name => {
+            let action = new Gio.SimpleAction({
+                name: name,
+                parameter_type: new GLib.VariantType("s")
+            });
+            action.connect("activate", () => this[name]());
+            this._actions.add_action(action);
+        });
+
+        Gio.DBus.session.export_action_group(
+            this._dbus.get_object_path(),
+            this._actions
+        );
     },
 
     /** Device Properties */
@@ -335,7 +411,18 @@ var Device = new Lang.Class({
         }
     },
 
-    /** Pairing Functions */
+    /**
+     * Keybindings
+     */
+    _initKeybindings: function () {
+    },
+
+    _handleKeybinding: function () {
+    },
+
+    /**
+     * Pairing Functions
+     */
     _handlePair: function (packet) {
         // A pair has been requested
         if (packet.body.pair) {
@@ -390,13 +477,15 @@ var Device = new Lang.Class({
         notif.set_icon(new Gio.ThemedIcon({ name: "channel-insecure-symbolic" }));
         notif.set_priority(Gio.NotificationPriority.URGENT);
 
-        notif.add_button(
+        notif.add_device_button(
             _("Reject"),
-            "app.pairAction(('" + this._dbus.get_object_path() + "','reject'))"
+            this._dbus.get_object_path(),
+            "rejectPair"
         );
-        notif.add_button(
+        notif.add_device_button(
             _("Accept"),
-            "app.pairAction(('" + this._dbus.get_object_path() + "','accept'))"
+            this._dbus.get_object_path(),
+            "acceptPair"
         );
 
         this.send_notification("pair-request", notif);
@@ -498,7 +587,6 @@ var Device = new Lang.Class({
     /**
      * Plugin Functions
      */
-
     _supportedPlugins: function () {
         let supported = [];
         let incoming = this.incomingCapabilities;
@@ -537,7 +625,7 @@ var Device = new Lang.Class({
                 module = imports.service.plugins[name];
                 plugin = new module.Plugin(this);
             } catch (e) {
-                debug("Error loading " + name + ": " + e.stack);
+                debug("Error loading " + name + ": " + e.message + "\n" + e.stack);
                 reject(e);
             }
 
@@ -571,16 +659,20 @@ var Device = new Lang.Class({
                 reject([name, false]);
             }
 
-            // Unregister handlers
-            let handler = imports.service.plugins[name];
+            try {
+                // Unregister handlers
+                let handler = imports.service.plugins[name];
 
-            for (let packetType of handler.METADATA.incomingPackets) {
-                this._handlers.delete(packetType);
+                for (let packetType of handler.METADATA.incomingPackets) {
+                    this._handlers.delete(packetType);
+                }
+
+                // Register as disabled
+                this._plugins.get(name).destroy();
+                this._plugins.delete(name);
+            } catch (e) {
+                reject(e);
             }
-
-            // Register as disabled
-            this._plugins.get(name).destroy();
-            this._plugins.delete(name);
 
             resolve([name, true]);
         });
@@ -596,21 +688,26 @@ var Device = new Lang.Class({
     },
 
     destroy: function () {
+        this.emit("destroy");
+
         if (this.connected) {
+            this.connect("notify::connected", () => {
+                if (!this.connected) {
+                    this._dbus.flush();
+                    this._dbus.unexport();
+                    delete this._dbus;
+                    GObject.signal_handlers_destroy(this);
+                }
+            });
             this._channel.close();
+        } else {
+            // TODO: this is causing errors to be thrown in _onDisconnected()
+            //       because DBus is unexported before it finishes...
+            this._dbus.flush();
+            this._dbus.unexport();
+            delete this._dbus;
+            GObject.signal_handlers_destroy(this);
         }
-
-        // TODO: it would be nice not to have to do this here
-        for (let [name, plugin] of this._plugins) {
-            plugin.destroy();
-        }
-
-        // TODO: this is causing errors to be thrown in _onDisconnected()
-        //       because it gets called before the channel fully closes
-        this._dbus.flush();
-        this._dbus.unexport();
-        delete this._dbus;
-        GObject.signal_handlers_destroy(this);
     }
 });
 

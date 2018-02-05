@@ -35,9 +35,10 @@ window.gsconnect = { datadir: getPath() };
 imports.searchPath.push(gsconnect.datadir);
 
 const _bootstrap = imports._bootstrap;
-const DaemonWidget = imports.widgets.daemon;
+const Settings = imports.modules.settings;
 const Device = imports.service.device;
 const Protocol = imports.service.protocol;
+const Sound = imports.modules.sound;
 const Telephony = imports.service.plugins.telephony;
 
 
@@ -116,6 +117,9 @@ var Daemon = new Lang.Class({
     },
 
     set discovering (bool) {
+        // FIXME
+        bool = true;
+
         if (bool) {
             this.tcpListener.start();
             this.broadcast();
@@ -258,6 +262,7 @@ var Daemon = new Lang.Class({
      * Discovery Methods
      */
     broadcast: function () {
+        if (!this.identity) { return; }
         this.udpListener.send(this.identity);
     },
 
@@ -276,6 +281,7 @@ var Daemon = new Lang.Class({
                 if (!this._devices.has(dbusPath)) {
                     new Promise((resolve, reject) => {
                         let device = new Device.Device({ id: id});
+                        // TODO: better
                         device.connect("notify::connected", (device) => {
                             if (!device.connected) {
                                 this._pruneDevices();
@@ -336,6 +342,7 @@ var Daemon = new Lang.Class({
                     packet: packet,
                     channel: channel
                 });
+                // TODO: better
                 device.connect("notify::connected", (device) => {
                     if (!device.connected) {
                         this._pruneDevices();
@@ -412,28 +419,11 @@ var Daemon = new Lang.Class({
     /**
      * Notification Actions
      */
-    _getPlugin: function (devicePath, pluginName) {
-        let device;
-
-        if ((device = this._devices.get(devicePath))) {
-            return device._plugins.get(pluginName);
-        }
-
-        return false;
-    },
-
-    _batteryWarningAction: function (action, parameter) {
-        let dbusPath = parameter.deep_unpack().toString();
-        let plugin = this._getPlugin(dbusPath, "findmyphone");
-
-        if (plugin) {
-            plugin.find();
-        }
-    },
-
     _cancelTransferAction: function (action, parameter) {
         parameter = parameter.deep_unpack();
-        let plugin = this._getPlugin(parameter["0"], "share");
+
+        let device = this._devices.get(parameter["0"]);
+        let plugin = (device) ? device._plugins.get("share") : false;
 
         if (plugin) {
             if (plugin.transfers.has(parameter["1"])) {
@@ -449,76 +439,83 @@ var Daemon = new Lang.Class({
         Gio.AppInfo.launch_default_for_uri(unescape(path), null);
     },
 
-    _muteCallAction: function (action, parameter) {
-        let dbusPath = parameter.deep_unpack().toString();
-        let plugin = this._getPlugin(dbusPath, "telephony");
+    /**
+     * A meta-action for directing device actions.
+     *
+     * @param {Gio.Action} action - ...
+     * @param {Object} params
+     * @param {string} params[0] - DBus object path for device
+     * @param {string} params[1] - GAction/Method name
+     * @param {string} params[2] - JSON string of action data
+     */
+    _deviceAction: function (action, params) {
+        params = params.unpack();
+        let device = this._devices.get(params["0"].unpack());
+        let name = params["1"].unpack();
 
-        if (plugin) {
-            plugin.muteCall();
-        }
-    },
+        let deviceAction = device._actions.lookup_action(name);
 
-    _replyMissedCallAction: function (action, parameter) {
-        parameter = parameter.deep_unpack();
-        let plugin = this._getPlugin(parameter["0"], "telephony");
-
-        if (plugin) {
-            plugin.replyMissedCall(parameter["1"], parameter["2"]);
-        }
-    },
-
-    _replySmsAction: function (action, parameter) {
-        parameter = parameter.deep_unpack();
-        let plugin = this._getPlugin(parameter["0"], "telephony");
-
-        if (plugin) {
-            plugin.replySms(parameter["1"], parameter["2"], parameter["3"]);
-        }
-    },
-
-    _pairAction: function (action, parameter) {
-        parameter = parameter.deep_unpack();
-        let device;
-
-        if ((device = this._devices.get(parameter["0"]))) {
-            if (parameter["1"] === "accept") {
-                device.acceptPair();
-            } else if (parameter["1"] === "reject") {
-                device.rejectPair();
+        if (device && deviceAction) {
+            try {
+                deviceAction.activate(params["2"]);
+            } catch (e) {
+                debug(e.message + "\n" + e.stack);
             }
+        } else {
+            debug("Error:\nDevice: " + device + "\nAction: " + name);
         }
     },
 
-    _restartNautilusAction: function (action, parameter) {
-        GLib.spawn_command_line_async("nautilus -q");
-    },
+    /**
+     * Add a list of [name, callback, parameter_type], with callback bound to
+     * @obj or this.
+     */
+    _addActions: function (actions, scope) {
+        scope = scope || this;
 
-    _initNotificationActions: function () {
-        let entries = [
-            ["pairAction", "(ss)", this._pairAction],
-            ["batteryWarning", "s", this._batteryWarningAction],
-            ["cancelTransfer", "(ss)", this._cancelTransferAction],
-            ["openTransfer", "s", this._openTransferAction],
-            ["muteCall", "s", this._muteCallAction],
-            ["replyMissedCall", "(sss)", this._replyMissedCallAction],
-            ["replySms", "(ssss)", this._replySmsAction],
-            ["restartNautilus", "s", this._restartNautilusAction]
-        ];
-
-        entries.forEach((entry) => {
+        actions.map((entry) => {
             let action = new Gio.SimpleAction({
                 name: entry[0],
-                parameter_type: new GLib.VariantType(entry[1])
+                parameter_type: (entry[2]) ? new GLib.VariantType(entry[2]) : null
             });
-            action.connect("activate", entry[2].bind(this));
+            action.connect("activate", entry[1].bind(scope));
             this.add_action(action);
         });
+    },
+
+    _initActions: function () {
+        this._addActions([
+            // Device
+            ["deviceAction", this._deviceAction, "(sss)"],
+            // Daemon
+            ["openSettings", this.openSettings],
+            ["cancelTransfer", this._cancelTransferAction, "(ss)"],
+            ["openTransfer", this._openTransferAction, "s"],
+            ["restartNautilus", this._restartNautilus]
+        ]);
+
+        // Mixer actions
+        if (Sound._mixerControl) {
+            this._mixer = new Sound.Mixer();
+            this._addActions([
+                ["lowerVolume", this._mixer.lowerVolume],
+                ["muteVolume", this._mixer.muteVolume],
+                ["muteMicrophone", this._mixer.muteMicrophone],
+                ["restoreMixer", this._mixer.restoreMixer]
+            ], this._mixer);
+        } else {
+            this._mixer = null;
+        }
     },
 
     /**
      *
      */
-    notifyNautilusExtension: function () {
+    _restartNautilus: function (action, parameter) {
+        GLib.spawn_command_line_async("nautilus -q");
+    },
+
+    _notifyRestartNautilus: function () {
         let notif = new Gio.Notification();
         notif.set_title(_("Nautilus extensions changed"));
         notif.set_body(_("Restart Nautilus to apply changes"));
@@ -528,7 +525,7 @@ var Daemon = new Lang.Class({
         notif.add_button(
             // TRANSLATORS: Notification button to restart Nautilus
             _("Restart"),
-            "app.restartNautilus('null')"
+            "app.restartNautilus"
         );
 
         this.send_notification("nautilus-integration", notif);
@@ -547,10 +544,10 @@ var Daemon = new Lang.Class({
                 null
             );
 
-            this.notifyNautilusExtension();
+            this._notifyRestartNautilus();
         } else if (!install && script.query_exists(null)) {
             script.delete(null);
-            this.notifyNautilusExtension();
+            this._notifyRestartNautilus();
         }
     },
 
@@ -602,6 +599,9 @@ var Daemon = new Lang.Class({
         }
     },
 
+    /**
+     * Open the application settings
+     */
     openSettings: function (device=null) {
         if (!this._window) {
             this._window = new Gtk.ApplicationWindow({
@@ -623,7 +623,7 @@ var Daemon = new Lang.Class({
                 })
             );
 
-            let page = new DaemonWidget.PrefsWidget(this);
+            let page = new Settings.PrefsWidget(this);
             this._window.add(page);
         }
 
@@ -641,6 +641,7 @@ var Daemon = new Lang.Class({
 
     /**
      * Watch 'daemon.js' in case the extension is uninstalled
+     * TODO: remove .desktop (etc) on delete
      */
     _watchDaemon: function () {
         let daemonFile = Gio.File.new_for_path(
@@ -656,6 +657,17 @@ var Daemon = new Lang.Class({
     /**
      * Overrides & utilities
      */
+    send_notification: function (notifId, notif) {
+        let now = GLib.DateTime.new_now_local().to_unix();
+
+        if (gsconnect.settings.get_int("donotdisturb") <= now) {
+            //notif.set_priority(Gio.NotificationPriority.LOW);
+            Gtk.Application.prototype.send_notification.call(this, notifId, notif);
+        }
+
+        //Gtk.Application.prototype.send_notification.call(this, notifId, notif);
+    },
+
     notify: function (name, format=null) {
         GObject.Object.prototype.notify.call(this, name);
 
@@ -686,7 +698,7 @@ var Daemon = new Lang.Class({
         Gtk.IconTheme.get_default().add_resource_path(gsconnect.app_path);
 
         this._initNotificationListener();
-        this._initNotificationActions();
+        this._initActions();
         this._watchDaemon();
 
         // Export DBus
@@ -707,6 +719,7 @@ var Daemon = new Lang.Class({
         try {
             this.udpListener = new Protocol.UdpListener();
             this.udpListener.connect("received", (server, packet) => {
+                //if (!this.identity) { return; }
                 if (packet.body.deviceId === this.identity.body.deviceId) {
                     return;
                 }
@@ -720,6 +733,7 @@ var Daemon = new Lang.Class({
 
         try {
             this.tcpListener = new Protocol.TcpListener();
+
             this.tcpListener.connect("incoming", (listener, connection) => {
                 let channel = new Protocol.LanChannel(this);
                 let conn = channel.connect("connected", (channel) => {
@@ -731,7 +745,7 @@ var Daemon = new Lang.Class({
             this.tcpListener.connect("notify::active", () => {
                 this.notify("discovering", "b");
             });
-            this.tcpListener.stop();
+            //this.tcpListener.stop();
         } catch (e) {
             log("Error starting TCP listener: " + e);
             this.quit();
@@ -768,7 +782,8 @@ var Daemon = new Lang.Class({
         this._watchDevices();
         log(this._devices.size + " devices loaded from cache");
 
-        this.broadcast();
+        // FIXME plugin loading
+        //this.broadcast();
     },
 
     vfunc_activate: function() {

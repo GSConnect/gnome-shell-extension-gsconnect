@@ -168,6 +168,76 @@ var Mixer = new Lang.Class({
 
         this.output = new Stream(this._control.get_default_sink());
         this.input = new Stream(this._control.get_default_source());
+
+        this._previousState = null;
+        this._volumeChanged = 0;
+        this._volumeMuted = false;
+        this._microphoneMuted = false;
+    },
+
+    /**
+     * Convenience methods
+     */
+    _adjustVolume: function (action) {
+        debug(action);
+
+        if (!this._mixer) { return; }
+
+        if (action === "lower" && !this._prevVolume) {
+            if (this._mixer.output.volume > 0.15) {
+                this._prevVolume = Number(this._mixer.output.volume);
+                this._mixer.output.lower(0.15);
+            }
+        } else if (action === "mute" && !this._mixer.output.muted) {
+            this._mixer.output.muted = true;
+            this._prevMute = true;
+        }
+    },
+
+    lowerVolume: function () {
+        debug("Lowering system volume to 15%");
+
+        if (this._mixer.output.volume > 0.15) {
+            this._volumeChanged = Number(this._mixer.output.volume);
+            this._mixer.output.lower(0.15);
+        }
+    },
+
+    muteVolume: function () {
+        debug("Muting system volume");
+
+        if (!this._mixer.output.muted) {
+            this._mixer.output.muted = true;
+            this._volumeMuted = true;
+        }
+    },
+
+    muteMicrophone: function () {
+        debug("Muting microphone");
+
+        if (!this._mixer.input.muted) {
+            this._mixer.input.muted = true;
+            this._microphoneMuted = true;
+        }
+    },
+
+    restoreMixer: function () {
+        debug("");
+
+        if (this._volumeMuted) {
+            this._mixer.output.muted = false;
+            this._volumeMuted = false;
+        }
+
+        if (this._previousVolume > 0) {
+            this._mixer.output.raise(this._previousVolume);
+            this._previousVolume = 0;
+        }
+
+        if (this._microphoneMuted) {
+            this._mixer.input.muted = false;
+            this._microphoneMuted = false;
+        }
     }
 });
 

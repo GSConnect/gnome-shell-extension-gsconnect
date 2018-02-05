@@ -4,25 +4,13 @@ const Gettext = imports.gettext.domain("org.gnome.Shell.Extensions.GSConnect");
 const _ = Gettext.gettext;
 const Lang = imports.lang;
 
-const GdkPixbuf = imports.gi.GdkPixbuf;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
-const Gtk = imports.gi.Gtk;
-
-try {
-    imports.gi.versions.GData = "0.0";
-    imports.gi.versions.Goa = "1.0";
-
-    var GData = imports.gi.GData;
-    var Goa = imports.gi.Goa;
-} catch (e) {
-    var GData = undefined;
-    var Goa = undefined;
-}
 
 // Local Imports
 imports.searchPath.push(gsconnect.datadir);
+const Contacts = imports.modules.contacts;
 const Sound = imports.modules.sound;
 const Protocol = imports.service.protocol;
 const PluginsBase = imports.service.plugins.base;
@@ -33,6 +21,41 @@ var METADATA = {
     uuid: "org.gnome.Shell.Extensions.GSConnect.Plugin.Telephony",
     incomingPackets: ["kdeconnect.telephony"],
     outgoingPackets: ["kdeconnect.telephony.request", "kdeconnect.sms.request"]
+};
+
+
+var UUID = "org.gnome.Shell.Extensions.GSConnect.Plugin.Telephony";
+
+var IncomingPacket = {
+    TELEPHONY_EVENT: "kdeconnect.telephony"
+};
+
+var OutgoingPacket = {
+    TELEPHONY_ACTION: "kdeconnect.telephony.request",
+    SMS_MESSAGE: "kdeconnect.sms.request"
+};
+
+var Action = {
+    openSms: {
+        label: _("Reply to a missed call by SMS"),
+        incoming: ["kdeconnect.telephony"],
+        outgoing: ["kdeconnect.sms.request"]
+    },
+    replyMissedCall: {
+        label: _("Reply to a missed call by SMS"),
+        incoming: ["kdeconnect.telephony"],
+        outgoing: ["kdeconnect.sms.request"]
+    },
+    replySms: {
+        label: _("Reply to an SMS"),
+        incoming: ["kdeconnect.telephony"],
+        outgoing: ["kdeconnect.sms.request"]
+    },
+    sendSms: {
+        label: _("Reply to a missed call by SMS"),
+        incoming: ["kdeconnect.telephony"],
+        outgoing: ["kdeconnect.sms.request"]
+    }
 };
 
 
@@ -75,6 +98,21 @@ var _numberRegex = new RegExp(
 /**
  * Telephony Plugin
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/telephony
+ *
+ * Packets:
+ *  {
+ *      type: kdeconnect.telephony
+ *      id: {Number microseconds timestamp}
+ *      body: {
+ *          event: missedCall | ringing | sms | talking,
+ *          [contactName]: {String} Sender's name (optional),
+ *          phoneNumber: {String} Sender's phone number (mandatory?),
+ *          [messageBody]: {String} SMS message body (mandatory for 'sms' events),
+ *          [phoneThumbnail]: {String} base64 encoded JPEG bytes,
+ *          [isCancel]: {Boolean} Marks the end of a 'ringing'/'talking' event
+ *      }
+ *  }
+ *
  *
  * TODO: track notifs: isCancel events, append new messages to unacknowledged?
  */
@@ -120,7 +158,7 @@ var Plugin = new Lang.Class({
     _init: function (device) {
         this.parent(device, "telephony");
 
-        this._cache = new ContactsCache();
+        this.contacts = Contacts.getStore();
 
         if (Sound._mixerControl) {
             this._mixer = new Sound.Mixer();
@@ -132,177 +170,310 @@ var Plugin = new Lang.Class({
         this._pausedPlayer = false;
     },
 
-    _getPixbuf: function (path) {
-        let loader = new GdkPixbuf.PixbufLoader();
-        loader.write(GLib.file_get_contents(path)[1]);
+    // FIXME: use contact cache
+    handlePacket: function (packet) {
+        debug(packet);
 
-        try {
-            loader.close();
-        } catch (e) {
-            debug("Warning: " + e.message);
+        let event = this._parsePacket(packet);
+
+        // Event handling
+        // The event has ended (ringing stopped or call ended)
+        if (event.isCancel) {
+            this._resumeMedia();
+            this._unmuteMicrophone();
+            this._restoreVolume();
+            this.device.withdraw_notification(event.event + "|" + event.contact.name); // FIXME
+        // An event was triggered
+        } else {
+            // SMS Message (sms)
+            if (event.event === "sms") {
+                this.emit(
+                    "sms",
+                    event.phoneNumber,
+                    event.contact.name,
+                    event.messageBody,
+                    event.contact.avatar || ""
+                );
+
+                this._dbus.emit_signal("sms",
+                    new GLib.Variant(
+                        "(ssss)",
+                        [event.phoneNumber,
+                        event.contact.name,
+                        event.messageBody,
+                        event.contact.avatar || ""]
+                    )
+                );
+
+                return new Promise((resolve, reject) => {
+                    if (this.settings.get_boolean("handle-messaging")) {
+                        resolve(this._onSms(event));
+                    } else {
+                        reject(false);
+                    }
+                });
+            // Phone Call (missedCall | ringing | talking)
+            } else {
+                this.emit(
+                    event.event,
+                    event.contact.number,
+                    event.contact.name,
+                    event.contact.avatar || ""
+                );
+                this._dbus.emit_signal(event.event,
+                    new GLib.Variant(
+                        "(sss)",
+                        [event.contact.number,
+                        event.contact.name,
+                        event.contact.avatar || ""]
+                    )
+                );
+
+                return new Promise((resolve, reject) => {
+                    if (this.settings.get_boolean("handle-calls")) {
+                        switch (event.event) {
+                            case "missedCall":
+                                resolve(this._onMissedCall(event));
+                                break;
+                            case "ringing":
+                                resolve(this._onRinging(event));
+                                break;
+                            case "missedCall":
+                                resolve(this._onTalking(event));
+                                break;
+                            default:
+                                log("Unknown telephony event");
+                                reject(false);
+                        }
+                    } else {
+                        reject(false);
+                    }
+                });
+            }
         }
-
-        return loader.get_pixbuf();
     },
 
-    _getIcon: function (packet) {
-        let contact = this._cache.getContact(
-            packet.body.phoneNumber,
-            packet.body.contactName
+    // FIXME FIXME FIXME
+    /**
+     * Parse an telephony packet and return an event object, with ... TODO
+     *
+     * @param {object} packet - A telephony event packet
+     * @return {object} - Aa event object
+     */
+    _parsePacket: function (packet) {
+        let event = packet.body;
+        event.time = GLib.DateTime.new_now_local().to_unix();
+
+        event.contact = this.contacts.getContact(
+            event.contactName,
+            event.phoneNumber
         );
 
-        if (contact.avatar) {
-            return this._getPixbuf(contact.avatar);
-        } else if (packet.body.event === "missedCall") {
+        // Update contact avatar
+        // FIXME: move to modules/contacts.js
+        if (event.phoneThumbnail) {
+            if (!contact.avatar) {
+                debug("Telephony: updating avatar for " + contact.name);
+
+                let path = this.contacts._cacheDir + "/" + GLib.uuid_string_random() + ".jpeg";
+                GLib.file_set_contents(
+                    path,
+                    GLib.base64_decode(packet.body.phoneThumbnail)
+                );
+                contact.avatar = path;
+                this.contacts._writeCache();
+            }
+
+            delete event.phoneThumbnail;
+        }
+
+        return event;
+    },
+
+    /**
+     * Notification Icons/Avatars
+     */
+    _getIcon: function (event) {
+        if (event.contact.avatar) {
+            return this.contacts.getContactPixbuf(contact.avatar);
+        } else if (event.event === "missedCall") {
             return new Gio.ThemedIcon({ name: "call-missed-symbolic" });
-        } else if (["ringing", "talking"].indexOf(packet.body.event) > -1) {
+        } else if (["ringing", "talking"].indexOf(event.event) > -1) {
             return new Gio.ThemedIcon({ name: "call-start-symbolic" });
-        } else if (packet.body.event === "sms") {
+        } else if (event.event === "sms") {
             return new Gio.ThemedIcon({ name: "sms-symbolic" });
         }
     },
 
-    _handleMissedCall: function (sender, packet) {
-        debug("Telephony: handleMissedCall()");
+    /**
+     * Telephony event handlers
+     */
+    _onMissedCall: function (event) {
+        debug(event);
+
+        // Start tracking the duplicate early
+        let notification = this.device._plugins.get("notification");
+
+        if (notification) {
+            // TRANSLATORS: This is specifically for matching missed call notifications on Android.
+            // You should translate this to match the notification on your phone that in english looks like "Missed call: John Lennon"
+            notification.trackDuplicate({
+                localId: event.event + "|" + _("Missed call") + ": " + event.contact.name,
+                ticker: _("Missed call") + ": " + event.contact.name,
+                time: event.time
+            });
+        }
 
         let notif = new Gio.Notification();
         // TRANSLATORS: Missed Call
         notif.set_title(_("Missed Call"));
         notif.set_body(
             // TRANSLATORS: eg. Missed call from John Smith on Google Pixel
-            _("Missed call from %s on %s").format(sender, this.device.name)
+            _("Missed call from %s on %s").format(
+                event.contact.name,
+                this.device.name
+            )
         );
-        notif.set_icon(this._getIcon(packet));
+        notif.set_icon(this._getIcon(event));
         notif.set_priority(Gio.NotificationPriority.NORMAL);
 
-        notif.add_button(
+        notif.add_device_button(
             // TRANSLATORS: Reply to a missed call by SMS
             _("Message"),
-            "app.replyMissedCall(('" +
-            this._dbus.get_object_path() +
-            "','" +
-            escape(packet.body.phoneNumber) +
-            "','" +
-            escape(packet.body.contactName) +
-            "'))"
+            this._dbus.get_object_path(),
+            "replyMissedCall",
+            [event.phoneNumber, event.contact.name, event.time]
         );
 
-        // Tell the notification plugin to "silence" any duplicate
-        let plugin = this.device._plugins.get("notification");
-        if (plugin) {
-            // TRANSLATORS: This is specifically for matching missed call notifications on Android.
-            // You should translate this (or not) to match the string on your phone that in english looks like "Missed call: John Lennon"
-            plugin.silenceDuplicate(_("Missed call") + ": " + sender);
-        }
-
         this.device.send_notification(
-            packet.body.event + "|" + _("Missed call") + ": " + sender,
-            notif);
+            event.event + "|" + _("Missed call") + ": " + event.contact.name,
+            notif
+        );
+
+        return true;
     },
 
-    _handleRinging: function (sender, packet) {
-        debug("Telephony: _handleRinging()");
+    _onRinging: function (event) {
+        debug(event);
 
         let notif = new Gio.Notification();
         // TRANSLATORS: Incoming Call
         notif.set_title(_("Incoming Call"));
         notif.set_body(
             // TRANSLATORS: eg. Incoming call from John Smith on Google Pixel
-            _("Incoming call from %s on %s").format(sender, this.device.name)
+            _("Incoming call from %s on %s").format(event.contact.name, this.device.name)
         );
-        notif.set_icon(this._getIcon(packet));
+        notif.set_icon(this._getIcon(event));
         notif.set_priority(Gio.NotificationPriority.URGENT);
 
-        notif.add_button(
+        notif.add_device_button(
             // TRANSLATORS: Silence an incoming call
             _("Mute"),
-            "app.muteCall('" + this._dbus.get_object_path() + "')"
+            this._dbus.get_object_path(),
+            "muteCall"
         );
 
-        this.device.send_notification(
-            packet.body.event + "|" + sender,
-            notif
-        );
+        this.device.send_notification(event.event + "|" + event.contact.name, notif);
 
+        // FIXME FIXME FIXME FIXME FIXME FIXME FIXME FIXME FIXME
         this._adjustVolume(this.settings.get_string("ringing-volume"));
         this._pauseMedia(this.settings.get_boolean("ringing-pause"));
+
+        return true;
     },
 
-    _handleSms: function (sender, packet) {
-        debug("Telephony: _handleSMS()");
+    _onSms: function (event) {
+        debug(event);
 
-        let plugin = this.device._plugins.get("notification");
+        // Start tracking the duplicate early
+        let notification = this.device._plugins.get("notification");
+
+        if (notification) {
+            notification.trackDuplicate({
+                localId: "sms|" + event.contact.name + ": " + event.messageBody,
+                ticker: event.contact.name + ": " + event.messageBody,
+                time: event.time
+            });
+        }
 
         // Check for an extant window
-        let window = this._hasWindow(packet.body.phoneNumber);
+        let window = this._hasWindow(event.phoneNumber);
 
         if (window) {
-            window.receive(
-                packet.body.phoneNumber,
-                packet.body.contactName,
-                packet.body.messageBody
+            window.receiveMessage(
+                event.contact,
+                event.phoneNumber,
+                event.messageBody
             );
             window.urgency_hint = true;
-            window._notifications.push(packet.id.toString());
+            window._notifications.push([
+                event.event,
+                event.contact.name + ": " + event.messageBody
+            ].join("|"));
 
             // Tell the notification plugin to mark any duplicate read
             if (plugin) {
-                plugin.closeDuplicate(sender + ": " + packet.body.messageBody);
+                plugin.closeDuplicate({
+                    localId: "sms|" + event.contact.name + ": " + event.messageBody,
+                    ticker: event.contact.name + ": " + event.messageBody,
+                    time: event.time
+                });
             }
         }
 
         let notif = new Gio.Notification();
-        notif.set_title(sender);
-        notif.set_body(packet.body.messageBody);
-        notif.set_icon(this._getIcon(packet));
+        notif.set_title(event.contact.name);
+        notif.set_body(event.messageBody);
+        notif.set_icon(this._getIcon(event));
         notif.set_priority(Gio.NotificationPriority.HIGH);
 
-        notif.set_default_action(
-            "app.replySms(('" +
-            this._dbus.get_object_path() +
-            "','" +
-            escape(packet.body.phoneNumber) +
-            "','" +
-            escape(packet.body.contactName) +
-            "','" +
-            escape(packet.body.messageBody) +
-            "'))"
+        notif.set_device_action(
+            this._dbus.get_object_path(),
+            "replySms",
+            [event.phoneNumber,
+            event.contact.name,
+            event.messageBody,
+            event.time]
         );
-
-        // Tell the notification plugin to "silence" any duplicate
-        if (plugin) {
-            plugin.silenceDuplicate(sender + ": " + packet.body.messageBody);
-        }
 
         this.device.send_notification(
-            packet.body.event + "|"  + sender + ": " + packet.body.messageBody,
+            event.event + "|"  + event.contact.name + ": " + event.messageBody,
             notif
         );
+
+        return true;
     },
 
-    _handleTalking: function (sender, packet) {
-        debug("Telephony: _handleTalking()");
+    _onTalking: function (event) {
+        debug(event);
 
-        this.device.withdraw_notification("ringing|" + sender);
+        // TODO: need this, or done by isCancel?
+        this.device.withdraw_notification("ringing|" + event.contact.name);
 
         let notif = new Gio.Notification();
         // TRANSLATORS: Talking on the phone
         notif.set_title(_("Call In Progress"));
         notif.set_body(
             // TRANSLATORS: eg. Call in progress with John Smith on Google Pixel
-            _("Call in progress with %s on %s").format(sender, this.device.name)
+            _("Call in progress with %s on %s").format(
+                event.contact.name,
+                this.device.name
+            )
         );
-        notif.set_icon(this._getIcon(packet));
+        notif.set_icon(this._getIcon(event));
         notif.set_priority(Gio.NotificationPriority.NORMAL);
 
         this.device.send_notification(
-            packet.body.event + "|" + sender,
+            event.event + "|" + event.contact.name,
             notif
         );
 
+        // FIXME FIXME FIXME FIXME FIXME FIXME FIXME FIXME FIXME
         this._adjustVolume(this.settings.get_string("talking-volume"));
         this._muteMicrophone(this.settings.get_boolean("talking-microphone"));
         this._pauseMedia(this.settings.get_boolean("talking-pause"));
+
+        return true;
     },
 
     /**
@@ -311,98 +482,34 @@ var Plugin = new Lang.Class({
      * @param {string|array} phoneNumber - A string phone number or array of
      */
     _hasWindow: function (number) {
-        debug("Telephony: _hasWindow(" + number + ")");
+        debug(number);
 
-        if (number instanceof Array) {
-            number = number.map(num => num.replace(/\D/g, "")).sort();
-        } else {
-            number = number.replace(/\D/g, "");
-        }
+        number = number.replace(/\D/g, "");
 
         // Get the current open windows
         let windows = this.device.daemon.get_windows();
-        let window = false;
+        let conversation = false;
 
         // Look for an open window with this contact
         for (let index_ in windows) {
             let win = windows[index_];
 
-            if (win.deviceId !== this.device.id || !win.numbers.length) {
+            if (!win.device || win.device.id !== this.device.id) {
                 continue;
             }
 
-            if (number instanceof Array) {
-                if (JSON.stringify(win.numbers) === JSON.stringify(number)) {
-                    window = win;
-                    break;
-                }
-            } else {
-                for (let winNumber of win.numbers) {
-                    if (number === winNumber) {
-                        window = win;
-                        break;
-                    }
-                }
+            if (number === win.number.replace(/\D/g, "")) {
+                conversation = win;
+                break;
             }
-
-            if (window !== false) { break; }
         }
 
-        return window;
+        return conversation;
     },
 
-    _adjustVolume: function (action) {
-        debug("Telephony: _adjustVolume()");
-
-        if (!this._mixer) { return; }
-
-        if (action === "lower" && !this._prevVolume) {
-            if (this._mixer.output.volume > 0.15) {
-                this._prevVolume = Number(this._mixer.output.volume);
-                this._mixer.output.lower(0.15);
-            }
-        } else if (action === "mute" && !this._mixer.output.muted) {
-            this._mixer.output.muted = true;
-            this._prevMute = true;
-        }
-    },
-
-    _restoreVolume: function () {
-        debug("Telephony: _restoreVolume()");
-
-        if (this._prevMute) {
-            this._mixer.output.muted = false;
-            this._prevMute = false;
-        }
-
-        if (this._prevVolume > 0) {
-            this._mixer.output.raise(this._prevVolume);
-            this._prevVolume = 0;
-        }
-    },
-
-    _muteMicrophone: function (mute) {
-        debug("Telephony: _muteMicrophone()");
-
-        if (!this._mixer) { return; }
-
-        if (mute && !this._mixer.input.muted) {
-            this._mixer.input.muted = true;
-            this._prevMicrophone = true;
-        }
-    },
-
-    _unmuteMicrophone: function () {
-        debug("Telephony: _unmuteMicrophone()");
-
-        if (this._prevMicrophone) {
-            this._mixer.input.muted = false;
-            this._prevMicrophone = false;
-        }
-    },
-
+    // FIXME modules/mpris.js
     _pauseMedia: function (pause) {
-        debug("Telephony: _pauseMedia()");
+        debug(pause);
 
         if (pause && this.device._plugins.has("mpris")) {
             let plugin = this.device._plugins.get("mpris");
@@ -416,6 +523,7 @@ var Plugin = new Lang.Class({
         }
     },
 
+    // FIXME modules/mpris.js
     _resumeMedia: function () {
         debug("Telephony: _resumeMedia()");
 
@@ -425,92 +533,18 @@ var Plugin = new Lang.Class({
         }
     },
 
-    handlePacket: function (packet) {
-        debug("Telephony: handlePacket()");
-
-        // Ensure our signal emissions don't choke, but leave them falsey
-        packet.body.contactName = packet.body.contactName || "";
-        packet.body.phoneNumber = packet.body.phoneNumber || "";
-        packet.body.phoneThumbnail = packet.body.phoneThumbnail || "";
-
-        let contact = this._cache.parsePacket(packet);
-
-        let sender;
-
-        if (packet.body.contactName) {
-            sender = packet.body.contactName;
-        } else if (packet.body.phoneNumber) {
-            sender = packet.body.phoneNumber;
-        } else {
-            sender = _("Unknown Number");
-        }
-
-        // Event handling
-        if (packet.body.isCancel) {
-            this._resumeMedia();
-            this._unmuteMicrophone();
-            this._restoreVolume();
-            this.device.withdraw_notification(packet.body.event + "|" + sender);
-        } else {
-            if (packet.body.event === "sms") {
-                this.emit(
-                    "sms",
-                    contact.number,
-                    contact.name,
-                    packet.body.messageBody,
-                    contact.avatar || ""
-                );
-
-                this._dbus.emit_signal("sms",
-                    new GLib.Variant(
-                        "(ssss)",
-                        [contact.number,
-                        contact.name,
-                        packet.body.messageBody,
-                        contact.avatar || ""]
-                    )
-                );
-            } else {
-                this.emit(
-                    packet.body.event,
-                    contact.number,
-                    contact.name,
-                    contact.avatar || ""
-                );
-                this._dbus.emit_signal(packet.body.event,
-                    new GLib.Variant(
-                        "(sss)",
-                        [contact.number,
-                        contact.name,
-                        contact.avatar || ""]
-                    )
-                );
-            }
-
-            if (packet.body.event === "missedCall") {
-                this._handleMissedCall(sender, packet);
-            } else if (packet.body.event === "ringing") {
-                this._handleRinging(sender, packet);
-            } else if (packet.body.event === "sms") {
-                this._handleSms(sender, packet);
-            } else if (packet.body.event === "talking") {
-                this._handleTalking(sender, packet);
-            }
-        }
-    },
-
     /**
      * Silence an incoming call
      */
     muteCall: function () {
-        debug("Telephony: muteCall()");
+        debug("");
 
         let packet = new Protocol.Packet({
             id: 0,
             type: "kdeconnect.telephony.request",
             body: { action: "mute" }
         });
-        this.device._channel.send(packet);
+        this.send(packet);
     },
 
     /**
@@ -523,6 +557,8 @@ var Plugin = new Lang.Class({
         window.present();
     },
 
+
+    // FIXME FIXME
     openUri: function (uri) {
         if (!uri instanceof SmsURI) {
             try {
@@ -541,17 +577,20 @@ var Plugin = new Lang.Class({
             window = new TelephonyWidget.ConversationWindow(this.device);
 
             for (let recipient of uri.recipients) {
-                window.addRecipient({
+                // FIXME
+                let contact = this.contacts.query({
                     number: recipient,
-                    name: ""
+                    name: "",
+                    single: false
                 });
+                window.addRecipient(recipient, contact);
             }
             window.urgency_hint = true;
         }
 
         // Set the outgoing message if the uri has a body variable
         if (uri.body) {
-            window.setEntry(uri.body);
+            window.setMessage(uri.body);
         }
 
         window.present();
@@ -562,33 +601,39 @@ var Plugin = new Lang.Class({
      *
      * @param {string} phoneNumber - The sender's phone number
      * @param {string} contactName - The sender's name
+     * @param {number} time - The event time in epoch us
      */
-    replyMissedCall: function (phoneNumber, contactName) {
-        debug("Telephony: replyMissedCall()");
+    replyMissedCall: function (phoneNumber, contactName, time) {
+        debug(event);
 
-        phoneNumber = unescape(phoneNumber);
-        contactName = unescape(contactName);
+        // Get a contact
+        let contact = this.contacts.getContact(
+            phoneNumber,
+            contactName
+        );
 
-        // Check for an extant window
+        // Check open windows for this number
         let window = this._hasWindow(phoneNumber);
 
-        // None found; open one, add the contact, log the message, mark it read
+        // None found; open one, mark duplicate read
         if (!window) {
             window = new TelephonyWidget.ConversationWindow(this.device);
-            window.addRecipient({
-                number: phoneNumber,
-                name: contactName
-            });
-            window.urgency_hint = true;
 
             // Tell the notification plugin to mark any duplicate read
             if (this.device._plugins.has("notification")) {
-                let sender = contactName || phoneNumber;
                 this.device._plugins.get("notification").closeDuplicate(
-                    _("Missed call") + ": " + sender
+                    "missedCall",
+                    _("Missed call") + ": " + event.contact.name
                 );
             }
         }
+
+        // FIXME: log the missed call in the window
+        window.receiveMessage(
+            contact,
+            phoneNumber,
+            "<i>" + _("Missed call at %s").format(event.time) + "</i>"
+        );
 
         window.present();
     },
@@ -599,13 +644,10 @@ var Plugin = new Lang.Class({
      * @param {string} phoneNumber - The sender's phone number
      * @param {string} contactName - The sender's name
      * @param {string} messageBody - The SMS message
+     * @param {number} time - The event time in epoch us
      */
-    replySms: function (phoneNumber, contactName, messageBody) {
-        debug("Telephony: replySms()");
-
-        phoneNumber = unescape(phoneNumber);
-        contactName = unescape(contactName);
-        messageBody = unescape(messageBody);
+    replySms: function (phoneNumber, contactName, messageBody, time) {
+        debug(arguments);
 
         // Check for an extant window
         let window = this._hasWindow(phoneNumber);
@@ -615,16 +657,20 @@ var Plugin = new Lang.Class({
             // Open a new window
             window = new TelephonyWidget.ConversationWindow(this.device);
 
+            let contact = this.contacts.getContact(
+                contactName,
+                phoneNumber
+            );
+
             // Log the message
-            window.receive(phoneNumber, contactName, messageBody);
+            window.receiveMessage(contact, phoneNumber, messageBody);
             window.urgency_hint = true;
 
             // Tell the notification plugin to mark any duplicate read
-            if (this.device._plugins.has("notification")) {
-                let sender = contactName || phoneNumber;
-                this.device._plugins.get("notification").closeDuplicate(
-                    sender + ": " + messageBody
-                );
+            let notification = this.device._plugins.get("notification");
+            if (notification) {
+                let name = contactName || phoneNumber;
+                notification.closeDuplicate("sms", name + ": " + messageBody);
             }
         }
 
@@ -650,7 +696,7 @@ var Plugin = new Lang.Class({
             }
         });
 
-        this.device._channel.send(packet);
+        this.send(packet);
     },
 
     /**
@@ -658,6 +704,7 @@ var Plugin = new Lang.Class({
      *
      * @param {string} url - The link to be shared
      */
+    // FIXME: re-check
     shareUri: function (url) {
         // Get the current open windows
         let windows = this.device.daemon.get_windows();
@@ -666,9 +713,11 @@ var Plugin = new Lang.Class({
         for (let index_ in windows) {
             let window = windows[index_];
 
-            if (window.deviceId === this.device.id && window.numbers.length) {
-                hasConversations = true;
-                break;
+            if (window.device && window.device.id === this.device.id) {
+                if (window.number) {
+                    hasConversations = true;
+                    break;
+                }
             }
         }
 
@@ -678,291 +727,10 @@ var Plugin = new Lang.Class({
             window = new TelephonyWidget.ShareWindow(this.device, url);
         } else {
             window = new TelephonyWidget.ConversationWindow(this.device);
-            window.setEntry(url);
+            window.setMessage(url);
         }
 
         window.present();
-    }
-});
-
-
-/**
- * A simple queriable contact cache, using a JSON file to store cache between
- * instances. File are in $HOME/.cache/gsconnnect/contacts for now.
- *
- * See also: https://phabricator.kde.org/T4678
- */
-var ContactsCache = new Lang.Class({
-    Name: "GSConnectContactsCache",
-    Extends: GObject.Object,
-    Properties: {
-        "contacts": GObject.param_spec_variant(
-            "contacts",
-            "ContactsList",
-            "A list of cached contacts",
-            new GLib.VariantType("as"),
-            new GLib.Variant("as", []),
-            GObject.ParamFlags.READABLE
-        ),
-        "provider": GObject.ParamSpec.string(
-            "provider",
-            "ContactsProvider",
-            "The provider for contacts",
-            GObject.ParamFlags.READWRITE,
-            "call-start-symbolic"
-        )
-    },
-
-    _init: function () {
-        this.parent();
-
-        this.provider = "call-start-symbolic";
-
-        this._dir =  ext.cachedir + "/contacts";
-        this._file = Gio.File.new_for_path(this._dir + "/contacts.json");
-        GLib.mkdir_with_parents(this._dir, 448);
-
-        this.contacts = [];
-        this.read();
-
-        this._monitor = this._file.monitor(Gio.FileMonitorFlags.NONE, null);
-        this._monitor.connect("changed", (monitor, file, ofile, event) => {
-            if (event === Gio.FileMonitorEvent.CHANGES_DONE_HINT) {
-                this.read();
-            }
-        });
-
-        this.update();
-    },
-
-    /**
-     * Return a contact object if @number (and @name if given) is matched
-     *
-     * @param {string} number - A phone number to be matched by digits only
-     * @param {string} [name] - A contact name to be matched exactly (optional)
-     * @return {object} - A populated contact object or {}
-     */
-    getContact: function (number, name) {
-        number = number.replace(/\D/g, "");
-
-        for (let contact of this.contacts) {
-            if (contact.number.replace(/\D/g, "") === number) {
-                if (!name || ["", name].indexOf(contact.name) > -1) {
-                    return contact;
-                }
-            }
-        }
-
-        return {};
-    },
-
-    /**
-     * Add or update a contact (update if @number and @name is matched)
-     *
-     * @param {object} newContact - A contact object with at least a number
-     * @param {boolean} [write] - Write the cache to disk, if true
-     */
-    setContact: function (newContact, write=true) {
-        let number = newContact.number.replace(/\D/g, "");
-
-        for (let contact of this.contacts) {
-            if (contact.number.replace(/\D/g, "") === number) {
-                if (["", newContact.name].indexOf(contact.name) > -1) {
-                    Object.assign(contact, newContact);
-                    if (write) { this.write(); }
-                    return contact;
-                }
-            }
-        }
-
-        this.contacts.push(newContact);
-        if (write) { this.write(); }
-        return newContact;
-    },
-
-    /**
-     * Search the cache for contact name or number matching @query. If a number
-     * or name with one phone number matching @query is found return a contact
-     * object. If no match or a contact with more than one number is found
-     * return false.
-     *
-     * @param {string} query - A contact name or phone number to search for
-     * @return {object|false} = A contact object or false.
-     */
-    searchContact: function (query) {
-        let matches = [];
-        let strippedNumber = query.replace(/\D/g, "");
-
-        for (let contact of this.contacts) {
-            if (contact.number.replace(/\D/g, "") === strippedNumber) {
-                matches.push(contact);
-            } else if (contact.name === query) {
-                matches.push(contact);
-            }
-        }
-
-        // Only return if there's a single match
-        return (matches.length === 1) ? matches[0] : false;
-    },
-
-    /**
-     * Parse an telephony event packet and return a contact object, updating
-     * the cache if appropriate.
-     *
-     * @param {object} packet - A telephony event packet
-     * @return {object} - A contact object
-     */
-    parsePacket: function (packet) {
-        let contact = this.getContact(
-            packet.body.phoneNumber,
-            packet.body.contactName
-        );
-
-        contact.name = contact.name || packet.body.contactName;
-        contact.number = contact.number || packet.body.phoneNumber;
-        contact.type = contact.type || "cell";
-        contact.origin = contact.origin || "kdeconnect";
-
-        if (packet.body.phoneThumbnail && !contact.avatar) {
-            debug("Telephony: updating avatar for " + contact.name);
-
-            let path = this._dir + "/" + GLib.uuid_string_random() + ".jpeg";
-            GLib.file_set_contents(
-                path,
-                GLib.base64_decode(packet.body.phoneThumbnail)
-            );
-            contact.avatar = path;
-        }
-
-        return this.setContact(contact);
-    },
-
-    read: function () {
-        try {
-            let contents = this._file.load_contents(null)[1];
-            this.contacts = JSON.parse(contents);
-            this.notify("contacts");
-        } catch (e) {
-            debug("Telephony: Error reading contacts cache: " + e);
-        }
-    },
-
-    write: function () {
-        try {
-            this._file.replace_contents(
-                JSON.stringify(this.contacts),
-                null,
-                false,
-                Gio.FileCreateFlags.REPLACE_DESTINATION,
-                null
-            );
-        } catch (e) {
-            debug("Telephony: Error writing contacts cache: " + e);
-        }
-    },
-
-    update: function () {
-        try {
-            let envp = GLib.get_environ();
-            envp.push("FOLKS_BACKENDS_DISABLED=telepathy")
-
-            let proc = GLib.spawn_async_with_pipes(
-                null,
-                ["python3", ext.datadir + "/folks-cache.py"],
-                envp,
-                GLib.SpawnFlags.SEARCH_PATH,
-                null
-            );
-
-            this._check_folks(proc);
-        } catch (e) {
-            debug("Telephony: Error reading folks-cache.py: " + e.message);
-
-            this._cacheGoogleContacts();
-        }
-    },
-
-    /** Check spawned folks.py for errors on stderr */
-    _check_folks: function (proc) {
-        let errstream = new Gio.DataInputStream({
-            base_stream: new Gio.UnixInputStream({ fd: proc[4] })
-        });
-
-        GLib.spawn_close_pid(proc[1]);
-
-        errstream.read_line_async(GLib.PRIORITY_LOW, null, (source, res) => {
-            let [errline, length] = source.read_line_finish(res);
-
-            if (errline === null) {
-                this.provider = "avatar-default-symbolic";
-                this.notify("provider");
-            } else {
-                debug("Telephony: Error reading folks-cache.py: " + errline);
-
-                this._cacheGoogleContacts();
-            }
-        });
-
-    },
-
-    /** Get all google accounts in Goa */
-    _getGoogleAccounts: function () {
-        let goaClient = Goa.Client.new_sync(null);
-        let goaAccounts = goaClient.get_accounts();
-
-        for (let goaAccount in goaAccounts) {
-            let acct = goaAccounts[goaAccount].get_account();
-
-            if (acct.provider_type === "google") {
-                yield new GData.ContactsService({
-                    authorizer: new GData.GoaAuthorizer({
-                        goa_object: goaClient.lookup_by_id(acct.id)
-                    })
-                })
-            }
-        }
-    },
-
-    /** Query google contacts via GData */
-    _getGoogleContacts: function (account) {
-        let query = new GData.ContactsQuery({ q: "" });
-        let count = 0;
-
-        while (true) {
-            let feed = account.query_contacts(
-                query, // query,
-                null, // cancellable
-                (contact) => {
-                    for (let phoneNumber of contact.get_phone_numbers()) {
-                        this.setContact({
-                            name: contact.title,
-                            number: phoneNumber.number,
-                            type: phoneNumber.relation_type || "unknown",
-                            origin: "google"
-                        }, false);
-                    }
-                }
-            );
-
-            count += feed.get_entries().length;
-            query.start_index = count;
-
-            if (count >= feed.total_results) { break; }
-        }
-
-        this.write();
-    },
-
-    _cacheGoogleContacts: function () {
-        try {
-            for (let account in this._getGoogleAccounts()) {
-                this._getGoogleContacts(account);
-                this.provider = "goa-account-google";
-                this.notify("provider");
-            }
-        } catch (e) {
-            debug("Telephony: Error reading Google Contacts: " + e);
-        }
     }
 });
 
@@ -1024,5 +792,4 @@ var SmsURI = new Lang.Class({
         return (this.body) ? uri + "?body=" + escape(this.body) : uri;
     }
 });
-
 

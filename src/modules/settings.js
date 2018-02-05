@@ -4,6 +4,7 @@ const Gettext = imports.gettext.domain("org.gnome.Shell.Extensions.GSConnect");
 const _ = Gettext.gettext;
 const Lang = imports.lang;
 
+const GdkPixbuf = imports.gi.GdkPixbuf;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
@@ -11,8 +12,446 @@ const Gtk = imports.gi.Gtk;
 
 // Local Imports
 imports.searchPath.push(gsconnect.datadir);
+const Client = imports.client;
 const KeybindingsWidget = imports.widgets.keybindings;
 const Sound = imports.modules.sound;
+
+
+/**
+ * A simple dialog for selecting a device
+ */
+var DeviceChooser = new Lang.Class({
+    Name: "GSConnectDeviceChooser",
+    Extends: Gtk.Dialog,
+
+    _init: function (params) {
+        this.parent({
+            use_header_bar: true,
+            application: Gio.Application.get_default(),
+            default_width: 300,
+            default_height: 200
+        });
+        this.set_keep_above(true);
+
+        // HeaderBar
+        let headerBar = this.get_header_bar();
+        headerBar.title = _("Select a Device");
+        headerBar.subtitle = params.title;
+        headerBar.show_close_button = false;
+
+        let selectButton = this.add_button(_("Select"), Gtk.ResponseType.OK);
+        selectButton.sensitive = false;
+        this.add_button(_("Cancel"), Gtk.ResponseType.CANCEL);
+        this.set_default_response(Gtk.ResponseType.OK);
+
+        // Device List
+        let scrolledWindow = new Gtk.ScrolledWindow({
+            hexpand: true,
+            vexpand: true,
+            hscrollbar_policy: Gtk.PolicyType.NEVER
+        });
+        this.get_content_area().add(scrolledWindow);
+
+        this.list = new Gtk.ListBox({ activate_on_single_click: false });
+        this.list.connect("row-activated", (list, row) => {
+            this.response(Gtk.ResponseType.OK);
+        });
+        this.list.connect("selected-rows-changed", () => {
+            selectButton.sensitive = (this.list.get_selected_rows().length);
+        });
+        scrolledWindow.add(this.list);
+
+        this._populate(params.devices);
+        scrolledWindow.show_all();
+    },
+
+    _populate: function (devices) {
+        for (let device of devices) {
+            let row = new Gtk.ListBoxRow();
+            row.device = device;
+            this.list.add(row);
+
+            let box = new Gtk.Box({
+                margin: 6,
+                spacing: 6
+            });
+            row.add(box);
+
+            let icon = new Gtk.Image({
+                icon_name: device.type,
+                pixel_size: 32
+            });
+            box.add(icon);
+
+            let name = new Gtk.Label({
+                label: device.name,
+                halign: Gtk.Align.START,
+                hexpand: true
+            });
+            box.add(name);
+        }
+    }
+});
+
+
+var SidebarRow = new Lang.Class({
+    Name: "GSConnectSidebarRow",
+    Extends: Gtk.ListBoxRow,
+
+    _init: function (params) {
+        this.parent({
+            selectable: true,
+            visible: true
+        });
+
+        this.type = params.type || undefined;
+        this.set_name(params.name);
+
+        this.box = new Gtk.Box({
+            orientation: Gtk.Orientation.HORIZONTAL,
+            spacing: 12,
+            margin_left: 8,
+            margin_right: 8,
+            margin_bottom: 12,
+            margin_top: 12,
+            visible: true
+        });
+        this.add(this.box);
+
+        this.icon = new Gtk.Image({
+            icon_name: params.icon_name,
+            pixel_size: 16,
+            visible: true
+        });
+        this.box.add(this.icon);
+
+        this.title = new Gtk.Label({
+            label: params.title,
+            halign: Gtk.Align.START,
+            hexpand: true,
+            valign: Gtk.Align.CENTER,
+            vexpand: true,
+            visible: true
+        });
+        this.box.add(this.title);
+
+        if (params.go_next) {
+            this.go_next = new Gtk.Image({
+                icon_name: "go-next-symbolic",
+                pixel_size: 16,
+                halign: Gtk.Align.END,
+                visible: true
+            });
+            this.box.add(this.go_next);
+        }
+    }
+});
+
+
+var PrefsWidget = Lang.Class({
+    Name: "GSConnectPrefsWidget",
+    Extends: Gtk.Grid,
+    Template: "resource:///org/gnome/Shell/Extensions/GSConnect/prefs.ui",
+    Children: [
+        "stack", "switcher", "sidebar",
+        "shell-list",
+        "show-indicators", "show-offline", "show-unpaired", "show-battery",
+        "extensions-list",
+        "files-integration", "webbrowser-integration",
+        "advanced-list",
+        "debug-mode", "debug-window",
+        "help", "help-list"
+    ],
+
+    _init: function (application=false) {
+        this.parent();
+
+        // Sidebar
+        this.help.type = "device";
+        this.switcher.set_header_func(this._switcher_separators);
+        this.switcher.connect("row-selected", (box, row) => {
+            row = row || this.switcher.get_row_at_index(0);
+            let name = row.get_name() || null;
+
+            this.stack.set_visible_child_name(name);
+
+            if (this.sidebar.get_child_by_name(name)) {
+                if (this.headerbar) {
+                    this.headerbar.title = row.title.label;
+                } else {
+                    this.get_toplevel().get_titlebar().title = row.title.label;
+                }
+
+                this.sidebar.set_visible_child_name(name);
+                this._prevButton.visible = true;
+            }
+        });
+        this.switcher.select_row(this.switcher.get_row_at_index(0));
+
+        // FIXME FIXME
+        // Init UI Elements
+        this._setHeaderbar();
+        this._connectTemplate();
+
+        // We were instantiated by the GtkApplication
+        if (application) {
+            this.daemon = application;
+
+            this.daemon.connect("notify::devices", (daemon) => {
+                this._devicesChanged();
+            });
+            this._devicesChanged();
+        // We were instantiated by the Shell, we need a proxy
+        } else {
+            this.daemon = new Client.Daemon();
+
+            this._watchdog = Gio.bus_watch_name(
+                Gio.BusType.SESSION,
+                "org.gnome.Shell.Extensions.GSConnect",
+                Gio.BusNameWatcherFlags.NONE,
+                (c, n, o) => this._serviceAppeared(c, n, o),
+                (c, n) => this._serviceVanished(c, n)
+            );
+        }
+
+        // Broadcasting
+        this.connect("destroy", () => {
+            GLib.source_remove(this._refreshSource);
+        });
+
+        this._refreshSource = GLib.timeout_add_seconds(
+            GLib.PRIORITY_DEFAULT,
+            5,
+            () => {
+                if (this.sidebar.get_visible_child_name() === "switcher") {
+                    this.daemon.broadcast();
+                }
+                return true;
+            }
+        );
+    },
+
+    _bind_bool: function (settings, key, label) {
+        // Watch the setting for changes
+        settings.connect("changed::" + key, (settings) => {
+            label.label = settings.get_boolean(key) ? _("On") : _("Off");
+        });
+        // Init the label
+        label.label = settings.get_boolean(key) ? _("On") : _("Off");
+
+        // Watch the Gtk.ListBox for activations
+        let row = label.get_parent().get_parent();
+        let box = row.get_parent();
+
+        box.connect("row-activated", (box, arow) => {
+            if (row === arow) {
+                // Set the boolean to the inverse of the label "value"
+                settings.set_boolean(key, (label.label === _("Off")));
+            }
+        });
+    },
+
+    /**
+     * UI Setup and template connecting
+     */
+    _setHeaderbar: function () {
+        // About Button
+        let aboutButton = new Gtk.Button({
+            image: new Gtk.Image({
+                icon_name: "help-about-symbolic",
+                pixel_size: 16,
+                visible: true
+            }),
+            always_show_image: true,
+            visible: true
+        });
+        aboutButton.connect("clicked", (button) => {
+            let dialog = new Gtk.AboutDialog({
+                authors: [ "Andy Holmes <andrew.g.r.holmes@gmail.com>" ],
+                //logo_icon_name: gsconnect.app_id,
+                logo: GdkPixbuf.Pixbuf.new_from_resource_at_scale(
+                    gsconnect.app_path + "/" + gsconnect.app_id + ".svg",
+                    128,
+                    128,
+                    true
+                ),
+                program_name: _("GSConnect"),
+                version: gsconnect.metadata.version,
+                website: gsconnect.metadata.url,
+                license_type: Gtk.License.GPL_2_0,
+                transient_for: this.get_toplevel(),
+                modal: true
+            });
+            dialog.connect("delete-event", dialog => dialog.destroy());
+            dialog.show();
+        });
+
+        // Previous Button
+        this._prevButton = new Gtk.Button({
+            image: new Gtk.Image({
+                icon_name: "go-previous-symbolic",
+                pixel_size: 16,
+                visible: true
+            }),
+            always_show_image: true,
+            visible: false
+        });
+        this._prevButton.connect("clicked", (button) => {
+            this.headerbar.title = _("GSConnect");
+            this.sidebar.set_visible_child_name("switcher");
+
+            this.switcher.get_row_at_index(0).emit("activate");
+            this._prevButton.visible = false;
+        });
+
+        // Hack for gnome-shell-extension-prefs
+        GLib.timeout_add(GLib.PRIORITY_DEFAULT, 0, () => {
+            this.headerbar = this.get_toplevel().get_titlebar();
+            this.headerbar.pack_end(aboutButton);
+            this.headerbar.pack_start(this._prevButton);
+            return false;
+        });
+    },
+
+    _connectTemplate: function () {
+        // Shell
+        this._bind_bool(gsconnect.settings, "show-indicators", this.show_indicators);
+        this._bind_bool(gsconnect.settings, "show-offline", this.show_offline);
+        this._bind_bool(gsconnect.settings, "show-unpaired", this.show_unpaired);
+        this._bind_bool(gsconnect.settings, "show-battery", this.show_battery);
+        this.shell_list.set_header_func(this._section_separators);
+
+        // Extensions
+        this._bind_bool(gsconnect.settings, "nautilus-integration", this.files_integration);
+        this._bind_bool(gsconnect.settings, "webbrowser-integration", this.webbrowser_integration);
+        this.extensions_list.set_header_func(this._section_separators);
+
+        // Application Extensions
+        this._bind_bool(gsconnect.settings, "debug", this.debug_mode);
+        this.debug_window.connect("clicked", () => {
+            GLib.spawn_command_line_async(
+                'gnome-terminal ' +
+                '--tab --title "GJS" --command "journalctl -f -o cat /usr/bin/gjs" ' +
+                '--tab --title "Gnome Shell" --command "journalctl -f -o cat /usr/bin/gnome-shell"'
+            );
+        });
+        this.advanced_list.set_header_func(this._section_separators);
+    },
+
+    _devicesChanged: function () {
+        for (let dbusPath of this.daemon.devices) {
+            if (!this.stack.get_child_by_name(dbusPath)) {
+                this.addDevice(this.daemon, dbusPath);
+            }
+        }
+
+        this.stack.foreach((child) => {
+            if (child.row) {
+                let name = child.row.get_name();
+                if (this.daemon.devices.indexOf(name) < 0) {
+                    this.stack.get_child_by_name(name).destroy();
+                }
+            }
+        });
+
+        this.help.visible = (!this.daemon.devices.length);
+    },
+
+    /**
+     * DBus Service Callbacks
+     */
+    _serviceAppeared: function (conn, name, name_owner) {
+        debug([conn, name, name_owner]);
+
+        if (!this.daemon) {
+            this.daemon = new Client.Daemon();
+        }
+
+        // Watch for new and removed devices
+        this.daemon.connect("notify::devices", (daemon) => {
+            this._devicesChanged(daemon);
+        });
+        this._devicesChanged();
+    },
+
+    _serviceVanished: function (conn, name) {
+        debug([conn, name]);
+
+        if (this.daemon) {
+            this.daemon.destroy();
+            delete this.daemon;
+        }
+
+        this.daemon = new Client.Daemon();
+    },
+
+    /**
+     * Header Funcs
+     */
+    _switcher_separators: function (row, before) {
+        if (before && row.type !== before.type) {
+            row.set_header(
+                new Gtk.Separator({
+                    orientation: Gtk.Orientation.HORIZONTAL,
+                    visible: true
+                })
+            );
+        }
+    },
+
+    _section_separators: function (row, before) {
+        if (before) {
+            row.set_header(
+                new Gtk.Separator({
+                    orientation: Gtk.Orientation.HORIZONTAL,
+                    visible: true
+                })
+            );
+        }
+    },
+
+    addDevice: function (daemon, dbusPath) {
+        let device = daemon._devices.get(dbusPath);
+        let meta = DeviceMetadata[device.type];
+
+        // Separate device settings widgets
+        let deviceSettings = new DeviceSettings(daemon, device);
+        let switcher = deviceSettings.switcher;
+        deviceSettings.remove(deviceSettings.switcher);
+        let panel = deviceSettings.stack;
+        deviceSettings.remove(deviceSettings.stack);
+
+        // Add panel switcher to sidebar stack
+        panel.connect("destroy", () => switcher.destroy());
+        this.sidebar.add_named(switcher, dbusPath);
+
+        // Add device panel stack
+        this.stack.add_titled(panel, dbusPath, device.name);
+
+        // Add device to sidebar
+        panel.row = new SidebarRow({
+            icon_name: device.paired ? meta.symbolic_icon : meta.unpaired_icon,
+            title: device.name,
+            type: "device",
+            name: dbusPath,
+            go_next: true
+        });
+
+        // Destroy the sidebar row when the panel goes
+        panel.connect("destroy", () => panel.row.destroy());
+
+        // Keep the icon up to date
+        device.connect("notify::paired", () => {
+            if (device.paired) {
+                panel.row.icon.icon_name = meta.symbolic_icon;
+            } else {
+                panel.row.icon.icon_name = meta.unpaired_icon;
+            }
+        });
+
+        this.switcher.add(panel.row);
+    }
+});
 
 
 var SectionRow = new Lang.Class({
@@ -144,14 +583,14 @@ var KeybindingsSection = new Lang.Class({
 });
 
 
-const DoubleBool = {
+const AllowTraffic = {
     OFF: 1,
     OUT: 2,
     IN: 4
 };
 
 
-var Settings = Lang.Class({
+var DeviceSettings = Lang.Class({
     Name: "GSConnectDeviceSettings",
     Extends: Gtk.Grid,
     Template: "resource:///org/gnome/Shell/Extensions/GSConnect/device.ui",
@@ -172,8 +611,8 @@ var Settings = Lang.Class({
         "send-notifications", "notification-apps",
         // Sharing
         "sharing", "sharing-page", "sharing-list",
-        "send-statistics", "direct-sharing", "clipboard-sync", "mpris-control", "allow-input",
-        "automount",
+        "battery-allow", "direct-sharing", "clipboard-allow", "mpris-control",
+        "allow-input",
         // Telephony
         "telephony", "telephony-page",
         "handler-list", "handle-messaging", "handle-calls",
@@ -193,22 +632,10 @@ var Settings = Lang.Class({
 
         this._infoPage();
         this._batterySettings();
-        this._commandsSettings();
+        this._runcommandSettings();
         this._notificationSettings();
         this._sharingSettings();
         this._telephonySettings();
-    },
-
-    // FIXME FIXME FIXME
-    _addPrefs: function () {
-        develSection.addGSetting(ext.settings, "debug");
-        ext.settings.connect("changed::debug", () => {
-            if (ext.settings.get_boolean("debug")) {
-                GLib.spawn_command_line_async(
-                    'gnome-terminal --tab --title "GJS" --command "journalctl -f -o cat /usr/bin/gjs" --tab --title "Gnome Shell" --command "journalctl -f -o cat /usr/bin/gnome-shell"'
-                );
-            }
-        });
     },
 
     _sectionSeparators: function (row, before) {
@@ -222,100 +649,77 @@ var Settings = Lang.Class({
         }
     },
 
-    _bool_image: function (obj, key, image, on_off) {
-        if (obj && obj.settings) {
-            let [on, off] = on_off;
-            // Watch the setting for changes
-            obj.settings.connect("changed::" + key, (settings) => {
-                image.icon_name = settings.get_boolean(key) ? on : off;
-            });
-            // Init the label
-            image.icon_name = obj.settings.get_boolean(key) ? on : on;
-
-            // Watch the Gtk.ListBox for activation
-            let row = label.get_parent().get_parent();
-            let box = row.get_parent();
-
-            box.connect("row-activated", (box, arow) => {
-                if (row === arow) {
-                    // Set the boolean to the inverse of the label "value"
-                    obj.settings.set_boolean(key, (label.label === off));
-                }
-            });
-        } else {
-            label.get_parent().get_parent().sensitive = false;
-        }
-    },
-
-    _bind_bool: function (obj, key, label) {
-        if (obj && obj.settings) {
-            // Watch the setting for changes
-            obj.settings.connect("changed::" + key, (settings) => {
-                label.label = settings.get_boolean(key) ? _("On") : _("Off");
-            });
-            // Init the label
-            label.label = obj.settings.get_boolean(key) ? _("On") : _("Off");
-
-            // Watch the Gtk.ListBox for activation
-            let row = label.get_parent().get_parent();
-            let box = row.get_parent();
-
-            box.connect("row-activated", (box, arow) => {
-                if (row === arow) {
-                    // Set the boolean to the inverse of the label "value"
-                    obj.settings.set_boolean(key, (label.label === _("Off")));
-                }
-            });
-        } else {
-            label.get_parent().get_parent().sensitive = false;
-        }
-    },
-
-    _bind_dbool: function (settings, key, label) {
-        settings.connect("changed::" + key, (settings) => {
-            let flags = settings.get_flags(key);
-
-            if (flags === DoubleBool.IN) {
-                label.label = _("In");
-            } else if (flags === DoubleBool.OUT) {
-                label.label = _("Out");
-            } else if (flags & (DoubleBool.OUT | DoubleBool.IN)) {
-                label.label = _("On");
-            } else {
-                label.label = _("Off");
-            }
-        });
-        settings.emit("changed::" + key, key);
-
-        // Watch the Gtk.ListBox for activation
+    _mapBool: function (obj, key, label, [on, off]=[true, false]) {
         let row = label.get_parent().get_parent();
-        let box = row.get_parent();
 
-        box.connect("row-activated", (box, arow) => {
-            if (row === arow) {
-                let val;
+        if (obj && obj.settings) {
+            let variant = obj.settings.get_value(key);
+            let format = variant.get_type_string();
 
-                switch (label.label) {
-                    case _("On"):
-                        val = DoubleBool.OFF;
-                        break;
-                    case _("Off"):
-                        val = DoubleBool.IN;
-                        break;
-                    case _("In"):
-                        val = DoubleBool.OUT;
-                        break;
-                    case _("Out"):
-                        val = DoubleBool.OUT | DoubleBool.IN;
-                        break;
-                    default:
-                        throw Error("unknown value");
+            // Init the label
+            label.label = (variant.unpack() === on) ? _("On") : _("Off");
+
+            // Watch the setting for changes
+            let _changed = obj.settings.connect("changed::" + key, (settings) => {
+                let variant = obj.settings.get_value(key);
+                label.label = (variant.unpack() === on) ? _("On") : _("Off");
+            });
+            label.connect("destroy", () => obj.settings.disconnect(_changed));
+
+            // Watch the Gtk.ListBox for activation
+            row.get_parent().connect("row-activated", (box, arow) => {
+                if (row === arow) {
+                    // Set the boolean to the inverse of the label "value"
+                    let variant = new GLib.Variant(
+                        format,
+                        (label.label === _("Off")) ? on : off
+                    );
+                    obj.settings.set_value(key, variant);
                 }
-
-                settings.set_flags(key, val);
-            }
-        });
+            });
+        } else {
+            row.visible = false;
+        }
     },
+
+    _mapNumber: function (obj, key, label, map=[]) {
+        let row = label.get_parent().get_parent();
+
+        if (obj && obj.settings) {
+            // Init the label
+            label.label = map[obj.settings.get_uint(key)];
+            // Watch settings for changes
+            let _changed = obj.settings.connect("changed::" + key, (settings) => {
+                label.label = map[obj.settings.get_uint(key)];
+            });
+            label.connect("destroy", () => obj.settings.disconnect(_changed));
+            obj.settings.emit("changed::" + key, key);
+
+            // Watch the Gtk.ListBox for activation
+            let lastIndex = map.length - 1;
+
+            row.get_parent().connect("row-activated", (box, arow) => {
+                if (row === arow) {
+                    let flags = obj.settings.get_uint(key);
+                    let next = map.slice(flags + 1).filter(e => e)[0];
+                    obj.settings.set_uint(key, (next) ? map.indexOf(next) : 1);
+                }
+            });
+        } else {
+            row.visible = false;
+        }
+    },
+
+    _mapTraffic: function (obj, key, label) {
+        let map = [];
+        map[1] = _("Off");
+        map[2] = _("Out");
+        map[4] = _("In");
+        map[6] = _("Both");
+
+        return this._mapNumber(obj, key, label, map);
+    },
+
     /**
      * Info Page
      */
@@ -347,6 +751,9 @@ var Settings = Lang.Class({
                     // TRANSLATORS: eg. Reconnect <b>Google Pixel</b>
                     _("Reconnect <b>%s</b>").format(this.device.name)
                 );
+
+                let pairedRow = this.device_paired.get_parent().get_parent();
+                pairedRow.sensitive = this.device.paired;
             }
         });
         this.device.notify("connected");
@@ -373,6 +780,7 @@ var Settings = Lang.Class({
                     // TRANSLATORS: eg. Unpair <b>Google Pixel</b>
                     _("Unpair <b>%s</b>").format(this.device.name)
                 );
+                pairedRow.sensitive = true;
             } else {
                 this.device_paired.icon_name = "channel-insecure-symbolic";
                 this.device_paired_text.label = _("Device is unpaired");
@@ -391,6 +799,7 @@ var Settings = Lang.Class({
                     // 00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
                     _("<b>%s Fingerprint:</b>\n%s\n\n<b>Local Fingerprint:</b>\n%s").format(this.device.name, this.device.fingerprint, this.daemon.fingerprint)
                 );
+                pairedRow.sensitive = this.device.connected;
             }
         });
         this.device.notify("paired");
@@ -435,7 +844,7 @@ var Settings = Lang.Class({
         }
     },
 
-    _commandsSettings: function () {
+    _runcommandSettings: function () {
         let runcommand = this.device._plugins.get("runcommand");
 
         if (runcommand) {
@@ -448,9 +857,11 @@ var Settings = Lang.Class({
                     ]
                 });
             });
+            this.command_edit_name.connect("activate", () => this._applyCommand());
+            this.command_edit_command.connect("icon-release", () => this._openCommand());
+            this.command_edit_command.connect("activate", () => this._applyCommand());
             this.command_edit_cancel.connect("clicked", () => this._cancelCommand());
             this.command_edit_apply.connect("clicked", () => this._applyCommand());
-            this.command_edit_command.connect("icon-release", () => this._openCommand());
 
             // Local Command List
             let commands = runcommand.settings.get_string("command-list");
@@ -563,10 +974,7 @@ var Settings = Lang.Class({
         if (pos === Gtk.EntryIconPosition.SECONDARY) {
             let filter = new Gtk.FileFilter();
             filter.add_mime_type("application/x-executable");
-            let dialog = new Gtk.FileChooserDialog({
-                action: Gtk.FileChooserAction.OPEN,
-                filter: filter
-            });
+            let dialog = new Gtk.FileChooserDialog({ filter: filter });
             dialog.add_button(_("Cancel"), Gtk.ResponseType.CANCEL);
             dialog.add_button(_("Open"), Gtk.ResponseType.OK);
 
@@ -704,28 +1112,32 @@ var Settings = Lang.Class({
      */
     _sharingSettings: function () {
         // Battery
-        let battery = this.device._plugins.get("battery");
-        this._bind_bool(battery, "send-statistics", this.send_statistics);
+        if (this.device.incomingCapabilities.indexOf("kdeconnect.battery") > -1) {
+            let battery = this.device._plugins.get("battery");
+            this._mapBool(battery, "allow", this.battery_allow, [ 2, 4 ]);
+        } else {
+            this.battery_allow.get_parent().get_parent().visible = false;
+        }
 
         // Direct Share
         let share = this.device._plugins.get("share");
-        this._bind_bool(share, "direct-sharing", this.direct_sharing);
+        this._mapBool(share, "direct-sharing", this.direct_sharing);
 
         // Clipboard Sync
         let clipboard = this.device._plugins.get("clipboard");
-        this._bind_dbool(clipboard.settings, "clipboard-sync", this.clipboard_sync);
+        this._mapTraffic(clipboard, "allow", this.clipboard_allow);
 
         // Media Players
         let mpris = this.device._plugins.get("mpris");
-        this._bind_bool(mpris, "mpris-control", this.mpris_control);
+        this._mapBool(mpris, "mpris-control", this.mpris_control);
 
         // Mouse & Keyboard input
         let mousepad = this.device._plugins.get("mousepad");
-        this._bind_bool(mousepad, "allow-input", this.allow_input);
+        this._mapBool(mousepad, "allow-input", this.allow_input);
 
-        // SFTP
-        let sftp = this.device._plugins.get("sftp");
-        this._bind_bool(sftp, "automount", this.automount);
+        // Location Sharing
+//        let findmyphone = this.device._plugins.get("findmyphone");
+//        this._mapBool(findmyphone, "allow-locate", this.allow_locate);
 
         // row separators
         this.sharing_list.set_header_func(this._sectionSeparators);
@@ -743,8 +1155,8 @@ var Settings = Lang.Class({
 
         if (telephony) {
             // Event Handling
-            this._bind_bool(telephony, "handle-messaging", this.handle_messaging);
-            this._bind_bool(telephony, "handle-calls", this.handle_calls);
+            this._mapBool(telephony, "handle-messaging", this.handle_messaging);
+            this._mapBool(telephony, "handle-calls", this.handle_calls);
             this.handler_list.set_header_func(this._sectionSeparators);
 
             // Ringing Event

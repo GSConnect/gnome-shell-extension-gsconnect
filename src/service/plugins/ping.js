@@ -10,7 +10,6 @@ const GObject = imports.gi.GObject;
 
 // Local Imports
 imports.searchPath.push(gsconnect.datadir);
-const Protocol = imports.service.protocol;
 const PluginsBase = imports.service.plugins.base;
 
 
@@ -78,17 +77,17 @@ var Plugin = new Lang.Class({
     ping: function (message="") {
         debug("Ping: ping(" + message + ")");
 
-        let packet = new Protocol.Packet({
+        let packet = {
             id: 0,
             type: "kdeconnect.ping",
             body: {}
-        });
+        };
 
         if (message.length) {
             packet.body.message = message;
         }
 
-        this.send(packet);
+        this.sendPacket(packet);
     }
 });
 

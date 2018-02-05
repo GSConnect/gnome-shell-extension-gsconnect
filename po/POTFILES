@@ -1,3 +1,5 @@
+data/device.ui
+data/prefs.ui
 src/extension.js
 src/nautilus-gsconnect.py
 src/prefs.js

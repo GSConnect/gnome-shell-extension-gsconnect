@@ -25,8 +25,11 @@ const Shell = imports.gi.Shell;
 const St = imports.gi.St;
 
 const Main = imports.ui.main;
+const MessageTray = imports.ui.messageTray;
+const ModalDialog = imports.ui.modalDialog;
 const PanelMenu = imports.ui.panelMenu;
 const PopupMenu = imports.ui.popupMenu;
+const Util = imports.misc.util;
 
 // Local Imports
 window.gsconnect = {
@@ -104,6 +107,167 @@ var KeybindingManager = new Lang.Class({
     destroy: function () {
         this.removeAll();
         GObject.signal_handler_disconnect(global.display, this._handler);
+    }
+});
+
+
+/** ... FIXME FIXME FIXME */
+var DoNotDisturbItem = new Lang.Class({
+    Name: "GSConnectShellDoNotDisturbItem",
+    Extends: PopupMenu.PopupSwitchMenuItem,
+
+    _init: function (daemon, device) {
+        this.parent(_("Do Not Disturb"), false);
+
+        // Update the toggle state when 'paintable'
+        this.actor.connect("notify::mapped", () => {
+            let now = GLib.DateTime.new_now_local().to_unix();
+            this.setToggleState(gsconnect.settings.get_int("donotdisturb") > now);
+        });
+
+        this.connect("toggled", () => {
+            // The state has already been changed when this is emitted
+            if (this.state) {
+                let dialog = new DoNotDisturbDialog();
+                dialog.open();
+            } else {
+                gsconnect.settings.set_int("donotdisturb", 0);
+            }
+
+            this._getTopMenu().close(true);
+        });
+    }
+});
+
+
+var DoNotDisturbDialog = new Lang.Class({
+    Name: "GSConnectShellDoNotDisturbDialog",
+    Extends: ShellWidget.Dialog,
+
+    _init: function () {
+        this.parent({
+            icon: "preferences-system-notifications-symbolic",
+            title: _("Do Not Disturb"),
+            subtitle: _("Silence Mobile Device Notifications")
+        });
+
+        //
+        this._time = 1*60*60; // 1 hour in seconds
+
+        this.permButton = new ShellWidget.RadioButton({
+            text: _("Until you turn this off")
+        });
+        this.content.add(this.permButton);
+
+        // Duration Timer
+        this.timerWidget = new St.BoxLayout({
+            vertical: false,
+            x_expand: true
+        });
+
+        let now = GLib.DateTime.new_now_local();
+        this.timerLabel = new St.Label({
+            text: _("Until %s (%s)").format(
+                Util.formatTime(now.add_seconds(this._time)),
+                this._getDurationLabel()
+            ),
+            x_expand: true,
+            y_align: Clutter.ActorAlign.CENTER,
+            style: "margin-right: 6px;"
+        });
+        this.timerWidget.add_child(this.timerLabel);
+
+        this.minusTime = new St.Button({
+            style_class: "pager-button",
+            child: new St.Icon({
+                icon_name: "list-remove-symbolic",
+                icon_size: 16
+            })
+        });
+        this.minusTime.connect("clicked", () => this._minusTime());
+        this.timerWidget.add_child(this.minusTime);
+
+        this.plusTime = new St.Button({
+            style_class: "pager-button",
+            child: new St.Icon({
+                icon_name: "list-add-symbolic",
+                icon_size: 16
+            })
+        });
+        this.plusTime.connect("clicked", () => this._plusTime());
+        this.timerWidget.add_child(this.plusTime);
+
+        this.timerButton = new ShellWidget.RadioButton({
+            widget: this.timerWidget,
+            group: this.permButton.group,
+            active: true
+        });
+        this.content.add(this.timerButton);
+
+        // Dialog Buttons
+        this.setButtons([
+            { label: _("Cancel"), action: () => this._cancel(), default: true },
+            { label: _("Done"), action: () => this._done() }
+        ]);
+    },
+
+    _cancel: function () {
+        gsconnect.settings.set_int("donotdisturb", 0);
+        this.close();
+    },
+
+    _done: function () {
+        let time;
+
+        if (this.timerButton.active) {
+            let now = GLib.DateTime.new_now_local();
+            time = now.add_seconds(this._time).to_unix();
+        } else {
+            time = GLib.MAXINT32;
+        }
+
+        gsconnect.settings.set_int("donotdisturb", time);
+        this.close();
+    },
+
+    _minusTime: function () {
+        if (this._time <= 60*60) {
+            this._time -= 15*60;
+        } else {
+            this._time -= 60*60;
+        }
+
+        this._setTimeLabel();
+    },
+
+    _plusTime: function () {
+        if (this._time < 60*60) {
+            this._time += 15*60;
+        } else {
+            this._time += 60*60;
+        }
+
+        this._setTimeLabel();
+    },
+
+    _getDurationLabel: function () {
+        if (this._time >= 60*60) {
+            let hours = this._time / 3600;
+            return Gettext.ngettext("%d Hour", "%d Hours", hours).format(hours);
+        } else {
+            return _("%d Minutes").format(this._time / 60);
+        }
+    },
+
+    _setTimeLabel: function () {
+        this.minusTime.reactive = (this._time > 15*60);
+        this.plusTime.reactive = (this._time < 12*60*60);
+
+        let now = GLib.DateTime.new_now_local();
+        this.timerLabel.text = _("Until %s (%s)").format(
+            Util.formatTime(now.add_seconds(this._time)),
+            this._getDurationLabel()
+        );
     }
 });
 
@@ -288,8 +452,17 @@ var DeviceMenu = new Lang.Class({
         }
 
         if (this.device.hasOwnProperty("runcommand")) {
-            let commands = JSON.parse(this.device.runcommand.commands);
-            this.runcommandButton.visible = (Object.keys(commands).length);
+            // FIXME: don't use JSON
+            try {
+                let commands = JSON.parse(this.device.runcommand.commands);
+
+                // FIXME :can't convert null to objec
+                if (commands) {
+                    this.runcommandButton.visible = (Object.keys(commands).length);
+                }
+            } catch (e) {
+                debug("Error loading commands: " + e);
+            }
         }
 
         // Status Bar
@@ -549,6 +722,11 @@ var SystemIndicator = new Lang.Class({
         );
         this.extensionMenu.menu.addMenuItem(this.devicesSection);
 
+        // FIXME FIXME FIXME FIXME FIXME FIXME FIXME FIXME FIXME FIXME FIXME
+        // Do Not Disturb Item
+        this.dndItem = new DoNotDisturbItem();
+        this.extensionMenu.menu.addMenuItem(this.dndItem);
+
         this.extensionMenu.menu.addAction(_("Mobile Settings"), () => {
             GLib.spawn_command_line_async(
                 "gnome-shell-extension-prefs gsconnect@andyholmes.github.io"
@@ -584,20 +762,24 @@ var SystemIndicator = new Lang.Class({
         this.extensionIndicator.visible = (this.daemon);
 
         // Add currently managed devices
-        for (let dbusPath of this.daemon.devices.keys()) {
-            this._deviceAdded(this.daemon, dbusPath);
+        for (let dbusPath of this.daemon.devices) {
+            this._onDeviceAdded(this.daemon, dbusPath);
         }
 
         // Watch for new and removed devices
-        this.daemon.connect(
-            "device::added",
-            Lang.bind(this, this._deviceAdded)
-        );
+        this.daemon.connect("notify::devices", (daemon) => {
+            for (let dbusPath of daemon.devices) {
+                if (!this._indicators[dbusPath]) {
+                    this._onDeviceAdded(daemon, dbusPath);
+                }
+            }
 
-        this.daemon.connect(
-            "device::removed",
-            Lang.bind(this, this._deviceRemoved)
-        );
+            for (let dbusPath in this._indicators) {
+                if (daemon.devices.indexOf(dbusPath) < 0) {
+                    this._onDeviceRemoved(daemon, dbusPath)
+                }
+            }
+        });
     },
 
     _serviceVanished: function () {
@@ -613,7 +795,37 @@ var SystemIndicator = new Lang.Class({
         this.daemon = new Client.Daemon();
     },
 
-    _deviceKeybindings: function (indicator) {
+    /**
+     * This is connected to the Shell notification's destroy signal by
+     * overriding MessageTray.Source.pushNotification().
+     *
+     * TODO:
+     * If the session state has changed the daemon should have already stopped
+     * and the remote notification shouldn't be closed.
+     */
+    _onNotificationDestroyed: function (id) {
+        debug(id);
+
+        if (!this.daemon) {
+            debug("daemon not connected");
+            return;
+        }
+
+        // Separate the device id from the notification id
+        id = id.split("|");
+        let deviceId = id.splice(0, 1)[0];
+        id = id.join("|");
+
+        // Search for a matching device with the notification plugin enabled
+        for (let device of this.daemon.devices.values()) {
+            if (deviceId === device.id && device.notification) {
+                device.notification.close(id);
+                break;
+            }
+        }
+    },
+
+    _onKeybindingsChanged: function (indicator) {
         let menu = indicator.deviceMenu;
 
         for (let binding of menu._keybindings) {
@@ -669,7 +881,7 @@ var SystemIndicator = new Lang.Class({
         }
     },
 
-    _browseDevice: function (indicator) {
+    _sftpDevice: function (indicator) {
         let menu;
 
         if (gsconnect.settings.get_boolean("show-indicators")) {
@@ -698,17 +910,17 @@ var SystemIndicator = new Lang.Class({
         }
     },
 
-    _deviceAdded: function (daemon, dbusPath) {
-        debug("extension.SystemIndicator._deviceAdded(" + dbusPath + ")");
+    _onDeviceAdded: function (daemon, dbusPath) {
+        debug(arguments);
 
-        let device = this.daemon.devices.get(dbusPath);
+        let device = this.daemon._devices.get(dbusPath);
 
-        // Status Area -> [ Device Indicator ]
+        // Status Area -> [ Device Indicator -> Device Menu ]
         let indicator = new DeviceIndicator(daemon, device);
         this._indicators[dbusPath] = indicator;
         Main.panel.addToStatusArea(dbusPath, indicator);
 
-        // Extension Menu -> [ Devices Section ] -> Device Menu
+        // Extension Menu -> Devices Section -> [ Device Menu ]
         let menu = new DeviceMenu(daemon, device);
         this._menus[dbusPath] = menu;
 
@@ -724,16 +936,16 @@ var SystemIndicator = new Lang.Class({
 
         // Keybindings
         device.settings.connect("changed::keybindings", () => {
-            this._deviceKeybindings(indicator);
+            this._onKeybindingsChanged(indicator);
         });
-        this._deviceKeybindings(indicator);
+        this._onKeybindingsChanged(indicator);
 
         // Try activating the device
         device.activate();
     },
 
-    _deviceRemoved: function (daemon, dbusPath) {
-        debug("extension.SystemIndicator._deviceRemoved(" + dbusPath + ")");
+    _onDeviceRemoved: function (daemon, dbusPath) {
+        debug(arguments);
 
         for (let binding of this._indicators[dbusPath].deviceMenu._keybindings) {
             this.keybindingManager.remove(binding);
@@ -747,7 +959,7 @@ var SystemIndicator = new Lang.Class({
         delete this._menus[dbusPath];
     },
 
-    _deviceMenuVisibility: function (menu){
+    _deviceMenuVisibility: function (menu) {
         let { connected, paired } = menu.device;
 
         if (!paired && !gsconnect.settings.get_boolean("show-unpaired")) {
@@ -768,7 +980,7 @@ var SystemIndicator = new Lang.Class({
         gsconnect.settings.disconnect(this._settingsChanged);
 
         for (let dbusPath in this._indicators) {
-            this._deviceRemoved(this.daemon, dbusPath);
+            this._onDeviceRemoved(this.daemon, dbusPath);
         }
 
         this.keybindingManager.destroy();
@@ -783,10 +995,57 @@ var SystemIndicator = new Lang.Class({
     }
 });
 
+
+// FIXME FIXME FIXME FIXME FIXME FIXME FIXME FIXME FIXME FIXME FIXME FIXME
+/**
+ * Monkey-patch for Gnome Shell notifications
+ *
+ * This removes the notification limit for GSConnect and connects close events
+ * to the notification plugin so Shell notifications work as expected.
+ */
+var pushNotification = function (notification) {
+    if (this.notifications.indexOf(notification) >= 0)
+        return;
+
+    if (this._appId && this._appId === "org.gnome.Shell.Extensions.GSConnect") {
+        // Find the GNotification Id
+        let notificationId;
+
+        for (let id in this._notifications) {
+            if (this._notifications[id] === notification) {
+                notificationId = id;
+                break;
+            }
+        }
+
+        debug("connecting to shell notification: " + notificationId);
+
+        // Close the notification remotely when dismissed
+        notification.connect("destroy", (notification, reason) => {
+            if (reason === MessageTray.NotificationDestroyedReason.DISMISSED) {
+                systemIndicator._onNotificationDestroyed(notificationId);
+            }
+        });
+    } else {
+        while (this.notifications.length >= MessageTray.MAX_NOTIFICATIONS_PER_SOURCE) {
+            this.notifications.shift().destroy(MessageTray.NotificationDestroyedReason.EXPIRED);
+        }
+    }
+
+    notification.connect('destroy', Lang.bind(this, this._onNotificationDestroy));
+    notification.connect('acknowledged-changed', Lang.bind(this, this.countUpdated));
+    this.notifications.push(notification);
+    this.emit('notification-added', notification);
+
+    this.countUpdated();
+};
+
 var systemIndicator;
 
 function init() {
     debug("initializing extension");
+
+    MessageTray.Source.prototype.pushNotification = pushNotification;
 }
 
 function enable() {

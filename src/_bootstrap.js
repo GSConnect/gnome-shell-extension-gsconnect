@@ -9,14 +9,18 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const Gtk = imports.gi.Gtk;
 
-//
+
+// Application Id and Path
 gsconnect.app_id = "org.gnome.Shell.Extensions.GSConnect";
 gsconnect.app_path = "/org/gnome/Shell/Extensions/GSConnect";
 
 gsconnect.metadata = JSON.parse(GLib.file_get_contents(gsconnect.datadir + "/metadata.json")[1]);
+
+// Gettext
 gsconnect.localedir = GLib.build_filenamev([gsconnect.datadir, "locale"]);
 Gettext.bindtextdomain(gsconnect.app_id, gsconnect.localedir);
 
+// User Directories
 gsconnect.cachedir = GLib.build_filenamev([GLib.get_user_cache_dir(), "gsconnect"]);
 gsconnect.configdir = GLib.build_filenamev([GLib.get_user_config_dir(), "gsconnect"]);
 gsconnect.runtimedir = GLib.build_filenamev([GLib.get_user_runtime_dir(), "gsconnect"]);
@@ -58,7 +62,7 @@ gsconnect.dbusinfo = new Gio.DBusNodeInfo.new_for_xml(
         0
     ).toArray().toString()
 );
-gsconnect.dbusinfo.nodes.forEach((ifaceInfo) => { ifaceInfo.cache_build(); });
+gsconnect.dbusinfo.nodes.forEach(info => info.cache_build());
 
 
 /**
@@ -154,6 +158,26 @@ gsconnect.uninstallService = function() {
     // Application desktop file
     let applicationsDir = GLib.get_user_data_dir() + "/applications/";
     GLib.unlink(applicationsDir + gsconnect.app_id + ".desktop");
+};
+
+
+Gio.Notification.prototype.add_device_button = function (label, dbusPath, name, obj={}) {
+    try {
+        let detail = [dbusPath, name, escape(JSON.stringify(obj))].join("','");
+        this.add_button(label, "app.deviceAction(('" + detail + "'))");
+    } catch(e) {
+        debug("Error adding button: " + [label, dbusPath, name, obj].join(","));
+    }
+};
+
+
+Gio.Notification.prototype.set_device_action = function (dbusPath, name, obj={}) {
+    try {
+        let detail = [dbusPath, name, escape(JSON.stringify(obj))].join("','");
+        this.set_default_action("app.deviceAction(('" + detail + "'))");
+    } catch(e) {
+        debug("Error setting action: " + [dbusPath, name, obj].join(","));
+    }
 };
 
 

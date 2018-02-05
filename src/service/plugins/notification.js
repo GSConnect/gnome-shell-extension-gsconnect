@@ -12,6 +12,7 @@ const Gtk = imports.gi.Gtk;
 
 // Local Imports
 imports.searchPath.push(gsconnect.datadir);
+const Contacts = imports.modules.contacts;
 const Protocol = imports.service.protocol;
 const PluginsBase = imports.service.plugins.base;
 
@@ -48,6 +49,24 @@ var METADATA = {
 var Plugin = new Lang.Class({
     Name: "GSConnectNotificationsPlugin",
     Extends: PluginsBase.Plugin,
+    Properties: {
+        "notifications": GObject.param_spec_variant(
+            "notifications",
+            "NotificationList",
+            "A list of active or expected notifications",
+            new GLib.VariantType("aa{sv}"),
+            new GLib.Variant("aa{sv}", []),
+            GObject.ParamFlags.READABLE
+        ),
+        "Notifications": GObject.param_spec_variant(
+            "Notifications",
+            "NotificationList",
+            "A list of active or expected notifications",
+            new GLib.VariantType("aa{sv}"),
+            new GLib.Variant("aa{sv}", []),
+            GObject.ParamFlags.READABLE
+        )
+    },
     Signals: {
         "received": {
             flags: GObject.SignalFlags.RUN_FIRST,
@@ -62,219 +81,304 @@ var Plugin = new Lang.Class({
     _init: function (device) {
         this.parent(device, "notification");
 
-        this._duplicates = new Map();
+        this.contacts = Contacts.getStore();
+
+        this._notifications = [];
+        this.cacheProperties(["_notifications"]);
 
         if (this.settings.get_boolean("receive-notifications")) {
             this.request();
         }
+
+        // Request missed notifications after donotdisturb ends
+        gsconnect.settings.connect("changed::donotdisturb", () => {
+            let now = GLib.DateTime.new_now_local().to_unix();
+            if (gsconnect.settings.get_int("donotdisturb") < now) {
+                if (this.settings.get_boolean("receive-notifications")) {
+                    this.request();
+                }
+            }
+        });
     },
 
-    _getIconInfo: function (iconName) {
-        let theme = Gtk.IconTheme.get_default();
-        let sizes = theme.get_icon_sizes(iconName);
+    //
+    get notifications () {
+        return this._notifications;
+    },
 
-        return theme.lookup_icon(
-            iconName,
+    handlePacket: function (packet) {
+        debug(packet);
+
+        return new Promise((resolve, reject) => {
+            if (packet.type === "kdeconnect.notification.request") {
+                // TODO: A request for our notifications; NotImplemented
+            } else if (this.settings.get_boolean("receive-notifications")) {
+                // Ignore GroupSummary notifications
+                if (packet.body.id.indexOf("GroupSummary") > -1) {
+                    debug("ignoring GroupSummary notification");
+                    resolve(false);
+                // Ignore grouped SMS notifications
+                } else if (packet.body.id.indexOf(":sms|") > -1) {
+                    debug("ignoring grouped SMS notification");
+                    resolve(false);
+                } else if (packet.body.isCancel) {
+                    this.device.withdraw_notification(packet.body.id);
+                    this.untrackNotification(packet.body);
+                    resolve(false);
+                // Ignore previously posted notifications
+                } else if (this._getNotification(packet.body)) {
+                    debug("ignoring cached notification");
+                    resolve(false);
+                } else if (packet.payloadSize) {
+                    debug("new notification with payload");
+                    this._downloadIcon(packet).then((result) => {
+                        resolve(this._createNotification(packet, result));
+                    });
+                } else {
+                    debug("new notification");
+                    resolve(this._createNotification(packet));
+                }
+            }
+        });
+    },
+
+    /**
+     * DBus Interface
+     */
+    get Notifications () {
+        return this._notifications.map((notif) => Object.toVariant(notif));
+    },
+
+    Close: function (id) {
+        this.close(id);
+    },
+
+    /**
+     * Private Methods
+     */
+
+    /** Get the path to the largest PNG of @name */
+    _getIconPath: function (name) {
+        let theme = Gtk.IconTheme.get_default();
+        let sizes = theme.get_icon_sizes(name);
+        let info = theme.lookup_icon(
+            name,
             Math.max.apply(null, sizes),
             Gtk.IconLookupFlags.NO_SVG
         );
+
+        return (info) ? info.get_filename() : false;
+    },
+
+    /**
+     * Search for a notification by data and return it or false if not found
+     */
+    _getNotification: function (query) {
+        for (let notif of this._notifications) {
+            // @query matches an active notification timestamp
+            if (notif.time && notif.time === query.time) {
+                debug("found notification by timestamp");
+                // Update the cached notification
+                Object.assign(notif, query);
+                return notif;
+            // @query is a duplicate search by GNotification id
+            } else if (notif.localId && notif.localId === query.id) {
+                debug("found notification by localId");
+                return notif;
+            // @query is a notification matching a duplicate we're expecting
+            } else if (notif.localId && !notif.time && notif.ticker === query.ticker) {
+                debug("found duplicate with matching ticker");
+
+                // Update the duplicate stub
+                Object.assign(notif, query);
+
+                // It's marked to be closed
+                if (notif.isCancel) {
+                    debug("closing duplicate notification");
+                    this.close(notif.time);
+                }
+
+                return notif;
+            }
+        }
+
+        return false;
     },
 
     _createNotification: function (packet, icon) {
-        let notif = new Gio.Notification();
+        return new Promise((resolve, reject) => {
+            let notif = new Gio.Notification();
 
-        // Check if this is a missed call or SMS notification
-        let isMissedCall = (packet.body.title === _("Missed call"));
-        let isSms = (packet.body.id.indexOf("sms") > -1);
+            // Check if this is a missed call or SMS notification
+            // TODO: maybe detect by app id
+            let isMissedCall = (packet.body.title === _("Missed call"));
+            let isSms = (packet.body.id.indexOf("sms") > -1);
 
-        // Check if it's from a known contact
-        let contact, plugin;
+            // Check if it's from a known contact
+            let contact, plugin;
 
-        if (isMissedCall || isSms) {
             if ((plugin = this.device._plugins.get("telephony"))) {
-                contact = plugin._cache.searchContact(
-                    (isSms) ? packet.body.title : packet.body.text
-                );
-            }
-        }
-
-        if (contact) {
-            if (!contact.avatar && icon) {
-                // FIXME: not saving cache?
-                let path = plugin._cache._dir + "/" + GLib.uuid_string_random() + ".jpeg";
-                GLib.file_set_contents(path, icon.get_bytes());
-                contact.avatar = path;
-            } else if (contact.avatar && !icon) {
-                icon = plugin._getPixbuf(contact.avatar);
-            }
-
-            // Format as a missed call notification
-            if (isMissedCall) {
-                notif.set_title(_("Missed Call"));
-                notif.set_body(
-                    _("Missed call from %s on %s").format(
-                        contact.name || contact.number,
-                        this.device.name
-                    )
-                );
-                notif.add_button(
-                    // TRANSLATORS: Reply to a missed call by SMS
-                    _("Message"),
-                    "app.replyMissedCall(('" +
-                    this._dbus.get_object_path() +
-                    "','" +
-                    escape(contact.number) +
-                    "','" +
-                    escape(contact.name) +
-                    "'))"
-                );
-            // Format as an SMS notification
-            } else if (isSms) {
-                notif.set_title(contact.name || contact.number);
-                notif.set_body(packet.body.text);
-                notif.set_default_action(
-                    "app.replySms(('" +
-                    this._dbus.get_object_path() +
-                    "','" +
-                    escape(contact.number) +
-                    "','" +
-                    escape(contact.name) +
-                    "','" +
-                    escape(packet.body.text) +
-                    "'))"
-                );
-                notif.set_priority(Gio.NotificationPriority.HIGH);
+                if (isSms) {
+                    debug("A telephony event");
+                    contact = this.contacts.query({ // TODO: create?
+                        name: packet.body.title,
+                        number: packet.body.title,
+                        single: true
+                    });
+                } else if (isMissedCall) {
+                    debug("A telephony event");
+                    contact = this.contacts.query({ // TODO: create?
+                        name: packet.body.text,
+                        number: packet.body.text,
+                        single: true
+                    });
+                }
             }
 
-            // Track the notification so the action can close it later
-            let duplicate;
+            // This is a missed call or SMS from a known contact
+            if (contact) {
+                debug("Found known contact");
 
-            if ((duplicate = this._duplicates.get(packet.body.ticker))) {
-                duplicate.id = packet.body.id;
+                if (!contact.avatar && icon) {
+                    // FIXME FIXME FIXME: not saving proper (data)?
+                    let path = this.contacts._cacheDir + "/" + GLib.uuid_string_random() + ".jpeg";
+                    log("BYTES: " + icon.get_bytes());
+                    return;
+                    GLib.file_set_contents(path, icon.get_bytes().toArray().toString());
+                    contact.avatar = path;
+                } else if (contact.avatar && !icon) {
+                    icon = this.contacts.getContactPixbuf(contact.avatar);
+                }
+
+                // Format as a missed call notification
+                if (isMissedCall) {
+                    notif.set_title(_("Missed Call"));
+                    notif.set_body(
+                        _("Missed call from %s on %s").format(
+                            contact.name || contact.numbers[0].number,
+                            this.device.name
+                        )
+                    );
+                    notif.add_button(
+                        // TRANSLATORS: Reply to a missed call by SMS
+                        _("Message"),
+                        "replyMissedCall",
+                        this._dbus.get_object_path(),
+                        [contact.numbers[0].number,
+                        contact.name,
+                        packet.body.time]
+                    );
+                    notif.set_priority(Gio.NotificationPriority.NORMAL);
+                // Format as an SMS notification
+                } else if (isSms) {
+                    notif.set_title(contact.name || contact.numbers[0].number);
+                    notif.set_body(packet.body.text);
+                    notif.set_device_action(
+                        this._dbus.get_object_path(),
+                        "replySms",
+                        [contact.numbers[0].number,
+                        contact.name,
+                        packet.body.text,
+                        packet.body.time]
+                    );
+                    notif.set_priority(Gio.NotificationPriority.HIGH);
+                }
+            // A regular notification or notification from an unknown contact
             } else {
-                this._duplicates.set(packet.body.ticker, { id: packet.body.id });
+                // Try to correct duplicate appName/title situations
+                if (packet.body.appName === packet.body.title || isSms) {
+                    notif.set_title(packet.body.title);
+                    notif.set_body(packet.body.text);
+                } else {
+                    notif.set_title(packet.body.appName);
+                    notif.set_body(packet.body.ticker);
+                }
+
+                notif.set_priority(Gio.NotificationPriority.NORMAL);
             }
-        } else {
-            // Try to correct duplicate appName/title situations
-            if (packet.body.appName === packet.body.title || isSms) {
-                notif.set_title(packet.body.title);
-                notif.set_body(packet.body.text);
-            } else {
-                notif.set_title(packet.body.appName);
-                notif.set_body(packet.body.ticker);
+
+            // Fallback if we still don't have an icon
+            if (!icon) {
+                let name = packet.body.appName.toLowerCase().replace(" ", "-");
+
+                if (isMissedCall) {
+                    icon = new Gio.ThemedIcon({ name: "call-missed-symbolic" });
+                } else if (isSms) {
+                    icon = new Gio.ThemedIcon({ name: "sms-symbolic" });
+                } else if (Gtk.IconTheme.get_default().has_icon(name)) {
+                    icon = new Gio.ThemedIcon({ name: name });
+                } else {
+                    icon = new Gio.ThemedIcon({
+                        name: this.device.type + "-symbolic"
+                    });
+                }
             }
 
-            notif.set_default_action(
-                "app.closeNotification(('" +
-                this._dbus.get_object_path() +
-                "','" +
-                escape(packet.body.id) +
-                "'))"
-            );
-            notif.set_priority(Gio.NotificationPriority.NORMAL);
-        }
+            notif.set_icon(icon);
 
-        // Fallback if we still don't have an icon
-        if (!icon) {
-            let name = packet.body.appName.toLowerCase().replace(" ", "-");
-
-            if (isMissedCall) {
-                icon = new Gio.ThemedIcon({ name: "call-missed-symbolic" });
-            } else if (isSms) {
-                icon = new Gio.ThemedIcon({ name: "sms-symbolic" });
-            } else if (Gtk.IconTheme.get_default().has_icon(name)) {
-                icon = new Gio.ThemedIcon({ name: name });
-            } else {
-                icon = new Gio.ThemedIcon({
-                    name: this.device.type + "-symbolic"
-                });
+            // TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
+            // Cache the notification only if it will actually be shown
+            let now = GLib.DateTime.new_now_local().to_unix();
+            if (gsconnect.settings.get_int("donotdisturb") < now) {
+                this.trackNotification(packet.body);
+                this.device.send_notification(packet.body.id, notif);
+                log("SHOWING NOTIFICATION");
             }
-        }
 
-        notif.set_icon(icon);
-
-        this._postNotification(packet, notif, packet.body.ticker);
-    },
-
-    _postNotification: function (packet, notif) {
-        debug("Notification: _postNotification('" + packet.body.ticker + "')");
-
-        let duplicate;
-
-        if ((duplicate = this._duplicates.get(packet.body.ticker))) {
-            // We've been asked to close this
-            if (duplicate.close) {
-                this.close(packet.body.id);
-                this._duplicates.delete(packet.body.ticker);
-            // We've been asked to silence this (we'll still track it)
-            } else if (duplicate.silence) {
-                duplicate.id = packet.body.id;
-            // This is a missed call/SMS notification
-            } else {
-                this.device.daemon.send_notification(
-                    this.device.id + "|" + packet.body.id,
-                    notif
-                );
-            }
-        // We can show this as normal
-        } else {
-            this.device.daemon.send_notification(
-                this.device.id + "|" + packet.body.id,
-                notif
-            );
-        }
+            // FIXME
+            resolve(true);
+        });
     },
 
     // Icon transfers
     _downloadIcon: function (packet) {
-        debug("Notification: _downloadIcon()");
+        debug([packet.payloadTransferInfo.port, packet.payloadSize, packet.body.payloadHash]);
 
-        let iconStream = Gio.MemoryOutputStream.new_resizable();
+        return new Promise((resolve, reject) => {
+            let iconStream = Gio.MemoryOutputStream.new_resizable();
 
-        let channel = new Protocol.LanDownloadChannel(
-            this.device.daemon,
-            this.device.id,
-            iconStream
-        );
-
-        channel.connect("connected", (channel) => {
-            let transfer = new Protocol.Transfer(
-                channel,
-                packet.payloadSize,
-                packet.body.payloadHash
+            let channel = new Protocol.LanDownloadChannel(
+                this.device.daemon,
+                this.device.id,
+                iconStream
             );
 
-            transfer.connect("failed", (transfer) => {
-                channel.close();
-                this._createNotification(packet);
-            });
-
-            transfer.connect("succeeded", (transfer) => {
-                channel.close();
-                iconStream.close(null);
-                this._createNotification(
-                    packet,
-                    Gio.BytesIcon.new(iconStream.steal_as_bytes())
+            channel.connect("connected", (channel) => {
+                let transfer = new Protocol.Transfer(
+                    channel,
+                    packet.payloadSize,
+                    packet.body.payloadHash
                 );
+
+                transfer.connect("failed", (transfer) => {
+                    channel.close();
+                    resolve(null);
+                });
+
+                transfer.connect("succeeded", (transfer) => {
+                    channel.close();
+                    iconStream.close(null);
+                    resolve(Gio.BytesIcon.new(iconStream.steal_as_bytes()));
+                });
+
+                transfer.start();
             });
 
-            transfer.start();
-        });
+            let addr = new Gio.InetSocketAddress({
+                address: Gio.InetAddress.new_from_string(
+                    this.device.settings.get_string("tcp-host")
+                ),
+                port: packet.payloadTransferInfo.port
+            });
 
-        let addr = new Gio.InetSocketAddress({
-            address: Gio.InetAddress.new_from_string(
-                this.device.settings.get_string("tcp-host")
-            ),
-            port: packet.payloadTransferInfo.port
+            channel.open(addr);
         });
-
-        channel.open(addr);
     },
 
-    _uploadIcon: function (packet, iconInfo) {
+    _uploadIcon: function (packet, filename) {
         debug("Notification: _uploadIcon()");
 
-        let file = Gio.File.new_for_path(iconInfo.get_filename());
+        let file = Gio.File.new_for_path(filename);
         let info = file.query_info("standard::size", 0, null);
 
         let channel = new Protocol.LanUploadChannel(
@@ -291,7 +395,7 @@ var Plugin = new Lang.Class({
                 file.load_contents(null)[1]
             );
 
-            this.device._channel.send(packet);
+            this.send(packet);
         });
 
         channel.connect("connected", (channel) => {
@@ -309,8 +413,15 @@ var Plugin = new Lang.Class({
         channel.open();
     },
 
+    /**
+     * This is called by the daemon
+     */
     Notify: function (appName, replacesId, iconName, summary, body, actions, hints, timeout) {
         debug("Notification: Notify()");
+
+        if (!appName) {
+            return;
+        }
 
         let applications = JSON.parse(this.settings.get_string("applications"));
 
@@ -336,107 +447,113 @@ var Plugin = new Lang.Class({
                     }
                 });
 
-                let iconInfo = this._getIconInfo(iconName);
+                let iconPath = this._getIconPath(iconName);
 
-                if (iconInfo) {
-                    this._uploadIcon(packet, iconInfo);
+                if (iconPath) {
+                    this._uploadIcon(packet, iconPath);
                 } else {
-                    this.device._channel.send(packet);
+                    this.send(packet);
                 }
             }
         }
     },
 
-    _fixNotification: function (packet) {
-        // kdeconnect-android 1.6.6 (hex: 20 e2 80 90 20)
-        if (packet.body.ticker.indexOf(" ‐ ") > -1) {
-            debug("Notification: fixing legacy notification");
-            [packet.body.title, packet.body.text] = packet.body.ticker.split(" ‐ ");
-            packet.body.ticker = packet.body.ticker.replace(" ‐ ", ": ");
-        }
-
-        return packet;
+    /**
+     * Start tracking a notification as active or expected
+     */
+    trackNotification: function (notif) {
+        this._notifications.push(notif);
+        this.notify("notifications");
+        this.notify("Notifications", "aa{sv}");
     },
 
-    handlePacket: function (packet) {
-        debug("Notification: handlePacket()");
+    untrackNotification: function (notif) {
+        let cnotif = this._getNotification(notif);
 
-        if (packet.type === "kdeconnect.notification.request") {
-            // TODO: KDE Connect says this is unused...
-        } else if (this.settings.get_boolean("receive-notifications")) {
-            if (packet.body.isCancel) {
-                this.device.withdraw_notification(packet.body.id);
-            // Ignore GroupSummary notifications
-            } else if (packet.body.id.indexOf("GroupSummary") > -1) {
-                debug("Notification: ignoring GroupSummary notification");
-            // Ignore grouped SMS notifications
-            } else if (packet.body.id.indexOf(":sms|") > -1) {
-                debug("Notification: ignoring grouped SMS notification");
-            } else if (packet.payloadSize) {
-                packet = this._fixNotification(packet);
-                this._downloadIcon(packet);
+        if (cnotif) {
+            let index_ = this._notifications.indexOf(cnotif);
+            this._notifications.splice(index_, 1);
+            this.notify("notifications");
+            this.notify("Notifications", "aa{sv}");
+        }
+    },
+
+    /**
+     * Start tracking a duplicate by ticker
+     *
+     * @param {string} event - The telephony event type
+     * @param {string} ticker - The notification's expected 'ticker' field
+     */
+    trackDuplicate: function (notif) {
+        debug(arguments);
+
+        // Check if this is a known duplicate
+        let cnotif = this._getNotification(notif);
+
+        if (!cnotif) {
+            this.trackNotification(notif);
+        }
+    },
+
+    /**
+     * Mark a notification handled by Telephony to be closed if received
+     *
+     * @param {string} event - The telephony event type
+     * @param {string} ticker - The notification's expected 'ticker' field
+     */
+    closeDuplicate: function (notif) {
+        debug(arguments);
+
+        // Check if this is a known duplicate
+        let cnotif = this._getNotification(notif);
+
+        if (cnotif) {
+            // Close it now if we know the remote id
+            if (cnotif.id) {
+                debug("closing duplicate notification");
+                this.close(cnotif.id);
+            // ...or mark it to be closed when we do
             } else {
-                packet = this._fixNotification(packet);
-                this._createNotification(packet);
+                debug("marking duplicate notification to be closed");
+                cnotif.isCancel = true;
             }
         }
     },
 
     /**
-     * Mark a notification to be closed if received (not shown locally and
-     * closed remotely)
-     * @param {string} matchString - The notification's expected content
-     */
-    closeDuplicate: function (matchString) {
-        debug("Notification: closeDuplicate('" + matchString + "')");
-
-        if (this._duplicates.has(matchString)) {
-            let duplicate = this._duplicates.get(matchString);
-
-            if (duplicate.id) {
-                this.close(duplicate.id);
-                this._duplicates.delete(matchString);
-            } else {
-                duplicate.close = true;
-            }
-        } else {
-            this._duplicates.set(matchString, { close: true });
-        }
-    },
-
-    /**
-     * Mark a notification to be silenced if received (not shown locally)
-     * @param {string} matchString - The notification's expected content
-     */
-    silenceDuplicate: function (matchString) {
-        debug("Notification: silenceDuplicate('" + matchString + "')");
-
-        if (this._duplicates.has(matchString)) {
-            this._duplicates.get(matchString).silence = true;
-        } else {
-            this._duplicates.set(matchString, { silence: true });
-        }
-    },
-
-    /**
-     * Close a remote notification
-     * @param {string} id - The notification id
+     * Close a remote notification and remove it from the cache
+     * @param {string} id - The either the local id or remote timestamp
      */
     close: function (id) {
-        let packet = new Protocol.Packet({
-            id: 0,
-            type: "kdeconnect.notification.request",
-            body: { cancel: id }
-        });
+        debug(id);
 
-        this.device._channel.send(packet);
+        // Check if this is a known notification
+        let cnotif = this._getNotification({ id: id, time: id });
+
+        if (cnotif) {
+            // Use correct id
+            let remoteId = cnotif.hasOwnProperty("id") ? cnotif.id : id;
+
+            let packet = new Protocol.Packet({
+                id: 0,
+                type: "kdeconnect.notification.request",
+                body: { cancel: remoteId }
+            });
+
+            debug("closing notification with id '" + id + "'");
+
+            this.send(packet);
+            this.untrackNotification(cnotif);
+        }
     },
 
     /**
      * Reply to a notification sent with a requestReplyId UUID
-     * TODO: kdeconnect-android 1.7+ only, this is untested and not used yet
+     * TODO: this is untested and not used yet
      */
     reply: function (id, appName, title, text) {
+        debug(arguments);
+
         let dialog = new ReplyDialog(this.device, appName, title, text);
         dialog.connect("delete-event", dialog.destroy);
         dialog.connect("response", (dialog, response) => {
@@ -450,7 +567,7 @@ var Plugin = new Lang.Class({
                     }
                 });
 
-                this.device._channel.send(packet);
+                this.send(packet);
             }
 
             dialog.destroy();
@@ -469,7 +586,7 @@ var Plugin = new Lang.Class({
             body: { request: true }
         });
 
-        this.device._channel.send(packet);
+        this.send(packet);
     }
 });
 

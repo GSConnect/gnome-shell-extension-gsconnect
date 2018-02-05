@@ -1,4 +1,4 @@
-project('gsconnect', 'c', version: '9', meson_version: '>= 0.40.1')
+project('gsconnect', 'c', version: '10', meson_version: '>= 0.40.1')
 
 gnome = import('gnome')
 extuuid = meson.project_name() + '@andyholmes.github.io'
@@ -18,8 +18,7 @@ extension_source = files(
   'src/_bootstrap.js',
   'src/client.js',
   # non-GJS files
-  'src/nautilus-gsconnect.py',
-  'src/folks-cache.py'
+  'src/nautilus-gsconnect.py'
 )
 
 install_data(

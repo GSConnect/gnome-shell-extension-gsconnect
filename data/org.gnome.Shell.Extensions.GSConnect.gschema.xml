@@ -1,5 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist gettext-domain="org.gnome.Shell.Extensions.GSConnect">
+  <!-- flags arent reusable, so this is the ENUM
+    1 NONE      No traffic allowed
+    2 OUT       Allow outgoing traffic
+    4 IN        Allow incoming traffic
+    8 FORWARD   Allow forwarding traffic between devices
+  -->
+  <flags id="org.gnome.Shell.Extensions.GSConnect.TelephonyAction">
+    <value nick="NOTHING" value="1"/>
+    <value nick="LOWER_VOLUME" value="2"/>
+    <value nick="MUTE_VOLUME" value="4"/>
+    <value nick="MUTE_MICROPHONE" value="8"/>
+    <value nick="CUSTOM" value="16"/>
+  </flags>
   <schema id="org.gnome.Shell.Extensions.GSConnect" path="/org/gnome/shell/extensions/gsconnect/">
     <key name="debug" type="b">
       <default>false</default>
@@ -28,6 +41,9 @@
     </key>
     <key name="devices" type="as">
       <default>[]</default>
+    </key>
+    <key name="donotdisturb" type="i">
+        <default>0</default>
     </key>
     <key name="nautilus-integration" type="b">
       <default>false</default>
@@ -61,10 +77,13 @@
     <key name="type" type="s">
       <default>"unknown"</default>
     </key>
-    <key name="enabled-plugins" type="as">
+    <key name="supported-plugins" type="as">
       <default>[]</default>
     </key>
-    <key name="supported-plugins" type="as">
+    <key name="incoming-capabilities" type="as">
+      <default>[]</default>
+    </key>
+    <key name="outgoing-capabilities" type="as">
       <default>[]</default>
     </key>
     <key name="tcp-host" type="s">
@@ -75,27 +94,69 @@
     </key>
   </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Battery">
-    <key name="receive-statistics" type="b">
-      <default>true</default>
-      <summary>Receive Statistics</summary>
-      <description></description>
-    </key>
-    <key name="send-statistics" type="b">
-      <default>false</default>
-      <summary>Send Statistics</summary>
-      <description></description>
+    <!-- FIXME NEW STUFF FIXME -->
+    <key name="allow" type="u">
+      <default>4</default>
+      <summary>Allow Traffic</summary>
+      <description>Allow flags for directional traffic</description>
     </key>
   </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Clipboard">
-    <key name="receive-content" type="b">
-      <default>true</default>
-      <summary>Receive Content</summary>
+    <!-- FIXME NEW STUFF FIXME -->
+    <key name="allow" type="u">
+      <default>1</default>
+      <summary>Allow Traffic</summary>
+      <description>Allow flags for directional traffic</description>
+    </key>
+  </schema>
+  <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Contacts">
+    <!-- FIXME NEW STUFF FIXME -->
+    <key name="allow-in" type="b">
+      <default>false</default>
+      <summary>Allow incoming packets</summary>
       <description></description>
     </key>
-    <key name="send-content" type="b">
-      <default>true</default>
-      <summary>Send Content</summary>
+  </schema>
+  <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.FindMyPhone">
+    <!-- FIXME NEW STUFF FIXME -->
+    <key name="allow" type="i">
+      <default>6</default>
+      <summary>Allow Traffic</summary>
+      <description>Allow flags for directional traffic</description>
+    </key>
+  </schema>
+  <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Lock">
+    <!-- FIXME NEW STUFF FIXME -->
+    <key name="allow-in" type="b">
+      <default>false</default>
+      <summary>Allow incoming packets</summary>
       <description></description>
+    </key>
+  </schema>
+  <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Mousepad">
+    <!-- FIXME NEW STUFF FIXME -->
+    <key name="allow-input" type="b">
+      <default>false</default>
+      <summary>Allow Input</summary>
+      <description>Allow control of the mouse and keyboard</description>
+    </key>
+    <key name="allow-output" type="b">
+      <default>true</default>
+      <summary>Allow Output</summary>
+      <description>Support controlling the device's input</description>
+    </key>
+  </schema>
+  <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.MPRIS">
+    <!-- FIXME NEW STUFF FIXME -->
+    <key name="mpris-control" type="b">
+      <default>false</default>
+      <summary>Allow Control</summary>
+      <description>Allow control of MPRIS media players</description>
+    </key>
+    <key name="mpris-view" type="b">
+      <default>true</default>
+      <summary>Allow View</summary>
+      <description>Allow viewing MPRIS media players</description>
     </key>
   </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Notification">
@@ -113,7 +174,22 @@
       <default>'{"GSConnect":{"iconName":"phone","enabled":false}}'</default>
     </key>
   </schema>
+  <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Ping">
+    <!-- FIXME NEW STUFF FIXME -->
+    <key name="allow-in" type="b">
+      <default>false</default>
+      <summary>Allow incoming packets</summary>
+      <description></description>
+    </key>
+  </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.RunCommand">
+    <!-- FIXME NEW STUFF FIXME -->
+    <key name="handle-execution" type="b">
+      <default>false</default>
+      <summary>Allow incoming packets</summary>
+      <description></description>
+    </key>
+
     <key name="command-list" type="s">
       <default>"{}"</default>
     </key>
@@ -126,6 +202,13 @@
     </key>
   </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Share">
+    <!-- FIXME NEW STUFF FIXME -->
+    <key name="direct-sharing" type="b">
+      <default>true</default>
+      <summary>Direct Sharing</summary>
+      <description>Allow direct sharing of files and URLs</description>
+    </key>
+
     <key name="download-directory" type="s">
       <default>""</default>
       <summary>Download Directory</summary>
@@ -138,6 +221,28 @@
     </key>
   </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Telephony">
+    <!-- FIXME NEW STUFF FIXME -->
+    <key name="handle-messaging" type="b">
+      <default>true</default>
+      <summary>Handle Messaging</summary>
+      <description>Handle SMS Events and other messaging</description>
+    </key>
+    <key name="handle-calls" type="b">
+      <default>true</default>
+      <summary>Handle Phone Calls</summary>
+      <description>Handle phone events</description>
+    </key>
+    <key name="ringing-action" type="as">
+      <default>[]</default>
+      <summary>Ringing Action</summary>
+      <description>Action to take when the phone rings</description>
+    </key>
+<!--    <key name="talking-action" flags="org.gnome.Shell.Extensions.GSConnect.TelephonyAction">-->
+<!--      <default>["MUTE_VOLUME", "MUTE_MICROPHONE", "PAUSE_MEDIA"]</default>-->
+<!--      <summary>Talking Action</summary>-->
+<!--      <description>Action to take when the phone is answered</description>-->
+<!--    </key>-->
+
     <key name="ringing-volume" type="s">
       <default>"lower"</default>
       <summary>System Volume</summary>

@@ -165,13 +165,19 @@ var NativeMessagingHost = new Lang.Class({
         // Watch device property changes (connected, paired, plugins, etc)
         for (let device of this.daemon._devices.values()) {
             device.connect("notify", () => this.sendDeviceList());
+            device._watching = true;
         }
 
         // Watch for new and removed devices
-        this.daemon.connect("device::added", (daemon, dbusPath) => {
-            let device = this.daemon.devices.get(dbusPath);
-            device.connect("notify", () => this.sendDeviceList());
-            this.sendDeviceList();
+        this.daemon.connect("notify::devices", () => {
+            for (let device of this.daemon._devices.values()) {
+                if (!device._watching) {
+                    device.connect("notify", () => this.sendDeviceList());
+                    device._watching = true;
+                }
+            }
+
+            this.sendDeviceList()
         });
 
         this.send({ type: "connected", data: true });

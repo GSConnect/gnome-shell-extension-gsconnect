@@ -247,11 +247,12 @@ def get_iterator(obj):
 # Folks
 ###############################################################################
 
-class PhoneFieldDetailsWrapper(object):
+class PhoneFieldDetails(object):
     def __init__(self, obj):
         self.field_details = obj
         self.value_type = obj.get_value_type()
         self.value = c_to_py(obj.get_value(), self.value_type)
+
         params = get_iterator(obj.get_parameters())
         self.parameters = {}
 
@@ -261,93 +262,167 @@ class PhoneFieldDetailsWrapper(object):
             self.parameters[key] = value
 
 
-class FolksListener(object):
+class Individual(object):
+    def __init__(self, individual):
+        self._individual = individual
+
+    @property
+    def avatar(self):
+        """An avatar for the contact
+
+        Return a GIcon (GLoadableIcon/GBytesIcon) or None
+        """
+        return self._individual.get_avatar()
+
+    @property
+    def display_name(self):
+        """The name of this Individual to display in the UI."""
+        return self._individual.get_display_name()
+
+    @property
+    def id(self):
+        """A unique identifier for the Individual."""
+        return self._individual.get_id()
+
+    def _get_local_ids(self):
+        for index, local_id in get_iterator(self._individual.get_local_ids()):
+            if local_id:
+                yield local_id
+
+    @property
+    def local_ids(self):
+        """The IIDs corresponding to Personas in a backend that we fully trust."""
+        return [lid for lid in self._get_local_ids()]
+
+    def _get_phone_numbers(self):
+        phone_numbers = self._individual.get_phone_numbers()
+
+        for key, details in get_iterator(phone_numbers):
+            yield PhoneFieldDetails(details)
+
+    @property
+    def phone_numbers(self):
+        phone_numbers = []
+
+        for phone_number in self._get_phone_numbers():
+            phone_numbers.append({
+                'number': phone_number.value,
+                'type': phone_number.parameters.get('type', 'unknown')
+            })
+
+        return phone_numbers
+
+
+class Aggregator(object):
     def __init__(self, loop):
         self.loop = loop
         self.cache_dir = os.path.expanduser("~/.cache/gsconnect/contacts/")
-        self.cache_path = os.path.join(self.cache_dir, "contacts.json")
+#        self.cache_path = os.path.join(self.cache_dir, "contacts.json")
 
-        try:
-            with open(self.cache_path, 'r') as cache_file:
-                self.cache = json.load(cache_file);
-        except:
-            self.cache = []
+#        try:
+#            with open(self.cache_path, 'r') as cache_file:
+#                self.cache = json.load(cache_file);
+#        except:
+#            self.cache = {}
 
-        self.aggregator = Folks.IndividualAggregator.dup()
-        self.aggregator.connect('notify::is-quiescent', self._on_quiescent)
-        self.aggregator.prepare()
+        self.contacts = {}
+
+        self._individuals = {}
+
+        self._aggregator = Folks.IndividualAggregator.dup()
+        self._aggregator.connect('notify::is-quiescent', self._on_quiescent)
+        self._aggregator.prepare()
 
     def _on_quiescent(self, *args):
-        new_cache = []
+        self._get_individuals()
 
-        for folk in self.get_folks():
-            for phone_number in self.get_phone_numbers(folk):
-                new_contact = {
-                    'name': folk.get_display_name(),
-                    'number': phone_number.value,
-                    'type': phone_number.parameters.get('type', 'unknown'),
-                    'origin': 'folks'
-                }
+        self.contacts = self.get_contacts()
 
-                avatar = folk.get_avatar()
-
-                if avatar != None:
-                    if hasattr(avatar, 'get_file'):
-                        new_contact['avatar'] = avatar.get_file().get_path()
-                    elif hasattr(avatar, 'get_bytes'):
-                        folk_id = folk.get_id() or GLib.uuid_string_random()
-                        path = os.path.join(self.cache_dir, folk_id + ".jpeg")
-
-                        with open(path, 'wb') as fobj:
-                            fobj.write(avatar.get_bytes().get_data())
-
-                        new_contact['avatar'] = path
-
-                new_cache.append(new_contact)
-
-        self.write(new_cache)
+        self.print(self.contacts)
         self.loop.quit()
 
-    def get_folks(self):
-        individuals = self.aggregator.get_individuals()
+    def _get_individuals(self):
+        individuals = self._aggregator.get_individuals()
 
         for uid, folk in get_iterator(individuals):
-            yield folk
+            self._individuals[uid] = Individual(folk)
 
-    def get_phone_numbers(self, folk):
-        phone_numbers = folk.get_phone_numbers()
+    @property
+    def individuals(self):
+        return self._individuals
 
-        for key, details in get_iterator(phone_numbers):
-            yield PhoneFieldDetailsWrapper(details)
+    def get_contacts(self):
+        contacts = {};
+        account_id = ''
+
+        for folk in self.individuals.values():
+            # Skip contacts without phone numbers
+            if not len(folk.phone_numbers):
+                continue
+
+            contact_id = ''
+
+            # We take a local_id, which is <contact-id>:<urn>, and split it
+            # so that if we get the same contacts from a different source, like
+            # GData, we use the same ID's and don't duplicate contacts.
+            if len(folk.local_ids) == 1:
+                fid, urn = folk.local_ids[0].split(':', 1)
+                #print(folk.display_name + ': ' + folk.local_ids[0])
+                contact_id = urn
+
+                if not account_id:
+                    account_id = fid
+
+            elif len(folk.local_ids) > 1:
+                for local_id in folk.local_ids:
+                    #print(folk.display_name + ': ' + local_id)
+                    fid, urn = local_id.split(':', 1)
+
+                    if fid != account_id:
+                        account_id = fid
+                        #print(account_id)
+
+                    contact_id = urn
+                    #print(contact_id)
+                    break
+
+            # Numbers
+            #for number in folk.phone_numbers:
+
+            # Avatar
+            avatar = None
+
+            if folk.avatar != None:
+                if hasattr(folk.avatar, 'get_file'):
+                    avatar = folk.avatar.get_file().get_path()
+                elif hasattr(avatar, 'get_bytes'):
+                    folk_id = folk.id or GLib.uuid_string_random()
+                    path = os.path.join(self.cache_dir, folk_id + '.jpeg')
+
+                    with open(path, 'wb') as fobj:
+                        fobj.write(folk.avatar.get_bytes().get_data())
+
+                    avatar = path
+
+            # Add the contact
+            contact = {
+                'avatar': avatar or "",
+                'folks_id': folk.id or None,
+                'name': folk.display_name,
+                'numbers': folk.phone_numbers,
+                'origin': 'folks'
+            }
+            contacts[contact_id] = contact
+
+        return contacts
+
+    def print(self, new_cache):
+        print(json.dumps(new_cache))
 
     def write(self, new_cache):
         # if new_cache is empty goa might not be running, avoid wiping contacts
         if not new_cache:
             return
-
-        # update contacts
-        new_diffs = list(itertools.filterfalse(lambda x: x in self.cache, new_cache))
-
-        for old_item in self.cache:
-            old_num = ''.join(re.findall(r'\d+', old_item['number']))
-
-            for new_item in new_diffs:
-                new_num = ''.join(re.findall(r'\d+', new_item['number']))
-
-                if old_item['name'] in ('', new_item['name']) and old_num == new_num:
-                    self.cache[self.cache.index(old_item)].update(new_item)
-                    new_diffs.remove(new_item)
-
-        # remove old folks
-        old_diffs = list(itertools.filterfalse(lambda x: x in new_cache, self.cache))
-
-        for old_item in old_diffs:
-            if old_item['origin'] != 'kdeconnect':
-                self.cache.remove(old_item);
-
-        # add new folks
-        for new_item in new_diffs:
-            self.cache.append(new_item)
 
         with open(self.cache_path, 'w') as cache_file:
             json.dump(new_cache, cache_file)
@@ -360,7 +435,7 @@ class FolksListener(object):
 if __name__ == '__main__':
     loop = GObject.MainLoop()
 
-    FolksListener(loop)
+    Aggregator(loop)
 
     loop.run()
 

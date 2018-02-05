@@ -20,12 +20,26 @@ This extension has not been reviewed on the official extensions website, but is
 considered a stable replacement for KDE Connect on Gnome Shell.
 
 Stable releases are available for download on the [releases page][releases].
-The Wiki contains instructions for [building from Git][wiki-git] and full list
-of [dependencies][wiki-depends].
+The Wiki contains instructions for [installing from Zip][wiki-zip],
+[building from Git][wiki-git] and full list of [dependencies][wiki-depends].
 
 The [Chrome extension][chrome-extension] and [Firefox Add-on][firefox-addon]
 can be installed after [Web Browser Integration][web-browser-integration] has
 been enabled in the preferences.
+
+### Getting Help
+
+You can open an [issue][git-issue] to report a problem, request a new feature
+or get help using GSConnect. There is also a [FAQ][git-faq] in the Wiki with
+some common questions.
+
+The KDE Connect team has resources available for problems or feature requests
+for the Android app or if you would like to contribute to the protocol or
+infrastructure:
+
+* [Bug Tracker][kdec-bugs]
+* [Phabricator][kdec-phabricator]
+* [KDE Connect Mailing List][kdec-mail]
     
 ### Credits
 
@@ -64,11 +78,19 @@ Joe Sneddon of [OMG! Ubuntu][omgubuntu] for his interest, support and articles.
 [gjs]: https://wiki.gnome.org/Projects/Gjs
 [releases]: https://github.com/andyholmes/gnome-shell-extension-gsconnect/releases
 [wiki]: https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki
+
+[wiki-zip]: https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Installation#installing-from-zip
 [wiki-git]: https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Installation#building-from-git
 [wiki-depends]: https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Installation#dependencies
 [web-browser-integration]: https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Preferences#web-browser-integration
 [chrome-extension]: https://chrome.google.com/webstore/detail/gsconnect/jfnifeihccihocjbfcfhicmmgpjicaec
 [firefox-addon]: https://addons.mozilla.org/en-US/firefox/addon/gsconnect/
+
+[git-issue]: https://github.com/andyholmes/gnome-shell-extension-gsconnect/issues/
+[git-faq]: https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/FAQ
+[kdec-bugs]: https://bugs.kde.org/buglist.cgi?quicksearch=kdeconnect
+[kdec-phabricator]: https://phabricator.kde.org/project/view/159/
+[kdec-mail]: https://mail.kde.org/mailman/listinfo/kdeconnect
 
 [kdeconnect]: https://community.kde.org/KDEConnect
 [google-play]: https://play.google.com/store/apps/details?id=org.kde.kdeconnect_tp
@@ -77,7 +99,6 @@ Joe Sneddon of [OMG! Ubuntu][omgubuntu] for his interest, support and articles.
 [gconnect]: https://github.com/getzze/gconnect
 [kindicator]: https://github.com/Bajoja/indicator-kdeconnect
 
-[albertvaka]: https://github.com/albertvaka
 [hugosenari]: https://github.com/hugosenari
 [python-folks]: https://github.com/hugosenari/folks
 [RaphaelRochet]: https://github.com/RaphaelRochet
@@ -87,6 +108,7 @@ Joe Sneddon of [OMG! Ubuntu][omgubuntu] for his interest, support and articles.
 [numix]: https://numixproject.org/
 [material]: https://material.io/
 
+[albertvaka]: https://github.com/albertvaka
 [ptomato]: https://github.com/ptomato
 [pwithnall]: https://github.com/pwithnall
 [nielsdg]: https://github.com/nielsdg

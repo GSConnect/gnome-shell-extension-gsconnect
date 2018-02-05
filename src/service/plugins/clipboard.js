@@ -47,29 +47,42 @@ var Plugin = new Lang.Class({
         }
 
         this._clipboard.connect("owner-change", (clipboard, event) => {
-            if (this.settings.get_boolean("send-content")) {
-                this._clipboard.request_text(Lang.bind(this, this.send));
-            }
+            this._clipboard.request_text((clipboard, text) => {
+                this._provideContent(text);
+            });
         });
     },
 
     handlePacket: function (packet) {
         debug(packet);
 
-        if (packet.body.content && this.settings.get_boolean("receive-content")) {
-            this.receive(packet.body.content);
-        }
+        return new Promise((resolve, reject) => {
+            if (packet.body.content && this.settings.get_uint("allow") & 4) {
+                resolve(this._handleContent(packet.body.content));
+            }
+        });
     },
 
-    receive: function (text) {
-        debug("Clipboard: receive('" + text + "')");
+    /**
+     * Remote Methods
+     */
+    _handleContent: function (text) {
+        debug(text);
 
         this._currentContent = text;
         this._clipboard.set_text(text, -1);
     },
 
-    send: function (clipboard, text) {
-        debug("Clipboard: send('" + text + "')");
+    /**
+     * Local Methods
+     */
+    _provideContent: function (text) {
+        debug(text);
+
+        // FIXME
+        if (!(this.settings.get_uint("allow") & 2)) {
+            return;
+        }
 
         if (text !== this._currentContent) {
             this._currentContent = text;

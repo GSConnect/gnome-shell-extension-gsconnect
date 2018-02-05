@@ -23,6 +23,25 @@ var METADATA = {
 };
 
 
+var UUID = "org.gnome.Shell.Extensions.GSConnect.Plugin.FindMyPhone";
+
+var IncomingPacket = {
+    LOCATE_EVENT: "kdeconnect.findmyphone.request"
+};
+
+var OutgoingPacket = {
+    LOCATE_ACTION: "kdeconnect.findmyphone.request"
+};
+
+var Action = {
+    find: {
+        label: _("Locate the device"),
+        incoming: [],
+        outgoing: ["kdeconnect.findmyphone.request"]
+    }
+};
+
+
 /**
  * FindMyPhone Plugin
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/findmyphone
@@ -34,6 +53,10 @@ var Plugin = new Lang.Class({
     _init: function (device) {
         this.parent(device, "findmyphone");
 
+        this._desktop = new Gio.Settings({
+            schema_id: "org.gnome.system.location"
+        });
+
         this._cancellable = null;
         this._dialog = null;
     },
@@ -42,7 +65,7 @@ var Plugin = new Lang.Class({
         debug("FindMyPhone: handlePacket()");
 
         return new Promise((resolve, reject) => {
-            if (this.settings.get_boolean("allow-locate")) {
+            if (this.settings.get_boolean("enabled")) {
                 resolve(this._handleFind());
             }
         });
