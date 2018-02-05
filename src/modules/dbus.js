@@ -79,35 +79,32 @@ var ProxyBase = new Lang.Class({
     },
 
     _set: function (name, value, signature) {
-        return new Promise((resolve, reject) => {
-            if (!signature) {
-                let propertyInfo = this.gInterfaceInfo.lookup_property(name);
-                let variant = new GLib.Variant(propertyInfo.signature, value);
-            }
+        if (!signature) {
+            let propertyInfo = this.gInterfaceInfo.lookup_property(name);
+            let variant = new GLib.Variant(propertyInfo.signature, value);
+        }
 
-            // Set the cached property first
-            this.set_cached_property(name, variant);
+        // Set the cached property first
+        this.set_cached_property(name, variant);
 
-            this.call(
-                "org.freedesktop.DBus.Properties.Set",
-                new GLib.Variant("(ssv)", [this.gInterfaceName, name, variant]),
-                Gio.DBusCallFlags.NONE,
-                -1,
-                this.cancellable,
-                (proxy, result) => {
-                    try {
-                        resolve(this.call_finish(result));
-                    } catch (e) {
-                        log(
-                            "Error setting " + name +
-                            " on " + this.gObjectPath +
-                            ": " + e.message
-                        );
-                        reject(e);
-                    }
+        this.call(
+            "org.freedesktop.DBus.Properties.Set",
+            new GLib.Variant("(ssv)", [this.gInterfaceName, name, variant]),
+            Gio.DBusCallFlags.NONE,
+            -1,
+            this.cancellable,
+            (proxy, result) => {
+                try {
+                    this.call_finish(result);
+                } catch (e) {
+                    log(
+                        "Error setting " + name +
+                        " on " + this.gObjectPath +
+                        ": " + e.message
+                    );
                 }
-            );
-        });
+            }
+        );
     },
 
     _getMethodSignature: function (name) {
