@@ -817,7 +817,7 @@ var SystemIndicator = new Lang.Class({
         id = id.join("|");
 
         // Search for a matching device with the notification plugin enabled
-        for (let device of this.daemon.devices.values()) {
+        for (let device of this.daemon._devices.values()) {
             if (deviceId === device.id && device.notification) {
                 device.notification.close(id);
                 break;
