@@ -300,41 +300,6 @@ var Store = new Lang.Class({
     },
 
     /**
-     * Cache functions
-     */
-    _queryContacts: function (query) {
-        debug(query);
-
-        // Return a subset of this.contacts
-        let matches = {};
-
-        // Match numbers by stripping non-digits
-        if (query.number) {
-            query.number = query.number.replace(/\D/g, "");
-        }
-
-        for (let id in this._contacts) {
-            let contact = this._contacts[id];
-
-            if (query.number) {
-                for (let num of contact.numbers) {
-                    if (query.number === num.number.replace(/\D/g, "")) {
-                        matches[id] = this._contacts[id];
-
-                        if (query.name && query.name === contact.name) {
-                            return { id: contact };
-                        }
-                    }
-                }
-            } else if (query.name && query.name === contact.name) {
-                matches[id] = contact;
-            }
-        }
-
-        return matches;
-    },
-
-    /**
      * Take name and a number and return a contact, known or new
      */
     getContact: function (name, number) {
