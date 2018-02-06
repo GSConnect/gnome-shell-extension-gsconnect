@@ -1,6 +1,7 @@
 "use strict";
 
 const Gio = imports.gi.Gio;
+const GLib = imports.gi.GLib;
 const Gtk = imports.gi.Gtk;
 
 // Local Imports
@@ -13,7 +14,7 @@ function getPath() {
 window.gsconnect = { datadir: getPath() };
 imports.searchPath.push(gsconnect.datadir);
 const _bootstrap = imports._bootstrap;
-const Settings = imports.modules.settings;
+const Client = imports.client;
 
 
 function init() {
@@ -26,6 +27,15 @@ function init() {
 function buildPrefsWidget() {
     debug("Prefs: buildPrefsWidget()");
 
-    return new Settings.PrefsWidget();
+    let label = new Gtk.Label();
+    GLib.timeout_add(GLib.PRIORITY_DEFAULT, 0, () => {
+        label.get_toplevel().destroy();
+        return false;
+    });
+
+    let daemon = new Client.Daemon();
+    daemon.openSettings();
+
+    return label;
 }
 
