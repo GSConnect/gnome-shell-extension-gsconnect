@@ -91,7 +91,6 @@ var Plugin = new Lang.Class({
         let file = Gio.File.new_for_path(filepath);
 
         let channel = new Protocol.LanDownloadChannel(
-            this.device.daemon,
             this.device.id,
             file.replace(null, false, Gio.FileCreateFlags.NONE, null)
         );
@@ -310,7 +309,6 @@ var Plugin = new Lang.Class({
         let info = file.query_info("standard::size", 0, null);
 
         let channel = new Protocol.LanUploadChannel(
-            this.device.daemon,
             this.device.id,
             file.read(null)
         );

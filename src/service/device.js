@@ -154,11 +154,12 @@ var Device = new Lang.Class({
         this._incomingPairRequest = 0;
         this._outgoingPairRequest = 0;
 
-        // Plugins
+        // A map of pluginName->pluginObject
         this._plugins = new Map();
+        // A map of packetType->pluginObject
         this._handlers = new Map();
 
-        // Param parsing
+        // We at least need the device Id for GSettings and the DBus interface
         let deviceId = params.id || params.packet.body.deviceId;
 
         // GSettings
@@ -170,11 +171,12 @@ var Device = new Lang.Class({
             path: "/org/gnome/shell/extensions/gsconnect/device/" + deviceId + "/"
         });
 
+        // This relies on GSettings
         if (params.packet) {
             this._handleIdentity(params.packet);
         }
 
-        // Export DBus
+        // Export DBus interface
         this._dbus = Gio.DBusExportedObject.wrapJSObject(
             gsconnect.dbusinfo.lookup_interface(
                 "org.gnome.Shell.Extensions.GSConnect.Device"
@@ -186,7 +188,7 @@ var Device = new Lang.Class({
             gsconnect.app_path + "/Device/" + deviceId.replace(/\W+/g, "_")
         );
 
-        // A TCP Connection
+        // Created for an incoming TCP Connection
         if (params.channel) {
             this._channel = params.channel;
 
@@ -274,7 +276,7 @@ var Device = new Lang.Class({
 			return;
 		}
 
-        this._channel = new Protocol.LanChannel(this.daemon, this.id);
+        this._channel = new Protocol.LanChannel(this.id);
 
         this._channel.connect("connected", (channel) => this._onConnected(channel));
         this._channel.connect("disconnected", (channel) => this._onDisconnected(channel));

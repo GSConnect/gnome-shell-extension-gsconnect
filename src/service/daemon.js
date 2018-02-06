@@ -379,31 +379,11 @@ var Daemon = new Lang.Class({
     },
 
     /**
-     * Notification listener
+     * Notification proxy function
      *
-     * This has to be a singleton since more than one device might want to
-     * receive our notifications, but we only have one Bus to work with.
+     * This function is called by eavesdropping on the Fdo Notifications
+     * interface, then forwards the notification to any supporting device.
      */
-    _initNotificationListener: function () {
-        this._ndbus = Gio.DBusExportedObject.wrapJSObject(
-            gsconnect.dbusinfo.lookup_interface("org.freedesktop.Notifications"),
-            this
-        );
-        this._ndbus.export(Gio.DBus.session, "/org/freedesktop/Notifications");
-
-        // Match all notifications
-        this._match = new GLib.Variant("(s)", ["interface='org.freedesktop.Notifications',member='Notify',type='method_call',eavesdrop='true'"])
-
-        this._proxy = new Gio.DBusProxy({
-            gConnection: Gio.DBus.session,
-            gName: "org.freedesktop.DBus",
-            gObjectPath: "/org/freedesktop/DBus",
-            gInterfaceName: "org.freedesktop.DBus"
-        });
-
-        this._proxy.call_sync("AddMatch", this._match, 0, -1, null);
-    },
-
     Notify: function (appName, replacesId, iconName, summary, body, actions, hints, timeout) {
         debug("Daemon: Notify()");
 
@@ -468,7 +448,7 @@ var Daemon = new Lang.Class({
 
     /**
      * Add a list of [name, callback, parameter_type], with callback bound to
-     * @obj or this.
+     * @scope or 'this'.
      */
     _addActions: function (actions, scope) {
         scope = scope || this;
@@ -697,20 +677,10 @@ var Daemon = new Lang.Class({
         this._initCSS();
         Gtk.IconTheme.get_default().add_resource_path(gsconnect.app_path);
 
-        this._initNotificationListener();
         this._initActions();
-        this._watchDaemon();
 
-        // Export DBus
-        let iface = "org.gnome.Shell.Extensions.GSConnect";
-        this._dbus = Gio.DBusExportedObject.wrapJSObject(
-            gsconnect.dbusinfo.lookup_interface(iface),
-            this
-        );
-        this._dbus.export(
-            Gio.DBus.session,
-            "/org/gnome/Shell/Extensions/GSConnect"
-        );
+        // Watch the file 'daemon.js' ot know when we're updated
+        this._watchDaemon();
 
         // Ensure fingerprint is available right away
         this.notify("fingerprint", "s");
@@ -719,7 +689,6 @@ var Daemon = new Lang.Class({
         try {
             this.udpListener = new Protocol.UdpListener();
             this.udpListener.connect("received", (server, packet) => {
-                //if (!this.identity) { return; }
                 if (packet.body.deviceId === this.identity.body.deviceId) {
                     return;
                 }
@@ -735,7 +704,7 @@ var Daemon = new Lang.Class({
             this.tcpListener = new Protocol.TcpListener();
 
             this.tcpListener.connect("incoming", (listener, connection) => {
-                let channel = new Protocol.LanChannel(this);
+                let channel = new Protocol.LanChannel();
                 let conn = channel.connect("connected", (channel) => {
                     GObject.signal_handler_disconnect(channel, conn);
                     this._addDevice(channel.identity, channel);
@@ -791,6 +760,46 @@ var Daemon = new Lang.Class({
         this.hold();
     },
 
+    vfunc_dbus_register: function (connection, object_path) {
+        // Application Interface
+        this._dbus = Gio.DBusExportedObject.wrapJSObject(
+            gsconnect.dbusinfo.lookup_interface(gsconnect.app_id),
+            this
+        );
+        this._dbus.export(connection, gsconnect.app_path);
+
+        // Notifications Listener
+        this._match = new GLib.Variant("(s)", [
+            "interface='org.freedesktop.Notifications'," +
+            "member='Notify'," +
+            "type='method_call'," +
+            "eavesdrop='true'"
+        ]);
+
+        this._proxy = new Gio.DBusProxy({
+            gConnection: Gio.DBus.session,
+            gName: "org.freedesktop.DBus",
+            gObjectPath: "/org/freedesktop/DBus",
+            gInterfaceName: "org.freedesktop.DBus"
+        });
+
+        this._proxy.call_sync("AddMatch", this._match, 0, -1, null);
+
+        this._ndbus = Gio.DBusExportedObject.wrapJSObject(
+            gsconnect.dbusinfo.lookup_interface("org.freedesktop.Notifications"),
+            this
+        );
+        this._ndbus.export(Gio.DBus.session, "/org/freedesktop/Notifications");
+
+        return true;
+    },
+
+    vfunc_dbus_unregister: function () {
+        this._proxy.call_sync("RemoveMatch", this._match, 0, -1, null);
+        this._ndbus.unexport();
+        this._dbus.unexport();
+    },
+
     vfunc_open: function (files, hint) {
         this.parent(files, hint);
 
@@ -839,10 +848,6 @@ var Daemon = new Lang.Class({
         for (let device of this._devices.values()) {
             device.destroy();
         }
-
-        this._proxy.call_sync("RemoveMatch", this._match, 0, -1, null);
-        this._ndbus.unexport();
-        this._dbus.unexport();
     }
 });
 

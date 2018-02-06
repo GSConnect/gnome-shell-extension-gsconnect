@@ -280,10 +280,10 @@ var LanChannel = new Lang.Class({
         }
     },
 
-    _init: function (daemon, deviceId) {
+    _init: function (deviceId) {
         this.parent();
 
-        this.daemon = daemon;
+        this.daemon = Gio.Application.get_default();
         this.identity = { body: { deviceId: deviceId } };
 
         this._monitor = 0;
@@ -676,8 +676,8 @@ var LanDownloadChannel = new Lang.Class({
     Name: "GSConnectLanDownloadChannel",
     Extends: LanChannel,
 
-    _init: function (device, identity, fileStream) {
-        this.parent(device, identity);
+    _init: function (identity, fileStream) {
+        this.parent(identity);
 
         this._out = fileStream;
     },
@@ -723,8 +723,8 @@ var LanUploadChannel = new Lang.Class({
         }
     },
 
-    _init: function (device, identity, srcStream) {
-        this.parent(device, identity);
+    _init: function (identity, srcStream) {
+        this.parent(identity);
 
         this._in = srcStream;
     },

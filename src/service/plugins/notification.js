@@ -338,7 +338,6 @@ var Plugin = new Lang.Class({
             let iconStream = Gio.MemoryOutputStream.new_resizable();
 
             let channel = new Protocol.LanDownloadChannel(
-                this.device.daemon,
                 this.device.id,
                 iconStream
             );
@@ -382,7 +381,6 @@ var Plugin = new Lang.Class({
         let info = file.query_info("standard::size", 0, null);
 
         let channel = new Protocol.LanUploadChannel(
-            this.device.daemon,
             this.device.id,
             file.read(null)
         );
