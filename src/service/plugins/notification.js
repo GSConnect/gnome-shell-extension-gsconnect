@@ -38,6 +38,32 @@ var METADATA = {
  *
  * Incoming Notifications
  *
+ *  {
+ *      id: 1517817309016,
+ *      type: "kdeconnect.notification",
+ *      body: {
+ *          payloadHash: {String} MD5 Hash of payload data
+ *                                (eg. "85ac3d1f77feb592f38dff6ae4f843e1"),
+ *          requestReplyId: {String} UUID for repliable notifications aka
+ *                                   Quick Reply (eg. "91bce2ab-873f-4056-8e91-16fd2f5781ec"),
+ *          id: {String} The remote notification's Id
+ *                       (eg. "0|com.google.android.apps.messaging|0|com.google.android.apps.messaging:sms:22|10109"),
+ *          appName: {String} The application name (eg. "Messages"),
+ *          isClearable: {Boolean} Whether the notification can be closed,
+ *          ticker: {String} Usually <title> and <text> joined with ": ". For
+ *                           SMS it's "<contactName|phoneNumber>: <messageBody>",
+ *          title: {String} Notification title, or <contactName|phoneNumber> for SMS,
+ *          text: {String} Notification body, or <messageBody> for SMS,
+ *          time: {String} String of epoch microseconds the notification
+ *                         was *posted* (eg. "1517817308985"); this resets when
+ *                         an Android device resets.
+ *      },
+ *      "payloadSize": {Number} Payload size in bytes,
+ *      "payloadTransferInfo": {
+ *          "port": {Number} Port number between 1739-1764 for transfer
+ *      }
+ *  }
+ *
  *
  * TODO: consider allowing clients to handle notifications/use signals
  *       make local notifications closeable (serial/reply_serial)
@@ -526,10 +552,10 @@ var Plugin = new Lang.Class({
         debug(id);
 
         // Check if this is a known notification
-        let cnotif = this._getNotification({ id: id, time: id });
+        let cnotif = this._getNotification({ id: id });
 
-        if (cnotif) {
-            // Use correct id
+        if (cnotif && cnotif.hasOwnProperty("id")) {
+            // If it doesn't have a remoteId use the local Id
             let remoteId = cnotif.hasOwnProperty("id") ? cnotif.id : id;
 
             let packet = new Protocol.Packet({
