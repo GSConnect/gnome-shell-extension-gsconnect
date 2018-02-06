@@ -584,35 +584,20 @@ var Daemon = new Lang.Class({
      */
     openSettings: function (device=null) {
         if (!this._window) {
-            this._window = new Gtk.ApplicationWindow({
-                application: this,
-                title: this.name,
-                visible: true
-            });
+            this._window = new Settings.SettingsWindow();
 
             this._window.connect("delete-event", () => {
                 delete this._window;
-                this._pruneDevices();
             });
-
-            this._window.set_titlebar(
-                new Gtk.HeaderBar({
-                    title: this.name,
-                    show_close_button: true,
-                    visible: true
-                })
-            );
-
-            let page = new Settings.PrefsWidget(this);
-            this._window.add(page);
         }
 
         this._window.present();
 
+        // Select a device page automatically
         if (device) {
-            this._window.get_child().switcher.foreach((row) => {
+            this._window.switcher.foreach((row) => {
                 if (row.get_name() === device) {
-                    this._window.get_child().switcher.select_row(row);
+                    this._window.switcher.select_row(row);
                     return;
                 }
             });

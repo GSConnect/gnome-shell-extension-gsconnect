@@ -240,10 +240,10 @@ var SidebarRow = new Lang.Class({
 });
 
 
-var PrefsWidget = Lang.Class({
-    Name: "GSConnectPrefsWidget",
-    Extends: Gtk.Grid,
-    Template: "resource:///org/gnome/Shell/Extensions/GSConnect/prefs.ui",
+var SettingsWindow = new Lang.Class({
+    Name: "GSConnectSettingsWindow",
+    Extends: Gtk.ApplicationWindow,
+    Template: "resource:///org/gnome/Shell/Extensions/GSConnect/settings.ui",
     Children: [
         "stack", "switcher", "sidebar",
         "shell-list",
@@ -255,8 +255,20 @@ var PrefsWidget = Lang.Class({
         "help", "help-list"
     ],
 
-    _init: function (application=false) {
-        this.parent();
+    _init: function (device=null) {
+        this.parent({
+            application: Gio.Application.get_default(),
+            visible: true
+        });
+        this.daemon = this.application;
+        this.connect("delete-event", () => this.daemon._pruneDevices());
+
+        this.headerbar = new Gtk.HeaderBar({
+            title: this.daemon.name,
+            show_close_button: true,
+            visible: true
+        });
+        this.set_titlebar(this.headerbar);
 
         // Sidebar
         this.help.type = "device";
@@ -285,31 +297,11 @@ var PrefsWidget = Lang.Class({
         this._setHeaderbar();
         this._connectTemplate();
 
-        // We were instantiated by the GtkApplication
-        if (application) {
-            this.daemon = application;
-
-            this.daemon.connect("notify::devices", (daemon) => {
-                this._devicesChanged();
-            });
-            this._devicesChanged();
-        // We were instantiated by the Shell, we need a proxy
-        } else {
-            this.daemon = new Client.Daemon();
-
-            this._watchdog = Gio.bus_watch_name(
-                Gio.BusType.SESSION,
-                "org.gnome.Shell.Extensions.GSConnect",
-                Gio.BusNameWatcherFlags.NONE,
-                (c, n, o) => this._serviceAppeared(c, n, o),
-                (c, n) => this._serviceVanished(c, n)
-            );
-        }
+        this.daemon.connect("notify::devices", () => this._devicesChanged());
+        this._devicesChanged();
 
         // Broadcasting
-        this.connect("destroy", () => {
-            GLib.source_remove(this._refreshSource);
-        });
+        this.connect("destroy", () => GLib.source_remove(this._refreshSource));
 
         this._refreshSource = GLib.timeout_add_seconds(
             GLib.PRIORITY_DEFAULT,
@@ -357,6 +349,7 @@ var PrefsWidget = Lang.Class({
             dialog.connect("delete-event", dialog => dialog.destroy());
             dialog.show();
         });
+        this.headerbar.pack_end(aboutButton);
 
         // Previous Button
         this._prevButton = new Gtk.Button({
@@ -375,14 +368,7 @@ var PrefsWidget = Lang.Class({
             this.switcher.get_row_at_index(0).emit("activate");
             this._prevButton.visible = false;
         });
-
-        // Hack for gnome-shell-extension-prefs
-        GLib.timeout_add(GLib.PRIORITY_DEFAULT, 0, () => {
-            this.headerbar = this.get_toplevel().get_titlebar();
-            this.headerbar.pack_end(aboutButton);
-            this.headerbar.pack_start(this._prevButton);
-            return false;
-        });
+        this.headerbar.pack_start(this._prevButton);
     },
 
     _connectTemplate: function () {
@@ -427,34 +413,6 @@ var PrefsWidget = Lang.Class({
         });
 
         this.help.visible = (!this.daemon.devices.length);
-    },
-
-    /**
-     * DBus Service Callbacks
-     */
-    _serviceAppeared: function (conn, name, name_owner) {
-        debug([conn, name, name_owner]);
-
-        if (!this.daemon) {
-            this.daemon = new Client.Daemon();
-        }
-
-        // Watch for new and removed devices
-        this.daemon.connect("notify::devices", (daemon) => {
-            this._devicesChanged(daemon);
-        });
-        this._devicesChanged();
-    },
-
-    _serviceVanished: function (conn, name) {
-        debug([conn, name]);
-
-        if (this.daemon) {
-            this.daemon.destroy();
-            delete this.daemon;
-        }
-
-        this.daemon = new Client.Daemon();
     },
 
     /**
@@ -692,7 +650,6 @@ var DeviceSettings = Lang.Class({
         });
 
         this._infoPage();
-        this._batterySettings();
         this._runcommandSettings();
         this._notificationSettings();
         this._sharingSettings();
@@ -791,13 +748,9 @@ var DeviceSettings = Lang.Class({
             }
         });
         this.device.notify("paired");
-    },
         this.device_status_list.set_header_func(section_separators);
 
-    /**
-     * Battery Settings
-     */
-    _batterySettings: function () {
+        // Battery Level Bar
         let battery = this.device._plugins.get("battery");
 
         if (battery) {
@@ -832,6 +785,10 @@ var DeviceSettings = Lang.Class({
         }
     },
 
+    /**
+     * RunCommand Page
+     * TODO: maybe action<->commands?
+     */
     _runcommandSettings: function () {
         let runcommand = this.device._plugins.get("runcommand");
 
@@ -856,14 +813,17 @@ var DeviceSettings = Lang.Class({
             this._commands = JSON.parse(commands);
 
             this.runcommand_local_list.set_sort_func((row1, row2) => {
+                // The add button
                 if (row1.get_child() instanceof Gtk.Image) {
                     return 1;
                 } else if (row2.get_child() instanceof Gtk.Image) {
                     return -1;
+                // Compare uuid?
                 } else if (row1.uuid && row1.uuid === row2.get_name()) {
                     return 1;
                 } else if (row2.uuid && row2.uuid === row1.get_name()) {
                     return -1;
+                // Shouldn't happen?!
                 } else if (!row1.title || !row2.title) {
                     return 0;
                 }
