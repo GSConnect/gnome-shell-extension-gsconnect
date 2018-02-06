@@ -263,37 +263,33 @@ var Plugin = new Lang.Class({
         // Update contact avatar
         // FIXME: move to modules/contacts.js
         if (event.phoneThumbnail) {
-            if (!contact.avatar) {
-                debug("Telephony: updating avatar for " + contact.name);
+            if (!event.contact.avatar) {
+                debug("updating avatar for " + event.contact.name);
 
                 let path = this.contacts._cacheDir + "/" + GLib.uuid_string_random() + ".jpeg";
                 GLib.file_set_contents(
                     path,
-                    GLib.base64_decode(packet.body.phoneThumbnail)
+                    GLib.base64_decode(event.phoneThumbnail)
                 );
-                contact.avatar = path;
+                event.contact.avatar = path;
                 this.contacts._writeCache();
             }
 
             delete event.phoneThumbnail;
         }
 
-        return event;
-    },
-
-    /**
-     * Notification Icons/Avatars
-     */
-    _getIcon: function (event) {
+        // Set an icon appropriate for the event
         if (event.contact.avatar) {
-            return this.contacts.getContactPixbuf(contact.avatar);
+            event.gicon = this.contacts.getContactPixbuf(event.contact.avatar);
         } else if (event.event === "missedCall") {
-            return new Gio.ThemedIcon({ name: "call-missed-symbolic" });
+            event.gicon = new Gio.ThemedIcon({ name: "call-missed-symbolic" });
         } else if (["ringing", "talking"].indexOf(event.event) > -1) {
-            return new Gio.ThemedIcon({ name: "call-start-symbolic" });
+            event.gicon = new Gio.ThemedIcon({ name: "call-start-symbolic" });
         } else if (event.event === "sms") {
-            return new Gio.ThemedIcon({ name: "sms-symbolic" });
+            event.gicon = new Gio.ThemedIcon({ name: "sms-symbolic" });
         }
+
+        return event;
     },
 
     /**
@@ -309,10 +305,35 @@ var Plugin = new Lang.Class({
             // TRANSLATORS: This is specifically for matching missed call notifications on Android.
             // You should translate this to match the notification on your phone that in english looks like "Missed call: John Lennon"
             notification.trackDuplicate({
-                localId: event.event + "|" + _("Missed call") + ": " + event.contact.name,
+                localId: "missedCall|" + event.time,
                 ticker: _("Missed call") + ": " + event.contact.name,
-                time: event.time
             });
+        }
+
+        // Check for an extant window
+        let window = this._hasWindow(event.phoneNumber);
+
+        if (window) {
+            // FIXME: log the missed call in the window
+            window.receiveMessage(
+                event.contact,
+                event.phoneNumber,
+                "<i>" + _("Missed call at %s").format(event.time) + "</i>"
+            );
+            window.urgency_hint = true;
+            window._notifications.push([
+                event.event,
+                event.contact.name + ": " + event.messageBody
+            ].join("|"));
+
+            // Tell the notification plugin to mark any duplicate read
+            if (notification) {
+                notification.closeDuplicate({
+                    localId: "missedCall|" + event.time,
+                    ticker: event.contact.name + ": " + event.messageBody,
+                    isCancel: true
+                });
+            }
         }
 
         let notif = new Gio.Notification();
@@ -325,7 +346,7 @@ var Plugin = new Lang.Class({
                 this.device.name
             )
         );
-        notif.set_icon(this._getIcon(event));
+        notif.set_icon(event.gicon);
         notif.set_priority(Gio.NotificationPriority.NORMAL);
 
         notif.add_device_button(
@@ -354,7 +375,7 @@ var Plugin = new Lang.Class({
             // TRANSLATORS: eg. Incoming call from John Smith on Google Pixel
             _("Incoming call from %s on %s").format(event.contact.name, this.device.name)
         );
-        notif.set_icon(this._getIcon(event));
+        notif.set_icon(event.gicon);
         notif.set_priority(Gio.NotificationPriority.URGENT);
 
         notif.add_device_button(
@@ -381,9 +402,8 @@ var Plugin = new Lang.Class({
 
         if (notification) {
             notification.trackDuplicate({
-                localId: "sms|" + event.contact.name + ": " + event.messageBody,
-                ticker: event.contact.name + ": " + event.messageBody,
-                time: event.time
+                localId: "sms|" + event.time,
+                ticker: event.contact.name + ": " + event.messageBody
             });
         }
 
@@ -403,11 +423,11 @@ var Plugin = new Lang.Class({
             ].join("|"));
 
             // Tell the notification plugin to mark any duplicate read
-            if (plugin) {
-                plugin.closeDuplicate({
-                    localId: "sms|" + event.contact.name + ": " + event.messageBody,
+            if (notification) {
+                notification.closeDuplicate({
+                    localId: "sms|" + event.time,
                     ticker: event.contact.name + ": " + event.messageBody,
-                    time: event.time
+                    isCancel: true
                 });
             }
         }
@@ -415,7 +435,7 @@ var Plugin = new Lang.Class({
         let notif = new Gio.Notification();
         notif.set_title(event.contact.name);
         notif.set_body(event.messageBody);
-        notif.set_icon(this._getIcon(event));
+        notif.set_icon(event.gicon);
         notif.set_priority(Gio.NotificationPriority.HIGH);
 
         notif.set_device_action(
@@ -451,7 +471,7 @@ var Plugin = new Lang.Class({
                 this.device.name
             )
         );
-        notif.set_icon(this._getIcon(event));
+        notif.set_icon(event.gicon);
         notif.set_priority(Gio.NotificationPriority.NORMAL);
 
         this.device.send_notification(
@@ -612,10 +632,11 @@ var Plugin = new Lang.Class({
 
             // Tell the notification plugin to mark any duplicate read
             if (this.device._plugins.has("notification")) {
-                this.device._plugins.get("notification").closeDuplicate(
-                    "missedCall",
-                    _("Missed call") + ": " + event.contact.name
-                );
+                this.device._plugins.get("notification").closeDuplicate({
+                    localId: "missedCall|" + time,
+                    ticker: _("Missed call") + ": " + contact.name,
+                    isCancel: true
+                });
             }
         }
 
@@ -623,7 +644,7 @@ var Plugin = new Lang.Class({
         window.receiveMessage(
             contact,
             phoneNumber,
-            "<i>" + _("Missed call at %s").format(event.time) + "</i>"
+            "<i>" + _("Missed call at %s").format(time) + "</i>"
         );
 
         window.present();
@@ -660,8 +681,11 @@ var Plugin = new Lang.Class({
             // Tell the notification plugin to mark any duplicate read
             let notification = this.device._plugins.get("notification");
             if (notification) {
-                let name = contactName || phoneNumber;
-                notification.closeDuplicate("sms", name + ": " + messageBody);
+                notification.closeDuplicate({
+                    localId: "sms|" + time,
+                    ticker: contact.name + ": " + messageBody,
+                    isCancel: true
+                });
             }
         }
 
