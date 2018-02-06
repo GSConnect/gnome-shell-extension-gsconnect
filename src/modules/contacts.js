@@ -118,52 +118,6 @@ var Contact = new Lang.Class({
 });
 
 
-var ContactStore = new Lang.Class({
-    Name: "GSConnectContactStore",
-    Extends: GObject.Object,
-    Implements: [ Gio.ListModel ],
-    Properties: {
-        "provider-icon": GObject.ParamSpec.string(
-            "provider-icon",
-            "ContactsProvider",
-            "The contact provider icon name",
-            GObject.ParamFlags.READABLE,
-            ""
-        ),
-        "provider-name": GObject.ParamSpec.string(
-            "provider-name",
-            "ContactsProvider",
-            "The contact provider name (eg. Google)",
-            GObject.ParamFlags.READABLE,
-            ""
-        )
-    },
-
-    _init: function () {
-        this.parent({ item_type: GObject.Object });
-    },
-
-    get provider_icon () {
-        return this._provider_icon || "call-start-symbolic";
-    },
-
-    get provider_name () {
-        return this._provider_name || _("GSConnect");
-    },
-
-    vfunc_get_item: function () {
-    },
-
-    vfunc_get_item_type: function () {
-        return Contact;
-    },
-
-    vfunc_get_n_items: function () {
-        return Object.keys(this._contacts).length;
-    },
-});
-
-
 var Store = new Lang.Class({
     Name: "GSConnectContactsStore",
     Extends: GObject.Object,
