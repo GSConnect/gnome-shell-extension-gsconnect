@@ -65,11 +65,14 @@ var Notification = new Lang.Class({
 /**
  * An object representing a remote device.
  *
+ * Device class is subclassed from Gio.SimpleActionGroup so it implements the
+ * GActionGroup and GActionMap interfaces, like Gio.Application.
+ *
  * TODO...
  */
 var Device = new Lang.Class({
     Name: "GSConnectDevice",
-    Extends: GObject.Object,
+    Extends: Gio.SimpleActionGroup,
     Properties: {
         "connected": GObject.ParamSpec.boolean(
             "connected",
@@ -202,27 +205,25 @@ var Device = new Lang.Class({
             }
 
 		    this._channel.emit("connected");
-        // A UDP Connection
+        // Created for an identity packet over UDP or from cache
         } else {
             this.activate();
         }
 
         // TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
         // Actions
-        this._actions = new Gio.SimpleActionGroup();
-
-        ["acceptPair", "rejectPair"].forEach(name => {
+        ["acceptPair", "rejectPair"].map(name => {
             let action = new Gio.SimpleAction({
                 name: name,
                 parameter_type: new GLib.VariantType("s")
             });
             action.connect("activate", () => this[name]());
-            this._actions.add_action(action);
+            this.add_action(action);
         });
 
         Gio.DBus.session.export_action_group(
             this._dbus.get_object_path(),
-            this._actions
+            this
         );
     },
 

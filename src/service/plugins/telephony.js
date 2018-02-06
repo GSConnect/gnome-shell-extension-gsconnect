@@ -159,15 +159,6 @@ var Plugin = new Lang.Class({
         this.parent(device, "telephony");
 
         this.contacts = Contacts.getStore();
-
-        if (Sound._mixerControl) {
-            this._mixer = new Sound.Mixer();
-        }
-
-        this._prevVolume = 0;
-        this._prevMute = false;
-        this._prevMicrophone = false;
-        this._pausedPlayer = false;
     },
 
     // FIXME: use contact cache
