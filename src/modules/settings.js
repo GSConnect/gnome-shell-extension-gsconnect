@@ -18,6 +18,98 @@ const Sound = imports.modules.sound;
 
 
 /**
+ *
+ */
+function section_separators(row, before) {
+    if (before) {
+        row.set_header(
+            new Gtk.Separator({
+                orientation: Gtk.Orientation.HORIZONTAL,
+                visible: true
+            })
+        );
+    }
+};
+
+
+/**
+ * Map @key on @obj.settings to @label ...
+ */
+
+
+// FIXME: this is garbage
+function mapLabel(obj, key, label, map) {
+    let row = label.get_parent().get_parent();
+
+    if (obj && obj.settings) {
+        // Init the label
+        let variant = obj.settings.get_value(key);
+        let type = variant.get_type_string();
+
+        // TODO: hacky
+        let value = variant.unpack();
+        let mappedValue = map.get(value);
+        label.label = (mappedValue) ? mappedValue : value.toString();
+        // Watch settings for changes
+        let _changed = obj.settings.connect("changed::" + key, (settings) => {
+            label.label = map.get(obj.settings.get_value(key).unpack());
+        });
+        label.connect("destroy", () => obj.settings.disconnect(_changed));
+
+        // Watch the Gtk.ListBox for activation
+        row.get_parent().connect("row-activated", (box, arow) => {
+            if (row === arow) {
+                let currentValue = obj.settings.get_value(key).unpack();
+                let next = false;
+                let newValue;
+
+                for (let [k, v] of map) {
+                    if (next) {
+                        newValue = k;
+                        break;
+                    } else if (k === currentValue) {
+                        next = true;
+                    }
+                }
+
+                newValue = (newValue !== undefined) ? newValue : map.keys().next().value;
+
+                obj.settings.set_value(
+                    key,
+                    new GLib.Variant(type, newValue)
+                );
+            }
+        });
+    } else {
+        row.visible = false;
+    }
+};
+
+
+function mapBool(obj, key, label, [on, off]=[true, false]) {
+    let map = new Map([
+        [on, _("On")],
+        [off, _("Off")]
+    ]);
+
+    return mapLabel(obj, key, label, map);
+};
+
+
+// FIXME: this is garbage
+function mapTraffic(obj, key, label) {
+    let map = new Map([
+        [1, _("Off")],
+        [2, _("Out")],
+        [4, _("In")],
+        [6, _("Both")]
+    ]);
+
+    return mapLabel(obj, key, label, map);
+};
+
+
+/**
  * A simple dialog for selecting a device
  */
 var DeviceChooser = new Lang.Class({
@@ -231,26 +323,6 @@ var PrefsWidget = Lang.Class({
         );
     },
 
-    _bind_bool: function (settings, key, label) {
-        // Watch the setting for changes
-        settings.connect("changed::" + key, (settings) => {
-            label.label = settings.get_boolean(key) ? _("On") : _("Off");
-        });
-        // Init the label
-        label.label = settings.get_boolean(key) ? _("On") : _("Off");
-
-        // Watch the Gtk.ListBox for activations
-        let row = label.get_parent().get_parent();
-        let box = row.get_parent();
-
-        box.connect("row-activated", (box, arow) => {
-            if (row === arow) {
-                // Set the boolean to the inverse of the label "value"
-                settings.set_boolean(key, (label.label === _("Off")));
-            }
-        });
-    },
-
     /**
      * UI Setup and template connecting
      */
@@ -315,19 +387,19 @@ var PrefsWidget = Lang.Class({
 
     _connectTemplate: function () {
         // Shell
-        this._bind_bool(gsconnect.settings, "show-indicators", this.show_indicators);
-        this._bind_bool(gsconnect.settings, "show-offline", this.show_offline);
-        this._bind_bool(gsconnect.settings, "show-unpaired", this.show_unpaired);
-        this._bind_bool(gsconnect.settings, "show-battery", this.show_battery);
-        this.shell_list.set_header_func(this._section_separators);
+        mapBool(gsconnect, "show-indicators", this.show_indicators);
+        mapBool(gsconnect, "show-offline", this.show_offline);
+        mapBool(gsconnect, "show-unpaired", this.show_unpaired);
+        mapBool(gsconnect, "show-battery", this.show_battery);
+        this.shell_list.set_header_func(section_separators);
 
         // Extensions
-        this._bind_bool(gsconnect.settings, "nautilus-integration", this.files_integration);
-        this._bind_bool(gsconnect.settings, "webbrowser-integration", this.webbrowser_integration);
-        this.extensions_list.set_header_func(this._section_separators);
+        mapBool(gsconnect, "nautilus-integration", this.files_integration);
+        mapBool(gsconnect, "webbrowser-integration", this.webbrowser_integration);
+        this.extensions_list.set_header_func(section_separators);
 
         // Application Extensions
-        this._bind_bool(gsconnect.settings, "debug", this.debug_mode);
+        mapBool(gsconnect, "debug", this.debug_mode);
         this.debug_window.connect("clicked", () => {
             GLib.spawn_command_line_async(
                 'gnome-terminal ' +
@@ -335,7 +407,7 @@ var PrefsWidget = Lang.Class({
                 '--tab --title "Gnome Shell" --command "journalctl -f -o cat /usr/bin/gnome-shell"'
             );
         });
-        this.advanced_list.set_header_func(this._section_separators);
+        this.advanced_list.set_header_func(section_separators);
     },
 
     _devicesChanged: function () {
@@ -390,17 +462,6 @@ var PrefsWidget = Lang.Class({
      */
     _switcher_separators: function (row, before) {
         if (before && row.type !== before.type) {
-            row.set_header(
-                new Gtk.Separator({
-                    orientation: Gtk.Orientation.HORIZONTAL,
-                    visible: true
-                })
-            );
-        }
-    },
-
-    _section_separators: function (row, before) {
-        if (before) {
             row.set_header(
                 new Gtk.Separator({
                     orientation: Gtk.Orientation.HORIZONTAL,
@@ -649,77 +710,6 @@ var DeviceSettings = Lang.Class({
         }
     },
 
-    _mapBool: function (obj, key, label, [on, off]=[true, false]) {
-        let row = label.get_parent().get_parent();
-
-        if (obj && obj.settings) {
-            let variant = obj.settings.get_value(key);
-            let format = variant.get_type_string();
-
-            // Init the label
-            label.label = (variant.unpack() === on) ? _("On") : _("Off");
-
-            // Watch the setting for changes
-            let _changed = obj.settings.connect("changed::" + key, (settings) => {
-                let variant = obj.settings.get_value(key);
-                label.label = (variant.unpack() === on) ? _("On") : _("Off");
-            });
-            label.connect("destroy", () => obj.settings.disconnect(_changed));
-
-            // Watch the Gtk.ListBox for activation
-            row.get_parent().connect("row-activated", (box, arow) => {
-                if (row === arow) {
-                    // Set the boolean to the inverse of the label "value"
-                    let variant = new GLib.Variant(
-                        format,
-                        (label.label === _("Off")) ? on : off
-                    );
-                    obj.settings.set_value(key, variant);
-                }
-            });
-        } else {
-            row.visible = false;
-        }
-    },
-
-    _mapNumber: function (obj, key, label, map=[]) {
-        let row = label.get_parent().get_parent();
-
-        if (obj && obj.settings) {
-            // Init the label
-            label.label = map[obj.settings.get_uint(key)];
-            // Watch settings for changes
-            let _changed = obj.settings.connect("changed::" + key, (settings) => {
-                label.label = map[obj.settings.get_uint(key)];
-            });
-            label.connect("destroy", () => obj.settings.disconnect(_changed));
-            obj.settings.emit("changed::" + key, key);
-
-            // Watch the Gtk.ListBox for activation
-            let lastIndex = map.length - 1;
-
-            row.get_parent().connect("row-activated", (box, arow) => {
-                if (row === arow) {
-                    let flags = obj.settings.get_uint(key);
-                    let next = map.slice(flags + 1).filter(e => e)[0];
-                    obj.settings.set_uint(key, (next) ? map.indexOf(next) : 1);
-                }
-            });
-        } else {
-            row.visible = false;
-        }
-    },
-
-    _mapTraffic: function (obj, key, label) {
-        let map = [];
-        map[1] = _("Off");
-        map[2] = _("Out");
-        map[4] = _("In");
-        map[6] = _("Both");
-
-        return this._mapNumber(obj, key, label, map);
-    },
-
     /**
      * Info Page
      */
@@ -736,7 +726,6 @@ var DeviceSettings = Lang.Class({
                 this.device.activate();
             }
         });
-
         this.device.connect("notify::connected", () => {
             let [on, off] = ["emblem-ok-symbolic", "emblem-synchronizing-symbolic"];
 
@@ -757,7 +746,6 @@ var DeviceSettings = Lang.Class({
             }
         });
         this.device.notify("connected");
-
 
         // Paired
         let pairedRow = this.device_paired.get_parent().get_parent();
@@ -803,8 +791,8 @@ var DeviceSettings = Lang.Class({
             }
         });
         this.device.notify("paired");
-        this.device_status_list.set_header_func(this._sectionSeparators);
     },
+        this.device_status_list.set_header_func(section_separators);
 
     /**
      * Battery Settings
@@ -882,7 +870,7 @@ var DeviceSettings = Lang.Class({
 
                 return row1.title.label.localeCompare(row2.title.label);
             });
-            this.runcommand_local_list.set_header_func(this._sectionSeparators);
+            this.runcommand_local_list.set_header_func(section_separators);
             this._populateCommands();
         } else {
             this.commands.visible = false;
@@ -1003,7 +991,7 @@ var DeviceSettings = Lang.Class({
             this.notification_apps.set_sort_func((row1, row2) => {
                 return row1.title.label.localeCompare(row2.title.label);
             });
-            this.notification_apps.set_header_func(this._sectionSeparators);
+            this.notification_apps.set_header_func(section_separators);
             this.notification_apps.connect("row-activated", (box, row) => {
                 if (row.enabled.label === _("On")) {
                     this._notification_apps[row.appName.label].enabled = false;
@@ -1114,33 +1102,33 @@ var DeviceSettings = Lang.Class({
         // Battery
         if (this.device.incomingCapabilities.indexOf("kdeconnect.battery") > -1) {
             let battery = this.device._plugins.get("battery");
-            this._mapBool(battery, "allow", this.battery_allow, [ 2, 4 ]);
+            mapBool(battery, "allow", this.battery_allow, [ 6, 4 ]);
         } else {
             this.battery_allow.get_parent().get_parent().visible = false;
         }
 
         // Direct Share
         let share = this.device._plugins.get("share");
-        this._mapBool(share, "direct-sharing", this.direct_sharing);
+        mapBool(share, "direct-sharing", this.direct_sharing);
 
         // Clipboard Sync
         let clipboard = this.device._plugins.get("clipboard");
-        this._mapTraffic(clipboard, "allow", this.clipboard_allow);
+        mapTraffic(clipboard, "allow", this.clipboard_allow);
 
         // Media Players
         let mpris = this.device._plugins.get("mpris");
-        this._mapBool(mpris, "mpris-control", this.mpris_control);
+        mapBool(mpris, "mpris-control", this.mpris_control);
 
         // Mouse & Keyboard input
         let mousepad = this.device._plugins.get("mousepad");
-        this._mapBool(mousepad, "allow-input", this.allow_input);
+        mapBool(mousepad, "allow-input", this.allow_input);
 
         // Location Sharing
 //        let findmyphone = this.device._plugins.get("findmyphone");
-//        this._mapBool(findmyphone, "allow-locate", this.allow_locate);
+//        mapBool(findmyphone, "allow-locate", this.allow_locate);
 
         // row separators
-        this.sharing_list.set_header_func(this._sectionSeparators);
+        this.sharing_list.set_header_func(section_separators);
 
 //        this.sharing_list.set_sort_func((row1, row2) => {
 //            return row1.appName.label.localeCompare(row2.appName.label);
@@ -1155,9 +1143,9 @@ var DeviceSettings = Lang.Class({
 
         if (telephony) {
             // Event Handling
-            this._mapBool(telephony, "handle-messaging", this.handle_messaging);
-            this._mapBool(telephony, "handle-calls", this.handle_calls);
-            this.handler_list.set_header_func(this._sectionSeparators);
+            mapBool(telephony, "handle-messaging", this.handle_messaging);
+            mapBool(telephony, "handle-calls", this.handle_calls);
+            this.handler_list.set_header_func(section_separators);
 
             // Ringing Event
             telephony.settings.bind(
@@ -1172,7 +1160,7 @@ var DeviceSettings = Lang.Class({
                 "active",
                 Gio.SettingsBindFlags.DEFAULT
             );
-            this.ringing_list.set_header_func(this._sectionSeparators);
+            this.ringing_list.set_header_func(section_separators);
 
             // Talking Event
             telephony.settings.bind(
@@ -1193,14 +1181,14 @@ var DeviceSettings = Lang.Class({
                 "active",
                 Gio.SettingsBindFlags.DEFAULT
             );
-            this.talking_list.set_header_func(this._sectionSeparators);
+            this.talking_list.set_header_func(section_separators);
         } else {
             this.telephony.visible = false;
             this.telephony_page.visible = false;
         }
 
         //
-        if (this.device.plugins.indexOf("mpris") < 0) {
+        if (this.device._plugins.get("mpris")) {
             this.ringing_pause.sensitive = false;
             this.ringing_pause.set_tooltip_markup(
                 _("MPRIS not supported")
