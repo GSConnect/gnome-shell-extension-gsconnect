@@ -69,8 +69,6 @@ var ProxyBase = new Lang.Class({
         );
         // So unpack that to get the real variant...
         variant = variant.deep_unpack()[0];
-        // signature...
-        signature = signature || variant.get_type_string();
         // and value
         let value = variant.deep_unpack();
 
