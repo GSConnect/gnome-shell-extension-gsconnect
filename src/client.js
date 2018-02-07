@@ -39,9 +39,6 @@ var Plugin = new Lang.Class({
             path: "/org/gnome/shell/extensions/gsconnect/device/" +
                   device.id + "/plugin/" + name.toLowerCase() + "/"
         });
-
-        // Wrap methods, properties and signals
-        this._wrapObject();
     }
 });
 
@@ -459,8 +456,6 @@ var Device = new Lang.Class({
         });
         this.daemon = daemon;
 
-        this._wrapObject();
-
         // GSettings
         this.settings = new Gio.Settings({
             settings_schema: gsconnect.gschema.lookup(
@@ -559,8 +554,6 @@ var Daemon = new Lang.Class({
             g_interface_name: iface.name,
             g_object_path: "/org/gnome/Shell/Extensions/GSConnect"
         });
-
-        this._wrapObject();
 
         // Mirror device handling of service/daemon.js
         this._devices = new Map();
