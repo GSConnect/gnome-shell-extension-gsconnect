@@ -80,7 +80,9 @@ const MPRISPlayerXML = '<node> \
     <property access="read" type="b" name="CanSeek"/> \
     <property access="read" type="b" name="CanControl"/> \
   </interface> \
-</node>'
+</node>';
+
+
 const MPRISPlayerProxy = new Gio.DBusProxy.makeProxyWrapper(MPRISPlayerXML);
 const MPRISPlayerNode = Gio.DBusNodeInfo.new_for_xml(MPRISPlayerXML);
 const MPRISPlayerIface = MPRISPlayerNode.lookup_interface("org.mpris.MediaPlayer2.Player");
@@ -101,7 +103,7 @@ function getManager () {
  */
 var MediaPlayer = new Lang.Class({
     Name: "GSConnectMPRISPlayerClass",
-    Extends: GObject.Object,
+    Extends: DBus.ProxyBase,
     Properties: {
         // Playing | Paused | Stop
         "PlaybackStatus": GObject.ParamSpec.string(
@@ -234,55 +236,16 @@ var MediaPlayer = new Lang.Class({
     },
 
     _init: function (params) {
-        this.parent();
+        this.parent({
+            g_connection: Gio.DBus.session,
+            g_interface_info: MPRISPlayerIface,
+            g_interface_name: MPRISPlayerIface.name,
+            g_name: params.g_name, // "org.mpris.MediaPlayer2.GSConnect",
+            g_object_path: "/org/mpris/MediaPlayer2"
+        });
 
         this.identity = params.identity;
-
-        // We're proxying a remote player
-        if (params.mprisObj) {
-            this._dbus = log();
-            this._dbus = Gio.DBusExportedObject.wrapJSObject(
-                //g_name: "org.mpris.MediaPlayer2.GSConnect", // FIXME
-                gsconnect.dbusinfo.lookup_interface(
-                    "org.gnome.Shell.Extensions.GSConnect.Device"
-                ),
-                mprisObj
-            );
-            this._dbus.export(Gio.DBus.session, "/org/mpris/MediaPlayer2");
-        // We're proxying a local player
-        } else {
-            this._proxy = new DBus.ProxyBase({
-                g_connection: Gio.DBus.session,
-                g_interface_info: MPRISPlayerIface,
-                g_interface_name: MPRISPlayerIface.name,
-                g_name: params.g_name, // "org.mpris.MediaPlayer2.GSConnect",
-                g_object_path: "/org/mpris/MediaPlayer2"
-            });
-
-            // Properties
-            //this._proxy._wrapProperties();
-            for (let property of MPRISPlayerIface.properties) {
-                let name = property.name;
-                let signature = property.signature;
-
-                Object.defineProperty(this, name, {
-                    get: () => this._proxy._get(name, signature),
-                    set: (value) => this._proxy._set(name, value, signature),
-                    configurable: true,
-                    enumerable: true
-                });
-            }
-            this._proxy.connect("g-properties-changed", (proxy, properties) => {
-                for (let name in properties.deep_unpack()) {
-                    this.notify(name);
-                }
-            });
-
-            // Signals
-            this._proxy.connect("g-signal", (proxy, name, parameters) => {
-                this.emit(name, ...parameters.deep_unpack());
-            });
-        }
+        this._wrapObject();
     },
 
     Next: function () {
@@ -348,6 +311,7 @@ var MediaPlayer = new Lang.Class({
         }
     }
 });
+
 
 var Manager = new Lang.Class({
     Name: "GSConnectMPRISManager",
