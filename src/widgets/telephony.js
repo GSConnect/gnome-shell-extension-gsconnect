@@ -3,6 +3,7 @@
 const Gettext = imports.gettext.domain("org.gnome.Shell.Extensions.GSConnect");
 const _ = Gettext.gettext;
 const Lang = imports.lang;
+const Tweener = imports.tweener.tweener;
 
 const Gdk = imports.gi.Gdk;
 const GdkPixbuf = imports.gi.GdkPixbuf;
@@ -336,11 +337,19 @@ var ConversationWindow = new Lang.Class({
             );
 
             let avatar = new Contacts.Avatar(this.recipient);
+            avatar.opacity = 0;
             avatar.halign = Gtk.Align.CENTER;
             avatar.valign = Gtk.Align.CENTER;
             this.headerBar.pack_start(avatar);
 
             this.entry.has_focus = true;
+
+            // Totally unnecessary animation
+            Tweener.addTween(avatar, {
+                opacity: 1,
+                time: 0.3,
+                transition: "easeOutQuad"
+            });
             this.stack.set_visible_child_name("messages");
         } else {
             this.headerBar.set_tooltip_text("");
