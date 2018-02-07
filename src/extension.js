@@ -481,7 +481,7 @@ var DeviceMenu = new Lang.Class({
     _findmyphoneAction: function (button) {
         debug("extension.DeviceMenu._findmyphoneAction()");
         this._getTopMenu().close(true);
-        this.device.find();
+        this.device._plugins.get("findmyphone").find();
     },
 
     _mousepadAction: function (button) {

@@ -39,6 +39,9 @@ var Plugin = new Lang.Class({
             path: "/org/gnome/shell/extensions/gsconnect/device/" +
                   device.id + "/plugin/" + name.toLowerCase() + "/"
         });
+
+        // Wrap methods, properties and signals
+        this._wrapObject();
     }
 });
 
@@ -76,18 +79,7 @@ var Battery = new Lang.Class({
 
     _init: function (device) {
         this.parent(device, "Battery");
-
-        //
-        this.connect("g-properties-changed", (proxy, properties) => {
-            for (let name in properties.deep_unpack()) {
-                this.notify(name);
-            }
-        });
-    },
-
-    get charging () { return this._get("charging"); },
-    get level () { return this._get("level") || -1; },
-    get time () { return this._get("time"); }
+    }
 });
 
 
@@ -126,13 +118,6 @@ var FindMyPhone = new Lang.Class({
 
     _init: function (device) {
         this.parent(device, "FindMyPhone");
-
-//        this._wrapObject();
-//    }
-    },
-
-    find: function () {
-        this._call("find");
     }
 });
 
@@ -205,35 +190,12 @@ var Notification = new Lang.Class({
 
     _init: function (device) {
         this.parent(device, "Notification");
-
-//        this._wrapObject({
-//            Notifications: () => { this.notify("notifications") }
-//        });
-
-        this.connect("g-properties-changed", (proxy, properties) => {
-            for (let name in properties.deep_unpack()) {
-                this.notify(name.toLowerCase()); // FIXME
-            }
-        });
-
-        this.connect("g-signal", (proxy, sender, name, parameters) => {
-            parameters = parameters.deep_unpack();
-            this.emit(name, parameters[0]);
-        });
     },
 
-    get notifications() {
-        return this._get("Notifications").map(notif => Object.fromVariant(notif));
-    },
-
-    // TODO: all the cache stuff
-    clearCache: function () {
-        this._call("ClearCache");
-    },
-
-    close: function (id) {
-        this._call("Close", id);
-    }
+    // FIXME
+//    get notifications() {
+//        return this._get("Notifications").map(notif => Object.fromVariant(notif));
+//    }
 });
 
 
@@ -252,14 +214,7 @@ var Ping = new Lang.Class({
 
     _init: function (device) {
         this.parent(device, "Ping");
-
-        this.connect("g-signal", (proxy, sender, name, parameters) => {
-            parameters = parameters.deep_unpack();
-            this.emit(name, parameters[0]);
-        });
-    },
-
-    ping: function (message=null) { this._call("ping", message); }
+    }
 });
 
 
@@ -281,19 +236,10 @@ var RunCommand = new Lang.Class({
 
     _init: function (device) {
         this.parent(device, "RunCommand");
-
-        //
-        this.connect("g-properties-changed", (proxy, properties) => {
-            for (let name in properties.deep_unpack()) {
-                this.notify(name);
-            }
-        });
     },
 
-    get commands () { return this._get("commands"); },
-
-    request: function () { this._call("request"); },
-    run: function (key) { this._call("run", key); }
+    // FIXME
+    //get commands () { return this._get("commands"); }
 });
 
 
@@ -323,19 +269,10 @@ var SFTP = new Lang.Class({
 
     _init: function (device) {
         this.parent(device, "SFTP");
-
-        this.connect("g-properties-changed", (proxy, properties) => {
-            for (let name in properties.deep_unpack()) {
-                this.notify(name);
-            }
-        });
     },
 
-    get directories () { return this._get("directories"); },
-    get mounted () { return this._get("mounted") === true; },
-
-    mount: function () { this._call("mount"); },
-    unmount: function () { this._call("unmount"); }
+    // FIXME
+    //get directories () { return this._get("directories"); }
 });
 
 
@@ -358,17 +295,7 @@ var Share = new Lang.Class({
 
     _init: function (device) {
         this.parent(device, "Share");
-
-        this.connect("g-signal", (proxy, sender, name, parameters) => {
-            parameters = parameters.deep_unpack();
-            this.emit(name, parameters[0], parameters[1]);
-        });
-    },
-
-    shareDialog: function () { this._call("shareDialog"); },
-    shareFile: function (uri) { this._call("shareUri", uri); },
-    shareText: function (text) { this._call("shareText", text); },
-    shareUrl: function (url) { this._call("shareUrl", url); }
+    }
 });
 
 
@@ -416,53 +343,6 @@ var Telephony = new Lang.Class({
 
     _init: function (device) {
         this.parent(device, "Telephony");
-
-        this.connect("g-signal", (proxy, sender, name, parameters) => {
-            parameters = parameters.deep_unpack();
-
-            if (name === "missedCall") {
-                this.emit("missedCall",
-                    parameters[0],
-                    parameters[1],
-                    parameters[2]
-                );
-            } else if (name === "ringing") {
-                this.emit("ringing",
-                    parameters[0],
-                    parameters[1],
-                    parameters[2]
-                );
-            } else if (name === "sms") {
-                this.emit("sms",
-                    parameters[0],
-                    parameters[1],
-                    parameters[2],
-                    parameters[3]
-                );
-            } else if (name === "talking") {
-                this.emit("talking",
-                    parameters[0],
-                    parameters[1],
-                    parameters[2]
-                );
-            }
-        });
-    },
-
-    muteCall: function () {
-        return this._call("muteCall");
-    },
-
-    openSms: function () {
-        return this._call("openSms");
-    },
-
-    sendSms: function (phoneNumber, messageBody) {
-        this._call("sendSms", phoneNumber, messageBody);
-    },
-
-    shareUri: function (url) {
-        this._call("shareUri", url);
     }
 });
 
@@ -579,6 +459,8 @@ var Device = new Lang.Class({
         });
         this.daemon = daemon;
 
+        this._wrapObject();
+
         // GSettings
         this.settings = new Gio.Settings({
             settings_schema: gsconnect.gschema.lookup(
@@ -588,65 +470,21 @@ var Device = new Lang.Class({
             path: "/org/gnome/shell/extensions/gsconnect/device/" + this.id + "/"
         });
 
-        // Connect to PropertiesChanged
-        this.connect("g-properties-changed", (proxy, properties) => {
-            for (let name in properties.deep_unpack()) {
-                // We'll call notify() later for our own plugins property
-                if (name === "plugins") {
-                    this._pluginsChanged();
-                } else {
-                    this.notify(name);
-                }
-            }
-        });
-
-        // Mirror _plugins Map from service.device
+        // Mirror plugin handling of service/device.js
         this._plugins = new Map();
-
-        this._pluginsChanged();
+        this.vprop_plugins();
+        this.notify("plugins");
     },
 
-    // Properties
-    get connected () { return this._get("connected") === true; },
-    get fingerprint () { return this._get("fingerprint"); },
-    get id () { return this._get("id"); },
-    get name () { return this._get("name"); },
-    get paired () { return this._get("paired") === true; },
-    get plugins () { return Array.from(this._plugins.keys()) },
-    get incomingCapabilities () { return this._get("incomingCapabilities") || []; },
-    get outgoingCapabilities () { return this._get("outgoingCapabilities") || []; },
-    get type () { return this._get("type"); },
-
-    // Device Connection/Pairing
-    activate: function () { this._call("activate"); },
-    pair: function () { this._call("pair"); },
-    unpair: function () { this._call("unpair"); },
-
-    // FIXME
-    find: function () {
-        let plugin = this._plugins.get("findmyphone");
-
-        if (plugin) {
-            plugin._call("find");
-        }
-    },
-
-    // Plugin Control
-    openSettings: function () {
-        this._call("openSettings");
-    },
-
-    _pluginsChanged: function () {
+    vprop_plugins: function () {
         let plugins = this._get("plugins") || [];
 
         for (let name of plugins) {
-            if (this.plugins.indexOf(name) < 0) {
+            if (!this._plugins.has(name)) {
                 this[name] = new _PluginMap[name](this);
                 this._plugins.set(name, this[name]);
             }
         }
-
-        this.notify("plugins");
     },
 
     destroy: function () {
@@ -678,7 +516,7 @@ var Daemon = new Lang.Class({
             "DevicesList",
             "A list of known devices",
             new GLib.VariantType("as"),
-            null,
+            new GLib.Variant("as", []),
             GObject.ParamFlags.READABLE
         ),
         "discovering": GObject.ParamSpec.boolean(
@@ -710,12 +548,6 @@ var Daemon = new Lang.Class({
             ""
         )
     },
-    Signals: {
-        "device": {
-            flags: GObject.SignalFlags.RUN_FIRST | GObject.SignalFlags.DETAILED,
-            param_types: [ GObject.TYPE_STRING ]
-        }
-    },
 
     _init: function () {
         let iface = gsconnect.dbusinfo.lookup_interface(
@@ -728,37 +560,16 @@ var Daemon = new Lang.Class({
             g_object_path: "/org/gnome/Shell/Extensions/GSConnect"
         });
 
-        // Track our device proxies, DBus path as key
+        this._wrapObject();
+
+        // Mirror device handling of service/daemon.js
         this._devices = new Map();
-
-        // Connect to PropertiesChanged
-        this.connect("g-properties-changed", (proxy, properties) => {
-            for (let name in properties.deep_unpack()) {
-                // Watch for new and removed devices
-                if (name === "devices") {
-                    this._devicesChanged();
-                } else {
-                    this.notify(name);
-                }
-            }
-        });
-
-        //this._wrapObject({ devices: this._devicesChanged });
-
-        // Add currently managed devices
-        this._devicesChanged();
+        this.vprop_devices();
+        this.notify("devices");
     },
 
-    get devices () { return Array.from(this._devices.keys()); },
-    get discovering () { return this._get("discovering") === true; },
-    set discovering (bool) { this._set("discovering", bool); },
-    get fingerprint () { return this._get("fingerprint"); },
-    get name () { return this._get("name"); },
-    set name (name) { this._set("name", name); },
-    get type () { return this._get("type"); },
-
-    // Callbacks
-    _devicesChanged: function () {
+    // Property Handlers
+    vprop_devices: function () {
         let managedDevices = this._get("devices") || [];
 
         for (let dbusPath of managedDevices) {
@@ -768,28 +579,13 @@ var Daemon = new Lang.Class({
             }
         }
 
-        for (let dbusPath of this.devices) {
+        for (let dbusPath of this._devices.keys()) {
             if (managedDevices.indexOf(dbusPath) < 0) {
                 this._devices.get(dbusPath).destroy();
                 this._devices.delete(dbusPath);
                 this.notify("devices");
             }
         }
-
-        //this.notify("devices");
-    },
-
-    // Public Methods
-    broadcast: function () {
-        this._call("broadcast");
-    },
-
-    openSettings: function () {
-        this._call("openSettings");
-    },
-
-    quit: function () {
-        this._call("quit");
     },
 
     destroy: function () {

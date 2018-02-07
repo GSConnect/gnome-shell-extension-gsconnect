@@ -27,41 +27,40 @@ var ProxyBase = new Lang.Class({
 
         return new Promise((resolve, reject) => {
             let methodInfo = this.gInterfaceInfo.lookup_method(name);
-            let signature = [];
-            let i, ret;
-
-            for (i = 0; i < methodInfo.in_args.length; i++) {
-                signature.push(methodInfo.in_args[i].signature);
-            }
-
+            let signature = methodInfo.in_args.map(arg => arg.signature);
             let variant = new GLib.Variant("(" + signature.join("") + ")", args);
 
             this.call(name, variant, 0, -1, null, (proxy, result) => {
-                let succeeded = false;
+                let ret;
 
                 try {
                     ret = this.call_finish(result);
                 } catch (e) {
-                    log("Error calling " + name + ": " + e.message);
+                    debug("Error calling " + name + ": " + e.message);
                     reject(e);
                 }
 
-                // If return has single arg, only return that
+                // If return has single arg, only return that or null
                 if (methodInfo.out_args.length === 1) {
                     resolve((ret) ? ret.deep_unpack()[0] : null);
+                // Otherwise return an array (possibly empty)
                 } else {
-                    resolve((ret) ? ret.deep_unpack() : null);
+                    resolve((ret) ? ret.deep_unpack() : []);
                 }
             });
         });
     },
 
+    /**
+     * Asynchronous Getter
+     */
     _get: function (name, signature) {
         let value = this.get_cached_property(name);
 
         if (!value) {
             signature = signature || this.g_interface_info.lookup_property(name).signature;
-            //
+
+            // TODO: test
             if (signature.startsWith("[") || signature.startsWith("as")) {
                 return [];
             } else if (signature.startsWith("{") || signature.startsWith("a{")) {
@@ -78,6 +77,9 @@ var ProxyBase = new Lang.Class({
         }
     },
 
+    /**
+     * Asynchronous Setter
+     */
     _set: function (name, value, signature) {
         if (!signature) {
             let propertyInfo = this.gInterfaceInfo.lookup_property(name);
@@ -89,7 +91,7 @@ var ProxyBase = new Lang.Class({
 
         this.call(
             "org.freedesktop.DBus.Properties.Set",
-            new GLib.Variant("(ssv)", [this.gInterfaceName, name, variant]),
+            new GLib.Variant("(ssv)", [this.g_interface_name, name, variant]),
             Gio.DBusCallFlags.NONE,
             -1,
             this.cancellable,
@@ -97,56 +99,66 @@ var ProxyBase = new Lang.Class({
                 try {
                     this.call_finish(result);
                 } catch (e) {
-                    log(
-                        "Error setting " + name +
-                        " on " + this.gObjectPath +
-                        ": " + e.message
+                    debug(
+                        "Error setting " + name + " on " + this.g_object_path +
+                        ": " + e.message + "\n" + e.stack
                     );
                 }
             }
         );
     },
 
-    _getMethodSignature: function (name) {
-        let methodInfo = this.gInterfaceInfo.lookup_method(name);
-        let signature = [];
-        let i, ret;
-
-        for (i = 0; i < methodInfo.in_args.length; i++) {
-            signature.push(methodInfo.in_args[i].signature);
-        }
-
-        return signature;
-    },
-
     _wrapMethod: function (name) {
         return function () {
-            return this._call.call(this, name, arguments);
+            return this._call.call(this, name, ...arguments);
         };
     },
 
-    _wrapProperties: function (handlers={}) {
-        let info = this.g_interface_info;
+    /**
+     * Wrap each method in this._call()
+     */
+    _wrapMethods: function (info) {
+        info = info || this.g_interface_info;
+
+        let i, methods = info.methods;
+
+        for (i = 0; i < methods.length; i++) {
+            var method = methods[i];
+            this[method.name] = this._wrapMethod(method.name);
+
+            // TODO: construct parameter for casing?
+            //log(this._toCamelCase(method.name));
+            //this[this._toCamelCase(method.name)] = this._wrapMethod(method.name);
+        }
+    },
+
+    /**
+     * Wrap each property with this._get()/this._set() and call notify().
+     * Properties can be handled before notify() is called by defining a method
+     * called vprop_name().
+     */
+    _wrapProperties: function (info) {
+        info = info || this.g_interface_info;
 
         if (info.properties.length > 0) {
             this.connect("g-properties-changed", (proxy, properties) => {
                 for (let name in properties.deep_unpack()) {
-                    if (handlers[name]) {
-                        debug("Calling " + name + " handler");
-                        handlers[name].call(this);
-                    } else {
-                        this.notify(name);
+                    // If the object has vprop_name(), call it before notify()
+                    if (this["vprop_" + name]) {
+                        debug("Calling 'vprop_" + name + "()' for " + name);
+                        this["vprop_" + name].call(this);
                     }
+
+                    this.notify(name);
                 }
             });
 
             for (let property of info.properties) {
                 let name = property.name;
-                let signature = property.signature;
 
                 Object.defineProperty(this, name, {
-                    get: () => this._get(name, signature),
-                    set: (value) => this._set(name, value, signature),
+                    get: () => this._get(name, property.signature),
+                    set: (value) => this._set(name, value, property.signature),
                     configurable: true,
                     enumerable: true
                 });
@@ -154,23 +166,9 @@ var ProxyBase = new Lang.Class({
         }
     },
 
-    // TODO TODO
-    _wrapObject: function (propertyHandlers, signalHandlers) {
+    _wrapSignals: function (info) {
+        info = info || this.g_interface_info;
 
-        let i, methods = info.methods;
-
-        for (i = 0; i < methods.length; i++) {
-            var method = methods[i];
-            log(this._toCamelCase(method.name));
-            this[this._toCamelCase(method.name)] = this._wrapMethod(method.name);
-//            this[method.name + 'Remote'] = _makeProxyMethod(methods[i], false);
-//            this[method.name + 'Sync'] = _makeProxyMethod(methods[i], true);
-        }
-
-        // Properties
-        this._wrapProperties(handlers);
-
-        // Signals
         if (info.signals.length > 0) {
             this.connect("g-signal", (proxy, name, parameters) => {
                 if (this.Signals[name]) {
@@ -186,6 +184,16 @@ var ProxyBase = new Lang.Class({
         }
     },
 
+    // TODO TODO
+    _wrapObject: function () {
+        let info = this.g_interface_info;
+
+        this._wrapMethods(info);
+        this._wrapProperties(info);
+        this._wrapSignals(info);
+    },
+
+    // TODO: use this?
     _toCamelCase: function (string) {
         return string.replace(/(?:^\w|[A-Z]|\b\w)/g, (ltr, idx) => {
             if (idx === 0) {

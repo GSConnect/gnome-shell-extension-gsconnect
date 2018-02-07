@@ -779,10 +779,12 @@ var Daemon = new Lang.Class({
         return true;
     },
 
-    vfunc_dbus_unregister: function () {
+    vfunc_dbus_unregister: function (connection, object_path) {
         this._proxy.call_sync("RemoveMatch", this._match, 0, -1, null);
         this._ndbus.unexport();
         this._dbus.unexport();
+
+        this.parent(connection, object_path);
     },
 
     vfunc_open: function (files, hint) {
