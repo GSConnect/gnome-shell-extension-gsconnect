@@ -101,10 +101,10 @@ var _numberRegex = new RegExp(
  *
  * Packets:
  *  {
- *      type: kdeconnect.telephony
+ *      type: "kdeconnect.telephony"
  *      id: {Number microseconds timestamp}
  *      body: {
- *          event: missedCall | ringing | sms | talking,
+ *          event: {String} missedCall | ringing | sms | talking,
  *          [contactName]: {String} Sender's name (optional),
  *          phoneNumber: {String} Sender's phone number (mandatory?),
  *          [messageBody]: {String} SMS message body (mandatory for 'sms' events),
@@ -244,7 +244,6 @@ var Plugin = new Lang.Class({
         }
     },
 
-    // FIXME FIXME FIXME
     /**
      * Parse an telephony packet and return an event object, with ... TODO
      *
@@ -304,7 +303,7 @@ var Plugin = new Lang.Class({
         if (notification) {
             // TRANSLATORS: This is specifically for matching missed call notifications on Android.
             // You should translate this to match the notification on your phone that in english looks like "Missed call: John Lennon"
-            notification.trackDuplicate({
+            notification.markDuplicate({
                 localId: "missedCall|" + event.time,
                 ticker: _("Missed call") + ": " + event.contact.name,
             });
@@ -328,7 +327,7 @@ var Plugin = new Lang.Class({
 
             // Tell the notification plugin to mark any duplicate read
             if (notification) {
-                notification.closeDuplicate({
+                notification.markDuplicate({
                     localId: "missedCall|" + event.time,
                     ticker: event.contact.name + ": " + event.messageBody,
                     isCancel: true
@@ -401,7 +400,7 @@ var Plugin = new Lang.Class({
         let notification = this.device._plugins.get("notification");
 
         if (notification) {
-            notification.trackDuplicate({
+            notification.markDuplicate({
                 localId: "sms|" + event.time,
                 ticker: event.contact.name + ": " + event.messageBody
             });
@@ -424,7 +423,7 @@ var Plugin = new Lang.Class({
 
             // Tell the notification plugin to mark any duplicate read
             if (notification) {
-                notification.closeDuplicate({
+                notification.markDuplicate({
                     localId: "sms|" + event.time,
                     ticker: event.contact.name + ": " + event.messageBody,
                     isCancel: true
@@ -632,7 +631,7 @@ var Plugin = new Lang.Class({
 
             // Tell the notification plugin to mark any duplicate read
             if (this.device._plugins.has("notification")) {
-                this.device._plugins.get("notification").closeDuplicate({
+                this.device._plugins.get("notification").markDuplicate({
                     localId: "missedCall|" + time,
                     ticker: _("Missed call") + ": " + contact.name,
                     isCancel: true
@@ -681,7 +680,7 @@ var Plugin = new Lang.Class({
             // Tell the notification plugin to mark any duplicate read
             let notification = this.device._plugins.get("notification");
             if (notification) {
-                notification.closeDuplicate({
+                notification.markDuplicate({
                     localId: "sms|" + time,
                     ticker: contact.name + ": " + messageBody,
                     isCancel: true

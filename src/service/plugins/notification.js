@@ -132,6 +132,10 @@ var Plugin = new Lang.Class({
         return this._notifications;
     },
 
+    get Notifications () {
+        return this._notifications.map((notif) => Object.toVariant(notif));
+    },
+
     handlePacket: function (packet) {
         debug(packet);
 
@@ -171,10 +175,6 @@ var Plugin = new Lang.Class({
     /**
      * DBus Interface
      */
-    get Notifications () {
-        return this._notifications.map((notif) => Object.toVariant(notif));
-    },
-
     Close: function (id) {
         this.close(id);
     },
@@ -209,7 +209,7 @@ var Plugin = new Lang.Class({
                 return notif;
             } else if (notif.localId) {
                 // @query is a duplicate search by GNotification id
-                // Called by close() or trackDuplicate()/closeDuplicate()
+                // Called by close() or markDuplicate()
                 if ([query.id, query.localId].indexOf(notif.localId) > -1) {
                     debug("found notification by localId");
                     return notif;
@@ -507,44 +507,32 @@ var Plugin = new Lang.Class({
     },
 
     /**
-     * Start tracking a duplicate by ticker
-     *
-     * @param {string} event - The telephony event type
-     * @param {string} ticker - The notification's expected 'ticker' field
+     * Mark a notification as handled by Telephony.
+     * @param {Object} notif - A notification stub
+     * @param {String} notif.localId - The local GNotification Id
+     * @param {String} notif.ticker - The expected 'ticker' field
+     * @param {Boolean} [notif.isCancel] - Whether the notification should be closed
      */
-    trackDuplicate: function (notif) {
+    markDuplicate: function (notif) {
         debug(arguments);
 
         // Check if this is a known duplicate
-        let cnotif = this._getNotification(notif);
+        let cachedNotif = this._getNotification(notif);
 
-        if (!cnotif) {
-            this.trackNotification(notif);
-        }
-    },
-
-    /**
-     * Mark a notification handled by Telephony to be closed if received
-     *
-     * @param {string} event - The telephony event type
-     * @param {string} ticker - The notification's expected 'ticker' field
-     */
-    closeDuplicate: function (notif) {
-        debug(arguments);
-
-        // Check if this is a known duplicate
-        let cnotif = this._getNotification(notif);
-
-        if (cnotif) {
-            // Close it now if we know the remote id
-            if (cnotif.id) {
+        // If we're asking to close it...
+        if (cachedNotif && notif.isCancel) {
+            // ...close it now if we know the remote id
+            if (cachedNotif.id) {
                 debug("closing duplicate notification");
-                this.close(cnotif.id);
+                this.close(cachedNotif.id);
             // ...or mark it to be closed when we do
             } else {
                 debug("marking duplicate notification to be closed");
-                cnotif.isCancel = true;
+                cachedNotif.isCancel = true;
             }
+        // Start tracking it now
+        } else {
+            this.trackNotification(notif);
         }
     },
 
