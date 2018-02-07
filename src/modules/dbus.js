@@ -19,6 +19,7 @@ var ProxyBase = new Lang.Class({
 
         this.cancellable = new Gio.Cancellable();
         this.init(null);
+        this._wrapObject();
     },
 
     _call: function (name) {
@@ -52,14 +53,26 @@ var ProxyBase = new Lang.Class({
     },
 
     /**
-     * Asynchronous Getter
+     * Synchronous Uncached Getter
      */
     _get: function (name, signature) {
-        let value = this.get_cached_property(name);
+        // Return '(v)'
+        let variant = this.call_sync(
+            "org.freedesktop.DBus.Properties.Get",
+            new GLib.Variant("(ss)", [this.g_interface_name, name]),
+            Gio.DBusCallFlags.NONE,
+            -1,
+            this.cancellable
+        );
+        // So unpack that to get the real variant...
+        variant = variant.deep_unpack()[0];
+        // signature...
+        signature = signature || variant.get_type_string();
+        // and value
+        let value = variant.deep_unpack();
 
-        if (!value) {
-            signature = signature || this.g_interface_info.lookup_property(name).signature;
-
+        // FIXME ...
+        if (!variant) {
             // TODO: test
             if (signature.startsWith("[") || signature.startsWith("as")) {
                 return [];
@@ -73,7 +86,7 @@ var ProxyBase = new Lang.Class({
                 return false;
             }
         } else {
-            return value ? value.deep_unpack() : null;
+            return value || null;
         }
     },
 
@@ -81,10 +94,8 @@ var ProxyBase = new Lang.Class({
      * Asynchronous Setter
      */
     _set: function (name, value, signature) {
-        if (!signature) {
-            let propertyInfo = this.gInterfaceInfo.lookup_property(name);
-            let variant = new GLib.Variant(propertyInfo.signature, value);
-        }
+        signature = signature || this.g_nterface_info.lookup_property(name).signature
+        let variant = new GLib.Variant(signature, value);
 
         // Set the cached property first
         this.set_cached_property(name, variant);
@@ -170,21 +181,13 @@ var ProxyBase = new Lang.Class({
         info = info || this.g_interface_info;
 
         if (info.signals.length > 0) {
-            this.connect("g-signal", (proxy, name, parameters) => {
-                if (this.Signals[name]) {
-                    let args = name.concat(parameters);
-
-                    if (signalHandlers[name]) {
-                        signalHandlers[name].call(this, ...args);
-                    } else {
-                        this.emit(...args);
-                    }
-                }
+            this.connect("g-signal", (proxy, sender, name, parameters) => {
+                let args = [name].concat(parameters.deep_unpack());
+                this.emit(...args);
             });
         }
     },
 
-    // TODO TODO
     _wrapObject: function () {
         let info = this.g_interface_info;
 
@@ -206,6 +209,201 @@ var ProxyBase = new Lang.Class({
 
     destroy: function () {
         GObject.signal_handlers_destroy(this);
+    }
+});
+
+
+/**
+ * org.freedesktop.DBus Proxy and ProxyBase usage example
+ */
+const FdoNode = Gio.DBusNodeInfo.new_for_xml(
+'<node> \
+  <interface name="org.freedesktop.DBus"> \
+    <method name="Hello"> \
+      <arg direction="out" type="s"/> \
+    </method> \
+    <method name="RequestName"> \
+      <arg direction="in" type="s"/> \
+      <arg direction="in" type="u"/> \
+      <arg direction="out" type="u"/> \
+    </method> \
+    <method name="ReleaseName"> \
+      <arg direction="in" type="s"/> \
+      <arg direction="out" type="u"/> \
+    </method> \
+    <method name="StartServiceByName"> \
+      <arg direction="in" type="s"/> \
+      <arg direction="in" type="u"/> \
+      <arg direction="out" type="u"/> \
+    </method> \
+    <method name="UpdateActivationEnvironment"> \
+      <arg direction="in" type="a{ss}"/> \
+    </method> \
+    <method name="NameHasOwner"> \
+      <arg direction="in" type="s"/> \
+      <arg direction="out" type="b"/> \
+    </method> \
+    <method name="ListNames"> \
+      <arg direction="out" type="as"/> \
+    </method> \
+    <method name="ListActivatableNames"> \
+      <arg direction="out" type="as"/> \
+    </method> \
+    <method name="AddMatch"> \
+      <arg direction="in" type="s"/> \
+    </method> \
+    <method name="RemoveMatch"> \
+      <arg direction="in" type="s"/> \
+    </method> \
+    <method name="GetNameOwner"> \
+      <arg direction="in" type="s"/> \
+      <arg direction="out" type="s"/> \
+    </method> \
+    <method name="ListQueuedOwners"> \
+      <arg direction="in" type="s"/> \
+      <arg direction="out" type="as"/> \
+    </method> \
+    <method name="GetConnectionUnixUser"> \
+      <arg direction="in" type="s"/> \
+      <arg direction="out" type="u"/> \
+    </method> \
+    <method name="GetConnectionUnixProcessID"> \
+      <arg direction="in" type="s"/> \
+      <arg direction="out" type="u"/> \
+    </method> \
+    <method name="GetAdtAuditSessionData"> \
+      <arg direction="in" type="s"/> \
+      <arg direction="out" type="ay"/> \
+    </method> \
+    <method name="GetConnectionSELinuxSecurityContext"> \
+      <arg direction="in" type="s"/> \
+      <arg direction="out" type="ay"/> \
+    </method> \
+    <method name="GetConnectionAppArmorSecurityContext"> \
+      <arg direction="in" type="s"/> \
+      <arg direction="out" type="s"/> \
+    </method> \
+    <method name="ReloadConfig"> \
+    </method> \
+    <method name="GetId"> \
+      <arg direction="out" type="s"/> \
+    </method> \
+    <method name="GetConnectionCredentials"> \
+      <arg direction="in" type="s"/> \
+      <arg direction="out" type="a{sv}"/> \
+    </method> \
+    <signal name="NameOwnerChanged"> \
+      <arg type="s"/> \
+      <arg type="s"/> \
+      <arg type="s"/> \
+    </signal> \
+    <signal name="NameLost"> \
+      <arg type="s"/> \
+    </signal> \
+    <signal name="NameAcquired"> \
+      <arg type="s"/> \
+    </signal> \
+  </interface> \
+  <interface name="org.freedesktop.DBus.Introspectable"> \
+    <method name="Introspect"> \
+      <arg direction="out" type="s"/> \
+    </method> \
+  </interface> \
+  <interface name="org.freedesktop.DBus.Monitoring"> \
+    <method name="BecomeMonitor"> \
+      <arg direction="in" type="as"/> \
+      <arg direction="in" type="u"/> \
+    </method> \
+  </interface> \
+  <interface name="org.freedesktop.DBus.Debug.Stats"> \
+    <method name="GetStats"> \
+      <arg direction="out" type="a{sv}"/> \
+    </method> \
+    <method name="GetConnectionStats"> \
+      <arg direction="in" type="s"/> \
+      <arg direction="out" type="a{sv}"/> \
+    </method> \
+    <method name="GetAllMatchRules"> \
+      <arg direction="out" type="a{sas}"/> \
+    </method> \
+  </interface> \
+</node>'
+);
+const FdoIface = FdoNode.lookup_interface("org.freedesktop.DBus");
+const MonitoringIface = FdoNode.lookup_interface("org.freedesktop.DBus.Monitoring");
+
+
+/**
+ * Implementing a singleton
+ */
+var _default;
+
+function get_default() {
+    if (!_default) {
+        _default = new FdoProxy();
+    }
+
+    return _default;
+};
+
+
+/**
+ * Proxy for org.freedesktop.DBus Interface
+ */
+var FdoProxy = new Lang.Class({
+    Name: "GSConnectFdoProxy",
+    Extends: ProxyBase,
+    Properties: {
+        // A custom property for the org.freedesktop.DBus.Monitoring interface
+        "Monitoring": GObject.ParamSpec.object(
+            "Monitoring",
+            "Monitoring Interface",
+            "A DBus proxy for org.freedesktop.DBus.Monitoring",
+            GObject.ParamFlags.READABLE,
+            Gio.DBusProxy
+        )
+    },
+    Signals: {
+        "NameOwnerChanged": {
+            flags: GObject.SignalFlags.RUN_FIRST,
+            param_types: [
+                GObject.TYPE_STRING, // Name
+                GObject.TYPE_STRING, // Old owner
+                GObject.TYPE_STRING // New owner
+            ]
+        },
+        "NameLost": {
+            flags: GObject.SignalFlags.RUN_FIRST,
+            param_types: [ GObject.TYPE_STRING ] // Name
+        },
+        "NameAcquired": {
+            flags: GObject.SignalFlags.RUN_FIRST,
+            param_types: [ GObject.TYPE_STRING ] // Name
+        }
+    },
+
+    _init: function () {
+        this.parent({
+            g_connection: Gio.DBus.session,
+            g_interface_info: FdoIface,
+            g_interface_name: FdoIface.name,
+            g_name: "org.freedesktop.DBus",
+            g_object_path: "/"
+        });
+    },
+
+    get Monitoring() {
+        if (!this._Monitoring) {
+            this._Monitoring = new ProxyBase({
+                g_connection: Gio.DBus.session,
+                g_interface_info: MonitoringIface,
+                g_interface_name: MonitoringIface.name,
+                g_name: "org.freedesktop.DBus",
+                g_object_path: "/"
+            });
+        }
+
+        return this._Monitoring;
     }
 });
 
