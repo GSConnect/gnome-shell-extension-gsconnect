@@ -201,30 +201,34 @@ var Plugin = new Lang.Class({
      */
     _getNotification: function (query) {
         for (let notif of this._notifications) {
-            // @query matches an active notification timestamp
+            // @query matches an active/shown notification timestamp
             if (notif.time && notif.time === query.time) {
                 debug("found notification by timestamp");
                 // Update the cached notification
                 Object.assign(notif, query);
                 return notif;
-            // @query is a duplicate search by GNotification id
-            } else if (notif.localId && notif.localId === query.id) {
-                debug("found notification by localId");
-                return notif;
-            // @query is a notification matching a duplicate we're expecting
-            } else if (notif.localId && !notif.time && notif.ticker === query.ticker) {
-                debug("found duplicate with matching ticker");
+            } else if (notif.localId) {
+                // @query is a duplicate search by GNotification id
+                // Called by close() or trackDuplicate()/closeDuplicate()
+                if ([query.id, query.localId].indexOf(notif.localId) > -1) {
+                    debug("found notification by localId");
+                    return notif;
+                // @query is a notification matching a duplicate we're expecting
+                // Called by handlePacket()
+                } else if (query.time && notif.ticker === query.ticker) {
+                    debug("found duplicate with matching ticker");
 
-                // Update the duplicate stub
-                Object.assign(notif, query);
+                    // Update the duplicate stub
+                    Object.assign(notif, query);
 
-                // It's marked to be closed
-                if (notif.isCancel) {
-                    debug("closing duplicate notification");
-                    this.close(notif.time);
+                    // It's marked to be closed
+                    if (notif.isCancel) {
+                        debug("closing duplicate notification");
+                        this.close(notif.id);
+                    }
+
+                    return notif;
                 }
-
-                return notif;
             }
         }
 
