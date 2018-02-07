@@ -174,8 +174,6 @@ var MediaPlayer2Proxy = new Lang.Class({
             g_name: g_name, // "org.mpris.MediaPlayer2.GSConnect",
             g_object_path: "/org/mpris/MediaPlayer2"
         });
-
-        this._wrapObject();
     },
 
     get Player() {
@@ -184,6 +182,11 @@ var MediaPlayer2Proxy = new Lang.Class({
         }
 
         return this._player;
+    },
+
+    destroy: function () {
+        this.Player.destroy();
+        DBus.ProxyBase.prototype.destroy.call(this);
     }
 });
 
@@ -330,8 +333,6 @@ var PlayerProxy = new Lang.Class({
             g_name: busName,
             g_object_path: "/org/mpris/MediaPlayer2"
         });
-
-        this._wrapObject();
     },
 
     Next: function () {
@@ -471,7 +472,7 @@ var Manager = new Lang.Class({
 
         // Add new players
         this._fdo.ListNames().then(names => {
-            names = names.map(n => n.startsWith("org.mpris.MediaPlayer2"));
+            names = names.filter(n => n.startsWith("org.mpris.MediaPlayer2"));
 
             for (let busName of names) {
                 log("BUSNAME: " + busName);
