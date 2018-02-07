@@ -253,8 +253,35 @@ var Store = new Lang.Class({
         return matches;
     },
 
+    update: function () {
+        this._updateFolksContacts().then((result) => {
+            debug("contacts read from folks");
+
+            this._writeCache();
+            [this._provider_icon, this._provider_name] = result;
+            log("PROVIDER ICON: " + this.provider_icon);
+            this.notify("provider-icon");
+            this.notify("provider-name");
+            this.notify("contacts");
+        }).catch((error) => {
+            debug("Warning: Error updating Folks contacts: " + error.message + "\n" + error.stack);
+
+            this._updateGoogleContacts().then((result) => {
+                debug("contacts read from google");
+
+                this._writeCache();
+                [this._provider_icon, this._provider_name] = result;
+                this.notify("provider-icon");
+                this.notify("provider-name");
+                this.notify("contacts");
+            }).catch((error) => {
+                debug("Warning: Error updating Google contacts: " + error.message + "\n" + error.stack);
+            });
+        });
+    },
+
     /**
-     * Take name and a number and return a contact, known or new
+     * Convenience Methods
      */
     getContact: function (name, number) {
         debug(arguments);
@@ -281,33 +308,6 @@ var Store = new Lang.Class({
     },
 
     setContactPixbuf: function () {
-    },
-
-    /**
-     * Update the contact store from the sources
-     */
-    update: function () {
-        this._updateFolksContacts().then((result) => {
-            debug("contacts read from folks");
-
-            this._writeCache();
-            this._provider_icon = result;
-            this.notify("provider-icon");
-            this.notify("contacts");
-        }).catch((error) => {
-            debug("Warning: Error updating Folks contacts: " + error.message + "\n" + error.stack);
-
-            this._updateGoogleContacts().then((result) => {
-                debug("contacts read from google");
-
-                this._writeCache();
-                this._provider_icon = result;
-                this.notify("provider-icon");
-                this.notify("contacts");
-            }).catch((error) => {
-                debug("Warning: Error updating Google contacts: " + error.message + "\n" + error.stack);
-            });
-        });
     },
 
     // FIXME FIXME FIXME: cleanup, stderr
@@ -360,7 +360,7 @@ var Store = new Lang.Class({
                 folks = JSON.parse(folks);
                 //Object.assign(this._contacts, folks);
                 this._contacts = mergeContacts(this._contacts, folks);
-                resolve("gnome-contacts-symbolic");
+                resolve(["gnome-contacts-symbolic", _("Gnome")]);
             } catch (e) {
                 reject(e);
             }
@@ -393,7 +393,7 @@ var Store = new Lang.Class({
 
             this._contacts = mergeContacts(this._contacts, contacts);
 
-            resolve("goa-account-google");
+            resolve(["goa-account-google", _("Google")]);
         });
     },
 
@@ -571,6 +571,7 @@ var Avatar = new Lang.Class({
             margin: 10,
             visible: true
         });
+        box.get_style_context().add_class("linked");
         popover.add(box);
 
         // Gnome Contacts
