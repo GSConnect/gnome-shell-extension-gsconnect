@@ -11,7 +11,8 @@ imports.searchPath.push(gsconnect.datadir);
 const DBus = imports.modules.dbus;
 
 
-var ShellXML = '<node> \
+var ShellNode = Gio.DBusNodeInfo.new_for_xml(
+'<node> \
   <interface name="org.freedesktop.DBus.Properties"> \
     <method name="Get"> \
       <arg type="s" name="interface_name" direction="in"/> \
@@ -158,13 +159,17 @@ var ShellXML = '<node> \
     <property type="s" name="ShellVersion" access="read"> \
     </property> \
   </interface> \
-</node> \
-';
+</node>'
+);
 
-var ShellNode = Gio.DBusNodeInfo.new_for_xml(ShellXML);
+
 var ShellIface = ShellNode.lookup_interface("org.gnome.Shell");
 var ExtensionsIface = ShellNode.lookup_interface("org.gnome.Shell.Extensions");
 
+
+/**
+ * A DBus proxy for org.gnome.Shell
+ */
 var ShellProxy = new Lang.Class({
     Name: "GSConnectShellProxy",
     Extends: DBus.ProxyBase,
@@ -212,6 +217,9 @@ var ShellProxy = new Lang.Class({
 });
 
 
+/**
+ * A DBus proxy for org.gnome.Shell.Extensions
+ */
 var ExtensionsProxy = new Lang.Class({
     Name: "GSConnectExtensionsProxy",
     Extends: DBus.ProxyBase,
