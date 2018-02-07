@@ -6,11 +6,13 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 
-
 imports.searchPath.push(gsconnect.datadir);
 const DBus = imports.modules.dbus;
 
 
+/**
+ * DBus Interface
+ */
 var ShellNode = Gio.DBusNodeInfo.new_for_xml(
 '<node> \
   <interface name="org.freedesktop.DBus.Properties"> \
@@ -161,10 +163,22 @@ var ShellNode = Gio.DBusNodeInfo.new_for_xml(
   </interface> \
 </node>'
 );
-
-
 var ShellIface = ShellNode.lookup_interface("org.gnome.Shell");
 var ExtensionsIface = ShellNode.lookup_interface("org.gnome.Shell.Extensions");
+
+
+/**
+ * Singleton
+ */
+var _default;
+
+function get_default() {
+    if (!_default) {
+        _default = new ShellProxy();
+    }
+
+    return _default;
+};
 
 
 /**
@@ -194,6 +208,14 @@ var ShellProxy = new Lang.Class({
             "Current running version of Gnome Shell",
             GObject.ParamFlags.READABLE,
             "3.26.2"
+        ),
+        // A custom property for the org.gnome.Shell.Extensions interface
+        "Extensions": GObject.ParamSpec.object(
+            "Extensions",
+            "Extensions Interface",
+            "A DBus proxy for org.gnome.Shell.Extensions",
+            GObject.ParamFlags.READABLE,
+            Gio.DBusProxy
         )
     },
     Signals: {
@@ -211,8 +233,14 @@ var ShellProxy = new Lang.Class({
             g_name: "org.gnome.Shell",
             g_object_path: "/org/gnome/Shell"
         });
+    },
 
-        this._wrapObject();
+    get Extensions() {
+        if (!this._extensions) {
+            this._extensions = new ExtensionsProxy();
+        }
+
+        return this._extensions;
     }
 });
 
@@ -251,8 +279,6 @@ var ExtensionsProxy = new Lang.Class({
             g_name: "org.gnome.Shell",
             g_object_path: "/org/gnome/Shell"
         });
-
-        this._wrapObject();
     }
 });
 
