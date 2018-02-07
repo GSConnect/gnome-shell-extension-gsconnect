@@ -25,7 +25,9 @@ const DBusXML = '<node> \
 </node>';
 const DBusProxy = new Gio.DBusProxy.makeProxyWrapper(DBusXML);
 
-const MPRISXML = '<node> \
+
+const MediaPlayer2Node = Gio.DBusNodeInfo.new_for_xml(
+'<node> \
   <interface name="org.mpris.MediaPlayer2"> \
       <method name="Raise" /> \
       <method name="Quit" /> \
@@ -38,10 +40,6 @@ const MPRISXML = '<node> \
       <property name="SupportedUriSchemes" type="as" access="read"/> \
       <property name="SupportedMimeTypes" type="as" access="read"/> \
   </interface> \
-</node>'
-const MPRISProxy = new Gio.DBusProxy.makeProxyWrapper(MPRISXML);
-
-const MPRISPlayerXML = '<node> \
   <interface name="org.mpris.MediaPlayer2.Player"> \
     <method name="Next"/> \
     <method name="Previous"/> \
@@ -80,29 +78,137 @@ const MPRISPlayerXML = '<node> \
     <property access="read" type="b" name="CanSeek"/> \
     <property access="read" type="b" name="CanControl"/> \
   </interface> \
-</node>';
+</node>'
+);
+const MediaPlayer2Iface = MediaPlayer2Node.lookup_interface("org.mpris.MediaPlayer2");
+const PlayerIface = MediaPlayer2Node.lookup_interface("org.mpris.MediaPlayer2.Player");
 
 
-const MPRISPlayerProxy = new Gio.DBusProxy.makeProxyWrapper(MPRISPlayerXML);
-const MPRISPlayerNode = Gio.DBusNodeInfo.new_for_xml(MPRISPlayerXML);
-const MPRISPlayerIface = MPRISPlayerNode.lookup_interface("org.mpris.MediaPlayer2.Player");
+/**
+ * Default
+ */
+var _default;
 
-
-function getManager () {
-    if (!this._manager) {
-        this._manager = new Manager();
+function get_default() {
+    if (!_default) {
+        _default = new Manager();
     }
 
-    return this._manager;
+    return _default;
 };
 
 
 /**
- * MPRIS Player Class
+ * org.mpris.MediaPlayer2 Proxy
+ * https://specifications.freedesktop.org/mpris-spec/latest/Media_Player.html
+ */
+var MediaPlayer2Proxy = new Lang.Class({
+    Name: "GSConnectMPRISPlayerClass",
+    Extends: DBus.ProxyBase,
+    Properties: {
+        "CanQuit": GObject.ParamSpec.boolean(
+            "CanQuit",
+            "CanQuit",
+            "If false, calling Quit will have no effect",
+            GObject.ParamFlags.READABLE,
+            false
+        ),
+        "Fullscreen": GObject.ParamSpec.boolean(
+            "Fullscreen",
+            "Fullscreen",
+            "Whether the media player is occupying the fullscreen",
+            GObject.ParamFlags.READWRITE,
+            false
+        ),
+        "CanSetFullscreen": GObject.ParamSpec.boolean(
+            "CanSetFullscreen",
+            "CanSetFullscreen",
+            "If false, attempting to set Fullscreen will have no effect",
+            GObject.ParamFlags.READABLE,
+            false
+        ),
+        "CanRaise": GObject.ParamSpec.boolean(
+            "CanRaise",
+            "CanRaise",
+            "If false, calling Raise will have no effect",
+            GObject.ParamFlags.READABLE,
+            false
+        ),
+        "HasTrackList": GObject.ParamSpec.boolean(
+            "HasTrackList",
+            "HasTrackList",
+            "Whether the object implements org.mpris.MediaPlayer2.TrackList",
+            GObject.ParamFlags.READABLE,
+            false
+        ),
+        "Identity": GObject.ParamSpec.string(
+            "Identity",
+            "Identity",
+            "A friendly name to identify the media player to users",
+            GObject.ParamFlags.READABLE,
+            ""
+        ),
+        "DesktopEntry": GObject.ParamSpec.string(
+            "DesktopEntry",
+            "DesktopEntry",
+            "The basename of an installed .desktop file (eg. app id)",
+            GObject.ParamFlags.READABLE,
+            ""
+        ),
+        "SupportedUriSchemes": GObject.param_spec_variant(
+            "SupportedUriSchemes",
+            "SupportedUriSchemes",
+            "The URI schemes supported by the media player",
+            new GLib.VariantType("as"),
+            new GLib.Variant("as", []),
+            GObject.ParamFlags.READABLE
+        ),
+        "SupportedMimeTypes": GObject.param_spec_variant(
+            "SupportedMimeTypes",
+            "SupportedMimeTypes",
+            "The mime-types supported by the media player",
+            new GLib.VariantType("as"),
+            new GLib.Variant("as", []),
+            GObject.ParamFlags.READABLE
+        ),
+        // A custom property for the org.mpris.MediaPlayer2.Player interface
+        "Player": GObject.ParamSpec.object(
+            "Player",
+            "Player Interface",
+            "A DBus proxy for org.mpris.MediaPlayer2.Player",
+            GObject.ParamFlags.READABLE,
+            Gio.DBusProxy
+        )
+    },
+
+    _init: function (g_name) {
+        this.parent({
+            g_connection: Gio.DBus.session,
+            g_interface_info: MediaPlayer2Iface,
+            g_interface_name: MediaPlayer2Iface.name,
+            g_name: g_name, // "org.mpris.MediaPlayer2.GSConnect",
+            g_object_path: "/org/mpris/MediaPlayer2"
+        });
+
+        this._wrapObject();
+    },
+
+    get Player() {
+        if (!this._player) {
+            this._player = new PlayerProxy(this.g_name);
+        }
+
+        return this._player;
+    }
+});
+
+
+/**
+ * org.mpris.MediaPlayer2.Player Proxy
  * https://specifications.freedesktop.org/mpris-spec/latest/Player_Interface.html
  */
-var MediaPlayer = new Lang.Class({
-    Name: "GSConnectMPRISPlayerClass",
+var PlayerProxy = new Lang.Class({
+    Name: "GSConnectMPRISPlayerProxy",
     Extends: DBus.ProxyBase,
     Properties: {
         // Playing | Paused | Stop
@@ -127,8 +233,7 @@ var MediaPlayer = new Lang.Class({
             "PlayerPlaybackRate",
             "The current playback rate",
             GObject.ParamFlags.READWRITE,
-            0.1,
-            1.0,
+            0.1, 1.0,
             1.0
         ),
         "Shuffle": GObject.ParamSpec.boolean(
@@ -152,8 +257,7 @@ var MediaPlayer = new Lang.Class({
             "PlayerVolume",
             "The volume level",
             GObject.ParamFlags.READWRITE,
-            0.0,
-            1.0,
+            0.0, 1.0,
             0.5
         ),
         //
@@ -171,8 +275,7 @@ var MediaPlayer = new Lang.Class({
             "PlayerPlaybackRateMinimum",
             "The minimum value which the Rate property can take",
             GObject.ParamFlags.READWRITE,
-            0.0,
-            1.0,
+            0.0, 1.0,
             1.0
         ),
         // >= 1.0
@@ -181,8 +284,7 @@ var MediaPlayer = new Lang.Class({
             "PlayerPlaybackRateMaximum",
             "The maximum value which the Rate property can take",
             GObject.ParamFlags.READWRITE,
-            1.0,
-            100.0,
+            1.0, 100.0,
             1.0
         ),
         "CanGoNext": GObject.ParamSpec.boolean(
@@ -235,16 +337,15 @@ var MediaPlayer = new Lang.Class({
         }
     },
 
-    _init: function (params) {
+    _init: function (busName) {
         this.parent({
             g_connection: Gio.DBus.session,
-            g_interface_info: MPRISPlayerIface,
-            g_interface_name: MPRISPlayerIface.name,
-            g_name: params.g_name, // "org.mpris.MediaPlayer2.GSConnect",
+            g_interface_info: PlayerIface,
+            g_interface_name: PlayerIface.name,
+            g_name: busName,
             g_object_path: "/org/mpris/MediaPlayer2"
         });
 
-        this.identity = params.identity;
         this._wrapObject();
     },
 
@@ -317,20 +418,22 @@ var Manager = new Lang.Class({
     Name: "GSConnectMPRISManager",
     Extends: GObject.Object,
     Properties: {
-        "names": GObject.param_spec_variant(
-            "devices",
-            "DevicesList",
-            "A list of known devices",
+        "identities": GObject.param_spec_variant(
+            "identities",
+            "IdentityList",
+            "A list of MediaPlayer2.Identity for each player",
             new GLib.VariantType("as"),
-            null,
+            new GLib.Variant("as", []),
             GObject.ParamFlags.READABLE
         ),
+        // Actually returns an Object of MediaPlayer2Proxy objects,
+        // Player.Identity as key
         "players": GObject.param_spec_variant(
             "players",
-            "DevicesList",
+            "PlayerList",
             "A list of known devices",
-            new GLib.VariantType("as"),
-            null,
+            new GLib.VariantType("a{sv}"),
+            new GLib.Variant("a{sv}", {}),
             GObject.ParamFlags.READABLE
         )
     },
@@ -345,83 +448,70 @@ var Manager = new Lang.Class({
         this.parent();
 
         try {
-            this._players = new Map();
+            this._players = {};
 
-            this._listener = new DBusProxy(
-                Gio.DBus.session,
-                'org.freedesktop.DBus',
-                '/org/freedesktop/DBus',
-                (proxy, error) => {
-                    if (error === null) {
-                        this._nameOwnerChanged = proxy.connectSignal(
-                            'NameOwnerChanged',
-                            Lang.bind(this, this._onNameOwnerChanged)
-                        );
-                        this._updatePlayers();
-                    }
+            this._fdo = new DBus.get_default();
+            this._fdo.connect("NameOwnerChanged", (proxy, name, oldOwner, newOwner) => {
+                if (name.startsWith("org.mpris.MediaPlayer2")) {
+                    this._updatePlayers();
                 }
-            );
+            });
+            this._updatePlayers();
         } catch (e) {
             debug("MPRIS ERROR: " + e);
         }
     },
 
-    get names () {
-        return Array.from(this._players.keys());
+    get identities () {
+        return Array.from(Object.keys(this._players));
     },
 
     get players () {
-        return Array.from(this._players.values());
+        return this._players;
     },
 
-    _onNameOwnerChanged: function(proxy, sender, [name, oldOwner, newOwner]) {
+    _onNameOwnerChanged: function(proxy, name, oldOwner, newOwner) {
         if (name.startsWith("org.mpris.MediaPlayer2")) {
             this._updatePlayers();
         }
     },
 
-    _listPlayers: function () {
-        debug("MPRIS: _listPlayers()");
-
-        let players = [];
-
-        for (let name of this._listener.ListNamesSync()[0]) {
-
-            if (name.indexOf("org.mpris.MediaPlayer2") > -1) {
-                players.push(name);
-            }
-        }
-
-        return players;
-    },
-
     _updatePlayers: function () {
         debug("MPRIS: _updatePlayers()");
 
-        let players = this._listPlayers();
-
         // Add new players
-        for (let name of players) {
-            let mpris = MPRISProxy(
-                Gio.DBus.session,
-                name,
-                "/org/mpris/MediaPlayer2"
-            );
+        this._fdo.ListNames().then(names => {
+            for (let busName of names) {
+                if (busName.startsWith("org.mpris.MediaPlayer2")) {
+                    log("BUSNAME: " + busName);
+                    let mediaPlayer = new MediaPlayer2Proxy(busName);
 
-            if (!this._players.has(mpris.Identity)) {
-                let player = new MediaPlayer({
-                    g_name: name,
-                    identity: mpris.Identity
-                });
+                    if (!this._players[mediaPlayer.Identity]) {
+                        mediaPlayer.Player.connect("notify", (player, properties) => {
+                            this.emit(
+                                "player-changed",
+                                player,
+                                new GLib.Variant("as", [])
+                            );
+                        });
+                        mediaPlayer.Player.connect("Seeked", (player) => {
+                            this.emit(
+                                "player-changed",
+                                player,
+                                new GLib.Variant("as", ["Position"])
+                            );
+                        });
 
-                // TODO: resending everything if anything changes
-                player._proxy.connect("g-properties-changed", (player, properties) => {
-                    this.emit("player-changed", player, properties);
-                });
+                        // FIXME: hack
+                        mediaPlayer.Player.Identity = mediaPlayer.Identity;
 
-                this._players.set(mpris.Identity, player);
+                        this.players[mediaPlayer.Identity] = mediaPlayer.Player;
+                    }
+                }
             }
-        }
+        }).catch(e => {
+            debug(e);
+        });
 
         // FIXME: gName/g_name undefined
         // Remove old players
@@ -441,7 +531,7 @@ var Manager = new Lang.Class({
         } catch (e) {
         }
 
-        for (let proxy of this._players.values()) {
+        for (let proxy of Object.values(this._players)) {
             try {
                 GObject.signal_handlers_destroy(proxy);
             } catch (e) {
