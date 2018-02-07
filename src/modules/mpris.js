@@ -11,21 +11,6 @@ imports.searchPath.push(gsconnect.datadir);
 const DBus = imports.modules.dbus;
 
 
-const DBusXML = '<node> \
-<interface name="org.freedesktop.DBus"> \
-  <method name="ListNames"> \
-    <arg type="as" direction="out" name="names" /> \
-  </method> \
-  <signal name="NameOwnerChanged"> \
-    <arg type="s" direction="out" name="name" /> \
-    <arg type="s" direction="out" name="oldOwner" /> \
-    <arg type="s" direction="out" name="newOwner" /> \
-  </signal> \
-</interface> \
-</node>';
-const DBusProxy = new Gio.DBusProxy.makeProxyWrapper(DBusXML);
-
-
 const MediaPlayer2Node = Gio.DBusNodeInfo.new_for_xml(
 '<node> \
   <interface name="org.mpris.MediaPlayer2"> \
@@ -448,14 +433,15 @@ var Manager = new Lang.Class({
         this.parent();
 
         try {
-            this._players = {};
-
             this._fdo = new DBus.get_default();
-            this._fdo.connect("NameOwnerChanged", (proxy, name, oldOwner, newOwner) => {
-                if (name.startsWith("org.mpris.MediaPlayer2")) {
-                    this._updatePlayers();
+            this._nameOwnerChanged = this._fdo.connect(
+                "NameOwnerChanged",
+                (proxy, name, oldOwner, newOwner) => {
+                    if (name.startsWith("org.mpris.MediaPlayer2")) {
+                        this._updatePlayers();
+                    }
                 }
-            });
+            );
             this._updatePlayers();
         } catch (e) {
             debug("MPRIS ERROR: " + e);
@@ -463,10 +449,14 @@ var Manager = new Lang.Class({
     },
 
     get identities () {
-        return Array.from(Object.keys(this._players));
+        return Array.from(Object.keys(this.players));
     },
 
     get players () {
+        if (!this._players) {
+            this._players = {};
+        }
+
         return this._players;
     },
 
@@ -481,61 +471,54 @@ var Manager = new Lang.Class({
 
         // Add new players
         this._fdo.ListNames().then(names => {
+            names = names.map(n => n.startsWith("org.mpris.MediaPlayer2"));
+
             for (let busName of names) {
-                if (busName.startsWith("org.mpris.MediaPlayer2")) {
-                    log("BUSNAME: " + busName);
-                    let mediaPlayer = new MediaPlayer2Proxy(busName);
+                log("BUSNAME: " + busName);
+                let mediaPlayer = new MediaPlayer2Proxy(busName);
 
-                    if (!this._players[mediaPlayer.Identity]) {
-                        mediaPlayer.Player.connect("notify", (player, properties) => {
-                            this.emit(
-                                "player-changed",
-                                player,
-                                new GLib.Variant("as", [])
-                            );
-                        });
-                        mediaPlayer.Player.connect("Seeked", (player) => {
-                            this.emit(
-                                "player-changed",
-                                player,
-                                new GLib.Variant("as", ["Position"])
-                            );
-                        });
+                if (!this._players[mediaPlayer.Identity]) {
+                    mediaPlayer.Player.connect("notify", (player, properties) => {
+                        this.emit(
+                            "player-changed",
+                            mediaPlayer,
+                            new GLib.Variant("as", [])
+                        );
+                    });
+                    mediaPlayer.Player.connect("Seeked", (player) => {
+                        this.emit(
+                            "player-changed",
+                            mediaPlayer,
+                            new GLib.Variant("as", ["Position"])
+                        );
+                    });
 
-                        // FIXME: hack
-                        mediaPlayer.Player.Identity = mediaPlayer.Identity;
+                    this.players[mediaPlayer.Identity] = mediaPlayer;
+                }
+            }
 
-                        this.players[mediaPlayer.Identity] = mediaPlayer.Player;
-                    }
+            // Remove old players
+            // TODO: use NameOwnerChanged
+            for (let name in this.players) {
+                let player = this.players[name];
+
+                if (names.indexOf(player.g_name) < 0) {
+                    player.destroy();
+                    delete this.players[name];
                 }
             }
         }).catch(e => {
             debug(e);
         });
 
-        // FIXME: gName/g_name undefined
-        // Remove old players
-//        for (let [name, proxy] of this._players.entries()) {
-//            if (players.indexOf(proxy.g_name) < 0) {
-//                GObject.signal_handlers_destroy(proxy);
-//                this._players.delete(name);
-//            }
-//        }
-
         this.notify("players");
     },
 
     destroy: function () {
-        try {
-            this._listener.disconnectSignal(this._nameOwnerChanged);
-        } catch (e) {
-        }
+        this._fdo.disconnect(this._nameOwnerChanged);
 
         for (let proxy of Object.values(this._players)) {
-            try {
-                GObject.signal_handlers_destroy(proxy);
-            } catch (e) {
-            }
+            proxy.destroy()
         }
     }
 });
