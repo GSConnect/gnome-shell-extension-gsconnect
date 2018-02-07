@@ -19,30 +19,33 @@ var ProxyBase = new Lang.Class({
 
         this.cancellable = new Gio.Cancellable();
         this.init(null);
-        this._wrapObject();
+
+        // Wrap methods, properties and signals
+        let info = this.g_interface_info;
+
+        this._wrapMethods(info);
+        this._wrapProperties(info);
+        this._wrapSignals(info);
     },
 
-    _call: function (name) {
-        /* Convert arg_array to a *real* array */
-        let args = Array.prototype.slice.call(arguments, 1);
-
+    _call: function (info) {
         return new Promise((resolve, reject) => {
-            let methodInfo = this.gInterfaceInfo.lookup_method(name);
-            let signature = methodInfo.in_args.map(arg => arg.signature);
+            let args = Array.prototype.slice.call(arguments, 1);
+            let signature = info.in_args.map(arg => arg.signature);
             let variant = new GLib.Variant("(" + signature.join("") + ")", args);
 
-            this.call(name, variant, 0, -1, null, (proxy, result) => {
+            this.call(info.name, variant, 0, -1, null, (proxy, result) => {
                 let ret;
 
                 try {
                     ret = this.call_finish(result);
                 } catch (e) {
-                    debug("Error calling " + name + ": " + e.message);
+                    debug("Error calling " + info.name + ": " + e.message);
                     reject(e);
                 }
 
                 // If return has single arg, only return that or null
-                if (methodInfo.out_args.length === 1) {
+                if (info.out_args.length === 1) {
                     resolve((ret) ? ret.deep_unpack()[0] : null);
                 // Otherwise return an array (possibly empty)
                 } else {
@@ -56,7 +59,7 @@ var ProxyBase = new Lang.Class({
      * Synchronous Uncached Getter
      */
     _get: function (name, signature) {
-        // Return '(v)'
+        // Returns '(v)'
         let variant = this.call_sync(
             "org.freedesktop.DBus.Properties.Get",
             new GLib.Variant("(ss)", [this.g_interface_name, name]),
@@ -72,34 +75,36 @@ var ProxyBase = new Lang.Class({
         let value = variant.deep_unpack();
 
         // FIXME ...
-        if (!variant) {
+        if (!value) {
             // TODO: test
-            if (signature.startsWith("[") || signature.startsWith("as")) {
+            if (signature === "b") {
+                return false;
+            } else if (signature === "s") {
+                return "";
+            } else if (["u", "i", "x", "d"].indexOf(signature) > -1) {
+                return 0;
+            } else if (["[", "(", "as"].some(c => signature.startsWith(c))) {
                 return [];
             } else if (signature.startsWith("{") || signature.startsWith("a{")) {
                 return {};
-            } else if (signature.startsWith("u") || signature.startsWith("i")) {
-                return 0;
-            } else if (signature.startsWith("s")) {
-                return "";
-            } else if (signature.startsWith("b")) {
-                return false;
+            } else {
+                return null;
             }
-        } else {
-            return value || null;
         }
+
+        return value;
     },
 
     /**
      * Asynchronous Setter
      */
     _set: function (name, value, signature) {
-        signature = signature || this.g_nterface_info.lookup_property(name).signature
         let variant = new GLib.Variant(signature, value);
 
         // Set the cached property first
         this.set_cached_property(name, variant);
 
+        // Let it run and just log any errors
         this.call(
             "org.freedesktop.DBus.Properties.Set",
             new GLib.Variant("(ssv)", [this.g_interface_name, name, variant]),
@@ -110,18 +115,19 @@ var ProxyBase = new Lang.Class({
                 try {
                     this.call_finish(result);
                 } catch (e) {
-                    debug(
-                        "Error setting " + name + " on " + this.g_object_path +
-                        ": " + e.message + "\n" + e.stack
+                    log(
+                        "Error setting " + name +
+                        " on " + this.g_object_path + ": " +
+                        e.message + "\n" + e.stack
                     );
                 }
             }
         );
     },
 
-    _wrapMethod: function (name) {
+    _wrapMethod: function (method) {
         return function () {
-            return this._call.call(this, name, ...arguments);
+            return this._call.call(this, method, ...arguments);
         };
     },
 
@@ -129,13 +135,11 @@ var ProxyBase = new Lang.Class({
      * Wrap each method in this._call()
      */
     _wrapMethods: function (info) {
-        info = info || this.g_interface_info;
-
         let i, methods = info.methods;
 
         for (i = 0; i < methods.length; i++) {
             var method = methods[i];
-            this[method.name] = this._wrapMethod(method.name);
+            this[method.name] = this._wrapMethod(method);
 
             // TODO: construct parameter for casing?
             //log(this._toCamelCase(method.name));
@@ -144,14 +148,25 @@ var ProxyBase = new Lang.Class({
     },
 
     /**
-     * Wrap each property with this._get()/this._set() and call notify().
+     * Wrap each property with this._get()/this._set() and call notify();
+     * requires each property to have a GObject.ParamSpec defined.
+     *
      * Properties can be handled before notify() is called by defining a method
      * called vprop_name().
      */
     _wrapProperties: function (info) {
-        info = info || this.g_interface_info;
-
         if (info.properties.length > 0) {
+            for (let property of info.properties) {
+                let name = property.name;
+
+                Object.defineProperty(this, name, {
+                    get: () => this._get(name, property.signature),
+                    set: (value) => this._set(name, value, property.signature),
+                    configurable: true,
+                    enumerable: true
+                });
+            }
+
             this.connect("g-properties-changed", (proxy, properties) => {
                 for (let name in properties.deep_unpack()) {
                     // If the object has vprop_name(), call it before notify()
@@ -163,48 +178,19 @@ var ProxyBase = new Lang.Class({
                     this.notify(name);
                 }
             });
-
-            for (let property of info.properties) {
-                let name = property.name;
-
-                Object.defineProperty(this, name, {
-                    get: () => this._get(name, property.signature),
-                    set: (value) => this._set(name, value, property.signature),
-                    configurable: true,
-                    enumerable: true
-                });
-            }
         }
     },
 
+    /**
+     * Wrap 'g-signal' with GObject.emit(); requires each signal to be defined
+     */
     _wrapSignals: function (info) {
-        info = info || this.g_interface_info;
-
         if (info.signals.length > 0) {
             this.connect("g-signal", (proxy, sender, name, parameters) => {
                 let args = [name].concat(parameters.deep_unpack());
                 this.emit(...args);
             });
         }
-    },
-
-    _wrapObject: function () {
-        let info = this.g_interface_info;
-
-        this._wrapMethods(info);
-        this._wrapProperties(info);
-        this._wrapSignals(info);
-    },
-
-    // TODO: use this?
-    _toCamelCase: function (string) {
-        return string.replace(/(?:^\w|[A-Z]|\b\w)/g, (ltr, idx) => {
-            if (idx === 0) {
-                return ltr.toLowerCase();
-            } else {
-                return ltr.toUpperCase();
-            }
-        }).replace(/\s+/g, '');
     },
 
     destroy: function () {
@@ -393,6 +379,7 @@ var FdoProxy = new Lang.Class({
     },
 
     get Monitoring() {
+        // A singleton child interface
         if (!this._Monitoring) {
             this._Monitoring = new ProxyBase({
                 g_connection: Gio.DBus.session,
@@ -404,6 +391,12 @@ var FdoProxy = new Lang.Class({
         }
 
         return this._Monitoring;
+    },
+
+    destroy: function () {
+        // Ensuring the child interface is destroyed, then chaining up
+        this.Monitoring.destroy();
+        DBus.ProxyBase.prototype.destroy.call(this);
     }
 });
 
