@@ -65,8 +65,10 @@ var Plugin = new Lang.Class({
         debug("FindMyPhone: handlePacket()");
 
         return new Promise((resolve, reject) => {
-            if (this.settings.get_boolean("enabled")) {
+            if (this.allow & 4) {
                 resolve(this._handleFind());
+            } else {
+                reject(new Error("Operation not permitted: " + packet.type));
             }
         });
     },
@@ -121,6 +123,10 @@ var Plugin = new Lang.Class({
      */
     find: function () {
         debug(this.device.name);
+
+        if (!(this.allow & 2)) {
+            return new Error("Operation not permitted: " + packet.type);;
+        }
 
         let packet = new Protocol.Packet({
             id: 0,
