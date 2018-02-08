@@ -39,6 +39,11 @@ var Plugin = new Lang.Class({
             path: "/org/gnome/shell/extensions/gsconnect/device/" +
                   device.id + "/plugin/" + name.toLowerCase() + "/"
         });
+    },
+
+    destroy: function () {
+        GObject.signal_handlers_destroy(this.settings);
+        DBus.ProxyBase.prototype.destroy.call(this);
     }
 });
 
@@ -456,6 +461,8 @@ var Device = new Lang.Class({
         });
         this.daemon = daemon;
 
+        this.daemon.connect("destroy", () => this.destroy());
+
         // GSettings
         this.settings = new Gio.Settings({
             settings_schema: gsconnect.gschema.lookup(
@@ -476,24 +483,28 @@ var Device = new Lang.Class({
 
         for (let name of plugins) {
             if (!this._plugins.has(name)) {
-                this[name] = new _PluginMap[name](this);
-                this._plugins.set(name, this[name]);
+                this._plugins.set(name, new _PluginMap[name](this));
+                this._plugins.get(name).connect("destroy", () => {
+                    delete this[name];
+                    this._plugins.delete(name);
+                });
+                this[name] = this._plugins.get(name);
+            }
+        }
+
+        for (let name of this._plugins.keys()) {
+            if (plugins.indexOf(name) < 0) {
+                this._plugins.get(name).destroy();
             }
         }
     },
 
     destroy: function () {
         for (let [key, value] of this._plugins) {
-            if (this.hasOwnProperty(key)) {
-                delete this[key];
-            }
-
             this._plugins.get(key).destroy();
-            this._plugins.delete(key);
         }
 
         GObject.signal_handlers_destroy(this.settings);
-
         DBus.ProxyBase.prototype.destroy.call(this);
     }
 });
@@ -555,6 +566,12 @@ var Daemon = new Lang.Class({
             g_object_path: "/org/gnome/Shell/Extensions/GSConnect"
         });
 
+        this.connect("destroy", () => {
+            for (let device in this._devices.values()) {
+                device.destroy();
+            }
+        });
+
         // Mirror device handling of service/daemon.js
         this._devices = new Map();
         this.vprop_devices();
@@ -567,6 +584,8 @@ var Daemon = new Lang.Class({
 
         for (let dbusPath of managedDevices) {
             if (!this._devices.has(dbusPath)) {
+                let device = new Device(dbusPath, this);
+                device.connect("destroy", () => this._devices.delete(dbusPath));
                 this._devices.set(dbusPath, new Device(dbusPath, this));
                 this.notify("devices");
             }
@@ -575,20 +594,9 @@ var Daemon = new Lang.Class({
         for (let dbusPath of this._devices.keys()) {
             if (managedDevices.indexOf(dbusPath) < 0) {
                 this._devices.get(dbusPath).destroy();
-                this._devices.delete(dbusPath);
                 this.notify("devices");
             }
         }
-    },
-
-    destroy: function () {
-        for (let dbusPath of this.devices) {
-            this._devices.get(dbusPath).destroy();
-            this._devices.delete(dbusPath);
-            this.notify("devices");
-        }
-
-        DBus.ProxyBase.prototype.destroy.call(this);
     }
 });
 
