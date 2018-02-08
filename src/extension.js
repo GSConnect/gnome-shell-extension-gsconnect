@@ -696,7 +696,6 @@ var SystemIndicator = new Lang.Class({
         this.daemon = new Client.Daemon();
         this._indicators = {};
         this._menus = {};
-        this.keybindingManager = new KeybindingManager();
 
         // Extension Indicator
         this.extensionIndicator = this._addIndicator();
@@ -738,12 +737,12 @@ var SystemIndicator = new Lang.Class({
         // Menu Visibility
         this._settingsChanged = gsconnect.settings.connect("changed", () => {
             for (let dbusPath in this._menus) {
-                this._deviceMenuVisibility(this._menus[dbusPath]);
+                this._displayMode(this._menus[dbusPath]);
             }
         });
 
         // Watch for DBus service
-        this._watchdog = Gio.bus_watch_name(
+        this._serviceName = Gio.bus_watch_name(
             Gio.BusType.SESSION,
             "org.gnome.Shell.Extensions.GSConnect",
             Gio.BusNameWatcherFlags.NONE,
@@ -753,13 +752,13 @@ var SystemIndicator = new Lang.Class({
     },
 
     _serviceAppeared: function () {
-        debug("");
+        debug("creating a service proxy");
 
         if (!this.daemon) {
             this.daemon = new Client.Daemon();
         }
 
-        this.extensionIndicator.visible = (this.daemon);
+        this.extensionIndicator.visible = true;
 
         // Add currently managed devices
         for (let dbusPath of this.daemon.devices) {
@@ -767,23 +766,11 @@ var SystemIndicator = new Lang.Class({
         }
 
         // Watch for new and removed devices
-        this.daemon.connect("notify::devices", (daemon) => {
-            for (let dbusPath of daemon.devices) {
-                if (!this._indicators[dbusPath]) {
-                    this._onDeviceAdded(daemon, dbusPath);
-                }
-            }
-
-            for (let dbusPath in this._indicators) {
-                if (daemon.devices.indexOf(dbusPath) < 0) {
-                    this._onDeviceRemoved(daemon, dbusPath)
-                }
-            }
-        });
+        this.daemon.connect("notify::devices", () => this._onDevicesChanged());
     },
 
     _serviceVanished: function () {
-        debug("");
+        debug("destroying the service proxy");
 
         if (this.daemon) {
             this.daemon.destroy();
@@ -825,62 +812,6 @@ var SystemIndicator = new Lang.Class({
         }
     },
 
-    _onKeybindingsChanged: function (indicator) {
-        let menu = indicator.deviceMenu;
-
-        for (let binding of menu._keybindings) {
-            this.keybindingManager.remove(binding);
-        }
-        menu._keybindings = [];
-
-        let accels = JSON.parse(menu.device.settings.get_string("keybindings"));
-
-        if (accels.menu) {
-            menu._keybindings.push(
-                this.keybindingManager.add(
-                    accels.menu,
-                    Lang.bind(this, this._openDeviceMenu, indicator)
-                )
-            );
-        }
-
-        if (accels.sms) {
-            menu._keybindings.push(
-                this.keybindingManager.add(
-                    accels.sms,
-                    Lang.bind(menu, menu._telephonyAction)
-                )
-            );
-        }
-
-        if (accels.find) {
-            menu._keybindings.push(
-                this.keybindingManager.add(
-                    accels.find,
-                    Lang.bind(menu, menu._findmyphoneAction)
-                )
-            );
-        }
-
-        if (accels.browse) {
-            menu._keybindings.push(
-                this.keybindingManager.add(
-                    accels.browse,
-                    Lang.bind(this, this._sftpDevice, indicator)
-                )
-            );
-        }
-
-        if (accels.share) {
-            menu._keybindings.push(
-                this.keybindingManager.add(
-                    accels.share,
-                    Lang.bind(menu, menu._shareAction)
-                )
-            );
-        }
-    },
-
     _sftpDevice: function (indicator) {
         let menu;
 
@@ -910,56 +841,7 @@ var SystemIndicator = new Lang.Class({
         }
     },
 
-    _onDeviceAdded: function (daemon, dbusPath) {
-        debug(arguments);
-
-        let device = this.daemon._devices.get(dbusPath);
-
-        // Status Area -> [ Device Indicator -> Device Menu ]
-        let indicator = new DeviceIndicator(daemon, device);
-        this._indicators[dbusPath] = indicator;
-        Main.panel.addToStatusArea(dbusPath, indicator);
-
-        // Extension Menu -> Devices Section -> [ Device Menu ]
-        let menu = new DeviceMenu(daemon, device);
-        this._menus[dbusPath] = menu;
-
-        device.connect("notify::connected", () => {
-            this._deviceMenuVisibility(menu);
-        });
-        device.connect("notify::paired", () => {
-            this._deviceMenuVisibility(menu);
-        });
-
-        this.devicesSection.addMenuItem(menu);
-        this._deviceMenuVisibility(menu);
-
-        // Keybindings
-        device.settings.connect("changed::keybindings", () => {
-            this._onKeybindingsChanged(indicator);
-        });
-        this._onKeybindingsChanged(indicator);
-
-        // Try activating the device
-        device.activate();
-    },
-
-    _onDeviceRemoved: function (daemon, dbusPath) {
-        debug(arguments);
-
-        for (let binding of this._indicators[dbusPath].deviceMenu._keybindings) {
-            this.keybindingManager.remove(binding);
-        }
-        this._indicators[dbusPath].deviceMenu._keybindings = [];
-
-        Main.panel.statusArea[dbusPath].destroy();
-        delete this._indicators[dbusPath];
-
-        this._menus[dbusPath].destroy();
-        delete this._menus[dbusPath];
-    },
-
-    _deviceMenuVisibility: function (menu) {
+    _displayMode: function (menu) {
         let { connected, paired } = menu.device;
 
         if (!paired && !gsconnect.settings.get_boolean("show-unpaired")) {
@@ -971,6 +853,45 @@ var SystemIndicator = new Lang.Class({
         }
     },
 
+    _onDevicesChanged: function (daemon, dbusPath) {
+        for (let dbusPath of this.daemon.devices) {
+            if (!this._indicators[dbusPath]) {
+                this._onDeviceAdded(this.daemon, dbusPath);
+            }
+        }
+    },
+
+    _onDeviceAdded: function (daemon, dbusPath) {
+        debug(arguments);
+
+        let device = this.daemon._devices.get(dbusPath);
+
+        // Device Indicator
+        let indicator = new DeviceIndicator(daemon, device);
+        this._indicators[dbusPath] = indicator;
+        Main.panel.addToStatusArea(dbusPath, indicator);
+
+        // Device Menu
+        let menu = new DeviceMenu(daemon, device);
+        this._menus[dbusPath] = menu;
+
+        this.devicesSection.addMenuItem(menu);
+        this._displayMode(menu);
+
+        // Destroy with device TODO
+        device.connect("notify::connected", () => this._displayMode(menu));
+        device.connect("notify::paired", () => this._displayMode(menu));
+        device.connect("destroy", (device) => {
+            menu.destroy();
+            delete this._menus[device.g_object_path];
+            indicator.destroy();
+            delete this._indicators[device.g_object_path];
+        });
+
+        // Try activating the device
+        device.activate();
+    },
+
     destroy: function () {
         if (this.daemon) {
             this.daemon.destroy();
@@ -979,19 +900,13 @@ var SystemIndicator = new Lang.Class({
 
         gsconnect.settings.disconnect(this._settingsChanged);
 
-        for (let dbusPath in this._indicators) {
-            this._onDeviceRemoved(this.daemon, dbusPath);
-        }
-
-        this.keybindingManager.destroy();
-
         // Destroy the UI
         this.extensionMenu.destroy();
         this.indicators.destroy();
         this.menu.destroy();
 
         // Stop watching for DBus Service
-        Gio.bus_unwatch_name(this._watchdog);
+        Gio.bus_unwatch_name(this._serviceName);
     }
 });
 
