@@ -10,6 +10,11 @@ const GObject = imports.gi.GObject;
 var ProxyBase = new Lang.Class({
     Name: "GSConnectDBusProxyBase",
     Extends: Gio.DBusProxy,
+    Signals: {
+        "destroy": {
+            flags: GObject.SignalFlags.NO_HOOKS
+        }
+    },
 
     _init: function (params) {
         this.parent(Object.assign({
@@ -59,38 +64,30 @@ var ProxyBase = new Lang.Class({
      * Synchronous Uncached Getter
      */
     _get: function (name, signature) {
-        // Returns '(v)'
-        let variant = this.call_sync(
-            "org.freedesktop.DBus.Properties.Get",
-            new GLib.Variant("(ss)", [this.g_interface_name, name]),
-            Gio.DBusCallFlags.NONE,
-            -1,
-            this.cancellable
-        );
-        // So unpack that to get the real variant...
-        variant = variant.deep_unpack()[0];
-        // and value
-        let value = variant.deep_unpack();
+        let variant;
 
-        // FIXME ...
-        if (!value) {
-            // TODO: test
-            if (signature === "b") {
-                return false;
-            } else if (signature === "s") {
-                return "";
-            } else if (["u", "i", "x", "d"].indexOf(signature) > -1) {
-                return 0;
-            } else if (["[", "(", "as"].some(c => signature.startsWith(c))) {
-                return [];
-            } else if (signature.startsWith("{") || signature.startsWith("a{")) {
-                return {};
-            } else {
+        try {
+            // Returns Variant('(v)')...
+            variant = this.call_sync(
+                "org.freedesktop.DBus.Properties.Get",
+                new GLib.Variant("(ss)", [this.g_interface_name, name]),
+                Gio.DBusCallFlags.NONE,
+                -1,
+                this.cancellable
+            );
+        } catch (e) {
+            debug("trying for cached property");
+
+            try {
+                return this.get_cached_property(name).deep_unpack();
+            } catch (e) {
+                debug(e);
                 return null;
             }
         }
 
-        return value;
+        // ...so unpack that to get the real variant and unpack the value
+        return variant.deep_unpack()[0].deep_unpack();
     },
 
     /**
@@ -169,7 +166,7 @@ var ProxyBase = new Lang.Class({
                 for (let name in properties.deep_unpack()) {
                     // If the object has vprop_name(), call it before notify()
                     if (this["vprop_" + name]) {
-                        debug("Calling 'vprop_" + name + "()' for " + name);
+                        debug("calling 'vprop_" + name + "()' for " + name);
                         this["vprop_" + name].call(this);
                     }
 
@@ -192,6 +189,7 @@ var ProxyBase = new Lang.Class({
     },
 
     destroy: function () {
+        this.emit("destroy");
         GObject.signal_handlers_destroy(this);
     }
 });
