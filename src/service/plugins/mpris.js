@@ -42,17 +42,15 @@ var Plugin = new Lang.Class({
         this.parent(device, "mpris");
 
         try {
-            this.mpris = new MPRIS.Manager();
-            this.mpris.connect("notify::players", (mpris) => {
-                log("MPRIS names: " + this.mpris.names);
-                log("MPRIS players: " + this.mpris.players);
-                this._sendPlayerList();
-            });
+            this.mpris = MPRIS.get_default();
+            this.mpris.connect("notify::players", () => this._sendPlayerList());
+            this._sendPlayerList();
             this.mpris.connect("player-changed", (mpris, player, names) => {
                 this._handleCommand({
                     body: {
-                        player: player.identity,
-                        requestNowPlaying: true
+                        player: player.Identity,
+                        requestNowPlaying: true,
+                        requestVolume: true
                     }
                 });
             });
@@ -66,14 +64,15 @@ var Plugin = new Lang.Class({
         debug(packet);
 
         return new Promise((resolve, reject) => {
-            if (packet.body.hasOwnProperty("requestPlayerList")) {
+            if (packet.body.requestPlayerList) {
                 this._sendPlayerList();
             } else if (packet.body.hasOwnProperty("player")) {
-                if (this.mpris._players.has(packet.body.player)) {
+                // If we have this player
+                if (this.mpris.players[packet.body.player]) {
                     resolve(this._handleCommand(packet));
+                // If we don't, send an updated list to the device
                 } else {
-                    this._updatePlayers();
-                    resolve(true);
+                    resolve(this._sendPlayerList());
                 }
             }
         });
@@ -83,19 +82,18 @@ var Plugin = new Lang.Class({
      * Local
      */
     _handleCommand: function (packet) {
-        debug("MPRIS: handleCommand()");
-
         // FIXME FIXME FIXME
-        if (!this.settings.get_boolean("mpris-view")) {
-            return;
-        } else if (!this.settings.get_boolean("mpris-control")) {
-            let control = false;
-        }
+        debug(packet);
 
         return new Promise((resolve, reject) => {
-            let player = this.mpris._players.get(packet.body.player);
+            if (!(this.allow & 4)) {
+                debug("Not allowed");
+                reject(new Error("Operation not permitted: " + packet.type));
+            }
 
-            // Player Commands
+            let player = this.mpris.players[packet.body.player].Player;
+
+            // Player Actions
             if (packet.body.hasOwnProperty("action")) {
                 switch (packet.body.action) {
                     case "PlayPause":
@@ -121,6 +119,7 @@ var Plugin = new Lang.Class({
                 }
             }
 
+            // Player Properties
             if (packet.body.hasOwnProperty("setVolume")) {
                 player.Volume = packet.body.setVolume / 100;
             }
@@ -130,8 +129,7 @@ var Plugin = new Lang.Class({
             }
 
             if (packet.body.hasOwnProperty("SetPosition")) {
-                let position = (packet.body.SetPosition * 1000) - player.Position;
-                player.Seek(position);
+                player.Seek((packet.body.SetPosition * 1000) - player.Position);
             }
 
             let response = new Protocol.Packet({
@@ -159,15 +157,14 @@ var Plugin = new Lang.Class({
 
                 response.body = {
                     nowPlaying: nowPlaying,
-                    pos: Math.round(player.Position / 1000),
+                    pos: Math.round(player.Position / 1000), /* TODO: really? */
                     isPlaying: (player.PlaybackStatus === "Playing"),
-                    canPause: (player.CanPause === true),
-                    canPlay: (player.CanPlay === true),
-                    canGoNext: (player.CanGoNext === true),
-                    canGoPrevious: (player.CanGoPrevious === true),
-                    canSeek: (player.CanSeek === true)
+                    canPause: player.CanPause,
+                    canPlay: player.CanPlay,
+                    canGoNext: player.CanGoNext,
+                    canGoPrevious: player.CanGoPrevious,
+                    canSeek: player.CanSeek
                 };
-
             }
 
             if (packet.body.hasOwnProperty("requestVolume")) {
@@ -180,7 +177,7 @@ var Plugin = new Lang.Class({
                 this.device._channel.send(response);
             }
 
-            resolve(true);
+            resolve(hasResponse ? response : "No response");
         });
     },
 
@@ -190,19 +187,10 @@ var Plugin = new Lang.Class({
         let packet = new Protocol.Packet({
             id: 0,
             type: "kdeconnect.mpris",
-            body: { playerList: this.mpris.names }
+            body: { playerList: this.mpris.identities }
         });
 
         this.send(packet);
-    },
-
-    destroy: function () {
-        try {
-            this.mpris.destroy();
-        } catch (e) {
-        }
-
-        PluginsBase.Plugin.prototype.destroy.call(this);
     }
 });
 
