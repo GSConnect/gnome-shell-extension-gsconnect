@@ -124,21 +124,45 @@ var Plugin = new Lang.Class({
         this.requestUpdate();
 
         // Local Battery
-        if (this.settings.get_uint("allow") & 2 && this.device.daemon.type === "laptop") {
+        if ((this.allow & 2) && this.device.daemon.type === "laptop") {
             this._monitor();
         }
 
         this.settings.connect("changed::allow", () => {
-            if (this.settings.get_uint("allow") & 2 && !this._battery) {
+            if ((this.allow & 2) && !this._battery) {
                 this._monitor();
-            } else if (!this.settings.get_uint("allow") & 2 && this._battery) {
+            } else if (!(this.allow & 2) && this._battery) {
                 GObject.signal_handlers_destroy(this._battery);
                 delete this._battery;
             }
         });
     },
 
+    get charging() { return this._charging; },
+    get level() { return this._level; },
+    get time() { return this._time; },
+    get threshold () { return this._thresholdLevel },
+
+    /**
+     * Packet dispatch
+     */
+    handlePacket: function (packet) {
+        debug(packet);
+
+        if (packet.type === "kdeconnect.battery" && (this.allow & 4)) {
+            return this._handleUpdate(packet.body);
+        } else if (packet.type === "kdeconnect.battery.request" && (this.allow & 2)) {
+            return this._provideUpdate();
+        } else {
+            return Promise.reject(new Error("Operation not permitted: " + packet.type));
+        }
+    },
+
+    /**
+     * Local Methods
+     */
     _monitor: function () {
+        // FIXME
         if (this.device.incomingCapabilities.indexOf("kdeconnect.battery") < 0) {
             return;
         }
@@ -165,29 +189,6 @@ var Plugin = new Lang.Class({
         }
     },
 
-    get charging() { return this._charging; },
-    get level() { return this._level; },
-    get time() { return this._time; },
-    get threshold () { return this._thresholdLevel },
-
-    /**
-     * Packet dispatch
-     */
-    handlePacket: function (packet) {
-        debug(packet);
-
-        if (packet.type === "kdeconnect.battery" && this.settings.get_uint("allow") & 4) {
-            return this._handleUpdate(packet.body);
-        } else if (packet.type === "kdeconnect.battery.request" && this._battery) {
-            return this._provideUpdate();
-        } else {
-            return Promise.reject(new Error("Operation not permitted"));
-        }
-    },
-
-    /**
-     * Local Methods
-     */
     _provideUpdate: function () {
         debug([this._battery.percentage, this._battery.state]);
 
