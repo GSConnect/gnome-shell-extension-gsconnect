@@ -316,31 +316,30 @@ var Plugin = new Lang.Class({
                 }
             // A regular notification or notification from an unknown contact
             } else {
-                // Try to correct duplicate appName/title situations
+                // Ignore 'appName' if it's the same as 'title' or this is SMS
                 if (packet.body.appName === packet.body.title || isSms) {
                     notif.set_title(packet.body.title);
                     notif.set_body(packet.body.text);
+                // Otherwise use the appName as the title
                 } else {
                     notif.set_title(packet.body.appName);
                     notif.set_body(packet.body.ticker);
                 }
-
-                notif.set_priority(Gio.NotificationPriority.NORMAL);
             }
 
-            // Fallback if we still don't have an icon
+            // If we don't have an avatar or payload icon, fallback on
+            // notification type, appName then device type
             if (!icon) {
-                let name = packet.body.appName.toLowerCase().replace(" ", "-");
-
                 if (isMissedCall) {
                     icon = new Gio.ThemedIcon({ name: "call-missed-symbolic" });
                 } else if (isSms) {
                     icon = new Gio.ThemedIcon({ name: "sms-symbolic" });
-                } else if (Gtk.IconTheme.get_default().has_icon(name)) {
-                    icon = new Gio.ThemedIcon({ name: name });
                 } else {
                     icon = new Gio.ThemedIcon({
-                        name: this.device.type + "-symbolic"
+                        names: [
+                            packet.body.appName.toLowerCase().replace(" ", "-"),
+                            this.device.type + "-symbolic"
+                        ]
                     });
                 }
             }
