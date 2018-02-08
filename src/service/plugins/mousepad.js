@@ -62,6 +62,10 @@ var Plugin = new Lang.Class({
 
         return new Promise((resolve, reject) => {
             if (packet.type === "kdeconnect.mousepad.request") {
+                if (!(this.allow & 4)) {
+                    reject(new Error("Not allowed: " + packet.type));
+                }
+
                 resolve(this._handleInput(packet));
             }
 
