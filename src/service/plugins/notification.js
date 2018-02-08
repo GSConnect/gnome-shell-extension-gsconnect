@@ -112,7 +112,7 @@ var Plugin = new Lang.Class({
         this._notifications = [];
         this.cacheProperties(["_notifications"]);
 
-        if (this.settings.get_boolean("receive-notifications")) {
+        if (this.allow & 4) {
             this.request();
         }
 
@@ -120,7 +120,7 @@ var Plugin = new Lang.Class({
         gsconnect.settings.connect("changed::donotdisturb", () => {
             let now = GLib.DateTime.new_now_local().to_unix();
             if (gsconnect.settings.get_int("donotdisturb") < now) {
-                if (this.settings.get_boolean("receive-notifications")) {
+                if (this.allow & 4) {
                     this.request();
                 }
             }
@@ -141,8 +141,10 @@ var Plugin = new Lang.Class({
 
         return new Promise((resolve, reject) => {
             if (packet.type === "kdeconnect.notification.request") {
+                if (this.allow & 4) {
+                }
                 // TODO: A request for our notifications; NotImplemented
-            } else if (this.settings.get_boolean("receive-notifications")) {
+            } else if (this.allow & 2) {
                 // Ignore GroupSummary notifications
                 if (packet.body.id.indexOf("GroupSummary") > -1) {
                     debug("ignoring GroupSummary notification");
