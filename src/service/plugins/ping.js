@@ -42,6 +42,10 @@ var Plugin = new Lang.Class({
         debug("Ping: handlePacket()");
 
         return new Promise((resolve, reject) => {
+            if (!(this.allow & 4)) {
+                reject(new Error("Not allowed: " + packet.type));
+            }
+
             // Ensure DBus signal doesn't fail
             if (!packet.body.hasOwnProperty("message")) {
                 packet.body.message = "";
