@@ -246,25 +246,24 @@ var Plugin = new Lang.Class({
             let isMissedCall = (packet.body.title === _("Missed call"));
             let isSms = (packet.body.id.indexOf("sms") > -1);
 
-            // Check if it's from a known contact
-            let contact, plugin;
+            // If it's an event we support, look for a known contact, but don't
+            // create a new one since we'll only have name *or* number
+            let contact;
 
-            if ((plugin = this.device._plugins.get("telephony"))) {
-                if (isSms) {
-                    debug("A telephony event");
-                    contact = this.contacts.query({ // TODO: create?
-                        name: packet.body.title,
-                        number: packet.body.title,
-                        single: true
-                    });
-                } else if (isMissedCall) {
-                    debug("A telephony event");
-                    contact = this.contacts.query({ // TODO: create?
-                        name: packet.body.text,
-                        number: packet.body.text,
-                        single: true
-                    });
-                }
+            if (isSms && this.device.lookup_action("replySms")) {
+                debug("An SMS notification");
+                contact = this.contacts.query({
+                    name: packet.body.title,
+                    number: packet.body.title,
+                    single: true
+                });
+            } else if (isMissedCall && this.device.lookup_action("replyMissedCall")) {
+                debug("A missed call notification");
+                contact = this.contacts.query({
+                    name: packet.body.text,
+                    number: packet.body.text,
+                    single: true
+                });
             }
 
             // This is a missed call or SMS from a known contact
