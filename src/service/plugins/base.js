@@ -17,6 +17,33 @@ const Protocol = imports.service.protocol;
 /**
  * Base class for plugins
  */
+var Action = new Lang.Class({
+    Name: "GSConnectPluginAction",
+    Extends: Gio.SimpleAction,
+
+    _init: function (params, obj) {
+        this.meta = params.meta;
+        delete params.meta;
+
+        this._obj = obj;
+        this.device = obj.device;
+
+        this.parent(params);
+    },
+
+    get enabled () {
+        return (this._obj.allow & this.meta.allow);
+    },
+
+    get_enabled: function () {
+        return this.enabled;
+    }
+});
+
+
+/**
+ * Base class for plugins
+ */
 var Plugin = new Lang.Class({
     Name: "GSConnectPlugin",
     Extends: GObject.Object,
@@ -42,7 +69,7 @@ var Plugin = new Lang.Class({
             param_types: [ GObject.TYPE_STRING, GObject.TYPE_VARIANT ]
         },
         "destroy": {
-            flags: GObject.SignalFlags.RUN_FIRST
+            flags: GObject.SignalFlags.NO_HOOKS
         }
     },
 
@@ -70,34 +97,40 @@ var Plugin = new Lang.Class({
         // Actions
         this._actions = [];
         let module = imports.service.plugins[name];
-        let _in = this.device.incomingCapabilities;
-        let _out = this.device.outgoingCapabilities;
+        let deviceIn = this.device.incomingCapabilities;
+        let deviceOut = this.device.outgoingCapabilities;
 
         if (module.Action) {
             for (let name in module.Action) {
-                let pluginAction = module.Action[name];
+                let meta = module.Action[name];
 
-                if (pluginAction.incoming.every(p => _out.indexOf(p) > -1) &&
-                    pluginAction.outgoing.every(p => _in.indexOf(p) > -1)) {
-
-                    let action = new Gio.SimpleAction({
-                        name: name,
-                        parameter_type: new GLib.VariantType("s")
-                    });
-                    action.connect("activate", (action, parameter) => {
-                        try {
-                            let args = JSON.parse(unescape(parameter.unpack()));
-                            this[name](...args);
-                        } catch(e) {
-                            debug(e.message + "\n" + e.stack);
-                        }
-                    });
-                    this.device._actions.add_action(action);
-
-                    this._actions.push(pluginAction);
+                if (meta.incoming.every(p => deviceOut.indexOf(p) > -1) &&
+                    meta.outgoing.every(p => deviceIn.indexOf(p) > -1)) {
+                    this._registerAction(name, meta);
                 }
             }
         }
+    },
+
+    _registerAction: function (name, meta) {
+        let action = new Action({
+            name: name,
+            meta: meta,
+            parameter_type: new GLib.VariantType("s")
+        }, this);
+
+        action.connect("activate", (action, parameter) => {
+            try {
+                let args = JSON.parse(unescape(parameter.unpack()));
+                this[name](...args);
+            } catch(e) {
+                debug(e.message + "\n" + e.stack);
+            }
+        });
+
+        this.device.add_action(action);
+
+        this._actions.push(meta);
     },
 
     get device () {
@@ -240,6 +273,7 @@ var Plugin = new Lang.Class({
         this._dbus.flush();
         this._dbus.unexport();
         delete this._dbus;
+
         GObject.signal_handlers_destroy(this.settings);
         GObject.signal_handlers_destroy(this);
     }
