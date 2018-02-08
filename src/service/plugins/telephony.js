@@ -356,10 +356,7 @@ var Plugin = new Lang.Class({
             [event.phoneNumber, event.contact.name, event.time]
         );
 
-        this.device.send_notification(
-            event.event + "|" + _("Missed call") + ": " + event.contact.name,
-            notif
-        );
+        this.device.send_notification(event.event + "|"  + event.time, notif);
 
         return true;
     },
@@ -384,7 +381,7 @@ var Plugin = new Lang.Class({
             "muteCall"
         );
 
-        this.device.send_notification(event.event + "|" + event.contact.name, notif);
+        this.device.send_notification(event.event + "|"  + event.time, notif);
 
         // FIXME FIXME FIXME FIXME FIXME FIXME FIXME FIXME FIXME
         this._adjustVolume(this.settings.get_string("ringing-volume"));
@@ -446,10 +443,7 @@ var Plugin = new Lang.Class({
             event.time]
         );
 
-        this.device.send_notification(
-            event.event + "|"  + event.contact.name + ": " + event.messageBody,
-            notif
-        );
+        this.device.send_notification(event.event + "|"  + event.time, notif);
 
         return true;
     },
@@ -473,10 +467,7 @@ var Plugin = new Lang.Class({
         notif.set_icon(event.gicon);
         notif.set_priority(Gio.NotificationPriority.NORMAL);
 
-        this.device.send_notification(
-            event.event + "|" + event.contact.name,
-            notif
-        );
+        this.device.send_notification(event.event + "|"  + event.time, notif);
 
         // FIXME FIXME FIXME FIXME FIXME FIXME FIXME FIXME FIXME
         this._adjustVolume(this.settings.get_string("talking-volume"));
