@@ -47,13 +47,6 @@ var Plugin = new Lang.Class({
     _init: function (device) {
         this.parent(device, "share");
 
-        if (!this.settings.get_string("download-directory")) {
-            this.settings.set_string(
-                "download-directory",
-                GLib.get_user_special_dir(GLib.UserDirectory.DIRECTORY_DOWNLOAD)
-            );
-        }
-
         this.transfers = new Map();
     },
 
@@ -63,17 +56,10 @@ var Plugin = new Lang.Class({
     _getFilepath: function (filename) {
         debug(filename);
 
-        let path = this.settings.get_string("download-directory");
-
-        if (this.settings.get_boolean("download-subdirectory")) {
-            path = GLib.build_pathv("/", [path, this.device.name]);
-        }
-
-        if (!GLib.file_test(path, GLib.FileTest.IS_DIR)) {
-            GLib.mkdir_with_parents(path, 493);
-        }
-
-        path = GLib.build_filenamev([path, filename]);
+        let path = GLib.build_filenamev([
+            GLib.get_user_special_dir(GLib.UserDirectory.DIRECTORY_DOWNLOAD),
+            filename
+        ]);
 
         let filepath = path.toString();
         let copyNum = 0;
@@ -258,12 +244,14 @@ var Plugin = new Lang.Class({
         debug("Share: handlePacket()");
 
         return new Promise((resolve, reject) => {
-            if (packet.body.hasOwnProperty("filename")) {
-                this._handleFile(packet);
+            if (!(this.allow & 4)) {
+                reject(new Error("Operation not permitted: " + packet.type));
+            } else if (packet.body.hasOwnProperty("filename")) {
+                resolve(this._handleFile(packet));
             } else if (packet.body.hasOwnProperty("text")) {
-                this._handleText(packet);
+                resolve(this._handleText(packet));
             } else if (packet.body.hasOwnProperty("url")) {
-                this._handleUrl(packet);
+                resolve(this._handleUrl(packet));
             }
         });
     },
@@ -283,6 +271,11 @@ var Plugin = new Lang.Class({
      * Remote methods
      */
     shareDialog: function () {
+        if (!(this.allow & 2)) {
+            debug("Operation not permitted");
+            return;
+        }
+
         debug("opening FileChooserDialog");
 
         let dialog = new FileChooserDialog(this.device);
@@ -291,6 +284,11 @@ var Plugin = new Lang.Class({
 
     // TODO: check file existence...
     shareFile: function (path) {
+        if (!(this.allow & 2)) {
+            debug("Operation not permitted");
+            return;
+        }
+
         debug(path);
 
         let file;
@@ -438,6 +436,11 @@ var Plugin = new Lang.Class({
     },
 
     shareText: function (text) {
+        if (!(this.allow & 2)) {
+            debug("Operation not permitted");
+            return;
+        }
+
         debug(text);
 
         let packet = new Protocol.Packet({
@@ -456,6 +459,11 @@ var Plugin = new Lang.Class({
 
     // TODO: check URL validity...
     shareUrl: function (url) {
+        if (!(this.allow & 2)) {
+            debug("Operation not permitted");
+            return;
+        }
+
         debug(url);
 
         // Re-direct file:// uri's
