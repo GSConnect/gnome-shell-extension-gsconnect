@@ -231,9 +231,7 @@ var Plugin = new Lang.Class({
         this.emit("destroy");
 
         // FIXME
-        Object.keys(this._actions).forEach((action) => {
-            this.device._actions.remove_action(action);
-        });
+        this._actions.map(name => this.device.remove_action(name));
 
         if (this._cacheFile) {
             this._writeCache();
