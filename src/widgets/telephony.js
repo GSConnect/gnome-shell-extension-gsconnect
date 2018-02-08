@@ -60,13 +60,11 @@ var ConversationMessage = new Lang.Class({
     Extends: Gtk.Grid,
 
     _init: function (params) {
-        Object.assign(this,
-            Object.assign({
-                contact: null,
-                direction: MessageDirection.OUT,
-                message: null
-            }, params)
-        );
+        Object.assign(this, {
+            contact: null,
+            direction: MessageDirection.OUT,
+            message: null
+        }, params);
 
         this.parent({
             visible: true,
