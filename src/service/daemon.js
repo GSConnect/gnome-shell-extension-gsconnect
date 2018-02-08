@@ -35,9 +35,10 @@ window.gsconnect = { datadir: getPath() };
 imports.searchPath.push(gsconnect.datadir);
 
 const _bootstrap = imports._bootstrap;
-const Settings = imports.modules.settings;
+const DBus = imports.modules.dbus;
 const Device = imports.service.device;
 const Protocol = imports.service.protocol;
+const Settings = imports.modules.settings;
 const Sound = imports.modules.sound;
 const Telephony = imports.service.plugins.telephony;
 
@@ -65,7 +66,7 @@ var Daemon = new Lang.Class({
             "DevicesList",
             "A list of known devices",
             new GLib.VariantType("as"),
-            null,
+            new GLib.Variant("as", []),
             GObject.ParamFlags.READABLE
         ),
         "discovering": GObject.ParamSpec.boolean(
@@ -433,7 +434,7 @@ var Daemon = new Lang.Class({
         let device = this._devices.get(params["0"].unpack());
         let name = params["1"].unpack();
 
-        let deviceAction = device._actions.lookup_action(name);
+        let deviceAction = device.lookup_action(name);
 
         if (device && deviceAction) {
             try {
@@ -754,37 +755,29 @@ var Daemon = new Lang.Class({
         this._dbus.export(connection, gsconnect.app_path);
 
         // Notifications Listener
-        this._match = new GLib.Variant("(s)", [
-            "interface='org.freedesktop.Notifications'," +
+        this._fdo = DBus.get_default();
+        this._match = "interface='org.freedesktop.Notifications'," +
             "member='Notify'," +
             "type='method_call'," +
-            "eavesdrop='true'"
-        ]);
-
-        this._proxy = new Gio.DBusProxy({
-            gConnection: Gio.DBus.session,
-            gName: "org.freedesktop.DBus",
-            gObjectPath: "/org/freedesktop/DBus",
-            gInterfaceName: "org.freedesktop.DBus"
-        });
-
-        this._proxy.call_sync("AddMatch", this._match, 0, -1, null);
-
-        this._ndbus = Gio.DBusExportedObject.wrapJSObject(
-            gsconnect.dbusinfo.lookup_interface("org.freedesktop.Notifications"),
-            this
-        );
-        this._ndbus.export(Gio.DBus.session, "/org/freedesktop/Notifications");
+            "eavesdrop='true'";
+        this._fdo.AddMatch(this._match).then(result => {
+            this._ndbus = Gio.DBusExportedObject.wrapJSObject(
+                gsconnect.dbusinfo.lookup_interface("org.freedesktop.Notifications"),
+                this
+            );
+            this._ndbus.export(Gio.DBus.session, "/org/freedesktop/Notifications");
+        }).catch(e => debug(e.message + "\n" + e.stack));
 
         return true;
     },
 
     vfunc_dbus_unregister: function (connection, object_path) {
-        this._proxy.call_sync("RemoveMatch", this._match, 0, -1, null);
-        this._ndbus.unexport();
-        this._dbus.unexport();
+        this._fdo.RemoveMatch(this._match).then(result => {
+            this._ndbus.unexport();
+            this._dbus.unexport();
 
-        this.parent(connection, object_path);
+        }).catch(e => debug(e));
+            this.parent(connection, object_path);
     },
 
     vfunc_open: function (files, hint) {
