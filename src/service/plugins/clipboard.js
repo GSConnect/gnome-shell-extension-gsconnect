@@ -48,6 +48,11 @@ var Plugin = new Lang.Class({
 
         this._clipboard.connect("owner-change", (clipboard, event) => {
             this._clipboard.request_text((clipboard, text) => {
+                if (!(this.allow & 2)) {
+                    debug("Operation not permitted");
+                    return;
+                }
+
                 this._provideContent(text);
             });
         });
@@ -57,8 +62,10 @@ var Plugin = new Lang.Class({
         debug(packet);
 
         return new Promise((resolve, reject) => {
-            if (packet.body.content && this.settings.get_uint("allow") & 4) {
+            if (packet.body.content && (this.allow & 4)) {
                 resolve(this._handleContent(packet.body.content));
+            } else {
+                reject(new Error("Operation not permitted: " + packet.type));
             }
         });
     },
@@ -77,14 +84,10 @@ var Plugin = new Lang.Class({
      * Local Methods
      */
     _provideContent: function (text) {
-        debug(text);
-
         // FIXME
-        if (!(this.settings.get_uint("allow") & 2)) {
-            return;
-        }
-
         if (text !== this._currentContent) {
+            debug(text);
+
             this._currentContent = text;
 
             let packet = new Protocol.Packet({
