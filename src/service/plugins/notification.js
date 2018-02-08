@@ -367,40 +367,24 @@ var Plugin = new Lang.Class({
         return new Promise((resolve, reject) => {
             let iconStream = Gio.MemoryOutputStream.new_resizable();
 
-            let channel = new Protocol.LanDownloadChannel(
-                this.device.id,
-                iconStream
-            );
-
-            channel.connect("connected", (channel) => {
-                let transfer = new Protocol.Transfer(
-                    channel,
-                    packet.payloadSize,
-                    packet.body.payloadHash
-                );
-
-                transfer.connect("failed", (transfer) => {
-                    channel.close();
-                    resolve(null);
-                });
-
-                transfer.connect("succeeded", (transfer) => {
-                    channel.close();
-                    iconStream.close(null);
-                    resolve(Gio.BytesIcon.new(iconStream.steal_as_bytes()));
-                });
-
-                transfer.start();
+            let transfer = new Protocol.Transfer({
+                device: this.device,
+                size: packet.payloadSize,
+                checksum: packet.body.payloadHash,
+                output_stream: iconStream
             });
 
-            let addr = new Gio.InetSocketAddress({
-                address: Gio.InetAddress.new_from_string(
-                    this.device.settings.get_string("tcp-host")
-                ),
-                port: packet.payloadTransferInfo.port
+            transfer.connect("connected", (transfer) => transfer.start());
+            transfer.connect("failed", (transfer) => {
+                channel.close();
+                resolve(null);
+            });
+            transfer.connect("succeeded", (transfer) => {
+                channel.close();
+                resolve(Gio.BytesIcon.new(iconStream.steal_as_bytes()));
             });
 
-            channel.open(addr);
+            transfer.download(packet.payloadTransferInfo.port).catch(e => debug(e));
         });
     },
 
@@ -410,12 +394,17 @@ var Plugin = new Lang.Class({
         let file = Gio.File.new_for_path(filename);
         let info = file.query_info("standard::size", 0, null);
 
-        let channel = new Protocol.LanUploadChannel(
-            this.device.id,
-            file.read(null)
-        );
+        let transfer = new Protocol.Transfer({
+            device: this.device,
+            size: info.get_size(),
+            input_stream: file.read(null)
+        });
 
-        channel.connect("listening", (channel, port) => {
+        transfer.connect("connected", (channel) => transfer.start());
+        transfer.connect("failed", () => channel.close());
+        transfer.connect("succeeded", () => channel.close());
+
+        transfer.upload().then(port => {
             packet.payloadSize = info.get_size();
             packet.payloadTransferInfo = { port: port };
             packet.body.payloadHash = GLib.compute_checksum_for_bytes(
@@ -423,22 +412,8 @@ var Plugin = new Lang.Class({
                 file.load_contents(null)[1]
             );
 
-            this.send(packet);
+            this.send(packet); // FIXME method name
         });
-
-        channel.connect("connected", (channel) => {
-            let transfer = new Protocol.Transfer(
-                channel,
-                info.get_size()
-            );
-
-            transfer.connect("failed", () => channel.close());
-            transfer.connect("succeeded", () => channel.close());
-
-            transfer.start();
-        });
-
-        channel.open();
     },
 
     /**

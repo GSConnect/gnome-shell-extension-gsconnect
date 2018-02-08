@@ -76,17 +76,14 @@ var Plugin = new Lang.Class({
         let filepath = this._getFilepath(packet.body.filename);
         let file = Gio.File.new_for_path(filepath);
 
-        let channel = new Protocol.LanDownloadChannel(
-            this.device.id,
-            file.replace(null, false, Gio.FileCreateFlags.NONE, null)
-        );
+        let transfer = new Protocol.Transfer({
+            device: this.device,
+            output_stream: file.replace(null, false, Gio.FileCreateFlags.NONE, null),
+            size: packet.payloadSize
+        });
 
-        channel.connect("connected", (channel) => {
-            let transfer = new Protocol.Transfer(
-                channel,
-                packet.payloadSize
-            );
-            this.transfers.set(transfer.id, transfer);
+        transfer.connect("connected", (transfer) => {
+            this.transfers.set(transfer.uuid, transfer);
 
             transfer.connect("started", (transfer) => {
                 transfer.notif = new Gio.Notification();
@@ -107,15 +104,15 @@ var Plugin = new Lang.Class({
                     "app.cancelTransfer(('" +
                     this._dbus.get_object_path() +
                     "','" +
-                    transfer.id +
+                    transfer.uuid +
                     "'))"
                 );
 
-                this.device.send_notification(transfer.id, transfer.notif);
+                this.device.send_notification(transfer.uuid, transfer.notif);
             });
 
             transfer.connect("succeeded", (transfer) => {
-                this.device.withdraw_notification(transfer.id);
+                this.device.withdraw_notification(transfer.uuid);
 
                 transfer.notif = new Gio.Notification();
                 transfer.notif.set_title(_("Transfer Successful"));
@@ -144,7 +141,7 @@ var Plugin = new Lang.Class({
                     "')"
                 );
 
-                this.device.send_notification(transfer.id, transfer.notif);
+                this.device.send_notification(transfer.uuid, transfer.notif);
 
                 this.emit("received", "file", file.get_uri());
                 this._dbus.emit_signal(
@@ -152,12 +149,12 @@ var Plugin = new Lang.Class({
                     new GLib.Variant("(ss)", ["file", file.get_uri()])
                 );
 
-                this.transfers.delete(transfer.id);
+                this.transfers.delete(transfer.uuid);
                 channel.close();
             });
 
             transfer.connect("failed", (transfer, error) => {
-                this.device.withdraw_notification(transfer.id);
+                this.device.withdraw_notification(transfer.uuid);
 
                 transfer.notif = new Gio.Notification();
                 transfer.notif.set_title(_("Transfer Failed"));
@@ -173,15 +170,15 @@ var Plugin = new Lang.Class({
                     new Gio.ThemedIcon({ name: "send-to-symbolic" })
                 );
 
-                this.device.send_notification(transfer.id, transfer.notif);
+                this.device.send_notification(transfer.uuid, transfer.notif);
 
                 GLib.unlink(filepath);
-                this.transfers.delete(transfer.id);
+                this.transfers.delete(transfer.uuid);
                 channel.close();
             });
 
             transfer.connect("cancelled", (transfer) => {
-                this.device.withdraw_notification(transfer.id);
+                this.device.withdraw_notification(transfer.uuid);
 
                 transfer.notif = new Gio.Notification();
                 transfer.notif.set_title(_("Transfer Cancelled"));
@@ -196,24 +193,17 @@ var Plugin = new Lang.Class({
                     new Gio.ThemedIcon({ name: "send-to-symbolic" })
                 );
 
-                this.device.send_notification(transfer.id, transfer.notif);
+                this.device.send_notification(transfer.uuid, transfer.notif);
 
                 GLib.unlink(filepath);
-                this.transfers.delete(transfer.id);
+                this.transfers.delete(transfer.uuid);
                 channel.close();
             });
 
             transfer.start();
         });
 
-        let addr = new Gio.InetSocketAddress({
-            address: Gio.InetAddress.new_from_string(
-                this.device.settings.get_string("tcp-host")
-            ),
-            port: packet.payloadTransferInfo.port
-        });
-
-        channel.open(addr);
+        transfer.download(packet.payloadTransferInfo.port).catch(e => debug(e));
     },
 
     _handleUrl: function (packet) {
@@ -306,29 +296,19 @@ var Plugin = new Lang.Class({
 
         let info = file.query_info("standard::size", 0, null);
 
-        let channel = new Protocol.LanUploadChannel(
-            this.device.id,
-            file.read(null)
-        );
-
-        channel.connect("listening", (channel, port) => {
-            let packet = new Protocol.Packet({
-                id: 0,
-                type: "kdeconnect.share.request",
-                body: { filename: file.get_basename() },
-                payloadSize: info.get_size(),
-                payloadTransferInfo: { port: port }
-            });
-
-            this.send(packet);
+        let transfer = new Protocol.Transfer({
+            device: this.device,
+            input_stream: file.read(null),
+            size: info.get_size(),
+            interactive: true
         });
 
-        channel.connect("connected", (channel) => {
-            let transfer = new Protocol.Transfer(
-                channel,
-                info.get_size()
-            );
-            this.transfers.set(transfer.id, transfer);
+        transfer.connect("connected", () => {
+            transfer.start();
+        });
+
+        transfer.connect("connected", (transfer) => {
+            this.transfers.set(transfer.uuid, transfer);
 
             transfer.connect("started", (transfer) => {
                 transfer.notif = new Gio.Notification();
@@ -349,20 +329,20 @@ var Plugin = new Lang.Class({
                     "app.cancelTransfer(('" +
                     this._dbus.get_object_path() +
                     "','" +
-                    transfer.id +
+                    transfer.uuid +
                     "'))"
                 );
 
-                this.device.send_notification(transfer.id, transfer.notif);
+                this.device.send_notification(transfer.uuid, transfer.notif);
             });
 
             transfer.connect("succeeded", (transfer) => {
-                this.device.withdraw_notification(transfer.id);
+                this.device.withdraw_notification(transfer.uuid);
 
                 transfer.notif = new Gio.Notification();
                 transfer.notif.set_title(_("Transfer Successful"));
                 transfer.notif.set_body(
-                    // TRANSLATORS: eg. Send "book.pdf" to Google Pixel
+                    // TRANSLATORS: eg. Sent "book.pdf" to Google Pixel
                     _("Sent \"%s\" to %s").format(
                         file.get_basename(),
                         this.device.name
@@ -372,7 +352,7 @@ var Plugin = new Lang.Class({
                     new Gio.ThemedIcon({ name: "send-to-symbolic" })
                 );
 
-                this.device.send_notification(transfer.id, transfer.notif);
+                this.device.send_notification(transfer.uuid, transfer.notif);
 
                 this.emit("sent", "file", file.get_basename());
                 this._dbus.emit_signal(
@@ -380,12 +360,12 @@ var Plugin = new Lang.Class({
                     new GLib.Variant("(ss)", ["file", file.get_basename()])
                 );
 
-                this.transfers.delete(transfer.id);
+                this.transfers.delete(transfer.uuid);
                 channel.close();
             });
 
             transfer.connect("failed", (transfer, error) => {
-                this.device.withdraw_notification(transfer.id);
+                this.device.withdraw_notification(transfer.uuid);
 
                 transfer.notif = new Gio.Notification();
                 transfer.notif.set_title(_("Transfer Failed"));
@@ -401,14 +381,14 @@ var Plugin = new Lang.Class({
                     new Gio.ThemedIcon({ name: "send-to-symbolic" })
                 );
 
-                this.device.send_notification(transfer.id, transfer.notif);
+                this.device.send_notification(transfer.uuid, transfer.notif);
 
-                this.transfers.delete(transfer.id);
+                this.transfers.delete(transfer.uuid);
                 channel.close();
             });
 
             transfer.connect("cancelled", (transfer) => {
-                this.device.withdraw_notification(transfer.id);
+                this.device.withdraw_notification(transfer.uuid);
 
                 transfer.notif = new Gio.Notification();
                 transfer.notif.set_title(_("Transfer Cancelled"));
@@ -423,16 +403,27 @@ var Plugin = new Lang.Class({
                     new Gio.ThemedIcon({ name: "send-to-symbolic" })
                 );
 
-                this.device.send_notification(transfer.id, transfer.notif);
+                this.device.send_notification(transfer.uuid, transfer.notif);
 
-                this.transfers.delete(transfer.id);
+                this.transfers.delete(transfer.uuid);
                 channel.close();
             });
 
             transfer.start();
         });
 
-        channel.open();
+        // Start the transfer process
+        transfer.upload().then(port => {
+            let packet = new Protocol.Packet({
+                id: 0,
+                type: "kdeconnect.share.request",
+                body: { filename: file.get_basename() },
+                payloadSize: info.get_size(),
+                payloadTransferInfo: { port: port }
+            });
+
+            this.send(packet); // FIXME
+        });
     },
 
     shareText: function (text) {
