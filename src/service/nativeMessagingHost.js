@@ -23,6 +23,7 @@ function getPath() {
 
 window.gsconnect = { datadir: getPath() };
 imports.searchPath.push(gsconnect.datadir);
+const _bootstrap = imports._bootstrap;
 const Client = imports.client;
 
 
@@ -69,16 +70,6 @@ var NativeMessagingHost = new Lang.Class({
     vfunc_startup: function() {
         this.parent();
 
-        this.daemon = new Client.Daemon();
-
-        this._watchdog = Gio.bus_watch_name(
-            Gio.BusType.SESSION,
-            "org.gnome.Shell.Extensions.GSConnect",
-            Gio.BusNameWatcherFlags.NONE,
-            () => this._serviceAppeared(),
-            () => this._serviceVanished()
-        );
-
         this.stdin = new Gio.DataInputStream({
             base_stream: new Gio.UnixInputStream({ fd: 0 })
         });
@@ -90,6 +81,14 @@ var NativeMessagingHost = new Lang.Class({
         this.stdout = new Gio.DataOutputStream({
             base_stream: new Gio.UnixOutputStream({ fd: 1 })
         });
+
+        this._watchdog = Gio.bus_watch_name(
+            Gio.BusType.SESSION,
+            "org.gnome.Shell.Extensions.GSConnect",
+            Gio.BusNameWatcherFlags.NONE,
+            () => this._serviceAppeared(),
+            () => this._serviceVanished()
+        );
     },
 
     receive: function () {
@@ -105,11 +104,11 @@ var NativeMessagingHost = new Lang.Class({
 
             message = JSON.parse(message);
         } catch (e) {
-            log("Error receiving message: " + e.message);
+            debug(e);
             return;
         }
 
-        debug("WebExtension: receive: " + JSON.stringify(message));
+        debug("Received: " + JSON.stringify(message));
 
         if (message.type === "devices") {
             this.sendDeviceList();
@@ -133,11 +132,17 @@ var NativeMessagingHost = new Lang.Class({
             this.stdout.write(length, null);
             this.stdout.put_string(data, null);
         } catch (e) {
-            log("Error sending message: " + e.message);
+            debug(e);
         }
     },
 
     sendDeviceList: function () {
+        if (!this.daemon) {
+            // Inform the WebExtension we're disconnected from the service
+            this.send({ type: "connected", data: false });
+            return;
+        }
+
         let devices = [];
 
         for (let device of this.daemon._devices.values()) {
@@ -146,8 +151,8 @@ var NativeMessagingHost = new Lang.Class({
                     id: device.id,
                     name: device.name,
                     type: device.type,
-                    share: (device.share),
-                    telephony: (device.telephony)
+                    share: device._plugins.has("share"),
+                    telephony: device._plugins.has("telephony")
                 });
             }
         }
@@ -164,16 +169,14 @@ var NativeMessagingHost = new Lang.Class({
 
         // Watch device property changes (connected, paired, plugins, etc)
         for (let device of this.daemon._devices.values()) {
-            device.connect("notify", () => this.sendDeviceList());
-            device._watching = true;
+            device._nmh = device.connect("notify", () => this.sendDeviceList());
         }
 
         // Watch for new and removed devices
         this.daemon.connect("notify::devices", () => {
             for (let device of this.daemon._devices.values()) {
-                if (!device._watching) {
-                    device.connect("notify", () => this.sendDeviceList());
-                    device._watching = true;
+                if (!device._nmh) {
+                    device._nmh = device.connect("notify", () => this.sendDeviceList());
                 }
             }
 
@@ -186,13 +189,16 @@ var NativeMessagingHost = new Lang.Class({
     _serviceVanished: function (conn, name) {
         debug("");
 
+        // Inform the WebExtension we're disconnected from the service
         this.send({ type: "connected", data: false });
 
+        // Destroy the proxy
         if (this.daemon) {
             this.daemon.destroy();
             this.daemon = false;
         }
 
+        // Try to restart the service
         this.daemon = new Client.Daemon();
     }
 });
