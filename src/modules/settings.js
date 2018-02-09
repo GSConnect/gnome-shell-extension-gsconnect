@@ -35,26 +35,38 @@ function section_separators(row, before) {
 /**
  * Map @key on @obj.settings to @label ...
  */
-
-
 // FIXME: this is garbage
-function mapLabel(obj, key, label, map) {
-    let row = label.get_parent().get_parent();
+function mapWidget(obj, key, widget, map) {
+    let row = widget.get_parent().get_parent();
 
     if (obj && obj.settings) {
-        // Init the label
+        // ...
         let variant = obj.settings.get_value(key);
         let type = variant.get_type_string();
 
+        let prop, def;
+
+        if (widget instanceof Gtk.Label) {
+            prop = "label";
+            def = "default";
+        } else if (widget instanceof Gtk.Switch) {
+            prop = "active";
+            def = "false";
+        }
+
+        // Init the widget
         // TODO: hacky
         let value = variant.unpack();
         let mappedValue = map.get(value);
-        label.label = (mappedValue) ? mappedValue : value.toString();
+        widget[prop] = (mappedValue !== undefined) ? mappedValue : value.toString(); // TODO
+
         // Watch settings for changes
         let _changed = obj.settings.connect("changed::" + key, (settings) => {
-            label.label = map.get(obj.settings.get_value(key).unpack());
+            let val = obj.settings.get_value(key).unpack();
+            let mappedVal = map.get(val);
+            widget[prop] = (mappedVal !== undefined) ? mappedVal : val.toString(); // TODO
         });
-        label.connect("destroy", () => obj.settings.disconnect(_changed));
+        widget.connect("destroy", () => obj.settings.disconnect(_changed));
 
         // Watch the Gtk.ListBox for activation
         row.get_parent().connect("row-activated", (box, arow) => {
@@ -73,16 +85,22 @@ function mapLabel(obj, key, label, map) {
                 }
 
                 newValue = (newValue !== undefined) ? newValue : map.keys().next().value;
-
-                obj.settings.set_value(
-                    key,
-                    new GLib.Variant(type, newValue)
-                );
+                obj.settings.set_value(key, new GLib.Variant(type, newValue));
             }
         });
     } else {
         row.visible = false;
     }
+};
+
+
+function mapSwitch(obj, key, label, [on, off]=[true, false]) {
+    let map = new Map([
+        [on, true],
+        [off, false]
+    ]);
+
+    return mapWidget(obj, key, label, map);
 };
 
 
@@ -92,12 +110,12 @@ function mapBool(obj, key, label, [on, off]=[true, false]) {
         [off, _("Off")]
     ]);
 
-    return mapLabel(obj, key, label, map);
+    return mapWidget(obj, key, label, map);
 };
 
 
 // FIXME: this is garbage
-function mapTraffic(obj, key, label) {
+function mapAllow(obj, key, label) {
     let map = new Map([
         [1, _("Off")],
         [2, _("Out")],
@@ -105,7 +123,7 @@ function mapTraffic(obj, key, label) {
         [6, _("Both")]
     ]);
 
-    return mapLabel(obj, key, label, map);
+    return mapWidget(obj, key, label, map);
 };
 
 
@@ -627,11 +645,11 @@ var DeviceSettings = Lang.Class({
         "command-edit-cancel", "command-edit-apply",
         // Notifications
         "notification", "notification-page",
-        "send-notifications", "notification-apps",
+        "notification-allow", "notification-apps",
         // Sharing
         "sharing", "sharing-page", "sharing-list",
-        "battery-allow", "direct-sharing", "clipboard-allow", "mpris-control",
-        "allow-input",
+        "battery-allow", "share-allow", "clipboard-allow", "mpris-allow",
+        "mousepad-allow", "findmyphone-allow",
         // Telephony
         "telephony", "telephony-page",
         "handler-list", "handle-messaging", "handle-calls",
@@ -941,12 +959,7 @@ var DeviceSettings = Lang.Class({
         let notification = this.device._plugins.get("notification");
 
         if (notification) {
-            notification.settings.bind(
-                "send-notifications",
-                this.send_notifications,
-                "active",
-                Gio.SettingsBindFlags.DEFAULT
-            );
+            mapSwitch(notification, "allow", this.notification_allow, [ 6, 4 ]);
             this._populateApplications(notification);
             this.notification_apps.set_sort_func((row1, row2) => {
                 return row1.title.label.localeCompare(row2.title.label);
@@ -965,12 +978,6 @@ var DeviceSettings = Lang.Class({
                     JSON.stringify(this._notification_apps)
                 );
             });
-            notification.settings.bind(
-                "send-notifications",
-                this.notification_apps,
-                "sensitive",
-                Gio.SettingsBindFlags.DEFAULT
-            );
         } else {
             this.notification.visible = false;
             this.notification_page.visible = false;
@@ -1069,23 +1076,23 @@ var DeviceSettings = Lang.Class({
 
         // Direct Share
         let share = this.device._plugins.get("share");
-        mapBool(share, "direct-sharing", this.direct_sharing);
+        mapBool(share, "allow", this.share_allow, [ 6, 2 ]);
 
         // Clipboard Sync
         let clipboard = this.device._plugins.get("clipboard");
-        mapTraffic(clipboard, "allow", this.clipboard_allow);
+        mapAllow(clipboard, "allow", this.clipboard_allow);
 
         // Media Players
         let mpris = this.device._plugins.get("mpris");
-        mapBool(mpris, "mpris-control", this.mpris_control);
+        mapAllow(mpris, "allow", this.mpris_allow);
 
         // Mouse & Keyboard input
         let mousepad = this.device._plugins.get("mousepad");
-        mapBool(mousepad, "allow-input", this.allow_input);
+        mapBool(mousepad, "allow", this.mousepad_allow, [ 6, 2 ]);
 
         // Location Sharing
-//        let findmyphone = this.device._plugins.get("findmyphone");
-//        mapBool(findmyphone, "allow-locate", this.allow_locate);
+        let findmyphone = this.device._plugins.get("findmyphone");
+        mapAllow(findmyphone, "allow", this.findmyphone_allow);
 
         // row separators
         this.sharing_list.set_header_func(section_separators);
