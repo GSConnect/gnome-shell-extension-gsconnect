@@ -1,24 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist gettext-domain="org.gnome.Shell.Extensions.GSConnect">
-  <!-- flags arent reusable, so this is the ENUM
-    1 NONE      No traffic allowed
-    2 OUT       Allow outgoing traffic
-    4 IN        Allow incoming traffic
-    8 FORWARD   Allow forwarding traffic between devices
-  -->
-  <flags id="org.gnome.Shell.Extensions.GSConnect.TelephonyAction">
-    <value nick="NOTHING" value="1"/>
-    <value nick="LOWER_VOLUME" value="2"/>
-    <value nick="MUTE_VOLUME" value="4"/>
-    <value nick="MUTE_MICROPHONE" value="8"/>
-    <value nick="CUSTOM" value="16"/>
-  </flags>
   <schema id="org.gnome.Shell.Extensions.GSConnect" path="/org/gnome/shell/extensions/gsconnect/">
-    <key name="debug" type="b">
-      <default>false</default>
-      <summary>Debug Mode</summary>
-      <description>Enable debug features and logging</description>
-    </key>
+    <!-- Extension Preferences -->
     <key name="show-indicators" type="b">
       <default>false</default>
       <summary>Show Indicators</summary>
@@ -39,12 +22,26 @@
       <summary>Show Battery Icon</summary>
       <description>Display an icon with percentage in the Device Menu</description>
     </key>
+
+    <!-- Service Settings (TODO: better default) -->
+    <key name="public-name" type="s">
+      <default>"GSConnect"</default>
+      <summary>Public Name</summary>
+      <description>The name visible to other devices</description>
+    </key>
     <key name="devices" type="as">
       <default>[]</default>
     </key>
     <key name="donotdisturb" type="i">
         <default>0</default>
     </key>
+    <key name="debug" type="b">
+      <default>false</default>
+      <summary>Debug Mode</summary>
+      <description>Enable debug features and logging</description>
+    </key>
+
+    <!-- Application Extensions (TODO: should be automatic) -->
     <key name="nautilus-integration" type="b">
       <default>false</default>
       <summary>Nautilus Integration</summary>
@@ -55,12 +52,9 @@
       <summary>Web Browser Integration</summary>
       <description>Share links with devices and contacts from the web browser</description>
     </key>
-    <key name="public-name" type="s">
-      <default>"GSConnect"</default>
-      <summary>Public Name</summary>
-      <description>The name visible to other devices</description>
-    </key>
   </schema>
+
+  <!-- Device Settings -->
   <schema id="org.gnome.Shell.Extensions.GSConnect.Device">
     <key name="certificate-pem" type="s">
       <default>""</default>
@@ -77,9 +71,6 @@
     <key name="type" type="s">
       <default>"unknown"</default>
     </key>
-    <key name="supported-plugins" type="as">
-      <default>[]</default>
-    </key>
     <key name="incoming-capabilities" type="as">
       <default>[]</default>
     </key>
@@ -93,8 +84,19 @@
       <default>1716</default>
     </key>
   </schema>
+
+  <!-- Plugin Settings
+
+  Each plugin has a uint32 "allow" determining whether actions requiring a
+  direction of traffic will be allowed, however signals are always emitted.
+
+  AllowTraffic flags
+    1 NONE      No traffic allowed
+    2 OUT       Allow outgoing traffic
+    4 IN        Allow incoming traffic
+    8 FORWARD   Allow forwarding traffic between devices
+  -->
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Battery">
-    <!-- FIXME NEW STUFF FIXME -->
     <key name="allow" type="u">
       <default>4</default>
       <summary>Allow Traffic</summary>
@@ -102,88 +104,72 @@
     </key>
   </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Clipboard">
-    <!-- FIXME NEW STUFF FIXME -->
     <key name="allow" type="u">
       <default>1</default>
       <summary>Allow Traffic</summary>
       <description>Allow flags for directional traffic</description>
     </key>
   </schema>
+  <!-- TODO this plugin hasn't been written yet -->
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Contacts">
-    <!-- FIXME NEW STUFF FIXME -->
-    <key name="allow-in" type="b">
-      <default>false</default>
-      <summary>Allow incoming packets</summary>
-      <description></description>
+    <key name="allow" type="u">
+      <default>1</default>
+      <summary>Allow Traffic</summary>
+      <description>Allow flags for directional traffic</description>
     </key>
   </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.FindMyPhone">
-    <!-- FIXME NEW STUFF FIXME -->
-    <key name="allow" type="i">
-      <default>6</default>
+    <key name="allow" type="u">
+      <default>2</default>
       <summary>Allow Traffic</summary>
       <description>Allow flags for directional traffic</description>
     </key>
   </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Lock">
-    <!-- FIXME NEW STUFF FIXME -->
-    <key name="allow-in" type="b">
-      <default>false</default>
-      <summary>Allow incoming packets</summary>
-      <description></description>
+    <key name="allow" type="u">
+      <default>1</default>
+      <summary>Allow Traffic</summary>
+      <description>Allow flags for directional traffic</description>
     </key>
   </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Mousepad">
-    <!-- FIXME NEW STUFF FIXME -->
-    <key name="allow-input" type="b">
-      <default>false</default>
-      <summary>Allow Input</summary>
-      <description>Allow control of the mouse and keyboard</description>
-    </key>
-    <key name="allow-output" type="b">
-      <default>true</default>
-      <summary>Allow Output</summary>
-      <description>Support controlling the device's input</description>
+    <key name="allow" type="u">
+      <default>2</default>
+      <summary>Allow Traffic</summary>
+      <description>Allow flags for directional traffic</description>
     </key>
   </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.MPRIS">
-    <!-- FIXME NEW STUFF FIXME -->
-    <key name="mpris-control" type="b">
-      <default>false</default>
-      <summary>Allow Control</summary>
-      <description>Allow control of MPRIS media players</description>
-    </key>
-    <key name="mpris-view" type="b">
-      <default>true</default>
-      <summary>Allow View</summary>
-      <description>Allow viewing MPRIS media players</description>
+    <key name="allow" type="u">
+      <default>4</default>
+      <summary>Allow Traffic</summary>
+      <description>Allow flags for directional traffic</description>
     </key>
   </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Notification">
-    <key name="receive-notifications" type="b">
-      <default>true</default>
-      <summary>Receive Notifications</summary>
-      <description></description>
-    </key>
-    <key name="send-notifications" type="b">
-      <default>true</default>
-      <summary>Send Notifications</summary>
-      <description></description>
+    <key name="allow" type="u">
+      <default>4</default>
+      <summary>Allow Traffic</summary>
+      <description>Allow flags for directional traffic</description>
     </key>
     <key name="applications" type="s">
-      <default>'{"GSConnect":{"iconName":"phone","enabled":false}}'</default>
+      <default>'{"GSConnect":{"iconName":"org.gnome.Shell.Extensions.GSConnect","enabled":false}}'</default>
     </key>
   </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Ping">
-    <!-- FIXME NEW STUFF FIXME -->
-    <key name="allow-in" type="b">
-      <default>false</default>
-      <summary>Allow incoming packets</summary>
-      <description></description>
+    <key name="allow" type="u">
+      <default>6</default>
+      <summary>Allow Traffic</summary>
+      <description>Allow flags for directional traffic</description>
     </key>
   </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.RunCommand">
     <!-- FIXME NEW STUFF FIXME -->
+    <key name="allow" type="u">
+      <default>2</default>
+      <summary>Allow Traffic</summary>
+      <description>Allow flags for directional traffic</description>
+    </key>
     <key name="handle-execution" type="b">
       <default>false</default>
       <summary>Allow incoming packets</summary>
@@ -202,26 +188,19 @@
     </key>
   </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Share">
-    <!-- FIXME NEW STUFF FIXME -->
-    <key name="direct-sharing" type="b">
-      <default>true</default>
-      <summary>Direct Sharing</summary>
-      <description>Allow direct sharing of files and URLs</description>
-    </key>
-
-    <key name="download-directory" type="s">
-      <default>""</default>
-      <summary>Download Directory</summary>
-      <description></description>
-    </key>
-    <key name="download-subdirectory" type="b">
-      <default>false</default>
-      <summary>Use Subdirectory</summary>
-      <description></description>
+    <key name="allow" type="u">
+      <default>2</default>
+      <summary>Allow Traffic</summary>
+      <description>Allow flags for directional traffic</description>
     </key>
   </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Telephony">
-    <!-- FIXME NEW STUFF FIXME -->
+    <key name="allow" type="u">
+      <default>6</default>
+      <summary>Allow Traffic</summary>
+      <description>Allow flags for directional traffic</description>
+    </key>
+
     <key name="handle-messaging" type="b">
       <default>true</default>
       <summary>Handle Messaging</summary>
@@ -237,11 +216,6 @@
       <summary>Ringing Action</summary>
       <description>Action to take when the phone rings</description>
     </key>
-<!--    <key name="talking-action" flags="org.gnome.Shell.Extensions.GSConnect.TelephonyAction">-->
-<!--      <default>["MUTE_VOLUME", "MUTE_MICROPHONE", "PAUSE_MEDIA"]</default>-->
-<!--      <summary>Talking Action</summary>-->
-<!--      <description>Action to take when the phone is answered</description>-->
-<!--    </key>-->
 
     <key name="ringing-volume" type="s">
       <default>"lower"</default>
