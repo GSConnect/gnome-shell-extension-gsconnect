@@ -94,18 +94,84 @@ var Packet = new Lang.Class({
 
 
 /**
- * Listeners
+ * LanChannelService consists of two parts.
+ *
+ * The TCP Listener listens on a port (usually 1716) for incoming connections
+ * and constructs a Channel object, emitting 'channel::'.
+ *
+ * The UDP Listener listens on a port (usually 1716) for incoming JSON identity
+ * packets containing a TCP port for connection, taking the address from the
+ * sender, emitting 'packet::'. It also broadcasts these packets to 255.255.255.255.
  */
-var TcpListener = new Lang.Class({
-    Name: "GSConnectTcpListener",
-    Extends: Gio.SocketService,
+var LanChannelService = new Lang.Class({
+    Name: "GSConnectLanChannelService",
+    Extends: GObject.Object,
+    Properties: {
+        "discovering": GObject.ParamSpec.boolean(
+            "discovering",
+            "ServiceDiscovering",
+            "Whether the TCP Listener is active",
+            GObject.ParamFlags.READWRITE,
+            true
+        ),
+        "tcp-port": GObject.ParamSpec.uint(
+            "tcp-port",
+            "TCP Port",
+            "The TCP port number the service is listening on",
+            GObject.ParamFlags.READABLE,
+            0, 1764,
+            1716
+        ),
+        "udp-port": GObject.ParamSpec.uint(
+            "udp-port",
+            "UDP Port",
+            "The UDP port number the service is listening on",
+            GObject.ParamFlags.READABLE,
+            0, 1764,
+            1716
+        )
+    },
+    Signals: {
+        "channel": {
+            flags: GObject.SignalFlags.RUN_FIRST,
+            param_types: [ GObject.TYPE_OBJECT ]
+        },
+        "packet": {
+            flags: GObject.SignalFlags.RUN_FIRST,
+            param_types: [ GObject.TYPE_OBJECT ]
+        }
+    },
 
     _init: function (port=1716) {
         this.parent();
 
+        this._initTcpListener();
+        this._initUdpListener();
+    },
+
+    get discovering() {
+        return this._tcp.active;
+    },
+
+    set discovering(bool) {
+        (bool) ? this._tcp.start() : this._tcp.stop();
+    },
+
+    get tcp_port() {
+        return this._tcp_port || 0;
+    },
+
+    get udp_port() {
+        return this._udp_port || 0;
+    },
+
+    _initTcpListener: function () {
+        this._tcp = new Gio.SocketService();
+        let port = 1716;
+
         while (true) {
             try {
-                this.add_inet_port(port, null);
+                this._tcp.add_inet_port(port, null);
             } catch (e) {
                 debug("TcpListener: failed to bind to port " + port + ": " + e);
 
@@ -118,42 +184,39 @@ var TcpListener = new Lang.Class({
                 }
             }
 
-            if (this.active) {
-                this._port = port;
+            if (this._tcp.active) {
+                this._tcp_port = port;
                 break;
             }
         }
 
-        log("TcpListener: using port " + this._port);
+        this._tcp.connect("incoming", (l, c) => this._receiveChannel(l, c));
+        this._tcp.connect("notify::active", () => this.notify("discovering"));
+
+        log("Using TCP port " + this.tcp_port);
     },
 
-    destroy: function () {
-        this.stop();
-        this.close();
-    }
-});
-
-
-var UdpListener = new Lang.Class({
-    Name: "GSConnectUdpListener",
-    Extends: GObject.Object,
-    Signals: {
-        "received": {
-            flags: GObject.SignalFlags.RUN_FIRST,
-            param_types: [ GObject.TYPE_OBJECT ]
-        }
+    /**
+     * Receive a TCP connection and emit a Channel with 'channel::'
+     */
+    _receiveChannel: function (listener, connection) {
+        let channel = new Channel();
+        let _tmp = channel.connect("connected", (channel) => {
+            channel.disconnect(_tmp);
+            this.emit("channel", channel);
+        });
+        channel.accept(connection);
     },
 
-    _init: function (port=1716) {
-        this.parent();
-
-        this.socket = new Gio.Socket({
+    _initUdpListener: function () {
+        this._udp = new Gio.Socket({
             family: Gio.SocketFamily.IPV4,
             type: Gio.SocketType.DATAGRAM,
             protocol: Gio.SocketProtocol.UDP,
             broadcast: true
         });
-        this.socket.init(null);
+        this._udp.init(null);
+        let port = 1716;
 
         while (true) {
             let addr = new Gio.InetSocketAddress({
@@ -162,7 +225,7 @@ var UdpListener = new Lang.Class({
             });
 
             try {
-                this.socket.bind(addr, false);
+                this._udp.bind(addr, false);
             } catch (e) {
                 debug("UdpListener: failed to bind to port " + port + ": " + e);
 
@@ -170,7 +233,7 @@ var UdpListener = new Lang.Class({
                     port += 1;
                     continue;
                 } else {
-                    this.socket.close();
+                    this._udp.close();
                     throw Error("UdpListener: Unable to find open port");
                 }
             }
@@ -179,83 +242,99 @@ var UdpListener = new Lang.Class({
         }
 
         // Broadcast Address
-        this._broadcastAddr = new Gio.InetSocketAddress({
+        this._udp_address = new Gio.InetSocketAddress({
             address: Gio.InetAddress.new_from_string("255.255.255.255"),
-            port: this.socket.local_address.port
+            port: this._udp.local_address.port
         });
 
+        // Input stream
         this._input_stream = new Gio.DataInputStream({
             base_stream: new Gio.UnixInputStream({
-                fd: this.socket.fd,
+                fd: this._udp.fd,
                 close_fd: false
             })
         });
 
-        // Watch for incoming packets
-        let source = this.socket.create_source(GLib.IOCondition.IN, null);
-        source.set_callback(Lang.bind(this, this.receive));
+        // Watch input stream for incoming packets
+        let source = this._udp.create_source(GLib.IOCondition.IN, null);
+        source.set_callback(() => this._receivePacket());
         source.attach(null);
 
-        log("UdpListener: using port " + port);
+        log("Using UDP port " + port);
     },
 
-    send: function (packet) {
-        debug("UdpListener.send()");
-
-        this.socket.send_to(
-            this._broadcastAddr,
-            packet.toData(),
-            null
-        );
-    },
-
-    receive: function () {
-        debug("UdpListener.receive()");
-
+    /**
+     * Receive an identity packet and emit 'packet::'
+     * @param {Packet} identity - the identity packet to broadcast
+     */
+    _receivePacket: function () {
         let addr, data, flags, size;
 
         try {
             // "Peek" the incoming address
-            [size, addr, data, flags] = this.socket.receive_message(
+            [size, addr, data, flags] = this._udp.receive_message(
                 [],
                 Gio.SocketMsgFlags.PEEK,
                 null
             );
             [data, size] = this._input_stream.read_line(null);
         } catch (e) {
-            log("UdpListener: Error reading data: " + e);
+            log("Error reading UDP packet: " + e);
             return;
         }
 
         let packet = new Packet(data.toString());
 
         if (packet.type !== TYPE_IDENTITY) {
-            debug("UdpListener: Unexpected packet type: " + packet.type);
+            debug("Unexpected UDP packet type: " + packet.type);
             return true;
         }
 
+        // Save the remote address for reconnecting
         packet.body.tcpHost = addr.address.to_string();
 
-        this.emit("received", packet);
+        this.emit("packet", packet);
 
         return true;
     },
 
-    destroy: function () {
-        try {
-            if (this._input_stream !== null) {
-                this._input_stream.close(null);
-            }
-        } catch (e) {
-            log("error closing data input: " + e);
-        }
+    /**
+     * Broadcast an identity packet
+     * @param {Packet} identity - the identity packet to broadcast
+     */
+    broadcast: function (identity) {
+        //debug(packet);
 
-        try {
-            if (this.socket !== null) {
-                this.socket.close();
-            }
-        } catch (e) {
-            log("error closing UDP listener: " + e);
+        this._udp.send_to(this._udp_address, packet.toData(), null);
+    },
+
+    destroy: function () {
+        this._tcp.stop();
+        this._tcp.close();
+        this._udp.close();
+    }
+});
+
+
+var BluetoothChannelService = new Lang.Class({
+    Name: "GSConnectBluetoothChannelService",
+    Extends: GObject.Object,
+        "discovering": GObject.ParamSpec.boolean(
+            "discovering",
+            "ServiceDiscovering",
+            "Whether the Bluetooth Listener is active",
+            GObject.ParamFlags.READWRITE,
+            true
+        )
+    },
+    Signals: {
+        "channel": {
+            flags: GObject.SignalFlags.RUN_FIRST,
+            param_types: [ GObject.TYPE_OBJECT ]
+        },
+        "packet": {
+            flags: GObject.SignalFlags.RUN_FIRST,
+            param_types: [ GObject.TYPE_OBJECT ]
         }
     }
 });
@@ -264,8 +343,8 @@ var UdpListener = new Lang.Class({
 /**
  * Data Channels
  */
-var LanChannel = new Lang.Class({
-    Name: "GSConnectLanChannel",
+var Channel = new Lang.Class({
+    Name: "GSConnectChannel",
     Extends: GObject.Object,
     Signals: {
         "connected": {
@@ -289,7 +368,9 @@ var LanChannel = new Lang.Class({
         this._monitor = 0;
     },
 
-    // Set socket options
+    /**
+     * Set TCP socket options
+     */
     _initSocket: function (connection) {
         return new Promise((resolve, reject) => {
             connection.socket.set_keepalive(true);
@@ -304,7 +385,9 @@ var LanChannel = new Lang.Class({
         });
     },
 
-    // Receive an identity packet
+    /**
+     * Read the identity packet from the Gio.SocketConnection file descriptor
+     */
     _receiveIdent: function (connection) {
         return new Promise((resolve, reject) => {
             let _input_stream = new Gio.DataInputStream({
@@ -314,23 +397,28 @@ var LanChannel = new Lang.Class({
                 })
             });
             let [data, len] = _input_stream.read_line(null);
-            this.identity = new Packet(data.toString());
-            this.identity.body.tcpHost = connection.socket.remote_address.address.to_string();
-            // We can't use the remote port later so use a reasonable default
-            this.identity.body.tcpPort = 1716;
             _input_stream.close(null);
+
+            //
+            this.identity = new Packet(data.toString());
+            // Save the remote address for reconnecting later
+            this.identity.body.tcpHost = connection.socket.remote_address.address.to_string();
+            // Can't use the remote port for reconnecting so use the default
+            this.identity.body.tcpPort = 1716;
 
             resolve(connection);
         });
     },
 
-    // Send identity packet, indicating we're about ready for a handshake
+    /**
+     * Write our identity packet to the Gio.SocketConnection file descriptor
+     */
     _sendIdent: function (connection) {
         return new Promise((resolve, reject) => {
             let _output_stream = new Gio.DataOutputStream({
                 base_stream: new Gio.UnixOutputStream({
                     fd: connection.socket.fd,
-                    close_fd: false
+                    close_fd: false // We're going to re-use the socket
                 })
             });
             _output_stream.put_string(this.daemon.identity.toData(), null);
@@ -340,53 +428,44 @@ var LanChannel = new Lang.Class({
         });
     },
 
-    // Wrap connection in TlsClientConnection and handshake
-    _clientTls: function (connection) {
-        return new Promise((resolve, reject) => {
-            connection = Gio.TlsClientConnection.new(
-                connection,
-                connection.socket.remote_address
-            );
-            connection.set_certificate(this.daemon.certificate);
-            connection.validation_flags = 0;
-            connection.authentication_mode = 1;
+    /**
+     * Verify connection certificate
+     */
+    _onAcceptCertificate: function (connection, peer_cert, flags) {
+        log("Authenticating '" + this.identity.body.deviceId + "'");
 
-            connection.connect(
-                "accept-certificate",
-                this._onAcceptCertificate.bind(this)
-            );
+        this._peer_cert = peer_cert;
 
-            connection.handshake_async(
-                GLib.PRIORITY_DEFAULT,
-                null,
-                (connection, res) => {
-                    try {
-                        if (connection.handshake_finish(res)) {
-                            resolve(connection);
-                        }
-                    } catch (e) {
-                        reject(e);
-                    }
-                }
-            );
+        // Get the settings for this deviceId
+        let settings = new Gio.Settings({
+            settings_schema: gsconnect.gschema.lookup(gsconnect.app_id + ".Device", true),
+            path: gsconnect.settings.path + "device/" + this.identity.body.deviceId + "/"
         });
+
+        // If this device is paired, verify the connection certificate
+        if (settings.get_string("certificate-pem")) {
+            let cert = Gio.TlsCertificate.new_from_pem(
+                settings.get_string("certificate-pem"),
+                -1
+            );
+
+            return (cert.verify(null, peer_cert) === 0);
+        }
+
+        // Otherwise trust on first use, we pair later
+        return true;
     },
 
-    // Wrap connection in TlsServerConnection and handshake
-    _serverTls: function (connection) {
+    /**
+     * Handshake Gio.TlsConnection
+     */
+    _handshakeTls: function (connection) {
         return new Promise((resolve, reject) => {
-            connection = Gio.TlsServerConnection.new(
-                connection,
-                this.daemon.certificate
-            );
-            connection.set_certificate(this.daemon.certificate);
             connection.validation_flags = 0;
             connection.authentication_mode = 1;
-
             connection.connect(
                 "accept-certificate",
                 this._onAcceptCertificate.bind(this)
-                //Lang.bind(this, this._accept_certificate)
             );
 
             connection.handshake_async(
@@ -406,31 +485,32 @@ var LanChannel = new Lang.Class({
     },
 
     /**
-     * Verify connection certificate
+     * Wrap @connection in TlsClientConnection and handshake
      */
-    _onAcceptCertificate: function (conn, peer_cert, flags) {
-        log("Authenticating '" + this.identity.body.deviceId + "'");
+    _clientTls: function (connection) {
+        return new Promise((resolve, reject) => {
+            connection = Gio.TlsClientConnection.new(
+                connection,
+                connection.socket.remote_address // TODO: incompatible wiht bluez?
+            );
+            connection.set_certificate(this.daemon.certificate);
 
-        this._peer_cert = peer_cert;
-
-        // Get the settings for this deviceId
-        let settings = new Gio.Settings({
-            settings_schema: gsconnect.gschema.lookup(gsconnect.app_id + ".Device", true),
-            path: gsconnect.settings.path + "device/" + this.identity.body.deviceId + "/"
+            resolve(this._handshakeTls(connection));
         });
+    },
 
-        // If we have a certificate, verify the connection
-        if (settings.get_string("certificate-pem")) {
-            let cert = Gio.TlsCertificate.new_from_pem(
-                settings.get_string("certificate-pem"),
-                -1
+    /**
+     * Wrap @connection in TlsServerConnection and handshake
+     */
+    _serverTls: function (connection) {
+        return new Promise((resolve, reject) => {
+            connection = Gio.TlsServerConnection.new(
+                connection,
+                this.daemon.certificate
             );
 
-            return (cert.verify(null, peer_cert) === 0);
-        }
-
-        // Otherwise trust on first use, we pair later
-        return true;
+            resolve(this._handshakeTls(connection));
+        });
     },
 
     /**
@@ -558,6 +638,10 @@ var LanChannel = new Lang.Class({
         this.emit("disconnected");
     },
 
+    /**
+     * Send a packet to a device
+     * @param {Packet} packet - A packet object
+     */
     send: function (packet) {
         debug(this.identity.body.deviceId + ", " + packet.toString());
 
@@ -569,13 +653,16 @@ var LanChannel = new Lang.Class({
         }
     },
 
+    /**
+     * Receive a packet from a device, emitting 'received::' with the packet
+     */
     receive: function () {
         let data, len, packet;
 
         try {
             [data, len] = this._input_stream.read_line(null);
         } catch (e) {
-            log("Failed to receive packet from " + this.identity.body.deviceId + ": " + e);
+            debug(e);
             return false;
         }
 
@@ -587,6 +674,7 @@ var LanChannel = new Lang.Class({
 
         packet = new Packet(data.toString());
         this.emit("received", packet);
+
         return true;
     }
 });
@@ -598,7 +686,7 @@ var LanChannel = new Lang.Class({
  */
 var Transfer = new Lang.Class({
     Name: "GSConnectTransfer",
-    Extends: LanChannel,
+    Extends: Channel,
     Signals: {
         "started": {
             flags: GObject.SignalFlags.RUN_FIRST

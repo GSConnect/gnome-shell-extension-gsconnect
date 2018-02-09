@@ -269,6 +269,9 @@ var Device = new Lang.Class({
         this.settings.set_uint("tcp-port", packet.body.tcpPort);
     },
 
+    /**
+     * Open a new Protocol.Channel and try to connect to the device
+     */
     activate: function () {
         debug(this.name + " (" + this.id + ")");
 
@@ -277,7 +280,7 @@ var Device = new Lang.Class({
 			return;
 		}
 
-        this._channel = new Protocol.LanChannel(this.id);
+        this._channel = new Protocol.Channel(this.id);
 
         this._channel.connect("connected", (channel) => this._onConnected(channel));
         this._channel.connect("disconnected", (channel) => this._onDisconnected(channel));
@@ -293,6 +296,9 @@ var Device = new Lang.Class({
         this._channel.open(addr);
     },
 
+    /**
+     * Update the device with a UDP packet or replacement Protocol.Channel
+     */
     update: function (packet, channel=null) {
         debug(this.name + " (" + this.id + ")");
 
@@ -384,7 +390,7 @@ var Device = new Lang.Class({
 	        // TODO: then-able resolve()'s
 	        let handler = this._handlers.get(packet.type);
             handler.handlePacket(packet).then(result => {
-                debug("Packet handled successfully: " + packet.type);
+                debug("'" + packet.type + "' handled successfully: " + result);
             }).catch(error => {
                 debug("Error handling packet: " + error);
                 debug(error.stack);

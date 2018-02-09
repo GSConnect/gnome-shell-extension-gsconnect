@@ -114,20 +114,11 @@ var Daemon = new Lang.Class({
     },
 
     get discovering () {
-        return this.tcpListener.active;
+        return this.lanService.discovering;
     },
 
     set discovering (bool) {
-        // FIXME
-        bool = true;
-
-        if (bool) {
-            this.tcpListener.start();
-            this.broadcast();
-        } else {
-            this.tcpListener.stop();
-            this._pruneDevices();
-        }
+        this.lanService.discovering = bool;
     },
 
     get fingerprint () {
@@ -235,7 +226,7 @@ var Daemon = new Lang.Class({
                 deviceId: this.certificate.get_common_name(),
                 deviceName: gsconnect.settings.get_string("public-name"),
                 deviceType: this.type,
-                tcpPort: this.tcpListener._port,
+                tcpPort: this.lanService.tcp_port,
                 protocolVersion: 7,
                 incomingCapabilities: [],
                 outgoingCapabilities: []
@@ -263,8 +254,9 @@ var Daemon = new Lang.Class({
      * Discovery Methods
      */
     broadcast: function () {
-        if (!this.identity) { return; }
-        this.udpListener.send(this.identity);
+        if (this.identity) {
+            this.lanService.broadcast(this.identity);
+        }
     },
 
     /**
@@ -413,8 +405,9 @@ var Daemon = new Lang.Class({
         }
     },
 
-    // TODO: check file existence, since the notification will persist while
-    //       the file could be moved/deleted
+    /**
+     * Only used by plugins/share.js
+     */
     _openTransferAction: function (action, parameter) {
         let path = parameter.deep_unpack().toString();
         Gio.AppInfo.launch_default_for_uri(unescape(path), null);
@@ -671,39 +664,25 @@ var Daemon = new Lang.Class({
         // Ensure fingerprint is available right away
         this.notify("fingerprint", "s");
 
-        // Listen for new devices
+        // LanChannelService
         try {
-            this.udpListener = new Protocol.UdpListener();
-            this.udpListener.connect("received", (server, packet) => {
-                if (packet.body.deviceId === this.identity.body.deviceId) {
-                    return;
+            this.lanService = new Protocol.LanChannelService();
+
+            // UDP
+            this.lanService.connect("packet", (service, packet) => {
+                if (packet.body.deviceId !== this.identity.body.deviceId) {
+                    this._addDevice(packet);
                 }
+            });
 
-                this._addDevice(packet);
+            // TCP
+            this.lanService.connect("channel", (service, channel) => {
+                this._addDevice(channel.identity, channel);
             });
         } catch (e) {
-            log("Error starting UDP listener: " + e);
-            this.quit();
-        }
-
-        try {
-            this.tcpListener = new Protocol.TcpListener();
-
-            this.tcpListener.connect("incoming", (listener, connection) => {
-                let channel = new Protocol.LanChannel();
-                let conn = channel.connect("connected", (channel) => {
-                    GObject.signal_handler_disconnect(channel, conn);
-                    this._addDevice(channel.identity, channel);
-                });
-                channel.accept(connection);
-            });
-            this.tcpListener.connect("notify::active", () => {
-                this.notify("discovering", "b");
-            });
-            //this.tcpListener.stop();
-        } catch (e) {
-            log("Error starting TCP listener: " + e);
-            this.quit();
+            log("Error starting LanChannelService: " + e);
+            //this.quit();
+            throw new Error("error starting lanchannelservice");
         }
 
         this.identity = this._getIdentityPacket();
@@ -732,17 +711,17 @@ var Daemon = new Lang.Class({
                 this.broadcast();
             }
         });
+    },
+
+    vfunc_activate: function() {
+        this.parent();
 
         // Load cached devices and watch for changes
         this._watchDevices();
         log(this._devices.size + " devices loaded from cache");
 
-        // FIXME plugin loading
-        //this.broadcast();
-    },
+        this.broadcast();
 
-    vfunc_activate: function() {
-        this.parent();
         this.hold();
     },
 
@@ -822,8 +801,7 @@ var Daemon = new Lang.Class({
 
         log("GSConnect: Shutting down");
 
-        this.tcpListener.destroy();
-        this.udpListener.destroy();
+        this.lanService.destroy();
 
         for (let device of this._devices.values()) {
             device.destroy();
