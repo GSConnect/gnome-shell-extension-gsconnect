@@ -116,12 +116,12 @@ var Plugin = new Lang.Class({
         let action = new Action({
             name: name,
             meta: meta,
-            parameter_type: new GLib.VariantType("s")
+            parameter_type: new GLib.VariantType("av")
         }, this);
 
         action.connect("activate", (action, parameter) => {
             try {
-                let args = JSON.parse(unescape(parameter.unpack()));
+                let args = parameter.deep_unpack().map(a => a.unpack());
                 this[name](...args);
             } catch(e) {
                 debug(e.message + "\n" + e.stack);
@@ -130,7 +130,7 @@ var Plugin = new Lang.Class({
 
         this.device.add_action(action);
 
-        this._actions.push(meta);
+        this._actions.push(action.name);
     },
 
     get device () {

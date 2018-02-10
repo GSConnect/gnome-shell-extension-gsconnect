@@ -4,7 +4,6 @@ const Gettext = imports.gettext.domain("org.gnome.Shell.Extensions.GSConnect");
 const _ = Gettext.gettext;
 const Lang = imports.lang;
 
-const GdkPixbuf = imports.gi.GdkPixbuf;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
@@ -67,10 +66,7 @@ var METADATA = {
  *
  * TODO: consider allowing clients to handle notifications/use signals
  *       make local notifications closeable (serial/reply_serial)
- *       The current beta supports:
- *           requestReplyId {string} - a UUID for replying (?)
- *           title {string} - The remote's title of the notification
- *           text {string} - The remote's body of the notification
+ *       requestReplyId {string} - a UUID for replying (?)
  */
 var Plugin = new Lang.Class({
     Name: "GSConnectNotificationsPlugin",
@@ -290,14 +286,14 @@ var Plugin = new Lang.Class({
                             this.device.name
                         )
                     );
-                    notif.add_button(
+                    notif.add_device_button(
                         // TRANSLATORS: Reply to a missed call by SMS
                         _("Message"),
                         "replyMissedCall",
                         this._dbus.get_object_path(),
-                        [contact.numbers[0].number,
+                        contact.numbers[0].number,
                         contact.name,
-                        packet.body.time]
+                        packet.body.time
                     );
                     notif.set_priority(Gio.NotificationPriority.NORMAL);
                 // Format as an SMS notification
@@ -307,10 +303,10 @@ var Plugin = new Lang.Class({
                     notif.set_device_action(
                         this._dbus.get_object_path(),
                         "replySms",
-                        [contact.numbers[0].number,
+                        contact.numbers[0].number,
                         contact.name,
                         packet.body.text,
-                        packet.body.time]
+                        packet.body.time
                     );
                     notif.set_priority(Gio.NotificationPriority.HIGH);
                 }

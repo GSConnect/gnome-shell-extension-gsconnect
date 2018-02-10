@@ -161,22 +161,55 @@ gsconnect.uninstallService = function() {
 };
 
 
-Gio.Notification.prototype.add_device_button = function (label, dbusPath, name, obj={}) {
-    try {
-        let detail = [dbusPath, name, escape(JSON.stringify(obj))].join("','");
-        this.add_button(label, "app.deviceAction(('" + detail + "'))");
-    } catch(e) {
-        debug("Error adding button: " + [label, dbusPath, name, obj].join(","));
+function toVariant(obj) {
+    switch (true) {
+        case obj instanceof GLib.Variant:
+            return obj;
+        case typeof obj === "string":
+            return GLib.Variant.new("s", obj);
+        case typeof obj === "number":
+            return GLib.Variant.new("d", obj);
+        case typeof obj === "boolean":
+            return GLib.Variant.new("b", obj);
+        // TODO: still returning a native array?
+        case Array.isArray(obj):
+            return GLib.Variant.new("av", obj.map(item => toVariant(item)));
+        // FIXME yick
+        case (typeof obj === "object" && typeof obj !== null):
+            let copy = {};
+
+            for (let key in obj) {
+                copy[key] = toVariant(obj[key]);
+            }
+
+            return GLib.Variant.new("a{sv}", copy);
+        default:
+            log("NO TYPE FOUND");
+            return null;
     }
 };
 
 
-Gio.Notification.prototype.set_device_action = function (dbusPath, name, obj={}) {
+Gio.Notification.prototype.add_device_button = function (label, dbusPath, name) {
     try {
-        let detail = [dbusPath, name, escape(JSON.stringify(obj))].join("','");
-        this.set_default_action("app.deviceAction(('" + detail + "'))");
+        let args = Array.from(arguments).slice(3).map(arg => toVariant(arg));
+        let parameter = new GLib.Variant("(ssav)", [dbusPath, name, args]);
+        this.add_button_with_target(label, "app.deviceAction", parameter);
     } catch(e) {
-        debug("Error setting action: " + [dbusPath, name, obj].join(","));
+        debug("Error adding button: " + [label, dbusPath, name].join(","));
+        debug(e);
+    }
+};
+
+
+Gio.Notification.prototype.set_device_action = function (dbusPath, name) {
+    try {
+        let args = Array.from(arguments).slice(3).map(arg => toVariant(arg));
+        let parameter = new GLib.Variant("(ssav)", [dbusPath, name, args]);
+        this.set_default_action_and_target("app.deviceAction", parameter);
+    } catch(e) {
+        debug("Error setting action: " + [dbusPath, name].join(","));
+        debug(e);
     }
 };
 

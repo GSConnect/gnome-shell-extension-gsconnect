@@ -417,22 +417,29 @@ var Daemon = new Lang.Class({
      * @param {GLib.Variant->Object/Array?} params
      * @param {GLib.Variant->String} params[0] - DBus object path for device
      * @param {GLib.Variant->String} params[1] - GAction/Method name
-     * @param {GLib.Variant->String} params[2] - JSON string of action args
+     * @param {GLib.Variant->"av"} params[2] - The device action parameter as
+     *                                         Array of arguments 'av'.
      */
-    _deviceAction: function (action, params) {
-        params = params.unpack();
+    _deviceAction: function (action, parameter) {
+        parameter = parameter.unpack();
 
-        let device = this._devices.get(params["0"].unpack());
-        let deviceAction = device.lookup_action(params["1"].unpack());
+        let device = this._devices.get(parameter[0].unpack());
 
-        if (device && deviceAction && deviceAction.enabled) {
-            try {
-                deviceAction.activate(params["2"]);
-            } catch (e) {
-                debug(e.message + "\n" + e.stack);
+        // If the device is available
+        if (device) {
+            let deviceAction = device.lookup_action(parameter[1].unpack());
+
+            // If it has the action enabled
+            if (deviceAction && deviceAction.enabled) {
+                // Pass the Variant of arguments still packed
+                try {
+                    deviceAction.activate(parameter[2]);
+                } catch (e) {
+                    debug(e.message + "\n" + e.stack);
+                }
             }
         } else {
-            debug("Error:\nDevice: " + device + "\nAction: " + name);
+            debug("Error:\nDevice: " + device.name + "\nAction: " + parameter["1"].unpack());
         }
     },
 
@@ -456,7 +463,7 @@ var Daemon = new Lang.Class({
     _initActions: function () {
         this._addActions([
             // Device
-            ["deviceAction", this._deviceAction, "(sss)"],
+            ["deviceAction", this._deviceAction, "(ssav)"],
             // Daemon
             ["openSettings", this.openSettings],
             ["cancelTransfer", this._cancelTransferAction, "(ss)"],

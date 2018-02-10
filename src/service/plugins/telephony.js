@@ -248,7 +248,7 @@ var Plugin = new Lang.Class({
      * Parse an telephony packet and return an event object, with ... TODO
      *
      * @param {object} packet - A telephony event packet
-     * @return {object} - Aa event object
+     * @return {object} - An event object
      */
     _parsePacket: function (packet) {
         let event = packet.body;
@@ -353,7 +353,9 @@ var Plugin = new Lang.Class({
             _("Message"),
             this._dbus.get_object_path(),
             "replyMissedCall",
-            [event.phoneNumber, event.contact.name, event.time]
+            event.phoneNumber,
+            event.contact.name,
+            event.time
         );
 
         this.device.send_notification(event.event + "|"  + event.time, notif);
@@ -437,10 +439,10 @@ var Plugin = new Lang.Class({
         notif.set_device_action(
             this._dbus.get_object_path(),
             "replySms",
-            [event.phoneNumber,
+            event.phoneNumber,
             event.contact.name,
             event.messageBody,
-            event.time]
+            event.time
         );
 
         this.device.send_notification(event.event + "|"  + event.time, notif);
@@ -552,7 +554,7 @@ var Plugin = new Lang.Class({
      * Open and present a new SMS window
      */
     openSms: function () {
-        debug("Telephony: openSms()");
+        debug(arguments);
 
         let window = new TelephonyWidget.ConversationWindow(this.device);
         window.present();
@@ -561,6 +563,8 @@ var Plugin = new Lang.Class({
 
     // FIXME FIXME
     openUri: function (uri) {
+        debug(arguments);
+
         if (!uri instanceof SmsURI) {
             try {
                 uri = new SmsURI(uri);
