@@ -226,7 +226,7 @@ var Daemon = new Lang.Class({
                 deviceId: this.certificate.get_common_name(),
                 deviceName: gsconnect.settings.get_string("public-name"),
                 deviceType: this.type,
-                tcpPort: this.lanService.tcp_port,
+                tcpPort: this.lanService.port,
                 protocolVersion: 7,
                 incomingCapabilities: [],
                 outgoingCapabilities: []
@@ -658,7 +658,7 @@ var Daemon = new Lang.Class({
 
         this._initActions();
 
-        // Watch the file 'daemon.js' ot know when we're updated
+        // Watch the file 'daemon.js' to know when we're updated
         this._watchDaemon();
 
         // Ensure fingerprint is available right away
@@ -756,7 +756,8 @@ var Daemon = new Lang.Class({
             this._dbus.unexport();
 
         }).catch(e => debug(e));
-            this.parent(connection, object_path);
+
+        this.parent(connection, object_path);
     },
 
     vfunc_open: function (files, hint) {

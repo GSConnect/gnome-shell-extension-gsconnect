@@ -96,8 +96,8 @@ var Packet = new Lang.Class({
 /**
  * LanChannelService consists of two parts.
  *
- * The TCP Listener listens on a port (usually 1716) for incoming connections
- * and constructs a Channel object, emitting 'channel::'.
+ * The TCP Listener listens on a port (usually 1716) and constructs a Channel
+ * object from the incoming Gio.TcpConnection, emitting 'channel::'.
  *
  * The UDP Listener listens on a port (usually 1716) for incoming JSON identity
  * packets containing a TCP port for connection, taking the address from the
@@ -114,18 +114,10 @@ var LanChannelService = new Lang.Class({
             GObject.ParamFlags.READWRITE,
             true
         ),
-        "tcp-port": GObject.ParamSpec.uint(
-            "tcp-port",
+        "port": GObject.ParamSpec.uint(
+            "port",
             "TCP Port",
             "The TCP port number the service is listening on",
-            GObject.ParamFlags.READABLE,
-            0, 1764,
-            1716
-        ),
-        "udp-port": GObject.ParamSpec.uint(
-            "udp-port",
-            "UDP Port",
-            "The UDP port number the service is listening on",
             GObject.ParamFlags.READABLE,
             0, 1764,
             1716
@@ -157,12 +149,8 @@ var LanChannelService = new Lang.Class({
         (bool) ? this._tcp.start() : this._tcp.stop();
     },
 
-    get tcp_port() {
-        return this._tcp_port || 0;
-    },
-
-    get udp_port() {
-        return this._udp_port || 0;
+    get port() {
+        return this._port || 0;
     },
 
     _initTcpListener: function () {
@@ -185,7 +173,7 @@ var LanChannelService = new Lang.Class({
             }
 
             if (this._tcp.active) {
-                this._tcp_port = port;
+                this._port = port;
                 break;
             }
         }
@@ -193,7 +181,7 @@ var LanChannelService = new Lang.Class({
         this._tcp.connect("incoming", (l, c) => this._receiveChannel(l, c));
         this._tcp.connect("notify::active", () => this.notify("discovering"));
 
-        log("Using TCP port " + this.tcp_port);
+        debug("Using port " + port + " for TCP");
     },
 
     /**
@@ -260,7 +248,7 @@ var LanChannelService = new Lang.Class({
         source.set_callback(() => this._receivePacket());
         source.attach(null);
 
-        log("Using UDP port " + port);
+        debug("Using port " + port + " for UDP");
     },
 
     /**
@@ -305,7 +293,12 @@ var LanChannelService = new Lang.Class({
     broadcast: function (identity) {
         //debug(packet);
 
-        this._udp.send_to(this._udp_address, packet.toData(), null);
+        try {
+            this._udp.send_to(this._udp_address, identity.toData(), null);
+        } catch (e) {
+            debug(e);
+            log("Error sending identity packet: " + e.message);
+        }
     },
 
     destroy: function () {
@@ -319,6 +312,7 @@ var LanChannelService = new Lang.Class({
 var BluetoothChannelService = new Lang.Class({
     Name: "GSConnectBluetoothChannelService",
     Extends: GObject.Object,
+    Properties: {
         "discovering": GObject.ParamSpec.boolean(
             "discovering",
             "ServiceDiscovering",
@@ -358,14 +352,29 @@ var Channel = new Lang.Class({
             param_types: [ GObject.TYPE_OBJECT ]
         }
     },
+    Properties: {
+        "certificate": GObject.ParamSpec.object(
+            "certificate",
+            "TlsCertificate",
+            "The TLS Certificate for this connection",
+            GObject.ParamFlags.READABLE,
+            GObject.Object
+        )
+    },
 
     _init: function (deviceId) {
         this.parent();
 
         this.daemon = Gio.Application.get_default();
+
+        // We need this to lookup the certificate in GSettings
         this.identity = { body: { deviceId: deviceId } };
 
         this._monitor = 0;
+    },
+
+    get certificate() {
+        return this._certificate || null;
     },
 
     /**
@@ -434,7 +443,7 @@ var Channel = new Lang.Class({
     _onAcceptCertificate: function (connection, peer_cert, flags) {
         log("Authenticating '" + this.identity.body.deviceId + "'");
 
-        this._peer_cert = peer_cert;
+        this._certificate = peer_cert;
 
         // Get the settings for this deviceId
         let settings = new Gio.Settings({
@@ -563,25 +572,25 @@ var Channel = new Lang.Class({
                 }
             });
         // Set the usual socket options
-        }).then(result => {
-            return this._initSocket(result);
+        }).then(tcpConnection => {
+            return this._initSocket(tcpConnection);
         // Send our identity packet
-        }).then(result => {
-            return this._sendIdent(result);
+        }).then(tcpConnection => {
+            return this._sendIdent(tcpConnection);
         // Authenticate the connection
-        }).then(result => {
-            return this._serverTls(result);
+        }).then(tcpConnection => {
+            return this._serverTls(tcpConnection);
         // Store the certificate and init streams for packet exchange
-        }).then(result => {
-            this._peer_cert = result.get_peer_certificate();
-            return this._initPacketIO(result);
+        }).then(tlsConnection => {
+            this._certificate = tlsConnection.get_peer_certificate();
+            return this._initPacketIO(tlsConnection);
         // Set the connection and emit
-        }).then(result => {
-            this._connection = result;
+        }).then(tlsConnection => {
+            this._connection = tlsConnection;
             this.emit("connected");
         }).catch(e => {
             debug(e);
-            log("Error connecting: " + e);
+            log("Error opening connection: " + e.message);
             this.close();
         });
     },
@@ -592,21 +601,21 @@ var Channel = new Lang.Class({
      */
     accept: function (connection) {
         // Set the usual socket options and receive the device's identity
-        return this._initSocket(connection).then(result => {
-            return this._receiveIdent(result);
+        return this._initSocket(connection).then(tcpConnection => {
+            return this._receiveIdent(tcpConnection);
         // Authenticate the connection
-        }).then(result => {
-            return this._clientTls(result);
+        }).then(tcpConnection => {
+            return this._clientTls(tcpConnection);
         // Store the certificate and init streams for packet exchange
-        }).then(result => {
-            this._peer_cert = result.get_peer_certificate();
-            return this._initPacketIO(result);
+        }).then(tlsConnection => {
+            this._certificate = tlsConnection.get_peer_certificate();
+            return this._initPacketIO(tlsConnection);
         // Set the connection and emit
-        }).then(result => {
-            this._connection = result;
+        }).then(tlsConnection => {
+            this._connection = tlsConnection;
             this.emit("connected");
         }).catch(e => {
-            log("Error connecting: " + e);
+            log("Error accepting connection: " + e.message);
             this.close();
             return e;
         });
@@ -623,7 +632,7 @@ var Channel = new Lang.Class({
             log("error removing monitor: " + e);
         }
 
-        ["_input_stream", "_output_stream", "_connection", "_listener"].map(stream => {
+        ["input_stream", "output_stream", "_connection", "_listener"].map(stream => {
             try {
                 if (this[stream]) {
                     this[stream].close(null);
@@ -657,7 +666,7 @@ var Channel = new Lang.Class({
      * Receive a packet from a device, emitting 'received::' with the packet
      */
     receive: function () {
-        let data, len, packet;
+        let data, len;
 
         try {
             [data, len] = this._input_stream.read_line(null);
@@ -672,7 +681,7 @@ var Channel = new Lang.Class({
 
         debug(this.identity.body.deviceId + ": " + data.toString());
 
-        packet = new Packet(data.toString());
+        let packet = new Packet(data.toString());
         this.emit("received", packet);
 
         return true;
@@ -682,7 +691,14 @@ var Channel = new Lang.Class({
 
 /**
  * File Transfers
- * TODO: errors
+ *
+ * Example Contruction:
+ *  let transfer = new Protocol.Transfer({
+ *      device: {Device.Device},
+ *      size: {Number} size in bytes,
+ *      input_stream: {Gio.InputStream} readable stream for uploads,
+ *      output_stream: {Gio.OutputStream} writable stream for downloads
+ *  });
  */
 var Transfer = new Lang.Class({
     Name: "GSConnectTransfer",
@@ -707,6 +723,14 @@ var Transfer = new Lang.Class({
         }
     },
     Properties: {
+        "size": GObject.ParamSpec.uint(
+            "size",
+            "TransferSize",
+            "The size in bytes of the transfer",
+            GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
+            0, GLib.MAXUINT32,
+            0
+        ),
         "uuid": GObject.ParamSpec.string(
             "uuid",
             "TransferUUID",
@@ -725,11 +749,15 @@ var Transfer = new Lang.Class({
 
         this._input_stream = params.input_stream;
         this._output_stream = params.output_stream;
+        this._size = params.size;
 
-        this.size = params.size;
         this.checksum = params.checksum;
         this._checksum = new GLib.Checksum(GLib.ChecksumType.MD5);
-        this.written = 0;
+        this._written = 0;
+    },
+
+    get size() {
+        return this._size || 0;
     },
 
     get uuid() {
@@ -742,18 +770,33 @@ var Transfer = new Lang.Class({
 
     /**
      * Open a new channel for uploading (incoming connection)
-     * @param {Gio.Socket} connection - ...
+     * @param {Number} port - A port between 1739-1764 for uploading
+     *
+     * Example usage:
+     *  transfer.connect("connected", transfer => transfer.start());
+     *  transfer.connect("succeeded"|"failed"|"cancelled", transfer => transfer.close());
+     *  transfer.upload().then(port => {
+     *      let packet = new Protocol.Packet({
+     *          id: 0,
+     *          type: "kdeconnect.share.request",
+     *          body: { filename: file.get_basename() },
+     *          payloadSize: info.get_size(),
+     *          payloadTransferInfo: { port: port }
+     *      });
+     *
+     *      device._channel.send(packet);
+     *  });
      */
     upload: function (port=1739) {
         debug(this.identity.body.deviceId);
 
         return new Promise((resolve, reject) => {
             // Start listening on new socket on a port between 1739-1764
-            let listener = new Gio.SocketListener();
+            this._listener = new Gio.SocketListener();
 
             while (true) {
                 try {
-                    listener.add_inet_port(port, null);
+                    this._listener.add_inet_port(port, null);
                 } catch (e) {
                     if (port < 1764) {
                         port += 1;
@@ -767,7 +810,7 @@ var Transfer = new Lang.Class({
             }
 
             // Wait for an incoming connection
-            listener.accept_async(null, this.upload_accept.bind(this));
+            this._listener.accept_async(null, this.upload_accept.bind(this));
 
             // Return the incoming port for payloadTransferInfo
             resolve(port);
@@ -777,41 +820,51 @@ var Transfer = new Lang.Class({
     upload_accept: function (listener, res) {
         debug(this.identity.body.deviceId);
 
+        // Accept the connection
         return new Promise((resolve, reject) => {
-            this._listener = listener;
-
-            // Accept the connection
             let connection, src;
 
             try {
                 [connection, src] = this._listener.accept_finish(res);
+                resolve(connection);
             } catch (e) {
-                debug(e);
-                this.close();
                 reject(e);
             }
-
-            // Set the usual socket options and authenticate the connection
-            return this._initSocket(connection).then(result => {
-                return this._serverTls(result);
-            // Init streams for uploading, set the connection and emit
-            }).then(result => {
-                this._output_stream = result.get_output_stream();
-                this._connection = result;
-                this.emit("connected");
-            }).catch(e => {
-                debug(e);
-            });
+        // Set the usual socket options
+        }).then(tcpConnection => {
+            return this._initSocket(tcpConnection);
+        // Authenticate the connection
+        }).then(tcpConnection => {
+            return this._serverTls(tcpConnection);
+        // Init streams for uploading, set the connection and emit
+        }).then(tlsConnection => {
+            this._output_stream = tlsConnection.get_output_stream();
+            this._connection = tlsConnection;
+            this.emit("connected");
+        }).catch(e => {
+            debug(e);
+            log("Error uploading: " + e.message);
+            this.close();
         });
     },
 
     /**
      * Open a new channel for downloading (outgoing connection)
+     * @param {Number} port - The port to connect to
+     *
+     * Example usage:
+     *  transfer.connect("connected", transfer => transfer.start());
+     *  transfer.connect("succeeded"|"failed"|"cancelled", transfer => transfer.close());
+     *  transfer.download(packet.payloadTransferInfo.port).catch(e => debug(e));
      */
     download: function (port) {
         log("Connecting to '" + this.identity.body.deviceId + "'");
 
+        // Create a new connection
         return new Promise((resolve, reject) => {
+            let client = new Gio.SocketClient();
+
+            // Use @port and the address from GSettings
             let address = new Gio.InetSocketAddress({
                 address: Gio.InetAddress.new_from_string(
                     this.device.settings.get_string("tcp-host")
@@ -819,38 +872,40 @@ var Transfer = new Lang.Class({
                 port: port
             });
 
-            // Create a new connection
-            let client = new Gio.SocketClient();
-
+            // Connect
             client.connect_async(address, null, (client, res) => {
                 try {
-                    let connection = client.connect_finish(res);
-                    resolve(connection); // FIXME
+                    resolve(client.connect_finish(res));
                 } catch (e) {
-                    debug(e);
-                    log("Error connecting: " + e);
-                    this.close();
                     reject(e)
                 }
             });
         // Set the usual socket options
-        }).then(result => {
-            return this._initSocket(result);
+        }).then(tcpConnection => {
+            return this._initSocket(tcpConnection);
         // Authenticate the connection
-        }).then(result => {
-            return this._clientTls(result);
-        // Init streams for packet exchange, set the connection and emit
-        }).then(result => {
-            this._input_stream = result.get_input_stream();
-            this._connection = result;
+        }).then(tcpConnection => {
+            return this._clientTls(tcpConnection);
+        // Init streams for downloading, set the connection and emit
+        }).then(tlsConnection => {
+            this._input_stream = tlsConnection.get_input_stream();
+            this._connection = tlsConnection;
             this.emit("connected");
-
-            return true;
         }).catch(e => {
             debug(e);
-            log("Error connecting: " + e);
+            log("Error downloading: " + e.message);
             this.close();
         });
+    },
+
+    start: function () {
+        this.emit("started");
+        this._read();
+    },
+
+    cancel: function () {
+        this._cancellable.cancel();
+        this.emit("cancelled");
     },
 
     _read: function () {
@@ -876,7 +931,7 @@ var Transfer = new Lang.Class({
                     this._write(bytes);
                     this._checksum.update(bytes.unref_to_array());
                 // Expected more data
-                } else if (this.size > this.written) {
+                } else if (this.size > this._written) {
                     this.emit("failed", "Incomplete transfer");
                 // Data should match the checksum
                 } else if (this.checksum) {
@@ -904,27 +959,17 @@ var Transfer = new Lang.Class({
             this._cancellable,
             (source, res) => {
                 try {
-                    this.written += source.write_bytes_finish(res);
+                    this._written += source.write_bytes_finish(res);
                 } catch (e) {
                     debug(e);
                     this.emit("failed", e.message);
                     return;
                 }
 
-                this.emit("progress", (this.written / this.size) * 100);
+                this.emit("progress", (this._written / this.size) * 100);
                 this._read();
             }
         );
-    },
-
-    start: function () {
-        this.emit("started");
-        this._read();
-    },
-
-    cancel: function () {
-        this._cancellable.cancel();
-        this.emit("cancelled");
     }
 });
 

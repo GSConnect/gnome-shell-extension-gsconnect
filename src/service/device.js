@@ -231,7 +231,7 @@ var Device = new Lang.Class({
     get connected () { return this._connected; },
     get fingerprint () {
         if (this.connected) {
-            return this._channel._peer_cert.fingerprint();
+            return this._channel.certificate.fingerprint();
         } else if (this.paired) {
             let cert = Gio.TlsCertificate.new_from_pem(
                 this.settings.get_string("certificate-pem"),
@@ -342,7 +342,7 @@ var Device = new Lang.Class({
         if (cert) {
             log("Authenticating '" + this.name + "'");
 
-            if (cert.verify(null, this._channel._peer_cert) > 0) {
+            if (cert.verify(null, this._channel.certificate) > 0) {
                 log("Authentication failure: '" + this.name + "'");
                 this._channel.close();
                 return false;
@@ -522,7 +522,7 @@ var Device = new Lang.Class({
         if (bool) {
             this.settings.set_string(
                 "certificate-pem",
-                this._channel._peer_cert.certificate_pem
+                this._channel.certificate.certificate_pem
             );
         } else {
             this.settings.reset("certificate-pem");
