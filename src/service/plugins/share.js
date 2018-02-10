@@ -150,7 +150,7 @@ var Plugin = new Lang.Class({
                 );
 
                 this.transfers.delete(transfer.uuid);
-                channel.close();
+                transfer.close();
             });
 
             transfer.connect("failed", (transfer, error) => {
@@ -174,7 +174,7 @@ var Plugin = new Lang.Class({
 
                 GLib.unlink(filepath);
                 this.transfers.delete(transfer.uuid);
-                channel.close();
+                transfer.close();
             });
 
             transfer.connect("cancelled", (transfer) => {
@@ -197,7 +197,7 @@ var Plugin = new Lang.Class({
 
                 GLib.unlink(filepath);
                 this.transfers.delete(transfer.uuid);
-                channel.close();
+                transfer.close();
             });
 
             transfer.start();
@@ -361,7 +361,7 @@ var Plugin = new Lang.Class({
                 );
 
                 this.transfers.delete(transfer.uuid);
-                channel.close();
+                transfer.close();
             });
 
             transfer.connect("failed", (transfer, error) => {
@@ -384,7 +384,7 @@ var Plugin = new Lang.Class({
                 this.device.send_notification(transfer.uuid, transfer.notif);
 
                 this.transfers.delete(transfer.uuid);
-                channel.close();
+                transfer.close();
             });
 
             transfer.connect("cancelled", (transfer) => {
@@ -406,7 +406,7 @@ var Plugin = new Lang.Class({
                 this.device.send_notification(transfer.uuid, transfer.notif);
 
                 this.transfers.delete(transfer.uuid);
-                channel.close();
+                transfer.close();
             });
 
             transfer.start();
