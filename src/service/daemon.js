@@ -372,19 +372,19 @@ var Daemon = new Lang.Class({
     },
 
     /**
-     * Notification proxy function
-     *
-     * This function is called by eavesdropping on the Fdo Notifications
-     * interface, then forwards the notification to any supporting device.
+     * This function forwards a local notification to any supporting device by
+     * eavesdropping on org.freedesktop.Notifications
      */
     Notify: function (appName, replacesId, iconName, summary, body, actions, hints, timeout) {
-        debug("Daemon: Notify()");
+        debug(arguments);
+
+        let variant = new GLib.Variant("s", escape(JSON.stringify([Array.from(arguments)])));
 
         for (let device of this._devices.values()) {
-            if (device._plugins.has("notification")) {
-                let plugin = device._plugins.get("notification");
-                // TODO: avoid spread operator if possible
-                plugin.Notify(...Array.from(arguments));
+            let action = device.lookup_action("sendNotification");
+
+            if (action && action.enabled) {
+                action.activate(variant);
             }
         }
     },
@@ -405,9 +405,6 @@ var Daemon = new Lang.Class({
         }
     },
 
-    /**
-     * Only used by plugins/share.js
-     */
     _openTransferAction: function (action, parameter) {
         let path = parameter.deep_unpack().toString();
         Gio.AppInfo.launch_default_for_uri(unescape(path), null);
@@ -417,19 +414,18 @@ var Daemon = new Lang.Class({
      * A meta-action for directing device actions.
      *
      * @param {Gio.Action} action - ...
-     * @param {Object} params
-     * @param {string} params[0] - DBus object path for device
-     * @param {string} params[1] - GAction/Method name
-     * @param {string} params[2] - JSON string of action data
+     * @param {GLib.Variant->Object/Array?} params
+     * @param {GLib.Variant->String} params[0] - DBus object path for device
+     * @param {GLib.Variant->String} params[1] - GAction/Method name
+     * @param {GLib.Variant->String} params[2] - JSON string of action args
      */
     _deviceAction: function (action, params) {
         params = params.unpack();
+
         let device = this._devices.get(params["0"].unpack());
-        let name = params["1"].unpack();
+        let deviceAction = device.lookup_action(params["1"].unpack());
 
-        let deviceAction = device.lookup_action(name);
-
-        if (device && deviceAction) {
+        if (device && deviceAction && deviceAction.enabled) {
             try {
                 deviceAction.activate(params["2"]);
             } catch (e) {
@@ -641,9 +637,8 @@ var Daemon = new Lang.Class({
     vfunc_startup: function() {
         this.parent();
 
+        // Track devices, DBus object path as key
         this._devices = new Map();
-        this._in = null;
-        this._listener = null;
 
         // Initialize encryption
         try {
