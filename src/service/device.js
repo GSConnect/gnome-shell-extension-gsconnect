@@ -191,25 +191,6 @@ var Device = new Lang.Class({
             gsconnect.app_path + "/Device/" + deviceId.replace(/\W+/g, "_")
         );
 
-        // Created for an incoming TCP Connection
-        if (params.channel) {
-            this._channel = params.channel;
-
-            this._channel.connect("connected", (channel) => this._onConnected(channel));
-            this._channel.connect("disconnected", (channel) => this._onDisconnected(channel));
-		    this._channel.connect("received", (channel, packet) => this._onReceived(channel, packet));
-
-            // Verify the certificate since it was TOFU'd by the listener
-            if (!this.verify()) {
-                return;
-            }
-
-		    this._channel.emit("connected");
-        // Created for an identity packet over UDP or from cache
-        } else {
-            this.activate();
-        }
-
         // TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
         // Actions
         ["acceptPair", "rejectPair"].map(name => {
@@ -225,6 +206,14 @@ var Device = new Lang.Class({
             this._dbus.get_object_path(),
             this
         );
+
+        // Created for an incoming TCP Connection
+        if (params.channel) {
+            this.update(params.channel.identity, params.channel);
+        // Created for an identity packet over UDP or from cache
+        } else {
+            this.activate();
+        }
     },
 
     /** Device Properties */
@@ -254,6 +243,8 @@ var Device = new Lang.Class({
         this.settings.set_string("id", packet.body.deviceId);
         this.settings.set_string("name", packet.body.deviceName);
         this.settings.set_string("type", packet.body.deviceType);
+        this.settings.set_string("tcp-host", packet.body.tcpHost);
+        this.settings.set_uint("tcp-port", packet.body.tcpPort);
 
         this.settings.set_strv(
             "incoming-capabilities",
@@ -264,9 +255,6 @@ var Device = new Lang.Class({
             "outgoing-capabilities",
             packet.body.outgoingCapabilities.sort()
         );
-
-        this.settings.set_string("tcp-host", packet.body.tcpHost);
-        this.settings.set_uint("tcp-port", packet.body.tcpPort);
     },
 
     /**
@@ -275,13 +263,14 @@ var Device = new Lang.Class({
     activate: function () {
         debug(this.name + " (" + this.id + ")");
 
+        // Already connected
 		if (this._channel !== null) {
 			debug(this.name + " (" + this.id + ")" + " already active");
 			return;
 		}
 
+        // Create a new channel
         this._channel = new Protocol.Channel(this.id);
-
         this._channel.connect("connected", (channel) => this._onConnected(channel));
         this._channel.connect("disconnected", (channel) => this._onDisconnected(channel));
 		this._channel.connect("received", (channel, packet) => this._onReceived(channel, packet));
@@ -303,12 +292,14 @@ var Device = new Lang.Class({
         debug(this.name + " (" + this.id + ")");
 
         if (channel) {
-            this._handleIdentity(packet);
+            this._handleIdentity(channel.identity);
 
+            // Disconnect from the current channel
             if (this._channel !== null) {
                 GObject.signal_handlers_destroy(this._channel);
             }
 
+            // Connect to the new channel
             this._channel = channel;
             this._channel.connect("connected", Lang.bind(this, this._onConnected));
             this._channel.connect("disconnected", Lang.bind(this, this._onDisconnected));
@@ -316,10 +307,8 @@ var Device = new Lang.Class({
 
             // Verify the certificate since it was TOFU'd by the listener
             if (!this.verify()) {
-                return;
-            }
-
-            if (!this.connected) {
+                this._channel.emit("disconnected");
+            } else if (!this.connected) {
                 this._channel.emit("connected");
             }
         } else {
