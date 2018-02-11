@@ -48,6 +48,14 @@ var Plugin = new Lang.Class({
     Name: "GSConnectPlugin",
     Extends: GObject.Object,
     Properties: {
+        "allow": GObject.ParamSpec.int(
+            "allow",
+            "AllowTraffic",
+            "The directions in which to allow traffic",
+            GObject.ParamFlags.READABLE,
+            1, 8,
+            1
+        ),
         "device": GObject.ParamSpec.object(
             "device",
             "WindowDevice",
@@ -113,15 +121,16 @@ var Plugin = new Lang.Class({
     },
 
     _registerAction: function (name, meta) {
+        let parameter_type = (meta.signature) ? new GLib.VariantType(meta.signature) : null;
         let action = new Action({
             name: name,
             meta: meta,
-            parameter_type: new GLib.VariantType("av")
+            parameter_type: parameter_type // "av" || null)
         }, this);
 
         action.connect("activate", (action, parameter) => {
             try {
-                let args = parameter.deep_unpack().map(a => a.unpack());
+                let args = gsconnect.full_unpack(parameter);
                 this[name](...args);
             } catch(e) {
                 debug(e.message + "\n" + e.stack);
@@ -131,6 +140,10 @@ var Plugin = new Lang.Class({
         this.device.add_action(action);
 
         this._actions.push(action.name);
+    },
+
+    get allow() {
+        return this.settings.get_uint("allow");
     },
 
     get device () {

@@ -161,39 +161,61 @@ gsconnect.uninstallService = function() {
 };
 
 
-function toVariant(obj) {
-    switch (true) {
-        case obj instanceof GLib.Variant:
-            return obj;
-        case typeof obj === "string":
-            return GLib.Variant.new("s", obj);
-        case typeof obj === "number":
-            return GLib.Variant.new("d", obj);
-        case typeof obj === "boolean":
-            return GLib.Variant.new("b", obj);
-        // TODO: still returning a native array?
-        case Array.isArray(obj):
-            return GLib.Variant.new("av", obj.map(item => toVariant(item)));
-        // FIXME yick
-        case (typeof obj === "object" && typeof obj !== null):
-            let copy = {};
+/**
+ * Recursively pack a GLib.Variant from a JSON-compatible object
+ */
+gsconnect.full_pack = function(obj) {
+    if (obj instanceof GLib.Variant) {
+        return obj;
+    } else if (typeof obj === "string") {
+        return GLib.Variant.new("s", obj);
+    } else if (typeof obj === "number") {
+        return GLib.Variant.new("d", obj);
+    } else if (typeof obj === "boolean") {
+        return GLib.Variant.new("b", obj);
+    } else if (typeof obj.map === "function") {
+        return GLib.Variant.new("av", obj.map(i => gsconnect.full_pack(i)));
+    } else if (typeof obj === "object" && typeof obj !== null) {
+        let packed = {};
 
-            for (let key in obj) {
-                copy[key] = toVariant(obj[key]);
-            }
+        for (let key in obj) {
+            packed[key] = gsconnect.full_pack(obj[key]);
+        }
 
-            return GLib.Variant.new("a{sv}", copy);
-        default:
-            log("NO TYPE FOUND");
-            return null;
+        return GLib.Variant.new("a{sv}", packed);
     }
+
+    return null;
+};
+
+
+/**
+ * Recursively deep_unpack() a GLib.Variant
+ */
+gsconnect.full_unpack = function(obj) {
+    if (typeof obj.deep_unpack === "function") {
+        return gsconnect.full_unpack(obj.deep_unpack());
+    } else if (typeof obj.map === "function") {
+        return obj.map(i => this.full_unpack(i));
+    } else if (typeof obj === "object" && typeof obj !== null) {
+        let unpacked = {};
+
+        for (let key in obj) {
+            unpacked[key] = gsconnect.full_unpack(obj[key]);
+        }
+
+        return unpacked;
+    }
+
+    return obj;
 };
 
 
 Gio.Notification.prototype.add_device_button = function (label, dbusPath, name) {
     try {
-        let args = Array.from(arguments).slice(3).map(arg => toVariant(arg));
-        let parameter = new GLib.Variant("(ssav)", [dbusPath, name, args]);
+        let args = Array.from(arguments).slice(3);
+        let vargs = args.map(arg => gsconnect.full_pack(arg));
+        let parameter = new GLib.Variant("(ssav)", [dbusPath, name, vargs]);
         this.add_button_with_target(label, "app.deviceAction", parameter);
     } catch(e) {
         debug("Error adding button: " + [label, dbusPath, name].join(","));
@@ -204,8 +226,9 @@ Gio.Notification.prototype.add_device_button = function (label, dbusPath, name) 
 
 Gio.Notification.prototype.set_device_action = function (dbusPath, name) {
     try {
-        let args = Array.from(arguments).slice(3).map(arg => toVariant(arg));
-        let parameter = new GLib.Variant("(ssav)", [dbusPath, name, args]);
+        let args = Array.from(arguments).slice(3);
+        let vargs = args.map(arg => gsconnect.full_pack(arg));
+        let parameter = new GLib.Variant("(ssav)", [dbusPath, name, vargs]);
         this.set_default_action_and_target("app.deviceAction", parameter);
     } catch(e) {
         debug("Error setting action: " + [dbusPath, name].join(","));
