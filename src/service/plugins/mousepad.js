@@ -14,10 +14,12 @@ const Protocol = imports.service.protocol;
 const PluginsBase = imports.service.plugins.base;
 
 
-var METADATA = {
-    uuid: "org.gnome.Shell.Extensions.GSConnect.Plugin.Mousepad",
-    incomingPackets: ["kdeconnect.mousepad.request"],
-    outgoingPackets: []
+var Metadata = {
+    id: "org.gnome.Shell.Extensions.GSConnect.Plugin.Mousepad",
+    incomingCapabilities: ["kdeconnect.mousepad.request"],
+    outgoingCapabilities: [],
+    actions: {},
+    events: {}
 };
 
 

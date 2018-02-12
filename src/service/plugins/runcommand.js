@@ -13,12 +13,21 @@ imports.searchPath.push(gsconnect.datadir);
 const PluginsBase = imports.service.plugins.base;
 
 
-var METADATA = {
-    summary: _("Run Commands"),
-    description: _("Execute local commands remotely"),
-    uuid: "org.gnome.Shell.Extensions.GSConnect.Plugin.RunCommand",
-    incomingPackets: ["kdeconnect.runcommand", "kdeconnect.runcommand.request"],
-    outgoingPackets: ["kdeconnect.runcommand", "kdeconnect.runcommand.request"]
+var Metadata = {
+    id: "org.gnome.Shell.Extensions.GSConnect.Plugin.RunCommand",
+    incomingCapabilities: ["kdeconnect.runcommand", "kdeconnect.runcommand.request"],
+    outgoingCapabilities: ["kdeconnect.runcommand", "kdeconnect.runcommand.request"],
+    actions: {
+        executeCommand: {
+            summary: _("Run Commands"),
+            description: _("Execute local commands remotely"),
+            signature: "av",
+            incoming: ["kdeconnect.runcommand"],
+            outgoing: ["kdeconnect.runcommand.request"],
+            allow: 2
+        }
+    },
+    events: {}
 };
 
 

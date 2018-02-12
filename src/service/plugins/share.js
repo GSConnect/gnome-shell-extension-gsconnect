@@ -15,10 +15,45 @@ const Protocol = imports.service.protocol;
 const PluginsBase = imports.service.plugins.base;
 
 
-var METADATA = {
-    uuid: "org.gnome.Shell.Extensions.GSConnect.Plugin.Share",
-    incomingPackets: ["kdeconnect.share.request"],
-    outgoingPackets: ["kdeconnect.share.request"]
+var Metadata = {
+    id: "org.gnome.Shell.Extensions.GSConnect.Plugin.Share",
+    incomingCapabilities: ["kdeconnect.share.request"],
+    outgoingCapabilities: ["kdeconnect.share.request"],
+    actions: {
+        shareDialog: {
+            summary: _("Share Dialog"),
+            description: _("Select a file or URL to share"),
+            signature: null,
+            incoming: [],
+            outgoing: ["kdeconnect.share.request"],
+            allow: 2
+        },
+        shareFile: {
+            summary: _("Share File"),
+            description: _("Directly share a file"),
+            signature: "av",
+            incoming: [],
+            outgoing: ["kdeconnect.share.request"],
+            allow: 2
+        },
+        shareText: {
+            summary: _("Share Text"),
+            description: _("Directly share text"),
+            signature: "av",
+            incoming: [],
+            outgoing: ["kdeconnect.share.request"],
+            allow: 2
+        },
+        shareUrl: {
+            summary: _("Share URL"),
+            description: _("Directly share a Url"),
+            signature: "av",
+            incoming: [],
+            outgoing: ["kdeconnect.share.request"],
+            allow: 2
+        }
+    },
+    events: {}
 };
 
 

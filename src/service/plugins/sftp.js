@@ -14,10 +14,21 @@ imports.searchPath.push(gsconnect.datadir);
 const PluginsBase = imports.service.plugins.base;
 
 
-var METADATA = {
-    uuid: "org.gnome.Shell.Extensions.GSConnect.Plugin.SFTP",
-    incomingPackets: ["kdeconnect.sftp"],
-    outgoingPackets: ["kdeconnect.sftp.request"]
+var Metadata = {
+    id: "org.gnome.Shell.Extensions.GSConnect.Plugin.SFTP",
+    incomingCapabilities: ["kdeconnect.sftp"],
+    outgoingCapabilities: ["kdeconnect.sftp.request"],
+    actions: {
+        mount: {
+            summary: _("Browse Device"),
+            description: _("Mount a remote device"),
+            signature: null,
+            incoming: ["kdeconnect.sftp"],
+            outgoing: ["kdeconnect.sftp.request"],
+            allow: 6
+        }
+    },
+    events: {}
 };
 
 

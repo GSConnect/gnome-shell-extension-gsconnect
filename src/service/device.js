@@ -591,16 +591,16 @@ var Device = new Lang.Class({
         let outgoing = this.outgoingCapabilities;
 
         for (let name in imports.service.plugins) {
-            // Skip base.js
-            if (!imports.service.plugins[name].METADATA) { continue; }
+            let meta = imports.service.plugins[name].Metadata;
 
-            let metadata = imports.service.plugins[name].METADATA;
+            // Skip base.js
+            if (!meta) { continue; }
 
             // If it sends packets we can handle
-            if (metadata.incomingPackets.some(v => outgoing.indexOf(v) >= 0)) {
+            if (meta.incomingCapabilities.some(v => outgoing.indexOf(v) > -1)) {
                 supported.push(name);
-            // If it handles packets we can send
-            } else if (metadata.outgoingPackets.some(v => incoming.indexOf(v) >= 0)) {
+            // Or handles packets we can send
+            } else if (meta.outgoingCapabilities.some(v => incoming.indexOf(v) > -1)) {
                 supported.push(name);
             }
         }
@@ -617,24 +617,24 @@ var Device = new Lang.Class({
             }
 
             // Instantiate the handler
-            let module, plugin;
+            let handler, plugin;
 
             try {
-                module = imports.service.plugins[name];
-                plugin = new module.Plugin(this);
+                handler = imports.service.plugins[name];
+                plugin = new handler.Plugin(this);
             } catch (e) {
                 debug("Error loading " + name + ": " + e.message + "\n" + e.stack);
                 reject(e);
             }
 
             // Register packet handlers
-            for (let packetType of module.METADATA.incomingPackets) {
+            for (let packetType of handler.Metadata.incomingCapabilities) {
                 if (!this._handlers.has(packetType)) {
                     this._handlers.set(packetType, plugin);
                 }
             }
 
-            // Register as enabled
+            // Register plugin
             if (!this._plugins.has(name)) {
                 this._plugins.set(name, plugin);
             }
@@ -661,11 +661,11 @@ var Device = new Lang.Class({
                 // Unregister handlers
                 let handler = imports.service.plugins[name];
 
-                for (let packetType of handler.METADATA.incomingPackets) {
+                for (let packetType of handler.Metadata.incomingCapabilities) {
                     this._handlers.delete(packetType);
                 }
 
-                // Register as disabled
+                // Unregister plugin
                 this._plugins.get(name).destroy();
                 this._plugins.delete(name);
             } catch (e) {

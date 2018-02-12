@@ -14,10 +14,20 @@ const Protocol = imports.service.protocol;
 const PluginsBase = imports.service.plugins.base;
 
 
-var METADATA = {
-    uuid: "org.gnome.Shell.Extensions.GSConnect.Plugin.Clipboard",
-    incomingPackets: ["kdeconnect.clipboard"],
-    outgoingPackets: ["kdeconnect.clipboard"]
+var Metadata = {
+    id: "org.gnome.Shell.Extensions.GSConnect.Plugin.Clipboard",
+    incomingCapabilities: ["kdeconnect.clipboard"],
+    outgoingCapabilities: ["kdeconnect.clipboard"],
+    actions: {
+        provideClipboard: {
+            summary: _("Provide Clipboard"),
+            description: _("Provide clipboard update"),
+            signature: "av",
+            incoming: ["kdeconnect.clipboard"],
+            outgoing: ["kdeconnect.clipboard"]
+        }
+    },
+    events: {}
 };
 
 

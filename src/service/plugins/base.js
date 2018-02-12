@@ -86,31 +86,30 @@ var Plugin = new Lang.Class({
 
         this._device = device;
         this._name = name;
-        this._metadata = imports.service.plugins[name].METADATA;
+        this._meta = imports.service.plugins[name].Metadata;
 
         // Export DBus
         this._dbus = Gio.DBusExportedObject.wrapJSObject(
-            gsconnect.dbusinfo.lookup_interface(this._metadata.uuid),
+            gsconnect.dbusinfo.lookup_interface(this._meta.id),
             this
         );
         this._dbus.export(Gio.DBus.session, device._dbus.get_object_path());
 
         // Init GSettings
         this.settings = new Gio.Settings({
-            settings_schema: gsconnect.gschema.lookup(this._metadata.uuid, -1),
+            settings_schema: gsconnect.gschema.lookup(this._meta.id, -1),
             path: gsconnect.settings.path + ["device", device.id, "plugin", name, ""].join("/")
         });
 
         // TODO TODO
         // Actions
         this._actions = [];
-        let module = imports.service.plugins[name];
         let deviceIn = this.device.incomingCapabilities;
         let deviceOut = this.device.outgoingCapabilities;
 
-        if (module.Action) {
-            for (let name in module.Action) {
-                let meta = module.Action[name];
+        if (this._meta.actions) {
+            for (let name in this._meta.actions) {
+                let meta = this._meta.actions[name];
 
                 if (meta.incoming.every(p => deviceOut.indexOf(p) > -1) &&
                     meta.outgoing.every(p => deviceIn.indexOf(p) > -1)) {

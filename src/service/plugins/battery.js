@@ -14,45 +14,27 @@ imports.searchPath.push(gsconnect.datadir);
 const PluginsBase = imports.service.plugins.base;
 
 
-var METADATA = {
-    uuid: "org.gnome.Shell.Extensions.GSConnect.Plugin.Battery",
-    incomingPackets: ["kdeconnect.battery", "kdeconnect.battery.request"],
-    outgoingPackets: ["kdeconnect.battery", "kdeconnect.battery.request"]
-};
-
-
-var UUID = "org.gnome.Shell.Extensions.GSConnect.Plugin.Battery";
-
-var IncomingPacket = {
-    BATTERY_UPDATE: "kdeconnect.battery",
-    BATTERY_UPDATE_REQUEST: "kdeconnect.battery.request"
-};
-
-var OutgoingPacket = {
-    BATTERY_UPDATE: "kdeconnect.battery",
-    BATTERY_UPDATE_REQUEST: "kdeconnect.battery.request"
-};
-
-var Action = {
-    // Sending an update
-    provideUpdate: {
-        label: _("Provide battery update"),
-        incoming: ["kdeconnect.battery.request"],
-        outgoing: ["kdeconnect.battery"]
+var Metadata = {
+    id: "org.gnome.Shell.Extensions.GSConnect.Plugin.Battery",
+    incomingCapabilities: ["kdeconnect.battery", "kdeconnect.battery.request"],
+    outgoingCapabilities: ["kdeconnect.battery", "kdeconnect.battery.request"],
+    actions: {
+        provideUpdate: {
+            summary: _("Report Battery"),
+            description: _("Provide battery update"),
+            signature: "av",
+            incoming: ["kdeconnect.battery.request"],
+            outgoing: ["kdeconnect.battery"]
+        },
+        requestUpdate: {
+            summary: _("Update Battery"),
+            description: _("Request battery update"),
+            signature: "av",
+            incoming: ["kdeconnect.battery"],
+            outgoing: ["kdeconnect.battery.request"]
+        }
     },
-    // Request an update
-    requestUpdate: {
-        label: _("Request battery update"),
-        incoming: ["kdeconnect.battery"],
-        outgoing: ["kdeconnect.battery.request"]
-    }
-};
-
-var Event = {
-    // Sent an update
-    BATTERY_UPDATE: "kdeconnect.battery",
-    // A request for an update
-    BATTERY_UPDATE_REQUEST: "kdeconnect.battery.request"
+    events: {}
 };
 
 

@@ -16,17 +16,37 @@ const Protocol = imports.service.protocol;
 const PluginsBase = imports.service.plugins.base;
 
 
-var METADATA = {
-    uuid: "org.gnome.Shell.Extensions.GSConnect.Plugin.Notification",
-    incomingPackets: [
-        "kdeconnect.notification",
-        "kdeconnect.notification.request"
-    ],
-    outgoingPackets: [
-        "kdeconnect.notification",
-        "kdeconnect.notification.reply",
-        "kdeconnect.notification.request"
-    ]
+var Metadata = {
+    id: "org.gnome.Shell.Extensions.GSConnect.Plugin.Notification",
+    incomingCapabilities: ["kdeconnect.notification", "kdeconnect.notification.request"],
+    outgoingCapabilities: ["kdeconnect.notification", "kdeconnect.notification.reply", "kdeconnect.notification.request"],
+    actions: {
+        showNotification: {
+            summary: _("Show Notification"),
+            description: _("Display a remote notification locally"),
+            signature: "av",
+            incoming: ["kdeconnect.notification"],
+            outgoing: [],
+            allow: 4
+        },
+        closeNotification: {
+            summary: _("Close Notification"),
+            description: _("Close a remote notification"),
+            signature: "av",
+            incoming: [],
+            outgoing: ["kdeconnect.notification.request"],
+            allow: 6
+        },
+        sendNotification: {
+            summary: _("Send Notification"),
+            description: _("Display a local notification remotely"),
+            signature: "av",
+            incoming: [],
+            outgoing: ["kdeconnect.notification"],
+            allow: 2
+        }
+    },
+    events: {}
 };
 
 

@@ -17,44 +17,88 @@ const PluginsBase = imports.service.plugins.base;
 const TelephonyWidget = imports.widgets.telephony;
 
 
-var METADATA = {
-    uuid: "org.gnome.Shell.Extensions.GSConnect.Plugin.Telephony",
-    incomingPackets: ["kdeconnect.telephony"],
-    outgoingPackets: ["kdeconnect.telephony.request", "kdeconnect.sms.request"]
-};
+var Metadata = {
+    id: "org.gnome.Shell.Extensions.GSConnect.Plugin.Telephony",
+    incomingCapabilities: ["kdeconnect.telephony"],
+    outgoingCapabilities: ["kdeconnect.telephony.request", "kdeconnect.sms.request"],
+    actions: {
+        // Call Actions
+        muteCall: {
+            summary: _("Mute Call"),
+            description: _("Silence an incoming call"),
+            signature: null,
+            incoming: ["kdeconnect.telephony"],
+            outgoing: ["kdeconnect.telephony.request"],
+            allow: 6
+        },
 
-
-var UUID = "org.gnome.Shell.Extensions.GSConnect.Plugin.Telephony";
-
-var IncomingPacket = {
-    TELEPHONY_EVENT: "kdeconnect.telephony"
-};
-
-var OutgoingPacket = {
-    TELEPHONY_ACTION: "kdeconnect.telephony.request",
-    SMS_MESSAGE: "kdeconnect.sms.request"
-};
-
-var Action = {
-    openSms: {
-        label: _("Reply to a missed call by SMS"),
-        incoming: ["kdeconnect.telephony"],
-        outgoing: ["kdeconnect.sms.request"]
+        // SMS Actions
+        openSms: {
+            summary: _("Open SMS"),
+            description: _("Start a new SMS conversation"),
+            signature: null,
+            incoming: ["kdeconnect.telephony"],
+            outgoing: ["kdeconnect.sms.request"],
+            allow: 6
+        },
+        replyMissedCall: {
+            summary: _("Reply Missed Call"),
+            description: _("Reply to a missed call by SMS"),
+            signature: "av",
+            incoming: ["kdeconnect.telephony"],
+            outgoing: ["kdeconnect.sms.request"],
+            allow: 6
+        },
+        replySms: {
+            summary: _("Reply SMS"),
+            description: _("Reply to an SMS message"),
+            signature: "av",
+            incoming: ["kdeconnect.telephony"],
+            outgoing: ["kdeconnect.sms.request"],
+            allow: 6
+        },
+        sendSms: {
+            summary: _("Send SMS"),
+            description: _("Send an SMS message"),
+            signature: "av",
+            incoming: ["kdeconnect.telephony"],
+            outgoing: ["kdeconnect.sms.request"],
+            allow: 6
+        }
     },
-    replyMissedCall: {
-        label: _("Reply to a missed call by SMS"),
-        incoming: ["kdeconnect.telephony"],
-        outgoing: ["kdeconnect.sms.request"]
-    },
-    replySms: {
-        label: _("Reply to an SMS"),
-        incoming: ["kdeconnect.telephony"],
-        outgoing: ["kdeconnect.sms.request"]
-    },
-    sendSms: {
-        label: _("Reply to a missed call by SMS"),
-        incoming: ["kdeconnect.telephony"],
-        outgoing: ["kdeconnect.sms.request"]
+    events: {
+        // SMS Events
+        missedCall: {
+            summary: _("Missed Call"),
+            description: _("An incoming call was missed"),
+            incoming: ["kdeconnect.telephony"],
+            allow: 4
+        },
+        ringing: {
+            summary: _("Incoming Call"),
+            description: _("An incoming call"),
+            incoming: ["kdeconnect.telephony"],
+            allow: 4
+        },
+        sms: {
+            summary: _("SMS Message"),
+            description: _("An incoming SMS message"),
+            incoming: ["kdeconnect.telephony"],
+            allow: 4
+        },
+        talking: {
+            summary: _("Call In Progress"),
+            description: _("An incoming call was answered"),
+            incoming: ["kdeconnect.telephony"],
+            allow: 4
+        },
+        // FIXME: isCancel???
+        ended: {
+            summary: _("Call Ended"),
+            description: _("An incoming call ended"),
+            incoming: ["kdeconnect.telephony"],
+            allow: 4
+        }
     }
 };
 

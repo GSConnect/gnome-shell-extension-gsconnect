@@ -16,28 +16,29 @@ const Protocol = imports.service.protocol;
 const PluginsBase = imports.service.plugins.base;
 
 
-var METADATA = {
-    uuid: "org.gnome.Shell.Extensions.GSConnect.Plugin.FindMyPhone",
-    incomingPackets: ["kdeconnect.findmyphone.request"],
-    outgoingPackets: ["kdeconnect.findmyphone.request"]
-};
-
-
-var UUID = "org.gnome.Shell.Extensions.GSConnect.Plugin.FindMyPhone";
-
-var IncomingPacket = {
-    LOCATE_EVENT: "kdeconnect.findmyphone.request"
-};
-
-var OutgoingPacket = {
-    LOCATE_ACTION: "kdeconnect.findmyphone.request"
-};
-
-var Action = {
-    find: {
-        label: _("Locate the device"),
-        incoming: [],
-        outgoing: ["kdeconnect.findmyphone.request"]
+var Metadata = {
+    id: "org.gnome.Shell.Extensions.GSConnect.Plugin.FindMyPhone",
+    incomingCapabilities: ["kdeconnect.findmyphone.request"],
+    outgoingCapabilities: ["kdeconnect.findmyphone.request"],
+    actions: {
+        find: {
+            summary: _("Locate"),
+            description: _("Find a device by making it ring"),
+            signature: null,
+            incoming: [],
+            outgoing: ["kdeconnect.findmyphone.request"],
+            allow: 2
+        }
+    },
+    events: {
+        find: {
+            summary: _("Locate"),
+            description: _("Find a device by making it ring"),
+            signature: null,
+            incoming: [],
+            outgoing: ["kdeconnect.findmyphone.request"],
+            allow: 4
+        }
     }
 };
 

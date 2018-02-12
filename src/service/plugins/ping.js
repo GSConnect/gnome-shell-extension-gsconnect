@@ -13,10 +13,30 @@ imports.searchPath.push(gsconnect.datadir);
 const PluginsBase = imports.service.plugins.base;
 
 
-var METADATA = {
-    uuid: "org.gnome.Shell.Extensions.GSConnect.Plugin.Ping",
-    incomingPackets: ["kdeconnect.ping"],
-    outgoingPackets: ["kdeconnect.ping"]
+var Metadata = {
+    id: "org.gnome.Shell.Extensions.GSConnect.Plugin.Ping",
+    incomingCapabilities: ["kdeconnect.ping"],
+    outgoingCapabilities: ["kdeconnect.ping"],
+    actions: {
+        ping: {
+            summary: _("Ping"),
+            description: _("Ping a device with an optional message"),
+            signature: "av",
+            incoming: [],
+            outgoing: ["kdeconnect.ping"],
+            allow: 2
+        }
+    },
+    events: {
+        ping: {
+            summary: _("Ping"),
+            description: _("Ping a device with an optional message"),
+            signature: "av",
+            incoming: ["kdeconnect.ping"],
+            outgoing: [],
+            allow: 4
+        }
+    }
 };
 
 

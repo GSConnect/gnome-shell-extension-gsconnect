@@ -14,10 +14,12 @@ const Protocol = imports.service.protocol;
 const PluginsBase = imports.service.plugins.base;
 
 
-var METADATA = {
-    uuid: "org.gnome.Shell.Extensions.GSConnect.Plugin.MPRIS",
-    incomingPackets: ["kdeconnect.mpris.request"],
-    outgoingPackets: ["kdeconnect.mpris"]
+var Metadata = {
+    id: "org.gnome.Shell.Extensions.GSConnect.Plugin.MPRIS",
+    incomingCapabilities: ["kdeconnect.mpris.request"],
+    outgoingCapabilities: ["kdeconnect.mpris"],
+    actions: {},
+    events: {}
 };
 
 

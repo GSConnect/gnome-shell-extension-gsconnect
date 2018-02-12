@@ -14,12 +14,12 @@ const Protocol = imports.service.protocol;
 const PluginsBase = imports.service.plugins.base;
 
 
-var METADATA = {
-    summary: _("Screen Lock"),
-    description: _("Lock and unlock devices"),
-    uuid: "org.gnome.Shell.Extensions.GSConnect.Plugin.Lock",
-    incomingPackets: ["kdeconnect.lock", "kdeconnect.lock.request"],
-    outgoingPackets: ["kdeconnect.lock", "kdeconnect.lock.request"]
+var Metadata = {
+    id: "org.gnome.Shell.Extensions.GSConnect.Plugin.Lock",
+    incomingCapabilities: ["kdeconnect.lock", "kdeconnect.lock.request"],
+    outgoingCapabilities: ["kdeconnect.lock", "kdeconnect.lock.request"],
+    actions: {},
+    events: {}
 };
 
 

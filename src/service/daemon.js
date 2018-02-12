@@ -234,16 +234,16 @@ var Daemon = new Lang.Class({
         });
 
         for (let name in imports.service.plugins) {
-            if (imports.service.plugins[name].METADATA) {
-                let metadata = imports.service.plugins[name].METADATA;
+            let meta = imports.service.plugins[name].Metadata;
 
-                for (let packetType of metadata.incomingPackets) {
-                    packet.body.incomingCapabilities.push(packetType);
-                }
+            if (!meta) continue;
 
-                for (let packetType of metadata.outgoingPackets) {
-                    packet.body.outgoingCapabilities.push(packetType);
-                }
+            for (let packetType of meta.incomingCapabilities) {
+                packet.body.incomingCapabilities.push(packetType);
+            }
+
+            for (let packetType of meta.outgoingCapabilities) {
+                packet.body.outgoingCapabilities.push(packetType);
             }
         }
 
