@@ -238,7 +238,7 @@ var Store = new Lang.Class({
             };
             this._writeCache();
 
-            this._matches[id] = this._contacts[id];
+            matches[id] = this._contacts[id];
             keys = Object.keys(matches);
         }
 
@@ -259,7 +259,6 @@ var Store = new Lang.Class({
 
             this._writeCache();
             [this._provider_icon, this._provider_name] = result;
-            log("PROVIDER ICON: " + this.provider_icon);
             this.notify("provider-icon");
             this.notify("provider-name");
             this.notify("contacts");
@@ -482,7 +481,6 @@ var Avatar = new Lang.Class({
 
         // Image
         if (this.contact.avatar) {
-            log("AVATAR: " + contact.avatar); // FIXME
             let loader = new GdkPixbuf.PixbufLoader();
             loader.write(GLib.file_get_contents(this.contact.avatar)[1]);
 
