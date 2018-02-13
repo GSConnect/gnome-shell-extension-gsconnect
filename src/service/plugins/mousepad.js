@@ -52,13 +52,21 @@ var Plugin = new Lang.Class({
         }
 
         this._display = Gdk.Display.get_default();
-
+        
         if (this._display === null) {
             this.destroy();
             throw Error(_("Failed to get Gdk.Display"));
         } else {
             this._seat = this._display.get_default_seat();
             this._pointer = this._seat.get_pointer();
+        }
+
+        // Try import Caribou
+        try {
+            const Caribou = imports.gi.Caribou;
+            this.vkbd = Caribou.DisplayAdapter.get_default();
+        } catch (e) {
+            debug(_("Cannot load Caribou virtual keyboard for Unicode support"));
         }
     },
 
@@ -86,18 +94,37 @@ var Plugin = new Lang.Class({
             }
         } else if (packet.body.hasOwnProperty("dx") && packet.body.hasOwnProperty("dy")) {
             this.movePointer(packet.body.dx, packet.body.dy);
-        } else if (packet.body.key) {
-            // This is sometimes sent in advance of a specialKey packet
-            if (packet.body.key !== "\u0000") {
-                this.pressKey(packet.body.key);
+        } else if (packet.body.key || packet.body.specialKey) {
+            if (this.vkbd ) {
+                // Set Gdk.ModifierType
+                let mask = 0;
+                if (packet.body.ctrl)  { mask |= Gdk.ModifierType.CONTROL_MASK; }
+                if (packet.body.shift) { mask |= Gdk.ModifierType.SHIFT_MASK; }
+                if (packet.body.alt)   { mask |= Gdk.ModifierType.MOD1_MASK; }  // Alt key
+                if (packet.body.super) { mask |= Gdk.ModifierType.SUPER_MASK; } // Super key
+
+                // Transform key to keysym
+                let keysym;
+                if (packet.body.key && packet.body.key !== "\u0000") {
+                    keysym = Gdk.unicode_to_keyval(packet.body.key.codePointAt(0));
+                } else if (packet.body.specialKey && KeyMap.has(packet.body.specialKey)) {
+                    keysym = KeyMap.get(packet.body.specialKey);
+                }
+                
+                this.pressKeySym(keysym, mask);
+            } else {
+                // This is sometimes sent in advance of a specialKey packet
+                if (packet.body.key && packet.body.key !== "\u0000") {
+                    this.pressKey(packet.body.key);
+                } else if (packet.body.specialKey) {
+                    this.pressSpecialKey(packet.body.specialKey);
+                }
             }
-        } else if (packet.body.specialKey) {
-            this.pressSpecialKey(packet.body.specialKey);
         }
     },
 
     clickPointer: function (button) {
-        debug("Mousepad: clickPointer(" + button + ", " + double + ")");
+        debug("Mousepad: clickPointer(" + button + ")");
 
         let event = "b%dc".format(button);
 
@@ -162,7 +189,9 @@ var Plugin = new Lang.Class({
         debug("Mousepad: pressKey(" + key + ")");
 
         try {
-            Atspi.generate_keyboard_event(0, key, Atspi.KeySynthType.STRING);
+            if ( !Atspi.generate_keyboard_event(0, key, Atspi.KeySynthType.STRING) ) {
+                throw Error("Unknown/invalid key");
+            };
         } catch (e) {
             log("Mousepad: Error simulating keypress: " + e);
         }
@@ -183,6 +212,21 @@ var Plugin = new Lang.Class({
             );
         } catch (e) {
             log("Mousepad: Error simulating special keypress: " + e);
+        }
+    },
+    
+    pressKeySym: function (keysym, mask) {
+        debug("Mousepad: pressKeySym(" + keysym + ", " + mask + ")");
+
+        try {
+            if (Gdk.keyval_to_unicode(keysym) !== 0) {
+                this.vkbd.mod_lock(mask);
+                this.vkbd.keyval_press(keysym);
+                this.vkbd.keyval_release(keysym);
+                this.vkbd.mod_unlock(mask);
+            }
+        } catch (e) {
+            log("Mousepad: Error simulating keyboard event with virtual keyboard: " + e);
         }
     }
 });
@@ -223,4 +267,3 @@ var KeyMap = new Map([
     [31, Gdk.KEY_F11],
     [32, Gdk.KEY_F12],
 ]);
-
