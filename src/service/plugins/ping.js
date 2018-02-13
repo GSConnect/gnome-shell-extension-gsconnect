@@ -66,10 +66,7 @@ var Plugin = new Lang.Class({
                 reject(new Error("Not allowed: " + packet.type));
             }
 
-            // Ensure DBus signal doesn't fail
-            if (!packet.body.hasOwnProperty("message")) {
-                packet.body.message = "";
-            }
+            packet.body.message = packet.body.message || "";
 
             this.emit("ping", packet.body.message);
             this._dbus.emit_signal(
@@ -78,20 +75,20 @@ var Plugin = new Lang.Class({
             );
 
             // Notification
-            let body;
+            let notif = new Gio.Notification();
+            notif.set_title(this.device.name);
 
             if (packet.body.message.length) {
                 // TRANSLATORS: An optional message accompanying a ping, rarely if ever used
                 // eg. Ping: A message sent with ping
-                body = _("Ping: %s").format(packet.body.message);
+                notif.set_body(_("Ping: %s").format(packet.body.message));
             } else {
-                body = _("Ping");
+                notif.set_body(_("Ping"));
             }
 
-            let notif = new Gio.Notification();
-            notif.set_title(this.device.name);
-            notif.set_body(body);
-            notif.set_icon(new Gio.ThemedIcon({ name: "phone-symbolic" }));
+            notif.set_icon(
+                new Gio.ThemedIcon({ name: this.device.type + "-symbolic" })
+            );
             this.device.send_notification("ping", notif);
 
             resolve(true);
