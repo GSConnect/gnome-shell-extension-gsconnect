@@ -99,14 +99,6 @@ var Plugin = new Lang.Class({
             new GLib.VariantType("aa{sv}"),
             new GLib.Variant("aa{sv}", []),
             GObject.ParamFlags.READABLE
-        ),
-        "Notifications": GObject.param_spec_variant(
-            "Notifications",
-            "NotificationList",
-            "A list of active or expected notifications",
-            new GLib.VariantType("aa{sv}"),
-            new GLib.Variant("aa{sv}", []),
-            GObject.ParamFlags.READABLE
         )
     },
     Signals: {
@@ -141,15 +133,11 @@ var Plugin = new Lang.Class({
                 }
             }
         });
+
     },
 
-    //
     get notifications () {
         return this._notifications;
-    },
-
-    get Notifications () {
-        return this._notifications.map((notif) => Object.toVariant(notif));
     },
 
     handlePacket: function (packet) {
@@ -158,48 +146,35 @@ var Plugin = new Lang.Class({
         return new Promise((resolve, reject) => {
             if (packet.type === "kdeconnect.notification.request") {
                 if (this.allow & 4) {
+                    // TODO: A request for our notifications; NotImplemented
                 }
-                // TODO: A request for our notifications; NotImplemented
             } else if (this.allow & 2) {
-                // Ignore GroupSummary notifications
+                // Grouped notifications close as a group so we don't use them
                 if (packet.body.id.indexOf("GroupSummary") > -1) {
-                    debug("ignoring GroupSummary notification");
-                    resolve(false);
-                // Ignore grouped SMS notifications
+                    resolve("ignored GroupSummary notification");
+                // Grouped SMS messages have no notification number in the id
+                // "0|com.google.android.apps.messaging|0|com.google.android.apps.messaging:sms|10109"
                 } else if (packet.body.id.indexOf(":sms|") > -1) {
-                    debug("ignoring grouped SMS notification");
-                    resolve(false);
+                    resolve("ignored grouped SMS notification");
                 } else if (packet.body.isCancel) {
                     this.device.withdraw_notification(packet.body.id);
                     this.untrackNotification(packet.body);
-                    resolve(false);
+                    resolve("closed notification");
                 // Ignore previously posted notifications
                 } else if (this._getNotification(packet.body)) {
-                    debug("ignoring cached notification");
-                    resolve(false);
+                    resolve("ignored cached notification");
                 } else if (packet.payloadSize) {
                     debug("new notification with payload");
                     this._downloadIcon(packet).then((result) => {
-                        resolve(this._createNotification(packet, result));
+                        resolve(this.showNotification(packet, result));
                     });
                 } else {
                     debug("new notification");
-                    resolve(this._createNotification(packet));
+                    resolve(this.showNotification(packet));
                 }
             }
         });
     },
-
-    /**
-     * DBus Interface
-     */
-    Close: function (id) {
-        this.close(id);
-    },
-
-    /**
-     * Private Methods
-     */
 
     /** Get the path to the largest PNG of @name */
     _getIconPath: function (name) {
@@ -227,7 +202,7 @@ var Plugin = new Lang.Class({
                 return notif;
             } else if (notif.localId) {
                 // @query is a duplicate search by GNotification id
-                // Called by close() or markDuplicate()
+                // Called by closeNotification() or markDuplicate()
                 if ([query.id, query.localId].indexOf(notif.localId) > -1) {
                     debug("found notification by localId");
                     return notif;
@@ -242,7 +217,7 @@ var Plugin = new Lang.Class({
                     // It's marked to be closed
                     if (notif.isCancel) {
                         debug("closing duplicate notification");
-                        this.close(notif.id);
+                        this.closeNotification(notif.id);
                     }
 
                     return notif;
@@ -253,7 +228,7 @@ var Plugin = new Lang.Class({
         return false;
     },
 
-    _createNotification: function (packet, icon) {
+    showNotification: function (packet, icon) {
         return new Promise((resolve, reject) => {
             let notif = new Gio.Notification();
 
@@ -289,8 +264,6 @@ var Plugin = new Lang.Class({
                 if (!contact.avatar && icon) {
                     // FIXME FIXME FIXME: not saving proper (data)?
                     let path = this.contacts._cacheDir + "/" + GLib.uuid_string_random() + ".jpeg";
-                    log("BYTES: " + icon.get_bytes());
-                    return;
                     GLib.file_set_contents(path, icon.get_bytes().toArray().toString());
                     contact.avatar = path;
                 } else if (contact.avatar && !icon) {
@@ -368,10 +341,8 @@ var Plugin = new Lang.Class({
             if (gsconnect.settings.get_int("donotdisturb") < now) {
                 this.trackNotification(packet.body);
                 this.device.send_notification(packet.body.id, notif);
-                log("SHOWING NOTIFICATION");
             }
 
-            // FIXME
             resolve(true);
         });
     },
@@ -391,12 +362,8 @@ var Plugin = new Lang.Class({
             });
 
             transfer.connect("connected", (transfer) => transfer.start());
-            transfer.connect("failed", (transfer) => {
-                channel.close();
-                resolve(null);
-            });
+            transfer.connect("failed", (transfer) => resolve(null));
             transfer.connect("succeeded", (transfer) => {
-                channel.close();
                 resolve(Gio.BytesIcon.new(iconStream.steal_as_bytes()));
             });
 
@@ -405,7 +372,7 @@ var Plugin = new Lang.Class({
     },
 
     _uploadIcon: function (packet, filename) {
-        debug("Notification: _uploadIcon()");
+        debug(filename);
 
         let file = Gio.File.new_for_path(filename);
         let info = file.query_info("standard::size", 0, null);
@@ -417,8 +384,6 @@ var Plugin = new Lang.Class({
         });
 
         transfer.connect("connected", (channel) => transfer.start());
-        transfer.connect("failed", () => channel.close());
-        transfer.connect("succeeded", () => channel.close());
 
         transfer.upload().then(port => {
             packet.payloadSize = info.get_size();
@@ -433,28 +398,41 @@ var Plugin = new Lang.Class({
     },
 
     /**
-     * This is called by the daemon
+     * This is called by the daemon; See Daemon.Notify()
      */
-    Notify: function (appName, replacesId, iconName, summary, body, actions, hints, timeout) {
-        debug("Notification: Notify()");
+    sendNotification: function (args) {
+        debug(args[0] + ": " + args[3] + " - " + args[4]);
 
-        if (!appName) {
-            return;
-        }
+        return new Promise((resolve, reject) => {
+            let [
+                appName,
+                replacesId,
+                iconName,
+                summary,
+                body,
+                actions,
+                hints,
+                timeout
+            ] = args;
 
-        let applications = JSON.parse(this.settings.get_string("applications"));
+            if (!appName) {
+                reject(new Error("no appName"));
+            }
 
-        // New application
-        if (appName && !applications.hasOwnProperty(appName)) {
-            applications[appName] = { iconName: iconName, enabled: true };
-            this.settings.set_string(
-                "applications",
-                JSON.stringify(applications)
-            );
-        }
+            let applications = JSON.parse(this.settings.get_string("applications"));
 
-        if (this.settings.get_boolean("send-notifications")) {
-            if (applications[appName].enabled) {
+            // New application
+            if (appName && !applications.hasOwnProperty(appName)) {
+                debug("adding '" + appName + "' to notifying applications");
+
+                applications[appName] = { iconName: iconName, enabled: true };
+                this.settings.set_string(
+                    "applications",
+                    JSON.stringify(applications)
+                );
+            }
+
+            if ((this.allow & 2) && applications[appName].enabled) {
                 let packet = new Protocol.Packet({
                     id: 0,
                     type: "kdeconnect.notification",
@@ -473,8 +451,12 @@ var Plugin = new Lang.Class({
                 } else {
                     this.send(packet);
                 }
+
+                resolve("'" + appName + "' notification forwarded");
             }
-        }
+
+            resolve(true);
+        });
     },
 
     /**
@@ -483,7 +465,6 @@ var Plugin = new Lang.Class({
     trackNotification: function (notif) {
         this._notifications.push(notif);
         this.notify("notifications");
-        this.notify("Notifications", "aa{sv}");
     },
 
     untrackNotification: function (notif) {
@@ -493,7 +474,6 @@ var Plugin = new Lang.Class({
             let index_ = this._notifications.indexOf(cnotif);
             this._notifications.splice(index_, 1);
             this.notify("notifications");
-            this.notify("Notifications", "aa{sv}");
         }
     },
 
@@ -515,7 +495,7 @@ var Plugin = new Lang.Class({
             // ...close it now if we know the remote id
             if (cachedNotif.id) {
                 debug("closing duplicate notification");
-                this.close(cachedNotif.id);
+                this.closeNotification(cachedNotif.id);
             // ...or mark it to be closed when we do
             } else {
                 debug("marking duplicate notification to be closed");
@@ -531,7 +511,7 @@ var Plugin = new Lang.Class({
      * Close a remote notification and remove it from the cache
      * @param {string} id - The either the local id or remote timestamp
      */
-    close: function (id) {
+    closeNotification: function (id) {
         debug(id);
 
         // Check if this is a known notification

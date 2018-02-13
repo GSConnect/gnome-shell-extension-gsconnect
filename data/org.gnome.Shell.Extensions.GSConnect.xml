@@ -66,11 +66,10 @@
 
   <!-- Notifications -->
   <interface name="org.gnome.Shell.Extensions.GSConnect.Plugin.Notification">
-    <property type="aa{sv}" name="Notifications" access="read"/>
     <signal name="received"/>
     <signal name="dismissed"/>
     <method name="ClearCache"/>
-    <method name="Close">
+    <method name="closeNotification">
       <arg name="id" type="s" direction="in"/>
     </method>
   </interface>
@@ -162,7 +161,7 @@
     </signal>
   </interface>
 
-  <!-- freedesktop.org Notifications Interface -->
+  <!-- org.freedesktop.Notifications Interface -->
   <interface name="org.freedesktop.Notifications">
     <method name="Notify">
       <arg name="appName" type="s" direction="in"/>

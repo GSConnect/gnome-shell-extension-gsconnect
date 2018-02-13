@@ -562,12 +562,8 @@ var Channel = new Lang.Class({
 
             client.connect_async(address, null, (client, res) => {
                 try {
-                    let connection = client.connect_finish(res);
-                    resolve(connection); // FIXME
+                    resolve(client.connect_finish(res));
                 } catch (e) {
-                    debug(e);
-                    log("Error connecting: " + e);
-                    this.close();
                     reject(e)
                 }
             });
@@ -589,15 +585,15 @@ var Channel = new Lang.Class({
             this._connection = tlsConnection;
             this.emit("connected");
         }).catch(e => {
-            debug(e);
             log("Error opening connection: " + e.message);
+            debug(e);
             this.close();
         });
     },
 
     /**
      * Accept a channel (incoming connection)
-     * @param {Gio.Socket} connection - ...
+     * @param {Gio.TcpConnection} connection - ...
      */
     accept: function (connection) {
         // Set the usual socket options and receive the device's identity
@@ -616,8 +612,8 @@ var Channel = new Lang.Class({
             this.emit("connected");
         }).catch(e => {
             log("Error accepting connection: " + e.message);
+            debug(e);
             this.close();
-            return e;
         });
     },
 
@@ -632,7 +628,7 @@ var Channel = new Lang.Class({
             log("error removing monitor: " + e);
         }
 
-        ["input_stream", "output_stream", "_connection", "_listener"].map(stream => {
+        ["_input_stream", "_output_stream", "_connection", "_listener"].map(stream => {
             try {
                 if (this[stream]) {
                     this[stream].close(null);
@@ -723,6 +719,13 @@ var Transfer = new Lang.Class({
         }
     },
     Properties: {
+        "device": GObject.ParamSpec.object(
+            "device",
+            "TransferDevice",
+            "The device associated with this transfer",
+            GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
+            GObject.Object
+        ),
         "size": GObject.ParamSpec.uint(
             "size",
             "TransferSize",
@@ -745,8 +748,7 @@ var Transfer = new Lang.Class({
 
         this._cancellable = new Gio.Cancellable();
 
-        this.device = params.device;
-
+        this._device = params.device;
         this._input_stream = params.input_stream;
         this._output_stream = params.output_stream;
         this._size = params.size;
@@ -754,6 +756,10 @@ var Transfer = new Lang.Class({
         this.checksum = params.checksum;
         this._checksum = new GLib.Checksum(GLib.ChecksumType.MD5);
         this._written = 0;
+    },
+
+    get device() {
+        return this._device;
     },
 
     get size() {
@@ -774,7 +780,7 @@ var Transfer = new Lang.Class({
      *
      * Example usage:
      *  transfer.connect("connected", transfer => transfer.start());
-     *  transfer.connect("succeeded"|"failed"|"cancelled", transfer => transfer.close());
+     *  transfer.connect("succeeded"|"failed"|"cancelled", transfer => func());
      *  transfer.upload().then(port => {
      *      let packet = new Protocol.Packet({
      *          id: 0,
@@ -822,11 +828,8 @@ var Transfer = new Lang.Class({
 
         // Accept the connection
         return new Promise((resolve, reject) => {
-            let connection, src;
-
             try {
-                [connection, src] = this._listener.accept_finish(res);
-                resolve(connection);
+                resolve(this._listener.accept_finish(res)[0]);
             } catch (e) {
                 reject(e);
             }
@@ -842,8 +845,8 @@ var Transfer = new Lang.Class({
             this._connection = tlsConnection;
             this.emit("connected");
         }).catch(e => {
-            debug(e);
             log("Error uploading: " + e.message);
+            debug(e);
             this.close();
         });
     },
@@ -854,7 +857,7 @@ var Transfer = new Lang.Class({
      *
      * Example usage:
      *  transfer.connect("connected", transfer => transfer.start());
-     *  transfer.connect("succeeded"|"failed"|"cancelled", transfer => transfer.close());
+     *  transfer.connect("succeeded"|"failed"|"cancelled", transfer => func());
      *  transfer.download(packet.payloadTransferInfo.port).catch(e => debug(e));
      */
     download: function (port) {
@@ -862,8 +865,6 @@ var Transfer = new Lang.Class({
 
         // Create a new connection
         return new Promise((resolve, reject) => {
-            let client = new Gio.SocketClient();
-
             // Use @port and the address from GSettings
             let address = new Gio.InetSocketAddress({
                 address: Gio.InetAddress.new_from_string(
@@ -873,6 +874,8 @@ var Transfer = new Lang.Class({
             });
 
             // Connect
+            let client = new Gio.SocketClient();
+
             client.connect_async(address, null, (client, res) => {
                 try {
                     resolve(client.connect_finish(res));
@@ -892,8 +895,8 @@ var Transfer = new Lang.Class({
             this._connection = tlsConnection;
             this.emit("connected");
         }).catch(e => {
-            debug(e);
             log("Error downloading: " + e.message);
+            debug(e);
             this.close();
         });
     },
@@ -933,18 +936,16 @@ var Transfer = new Lang.Class({
                 // Expected more data
                 } else if (this.size > this._written) {
                     this.emit("failed", "Incomplete transfer");
+                    this.close();
                 // Data should match the checksum
-                } else if (this.checksum) {
-                    if (this.checksum !== this._checksum.get_string()) {
-                        this.emit("failed", "Checksum mismatch");
-                    } else {
-                        debug("Completed transfer of " + this.size + " bytes");
-                        this.emit("succeeded");
-                    }
+                } else if (this.checksum && this.checksum !== this._checksum.get_string()) {
+                    this.emit("failed", "Checksum mismatch");
+                    this.close();
                 // All done
                 } else {
                     debug("Completed transfer of " + this.size + " bytes");
                     this.emit("succeeded");
+                    this.close();
                 }
             }
         );
