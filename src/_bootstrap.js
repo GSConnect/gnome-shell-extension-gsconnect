@@ -75,13 +75,18 @@ gsconnect.settings.connect("changed::debug", () => {
         window.debug = function (msg) {
             // Stack regexp
             let _dbgRegexp = /(?:(?:([^<.]+)<\.)?([^@]+))?@(.+):(\d+):\d+/g;
-            let stackLine = (new Error()).stack.split("\n")[1];
-            let [m, k, f, fn, l] = _dbgRegexp.exec(stackLine);
+            let e = (msg.stack) ? msg : new Error();
+            let [m, k, f, fn, l] = _dbgRegexp.exec(e.stack.split("\n")[1]);
             fn = GLib.path_get_basename(fn);
 
-            // fix msg if not string
             let hdr = [gsconnect.metadata.name, fn, k, f, l].filter(k => (k)).join(":");
-            msg = (typeof msg !== "string") ? JSON.stringify(msg) : msg;
+
+            // fix msg if not string
+            if (msg.stack) {
+                msg = msg.message + "\n" + msg.stack;
+            } else if (typeof msg !== "string") {
+                msg = JSON.stringify(msg);
+            }
 
             log("[" + hdr + "]: " + msg);
         };
@@ -211,9 +216,8 @@ gsconnect.full_unpack = function(obj) {
 };
 
 
-Gio.Notification.prototype.add_device_button = function (label, dbusPath, name) {
+Gio.Notification.prototype.add_device_button = function (label, dbusPath, name, ...args) {
     try {
-        let args = Array.from(arguments).slice(3);
         let vargs = args.map(arg => gsconnect.full_pack(arg));
         let parameter = new GLib.Variant("(ssav)", [dbusPath, name, vargs]);
         this.add_button_with_target(label, "app.deviceAction", parameter);
@@ -224,9 +228,8 @@ Gio.Notification.prototype.add_device_button = function (label, dbusPath, name) 
 };
 
 
-Gio.Notification.prototype.set_device_action = function (dbusPath, name) {
+Gio.Notification.prototype.set_device_action = function (dbusPath, name, ...args) {
     try {
-        let args = Array.from(arguments).slice(3);
         let vargs = args.map(arg => gsconnect.full_pack(arg));
         let parameter = new GLib.Variant("(ssav)", [dbusPath, name, vargs]);
         this.set_default_action_and_target("app.deviceAction", parameter);
