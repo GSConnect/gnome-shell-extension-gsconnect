@@ -9,7 +9,6 @@ imports.gi.versions.Gio = "2.0";
 imports.gi.versions.GLib = "2.0";
 imports.gi.versions.GObject = "2.0";
 imports.gi.versions.Gtk = "3.0";
-imports.gi.versions.Meta = "1";
 imports.gi.versions.Pango = "1.0";
 imports.gi.versions.Shell = "0.1";
 imports.gi.versions.St = "1.0";
@@ -19,7 +18,6 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
-const Meta = imports.gi.Meta;
 const Pango = imports.gi.Pango;
 const Shell = imports.gi.Shell;
 const St = imports.gi.St;
@@ -39,7 +37,7 @@ window.gsconnect = {
 imports.searchPath.push(gsconnect.datadir);
 const _bootstrap = imports._bootstrap;
 const Client = imports.client;
-const ShellWidget = imports.widgets.shell;
+const Actors = imports.actors;
 
 
 /** ... FIXME FIXME FIXME */
@@ -737,7 +735,7 @@ var SystemIndicator = new Lang.Class({
         // Search for a matching device with the notification plugin enabled
         for (let device of this.daemon._devices.values()) {
             if (deviceId === device.id && device.notification) {
-                device.notification.close(id);
+                device.notification.closeNotification(id);
                 break;
             }
         }
@@ -854,24 +852,20 @@ var pushNotification = function (notification) {
         return;
 
     if (this._appId && this._appId === "org.gnome.Shell.Extensions.GSConnect") {
-        // Find the GNotification Id
-        let notificationId;
-
+        // Look for the GNotification id
         for (let id in this._notifications) {
             if (this._notifications[id] === notification) {
-                notificationId = id;
+                debug("connecting to shell notification: " + id);
+
+                // Close the notification remotely when dismissed
+                notification.connect("destroy", (notification, reason) => {
+                    if (reason === MessageTray.NotificationDestroyedReason.DISMISSED) {
+                        systemIndicator._onNotificationDestroyed(id);
+                    }
+                });
                 break;
             }
         }
-
-        debug("connecting to shell notification: " + notificationId);
-
-        // Close the notification remotely when dismissed
-        notification.connect("destroy", (notification, reason) => {
-            if (reason === MessageTray.NotificationDestroyedReason.DISMISSED) {
-                systemIndicator._onNotificationDestroyed(notificationId);
-            }
-        });
     } else {
         while (this.notifications.length >= MessageTray.MAX_NOTIFICATIONS_PER_SOURCE) {
             this.notifications.shift().destroy(MessageTray.NotificationDestroyedReason.EXPIRED);
