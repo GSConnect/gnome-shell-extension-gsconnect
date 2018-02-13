@@ -192,12 +192,7 @@ var Notification = new Lang.Class({
 
     _init: function (device) {
         this.parent(device, "Notification");
-    },
-
-    // FIXME
-//    get notifications() {
-//        return this._get("Notifications").map(notif => Object.fromVariant(notif));
-//    }
+    }
 });
 
 
