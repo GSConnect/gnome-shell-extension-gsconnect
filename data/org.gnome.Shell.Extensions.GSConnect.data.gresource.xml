@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
   <gresource prefix="/org/gnome/Shell/Extensions/GSConnect">
+    <!-- UI -->
     <file compressed="true">application.css</file>
     <file compressed="true" preprocess="xml-stripblanks">device.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">settings.ui</file>
-
-    <!-- DBus Files -->
+    <file compressed="true" preprocess="xml-stripblanks">shortcut-editor.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">enter-keyboard-shortcut.svg</file>
+    <!-- DBus Service -->
     <file compressed="true">org.gnome.Shell.Extensions.GSConnect.desktop</file>
     <file compressed="true">org.gnome.Shell.Extensions.GSConnect.service</file>
     <file compressed="true" preprocess="xml-stripblanks">org.gnome.Shell.Extensions.GSConnect.xml</file>

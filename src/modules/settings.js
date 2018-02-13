@@ -4,7 +4,6 @@ const Gettext = imports.gettext.domain("org.gnome.Shell.Extensions.GSConnect");
 const _ = Gettext.gettext;
 const Lang = imports.lang;
 
-const GdkPixbuf = imports.gi.GdkPixbuf;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
@@ -12,9 +11,7 @@ const Gtk = imports.gi.Gtk;
 
 // Local Imports
 imports.searchPath.push(gsconnect.datadir);
-const Client = imports.client;
-const KeybindingsWidget = imports.widgets.keybindings;
-const Sound = imports.modules.sound;
+const Keybindings = imports.modules.keybindings;
 
 
 /**
@@ -44,27 +41,17 @@ function mapWidget(obj, key, widget, map) {
         let variant = obj.settings.get_value(key);
         let type = variant.get_type_string();
 
-        let prop, def;
-
-        if (widget instanceof Gtk.Label) {
-            prop = "label";
-            def = "default";
-        } else if (widget instanceof Gtk.Switch) {
-            prop = "active";
-            def = "false";
-        }
-
         // Init the widget
         // TODO: hacky
         let value = variant.unpack();
         let mappedValue = map.get(value);
-        widget[prop] = (mappedValue !== undefined) ? mappedValue : value.toString(); // TODO
+        widget.label = (mappedValue !== undefined) ? mappedValue : value.toString();
 
         // Watch settings for changes
         let _changed = obj.settings.connect("changed::" + key, (settings) => {
             let val = obj.settings.get_value(key).unpack();
             let mappedVal = map.get(val);
-            widget[prop] = (mappedVal !== undefined) ? mappedVal : val.toString(); // TODO
+            widget.label = (mappedVal !== undefined) ? mappedVal : value.toString();
         });
         widget.connect("destroy", () => obj.settings.disconnect(_changed));
 
@@ -84,23 +71,13 @@ function mapWidget(obj, key, widget, map) {
                     }
                 }
 
-                newValue = (newValue !== undefined) ? newValue : map.keys().next().value;
+                newValue = (newValue) ? newValue : map.keys().next().value;
                 obj.settings.set_value(key, new GLib.Variant(type, newValue));
             }
         });
     } else {
         row.visible = false;
     }
-};
-
-
-function mapSwitch(obj, key, label, [on, off]=[true, false]) {
-    let map = new Map([
-        [on, true],
-        [off, false]
-    ]);
-
-    return mapWidget(obj, key, label, map);
 };
 
 
@@ -114,7 +91,6 @@ function mapBool(obj, key, label, [on, off]=[true, false]) {
 };
 
 
-// FIXME: this is garbage
 function mapAllow(obj, key, label) {
     let map = new Map([
         [1, _("Off")],
@@ -124,6 +100,28 @@ function mapAllow(obj, key, label) {
     ]);
 
     return mapWidget(obj, key, label, map);
+};
+
+
+function mapSwitch(obj, widget, [on, off]=[6, 4]) {
+    let row = widget.get_parent().get_parent();
+
+    if (obj && obj.settings) {
+        // Init the widget
+        widget.active = (obj.settings.get_uint("allow") === on);
+
+        widget.connect("notify::active", () => {
+            obj.settings.set_uint("allow", (widget.active) ? on : off);
+        });
+
+        // Watch settings for changes
+        let _changed = obj.settings.connect("changed::allow", (settings) => {
+            widget.active = (obj.settings.get_uint("allow") === on);
+        });
+        widget.connect("destroy", () => obj.settings.disconnect(_changed));
+    } else {
+        row.visible = false;
+    }
 };
 
 
@@ -258,6 +256,87 @@ var SidebarRow = new Lang.Class({
 });
 
 
+/**
+ * A row for a section of settings
+ */
+var SectionRow = new Lang.Class({
+    Name: "GSConnectSectionRow",
+    Extends: Gtk.ListBoxRow,
+
+    _init: function (params) {
+        let icon_name = params.icon_name;
+        delete params.icon_name;
+        let title = params.title;
+        delete params.title;
+        let subtitle = params.subtitle;
+        delete params.subtitle;
+        let widget = params.widget;
+        delete params.widget;
+
+        params = Object.assign({
+            activatable: true,
+            selectable: false,
+            height_request: 56,
+            visible: true
+        }, params);
+        this.parent(params);
+
+        this.grid = new Gtk.Grid({
+            column_spacing: 12,
+            margin_top: 8,
+            margin_right: 12,
+            margin_bottom: 8,
+            margin_left: 12,
+            visible: true
+        });
+        this.add(this.grid);
+
+        if (icon_name) {
+            this.icon = new Gtk.Image({
+                gicon: new Gio.ThemedIcon({
+                    names: [ icon_name, "system-run-symbolic" ]
+                }),
+                pixel_size: 32,
+                visible: true
+            });
+
+            this.height_request = 56;
+            this.grid.attach(this.icon, 0, 0, 1, 2);
+        }
+
+        if (title) {
+            this.title = new Gtk.Label({
+                label: title,
+                halign: Gtk.Align.START,
+                hexpand: true,
+                valign: Gtk.Align.CENTER,
+                vexpand: true,
+                visible: true
+            });
+            this.grid.attach(this.title, 1, 0, 1, 1);
+        }
+
+        if (subtitle) {
+            this.subtitle = new Gtk.Label({
+                label: subtitle,
+                halign: Gtk.Align.START,
+                hexpand: true,
+                valign: Gtk.Align.CENTER,
+                vexpand: true,
+                visible: true
+            });
+            this.subtitle.get_style_context().add_class("dim-label");
+            this.grid.attach(this.subtitle, 1, 1, 1, 1);
+        }
+
+        if (widget) {
+            this.widget = widget;
+            this.grid.attach(this.widget, 2, 0, 1, 2);
+        }
+    }
+});
+
+
 var SettingsWindow = new Lang.Class({
     Name: "GSConnectSettingsWindow",
     Extends: Gtk.ApplicationWindow,
@@ -337,38 +416,6 @@ var SettingsWindow = new Lang.Class({
      * UI Setup and template connecting
      */
     _setHeaderbar: function () {
-        // About Button
-        let aboutButton = new Gtk.Button({
-            image: new Gtk.Image({
-                icon_name: "help-about-symbolic",
-                pixel_size: 16,
-                visible: true
-            }),
-            always_show_image: true,
-            visible: true
-        });
-        aboutButton.connect("clicked", (button) => {
-            let dialog = new Gtk.AboutDialog({
-                authors: [ "Andy Holmes <andrew.g.r.holmes@gmail.com>" ],
-                //logo_icon_name: gsconnect.app_id,
-                logo: GdkPixbuf.Pixbuf.new_from_resource_at_scale(
-                    gsconnect.app_path + "/" + gsconnect.app_id + ".svg",
-                    128,
-                    128,
-                    true
-                ),
-                program_name: _("GSConnect"),
-                version: gsconnect.metadata.version,
-                website: gsconnect.metadata.url,
-                license_type: Gtk.License.GPL_2_0,
-                transient_for: this.get_toplevel(),
-                modal: true
-            });
-            dialog.connect("delete-event", dialog => dialog.destroy());
-            dialog.show();
-        });
-        this.headerbar.pack_end(aboutButton);
-
         // Previous Button
         this._prevButton = new Gtk.Button({
             image: new Gtk.Image({
@@ -452,11 +499,8 @@ var SettingsWindow = new Lang.Class({
         let meta = DeviceMetadata[device.type];
 
         // Separate device settings widgets
-        let deviceSettings = new DeviceSettings(daemon, device);
-        let switcher = deviceSettings.switcher;
-        deviceSettings.remove(deviceSettings.switcher);
-        let panel = deviceSettings.stack;
-        deviceSettings.remove(deviceSettings.stack);
+        let panel = new DeviceSettings(daemon, device);
+        let switcher = panel.switcher;
 
         // Add panel switcher to sidebar stack
         panel.connect("destroy", () => switcher.destroy());
@@ -491,135 +535,6 @@ var SettingsWindow = new Lang.Class({
 });
 
 
-var SectionRow = new Lang.Class({
-    Name: "GSConnectSectionRow",
-    Extends: Gtk.ListBoxRow,
-
-    _init: function (params) {
-        let icon_name = params.icon_name || "";
-        delete params.icon_name;
-        let title = params.title;
-        delete params.title;
-        let subtitle = params.subtitle;
-        delete params.subtitle;
-
-        params = Object.assign({
-            activatable: true,
-            selectable: false,
-            height_request: 56,
-            visible: true
-        }, params);
-        this.parent(params);
-
-        this.grid = new Gtk.Grid({
-            column_spacing: 12,
-            margin_top: 8,
-            margin_right: 12,
-            margin_bottom: 8,
-            margin_left: 12,
-            visible: true
-        });
-        this.add(this.grid);
-
-        if (icon_name) {
-            this.icon = new Gtk.Image({
-                gicon: new Gio.ThemedIcon({
-                    names: [ icon_name, "system-run-symbolic" ]
-                }),
-                pixel_size: 32,
-                visible: true
-            });
-
-            this.height_request = 56;
-            this.grid.attach(this.icon, 0, 0, 1, 2);
-        }
-
-        if (title) {
-            this.title = new Gtk.Label({
-                label: title,
-                halign: Gtk.Align.START,
-                hexpand: true,
-                valign: Gtk.Align.CENTER,
-                vexpand: true,
-                visible: true
-            });
-            this.grid.attach(this.title, 1, 0, 1, 1);
-        }
-
-        if (subtitle) {
-            this.subtitle = new Gtk.Label({
-                label: subtitle,
-                halign: Gtk.Align.START,
-                hexpand: true,
-                valign: Gtk.Align.CENTER,
-                vexpand: true,
-                visible: true
-            });
-            this.subtitle.get_style_context().add_class("dim-label");
-            this.grid.attach(this.subtitle, 1, 1, 1, 1);
-        }
-    }
-});
-
-
-var KeybindingsSection = new Lang.Class({
-    Name: "GSConnectKeybindingsSection",
-    Extends: Gtk.Frame,
-
-    _init: function (device) {
-        this.parent({
-            can_focus: false,
-            hexpand: true,
-            shadow_type: Gtk.ShadowType.IN,
-            visible: true
-        });
-
-        this.device = device;
-
-        this.keyView = new KeybindingsWidget.TreeView(
-            this.device.settings,
-            "keybindings"
-        );
-        this.add(this.keyView);
-
-        this._setup();
-    },
-
-    _reset: function () {
-        this.device.settings.set_string("keybindings", "{}");
-        this.remove(this.keyView);
-        this.keyView.destroy();
-        delete this.keyView;
-
-        this.keyView = new KeybindingsWidget.TreeView(
-            this.device.settings,
-            "keybindings"
-        );
-        this.add(this.keyView);
-
-        //this.keyView.model.clear();
-        this._setup();
-    },
-
-    _setup: function () {
-        // TRANSLATORS: Open the device menu
-        this.keyView.addAccel("menu", _("Open Menu"), 0, 0);
-        // TRANSLATORS: Open a new SMS window
-        this.keyView.addAccel("sms", _("Send SMS"), 0, 0);
-        // TRANSLATORS: eg. Locate Google Pixel
-        this.keyView.addAccel("find", _("Locate %s").format(this.device.name), 0, 0);
-        // TRANSLATORS: Open the device's list of browseable directories
-        this.keyView.addAccel("browse", _("Browse Files"), 0, 0);
-        // TRANSLATORS: Open the file chooser for sending files/links
-        this.keyView.addAccel("share", _("Share File/URL"), 0, 0);
-
-        this.keyView.setAccels(
-            JSON.parse(this.device.settings.get_string("keybindings"))
-        );
-    }
-});
-
-
 const AllowTraffic = {
     OFF: 1,
     OUT: 2,
@@ -629,10 +544,10 @@ const AllowTraffic = {
 
 var DeviceSettings = Lang.Class({
     Name: "GSConnectDeviceSettings",
-    Extends: Gtk.Grid,
+    Extends: Gtk.Stack,
     Template: "resource:///org/gnome/Shell/Extensions/GSConnect/device.ui",
     Children: [
-        "stack", "switcher",
+        "switcher",
         // Device
         "device-status-list",
         "device-icon", "device-name", "device-type",
@@ -650,11 +565,8 @@ var DeviceSettings = Lang.Class({
         "sharing", "sharing-page", "sharing-list",
         "battery-allow", "share-allow", "clipboard-allow", "mpris-allow",
         "mousepad-allow", "findmyphone-allow",
-        // Telephony
-        "telephony", "telephony-page",
-        "handler-list", "handle-messaging", "handle-calls",
-        "ringing-list", "ringing-volume", "ringing-pause",
-        "talking-list", "talking-volume", "talking-pause", "talking-microphone"
+        // Shortcuts
+        "shortcuts-list"
     ],
 
     _init: function (daemon, device) {
@@ -664,25 +576,15 @@ var DeviceSettings = Lang.Class({
         this.device = device;
 
         this.switcher.connect("row-selected", (box, row) => {
-            this.stack.set_visible_child_name(row.get_name());
+            this.set_visible_child_name(row.get_name());
         });
 
         this._infoPage();
         this._runcommandSettings();
         this._notificationSettings();
         this._sharingSettings();
-        this._telephonySettings();
-    },
 
-    _sectionSeparators: function (row, before) {
-        if (before) {
-            row.set_header(
-                new Gtk.Separator({
-                    orientation: Gtk.Orientation.HORIZONTAL,
-                    visible: true
-                })
-            );
-        }
+        this._keyboardShortcuts();
     },
 
     /**
@@ -959,18 +861,22 @@ var DeviceSettings = Lang.Class({
         let notification = this.device._plugins.get("notification");
 
         if (notification) {
-            mapSwitch(notification, "allow", this.notification_allow, [ 6, 4 ]);
+            mapSwitch(notification, this.notification_allow, [ 6, 4 ]);
+
+            // Populate, sort and separate
             this._populateApplications(notification);
             this.notification_apps.set_sort_func((row1, row2) => {
                 return row1.title.label.localeCompare(row2.title.label);
             });
             this.notification_apps.set_header_func(section_separators);
+
+            // Map "row-activated" to notification settings
             this.notification_apps.connect("row-activated", (box, row) => {
                 if (row.enabled.label === _("On")) {
-                    this._notification_apps[row.appName.label].enabled = false;
+                    this._notification_apps[row.title.label].enabled = false;
                     row.enabled.label = _("Off")
                 } else {
-                    this._notification_apps[row.appName.label].enabled = true;
+                    this._notification_apps[row.title.label].enabled = true;
                     row.enabled.label = _("On")
                 }
                 notification.settings.set_string(
@@ -978,6 +884,13 @@ var DeviceSettings = Lang.Class({
                     JSON.stringify(this._notification_apps)
                 );
             });
+
+            this.notification_allow.bind_property(
+                "active",
+                this.notification_apps,
+                "sensitive",
+                GObject.BindingFlags.SYNC_CREATE
+            );
         } else {
             this.notification.visible = false;
             this.notification_page.visible = false;
@@ -985,7 +898,7 @@ var DeviceSettings = Lang.Class({
     },
 
     _populateApplications: function (notification) {
-        let applications = this._queryApplications(notification);
+        this._queryApplications(notification);
 
         for (let name in this._notification_apps) {
             let row = new SectionRow({
@@ -1010,8 +923,16 @@ var DeviceSettings = Lang.Class({
     },
 
     _queryApplications: function (notification) {
-        let applications = notification.settings.get_string("applications");
-        this._notification_apps = JSON.parse(applications);
+        try {
+            this._notification_apps = JSON.parse(
+                notification.settings.get_string("applications")
+            );
+        } catch (e) {
+            debug(e);
+            this._notification_apps = {};
+        }
+
+        let apps = [];
 
         // Query Gnome's notification settings
         let desktopSettings = new Gio.Settings({
@@ -1029,37 +950,33 @@ var DeviceSettings = Lang.Class({
             );
 
             if (appInfo) {
-                let name = appInfo.get_name();
-
-                if (!this._notification_apps[name]) {
-                    this._notification_apps[name] = {
-                        iconName: appInfo.get_icon().to_string(),
-                        enabled: true
-                    };
-                }
+                apps.push(appInfo);
             }
         }
 
         // Include applications that statically declare to show notifications
-        for (let appInfo of Gio.AppInfo.get_all()) {
+        Gio.AppInfo.get_all().map(appInfo => {
             if (appInfo.get_boolean("X-GNOME-UsesNotifications")) {
-                let name = appInfo.get_name();
-
-                if (!this._notification_apps[name]) {
-                    this._notification_apps[name] = {
-                        iconName: appInfo.get_icon().to_string(),
-                        enabled: true
-                    };
-                }
+                apps.push(appInfo);
             }
-        }
+        });
+
+        // Update GSettings
+        apps.map(appInfo => {
+            let appName = appInfo.get_name();
+
+            if (appName && !this._notification_apps[appName]) {
+                this._notification_apps[appName] = {
+                    iconName: appInfo.get_icon().to_string(),
+                    enabled: true
+                };
+            }
+        });
 
         notification.settings.set_string(
             "applications",
             JSON.stringify(this._notification_apps)
         );
-
-        return applications;
     },
 
     /**
@@ -1098,86 +1015,63 @@ var DeviceSettings = Lang.Class({
         this.sharing_list.set_header_func(section_separators);
 
 //        this.sharing_list.set_sort_func((row1, row2) => {
-//            return row1.appName.label.localeCompare(row2.appName.label);
+//            return row1.title.label.localeCompare(row2.title.label);
 //        });
     },
 
     /**
-     * Telephony Settings
+     * Keyboard Shortcuts
      */
-    _telephonySettings: function () {
-        let telephony = this.device._plugins.get("telephony");
+    _keyboardShortcuts: function () {
+        this._keybindings = JSON.parse(
+            this.device.settings.get_string("keybindings")
+        );
 
-        if (telephony) {
-            // Event Handling
-            mapBool(telephony, "handle-messaging", this.handle_messaging);
-            mapBool(telephony, "handle-calls", this.handle_calls);
-            this.handler_list.set_header_func(section_separators);
+        for (let name of this.device.list_actions().sort()) {
+            let action = this.device.lookup_action(name)
 
-            // Ringing Event
-            telephony.settings.bind(
-                "ringing-volume",
-                this.ringing_volume,
-                "active-id",
-                Gio.SettingsBindFlags.DEFAULT
-            );
-            telephony.settings.bind(
-                "ringing-pause",
-                this.ringing_pause,
-                "active",
-                Gio.SettingsBindFlags.DEFAULT
-            );
-            this.ringing_list.set_header_func(section_separators);
+            if (!action.parameter_type) {
+                let widget = new Gtk.Label({
+                    label: this._keybindings[action.name] || _("Disabled"),
+                    visible: true
+                });
+                widget.get_style_context().add_class("dim-label");
 
-            // Talking Event
-            telephony.settings.bind(
-                "talking-volume",
-                this.talking_volume,
-                "active-id",
-                Gio.SettingsBindFlags.DEFAULT
-            );
-            telephony.settings.bind(
-                "talking-microphone",
-                this.talking_microphone,
-                "active",
-                Gio.SettingsBindFlags.DEFAULT
-            );
-            telephony.settings.bind(
-                "talking-pause",
-                this.talking_pause,
-                "active",
-                Gio.SettingsBindFlags.DEFAULT
-            );
-            this.talking_list.set_header_func(section_separators);
-        } else {
-            this.telephony.visible = false;
-            this.telephony_page.visible = false;
+                let meta = (action.getMeta) ? action.getMeta() : {};
+                let row = new SectionRow({
+                    title: meta.summary || name,
+                    subtitle: meta.description || name,
+                    widget: widget
+                });
+                row.name = name;
+                row.meta = meta;
+                this.shortcuts_list.add(row);
+            }
         }
 
-        //
-        if (this.device._plugins.get("mpris")) {
-            this.ringing_pause.sensitive = false;
-            this.ringing_pause.set_tooltip_markup(
-                _("MPRIS not supported")
-            );
+        this.shortcuts_list.connect("row-activated", (box, row) => {
+            let dialog = new Keybindings.ShortcutEditor({
+                name: row.name,
+                summary: row.meta.summary,
+                transient_for: this.get_toplevel()
+            });
 
-            this.talking_pause.sensitive = false;
-            this.talking_pause.set_tooltip_markup(
-                _("MPRIS not supported")
-            );
-        }
+            dialog.connect("response", (dialog, response) => {
+                if (response === Gtk.ResponseType.OK) {
+                    this._keybindings[dialog.name] = dialog.result;
+                } else if (response === 1) {
+                    this._keybindings[dialog.name] = "";
+                }
 
-        //
-        if (!Sound._mixerControl) {
-            this.ringing_volume.sensitive = false;
-            this.ringing_volume.set_tooltip_markup(_("Gvc not available"));
+                this.device.settings.set_string(
+                    "keybindings",
+                    JSON.stringify(this._keybindings)
+                );
+                dialog.destroy();
+            });
 
-            this.talking_volume.sensitive = false;
-            this.talking_volume.set_tooltip_markup(_("Gvc not available"));
-
-            this.talking_microphone.sensitive = false;
-            this.talking_microphone.set_tooltip_markup(_("Gvc not available"));
-        }
+            dialog.run();
+        });
     }
 });
 

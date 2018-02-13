@@ -34,7 +34,7 @@ function buildPrefsWidget() {
     });
 
     let daemon = new Client.Daemon();
-    daemon.openSettings();
+    daemon.openSettings().then(result => daemon.destroy());
 
     return label;
 }
