@@ -247,16 +247,13 @@ var Plugin = new Lang.Class({
         );
         notif.set_icon(new Gio.ThemedIcon({ name: "battery-caution-symbolic" }));
 
-        if (this.device._plugins.has("findmyphone")) {
-            notif.add_button(
+        let action = this.device.lookup_action("find");
+
+        if (action && action.enabled) {
+            notif.add_device_button(
                 _("Locate"),
-                "app.deviceAction(('" +
-                this._dbus.get_object_path() +
-                "','" +
-                "find" +
-                "','" +
-                "{}" +
-                "'))"
+                this._dbus.get_object_path(),
+                "find"
             );
         }
 
