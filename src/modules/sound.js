@@ -112,6 +112,7 @@ var Stream = new Lang.Class({
 
     set muted (bool) {
         this._stream.change_is_muted(bool);
+        this.notify("muted");
     },
 
     get volume () {
@@ -121,6 +122,7 @@ var Stream = new Lang.Class({
     set volume (num) {
         this._stream.volume = num * this._max;
         this._stream.push_volume();
+        this.notify("volume");
     },
 
     lower: function (value) {
