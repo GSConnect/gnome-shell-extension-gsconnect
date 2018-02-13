@@ -297,6 +297,7 @@ var Device = new Lang.Class({
             // Disconnect from the current channel
             if (this._channel !== null) {
                 GObject.signal_handlers_destroy(this._channel);
+                this._channel.close();
             }
 
             // Connect to the new channel
@@ -345,9 +346,10 @@ var Device = new Lang.Class({
     _onConnected: function (channel) {
         log("Connected to '" + this.name + "'");
 
+        this.notify("connected", "b");
+        this._connected = true;
+
         this._loadPlugins().then((values) => {
-            this._connected = true;
-            this.notify("connected", "b");
             this.notify("plugins", "as");
         });
 
@@ -381,8 +383,7 @@ var Device = new Lang.Class({
             handler.handlePacket(packet).then(result => {
                 debug("'" + packet.type + "' handled successfully: " + result);
             }).catch(error => {
-                debug("Error handling packet: " + error);
-                debug(error.stack);
+                debug("Error handling packet: " + error.message + "\n" + error.stack);
             });
         } else {
             debug("Received unsupported packet type: " + packet.toString());
