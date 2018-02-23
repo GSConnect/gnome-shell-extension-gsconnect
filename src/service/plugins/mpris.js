@@ -174,7 +174,7 @@ var Plugin = new Lang.Class({
 
             if (hasResponse) {
                 response.body.player = packet.body.player;
-                this.device._channel.send(response);
+                this.sendPacket(response);
             }
 
             resolve(hasResponse ? response : "No response");
@@ -190,7 +190,7 @@ var Plugin = new Lang.Class({
             body: { playerList: this.mpris.identities }
         });
 
-        this.send(packet);
+        this.sendPacket(packet);
     }
 });
 

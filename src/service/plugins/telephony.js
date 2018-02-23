@@ -161,41 +161,6 @@ var _numberRegex = new RegExp(
 var Plugin = new Lang.Class({
     Name: "GSConnectTelephonyPlugin",
     Extends: PluginsBase.Plugin,
-    Signals: {
-        "missedCall": {
-            flags: GObject.SignalFlags.RUN_FIRST,
-            param_types: [
-                GObject.TYPE_STRING,
-                GObject.TYPE_STRING,
-                GObject.TYPE_STRING
-            ]
-        },
-        "ringing": {
-            flags: GObject.SignalFlags.RUN_FIRST,
-            param_types: [
-                GObject.TYPE_STRING,
-                GObject.TYPE_STRING,
-                GObject.TYPE_STRING
-            ]
-        },
-        "sms": {
-            flags: GObject.SignalFlags.RUN_FIRST,
-            param_types: [
-                GObject.TYPE_STRING,
-                GObject.TYPE_STRING,
-                GObject.TYPE_STRING,
-                GObject.TYPE_STRING
-            ]
-        },
-        "talking": {
-            flags: GObject.SignalFlags.RUN_FIRST,
-            param_types: [
-                GObject.TYPE_STRING,
-                GObject.TYPE_STRING,
-                GObject.TYPE_STRING
-            ]
-        }
-    },
 
     _init: function (device) {
         this.parent(device, "telephony");
@@ -212,77 +177,43 @@ var Plugin = new Lang.Class({
         // Event handling
         // The event has ended (ringing stopped or call ended)
         if (event.isCancel) {
-            this._resumeMedia();
-            this._unmuteMicrophone();
-            this._restoreVolume();
+            this._setMediaState(1);
             this.device.withdraw_notification(event.event + "|" + event.contact.name); // FIXME
         // An event was triggered
         } else {
-            // SMS Message (sms)
-            if (event.event === "sms") {
-                this.emit(
-                    "sms",
-                    event.phoneNumber,
-                    event.contact.name,
-                    event.messageBody,
-                    event.contact.avatar || ""
-                );
+            this.emit(
+                "event",
+                event.event,
+                gsconnect.full_pack([
+                    event.contact.name || "",
+                    event.phoneNumber || "",
+                    event.contact.avatar || "",
+                    event.messageBody || ""
+                ])
+            );
 
-                this._dbus.emit_signal("sms",
-                    new GLib.Variant(
-                        "(ssss)",
-                        [event.phoneNumber,
-                        event.contact.name,
-                        event.messageBody,
-                        event.contact.avatar || ""]
-                    )
-                );
-
-                return new Promise((resolve, reject) => {
-                    if (this.settings.get_boolean("handle-messaging")) {
-                        resolve(this._onSms(event));
-                    } else {
-                        reject(false);
+            return new Promise((resolve, reject) => {
+                if (event.event === "sms" && this.allow & Allow.SMS) {
+                    resolve(this._onSms(event));
+                } else if (this.allow & Allow.CALLS) {
+                    switch (event.event) {
+                        case "missedCall":
+                            resolve(this._onMissedCall(event));
+                            break;
+                        case "ringing":
+                            resolve(this._onRinging(event));
+                            break;
+                        case "talking":
+                            resolve(this._onTalking(event));
+                            break;
+                        default:
+                            log("Unknown telephony event");
+                            reject(false);
                     }
-                });
-            // Phone Call (missedCall | ringing | talking)
-            } else {
-                this.emit(
-                    event.event,
-                    event.contact.number,
-                    event.contact.name,
-                    event.contact.avatar || ""
-                );
-                this._dbus.emit_signal(event.event,
-                    new GLib.Variant(
-                        "(sss)",
-                        [event.contact.number,
-                        event.contact.name,
-                        event.contact.avatar || ""]
-                    )
-                );
-
-                return new Promise((resolve, reject) => {
-                    if (this.settings.get_boolean("handle-calls")) {
-                        switch (event.event) {
-                            case "missedCall":
-                                resolve(this._onMissedCall(event));
-                                break;
-                            case "ringing":
-                                resolve(this._onRinging(event));
-                                break;
-                            case "missedCall":
-                                resolve(this._onTalking(event));
-                                break;
-                            default:
-                                log("Unknown telephony event");
-                                reject(false);
-                        }
-                    } else {
-                        reject(false);
-                    }
-                });
-            }
+                } else {
+                    reject(false);
+                }
+            });
         }
     },
 
@@ -426,10 +357,7 @@ var Plugin = new Lang.Class({
         );
 
         this.device.send_notification(event.event + "|"  + event.time, notif);
-
-        // FIXME FIXME FIXME FIXME FIXME FIXME FIXME FIXME FIXME
-        this._adjustVolume(this.settings.get_string("ringing-volume"));
-        this._pauseMedia(this.settings.get_boolean("ringing-pause"));
+        this._setMediaState(2);
 
         return true;
     },
@@ -512,11 +440,7 @@ var Plugin = new Lang.Class({
         notif.set_priority(Gio.NotificationPriority.NORMAL);
 
         this.device.send_notification(event.event + "|"  + event.time, notif);
-
-        // FIXME FIXME FIXME FIXME FIXME FIXME FIXME FIXME FIXME
-        this._adjustVolume(this.settings.get_string("talking-volume"));
-        this._muteMicrophone(this.settings.get_boolean("talking-microphone"));
-        this._pauseMedia(this.settings.get_boolean("talking-pause"));
+        this._setMediaState(2);
 
         return true;
     },
@@ -552,29 +476,17 @@ var Plugin = new Lang.Class({
         return conversation;
     },
 
-    // FIXME modules/mpris.js
-    _pauseMedia: function (pause) {
-        debug(pause);
+    _setMediaState: function (state) {
+        if (state === 1) {
+            this._state = 1;
+        } else {
+            this._state = 2;
 
-        if (pause && this.device._plugins.has("mpris")) {
-            let plugin = this.device._plugins.get("mpris");
-
-            for (let player of plugin._players.values()) {
-                if (player.PlaybackStatus === "Playing" && player.CanPause) {
-                    player.PauseSync();
-                    this._pausedPlayer = player;
-                }
+            if (state & 2) {
+                this._state &= state;
+            } else if (state & 4) {
+                this._state &= state;
             }
-        }
-    },
-
-    // FIXME modules/mpris.js
-    _resumeMedia: function () {
-        debug("Telephony: _resumeMedia()");
-
-        if (this._pausedPlayer) {
-            this._pausedPlayer.PlaySync();
-            this._pausedPlayer = false;
         }
     },
 
@@ -589,7 +501,7 @@ var Plugin = new Lang.Class({
             type: "kdeconnect.telephony.request",
             body: { action: "mute" }
         });
-        this.send(packet);
+        this.sendPacket(packet);
     },
 
     /**
@@ -747,7 +659,7 @@ var Plugin = new Lang.Class({
             }
         });
 
-        this.send(packet);
+        this.sendPacket(packet);
     },
 
     /**

@@ -104,7 +104,7 @@ var Plugin = new Lang.Class({
                 body: { content: text }
             });
 
-            this.send(packet);
+            this.sendPacket(packet);
         }
     },
 

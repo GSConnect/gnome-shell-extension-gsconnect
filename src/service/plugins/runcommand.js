@@ -55,7 +55,7 @@ var Plugin = new Lang.Class({
         });
 
         this._commands = "{}";
-        this.notify("commands", "s");
+        this.notify("commands");
         this.request();
     },
 
@@ -77,7 +77,7 @@ var Plugin = new Lang.Class({
             // A list of the remote device's commands
             } else if (packet.type === "kdeconnect.runcommand") {
                 this._commands = packet.body.commandList;
-                this.notify("commands", "s");
+                this.notify("commands");
             }
         });
     },

@@ -192,20 +192,22 @@ var Plugin = new Lang.Class({
      */
     _getNotification: function (query) {
         for (let notif of this._notifications) {
-            // @query matches an active/shown notification timestamp
+            // @query is a full notification matching a timestamp (shown)
+            // We check for timestamp since the device controls id turnover and
+            // timestamps only changes if the phone resets.
             if (notif.time && notif.time === query.time) {
-                debug("found notification by timestamp");
+                debug("found notification with matching timestamp");
                 // Update the cached notification
                 Object.assign(notif, query);
                 return notif;
             } else if (notif.localId) {
-                // @query is a duplicate search by GNotification id
-                // Called by closeNotification() or markDuplicate()
+                // @query is a duplicate stub matching a GNotification id
+                // closeNotification(id|localId) or markDuplicate(localId)
                 if ([query.id, query.localId].indexOf(notif.localId) > -1) {
-                    debug("found notification by localId");
+                    debug("found duplicate with matching localId");
                     return notif;
-                // @query is a notification matching a duplicate we're expecting
-                // Called by handlePacket()
+                // @query is a full notification matching an expected duplicate
+                // handlePacket(id)
                 } else if (query.time && notif.ticker === query.ticker) {
                     debug("found duplicate with matching ticker");
 
@@ -226,6 +228,59 @@ var Plugin = new Lang.Class({
         return false;
     },
 
+    /**
+     * Icon transfers
+     */
+    _downloadIcon: function (packet) {
+        debug([packet.payloadTransferInfo.port, packet.payloadSize, packet.body.payloadHash]);
+
+        return new Promise((resolve, reject) => {
+            let iconStream = Gio.MemoryOutputStream.new_resizable();
+
+            let transfer = new Protocol.Transfer({
+                device: this.device,
+                size: packet.payloadSize,
+                checksum: packet.body.payloadHash,
+                output_stream: iconStream
+            });
+
+            transfer.connect("connected", (transfer) => transfer.start());
+            transfer.connect("failed", (transfer) => resolve(null));
+            transfer.connect("succeeded", (transfer) => {
+                //iconStream.close(null);
+                resolve(Gio.BytesIcon.new(iconStream.steal_as_bytes()));
+            });
+
+            transfer.download(packet.payloadTransferInfo.port).catch(e => debug(e));
+        });
+    },
+
+    _uploadIcon: function (packet, filename) {
+        debug(filename);
+
+        let file = Gio.File.new_for_path(filename);
+        let info = file.query_info("standard::size", 0, null);
+
+        let transfer = new Protocol.Transfer({
+            device: this.device,
+            size: info.get_size(),
+            input_stream: file.read(null)
+        });
+
+        transfer.connect("connected", (channel) => transfer.start());
+
+        transfer.upload().then(port => {
+            packet.payloadSize = info.get_size();
+            packet.payloadTransferInfo = { port: port };
+            packet.body.payloadHash = GLib.compute_checksum_for_bytes(
+                GLib.ChecksumType.MD5,
+                file.load_contents(null)[1]
+            );
+
+            this.sendPacket(packet);
+        });
+    },
+
     showNotification: function (packet, icon) {
         return new Promise((resolve, reject) => {
             let notif = new Gio.Notification();
@@ -236,7 +291,8 @@ var Plugin = new Lang.Class({
             let isSms = (packet.body.id.indexOf("sms") > -1);
 
             // If it's an event we support, look for a known contact, but don't
-            // create a new one since we'll only have name *or* number
+            // create a new one since we'll only have name *or* number with no
+            // decent way to tell which
             let contact;
 
             if (isSms && this.device.lookup_action("replySms")) {
@@ -345,56 +401,6 @@ var Plugin = new Lang.Class({
         });
     },
 
-    // Icon transfers
-    _downloadIcon: function (packet) {
-        debug([packet.payloadTransferInfo.port, packet.payloadSize, packet.body.payloadHash]);
-
-        return new Promise((resolve, reject) => {
-            let iconStream = Gio.MemoryOutputStream.new_resizable();
-
-            let transfer = new Protocol.Transfer({
-                device: this.device,
-                size: packet.payloadSize,
-                checksum: packet.body.payloadHash,
-                output_stream: iconStream
-            });
-
-            transfer.connect("connected", (transfer) => transfer.start());
-            transfer.connect("failed", (transfer) => resolve(null));
-            transfer.connect("succeeded", (transfer) => {
-                resolve(Gio.BytesIcon.new(iconStream.steal_as_bytes()));
-            });
-
-            transfer.download(packet.payloadTransferInfo.port).catch(e => debug(e));
-        });
-    },
-
-    _uploadIcon: function (packet, filename) {
-        debug(filename);
-
-        let file = Gio.File.new_for_path(filename);
-        let info = file.query_info("standard::size", 0, null);
-
-        let transfer = new Protocol.Transfer({
-            device: this.device,
-            size: info.get_size(),
-            input_stream: file.read(null)
-        });
-
-        transfer.connect("connected", (channel) => transfer.start());
-
-        transfer.upload().then(port => {
-            packet.payloadSize = info.get_size();
-            packet.payloadTransferInfo = { port: port };
-            packet.body.payloadHash = GLib.compute_checksum_for_bytes(
-                GLib.ChecksumType.MD5,
-                file.load_contents(null)[1]
-            );
-
-            this.send(packet); // FIXME method name
-        });
-    },
-
     /**
      * This is called by the daemon; See Daemon.Notify()
      */
@@ -447,7 +453,7 @@ var Plugin = new Lang.Class({
                 if (iconPath) {
                     this._uploadIcon(packet, iconPath);
                 } else {
-                    this.send(packet);
+                    this.sendPacket(packet);
                 }
 
                 resolve("'" + appName + "' notification forwarded");
@@ -466,10 +472,10 @@ var Plugin = new Lang.Class({
     },
 
     untrackNotification: function (notif) {
-        let cnotif = this._getNotification(notif);
+        let cachedNotif = this._getNotification(notif);
 
-        if (cnotif) {
-            let index_ = this._notifications.indexOf(cnotif);
+        if (cachedNotif) {
+            let index_ = this._notifications.indexOf(cachedNotif);
             this._notifications.splice(index_, 1);
             this.notify("notifications");
         }
@@ -513,11 +519,11 @@ var Plugin = new Lang.Class({
         debug(id);
 
         // Check if this is a known notification
-        let cnotif = this._getNotification({ id: id });
+        let cachedNotif = this._getNotification({ id: id });
 
-        if (cnotif && cnotif.hasOwnProperty("id")) {
+        if (cachedNotif && cachedNotif.hasOwnProperty("id")) {
             // If it doesn't have a remoteId use the local Id
-            let remoteId = cnotif.hasOwnProperty("id") ? cnotif.id : id;
+            let remoteId = cachedNotif.hasOwnProperty("id") ? cachedNotif.id : id;
 
             let packet = new Protocol.Packet({
                 id: 0,
@@ -525,10 +531,14 @@ var Plugin = new Lang.Class({
                 body: { cancel: remoteId }
             });
 
-            debug("closing notification with id '" + id + "'");
+            debug("closing notification '" + id + "'");
 
-            this.send(packet);
-            this.untrackNotification(cnotif);
+            this.sendPacket(packet);
+            this.untrackNotification(cachedNotif);
+        // Mark it to be closed if it exists, otherwise ignore
+        } else if (cachedNotif) {
+            debug("marking duplicate notification to be closed");
+            cachedNotif.isCancel = true;
         }
     },
 
@@ -552,7 +562,7 @@ var Plugin = new Lang.Class({
                     }
                 });
 
-                this.send(packet);
+                this.sendPacket(packet);
             }
 
             dialog.destroy();
@@ -571,7 +581,7 @@ var Plugin = new Lang.Class({
             body: { request: true }
         });
 
-        this.send(packet);
+        this.sendPacket(packet);
     }
 });
 

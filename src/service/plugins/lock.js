@@ -98,7 +98,7 @@ var Plugin = new Lang.Class({
             body: { setLocked: bool }
         });
 
-        this.send(packet);
+        this.sendPacket(packet);
     },
 
     _request: function () {
@@ -108,7 +108,7 @@ var Plugin = new Lang.Class({
             body: { requestLocked: true }
         });
 
-        this.send(packet);
+        this.sendPacket(packet);
     },
 
     _response: function () {
@@ -118,7 +118,7 @@ var Plugin = new Lang.Class({
             body: { isLocked: this._screensaver.GetActiveSync() }
         });
 
-        this.send(packet);
+        this.sendPacket(packet);
     },
 
     handlePacket: function (packet) {
@@ -141,7 +141,7 @@ var Plugin = new Lang.Class({
             } else if (packet.type === "kdeconnect.lock") {
                 this._locked = packet.body.isLocked;
 
-                this.notify("locked", "b");
+                this.notify("locked");
             }
         });
     },

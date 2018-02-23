@@ -67,10 +67,6 @@ var Plugin = new Lang.Class({
             packet.body.message = packet.body.message || "";
 
             this.emit("ping", packet.body.message);
-            this._dbus.emit_signal(
-                "ping",
-                new GLib.Variant("(s)", [packet.body.message])
-            );
 
             // Notification
             let notif = new Gio.Notification();

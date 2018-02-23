@@ -133,7 +133,7 @@ var Plugin = new Lang.Class({
             body: {}
         });
 
-        this.send(packet);
+        this.sendPacket(packet);
     },
 
     destroy: function () {

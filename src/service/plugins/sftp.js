@@ -35,6 +35,20 @@ var Metadata = {
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/sftp
  *
  * TODO: the Android app source that says SSHFS 3.x and causes data corruption
+ *
+ * {
+ *     "id": 1518956413092,
+ *     "type":"kdeconnect.sftp",
+ *     "body": {
+ *         "ip": "192.168.1.71",
+ *         "port": 1743,
+ *         "user": "kdeconnect",
+ *         "password": "UzcNCrI7T668JyxUFjOxQncBPNcO",
+ *         "path": "/storage/emulated/0",
+ *         "multiPaths": ["/storage/emulated/0","/storage/emulated/0/DCIM/Camera"],
+ *         "pathNames":["All files","Camera pictures"]
+ *     }
+ * }
  */
 var Plugin = new Lang.Class({
     Name: "GSConnectSFTPPlugin",
@@ -191,11 +205,11 @@ var Plugin = new Lang.Class({
 //            }
         }
 
-        this.notify("directories", "a{ss}");
+        this.notify("directories");
 
         // Set "mounted" and notify
         this._mounted = true;
-        this.notify("mounted", "b");
+        this.notify("mounted");
 
         return true;
     },
@@ -279,14 +293,10 @@ var Plugin = new Lang.Class({
         delete this._stderr;
 
         this._directories = {};
-
-        this._dbus.emit_property_changed(
-            "directories",
-            new GLib.Variant("a{ss}", this._directories)
-        );
+        this.notify("directories");
 
         this._mounted = false;
-        this.notify("mounted", "b");
+        this.notify("mounted");
     },
 
     destroy: function () {

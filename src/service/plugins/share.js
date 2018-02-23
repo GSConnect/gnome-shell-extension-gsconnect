@@ -177,10 +177,6 @@ var Plugin = new Lang.Class({
                 this.device.send_notification(transfer.uuid, transfer.notif);
 
                 this.emit("received", "file", file.get_uri());
-                this._dbus.emit_signal(
-                    "received",
-                    new GLib.Variant("(ss)", ["file", file.get_uri()])
-                );
 
                 this.transfers.delete(transfer.uuid);
             });
@@ -240,10 +236,6 @@ var Plugin = new Lang.Class({
         Gio.AppInfo.launch_default_for_uri(packet.body.url, null);
 
         this.emit("received", "url", packet.body.url);
-        this._dbus.emit_signal(
-            "received",
-            new GLib.Variant("(ss)", ["url", packet.body.url])
-        );
     },
 
     _handleText: function (packet) {
@@ -251,10 +243,6 @@ var Plugin = new Lang.Class({
         log("receiving text: '" + packet.body.text + "'");
 
         this.emit("received", "text", packet.body.text);
-        this._dbus.emit_signal(
-            "received",
-            new GLib.Variant("(ss)", ["text", packet.body.text])
-        );
     },
 
     /**
@@ -385,10 +373,6 @@ var Plugin = new Lang.Class({
                 this.device.send_notification(transfer.uuid, transfer.notif);
 
                 this.emit("sent", "file", file.get_basename());
-                this._dbus.emit_signal(
-                    "sent",
-                    new GLib.Variant("(ss)", ["file", file.get_basename()])
-                );
 
                 this.transfers.delete(transfer.uuid);
             });
@@ -449,7 +433,7 @@ var Plugin = new Lang.Class({
                 payloadTransferInfo: { port: port }
             });
 
-            this.send(packet); // FIXME
+            this.sendPacket(packet);
         });
     },
 
@@ -466,13 +450,9 @@ var Plugin = new Lang.Class({
             type: "kdeconnect.share.request",
             body: { text: text }
         });
-        this.send(packet);
+        this.sendPacket(packet);
 
         this.emit("sent", "text", text);
-        this._dbus.emit_signal(
-            "sent",
-            new GLib.Variant("(ss)", ["text", text])
-        );
     },
 
     // TODO: check URL validity...
@@ -497,13 +477,9 @@ var Plugin = new Lang.Class({
             type: "kdeconnect.share.request",
             body: { url: uri }
         });
-        this.send(packet);
+        this.sendPacket(packet);
 
         this.emit("sent", "url", uri);
-        this._dbus.emit_signal(
-            "sent",
-            new GLib.Variant("(ss)", ["url", uri])
-        );
     }
 });
 
