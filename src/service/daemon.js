@@ -47,13 +47,6 @@ var Daemon = new Lang.Class({
     Name: "GSConnectDaemon",
     Extends: Gtk.Application,
     Properties: {
-        "name": GObject.ParamSpec.string(
-            "name",
-            "DeviceName",
-            "The name announced to the network",
-            GObject.ParamFlags.READWRITE,
-            "GSConnect"
-        ),
         "certificate": GObject.ParamSpec.object(
             "certificate",
             "TlsCertificate",
@@ -83,6 +76,20 @@ var Daemon = new Lang.Class({
             GObject.ParamFlags.READABLE,
             ""
         ),
+        "symbolic-icon-name": GObject.ParamSpec.string(
+            "symbolic-icon-name",
+            "ServiceIconName",
+            "Icon name representing the service device",
+            GObject.ParamFlags.READABLE,
+            ""
+        ),
+        "name": GObject.ParamSpec.string(
+            "name",
+            "DeviceName",
+            "The name announced to the network",
+            GObject.ParamFlags.READWRITE,
+            "GSConnect"
+        ),
         "type": GObject.ParamSpec.string(
             "type",
             "DeviceType",
@@ -105,24 +112,28 @@ var Daemon = new Lang.Class({
     },
 
     // Properties
-    get certificate () {
+    get certificate() {
         return this._certificate;
     },
 
-    get devices () {
+    get devices() {
         return Array.from(this._devices.keys());
     },
 
-    get discovering () {
+    get discovering() {
         return this.lanService.discovering;
     },
 
-    set discovering (bool) {
+    set discovering(bool) {
         this.lanService.discovering = bool;
     },
 
-    get fingerprint () {
+    get fingerprint() {
         return this.certificate.fingerprint()
+    },
+
+    get symbolic_icon_name() {
+        return (this.type === "laptop") ? "laptop" : "computer";
     },
 
     get name() {
@@ -135,7 +146,7 @@ var Daemon = new Lang.Class({
         this.broadcast();
     },
 
-    get type () {
+    get type() {
         try {
             let type = Number(
                 GLib.file_get_contents("/sys/class/dmi/id/chassis_type")[1]
@@ -154,7 +165,7 @@ var Daemon = new Lang.Class({
     /**
      * Special method to accomodate nautilus-gsconnect.py
      */
-    getShareable: function () {
+    getShareable: function() {
         let shareable = [];
 
         for (let [busPath, device] of this._devices.entries()) {
@@ -203,7 +214,7 @@ var Daemon = new Lang.Class({
         );
     },
 
-    _initCSS: function () {
+    _applyResources: function () {
         let provider = new Gtk.CssProvider();
         provider.load_from_file(
             Gio.File.new_for_uri("resource://" + gsconnect.app_path + "/application.css")
@@ -213,6 +224,7 @@ var Daemon = new Lang.Class({
             provider,
             Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
         );
+        Gtk.IconTheme.get_default().add_resource_path(gsconnect.app_path);
     },
 
     /**
@@ -283,7 +295,7 @@ var Daemon = new Lang.Class({
                         this._devices.set(dbusPath, device);
                         resolve(true);
                     }).then((result) => {
-                        this.notify("devices", "as");
+                        this.notify("devices");
                     }).catch((e) => {
                         log("GSConnect: Error adding device: " + e);
                     });
@@ -319,27 +331,26 @@ var Daemon = new Lang.Class({
     _addDevice: function (packet, channel=null) {
         debug(packet);
 
-        return new Promise((resolve, reject) => {
-            let dbusPath = gsconnect.app_path + "/Device/" + packet.body.deviceId.replace(/\W+/g, "_");
+        let dbusPath = gsconnect.app_path + "/Device/" + packet.body.deviceId.replace(/\W+/g, "_");
 
-            if (this._devices.has(dbusPath)) {
-                log("GSConnect: Updating device");
+        if (this._devices.has(dbusPath)) {
+            log("GSConnect: Updating device");
 
-                let device = this._devices.get(dbusPath);
-                device.update(packet, channel);
-                resolve(true);
-            } else {
-                log("GSConnect: Adding device");
+            this._devices.get(dbusPath).update(packet, channel);
+        } else {
+            log("GSConnect: Adding device");
 
-                let device = new Device.Device({
-                    packet: packet,
-                    channel: channel
-                });
+            return new Promise((resolve, reject) => {
+                resolve(
+                    new Device.Device({
+                        packet: packet,
+                        channel: channel
+                    })
+                );
+            }).then(device => {
                 // TODO: better
                 device.connect("notify::connected", (device) => {
-                    if (!device.connected) {
-                        this._pruneDevices();
-                    }
+                    if (!device.connected) { this._pruneDevices(); }
                 });
                 this._devices.set(dbusPath, device);
 
@@ -350,10 +361,9 @@ var Daemon = new Lang.Class({
                     gsconnect.settings.set_strv("devices", knownDevices);
                 }
 
-                this.notify("devices", "as");
-                resolve(true);
-            }
-        });
+                this.notify("devices");
+            }).catch(e => debug(e));
+        }
     },
 
     _removeDevice: function (dbusPath) {
@@ -367,7 +377,7 @@ var Daemon = new Lang.Class({
             device.destroy();
             this._devices.delete(dbusPath);
 
-            this.notify("devices", "as");
+            this.notify("devices");
         }
     },
 
@@ -577,7 +587,11 @@ var Daemon = new Lang.Class({
     },
 
     /**
-     * Open the application settings
+     * Open the application settings.
+     * @param {String} [device] - DBus object path of device to configure
+     *
+     * The DBus method takes no arguments; the matching Device method supplies
+     * this value.
      */
     openSettings: function (device=null) {
         if (!this._window) {
@@ -630,41 +644,30 @@ var Daemon = new Lang.Class({
         //Gtk.Application.prototype.send_notification.call(this, notifId, notif);
     },
 
-    notify: function (name, format=null) {
-        GObject.Object.prototype.notify.call(this, name);
-
-        if (format && this._dbus) {
-            this._dbus.emit_property_changed(
-                name,
-                new GLib.Variant(format, this[name])
-            );
-        }
-    },
-
     vfunc_startup: function() {
         this.parent();
-
-        // Track devices, DBus object path as key
-        this._devices = new Map();
 
         // Initialize encryption
         try {
             this._initEncryption();
+
+            // Ensure fingerprint is available right away
+            this.notify("fingerprint");
         } catch (e) {
             log("Error generating TLS Certificate: " + e.message);
             this.quit();
         }
 
-        this._initCSS();
-        Gtk.IconTheme.get_default().add_resource_path(gsconnect.app_path);
 
-        this._initActions();
 
         // Watch the file 'daemon.js' to know when we're updated
         this._watchDaemon();
 
-        // Ensure fingerprint is available right away
-        this.notify("fingerprint", "s");
+        // Init some resources
+        this._applyResources();
+
+        // GActions
+        this._initActions();
 
         // LanChannelService
         try {
@@ -672,6 +675,7 @@ var Daemon = new Lang.Class({
 
             // UDP
             this.lanService.connect("packet", (service, packet) => {
+                // Ignore our broadcasts
                 if (packet.body.deviceId !== this.identity.body.deviceId) {
                     this._addDevice(packet);
                 }
@@ -683,8 +687,7 @@ var Daemon = new Lang.Class({
             });
         } catch (e) {
             log("Error starting LanChannelService: " + e);
-            //this.quit();
-            throw new Error("error starting lanchannelservice");
+            this.quit();
         }
 
         this.identity = this._getIdentityPacket();
@@ -695,7 +698,7 @@ var Daemon = new Lang.Class({
             Gio.SettingsBindFlags.DEFAULT
         );
 
-        // Extensions
+        // Monitor extensions
         gsconnect.settings.connect("changed::nautilus-integration", () => {
             this.toggleNautilusExtension();
         });
@@ -713,27 +716,31 @@ var Daemon = new Lang.Class({
                 this.broadcast();
             }
         });
+
+        // Track devices, DBus object path as key
+        this._devices = new Map();
+        this._watchDevices();
+        log(this._devices.size + " devices loaded from cache");
     },
 
     vfunc_activate: function() {
         this.parent();
-
-        // Load cached devices and watch for changes
-        this._watchDevices();
-        log(this._devices.size + " devices loaded from cache");
-
-        this.broadcast();
-
         this.hold();
     },
 
     vfunc_dbus_register: function (connection, object_path) {
         // Application Interface
-        this._dbus = Gio.DBusExportedObject.wrapJSObject(
-            gsconnect.dbusinfo.lookup_interface(gsconnect.app_id),
-            this
-        );
-        this._dbus.export(connection, gsconnect.app_path);
+        this._dbus = new DBus.ProxyServer({
+            g_connection: connection,
+            g_instance: this,
+            g_interface_info: gsconnect.dbusinfo.lookup_interface(gsconnect.app_id),
+            g_object_path: gsconnect.app_path
+        });
+
+        this.objectManager = new Gio.DBusObjectManagerServer({
+            connection: Gio.DBus.session,
+            object_path: object_path
+        });
 
         // Notifications Listener
         this._fdo = DBus.get_default();
