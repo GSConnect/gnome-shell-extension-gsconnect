@@ -9,6 +9,7 @@ const Gtk = imports.gi.Gtk;
 
 // Local Imports
 imports.searchPath.push(gsconnect.datadir);
+const DBus = imports.modules.dbus;
 const Protocol = imports.service.protocol;
 
 
@@ -86,6 +87,13 @@ var Device = new Lang.Class({
             GObject.ParamFlags.READABLE,
             ""
         ),
+        "icon-name": GObject.ParamSpec.string(
+            "icon-name",
+            "IconName",
+            "Icon name representing the service device",
+            GObject.ParamFlags.READABLE,
+            ""
+        ),
         "id": GObject.ParamSpec.string(
             "id",
             "deviceId",
@@ -131,6 +139,13 @@ var Device = new Lang.Class({
             new GLib.Variant("as", []),
             GObject.ParamFlags.READABLE
         ),
+        "symbolic-icon-name": GObject.ParamSpec.string(
+            "symbolic-icon-name",
+            "ServiceIconName",
+            "Symbolic icon name representing the service device",
+            GObject.ParamFlags.READABLE,
+            ""
+        ),
         "type": GObject.ParamSpec.string(
             "type",
             "deviceType",
@@ -148,10 +163,11 @@ var Device = new Lang.Class({
     _init: function (params) {
         this.parent();
 
-        this.daemon = Gio.Application.get_default();
+        this.service = Gio.Application.get_default();
         this._channel = null;
         this._connected = false;
 
+        // GLib.Source timeout id's for pairing requests
         this._incomingPairRequest = 0;
         this._outgoingPairRequest = 0;
 
@@ -177,25 +193,25 @@ var Device = new Lang.Class({
             this._handleIdentity(params.packet);
         }
 
-        // Export DBus interface
-        this._dbus = Gio.DBusExportedObject.wrapJSObject(
-            gsconnect.dbusinfo.lookup_interface(
+        // Export an object path for the device via the ObjectManager
+        this._dbus_object = new Gio.DBusObjectSkeleton({
+            g_object_path: gsconnect.app_path + "/Device/" + deviceId.replace(/\W+/g, "_")
+        });
+        this.service.objectManager.export(this._dbus_object);
+
+        // Export org.gnome.Shell.Extensions.GSConnect.Device on that path
+        this._dbus = new DBus.ProxyServer({
+            g_instance: this,
+            g_interface_info: gsconnect.dbusinfo.lookup_interface(
                 "org.gnome.Shell.Extensions.GSConnect.Device"
-            ),
-            this
-        );
-        this._dbus.export(
-            Gio.DBus.session,
-            gsconnect.app_path + "/Device/" + deviceId.replace(/\W+/g, "_")
-        );
+            )
+        });
+        this._dbus_object.add_interface(this._dbus);
 
         // TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
         // Actions
         ["acceptPair", "rejectPair"].map(name => {
-            let action = new Gio.SimpleAction({
-                name: name,
-                parameter_type: new GLib.VariantType("s")
-            });
+            let action = new Gio.SimpleAction({ name: name });
             action.connect("activate", () => this[name]());
             this.add_action(action);
         });
@@ -235,6 +251,21 @@ var Device = new Lang.Class({
     get plugins () { return Array.from(this._plugins.keys()); },
     get incomingCapabilities () { return this.settings.get_strv("incoming-capabilities"); },
     get outgoingCapabilities () { return this.settings.get_strv("outgoing-capabilities"); },
+    get icon_name() {
+        return (this.type === "desktop") ? "computer" : this.type;
+    },
+    get symbolic_icon_name() {
+        let icon = (this.type === "phone") ? "smartphone" : this.type;
+        icon = (this.type === "unknown") ? "desktop" : icon;
+
+        if (this.paired && this.connected) {
+            return icon + "connected";
+        } else if (this.paired) {
+            return icon + "trusted";
+        } else {
+            return icon + "disconnected";
+        }
+    },
     get type () { return this.settings.get_string("type"); },
 
     _handleIdentity: function (packet) {
@@ -344,15 +375,16 @@ var Device = new Lang.Class({
     _onConnected: function (channel) {
         log("Connected to '" + this.name + "'");
 
-        this.notify("connected", "b");
         this._connected = true;
+        this.notify("connected");
+        this.notify("symbolic-icon-name");
 
         this._loadPlugins().then((values) => {
-            this.notify("plugins", "as");
+            this.notify("plugins");
         });
 
         // Ensure fingerprint is available right away
-        this.notify("fingerprint", "s");
+        this.notify("fingerprint");
     },
 
     _onDisconnected: function (channel) {
@@ -363,9 +395,10 @@ var Device = new Lang.Class({
         }
 
         this._unloadPlugins().then((values) => {
-            this.notify("plugins", "as");
+            this.notify("plugins");
             this._connected = false;
-            this.notify("connected", "b");
+            this.notify("connected");
+            this.notify("symbolic-icon-name");
         });
     },
 
@@ -390,31 +423,11 @@ var Device = new Lang.Class({
 
     /** Overrides & utilities */
     send_notification: function (id, notification) {
-        this.daemon.send_notification(this.id + "|" + id, notification);
+        this.service.send_notification(this.id + "|" + id, notification);
     },
 
     withdraw_notification: function (id) {
-        this.daemon.withdraw_notification(this.id + "|" + id);
-    },
-
-    notify: function (name, format=null) {
-        GObject.Object.prototype.notify.call(this, name);
-
-        if (format && this._dbus) {
-            this._dbus.emit_property_changed(
-                name,
-                new GLib.Variant(format, this[name])
-            );
-        }
-    },
-
-    /**
-     * Keybindings
-     */
-    _initKeybindings: function () {
-    },
-
-    _handleKeybinding: function () {
+        this.service.withdraw_notification(this.id + "|" + id);
     },
 
     /**
@@ -429,7 +442,7 @@ var Device = new Lang.Class({
 
                 this._setPaired(true);
                 this._loadPlugins().then((values) => {
-                    this.notify("plugins", "as");
+                    this.notify("plugins");
                 });
             // The device thinks we're unpaired
             } else if (this.paired) {
@@ -444,7 +457,7 @@ var Device = new Lang.Class({
             log("Pair rejected by " + this.name);
 
             this._unloadPlugins().then((values) => {
-                this.notify("plugins", "as");
+                this.notify("plugins");
                 this._setPaired(false);
             });
         }
@@ -468,7 +481,7 @@ var Device = new Lang.Class({
             _("%s Fingerprint:\n%s\n\nLocal Fingerprint:\n%s").format(
                 this.name,
                 this.fingerprint,
-                this.daemon.fingerprint
+                this.service.fingerprint
             )
         );
         notif.set_icon(new Gio.ThemedIcon({ name: "channel-insecure-symbolic" }));
@@ -516,7 +529,8 @@ var Device = new Lang.Class({
             this.settings.reset("certificate-pem");
         }
 
-        this.notify("paired", "b");
+        this.notify("paired");
+        this.notify("symbolic-icon-name");
     },
 
     pair: function () {
@@ -560,7 +574,7 @@ var Device = new Lang.Class({
         }
 
         this._unloadPlugins().then((values) => {
-            this.notify("plugins", "as");
+            this.notify("plugins");
             this._setPaired(false);
         });
     },
@@ -571,7 +585,7 @@ var Device = new Lang.Class({
         this._setPaired(true);
         this.pair();
         this._loadPlugins().then((values) => {
-            this.notify("plugins", "as");
+            this.notify("plugins");
         });
     },
 
@@ -681,7 +695,7 @@ var Device = new Lang.Class({
     },
 
     openSettings: function () {
-        this.daemon.openSettings(this._dbus.get_object_path());
+        this.service.openSettings(this._dbus.get_object_path());
     },
 
     destroy: function () {
