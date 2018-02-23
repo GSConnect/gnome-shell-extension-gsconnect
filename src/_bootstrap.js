@@ -10,23 +10,45 @@ const GLib = imports.gi.GLib;
 const Gtk = imports.gi.Gtk;
 
 
-// Application Id and Path
+/**
+ * Application Id and Path
+ */
 gsconnect.app_id = "org.gnome.Shell.Extensions.GSConnect";
 gsconnect.app_path = "/org/gnome/Shell/Extensions/GSConnect";
-
 gsconnect.metadata = JSON.parse(GLib.file_get_contents(gsconnect.datadir + "/metadata.json")[1]);
 
-// Gettext
-gsconnect.localedir = GLib.build_filenamev([gsconnect.datadir, "locale"]);
-Gettext.bindtextdomain(gsconnect.app_id, gsconnect.localedir);
 
-// User Directories
+/**
+ * User Directories
+ */
 gsconnect.cachedir = GLib.build_filenamev([GLib.get_user_cache_dir(), "gsconnect"]);
 gsconnect.configdir = GLib.build_filenamev([GLib.get_user_config_dir(), "gsconnect"]);
 gsconnect.runtimedir = GLib.build_filenamev([GLib.get_user_runtime_dir(), "gsconnect"]);
 
 for (let path of [gsconnect.cachedir, gsconnect.configdir, gsconnect.runtimedir]) {
     GLib.mkdir_with_parents(path, 448);
+}
+
+/**
+ * Gettext
+ */
+gsconnect.localedir = GLib.build_filenamev([gsconnect.datadir, "locale"]);
+
+Gettext.bindtextdomain(gsconnect.app_id, gsconnect.localedir);
+Gettext.textdomain(gsconnect.app_id);
+
+// If we aren't inside the Gnome Shell process, set gettext on the global. Any
+// script *inside* the proc should set these manually from gsconnect.*
+if (typeof _ !== "function") {
+    window._ = Gettext.gettext;
+    window.ngettext = Gettext.ngettext;
+    window.N_ = function (s) { return s; };
+    window.C_ = Gettext.pgettext;
+} else {
+    gsconnect._ = Gettext.gettext;
+    gsconnect.ngettext = Gettext.ngettext;
+    gsconnect.N_ = function (s) { return s; };
+    gsconnect.C_ = Gettext.pgettext;
 }
 
 

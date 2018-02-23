@@ -1,7 +1,5 @@
 "use strict";
 
-const Gettext = imports.gettext.domain("org.gnome.Shell.Extensions.GSConnect");
-const _ = Gettext.gettext;
 const Lang = imports.lang;
 
 const Clutter = imports.gi.Clutter;
@@ -28,6 +26,7 @@ window.gsconnect = {
 imports.searchPath.push(gsconnect.datadir);
 const _bootstrap = imports._bootstrap;
 const Client = imports.client;
+const _ = gsconnect._;
 const Actors = imports.actors;
 
 
