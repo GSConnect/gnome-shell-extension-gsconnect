@@ -25,9 +25,9 @@ window.gsconnect = {
 
 imports.searchPath.push(gsconnect.datadir);
 const _bootstrap = imports._bootstrap;
-const Client = imports.client;
 const _ = gsconnect._;
 const Actors = imports.actors;
+const DBus = imports.modules.dbus;
 
 
 /** ... FIXME FIXME FIXME */
@@ -325,19 +325,20 @@ var DeviceMenu = new Lang.Class({
         this.addMenuItem(this.listPanel);
 
         // Properties
-        device.connect("notify::name", Lang.bind(this, this._sync));
-        device.connect("notify::plugins", Lang.bind(this, this._sync));
-        device.connect("notify::connected", Lang.bind(this, this._sync));
-        device.connect("notify::paired", Lang.bind(this, this._sync));
+        this.device.connect("notify", this._sync.bind(this));
+        this.device.connect("destroy", () => this.destroy());
+        this.device.actions.connect("action-enabled-changed", this._sync.bind(this));
+        this.device.actions.connect("action-added", this._sync.bind(this));
+        this.device.actions.connect("action-removed", this._sync.bind(this));
 
-        this.actor.connect("notify::visible", Lang.bind(this, this._sync));
-        this._settingsChanged = gsconnect.settings.connect("changed", () => this._sync());
+        this.actor.connect("notify::visible", this._sync.bind(this));
+        this._settingsChanged = gsconnect.settings.connect("changed", this._sync.bind(this));
 
-        this._sync(device);
+        this._sync(this.device);
     },
 
     _sync: function (device) {
-        debug("extension.DeviceMenu._sync()");
+        debug(this.device.name);
 
         if (!this.actor.visible) { return; }
 
@@ -400,7 +401,10 @@ var DeviceMenu = new Lang.Class({
     _findmyphoneAction: function (button) {
         debug("extension.DeviceMenu._findmyphoneAction()");
         this._getTopMenu().close(true);
-        this.device._plugins.get("findmyphone").find();
+
+        if (this.device.actions.get_action_enabled("find")) {
+            this.device.actions.activate_action("find", null);
+        }
     },
 
     _mousepadAction: function (button) {
@@ -509,7 +513,7 @@ var DeviceMenu = new Lang.Class({
         unmountItem._ornamentLabel.text = "\u23CF";
         unmountItem.connect("activate", (item) => {
             item._getTopMenu().close(true);
-            this.device.sftp.unmount();
+            let sftp = this.device._plugins.get("sftp");
         });
         this.listPanel.addMenuItem(unmountItem);
 
@@ -519,13 +523,19 @@ var DeviceMenu = new Lang.Class({
     _shareAction: function (button) {
         debug("extension.DeviceMenu._shareAction()");
         this._getTopMenu().close(true);
-        this.device.share.shareDialog();
+
+        if (this.device.actions.get_action_enabled("shareDialog")) {
+            this.device.actions.activate_action("shareDialog", null);
+        }
     },
 
     _telephonyAction: function (button) {
         debug("extension.DeviceMenu._telephonyAction()");
         this._getTopMenu().close(true);
-        this.device.telephony.openSms();
+
+        if (this.device.actions.get_action_enabled("openSms")) {
+            this.device.actions.activate_action("openSms", null);
+        }
     },
 
     destroy: function () {
@@ -698,7 +708,7 @@ var SystemIndicator = new Lang.Class({
 
         this.extensionIndicator.visible = false;
 
-        this.daemon = new Client.Daemon();
+        this._serviceAppeared();
     },
 
     /**
@@ -830,7 +840,6 @@ var SystemIndicator = new Lang.Class({
 });
 
 
-// FIXME FIXME FIXME FIXME FIXME FIXME FIXME FIXME FIXME FIXME FIXME FIXME
 /**
  * Monkey-patch for Gnome Shell notifications
  *
