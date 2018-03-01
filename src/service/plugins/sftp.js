@@ -75,10 +75,10 @@ var Plugin = new Lang.Class({
     _prepare: function () {
         debug("SFTP: _prepare()");
 
-        this._path = ext.runtimedir + "/" + this.device.id;
-        GLib.mkdir_with_parents(this._path, 448);
+        this._mount_path = ext.runtimedir + "/" + this.device.id;
+        GLib.mkdir_with_parents(this._mount_path, 448);
 
-        let dir = Gio.File.new_for_path(this._path);
+        let dir = Gio.File.new_for_path(this._mount_path);
         let info = dir.query_info("unix::uid,unix::gid", 0, null);
         this._uid = info.get_attribute_uint32("unix::uid").toString();
         this._gid = info.get_attribute_uint32("unix::gid").toString();
@@ -95,10 +95,12 @@ var Plugin = new Lang.Class({
             return;
         }
 
+        let path = packet.body.multiPaths ? "/" : packet.body.path;
+
         let args = [
             "sshfs",
-            packet.body.user + "@" + packet.body.ip + ":" + packet.body.path,
-            this._path,
+            packet.body.user + "@" + packet.body.ip + ":" + path,
+            this._mount_path,
             "-p", packet.body.port.toString(),
             // "disable multi-threaded operation"
             // Fixes file chunks being sent out of order and corrupted
@@ -155,12 +157,13 @@ var Plugin = new Lang.Class({
         this._stdin.put_string(packet.body.password + "\n", null);
 
         // Set the directories and notify (client.js needs this before mounted)
-        for (let index in packet.body.pathNames) {
-            if ( packet.body.multiPaths[index].search(packet.body.path) === 0 ) {
-                let name = packet.body.pathNames[index];
-                let path = packet.body.multiPaths[index].replace(packet.body.path, "");
-                this._directories[name] = this._path + path;
+        if (packet.body.multiPaths) {
+            for (let index in packet.body.pathNames) {
+                this._directories[packet.body.pathNames[index]] = this._mount_path + packet.body.multiPaths[index];
             }
+        } else {
+            this._directories["All files"] = this._mount_path;
+            this._directories["Camera pictures"] = this._mount_path + "/DCIM/Camera";
         }
 
         this.notify("directories");
@@ -227,14 +230,14 @@ var Plugin = new Lang.Class({
             log("SFTP: Error killing sshfs: " + e);
         }
 
-        if (this._path) {
+        if (this._mount_path) {
             if (Common.checkCommand("fusermount")) {
-                GLib.spawn_command_line_async("fusermount -uz " + this._path);
+                GLib.spawn_command_line_async("fusermount -uz " + this._mount_path);
             } else {
-                GLib.spawn_command_line_async("umount " + this._path);
+                GLib.spawn_command_line_async("umount " + this._mount_path);
             }
 
-            delete this._path;
+            delete this._mount_path;
             delete this._uid;
             delete this._gid;
         }
