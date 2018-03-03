@@ -30,6 +30,16 @@
     <method name="unpair"/>
     <method name="acceptPair"/>
     <method name="rejectPair"/>
+    <method name="enablePlugin">
+      <arg name="name" type="s" direction="in"/>
+      <arg name="success" type="b" direction="out"/>
+      <arg name="error" type="s" direction="out"/>
+    </method>
+    <method name="disablePlugin">
+      <arg name="name" type="s" direction="in"/>
+      <arg name="success" type="b" direction="out"/>
+      <arg name="error" type="s" direction="out"/>
+    </method>
     <method name="openSettings"/>
   </interface>
 
