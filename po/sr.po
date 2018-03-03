@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-01-05 18:43-0800\n"
+"POT-Creation-Date: 2018-03-03 02:41-0800\n"
 "PO-Revision-Date: 2017-12-24 15:07+0100\n"
 "Last-Translator: Слободан Терзић  <slobodan.terzic@zoho.eu>\n"
 "Language-Team: \n"
@@ -79,27 +79,27 @@ msgid "Send To Mobile Device"
 msgstr "Пошаљи на мобилни уређај"
 
 # Leaving the name in original form for About dialog.
-#: src/prefs.js:52 src/service/daemon.js:208
+#: src/prefs.js:51 src/service/daemon.js:208
 msgid "GSConnect"
 msgstr "GSConnect"
 
-#: src/prefs.js:61
+#: src/prefs.js:60
 msgid "KDE Connect implementation with Gnome Shell integration"
 msgstr "Имплементација КДЕ Конекта уграђена у Гномову шкољку"
 
-#: src/prefs.js:68
+#: src/prefs.js:67
 msgid "GSConnect Website"
 msgstr "Домаћа страница"
 
-#: src/prefs.js:75
+#: src/prefs.js:74
 msgid "Copyright © 2017 Andy Holmes"
 msgstr "Copyright © 2017 Andy Holmes"
 
-#: src/prefs.js:82
+#: src/prefs.js:81
 msgid "This program comes with absolutely no warranty."
 msgstr "Овај програм не доставља никакве гаранције."
 
-#: src/prefs.js:83
+#: src/prefs.js:82
 msgid ""
 "See the <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html"
 "\">GNU General Public License, version 2 or later</a> for details."
@@ -107,28 +107,28 @@ msgstr ""
 "Погледајте <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html"
 "\">ГНУову општу јавну лиценцу, верзије 2 или новију</a> за више детаља."
 
-#: src/prefs.js:107
+#: src/prefs.js:106
 msgid "Devices"
 msgstr "Уређаји"
 
 #. Preferences Page
-#: src/prefs.js:111
+#: src/prefs.js:110
 msgid "Preferences"
 msgstr "Поставке"
 
-#: src/prefs.js:113
+#: src/prefs.js:112
 msgid "Appearance"
 msgstr "Изглед"
 
-#: src/prefs.js:120
+#: src/prefs.js:119
 msgid "Extensions"
 msgstr "Проширења"
 
-#: src/prefs.js:129 data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:39
+#: src/prefs.js:126 data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:39
 msgid "Web Browser Integration"
 msgstr "Уградња у веб прегледач"
 
-#: src/prefs.js:130
+#: src/prefs.js:127
 #, javascript-format
 msgid ""
 "Requires <a href=\"%s\">Chrome Extension</a> or <a href=\"%s\">Firefox Add-"
@@ -137,7 +137,7 @@ msgstr ""
 "Захтева <a href=\"%s\">проширење Хрома</a> или <a href=\"%s\">додатак за "
 "Фајерфокс</a>"
 
-#: src/prefs.js:140
+#: src/prefs.js:137
 msgid "About"
 msgstr "О програму"
 
@@ -146,9 +146,9 @@ msgstr "О програму"
 msgid "Select a Device"
 msgstr "Лоцирање уређаја"
 
-#: src/service/daemon.js:72 src/service/plugins/base.js:89
+#: src/service/daemon.js:72 src/service/plugins/base.js:169
 #: src/service/plugins/notification.js:501 src/service/plugins/share.js:100
-#: src/service/plugins/share.js:343 src/service/plugins/share.js:504
+#: src/service/plugins/share.js:331 src/service/plugins/share.js:480
 msgid "Cancel"
 msgstr "Откажи"
 
@@ -170,7 +170,7 @@ msgid "Restart"
 msgstr "Поново покрени"
 
 #. TRANSLATORS: eg. Pair Request from Google Pixel
-#: src/service/device.js:364
+#: src/service/device.js:381
 #, javascript-format
 msgid "Pair Request from %s"
 msgstr "Захтев за упаривање од %s"
@@ -185,7 +185,7 @@ msgstr "Захтев за упаривање од %s"
 #.
 #. Local Fingerprint:
 #. 00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
-#: src/service/device.js:376
+#: src/service/device.js:393
 #, javascript-format
 msgid ""
 "%s Fingerprint:\n"
@@ -200,15 +200,15 @@ msgstr ""
 "Локални отисак:\n"
 "%s"
 
-#: src/service/device.js:386
+#: src/service/device.js:403
 msgid "Reject"
 msgstr "Одбиј"
 
-#: src/service/device.js:390
+#: src/service/device.js:407
 msgid "Accept"
 msgstr "Прихвати"
 
-#: src/service/plugins/base.js:88
+#: src/service/plugins/base.js:168
 msgid "Apply"
 msgstr "Примени"
 
@@ -221,17 +221,17 @@ msgid "Send and receive battery statistics"
 msgstr "Слање и пријем стања батерије"
 
 #. TRANSLATORS: Low Battery Warning
-#: src/service/plugins/battery.js:242
+#: src/service/plugins/battery.js:251
 msgid "Low Battery Warning"
 msgstr "Упозорење о скоро празној батерији"
 
 #. TRANSLATORS: eg. Google Pixel's battery level is 15%
-#: src/service/plugins/battery.js:245
+#: src/service/plugins/battery.js:254
 #, javascript-format
 msgid "%s's battery level is %d%%"
 msgstr "Ниво батерије за %s је %d%%"
 
-#: src/service/plugins/battery.js:251
+#: src/service/plugins/battery.js:260
 msgid "Locate"
 msgstr "Лоцирај"
 
@@ -288,6 +288,10 @@ msgstr "Не ради у Вејланд сесији"
 msgid "Failed to initialize Atspi"
 msgstr "Неуспела иницијелизација Atspi"
 
+#: src/service/plugins/mousepad.js:69
+msgid "Cannot load Caribou virtual keyboard for Unicode support"
+msgstr ""
+
 #: src/service/plugins/mpris.js:19
 msgid "Media Player Control"
 msgstr "Управљање медијским плејерима"
@@ -304,36 +308,36 @@ msgstr "Обавештења"
 msgid "Sync notifications between devices"
 msgstr "Синхронизација обавештења између уређаја"
 
+#. Check if this is a missed call or SMS notification
 #. TRANSLATORS: This is specifically for matching missed call notifications on Android.
 #. You should translate this (or not) to match the string on your phone that in english looks like "Missed call: John Lennon"
-#: src/service/plugins/notification.js:130
-#: src/service/plugins/notification.js:203 src/service/plugins/telephony.js:199
-#: src/service/plugins/telephony.js:203 src/service/plugins/telephony.js:594
+#: src/service/plugins/notification.js:92 src/service/plugins/telephony.js:199
+#: src/service/plugins/telephony.js:203 src/service/plugins/telephony.js:592
 msgid "Missed call"
 msgstr "Пропуштен позив"
 
 #. TRANSLATORS: Missed Call
-#: src/service/plugins/notification.js:139 src/service/plugins/telephony.js:174
+#: src/service/plugins/notification.js:118 src/service/plugins/telephony.js:174
 msgid "Missed Call"
 msgstr "Пропуштен позив"
 
 #. TRANSLATORS: eg. Missed call from John Smith on Google Pixel
-#: src/service/plugins/notification.js:141 src/service/plugins/telephony.js:177
+#: src/service/plugins/notification.js:120 src/service/plugins/telephony.js:177
 #, javascript-format
 msgid "Missed call from %s on %s"
 msgstr "Пропуштен позив од %s на %s"
 
 #. TRANSLATORS: Reply to a missed call by SMS
-#: src/service/plugins/notification.js:148 src/service/plugins/telephony.js:184
+#: src/service/plugins/notification.js:127 src/service/plugins/telephony.js:184
 msgid "Message"
 msgstr "Порука"
 
-#: src/service/plugins/notification.js:499 src/service/plugins/share.js:505
-#: src/widgets/telephony.js:1074
+#: src/service/plugins/notification.js:499 src/service/plugins/share.js:481
+#: src/widgets/telephony.js:1072
 msgid "Send"
 msgstr "Пошаљи"
 
-#: src/service/plugins/notification.js:568
+#: src/service/plugins/notification.js:567
 msgid "Applications"
 msgstr "Програми"
 
@@ -382,7 +386,7 @@ msgstr "Дељење"
 msgid "Send and receive files and URLs"
 msgstr "Слање и пријем фалова и УРЛ-ова"
 
-#: src/service/plugins/share.js:87 src/service/plugins/share.js:330
+#: src/service/plugins/share.js:87 src/service/plugins/share.js:318
 msgid "Starting Transfer"
 msgstr "Започињем пренос"
 
@@ -392,82 +396,82 @@ msgstr "Започињем пренос"
 msgid "Receiving \"%s\" from %s"
 msgstr "Примам „%s“ од %s"
 
-#: src/service/plugins/share.js:118 src/service/plugins/share.js:361
+#: src/service/plugins/share.js:115 src/service/plugins/share.js:346
 msgid "Transfer Successful"
 msgstr "Успешан пренос"
 
 #. TRANSLATORS: eg. Received "book.pdf" from Google Pixel
-#: src/service/plugins/share.js:121
+#: src/service/plugins/share.js:118
 #, javascript-format
 msgid "Received \"%s\" from %s"
 msgstr "Примих „%s“ од %s"
 
-#: src/service/plugins/share.js:131
+#: src/service/plugins/share.js:128
 msgid "Open Folder"
 msgstr "Отвори фасциклу"
 
-#: src/service/plugins/share.js:138
+#: src/service/plugins/share.js:135
 msgid "Open File"
 msgstr "Отвори фајл"
 
-#: src/service/plugins/share.js:163 src/service/plugins/share.js:392
+#: src/service/plugins/share.js:157 src/service/plugins/share.js:374
 msgid "Transfer Failed"
 msgstr "Пренос није успео"
 
 #. TRANSLATORS: eg. Failed to receive "book.pdf" from Google Pixel: Some error
-#: src/service/plugins/share.js:166
+#: src/service/plugins/share.js:160
 #, javascript-format
 msgid "Failed to receive \"%s\" from %s: %s"
 msgstr "Неуспешан пријем „%s“ од %s: %s"
 
-#: src/service/plugins/share.js:190 src/service/plugins/share.js:418
+#: src/service/plugins/share.js:181 src/service/plugins/share.js:397
 msgid "Transfer Cancelled"
 msgstr "Пренос је отказан"
 
 #. TRANSLATORS: eg. Cancelled transfer of "book.pdf" from Google Pixel
-#: src/service/plugins/share.js:193
+#: src/service/plugins/share.js:184
 #, javascript-format
 msgid "Cancelled transfer of \"%s\" from %s"
 msgstr "Отказан пренос „%s“ од %s"
 
 #. TRANSLATORS: eg. Sending "book.pdf" to Google Pixel
-#: src/service/plugins/share.js:333
+#: src/service/plugins/share.js:321
 #, javascript-format
 msgid "Sending \"%s\" to %s"
 msgstr "Слање „%s“ за %s"
 
 #. TRANSLATORS: eg. Send "book.pdf" to Google Pixel
-#: src/service/plugins/share.js:364
+#: src/service/plugins/share.js:349
 #, javascript-format
 msgid "Sent \"%s\" to %s"
 msgstr "Послах „%s“ за %s"
 
 #. TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel: Some error
-#: src/service/plugins/share.js:395
+#: src/service/plugins/share.js:377
 #, javascript-format
 msgid "Failed to send \"%s\" to %s: %s"
 msgstr "Неуспело слање „%s“ за %s: %s"
 
 #. TRANSLATORS: eg. Cancelled transfer of "book.pdf" to Google Pixel
-#: src/service/plugins/share.js:421
+#: src/service/plugins/share.js:400
 #, javascript-format
 msgid "Cancelled transfer of \"%s\" to %s"
 msgstr "Отказано слање „%s“ за %s"
 
 #. TRANSLATORS: eg. Send files to Google Pixel
-#: src/service/plugins/share.js:474
+#: src/service/plugins/share.js:450
 #, javascript-format
 msgid "Send files to %s"
 msgstr "Пошаљи фајлове на %s"
 
 #. TRANSLATORS: eg. Send a link to Google Pixel
-#: src/service/plugins/share.js:493
+#: src/service/plugins/share.js:469
 #, javascript-format
 msgid "Send a link to %s"
 msgstr "Пошаљи везе на %s"
 
 #. TRANSLATORS: eg. Use a subdirectory named <b>Google Pixel<b>
-#: src/service/plugins/share.js:552
+#: src/service/plugins/share.js:528
 #, javascript-format
 msgid "Use a subdirectory named <b>%s</b>"
 msgstr "Користи подфасциклу названу <b>%s</b>"
@@ -481,19 +485,19 @@ msgid "Call notification and SMS messaging"
 msgstr "Обавештења о позивима и СМС порукама"
 
 #. TRANSLATORS: Incoming Call
-#: src/service/plugins/telephony.js:213
+#: src/service/plugins/telephony.js:212
 msgid "Incoming Call"
 msgstr "Долазни позив"
 
 #. TRANSLATORS: eg. Incoming call from John Smith on Google Pixel
-#: src/service/plugins/telephony.js:216
+#: src/service/plugins/telephony.js:215
 #, javascript-format
 msgid "Incoming call from %s on %s"
 msgstr "Долазни позив од %s на %s"
 
 #. TRANSLATORS: Silence an incoming call
-#: src/service/plugins/telephony.js:223 src/service/plugins/telephony.js:1056
-#: src/service/plugins/telephony.js:1080
+#: src/service/plugins/telephony.js:222 src/service/plugins/telephony.js:1054
+#: src/service/plugins/telephony.js:1078
 msgid "Mute"
 msgstr "Утишај"
 
@@ -512,35 +516,34 @@ msgstr "У току је разговор са %s на %s"
 msgid "Unknown Number"
 msgstr "Непознат број"
 
-#: src/service/plugins/telephony.js:1043
+#: src/service/plugins/telephony.js:1041
 msgid "Incoming Calls"
 msgstr "Долазни позиви"
 
-#: src/service/plugins/telephony.js:1054 src/service/plugins/telephony.js:1078
-#: src/widgets/gsettings.js:138
+#: src/service/plugins/telephony.js:1052 src/service/plugins/telephony.js:1076
 msgid "Nothing"
 msgstr "Ништа"
 
-#: src/service/plugins/telephony.js:1055 src/service/plugins/telephony.js:1079
+#: src/service/plugins/telephony.js:1053 src/service/plugins/telephony.js:1077
 msgid "Lower"
 msgstr "Утишај"
 
-#: src/service/plugins/telephony.js:1063 src/service/plugins/telephony.js:1087
-#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:148
-#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:158
+#: src/service/plugins/telephony.js:1061 src/service/plugins/telephony.js:1085
+#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:143
+#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:153
 msgid "System Volume"
 msgstr "Системска јачина"
 
-#: src/service/plugins/telephony.js:1067
+#: src/service/plugins/telephony.js:1065
 msgid "In Progress Calls"
 msgstr "Током текућих позива"
 
-#: src/service/plugins/telephony.js:1096 src/service/plugins/telephony.js:1101
+#: src/service/plugins/telephony.js:1094 src/service/plugins/telephony.js:1099
 msgid "The <b>Media Player Control</b> plugin must be enabled"
 msgstr "Прикључак <b>Управљање медијским плејерима</b> мора бити омогућен"
 
-#: src/service/plugins/telephony.js:1108 src/service/plugins/telephony.js:1111
-#: src/service/plugins/telephony.js:1114
+#: src/service/plugins/telephony.js:1106 src/service/plugins/telephony.js:1109
+#: src/service/plugins/telephony.js:1112
 msgid "Gvc not available"
 msgstr "Gvc није доступан"
 
@@ -662,14 +665,6 @@ msgstr "Таблет"
 msgid "Unknown"
 msgstr "Непознато"
 
-#: src/widgets/gsettings.js:150
-msgid "True"
-msgstr "Тачно"
-
-#: src/widgets/gsettings.js:162
-msgid "False"
-msgstr "Нетачно"
-
 #: src/widgets/keybindings.js:170
 msgid "Keyboard Shortcut Unavailable"
 msgstr "Пречица тастатуре није доступна"
@@ -765,17 +760,17 @@ msgstr "СМС разговор"
 msgid "Add and remove people"
 msgstr "Додавање и уклањање особа"
 
-#: src/widgets/telephony.js:729 src/widgets/telephony.js:730
+#: src/widgets/telephony.js:726 src/widgets/telephony.js:727
 msgid "Type a phone number or name"
 msgstr "Унеите број телефона или име"
 
 #. TRANSLATORS: eg. <b>Google Pixel</b> is disconnected
-#: src/widgets/telephony.js:755
+#: src/widgets/telephony.js:752
 #, javascript-format
 msgid "<b>%s</b> is disconnected"
 msgstr "%s је развезан"
 
-#: src/widgets/telephony.js:841 src/widgets/telephony.js:1129
+#: src/widgets/telephony.js:838 src/widgets/telephony.js:1127
 #, fuzzy, javascript-format
 msgid "And one other person"
 msgid_plural "And %d other people"
@@ -784,20 +779,20 @@ msgstr[1] "И још једна особа"
 msgstr[2] "И још једна особа"
 
 #. TRANSLATORS: eg. SMS Conversation with John, Paul, George, Ringo
-#: src/widgets/telephony.js:856 src/widgets/telephony.js:1140
+#: src/widgets/telephony.js:853 src/widgets/telephony.js:1138
 #, javascript-format
 msgid "SMS Conversation with %s"
 msgstr "СМС разговор са %s"
 
-#: src/widgets/telephony.js:861
+#: src/widgets/telephony.js:858
 msgid "New SMS Conversation"
 msgstr "Нови СМС разговор"
 
-#: src/widgets/telephony.js:1012 src/widgets/telephony.js:1024
+#: src/widgets/telephony.js:1010 src/widgets/telephony.js:1022
 msgid "Share Link"
 msgstr "Подели везу"
 
-#: src/widgets/telephony.js:1062
+#: src/widgets/telephony.js:1060
 msgid "New Message"
 msgstr "Нова порука"
 
@@ -885,27 +880,32 @@ msgstr "Пријем обавештења"
 msgid "Send Notifications"
 msgstr "Слање обавештења"
 
-#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:114
-msgid "Sync Icons"
-msgstr "Синхронизација икона"
-
-#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:129
+#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:124
 msgid "Automatically Mount"
 msgstr "Аутоматско монтирање"
 
-#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:136
+#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:131
 msgid "Download Directory"
 msgstr "Пријемна фасцикла"
 
-#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:141
+#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:136
 msgid "Use Subdirectory"
 msgstr "Користи подфасциклу"
 
-#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:153
-#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:168
+#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:148
+#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:163
 msgid "Pause Media"
 msgstr "Паузирај медије"
 
-#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:163
+#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:158
 msgid "Mute Microphone"
 msgstr "Утишај микрофон"
+
+#~ msgid "True"
+#~ msgstr "Тачно"
+
+#~ msgid "False"
+#~ msgstr "Нетачно"
+
+#~ msgid "Sync Icons"
+#~ msgstr "Синхронизација икона"

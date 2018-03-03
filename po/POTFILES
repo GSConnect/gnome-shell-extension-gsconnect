@@ -17,7 +17,6 @@ src/service/plugins/sftp.js
 src/service/plugins/share.js
 src/service/plugins/telephony.js
 src/widgets/device.js
-src/widgets/gsettings.js
 src/widgets/keybindings.js
 src/widgets/shell.js
 src/widgets/telephony.js
