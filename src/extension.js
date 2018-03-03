@@ -407,7 +407,7 @@ var DeviceMenu = new Lang.Class({
                 item._getTopMenu().close(true);
                 Gio.AppInfo.launch_default_for_uri(
                     "file://" + item.path,
-                    null
+                    global.create_app_launch_context(0, -1)
                 );
             });
 
