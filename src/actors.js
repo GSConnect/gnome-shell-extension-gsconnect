@@ -1,16 +1,16 @@
 "use strict";
 
 const Cairo = imports.cairo;
-const Gettext = imports.gettext.domain("org.gnome.Shell.Extensions.GSConnect");
-const _ = Gettext.gettext;
 const Lang = imports.lang;
 
 const Clutter = imports.gi.Clutter;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
+const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 const Pango = imports.gi.Pango;
 const St = imports.gi.St;
+const UPower = imports.gi.UPowerGlib;
 
 const Main = imports.ui.main;
 const ModalDialog = imports.ui.modalDialog;
@@ -18,6 +18,8 @@ const Tweener = imports.ui.tweener;
 
 // Local Imports
 imports.searchPath.push(gsconnect.datadir);
+const _ = gsconnect._;
+const DBus = imports.modules.dbus;
 const Color = imports.modules.color;
 
 
@@ -324,14 +326,12 @@ var Tooltip = new Lang.Class({
     _hover: function () {
         if (this._parent.hover) {
             if (!this._hoverTimeoutId) {
-                let timeout = (TOOLTIP_BROWSE_MODE) ? 60 : 500;
-
                 if (this._showing) {
                     this._show();
                 } else {
                     this._hoverTimeoutId = GLib.timeout_add(
                         GLib.PRIORITY_DEFAULT,
-                        timeout,
+                        (TOOLTIP_BROWSE_MODE) ? 60 : 500,
                         () => {
                             this._show();
                             this._hoverTimeoutId = 0;
@@ -501,10 +501,7 @@ var PluginButton = new Lang.Class({
         });
 
         this.callback = params.callback;
-
-        this.connect("clicked", () => {
-            this.callback(this);
-        });
+        this.connect("clicked", () => this.callback(this));
 
         this.connect("notify::checked", () => {
             if (this.checked) {
@@ -525,17 +522,47 @@ var PluginButton = new Lang.Class({
 });
 
 
+var MenuButton = new Lang.Class({
+    Name: "GSConnectShellMenuButton",
+    Extends: St.Button,
+
+    _init: function (params) {
+        this.parent({
+            child: new St.Icon({ icon_name: params.item.icon }),
+            style_class: "system-menu-action gsconnect-plugin-button",
+            can_focus: true
+        });
+
+        this._gactions = params.gactions;
+        this._item = params.item;
+        this.connect("clicked", this._onClicked.bind(this));
+
+        this.tooltip = new Tooltip({
+            parent: this,
+            markup: this._item.label
+        });
+    },
+
+    _onClicked: function () {
+        debug("activating: " + this._item.action);
+        this._gactions.activate_action(this._item.action, null);
+    }
+});
+
+
 /** St.BoxLayout subclass for a battery icon with text percentage */
 var DeviceBattery = new Lang.Class({
     Name: "GSConnectShellDeviceBattery",
     Extends: St.BoxLayout,
 
-    _init: function (device) {
+    _init: function (object, device) {
         this.parent({
             reactive: false,
-            style_class: "gsconnect-device-battery"
+            style_class: "gsconnect-device-battery",
+            visible: gsconnect.settings.get_boolean("show-battery")
         });
 
+        this.object = object;
         this.device = device;
 
         this.label = new St.Label({ text: "" });
@@ -544,47 +571,44 @@ var DeviceBattery = new Lang.Class({
         this.icon = new St.Icon({ icon_size: 16 });
         this.add_child(this.icon);
 
-        this.device.connect("notify::plugins", () => this._pluginsChanged());
-        this._pluginsChanged();
-    },
+        // Battery proxy
+        this.battery = this.object.get_interface(
+            "org.gnome.Shell.Extensions.GSConnect.Plugin.Battery"
+        );
 
-    _pluginsChanged: function () {
-        let battery = this.device._plugins.get("battery");
-
-        if (battery && !this._battery) {
-            this._battery = battery.connect("notify", (battery) => this.update(battery));
-            this.update(battery);
-        } else if (!battery && this._battery) {
-            delete this._battery;
+        if (this.battery) {
+            this._batteryId = this.battery.connect("notify", this.update.bind(this));
+            this.battery.connect("destroy", () => { delete this.battery });
         }
+
+        this.object.connect("interface-added", (obj, iface) => {
+            if (iface.g_interface_name === "org.gnome.Shell.Extensions.GSConnect.Plugin.Battery") {
+                this.battery = iface;
+                this._batteryId = this.battery.connect("notify", this.update.bind(this));
+                this.battery.connect("destroy", () => { delete this.battery });
+            }
+        });
+
+        // Cleanup
+        device.connect("destroy", () => this.destroy());
+        // TODO: des
+        this.connect("destroy", () => {
+            if (this._batteryId && this.battery) {
+                this.battery.disconnect(this._batteryId);
+            }
+        });
     },
 
     update: function (battery) {
-        this.icon.visible = (battery && battery.level > -1);
-        this.label.visible = (battery && battery.level > -1);
+        this.icon.visible = (this.battery && this.battery.level > -1);
+        this.label.visible = (this.battery && this.battery.level > -1);
 
-        if (!this.visible || !battery || !this.icon.visible) {
+        if (!this.visible || !this.icon.visible) {
             return;
         }
 
-        let {charging, level} = battery;
-        let icon = "battery";
-
-        if (level < 3) {
-            icon += "-empty";
-        } else if (level < 10) {
-            icon += "-caution";
-        } else if (level < 30) {
-            icon += "-low";
-        } else if (level < 60) {
-            icon += "-good";
-        } else if (level >= 60) {
-            icon += "-full";
-        }
-
-        icon += (charging) ? "-charging-symbolic" : "-symbolic";
-        this.icon.icon_name = icon;
-        this.label.text = level + "%";
+        this.icon.icon_name = this.battery.icon_name;
+        this.label.text = this.battery.level + "%";
     }
 });
 
@@ -596,7 +620,7 @@ var DeviceIcon = new Lang.Class({
     Name: "GSConnectShellDeviceIcon",
     Extends: St.DrawingArea,
 
-    _init: function (device) {
+    _init: function (object, device) {
         this.parent({
             width: 48,
             height: 48,
@@ -606,6 +630,7 @@ var DeviceIcon = new Lang.Class({
             y_expand: false
         });
 
+        this.object = object;
         this.device = device;
 
         this.tooltip = new Tooltip({
@@ -615,99 +640,80 @@ var DeviceIcon = new Lang.Class({
         });
 
         // Device Type
-        let type = (this.device.type === "desktop") ? "computer" : this.device.type;
         this._theme = Gtk.IconTheme.get_default();
-        this.icon = this._theme.load_surface(type, 32, 1, null, 0);
+        this.icon = this._theme.load_surface(this.device.icon_name, 32, 1, null, 0);
 
         this._themeSignal = this._theme.connect("changed", () => {
-            this.icon = this._theme.load_surface(type, 32, 1, null, 0);
+            this.icon = this._theme.load_surface(this.device.icon_name, 32, 1, null, 0);
             this.queue_repaint();
         });
 
-        // Battery Plugin
-        if (this.device.battery) {
-            this._battery = this.device.battery.connect("notify", () => {
-                this.queue_repaint();
-            });
+        // Battery proxy
+        this.battery = this.object.get_interface(
+            "org.gnome.Shell.Extensions.GSConnect.Plugin.Battery"
+        );
+
+        if (this.battery) {
+            this._batteryId = this.battery.connect("notify", () => this.queue_repaint());
+            this.battery.connect("destroy", () => { delete this.battery; });
         }
 
-        this.device.connect("notify::plugins", () => {
-            if (this.device.battery && !this._battery) {
-                this._battery = this.device.battery.connect("notify", () => {
-                    this.queue_repaint();
-                });
-                this.queue_repaint();
-            } else if (!this.device.battery && this._battery) {
-                delete this._battery;
+        this.object.connect("interface-added", (obj, iface) => {
+            if (iface.g_interface_name === "org.gnome.Shell.Extensions.GSConnect.Plugin.Battery") {
+                this.battery = iface;
+                this._batteryId = this.battery.connect("notify", () => this.queue_repaint());
+                this.battery.connect("destroy", () => { delete this.battery; });
             }
         });
 
         // Device Status
-        device.connect("notify::connected", () => { this.queue_repaint(); });
-        device.connect("notify::paired", () => { this.queue_repaint(); });
+        device.connect("notify::connected", () => this.queue_repaint());
+        device.connect("notify::paired", () => this.queue_repaint());
+        device.connect("destroy", () => this.destroy());
 
-        this.connect("repaint", Lang.bind(this, this._draw));
+        this.connect("repaint", this._draw.bind(this));
         this.connect("destroy", () => {
             this._theme.disconnect(this._themeSignal);
-            return true;
+            if (this._batteryId && this.battery) {
+                this.battery.disconnect(this._batteryId);
+            }
         });
     },
 
     _batteryColor: function () {
         return Color.hsv2rgb(
-            this.device.battery.level / 100 * 120,
+            this.battery.level / 100 * 120,
             100,
-            100 - (this.device.battery.level / 100 * 15)
+            100 - (this.battery.level / 100 * 15)
         );
     },
 
-    _batteryIcon: function () {
-        let {charging, level} = this.device.battery;
-        let icon = "battery";
+    _getTimeLabel: function () {
+        let { charging, level, time } = this.battery;
 
         if (level === 100) {
-            return "battery-full-charged-symbolic";
-        } else if (level < 3) {
-            icon += "-empty";
-        } else if (level < 10) {
-            icon += "-caution";
-        } else if (level < 30) {
-            icon += "-low";
-        } else if (level < 60) {
-            icon += "-good";
-        } else if (level >= 60) {
-            icon += "-full";
-        }
-
-        icon += (charging) ? "-charging-symbolic" : "-symbolic";
-
-        return icon;
-    },
-
-    _batteryRemaining: function () {
-        if (this.device.battery.level === 100) {
             // TRANSLATORS: Fully Charged
             return _("Fully Charged");
-        } else if (this.device.battery.time === 0) {
+        } else if (time === 0) {
             // TRANSLATORS: <percentage> (Estimating…)
-            return _("%d%% (Estimating…)").format(this.device.battery.level);
+            return _("%d%% (Estimating…)").format(level);
         }
 
-        let time = this.device.battery.time / 60;
+        time = time / 60;
         let minutes = time % 60;
         let hours = Math.floor(time / 60);
 
-        if (this.device.battery.charging) {
+        if (charging) {
             // TRANSLATORS: <percentage> (<hours>:<minutes> Until Full)
             return _("%d%% (%d\u2236%02d Until Full)").format(
-                this.device.battery.level,
+                level,
                 hours,
                 minutes
             );
         } else {
             // TRANSLATORS: <percentage> (<hours>:<minutes> Remaining)
             return _("%d%% (%d\u2236%02d Remaining)").format(
-                this.device.battery.level,
+                level,
                 hours,
                 minutes
             );
@@ -717,16 +723,13 @@ var DeviceIcon = new Lang.Class({
     _draw: function () {
         if (!this.visible) { return; }
 
-        let battery = this.device._plugins.get("battery");
-
         let [width, height] = this.get_surface_size();
         let xc = width / 2;
         let yc = height / 2;
-        let rc = Math.min(xc, yc);
 
         let cr = this.get_context();
         let thickness = 3;
-        let r = rc - (thickness / 2);
+        let r = Math.min(xc, yc) - (thickness / 2);
         cr.setLineWidth(thickness);
 
         // Icon
@@ -749,7 +752,7 @@ var DeviceIcon = new Lang.Class({
             cr.arc(xc, yc, r, 1.48 * Math.PI, 1.47 * Math.PI);
             cr.stroke();
         } else if (!this.device.paired) {
-            this.tooltip.markup = _("Pair <b>%s</b>").format(this.device.name) + "\n\n" + _("<b>%s Fingerprint:</b>\n%s\n\n<b>Local Fingerprint:</b>\n%s").format(this.device.name, this.device.fingerprint, this.device.daemon.fingerprint);
+            this.tooltip.markup = _("Pair <b>%s</b>").format(this.device.name) + "\n\n" + _("<b>%s Fingerprint:</b>\n%s\n\n<b>Local Fingerprint:</b>\n%s").format(this.device.name, this.device.fingerprint, this.device.service.fingerprint);
             this.tooltip.icon_name = "channel-insecure-symbolic";
 
             cr.setSourceRGB(0.95, 0.0, 0.0);
@@ -758,14 +761,14 @@ var DeviceIcon = new Lang.Class({
             cr.setDash([3, 7], 0);
             cr.arc(xc, yc, r, 1.48 * Math.PI, 1.47 * Math.PI);
             cr.stroke();
-        } else if (battery && battery.level > -1) {
+        } else if (this.battery && this.battery.level > -1) {
             // Capacity arc
             cr.setSourceRGB(0.8, 0.8, 0.8);
 
-            if (battery.level < 1) {
+            if (this.battery.level < 1) {
                 cr.arc(xc, yc, r, 0, 2 * Math.PI);
-            } else if (battery.level < 100) {
-                let end = (battery.level / 50 * Math.PI) + 1.5 * Math.PI;
+            } else if (this.battery.level < 100) {
+                let end = (this.battery.level / 50 * Math.PI) + 1.5 * Math.PI;
                 cr.arcNegative(xc, yc, r, 1.5 * Math.PI, end);
             }
             cr.stroke();
@@ -773,18 +776,18 @@ var DeviceIcon = new Lang.Class({
             // Remaining arc
             cr.setSourceRGB(...this._batteryColor());
 
-            if (battery.level === 100) {
+            if (this.battery.level === 100) {
                 cr.arc(xc, yc, r, 0, 2 * Math.PI);
-            } else if (battery.level > 0) {
-                let end = (battery.level / 50 * Math.PI) + 1.5 * Math.PI;
+            } else if (this.battery.level > 0) {
+                let end = (this.battery.level / 50 * Math.PI) + 1.5 * Math.PI;
                 cr.arc(xc, yc, r, 1.5 * Math.PI, end);
             }
-            this.tooltip.markup = this._batteryRemaining();
-            this.tooltip.icon_name = this._batteryIcon();
+            this.tooltip.markup = this._getTimeLabel();
+            this.tooltip.icon_name = this.battery.icon_name;
             cr.stroke();
 
             // Charging highlight
-            if (this.device.battery.charging) {
+            if (this.battery.charging) {
                 cr.setOperator(Cairo.Operator.DEST_OVER);
                 cr.setSourceRGBA(...this._batteryColor(), 0.25);
                 cr.arc(xc, yc, r, 0, 2 * Math.PI);
@@ -799,6 +802,7 @@ var DeviceIcon = new Lang.Class({
         }
 
         cr.$dispose();
+        return false;
     }
 });
 
@@ -808,10 +812,10 @@ var DeviceButton = new Lang.Class({
     Name: "GSConnectShellDeviceButton",
     Extends: St.Button,
 
-    _init: function (device) {
+    _init: function (object, device) {
         this.parent({
             style_class: "system-menu-action gsconnect-device-button",
-            child: new DeviceIcon(device),
+            child: new DeviceIcon(object, device),
             can_focus: true,
             track_hover: true,
             x_expand: false,
@@ -821,7 +825,9 @@ var DeviceButton = new Lang.Class({
         });
         this.set_y_align(Clutter.ActorAlign.START);
 
+        this.object = object;
         this.device = device;
+        device.connect("destroy", () => this.destroy());
 
         this.connect("clicked", () => {
             if (!this.device.connected) {

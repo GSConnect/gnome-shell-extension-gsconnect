@@ -61,7 +61,7 @@ var DoNotDisturbItem = new Lang.Class({
 
 var DoNotDisturbDialog = new Lang.Class({
     Name: "GSConnectShellDoNotDisturbDialog",
-    Extends: ShellWidget.Dialog,
+    Extends: Actors.Dialog,
 
     _init: function () {
         this.parent({
@@ -73,7 +73,7 @@ var DoNotDisturbDialog = new Lang.Class({
         //
         this._time = 1*60*60; // 1 hour in seconds
 
-        this.permButton = new ShellWidget.RadioButton({
+        this.permButton = new Actors.RadioButton({
             text: _("Until you turn this off")
         });
         this.content.add(this.permButton);
@@ -116,7 +116,7 @@ var DoNotDisturbDialog = new Lang.Class({
         this.plusTime.connect("clicked", () => this._plusTime());
         this.timerWidget.add_child(this.plusTime);
 
-        this.timerButton = new ShellWidget.RadioButton({
+        this.timerButton = new Actors.RadioButton({
             widget: this.timerWidget,
             group: this.permButton.group,
             active: true
@@ -213,7 +213,7 @@ var DeviceMenu = new Lang.Class({
         this.deviceBox.actor.vertical = false;
         this.addMenuItem(this.deviceBox);
 
-        this.deviceButton = new ShellWidget.DeviceButton(this.device);
+        this.deviceButton = new Actors.DeviceButton(object, iface);
         this.deviceBox.actor.add_child(this.deviceButton);
 
         this.controlBox = new St.BoxLayout({
@@ -439,7 +439,7 @@ var DeviceMenu = new Lang.Class({
                 style_class: "popup-menu-icon"
             });
             commandItem.actor.insert_child_at_index(icon, 1);
-            commandItem.tooltip = new ShellWidget.Tooltip({
+            commandItem.tooltip = new Actors.Tooltip({
                 parent: commandItem,
                 markup: commands[key].command
             });
