@@ -38,7 +38,7 @@ const _bootstrap = imports._bootstrap;
 const DBus = imports.modules.dbus;
 const Device = imports.service.device;
 const Protocol = imports.service.protocol;
-const Settings = imports.modules.settings;
+const Settings = imports.service.settings;
 const Sound = imports.modules.sound;
 const Telephony = imports.service.plugins.telephony;
 
