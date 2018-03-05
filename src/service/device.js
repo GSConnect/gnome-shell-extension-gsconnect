@@ -171,9 +171,8 @@ var Device = new Lang.Class({
         this._incomingPairRequest = 0;
         this._outgoingPairRequest = 0;
 
-        // A map of pluginName->pluginObject
+        // Maps of pluginName->pluginObject & packetType->pluginObject
         this._plugins = new Map();
-        // A map of packetType->pluginObject
         this._handlers = new Map();
 
         // We at least need the device Id for GSettings and the DBus interface
@@ -208,17 +207,16 @@ var Device = new Lang.Class({
         });
         this._dbus_object.add_interface(this._dbus);
 
-        // TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
-        // Actions
-        ["acceptPair", "rejectPair"].map(name => {
-            let action = new Gio.SimpleAction({ name: name });
-            action.connect("activate", () => this[name]());
-            this.add_action(action);
-        });
-
-        Gio.DBus.session.export_action_group(
+        // GActions/GMenu
+        this._actionsId = Gio.DBus.session.export_action_group(
             this._dbus.get_object_path(),
             this
+        );
+
+        this.menu = new Menu(this);
+        this._menuId = this._dbus.get_connection().export_menu_model(
+            this._dbus.get_object_path(),
+            this.menu
         );
 
         // Created for an incoming TCP Connection
@@ -300,9 +298,9 @@ var Device = new Lang.Class({
 
         // Create a new channel
         this._channel = new Protocol.Channel(this.id);
-        this._channel.connect("connected", (channel) => this._onConnected(channel));
-        this._channel.connect("disconnected", (channel) => this._onDisconnected(channel));
-		this._channel.connect("received", (channel, packet) => this._onReceived(channel, packet));
+        this._channel.connect("connected", this._onConnected.bind(this));
+        this._channel.connect("disconnected", this._onDisconnected.bind(this));
+		this._channel.connect("received", this._onReceived.bind(this));
 
 		let addr = new Gio.InetSocketAddress({
             address: Gio.InetAddress.new_from_string(
@@ -379,12 +377,10 @@ var Device = new Lang.Class({
         this.notify("connected");
         this.notify("symbolic-icon-name");
 
-        this._loadPlugins().then((values) => {
-            this.notify("plugins");
-        });
-
         // Ensure fingerprint is available right away
         this.notify("fingerprint");
+
+        this._loadPlugins().then(values => this.notify("plugins"));
     },
 
     _onDisconnected: function (channel) {
@@ -394,7 +390,7 @@ var Device = new Lang.Class({
             this._channel = null;
         }
 
-        this._unloadPlugins().then((values) => {
+        this._unloadPlugins().then(values => {
             this.notify("plugins");
             this._connected = false;
             this.notify("connected");
@@ -409,13 +405,11 @@ var Device = new Lang.Class({
         } else if (packet.type === Protocol.TYPE_PAIR) {
 	        this._handlePair(packet);
 	    } else if (this._handlers.has(packet.type)) {
-	        // TODO: then-able resolve()'s
 	        let handler = this._handlers.get(packet.type);
+
             handler.handlePacket(packet).then(result => {
                 debug("'" + packet.type + "' handled successfully: " + result);
-            }).catch(error => {
-                debug("Error handling packet: " + error.message + "\n" + error.stack);
-            });
+            }).catch(e => debug(e));
         } else {
             debug("Received unsupported packet type: " + packet.toString());
         }
@@ -701,22 +695,23 @@ var Device = new Lang.Class({
     destroy: function () {
         this.emit("destroy");
 
+        Gio.DBus.session.unexport_action_group(this._actionsId);
+        Gio.DBus.session.unexport_menu_model(this._menuId);
+
+        let path = this._dbus.get_object_path();
+
         if (this.connected) {
             this.connect("notify::connected", () => {
                 if (!this.connected) {
-                    this._dbus.flush();
-                    this._dbus.unexport();
-                    delete this._dbus;
+                    this._dbus_object.remove_interface(this._dbus);
+                    this.service.objectManager.unexport(path);
                     GObject.signal_handlers_destroy(this);
                 }
             });
             this._channel.close();
         } else {
-            // TODO: this is causing errors to be thrown in _onDisconnected()
-            //       because DBus is unexported before it finishes...
-            this._dbus.flush();
-            this._dbus.unexport();
-            delete this._dbus;
+            this._dbus_object.remove_interface(this._dbus);
+            this.service.objectManager.unexport(path);
             GObject.signal_handlers_destroy(this);
         }
     }
