@@ -1,4 +1,4 @@
-# KDE Connect implementation with Gnome Shell integration
+# KDE Connect implementation for Gnome SHell 3.24+
 
 ![Extension Screenshot][screenshot]
 
@@ -17,7 +17,7 @@ See the [Wiki][wiki] for more information.
 ### Installation
 
 This extension has not been reviewed on the official extensions website, but is
-considered a stable replacement for KDE Connect on Gnome Shell.
+considered a stable replacement for KDE Connect on Gnome Shell 3.24+.
 
 Stable releases are available for download on the [releases page][releases].
 The Wiki contains standard [install instructions][wiki-install] for installing 
