@@ -1,4 +1,4 @@
-# KDE Connect implementation for Gnome SHell 3.24+
+# KDE Connect implementation for Gnome Shell 3.24+
 
 ![Extension Screenshot][screenshot]
 
