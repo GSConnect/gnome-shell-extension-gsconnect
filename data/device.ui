@@ -1098,15 +1098,16 @@
                     <property name="margin_bottom">32</property>
                     <property name="label_xalign">0</property>
                     <child>
-                      <object class="GtkListBox" id="runcommand-local-list">
+                      <object class="GtkListBox" id="command-list">
                         <property name="width_request">320</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="hexpand">True</property>
                         <property name="vexpand">False</property>
                         <property name="selection_mode">none</property>
+                        <signal name="row-activated" handler="_newCommand" object="Gjs_GSConnectDeviceSettings" swapped="no"/>
                         <child>
-                          <object class="GtkListBoxRow" id="command-edit">
+                          <object class="GtkListBoxRow" id="command-editor">
                             <property name="width_request">100</property>
                             <property name="height_request">80</property>
                             <property name="can_focus">True</property>
@@ -1127,13 +1128,16 @@
                                 <property name="row_spacing">6</property>
                                 <property name="column_spacing">12</property>
                                 <child>
-                                  <object class="GtkEntry" id="command-edit-command">
+                                  <object class="GtkEntry" id="command-line">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="valign">center</property>
                                     <property name="hexpand">True</property>
                                     <property name="secondary_icon_stock">gtk-open</property>
                                     <property name="secondary_icon_tooltip_text" translatable="yes">Choose an executable</property>
+                                    <property name="placeholder_text" translatable="yes">Command Line</property>
+                                    <signal name="activate" handler="_saveCommand" object="Gjs_GSConnectDeviceSettings" swapped="no"/>
+                                    <signal name="icon-release" handler="_browseCommand" object="Gjs_GSConnectDeviceSettings" swapped="no"/>
                                   </object>
                                   <packing>
                                     <property name="left_attach">1</property>
@@ -1141,7 +1145,7 @@
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkImage" id="command-edit-icon">
+                                  <object class="GtkImage" id="command-icon">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="valign">start</property>
@@ -1157,11 +1161,13 @@
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkEntry" id="command-edit-name">
+                                  <object class="GtkEntry" id="command-name">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="valign">center</property>
                                     <property name="hexpand">True</property>
+                                    <property name="placeholder_text" translatable="yes">Name</property>
+                                    <signal name="activate" handler="_saveCommand" object="Gjs_GSConnectDeviceSettings" swapped="no"/>
                                   </object>
                                   <packing>
                                     <property name="left_attach">1</property>
@@ -1175,20 +1181,21 @@
                                     <property name="halign">end</property>
                                     <property name="layout_style">expand</property>
                                     <child>
-                                      <object class="GtkButton" id="command-edit-cancel">
+                                      <object class="GtkButton" id="command-trash">
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">True</property>
                                         <property name="halign">start</property>
                                         <property name="valign">start</property>
                                         <property name="relief">none</property>
+                                        <signal name="clicked" handler="_removeCommand" object="Gjs_GSConnectDeviceSettings" swapped="no"/>
                                         <child>
                                           <object class="GtkImage">
                                             <property name="visible">True</property>
                                             <property name="can_focus">False</property>
                                             <property name="halign">center</property>
                                             <property name="valign">center</property>
-                                            <property name="icon_name">cancel</property>
+                                            <property name="icon_name">user-trash-symbolic</property>
                                           </object>
                                         </child>
                                       </object>
@@ -1200,20 +1207,21 @@
                                       </packing>
                                     </child>
                                     <child>
-                                      <object class="GtkButton" id="command-edit-apply">
+                                      <object class="GtkButton" id="command-save">
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">True</property>
                                         <property name="halign">end</property>
                                         <property name="valign">start</property>
                                         <property name="relief">none</property>
+                                        <signal name="clicked" handler="_saveCommand" object="Gjs_GSConnectDeviceSettings" swapped="no"/>
                                         <child>
                                           <object class="GtkImage">
                                             <property name="visible">True</property>
                                             <property name="can_focus">False</property>
                                             <property name="halign">center</property>
                                             <property name="valign">center</property>
-                                            <property name="icon_name">gtk-apply</property>
+                                            <property name="icon_name">document-save-symbolic</property>
                                           </object>
                                         </child>
                                       </object>
@@ -1241,7 +1249,7 @@
                           </object>
                         </child>
                         <child>
-                          <object class="GtkListBoxRow" id="add-command">
+                          <object class="GtkListBoxRow" id="command-new">
                             <property name="height_request">32</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
@@ -1266,43 +1274,10 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkLabel">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="halign">start</property>
-                    <property name="margin_bottom">12</property>
-                    <property name="label" translatable="yes">Remote Commands</property>
-                    <attributes>
-                      <attribute name="weight" value="bold"/>
-                    </attributes>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">3</property>
-                  </packing>
+                  <placeholder/>
                 </child>
                 <child>
-                  <object class="GtkFrame">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="label_xalign">0</property>
-                    <child>
-                      <object class="GtkListBox" id="runcommand-remote-list">
-                        <property name="width_request">320</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="hexpand">True</property>
-                        <property name="vexpand">False</property>
-                        <property name="selection_mode">none</property>
-                      </object>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">4</property>
-                  </packing>
+                  <placeholder/>
                 </child>
               </object>
             </child>
@@ -1546,7 +1521,6 @@
                   <object class="GtkFrame">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="margin_bottom">32</property>
                     <property name="label_xalign">0</property>
                     <child>
                       <object class="GtkListBox" id="shortcuts-list">
@@ -1575,9 +1549,6 @@
         <property name="title" translatable="yes">Shortcuts</property>
         <property name="position">5</property>
       </packing>
-    </child>
-    <child>
-      <placeholder/>
     </child>
   </template>
   <object class="GtkListBox" id="switcher">
