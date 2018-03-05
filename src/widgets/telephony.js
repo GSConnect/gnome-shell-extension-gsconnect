@@ -5,6 +5,7 @@ const Tweener = imports.tweener.tweener;
 
 const Gdk = imports.gi.Gdk;
 const GdkPixbuf = imports.gi.GdkPixbuf;
+const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
@@ -90,13 +91,12 @@ var ConversationMessage = new Lang.Class({
             );
             return true;
         });
-        this.connect("draw", (widget, cr) => this._draw(widget, cr));
+        this.connect("draw", this._onDraw.bind(this));
         this.add(messageContent);
     },
 
-    _draw: function (widget, cr) {
+    _onDraw: function (widget, cr) {
         let [size, baseline] = widget.get_allocated_size();
-        //let size = this.get_allocation();
 
         let color = (this.direction) ? this.contact.rgb : [ 0.83, 0.84, 0.81 ];
 
@@ -119,6 +119,7 @@ var ConversationMessage = new Lang.Class({
         // Foreground
         Color.setFgClass(this, color);
 
+        cr.$dispose();
         return false;
     },
 
@@ -167,7 +168,7 @@ var ConversationWindow = new Lang.Class({
 
     _init: function (device) {
         this.parent({
-            application: device.daemon,
+            application: Gio.Application.get_default(),
             title: _("SMS Conversation"),
             default_width: 300,
             default_height: 300,
@@ -327,11 +328,6 @@ var ConversationWindow = new Lang.Class({
                 this.headerBar.set_subtitle(null);
             }
 
-            this.headerBar.set_tooltip_text(
-                // TRANSLATORS: eg. SMS Conversation with John, Paul, George, Ringo
-                _("SMS Conversation with %s").format(this.recipient.name || this._displayNumber)
-            );
-
             let avatar = new Contacts.Avatar(this.recipient);
             avatar.opacity = 0;
             avatar.halign = Gtk.Align.CENTER;
@@ -348,7 +344,6 @@ var ConversationWindow = new Lang.Class({
             });
             this.stack.set_visible_child_name("messages");
         } else {
-            this.headerBar.set_tooltip_text("");
             this.headerBar.custom_title = this.contactList.entry;
             this.contactList.entry.has_focus = true;
             this.stack.set_visible_child_name("contacts");
@@ -515,7 +510,7 @@ var ShareWindow = new Lang.Class({
 
     _init: function (device, url) {
         this.parent({
-            application: device.daemon,
+            application: Gio.Application.get_default(),
             title: _("Share Link"),
             default_width: 300,
             default_height: 200
@@ -576,7 +571,7 @@ var ShareWindow = new Lang.Class({
     },
 
     _addWindows: function () {
-        let windows = this.device.daemon.get_windows();
+        let windows = Gio.Application.get_default().get_windows();
 
         for (let index_ in windows) {
             let window = windows[index_];
