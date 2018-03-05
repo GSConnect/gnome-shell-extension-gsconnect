@@ -9,10 +9,10 @@ const GObject = imports.gi.GObject;
 // Local Imports
 imports.searchPath.push(gsconnect.datadir);
 const Contacts = imports.modules.contacts;
+const Sms = imports.modules.sms;
 const Sound = imports.modules.sound;
 const Protocol = imports.service.protocol;
 const PluginsBase = imports.service.plugins.base;
-const TelephonyWidget = imports.widgets.telephony;
 
 
 var Metadata = {
@@ -510,7 +510,7 @@ var Plugin = new Lang.Class({
     openSms: function () {
         debug(arguments);
 
-        let window = new TelephonyWidget.ConversationWindow(this.device);
+        let window = new Sms.ConversationWindow(this.device);
         window.present();
     },
 
@@ -533,7 +533,7 @@ var Plugin = new Lang.Class({
 
         // None found; open one and add the contact(s)
         if (!window) {
-            window = new TelephonyWidget.ConversationWindow(this.device);
+            window = new Sms.ConversationWindow(this.device);
 
             for (let recipient of uri.recipients) {
                 // FIXME
@@ -576,7 +576,7 @@ var Plugin = new Lang.Class({
 
         // None found; open one, mark duplicate read
         if (!window) {
-            window = new TelephonyWidget.ConversationWindow(this.device);
+            window = new Sms.ConversationWindow(this.device);
 
             // Tell the notification plugin to mark any duplicate read
             if (this.device._plugins.has("notification")) {
@@ -615,7 +615,7 @@ var Plugin = new Lang.Class({
         // None found
         if (!window) {
             // Open a new window
-            window = new TelephonyWidget.ConversationWindow(this.device);
+            window = new Sms.ConversationWindow(this.device);
 
             let contact = this.contacts.getContact(
                 contactName,
@@ -687,9 +687,9 @@ var Plugin = new Lang.Class({
         let window;
 
         if (hasConversations) {
-            window = new TelephonyWidget.ShareWindow(this.device, url);
+            window = new Sms.ShareWindow(this.device, url);
         } else {
-            window = new TelephonyWidget.ConversationWindow(this.device);
+            window = new Sms.ConversationWindow(this.device);
             window.setMessage(url);
         }
 

@@ -29,7 +29,6 @@ install_data(
 
 install_subdir('src/modules', install_dir: extdatadir)
 install_subdir('src/service', install_dir: extdatadir)
-install_subdir('src/widgets', install_dir: extdatadir)
 
 # metadata.json
 extmetadata = configuration_data()

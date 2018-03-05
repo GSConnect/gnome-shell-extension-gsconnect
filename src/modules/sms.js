@@ -301,7 +301,7 @@ var ConversationWindow = new Lang.Class({
     },
 
     get number () {
-        return this._number;
+        return this._number || null;
     },
 
     get recipient () {
@@ -339,8 +339,8 @@ var ConversationWindow = new Lang.Class({
             // Totally unnecessary animation
             Tweener.addTween(avatar, {
                 opacity: 1,
-                time: 0.3,
-                transition: "easeOutQuad"
+                time: 0.4,
+                transition: "easeOutCubic"
             });
             this.stack.set_visible_child_name("messages");
         } else {
@@ -531,7 +531,7 @@ var ShareWindow = new Lang.Class({
 
         let newButton = new Gtk.Button({
             image: new Gtk.Image({ icon_name: "list-add-symbolic" }),
-            tooltip_text: _("New Conversation"),
+            tooltip_text: _("New Message"),
             always_show_image: true
         });
         newButton.connect("clicked", () => {
