@@ -86,7 +86,7 @@ Joe Sneddon of [OMG! Ubuntu][omgubuntu] for his interest, support and articles.
 [tooltips]: https://github.com/RaphaelRochet/applications-overview-tooltip
 [pdf]: https://github.com/pdf
 [kdeconnect-chrome-extension]: https://github.com/pdf/kdeconnect-chrome-extension
-[numix]: https://numixproject.org/
+[numix]: https://numixproject.github.io/
 [material]: https://material.io/
 
 [ptomato]: https://github.com/ptomato
