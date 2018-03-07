@@ -457,135 +457,6 @@ var DeviceMenu = new Lang.Class({
         }
     },
 
-    // Plugin Callbacks
-    _runcommandAction: function (button) {
-        debug("extension.DeviceMenu._runcommandAction()");
-
-        if (button.checked) {
-            this.sftpButton.checked = false;
-            this.listPanel.actor.destroy_all_children();
-        } else {
-            this.listPanel.actor.visible = false;
-            return;
-        }
-
-        this._runcommandList();
-    },
-
-    _runcommandList: function () {
-        debug("extension.DeviceMenu._runcommandList()");
-
-        // FIXME: ACTIONS
-        // FIXME: don't use JSON
-        let runcommand = this.device._plugins.get("runcommand");
-        let commands = runcommand.commands;
-
-        for (let key in commands) {
-            let commandItem = new PopupMenu.PopupMenuItem(commands[key].name);
-            let icon = new St.Icon({
-                icon_name: GLib.path_get_basename(commands[key].command),
-                fallback_icon_name: "system-run-symbolic",
-                style_class: "popup-menu-icon"
-            });
-            commandItem.actor.insert_child_at_index(icon, 1);
-            commandItem.tooltip = new Actors.Tooltip({
-                parent: commandItem,
-                markup: commands[key].command
-            });
-            commandItem.key = key;
-
-            commandItem.connect("activate", (item) => {
-                item._getTopMenu().close(true);
-
-                // FIXME: no action defined...
-                if (this.device.actions.get_action_enabled("runCommand")) {
-                    this.device.actions.activate_action("runCommand", null);
-                }
-            });
-
-            this.listPanel.addMenuItem(commandItem);
-        }
-
-        this.listPanel.actor.visible = true;
-    },
-
-    _sftpAction: function (button) {
-        debug("extension.DeviceMenu._sftpAction()");
-
-        if (button.checked) {
-            this.runcommandButton.checked = false;
-            this.listPanel.actor.destroy_all_children();
-        } else {
-            this.listPanel.actor.visible = false;
-            return;
-        }
-
-        // FIXME: ACTIONS/PROXY
-        if (this.device.actions.get_action_enabled("mount")) {
-            this.device.actions.activate_action("shareDialog", null);
-        }
-
-        if (sftp && sftp.mounted) {
-            this._sftpList();
-        } else if (sftp) {
-            // TODO: user feedback
-            this._sftpNotify = sftp.connect("notify::mounted", () => {
-                if (sftp.mounted) {
-                    this._sftpList();
-                } else {
-                    Main.notifyError(
-                        this.device.name,
-                        // TRANSLATORS: eg. Failed to mount Google Pixel
-                        _("Failed to mount %s").format(this.device.name)
-                    );
-
-                    button.checked = false;
-                    button.remove_style_pseudo_class("active");
-                }
-
-                sftp.disconnect(this._sftpNotify);
-            });
-
-            sftp.mount();
-        }
-    },
-
-    _sftpList: function () {
-        debug("extension.DeviceMenu._sftpList()");
-
-        // FIXME: ACTIONS/PROXY
-        if (this.device.actions.get_action_enabled("mount")) {
-            this.device.actions.activate_action("shareDialog", null);
-
-            for (let name in sftp.directories) {
-                let mountItem = new PopupMenu.PopupMenuItem(name);
-                mountItem.path = sftp.directories[name];
-
-                mountItem.connect("activate", (item) => {
-                    item._getTopMenu().close(true);
-                    Gio.AppInfo.launch_default_for_uri(
-                        "file://" + item.path,
-                        global.create_app_launch_context(0, -1)
-                    );
-                });
-
-                this.listPanel.addMenuItem(mountItem);
-            }
-        }
-
-        // FIXME: ACTIONS
-        let unmountItem = new PopupMenu.PopupMenuItem(_("Unmount"));
-        unmountItem._ornamentLabel.text = "\u23CF";
-        unmountItem.connect("activate", (item) => {
-            item._getTopMenu().close(true);
-            let sftp = this.device._plugins.get("sftp");
-            sftp.unmount();
-        });
-        this.listPanel.addMenuItem(unmountItem);
-
-        this.listPanel.actor.visible = true;
-    },
-
     destroy: function () {
         this._gactionsId.map(id => this.device.actions.disconnect(id));
         this._gmenu.disconnect(this._gmenuId);
@@ -740,7 +611,7 @@ var SystemIndicator = new Lang.Class({
             Gio.DBusObjectManagerClientFlags.NONE,
             gsconnect.app_id,
             gsconnect.app_path,
-            null, // get-proxy-type-func
+            null,
             null,
             (obj, res) => {
                 this.manager = Gio.DBusObjectManagerClient.new_finish(res);
