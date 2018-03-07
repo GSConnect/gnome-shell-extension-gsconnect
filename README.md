@@ -8,7 +8,6 @@ GSConnect is a complete [KDE Connect][kdeconnect] protocol implementation
 for Gnome Shell 3.24+ with Nautilus, Chrome and Firefox integration. See the
 [Wiki][wiki] for more information.
 
-
 ### Getting Started
 
 The easiest way to get started is to install the extension from the official
@@ -25,11 +24,11 @@ To connect an Android device, install the KDE Connect Android app from the
 
 ### Getting Help
 
-Please the [FAQ][wiki-faq] in the Wiki for answers to common questions before
+Please see the [FAQ][wiki-faq] for answers to common questions before
 [opening an issue][git-issue] to report a problem or request a new feature.
 
 The KDE Connect team has resources available for problems, feature requests and
-contributions related to Android App:
+contributions related to the Android App:
 
 * [Bug Tracker][kdec-bugs]
 * [Phabricator][kdec-phabricator]
