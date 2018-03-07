@@ -63,122 +63,120 @@ var Plugin = new Lang.Class({
     handlePacket: function (packet) {
         debug(packet);
 
-        return new Promise((resolve, reject) => {
-            if (packet.body.requestPlayerList) {
+        if (packet.body.requestPlayerList) {
+            this._sendPlayerList();
+        } else if (packet.body.hasOwnProperty("player")) {
+            // If we have this player
+            if (this.mpris.players[packet.body.player]) {
+                this._handleCommand(packet);
+            // If we don't, send an updated list to the device
+            } else {
                 this._sendPlayerList();
-            } else if (packet.body.hasOwnProperty("player")) {
-                // If we have this player
-                if (this.mpris.players[packet.body.player]) {
-                    resolve(this._handleCommand(packet));
-                // If we don't, send an updated list to the device
-                } else {
-                    resolve(this._sendPlayerList());
-                }
             }
-        });
+        }
+    },
+
+    // FIXME
+    onConnected: function () {
+        this._sendPlayerList();
     },
 
     /**
      * Local
      */
     _handleCommand: function (packet) {
-        // FIXME FIXME FIXME
         debug(packet);
 
-        return new Promise((resolve, reject) => {
-            if (!(this.allow & 4)) {
-                debug("Not allowed");
-                reject(new Error("Operation not permitted: " + packet.type));
+        // FIXME: AllowTraffic constant??
+        if (!(this.allow & 4)) {
+            debug("Not allowed");
+        }
+
+        let player = this.mpris.players[packet.body.player].Player;
+
+        // Player Actions
+        if (packet.body.hasOwnProperty("action")) {
+            switch (packet.body.action) {
+                case "PlayPause":
+                    player.PlayPause();
+                    break;
+                case "Play":
+                    player.Play();
+                    break;
+                case "Pause":
+                    player.Pause();
+                    break;
+                case "Next":
+                    player.Next();
+                    break;
+                case "Previous":
+                    player.Previous();
+                    break;
+                case "Stop":
+                    player.Stop();
+                    break;
+                default:
+                    debug("unknown action: " + packet.body.action);
             }
+        }
 
-            let player = this.mpris.players[packet.body.player].Player;
+        // Player Properties
+        if (packet.body.hasOwnProperty("setVolume")) {
+            player.Volume = packet.body.setVolume / 100;
+        }
 
-            // Player Actions
-            if (packet.body.hasOwnProperty("action")) {
-                switch (packet.body.action) {
-                    case "PlayPause":
-                        resolve(player.PlayPause());
-                        break;
-                    case "Play":
-                        resolve(player.Play());
-                        break;
-                    case "Pause":
-                        resolve(player.Pause());
-                        break;
-                    case "Next":
-                        resolve(player.Next());
-                        break;
-                    case "Previous":
-                        resolve(player.Previous());
-                        break;
-                    case "Stop":
-                        resolve(player.Stop());
-                        break;
-                    default:
-                        reject(new Error("unknown action: " + packet.body.action));
-                }
-            }
+        if (packet.body.hasOwnProperty("Seek")) {
+            player.Seek(packet.body.Seek);
+        }
 
-            // Player Properties
-            if (packet.body.hasOwnProperty("setVolume")) {
-                player.Volume = packet.body.setVolume / 100;
-            }
+        if (packet.body.hasOwnProperty("SetPosition")) {
+            player.Seek((packet.body.SetPosition * 1000) - player.Position);
+        }
 
-            if (packet.body.hasOwnProperty("Seek")) {
-                player.Seek(packet.body.Seek);
-            }
-
-            if (packet.body.hasOwnProperty("SetPosition")) {
-                player.Seek((packet.body.SetPosition * 1000) - player.Position);
-            }
-
-            let response = new Protocol.Packet({
-                id: 0,
-                type: "kdeconnect.mpris",
-                body: {}
-            });
-
-            // Information Request
-            let hasResponse = false;
-
-            if (packet.body.hasOwnProperty("requestNowPlaying")) {
-                hasResponse = true;
-
-                // Unpack variants
-                let Metadata = {};
-                for (let entry in player.Metadata) {
-                    Metadata[entry] = player.Metadata[entry].deep_unpack();
-                }
-
-                let nowPlaying = Metadata["xesam:title"];
-                if (Metadata.hasOwnProperty("xesam:artist")) {
-                    nowPlaying = Metadata["xesam:artist"] + " - " + nowPlaying;
-                }
-
-                response.body = {
-                    nowPlaying: nowPlaying,
-                    pos: Math.round(player.Position / 1000), /* TODO: really? */
-                    isPlaying: (player.PlaybackStatus === "Playing"),
-                    canPause: player.CanPause,
-                    canPlay: player.CanPlay,
-                    canGoNext: player.CanGoNext,
-                    canGoPrevious: player.CanGoPrevious,
-                    canSeek: player.CanSeek
-                };
-            }
-
-            if (packet.body.hasOwnProperty("requestVolume")) {
-                hasResponse = true;
-                response.body.volume = player.Volume * 100;
-            }
-
-            if (hasResponse) {
-                response.body.player = packet.body.player;
-                this.sendPacket(response);
-            }
-
-            resolve(hasResponse ? response : "No response");
+        let response = new Protocol.Packet({
+            id: 0,
+            type: "kdeconnect.mpris",
+            body: {}
         });
+
+        // Information Request
+        let hasResponse = false;
+
+        if (packet.body.hasOwnProperty("requestNowPlaying")) {
+            hasResponse = true;
+
+            // Unpack variants
+            let Metadata = {};
+            for (let entry in player.Metadata) {
+                Metadata[entry] = player.Metadata[entry].deep_unpack();
+            }
+
+            let nowPlaying = Metadata["xesam:title"];
+            if (Metadata.hasOwnProperty("xesam:artist")) {
+                nowPlaying = Metadata["xesam:artist"] + " - " + nowPlaying;
+            }
+
+            response.body = {
+                nowPlaying: nowPlaying,
+                pos: Math.round(player.Position / 1000), /* TODO: really? */
+                isPlaying: (player.PlaybackStatus === "Playing"),
+                canPause: player.CanPause,
+                canPlay: player.CanPlay,
+                canGoNext: player.CanGoNext,
+                canGoPrevious: player.CanGoPrevious,
+                canSeek: player.CanSeek
+            };
+        }
+
+        if (packet.body.hasOwnProperty("requestVolume")) {
+            hasResponse = true;
+            response.body.volume = player.Volume * 100;
+        }
+
+        if (hasResponse) {
+            response.body.player = packet.body.player;
+            this.device.sendPacket(response);
+        }
     },
 
     _sendPlayerList: function () {
@@ -190,7 +188,7 @@ var Plugin = new Lang.Class({
             body: { playerList: this.mpris.identities }
         });
 
-        this.sendPacket(packet);
+        this.device.sendPacket(packet);
     }
 });
 

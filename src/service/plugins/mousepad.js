@@ -55,138 +55,161 @@ var Plugin = new Lang.Class({
             this._seat = this._display.get_default_seat();
             this._pointer = this._seat.get_pointer();
         }
+
+        // Try import Caribou
+        try {
+            const Caribou = imports.gi.Caribou;
+            this.vkbd = Caribou.DisplayAdapter.get_default();
+        } catch (e) {
+            debug(_("Cannot load Caribou virtual keyboard for Unicode support"));
+        }
     },
 
     handlePacket: function (packet) {
         debug(packet);
 
-        return new Promise((resolve, reject) => {
-            if (packet.type === "kdeconnect.mousepad.request") {
-                if (!(this.allow & 4)) {
-                    reject(new Error("Not allowed: " + packet.type));
-                }
-
-                resolve(this._handleInput(packet));
+        if (packet.type === "kdeconnect.mousepad.request") {
+            // TODO
+            if (!(this.allow & 4)) {
+                debug("Not allowed: " + packet.type);
+                return;
             }
 
-            reject(new Error("Unsupported packet"));
-        });
+            this._handleInput(packet);
+        }
     },
 
     /**
      * Local Methods
      */
     _handleInput: function (packet) {
+        debug("");
+
         if (packet.body.singleclick) {
-            this._clickPointer(1);
+            this.clickPointer(1);
         } else if (packet.body.doubleclick) {
-            this._doubleclickPointer(1);
+            this.doubleclickPointer(1);
         } else if (packet.body.middleclick) {
-            this._clickPointer(2);
+            this.clickPointer(2);
         } else if (packet.body.rightclick) {
-            this._clickPointer(3);
+            this.clickPointer(3);
         } else if (packet.body.singlehold) {
-            this._pressPointer(1);
+            this.pressPointer(1);
         } else if (packet.body.singlerelease) {
             // This is not used, hold is released with a regular click instead
-            this._releasePointer(1);
+            this.releasePointer(1);
         } else if (packet.body.scroll) {
             if (packet.body.dy < 0) {
-                this._clickPointer(5);
+                this.clickPointer(5);
             } else if (packet.body.dy > 0) {
-                this._clickPointer(4);
+                this.clickPointer(4);
             }
         } else if (packet.body.hasOwnProperty("dx") && packet.body.hasOwnProperty("dy")) {
-            this._movePointer(packet.body.dx, packet.body.dy);
-        } else if (packet.body.key) {
-            // This is sometimes sent in advance of a specialKey packet
-            if (packet.body.key !== "\u0000") {
-                this._pressKey(packet.body.key);
-            }
-        } else if (packet.body.specialKey) {
-            this._pressSpecialKey(packet.body.specialKey);
-        }
+            this.movePointer(packet.body.dx, packet.body.dy);
+        } else if (packet.body.key || packet.body.specialKey) {
+            if (this.vkbd ) {
+                // Set Gdk.ModifierType
+                let mask = 0;
+                if (packet.body.ctrl)  { mask |= Gdk.ModifierType.CONTROL_MASK; }
+                if (packet.body.shift) { mask |= Gdk.ModifierType.SHIFT_MASK; }
+                if (packet.body.alt)   { mask |= Gdk.ModifierType.MOD1_MASK; }  // Alt key
+                if (packet.body.super) { mask |= Gdk.ModifierType.SUPER_MASK; } // Super key
 
-        return true;
+                // Transform key to keysym
+                let keysym;
+                if (packet.body.key && packet.body.key !== "\u0000") {
+                    keysym = Gdk.unicode_to_keyval(packet.body.key.codePointAt(0));
+                } else if (packet.body.specialKey && KeyMap.has(packet.body.specialKey)) {
+                    keysym = KeyMap.get(packet.body.specialKey);
+                }
+
+                this.pressKeySym(keysym, mask);
+            } else {
+                // This is sometimes sent in advance of a specialKey packet
+                if (packet.body.key && packet.body.key !== "\u0000") {
+                    this.pressKey(packet.body.key);
+                } else if (packet.body.specialKey) {
+                    this.pressSpecialKey(packet.body.specialKey);
+                }
+            }
+        }
     },
 
-    _clickPointer: function (button) {
-        debug(button);
+    clickPointer: function (button) {
+        debug("Mousepad: clickPointer(" + button + ")");
 
         let event = "b%dc".format(button);
 
         try {
             let [screen, x, y] = this._pointer.get_position();
-            return Atspi.generate_mouse_event(x, y, event);
+            Atspi.generate_mouse_event(x, y, event);
         } catch (e) {
             log("Mousepad: Error simulating mouse click: " + e);
         }
     },
 
-    _doubleclickPointer: function (button) {
-        debug(button);
+    doubleclickPointer: function (button) {
+        debug("Mousepad: doubleclickPointer(" + button + ")");
 
         let event = "b%dd".format(button);
 
         try {
             let [screen, x, y] = this._pointer.get_position();
-            return Atspi.generate_mouse_event(x, y, event);
+            Atspi.generate_mouse_event(x, y, event);
         } catch (e) {
             log("Mousepad: Error simulating mouse double click: " + e);
         }
     },
 
-    _movePointer: function (dx, dy) {
-        debug([dx, dy]);
+    movePointer: function (dx, dy) {
+        debug("Mousepad: movePointer(" + dx + ", " + dy + ")");
 
         try {
-            return Atspi.generate_mouse_event(dx, dy, "rel");
+            Atspi.generate_mouse_event(dx, dy, "rel");
         } catch (e) {
             log("Mousepad: Error simulating mouse movement: " + e);
         }
     },
 
-    _pressPointer: function (button) {
-        debug(button);
+    pressPointer: function (button) {
+        debug("Mousepad: pressPointer()");
 
         let event = "b%dp".format(button);
 
         try {
             let [screen, x, y] = this._pointer.get_position();
-            return Atspi.generate_mouse_event(x, y, event);
+            Atspi.generate_mouse_event(x, y, event);
         } catch (e) {
             log("Mousepad: Error simulating mouse press: " + e);
         }
     },
 
-    _releasePointer: function (button) {
-        debug(button);
+    releasePointer: function (button) {
+        debug("Mousepad: releasePointer()");
 
         let event = "b%dr".format(button);
 
         try {
             let [screen, x, y] = this._pointer.get_position();
-            return Atspi.generate_mouse_event(x, y, event);
+            Atspi.generate_mouse_event(x, y, event);
         } catch (e) {
             log("Mousepad: Error simulating mouse release: " + e);
         }
     },
 
-    _pressKey: function (key) {
+    pressKey: function (key) {
         debug("Mousepad: pressKey(" + key + ")");
 
         try {
-            return Atspi.generate_keyboard_event(
-                0,
-                key,
-                Atspi.KeySynthType.STRING
-            );
+            if ( !Atspi.generate_keyboard_event(0, key, Atspi.KeySynthType.STRING) ) {
+                throw Error("Unknown/invalid key");
+            };
         } catch (e) {
             log("Mousepad: Error simulating keypress: " + e);
         }
     },
 
-    _pressSpecialKey: function (key) {
+    pressSpecialKey: function (key) {
         debug("Mousepad: pressSpecialKey(" + key + ")");
 
         try {
@@ -194,7 +217,7 @@ var Plugin = new Lang.Class({
                 throw Error("Unknown/invalid key");
             }
 
-            return Atspi.generate_keyboard_event(
+            Atspi.generate_keyboard_event(
                 KeyMap.get(key),
                 null,
                 Atspi.KeySynthType.PRESSRELEASE | Atspi.KeySynthType.SYM
@@ -202,13 +225,25 @@ var Plugin = new Lang.Class({
         } catch (e) {
             log("Mousepad: Error simulating special keypress: " + e);
         }
+    },
+
+    pressKeySym: function (keysym, mask) {
+        debug("Mousepad: pressKeySym(" + keysym + ", " + mask + ")");
+
+        try {
+            if (Gdk.keyval_to_unicode(keysym) !== 0) {
+                this.vkbd.mod_lock(mask);
+                this.vkbd.keyval_press(keysym);
+                this.vkbd.keyval_release(keysym);
+                this.vkbd.mod_unlock(mask);
+            }
+        } catch (e) {
+            log("Mousepad: Error simulating keyboard event with virtual keyboard: " + e);
+        }
     }
 });
 
 
-/**
- * KDE Connect Keymap
- */
 var KeyMap = new Map([
     [0, 0], // Invalid: pressSpecialKey throws error
     [1, Gdk.KEY_BackSpace],

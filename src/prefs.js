@@ -14,26 +14,31 @@ function getPath() {
 window.gsconnect = { datadir: getPath() };
 imports.searchPath.push(gsconnect.datadir);
 const _bootstrap = imports._bootstrap;
-const Client = imports.client;
+const DBus = imports.modules.dbus;
+
+
+const DaemonProxy = DBus.makeInterfaceProxy(
+    gsconnect.dbusinfo.lookup_interface(gsconnect.app_id)
+);
 
 
 function init() {
-    debug("initializing extension preferences");
-
     gsconnect.installService();
     Gtk.IconTheme.get_default().add_resource_path(gsconnect.app_path);
 }
 
 function buildPrefsWidget() {
-    debug("Prefs: buildPrefsWidget()");
-
     let label = new Gtk.Label();
     GLib.timeout_add(GLib.PRIORITY_DEFAULT, 0, () => {
         label.get_toplevel().destroy();
         return false;
     });
 
-    let daemon = new Client.Daemon();
+    let daemon = new DaemonProxy({
+        g_connection: Gio.DBus.session,
+        g_name: gsconnect.app_id,
+        g_object_path: gsconnect.app_path
+    });
     daemon.openSettings().then(result => daemon.destroy());
 
     return label;

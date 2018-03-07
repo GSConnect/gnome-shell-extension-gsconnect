@@ -17,19 +17,21 @@ var Metadata = {
     incomingCapabilities: ["kdeconnect.battery", "kdeconnect.battery.request"],
     outgoingCapabilities: ["kdeconnect.battery", "kdeconnect.battery.request"],
     actions: {
-        provideUpdate: {
+        reportStatus: {
             summary: _("Report Battery"),
             description: _("Provide battery update"),
             signature: "av",
             incoming: ["kdeconnect.battery.request"],
-            outgoing: ["kdeconnect.battery"]
+            outgoing: ["kdeconnect.battery"],
+            allow: 2
         },
-        requestUpdate: {
+        requestStatus: {
             summary: _("Update Battery"),
             description: _("Request battery update"),
             signature: "av",
             incoming: ["kdeconnect.battery"],
-            outgoing: ["kdeconnect.battery.request"]
+            outgoing: ["kdeconnect.battery.request"],
+            allow: 4
         }
     },
     events: {}
@@ -50,6 +52,13 @@ var Plugin = new Lang.Class({
             "Whether the device is charging",
             GObject.ParamFlags.READABLE,
             false
+        ),
+        "icon-name": GObject.ParamSpec.string(
+            "icon-name",
+            "IconName",
+            "Icon name representing the service device",
+            GObject.ParamFlags.READABLE,
+            ""
         ),
         "level": GObject.ParamSpec.int(
             "level",
@@ -95,32 +104,59 @@ var Plugin = new Lang.Class({
         ]);
 
         // Remote Battery
-        this._charging = false;
-        this.notify("charging", "b");
-        this._level = -1;
-        this.notify("level", "i");
-        this._time = -1;
-        this.notify("time", "i");
-        this.requestUpdate();
+        this.notify("charging");
+        this.notify("level");
+        this.notify("time");
+        this.notify("icon-name");
 
-        // Local Battery
-        if ((this.allow & 2) && this.device.daemon.type === "laptop") {
+        this.requestStatus();
+
+        // Local Battery (UPower)
+        if ((this.allow & 2) && this.device.service.type === "laptop") {
             this._monitor();
         }
 
         this.settings.connect("changed::allow", () => {
-            if ((this.allow & 2) && !this._battery) {
+            if ((this.allow & 2) && !this._upower) {
                 this._monitor();
-            } else if (!(this.allow & 2) && this._battery) {
-                GObject.signal_handlers_destroy(this._battery);
-                delete this._battery;
+            } else if (!(this.allow & 2) && this._upower) {
+                GObject.signal_handlers_destroy(this._upower);
+                delete this._upower;
             }
         });
     },
 
-    get charging() { return this._charging; },
-    get level() { return this._level; },
-    get time() { return this._time; },
+    get charging() { return this._charging || false; },
+    get icon_name() {
+        let icon = "battery";
+
+        if (this.level === -1) {
+            return "battery-missing-symbolic";
+        } else if (this.level === 100) {
+            return "battery-full-charged-symbolic";
+        } else if (this.level < 3) {
+            icon += "-empty";
+        } else if (this.level < 10) {
+            icon += "-caution";
+        } else if (this.level < 30) {
+            icon += "-low";
+        } else if (this.level < 60) {
+            icon += "-good";
+        } else if (this.level >= 60) {
+            icon += "-full";
+        }
+
+        icon += (this._charging) ? "-charging-symbolic" : "-symbolic";
+        return icon;
+    },
+    get level() {
+        if (this._level === undefined) {
+            return -1;
+        }
+
+        return this._level;
+    },
+    get time() { return this._time || 0; },
     get threshold () { return this._thresholdLevel },
 
     /**
@@ -132,9 +168,7 @@ var Plugin = new Lang.Class({
         if (packet.type === "kdeconnect.battery" && (this.allow & 4)) {
             return this._handleUpdate(packet.body);
         } else if (packet.type === "kdeconnect.battery.request" && (this.allow & 2)) {
-            return this._provideUpdate();
-        } else {
-            return Promise.reject(new Error("Operation not permitted: " + packet.type));
+            return this.requestUpdate();
         }
     },
 
@@ -148,54 +182,25 @@ var Plugin = new Lang.Class({
         }
 
         try {
-            this._battery = new UPower.Device();
+            this._upower = new UPower.Device();
 
-            this._battery.set_object_path_sync(
+            this._upower.set_object_path_sync(
                 "/org/freedesktop/UPower/devices/DisplayDevice",
                 null
             );
 
             for (let property of ["percentage", "state", "warning_level"]) {
-                this._battery.connect("notify::" + property, () => {
-                    this._provideUpdate();
+                this._upower.connect("notify::" + property, () => {
+                    this.requestUpdate();
                 });
             }
 
-            this._provideUpdate();
+            this.requestUpdate();
         } catch(e) {
             debug("Battery: Failed to initialize UPower: " + e);
-            GObject.signal_handlers_destroy(this._battery);
-            delete this._battery;
+            GObject.signal_handlers_destroy(this._upower);
+            delete this._upower;
         }
-    },
-
-    _provideUpdate: function () {
-        debug([this._battery.percentage, this._battery.state]);
-
-        if (!this._battery) { return; }
-
-        // TODO: error handling?
-        return new Promise((resolve, reject) => {
-            let packet = {
-                id: 0,
-                type: "kdeconnect.battery",
-                body: {
-                    currentCharge: this._battery.percentage,
-                    isCharging: (this._battery.state !== UPower.DeviceState.DISCHARGING),
-                    thresholdEvent: 0
-                }
-            };
-
-            if (this._battery.percentage === 15) {
-                if (!packet.body.isCharging) {
-                    packet.body.thresholdEvent = 1;
-                }
-            }
-
-            this.sendPacket(packet);
-
-            resolve(true);
-        });
     },
 
     /**
@@ -204,33 +209,31 @@ var Plugin = new Lang.Class({
     _handleUpdate: function (update) {
         debug(update);
 
-        // TODO: error handling?
-        return new Promise((resolve, reject) => {
-            if (update.thresholdEvent > 0) {
-                this._handleThreshold();
+        if (update.thresholdEvent > 0) {
+            this._handleThreshold();
+        }
+
+        if (this._charging !== update.isCharging) {
+            this._charging = update.isCharging;
+            this.notify("charging");
+        }
+
+        if (this._level !== update.currentCharge) {
+            this._level = update.currentCharge;
+            this.notify("level");
+
+            if (this._level > this._thresholdLevel) {
+                this.device.withdraw_notification("battery|threshold");
             }
+        }
 
-            if (this._charging !== update.isCharging) {
-                this._charging = update.isCharging;
-                this.notify("charging", "b");
-            }
+        this._logStatus(update.currentCharge, update.isCharging);
 
-            if (this._level !== update.currentCharge) {
-                this._level = update.currentCharge;
-                this.notify("level", "i");
+        //this._icon_name = this._updateIcon();
+        this.notify("icon-name");
 
-                if (this._level > this._thresholdLevel) {
-                    this.device.withdraw_notification("battery|threshold");
-                }
-            }
-
-            this.addStat(update.currentCharge, this.charging);
-
-            this._time = this._extrapolateTime();
-            this.notify("time", "i");
-
-            resolve(true);
-        });
+        this._time = this._extrapolateTime();
+        this.notify("time");
     },
 
     _handleThreshold: function () {
@@ -261,12 +264,72 @@ var Plugin = new Lang.Class({
     },
 
     /**
-     * Request the remote battery statistics
+     * Local Methods
      */
-    requestUpdate: function () {
-        debug("");
+    _monitor: function () {
+        // FIXME
+        let action = this.device.lookup_action("reportStatus");
 
-        this.sendPacket({
+        if (!action || !action.enabled) {
+            return;
+        }
+
+        try {
+            this._upower = new UPower.Device();
+
+            this._upower.set_object_path_sync(
+                "/org/freedesktop/UPower/devices/DisplayDevice",
+                null
+            );
+
+            for (let property of ["percentage", "state", "warning_level"]) {
+                this._upower.connect("notify::" + property, () => {
+                    this.reportStatus();
+                });
+            }
+
+            this.reportStatus();
+        } catch(e) {
+            debug("Battery: Failed to initialize UPower: " + e);
+            GObject.signal_handlers_destroy(this._upower);
+            delete this._upower;
+        }
+    },
+
+    /**
+     * Report the local battery's current charge/state
+     */
+    reportStatus: function () {
+        debug([this._upower.percentage, this._upower.state]);
+
+        if (!this._upower) { return; }
+
+        let packet = {
+            id: 0,
+            type: "kdeconnect.battery",
+            body: {
+                currentCharge: this._upower.percentage,
+                isCharging: (this._upower.state !== UPower.DeviceState.DISCHARGING),
+                thresholdEvent: 0
+            }
+        };
+
+        if (this._upower.percentage === 15) {
+            if (!packet.body.isCharging) {
+                packet.body.thresholdEvent = 1;
+            }
+        }
+
+        this.device.sendPacket(packet);
+
+        return true;
+    },
+
+    /**
+     * Report the local battery's current charge/state
+     */
+    requestStatus: function () {
+        this.device.sendPacket({
             id: 0,
             type: "kdeconnect.battery.request",
             body: { request: true }
@@ -278,7 +341,7 @@ var Plugin = new Lang.Class({
      *
      * See also: https://android.googlesource.com/platform/frameworks/base/+/master/core/java/android/os/BatteryStats.java#1036
      */
-    addStat: function (level, charging) {
+    _logStatus: function (level, charging) {
         // Edge case
         if (!level) {
             return;
@@ -342,9 +405,9 @@ var Plugin = new Lang.Class({
     },
 
     destroy: function () {
-        if (this._battery) {
-            GObject.signal_handlers_destroy(this._battery);
-            delete this._battery;
+        if (this._upower) {
+            GObject.signal_handlers_destroy(this._upower);
+            delete this._upower;
         }
 
         PluginsBase.Plugin.prototype.destroy.call(this);

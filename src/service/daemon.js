@@ -19,6 +19,7 @@ imports.gi.versions.Pango = "1.0";
 imports.gi.versions.UPowerGlib = "1.0";
 
 const Gdk = imports.gi.Gdk;
+const GdkPixbuf = imports.gi.GdkPixbuf;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
@@ -52,14 +53,14 @@ var Daemon = new Lang.Class({
             "TlsCertificate",
             "The local TLS Certificate",
             GObject.ParamFlags.READABLE,
-            GObject.Object
+            Gio.TlsCertificate
         ),
         "devices": GObject.param_spec_variant(
             "devices",
             "DevicesList",
             "A list of known devices",
             new GLib.VariantType("as"),
-            new GLib.Variant("as", []),
+            null,
             GObject.ParamFlags.READABLE
         ),
         "discovering": GObject.ParamSpec.boolean(
@@ -117,13 +118,15 @@ var Daemon = new Lang.Class({
     },
 
     get devices() {
-        return Array.from(this._devices.keys());
+        return this.objectManager.get_objects().map(obj => obj.g_object_path);
     },
 
+    // FIXME: meta for lan+bluez?
     get discovering() {
         return this.lanService.discovering;
     },
 
+    // FIXME: meta for lan+bluez?
     set discovering(bool) {
         this.lanService.discovering = bool;
     },
@@ -142,7 +145,7 @@ var Daemon = new Lang.Class({
 
     set name(name) {
         this.identity.body.deviceName = name;
-        this.notify("name", "s");
+        this.notify("name");
         this.broadcast();
     },
 
@@ -169,7 +172,9 @@ var Daemon = new Lang.Class({
         let shareable = [];
 
         for (let [busPath, device] of this._devices.entries()) {
-            if (device.connected && device._plugins.has("share")) {
+            let action = device.lookup_action("shareFile");
+
+            if (action && action.enabled) {
                 shareable.push([busPath, device.name]);
             }
         }
@@ -274,60 +279,6 @@ var Daemon = new Lang.Class({
     /**
      * Device Methods
      */
-    _watchDevices: function () {
-        gsconnect.settings.connect("changed::devices", () => {
-            //
-            let knownDevices = gsconnect.settings.get_strv("devices");
-
-            // New devices
-            for (let id of knownDevices) {
-                let dbusPath = gsconnect.app_path + "/Device/" + id.replace(/\W+/g, "_");
-
-                if (!this._devices.has(dbusPath)) {
-                    new Promise((resolve, reject) => {
-                        let device = new Device.Device({ id: id});
-                        // TODO: better
-                        device.connect("notify::connected", (device) => {
-                            if (!device.connected) {
-                                this._pruneDevices();
-                            }
-                        });
-                        this._devices.set(dbusPath, device);
-                        resolve(true);
-                    }).then((result) => {
-                        this.notify("devices");
-                    }).catch((e) => {
-                        log("GSConnect: Error adding device: " + e);
-                    });
-                }
-            }
-
-            // Old devices
-            for (let [dbusPath, device] of this._devices.entries()) {
-                if (knownDevices.indexOf(device.id) < 0) {
-                    this._removeDevice(dbusPath);
-                }
-            }
-        });
-
-        gsconnect.settings.emit("changed::devices", "devices");
-    },
-
-    _pruneDevices: function () {
-        if (this._window) {
-            return;
-        }
-
-        let knownDevices = gsconnect.settings.get_strv("devices");
-
-        for (let device of this._devices.values()) {
-            if (!device.connected && !device.paired) {
-                knownDevices.splice(knownDevices.indexOf(device.id), 1);
-                gsconnect.settings.set_strv("devices", knownDevices);
-            }
-        }
-    },
-
     _addDevice: function (packet, channel=null) {
         debug(packet);
 
@@ -340,6 +291,7 @@ var Daemon = new Lang.Class({
         } else {
             log("GSConnect: Adding device");
 
+            // TODO: another device might still be resolving at this point...
             return new Promise((resolve, reject) => {
                 resolve(
                     new Device.Device({
@@ -361,7 +313,8 @@ var Daemon = new Lang.Class({
                     gsconnect.settings.set_strv("devices", knownDevices);
                 }
 
-                this.notify("devices");
+                // FIXME: notified by ObjectManager now
+                //this.notify("devices");
             }).catch(e => debug(e));
         }
     },
@@ -377,7 +330,65 @@ var Daemon = new Lang.Class({
             device.destroy();
             this._devices.delete(dbusPath);
 
-            this.notify("devices");
+            // FIXME: notified by ObjectManager now
+            //this.notify("devices");
+        }
+    },
+
+    _onDevicesChanged: function () {
+        let knownDevices = gsconnect.settings.get_strv("devices");
+
+        // New devices
+        let newDevices = [];
+
+        for (let id of knownDevices) {
+            let dbusPath = gsconnect.app_path + "/Device/" + id.replace(/\W+/g, "_");
+
+            if (!this._devices.has(dbusPath)) {
+                newDevices.push(
+                    new Promise((resolve, reject) => {
+                        let device = new Device.Device({ id: id});
+                        // TODO: better
+                        device.connect("notify::connected", (device) => {
+                            if (!device.connected) {
+                                this._pruneDevices();
+                            }
+                        });
+                        this._devices.set(dbusPath, device);
+                        resolve(true);
+                    }).catch(e => log("GSConnect: Error adding device: " + e))
+                );
+            }
+        }
+
+        Promise.all(newDevices).then(result => {
+            // Old devices
+            for (let [dbusPath, device] of this._devices.entries()) {
+                if (knownDevices.indexOf(device.id) < 0) {
+                    this._removeDevice(dbusPath);
+                }
+            }
+        });
+    },
+
+    _watchDevices: function () {
+        gsconnect.settings.connect("changed::devices", () => {
+            this._onDevicesChanged();
+        });
+        this._onDevicesChanged();
+    },
+
+    _pruneDevices: function () {
+        // Don't prune devices while the settings window is open
+        if (this._window) { return; }
+
+        let knownDevices = gsconnect.settings.get_strv("devices");
+
+        for (let device of this._devices.values()) {
+            if (!device.connected && !device.paired) {
+                knownDevices.splice(knownDevices.indexOf(device.id), 1);
+                gsconnect.settings.set_strv("devices", knownDevices);
+            }
         }
     },
 
@@ -389,6 +400,7 @@ var Daemon = new Lang.Class({
         debug(arguments);
 
         let variant = new GLib.Variant("s", escape(JSON.stringify([Array.from(arguments)])));
+        // FIXME FIXME
 
         for (let device of this._devices.values()) {
             let action = device.lookup_action("sendNotification");
@@ -400,7 +412,7 @@ var Daemon = new Lang.Class({
     },
 
     /**
-     * Notification Actions
+     * Only used by plugins/share.js
      */
     _cancelTransferAction: function (action, parameter) {
         parameter = parameter.deep_unpack();
@@ -420,8 +432,29 @@ var Daemon = new Lang.Class({
         Gio.AppInfo.launch_default_for_uri(unescape(path), null);
     },
 
+    _aboutAction: function () {
+        let dialog = new Gtk.AboutDialog({
+            authors: [ "Andy Holmes <andrew.g.r.holmes@gmail.com>" ],
+            //logo_icon_name: gsconnect.app_id,
+            logo: GdkPixbuf.Pixbuf.new_from_resource_at_scale(
+                gsconnect.app_path + "/" + gsconnect.app_id + ".svg",
+                128,
+                128,
+                true
+            ),
+            program_name: _("GSConnect"),
+            version: gsconnect.metadata.version,
+            website: gsconnect.metadata.url,
+            license_type: Gtk.License.GPL_2_0,
+            transient_for: this.get_toplevel(),
+            modal: true
+        });
+        dialog.connect("delete-event", dialog => dialog.destroy());
+        dialog.show();
+    },
+
     /**
-     * A meta-action for directing device actions.
+     * A meta-action for routing device actions.
      *
      * @param {Gio.Action} action - ...
      * @param {GLib.Variant->Object/Array?} params
@@ -509,11 +542,8 @@ var Daemon = new Lang.Class({
         notif.set_icon(
             new Gio.ThemedIcon({ name: "system-file-manager-symbolic" })
         );
-        notif.add_button(
-            // TRANSLATORS: Notification button to restart Nautilus
-            _("Restart"),
-            "app.restartNautilus"
-        );
+        // TRANSLATORS: Notification button to restart Nautilus
+        notif.add_button(_("Restart"), "app.restartNautilus");
 
         this.send_notification("nautilus-integration", notif);
     },
@@ -587,26 +617,23 @@ var Daemon = new Lang.Class({
     },
 
     /**
-     * Open the application settings.
-     * @param {String} [device] - DBus object path of device to configure
+     * Open the application settings, for @device if given.
+     * @param {String} [device] - DBus object path of the device
      *
-     * The DBus method takes no arguments; the matching Device method supplies
-     * this value.
+     * The DBus method takes no arguments; Device.openSettings() calls this
+     * and populates @device.
      */
     openSettings: function (device=null) {
         if (!this._window) {
             this._window = new Settings.SettingsWindow();
-
-            this._window.connect("delete-event", () => {
-                delete this._window;
-            });
+            this._window.connect("destroy", () => { delete this._window; });
         }
 
         this._window.present();
 
-        // Select a device page automatically
+        // Open to a device page
         if (device) {
-            this._window.switcher.foreach((row) => {
+            this._window.switcher.foreach(row => {
                 if (row.get_name() === device) {
                     this._window.switcher.select_row(row);
                     return;
@@ -620,18 +647,19 @@ var Daemon = new Lang.Class({
      * TODO: remove .desktop (etc) on delete
      */
     _watchDaemon: function () {
-        let daemonFile = Gio.File.new_for_path(
+        this.daemonMonitor = Gio.File.new_for_path(
             gsconnect.datadir + "/service/daemon.js"
-        );
-        this.daemonMonitor = daemonFile.monitor(
+        ).monitor(
             Gio.FileMonitorFlags.WATCH_MOVES,
             null
         );
-        this.daemonMonitor.connect("changed", () => this.quit());
+
+        // If quit() is called it will skip the DBus hooks, so use release()
+        this.daemonMonitor.connect("changed", () => this.release());
     },
 
     /**
-     * Overrides & utilities
+     * Override Gio.Application.send_notification() to respect donotdisturb
      */
     send_notification: function (notifId, notif) {
         let now = GLib.DateTime.new_now_local().to_unix();
@@ -640,25 +668,20 @@ var Daemon = new Lang.Class({
             //notif.set_priority(Gio.NotificationPriority.LOW);
             Gtk.Application.prototype.send_notification.call(this, notifId, notif);
         }
-
-        //Gtk.Application.prototype.send_notification.call(this, notifId, notif);
     },
 
     vfunc_startup: function() {
         this.parent();
 
-        // Initialize encryption
+        // Initialize encryption and ensure fingerprint is available right away
+        // FIXME: endless loop on fail?
         try {
             this._initEncryption();
-
-            // Ensure fingerprint is available right away
             this.notify("fingerprint");
         } catch (e) {
             log("Error generating TLS Certificate: " + e.message);
             this.quit();
         }
-
-
 
         // Watch the file 'daemon.js' to know when we're updated
         this._watchDaemon();
@@ -670,6 +693,7 @@ var Daemon = new Lang.Class({
         this._initActions();
 
         // LanChannelService
+        // FIXME: endless loop on fail?
         try {
             this.lanService = new Protocol.LanChannelService();
 
@@ -718,6 +742,7 @@ var Daemon = new Lang.Class({
         });
 
         // Track devices, DBus object path as key
+        // FIXME: there's now some overlap with use of ObjectManager here...
         this._devices = new Map();
         this._watchDevices();
         log(this._devices.size + " devices loaded from cache");
@@ -725,11 +750,24 @@ var Daemon = new Lang.Class({
 
     vfunc_activate: function() {
         this.parent();
+        // FIXME: this.broadcast();
         this.hold();
     },
 
     vfunc_dbus_register: function (connection, object_path) {
-        // Application Interface
+        if (!this.parent(connection, object_path)) {
+            return false;
+        }
+
+        // org.freedesktop.ObjectManager interface; only devices currently
+        this.objectManager = new Gio.DBusObjectManagerServer({
+            connection: connection,
+            object_path: object_path
+        });
+        this.objectManager.connect("object-added", () => this.notify("devices"));
+        this.objectManager.connect("object-removed", () => this.notify("devices"));
+
+        // org.gnome.Shell.Extensions.GSConnect interface
         this._dbus = new DBus.ProxyServer({
             g_connection: connection,
             g_instance: this,
@@ -737,38 +775,51 @@ var Daemon = new Lang.Class({
             g_object_path: gsconnect.app_path
         });
 
-        this.objectManager = new Gio.DBusObjectManagerServer({
-            connection: Gio.DBus.session,
-            object_path: object_path
+        // org.freedesktop.Notifications clone...
+        this._ndbus = new DBus.ProxyServer({
+            g_connection: connection,
+            g_instance: this,
+            g_interface_info: gsconnect.dbusinfo.lookup_interface("org.freedesktop.Notifications"),
+            g_object_path: "/org/freedesktop/Notifications"
         });
 
-        // Notifications Listener
-        this._fdo = DBus.get_default();
+        // Proxy calls to Notify()
         this._match = "interface='org.freedesktop.Notifications'," +
             "member='Notify'," +
             "type='method_call'," +
             "eavesdrop='true'";
-        this._fdo.AddMatch(this._match).then(result => {
-            this._ndbus = Gio.DBusExportedObject.wrapJSObject(
-                gsconnect.dbusinfo.lookup_interface("org.freedesktop.Notifications"),
-                this
-            );
-            this._ndbus.export(Gio.DBus.session, "/org/freedesktop/Notifications");
-        }).catch(e => debug(e.message + "\n" + e.stack));
+
+        this._fdo = new DBus.FdoProxy({
+            g_connection: Gio.DBus.session,
+            g_name: "org.freedesktop.DBus",
+            g_object_path: "/"
+        });
+
+        this._fdo.init_promise().then(result => {
+            this._fdo.addMatch(this._match).catch(e => debug(e));
+        });
 
         return true;
     },
 
     vfunc_dbus_unregister: function (connection, object_path) {
-        this._fdo.RemoveMatch(this._match).then(result => {
-            this._ndbus.unexport();
-            this._dbus.unexport();
-
+        this._fdo.removeMatch(this._match).then(result => {
+            this._fdo.destroy();
+            this._ndbus.destroy();
         }).catch(e => debug(e));
+
+        // Must be done before g_name_owner === null
+        for (let device of this._devices.values()) {
+            log("Calling Device.destroy() on '" + device.name + "'");
+            device.destroy();
+        }
+
+        this._dbus.destroy();
 
         this.parent(connection, object_path);
     },
 
+    // FIXME: this is all garbage
     vfunc_open: function (files, hint) {
         this.parent(files, hint);
 
@@ -779,22 +830,26 @@ var Daemon = new Lang.Class({
                     let devices = [];
 
                     for (let device of this._devices.values()) {
-                        if (device._plugins.has("telephony")) {
+                        let action = device.lookup_action("openUri");
+
+                        if (action && action.enabled) {
                             devices.push(device);
                         }
                     }
 
                     if (devices.length === 1) {
-                        devices[0]._plugins.get("telephony").openUri(uri);
+                        let action = device[0].lookup_action("openUri");
+                        action.activate(uri);
                     } else if (devices.length > 1) {
-                        let win = new DaemonWidget.DeviceChooser({
+                        let win = new Settings.DeviceChooser({
                             title: _("Send SMS"),
                             devices: devices
                         });
 
                         if (win.run() === Gtk.ResponseType.OK) {
                             let device = win.list.get_selected_row().device;
-                            device._plugins.get("telephony").openUri(uri);
+                            let action = device.lookup_action("openUri");
+                            action.activate(uri);
                         }
 
                         win.destroy();
@@ -812,10 +867,6 @@ var Daemon = new Lang.Class({
         log("GSConnect: Shutting down");
 
         this.lanService.destroy();
-
-        for (let device of this._devices.values()) {
-            device.destroy();
-        }
     }
 });
 

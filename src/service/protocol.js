@@ -21,6 +21,15 @@ var TYPE_PAIR = "kdeconnect.pair";
 var Packet = new Lang.Class({
     Name: "GSConnectPacket",
     Extends: GObject.Object,
+    Properties: {
+        "file": GObject.ParamSpec.object(
+            "file",
+            "PacketFile",
+            "The file associated with the packet",
+            GObject.ParamFlags.READABLE,
+            Gio.File
+        ),
+    },
 
     _init: function (data=false) {
         this.parent();
@@ -40,6 +49,7 @@ var Packet = new Lang.Class({
         }
     },
 
+    // TODO: this means *complete* packets have to be set at construction
     _check: function (obj) {
         if (!obj.hasOwnProperty("type")) {
             debug("Packet: missing 'type' field");
@@ -53,6 +63,36 @@ var Packet = new Lang.Class({
         }
 
         return true;
+    },
+
+    setPayload: function (file) {
+        if (!file instanceof Gio.File) {
+            throw TypeError("must be Gio.File");
+        }
+
+        let info = file.query_info("standard::size", 0, null);
+        this.payloadSize = file.query_info("standard::size", 0, null).get_size();
+
+        let transfer = new Transfer({
+            device: device,
+            size: this.payloadSize,
+            input_stream: file.read(null)
+        });
+
+        transfer.upload().then(port => {
+            let packet = new Protocol.Packet({
+                id: 0,
+                type: "kdeconnect.share.request",
+                body: { filename: file.get_basename() },
+                payloadSize: info.get_size(),
+                payloadTransferInfo: { port: port }
+            });
+
+            device._channel.send(packet);
+        });
+
+        this._payloadFile = file;
+        this._payloadStream = file.read(null);
     },
 
     fromData: function (data) {
@@ -83,7 +123,7 @@ var Packet = new Lang.Class({
     },
 
     toData: function () {
-        this.id = Date.now();
+        this.id = GLib.DateTime.new_now_local().to_unix();
         return JSON.stringify(this) + "\n";
     },
 
@@ -292,6 +332,7 @@ var LanChannelService = new Lang.Class({
      */
     broadcast: function (identity) {
         //debug(packet);
+        //debug(identity);
 
         try {
             this._udp.send_to(this._udp_address, identity.toData(), null);
@@ -335,6 +376,70 @@ var BluetoothChannelService = new Lang.Class({
 
 
 /**
+ * Service Discovery Protocol Record (KDE Connect)
+ */
+var SdpRecordTemplate = '<?xml version="1.0" encoding="utf-8" ?> \
+<record> \
+    <attribute id="0x0001"> \
+        <!-- ServiceClassIDList --> \
+        <sequence> \
+            <uuid value="%s" />      <!-- Custom UUID --> \
+            <uuid value="0x%s" />    <!-- Custom UUID hex for Android --> \
+            <uuid value="0x1101" />  <!-- SPP profile --> \
+        </sequence> \
+    </attribute> \
+    <attribute id="0x0003"> \
+        <!-- ServiceID --> \
+        <uuid value="%s" /> \
+    </attribute> \
+    <attribute id="0x0004"> \
+        <!-- ProtocolDescriptorList --> \
+        <sequence> \
+            <sequence> \
+                <uuid value="0x0100" /> \
+                %s \
+            </sequence> \
+            <sequence> \
+                <uuid value="0x0003" /> \
+                %s \
+            </sequence> \
+        </sequence> \
+    </attribute> \
+    <attribute id="0x0005"> \
+        <!-- BrowseGroupList --> \
+        <sequence> \
+            <uuid value="0x1002" /> \
+        </sequence> \
+    </attribute> \
+    <attribute id="0x0009"> \
+        <!-- ProfileDescriptorList --> \
+        <sequence> \
+            <uuid value="0x1101" /> \
+        </sequence> \
+    </attribute> \
+    <attribute id="0x0100"> \
+        <!-- Service name --> \
+        <text value="%s" /> \
+    </attribute> \
+</record>';
+
+
+function get_sdp_record(name, uuid, channel, psm) {
+    channel = (channel) ? '<uint8 value="%#x" />'.format(channel) : "";
+    psm = (psm) ? '<uint8 value="%#x" />'.format(psm) : "";
+
+    return SdpRecordTemplate.format(
+        uuid,                   // Custom UUID
+        uuid.replace("-", ""),  // Custom Android UUID
+        uuid,                   // Service UUID
+        channel_str,            // RFCOMM channel
+        psm_str,                // RFCOMM channel
+        name                    // ???
+    );
+};
+
+
+/**
  * Data Channels
  */
 var Channel = new Lang.Class({
@@ -358,7 +463,7 @@ var Channel = new Lang.Class({
             "TlsCertificate",
             "The TLS Certificate for this connection",
             GObject.ParamFlags.READABLE,
-            GObject.Object
+            Gio.TlsCertificate
         )
     },
 
@@ -383,12 +488,9 @@ var Channel = new Lang.Class({
     _initSocket: function (connection) {
         return new Promise((resolve, reject) => {
             connection.socket.set_keepalive(true);
-            // TCP_KEEPIDLE: time to start sending keepalive packets (seconds)
-            connection.socket.set_option(6, 4, 10);
-            // TCP_KEEPINTVL: interval between keepalive packets (seconds)
-            connection.socket.set_option(6, 5, 5);
-            // TCP_KEEPCNT: number of missed keepalive packets before disconnecting
-            connection.socket.set_option(6, 6, 3);
+            connection.socket.set_option(6, 4, 10); // TCP_KEEPIDLE
+            connection.socket.set_option(6, 5, 5); // TCP_KEEPINTVL
+            connection.socket.set_option(6, 6, 3); // TCP_KEEPCNT
 
             resolve(connection);
         });
@@ -396,12 +498,13 @@ var Channel = new Lang.Class({
 
     /**
      * Read the identity packet from the Gio.SocketConnection file descriptor
+     * TODO: could just take a file-descriptor, ie bluetooth
      */
     _receiveIdent: function (connection) {
         return new Promise((resolve, reject) => {
             let _input_stream = new Gio.DataInputStream({
                 base_stream: new Gio.UnixInputStream({
-                    fd: connection.socket.fd,
+                    fd: connection.socket.fd, // TODO: works with bluetooth?
                     close_fd: false // We're going to re-use the socket
                 })
             });
@@ -421,12 +524,13 @@ var Channel = new Lang.Class({
 
     /**
      * Write our identity packet to the Gio.SocketConnection file descriptor
+     * TODO: could just take a file-descriptor, ie bluetooth
      */
     _sendIdent: function (connection) {
         return new Promise((resolve, reject) => {
             let _output_stream = new Gio.DataOutputStream({
                 base_stream: new Gio.UnixOutputStream({
-                    fd: connection.socket.fd,
+                    fd: connection.socket.fd, // TODO: works with bluetooth?
                     close_fd: false // We're going to re-use the socket
                 })
             });
@@ -640,6 +744,16 @@ var Channel = new Lang.Class({
             }
         });
 
+        try {
+            if (this._listener) {
+                this._listener.close();
+                delete this._listener;
+            }
+        } catch (e) {
+            debug(e);
+            log("error closing stream '" + this._listener + "': " + e);
+        }
+
         this.emit("disconnected");
     },
 
@@ -687,6 +801,8 @@ var Channel = new Lang.Class({
 
 /**
  * File Transfers
+ *
+ * NOTE: transfers are always closed on completion
  *
  * Example Contruction:
  *  let transfer = new Protocol.Transfer({
@@ -935,17 +1051,17 @@ var Transfer = new Lang.Class({
                     this._checksum.update(bytes.unref_to_array());
                 // Expected more data
                 } else if (this.size > this._written) {
-                    this.emit("failed", "Incomplete transfer");
                     this.close();
+                    this.emit("failed", "Incomplete transfer");
                 // Data should match the checksum
                 } else if (this.checksum && this.checksum !== this._checksum.get_string()) {
-                    this.emit("failed", "Checksum mismatch");
                     this.close();
+                    this.emit("failed", "Checksum mismatch");
                 // All done
                 } else {
                     debug("Completed transfer of " + this.size + " bytes");
-                    this.emit("succeeded");
                     this.close();
+                    this.emit("succeeded");
                 }
             }
         );

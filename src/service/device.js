@@ -62,6 +62,81 @@ var Notification = new Lang.Class({
 
 
 /**
+ * Base class for plugin actions
+ */
+var Action = new Lang.Class({
+    Name: "GSConnectDeviceAction",
+    Extends: Gio.SimpleAction,
+    Properties: {
+        "allow": GObject.ParamSpec.int(
+            "allow",
+            "AllowTraffic",
+            "The required permissions for this action",
+            GObject.ParamFlags.READABLE,
+            1, 8,
+            1
+        )
+    },
+
+    _init: function (params, context) {
+        // TODO
+        this.meta = params.meta;
+        delete params.meta;
+
+        this._allow = this.meta.allow;
+
+        // TODO
+        this._context = context;
+        this.device = context.device;
+
+        this.parent(params);
+    },
+
+    get allow() {
+        return this._allow;
+    },
+
+    getMeta: function () {
+        return this.meta;
+    }
+});
+
+
+var Menu = new Lang.Class({
+    Name: "GSConnectDeviceMenu",
+    Extends: Gio.Menu,
+
+    _init: function (device) {
+        this.parent();
+        this.device = device;
+    },
+
+    add: function (name, params) {
+        //debug(name);
+
+        let item = new Gio.MenuItem();
+        item.set_label(params.summary);
+        item.set_icon(
+            new Gio.ThemedIcon({
+                names: [ params.icon_name || "application-x-executable-symbolic" ]
+            })
+        );
+
+        // Always (ssav) => [object_path, action_name, method_args]
+        let parameter = new GLib.Variant(
+            "(ssav)", [this.device._dbus.get_object_path(), name, []]
+        );
+
+        // In the case of actions with variable parameters, the MenuModel is
+        // really only a source of metadata for activating the action directly.
+        item.set_action_and_target_value(name, parameter);
+
+        this.append_item(item);
+    }
+});
+
+
+/**
  * An object representing a remote device.
  *
  * Device class is subclassed from Gio.SimpleActionGroup so it implements the
@@ -187,9 +262,11 @@ var Device = new Lang.Class({
             path: "/org/gnome/shell/extensions/gsconnect/device/" + deviceId + "/"
         });
 
-        // This relies on GSettings
+        // This relies on GSettings being initialized
         if (params.packet) {
             this._handleIdentity(params.packet);
+        } else {
+            // TODO: read identity from GSettings
         }
 
         // Export an object path for the device via the ObjectManager
@@ -228,10 +305,21 @@ var Device = new Lang.Class({
         }
     },
 
+    // TODO: not sure about these...
+    _pairActions: function () {
+        let action = new Action({
+            name: "acceptPair",
+            summary: "Accept Pair",
+            icon_name: "channel-insecure-symbolic"
+        });
+        action.connect("activate", () => this[name]());
+        this.add_action(action);
+    },
+
     /** Device Properties */
     get connected () { return this._connected; },
     get fingerprint () {
-        if (this.connected) {
+        if (this.connected && this._channel) {
             return this._channel.certificate.fingerprint();
         } else if (this.paired) {
             let cert = Gio.TlsCertificate.new_from_pem(
@@ -243,12 +331,18 @@ var Device = new Lang.Class({
 
         return "";
     },
-    get id () { return this.settings.get_string("id"); },
-    get name () { return this.settings.get_string("name"); },
-    get paired () { return (this.settings.get_string("certificate-pem")); },
-    get plugins () { return Array.from(this._plugins.keys()); },
-    get incomingCapabilities () { return this.settings.get_strv("incoming-capabilities"); },
-    get outgoingCapabilities () { return this.settings.get_strv("outgoing-capabilities"); },
+
+    // TODO: wrap theses all up into 'identity'
+    get id() { return this.settings.get_string("id"); },
+    get name() { return this.settings.get_string("name"); },
+    get paired() { return (this.settings.get_string("certificate-pem")); },
+    get plugins() { return Array.from(this._plugins.keys()) || []; },
+    get incomingCapabilities() {
+        return this.settings.get_strv("incoming-capabilities");
+    },
+    get outgoingCapabilities() {
+        return this.settings.get_strv("outgoing-capabilities");
+    },
     get icon_name() {
         return (this.type === "desktop") ? "computer" : this.type;
     },
@@ -264,7 +358,7 @@ var Device = new Lang.Class({
             return icon + "disconnected";
         }
     },
-    get type () { return this.settings.get_string("type"); },
+    get type() { return this.settings.get_string("type"); },
 
     _handleIdentity: function (packet) {
         this.settings.set_string("id", packet.body.deviceId);
@@ -369,6 +463,18 @@ var Device = new Lang.Class({
         return true;
     },
 
+    /**
+     * Send a packet to the device
+     * @param {Object} packet - An object of packet data...
+     * @param {Gio.Stream} payload - A payload stream // TODO
+     */
+    sendPacket: function (packet, payload=null) {
+        if (this.connected && this.paired) {
+            packet = new Protocol.Packet(packet);
+            this._channel.send(packet);
+        }
+    },
+
     /** Channel Callbacks */
     _onConnected: function (channel) {
         log("Connected to '" + this.name + "'");
@@ -406,10 +512,7 @@ var Device = new Lang.Class({
 	        this._handlePair(packet);
 	    } else if (this._handlers.has(packet.type)) {
 	        let handler = this._handlers.get(packet.type);
-
-            handler.handlePacket(packet).then(result => {
-                debug("'" + packet.type + "' handled successfully: " + result);
-            }).catch(e => debug(e));
+            handler.handlePacket(packet);
         } else {
             debug("Received unsupported packet type: " + packet.toString());
         }
@@ -435,9 +538,10 @@ var Device = new Lang.Class({
                 log("Pair accepted by " + this.name);
 
                 this._setPaired(true);
-                this._loadPlugins().then((values) => {
+                return this._loadPlugins().then(values => {
                     this.notify("plugins");
                 });
+                //this._loadPlugins();
             // The device thinks we're unpaired
             } else if (this.paired) {
                 this.acceptPair();
@@ -567,7 +671,7 @@ var Device = new Lang.Class({
             this._channel.send(packet);
         }
 
-        this._unloadPlugins().then((values) => {
+        this._unloadPlugins().then(values => {
             this.notify("plugins");
             this._setPaired(false);
         });
@@ -578,9 +682,7 @@ var Device = new Lang.Class({
 
         this._setPaired(true);
         this.pair();
-        this._loadPlugins().then((values) => {
-            this.notify("plugins");
-        });
+        this._loadPlugins().then(values => this.notify("plugins"));
     },
 
     rejectPair: function () {
@@ -592,7 +694,7 @@ var Device = new Lang.Class({
     /**
      * Plugin Functions
      */
-    _supportedPlugins: function () {
+    supportedPlugins: function () {
         let supported = [];
         let incoming = this.incomingCapabilities;
         let outgoing = this.outgoingCapabilities;
@@ -624,25 +726,25 @@ var Device = new Lang.Class({
             }
 
             // Instantiate the handler
-            let handler, plugin;
-
-            try {
-                handler = imports.service.plugins[name];
-                plugin = new handler.Plugin(this);
-            } catch (e) {
-                debug("Error loading " + name + ": " + e.message + "\n" + e.stack);
-                reject(e);
-            }
-
-            // Register packet handlers
-            for (let packetType of handler.Metadata.incomingCapabilities) {
-                if (!this._handlers.has(packetType)) {
-                    this._handlers.set(packetType, plugin);
-                }
-            }
-
-            // Register plugin
             if (!this._plugins.has(name)) {
+                let handler, plugin;
+
+                try {
+                    handler = imports.service.plugins[name];
+                    plugin = new handler.Plugin(this);
+                } catch (e) {
+                    debug(e);
+                    reject(e);
+                }
+
+                // Register packet handlers
+                for (let packetType of handler.Metadata.incomingCapabilities) {
+                    if (!this._handlers.has(packetType)) {
+                        this._handlers.set(packetType, plugin);
+                    }
+                }
+
+                // Register plugin
                 this._plugins.set(name, plugin);
             }
 
@@ -651,8 +753,7 @@ var Device = new Lang.Class({
     },
 
     _loadPlugins: function () {
-        let supported = this._supportedPlugins();
-        let promises = supported.map(name => this._loadPlugin(name));
+        let promises = this.supportedPlugins().map(name => this._loadPlugin(name));
         return Promise.all(promises.map(p => p.catch(() => undefined)));
     },
 
@@ -676,6 +777,7 @@ var Device = new Lang.Class({
                 this._plugins.get(name).destroy();
                 this._plugins.delete(name);
             } catch (e) {
+                debug(e);
                 reject(e);
             }
 
@@ -703,6 +805,8 @@ var Device = new Lang.Class({
         if (this.connected) {
             this.connect("notify::connected", () => {
                 if (!this.connected) {
+                    //this._dbus.flush();
+                    //this._dbus.destroy();
                     this._dbus_object.remove_interface(this._dbus);
                     this.service.objectManager.unexport(path);
                     GObject.signal_handlers_destroy(this);
@@ -710,6 +814,8 @@ var Device = new Lang.Class({
             });
             this._channel.close();
         } else {
+            //this._dbus.flush();
+            //this._dbus.destroy();
             this._dbus_object.remove_interface(this._dbus);
             this.service.objectManager.unexport(path);
             GObject.signal_handlers_destroy(this);

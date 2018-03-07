@@ -12,6 +12,7 @@ const Gtk = imports.gi.Gtk;
 
 /**
  * Application Id and Path
+ * TODO: these should mirror package.js
  */
 gsconnect.app_id = "org.gnome.Shell.Extensions.GSConnect";
 gsconnect.app_path = "/org/gnome/Shell/Extensions/GSConnect";
@@ -20,6 +21,7 @@ gsconnect.metadata = JSON.parse(GLib.file_get_contents(gsconnect.datadir + "/met
 
 /**
  * User Directories
+ * TODO: these should mirror package.js
  */
 gsconnect.cachedir = GLib.build_filenamev([GLib.get_user_cache_dir(), "gsconnect"]);
 gsconnect.configdir = GLib.build_filenamev([GLib.get_user_config_dir(), "gsconnect"]);
@@ -31,6 +33,7 @@ for (let path of [gsconnect.cachedir, gsconnect.configdir, gsconnect.runtimedir]
 
 /**
  * Gettext
+ * TODO: these should mirror package.js
  */
 gsconnect.localedir = GLib.build_filenamev([gsconnect.datadir, "locale"]);
 
@@ -54,6 +57,7 @@ if (typeof _ !== "function") {
 
 /**
  * Init GSettings
+ * TODO: these should mirror package.js
  */
 gsconnect.gschema = Gio.SettingsSchemaSource.new_from_directory(
     GLib.build_filenamev([gsconnect.datadir, "schemas"]),
@@ -68,6 +72,7 @@ gsconnect.settings = new Gio.Settings({
 
 /**
  * Register resources
+ * TODO: these should mirror package.js
  */
 gsconnect.resource = Gio.Resource.load(
     GLib.build_filenamev([gsconnect.datadir, gsconnect.app_id + ".data.gresource"])
@@ -101,6 +106,7 @@ gsconnect.settings.connect("changed::debug", () => {
             let [m, k, f, fn, l] = _dbgRegexp.exec(e.stack.split("\n")[1]);
             fn = GLib.path_get_basename(fn);
 
+            // There's a better way...
             let hdr = [gsconnect.metadata.name, fn, k, f, l].filter(k => (k)).join(":");
 
             // fix msg if not string
@@ -177,6 +183,7 @@ gsconnect.installService = function() {
 };
 
 
+// FIXME: Not used anymore, should just be ignored by the shell
 gsconnect.uninstallService = function() {
     // DBus service file
     let serviceDir = GLib.get_user_data_dir() + "/dbus-1/services/";
@@ -223,7 +230,7 @@ gsconnect.full_unpack = function(obj) {
     if (typeof obj.deep_unpack === "function") {
         return gsconnect.full_unpack(obj.deep_unpack());
     } else if (typeof obj.map === "function") {
-        return obj.map(i => this.full_unpack(i));
+        return obj.map(i => gsconnect.full_unpack(i));
     } else if (typeof obj === "object" && typeof obj !== null) {
         let unpacked = {};
 
@@ -234,6 +241,7 @@ gsconnect.full_unpack = function(obj) {
         return unpacked;
     }
 
+    // FIXME: huh?
     return obj;
 };
 
@@ -241,6 +249,8 @@ gsconnect.full_unpack = function(obj) {
 Gio.Notification.prototype.add_device_button = function (label, dbusPath, name, ...args) {
     try {
         let vargs = args.map(arg => gsconnect.full_pack(arg));
+        log(vargs);
+        //let vargs = gsconnect.full_pack(args);
         let parameter = new GLib.Variant("(ssav)", [dbusPath, name, vargs]);
         this.add_button_with_target(label, "app.deviceAction", parameter);
     } catch(e) {
@@ -253,6 +263,7 @@ Gio.Notification.prototype.add_device_button = function (label, dbusPath, name, 
 Gio.Notification.prototype.set_device_action = function (dbusPath, name, ...args) {
     try {
         let vargs = args.map(arg => gsconnect.full_pack(arg));
+        log(vargs);
         let parameter = new GLib.Variant("(ssav)", [dbusPath, name, vargs]);
         this.set_default_action_and_target("app.deviceAction", parameter);
     } catch(e) {
@@ -323,59 +334,95 @@ Gio.TlsCertificate.prototype.fingerprint = function () {
 };
 
 
+Gio.DBusObjectManagerClient.prototype.get_devices = function () {
+    let devices = [];
+
+    for (let obj of this.get_objects()) {
+        for (let iface of obj.get_interfaces()) {
+            if (iface.g_interface_name === "org.gnome.Shell.Extensions.GSConnect.Device") {
+                devices.push(iface);
+            }
+        }
+    }
+
+    return devices;
+};
+
+
+//
+Gio.MenuModel.prototype[Symbol.iterator] = function* _menuModelIterator() {
+    let _index = 0;
+    const _len = this.get_n_items();
+
+    while (_index < _len) {
+        yield {
+            action: this.get_item_attribute_value(_index, "action", null).unpack(),
+            label: this.get_item_attribute_value(_index, "label", null).unpack(),
+            icon: this.get_item_attribute_value(_index, "icon", null).deep_unpack()[1].deep_unpack()[0]
+        };
+
+        _index++;
+    }
+}
+
+
 /**
  * String.format API supporting %s, %d, %x and %f
  * See: https://github.com/GNOME/gjs/blob/master/modules/format.js
  */
 String.prototype.format = Format.format;
 
-Object.defineProperty(Object, "toVariant", {
-    value: function (obj) {
-        "use strict";
-        if (!obj) { obj = this; }
 
-        let out = {};
-        for (let key in obj) {
-            let val = obj[key];
-            let type;
-            switch (typeof val) {
-                case 'string':
-                    type = 's';
-                    break;
-                case 'number':
-                    type = 'd';
-                    break;
-                case 'boolean':
-                    type = 'b';
-                    break;
-                default:
-                    continue;
-            }
-            out[key] = GLib.Variant.new(type, val);
-        }
+/**
+ * String tranformation prototypes
+ */
+// FIXME
+String.prototype.toDBusSafe = function(string) {
+    string = string || this;
+    return string.replace(/[^A-Za-z0-9_]+/g, "_");
+};
 
-        return out;
-    },
-    writable: true,
-    configurable: true
-});
 
-Object.defineProperty(Object, "fromVariant", {
-    value: function (obj) {
-        "use strict";
-        if (!obj) { obj = this; }
+// FIXME
+String.prototype.toGSettingsSafe = function(string) {
+    string = string || this;
+    return string.replace(/[^a-z0-9-]+/g, "_");
+};
 
-        log("UNPACK: " + obj.deep_unpack());
 
-        let out = {};
+String.prototype.toCamelCase = function(string) {
+    string = string || this;
 
-        for (let key in obj) {
-            out[key] = obj[key].unpack();
-        }
+    return string.replace(/(?:^\w|[A-Z]|\b\w)/g, (ltr, offset) => {
+        return (offset === 0) ? ltr.toLowerCase() : ltr.toUpperCase();
+    }).replace(/[\s_-]+/g, '');
+};
 
-        return out;
-    },
-    writable: true,
-    configurable: true
-});
+
+String.prototype.toHyphenCase = function(string) {
+    string = string || this;
+
+	return string.replace(/(?:[A-Z])/g, (ltr, offset) => {
+        return (offset > 0) ? "-" + ltr.toLowerCase() : ltr.toLowerCase();
+	}).replace(/[\s_]+/g, '');
+};
+
+
+String.prototype.toTitleCase = function(string) {
+    string = string || this;
+
+    return string.replace(/(?:^\w|[A-Z]|\b\w)/g, (ltr, offset) => {
+        return ltr.toUpperCase();
+    }).replace(/[\s_-]+/g, '');
+};
+
+
+String.prototype.toUnderscoreCase = function(string) {
+    string = string || this;
+
+	return string.replace(/(?:^\w|[A-Z]|_|\b\w)/g, (ltr, offset) => {
+	    if (ltr === "_") return "";
+        return (offset > 0) ? "_" + ltr.toLowerCase() : ltr.toLowerCase();
+	}).replace(/[\s-]+/g, '');
+};
 

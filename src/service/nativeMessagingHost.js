@@ -24,7 +24,7 @@ function getPath() {
 window.gsconnect = { datadir: getPath() };
 imports.searchPath.push(gsconnect.datadir);
 const _bootstrap = imports._bootstrap;
-const Client = imports.client;
+const DBus = imports.modules.dbus;
 
 
 function fromInt32 (byteArray) {
@@ -36,6 +36,7 @@ function fromInt32 (byteArray) {
 
     return value;
 };
+
 
 function toInt32 (number) {
     var byteArray = [0, 0, 0, 0];
@@ -82,13 +83,29 @@ var NativeMessagingHost = new Lang.Class({
             base_stream: new Gio.UnixOutputStream({ fd: 1 })
         });
 
-        this._watchdog = Gio.bus_watch_name(
-            Gio.BusType.SESSION,
-            "org.gnome.Shell.Extensions.GSConnect",
-            Gio.BusNameWatcherFlags.NONE,
-            () => this._serviceAppeared(),
-            () => this._serviceVanished()
+        Gio.DBusObjectManagerClient.new(
+            Gio.DBus.session,
+            Gio.DBusObjectManagerClientFlags.NONE,
+            gsconnect.app_id,
+            gsconnect.app_path,
+            null, // get-proxy-type-func
+            null,
+            (obj, res) => {
+                this.manager = Gio.DBusObjectManagerClient.new_finish(res);
+
+                this.manager.connect("notify::name-owner", () => this.sendDeviceList());
+                this.manager.connect("interface-added", this._interfaceAdded.bind(this));
+                this.manager.connect("interface-removed", this._interfaceRemoved.bind(this));
+
+                // Watch device property changes (connected, paired, plugins, etc)
+                // FIXME: this could get crazy
+                this.manager.connect("interface-proxy-properties-changed", () => {
+                    this.sendDeviceList();
+                });
+            }
         );
+
+        this.send({ type: "connected", data: true });
     },
 
     receive: function () {
@@ -113,7 +130,7 @@ var NativeMessagingHost = new Lang.Class({
         if (message.type === "devices") {
             this.sendDeviceList();
         } else if (message.type === "share") {
-            for (let device of this.daemon.devices.values()) {
+            for (let device of this.manager.get_devices()) {
                 if (device.id === message.data.device) {
                     device[message.data.action].shareUrl(message.data.url);
                 }
@@ -137,7 +154,7 @@ var NativeMessagingHost = new Lang.Class({
     },
 
     sendDeviceList: function () {
-        if (!this.daemon) {
+        if (this.manager.name_owner === null) {
             // Inform the WebExtension we're disconnected from the service
             this.send({ type: "connected", data: false });
             return;
@@ -145,14 +162,18 @@ var NativeMessagingHost = new Lang.Class({
 
         let devices = [];
 
-        for (let device of this.daemon._devices.values()) {
-            if (device.connected && device.paired && (device.share || device.telephony)) {
+        // FIXME: GActions
+        for (let device of this.manager.get_devices()) {
+            let share = (device.plugins.indexOf("share") > -1);
+            let telephony = (device.plugins.indexOf("telephony") > -1);
+
+            if (device.connected && device.paired && (share || telephony)) {
                 devices.push({
                     id: device.id,
                     name: device.name,
                     type: device.type,
-                    share: device._plugins.has("share"),
-                    telephony: device._plugins.has("telephony")
+                    share: share,
+                    telephony: telephony
                 });
             }
         }
@@ -160,46 +181,10 @@ var NativeMessagingHost = new Lang.Class({
         this.send({ type: "devices", data: devices });
     },
 
-    _serviceAppeared: function () {
-        debug("");
-
-        if (!this.daemon) {
-            this.daemon = new Client.Daemon();
-        }
-
-        // Watch device property changes (connected, paired, plugins, etc)
-        for (let device of this.daemon._devices.values()) {
-            device._nmh = device.connect("notify", () => this.sendDeviceList());
-        }
-
-        // Watch for new and removed devices
-        this.daemon.connect("notify::devices", () => {
-            for (let device of this.daemon._devices.values()) {
-                if (!device._nmh) {
-                    device._nmh = device.connect("notify", () => this.sendDeviceList());
-                }
-            }
-
-            this.sendDeviceList()
-        });
-
-        this.send({ type: "connected", data: true });
+    _interfaceAdded: function (object, iface) {
     },
 
-    _serviceVanished: function (conn, name) {
-        debug("");
-
-        // Inform the WebExtension we're disconnected from the service
-        this.send({ type: "connected", data: false });
-
-        // Destroy the proxy
-        if (this.daemon) {
-            this.daemon.destroy();
-            this.daemon = false;
-        }
-
-        // Try to restart the service
-        this.daemon = new Client.Daemon();
+    _interfaceRemoved: function (object, iface) {
     }
 });
 

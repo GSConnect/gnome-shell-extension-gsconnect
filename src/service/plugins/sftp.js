@@ -17,10 +17,21 @@ var Metadata = {
     incomingCapabilities: ["kdeconnect.sftp"],
     outgoingCapabilities: ["kdeconnect.sftp.request"],
     actions: {
+        // TODO: stateful action???
         mount: {
-            summary: _("Browse Device"),
+            summary: _("Browse Files"),
             description: _("Mount a remote device"),
+            icon_name: "folder-remote-symbolic",
+
             signature: null,
+            incoming: ["kdeconnect.sftp"],
+            outgoing: ["kdeconnect.sftp.request"],
+            allow: 6
+        },
+        unmount: {
+            summary: _("Stop Browsing"),
+            description: _("Unmount a remote device"),
+            signature: "(ssav)",
             incoming: ["kdeconnect.sftp"],
             outgoing: ["kdeconnect.sftp.request"],
             allow: 6
@@ -34,7 +45,8 @@ var Metadata = {
  * SFTP Plugin
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/sftp
  *
- * TODO: the Android app source that says SSHFS 3.x and causes data corruption
+ * TODO: see #40 & #54 by @getzze
+ * TODO: the Android app source that says SSHFS < 3.3 and causes data corruption
  *
  * {
  *     "id": 1518956413092,
@@ -68,6 +80,14 @@ var Plugin = new Lang.Class({
             "Whether the device is mounted",
             GObject.ParamFlags.READABLE,
             false
+        ),
+        "port": GObject.ParamSpec.uint(
+            "port",
+            "SFTP Port",
+            "The port used for SFTP communication",
+            GObject.ParamFlags.READABLE,
+            1739, 1764,
+            1739
         )
     },
 
@@ -79,6 +99,9 @@ var Plugin = new Lang.Class({
             throw Error(_("SSHFS not installed"));
         }
 
+        this._path = gsconnect.runtimedir + "/" + this.device.id;
+        GLib.mkdir_with_parents(this._path, 448);
+
         this._mounted = false;
         this._directories = {};
 
@@ -87,54 +110,51 @@ var Plugin = new Lang.Class({
         }
     },
 
-    get mounted () { return this._mounted },
-    get directories () { return this._directories; },
-
-    _prepare: function () {
-        debug("SFTP: _prepare()");
-
-        this._path = gsconnect.runtimedir + "/" + this.device.id;
-        GLib.mkdir_with_parents(this._path, 448);
-
-        let dir = Gio.File.new_for_path(this._path);
-        let info = dir.query_info("unix::uid,unix::gid", 0, null);
-        this._uid = info.get_attribute_uint32("unix::uid").toString();
-        this._gid = info.get_attribute_uint32("unix::gid").toString();
-    },
+    get directories () { return this._directories || {}; },
+    get mounted () { return this._mounted || false },
+    get port () { return this._port || 0; },
 
     handlePacket: function (packet) {
         debug(packet);
 
         // FIXME FIXME FIXME
-        return new Promise((resolve, reject) => {
-            if (packet.type === "kdeconnect.sftp") {
-                let result = this._mount();
+        if (packet.type === "kdeconnect.sftp") {
+            this._parseConnectionData(packet);
+        }
+    },
 
-                if (result instanceof Error) {
-                    reject(result);
-                } else {
-                    resolve(result);
-                }
-            } else if (false) {
-                reject(new Error("Unknown packet type"));
+    _parseConnectionData: function (packet) {
+        this._ip = packet.body.ip;
+        this._port = packet.body.port;
+        this._root = packet.body.path;
+
+        this._user = packet.body.user;
+        this._password = packet.body.password;
+
+        // Set the directories and notify (client.js needs this before mounted)
+        for (let index in packet.body.pathNames) {
+            if (packet.body.multiPaths[index].indexOf(this._root) === 0 ) {
+                let name = packet.body.pathNames[index];
+                let path = packet.body.multiPaths[index].replace(this._root, "");
+                this._directories[name] = this._path + path;
             }
-        });
+        }
+
+        // FIXME: shouldn't automount, but should auto-probe for info
+        this._mount(packet);
     },
 
     _mount: function (packet) {
-        try {
-            this._prepare();
-        } catch (e) {
-            log("SFTP: Error preparing to mount '" + this.device.name + "': " + e);
-            this.unmount();
-            return e;
-        }
+        let dir = Gio.File.new_for_path(this._path);
+        let info = dir.query_info("unix::uid,unix::gid", 0, null);
+        this._uid = info.get_attribute_uint32("unix::uid").toString();
+        this._gid = info.get_attribute_uint32("unix::gid").toString();
 
         let args = [
             "sshfs",
-            packet.body.user + "@" + packet.body.ip + ":" + packet.body.path,
+            this._user + "@" + this._ip + ":" + this._root,
             this._path,
-            "-p", packet.body.port.toString(),
+            "-p", this.port.toString(),
             // "disable multi-threaded operation"
             // Fixes file chunks being sent out of order and corrupted
             "-s",
@@ -187,24 +207,9 @@ var Plugin = new Lang.Class({
         source.attach(null);
 
         // Send session password
-        this._stdin.put_string(packet.body.password + "\n", null);
+        this._stdin.put_string(this._password + "\n", null);
 
-        // Set the directories and notify (client.js needs this before mounted)
-        for (let index in packet.body.pathNames) {
-            let name = packet.body.pathNames[index];
-            let path = packet.body.multiPaths[index].replace(packet.body.path, "");
-            path = path.replace(packet.body.path, "");
-
-            this._directories[name] = this._path + path;
-
-            // FIXME FIXME FIXME: see #40
-//            if ( packet.body.multiPaths[index].search(packet.body.path) === 0 ) {
-//                let name = packet.body.pathNames[index];
-//                let path = packet.body.multiPaths[index].replace(packet.body.path, "");
-//                this._directories[name] = this._path + path;
-//            }
-        }
-
+        // FIXME: move to _parseConnectionData()
         this.notify("directories");
 
         // Set "mounted" and notify
@@ -242,7 +247,7 @@ var Plugin = new Lang.Class({
     mount: function () {
         debug("SFTP: mount()");
 
-        this.sendPacket({
+        this.device.sendPacket({
             id: 0,
             type: "kdeconnect.sftp.request",
             body: { startBrowsing: true }

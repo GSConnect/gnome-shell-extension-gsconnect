@@ -21,6 +21,8 @@ var Metadata = {
         shareDialog: {
             summary: _("Share Dialog"),
             description: _("Select a file or URL to share"),
+            icon_name: "send-to-symbolic",
+
             signature: null,
             incoming: [],
             outgoing: ["kdeconnect.share.request"],
@@ -59,7 +61,7 @@ var Metadata = {
  * Share Plugin
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/share
  *
- * TODO: receiving "text"
+ * TODO: receiving "text" TODO: Window with textview & "Copy to Clipboard..
  *       expand signals to cover Protocol.Transfer signals
  *       https://github.com/KDE/kdeconnect-kde/commit/28f11bd5c9a717fb9fbb3f02ddd6cea62021d055
  */
@@ -94,7 +96,7 @@ var Plugin = new Lang.Class({
             filename
         ]);
 
-        let filepath = path.toString();
+        let filepath = path.toString(); // TODO: wtf
         let copyNum = 0;
 
         while (GLib.file_test(filepath, GLib.FileTest.EXISTS)) {
@@ -251,17 +253,15 @@ var Plugin = new Lang.Class({
     handlePacket: function (packet) {
         debug("Share: handlePacket()");
 
-        return new Promise((resolve, reject) => {
-            if (!(this.allow & 4)) {
-                reject(new Error("Operation not permitted: " + packet.type));
-            } else if (packet.body.hasOwnProperty("filename")) {
-                resolve(this._handleFile(packet));
-            } else if (packet.body.hasOwnProperty("text")) {
-                resolve(this._handleText(packet));
-            } else if (packet.body.hasOwnProperty("url")) {
-                resolve(this._handleUrl(packet));
-            }
-        });
+        if (!(this.allow & 4)) {
+            return
+        } else if (packet.body.hasOwnProperty("filename")) {
+            this._handleFile(packet);
+        } else if (packet.body.hasOwnProperty("text")) {
+            this._handleText(packet);
+        } else if (packet.body.hasOwnProperty("url")) {
+            this._handleUrl(packet);
+        }
     },
 
     /**
@@ -279,6 +279,7 @@ var Plugin = new Lang.Class({
      * Remote methods
      */
     shareDialog: function () {
+        // FIXME
         if (!(this.allow & 2)) {
             debug("Operation not permitted");
             return;
@@ -292,6 +293,7 @@ var Plugin = new Lang.Class({
 
     // TODO: check file existence...
     shareFile: function (path) {
+        // FIXME
         if (!(this.allow & 2)) {
             debug("Operation not permitted");
             return;
@@ -433,11 +435,12 @@ var Plugin = new Lang.Class({
                 payloadTransferInfo: { port: port }
             });
 
-            this.sendPacket(packet);
+            this.device.sendPacket(packet);
         });
     },
 
     shareText: function (text) {
+        // FIXME
         if (!(this.allow & 2)) {
             debug("Operation not permitted");
             return;
@@ -450,13 +453,14 @@ var Plugin = new Lang.Class({
             type: "kdeconnect.share.request",
             body: { text: text }
         });
-        this.sendPacket(packet);
+        this.device.sendPacket(packet);
 
         this.emit("sent", "text", text);
     },
 
     // TODO: check URL validity...
     shareUrl: function (url) {
+        // FIXME
         if (!(this.allow & 2)) {
             debug("Operation not permitted");
             return;
@@ -477,7 +481,7 @@ var Plugin = new Lang.Class({
             type: "kdeconnect.share.request",
             body: { url: uri }
         });
-        this.sendPacket(packet);
+        this.device.sendPacket(packet);
 
         this.emit("sent", "url", uri);
     }

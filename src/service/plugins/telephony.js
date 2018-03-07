@@ -15,6 +15,15 @@ const Protocol = imports.service.protocol;
 const PluginsBase = imports.service.plugins.base;
 
 
+var Allow = {
+    NONE: 1,
+    OUT: 2,
+    IN: 4,
+    CALLS: 8,
+    SMS: 16
+};
+
+
 var Metadata = {
     id: "org.gnome.Shell.Extensions.GSConnect.Plugin.Telephony",
     incomingCapabilities: ["kdeconnect.telephony"],
@@ -24,44 +33,54 @@ var Metadata = {
         muteCall: {
             summary: _("Mute Call"),
             description: _("Silence an incoming call"),
+            icon_name: "audio-volume-muted-symbolic",
+
             signature: null,
             incoming: ["kdeconnect.telephony"],
             outgoing: ["kdeconnect.telephony.request"],
-            allow: 6
+            allow: Allow.OUT | Allow.IN | Allow.CALLS
         },
 
         // SMS Actions
-        openSms: {
-            summary: _("Open SMS"),
+        newSms: {
+            summary: _("New SMS"),
             description: _("Start a new SMS conversation"),
+            icon_name: "sms-symbolic",
+
             signature: null,
             incoming: ["kdeconnect.telephony"],
             outgoing: ["kdeconnect.sms.request"],
-            allow: 6
+            allow: Allow.OUT | Allow.IN | Allow.SMS
         },
         replyMissedCall: {
             summary: _("Reply Missed Call"),
             description: _("Reply to a missed call by SMS"),
+            icon_name: "sms-symbolic",
+
             signature: "av",
             incoming: ["kdeconnect.telephony"],
             outgoing: ["kdeconnect.sms.request"],
-            allow: 6
+            allow: Allow.OUT | Allow.IN | Allow.CALLS | Allow.SMS
         },
         replySms: {
             summary: _("Reply SMS"),
             description: _("Reply to an SMS message"),
+            icon_name: "sms-symbolic",
+
             signature: "av",
             incoming: ["kdeconnect.telephony"],
             outgoing: ["kdeconnect.sms.request"],
-            allow: 6
+            allow: Allow.OUT | Allow.IN | Allow.SMS
         },
         sendSms: {
             summary: _("Send SMS"),
             description: _("Send an SMS message"),
+            icon_name: "sms-send",
+
             signature: "av",
             incoming: ["kdeconnect.telephony"],
             outgoing: ["kdeconnect.sms.request"],
-            allow: 6
+            allow: Allow.OUT | Allow.IN | Allow.SMS
         }
     },
     events: {
@@ -101,12 +120,21 @@ var Metadata = {
 };
 
 
+var MediaState = {
+    NONE: 1,
+    VOLUME_LOWERED: 2,
+    VOLUME_MUTED: 4,
+    MICROPHONE_MUTED: 8,
+    MEDIA_PAUSED: 16
+};
+
+
 /**
  * sms/tel URI RegExp (https://tools.ietf.org/html/rfc5724)
  *
  * A fairly lenient regexp for sms: URIs that allows tel: numbers with chars
- * from global-number, local-number (without phone-context) and single spaces,
- * allowing passing numbers directly from libfolks or GData without
+ * from global-number, local-number (without phone-context) and single spaces.
+ * This allows passing numbers directly from libfolks or GData without
  * pre-processing. It also makes an allowance for URIs passed from Gio.File
  * that always come in the form "sms:///".
  */
@@ -177,10 +205,13 @@ var Plugin = new Lang.Class({
         // Event handling
         // The event has ended (ringing stopped or call ended)
         if (event.isCancel) {
+            // TODO TODO TODO: all of it
             this._setMediaState(1);
             this.device.withdraw_notification(event.event + "|" + event.contact.name); // FIXME
         // An event was triggered
         } else {
+            // FIXME FIXME
+            log("EVENT: " + event.event);
             this.emit(
                 "event",
                 event.event,
@@ -192,28 +223,23 @@ var Plugin = new Lang.Class({
                 ])
             );
 
-            return new Promise((resolve, reject) => {
-                if (event.event === "sms" && this.allow & Allow.SMS) {
-                    resolve(this._onSms(event));
-                } else if (this.allow & Allow.CALLS) {
-                    switch (event.event) {
-                        case "missedCall":
-                            resolve(this._onMissedCall(event));
-                            break;
-                        case "ringing":
-                            resolve(this._onRinging(event));
-                            break;
-                        case "talking":
-                            resolve(this._onTalking(event));
-                            break;
-                        default:
-                            log("Unknown telephony event");
-                            reject(false);
-                    }
-                } else {
-                    reject(false);
+            if (event.event === "sms" && this.allow & Allow.SMS) {
+                this._onSms(event);
+            } else if (this.allow & Allow.CALLS) {
+                switch (event.event) {
+                    case "missedCall":
+                        this._onMissedCall(event);
+                        break;
+                    case "ringing":
+                        this._onRinging(event);
+                        break;
+                    case "talking":
+                        this._onTalking(event);
+                        break;
+                    default:
+                        log("Unknown telephony event");
                 }
-            });
+            }
         }
     },
 
@@ -286,7 +312,8 @@ var Plugin = new Lang.Class({
         let window = this._hasWindow(event.phoneNumber);
 
         if (window) {
-            // FIXME: log the missed call in the window
+            // FIXME: logging the missed call in the window
+            // TODO: need message object
             window.receiveMessage(
                 event.contact,
                 event.phoneNumber,
@@ -357,6 +384,7 @@ var Plugin = new Lang.Class({
         );
 
         this.device.send_notification(event.event + "|"  + event.time, notif);
+        // TODO TODO TODO
         this._setMediaState(2);
 
         return true;
@@ -440,6 +468,7 @@ var Plugin = new Lang.Class({
         notif.set_priority(Gio.NotificationPriority.NORMAL);
 
         this.device.send_notification(event.event + "|"  + event.time, notif);
+        // TODO TODO TODO
         this._setMediaState(2);
 
         return true;
@@ -456,7 +485,7 @@ var Plugin = new Lang.Class({
         number = number.replace(/\D/g, "");
 
         // Get the current open windows
-        let windows = this.device.daemon.get_windows();
+        let windows = this.device.service.get_windows();
         let conversation = false;
 
         // Look for an open window with this contact
@@ -476,10 +505,13 @@ var Plugin = new Lang.Class({
         return conversation;
     },
 
+    // FIXME FIXME FIXME
     _setMediaState: function (state) {
         if (state === 1) {
+            // TODO: restore state here
             this._state = 1;
         } else {
+            // TODO: set state here base on flags
             this._state = 2;
 
             if (state & 2) {
@@ -501,13 +533,13 @@ var Plugin = new Lang.Class({
             type: "kdeconnect.telephony.request",
             body: { action: "mute" }
         });
-        this.sendPacket(packet);
+        this.device.sendPacket(packet);
     },
 
     /**
      * Open and present a new SMS window
      */
-    openSms: function () {
+    newSms: function () {
         debug(arguments);
 
         let window = new Sms.ConversationWindow(this.device);
@@ -535,6 +567,7 @@ var Plugin = new Lang.Class({
         if (!window) {
             window = new Sms.ConversationWindow(this.device);
 
+            // FIXME: need batch SMS window now
             for (let recipient of uri.recipients) {
                 // FIXME
                 let contact = this.contacts.query({
@@ -659,7 +692,7 @@ var Plugin = new Lang.Class({
             }
         });
 
-        this.sendPacket(packet);
+        this.device.sendPacket(packet);
     },
 
     /**
@@ -670,7 +703,7 @@ var Plugin = new Lang.Class({
     // FIXME: re-check
     shareUri: function (url) {
         // Get the current open windows
-        let windows = this.device.daemon.get_windows();
+        let windows = this.device.service.get_windows();
         let hasConversations = false;
 
         for (let index_ in windows) {

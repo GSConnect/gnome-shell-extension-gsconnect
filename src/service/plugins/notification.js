@@ -49,6 +49,19 @@ var Metadata = {
 
 
 /**
+ * Grouped Notifications snippets
+ */
+const GroupedNotifications = [
+    "GroupSummary",
+    // Google+ grouped
+    "gns_notifications_group",
+    // Grouped SMS messages have no notification number in the id ----------------v
+    // "0|com.google.android.apps.messaging|0|com.google.android.apps.messaging:sms|10109"
+    ":sms|"
+];
+
+
+/**
  * Notification Plugin
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/notifications
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/sendnotifications
@@ -118,20 +131,10 @@ var Plugin = new Lang.Class({
         this._notifications = [];
         this.cacheProperties(["_notifications"]);
 
-        if (this.allow & 4) {
-            this.request();
-        }
-
-        // Request missed notifications after donotdisturb ends
-        gsconnect.settings.connect("changed::donotdisturb", () => {
-            let now = GLib.DateTime.new_now_local().to_unix();
-            if (gsconnect.settings.get_int("donotdisturb") < now) {
-                if (this.allow & 4) {
-                    this.request();
-                }
-            }
-        });
-
+        // TODO
+//        if (this.allow & 4) {
+//            this.request();
+//        }
     },
 
     get notifications () {
@@ -141,37 +144,49 @@ var Plugin = new Lang.Class({
     handlePacket: function (packet) {
         debug(packet);
 
-        return new Promise((resolve, reject) => {
-            if (packet.type === "kdeconnect.notification.request") {
-                if (this.allow & 4) {
-                    // TODO: A request for our notifications; NotImplemented
-                }
-            } else if (this.allow & 2) {
-                // Grouped notifications close as a group so we don't use them
-                if (packet.body.id.indexOf("GroupSummary") > -1) {
-                    resolve("ignored GroupSummary notification");
-                // Grouped SMS messages have no notification number in the id
-                // "0|com.google.android.apps.messaging|0|com.google.android.apps.messaging:sms|10109"
-                } else if (packet.body.id.indexOf(":sms|") > -1) {
-                    resolve("ignored grouped SMS notification");
-                } else if (packet.body.isCancel) {
-                    this.device.withdraw_notification(packet.body.id);
-                    this.untrackNotification(packet.body);
-                    resolve("closed notification");
-                // Ignore previously posted notifications
-                } else if (this._getNotification(packet.body)) {
-                    resolve("ignored cached notification");
-                } else if (packet.payloadSize) {
-                    debug("new notification with payload");
-                    this._downloadIcon(packet).then((result) => {
-                        resolve(this.showNotification(packet, result));
-                    });
-                } else {
-                    debug("new notification");
-                    resolve(this.showNotification(packet));
-                }
+        if (packet.type === "kdeconnect.notification.request") {
+            if (this.allow & 4) {
+                // TODO: A request for our notifications; NotImplemented
+                return;
             }
-        });
+        } else if (this.allow & 2) {
+            // Grouped notifications close as a group so we don't use them
+            // TODO: example id GroupSummary notifications
+            if (packet.body.id.indexOf("GroupSummary") > -1) {
+                debug("ignored GroupSummary notification");
+            // Grouped SMS messages have no notification number in the id ----------------v
+            // "0|com.google.android.apps.messaging|0|com.google.android.apps.messaging:sms|10109"
+            } else if (packet.body.id.indexOf(":sms|") > -1) {
+                debug("ignored grouped SMS notification");
+            // Grouped Google+ notification; these also lack a "text" field
+            // "0|com.google.android.apps.plus|0|gns_notifications_group|10088"
+            } else if (packet.body.id.indexOf("gns_notifications_group") > -1) {
+                debug("ignored grouped Google+ notification");
+            } else if (packet.body.isCancel) {
+                this.device.withdraw_notification(packet.body.id);
+                this.untrackNotification(packet.body);
+                debug("closed notification");
+            // Ignore previously posted notifications
+            } else if (this._getNotification(packet.body)) {
+                debug("ignored cached notification");
+//            } else if (packet.payloadSize) {
+//                debug("new notification with payload");
+//                this._downloadIcon(packet).then(result => {
+//                    resolve(this.showNotification(packet, result));
+//                });
+            } else {
+                debug("new notification");
+                this.showNotification(packet);
+            }
+        }
+    },
+
+    /**
+     * Check if a notification is grouped notification
+     * @param {Protocol.Packet} packet - A notification packet
+     * @return {Boolean} - %true if the notification is grouped
+     */
+    _isGrouped: function (packet) {
     },
 
     /** Get the path to the largest PNG of @name */
@@ -188,18 +203,30 @@ var Plugin = new Lang.Class({
     },
 
     /**
-     * Search for a notification by data and return it or false if not found
+     * Search the cache for a notification by data and return it or %false if
+     * not found
      */
     _getNotification: function (query) {
         for (let notif of this._notifications) {
             // @query is a full notification matching a timestamp (shown)
-            // We check for timestamp since the device controls id turnover and
-            // timestamps only changes if the phone resets.
+            // We check for timestamp first since the device controls id
+            // turnover and timestamps only change if the phone resets.
             if (notif.time && notif.time === query.time) {
                 debug("found notification with matching timestamp");
-                // Update the cached notification
                 Object.assign(notif, query);
                 return notif;
+            // TODO: confirm this works...
+            // @query is a full notification matching an id (shown)
+            // We also have to check for id, since some applications update
+            // notifications (desktop-style) by reusing the id...
+            } else if (notif.id && notif.id === query.id) {
+                debug("found notification with matching id");
+                Object.assign(notif, query);
+
+                // If we made it this far it's the same id, but different
+                // timestamp & ticker ("title: text") so the device probably
+                // considers it an 'update'
+                return (notif.ticker === query.ticker) ? notif : false;
             } else if (notif.localId) {
                 // @query is a duplicate stub matching a GNotification id
                 // closeNotification(id|localId) or markDuplicate(localId)
@@ -277,12 +304,12 @@ var Plugin = new Lang.Class({
                 file.load_contents(null)[1]
             );
 
-            this.sendPacket(packet);
+            this.device.sendPacket(packet);
         });
     },
 
     showNotification: function (packet, icon) {
-        return new Promise((resolve, reject) => {
+//        return new Promise((resolve, reject) => {
             let notif = new Gio.Notification();
 
             // Check if this is a missed call or SMS notification
@@ -316,8 +343,9 @@ var Plugin = new Lang.Class({
                 debug("Found known contact");
 
                 if (!contact.avatar && icon) {
-                    // FIXME FIXME FIXME: not saving proper (data)?
+                    // FIXME: not saving proper (data)?
                     let path = this.contacts._cacheDir + "/" + GLib.uuid_string_random() + ".jpeg";
+                    log("ICON BYTES: " + icon.get_bytes());
                     GLib.file_set_contents(path, icon.get_bytes().toArray().toString());
                     contact.avatar = path;
                 } else if (contact.avatar && !icon) {
@@ -389,16 +417,13 @@ var Plugin = new Lang.Class({
 
             notif.set_icon(icon);
 
-            // TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
-            // Cache the notification only if it will actually be shown
-            let now = GLib.DateTime.new_now_local().to_unix();
-            if (gsconnect.settings.get_int("donotdisturb") < now) {
-                this.trackNotification(packet.body);
-                this.device.send_notification(packet.body.id, notif);
-            }
+            this.trackNotification(packet.body);
+            // We use the timestamp as an the effective ID, since phone apps
+            // reuse their ID's at whim.
+            this.device.send_notification(packet.body.time, notif);
 
-            resolve(true);
-        });
+//            resolve(true);
+//        });
     },
 
     /**
@@ -453,7 +478,7 @@ var Plugin = new Lang.Class({
                 if (iconPath) {
                     this._uploadIcon(packet, iconPath);
                 } else {
-                    this.sendPacket(packet);
+                    this.device.sendPacket(packet);
                 }
 
                 resolve("'" + appName + "' notification forwarded");
@@ -489,7 +514,7 @@ var Plugin = new Lang.Class({
      * @param {Boolean} [notif.isCancel] - Whether the notification should be closed
      */
     markDuplicate: function (notif) {
-        debug(arguments);
+        debug(notif);
 
         // Check if this is a known duplicate
         let cachedNotif = this._getNotification(notif);
@@ -498,6 +523,7 @@ var Plugin = new Lang.Class({
         if (cachedNotif && notif.isCancel) {
             // ...close it now if we know the remote id
             if (cachedNotif.id) {
+                debug("closing notification '" + cachedNotif.id + "'");
                 debug("closing duplicate notification");
                 this.closeNotification(cachedNotif.id);
             // ...or mark it to be closed when we do
@@ -507,35 +533,33 @@ var Plugin = new Lang.Class({
             }
         // Start tracking it now
         } else {
+
+            log("FIXME: shouldn't be reached");
             this.trackNotification(notif);
         }
     },
 
     /**
      * Close a remote notification and remove it from the cache
-     * @param {string} id - The either the local id or remote timestamp
+     * @param {string} timestamp - The remote notification timestamp
      */
-    closeNotification: function (id) {
-        debug(id);
+    closeNotification: function (timestamp) {
+        debug(timestamp);
 
-        // Check if this is a known notification
-        let cachedNotif = this._getNotification({ id: id });
+        // Check if this is a known notification (by timestamp)
+        let cachedNotif = this._getNotification({ time: timestamp });
 
+        // If it is known and we have the remote id we can close it...
         if (cachedNotif && cachedNotif.hasOwnProperty("id")) {
-            // If it doesn't have a remoteId use the local Id
-            let remoteId = cachedNotif.hasOwnProperty("id") ? cachedNotif.id : id;
+            debug("closing notification '" + cachedNotif.id + "'");
 
-            let packet = new Protocol.Packet({
+            this.device.sendPacket({
                 id: 0,
                 type: "kdeconnect.notification.request",
-                body: { cancel: remoteId }
+                body: { cancel: cachedNotif.id }
             });
-
-            debug("closing notification '" + id + "'");
-
-            this.sendPacket(packet);
             this.untrackNotification(cachedNotif);
-        // Mark it to be closed if it exists, otherwise ignore
+        // ...or we mark it to be closed on arrival if it is known
         } else if (cachedNotif) {
             debug("marking duplicate notification to be closed");
             cachedNotif.isCancel = true;
@@ -545,6 +569,7 @@ var Plugin = new Lang.Class({
     /**
      * Reply to a notification sent with a requestReplyId UUID
      * TODO: this is untested and not used yet
+     * TODO: could probably use telepathy...
      */
     reply: function (id, appName, title, text) {
         debug(arguments);
@@ -562,7 +587,7 @@ var Plugin = new Lang.Class({
                     }
                 });
 
-                this.sendPacket(packet);
+                this.device.sendPacket(packet);
             }
 
             dialog.destroy();
@@ -581,7 +606,7 @@ var Plugin = new Lang.Class({
             body: { request: true }
         });
 
-        this.sendPacket(packet);
+        this.device.sendPacket(packet);
     }
 });
 
@@ -593,7 +618,7 @@ var ReplyDialog = Lang.Class({
     _init: function (device, appName, title, text) {
         this.parent({
             use_header_bar: true,
-            application: device.daemon,
+            application: Gio.Application.get_default(),
             default_height: 300,
             default_width: 300
         });

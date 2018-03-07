@@ -105,6 +105,10 @@ var Contact = new Lang.Class({
         this.parent();
     },
 
+    // TODO: deep merge a contact
+    merge: function (contactObject) {
+    },
+
     // Convenience function for turning a contact into a string of JSON
     toString: function () {
         return JSON.stringify({
@@ -121,6 +125,7 @@ var Contact = new Lang.Class({
 var Store = new Lang.Class({
     Name: "GSConnectContactsStore",
     Extends: GObject.Object,
+    Implements: [ Gio.ListModel ],
     Properties: {
         "contacts": GObject.param_spec_variant(
             "contacts",
@@ -170,7 +175,11 @@ var Store = new Lang.Class({
             this._contacts = {};
         }
 
-        this.connect("notify::contacts", () => this._writeCache());
+        this.connect("notify::contacts", () => {
+            //this.notify("items-changed");
+            // FIXME
+            this._writeCache()
+        });
 
         this.update();
     },
@@ -183,11 +192,32 @@ var Store = new Lang.Class({
         return this._provider_icon || "call-start-symbolic";
     },
 
-    add: function () {
+    get provider_name () {
+        return this._provider_name || _("GSConnect");
+    },
+
+    /**
+     * Gio.ListModel interface
+     */
+    vfunc_get_item: function () {
+    },
+
+    vfunc_get_item_type: function () {
+        return Contact;
+    },
+
+    vfunc_get_n_items: function () {
+        return Object.keys(this._contacts).length;
+    },
+
+    /**
+     * Addition ListModel-like function
+     */
+    add_item: function () {
         this.notify("contacts");
     },
 
-    remove: function () {
+    remove_item: function () {
         this.notify("contacts");
     },
 
@@ -520,12 +550,8 @@ var Avatar = new Lang.Class({
         this.connect("button-release-event", (widget, event) => this._popover(widget, event));
 
         // Image
-        this.connect("draw", (widget, cr) => this._onDraw(widget, cr));
+        this.connect("draw", this._onDraw.bind(this));
         this.queue_draw();
-    },
-
-    get gicon () {
-        Gdk.pixbuf_get_from_surface(this._target, 0, 0, this.size, this.size);
     },
 
     // Image
@@ -551,8 +577,6 @@ var Avatar = new Lang.Class({
             cr.clip();
             cr.paint();
         }
-
-        this._target = cr.getTarget();
 
         cr.$dispose();
         return false;

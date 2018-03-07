@@ -1,8 +1,11 @@
 data/device.ui
-data/prefs.ui
+data/settings.ui
+src/actors.js
 src/extension.js
 src/nautilus-gsconnect.py
 src/prefs.js
+src/modules/contacts.js
+src/modules/settings.js
 src/service/daemon.js
 src/service/device.js
 src/service/plugins/base.js
@@ -18,10 +21,6 @@ src/service/plugins/runcommand.js
 src/service/plugins/sftp.js
 src/service/plugins/share.js
 src/service/plugins/telephony.js
-src/widgets/device.js
-src/widgets/gsettings.js
 src/widgets/keybindings.js
-src/widgets/shell.js
 src/widgets/telephony.js
-data/org.gnome.Shell.Extensions.GSConnect.gschema.xml
 

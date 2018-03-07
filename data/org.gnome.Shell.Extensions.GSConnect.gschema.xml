@@ -32,6 +32,7 @@
     <key name="devices" type="as">
       <default>[]</default>
     </key>
+    <!-- TODO: WIP -->
     <key name="donotdisturb" type="i">
         <default>0</default>
     </key>
@@ -58,6 +59,9 @@
   <schema id="org.gnome.Shell.Extensions.GSConnect.Device">
     <key name="certificate-pem" type="s">
       <default>""</default>
+    </key>
+    <key name="identity" type="a{sv}">
+      <default>{}</default>
     </key>
     <key name="id" type="s">
       <default>""</default>
@@ -91,10 +95,13 @@
   direction of traffic will be allowed, however signals are always emitted.
 
   AllowTraffic flags
-    1 NONE      No traffic allowed
-    2 OUT       Allow outgoing traffic
-    4 IN        Allow incoming traffic
-    8 FORWARD   Allow forwarding traffic between devices
+    1  NONE         No traffic allowed
+    2  OUT          Allow outgoing traffic
+    4  IN           Allow incoming traffic
+    8  RESERVED1    Allow <type> traffic
+    16 RESERVED2    Allow <type> traffic
+    32 RESERVED3    Allow <type> traffic
+    64 RESERVED4    Allow <type> traffic
   -->
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Battery">
     <key name="allow" type="u">
@@ -125,6 +132,7 @@
       <description>Allow flags for directional traffic</description>
     </key>
   </schema>
+  <!-- TODO this plugin needs to be rewritten -->
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Lock">
     <key name="allow" type="u">
       <default>1</default>
@@ -170,17 +178,24 @@
       <summary>Allow Traffic</summary>
       <description>Allow flags for directional traffic</description>
     </key>
+    <!-- FIXME NEW STUFF FIXME -->
     <key name="handle-execution" type="b">
       <default>false</default>
       <summary>Allow incoming packets</summary>
       <description></description>
     </key>
 
-    <key name="command-list" type="s">
-      <default>"{}"</default>
+    <key name="command-list" type="a{sv}">
+      <default>{}</default>
     </key>
   </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.SFTP">
+    <key name="allow" type="u">
+      <default>6</default>
+      <summary>Allow Traffic</summary>
+      <description>Allow flags for directional traffic</description>
+    </key>
+    <!-- FIXME This is old and stupid -->
     <key name="automount" type="b">
       <default>false</default>
       <summary>Automatically Mount</summary>
@@ -196,11 +211,13 @@
   </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Telephony">
     <key name="allow" type="u">
-      <default>6</default>
+      <!-- Allow.IN | Allow.OUT | Allow.SMS | Allow.CALLS -->
+      <default>30</default>
       <summary>Allow Traffic</summary>
       <description>Allow flags for directional traffic</description>
     </key>
 
+    <!-- FIXME permission need to be rewritten -->
     <key name="handle-messaging" type="b">
       <default>true</default>
       <summary>Handle Messaging</summary>

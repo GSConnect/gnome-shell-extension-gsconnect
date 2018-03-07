@@ -45,6 +45,7 @@ var Plugin = new Lang.Class({
         )
     },
     Signals: {
+        // TODO TODO TODO: 'event' is a Gtk signal...and on telephony
         "event": {
             flags: GObject.SignalFlags.RUN_FIRST,
             param_types: [ GObject.TYPE_STRING, GObject.TYPE_VARIANT ]
@@ -66,11 +67,10 @@ var Plugin = new Lang.Class({
 
         if (iface) {
             this._dbus = new DBus.ProxyServer({
-                g_connection: this.device._dbus.get_connection(),
                 g_interface_info: iface,
-                g_object_path: this.device._dbus.get_object_path(), // TODO
                 g_instance: this // TODO: the object to export
             });
+            this.device._dbus_object.add_interface(this._dbus);
         }
 
         // Init GSettings
@@ -79,7 +79,6 @@ var Plugin = new Lang.Class({
             path: gsconnect.settings.path + ["device", device.id, "plugin", name, ""].join("/")
         });
 
-        // TODO TODO
         // Actions
         if (this._meta.actions) {
             // We register actions based on the device capabilities
@@ -96,6 +95,7 @@ var Plugin = new Lang.Class({
                 }
             }
 
+            // TODO: other triggers...
             // We enabled/disable actions based on user settings
             this.settings.connect("changed::allow", () => {
                 this._registeredActions.map(action => {
@@ -103,6 +103,14 @@ var Plugin = new Lang.Class({
                 });
             });
         }
+
+        // FIXME FIXME FIXME: ???
+        if (this.onConnected) {
+            this.device.connect("notify::connected", (device) => {
+                if (device.connected) {
+                    this.onConnected();
+                }
+            });
         }
     },
 
@@ -111,7 +119,7 @@ var Plugin = new Lang.Class({
         let action = new Device.Action({
             name: name,
             meta: meta,
-            parameter_type: parameter_type // "av" || null
+            parameter_type: parameter_type
         }, this);
         action.set_enabled(action.allow & this.allow);
 
@@ -130,11 +138,16 @@ var Plugin = new Lang.Class({
 
         this.device.add_action(action);
 
-        this.device.menu.add(action.name, action.meta);
+        if (parameter_type === null) {
+            this.device.menu.add(action.name, action.meta);
+        }
 
         this._registeredActions.push(action);
     },
 
+    /**
+     * A convenience for retrieving the allow flags for a handler
+     */
     get allow() {
         return this.settings.get_uint("allow");
     },
@@ -155,27 +168,19 @@ var Plugin = new Lang.Class({
         return this._name;
     },
 
+    /**
+     * TODO: A generic event signal...move to Device?
+     */
     event: function (type, data) {
         // TODO: dbus emit
-        let event = new GLib.Variant("a{sv}", Object.toVariant(data));
+        let event = new GLib.Variant("a{sv}", gsconnect.full_pack(data));
         this.emit("event", type, event)
     },
-
-    handlePacket: function (packet) { throw Error("Not implemented"); },
 
     /**
      *
      */
-    send: function (packet) {
-        this.sendPacket(packet);
-    },
-
-    sendPacket: function (obj) {
-        if (this.device.connected && this.device.paired) {
-            let packet = new Protocol.Packet(obj);
-            this.device._channel.send(packet);
-        }
-    },
+    handlePacket: function (packet) { throw Error("Not implemented"); },
 
     /**
      * Cache JSON parseable properties on this object for persistence. The
@@ -212,7 +217,7 @@ var Plugin = new Lang.Class({
     },
 
     // A DBus method for clearing the cache
-    ClearCache: function () {
+    clearCache: function () {
         for (let name in this._cacheProperties) {
             debug("clearing '" + name + "' from '" + this.name + "'");
             this[name] = JSON.parse(JSON.stringify(this._cacheProperties[name]));
@@ -266,14 +271,16 @@ var Plugin = new Lang.Class({
     destroy: function () {
         this.emit("destroy");
 
-        // FIXME
         this._registeredActions.map(action => this.device.remove_action(action.name));
 
         if (this._cacheFile) {
             this._writeCache();
         }
 
-        this._dbus.destroy();
+        // FIXME
+        if (this._dbus) {
+            this.device._dbus_object.remove_interface(this._dbus);
+        }
 
         GObject.signal_handlers_destroy(this.settings);
         GObject.signal_handlers_destroy(this);

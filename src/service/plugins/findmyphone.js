@@ -22,6 +22,8 @@ var Metadata = {
         find: {
             summary: _("Locate"),
             description: _("Find a device by making it ring"),
+            icon_name: "find-location-symbolic",
+
             signature: null,
             incoming: [],
             outgoing: ["kdeconnect.findmyphone.request"],
@@ -32,6 +34,7 @@ var Metadata = {
         find: {
             summary: _("Locate"),
             description: _("Find a device by making it ring"),
+
             signature: null,
             incoming: [],
             outgoing: ["kdeconnect.findmyphone.request"],
@@ -63,13 +66,9 @@ var Plugin = new Lang.Class({
     handlePacket: function (packet) {
         debug("FindMyPhone: handlePacket()");
 
-        return new Promise((resolve, reject) => {
-            if (this.allow & 4) {
-                resolve(this._handleFind());
-            } else {
-                reject(new Error("Operation not permitted: " + packet.type));
-            }
-        });
+        if (this.allow & 4) {
+            this._handleFind();
+        }
     },
 
     /**
@@ -90,7 +89,7 @@ var Plugin = new Lang.Class({
             secondary_text: _("%s asked to locate this device").format(this.device.name),
             urgency_hint: true,
             window_position: Gtk.WindowPosition.CENTER_ALWAYS,
-            application: this.device.daemon,
+            application: Gio.Application.get_default(),
             skip_pager_hint: true,
             skip_taskbar_hint: true,
             visible: true
@@ -123,8 +122,9 @@ var Plugin = new Lang.Class({
     find: function () {
         debug(this.device.name);
 
+        // FIXME
         if (!(this.allow & 2)) {
-            return new Error("Operation not permitted: " + packet.type);;
+            debug(new Error("Operation not permitted: " + packet.type));
         }
 
         let packet = new Protocol.Packet({
@@ -133,7 +133,7 @@ var Plugin = new Lang.Class({
             body: {}
         });
 
-        this.sendPacket(packet);
+        this.device.sendPacket(packet);
     },
 
     destroy: function () {

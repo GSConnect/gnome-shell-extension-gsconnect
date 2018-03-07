@@ -10,7 +10,6 @@ const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 const Pango = imports.gi.Pango;
 const St = imports.gi.St;
-const UPower = imports.gi.UPowerGlib;
 
 const Main = imports.ui.main;
 const ModalDialog = imports.ui.modalDialog;
@@ -577,20 +576,27 @@ var DeviceBattery = new Lang.Class({
         );
 
         if (this.battery) {
-            this._batteryId = this.battery.connect("notify", this.update.bind(this));
-            this.battery.connect("destroy", () => { delete this.battery });
+            this._batteryId = this.battery.connect("g-properties-changed", this.update.bind(this));
         }
 
         this.object.connect("interface-added", (obj, iface) => {
             if (iface.g_interface_name === "org.gnome.Shell.Extensions.GSConnect.Plugin.Battery") {
                 this.battery = iface;
-                this._batteryId = this.battery.connect("notify", this.update.bind(this));
-                this.battery.connect("destroy", () => { delete this.battery });
+                this._batteryId = this.battery.connect("g-properties-changed", this.update.bind(this));
+            }
+        });
+
+        this.object.connect("interface-removed", (obj, iface) => {
+            if (iface.g_interface_name === "org.gnome.Shell.Extensions.GSConnect.Plugin.Battery") {
+                this.battery = iface;
+                this.battery.disconnect(this._batteryId);
+                delete this._batteryId;
+                delete this.battery;
             }
         });
 
         // Cleanup
-        device.connect("destroy", () => this.destroy());
+        //device.connect("destroy", () => this.destroy());
         // TODO: des
         this.connect("destroy", () => {
             if (this._batteryId && this.battery) {
@@ -602,11 +608,6 @@ var DeviceBattery = new Lang.Class({
     update: function (battery) {
         this.icon.visible = (this.battery && this.battery.level > -1);
         this.label.visible = (this.battery && this.battery.level > -1);
-
-        if (!this.visible || !this.icon.visible) {
-            return;
-        }
-
         this.icon.icon_name = this.battery.icon_name;
         this.label.text = this.battery.level + "%";
     }
@@ -654,22 +655,27 @@ var DeviceIcon = new Lang.Class({
         );
 
         if (this.battery) {
-            this._batteryId = this.battery.connect("notify", () => this.queue_repaint());
-            this.battery.connect("destroy", () => { delete this.battery; });
+            this._batteryId = this.battery.connect("g-properties-changed", () => this.queue_repaint());
         }
 
         this.object.connect("interface-added", (obj, iface) => {
             if (iface.g_interface_name === "org.gnome.Shell.Extensions.GSConnect.Plugin.Battery") {
                 this.battery = iface;
-                this._batteryId = this.battery.connect("notify", () => this.queue_repaint());
-                this.battery.connect("destroy", () => { delete this.battery; });
+                this._batteryId = this.battery.connect("g-properties-changed", () => this.queue_repaint());
+            }
+        });
+
+        this.object.connect("interface-removed", (obj, iface) => {
+            if (iface.g_interface_name === "org.gnome.Shell.Extensions.GSConnect.Plugin.Battery") {
+                this.battery = iface;
+                this.battery.disconnect(this._batteryId);
+                delete this._batteryId;
+                delete this.battery;
             }
         });
 
         // Device Status
-        device.connect("notify::connected", () => this.queue_repaint());
-        device.connect("notify::paired", () => this.queue_repaint());
-        device.connect("destroy", () => this.destroy());
+        device.connect("g-properties-changed", () => this.queue_repaint());
 
         this.connect("repaint", this._draw.bind(this));
         this.connect("destroy", () => {
@@ -827,7 +833,7 @@ var DeviceButton = new Lang.Class({
 
         this.object = object;
         this.device = device;
-        device.connect("destroy", () => this.destroy());
+        // FIXME device.connect("destroy", () => this.destroy());
 
         this.connect("clicked", () => {
             if (!this.device.connected) {

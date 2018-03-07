@@ -59,34 +59,31 @@ var Plugin = new Lang.Class({
     handlePacket: function (packet) {
         debug("Ping: handlePacket()");
 
-        return new Promise((resolve, reject) => {
-            if (!(this.allow & 4)) {
-                reject(new Error("Not allowed: " + packet.type));
-            }
+        // TODO
+        if (!(this.allow & 4)) {
+            return;
+        }
 
-            packet.body.message = packet.body.message || "";
+        packet.body.message = packet.body.message || "";
 
-            this.emit("ping", packet.body.message);
+        this.emit("ping", packet.body.message);
 
-            // Notification
-            let notif = new Gio.Notification();
-            notif.set_title(this.device.name);
+        // Notification
+        let notif = new Gio.Notification();
+        notif.set_title(this.device.name);
 
-            if (packet.body.message.length) {
-                // TRANSLATORS: An optional message accompanying a ping, rarely if ever used
-                // eg. Ping: A message sent with ping
-                notif.set_body(_("Ping: %s").format(packet.body.message));
-            } else {
-                notif.set_body(_("Ping"));
-            }
+        if (packet.body.message.length) {
+            // TRANSLATORS: An optional message accompanying a ping, rarely if ever used
+            // eg. Ping: A message sent with ping
+            notif.set_body(_("Ping: %s").format(packet.body.message));
+        } else {
+            notif.set_body(_("Ping"));
+        }
 
-            notif.set_icon(
-                new Gio.ThemedIcon({ name: this.device.type + "-symbolic" })
-            );
-            this.device.send_notification("ping", notif);
-
-            resolve(true);
-        });
+        notif.set_icon(
+            new Gio.ThemedIcon({ name: this.device.type + "-symbolic" })
+        );
+        this.device.send_notification("ping", notif);
     },
 
     ping: function (message="") {
@@ -102,7 +99,7 @@ var Plugin = new Lang.Class({
             packet.body.message = message;
         }
 
-        this.sendPacket(packet);
+        this.device.sendPacket(packet);
     }
 });
 

@@ -1,126 +1,177 @@
 <node>
   <!-- Daemon -->
   <interface name="org.gnome.Shell.Extensions.GSConnect">
-    <property type="as" name="devices" access="read"/>
-    <property type="b" name="discovering" access="readwrite"/>
-    <property type="s" name="fingerprint" access="read"/>
-    <property type="s" name="name" access="readwrite"/>
-    <property type="s" name="type" access="read"/>
+    <property type="as" name="Devices" access="read"/>
+    <property type="b" name="Discovering" access="readwrite"/>
+    <property type="s" name="Fingerprint" access="read"/>
+    <property type="s" name="SymbolicIconName" access="read"/>
+    <property type="s" name="Name" access="readwrite"/>
+    <property type="s" name="Type" access="read"/>
 
-    <method name="broadcast"/>
-    <method name="getShareable">
+    <method name="Broadcast"/>
+    <method name="GetShareable">
       <arg name="shareable" type="a(ss)" direction="out"/>
     </method>
-    <method name="openSettings"/>
-    <method name="quit"/>
+    <method name="OpenSettings"/>
+    <method name="Quit"/>
   </interface>
 
   <!-- Device -->
   <interface name="org.gnome.Shell.Extensions.GSConnect.Device">
-    <property type="b" name="connected" access="read"/>
-    <property type="s" name="fingerprint" access="read"/>
-    <property type="s" name="id" access="read"/>
-    <property type="s" name="name" access="read"/>
-    <property type="b" name="paired" access="read"/>
-    <property type="as" name="plugins" access="read"/>
-    <property type="as" name="incomingCapabilities" access="read"/>
-    <property type="as" name="outgoingCapabilities" access="read"/>
-    <property type="as" name="supportedPlugins" access="read"/>
-    <property type="s" name="type" access="read"/>
+    <property type="b" name="Connected" access="read"/>
+    <property type="s" name="Fingerprint" access="read"/>
+    <property type="s" name="Id" access="read"/>
+    <property type="s" name="Name" access="read"/>
+    <property type="b" name="Paired" access="read"/>
+    <property type="as" name="Plugins" access="read"/>
+    <!--<property type="as" name="IncomingCapabilities" access="read"/>
+    <property type="as" name="OutgoingCapabilities" access="read"/>-->
+    <property type="s" name="IconName" access="read"/>
+    <property type="s" name="SymbolicIconName" access="read"/>
+    <property type="s" name="Type" access="read"/>
 
-    <method name="activate"/>
-    <method name="pair"/>
-    <method name="unpair"/>
-    <method name="acceptPair"/>
-    <method name="rejectPair"/>
-    <method name="openSettings"/>
+    <method name="Activate"/>
+    <method name="Pair"/>
+    <method name="Unpair"/>
+    <method name="AcceptPair"/>
+    <method name="RejectPair"/>
+    <method name="OpenSettings"/>
   </interface>
 
   <!-- Battery -->
   <interface name="org.gnome.Shell.Extensions.GSConnect.Plugin.Battery">
-    <property type="b" name="charging" access="read"/>
-    <property type="i" name="level" access="read"/>
-    <property type="i" name="time" access="read"/>
-    <method name="requestUpdate"/>
-    <method name="sendUpdate"/>
-  </interface>
+    <property type="b" name="Charging" access="read"/>
+    <property type="s" name="IconName" access="read"/>
+    <property type="i" name="Level" access="read"/>
+    <property type="i" name="Time" access="read"/>
 
-  <!-- Clipboard -->
-  <interface name="org.gnome.Shell.Extensions.GSConnect.Plugin.Clipboard"/>
+    <method name="ReportStatus"/>
+    <method name="RequestStatus"/>
+  </interface>
 
   <!-- FindMyPhone -->
   <interface name="org.gnome.Shell.Extensions.GSConnect.Plugin.FindMyPhone">
-    <method name="find"/>
+    <method name="Find"/>
   </interface>
 
   <!-- Lock -->
   <interface name="org.gnome.Shell.Extensions.GSConnect.Plugin.Lock">
-    <property type="b" name="locked" access="readwrite"/>
+    <property type="b" name="Locked" access="readwrite"/>
   </interface>
 
   <!-- Mousepad -->
   <interface name="org.gnome.Shell.Extensions.GSConnect.Plugin.Mousepad"/>
 
   <!-- MPRIS -->
-  <interface name="org.gnome.Shell.Extensions.GSConnect.Plugin.MPRIS"/>
+  <interface name="org.mpris.MediaPlayer2">
+      <method name="Raise" />
+      <method name="Quit" />
+      <property name="CanQuit" type="b" access="read" />
+      <property name="Fullscreen" type="b" access="readwrite" />
+      <property name="CanRaise" type="b" access="read" />
+      <property name="HasTrackList" type="b" access="read"/>
+      <property name="Identity" type="s" access="read"/>
+      <property name="DesktopEntry" type="s" access="read"/>
+      <property name="SupportedUriSchemes" type="as" access="read"/>
+      <property name="SupportedMimeTypes" type="as" access="read"/>
+  </interface>
+  <interface name="org.mpris.MediaPlayer2.Player">
+    <method name="Next"/>
+    <method name="Previous"/>
+    <method name="Pause"/>
+    <method name="PlayPause"/>
+    <method name="Stop"/>
+    <method name="Play"/>
+    <method name="Seek">
+      <arg direction="in" type="x" name="Offset"/>
+    </method>
+    <method name="SetPosition">
+      <arg direction="in" type="o" name="TrackId"/>
+      <arg direction="in" type="x" name="Position"/>
+    </method>
+    <method name="OpenUri">
+      <arg direction="in" type="s"/>
+    </method>
+    <!-- Signals -->
+    <signal name="Seeked">
+      <arg type="x" name="Position"/>
+    </signal>
+    <!-- Properties -->
+    <property access="read" type="s" name="PlaybackStatus"/>
+    <property access="readwrite" type="s" name="LoopStatus"/>
+    <property access="readwrite" type="d" name="Rate"/>
+    <property access="readwrite" type="b" name="Shuffle"/>
+    <property access="read" type="a{sv}" name="Metadata"/>
+    <property access="readwrite" type="d" name="Volume"/>
+    <property access="read" type="x" name="Position"/>
+    <property access="read" type="d" name="MinimumRate"/>
+    <property access="read" type="d" name="MaximumRate"/>
+    <property access="read" type="b" name="CanGoNext"/>
+    <property access="read" type="b" name="CanGoPrevious"/>
+    <property access="read" type="b" name="CanPlay"/>
+    <property access="read" type="b" name="CanPause"/>
+    <property access="read" type="b" name="CanSeek"/>
+    <property access="read" type="b" name="CanControl"/>
+  </interface>
 
   <!-- Notifications -->
   <interface name="org.gnome.Shell.Extensions.GSConnect.Plugin.Notification">
-    <signal name="received"/>
-    <signal name="dismissed"/>
+    <!--<property type="aa{sv}" name="Notifications" access="read"/>-->
+    <signal name="Received"/>
+    <signal name="Dismissed"/>
     <method name="ClearCache"/>
-    <method name="closeNotification">
+    <method name="CloseNotification">
       <arg name="id" type="s" direction="in"/>
     </method>
   </interface>
 
   <!-- Ping -->
   <interface name="org.gnome.Shell.Extensions.GSConnect.Plugin.Ping">
-    <method name="ping">
+    <method name="Ping">
       <arg name="message" type="s" direction="in"/>
     </method>
 
-    <signal name="ping">
+    <signal name="Ping">
       <arg name="message" type="s"/>
     </signal>
   </interface>
 
   <!-- Run Commands -->
   <interface name="org.gnome.Shell.Extensions.GSConnect.Plugin.RunCommand">
-    <property type="s" name="commands" access="read"/>
-    <method name="request"/>
-    <method name="run">
+    <property type="a{sv}" name="Commands" access="read"/>
+    <method name="Request"/>
+    <method name="Run">
       <arg name="key" type="s" direction="in"/>
     </method>
   </interface>
 
   <!-- SFTP -->
   <interface name="org.gnome.Shell.Extensions.GSConnect.Plugin.SFTP">
-    <property type="b" name="mounted" access="read"/>
-    <property type="a{ss}" name="directories" access="read"/>
+    <property type="b" name="Mounted" access="read"/>
+    <property type="a{ss}" name="Directories" access="read"/>
 
-    <method name="mount"/>
-    <method name="unmount"/>
+    <method name="Mount"/>
+    <method name="Unmount"/>
   </interface>
 
   <!-- FIXME Share -->
   <interface name="org.gnome.Shell.Extensions.GSConnect.Plugin.Share">
-    <method name="shareDialog"/>
-    <method name="shareFile">
+    <method name="ShareDialog"/>
+    <method name="ShareFile">
       <arg name="uri" type="s" direction="in"/>
     </method>
-    <method name="shareText">
+    <method name="ShareText">
       <arg name="text" type="s" direction="in"/>
     </method>
-    <method name="shareUrl">
+    <method name="ShareUrl">
       <arg name="url" type="s" direction="in"/>
     </method>
 
-    <signal name="received">
+    <signal name="Received">
       <arg name="type" type="s"/>
       <arg name="content" type="s"/>
     </signal>
-    <signal name="sent">
+    <signal name="Sent">
       <arg name="type" type="s"/>
       <arg name="content" type="s"/>
     </signal>
@@ -128,36 +179,19 @@
 
   <!-- Telephony -->
   <interface name="org.gnome.Shell.Extensions.GSConnect.Plugin.Telephony">
-    <method name="muteCall"/>
-    <method name="openSms"/>
-    <method name="sendSms">
+    <method name="MuteCall"/>
+    <method name="NewSms"/>
+    <method name="SendSms">
       <arg name="phoneNumber" type="s" direction="in"/>
       <arg name="messageBody" type="s" direction="in"/>
     </method>
-    <method name="shareUri">
+    <method name="ShareUri">
       <arg name="url" type="s" direction="in"/>
     </method>
 
-    <signal name="missedCall">
-      <arg name="number" type="s"/>
-      <arg name="name" type="s"/>
-      <arg name="avatar" type="s"/>
-    </signal>
-    <signal name="ringing">
-      <arg name="number" type="s"/>
-      <arg name="name" type="s"/>
-      <arg name="avatar" type="s"/>
-    </signal>
-    <signal name="sms">
-      <arg name="number" type="s"/>
-      <arg name="name" type="s"/>
-      <arg name="message" type="s"/>
-      <arg name="avatar" type="s"/>
-    </signal>
-    <signal name="talking">
-      <arg name="number" type="s"/>
-      <arg name="name" type="s"/>
-      <arg name="avatar" type="s"/>
+    <signal name="Event">
+      <arg name="type" type="s"/>
+      <arg name="data" type="v"/>
     </signal>
   </interface>
 
@@ -173,6 +207,51 @@
       <arg name="hints" type="a{sv}" direction="in"/>
       <arg name="timeout" type="i" direction="in"/>
     </method>
+  </interface>
+
+  <!-- org.gnome.Shell Interface -->
+  <interface name="org.gnome.Shell">
+    <method name="Eval">
+      <arg type="s" name="script" direction="in" />
+      <arg type="b" name="success" direction="out" />
+      <arg type="s" name="result" direction="out" />
+    </method>
+    <method name="FocusSearch" />
+    <method name="ShowOSD">
+      <arg type="a{sv}" name="params" direction="in" />
+    </method>
+    <method name="ShowMonitorLabels">
+      <arg type="a{uv}" name="params" direction="in" />
+    </method>
+    <method name="ShowMonitorLabels2">
+      <arg type="a{sv}" name="params" direction="in" />
+    </method>
+    <method name="HideMonitorLabels">
+    </method>
+    <method name="FocusApp">
+      <arg type="s" name="id" direction="in" />
+    </method>
+    <method name="ShowApplications" />
+    <method name="GrabAccelerator">
+      <arg type="s" name="accelerator" direction="in" />
+      <arg type="u" name="flags" direction="in" />
+      <arg type="u" name="action" direction="out" />
+    </method>
+    <method name="GrabAccelerators">
+      <arg type="a(su)" name="accelerators" direction="in" />
+      <arg type="au" name="actions" direction="out" />
+    </method>
+    <method name="UngrabAccelerator">
+      <arg type="u" name="action" direction="in" />
+      <arg type="b" name="success" direction="out" />
+    </method>
+    <signal name="AcceleratorActivated">
+      <arg type="u" name="action" />
+      <arg type="a{sv}" name="parameters" />
+    </signal>
+    <property type="s" name="Mode" access="read" />
+    <property type="b" name="OverviewActive" access="readwrite" />
+    <property type="s" name="ShellVersion" access="read" />
   </interface>
 </node>
 

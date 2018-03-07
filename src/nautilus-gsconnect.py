@@ -59,17 +59,17 @@ class GSConnectShareExtension(GObject.GObject, Nautilus.MenuProvider):
 
         for file in files:
             variant = GLib.Variant('(s)', (file.get_uri(),))
-            device_proxy.call_sync('shareFile', variant, 0, -1, None)
+            device_proxy.call_sync('ShareFile', variant, 0, -1, None)
 
     def get_file_items(self, window, files):
         """Return a list of select files to be sent"""
 
         # Try to get devices
         try:
-            devices = self.dbus.call_sync('getShareable', None, 0, -1, None)
+            devices = self.dbus.call_sync('GetShareable', None, 0, -1, None)
             devices = devices.unpack()[0]
         except Exception as e:
-            raise Exception('Error while getting reachable devices')
+            raise Exception('Error while getting reachable devices: ')
 
         # No devices, don't show menu entry
         if not devices:

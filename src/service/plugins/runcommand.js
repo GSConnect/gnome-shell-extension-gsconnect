@@ -38,48 +38,48 @@ var Plugin = new Lang.Class({
     Name: "GSConnectRunCommandPlugin",
     Extends: PluginsBase.Plugin,
     Properties: {
-        "commands": GObject.ParamSpec.string(
+        "commands": GObject.param_spec_variant(
             "commands",
-            "DeviceCommandList",
-            "A string of JSON containing the remote commands",
-            GObject.ParamFlags.READABLE,
-            "{}"
+            "DeviceCommands",
+            "A dictionary of remote commands",
+            new GLib.VariantType("a{sv}"),
+            null,
+            GObject.ParamFlags.READABLE
         )
     },
 
     _init: function (device) {
         this.parent(device, "runcommand");
 
+        // Local Commands
         this.settings.connect("changed::command-list", () => {
             this._handleRequest();
         });
 
-        this._commands = "{}";
+        this._commands = {};
         this.notify("commands");
         this.request();
     },
 
     get commands () {
-        return this._commands;
+        return this._commands || {};
     },
 
     handlePacket: function (packet) {
         debug(packet);
 
-        return new Promise((resolve, reject) => {
-            // Request for command list or execution
-            if (packet.type === "kdeconnect.runcommand.request") {
-                if (packet.body.requestCommandList) {
-                    this._handleRequest();
-                } else if (packet.body.key) {
-                    this._handleExecute(key);
-                }
-            // A list of the remote device's commands
-            } else if (packet.type === "kdeconnect.runcommand") {
-                this._commands = packet.body.commandList;
-                this.notify("commands");
+        // Request for command list or execution
+        if (packet.type === "kdeconnect.runcommand.request") {
+            if (packet.body.requestCommandList) {
+                this._handleRequest();
+            } else if (packet.body.key) {
+                this._handleExecute(packet.body.key);
             }
-        });
+        // A list of the remote device's commands
+        } else if (packet.type === "kdeconnect.runcommand") {
+            this._commands = packet.body.commandList;
+            this.notify("commands");
+        }
     },
 
     /**
@@ -88,21 +88,28 @@ var Plugin = new Lang.Class({
     _handleRequest: function () {
         debug("...");
 
-        this.sendPacket({
+        let commands = gsconnect.full_unpack(
+            this.settings.get_value("command-list")
+        );
+
+        this.device.sendPacket({
             id: 0,
             type: "kdeconnect.runcommand",
-            body: { commandList: this.settings.get_string("command-list") }
+            body: { commandList: commands }
         });
     },
 
     _handleExecute: function (key) {
         debug(key);
 
-        let commands = JSON.parse(this.settings.get_string("command-list"));
-        if (commands.hasOwnProperty(packet.body.key)) {
+        let commands = gsconnect.full_unpack(
+            this.settings.get_value("command-list")
+        );
+
+        if (commands.hasOwnProperty(key)) {
             GLib.spawn_async(
                 null, // working_dir
-                ["/bin/sh", "-c", commands[packet.body.key].command],
+                ["/bin/sh", "-c", commands[key].command],
                 null, // envp
                 GLib.SpawnFlags.DEFAULT, // flags
                 null // GLib.SpawnChildSetupFunc
@@ -114,7 +121,7 @@ var Plugin = new Lang.Class({
      * Remote Methods
      */
     request: function () {
-        this.sendPacket({
+        this.device.sendPacket({
             id: 0,
             type: "kdeconnect.runcommand.request",
             body: { requestCommandList: true }
@@ -126,7 +133,7 @@ var Plugin = new Lang.Class({
      * @param {string} key - The key of the remote command
      */
     run: function (key) {
-        this.sendPacket({
+        this.device.sendPacket({
             id: 0,
             type: "kdeconnect.runcommand.request",
             body: { key: key }
