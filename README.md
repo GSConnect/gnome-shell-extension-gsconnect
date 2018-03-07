@@ -25,7 +25,7 @@ To connect an Android device, install the KDE Connect Android app from the
 
 ### Getting Help
 
-Please the [FAQ][git-faq] in the Wiki for answers to common questions before
+Please the [FAQ][wiki-faq] in the Wiki for answers to common questions before
 [opening an issue][git-issue] to report a problem or request a new feature.
 
 The KDE Connect team has resources available for problems, feature requests and
@@ -83,7 +83,7 @@ Joe Sneddon of [OMG! Ubuntu][omgubuntu] for his interest, support and articles.
 [firefox-addon]: https://addons.mozilla.org/en-US/firefox/addon/gsconnect/
 
 [git-issue]: https://github.com/andyholmes/gnome-shell-extension-gsconnect/issues/
-[git-faq]: https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/FAQ
+[wiki-faq]: https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Frequently-Asked-Questions
 [kdec-bugs]: https://bugs.kde.org/buglist.cgi?quicksearch=kdeconnect
 [kdec-phabricator]: https://phabricator.kde.org/project/view/159/
 [kdec-mail]: https://mail.kde.org/mailman/listinfo/kdeconnect
