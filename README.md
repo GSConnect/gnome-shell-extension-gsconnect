@@ -11,9 +11,9 @@ for Gnome Shell 3.24+ with Nautilus, Chrome and Firefox integration. See the
 ### Getting Started
 
 The easiest way to get started is to install the extension from the official
-[GNOME Shell Extensions website][ego-install]. There are also instructions in
-the Wiki for [installing the latest stable release][wiki-install] and a
-[full list of dependencies][wiki-depends].
+[GNOME Shell Extensions website][ego-install]. There is a short guide for
+[pairing your first device][wiki-install], [installing from Zip][wiki-zip]
+and a [full list of dependencies][wiki-depends].
 
 The [Chrome extension][chrome-extension] and [Firefox Add-on][firefox-addon]
 can be installed after [Web Browser Integration][web-browser-integration] has
@@ -69,13 +69,11 @@ Joe Sneddon of [OMG! Ubuntu][omgubuntu] for his interest, support and articles.
 
 [screenshot]: https://raw.githubusercontent.com/andyholmes/gnome-shell-extension-gsconnect/master/extra/screenshot.png
 [gjs]: https://wiki.gnome.org/Projects/Gjs
-[releases]: https://github.com/andyholmes/gnome-shell-extension-gsconnect/releases
 [wiki]: https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki
 
 [ego-install]: https://extensions.gnome.org/extension/1319/gsconnect/
-[wiki-zip]: https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Installation#installing-from-zip
 [wiki-install]: https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Installation
-[wiki-git]: https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Installation#building-from-git
+[wiki-zip]: https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Installation#installing-from-zip
 [wiki-depends]: https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Installation#dependencies
 [web-browser-integration]: https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Preferences#web-browser-integration
 [chrome-extension]: https://chrome.google.com/webstore/detail/gsconnect/jfnifeihccihocjbfcfhicmmgpjicaec
