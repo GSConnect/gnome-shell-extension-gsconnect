@@ -59,11 +59,6 @@
     <method name="Find"/>
   </interface>
 
-  <!-- Lock -->
-  <interface name="org.gnome.Shell.Extensions.GSConnect.Plugin.Lock">
-    <property type="b" name="Locked" access="readwrite"/>
-  </interface>
-
   <!-- Mousepad -->
   <interface name="org.gnome.Shell.Extensions.GSConnect.Plugin.Mousepad"/>
 
