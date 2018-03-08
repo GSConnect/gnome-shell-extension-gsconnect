@@ -172,17 +172,11 @@
     </key>
   </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.RunCommand">
-    <!-- FIXME NEW STUFF FIXME -->
     <key name="allow" type="u">
       <default>2</default>
       <summary>Allow Traffic</summary>
       <description>Allow flags for directional traffic</description>
     </key>
-    <!-- FIXME NEW STUFF FIXME -->
-    <key name="handle-execution" type="b">
-      <default>false</default>
-      <summary>Allow incoming packets</summary>
-      <description></description>
     </key>
 
     <key name="command-list" type="a{sv}">
@@ -216,48 +210,6 @@
       <summary>Allow Traffic</summary>
       <description>Allow flags for directional traffic</description>
     </key>
-
-    <!-- FIXME permission need to be rewritten -->
-    <key name="handle-messaging" type="b">
-      <default>true</default>
-      <summary>Handle Messaging</summary>
-      <description>Handle SMS Events and other messaging</description>
-    </key>
-    <key name="handle-calls" type="b">
-      <default>true</default>
-      <summary>Handle Phone Calls</summary>
-      <description>Handle phone events</description>
-    </key>
-    <key name="ringing-action" type="as">
-      <default>[]</default>
-      <summary>Ringing Action</summary>
-      <description>Action to take when the phone rings</description>
-    </key>
-
-    <key name="ringing-volume" type="s">
-      <default>"lower"</default>
-      <summary>System Volume</summary>
-      <description></description>
-    </key>
-    <key name="ringing-pause" type="b">
-      <default>false</default>
-      <summary>Pause Media</summary>
-      <description></description>
-    </key>
-    <key name="talking-volume" type="s">
-      <default>"mute"</default>
-      <summary>System Volume</summary>
-      <description></description>
-    </key>
-    <key name="talking-microphone" type="b">
-      <default>true</default>
-      <summary>Mute Microphone</summary>
-      <description></description>
-    </key>
-    <key name="talking-pause" type="b">
-      <default>true</default>
-      <summary>Pause Media</summary>
-      <description></description>
     </key>
   </schema>
 </schemalist>
