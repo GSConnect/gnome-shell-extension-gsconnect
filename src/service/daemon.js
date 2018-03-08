@@ -661,13 +661,22 @@ var Daemon = new Lang.Class({
     /**
      * Override Gio.Application.send_notification() to respect donotdisturb
      */
-    send_notification: function (notifId, notif) {
-        let now = GLib.DateTime.new_now_local().to_unix();
-
-        if (gsconnect.settings.get_int("donotdisturb") <= now) {
-            //notif.set_priority(Gio.NotificationPriority.LOW);
-            Gtk.Application.prototype.send_notification.call(this, notifId, notif);
+    send_notification: function (id, notification) {
+        if (!this._notificationSettings) {
+            this._notificationSettings = new Gio.Settings({
+                schema_id: "org.gnome.desktop.notifications.application",
+                path: "/org/gnome/desktop/notifications/application/org-gnome-shell-extensions-gsconnect/"
+            });
         }
+
+        let now = GLib.DateTime.new_now_local().to_unix();
+        let dnd = (gsconnect.settings.get_int("donotdisturb") <= now);
+
+        // Maybe the 'enable-sound-alerts' should be left alone/queried
+        this._notificationSettings.set_boolean("enable-sound-alerts", dnd);
+        this._notificationSettings.set_boolean("show-banners", dnd);
+
+        Gtk.Application.prototype.send_notification.call(this, id, notification);
     },
 
     vfunc_startup: function() {
