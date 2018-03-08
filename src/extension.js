@@ -428,7 +428,7 @@ var DeviceMenu = new Lang.Class({
         // TODO: might as well move this to actors.js
         if (connected && paired && gsconnect.settings.get_boolean("show-battery")) {
             this.deviceBattery.visible = true;
-            this.deviceBattery.update();
+            //this.deviceBattery.update();
         } else {
             this.deviceBattery.visible = false;
         }
@@ -531,6 +531,33 @@ var ServiceProxy = DBus.makeInterfaceProxy(
 );
 
 
+// TODO: better
+function _proxyMethods(info, iface) {
+    info.methods.map(method => {
+        iface[method.name.toCamelCase()] = function () {
+            iface.call(method.name, null, 0, -1, null, (proxy, res) => {
+                let ret;
+
+                try {
+                    ret = this.call_finish(res);
+                } catch (e) {
+                    debug(method.name + ": " + e.message);
+                }
+
+                // If return has single arg, only return that or null
+                if (method.out_args.length === 1) {
+                    (ret) ? ret.deep_unpack()[0] : null;
+                // Otherwise return an array (possibly empty)
+                } else {
+                    (ret) ? ret.deep_unpack() : [];
+                }
+            });
+        };
+    });
+};
+
+
+// TODO: better
 function _proxyProperties(info, iface) {
     info.properties.map(property => {
         Object.defineProperty(iface, property.name.toUnderscoreCase(), {
@@ -628,6 +655,18 @@ var SystemIndicator = new Lang.Class({
         );
     },
 
+    _displayMode: function (menu) {
+        let { connected, paired } = menu.device;
+
+        if (!paired && !gsconnect.settings.get_boolean("show-unpaired")) {
+            menu.actor.visible = false;
+        } else if (!connected && !gsconnect.settings.get_boolean("show-offline")) {
+            menu.actor.visible = false;
+        } else {
+            menu.actor.visible = true;
+        }
+    },
+
     _setupObjManager: function () {
         // Setup currently managed objects
         for (let obj of this.manager.get_objects()) {
@@ -636,25 +675,12 @@ var SystemIndicator = new Lang.Class({
             }
         }
 
-        // Watch for new and removed`
+        // Watch for new and removed
         this.manager.connect("interface-added", this._interfaceAdded.bind(this));
         this.manager.connect("interface-removed", this._interfaceRemoved.bind(this));
-
-        // HACK: A race condition with Gio.DBusObjectManagerClient causes an
-        // an error with 'interface-removed' where the Gio.DBusObjectProxy is
-        // destroyed before the signal handler is invoked.
-        // cf. https://bugzilla.gnome.org/show_bug.cgi?id=783795
-        //     https://bugzilla.gnome.org/show_bug.cgi?id=788368
         this.manager.connect("notify::name-owner", () => {
             if (this.manager.name_owner === null) {
-                debug("name-owner disappeared, destroying device proxies");
-
-                for (let object_path in this._indicators) {
-                    this._indicators[object_path].destroy();
-                    this._menus[object_path].destroy();
-                    delete this._indicators[object_path];
-                    delete this._menus[object_path];
-                }
+                debug("name-owner disappeared, oh noes!");
             }
         });
     },
@@ -696,7 +722,7 @@ var SystemIndicator = new Lang.Class({
     _interfaceAdded: function (manager, object, iface) {
         let info = gsconnect.dbusinfo.lookup_interface(iface.g_interface_name);
 
-        // TODO: move elsewhere
+        // We only setup properties for GSConnect interfaces
         if (info) {
             _proxyProperties(info, iface);
         }
@@ -714,28 +740,9 @@ var SystemIndicator = new Lang.Class({
                     iface.g_object_path
                 );
 
-                // TODO: move this elsewhere
-                info.methods.map(method => {
-                    iface[method.name.toCamelCase()] = function () {
-                        iface.call(method.name, null, 0, -1, null, (proxy, res) => {
-                            let ret;
-
-                            try {
-                                ret = this.call_finish(res);
-                            } catch (e) {
-                                debug(method.name + ": " + e.message);
-                            }
-
-                            // If return has single arg, only return that or null
-                            if (method.out_args.length === 1) {
-                                (ret) ? ret.deep_unpack()[0] : null;
-                            // Otherwise return an array (possibly empty)
-                            } else {
-                                (ret) ? ret.deep_unpack() : [];
-                            }
-                        });
-                    };
-                });
+                // Currently we only setup methods for Device interfaces, and
+                // we only really use it for activate() and openSettings()
+                _proxyMethods(info, iface);
 
                 // Device Indicator
                 let indicator = new DeviceIndicator(object, iface);
@@ -750,11 +757,7 @@ var SystemIndicator = new Lang.Class({
                 this._displayMode(menu);
 
                 // Properties
-                iface.connect("g-properties-changed", () => {
-//                    indicator._sync();
-//                    menu._sync();
-                    this._displayMode(menu);
-                });
+                iface.connect("g-properties-changed", () => this._displayMode(menu));
 
                 // Try activating the device
                 iface.activate();
@@ -763,15 +766,15 @@ var SystemIndicator = new Lang.Class({
     },
 
     _interfaceRemoved: function (manager, object, iface) {
-        //debug(iface.g_interface_name);
+        debug(iface.g_interface_name);
 
         if (iface.g_interface_name === "org.gnome.Shell.Extensions.GSConnect.Device") {
-            log("DEVICE REMOVED; DESTROYING UI: " + iface.name);
-            // FIXME
-        }
+            debug("Destroying " + iface.name + " UI");
 
-        if (typeof iface.destroy === "function") {
-            iface.destroy();
+            this._indicators[iface.g_object_path].destroy();
+            this._menus[iface.g_object_path].destroy();
+            delete this._indicators[iface.g_object_path];
+            delete this._menus[iface.g_object_path];
         }
     },
 
@@ -812,6 +815,7 @@ var SystemIndicator = new Lang.Class({
             menu = indicator.deviceMenu;
         } else {
             this._openDeviceMenu();
+
             for (let dbusPath in this._menus) {
                 if (this._menus[dbusPath].device.id === indicator.device.id) {
                     menu = this._menus[dbusPath];
@@ -830,18 +834,6 @@ var SystemIndicator = new Lang.Class({
             Main.panel._toggleMenu(Main.panel.statusArea.aggregateMenu);
             this.extensionMenu.menu.toggle();
             this.extensionMenu.actor.grab_key_focus();
-        }
-    },
-
-    _displayMode: function (menu) {
-        let { connected, paired } = menu.device;
-
-        if (!paired && !gsconnect.settings.get_boolean("show-unpaired")) {
-            menu.actor.visible = false;
-        } else if (!connected && !gsconnect.settings.get_boolean("show-offline")) {
-            menu.actor.visible = false;
-        } else {
-            menu.actor.visible = true;
         }
     },
 
@@ -912,7 +904,8 @@ var pushNotification = function (notification) {
 };
 
 
-var systemIndicator;
+var systemIndicator = null;
+
 
 function init() {
     debug("initializing extension");
@@ -935,5 +928,6 @@ function disable() {
     debug("disabling extension");
 
     systemIndicator.destroy();
+    systemIndicator = null;
 };
 
