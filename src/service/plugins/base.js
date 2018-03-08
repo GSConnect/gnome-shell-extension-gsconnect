@@ -82,7 +82,7 @@ var Plugin = new Lang.Class({
         // Actions
         if (this._meta.actions) {
             // We register actions based on the device capabilities
-            this._registeredActions = [];
+            this._gactions = [];
             let deviceHandles = this.device.incomingCapabilities;
             let deviceProvides = this.device.outgoingCapabilities;
 
@@ -98,7 +98,7 @@ var Plugin = new Lang.Class({
             // TODO: other triggers...
             // We enabled/disable actions based on user settings
             this.settings.connect("changed::allow", () => {
-                this._registeredActions.map(action => {
+                this._gactions.map(action => {
                     action.set_enabled(action.allow & this.allow);
                 });
             });
@@ -142,11 +142,11 @@ var Plugin = new Lang.Class({
             this.device.menu.add(action.name, action.meta);
         }
 
-        this._registeredActions.push(action);
+        this._gactions.push(action);
     },
 
     /**
-     * A convenience for retrieving the allow flags for a handler
+     * A convenience for retrieving the allow flags for a packet handler
      */
     get allow() {
         return this.settings.get_uint("allow");
@@ -271,7 +271,7 @@ var Plugin = new Lang.Class({
     destroy: function () {
         this.emit("destroy");
 
-        this._registeredActions.map(action => this.device.remove_action(action.name));
+        this._gactions.map(action => this.device.remove_action(action.name));
 
         if (this._cacheFile) {
             this._writeCache();
