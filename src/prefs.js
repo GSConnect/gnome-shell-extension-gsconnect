@@ -53,7 +53,7 @@ var AboutWidget = new Lang.Class({
         });
         this.add(aboutName);
 
-        let aboutVersion = new Gtk.Label({ label: ext.metadata.version });
+        let aboutVersion = new Gtk.Label({ label: ext.metadata.version.toString() });
         this.add(aboutVersion);
 
         let aboutDescription = new Gtk.Label({
