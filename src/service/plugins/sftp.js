@@ -305,7 +305,9 @@ var Plugin = new Lang.Class({
     },
 
     destroy: function () {
-        this.unmount();
+        if (this.mounted) {
+            this.unmount();
+        }
 
         PluginsBase.Plugin.prototype.destroy.call(this);
     }
