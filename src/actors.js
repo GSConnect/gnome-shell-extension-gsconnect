@@ -477,49 +477,6 @@ var RadioButton = new Lang.Class({
 });
 
 
-/** St.Button subclass for plugin buttons with an image, action and tooltip */
-var PluginButton = new Lang.Class({
-    Name: "GSConnectShellPluginButton",
-    Extends: St.Button,
-
-    _init: function (params) {
-        params = Object.assign({
-            icon_name: "application-x-executable",
-            callback: () => {},
-            toggle_mode: false,
-            tooltip_markup: false,
-            tooltip_text: false
-        }, params);
-
-        this.parent({
-            style_class: "system-menu-action gsconnect-plugin-button",
-            child: new St.Icon({ icon_name: params.icon_name }),
-            toggle_mode: params.toggle_mode,
-            can_focus: true
-        });
-
-        this.callback = params.callback;
-        this.connect("clicked", () => this.callback(this));
-
-        this.connect("notify::checked", () => {
-            if (this.checked) {
-                this.add_style_pseudo_class("active");
-            } else {
-                this.remove_style_pseudo_class("active");
-            }
-        });
-
-        this.tooltip = new Tooltip({ parent: this });
-
-        if (params.tooltip_markup) {
-            this.tooltip.markup = params.tooltip_markup;
-        } else if (params.tooltip_text) {
-            this.tooltip.text = params.tooltip_text;
-        }
-    }
-});
-
-
 var MenuButton = new Lang.Class({
     Name: "GSConnectShellMenuButton",
     Extends: St.Button,
