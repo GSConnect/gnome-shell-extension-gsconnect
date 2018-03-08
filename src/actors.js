@@ -18,7 +18,6 @@ const Tweener = imports.ui.tweener;
 // Local Imports
 imports.searchPath.push(gsconnect.datadir);
 const _ = gsconnect._;
-const DBus = imports.modules.dbus;
 const Color = imports.modules.color;
 
 
@@ -596,8 +595,6 @@ var DeviceBattery = new Lang.Class({
         });
 
         // Cleanup
-        //device.connect("destroy", () => this.destroy());
-        // TODO: des
         this.connect("destroy", () => {
             if (this._batteryId && this.battery) {
                 this.battery.disconnect(this._batteryId);
