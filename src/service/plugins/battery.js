@@ -173,37 +173,6 @@ var Plugin = new Lang.Class({
     },
 
     /**
-     * Local Methods
-     */
-    _monitor: function () {
-        // FIXME
-        if (this.device.incomingCapabilities.indexOf("kdeconnect.battery") < 0) {
-            return;
-        }
-
-        try {
-            this._upower = new UPower.Device();
-
-            this._upower.set_object_path_sync(
-                "/org/freedesktop/UPower/devices/DisplayDevice",
-                null
-            );
-
-            for (let property of ["percentage", "state", "warning_level"]) {
-                this._upower.connect("notify::" + property, () => {
-                    this.requestUpdate();
-                });
-            }
-
-            this.requestUpdate();
-        } catch(e) {
-            debug("Battery: Failed to initialize UPower: " + e);
-            GObject.signal_handlers_destroy(this._upower);
-            delete this._upower;
-        }
-    },
-
-    /**
      * Remote methods
      */
     _handleUpdate: function (update) {
