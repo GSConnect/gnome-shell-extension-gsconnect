@@ -230,6 +230,10 @@ var Device = new Lang.Class({
         )
     },
     Signals: {
+        "event": {
+            flags: GObject.SignalFlags.RUN_FIRST,
+            param_types: [ GObject.TYPE_STRING, GObject.TYPE_VARIANT ]
+        },
         "destroy": {
             flags: GObject.SignalFlags.NO_HOOKS
         }

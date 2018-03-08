@@ -68,16 +68,6 @@ var Metadata = {
 var Plugin = new Lang.Class({
     Name: "GSConnectSharePlugin",
     Extends: PluginsBase.Plugin,
-    Signals: {
-        "sent": {
-            flags: GObject.SignalFlags.RUN_FIRST,
-            param_types: [ GObject.TYPE_STRING, GObject.TYPE_STRING ]
-        },
-        "received": {
-            flags: GObject.SignalFlags.RUN_FIRST,
-            param_types: [ GObject.TYPE_STRING, GObject.TYPE_STRING ]
-        }
-    },
 
     _init: function (device) {
         this.parent(device, "share");
@@ -178,7 +168,7 @@ var Plugin = new Lang.Class({
 
                 this.device.send_notification(transfer.uuid, transfer.notif);
 
-                this.emit("received", "file", file.get_uri());
+                this.event("receivedFile", file.get_uri());
 
                 this.transfers.delete(transfer.uuid);
             });
@@ -237,14 +227,14 @@ var Plugin = new Lang.Class({
     _handleUrl: function (packet) {
         Gio.AppInfo.launch_default_for_uri(packet.body.url, null);
 
-        this.emit("received", "url", packet.body.url);
+        this.event("receivedUrl", packet.body.url);
     },
 
     _handleText: function (packet) {
         log("IMPLEMENT: " + packet.toString());
         log("receiving text: '" + packet.body.text + "'");
 
-        this.emit("received", "text", packet.body.text);
+        this.event("receivedText", packet.body.text);
     },
 
     /**
@@ -374,8 +364,6 @@ var Plugin = new Lang.Class({
 
                 this.device.send_notification(transfer.uuid, transfer.notif);
 
-                this.emit("sent", "file", file.get_basename());
-
                 this.transfers.delete(transfer.uuid);
             });
 
@@ -454,8 +442,6 @@ var Plugin = new Lang.Class({
             body: { text: text }
         });
         this.device.sendPacket(packet);
-
-        this.emit("sent", "text", text);
     },
 
     // TODO: check URL validity...
@@ -482,8 +468,6 @@ var Plugin = new Lang.Class({
             body: { url: uri }
         });
         this.device.sendPacket(packet);
-
-        this.emit("sent", "url", uri);
     }
 });
 

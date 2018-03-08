@@ -36,6 +36,11 @@
     <method name="AcceptPair"/>
     <method name="RejectPair"/>
     <method name="OpenSettings"/>
+
+    <signal name="Event">
+      <arg type="s" name="Type"/>
+      <arg type="v" name="Data"/>
+    </signal>
   </interface>
 
   <!-- Battery -->
@@ -117,8 +122,6 @@
   <!-- Notifications -->
   <interface name="org.gnome.Shell.Extensions.GSConnect.Plugin.Notification">
     <!--<property type="aa{sv}" name="Notifications" access="read"/>-->
-    <signal name="Received"/>
-    <signal name="Dismissed"/>
     <method name="ClearCache"/>
     <method name="CloseNotification">
       <arg name="id" type="s" direction="in"/>
@@ -130,10 +133,6 @@
     <method name="Ping">
       <arg name="message" type="s" direction="in"/>
     </method>
-
-    <signal name="Ping">
-      <arg name="message" type="s"/>
-    </signal>
   </interface>
 
   <!-- Run Commands -->
@@ -166,15 +165,6 @@
     <method name="ShareUrl">
       <arg name="url" type="s" direction="in"/>
     </method>
-
-    <signal name="Received">
-      <arg name="type" type="s"/>
-      <arg name="content" type="s"/>
-    </signal>
-    <signal name="Sent">
-      <arg name="type" type="s"/>
-      <arg name="content" type="s"/>
-    </signal>
   </interface>
 
   <!-- Telephony -->
@@ -188,11 +178,6 @@
     <method name="ShareUri">
       <arg name="url" type="s" direction="in"/>
     </method>
-
-    <signal name="Event">
-      <arg name="type" type="s"/>
-      <arg name="data" type="v"/>
-    </signal>
   </interface>
 
   <!-- org.freedesktop.Notifications Interface -->

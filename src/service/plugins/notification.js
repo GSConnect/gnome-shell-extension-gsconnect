@@ -112,16 +112,6 @@ var Plugin = new Lang.Class({
             GObject.ParamFlags.READABLE
         )
     },
-    Signals: {
-        "received": {
-            flags: GObject.SignalFlags.RUN_FIRST,
-            param_types: [ GObject.TYPE_STRING ]
-        },
-        "dismissed": {
-            flags: GObject.SignalFlags.RUN_FIRST,
-            param_types: [ GObject.TYPE_STRING ]
-        }
-    },
 
     _init: function (device) {
         this.parent(device, "notification");

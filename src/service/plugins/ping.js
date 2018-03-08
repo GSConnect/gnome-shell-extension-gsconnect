@@ -45,12 +45,6 @@ var Metadata = {
 var Plugin = new Lang.Class({
     Name: "GSConnectPingPlugin",
     Extends: PluginsBase.Plugin,
-    Signals: {
-        "ping": {
-            flags: GObject.SignalFlags.RUN_FIRST,
-            param_types: [ GObject.TYPE_STRING ]
-        }
-    },
 
     _init: function (device) {
         this.parent(device, "ping");
@@ -66,7 +60,7 @@ var Plugin = new Lang.Class({
 
         packet.body.message = packet.body.message || "";
 
-        this.emit("ping", packet.body.message);
+        this.event("ping", packet.body.message);
 
         // Notification
         let notif = new Gio.Notification();

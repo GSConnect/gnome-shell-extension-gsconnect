@@ -210,17 +210,12 @@ var Plugin = new Lang.Class({
             this.device.withdraw_notification(event.event + "|" + event.contact.name); // FIXME
         // An event was triggered
         } else {
-            // FIXME FIXME
-            log("EVENT: " + event.event);
-            this.emit(
-                "event",
+            this.event(
                 event.event,
-                gsconnect.full_pack([
-                    event.contact.name || "",
-                    event.phoneNumber || "",
-                    event.contact.avatar || "",
-                    event.messageBody || ""
-                ])
+                [event.contact.name || "",
+                event.phoneNumber || "",
+                event.contact.avatar || "",
+                event.messageBody || ""]
             );
 
             if (event.event === "sms" && this.allow & Allow.SMS) {

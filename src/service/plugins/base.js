@@ -45,11 +45,6 @@ var Plugin = new Lang.Class({
         )
     },
     Signals: {
-        // TODO TODO TODO: 'event' is a Gtk signal...and on telephony
-        "event": {
-            flags: GObject.SignalFlags.RUN_FIRST,
-            param_types: [ GObject.TYPE_STRING, GObject.TYPE_VARIANT ]
-        },
         "destroy": {
             flags: GObject.SignalFlags.NO_HOOKS
         }
@@ -169,12 +164,10 @@ var Plugin = new Lang.Class({
     },
 
     /**
-     * TODO: A generic event signal...move to Device?
+     * Emit an event on the device
      */
-    event: function (type, data) {
-        // TODO: dbus emit
-        let event = new GLib.Variant("a{sv}", gsconnect.full_pack(data));
-        this.emit("event", type, event)
+    event: function(type, data) {
+        this.device.emit("event", type, gsconnect.full_pack(data));
     },
 
     /**
