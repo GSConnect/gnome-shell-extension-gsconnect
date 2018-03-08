@@ -5,6 +5,7 @@
     <file compressed="true">application.css</file>
     <file compressed="true" preprocess="xml-stripblanks">device.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">settings.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">event-editor.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">shortcut-editor.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">enter-keyboard-shortcut.svg</file>
     <!-- DBus Service -->
