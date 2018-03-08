@@ -800,26 +800,15 @@ var Device = new Lang.Class({
         Gio.DBus.session.unexport_action_group(this._actionsId);
         Gio.DBus.session.unexport_menu_model(this._menuId);
 
-        let path = this._dbus.get_object_path();
+        this._dbus.flush();
+        this._dbus_object.remove_interface(this._dbus);
+        this.service.objectManager.unexport(this._dbus_object.g_object_path);
 
         if (this.connected) {
-            this.connect("notify::connected", () => {
-                if (!this.connected) {
-                    //this._dbus.flush();
-                    //this._dbus.destroy();
-                    this._dbus_object.remove_interface(this._dbus);
-                    this.service.objectManager.unexport(path);
-                    GObject.signal_handlers_destroy(this);
-                }
-            });
             this._channel.close();
-        } else {
-            //this._dbus.flush();
-            //this._dbus.destroy();
-            this._dbus_object.remove_interface(this._dbus);
-            this.service.objectManager.unexport(path);
-            GObject.signal_handlers_destroy(this);
         }
+
+        GObject.signal_handlers_destroy(this);
     }
 });
 
