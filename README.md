@@ -3,7 +3,7 @@
 ## Overview
 
 This is a work in progress branch, representing a major rewrite of GSConnect.
-It's generally stable at this point, which is to say it won't crash, cause
+It's generally stable at this point, which is to say it shouldn't crash, cause
 Gnome Shell to crash, cause data loss or any other nasty consequences. That
 being said, many features just don't work, don't work well or sometimes cause
 minor hangs (a few seconds of unresponsiveness).
