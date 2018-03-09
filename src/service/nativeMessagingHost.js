@@ -51,6 +51,26 @@ function toInt32 (number) {
 };
 
 
+function _proxyProperties(info, iface) {
+    info.properties.map(property => {
+        Object.defineProperty(iface, property.name.toUnderscoreCase(), {
+            get: () => {
+                return gsconnect.full_unpack(
+                    iface.get_cached_property(property.name)
+                );
+            },
+            configurable: true,
+            enumerable: true
+        });
+    });
+};
+
+
+var DeviceInterface = gsconnect.dbusinfo.lookup_interface(
+    "org.gnome.Shell.Extensions.GSConnect.Device"
+);
+
+
 var NativeMessagingHost = new Lang.Class({
     Name: "GSConnectNativeMessagingHost",
     Extends: Gio.Application,
@@ -61,7 +81,11 @@ var NativeMessagingHost = new Lang.Class({
             flags: Gio.ApplicationFlags.NON_UNIQUE
         });
         gsconnect.installService();
+
+        this._devices = {};
     },
+
+    get devices() { return Object.values(this._devices); },
 
     vfunc_activate: function() {
         this.parent();
@@ -71,18 +95,20 @@ var NativeMessagingHost = new Lang.Class({
     vfunc_startup: function() {
         this.parent();
 
+        // IO Channels
         this.stdin = new Gio.DataInputStream({
             base_stream: new Gio.UnixInputStream({ fd: 0 })
         });
-
-        let source = this.stdin.base_stream.create_source(null);
-        source.set_callback(Lang.bind(this, this.receive));
-        source.attach(null);
 
         this.stdout = new Gio.DataOutputStream({
             base_stream: new Gio.UnixOutputStream({ fd: 1 })
         });
 
+        let source = this.stdin.base_stream.create_source(null);
+        source.set_callback(this.receive.bind(this));
+        source.attach(null);
+
+        // ObjectManager
         Gio.DBusObjectManagerClient.new(
             Gio.DBus.session,
             Gio.DBusObjectManagerClientFlags.NONE,
@@ -93,7 +119,12 @@ var NativeMessagingHost = new Lang.Class({
             (obj, res) => {
                 this.manager = Gio.DBusObjectManagerClient.new_finish(res);
 
-                this.manager.connect("notify::name-owner", () => this.sendDeviceList());
+                for (let object of this.manager.get_objects()) {
+                    for (let iface of object.get_interfaces()) {
+                        this._interfaceAdded(object, iface);
+                    }
+                }
+
                 this.manager.connect("interface-added", this._interfaceAdded.bind(this));
                 this.manager.connect("interface-removed", this._interfaceRemoved.bind(this));
 
@@ -130,10 +161,20 @@ var NativeMessagingHost = new Lang.Class({
         if (message.type === "devices") {
             this.sendDeviceList();
         } else if (message.type === "share") {
-            for (let device of this.manager.get_devices()) {
-                if (device.id === message.data.device) {
-                    device[message.data.action].shareUrl(message.data.url);
+            let actionName;
+            let device = this._devices[message.data.device];
+
+            if (device) {
+                if (message.data.action === "share") {
+                    actionName = "shareUrl";
+                } else if (message.data.action === "telephony") {
+                    actionName = ""; // FIXME
                 }
+
+                device.actions.activate_action(
+                    actionName,
+                    gsconnect.full_pack([message.data.url])
+                );
             }
         }
 
@@ -154,7 +195,7 @@ var NativeMessagingHost = new Lang.Class({
     },
 
     sendDeviceList: function () {
-        if (this.manager.name_owner === null) {
+        if (!this.manager || this.manager.name_owner === null) {
             // Inform the WebExtension we're disconnected from the service
             this.send({ type: "connected", data: false });
             return;
@@ -162,10 +203,10 @@ var NativeMessagingHost = new Lang.Class({
 
         let devices = [];
 
-        // FIXME: GActions
-        for (let device of this.manager.get_devices()) {
-            let share = (device.plugins.indexOf("share") > -1);
-            let telephony = (device.plugins.indexOf("telephony") > -1);
+        for (let device of this.devices) {
+            let share = device.actions.get_action_enabled("shareUrl");
+            // FIXME: need new telephony action for this
+            let telephony = device.actions.get_action_enabled("newSms");
 
             if (device.connected && device.paired && (share || telephony)) {
                 devices.push({
@@ -182,9 +223,23 @@ var NativeMessagingHost = new Lang.Class({
     },
 
     _interfaceAdded: function (object, iface) {
+        if (iface.g_interface_name === "org.gnome.Shell.Extensions.GSConnect.Device") {
+            _proxyProperties(DeviceInterface, iface);
+
+            iface.actions = Gio.DBusActionGroup.get(
+                iface.g_connection,
+                iface.g_name,
+                iface.g_object_path
+            );
+
+            this._devices[iface.id] = iface;
+        }
     },
 
     _interfaceRemoved: function (object, iface) {
+        if (iface.g_interface_name === "org.gnome.Shell.Extensions.GSConnect.Device") {
+            delete this._devices[iface.id];
+        }
     }
 });
 
