@@ -46,37 +46,10 @@ function variantToGType(types) {
             // FIXME: assume it's a variant
             default:
                 gtypes.push(GObject.TYPE_VARIANT);
-
         }
     }
 
     return gtypes;
-};
-
-
-/**
- * TODO: org.freedesktop.ObjectManager helpers
- */
-function get_object_manager_client(params) {
-    return new Promise((resolve, reject) => {
-        let obj = Gio.DBusObjectManagerClient.new(
-            params.g_connection,
-            Gio.DBusObjectManagerClientFlags.NONE,
-            params.g_name,
-            params.g_object_path,
-            params.proxyFunc,
-            //_proxyTypeFunc, // FIXME
-            null,
-            (source_object, res) => {
-                try {
-                    source_object.new_finish(res);
-                    resolve(obj);
-                } catch(e) {
-                    reject(e);
-                }
-            }
-        );
-    });
 };
 
 
