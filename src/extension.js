@@ -563,9 +563,7 @@ function _proxyProperties(info, iface) {
         Object.defineProperty(iface, property.name.toUnderscoreCase(), {
             get: () => {
                 return gsconnect.full_unpack(
-                    iface.get_cached_property(
-                        property.name.toTitleCase()
-                    )
+                    iface.get_cached_property(property.name)
                 );
             },
             //set: (value) => iface.set_cached_property(property.name, value),

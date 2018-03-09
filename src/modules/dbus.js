@@ -82,18 +82,10 @@ function get_object_manager_client(params) {
 
 /**
  * ProxyServer represents a DBus interface bound to an object instance, meant
- * to be exported over DBus. By default it binds to all methods, signals and
- * properties defined in the interface and translates all members to TitleCase.
- *
+ * to be exported over DBus. It will automatically bind to all methods, signals
+ * and properties (include notify::) defined in the interface and transforms
+ * all members to TitleCase.
  */
-var ExportFlags = {
-    METHODS: 2,         // Export methods
-    PROPERTIES: 4,      // Export properties
-    SIGNALS: 8,         // Export signals
-    CASE_CONVERSION: 16 // Convert member names to TitleCase
-};
-
-
 var ProxyServer = new Lang.Class({
     Name: "GSConnectDBusProxyServer",
     Extends: GjsPrivate.DBusImplementation,
@@ -111,7 +103,6 @@ var ProxyServer = new Lang.Class({
 
         this._g_interface_info = params.g_interface_info;
         this._exportee = params.g_instance;
-        this._flags = (params.flags !== undefined) ? params.flags : 30;
 
         if (params.g_object_path) {
             this.g_object_path = params.g_object_path;
@@ -120,20 +111,11 @@ var ProxyServer = new Lang.Class({
         // Bind Object
         let info = this.get_info();
 
-        if (info.methods.length > 0 && (this.flags & ExportFlags.METHODS)) {
-            this._exportMethods(info);
-        }
-
-        if (info.properties.length > 0 && (this.flags & ExportFlags.PROPERTIES)) {
-            this._exportProperties(info);
-        }
-
-        if (info.signals.length > 0 && (this.flags & ExportFlags.SIGNALS)) {
-            this._exportSignals(info);
-        }
+        this._exportMethods(info);
+        this._exportProperties(info);
+        this._exportSignals(info);
 
         // Export if connection and objec path were given
-        // TODO: flags
         if (params.g_connection && params.g_object_path) {
             this.export(
                 params.g_connection,
@@ -147,15 +129,10 @@ var ProxyServer = new Lang.Class({
         return this.get_info();
     },
 
-    get flags() {
-        return this._flags;
-    },
-
     /**
      *
      */
     _call: function(info, methodName, parameters, invocation) {
-        // FIXME: ugly
         let properName = methodName.toCamelCase();
         properName = (this[properName]) ? properName : methodName.toUnderscoreCase();
 
@@ -232,8 +209,8 @@ var ProxyServer = new Lang.Class({
 
     _set: function(info, name, value) {
         // TODO: relies on 'gsconnect'
-        //value = gsconnect.full_unpack(value);
-        value = value.deep_unpack();
+        value = gsconnect.full_unpack(value);
+        //value = value.deep_unpack();
 
         if (!this._propertyCase) {
             if (this[name.toUnderscoreCase()]) {
@@ -266,21 +243,13 @@ var ProxyServer = new Lang.Class({
         });
 
         this._exportee.connect("notify", (obj, paramSpec) => {
-            let exportName;
+            let name = paramSpec.name.toDBusCase();
 
-            if (this.flags & ExportFlags.CASE_CONVERSION) {
-                exportName = paramSpec.name.toTitleCase();
-            } else {
-                exportName = paramSpec.name;
-            }
-
-            let propertyInfo = this.g_interface_info.lookup_property(
-                exportName
-            );
+            let propertyInfo = this.g_interface_info.lookup_property(name);
 
             if (propertyInfo) {
                 this.emit_property_changed(
-                    exportName,
+                    name,
                     new GLib.Variant(
                         propertyInfo.signature,
                         // Adjust for GJS's '-'/'_' conversion
@@ -317,13 +286,6 @@ var ProxyServer = new Lang.Class({
 /**
  *
  */
-var WrapperFlags = {
-    CAMEL_CASE_PROPERTIES: 2,
-    HYPHEN_CASE_PROPERTIES: 4,
-    TITLE_CASE_PROPERTIES: 8
-};
-
-
 var Proxies = {};
 
 
@@ -671,20 +633,6 @@ function makeInterfaceProxy(info) {
     });
 
     return Proxies[info.name];
-};
-
-
-/**
- *
- */
-function get_interface_proxy(params) {
-    return new Promise((resolve, reject) => {
-        resolve(true);
-    });
-};
-
-
-function get_interface_proxy_sync(params) {
 };
 
 
