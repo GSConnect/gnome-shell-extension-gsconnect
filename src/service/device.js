@@ -195,7 +195,7 @@ var Device = new Lang.Class({
             "PluginsList",
             "A list of enabled plugins",
             new GLib.VariantType("as"),
-            new GLib.Variant("as", []),
+            null,
             GObject.ParamFlags.READABLE
         ),
         "incomingCapabilities": GObject.param_spec_variant(
@@ -203,7 +203,7 @@ var Device = new Lang.Class({
             "IncomingCapabilitiesList",
             "A list of incoming packet types the device can receive",
             new GLib.VariantType("as"),
-            new GLib.Variant("as", []),
+            null,
             GObject.ParamFlags.READABLE
         ),
         "outgoingCapabilities": GObject.param_spec_variant(
@@ -211,7 +211,7 @@ var Device = new Lang.Class({
             "OutgoingCapabilitiesList",
             "A list of outgoing packet types the device can send",
             new GLib.VariantType("as"),
-            new GLib.Variant("as", []),
+            null,
             GObject.ParamFlags.READABLE
         ),
         "symbolic-icon-name": GObject.ParamSpec.string(
