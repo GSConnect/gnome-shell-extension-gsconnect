@@ -98,15 +98,6 @@ var Plugin = new Lang.Class({
                 });
             });
         }
-
-        // FIXME FIXME FIXME: ???
-        if (this.onConnected) {
-            this.device.connect("notify::connected", (device) => {
-                if (device.connected) {
-                    this.onConnected();
-                }
-            });
-        }
     },
 
     _registerAction: function (name, meta) {
@@ -155,11 +146,11 @@ var Plugin = new Lang.Class({
         this.settings.set_uint("allow", value);
     },
 
-    get device () {
+    get device() {
         return this._device;
     },
 
-    get name () {
+    get name() {
         return this._name;
     },
 
@@ -173,7 +164,7 @@ var Plugin = new Lang.Class({
     /**
      *
      */
-    handlePacket: function (packet) { throw Error("Not implemented"); },
+    handlePacket: function(packet) { throw Error("Not implemented"); },
 
     /**
      * Cache JSON parseable properties on this object for persistence. The

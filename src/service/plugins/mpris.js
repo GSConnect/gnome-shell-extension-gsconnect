@@ -76,11 +76,6 @@ var Plugin = new Lang.Class({
         }
     },
 
-    // FIXME
-    onConnected: function () {
-        this._sendPlayerList();
-    },
-
     /**
      * Local
      */
