@@ -415,15 +415,13 @@ var Plugin = new Lang.Class({
 
         // Start the transfer process
         transfer.upload().then(port => {
-            let packet = new Protocol.Packet({
+            this.device.sendPacket({
                 id: 0,
                 type: "kdeconnect.share.request",
                 body: { filename: file.get_basename() },
                 payloadSize: info.get_size(),
                 payloadTransferInfo: { port: port }
             });
-
-            this.device.sendPacket(packet);
         });
     },
 
@@ -436,12 +434,11 @@ var Plugin = new Lang.Class({
 
         debug(text);
 
-        let packet = new Protocol.Packet({
+        this.device.sendPacket({
             id: 0,
             type: "kdeconnect.share.request",
             body: { text: text }
         });
-        this.device.sendPacket(packet);
     },
 
     // TODO: check URL validity...
@@ -462,12 +459,11 @@ var Plugin = new Lang.Class({
             url = "https://" + url;
         }
 
-        let packet = new Protocol.Packet({
+        this.device.sendPacket({
             id: 0,
             type: "kdeconnect.share.request",
             body: { url: uri }
         });
-        this.device.sendPacket(packet);
     }
 });
 
