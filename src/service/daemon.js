@@ -434,7 +434,9 @@ var Daemon = new Lang.Class({
 
     _aboutAction: function () {
         let dialog = new Gtk.AboutDialog({
+            application: this,
             authors: [ "Andy Holmes <andrew.g.r.holmes@gmail.com>" ],
+            comments: gsconnect.metadata.description,
             //logo_icon_name: gsconnect.app_id,
             logo: GdkPixbuf.Pixbuf.new_from_resource_at_scale(
                 gsconnect.app_path + "/" + gsconnect.app_id + ".svg",
@@ -445,9 +447,7 @@ var Daemon = new Lang.Class({
             program_name: _("GSConnect"),
             version: gsconnect.metadata.version,
             website: gsconnect.metadata.url,
-            license_type: Gtk.License.GPL_2_0,
-            transient_for: this.get_toplevel(),
-            modal: true
+            license_type: Gtk.License.GPL_2_0
         });
         dialog.connect("delete-event", dialog => dialog.destroy());
         dialog.show();
@@ -511,7 +511,8 @@ var Daemon = new Lang.Class({
             ["openSettings", this.openSettings],
             ["cancelTransfer", this._cancelTransferAction, "(ss)"],
             ["openTransfer", this._openTransferAction, "s"],
-            ["restartNautilus", this._restartNautilus]
+            ["restartNautilus", this._restartNautilus],
+            ["about", this._aboutAction]
         ]);
 
         // Mixer actions
