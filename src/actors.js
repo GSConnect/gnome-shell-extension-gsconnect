@@ -505,6 +505,9 @@ var MenuButton = new Lang.Class({
 });
 
 
+var BATTERY_INTERFACE = "org.gnome.Shell.Extensions.GSConnect.Plugin.Battery";
+
+
 /** St.BoxLayout subclass for a battery icon with text percentage */
 var DeviceBattery = new Lang.Class({
     Name: "GSConnectShellDeviceBattery",
@@ -527,23 +530,21 @@ var DeviceBattery = new Lang.Class({
         this.add_child(this.icon);
 
         // Battery proxy
-        this.battery = this.object.get_interface(
-            "org.gnome.Shell.Extensions.GSConnect.Plugin.Battery"
-        );
+        this.battery = this.object.get_interface(BATTERY_INTERFACE);
 
         if (this.battery) {
             this._batteryId = this.battery.connect("g-properties-changed", this.update.bind(this));
         }
 
         this.object.connect("interface-added", (obj, iface) => {
-            if (iface.g_interface_name === "org.gnome.Shell.Extensions.GSConnect.Plugin.Battery") {
+            if (iface.g_interface_name === BATTERY_INTERFACE) {
                 this.battery = iface;
                 this._batteryId = this.battery.connect("g-properties-changed", this.update.bind(this));
             }
         });
 
         this.object.connect("interface-removed", (obj, iface) => {
-            if (iface.g_interface_name === "org.gnome.Shell.Extensions.GSConnect.Plugin.Battery") {
+            if (iface.g_interface_name === BATTERY_INTERFACE) {
                 this.battery = iface;
                 this.battery.disconnect(this._batteryId);
                 delete this._batteryId;
@@ -604,23 +605,21 @@ var DeviceIcon = new Lang.Class({
         });
 
         // Battery proxy
-        this.battery = this.object.get_interface(
-            "org.gnome.Shell.Extensions.GSConnect.Plugin.Battery"
-        );
+        this.battery = this.object.get_interface(BATTERY_INTERFACE);
 
         if (this.battery) {
             this._batteryId = this.battery.connect("g-properties-changed", () => this.queue_repaint());
         }
 
         this.object.connect("interface-added", (obj, iface) => {
-            if (iface.g_interface_name === "org.gnome.Shell.Extensions.GSConnect.Plugin.Battery") {
+            if (iface.g_interface_name === BATTERY_INTERFACE) {
                 this.battery = iface;
                 this._batteryId = this.battery.connect("g-properties-changed", () => this.queue_repaint());
             }
         });
 
         this.object.connect("interface-removed", (obj, iface) => {
-            if (iface.g_interface_name === "org.gnome.Shell.Extensions.GSConnect.Plugin.Battery") {
+            if (iface.g_interface_name === BATTERY_INTERFACE) {
                 this.battery = iface;
                 this.battery.disconnect(this._batteryId);
                 delete this._batteryId;
@@ -722,7 +721,7 @@ var DeviceIcon = new Lang.Class({
             cr.arc(xc, yc, r, 1.48 * Math.PI, 1.47 * Math.PI);
             cr.stroke();
         } else if (this.battery && this.battery.level > -1) {
-            // Capacity arc
+            // Depleted arc
             cr.setSourceRGB(0.8, 0.8, 0.8);
 
             if (this.battery.level < 1) {
@@ -787,7 +786,6 @@ var DeviceButton = new Lang.Class({
 
         this.object = object;
         this.device = device;
-        // FIXME device.connect("destroy", () => this.destroy());
 
         this.connect("clicked", () => {
             if (!this.device.connected) {
