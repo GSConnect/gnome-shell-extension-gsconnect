@@ -14,54 +14,6 @@ const Protocol = imports.service.protocol;
 
 
 /**
- * A device notification.
- *
- * TODO...
- */
-var Notification = new Lang.Class({
-    Name: "GSConnectDeviceNotification",
-    Extends: GObject.Object,
-    Properties: {
-        "connected": GObject.ParamSpec.boolean(
-            "connected",
-            "deviceConnected",
-            "Whether the device is connected",
-            GObject.ParamFlags.READABLE,
-            false
-        ),
-        "fingerprint": GObject.ParamSpec.string(
-            "fingerprint",
-            "deviceFingerprint",
-            "SHA1 fingerprint for the device certificate",
-            GObject.ParamFlags.READABLE,
-            ""
-        )
-    },
-
-    _init: function (params) {
-    },
-
-    send: function () {
-        let notif = new Gio.Notification();
-
-        notif.set_title(this.title);
-        notif.set_body(this.body);
-        notif.set_icon(this.icon);
-
-        for (let button of this.buttons) {
-            // TODO
-            notif.add_button();
-        }
-
-        if (this.action) {
-            // TODO
-            notif.set_default_action();
-        }
-    }
-});
-
-
-/**
  * Base class for plugin actions
  */
 var Action = new Lang.Class({
