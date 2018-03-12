@@ -12,13 +12,6 @@ imports.searchPath.push(gsconnect.datadir);
 const Keybindings = imports.modules.keybindings;
 
 
-const AllowTraffic = {
-    OFF: 1,
-    OUT: 2,
-    IN: 4
-};
-
-
 /**
  *
  */
