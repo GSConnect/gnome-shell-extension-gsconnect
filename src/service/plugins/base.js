@@ -100,7 +100,20 @@ var Plugin = new Lang.Class({
         }
     },
 
-    _registerAction: function (name, meta) {
+    _activateAction(action, parameter) {
+        try {
+            if (parameter) {
+                debug(gsconnect.full_unpack(parameter));
+                this[action.name].call(this, gsconnect.full_unpack(parameter));
+            } else {
+                this[action.name].call(this);
+            }
+        } catch(e) {
+            debug(e);
+        }
+    },
+
+    _registerAction(name, meta) {
         let parameter_type = (meta.signature) ? new GLib.VariantType(meta.signature) : null;
         let action = new Device.Action({
             name: name,
@@ -109,18 +122,7 @@ var Plugin = new Lang.Class({
         }, this);
         action.set_enabled(action.allow & this.allow);
 
-        action.connect("activate", (action, parameter) => {
-            try {
-                if (parameter) {
-                    let args = gsconnect.full_unpack(parameter);
-                    this[name].call(this, ...args);
-                } else {
-                    this[name].call(this);
-                }
-            } catch(e) {
-                debug(e.message + "\n" + e.stack);
-            }
-        });
+        action.connect("activate", this._activateAction.bind(this));
 
         this.device.add_action(action);
 
