@@ -42,4 +42,7 @@
     <!-- Miscellaneous Fallback Icons -->
     <file compressed="true" preprocess="xml-stripblanks">gnome-contacts-symbolic.svg</file>
   </gresource>
+  <gresource prefix="/org/gnome/Shell/Extensions/GSConnect/gtk">
+    <file compressed="true" preprocess="xml-stripblanks">menus.ui</file>
+  </gresource>
 </gresources>
