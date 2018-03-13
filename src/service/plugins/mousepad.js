@@ -1,14 +1,12 @@
 "use strict";
 
-const Lang = imports.lang;
-
 const Atspi = imports.gi.Atspi;
 const Gdk = imports.gi.Gdk;
 const GLib = imports.gi.GLib;
+const GObject = imports.gi.GObject;
 
 // Local Imports
 imports.searchPath.push(gsconnect.datadir);
-const Protocol = imports.service.protocol;
 const PluginsBase = imports.service.plugins.base;
 
 
@@ -27,12 +25,12 @@ var Metadata = {
  *
  * TODO: support outgoing mouse/keyboard events
  */
-var Plugin = new Lang.Class({
-    Name: "GSConnectMousepadPlugin",
-    Extends: PluginsBase.Plugin,
+var Plugin = GObject.registerClass({
+    GTypeName: "GSConnectMousepadPlugin",
+}, class Plugin extends PluginsBase.Plugin {
 
-    _init: function (device) {
-        this.parent(device, "mousepad");
+    _init(device) {
+        super._init(device, "mousepad");
 
         if (GLib.getenv("XDG_SESSION_TYPE") === "wayland") {
             this.destroy();
@@ -63,9 +61,9 @@ var Plugin = new Lang.Class({
         } catch (e) {
             debug(_("Cannot load Caribou virtual keyboard for Unicode support"));
         }
-    },
+    }
 
-    handlePacket: function (packet) {
+    handlePacket(packet) {
         debug(packet);
 
         if (packet.type === "kdeconnect.mousepad.request") {
@@ -77,12 +75,12 @@ var Plugin = new Lang.Class({
 
             this._handleInput(packet);
         }
-    },
+    }
 
     /**
      * Local Methods
      */
-    _handleInput: function (packet) {
+    _handleInput(packet) {
         debug("");
 
         if (packet.body.singleclick) {
@@ -133,9 +131,9 @@ var Plugin = new Lang.Class({
                 }
             }
         }
-    },
+    }
 
-    clickPointer: function (button) {
+    clickPointer(button) {
         debug("Mousepad: clickPointer(" + button + ")");
 
         let event = "b%dc".format(button);
@@ -146,9 +144,9 @@ var Plugin = new Lang.Class({
         } catch (e) {
             log("Mousepad: Error simulating mouse click: " + e);
         }
-    },
+    }
 
-    doubleclickPointer: function (button) {
+    doubleclickPointer(button) {
         debug("Mousepad: doubleclickPointer(" + button + ")");
 
         let event = "b%dd".format(button);
@@ -159,9 +157,9 @@ var Plugin = new Lang.Class({
         } catch (e) {
             log("Mousepad: Error simulating mouse double click: " + e);
         }
-    },
+    }
 
-    movePointer: function (dx, dy) {
+    movePointer(dx, dy) {
         debug("Mousepad: movePointer(" + dx + ", " + dy + ")");
 
         try {
@@ -169,9 +167,9 @@ var Plugin = new Lang.Class({
         } catch (e) {
             log("Mousepad: Error simulating mouse movement: " + e);
         }
-    },
+    }
 
-    pressPointer: function (button) {
+    pressPointer(button) {
         debug("Mousepad: pressPointer()");
 
         let event = "b%dp".format(button);
@@ -182,9 +180,9 @@ var Plugin = new Lang.Class({
         } catch (e) {
             log("Mousepad: Error simulating mouse press: " + e);
         }
-    },
+    }
 
-    releasePointer: function (button) {
+    releasePointer(button) {
         debug("Mousepad: releasePointer()");
 
         let event = "b%dr".format(button);
@@ -195,9 +193,9 @@ var Plugin = new Lang.Class({
         } catch (e) {
             log("Mousepad: Error simulating mouse release: " + e);
         }
-    },
+    }
 
-    pressKey: function (key) {
+    pressKey(key) {
         debug("Mousepad: pressKey(" + key + ")");
 
         try {
@@ -207,9 +205,9 @@ var Plugin = new Lang.Class({
         } catch (e) {
             log("Mousepad: Error simulating keypress: " + e);
         }
-    },
+    }
 
-    pressSpecialKey: function (key) {
+    pressSpecialKey(key) {
         debug("Mousepad: pressSpecialKey(" + key + ")");
 
         try {
@@ -225,9 +223,9 @@ var Plugin = new Lang.Class({
         } catch (e) {
             log("Mousepad: Error simulating special keypress: " + e);
         }
-    },
+    }
 
-    pressKeySym: function (keysym, mask) {
+    pressKeySym(keysym, mask) {
         debug("Mousepad: pressKeySym(" + keysym + ", " + mask + ")");
 
         try {

@@ -1,7 +1,5 @@
 "use strict";
 
-const Lang = imports.lang;
-
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
@@ -99,9 +97,8 @@ const GroupedNotifications = [
  *       make local notifications closeable (serial/reply_serial)
  *       requestReplyId {string} - a UUID for replying (?)
  */
-var Plugin = new Lang.Class({
-    Name: "GSConnectNotificationsPlugin",
-    Extends: PluginsBase.Plugin,
+var Plugin = GObject.registerClass({
+    GTypeName: "GSConnectNotificationsPlugin",
     Properties: {
         "notifications": GObject.param_spec_variant(
             "notifications",
@@ -111,10 +108,11 @@ var Plugin = new Lang.Class({
             new GLib.Variant("aa{sv}", []),
             GObject.ParamFlags.READABLE
         )
-    },
+    }
+}, class Plugin extends PluginsBase.Plugin {
 
-    _init: function (device) {
-        this.parent(device, "notification");
+    _init(device) {
+        super._init(device, "notification");
 
         this.contacts = Contacts.getStore();
 
@@ -125,13 +123,13 @@ var Plugin = new Lang.Class({
 //        if (this.allow & 4) {
 //            this.request();
 //        }
-    },
+    }
 
     get notifications () {
         return this._notifications;
-    },
+    }
 
-    handlePacket: function (packet) {
+    handlePacket(packet) {
         debug(packet);
 
         if (packet.type === "kdeconnect.notification.request") {
@@ -169,18 +167,16 @@ var Plugin = new Lang.Class({
                 this.showNotification(packet);
             }
         }
-    },
+    }
 
     /**
      * Check if a notification is grouped notification
      * @param {Protocol.Packet} packet - A notification packet
      * @return {Boolean} - %true if the notification is grouped
      */
-    _isGrouped: function (packet) {
-    },
 
     /** Get the path to the largest PNG of @name */
-    _getIconPath: function (name) {
+    _getIconPath(name) {
         let theme = Gtk.IconTheme.get_default();
         let sizes = theme.get_icon_sizes(name);
         let info = theme.lookup_icon(
@@ -190,13 +186,13 @@ var Plugin = new Lang.Class({
         );
 
         return (info) ? info.get_filename() : false;
-    },
+    }
 
     /**
      * Search the cache for a notification by data and return it or %false if
      * not found
      */
-    _getNotification: function (query) {
+    _getNotification(query) {
         for (let notif of this._notifications) {
             // @query is a full notification matching a timestamp (shown)
             // We check for timestamp first since the device controls id
@@ -243,12 +239,12 @@ var Plugin = new Lang.Class({
         }
 
         return false;
-    },
+    }
 
     /**
      * Icon transfers
      */
-    _downloadIcon: function (packet) {
+    _downloadIcon(packet) {
         debug([packet.payloadTransferInfo.port, packet.payloadSize, packet.body.payloadHash]);
 
         return new Promise((resolve, reject) => {
@@ -270,9 +266,9 @@ var Plugin = new Lang.Class({
 
             transfer.download(packet.payloadTransferInfo.port).catch(e => debug(e));
         });
-    },
+    }
 
-    _uploadIcon: function (packet, filename) {
+    _uploadIcon(packet, filename) {
         debug(filename);
 
         let file = Gio.File.new_for_path(filename);
@@ -296,10 +292,10 @@ var Plugin = new Lang.Class({
 
             this.device.sendPacket(packet);
         });
-    },
+    }
 
-    showNotification: function (packet, icon) {
-//        return new Promise((resolve, reject) => {
+    showNotification(packet, icon) {
+        return new Promise((resolve, reject) => {
             let notif = new Gio.Notification();
 
             // Check if this is a missed call or SMS notification
@@ -319,7 +315,7 @@ var Plugin = new Lang.Class({
                     number: packet.body.title,
                     single: true
                 });
-            } else if (isMissedCall && this.device.lookup_action("replyMissedCall")) {
+            } else if (isMissedCall && this.device.lookup_action("replySms")) {
                 debug("A missed call notification");
                 contact = this.contacts.query({
                     name: packet.body.text,
@@ -333,11 +329,16 @@ var Plugin = new Lang.Class({
                 debug("Found known contact");
 
                 if (!contact.avatar && icon) {
+                    contact.avatar = GLib.build_filenamev([
+                        Contacts.CACHE_DIR,
+                        GLib.uuid_string_random() + ".jpeg"
+                    ]);
                     // FIXME: not saving proper (data)?
-                    let path = this.contacts._cacheDir + "/" + GLib.uuid_string_random() + ".jpeg";
                     log("ICON BYTES: " + icon.get_bytes());
-                    GLib.file_set_contents(path, icon.get_bytes().toArray().toString());
-                    contact.avatar = path;
+                    GLib.file_set_contents(
+                        contact.avatar,
+                        icon.get_bytes().toArray().toString()
+                    );
                 } else if (contact.avatar && !icon) {
                     icon = this.contacts.getContactPixbuf(contact.avatar);
                 }
@@ -354,7 +355,7 @@ var Plugin = new Lang.Class({
                     notif.add_device_button(
                         // TRANSLATORS: Reply to a missed call by SMS
                         _("Message"),
-                        "replyMissedCall",
+                        "replySms",
                         this._dbus.get_object_path(),
                         contact.numbers[0].number,
                         contact.name,
@@ -412,14 +413,14 @@ var Plugin = new Lang.Class({
             // reuse their ID's at whim.
             this.device.send_notification(packet.body.time, notif);
 
-//            resolve(true);
-//        });
-    },
+            resolve(true);
+        });
+    }
 
     /**
      * This is called by the daemon; See Daemon.Notify()
      */
-    sendNotification: function (args) {
+    sendNotification(args) {
         debug(args[0] + ": " + args[3] + " - " + args[4]);
 
         return new Promise((resolve, reject) => {
@@ -476,17 +477,17 @@ var Plugin = new Lang.Class({
 
             resolve(true);
         });
-    },
+    }
 
     /**
      * Start tracking a notification as active or expected
      */
-    trackNotification: function (notif) {
+    trackNotification(notif) {
         this._notifications.push(notif);
         this.notify("notifications");
-    },
+    }
 
-    untrackNotification: function (notif) {
+    untrackNotification(notif) {
         let cachedNotif = this._getNotification(notif);
 
         if (cachedNotif) {
@@ -494,7 +495,7 @@ var Plugin = new Lang.Class({
             this._notifications.splice(index_, 1);
             this.notify("notifications");
         }
-    },
+    }
 
     /**
      * Mark a notification as handled by Telephony.
@@ -503,7 +504,7 @@ var Plugin = new Lang.Class({
      * @param {String} notif.ticker - The expected 'ticker' field
      * @param {Boolean} [notif.isCancel] - Whether the notification should be closed
      */
-    markDuplicate: function (notif) {
+    markDuplicate(notif) {
         debug(notif);
 
         // Check if this is a known duplicate
@@ -527,13 +528,13 @@ var Plugin = new Lang.Class({
             log("FIXME: shouldn't be reached");
             this.trackNotification(notif);
         }
-    },
+    }
 
     /**
      * Close a remote notification and remove it from the cache
      * @param {string} timestamp - The remote notification timestamp
      */
-    closeNotification: function (timestamp) {
+    closeNotification(timestamp) {
         debug(timestamp);
 
         // Check if this is a known notification (by timestamp)
@@ -554,14 +555,14 @@ var Plugin = new Lang.Class({
             debug("marking duplicate notification to be closed");
             cachedNotif.isCancel = true;
         }
-    },
+    }
 
     /**
      * Reply to a notification sent with a requestReplyId UUID
      * TODO: this is untested and not used yet
      * TODO: could probably use telepathy...
      */
-    reply: function (id, appName, title, text) {
+    reply(id, appName, title, text) {
         debug(arguments);
 
         let dialog = new ReplyDialog(this.device, appName, title, text);
@@ -584,29 +585,27 @@ var Plugin = new Lang.Class({
         });
 
         dialog.show_all();
-    },
+    }
 
     /**
      * Request the remote notifications be sent
      */
-    request: function () {
-        let packet = new Protocol.Packet({
+    request() {
+        this.device.sendPacket({
             id: 0,
             type: "kdeconnect.notification.request",
             body: { request: true }
         });
-
-        this.device.sendPacket(packet);
     }
 });
 
 
-var ReplyDialog = Lang.Class({
-    Extends: Gtk.Dialog,
-    Name: "GSConnectNotificationReplyDialog",
+var ReplyDialog = GObject.registerClass({
+    GTypeName: "GSConnectNotificationReplyDialog",
+}, class ReplyDialog extends Gtk.Dialog {
 
-    _init: function (device, appName, title, text) {
-        this.parent({
+    _init(device, appName, title, text) {
+        super._init({
             use_header_bar: true,
             application: Gio.Application.get_default(),
             default_height: 300,

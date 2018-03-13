@@ -44,9 +44,8 @@ const Sound = imports.modules.sound;
 const Telephony = imports.service.plugins.telephony;
 
 
-var Daemon = new Lang.Class({
-    Name: "GSConnectDaemon",
-    Extends: Gtk.Application,
+var Daemon = GObject.registerClass({
+    GTypeName: "GSConnectDaemon",
     Properties: {
         "certificate": GObject.ParamSpec.object(
             "certificate",
@@ -98,10 +97,11 @@ var Daemon = new Lang.Class({
             GObject.ParamFlags.READABLE,
             "desktop"
         )
-    },
+    }
+}, class Daemon extends Gtk.Application {
 
-    _init: function() {
-        this.parent({
+    _init() {
+        super._init({
             application_id: gsconnect.app_id,
             flags: Gio.ApplicationFlags.HANDLES_OPEN
         });
@@ -110,44 +110,44 @@ var Daemon = new Lang.Class({
         GLib.set_application_name(_("GSConnect"));
 
         this.register(null);
-    },
+    }
 
     // Properties
     get certificate() {
         return this._certificate;
-    },
+    }
 
     get devices() {
         return this.objectManager.get_objects().map(obj => obj.g_object_path);
-    },
+    }
 
     // FIXME: meta for lan+bluez?
     get discovering() {
         return this.lanService.discovering;
-    },
+    }
 
     // FIXME: meta for lan+bluez?
     set discovering(bool) {
         this.lanService.discovering = bool;
-    },
+    }
 
     get fingerprint() {
         return this.certificate.fingerprint()
-    },
+    }
 
     get symbolic_icon_name() {
         return (this.type === "laptop") ? "laptop" : "computer";
-    },
+    }
 
     get name() {
         return this.identity.body.deviceName;
-    },
+    }
 
     set name(name) {
         this.identity.body.deviceName = name;
         this.notify("name");
         this.broadcast();
-    },
+    }
 
     get type() {
         try {
@@ -163,12 +163,12 @@ var Daemon = new Lang.Class({
         }
 
         return "desktop";
-    },
+    }
 
     /**
      * Special method to accomodate nautilus-gsconnect.py
      */
-    getShareable: function() {
+    getShareable() {
         let shareable = [];
 
         for (let [busPath, device] of this._devices.entries()) {
@@ -180,12 +180,12 @@ var Daemon = new Lang.Class({
         }
 
         return shareable;
-    },
+    }
 
     /**
      * Generate a Private Key and TLS Certificate
      */
-    _initEncryption: function () {
+    _initEncryption() {
         let certPath = gsconnect.configdir + "/certificate.pem";
         let certExists = GLib.file_test(certPath, GLib.FileTest.EXISTS);
         let keyPath = gsconnect.configdir + "/private.pem";
@@ -217,9 +217,9 @@ var Daemon = new Lang.Class({
             certPath,
             keyPath
         );
-    },
+    }
 
-    _applyResources: function () {
+    _applyResources() {
         let provider = new Gtk.CssProvider();
         provider.load_from_file(
             Gio.File.new_for_uri("resource://" + gsconnect.app_path + "/application.css")
@@ -230,12 +230,12 @@ var Daemon = new Lang.Class({
             Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
         );
         Gtk.IconTheme.get_default().add_resource_path(gsconnect.app_path);
-    },
+    }
 
     /**
      * Build and return an identity packet for the local device
      */
-    _getIdentityPacket: function () {
+    _getIdentityPacket() {
         let packet = new Protocol.Packet({
             id: 0,
             type: Protocol.TYPE_IDENTITY,
@@ -265,21 +265,21 @@ var Daemon = new Lang.Class({
         }
 
         return packet;
-    },
+    }
 
     /**
      * Discovery Methods
      */
-    broadcast: function () {
+    broadcast() {
         if (this.identity) {
             this.lanService.broadcast(this.identity);
         }
-    },
+    }
 
     /**
      * Device Methods
      */
-    _addDevice: function (packet, channel=null) {
+    _addDevice(packet, channel=null) {
         debug(packet);
 
         let dbusPath = gsconnect.app_path + "/Device/" + packet.body.deviceId.replace(/\W+/g, "_");
@@ -317,9 +317,9 @@ var Daemon = new Lang.Class({
                 //this.notify("devices");
             }).catch(e => debug(e));
         }
-    },
+    }
 
-    _removeDevice: function (dbusPath) {
+    _removeDevice(dbusPath) {
         debug("Daemon._removeDevice(" + dbusPath + ")");
 
         if (this._devices.has(dbusPath)) {
@@ -333,9 +333,9 @@ var Daemon = new Lang.Class({
             // FIXME: notified by ObjectManager now
             //this.notify("devices");
         }
-    },
+    }
 
-    _onDevicesChanged: function () {
+    _onDevicesChanged() {
         let knownDevices = gsconnect.settings.get_strv("devices");
 
         // New devices
@@ -369,16 +369,16 @@ var Daemon = new Lang.Class({
                 }
             }
         });
-    },
+    }
 
-    _watchDevices: function () {
+    _watchDevices() {
         gsconnect.settings.connect("changed::devices", () => {
             this._onDevicesChanged();
         });
         this._onDevicesChanged();
-    },
+    }
 
-    _pruneDevices: function () {
+    _pruneDevices() {
         // Don't prune devices while the settings window is open
         if (this._window) { return; }
 
@@ -390,13 +390,13 @@ var Daemon = new Lang.Class({
                 gsconnect.settings.set_strv("devices", knownDevices);
             }
         }
-    },
+    }
 
     /**
      * This function forwards a local notification to any supporting device by
      * eavesdropping on org.freedesktop.Notifications
      */
-    Notify: function (appName, replacesId, iconName, summary, body, actions, hints, timeout) {
+    Notify(appName, replacesId, iconName, summary, body, actions, hints, timeout) {
         debug(arguments);
 
         let variant = new GLib.Variant("s", escape(JSON.stringify([Array.from(arguments)])));
@@ -409,12 +409,12 @@ var Daemon = new Lang.Class({
                 action.activate(variant);
             }
         }
-    },
+    }
 
     /**
      * Only used by plugins/share.js
      */
-    _cancelTransferAction: function (action, parameter) {
+    _cancelTransferAction(action, parameter) {
         parameter = parameter.deep_unpack();
 
         let device = this._devices.get(parameter["0"]);
@@ -425,14 +425,14 @@ var Daemon = new Lang.Class({
                 plugin.transfers.get(parameter["1"]).cancel();
             }
         }
-    },
+    }
 
-    _openTransferAction: function (action, parameter) {
+    _openTransferAction(action, parameter) {
         let path = parameter.deep_unpack().toString();
         Gio.AppInfo.launch_default_for_uri(unescape(path), null);
-    },
+    }
 
-    _aboutAction: function () {
+    _aboutAction() {
         let dialog = new Gtk.AboutDialog({
             application: this,
             authors: [ "Andy Holmes <andrew.g.r.holmes@gmail.com>" ],
@@ -451,19 +451,18 @@ var Daemon = new Lang.Class({
         });
         dialog.connect("delete-event", dialog => dialog.destroy());
         dialog.show();
-    },
+    }
 
     /**
      * A meta-action for routing device actions.
      *
      * @param {Gio.Action} action - ...
-     * @param {GLib.Variant->Object/Array?} params
-     * @param {GLib.Variant->String} params[0] - DBus object path for device
-     * @param {GLib.Variant->String} params[1] - GAction/Method name
-     * @param {GLib.Variant->"av"} params[2] - The device action parameter as
-     *                                         Array of arguments 'av'.
+     * @param {GLib.Variant[]} parameter - ...
+     * @param {GLib.Variant(s)} parameter[] - DBus object path for device
+     * @param {GLib.Variant(s)} parameter[] - GAction/Method name
+     * @param {GLib.Variant(v)} parameter[] - The device action parameter
      */
-    _deviceAction: function (action, parameter) {
+    _deviceAction(action, parameter) {
         parameter = parameter.unpack();
 
         let device = this._devices.get(parameter[0].unpack());
@@ -474,23 +473,22 @@ var Daemon = new Lang.Class({
 
             // If it has the action enabled
             if (deviceAction && deviceAction.enabled) {
-                // Pass the Variant of arguments still packed
                 try {
                     deviceAction.activate(parameter[2]);
                 } catch (e) {
-                    debug(e.message + "\n" + e.stack);
+                    debug(e);
                 }
             }
         } else {
-            debug("Error:\nDevice: " + device.name + "\nAction: " + parameter["1"].unpack());
+            debug("Device: " + device.name + "\nAction: " + parameter[1].unpack());
         }
-    },
+    }
 
     /**
      * Add a list of [name, callback, parameter_type], with callback bound to
      * @scope or 'this'.
      */
-    _addActions: function (actions, scope) {
+    _addActions(actions, scope) {
         scope = scope || this;
 
         actions.map((entry) => {
@@ -501,12 +499,12 @@ var Daemon = new Lang.Class({
             action.connect("activate", entry[1].bind(scope));
             this.add_action(action);
         });
-    },
+    }
 
-    _initActions: function () {
+    _initActions() {
         this._addActions([
             // Device
-            ["deviceAction", this._deviceAction, "(ssav)"],
+            ["deviceAction", this._deviceAction, "(ssv)"],
             // Daemon
             ["openSettings", this.openSettings],
             ["cancelTransfer", this._cancelTransferAction, "(ss)"],
@@ -527,16 +525,16 @@ var Daemon = new Lang.Class({
         } else {
             this._mixer = null;
         }
-    },
+    }
 
     /**
      *
      */
-    _restartNautilus: function (action, parameter) {
+    _restartNautilus(action, parameter) {
         GLib.spawn_command_line_async("nautilus -q");
-    },
+    }
 
-    _notifyRestartNautilus: function () {
+    _notifyRestartNautilus() {
         let notif = new Gio.Notification();
         notif.set_title(_("Nautilus extensions changed"));
         notif.set_body(_("Restart Nautilus to apply changes"));
@@ -547,9 +545,9 @@ var Daemon = new Lang.Class({
         notif.add_button(_("Restart"), "app.restartNautilus");
 
         this.send_notification("nautilus-integration", notif);
-    },
+    }
 
-    toggleNautilusExtension: function () {
+    toggleNautilusExtension() {
         let path = GLib.get_user_data_dir() + "/nautilus-python/extensions";
         let script = Gio.File.new_for_path(path).get_child("nautilus-gsconnect.py");
         let install = gsconnect.settings.get_boolean("nautilus-integration");
@@ -567,9 +565,9 @@ var Daemon = new Lang.Class({
             script.delete(null);
             this._notifyRestartNautilus();
         }
-    },
+    }
 
-    toggleWebExtension: function () {
+    toggleWebExtension() {
         let nmhPath = gsconnect.datadir + "/service/nativeMessagingHost.js";
 
         let google = {
@@ -615,7 +613,7 @@ var Daemon = new Lang.Class({
 
             GLib.spawn_command_line_async("chmod 0744 " + nmhPath);
         }
-    },
+    }
 
     /**
      * Open the application settings, for @device if given.
@@ -624,7 +622,7 @@ var Daemon = new Lang.Class({
      * The DBus method takes no arguments; Device.openSettings() calls this
      * and populates @device.
      */
-    openSettings: function (device=null) {
+    openSettings(device=null) {
         if (!this._window) {
             this._window = new Settings.SettingsWindow();
             this._window.connect("destroy", () => { delete this._window; });
@@ -641,13 +639,13 @@ var Daemon = new Lang.Class({
                 }
             });
         }
-    },
+    }
 
     /**
      * Watch 'daemon.js' in case the extension is uninstalled
      * TODO: remove .desktop (etc) on delete
      */
-    _watchDaemon: function () {
+    _watchDaemon() {
         this.daemonMonitor = Gio.File.new_for_path(
             gsconnect.datadir + "/service/daemon.js"
         ).monitor(
@@ -657,12 +655,12 @@ var Daemon = new Lang.Class({
 
         // If quit() is called it will skip the DBus hooks, so use release()
         this.daemonMonitor.connect("changed", () => this.release());
-    },
+    }
 
     /**
      * Override Gio.Application.send_notification() to respect donotdisturb
      */
-    send_notification: function (id, notification) {
+    send_notification(id, notification) {
         if (!this._notificationSettings) {
             this._notificationSettings = new Gio.Settings({
                 schema_id: "org.gnome.desktop.notifications.application",
@@ -678,10 +676,10 @@ var Daemon = new Lang.Class({
         this._notificationSettings.set_boolean("show-banners", dnd);
 
         Gtk.Application.prototype.send_notification.call(this, id, notification);
-    },
+    }
 
-    vfunc_startup: function() {
-        this.parent();
+    vfunc_startup() {
+        super.vfunc_startup();
 
         // Initialize encryption and ensure fingerprint is available right away
         // FIXME: endless loop on fail?
@@ -756,16 +754,16 @@ var Daemon = new Lang.Class({
         this._devices = new Map();
         this._watchDevices();
         log(this._devices.size + " devices loaded from cache");
-    },
+    }
 
-    vfunc_activate: function() {
-        this.parent();
+    vfunc_activate() {
+        super.vfunc_activate();
         // FIXME: this.broadcast();
         this.hold();
-    },
+    }
 
-    vfunc_dbus_register: function (connection, object_path) {
-        if (!this.parent(connection, object_path)) {
+    vfunc_dbus_register(connection, object_path) {
+        if (!super.vfunc_dbus_register(connection, object_path)) {
             return false;
         }
 
@@ -810,10 +808,10 @@ var Daemon = new Lang.Class({
         });
 
         return true;
-    },
+    }
 
-    vfunc_dbus_unregister: function (connection, object_path) {
         this._fdo.removeMatch(this._match).then(result => {
+    vfunc_dbus_unregister(connection, object_path) {
             this._fdo.destroy();
             this._ndbus.destroy();
         }).catch(e => debug(e));
@@ -826,12 +824,12 @@ var Daemon = new Lang.Class({
 
         this._dbus.destroy();
 
-        this.parent(connection, object_path);
-    },
+        super.vfunc_dbus_register(connection, object_path);
+    }
 
     // FIXME: this is all garbage
-    vfunc_open: function (files, hint) {
-        this.parent(files, hint);
+    vfunc_open(files, hint) {
+        super.vfunc_open(files, hint);
 
         for (let file of files) {
             try {
@@ -869,10 +867,10 @@ var Daemon = new Lang.Class({
                 log("Error opening file/uri: " + e.message);
             }
         }
-    },
+    }
 
-    vfunc_shutdown: function() {
-        this.parent();
+    vfunc_shutdown() {
+        super.vfunc_shutdown();
 
         log("GSConnect: Shutting down");
 

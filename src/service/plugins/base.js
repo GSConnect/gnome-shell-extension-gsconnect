@@ -1,7 +1,5 @@
 "use strict";
 
-const Lang = imports.lang;
-
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
@@ -17,9 +15,8 @@ const Device = imports.service.device;
 /**
  * Base class for plugins
  */
-var Plugin = new Lang.Class({
-    Name: "GSConnectPlugin",
-    Extends: GObject.Object,
+var Plugin = GObject.registerClass({
+    GTypeName: "GSConnectPlugin",
     Properties: {
         "allow": GObject.ParamSpec.int(
             "allow",
@@ -48,10 +45,11 @@ var Plugin = new Lang.Class({
         "destroy": {
             flags: GObject.SignalFlags.NO_HOOKS
         }
-    },
+    }
+}, class Plugin extends GObject.Object {
 
-    _init: function (device, name) {
-        this.parent();
+    _init(device, name) {
+        super._init();
 
         this._device = device;
         this._name = name;
@@ -74,7 +72,7 @@ var Plugin = new Lang.Class({
             path: gsconnect.settings.path + ["device", device.id, "plugin", name, ""].join("/")
         });
 
-        // Actions
+        // GActions
         if (this._meta.actions) {
             // We register actions based on the device capabilities
             this._gactions = [];
@@ -98,7 +96,7 @@ var Plugin = new Lang.Class({
                 });
             });
         }
-    },
+    }
 
     _activateAction(action, parameter) {
         try {
@@ -111,7 +109,7 @@ var Plugin = new Lang.Class({
         } catch(e) {
             debug(e);
         }
-    },
+    }
 
     _registerAction(name, meta) {
         let parameter_type = (meta.signature) ? new GLib.VariantType(meta.signature) : null;
@@ -131,14 +129,14 @@ var Plugin = new Lang.Class({
         }
 
         this._gactions.push(action);
-    },
+    }
 
     /**
      * A convenience for retrieving the allow flags for a packet handler
      */
     get allow() {
         return this.settings.get_uint("allow");
-    },
+    }
 
     set allow(value) {
         if (typeof value !== "number") {
@@ -146,27 +144,27 @@ var Plugin = new Lang.Class({
         }
 
         this.settings.set_uint("allow", value);
-    },
+    }
 
     get device() {
         return this._device;
-    },
+    }
 
     get name() {
         return this._name;
-    },
+    }
 
     /**
      * Emit an event on the device
      */
-    event: function(type, data) {
+    event(type, data) {
         this.device.emit("event", type, gsconnect.full_pack(data));
-    },
+    }
 
     /**
      *
      */
-    handlePacket: function(packet) { throw Error("Not implemented"); },
+    handlePacket(packet) { throw Error("Not implemented"); }
 
     /**
      * Cache JSON parseable properties on this object for persistence. The
@@ -179,7 +177,7 @@ var Plugin = new Lang.Class({
      *
      * @param {array} names - A list of this object's property names to cache
      */
-    cacheProperties: function (names) {
+    cacheProperties(names) {
         this._cacheDir =  GLib.build_filenamev([gsconnect.cachedir, this.name]);
         GLib.mkdir_with_parents(this._cacheDir, 448);
 
@@ -197,25 +195,25 @@ var Plugin = new Lang.Class({
         }
 
         this._readCache();
-    },
+    }
 
-    cacheFile: function (bytes) {
-    },
+    cacheFile(bytes) {
+    }
 
     // A DBus method for clearing the cache
-    clearCache: function () {
+    clearCache() {
         for (let name in this._cacheProperties) {
             debug("clearing '" + name + "' from '" + this.name + "'");
             this[name] = JSON.parse(JSON.stringify(this._cacheProperties[name]));
         }
-    },
+    }
 
     // An overridable function that gets called before the cache is written
-    _filterCache: function (names) {
+    _filterCache(names) {
         return;
-    },
+    }
 
-    _readCache: function () {
+    _readCache() {
         try {
             let cache = JSON.parse(this._cacheFile.load_contents(null)[1]);
 
@@ -227,9 +225,9 @@ var Plugin = new Lang.Class({
         } catch (e) {
             debug("Cache: Error reading %s cache: %s".format(this.name, e.message));
         }
-    },
+    }
 
-    _writeCache: function () {
+    _writeCache() {
         this._filterCache(this._cacheProperties);
 
         let cache = {};
@@ -249,12 +247,12 @@ var Plugin = new Lang.Class({
         } catch (e) {
             debug("Cache: Error writing %s cache: %s".format(this._name, e.message));
         }
-    },
+    }
 
     /**
      * The destroy function
      */
-    destroy: function () {
+    destroy() {
         this.emit("destroy");
 
         this._gactions.map(action => this.device.remove_action(action.name));

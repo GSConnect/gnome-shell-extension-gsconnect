@@ -186,25 +186,25 @@ var _numberRegex = new RegExp(
  *
  * TODO: track notifs: isCancel events, append new messages to unacknowledged?
  */
-var Plugin = new Lang.Class({
-    Name: "GSConnectTelephonyPlugin",
-    Extends: PluginsBase.Plugin,
+var Plugin = GObject.registerClass({
+    GTypeName: "GSConnectTelephonyPlugin",
+}, class Plugin extends PluginsBase.Plugin {
 
-    _init: function (device) {
-        this.parent(device, "telephony");
+    _init(device) {
+        super._init(device, "telephony");
 
         this.contacts = Contacts.getStore();
-    },
 
-    // FIXME: use contact cache
-    handlePacket: function (packet) {
+    }
+
+    handlePacket(packet) {
         debug(packet);
 
         let event = this._parsePacket(packet);
 
         // Event handling
         // The event has ended (ringing stopped or call ended)
-        if (event.isCancel) {
+        if (packet.body.isCancel) {
             // TODO TODO TODO: all of it
             this._setMediaState(1);
             this.device.withdraw_notification(event.event + "|" + event.contact.name); // FIXME
@@ -236,15 +236,14 @@ var Plugin = new Lang.Class({
                 }
             }
         }
-    },
+    }
 
     /**
      * Parse an telephony packet and return an event object, with ... TODO
      *
-     * @param {object} packet - A telephony event packet
-     * @return {object} - An event object
+     * @param {Object} packet - A telephony event packet
+     * @return {Object} - An event object
      */
-    _parsePacket: function (packet) {
         let event = packet.body;
         event.time = GLib.DateTime.new_now_local().to_unix();
 
@@ -252,6 +251,7 @@ var Plugin = new Lang.Class({
             event.contactName,
             event.phoneNumber
         );
+    _parsePacket(packet) {
 
         // Update contact avatar
         // FIXME: move to modules/contacts.js
@@ -267,6 +267,7 @@ var Plugin = new Lang.Class({
                 event.contact.avatar = path;
                 this.contacts._writeCache();
             }
+    }
 
             delete event.phoneThumbnail;
         }
@@ -283,12 +284,12 @@ var Plugin = new Lang.Class({
         }
 
         return event;
-    },
+    }
 
     /**
      * Telephony event handlers
      */
-    _onMissedCall: function (event) {
+    _onMissedCall(event) {
         debug(event);
 
         // Start tracking the duplicate early
@@ -356,9 +357,9 @@ var Plugin = new Lang.Class({
         this.device.send_notification(event.event + "|"  + event.time, notif);
 
         return true;
-    },
+    }
 
-    _onRinging: function (event) {
+    _onRinging(event) {
         debug(event);
 
         let notif = new Gio.Notification();
@@ -381,14 +382,12 @@ var Plugin = new Lang.Class({
         this.device.send_notification(event.event + "|"  + event.time, notif);
         // TODO TODO TODO
         this._setMediaState(2);
+    }
 
-        return true;
-    },
-
-    _onSms: function (event) {
+    _onSms(event) {
         debug(event);
 
-        // Start tracking the duplicate early
+        // Start tracking the duplicate as soon as possible
         let notification = this.device._plugins.get("notification");
 
         if (notification) {
@@ -441,9 +440,9 @@ var Plugin = new Lang.Class({
         this.device.send_notification(event.event + "|"  + event.time, notif);
 
         return true;
-    },
+    }
 
-    _onTalking: function (event) {
+    _onTalking(event) {
         debug(event);
 
         // TODO: need this, or done by isCancel?
@@ -465,16 +464,14 @@ var Plugin = new Lang.Class({
         this.device.send_notification(event.event + "|"  + event.time, notif);
         // TODO TODO TODO
         this._setMediaState(2);
-
-        return true;
-    },
+    }
 
     /**
      * Check if there's an open conversation for a number(s)
      *
      * @param {string|array} phoneNumber - A string phone number or array of
      */
-    _hasWindow: function (number) {
+    _hasWindow(number) {
         debug(number);
 
         number = number.replace(/\D/g, "");
@@ -498,10 +495,10 @@ var Plugin = new Lang.Class({
         }
 
         return conversation;
-    },
+    }
 
     // FIXME FIXME FIXME
-    _setMediaState: function (state) {
+    _setMediaState(state) {
         if (state === 1) {
             // TODO: restore state here
             this._state = 1;
@@ -515,36 +512,34 @@ var Plugin = new Lang.Class({
                 this._state &= state;
             }
         }
-    },
+    }
 
     /**
      * Silence an incoming call
      */
-    muteCall: function () {
+    muteCall() {
         debug("");
 
-        let packet = new Protocol.Packet({
+        this.device.sendPacket({
             id: 0,
             type: "kdeconnect.telephony.request",
             body: { action: "mute" }
         });
-        this.device.sendPacket(packet);
-    },
+    }
 
     /**
      * Open and present a new SMS window
      */
-    newSms: function () {
-        debug(arguments);
+    newSms() {
+        debug("");
 
         let window = new Sms.ConversationWindow(this.device);
         window.present();
-    },
-
+    }
 
     // FIXME FIXME
-    openUri: function (uri) {
-        debug(arguments);
+    openUri(uri) {
+        debug("");
 
         if (!uri instanceof SmsURI) {
             try {
@@ -581,61 +576,20 @@ var Plugin = new Lang.Class({
         }
 
         window.present();
-    },
+    }
 
     /**
-     * Either open a new SMS window for the caller or reuse an existing one
+     * Either open a new SMS window for the sender and log the message, which
+     * could be a missed call, or reuse an existing one
      *
-     * @param {string} phoneNumber - The sender's phone number
-     * @param {string} contactName - The sender's name
-     * @param {number} time - The event time in epoch us
+     * @param {Object} event - The event
+     * @param {string} event.number - The sender's phone number
+     * @param {string} event.contactName - The sender's name
+     * @param {string} event.content - The SMS message
+     * @param {number} event.time - The event time in epoch us
      */
-    replyMissedCall: function (phoneNumber, contactName, time) {
+    replySms(event) {
         debug(event);
-
-        // Get a contact
-        let contact = this.contacts.getContact(
-            phoneNumber,
-            contactName
-        );
-
-        // Check open windows for this number
-        let window = this._hasWindow(phoneNumber);
-
-        // None found; open one, mark duplicate read
-        if (!window) {
-            window = new Sms.ConversationWindow(this.device);
-
-            // Tell the notification plugin to mark any duplicate read
-            if (this.device._plugins.has("notification")) {
-                this.device._plugins.get("notification").markDuplicate({
-                    localId: "missedCall|" + time,
-                    ticker: _("Missed call") + ": " + contact.name,
-                    isCancel: true
-                });
-            }
-        }
-
-        // FIXME: log the missed call in the window
-        window.receiveMessage(
-            contact,
-            phoneNumber,
-            "<i>" + _("Missed call at %s").format(time) + "</i>"
-        );
-
-        window.present();
-    },
-
-    /**
-     * Either open a new SMS window for the sender or reuse an existing one
-     *
-     * @param {string} phoneNumber - The sender's phone number
-     * @param {string} contactName - The sender's name
-     * @param {string} messageBody - The SMS message
-     * @param {number} time - The event time in epoch us
-     */
-    replySms: function (phoneNumber, contactName, messageBody, time) {
-        debug(arguments);
 
         // Check for an extant window
         let window = this._hasWindow(phoneNumber);
@@ -656,6 +610,7 @@ var Plugin = new Lang.Class({
 
             // Tell the notification plugin to mark any duplicate read
             let notification = this.device._plugins.get("notification");
+
             if (notification) {
                 notification.markDuplicate({
                     localId: "sms|" + time,
@@ -666,7 +621,7 @@ var Plugin = new Lang.Class({
         }
 
         window.present();
-    },
+    }
 
     /**
      * Send an SMS message
@@ -674,10 +629,10 @@ var Plugin = new Lang.Class({
      * @param {string} phoneNumber - The phone number to send the message to
      * @param {string} messageBody - The message to send
      */
-    sendSms: function (phoneNumber, messageBody) {
-        debug("Telephony: sendSms(" + phoneNumber + ", " + messageBody + ")");
+    sendSms(phoneNumber, messageBody) {
+        debug(phoneNumber + ", " + messageBody);
 
-        let packet = new Protocol.Packet({
+        this.device.sendPacket({
             id: 0,
             type: "kdeconnect.sms.request",
             body: {
@@ -686,9 +641,7 @@ var Plugin = new Lang.Class({
                 messageBody: messageBody
             }
         });
-
-        this.device.sendPacket(packet);
-    },
+    }
 
     /**
      * Share a link by SMS message
@@ -696,7 +649,7 @@ var Plugin = new Lang.Class({
      * @param {string} url - The link to be shared
      */
     // FIXME: re-check
-    shareUri: function (url) {
+    shareUri(url) {
         // Get the current open windows
         let windows = this.device.service.get_windows();
         let hasConversations = false;
@@ -729,10 +682,9 @@ var Plugin = new Lang.Class({
 /**
  * A simple parsing class for sms: URI's (https://tools.ietf.org/html/rfc5724)
  */
-var SmsURI = new Lang.Class({
-    Name: "GSConnectSmsURI",
+var SmsURI = class SmsURI {
 
-    _init: function (uri) {
+    constructor(uri) {
         debug("SmsURI: _init(" + uri + ")");
 
         let full, recipients, query;
@@ -775,12 +727,12 @@ var SmsURI = new Lang.Class({
                 }
             }
         }
-    },
+    }
 
-    toString: function () {
+    toString() {
         let uri = "sms:" + this.recipients.join(",");
 
         return (this.body) ? uri + "?body=" + escape(this.body) : uri;
     }
-});
+}
 

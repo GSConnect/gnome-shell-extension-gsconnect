@@ -1,7 +1,5 @@
 "use strict";
 
-const Lang = imports.lang;
-
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
@@ -65,20 +63,20 @@ var Metadata = {
  *       expand signals to cover Protocol.Transfer signals
  *       https://github.com/KDE/kdeconnect-kde/commit/28f11bd5c9a717fb9fbb3f02ddd6cea62021d055
  */
-var Plugin = new Lang.Class({
-    Name: "GSConnectSharePlugin",
-    Extends: PluginsBase.Plugin,
+var Plugin = GObject.registerClass({
+    GTypeName: "GSConnectSharePlugin",
+}, class Plugin extends PluginsBase.Plugin {
 
-    _init: function (device) {
-        this.parent(device, "share");
+    _init(device) {
+        super._init(device, "share");
 
         this.transfers = new Map();
-    },
+    }
 
     /**
      * Local Methods
      */
-    _getFilepath: function (filename) {
+    _getFilepath(filename) {
         debug(filename);
 
         let path = GLib.build_filenamev([
@@ -95,9 +93,9 @@ var Plugin = new Lang.Class({
         }
 
         return filepath;
-    },
+    }
 
-    _handleFile: function (packet) {
+    _handleFile(packet) {
         let filepath = this._getFilepath(packet.body.filename);
         let file = Gio.File.new_for_path(filepath);
 
@@ -222,25 +220,25 @@ var Plugin = new Lang.Class({
         });
 
         transfer.download(packet.payloadTransferInfo.port).catch(e => debug(e));
-    },
+    }
 
-    _handleUrl: function (packet) {
+    _handleUrl(packet) {
         Gio.AppInfo.launch_default_for_uri(packet.body.url, null);
 
         this.event("receivedUrl", packet.body.url);
-    },
+    }
 
-    _handleText: function (packet) {
+    _handleText(packet) {
         log("IMPLEMENT: " + packet.toString());
         log("receiving text: '" + packet.body.text + "'");
 
         this.event("receivedText", packet.body.text);
-    },
+    }
 
     /**
      * Packet dispatch
      */
-    handlePacket: function (packet) {
+    handlePacket(packet) {
         debug("Share: handlePacket()");
 
         if (!(this.allow & 4)) {
@@ -252,23 +250,23 @@ var Plugin = new Lang.Class({
         } else if (packet.body.hasOwnProperty("url")) {
             this._handleUrl(packet);
         }
-    },
+    }
 
     /**
      * Actions FIXME
      */
-    _openFile: function (path) {
+    _openFile(path) {
         Gio.AppInfo.launch_default_for_uri(path, null);
-    },
+    }
 
-    _openDirectory: function (path) {
+    _openDirectory(path) {
         Gio.AppInfo.launch_default_for_uri(path, null);
-    },
+    }
 
     /**
      * Remote methods
      */
-    shareDialog: function () {
+    shareDialog() {
         // FIXME
         if (!(this.allow & 2)) {
             debug("Operation not permitted");
@@ -279,10 +277,10 @@ var Plugin = new Lang.Class({
 
         let dialog = new FileChooserDialog(this.device);
         dialog.run();
-    },
+    }
 
     // TODO: check file existence...
-    shareFile: function (path) {
+    shareFile(path) {
         // FIXME
         if (!(this.allow & 2)) {
             debug("Operation not permitted");
@@ -423,9 +421,9 @@ var Plugin = new Lang.Class({
                 payloadTransferInfo: { port: port }
             });
         });
-    },
+    }
 
-    shareText: function (text) {
+    shareText(text) {
         // FIXME
         if (!(this.allow & 2)) {
             debug("Operation not permitted");
@@ -439,10 +437,10 @@ var Plugin = new Lang.Class({
             type: "kdeconnect.share.request",
             body: { text: text }
         });
-    },
+    }
 
     // TODO: check URL validity...
-    shareUrl: function (url) {
+    shareUrl(url) {
         // FIXME
         if (!(this.allow & 2)) {
             debug("Operation not permitted");
@@ -469,12 +467,12 @@ var Plugin = new Lang.Class({
 
 
 /** A simple FileChooserDialog for sharing files */
-var FileChooserDialog = new Lang.Class({
-    Name: "GSConnectShareFileChooserDialog",
-    Extends: Gtk.FileChooserDialog,
+var FileChooserDialog = GObject.registerClass({
+    GTypeName: "GSConnectShareFileChooserDialog",
+}, class FileChooserDialog extends Gtk.FileChooserDialog {
 
-    _init: function (device) {
-        this.parent({
+    _init(device) {
+        super._init({
             // TRANSLATORS: eg. Send files to Google Pixel
             title: _("Send files to %s").format(device.name),
             action: Gtk.FileChooserAction.OPEN,
@@ -488,7 +486,7 @@ var FileChooserDialog = new Lang.Class({
             hexpand: true,
             visible: true
         });
-        this.webEntry.connect("activate", Lang.bind(this, this._sendLink));
+        this.webEntry.connect("activate", this._sendLink.bind(this));
 
         this.webButton = new Gtk.ToggleButton({
             image: new Gtk.Image({
@@ -509,7 +507,7 @@ var FileChooserDialog = new Lang.Class({
 
         this.add_button(_("Cancel"), Gtk.ResponseType.CANCEL);
         let sendButton = this.add_button(_("Send"), Gtk.ResponseType.OK);
-        sendButton.connect("clicked", Lang.bind(this, this._sendLink));
+        sendButton.connect("clicked", this._sendLink.bind(this));
 
 
         this.get_header_bar().pack_end(this.webButton);
@@ -517,16 +515,16 @@ var FileChooserDialog = new Lang.Class({
         this.connect("delete-event", () => {
             this.emit("response", Gtk.ResponseType.CANCEL);
         });
-    },
+    }
 
-    _sendLink: function (widget) {
+    _sendLink(widget) {
         if (this.webButton.active && this.webEntry.text.length) {
             this.emit("response", 1);
         }
-    },
+    }
 
     // A non-blocking version of run()
-    run: function () {
+    run() {
         this.connect("response", (dialog, response) => {
             if (response === Gtk.ResponseType.OK) {
                 let uris = this.get_uris();

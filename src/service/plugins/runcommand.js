@@ -1,7 +1,5 @@
 "use strict";
 
-const Lang = imports.lang;
-
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
@@ -34,9 +32,8 @@ var Metadata = {
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/remotecommands
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/runcommand
  */
-var Plugin = new Lang.Class({
-    Name: "GSConnectRunCommandPlugin",
-    Extends: PluginsBase.Plugin,
+var Plugin = GObject.registerClass({
+    GTypeName: "GSConnectRunCommandPlugin",
     Properties: {
         "commands": GObject.param_spec_variant(
             "commands",
@@ -46,26 +43,25 @@ var Plugin = new Lang.Class({
             null,
             GObject.ParamFlags.READABLE
         )
-    },
+    }
+}, class Plugin extends PluginsBase.Plugin {
 
-    _init: function (device) {
-        this.parent(device, "runcommand");
+    _init(device) {
+        super._init(device, "runcommand");
 
         // Local Commands
-        this.settings.connect("changed::command-list", () => {
-            this._handleRequest();
-        });
+        this.settings.connect("changed::command-list", this._handleRequest.bind(this));
 
         this._commands = {};
         this.notify("commands");
         this.request();
-    },
+    }
 
     get commands () {
         return this._commands || {};
-    },
+    }
 
-    handlePacket: function (packet) {
+    handlePacket(packet) {
         debug(packet);
 
         // Request for command list or execution
@@ -80,12 +76,12 @@ var Plugin = new Lang.Class({
             this._commands = packet.body.commandList;
             this.notify("commands");
         }
-    },
+    }
 
     /**
      * Local Methods
      */
-    _handleRequest: function () {
+    _handleRequest() {
         debug("...");
 
         let commands = gsconnect.full_unpack(
@@ -97,9 +93,9 @@ var Plugin = new Lang.Class({
             type: "kdeconnect.runcommand",
             body: { commandList: commands }
         });
-    },
+    }
 
-    _handleExecute: function (key) {
+    _handleExecute(key) {
         debug(key);
 
         let commands = gsconnect.full_unpack(
@@ -115,24 +111,24 @@ var Plugin = new Lang.Class({
                 null // GLib.SpawnChildSetupFunc
             );
         }
-    },
+    }
 
     /**
      * Remote Methods
      */
-    request: function () {
+    request() {
         this.device.sendPacket({
             id: 0,
             type: "kdeconnect.runcommand.request",
             body: { requestCommandList: true }
         });
-    },
+    }
 
     /**
      * Run the remote command @key
      * @param {string} key - The key of the remote command
      */
-    run: function (key) {
+    run(key) {
         this.device.sendPacket({
             id: 0,
             type: "kdeconnect.runcommand.request",

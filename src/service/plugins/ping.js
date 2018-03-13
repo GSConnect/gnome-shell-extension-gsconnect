@@ -1,7 +1,5 @@
 "use strict";
 
-const Lang = imports.lang;
-
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
@@ -42,18 +40,17 @@ var Metadata = {
  * Ping Plugin
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/ping
  */
-var Plugin = new Lang.Class({
-    Name: "GSConnectPingPlugin",
-    Extends: PluginsBase.Plugin,
+var Plugin = GObject.registerClass({
+    GTypeName: "GSConnectPingPlugin"
+}, class Plugin extends PluginsBase.Plugin {
 
-    _init: function (device) {
-        this.parent(device, "ping");
-    },
+    _init(device) {
+        super._init(device, "ping");
+    }
 
-    handlePacket: function (packet) {
+    handlePacket(packet) {
         debug("Ping: handlePacket()");
 
-        // TODO
         if (!(this.allow & 4)) {
             return;
         }
@@ -78,9 +75,9 @@ var Plugin = new Lang.Class({
             new Gio.ThemedIcon({ name: this.device.type + "-symbolic" })
         );
         this.device.send_notification("ping", notif);
-    },
+    }
 
-    ping: function (message="") {
+    ping(message="") {
         debug("Ping: ping(" + message + ")");
 
         let packet = {

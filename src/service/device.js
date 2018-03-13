@@ -16,9 +16,8 @@ const Protocol = imports.service.protocol;
 /**
  * Base class for plugin actions
  */
-var Action = new Lang.Class({
-    Name: "GSConnectDeviceAction",
-    Extends: Gio.SimpleAction,
+var Action = GObject.registerClass({
+    GTypeName: "GSConnectDeviceAction",
     Properties: {
         "allow": GObject.ParamSpec.int(
             "allow",
@@ -28,9 +27,10 @@ var Action = new Lang.Class({
             1, 8,
             1
         )
-    },
+    }
+}, class Action extends Gio.SimpleAction {
 
-    _init: function (params, context) {
+    _init(params, context) {
         // TODO
         this.meta = params.meta;
         delete params.meta;
@@ -41,29 +41,29 @@ var Action = new Lang.Class({
         this._context = context;
         this.device = context.device;
 
-        this.parent(params);
-    },
+        super._init(params);
+    }
 
     get allow() {
         return this._allow;
-    },
+    }
 
-    getMeta: function () {
+    getMeta() {
         return this.meta;
     }
 });
 
 
-var Menu = new Lang.Class({
-    Name: "GSConnectDeviceMenu",
-    Extends: Gio.Menu,
+var Menu = GObject.registerClass({
+    GTypeName: "GSConnectDeviceMenu"
+}, class Menu extends Gio.Menu {
 
-    _init: function (device) {
-        this.parent();
+    _init(device) {
+        super._init();
         this.device = device;
-    },
+    }
 
-    add: function (name, params) {
+    add(name, params) {
         //debug(name);
 
         let item = new Gio.MenuItem();
@@ -96,9 +96,8 @@ var Menu = new Lang.Class({
  *
  * TODO...
  */
-var Device = new Lang.Class({
-    Name: "GSConnectDevice",
-    Extends: Gio.SimpleActionGroup,
+var Device = GObject.registerClass({
+    GTypeName: "GSConnectDevice",
     Properties: {
         "connected": GObject.ParamSpec.boolean(
             "connected",
@@ -189,10 +188,11 @@ var Device = new Lang.Class({
         "destroy": {
             flags: GObject.SignalFlags.NO_HOOKS
         }
-    },
+    }
+}, class Device extends Gio.SimpleActionGroup {
 
-    _init: function (params) {
-        this.parent();
+    _init(params) {
+        super._init();
 
         this.service = Gio.Application.get_default();
         this._channel = null;
@@ -259,10 +259,10 @@ var Device = new Lang.Class({
         } else {
             this.activate();
         }
-    },
+    }
 
     // TODO: not sure about these...
-    _pairActions: function () {
+    _pairActions() {
         let action = new Action({
             name: "acceptPair",
             summary: "Accept Pair",
@@ -270,10 +270,10 @@ var Device = new Lang.Class({
         });
         action.connect("activate", () => this[name]());
         this.add_action(action);
-    },
+    }
 
     /** Device Properties */
-    get connected () { return this._connected; },
+    get connected () { return this._connected; }
     get fingerprint () {
         if (this.connected && this._channel) {
             return this._channel.certificate.fingerprint();
@@ -286,22 +286,22 @@ var Device = new Lang.Class({
         }
 
         return "";
-    },
+    }
 
     // TODO: wrap theses all up into 'identity'
-    get id() { return this.settings.get_string("id"); },
-    get name() { return this.settings.get_string("name"); },
-    get paired() { return (this.settings.get_string("certificate-pem")); },
-    get plugins() { return Array.from(this._plugins.keys()) || []; },
+    get id() { return this.settings.get_string("id"); }
+    get name() { return this.settings.get_string("name"); }
+    get paired() { return (this.settings.get_string("certificate-pem")); }
+    get plugins() { return Array.from(this._plugins.keys()) || []; }
     get incomingCapabilities() {
         return this.settings.get_strv("incoming-capabilities");
-    },
+    }
     get outgoingCapabilities() {
         return this.settings.get_strv("outgoing-capabilities");
-    },
+    }
     get icon_name() {
         return (this.type === "desktop") ? "computer" : this.type;
-    },
+    }
     get symbolic_icon_name() {
         let icon = (this.type === "phone") ? "smartphone" : this.type;
         icon = (this.type === "unknown") ? "desktop" : icon;
@@ -313,10 +313,10 @@ var Device = new Lang.Class({
         } else {
             return icon + "disconnected";
         }
-    },
-    get type() { return this.settings.get_string("type"); },
+    }
+    get type() { return this.settings.get_string("type"); }
 
-    _handleIdentity: function (packet) {
+    _handleIdentity(packet) {
         this.settings.set_string("id", packet.body.deviceId);
         this.settings.set_string("name", packet.body.deviceName);
         this.settings.set_string("type", packet.body.deviceType);
@@ -332,12 +332,12 @@ var Device = new Lang.Class({
             "outgoing-capabilities",
             packet.body.outgoingCapabilities.sort()
         );
-    },
+    }
 
     /**
      * Open a new Protocol.Channel and try to connect to the device
      */
-    activate: function () {
+    activate() {
         debug(this.name + " (" + this.id + ")");
 
         // Already connected
@@ -360,12 +360,12 @@ var Device = new Lang.Class({
         });
 
         this._channel.open(addr);
-    },
+    }
 
     /**
      * Update the device with a UDP packet or replacement Protocol.Channel
      */
-    update: function (packet, channel=null) {
+    update(packet, channel=null) {
         debug(this.name + " (" + this.id + ")");
 
         if (channel) {
@@ -392,9 +392,9 @@ var Device = new Lang.Class({
         } else {
             this._onReceived(this._channel, packet);
         }
-    },
+    }
 
-    verify: function () {
+    verify() {
         debug(this.name + " (" + this.id + ")");
 
         let cert;
@@ -417,22 +417,22 @@ var Device = new Lang.Class({
         }
 
         return true;
-    },
+    }
 
     /**
      * Send a packet to the device
      * @param {Object} packet - An object of packet data...
      * @param {Gio.Stream} payload - A payload stream // TODO
      */
-    sendPacket: function (packet, payload=null) {
+    sendPacket(packet, payload=null) {
         if (this.connected && this.paired) {
             packet = new Protocol.Packet(packet);
             this._channel.send(packet);
         }
-    },
+    }
 
     /** Channel Callbacks */
-    _onConnected: function (channel) {
+    _onConnected(channel) {
         log("Connected to '" + this.name + "'");
 
         this._connected = true;
@@ -443,9 +443,9 @@ var Device = new Lang.Class({
         this.notify("fingerprint");
 
         this._loadPlugins().then(values => this.notify("plugins"));
-    },
+    }
 
-    _onDisconnected: function (channel) {
+    _onDisconnected(channel) {
         log("Disconnected from '" + this.name + "'");
 
         if (this._channel !== null) {
@@ -458,9 +458,9 @@ var Device = new Lang.Class({
             this.notify("connected");
             this.notify("symbolic-icon-name");
         });
-    },
+    }
 
-    _onReceived: function (channel, packet) {
+    _onReceived(channel, packet) {
         if (packet.type === Protocol.TYPE_IDENTITY) {
             this._handleIdentity(packet);
             this.activate();
@@ -472,21 +472,23 @@ var Device = new Lang.Class({
         } else {
             debug("Received unsupported packet type: " + packet.toString());
         }
-    },
+    }
 
-    /** Overrides & utilities */
-    send_notification: function (id, notification) {
+    /**
+     * Device notifications
+     */
+    send_notification(id, notification) {
         this.service.send_notification(this.id + "|" + id, notification);
-    },
+    }
 
-    withdraw_notification: function (id) {
+    withdraw_notification(id) {
         this.service.withdraw_notification(this.id + "|" + id);
-    },
+    }
 
     /**
      * Pairing Functions
      */
-    _handlePair: function (packet) {
+    _handlePair(packet) {
         // A pair has been requested
         if (packet.body.pair) {
             // The device is accepting our request
@@ -515,9 +517,9 @@ var Device = new Lang.Class({
                 this._setPaired(false);
             });
         }
-    },
+    }
 
-    _notifyPair: function (packet) {
+    _notifyPair(packet) {
         let notif = new Gio.Notification();
         // TRANSLATORS: eg. Pair Request from Google Pixel
         notif.set_title(_("Pair Request from %s").format(this.name));
@@ -560,9 +562,9 @@ var Device = new Lang.Class({
             30,
             () => this._setPaired(false)
         );
-    },
+    }
 
-    _setPaired: function (bool) {
+    _setPaired(bool) {
         if (this._incomingPairRequest) {
             this.withdraw_notification("pair-request");
             GLib.source_remove(this._incomingPairRequest);
@@ -585,9 +587,9 @@ var Device = new Lang.Class({
 
         this.notify("paired");
         this.notify("symbolic-icon-name");
-    },
+    }
 
-    pair: function () {
+    pair() {
         debug(this.name + " (" + this.id + ")");
 
         // The pair button was pressed during an incoming pair request
@@ -612,9 +614,9 @@ var Device = new Lang.Class({
             body: { pair: true }
         });
         this._channel.send(packet);
-    },
+    }
 
-    unpair: function () {
+    unpair() {
         debug(this.name + " (" + this.id + ")");
 
         // Send the unpair packet only if we're connected
@@ -631,26 +633,26 @@ var Device = new Lang.Class({
             this.notify("plugins");
             this._setPaired(false);
         });
-    },
+    }
 
-    acceptPair: function () {
+    acceptPair() {
         debug(this.name + " (" + this.id + ")");
 
         this._setPaired(true);
         this.pair();
         this._loadPlugins().then(values => this.notify("plugins"));
-    },
+    }
 
-    rejectPair: function () {
+    rejectPair() {
         debug(this.name + " (" + this.id + ")");
 
         this.unpair();
-    },
+    }
 
     /**
      * Plugin Functions
      */
-    supportedPlugins: function () {
+    supportedPlugins() {
         let supported = [];
         let incoming = this.incomingCapabilities;
         let outgoing = this.outgoingCapabilities;
@@ -671,9 +673,9 @@ var Device = new Lang.Class({
         }
 
         return supported.sort();
-    },
+    }
 
-    _loadPlugin: function (name) {
+    _loadPlugin(name) {
         debug(name + " (" + this.name + ")");
 
         return new Promise((resolve, reject) => {
@@ -706,14 +708,14 @@ var Device = new Lang.Class({
 
             resolve([name, true]);
         });
-    },
+    }
 
-    _loadPlugins: function () {
+    _loadPlugins() {
         let promises = this.supportedPlugins().map(name => this._loadPlugin(name));
         return Promise.all(promises.map(p => p.catch(() => undefined)));
-    },
+    }
 
-    _unloadPlugin: function (name) {
+    _unloadPlugin(name) {
         debug(name + " (" + this.name + ")");
 
         return new Promise((resolve, reject) => {
@@ -739,18 +741,18 @@ var Device = new Lang.Class({
 
             resolve([name, true]);
         });
-    },
+    }
 
-    _unloadPlugins: function () {
+    _unloadPlugins() {
         let promises = this.plugins.map(name => this._unloadPlugin(name));
         return Promise.all(promises.map(p => p.catch(() => undefined)));
-    },
+    }
 
-    openSettings: function () {
+    openSettings() {
         this.service.openSettings(this._dbus.get_object_path());
-    },
+    }
 
-    destroy: function () {
+    destroy() {
         this.emit("destroy");
 
         Gio.DBus.session.unexport_action_group(this._actionsId);

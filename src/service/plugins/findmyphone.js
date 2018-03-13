@@ -1,16 +1,14 @@
 "use strict";
 
-const Lang = imports.lang;
-
 const Gdk = imports.gi.Gdk;
 const Gio = imports.gi.Gio;
+const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
 // Local Imports
 imports.searchPath.push(gsconnect.datadir);
 
 const Sound = imports.modules.sound;
-const Protocol = imports.service.protocol;
 const PluginsBase = imports.service.plugins.base;
 
 
@@ -48,12 +46,12 @@ var Metadata = {
  * FindMyPhone Plugin
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/findmyphone
  */
-var Plugin = new Lang.Class({
-    Name: "GSConnectFindMyPhonePlugin",
-    Extends: PluginsBase.Plugin,
+var Plugin = GObject.registerClass({
+    GTypeName: "GSConnectFindMyPhonePlugin",
+}, class Plugin extends PluginsBase.Plugin {
 
-    _init: function (device) {
-        this.parent(device, "findmyphone");
+    _init(device) {
+        super._init(device, "findmyphone");
 
         this._desktop = new Gio.Settings({
             schema_id: "org.gnome.system.location"
@@ -61,20 +59,20 @@ var Plugin = new Lang.Class({
 
         this._cancellable = null;
         this._dialog = null;
-    },
+    }
 
-    handlePacket: function (packet) {
+    handlePacket(packet) {
         debug("FindMyPhone: handlePacket()");
 
         if (this.allow & 4) {
             this._handleFind();
         }
-    },
+    }
 
     /**
      * Local Methods
      */
-    _handleFind: function () {
+    _handleFind() {
         debug("FindMyPhone: _ring()");
 
         if (this._cancellable || this._dialog) {
@@ -107,19 +105,19 @@ var Plugin = new Lang.Class({
         this._dialog.present();
 
         return true;
-    },
+    }
 
-    _endFind: function () {
+    _endFind() {
         this._cancellable.cancel();
         this._cancellable = null;
         this._dialog.destroy()
         this._dialog = null;
-    },
+    }
 
     /**
      * Remote Methods
      */
-    find: function () {
+    find() {
         debug(this.device.name);
 
         // FIXME
@@ -127,16 +125,14 @@ var Plugin = new Lang.Class({
             debug(new Error("Operation not permitted: " + packet.type));
         }
 
-        let packet = new Protocol.Packet({
+        this.device.sendPacket({
             id: 0,
             type: "kdeconnect.findmyphone.request",
             body: {}
         });
+    }
 
-        this.device.sendPacket(packet);
-    },
-
-    destroy: function () {
+    destroy() {
         if (this._cancellable || this._dialog) {
             this._endFind();
         }

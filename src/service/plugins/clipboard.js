@@ -1,14 +1,11 @@
 "use strict";
 
-const Lang = imports.lang;
-
 const Gdk = imports.gi.Gdk;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
 // Local Imports
 imports.searchPath.push(gsconnect.datadir);
-const Protocol = imports.service.protocol;
 const PluginsBase = imports.service.plugins.base;
 
 
@@ -33,12 +30,12 @@ var Metadata = {
  * Clipboard Plugin
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/clipboard
  */
-var Plugin = new Lang.Class({
-    Name: "GSConnectClipboardPlugin",
-    Extends: PluginsBase.Plugin,
+var Plugin = GObject.registerClass({
+    GTypeName: "GSConnectClipboardPlugin",
+}, class Plugin extends PluginsBase.Plugin {
 
-    _init: function (device) {
-        this.parent(device, "clipboard");
+    _init(device) {
+        super._init(device, "clipboard");
 
         this._display = Gdk.Display.get_default();
 
@@ -62,49 +59,47 @@ var Plugin = new Lang.Class({
                     return;
                 }
 
-                this._provideContent(text);
+                this.provideClipboard(text);
             });
         });
-    },
+    }
 
-    handlePacket: function (packet) {
+    handlePacket(packet) {
         debug(packet);
 
         if (packet.body.content && (this.allow & 4)) {
             this._handleContent(packet.body.content);
         }
-    },
+    }
 
     /**
      * Remote Methods
      */
-    _handleContent: function (text) {
+    _handleContent(text) {
         debug(text);
 
         this._currentContent = text;
         this._clipboard.set_text(text, -1);
-    },
+    }
 
     /**
      * Local Methods
      */
-    _provideContent: function (text) {
+    provideClipboard(text) {
         if (text !== this._currentContent) {
             debug(text);
 
             this._currentContent = text;
 
-            let packet = new Protocol.Packet({
+            this.device.sendPacket({
                 id: 0,
                 type: "kdeconnect.clipboard",
                 body: { content: text }
             });
-
-            this.device.sendPacket(packet);
         }
-    },
+    }
 
-    destroy: function () {
+    destroy() {
         GObject.signal_handlers_destroy(this._clipboard);
 
         PluginsBase.Plugin.prototype.destroy.call(this);

@@ -1,7 +1,5 @@
 "use strict";
 
-const Lang = imports.lang;
-
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
@@ -42,9 +40,8 @@ var Metadata = {
  * Battery Plugin
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/battery
  */
-var Plugin = new Lang.Class({
-    Name: "GSConnectBatteryPlugin",
-    Extends: PluginsBase.Plugin,
+var Plugin = GObject.registerClass({
+    GTypeName: "GSConnectBatteryPlugin",
     Properties: {
         "charging": GObject.ParamSpec.boolean(
             "charging",
@@ -84,10 +81,11 @@ var Plugin = new Lang.Class({
             -1, GLib.MAXINT32,
             -1
         )
-    },
+    }
+}, class Plugin extends PluginsBase.Plugin {
 
-    _init: function (device) {
-        this.parent(device, "battery");
+    _init(device) {
+        super._init(device, "battery");
 
         this._charging = false;
         this._level = -1;
@@ -124,9 +122,9 @@ var Plugin = new Lang.Class({
                 delete this._upower;
             }
         });
-    },
+    }
 
-    get charging() { return this._charging || false; },
+    get charging() { return this._charging || false; }
     get icon_name() {
         let icon = "battery";
 
@@ -148,21 +146,21 @@ var Plugin = new Lang.Class({
 
         icon += (this._charging) ? "-charging-symbolic" : "-symbolic";
         return icon;
-    },
+    }
     get level() {
         if (this._level === undefined) {
             return -1;
         }
 
         return this._level;
-    },
-    get time() { return this._time || 0; },
-    get threshold () { return this._thresholdLevel },
+    }
+    get time() { return this._time || 0; }
+    get threshold () { return this._thresholdLevel }
 
     /**
      * Packet dispatch
      */
-    handlePacket: function (packet) {
+    handlePacket(packet) {
         debug(packet);
 
         if (packet.type === "kdeconnect.battery" && (this.allow & 4)) {
@@ -170,12 +168,12 @@ var Plugin = new Lang.Class({
         } else if (packet.type === "kdeconnect.battery.request" && (this.allow & 2)) {
             return this.requestUpdate();
         }
-    },
+    }
 
     /**
      * Remote methods
      */
-    _handleUpdate: function (update) {
+    _handleUpdate(update) {
         debug(update);
 
         if (update.thresholdEvent > 0) {
@@ -203,9 +201,9 @@ var Plugin = new Lang.Class({
 
         this._time = this._extrapolateTime();
         this.notify("time");
-    },
+    }
 
-    _handleThreshold: function () {
+    _handleThreshold() {
         debug(this._level);
 
         let notif = new Gio.Notification();
@@ -230,12 +228,12 @@ var Plugin = new Lang.Class({
         this.device.send_notification("battery|threshold", notif);
 
         this._thresholdLevel = this.level;
-    },
+    }
 
     /**
      * Local Methods
      */
-    _monitor: function () {
+    _monitor() {
         // FIXME
         let action = this.device.lookup_action("reportStatus");
 
@@ -263,12 +261,12 @@ var Plugin = new Lang.Class({
             GObject.signal_handlers_destroy(this._upower);
             delete this._upower;
         }
-    },
+    }
 
     /**
      * Report the local battery's current charge/state
      */
-    reportStatus: function () {
+    reportStatus() {
         debug([this._upower.percentage, this._upower.state]);
 
         if (!this._upower) { return; }
@@ -292,25 +290,25 @@ var Plugin = new Lang.Class({
         this.device.sendPacket(packet);
 
         return true;
-    },
+    }
 
     /**
      * Report the local battery's current charge/state
      */
-    requestStatus: function () {
+    requestStatus() {
         this.device.sendPacket({
             id: 0,
             type: "kdeconnect.battery.request",
             body: { request: true }
         });
-    },
+    }
 
     /**
      * Cache methods for battery statistics
      *
      * See also: https://android.googlesource.com/platform/frameworks/base/+/master/core/java/android/os/BatteryStats.java#1036
      */
-    _logStatus: function (level, charging) {
+    _logStatus(level, charging) {
         // Edge case
         if (!level) {
             return;
@@ -328,9 +326,9 @@ var Plugin = new Lang.Class({
         } else if (stats[stats.length - 1].level !== level) {
             stats.push({ time: time, level: level });
         }
-    },
+    }
 
-    _extrapolateTime: function () {
+    _extrapolateTime() {
         let tdelta, ldelta;
         let rate = 0;
         let time = 0;
@@ -360,9 +358,9 @@ var Plugin = new Lang.Class({
         }
 
         return (time === NaN) ? 0 : Math.floor(time);
-    },
+    }
 
-    _limit_func: function () {
+    _limit_func() {
         // Limit stats to 3 days
         let limit = (Date.now() / 1000) - (3*24*60*60);
 
@@ -371,9 +369,9 @@ var Plugin = new Lang.Class({
             discharging: this._dischargeStats.filter(stat => stat.time > limit),
             threshold: this._thresholdLevel
         };
-    },
+    }
 
-    destroy: function () {
+    destroy() {
         if (this._upower) {
             GObject.signal_handlers_destroy(this._upower);
             delete this._upower;

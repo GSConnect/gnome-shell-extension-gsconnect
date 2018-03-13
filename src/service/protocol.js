@@ -18,9 +18,8 @@ var TYPE_PAIR = "kdeconnect.pair";
 /**
  * Packets
  */
-var Packet = new Lang.Class({
-    Name: "GSConnectPacket",
-    Extends: GObject.Object,
+var Packet = GObject.registerClass({
+    GTypeName: "GSConnectPacket",
     Properties: {
         "file": GObject.ParamSpec.object(
             "file",
@@ -28,11 +27,12 @@ var Packet = new Lang.Class({
             "The file associated with the packet",
             GObject.ParamFlags.READABLE,
             Gio.File
-        ),
-    },
+        )
+    }
+}, class Packet extends GObject.Object {
 
-    _init: function (data=false) {
-        this.parent();
+    _init(data=false) {
+        super._init();
 
         this.id = 0;
         this.type = "";
@@ -47,10 +47,10 @@ var Packet = new Lang.Class({
         } else {
             log("Error: unsupported packet source: " + typeof data);
         }
-    },
+    }
 
     // TODO: this means *complete* packets have to be set at construction
-    _check: function (obj) {
+    _check(obj) {
         if (!obj.hasOwnProperty("type")) {
             debug("Packet: missing 'type' field");
             return false;
@@ -63,9 +63,9 @@ var Packet = new Lang.Class({
         }
 
         return true;
-    },
+    }
 
-    setPayload: function (file) {
+    setPayload(file) {
         if (!file instanceof Gio.File) {
             throw TypeError("must be Gio.File");
         }
@@ -93,9 +93,9 @@ var Packet = new Lang.Class({
 
         this._payloadFile = file;
         this._payloadStream = file.read(null);
-    },
+    }
 
-    fromData: function (data) {
+    fromData(data) {
         let json;
 
         try {
@@ -111,23 +111,23 @@ var Packet = new Lang.Class({
         } else {
             throw Error("Packet.fromData(): Malformed packet");
         }
-    },
+    }
 
     // TODO: better merging than this
-    fromPacket: function (packet) {
+    fromPacket(packet) {
         if (this._check(packet)) {
             Object.assign(this, JSON.parse(JSON.stringify(packet)));
         } else {
             throw Error("Packet.fromPacket(): Malformed packet");
         }
-    },
+    }
 
-    toData: function () {
+    toData() {
         this.id = GLib.DateTime.new_now_local().to_unix();
         return JSON.stringify(this) + "\n";
-    },
+    }
 
-    toString: function () {
+    toString() {
         return JSON.stringify(this);
     }
 });
@@ -143,9 +143,8 @@ var Packet = new Lang.Class({
  * packets containing a TCP port for connection, taking the address from the
  * sender, emitting 'packet::'. It also broadcasts these packets to 255.255.255.255.
  */
-var LanChannelService = new Lang.Class({
-    Name: "GSConnectLanChannelService",
-    Extends: GObject.Object,
+var LanChannelService = GObject.registerClass({
+    GTypeName: "GSConnectLanChannelService",
     Properties: {
         "discovering": GObject.ParamSpec.boolean(
             "discovering",
@@ -172,28 +171,29 @@ var LanChannelService = new Lang.Class({
             flags: GObject.SignalFlags.RUN_FIRST,
             param_types: [ GObject.TYPE_OBJECT ]
         }
-    },
+    }
+}, class LanChannelService extends GObject.Object {
 
-    _init: function (port=1716) {
-        this.parent();
+    _init(port=1716) {
+        super._init();
 
         this._initTcpListener();
         this._initUdpListener();
-    },
+    }
 
     get discovering() {
         return this._tcp.active;
-    },
+    }
 
     set discovering(bool) {
         (bool) ? this._tcp.start() : this._tcp.stop();
-    },
+    }
 
     get port() {
         return this._port || 0;
-    },
+    }
 
-    _initTcpListener: function () {
+    _initTcpListener() {
         this._tcp = new Gio.SocketService();
         let port = 1716;
 
@@ -222,21 +222,21 @@ var LanChannelService = new Lang.Class({
         this._tcp.connect("notify::active", () => this.notify("discovering"));
 
         debug("Using port " + port + " for TCP");
-    },
+    }
 
     /**
      * Receive a TCP connection and emit a Channel with 'channel::'
      */
-    _receiveChannel: function (listener, connection) {
+    _receiveChannel(listener, connection) {
         let channel = new Channel();
         let _tmp = channel.connect("connected", (channel) => {
             channel.disconnect(_tmp);
             this.emit("channel", channel);
         });
         channel.accept(connection);
-    },
+    }
 
-    _initUdpListener: function () {
+    _initUdpListener() {
         this._udp = new Gio.Socket({
             family: Gio.SocketFamily.IPV4,
             type: Gio.SocketType.DATAGRAM,
@@ -289,13 +289,13 @@ var LanChannelService = new Lang.Class({
         source.attach(null);
 
         debug("Using port " + port + " for UDP");
-    },
+    }
 
     /**
      * Receive an identity packet and emit 'packet::'
      * @param {Packet} identity - the identity packet to broadcast
      */
-    _receivePacket: function () {
+    _receivePacket() {
         let addr, data, flags, size;
 
         try {
@@ -324,13 +324,13 @@ var LanChannelService = new Lang.Class({
         this.emit("packet", packet);
 
         return true;
-    },
+    }
 
     /**
      * Broadcast an identity packet
      * @param {Packet} identity - the identity packet to broadcast
      */
-    broadcast: function (identity) {
+    broadcast(identity) {
         //debug(packet);
         //debug(identity);
 
@@ -340,9 +340,9 @@ var LanChannelService = new Lang.Class({
             debug(e);
             log("Error sending identity packet: " + e.message);
         }
-    },
+    }
 
-    destroy: function () {
+    destroy() {
         this._tcp.stop();
         this._tcp.close();
         this._udp.close();
@@ -350,9 +350,8 @@ var LanChannelService = new Lang.Class({
 });
 
 
-var BluetoothChannelService = new Lang.Class({
-    Name: "GSConnectBluetoothChannelService",
-    Extends: GObject.Object,
+var BluetoothChannelService = GObject.registerClass({
+    GTypeName: "GSConnectBluetoothChannelService",
     Properties: {
         "discovering": GObject.ParamSpec.boolean(
             "discovering",
@@ -371,6 +370,10 @@ var BluetoothChannelService = new Lang.Class({
             flags: GObject.SignalFlags.RUN_FIRST,
             param_types: [ GObject.TYPE_OBJECT ]
         }
+    }
+}, class BluetoothChannelService extends GObject.Object {
+    _init() {
+        super._init();
     }
 });
 
@@ -442,9 +445,8 @@ function get_sdp_record(name, uuid, channel, psm) {
 /**
  * Data Channels
  */
-var Channel = new Lang.Class({
-    Name: "GSConnectChannel",
-    Extends: GObject.Object,
+var Channel = GObject.registerClass({
+    GTypeName: "GSConnectChannel",
     Signals: {
         "connected": {
             flags: GObject.SignalFlags.RUN_FIRST
@@ -465,10 +467,11 @@ var Channel = new Lang.Class({
             GObject.ParamFlags.READABLE,
             Gio.TlsCertificate
         )
-    },
+    }
+}, class Channel extends GObject.Object {
 
-    _init: function (deviceId) {
-        this.parent();
+    _init(deviceId) {
+        super._init();
 
         this.daemon = Gio.Application.get_default();
 
@@ -476,31 +479,31 @@ var Channel = new Lang.Class({
         this.identity = { body: { deviceId: deviceId } };
 
         this._monitor = 0;
-    },
+    }
 
     get certificate() {
         return this._certificate || null;
-    },
+    }
 
     /**
      * Set TCP socket options
      */
-    _initSocket: function (connection) {
+    _initSocket(connection) {
         return new Promise((resolve, reject) => {
             connection.socket.set_keepalive(true);
             connection.socket.set_option(6, 4, 10); // TCP_KEEPIDLE
-            connection.socket.set_option(6, 5, 5); // TCP_KEEPINTVL
-            connection.socket.set_option(6, 6, 3); // TCP_KEEPCNT
+            connection.socket.set_option(6, 5, 5);  // TCP_KEEPINTVL
+            connection.socket.set_option(6, 6, 3);  // TCP_KEEPCNT
 
             resolve(connection);
         });
-    },
+    }
 
     /**
      * Read the identity packet from the Gio.SocketConnection file descriptor
      * TODO: could just take a file-descriptor, ie bluetooth
      */
-    _receiveIdent: function (connection) {
+    _receiveIdent(connection) {
         return new Promise((resolve, reject) => {
             let _input_stream = new Gio.DataInputStream({
                 base_stream: new Gio.UnixInputStream({
@@ -520,13 +523,13 @@ var Channel = new Lang.Class({
 
             resolve(connection);
         });
-    },
+    }
 
     /**
      * Write our identity packet to the Gio.SocketConnection file descriptor
      * TODO: could just take a file-descriptor, ie bluetooth
      */
-    _sendIdent: function (connection) {
+    _sendIdent(connection) {
         return new Promise((resolve, reject) => {
             let _output_stream = new Gio.DataOutputStream({
                 base_stream: new Gio.UnixOutputStream({
@@ -539,12 +542,12 @@ var Channel = new Lang.Class({
 
             resolve(connection);
         });
-    },
+    }
 
     /**
      * Verify connection certificate
      */
-    _onAcceptCertificate: function (connection, peer_cert, flags) {
+    _onAcceptCertificate(connection, peer_cert, flags) {
         log("Authenticating '" + this.identity.body.deviceId + "'");
 
         this._certificate = peer_cert;
@@ -567,12 +570,12 @@ var Channel = new Lang.Class({
 
         // Otherwise trust on first use, we pair later
         return true;
-    },
+    }
 
     /**
      * Handshake Gio.TlsConnection
      */
-    _handshakeTls: function (connection) {
+    _handshakeTls(connection) {
         return new Promise((resolve, reject) => {
             connection.validation_flags = 0;
             connection.authentication_mode = 1;
@@ -595,12 +598,12 @@ var Channel = new Lang.Class({
                 }
             );
         });
-    },
+    }
 
     /**
      * Wrap @connection in TlsClientConnection and handshake
      */
-    _clientTls: function (connection) {
+    _clientTls(connection) {
         return new Promise((resolve, reject) => {
             connection = Gio.TlsClientConnection.new(
                 connection,
@@ -610,12 +613,12 @@ var Channel = new Lang.Class({
 
             resolve(this._handshakeTls(connection));
         });
-    },
+    }
 
     /**
      * Wrap @connection in TlsServerConnection and handshake
      */
-    _serverTls: function (connection) {
+    _serverTls(connection) {
         return new Promise((resolve, reject) => {
             connection = Gio.TlsServerConnection.new(
                 connection,
@@ -624,13 +627,13 @@ var Channel = new Lang.Class({
 
             resolve(this._handshakeTls(connection));
         });
-    },
+    }
 
     /**
      * Init streams for reading/writing packets and monitor the input stream
      * TODO
      */
-    _initPacketIO: function (connection) {
+    _initPacketIO(connection) {
         return new Promise((resolve, reject) => {
             this._input_stream = new Gio.DataInputStream({
                 base_stream: connection.input_stream,
@@ -642,22 +645,18 @@ var Channel = new Lang.Class({
             });
 
             this._monitor = this._input_stream.base_stream.create_source(null);
-            this._monitor.set_callback((condition) => {
-                let result = this.receive();
-                if (!result) { this.close(); }
-                return result;
-            });
+            this._monitor.set_callback(this.receive.bind(this));
             this._monitor.attach(null);
 
             resolve(connection);
         });
-    },
+    }
 
     /**
      * Open a channel (outgoing connection)
      * @param {Gio.InetSocketAddress} address - ...
      */
-    open: function (address) {
+    open(address) {
         log("Connecting to '" + this.identity.body.deviceId + "'");
 
         // Open a new outgoing connection
@@ -693,13 +692,13 @@ var Channel = new Lang.Class({
             debug(e);
             this.close();
         });
-    },
+    }
 
     /**
      * Accept a channel (incoming connection)
      * @param {Gio.TcpConnection} connection - ...
      */
-    accept: function (connection) {
+    accept(connection) {
         // Set the usual socket options and receive the device's identity
         return this._initSocket(connection).then(tcpConnection => {
             return this._receiveIdent(tcpConnection);
@@ -719,9 +718,9 @@ var Channel = new Lang.Class({
             debug(e);
             this.close();
         });
-    },
+    }
 
-    close: function () {
+    close() {
         try {
             if (this._monitor > 0) {
                 GLib.Source.remove(this._monitor);
@@ -729,10 +728,9 @@ var Channel = new Lang.Class({
             }
         } catch (e) {
             debug(e);
-            log("error removing monitor: " + e);
         }
 
-        ["_input_stream", "_output_stream", "_connection", "_listener"].map(stream => {
+        ["_input_stream", "_output_stream", "_connection"].map(stream => {
             try {
                 if (this[stream]) {
                     this[stream].close(null);
@@ -740,7 +738,6 @@ var Channel = new Lang.Class({
                 }
             } catch (e) {
                 debug(e);
-                log("error closing stream '" + stream + "': " + e);
             }
         });
 
@@ -751,17 +748,16 @@ var Channel = new Lang.Class({
             }
         } catch (e) {
             debug(e);
-            log("error closing stream '" + this._listener + "': " + e);
         }
 
         this.emit("disconnected");
-    },
+    }
 
     /**
      * Send a packet to a device
      * @param {Packet} packet - A packet object
      */
-    send: function (packet) {
+    send(packet) {
         debug(this.identity.body.deviceId + ", " + packet.toString());
 
         try {
@@ -770,22 +766,24 @@ var Channel = new Lang.Class({
             log("error sending packet: " + e);
             // TODO: disconnect? check kdeconnect code
         }
-    },
+    }
 
     /**
      * Receive a packet from a device, emitting 'received::' with the packet
      */
-    receive: function () {
-        let data, len;
+    receive() {
+        let data, length;
 
         try {
-            [data, len] = this._input_stream.read_line(null);
+            [data, length] = this._input_stream.read_line(null);
         } catch (e) {
             debug(e);
+            this.close();
             return false;
         }
 
-        if (data === null || data === undefined || !data.length) {
+        if (!data) {
+            this.close();
             return false;
         }
 
@@ -812,9 +810,8 @@ var Channel = new Lang.Class({
  *      output_stream: {Gio.OutputStream} writable stream for downloads
  *  });
  */
-var Transfer = new Lang.Class({
-    Name: "GSConnectTransfer",
-    Extends: Channel,
+var Transfer = GObject.registerClass({
+    GTypeName: "GSConnectTransfer",
     Signals: {
         "started": {
             flags: GObject.SignalFlags.RUN_FIRST
@@ -857,9 +854,10 @@ var Transfer = new Lang.Class({
             GObject.ParamFlags.READABLE,
             ""
         )
-    },
+    }
+}, class Transfer extends Channel {
 
-    _init: function (params) {
+    _init(params) {
         this.parent(params.device.id);
 
         this._cancellable = new Gio.Cancellable();
@@ -872,15 +870,15 @@ var Transfer = new Lang.Class({
         this.checksum = params.checksum;
         this._checksum = new GLib.Checksum(GLib.ChecksumType.MD5);
         this._written = 0;
-    },
+    }
 
     get device() {
         return this._device;
-    },
+    }
 
     get size() {
         return this._size || 0;
-    },
+    }
 
     get uuid() {
         if (!this._uuid) {
@@ -888,7 +886,7 @@ var Transfer = new Lang.Class({
         }
 
         return this._uuid;
-    },
+    }
 
     /**
      * Open a new channel for uploading (incoming connection)
@@ -909,7 +907,7 @@ var Transfer = new Lang.Class({
      *      device._channel.send(packet);
      *  });
      */
-    upload: function (port=1739) {
+    upload(port=1739) {
         debug(this.identity.body.deviceId);
 
         return new Promise((resolve, reject) => {
@@ -937,9 +935,9 @@ var Transfer = new Lang.Class({
             // Return the incoming port for payloadTransferInfo
             resolve(port);
         });
-    },
+    }
 
-    upload_accept: function (listener, res) {
+    upload_accept(listener, res) {
         debug(this.identity.body.deviceId);
 
         // Accept the connection
@@ -965,7 +963,7 @@ var Transfer = new Lang.Class({
             debug(e);
             this.close();
         });
-    },
+    }
 
     /**
      * Open a new channel for downloading (outgoing connection)
@@ -976,7 +974,7 @@ var Transfer = new Lang.Class({
      *  transfer.connect("succeeded"|"failed"|"cancelled", transfer => func());
      *  transfer.download(packet.payloadTransferInfo.port).catch(e => debug(e));
      */
-    download: function (port) {
+    download(port) {
         log("Connecting to '" + this.identity.body.deviceId + "'");
 
         // Create a new connection
@@ -1015,19 +1013,19 @@ var Transfer = new Lang.Class({
             debug(e);
             this.close();
         });
-    },
+    }
 
-    start: function () {
+    start() {
         this.emit("started");
         this._read();
-    },
+    }
 
-    cancel: function () {
+    cancel() {
         this._cancellable.cancel();
         this.emit("cancelled");
-    },
+    }
 
-    _read: function () {
+    _read() {
         if (this._cancellable.is_cancelled()) { return; }
 
         this._input_stream.read_bytes_async(
@@ -1065,9 +1063,9 @@ var Transfer = new Lang.Class({
                 }
             }
         );
-    },
+    }
 
-    _write: function (bytes) {
+    _write(bytes) {
         if (this._cancellable.is_cancelled()) { return; }
 
         this._output_stream.write_bytes_async(

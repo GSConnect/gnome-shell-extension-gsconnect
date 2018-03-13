@@ -1,14 +1,11 @@
 "use strict";
 
-const Lang = imports.lang;
-
 const Gio = imports.gi.Gio;
 const GObject = imports.gi.GObject;
 
 // Local Imports
 imports.searchPath.push(gsconnect.datadir);
 const MPRIS = imports.modules.mpris;
-const Protocol = imports.service.protocol;
 const PluginsBase = imports.service.plugins.base;
 
 
@@ -34,12 +31,12 @@ var Metadata = {
  *       See #39 https://github.com/andyholmes/gnome-shell-extension-gsconnect/pull/39
  *       https://github.com/KDE/kdeconnect-kde/commit/9e0d4874c072646f1018ad413d59d1f43e590777
  */
-var Plugin = new Lang.Class({
-    Name: "GSConnectMPRISPlugin",
-    Extends: PluginsBase.Plugin,
+var Plugin = GObject.registerClass({
+    GTypeName: "GSConnectMPRISPlugin",
+}, class Plugin extends PluginsBase.Plugin {
 
-    _init: function (device) {
-        this.parent(device, "mpris");
+    _init(device) {
+        super._init(device, "mpris");
 
         try {
             this.mpris = MPRIS.get_default();
@@ -58,9 +55,9 @@ var Plugin = new Lang.Class({
             this.destroy();
             throw Error("MPRIS: " + e.message);
         }
-    },
+    }
 
-    handlePacket: function (packet) {
+    handlePacket(packet) {
         debug(packet);
 
         if (packet.body.requestPlayerList) {
@@ -74,12 +71,12 @@ var Plugin = new Lang.Class({
                 this._sendPlayerList();
             }
         }
-    },
+    }
 
     /**
      * Local
      */
-    _handleCommand: function (packet) {
+    _handleCommand(packet) {
         debug(packet);
 
         // FIXME: AllowTraffic constant??
@@ -172,18 +169,16 @@ var Plugin = new Lang.Class({
             response.body.player = packet.body.player;
             this.device.sendPacket(response);
         }
-    },
+    }
 
-    _sendPlayerList: function () {
+    _sendPlayerList() {
         debug("MPRIS: _sendPlayerList()");
 
-        let packet = new Protocol.Packet({
+        this.device.sendPacket({
             id: 0,
             type: "kdeconnect.mpris",
             body: { playerList: this.mpris.identities }
         });
-
-        this.device.sendPacket(packet);
     }
 });
 

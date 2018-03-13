@@ -1,7 +1,5 @@
 "use strict";
 
-const Lang = imports.lang;
-
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
@@ -62,9 +60,8 @@ var Metadata = {
  *     }
  * }
  */
-var Plugin = new Lang.Class({
+var Plugin = GObject.registerClass({
     Name: "GSConnectSFTPPlugin",
-    Extends: PluginsBase.Plugin,
     Properties: {
         "directories": GObject.param_spec_variant(
             "directories",
@@ -89,10 +86,11 @@ var Plugin = new Lang.Class({
             1739, 1764,
             1739
         )
-    },
+    }
+}, class Plugin extends PluginsBase.Plugin {
 
-    _init: function (device) {
-        this.parent(device, "sftp");
+    _init(device) {
+        super._init(device, "sftp");
 
         if (!gsconnect.checkCommand("sshfs")) {
             this.destroy();
@@ -108,22 +106,22 @@ var Plugin = new Lang.Class({
         if (this.settings.get_boolean("automount")) {
             this.mount();
         }
-    },
+    }
 
-    get directories () { return this._directories || {}; },
-    get mounted () { return this._mounted || false },
-    get port () { return this._port || 0; },
+    get directories () { return this._directories || {}; }
+    get mounted () { return this._mounted || false }
+    get port () { return this._port || 0; }
 
-    handlePacket: function (packet) {
+    handlePacket(packet) {
         debug(packet);
 
         // FIXME FIXME FIXME
         if (packet.type === "kdeconnect.sftp") {
             this._parseConnectionData(packet);
         }
-    },
+    }
 
-    _parseConnectionData: function (packet) {
+    _parseConnectionData(packet) {
         this._ip = packet.body.ip;
         this._port = packet.body.port;
         this._root = packet.body.path;
@@ -142,9 +140,9 @@ var Plugin = new Lang.Class({
 
         // FIXME: shouldn't automount, but should auto-probe for info
         this._mount(packet);
-    },
+    }
 
-    _mount: function (packet) {
+    _mount(packet) {
         let dir = Gio.File.new_for_path(this._path);
         let info = dir.query_info("unix::uid,unix::gid", 0, null);
         this._uid = info.get_attribute_uint32("unix::uid").toString();
@@ -203,7 +201,7 @@ var Plugin = new Lang.Class({
         });
 
         let source = this._stderr.base_stream.create_source(null);
-        source.set_callback(Lang.bind(this, this._read_stderr));
+        source.set_callback(this._read_stderr.bind(this));
         source.attach(null);
 
         // Send session password
@@ -217,9 +215,9 @@ var Plugin = new Lang.Class({
         this.notify("mounted");
 
         return true;
-    },
+    }
 
-    _read_stderr: function () {
+    _read_stderr() {
         // unmount() was called with data in the queue
         if (!this._stderr) { return; }
 
@@ -242,9 +240,9 @@ var Plugin = new Lang.Class({
                 }
             }
         });
-    },
+    }
 
-    mount: function () {
+    mount() {
         debug("SFTP: mount()");
 
         this.device.sendPacket({
@@ -252,9 +250,9 @@ var Plugin = new Lang.Class({
             type: "kdeconnect.sftp.request",
             body: { startBrowsing: true }
         });
-    },
+    }
 
-    unmount: function () {
+    unmount() {
         debug("SFTP: unmount()");
 
         try {
@@ -302,9 +300,9 @@ var Plugin = new Lang.Class({
 
         this._mounted = false;
         this.notify("mounted");
-    },
+    }
 
-    destroy: function () {
+    destroy() {
         if (this.mounted) {
             this.unmount();
         }

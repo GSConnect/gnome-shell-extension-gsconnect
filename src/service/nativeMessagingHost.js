@@ -71,29 +71,29 @@ var DeviceInterface = gsconnect.dbusinfo.lookup_interface(
 );
 
 
-var NativeMessagingHost = new Lang.Class({
-    Name: "GSConnectNativeMessagingHost",
-    Extends: Gio.Application,
+var NativeMessagingHost = GObject.registerClass({
+    GTypeName: "GSConnectNativeMessagingHost"
+}, class NativeMessagingHost extends Gio.Application {
 
-    _init: function () {
-        this.parent({
+    _init() {
+        super._init({
             application_id: "org.gnome.Shell.Extensions.GSConnect.NativeMessagingHost",
             flags: Gio.ApplicationFlags.NON_UNIQUE
         });
         gsconnect.installService();
 
         this._devices = {};
-    },
+    }
 
-    get devices() { return Object.values(this._devices); },
+    get devices() { return Object.values(this._devices); }
 
-    vfunc_activate: function() {
-        this.parent();
+    vfunc_activate() {
+        super.vfunc_activate();
         this.hold();
-    },
+    }
 
-    vfunc_startup: function() {
-        this.parent();
+    vfunc_startup() {
+        super.vfunc_startup();
 
         // IO Channels
         this.stdin = new Gio.DataInputStream({
@@ -137,9 +137,9 @@ var NativeMessagingHost = new Lang.Class({
         );
 
         this.send({ type: "connected", data: true });
-    },
+    }
 
-    receive: function () {
+    receive() {
         let message;
 
         try {
@@ -179,9 +179,9 @@ var NativeMessagingHost = new Lang.Class({
         }
 
         return true;
-    },
+    }
 
-    send: function (message) {
+    send(message) {
         try {
             let data = JSON.stringify(message);
             debug("WebExtension: send: " + data);
@@ -192,9 +192,9 @@ var NativeMessagingHost = new Lang.Class({
         } catch (e) {
             debug(e);
         }
-    },
+    }
 
-    sendDeviceList: function () {
+    sendDeviceList() {
         if (!this.manager || this.manager.name_owner === null) {
             // Inform the WebExtension we're disconnected from the service
             this.send({ type: "connected", data: false });
@@ -220,9 +220,9 @@ var NativeMessagingHost = new Lang.Class({
         }
 
         this.send({ type: "devices", data: devices });
-    },
+    }
 
-    _interfaceAdded: function (object, iface) {
+    _interfaceAdded(object, iface) {
         if (iface.g_interface_name === "org.gnome.Shell.Extensions.GSConnect.Device") {
             _proxyProperties(DeviceInterface, iface);
 
@@ -234,9 +234,9 @@ var NativeMessagingHost = new Lang.Class({
 
             this._devices[iface.id] = iface;
         }
-    },
+    }
 
-    _interfaceRemoved: function (object, iface) {
+    _interfaceRemoved(object, iface) {
         if (iface.g_interface_name === "org.gnome.Shell.Extensions.GSConnect.Device") {
             delete this._devices[iface.id];
         }
