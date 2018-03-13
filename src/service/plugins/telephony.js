@@ -52,22 +52,12 @@ var Metadata = {
             outgoing: ["kdeconnect.sms.request"],
             allow: Allow.OUT | Allow.IN | Allow.SMS
         },
-        replyMissedCall: {
-            summary: _("Reply Missed Call"),
-            description: _("Reply to a missed call by SMS"),
-            icon_name: "sms-symbolic",
-
-            signature: "av",
-            incoming: ["kdeconnect.telephony"],
-            outgoing: ["kdeconnect.sms.request"],
-            allow: Allow.OUT | Allow.IN | Allow.CALLS | Allow.SMS
-        },
         replySms: {
             summary: _("Reply SMS"),
             description: _("Reply to an SMS message"),
             icon_name: "sms-symbolic",
 
-            signature: "av",
+            signature: "v",
             incoming: ["kdeconnect.telephony"],
             outgoing: ["kdeconnect.sms.request"],
             allow: Allow.OUT | Allow.IN | Allow.SMS
@@ -78,6 +68,26 @@ var Metadata = {
             icon_name: "sms-send",
 
             signature: "av",
+            incoming: ["kdeconnect.telephony"],
+            outgoing: ["kdeconnect.sms.request"],
+            allow: Allow.OUT | Allow.IN | Allow.SMS
+        },
+        callNotification: {
+            summary: _("Call Notification"),
+            description: _("Show a notification tailored for phone calls"),
+            icon_name: "sms-symbolic",
+
+            signature: "v",
+            incoming: ["kdeconnect.telephony"],
+            outgoing: ["kdeconnect.sms.request"],
+            allow: Allow.OUT | Allow.IN | Allow.CALLS | Allow.SMS
+        },
+        smsNotification: {
+            summary: _("SMS Notification"),
+            description: _("Show a notification that opens a new conversation when activated"),
+            icon_name: "sms-symbolic",
+
+            signature: "v",
             incoming: ["kdeconnect.telephony"],
             outgoing: ["kdeconnect.sms.request"],
             allow: Allow.OUT | Allow.IN | Allow.SMS
@@ -207,21 +217,17 @@ var Plugin = GObject.registerClass({
         if (packet.body.isCancel) {
             // TODO TODO TODO: all of it
             this._setMediaState(1);
-            this.device.withdraw_notification(event.event + "|" + event.contact.name); // FIXME
+            this.device.withdraw_notification(
+                event.type + "|" + event.contact.name
+            );
         // An event was triggered
         } else {
-            this.event(
-                event.event,
-                [event.contact.name || "",
-                event.phoneNumber || "",
-                event.contact.avatar || "",
-                event.messageBody || ""]
-            );
+            this.event(event.type, event);
 
-            if (event.event === "sms" && this.allow & Allow.SMS) {
+            if (event.type === "sms" && this.allow & Allow.SMS) {
                 this._onSms(event);
             } else if (this.allow & Allow.CALLS) {
-                switch (event.event) {
+                switch (event.type) {
                     case "missedCall":
                         this._onMissedCall(event);
                         break;
@@ -244,46 +250,126 @@ var Plugin = GObject.registerClass({
      * @param {Object} packet - A telephony event packet
      * @return {Object} - An event object
      */
-        let event = packet.body;
-        event.time = GLib.DateTime.new_now_local().to_unix();
-
-        event.contact = this.contacts.getContact(
-            event.contactName,
-            event.phoneNumber
-        );
     _parsePacket(packet) {
+        let event = {
+            type: packet.body.event,
+            contact: this.contacts.getContact(
+                packet.body.contactName,
+                packet.body.phoneNumber
+            ),
+            number: packet.body.phoneNumber,
+            time: GLib.DateTime.new_now_local().to_unix()
+        };
 
         // Update contact avatar
-        // FIXME: move to modules/contacts.js
-        if (event.phoneThumbnail) {
-            if (!event.contact.avatar) {
-                debug("updating avatar for " + event.contact.name);
+        if (packet.body.phoneThumbnail && !event.contact.avatar) {
+            debug("updating avatar for " + event.contact.name);
 
-                let path = this.contacts._cacheDir + "/" + GLib.uuid_string_random() + ".jpeg";
-                GLib.file_set_contents(
-                    path,
-                    GLib.base64_decode(event.phoneThumbnail)
-                );
-                event.contact.avatar = path;
-                this.contacts._writeCache();
-            }
-    }
-
-            delete event.phoneThumbnail;
+            event.contact.avatar = GLib.build_filenamev([
+                Contacts.CACHE_DIR,
+                GLib.uuid_string_random() + ".jpeg"
+            ]);
+            GLib.file_set_contents(
+                event.contact.avatar,
+                GLib.base64_decode(event.phoneThumbnail)
+            );
+            this.contacts._writeCache();
         }
 
-        // Set an icon appropriate for the event
-        if (event.contact.avatar) {
-            event.gicon = this.contacts.getContactPixbuf(event.contact.avatar);
-        } else if (event.event === "missedCall") {
-            event.gicon = new Gio.ThemedIcon({ name: "call-missed-symbolic" });
-        } else if (["ringing", "talking"].indexOf(event.event) > -1) {
-            event.gicon = new Gio.ThemedIcon({ name: "call-start-symbolic" });
-        } else if (event.event === "sms") {
-            event.gicon = new Gio.ThemedIcon({ name: "sms-symbolic" });
+        if (event.type === "sms") {
+            event.content = packet.body.messageBody;
+        } else if (event.type === "missedCall") {
+            event.content = "<i>" + _("Missed call at %s").format(event.time) + "</i>";
+        } else if (event.type === "ringing") {
+            event.content = packet.body.messageBody;
+        } else if (event.type === "talking") {
+            event.content = packet.body.messageBody;
         }
 
         return event;
+    }
+
+    /**
+     * Show a local notification that opens a new SMS window when activated
+     *
+     * @param {Object} event - The telephony event
+     * @param {string} event.contactName - The sender's name
+     * @param {string} event.number - The sender's phone number
+     * @param {number} event.time - The event time in epoch us
+     */
+    callNotification(event) {
+        let body, title, icon, priority, buttons;
+
+        if (event.contact && event.contact.avatar) {
+            icon = Contacts.getPixbuf(event.contact.avatar);
+        }
+
+        if (event.type === "missedCall") {
+            // TRANSLATORS: eg. Missed call from John Smith on Google Pixel
+            body = _("Missed call from %s").format(event.contact.name);
+            icon = icon || new Gio.ThemedIcon({ name: "call-missed-symbolic" });
+            priority = Gio.NotificationPriority.NORMAL;
+            buttons = [{
+                action: "replySms",
+                // TRANSLATORS: Reply to a missed call by SMS
+                label: _("Message"),
+                params: event
+            }];
+        } else if (event.type === "ringing") {
+            // TRANSLATORS: eg. Incoming call from John Smith
+            body = _("Incoming call from %s").format(event.contact.name);
+            icon = icon || new Gio.ThemedIcon({ name: "call-start-symbolic" });
+            priority = Gio.NotificationPriority.URGENT;
+            buttons = [{
+                action: "muteCall",
+                // TRANSLATORS: Silence an incoming call
+                label: _("Mute"),
+                params: event
+            }];
+        } else if (event.type === "talking") {
+            // TRANSLATORS: eg. Call in progress with John Smith
+            body = _("Call in progress with %s").format(event.contact.name);
+            icon = icon || new Gio.ThemedIcon({ name: "call-start-symbolic" });
+            priority = Gio.NotificationPriority.NORMAL;
+        }
+
+        this.device.showNotification({
+            id: event.type + "|" + event.time,
+            title: event.contact.name,
+            body: event.content,
+            icon: icon,
+            priority: priority
+        });
+    }
+
+    /**
+     * Show a local notification that opens a new SMS window when activated
+     *
+     * @param {Object} event - The telephony event
+     * @param {string} event.contactName - The sender's name
+     * @param {string} event.number - The sender's phone number
+     * @param {number} event.time - The event time in epoch us
+     */
+    smsNotification(event) {
+        let icon;
+
+        if (event.contact.avatar) {
+            icon = Contacts.getPixbuf(event.contact.avatar);
+        } else {
+            icon = new Gio.ThemedIcon({ name: "sms-symbolic" });
+        }
+
+        this.device.showNotification({
+            id: event.type + "|"  + event.time,
+            title: event.contact.name,
+            body: event.content,
+            icon: icon,
+            priority: Gio.NotificationPriority.HIGH,
+            action: {
+                name: "replySms",
+                params: event
+            }
+        });
     }
 
     /**
@@ -299,88 +385,48 @@ var Plugin = GObject.registerClass({
             // TRANSLATORS: This is specifically for matching missed call notifications on Android.
             // You should translate this to match the notification on your phone that in english looks like "Missed call: John Lennon"
             notification.markDuplicate({
-                localId: "missedCall|" + event.time,
+                localId: event.type + "|" + event.time,
                 ticker: _("Missed call") + ": " + event.contact.name,
             });
         }
 
         // Check for an extant window
-        let window = this._hasWindow(event.phoneNumber);
+        let window = this._hasWindow(event.number);
 
         if (window) {
             // FIXME: logging the missed call in the window
             // TODO: need message object
             window.receiveMessage(
                 event.contact,
-                event.phoneNumber,
+                event.number,
                 "<i>" + _("Missed call at %s").format(event.time) + "</i>"
             );
             window.urgency_hint = true;
             window._notifications.push([
-                event.event,
-                event.contact.name + ": " + event.messageBody
+                event.type,
+                event.contact.name + ": " + event.content
             ].join("|"));
 
             // Tell the notification plugin to mark any duplicate read
             if (notification) {
                 notification.markDuplicate({
-                    localId: "missedCall|" + event.time,
-                    ticker: event.contact.name + ": " + event.messageBody,
+                    localId: event.type + "|" + event.time,
+                    ticker: event.contact.name + ": " + event.content,
                     isCancel: true
                 });
             }
         }
 
-        let notif = new Gio.Notification();
-        // TRANSLATORS: Missed Call
-        notif.set_title(_("Missed Call"));
-        notif.set_body(
-            // TRANSLATORS: eg. Missed call from John Smith on Google Pixel
-            _("Missed call from %s on %s").format(
-                event.contact.name,
-                this.device.name
-            )
-        );
-        notif.set_icon(event.gicon);
-        notif.set_priority(Gio.NotificationPriority.NORMAL);
-
-        notif.add_device_button(
-            // TRANSLATORS: Reply to a missed call by SMS
-            _("Message"),
-            this._dbus.get_object_path(),
-            "replyMissedCall",
-            event.phoneNumber,
-            event.contact.name,
-            event.time
-        );
-
-        this.device.send_notification(event.event + "|"  + event.time, notif);
-
-        return true;
+        let actions = gsconnect.full_unpack(this.settings.get_value("events"))[event.type];
+        this.callNotification(event);
     }
 
     _onRinging(event) {
         debug(event);
 
-        let notif = new Gio.Notification();
-        // TRANSLATORS: Incoming Call
-        notif.set_title(_("Incoming Call"));
-        notif.set_body(
-            // TRANSLATORS: eg. Incoming call from John Smith on Google Pixel
-            _("Incoming call from %s on %s").format(event.contact.name, this.device.name)
-        );
-        notif.set_icon(event.gicon);
-        notif.set_priority(Gio.NotificationPriority.URGENT);
-
-        notif.add_device_button(
-            // TRANSLATORS: Silence an incoming call
-            _("Mute"),
-            this._dbus.get_object_path(),
-            "muteCall"
-        );
-
-        this.device.send_notification(event.event + "|"  + event.time, notif);
         // TODO TODO TODO
+        let actions = gsconnect.full_unpack(this.settings.get_value("events"))[event.type];
+        this.callNotification(event);
         this._setMediaState(2);
     }
 
@@ -392,54 +438,39 @@ var Plugin = GObject.registerClass({
 
         if (notification) {
             notification.markDuplicate({
-                localId: "sms|" + event.time,
-                ticker: event.contact.name + ": " + event.messageBody
+                localId: event.type + "|" + event.time,
+                ticker: event.contact.name + ": " + event.content
             });
         }
 
         // Check for an extant window
-        let window = this._hasWindow(event.phoneNumber);
+        let window = this._hasWindow(event.number);
 
         if (window) {
             window.receiveMessage(
                 event.contact,
-                event.phoneNumber,
-                event.messageBody
+                event.number,
+                event.content
             );
             window.urgency_hint = true;
             window._notifications.push([
-                event.event,
-                event.contact.name + ": " + event.messageBody
+                event.type,
+                event.contact.name + ": " + event.content
             ].join("|"));
 
             // Tell the notification plugin to mark any duplicate read
             if (notification) {
                 notification.markDuplicate({
-                    localId: "sms|" + event.time,
-                    ticker: event.contact.name + ": " + event.messageBody,
+                    localId: event.type + "|" + event.time,
+                    ticker: event.contact.name + ": " + event.content,
                     isCancel: true
                 });
             }
         }
 
-        let notif = new Gio.Notification();
-        notif.set_title(event.contact.name);
-        notif.set_body(event.messageBody);
-        notif.set_icon(event.gicon);
-        notif.set_priority(Gio.NotificationPriority.HIGH);
-
-        notif.set_device_action(
-            this._dbus.get_object_path(),
-            "replySms",
-            event.phoneNumber,
-            event.contact.name,
-            event.messageBody,
-            event.time
-        );
-
-        this.device.send_notification(event.event + "|"  + event.time, notif);
-
-        return true;
+        let actions = gsconnect.full_unpack(this.settings.get_value("events"))[event.type];
+        log("SMS ACTIONS: " + actions);
+        this.smsNotification(event);
     }
 
     _onTalking(event) {
@@ -448,21 +479,9 @@ var Plugin = GObject.registerClass({
         // TODO: need this, or done by isCancel?
         this.device.withdraw_notification("ringing|" + event.contact.name);
 
-        let notif = new Gio.Notification();
-        // TRANSLATORS: Talking on the phone
-        notif.set_title(_("Call In Progress"));
-        notif.set_body(
-            // TRANSLATORS: eg. Call in progress with John Smith on Google Pixel
-            _("Call in progress with %s on %s").format(
-                event.contact.name,
-                this.device.name
-            )
-        );
-        notif.set_icon(event.gicon);
-        notif.set_priority(Gio.NotificationPriority.NORMAL);
-
-        this.device.send_notification(event.event + "|"  + event.time, notif);
         // TODO TODO TODO
+        let actions = gsconnect.full_unpack(this.settings.get_value("events"))[event.type];
+        this.callNotification(event);
         this._setMediaState(2);
     }
 
@@ -583,38 +602,39 @@ var Plugin = GObject.registerClass({
      * could be a missed call, or reuse an existing one
      *
      * @param {Object} event - The event
+     * @param {Object} event.contact - A contact object for the sender
      * @param {string} event.number - The sender's phone number
-     * @param {string} event.contactName - The sender's name
-     * @param {string} event.content - The SMS message
+     * @param {string} event.content - The content of the event (eg. SMS)
      * @param {number} event.time - The event time in epoch us
      */
     replySms(event) {
         debug(event);
 
         // Check for an extant window
-        let window = this._hasWindow(phoneNumber);
+        let window = this._hasWindow(event.number);
 
         // None found
         if (!window) {
             // Open a new window
             window = new Sms.ConversationWindow(this.device);
 
-            let contact = this.contacts.getContact(
-                contactName,
-                phoneNumber
-            );
-
             // Log the message
-            window.receiveMessage(contact, phoneNumber, messageBody);
-            window.urgency_hint = true;
+            if (event.content) {
+                window.receiveMessage(
+                    event.contact,
+                    event.number,
+                    event.content
+                );
+                window.urgency_hint = true;
+            }
 
             // Tell the notification plugin to mark any duplicate read
             let notification = this.device._plugins.get("notification");
 
             if (notification) {
                 notification.markDuplicate({
-                    localId: "sms|" + time,
-                    ticker: contact.name + ": " + messageBody,
+                    localId: event.type + "|" + event.time,
+                    ticker: event.contact.name + ": " + event.content,
                     isCancel: true
                 });
             }
