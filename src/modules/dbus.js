@@ -2,11 +2,23 @@
 
 const Lang = imports.lang;
 
+const Gi = imports._gi;
 const Gio = imports.gi.Gio;
 const GjsPrivate = imports.gi.GjsPrivate;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
-const Gi = imports._gi;
+
+
+/**
+ * Some utility methods
+ */
+String.prototype.toDBusCase = function(string) {
+    string = string || this;
+
+    return string.replace(/(?:^\w|[A-Z]|\b\w)/g, (ltr, offset) => {
+        return ltr.toUpperCase();
+    }).replace(/[\s_-]+/g, '');
+};
 
 
 function _makeOutSignature(args) {
@@ -18,11 +30,11 @@ function _makeOutSignature(args) {
 };
 
 
-function variantToGType(types) {
+function dbus_variant_to_gtype(types) {
     let gtypes = [];
 
-    for (let char of types) {
-        switch (char) {
+    for (let i = 0; i < types.length; i++) {
+        switch (types[i]) {
             case "b":
                 gtypes.push(GObject.TYPE_BOOLEAN);
                 break;
@@ -59,22 +71,20 @@ function variantToGType(types) {
  * and properties (include notify::) defined in the interface and transforms
  * all members to TitleCase.
  */
-var ProxyServer = new Lang.Class({
-    Name: "GSConnectDBusProxyServer",
-    Extends: GjsPrivate.DBusImplementation,
+var ProxyServer = GObject.registerClass({
+    GTypeName: "GSConnectDBusProxyServer",
     Signals: {
         "destroy": {
             flags: GObject.SignalFlags.NO_HOOKS
         }
-    },
+    }
+}, class ProxyServer extends GjsPrivate.DBusImplementation {
 
-    _init: function (params) {
-        this.parent({
+    _init(params) {
+        super._init({
             g_interface_info: params.g_interface_info
         });
-        delete params.g_interface_info;
 
-        this._g_interface_info = params.g_interface_info;
         this._exportee = params.g_instance;
 
         if (params.g_object_path) {
@@ -95,17 +105,17 @@ var ProxyServer = new Lang.Class({
                 params.g_object_path
             );
         }
-    },
+    }
 
     // HACK: for some reason the getter doesn't work properly on the parent
     get g_interface_info() {
         return this.get_info();
-    },
+    }
 
     /**
      *
      */
-    _call: function(info, methodName, parameters, invocation) {
+    _call(info, methodName, parameters, invocation) {
         let properName = methodName.toCamelCase();
         properName = (this[properName]) ? properName : methodName.toUnderscoreCase();
 
@@ -152,9 +162,9 @@ var ProxyServer = new Lang.Class({
                 "Service implementation returned an incorrect value type"
             );
         }
-    },
+    }
 
-    _exportMethods: function () {
+    _exportMethods() {
         this.connect('handle-method-call', (impl, name, parameters, invocation) => {
             return this._call.call(
                 this._exportee,
@@ -164,9 +174,9 @@ var ProxyServer = new Lang.Class({
                 invocation
             );
         });
-    },
+    }
 
-    _get: function(info, propertyName) {
+    _get(info, propertyName) {
         // Look up the property info
         let propertyInfo = info.lookup_property(propertyName);
         // Convert to lower_underscore case before getting
@@ -178,9 +188,9 @@ var ProxyServer = new Lang.Class({
         }
 
         return null;
-    },
+    }
 
-    _set: function(info, name, value) {
+    _set(info, name, value) {
         // TODO: relies on 'gsconnect'
         value = gsconnect.full_unpack(value);
         //value = value.deep_unpack();
@@ -195,29 +205,19 @@ var ProxyServer = new Lang.Class({
 
         // Convert to lower_underscore case before setting
         this[name[this._propertyCase]()] = value;
-    },
+    }
 
-    _exportProperties: function(info) {
+    _exportProperties(info) {
         this.connect('handle-property-get', (impl, name) => {
-            return this._get.call(
-                this._exportee,
-                this.g_interface_info,
-                name
-            );
+            return this._get.call(this._exportee, info, name);
         });
 
         this.connect('handle-property-set', (impl, name, value) => {
-            return this._set.call(
-                this._exportee,
-                this.g_interface_info,
-                name,
-                value
-            );
+            return this._set.call(this._exportee, info, name, value);
         });
 
         this._exportee.connect("notify", (obj, paramSpec) => {
             let name = paramSpec.name.toDBusCase();
-
             let propertyInfo = this.g_interface_info.lookup_property(name);
 
             if (propertyInfo) {
@@ -231,9 +231,9 @@ var ProxyServer = new Lang.Class({
                 );
             }
         });
-    },
+    }
 
-    _exportSignals: function (info) {
+    _exportSignals(info) {
         for (let signal of info.signals) {
             this._exportee.connect(signal.name.toHyphenCase(), (obj, ...args) => {
                 this.emit_signal(
@@ -245,9 +245,9 @@ var ProxyServer = new Lang.Class({
                 );
             });
         }
-    },
+    }
 
-    destroy: function() {
+    destroy() {
         this.emit("destroy");
         this.flush();
         this.unexport();
@@ -262,28 +262,37 @@ var ProxyServer = new Lang.Class({
 var Proxies = {};
 
 
-var ProxyBase = new Lang.Class({
-    Name: "GSConnectDBusProxyBase",
-    Extends: Gio.DBusProxy,
+var ProxyBase = GObject.registerClass({
+    GTypeName: "GSConnectDBusProxyBase",
     Signals: {
         "destroy": {
             flags: GObject.SignalFlags.NO_HOOKS
         }
-    },
+    }
+}, class ProxyBase extends Gio.DBusProxy {
 
-    _init: function (params) {
-        this.flags = params.flags;
-        delete params.flags;
-
-        this.parent(Object.assign({
+    _init(params) {
+        super._init(Object.assign({
             g_connection: Gio.DBus.session
         }, params));
 
         this.cancellable = new Gio.Cancellable();
-        this._proxyAll(this.g_interface_info);
-    },
 
-    init_promise: function () {
+        // Proxy all members
+        let info = this.g_interface_info;
+
+        this._proxyMethods(info);
+        this._proxyProperties(info);
+        this._proxySignals(info);
+
+        // Destroy the proxy if the g_name_owner dies
+        this.connect("notify::g-name-owner", () => {
+            if (this.g_name_owner === null) {
+            }
+        });
+    }
+
+    init_promise() {
         return new Promise((resolve, reject) => {
             this.init_async(GLib.PRIORITY_DEFAULT, null, (proxy, res) => {
                 try {
@@ -294,9 +303,9 @@ var ProxyBase = new Lang.Class({
                 }
             });
         });
-    },
+    }
 
-    _call_sync: function (info) {
+    _call_sync(info) {
         // TODO: do this in _proxyMethod()???
         let args = Array.prototype.slice.call(arguments, 1);
         let signature = info.in_args.map(arg => arg.signature).join("");
@@ -314,9 +323,9 @@ var ProxyBase = new Lang.Class({
         }
 
         return retval;
-    },
+    }
 
-    _call: function (info) {
+    _call(info) {
         return new Promise((resolve, reject) => {
             let args = Array.prototype.slice.call(arguments, 1);
             let signature = info.in_args.map(arg => arg.signature);
@@ -341,12 +350,12 @@ var ProxyBase = new Lang.Class({
                 }
             });
         });
-    },
+    }
 
     /**
      * Synchronous Uncached Getter
      */
-    _get: function (name, signature) {
+    _get(name, signature) {
         let variant;
 
         try {
@@ -373,12 +382,12 @@ var ProxyBase = new Lang.Class({
                 return null;
             }
         }
-    },
+    }
 
     /**
      * Asynchronous Setter
      */
-    _set: function (name, value, signature) {
+    _set(name, value, signature) {
         // Pack the new value
         let variant = new GLib.Variant(signature, value);
 
@@ -404,25 +413,25 @@ var ProxyBase = new Lang.Class({
                 }
             }
         );
-    },
+    }
 
     /**
      * Wrap a method in this._call()
      * @param {Gio.DBusMethodInfo} info - The interface expected to be
-     *                                       implemented by this object
+     *                                    implemented by this object
      */
-    _proxyMethod: function (info) {
+    _proxyMethod(info) {
         return function () {
             return this._call.call(this, info, ...arguments);
         };
-    },
+    }
 
     /**
      * Wrap each method in this._call()
      * @param {Gio.DBusInterfaceInfo} info - The interface expected to be
      *                                       implemented by this object
      */
-    _proxyMethods: function (info) {
+    _proxyMethods(info) {
         let i, methods = info.methods;
 
         for (i = 0; i < methods.length; i++) {
@@ -431,7 +440,7 @@ var ProxyBase = new Lang.Class({
             let properName = method.name.toCamelCase();
             this[properName] = this._proxyMethod(method);
         }
-    },
+    }
 
     /**
      * Wrap each property with this._get()/this._set() and call notify();
@@ -440,7 +449,7 @@ var ProxyBase = new Lang.Class({
      * @param {Gio.DBusInterfaceInfo} info - The interface expected to be
      *                                       implemented by this object
      */
-    _proxyProperties: function(info) {
+    _proxyProperties(info) {
         if (info.properties.length > 0) {
             for (let property of info.properties) {
                 let name = property.name;
@@ -464,14 +473,14 @@ var ProxyBase = new Lang.Class({
                 }
             });
         }
-    },
+    }
 
     /**
      * Wrap 'g-signal' with GObject.emit(); requires each signal to be defined
      * @param {Gio.DBusInterfaceInfo} info - The interface expected to be
      *                                       implemented by this object
      */
-    _proxySignals: function(info) {
+    _proxySignals(info) {
         if (info.signals.length > 0) {
             this.connect("g-signal", (proxy, sender, name, parameters) => {
                 // Signals are emitted using lower-hyphen
@@ -481,29 +490,9 @@ var ProxyBase = new Lang.Class({
                 this.emit(...args);
             });
         }
-    },
+    }
 
-    /**
-     * Wrap all methods, properties and signals
-     * @param {Gio.DBusInterfaceInfo} info - The interface expected to be
-     *                                       implemented by this object
-     */
-    _proxyAll: function(info) {
-        this._proxyMethods(info);
-        this._proxyProperties(info);
-        this._proxySignals(info);
-
-        // FIXME FIXME FIXME
-        // Destroy the proxy if the g_name_owner dies
-        this.connect("notify::g-name-owner", () => {
-            if (this.g_name_owner === null) {
-                debug("NAME OWNER CHANGED: " + this.g_object_path + ":" + this.g_interface_name);
-                //this.destroy();
-            }
-        });
-    },
-
-    destroy: function() {
+    destroy() {
         debug(this.g_interface_name);
 
         this.emit("destroy");
@@ -522,7 +511,7 @@ function makeInterfaceProxy(info) {
         return Proxies[info.name];
     }
 
-    // Properties
+    // GProperty ParamSpec's
     let properties_ = {};
 
     for (let i = 0; i < info.properties.length; i++) {
@@ -577,7 +566,7 @@ function makeInterfaceProxy(info) {
         }
     }
 
-    // Signals
+    // GSignal Spec's
     let signals_ = {};
 
     for (let i = 0; i < info.signals.length; i++) {
@@ -585,19 +574,19 @@ function makeInterfaceProxy(info) {
 
         signals_[signal.name.toHyphenCase()] = {
             flags: GObject.SignalFlags.RUN_FIRST,
-            param_types: variantToGType(signal.args.map(arg => arg.signature).join(""))
+            param_types: dbus_variant_to_gtype(signal.args.map(arg => arg.signature).join(""))
         };
     }
 
     // Register and store the proxy class to avoid more work or GType collisions
-    Proxies[info.name] = new Lang.Class({
-        Name: "Proxy_" + info.name.split(".").join(""),
-        Extends: ProxyBase,
+    Proxies[info.name] = GObject.registerClass({
+        GTypeName: "Proxy_" + info.name.split(".").join(""),
         Properties: properties_,
-        Signals: signals_,
+        Signals: signals_
+    }, class ProxyExtension extends ProxyBase {
 
-        _init: function (params) {
-            this.parent(Object.assign({
+        _init(params) {
+            super._init(Object.assign({
                 g_connection: Gio.DBus.session,
                 g_interface_info: info,
                 g_interface_name: info.name
