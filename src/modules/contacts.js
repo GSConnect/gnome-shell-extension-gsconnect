@@ -2,7 +2,6 @@
 
 const Gettext = imports.gettext.domain("org.gnome.Shell.Extensions.GSConnect");
 const _ = Gettext.gettext;
-const Lang = imports.lang;
 
 const Gdk = imports.gi.Gdk;
 const GdkPixbuf = imports.gi.GdkPixbuf;
@@ -28,6 +27,10 @@ try {
 // Local Imports
 imports.searchPath.push(gsconnect.datadir);
 const Color = imports.modules.color;
+
+
+//
+var CACHE_DIR = GLib.build_filenamev([gsconnect.cachedir, "_contacts"]);
 
 
 // Return a singleton
@@ -107,43 +110,8 @@ function mergeContacts(current, update) {
 };
 
 
-var Contact = new Lang.Class({
-    Name: "GSConnectContact",
-    Extends: GObject.Object,
-    Properties: {
-        "name": GObject.ParamSpec.string(
-            "name",
-            "Contact Name",
-            "The contact display name",
-            GObject.ParamFlags.READABLE,
-            ""
-        )
-    },
-
-    _init: function () {
-        this.parent();
-    },
-
-    // TODO: deep merge a contact
-    merge: function (contactObject) {
-    },
-
-    // Convenience function for turning a contact into a string of JSON
-    toString: function () {
-        return JSON.stringify({
-            name: this.name,
-            numbers: this.numbers,
-            avatar: this.avatar,
-            folks_id: this.folks_id,
-            origin: this.origin
-        });
-    }
-});
-
-
-var Store = new Lang.Class({
-    Name: "GSConnectContactsStore",
-    Extends: GObject.Object,
+var Store = GObject.registerClass({
+    GTypeName: "GSConnectContactsStore",
     Implements: [ Gio.ListModel ],
     Properties: {
         "contacts": GObject.param_spec_variant(
@@ -172,17 +140,17 @@ var Store = new Lang.Class({
     Signals: {
         "destroy": { flags: GObject.SignalFlags.NO_HOOKS },
         "ready": { flags: GObject.SignalFlags.RUN_FIRST }
-    },
+    }
+}, class Store extends GObject.Object {
 
-    _init: function () {
-        this.parent();
+    _init() {
+        super._init();
 
         // Init cache
-        this._cacheDir =  GLib.build_filenamev([gsconnect.cachedir, "_contacts"]);
-        GLib.mkdir_with_parents(this._cacheDir, 448);
+        GLib.mkdir_with_parents(CACHE_DIR, 448);
 
         this._cacheFile = Gio.File.new_for_path(
-            GLib.build_filenamev([this._cacheDir, "contacts.json"])
+            GLib.build_filenamev([CACHE_DIR, "contacts.json"])
         );
 
         // Read cache
@@ -201,46 +169,46 @@ var Store = new Lang.Class({
         });
 
         this.update();
-    },
+    }
 
-    get contacts () {
+    get contacts() {
         return Object.keys(this._contacts);
-    },
+    }
 
-    get provider_icon () {
+    get provider_icon() {
         return this._provider_icon || "call-start-symbolic";
-    },
+    }
 
-    get provider_name () {
+    get provider_name() {
         return this._provider_name || _("GSConnect");
-    },
+    }
 
     /**
      * Gio.ListModel interface
      */
-    vfunc_get_item: function () {
-    },
+    vfunc_get_item() {
+    }
 
-    vfunc_get_item_type: function () {
+    vfunc_get_item_type() {
         return Contact;
-    },
+    }
 
-    vfunc_get_n_items: function () {
+    vfunc_get_n_items() {
         return Object.keys(this._contacts).length;
-    },
+    }
 
     /**
      * Addition ListModel-like function
      */
-    add_item: function () {
+    add_item() {
         this.notify("contacts");
-    },
+    }
 
-    remove_item: function () {
+    remove_item() {
         this.notify("contacts");
-    },
+    }
 
-    query: function (query) {
+    query(query) {
         let number = (query.number) ? query.number.replace(/\D/g, "") : null;
 
         let matches = {};
@@ -300,9 +268,9 @@ var Store = new Lang.Class({
         }
 
         return matches;
-    },
+    }
 
-    update: function () {
+    update() {
         this._updateFolksContacts().then((result) => {
             debug("contacts read from folks");
 
@@ -326,12 +294,12 @@ var Store = new Lang.Class({
                 debug("Warning: Error updating Google contacts: " + error.message + "\n" + error.stack);
             });
         });
-    },
+    }
 
     /**
      * Convenience Methods
      */
-    getContact: function (name, number) {
+    getContact(name, number) {
         debug(arguments);
 
         return this.query({
@@ -340,11 +308,10 @@ var Store = new Lang.Class({
             single: true,
             create: true
         });
-    },
-
+    }
 
     // FIXME FIXME FIXME: cleanup, stderr
-    _updateFolksContacts: function () {
+    _updateFolksContacts() {
         return new Promise((resolve, reject) => {
             let envp = GLib.get_environ();
             envp.push("FOLKS_BACKENDS_DISABLED=telepathy")
@@ -398,9 +365,9 @@ var Store = new Lang.Class({
                 reject(e);
             }
         });
-    },
+    }
 
-    _updateGoogleContacts: function () {
+    _updateGoogleContacts() {
         return new Promise((resolve, reject) => {
             let contacts = {};
             let goaClient = Goa.Client.new_sync(null);
@@ -428,10 +395,10 @@ var Store = new Lang.Class({
 
             resolve(["goa-account-google", _("Google")]);
         });
-    },
+    }
 
     /** Query a Google account for contacts via GData */
-    _getGoogleContacts: function (account) {
+    _getGoogleContacts(account) {
         let query = new GData.ContactsQuery({ q: "" });
         let count = 0;
         let contacts = {};
@@ -469,9 +436,9 @@ var Store = new Lang.Class({
         }
 
         return contacts
-    },
+    }
 
-    _writeCache: function () {
+    _writeCache() {
         try {
             this._cacheFile.replace_contents(
                 JSON.stringify(this._contacts),
@@ -483,9 +450,9 @@ var Store = new Lang.Class({
         } catch (e) {
             debug("Error writing contacts cache: " + e.message + "\n" + e.stack);
         }
-    },
+    }
 
-    destroy: function () {
+    destroy() {
         this.emit("destroy");
 
         this._writeCache();
@@ -496,12 +463,12 @@ var Store = new Lang.Class({
 /**
  * Contact Avatar
  */
-var Avatar = new Lang.Class({
-    Name: "GSConnectContactAvatar",
-    Extends: Gtk.DrawingArea,
+var Avatar = GObject.registerClass({
+    GTypeName: "GSConnectContactAvatar"
+}, class Avatar extends Gtk.DrawingArea {
 
-    _init: function (contact, size=32) {
-        this.parent({
+    _init(contact, size=32) {
+        super._init({
             height_request: size,
             width_request: size,
             vexpand: false,
@@ -556,10 +523,10 @@ var Avatar = new Lang.Class({
         // Image
         this.connect("draw", this._onDraw.bind(this));
         this.queue_draw();
-    },
+    }
 
     // Image
-    _onDraw: function (widget, cr) {
+    _onDraw(widget, cr) {
         let offset = 0;
 
         if (!this.contact.avatar) {
@@ -584,10 +551,10 @@ var Avatar = new Lang.Class({
 
         cr.$dispose();
         return false;
-    },
+    }
 
     // Popover
-    _popover: function (widget, event) {
+    _popover(widget, event) {
         let popover = new Gtk.PopoverMenu({
             relative_to: this,
             visible: true
@@ -635,15 +602,15 @@ var Avatar = new Lang.Class({
         }
 
         popover.popup();
-    },
+    }
 
-    _popoverContacts: function () {
+    _popoverContacts() {
         GLib.spawn_command_line_async(
             "gnome-contacts -i " + this.contact.folks_id
         );
-    },
+    }
 
-    _popoverColor: function (event) {
+    _popoverColor(event) {
         let colorChooser = new Gtk.ColorChooserDialog({
             modal: true,
             transient_for: this.get_toplevel(),
@@ -669,9 +636,9 @@ var Avatar = new Lang.Class({
         });
 
         colorChooser.show();
-    },
+    }
 
-    _popoverDelete: function () {
+    _popoverDelete() {
         let store = getStore();
         let contacts = store._contacts;
 
@@ -684,20 +651,19 @@ var Avatar = new Lang.Class({
 
         store._writeCache();
         store.notify("contacts");
-    },
+    }
 });
 
 
-var ContactChooser = new Lang.Class({
-    Name: "GSConnectContactChooser",
-    Extends: Gtk.ScrolledWindow,
+var ContactChooser = GObject.registerClass({
+    GTypeName: "GSConnectContactChooser",
     Properties: {
         "selected": GObject.param_spec_variant(
             "selected",
             "selectedContacts",
             "A list of selected contacts",
             new GLib.VariantType("as"),
-            new GLib.Variant("as", []),
+            null,
             GObject.ParamFlags.READABLE
         )
     },
@@ -706,10 +672,11 @@ var ContactChooser = new Lang.Class({
             flags: GObject.SignalFlags.RUN_FIRST,
             param_types: [ GObject.TYPE_STRING ]
         }
-    },
+    }
+}, class ContactChooser extends Gtk.ScrolledWindow {
 
-    _init: function (params) {
-        this.parent({
+    _init(params) {
+        super._init({
             can_focus: false,
             hexpand: true,
             vexpand: true,
@@ -744,8 +711,8 @@ var ContactChooser = new Lang.Class({
             selection_mode: Gtk.SelectionMode.NONE,
             visible: true
         });
-        this.list.set_filter_func(Lang.bind(this, this._filter));
-        this.list.set_sort_func(Lang.bind(this, this._sort));
+        this.list.set_filter_func(this._filter.bind(this));
+        this.list.set_sort_func(this._sort.bind(this));
         this.add(this.list);
 
         // Placeholder
@@ -788,16 +755,16 @@ var ContactChooser = new Lang.Class({
         this.show_all();
         this.entry.has_focus = true;
         this.list.unselect_all();
-    },
+    }
 
     get selected () {
         return this._selected;
-    },
+    }
 
     /**
      * Add a new contact row to the list
      */
-    _addContact: function (contact) {
+    _addContact(contact) {
         let row = new Gtk.ListBoxRow({
             activatable: false,
             visible: true
@@ -835,12 +802,12 @@ var ContactChooser = new Lang.Class({
         }
 
         return row;
-    },
+    }
 
     /**
      * Add a contact number to a row
      */
-    _addContactNumber: function (row, number) {
+    _addContactNumber(row, number) {
         let box = new Gtk.Box({ visible: true });
         box.number = number;
         row.numbers.add(box);
@@ -874,9 +841,9 @@ var ContactChooser = new Lang.Class({
         box.add(box.recipient);
 
         row.show_all();
-    },
+    }
 
-    _onEntryChanged: function (entry) {
+    _onEntryChanged(entry) {
         if (this.entry.text.replace(/\D/g, "").length > 2) {
             if (this._dynamic) {
                 this._dynamic._name.label = _("Send to %s").format(this.entry.text);
@@ -899,9 +866,9 @@ var ContactChooser = new Lang.Class({
 
         this.list.invalidate_sort();
         this.list.invalidate_filter();
-    },
+    }
 
-    _filter: function (row) {
+    _filter(row) {
         let queryName = this.entry.text.toLowerCase();
         let queryNumber = this.entry.text.replace(/\D/g, "");
 
@@ -930,7 +897,7 @@ var ContactChooser = new Lang.Class({
         }
 
         return false;
-    },
+    }
 
     /**
      * Return a localized string for a phone number type
@@ -938,7 +905,7 @@ var ContactChooser = new Lang.Class({
      * See: https://developers.google.com/gdata/docs/2.0/elements#rel-values_71
      *      http://www.ietf.org/rfc/rfc2426.txt
      */
-    _localizeType: function (type) {
+    _localizeType(type) {
         if (!type) { return _("Other"); }
 
         if (type.indexOf("fax") > -1) {
@@ -958,17 +925,17 @@ var ContactChooser = new Lang.Class({
             // TRANSLATORS: A phone number type
             return _("Other");
         }
-    },
+    }
 
-    _populate: function () {
+    _populate() {
         this.list.foreach(child => child.destroy());
 
         for (let id in this.contacts._contacts) {
             this._addContact(this.contacts._contacts[id]);
         }
-    },
+    }
 
-    _sort: function (row1, row2) {
+    _sort(row1, row2) {
         if (row1.dynamic) {
             return -1;
         } else if (row2.dynamic) {
@@ -998,9 +965,9 @@ var ContactChooser = new Lang.Class({
         }
 
         return row1._name.label.localeCompare(row2._name.label);
-    },
+    }
 
-    _toggle: function (row, box) {
+    _toggle(row, box) {
         if (box.recipient.active) {
             if (row.dynamic) {
                 row._name.label = box.contact.name;
