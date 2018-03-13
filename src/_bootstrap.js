@@ -376,14 +376,6 @@ String.prototype.format = Format.format;
 /**
  * String tranformation prototypes
  */
-String.prototype.toDBusCase = function(string) {
-    string = string || this;
-
-    return string.replace(/(?:^\w|[A-Z]|\b\w)/g, (ltr, offset) => {
-        return ltr.toUpperCase();
-    }).replace(/[\s_-]+/g, '');
-};
-
 // FIXME
 String.prototype.toDBusSafe = function(string) {
     string = string || this;
