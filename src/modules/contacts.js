@@ -41,6 +41,25 @@ function getStore() {
     return _contactsStore;
 };
 
+/**
+ * Get Gdk.Pixbuf for @path, allowing for partially corrupt JPEG's KDE Connect
+ * sometimes sends.
+ *
+ * @param {string} path - A local file path
+ */
+function getPixbuf(path) {
+    let loader = new GdkPixbuf.PixbufLoader();
+    loader.write(GLib.file_get_contents(path)[1]);
+
+    try {
+        loader.close();
+    } catch (e) {
+        debug("Warning: " + e.message);
+    }
+
+    return loader.get_pixbuf();
+};
+
 
 function mergeContacts(current, update) {
     let newContacts = {};
@@ -323,21 +342,6 @@ var Store = new Lang.Class({
         });
     },
 
-    getContactPixbuf: function (path) {
-        let loader = new GdkPixbuf.PixbufLoader();
-        loader.write(GLib.file_get_contents(path)[1]);
-
-        try {
-            loader.close();
-        } catch (e) {
-            debug("Warning: " + e.message);
-        }
-
-        return loader.get_pixbuf();
-    },
-
-    setContactPixbuf: function () {
-    },
 
     // FIXME FIXME FIXME: cleanup, stderr
     _updateFolksContacts: function () {

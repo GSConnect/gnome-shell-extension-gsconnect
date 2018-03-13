@@ -340,7 +340,7 @@ var Plugin = GObject.registerClass({
                         icon.get_bytes().toArray().toString()
                     );
                 } else if (contact.avatar && !icon) {
-                    icon = this.contacts.getContactPixbuf(contact.avatar);
+                    icon = Contacts.getPixbuf(contact.avatar);
                 }
 
                 // Format as a missed call notification
