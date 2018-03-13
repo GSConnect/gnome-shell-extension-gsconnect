@@ -485,6 +485,48 @@ var Device = GObject.registerClass({
         this.service.withdraw_notification(this.id + "|" + id);
     }
 
+    showNotification(params) {
+        params = Object.assign({
+            title: this.name,
+            body: "",
+            icon: new Gio.ThemedIcon({ name: this.symbolic_icon_name }),
+            priority: Gio.NotificationPriority.NORMAL,
+            action: null,
+            buttons: []
+        }, params);
+
+        let notif = new Gio.Notification();
+        notif.set_title(params.title);
+        notif.set_body(params.body);
+        notif.set_icon(params.icon);
+        notif.set_priority(params.priority);
+
+        if (params.action) {
+            notif.set_default_action_and_target(
+                "app.deviceAction",
+                new GLib.Variant("(ssv)", [
+                    this._dbus.get_object_path(),
+                    params.action.name,
+                    gsconnect.full_pack(params.action.params)
+                ])
+            );
+        }
+
+        for (let button of params.buttons) {
+            notif.add_button_with_target(
+                button.label,
+                "app.deviceAction",
+                new GLib.Variant("(ssv)", [
+                    this._dbus.get_object_path(),
+                    button.action,
+                    gsconnect.full_pack(button.params)
+                ])
+            );
+        }
+
+        this.send_notification("tester", notif);
+    }
+
     /**
      * Pairing Functions
      */
