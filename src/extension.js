@@ -585,6 +585,7 @@ var SystemIndicator = new Lang.Class({
     _init: function () {
         this.parent();
 
+        this._devices = {};
         this._indicators = {};
         this._menus = {};
 
@@ -651,6 +652,10 @@ var SystemIndicator = new Lang.Class({
             this._serviceAppeared.bind(this),
             this._serviceVanished.bind(this)
         );
+    },
+
+    get devices() {
+        return Object.values(this._devices);
     },
 
     _displayMode: function (menu) {
@@ -760,6 +765,8 @@ var SystemIndicator = new Lang.Class({
                 // Try activating the device
                 iface.activate();
             }
+
+            this._devices[iface.id] = iface;
         }
     },
 
@@ -771,6 +778,7 @@ var SystemIndicator = new Lang.Class({
 
             this._indicators[iface.g_object_path].destroy();
             this._menus[iface.g_object_path].destroy();
+            delete this._devices[iface.id];
             delete this._indicators[iface.g_object_path];
             delete this._menus[iface.g_object_path];
         }
@@ -794,13 +802,13 @@ var SystemIndicator = new Lang.Class({
         let deviceId = id.splice(0, 1)[0];
         id = id.join("|");
 
-        for (let device of this.manager.get_devices()) {
-            if (deviceId === device.id && device.actions.get_action_enabled("closeNotification")) {
+        if (serviceIndicator._devices[deviceId]) {
+            let device = serviceIndicator._devices[deviceId];
+            if (device.actions.get_action_enabled("closeNotification")) {
                 device.actions.activate_action(
                     "closeNotification",
                     gsconnect.full_pack([id])
                 );
-                break;
             }
         }
     },

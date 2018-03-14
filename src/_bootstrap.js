@@ -340,22 +340,7 @@ Object.defineProperty(Gio.TlsCertificate.prototype, "serial", {
 });
 
 
-Gio.DBusObjectManagerClient.prototype.get_devices = function () {
-    let devices = [];
-
-    for (let obj of this.get_objects()) {
-        for (let iface of obj.get_interfaces()) {
-            if (iface.g_interface_name === "org.gnome.Shell.Extensions.GSConnect.Device") {
-                devices.push(iface);
-            }
-        }
-    }
-
-    return devices;
-};
-
-
-//
+// FIXME: :P
 Gio.MenuModel.prototype[Symbol.iterator] = function* _menuModelIterator() {
     let _index = 0;
     const _len = this.get_n_items();
