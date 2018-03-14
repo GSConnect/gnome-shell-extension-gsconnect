@@ -165,10 +165,10 @@ Gio.TlsCertificate.prototype.get_common_name = function () {
     let stdout = new Gio.DataInputStream({
         base_stream: new Gio.UnixInputStream({ fd: proc[3] })
     });
-    let uuid = stdout.read_line(null)[0].toString().split("/CN=")[1];
+    let output = stdout.read_line(null)[0].toString();
     stdout.close(null);
 
-    return uuid;
+    return /[a-zA-Z0-9\-]{36}/.exec(output)[0];
 };
 
 
