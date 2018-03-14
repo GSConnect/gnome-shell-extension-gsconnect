@@ -274,64 +274,70 @@ Gio.Notification.prototype.set_device_action = function (dbusPath, name, ...args
 
 
 /**
- * Extend Gio.TlsCertificate with a function to retreive the Common Name
+ * Extend Gio.TlsCertificate with a method for computing a SHA1 fingerprint.
+ * See: https://bugzilla.gnome.org/show_bug.cgi?id=788315
  *
- * @return {string} - The common name of the certificate issuer
+ * @return {string} - A SHA1 fingerprint of the certificate.
  */
-Gio.TlsCertificate.prototype.get_common_name = function () {
-    let proc = GLib.spawn_async_with_pipes(
-        null,
-        ["openssl", "x509", "-noout", "-subject", "-inform", "pem"],
-        null,
-        GLib.SpawnFlags.SEARCH_PATH,
-        null
-    );
+Gio.TlsCertificate.prototype.fingerprint = function() {
+    if (!this.__fingerprint) {
+        let proc = GLib.spawn_async_with_pipes(
+            null,
+            ["openssl", "x509", "-noout", "-fingerprint", "-sha1", "-inform", "pem"],
+            null,
+            GLib.SpawnFlags.SEARCH_PATH,
+            null
+        );
 
-    let stdin = new Gio.DataOutputStream({
-        base_stream: new Gio.UnixOutputStream({ fd: proc[2] })
-    });
-    stdin.put_string(this.certificate_pem, null);
-    stdin.close(null);
+        let stdin = new Gio.DataOutputStream({
+            base_stream: new Gio.UnixOutputStream({ fd: proc[2] })
+        });
+        stdin.put_string(this.certificate_pem, null);
+        stdin.close(null);
 
-    let stdout = new Gio.DataInputStream({
-        base_stream: new Gio.UnixInputStream({ fd: proc[3] })
-    });
-    let uuid = stdout.read_line(null)[0].toString().split("/CN=")[1];
-    stdout.close(null);
+        let stdout = new Gio.DataInputStream({
+            base_stream: new Gio.UnixInputStream({ fd: proc[3] })
+        });
+        this.__fingerprint = stdout.read_line(null)[0].toString().split("=")[1];
+        stdout.close(null);
+    }
 
-    return uuid;
+    return this.__fingerprint;
 };
 
 
 /**
- * Extend Gio.TlsCertificate with a SHA1 fingerprint function
- * See: https://bugzilla.gnome.org/show_bug.cgi?id=788315
- *
- * @return {string} - A SHA1 fingerprint
+ * Extend Gio.TlsCertificate with a property holding the serial number of the
+ * certificate.
  */
-Gio.TlsCertificate.prototype.fingerprint = function () {
-    let proc = GLib.spawn_async_with_pipes(
-        null,
-        ["openssl", "x509", "-noout", "-fingerprint", "-sha1", "-inform", "pem"],
-        null,
-        GLib.SpawnFlags.SEARCH_PATH,
-        null
-    );
+Object.defineProperty(Gio.TlsCertificate.prototype, "serial", {
+    get: function() {
+        if (!this.__serial) {
+            let proc = GLib.spawn_async_with_pipes(
+                null,
+                ["openssl", "x509", "-noout", "-serial", "-inform", "pem"],
+                null,
+                GLib.SpawnFlags.SEARCH_PATH,
+                null
+            );
 
-    let stdin = new Gio.DataOutputStream({
-        base_stream: new Gio.UnixOutputStream({ fd: proc[2] })
-    });
-    stdin.put_string(this.certificate_pem, null);
-    stdin.close(null);
+            let stdin = new Gio.DataOutputStream({
+                base_stream: new Gio.UnixOutputStream({ fd: proc[2] })
+            });
+            stdin.put_string(this.certificate_pem, null);
+            stdin.close(null);
 
-    let stdout = new Gio.DataInputStream({
-        base_stream: new Gio.UnixInputStream({ fd: proc[3] })
-    });
-    let fingerprint = stdout.read_line(null)[0].toString().split("=")[1];
-    stdout.close(null);
+            let stdout = new Gio.DataInputStream({
+                base_stream: new Gio.UnixInputStream({ fd: proc[3] })
+            });
+            this.__serial = stdout.read_line(null)[0].toString().split("=")[1];
+            stdout.close(null);
+        }
 
-    return fingerprint;
-};
+        return this.__serial;
+    },
+    enumerable: true
+});
 
 
 Gio.DBusObjectManagerClient.prototype.get_devices = function () {

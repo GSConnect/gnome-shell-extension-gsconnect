@@ -184,6 +184,7 @@ var Daemon = GObject.registerClass({
 
     /**
      * Generate a Private Key and TLS Certificate
+     * See: https://github.com/KDE/kdeconnect-kde/blob/master/core/kdeconnectconfig.cpp#L119
      */
     _initEncryption() {
         let certPath = gsconnect.configdir + "/certificate.pem";
@@ -196,7 +197,7 @@ var Daemon = GObject.registerClass({
                 "openssl", "req", "-new", "-x509", "-sha256", "-newkey",
                 "rsa:2048", "-nodes", "-keyout", "private.pem", "-days", "3650",
                 "-out", "certificate.pem", "-subj",
-                "/CN=" + GLib.uuid_string_random()
+                "/O=andyholmes.github.io/OU=GSConnect/CN=" + GLib.uuid_string_random()
             ];
 
             let proc = GLib.spawn_sync(
@@ -213,10 +214,7 @@ var Daemon = GObject.registerClass({
         GLib.spawn_command_line_async("chmod 0600 " + certPath);
 
         // Load the certificate
-        this._certificate = Gio.TlsCertificate.new_from_files(
-            certPath,
-            keyPath
-        );
+        this._certificate = Gio.TlsCertificate.new_from_files(certPath, keyPath);
     }
 
     _applyResources() {
@@ -240,7 +238,7 @@ var Daemon = GObject.registerClass({
             id: 0,
             type: Protocol.TYPE_IDENTITY,
             body: {
-                deviceId: this.certificate.get_common_name(),
+                deviceId: this.certificate.serial,
                 deviceName: gsconnect.settings.get_string("public-name"),
                 deviceType: this.type,
                 tcpPort: this.lanService.port,
