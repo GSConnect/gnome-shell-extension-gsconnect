@@ -40,8 +40,8 @@ const DBus = imports.modules.dbus;
 const Device = imports.service.device;
 const Protocol = imports.service.protocol;
 const Settings = imports.service.settings;
+const Sms = imports.modules.sms;
 const Sound = imports.modules.sound;
-const Telephony = imports.service.plugins.telephony;
 
 
 var Daemon = GObject.registerClass({
@@ -834,7 +834,7 @@ var Daemon = GObject.registerClass({
         for (let file of files) {
             try {
                 if (file.get_uri_scheme() === "sms") {
-                    let uri = new Telephony.SmsURI(file.get_uri());
+                    let uri = new Sms.URI(file.get_uri());
                     let devices = [];
 
                     for (let device of this._devices.values()) {
