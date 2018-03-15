@@ -2,7 +2,7 @@
 <!-- Generated with glade 3.20.0 -->
 <interface>
   <requires lib="gtk+" version="3.20"/>
-  <template class="Gjs_GSConnectDeviceSettings" parent="GtkStack">
+  <template class="GSConnectDeviceSettings" parent="GtkStack">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="hexpand">True</property>
@@ -82,8 +82,11 @@
                                     <property name="valign">end</property>
                                     <property name="hexpand">True</property>
                                     <property name="vexpand">True</property>
-                                    <property name="label" translatable="yes">&lt;big&gt;&lt;b&gt;Device Name&lt;/b&gt;&lt;/big&gt;</property>
-                                    <property name="use_markup">True</property>
+                                    <property name="label" translatable="yes">Device Name</property>
+                                    <attributes>
+                                      <attribute name="weight" value="bold"/>
+                                      <attribute name="scale" value="1.25"/>
+                                    </attributes>
                                   </object>
                                   <packing>
                                     <property name="left_attach">1</property>
@@ -197,7 +200,7 @@
                         <property name="vexpand">False</property>
                         <property name="selection_mode">none</property>
                         <child>
-                          <object class="GtkListBoxRow">
+                          <object class="GtkListBoxRow" id="device-connected">
                             <property name="height_request">56</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
@@ -246,7 +249,7 @@
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkImage" id="device-connected">
+                                  <object class="GtkImage" id="device-connected-image">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="valign">center</property>
@@ -265,7 +268,7 @@
                           </object>
                         </child>
                         <child>
-                          <object class="GtkListBoxRow">
+                          <object class="GtkListBoxRow" id="device-paired">
                             <property name="height_request">56</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
@@ -313,7 +316,7 @@
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkImage" id="device-paired">
+                                  <object class="GtkImage" id="device-paired-image">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="valign">center</property>
@@ -1105,7 +1108,7 @@
                         <property name="hexpand">True</property>
                         <property name="vexpand">False</property>
                         <property name="selection_mode">none</property>
-                        <signal name="row-activated" handler="_newCommand" object="Gjs_GSConnectDeviceSettings" swapped="no"/>
+                        <signal name="row-activated" handler="_newCommand" object="GSConnectDeviceSettings" swapped="no"/>
                         <child>
                           <object class="GtkListBoxRow" id="command-editor">
                             <property name="width_request">100</property>
@@ -1136,8 +1139,8 @@
                                     <property name="secondary_icon_stock">gtk-open</property>
                                     <property name="secondary_icon_tooltip_text" translatable="yes">Choose an executable</property>
                                     <property name="placeholder_text" translatable="yes">Command Line</property>
-                                    <signal name="activate" handler="_saveCommand" object="Gjs_GSConnectDeviceSettings" swapped="no"/>
-                                    <signal name="icon-release" handler="_browseCommand" object="Gjs_GSConnectDeviceSettings" swapped="no"/>
+                                    <signal name="activate" handler="_saveCommand" object="GSConnectDeviceSettings" swapped="no"/>
+                                    <signal name="icon-release" handler="_browseCommand" object="GSConnectDeviceSettings" swapped="no"/>
                                   </object>
                                   <packing>
                                     <property name="left_attach">1</property>
@@ -1167,7 +1170,7 @@
                                     <property name="valign">center</property>
                                     <property name="hexpand">True</property>
                                     <property name="placeholder_text" translatable="yes">Name</property>
-                                    <signal name="activate" handler="_saveCommand" object="Gjs_GSConnectDeviceSettings" swapped="no"/>
+                                    <signal name="activate" handler="_saveCommand" object="GSConnectDeviceSettings" swapped="no"/>
                                   </object>
                                   <packing>
                                     <property name="left_attach">1</property>
@@ -1188,7 +1191,7 @@
                                         <property name="halign">start</property>
                                         <property name="valign">start</property>
                                         <property name="relief">none</property>
-                                        <signal name="clicked" handler="_removeCommand" object="Gjs_GSConnectDeviceSettings" swapped="no"/>
+                                        <signal name="clicked" handler="_removeCommand" object="GSConnectDeviceSettings" swapped="no"/>
                                         <child>
                                           <object class="GtkImage">
                                             <property name="visible">True</property>
@@ -1214,7 +1217,7 @@
                                         <property name="halign">end</property>
                                         <property name="valign">start</property>
                                         <property name="relief">none</property>
-                                        <signal name="clicked" handler="_saveCommand" object="Gjs_GSConnectDeviceSettings" swapped="no"/>
+                                        <signal name="clicked" handler="_saveCommand" object="GSConnectDeviceSettings" swapped="no"/>
                                         <child>
                                           <object class="GtkImage">
                                             <property name="visible">True</property>
@@ -1414,6 +1417,7 @@
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="vexpand">True</property>
+    <signal name="row-selected" handler="_onSwitcherRowSelected" object="GSConnectDeviceSettings" swapped="no"/>
     <child>
       <object class="GtkListBoxRow" id="information">
         <property name="visible">True</property>

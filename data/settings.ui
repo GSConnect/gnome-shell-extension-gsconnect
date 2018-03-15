@@ -2,7 +2,7 @@
 <!-- Generated with glade 3.20.0 -->
 <interface>
   <requires lib="gtk+" version="3.20"/>
-  <template class="Gjs_GSConnectSettingsWindow" parent="GtkApplicationWindow">
+  <template class="GSConnectSettingsWindow" parent="GtkApplicationWindow">
     <property name="can_focus">False</property>
     <child>
       <object class="GtkGrid">
@@ -937,7 +937,7 @@ Please see the &lt;a href="https://github.com/andyholmes/gnome-shell-extension-g
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="vexpand">True</property>
-                <signal name="row-selected" handler="_onSwitcherRowSelected" object="Gjs_GSConnectSettingsWindow" swapped="no"/>
+                <signal name="row-selected" handler="_onSwitcherRowSelected" object="GSConnectSettingsWindow" swapped="no"/>
                 <child>
                   <object class="GtkListBoxRow" id="shell">
                     <property name="visible">True</property>
@@ -1137,12 +1137,11 @@ Please see the &lt;a href="https://github.com/andyholmes/gnome-shell-extension-g
         <property name="show_close_button">True</property>
         <child>
           <object class="GtkButton" id="prev-button">
-            <property name="visible">False</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
             <property name="halign">center</property>
             <property name="valign">center</property>
-            <signal name="clicked" handler="_onPrevious" object="Gjs_GSConnectSettingsWindow" swapped="no"/>
+            <signal name="clicked" handler="_onPrevious" object="GSConnectSettingsWindow" swapped="no"/>
             <child>
               <object class="GtkImage">
                 <property name="visible">True</property>
@@ -1178,7 +1177,7 @@ Please see the &lt;a href="https://github.com/andyholmes/gnome-shell-extension-g
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="relief">none</property>
-                <signal name="clicked" handler="_onEditServiceName" object="Gjs_GSConnectSettingsWindow" swapped="no"/>
+                <signal name="clicked" handler="_onEditServiceName" object="GSConnectSettingsWindow" swapped="no"/>
                 <child>
                   <object class="GtkImage">
                     <property name="visible">True</property>
@@ -1187,7 +1186,7 @@ Please see the &lt;a href="https://github.com/andyholmes/gnome-shell-extension-g
                   </object>
                 </child>
                 <style>
-                  <class name="flat"/>
+                  <class name="titlebutton"/>
                 </style>
               </object>
               <packing>
@@ -1199,13 +1198,28 @@ Please see the &lt;a href="https://github.com/andyholmes/gnome-shell-extension-g
               <object class="GtkEntry" id="headerbar-entry">
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <signal name="activate" handler="_onSetServiceName" object="Gjs_GSConnectSettingsWindow" swapped="no"/>
+                <signal name="activate" handler="_onSetServiceName" object="GSConnectSettingsWindow" swapped="no"/>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">2</property>
+                <property name="width">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="headerbar-subtitle">
+                <property name="can_focus">False</property>
+                <style>
+                  <class name="subtitle"/>
+                </style>
               </object>
               <packing>
                 <property name="left_attach">0</property>
                 <property name="top_attach">1</property>
-                <property name="width">2</property>
               </packing>
+            </child>
+            <child>
+              <placeholder/>
             </child>
           </object>
         </child>
