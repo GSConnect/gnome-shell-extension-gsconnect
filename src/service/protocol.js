@@ -548,7 +548,7 @@ var Channel = GObject.registerClass({
      * Verify connection certificate
      */
     _onAcceptCertificate(connection, peer_cert, flags) {
-        log("Authenticating '" + this.identity.body.deviceId + "'");
+        log(`Authenticating ${this.identity.body.deviceId}`);
 
         this._certificate = peer_cert;
 
@@ -657,7 +657,7 @@ var Channel = GObject.registerClass({
      * @param {Gio.InetSocketAddress} address - ...
      */
     open(address) {
-        log("Connecting to '" + this.identity.body.deviceId + "'");
+        log(`Connecting to ${this.identity.body.deviceId}`);
 
         // Open a new outgoing connection
         return new Promise((resolve, reject) => {
@@ -975,7 +975,7 @@ var Transfer = GObject.registerClass({
      *  transfer.download(packet.payloadTransferInfo.port).catch(e => debug(e));
      */
     download(port) {
-        log("Connecting to '" + this.identity.body.deviceId + "'");
+        log(`Connecting to ${this.identity.body.deviceId}`);
 
         // Create a new connection
         return new Promise((resolve, reject) => {

@@ -10,9 +10,6 @@ imports.searchPath.push(gsconnect.datadir);
 const Keybindings = imports.modules.keybindings;
 
 
-/**
- *
- */
 function template_connect_func(builder, obj, signalName, handlerName, connectObj, flags) {
     obj.connect(signalName, connectObj[handlerName].bind(connectObj));
 };
@@ -20,56 +17,38 @@ function template_connect_func(builder, obj, signalName, handlerName, connectObj
 
 function section_separators(row, before) {
     if (before) {
-        row.set_header(
-            new Gtk.Separator({
-                orientation: Gtk.Orientation.HORIZONTAL,
-                visible: true
-            })
-        );
+        row.set_header(new Gtk.Separator({ visible: true }));
     }
 };
 
 
 function switcher_separators(row, before) {
     if (before && row.type !== before.type) {
-        row.set_header(
-            new Gtk.Separator({
-                orientation: Gtk.Orientation.HORIZONTAL,
-                visible: true
-            })
-        );
+        row.set_header(new Gtk.Separator({ visible: true }));
     }
 };
 
 
-/**
- * Map @key on @settings to @label ...
- */
 // FIXME: this is garbage
-function mapWidget(settings, key, widget, map) {
+function mapWidget(settings, widget, map) {
     let row = widget.get_parent().get_parent();
-
-    // ...
-    let variant = settings.get_value(key);
-    let type = variant.get_type_string();
+    row.visible = (settings);
 
     // Init the widget
-    let value = variant.unpack();
-    let mappedValue = map.get(value);
-    widget.label = (mappedValue !== undefined) ? mappedValue : value.toString();
+    let value = settings.get_uint("allow");
+    widget.label = (map.get(value) !== undefined) ? map.get(value) : value.toString();
 
     // Watch settings for changes
-    let _changed = settings.connect("changed::" + key, () => {
-        let val = settings.get_value(key).unpack();
-        let mappedVal = map.get(val);
-        widget.label = (mappedVal !== undefined) ? mappedVal : value.toString();
+    let _changed = settings.connect("changed::allow", () => {
+        let value = settings.get_uint("allow");
+        widget.label = (map.get(value) !== undefined) ? map.get(value) : value.toString();
     });
-    widget.connect("destroy", () => settings.disconnect(_changed));
+    widget.connect_after("destroy", () => settings.disconnect(_changed));
 
     // Watch the Gtk.ListBox for activation
     row.get_parent().connect("row-activated", (box, arow) => {
         if (row === arow) {
-            let currentValue = settings.get_value(key).unpack();
+            let currentValue = settings.get_uint("allow");
             let next = false;
             let newValue;
 
@@ -86,48 +65,61 @@ function mapWidget(settings, key, widget, map) {
                 newValue = map.keys().next().value;
             }
 
-            settings.set_value(key, new GLib.Variant(type, newValue));
+            settings.set_uint("allow", newValue);
         }
     });
 };
 
 
-function mapBoolFlag(settings, key, label, on) {
+function mapFlagToBool(settings, label, on) {
     let row = label.get_parent().get_parent();
     row.visible = (settings);
 
     if (settings) {
         // Set the intial label
-        let value = settings.get_uint(key);
-        label.label = (value & on) ? _("On") : _("Off");
+        label.label = (settings.get_uint("allow") & on) ? _("On") : _("Off");
 
         // Watch settings for changes
-        let _changed = settings.connect("changed::" + key, () => {
-            label.label = (settings.get_uint(key) & on) ? _("On") : _("Off");
+        let _changed = settings.connect("changed::allow", () => {
+            label.label = (settings.get_uint("allow") & on) ? _("On") : _("Off");
         });
-        label.connect("destroy", () => settings.disconnect(_changed));
+        label.connect_after("destroy", () => settings.disconnect(_changed));
 
         // Watch the Gtk.ListBox for activation
         row.get_parent().connect("row-activated", (box, arow) => {
             if (row === arow) {
-                settings.set_uint(key, settings.get_uint(key) ^ on);
+                settings.set_uint("allow", settings.get_uint("allow") ^ on);
             }
         });
     }
 };
 
 
-function mapBool(settings, key, label, [on, off]=[true, false]) {
-    let map = new Map([
-        [on, _("On")],
-        [off, _("Off")]
-    ]);
+function mapBoolLabel(settings, key, label) {
+    let row = label.get_parent().get_parent();
+    row.visible = (settings);
 
-    return mapWidget(settings, key, label, map);
+    if (settings) {
+        // Set the intial label
+        label.label = settings.get_boolean(key) ? _("On") : _("Off");
+
+        // Watch settings for changes
+        let _changed = settings.connect("changed::" + key, () => {
+            label.label = settings.get_boolean(key) ? _("On") : _("Off");
+        });
+        label.connect_after("destroy", () => settings.disconnect(_changed));
+
+        // Watch the Gtk.ListBox for activation
+        row.get_parent().connect("row-activated", (box, arow) => {
+            if (row === arow) {
+                settings.set_boolean(key, !settings.get_boolean(key));
+            }
+        });
+    }
 };
 
 
-function mapAllow(settings, key, label) {
+function mapAllow(settings, label) {
     let map = new Map([
         [1, _("Off")],
         [2, _("To Device")],
@@ -135,25 +127,41 @@ function mapAllow(settings, key, label) {
         [6, _("Both")]
     ]);
 
-    return mapWidget(settings, key, label, map);
+    return mapWidget(settings, label, map);
+};
+
+
+Gio.Settings.prototype.bind_with_mapping = function(key, object, property, flags=0, get_mapping, set_mapping) {
+    let type = "";
+
+    if ((flags & Gio.SettingsBindFlags.GET) || flags === 0) {
+        let _changed = this.connect(
+            "changed::" + key,
+            () => get_mapping(this.get_value(key))
+        );
+        object.connect("destroy", () => this.disconnect(_changed));
+    }
+
+    if ((flags & Gio.SettingsBindFlags.SET) || flags === 0) {
+        let _changed = object.connect(
+            "notify::" + property,
+            () => set_mapping(object[property])
+        );
+        object.connect("destroy", () => object.disconnect(_changed));
+    }
 };
 
 
 function mapSwitch(settings, widget, [on, off]=[6, 4]) {
-    let row = widget.get_parent().get_parent();
-
-    // Init the widget
-    widget.active = (settings.get_uint("allow") === on);
-
-    widget.connect("notify::active", () => {
-        settings.set_uint("allow", (widget.active) ? on : off);
-    });
-
-    // Watch settings for changes
-    let _changed = settings.connect("changed::allow", () => {
-        widget.active = (settings.get_uint("allow") === on);
-    });
-    widget.connect("destroy", () => settings.disconnect(_changed));
+    return;
+    settings.bind_with_mapping(
+        "allow",
+        widget,
+        "active",
+        0,
+        variant => { widget.active = (variant.unpack() === on); },
+        value => settings.set_uint("allow", (value) ? on : off)
+    );
 };
 
 
@@ -161,7 +169,7 @@ function mapSwitch(settings, widget, [on, off]=[6, 4]) {
  * A simple dialog for selecting a device
  */
 var DeviceChooser = GObject.registerClass({
-    GTypeName: "GSConnectDeviceChooser",
+    GTypeName: "GSConnectDeviceChooser"
 }, class DeviceChooserDialog extends Gtk.Dialog {
 
     _init(params) {
@@ -390,7 +398,7 @@ var SettingsWindow = GObject.registerClass({
     ]
 }, class SettingsWindow extends Gtk.ApplicationWindow {
 
-    _init(device=null) {
+    _init() {
         Gtk.Widget.set_connect_func.call(this, template_connect_func);
 
         super._init({
@@ -425,9 +433,9 @@ var SettingsWindow = GObject.registerClass({
         // Setup devices
         this._serviceDevices = this.application.connect(
             "notify::devices",
-            this._devicesChanged.bind(this)
+            this._onDevicesChanged.bind(this)
         );
-        this._devicesChanged();
+        this._onDevicesChanged();
 
         // Cleanup
         this.connect("destroy", () => {
@@ -493,20 +501,20 @@ var SettingsWindow = GObject.registerClass({
      */
     _bindSettings() {
         // Shell
-        mapBool(gsconnect.settings, "show-indicators", this.show_indicators);
-        mapBool(gsconnect.settings, "show-offline", this.show_offline);
-        mapBool(gsconnect.settings, "show-unpaired", this.show_unpaired);
-        mapBool(gsconnect.settings, "show-battery", this.show_battery);
+        mapBoolLabel(gsconnect.settings, "show-indicators", this.show_indicators);
+        mapBoolLabel(gsconnect.settings, "show-offline", this.show_offline);
+        mapBoolLabel(gsconnect.settings, "show-unpaired", this.show_unpaired);
+        mapBoolLabel(gsconnect.settings, "show-battery", this.show_battery);
         this.shell_list.set_header_func(section_separators);
 
         // Extensions
         // TODO: these should go..
-        mapBool(gsconnect.settings, "nautilus-integration", this.files_integration);
-        mapBool(gsconnect.settings, "webbrowser-integration", this.webbrowser_integration);
+        mapBoolLabel(gsconnect.settings, "nautilus-integration", this.files_integration);
+        mapBoolLabel(gsconnect.settings, "webbrowser-integration", this.webbrowser_integration);
         this.extensions_list.set_header_func(section_separators);
 
         // Application Extensions
-        mapBool(gsconnect.settings, "debug", this.debug_mode);
+        mapBoolLabel(gsconnect.settings, "debug", this.debug_mode);
         this.debug_window.connect("clicked", () => {
             GLib.spawn_command_line_async(
                 'gnome-terminal ' +
@@ -517,10 +525,10 @@ var SettingsWindow = GObject.registerClass({
         this.advanced_list.set_header_func(section_separators);
     }
 
-    _devicesChanged() {
+    _onDevicesChanged() {
         for (let dbusPath of this.application.devices) {
             if (!this.stack.get_child_by_name(dbusPath)) {
-                this.addDevice(this.application, dbusPath);
+                this.addDevice(dbusPath);
             }
         }
 
@@ -536,43 +544,15 @@ var SettingsWindow = GObject.registerClass({
         this.help.visible = !this.application.devices.length;
     }
 
-    /**
-     * Header Funcs
-     */
-
-    addDevice(service, dbusPath) {
-        let device = service._devices.get(dbusPath);
+    addDevice(dbusPath) {
+        let device = this.application._devices.get(dbusPath);
 
         // Create a new device widget
         let panel = new DeviceSettings(device);
 
-        // Add device to switcher and panel stack
+        // Add device to switcher, and panel stack
         this.stack.add_titled(panel, dbusPath, device.name);
         this.sidebar.add_named(panel.switcher, dbusPath);
-
-        // Add device to sidebar
-        panel.row = new SidebarRow({
-            icon_name: (device.paired) ? panel.meta.symbolic_icon : panel.meta.unpaired_icon,
-            title: device.name,
-            type: "device",
-            name: dbusPath,
-            show_go_next: true
-        });
-
-        // Keep the icon up to date
-        panel._pairedId = device.connect("notify::paired", () => {
-            if (device.paired) {
-                panel.row.icon.icon_name = panel.meta.symbolic_icon;
-            } else {
-                panel.row.icon.icon_name = panel.meta.unpaired_icon;
-            }
-        });
-
-        panel.connect("destroy", () => {
-            panel.switcher.destroy();
-            panel.row.destroy();
-        });
-
         this.switcher.add(panel.row);
     }
 });
@@ -617,14 +597,68 @@ var DeviceSettings = GObject.registerClass({
         this.meta = DeviceMetadata[this.device.type];
 
         this._gsettings = {};
-        this._supported = this.device.supportedPlugins();
 
-        this._infoPage();
-        this._localCommands();
-        this._notificationSettings();
+        this.row = new SidebarRow({
+            icon_name: (device.paired) ? this.meta.symbolic_icon : this.meta.unpaired_icon,
+            title: device.name,
+            type: "device",
+            name: device._dbus.get_object_path(),
+            show_go_next: true
+        });
+
+        // Info Page
+        this.device.bind_property(
+            "name",
+            this.device_name,
+            "label",
+            GObject.BindingFlags.SYNC_CREATE
+        );
+        this.device_type.label = this.meta.type;
+        this.device_icon.icon_name = this.meta.icon;
+
+        // Connected
+        this._connectedId = this.device.connect(
+            "notify::connected",
+            this._onConnected.bind(this)
+        );
+        this._onConnected();
+
+        // Paired
+        this._pairedId = this.device.connect(
+            "notify::paired",
+            this._onPaired.bind(this)
+        );
+        this._onPaired();
+
+        this.device_status_list.connect("row-activated", (box, row) => {
+            if (row === this.device_connected) {
+                this.device.activate();
+            } else if (row === this.device_paired) {
+                this.device.paired ? this.device.unpair() : this.device.pair();
+            }
+        });
+
+        this.device_status_list.set_header_func(section_separators);
+
+        this._batteryBar();
         this._sharingSettings();
-
+        this._runcommandSettings();
+        this._notificationSettings();
+        this._eventsSettings();
         this._keyboardShortcuts();
+
+        // Cleanup
+        this.connect_after("destroy", () => {
+            this.device.disconnect(this._connectedId);
+            this.device.disconnect(this._pairedId);
+
+            this.switcher.destroy();
+            this.row.destroy();
+
+            if (this._infoBattery) {
+                this.device._plugins.get("battery").disconnect(this._infoBattery);
+            }
+        });
     }
 
     _getSettings(name) {
@@ -632,7 +666,7 @@ var DeviceSettings = GObject.registerClass({
             return this._gsettings[name];
         }
 
-        if (this._supported.indexOf(name) > -1) {
+        if (this.device.supportedPlugins().indexOf(name) > -1) {
             let meta = imports.service.plugins[name].Metadata;
 
             this._gsettings[name] = new Gio.Settings({
@@ -673,6 +707,8 @@ var DeviceSettings = GObject.registerClass({
                 // TRANSLATORS: eg. Unpair <b>Google Pixel</b>
                 _("Unpair <b>%s</b>").format(this.device.name)
             );
+
+            this.row.icon.icon_name = this.meta.symbolic_icon;
         } else {
             this.device_paired_image.icon_name = "channel-insecure-symbolic";
             this.device_paired_text.label = _("Device is unpaired");
@@ -689,48 +725,21 @@ var DeviceSettings = GObject.registerClass({
                 //
                 // <b>Local Fingerprint:</b>
                 // 00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
-                _("<b>%s Fingerprint:</b>\n%s\n\n<b>Local Fingerprint:</b>\n%s").format(this.device.name, this.device.fingerprint, this.service.fingerprint)
+                _("<b>%s Fingerprint:</b>\n%s\n\n<b>Local Fingerprint:</b>\n%s").format(
+                    this.device.name,
+                    this.device.fingerprint,
+                    this.service.fingerprint
+                )
             );
+
+            this.row.icon.icon_name = this.meta.unpaired_icon;
         }
     }
 
     /**
      * Info Page
      */
-    _infoPage() {
-        this.device.bind_property(
-            "name",
-            this.device_name,
-            "label",
-            GObject.BindingFlags.SYNC_CREATE
-        );
-        this.device_type.label = this.meta.type;
-        this.device_icon.icon_name = this.meta.icon;
-
-        // Connected
-        this._connectedId = this.device.connect(
-            "notify::connected",
-            this._onConnected.bind(this)
-        );
-        this._onConnected();
-
-        // Paired
-        this._pairedId = this.device.connect(
-            "notify::paired",
-            this._onPaired.bind(this)
-        );
-        this._onPaired();
-
-        this.device_status_list.connect("row-activated", (box, row) => {
-            if (row === this.device_connected) {
-                this.device.activate();
-            } else if (row === this.device_paired) {
-                (this.device.paired) ? this.device.unpair() : this.device.pair();
-            }
-        });
-
-        this.device_status_list.set_header_func(section_separators);
-
+    _batteryBar() {
         // Battery Level Bar
         // TODO: this might not be worth the trouble...
         let battery = this.device._plugins.get("battery");
@@ -765,24 +774,19 @@ var DeviceSettings = GObject.registerClass({
             });
 
             battery.notify("level");
+            battery.connect_after("destroy", () => {
+                this.battery_level.visible = false;
+                this.battery_condition.visible = false;
+                this.battery_percent.visible = false;
+            });
         }
-
-        // Cleanup
-        this.connect("destroy", () => {
-            this.device.disconnect(this._connectedId);
-            this.device.disconnect(this._pairedId);
-
-            if (this._infoBattery) {
-                this.device._plugins.get("battery").disconnect(this._infoBattery);
-            }
-        });
     }
 
     /**
      * RunCommand Page
      * TODO: maybe action<->commands?
      */
-    _localCommands() {
+    _runcommandSettings() {
         let runcommand = this._getSettings("runcommand");
 
         if (runcommand) {
@@ -967,21 +971,6 @@ var DeviceSettings = GObject.registerClass({
             });
             this.notification_apps.set_header_func(section_separators);
 
-            // Map "row-activated" to notification settings
-            this.notification_apps.connect("row-activated", (box, row) => {
-                if (row.enabled.label === _("On")) {
-                    this._notification_apps[row.title.label].enabled = false;
-                    row.enabled.label = _("Off");
-                } else {
-                    this._notification_apps[row.title.label].enabled = true;
-                    row.enabled.label = _("On");
-                }
-                notification.set_string(
-                    "applications",
-                    JSON.stringify(this._notification_apps)
-                );
-            });
-
             this.notification_allow.bind_property(
                 "active",
                 this.notification_apps,
@@ -991,6 +980,22 @@ var DeviceSettings = GObject.registerClass({
         } else {
             this.notification.visible = false;
         }
+    }
+
+    _onNotificationRowActivated(box, row) {
+        let notification = this._getSettings("notification");
+
+        if (row.enabled.label === _("On")) {
+            this._notification_apps[row.title.label].enabled = false;
+            row.enabled.label = _("Off");
+        } else {
+            this._notification_apps[row.title.label].enabled = true;
+            row.enabled.label = _("On");
+        }
+        notification.set_string(
+            "applications",
+            JSON.stringify(this._notification_apps)
+        );
     }
 
     _populateApplications(notification) {
@@ -1082,16 +1087,16 @@ var DeviceSettings = GObject.registerClass({
     _sharingSettings() {
         // Battery
         if (this.device.get_action_enabled("reportStatus")) {
-            mapBoolFlag(this._getSettings("battery"), "allow", this.battery_allow, 2);
+            mapFlagToBool(this._getSettings("battery"), this.battery_allow, 2);
         } else {
             this.battery_allow.get_parent().get_parent().visible = false;
         }
 
-        mapAllow(this._getSettings("clipboard"), "allow", this.clipboard_allow);
-        mapBoolFlag(this._getSettings("share"), "allow", this.share_allow, 4);
-        mapBoolFlag(this._getSettings("mpris"), "allow", this.mpris_allow, 4);
-        mapBoolFlag(this._getSettings("mousepad"), "allow", this.mousepad_allow, 4);
-        mapBoolFlag(this._getSettings("findmyphone"), "allow", this.findmyphone_allow, 4);
+        //mapAllow(this._getSettings("clipboard"), this.clipboard_allow);
+        mapFlagToBool(this._getSettings("share"), this.share_allow, 4);
+        mapFlagToBool(this._getSettings("mpris"), this.mpris_allow, 4);
+        mapFlagToBool(this._getSettings("mousepad"), this.mousepad_allow, 4);
+        mapFlagToBool(this._getSettings("findmyphone"), this.findmyphone_allow, 4);
 
         // Separators & Sorting
         this.sharing_list.set_header_func(section_separators);
@@ -1133,33 +1138,33 @@ var DeviceSettings = GObject.registerClass({
             }
         }
 
-        this.shortcuts_list.connect("row-activated", (box, row) => {
-            let dialog = new Keybindings.ShortcutEditor({
-                summary: row.meta.summary,
-                transient_for: this.get_toplevel()
-            });
+        this.shortcuts_list.set_header_func(section_separators);
+    }
 
-            dialog.connect("response", (dialog, response) => {
-                // Set
-                if (response === Gtk.ResponseType.OK) {
-                    this._keybindings[row.name] = dialog.accelerator;
-                // Reset (Backspace)
-                } else if (response === 1) {
-                    this._keybindings[row.name] = "";
-                }
-
-                this.device.settings.set_string(
-                    "keybindings",
-                    JSON.stringify(this._keybindings)
-                );
-
-                dialog.destroy();
-            });
-
-            dialog.run();
+    _onShortcutRowActivated(box, row) {
+        let dialog = new Keybindings.ShortcutEditor({
+            summary: row.meta.summary,
+            transient_for: this.get_toplevel()
         });
 
-        this.shortcuts_list.set_header_func(section_separators);
+        dialog.connect("response", (dialog, response) => {
+            // Set
+            if (response === Gtk.ResponseType.OK) {
+                this._keybindings[row.name] = dialog.accelerator;
+            // Reset (Backspace)
+            } else if (response === 1) {
+                this._keybindings[row.name] = "";
+            }
+
+            this.device.settings.set_string(
+                "keybindings",
+                JSON.stringify(this._keybindings)
+            );
+
+            dialog.destroy();
+        });
+
+        dialog.run();
     }
     }
 });

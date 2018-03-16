@@ -338,7 +338,7 @@ var Device = GObject.registerClass({
      * Open a new Protocol.Channel and try to connect to the device
      */
     activate() {
-        debug(this.name + " (" + this.id + ")");
+        debug(`${this.name} (${this.id})`);
 
         // Already connected
 		if (this._channel !== null) {
@@ -366,7 +366,7 @@ var Device = GObject.registerClass({
      * Update the device with a UDP packet or replacement Protocol.Channel
      */
     update(packet, channel=null) {
-        debug(this.name + " (" + this.id + ")");
+        debug(`${this.name} (${this.id})`);
 
         if (channel) {
             this._handleIdentity(channel.identity);
@@ -395,7 +395,7 @@ var Device = GObject.registerClass({
     }
 
     verify() {
-        debug(this.name + " (" + this.id + ")");
+        debug(`${this.name} (${this.id})`);
 
         let cert;
 
@@ -407,10 +407,10 @@ var Device = GObject.registerClass({
         }
 
         if (cert) {
-            log("Authenticating '" + this.name + "'");
+            log(`Authenticating ${this.name}`);
 
             if (cert.verify(null, this._channel.certificate) > 0) {
-                log("Authentication failure: '" + this.name + "'");
+                log(`Failed to authenticate ${this.name}`);
                 this._channel.close();
                 return false;
             }
@@ -433,7 +433,7 @@ var Device = GObject.registerClass({
 
     /** Channel Callbacks */
     _onConnected(channel) {
-        log("Connected to '" + this.name + "'");
+        log(`Connected to ${this.name}`);
 
         this._connected = true;
         this.notify("connected");
@@ -446,11 +446,9 @@ var Device = GObject.registerClass({
     }
 
     _onDisconnected(channel) {
-        log("Disconnected from '" + this.name + "'");
+        log(`Disconnected from ${this.name}`);
 
-        if (this._channel !== null) {
-            this._channel = null;
-        }
+        this._channel = null;
 
         this._unloadPlugins().then(values => {
             this.notify("plugins");
@@ -470,7 +468,7 @@ var Device = GObject.registerClass({
 	        let handler = this._handlers.get(packet.type);
             handler.handlePacket(packet);
         } else {
-            debug("Received unsupported packet type: " + packet.toString());
+            debug(`Received unsupported packet type: ${packet.type}`);
         }
     }
 
@@ -535,24 +533,21 @@ var Device = GObject.registerClass({
         if (packet.body.pair) {
             // The device is accepting our request
             if (this._outgoingPairRequest) {
-                log("Pair accepted by " + this.name);
+                log(`Pair accepted by ${this.name}`);
 
                 this._setPaired(true);
-                return this._loadPlugins().then(values => {
-                    this.notify("plugins");
-                });
-                //this._loadPlugins();
+                return this._loadPlugins().then(values => this.notify("plugins"));
             // The device thinks we're unpaired
             } else if (this.paired) {
                 this.acceptPair();
             // The device is requesting pairing
             } else {
-                log("Pair request from " + this.name);
+                log(`Pair request from ${this.name}`);
                 this._notifyPair(packet);
             }
         // Device is requesting unpairing/rejecting our request
         } else {
-            log("Pair rejected by " + this.name);
+            log(`Pair rejected by ${this.name}`);
 
             this._unloadPlugins().then((values) => {
                 this.notify("plugins");
@@ -632,7 +627,7 @@ var Device = GObject.registerClass({
     }
 
     pair() {
-        debug(this.name + " (" + this.id + ")");
+        debug(`${this.name} (${this.id})`);
 
         // The pair button was pressed during an incoming pair request
         if (this._incomingPairRequest) {
@@ -659,7 +654,7 @@ var Device = GObject.registerClass({
     }
 
     unpair() {
-        debug(this.name + " (" + this.id + ")");
+        debug(`${this.name} (${this.id})`);
 
         // Send the unpair packet only if we're connected
         if (this._channel !== null) {
@@ -678,7 +673,7 @@ var Device = GObject.registerClass({
     }
 
     acceptPair() {
-        debug(this.name + " (" + this.id + ")");
+        debug(`${this.name} (${this.id})`);
 
         this._setPaired(true);
         this.pair();
@@ -686,7 +681,7 @@ var Device = GObject.registerClass({
     }
 
     rejectPair() {
-        debug(this.name + " (" + this.id + ")");
+        debug(`${this.name} (${this.id})`);
 
         this.unpair();
     }
@@ -718,11 +713,11 @@ var Device = GObject.registerClass({
     }
 
     _loadPlugin(name) {
-        debug(name + " (" + this.name + ")");
+        debug(`${name} (${this.name})`);
 
         return new Promise((resolve, reject) => {
             if (!this.paired) {
-                reject([name, "Device not paired"]);
+                reject();
             }
 
             // Instantiate the handler
@@ -748,7 +743,7 @@ var Device = GObject.registerClass({
                 this._plugins.set(name, plugin);
             }
 
-            resolve([name, true]);
+            resolve();
         });
     }
 
@@ -758,11 +753,11 @@ var Device = GObject.registerClass({
     }
 
     _unloadPlugin(name) {
-        debug(name + " (" + this.name + ")");
+        debug(`${name} (${this.name})`);
 
         return new Promise((resolve, reject) => {
             if (!this.paired) {
-                reject([name, false]);
+                reject();
             }
 
             try {

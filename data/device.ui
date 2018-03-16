@@ -949,6 +949,7 @@
                         <property name="hexpand">True</property>
                         <property name="vexpand">False</property>
                         <property name="selection_mode">none</property>
+                        <signal name="row-activated" handler="_onNotificationRowActivated" object="GSConnectDeviceSettings" swapped="no"/>
                       </object>
                     </child>
                   </object>
@@ -1392,6 +1393,7 @@
                         <property name="hexpand">True</property>
                         <property name="vexpand">False</property>
                         <property name="selection_mode">none</property>
+                        <signal name="row-activated" handler="_onShortcutRowActivated" object="GSConnectDeviceSettings" swapped="no"/>
                       </object>
                     </child>
                   </object>

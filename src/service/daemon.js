@@ -318,12 +318,12 @@ var Daemon = GObject.registerClass({
     }
 
     _removeDevice(dbusPath) {
-        debug("Daemon._removeDevice(" + dbusPath + ")");
+        debug(dbusPath);
 
-        if (this._devices.has(dbusPath)) {
-            log("Daemon: Removing device");
+        let device = this._devices.get(dbusPath);
 
-            let device = this._devices.get(dbusPath);
+        if (device) {
+            log(`GSConnect: Removing ${device.name}`);
 
             device.destroy();
             this._devices.delete(dbusPath);
