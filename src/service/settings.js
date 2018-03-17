@@ -630,14 +630,6 @@ var DeviceSettings = GObject.registerClass({
         );
         this._onPaired();
 
-        this.device_status_list.connect("row-activated", (box, row) => {
-            if (row === this.device_connected) {
-                this.device.activate();
-            } else if (row === this.device_paired) {
-                this.device.paired ? this.device.unpair() : this.device.pair();
-            }
-        });
-
         this.device_status_list.set_header_func(section_separators);
 
         this._batteryBar();

@@ -199,6 +199,7 @@
                         <property name="hexpand">True</property>
                         <property name="vexpand">False</property>
                         <property name="selection_mode">none</property>
+                        <signal name="row-activated" handler="_onStatusRowActivated" object="GSConnectDeviceSettings" swapped="no"/>
                         <child>
                           <object class="GtkListBoxRow" id="device-connected">
                             <property name="height_request">56</property>
