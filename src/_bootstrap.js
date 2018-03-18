@@ -246,33 +246,6 @@ gsconnect.full_unpack = function(obj) {
 };
 
 
-Gio.Notification.prototype.add_device_button = function (label, dbusPath, name, ...args) {
-    try {
-        let vargs = args.map(arg => gsconnect.full_pack(arg));
-        log(vargs);
-        //let vargs = gsconnect.full_pack(args);
-        let parameter = new GLib.Variant("(ssav)", [dbusPath, name, vargs]);
-        this.add_button_with_target(label, "app.deviceAction", parameter);
-    } catch(e) {
-        debug("Error adding button: " + [label, dbusPath, name].join(","));
-        debug(e);
-    }
-};
-
-
-Gio.Notification.prototype.set_device_action = function (dbusPath, name, ...args) {
-    try {
-        let vargs = args.map(arg => gsconnect.full_pack(arg));
-        log(vargs);
-        let parameter = new GLib.Variant("(ssav)", [dbusPath, name, vargs]);
-        this.set_default_action_and_target("app.deviceAction", parameter);
-    } catch(e) {
-        debug("Error setting action: " + [dbusPath, name].join(","));
-        debug(e);
-    }
-};
-
-
 /**
  * Extend Gio.TlsCertificate with a method for computing a SHA1 fingerprint.
  * See: https://bugzilla.gnome.org/show_bug.cgi?id=788315

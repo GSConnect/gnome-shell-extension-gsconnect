@@ -557,10 +557,10 @@ var Device = GObject.registerClass({
     }
 
     _notifyPair(packet) {
-        let notif = new Gio.Notification();
-        // TRANSLATORS: eg. Pair Request from Google Pixel
-        notif.set_title(_("Pair Request from %s").format(this.name));
-        notif.set_body(
+        this.showNotification({
+            id: "pair-request",
+            // TRANSLATORS: eg. Pair Request from Google Pixel
+            title: _("Pair Request from %s").format(this.name),
             // TRANSLATORS: Remote and local TLS Certificate fingerprint
             // PLEASE KEEP NEWLINE CHARACTERS (\n)
             //
@@ -571,27 +571,26 @@ var Device = GObject.registerClass({
             //
             // Local Fingerprint:
             // 00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
-            _("%s Fingerprint:\n%s\n\nLocal Fingerprint:\n%s").format(
+            body: _("%s Fingerprint:\n%s\n\nLocal Fingerprint:\n%s").format(
                 this.name,
                 this.fingerprint,
                 this.service.fingerprint
-            )
-        );
-        notif.set_icon(new Gio.ThemedIcon({ name: "channel-insecure-symbolic" }));
-        notif.set_priority(Gio.NotificationPriority.URGENT);
-
-        notif.add_device_button(
-            _("Reject"),
-            this._dbus.get_object_path(),
-            "rejectPair"
-        );
-        notif.add_device_button(
-            _("Accept"),
-            this._dbus.get_object_path(),
-            "acceptPair"
-        );
-
-        this.send_notification("pair-request", notif);
+            ),
+            icon: new Gio.ThemedIcon({ name: "channel-insecure-symbolic" }),
+            priority: Gio.NotificationPriority.URGENT,
+            buttons: [
+                {
+                    action: "rejectPair",
+                    label: _("Reject"),
+                    params: null
+                },
+                {
+                    action: "acceptPair",
+                    label: _("Accept"),
+                    params: null
+                }
+            ]
+        });
 
         // Start a 30s countdown
         this._incomingPairRequest = GLib.timeout_add_seconds(

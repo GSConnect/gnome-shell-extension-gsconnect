@@ -206,26 +206,28 @@ var Plugin = GObject.registerClass({
     _handleThreshold() {
         debug(this._level);
 
-        let notif = new Gio.Notification();
-        // TRANSLATORS: Low Battery Warning
-        notif.set_title(_("Low Battery Warning"));
-        notif.set_body(
-            // TRANSLATORS: eg. Google Pixel's battery level is 15%
-            _("%s's battery level is %d%%").format(this.device.name, this.level)
-        );
-        notif.set_icon(new Gio.ThemedIcon({ name: "battery-caution-symbolic" }));
+        let buttons = [];
 
-        let action = this.device.lookup_action("find");
-
-        if (action && action.enabled) {
-            notif.add_device_button(
-                _("Locate"),
-                this._dbus.get_object_path(),
-                "find"
-            );
+        if (this.device.get_action_enabled("find")) {
+            buttons = [{
+                label: _("Locate"),
+                action: "find",
+                params: null
+            }];
         }
 
-        this.device.send_notification("battery|threshold", notif);
+        this.device.showNotification({
+            id: "battery|threshold",
+            // TRANSLATORS: Low Battery Warning
+            title: _("Low Battery Warning"),
+            // TRANSLATORS: eg. Google Pixel's battery level is 15%
+            body: _("%s's battery level is %d%%").format(
+                this.device.name,
+                this.level
+            ),
+            icon: new Gio.ThemedIcon({ name: "battery-caution-symbolic" }),
+            buttons: buttons
+        });
 
         this._thresholdLevel = this.level;
     }

@@ -296,7 +296,7 @@ var Plugin = GObject.registerClass({
 
     showNotification(packet, icon) {
         return new Promise((resolve, reject) => {
-            let notif = new Gio.Notification();
+            let notif = {};
 
             // Check if this is a missed call or SMS notification
             // TODO: maybe detect by app id
@@ -345,36 +345,39 @@ var Plugin = GObject.registerClass({
 
                 // Format as a missed call notification
                 if (isMissedCall) {
-                    notif.set_title(_("Missed Call"));
-                    notif.set_body(
-                        _("Missed call from %s on %s").format(
-                            contact.name || contact.numbers[0].number,
-                            this.device.name
-                        )
+                    notif.title = _("Missed Call");
+                    notif.body = _("Missed call from %s on %s").format(
+                        contact.name || contact.numbers[0].number,
+                        this.device.name
                     );
-                    notif.add_device_button(
+                    notif.buttons = [{
+                        action: "replySms",
                         // TRANSLATORS: Reply to a missed call by SMS
-                        _("Message"),
-                        "replySms",
-                        this._dbus.get_object_path(),
-                        contact.numbers[0].number,
-                        contact.name,
-                        packet.body.time
-                    );
-                    notif.set_priority(Gio.NotificationPriority.NORMAL);
+                        label: _("Message"),
+                        params: {
+                            type: "missedCall",
+                            contact: contact,
+                            number: contact.numbers[0].number,
+                            time: packet.body.time,
+                            content: packet.body.text
+                        }
+                    }];
+                    notif.priority = Gio.NotificationPriority.NORMAL;
                 // Format as an SMS notification
                 } else if (isSms) {
-                    notif.set_title(contact.name || contact.numbers[0].number);
-                    notif.set_body(packet.body.text);
-                    notif.set_device_action(
-                        this._dbus.get_object_path(),
-                        "replySms",
-                        contact.numbers[0].number,
-                        contact.name,
-                        packet.body.text,
-                        packet.body.time
-                    );
-                    notif.set_priority(Gio.NotificationPriority.HIGH);
+                    notif.title = contact.name || contact.numbers[0].number;
+                    notif.body = packet.body.text;
+                    notif.action = {
+                        name: "replySms",
+                        params: {
+                            type: "sms",
+                            contact: contact,
+                            number: contact.numbers[0].number,
+                            time: packet.body.time,
+                            content: packet.body.text
+                        }
+                    };
+                    notif.priority = Gio.NotificationPriority.HIGH;
                 }
             // A regular notification or notification from an unknown contact
             } else {
@@ -406,12 +409,20 @@ var Plugin = GObject.registerClass({
                 }
             }
 
-            notif.set_icon(icon);
-
             this.trackNotification(packet.body);
             // We use the timestamp as an the effective ID, since phone apps
             // reuse their ID's at whim.
             this.device.send_notification(packet.body.time, notif);
+
+            this.device.showNotification({
+                id: packet.body.time,
+                title: notif.title,
+                body: notif.body,
+                icon: icon,
+                priority: notif.priority,
+                action: notif.action || null,
+                buttons: notif.buttons || []
+            });
 
             resolve(true);
         });
