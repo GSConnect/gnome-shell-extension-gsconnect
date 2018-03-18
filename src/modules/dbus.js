@@ -1,7 +1,5 @@
 "use strict";
 
-const Lang = imports.lang;
-
 const Gi = imports._gi;
 const Gio = imports.gi.Gio;
 const GjsPrivate = imports.gi.GjsPrivate;

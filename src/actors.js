@@ -1,7 +1,6 @@
 "use strict";
 
 const Cairo = imports.cairo;
-const Lang = imports.lang;
 
 const Clutter = imports.gi.Clutter;
 const Gio = imports.gi.Gio;
@@ -23,12 +22,10 @@ const Color = imports.modules.color;
 
 /**
  */
-var Dialog = new Lang.Class({
-    Name: "GSConnectShellDoNotDisturbDialog",
-    Extends: ModalDialog.ModalDialog,
+var Dialog = class Dialog extends ModalDialog.ModalDialog {
 
-    _init: function (params) {
-        this.parent();
+    constructor(params) {
+        super._init();
 
         let headerBar = new St.BoxLayout({
             style_class: "nm-dialog-header-hbox"
@@ -60,32 +57,32 @@ var Dialog = new Lang.Class({
 
         this.content = new St.BoxLayout({ vertical: true });
         this.contentLayout.add(this.content);
-    },
+    }
 
     get icon () {
         return this._icon.icon_name;
-    },
+    }
 
     set icon (name) {
         this._icon.icon_name = name;
-    },
+    }
 
     get title () {
         return this._title.text;
-    },
+    }
 
     set title (text) {
         this._title.text = text;
-    },
+    }
 
     get subtitle () {
         return this._title.text;
-    },
+    }
 
     set subtitle (text) {
         this._title.text = text;
     }
-});
+}
 
 
 /**
@@ -97,10 +94,9 @@ var Dialog = new Lang.Class({
 var TOOLTIP_BROWSE_ID = 0;
 var TOOLTIP_BROWSE_MODE = false;
 
-var Tooltip = new Lang.Class({
-    Name: "GSConnectShellTooltip",
+var Tooltip = class Tooltip {
 
-    _init: function (params) {
+    constructor(params) {
         // Properties
         Object.defineProperties(this, {
             "custom": {
@@ -178,18 +174,18 @@ var Tooltip = new Lang.Class({
 
         // TODO: oddly fuzzy on menu items, sometimes
         if (this._parent.actor) { this._parent = this._parent.actor; }
-        this._parent.connect("notify::hover", Lang.bind(this, this._hover));
-        this._parent.connect("button-press-event", Lang.bind(this, this._hide));
-        this._parent.connect("destroy", Lang.bind(this, this.destroy));
-    },
+        this._parent.connect("notify::hover", this._hover.bind(this));
+        this._parent.connect("button-press-event", this._hide.bind(this));
+        this._parent.connect("destroy", this.destroy.bind(this));
+    }
 
-    _update: function () {
+    _update() {
         if (this._showing) {
             this._show();
         }
-    },
+    }
 
-    _show: function () {
+    _show() {
         if (!this.text && !this.markup) {
             this._hide();
             return;
@@ -285,9 +281,9 @@ var Tooltip = new Lang.Class({
             GLib.source_remove(this._hoverTimeoutId);
             this._hoverTimeoutId = 0;
         }
-    },
+    }
 
-    _hide: function () {
+    _hide() {
         if (this.bin) {
             Tweener.addTween(this.bin, {
                 opacity: 0,
@@ -319,9 +315,9 @@ var Tooltip = new Lang.Class({
 
         this._showing = false;
         this._hoverTimeoutId = 0;
-    },
+    }
 
-    _hover: function () {
+    _hover() {
         if (this._parent.hover) {
             if (!this._hoverTimeoutId) {
                 if (this._showing) {
@@ -341,9 +337,9 @@ var Tooltip = new Lang.Class({
         } else {
             this._hide();
         }
-    },
+    }
 
-    destroy: function () {
+    destroy() {
         if (this.custom) {
             this.custom.destroy();
         }
@@ -358,14 +354,14 @@ var Tooltip = new Lang.Class({
             this._hoverTimeoutId = 0;
         }
     }
-});
+}
 
 
-var RadioButton = new Lang.Class({
-    Name: "GSConnectShellRadioButton",
-    Extends: St.BoxLayout,
+var RadioButton = GObject.registerClass({
+    GTypeName: "GSConnectShellRadioButton"
+}, class RadioButton extends St.BoxLayout {
 
-    _init: function (params) {
+    _init(params) {
         params = Object.assign({
             text: null,
             widget: null,
@@ -375,7 +371,7 @@ var RadioButton = new Lang.Class({
             tooltip_text: false
         }, params);
 
-        this.parent({
+        super._init({
             style_class: "radio-button",
             style: "spacing: 6px;",
             vertical: false
@@ -416,11 +412,11 @@ var RadioButton = new Lang.Class({
         } else if (params.tooltip_text) {
             this.tooltip.text = params.tooltip_text;
         }
-    },
+    }
 
     get active () {
         return (this.button.child.icon_name === "radio-checked-symbolic");
-    },
+    }
 
     set active (bool) {
         if (bool) {
@@ -434,11 +430,11 @@ var RadioButton = new Lang.Class({
         } else {
             this.button.child.icon_name = "radio-symbolic";
         }
-    },
+    }
 
     get group () {
         return this._group;
-    },
+    }
 
     set group (group) {
         this._group = group;
@@ -448,7 +444,7 @@ var RadioButton = new Lang.Class({
         }
 
         this.active = (this.group.length === 1);
-    },
+    }
 
     get text () {
         if (this.widget instanceof St.Label) {
@@ -456,17 +452,17 @@ var RadioButton = new Lang.Class({
         }
 
         return null;
-    },
+    }
 
     set text (text) {
         if (typeof text === "string") {
             this.widget = new St.Label({ text: text });
         }
-    },
+    }
 
     get widget () {
         return this.get_child_at_index(1);
-    },
+    }
 
     set widget (widget) {
         if (widget instanceof Clutter.Actor) {
@@ -477,12 +473,12 @@ var RadioButton = new Lang.Class({
 });
 
 
-var MenuButton = new Lang.Class({
-    Name: "GSConnectShellMenuButton",
-    Extends: St.Button,
+var MenuButton = GObject.registerClass({
+    GTypeName: "GSConnectShellMenuButton"
+}, class MenuButton extends St.Button {
 
-    _init: function (params) {
-        this.parent({
+    _init(params) {
+        super._init({
             child: new St.Icon({ icon_name: params.item.icon }),
             style_class: "system-menu-action gsconnect-plugin-button",
             can_focus: true
@@ -496,9 +492,9 @@ var MenuButton = new Lang.Class({
             parent: this,
             markup: this._item.label
         });
-    },
+    }
 
-    _onClicked: function () {
+    _onClicked() {
         debug("activating: " + this._item.action);
         this._gactions.activate_action(this._item.action, null);
     }
@@ -509,12 +505,12 @@ var BATTERY_INTERFACE = "org.gnome.Shell.Extensions.GSConnect.Plugin.Battery";
 
 
 /** St.BoxLayout subclass for a battery icon with text percentage */
-var DeviceBattery = new Lang.Class({
-    Name: "GSConnectShellDeviceBattery",
-    Extends: St.BoxLayout,
+var DeviceBattery = GObject.registerClass({
+    GTypeName: "GSConnectShellDeviceBattery"
+}, class DeviceBattery extends St.BoxLayout {
 
-    _init: function (object, device) {
-        this.parent({
+    _init(object, device) {
+        super._init({
             reactive: false,
             style_class: "gsconnect-device-battery",
             visible: gsconnect.settings.get_boolean("show-battery")
@@ -558,9 +554,10 @@ var DeviceBattery = new Lang.Class({
                 this.battery.disconnect(this._batteryId);
             }
         });
-    },
+    }
 
-    update: function (battery) {
+    update(battery) {
+
         this.icon.visible = (this.battery && this.battery.level > -1);
         this.label.visible = (this.battery && this.battery.level > -1);
         this.icon.icon_name = this.battery.icon_name;
@@ -572,12 +569,12 @@ var DeviceBattery = new Lang.Class({
 /**
  * A Device Icon
  */
-var DeviceIcon = new Lang.Class({
-    Name: "GSConnectShellDeviceIcon",
-    Extends: St.DrawingArea,
+var DeviceIcon = GObject.registerClass({
+    GtypeName: "GSConnectShellDeviceIcon"
+}, class DeviceIcon extends St.DrawingArea {
 
-    _init: function (object, device) {
-        this.parent({
+    _init(object, device) {
+        super._init({
             width: 48,
             height: 48,
             reactive: true,
@@ -637,17 +634,17 @@ var DeviceIcon = new Lang.Class({
                 this.battery.disconnect(this._batteryId);
             }
         });
-    },
+    }
 
-    _batteryColor: function () {
+    _batteryColor() {
         return Color.hsv2rgb(
             this.battery.level / 100 * 120,
             100,
             100 - (this.battery.level / 100 * 15)
         );
-    },
+    }
 
-    _getTimeLabel: function () {
+    _getTimeLabel() {
         let { charging, level, time } = this.battery;
 
         if (level === 100) {
@@ -677,9 +674,9 @@ var DeviceIcon = new Lang.Class({
                 minutes
             );
         }
-    },
+    }
 
-    _draw: function () {
+    _draw() {
         if (!this.visible) { return; }
 
         let [width, height] = this.get_surface_size();
@@ -767,12 +764,12 @@ var DeviceIcon = new Lang.Class({
 
 
 /** An St.Button subclass for buttons with an image and an action */
-var DeviceButton = new Lang.Class({
-    Name: "GSConnectShellDeviceButton",
-    Extends: St.Button,
+var DeviceButton = GObject.registerClass({
+    GTypeName: "GSConnectShellDeviceButton"
+}, class DeviceButton extends St.Button {
 
-    _init: function (object, device) {
-        this.parent({
+    _init(object, device) {
+        super._init({
             style_class: "system-menu-action gsconnect-device-button",
             child: new DeviceIcon(object, device),
             can_focus: true,

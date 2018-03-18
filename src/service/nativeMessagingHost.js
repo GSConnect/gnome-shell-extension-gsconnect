@@ -3,7 +3,6 @@
 "use strict";
 
 const ByteArray = imports.byteArray;
-const Lang = imports.lang;
 const System = imports.system;
 
 imports.gi.versions.Gio = "2.0";

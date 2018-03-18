@@ -4,7 +4,6 @@
 
 const Gettext = imports.gettext.domain("org.gnome.Shell.Extensions.GSConnect");
 const _ = Gettext.gettext;
-const Lang = imports.lang;
 const System = imports.system;
 
 imports.gi.versions.Atspi = "2.0";

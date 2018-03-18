@@ -1,7 +1,5 @@
 "use strict";
 
-const Lang = imports.lang;
-
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
@@ -43,9 +41,8 @@ var PlayerProxy = DBus.makeInterfaceProxy(
 );
 
 
-var Manager = new Lang.Class({
-    Name: "GSConnectMPRISManager",
-    Extends: GObject.Object,
+var Manager = GObject.registerClass({
+    GTypeName: "GSConnectMPRISManager",
     Properties: {
         "identities": GObject.param_spec_variant(
             "identities",
@@ -71,10 +68,11 @@ var Manager = new Lang.Class({
             flags: GObject.SignalFlags.RUN_FIRST,
             param_types: [ GObject.TYPE_OBJECT, GObject.TYPE_VARIANT ]
         }
-    },
+    }
+}, class Manager extends GObject.Object {
 
-    _init: function () {
-        this.parent();
+    _init() {
+        super._init();
 
         try {
             this._fdo = new DBus.FdoProxy({
@@ -97,11 +95,11 @@ var Manager = new Lang.Class({
         } catch (e) {
             debug("MPRIS ERROR: " + e);
         }
-    },
+    }
 
     get identities () {
         return Array.from(Object.keys(this.players));
-    },
+    }
 
     get players () {
         if (!this._players) {
@@ -109,22 +107,22 @@ var Manager = new Lang.Class({
         }
 
         return this._players;
-    },
+    }
 
     // FIXME: could actually use this
-    _onNameOwnerChanged: function(proxy, name, oldOwner, newOwner) {
+    _onNameOwnerChanged(proxy, name, oldOwner, newOwner) {
         if (name.startsWith("org.mpris.MediaPlayer2")) {
             this._updatePlayers();
         }
-    },
+    }
 
-    _addPlayer: function () {
-    },
+    _addPlayer() {
+    }
 
-    _removePlayer: function () {
-    },
+    _removePlayer() {
+    }
 
-    _updatePlayers: function () {
+    _updatePlayers() {
         debug("MPRIS: _updatePlayers()");
 
         // Add new players
@@ -182,9 +180,9 @@ var Manager = new Lang.Class({
         });
 
         this.notify("players");
-    },
+    }
 
-    destroy: function () {
+    destroy() {
         this._fdo.disconnect(this._nameOwnerChanged);
 
         for (let proxy of Object.values(this._players)) {

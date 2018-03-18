@@ -1,6 +1,5 @@
 "use strict";
 
-const Lang = imports.lang;
 const Tweener = imports.tweener.tweener;
 
 const GIRepository = imports.gi.GIRepository;
@@ -79,9 +78,8 @@ function loopThemeSound (name, cancellable) {
 };
 
 
-var Stream = new Lang.Class({
-    Name: "GSConnectSoundStream",
-    Extends: GObject.Object,
+var Stream = GObject.registerClass({
+    GTypeName: "GSConnectSoundStream",
     Properties: {
         "muted": GObject.ParamSpec.boolean(
             "muted",
@@ -97,35 +95,36 @@ var Stream = new Lang.Class({
             GObject.ParamFlags.READABLE,
             0
         )
-    },
+    }
+}, class Stream extends GObject.Object {
 
-    _init: function (stream) {
-        this.parent();
+    _init(stream) {
+        super._init();
 
         this._max = _mixerControl.get_vol_max_norm()
         this._stream = stream;
-    },
+    }
 
     get muted () {
         return this._stream.is_muted;
-    },
+    }
 
     set muted (bool) {
         this._stream.change_is_muted(bool);
         this.notify("muted");
-    },
+    }
 
     get volume () {
         return Math.round(100 * this._stream.volume / this._max) / 100;
-    },
+    }
 
     set volume (num) {
         this._stream.volume = num * this._max;
         this._stream.push_volume();
         this.notify("volume");
-    },
+    }
 
-    lower: function (value) {
+    lower(value) {
         Tweener.removeTweens(this);
         Tweener.addTween(this, {
             volume: value,
@@ -133,9 +132,9 @@ var Stream = new Lang.Class({
             transition: "easeOutCubic",
             onComplete: () => { Tweener.removeTweens(this); }
         });
-    },
+    }
 
-    raise: function (value) {
+    raise(value) {
         Tweener.removeTweens(this);
         Tweener.addTween(this, {
             volume: value,
@@ -147,10 +146,9 @@ var Stream = new Lang.Class({
 });
 
 
-var Mixer = new Lang.Class({
-    Name: "GSConnectSoundMixer",
+var Mixer = class Mixer {
 
-    _init: function () {
+    constructor() {
         this._control = _mixerControl;
 
         this._control.connect("default-sink-changed", () => {
@@ -175,12 +173,12 @@ var Mixer = new Lang.Class({
         this._volumeChanged = 0;
         this._volumeMuted = false;
         this._microphoneMuted = false;
-    },
+    }
 
     /**
      * Convenience methods
      */
-    _adjustVolume: function (action) {
+    _adjustVolume(action) {
         debug(action);
 
         if (!this._mixer) { return; }
@@ -194,36 +192,36 @@ var Mixer = new Lang.Class({
             this._mixer.output.muted = true;
             this._prevMute = true;
         }
-    },
+    }
 
-    lowerVolume: function () {
+    lowerVolume() {
         debug("Lowering system volume to 15%");
 
         if (this._mixer.output.volume > 0.15) {
             this._volumeChanged = Number(this._mixer.output.volume);
             this._mixer.output.lower(0.15);
         }
-    },
+    }
 
-    muteVolume: function () {
+    muteVolume() {
         debug("Muting system volume");
 
         if (!this._mixer.output.muted) {
             this._mixer.output.muted = true;
             this._volumeMuted = true;
         }
-    },
+    }
 
-    muteMicrophone: function () {
+    muteMicrophone() {
         debug("Muting microphone");
 
         if (!this._mixer.input.muted) {
             this._mixer.input.muted = true;
             this._microphoneMuted = true;
         }
-    },
+    }
 
-    restoreMixer: function () {
+    restoreMixer() {
         debug("");
 
         if (this._volumeMuted) {
@@ -241,5 +239,5 @@ var Mixer = new Lang.Class({
             this._microphoneMuted = false;
         }
     }
-});
+}
 

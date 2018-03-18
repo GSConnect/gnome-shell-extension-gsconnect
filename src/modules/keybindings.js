@@ -1,10 +1,7 @@
 "use strict";
 
-const Lang = imports.lang;
-
 const Gdk = imports.gi.Gdk;
 const Gio = imports.gi.Gio;
-const GIRepository = imports.gi.GIRepository;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
@@ -20,9 +17,8 @@ var ShellProxy = DBus.makeInterfaceProxy(
 /**
  *
  */
-var ShortcutEditor = new Lang.Class({
-    Name: "GSConnectShortcutEditor",
-    Extends: Gtk.Dialog,
+var ShortcutEditor = GObject.registerClass({
+    GTypeName: "GSConnectShortcutEditor",
     Template: "resource:///org/gnome/Shell/Extensions/GSConnect/shortcut-editor.ui",
     Children: [
         // HeaderBar
@@ -38,12 +34,13 @@ var ShortcutEditor = new Lang.Class({
             flags: GObject.SignalFlags.RUN_FIRST,
             param_types: [ GObject.TYPE_STRING ]
         }
-    },
+    }
+}, class ShortcutEditor extends Gtk.Dialog {
 
-    _init: function (params) {
+    _init(params) {
         // Hack until template callbacks are supported (GJS 1.54?)
         Gtk.Widget.set_connect_func.call(this, (builder, obj, signalName, handlerName, connectObj, flags) => {
-            obj.connect(signalName, this[handlerName].bind(connectObj));
+            obj.connect(signalName, connectObj[handlerName].bind(connectObj));
         });
 
         this.parent({
@@ -75,7 +72,7 @@ var ShortcutEditor = new Lang.Class({
             visible: true
         });
         this.confirm_shortcut.attach(this.shortcut_label, 0, 0, 1, 1);
-    },
+    }
 
 //    /*
 //     * Stolen from GtkCellRendererAccel:
@@ -104,7 +101,7 @@ var ShortcutEditor = new Lang.Class({
 //      return name;
 //    }
 
-    _onKeyPressEvent: function(widget, event) {
+    _onKeyPressEvent(widget, event) {
         if (!this._grabId) {
             return false;
         }
@@ -197,25 +194,25 @@ var ShortcutEditor = new Lang.Class({
         }
 
         return true;
-    },
+    }
 
-    _onCancel: function() {
+    _onCancel() {
         return this.response(Gtk.ResponseType.CANCEL);
-    },
+    }
 
-    _onSet: function() {
+    _onSet() {
         return this.response(Gtk.ResponseType.OK);
-    },
+    }
 
-    response: function(id) {
+    response(id) {
         this.hide();
         this.ungrab();
         Gtk.Dialog.prototype.response.call(this, id);
 
         return true;
-    },
+    }
 
-    check: function(accelerator) {
+    check(accelerator) {
         // Check someone else isn't already using the binding
         let action = this.shell.grabAccelerator(accelerator, 0);
 //        let action = this.shell.call_sync(
@@ -239,9 +236,9 @@ var ShortcutEditor = new Lang.Class({
         }
 
         return false;
-    },
+    }
 
-    grab: function() {
+    grab() {
         let success = this.seat.grab(
             this.get_window(),
             Gdk.SeatCapabilities.KEYBOARD,
@@ -260,16 +257,16 @@ var ShortcutEditor = new Lang.Class({
         this._grabId = this.seat.get_keyboard();
         this._grabId = this._grabId || this.seat.get_pointer();
         this.grab_add();
-    },
+    }
 
-    ungrab: function() {
+    ungrab() {
         this.seat.ungrab();
         this.grab_remove();
         delete this._grabId;
-    },
+    }
 
     // A non-blocking version of run()
-    run: function() {
+    run() {
         this.set_button.visible = false;
 
         this.show();

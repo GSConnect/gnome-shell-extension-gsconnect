@@ -1,6 +1,5 @@
 "use strict";
 
-const Lang = imports.lang;
 const Tweener = imports.tweener.tweener;
 
 const Gdk = imports.gi.Gdk;
@@ -150,18 +149,18 @@ var URI = class URI {
 /**
  *
  */
-var ConversationMessage = new Lang.Class({
-    Name: "GSConnectConversationMessage",
-    Extends: Gtk.Grid,
+var ConversationMessage = GObject.registerClass({
+    GTypeName: "GSConnectConversationMessage"
+}, class ConversationMessage extends Gtk.Grid {
 
-    _init: function (params) {
+    _init(params) {
         Object.assign(this, {
             contact: null,
             direction: MessageDirection.OUT,
             message: null
         }, params);
 
-        this.parent({
+        super._init({
             visible: true,
             halign: (this.direction) ? Gtk.Align.START : Gtk.Align.END
         });
@@ -189,9 +188,9 @@ var ConversationMessage = new Lang.Class({
         });
         this.connect("draw", this._onDraw.bind(this));
         this.add(messageContent);
-    },
+    }
 
-    _onDraw: function (widget, cr) {
+    _onDraw(widget, cr) {
         let [size, baseline] = widget.get_allocated_size();
 
         let color = (this.direction) ? this.contact.rgb : [ 0.83, 0.84, 0.81 ];
@@ -217,7 +216,7 @@ var ConversationMessage = new Lang.Class({
 
         cr.$dispose();
         return false;
-    },
+    }
 
     /**
      * Return a string with URLs couched in <a> tags, parseable by Pango and
@@ -226,7 +225,7 @@ var ConversationMessage = new Lang.Class({
      * @param {string} text - The string to be modified
      * @return {string} - the modified text
      */
-    _linkify: function (text) {
+    _linkify(text) {
         _urlRegexp.lastIndex = 0;
         return text.replace(
             _urlRegexp,
@@ -235,16 +234,15 @@ var ConversationMessage = new Lang.Class({
             /&(?!amp;)/g,
             "&amp;"
         );
-    },
+    }
 });
 
 
 /**
  * A Gtk.ApplicationWindow for SMS conversations
  */
-var ConversationWindow = new Lang.Class({
-    Name: "GSConnectConversationWindow",
-    Extends: Gtk.ApplicationWindow,
+var ConversationWindow = GObject.registerClass({
+    GTypeName: "GSConnectConversationWindow",
     Properties: {
         "device": GObject.ParamSpec.object(
             "device",
@@ -260,10 +258,11 @@ var ConversationWindow = new Lang.Class({
             GObject.ParamFlags.READABLE,
             ""
         )
-    },
+    }
+}, class ConversationWindow extends Gtk.ApplicationWindow {
 
-    _init: function (device) {
-        this.parent({
+    _init(device) {
+        super._init({
             application: Gio.Application.get_default(),
             title: _("SMS Conversation"),
             default_width: 300,
@@ -390,28 +389,28 @@ var ConversationWindow = new Lang.Class({
         // Finish initing
         this.show_all();
         this._setHeaderBar();
-    },
+    }
 
     get device () {
         return this._device;
-    },
+    }
 
     get number () {
         return this._number || null;
-    },
+    }
 
     get recipient () {
         return this._recipient || null;
-    },
+    }
 
-    getRecipient: function () {
+    getRecipient() {
         return this.recipient;
-    },
+    }
 
     /**
      * Set the Header Bar and stack child
      */
-    _setHeaderBar: function () {
+    _setHeaderBar() {
         if (this.recipient) {
             this.headerBar.custom_title = null;
             this.contactList.entry.text = "";
@@ -444,7 +443,7 @@ var ConversationWindow = new Lang.Class({
             this.contactList.entry.has_focus = true;
             this.stack.set_visible_child_name("contacts");
         }
-    },
+    }
 
     /**
      * Add a new thread, which is a series of sequential messages from one user
@@ -455,7 +454,7 @@ var ConversationWindow = new Lang.Class({
      *     MessageDirection enums (either OUT [0] or IN [1])
      * @return {Gtk.ListBoxRow} - The new thread
      */
-    _addThread: function (direction) {
+    _addThread(direction) {
         let sender;
 
         if (direction === MessageDirection.IN) {
@@ -505,7 +504,7 @@ var ConversationWindow = new Lang.Class({
 
         this._thread = row;
         return row;
-    },
+    }
 
     /**
      * Log a new message in the conversation
@@ -514,7 +513,7 @@ var ConversationWindow = new Lang.Class({
      * @param {MessageDirection} - The direction of the message; one of the
      *     MessageDirection enums (either OUT [0] or IN [1])
      */
-    _logMessage: function (message, direction=MessageDirection.OUT) {
+    _logMessage(message, direction=MessageDirection.OUT) {
         // Check if we need a new thread
         let thread;
 
@@ -530,12 +529,12 @@ var ConversationWindow = new Lang.Class({
             message: message
         });
         thread.messages.add(conversationMessage);
-    },
+    }
 
     /**
      * Set the conversation recipient
      */
-    _setRecipient: function (contact, phoneNumber) {
+    _setRecipient(contact, phoneNumber) {
         // We use the number from kdeconnect for transmission and comparisons
         this._number = phoneNumber;
         this._displayNumber = phoneNumber;
@@ -552,7 +551,7 @@ var ConversationWindow = new Lang.Class({
         }
 
         this.notify("number");
-    },
+    }
 
     /**
      * Log an incoming message in the MessageList
@@ -560,7 +559,7 @@ var ConversationWindow = new Lang.Class({
      * @param {String} phoneNumber - The original phone number for this event
      * @param {String|Pango markup} messageBody - The message to be logged
      */
-    receiveMessage: function (contact, phoneNumber, message) {
+    receiveMessage(contact, phoneNumber, message) {
         this._number = phoneNumber;
 
         if (!this.recipient) {
@@ -568,12 +567,12 @@ var ConversationWindow = new Lang.Class({
         }
 
         this._logMessage(message, MessageDirection.IN);
-    },
+    }
 
     /**
      * Send the contents of the message entry to the recipient
      */
-    sendMessage: function (entry, signal_id, event) {
+    sendMessage(entry, signal_id, event) {
         if (!this.entry.text.length) {
             return;
         }
@@ -585,12 +584,12 @@ var ConversationWindow = new Lang.Class({
         // Log the outgoing message
         this._logMessage(this.entry.text, MessageDirection.OUT);
         this.entry.text = "";
-    },
+    }
 
     /**
      * Send the contents of the message entry to @text
      */
-    setMessage: function (text) {
+    setMessage(text) {
         this.entry.text = text;
         this.entry.emit("move-cursor", 0, text.length, false);
     }
@@ -600,12 +599,12 @@ var ConversationWindow = new Lang.Class({
 /**
  * A Gtk.ApplicationWindow for sharing links via SMS
  */
-var ShareWindow = new Lang.Class({
-    Name: "GSConnectContactShareWindow",
-    Extends: Gtk.ApplicationWindow,
+var ShareWindow = GObject.registerClass({
+    GTypeName: "GSConnectContactShareWindow"
+}, class ShareWindow extends Gtk.ApplicationWindow {
 
-    _init: function (device, url) {
-        this.parent({
+    _init(device, url) {
+        super._init({
             application: Gio.Application.get_default(),
             title: _("Share Link"),
             default_width: 300,
@@ -658,15 +657,15 @@ var ShareWindow = new Lang.Class({
         // Filter Setup
         this.show_all();
         this._addWindows();
-    },
+    }
 
-    _select: function (window) {
+    _select(window) {
         window.setMessage(this.url);
         this.destroy();
         window.present();
-    },
+    }
 
-    _addWindows: function () {
+    _addWindows() {
         let windows = Gio.Application.get_default().get_windows();
 
         for (let index_ in windows) {

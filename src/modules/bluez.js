@@ -1,7 +1,5 @@
 "use strict";
 
-const Lang = imports.lang;
-
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
@@ -214,110 +212,7 @@ function get_default() {
 /**
  * Proxy for org.bluez.Adapter1 interface
  */
-var Adapter1Proxy = new Lang.Class({
-    Name: "GSConnectAdapter1Proxy",
-    Extends: DBus.ProxyBase,
-    Properties: {
-        "UUIDs": GObject.param_spec_variant(
-            "UUIDs",
-            "AdapterUUIDs",
-            "...",
-            new GLib.VariantType("as"),
-            new GLib.Variant("as", []),
-            GObject.ParamFlags.READABLE
-        ),
-        "Discoverable": GObject.ParamSpec.boolean(
-            "Discoverable",
-            "AdapterDiscovering",
-            "...",
-            GObject.ParamFlags.READWRITE,
-            false
-        ),
-        "Discovering": GObject.ParamSpec.boolean(
-            "Discovering",
-            "AdapterDiscovering",
-            "...",
-            GObject.ParamFlags.READABLE,
-            false
-        ),
-        "Pairable": GObject.ParamSpec.boolean(
-            "Pairable",
-            "AdapterPairable",
-            "...",
-            GObject.ParamFlags.READWRITE,
-            false
-        ),
-        "Powered": GObject.ParamSpec.boolean(
-            "Powered",
-            "AdapterPowered",
-            "...",
-            GObject.ParamFlags.READWRITE,
-            false
-        ),
-        "Address": GObject.ParamSpec.string(
-            "Address",
-            "AdapterAddress",
-            "...",
-            GObject.ParamFlags.READABLE,
-            ""
-        ),
-        "Alias": GObject.ParamSpec.string(
-            "Alias",
-            "AdapterAlias",
-            "Visible Name (eg. hostname)",
-            GObject.ParamFlags.READWRITE,
-            ""
-        ),
-        "Modalias": GObject.ParamSpec.string(
-            "Modalias",
-            "AdapterModalias",
-            "...",
-            GObject.ParamFlags.READABLE,
-            ""
-        ),
-        "Name": GObject.ParamSpec.string(
-            "Name",
-            "AdapterName",
-            "...",
-            GObject.ParamFlags.READABLE,
-            ""
-        ),
-        "Class": GObject.ParamSpec.uint(
-            "Class",
-            "AdapterClass",
-            "...",
-            GObject.ParamFlags.READABLE,
-            new GLib.Variant("u", 0), new GLib.Variant("u", GLib.MAXUINT32),
-            new GLib.Variant("u", 0)
-        ),
-        "DiscoverableTimeout": GObject.ParamSpec.uint(
-            "DiscoverableTimeout",
-            "AdapterDiscoverableTimeout",
-            "...",
-            GObject.ParamFlags.READWRITE,
-            new GLib.Variant("u", 0), new GLib.Variant("u", GLib.MAXUINT32),
-            new GLib.Variant("u", 0)
-        ),
-        "PairableTimeout": GObject.ParamSpec.uint(
-            "PairableTimeout",
-            "AdapterPairableTimeout",
-            "...",
-            GObject.ParamFlags.READWRITE,
-            new GLib.Variant("u", 0), new GLib.Variant("u", GLib.MAXUINT32),
-            new GLib.Variant("u", 0)
-        )
-    },
-
-    _init: function (params) {
-        params = Object.assign({
-            g_connection: Gio.DBus.system,
-            g_interface_info: Adapter1Iface,
-            g_interface_name: Adapter1Iface.name,
-            g_name: "org.bluez",
-            g_object_path: "/org/bluez/hci0"
-        }, params);
-
-        this.parent(params);
-    }
-});
+var Adapter1Proxy = DBus.makeInterfaceProxy(
+    gsconnect.dbusinfo.lookup_interface("org.bluez.AgentManager1")
+);
 
