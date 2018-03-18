@@ -505,7 +505,7 @@ var Device = GObject.registerClass({
                 new GLib.Variant("(ssv)", [
                     this._dbus.get_object_path(),
                     params.action.name,
-                    gsconnect.full_pack(params.action.params)
+                    params.actions.params ? gsconnect.full_pack(params.action.params) : null
                 ])
             );
         }
@@ -517,12 +517,12 @@ var Device = GObject.registerClass({
                 new GLib.Variant("(ssv)", [
                     this._dbus.get_object_path(),
                     button.action,
-                    gsconnect.full_pack(button.params)
+                    button.params ? gsconnect.full_pack(button.params) : null
                 ])
             );
         }
 
-        this.send_notification("tester", notif);
+        this.send_notification("tester", notif); // FIXME: id
     }
 
     /**
