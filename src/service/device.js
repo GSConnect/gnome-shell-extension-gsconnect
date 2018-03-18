@@ -1,7 +1,5 @@
 "use strict";
 
-const Lang = imports.lang;
-
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
@@ -379,9 +377,9 @@ var Device = GObject.registerClass({
 
             // Connect to the new channel
             this._channel = channel;
-            this._channel.connect("connected", Lang.bind(this, this._onConnected));
-            this._channel.connect("disconnected", Lang.bind(this, this._onDisconnected));
-            this._channel.connect("received", Lang.bind(this, this._onReceived));
+            this._channel.connect("connected", this._onConnected.bind(this));
+            this._channel.connect("disconnected", this._onDisconnected.bind(this));
+            this._channel.connect("received", this._onReceived.bind(this));
 
             // Verify the certificate since it was TOFU'd by the listener
             if (!this.verify()) {
