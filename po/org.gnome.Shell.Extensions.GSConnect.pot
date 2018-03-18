@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-04 16:19+0100\n"
+"POT-Creation-Date: 2018-03-17 20:10-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
 #. TRANSLATORS: Open a new SMS window
-#: src/extension.js:176 src/service/daemon.js:853 src/widgets/device.js:199
+#: src/extension.js:176 src/service/daemon.js:856 src/widgets/device.js:199
 msgid "Send SMS"
 msgstr ""
 
@@ -82,7 +82,7 @@ msgstr ""
 msgid "Send To Mobile Device"
 msgstr ""
 
-#: src/prefs.js:51 src/service/daemon.js:208
+#: src/prefs.js:51 src/service/daemon.js:211
 msgid "GSConnect"
 msgstr ""
 
@@ -154,16 +154,16 @@ msgstr ""
 msgid "Select"
 msgstr ""
 
-#: src/service/daemon.js:634
+#: src/service/daemon.js:637
 msgid "Nautilus extensions changed"
 msgstr ""
 
-#: src/service/daemon.js:635
+#: src/service/daemon.js:638
 msgid "Restart Nautilus to apply changes"
 msgstr ""
 
 #. TRANSLATORS: Notification button to restart Nautilus
-#: src/service/daemon.js:641
+#: src/service/daemon.js:644
 msgid "Restart"
 msgstr ""
 

@@ -7,19 +7,19 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-04 16:19+0100\n"
+"POT-Creation-Date: 2018-03-17 20:10-0700\n"
 "PO-Revision-Date: 2018-03-05 11:11-0600\n"
+"Last-Translator: Adolfo Jayme Barrientos <fitojb@ubuntu.com>\n"
 "Language-Team: \n"
+"Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 2.0.6\n"
-"Last-Translator: Adolfo Jayme Barrientos <fitojb@ubuntu.com>\n"
-"Language: es\n"
 
 #. TRANSLATORS: Open a new SMS window
-#: src/extension.js:176 src/service/daemon.js:853 src/widgets/device.js:199
+#: src/extension.js:176 src/service/daemon.js:856 src/widgets/device.js:199
 msgid "Send SMS"
 msgstr "Enviar SMS"
 
@@ -82,7 +82,7 @@ msgstr "Configuración de móviles"
 msgid "Send To Mobile Device"
 msgstr "Enviar a dispositivo móvil"
 
-#: src/prefs.js:51 src/service/daemon.js:208
+#: src/prefs.js:51 src/service/daemon.js:211
 msgid "GSConnect"
 msgstr "GSConnect"
 
@@ -159,16 +159,16 @@ msgstr "Cancelar"
 msgid "Select"
 msgstr "Seleccionar"
 
-#: src/service/daemon.js:634
+#: src/service/daemon.js:637
 msgid "Nautilus extensions changed"
 msgstr "Han cambiado las extensiones de Nautilus"
 
-#: src/service/daemon.js:635
+#: src/service/daemon.js:638
 msgid "Restart Nautilus to apply changes"
 msgstr "Reinicie Nautilus para aplicar los cambios"
 
 #. TRANSLATORS: Notification button to restart Nautilus
-#: src/service/daemon.js:641
+#: src/service/daemon.js:644
 msgid "Restart"
 msgstr "Reiniciar"
 
