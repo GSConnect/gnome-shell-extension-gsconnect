@@ -650,8 +650,7 @@ var Daemon = GObject.registerClass({
             null
         );
 
-        // If quit() is called it will skip the DBus hooks, so use release()
-        this.daemonMonitor.connect("changed", () => this.release());
+        this.daemonMonitor.connect("changed", () => this.quit());
     }
 
     /**
