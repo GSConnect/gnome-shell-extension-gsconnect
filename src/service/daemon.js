@@ -105,6 +105,10 @@ var Daemon = GObject.registerClass({
             flags: Gio.ApplicationFlags.HANDLES_OPEN
         });
 
+        // This is currently required for clipboard to work under Wayland, but
+        // in future will probably just be removed.
+        Gdk.set_allowed_backends("x11,*");
+
         GLib.set_prgname(gsconnect.app_id);
         GLib.set_application_name(_("GSConnect"));
 
