@@ -199,7 +199,8 @@ var Plugin = new Lang.Class({
                         debug("Sftp: disconnected");
                         this.unmount();
                     case "Timeout waiting for prompt":
-                        this.unmount("Sftp: timeout");
+                        debug("Sftp: timeout");
+                        this.unmount();
                     default:
                         log("Sftp: " + data.toString());
                 }
