@@ -423,6 +423,8 @@ var Device = GObject.registerClass({
      * @param {Gio.Stream} payload - A payload stream // TODO
      */
     sendPacket(packet, payload=null) {
+        debug(`${this.name} (${this.id}): ${JSON.stringify(packet, null, 2)}`);
+
         if (this.connected && this.paired) {
             packet = new Protocol.Packet(packet);
             this._channel.send(packet);

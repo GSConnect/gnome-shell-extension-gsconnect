@@ -756,12 +756,13 @@ var Channel = GObject.registerClass({
      * @param {Packet} packet - A packet object
      */
     send(packet) {
+        //debug(packet);
         debug(this.identity.body.deviceId + ", " + packet.toString());
 
         try {
             this._output_stream.put_string(packet.toData(), null);
         } catch (e) {
-            log("error sending packet: " + e);
+            debug(e);
             // TODO: disconnect? check kdeconnect code
         }
     }
@@ -785,7 +786,9 @@ var Channel = GObject.registerClass({
             return false;
         }
 
-        this.emit("received", new Packet(data.toString()));
+        let packet = new Packet(data.toString());
+        //debug(packet);
+        this.emit("received", packet);
         return true;
     }
 });
