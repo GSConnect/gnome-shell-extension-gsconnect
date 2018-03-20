@@ -431,7 +431,7 @@ var Device = GObject.registerClass({
 
     /** Channel Callbacks */
     _onConnected(channel) {
-        log(`Connected to ${this.name}`);
+        log(`Connected to ${this.name} (${this.id})`);
 
         this._connected = true;
         this.notify("connected");
@@ -444,7 +444,7 @@ var Device = GObject.registerClass({
     }
 
     _onDisconnected(channel) {
-        log(`Disconnected from ${this.name}`);
+        log(`Disconnected from ${this.name} (${this.id})`);
 
         this._channel = null;
 
@@ -457,6 +457,8 @@ var Device = GObject.registerClass({
     }
 
     _onReceived(channel, packet) {
+        debug(`Received ${packet.type} from ${this.name} (${this.id})`);
+
         if (packet.type === Protocol.TYPE_IDENTITY) {
             this._handleIdentity(packet);
             this.activate();

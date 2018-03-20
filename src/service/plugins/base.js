@@ -101,7 +101,6 @@ var Plugin = GObject.registerClass({
     _activateAction(action, parameter) {
         try {
             if (parameter) {
-                debug(gsconnect.full_unpack(parameter));
                 this[action.name].call(this, gsconnect.full_unpack(parameter));
             } else {
                 this[action.name].call(this);

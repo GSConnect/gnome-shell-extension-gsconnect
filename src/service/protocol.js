@@ -785,11 +785,7 @@ var Channel = GObject.registerClass({
             return false;
         }
 
-        debug(this.identity.body.deviceId + ": " + data.toString());
-
-        let packet = new Packet(data.toString());
-        this.emit("received", packet);
-
+        this.emit("received", new Packet(data.toString()));
         return true;
     }
 });

@@ -1,6 +1,5 @@
 "use strict";
 
-const Lang = imports.lang;
 const Format = imports.format;
 const Gettext = imports.gettext;
 
@@ -40,8 +39,8 @@ gsconnect.localedir = GLib.build_filenamev([gsconnect.datadir, "locale"]);
 Gettext.bindtextdomain(gsconnect.app_id, gsconnect.localedir);
 Gettext.textdomain(gsconnect.app_id);
 
-// If we aren't inside the Gnome Shell process, set gettext on the global. Any
-// script *inside* the proc should set these manually from gsconnect.*
+// If we aren't inside the Gnome Shell process, set gettext on the global,
+// otherwise we'll set in on the global 'gsconnect' object
 if (typeof _ !== "function") {
     window._ = Gettext.gettext;
     window.ngettext = Gettext.ngettext;
@@ -113,7 +112,7 @@ gsconnect.settings.connect("changed::debug", () => {
             if (msg.stack) {
                 msg = msg.message + "\n" + msg.stack;
             } else if (typeof msg !== "string") {
-                msg = JSON.stringify(msg);
+                msg = JSON.stringify(msg, null, 2);
             }
 
             log("[" + hdr + "]: " + msg);

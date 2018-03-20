@@ -286,11 +286,11 @@ var Daemon = GObject.registerClass({
         let dbusPath = gsconnect.app_path + "/Device/" + packet.body.deviceId.replace(/\W+/g, "_");
 
         if (this._devices.has(dbusPath)) {
-            log("GSConnect: Updating device");
+            log(`GSConnect: Updating ${packet.body.deviceName}`);
 
             this._devices.get(dbusPath).update(packet, channel);
         } else {
-            log("GSConnect: Adding device");
+            log(`GSConnect: Adding ${packet.body.deviceName}`);
 
             // TODO: another device might still be resolving at this point...
             return new Promise((resolve, reject) => {
