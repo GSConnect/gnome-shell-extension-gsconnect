@@ -233,7 +233,7 @@ var Plugin = GObject.registerClass({
             ]);
             GLib.file_set_contents(
                 event.contact.avatar,
-                GLib.base64_decode(event.phoneThumbnail)
+                GLib.base64_decode(packet.body.phoneThumbnail)
             );
             this.contacts._writeCache();
         }
