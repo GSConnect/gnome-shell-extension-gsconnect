@@ -85,7 +85,7 @@ var Metadata = {
             description: _("Show a notification that opens a new conversation when activated"),
             icon_name: "sms-symbolic",
 
-            signature: "v",
+            signature: "a{sv}",
             incoming: ["kdeconnect.telephony"],
             outgoing: ["kdeconnect.sms.request"],
             allow: Allow.OUT | Allow.IN | Allow.SMS
@@ -186,7 +186,7 @@ var Plugin = GObject.registerClass({
         } else {
             this.event(event.type, event);
 
-            if (event.type === "sms" && this.allow & Allow.SMS) {
+            if (event.type === "sms" && (this.allow & Allow.SMS)) {
                 this._onSms(event);
             } else if (this.allow & Allow.CALLS) {
                 switch (event.type) {
@@ -241,11 +241,14 @@ var Plugin = GObject.registerClass({
         if (event.type === "sms") {
             event.content = packet.body.messageBody;
         } else if (event.type === "missedCall") {
-            event.content = "<i>" + _("Missed call at %s").format(event.time) + "</i>";
+            // TRANSLATORS: eg. Missed call from John Smith on Google Pixel
+            event.content = _("Missed call at %s").format(event.time);
         } else if (event.type === "ringing") {
-            event.content = packet.body.messageBody;
+            // TRANSLATORS: eg. Incoming call from John Smith
+            event.content = _("Incoming call from %s").format(event.contact.name);
         } else if (event.type === "talking") {
-            event.content = packet.body.messageBody;
+            // TRANSLATORS: eg. Call in progress with John Smith
+            event.content = _("Call in progress with %s").format(event.contact.name);
         }
 
         return event;
@@ -255,44 +258,39 @@ var Plugin = GObject.registerClass({
      * Show a local notification that opens a new SMS window when activated
      *
      * @param {Object} event - The telephony event
-     * @param {string} event.contactName - The sender's name
-     * @param {string} event.number - The sender's phone number
+     * @param {string} event.contact - A contact object for the event
+     * @param {string} event.content - The content of the event (message|event description)
+     * @param {string} event.number - The phone number reported by KDE Connect
      * @param {number} event.time - The event time in epoch us
+     * @param {string} event.type - The event type (sms|missedCall|ringing|talking)
      */
     callNotification(event) {
-        let body, title, icon, priority, buttons;
+        let buttons, icon;
+        let priority = Gio.NotificationPriority.NORMAL;
 
         if (event.contact && event.contact.avatar) {
             icon = Contacts.getPixbuf(event.contact.avatar);
         }
 
         if (event.type === "missedCall") {
-            // TRANSLATORS: eg. Missed call from John Smith on Google Pixel
-            body = _("Missed call from %s").format(event.contact.name);
-            icon = icon || new Gio.ThemedIcon({ name: "call-missed-symbolic" });
-            priority = Gio.NotificationPriority.NORMAL;
             buttons = [{
                 action: "replySms",
                 // TRANSLATORS: Reply to a missed call by SMS
                 label: _("Message"),
                 params: event
             }];
+            icon = icon || new Gio.ThemedIcon({ name: "call-missed-symbolic" });
         } else if (event.type === "ringing") {
-            // TRANSLATORS: eg. Incoming call from John Smith
-            body = _("Incoming call from %s").format(event.contact.name);
-            icon = icon || new Gio.ThemedIcon({ name: "call-start-symbolic" });
-            priority = Gio.NotificationPriority.URGENT;
             buttons = [{
                 action: "muteCall",
                 // TRANSLATORS: Silence an incoming call
                 label: _("Mute"),
                 params: event
             }];
-        } else if (event.type === "talking") {
-            // TRANSLATORS: eg. Call in progress with John Smith
-            body = _("Call in progress with %s").format(event.contact.name);
             icon = icon || new Gio.ThemedIcon({ name: "call-start-symbolic" });
-            priority = Gio.NotificationPriority.NORMAL;
+            priority = Gio.NotificationPriority.URGENT;
+        } else if (event.type === "talking") {
+            icon = icon || new Gio.ThemedIcon({ name: "call-start-symbolic" });
         }
 
         this.device.showNotification({
@@ -300,7 +298,8 @@ var Plugin = GObject.registerClass({
             title: event.contact.name,
             body: event.content,
             icon: icon,
-            priority: priority
+            priority: priority,
+            buttons: (buttons) ? buttons : []
         });
     }
 
@@ -308,9 +307,11 @@ var Plugin = GObject.registerClass({
      * Show a local notification that opens a new SMS window when activated
      *
      * @param {Object} event - The telephony event
-     * @param {string} event.contactName - The sender's name
-     * @param {string} event.number - The sender's phone number
+     * @param {string} event.contact - A contact object for the event
+     * @param {string} event.content - The content of the event (message|event description)
+     * @param {string} event.number - The phone number reported by KDE Connect
      * @param {number} event.time - The event time in epoch us
+     * @param {string} event.type - The event type (sms|missedCall|ringing|talking)
      */
     smsNotification(event) {
         let icon;
@@ -361,7 +362,7 @@ var Plugin = GObject.registerClass({
             window.receiveMessage(
                 event.contact,
                 event.number,
-                "<i>" + _("Missed call at %s").format(event.time) + "</i>"
+                `<i>${event.content}</i>`
             );
             window.urgency_hint = true;
             window._notifications.push([
