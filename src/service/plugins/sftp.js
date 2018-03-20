@@ -99,7 +99,7 @@ var Plugin = new Lang.Class({
 
         let args = [
             "sshfs",
-            packet.body.user + "@" + packet.body.ip + ":" + path,
+            packet.body.user + "@" + this.device.settings.get_string("tcp-host") + ":" + path,
             this._mount_path,
             "-p", packet.body.port.toString(),
             // "disable multi-threaded operation"
