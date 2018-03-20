@@ -379,17 +379,14 @@ var Plugin = GObject.registerClass({
             }
         }
 
-        let actions = gsconnect.full_unpack(this.settings.get_value("events"))[event.type];
-        this.callNotification(event);
+        this._telephonyAction(event);
     }
 
     _onRinging(event) {
         debug(event);
 
-        // TODO TODO TODO
-        let actions = gsconnect.full_unpack(this.settings.get_value("events"))[event.type];
-        this.callNotification(event);
-        this._setMediaState(2);
+        this._telephonyAction(event);
+        this._setMediaState(2); // TODO
     }
 
     _onSms(event) {
@@ -430,9 +427,7 @@ var Plugin = GObject.registerClass({
             }
         }
 
-        let actions = gsconnect.full_unpack(this.settings.get_value("events"))[event.type];
-        log("SMS ACTIONS: " + actions);
-        this.smsNotification(event);
+        this._telephonyAction(event);
     }
 
     _onTalking(event) {
@@ -441,10 +436,26 @@ var Plugin = GObject.registerClass({
         // TODO: need this, or done by isCancel?
         this.device.withdraw_notification("ringing|" + event.contact.name);
 
-        // TODO TODO TODO
-        let actions = gsconnect.full_unpack(this.settings.get_value("events"))[event.type];
-        this.callNotification(event);
-        this._setMediaState(2);
+        this._telephonyAction(event);
+        this._setMediaState(2); // TODO
+    }
+
+    _telephonyAction(event) {
+        let actions = gsconnect.full_unpack(
+            this.settings.get_value("events")
+        )[event.type];
+
+        for (let name in actions) {
+            if (actions[name]) {
+                let action = this.device.lookup_action(name);
+
+                if (action && action.parameter_type) {
+                    action.activate(gsconnect.full_pack(event));
+                } else if (action) {
+                    action.activate();
+                }
+            }
+        }
     }
 
     /**
