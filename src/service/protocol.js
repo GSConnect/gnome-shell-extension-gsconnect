@@ -855,7 +855,7 @@ var Transfer = GObject.registerClass({
 }, class Transfer extends Channel {
 
     _init(params) {
-        this.parent(params.device.id);
+        super._init(params.device.id);
 
         this._cancellable = new Gio.Cancellable();
 
