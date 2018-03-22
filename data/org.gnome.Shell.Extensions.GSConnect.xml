@@ -54,14 +54,6 @@
     <method name="RequestStatus"/>
   </interface>
 
-  <!-- FindMyPhone -->
-  <interface name="org.gnome.Shell.Extensions.GSConnect.Plugin.FindMyPhone">
-    <method name="Find"/>
-  </interface>
-
-  <!-- Mousepad -->
-  <interface name="org.gnome.Shell.Extensions.GSConnect.Plugin.Mousepad"/>
-
   <!-- MPRIS -->
   <interface name="org.mpris.MediaPlayer2">
       <method name="Raise" />
@@ -123,13 +115,6 @@
     </method>
   </interface>
 
-  <!-- Ping -->
-  <interface name="org.gnome.Shell.Extensions.GSConnect.Plugin.Ping">
-    <method name="Ping">
-      <arg name="message" type="s" direction="in"/>
-    </method>
-  </interface>
-
   <!-- Run Commands -->
   <interface name="org.gnome.Shell.Extensions.GSConnect.Plugin.RunCommand">
     <property type="a{sv}" name="Commands" access="read"/>
@@ -148,34 +133,7 @@
     <method name="Unmount"/>
   </interface>
 
-  <!-- FIXME Share -->
-  <interface name="org.gnome.Shell.Extensions.GSConnect.Plugin.Share">
-    <method name="ShareDialog"/>
-    <method name="ShareFile">
-      <arg name="uri" type="s" direction="in"/>
-    </method>
-    <method name="ShareText">
-      <arg name="text" type="s" direction="in"/>
-    </method>
-    <method name="ShareUrl">
-      <arg name="url" type="s" direction="in"/>
-    </method>
-  </interface>
-
-  <!-- Telephony -->
-  <interface name="org.gnome.Shell.Extensions.GSConnect.Plugin.Telephony">
-    <method name="MuteCall"/>
-    <method name="NewSms"/>
-    <method name="SendSms">
-      <arg name="phoneNumber" type="s" direction="in"/>
-      <arg name="messageBody" type="s" direction="in"/>
-    </method>
-    <method name="ShareUri">
-      <arg name="url" type="s" direction="in"/>
-    </method>
-  </interface>
-
-  <!-- org.freedesktop.Notifications Interface -->
+  <!-- libnotify (org.freedesktop.Notifications) -->
   <interface name="org.freedesktop.Notifications">
     <method name="Notify">
       <arg name="appName" type="s" direction="in"/>
