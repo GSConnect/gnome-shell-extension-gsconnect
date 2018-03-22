@@ -111,11 +111,10 @@ var Plugin = GObject.registerClass({
     }
 
     _registerAction(name, meta) {
-        let parameter_type = (meta.signature) ? new GLib.VariantType(meta.signature) : null;
         let action = new Device.Action({
             name: name,
             meta: meta,
-            parameter_type: parameter_type
+            parameter_type: (meta.signature) ? new GLib.VariantType(meta.signature) : null
         }, this);
         action.set_enabled(action.allow & this.allow);
 
@@ -123,7 +122,7 @@ var Plugin = GObject.registerClass({
 
         this.device.add_action(action);
 
-        if (parameter_type === null) {
+        if (action.parameter_type === null) {
             this.device.menu.add(action.name, action.meta);
         }
 
