@@ -507,7 +507,7 @@ var Device = GObject.registerClass({
                 new GLib.Variant("(ssv)", [
                     this._dbus.get_object_path(),
                     params.action.name,
-                    params.actions.params ? gsconnect.full_pack(params.action.params) : null
+                    params.action.params ? gsconnect.full_pack(params.action.params) : null
                 ])
             );
         }
