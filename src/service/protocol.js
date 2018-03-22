@@ -634,8 +634,7 @@ var Channel = GObject.registerClass({
     _initPacketIO(connection) {
         return new Promise((resolve, reject) => {
             this._input_stream = new Gio.DataInputStream({
-                base_stream: connection.input_stream,
-                newline_type: Gio.DataStreamNewlineType.LF
+                base_stream: connection.input_stream
             });
 
             this._output_stream = new Gio.DataOutputStream({
