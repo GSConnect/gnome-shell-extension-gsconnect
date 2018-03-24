@@ -176,6 +176,13 @@ var Device = GObject.registerClass({
             "The device type",
             GObject.ParamFlags.READABLE,
             "unknown"
+        ),
+        "display-type": GObject.ParamSpec.string(
+            "display-type",
+            "Display Name",
+            "The device type, formatted for display",
+            GObject.ParamFlags.READABLE,
+            "Desktop"
         )
     },
     Signals: {
@@ -298,7 +305,8 @@ var Device = GObject.registerClass({
         return this.settings.get_strv("outgoing-capabilities");
     }
     get icon_name() {
-        return (this.type === "desktop") ? "computer" : this.type;
+        let icon = (this.type === "desktop") ? "computer" : this.type;
+        return (icon === "phone") ? "smartphone" : icon;
     }
     get symbolic_icon_name() {
         let icon = (this.type === "phone") ? "smartphone" : this.type;
@@ -313,6 +321,18 @@ var Device = GObject.registerClass({
         }
     }
     get type() { return this.settings.get_string("type"); }
+    get display_type() {
+        switch (this.type) {
+            case "laptop":
+                return _("Laptop");
+            case "phone":
+                return _("Smartphone");
+            case "tablet":
+                return _("Tablet");
+            default:
+                return _("Desktop");
+        }
+    }
 
     _handleIdentity(packet) {
         this.settings.set_string("id", packet.body.deviceId);

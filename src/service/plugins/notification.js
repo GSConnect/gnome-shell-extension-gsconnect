@@ -47,19 +47,6 @@ var Metadata = {
 
 
 /**
- * Grouped Notifications snippets
- */
-const GroupedNotifications = [
-    "GroupSummary",
-    // Google+ grouped
-    "gns_notifications_group",
-    // Grouped SMS messages have no notification number in the id ----------------v
-    // "0|com.google.android.apps.messaging|0|com.google.android.apps.messaging:sms|10109"
-    ":sms|"
-];
-
-
-/**
  * Notification Plugin
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/notifications
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/sendnotifications
@@ -138,19 +125,7 @@ var Plugin = GObject.registerClass({
                 return;
             }
         } else if (this.allow & 2) {
-            // Grouped notifications close as a group so we don't use them
-            // TODO: example id GroupSummary notifications
-            if (packet.body.id.indexOf("GroupSummary") > -1) {
-                debug("ignored GroupSummary notification");
-            // Grouped SMS messages have no notification number in the id ----------------v
-            // "0|com.google.android.apps.messaging|0|com.google.android.apps.messaging:sms|10109"
-            } else if (packet.body.id.indexOf(":sms|") > -1) {
-                debug("ignored grouped SMS notification");
-            // Grouped Google+ notification; these also lack a "text" field
-            // "0|com.google.android.apps.plus|0|gns_notifications_group|10088"
-            } else if (packet.body.id.indexOf("gns_notifications_group") > -1) {
-                debug("ignored grouped Google+ notification");
-            } else if (packet.body.isCancel) {
+            if (packet.body.isCancel) {
                 this.device.withdraw_notification(packet.body.id);
                 this.untrackNotification(packet.body);
                 debug("closed notification");

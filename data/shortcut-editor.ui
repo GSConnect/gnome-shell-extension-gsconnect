@@ -2,8 +2,8 @@
 <!-- Generated with glade 3.20.0 -->
 <interface>
   <requires lib="gtk+" version="3.20"/>
-  <template class="Gjs_GSConnectShortcutEditor" parent="GtkDialog">
-    <signal name="key-press-event" handler="_onKeyPressEvent" object="Gjs_GSConnectShortcutEditor" swapped="no" />
+  <template class="GSConnectShortcutEditor" parent="GtkDialog">
+    <signal name="key-press-event" handler="_onKeyPressEvent" object="GSConnectShortcutEditor" swapped="no" />
 
     <property name="width_request">400</property>
     <property name="height_request">300</property>
@@ -139,7 +139,7 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
-            <signal name="clicked" handler="_onCancel" object="Gjs_GSConnectShortcutEditor" swapped="no" />
+            <signal name="clicked" handler="_onCancel" object="GSConnectShortcutEditor" swapped="no" />
           </object>
         </child>
         <child>
@@ -149,7 +149,7 @@
             <property name="can_focus">True</property>
             <property name="can_default">True</property>
             <property name="receives_default">True</property>
-            <signal name="clicked" handler="_onSet" object="Gjs_GSConnectShortcutEditor" swapped="no" />
+            <signal name="clicked" handler="_onSet" object="GSConnectShortcutEditor" swapped="no" />
             <style>
               <class name="suggested-action"/>
             </style>

@@ -117,6 +117,39 @@ var Daemon = GObject.registerClass({
 
     // Properties
     get certificate() {
+        // https://github.com/KDE/kdeconnect-kde/blob/master/core/kdeconnectconfig.cpp#L119
+        if (this._certificate === undefined) {
+            let certPath = gsconnect.configdir + "/certificate.pem";
+            let certExists = GLib.file_test(certPath, GLib.FileTest.EXISTS);
+            let keyPath = gsconnect.configdir + "/private.pem";
+            let keyExists = GLib.file_test(keyPath, GLib.FileTest.EXISTS);
+
+            if (!keyExists || !certExists) {
+                let cmd = [
+                    "openssl", "req", "-new", "-x509", "-sha256",
+                    "-newkey", "rsa:2048", "-nodes", "-keyout", "private.pem",
+                    "-days", "3650", "-out", "certificate.pem", "-subj",
+                    "/O=andyholmes.github.io/OU=GSConnect/CN=" + GLib.uuid_string_random()
+                ];
+
+                let proc = GLib.spawn_sync(
+                    gsconnect.configdir,
+                    cmd,
+                    null,
+                    GLib.SpawnFlags.SEARCH_PATH,
+                    null
+                );
+            }
+
+            // Ensure permissions are restrictive
+            GLib.spawn_command_line_async("chmod 0600 " + keyPath);
+            GLib.spawn_command_line_async("chmod 0600 " + certPath);
+
+            // Load the certificate
+            this._certificate = Gio.TlsCertificate.new_from_files(certPath, keyPath);
+            this.notify("fingerprint");
+        }
+
         return this._certificate;
     }
 
@@ -138,6 +171,40 @@ var Daemon = GObject.registerClass({
         return this.certificate.fingerprint()
     }
 
+    get identity() {
+        if (this._identity === undefined) {
+            this._identity = new Protocol.Packet({
+                id: 0,
+                type: Protocol.TYPE_IDENTITY,
+                body: {
+                    deviceId: this.certificate.serial,
+                    deviceName: gsconnect.settings.get_string("public-name"),
+                    deviceType: this.type,
+                    tcpPort: this.lanService.port,
+                    protocolVersion: 7,
+                    incomingCapabilities: [],
+                    outgoingCapabilities: []
+                }
+            });
+
+            for (let name in imports.service.plugins) {
+                let meta = imports.service.plugins[name].Metadata;
+
+                if (!meta) continue;
+
+                for (let packetType of meta.incomingCapabilities) {
+                    this._identity.body.incomingCapabilities.push(packetType);
+                }
+
+                for (let packetType of meta.outgoingCapabilities) {
+                    this._identity.body.outgoingCapabilities.push(packetType);
+                }
+            }
+        }
+
+        return this._identity;
+    }
+
     get symbolic_icon_name() {
         return (this.type === "laptop") ? "laptop" : "computer";
     }
@@ -153,19 +220,20 @@ var Daemon = GObject.registerClass({
     }
 
     get type() {
-        try {
-            let type = Number(
-                GLib.file_get_contents("/sys/class/dmi/id/chassis_type")[1]
-            );
+        if (this._type === undefined) {
+            try {
+                let type = Number(
+                    GLib.file_get_contents("/sys/class/dmi/id/chassis_type")[1]
+                );
 
-            if ([8, 9, 10, 14].indexOf(type) > -1) {
-                return "laptop";
+                this._type = ([8, 9, 10, 14].indexOf(type) > -1) ? "laptop" : "desktop";
+            } catch (e) {
+                debug("Error reading chassis_type: " + e);
+                this._type = "desktop";
             }
-        } catch (e) {
-            debug("Error reading chassis_type: " + e);
         }
 
-        return "desktop";
+        return this._type;
     }
 
     /**
@@ -185,41 +253,6 @@ var Daemon = GObject.registerClass({
         return shareable;
     }
 
-    /**
-     * Generate a Private Key and TLS Certificate
-     * See: https://github.com/KDE/kdeconnect-kde/blob/master/core/kdeconnectconfig.cpp#L119
-     */
-    _initEncryption() {
-        let certPath = gsconnect.configdir + "/certificate.pem";
-        let certExists = GLib.file_test(certPath, GLib.FileTest.EXISTS);
-        let keyPath = gsconnect.configdir + "/private.pem";
-        let keyExists = GLib.file_test(keyPath, GLib.FileTest.EXISTS);
-
-        if (!keyExists || !certExists) {
-            let cmd = [
-                "openssl", "req", "-new", "-x509", "-sha256", "-newkey",
-                "rsa:2048", "-nodes", "-keyout", "private.pem", "-days", "3650",
-                "-out", "certificate.pem", "-subj",
-                "/O=andyholmes.github.io/OU=GSConnect/CN=" + GLib.uuid_string_random()
-            ];
-
-            let proc = GLib.spawn_sync(
-                gsconnect.configdir,
-                cmd,
-                null,
-                GLib.SpawnFlags.SEARCH_PATH,
-                null
-            );
-        }
-
-        // Ensure permissions are restrictive
-        GLib.spawn_command_line_async("chmod 0600 " + keyPath);
-        GLib.spawn_command_line_async("chmod 0600 " + certPath);
-
-        // Load the certificate
-        this._certificate = Gio.TlsCertificate.new_from_files(certPath, keyPath);
-    }
-
     _applyResources() {
         let provider = new Gtk.CssProvider();
         provider.load_from_file(
@@ -231,41 +264,6 @@ var Daemon = GObject.registerClass({
             Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
         );
         Gtk.IconTheme.get_default().add_resource_path(gsconnect.app_path);
-    }
-
-    /**
-     * Build and return an identity packet for the local device
-     */
-    _getIdentityPacket() {
-        let packet = new Protocol.Packet({
-            id: 0,
-            type: Protocol.TYPE_IDENTITY,
-            body: {
-                deviceId: this.certificate.serial,
-                deviceName: gsconnect.settings.get_string("public-name"),
-                deviceType: this.type,
-                tcpPort: this.lanService.port,
-                protocolVersion: 7,
-                incomingCapabilities: [],
-                outgoingCapabilities: []
-            }
-        });
-
-        for (let name in imports.service.plugins) {
-            let meta = imports.service.plugins[name].Metadata;
-
-            if (!meta) continue;
-
-            for (let packetType of meta.incomingCapabilities) {
-                packet.body.incomingCapabilities.push(packetType);
-            }
-
-            for (let packetType of meta.outgoingCapabilities) {
-                packet.body.outgoingCapabilities.push(packetType);
-            }
-        }
-
-        return packet;
     }
 
     /**
@@ -681,16 +679,6 @@ var Daemon = GObject.registerClass({
     vfunc_startup() {
         super.vfunc_startup();
 
-        // Initialize encryption and ensure fingerprint is available right away
-        // FIXME: endless loop on fail?
-        try {
-            this._initEncryption();
-            this.notify("fingerprint");
-        } catch (e) {
-            log("Error generating TLS Certificate: " + e.message);
-            this.quit();
-        }
-
         // Watch the file 'daemon.js' to know when we're updated
         this._watchDaemon();
 
@@ -722,7 +710,6 @@ var Daemon = GObject.registerClass({
             this.quit();
         }
 
-        this.identity = this._getIdentityPacket();
         gsconnect.settings.bind(
             "public-name",
             this,

@@ -52,8 +52,8 @@ class KeybindingManager {
         );
     }
 
-    add(accelerator, callback){
-        debug("KeybindingManager.add(" + accelerator + ")");
+    add(accelerator, callback) {
+        debug(arguments);
 
         let action = global.display.grab_accelerator(accelerator);
 
@@ -68,7 +68,7 @@ class KeybindingManager {
                 callback: callback
             });
         } else {
-            debug("failed to grab accelerator: " + accelerator);
+            debug(`Failed to grab accelerator "${accelerator}"`);
         }
 
         return action;
@@ -409,7 +409,7 @@ class DeviceMenu extends PopupMenu.PopupMenuSection {
     }
 
     _sync() {
-        debug(this.device.name);
+        debug(`${this.device.name} (${this.device.id})`);
 
         if (!this.actor.visible) { return; }
 
@@ -490,7 +490,7 @@ class DeviceIndicator extends PanelMenu.Button {
     }
 
     _sync() {
-        debug(this.device.name);
+        debug(`${this.device.name} (${this.device.id})`);
 
         let { connected, paired } = this.device;
 
@@ -532,7 +532,7 @@ function _proxyMethods(info, iface) {
                 try {
                     ret = this.call_finish(res);
                 } catch (e) {
-                    debug(method.name + ": " + e.message);
+                    debug(`Error calling ${method.name} on ${proxy.g_object_path}: ${e.message}`);
                 }
 
                 // If return has single arg, only return that or null
@@ -633,21 +633,13 @@ var ServiceIndicator = class ServiceIndicator extends PanelMenu.SystemIndicator 
                 this._setupObjManager();
             }
         );
-
-        this._watchService = Gio.bus_watch_name(
-            Gio.BusType.SESSION,
-            "org.gnome.Shell.Extensions.GSConnect",
-            Gio.BusNameWatcherFlags.NONE,
-            this._serviceAppeared.bind(this),
-            this._serviceVanished.bind(this)
-        );
     }
 
     get devices() {
         return Object.values(this._devices);
     }
 
-    _displayMode(menu) {
+    _sync(menu) {
         let { connected, paired } = menu.device;
 
         if (!paired && !gsconnect.settings.get_boolean("show-unpaired")) {
@@ -660,6 +652,10 @@ var ServiceIndicator = class ServiceIndicator extends PanelMenu.SystemIndicator 
     }
 
     _setupObjManager() {
+        if (!this.service) {
+            this._startService();
+        }
+
         // Setup currently managed objects
         for (let obj of this.manager.get_objects()) {
             for (let iface of obj.get_interfaces()) {
@@ -670,15 +666,9 @@ var ServiceIndicator = class ServiceIndicator extends PanelMenu.SystemIndicator 
         // Watch for new and removed
         this.manager.connect("interface-added", this._interfaceAdded.bind(this));
         this.manager.connect("interface-removed", this._interfaceRemoved.bind(this));
-        this.manager.connect("notify::name-owner", () => {
-            if (this.manager.name_owner === null) {
-                debug("name-owner disappeared, oh noes!");
-            }
-        });
+        this.manager.connect("notify::name-owner", this._onNameOwnerChanged.bind(this));
     }
 
-    // TODO: Because GApplication already owns it's object path, the
-    //       DBusObjectManager can't manage it's interfaces
     _startService() {
         this.service = new ServiceProxy({
             g_connection: Gio.DBus.session,
@@ -686,29 +676,37 @@ var ServiceIndicator = class ServiceIndicator extends PanelMenu.SystemIndicator 
             g_object_path: gsconnect.app_path
         });
 
-        this.service.init_promise().then(result => {
-            this.extensionIndicator.visible = true;
-        }).catch(e => debug(e));
+        this.service.init(null);
+
+        this.devices.map(device => { device.service = this.service; });
+
+        this.extensionIndicator.visible = true;
     }
 
-    _serviceAppeared(connection, name, name_owner) {
-        debug(name);
+    _onNameOwnerChanged() {
+        debug(`${this.manager.name_owner}`);
+
+        if (this.manager.name_owner === null) {
+            // Destroy any device proxies
+            for (let path in this._indicators) {
+                debug("name-owner destroy");
+
+                this._indicators[path].destroy();
+                this._menus[path].destroy();
+                delete this._indicators[path];
+                delete this._menus[path];
+            }
+
+            if (this.service) {
+                this.service.destroy();
+                delete this.service;
+                this.extensionIndicator.visible = false;
+            }
+        }
 
         if (!this.service) {
             this._startService();
         }
-    }
-
-    _serviceVanished(connection, name, name_owner) {
-        debug(name);
-
-        if (this.service) {
-            this.service.destroy();
-            delete this.service;
-            this.extensionIndicator.visible = false;
-        }
-
-        this._startService();
     }
 
     _interfaceAdded(manager, object, iface) {
@@ -721,41 +719,38 @@ var ServiceIndicator = class ServiceIndicator extends PanelMenu.SystemIndicator 
 
         // It's a device
         if (iface.g_interface_name === "org.gnome.Shell.Extensions.GSConnect.Device") {
-            debug("Device added: " + iface.name);
-
-            // It's a new device
-            if (!this._indicators[iface.g_object_path]) {
-                // FIXME: awkward...
-                iface.actions = Gio.DBusActionGroup.get(
-                    iface.g_connection,
-                    iface.g_name,
-                    iface.g_object_path
-                );
-
-                // Currently we only setup methods for Device interfaces, and
-                // we only really use it for activate() and openSettings()
-                _proxyMethods(info, iface);
-
-                // Device Indicator
-                let indicator = new DeviceIndicator(object, iface);
-                this._indicators[iface.g_object_path] = indicator;
-                Main.panel.addToStatusArea(iface.g_object_path, indicator);
-
-                // Device Menu
-                let menu = new DeviceMenu(object, iface);
-                this._menus[iface.g_object_path] = menu;
-
-                this.devicesSection.addMenuItem(menu);
-                this._displayMode(menu);
-
-                // Properties
-                iface.connect("g-properties-changed", () => this._displayMode(menu));
-
-                // Try activating the device
-                iface.activate();
-            }
+            log(`GSConnect: Adding ${iface.name}`);
 
             this._devices[iface.id] = iface;
+
+            iface.actions = Gio.DBusActionGroup.get(
+                iface.g_connection,
+                iface.g_name,
+                iface.g_object_path
+            );
+            iface.service = this.service;
+
+            // Currently we only setup methods for Device interfaces, and
+            // we only really use it for activate() and openSettings()
+            _proxyMethods(info, iface);
+
+            // Device Indicator
+            let indicator = new DeviceIndicator(object, iface);
+            this._indicators[iface.g_object_path] = indicator;
+            Main.panel.addToStatusArea(iface.g_object_path, indicator);
+
+            // Device Menu
+            let menu = new DeviceMenu(object, iface);
+            this._menus[iface.g_object_path] = menu;
+
+            this.devicesSection.addMenuItem(menu);
+            this._sync(menu);
+
+            // Properties
+            iface.connect("g-properties-changed", () => this._sync(menu));
+
+            // Try activating the device
+            iface.activate();
         }
     }
 
@@ -763,10 +758,12 @@ var ServiceIndicator = class ServiceIndicator extends PanelMenu.SystemIndicator 
         debug(iface.g_interface_name);
 
         if (iface.g_interface_name === "org.gnome.Shell.Extensions.GSConnect.Device") {
-            debug("Destroying " + iface.name + " UI");
+            log(`GSConnect: Removing ${iface.name}`);
 
+            this._devices[iface.id].destroy();
             this._indicators[iface.g_object_path].destroy();
             this._menus[iface.g_object_path].destroy();
+
             delete this._devices[iface.id];
             delete this._indicators[iface.g_object_path];
             delete this._menus[iface.g_object_path];
@@ -796,30 +793,10 @@ var ServiceIndicator = class ServiceIndicator extends PanelMenu.SystemIndicator 
             if (device.actions.get_action_enabled("closeNotification")) {
                 device.actions.activate_action(
                     "closeNotification",
-                    gsconnect.full_pack([id])
+                    gsconnect.full_pack(id)
                 );
             }
         }
-    }
-
-    _sftpDevice(indicator) {
-        let menu;
-
-        if (gsconnect.settings.get_boolean("show-indicators")) {
-            indicator.menu.toggle();
-            menu = indicator.deviceMenu;
-        } else {
-            this._openDeviceMenu();
-
-            for (let dbusPath in this._menus) {
-                if (this._menus[dbusPath].device.id === indicator.device.id) {
-                    menu = this._menus[dbusPath];
-                }
-            }
-        }
-
-        menu.sftpButton.checked = !menu.sftpButton.checked;
-        menu.sftpButton.emit("clicked", menu.sftpButton);
     }
 
     _openDeviceMenu(indicator) {
@@ -833,9 +810,6 @@ var ServiceIndicator = class ServiceIndicator extends PanelMenu.SystemIndicator 
     }
 
     destroy() {
-        // Stop watching the service (eg. don't try and restart anymore)
-        Gio.bus_unwatch_name(this._watchService);
-
         // Unhook from any ObjectManager events
         GObject.signal_handlers_destroy(this.manager);
 
@@ -846,6 +820,8 @@ var ServiceIndicator = class ServiceIndicator extends PanelMenu.SystemIndicator 
             delete this._indicators[path];
             delete this._menus[path];
         }
+
+        this.devices.map(device => device.destroy());
 
         // Disconnect from any GSettings changes
         gsconnect.settings.disconnect(this._gsettingsId);

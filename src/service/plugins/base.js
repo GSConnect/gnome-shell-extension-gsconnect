@@ -7,7 +7,6 @@ const Gtk = imports.gi.Gtk;
 
 // Local Imports
 imports.searchPath.push(gsconnect.datadir);
-const Protocol = imports.service.protocol;
 const DBus = imports.modules.dbus;
 const Device = imports.service.device;
 
@@ -201,7 +200,7 @@ var Plugin = GObject.registerClass({
     // A DBus method for clearing the cache
     clearCache() {
         for (let name in this._cacheProperties) {
-            debug("clearing '" + name + "' from '" + this.name + "'");
+            debug(`Cache: clearing ${name} from ${this.name}`);
             this[name] = JSON.parse(JSON.stringify(this._cacheProperties[name]));
         }
     }
@@ -221,7 +220,7 @@ var Plugin = GObject.registerClass({
                 }
             }
         } catch (e) {
-            debug("Cache: Error reading %s cache: %s".format(this.name, e.message));
+            debug(`Cache: Error reading ${this.name} cache: ${e.message}`);
         }
     }
 
@@ -243,7 +242,7 @@ var Plugin = GObject.registerClass({
                 null
             );
         } catch (e) {
-            debug("Cache: Error writing %s cache: %s".format(this._name, e.message));
+            debug(`Cache: Error writing ${this.name} cache: ${e.message}`);
         }
     }
 

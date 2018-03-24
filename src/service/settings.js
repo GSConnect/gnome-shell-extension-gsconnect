@@ -1,5 +1,6 @@
 "use strict";
 
+const Gdk = imports.gi.Gdk;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
@@ -7,7 +8,7 @@ const Gtk = imports.gi.Gtk;
 
 // Local Imports
 imports.searchPath.push(gsconnect.datadir);
-const Keybindings = imports.modules.keybindings;
+const DBus = imports.modules.dbus;
 
 
 function template_connect_func(builder, obj, signalName, handlerName, connectObj, flags) {
@@ -153,7 +154,6 @@ Gio.Settings.prototype.bind_with_mapping = function(key, object, property, flags
 
 
 function mapSwitch(settings, widget, [on, off]=[6, 4]) {
-    return;
     settings.bind_with_mapping(
         "allow",
         widget,
@@ -398,13 +398,10 @@ var SettingsWindow = GObject.registerClass({
     ]
 }, class SettingsWindow extends Gtk.ApplicationWindow {
 
-    _init() {
+    _init(params={}) {
         Gtk.Widget.set_connect_func.call(this, template_connect_func);
 
-        super._init({
-            application: Gio.Application.get_default(),
-            visible: true
-        });
+        super._init(params);
 
         // Header Bar
         this.headerbar_title.label = this.application.name;
@@ -560,6 +557,22 @@ var SettingsWindow = GObject.registerClass({
 
 var DeviceSettings = GObject.registerClass({
     GTypeName: "GSConnectDeviceSettings",
+    Properties: {
+        "connected": GObject.ParamSpec.boolean(
+            "connected",
+            "deviceConnected",
+            "Whether the device is connected",
+            GObject.ParamFlags.READWRITE,
+            false
+        ),
+        "paired": GObject.ParamSpec.boolean(
+            "paired",
+            "devicePaired",
+            "Whether the device is paired",
+            GObject.ParamFlags.READWRITE,
+            false
+        )
+    },
     Template: "resource:///org/gnome/Shell/Extensions/GSConnect/device.ui",
     Children: [
         "switcher",
@@ -587,51 +600,40 @@ var DeviceSettings = GObject.registerClass({
     ]
 }, class DeviceSettings extends Gtk.Stack {
 
-    _init(device) {
+    _init(device, params={}) {
         Gtk.Widget.set_connect_func.call(this, template_connect_func);
 
-        super._init();
+        super._init(params);
 
         this.service = Gio.Application.get_default();
         this.device = device;
-        this.meta = DeviceMetadata[this.device.type];
+
+        // Device Status
+        this.connect("notify::connected", this._onConnected.bind(this));
+        this.device.bind_property("connected", this, "connected", GObject.BindingFlags.SYNC_CREATE);
+
+        this.connect("notify::paired", this._onPaired.bind(this));
+        this.device.bind_property("paired", this, "paired", GObject.BindingFlags.SYNC_CREATE);
+
+        this.device_status_list.set_header_func(section_separators);
 
         this._gsettings = {};
 
+        // Sidebar Row
         this.row = new SidebarRow({
-            icon_name: (device.paired) ? this.meta.symbolic_icon : this.meta.unpaired_icon,
+            icon: this._getSymbolicIcon(),
             title: device.name,
             type: "device",
             name: device._dbus.get_object_path(),
             show_go_next: true
         });
 
-        // Info Page
-        this.device.bind_property(
-            "name",
-            this.device_name,
-            "label",
-            GObject.BindingFlags.SYNC_CREATE
-        );
-        this.device_type.label = this.meta.type;
-        this.device_icon.icon_name = this.meta.icon;
+        // Info Pane
+        this.device_name.label = this.device.name;
+        this.device_type.label = this.device.display_type;
+        this.device_icon.icon_name = this.device.icon_name;
 
-        // Connected
-        this._connectedId = this.device.connect(
-            "notify::connected",
-            this._onConnected.bind(this)
-        );
-        this._onConnected();
-
-        // Paired
-        this._pairedId = this.device.connect(
-            "notify::paired",
-            this._onPaired.bind(this)
-        );
-        this._onPaired();
-
-        this.device_status_list.set_header_func(section_separators);
-
+        // Settings Pages
         this._batteryBar();
         this._sharingSettings();
         this._runcommandSettings();
@@ -670,12 +672,8 @@ var DeviceSettings = GObject.registerClass({
         return this._gsettings[name] || false;
     }
 
-    _onSwitcherRowSelected(box, row) {
-        this.set_visible_child_name(row.get_name());
-    }
-
     _onConnected() {
-        if (this.device.connected) {
+        if (this.connected) {
             this.device_connected_image.icon_name = "emblem-ok-symbolic";
             this.device_connected_text.label = _("Device is connected");
             this.device_connected.set_tooltip_markup(null);
@@ -688,19 +686,17 @@ var DeviceSettings = GObject.registerClass({
             );
         }
 
-        this.device_paired.sensitive = this.device.connected;
+        this.device_paired.sensitive = this.connected;
     }
 
     _onPaired() {
-        if (this.device.paired) {
+        if (this.paired) {
             this.device_paired_image.icon_name = "application-certificate-symbolic";
             this.device_paired_text.label = _("Device is paired");
             this.device_paired.set_tooltip_markup(
                 // TRANSLATORS: eg. Unpair <b>Google Pixel</b>
                 _("Unpair <b>%s</b>").format(this.device.name)
             );
-
-            this.row.icon.icon_name = this.meta.symbolic_icon;
         } else {
             this.device_paired_image.icon_name = "channel-insecure-symbolic";
             this.device_paired_text.label = _("Device is unpaired");
@@ -723,17 +719,27 @@ var DeviceSettings = GObject.registerClass({
                     this.service.fingerprint
                 )
             );
+        }
 
-            this.row.icon.icon_name = this.meta.unpaired_icon;
+        this.row.icon.icon_name = this._getSymbolicIconName();
+    }
+
+    _onStatusRowActivated(box, row) {
+        if (row === this.device_connected) {
+            this.device.activate();
+        } else if (row === this.device_paired) {
+            this.device.paired ? this.device.unpair() : this.device.pair();
         }
     }
 
+    _onSwitcherRowSelected(box, row) {
+        this.set_visible_child_name(row.get_name());
+    }
+
     /**
-     * Info Page
+     * Battery Level
      */
     _batteryBar() {
-        // Battery Level Bar
-        // TODO: this might not be worth the trouble...
         let battery = this.device._plugins.get("battery");
 
         if (battery) {
@@ -782,17 +788,6 @@ var DeviceSettings = GObject.registerClass({
         let runcommand = this._getSettings("runcommand");
 
         if (runcommand) {
-            // Edit Command dialog
-            // TODO: move to template
-            this.command_name.connect("changed", () => {
-                this.command_icon.gicon = new Gio.ThemedIcon({
-                    names: [
-                        this.command_name.text.toLowerCase(),
-                        "application-x-executable"
-                    ]
-                });
-            });
-
             // Local Command List
             this._commands = gsconnect.full_unpack(
                 runcommand.get_value("command-list")
@@ -821,6 +816,12 @@ var DeviceSettings = GObject.registerClass({
         } else {
             this.commands.visible = false;
         }
+    }
+
+    _onCommandNameChanged(entry) {
+        this.command_icon.gicon = new Gio.ThemedIcon({
+            names: [ entry.text.toLowerCase(), "application-x-executable" ]
+        });
     }
 
     _insertCommand(uuid) {
@@ -885,7 +886,6 @@ var DeviceSettings = GObject.registerClass({
         );
 
         this._resetCommandEditor();
-        this._populateCommands();
     }
 
     _resetCommandEditor(button) {
@@ -903,6 +903,8 @@ var DeviceSettings = GObject.registerClass({
         this.command_new.visible = true;
         this.command_editor.visible = false;
         this.command_list.invalidate_sort();
+
+        this._populateCommands();
     }
 
     _editCommand(row, uuid) {
@@ -925,6 +927,7 @@ var DeviceSettings = GObject.registerClass({
     _browseCommand(entry, icon_pos, event) {
         let filter = new Gtk.FileFilter();
         filter.add_mime_type("application/x-executable");
+
         let dialog = new Gtk.FileChooserDialog({ filter: filter });
         dialog.add_button(_("Cancel"), Gtk.ResponseType.CANCEL);
         dialog.add_button(_("Open"), Gtk.ResponseType.OK);
@@ -938,13 +941,13 @@ var DeviceSettings = GObject.registerClass({
 
     _removeCommand(button) {
         delete this._commands[this.command_editor.uuid];
+
         this._getSettings("runcommand").set_value(
             "command-list",
             gsconnect.full_pack(this._commands)
         );
 
         this._resetCommandEditor();
-        this._populateCommands();
     }
 
     /**
@@ -1134,7 +1137,7 @@ var DeviceSettings = GObject.registerClass({
     }
 
     _onShortcutRowActivated(box, row) {
-        let dialog = new Keybindings.ShortcutEditor({
+        let dialog = new ShortcutEditor({
             summary: row.meta.summary,
             transient_for: this.get_toplevel()
         });
@@ -1162,36 +1165,270 @@ var DeviceSettings = GObject.registerClass({
 });
 
 
-var DeviceMetadata = {
-    desktop: {
-        type: _("Desktop"),
-        icon: "computer",
-        symbolic_icon: "computer-symbolic",
-        unpaired_icon: "desktopdisconnected"
-    },
-    laptop: {
-        type: _("Laptop"),
-        icon: "laptop",
-        symbolic_icon: "laptop-symbolic",
-        unpaired_icon: "laptopdisconnected"
-    },
-    phone: {
-        type: _("Smartphone"),
-        icon: "smartphone",
-        symbolic_icon: "smartphone-symbolic",
-        unpaired_icon: "smartphonedisconnected"
-    },
-    tablet: {
-        type: _("Tablet"),
-        icon: "tablet",
-        symbolic_icon: "tablet-symbolic",
-        unpaired_icon: "tabletdisconnected"
-    },
-    unknown: {
-        type: _("Unknown"),
-        icon: "computer",
-        symbolic_icon: "computer-symbolic",
-        unpaired_icon: "desktopdisconnected"
+var ShellProxy = DBus.makeInterfaceProxy(
+    gsconnect.dbusinfo.lookup_interface("org.gnome.Shell")
+);
+
+/**
+ *
+ */
+var ShortcutEditor = GObject.registerClass({
+    GTypeName: "GSConnectShortcutEditor",
+    Template: "resource:///org/gnome/Shell/Extensions/GSConnect/shortcut-editor.ui",
+    Children: [
+        // HeaderBar
+        "cancel_button", "set_button",
+        //
+        "stack",
+        "shortcut-summary",
+        "edit-shortcut", "confirm-shortcut",
+        "conflict-label"
+    ],
+    Signals: {
+        "result": {
+            flags: GObject.SignalFlags.RUN_FIRST,
+            param_types: [ GObject.TYPE_STRING ]
+        }
     }
-};
+}, class ShortcutEditor extends Gtk.Dialog {
+
+    _init(params) {
+        // Hack until template callbacks are supported (GJS 1.54?)
+        Gtk.Widget.set_connect_func.call(this, template_connect_func);
+
+        super._init({
+            transient_for: params.transient_for,
+            use_header_bar: true,
+            modal: true
+        });
+
+        this.summary = params.summary;
+        this.result = "";
+
+        this.shell = new ShellProxy({
+            g_connection: Gio.DBus.session,
+            g_name: "org.gnome.Shell",
+            g_object_path: "/org/gnome/Shell"
+        });
+        this.shell.init_promise().catch(e => debug(e));
+
+        this.seat = Gdk.Display.get_default().get_default_seat();
+
+        // Content
+        this.shortcut_summary.label = _("Enter a new shortcut to change <b>%s</b>").format(this.summary);
+
+        this.shortcut_label = new Gtk.ShortcutLabel({
+            accelerator: "",
+            disabled_text: _("Disabled"),
+            hexpand: true,
+            halign: Gtk.Align.CENTER,
+            visible: true
+        });
+        this.confirm_shortcut.attach(this.shortcut_label, 0, 0, 1, 1);
+    }
+
+//    /*
+//     * Stolen from GtkCellRendererAccel:
+//     * https://git.gnome.org/browse/gtk+/tree/gtk/gtkcellrendereraccel.c#n261
+//     */
+//    gchar*
+//    convert_keysym_state_to_string (CcKeyCombo *combo)
+//    {
+//      gchar *name;
+
+//      if (combo->keyval == 0 && combo->keycode == 0)
+//        {
+//          /* This label is displayed in a treeview cell displaying
+//           * a disabled accelerator key combination.
+//           */
+//          name = g_strdup (_("Disabled"));
+//        }
+//      else
+//        {
+//          name = gtk_accelerator_get_label_with_keycode (NULL, combo->keyval, combo->keycode, combo->mask);
+
+//          if (name == NULL)
+//            name = gtk_accelerator_name_with_keycode (NULL, combo->keyval, combo->keycode, combo->mask);
+//        }
+
+//      return name;
+//    }
+
+    _onKeyPressEvent(widget, event) {
+        if (!this._grabId) {
+            return false;
+        }
+
+        let keyval = event.get_keyval()[1];
+        let keyvalLower = Gdk.keyval_to_lower(keyval);
+
+        let state = event.get_state()[1];
+        let realMask = state & Gtk.accelerator_get_default_mod_mask();
+
+        // FIXME: Remove modifier keys
+        let mods = [
+            Gdk.KEY_Alt_L,
+            Gdk.KEY_Alt_R,
+            Gdk.KEY_Caps_Lock,
+            Gdk.KEY_Control_L,
+            Gdk.KEY_Control_R,
+            Gdk.KEY_Meta_L,
+            Gdk.KEY_Meta_R,
+            Gdk.KEY_Num_Lock,
+            Gdk.KEY_Shift_L,
+            Gdk.KEY_Shift_R,
+            Gdk.KEY_Super_L,
+            Gdk.KEY_Super_R
+        ];
+        if (mods.indexOf(keyvalLower) > -1) {
+            log("returning");
+            return true;
+        }
+
+        // Normalize Tab
+        if (keyvalLower === Gdk.KEY_ISO_Left_Tab) {
+            keyvalLower = Gdk.KEY_Tab;
+        }
+
+        // Put shift back if it changed the case of the key, not otherwise.
+        if (keyvalLower !== keyval) {
+            realMask |= Gdk.ModifierType.SHIFT_MASK;
+        }
+
+        // HACK: we don't want to use SysRq as a keybinding (but we do want
+        // Alt+Print), so we avoid translation from Alt+Print to SysRq
+        if (keyvalLower === Gdk.KEY_Sys_Req && (realMask & Gdk.ModifierType.MOD1_MASK) !== 0) {
+            keyvalLower = Gdk.KEY_Print;
+        }
+
+        // A single Escape press cancels the editing
+        // FIXME: or does it...
+        if (realMask === 0 && keyvalLower === Gdk.KEY_Esc) {
+            return this._onCancel();
+        }
+
+        // Backspace disables the current shortcut
+        if (realMask === 0 && keyvalLower === Gdk.KEY_BackSpace) {
+            return this._onRemove();
+        }
+
+        // CapsLock isn't supported as a keybinding modifier, so keep it from
+        // confusing us
+        realMask &= ~Gdk.ModifierType.LOCK_MASK;
+
+        if (keyvalLower !== 0 && realMask !== 0) {
+            this.ungrab();
+
+            this.accelerator = Gtk.accelerator_name(keyvalLower, realMask);
+            this.accelerator_label = Gtk.accelerator_get_label(keyvalLower, realMask);
+
+            log("KEYVAL: " + keyvalLower);
+            log("MASK: " + realMask);
+            log("SHORTCUT: " + this.accelerator);
+            log("SHORTCUT: " + this.accelerator_label);
+
+            // Switch to confirm/conflict page
+            this.stack.set_visible_child_name("confirm-shortcut");
+            // Show shortcut icons
+            this.shortcut_label.accelerator = this.accelerator;
+
+            //FIXME
+            // If not available, show confliction
+            if (!this.check(this.accelerator)) {
+                this.conflict_label.visible = true;
+                //_("The requested keyboard shortcut is already in use and can't be overridden.")
+                this.conflict_label.label = _("%s is already being used").format(this.accelerator_label);
+            // Otherwise the set button
+            } else {
+                this.set_button.visible = true;
+            }
+
+            return true;
+        }
+
+        return true;
+    }
+
+    _onCancel() {
+        return this.response(Gtk.ResponseType.CANCEL);
+    }
+
+    _onSet() {
+        return this.response(Gtk.ResponseType.OK);
+    }
+
+    response(id) {
+        this.hide();
+        this.ungrab();
+        Gtk.Dialog.prototype.response.call(this, id);
+
+        return true;
+    }
+
+    check(accelerator) {
+        // Check someone else isn't already using the binding
+        let action = this.shell.grabAccelerator(accelerator, 0);
+//        let action = this.shell.call_sync(
+//            "GrabAccelerator",
+//            new GLib.Variant("(su)", [accelerator, 0]),
+//            0,
+//            -1,
+//            null
+//        ).deep_unpack()[0];
+
+        if (action !== 0) {
+            this.shell.ungrabAccelerator(action);
+//            this.shell.call_sync(
+//                "UngrabAccelerator",
+//                new GLib.Variant("(u)", [action]),
+//                0,
+//                -1,
+//                null
+//            );
+            return true;
+        }
+
+        return false;
+    }
+
+    grab() {
+        let success = this.seat.grab(
+            this.get_window(),
+            Gdk.SeatCapabilities.KEYBOARD,
+            true, // owner_events
+            null, // cursor
+            null, // event
+            null
+        );
+
+        log("Seat Grab: " + success);
+
+        if (success !== Gdk.GrabStatus.SUCCESS) {
+            this._onCancel();
+        }
+
+        this._grabId = this.seat.get_keyboard();
+        this._grabId = this._grabId || this.seat.get_pointer();
+        this.grab_add();
+    }
+
+    ungrab() {
+        this.seat.ungrab();
+        this.grab_remove();
+        delete this._grabId;
+    }
+
+    // A non-blocking version of run()
+    run() {
+        this.set_button.visible = false;
+
+        this.show();
+
+        GLib.timeout_add(GLib.PRIORITY_DEFAULT, 100, () => {
+            this.grab();
+            return false;
+        });
+    }
+});
+
 

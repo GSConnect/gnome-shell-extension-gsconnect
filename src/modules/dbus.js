@@ -316,7 +316,7 @@ var ProxyBase = GObject.registerClass({
             let ret = this.call_sync(info.name, variant, 0, -1, null);
             retval = ret.deep_unpack();
         } catch (e) {
-            log("Error calling '" + info.name + "': " + e.message);
+            debug(`Error calling ${info.name} on ${this.g_object_path}: ${e.message}`);
             retval = undefined;
         }
 
@@ -335,7 +335,7 @@ var ProxyBase = GObject.registerClass({
                 try {
                     ret = this.call_finish(result);
                 } catch (e) {
-                    debug("Error calling " + info.name + ": " + e.message);
+                    debug(`Error calling ${info.name} on ${this.g_object_path}: ${e.message}`);
                     reject(e);
                 }
 
@@ -370,8 +370,7 @@ var ProxyBase = GObject.registerClass({
             return variant.deep_unpack()[0].deep_unpack();
         // Fallback to cached property...
         } catch (e) {
-            debug("Failed to get: " + name + " on " + this.g_interface_name);
-            debug("trying for cached property");
+            debug(`Failed to get ${name} on ${this.g_interface_name}; falling back to cache...`);
 
             try {
                 return this.get_cached_property(name).deep_unpack();
@@ -403,11 +402,7 @@ var ProxyBase = GObject.registerClass({
                 try {
                     this.call_finish(result);
                 } catch (e) {
-                    log(
-                        "Error setting " + name +
-                        " on " + this.g_object_path + ": " +
-                        e.message + "\n" + e.stack
-                    );
+                    log(`Error setting ${name} on ${this.g_object_path}: ${e.message}`);
                 }
             }
         );

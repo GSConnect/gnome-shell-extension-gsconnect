@@ -1173,6 +1173,7 @@
                                     <property name="hexpand">True</property>
                                     <property name="placeholder_text" translatable="yes">Name</property>
                                     <signal name="activate" handler="_saveCommand" object="GSConnectDeviceSettings" swapped="no"/>
+                                    <signal name="changed" handler="_onCommandNameChanged" object="GSConnectDeviceSettings" swapped="no"/>
                                   </object>
                                   <packing>
                                     <property name="left_attach">1</property>

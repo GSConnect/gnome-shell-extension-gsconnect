@@ -27,7 +27,6 @@ var Metadata = {
         ping: {
             summary: _("Ping"),
             description: _("Ping a device with an optional message"),
-            signature: "av",
             incoming: ["kdeconnect.ping"],
             outgoing: [],
             allow: 4
@@ -49,36 +48,32 @@ var Plugin = GObject.registerClass({
     }
 
     handlePacket(packet) {
-        debug("Ping: handlePacket()");
+        debug(packet);
 
         if (!(this.allow & 4)) {
             return;
         }
 
-        packet.body.message = packet.body.message || "";
-
-        this.event("ping", packet.body.message);
+        this.event("ping", packet.body.message || "");
 
         // Notification
-        let notif = new Gio.Notification();
-        notif.set_title(this.device.name);
+        let notif = {
+            title: this.device.name,
+            body: _("Ping"),
+            icon: new Gio.ThemedIcon({ name: this.device.type + "-symbolic" })
+        };
 
-        if (packet.body.message.length) {
+        if (packet.body.message) {
             // TRANSLATORS: An optional message accompanying a ping, rarely if ever used
             // eg. Ping: A message sent with ping
-            notif.set_body(_("Ping: %s").format(packet.body.message));
-        } else {
-            notif.set_body(_("Ping"));
+            notif.body = _("Ping: %s").format(packet.body.message);
         }
 
-        notif.set_icon(
-            new Gio.ThemedIcon({ name: this.device.type + "-symbolic" })
-        );
-        this.device.send_notification("ping", notif);
+        this.device.showNotification(notif);
     }
 
     ping(message="") {
-        debug("Ping: ping(" + message + ")");
+        debug(message);
 
         let packet = {
             id: 0,
