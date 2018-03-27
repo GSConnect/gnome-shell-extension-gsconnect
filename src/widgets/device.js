@@ -281,8 +281,6 @@ var Stack = new Lang.Class({
     },
 
     _addDaemon: function () {
-        let metadata = DeviceMetadata[this._parent.daemon.type];
-
         // Default Sidebar Entry
         this.defaultRow = new PreferencesWidget.Row({
             height_request: -1,
@@ -293,7 +291,7 @@ var Stack = new Lang.Class({
         this.defaultRow.device = { id: "default" };
 
         let icon = new Gtk.Image({
-            icon_name: metadata.symbolic_icon,
+            icon_name: "org.gnome.Shell.Extensions.GSConnect-symbolic",
             pixel_size: 16
         });
         this.defaultRow.grid.attach(icon, 0, 0, 1, 1);
