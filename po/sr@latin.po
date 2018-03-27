@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-17 20:10-0700\n"
+"POT-Creation-Date: 2018-03-27 16:02-0700\n"
 "PO-Revision-Date: 2018-03-03 15:29+0100\n"
 "Last-Translator: Слободан Терзић  <slobodan.terzic@zoho.eu>\n"
 "Language-Team: \n"
@@ -586,24 +586,24 @@ msgstr "Otvori meni"
 msgid "Refresh"
 msgstr "Osveži"
 
-#: src/widgets/device.js:319
+#: src/widgets/device.js:317
 msgid "Connecting Devices"
 msgstr "Povezivanje uređaja"
 
 #. TRANSLATORS: eg. Reconnect <b>Google Pixel</b>
-#: src/widgets/device.js:438 src/widgets/shell.js:599
+#: src/widgets/device.js:436 src/widgets/shell.js:599
 #, javascript-format
 msgid "Reconnect <b>%s</b>"
 msgstr "Ponovo poveži <b>%s</b>"
 
 #. TRANSLATORS: eg. Unpair <b>Google Pixel</b>
-#: src/widgets/device.js:479
+#: src/widgets/device.js:477
 #, javascript-format
 msgid "Unpair <b>%s</b>"
 msgstr "Raspari <b>%s</b>"
 
 #. TRANSLATORS: eg. Pair <b>Google Pixel</b>
-#: src/widgets/device.js:488 src/widgets/shell.js:609
+#: src/widgets/device.js:486 src/widgets/shell.js:609
 #, javascript-format
 msgid "Pair <b>%s</b>"
 msgstr "Upari <b>%s</b>"
@@ -618,7 +618,7 @@ msgstr "Upari <b>%s</b>"
 #.
 #. <b>Local Fingerprint:</b>
 #. 00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
-#: src/widgets/device.js:499 src/widgets/shell.js:609
+#: src/widgets/device.js:497 src/widgets/shell.js:609
 #, javascript-format
 msgid ""
 "<b>%s Fingerprint:</b>\n"
@@ -634,32 +634,32 @@ msgstr ""
 "%s"
 
 #. Plugins
-#: src/widgets/device.js:508
+#: src/widgets/device.js:506
 msgid "Plugins"
 msgstr "Priključci"
 
 #. Keyboard Shortcuts
-#: src/widgets/device.js:511
+#: src/widgets/device.js:509
 msgid "Keyboard Shortcuts"
 msgstr "Prečice tastature"
 
-#: src/widgets/device.js:521
+#: src/widgets/device.js:519
 msgid "Desktop"
 msgstr "Radna površ"
 
-#: src/widgets/device.js:527
+#: src/widgets/device.js:525
 msgid "Laptop"
 msgstr "Laptop"
 
-#: src/widgets/device.js:533
+#: src/widgets/device.js:531
 msgid "Smartphone"
 msgstr "Pametni telefon"
 
-#: src/widgets/device.js:539
+#: src/widgets/device.js:537
 msgid "Tablet"
 msgstr "Tablet"
 
-#: src/widgets/device.js:545
+#: src/widgets/device.js:543
 msgid "Unknown"
 msgstr "Nepoznato"
 
