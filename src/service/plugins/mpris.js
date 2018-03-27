@@ -336,7 +336,7 @@ var Plugin = new Lang.Class({
             if (Metadata.hasOwnProperty("xesam:artist")) {
                 nowPlaying = Metadata["xesam:artist"] + " - " + nowPlaying;
             }
-            
+
             // Bug with player.Position always returning 0. Must use the cumbersome API
             let pos = p.prop.GetSync("org.mpris.MediaPlayer2.Player", "Position")[0].get_int64();
             response.body = {
@@ -349,11 +349,14 @@ var Plugin = new Lang.Class({
                 canGoPrevious: (player.CanGoPrevious === true),
                 canSeek: (player.CanSeek === true)
             };
+
             if (Metadata.hasOwnProperty("mpris:length")) {
                 response.body["length"] = Math.round(Metadata["mpris:length"]/1000);
             }
 
-
+            if (Metadata.hasOwnProperty("mpris:artUrl")) {
+                response.body["albumArtUrl"] = Metadata["mpris:artUrl"];
+            }
         }
 
         if (packet.body.hasOwnProperty("requestVolume")) {
