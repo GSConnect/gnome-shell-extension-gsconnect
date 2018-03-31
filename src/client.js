@@ -641,6 +641,8 @@ var Device = new Lang.Class({
             }
         });
 
+        GObject.signal_handlers_destroy(this.settings);
+
         ProxyBase.prototype.destroy.call(this);
     }
 });
