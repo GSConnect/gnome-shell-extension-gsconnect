@@ -145,25 +145,6 @@ var Plugin = GObject.registerClass({
     }
 
     /**
-     * Check if a notification is grouped notification
-     * @param {Protocol.Packet} packet - A notification packet
-     * @return {Boolean} - %true if the notification is grouped
-     */
-
-    /** Get the path to the largest PNG of @name */
-    _getIconPath(name) {
-        let theme = Gtk.IconTheme.get_default();
-        let sizes = theme.get_icon_sizes(name);
-        let info = theme.lookup_icon(
-            name,
-            Math.max.apply(null, sizes),
-            Gtk.IconLookupFlags.NO_SVG
-        );
-
-        return (info) ? info.get_filename() : false;
-    }
-
-    /**
      * Search the cache for a notification by data and return it or %false if
      * not found
      */
@@ -217,7 +198,134 @@ var Plugin = GObject.registerClass({
     }
 
     /**
-     * Icon transfers
+     * Sending Notifications
+     */
+    _uploadIcon(packet, icon) {
+        debug(icon);
+
+        if (typeof icon === "string") {
+            this._uploadNamedIcon(packet, icon);
+        } else if (icon instanceof Gio.BytesIcon) {
+            this._uploadBytesIcon(packet, icon.get_bytes());
+        } else if (icon instanceof Gio.FileIcon) {
+            this._uploadFileIcon(packet, icon.get_file());
+        } else if (icon instanceof Gio.ThemedIcon) {
+            this._uploadNamedIcon(packet, icon.name);
+        }
+    }
+
+    _uploadBytesIcon(packet, gbytes) {
+        this._uploadIconStream(
+            packet,
+            Gio.MemoryInputStream.new_from_bytes(gbytes),
+            gbytes.get_size(),
+            GLib.compute_checksum_for_bytes(
+                GLib.ChecksumType.MD5,
+                gbytes.toArray()
+            )
+        );
+    }
+
+    _uploadNamedIcon(packet, name) {
+        let theme = Gtk.IconTheme.get_default();
+        let sizes = theme.get_icon_sizes(name);
+        let info = theme.lookup_icon(
+            name,
+            Math.max.apply(null, sizes),
+            Gtk.IconLookupFlags.NO_SVG
+        );
+
+        if (info) {
+            this._uploadFileIcon(
+                packet,
+                Gio.File.new_for_path(info.get_filename())
+            );
+        } else {
+            this.device.sendPacket(packet);
+        }
+    }
+
+    _uploadFileIcon(packet, gfile) {
+        //debug(gfile);
+
+        this._uploadIconStream(
+            packet,
+            gfile.read(null),
+            gfile.query_info("standard::size", 0, null).get_size(),
+            GLib.compute_checksum_for_bytes(
+                GLib.ChecksumType.MD5,
+                gfile.load_contents(null)[1]
+            )
+        );
+    }
+
+    _uploadIconStream(packet, stream, size, checksum) {
+        let transfer = new Protocol.Transfer({
+            device: this.device,
+            size: size,
+            input_stream: stream
+        });
+
+        transfer.connect("connected", (channel) => transfer.start());
+
+        transfer.upload().then(port => {
+            packet.payloadSize = size;
+            packet.payloadTransferInfo = { port: port };
+            packet.body.payloadHash = checksum;
+
+            this.device.sendPacket(packet);
+        });
+    }
+
+    /**
+     * This is called by the daemon; See Daemon._sendNotification()
+     */
+    sendNotification(notif) {
+        debug(`(${notif.appName}) ${notif.title}: ${notif.text}`);
+
+        return new Promise((resolve, reject) => {
+            let applications = JSON.parse(this.settings.get_string("applications"));
+
+            // New application
+            if (!applications.hasOwnProperty(notif.appName)) {
+                debug(`new application: ${notif.appName}`);
+
+                applications[notif.appName] = {
+                    iconName: (typeof notif.icon === "string") ? notif.icon : "system-run-symbolic",
+                    enabled: true
+                };
+
+                this.settings.set_string(
+                    "applications",
+                    JSON.stringify(applications)
+                );
+            }
+
+            if ((this.allow & 2) && applications[notif.appName].enabled) {
+                let icon = notif.icon;
+                delete notif.icon;
+
+                let packet = {
+                    id: 0,
+                    type: "kdeconnect.notification",
+                    body: notif
+                };
+
+                if (icon) {
+                    this._uploadIcon();
+                } else {
+                    this.device.sendPacket(packet);
+                }
+
+                resolve(`'${notif.appName}' notification forwarded`);
+            } else {
+                resolve(true);
+            }
+        }).catch(e => debug(e));
+    }
+
+    /**
+     * Receiving Notifications
      */
     _downloadIcon(packet) {
         debug([packet.payloadTransferInfo.port, packet.payloadSize, packet.body.payloadHash]);
@@ -243,26 +351,6 @@ var Plugin = GObject.registerClass({
         });
     }
 
-    _uploadIcon(packet, filename) {
-        debug(filename);
-
-        let file = Gio.File.new_for_path(filename);
-        let info = file.query_info("standard::size", 0, null);
-
-        let transfer = new Protocol.Transfer({
-            device: this.device,
-            size: info.get_size(),
-            input_stream: file.read(null)
-        });
-
-        transfer.connect("connected", (channel) => transfer.start());
-
-        transfer.upload().then(port => {
-            packet.payloadSize = info.get_size();
-            packet.payloadTransferInfo = { port: port };
-            packet.body.payloadHash = GLib.compute_checksum_for_bytes(
-                GLib.ChecksumType.MD5,
-                file.load_contents(null)[1]
             );
 
             this.device.sendPacket(packet);
@@ -385,84 +473,10 @@ var Plugin = GObject.registerClass({
             }
 
             this.trackNotification(packet.body);
-            // We use the timestamp as an the effective ID, since phone apps
-            // reuse their ID's at whim.
-            this.device.send_notification(packet.body.time, notif);
-
-            this.device.showNotification({
-                id: packet.body.time,
-                title: notif.title,
-                body: notif.body,
-                icon: icon,
-                priority: notif.priority,
-                action: notif.action || null,
-                buttons: notif.buttons || []
-            });
+            this.device.showNotification(notif);
 
             resolve(true);
-        });
-    }
-
-    /**
-     * This is called by the daemon; See Daemon.Notify()
-     */
-    sendNotification(args) {
-        debug(args[0] + ": " + args[3] + " - " + args[4]);
-
-        return new Promise((resolve, reject) => {
-            let [
-                appName,
-                replacesId,
-                iconName,
-                summary,
-                body,
-                actions,
-                hints,
-                timeout
-            ] = args;
-
-            if (!appName) {
-                reject(new Error("no appName"));
-            }
-
-            let applications = JSON.parse(this.settings.get_string("applications"));
-
-            // New application
-            if (appName && !applications.hasOwnProperty(appName)) {
-                debug("adding '" + appName + "' to notifying applications");
-
-                applications[appName] = { iconName: iconName, enabled: true };
-                this.settings.set_string(
-                    "applications",
-                    JSON.stringify(applications)
-                );
-            }
-
-            if ((this.allow & 2) && applications[appName].enabled) {
-                let packet = new Protocol.Packet({
-                    id: 0,
-                    type: "kdeconnect.notification",
-                    body: {
-                        appName: appName,
-                        id: replacesId.toString(),
-                        isClearable: (replacesId),
-                        ticker: body
-                    }
-                });
-
-                let iconPath = this._getIconPath(iconName);
-
-                if (iconPath) {
-                    this._uploadIcon(packet, iconPath);
-                } else {
-                    this.device.sendPacket(packet);
-                }
-
-                resolve("'" + appName + "' notification forwarded");
-            }
-
-            resolve(true);
-        });
+        }).catch(e => debug(e));
     }
 
     /**
@@ -510,7 +524,6 @@ var Plugin = GObject.registerClass({
             }
         // Start tracking it now
         } else {
-
             log("FIXME: shouldn't be reached");
             this.trackNotification(notif);
         }

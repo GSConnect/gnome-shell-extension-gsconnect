@@ -1,5 +1,5 @@
 <node>
-  <!-- Daemon -->
+  <!-- Service -->
   <interface name="org.gnome.Shell.Extensions.GSConnect">
     <property type="as" name="Devices" access="read"/>
     <property type="b" name="Discovering" access="readwrite"/>
@@ -147,7 +147,20 @@
     </method>
   </interface>
 
-  <!-- org.gnome.Shell Interface -->
+  <!-- GNotification (org.gtk.Notifications) -->
+  <interface name="org.gtk.Notifications">
+    <method name="AddNotification">
+      <arg type="s" direction="in"/>
+      <arg type="s" direction="in"/>
+      <arg type="a{sv}" direction="in"/>
+    </method>
+    <method name="RemoveNotification">
+      <arg type="s" direction="in"/>
+      <arg type="s" direction="in"/>
+    </method>
+  </interface>
+
+  <!-- Gnome Shell (org.gnome.Shell) -->
   <interface name="org.gnome.Shell">
     <method name="Eval">
       <arg type="s" name="script" direction="in" />

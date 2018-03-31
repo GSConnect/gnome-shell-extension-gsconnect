@@ -392,14 +392,102 @@ var Daemon = GObject.registerClass({
     }
 
     /**
-     * This function forwards a local notification to any supporting device by
-     * eavesdropping on org.freedesktop.Notifications
+     * Local Notifications
+     *
+     * There are two buses we watch for notifications:
+     *   1) org.freedesktop.Notifications (libnotify)
+     *   2) org.gtk.Notifications (GNotification)
      */
-    Notify(appName, replacesId, iconName, summary, body, actions, hints, timeout) {
-        debug(arguments);
+    _getAppNotificationSettings() {
+        this._appNotificationSettings = {};
 
-        let variant = new GLib.Variant("s", escape(JSON.stringify([Array.from(arguments)])));
-        // FIXME FIXME
+        for (let app of this._desktopNotificationSettings.get_strv("application-children")) {
+            let appSettings = new Gio.Settings({
+                schema_id: "org.gnome.desktop.notifications.application",
+                path: "/org/gnome/desktop/notifications/application/" + app + "/"
+            });
+
+            let appInfo = Gio.DesktopAppInfo.new(
+                appSettings.get_string("application-id")
+            );
+
+            if (appInfo) {
+                this._appNotificationSettings[appInfo.get_display_name()] = appSettings;
+            }
+        }
+    }
+
+    _startNotificationListener(connection) {
+        // Respect desktop notification settings
+        this._desktopNotificationSettings = new Gio.Settings({
+            schema_id: "org.gnome.desktop.notifications"
+        });
+        this._desktopNotificationSettings.connect(
+            "changed::application-children",
+            () => this._getAppNotificationSettings()
+        );
+        this._getAppNotificationSettings();
+
+        // libnotify (org.freedesktop.Notifications)
+        this._fdoNotifications = new DBus.ProxyServer({
+            g_connection: connection,
+            g_instance: this,
+            g_interface_info: gsconnect.dbusinfo.lookup_interface(
+                "org.freedesktop.Notifications"
+            ),
+            g_object_path: "/org/freedesktop/Notifications"
+        });
+
+        this._fdoNotificationsMatch = "interface='org.freedesktop.Notifications'," +
+                                      "member='Notify'," +
+                                      "type='method_call'," +
+                                      "eavesdrop='true'";
+
+        // GNotification (org.gtk.Notifications)
+        this._gtkNotifications = new DBus.ProxyServer({
+            g_connection: connection,
+            g_instance: this,
+            g_interface_info: gsconnect.dbusinfo.lookup_interface(
+                "org.gtk.Notifications"
+            ),
+            g_object_path: "/org/gtk/Notifications"
+        });
+
+        this._gtkNotificationsMatch = "interface='org.gtk.Notifications'," +
+                                      "member='AddNotification'," +
+                                      "type='method_call'," +
+                                      "eavesdrop='true'";
+
+        this._fdo = new DBus.FdoProxy({
+            g_connection: connection,
+            g_name: "org.freedesktop.DBus",
+            g_object_path: "/"
+        });
+
+        this._fdo.init_promise().then(result => {
+            this._fdo.addMatch(this._fdoNotificationsMatch).catch(debug);
+            this._fdo.addMatch(this._gtkNotificationsMatch).catch(debug);
+        });
+    }
+
+    _stopNotificationListener() {
+        this._fdo.removeMatch(this._fdoNotificationsMatch);
+        this._fdo.removeMatch(this._gtkNotificationsMatch);
+        this._fdo.destroy();
+        this._fdoNotifications.destroy();
+        this._gtkNotifications.destroy();
+    }
+
+    _sendNotification(notif) {
+        debug(notif);
+
+        let appSettings = this._appNotificationSettings[notif.appName];
+
+        if (appSettings && !appSettings.get_boolean("enable")) {
+            return;
+        }
+
+        let variant = gsconnect.full_pack(notif);
 
         for (let device of this._devices.values()) {
             let action = device.lookup_action("sendNotification");
@@ -408,6 +496,43 @@ var Daemon = GObject.registerClass({
                 action.activate(variant);
             }
         }
+    }
+
+    Notify(appName, replacesId, iconName, summary, body, actions, hints, timeout) {
+        // Ignore notifications without an appName
+        if (!appName) {
+            return;
+        }
+
+        this._sendNotification({
+            appName: appName,
+            id: replacesId,
+            title: summary,
+            text: body,
+            ticker: `${summary}: ${body}`,
+            isClearable: (replacesId !== "0"),
+            icon: iconName
+        });
+    }
+
+    AddNotification() {
+        // [ appId, notificationId, { title, body, icon, ... } ]
+        let notif = gsconnect.full_unpack(Array.from(arguments));
+
+        // Ignore our own notifications (otherwise things could get loopy)
+        if (notif[0] === "org.gnome.Shell.Extensions.GSConnect") {
+            return;
+        }
+
+        this._sendNotification({
+            appName: Gio.DesktopAppInfo.new(notif[0]).get_display_name(),
+            id: notif[1],
+            title: notif[2].title,
+            text: notif[2].body,
+            ticker: `${notif[2].title}: ${notif[2].body}`,
+            isClearable: true,
+            icon: Gio.Icon.deserialize(notif[2].icon)
+        });
     }
 
     /**
@@ -770,38 +895,13 @@ var Daemon = GObject.registerClass({
             g_object_path: gsconnect.app_path
         });
 
-        // org.freedesktop.Notifications clone...
-        this._ndbus = new DBus.ProxyServer({
-            g_connection: connection,
-            g_instance: this,
-            g_interface_info: gsconnect.dbusinfo.lookup_interface("org.freedesktop.Notifications"),
-            g_object_path: "/org/freedesktop/Notifications"
-        });
-
-        // Proxy calls to Notify()
-        this._match = "interface='org.freedesktop.Notifications'," +
-            "member='Notify'," +
-            "type='method_call'," +
-            "eavesdrop='true'";
-
-        this._fdo = new DBus.FdoProxy({
-            g_connection: Gio.DBus.session,
-            g_name: "org.freedesktop.DBus",
-            g_object_path: "/"
-        });
-
-        this._fdo.init_promise().then(result => {
-            this._fdo.addMatch(this._match).catch(e => debug(e));
-        });
+        this._startNotificationListener(connection);
 
         return true;
     }
 
-        this._fdo.removeMatch(this._match).then(result => {
     vfunc_dbus_unregister(connection, object_path) {
-            this._fdo.destroy();
-            this._ndbus.destroy();
-        }).catch(e => debug(e));
+        this._stopNotificationListener();
 
         // Must be done before g_name_owner === null
         for (let device of this._devices.values()) {
@@ -811,7 +911,7 @@ var Daemon = GObject.registerClass({
 
         this._dbus.destroy();
 
-        super.vfunc_dbus_register(connection, object_path);
+        super.vfunc_dbus_unregister(connection, object_path);
     }
 
     // FIXME: this is all garbage
