@@ -370,13 +370,6 @@ var Daemon = GObject.registerClass({
         });
     }
 
-    _watchDevices() {
-        gsconnect.settings.connect("changed::devices", () => {
-            this._onDevicesChanged();
-        });
-        this._onDevicesChanged();
-    }
-
     _pruneDevices() {
         // Don't prune devices while the settings window is open
         if (this._window) { return; }
@@ -389,6 +382,17 @@ var Daemon = GObject.registerClass({
                 gsconnect.settings.set_strv("devices", knownDevices);
             }
         }
+    }
+
+    _watchDevices() {
+        this._devices = new Map();
+
+        gsconnect.settings.connect("changed::devices", () => {
+            this._onDevicesChanged();
+        });
+
+        this._onDevicesChanged();
+        log(`${this._devices.size} devices loaded from cache`);
     }
 
     /**
@@ -863,9 +867,7 @@ var Daemon = GObject.registerClass({
 
         // Track devices, DBus object path as key
         // FIXME: there's now some overlap with use of ObjectManager here...
-        this._devices = new Map();
         this._watchDevices();
-        log(this._devices.size + " devices loaded from cache");
     }
 
     vfunc_activate() {
