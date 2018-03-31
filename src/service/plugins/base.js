@@ -72,9 +72,10 @@ var Plugin = GObject.registerClass({
         });
 
         // GActions
+        this._gactions = [];
+
         if (this._meta.actions) {
             // We register actions based on the device capabilities
-            this._gactions = [];
             let deviceHandles = this.device.incomingCapabilities;
             let deviceProvides = this.device.outgoingCapabilities;
 
@@ -200,7 +201,7 @@ var Plugin = GObject.registerClass({
     // A DBus method for clearing the cache
     clearCache() {
         for (let name in this._cacheProperties) {
-            debug(`Cache: clearing ${name} from ${this.name}`);
+            debug(`clearing ${name} from ${this.name}`);
             this[name] = JSON.parse(JSON.stringify(this._cacheProperties[name]));
         }
     }
@@ -220,7 +221,7 @@ var Plugin = GObject.registerClass({
                 }
             }
         } catch (e) {
-            debug(`Cache: Error reading ${this.name} cache: ${e.message}`);
+            debug(`error reading ${this.name} cache: ${e.message}`);
         }
     }
 
@@ -242,7 +243,7 @@ var Plugin = GObject.registerClass({
                 null
             );
         } catch (e) {
-            debug(`Cache: Error writing ${this.name} cache: ${e.message}`);
+            debug(`error writing ${this.name} cache: ${e.message}`);
         }
     }
 
