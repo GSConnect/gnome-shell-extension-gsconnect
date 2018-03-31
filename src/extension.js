@@ -760,7 +760,6 @@ var ServiceIndicator = class ServiceIndicator extends PanelMenu.SystemIndicator 
         if (iface.g_interface_name === "org.gnome.Shell.Extensions.GSConnect.Device") {
             log(`GSConnect: Removing ${iface.name}`);
 
-            this._devices[iface.id].destroy();
             this._indicators[iface.g_object_path].destroy();
             this._menus[iface.g_object_path].destroy();
 
@@ -820,8 +819,6 @@ var ServiceIndicator = class ServiceIndicator extends PanelMenu.SystemIndicator 
             delete this._indicators[path];
             delete this._menus[path];
         }
-
-        this.devices.map(device => device.destroy());
 
         // Disconnect from any GSettings changes
         gsconnect.settings.disconnect(this._gsettingsId);
