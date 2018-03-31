@@ -712,7 +712,7 @@ var ContactChooser = GObject.registerClass({
             visible: true
         });
         this.list.set_filter_func(this._filter.bind(this));
-        this.list.set_sort_func(this._sort.bind(this));
+        this.list.set_sort_func(this._sort);
         this.add(this.list);
 
         // Placeholder
