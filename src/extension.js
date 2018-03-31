@@ -466,7 +466,7 @@ class DeviceMenu extends PopupMenu.PopupMenuSection {
 class DeviceIndicator extends PanelMenu.Button {
 
     _init(object, iface) {
-        super._init(null, iface.name + " Indicator", false);
+        super._init(null, `${iface.name} Indicator`, false);
 
         this.object = object;
         this.device = iface;
