@@ -565,7 +565,6 @@ var Daemon = GObject.registerClass({
             application: this,
             authors: [ "Andy Holmes <andrew.g.r.holmes@gmail.com>" ],
             comments: gsconnect.metadata.description,
-            //logo_icon_name: gsconnect.app_id,
             logo: GdkPixbuf.Pixbuf.new_from_resource_at_scale(
                 gsconnect.app_path + "/" + gsconnect.app_id + ".svg",
                 128,
@@ -608,7 +607,7 @@ var Daemon = GObject.registerClass({
                 }
             }
         } else {
-            debug("Device: " + device.name + "\nAction: " + parameter[1].unpack());
+            debug(`${parameters[0]}: ${parameter[1].unpack()}`);
         }
     }
 
@@ -747,8 +746,8 @@ var Daemon = GObject.registerClass({
      * Open the application settings, for @device if given.
      * @param {String} [device] - DBus object path of the device
      *
-     * The DBus method takes no arguments; Device.openSettings() calls this
-     * and populates @device.
+     * The DBus method takes no arguments; Device.openSettings() calls this and
+     * populates @device.
      */
     openSettings(device=null) {
         if (!this._window) {
@@ -835,7 +834,7 @@ var Daemon = GObject.registerClass({
                 this._addDevice(channel.identity, channel);
             });
         } catch (e) {
-            log("Error starting LanChannelService: " + e);
+            debug(e);
             this.quit();
         }
 
