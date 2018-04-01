@@ -74,6 +74,22 @@
 .gsconnect-status-bar {
 }
 
+/**
+ * Account for a patch that landed in gnome-shell-3.28.0 that clobbered all
+ * :first-child descendants with margin/padding changes.
+ * https://gitlab.gnome.org/GNOME/gnome-shell/commit/fb9db4e171778a63bd85ac6fde15b7acfdede2c2
+ */
+.aggregate-menu .popup-sub-menu .gsconnect-device-box :first-child {
+    padding: 0;
+    margin: 0;
+}
+
+.aggregate-menu .popup-sub-menu .gsconnect-plugin-button:first-child {
+    border: none;
+    border-radius: 16px;
+    padding: 8px;
+}
+
 /* Tooltip
 
 StBin.gsconnect-tooltip (inherits from .osd-window)
