@@ -27,8 +27,8 @@ var Metadata = {
         },
         closeNotification: {
             summary: _("Close Notification"),
-            description: _("Close a remote notification"),
-            signature: "av",
+            description: _("Close a remote notification by Id"),
+            signature: "s",
             incoming: [],
             outgoing: ["kdeconnect.notification.request"],
             allow: 6
