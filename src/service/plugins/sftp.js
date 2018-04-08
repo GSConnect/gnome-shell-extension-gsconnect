@@ -109,6 +109,8 @@ var Plugin = new Lang.Class({
             "-f",
             // Do not use ~/.ssh/config
             "-F", "/dev/null",
+            // "reconnect to server"
+            "-o", "reconnect",
             // Sketchy?
             "-o", "IdentityFile=" + ext.configdir + "/private.pem",
             // Don't prompt for new host confirmation (we know the host)
