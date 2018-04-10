@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-04-10 08:05-0700\n"
+"POT-Creation-Date: 2018-04-10 08:50-0700\n"
 "PO-Revision-Date: 2018-03-03 15:23+0100\n"
 "Last-Translator: Слободан Терзић  <slobodan.terzic@zoho.eu>\n"
 "Language-Team: \n"
@@ -15,7 +15,7 @@ msgstr ""
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #. TRANSLATORS: Open a new SMS window
-#: src/extension.js:176 src/service/daemon.js:856 src/widgets/device.js:199
+#: src/extension.js:176 src/service/daemon.js:889 src/widgets/device.js:199
 msgid "Send SMS"
 msgstr "Пошаљи СМС"
 
@@ -155,20 +155,20 @@ msgstr "Откажи"
 msgid "Select"
 msgstr "Изаберите"
 
-#: src/service/daemon.js:637
+#: src/service/daemon.js:670
 msgid "Nautilus extensions changed"
 msgstr "Измењена су проширења Нутилуса"
 
-#: src/service/daemon.js:638
+#: src/service/daemon.js:671
 msgid "Restart Nautilus to apply changes"
 msgstr "Поново покрените Наутилус да би применили измене"
 
 #. TRANSLATORS: Notification button to restart Nautilus
-#: src/service/daemon.js:644
+#: src/service/daemon.js:677
 msgid "Restart"
 msgstr "Поново покрени"
 
-#: src/service/daemon.js:869
+#: src/service/daemon.js:904
 msgid "Dial Phone Number"
 msgstr ""
 

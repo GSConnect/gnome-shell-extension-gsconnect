@@ -481,7 +481,35 @@ var Daemon = new Lang.Class({
      * This has to be a singleton since more than one device might want to
      * receive our notifications, but we only have one Bus to work with.
      */
+    _getAppNotificationSettings: function () {
+        this._appNotificationSettings = {};
+
+        for (let app of this._desktopNotificationSettings.get_strv("application-children")) {
+            let appSettings = new Gio.Settings({
+                schema_id: "org.gnome.desktop.notifications.application",
+                path: "/org/gnome/desktop/notifications/application/" + app + "/"
+            });
+
+            let appInfo = Gio.DesktopAppInfo.new(
+                appSettings.get_string("application-id")
+            );
+
+            if (appInfo) {
+                this._appNotificationSettings[appInfo.get_display_name()] = appSettings;
+            }
+        }
+    },
+
     _initNotificationListener: function () {
+        this._desktopNotificationSettings = new Gio.Settings({
+            schema_id: "org.gnome.desktop.notifications"
+        });
+        this._desktopNotificationSettings.connect(
+            "changed::application-children",
+            () => this._getAppNotificationSettings()
+        );
+        this._getAppNotificationSettings();
+
         this._ndbus = Gio.DBusExportedObject.wrapJSObject(
             ext.dbusinfo.lookup_interface("org.freedesktop.Notifications"),
             this
@@ -503,6 +531,11 @@ var Daemon = new Lang.Class({
 
     Notify: function (appName, replacesId, iconName, summary, body, actions, hints, timeout) {
         debug("Daemon: Notify()");
+
+        if (this._appNotificationSettings[appName] &&
+            !this._appNotificationSettings[appName].get_boolean("enable")) {
+            return;
+        }
 
         for (let device of this._devices.values()) {
             if (device._plugins.has("notification")) {
