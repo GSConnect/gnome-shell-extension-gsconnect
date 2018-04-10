@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-27 16:02-0700\n"
+"POT-Creation-Date: 2018-04-10 08:05-0700\n"
 "PO-Revision-Date: 2018-03-05 11:11-0600\n"
 "Last-Translator: Adolfo Jayme Barrientos <fitojb@ubuntu.com>\n"
 "Language-Team: \n"
@@ -171,6 +171,10 @@ msgstr "Reinicie Nautilus para aplicar los cambios"
 #: src/service/daemon.js:644
 msgid "Restart"
 msgstr "Reiniciar"
+
+#: src/service/daemon.js:869
+msgid "Dial Phone Number"
+msgstr ""
 
 #. TRANSLATORS: eg. Pair Request from Google Pixel
 #: src/service/device.js:381

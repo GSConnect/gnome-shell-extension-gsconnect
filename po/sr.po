@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-27 16:02-0700\n"
+"POT-Creation-Date: 2018-04-10 08:05-0700\n"
 "PO-Revision-Date: 2018-03-03 15:23+0100\n"
 "Last-Translator: Слободан Терзић  <slobodan.terzic@zoho.eu>\n"
 "Language-Team: \n"
@@ -167,6 +167,10 @@ msgstr "Поново покрените Наутилус да би примен�
 #: src/service/daemon.js:644
 msgid "Restart"
 msgstr "Поново покрени"
+
+#: src/service/daemon.js:869
+msgid "Dial Phone Number"
+msgstr ""
 
 #. TRANSLATORS: eg. Pair Request from Google Pixel
 #: src/service/device.js:381
