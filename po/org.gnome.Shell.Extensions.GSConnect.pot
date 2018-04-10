@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-27 16:02-0700\n"
+"POT-Creation-Date: 2018-04-10 08:05-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -165,6 +165,10 @@ msgstr ""
 #. TRANSLATORS: Notification button to restart Nautilus
 #: src/service/daemon.js:644
 msgid "Restart"
+msgstr ""
+
+#: src/service/daemon.js:869
+msgid "Dial Phone Number"
 msgstr ""
 
 #. TRANSLATORS: eg. Pair Request from Google Pixel
