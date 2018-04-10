@@ -615,15 +615,15 @@ var Daemon = GObject.registerClass({
      * Add a list of [name, callback, parameter_type], with callback bound to
      * @scope or 'this'.
      */
-    _addActions(actions, scope) {
-        scope = scope || this;
+    _addActions(actions, context) {
+        context = context || this;
 
         actions.map((entry) => {
             let action = new Gio.SimpleAction({
                 name: entry[0],
                 parameter_type: (entry[2]) ? new GLib.VariantType(entry[2]) : null
             });
-            action.connect("activate", entry[1].bind(scope));
+            action.connect("activate", entry[1].bind(context));
             this.add_action(action);
         });
     }
@@ -655,7 +655,7 @@ var Daemon = GObject.registerClass({
     }
 
     /**
-     *
+     * Extensions
      */
     _restartNautilus(action, parameter) {
         GLib.spawn_command_line_async("nautilus -q");
@@ -906,7 +906,7 @@ var Daemon = GObject.registerClass({
 
         // Must be done before g_name_owner === null
         for (let device of this._devices.values()) {
-            log("Calling Device.destroy() on '" + device.name + "'");
+            log(`Calling Device.destroy() on '${device.name}'`);
             device.destroy();
         }
 
