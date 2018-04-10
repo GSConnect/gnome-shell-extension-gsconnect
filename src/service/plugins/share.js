@@ -417,7 +417,7 @@ var Plugin = new Lang.Class({
 
             channel.open();
         } else {
-            if (!uri.startsWith("http://") && !uri.startsWith("https://")) {
+            if (!uri.startsWith("http://") && !uri.startsWith("https://") && !uri.startsWith("tel:")) {
                 uri = "https://" + uri;
             }
 
