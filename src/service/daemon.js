@@ -865,6 +865,8 @@ var Daemon = new Lang.Class({
 
                     win.run();
                 } else if (file.get_uri_scheme() === "tel") {
+                    let uri = file.get_uri();
+
                     let win = new DeviceChooser({
                         title: _("Dial Phone Number"),
                         filter_func: (device) => {
