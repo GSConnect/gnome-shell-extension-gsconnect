@@ -194,9 +194,6 @@ var Plugin = GObject.registerClass({
             return e;
         }
 
-        // Initialize streams
-        this._stdin = new Gio.DataOutputStream({
-            base_stream: new Gio.UnixOutputStream({ fd: this._proc[2] })
         });
 
         this._stderr = new Gio.DataInputStream({
@@ -208,7 +205,14 @@ var Plugin = GObject.registerClass({
         source.attach(null);
 
         // Send session password
-        this._stdin.put_string(this._password + "\n", null);
+        let stdin = new Gio.DataOutputStream({
+            base_stream: new Gio.UnixOutputStream({
+                close_fd: false,
+                fd: this._proc[2]
+            })
+        });
+        stdin.put_string(this._password + "\n", null);
+        stdin.close(null);
 
         // FIXME: move to _parseConnectionData()
         this.notify("directories");
@@ -279,14 +283,6 @@ var Plugin = GObject.registerClass({
         }
 
         try {
-            if (this._stdin) {
-                this._stdin.close(null);
-            }
-        } catch (e) {
-            log("SFTP: Error closing stdin: " + e);
-        }
-
-        try {
             if (this._stderr) {
                 this._stderr.close(null);
             }
@@ -295,7 +291,6 @@ var Plugin = GObject.registerClass({
         }
 
         delete this._proc;
-        delete this._stdin;
         delete this._stderr;
 
         this._directories = {};
