@@ -132,11 +132,14 @@ var Plugin = GObject.registerClass({
             // Ignore previously posted notifications
             } else if (this._getNotification(packet.body)) {
                 debug("ignored cached notification");
-//            } else if (packet.payloadSize) {
-//                debug("new notification with payload");
-//                this._downloadIcon(packet).then(result => {
-//                    resolve(this.showNotification(packet, result));
-//                });
+            } else if (packet.payloadSize) {
+                debug("new notification with payload");
+                this._downloadIcon(packet).then(icon => {
+                    return this.showNotification(packet, icon);
+                }).catch(e => {
+                    debug(e);
+                    this.showNotification(packet);
+                });
             } else {
                 debug("new notification");
                 this.showNotification(packet);
