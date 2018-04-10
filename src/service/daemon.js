@@ -864,6 +864,19 @@ var Daemon = new Lang.Class({
                     });
 
                     win.run();
+                } else if (file.get_uri_scheme() === "tel") {
+                    let win = new DeviceChooser({
+                        title: _("Dial Phone Number"),
+                        filter_func: (device) => {
+                            return device._plugins.has("share");
+                        }
+                    });
+
+                    win.connect("selected", (window, device) => {
+                        device._plugins.get("share").shareUri(uri);
+                    });
+
+                    win.run();
                 }
             } catch (e) {
                 log("Error opening file/uri: " + e.message);

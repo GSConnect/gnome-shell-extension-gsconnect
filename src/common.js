@@ -128,6 +128,7 @@ function installService () {
         applicationsDir + desktopFile
     );
     appinfo.add_supports_type("x-scheme-handler/sms");
+    appinfo.add_supports_type("x-scheme-handler/tel");
 };
 
 
