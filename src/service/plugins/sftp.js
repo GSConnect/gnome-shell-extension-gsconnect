@@ -150,9 +150,9 @@ var Plugin = GObject.registerClass({
 
         let args = [
             "sshfs",
-            this._user + "@" + this._ip + ":" + this._root,
+            `${this._user}@${this._ip}:${this._root}`,
             this._path,
-            "-p", this.port.toString(),
+            "-p", this._port.toString(),
             // "disable multi-threaded operation"
             // Fixes file chunks being sent out of order and corrupted
             "-s",
@@ -169,9 +169,12 @@ var Plugin = GObject.registerClass({
             // ssh-dss (DSA) keys are deprecated since openssh-7.0p1
             // See: https://bugs.kde.org/show_bug.cgi?id=351725
             "-o", "HostKeyAlgorithms=ssh-dss",
+            // Match keepalive for kdeconnect connection (30sx3)
             "-o", "ServerAliveInterval=30",
-            // "set file owner/group"
-            "-o", "uid=" + this._uid, "-o", "gid=" + this._gid,
+            // Automatically reconnect to server if connection is interrupted
+            "-o", "reconnect",
+            // Set user/group permissions to allow readwrite access
+            "-o", `uid=${this._uid}`, "-o", `gid=${this._gid}`,
             // "read password from stdin (only for pam_mount!)"
             "-o", "password_stdin"
         ];
