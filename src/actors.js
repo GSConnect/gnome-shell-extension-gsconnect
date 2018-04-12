@@ -414,11 +414,11 @@ var RadioButton = GObject.registerClass({
         }
     }
 
-    get active () {
+    get active() {
         return (this.button.child.icon_name === "radio-checked-symbolic");
     }
 
-    set active (bool) {
+    set active(bool) {
         if (bool) {
             this.button.child.icon_name = "radio-checked-symbolic";
 
@@ -432,11 +432,11 @@ var RadioButton = GObject.registerClass({
         }
     }
 
-    get group () {
+    get group() {
         return this._group;
     }
 
-    set group (group) {
+    set group(group) {
         this._group = group;
 
         if (this._group.indexOf(this) < 0) {
@@ -446,7 +446,7 @@ var RadioButton = GObject.registerClass({
         this.active = (this.group.length === 1);
     }
 
-    get text () {
+    get text() {
         if (this.widget instanceof St.Label) {
             return this.widget.text;
         }
@@ -454,7 +454,7 @@ var RadioButton = GObject.registerClass({
         return null;
     }
 
-    set text (text) {
+    set text(text) {
         if (typeof text === "string") {
             this.widget = new St.Label({ text: text });
         }
