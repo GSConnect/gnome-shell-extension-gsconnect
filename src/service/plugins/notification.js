@@ -645,10 +645,12 @@ var SettingsDialog = new Lang.Class({
 
             if (appInfo) {
                 let name = appInfo.get_name();
+                let icon = appInfo.get_icon();
+                icon = (icon) ? icon.to_string() : "application-x-executable"
 
                 if (!this._applications[name]) {
                     this._applications[name] = {
-                        iconName: appInfo.get_icon().to_string(),
+                        iconName: icon,
                         enabled: true
                     };
                 }
@@ -659,10 +661,12 @@ var SettingsDialog = new Lang.Class({
         for (let appInfo of Gio.AppInfo.get_all()) {
             if (appInfo.get_boolean("X-GNOME-UsesNotifications")) {
                 let name = appInfo.get_name();
+                let icon = appInfo.get_icon();
+                icon = (icon) ? icon.to_string() : "application-x-executable"
 
                 if (!this._applications[name]) {
                     this._applications[name] = {
-                        iconName: appInfo.get_icon().to_string(),
+                        iconName: icon,
                         enabled: true
                     };
                 }
