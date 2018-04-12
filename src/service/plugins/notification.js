@@ -646,7 +646,7 @@ var SettingsDialog = new Lang.Class({
             if (appInfo) {
                 let name = appInfo.get_name();
                 let icon = appInfo.get_icon();
-                icon = (icon) ? icon.to_string() : "application-x-executable"
+                icon = (icon) ? icon.to_string() : "application-x-executable";
 
                 if (!this._applications[name]) {
                     this._applications[name] = {
@@ -662,7 +662,7 @@ var SettingsDialog = new Lang.Class({
             if (appInfo.get_boolean("X-GNOME-UsesNotifications")) {
                 let name = appInfo.get_name();
                 let icon = appInfo.get_icon();
-                icon = (icon) ? icon.to_string() : "application-x-executable"
+                icon = (icon) ? icon.to_string() : "application-x-executable";
 
                 if (!this._applications[name]) {
                     this._applications[name] = {
