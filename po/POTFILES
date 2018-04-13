@@ -5,14 +5,13 @@ src/extension.js
 src/nautilus-gsconnect.py
 src/prefs.js
 src/modules/contacts.js
-src/modules/settings.js
 src/service/daemon.js
 src/service/device.js
+src/service/settings.js
 src/service/plugins/base.js
 src/service/plugins/battery.js
 src/service/plugins/clipboard.js
 src/service/plugins/findmyphone.js
-src/service/plugins/lock.js
 src/service/plugins/mousepad.js
 src/service/plugins/mpris.js
 src/service/plugins/notification.js
@@ -21,6 +20,4 @@ src/service/plugins/runcommand.js
 src/service/plugins/sftp.js
 src/service/plugins/share.js
 src/service/plugins/telephony.js
-src/widgets/keybindings.js
-src/widgets/telephony.js
 
