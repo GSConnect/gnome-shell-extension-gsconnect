@@ -24,7 +24,7 @@ const Color = imports.modules.color;
  */
 var Dialog = class Dialog extends ModalDialog.ModalDialog {
 
-    constructor(params) {
+    _init(params) {
         super._init();
 
         let headerBar = new St.BoxLayout({
