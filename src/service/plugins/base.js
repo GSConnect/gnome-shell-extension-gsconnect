@@ -122,9 +122,6 @@ var Plugin = GObject.registerClass({
 
         this.device.add_action(action);
 
-        if (action.parameter_type === null) {
-            this.device.menu.add(action.name, action.meta);
-        }
 
         this._gactions.push(action);
     }
@@ -253,7 +250,10 @@ var Plugin = GObject.registerClass({
     destroy() {
         this.emit("destroy");
 
-        this._gactions.map(action => this.device.remove_action(action.name));
+        this._gactions.map(action => {
+            this.device.menu.remove_action(action.name);
+            this.device.remove_action(action.name);
+        });
 
         if (this._cacheFile) {
             this._writeCache();
