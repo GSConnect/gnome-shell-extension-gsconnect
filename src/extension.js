@@ -616,7 +616,7 @@ var ServiceIndicator = class ServiceIndicator extends PanelMenu.SystemIndicator 
         // Menu Visibility
         this._gsettingsId = gsconnect.settings.connect("changed", () => {
             for (let dbusPath in this._menus) {
-                this._displayMode(this._menus[dbusPath]);
+                this._sync(this._menus[dbusPath]);
             }
         });
 
