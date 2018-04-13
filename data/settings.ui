@@ -454,7 +454,7 @@
                                             <property name="valign">center</property>
                                             <property name="hexpand">True</property>
                                             <property name="vexpand">True</property>
-                                            <property name="label">File Integration</property>
+                                            <property name="label">Files Integration</property>
                                           </object>
                                           <packing>
                                             <property name="left_attach">0</property>
@@ -469,7 +469,7 @@
                                             <property name="valign">center</property>
                                             <property name="hexpand">True</property>
                                             <property name="vexpand">True</property>
-                                            <property name="label">Allow sharing files fro the Nautilus context menu</property>
+                                            <property name="label">Sharing files from the Nautilus context menu</property>
                                             <property name="wrap">True</property>
                                             <style>
                                               <class name="dim-label"/>
@@ -681,7 +681,7 @@
                                             <property name="valign">center</property>
                                             <property name="hexpand">True</property>
                                             <property name="vexpand">True</property>
-                                            <property name="label">Debug messaging and features</property>
+                                            <property name="label">Debug logging and features</property>
                                             <property name="wrap">True</property>
                                             <style>
                                               <class name="dim-label"/>
@@ -717,6 +717,7 @@
                                     <property name="height_request">56</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
+                                    <property name="activatable">False</property>
                                     <child>
                                       <object class="GtkGrid">
                                         <property name="visible">True</property>
@@ -736,7 +737,7 @@
                                             <property name="valign">center</property>
                                             <property name="hexpand">True</property>
                                             <property name="vexpand">True</property>
-                                            <property name="label">Debug Mode</property>
+                                            <property name="label">Debug Log</property>
                                           </object>
                                           <packing>
                                             <property name="left_attach">0</property>
@@ -751,7 +752,7 @@
                                             <property name="valign">center</property>
                                             <property name="hexpand">True</property>
                                             <property name="vexpand">True</property>
-                                            <property name="label">Debug messaging and features</property>
+                                            <property name="label">Open a debug logging terminal</property>
                                             <property name="wrap">True</property>
                                             <style>
                                               <class name="dim-label"/>

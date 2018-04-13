@@ -1343,6 +1343,7 @@
                         <property name="hexpand">True</property>
                         <property name="vexpand">False</property>
                         <property name="selection_mode">none</property>
+                        <signal name="row-activated" handler="_onEventRowActivated" object="GSConnectDeviceSettings" swapped="no"/>
                       </object>
                     </child>
                   </object>
