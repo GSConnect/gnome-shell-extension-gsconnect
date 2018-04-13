@@ -197,9 +197,6 @@ var Plugin = new Lang.Class({
                 this.unmount();
             } else {
                 switch (data.toString()) {
-                    case "remote host has disconnected":
-                        debug("Sftp: disconnected");
-                        this.unmount();
                     case "Timeout waiting for prompt":
                         debug("Sftp: timeout");
                         this.unmount();
