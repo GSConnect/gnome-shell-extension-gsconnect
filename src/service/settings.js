@@ -386,7 +386,7 @@ var SettingsWindow = GObject.registerClass({
     Children: [
         "headerbar",
         "headerbar-title", "headerbar-subtitle", "headerbar-edit", "headerbar-entry",
-        "prev-button",
+        "prev-button", "device-menu",
         "stack", "switcher", "sidebar",
         "shell-list",
         "show-indicators", "show-offline", "show-unpaired", "show-battery",
@@ -451,7 +451,11 @@ var SettingsWindow = GObject.registerClass({
         this.sidebar.set_visible_child_name("switcher");
 
         this.switcher.get_row_at_index(0).emit("activate");
-        button.visible = false;
+        this.prev_button.visible = false;
+
+        this.device_menu.visible = false;
+        this.device_menu.insert_action_group("device", null);
+        this.device_menu.menu_model = null;
     }
 
     _onEditServiceName(button, event) {
@@ -483,6 +487,8 @@ var SettingsWindow = GObject.registerClass({
         this.stack.set_visible_child_name(name);
 
         if (this.sidebar.get_child_by_name(name)) {
+            let device = this.stack.get_visible_child().device;
+
             this.headerbar_title.label = row.title.label;
             this.headerbar_subtitle.label = this.stack.get_visible_child().device_type.label;
             this.headerbar_subtitle.visible = true;
@@ -490,6 +496,10 @@ var SettingsWindow = GObject.registerClass({
 
             this.sidebar.set_visible_child_name(name);
             this.prev_button.visible = true;
+
+            this.device_menu.insert_action_group('device', device);
+            this.device_menu.set_menu_model(device.menu);
+            this.device_menu.visible = true;
         }
     }
 
