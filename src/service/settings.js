@@ -989,32 +989,31 @@ var DeviceSettings = GObject.registerClass({
 
     _onNotificationRowActivated(box, row) {
         let notification = this._getSettings("notification");
+        let applications = JSON.parse(notification.get_string("applications"));
 
         if (row.enabled.label === _("On")) {
-            this._notification_apps[row.title.label].enabled = false;
+            applications[row.title.label].enabled = false;
             row.enabled.label = _("Off");
         } else {
-            this._notification_apps[row.title.label].enabled = true;
+            applications[row.title.label].enabled = true;
             row.enabled.label = _("On");
         }
-        notification.set_string(
-            "applications",
-            JSON.stringify(this._notification_apps)
-        );
+
+        notification.set_string("applications", JSON.stringify(applications));
     }
 
     _populateApplications(notification) {
-        this._queryApplications(notification);
+        let applications = this._queryApplications(notification);
 
-        for (let name in this._notification_apps) {
+        for (let name in applications) {
             let row = new SectionRow({
-                icon_name: this._notification_apps[name].iconName,
+                icon_name: applications[name].iconName,
                 title: name,
                 height_request: 48
             });
 
             row.enabled = new Gtk.Label({
-                label: this._notification_apps[name].enabled ? _("On") : _("Off"),
+                label: applications[name].enabled ? _("On") : _("Off"),
                 margin_end: 12,
                 halign: Gtk.Align.END,
                 hexpand: true,
@@ -1029,60 +1028,59 @@ var DeviceSettings = GObject.registerClass({
     }
 
     _queryApplications(notification) {
+        let applications = {};
+
         try {
-            this._notification_apps = JSON.parse(
-                notification.get_string("applications")
-            );
+            applications = JSON.parse(notification.get_string("applications"));
         } catch (e) {
-            debug(e);
-            this._notification_apps = {};
+            applications = {};
         }
 
-        let apps = [];
+        let appInfos = [];
+        let ignoreId = "org.gnome.Shell.Extensions.GSConnect.desktop";
 
         // Query Gnome's notification settings
-        let desktopSettings = new Gio.Settings({
-            schema_id: "org.gnome.desktop.notifications"
-        });
-
-        for (let app of desktopSettings.get_strv("application-children")) {
+        for (let app of this.service._desktopNotificationSettings.get_strv("application-children")) {
             let appSettings = new Gio.Settings({
                 schema_id: "org.gnome.desktop.notifications.application",
                 path: "/org/gnome/desktop/notifications/application/" + app + "/"
             });
 
-            let appInfo = Gio.DesktopAppInfo.new(
-                appSettings.get_string("application-id")
-            );
+            let appId = appSettings.get_string("application-id");
 
-            if (appInfo) {
-                apps.push(appInfo);
+            if (appId !== ignoreId) {
+                let appInfo = Gio.DesktopAppInfo.new(appId);
+
+                if (appInfo) {
+                    appInfos.push(appInfo);
+                }
             }
         }
 
         // Include applications that statically declare to show notifications
         Gio.AppInfo.get_all().map(appInfo => {
-            if (appInfo.get_boolean("X-GNOME-UsesNotifications")) {
-                apps.push(appInfo);
+            if (appInfo.get_id() !== ignoreId &&
+                appInfo.get_boolean("X-GNOME-UsesNotifications")) {
+                appInfos.push(appInfo);
             }
         });
 
         // Update GSettings
-        apps.map(appInfo => {
+        appInfos.map(appInfo => {
             let appName = appInfo.get_name();
+            let icon = appInfo.get_icon();
 
-            if (appName && !this._notification_apps[appName]) {
-                this._notification_apps[appName] = {
-                    iconName: appInfo.get_icon().to_string(),
+            if (appName && !applications[appName]) {
+                applications[appName] = {
+                    iconName: (icon) ? icon.to_string() : 'application-x-executable',
                     enabled: true
                 };
             }
         });
 
-        notification.set_string(
-            "applications",
-            JSON.stringify(this._notification_apps)
-        );
+        notification.set_string("applications", JSON.stringify(applications));
+
+        return applications;
     }
 
     /**
