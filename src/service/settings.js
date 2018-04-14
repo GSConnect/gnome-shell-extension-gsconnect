@@ -162,6 +162,7 @@ function mapSwitch(settings, widget, [on, off]=[6, 4]) {
         variant => { widget.active = (variant.unpack() === on); },
         value => settings.set_uint("allow", (value) ? on : off)
     );
+    widget.active = (settings.get_uint('allow') === on);
 };
 
 
