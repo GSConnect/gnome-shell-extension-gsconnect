@@ -107,31 +107,6 @@
   </interface>
 
   <!-- Notifications -->
-  <interface name="org.gnome.Shell.Extensions.GSConnect.Plugin.Notification">
-    <!--<property type="aa{sv}" name="Notifications" access="read"/>-->
-    <method name="ClearCache"/>
-    <method name="CloseNotification">
-      <arg name="id" type="s" direction="in"/>
-    </method>
-  </interface>
-
-  <!-- Run Commands -->
-  <interface name="org.gnome.Shell.Extensions.GSConnect.Plugin.RunCommand">
-    <property type="a{sv}" name="Commands" access="read"/>
-    <method name="Request"/>
-    <method name="Run">
-      <arg name="key" type="s" direction="in"/>
-    </method>
-  </interface>
-
-  <!-- SFTP -->
-  <interface name="org.gnome.Shell.Extensions.GSConnect.Plugin.SFTP">
-    <property type="b" name="Mounted" access="read"/>
-    <property type="a{ss}" name="Directories" access="read"/>
-
-    <method name="Mount"/>
-    <method name="Unmount"/>
-  </interface>
 
   <!-- libnotify (org.freedesktop.Notifications) -->
   <interface name="org.freedesktop.Notifications">
