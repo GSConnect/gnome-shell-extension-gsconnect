@@ -426,19 +426,6 @@ class DeviceMenu extends PopupMenu.PopupMenuSection {
             this.deviceBattery.visible = false;
         }
 
-//        // TODO: this should probably be a sub-GMenu
-//        let runcommand = this.device.actions.get_action_enabled("runCommand");
-
-//        if (runcommand) {
-//            // FIXME: don't use JSON
-//            try {
-//                let commands = JSON.parse(runcommand.commands);
-//                this.runcommandButton.visible = (Object.keys(commands).length);
-//            } catch (e) {
-//                debug("Error loading commands: " + e);
-//            }
-//        }
-
         // Plugin/Status Bar visibility
         this.pluginBar.visible = (connected && paired);
         this.statusBar.visible = (!connected || !paired);
