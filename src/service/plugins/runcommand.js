@@ -1,5 +1,6 @@
-"use strict";
+'use strict';
 
+const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
@@ -10,16 +11,16 @@ const PluginsBase = imports.service.plugins.base;
 
 
 var Metadata = {
-    id: "org.gnome.Shell.Extensions.GSConnect.Plugin.RunCommand",
-    incomingCapabilities: ["kdeconnect.runcommand", "kdeconnect.runcommand.request"],
-    outgoingCapabilities: ["kdeconnect.runcommand", "kdeconnect.runcommand.request"],
+    id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.RunCommand',
+    incomingCapabilities: ['kdeconnect.runcommand', 'kdeconnect.runcommand.request'],
+    outgoingCapabilities: ['kdeconnect.runcommand', 'kdeconnect.runcommand.request'],
     actions: {
         executeCommand: {
             summary: _("Run Commands"),
-            description: _("Execute local commands remotely"),
-            signature: "av",
-            incoming: ["kdeconnect.runcommand"],
-            outgoing: ["kdeconnect.runcommand.request"],
+            description: _('Execute local commands remotely'),
+            signature: 's',
+            incoming: ['kdeconnect.runcommand'],
+            outgoing: ['kdeconnect.runcommand.request'],
             allow: 2
         }
     },
@@ -31,109 +32,160 @@ var Metadata = {
  * RunCommand Plugin
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/remotecommands
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/runcommand
+ *
+ * {
+ *      'id':0,
+ *      'type': 'kdeconnect.runcommand',
+ *      'body': {
+ *          'commandList': {
+ *              '98482d76-8409-4ea3-9263-d812f000a19a': {
+ *                  'name': 'Kodi',
+ *                  'command': '/home/andrew/scripts/kodi'
+ *              }
+ *          }
+ *      }
+ * }
  */
 var Plugin = GObject.registerClass({
-    GTypeName: "GSConnectRunCommandPlugin",
-    Properties: {
-        "commands": GObject.param_spec_variant(
-            "commands",
-            "DeviceCommands",
-            "A dictionary of remote commands",
-            new GLib.VariantType("a{sv}"),
-            null,
-            GObject.ParamFlags.READABLE
-        )
-    }
+    GTypeName: 'GSConnectRunCommandPlugin',
 }, class Plugin extends PluginsBase.Plugin {
 
     _init(device) {
-        super._init(device, "runcommand");
+        super._init(device, 'runcommand');
 
         // Local Commands
-        this.settings.connect("changed::command-list", this._handleRequest.bind(this));
+        this.settings.connect(
+            'changed::command-list',
+            this._sendCommandList.bind(this)
+        );
 
-        this._commands = {};
-        this.notify("commands");
-        this.request();
-    }
-
-    get commands () {
-        return this._commands || {};
+        // Remote Commands
+        this.requestCommandList();
     }
 
     handlePacket(packet) {
         debug(packet);
 
-        // Request for command list or execution
-        if (packet.type === "kdeconnect.runcommand.request") {
+        // A request for command list or execution
+        if (packet.type === 'kdeconnect.runcommand.request') {
             if (packet.body.requestCommandList) {
-                this._handleRequest();
+                this._sendCommandList();
             } else if (packet.body.key) {
-                this._handleExecute(packet.body.key);
+                this._handleCommand(packet.body.key);
             }
-        // A list of the remote device's commands
-        } else if (packet.type === "kdeconnect.runcommand") {
-            this._commands = packet.body.commandList;
-            this.notify("commands");
+        // An answer to a request for the remote command list
+        } else if (packet.type === 'kdeconnect.runcommand') {
+            this._handleCommandList(packet.body.commandList);
         }
     }
 
     /**
-     * Local Methods
+     * Send the local command list
      */
-    _handleRequest() {
-        debug("...");
-
+    _sendCommandList() {
         let commands = gsconnect.full_unpack(
-            this.settings.get_value("command-list")
+            this.settings.get_value('command-list')
         );
 
         this.device.sendPacket({
             id: 0,
-            type: "kdeconnect.runcommand",
+            type: 'kdeconnect.runcommand',
             body: { commandList: commands }
         });
     }
 
-    _handleExecute(key) {
-        debug(key);
-
+    /**
+     * Handle a request to execute the local command with the UUID @key
+     * @param {String} key - The UUID of the local command
+     */
+    _handleCommand(key) {
         let commands = gsconnect.full_unpack(
-            this.settings.get_value("command-list")
+            this.settings.get_value('command-list')
         );
 
         if (commands.hasOwnProperty(key)) {
             GLib.spawn_async(
-                null, // working_dir
-                ["/bin/sh", "-c", commands[key].command],
-                null, // envp
-                GLib.SpawnFlags.DEFAULT, // flags
-                null // GLib.SpawnChildSetupFunc
+                null,
+                ['/bin/sh', '-c', commands[key].command],
+                null,
+                GLib.SpawnFlags.DEFAULT,
+                null
             );
+        } else {
+            logError(new Error(`Unknown command ${key}`));
         }
     }
 
     /**
-     * Remote Methods
+     * Send a request for the remote command list
      */
-    request() {
+    requestCommandList() {
         this.device.sendPacket({
             id: 0,
-            type: "kdeconnect.runcommand.request",
+            type: 'kdeconnect.runcommand.request',
             body: { requestCommandList: true }
         });
     }
 
     /**
-     * Run the remote command @key
-     * @param {string} key - The key of the remote command
+     * Parse the response to a request for the remote command list. Remove the
+     * command menu if there are no commands, otherwise amend the menu.
      */
-    run(key) {
+    _handleCommandList(commandList) {
+        let commandEntries = Object.entries(commandList);
+
+        // Remove the menu if there are no commands
+        if (commandEntries.length < 1) {
+            this.device.menu.remove_named(_('Commands'));
+            return;
+        }
+
+        // Commands Submenu
+        let commandSubmenu = new Gio.Menu();
+
+        for (let [uuid, info] of commandEntries) {
+            let item = new Gio.MenuItem();
+            item.set_label(info.name);
+            item.set_icon(
+                new Gio.ThemedIcon({ names: [
+                    info.name.toLowerCase(),
+                    'application-x-executable-symbolic'
+                    ]
+                })
+            );
+            item.set_detailed_action(`device.executeCommand::${uuid}`);
+            commandSubmenu.append_item(item);
+        }
+
+        // Commands Item
+        let commandItem = new Gio.MenuItem();
+        commandItem.set_icon(
+            new Gio.ThemedIcon({ name: 'system-run-symbolic' })
+        );
+        commandItem.set_label(_('Commands'));
+        commandItem.set_submenu(commandSubmenu);
+
+        // If the Commands item is already present it will be replaced,
+        // otherwise it will be appended to the end of the menu.
+        this.device.menu.replace_named(_('Commands'), commandItem);
+    }
+
+    /**
+     * Send a request to execute the remote command with the UUID @key
+     * @param {String} key - The UUID of the remote command
+     */
+    executeCommand(key) {
         this.device.sendPacket({
             id: 0,
-            type: "kdeconnect.runcommand.request",
+            type: 'kdeconnect.runcommand.request',
             body: { key: key }
         });
+    }
+
+    destroy() {
+        this.device.menu.remove_named(_('Commands'));
+
+        PluginsBase.Plugin.prototype.destroy.call(this);
     }
 });
 
