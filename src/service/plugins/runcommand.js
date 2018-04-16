@@ -58,6 +58,7 @@ var Plugin = GObject.registerClass({
             'changed::command-list',
             this._sendCommandList.bind(this)
         );
+        this._sendCommandList();
 
         // Remote Commands
         this.requestCommandList();
@@ -99,14 +100,14 @@ var Plugin = GObject.registerClass({
      * @param {String} key - The UUID of the local command
      */
     _handleCommand(key) {
-        let commands = gsconnect.full_unpack(
+        let commandList = gsconnect.full_unpack(
             this.settings.get_value('command-list')
         );
 
-        if (commands.hasOwnProperty(key)) {
+        if (commandList.hasOwnProperty(key)) {
             GLib.spawn_async(
                 null,
-                ['/bin/sh', '-c', commands[key].command],
+                ['/bin/sh', '-c', commandList[key].command],
                 null,
                 GLib.SpawnFlags.DEFAULT,
                 null
