@@ -17,7 +17,7 @@ var Metadata = {
     actions: {
         // TODO: stateful action???
         mount: {
-            summary: _("Browse Files"),
+            summary: _('Mount'),
             description: _('Mount a remote device'),
             icon_name: 'folder-remote-symbolic',
 
@@ -27,7 +27,7 @@ var Metadata = {
             allow: 6
         },
         unmount: {
-            summary: _("Stop Browsing"),
+            summary: _('Unmount'),
             description: _('Unmount a remote device'),
             icon_name: 'media-eject-symbolic',
 
@@ -303,7 +303,7 @@ var Plugin = GObject.registerClass({
     }
 
     /**
-     * Replace the 'Browse Files' item with a submenu of directories
+     * Replace the 'Mount' item with a submenu of directories
      */
     _addSubmenu() {
         // Directory Submenu
@@ -334,7 +334,7 @@ var Plugin = GObject.registerClass({
             new Gio.ThemedIcon({ name: 'view-list-symbolic' })
         );
         foldersItem.set_label(_('List Folders'));
-        foldersItem.set_submenu(sftpSubmenu);
+        foldersItem.set_submenu(foldersSubmenu);
 
         this.device.menu.replace_action('mount', foldersItem);
     }
@@ -399,7 +399,7 @@ var Plugin = GObject.registerClass({
 
         // Add the mount item back to the menu
         let mountItem = new Gio.MenuItem();
-        mountItem.set_label(_('Browse Files'));
+        mountItem.set_label(_('Mount'));
         mountItem.set_icon(
             new Gio.ThemedIcon({ name: 'folder-remote-symbolic' })
         );
