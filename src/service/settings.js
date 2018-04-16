@@ -136,19 +136,19 @@ Gio.Settings.prototype.bind_with_mapping = function(key, object, property, flags
     let type = "";
 
     if ((flags & Gio.SettingsBindFlags.GET) || flags === 0) {
-        let _changed = this.connect(
+        let _getChanged = this.connect(
             "changed::" + key,
             () => get_mapping(this.get_value(key))
         );
-        object.connect("destroy", () => this.disconnect(_changed));
+        object.connect("destroy", () => this.disconnect(_getChanged));
     }
 
     if ((flags & Gio.SettingsBindFlags.SET) || flags === 0) {
-        let _changed = object.connect(
+        let _setChanged = object.connect(
             "notify::" + property,
             () => set_mapping(object[property])
         );
-        object.connect("destroy", () => object.disconnect(_changed));
+        object.connect("destroy", () => object.disconnect(_setChanged));
     }
 };
 
