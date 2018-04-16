@@ -16,8 +16,8 @@ var Metadata = {
     outgoingCapabilities: ['kdeconnect.runcommand', 'kdeconnect.runcommand.request'],
     actions: {
         executeCommand: {
-            summary: _("Run Commands"),
-            description: _('Execute local commands remotely'),
+            summary: _('Run Command'),
+            description: _('Execute a command on the device'),
             signature: 's',
             incoming: ['kdeconnect.runcommand'],
             outgoing: ['kdeconnect.runcommand.request'],
