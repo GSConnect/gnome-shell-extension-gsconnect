@@ -1116,16 +1116,33 @@ var DeviceSettings = GObject.registerClass({
      * Keyboard Shortcuts
      */
     _keyboardShortcuts() {
-        this._keybindings = JSON.parse(
-            this.device.settings.get_string("keybindings")
+        this._keybindingsId = this.device.settings.connect(
+            "changed::keybindings",
+            this._populateKeyboardShortcuts.bind(this)
         );
+        this._populateKeyboardShortcuts();
+    }
+
+    _populateKeyboardShortcuts() {
+        this.shortcuts_list.foreach(row => row.destroy());
+
+        //
+        let keybindings = {};
+
+        try {
+            keybindings = JSON.parse(
+                this.device.settings.get_string("keybindings")
+            );
+        } catch (e) {
+            keybindings = {};
+        }
 
         for (let name of this.device.list_actions().sort()) {
             let action = this.device.lookup_action(name)
 
             if (!action.parameter_type) {
                 let widget = new Gtk.Label({
-                    label: this._keybindings[action.name] || _("Disabled"),
+                    label: keybindings[action.name] || _("Disabled"),
                     visible: true
                 });
                 widget.get_style_context().add_class("dim-label");
@@ -1148,21 +1165,25 @@ var DeviceSettings = GObject.registerClass({
     _onShortcutRowActivated(box, row) {
         let dialog = new ShortcutEditor({
             summary: row.meta.summary,
-            transient_for: this.get_toplevel()
+            transient_for: box.get_toplevel()
         });
 
         dialog.connect("response", (dialog, response) => {
+            let keybindings = JSON.parse(
+                this.device.settings.get_string("keybindings")
+            );
+
             // Set
             if (response === Gtk.ResponseType.OK) {
-                this._keybindings[row.name] = dialog.accelerator;
+                keybindings[row.name] = dialog.accelerator;
             // Reset (Backspace)
             } else if (response === 1) {
-                this._keybindings[row.name] = "";
+                keybindings[row.name] = "";
             }
 
             this.device.settings.set_string(
                 "keybindings",
-                JSON.stringify(this._keybindings)
+                JSON.stringify(keybindings)
             );
 
             dialog.destroy();
