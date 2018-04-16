@@ -628,8 +628,6 @@ var DeviceSettings = GObject.registerClass({
 
         this.device_status_list.set_header_func(section_separators);
 
-        this._gsettings = {};
-
         // Sidebar Row
         this.row = new SidebarRow({
             icon: this._getSymbolicIcon(),
@@ -653,12 +651,11 @@ var DeviceSettings = GObject.registerClass({
         this._keyboardShortcuts();
 
         // Cleanup
-        this.connect_after("destroy", () => {
-            this.device.disconnect(this._connectedId);
-            this.device.disconnect(this._pairedId);
+        this.connect_after("destroy", (widget) => {
+            widget.device.settings.disconnect(widget._keybindingsId);
 
-            this.switcher.destroy();
-            this.row.destroy();
+            widget.switcher.destroy();
+            widget.row.destroy();
 
             if (this._infoBattery) {
                 this.device._plugins.get("battery").disconnect(this._infoBattery);
@@ -667,6 +664,10 @@ var DeviceSettings = GObject.registerClass({
     }
 
     _getSettings(name) {
+        if (this._gsettings === undefined) {
+            this._gsettings = {};
+        }
+
         if (this._gsettings[name]) {
             return this._gsettings[name];
         }
@@ -676,7 +677,7 @@ var DeviceSettings = GObject.registerClass({
 
             this._gsettings[name] = new Gio.Settings({
                 settings_schema: gsconnect.gschema.lookup(meta.id, -1),
-                path: gsconnect.settings.path + ["device", this.device.id, "plugin", name, ""].join("/")
+                path: `${gsconnect.settings.path}device/${this.device.id}/plugin/${name}/`
             });
         }
 
@@ -1199,6 +1200,7 @@ var ShellProxy = DBus.makeInterfaceProxy(
     gsconnect.dbusinfo.lookup_interface("org.gnome.Shell")
 );
 
+
 /**
  *
  */
@@ -1460,5 +1462,4 @@ var ShortcutEditor = GObject.registerClass({
         });
     }
 });
-
 
