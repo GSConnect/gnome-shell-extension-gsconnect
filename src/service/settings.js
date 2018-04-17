@@ -605,6 +605,7 @@ var DeviceSettings = GObject.registerClass({
         "battery-allow", "share-allow", "clipboard-allow", "mpris-allow",
         "mousepad-allow", "findmyphone-allow",
         // Events
+        "events-list",
         //TODO
         // Shortcuts
         "shortcuts-list"
@@ -1114,6 +1115,40 @@ var DeviceSettings = GObject.registerClass({
     }
 
     /**
+     * Events Settings
+     */
+    _eventsSettings() {
+        for (let name of this.device.supportedPlugins()) {
+            let meta = imports.service.plugins[name].Metadata;
+
+            if (!meta.events) {
+                continue;
+            }
+
+            for (let eventName in meta.events) {
+                let event = meta.events[eventName];
+
+                let row = new SectionRow({
+                    title: event.summary,
+                    subtitle: event.description
+                });
+                row.name = eventName;
+                row.event = event;
+                row.plugin = name;
+
+                this.events_list.add(row);
+            }
+        }
+
+        this.events_list.set_header_func(section_separators);
+    }
+
+    _onEventRowActivated(box, row) {
+        let dialog = new EventEditor(this, row);
+        dialog.show();
+    }
+
+    /**
      * Keyboard Shortcuts
      */
     _keyboardShortcuts() {
@@ -1192,6 +1227,95 @@ var DeviceSettings = GObject.registerClass({
 
         dialog.run();
     }
+});
+
+
+var EventEditor = GObject.registerClass({
+    GTypeName: "GSConnectEventEditor",
+    Template: "resource:///org/gnome/Shell/Extensions/GSConnect/event-editor.ui",
+    Children: [
+        // HeaderBar
+        //"cancel_button", "set_button",
+        "headerbar", "action-add", "action-list", "command-editor"
+    ]
+}, class EventEditor extends Gtk.Dialog {
+
+    _init(page, row) {
+        Gtk.Widget.set_connect_func.call(this, template_connect_func);
+
+        super._init({
+            transient_for: page.get_toplevel(),
+            use_header_bar: true
+        });
+        this.get_content_area().border_width = 0;
+
+        this.headerbar.title = row.event.label;
+        this.headerbar.subtitle = row.event.description;
+
+        this._page = page;
+        this.device = page.device;
+        this._eventName = row.name;
+        this._pluginName = row.plugin;
+
+        this.settings = page._getSettings(this._pluginName);
+        this._settingsId = this.settings.connect("changed::events", () => this._populate());
+        this.connect_after("destroy", () => this.settings.disconnect(this._settingsId));
+
+        // Action List
+        this.action_list.set_sort_func(this._sort);
+        this.action_list.set_header_func(section_separators);
+
+        this._populate();
+    }
+
+    _onRowActivated(box, row) {
+        if (row === this.command_editor) { return; }
+
+        let events = gsconnect.full_unpack(this.settings.get_value("events"));
+        let eventActions = events[this._eventName];
+
+        eventActions[row.name] = !eventActions[row.name];
+        this.settings.set_value("events", gsconnect.full_pack(events));
+    }
+
+    _sort(row1, row2) {
+        if (!row1.title || !row2.title) { return 0; }
+        return row1.title.label.localeCompare(row2.title.label);
+    }
+
+    _populate() {
+        this.action_list.foreach(row => {
+            if (row !== this.command_editor) {
+                row.destroy();
+            }
+        });
+
+        let eventActions = gsconnect.full_unpack(
+            this.settings.get_value("events")
+        )[this._eventName];
+
+        for (let actionName of this.device.list_actions().sort()) {
+            log(JSON.stringify(eventActions));
+
+            let action = this.device.lookup_action(actionName);
+            let active = (eventActions[actionName]);
+
+            let widget = new Gtk.Image({
+                icon_name: (active) ? "emblem-ok-symbolic" : "",
+                visible: true
+            });
+
+            let meta = (action.getMeta) ? action.getMeta() : {};
+            let row = new SectionRow({
+                title: meta.summary || actionName,
+                subtitle: meta.description || actionName,
+                widget: widget
+            });
+            row.name = actionName;
+            row.meta = meta;
+
+            this.action_list.add(row);
+        }
     }
 });
 

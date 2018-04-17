@@ -109,12 +109,22 @@
       <summary>Allow Traffic</summary>
       <description>Allow flags for directional traffic</description>
     </key>
+    <key name="events" type="a{sv}">
+      <default>{}</default>
+      <summary>Event Handlers</summary>
+      <description>Actions to be invoked when events are emitted</description>
+    </key>
   </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Clipboard">
     <key name="allow" type="u">
       <default>1</default>
       <summary>Allow Traffic</summary>
       <description>Allow flags for directional traffic</description>
+    </key>
+    <key name="events" type="a{sv}">
+      <default>{}</default>
+      <summary>Event Handlers</summary>
+      <description>Actions to be invoked when events are emitted</description>
     </key>
   </schema>
   <!-- TODO this plugin hasn't been written yet -->
@@ -131,13 +141,10 @@
       <summary>Allow Traffic</summary>
       <description>Allow flags for directional traffic</description>
     </key>
-  </schema>
-  <!-- TODO this plugin needs to be rewritten -->
-  <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Lock">
-    <key name="allow" type="u">
-      <default>1</default>
-      <summary>Allow Traffic</summary>
-      <description>Allow flags for directional traffic</description>
+    <key name="events" type="a{sv}">
+      <default>{}</default>
+      <summary>Event Handlers</summary>
+      <description>Actions to be invoked when events are emitted</description>
     </key>
   </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Mousepad">
@@ -161,7 +168,7 @@
       <description>Allow flags for directional traffic</description>
     </key>
     <key name="applications" type="s">
-      <default>'{"GSConnect":{"iconName":"org.gnome.Shell.Extensions.GSConnect","enabled":false}}'</default>
+      <default>'{}'</default>
     </key>
   </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Ping">
@@ -170,6 +177,11 @@
       <summary>Allow Traffic</summary>
       <description>Allow flags for directional traffic</description>
     </key>
+    <key name="events" type="a{sv}">
+      <default>{}</default>
+      <summary>Event Handlers</summary>
+      <description>Actions to be invoked when events are emitted</description>
+    </key>
   </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.RunCommand">
     <key name="allow" type="u">
@@ -177,6 +189,10 @@
       <summary>Allow Traffic</summary>
       <description>Allow flags for directional traffic</description>
     </key>
+    <key name="events" type="a{sv}">
+      <default>{}</default>
+      <summary>Event Handlers</summary>
+      <description>Actions to be invoked when events are emitted</description>
     </key>
 
     <key name="command-list" type="a{sv}">
@@ -189,11 +205,10 @@
       <summary>Allow Traffic</summary>
       <description>Allow flags for directional traffic</description>
     </key>
-    <!-- FIXME This is old and stupid -->
-    <key name="automount" type="b">
-      <default>false</default>
-      <summary>Automatically Mount</summary>
-      <description></description>
+    <key name="events" type="a{sv}">
+      <default>{}</default>
+      <summary>Event Handlers</summary>
+      <description>Actions to be invoked when events are emitted</description>
     </key>
   </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Share">
@@ -201,6 +216,11 @@
       <default>2</default>
       <summary>Allow Traffic</summary>
       <description>Allow flags for directional traffic</description>
+    </key>
+    <key name="events" type="a{sv}">
+      <default>{}</default>
+      <summary>Event Handlers</summary>
+      <description>Actions to be invoked when events are emitted</description>
     </key>
   </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Telephony">
@@ -210,6 +230,10 @@
       <summary>Allow Traffic</summary>
       <description>Allow flags for directional traffic</description>
     </key>
+    <key name="events" type="a{sv}">
+      <default><![CDATA[{'missedCall': <{'callNotification': <true>}>, 'ringing': <{'callNotification': <true>}>, 'sms': <{'smsNotification':<true>}>, 'talking': <{'callNotification': <true>}>}]]></default>
+      <summary>Event Handlers</summary>
+      <description>Actions to be invoked when events are emitted</description>
     </key>
   </schema>
 </schemalist>
