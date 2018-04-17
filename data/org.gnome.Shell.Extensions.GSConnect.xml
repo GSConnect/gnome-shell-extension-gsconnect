@@ -24,8 +24,6 @@
     <property type="s" name="Name" access="read"/>
     <property type="b" name="Paired" access="read"/>
     <property type="as" name="Plugins" access="read"/>
-    <!--<property type="as" name="IncomingCapabilities" access="read"/>
-    <property type="as" name="OutgoingCapabilities" access="read"/>-->
     <property type="s" name="IconName" access="read"/>
     <property type="s" name="SymbolicIconName" access="read"/>
     <property type="s" name="Type" access="read"/>
@@ -37,6 +35,7 @@
     <method name="RejectPair"/>
     <method name="OpenSettings"/>
 
+    <!-- Signals -->
     <signal name="Event">
       <arg type="s" name="Type"/>
       <arg type="v" name="Data"/>
