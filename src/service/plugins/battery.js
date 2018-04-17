@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
@@ -12,24 +12,24 @@ const PluginsBase = imports.service.plugins.base;
 
 
 var Metadata = {
-    id: "org.gnome.Shell.Extensions.GSConnect.Plugin.Battery",
-    incomingCapabilities: ["kdeconnect.battery", "kdeconnect.battery.request"],
-    outgoingCapabilities: ["kdeconnect.battery", "kdeconnect.battery.request"],
+    id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.Battery',
+    incomingCapabilities: ['kdeconnect.battery', 'kdeconnect.battery.request'],
+    outgoingCapabilities: ['kdeconnect.battery', 'kdeconnect.battery.request'],
     actions: {
         reportStatus: {
-            summary: _("Report Battery"),
-            description: _("Provide battery update"),
-            signature: "av",
-            incoming: ["kdeconnect.battery.request"],
-            outgoing: ["kdeconnect.battery"],
+            summary: _('Report Battery'),
+            description: _('Provide battery update'),
+            signature: 'av',
+            incoming: ['kdeconnect.battery.request'],
+            outgoing: ['kdeconnect.battery'],
             allow: 2
         },
         requestStatus: {
-            summary: _("Update Battery"),
-            description: _("Request battery update"),
-            signature: "av",
-            incoming: ["kdeconnect.battery"],
-            outgoing: ["kdeconnect.battery.request"],
+            summary: _('Update Battery'),
+            description: _('Request battery update'),
+            signature: 'av',
+            incoming: ['kdeconnect.battery'],
+            outgoing: ['kdeconnect.battery.request'],
             allow: 4
         }
     },
@@ -42,42 +42,42 @@ var Metadata = {
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/battery
  */
 var Plugin = GObject.registerClass({
-    GTypeName: "GSConnectBatteryPlugin",
+    GTypeName: 'GSConnectBatteryPlugin',
     Properties: {
-        "charging": GObject.ParamSpec.boolean(
-            "charging",
-            "isCharging",
-            "Whether the device is charging",
+        'charging': GObject.ParamSpec.boolean(
+            'charging',
+            'isCharging',
+            'Whether the device is charging',
             GObject.ParamFlags.READABLE,
             false
         ),
-        "icon-name": GObject.ParamSpec.string(
-            "icon-name",
-            "IconName",
-            "Icon name representing the service device",
+        'icon-name': GObject.ParamSpec.string(
+            'icon-name',
+            'IconName',
+            'Icon name representing the battery state',
             GObject.ParamFlags.READABLE,
-            ""
+            ''
         ),
-        "level": GObject.ParamSpec.int(
-            "level",
-            "currentCharge",
-            "Whether the device is charging",
+        'level': GObject.ParamSpec.int(
+            'level',
+            'currentCharge',
+            'Whether the device is charging',
             GObject.ParamFlags.READABLE,
             -1, 100,
             -1
         ),
-        "threshold": GObject.ParamSpec.int(
-            "theshold",
-            "thresholdLevel",
-            "The level considered critical",
+        'threshold': GObject.ParamSpec.int(
+            'theshold',
+            'thresholdLevel',
+            'The level considered critical',
             GObject.ParamFlags.READABLE,
             -1, 100,
             25
         ),
-        "time": GObject.ParamSpec.int(
-            "time",
-            "timeRemaining",
-            "Seconds until full or depleted",
+        'time': GObject.ParamSpec.int(
+            'time',
+            'timeRemaining',
+            'Seconds until full or depleted',
             GObject.ParamFlags.READABLE,
             -1, GLib.MAXINT32,
             -1
@@ -86,7 +86,7 @@ var Plugin = GObject.registerClass({
 }, class Plugin extends PluginsBase.Plugin {
 
     _init(device) {
-        super._init(device, "battery");
+        super._init(device, 'battery');
 
         // Export DBus
         this._dbus = new DBus.ProxyServer({
@@ -104,25 +104,25 @@ var Plugin = GObject.registerClass({
         this._thresholdLevel = 25;
 
         this.cacheProperties([
-            "_chargeStats",
-            "_dischargeStats",
-            "_thresholdLevel"
+            '_chargeStats',
+            '_dischargeStats',
+            '_thresholdLevel'
         ]);
 
         // Remote Battery
-        this.notify("charging");
-        this.notify("level");
-        this.notify("time");
-        this.notify("icon-name");
+        this.notify('charging');
+        this.notify('level');
+        this.notify('time');
+        this.notify('icon-name');
 
         this.requestStatus();
 
         // Local Battery (UPower)
-        if ((this.allow & 2) && this.device.service.type === "laptop") {
+        if ((this.allow & 2) && this.device.service.type === 'laptop') {
             this._monitor();
         }
 
-        this.settings.connect("changed::allow", () => {
+        this.settings.connect('changed::allow', () => {
             if ((this.allow & 2) && !this._upower) {
                 this._monitor();
             } else if (!(this.allow & 2) && this._upower) {
@@ -134,25 +134,25 @@ var Plugin = GObject.registerClass({
 
     get charging() { return this._charging || false; }
     get icon_name() {
-        let icon = "battery";
+        let icon = 'battery';
 
         if (this.level === -1) {
-            return "battery-missing-symbolic";
+            return 'battery-missing-symbolic';
         } else if (this.level === 100) {
-            return "battery-full-charged-symbolic";
+            return 'battery-full-charged-symbolic';
         } else if (this.level < 3) {
-            icon += "-empty";
+            icon += '-empty';
         } else if (this.level < 10) {
-            icon += "-caution";
+            icon += '-caution';
         } else if (this.level < 30) {
-            icon += "-low";
+            icon += '-low';
         } else if (this.level < 60) {
-            icon += "-good";
+            icon += '-good';
         } else if (this.level >= 60) {
-            icon += "-full";
+            icon += '-full';
         }
 
-        icon += (this._charging) ? "-charging-symbolic" : "-symbolic";
+        icon += (this._charging) ? '-charging-symbolic' : '-symbolic';
         return icon;
     }
     get level() {
@@ -171,9 +171,9 @@ var Plugin = GObject.registerClass({
     handlePacket(packet) {
         debug(packet);
 
-        if (packet.type === "kdeconnect.battery" && (this.allow & 4)) {
+        if (packet.type === 'kdeconnect.battery' && (this.allow & 4)) {
             return this._handleUpdate(packet.body);
-        } else if (packet.type === "kdeconnect.battery.request" && (this.allow & 2)) {
+        } else if (packet.type === 'kdeconnect.battery.request' && (this.allow & 2)) {
             return this.requestUpdate();
         }
     }
@@ -190,25 +190,25 @@ var Plugin = GObject.registerClass({
 
         if (this._charging !== update.isCharging) {
             this._charging = update.isCharging;
-            this.notify("charging");
+            this.notify('charging');
         }
 
         if (this._level !== update.currentCharge) {
             this._level = update.currentCharge;
-            this.notify("level");
+            this.notify('level');
 
             if (this._level > this._thresholdLevel) {
-                this.device.withdraw_notification("battery|threshold");
+                this.device.withdraw_notification('battery|threshold');
             }
         }
 
         this._logStatus(update.currentCharge, update.isCharging);
 
         //this._icon_name = this._updateIcon();
-        this.notify("icon-name");
+        this.notify('icon-name');
 
         this._time = this._extrapolateTime();
-        this.notify("time");
+        this.notify('time');
     }
 
     _handleThreshold() {
@@ -216,24 +216,24 @@ var Plugin = GObject.registerClass({
 
         let buttons = [];
 
-        if (this.device.get_action_enabled("find")) {
+        if (this.device.get_action_enabled('find')) {
             buttons = [{
-                label: _("Locate"),
-                action: "find",
+                label: _('Locate'),
+                action: 'find',
                 params: null
             }];
         }
 
         this.device.showNotification({
-            id: "battery|threshold",
+            id: 'battery|threshold',
             // TRANSLATORS: Low Battery Warning
-            title: _("Low Battery Warning"),
+            title: _('Low Battery Warning'),
             // TRANSLATORS: eg. Google Pixel's battery level is 15%
-            body: _("%s's battery level is %d%%").format(
+            body: _('%s: battery level is %d%%').format(
                 this.device.name,
                 this.level
             ),
-            icon: new Gio.ThemedIcon({ name: "battery-caution-symbolic" }),
+            icon: new Gio.ThemedIcon({ name: 'battery-caution-symbolic' }),
             buttons: buttons
         });
 
@@ -245,7 +245,7 @@ var Plugin = GObject.registerClass({
      */
     _monitor() {
         // FIXME
-        let action = this.device.lookup_action("reportStatus");
+        let action = this.device.lookup_action('reportStatus');
 
         if (!action || !action.enabled) {
             return;
@@ -255,19 +255,19 @@ var Plugin = GObject.registerClass({
             this._upower = new UPower.Device();
 
             this._upower.set_object_path_sync(
-                "/org/freedesktop/UPower/devices/DisplayDevice",
+                '/org/freedesktop/UPower/devices/DisplayDevice',
                 null
             );
 
-            for (let property of ["percentage", "state", "warning_level"]) {
-                this._upower.connect("notify::" + property, () => {
+            for (let property of ['percentage', 'state', 'warning_level']) {
+                this._upower.connect('notify::' + property, () => {
                     this.reportStatus();
                 });
             }
 
             this.reportStatus();
         } catch(e) {
-            debug("Battery: Failed to initialize UPower: " + e);
+            debug('Battery: Failed to initialize UPower: ' + e);
             GObject.signal_handlers_destroy(this._upower);
             delete this._upower;
         }
@@ -277,13 +277,13 @@ var Plugin = GObject.registerClass({
      * Report the local battery's current charge/state
      */
     reportStatus() {
-        debug([this._upower.percentage, this._upower.state]);
-
         if (!this._upower) { return; }
+
+        debug([this._upower.percentage, this._upower.state]);
 
         let packet = {
             id: 0,
-            type: "kdeconnect.battery",
+            type: 'kdeconnect.battery',
             body: {
                 currentCharge: this._upower.percentage,
                 isCharging: (this._upower.state !== UPower.DeviceState.DISCHARGING),
@@ -298,17 +298,15 @@ var Plugin = GObject.registerClass({
         }
 
         this.device.sendPacket(packet);
-
-        return true;
     }
 
     /**
-     * Report the local battery's current charge/state
+     * Request the remote battery's current charge/state
      */
     requestStatus() {
         this.device.sendPacket({
             id: 0,
-            type: "kdeconnect.battery.request",
+            type: 'kdeconnect.battery.request',
             body: { request: true }
         });
     }
