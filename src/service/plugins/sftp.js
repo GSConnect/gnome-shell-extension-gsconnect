@@ -329,10 +329,16 @@ var Plugin = GObject.registerClass({
         foldersSubmenu.append_section(null, unmountSection);
 
         // Directories Item
+        let foldersIcon = new Gio.EmblemedIcon({
+            gicon: new Gio.ThemedIcon({ name: 'folder-remote-symbolic' })
+        });
+        let emblem = new Gio.Emblem({
+            icon: new Gio.ThemedIcon({ name: 'emblem-default' })
+        });
+        foldersIcon.add_emblem(emblem);
+
         let foldersItem = new Gio.MenuItem();
-        foldersItem.set_icon(
-            new Gio.ThemedIcon({ name: 'view-list-symbolic' })
-        );
+        foldersItem.set_icon(foldersIcon);
         foldersItem.set_label(_('List Folders'));
         foldersItem.set_submenu(foldersSubmenu);
 
