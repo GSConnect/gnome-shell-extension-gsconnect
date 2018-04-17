@@ -7,6 +7,7 @@ const UPower = imports.gi.UPowerGlib;
 
 // Local Imports
 imports.searchPath.push(gsconnect.datadir);
+const DBus = imports.modules.dbus;
 const PluginsBase = imports.service.plugins.base;
 
 
@@ -86,6 +87,13 @@ var Plugin = GObject.registerClass({
 
     _init(device) {
         super._init(device, "battery");
+
+        // Export DBus
+        this._dbus = new DBus.ProxyServer({
+            g_interface_info: gsconnect.dbusinfo.lookup_interface(Metadata.id),
+            g_instance: this
+        });
+        this.device._dbus_object.add_interface(this._dbus);
 
         this._charging = false;
         this._level = -1;
@@ -378,6 +386,8 @@ var Plugin = GObject.registerClass({
             GObject.signal_handlers_destroy(this._upower);
             delete this._upower;
         }
+
+        this.device._dbus_object.remove_interface(this._dbus);
 
         PluginsBase.Plugin.prototype.destroy.call(this);
     }

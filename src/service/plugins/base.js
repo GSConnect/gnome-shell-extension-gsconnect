@@ -7,7 +7,6 @@ const Gtk = imports.gi.Gtk;
 
 // Local Imports
 imports.searchPath.push(gsconnect.datadir);
-const DBus = imports.modules.dbus;
 const Device = imports.service.device;
 
 
@@ -53,17 +52,6 @@ var Plugin = GObject.registerClass({
         this._device = device;
         this._name = name;
         this._meta = imports.service.plugins[name].Metadata;
-
-        // Export DBus
-        let iface = gsconnect.dbusinfo.lookup_interface(this._meta.id);
-
-        if (iface) {
-            this._dbus = new DBus.ProxyServer({
-                g_interface_info: iface,
-                g_instance: this // TODO: the object to export
-            });
-            this.device._dbus_object.add_interface(this._dbus);
-        }
 
         // Init GSettings
         this.settings = new Gio.Settings({
@@ -121,7 +109,6 @@ var Plugin = GObject.registerClass({
         action.connect("activate", this._activateAction.bind(this));
 
         this.device.add_action(action);
-
 
         this._gactions.push(action);
     }
@@ -257,11 +244,6 @@ var Plugin = GObject.registerClass({
 
         if (this._cacheFile) {
             this._writeCache();
-        }
-
-        // FIXME
-        if (this._dbus) {
-            this.device._dbus_object.remove_interface(this._dbus);
         }
 
         GObject.signal_handlers_destroy(this.settings);
