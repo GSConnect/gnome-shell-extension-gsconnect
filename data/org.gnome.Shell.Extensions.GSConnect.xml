@@ -106,8 +106,6 @@
     <property access="read" type="b" name="CanControl"/>
   </interface>
 
-  <!-- Notifications -->
-
   <!-- libnotify (org.freedesktop.Notifications) -->
   <interface name="org.freedesktop.Notifications">
     <method name="Notify">
