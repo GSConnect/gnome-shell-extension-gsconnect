@@ -101,21 +101,21 @@ class KeybindingManager {
 class DoNotDisturbItem extends PopupMenu.PopupSwitchMenuItem {
 
     _init() {
-        super._init(_("Do Not Disturb"), false);
+        super._init(_('Do Not Disturb'), false);
 
         // Update the toggle state when 'paintable'
-        this.actor.connect("notify::mapped", () => {
+        this.actor.connect('notify::mapped', () => {
             let now = GLib.DateTime.new_now_local().to_unix();
-            this.setToggleState(gsconnect.settings.get_int("donotdisturb") > now);
+            this.setToggleState(gsconnect.settings.get_int('donotdisturb') > now);
         });
 
-        this.connect("toggled", () => {
+        this.connect('toggled', () => {
             // The state has already been changed when this is emitted
             if (this.state) {
                 let dialog = new DoNotDisturbDialog();
                 dialog.open();
             } else {
-                gsconnect.settings.set_int("donotdisturb", 0);
+                gsconnect.settings.set_int('donotdisturb', 0);
             }
 
             this._getTopMenu().close(true);
@@ -128,16 +128,16 @@ class DoNotDisturbDialog extends Actors.Dialog {
 
     _init() {
         super._init({
-            icon: "preferences-system-notifications-symbolic",
-            title: _("Do Not Disturb"),
-            subtitle: _("Silence Mobile Device Notifications")
+            icon: 'preferences-system-time-symbolic',
+            title: _('Do Not Disturb'),
+            subtitle: _('Silence Mobile Device Notifications')
         });
 
         //
         this._time = 1*60*60; // 1 hour in seconds
 
         this.permButton = new Actors.RadioButton({
-            text: _("Until you turn this off")
+            text: _('Until you turn this off')
         });
         this.content.add(this.permButton);
 
@@ -149,34 +149,34 @@ class DoNotDisturbDialog extends Actors.Dialog {
 
         let now = GLib.DateTime.new_now_local();
         this.timerLabel = new St.Label({
-            text: _("Until %s (%s)").format(
+            text: _('Until %s (%s)').format(
                 Util.formatTime(now.add_seconds(this._time)),
                 this._getDurationLabel()
             ),
             x_expand: true,
             y_align: Clutter.ActorAlign.CENTER,
-            style: "margin-right: 6px;"
+            style: 'margin-right: 6px;'
         });
         this.timerWidget.add_child(this.timerLabel);
 
         this.minusTime = new St.Button({
-            style_class: "pager-button",
+            style_class: 'pager-button',
             child: new St.Icon({
-                icon_name: "list-remove-symbolic",
+                icon_name: 'list-remove-symbolic',
                 icon_size: 16
             })
         });
-        this.minusTime.connect("clicked", () => this._minusTime());
+        this.minusTime.connect('clicked', this._minusTime.bind(this));
         this.timerWidget.add_child(this.minusTime);
 
         this.plusTime = new St.Button({
-            style_class: "pager-button",
+            style_class: 'pager-button',
             child: new St.Icon({
-                icon_name: "list-add-symbolic",
+                icon_name: 'list-add-symbolic',
                 icon_size: 16
             })
         });
-        this.plusTime.connect("clicked", () => this._plusTime());
+        this.plusTime.connect('clicked', this._plusTime.bind(this));
         this.timerWidget.add_child(this.plusTime);
 
         this.timerButton = new Actors.RadioButton({
@@ -188,13 +188,13 @@ class DoNotDisturbDialog extends Actors.Dialog {
 
         // Dialog Buttons
         this.setButtons([
-            { label: _("Cancel"), action: () => this._cancel(), default: true },
-            { label: _("Done"), action: () => this._done() }
+            { label: _('Cancel'), action: this._cancel.bind(this), default: true },
+            { label: _('Done'), action: this._done.bind(this) }
         ]);
     }
 
     _cancel() {
-        gsconnect.settings.set_int("donotdisturb", 0);
+        gsconnect.settings.set_int('donotdisturb', 0);
         this.close();
     }
 
@@ -208,7 +208,7 @@ class DoNotDisturbDialog extends Actors.Dialog {
             time = GLib.MAXINT32;
         }
 
-        gsconnect.settings.set_int("donotdisturb", time);
+        gsconnect.settings.set_int('donotdisturb', time);
         this.close();
     }
 
@@ -235,9 +235,9 @@ class DoNotDisturbDialog extends Actors.Dialog {
     _getDurationLabel() {
         if (this._time >= 60*60) {
             let hours = this._time / 3600;
-            return gsconnect.ngettext("%d Hour", "%d Hours", hours).format(hours);
+            return gsconnect.ngettext('%d Hour', '%d Hours', hours).format(hours);
         } else {
-            return _("%d Minutes").format(this._time / 60);
+            return _('%d Minutes').format(this._time / 60);
         }
     }
 
@@ -246,7 +246,7 @@ class DoNotDisturbDialog extends Actors.Dialog {
         this.plusTime.reactive = (this._time < 12*60*60);
 
         let now = GLib.DateTime.new_now_local();
-        this.timerLabel.text = _("Until %s (%s)").format(
+        this.timerLabel.text = _('Until %s (%s)').format(
             Util.formatTime(now.add_seconds(this._time)),
             this._getDurationLabel()
         );

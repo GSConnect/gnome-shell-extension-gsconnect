@@ -34,7 +34,7 @@ var Dialog = class Dialog extends ModalDialog.ModalDialog {
 
         this._icon = new St.Icon({
             style_class: "nm-dialog-header-icon",
-            icon_name: params.icon
+            gicon: new Gio.ThemedIcon({ name: params.icon })
         });
         headerBar.add(this._icon);
 
@@ -60,11 +60,11 @@ var Dialog = class Dialog extends ModalDialog.ModalDialog {
     }
 
     get icon () {
-        return this._icon.icon_name;
+        return this._icon.gicon.name;
     }
 
     set icon (name) {
-        this._icon.icon_name = name;
+        this._icon.gicon.name = name;
     }
 
     get title () {
