@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 const Gi = imports._gi;
 const Gio = imports.gi.Gio;
@@ -33,24 +33,24 @@ function dbus_variant_to_gtype(types) {
 
     for (let i = 0; i < types.length; i++) {
         switch (types[i]) {
-            case "b":
+            case 'b':
                 gtypes.push(GObject.TYPE_BOOLEAN);
                 break;
-            case "h" || "i":
+            case 'h' || 'i':
                 gtypes.push(GObject.TYPE_INT);
-            case "u":
+            case 'u':
                 gtypes.push(GObject.TYPE_UINT);
-            case "x":
+            case 'x':
                 gtypes.push(GObject.TYPE_INT64);
-            case "t":
+            case 't':
                 gtypes.push(GObject.TYPE_UINT64);
-            case "d":
+            case 'd':
                 gtypes.push(GObject.TYPE_DOUBLE);
                 break;
-            case "s":
+            case 's':
                 gtypes.push(GObject.TYPE_STRING);
                 break;
-            case "y":
+            case 'y':
                 gtypes.push(GObject.TYPE_UCHAR);
                 break;
             // FIXME: assume it's a variant
@@ -70,9 +70,9 @@ function dbus_variant_to_gtype(types) {
  * all members to TitleCase.
  */
 var ProxyServer = GObject.registerClass({
-    GTypeName: "GSConnectDBusProxyServer",
+    GTypeName: 'GSConnectDBusProxyServer',
     Signals: {
-        "destroy": {
+        'destroy': {
             flags: GObject.SignalFlags.NO_HOOKS
         }
     }
@@ -130,7 +130,7 @@ var ProxyServer = GObject.registerClass({
                     // likely to be a normal JS error
                     name = 'org.gnome.gjs.JSError.' + name;
                 }
-                logError(e, "Exception in method call: " + methodName);
+                logError(e, 'Exception in method call: ' + memberName);
                 invocation.return_dbus_error(name, e.message);
             }
             return;
@@ -156,8 +156,8 @@ var ProxyServer = GObject.registerClass({
         } catch(e) {
             debug(e);
             invocation.return_dbus_error(
-                "org.gnome.gjs.JSError.ValueError",
-                "Service implementation returned an incorrect value type"
+                'org.gnome.gjs.JSError.ValueError',
+                'Service implementation returned an incorrect value type'
             );
         }
     }
@@ -195,9 +195,9 @@ var ProxyServer = GObject.registerClass({
 
         if (!this._propertyCase) {
             if (this[name.toUnderscoreCase()]) {
-                this._propertyCase = "toUnderScoreCase";
+                this._propertyCase = 'toUnderScoreCase';
             } else if (this[name.toCamelCase()]) {
-                this._propertyCase = "toCamelCase";
+                this._propertyCase = 'toCamelCase';
             }
         }
 
@@ -214,7 +214,7 @@ var ProxyServer = GObject.registerClass({
             return this._set.call(this._exportee, info, name, value);
         });
 
-        this._exportee.connect("notify", (obj, paramSpec) => {
+        this._exportee.connect('notify', (obj, paramSpec) => {
             let name = paramSpec.name.toDBusCase();
             let propertyInfo = this.g_interface_info.lookup_property(name);
 
@@ -224,7 +224,7 @@ var ProxyServer = GObject.registerClass({
                     new GLib.Variant(
                         propertyInfo.signature,
                         // Adjust for GJS's '-'/'_' conversion
-                        this._exportee[paramSpec.name.replace(/[\-]+/g, "_")]
+                        this._exportee[paramSpec.name.replace(/[\-]+/g, '_')]
                     )
                 );
             }
@@ -237,7 +237,7 @@ var ProxyServer = GObject.registerClass({
                 this.emit_signal(
                     signal.name,
                     new GLib.Variant(
-                        "(" + signal.args.map(arg => arg.signature).join("") + ")",
+                        `(${signal.args.map(arg => arg.signature).join('')})`,
                         args
                     )
                 );
@@ -246,7 +246,7 @@ var ProxyServer = GObject.registerClass({
     }
 
     destroy() {
-        this.emit("destroy");
+        this.emit('destroy');
         this.flush();
         this.unexport();
         GObject.signal_handlers_destroy(this);
@@ -261,9 +261,9 @@ var Proxies = {};
 
 
 var ProxyBase = GObject.registerClass({
-    GTypeName: "GSConnectDBusProxyBase",
+    GTypeName: 'GSConnectDBusProxyBase',
     Signals: {
-        "destroy": {
+        'destroy': {
             flags: GObject.SignalFlags.NO_HOOKS
         }
     }
@@ -284,8 +284,9 @@ var ProxyBase = GObject.registerClass({
         this._proxySignals(info);
 
         // Destroy the proxy if the g_name_owner dies
-        this.connect("notify::g-name-owner", () => {
+        this.connect('notify::g-name-owner', () => {
             if (this.g_name_owner === null) {
+                debug(`NAME OWNER CHANGED: ${this.g_object_path}: ${this.g_interface_name}`);
             }
         });
     }
@@ -306,8 +307,8 @@ var ProxyBase = GObject.registerClass({
     _call_sync(info) {
         // TODO: do this in _proxyMethod()???
         let args = Array.prototype.slice.call(arguments, 1);
-        let signature = info.in_args.map(arg => arg.signature).join("");
-        let variant = new GLib.Variant("(" + signature + ")", args);
+        let signature = info.in_args.map(arg => arg.signature).join('');
+        let variant = new GLib.Variant(`(${signature})`, args);
 
         //
         let retval;
@@ -326,8 +327,8 @@ var ProxyBase = GObject.registerClass({
     _call(info) {
         return new Promise((resolve, reject) => {
             let args = Array.prototype.slice.call(arguments, 1);
-            let signature = info.in_args.map(arg => arg.signature);
-            let variant = new GLib.Variant("(" + signature.join("") + ")", args);
+            let signature = info.in_args.map(arg => arg.signature).join('');
+            let variant = new GLib.Variant(`(${signature})`, args);
 
             this.call(info.name, variant, 0, -1, null, (proxy, result) => {
                 let ret;
@@ -359,8 +360,8 @@ var ProxyBase = GObject.registerClass({
         try {
             // Returns Variant('(v)')...
             variant = this.call_sync(
-                "org.freedesktop.DBus.Properties.Get",
-                new GLib.Variant("(ss)", [this.g_interface_name, name]),
+                'org.freedesktop.DBus.Properties.Get',
+                new GLib.Variant('(ss)', [this.g_interface_name, name]),
                 Gio.DBusCallFlags.NONE,
                 -1,
                 this.cancellable
@@ -393,8 +394,8 @@ var ProxyBase = GObject.registerClass({
 
         // Let it run and just log any errors
         this.call(
-            "org.freedesktop.DBus.Properties.Set",
-            new GLib.Variant("(ssv)", [this.g_interface_name, name, variant]),
+            'org.freedesktop.DBus.Properties.Set',
+            new GLib.Variant('(ssv)', [this.g_interface_name, name, variant]),
             Gio.DBusCallFlags.NONE,
             -1,
             this.cancellable,
@@ -457,7 +458,7 @@ var ProxyBase = GObject.registerClass({
                 });
             }
 
-            this.connect("g-properties-changed", (proxy, properties) => {
+            this.connect('g-properties-changed', (proxy, properties) => {
                 for (let name in properties.deep_unpack()) {
                     // Properties are set using lower_underscore...
                     let properName = name.toUnderscoreCase();
@@ -475,7 +476,7 @@ var ProxyBase = GObject.registerClass({
      */
     _proxySignals(info) {
         if (info.signals.length > 0) {
-            this.connect("g-signal", (proxy, sender, name, parameters) => {
+            this.connect('g-signal', (proxy, sender, name, parameters) => {
                 // Signals are emitted using lower-hyphen
                 let properName = name.toHyphenCase();
                 // FIXME: better unpack
@@ -488,7 +489,7 @@ var ProxyBase = GObject.registerClass({
     destroy() {
         debug(this.g_interface_name);
 
-        this.emit("destroy");
+        this.emit('destroy');
         GObject.signal_handlers_destroy(this);
     }
 });
@@ -520,29 +521,29 @@ function makeInterfaceProxy(info) {
             flags |= GObject.ParamFlags.WRITABLE;
         }
 
-        if (property.signature === "b") {
+        if (property.signature === 'b') {
             properties_[proxyName] = GObject.ParamSpec.boolean(
                 proxyName,
                 property.name,
-                property.name + ": automatically populated",
+                property.name + ': automatically populated',
                 flags,
                 false
             );
-        } else if ("sog".indexOf(property.signature) > -1) {
+        } else if ('sog'.indexOf(property.signature) > -1) {
             properties_[proxyName] = GObject.ParamSpec.string(
                 proxyName,
                 property.name,
-                property.name + ": automatically populated",
+                property.name + ': automatically populated',
                 flags,
-                ""
+                ''
             );
         // TODO: all number types are converted to Number which is a double,
         //       but there may be a case where type is relevant on the proxy
-        } else if ("hiuxtd".indexOf(property.signature) > -1) {
+        } else if ('hiuxtd'.indexOf(property.signature) > -1) {
             properties_[proxyName] = GObject.ParamSpec.double(
                 proxyName,
                 property.name,
-                property.name + ": automatically populated",
+                property.name + ': automatically populated',
                 flags,
                 GLib.MININT32, GLib.MAXINT32,
                 0.0
@@ -551,7 +552,7 @@ function makeInterfaceProxy(info) {
             properties_[proxyName] = GObject.param_spec_variant(
                 proxyName,
                 property.name,
-                property.name + ": automatically populated",
+                property.name + ': automatically populated',
                 new GLib.VariantType(property.signature),
                 null,
                 flags
@@ -567,13 +568,13 @@ function makeInterfaceProxy(info) {
 
         signals_[signal.name.toHyphenCase()] = {
             flags: GObject.SignalFlags.RUN_FIRST,
-            param_types: dbus_variant_to_gtype(signal.args.map(arg => arg.signature).join(""))
+            param_types: dbus_variant_to_gtype(signal.args.map(arg => arg.signature).join(''))
         };
     }
 
     // Register and store the proxy class to avoid more work or GType collisions
     Proxies[info.name] = GObject.registerClass({
-        GTypeName: "Proxy_" + info.name.split(".").join(""),
+        GTypeName: 'Proxy_' + info.name.split('.').join(''),
         Properties: properties_,
         Signals: signals_
     }, class ProxyExtension extends ProxyBase {
@@ -696,12 +697,12 @@ const FdoNode = Gio.DBusNodeInfo.new_for_xml(
  * Proxy for org.freedesktop.DBus Interface
  */
 var FdoProxy = makeInterfaceProxy(
-    FdoNode.lookup_interface("org.freedesktop.DBus")
+    FdoNode.lookup_interface('org.freedesktop.DBus')
 );
 
 // TODO not used?
 var FdoMonitoringProxy = makeInterfaceProxy(
-    FdoNode.lookup_interface("org.freedesktop.DBus.Monitoring")
+    FdoNode.lookup_interface('org.freedesktop.DBus.Monitoring')
 );
 
 
@@ -714,15 +715,12 @@ function get_default() {
     if (!_default) {
         _default = new FdoProxy({
             g_connection: Gio.DBus.session,
-            g_name: "org.freedesktop.DBus",
-            g_object_path: "/"
+            g_name: 'org.freedesktop.DBus',
+            g_object_path: '/'
         });
-
-        _default.init_promise().then(result => {
-            return _default;
-        }).catch(e => debug(e));
-    } else {
-        return _default;
+        _default.init(null);
     }
+
+    return _default;
 };
 
