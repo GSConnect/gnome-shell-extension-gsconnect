@@ -436,9 +436,7 @@ var ProxyBase = GObject.registerClass({
 
         for (i = 0; i < methods.length; i++) {
             var method = methods[i];
-            // TODO: Correct casing/guess?
-            let properName = method.name.toCamelCase();
-            this[properName] = this._proxyMethod(method);
+            this[method.name] = this._proxyMethod(method);
         }
     }
 
