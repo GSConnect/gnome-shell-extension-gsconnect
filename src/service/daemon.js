@@ -1,21 +1,21 @@
 #!/usr/bin/env gjs
 
-"use strict";
+'use strict';
 
-const Gettext = imports.gettext.domain("org.gnome.Shell.Extensions.GSConnect");
+const Gettext = imports.gettext.domain('org.gnome.Shell.Extensions.GSConnect');
 const _ = Gettext.gettext;
 const System = imports.system;
 
-imports.gi.versions.Atspi = "2.0";
-imports.gi.versions.Gdk = "3.0";
-imports.gi.versions.GdkPixbuf = "2.0";
-imports.gi.versions.Gio = "2.0";
-imports.gi.versions.GIRepository = "2.0";
-imports.gi.versions.GLib = "2.0";
-imports.gi.versions.GObject = "2.0";
-imports.gi.versions.Gtk = "3.0";
-imports.gi.versions.Pango = "1.0";
-imports.gi.versions.UPowerGlib = "1.0";
+imports.gi.versions.Atspi = '2.0';
+imports.gi.versions.Gdk = '3.0';
+imports.gi.versions.GdkPixbuf = '2.0';
+imports.gi.versions.Gio = '2.0';
+imports.gi.versions.GIRepository = '2.0';
+imports.gi.versions.GLib = '2.0';
+imports.gi.versions.GObject = '2.0';
+imports.gi.versions.Gtk = '3.0';
+imports.gi.versions.Pango = '1.0';
+imports.gi.versions.UPowerGlib = '1.0';
 
 const Gdk = imports.gi.Gdk;
 const GdkPixbuf = imports.gi.GdkPixbuf;
@@ -27,7 +27,7 @@ const Gtk = imports.gi.Gtk;
 // Local Imports
 function getPath() {
     // Diced from: https://github.com/optimisme/gjs-examples/
-    let m = new RegExp("@(.+):\\d+").exec((new Error()).stack.split("\n")[1]);
+    let m = new RegExp('@(.+):\\d+').exec((new Error()).stack.split('\n')[1]);
     return Gio.File.new_for_path(m[1]).get_parent().get_parent().get_path();
 }
 
@@ -44,57 +44,57 @@ const Sound = imports.modules.sound;
 
 
 var Daemon = GObject.registerClass({
-    GTypeName: "GSConnectDaemon",
+    GTypeName: 'GSConnectDaemon',
     Properties: {
-        "certificate": GObject.ParamSpec.object(
-            "certificate",
-            "TlsCertificate",
-            "The local TLS Certificate",
+        'certificate': GObject.ParamSpec.object(
+            'certificate',
+            'TlsCertificate',
+            'The local TLS Certificate',
             GObject.ParamFlags.READABLE,
             Gio.TlsCertificate
         ),
-        "devices": GObject.param_spec_variant(
-            "devices",
-            "DevicesList",
-            "A list of known devices",
-            new GLib.VariantType("as"),
+        'devices': GObject.param_spec_variant(
+            'devices',
+            'DevicesList',
+            'A list of known devices',
+            new GLib.VariantType('as'),
             null,
             GObject.ParamFlags.READABLE
         ),
-        "discovering": GObject.ParamSpec.boolean(
-            "discovering",
-            "discoveringDevices",
-            "Whether the daemon is discovering new devices",
+        'discovering': GObject.ParamSpec.boolean(
+            'discovering',
+            'discoveringDevices',
+            'Whether the daemon is discovering new devices',
             GObject.ParamFlags.READWRITE,
             false
         ),
-        "fingerprint": GObject.ParamSpec.string(
-            "fingerprint",
-            "LocalFingerprint",
-            "SHA1 fingerprint for the local certificate",
+        'fingerprint': GObject.ParamSpec.string(
+            'fingerprint',
+            'LocalFingerprint',
+            'SHA1 fingerprint for the local certificate',
             GObject.ParamFlags.READABLE,
-            ""
+            ''
         ),
-        "symbolic-icon-name": GObject.ParamSpec.string(
-            "symbolic-icon-name",
-            "ServiceIconName",
-            "Icon name representing the service device",
+        'symbolic-icon-name': GObject.ParamSpec.string(
+            'symbolic-icon-name',
+            'ServiceIconName',
+            'Icon name representing the service device',
             GObject.ParamFlags.READABLE,
-            ""
+            ''
         ),
-        "name": GObject.ParamSpec.string(
-            "name",
-            "DeviceName",
-            "The name announced to the network",
+        'name': GObject.ParamSpec.string(
+            'name',
+            'DeviceName',
+            'The name announced to the network',
             GObject.ParamFlags.READWRITE,
-            "GSConnect"
+            'GSConnect'
         ),
-        "type": GObject.ParamSpec.string(
-            "type",
-            "DeviceType",
-            "The host's device type",
+        'type': GObject.ParamSpec.string(
+            'type',
+            'DeviceType',
+            'The service device type',
             GObject.ParamFlags.READABLE,
-            "desktop"
+            'desktop'
         )
     }
 }, class Daemon extends Gtk.Application {
@@ -107,10 +107,10 @@ var Daemon = GObject.registerClass({
 
         // This is currently required for clipboard to work under Wayland, but
         // in future will probably just be removed.
-        Gdk.set_allowed_backends("x11,*");
+        Gdk.set_allowed_backends('x11,*');
 
         GLib.set_prgname(gsconnect.app_id);
-        GLib.set_application_name(_("GSConnect"));
+        GLib.set_application_name(_('GSConnect'));
 
         this.register(null);
     }
@@ -119,17 +119,17 @@ var Daemon = GObject.registerClass({
     get certificate() {
         // https://github.com/KDE/kdeconnect-kde/blob/master/core/kdeconnectconfig.cpp#L119
         if (this._certificate === undefined) {
-            let certPath = gsconnect.configdir + "/certificate.pem";
+            let certPath = gsconnect.configdir + '/certificate.pem';
             let certExists = GLib.file_test(certPath, GLib.FileTest.EXISTS);
-            let keyPath = gsconnect.configdir + "/private.pem";
+            let keyPath = gsconnect.configdir + '/private.pem';
             let keyExists = GLib.file_test(keyPath, GLib.FileTest.EXISTS);
 
             if (!keyExists || !certExists) {
                 let cmd = [
-                    "openssl", "req", "-new", "-x509", "-sha256",
-                    "-newkey", "rsa:2048", "-nodes", "-keyout", "private.pem",
-                    "-days", "3650", "-out", "certificate.pem", "-subj",
-                    "/O=andyholmes.github.io/OU=GSConnect/CN=" + GLib.uuid_string_random()
+                    'openssl', 'req', '-new', '-x509', '-sha256',
+                    '-newkey', 'rsa:2048', '-nodes', '-keyout', 'private.pem',
+                    '-days', '3650', '-out', 'certificate.pem', '-subj',
+                    '/O=andyholmes.github.io/OU=GSConnect/CN=' + GLib.uuid_string_random()
                 ];
 
                 let proc = GLib.spawn_sync(
@@ -142,12 +142,12 @@ var Daemon = GObject.registerClass({
             }
 
             // Ensure permissions are restrictive
-            GLib.spawn_command_line_async("chmod 0600 " + keyPath);
-            GLib.spawn_command_line_async("chmod 0600 " + certPath);
+            GLib.spawn_command_line_async(`chmod 0600 ${keyPath}`);
+            GLib.spawn_command_line_async(`chmod 0600 ${certPath}`);
 
             // Load the certificate
             this._certificate = Gio.TlsCertificate.new_from_files(certPath, keyPath);
-            this.notify("fingerprint");
+            this.notify('fingerprint');
         }
 
         return this._certificate;
@@ -178,7 +178,7 @@ var Daemon = GObject.registerClass({
                 type: Protocol.TYPE_IDENTITY,
                 body: {
                     deviceId: this.certificate.serial,
-                    deviceName: gsconnect.settings.get_string("public-name"),
+                    deviceName: gsconnect.settings.get_string('public-name'),
                     deviceType: this.type,
                     tcpPort: this.lanService.port,
                     protocolVersion: 7,
@@ -206,7 +206,7 @@ var Daemon = GObject.registerClass({
     }
 
     get symbolic_icon_name() {
-        return (this.type === "laptop") ? "laptop" : "computer";
+        return (this.type === 'laptop') ? 'laptop' : 'computer';
     }
 
     get name() {
@@ -215,7 +215,7 @@ var Daemon = GObject.registerClass({
 
     set name(name) {
         this.identity.body.deviceName = name;
-        this.notify("name");
+        this.notify('name');
         this.broadcast();
     }
 
@@ -223,13 +223,13 @@ var Daemon = GObject.registerClass({
         if (this._type === undefined) {
             try {
                 let type = Number(
-                    GLib.file_get_contents("/sys/class/dmi/id/chassis_type")[1]
+                    GLib.file_get_contents('/sys/class/dmi/id/chassis_type')[1]
                 );
 
-                this._type = ([8, 9, 10, 14].indexOf(type) > -1) ? "laptop" : "desktop";
+                this._type = ([8, 9, 10, 14].indexOf(type) > -1) ? 'laptop' : 'desktop';
             } catch (e) {
-                debug("Error reading chassis_type: " + e);
-                this._type = "desktop";
+                debug('Error reading chassis_type: ' + e);
+                this._type = 'desktop';
             }
         }
 
@@ -243,7 +243,7 @@ var Daemon = GObject.registerClass({
         let shareable = [];
 
         for (let [busPath, device] of this._devices.entries()) {
-            let action = device.lookup_action("shareFile");
+            let action = device.lookup_action('shareFile');
 
             if (action && action.enabled) {
                 shareable.push([busPath, device.name]);
@@ -256,7 +256,7 @@ var Daemon = GObject.registerClass({
     _applyResources() {
         let provider = new Gtk.CssProvider();
         provider.load_from_file(
-            Gio.File.new_for_uri("resource://" + gsconnect.app_path + "/application.css")
+            Gio.File.new_for_uri('resource://' + gsconnect.app_path + '/application.css')
         );
         Gtk.StyleContext.add_provider_for_screen(
             Gdk.Screen.get_default(),
@@ -281,7 +281,7 @@ var Daemon = GObject.registerClass({
     _addDevice(packet, channel=null) {
         debug(packet);
 
-        let dbusPath = gsconnect.app_path + "/Device/" + packet.body.deviceId.replace(/\W+/g, "_");
+        let dbusPath = gsconnect.app_path + '/Device/' + packet.body.deviceId.replace(/\W+/g, '_');
 
         if (this._devices.has(dbusPath)) {
             log(`GSConnect: Updating ${packet.body.deviceName}`);
@@ -300,20 +300,20 @@ var Daemon = GObject.registerClass({
                 );
             }).then(device => {
                 // TODO: better
-                device.connect("notify::connected", (device) => {
+                device.connect('notify::connected', (device) => {
                     if (!device.connected) { this._pruneDevices(); }
                 });
                 this._devices.set(dbusPath, device);
 
-                let knownDevices = gsconnect.settings.get_strv("devices");
+                let knownDevices = gsconnect.settings.get_strv('devices');
 
                 if (knownDevices.indexOf(device.id) < 0) {
                     knownDevices.push(device.id);
-                    gsconnect.settings.set_strv("devices", knownDevices);
+                    gsconnect.settings.set_strv('devices', knownDevices);
                 }
 
                 // FIXME: notified by ObjectManager now
-                //this.notify("devices");
+                //this.notify('devices');
             }).catch(e => debug(e));
         }
     }
@@ -330,32 +330,32 @@ var Daemon = GObject.registerClass({
             this._devices.delete(dbusPath);
 
             // FIXME: notified by ObjectManager now
-            //this.notify("devices");
+            //this.notify('devices');
         }
     }
 
     _onDevicesChanged() {
-        let knownDevices = gsconnect.settings.get_strv("devices");
+        let knownDevices = gsconnect.settings.get_strv('devices');
 
         // New devices
         let newDevices = [];
 
         for (let id of knownDevices) {
-            let dbusPath = gsconnect.app_path + "/Device/" + id.replace(/\W+/g, "_");
+            let dbusPath = gsconnect.app_path + '/Device/' + id.replace(/\W+/g, '_');
 
             if (!this._devices.has(dbusPath)) {
                 newDevices.push(
                     new Promise((resolve, reject) => {
                         let device = new Device.Device({ id: id});
                         // TODO: better
-                        device.connect("notify::connected", (device) => {
+                        device.connect('notify::connected', (device) => {
                             if (!device.connected) {
                                 this._pruneDevices();
                             }
                         });
                         this._devices.set(dbusPath, device);
                         resolve(true);
-                    }).catch(e => log("GSConnect: Error adding device: " + e))
+                    }).catch(e => log('GSConnect: Error adding device: ' + e))
                 );
             }
         }
@@ -374,12 +374,12 @@ var Daemon = GObject.registerClass({
         // Don't prune devices while the settings window is open
         if (this._window) { return; }
 
-        let knownDevices = gsconnect.settings.get_strv("devices");
+        let knownDevices = gsconnect.settings.get_strv('devices');
 
         for (let device of this._devices.values()) {
             if (!device.connected && !device.paired) {
                 knownDevices.splice(knownDevices.indexOf(device.id), 1);
-                gsconnect.settings.set_strv("devices", knownDevices);
+                gsconnect.settings.set_strv('devices', knownDevices);
             }
         }
     }
@@ -387,7 +387,7 @@ var Daemon = GObject.registerClass({
     _watchDevices() {
         this._devices = new Map();
 
-        gsconnect.settings.connect("changed::devices", () => {
+        gsconnect.settings.connect('changed::devices', () => {
             this._onDevicesChanged();
         });
 
@@ -405,14 +405,14 @@ var Daemon = GObject.registerClass({
     _getAppNotificationSettings() {
         this._appNotificationSettings = {};
 
-        for (let app of this._desktopNotificationSettings.get_strv("application-children")) {
+        for (let app of this._desktopNotificationSettings.get_strv('application-children')) {
             let appSettings = new Gio.Settings({
-                schema_id: "org.gnome.desktop.notifications.application",
-                path: "/org/gnome/desktop/notifications/application/" + app + "/"
+                schema_id: 'org.gnome.desktop.notifications.application',
+                path: '/org/gnome/desktop/notifications/application/' + app + '/'
             });
 
             let appInfo = Gio.DesktopAppInfo.new(
-                appSettings.get_string("application-id")
+                appSettings.get_string('application-id')
             );
 
             if (appInfo) {
@@ -424,11 +424,11 @@ var Daemon = GObject.registerClass({
     _startNotificationListener(connection) {
         // Respect desktop notification settings
         this._desktopNotificationSettings = new Gio.Settings({
-            schema_id: "org.gnome.desktop.notifications"
+            schema_id: 'org.gnome.desktop.notifications'
         });
         this._desktopNotificationSettings.connect(
-            "changed::application-children",
-            () => this._getAppNotificationSettings()
+            'changed::application-children',
+            this._getAppNotificationSettings.bind(this)
         );
         this._getAppNotificationSettings();
 
@@ -437,35 +437,35 @@ var Daemon = GObject.registerClass({
             g_connection: connection,
             g_instance: this,
             g_interface_info: gsconnect.dbusinfo.lookup_interface(
-                "org.freedesktop.Notifications"
+                'org.freedesktop.Notifications'
             ),
-            g_object_path: "/org/freedesktop/Notifications"
+            g_object_path: '/org/freedesktop/Notifications'
         });
 
-        this._fdoNotificationsMatch = "interface='org.freedesktop.Notifications'," +
-                                      "member='Notify'," +
-                                      "type='method_call'," +
-                                      "eavesdrop='true'";
+        this._fdoNotificationsMatch = 'interface=\'org.freedesktop.Notifications\',' +
+                                      'member=\'Notify\',' +
+                                      'type=\'method_call\',' +
+                                      'eavesdrop=\'true\'';
 
         // GNotification (org.gtk.Notifications)
         this._gtkNotifications = new DBus.ProxyServer({
             g_connection: connection,
             g_instance: this,
             g_interface_info: gsconnect.dbusinfo.lookup_interface(
-                "org.gtk.Notifications"
+                'org.gtk.Notifications'
             ),
-            g_object_path: "/org/gtk/Notifications"
+            g_object_path: '/org/gtk/Notifications'
         });
 
-        this._gtkNotificationsMatch = "interface='org.gtk.Notifications'," +
-                                      "member='AddNotification'," +
-                                      "type='method_call'," +
-                                      "eavesdrop='true'";
+        this._gtkNotificationsMatch = 'interface=\'org.gtk.Notifications\',' +
+                                      'member=\'AddNotification\',' +
+                                      'type=\'method_call\',' +
+                                      'eavesdrop=\'true\'';
 
         this._fdo = new DBus.FdoProxy({
             g_connection: connection,
-            g_name: "org.freedesktop.DBus",
-            g_object_path: "/"
+            g_name: 'org.freedesktop.DBus',
+            g_object_path: '/'
         });
 
         this._fdo.init_promise().then(result => {
@@ -485,16 +485,18 @@ var Daemon = GObject.registerClass({
     _sendNotification(notif) {
         debug(notif);
 
+        // Check if notifications are disabled in desktop settings
         let appSettings = this._appNotificationSettings[notif.appName];
 
-        if (appSettings && !appSettings.get_boolean("enable")) {
+        if (appSettings && !appSettings.get_boolean('enable')) {
             return;
         }
 
+        // Send the notification to each supporting device
         let variant = gsconnect.full_pack(notif);
 
         for (let device of this._devices.values()) {
-            let action = device.lookup_action("sendNotification");
+            let action = device.lookup_action('sendNotification');
 
             if (action && action.enabled) {
                 action.activate(variant);
@@ -514,7 +516,7 @@ var Daemon = GObject.registerClass({
             title: summary,
             text: body,
             ticker: `${summary}: ${body}`,
-            isClearable: (replacesId !== "0"),
+            isClearable: (replacesId !== '0'),
             icon: iconName
         });
     }
@@ -524,12 +526,14 @@ var Daemon = GObject.registerClass({
         let notif = gsconnect.full_unpack(Array.from(arguments));
 
         // Ignore our own notifications (otherwise things could get loopy)
-        if (notif[0] === "org.gnome.Shell.Extensions.GSConnect") {
+        if (notif[0] === 'org.gnome.Shell.Extensions.GSConnect') {
             return;
         }
 
+        let appInfo = Gio.DesktopAppInfo.new(`${notif[0]}.desktop`);
+
         this._sendNotification({
-            appName: Gio.DesktopAppInfo.new(notif[0]).get_display_name(),
+            appName: appInfo.get_display_name(),
             id: notif[1],
             title: notif[2].title,
             text: notif[2].body,
@@ -545,12 +549,12 @@ var Daemon = GObject.registerClass({
     _cancelTransferAction(action, parameter) {
         parameter = parameter.deep_unpack();
 
-        let device = this._devices.get(parameter["0"]);
-        let plugin = (device) ? device._plugins.get("share") : false;
+        let device = this._devices.get(parameter['0']);
+        let plugin = (device) ? device._plugins.get('share') : false;
 
         if (plugin) {
-            if (plugin.transfers.has(parameter["1"])) {
-                plugin.transfers.get(parameter["1"]).cancel();
+            if (plugin.transfers.has(parameter['1'])) {
+                plugin.transfers.get(parameter['1']).cancel();
             }
         }
     }
@@ -563,20 +567,20 @@ var Daemon = GObject.registerClass({
     _aboutAction() {
         let dialog = new Gtk.AboutDialog({
             application: this,
-            authors: [ "Andy Holmes <andrew.g.r.holmes@gmail.com>" ],
+            authors: [ 'Andy Holmes <andrew.g.r.holmes@gmail.com>' ],
             comments: gsconnect.metadata.description,
             logo: GdkPixbuf.Pixbuf.new_from_resource_at_scale(
-                gsconnect.app_path + "/" + gsconnect.app_id + ".svg",
+                gsconnect.app_path + '/' + gsconnect.app_id + '.svg',
                 128,
                 128,
                 true
             ),
-            program_name: _("GSConnect"),
+            program_name: _('GSConnect'),
             version: gsconnect.metadata.version,
             website: gsconnect.metadata.url,
             license_type: Gtk.License.GPL_2_0
         });
-        dialog.connect("delete-event", dialog => dialog.destroy());
+        dialog.connect('delete-event', dialog => dialog.destroy());
         dialog.show();
     }
 
@@ -623,7 +627,7 @@ var Daemon = GObject.registerClass({
                 name: entry[0],
                 parameter_type: (entry[2]) ? new GLib.VariantType(entry[2]) : null
             });
-            action.connect("activate", entry[1].bind(context));
+            action.connect('activate', entry[1].bind(context));
             this.add_action(action);
         });
     }
@@ -631,23 +635,23 @@ var Daemon = GObject.registerClass({
     _initActions() {
         this._addActions([
             // Device
-            ["deviceAction", this._deviceAction, "(ssv)"],
+            ['deviceAction', this._deviceAction, '(ssv)'],
             // Daemon
-            ["openSettings", this.openSettings],
-            ["cancelTransfer", this._cancelTransferAction, "(ss)"],
-            ["openTransfer", this._openTransferAction, "s"],
-            ["restartNautilus", this._restartNautilus],
-            ["about", this._aboutAction]
+            ['openSettings', this.openSettings],
+            ['cancelTransfer', this._cancelTransferAction, '(ss)'],
+            ['openTransfer', this._openTransferAction, 's'],
+            ['restartNautilus', this._restartNautilus],
+            ['about', this._aboutAction]
         ]);
 
         // Mixer actions
         if (Sound._mixerControl) {
             this._mixer = new Sound.Mixer();
             this._addActions([
-                ["lowerVolume", this._mixer.lowerVolume],
-                ["muteVolume", this._mixer.muteVolume],
-                ["muteMicrophone", this._mixer.muteMicrophone],
-                ["restoreMixer", this._mixer.restoreMixer]
+                ['lowerVolume', this._mixer.lowerVolume],
+                ['muteVolume', this._mixer.muteVolume],
+                ['muteMicrophone', this._mixer.muteMicrophone],
+                ['restoreMixer', this._mixer.restoreMixer]
             ], this._mixer);
         } else {
             this._mixer = null;
@@ -658,32 +662,32 @@ var Daemon = GObject.registerClass({
      * Extensions
      */
     _restartNautilus(action, parameter) {
-        GLib.spawn_command_line_async("nautilus -q");
+        GLib.spawn_command_line_async('nautilus -q');
     }
 
     _notifyRestartNautilus() {
         let notif = new Gio.Notification();
-        notif.set_title(_("Nautilus extensions changed"));
-        notif.set_body(_("Restart Nautilus to apply changes"));
+        notif.set_title(_('Nautilus extensions changed'));
+        notif.set_body(_('Restart Nautilus to apply changes'));
         notif.set_icon(
-            new Gio.ThemedIcon({ name: "system-file-manager-symbolic" })
+            new Gio.ThemedIcon({ name: 'system-file-manager-symbolic' })
         );
         // TRANSLATORS: Notification button to restart Nautilus
-        notif.add_button(_("Restart"), "app.restartNautilus");
+        notif.add_button(_('Restart'), 'app.restartNautilus');
 
-        this.send_notification("nautilus-integration", notif);
+        this.send_notification('nautilus-integration', notif);
     }
 
     toggleNautilusExtension() {
-        let path = GLib.get_user_data_dir() + "/nautilus-python/extensions";
-        let script = Gio.File.new_for_path(path).get_child("nautilus-gsconnect.py");
-        let install = gsconnect.settings.get_boolean("nautilus-integration");
+        let path = GLib.get_user_data_dir() + '/nautilus-python/extensions';
+        let script = Gio.File.new_for_path(path).get_child('nautilus-gsconnect.py');
+        let install = gsconnect.settings.get_boolean('nautilus-integration');
 
         if (install && !script.query_exists(null)) {
             GLib.mkdir_with_parents(path, 493); // 0755 in octal
 
             script.make_symbolic_link(
-                gsconnect.datadir + "/nautilus-gsconnect.py",
+                gsconnect.datadir + '/nautilus-gsconnect.py',
                 null
             );
 
@@ -695,35 +699,35 @@ var Daemon = GObject.registerClass({
     }
 
     toggleWebExtension() {
-        let nmhPath = gsconnect.datadir + "/service/nativeMessagingHost.js";
+        let nmhPath = gsconnect.datadir + '/service/nativeMessagingHost.js';
 
         let google = {
-            "name": "org.gnome.shell.extensions.gsconnect",
-            "description": "Native messaging host for GSConnect WebExtension",
-            "path": nmhPath,
-            "type": "stdio",
-            "allowed_origins": [ "chrome-extension://jfnifeihccihocjbfcfhicmmgpjicaec/" ]
+            'name': 'org.gnome.shell.extensions.gsconnect',
+            'description': 'Native messaging host for GSConnect WebExtension',
+            'path': nmhPath,
+            'type': 'stdio',
+            'allowed_origins': [ 'chrome-extension://jfnifeihccihocjbfcfhicmmgpjicaec/' ]
         };
 
         let mozilla = {
-            "name": "org.gnome.shell.extensions.gsconnect",
-            "description": "Native messaging host for GSConnect WebExtension",
-            "path": nmhPath,
-            "type": "stdio",
-            "allowed_extensions": [ "gsconnect@andyholmes.github.io" ]
+            'name': 'org.gnome.shell.extensions.gsconnect',
+            'description': 'Native messaging host for GSConnect WebExtension',
+            'path': nmhPath,
+            'type': 'stdio',
+            'allowed_extensions': [ 'gsconnect@andyholmes.github.io' ]
         };
 
-        let basename = "org.gnome.shell.extensions.gsconnect.json";
+        let basename = 'org.gnome.shell.extensions.gsconnect.json';
         let userConfDir = GLib.get_user_config_dir();
         let browsers = [
-            [userConfDir + "/chromium/NativeMessagingHosts/", google],
-            [userConfDir + "/google-chrome/NativeMessagingHosts/", google],
-            [userConfDir + "/google-chrome-beta/NativeMessagingHosts/", google],
-            [userConfDir + "/google-chrome-unstable/NativeMessagingHosts/", google],
-            [GLib.get_home_dir() + "/.mozilla/native-messaging-hosts/", mozilla]
+            [userConfDir + '/chromium/NativeMessagingHosts/', google],
+            [userConfDir + '/google-chrome/NativeMessagingHosts/', google],
+            [userConfDir + '/google-chrome-beta/NativeMessagingHosts/', google],
+            [userConfDir + '/google-chrome-unstable/NativeMessagingHosts/', google],
+            [GLib.get_home_dir() + '/.mozilla/native-messaging-hosts/', mozilla]
         ];
 
-        if (gsconnect.settings.get_boolean("webbrowser-integration")) {
+        if (gsconnect.settings.get_boolean('webbrowser-integration')) {
             for (let browser of browsers) {
                 GLib.mkdir_with_parents(browser[0], 493);
                 GLib.file_set_contents(
@@ -732,13 +736,13 @@ var Daemon = GObject.registerClass({
                 );
             }
 
-            GLib.spawn_command_line_async("chmod 0755 " + nmhPath);
+            GLib.spawn_command_line_async(`chmod 0755 ${nmhPath}`);
         } else {
             for (let browser of browsers) {
                 GLib.unlink(browser[0] + basename);
             }
 
-            GLib.spawn_command_line_async("chmod 0744 " + nmhPath);
+            GLib.spawn_command_line_async(`chmod 0744 ${nmhPath}`);
         }
     }
 
@@ -774,13 +778,13 @@ var Daemon = GObject.registerClass({
      */
     _watchDaemon() {
         this.daemonMonitor = Gio.File.new_for_path(
-            gsconnect.datadir + "/service/daemon.js"
+            gsconnect.datadir + '/service/daemon.js'
         ).monitor(
             Gio.FileMonitorFlags.WATCH_MOVES,
             null
         );
 
-        this.daemonMonitor.connect("changed", () => this.quit());
+        this.daemonMonitor.connect('changed', () => this.quit());
     }
 
     /**
@@ -789,17 +793,17 @@ var Daemon = GObject.registerClass({
     send_notification(id, notification) {
         if (!this._notificationSettings) {
             this._notificationSettings = new Gio.Settings({
-                schema_id: "org.gnome.desktop.notifications.application",
-                path: "/org/gnome/desktop/notifications/application/org-gnome-shell-extensions-gsconnect/"
+                schema_id: 'org.gnome.desktop.notifications.application',
+                path: '/org/gnome/desktop/notifications/application/org-gnome-shell-extensions-gsconnect/'
             });
         }
 
         let now = GLib.DateTime.new_now_local().to_unix();
-        let dnd = (gsconnect.settings.get_int("donotdisturb") <= now);
+        let dnd = (gsconnect.settings.get_int('donotdisturb') <= now);
 
         // Maybe the 'enable-sound-alerts' should be left alone/queried
-        this._notificationSettings.set_boolean("enable-sound-alerts", dnd);
-        this._notificationSettings.set_boolean("show-banners", dnd);
+        this._notificationSettings.set_boolean('enable-sound-alerts', dnd);
+        this._notificationSettings.set_boolean('show-banners', dnd);
 
         Gtk.Application.prototype.send_notification.call(this, id, notification);
     }
@@ -822,7 +826,7 @@ var Daemon = GObject.registerClass({
             this.lanService = new Protocol.LanChannelService();
 
             // UDP
-            this.lanService.connect("packet", (service, packet) => {
+            this.lanService.connect('packet', (service, packet) => {
                 // Ignore our broadcasts
                 if (packet.body.deviceId !== this.identity.body.deviceId) {
                     this._addDevice(packet);
@@ -830,7 +834,7 @@ var Daemon = GObject.registerClass({
             });
 
             // TCP
-            this.lanService.connect("channel", (service, channel) => {
+            this.lanService.connect('channel', (service, channel) => {
                 this._addDevice(channel.identity, channel);
             });
         } catch (e) {
@@ -839,26 +843,26 @@ var Daemon = GObject.registerClass({
         }
 
         gsconnect.settings.bind(
-            "public-name",
+            'public-name',
             this,
-            "name",
+            'name',
             Gio.SettingsBindFlags.DEFAULT
         );
 
         // Monitor extensions
-        gsconnect.settings.connect("changed::nautilus-integration", () => {
+        gsconnect.settings.connect('changed::nautilus-integration', () => {
             this.toggleNautilusExtension();
         });
         this.toggleNautilusExtension();
 
-        gsconnect.settings.connect("changed::webbrowser-integration", () => {
+        gsconnect.settings.connect('changed::webbrowser-integration', () => {
             this.toggleWebExtension();
         });
         this.toggleWebExtension();
 
         // Monitor network changes
         this._netmonitor = Gio.NetworkMonitor.get_default();
-        this._netmonitor.connect("network-changed", (monitor, available) => {
+        this._netmonitor.connect('network-changed', (monitor, available) => {
             if (available) {
                 this.broadcast();
             }
@@ -885,8 +889,8 @@ var Daemon = GObject.registerClass({
             connection: connection,
             object_path: object_path
         });
-        this.objectManager.connect("object-added", () => this.notify("devices"));
-        this.objectManager.connect("object-removed", () => this.notify("devices"));
+        this.objectManager.connect('object-added', () => this.notify('devices'));
+        this.objectManager.connect('object-removed', () => this.notify('devices'));
 
         // org.gnome.Shell.Extensions.GSConnect interface
         this._dbus = new DBus.ProxyServer({
@@ -921,12 +925,12 @@ var Daemon = GObject.registerClass({
 
         for (let file of files) {
             try {
-                if (file.get_uri_scheme() === "sms") {
+                if (file.get_uri_scheme() === 'sms') {
                     let uri = new Sms.URI(file.get_uri());
                     let devices = [];
 
                     for (let device of this._devices.values()) {
-                        let action = device.lookup_action("openUri");
+                        let action = device.lookup_action('openUri');
 
                         if (action && action.enabled) {
                             devices.push(device);
@@ -934,17 +938,17 @@ var Daemon = GObject.registerClass({
                     }
 
                     if (devices.length === 1) {
-                        let action = device[0].lookup_action("openUri");
+                        let action = device[0].lookup_action('openUri');
                         action.activate(uri);
                     } else if (devices.length > 1) {
                         let win = new Settings.DeviceChooser({
-                            title: _("Send SMS"),
+                            title: _('Send SMS'),
                             devices: devices
                         });
 
                         if (win.run() === Gtk.ResponseType.OK) {
                             let device = win.list.get_selected_row().device;
-                            let action = device.lookup_action("openUri");
+                            let action = device.lookup_action('openUri');
                             action.activate(uri);
                         }
 
@@ -952,7 +956,7 @@ var Daemon = GObject.registerClass({
                     }
                 }
             } catch (e) {
-                log("Error opening file/uri: " + e.message);
+                log('Error opening file/uri: ' + e.message);
             }
         }
     }
@@ -960,7 +964,7 @@ var Daemon = GObject.registerClass({
     vfunc_shutdown() {
         super.vfunc_shutdown();
 
-        log("GSConnect: Shutting down");
+        log('GSConnect: Shutting down');
 
         this.lanService.destroy();
     }
