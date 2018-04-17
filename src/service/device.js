@@ -334,6 +334,10 @@ var Device = GObject.registerClass({
         }
     }
 
+    get object_path() {
+        return this._dbus.get_object_path();
+    }
+
     _handleIdentity(packet) {
         this.settings.set_string("id", packet.body.deviceId);
         this.settings.set_string("name", packet.body.deviceName);
