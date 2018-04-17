@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 const Gio = imports.gi.Gio;
 const GObject = imports.gi.GObject;
@@ -10,9 +10,9 @@ const PluginsBase = imports.service.plugins.base;
 
 
 var Metadata = {
-    id: "org.gnome.Shell.Extensions.GSConnect.Plugin.MPRIS",
-    incomingCapabilities: ["kdeconnect.mpris.request"],
-    outgoingCapabilities: ["kdeconnect.mpris"],
+    id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.MPRIS',
+    incomingCapabilities: ['kdeconnect.mpris.request'],
+    outgoingCapabilities: ['kdeconnect.mpris'],
     actions: {},
     events: {}
 };
@@ -32,17 +32,17 @@ var Metadata = {
  *       https://github.com/KDE/kdeconnect-kde/commit/9e0d4874c072646f1018ad413d59d1f43e590777
  */
 var Plugin = GObject.registerClass({
-    GTypeName: "GSConnectMPRISPlugin",
+    GTypeName: 'GSConnectMPRISPlugin',
 }, class Plugin extends PluginsBase.Plugin {
 
     _init(device) {
-        super._init(device, "mpris");
+        super._init(device, 'mpris');
 
         try {
             this.mpris = MPRIS.get_default();
-            this.mpris.connect("notify::players", () => this._sendPlayerList());
+            this.mpris.connect('notify::players', () => this._sendPlayerList());
             this._sendPlayerList();
-            this.mpris.connect("player-changed", (mpris, player, names) => {
+            this.mpris.connect('player-changed', (mpris, player, names) => {
                 this._handleCommand({
                     body: {
                         player: player.Identity,
@@ -53,7 +53,7 @@ var Plugin = GObject.registerClass({
             });
         } catch (e) {
             this.destroy();
-            throw Error("MPRIS: " + e.message);
+            throw Error('MPRIS: ' + e.message);
         }
     }
 
@@ -62,7 +62,7 @@ var Plugin = GObject.registerClass({
 
         if (packet.body.requestPlayerList) {
             this._sendPlayerList();
-        } else if (packet.body.hasOwnProperty("player")) {
+        } else if (packet.body.hasOwnProperty('player')) {
             // If we have this player
             if (this.mpris.players[packet.body.player]) {
                 this._handleCommand(packet);
@@ -81,60 +81,60 @@ var Plugin = GObject.registerClass({
 
         // FIXME: AllowTraffic constant??
         if (!(this.allow & 4)) {
-            debug("Not allowed");
+            debug('Not allowed');
         }
 
         let player = this.mpris.players[packet.body.player].Player;
 
         // Player Actions
-        if (packet.body.hasOwnProperty("action")) {
+        if (packet.body.hasOwnProperty('action')) {
             switch (packet.body.action) {
-                case "PlayPause":
+                case 'PlayPause':
                     player.PlayPause();
                     break;
-                case "Play":
+                case 'Play':
                     player.Play();
                     break;
-                case "Pause":
+                case 'Pause':
                     player.Pause();
                     break;
-                case "Next":
+                case 'Next':
                     player.Next();
                     break;
-                case "Previous":
+                case 'Previous':
                     player.Previous();
                     break;
-                case "Stop":
+                case 'Stop':
                     player.Stop();
                     break;
                 default:
-                    debug("unknown action: " + packet.body.action);
+                    debug('unknown action: ' + packet.body.action);
             }
         }
 
         // Player Properties
-        if (packet.body.hasOwnProperty("setVolume")) {
+        if (packet.body.hasOwnProperty('setVolume')) {
             player.Volume = packet.body.setVolume / 100;
         }
 
-        if (packet.body.hasOwnProperty("Seek")) {
+        if (packet.body.hasOwnProperty('Seek')) {
             player.Seek(packet.body.Seek);
         }
 
-        if (packet.body.hasOwnProperty("SetPosition")) {
+        if (packet.body.hasOwnProperty('SetPosition')) {
             player.Seek((packet.body.SetPosition * 1000) - player.Position);
         }
 
         let response = new Protocol.Packet({
             id: 0,
-            type: "kdeconnect.mpris",
+            type: 'kdeconnect.mpris',
             body: {}
         });
 
         // Information Request
         let hasResponse = false;
 
-        if (packet.body.hasOwnProperty("requestNowPlaying")) {
+        if (packet.body.hasOwnProperty('requestNowPlaying')) {
             hasResponse = true;
 
             // Unpack variants
@@ -143,15 +143,15 @@ var Plugin = GObject.registerClass({
                 Metadata[entry] = player.Metadata[entry].deep_unpack();
             }
 
-            let nowPlaying = Metadata["xesam:title"];
-            if (Metadata.hasOwnProperty("xesam:artist")) {
-                nowPlaying = Metadata["xesam:artist"] + " - " + nowPlaying;
+            let nowPlaying = Metadata['xesam:title'];
+            if (Metadata.hasOwnProperty('xesam:artist')) {
+                nowPlaying = Metadata['xesam:artist'] + ' - ' + nowPlaying;
             }
 
             response.body = {
                 nowPlaying: nowPlaying,
                 pos: Math.round(player.Position / 1000), /* TODO: really? */
-                isPlaying: (player.PlaybackStatus === "Playing"),
+                isPlaying: (player.PlaybackStatus === 'Playing'),
                 canPause: player.CanPause,
                 canPlay: player.CanPlay,
                 canGoNext: player.CanGoNext,
@@ -160,7 +160,7 @@ var Plugin = GObject.registerClass({
             };
         }
 
-        if (packet.body.hasOwnProperty("requestVolume")) {
+        if (packet.body.hasOwnProperty('requestVolume')) {
             hasResponse = true;
             response.body.volume = player.Volume * 100;
         }
@@ -172,11 +172,11 @@ var Plugin = GObject.registerClass({
     }
 
     _sendPlayerList() {
-        debug("MPRIS: _sendPlayerList()");
+        debug('MPRIS: _sendPlayerList()');
 
         this.device.sendPacket({
             id: 0,
-            type: "kdeconnect.mpris",
+            type: 'kdeconnect.mpris',
             body: { playerList: this.mpris.identities }
         });
     }

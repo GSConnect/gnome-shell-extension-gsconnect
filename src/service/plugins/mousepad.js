@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 const Atspi = imports.gi.Atspi;
 const Gdk = imports.gi.Gdk;
@@ -11,8 +11,8 @@ const PluginsBase = imports.service.plugins.base;
 
 
 var Metadata = {
-    id: "org.gnome.Shell.Extensions.GSConnect.Plugin.Mousepad",
-    incomingCapabilities: ["kdeconnect.mousepad.request"],
+    id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.Mousepad',
+    incomingCapabilities: ['kdeconnect.mousepad.request'],
     outgoingCapabilities: [],
     actions: {},
     events: {}
@@ -26,29 +26,29 @@ var Metadata = {
  * TODO: support outgoing mouse/keyboard events
  */
 var Plugin = GObject.registerClass({
-    GTypeName: "GSConnectMousepadPlugin",
+    GTypeName: 'GSConnectMousepadPlugin',
 }, class Plugin extends PluginsBase.Plugin {
 
     _init(device) {
-        super._init(device, "mousepad");
+        super._init(device, 'mousepad');
 
-        if (GLib.getenv("XDG_SESSION_TYPE") === "wayland") {
+        if (GLib.getenv('XDG_SESSION_TYPE') === 'wayland') {
             this.destroy();
-            throw Error(_("Can't run in Wayland session"));
+            throw Error(_('Can\'t run in Wayland session'));
         }
 
         let ret = Atspi.init();
 
         if (ret !== 0 && ret !== 1) {
             this.destroy();
-            throw Error(_("Failed to initialize Atspi"));
+            throw Error(_('Failed to initialize Atspi'));
         }
 
         this._display = Gdk.Display.get_default();
 
         if (this._display === null) {
             this.destroy();
-            throw Error(_("Failed to get Gdk.Display"));
+            throw Error(_('Failed to get Gdk.Display'));
         } else {
             this._seat = this._display.get_default_seat();
             this._pointer = this._seat.get_pointer();
@@ -59,17 +59,17 @@ var Plugin = GObject.registerClass({
             const Caribou = imports.gi.Caribou;
             this.vkbd = Caribou.DisplayAdapter.get_default();
         } catch (e) {
-            debug(_("Cannot load Caribou virtual keyboard for Unicode support"));
+            debug(_('Cannot load Caribou virtual keyboard for Unicode support'));
         }
     }
 
     handlePacket(packet) {
         debug(packet);
 
-        if (packet.type === "kdeconnect.mousepad.request") {
+        if (packet.type === 'kdeconnect.mousepad.request') {
             // TODO
             if (!(this.allow & 4)) {
-                debug("Not allowed: " + packet.type);
+                debug('Not allowed: ' + packet.type);
                 return;
             }
 
@@ -81,7 +81,7 @@ var Plugin = GObject.registerClass({
      * Local Methods
      */
     _handleInput(packet) {
-        debug("");
+        debug('');
 
         if (packet.body.singleclick) {
             this.clickPointer(1);
@@ -102,7 +102,7 @@ var Plugin = GObject.registerClass({
             } else if (packet.body.dy > 0) {
                 this.clickPointer(4);
             }
-        } else if (packet.body.hasOwnProperty("dx") && packet.body.hasOwnProperty("dy")) {
+        } else if (packet.body.hasOwnProperty('dx') && packet.body.hasOwnProperty('dy')) {
             this.movePointer(packet.body.dx, packet.body.dy);
         } else if (packet.body.key || packet.body.specialKey) {
             if (this.vkbd ) {
@@ -115,7 +115,7 @@ var Plugin = GObject.registerClass({
 
                 // Transform key to keysym
                 let keysym;
-                if (packet.body.key && packet.body.key !== "\u0000") {
+                if (packet.body.key && packet.body.key !== '\u0000') {
                     keysym = Gdk.unicode_to_keyval(packet.body.key.codePointAt(0));
                 } else if (packet.body.specialKey && KeyMap.has(packet.body.specialKey)) {
                     keysym = KeyMap.get(packet.body.specialKey);
@@ -124,7 +124,7 @@ var Plugin = GObject.registerClass({
                 this.pressKeySym(keysym, mask);
             } else {
                 // This is sometimes sent in advance of a specialKey packet
-                if (packet.body.key && packet.body.key !== "\u0000") {
+                if (packet.body.key && packet.body.key !== '\u0000') {
                     this.pressKey(packet.body.key);
                 } else if (packet.body.specialKey) {
                     this.pressSpecialKey(packet.body.specialKey);
@@ -134,85 +134,85 @@ var Plugin = GObject.registerClass({
     }
 
     clickPointer(button) {
-        debug("Mousepad: clickPointer(" + button + ")");
+        debug('Mousepad: clickPointer(' + button + ')');
 
-        let event = "b%dc".format(button);
+        let event = 'b%dc'.format(button);
 
         try {
             let [screen, x, y] = this._pointer.get_position();
             Atspi.generate_mouse_event(x, y, event);
         } catch (e) {
-            log("Mousepad: Error simulating mouse click: " + e);
+            log('Mousepad: Error simulating mouse click: ' + e);
         }
     }
 
     doubleclickPointer(button) {
-        debug("Mousepad: doubleclickPointer(" + button + ")");
+        debug('Mousepad: doubleclickPointer(' + button + ')');
 
-        let event = "b%dd".format(button);
+        let event = 'b%dd'.format(button);
 
         try {
             let [screen, x, y] = this._pointer.get_position();
             Atspi.generate_mouse_event(x, y, event);
         } catch (e) {
-            log("Mousepad: Error simulating mouse double click: " + e);
+            log('Mousepad: Error simulating mouse double click: ' + e);
         }
     }
 
     movePointer(dx, dy) {
-        debug("Mousepad: movePointer(" + dx + ", " + dy + ")");
+        debug('Mousepad: movePointer(' + dx + ', ' + dy + ')');
 
         try {
-            Atspi.generate_mouse_event(dx, dy, "rel");
+            Atspi.generate_mouse_event(dx, dy, 'rel');
         } catch (e) {
-            log("Mousepad: Error simulating mouse movement: " + e);
+            log('Mousepad: Error simulating mouse movement: ' + e);
         }
     }
 
     pressPointer(button) {
-        debug("Mousepad: pressPointer()");
+        debug('Mousepad: pressPointer()');
 
-        let event = "b%dp".format(button);
+        let event = 'b%dp'.format(button);
 
         try {
             let [screen, x, y] = this._pointer.get_position();
             Atspi.generate_mouse_event(x, y, event);
         } catch (e) {
-            log("Mousepad: Error simulating mouse press: " + e);
+            log('Mousepad: Error simulating mouse press: ' + e);
         }
     }
 
     releasePointer(button) {
-        debug("Mousepad: releasePointer()");
+        debug('Mousepad: releasePointer()');
 
-        let event = "b%dr".format(button);
+        let event = 'b%dr'.format(button);
 
         try {
             let [screen, x, y] = this._pointer.get_position();
             Atspi.generate_mouse_event(x, y, event);
         } catch (e) {
-            log("Mousepad: Error simulating mouse release: " + e);
+            log('Mousepad: Error simulating mouse release: ' + e);
         }
     }
 
     pressKey(key) {
-        debug("Mousepad: pressKey(" + key + ")");
+        debug('Mousepad: pressKey(' + key + ')');
 
         try {
             if ( !Atspi.generate_keyboard_event(0, key, Atspi.KeySynthType.STRING) ) {
-                throw Error("Unknown/invalid key");
+                throw Error('Unknown/invalid key');
             };
         } catch (e) {
-            log("Mousepad: Error simulating keypress: " + e);
+            log('Mousepad: Error simulating keypress: ' + e);
         }
     }
 
     pressSpecialKey(key) {
-        debug("Mousepad: pressSpecialKey(" + key + ")");
+        debug('Mousepad: pressSpecialKey(' + key + ')');
 
         try {
             if (!KeyMap.has(key) || key === 0) {
-                throw Error("Unknown/invalid key");
+                throw Error('Unknown/invalid key');
             }
 
             Atspi.generate_keyboard_event(
@@ -221,12 +221,12 @@ var Plugin = GObject.registerClass({
                 Atspi.KeySynthType.PRESSRELEASE | Atspi.KeySynthType.SYM
             );
         } catch (e) {
-            log("Mousepad: Error simulating special keypress: " + e);
+            log('Mousepad: Error simulating special keypress: ' + e);
         }
     }
 
     pressKeySym(keysym, mask) {
-        debug("Mousepad: pressKeySym(" + keysym + ", " + mask + ")");
+        debug('Mousepad: pressKeySym(' + keysym + ', ' + mask + ')');
 
         try {
             if (Gdk.keyval_to_unicode(keysym) !== 0) {
@@ -236,7 +236,7 @@ var Plugin = GObject.registerClass({
                 this.vkbd.mod_unlock(mask);
             }
         } catch (e) {
-            log("Mousepad: Error simulating keyboard event with virtual keyboard: " + e);
+            log('Mousepad: Error simulating keyboard event with virtual keyboard: ' + e);
         }
     }
 });

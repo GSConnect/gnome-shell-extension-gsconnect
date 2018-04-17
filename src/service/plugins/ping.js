@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
@@ -10,24 +10,24 @@ const PluginsBase = imports.service.plugins.base;
 
 
 var Metadata = {
-    id: "org.gnome.Shell.Extensions.GSConnect.Plugin.Ping",
-    incomingCapabilities: ["kdeconnect.ping"],
-    outgoingCapabilities: ["kdeconnect.ping"],
+    id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.Ping',
+    incomingCapabilities: ['kdeconnect.ping'],
+    outgoingCapabilities: ['kdeconnect.ping'],
     actions: {
         ping: {
-            summary: _("Ping"),
-            description: _("Ping a device with an optional message"),
-            signature: "av",
+            summary: _('Ping'),
+            description: _('Ping a device with an optional message'),
+            signature: 'av',
             incoming: [],
-            outgoing: ["kdeconnect.ping"],
+            outgoing: ['kdeconnect.ping'],
             allow: 2
         }
     },
     events: {
         ping: {
-            summary: _("Ping"),
-            description: _("Ping a device with an optional message"),
-            incoming: ["kdeconnect.ping"],
+            summary: _('Ping'),
+            description: _('Ping a device with an optional message'),
+            incoming: ['kdeconnect.ping'],
             outgoing: [],
             allow: 4
         }
@@ -40,11 +40,11 @@ var Metadata = {
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/ping
  */
 var Plugin = GObject.registerClass({
-    GTypeName: "GSConnectPingPlugin"
+    GTypeName: 'GSConnectPingPlugin'
 }, class Plugin extends PluginsBase.Plugin {
 
     _init(device) {
-        super._init(device, "ping");
+        super._init(device, 'ping');
     }
 
     handlePacket(packet) {
@@ -54,30 +54,30 @@ var Plugin = GObject.registerClass({
             return;
         }
 
-        this.event("ping", packet.body.message || "");
+        this.event('ping', packet.body.message || '');
 
         // Notification
         let notif = {
             title: this.device.name,
-            body: _("Ping"),
-            icon: new Gio.ThemedIcon({ name: this.device.type + "-symbolic" })
+            body: _('Ping'),
+            icon: new Gio.ThemedIcon({ name: this.device.type + '-symbolic' })
         };
 
         if (packet.body.message) {
             // TRANSLATORS: An optional message accompanying a ping, rarely if ever used
             // eg. Ping: A message sent with ping
-            notif.body = _("Ping: %s").format(packet.body.message);
+            notif.body = _('Ping: %s').format(packet.body.message);
         }
 
         this.device.showNotification(notif);
     }
 
-    ping(message="") {
+    ping(message='') {
         debug(message);
 
         let packet = {
             id: 0,
-            type: "kdeconnect.ping",
+            type: 'kdeconnect.ping',
             body: {}
         };
 
