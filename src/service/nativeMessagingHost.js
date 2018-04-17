@@ -155,7 +155,7 @@ var NativeMessagingHost = GObject.registerClass({
             return;
         }
 
-        debug("Received: " + JSON.stringify(message));
+        debug(message);
 
         if (message.type === "devices") {
             this.sendDeviceList();
@@ -181,9 +181,10 @@ var NativeMessagingHost = GObject.registerClass({
     }
 
     send(message) {
+        debug(message);
+
         try {
             let data = JSON.stringify(message);
-            debug("WebExtension: send: " + data);
 
             let length = toInt32(data.length);
             this.stdout.write(length, null);
