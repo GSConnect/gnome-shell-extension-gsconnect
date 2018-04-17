@@ -113,14 +113,22 @@ var ProxyServer = GObject.registerClass({
     /**
      *
      */
-    _call(info, methodName, parameters, invocation) {
-        let properName = methodName.toCamelCase();
-        properName = (this[properName]) ? properName : methodName.toUnderscoreCase();
+    _call(info, memberName, parameters, invocation) {
+        // Convert member casing to native casing
+        let nativeName;
+
+        if (this[memberName]) {
+            nativeName = memberName;
+        } else if (this[memberName.toUnderscoreCase()]) {
+            nativeName = memberName.toUnderscoreCase();
+        } else if (this[memberName.toCamelCase()]) {
+            nativeName = memberName.toCamelCase();
+        }
 
         let retval;
+
         try {
-            // FIXME: full unpack..?
-            retval = this[properName].apply(this, parameters.deep_unpack());
+            retval = this[nativeName].apply(this, gsconnect.full_unpack(parameters));
         } catch (e) {
             if (e instanceof GLib.Error) {
                 invocation.return_gerror(e);
@@ -144,7 +152,7 @@ var ProxyServer = GObject.registerClass({
         // Try manually packing a variant
         try {
             if (!(retval instanceof GLib.Variant)) {
-                let outArgs = info.lookup_method(methodName).out_args;
+                let outArgs = info.lookup_method(memberName).out_args;
                 retval = new GLib.Variant(
                     _makeOutSignature(outArgs),
                     (outArgs.length == 1) ? [retval] : retval
@@ -189,9 +197,7 @@ var ProxyServer = GObject.registerClass({
     }
 
     _set(info, name, value) {
-        // TODO: relies on 'gsconnect'
         value = gsconnect.full_unpack(value);
-        //value = value.deep_unpack();
 
         if (!this._propertyCase) {
             if (this[name.toUnderscoreCase()]) {
