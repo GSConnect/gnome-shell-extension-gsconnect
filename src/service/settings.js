@@ -1523,7 +1523,7 @@ var ShortcutEditor = GObject.registerClass({
 
     check(accelerator) {
         // Check someone else isn't already using the binding
-        let action = this.shell.grabAccelerator(accelerator, 0);
+        let action = this.shell.GrabAccelerator(accelerator, 0);
 //        let action = this.shell.call_sync(
 //            "GrabAccelerator",
 //            new GLib.Variant("(su)", [accelerator, 0]),
@@ -1533,7 +1533,7 @@ var ShortcutEditor = GObject.registerClass({
 //        ).deep_unpack()[0];
 
         if (action !== 0) {
-            this.shell.ungrabAccelerator(action);
+            this.shell.UngrabAccelerator(action);
 //            this.shell.call_sync(
 //                "UngrabAccelerator",
 //                new GLib.Variant("(u)", [action]),
