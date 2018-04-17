@@ -17,7 +17,7 @@ const _bootstrap = imports._bootstrap;
 const DBus = imports.modules.dbus;
 
 
-const DaemonProxy = DBus.makeInterfaceProxy(
+const ServiceProxy = DBus.makeInterfaceProxy(
     gsconnect.dbusinfo.lookup_interface(gsconnect.app_id)
 );
 
@@ -34,12 +34,12 @@ function buildPrefsWidget() {
         return false;
     });
 
-    let daemon = new DaemonProxy({
+    let daemon = new ServiceProxy({
         g_connection: Gio.DBus.session,
         g_name: gsconnect.app_id,
         g_object_path: gsconnect.app_path
     });
-    daemon.openSettings().then(result => daemon.destroy());
+    daemon.OpenSettings().then(result => daemon.destroy());
 
     return label;
 }
