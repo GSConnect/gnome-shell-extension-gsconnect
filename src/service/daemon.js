@@ -469,14 +469,14 @@ var Daemon = GObject.registerClass({
         });
 
         this._fdo.init_promise().then(result => {
-            this._fdo.addMatch(this._fdoNotificationsMatch).catch(debug);
-            this._fdo.addMatch(this._gtkNotificationsMatch).catch(debug);
+            this._fdo.AddMatch(this._fdoNotificationsMatch).catch(debug);
+            this._fdo.AddMatch(this._gtkNotificationsMatch).catch(debug);
         });
     }
 
     _stopNotificationListener() {
-        this._fdo.removeMatch(this._fdoNotificationsMatch);
-        this._fdo.removeMatch(this._gtkNotificationsMatch);
+        this._fdo.RemoveMatch(this._fdoNotificationsMatch);
+        this._fdo.RemoveMatch(this._gtkNotificationsMatch);
         this._fdo.destroy();
         this._fdoNotifications.destroy();
         this._gtkNotifications.destroy();
