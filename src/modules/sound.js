@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 const Tweener = imports.tweener.tweener;
 
@@ -6,19 +6,19 @@ const GIRepository = imports.gi.GIRepository;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 
-GIRepository.Repository.prepend_search_path("/usr/lib/gnome-shell");
-GIRepository.Repository.prepend_library_path("/usr/lib/gnome-shell");
-GIRepository.Repository.prepend_search_path("/usr/lib64/gnome-shell");
-GIRepository.Repository.prepend_library_path("/usr/lib64/gnome-shell");
+GIRepository.Repository.prepend_search_path('/usr/lib/gnome-shell');
+GIRepository.Repository.prepend_library_path('/usr/lib/gnome-shell');
+GIRepository.Repository.prepend_search_path('/usr/lib64/gnome-shell');
+GIRepository.Repository.prepend_library_path('/usr/lib64/gnome-shell');
 
 
 // Gvc.MixerControl singleton
 try {
     var Gvc = imports.gi.Gvc;
-    var _mixerControl = new Gvc.MixerControl({ name: "GSConnect" });
+    var _mixerControl = new Gvc.MixerControl({ name: 'GSConnect' });
     _mixerControl.open();
 } catch (e) {
-    debug("Warning: failed to initialize Gvc: " + e);
+    debug('Warning: failed to initialize Gvc: ' + e);
     var _mixerControl = undefined;
 }
 
@@ -28,17 +28,17 @@ try {
     var _gsoundContext = new GSound.Context();
     _gsoundContext.init(null);
 } catch (e) {
-    debug("Warning: failed to initialize GSound: " + e);
+    debug('Warning: failed to initialize GSound: ' + e);
     var _gsoundContext = undefined;
 }
 
 
 function playThemeSound (name) {
     if (_gsoundContext) {
-        _gsoundContext.play_simple({ "event.id" : name }, null);
+        _gsoundContext.play_simple({ 'event.id' : name }, null);
         return true;
-    } else if (gsconnect.checkCommand("canberra-gtk-play")) {
-        GLib.spawn_command_line_async("canberra-gtk-play -i " + name);
+    } else if (gsconnect.checkCommand('canberra-gtk-play')) {
+        GLib.spawn_command_line_async('canberra-gtk-play -i ' + name);
         return true;
     }
 
@@ -49,7 +49,7 @@ function playThemeSound (name) {
 function loopThemeSound (name, cancellable) {
     if (_gsoundContext) {
         _gsoundContext.play_full(
-            { "event.id" : name },
+            { 'event.id' : name },
             cancellable,
             (source, res) => {
                 try {
@@ -59,10 +59,10 @@ function loopThemeSound (name, cancellable) {
                 }
             }
         );
-    } else if (gsconnect.checkCommand("canberra-gtk-play")) {
+    } else if (gsconnect.checkCommand('canberra-gtk-play')) {
         let [ok, pid] = GLib.spawn_async(
             null,
-            ["canberra-gtk-play", "-i", name],
+            ['canberra-gtk-play', '-i', name],
             null,
             GLib.SpawnFlags.SEARCH_PATH | GLib.SpawnFlags.DO_NOT_REAP_CHILD,
             null
@@ -79,19 +79,19 @@ function loopThemeSound (name, cancellable) {
 
 
 var Stream = GObject.registerClass({
-    GTypeName: "GSConnectSoundStream",
+    GTypeName: 'GSConnectSoundStream',
     Properties: {
-        "muted": GObject.ParamSpec.boolean(
-            "muted",
-            "StreamMuted",
-            "Stream Muted",
+        'muted': GObject.ParamSpec.boolean(
+            'muted',
+            'StreamMuted',
+            'Stream Muted',
             GObject.ParamFlags.READWRITE,
             false
         ),
-        "volume": GObject.ParamSpec.int(
-            "volume",
-            "StreamVolume",
-            "Stream Volume",
+        'volume': GObject.ParamSpec.int(
+            'volume',
+            'StreamVolume',
+            'Stream Volume',
             GObject.ParamFlags.READABLE,
             0
         )
@@ -111,7 +111,7 @@ var Stream = GObject.registerClass({
 
     set muted (bool) {
         this._stream.change_is_muted(bool);
-        this.notify("muted");
+        this.notify('muted');
     }
 
     get volume () {
@@ -121,7 +121,7 @@ var Stream = GObject.registerClass({
     set volume (num) {
         this._stream.volume = num * this._max;
         this._stream.push_volume();
-        this.notify("volume");
+        this.notify('volume');
     }
 
     lower(value) {
@@ -129,7 +129,7 @@ var Stream = GObject.registerClass({
         Tweener.addTween(this, {
             volume: value,
             time: 1,
-            transition: "easeOutCubic",
+            transition: 'easeOutCubic',
             onComplete: () => { Tweener.removeTweens(this); }
         });
     }
@@ -139,7 +139,7 @@ var Stream = GObject.registerClass({
         Tweener.addTween(this, {
             volume: value,
             time: 1,
-            transition: "easeInCubic",
+            transition: 'easeInCubic',
             onComplete: () => { Tweener.removeTweens(this); }
         });
     }
@@ -151,15 +151,15 @@ var Mixer = class Mixer {
     constructor() {
         this._control = _mixerControl;
 
-        this._control.connect("default-sink-changed", () => {
+        this._control.connect('default-sink-changed', () => {
             this.output = new Stream(this._control.get_default_sink());
         });
 
-        this._control.connect("default-source-changed", () => {
+        this._control.connect('default-source-changed', () => {
             this.input = new Stream(this._control.get_default_source());
         });
 
-        this._control.connect("state-changed", () => {
+        this._control.connect('state-changed', () => {
             if (this._control.get_state() == Gvc.MixerControlState.READY) {
                 this.output = new Stream(this._control.get_default_sink());
                 this.input = new Stream(this._control.get_default_source());
@@ -183,19 +183,19 @@ var Mixer = class Mixer {
 
         if (!this._mixer) { return; }
 
-        if (action === "lower" && !this._prevVolume) {
+        if (action === 'lower' && !this._prevVolume) {
             if (this._mixer.output.volume > 0.15) {
                 this._prevVolume = Number(this._mixer.output.volume);
                 this._mixer.output.lower(0.15);
             }
-        } else if (action === "mute" && !this._mixer.output.muted) {
+        } else if (action === 'mute' && !this._mixer.output.muted) {
             this._mixer.output.muted = true;
             this._prevMute = true;
         }
     }
 
     lowerVolume() {
-        debug("Lowering system volume to 15%");
+        debug('Lowering system volume to 15%');
 
         if (this._mixer.output.volume > 0.15) {
             this._volumeChanged = Number(this._mixer.output.volume);
@@ -204,7 +204,7 @@ var Mixer = class Mixer {
     }
 
     muteVolume() {
-        debug("Muting system volume");
+        debug('Muting system volume');
 
         if (!this._mixer.output.muted) {
             this._mixer.output.muted = true;
@@ -213,7 +213,7 @@ var Mixer = class Mixer {
     }
 
     muteMicrophone() {
-        debug("Muting microphone");
+        debug('Muting microphone');
 
         if (!this._mixer.input.muted) {
             this._mixer.input.muted = true;
@@ -222,7 +222,7 @@ var Mixer = class Mixer {
     }
 
     restoreMixer() {
-        debug("");
+        debug('');
 
         if (this._volumeMuted) {
             this._mixer.output.muted = false;
