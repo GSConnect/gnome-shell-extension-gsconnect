@@ -7,7 +7,7 @@ const Gtk = imports.gi.Gtk;
 
 // Local Imports
 imports.searchPath.push(gsconnect.datadir);
-const Protocol = imports.service.protocol;
+const Lan = imports.service.lan;
 const PluginsBase = imports.service.plugins.base;
 
 
@@ -79,7 +79,7 @@ var Metadata = {
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/share
  *
  * TODO: receiving 'text' TODO: Window with textview & 'Copy to Clipboard..
- *       expand signals to cover Protocol.Transfer signals
+ *       expand signals to cover Lan.Transfer signals
  *       https://github.com/KDE/kdeconnect-kde/commit/28f11bd5c9a717fb9fbb3f02ddd6cea62021d055
  *       Support tel: uris
  */
@@ -121,7 +121,7 @@ var Plugin = GObject.registerClass({
         let filepath = this._getFilepath(packet.body.filename);
         let file = Gio.File.new_for_path(filepath);
 
-        let transfer = new Protocol.Transfer({
+        let transfer = new Lan.Transfer({
             device: this.device,
             output_stream: file.replace(null, false, Gio.FileCreateFlags.NONE, null),
             size: packet.payloadSize
@@ -318,7 +318,7 @@ var Plugin = GObject.registerClass({
 
         let info = file.query_info('standard::size', 0, null);
 
-        let transfer = new Protocol.Transfer({
+        let transfer = new Lan.Transfer({
             device: this.device,
             input_stream: file.read(null),
             size: info.get_size(),

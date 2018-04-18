@@ -8,7 +8,7 @@ const Gtk = imports.gi.Gtk;
 // Local Imports
 imports.searchPath.push(gsconnect.datadir);
 const DBus = imports.modules.dbus;
-const Protocol = imports.service.protocol;
+const Lan = imports.service.lan;
 
 
 /**
@@ -357,7 +357,7 @@ var Device = GObject.registerClass({
     }
 
     /**
-     * Open a new Protocol.Channel and try to connect to the device
+     * Open a new Lan.Channel and try to connect to the device
      */
     activate() {
         debug(`${this.name} (${this.id})`);
@@ -369,7 +369,7 @@ var Device = GObject.registerClass({
 		}
 
         // Create a new channel
-        this._channel = new Protocol.Channel(this.id);
+        this._channel = new Lan.Channel(this.id);
         this._channel.connect("connected", this._onConnected.bind(this));
         this._channel.connect("disconnected", this._onDisconnected.bind(this));
 		this._channel.connect("received", this._onReceived.bind(this));
@@ -385,7 +385,7 @@ var Device = GObject.registerClass({
     }
 
     /**
-     * Update the device with a UDP packet or replacement Protocol.Channel
+     * Update the device with a UDP packet or replacement Lan.Channel
      */
     update(packet, channel=null) {
         debug(`${this.name} (${this.id})`);
@@ -450,7 +450,7 @@ var Device = GObject.registerClass({
         debug(`${this.name} (${this.id}): ${JSON.stringify(packet, null, 2)}`);
 
         if (this.connected && this.paired) {
-            packet = new Protocol.Packet(packet);
+            packet = new Lan.Packet(packet);
             this._channel.send(packet);
         }
     }
@@ -485,10 +485,10 @@ var Device = GObject.registerClass({
     _onReceived(channel, packet) {
         debug(`Received ${packet.type} from ${this.name} (${this.id})`);
 
-        if (packet.type === Protocol.TYPE_IDENTITY) {
+        if (packet.type === Lan.TYPE_IDENTITY) {
             this._handleIdentity(packet);
             this.activate();
-        } else if (packet.type === Protocol.TYPE_PAIR) {
+        } else if (packet.type === Lan.TYPE_PAIR) {
 	        this._handlePair(packet);
 	    } else if (this._handlers.has(packet.type)) {
 	        let handler = this._handlers.get(packet.type);
@@ -670,9 +670,9 @@ var Device = GObject.registerClass({
         }
 
         // Send a pair packet
-        let packet = new Protocol.Packet({
+        let packet = new Lan.Packet({
             id: 0,
-            type: Protocol.TYPE_PAIR,
+            type: Lan.TYPE_PAIR,
             body: { pair: true }
         });
         this._channel.send(packet);
@@ -683,9 +683,9 @@ var Device = GObject.registerClass({
 
         // Send the unpair packet only if we're connected
         if (this._channel !== null) {
-            let packet = new Protocol.Packet({
+            let packet = new Lan.Packet({
                 id: 0,
-                type: Protocol.TYPE_PAIR,
+                type: Lan.TYPE_PAIR,
                 body: { pair: false }
             });
             this._channel.send(packet);

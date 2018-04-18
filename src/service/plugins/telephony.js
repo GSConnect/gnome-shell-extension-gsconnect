@@ -9,7 +9,6 @@ imports.searchPath.push(gsconnect.datadir);
 const Contacts = imports.modules.contacts;
 const Sms = imports.modules.sms;
 const Sound = imports.modules.sound;
-const Protocol = imports.service.protocol;
 const PluginsBase = imports.service.plugins.base;
 
 

@@ -141,7 +141,7 @@ var Packet = GObject.registerClass({
  * packets containing a TCP port for connection, taking the address from the
  * sender, emitting 'packet::'. It also broadcasts these packets to 255.255.255.255.
  */
-var LanChannelService = GObject.registerClass({
+var ChannelService = GObject.registerClass({
     GTypeName: "GSConnectLanChannelService",
     Properties: {
         "discovering": GObject.ParamSpec.boolean(
@@ -170,7 +170,7 @@ var LanChannelService = GObject.registerClass({
             param_types: [ GObject.TYPE_OBJECT ]
         }
     }
-}, class LanChannelService extends GObject.Object {
+}, class ChannelService extends GObject.Object {
 
     _init(port=1716) {
         super._init();
@@ -346,98 +346,6 @@ var LanChannelService = GObject.registerClass({
         this._udp.close();
     }
 });
-
-
-var BluetoothChannelService = GObject.registerClass({
-    GTypeName: "GSConnectBluetoothChannelService",
-    Properties: {
-        "discovering": GObject.ParamSpec.boolean(
-            "discovering",
-            "ServiceDiscovering",
-            "Whether the Bluetooth Listener is active",
-            GObject.ParamFlags.READWRITE,
-            true
-        )
-    },
-    Signals: {
-        "channel": {
-            flags: GObject.SignalFlags.RUN_FIRST,
-            param_types: [ GObject.TYPE_OBJECT ]
-        },
-        "packet": {
-            flags: GObject.SignalFlags.RUN_FIRST,
-            param_types: [ GObject.TYPE_OBJECT ]
-        }
-    }
-}, class BluetoothChannelService extends GObject.Object {
-    _init() {
-        super._init();
-    }
-});
-
-
-/**
- * Service Discovery Protocol Record (KDE Connect)
- */
-var SdpRecordTemplate = '<?xml version="1.0" encoding="utf-8" ?> \
-<record> \
-    <attribute id="0x0001"> \
-        <!-- ServiceClassIDList --> \
-        <sequence> \
-            <uuid value="%s" />      <!-- Custom UUID --> \
-            <uuid value="0x%s" />    <!-- Custom UUID hex for Android --> \
-            <uuid value="0x1101" />  <!-- SPP profile --> \
-        </sequence> \
-    </attribute> \
-    <attribute id="0x0003"> \
-        <!-- ServiceID --> \
-        <uuid value="%s" /> \
-    </attribute> \
-    <attribute id="0x0004"> \
-        <!-- ProtocolDescriptorList --> \
-        <sequence> \
-            <sequence> \
-                <uuid value="0x0100" /> \
-                %s \
-            </sequence> \
-            <sequence> \
-                <uuid value="0x0003" /> \
-                %s \
-            </sequence> \
-        </sequence> \
-    </attribute> \
-    <attribute id="0x0005"> \
-        <!-- BrowseGroupList --> \
-        <sequence> \
-            <uuid value="0x1002" /> \
-        </sequence> \
-    </attribute> \
-    <attribute id="0x0009"> \
-        <!-- ProfileDescriptorList --> \
-        <sequence> \
-            <uuid value="0x1101" /> \
-        </sequence> \
-    </attribute> \
-    <attribute id="0x0100"> \
-        <!-- Service name --> \
-        <text value="%s" /> \
-    </attribute> \
-</record>';
-
-
-function get_sdp_record(name, uuid, channel, psm) {
-    channel = (channel) ? '<uint8 value="%#x" />'.format(channel) : "";
-    psm = (psm) ? '<uint8 value="%#x" />'.format(psm) : "";
-
-    return SdpRecordTemplate.format(
-        uuid,                   // Custom UUID
-        uuid.replace("-", ""),  // Custom Android UUID
-        uuid,                   // Service UUID
-        channel_str,            // RFCOMM channel
-        psm_str,                // RFCOMM channel
-        name                    // ???
-    );
-};
 
 
 /**

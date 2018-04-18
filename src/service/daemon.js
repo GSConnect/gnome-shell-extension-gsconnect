@@ -35,9 +35,10 @@ window.gsconnect = { datadir: getPath() };
 imports.searchPath.push(gsconnect.datadir);
 
 const _bootstrap = imports._bootstrap;
+const Bluetooth = imports.service.bluetooth;
 const DBus = imports.modules.dbus;
 const Device = imports.service.device;
-const Protocol = imports.service.protocol;
+const Lan = imports.service.lan;
 const Settings = imports.service.settings;
 const Sms = imports.modules.sms;
 const Sound = imports.modules.sound;
@@ -173,9 +174,9 @@ var Daemon = GObject.registerClass({
 
     get identity() {
         if (this._identity === undefined) {
-            this._identity = new Protocol.Packet({
+            this._identity = new Lan.Packet({
                 id: 0,
-                type: Protocol.TYPE_IDENTITY,
+                type: Lan.TYPE_IDENTITY,
                 body: {
                     deviceId: this.certificate.serial,
                     deviceName: gsconnect.settings.get_string('public-name'),
@@ -823,7 +824,7 @@ var Daemon = GObject.registerClass({
         // LanChannelService
         // FIXME: endless loop on fail?
         try {
-            this.lanService = new Protocol.LanChannelService();
+            this.lanService = new Lan.ChannelService();
 
             // UDP
             this.lanService.connect('packet', (service, packet) => {

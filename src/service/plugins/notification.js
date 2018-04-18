@@ -8,7 +8,7 @@ const Gtk = imports.gi.Gtk;
 // Local Imports
 imports.searchPath.push(gsconnect.datadir);
 const Contacts = imports.modules.contacts;
-const Protocol = imports.service.protocol;
+const Lan = imports.service.lan;
 const PluginsBase = imports.service.plugins.base;
 
 
@@ -263,7 +263,7 @@ var Plugin = GObject.registerClass({
     }
 
     _uploadIconStream(packet, stream, size, checksum) {
-        let transfer = new Protocol.Transfer({
+        let transfer = new Lan.Transfer({
             device: this.device,
             size: size,
             input_stream: stream
@@ -336,7 +336,7 @@ var Plugin = GObject.registerClass({
         return new Promise((resolve, reject) => {
             let iconStream = Gio.MemoryOutputStream.new_resizable();
 
-            let transfer = new Protocol.Transfer({
+            let transfer = new Lan.Transfer({
                 device: this.device,
                 size: packet.payloadSize,
                 checksum: packet.body.payloadHash,
@@ -571,7 +571,7 @@ var Plugin = GObject.registerClass({
         dialog.connect("delete-event", dialog.destroy);
         dialog.connect("response", (dialog, response) => {
             if (response === Gtk.ResponseType.OK) {
-                let packet = new Protocol.Packet({
+                this.device.sendPacket({
                     id: 0,
                     type: "kdeconnect.notification.reply",
                     body: {
@@ -579,8 +579,6 @@ var Plugin = GObject.registerClass({
                         messageBody: dialog.entry.buffer.text
                     }
                 });
-
-                this.device.sendPacket(packet);
             }
 
             dialog.destroy();
