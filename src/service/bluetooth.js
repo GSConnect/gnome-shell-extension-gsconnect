@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
@@ -193,7 +193,7 @@ function get_sdp_record(name, uuid, channel, psm) {
 
     return SdpRecordTemplate.format(
         uuid,                   // Custom UUID
-        uuid.replace("-", ""),  // Custom Android UUID
+        uuid.replace('-', ''),  // Custom Android UUID
         uuid,                   // Service UUID
         channel_str,            // RFCOMM channel
         psm_str,                // RFCOMM channel
@@ -206,24 +206,24 @@ function get_sdp_record(name, uuid, channel, psm) {
  * Bluez Device Channel
  */
 var Channel = GObject.registerClass({
-    GTypeName: "GSConnectBluetoothChannel",
+    GTypeName: 'GSConnectBluetoothChannel',
     Signals: {
-        "connected": {
+        'connected': {
             flags: GObject.SignalFlags.RUN_FIRST
         },
-        "disconnected": {
+        'disconnected': {
             flags: GObject.SignalFlags.RUN_FIRST
         },
-        "received": {
+        'received': {
             flags: GObject.SignalFlags.RUN_FIRST,
             param_types: [ GObject.TYPE_OBJECT ]
         }
     },
     Properties: {
-        "certificate": GObject.ParamSpec.object(
-            "certificate",
-            "TlsCertificate",
-            "The TLS Certificate for this connection",
+        'certificate': GObject.ParamSpec.object(
+            'certificate',
+            'TlsCertificate',
+            'The TLS Certificate for this connection',
             GObject.ParamFlags.READABLE,
             Gio.TlsCertificate
         )
@@ -239,22 +239,22 @@ var Channel = GObject.registerClass({
  * Bluez Channel Service
  */
 var ChannelService = GObject.registerClass({
-    GTypeName: "GSConnectBluetoothChannelService",
+    GTypeName: 'GSConnectBluetoothChannelService',
     Properties: {
-        "discovering": GObject.ParamSpec.boolean(
-            "discovering",
-            "ServiceDiscovering",
-            "Whether the Bluetooth Listener is active",
+        'discovering': GObject.ParamSpec.boolean(
+            'discovering',
+            'ServiceDiscovering',
+            'Whether the Bluetooth Listener is active',
             GObject.ParamFlags.READWRITE,
             true
         )
     },
     Signals: {
-        "channel": {
+        'channel': {
             flags: GObject.SignalFlags.RUN_FIRST,
             param_types: [ GObject.TYPE_OBJECT ]
         },
-        "packet": {
+        'packet': {
             flags: GObject.SignalFlags.RUN_FIRST,
             param_types: [ GObject.TYPE_OBJECT ]
         }
@@ -333,8 +333,8 @@ var ChannelService = GObject.registerClass({
         // Connect to ProfileManager1
         this._profileManager = new ProfileManager1Proxy({
             g_connection: Gio.DBus.system,
-            g_name: "org.bluez",
-            g_object_path: "/org/bluez"
+            g_name: 'org.bluez',
+            g_object_path: '/org/bluez'
         });
         this._profileManager.init_promise().then(result => {
             log('Profile Manager Connected');

@@ -1,13 +1,13 @@
 #!/usr/bin/env gjs
 
-"use strict";
+'use strict';
 
 const ByteArray = imports.byteArray;
 const System = imports.system;
 
-imports.gi.versions.Gio = "2.0";
-imports.gi.versions.GLib = "2.0";
-imports.gi.versions.GObject = "2.0";
+imports.gi.versions.Gio = '2.0';
+imports.gi.versions.GLib = '2.0';
+imports.gi.versions.GObject = '2.0';
 
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
@@ -16,7 +16,7 @@ const GObject = imports.gi.GObject;
 // Local Imports
 function getPath() {
     // Diced from: https://github.com/optimisme/gjs-examples/
-    let m = new RegExp("@(.+):\\d+").exec((new Error()).stack.split("\n")[1]);
+    let m = new RegExp('@(.+):\\d+').exec((new Error()).stack.split('\n')[1]);
     return Gio.File.new_for_path(m[1]).get_parent().get_parent().get_path();
 }
 
@@ -66,17 +66,17 @@ function _proxyProperties(info, iface) {
 
 
 var DeviceInterface = gsconnect.dbusinfo.lookup_interface(
-    "org.gnome.Shell.Extensions.GSConnect.Device"
+    'org.gnome.Shell.Extensions.GSConnect.Device'
 );
 
 
 var NativeMessagingHost = GObject.registerClass({
-    GTypeName: "GSConnectNativeMessagingHost"
+    GTypeName: 'GSConnectNativeMessagingHost'
 }, class NativeMessagingHost extends Gio.Application {
 
     _init() {
         super._init({
-            application_id: "org.gnome.Shell.Extensions.GSConnect.NativeMessagingHost",
+            application_id: 'org.gnome.Shell.Extensions.GSConnect.NativeMessagingHost',
             flags: Gio.ApplicationFlags.NON_UNIQUE
         });
         gsconnect.installService();
@@ -124,18 +124,18 @@ var NativeMessagingHost = GObject.registerClass({
                     }
                 }
 
-                this.manager.connect("interface-added", this._interfaceAdded.bind(this));
-                this.manager.connect("interface-removed", this._interfaceRemoved.bind(this));
+                this.manager.connect('interface-added', this._interfaceAdded.bind(this));
+                this.manager.connect('interface-removed', this._interfaceRemoved.bind(this));
 
                 // Watch device property changes (connected, paired, plugins, etc)
                 // FIXME: this could get crazy
-                this.manager.connect("interface-proxy-properties-changed", () => {
+                this.manager.connect('interface-proxy-properties-changed', () => {
                     this.sendDeviceList();
                 });
             }
         );
 
-        this.send({ type: "connected", data: true });
+        this.send({ type: 'connected', data: true });
     }
 
     receive() {
@@ -157,17 +157,17 @@ var NativeMessagingHost = GObject.registerClass({
 
         debug(message);
 
-        if (message.type === "devices") {
+        if (message.type === 'devices') {
             this.sendDeviceList();
-        } else if (message.type === "share") {
+        } else if (message.type === 'share') {
             let actionName;
             let device = this._devices[message.data.device];
 
             if (device) {
-                if (message.data.action === "share") {
-                    actionName = "shareUrl";
-                } else if (message.data.action === "telephony") {
-                    actionName = ""; // FIXME
+                if (message.data.action === 'share') {
+                    actionName = 'shareUrl';
+                } else if (message.data.action === 'telephony') {
+                    actionName = ''; // FIXME
                 }
 
                 device.actions.activate_action(
@@ -197,16 +197,16 @@ var NativeMessagingHost = GObject.registerClass({
     sendDeviceList() {
         if (!this.manager || this.manager.name_owner === null) {
             // Inform the WebExtension we're disconnected from the service
-            this.send({ type: "connected", data: false });
+            this.send({ type: 'connected', data: false });
             return;
         }
 
         let devices = [];
 
         for (let device of this.devices) {
-            let share = device.actions.get_action_enabled("shareUrl");
+            let share = device.actions.get_action_enabled('shareUrl');
             // FIXME: need new telephony action for this
-            let telephony = device.actions.get_action_enabled("newSms");
+            let telephony = device.actions.get_action_enabled('newSms');
 
             if (device.connected && device.paired && (share || telephony)) {
                 devices.push({
@@ -219,11 +219,11 @@ var NativeMessagingHost = GObject.registerClass({
             }
         }
 
-        this.send({ type: "devices", data: devices });
+        this.send({ type: 'devices', data: devices });
     }
 
     _interfaceAdded(object, iface) {
-        if (iface.g_interface_name === "org.gnome.Shell.Extensions.GSConnect.Device") {
+        if (iface.g_interface_name === 'org.gnome.Shell.Extensions.GSConnect.Device') {
             _proxyProperties(DeviceInterface, iface);
 
             iface.actions = Gio.DBusActionGroup.get(
@@ -237,7 +237,7 @@ var NativeMessagingHost = GObject.registerClass({
     }
 
     _interfaceRemoved(object, iface) {
-        if (iface.g_interface_name === "org.gnome.Shell.Extensions.GSConnect.Device") {
+        if (iface.g_interface_name === 'org.gnome.Shell.Extensions.GSConnect.Device') {
             delete this._devices[iface.id];
         }
     }

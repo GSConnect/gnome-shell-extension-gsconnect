@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
@@ -28,7 +28,7 @@ function get_default() {
  * https://specifications.freedesktop.org/mpris-spec/latest/Media_Player.html
  */
 var MediaPlayer2Proxy = DBus.makeInterfaceProxy(
-    gsconnect.dbusinfo.lookup_interface("org.mpris.MediaPlayer2")
+    gsconnect.dbusinfo.lookup_interface('org.mpris.MediaPlayer2')
 );
 
 
@@ -37,34 +37,34 @@ var MediaPlayer2Proxy = DBus.makeInterfaceProxy(
  * https://specifications.freedesktop.org/mpris-spec/latest/Player_Interface.html
  */
 var PlayerProxy = DBus.makeInterfaceProxy(
-    gsconnect.dbusinfo.lookup_interface("org.mpris.MediaPlayer2.Player")
+    gsconnect.dbusinfo.lookup_interface('org.mpris.MediaPlayer2.Player')
 );
 
 
 var Manager = GObject.registerClass({
-    GTypeName: "GSConnectMPRISManager",
+    GTypeName: 'GSConnectMPRISManager',
     Properties: {
-        "identities": GObject.param_spec_variant(
-            "identities",
-            "IdentityList",
-            "A list of MediaPlayer2.Identity for each player",
-            new GLib.VariantType("as"),
-            new GLib.Variant("as", []),
+        'identities': GObject.param_spec_variant(
+            'identities',
+            'IdentityList',
+            'A list of MediaPlayer2.Identity for each player',
+            new GLib.VariantType('as'),
+            null,
             GObject.ParamFlags.READABLE
         ),
         // Actually returns an Object of MediaPlayer2Proxy objects,
         // Player.Identity as key
-        "players": GObject.param_spec_variant(
-            "players",
-            "PlayerList",
-            "A list of known devices",
-            new GLib.VariantType("a{sv}"),
-            new GLib.Variant("a{sv}", {}),
+        'players': GObject.param_spec_variant(
+            'players',
+            'PlayerList',
+            'A list of known devices',
+            new GLib.VariantType('a{sv}'),
+            null,
             GObject.ParamFlags.READABLE
         )
     },
     Signals: {
-        "player-changed": {
+        'player-changed': {
             flags: GObject.SignalFlags.RUN_FIRST,
             param_types: [ GObject.TYPE_OBJECT, GObject.TYPE_VARIANT ]
         }
@@ -77,23 +77,23 @@ var Manager = GObject.registerClass({
         try {
             this._fdo = new DBus.FdoProxy({
                 g_connection: Gio.DBus.session,
-                g_name: "org.freedesktop.DBus",
-                g_object_path: "/"
+                g_name: 'org.freedesktop.DBus',
+                g_object_path: '/'
             });
 
             this._fdo.init_promise().then(result => {
                 this._nameOwnerChanged = this._fdo.connect(
-                    "name-owner-changed",
+                    'name-owner-changed',
                     (proxy, name, oldOwner, newOwner) => {
-                        if (name.startsWith("org.mpris.MediaPlayer2")) {
+                        if (name.startsWith('org.mpris.MediaPlayer2')) {
                             this._updatePlayers();
                         }
                     }
                 );
                 this._updatePlayers();
-            });
+            }).catch(debug);
         } catch (e) {
-            debug("MPRIS ERROR: " + e);
+            debug('MPRIS ERROR: ' + e);
         }
     }
 
@@ -111,7 +111,7 @@ var Manager = GObject.registerClass({
 
     // FIXME: could actually use this
     _onNameOwnerChanged(proxy, name, oldOwner, newOwner) {
-        if (name.startsWith("org.mpris.MediaPlayer2")) {
+        if (name.startsWith('org.mpris.MediaPlayer2')) {
             this._updatePlayers();
         }
     }
@@ -123,39 +123,39 @@ var Manager = GObject.registerClass({
     }
 
     _updatePlayers() {
-        debug("MPRIS: _updatePlayers()");
+        debug('MPRIS: _updatePlayers()');
 
         // Add new players
-        this._fdo.listNames().then(names => {
-            names = names.filter(n => n.startsWith("org.mpris.MediaPlayer2"));
-            log("NAMES: " + names);
+        this._fdo.ListNames().then(names => {
+            names = names.filter(n => n.startsWith('org.mpris.MediaPlayer2'));
+            log('NAMES: ' + names);
 
             for (let busName of names) {
                 let mediaPlayer = new MediaPlayer2Proxy({
                     g_connection: Gio.DBus.session,
                     g_name: busName,
-                    g_object_path: "/org/mpris/MediaPlayer2"
+                    g_object_path: '/org/mpris/MediaPlayer2'
                 });
 
                 mediaPlayer.Player = new PlayerProxy({
                     g_connection: Gio.DBus.session,
                     g_name: busName,
-                    g_object_path: "/org/mpris/MediaPlayer2"
+                    g_object_path: '/org/mpris/MediaPlayer2'
                 });
 
                 if (!this._players[mediaPlayer.identity]) {
-                    mediaPlayer.Player.connect("notify", (player, properties) => {
+                    mediaPlayer.Player.connect('notify', (player, properties) => {
                         this.emit(
-                            "player-changed",
+                            'player-changed',
                             mediaPlayer,
-                            new GLib.Variant("as", [])
+                            new GLib.Variant('as', [])
                         );
                     });
-                    mediaPlayer.Player.connect("seeked", (player) => {
+                    mediaPlayer.Player.connect('seeked', (player) => {
                         this.emit(
-                            "player-changed",
+                            'player-changed',
                             mediaPlayer,
-                            new GLib.Variant("as", ["Position"])
+                            new GLib.Variant('as', ['Position'])
                         );
                     });
 
@@ -166,7 +166,7 @@ var Manager = GObject.registerClass({
             // Remove old players
             // TODO: use NameOwnerChanged
             for (let name in this.players) {
-                debug("removing player '" + name + "'");
+                debug(`removing player ${name}`);
                 let player = this.players[name];
 
                 if (names.indexOf(player.g_name) < 0) {
@@ -174,12 +174,9 @@ var Manager = GObject.registerClass({
                     delete this.players[name];
                 }
             }
-        // Better
-        }).catch(e => {
-            debug(e);
-        });
 
-        this.notify("players");
+            this.notify('players');
+        }).catch(debug);
     }
 
     destroy() {

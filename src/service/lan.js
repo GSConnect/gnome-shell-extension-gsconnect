@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
@@ -9,20 +9,20 @@ imports.searchPath.push(gsconnect.datadir);
 
 
 // Packet Types
-var TYPE_IDENTITY = "kdeconnect.identity";
-var TYPE_PAIR = "kdeconnect.pair";
+var TYPE_IDENTITY = 'kdeconnect.identity';
+var TYPE_PAIR = 'kdeconnect.pair';
 
 
 /**
  * Packets
  */
 var Packet = GObject.registerClass({
-    GTypeName: "GSConnectPacket",
+    GTypeName: 'GSConnectPacket',
     Properties: {
-        "file": GObject.ParamSpec.object(
-            "file",
-            "PacketFile",
-            "The file associated with the packet",
+        'file': GObject.ParamSpec.object(
+            'file',
+            'PacketFile',
+            'The file associated with the packet',
             GObject.ParamFlags.READABLE,
             Gio.File
         )
@@ -33,30 +33,30 @@ var Packet = GObject.registerClass({
         super._init();
 
         this.id = 0;
-        this.type = "";
+        this.type = '';
         this.body = {};
 
         if (data === false) {
             return;
-        } else if (typeof data === "string") {
+        } else if (typeof data === 'string') {
             this.fromData(data);
-        } else if (typeof data === "object") {
+        } else if (typeof data === 'object') {
             this.fromPacket(data);
         } else {
-            log("Error: unsupported packet source: " + typeof data);
+            log('Error: unsupported packet source: ' + typeof data);
         }
     }
 
     // TODO: this means *complete* packets have to be set at construction
     _check(obj) {
-        if (!obj.hasOwnProperty("type")) {
-            debug("Packet: missing 'type' field");
+        if (!obj.hasOwnProperty('type')) {
+            debug('Packet: missing type field');
             return false;
-        } else if (!obj.hasOwnProperty("body")) {
-            debug("Packet: missing 'body' field");
+        } else if (!obj.hasOwnProperty('body')) {
+            debug('Packet: missing body field');
             return false;
-        } else if (!obj.hasOwnProperty("id")) {
-            debug("Packet: missing 'id' field");
+        } else if (!obj.hasOwnProperty('id')) {
+            debug('Packet: missing id field');
             return false;
         }
 
@@ -65,11 +65,11 @@ var Packet = GObject.registerClass({
 
     setPayload(file) {
         if (!file instanceof Gio.File) {
-            throw TypeError("must be Gio.File");
+            throw TypeError('must be Gio.File');
         }
 
-        let info = file.query_info("standard::size", 0, null);
-        this.payloadSize = file.query_info("standard::size", 0, null).get_size();
+        let info = file.query_info('standard::size', 0, null);
+        this.payloadSize = file.query_info('standard::size', 0, null).get_size();
 
         let transfer = new Transfer({
             device: device,
@@ -80,7 +80,7 @@ var Packet = GObject.registerClass({
         transfer.upload().then(port => {
             let packet = new Protocol.Packet({
                 id: 0,
-                type: "kdeconnect.share.request",
+                type: 'kdeconnect.share.request',
                 body: { filename: file.get_basename() },
                 payloadSize: info.get_size(),
                 payloadTransferInfo: { port: port }
@@ -100,14 +100,14 @@ var Packet = GObject.registerClass({
             json = JSON.parse(data);
         } catch (e) {
             log(e);
-            log("Data: '%s'".format(data));
+            log('Data: %s'.format(data));
             return;
         }
 
         if (this._check(json)) {
             Object.assign(this, json);
         } else {
-            throw Error("Packet.fromData(): Malformed packet");
+            throw Error('Packet.fromData(): Malformed packet');
         }
     }
 
@@ -116,13 +116,13 @@ var Packet = GObject.registerClass({
         if (this._check(packet)) {
             Object.assign(this, JSON.parse(JSON.stringify(packet)));
         } else {
-            throw Error("Packet.fromPacket(): Malformed packet");
+            throw Error('Packet.fromPacket(): Malformed packet');
         }
     }
 
     toData() {
         this.id = GLib.DateTime.new_now_local().to_unix();
-        return JSON.stringify(this) + "\n";
+        return JSON.stringify(this) + '\n';
     }
 
     toString() {
@@ -142,30 +142,30 @@ var Packet = GObject.registerClass({
  * sender, emitting 'packet::'. It also broadcasts these packets to 255.255.255.255.
  */
 var ChannelService = GObject.registerClass({
-    GTypeName: "GSConnectLanChannelService",
+    GTypeName: 'GSConnectLanChannelService',
     Properties: {
-        "discovering": GObject.ParamSpec.boolean(
-            "discovering",
-            "ServiceDiscovering",
-            "Whether the TCP Listener is active",
+        'discovering': GObject.ParamSpec.boolean(
+            'discovering',
+            'ServiceDiscovering',
+            'Whether the TCP Listener is active',
             GObject.ParamFlags.READWRITE,
             true
         ),
-        "port": GObject.ParamSpec.uint(
-            "port",
-            "TCP Port",
-            "The TCP port number the service is listening on",
+        'port': GObject.ParamSpec.uint(
+            'port',
+            'TCP Port',
+            'The TCP port number the service is listening on',
             GObject.ParamFlags.READABLE,
             0, 1764,
             1716
         )
     },
     Signals: {
-        "channel": {
+        'channel': {
             flags: GObject.SignalFlags.RUN_FIRST,
             param_types: [ GObject.TYPE_OBJECT ]
         },
-        "packet": {
+        'packet': {
             flags: GObject.SignalFlags.RUN_FIRST,
             param_types: [ GObject.TYPE_OBJECT ]
         }
@@ -199,14 +199,14 @@ var ChannelService = GObject.registerClass({
             try {
                 this._tcp.add_inet_port(port, null);
             } catch (e) {
-                debug("TcpListener: failed to bind to port " + port + ": " + e);
+                debug('TcpListener: failed to bind to port ' + port + ': ' + e);
 
                 if (port < 1764) {
                     port += 1;
                     continue;
                 } else {
                     this.destroy();
-                    throw Error("TcpListener: Unable to find open port");
+                    throw Error('TcpListener: Unable to find open port');
                 }
             }
 
@@ -216,10 +216,10 @@ var ChannelService = GObject.registerClass({
             }
         }
 
-        this._tcp.connect("incoming", (l, c) => this._receiveChannel(l, c));
-        this._tcp.connect("notify::active", () => this.notify("discovering"));
+        this._tcp.connect('incoming', (l, c) => this._receiveChannel(l, c));
+        this._tcp.connect('notify::active', () => this.notify('discovering'));
 
-        debug("Using port " + port + " for TCP");
+        debug('Using port ' + port + ' for TCP');
     }
 
     /**
@@ -227,9 +227,9 @@ var ChannelService = GObject.registerClass({
      */
     _receiveChannel(listener, connection) {
         let channel = new Channel();
-        let _tmp = channel.connect("connected", (channel) => {
+        let _tmp = channel.connect('connected', (channel) => {
             channel.disconnect(_tmp);
-            this.emit("channel", channel);
+            this.emit('channel', channel);
         });
         channel.accept(connection);
     }
@@ -253,14 +253,14 @@ var ChannelService = GObject.registerClass({
             try {
                 this._udp.bind(addr, false);
             } catch (e) {
-                debug("UdpListener: failed to bind to port " + port + ": " + e);
+                debug('UdpListener: failed to bind to port ' + port + ': ' + e);
 
                 if (port < 1764) {
                     port += 1;
                     continue;
                 } else {
                     this._udp.close();
-                    throw Error("UdpListener: Unable to find open port");
+                    throw Error('UdpListener: Unable to find open port');
                 }
             }
 
@@ -269,7 +269,7 @@ var ChannelService = GObject.registerClass({
 
         // Broadcast Address
         this._udp_address = new Gio.InetSocketAddress({
-            address: Gio.InetAddress.new_from_string("255.255.255.255"),
+            address: Gio.InetAddress.new_from_string('255.255.255.255'),
             port: this._udp.local_address.port
         });
 
@@ -286,7 +286,7 @@ var ChannelService = GObject.registerClass({
         source.set_callback(() => this._receivePacket());
         source.attach(null);
 
-        debug("Using port " + port + " for UDP");
+        debug('Using port ' + port + ' for UDP');
     }
 
     /**
@@ -297,7 +297,7 @@ var ChannelService = GObject.registerClass({
         let addr, data, flags, size;
 
         try {
-            // "Peek" the incoming address
+            // 'Peek' the incoming address
             [size, addr, data, flags] = this._udp.receive_message(
                 [],
                 Gio.SocketMsgFlags.PEEK,
@@ -305,21 +305,21 @@ var ChannelService = GObject.registerClass({
             );
             [data, size] = this._input_stream.read_line(null);
         } catch (e) {
-            log("Error reading UDP packet: " + e);
+            log('Error reading UDP packet: ' + e);
             return;
         }
 
         let packet = new Packet(data.toString());
 
         if (packet.type !== TYPE_IDENTITY) {
-            debug("Unexpected UDP packet type: " + packet.type);
+            debug('Unexpected UDP packet type: ' + packet.type);
             return true;
         }
 
         // Save the remote address for reconnecting
         packet.body.tcpHost = addr.address.to_string();
 
-        this.emit("packet", packet);
+        this.emit('packet', packet);
 
         return true;
     }
@@ -336,7 +336,7 @@ var ChannelService = GObject.registerClass({
             this._udp.send_to(this._udp_address, identity.toData(), null);
         } catch (e) {
             debug(e);
-            log("Error sending identity packet: " + e.message);
+            log('Error sending identity packet: ' + e.message);
         }
     }
 
@@ -352,24 +352,24 @@ var ChannelService = GObject.registerClass({
  * Data Channels
  */
 var Channel = GObject.registerClass({
-    GTypeName: "GSConnectChannel",
+    GTypeName: 'GSConnectChannel',
     Signals: {
-        "connected": {
+        'connected': {
             flags: GObject.SignalFlags.RUN_FIRST
         },
-        "disconnected": {
+        'disconnected': {
             flags: GObject.SignalFlags.RUN_FIRST
         },
-        "received": {
+        'received': {
             flags: GObject.SignalFlags.RUN_FIRST,
             param_types: [ GObject.TYPE_OBJECT ]
         }
     },
     Properties: {
-        "certificate": GObject.ParamSpec.object(
-            "certificate",
-            "TlsCertificate",
-            "The TLS Certificate for this connection",
+        'certificate': GObject.ParamSpec.object(
+            'certificate',
+            'TlsCertificate',
+            'The TLS Certificate for this connection',
             GObject.ParamFlags.READABLE,
             Gio.TlsCertificate
         )
@@ -460,14 +460,14 @@ var Channel = GObject.registerClass({
 
         // Get the settings for this deviceId
         let settings = new Gio.Settings({
-            settings_schema: gsconnect.gschema.lookup(gsconnect.app_id + ".Device", true),
-            path: gsconnect.settings.path + "device/" + this.identity.body.deviceId + "/"
+            settings_schema: gsconnect.gschema.lookup(gsconnect.app_id + '.Device', true),
+            path: gsconnect.settings.path + 'device/' + this.identity.body.deviceId + '/'
         });
 
         // If this device is paired, verify the connection certificate
-        if (settings.get_string("certificate-pem")) {
+        if (settings.get_string('certificate-pem')) {
             let cert = Gio.TlsCertificate.new_from_pem(
-                settings.get_string("certificate-pem"),
+                settings.get_string('certificate-pem'),
                 -1
             );
 
@@ -486,7 +486,7 @@ var Channel = GObject.registerClass({
             connection.validation_flags = 0;
             connection.authentication_mode = 1;
             connection.connect(
-                "accept-certificate",
+                'accept-certificate',
                 this._onAcceptCertificate.bind(this)
             );
 
@@ -591,9 +591,9 @@ var Channel = GObject.registerClass({
         // Set the connection and emit
         }).then(tlsConnection => {
             this._connection = tlsConnection;
-            this.emit("connected");
+            this.emit('connected');
         }).catch(e => {
-            log("Error opening connection: " + e.message);
+            log('Error opening connection: ' + e.message);
             debug(e);
             this.close();
         });
@@ -617,9 +617,9 @@ var Channel = GObject.registerClass({
         // Set the connection and emit
         }).then(tlsConnection => {
             this._connection = tlsConnection;
-            this.emit("connected");
+            this.emit('connected');
         }).catch(e => {
-            log("Error accepting connection: " + e.message);
+            log('Error accepting connection: ' + e.message);
             debug(e);
             this.close();
         });
@@ -635,7 +635,7 @@ var Channel = GObject.registerClass({
             debug(e);
         }
 
-        ["_input_stream", "_output_stream", "_connection"].map(stream => {
+        ['_input_stream', '_output_stream', '_connection'].map(stream => {
             try {
                 if (this[stream]) {
                     this[stream].close(null);
@@ -655,7 +655,7 @@ var Channel = GObject.registerClass({
             debug(e);
         }
 
-        this.emit("disconnected");
+        this.emit('disconnected');
     }
 
     /**
@@ -664,7 +664,7 @@ var Channel = GObject.registerClass({
      */
     send(packet) {
         //debug(packet);
-        debug(this.identity.body.deviceId + ", " + packet.toString());
+        debug(this.identity.body.deviceId + ', ' + packet.toString());
 
         try {
             this._output_stream.put_string(packet.toData(), null);
@@ -695,7 +695,7 @@ var Channel = GObject.registerClass({
 
         let packet = new Packet(data.toString());
         //debug(packet);
-        this.emit("received", packet);
+        this.emit('received', packet);
         return true;
     }
 });
@@ -715,48 +715,48 @@ var Channel = GObject.registerClass({
  *  });
  */
 var Transfer = GObject.registerClass({
-    GTypeName: "GSConnectTransfer",
+    GTypeName: 'GSConnectTransfer',
     Signals: {
-        "started": {
+        'started': {
             flags: GObject.SignalFlags.RUN_FIRST
         },
-        "progress": {
+        'progress': {
             flags: GObject.SignalFlags.RUN_FIRST,
             param_types: [ GObject.TYPE_INT ]
         },
-        "cancelled": {
+        'cancelled': {
             flags: GObject.SignalFlags.RUN_FIRST
         },
-        "failed": {
+        'failed': {
             flags: GObject.SignalFlags.RUN_FIRST,
             param_types: [ GObject.TYPE_STRING ]
         },
-        "succeeded": {
+        'succeeded': {
             flags: GObject.SignalFlags.RUN_FIRST
         }
     },
     Properties: {
-        "device": GObject.ParamSpec.object(
-            "device",
-            "TransferDevice",
-            "The device associated with this transfer",
+        'device': GObject.ParamSpec.object(
+            'device',
+            'TransferDevice',
+            'The device associated with this transfer',
             GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
             GObject.Object
         ),
-        "size": GObject.ParamSpec.uint(
-            "size",
-            "TransferSize",
-            "The size in bytes of the transfer",
+        'size': GObject.ParamSpec.uint(
+            'size',
+            'TransferSize',
+            'The size in bytes of the transfer',
             GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
             0, GLib.MAXUINT32,
             0
         ),
-        "uuid": GObject.ParamSpec.string(
-            "uuid",
-            "TransferUUID",
-            "The UUID of this transfer",
+        'uuid': GObject.ParamSpec.string(
+            'uuid',
+            'TransferUUID',
+            'The UUID of this transfer',
             GObject.ParamFlags.READABLE,
-            ""
+            ''
         )
     }
 }, class Transfer extends Channel {
@@ -797,12 +797,12 @@ var Transfer = GObject.registerClass({
      * @param {Number} port - A port between 1739-1764 for uploading
      *
      * Example usage:
-     *  transfer.connect("connected", transfer => transfer.start());
-     *  transfer.connect("succeeded"|"failed"|"cancelled", transfer => func());
+     *  transfer.connect('connected', transfer => transfer.start());
+     *  transfer.connect('succeeded'|'failed'|'cancelled', transfer => func());
      *  transfer.upload().then(port => {
      *      let packet = new Protocol.Packet({
      *          id: 0,
-     *          type: "kdeconnect.share.request",
+     *          type: 'kdeconnect.share.request',
      *          body: { filename: file.get_basename() },
      *          payloadSize: info.get_size(),
      *          payloadTransferInfo: { port: port }
@@ -826,7 +826,7 @@ var Transfer = GObject.registerClass({
                         port += 1;
                         continue;
                     } else {
-                        reject(new Error("Failed to open port"));
+                        reject(new Error('Failed to open port'));
                     }
                 }
 
@@ -861,9 +861,9 @@ var Transfer = GObject.registerClass({
         }).then(tlsConnection => {
             this._output_stream = tlsConnection.get_output_stream();
             this._connection = tlsConnection;
-            this.emit("connected");
+            this.emit('connected');
         }).catch(e => {
-            log("Error uploading: " + e.message);
+            log('Error uploading: ' + e.message);
             debug(e);
             this.close();
         });
@@ -874,8 +874,8 @@ var Transfer = GObject.registerClass({
      * @param {Number} port - The port to connect to
      *
      * Example usage:
-     *  transfer.connect("connected", transfer => transfer.start());
-     *  transfer.connect("succeeded"|"failed"|"cancelled", transfer => func());
+     *  transfer.connect('connected', transfer => transfer.start());
+     *  transfer.connect('succeeded'|'failed'|'cancelled', transfer => func());
      *  transfer.download(packet.payloadTransferInfo.port).catch(e => debug(e));
      */
     download(port) {
@@ -886,7 +886,7 @@ var Transfer = GObject.registerClass({
             // Use @port and the address from GSettings
             let address = new Gio.InetSocketAddress({
                 address: Gio.InetAddress.new_from_string(
-                    this.device.settings.get_string("tcp-host")
+                    this.device.settings.get_string('tcp-host')
                 ),
                 port: port
             });
@@ -911,22 +911,22 @@ var Transfer = GObject.registerClass({
         }).then(tlsConnection => {
             this._input_stream = tlsConnection.get_input_stream();
             this._connection = tlsConnection;
-            this.emit("connected");
+            this.emit('connected');
         }).catch(e => {
-            log("Error downloading: " + e.message);
+            log('Error downloading: ' + e.message);
             debug(e);
             this.close();
         });
     }
 
     start() {
-        this.emit("started");
+        this.emit('started');
         this._read();
     }
 
     cancel() {
         this._cancellable.cancel();
-        this.emit("cancelled");
+        this.emit('cancelled');
     }
 
     _read() {
@@ -943,7 +943,7 @@ var Transfer = GObject.registerClass({
                     bytes = source.read_bytes_finish(res);
                 } catch (e) {
                     debug(e);
-                    this.emit("failed", e.message);
+                    this.emit('failed', e.message);
                     return;
                 }
 
@@ -954,16 +954,16 @@ var Transfer = GObject.registerClass({
                 // Expected more data
                 } else if (this.size > this._written) {
                     this.close();
-                    this.emit("failed", "Incomplete transfer");
+                    this.emit('failed', 'Incomplete transfer');
                 // Data should match the checksum
                 } else if (this.checksum && this.checksum !== this._checksum.get_string()) {
                     this.close();
-                    this.emit("failed", "Checksum mismatch");
+                    this.emit('failed', 'Checksum mismatch');
                 // All done
                 } else {
-                    debug("Completed transfer of " + this.size + " bytes");
+                    debug('Completed transfer of ' + this.size + ' bytes');
                     this.close();
-                    this.emit("succeeded");
+                    this.emit('succeeded');
                 }
             }
         );
@@ -981,11 +981,11 @@ var Transfer = GObject.registerClass({
                     this._written += source.write_bytes_finish(res);
                 } catch (e) {
                     debug(e);
-                    this.emit("failed", e.message);
+                    this.emit('failed', e.message);
                     return;
                 }
 
-                this.emit("progress", (this._written / this.size) * 100);
+                this.emit('progress', (this._written / this.size) * 100);
                 this._read();
             }
         );
