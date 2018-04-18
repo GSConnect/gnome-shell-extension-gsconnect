@@ -176,11 +176,7 @@ var Plugin = GObject.registerClass({
         // Event handling
         // The event has ended (ringing stopped or call ended)
         if (packet.body.isCancel) {
-            // TODO TODO TODO: all of it
-            this._setMediaState(1);
-            this.device.withdraw_notification(
-                event.type + "|" + event.contact.name
-            );
+            this._onCancel(packet)
         // An event was triggered
         } else {
             this.event(event.type, event);
@@ -334,6 +330,13 @@ var Plugin = GObject.registerClass({
         });
     }
 
+    _onCancel(event) {
+        this._setMediaState(1);
+        this.device.withdraw_notification(
+            event.type + "|" + event.contact.name // FIXME
+        );
+    }
+
     /**
      * Telephony event handlers
      */
@@ -344,10 +347,10 @@ var Plugin = GObject.registerClass({
         let notification = this.device._plugins.get("notification");
 
         if (notification) {
-            // TRANSLATORS: This is specifically for matching missed call notifications on Android.
-            // You should translate this to match the notification on your phone that in english looks like "Missed call: John Lennon"
             notification.markDuplicate({
                 localId: event.type + "|" + event.time,
+                // TRANSLATORS: This is _specifically_ for matching missed call notifications on Android.
+                // This should _exactly_ match the Android notification that in english looks like "Missed call: John Lennon"
                 ticker: _("Missed call") + ": " + event.contact.name,
             });
         }
