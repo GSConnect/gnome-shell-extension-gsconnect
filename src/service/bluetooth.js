@@ -380,7 +380,7 @@ var ChannelService = GObject.registerClass({
                 g_object_path: iface.g_object_path
             });
             this._adapter.init_promise().then(result => {
-                log('Address: ' + this._adapter.address);
+                log('Address: ' + this._adapter.Address);
             }).catch(debug);
         }
 

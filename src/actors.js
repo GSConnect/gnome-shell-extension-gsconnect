@@ -557,11 +557,11 @@ var DeviceBattery = GObject.registerClass({
     }
 
     update(battery) {
+        this.icon.visible = (this.battery && this.battery.Level > -1);
+        this.label.visible = (this.battery && this.battery.Level > -1);
 
-        this.icon.visible = (this.battery && this.battery.level > -1);
-        this.label.visible = (this.battery && this.battery.level > -1);
-        this.icon.icon_name = this.battery.icon_name;
-        this.label.text = this.battery.level + "%";
+        this.icon.icon_name = this.battery.IconName;
+        this.label.text = this.battery.Level + "%";
     }
 });
 
@@ -638,9 +638,9 @@ var DeviceIcon = GObject.registerClass({
 
     _batteryColor() {
         return Color.hsv2rgb(
-            this.battery.level / 100 * 120,
+            this.battery.Level / 100 * 120,
             100,
-            100 - (this.battery.level / 100 * 15)
+            100 - (this.battery.Level / 100 * 15)
         );
     }
 
@@ -717,14 +717,14 @@ var DeviceIcon = GObject.registerClass({
             cr.setDash([3, 7], 0);
             cr.arc(xc, yc, r, 1.48 * Math.PI, 1.47 * Math.PI);
             cr.stroke();
-        } else if (this.battery && this.battery.level > -1) {
+        } else if (this.battery && this.battery.Level > -1) {
             // Depleted arc
             cr.setSourceRGB(0.8, 0.8, 0.8);
 
-            if (this.battery.level < 1) {
+            if (this.battery.Level < 1) {
                 cr.arc(xc, yc, r, 0, 2 * Math.PI);
-            } else if (this.battery.level < 100) {
-                let end = (this.battery.level / 50 * Math.PI) + 1.5 * Math.PI;
+            } else if (this.battery.Level < 100) {
+                let end = (this.battery.Level / 50 * Math.PI) + 1.5 * Math.PI;
                 cr.arcNegative(xc, yc, r, 1.5 * Math.PI, end);
             }
             cr.stroke();
@@ -732,18 +732,18 @@ var DeviceIcon = GObject.registerClass({
             // Remaining arc
             cr.setSourceRGB(...this._batteryColor());
 
-            if (this.battery.level === 100) {
+            if (this.battery.Level === 100) {
                 cr.arc(xc, yc, r, 0, 2 * Math.PI);
-            } else if (this.battery.level > 0) {
-                let end = (this.battery.level / 50 * Math.PI) + 1.5 * Math.PI;
+            } else if (this.battery.Level > 0) {
+                let end = (this.battery.Level / 50 * Math.PI) + 1.5 * Math.PI;
                 cr.arc(xc, yc, r, 1.5 * Math.PI, end);
             }
             this.tooltip.markup = this._getTimeLabel();
-            this.tooltip.icon_name = this.battery.icon_name;
+            this.tooltip.icon_name = this.battery.IconName;
             cr.stroke();
 
             // Charging highlight
-            if (this.battery.charging) {
+            if (this.battery.Charging) {
                 cr.setOperator(Cairo.Operator.DEST_OVER);
                 cr.setSourceRGBA(...this._batteryColor(), 0.25);
                 cr.arc(xc, yc, r, 0, 2 * Math.PI);
@@ -786,12 +786,12 @@ var DeviceButton = GObject.registerClass({
 
         this.connect("clicked", () => {
             if (!this.device.connected) {
-                this.device.activate();
+                this.device.Activate();
             } else if (!this.device.paired) {
                 this.device.pair();
             } else {
                 this.get_parent()._delegate._getTopMenu().close(true);
-                this.device.openSettings();
+                this.device.OpenSettings();
             }
         });
     }

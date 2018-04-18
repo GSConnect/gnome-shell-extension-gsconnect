@@ -512,7 +512,7 @@ var ServiceProxy = DBus.makeInterfaceProxy(
 // TODO: better
 function _proxyMethods(info, iface) {
     info.methods.map(method => {
-        iface[method.name.toCamelCase()] = function () {
+        iface[method.name] = function () {
             iface.call(method.name, null, 0, -1, null, (proxy, res) => {
                 let ret;
 
@@ -595,7 +595,7 @@ var ServiceIndicator = class ServiceIndicator extends PanelMenu.SystemIndicator 
         this.extensionMenu.menu.addMenuItem(this.dndItem);
 
         this.extensionMenu.menu.addAction(_("Mobile Settings"), () => {
-            this.service.openSettings();
+            this.service.OpenSettings();
         });
 
         Main.panel.statusArea.aggregateMenu.menu.addMenuItem(this.menu, 4);
@@ -662,7 +662,6 @@ var ServiceIndicator = class ServiceIndicator extends PanelMenu.SystemIndicator 
             g_name: gsconnect.app_id,
             g_object_path: gsconnect.app_path
         });
-
         this.service.init(null);
 
         this.devices.map(device => { device.service = this.service; });
@@ -737,7 +736,7 @@ var ServiceIndicator = class ServiceIndicator extends PanelMenu.SystemIndicator 
             iface.connect("g-properties-changed", () => this._sync(menu));
 
             // Try activating the device
-            iface.activate();
+            iface.Activate();
         }
     }
 

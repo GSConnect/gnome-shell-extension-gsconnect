@@ -96,7 +96,7 @@ var ProxyServer = GObject.registerClass({
         this._exportProperties(info);
         this._exportSignals(info);
 
-        // Export if connection and objec path were given
+        // Export if connection and object path were given
         if (params.g_connection && params.g_object_path) {
             this.export(
                 params.g_connection,
@@ -450,13 +450,9 @@ var ProxyBase = GObject.registerClass({
     _proxyProperties(info) {
         if (info.properties.length > 0) {
             for (let property of info.properties) {
-                let name = property.name;
-
-                let properName = name.toUnderscoreCase();
-
-                Object.defineProperty(this, properName, {
-                    get: () => this._get(name, property.signature),
-                    set: (value) => this._set(name, value, property.signature),
+                Object.defineProperty(this, property.name, {
+                    get: () => this._get(property.name, property.signature),
+                    set: (value) => this._set(property.name, value, property.signature),
                     configurable: true,
                     enumerable: true
                 });
@@ -464,10 +460,7 @@ var ProxyBase = GObject.registerClass({
 
             this.connect('g-properties-changed', (proxy, properties) => {
                 for (let name in properties.deep_unpack()) {
-                    // Properties are set using lower_underscore...
-                    let properName = name.toUnderscoreCase();
-                    // but notify()'d using lower-hyphen
-                    this.notify(name.toHyphenCase());
+                    this.notify(name);
                 }
             });
         }
@@ -481,10 +474,7 @@ var ProxyBase = GObject.registerClass({
     _proxySignals(info) {
         if (info.signals.length > 0) {
             this.connect('g-signal', (proxy, sender, name, parameters) => {
-                // Signals are emitted using lower-hyphen
-                let properName = name.toHyphenCase();
-                // FIXME: better unpack
-                let args = [properName].concat(parameters.deep_unpack());
+                let args = [name].concat(parameters.deep_unpack());
                 this.emit(...args);
             });
         }
@@ -514,7 +504,6 @@ function makeInterfaceProxy(info) {
 
     for (let i = 0; i < info.properties.length; i++) {
         let property = info.properties[i]
-        let proxyName = property.name.toHyphenCase();
         let flags = 0;
 
         if (property.flags & Gio.DBusPropertyInfoFlags.READABLE) {
@@ -526,16 +515,16 @@ function makeInterfaceProxy(info) {
         }
 
         if (property.signature === 'b') {
-            properties_[proxyName] = GObject.ParamSpec.boolean(
-                proxyName,
+            properties_[property.name] = GObject.ParamSpec.boolean(
+                property.name,
                 property.name,
                 property.name + ': automatically populated',
                 flags,
                 false
             );
         } else if ('sog'.indexOf(property.signature) > -1) {
-            properties_[proxyName] = GObject.ParamSpec.string(
-                proxyName,
+            properties_[property.name] = GObject.ParamSpec.string(
+                property.name,
                 property.name,
                 property.name + ': automatically populated',
                 flags,
@@ -544,8 +533,8 @@ function makeInterfaceProxy(info) {
         // TODO: all number types are converted to Number which is a double,
         //       but there may be a case where type is relevant on the proxy
         } else if ('hiuxtd'.indexOf(property.signature) > -1) {
-            properties_[proxyName] = GObject.ParamSpec.double(
-                proxyName,
+            properties_[property.name] = GObject.ParamSpec.double(
+                property.name,
                 property.name,
                 property.name + ': automatically populated',
                 flags,
@@ -553,8 +542,8 @@ function makeInterfaceProxy(info) {
                 0.0
             );
         } else {
-            properties_[proxyName] = GObject.param_spec_variant(
-                proxyName,
+            properties_[property.name] = GObject.param_spec_variant(
+                property.name,
                 property.name,
                 property.name + ': automatically populated',
                 new GLib.VariantType(property.signature),
@@ -570,7 +559,7 @@ function makeInterfaceProxy(info) {
     for (let i = 0; i < info.signals.length; i++) {
         let signal = info.signals[i];
 
-        signals_[signal.name.toHyphenCase()] = {
+        signals_[signal.name] = {
             flags: GObject.SignalFlags.RUN_FIRST,
             param_types: dbus_variant_to_gtype(signal.args.map(arg => arg.signature).join(''))
         };
