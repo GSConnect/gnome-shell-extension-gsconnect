@@ -199,7 +199,7 @@
                         <property name="hexpand">True</property>
                         <property name="vexpand">False</property>
                         <property name="selection_mode">none</property>
-                        <signal name="row-activated" handler="_onStatusRowActivated" object="GSConnectDeviceSettings" swapped="no"/>
+                        <signal name="row-activated" handler="_onStatusRowActivated" swapped="no"/>
                         <child>
                           <object class="GtkListBoxRow" id="device-connected">
                             <property name="height_request">56</property>
@@ -950,7 +950,7 @@
                         <property name="hexpand">True</property>
                         <property name="vexpand">False</property>
                         <property name="selection_mode">none</property>
-                        <signal name="row-activated" handler="_onNotificationRowActivated" object="GSConnectDeviceSettings" swapped="no"/>
+                        <signal name="row-activated" handler="_onNotificationRowActivated" swapped="no"/>
                       </object>
                     </child>
                   </object>
@@ -1110,7 +1110,7 @@
                         <property name="hexpand">True</property>
                         <property name="vexpand">False</property>
                         <property name="selection_mode">none</property>
-                        <signal name="row-activated" handler="_newCommand" object="GSConnectDeviceSettings" swapped="no"/>
+                        <signal name="row-activated" handler="_newCommand" swapped="no"/>
                         <child>
                           <object class="GtkListBoxRow" id="command-editor">
                             <property name="width_request">100</property>
@@ -1141,8 +1141,8 @@
                                     <property name="secondary_icon_stock">gtk-open</property>
                                     <property name="secondary_icon_tooltip_text" translatable="yes">Choose an executable</property>
                                     <property name="placeholder_text" translatable="yes">Command Line</property>
-                                    <signal name="activate" handler="_saveCommand" object="GSConnectDeviceSettings" swapped="no"/>
-                                    <signal name="icon-release" handler="_browseCommand" object="GSConnectDeviceSettings" swapped="no"/>
+                                    <signal name="activate" handler="_saveCommand" swapped="no"/>
+                                    <signal name="icon-release" handler="_browseCommand" swapped="no"/>
                                   </object>
                                   <packing>
                                     <property name="left_attach">1</property>
@@ -1172,8 +1172,8 @@
                                     <property name="valign">center</property>
                                     <property name="hexpand">True</property>
                                     <property name="placeholder_text" translatable="yes">Name</property>
-                                    <signal name="activate" handler="_saveCommand" object="GSConnectDeviceSettings" swapped="no"/>
-                                    <signal name="changed" handler="_onCommandNameChanged" object="GSConnectDeviceSettings" swapped="no"/>
+                                    <signal name="activate" handler="_saveCommand" swapped="no"/>
+                                    <signal name="changed" handler="_onCommandNameChanged" swapped="no"/>
                                   </object>
                                   <packing>
                                     <property name="left_attach">1</property>
@@ -1194,7 +1194,7 @@
                                         <property name="halign">start</property>
                                         <property name="valign">start</property>
                                         <property name="relief">none</property>
-                                        <signal name="clicked" handler="_removeCommand" object="GSConnectDeviceSettings" swapped="no"/>
+                                        <signal name="clicked" handler="_removeCommand" swapped="no"/>
                                         <child>
                                           <object class="GtkImage">
                                             <property name="visible">True</property>
@@ -1220,7 +1220,7 @@
                                         <property name="halign">end</property>
                                         <property name="valign">start</property>
                                         <property name="relief">none</property>
-                                        <signal name="clicked" handler="_saveCommand" object="GSConnectDeviceSettings" swapped="no"/>
+                                        <signal name="clicked" handler="_saveCommand" swapped="no"/>
                                         <child>
                                           <object class="GtkImage">
                                             <property name="visible">True</property>
@@ -1343,7 +1343,7 @@
                         <property name="hexpand">True</property>
                         <property name="vexpand">False</property>
                         <property name="selection_mode">none</property>
-                        <signal name="row-activated" handler="_onEventRowActivated" object="GSConnectDeviceSettings" swapped="no"/>
+                        <signal name="row-activated" handler="_onEventRowActivated" swapped="no"/>
                       </object>
                     </child>
                   </object>
@@ -1396,7 +1396,7 @@
                         <property name="hexpand">True</property>
                         <property name="vexpand">False</property>
                         <property name="selection_mode">none</property>
-                        <signal name="row-activated" handler="_onShortcutRowActivated" object="GSConnectDeviceSettings" swapped="no"/>
+                        <signal name="row-activated" handler="_onShortcutRowActivated" swapped="no"/>
                       </object>
                     </child>
                   </object>
@@ -1422,7 +1422,7 @@
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="vexpand">True</property>
-    <signal name="row-selected" handler="_onSwitcherRowSelected" object="GSConnectDeviceSettings" swapped="no"/>
+    <signal name="row-selected" handler="_onSwitcherRowSelected" swapped="no"/>
     <child>
       <object class="GtkListBoxRow" id="information">
         <property name="visible">True</property>

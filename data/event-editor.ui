@@ -44,7 +44,7 @@
                     <property name="hexpand">True</property>
                     <property name="vexpand">False</property>
                     <property name="selection_mode">none</property>
-                    <signal name="row-activated" handler="_onRowActivated" object="GSConnectEventEditor" swapped="no"/>
+                    <signal name="row-activated" handler="_onRowActivated" swapped="no"/>
                     <child>
                       <object class="GtkListBoxRow" id="command-editor">
                         <property name="width_request">100</property>

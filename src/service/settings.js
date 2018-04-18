@@ -11,11 +11,6 @@ imports.searchPath.push(gsconnect.datadir);
 const DBus = imports.modules.dbus;
 
 
-function template_connect_func(builder, obj, signalName, handlerName, connectObj, flags) {
-    obj.connect(signalName, connectObj[handlerName].bind(connectObj));
-};
-
-
 function section_separators(row, before) {
     if (before) {
         row.set_header(new Gtk.Separator({ visible: true }));
@@ -400,7 +395,9 @@ var SettingsWindow = GObject.registerClass({
 }, class SettingsWindow extends Gtk.ApplicationWindow {
 
     _init(params={}) {
-        Gtk.Widget.set_connect_func.call(this, template_connect_func);
+        Gtk.Widget.set_connect_func.call(this, (builder, obj, signalName, handlerName, connectObj, flags) => {
+            obj.connect(signalName, this[handlerName].bind(this));
+        });
 
         super._init(params);
 
@@ -613,7 +610,9 @@ var DeviceSettings = GObject.registerClass({
 }, class DeviceSettings extends Gtk.Stack {
 
     _init(device, params={}) {
-        Gtk.Widget.set_connect_func.call(this, template_connect_func);
+        Gtk.Widget.set_connect_func.call(this, (builder, obj, signalName, handlerName, connectObj, flags) => {
+            obj.connect(signalName, this[handlerName].bind(this));
+        });
 
         super._init(params);
 
@@ -1241,7 +1240,9 @@ var EventEditor = GObject.registerClass({
 }, class EventEditor extends Gtk.Dialog {
 
     _init(page, row) {
-        Gtk.Widget.set_connect_func.call(this, template_connect_func);
+        Gtk.Widget.set_connect_func.call(this, (builder, obj, signalName, handlerName, connectObj, flags) => {
+            obj.connect(signalName, this[handlerName].bind(this));
+        });
 
         super._init({
             transient_for: page.get_toplevel(),
@@ -1350,7 +1351,9 @@ var ShortcutEditor = GObject.registerClass({
 
     _init(params) {
         // Hack until template callbacks are supported (GJS 1.54?)
-        Gtk.Widget.set_connect_func.call(this, template_connect_func);
+        Gtk.Widget.set_connect_func.call(this, (builder, obj, signalName, handlerName, connectObj, flags) => {
+            obj.connect(signalName, this[handlerName].bind(this));
+        });
 
         super._init({
             transient_for: params.transient_for,
