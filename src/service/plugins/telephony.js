@@ -64,7 +64,7 @@ var Metadata = {
             description: _("Send an SMS message"),
             icon_name: "sms-send",
 
-            signature: "av",
+            signature: "(ss)",
             incoming: ["kdeconnect.telephony"],
             outgoing: ["kdeconnect.sms.request"],
             allow: Allow.OUT | Allow.IN | Allow.SMS
