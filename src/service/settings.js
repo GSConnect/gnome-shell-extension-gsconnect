@@ -1249,7 +1249,7 @@ var EventEditor = GObject.registerClass({
         });
         this.get_content_area().border_width = 0;
 
-        this.headerbar.title = row.event.label;
+        this.headerbar.title = row.event.summary;
         this.headerbar.subtitle = row.event.description;
 
         this._page = page;
