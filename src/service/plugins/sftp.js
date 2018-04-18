@@ -82,6 +82,7 @@ var Plugin = GObject.registerClass({
 
         this._directories = {};
         this._mounted = false;
+        // Track when mounting is in progress
         this._mounting = false;
 
         this.device.menu.add_action('mount', Metadata.actions.mount);
@@ -164,6 +165,15 @@ var Plugin = GObject.registerClass({
                 let name = packet.body.pathNames[i];
                 this._directories[name] = this._mountpoint + paths[i];
             }
+
+            // The kdeconnect-kde way
+//            this._root = '/';
+
+//            for (let i = 0; i < packet.body.multiPaths.length; i++) {
+//                let name = packet.body.pathNames[i];
+//                let path = packet.body.multiPaths[i];
+//                this._directories[name] = this._mountpoint + path;
+//            }
         // If 'multiPaths' is missing, just use 'path' and assume there's a
         // a Camera folder. See also:
         //     https://github.com/KDE/kdeconnect-android/blob/master/src/org/kde/kdeconnect/Helpers/StorageHelper.java#L62
