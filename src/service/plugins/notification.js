@@ -36,7 +36,7 @@ var Metadata = {
         sendNotification: {
             summary: _("Send Notification"),
             description: _("Display a local notification remotely"),
-            signature: "av",
+            signature: "a{sv}",
             incoming: [],
             outgoing: ["kdeconnect.notification"],
             allow: 2
@@ -92,7 +92,7 @@ var Plugin = GObject.registerClass({
             "NotificationList",
             "A list of active or expected notifications",
             new GLib.VariantType("aa{sv}"),
-            new GLib.Variant("aa{sv}", []),
+            null,
             GObject.ParamFlags.READABLE
         )
     }
