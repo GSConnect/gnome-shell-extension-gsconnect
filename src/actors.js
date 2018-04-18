@@ -588,16 +588,16 @@ var DeviceIcon = GObject.registerClass({
 
         this.tooltip = new Tooltip({
             parent: this,
-            markup: this.device.name,
+            markup: this.device.Name,
             y_offset: 16
         });
 
         // Device Type
         this._theme = Gtk.IconTheme.get_default();
-        this.icon = this._theme.load_surface(this.device.icon_name, 32, 1, null, 0);
+        this.icon = this._theme.load_surface(this.device.IconName, 32, 1, null, 0);
 
         this._themeSignal = this._theme.connect("changed", () => {
-            this.icon = this._theme.load_surface(this.device.icon_name, 32, 1, null, 0);
+            this.icon = this._theme.load_surface(this.device.IconName, 32, 1, null, 0);
             this.queue_repaint();
         });
 
@@ -645,31 +645,31 @@ var DeviceIcon = GObject.registerClass({
     }
 
     _getTimeLabel() {
-        let { charging, level, time } = this.battery;
+        let { Charging, Level, Time } = this.battery;
 
-        if (level === 100) {
+        if (Level === 100) {
             // TRANSLATORS: Fully Charged
             return _("Fully Charged");
-        } else if (time === 0) {
+        } else if (Time === 0) {
             // TRANSLATORS: <percentage> (Estimating…)
-            return _("%d%% (Estimating…)").format(level);
+            return _("%d%% (Estimating…)").format(Level);
         }
 
-        time = time / 60;
-        let minutes = time % 60;
-        let hours = Math.floor(time / 60);
+        Time = Time / 60;
+        let minutes = Time % 60;
+        let hours = Math.floor(Time / 60);
 
-        if (charging) {
+        if (Charging) {
             // TRANSLATORS: <percentage> (<hours>:<minutes> Until Full)
             return _("%d%% (%d\u2236%02d Until Full)").format(
-                level,
+                Level,
                 hours,
                 minutes
             );
         } else {
             // TRANSLATORS: <percentage> (<hours>:<minutes> Remaining)
             return _("%d%% (%d\u2236%02d Remaining)").format(
-                level,
+                Level,
                 hours,
                 minutes
             );
@@ -692,13 +692,13 @@ var DeviceIcon = GObject.registerClass({
         cr.setSourceSurface(this.icon, xc - 16, yc - 16);
         cr.paint();
 
-        if (!this.device.connected) {
+        if (!this.device.Connected) {
             cr.setOperator(Cairo.Operator.HSL_SATURATION);
             cr.setSourceRGB(0, 0, 0);
             cr.maskSurface(this.icon, xc - 16, yc - 16);
             cr.fill();
 
-            this.tooltip.markup = _("Reconnect <b>%s</b>").format(this.device.name);
+            this.tooltip.markup = _("Reconnect <b>%s</b>").format(this.device.Name);
             this.tooltip.icon_name = "view-refresh-symbolic";
 
             cr.setSourceRGB(0.8, 0.8, 0.8);
@@ -707,8 +707,8 @@ var DeviceIcon = GObject.registerClass({
             cr.setDash([3, 7], 0);
             cr.arc(xc, yc, r, 1.48 * Math.PI, 1.47 * Math.PI);
             cr.stroke();
-        } else if (!this.device.paired) {
-            this.tooltip.markup = _("Pair <b>%s</b>").format(this.device.name) + "\n\n" + _("<b>%s Fingerprint:</b>\n%s\n\n<b>Local Fingerprint:</b>\n%s").format(this.device.name, this.device.fingerprint, this.device.service.fingerprint);
+        } else if (!this.device.Paired) {
+            this.tooltip.markup = _("Pair <b>%s</b>").format(this.device.Name) + "\n\n" + _("<b>%s Fingerprint:</b>\n%s\n\n<b>Local Fingerprint:</b>\n%s").format(this.device.Name, this.device.Fingerprint, this.device.service.Fingerprint);
             this.tooltip.icon_name = "channel-insecure-symbolic";
 
             cr.setSourceRGB(0.95, 0.0, 0.0);
@@ -750,7 +750,7 @@ var DeviceIcon = GObject.registerClass({
                 cr.fill();
             }
         } else {
-            this.tooltip.markup = _("Configure <b>%s</b>").format(this.device.name);
+            this.tooltip.markup = _("Configure <b>%s</b>").format(this.device.Name);
             this.tooltip.icon_name = "preferences-other-symbolic";
             cr.setSourceRGB(0.8, 0.8, 0.8);
             cr.arc(xc, yc, r, 0, 2 * Math.PI);
@@ -785,9 +785,9 @@ var DeviceButton = GObject.registerClass({
         this.device = device;
 
         this.connect("clicked", () => {
-            if (!this.device.connected) {
+            if (!this.device.Connected) {
                 this.device.Activate();
-            } else if (!this.device.paired) {
+            } else if (!this.device.Paired) {
                 this.device.pair();
             } else {
                 this.get_parent()._delegate._getTopMenu().close(true);

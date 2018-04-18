@@ -295,7 +295,7 @@ class DeviceMenu extends PopupMenu.PopupMenuSection {
         // Title Bar -> Device Name
         this.nameLabel = new St.Label({
             style_class: "gsconnect-device-name",
-            text: this.device.name
+            text: this.device.Name
         });
         this.titleBar.add_child(this.nameLabel);
 
@@ -409,17 +409,17 @@ class DeviceMenu extends PopupMenu.PopupMenuSection {
     }
 
     _sync() {
-        debug(`${this.device.name} (${this.device.id})`);
+        debug(`${this.device.Name} (${this.device.Id})`);
 
         if (!this.actor.visible) { return; }
 
-        let { connected, paired } = this.device;
+        let { Connected, Paired } = this.device;
 
         // Title Bar
-        this.nameLabel.text = this.device.name;
+        this.nameLabel.text = this.device.Name;
 
         // TODO: might as well move this to actors.js
-        if (connected && paired && gsconnect.settings.get_boolean("show-battery")) {
+        if (Connected && Paired && gsconnect.settings.get_boolean("show-battery")) {
             this.deviceBattery.visible = true;
             //this.deviceBattery.update();
         } else {
@@ -427,10 +427,10 @@ class DeviceMenu extends PopupMenu.PopupMenuSection {
         }
 
         // Plugin/Status Bar visibility
-        this.pluginBar.visible = (connected && paired);
-        this.statusBar.visible = (!connected || !paired);
+        this.pluginBar.visible = (Connected && Paired);
+        this.statusBar.visible = (!Connected || !Paired);
 
-        if (!connected) {
+        if (!Connected) {
             this.statusLabel.text = _("Device is disconnected");
         } else if (!paired) {
             this.statusLabel.text = _("Device is unpaired");
@@ -453,14 +453,14 @@ class DeviceMenu extends PopupMenu.PopupMenuSection {
 class DeviceIndicator extends PanelMenu.Button {
 
     _init(object, iface) {
-        super._init(null, `${iface.name} Indicator`, false);
+        super._init(null, `${iface.Name} Indicator`, false);
 
         this.object = object;
         this.device = iface;
 
         // Device Icon
         this.icon = new St.Icon({
-            icon_name: this.device.symbolic_icon_name,
+            icon_name: this.device.SymbolicIconName,
             style_class: "system-status-icon"
         });
         this.actor.add_actor(this.icon);
@@ -477,7 +477,7 @@ class DeviceIndicator extends PanelMenu.Button {
     }
 
     _sync() {
-        debug(`${this.device.name} (${this.device.id})`);
+        debug(`${this.device.Name} (${this.device.Id})`);
 
         let { connected, paired } = this.device;
 
@@ -492,7 +492,7 @@ class DeviceIndicator extends PanelMenu.Button {
             this.actor.visible = true;
         }
 
-        this.icon.icon_name = this.device.symbolic_icon_name;
+        this.icon.icon_name = this.device.SymbolicIconName;
     }
 
     destroy() {
@@ -538,7 +538,7 @@ function _proxyMethods(info, iface) {
 // TODO: better
 function _proxyProperties(info, iface) {
     info.properties.map(property => {
-        Object.defineProperty(iface, property.name.toUnderscoreCase(), {
+        Object.defineProperty(iface, property.name, {
             get: () => {
                 return gsconnect.full_unpack(
                     iface.get_cached_property(property.name)
@@ -705,9 +705,9 @@ var ServiceIndicator = class ServiceIndicator extends PanelMenu.SystemIndicator 
 
         // It's a device
         if (iface.g_interface_name === "org.gnome.Shell.Extensions.GSConnect.Device") {
-            log(`GSConnect: Adding ${iface.name}`);
+            log(`GSConnect: Adding ${iface.Name}`);
 
-            this._devices[iface.id] = iface;
+            this._devices[iface.Id] = iface;
 
             iface.actions = Gio.DBusActionGroup.get(
                 iface.g_connection,
@@ -744,7 +744,7 @@ var ServiceIndicator = class ServiceIndicator extends PanelMenu.SystemIndicator 
         debug(iface.g_interface_name);
 
         if (iface.g_interface_name === "org.gnome.Shell.Extensions.GSConnect.Device") {
-            log(`GSConnect: Removing ${iface.name}`);
+            log(`GSConnect: Removing ${iface.Name}`);
 
             this._indicators[iface.g_object_path].destroy();
             this._menus[iface.g_object_path].destroy();
