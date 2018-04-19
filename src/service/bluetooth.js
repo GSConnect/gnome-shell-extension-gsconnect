@@ -10,13 +10,6 @@ const DBus = imports.modules.dbus;
 
 
 /**
- * Bluetooth UUIDs
- */
-const KDE_UUID = '185f3df4-3268-4e3f-9fca-d4d5059915bd';
-const SPP_UUID = '00001101-0000-1000-8000-00805f9b34fb';
-
-
-/**
  * org.bluez Interfaces
  */
 var BluezNode = Gio.DBusNodeInfo.new_for_xml(
@@ -34,6 +27,7 @@ var BluezNode = Gio.DBusNodeInfo.new_for_xml(
       <arg name="agent" type="o" direction="in"/> \
     </method> \
   </interface> \
+  \
   <interface name="org.bluez.ProfileManager1"> \
     <method name="RegisterProfile"> \
       <arg name="profile" type="o" direction="in"/> \
@@ -142,10 +136,12 @@ var Profile1Iface = BluezNode.lookup_interface("org.bluez.Profile1");
 /**
  * Service Discovery Protocol Record (KDE Connect)
  */
+const KDE_UUID = '185f3df4-3268-4e3f-9fca-d4d5059915bd';
+
 const SdpRecord = `<?xml version="1.0" encoding="utf-8" ?>
 <record>
+<!-- ServiceClassIDList -->
   <attribute id="0x0001">
-    <!-- ServiceClassIDList -->
     <sequence>
       <!-- Custom UUID -->
       <uuid value="${KDE_UUID}" />
@@ -155,12 +151,12 @@ const SdpRecord = `<?xml version="1.0" encoding="utf-8" ?>
       <uuid value="0x1101" />
     </sequence>
   </attribute>
+  <!-- ServiceID -->
   <attribute id="0x0003">
-    <!-- ServiceID -->
     <uuid value="${KDE_UUID}" />
   </attribute>
+  <!-- ProtocolDescriptorList -->
   <attribute id="0x0004">
-    <!-- ProtocolDescriptorList -->
     <sequence>
       <!-- RFCOMM -->
       <sequence>
@@ -169,20 +165,20 @@ const SdpRecord = `<?xml version="1.0" encoding="utf-8" ?>
       </sequence>
     </sequence>
   </attribute>
+  <!-- BrowseGroupList -->
   <attribute id="0x0005">
-    <!-- BrowseGroupList -->
     <sequence>
       <uuid value="0x1002" />
     </sequence>
   </attribute>
+  <!-- BluetoothProfileDescriptorList -->
   <attribute id="0x0009">
-    <!-- ProfileDescriptorList -->
     <sequence>
       <uuid value="0x1101" />
     </sequence>
   </attribute>
+  <!-- Service name -->
   <attribute id="0x0100">
-    <!-- Service name -->
     <text value="GSConnectBT" />
   </attribute>
 </record>`;
@@ -250,6 +246,7 @@ var ChannelService = GObject.registerClass({
         super._init();
 
 
+        // The exported Profile1 interface
         this._dbus = new DBus.ProxyServer({
             g_connection: Gio.DBus.session,
             g_instance: this,
@@ -268,47 +265,21 @@ var ChannelService = GObject.registerClass({
         );
     }
 
-    _getProfile() {
-        let channel = null;
-        let psm = null;
-
-        let sdpRecord = get_sdp_record(
-            'GSConnectBT',
-            this._sppUUID,
-            channel,
-            psm
-        );
-
+    _registerProfile() {
         let profile = {
             Name: new GLib.Variant('s', 'GSConnectBT'),
-            //Service: new GLib.Variant('s', 'spp char BLUETOOTH_KDE_UUID'),
+            //Service: new GLib.Variant('s', KDE_UUID),
             RequireAuthentication: new GLib.Variant('b', true),
             RequireAuthorization: new GLib.Variant('b', false),
             AutoConnect: new GLib.Variant('b', true),
-            ServiceRecord: new GLib.Variant('s', sdpRecord)
+            ServiceRecord: new GLib.Variant('s', SdpRecordTemplate)
         };
-
-        if (channel) {
-            profile.Channel = new GLib.Variant('q', channel);
-        }
-
-        if (psm) {
-            profile.PSM = new GLib.Variant('q', psm);
-        }
-
-        return profile;
-    }
-
-    _registerProfile() {
-        let profile = this._getProfile();
-
-        log('ABOUT TO REGISTER PROFILE');
 
         return this._profileManager.RegisterProfile(
             this._dbus.get_object_path(),
-            this._kdeUUID,
+            KDE_UUID,
             profile
-        );
+        ).then(result => log('GSConnect: Bluez profile registered'));
     }
 
     _setupObjManager(obj, res) {
