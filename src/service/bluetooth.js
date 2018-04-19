@@ -10,6 +10,13 @@ const DBus = imports.modules.dbus;
 
 
 /**
+ * Bluetooth UUIDs
+ */
+const KDE_UUID = '185f3df4-3268-4e3f-9fca-d4d5059915bd';
+const SPP_UUID = '00001101-0000-1000-8000-00805f9b34fb';
+
+
+/**
  * org.bluez Interfaces
  */
 var BluezNode = Gio.DBusNodeInfo.new_for_xml(
@@ -135,71 +142,50 @@ var Profile1Iface = BluezNode.lookup_interface("org.bluez.Profile1");
 /**
  * Service Discovery Protocol Record (KDE Connect)
  */
-const SdpRecordTemplate = '<?xml version="1.0" encoding="utf-8" ?> \
-<record> \
-  <attribute id="0x0001"> \
-    <!-- ServiceClassIDList --> \
-    <sequence> \
-      <uuid value="%s" />    <!-- Custom UUID --> \
-      <uuid value="0x%s" />  <!-- Custom UUID hex for Android --> \
-      <uuid value="0x1101" />  <!-- SPP profile --> \
-    </sequence> \
-  </attribute> \
-  <attribute id="0x0003"> \
-    <!-- ServiceID --> \
-    <uuid value="%s" /> \
-  </attribute> \
-  <attribute id="0x0004"> \
-    <!-- ProtocolDescriptorList --> \
-    <sequence> \
-      <sequence> \
-      <uuid value="0x0100" /> \
-      %s \
-      </sequence> \
-      <sequence> \
-      <uuid value="0x0003" /> \
-      %s \
-      </sequence> \
-    </sequence> \
-  </attribute> \
-  <attribute id="0x0005"> \
-    <!-- BrowseGroupList --> \
-    <sequence> \
-      <uuid value="0x1002" /> \
-    </sequence> \
-  </attribute> \
-  <attribute id="0x0009"> \
-    <!-- ProfileDescriptorList --> \
-    <sequence> \
-      <uuid value="0x1101" /> \
-    </sequence> \
-  </attribute> \
-  <attribute id="0x0100"> \
-    <!-- Service name --> \
-    <text value="%s" /> \
-  </attribute> \
-</record>';
-
-// OMG I'm a terrible person
-Number.prototype.phx = function(len) {
-    let str = this.toString(16);
-    return '0x' + '0'.repeat(len - str.length) + str;
-};
-
-
-function get_sdp_record(name, uuid, channel, psm) {
-    let channel_str = (channel) ? '<uint8 value="%s" />'.format(channel.phx(4)) : '';
-    let psm_str = (psm) ? '<uint8 value="%s" />'.format(psm.phx(4)) : '';
-
-    return SdpRecordTemplate.format(
-        uuid,                   // Custom UUID
-        uuid.replace('-', ''),  // Custom Android UUID
-        uuid,                   // Service UUID
-        channel_str,            // RFCOMM channel
-        psm_str,                // RFCOMM channel
-        name                    // ???
-    );
-};
+const SdpRecord = `<?xml version="1.0" encoding="utf-8" ?>
+<record>
+  <attribute id="0x0001">
+    <!-- ServiceClassIDList -->
+    <sequence>
+      <!-- Custom UUID -->
+      <uuid value="${KDE_UUID}" />
+      <!-- Custom UUID hex for Android -->
+      <uuid value="0x${KDE_UUID.split('-').join('')}" />
+      <!-- SPP (Serial Port Profile) -->
+      <uuid value="0x1101" />
+    </sequence>
+  </attribute>
+  <attribute id="0x0003">
+    <!-- ServiceID -->
+    <uuid value="${KDE_UUID}" />
+  </attribute>
+  <attribute id="0x0004">
+    <!-- ProtocolDescriptorList -->
+    <sequence>
+      <!-- RFCOMM -->
+      <sequence>
+        <uuid value="0x0003" />
+        <uint8 value="0x06" />
+      </sequence>
+    </sequence>
+  </attribute>
+  <attribute id="0x0005">
+    <!-- BrowseGroupList -->
+    <sequence>
+      <uuid value="0x1002" />
+    </sequence>
+  </attribute>
+  <attribute id="0x0009">
+    <!-- ProfileDescriptorList -->
+    <sequence>
+      <uuid value="0x1101" />
+    </sequence>
+  </attribute>
+  <attribute id="0x0100">
+    <!-- Service name -->
+    <text value="GSConnectBT" />
+  </attribute>
+</record>`;
 
 
 /**
@@ -263,8 +249,6 @@ var ChannelService = GObject.registerClass({
     _init() {
         super._init();
 
-        this._kdeUUID = '185f3df4-3268-4e3f-9fca-d4d5059915bd';
-        this._sppUUID = '00001101-0000-1000-8000-00805f9b34fb';
 
         this._dbus = new DBus.ProxyServer({
             g_connection: Gio.DBus.session,
