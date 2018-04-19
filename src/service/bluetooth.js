@@ -103,7 +103,7 @@ var BluezNode = Gio.DBusNodeInfo.new_for_xml(
     <method name="Release"/> \
     <method name="NewConnection"> \
       <arg name="object_path" type="o" direction="in"/> \
-      <arg name="socket" type="h" direction="in"/> \
+      <arg name="fd" type="h" direction="in"/> \
       <arg name="fd_properties" type="a{sv}" direction="in"/> \
     </method> \
     <method name="RequestDisconnection"> \
