@@ -103,7 +103,7 @@ var BluezNode = Gio.DBusNodeInfo.new_for_xml(
     <!-- Methods --> \
     <method name="Release"/> \
     <method name="NewConnection"> \
-      <arg name="object_path" type="o" direction="in"/> \
+      <arg name="device" type="o" direction="in"/> \
       <arg name="fd" type="h" direction="in"/> \
       <arg name="fd_properties" type="a{sv}" direction="in"/> \
     </method> \
@@ -248,7 +248,7 @@ var ChannelService = GObject.registerClass({
 
         // The exported Profile1 interface
         this._dbus = new DBus.ProxyServer({
-            g_connection: Gio.DBus.session,
+            g_connection: Gio.DBus.system,
             g_instance: this,
             g_interface_info: Profile1Iface,
             g_object_path: gsconnect.app_path
