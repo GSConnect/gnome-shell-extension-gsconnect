@@ -304,7 +304,7 @@ var Device = GObject.registerClass({
                 "org.gnome.Shell.Extensions.GSConnect.Device",
                 true
             ),
-            path: "/org/gnome/shell/extensions/gsconnect/device/" + deviceId + "/"
+            path: `/org/gnome/shell/extensions/gsconnect/device/${deviceId}/`
         });
 
         // This relies on GSettings being initialized
@@ -316,7 +316,7 @@ var Device = GObject.registerClass({
 
         // Export an object path for the device via the ObjectManager
         this._dbus_object = new Gio.DBusObjectSkeleton({
-            g_object_path: gsconnect.app_path + "/Device/" + deviceId.replace(/\W+/g, "_")
+            g_object_path: `${gsconnect.app_path}/Device/${deviceId.replace(/\W+/g, "_")}`
         });
         this.service.objectManager.export(this._dbus_object);
 
@@ -353,7 +353,7 @@ var Device = GObject.registerClass({
     }
 
     /** Device Properties */
-    get connected () { return this._connected; }
+    get connected () { return this._connected && this._channel; }
     get fingerprint () {
         if (this.connected && this._channel) {
             return this._channel.certificate.fingerprint();
@@ -638,6 +638,7 @@ var Device = GObject.registerClass({
 
     showNotification(params) {
         params = Object.assign({
+            id: GLib.DateTime.new_now_local().to_unix(),
             title: this.name,
             body: "",
             icon: new Gio.ThemedIcon({ name: this.symbolic_icon_name }),
@@ -888,7 +889,7 @@ var Device = GObject.registerClass({
                     handler = imports.service.plugins[name];
                     plugin = new handler.Plugin(this);
                 } catch (e) {
-                    debug(e);
+                    logError(e);
                     reject(e);
                 }
 
@@ -932,7 +933,7 @@ var Device = GObject.registerClass({
                 this._plugins.get(name).destroy();
                 this._plugins.delete(name);
             } catch (e) {
-                debug(e);
+                logError(e);
                 reject(e);
             }
 
