@@ -432,7 +432,7 @@ class DeviceMenu extends PopupMenu.PopupMenuSection {
 
         if (!Connected) {
             this.statusLabel.text = _("Device is disconnected");
-        } else if (!paired) {
+        } else if (!Paired) {
             this.statusLabel.text = _("Device is unpaired");
         }
     }
@@ -479,14 +479,14 @@ class DeviceIndicator extends PanelMenu.Button {
     _sync() {
         debug(`${this.device.Name} (${this.device.Id})`);
 
-        let { connected, paired } = this.device;
+        let { Connected, Paired } = this.device;
 
         // Device Indicator Visibility
         if (!gsconnect.settings.get_boolean("show-indicators")) {
             this.actor.visible = false;
-        } else if (!paired && !gsconnect.settings.get_boolean("show-unpaired")) {
+        } else if (!Paired && !gsconnect.settings.get_boolean("show-unpaired")) {
             this.actor.visible = false;
-        } else if (!connected && !gsconnect.settings.get_boolean("show-offline")) {
+        } else if (!Connected && !gsconnect.settings.get_boolean("show-offline")) {
             this.actor.visible = false;
         } else {
             this.actor.visible = true;
@@ -627,11 +627,11 @@ var ServiceIndicator = class ServiceIndicator extends PanelMenu.SystemIndicator 
     }
 
     _sync(menu) {
-        let { connected, paired } = menu.device;
+        let { Connected, Paired } = menu.device;
 
-        if (!paired && !gsconnect.settings.get_boolean("show-unpaired")) {
+        if (!Paired && !gsconnect.settings.get_boolean("show-unpaired")) {
             menu.actor.visible = false;
-        } else if (!connected && !gsconnect.settings.get_boolean("show-offline")) {
+        } else if (!Connected && !gsconnect.settings.get_boolean("show-offline")) {
             menu.actor.visible = false;
         } else {
             menu.actor.visible = true;
