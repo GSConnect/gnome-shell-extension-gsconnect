@@ -822,7 +822,6 @@ var Daemon = GObject.registerClass({
         this._initActions();
 
         // LanChannelService
-        // FIXME: endless loop on fail?
         try {
             this.lanService = new Lan.ChannelService();
 
@@ -840,7 +839,6 @@ var Daemon = GObject.registerClass({
             });
         } catch (e) {
             debug(e);
-            this.quit();
         }
 
         gsconnect.settings.bind(
