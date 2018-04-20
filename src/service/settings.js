@@ -266,6 +266,7 @@ var SidebarRow = GObject.registerClass({
         this.add(this.box);
 
         this.icon = new Gtk.Image({
+            icon_name: params.icon,
             pixel_size: 16,
             visible: true
         });
