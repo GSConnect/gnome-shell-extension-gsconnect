@@ -348,7 +348,7 @@ var Plugin = GObject.registerClass({
 
         if (notification) {
             notification.markDuplicate({
-                localId: event.type + "|" + event.time,
+                telId: event.type + "|" + event.time,
                 // TRANSLATORS: This is _specifically_ for matching missed call notifications on Android.
                 // This should _exactly_ match the Android notification that in english looks like "Missed call: John Lennon"
                 ticker: _("Missed call") + ": " + event.contact.name,
@@ -364,7 +364,7 @@ var Plugin = GObject.registerClass({
             window.receiveMessage(
                 event.contact,
                 event.number,
-                `<i>${event.content}</i>`
+                '<i>' + event.content + '</i>'
             );
             window.urgency_hint = true;
             window._notifications.push([
@@ -375,7 +375,7 @@ var Plugin = GObject.registerClass({
             // Tell the notification plugin to mark any duplicate read
             if (notification) {
                 notification.markDuplicate({
-                    localId: event.type + "|" + event.time,
+                    telId: event.type + "|" + event.time,
                     ticker: event.contact.name + ": " + event.content,
                     isCancel: true
                 });
@@ -400,7 +400,7 @@ var Plugin = GObject.registerClass({
 
         if (notification) {
             notification.markDuplicate({
-                localId: event.type + "|" + event.time,
+                telId: event.type + "|" + event.time,
                 ticker: event.contact.name + ": " + event.content
             });
         }
@@ -423,7 +423,7 @@ var Plugin = GObject.registerClass({
             // Tell the notification plugin to mark any duplicate read
             if (notification) {
                 notification.markDuplicate({
-                    localId: event.type + "|" + event.time,
+                    telId: "sms|" + event.time,
                     ticker: event.contact.name + ": " + event.content,
                     isCancel: true
                 });
@@ -609,7 +609,7 @@ var Plugin = GObject.registerClass({
 
             if (notification) {
                 notification.markDuplicate({
-                    localId: event.type + "|" + event.time,
+                    telId: event.type + "|" + event.time,
                     ticker: event.contact.name + ": " + event.content,
                     isCancel: true
                 });

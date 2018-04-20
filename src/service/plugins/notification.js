@@ -126,11 +126,12 @@ var Plugin = GObject.registerClass({
             }
         } else if (this.allow & 2) {
             if (packet.body.isCancel) {
+                // TODO: call org.gtk.Notifications->RemoveNotification()
                 this.device.withdraw_notification(packet.body.id);
                 this.untrackNotification(packet.body);
                 debug("closed notification");
             // Ignore previously posted notifications
-            } else if (this._getNotification(packet.body)) {
+            } else if (this._matchNotification(packet.body)) {
                 debug("ignored cached notification");
             } else if (packet.payloadSize) {
                 debug("new notification with payload");
@@ -151,49 +152,64 @@ var Plugin = GObject.registerClass({
      * Search the cache for a notification by data and return it or %false if
      * not found
      */
-    _getNotification(query) {
-        for (let notif of this._notifications) {
-            // @query is a full notification matching a timestamp (shown)
-            // We check for timestamp first since the device controls id
-            // turnover and timestamps only change if the phone resets.
-            if (notif.time && notif.time === query.time) {
-                debug("found notification with matching timestamp");
-                Object.assign(notif, query);
-                return notif;
-            // TODO: confirm this works...
-            // @query is a full notification matching an id (shown)
-            // We also have to check for id, since some applications update
-            // notifications (desktop-style) by reusing the id...
-            } else if (notif.id && notif.id === query.id) {
-                debug("found notification with matching id");
-                Object.assign(notif, query);
+    _matchNotification(query) {
+        for (let i = 0; i < this._notifications.length; i++) {
+            let notif = this._notifications[i];
 
-                // If we made it this far it's the same id, but different
-                // timestamp & ticker ("title: text") so the device probably
-                // considers it an 'update'
-                return (notif.ticker === query.ticker) ? notif : false;
-            } else if (notif.localId) {
+            if (notif.telId) {
                 // @query is a duplicate stub matching a GNotification id
-                // closeNotification(id|localId) or markDuplicate(localId)
-                if ([query.id, query.localId].indexOf(notif.localId) > -1) {
-                    debug("found duplicate with matching localId");
+                // closeNotification(id|telId) or markDuplicate(telId)
+                if (query.telId && query.telId === notif.telId ) {
+                    debug(`duplicate/matching telId: ${query.telId}`);
                     return notif;
                 // @query is a full notification matching an expected duplicate
                 // handlePacket(id)
-                } else if (query.time && notif.ticker === query.ticker) {
-                    debug("found duplicate with matching ticker");
+                } else if (query.appName && notif.ticker === query.ticker) {
+                    debug(`duplicate/matching ticker: ${query.ticker}`);
 
                     // Update the duplicate stub
                     Object.assign(notif, query);
 
                     // It's marked to be closed
                     if (notif.isCancel) {
-                        debug("closing duplicate notification");
-                        this.closeNotification(notif.id);
+                        debug(`duplicate/isCancel: ${notif.id}`);
+                        //this.closeNotification(notif.id);
+
+                        this.device.sendPacket({
+                            id: 0,
+                            type: "kdeconnect.notification.request",
+                            body: { cancel: notif.id }
+                        });
+                        this.untrackNotification(notif);
                     }
 
                     return notif;
                 }
+            // @query is a full notification matching a timestamp (shown)
+            // We check for timestamp first since the device controls id
+            // turnover and timestamps only change if the phone resets.
+            } else if (notif.time && notif.time === query.time) {
+                debug(`notification/matching timestamp: ${notif.id}`);
+                Object.assign(notif, query);
+                return notif;
+            // @query is a full notification matching an id (shown)
+            // We also have to check for id, since some applications update
+            // notifications (desktop-style) by reusing the id...
+            } else if (notif.id && notif.id === query.id) {
+                debug(`notification/matching id: ${notif.id}`);
+
+                // Same id, but different timestamp & ticker means it's likely
+                // an updated notification, so update the cache and return
+                // %false to re-send (update) the local notification
+                if (notif.ticker !== query.ticker) {
+                    debug(`notification/matching id/updated ticker: ${notif.ticker}`);
+                    Object.assign(notif, query);
+                    return notif;
+                }
+
+                debug(`notification/matching id/matching ticker: ${notif.ticker}`);
+                Object.assign(notif, query);
+                return notif;
             }
         }
 
@@ -354,119 +370,113 @@ var Plugin = GObject.registerClass({
         });
     }
 
-            );
+    /**
+     *
+     */
+    _parseTelephonyNotification(notif, contact, icon, type) {
+        let event = {
+            type: type,
+            contact: contact,
+            number: contact.numbers[0].number,
+            time: parseInt(notif.time)
+        };
 
-            this.device.sendPacket(packet);
-        });
+        // Update contact avatar
+        if (!contact.avatar && icon instanceof Gio.BytesIcon) {
+            debug("updating avatar for " + event.contact.name);
+            contact.avatar = GLib.build_filenamev([
+                Contacts.CACHE_DIR,
+                GLib.uuid_string_random() + ".jpeg"
+            ]);
+            GLib.file_set_contents(
+                contact.avatar,
+                icon.get_bytes().toArray().toString()
+            );
+            this.contacts._writeCache();
+        }
+
+        if (event.type === "sms") {
+            event.content = notif.text;
+        } else if (event.type === "missedCall") {
+            // TRANSLATORS: eg. Missed call from John Smith on Google Pixel
+            event.content = _("Missed call at %s").format(event.time);
+        }
+
+        return event;
     }
 
     showNotification(packet, icon) {
         return new Promise((resolve, reject) => {
-            let notif = {};
+            // We use the timestamp as an the effective ID, since phone apps
+            // reuse their ID's at whim.
+            let notif = {
+                id: packet.body.time, // WTF: really...
+                icon: icon
+            };
 
             // Check if this is a missed call or SMS notification
-            // TODO: maybe detect by app id
-            let isMissedCall = (packet.body.title === _("Missed call"));
+            let isMissedCall = (packet.body.id.indexOf("MissedCall") > -1);
             let isSms = (packet.body.id.indexOf("sms") > -1);
 
             // If it's an event we support, look for a known contact, but don't
             // create a new one since we'll only have name *or* number with no
             // decent way to tell which
-            let contact;
+            let action, contact;
 
-            if (isSms && this.device.lookup_action("replySms")) {
+            if (isSms && this.device.get_action_enabled("smsNotification")) {
                 debug("An SMS notification");
                 contact = this.contacts.query({
                     name: packet.body.title,
                     number: packet.body.title,
                     single: true
                 });
-            } else if (isMissedCall && this.device.lookup_action("replySms")) {
+                action = this.device.lookup_action("smsNotification");
+            } else if (isMissedCall && this.device.get_action_enabled("callNotification")) {
                 debug("A missed call notification");
                 contact = this.contacts.query({
                     name: packet.body.text,
                     number: packet.body.text,
                     single: true
                 });
+                action = this.device.lookup_action("callNotification");
             }
 
             // This is a missed call or SMS from a known contact
             if (contact) {
                 debug("Found known contact");
 
-                if (!contact.avatar && icon) {
-                    contact.avatar = GLib.build_filenamev([
-                        Contacts.CACHE_DIR,
-                        GLib.uuid_string_random() + ".jpeg"
-                    ]);
-                    // FIXME: not saving proper (data)?
-                    log("ICON BYTES: " + icon.get_bytes());
-                    GLib.file_set_contents(
-                        contact.avatar,
-                        icon.get_bytes().toArray().toString()
-                    );
-                } else if (contact.avatar && !icon) {
-                    icon = Contacts.getPixbuf(contact.avatar);
-                }
+                let event = this._parseTelephonyNotification(
+                    packet.body,
+                    contact,
+                    icon,
+                    (isMissedCall) ? "missedCall" : "sms"
+                );
 
-                // Format as a missed call notification
-                if (isMissedCall) {
-                    notif.title = _("Missed Call");
-                    notif.body = _("Missed call from %s on %s").format(
-                        contact.name || contact.numbers[0].number,
-                        this.device.name
-                    );
-                    notif.buttons = [{
-                        action: "replySms",
-                        // TRANSLATORS: Reply to a missed call by SMS
-                        label: _("Message"),
-                        params: {
-                            type: "missedCall",
-                            contact: contact,
-                            number: contact.numbers[0].number,
-                            time: packet.body.time,
-                            content: packet.body.text
-                        }
-                    }];
-                    notif.priority = Gio.NotificationPriority.NORMAL;
-                // Format as an SMS notification
-                } else if (isSms) {
-                    notif.title = contact.name || contact.numbers[0].number;
-                    notif.body = packet.body.text;
-                    notif.action = {
-                        name: "replySms",
-                        params: {
-                            type: "sms",
-                            contact: contact,
-                            number: contact.numbers[0].number,
-                            time: packet.body.time,
-                            content: packet.body.text
-                        }
-                    };
-                    notif.priority = Gio.NotificationPriority.HIGH;
-                }
+                action.activate(gsconnect.full_pack(event));
+                this.trackNotification(packet.body);
+                resolve(true);
             // A regular notification or notification from an unknown contact
             } else {
                 // Ignore 'appName' if it's the same as 'title' or this is SMS
                 if (packet.body.appName === packet.body.title || isSms) {
-                    notif.set_title(packet.body.title);
-                    notif.set_body(packet.body.text);
+                    notif.title = packet.body.title;
+                    notif.body = packet.body.text;
                 // Otherwise use the appName as the title
                 } else {
-                    notif.set_title(packet.body.appName);
-                    notif.set_body(packet.body.ticker);
+                    notif.title = packet.body.appName;
+                    notif.body = packet.body.ticker;
                 }
             }
 
             // If we don't have an avatar or payload icon, fallback on
             // notification type, appName then device type
-            if (!icon) {
+            if (!notif.icon) {
                 if (isMissedCall) {
-                    icon = new Gio.ThemedIcon({ name: "call-missed-symbolic" });
+                    notif.icon = new Gio.ThemedIcon({ name: "call-missed-symbolic" });
                 } else if (isSms) {
-                    icon = new Gio.ThemedIcon({ name: "sms-symbolic" });
+                    notif.icon = new Gio.ThemedIcon({ name: "sms-symbolic" });
                 } else {
-                    icon = new Gio.ThemedIcon({
+                    notif.icon = new Gio.ThemedIcon({
                         names: [
                             packet.body.appName.toLowerCase().replace(" ", "-"),
                             this.device.type + "-symbolic"
@@ -491,7 +501,7 @@ var Plugin = GObject.registerClass({
     }
 
     untrackNotification(notif) {
-        let cachedNotif = this._getNotification(notif);
+        let cachedNotif = this._matchNotification(notif);
 
         if (cachedNotif) {
             let index_ = this._notifications.indexOf(cachedNotif);
@@ -503,7 +513,7 @@ var Plugin = GObject.registerClass({
     /**
      * Mark a notification as handled by Telephony.
      * @param {Object} notif - A notification stub
-     * @param {String} notif.localId - The local GNotification Id
+     * @param {String} notif.telId - The local GNotification Id
      * @param {String} notif.ticker - The expected 'ticker' field
      * @param {Boolean} [notif.isCancel] - Whether the notification should be closed
      */
@@ -511,14 +521,13 @@ var Plugin = GObject.registerClass({
         debug(notif);
 
         // Check if this is a known duplicate
-        let cachedNotif = this._getNotification(notif);
+        let cachedNotif = this._matchNotification(notif);
 
         // If we're asking to close it...
         if (cachedNotif && notif.isCancel) {
             // ...close it now if we know the remote id
             if (cachedNotif.id) {
-                debug("closing notification '" + cachedNotif.id + "'");
-                debug("closing duplicate notification");
+                debug(`${this.device.name}: closing duplicate notification ${cachedNotif.id}`);
                 this.closeNotification(cachedNotif.id);
             // ...or mark it to be closed when we do
             } else {
@@ -534,17 +543,26 @@ var Plugin = GObject.registerClass({
 
     /**
      * Close a remote notification and remove it from the cache
-     * @param {string} timestamp - The remote notification timestamp
+     * @param {string} query - The data used to find the notification
      */
-    closeNotification(timestamp) {
-        debug(timestamp);
+    closeNotification(query) {
+        debug(query);
 
-        // Check if this is a known notification (by timestamp)
-        let cachedNotif = this._getNotification({ time: timestamp });
+        let cachedNotif;
+
+        if (query.startsWith('sms') || query.startsWith('missedCall')) {
+            cachedNotif = this._matchNotification({ telId: query });
+        } else {
+            cachedNotif = this._matchNotification({ id: query });
+        }
+
+        // Check if this is a known notification
+        //let cachedNotif = this._matchNotification({ id: query });
+        log("cachedNotif: " + cachedNotif);
 
         // If it is known and we have the remote id we can close it...
         if (cachedNotif && cachedNotif.hasOwnProperty("id")) {
-            debug("closing notification '" + cachedNotif.id + "'");
+            debug(`${this.device.name}: closing duplicate notification ${cachedNotif.id}`);
 
             this.device.sendPacket({
                 id: 0,
@@ -554,7 +572,7 @@ var Plugin = GObject.registerClass({
             this.untrackNotification(cachedNotif);
         // ...or we mark it to be closed on arrival if it is known
         } else if (cachedNotif) {
-            debug("marking duplicate notification to be closed");
+            debug(`${this.device.name}: marking duplicate notification to be closed`);
             cachedNotif.isCancel = true;
         }
     }
