@@ -642,7 +642,7 @@ var DeviceSettings = GObject.registerClass({
         this.device_icon.icon_name = this.device.icon_name;
 
         // Settings Pages
-        this._batteryBar();
+        //this._batteryBar();
         this._sharingSettings();
         this._runcommandSettings();
         this._notificationSettings();
@@ -656,8 +656,10 @@ var DeviceSettings = GObject.registerClass({
             widget.switcher.destroy();
             widget.row.destroy();
 
-            if (this._infoBattery) {
-                this.device._plugins.get("battery").disconnect(this._infoBattery);
+            if (widget._batteryId) {
+                widget.device._plugins.get("battery").disconnect(
+                    widget._batteryId
+                );
             }
         });
     }
@@ -768,15 +770,14 @@ var DeviceSettings = GObject.registerClass({
         if (battery) {
             this.battery_level.get_style_context().add_class("battery-bar");
 
-            this._infoBattery = battery.connect("notify", (plugin) => {
-                let level = battery.level;
-                let active = (level > -1);
+            this._batteryId = battery.connect("notify", (plugin) => {
+                let level = plugin.level;
 
-                this.battery_level.visible = active;
-                this.battery_condition.visible = active;
-                this.battery_percent.visible = active;
+                this.battery_level.visible = (level > -1);
+                this.battery_condition.visible = (level > -1);
+                this.battery_percent.visible = (level > -1);
 
-                if (active) {
+                if (level > -1) {
                     this.battery_level.value = level;
                     this.battery_percent.label = _("%d%%").format(level);
 
@@ -800,6 +801,10 @@ var DeviceSettings = GObject.registerClass({
                 this.battery_condition.visible = false;
                 this.battery_percent.visible = false;
             });
+        } else {
+            this.battery_level.visible = false;
+            this.battery_condition.visible = false;
+            this.battery_percent.visible = false;
         }
     }
 
