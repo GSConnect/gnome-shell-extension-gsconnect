@@ -266,7 +266,6 @@ var SidebarRow = GObject.registerClass({
         this.add(this.box);
 
         this.icon = new Gtk.Image({
-            icon_name: params.icon_name,
             pixel_size: 16,
             visible: true
         });
@@ -663,6 +662,16 @@ var DeviceSettings = GObject.registerClass({
         });
     }
 
+    _getSymbolicIcon(widget) {
+        if (!this.paired) {
+            let icon = this.device.icon_name;
+            icon = (icon === "computer") ? "desktop" : icon;
+            return icon + "disconnected";
+        }
+
+        return this.device.icon_name + "-symbolic";
+    }
+
     _getSettings(name) {
         if (this._gsettings === undefined) {
             this._gsettings = {};
@@ -733,7 +742,9 @@ var DeviceSettings = GObject.registerClass({
             );
         }
 
-        this.row.icon.icon_name = this._getSymbolicIconName();
+        if (this.row) {
+            this.row.icon.icon_name = this._getSymbolicIcon();
+        }
     }
 
     _onStatusRowActivated(box, row) {
