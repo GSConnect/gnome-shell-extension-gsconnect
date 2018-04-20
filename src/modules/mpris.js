@@ -83,7 +83,7 @@ var Manager = GObject.registerClass({
 
             this._fdo.init_promise().then(result => {
                 this._nameOwnerChanged = this._fdo.connect(
-                    'name-owner-changed',
+                    'NameOwnerChanged',
                     (proxy, name, oldOwner, newOwner) => {
                         if (name.startsWith('org.mpris.MediaPlayer2')) {
                             this._updatePlayers();
