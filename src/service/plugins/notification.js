@@ -315,7 +315,7 @@ var Plugin = GObject.registerClass({
                 };
 
                 if (icon) {
-                    this._uploadIcon();
+                    this._uploadIcon(packet, icon);
                 } else {
                     this.device.sendPacket(packet);
                 }
