@@ -101,9 +101,8 @@ var Plugin = GObject.registerClass({
     _registerAction(name, meta) {
         let action = new Device.Action({
             name: name,
-            meta: meta,
             parameter_type: (meta.signature) ? new GLib.VariantType(meta.signature) : null
-        }, this);
+        }, meta);
         action.set_enabled(action.allow & this.allow);
 
         action.connect("activate", this._activateAction.bind(this));

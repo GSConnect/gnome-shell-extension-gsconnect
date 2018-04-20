@@ -28,16 +28,9 @@ var Action = GObject.registerClass({
     }
 }, class Action extends Gio.SimpleAction {
 
-    _init(params, context) {
-        // TODO
-        this.meta = params.meta;
-        delete params.meta;
-
+    _init(params, meta) {
+        this.meta = meta;
         this._allow = this.meta.allow;
-
-        // TODO
-        this._context = context;
-        this.device = context.device;
 
         super._init(params);
     }
@@ -53,35 +46,126 @@ var Action = GObject.registerClass({
 
 
 var Menu = GObject.registerClass({
-    GTypeName: "GSConnectDeviceMenu"
+    GTypeName: 'GSConnectDeviceMenu'
 }, class Menu extends Gio.Menu {
 
-    _init(device) {
+    _init() {
         super._init();
-        this.device = device;
     }
 
-    add(name, params) {
-        //debug(name);
+    /**
+     * Return the index of an item in the menu by attribute and value
+     * @param {String} name - The attribute name (eg. 'label', 'action')
+     * @param {*} - The value of the attribute
+     * @return {Number} - The index of the item or %-1 if not found
+     */
+    _get(name, value) {
+        let len = this.get_n_items();
 
+        for (let i = 0; i < len; i++) {
+            try {
+                let item = this.get_item_attribute_value(i, name, null).unpack();
+
+                if (item === value) {
+                    return i;
+                }
+            } catch (e) {
+                continue;
+            }
+        }
+
+        return -1;
+    }
+
+    /**
+     * Remove an item from the menu by attribute and value
+     * @param {String} name - The attribute name (eg. 'label', 'action')
+     * @param {*} - The value of the attribute
+     * @return {Number} - The index of the removed item or %-1 if not found
+     */
+    _remove(name, value) {
+        let index = this._get(name, value);
+
+        if (index > -1) {
+            this.remove(index);
+        }
+
+        return index;
+    }
+
+    /**
+     * Return the index of the first GMenuItem found with @action
+     * @param {String} name - The action name (without scope)
+     * @return {Number} - The index of the action
+     */
+    get_action(name) {
+        return this._get('action', `device.${name}`);
+    }
+
+    /**
+     * Add a GMenuItem for a plugin action
+     * @param {String} name - The action name (without scope)
+     * @param {Object} action - The action meta
+     * @return {Number} - The index of the added item
+     */
+    add_action(name, action) {
         let item = new Gio.MenuItem();
-        item.set_label(params.summary);
+        item.set_label(action.summary);
         item.set_icon(
             new Gio.ThemedIcon({
-                names: [ params.icon_name || "application-x-executable-symbolic" ]
+                name: action.icon_name || 'application-x-executable-symbolic'
             })
         );
-
-        // Always (ssav) => [object_path, action_name, method_args]
-        let parameter = new GLib.Variant(
-            "(ssav)", [this.device._dbus.get_object_path(), name, []]
-        );
-
-        // In the case of actions with variable parameters, the MenuModel is
-        // really only a source of metadata for activating the action directly.
-        item.set_action_and_target_value(name, parameter);
+        item.set_detailed_action(`device.${name}`);
 
         this.append_item(item);
+
+        return this.get_n_items();
+    }
+
+    /**
+     * Remove a GMenuItem by action name, with or without group prefix
+     * @param {String} name - Action name of the item to remove
+     * @return {Number} - The index of the removed item or -1 if not found
+     */
+    remove_action(name) {
+        let index = this._remove('action', name);
+
+        if (index < 0) {
+            return this._remove('action', `device.${name}`);
+        }
+
+        return index;
+    }
+
+    replace_action(name, item) {
+        let index = this.remove_action(name);
+        this.insert_item(index, item);
+    }
+
+    /**
+     * Remove a GMenuItem by label
+     * @param {String} name - Label of the item to remove
+     * @return {Number} - The index of the removed item or -1 if not found
+     */
+    remove_named(name) {
+        return this._remove('label', name);
+    }
+
+    /**
+     * Replace a GMenuItem by label with another. If @name is not found @item
+     * will be appended to the end of the menu.
+     * @param {String} name - Label of the item to replace
+     * @param {Gio.MenuItem} item - Menu item to replace the removed item
+     */
+    replace_named(name, item) {
+        let index = this.remove_named(name);
+
+        if (index > -1) {
+            this.insert_item(index, item);
+        } else {
+            this.append_item(item);
+        }
     }
 });
 
@@ -251,11 +335,13 @@ var Device = GObject.registerClass({
             this
         );
 
-        this.menu = new Menu(this);
+        this.menu = new Menu();
         this._menuId = this._dbus.get_connection().export_menu_model(
             this._dbus.get_object_path(),
             this.menu
         );
+
+        this._registerActions();
 
         // Created for an incoming TCP Connection
         if (params.channel) {
@@ -264,17 +350,6 @@ var Device = GObject.registerClass({
         } else {
             this.activate();
         }
-    }
-
-    // TODO: not sure about these...
-    _pairActions() {
-        let action = new Action({
-            name: "acceptPair",
-            summary: "Accept Pair",
-            icon_name: "channel-insecure-symbolic"
-        });
-        action.connect("activate", () => this[name]());
-        this.add_action(action);
     }
 
     /** Device Properties */
@@ -499,6 +574,58 @@ var Device = GObject.registerClass({
     }
 
     /**
+     * Stock device actions
+     */
+    _registerActions() {
+        let acceptPair = new Action(
+            {
+                name: "acceptPair",
+                parameter_type: new GLib.VariantType("v")
+            },
+            {
+                summary: _("Accept Pair"),
+                description: _("Accept an incoming pair request"),
+                icon_name: "channel-insecure-symbolic"
+            }
+        );
+        acceptPair.connect("activate", this.acceptPair.bind(this));
+        this.add_action(acceptPair);
+
+        let rejectPair = new Action(
+            {
+                name: "rejectPair",
+                parameter_type: new GLib.VariantType("v")
+            },
+            {
+                summary: _("Reject Pair"),
+                description: _("Reject an incoming pair request"),
+                icon_name: "channel-insecure-symbolic"
+            }
+        );
+        rejectPair.connect("activate", this.rejectPair.bind(this));
+        this.add_action(rejectPair);
+
+        let viewFolder = new Action(
+            {
+                name: "viewFolder",
+                parameter_type: new GLib.VariantType("s")
+            },
+            {
+                summary: _("View Folder"),
+                description: _("Open a folder for viewing"),
+                icon_name: "folder-open-symbolic"
+            }
+        );
+        viewFolder.connect("activate", this.viewFolder.bind(this));
+        this.add_action(viewFolder);
+    }
+
+    viewFolder(action, parameter) {
+        let path = gsconnect.full_unpack(parameter);
+        Gio.AppInfo.launch_default_for_uri(`file://${path}`, null);
+    }
+
+    /**
      * Device notifications
      */
     send_notification(id, notification) {
@@ -526,29 +653,37 @@ var Device = GObject.registerClass({
         notif.set_priority(params.priority);
 
         if (params.action) {
+            if (!params.action.params && params.action.params !== false) {
+                params.action.params = "";
+            }
+
             notif.set_default_action_and_target(
                 "app.deviceAction",
                 new GLib.Variant("(ssv)", [
                     this._dbus.get_object_path(),
                     params.action.name,
-                    params.action.params ? gsconnect.full_pack(params.action.params) : null
+                    gsconnect.full_pack(params.action.params)
                 ])
             );
         }
 
         for (let button of params.buttons) {
+            if (!button.params && button.params !== false) {
+                button.params = "";
+            }
+
             notif.add_button_with_target(
-                button.label,
+                button.summary,
                 "app.deviceAction",
                 new GLib.Variant("(ssv)", [
                     this._dbus.get_object_path(),
                     button.action,
-                    button.params ? gsconnect.full_pack(button.params) : null
+                    gsconnect.full_pack(button.params)
                 ])
             );
         }
 
-        this.send_notification("tester", notif); // FIXME: id
+        this.send_notification(params.id, notif);
     }
 
     /**
@@ -607,13 +742,13 @@ var Device = GObject.registerClass({
             buttons: [
                 {
                     action: "rejectPair",
-                    label: _("Reject"),
-                    params: null
+                    summary: _("Reject"),
+                    params: "."
                 },
                 {
                     action: "acceptPair",
-                    label: _("Accept"),
-                    params: null
+                    summary: _("Accept"),
+                    params: "."
                 }
             ]
         });
