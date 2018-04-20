@@ -841,6 +841,13 @@ var Daemon = GObject.registerClass({
             debug(e);
         }
 
+        // BluetoothChannelService
+        try {
+            this.bluetoothService = new Bluetooth.ChannelService();
+        } catch (e) {
+            debug(e);
+        }
+
         gsconnect.settings.bind(
             'public-name',
             this,
@@ -966,6 +973,7 @@ var Daemon = GObject.registerClass({
         log('GSConnect: Shutting down');
 
         this.lanService.destroy();
+        this.bluetoothService.destroy();
     }
 });
 
