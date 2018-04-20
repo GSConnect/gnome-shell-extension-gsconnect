@@ -394,7 +394,7 @@ var SettingsWindow = GObject.registerClass({
     ]
 }, class SettingsWindow extends Gtk.ApplicationWindow {
 
-    _init(params={}) {
+    _init(params) {
         Gtk.Widget.set_connect_func.call(this, (builder, obj, signalName, handlerName, connectObj, flags) => {
             obj.connect(signalName, this[handlerName].bind(this));
         });
@@ -419,7 +419,7 @@ var SettingsWindow = GObject.registerClass({
             5,
             () => {
                 if (this.sidebar.get_visible_child_name() === "switcher") {
-                    this.service.broadcast();
+                    this.application.broadcast();
                 }
                 return true;
             }
