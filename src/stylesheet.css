@@ -12,7 +12,7 @@
                 StLabel
                 StIcon
         StBoxLayout.gsconnect-plugin-bar
-            StButton.gsconnect-plugin-button (inherits from .system-menu-action)
+            StButton.gsconnect-menu-button (inherits from .system-menu-action)
                 StIcon
         StBoxLayout.gsconnect-status-bar
             StLabel
@@ -60,13 +60,13 @@
     spacing: 6px;
 }
 
-.gsconnect-plugin-button {
+.gsconnect-menu-button {
     border: none;
     border-radius: 16px;
     padding: 8px;
 }
 
-.gsconnect-plugin-button:hover, .gsconnect-plugin-button:focus {
+.gsconnect-menu-button:hover, .gsconnect-menu-button:focus {
     border: none;
     padding: 8px;
 }
@@ -84,7 +84,7 @@
     margin: 0;
 }
 
-.aggregate-menu .popup-sub-menu .gsconnect-plugin-button:first-child {
+.aggregate-menu .popup-sub-menu .gsconnect-menu-button:first-child {
     border: none;
     border-radius: 16px;
     padding: 8px;

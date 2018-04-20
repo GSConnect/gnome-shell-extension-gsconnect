@@ -28,6 +28,7 @@ const _bootstrap = imports._bootstrap;
 const _ = gsconnect._;
 const Actors = imports.actors;
 const DBus = imports.modules.dbus;
+const Menu = imports.shell.menu;
 
 
 /**
@@ -313,10 +314,8 @@ class DeviceMenu extends PopupMenu.PopupMenuSection {
         this.titleBar.add_child(this.deviceBattery);
 
         // Plugin Bar
-        // FIXME FIXME FIXME: this needs to be a flowbox now
-        this.pluginBar = new St.BoxLayout({
-            style_class: "gsconnect-plugin-bar"
-        });
+        this.pluginBar = new Menu.IconFlowBox(iface.gmenu, iface.gactions);
+        this.pluginBar.connect('submenu-toggle', this._onSubmenuToggle.bind(this));
         this.controlBox.add_child(this.pluginBar);
 
         // Status Bar
@@ -333,78 +332,33 @@ class DeviceMenu extends PopupMenu.PopupMenuSection {
         });
         this.statusBar.add_child(this.statusLabel);
 
-        // List Panel
-        this.listPanel = new PopupMenu.PopupMenuSection();
-        this.listPanel.actor.style_class = "popup-sub-menu";
-        this.listPanel.actor.visible = false;
-        this.listPanel._getTopMenu().connect("open-state-changed", (actor, open) => {
-            if (!open) {
-//                this.sftpButton.checked = false;
-//                this.runcommandButton.checked = false;
-//                this.listPanel.actor.visible = false;
+        // Hide the submenu when the device menu is closed
+        this._getTopMenu().connect('open-state-changed', (actor, open) => {
+            if (!open && this._submenu) {
+                this.box.remove_child(this._submenu.actor);
+                this._submenu = undefined;
             }
         });
-        this.addMenuItem(this.listPanel);
-
-        // GActions
-        this._gactions = Gio.DBusActionGroup.get(
-            this.device.g_connection,
-            this.device.g_name,
-            this.device.g_object_path
-        );
-        this._gactionsId = [];
-
-        for (let signal of ["enabled-changed", "added", "removed"]) {
-            this._gactionsId.push(
-                this._gactions.connect("action-" + signal, this._syncItems.bind(this))
-            );
-        }
-
-        this._buttons = {};
-
-        this.actor.connect("notify::visible", this._sync.bind(this));
 
         // Watch GSettings & Properties
         this._gsettingsId = gsconnect.settings.connect("changed", this._sync.bind(this));
         this._propertiesId = this.device.connect("g-properties-changed", this._sync.bind(this));
-
-        // GMenu
-        this._gmenu = Gio.DBusMenuModel.get(
-            this.device.g_connection,
-            this.device.g_name,
-            this.device.g_object_path
-        );
-
-        this._gmenuId = this._gmenu.connect("items-changed", this._syncItems.bind(this));
+        this.actor.connect("notify::mapped", this._sync.bind(this));
 
         // Init
-        this._syncItems();
-        this._sync(this.device);
+        this._sync();
     }
 
-    // TODO: sortable buttons...gsettings? dnd?
-    _sort() {
-    }
+    _onSubmenuToggle(box, button) {
+        if (this._submenu) {
+            this.box.remove_child(this._submenu.actor);
+        }
 
-    // TODO: destroy withdrawn items
-    _syncItems() {
-        for (let item of this._gmenu) {
-            if (!this._buttons[item.action]) {
-                this._buttons[item.action] = new Actors.MenuButton({
-                    gmenu: this._gmenu,
-                    gactions: this._gactions,
-                    item: item
-                });
-                this._buttons[item.action].connect("clicked", () => {
-                    this._getTopMenu().close(null);
-                });
-
-                this.pluginBar.add_child(this._buttons[item.action]);
-            }
-
-            this._buttons[item.action].visible = this._gactions.get_action_enabled(
-                item.action
-            );
+        if (this._submenu !== button.submenu) {
+            this._submenu = button.submenu;
+            this.box.add_child(this._submenu.actor);
+        } else {
+            this._submenu = undefined;
         }
     }
 
@@ -421,7 +375,7 @@ class DeviceMenu extends PopupMenu.PopupMenuSection {
         // TODO: might as well move this to actors.js
         if (Connected && Paired && gsconnect.settings.get_boolean("show-battery")) {
             this.deviceBattery.visible = true;
-            //this.deviceBattery.update();
+            this.deviceBattery.update();
         } else {
             this.deviceBattery.visible = false;
         }
@@ -438,9 +392,6 @@ class DeviceMenu extends PopupMenu.PopupMenuSection {
     }
 
     destroy() {
-        this._gactionsId.map(id => this.device.actions.disconnect(id));
-        this._gmenu.disconnect(this._gmenuId);
-
         this.device.disconnect(this._propertiesId);
         gsconnect.settings.disconnect(this._gsettingsId);
 
@@ -615,10 +566,7 @@ var ServiceIndicator = class ServiceIndicator extends PanelMenu.SystemIndicator 
             gsconnect.app_path,
             null,
             null,
-            (obj, res) => {
-                this.manager = Gio.DBusObjectManagerClient.new_finish(res);
-                this._setupObjManager();
-            }
+            this._setupObjManager.bind(this)
         );
     }
 
@@ -638,7 +586,9 @@ var ServiceIndicator = class ServiceIndicator extends PanelMenu.SystemIndicator 
         }
     }
 
-    _setupObjManager() {
+    _setupObjManager(obj, res) {
+        this.manager = Gio.DBusObjectManagerClient.new_finish(res);
+
         if (!this.service) {
             this._startService();
         }
@@ -709,11 +659,21 @@ var ServiceIndicator = class ServiceIndicator extends PanelMenu.SystemIndicator 
 
             this._devices[iface.Id] = iface;
 
-            iface.actions = Gio.DBusActionGroup.get(
+            // GActions
+            iface.gactions = Gio.DBusActionGroup.get(
                 iface.g_connection,
                 iface.g_name,
                 iface.g_object_path
             );
+            iface.gactions.list_actions();
+
+            // GMenu
+            iface.gmenu = Gio.DBusMenuModel.get(
+                iface.g_connection,
+                iface.g_name,
+                iface.g_object_path
+            );
+
             iface.service = this.service;
 
             // Currently we only setup methods for Device interfaces, and
