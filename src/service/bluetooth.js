@@ -138,50 +138,10 @@ var Profile1Iface = BluezNode.lookup_interface("org.bluez.Profile1");
  */
 const KDE_UUID = '185f3df4-3268-4e3f-9fca-d4d5059915bd';
 
-const SdpRecord = `<?xml version="1.0" encoding="utf-8" ?>
-<record>
-<!-- ServiceClassIDList -->
-  <attribute id="0x0001">
-    <sequence>
-      <!-- Custom UUID -->
-      <uuid value="${KDE_UUID}" />
-      <!-- Custom UUID hex for Android -->
-      <uuid value="0x${KDE_UUID.split('-').join('')}" />
-      <!-- SPP (Serial Port Profile) -->
-      <uuid value="0x1101" />
-    </sequence>
-  </attribute>
-  <!-- ServiceID -->
-  <attribute id="0x0003">
-    <uuid value="${KDE_UUID}" />
-  </attribute>
-  <!-- ProtocolDescriptorList -->
-  <attribute id="0x0004">
-    <sequence>
-      <!-- RFCOMM -->
-      <sequence>
-        <uuid value="0x0003" />
-        <uint8 value="0x06" />
-      </sequence>
-    </sequence>
-  </attribute>
-  <!-- BrowseGroupList -->
-  <attribute id="0x0005">
-    <sequence>
-      <uuid value="0x1002" />
-    </sequence>
-  </attribute>
-  <!-- BluetoothProfileDescriptorList -->
-  <attribute id="0x0009">
-    <sequence>
-      <uuid value="0x1101" />
-    </sequence>
-  </attribute>
-  <!-- Service name -->
-  <attribute id="0x0100">
-    <text value="GSConnectBT" />
-  </attribute>
-</record>`;
+const SdpRecord = Gio.resources_lookup_data(
+    gsconnect.app_path + '/' + gsconnect.app_id + '.sdp.xml',
+    Gio.ResourceLookupFlags.NONE
+).toArray().toString();
 
 
 /**

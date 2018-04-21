@@ -85,7 +85,7 @@ gsconnect.resource._register();
 gsconnect.dbusinfo = new Gio.DBusNodeInfo.new_for_xml(
     Gio.resources_lookup_data(
         gsconnect.app_path + "/" + gsconnect.app_id + ".xml",
-        0
+        Gio.ResourceLookupFlags.NONE
     ).toArray().toString()
 );
 gsconnect.dbusinfo.nodes.forEach(info => info.cache_build());
