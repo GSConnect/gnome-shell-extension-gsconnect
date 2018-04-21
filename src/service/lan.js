@@ -379,7 +379,7 @@ var Channel = GObject.registerClass({
     _init(deviceId) {
         super._init();
 
-        this.daemon = Gio.Application.get_default();
+        this.service = Gio.Application.get_default();
 
         // We need this to lookup the certificate in GSettings
         this.identity = { body: { deviceId: deviceId } };
@@ -443,7 +443,7 @@ var Channel = GObject.registerClass({
                     close_fd: false // We're going to re-use the socket
                 })
             });
-            _output_stream.put_string(this.daemon.identity.toData(), null);
+            _output_stream.put_string(this.service.identity.toData(), null);
             _output_stream.close(null);
 
             resolve(connection);
@@ -515,7 +515,7 @@ var Channel = GObject.registerClass({
                 connection,
                 connection.socket.remote_address // TODO: incompatible wiht bluez?
             );
-            connection.set_certificate(this.daemon.certificate);
+            connection.set_certificate(this.service.certificate);
 
             resolve(this._handshakeTls(connection));
         });
@@ -528,7 +528,7 @@ var Channel = GObject.registerClass({
         return new Promise((resolve, reject) => {
             connection = Gio.TlsServerConnection.new(
                 connection,
-                this.daemon.certificate
+                this.service.certificate
             );
 
             resolve(this._handshakeTls(connection));
