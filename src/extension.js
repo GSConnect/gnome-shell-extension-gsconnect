@@ -24,7 +24,7 @@ window.gsconnect = {
 };
 
 imports.searchPath.unshift(gsconnect.datadir);
-const _bootstrap = imports._bootstrap;
+const _gsconnect = imports._gsconnect;
 const _ = gsconnect._;
 const Actors = imports.actors;
 const DBus = imports.modules.dbus;

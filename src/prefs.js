@@ -13,7 +13,7 @@ function getPath() {
 
 window.gsconnect = { datadir: getPath() };
 imports.searchPath.unshift(gsconnect.datadir);
-const _bootstrap = imports._bootstrap;
+const _gsconnect = imports._gsconnect;
 const DBus = imports.modules.dbus;
 
 

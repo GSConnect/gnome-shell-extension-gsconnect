@@ -33,8 +33,8 @@ function getPath() {
 
 window.gsconnect = { datadir: getPath() };
 imports.searchPath.unshift(gsconnect.datadir);
+const _gsconnect = imports._gsconnect;
 
-const _bootstrap = imports._bootstrap;
 const Bluetooth = imports.service.bluetooth;
 const DBus = imports.modules.dbus;
 const Device = imports.service.device;
