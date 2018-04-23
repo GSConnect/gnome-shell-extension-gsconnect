@@ -12,7 +12,7 @@ function getPath() {
 }
 
 window.gsconnect = { datadir: getPath() };
-imports.searchPath.push(gsconnect.datadir);
+imports.searchPath.unshift(gsconnect.datadir);
 const _bootstrap = imports._bootstrap;
 const DBus = imports.modules.dbus;
 

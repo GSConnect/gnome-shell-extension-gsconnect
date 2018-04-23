@@ -23,7 +23,7 @@ window.gsconnect = {
     datadir: imports.misc.extensionUtils.getCurrentExtension().path
 };
 
-imports.searchPath.push(gsconnect.datadir);
+imports.searchPath.unshift(gsconnect.datadir);
 const _bootstrap = imports._bootstrap;
 const _ = gsconnect._;
 const Actors = imports.actors;
