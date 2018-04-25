@@ -412,10 +412,8 @@ var Channel = GObject.registerClass({
     _receiveIdent(connection) {
         return new Promise((resolve, reject) => {
             let _input_stream = new Gio.DataInputStream({
-                base_stream: new Gio.UnixInputStream({
-                    fd: connection.socket.fd, // TODO: works with bluetooth?
-                    close_fd: false // We're going to re-use the socket
-                })
+                base_stream: connection.input_stream,
+                close_base_stream: false
             });
             let [data, len] = _input_stream.read_line(null);
             _input_stream.close(null);
@@ -438,10 +436,8 @@ var Channel = GObject.registerClass({
     _sendIdent(connection) {
         return new Promise((resolve, reject) => {
             let _output_stream = new Gio.DataOutputStream({
-                base_stream: new Gio.UnixOutputStream({
-                    fd: connection.socket.fd, // TODO: works with bluetooth?
-                    close_fd: false // We're going to re-use the socket
-                })
+                base_stream: connection.output_stream,
+                close_base_stream: false
             });
             _output_stream.put_string(this.service.identity.toData(), null);
             _output_stream.close(null);
