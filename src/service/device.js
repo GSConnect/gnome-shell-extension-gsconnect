@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
@@ -15,12 +15,12 @@ const Lan = imports.service.lan;
  * Base class for plugin actions
  */
 var Action = GObject.registerClass({
-    GTypeName: "GSConnectDeviceAction",
+    GTypeName: 'GSConnectDeviceAction',
     Properties: {
-        "allow": GObject.ParamSpec.int(
-            "allow",
-            "AllowTraffic",
-            "The required permissions for this action",
+        'allow': GObject.ParamSpec.int(
+            'allow',
+            'AllowTraffic',
+            'The required permissions for this action',
             GObject.ParamFlags.READABLE,
             1, 8,
             1
@@ -179,102 +179,102 @@ var Menu = GObject.registerClass({
  * TODO...
  */
 var Device = GObject.registerClass({
-    GTypeName: "GSConnectDevice",
+    GTypeName: 'GSConnectDevice',
     Properties: {
-        "connected": GObject.ParamSpec.boolean(
-            "connected",
-            "deviceConnected",
-            "Whether the device is connected",
+        'connected': GObject.ParamSpec.boolean(
+            'connected',
+            'deviceConnected',
+            'Whether the device is connected',
             GObject.ParamFlags.READABLE,
             false
         ),
-        "fingerprint": GObject.ParamSpec.string(
-            "fingerprint",
-            "deviceFingerprint",
-            "SHA1 fingerprint for the device certificate",
+        'fingerprint': GObject.ParamSpec.string(
+            'fingerprint',
+            'deviceFingerprint',
+            'SHA1 fingerprint for the device certificate',
             GObject.ParamFlags.READABLE,
-            ""
+            ''
         ),
-        "icon-name": GObject.ParamSpec.string(
-            "icon-name",
-            "IconName",
-            "Icon name representing the service device",
+        'icon-name': GObject.ParamSpec.string(
+            'icon-name',
+            'IconName',
+            'Icon name representing the service device',
             GObject.ParamFlags.READABLE,
-            ""
+            ''
         ),
-        "id": GObject.ParamSpec.string(
-            "id",
-            "deviceId",
-            "The device id/hostname",
+        'id': GObject.ParamSpec.string(
+            'id',
+            'deviceId',
+            'The device id/hostname',
             GObject.ParamFlags.READABLE,
-            ""
+            ''
         ),
-        "name": GObject.ParamSpec.string(
-            "name",
-            "deviceName",
-            "The device name",
+        'name': GObject.ParamSpec.string(
+            'name',
+            'deviceName',
+            'The device name',
             GObject.ParamFlags.READABLE,
-            ""
+            ''
         ),
-        "paired": GObject.ParamSpec.boolean(
-            "paired",
-            "devicePaired",
-            "Whether the device is paired",
+        'paired': GObject.ParamSpec.boolean(
+            'paired',
+            'devicePaired',
+            'Whether the device is paired',
             GObject.ParamFlags.READABLE,
             false
         ),
-        "plugins": GObject.param_spec_variant(
-            "plugins",
-            "PluginsList",
-            "A list of enabled plugins",
-            new GLib.VariantType("as"),
+        'plugins': GObject.param_spec_variant(
+            'plugins',
+            'PluginsList',
+            'A list of enabled plugins',
+            new GLib.VariantType('as'),
             null,
             GObject.ParamFlags.READABLE
         ),
-        "incomingCapabilities": GObject.param_spec_variant(
-            "incomingCapabilities",
-            "IncomingCapabilitiesList",
-            "A list of incoming packet types the device can receive",
-            new GLib.VariantType("as"),
+        'incomingCapabilities': GObject.param_spec_variant(
+            'incomingCapabilities',
+            'IncomingCapabilitiesList',
+            'A list of incoming packet types the device can receive',
+            new GLib.VariantType('as'),
             null,
             GObject.ParamFlags.READABLE
         ),
-        "outgoingCapabilities": GObject.param_spec_variant(
-            "outgoingCapabilities",
-            "OutgoingCapabilitiesList",
-            "A list of outgoing packet types the device can send",
-            new GLib.VariantType("as"),
+        'outgoingCapabilities': GObject.param_spec_variant(
+            'outgoingCapabilities',
+            'OutgoingCapabilitiesList',
+            'A list of outgoing packet types the device can send',
+            new GLib.VariantType('as'),
             null,
             GObject.ParamFlags.READABLE
         ),
-        "symbolic-icon-name": GObject.ParamSpec.string(
-            "symbolic-icon-name",
-            "ServiceIconName",
-            "Symbolic icon name representing the service device",
+        'symbolic-icon-name': GObject.ParamSpec.string(
+            'symbolic-icon-name',
+            'ServiceIconName',
+            'Symbolic icon name representing the service device',
             GObject.ParamFlags.READABLE,
-            ""
+            ''
         ),
-        "type": GObject.ParamSpec.string(
-            "type",
-            "deviceType",
-            "The device type",
+        'type': GObject.ParamSpec.string(
+            'type',
+            'deviceType',
+            'The device type',
             GObject.ParamFlags.READABLE,
-            "unknown"
+            'unknown'
         ),
-        "display-type": GObject.ParamSpec.string(
-            "display-type",
-            "Display Name",
-            "The device type, formatted for display",
+        'display-type': GObject.ParamSpec.string(
+            'display-type',
+            'Display Name',
+            'The device type, formatted for display',
             GObject.ParamFlags.READABLE,
-            "Desktop"
+            'Desktop'
         )
     },
     Signals: {
-        "event": {
+        'event': {
             flags: GObject.SignalFlags.RUN_FIRST,
             param_types: [ GObject.TYPE_STRING, GObject.TYPE_VARIANT ]
         },
-        "destroy": {
+        'destroy': {
             flags: GObject.SignalFlags.NO_HOOKS
         }
     }
@@ -301,7 +301,7 @@ var Device = GObject.registerClass({
         // GSettings
         this.settings = new Gio.Settings({
             settings_schema: gsconnect.gschema.lookup(
-                "org.gnome.Shell.Extensions.GSConnect.Device",
+                'org.gnome.Shell.Extensions.GSConnect.Device',
                 true
             ),
             path: `/org/gnome/shell/extensions/gsconnect/device/${deviceId}/`
@@ -316,15 +316,15 @@ var Device = GObject.registerClass({
 
         // Export an object path for the device via the ObjectManager
         this._dbus_object = new Gio.DBusObjectSkeleton({
-            g_object_path: `${gsconnect.app_path}/Device/${deviceId.replace(/\W+/g, "_")}`
+            g_object_path: `${gsconnect.app_path}/Device/${deviceId.replace(/\W+/g, '_')}`
         });
         this.service.objectManager.export(this._dbus_object);
 
         // Export org.gnome.Shell.Extensions.GSConnect.Device on that path
-        this._dbus = new DBus.ProxyServer({
+        this._dbus = new DBus.Interface({
             g_instance: this,
             g_interface_info: gsconnect.dbusinfo.lookup_interface(
-                "org.gnome.Shell.Extensions.GSConnect.Device"
+                'org.gnome.Shell.Extensions.GSConnect.Device'
             )
         });
         this._dbus_object.add_interface(this._dbus);
@@ -359,53 +359,53 @@ var Device = GObject.registerClass({
             return this._channel.certificate.fingerprint();
         } else if (this.paired) {
             let cert = Gio.TlsCertificate.new_from_pem(
-                this.settings.get_string("certificate-pem"),
+                this.settings.get_string('certificate-pem'),
                 -1
             );
             return cert.fingerprint();
         }
 
-        return "";
+        return '';
     }
 
     // TODO: wrap theses all up into 'identity'
-    get id() { return this.settings.get_string("id"); }
-    get name() { return this.settings.get_string("name"); }
-    get paired() { return (this.settings.get_string("certificate-pem")); }
+    get id() { return this.settings.get_string('id'); }
+    get name() { return this.settings.get_string('name'); }
+    get paired() { return (this.settings.get_string('certificate-pem')); }
     get plugins() { return Array.from(this._plugins.keys()) || []; }
     get incomingCapabilities() {
-        return this.settings.get_strv("incoming-capabilities");
+        return this.settings.get_strv('incoming-capabilities');
     }
     get outgoingCapabilities() {
-        return this.settings.get_strv("outgoing-capabilities");
+        return this.settings.get_strv('outgoing-capabilities');
     }
     get icon_name() {
-        let icon = (this.type === "desktop") ? "computer" : this.type;
-        return (icon === "phone") ? "smartphone" : icon;
+        let icon = (this.type === 'desktop') ? 'computer' : this.type;
+        return (icon === 'phone') ? 'smartphone' : icon;
     }
     get symbolic_icon_name() {
-        let icon = (this.type === "phone") ? "smartphone" : this.type;
-        icon = (this.type === "unknown") ? "desktop" : icon;
+        let icon = (this.type === 'phone') ? 'smartphone' : this.type;
+        icon = (this.type === 'unknown') ? 'desktop' : icon;
 
         if (this.paired && this.connected) {
-            return icon + "connected";
+            return icon + 'connected';
         } else if (this.paired) {
-            return icon + "trusted";
+            return icon + 'trusted';
         } else {
-            return icon + "disconnected";
+            return icon + 'disconnected';
         }
     }
-    get type() { return this.settings.get_string("type"); }
+    get type() { return this.settings.get_string('type'); }
     get display_type() {
         switch (this.type) {
-            case "laptop":
-                return _("Laptop");
-            case "phone":
-                return _("Smartphone");
-            case "tablet":
-                return _("Tablet");
+            case 'laptop':
+                return _('Laptop');
+            case 'phone':
+                return _('Smartphone');
+            case 'tablet':
+                return _('Tablet');
             default:
-                return _("Desktop");
+                return _('Desktop');
         }
     }
 
@@ -414,19 +414,19 @@ var Device = GObject.registerClass({
     }
 
     _handleIdentity(packet) {
-        this.settings.set_string("id", packet.body.deviceId);
-        this.settings.set_string("name", packet.body.deviceName);
-        this.settings.set_string("type", packet.body.deviceType);
-        this.settings.set_string("tcp-host", packet.body.tcpHost);
-        this.settings.set_uint("tcp-port", packet.body.tcpPort);
+        this.settings.set_string('id', packet.body.deviceId);
+        this.settings.set_string('name', packet.body.deviceName);
+        this.settings.set_string('type', packet.body.deviceType);
+        this.settings.set_string('tcp-host', packet.body.tcpHost);
+        this.settings.set_uint('tcp-port', packet.body.tcpPort);
 
         this.settings.set_strv(
-            "incoming-capabilities",
+            'incoming-capabilities',
             packet.body.incomingCapabilities.sort()
         );
 
         this.settings.set_strv(
-            "outgoing-capabilities",
+            'outgoing-capabilities',
             packet.body.outgoingCapabilities.sort()
         );
     }
@@ -439,21 +439,21 @@ var Device = GObject.registerClass({
 
         // Already connected
 		if (this._channel !== null) {
-			debug(this.name + " (" + this.id + ")" + " already active");
+			debug(this.name + ' (' + this.id + ')' + ' already active');
 			return;
 		}
 
         // Create a new channel
         this._channel = new Lan.Channel(this.id);
-        this._channel.connect("connected", this._onConnected.bind(this));
-        this._channel.connect("disconnected", this._onDisconnected.bind(this));
-		this._channel.connect("received", this._onReceived.bind(this));
+        this._channel.connect('connected', this._onConnected.bind(this));
+        this._channel.connect('disconnected', this._onDisconnected.bind(this));
+		this._channel.connect('received', this._onReceived.bind(this));
 
 		let addr = new Gio.InetSocketAddress({
             address: Gio.InetAddress.new_from_string(
-                this.settings.get_string("tcp-host")
+                this.settings.get_string('tcp-host')
             ),
-            port: this.settings.get_uint("tcp-port")
+            port: this.settings.get_uint('tcp-port')
         });
 
         this._channel.open(addr);
@@ -476,15 +476,15 @@ var Device = GObject.registerClass({
 
             // Connect to the new channel
             this._channel = channel;
-            this._channel.connect("connected", this._onConnected.bind(this));
-            this._channel.connect("disconnected", this._onDisconnected.bind(this));
-            this._channel.connect("received", this._onReceived.bind(this));
+            this._channel.connect('connected', this._onConnected.bind(this));
+            this._channel.connect('disconnected', this._onDisconnected.bind(this));
+            this._channel.connect('received', this._onReceived.bind(this));
 
             // Verify the certificate since it was TOFU'd by the listener
             if (!this.verify()) {
-                this._channel.emit("disconnected");
+                this._channel.emit('disconnected');
             } else if (!this.connected) {
-                this._channel.emit("connected");
+                this._channel.emit('connected');
             }
         } else {
             this._onReceived(this._channel, packet);
@@ -496,9 +496,9 @@ var Device = GObject.registerClass({
 
         let cert;
 
-        if (this.settings.get_string("certificate-pem")) {
+        if (this.settings.get_string('certificate-pem')) {
             cert = Gio.TlsCertificate.new_from_pem(
-                this.settings.get_string("certificate-pem"),
+                this.settings.get_string('certificate-pem'),
                 -1
             );
         }
@@ -535,13 +535,13 @@ var Device = GObject.registerClass({
         log(`Connected to ${this.name} (${this.id})`);
 
         this._connected = true;
-        this.notify("connected");
-        this.notify("symbolic-icon-name");
+        this.notify('connected');
+        this.notify('symbolic-icon-name');
 
         // Ensure fingerprint is available right away
-        this.notify("fingerprint");
+        this.notify('fingerprint');
 
-        this._loadPlugins().then(values => this.notify("plugins"));
+        this._loadPlugins().then(values => this.notify('plugins'));
     }
 
     _onDisconnected(channel) {
@@ -550,10 +550,10 @@ var Device = GObject.registerClass({
         this._channel = null;
 
         this._unloadPlugins().then(values => {
-            this.notify("plugins");
+            this.notify('plugins');
             this._connected = false;
-            this.notify("connected");
-            this.notify("symbolic-icon-name");
+            this.notify('connected');
+            this.notify('symbolic-icon-name');
         });
     }
 
@@ -579,44 +579,44 @@ var Device = GObject.registerClass({
     _registerActions() {
         let acceptPair = new Action(
             {
-                name: "acceptPair",
-                parameter_type: new GLib.VariantType("v")
+                name: 'acceptPair',
+                parameter_type: new GLib.VariantType('v')
             },
             {
-                summary: _("Accept Pair"),
-                description: _("Accept an incoming pair request"),
-                icon_name: "channel-insecure-symbolic"
+                summary: _('Accept Pair'),
+                description: _('Accept an incoming pair request'),
+                icon_name: 'channel-insecure-symbolic'
             }
         );
-        acceptPair.connect("activate", this.acceptPair.bind(this));
+        acceptPair.connect('activate', this.acceptPair.bind(this));
         this.add_action(acceptPair);
 
         let rejectPair = new Action(
             {
-                name: "rejectPair",
-                parameter_type: new GLib.VariantType("v")
+                name: 'rejectPair',
+                parameter_type: new GLib.VariantType('v')
             },
             {
-                summary: _("Reject Pair"),
-                description: _("Reject an incoming pair request"),
-                icon_name: "channel-insecure-symbolic"
+                summary: _('Reject Pair'),
+                description: _('Reject an incoming pair request'),
+                icon_name: 'channel-insecure-symbolic'
             }
         );
-        rejectPair.connect("activate", this.rejectPair.bind(this));
+        rejectPair.connect('activate', this.rejectPair.bind(this));
         this.add_action(rejectPair);
 
         let viewFolder = new Action(
             {
-                name: "viewFolder",
-                parameter_type: new GLib.VariantType("s")
+                name: 'viewFolder',
+                parameter_type: new GLib.VariantType('s')
             },
             {
-                summary: _("View Folder"),
-                description: _("Open a folder for viewing"),
-                icon_name: "folder-open-symbolic"
+                summary: _('View Folder'),
+                description: _('Open a folder for viewing'),
+                icon_name: 'folder-open-symbolic'
             }
         );
-        viewFolder.connect("activate", this.viewFolder.bind(this));
+        viewFolder.connect('activate', this.viewFolder.bind(this));
         this.add_action(viewFolder);
     }
 
@@ -629,18 +629,18 @@ var Device = GObject.registerClass({
      * Device notifications
      */
     send_notification(id, notification) {
-        this.service.send_notification(this.id + "|" + id, notification);
+        this.service.send_notification(this.id + '|' + id, notification);
     }
 
     withdraw_notification(id) {
-        this.service.withdraw_notification(this.id + "|" + id);
+        this.service.withdraw_notification(this.id + '|' + id);
     }
 
     showNotification(params) {
         params = Object.assign({
             id: GLib.DateTime.new_now_local().to_unix(),
             title: this.name,
-            body: "",
+            body: '',
             icon: new Gio.ThemedIcon({ name: this.symbolic_icon_name }),
             priority: Gio.NotificationPriority.NORMAL,
             action: null,
@@ -655,12 +655,12 @@ var Device = GObject.registerClass({
 
         if (params.action) {
             if (!params.action.params && params.action.params !== false) {
-                params.action.params = "";
+                params.action.params = '';
             }
 
             notif.set_default_action_and_target(
-                "app.deviceAction",
-                new GLib.Variant("(ssv)", [
+                'app.deviceAction',
+                new GLib.Variant('(ssv)', [
                     this._dbus.get_object_path(),
                     params.action.name,
                     gsconnect.full_pack(params.action.params)
@@ -670,13 +670,13 @@ var Device = GObject.registerClass({
 
         for (let button of params.buttons) {
             if (!button.params && button.params !== false) {
-                button.params = "";
+                button.params = '';
             }
 
             notif.add_button_with_target(
                 button.summary,
-                "app.deviceAction",
-                new GLib.Variant("(ssv)", [
+                'app.deviceAction',
+                new GLib.Variant('(ssv)', [
                     this._dbus.get_object_path(),
                     button.action,
                     gsconnect.full_pack(button.params)
@@ -698,7 +698,7 @@ var Device = GObject.registerClass({
                 log(`Pair accepted by ${this.name}`);
 
                 this._setPaired(true);
-                return this._loadPlugins().then(values => this.notify("plugins"));
+                return this._loadPlugins().then(values => this.notify('plugins'));
             // The device thinks we're unpaired
             } else if (this.paired) {
                 this.acceptPair();
@@ -712,7 +712,7 @@ var Device = GObject.registerClass({
             log(`Pair rejected by ${this.name}`);
 
             this._unloadPlugins().then((values) => {
-                this.notify("plugins");
+                this.notify('plugins');
                 this._setPaired(false);
             });
         }
@@ -720,9 +720,9 @@ var Device = GObject.registerClass({
 
     _notifyPair(packet) {
         this.showNotification({
-            id: "pair-request",
+            id: 'pair-request',
             // TRANSLATORS: eg. Pair Request from Google Pixel
-            title: _("Pair Request from %s").format(this.name),
+            title: _('Pair Request from %s').format(this.name),
             // TRANSLATORS: Remote and local TLS Certificate fingerprint
             // PLEASE KEEP NEWLINE CHARACTERS (\n)
             //
@@ -733,23 +733,23 @@ var Device = GObject.registerClass({
             //
             // Local Fingerprint:
             // 00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
-            body: _("%s Fingerprint:\n%s\n\nLocal Fingerprint:\n%s").format(
+            body: _('%s Fingerprint:\n%s\n\nLocal Fingerprint:\n%s').format(
                 this.name,
                 this.fingerprint,
                 this.service.fingerprint
             ),
-            icon: new Gio.ThemedIcon({ name: "channel-insecure-symbolic" }),
+            icon: new Gio.ThemedIcon({ name: 'channel-insecure-symbolic' }),
             priority: Gio.NotificationPriority.URGENT,
             buttons: [
                 {
-                    action: "rejectPair",
-                    summary: _("Reject"),
-                    params: "."
+                    action: 'rejectPair',
+                    summary: _('Reject'),
+                    params: '.'
                 },
                 {
-                    action: "acceptPair",
-                    summary: _("Accept"),
-                    params: "."
+                    action: 'acceptPair',
+                    summary: _('Accept'),
+                    params: '.'
                 }
             ]
         });
@@ -764,7 +764,7 @@ var Device = GObject.registerClass({
 
     _setPaired(bool) {
         if (this._incomingPairRequest) {
-            this.withdraw_notification("pair-request");
+            this.withdraw_notification('pair-request');
             GLib.source_remove(this._incomingPairRequest);
             this._incomingPairRequest = 0;
         }
@@ -776,15 +776,15 @@ var Device = GObject.registerClass({
 
         if (bool) {
             this.settings.set_string(
-                "certificate-pem",
+                'certificate-pem',
                 this._channel.certificate.certificate_pem
             );
         } else {
-            this.settings.reset("certificate-pem");
+            this.settings.reset('certificate-pem');
         }
 
-        this.notify("paired");
-        this.notify("symbolic-icon-name");
+        this.notify('paired');
+        this.notify('symbolic-icon-name');
     }
 
     pair() {
@@ -828,7 +828,7 @@ var Device = GObject.registerClass({
         }
 
         this._unloadPlugins().then(values => {
-            this.notify("plugins");
+            this.notify('plugins');
             this._setPaired(false);
         });
     }
@@ -838,7 +838,7 @@ var Device = GObject.registerClass({
 
         this._setPaired(true);
         this.pair();
-        this._loadPlugins().then(values => this.notify("plugins"));
+        this._loadPlugins().then(values => this.notify('plugins'));
     }
 
     rejectPair() {
@@ -951,7 +951,7 @@ var Device = GObject.registerClass({
     }
 
     destroy() {
-        this.emit("destroy");
+        this.emit('destroy');
 
         Gio.DBus.session.unexport_action_group(this._actionsId);
         Gio.DBus.session.unexport_menu_model(this._menuId);

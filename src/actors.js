@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 const Cairo = imports.cairo;
 
@@ -12,7 +12,7 @@ const St = imports.gi.St;
 const ModalDialog = imports.ui.modalDialog;
 
 // Local Imports
-imports.searchPath.push(gsconnect.datadir);
+imports.searchPath.unshift(gsconnect.datadir);
 const _ = gsconnect._;
 const Color = imports.modules.color;
 const Tooltip = imports.shell.tooltip;
@@ -26,12 +26,12 @@ var Dialog = class Dialog extends ModalDialog.ModalDialog {
         super._init();
 
         let headerBar = new St.BoxLayout({
-            style_class: "nm-dialog-header-hbox"
+            style_class: 'nm-dialog-header-hbox'
         });
         this.contentLayout.add(headerBar);
 
         this._icon = new St.Icon({
-            style_class: "nm-dialog-header-icon",
+            style_class: 'nm-dialog-header-icon',
             gicon: new Gio.ThemedIcon({ name: params.icon })
         });
         headerBar.add(this._icon);
@@ -40,18 +40,18 @@ var Dialog = class Dialog extends ModalDialog.ModalDialog {
         headerBar.add(titleBox);
 
         this._title = new St.Label({
-            style_class: "nm-dialog-header",
+            style_class: 'nm-dialog-header',
             text: params.title
         });
         titleBox.add(this._title);
 
         this._subtitle = new St.Label({
-            style_class: "nm-dialog-subheader",
+            style_class: 'nm-dialog-subheader',
             text: params.subtitle
         });
         titleBox.add(this._subtitle);
 
-        this.contentLayout.style_class = "nm-dialog-content";
+        this.contentLayout.style_class = 'nm-dialog-content';
 
         this.content = new St.BoxLayout({ vertical: true });
         this.contentLayout.add(this.content);
@@ -84,7 +84,7 @@ var Dialog = class Dialog extends ModalDialog.ModalDialog {
 
 
 var RadioButton = GObject.registerClass({
-    GTypeName: "GSConnectShellRadioButton"
+    GTypeName: 'GSConnectShellRadioButton'
 }, class RadioButton extends St.BoxLayout {
 
     _init(params) {
@@ -98,14 +98,14 @@ var RadioButton = GObject.registerClass({
         }, params);
 
         super._init({
-            style_class: "radio-button",
-            style: "spacing: 6px;",
+            style_class: 'radio-button',
+            style: 'spacing: 6px;',
             vertical: false
         });
 
         this.button = new St.Button({
-            style_class: "pager-button",
-            child: new St.Icon({ icon_name: "radio-symbolic", icon_size: 16 })
+            style_class: 'pager-button',
+            child: new St.Icon({ icon_name: 'radio-symbolic', icon_size: 16 })
         });
         this.add_child(this.button);
 
@@ -118,13 +118,13 @@ var RadioButton = GObject.registerClass({
         }
 
         //
-        this.button.connect("clicked", () => {
+        this.button.connect('clicked', () => {
             this.active = true;
         });
 
         // Group
         this.group = params.group;
-        this.connect("destroy", () => {
+        this.connect('destroy', () => {
             this.group.splice(this.group.indexOf(this), 1);
         });
 
@@ -141,20 +141,20 @@ var RadioButton = GObject.registerClass({
     }
 
     get active() {
-        return (this.button.child.icon_name === "radio-checked-symbolic");
+        return (this.button.child.icon_name === 'radio-checked-symbolic');
     }
 
     set active(bool) {
         if (bool) {
-            this.button.child.icon_name = "radio-checked-symbolic";
+            this.button.child.icon_name = 'radio-checked-symbolic';
 
             for (let radio of this.group) {
                 if (radio !== this) {
-                    radio.button.child.icon_name = "radio-symbolic";
+                    radio.button.child.icon_name = 'radio-symbolic';
                 }
             }
         } else {
-            this.button.child.icon_name = "radio-symbolic";
+            this.button.child.icon_name = 'radio-symbolic';
         }
     }
 
@@ -181,7 +181,7 @@ var RadioButton = GObject.registerClass({
     }
 
     set text(text) {
-        if (typeof text === "string") {
+        if (typeof text === 'string') {
             this.widget = new St.Label({ text: text });
         }
     }
@@ -199,25 +199,25 @@ var RadioButton = GObject.registerClass({
 });
 
 
-var BATTERY_INTERFACE = "org.gnome.Shell.Extensions.GSConnect.Plugin.Battery";
+var BATTERY_INTERFACE = 'org.gnome.Shell.Extensions.GSConnect.Plugin.Battery';
 
 
 /** St.BoxLayout subclass for a battery icon with text percentage */
 var DeviceBattery = GObject.registerClass({
-    GTypeName: "GSConnectShellDeviceBattery"
+    GTypeName: 'GSConnectShellDeviceBattery'
 }, class DeviceBattery extends St.BoxLayout {
 
     _init(object, device) {
         super._init({
             reactive: false,
-            style_class: "gsconnect-device-battery",
-            visible: gsconnect.settings.get_boolean("show-battery")
+            style_class: 'gsconnect-device-battery',
+            visible: gsconnect.settings.get_boolean('show-battery')
         });
 
         this.object = object;
         this.device = device;
 
-        this.label = new St.Label({ text: "" });
+        this.label = new St.Label({ text: '' });
         this.add_child(this.label);
 
         this.icon = new St.Icon({ icon_size: 16 });
@@ -227,17 +227,17 @@ var DeviceBattery = GObject.registerClass({
         this.battery = this.object.get_interface(BATTERY_INTERFACE);
 
         if (this.battery) {
-            this._batteryId = this.battery.connect("g-properties-changed", this.update.bind(this));
+            this._batteryId = this.battery.connect('g-properties-changed', this.update.bind(this));
         }
 
-        this.object.connect("interface-added", (obj, iface) => {
+        this.object.connect('interface-added', (obj, iface) => {
             if (iface.g_interface_name === BATTERY_INTERFACE) {
                 this.battery = iface;
-                this._batteryId = this.battery.connect("g-properties-changed", this.update.bind(this));
+                this._batteryId = this.battery.connect('g-properties-changed', this.update.bind(this));
             }
         });
 
-        this.object.connect("interface-removed", (obj, iface) => {
+        this.object.connect('interface-removed', (obj, iface) => {
             if (iface.g_interface_name === BATTERY_INTERFACE) {
                 this.battery = iface;
                 this.battery.disconnect(this._batteryId);
@@ -247,7 +247,7 @@ var DeviceBattery = GObject.registerClass({
         });
 
         // Cleanup
-        this.connect("destroy", () => {
+        this.connect('destroy', () => {
             if (this._batteryId && this.battery) {
                 this.battery.disconnect(this._batteryId);
             }
@@ -259,7 +259,7 @@ var DeviceBattery = GObject.registerClass({
         this.label.visible = (this.battery && this.battery.Level > -1);
 
         this.icon.icon_name = this.battery.IconName;
-        this.label.text = this.battery.Level + "%";
+        this.label.text = this.battery.Level + '%';
     }
 });
 
@@ -268,7 +268,7 @@ var DeviceBattery = GObject.registerClass({
  * A Device Icon
  */
 var DeviceIcon = GObject.registerClass({
-    GtypeName: "GSConnectShellDeviceIcon"
+    GtypeName: 'GSConnectShellDeviceIcon'
 }, class DeviceIcon extends St.DrawingArea {
 
     _init(object, device) {
@@ -294,7 +294,7 @@ var DeviceIcon = GObject.registerClass({
         this._theme = Gtk.IconTheme.get_default();
         this.icon = this._theme.load_surface(this.device.IconName, 32, 1, null, 0);
 
-        this._themeSignal = this._theme.connect("changed", () => {
+        this._themeSignal = this._theme.connect('changed', () => {
             this.icon = this._theme.load_surface(this.device.IconName, 32, 1, null, 0);
             this.queue_repaint();
         });
@@ -303,17 +303,17 @@ var DeviceIcon = GObject.registerClass({
         this.battery = this.object.get_interface(BATTERY_INTERFACE);
 
         if (this.battery) {
-            this._batteryId = this.battery.connect("g-properties-changed", () => this.queue_repaint());
+            this._batteryId = this.battery.connect('g-properties-changed', () => this.queue_repaint());
         }
 
-        this.object.connect("interface-added", (obj, iface) => {
+        this.object.connect('interface-added', (obj, iface) => {
             if (iface.g_interface_name === BATTERY_INTERFACE) {
                 this.battery = iface;
-                this._batteryId = this.battery.connect("g-properties-changed", () => this.queue_repaint());
+                this._batteryId = this.battery.connect('g-properties-changed', () => this.queue_repaint());
             }
         });
 
-        this.object.connect("interface-removed", (obj, iface) => {
+        this.object.connect('interface-removed', (obj, iface) => {
             if (iface.g_interface_name === BATTERY_INTERFACE) {
                 this.battery = iface;
                 this.battery.disconnect(this._batteryId);
@@ -323,10 +323,10 @@ var DeviceIcon = GObject.registerClass({
         });
 
         // Device Status
-        device.connect("g-properties-changed", () => this.queue_repaint());
+        device.connect('g-properties-changed', () => this.queue_repaint());
 
-        this.connect("repaint", this._draw.bind(this));
-        this.connect("destroy", () => {
+        this.connect('repaint', this._draw.bind(this));
+        this.connect('destroy', () => {
             this._theme.disconnect(this._themeSignal);
             if (this._batteryId && this.battery) {
                 this.battery.disconnect(this._batteryId);
@@ -347,10 +347,10 @@ var DeviceIcon = GObject.registerClass({
 
         if (Level === 100) {
             // TRANSLATORS: Fully Charged
-            return _("Fully Charged");
+            return _('Fully Charged');
         } else if (Time === 0) {
             // TRANSLATORS: <percentage> (Estimating…)
-            return _("%d%% (Estimating…)").format(Level);
+            return _('%d%% (Estimating…)').format(Level);
         }
 
         Time = Time / 60;
@@ -359,14 +359,14 @@ var DeviceIcon = GObject.registerClass({
 
         if (Charging) {
             // TRANSLATORS: <percentage> (<hours>:<minutes> Until Full)
-            return _("%d%% (%d\u2236%02d Until Full)").format(
+            return _('%d%% (%d\u2236%02d Until Full)').format(
                 Level,
                 hours,
                 minutes
             );
         } else {
             // TRANSLATORS: <percentage> (<hours>:<minutes> Remaining)
-            return _("%d%% (%d\u2236%02d Remaining)").format(
+            return _('%d%% (%d\u2236%02d Remaining)').format(
                 Level,
                 hours,
                 minutes
@@ -396,8 +396,8 @@ var DeviceIcon = GObject.registerClass({
             cr.maskSurface(this.icon, xc - 16, yc - 16);
             cr.fill();
 
-            this.tooltip.markup = _("Reconnect <b>%s</b>").format(this.device.Name);
-            this.tooltip.icon_name = "view-refresh-symbolic";
+            this.tooltip.markup = _('Reconnect <b>%s</b>').format(this.device.Name);
+            this.tooltip.icon_name = 'view-refresh-symbolic';
 
             cr.setSourceRGB(0.8, 0.8, 0.8);
             cr.setOperator(Cairo.Operator.OVER);
@@ -406,8 +406,8 @@ var DeviceIcon = GObject.registerClass({
             cr.arc(xc, yc, r, 1.48 * Math.PI, 1.47 * Math.PI);
             cr.stroke();
         } else if (!this.device.Paired) {
-            this.tooltip.markup = _("Pair <b>%s</b>").format(this.device.Name) + "\n\n" + _("<b>%s Fingerprint:</b>\n%s\n\n<b>Local Fingerprint:</b>\n%s").format(this.device.Name, this.device.Fingerprint, this.device.service.Fingerprint);
-            this.tooltip.icon_name = "channel-insecure-symbolic";
+            this.tooltip.markup = _('Pair <b>%s</b>').format(this.device.Name) + '\n\n' + _('<b>%s Fingerprint:</b>\n%s\n\n<b>Local Fingerprint:</b>\n%s').format(this.device.Name, this.device.Fingerprint, this.device.service.Fingerprint);
+            this.tooltip.icon_name = 'channel-insecure-symbolic';
 
             cr.setSourceRGB(0.95, 0.0, 0.0);
             cr.setOperator(Cairo.Operator.OVER);
@@ -448,8 +448,8 @@ var DeviceIcon = GObject.registerClass({
                 cr.fill();
             }
         } else {
-            this.tooltip.markup = _("Configure <b>%s</b>").format(this.device.Name);
-            this.tooltip.icon_name = "preferences-other-symbolic";
+            this.tooltip.markup = _('Configure <b>%s</b>').format(this.device.Name);
+            this.tooltip.icon_name = 'preferences-other-symbolic';
             cr.setSourceRGB(0.8, 0.8, 0.8);
             cr.arc(xc, yc, r, 0, 2 * Math.PI);
             cr.stroke();
@@ -463,12 +463,12 @@ var DeviceIcon = GObject.registerClass({
 
 /** An St.Button subclass for buttons with an image and an action */
 var DeviceButton = GObject.registerClass({
-    GTypeName: "GSConnectShellDeviceButton"
+    GTypeName: 'GSConnectShellDeviceButton'
 }, class DeviceButton extends St.Button {
 
     _init(object, device) {
         super._init({
-            style_class: "system-menu-action gsconnect-device-button",
+            style_class: 'system-menu-action gsconnect-device-button',
             child: new DeviceIcon(object, device),
             can_focus: true,
             track_hover: true,
@@ -482,7 +482,7 @@ var DeviceButton = GObject.registerClass({
         this.object = object;
         this.device = device;
 
-        this.connect("clicked", () => {
+        this.connect('clicked', () => {
             if (!this.device.Connected) {
                 this.device.Activate();
             } else if (!this.device.Paired) {
