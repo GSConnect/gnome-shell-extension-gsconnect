@@ -78,6 +78,7 @@ var BluezNode = Gio.DBusNodeInfo.new_for_xml(
     <method name="CancelPairing"/> \
     <!-- Properties --> \
     <property name="Address" type="s" access="read"/> \
+    <property name="AddressType" type="s" access="read"/> \
     <property name="Name" type="s" access="read"/> \
     <property name="Alias" type="s" access="readwrite"/> \
     <property name="Class" type="u" access="read"/> \
@@ -98,7 +99,7 @@ var BluezNode = Gio.DBusNodeInfo.new_for_xml(
     <property name="ServicesResolved" type="b" access="read"/> \
   </interface> \
   \
-  <!-- Profile (to be exported --> \
+  <!-- Profile (to be exported) --> \
   <interface name="org.bluez.Profile1"> \
     <!-- Methods --> \
     <method name="Release"/> \
