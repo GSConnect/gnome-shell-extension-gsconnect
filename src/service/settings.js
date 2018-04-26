@@ -783,7 +783,7 @@ var DeviceSettings = GObject.registerClass({
                     this.battery_percent.label = _('%d%%').format(level);
 
                     if (battery.charging) {
-                        this.battery_condition.label = _('Charging...');
+                        this.battery_condition.label = _('Charging…');
                     } else if (level < 10) {
                         this.battery_condition.label = _('Caution');
                     } else if (level < 30) {
