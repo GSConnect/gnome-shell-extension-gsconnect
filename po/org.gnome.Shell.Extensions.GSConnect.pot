@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-04-10 08:50-0700\n"
+"POT-Creation-Date: 2018-04-27 19:02-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
 #. TRANSLATORS: Open a new SMS window
-#: src/extension.js:176 src/service/daemon.js:889 src/widgets/device.js:199
+#: src/extension.js:176 src/service/daemon.js:912 src/widgets/device.js:199
 msgid "Send SMS"
 msgstr ""
 
@@ -154,20 +154,20 @@ msgstr ""
 msgid "Select"
 msgstr ""
 
-#: src/service/daemon.js:670
+#: src/service/daemon.js:693
 msgid "Nautilus extensions changed"
 msgstr ""
 
-#: src/service/daemon.js:671
+#: src/service/daemon.js:694
 msgid "Restart Nautilus to apply changes"
 msgstr ""
 
 #. TRANSLATORS: Notification button to restart Nautilus
-#: src/service/daemon.js:677
+#: src/service/daemon.js:700
 msgid "Restart"
 msgstr ""
 
-#: src/service/daemon.js:904
+#: src/service/daemon.js:927
 msgid "Dial Phone Number"
 msgstr ""
 

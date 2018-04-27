@@ -510,23 +510,46 @@ var Daemon = new Lang.Class({
         );
         this._getAppNotificationSettings();
 
+        // Special connection for monitoring
+        this._dbusMonitor = Gio.DBusConnection.new_for_address_sync(
+            Gio.dbus_address_get_for_bus_sync(Gio.BusType.SESSION, null),
+            Gio.DBusConnectionFlags.AUTHENTICATION_CLIENT,
+            null,
+            null
+        );
+
+        // Introduce the connection to DBus
+        this._dbusMonitor.call_sync(
+            "org.freedesktop.DBus",
+            "/org/freedesktop/DBus",
+            "org.freedesktop.DBus",
+            "Hello",
+            null,
+            null,
+            Gio.DBusCallFlags.NONE,
+            -1,
+            null
+        );
+
+        // Export our method handlers
         this._ndbus = Gio.DBusExportedObject.wrapJSObject(
             ext.dbusinfo.lookup_interface("org.freedesktop.Notifications"),
             this
         );
-        this._ndbus.export(Gio.DBus.session, "/org/freedesktop/Notifications");
+        this._ndbus.export(this._dbusMonitor, "/org/freedesktop/Notifications");
 
-        // Match all notifications
-        this._match = new GLib.Variant("(s)", ["interface='org.freedesktop.Notifications',member='Notify',type='method_call',eavesdrop='true'"])
-
-        this._proxy = new Gio.DBusProxy({
-            gConnection: Gio.DBus.session,
-            gName: "org.freedesktop.DBus",
-            gObjectPath: "/org/freedesktop/DBus",
-            gInterfaceName: "org.freedesktop.DBus"
-        });
-
-        this._proxy.call_sync("AddMatch", this._match, 0, -1, null);
+        // Become a monitor for Fdo notifications
+        this._dbusMonitor.call_sync(
+            "org.freedesktop.DBus",
+            "/org/freedesktop/DBus",
+            "org.freedesktop.DBus.Monitoring",
+            "BecomeMonitor",
+            new GLib.Variant("(asu)", [["interface='org.freedesktop.Notifications',member='Notify',type='method_call'"], 0]),
+            null,
+            Gio.DBusCallFlags.NONE,
+            -1,
+            null
+        );
     },
 
     Notify: function (appName, replacesId, iconName, summary, body, actions, hints, timeout) {
@@ -931,7 +954,6 @@ var Daemon = new Lang.Class({
             device.destroy();
         }
 
-        this._proxy.call_sync("RemoveMatch", this._match, 0, -1, null);
         this._ndbus.unexport();
         this._dbus.unexport();
     }
