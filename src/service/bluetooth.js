@@ -106,18 +106,16 @@ var BluezNode = Gio.DBusNodeInfo.new_for_xml(
  * Proxy for org.bluez.Adapter1 interface
  */
 var ProfileManager1Proxy = DBus.makeInterfaceProxy(
-    BluezNode.lookup_interface("org.bluez.ProfileManager1")
+    BluezNode.lookup_interface('org.bluez.ProfileManager1')
 );
 
 var Adapter1Proxy = DBus.makeInterfaceProxy(
-    BluezNode.lookup_interface("org.bluez.Adapter1")
+    BluezNode.lookup_interface('org.bluez.Adapter1')
 );
 
 var Device1Proxy = DBus.makeInterfaceProxy(
-    BluezNode.lookup_interface("org.bluez.Device1")
+    BluezNode.lookup_interface('org.bluez.Device1')
 );
-
-var Profile1Iface = BluezNode.lookup_interface("org.bluez.Profile1");
 
 
 /**
@@ -169,7 +167,7 @@ var ChannelService = GObject.registerClass({
         this._dbus = new DBus.ProxyServer({
             g_connection: Gio.DBus.system,
             g_instance: this,
-            g_interface_info: Profile1Iface,
+            g_interface_info: BluezNode.lookup_interface('org.bluez.Profile1'),
             g_object_path: gsconnect.app_path
         });
 
