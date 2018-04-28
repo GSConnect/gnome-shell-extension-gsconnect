@@ -422,7 +422,7 @@ var Daemon = GObject.registerClass({
         }
     }
 
-    _startNotificationListener(connection) {
+    _startNotificationListener() {
         // Respect desktop notification settings
         this._desktopNotificationSettings = new Gio.Settings({
             schema_id: 'org.gnome.desktop.notifications'
@@ -433,9 +433,30 @@ var Daemon = GObject.registerClass({
         );
         this._getAppNotificationSettings();
 
+        // Special connection for monitoring
+        this._dbusMonitor = Gio.DBusConnection.new_for_address_sync(
+            Gio.dbus_address_get_for_bus_sync(Gio.BusType.SESSION, null),
+            Gio.DBusConnectionFlags.AUTHENTICATION_CLIENT,
+            null,
+            null
+        );
+
+        // Introduce the connection to DBus
+        this._dbusMonitor.call_sync(
+            "org.freedesktop.DBus",
+            "/org/freedesktop/DBus",
+            "org.freedesktop.DBus",
+            "Hello",
+            null,
+            null,
+            Gio.DBusCallFlags.NONE,
+            -1,
+            null
+        );
+
         // libnotify (org.freedesktop.Notifications)
         this._fdoNotifications = new DBus.ProxyServer({
-            g_connection: connection,
+            g_connection: this._dbusMonitor,
             g_instance: this,
             g_interface_info: gsconnect.dbusinfo.lookup_interface(
                 'org.freedesktop.Notifications'
@@ -443,14 +464,13 @@ var Daemon = GObject.registerClass({
             g_object_path: '/org/freedesktop/Notifications'
         });
 
-        this._fdoNotificationsMatch = 'interface=\'org.freedesktop.Notifications\',' +
-                                      'member=\'Notify\',' +
-                                      'type=\'method_call\',' +
-                                      'eavesdrop=\'true\'';
+        let fdoMatch = 'interface=\'org.freedesktop.Notifications\',' +
+                       'member=\'Notify\',' +
+                       'type=\'method_call\'';
 
         // GNotification (org.gtk.Notifications)
         this._gtkNotifications = new DBus.ProxyServer({
-            g_connection: connection,
+            g_connection: this._dbusMonitor,
             g_instance: this,
             g_interface_info: gsconnect.dbusinfo.lookup_interface(
                 'org.gtk.Notifications'
@@ -458,29 +478,28 @@ var Daemon = GObject.registerClass({
             g_object_path: '/org/gtk/Notifications'
         });
 
-        this._gtkNotificationsMatch = 'interface=\'org.gtk.Notifications\',' +
-                                      'member=\'AddNotification\',' +
-                                      'type=\'method_call\',' +
-                                      'eavesdrop=\'true\'';
+        let gtkMatch = 'interface=\'org.gtk.Notifications\',' +
+                       'member=\'AddNotification\',' +
+                       'type=\'method_call\'';
 
-        this._fdo = new DBus.FdoProxy({
-            g_connection: connection,
-            g_name: 'org.freedesktop.DBus',
-            g_object_path: '/'
-        });
-
-        this._fdo.init_promise().then(result => {
-            this._fdo.AddMatch(this._fdoNotificationsMatch).catch(debug);
-            this._fdo.AddMatch(this._gtkNotificationsMatch).catch(debug);
-        });
+        // Become a monitor for Fdo & Gtk notifications
+        this._dbusMonitor.call_sync(
+            "org.freedesktop.DBus",
+            "/org/freedesktop/DBus",
+            "org.freedesktop.DBus.Monitoring",
+            "BecomeMonitor",
+            new GLib.Variant("(asu)", [[fdoMatch, gtkMatch], 0]),
+            null,
+            Gio.DBusCallFlags.NONE,
+            -1,
+            null
+        );
     }
 
     _stopNotificationListener() {
-        this._fdo.RemoveMatch(this._fdoNotificationsMatch);
-        this._fdo.RemoveMatch(this._gtkNotificationsMatch);
-        this._fdo.destroy();
         this._fdoNotifications.destroy();
         this._gtkNotifications.destroy();
+        this._dbusMonitor.close_sync(null);
     }
 
     _sendNotification(notif) {
@@ -906,12 +925,14 @@ var Daemon = GObject.registerClass({
             g_object_path: gsconnect.app_path
         });
 
-        this._startNotificationListener(connection);
+        // Start the notification listeners
+        this._startNotificationListener();
 
         return true;
     }
 
     vfunc_dbus_unregister(connection, object_path) {
+        // Stop the notification listeners
         this._stopNotificationListener();
 
         // Must be done before g_name_owner === null

@@ -1,0 +1,4 @@
+[D-BUS Service]
+Name=org.gnome.Shell.Extensions.GSConnect
+Exec=/bin/false
+SystemdService=org.gnome.Shell.Extensions.GSConnect.service

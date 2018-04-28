@@ -154,15 +154,26 @@ gsconnect.checkCommand = function(cmd) {
  *     - Register sms:// scheme handler
  */
 gsconnect.installService = function() {
-    // DBus service file
-    let serviceDir = GLib.get_user_data_dir() + '/dbus-1/services/';
-    let serviceFile = gsconnect.app_id + '.service';
-    let serviceBytes = Gio.resources_lookup_data(
-        gsconnect.app_path + '/' + serviceFile, 0
+    // systemd service file
+    let systemdDir = GLib.get_user_data_dir() + '/systemd/user/';
+    let systemdFile = gsconnect.app_id + '.service';
+    let systemdBytes = Gio.resources_lookup_data(
+        gsconnect.app_path + '/' + systemdFile + '-systemd', 0
     ).toArray().toString().replace('@DATADIR@', gsconnect.datadir);
 
-    GLib.mkdir_with_parents(serviceDir, 493);
-    GLib.file_set_contents(serviceDir + serviceFile, serviceBytes);
+    GLib.mkdir_with_parents(systemdDir, 493);
+    GLib.file_set_contents(systemdDir + systemdFile, systemdBytes);
+    GLib.spawn_command_line_async('systemctl --user daemon-reload');
+
+    // DBus service file
+    let dbusDir = GLib.get_user_data_dir() + '/dbus-1/services/';
+    let dbusFile = gsconnect.app_id + '.service';
+    let dbusBytes = Gio.resources_lookup_data(
+        gsconnect.app_path + '/' + dbusFile + '-dbus', 0
+    ).toArray().toString().replace('@DATADIR@', gsconnect.datadir);
+
+    GLib.mkdir_with_parents(dbusDir, 493);
+    GLib.file_set_contents(dbusDir + dbusFile, dbusBytes);
 
     // Application desktop file
     let applicationsDir = GLib.get_user_data_dir() + '/applications/';
@@ -175,10 +186,11 @@ gsconnect.installService = function() {
     GLib.file_set_contents(applicationsDir + desktopFile, desktopBytes);
 
     // sms:// scheme handler
-    let appinfo = Gio.DesktopAppInfo.new_from_filename(
+    let appInfo = Gio.DesktopAppInfo.new_from_filename(
         applicationsDir + desktopFile
     );
-    appinfo.add_supports_type('x-scheme-handler/sms');
+    appInfo.add_supports_type('x-scheme-handler/sms');
+    appInfo.add_supports_type('x-scheme-handler/tel');
 };
 
 

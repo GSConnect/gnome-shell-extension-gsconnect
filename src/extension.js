@@ -589,7 +589,7 @@ var ServiceIndicator = class ServiceIndicator extends PanelMenu.SystemIndicator 
     _setupObjManager(obj, res) {
         this.manager = Gio.DBusObjectManagerClient.new_finish(res);
 
-        if (!this.service) {
+        if (!this.service && GLib.file_test(gsconnect.datadir + '/service/daemon.js', GLib.FileTest.EXISTS)) {
             this._startService();
         }
 
@@ -640,7 +640,7 @@ var ServiceIndicator = class ServiceIndicator extends PanelMenu.SystemIndicator 
             }
         }
 
-        if (!this.service) {
+        if (!this.service && GLib.file_test(gsconnect.datadir + '/service/daemon.js', GLib.FileTest.EXISTS)) {
             this._startService();
         }
     }
