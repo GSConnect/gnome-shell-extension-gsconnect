@@ -432,14 +432,14 @@ var Device = GObject.registerClass({
     }
 
     /**
-     * Open a new Lan.Channel and try to connect to the device
+     * Open a new Channel and try to connect to the device
      */
     activate() {
         debug(`${this.name} (${this.id})`);
 
         // Already connected
 		if (this._channel !== null) {
-			debug(this.name + ' (' + this.id + ')' + ' already active');
+			debug(`${this.name} (${this.id}) already active`);
 			return;
 		}
 

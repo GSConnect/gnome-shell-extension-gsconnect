@@ -229,6 +229,10 @@ var ChannelService = GObject.registerClass({
         let channel = new Channel();
         let _tmp = channel.connect('connected', (channel) => {
             channel.disconnect(_tmp);
+            // Save the remote address for reconnecting later
+            let inetAddress = channel._connection.base_io_stream.get_remote_address();
+            channel.identity.body.tcpHost = inetAddress.address.to_string();
+            channel.identity.body.tcpPort = '1716';
             this.emit('channel', channel);
         });
         channel.accept(connection);
@@ -396,10 +400,14 @@ var Channel = GObject.registerClass({
      */
     _initSocket(connection) {
         return new Promise((resolve, reject) => {
-            connection.socket.set_keepalive(true);
-            connection.socket.set_option(6, 4, 10); // TCP_KEEPIDLE
-            connection.socket.set_option(6, 5, 5);  // TCP_KEEPINTVL
-            connection.socket.set_option(6, 6, 3);  // TCP_KEEPCNT
+            if (connection instanceof Gio.TcpConnection) {
+                connection.socket.set_keepalive(true);
+                connection.socket.set_option(6, 4, 10); // TCP_KEEPIDLE
+                connection.socket.set_option(6, 5, 5);  // TCP_KEEPINTVL
+                connection.socket.set_option(6, 6, 3);  // TCP_KEEPCNT
+            } else if (connection instanceof Gio.UnixConnection) {
+                connection.socket.set_blocking(false);
+            }
 
             resolve(connection);
         });
@@ -418,12 +426,8 @@ var Channel = GObject.registerClass({
             let [data, len] = _input_stream.read_line(null);
             _input_stream.close(null);
 
-            //
+            // Store the identity as an object property
             this.identity = new Packet(data.toString());
-            // Save the remote address for reconnecting later
-            this.identity.body.tcpHost = connection.socket.remote_address.address.to_string();
-            // Can't use the remote port for reconnecting so use the default
-            this.identity.body.tcpPort = 1716;
 
             resolve(connection);
         });
@@ -431,7 +435,6 @@ var Channel = GObject.registerClass({
 
     /**
      * Write our identity packet to the Gio.SocketConnection file descriptor
-     * TODO: could just take a file-descriptor, ie bluetooth
      */
     _sendIdent(connection) {
         return new Promise((resolve, reject) => {
@@ -503,31 +506,41 @@ var Channel = GObject.registerClass({
     }
 
     /**
-     * Wrap @connection in TlsClientConnection and handshake
+     * If @connection is a Gio.TcpConnection, wrap it in Gio.TlsClientConnection
+     * and initiate handshake, otherwise just return it.
      */
-    _clientTls(connection) {
+    _clientEncryption(connection) {
         return new Promise((resolve, reject) => {
-            connection = Gio.TlsClientConnection.new(
-                connection,
-                connection.socket.remote_address // TODO: incompatible wiht bluez?
-            );
-            connection.set_certificate(this.service.certificate);
+            if (connection instanceof Gio.TcpConnection) {
+                connection = Gio.TlsClientConnection.new(
+                    connection,
+                    connection.socket.remote_address
+                );
+                connection.set_certificate(this.service.certificate);
 
-            resolve(this._handshakeTls(connection));
+                resolve(this._handshakeTls(connection));
+            } else {
+                resolve(connection);
+            }
         });
     }
 
     /**
-     * Wrap @connection in TlsServerConnection and handshake
+     * If @connection is a Gio.TcpConnection, wrap it in Gio.TlsServerConnection
+     * and initiate handshake, otherwise just return it.
      */
-    _serverTls(connection) {
+    _serverEncryption(connection) {
         return new Promise((resolve, reject) => {
-            connection = Gio.TlsServerConnection.new(
-                connection,
-                this.service.certificate
-            );
+            if (connection instanceof Gio.TcpConnection) {
+                connection = Gio.TlsServerConnection.new(
+                    connection,
+                    this.service.certificate
+                );
 
-            resolve(this._handshakeTls(connection));
+                resolve(this._handshakeTls(connection));
+            } else {
+                resolve(connection);
+            }
         });
     }
 
@@ -572,21 +585,26 @@ var Channel = GObject.registerClass({
                 }
             });
         // Set the usual socket options
-        }).then(tcpConnection => {
-            return this._initSocket(tcpConnection);
+        }).then(socketConnection => {
+            return this._initSocket(socketConnection);
         // Send our identity packet
-        }).then(tcpConnection => {
-            return this._sendIdent(tcpConnection);
+        }).then(socketConnection => {
+            return this._sendIdent(socketConnection);
         // Authenticate the connection
-        }).then(tcpConnection => {
-            return this._serverTls(tcpConnection);
+        }).then(socketConnection => {
+            return this._serverEncryption(socketConnection);
         // Store the certificate and init streams for packet exchange
-        }).then(tlsConnection => {
-            this._certificate = tlsConnection.get_peer_certificate();
-            return this._initPacketIO(tlsConnection);
+        }).then(secureConnection => {
+            if (secureConnection.hasOwnProperty('get_peer_certificate')) {
+                this._certificate = secureConnection.get_peer_certificate();
+            } else {
+                this._certificate = null;
+            }
+
+            return this._initPacketIO(secureConnection);
         // Set the connection and emit
-        }).then(tlsConnection => {
-            this._connection = tlsConnection;
+        }).then(secureConnection => {
+            this._connection = secureConnection;
             this.emit('connected');
         }).catch(e => {
             log('Error opening connection: ' + e.message);
@@ -601,18 +619,23 @@ var Channel = GObject.registerClass({
      */
     accept(connection) {
         // Set the usual socket options and receive the device's identity
-        return this._initSocket(connection).then(tcpConnection => {
-            return this._receiveIdent(tcpConnection);
+        return this._initSocket(connection).then(socketConnection => {
+            return this._receiveIdent(socketConnection);
         // Authenticate the connection
-        }).then(tcpConnection => {
-            return this._clientTls(tcpConnection);
+        }).then(socketConnection => {
+            return this._clientEncryption(socketConnection);
         // Store the certificate and init streams for packet exchange
-        }).then(tlsConnection => {
-            this._certificate = tlsConnection.get_peer_certificate();
-            return this._initPacketIO(tlsConnection);
+        }).then(secureConnection => {
+            if (secureConnection.hasOwnProperty('get_peer_certificate')) {
+                this._certificate = secureConnection.get_peer_certificate();
+            } else {
+                this._certificate = null;
+            }
+
+            return this._initPacketIO(secureConnection);
         // Set the connection and emit
-        }).then(tlsConnection => {
-            this._connection = tlsConnection;
+        }).then(secureConnection => {
+            this._connection = secureConnection;
             this.emit('connected');
         }).catch(e => {
             log('Error accepting connection: ' + e.message);
@@ -631,24 +654,18 @@ var Channel = GObject.registerClass({
             debug(e);
         }
 
-        ['_input_stream', '_output_stream', '_connection'].map(stream => {
-            try {
-                if (this[stream]) {
-                    this[stream].close(null);
-                    delete this[stream];
-                }
-            } catch (e) {
-                debug(e);
-            }
-        });
+        try {
+            this._connection.close(null);
+            delete this._connection;
+        } catch (e) {
+            debug(e.message);
+        }
 
         try {
-            if (this._listener) {
-                this._listener.close();
-                delete this._listener;
-            }
+            this._listener.close();
+            delete this._listener;
         } catch (e) {
-            debug(e);
+            debug(e.message);
         }
 
         this.emit('disconnected');
@@ -679,7 +696,7 @@ var Channel = GObject.registerClass({
         try {
             [data, length] = this._input_stream.read_line(null);
         } catch (e) {
-            debug(e);
+            debug(`${this.identity.body.deviceName}: ${e.message}`);
             this.close();
             return false;
         }
@@ -848,15 +865,15 @@ var Transfer = GObject.registerClass({
                 reject(e);
             }
         // Set the usual socket options
-        }).then(tcpConnection => {
-            return this._initSocket(tcpConnection);
+        }).then(socketConnection => {
+            return this._initSocket(socketConnection);
         // Authenticate the connection
-        }).then(tcpConnection => {
-            return this._serverTls(tcpConnection);
+        }).then(socketConnection => {
+            return this._serverEncryption(socketConnection);
         // Init streams for uploading, set the connection and emit
-        }).then(tlsConnection => {
-            this._output_stream = tlsConnection.get_output_stream();
-            this._connection = tlsConnection;
+        }).then(secureConnection => {
+            this._output_stream = secureConnection.get_output_stream();
+            this._connection = secureConnection;
             this.emit('connected');
         }).catch(e => {
             log('Error uploading: ' + e.message);
@@ -898,15 +915,15 @@ var Transfer = GObject.registerClass({
                 }
             });
         // Set the usual socket options
-        }).then(tcpConnection => {
-            return this._initSocket(tcpConnection);
+        }).then(socketConnection => {
+            return this._initSocket(socketConnection);
         // Authenticate the connection
-        }).then(tcpConnection => {
-            return this._clientTls(tcpConnection);
+        }).then(socketConnection => {
+            return this._clientEncryption(socketConnection);
         // Init streams for downloading, set the connection and emit
-        }).then(tlsConnection => {
-            this._input_stream = tlsConnection.get_input_stream();
-            this._connection = tlsConnection;
+        }).then(secureConnection => {
+            this._input_stream = secureConnection.get_input_stream();
+            this._connection = secureConnection;
             this.emit('connected');
         }).catch(e => {
             log('Error downloading: ' + e.message);

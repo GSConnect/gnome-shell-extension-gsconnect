@@ -132,39 +132,6 @@ const SdpRecord = Gio.resources_lookup_data(
 
 
 /**
- * Bluez Device Channel
- */
-var Channel = GObject.registerClass({
-    GTypeName: 'GSConnectBluetoothChannel',
-    Signals: {
-        'connected': {
-            flags: GObject.SignalFlags.RUN_FIRST
-        },
-        'disconnected': {
-            flags: GObject.SignalFlags.RUN_FIRST
-        },
-        'received': {
-            flags: GObject.SignalFlags.RUN_FIRST,
-            param_types: [ GObject.TYPE_OBJECT ]
-        }
-    },
-    Properties: {
-        'certificate': GObject.ParamSpec.object(
-            'certificate',
-            'TlsCertificate',
-            'The TLS Certificate for this connection',
-            GObject.ParamFlags.READABLE,
-            Gio.TlsCertificate
-        )
-    }
-}, class Channel extends GObject.Object {
-    _init() {
-        super._init();
-    }
-});
-
-
-/**
  * Bluez Channel Service
  */
 var ChannelService = GObject.registerClass({
