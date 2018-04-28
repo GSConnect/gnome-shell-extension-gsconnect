@@ -192,7 +192,9 @@ var NativeMessagingHost = new Lang.Class({
             this.daemon = false;
         }
 
-        this.daemon = new Client.Daemon();
+        if (GLib.file_test(ext.datadir + "/service/daemon.js", GLib.FileTest.EXISTS)) {
+            this.daemon = new Client.Daemon();
+        }
     }
 });
 

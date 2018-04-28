@@ -601,7 +601,9 @@ var SystemIndicator = new Lang.Class({
 
         this.extensionIndicator.visible = (this.daemon);
 
-        this.daemon = new Client.Daemon();
+        if (GLib.file_test(ext.datadir + "/service/daemon.js", GLib.FileTest.EXISTS)) {
+            this.daemon = new Client.Daemon();
+        }
     },
 
     _deviceKeybindings: function (indicator) {
