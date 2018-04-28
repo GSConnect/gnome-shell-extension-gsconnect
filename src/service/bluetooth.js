@@ -14,20 +14,6 @@ const DBus = imports.modules.dbus;
  */
 var BluezNode = Gio.DBusNodeInfo.new_for_xml(
 '<node> \
-  <!-- Manager (eg. /org/bluez) --> \
-  <interface name="org.bluez.AgentManager1"> \
-    <method name="RegisterAgent">\
-      <arg name="agent" type="o" direction="in"/> \
-      <arg name="capability" type="s" direction="in"/> \
-    </method> \
-    <method name="UnregisterAgent"> \
-      <arg name="agent" type="o" direction="in"/> \
-    </method> \
-    <method name="RequestDefaultAgent"> \
-      <arg name="agent" type="o" direction="in"/> \
-    </method> \
-  </interface> \
-  \
   <interface name="org.bluez.ProfileManager1"> \
     <method name="RegisterProfile"> \
       <arg name="profile" type="o" direction="in"/> \
