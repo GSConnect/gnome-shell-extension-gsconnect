@@ -229,7 +229,6 @@ var Daemon = GObject.registerClass({
 
                 this._type = ([8, 9, 10, 14].indexOf(type) > -1) ? 'laptop' : 'desktop';
             } catch (e) {
-                debug('Error reading chassis_type: ' + e);
                 this._type = 'desktop';
             }
         }
@@ -863,6 +862,10 @@ var Daemon = GObject.registerClass({
         // BluetoothChannelService
         try {
             this.bluetoothService = new Bluetooth.ChannelService();
+
+            this.bluetoothService.connect('channel', (service, channel) => {
+                this._addDevice(channel.identity, channel);
+            });
         } catch (e) {
             debug(e);
         }
