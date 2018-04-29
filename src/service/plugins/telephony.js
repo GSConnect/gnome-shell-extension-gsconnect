@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
@@ -22,105 +22,105 @@ var Allow = {
 
 
 var Metadata = {
-    id: "org.gnome.Shell.Extensions.GSConnect.Plugin.Telephony",
-    incomingCapabilities: ["kdeconnect.telephony"],
-    outgoingCapabilities: ["kdeconnect.telephony.request", "kdeconnect.sms.request"],
+    id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.Telephony',
+    incomingCapabilities: ['kdeconnect.telephony'],
+    outgoingCapabilities: ['kdeconnect.telephony.request', 'kdeconnect.sms.request'],
     actions: {
         // Call Actions
         muteCall: {
-            summary: _("Mute Call"),
-            description: _("Silence an incoming call"),
-            icon_name: "audio-volume-muted-symbolic",
+            summary: _('Mute Call'),
+            description: _('Silence an incoming call'),
+            icon_name: 'audio-volume-muted-symbolic',
 
             signature: null,
-            incoming: ["kdeconnect.telephony"],
-            outgoing: ["kdeconnect.telephony.request"],
+            incoming: ['kdeconnect.telephony'],
+            outgoing: ['kdeconnect.telephony.request'],
             allow: Allow.OUT | Allow.IN | Allow.CALLS
         },
 
         // SMS Actions
         newSms: {
-            summary: _("New SMS"),
-            description: _("Start a new SMS conversation"),
-            icon_name: "sms-symbolic",
+            summary: _('New SMS'),
+            description: _('Start a new SMS conversation'),
+            icon_name: 'sms-symbolic',
 
             signature: null,
-            incoming: ["kdeconnect.telephony"],
-            outgoing: ["kdeconnect.sms.request"],
+            incoming: ['kdeconnect.telephony'],
+            outgoing: ['kdeconnect.sms.request'],
             allow: Allow.OUT | Allow.IN | Allow.SMS
         },
         replySms: {
-            summary: _("Reply SMS"),
-            description: _("Reply to an SMS message"),
-            icon_name: "sms-symbolic",
+            summary: _('Reply SMS'),
+            description: _('Reply to an SMS message'),
+            icon_name: 'sms-symbolic',
 
-            signature: "v",
-            incoming: ["kdeconnect.telephony"],
-            outgoing: ["kdeconnect.sms.request"],
+            signature: 'v',
+            incoming: ['kdeconnect.telephony'],
+            outgoing: ['kdeconnect.sms.request'],
             allow: Allow.OUT | Allow.IN | Allow.SMS
         },
         sendSms: {
-            summary: _("Send SMS"),
-            description: _("Send an SMS message"),
-            icon_name: "sms-send",
+            summary: _('Send SMS'),
+            description: _('Send an SMS message'),
+            icon_name: 'sms-send',
 
-            signature: "(ss)",
-            incoming: ["kdeconnect.telephony"],
-            outgoing: ["kdeconnect.sms.request"],
+            signature: '(ss)',
+            incoming: ['kdeconnect.telephony'],
+            outgoing: ['kdeconnect.sms.request'],
             allow: Allow.OUT | Allow.IN | Allow.SMS
         },
         callNotification: {
-            summary: _("Call Notification"),
-            description: _("Show a notification tailored for phone calls"),
-            icon_name: "sms-symbolic",
+            summary: _('Call Notification'),
+            description: _('Show a notification tailored for phone calls'),
+            icon_name: 'sms-symbolic',
 
-            signature: "v",
-            incoming: ["kdeconnect.telephony"],
-            outgoing: ["kdeconnect.sms.request"],
+            signature: 'v',
+            incoming: ['kdeconnect.telephony'],
+            outgoing: ['kdeconnect.sms.request'],
             allow: Allow.OUT | Allow.IN | Allow.CALLS | Allow.SMS
         },
         smsNotification: {
-            summary: _("SMS Notification"),
-            description: _("Show a notification that opens a new conversation when activated"),
-            icon_name: "sms-symbolic",
+            summary: _('SMS Notification'),
+            description: _('Show a notification that opens a new conversation when activated'),
+            icon_name: 'sms-symbolic',
 
-            signature: "a{sv}",
-            incoming: ["kdeconnect.telephony"],
-            outgoing: ["kdeconnect.sms.request"],
+            signature: 'a{sv}',
+            incoming: ['kdeconnect.telephony'],
+            outgoing: ['kdeconnect.sms.request'],
             allow: Allow.OUT | Allow.IN | Allow.SMS
         }
     },
     events: {
         // SMS Events
         missedCall: {
-            summary: _("Missed Call"),
-            description: _("An incoming call was missed"),
-            incoming: ["kdeconnect.telephony"],
+            summary: _('Missed Call'),
+            description: _('An incoming call was missed'),
+            incoming: ['kdeconnect.telephony'],
             allow: 4
         },
         ringing: {
-            summary: _("Incoming Call"),
-            description: _("An incoming call"),
-            incoming: ["kdeconnect.telephony"],
+            summary: _('Incoming Call'),
+            description: _('An incoming call'),
+            incoming: ['kdeconnect.telephony'],
             allow: 4
         },
         sms: {
-            summary: _("SMS Message"),
-            description: _("An incoming SMS message"),
-            incoming: ["kdeconnect.telephony"],
+            summary: _('SMS Message'),
+            description: _('An incoming SMS message'),
+            incoming: ['kdeconnect.telephony'],
             allow: 4
         },
         talking: {
-            summary: _("Call In Progress"),
-            description: _("An incoming call was answered"),
-            incoming: ["kdeconnect.telephony"],
+            summary: _('Call In Progress'),
+            description: _('An incoming call was answered'),
+            incoming: ['kdeconnect.telephony'],
             allow: 4
         },
         // FIXME: isCancel???
         ended: {
-            summary: _("Call Ended"),
-            description: _("An incoming call ended"),
-            incoming: ["kdeconnect.telephony"],
+            summary: _('Call Ended'),
+            description: _('An incoming call ended'),
+            incoming: ['kdeconnect.telephony'],
             allow: 4
         }
     }
@@ -142,7 +142,7 @@ var MediaState = {
  *
  * Packets:
  *  {
- *      type: "kdeconnect.telephony"
+ *      type: 'kdeconnect.telephony'
  *      id: {Number microseconds timestamp}
  *      body: {
  *          event: {String} missedCall | ringing | sms | talking,
@@ -158,14 +158,15 @@ var MediaState = {
  * TODO: track notifs: isCancel events, append new messages to unacknowledged?
  */
 var Plugin = GObject.registerClass({
-    GTypeName: "GSConnectTelephonyPlugin",
+    GTypeName: 'GSConnectTelephonyPlugin',
 }, class Plugin extends PluginsBase.Plugin {
 
     _init(device) {
-        super._init(device, "telephony");
+        super._init(device, 'telephony');
 
         this.contacts = Contacts.getStore();
 
+        this.device.menu.add_action('newSms', Metadata.actions.newSms);
     }
 
     handlePacket(packet) {
@@ -181,21 +182,21 @@ var Plugin = GObject.registerClass({
         } else {
             this.event(event.type, event);
 
-            if (event.type === "sms" && (this.allow & Allow.SMS)) {
+            if (event.type === 'sms' && (this.allow & Allow.SMS)) {
                 this._onSms(event);
             } else if (this.allow & Allow.CALLS) {
                 switch (event.type) {
-                    case "missedCall":
+                    case 'missedCall':
                         this._onMissedCall(event);
                         break;
-                    case "ringing":
+                    case 'ringing':
                         this._onRinging(event);
                         break;
-                    case "talking":
+                    case 'talking':
                         this._onTalking(event);
                         break;
                     default:
-                        log("Unknown telephony event");
+                        log('Unknown telephony event');
                 }
             }
         }
@@ -220,11 +221,11 @@ var Plugin = GObject.registerClass({
 
         // Update contact avatar
         if (packet.body.phoneThumbnail && !event.contact.avatar) {
-            debug("updating avatar for " + event.contact.name);
+            debug('updating avatar for ' + event.contact.name);
 
             event.contact.avatar = GLib.build_filenamev([
                 Contacts.CACHE_DIR,
-                GLib.uuid_string_random() + ".jpeg"
+                GLib.uuid_string_random() + '.jpeg'
             ]);
             GLib.file_set_contents(
                 event.contact.avatar,
@@ -233,17 +234,17 @@ var Plugin = GObject.registerClass({
             this.contacts._writeCache();
         }
 
-        if (event.type === "sms") {
+        if (event.type === 'sms') {
             event.content = packet.body.messageBody;
-        } else if (event.type === "missedCall") {
+        } else if (event.type === 'missedCall') {
             // TRANSLATORS: eg. Missed call from John Smith on Google Pixel
-            event.content = _("Missed call at %s").format(event.time);
-        } else if (event.type === "ringing") {
+            event.content = _('Missed call at %s').format(event.time);
+        } else if (event.type === 'ringing') {
             // TRANSLATORS: eg. Incoming call from John Smith
-            event.content = _("Incoming call from %s").format(event.contact.name);
-        } else if (event.type === "talking") {
+            event.content = _('Incoming call from %s').format(event.contact.name);
+        } else if (event.type === 'talking') {
             // TRANSLATORS: eg. Call in progress with John Smith
-            event.content = _("Call in progress with %s").format(event.contact.name);
+            event.content = _('Call in progress with %s').format(event.contact.name);
         }
 
         return event;
@@ -267,29 +268,29 @@ var Plugin = GObject.registerClass({
             icon = Contacts.getPixbuf(event.contact.avatar);
         }
 
-        if (event.type === "missedCall") {
+        if (event.type === 'missedCall') {
             buttons = [{
-                action: "replySms",
+                action: 'replySms',
                 // TRANSLATORS: Reply to a missed call by SMS
-                label: _("Message"),
+                label: _('Message'),
                 params: event
             }];
-            icon = icon || new Gio.ThemedIcon({ name: "call-missed-symbolic" });
-        } else if (event.type === "ringing") {
+            icon = icon || new Gio.ThemedIcon({ name: 'call-missed-symbolic' });
+        } else if (event.type === 'ringing') {
             buttons = [{
-                action: "muteCall",
+                action: 'muteCall',
                 // TRANSLATORS: Silence an incoming call
-                label: _("Mute"),
+                label: _('Mute'),
                 params: event
             }];
-            icon = icon || new Gio.ThemedIcon({ name: "call-start-symbolic" });
+            icon = icon || new Gio.ThemedIcon({ name: 'call-start-symbolic' });
             priority = Gio.NotificationPriority.URGENT;
-        } else if (event.type === "talking") {
-            icon = icon || new Gio.ThemedIcon({ name: "call-start-symbolic" });
+        } else if (event.type === 'talking') {
+            icon = icon || new Gio.ThemedIcon({ name: 'call-start-symbolic' });
         }
 
         this.device.showNotification({
-            id: event.type + "|" + event.time,
+            id: event.type + '|' + event.time,
             title: event.contact.name,
             body: event.content,
             icon: icon,
@@ -314,17 +315,17 @@ var Plugin = GObject.registerClass({
         if (event.contact.avatar) {
             icon = Contacts.getPixbuf(event.contact.avatar);
         } else {
-            icon = new Gio.ThemedIcon({ name: "sms-symbolic" });
+            icon = new Gio.ThemedIcon({ name: 'sms-symbolic' });
         }
 
         this.device.showNotification({
-            id: event.type + "|"  + event.time,
+            id: event.type + '|'  + event.time,
             title: event.contact.name,
             body: event.content,
             icon: icon,
             priority: Gio.NotificationPriority.HIGH,
             action: {
-                name: "replySms",
+                name: 'replySms',
                 params: event
             }
         });
@@ -333,7 +334,7 @@ var Plugin = GObject.registerClass({
     _onCancel(event) {
         this._setMediaState(1);
         this.device.withdraw_notification(
-            event.type + "|" + event.contact.name // FIXME
+            event.type + '|' + event.contact.name // FIXME
         );
     }
 
@@ -344,14 +345,14 @@ var Plugin = GObject.registerClass({
         debug(event);
 
         // Start tracking the duplicate early
-        let notification = this.device._plugins.get("notification");
+        let notification = this.device._plugins.get('notification');
 
         if (notification) {
             notification.markDuplicate({
-                telId: event.type + "|" + event.time,
+                telId: event.type + '|' + event.time,
                 // TRANSLATORS: This is _specifically_ for matching missed call notifications on Android.
-                // This should _exactly_ match the Android notification that in english looks like "Missed call: John Lennon"
-                ticker: _("Missed call") + ": " + event.contact.name,
+                // This should _exactly_ match the Android notification that in english looks like 'Missed call: John Lennon'
+                ticker: _('Missed call') + ': ' + event.contact.name,
             });
         }
 
@@ -369,14 +370,14 @@ var Plugin = GObject.registerClass({
             window.urgency_hint = true;
             window._notifications.push([
                 event.type,
-                event.contact.name + ": " + event.content
-            ].join("|"));
+                event.contact.name + ': ' + event.content
+            ].join('|'));
 
             // Tell the notification plugin to mark any duplicate read
             if (notification) {
                 notification.markDuplicate({
-                    telId: event.type + "|" + event.time,
-                    ticker: event.contact.name + ": " + event.content,
+                    telId: event.type + '|' + event.time,
+                    ticker: event.contact.name + ': ' + event.content,
                     isCancel: true
                 });
             }
@@ -396,12 +397,12 @@ var Plugin = GObject.registerClass({
         debug(event);
 
         // Start tracking the duplicate as soon as possible
-        let notification = this.device._plugins.get("notification");
+        let notification = this.device._plugins.get('notification');
 
         if (notification) {
             notification.markDuplicate({
-                telId: event.type + "|" + event.time,
-                ticker: event.contact.name + ": " + event.content
+                telId: event.type + '|' + event.time,
+                ticker: event.contact.name + ': ' + event.content
             });
         }
 
@@ -423,8 +424,8 @@ var Plugin = GObject.registerClass({
             // Tell the notification plugin to mark any duplicate read
             if (notification) {
                 notification.markDuplicate({
-                    telId: "sms|" + event.time,
-                    ticker: event.contact.name + ": " + event.content,
+                    telId: 'sms|' + event.time,
+                    ticker: event.contact.name + ': ' + event.content,
                     isCancel: true
                 });
             }
@@ -437,7 +438,7 @@ var Plugin = GObject.registerClass({
         debug(event);
 
         // TODO: need this, or done by isCancel?
-        this.device.withdraw_notification("ringing|" + event.contact.name);
+        this.device.withdraw_notification('ringing|' + event.contact.name);
 
         this._telephonyAction(event);
         this._setMediaState(2); // TODO
@@ -445,7 +446,7 @@ var Plugin = GObject.registerClass({
 
     _telephonyAction(event) {
         let actions = gsconnect.full_unpack(
-            this.settings.get_value("events")
+            this.settings.get_value('events')
         )[event.type];
 
         for (let name in actions) {
@@ -469,7 +470,7 @@ var Plugin = GObject.registerClass({
     _hasWindow(number) {
         debug(number);
 
-        number = number.replace(/\D/g, "");
+        number = number.replace(/\D/g, '');
 
         // Get the current open windows
         let windows = this.device.service.get_windows();
@@ -483,7 +484,7 @@ var Plugin = GObject.registerClass({
                 continue;
             }
 
-            if (number === win.number.replace(/\D/g, "")) {
+            if (number === win.number.replace(/\D/g, '')) {
                 conversation = win;
                 break;
             }
@@ -513,12 +514,12 @@ var Plugin = GObject.registerClass({
      * Silence an incoming call
      */
     muteCall() {
-        debug("");
+        debug('');
 
         this.device.sendPacket({
             id: 0,
-            type: "kdeconnect.telephony.request",
-            body: { action: "mute" }
+            type: 'kdeconnect.telephony.request',
+            body: { action: 'mute' }
         });
     }
 
@@ -526,7 +527,7 @@ var Plugin = GObject.registerClass({
      * Open and present a new SMS window
      */
     newSms() {
-        debug("");
+        debug('');
 
         let window = new Sms.ConversationWindow(this.device);
         window.present();
@@ -534,13 +535,13 @@ var Plugin = GObject.registerClass({
 
     // FIXME FIXME
     openUri(uri) {
-        debug("");
+        debug('');
 
         if (!uri instanceof Sms.URI) {
             try {
                 uri = new Sms.URI(uri);
             } catch (e) {
-                debug("Error parsing sms URI: " + e.message);
+                debug('Error parsing sms URI: ' + e.message);
                 return;
             }
         }
@@ -557,7 +558,7 @@ var Plugin = GObject.registerClass({
                 // FIXME
                 let contact = this.contacts.query({
                     number: recipient,
-                    name: "",
+                    name: '',
                     single: false
                 });
                 window.addRecipient(recipient, contact);
@@ -605,12 +606,12 @@ var Plugin = GObject.registerClass({
             }
 
             // Tell the notification plugin to mark any duplicate read
-            let notification = this.device._plugins.get("notification");
+            let notification = this.device._plugins.get('notification');
 
             if (notification) {
                 notification.markDuplicate({
-                    telId: event.type + "|" + event.time,
-                    ticker: event.contact.name + ": " + event.content,
+                    telId: event.type + '|' + event.time,
+                    ticker: event.contact.name + ': ' + event.content,
                     isCancel: true
                 });
             }
@@ -626,11 +627,11 @@ var Plugin = GObject.registerClass({
      * @param {string} messageBody - The message to send
      */
     sendSms(phoneNumber, messageBody) {
-        debug(phoneNumber + ", " + messageBody);
+        debug(phoneNumber + ', ' + messageBody);
 
         this.device.sendPacket({
             id: 0,
-            type: "kdeconnect.sms.request",
+            type: 'kdeconnect.sms.request',
             body: {
                 sendSms: true,
                 phoneNumber: phoneNumber,
