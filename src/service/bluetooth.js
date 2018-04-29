@@ -6,8 +6,8 @@ const GObject = imports.gi.GObject;
 
 // Local Imports
 imports.searchPath.push(gsconnect.datadir);
+const Core = imports.service.core;
 const DBus = imports.modules.dbus;
-const Lan = imports.service.lan;
 
 
 /**
@@ -308,7 +308,7 @@ var ChannelService = GObject.registerClass({
 
         let device = this._devices.get(object_path);
 
-        device._channel = new Lan.Channel();
+        device._channel = new Core.Channel();
         let _tmp = device._channel.connect('connected', (channel) => {
             channel.disconnect(_tmp);
             channel.identity.body.btHost = device.Address;

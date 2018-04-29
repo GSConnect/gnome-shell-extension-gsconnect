@@ -37,6 +37,7 @@ imports._gsconnect;
 
 // Local Imports
 const Bluetooth = imports.service.bluetooth;
+const Core = imports.service.core;
 const DBus = imports.modules.dbus;
 const Device = imports.service.device;
 const Lan = imports.service.lan;
@@ -175,9 +176,9 @@ var Daemon = GObject.registerClass({
 
     get identity() {
         if (this._identity === undefined) {
-            this._identity = new Lan.Packet({
+            this._identity = new Core.Packet({
                 id: 0,
-                type: Lan.TYPE_IDENTITY,
+                type: 'kdeconnect.identity',
                 body: {
                     deviceId: this.certificate.serial,
                     deviceName: gsconnect.settings.get_string('public-name'),

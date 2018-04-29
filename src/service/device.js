@@ -7,9 +7,9 @@ const Gtk = imports.gi.Gtk;
 
 // Local Imports
 imports.searchPath.push(gsconnect.datadir);
+const Core = imports.service.core;
 const DBus = imports.modules.dbus;
 const Bluetooth = imports.service.bluetooth;
-const Lan = imports.service.lan;
 
 
 /**
@@ -464,7 +464,7 @@ var Device = GObject.registerClass({
 		    }
 		} else if (lastConnection === 'tcp') {
             // Create a new channel
-            this._channel = new Lan.Channel(this.id);
+            this._channel = new Core.Channel(this.id);
             this._channel.connect('connected', this._onConnected.bind(this));
             this._channel.connect('disconnected', this._onDisconnected.bind(this));
 		    this._channel.connect('received', this._onReceived.bind(this));
@@ -481,7 +481,7 @@ var Device = GObject.registerClass({
     }
 
     /**
-     * Update the device with a UDP packet or replacement Lan.Channel
+     * Update the device with a UDP packet or replacement Core.Channel
      */
     update(packet, channel=null) {
         debug(`${this.name} (${this.id})`);
@@ -550,7 +550,7 @@ var Device = GObject.registerClass({
         debug(`${this.name} (${this.id}): ${JSON.stringify(packet, null, 2)}`);
 
         if (this.connected && this.paired) {
-            packet = new Lan.Packet(packet);
+            packet = new Core.Packet(packet);
             this._channel.send(packet);
         }
     }
@@ -591,10 +591,10 @@ var Device = GObject.registerClass({
     _onReceived(channel, packet) {
         debug(`Received ${packet.type} from ${this.name} (${this.id})`);
 
-        if (packet.type === Lan.TYPE_IDENTITY) {
+        if (packet.type === 'kdeconnect.identity') {
             this._handleIdentity(packet);
             this.activate();
-        } else if (packet.type === Lan.TYPE_PAIR) {
+        } else if (packet.type === 'kdeconnect.pair') {
 	        this._handlePair(packet);
 	    } else if (this._handlers.has(packet.type)) {
 	        let handler = this._handlers.get(packet.type);
@@ -837,9 +837,9 @@ var Device = GObject.registerClass({
         }
 
         // Send a pair packet
-        let packet = new Lan.Packet({
+        let packet = new Core.Packet({
             id: 0,
-            type: Lan.TYPE_PAIR,
+            type: 'kdeconnect.pair',
             body: { pair: true }
         });
         this._channel.send(packet);
@@ -850,9 +850,9 @@ var Device = GObject.registerClass({
 
         // Send the unpair packet only if we're connected
         if (this._channel !== null) {
-            let packet = new Lan.Packet({
+            let packet = new Core.Packet({
                 id: 0,
-                type: Lan.TYPE_PAIR,
+                type: 'kdeconnect.pair',
                 body: { pair: false }
             });
             this._channel.send(packet);
