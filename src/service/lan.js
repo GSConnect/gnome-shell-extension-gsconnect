@@ -707,6 +707,11 @@ var Channel = GObject.registerClass({
         }
 
         let packet = new Packet(data.toString());
+
+        if (packet.type === 'kdeconnect.identity') {
+            this.identity = packet;
+        }
+
         //debug(packet);
         this.emit('received', packet);
         return true;
