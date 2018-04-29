@@ -24,7 +24,7 @@ const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
-// Local Imports
+// Bootstrap
 function getPath() {
     // Diced from: https://github.com/optimisme/gjs-examples/
     let m = new RegExp('@(.+):\\d+').exec((new Error()).stack.split('\n')[1]);
@@ -33,8 +33,9 @@ function getPath() {
 
 window.gsconnect = { datadir: getPath() };
 imports.searchPath.unshift(gsconnect.datadir);
-const _gsconnect = imports._gsconnect;
+imports._gsconnect;
 
+// Local Imports
 const Bluetooth = imports.service.bluetooth;
 const DBus = imports.modules.dbus;
 const Device = imports.service.device;

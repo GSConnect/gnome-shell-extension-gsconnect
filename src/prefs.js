@@ -4,7 +4,7 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const Gtk = imports.gi.Gtk;
 
-// Local Imports
+// Bootstrap
 function getPath() {
     // Diced from: https://github.com/optimisme/gjs-examples/
     let m = new RegExp("@(.+):\\d+").exec((new Error()).stack.split("\n")[1]);
@@ -13,7 +13,9 @@ function getPath() {
 
 window.gsconnect = { datadir: getPath() };
 imports.searchPath.unshift(gsconnect.datadir);
-const _gsconnect = imports._gsconnect;
+imports._gsconnect;
+
+// Local Imports
 const DBus = imports.modules.dbus;
 
 

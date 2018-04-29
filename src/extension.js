@@ -18,13 +18,14 @@ const PanelMenu = imports.ui.panelMenu;
 const PopupMenu = imports.ui.popupMenu;
 const Util = imports.misc.util;
 
-// Local Imports
+// Bootstrap
 window.gsconnect = {
     datadir: imports.misc.extensionUtils.getCurrentExtension().path
 };
-
 imports.searchPath.unshift(gsconnect.datadir);
-const _gsconnect = imports._gsconnect;
+imports._gsconnect;
+
+// Local Imports
 const _ = gsconnect._;
 const Actors = imports.actors;
 const DBus = imports.modules.dbus;
@@ -830,7 +831,7 @@ function init() {
 
 
 function enable() {
-    debug("enabling extension");
+    log('Enabling GSConnect');
 
     gsconnect.installService();
     Gtk.IconTheme.get_default().add_resource_path(gsconnect.app_path);
@@ -839,7 +840,7 @@ function enable() {
 
 
 function disable() {
-    debug("disabling extension");
+    log('Disabling GSConnect');
 
     serviceIndicator.destroy();
     serviceIndicator = null;

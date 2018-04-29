@@ -448,7 +448,7 @@ var Store = GObject.registerClass({
                 null
             );
         } catch (e) {
-            debug("Error writing contacts cache: " + e.message + "\n" + e.stack);
+            debug(e);
         }
     }
 
@@ -477,6 +477,7 @@ var Avatar = GObject.registerClass({
         });
 
         this.contact = contact;
+        this.contact.rgb = this.contact.rgb || Color.randomRGB();
         this.size = size;
         this.center = size/2;
 
@@ -529,11 +530,15 @@ var Avatar = GObject.registerClass({
     _onDraw(widget, cr) {
         let offset = 0;
 
-        if (!this.contact.avatar) {
+        if (this.contact.avatar) {
+            cr.setSourceSurface(this.surface, offset, offset);
+            cr.arc(this.size/2, this.size/2, this.size/2, 0, 2*Math.PI);
+            cr.clip();
+            cr.paint();
+        } else {
             offset = (this.size - this.size/1.5) / 2;
 
             // Colored circle
-            this.contact.rgb = this.contact.rgb || Color.randomRGB();
             cr.setSourceRGB(...this.contact.rgb);
             cr.arc(this.size/2, this.size/2, this.size/2, 0, 2*Math.PI);
             cr.fill();
@@ -542,11 +547,6 @@ var Avatar = GObject.registerClass({
             cr.setSourceRGB(...Color.getFgRGB(this.contact.rgb));
             cr.maskSurface(this.surface, offset, offset);
             cr.fill();
-        } else {
-            cr.setSourceSurface(this.surface, offset, offset);
-            cr.arc(this.size/2, this.size/2, this.size/2, 0, 2*Math.PI);
-            cr.clip();
-            cr.paint();
         }
 
         cr.$dispose();
