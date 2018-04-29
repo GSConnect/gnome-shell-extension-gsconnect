@@ -8,6 +8,7 @@ const Gtk = imports.gi.Gtk;
 // Local Imports
 imports.searchPath.push(gsconnect.datadir);
 const DBus = imports.modules.dbus;
+const Bluetooth = imports.service.bluetooth;
 const Lan = imports.service.lan;
 
 
@@ -355,7 +356,9 @@ var Device = GObject.registerClass({
     /** Device Properties */
     get connected () { return this._connected && this._channel; }
     get fingerprint () {
-        if (this.connected && this._channel) {
+        if (this._channel && this._channel.identity.body.hasOwnProperty('btHost')) {
+            return this._channel.identity.body.btHost;
+        } else if (this.connected && this._channel) {
             return this._channel.certificate.fingerprint();
         } else if (this.paired) {
             let cert = Gio.TlsCertificate.new_from_pem(
@@ -417,8 +420,14 @@ var Device = GObject.registerClass({
         this.settings.set_string('id', packet.body.deviceId);
         this.settings.set_string('name', packet.body.deviceName);
         this.settings.set_string('type', packet.body.deviceType);
-        this.settings.set_string('tcp-host', packet.body.tcpHost);
-        this.settings.set_uint('tcp-port', packet.body.tcpPort);
+
+        if (packet.body.hasOwnProperty('btHost')) {
+            this.settings.set_string('bt-host', packet.body.btHost);
+            this.settings.set_string('bt-path', packet.body.btPath);
+        } else if (packet.body.hasOwnProperty('tcpHost')) {
+            this.settings.set_string('tcp-host', packet.body.tcpHost);
+            this.settings.set_uint('tcp-port', packet.body.tcpPort);
+        }
 
         this.settings.set_strv(
             'incoming-capabilities',
@@ -443,20 +452,32 @@ var Device = GObject.registerClass({
 			return;
 		}
 
-        // Create a new channel
-        this._channel = new Lan.Channel(this.id);
-        this._channel.connect('connected', this._onConnected.bind(this));
-        this._channel.connect('disconnected', this._onDisconnected.bind(this));
-		this._channel.connect('received', this._onReceived.bind(this));
+		let lastConnection = this.settings.get_string('last-connection');
 
-		let addr = new Gio.InetSocketAddress({
-            address: Gio.InetAddress.new_from_string(
-                this.settings.get_string('tcp-host')
-            ),
-            port: this.settings.get_uint('tcp-port')
-        });
+		if (lastConnection === 'bt') {
+            let btDevice = this.service.bluetoothService._devices.get(
+		        this.settings.get_string('bt-path')
+		    );
 
-        this._channel.open(addr);
+		    if (btDevice) {
+		        btDevice.ConnectProfile(Bluetooth.SERVICE_UUID);
+		    }
+		} else if (lastConnection === 'tcp') {
+            // Create a new channel
+            this._channel = new Lan.Channel(this.id);
+            this._channel.connect('connected', this._onConnected.bind(this));
+            this._channel.connect('disconnected', this._onDisconnected.bind(this));
+		    this._channel.connect('received', this._onReceived.bind(this));
+
+		    let addr = new Gio.InetSocketAddress({
+                address: Gio.InetAddress.new_from_string(
+                    this.settings.get_string('tcp-host')
+                ),
+                port: this.settings.get_uint('tcp-port')
+            });
+
+            this._channel.open(addr);
+        }
     }
 
     /**
@@ -503,6 +524,10 @@ var Device = GObject.registerClass({
             );
         }
 
+        if (!this._channel.certificate) {
+            return (cert);
+        }
+
         if (cert) {
             log(`Authenticating ${this.name}`);
 
@@ -533,6 +558,12 @@ var Device = GObject.registerClass({
     /** Channel Callbacks */
     _onConnected(channel) {
         log(`Connected to ${this.name} (${this.id})`);
+
+        if (channel.identity.body.hasOwnProperty('btHost')) {
+            this.settings.set_string('last-connection', 'bt');
+        } else {
+            this.settings.set_string('last-connection', 'tcp');
+        }
 
         this._connected = true;
         this.notify('connected');

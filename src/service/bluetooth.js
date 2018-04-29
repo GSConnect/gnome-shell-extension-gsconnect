@@ -7,6 +7,7 @@ const GObject = imports.gi.GObject;
 // Local Imports
 imports.searchPath.push(gsconnect.datadir);
 const DBus = imports.modules.dbus;
+const Lan = imports.service.lan;
 
 
 /**
@@ -121,7 +122,7 @@ var Device1Proxy = DBus.makeInterfaceProxy(
 /**
  * Service Discovery Protocol Record (KDE Connect)
  */
-const KDE_UUID = '185f3df4-3268-4e3f-9fca-d4d5059915bd';
+var SERVICE_UUID = '185f3df4-3268-4e3f-9fca-d4d5059915bd';
 
 const SdpRecord = Gio.resources_lookup_data(
     gsconnect.app_path + '/' + gsconnect.app_id + '.sdp.xml',
@@ -162,9 +163,8 @@ var ChannelService = GObject.registerClass({
         //
         this._devices = new Map();
 
-        // The exported Profile1 interface
-        debug('Atempting to export Profile1');
-        this._dbus = new DBus.ProxyServer({
+        // Export the org.bluez.Profile1 interface for the KDE Connect service
+        this._profile = new DBus.Interface({
             g_connection: Gio.DBus.system,
             g_instance: this,
             g_interface_info: BluezNode.lookup_interface('org.bluez.Profile1'),
@@ -179,22 +179,18 @@ var ChannelService = GObject.registerClass({
         });
         this._profileManager.init(null);
 
-        let profile = {
-            Name: new GLib.Variant('s', 'GSConnectBT'),
-            //Service: new GLib.Variant('s', KDE_UUID),
+        let profileOptions = {
             RequireAuthentication: new GLib.Variant('b', true),
             RequireAuthorization: new GLib.Variant('b', false),
-            AutoConnect: new GLib.Variant('b', true),
             ServiceRecord: new GLib.Variant('s', SdpRecord)
         };
 
+        // Register KDE Connect bluez profile
         this._profileManager.RegisterProfile(
-            this._dbus.get_object_path(),
-            KDE_UUID,
-            profile
+            this._profile.get_object_path(),
+            SERVICE_UUID,
+            profileOptions
         ).then(result => {
-            log('GSConnect: Bluez profile registered');
-
             Gio.DBusObjectManagerClient.new(
                 Gio.DBus.system,
                 Gio.DBusObjectManagerClientFlags.NONE,
@@ -215,37 +211,20 @@ var ChannelService = GObject.registerClass({
 
         // A device
         if (iface.g_interface_name === 'org.bluez.Device1') {
-            debug('Device on ' + iface.g_object_path);
+            debug(`Device on ${iface.g_object_path}`);
 
             new Device1Proxy({
                 g_connection: Gio.DBus.system,
                 g_name: 'org.bluez',
                 g_object_path: iface.g_object_path
             }).init_promise().then(device => {
-                if (device.Paired && device.Connected &&
-                    device.UUIDs.indexOf(KDE_UUID) > -1 &&
-                    !this._devices.has(device.g_object_path)) {
+                if (!this._devices.has(device.g_object_path)) {
+                    debug('adding device');
 
-                    debug('Trying to connect new device...');
-                    device.ConnectProfile(KDE_UUID).then(result => {
-                        debug('Connected?');
-                        this._devices.set(device.g_object_path, device);
-                    }).catch(debug);
+                    this._devices.set(device.g_object_path, device);
+                    this._onDeviceChanged(device);
                 }
             }).catch(debug);
-
-        // TODO: presumably this is only used for discovery
-        } else if (iface.g_interface_name === 'org.bluez.Adapter1') {
-            debug(`Adapter on ${iface.g_object_path}`);
-
-//            this._adapter = new Adapter1Proxy({
-//                g_connection: Gio.DBus.system,
-//                g_name: 'org.bluez',
-//                g_object_path: iface.g_object_path
-//            });
-//            this._adapter.init_promise().then(adapter => {
-//                log(`Adapter Address: ${this._adapter.Address}`);
-//            }).catch(debug);
         }
     }
 
@@ -255,8 +234,6 @@ var ChannelService = GObject.registerClass({
             return;
         }
 
-        debug(iface.g_interface_name);
-
         if (iface.g_interface_name === 'org.bluez.Device1') {
             if (this._devices.has(iface.g_object_path)) {
                 log(`GSConnect Bluetooth: Removing ${iface.get_cached_property('Name').unpack()}`);
@@ -265,31 +242,28 @@ var ChannelService = GObject.registerClass({
         }
     }
 
-    _onPropertiesChanged(manager, object, iface, properties, invalidated) {
+    _onPropertiesChanged(manager, object, iface, changed, invalidated) {
         if (iface.g_interface_name === 'org.bluez.Device1') {
-            properties = gsconnect.full_unpack(properties);
+            let properties = gsconnect.full_unpack(changed);
 
             if (properties.hasOwnProperty('Connected') && !properties.Connected) {
                 this.RequestDisconnection(iface.g_object_path);
             } else if (properties.Connected) {
-                this._onDeviceConnected(iface);
+                this._onDeviceChanged(iface);
             }
         }
     }
 
-    _onDeviceConnected(iface) {
-        if (this._devices.has(iface.g_object_path)) {
-            let device = this._devices.get(iface.g_object_path);
+    _onDeviceChanged(iface) {
+        let device = this._devices.get(iface.g_object_path);
 
-            if (device.Connected && device.Paired && device.UUIDs.indexOf(KDE_UUID) > -1) {
+        if (device) {
+            if (device.Connected && device.Paired && device.UUIDs.indexOf(SERVICE_UUID) > -1) {
                 debug('Trying to connect profile...');
-//                device.ConnectProfile(KDE_UUID).then(result=> {
-//                    debug('Connected?');
-//                }).catch(debug);
+                device.ConnectProfile(SERVICE_UUID).then(result=> {
+                    log(`GSConnect: Connected to ${device.Name}`);
+                }).catch(debug);
             }
-            //
-        } else {
-            this._onInterfaceAdded(null, null, iface);
         }
     }
 
@@ -308,10 +282,6 @@ var ChannelService = GObject.registerClass({
             this._onPropertiesChanged.bind(this)
         );
 
-        this._addDevices();
-    }
-
-    _addDevices() {
         for (let obj of this._objManager.get_objects()) {
             for (let iface of obj.get_interfaces()) {
                 this._onInterfaceAdded(this._objManager, obj, iface);
@@ -319,36 +289,65 @@ var ChannelService = GObject.registerClass({
         }
     }
 
-    // DBus Methods
-    // https://git.kernel.org/pub/scm/bluetooth/bluez.git/tree/doc/profile-api.txt
+    /**
+     * This method gets called when the service daemon unregisters the profile.
+     * A profile can use it to do cleanup tasks. There is no need to unregister
+     * the profile, because when this method gets called it has already been
+     * unregistered.
+     */
     Release() {
         debug(arguments);
     }
 
+    /**
+     * This method gets called when a new service level connection has been
+     * made and authorized.
+     */
     NewConnection(object_path, fd, fd_properties) {
         debug(`(${object_path}, ${fd}, ${JSON.stringify(fd_properties)})`);
 
-        let socket = new Gio.Socket({ fd: fd });
-        socket.init(null);
-        log(socket);
+        let device = this._devices.get(object_path);
 
-        socket.send(this.service.identity.toString(), null);
+        device._channel = new Lan.Channel();
+        let _tmp = device._channel.connect('connected', (channel) => {
+            channel.disconnect(_tmp);
+            channel.identity.body.btHost = device.Address;
+            channel.identity.body.btPath = device.g_object_path;
+            this.emit('channel', channel);
+        });
+
+        // Create a Gio.SocketConnection from the file-descriptor
+        GLib.unix_set_fd_nonblocking(fd, true);
+        let socket = Gio.Socket.new_from_fd(fd);
+        let connection = socket.connection_factory_create_connection();
+
+        // NewConnection() is actually called in response to ConnectProfile()
+        // so maybe it makes more sense for this to use open() somehow?
+        device._channel._sendIdent(connection).then(connection => {
+            device._channel.accept(connection);
+        });
     }
 
+    /**
+     * This method gets called when a profile gets disconnected.
+     *
+	 * The file descriptor is no longer owned by the service daemon and the
+	 * profile implementation needs to take care of cleaning up all
+	 * connections.
+	 *
+	 * If multiple file descriptors are indicated via NewConnection, it is
+	 * expected that all of them are disconnected before returning from this
+	 * method call.
+     */
     RequestDisconnection(object_path) {
         debug(object_path);
 
-        // TODO: other stuff?
         let device = this._devices.get(object_path);
 
-        if (device) {
-            log(`GSConnect Bluetooth: Removing ${device.Name}`);
-            this._devices.delete(device.g_object_path);
-
-            // TODO: Auto disconnect?
-            //device.DisconnectProfile(KDE_UUID).then(result => {
-            //    this._devices.delete(device.g_object_path);
-            //});
+        if (device && device.hasOwnProperty('_channel')) {
+            log(`GSConnect: Disconnecting ${device.Name}`);
+            device._channel.close();
+            delete device._channel;
         }
     }
 
@@ -360,7 +359,10 @@ var ChannelService = GObject.registerClass({
             this.RequestDisconnection(object_path);
         }
 
-        this._profileManager.UnregisterProfile(KDE_UUID).then(result => {
+        this._profileManager.UnregisterProfile(
+            this._profile.get_object_path()
+        ).then(result => {
+            this._profile.destroy();
             debug('Successfully unregistered bluez profile');
         }).catch(debug);
     }

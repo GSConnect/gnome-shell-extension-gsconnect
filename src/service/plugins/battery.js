@@ -89,7 +89,7 @@ var Plugin = GObject.registerClass({
         super._init(device, 'battery');
 
         // Export DBus
-        this._dbus = new DBus.ProxyServer({
+        this._dbus = new DBus.Interface({
             g_interface_info: gsconnect.dbusinfo.lookup_interface(Metadata.id),
             g_instance: this
         });

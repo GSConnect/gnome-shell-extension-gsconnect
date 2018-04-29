@@ -87,6 +87,15 @@
     <key name="tcp-port" type="u">
       <default>1716</default>
     </key>
+    <key name="bt-host" type="s">
+      <default>""</default>
+    </key>
+    <key name="bt-path" type="s">
+      <default>""</default>
+    </key>
+    <key name="last-connection" type="s">
+      <default>""</default>
+    </key>
   </schema>
 
   <!-- Plugin Settings

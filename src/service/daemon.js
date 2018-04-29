@@ -454,7 +454,7 @@ var Daemon = GObject.registerClass({
         );
 
         // libnotify (org.freedesktop.Notifications)
-        this._fdoNotifications = new DBus.ProxyServer({
+        this._fdoNotifications = new DBus.Interface({
             g_connection: this._dbusMonitor,
             g_instance: this,
             g_interface_info: gsconnect.dbusinfo.lookup_interface(
@@ -468,7 +468,7 @@ var Daemon = GObject.registerClass({
                        'type=\'method_call\'';
 
         // GNotification (org.gtk.Notifications)
-        this._gtkNotifications = new DBus.ProxyServer({
+        this._gtkNotifications = new DBus.Interface({
             g_connection: this._dbusMonitor,
             g_instance: this,
             g_interface_info: gsconnect.dbusinfo.lookup_interface(
@@ -921,7 +921,7 @@ var Daemon = GObject.registerClass({
         this.objectManager.connect('object-removed', () => this.notify('devices'));
 
         // org.gnome.Shell.Extensions.GSConnect interface
-        this._dbus = new DBus.ProxyServer({
+        this._dbus = new DBus.Interface({
             g_connection: connection,
             g_instance: this,
             g_interface_info: gsconnect.dbusinfo.lookup_interface(gsconnect.app_id),

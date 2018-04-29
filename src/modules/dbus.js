@@ -64,19 +64,19 @@ function dbus_variant_to_gtype(types) {
 
 
 /**
- * ProxyServer represents a DBus interface bound to an object instance, meant
+ * DBus.Interface represents a DBus interface bound to an object instance, meant
  * to be exported over DBus. It will automatically bind to all methods, signals
  * and properties (include notify::) defined in the interface and transforms
  * all members to TitleCase.
  */
-var ProxyServer = GObject.registerClass({
-    GTypeName: 'GSConnectDBusProxyServer',
+var Interface = GObject.registerClass({
+    GTypeName: 'GSConnectDBusInterface',
     Signals: {
         'destroy': {
             flags: GObject.SignalFlags.NO_HOOKS
         }
     }
-}, class ProxyServer extends GjsPrivate.DBusImplementation {
+}, class Interface extends GjsPrivate.DBusImplementation {
 
     _init(params) {
         super._init({
