@@ -508,7 +508,7 @@ function _proxyProperties(info, iface) {
  * A System Indicator used as the hub for spawning device indicators and
  * indicating that the extension is active when there are none.
  */
-var ServiceIndicator = class ServiceIndicator extends PanelMenu.SystemIndicator {
+class ServiceIndicator extends PanelMenu.SystemIndicator {
 
     _init() {
         super._init();
