@@ -128,7 +128,17 @@ var Interface = GObject.registerClass({
         let retval;
 
         try {
-            retval = this[nativeName].apply(this, gsconnect.full_unpack(parameters));
+            let params = parameters.unpack().map(parameter => {
+                if (parameter.get_type_string() === 'h') {
+                    let fds = invocation.get_message().get_unix_fd_list();
+                    let idx = parameter.deep_unpack();
+                    return fds.get(idx);
+                } else {
+                    return gsconnect.full_unpack(parameter);
+                }
+            });
+
+            retval = this[nativeName].apply(this, params);
         } catch (e) {
             if (e instanceof GLib.Error) {
                 invocation.return_gerror(e);
