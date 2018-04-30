@@ -389,7 +389,7 @@ var SettingsWindow = GObject.registerClass({
         'extensions-list',
         'files-integration', 'webbrowser-integration',
         'advanced-list',
-        'debug-mode', 'debug-window',
+        'debug-mode', 'debug-window', 'debug-restart',
         'help', 'help-list'
     ]
 }, class SettingsWindow extends Gtk.ApplicationWindow {
@@ -518,7 +518,7 @@ var SettingsWindow = GObject.registerClass({
         mapBoolLabel(gsconnect.settings, 'webbrowser-integration', this.webbrowser_integration);
         this.extensions_list.set_header_func(section_separators);
 
-        // Application Extensions
+        // Advanced/Debug
         mapBoolLabel(gsconnect.settings, 'debug', this.debug_mode);
         this.debug_window.connect('clicked', () => {
             GLib.spawn_command_line_async(
@@ -527,6 +527,7 @@ var SettingsWindow = GObject.registerClass({
                 '--tab --title "Gnome Shell" --command "journalctl -f -o cat /usr/bin/gnome-shell"'
             );
         });
+        this.debug_restart.connect('clicked', () => this.application.quit());
         this.advanced_list.set_header_func(section_separators);
     }
 
