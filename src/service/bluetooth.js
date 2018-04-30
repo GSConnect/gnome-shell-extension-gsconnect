@@ -311,8 +311,8 @@ var ChannelService = GObject.registerClass({
         device._channel = new Core.Channel();
         let _tmp = device._channel.connect('connected', (channel) => {
             channel.disconnect(_tmp);
-            channel.identity.body.btHost = device.Address;
-            channel.identity.body.btPath = device.g_object_path;
+            channel.identity.body.bluetoothHost = device.Address;
+            channel.identity.body.bluetoothPath = device.g_object_path;
             this.emit('channel', channel);
         });
 

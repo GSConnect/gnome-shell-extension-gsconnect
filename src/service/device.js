@@ -357,7 +357,7 @@ var Device = GObject.registerClass({
     get connected () { return this._connected && this._channel; }
     get fingerprint () {
         if (this.connected && this._channel.type === 'bluetooth') {
-            return this._channel.identity.body.btHost;
+            return this._channel.identity.body.bluetoothHost;
         } else if (this.connected && this._channel.type === 'tcp') {
             return this._channel.certificate.fingerprint();
         } else if (this.paired) {
@@ -421,9 +421,9 @@ var Device = GObject.registerClass({
         this.settings.set_string('name', packet.body.deviceName);
         this.settings.set_string('type', packet.body.deviceType);
 
-        if (packet.body.hasOwnProperty('btHost')) {
-            this.settings.set_string('bt-host', packet.body.btHost);
-            this.settings.set_string('bt-path', packet.body.btPath);
+        if (packet.body.hasOwnProperty('bluetoothHost')) {
+            this.settings.set_string('bluetooth-host', packet.body.bluetoothHost);
+            this.settings.set_string('bluetooth-path', packet.body.bluetoothPath);
         } else if (packet.body.hasOwnProperty('tcpHost')) {
             this.settings.set_string('tcp-host', packet.body.tcpHost);
             this.settings.set_uint('tcp-port', packet.body.tcpPort);
@@ -452,17 +452,15 @@ var Device = GObject.registerClass({
 			return;
 		}
 
-		let lastConnection = this.settings.get_string('last-connection');
-
-		if (lastConnection === 'bt') {
-            let btDevice = this.service.bluetoothService._devices.get(
-		        this.settings.get_string('bt-path')
+		if (this.settings.get_string('last-connection') === 'bluetooth') {
+            let bluezDevice = this.service.bluetoothService._devices.get(
+		        this.settings.get_string('bluetooth-path')
 		    );
 
-		    if (btDevice) {
-		        btDevice.ConnectProfile(Bluetooth.SERVICE_UUID);
+		    if (bluezDevice) {
+		        bluezDevice.ConnectProfile(Bluetooth.SERVICE_UUID);
 		    }
-		} else if (lastConnection === 'tcp') {
+		} else {
             // Create a new channel
             this._channel = new Core.Channel(this.id);
             this._channel.connect('connected', this._onConnected.bind(this));
@@ -560,11 +558,7 @@ var Device = GObject.registerClass({
     _onConnected(channel) {
         log(`Connected to ${this.name} (${this.id})`);
 
-        if (channel.identity.body.hasOwnProperty('btHost')) {
-            this.settings.set_string('last-connection', 'bt');
-        } else {
-            this.settings.set_string('last-connection', 'tcp');
-        }
+        this.settings.set_string('last-connection', channel.type);
 
         this._connected = true;
         this.notify('connected');

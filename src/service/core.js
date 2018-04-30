@@ -189,7 +189,7 @@ var Channel = GObject.registerClass({
 
     get type() {
         if (typeof this._connection.get_local_address === 'function') {
-            return 'bluez';
+            return 'bluetooth';
         } else {
             return 'tcp';
         }
@@ -201,15 +201,11 @@ var Channel = GObject.registerClass({
     _initSocket(connection) {
         return new Promise((resolve, reject) => {
             if (connection instanceof Gio.TcpConnection) {
-                log('SETTING TCP SOCKET OPTS');
-
                 connection.socket.set_keepalive(true);
                 connection.socket.set_option(6, 4, 10); // TCP_KEEPIDLE
                 connection.socket.set_option(6, 5, 5);  // TCP_KEEPINTVL
                 connection.socket.set_option(6, 6, 3);  // TCP_KEEPCNT
-            } else if (connection instanceof Gio.UnixConnection) {
-                log('SETTING UNIX SOCKET OPTS');
-
+            } else if (typeof connection.get_local_address === 'function') {
                 connection.socket.set_blocking(false);
             }
 
@@ -219,7 +215,6 @@ var Channel = GObject.registerClass({
 
     /**
      * Read the identity packet from the Gio.SocketConnection file descriptor
-     * TODO: could just take a file-descriptor, ie bluetooth
      */
     _receiveIdent(connection) {
         return new Promise((resolve, reject) => {
@@ -402,7 +397,7 @@ var Channel = GObject.registerClass({
             this._connection = secureConnection;
             this.emit('connected');
         }).catch(e => {
-            log('Error opening connection: ' + e.message);
+            log(`GSConnect: Error opening connection: ${e.message}`);
             debug(e);
             this.close();
         });
@@ -427,7 +422,7 @@ var Channel = GObject.registerClass({
             this._connection = secureConnection;
             this.emit('connected');
         }).catch(e => {
-            log('Error accepting connection: ' + e.message);
+            log(`GSConnect: Error accepting connection: ${e.message}`);
             debug(e);
             this.close();
         });
@@ -465,7 +460,7 @@ var Channel = GObject.registerClass({
      * @param {Packet} packet - A packet object
      */
     send(packet) {
-        debug(this.identity.body.deviceId + ', ' + packet);
+        debug(`${this.identity.body.deviceId}, ${packet}`);
 
         try {
             this._output_stream.put_string(packet.toString(), null);
