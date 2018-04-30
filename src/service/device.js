@@ -424,9 +424,11 @@ var Device = GObject.registerClass({
         if (packet.body.hasOwnProperty('bluetoothHost')) {
             this.settings.set_string('bluetooth-host', packet.body.bluetoothHost);
             this.settings.set_string('bluetooth-path', packet.body.bluetoothPath);
+            this.settings.set_string('last-connection', 'bluetooth');
         } else if (packet.body.hasOwnProperty('tcpHost')) {
             this.settings.set_string('tcp-host', packet.body.tcpHost);
             this.settings.set_uint('tcp-port', packet.body.tcpPort);
+            this.settings.set_string('last-connection', 'tcp');
         }
 
         this.settings.set_strv(
