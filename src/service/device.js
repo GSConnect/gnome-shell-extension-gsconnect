@@ -344,10 +344,10 @@ var Device = GObject.registerClass({
 
         this._registerActions();
 
-        // Created for an incoming TCP Connection
+        // Created for an incoming connection
         if (params.channel) {
             this.update(params.channel.identity, params.channel);
-        // Created for an identity packet over UDP or from cache
+        // Created for an identity packet
         } else {
             this.activate();
         }
@@ -356,9 +356,9 @@ var Device = GObject.registerClass({
     /** Device Properties */
     get connected () { return this._connected && this._channel; }
     get fingerprint () {
-        if (this._channel && this._channel.identity.body.hasOwnProperty('btHost')) {
+        if (this.connected && this._channel.type === 'bluetooth') {
             return this._channel.identity.body.btHost;
-        } else if (this.connected && this._channel) {
+        } else if (this.connected && this._channel.type === 'tcp') {
             return this._channel.certificate.fingerprint();
         } else if (this.paired) {
             let cert = Gio.TlsCertificate.new_from_pem(
@@ -513,7 +513,7 @@ var Device = GObject.registerClass({
     }
 
     verify() {
-        debug(`${this.name} (${this.id})`);
+        log(`Authenticating ${this.name}`);
 
         let cert;
 
@@ -524,12 +524,13 @@ var Device = GObject.registerClass({
             );
         }
 
-        if (!this._channel.certificate) {
+        if (this._channel.type === 'bluez') {
+            debug(`Pre-authorizing Bluez connection for ${this.name}`);
             return (cert);
         }
 
         if (cert) {
-            log(`Authenticating ${this.name}`);
+            debug(`Authenticating TLS certificate for ${this.name}`);
 
             if (cert.verify(null, this._channel.certificate) > 0) {
                 log(`Failed to authenticate ${this.name}`);

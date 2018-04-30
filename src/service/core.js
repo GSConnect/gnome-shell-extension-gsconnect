@@ -163,7 +163,7 @@ var Channel = GObject.registerClass({
             'Data Channel Type',
             'The protocol this data channel uses',
             GObject.ParamFlags.READABLE,
-            ''
+            'tcp'
         )
     }
 }, class Channel extends GObject.Object {
@@ -180,14 +180,18 @@ var Channel = GObject.registerClass({
     }
 
     get certificate() {
-        return this._certificate || null;
+        if (typeof this._connection.get_peer_certificate === 'function') {
+            return this._connection.get_peer_certificate();
+        }
+
+        return null;
     }
 
     get type() {
-        if (this._connection instanceof Gio.TlsConnection) {
-            return 'tcp';
-        } else {
+        if (typeof this._connection.get_local_address === 'function') {
             return 'bluez';
+        } else {
+            return 'tcp';
         }
     }
 
@@ -254,8 +258,6 @@ var Channel = GObject.registerClass({
      */
     _onAcceptCertificate(connection, peer_cert, flags) {
         log(`Authenticating ${this.identity.body.deviceId}`);
-
-        this._certificate = peer_cert;
 
         // Get the settings for this deviceId
         let settings = new Gio.Settings({
@@ -346,7 +348,6 @@ var Channel = GObject.registerClass({
 
     /**
      * Init streams for reading/writing packets and monitor the input stream
-     * TODO
      */
     _initPacketIO(connection) {
         return new Promise((resolve, reject) => {
@@ -395,13 +396,6 @@ var Channel = GObject.registerClass({
             return this._serverEncryption(socketConnection);
         // Store the certificate and init streams for packet exchange
         }).then(secureConnection => {
-            // FIXME: have to do something about this whole thing
-            if (secureConnection.hasOwnProperty('get_peer_certificate')) {
-                this._certificate = secureConnection.get_peer_certificate();
-            } else {
-                this._certificate = null;
-            }
-
             return this._initPacketIO(secureConnection);
         // Set the connection and emit
         }).then(secureConnection => {
@@ -427,13 +421,6 @@ var Channel = GObject.registerClass({
             return this._clientEncryption(socketConnection);
         // Store the certificate and init streams for packet exchange
         }).then(secureConnection => {
-            // FIXME: have to do something about this whole thing
-            if (secureConnection.hasOwnProperty('get_peer_certificate')) {
-                this._certificate = secureConnection.get_peer_certificate();
-            } else {
-                this._certificate = null;
-            }
-
             return this._initPacketIO(secureConnection);
         // Set the connection and emit
         }).then(secureConnection => {
