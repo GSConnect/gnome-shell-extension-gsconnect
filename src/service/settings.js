@@ -128,8 +128,6 @@ function mapAllow(settings, label) {
 
 
 Gio.Settings.prototype.bind_with_mapping = function(key, object, property, flags=0, get_mapping, set_mapping) {
-    let type = '';
-
     if ((flags & Gio.SettingsBindFlags.GET) || flags === 0) {
         let _getChanged = this.connect(
             'changed::' + key,
@@ -376,7 +374,7 @@ var SectionRow = GObject.registerClass({
 });
 
 
-var SettingsWindow = GObject.registerClass({
+var Window = GObject.registerClass({
     GTypeName: 'GSConnectSettingsWindow',
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/settings.ui',
     Children: [
@@ -392,7 +390,7 @@ var SettingsWindow = GObject.registerClass({
         'debug-mode', 'debug-window', 'debug-restart',
         'help', 'help-list'
     ]
-}, class SettingsWindow extends Gtk.ApplicationWindow {
+}, class Window extends Gtk.ApplicationWindow {
 
     _init(params) {
         Gtk.Widget.set_connect_func.call(this, (builder, obj, signalName, handlerName, connectObj, flags) => {

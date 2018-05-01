@@ -776,8 +776,10 @@ var Daemon = GObject.registerClass({
      */
     openSettings(device=null) {
         if (!this._window) {
-            this._window = new Settings.SettingsWindow();
-            this._window.connect("destroy", () => { delete this._window; });
+            this._window = new Settings.Window({ application: this });
+            this._window.connect_after('destroy', () => {
+                this._window = undefined;
+            });
         }
 
         this._window.present();
