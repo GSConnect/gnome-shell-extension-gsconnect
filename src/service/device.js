@@ -880,8 +880,6 @@ var Device = GObject.registerClass({
      */
     supportedPlugins() {
         let supported = [];
-        let incoming = this.incomingCapabilities;
-        let outgoing = this.outgoingCapabilities;
 
         for (let name in imports.service.plugins) {
             let meta = imports.service.plugins[name].Metadata;
@@ -890,10 +888,10 @@ var Device = GObject.registerClass({
             if (!meta) { continue; }
 
             // If it sends packets we can handle
-            if (meta.incomingCapabilities.some(v => outgoing.indexOf(v) > -1)) {
+            if (meta.incomingCapabilities.some(v => this.outgoingCapabilities.indexOf(v) > -1)) {
                 supported.push(name);
             // Or handles packets we can send
-            } else if (meta.outgoingCapabilities.some(v => incoming.indexOf(v) > -1)) {
+            } else if (meta.outgoingCapabilities.some(v => this.incomingCapabilities.indexOf(v) > -1)) {
                 supported.push(name);
             }
         }
@@ -913,23 +911,27 @@ var Device = GObject.registerClass({
             if (!this._plugins.has(name)) {
                 let handler, plugin;
 
+                // TODO: Plugins already throw errors in _init() for known
+                // problems, but nothing is really done with them. They should
+                // be reported to the user, preferrably by way of some device
+                // log that can be reviewed.
                 try {
                     handler = imports.service.plugins[name];
                     plugin = new handler.Plugin(this);
+
+                    // Register packet handlers
+                    for (let packetType of handler.Metadata.incomingCapabilities) {
+                        if (!this._handlers.has(packetType)) {
+                            this._handlers.set(packetType, plugin);
+                        }
+                    }
+
+                    // Register plugin
+                    this._plugins.set(name, plugin);
                 } catch (e) {
                     logError(e);
                     reject(e);
                 }
-
-                // Register packet handlers
-                for (let packetType of handler.Metadata.incomingCapabilities) {
-                    if (!this._handlers.has(packetType)) {
-                        this._handlers.set(packetType, plugin);
-                    }
-                }
-
-                // Register plugin
-                this._plugins.set(name, plugin);
             }
 
             resolve();
