@@ -584,10 +584,16 @@ var Daemon = GObject.registerClass({
         Gio.AppInfo.launch_default_for_uri(unescape(path), null);
     }
 
+    // TODO: it would be nice to populate this entirely from metadata.json, and
+    //       in turn populate that during meson.build
     _aboutAction() {
         let dialog = new Gtk.AboutDialog({
             application: this,
-            authors: [ 'Andy Holmes <andrew.g.r.holmes@gmail.com>' ],
+            authors: [
+                'Andy Holmes <andrew.g.r.holmes@gmail.com>',
+                'Bertrand Lacoste <getzze@gmail.com>',
+                'Peter Oliver'
+            ],
             comments: gsconnect.metadata.description,
             logo: GdkPixbuf.Pixbuf.new_from_resource_at_scale(
                 gsconnect.app_path + '/' + gsconnect.app_id + '.svg',
