@@ -1110,7 +1110,7 @@
                         <property name="hexpand">True</property>
                         <property name="vexpand">False</property>
                         <property name="selection_mode">none</property>
-                        <signal name="row-activated" handler="_newCommand" swapped="no"/>
+                        <signal name="row-activated" handler="_onAddCommand" swapped="no"/>
                         <child>
                           <object class="GtkListBoxRow" id="command-editor">
                             <property name="width_request">100</property>
@@ -1141,8 +1141,8 @@
                                     <property name="secondary_icon_stock">gtk-open</property>
                                     <property name="secondary_icon_tooltip_text" translatable="yes">Choose an executable</property>
                                     <property name="placeholder_text" translatable="yes">Command Line</property>
-                                    <signal name="activate" handler="_saveCommand" swapped="no"/>
-                                    <signal name="icon-release" handler="_browseCommand" swapped="no"/>
+                                    <signal name="activate" handler="_onSaveCommand" swapped="no"/>
+                                    <signal name="icon-release" handler="_onBrowseCommand" swapped="no"/>
                                   </object>
                                   <packing>
                                     <property name="left_attach">1</property>
@@ -1172,7 +1172,7 @@
                                     <property name="valign">center</property>
                                     <property name="hexpand">True</property>
                                     <property name="placeholder_text" translatable="yes">Name</property>
-                                    <signal name="activate" handler="_saveCommand" swapped="no"/>
+                                    <signal name="activate" handler="_onSaveCommand" swapped="no"/>
                                     <signal name="changed" handler="_onCommandNameChanged" swapped="no"/>
                                   </object>
                                   <packing>
@@ -1194,7 +1194,7 @@
                                         <property name="halign">start</property>
                                         <property name="valign">start</property>
                                         <property name="relief">none</property>
-                                        <signal name="clicked" handler="_removeCommand" swapped="no"/>
+                                        <signal name="clicked" handler="_onRemoveCommand" swapped="no"/>
                                         <child>
                                           <object class="GtkImage">
                                             <property name="visible">True</property>
@@ -1220,7 +1220,7 @@
                                         <property name="halign">end</property>
                                         <property name="valign">start</property>
                                         <property name="relief">none</property>
-                                        <signal name="clicked" handler="_saveCommand" swapped="no"/>
+                                        <signal name="clicked" handler="_onSaveCommand" swapped="no"/>
                                         <child>
                                           <object class="GtkImage">
                                             <property name="visible">True</property>

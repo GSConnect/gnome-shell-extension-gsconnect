@@ -5,6 +5,7 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
+const Pango = imports.gi.Pango;
 
 // Local Imports
 imports.searchPath.unshift(gsconnect.datadir);
@@ -822,7 +823,7 @@ var DeviceSettings = GObject.registerClass({
             );
 
             this.command_list.set_sort_func((row1, row2) => {
-                // The add button
+                // The [+] button
                 if (row1.get_child() instanceof Gtk.Image) {
                     return 1;
                 } else if (row2.get_child() instanceof Gtk.Image) {
@@ -870,72 +871,27 @@ var DeviceSettings = GObject.registerClass({
             })
         });
         row.set_name(uuid);
+        row.subtitle.ellipsize = Pango.EllipsizeMode.MIDDLE;
         row.widget.get_style_context().add_class('circular');
         row.widget.get_style_context().add_class('flat');
-        row.widget.connect('clicked', () => this._editCommand(row, uuid));
+        row.widget.connect('clicked', () => this._onEditCommand(row, uuid));
 
         this.command_list.add(row);
 
         return row;
     }
 
-    _newCommand(box, row) {
+    // The '+' row at the bottom of the command list
+    _onAddCommand(box, row) {
         if (row === this.command_new) {
             let uuid = GLib.uuid_string_random();
             this._commands[uuid] = { name: '', command: '' };
-            this._editCommand(this._insertCommand(uuid), uuid);
+            this._onEditCommand(this._insertCommand(uuid), uuid);
         }
     }
 
-    _populateCommands() {
-        this.command_list.foreach(row => {
-            if (row !== this.command_new && row !== this.command_editor) {
-                row.destroy();
-            }
-        });
-
-        for (let uuid in this._commands) {
-            this._insertCommand(uuid);
-        }
-    }
-
-    _saveCommand() {
-        if (this.command_name.text && this.command_line.text) {
-            let cmd = this._commands[this.command_editor.uuid];
-            cmd.name = this.command_name.text.slice(0);
-            cmd.command = this.command_line.text.slice(0);
-        } else {
-            delete this._commands[this.command_editor.uuid];
-        }
-
-        this._getSettings('runcommand').set_value(
-            'command-list',
-            gsconnect.full_pack(this._commands)
-        );
-
-        this._resetCommandEditor();
-    }
-
-    _resetCommandEditor(button) {
-        delete this.command_editor.title;
-        this.command_name.text = '';
-        this.command_line.text = '';
-
-        this.command_list.foreach(row => {
-            if (row.get_name() === this.command_editor.uuid) {
-                row.visible = true;
-            }
-        });
-        delete this.command_editor.uuid;
-
-        this.command_new.visible = true;
-        this.command_editor.visible = false;
-        this.command_list.invalidate_sort();
-
-        this._populateCommands();
-    }
-
-    _editCommand(row, uuid) {
+    // The 'edit' icon in the GtkListBoxRow of a command
+    _onEditCommand(row, uuid) {
         this.command_editor.uuid = uuid;
         this.command_name.text = this._commands[uuid].name.slice(0);
         this.command_line.text = this._commands[uuid].command.slice(0);
@@ -952,7 +908,8 @@ var DeviceSettings = GObject.registerClass({
         this.command_list.invalidate_sort();
     }
 
-    _browseCommand(entry, icon_pos, event) {
+    // The 'folder' GtkEntry icon in the command editor
+    _onBrowseCommand(entry, icon_pos, event) {
         let filter = new Gtk.FileFilter();
         filter.add_mime_type('application/x-executable');
 
@@ -967,7 +924,8 @@ var DeviceSettings = GObject.registerClass({
         dialog.destroy();
     }
 
-    _removeCommand(button) {
+    // The 'trash' icon in the command editor
+    _onRemoveCommand(button) {
         delete this._commands[this.command_editor.uuid];
 
         this._getSettings('runcommand').set_value(
@@ -975,7 +933,52 @@ var DeviceSettings = GObject.registerClass({
             gsconnect.full_pack(this._commands)
         );
 
-        this._resetCommandEditor();
+        this._populateCommands();
+    }
+
+    // The 'save' icon in the command editor
+    _onSaveCommand() {
+        if (this.command_name.text && this.command_line.text) {
+            let cmd = this._commands[this.command_editor.uuid];
+            cmd.name = this.command_name.text.slice(0);
+            cmd.command = this.command_line.text.slice(0);
+        } else {
+            delete this._commands[this.command_editor.uuid];
+        }
+
+        this._getSettings('runcommand').set_value(
+            'command-list',
+            gsconnect.full_pack(this._commands)
+        );
+
+        this._populateCommands();
+    }
+
+    _populateCommands() {
+        delete this.command_editor.title;
+        this.command_name.text = '';
+        this.command_line.text = '';
+
+        this.command_list.foreach(row => {
+            if (row.get_name() === this.command_editor.uuid) {
+                row.visible = true;
+            }
+        });
+        delete this.command_editor.uuid;
+
+        this.command_new.visible = true;
+        this.command_editor.visible = false;
+        this.command_list.invalidate_sort();
+
+        this.command_list.foreach(row => {
+            if (row !== this.command_new && row !== this.command_editor) {
+                row.destroy();
+            }
+        });
+
+        for (let uuid in this._commands) {
+            this._insertCommand(uuid);
+        }
     }
 
     /**
