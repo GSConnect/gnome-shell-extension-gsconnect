@@ -280,7 +280,7 @@ var Store = GObject.registerClass({
             this.notify("provider-name");
             this.notify("contacts");
         }).catch((error) => {
-            debug("Warning: Error updating Folks contacts: " + error.message + "\n" + error.stack);
+            debug("Warning: Failed to update Folks contacts: " + error.message);
 
             this._updateGoogleContacts().then((result) => {
                 debug("contacts read from google");
@@ -291,7 +291,7 @@ var Store = GObject.registerClass({
                 this.notify("provider-name");
                 this.notify("contacts");
             }).catch((error) => {
-                debug("Warning: Error updating Google contacts: " + error.message + "\n" + error.stack);
+                debug("Warning: Failed to update Google contacts: " + error.message);
             });
         });
     }
