@@ -32,11 +32,13 @@ var Plugin = GObject.registerClass({
     _init(device) {
         super._init(device, 'mousepad');
 
+        // See: https://wiki.gnome.org/Accessibility/Wayland#Bugs.2FIssues_We_Must_Address
         if (GLib.getenv('XDG_SESSION_TYPE') === 'wayland') {
             this.destroy();
             throw Error(_('Can\'t run in Wayland session'));
         }
 
+        // Sometimes AT-SPI goes down and there's nothing we can do about that
         let ret = Atspi.init();
 
         if (ret !== 0 && ret !== 1) {

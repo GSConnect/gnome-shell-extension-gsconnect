@@ -160,12 +160,11 @@ var Daemon = GObject.registerClass({
         return this.objectManager.get_objects().map(obj => obj.g_object_path);
     }
 
-    // FIXME: meta for lan+bluez?
+    // FIXME: implement bluetooth discovery
     get discovering() {
         return this.lanService.discovering;
     }
 
-    // FIXME: meta for lan+bluez?
     set discovering(bool) {
         this.lanService.discovering = bool;
     }
@@ -369,7 +368,7 @@ var Daemon = GObject.registerClass({
                     this._removeDevice(dbusPath);
                 }
             }
-        });
+        }).catch(debug);
     }
 
     _pruneDevices() {

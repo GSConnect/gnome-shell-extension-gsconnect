@@ -232,22 +232,6 @@ var Device = GObject.registerClass({
             null,
             GObject.ParamFlags.READABLE
         ),
-        'incomingCapabilities': GObject.param_spec_variant(
-            'incomingCapabilities',
-            'IncomingCapabilitiesList',
-            'A list of incoming packet types the device can receive',
-            new GLib.VariantType('as'),
-            null,
-            GObject.ParamFlags.READABLE
-        ),
-        'outgoingCapabilities': GObject.param_spec_variant(
-            'outgoingCapabilities',
-            'OutgoingCapabilitiesList',
-            'A list of outgoing packet types the device can send',
-            new GLib.VariantType('as'),
-            null,
-            GObject.ParamFlags.READABLE
-        ),
         'symbolic-icon-name': GObject.ParamSpec.string(
             'symbolic-icon-name',
             'ServiceIconName',
@@ -264,7 +248,7 @@ var Device = GObject.registerClass({
         ),
         'display-type': GObject.ParamSpec.string(
             'display-type',
-            'Display Name',
+            'Display Type',
             'The device type, formatted for display',
             GObject.ParamFlags.READABLE,
             'Desktop'
@@ -357,6 +341,8 @@ var Device = GObject.registerClass({
     get connected () { return this._connected && this._channel; }
     get fingerprint () {
         if (this.connected && this._channel.type === 'bluetooth') {
+            // TODO: this isn't really useful, and kind of misleading since it
+            // looks like a fingerprint when it's actually a MAC Address
             return this._channel.identity.body.bluetoothHost;
         } else if (this.connected && this._channel.type === 'tcp') {
             return this._channel.certificate.fingerprint();
@@ -371,17 +357,23 @@ var Device = GObject.registerClass({
         return '';
     }
 
-    // TODO: wrap theses all up into 'identity'
     get id() { return this.settings.get_string('id'); }
     get name() { return this.settings.get_string('name'); }
-    get paired() { return (this.settings.get_string('certificate-pem')); }
+
+    // TODO: This will have to be revisited when upstream makes a decision on
+    //       how pairing will work with bluetooth connections
+    get paired() {
+        return (this.settings.get_string('certificate-pem'));
+    }
     get plugins() { return Array.from(this._plugins.keys()) || []; }
+
     get incomingCapabilities() {
         return this.settings.get_strv('incoming-capabilities');
     }
     get outgoingCapabilities() {
         return this.settings.get_strv('outgoing-capabilities');
     }
+
     get icon_name() {
         let icon = (this.type === 'desktop') ? 'computer' : this.type;
         return (icon === 'phone') ? 'smartphone' : icon;
@@ -454,6 +446,8 @@ var Device = GObject.registerClass({
 			return;
 		}
 
+		// FIXME: There's no contingency for falling back to another connection
+		//        type if one fails
 		if (this.settings.get_string('last-connection') === 'bluetooth') {
             let bluezDevice = this.service.bluetoothService._devices.get(
 		        this.settings.get_string('bluetooth-path')
