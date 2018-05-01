@@ -85,17 +85,35 @@ var Plugin = GObject.registerClass({
 
         this._setup();
 
-        this._directories = {};
-        this._mounted = false;
         // Track when mounting is in progress
         this._mounting = false;
 
         this.device.menu.add_action('mount', Metadata.actions.mount);
     }
 
-    get directories () { return this._directories; }
-    get mounted () { return this._mounted; }
-    get port () { return this._port || 0; }
+    get directories () {
+        if (this._directories === undefined) {
+            this._directories = {};
+        }
+
+        return this._directories;
+    }
+
+    get mounted () {
+        if (this._mounted === undefined) {
+            this._mounted = false;
+        }
+
+        return this._mounted;
+    }
+
+    get port () {
+        if (this._port === undefined) {
+            this._port = 0;
+        }
+
+        return this._port;
+    }
 
     handlePacket(packet) {
         debug(packet);
