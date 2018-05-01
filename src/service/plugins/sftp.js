@@ -73,6 +73,11 @@ var Plugin = GObject.registerClass({
     _init(device) {
         super._init(device, 'sftp');
 
+        this._directories = {};
+        this._mounted = false;
+        this._mounting = false;
+        this._port = 0;
+
         if (this.device._channel.type === 'bluetooth') {
             this.destroy();
             throw Error(_('Can\'t run on bluetooth connection'));
@@ -85,34 +90,7 @@ var Plugin = GObject.registerClass({
 
         this._setup();
 
-        // Track when mounting is in progress
-        this._mounting = false;
-
         this.device.menu.add_action('mount', Metadata.actions.mount);
-    }
-
-    get directories () {
-        if (this._directories === undefined) {
-            this._directories = {};
-        }
-
-        return this._directories;
-    }
-
-    get mounted () {
-        if (this._mounted === undefined) {
-            this._mounted = false;
-        }
-
-        return this._mounted;
-    }
-
-    get port () {
-        if (this._port === undefined) {
-            this._port = 0;
-        }
-
-        return this._port;
     }
 
     handlePacket(packet) {
