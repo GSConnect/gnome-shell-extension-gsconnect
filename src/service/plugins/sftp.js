@@ -73,6 +73,11 @@ var Plugin = GObject.registerClass({
     _init(device) {
         super._init(device, 'sftp');
 
+        if (this.device._channel.type === 'bluetooth') {
+            this.destroy();
+            throw Error(_('Can\'t run on bluetooth connection'));
+        }
+
         if (!gsconnect.checkCommand('sshfs')) {
             this.destroy();
             throw Error(_('SSHFS not installed'));
