@@ -449,12 +449,12 @@ var Device = GObject.registerClass({
 		// FIXME: There's no contingency for falling back to another connection
 		//        type if one fails
 		if (this.settings.get_string('last-connection') === 'bluetooth') {
-            let bluezDevice = this.service.bluetoothService._devices.get(
+            let bluezDevice = this.service.bluetoothService.devices.get(
 		        this.settings.get_string('bluetooth-path')
 		    );
 
 		    if (bluezDevice) {
-		        bluezDevice.ConnectProfile(Bluetooth.SERVICE_UUID);
+		        bluezDevice.ConnectProfile(Bluetooth.SERVICE_UUID).catch(debug);
 		    }
 		} else {
             // Create a new channel

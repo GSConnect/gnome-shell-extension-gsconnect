@@ -161,7 +161,7 @@ var ChannelService = GObject.registerClass({
         this.service = Gio.Application.get_default();
 
         //
-        this._devices = new Map();
+        this.devices = new Map();
 
         // Export the org.bluez.Profile1 interface for the KDE Connect service
         this._profile = new DBus.Interface({
@@ -218,10 +218,10 @@ var ChannelService = GObject.registerClass({
                 g_name: 'org.bluez',
                 g_object_path: iface.g_object_path
             }).init_promise().then(device => {
-                if (!this._devices.has(device.g_object_path)) {
+                if (!this.devices.has(device.g_object_path)) {
                     debug('adding device');
 
-                    this._devices.set(device.g_object_path, device);
+                    this.devices.set(device.g_object_path, device);
                     this._onDeviceChanged(device);
                 }
             }).catch(debug);
@@ -235,9 +235,9 @@ var ChannelService = GObject.registerClass({
         }
 
         if (iface.g_interface_name === 'org.bluez.Device1') {
-            if (this._devices.has(iface.g_object_path)) {
+            if (this.devices.has(iface.g_object_path)) {
                 log(`GSConnect Bluetooth: Removing ${iface.get_cached_property('Name').unpack()}`);
-                this._devices.delete(iface.g_object_path);
+                this.devices.delete(iface.g_object_path);
             }
         }
     }
@@ -255,7 +255,7 @@ var ChannelService = GObject.registerClass({
     }
 
     _onDeviceChanged(iface) {
-        let device = this._devices.get(iface.g_object_path);
+        let device = this.devices.get(iface.g_object_path);
 
         if (device) {
             if (device.Connected && device.Paired && device.UUIDs.indexOf(SERVICE_UUID) > -1) {
@@ -306,7 +306,7 @@ var ChannelService = GObject.registerClass({
     NewConnection(object_path, fd, fd_properties) {
         debug(`(${object_path}, ${fd}, ${JSON.stringify(fd_properties)})`);
 
-        let device = this._devices.get(object_path);
+        let device = this.devices.get(object_path);
 
         device._channel = new Core.Channel();
         let _tmp = device._channel.connect('connected', (channel) => {
@@ -342,7 +342,7 @@ var ChannelService = GObject.registerClass({
     RequestDisconnection(object_path) {
         debug(object_path);
 
-        let device = this._devices.get(object_path);
+        let device = this.devices.get(object_path);
 
         if (device && device.hasOwnProperty('_channel')) {
             log(`GSConnect: Disconnecting ${device.Name}`);
@@ -355,7 +355,7 @@ var ChannelService = GObject.registerClass({
     destroy() {
         GObject.signal_handlers_destroy(this._objManager);
 
-        for (let object_path of this._devices.keys()) {
+        for (let object_path of this.devices.keys()) {
             this.RequestDisconnection(object_path);
         }
 
