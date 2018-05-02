@@ -651,7 +651,7 @@ var DeviceSettings = GObject.registerClass({
         this._keyboardShortcuts();
 
         // Cleanup
-        this.connect_after('destroy', (widget) => {
+        this.connect('destroy', (widget) => {
             widget.device.settings.disconnect(widget._keybindingsId);
 
             widget.switcher.destroy();
@@ -1279,7 +1279,7 @@ var EventEditor = GObject.registerClass({
 
         this.settings = page._getSettings(this._pluginName);
         this._settingsId = this.settings.connect('changed::events', () => this._populate());
-        this.connect_after('destroy', () => this.settings.disconnect(this._settingsId));
+        this.connect('destroy', () => this.settings.disconnect(this._settingsId));
 
         // Action List
         this.action_list.set_sort_func(this._sort);
