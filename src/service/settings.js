@@ -1009,8 +1009,8 @@ var DeviceSettings = GObject.registerClass({
     }
 
     _onNotificationRowActivated(box, row) {
-        let notification = this._getSettings('notification');
-        let applications = JSON.parse(notification.get_string('applications'));
+        let settings = this._getSettings('notification');
+        let applications = JSON.parse(settings.get_string('applications'));
 
         if (row.enabled.label === _('On')) {
             applications[row.title.label].enabled = false;
@@ -1020,7 +1020,7 @@ var DeviceSettings = GObject.registerClass({
             row.enabled.label = _('On');
         }
 
-        notification.set_string('applications', JSON.stringify(applications));
+        settings.set_string('applications', JSON.stringify(applications));
     }
 
     _populateApplications(notification) {
