@@ -12,6 +12,14 @@ imports.searchPath.unshift(gsconnect.datadir);
 const DBus = imports.modules.dbus;
 
 
+const AllowMap = new Map([
+    [1, _('Off')],
+    [2, _('To Device')],
+    [4, _('From Device')],
+    [6, _('Both')]
+]);
+
+
 function section_separators(row, before) {
     if (before) {
         row.set_header(new Gtk.Separator({ visible: true }));
@@ -23,108 +31,6 @@ function switcher_separators(row, before) {
     if (before && row.type !== before.type) {
         row.set_header(new Gtk.Separator({ visible: true }));
     }
-};
-
-
-// FIXME: this is garbage
-function mapWidget(settings, widget, map) {
-    let row = widget.get_parent().get_parent();
-    row.visible = (settings);
-
-    // Init the widget
-    let value = settings.get_uint('allow');
-    widget.label = (map.get(value) !== undefined) ? map.get(value) : value.toString();
-
-    // Watch settings for changes
-    let _changed = settings.connect('changed::allow', () => {
-        let value = settings.get_uint('allow');
-        widget.label = (map.get(value) !== undefined) ? map.get(value) : value.toString();
-    });
-    widget.connect('destroy', () => settings.disconnect(_changed));
-
-    // Watch the Gtk.ListBox for activation
-    row.get_parent().connect('row-activated', (box, arow) => {
-        if (row === arow) {
-            let currentValue = settings.get_uint('allow');
-            let next = false;
-            let newValue;
-
-            for (let [k, v] of map) {
-                if (next) {
-                    newValue = k;
-                    break;
-                } else if (k === currentValue) {
-                    next = true;
-                }
-            }
-
-            if (newValue === undefined) {
-                newValue = map.keys().next().value;
-            }
-
-            settings.set_uint('allow', newValue);
-        }
-    });
-};
-
-
-function mapFlagToBool(settings, label, on) {
-    let row = label.get_parent().get_parent();
-    row.visible = (settings);
-
-    if (settings) {
-        // Set the intial label
-        label.label = (settings.get_uint('allow') & on) ? _('On') : _('Off');
-
-        // Watch settings for changes
-        let _changed = settings.connect('changed::allow', () => {
-            label.label = (settings.get_uint('allow') & on) ? _('On') : _('Off');
-        });
-        label.connect('destroy', () => settings.disconnect(_changed));
-
-        // Watch the Gtk.ListBox for activation
-        row.get_parent().connect('row-activated', (box, arow) => {
-            if (row === arow) {
-                settings.set_uint('allow', settings.get_uint('allow') ^ on);
-            }
-        });
-    }
-};
-
-
-function mapBoolLabel(settings, key, label) {
-    let row = label.get_parent().get_parent();
-    row.visible = (settings);
-
-    if (settings) {
-        // Set the intial label
-        label.label = settings.get_boolean(key) ? _('On') : _('Off');
-
-        // Watch settings for changes
-        let _changed = settings.connect('changed::' + key, () => {
-            label.label = settings.get_boolean(key) ? _('On') : _('Off');
-        });
-        label.connect('destroy', () => settings.disconnect(_changed));
-
-        // Watch the Gtk.ListBox for activation
-        row.get_parent().connect('row-activated', (box, arow) => {
-            if (row === arow) {
-                settings.set_boolean(key, !settings.get_boolean(key));
-            }
-        });
-    }
-};
-
-
-function mapAllow(settings, label) {
-    let map = new Map([
-        [1, _('Off')],
-        [2, _('To Device')],
-        [4, _('From Device')],
-        [6, _('Both')]
-    ]);
-
-    return mapWidget(settings, label, map);
 };
 
 
@@ -386,9 +292,9 @@ var Window = GObject.registerClass({
         'shell-list',
         'show-indicators', 'show-offline', 'show-unpaired', 'show-battery',
         'extensions-list',
-        'files-integration', 'webbrowser-integration',
+        'nautilus-integration', 'webbrowser-integration',
         'advanced-list',
-        'debug-mode', 'debug-window', 'debug-restart',
+        'debug', 'debug-window', 'debug-restart',
         'help', 'help-list'
     ]
 }, class Window extends Gtk.ApplicationWindow {
@@ -505,20 +411,16 @@ var Window = GObject.registerClass({
      */
     _bindSettings() {
         // Shell
-        mapBoolLabel(gsconnect.settings, 'show-indicators', this.show_indicators);
-        mapBoolLabel(gsconnect.settings, 'show-offline', this.show_offline);
-        mapBoolLabel(gsconnect.settings, 'show-unpaired', this.show_unpaired);
-        mapBoolLabel(gsconnect.settings, 'show-battery', this.show_battery);
+        this.shell_list.foreach(this._setGlobalRow);
         this.shell_list.set_header_func(section_separators);
 
         // Extensions
         // TODO: these should go..
-        mapBoolLabel(gsconnect.settings, 'nautilus-integration', this.files_integration);
-        mapBoolLabel(gsconnect.settings, 'webbrowser-integration', this.webbrowser_integration);
+        this.extensions_list.foreach(this._setGlobalRow);
         this.extensions_list.set_header_func(section_separators);
 
         // Advanced/Debug
-        mapBoolLabel(gsconnect.settings, 'debug', this.debug_mode);
+        this.advanced_list.foreach(this._setGlobalRow);
         this.debug_window.connect('clicked', () => {
             GLib.spawn_command_line_async(
                 'gnome-terminal ' +
@@ -528,6 +430,25 @@ var Window = GObject.registerClass({
         });
         this.debug_restart.connect('clicked', () => this.application.quit());
         this.advanced_list.set_header_func(section_separators);
+    }
+
+    _setGlobalRow(row) {
+        let label = row.get_child().get_child_at(1, 0);
+        let name = label.get_name();
+
+        if (!(label instanceof Gtk.Label)) {
+            return;
+        }
+
+        label.label = gsconnect.settings.get_boolean(name) ? _('On') : _('Off');
+    }
+
+    _onGlobalRowActivated(box, row) {
+        let label = row.get_child().get_child_at(1, 0);
+        let name = label.get_name();
+
+        gsconnect.settings.set_boolean(name, !gsconnect.settings.get_boolean(name));
+        label.label = (label.label === _('On')) ? _('Off') : _('On');
     }
 
     _onDevicesChanged() {
@@ -797,7 +718,7 @@ var DeviceSettings = GObject.registerClass({
             });
 
             battery.notify('level');
-            battery.connect_after('destroy', () => {
+            battery.connect('destroy', () => {
                 this.battery_level.visible = false;
                 this.battery_condition.visible = false;
                 this.battery_percent.visible = false;
@@ -806,6 +727,73 @@ var DeviceSettings = GObject.registerClass({
             this.battery_level.visible = false;
             this.battery_condition.visible = false;
             this.battery_percent.visible = false;
+        }
+    }
+
+    /**
+     * Basic Settings
+     */
+    _sharingSettings() {
+        // Battery
+        if (!this.device.get_action_enabled('reportStatus')) {
+            this.battery_allow.get_parent().get_parent().visible = false;
+        }
+
+        // Separators & Sorting
+        this.sharing_list.set_header_func(section_separators);
+
+        this.sharing_list.set_sort_func((row1, row2) => {
+            row1 = row1.get_child().get_child_at(0, 0);
+            row2 = row2.get_child().get_child_at(0, 0);
+            return row1.label.localeCompare(row2.label);
+        });
+
+        this.sharing_list.foreach(row => {
+            let label = row.get_child().get_child_at(1, 0);
+            let name = label.get_name().split('-')[0];
+            let settings = this._getSettings(name);
+
+            if (name === 'clipboard') {
+                label.label = AllowMap.get(settings.get_uint('allow'));
+            } else if (name === 'battery') {
+                label.label = (settings.get_uint('allow') & 2) ? _('On') : _('Off');
+            } else {
+                label.label = (settings.get_uint('allow') & 4) ? _('On') : _('Off');
+            }
+        });
+    }
+
+    _onSharingRowActivated(box, row) {
+        let label = row.get_child().get_child_at(1, 0);
+        let name = label.get_name().split('-')[0];
+        let settings = this._getSettings(name);
+
+        if (name === 'clipboard') {
+            let currentValue = settings.get_uint('allow');
+            let next = false;
+            let newValue;
+
+            for (let [k, v] of AllowMap) {
+                if (next) {
+                    newValue = k;
+                    break;
+                } else if (k === currentValue) {
+                    next = true;
+                }
+            }
+
+            if (newValue === undefined) {
+                newValue = AllowMap.keys().next().value;
+            }
+
+            settings.set_uint('allow', newValue);
+            label.label = AllowMap.get(newValue);
+        } else if (name === 'battery') {
+            settings.set_uint('allow', settings.get_uint('allow') ^ 2);
+            label.label = (label.label === _('On')) ? _('Off') : _('On');
+        } else {
+            settings.set_uint('allow', settings.get_uint('allow') ^ 4);
+            label.label = (label.label === _('On')) ? _('Off') : _('On');
         }
     }
 
@@ -1094,34 +1082,6 @@ var DeviceSettings = GObject.registerClass({
         notification.set_string('applications', JSON.stringify(applications));
 
         return applications;
-    }
-
-    /**
-     * Sharing Settings
-     * TODO: use supported capabilities & gsettings
-     */
-    _sharingSettings() {
-        // Battery
-        if (this.device.get_action_enabled('reportStatus')) {
-            mapFlagToBool(this._getSettings('battery'), this.battery_allow, 2);
-        } else {
-            this.battery_allow.get_parent().get_parent().visible = false;
-        }
-
-        //mapAllow(this._getSettings('clipboard'), this.clipboard_allow);
-        mapFlagToBool(this._getSettings('share'), this.share_allow, 4);
-        mapFlagToBool(this._getSettings('mpris'), this.mpris_allow, 4);
-        mapFlagToBool(this._getSettings('mousepad'), this.mousepad_allow, 4);
-        mapFlagToBool(this._getSettings('findmyphone'), this.findmyphone_allow, 4);
-
-        // Separators & Sorting
-        this.sharing_list.set_header_func(section_separators);
-
-        this.sharing_list.set_sort_func((row1, row2) => {
-            row1 = row1.get_child().get_child_at(0, 0);
-            row2 = row2.get_child().get_child_at(0, 0);
-            return row1.label.localeCompare(row2.label);
-        });
     }
 
     /**

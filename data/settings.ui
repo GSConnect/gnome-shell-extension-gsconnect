@@ -196,6 +196,7 @@
                                 <property name="hexpand">True</property>
                                 <property name="vexpand">False</property>
                                 <property name="selection_mode">none</property>
+                                <signal name="row-activated" handler="_onGlobalRowActivated" swapped="no"/>
                                 <child>
                                   <object class="GtkListBoxRow">
                                     <property name="height_request">56</property>
@@ -545,6 +546,7 @@
                                 <property name="hexpand">True</property>
                                 <property name="vexpand">False</property>
                                 <property name="selection_mode">none</property>
+                                <signal name="row-activated" handler="_onGlobalRowActivated" swapped="no"/>
                                 <child>
                                   <object class="GtkListBoxRow">
                                     <property name="height_request">56</property>
@@ -598,7 +600,7 @@
                                           </packing>
                                         </child>
                                         <child>
-                                          <object class="GtkLabel" id="files-integration">
+                                          <object class="GtkLabel" id="nautilus-integration">
                                             <property name="visible">True</property>
                                             <property name="can_focus">False</property>
                                             <property name="halign">end</property>
@@ -733,7 +735,7 @@
                             <property name="can_focus">False</property>
                             <property name="halign">start</property>
                             <property name="margin_bottom">12</property>
-                            <property name="label" translatable="yes">Advanced</property>
+                            <property name="label" translatable="yes">Debugging</property>
                             <attributes>
                               <attribute name="weight" value="bold"/>
                             </attributes>
@@ -757,6 +759,7 @@
                                 <property name="hexpand">True</property>
                                 <property name="vexpand">False</property>
                                 <property name="selection_mode">none</property>
+                                <signal name="row-activated" handler="_onGlobalRowActivated" swapped="no"/>
                                 <child>
                                   <object class="GtkListBoxRow">
                                     <property name="height_request">56</property>
@@ -798,7 +801,7 @@
                                             <property name="valign">center</property>
                                             <property name="hexpand">True</property>
                                             <property name="vexpand">True</property>
-                                            <property name="label">Debug logging and features</property>
+                                            <property name="label">Enable debugging messages and features</property>
                                             <property name="wrap">True</property>
                                             <style>
                                               <class name="dim-label"/>
@@ -810,7 +813,7 @@
                                           </packing>
                                         </child>
                                         <child>
-                                          <object class="GtkLabel" id="debug-mode">
+                                          <object class="GtkLabel" id="debug">
                                             <property name="visible">True</property>
                                             <property name="can_focus">False</property>
                                             <property name="halign">end</property>
@@ -869,7 +872,7 @@
                                             <property name="valign">center</property>
                                             <property name="hexpand">True</property>
                                             <property name="vexpand">True</property>
-                                            <property name="label">Open a debug logging terminal</property>
+                                            <property name="label">Open a terminal to inspect debug logs</property>
                                             <property name="wrap">True</property>
                                             <style>
                                               <class name="dim-label"/>

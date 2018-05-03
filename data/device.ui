@@ -385,6 +385,7 @@
                         <property name="hexpand">True</property>
                         <property name="vexpand">False</property>
                         <property name="selection_mode">none</property>
+                        <signal name="row-activated" handler="_onSharingRowActivated" swapped="no"/>
                         <child>
                           <object class="GtkListBoxRow">
                             <property name="height_request">56</property>
