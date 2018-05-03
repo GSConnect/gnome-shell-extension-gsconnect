@@ -338,9 +338,9 @@ var Window = GObject.registerClass({
         this._onDevicesChanged();
 
         // Cleanup
-        this.connect('destroy', () => {
-            GLib.source_remove(this._refreshSource);
-            this.application.disconnect(this._serviceDevices);
+        this.connect('destroy', (widget) => {
+            GLib.source_remove(widget._refreshSource);
+            widget.application.disconnect(widget._serviceDevices);
         });
     }
 
