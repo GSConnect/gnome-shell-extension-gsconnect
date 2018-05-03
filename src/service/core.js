@@ -196,7 +196,7 @@ var Channel = GObject.registerClass({
     }
 
     /**
-     * Set TCP socket options
+     * Set socket options
      */
     _initSocket(connection) {
         return new Promise((resolve, reject) => {
@@ -435,19 +435,17 @@ var Channel = GObject.registerClass({
                 this._monitor = 0;
             }
         } catch (e) {
-            debug(e);
+            debug(e.message);
         }
 
         try {
             this._connection.close(null);
-            delete this._connection;
         } catch (e) {
             debug(e.message);
         }
 
         try {
             this._listener.close();
-            delete this._listener;
         } catch (e) {
             debug(e.message);
         }
@@ -465,7 +463,6 @@ var Channel = GObject.registerClass({
         try {
             this._output_stream.put_string(packet.toString(), null);
         } catch (e) {
-            // TODO: disconnect?
             debug(e.message);
         }
     }
@@ -495,7 +492,6 @@ var Channel = GObject.registerClass({
             this.identity = packet;
         }
 
-        //debug(packet);
         this.emit('received', packet);
         return true;
     }
