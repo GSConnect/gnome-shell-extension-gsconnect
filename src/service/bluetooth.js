@@ -180,8 +180,10 @@ var ChannelService = GObject.registerClass({
         this._profileManager.init(null);
 
         let profileOptions = {
-            RequireAuthentication: new GLib.Variant('b', true),
+            // Don't require confirmation
             RequireAuthorization: new GLib.Variant('b', false),
+            // Only allow paired devices
+            RequireAuthentication: new GLib.Variant('b', true),
             ServiceRecord: new GLib.Variant('s', SdpRecord)
         };
 
@@ -224,10 +226,7 @@ var ChannelService = GObject.registerClass({
 
     _onInterfaceRemoved(manager, object, iface) {
         if (iface.g_interface_name === 'org.bluez.Device1') {
-            if (this.devices.has(iface.g_object_path)) {
-                log(`GSConnect Bluetooth: Removing ${iface.get_cached_property('Name').unpack()}`);
-                this.devices.delete(iface.g_object_path);
-            }
+            this.devices.delete(iface.g_object_path);
         }
     }
 
