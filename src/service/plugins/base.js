@@ -56,7 +56,7 @@ var Plugin = GObject.registerClass({
         // Init GSettings
         this.settings = new Gio.Settings({
             settings_schema: gsconnect.gschema.lookup(this._meta.id, -1),
-            path: gsconnect.settings.path + ["device", device.id, "plugin", name, ""].join("/")
+            path: `${gsconnect.settings.path}device/${device.id}/plugin/${name}/`
         });
 
         // GActions
