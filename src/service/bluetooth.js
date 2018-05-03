@@ -204,12 +204,6 @@ var ChannelService = GObject.registerClass({
     }
 
     _onInterfaceAdded(manager, object, iface) {
-        // We aren't interested in object paths
-        if (!iface instanceof Gio.DBusProxy) {
-            return;
-        }
-
-        // A device
         if (iface.g_interface_name === 'org.bluez.Device1') {
             debug(`Device on ${iface.g_object_path}`);
 
@@ -229,11 +223,6 @@ var ChannelService = GObject.registerClass({
     }
 
     _onInterfaceRemoved(manager, object, iface) {
-        // We aren't interested in object paths
-        if (!iface instanceof Gio.DBusProxy) {
-            return;
-        }
-
         if (iface.g_interface_name === 'org.bluez.Device1') {
             if (this.devices.has(iface.g_object_path)) {
                 log(`GSConnect Bluetooth: Removing ${iface.get_cached_property('Name').unpack()}`);
@@ -347,7 +336,7 @@ var ChannelService = GObject.registerClass({
         if (device && device.hasOwnProperty('_channel')) {
             log(`GSConnect: Disconnecting ${device.Name}`);
             device._channel.close();
-            delete device._channel;
+            device._channel = undefined;
         }
     }
 
