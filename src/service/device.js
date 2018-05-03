@@ -518,7 +518,7 @@ var Device = GObject.registerClass({
             );
         }
 
-        if (this._channel.type === 'bluez') {
+        if (this._channel.type === 'bluetooth') {
             debug(`Pre-authorizing Bluez connection for ${this.name}`);
             return (cert);
         }
