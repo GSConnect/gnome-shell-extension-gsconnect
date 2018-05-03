@@ -609,12 +609,12 @@ var DeviceSettings = GObject.registerClass({
     ]
 }, class DeviceSettings extends Gtk.Stack {
 
-    _init(device, params={}) {
+    _init(device) {
         Gtk.Widget.set_connect_func.call(this, (builder, obj, signalName, handlerName, connectObj, flags) => {
             obj.connect(signalName, this[handlerName].bind(this));
         });
 
-        super._init(params);
+        super._init();
 
         this.service = Gio.Application.get_default();
         this.device = device;
@@ -874,7 +874,7 @@ var DeviceSettings = GObject.registerClass({
         row.subtitle.ellipsize = Pango.EllipsizeMode.MIDDLE;
         row.widget.get_style_context().add_class('circular');
         row.widget.get_style_context().add_class('flat');
-        row.widget.connect('clicked', () => this._onEditCommand(row, uuid));
+        row.widget.connect('clicked', this._onEditCommand.bind(this));
 
         this.command_list.add(row);
 
@@ -891,17 +891,16 @@ var DeviceSettings = GObject.registerClass({
     }
 
     // The 'edit' icon in the GtkListBoxRow of a command
-    _onEditCommand(row, uuid) {
+    _onEditCommand(button) {
+        let row = button.get_parent().get_parent();
+        let uuid = row.get_name();
+
         this.command_editor.uuid = uuid;
         this.command_name.text = this._commands[uuid].name.slice(0);
         this.command_line.text = this._commands[uuid].command.slice(0);
 
         this.command_editor.title = { label: this.command_name.text };
-        this.command_list.foreach(row => {
-            if (row.get_name() === uuid) {
-                row.visible = false;
-            }
-        });
+        row.visible = false;
 
         this.command_new.visible = false;
         this.command_editor.visible = true;
@@ -956,25 +955,18 @@ var DeviceSettings = GObject.registerClass({
 
     _populateCommands() {
         delete this.command_editor.title;
+        delete this.command_editor.uuid;
         this.command_name.text = '';
         this.command_line.text = '';
-
-        this.command_list.foreach(row => {
-            if (row.get_name() === this.command_editor.uuid) {
-                row.visible = true;
-            }
-        });
-        delete this.command_editor.uuid;
-
-        this.command_new.visible = true;
-        this.command_editor.visible = false;
-        this.command_list.invalidate_sort();
 
         this.command_list.foreach(row => {
             if (row !== this.command_new && row !== this.command_editor) {
                 row.destroy();
             }
         });
+
+        this.command_new.visible = true;
+        this.command_editor.visible = false;
 
         for (let uuid in this._commands) {
             this._insertCommand(uuid);
