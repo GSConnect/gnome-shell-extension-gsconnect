@@ -292,11 +292,9 @@ var Device = GObject.registerClass({
             path: `/org/gnome/shell/extensions/gsconnect/device/${deviceId}/`
         });
 
-        // This relies on GSettings being initialized
+        // Parse identity if initialized with a proper packet
         if (params.packet.type) {
             this._handleIdentity(params.packet);
-        } else {
-            // TODO: read identity from GSettings
         }
 
         // Export an object path for the device via the ObjectManager
@@ -518,6 +516,7 @@ var Device = GObject.registerClass({
             );
         }
 
+        // FIXME: we've just checked it was previously paired over LAN
         if (this._channel.type === 'bluetooth') {
             debug(`Pre-authorizing Bluez connection for ${this.name}`);
             return (cert);
@@ -828,12 +827,11 @@ var Device = GObject.registerClass({
         }
 
         // Send a pair packet
-        let packet = new Core.Packet({
+        this.sendPacket({
             id: 0,
             type: 'kdeconnect.pair',
             body: { pair: true }
         });
-        this._channel.send(packet);
     }
 
     unpair() {
@@ -841,12 +839,11 @@ var Device = GObject.registerClass({
 
         // Send the unpair packet only if we're connected
         if (this._channel !== null) {
-            let packet = new Core.Packet({
+            this.sendPacket({
                 id: 0,
                 type: 'kdeconnect.pair',
                 body: { pair: false }
             });
-            this._channel.send(packet);
         }
 
         this._unloadPlugins().then(values => {
