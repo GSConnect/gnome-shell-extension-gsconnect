@@ -293,7 +293,7 @@ var Device = GObject.registerClass({
         });
 
         // This relies on GSettings being initialized
-        if (params.packet) {
+        if (params.packet.type) {
             this._handleIdentity(params.packet);
         } else {
             // TODO: read identity from GSettings

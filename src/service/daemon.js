@@ -339,19 +339,7 @@ var Daemon = GObject.registerClass({
             let dbusPath = gsconnect.app_path + '/Device/' + id.replace(/\W+/g, '_');
 
             if (!this._devices.has(dbusPath)) {
-                newDevices.push(
-                    new Promise((resolve, reject) => {
-                        let device = new Device.Device({ id: id});
-                        // TODO: better
-                        device.connect('notify::connected', (device) => {
-                            if (!device.connected) {
-                                this._pruneDevices();
-                            }
-                        });
-                        this._devices.set(dbusPath, device);
-                        resolve(true);
-                    }).catch(e => log('GSConnect: Error adding device: ' + e))
-                );
+                newDevices.push(this._addDevice({ body: { deviceId: id } }));
             }
         }
 
