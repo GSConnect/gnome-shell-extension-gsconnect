@@ -312,10 +312,7 @@ var Daemon = GObject.registerClass({
                     knownDevices.push(device.id);
                     gsconnect.settings.set_strv('devices', knownDevices);
                 }
-
-                // FIXME: notified by ObjectManager now
-                //this.notify('devices');
-            }).catch(e => debug(e));
+            }).catch(debug);
         }
     }
 
@@ -329,9 +326,6 @@ var Daemon = GObject.registerClass({
 
             device.destroy();
             this._devices.delete(dbusPath);
-
-            // FIXME: notified by ObjectManager now
-            //this.notify('devices');
         }
     }
 
@@ -615,9 +609,9 @@ var Daemon = GObject.registerClass({
      *
      * @param {Gio.Action} action - ...
      * @param {GLib.Variant[]} parameter - ...
-     * @param {GLib.Variant(s)} parameter[] - DBus object path for device
-     * @param {GLib.Variant(s)} parameter[] - GAction/Method name
-     * @param {GLib.Variant(v)} parameter[] - The device action parameter
+     * @param {GLib.Variant(s)} parameter[0] - DBus object path of the device
+     * @param {GLib.Variant(s)} parameter[1] - GAction/Method name
+     * @param {GLib.Variant(v)} parameter[2] - The device action parameter
      */
     _deviceAction(action, parameter) {
         parameter = parameter.unpack();
