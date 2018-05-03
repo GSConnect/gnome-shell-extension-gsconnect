@@ -32,6 +32,7 @@ var Metadata = {
         find: {
             summary: _('Locate'),
             description: _('Find a device by making it ring'),
+            icon_name: 'find-location-symbolic',
 
             signature: null,
             incoming: [],
@@ -66,7 +67,7 @@ var Plugin = GObject.registerClass({
     handlePacket(packet) {
         debug('FindMyPhone: handlePacket()');
 
-        if (this.allow & 4) {
+        if (packet.type === 'kdeconnect.findmyphone.request' && (this.allow & 4)) {
             this._handleFind();
         }
     }
@@ -121,11 +122,6 @@ var Plugin = GObject.registerClass({
      */
     find() {
         debug(this.device.name);
-
-        // FIXME
-        if (!(this.allow & 2)) {
-            debug(new Error('Operation not permitted: ' + packet.type));
-        }
 
         this.device.sendPacket({
             id: 0,
