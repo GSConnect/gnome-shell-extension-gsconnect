@@ -333,15 +333,13 @@ var Daemon = GObject.registerClass({
         let knownDevices = gsconnect.settings.get_strv('devices');
 
         // New devices
-        let newDevices = [];
-
-        for (let id of knownDevices) {
+        let newDevices = knownDevices.map(id => {
             let dbusPath = gsconnect.app_path + '/Device/' + id.replace(/\W+/g, '_');
 
             if (!this._devices.has(dbusPath)) {
-                newDevices.push(this._addDevice({ body: { deviceId: id } }));
+                return this._addDevice({ body: { deviceId: id } });
             }
-        }
+        });
 
         Promise.all(newDevices).then(result => {
             // Old devices
