@@ -218,17 +218,24 @@ var Channel = GObject.registerClass({
      */
     _receiveIdent(connection) {
         return new Promise((resolve, reject) => {
-            let _input_stream = new Gio.DataInputStream({
+            let stream = new Gio.DataInputStream({
                 base_stream: connection.input_stream,
                 close_base_stream: false
+            })
+
+            stream.read_line_async(GLib.PRIORITY_DEFAULT, null, (stream, res) => {
+                try {
+                    let [data, len] = stream.read_line_finish(res);
+                    stream.close(null);
+
+                    // Store the identity as an object property
+                    this.identity = new Packet(data.toString());
+
+                    resolve(connection);
+                } catch (e) {
+                    reject(e);
+                }
             });
-            let [data, len] = _input_stream.read_line(null);
-            _input_stream.close(null);
-
-            // Store the identity as an object property
-            this.identity = new Packet(data.toString());
-
-            resolve(connection);
         });
     }
 
