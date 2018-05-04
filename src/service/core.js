@@ -366,66 +366,50 @@ var Channel = GObject.registerClass({
      * Open a channel (outgoing connection)
      * @param {Gio.InetSocketAddress} address - ...
      */
-    open(address) {
+    async open(address) {
         log(`Connecting to ${this.identity.body.deviceId}`);
 
-        // Open a new outgoing connection
-        return new Promise((resolve, reject) => {
-            let client = new Gio.SocketClient();
+        try {
+            // Open a new outgoing connection
+            this._connection = await new Promise((resolve, reject) => {
+                let client = new Gio.SocketClient();
 
-            client.connect_async(address, null, (client, res) => {
-                try {
-                    resolve(client.connect_finish(res));
-                } catch (e) {
-                    reject(e)
-                }
+                client.connect_async(address, null, (client, res) => {
+                    try {
+                        resolve(client.connect_finish(res));
+                    } catch (e) {
+                        reject(e)
+                    }
+                });
             });
-        // Set the usual socket options
-        }).then(socketConnection => {
-            return this._initSocket(socketConnection);
-        // Send our identity packet
-        }).then(socketConnection => {
-            return this._sendIdent(socketConnection);
-        // Authenticate the connection
-        }).then(socketConnection => {
-            return this._serverEncryption(socketConnection);
-        // Store the certificate and init streams for packet exchange
-        }).then(secureConnection => {
-            return this._initPacketIO(secureConnection);
-        // Set the connection and emit
-        }).then(secureConnection => {
-            this._connection = secureConnection;
+            this._connection = await this._initSocket(this._connection);
+            this._connection = await this._sendIdent(this._connection);
+            this._connection = await this._serverEncryption(this._connection);
+            this._connection = await this._initPacketIO(this._connection);
             this.emit('connected');
-        }).catch(e => {
+        } catch (e) {
             log(`GSConnect: Error opening connection: ${e.message}`);
             debug(e);
             this.close();
-        });
+        }
     }
 
     /**
      * Accept a channel (incoming connection)
      * @param {Gio.TcpConnection} connection - ...
      */
-    accept(connection) {
-        // Set the usual socket options and receive the device's identity
-        return this._initSocket(connection).then(socketConnection => {
-            return this._receiveIdent(socketConnection);
-        // Authenticate the connection
-        }).then(socketConnection => {
-            return this._clientEncryption(socketConnection);
-        // Store the certificate and init streams for packet exchange
-        }).then(secureConnection => {
-            return this._initPacketIO(secureConnection);
-        // Set the connection and emit
-        }).then(secureConnection => {
-            this._connection = secureConnection;
+    async accept(connection) {
+        try {
+            this._connection = await this._initSocket(connection);
+            this._connection = await this._receiveIdent(this._connection);
+            this._connection = await this._clientEncryption(this._connection);
+            this._connection = await this._initPacketIO(this._connection);
             this.emit('connected');
-        }).catch(e => {
+        } catch(e) {
             log(`GSConnect: Error accepting connection: ${e.message}`);
             debug(e);
             this.close();
-        });
+        }
     }
 
     close() {
