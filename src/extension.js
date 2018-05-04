@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 const Clutter = imports.gi.Clutter;
 const Gio = imports.gi.Gio;
@@ -45,7 +45,7 @@ class KeybindingManager {
         this.bindings = new Map();
 
         this._acceleratorId = global.display.connect(
-            "accelerator-activated",
+            'accelerator-activated',
             (display, action, deviceId, timestamp) => {
                 if (this.bindings.has(action)) {
                     this.bindings.get(action).callback()
@@ -70,7 +70,7 @@ class KeybindingManager {
                 callback: callback
             });
         } else {
-            debug(`Failed to grab accelerator "${accelerator}"`);
+            debug(`Failed to grab accelerator '${accelerator}'`);
         }
 
         return action;
@@ -272,7 +272,7 @@ class DeviceMenu extends PopupMenu.PopupMenuSection {
         this.deviceBox = new PopupMenu.PopupBaseMenuItem({
             can_focus: false,
             reactive: false,
-            style_class: "popup-menu-item gsconnect-device-box"
+            style_class: 'popup-menu-item gsconnect-device-box'
         });
         this.deviceBox.actor.remove_child(this.deviceBox._ornamentLabel);
         this.deviceBox.actor.vertical = false;
@@ -282,7 +282,7 @@ class DeviceMenu extends PopupMenu.PopupMenuSection {
         this.deviceBox.actor.add_child(this.deviceButton);
 
         this.controlBox = new St.BoxLayout({
-            style_class: "gsconnect-control-box",
+            style_class: 'gsconnect-control-box',
             vertical: true,
             x_expand: true
         });
@@ -290,20 +290,20 @@ class DeviceMenu extends PopupMenu.PopupMenuSection {
 
         // Title Bar
         this.titleBar = new St.BoxLayout({
-            style_class: "gsconnect-title-bar"
+            style_class: 'gsconnect-title-bar'
         });
         this.controlBox.add_child(this.titleBar);
 
         // Title Bar -> Device Name
         this.nameLabel = new St.Label({
-            style_class: "gsconnect-device-name",
+            style_class: 'gsconnect-device-name',
             text: this.device.Name
         });
         this.titleBar.add_child(this.nameLabel);
 
         // Title Bar -> Separator
         let nameSeparator = new St.Widget({
-            style_class: "popup-separator-menu-item gsconnect-title-separator",
+            style_class: 'popup-separator-menu-item gsconnect-title-separator',
             x_expand: true,
             y_expand: true,
             y_align: Clutter.ActorAlign.CENTER
@@ -321,14 +321,14 @@ class DeviceMenu extends PopupMenu.PopupMenuSection {
 
         // Status Bar
         this.statusBar = new St.BoxLayout({
-            style_class: "gsconnect-status-bar",
+            style_class: 'gsconnect-status-bar',
             y_align: Clutter.ActorAlign.FILL,
             y_expand: true
         });
         this.controlBox.add_child(this.statusBar);
 
         this.statusLabel = new St.Label({
-            text: "",
+            text: '',
             y_align: Clutter.ActorAlign.CENTER
         });
         this.statusBar.add_child(this.statusLabel);
@@ -342,9 +342,9 @@ class DeviceMenu extends PopupMenu.PopupMenuSection {
         });
 
         // Watch GSettings & Properties
-        this._gsettingsId = gsconnect.settings.connect("changed", this._sync.bind(this));
-        this._propertiesId = this.device.connect("g-properties-changed", this._sync.bind(this));
-        this.actor.connect("notify::mapped", this._sync.bind(this));
+        this._gsettingsId = gsconnect.settings.connect('changed', this._sync.bind(this));
+        this._propertiesId = this.device.connect('g-properties-changed', this._sync.bind(this));
+        this.actor.connect('notify::mapped', this._sync.bind(this));
 
         // Init
         this._sync();
@@ -374,7 +374,7 @@ class DeviceMenu extends PopupMenu.PopupMenuSection {
         this.nameLabel.text = this.device.Name;
 
         // TODO: might as well move this to actors.js
-        if (Connected && Paired && gsconnect.settings.get_boolean("show-battery")) {
+        if (Connected && Paired && gsconnect.settings.get_boolean('show-battery')) {
             this.deviceBattery.visible = true;
             this.deviceBattery.update();
         } else {
@@ -386,9 +386,9 @@ class DeviceMenu extends PopupMenu.PopupMenuSection {
         this.statusBar.visible = (!Connected || !Paired);
 
         if (!Connected) {
-            this.statusLabel.text = _("Device is disconnected");
+            this.statusLabel.text = _('Device is disconnected');
         } else if (!Paired) {
-            this.statusLabel.text = _("Device is unpaired");
+            this.statusLabel.text = _('Device is unpaired');
         }
     }
 
@@ -413,7 +413,7 @@ class DeviceIndicator extends PanelMenu.Button {
         // Device Icon
         this.icon = new St.Icon({
             icon_name: this.device.SymbolicIconName,
-            style_class: "system-status-icon"
+            style_class: 'system-status-icon'
         });
         this.actor.add_actor(this.icon);
 
@@ -422,8 +422,8 @@ class DeviceIndicator extends PanelMenu.Button {
         this.menu.addMenuItem(this.deviceMenu);
 
         // Watch GSettings & Properties
-        this._gsettingsId = gsconnect.settings.connect("changed", this._sync.bind(this));
-        this._propertiesId = this.device.connect("g-properties-changed", this._sync.bind(this));
+        this._gsettingsId = gsconnect.settings.connect('changed', this._sync.bind(this));
+        this._propertiesId = this.device.connect('g-properties-changed', this._sync.bind(this));
 
         this._sync();
     }
@@ -434,11 +434,11 @@ class DeviceIndicator extends PanelMenu.Button {
         let { Connected, Paired } = this.device;
 
         // Device Indicator Visibility
-        if (!gsconnect.settings.get_boolean("show-indicators")) {
+        if (!gsconnect.settings.get_boolean('show-indicators')) {
             this.actor.visible = false;
-        } else if (!Paired && !gsconnect.settings.get_boolean("show-unpaired")) {
+        } else if (!Paired && !gsconnect.settings.get_boolean('show-unpaired')) {
             this.actor.visible = false;
-        } else if (!Connected && !gsconnect.settings.get_boolean("show-offline")) {
+        } else if (!Connected && !gsconnect.settings.get_boolean('show-offline')) {
             this.actor.visible = false;
         } else {
             this.actor.visible = true;
@@ -519,13 +519,13 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
 
         // Extension Indicator
         this.extensionIndicator = this._addIndicator();
-        this.extensionIndicator.icon_name = "org.gnome.Shell.Extensions.GSConnect-symbolic";
+        this.extensionIndicator.icon_name = 'org.gnome.Shell.Extensions.GSConnect-symbolic';
         let userMenuTray = Main.panel.statusArea.aggregateMenu._indicators;
         userMenuTray.insert_child_at_index(this.indicators, 0);
 
         // Extension Menu
         this.extensionMenu = new PopupMenu.PopupSubMenuMenuItem(
-            _("Mobile Devices"),
+            _('Mobile Devices'),
             true
         );
         this.extensionMenu.icon.icon_name = this.extensionIndicator.icon_name;
@@ -534,9 +534,9 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         // Devices Section
         this.devicesSection = new PopupMenu.PopupMenuSection();
         gsconnect.settings.bind(
-            "show-indicators",
+            'show-indicators',
             this.devicesSection.actor,
-            "visible",
+            'visible',
             Gio.SettingsBindFlags.INVERT_BOOLEAN
         );
         this.extensionMenu.menu.addMenuItem(this.devicesSection);
@@ -546,14 +546,14 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         this.dndItem = new DoNotDisturbItem();
         this.extensionMenu.menu.addMenuItem(this.dndItem);
 
-        this.extensionMenu.menu.addAction(_("Mobile Settings"), () => {
+        this.extensionMenu.menu.addAction(_('Mobile Settings'), () => {
             this.service.OpenSettings();
         });
 
         Main.panel.statusArea.aggregateMenu.menu.addMenuItem(this.menu, 4);
 
         // Menu Visibility
-        this._gsettingsId = gsconnect.settings.connect("changed", () => {
+        this._gsettingsId = gsconnect.settings.connect('changed', () => {
             for (let dbusPath in this._menus) {
                 this._sync(this._menus[dbusPath]);
             }
@@ -578,9 +578,9 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
     _sync(menu) {
         let { Connected, Paired } = menu.device;
 
-        if (!Paired && !gsconnect.settings.get_boolean("show-unpaired")) {
+        if (!Paired && !gsconnect.settings.get_boolean('show-unpaired')) {
             menu.actor.visible = false;
-        } else if (!Connected && !gsconnect.settings.get_boolean("show-offline")) {
+        } else if (!Connected && !gsconnect.settings.get_boolean('show-offline')) {
             menu.actor.visible = false;
         } else {
             menu.actor.visible = true;
@@ -602,9 +602,9 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         }
 
         // Watch for new and removed
-        this.manager.connect("interface-added", this._interfaceAdded.bind(this));
-        this.manager.connect("interface-removed", this._interfaceRemoved.bind(this));
-        this.manager.connect("notify::name-owner", this._onNameOwnerChanged.bind(this));
+        this.manager.connect('interface-added', this._interfaceAdded.bind(this));
+        this.manager.connect('interface-removed', this._interfaceRemoved.bind(this));
+        this.manager.connect('notify::name-owner', this._onNameOwnerChanged.bind(this));
     }
 
     _startService() {
@@ -626,7 +626,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         if (this.manager.name_owner === null) {
             // Destroy any device proxies
             for (let path in this._indicators) {
-                debug("name-owner destroy");
+                debug('name-owner destroy');
 
                 this._indicators[path].destroy();
                 this._menus[path].destroy();
@@ -704,7 +704,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
     _interfaceRemoved(manager, object, iface) {
         debug(iface.g_interface_name);
 
-        if (iface.g_interface_name === "org.gnome.Shell.Extensions.GSConnect.Device") {
+        if (iface.g_interface_name === 'org.gnome.Shell.Extensions.GSConnect.Device') {
             log(`GSConnect: Removing ${iface.Name}`);
 
             this._indicators[iface.g_object_path].destroy();
@@ -730,15 +730,15 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         debug(id);
 
         // Separate the device id from the notification id
-        id = id.split("|");
+        id = id.split('|');
         let deviceId = id.splice(0, 1)[0];
-        id = id.join("|");
+        id = id.join('|');
 
         if (serviceIndicator._devices[deviceId]) {
             let device = serviceIndicator._devices[deviceId];
-            if (device.actions.get_action_enabled("closeNotification")) {
+            if (device.actions.get_action_enabled('closeNotification')) {
                 device.actions.activate_action(
-                    "closeNotification",
+                    'closeNotification',
                     gsconnect.full_pack(id)
                 );
             }
@@ -746,7 +746,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
     }
 
     _openDeviceMenu(indicator) {
-        if (gsconnect.settings.get_boolean("show-indicators")) {
+        if (gsconnect.settings.get_boolean('show-indicators')) {
             indicator.menu.toggle();
         } else {
             Main.panel._toggleMenu(Main.panel.statusArea.aggregateMenu);
@@ -789,14 +789,14 @@ var pushNotification = function (notification) {
     if (this.notifications.indexOf(notification) >= 0)
         return;
 
-    if (this._appId === "org.gnome.Shell.Extensions.GSConnect") {
+    if (this._appId === 'org.gnome.Shell.Extensions.GSConnect') {
         // Look for the GNotification id
         for (let id in this._notifications) {
             if (this._notifications[id] === notification) {
-                debug("connecting to shell notification: " + id);
+                debug('connecting to shell notification: ' + id);
 
                 // Close the notification remotely when dismissed
-                notification.connect("destroy", (notification, reason) => {
+                notification.connect('destroy', (notification, reason) => {
                     if (reason === MessageTray.NotificationDestroyedReason.DISMISSED) {
                         serviceIndicator._onNotificationDestroyed(id);
                     }
@@ -823,7 +823,7 @@ var serviceIndicator = null;
 
 
 function init() {
-    debug("initializing extension");
+    debug('initializing extension');
 
     // TODO: restore prototype???
     NotificationDaemon.GtkNotificationDaemonAppSource.prototype.pushNotification = pushNotification;
