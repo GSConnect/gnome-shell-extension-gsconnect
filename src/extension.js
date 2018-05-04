@@ -590,9 +590,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
     _setupObjManager(obj, res) {
         this.manager = Gio.DBusObjectManagerClient.new_finish(res);
 
-        if (!this.service && GLib.file_test(gsconnect.datadir + '/service/daemon.js', GLib.FileTest.EXISTS)) {
-            this._startService();
-        }
+        this._startService();
 
         // Setup currently managed objects
         for (let obj of this.manager.get_objects()) {
@@ -608,6 +606,12 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
     }
 
     _startService() {
+        let path = gsconnect.datadir + '/service/daemon.js';
+
+        if (this.service || !GLib.file_test(path, GLib.FileTest.EXISTS)) {
+            return;
+        }
+
         this.service = new ServiceProxy({
             g_connection: Gio.DBus.session,
             g_name: gsconnect.app_id,
@@ -641,9 +645,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
             }
         }
 
-        if (!this.service && GLib.file_test(gsconnect.datadir + '/service/daemon.js', GLib.FileTest.EXISTS)) {
-            this._startService();
-        }
+        this._startService();
     }
 
     _interfaceAdded(manager, object, iface) {
