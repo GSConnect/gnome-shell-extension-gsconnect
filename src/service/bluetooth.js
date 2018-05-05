@@ -130,6 +130,17 @@ const SdpRecord = Gio.resources_lookup_data(
 ).toArray().toString();
 
 
+function makeSdpRecord(uuid) {
+    return SdpRecord.replace(
+        /@UUID@/gi,
+        uuid
+    ).replace(
+        '@UUID_HEX@',
+        uuid.replace(/\-/gi, '')
+    );
+};
+
+
 /**
  * Bluez Channel Service
  */
@@ -184,7 +195,7 @@ var ChannelService = GObject.registerClass({
             RequireAuthorization: new GLib.Variant('b', false),
             // Only allow paired devices
             RequireAuthentication: new GLib.Variant('b', true),
-            ServiceRecord: new GLib.Variant('s', SdpRecord)
+            ServiceRecord: new GLib.Variant('s', makeSdpRecord(uuid))
         };
 
         // Register KDE Connect bluez profile
