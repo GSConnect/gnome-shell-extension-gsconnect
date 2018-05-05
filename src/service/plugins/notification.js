@@ -350,23 +350,27 @@ var Plugin = GObject.registerClass({
         debug([packet.payloadTransferInfo.port, packet.payloadSize, packet.body.payloadHash]);
 
         return new Promise((resolve, reject) => {
-            let iconStream = Gio.MemoryOutputStream.new_resizable();
+            if (packet.payloadTransferInfo.hasOwnProperty('port')) {
+                let iconStream = Gio.MemoryOutputStream.new_resizable();
 
-            let transfer = new Lan.Transfer({
-                device: this.device,
-                size: packet.payloadSize,
-                checksum: packet.body.payloadHash,
-                output_stream: iconStream
-            });
+                let transfer = new Lan.Transfer({
+                    device: this.device,
+                    size: packet.payloadSize,
+                    checksum: packet.body.payloadHash,
+                    output_stream: iconStream
+                });
 
-            transfer.connect("connected", (transfer) => transfer.start());
-            transfer.connect("failed", (transfer) => resolve(null));
-            transfer.connect("succeeded", (transfer) => {
-                iconStream.close(null);
-                resolve(Gio.BytesIcon.new(iconStream.steal_as_bytes()));
-            });
+                transfer.connect("connected", (transfer) => transfer.start());
+                transfer.connect("failed", (transfer) => resolve(null));
+                transfer.connect("succeeded", (transfer) => {
+                    iconStream.close(null);
+                    resolve(Gio.BytesIcon.new(iconStream.steal_as_bytes()));
+                });
 
-            transfer.download(packet.payloadTransferInfo.port).catch(e => debug(e));
+                transfer.download(packet.payloadTransferInfo.port).catch(e => debug(e));
+            } else if (packet.payloadTransferInfo.hasOwnProperty('uuid')) {
+                resolve(null);
+            }
         });
     }
 
