@@ -183,27 +183,14 @@ var ChannelService = GObject.registerClass({
         });
 
         // Setup profile
-        this._profileManager = new ProfileManager1Proxy({
+        new ProfileManager1Proxy({
             g_connection: Gio.DBus.system,
             g_name: 'org.bluez',
             g_object_path: '/org/bluez'
-        });
-        this._profileManager.init(null);
-
-        let profileOptions = {
-            // Don't require confirmation
-            RequireAuthorization: new GLib.Variant('b', false),
-            // Only allow paired devices
-            RequireAuthentication: new GLib.Variant('b', true),
-            ServiceRecord: new GLib.Variant('s', makeSdpRecord(uuid))
-        };
-
-        // Register KDE Connect bluez profile
-        this._profileManager.RegisterProfile(
-            this._profile.get_object_path(),
-            SERVICE_UUID,
-            profileOptions
-        ).then(result => {
+        }).init_promise().then(profileManager => {
+            this._profileManager = profileManager;
+            return this._registerProfile(SERVICE_UUID);
+        }).then(result => {
             Gio.DBusObjectManagerClient.new(
                 Gio.DBus.system,
                 Gio.DBusObjectManagerClientFlags.NONE,
@@ -214,6 +201,23 @@ var ChannelService = GObject.registerClass({
                 this._setupObjManager.bind(this)
             );
         }).catch(debug);
+    }
+
+    _registerProfile(uuid) {
+        let profileOptions = {
+            // Don't require confirmation
+            RequireAuthorization: new GLib.Variant('b', false),
+            // Only allow paired devices
+            RequireAuthentication: new GLib.Variant('b', true),
+            ServiceRecord: new GLib.Variant('s', makeSdpRecord(uuid))
+        };
+
+        // Register KDE Connect bluez profile
+        return this._profileManager.RegisterProfile(
+            this._profile.get_object_path(),
+            uuid,
+            profileOptions
+        );
     }
 
     _onInterfaceAdded(manager, object, iface) {
@@ -244,25 +248,31 @@ var ChannelService = GObject.registerClass({
     _onPropertiesChanged(manager, object, iface, changed, invalidated) {
         if (iface.g_interface_name === 'org.bluez.Device1') {
             let properties = gsconnect.full_unpack(changed);
+            let device = this.devices.get(iface.g_object_path);
 
-            if (properties.hasOwnProperty('Connected') && !properties.Connected) {
-                this.RequestDisconnection(iface.g_object_path);
-            } else if (properties.Connected) {
-                this._onDeviceChanged(iface);
+            if (properties.hasOwnProperty('Connected')) {
+                if (device.Connected) {
+                    log('Connected changed');
+                    this._onDeviceChanged(device);
+                } else {
+                    this.RequestDisconnection(iface.g_object_path);
+                }
+            } else if (properties.hasOwnProperty('ServicesResolved') &&
+                       properties.ServicesResolved) {
+                    log('ServicesResolved changed');
+                    this._onDeviceChanged(device);
             }
         }
     }
 
-    _onDeviceChanged(iface) {
-        let device = this.devices.get(iface.g_object_path);
+    _onDeviceChanged(device) {
 
-        if (device) {
-            if (device.Connected && device.Paired && device.UUIDs.indexOf(SERVICE_UUID) > -1) {
-                debug('Trying to connect profile...');
-                device.ConnectProfile(SERVICE_UUID).then(result=> {
-                    log(`GSConnect: Connected to ${device.Name}`);
-                }).catch(debug);
-            }
+        if (device.Connected && device.Paired && device.UUIDs.indexOf(SERVICE_UUID) > -1) {
+            debug('Trying to connect profile...');
+            device.ConnectProfile(SERVICE_UUID).then(result=> {
+
+                debug(`Profile connected for to ${device.Name}`);
+            }).catch(e => debug(e.message));
         }
     }
 
@@ -342,14 +352,13 @@ var ChannelService = GObject.registerClass({
 
         let device = this.devices.get(object_path);
 
-        if (device && device.hasOwnProperty('_channel')) {
+        if (device && device._channel !== undefined) {
             log(`GSConnect: Disconnecting ${device.Name}`);
             device._channel.close();
             device._channel = undefined;
         }
     }
 
-    // TODO: this probably needs a lot of work and testing
     destroy() {
         GObject.signal_handlers_destroy(this._objManager);
 
