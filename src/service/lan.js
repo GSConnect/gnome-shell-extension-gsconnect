@@ -10,7 +10,7 @@ const Core = imports.service.core;
 
 
 /**
- * LanChannelService consists of two parts.
+ * Lan.ChannelService consists of two parts.
  *
  * The TCP Listener listens on a port (usually 1716) and constructs a Channel
  * object from the incoming Gio.TcpConnection, emitting 'channel::'.
@@ -244,82 +244,8 @@ var ChannelService = GObject.registerClass({
  *  });
  */
 var Transfer = GObject.registerClass({
-    GTypeName: 'GSConnectTransfer',
-    Signals: {
-        'started': {
-            flags: GObject.SignalFlags.RUN_FIRST
-        },
-        'progress': {
-            flags: GObject.SignalFlags.RUN_FIRST,
-            param_types: [ GObject.TYPE_INT ]
-        },
-        'cancelled': {
-            flags: GObject.SignalFlags.RUN_FIRST
-        },
-        'failed': {
-            flags: GObject.SignalFlags.RUN_FIRST,
-            param_types: [ GObject.TYPE_STRING ]
-        },
-        'succeeded': {
-            flags: GObject.SignalFlags.RUN_FIRST
-        }
-    },
-    Properties: {
-        'device': GObject.ParamSpec.object(
-            'device',
-            'TransferDevice',
-            'The device associated with this transfer',
-            GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
-            GObject.Object
-        ),
-        'size': GObject.ParamSpec.uint(
-            'size',
-            'TransferSize',
-            'The size in bytes of the transfer',
-            GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
-            0, GLib.MAXUINT32,
-            0
-        ),
-        'uuid': GObject.ParamSpec.string(
-            'uuid',
-            'TransferUUID',
-            'The UUID of this transfer',
-            GObject.ParamFlags.READABLE,
-            ''
-        )
-    }
-}, class Transfer extends Core.Channel {
-
-    _init(params) {
-        super._init(params.device.id);
-
-        this._cancellable = new Gio.Cancellable();
-
-        this._device = params.device;
-        this._input_stream = params.input_stream;
-        this._output_stream = params.output_stream;
-        this._size = params.size;
-
-        this.checksum = params.checksum;
-        this._checksum = new GLib.Checksum(GLib.ChecksumType.MD5);
-        this._written = 0;
-    }
-
-    get device() {
-        return this._device;
-    }
-
-    get size() {
-        return this._size || 0;
-    }
-
-    get uuid() {
-        if (!this._uuid) {
-            this._uuid = GLib.uuid_string_random();
-        }
-
-        return this._uuid;
-    }
+    GTypeName: 'GSConnectLanTransfer',
+}, class Transfer extends Core.Transfer {
 
     /**
      * Open a new channel for uploading (incoming connection)
@@ -370,32 +296,26 @@ var Transfer = GObject.registerClass({
         });
     }
 
-    upload_accept(listener, res) {
+    async upload_accept(listener, res) {
         debug(this.identity.body.deviceId);
 
-        // Accept the connection
-        return new Promise((resolve, reject) => {
-            try {
-                resolve(this._listener.accept_finish(res)[0]);
-            } catch (e) {
-                reject(e);
-            }
-        // Set the usual socket options
-        }).then(socketConnection => {
-            return this._initSocket(socketConnection);
-        // Authenticate the connection
-        }).then(socketConnection => {
-            return this._serverEncryption(socketConnection);
-        // Init streams for uploading, set the connection and emit
-        }).then(secureConnection => {
-            this._output_stream = secureConnection.get_output_stream();
-            this._connection = secureConnection;
+        try {
+            this._connection = await new Promise((resolve, reject) => {
+                try {
+                    resolve(this._listener.accept_finish(res)[0]);
+                } catch (e) {
+                    reject(e);
+                }
+            });
+            this._connection = await this._initSocket(this._connection);
+            this._connection = await this._serverEncryption(this._connection);
+            this._output_stream = this._connection.get_output_stream();
             this.emit('connected');
-        }).catch(e => {
+        } catch(e) {
             log('Error uploading: ' + e.message);
             debug(e);
             this.close();
-        });
+        }
     }
 
     /**
@@ -407,117 +327,39 @@ var Transfer = GObject.registerClass({
      *  transfer.connect('succeeded'|'failed'|'cancelled', transfer => func());
      *  transfer.download(packet.payloadTransferInfo.port).catch(e => debug(e));
      */
-    download(port) {
+    async download(port) {
         log(`Connecting to ${this.identity.body.deviceId}`);
 
-        // Create a new connection
-        return new Promise((resolve, reject) => {
-            // Use @port and the address from GSettings
-            let address = new Gio.InetSocketAddress({
-                address: Gio.InetAddress.new_from_string(
-                    this.device.settings.get_string('tcp-host')
-                ),
-                port: port
-            });
+        try {
+            this._connection = await new Promise((resolve, reject) => {
+                // Use @port and the address from GSettings
+                let address = new Gio.InetSocketAddress({
+                    address: Gio.InetAddress.new_from_string(
+                        this.device.settings.get_string('tcp-host')
+                    ),
+                    port: port
+                });
 
-            // Connect
-            let client = new Gio.SocketClient();
+                // Connect
+                let client = new Gio.SocketClient();
 
-            client.connect_async(address, null, (client, res) => {
-                try {
-                    resolve(client.connect_finish(res));
-                } catch (e) {
-                    reject(e)
-                }
+                client.connect_async(address, null, (client, res) => {
+                    try {
+                        resolve(client.connect_finish(res));
+                    } catch (e) {
+                        reject(e)
+                    }
+                });
             });
-        // Set the usual socket options
-        }).then(socketConnection => {
-            return this._initSocket(socketConnection);
-        // Authenticate the connection
-        }).then(socketConnection => {
-            return this._clientEncryption(socketConnection);
-        // Init streams for downloading, set the connection and emit
-        }).then(secureConnection => {
-            this._input_stream = secureConnection.get_input_stream();
-            this._connection = secureConnection;
+            this._connection = await this._initSocket(this._connection);
+            this._connection = await this._clientEncryption(this._connection);
+            this._input_stream = this._connection.get_input_stream();
             this.emit('connected');
-        }).catch(e => {
+        } catch (e) {
             log('Error downloading: ' + e.message);
             debug(e);
             this.close();
-        });
-    }
-
-    start() {
-        this.emit('started');
-        this._read();
-    }
-
-    cancel() {
-        this._cancellable.cancel();
-        this.emit('cancelled');
-    }
-
-    _read() {
-        if (this._cancellable.is_cancelled()) { return; }
-
-        this._input_stream.read_bytes_async(
-            4096,
-            GLib.PRIORITY_DEFAULT,
-            this._cancellable,
-            (source, res) => {
-                let bytes;
-
-                try {
-                    bytes = source.read_bytes_finish(res);
-                } catch (e) {
-                    debug(e);
-                    this.emit('failed', e.message);
-                    return;
-                }
-
-                // Data to write
-                if (bytes.get_size()) {
-                    this._write(bytes);
-                    this._checksum.update(bytes.unref_to_array());
-                // Expected more data
-                } else if (this.size > this._written) {
-                    this.close();
-                    this.emit('failed', 'Incomplete transfer');
-                // Data should match the checksum
-                } else if (this.checksum && this.checksum !== this._checksum.get_string()) {
-                    this.close();
-                    this.emit('failed', 'Checksum mismatch');
-                // All done
-                } else {
-                    debug('Completed transfer of ' + this.size + ' bytes');
-                    this.close();
-                    this.emit('succeeded');
-                }
-            }
-        );
-    }
-
-    _write(bytes) {
-        if (this._cancellable.is_cancelled()) { return; }
-
-        this._output_stream.write_bytes_async(
-            bytes,
-            GLib.PRIORITY_DEFAULT,
-            this._cancellable,
-            (source, res) => {
-                try {
-                    this._written += source.write_bytes_finish(res);
-                } catch (e) {
-                    debug(e);
-                    this.emit('failed', e.message);
-                    return;
-                }
-
-                this.emit('progress', (this._written / this.size) * 100);
-                this._read();
-            }
-        );
+        }
     }
 });
 

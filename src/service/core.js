@@ -486,3 +486,182 @@ var Channel = GObject.registerClass({
     }
 });
 
+
+/**
+ * File Transfers
+ *
+ * NOTE: transfers are always closed on completion
+ *
+ * Example Contruction:
+ *  let transfer = new Protocol.Transfer({
+ *      device: {Device.Device},
+ *      size: {Number} size in bytes,
+ *      input_stream: {Gio.InputStream} readable stream for uploads,
+ *      output_stream: {Gio.OutputStream} writable stream for downloads
+ *  });
+ */
+var Transfer = GObject.registerClass({
+    GTypeName: 'GSConnectCoreTransfer',
+    Signals: {
+        'started': {
+            flags: GObject.SignalFlags.RUN_FIRST
+        },
+        'progress': {
+            flags: GObject.SignalFlags.RUN_FIRST,
+            param_types: [ GObject.TYPE_INT ]
+        },
+        'cancelled': {
+            flags: GObject.SignalFlags.RUN_FIRST
+        },
+        'failed': {
+            flags: GObject.SignalFlags.RUN_FIRST,
+            param_types: [ GObject.TYPE_STRING ]
+        },
+        'succeeded': {
+            flags: GObject.SignalFlags.RUN_FIRST
+        }
+    },
+    Properties: {
+        'device': GObject.ParamSpec.object(
+            'device',
+            'TransferDevice',
+            'The device associated with this transfer',
+            GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
+            GObject.Object
+        ),
+        'size': GObject.ParamSpec.uint(
+            'size',
+            'TransferSize',
+            'The size in bytes of the transfer',
+            GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
+            0, GLib.MAXUINT32,
+            0
+        ),
+        'uuid': GObject.ParamSpec.string(
+            'uuid',
+            'TransferUUID',
+            'The UUID of this transfer',
+            GObject.ParamFlags.READABLE,
+            ''
+        )
+    }
+}, class Transfer extends Channel {
+
+    _init(params) {
+        super._init(params.device.id);
+
+        this._cancellable = new Gio.Cancellable();
+
+        this._device = params.device;
+        this._input_stream = params.input_stream;
+        this._output_stream = params.output_stream;
+        this._size = params.size;
+
+        this.checksum = params.checksum;
+        this._checksum = new GLib.Checksum(GLib.ChecksumType.MD5);
+        this._written = 0;
+    }
+
+    get device() {
+        return this._device;
+    }
+
+    get size() {
+        return this._size || 0;
+    }
+
+    get uuid() {
+        if (!this._uuid) {
+            this._uuid = GLib.uuid_string_random();
+        }
+
+        return this._uuid;
+    }
+
+    /**
+     * Override in protocol implementation
+     */
+    upload() {
+    }
+
+    upload_accept() {
+    }
+
+    /**
+     * Override in protocol implementation
+     */
+    download() {
+    }
+
+    start() {
+        this.emit('started');
+        this._read();
+    }
+
+    cancel() {
+        this._cancellable.cancel();
+        this.emit('cancelled');
+    }
+
+    _read() {
+        if (this._cancellable.is_cancelled()) { return; }
+
+        this._input_stream.read_bytes_async(
+            4096,
+            GLib.PRIORITY_DEFAULT,
+            this._cancellable,
+            (source, res) => {
+                let bytes;
+
+                try {
+                    bytes = source.read_bytes_finish(res);
+                } catch (e) {
+                    debug(e);
+                    this.emit('failed', e.message);
+                    return;
+                }
+
+                // Data to write
+                if (bytes.get_size()) {
+                    this._write(bytes);
+                    this._checksum.update(bytes.unref_to_array());
+                // Expected more data
+                } else if (this.size > this._written) {
+                    this.close();
+                    this.emit('failed', 'Incomplete transfer');
+                // Data should match the checksum
+                } else if (this.checksum && this.checksum !== this._checksum.get_string()) {
+                    this.close();
+                    this.emit('failed', 'Checksum mismatch');
+                // All done
+                } else {
+                    debug('Completed transfer of ' + this.size + ' bytes');
+                    this.close();
+                    this.emit('succeeded');
+                }
+            }
+        );
+    }
+
+    _write(bytes) {
+        if (this._cancellable.is_cancelled()) { return; }
+
+        this._output_stream.write_bytes_async(
+            bytes,
+            GLib.PRIORITY_DEFAULT,
+            this._cancellable,
+            (source, res) => {
+                try {
+                    this._written += source.write_bytes_finish(res);
+                } catch (e) {
+                    debug(e);
+                    this.emit('failed', e.message);
+                    return;
+                }
+
+                this.emit('progress', (this._written / this.size) * 100);
+                this._read();
+            }
+        );
+    }
+});
