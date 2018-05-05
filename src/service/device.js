@@ -499,6 +499,12 @@ var Device = GObject.registerClass({
     verify() {
         log(`Authenticating ${this.name}`);
 
+        // Consider paired bluetooth connections verified
+        if (this._channel.type === 'bluetooth') {
+            debug(`Allowing paired Bluez connection for ${this.name}`);
+            return true;
+        }
+
         let cert;
 
         if (this.settings.get_string('certificate-pem')) {
@@ -506,12 +512,6 @@ var Device = GObject.registerClass({
                 this.settings.get_string('certificate-pem'),
                 -1
             );
-        }
-
-        // FIXME: we've just checked it was previously paired over LAN
-        if (this._channel.type === 'bluetooth') {
-            debug(`Pre-authorizing Bluez connection for ${this.name}`);
-            return (cert);
         }
 
         if (cert) {
