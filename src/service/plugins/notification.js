@@ -340,7 +340,7 @@ var Plugin = GObject.registerClass({
             } else {
                 resolve(true);
             }
-        }).catch(e => debug(e));
+        }).catch(debug);
     }
 
     /**
@@ -362,7 +362,7 @@ var Plugin = GObject.registerClass({
             transfer.connect("connected", (transfer) => transfer.start());
             transfer.connect("failed", (transfer) => resolve(null));
             transfer.connect("succeeded", (transfer) => {
-                //iconStream.close(null);
+                iconStream.close(null);
                 resolve(Gio.BytesIcon.new(iconStream.steal_as_bytes()));
             });
 
