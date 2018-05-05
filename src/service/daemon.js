@@ -293,18 +293,15 @@ var Daemon = GObject.registerClass({
 
             // TODO: another device might still be resolving at this point...
             return new Promise((resolve, reject) => {
-                resolve(
-                    new Device.Device({
-                        packet: packet,
-                        channel: channel
-                    })
-                );
+                resolve(new Device.Device(packet));
             }).then(device => {
                 // TODO: better
                 device.connect('notify::connected', (device) => {
                     if (!device.connected) { this._pruneDevices(); }
                 });
                 this._devices.set(dbusPath, device);
+
+                device.update(packet, channel);
 
                 let knownDevices = gsconnect.settings.get_strv('devices');
 

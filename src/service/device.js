@@ -265,7 +265,7 @@ var Device = GObject.registerClass({
     }
 }, class Device extends Gio.SimpleActionGroup {
 
-    _init(params) {
+    _init(identity) {
         super._init();
 
         this.service = Gio.Application.get_default();
@@ -281,7 +281,7 @@ var Device = GObject.registerClass({
         this._handlers = new Map();
 
         // We at least need the device Id for GSettings and the DBus interface
-        let deviceId = params.id || params.packet.body.deviceId;
+        let deviceId = identity.body.deviceId;
 
         // GSettings
         this.settings = new Gio.Settings({
@@ -293,8 +293,8 @@ var Device = GObject.registerClass({
         });
 
         // Parse identity if initialized with a proper packet
-        if (params.packet.type) {
-            this._handleIdentity(params.packet);
+        if (identity.type) {
+            this._handleIdentity(identity);
         }
 
         // Export an object path for the device via the ObjectManager
@@ -325,14 +325,6 @@ var Device = GObject.registerClass({
         );
 
         this._registerActions();
-
-        // Created for an incoming connection
-        if (params.channel) {
-            this.update(params.channel.identity, params.channel);
-        // Created for an identity packet
-        } else {
-            this.activate();
-        }
     }
 
     /** Device Properties */
