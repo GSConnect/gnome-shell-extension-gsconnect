@@ -305,7 +305,6 @@ var ChannelService = GObject.registerClass({
         });
 
         // Create a Gio.SocketConnection from the file-descriptor
-        GLib.unix_set_fd_nonblocking(fd, true);
         let socket = Gio.Socket.new_from_fd(fd);
         let connection = socket.connection_factory_create_connection();
 

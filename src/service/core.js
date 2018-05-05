@@ -205,8 +205,6 @@ var Channel = GObject.registerClass({
                 connection.socket.set_option(6, 4, 10); // TCP_KEEPIDLE
                 connection.socket.set_option(6, 5, 5);  // TCP_KEEPINTVL
                 connection.socket.set_option(6, 6, 3);  // TCP_KEEPCNT
-            } else if (typeof connection.get_local_address === 'function') {
-                connection.socket.set_blocking(false);
             }
 
             resolve(connection);
