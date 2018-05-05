@@ -266,6 +266,9 @@ var ChannelService = GObject.registerClass({
     }
 
     _onDeviceChanged(device) {
+        if (device._channel !== undefined) {
+            return;
+        }
 
         if (device.Connected && device.Paired && device.UUIDs.indexOf(SERVICE_UUID) > -1) {
             debug('Trying to connect profile...');
@@ -332,7 +335,7 @@ var ChannelService = GObject.registerClass({
         // NewConnection() is actually called in response to ConnectProfile()
         // so maybe it makes more sense for this to use open() somehow?
         device._channel._sendIdent(connection).then(connection => {
-            device._channel.accept(connection);
+            return device._channel.accept(connection);
         });
     }
 
