@@ -291,7 +291,6 @@ var Daemon = GObject.registerClass({
         } else {
             log(`GSConnect: Adding ${packet.body.deviceName}`);
 
-            // TODO: another device might still be resolving at this point...
             return new Promise((resolve, reject) => {
                 resolve(new Device.Device(packet));
             }).then(device => {
@@ -338,8 +337,8 @@ var Daemon = GObject.registerClass({
             }
         });
 
+        // Old devices
         Promise.all(newDevices).then(result => {
-            // Old devices
             for (let [dbusPath, device] of this._devices.entries()) {
                 if (knownDevices.indexOf(device.id) < 0) {
                     this._removeDevice(dbusPath);
