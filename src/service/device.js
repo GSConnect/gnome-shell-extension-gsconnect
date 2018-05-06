@@ -297,13 +297,13 @@ var Device = GObject.registerClass({
             this._handleIdentity(identity);
         }
 
-        // Export an object path for the device via the ObjectManager
+        // Export an object path for the device
         this._dbus_object = new Gio.DBusObjectSkeleton({
             g_object_path: `${gsconnect.app_path}/Device/${deviceId.replace(/\W+/g, '_')}`
         });
         this.service.objectManager.export(this._dbus_object);
 
-        // Export org.gnome.Shell.Extensions.GSConnect.Device on that path
+        // Export org.gnome.Shell.Extensions.GSConnect.Device interface
         this._dbus = new DBus.Interface({
             g_instance: this,
             g_interface_info: gsconnect.dbusinfo.lookup_interface(
@@ -330,9 +330,9 @@ var Device = GObject.registerClass({
     /** Device Properties */
     get connected () { return this._connected && this._channel; }
     get fingerprint () {
+        // TODO: this isn't really useful, and kind of misleading since it looks
+        // like a fingerprint when it's actually a MAC Address
         if (this.connected && this._channel.type === 'bluetooth') {
-            // TODO: this isn't really useful, and kind of misleading since it
-            // looks like a fingerprint when it's actually a MAC Address
             return this._channel.identity.body.bluetoothHost;
         } else if (this.connected && this._channel.type === 'tcp') {
             return this._channel.certificate.fingerprint();
@@ -501,7 +501,7 @@ var Device = GObject.registerClass({
 
         // Consider paired bluetooth connections verified
         if (this._channel.type === 'bluetooth') {
-            debug(`Allowing paired Bluez connection for ${this.name}`);
+            debug(`Allowing paired Bluetooth connection for ${this.name}`);
             return true;
         }
 
