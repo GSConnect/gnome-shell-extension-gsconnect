@@ -428,13 +428,21 @@ var Plugin = GObject.registerClass({
         });
 
         // Start the transfer process
-        transfer.upload().then(port => {
+        transfer.upload().then(transferChannel => {
+            let transferInfo = {};
+
+            if (this.device._channel.type === 'bluetooth') {
+                transferInfo.uuid = transferChannel;
+            } else if (this.device._channel.type === 'tcp') {
+                transferInfo.port = transferChannel;
+            }
+
             this.device.sendPacket({
                 id: 0,
                 type: 'kdeconnect.share.request',
                 body: { filename: file.get_basename() },
                 payloadSize: info.get_size(),
-                payloadTransferInfo: { port: port }
+                payloadTransferInfo: transferInfo
             });
         });
     }
