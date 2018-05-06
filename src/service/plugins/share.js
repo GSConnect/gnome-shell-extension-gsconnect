@@ -90,6 +90,11 @@ var Plugin = GObject.registerClass({
     _init(device) {
         super._init(device, 'share');
 
+        if (this.device._channel.type === 'bluetooth') {
+            this.destroy();
+            throw Error(_('Can\'t run on bluetooth connection'));
+        }
+
         this.transfers = new Map();
 
         this.device.menu.add_action('shareDialog', Metadata.actions.shareDialog);
