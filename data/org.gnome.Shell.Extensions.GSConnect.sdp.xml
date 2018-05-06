@@ -6,7 +6,7 @@
       <!-- Custom UUID -->
       <uuid value="@UUID@" />
       <!-- Custom UUID hex for Android -->
-      <uuid value="0x@UUID_HEX@" />
+      <uuid value="0x@UUID_ANDROID@" />
       <!-- SPP (Serial Port Profile) -->
       <uuid value="0x1101" />
     </sequence>

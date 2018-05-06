@@ -120,22 +120,26 @@ var Device1Proxy = DBus.makeInterfaceProxy(
 
 
 /**
- * Service Discovery Protocol Record (KDE Connect)
+ * KDE Connect Service UUID
  */
 var SERVICE_UUID = '185f3df4-3268-4e3f-9fca-d4d5059915bd';
 
-const SdpRecord = Gio.resources_lookup_data(
+
+/**
+ * Service Discovery Protocol Record template
+ */
+const SDP_TEMPLATE = Gio.resources_lookup_data(
     gsconnect.app_path + '/' + gsconnect.app_id + '.sdp.xml',
     Gio.ResourceLookupFlags.NONE
 ).toArray().toString();
 
 
 function makeSdpRecord(uuid) {
-    return SdpRecord.replace(
+    return SDP_TEMPLATE.replace(
         /@UUID@/gi,
         uuid
     ).replace(
-        '@UUID_HEX@',
+        '@UUID_ANDROID@',
         uuid.replace(/\-/gi, '')
     );
 };
@@ -209,6 +213,7 @@ var ChannelService = GObject.registerClass({
             RequireAuthorization: new GLib.Variant('b', false),
             // Only allow paired devices
             RequireAuthentication: new GLib.Variant('b', true),
+            // Service Record (customized to work with Android)
             ServiceRecord: new GLib.Variant('s', makeSdpRecord(uuid))
         };
 
