@@ -63,18 +63,14 @@ class GSConnectShareExtension(GObject.GObject, Nautilus.MenuProvider):
     def send_files(self, menu, files, devicePath):
         """Send *files* to *device_id*"""
 
-        device_proxy = Gio.DBusProxy.new_for_bus_sync(
-			Gio.BusType.SESSION,
-			Gio.DBusProxyFlags.NONE,
-			None,
+        device_actions = Gio.DBusActionGroup.get(
+			self.dbus.get_connection(),
 			'org.gnome.Shell.Extensions.GSConnect',
-			devicePath,
-			'org.gnome.Shell.Extensions.GSConnect.Plugin.Share',
-			None)
+			devicePath)
 
         for file in files:
-            variant = GLib.Variant('(s)', (file.get_uri(),))
-            device_proxy.call_sync('ShareFile', variant, 0, -1, None)
+            variant = GLib.Variant('s', file.get_uri())
+            device_actions.activate_action('shareFile', variant)
 
     def get_file_items(self, window, files):
         """Return a list of select files to be sent"""
