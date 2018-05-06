@@ -27,8 +27,8 @@ if os.path.exists(USER_DIR):
     LOCALE_DIR = os.path.join(USER_DIR, 'locale')
     SCHEMA_DIR = os.path.join(USER_DIR, 'schemas')
 else:
-    LOCALE_DIR = ''
-    SCHEMA_DIR = ''
+    LOCALE_DIR = None
+    SCHEMA_DIR = None
 
 
 
@@ -46,10 +46,15 @@ class GSConnectShareExtension(GObject.GObject, Nautilus.MenuProvider):
         except:
             pass
 
-        schema = Gio.SettingsSchemaSource.new_from_directory(SCHEMA_DIR,
-                                                             Gio.SettingsSchemaSource.get_default(),
-                                                             False)
-        self.settings = Gio.Settings(settings_schema=schema.lookup('org.gnome.Shell.Extensions.GSConnect', True))
+        if SCHEMA_DIR == None:
+            self.settings = Gio.Settings.new('org.gnome.Shell.Extensions.GSConnect')
+        else:
+            schema_src = Gio.SettingsSchemaSource.new_from_directory(
+                SCHEMA_DIR,
+                Gio.SettingsSchemaSource.get_default(),
+                False)
+            schema = schema_src.lookup('org.gnome.Shell.Extensions.GSConnect', True)
+            self.settings = Gio.Settings(settings_schema=schema)
 
         self.dbus = Gio.DBusProxy.new_for_bus_sync(
 			Gio.BusType.SESSION,
