@@ -21,20 +21,35 @@ import subprocess
 
 _ = gettext.gettext
 
-LOCALE_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'locale')
+USER_DIR = os.path.join(GLib.get_user_data_dir(), 'gnome-shell/extensions/gsconnect@andyholmes.github.io')
+
+if os.path.exists(USER_DIR):
+    LOCALE_DIR = os.path.join(USER_DIR, 'locale')
+    SCHEMA_DIR = os.path.join(USER_DIR, 'schemas')
+else:
+    LOCALE_DIR = ''
+    SCHEMA_DIR = ''
+
 
 
 class GSConnectShareExtension(GObject.GObject, Nautilus.MenuProvider):
     """A context menu for sending files via GSConnect."""
 
     def __init__(self):
-        """Initialize translations"""
+        """Initialize Gettext translations and GSettings"""
+
+        GObject.Object.__init__(self)
 
         try:
             locale.setlocale(locale.LC_ALL, '')
             gettext.bindtextdomain('org.gnome.Shell.Extensions.GSConnect', LOCALE_DIR)
         except:
             pass
+
+        schema = Gio.SettingsSchemaSource.new_from_directory(SCHEMA_DIR,
+                                                             Gio.SettingsSchemaSource.get_default(),
+                                                             False)
+        self.settings = Gio.Settings(settings_schema=schema.lookup('org.gnome.Shell.Extensions.GSConnect', True))
 
         self.dbus = Gio.DBusProxy.new_for_bus_sync(
 			Gio.BusType.SESSION,
@@ -63,6 +78,9 @@ class GSConnectShareExtension(GObject.GObject, Nautilus.MenuProvider):
 
     def get_file_items(self, window, files):
         """Return a list of select files to be sent"""
+
+        if not self.settings.get_boolean('nautilus-integration'):
+            return
 
         # Try to get devices
         try:

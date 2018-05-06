@@ -680,26 +680,6 @@ var Daemon = GObject.registerClass({
         this.send_notification('nautilus-integration', notif);
     }
 
-    toggleNautilusExtension() {
-        let path = GLib.get_user_data_dir() + '/nautilus-python/extensions';
-        let script = Gio.File.new_for_path(path).get_child('nautilus-gsconnect.py');
-        let install = gsconnect.settings.get_boolean('nautilus-integration');
-
-        if (install && !script.query_exists(null)) {
-            GLib.mkdir_with_parents(path, 493); // 0755 in octal
-
-            script.make_symbolic_link(
-                gsconnect.datadir + '/nautilus-gsconnect.py',
-                null
-            );
-
-            this._notifyRestartNautilus();
-        } else if (!install && script.query_exists(null)) {
-            script.delete(null);
-            this._notifyRestartNautilus();
-        }
-    }
-
     toggleWebExtension() {
         let nmhPath = gsconnect.datadir + '/service/nativeMessagingHost.js';
 
@@ -863,11 +843,6 @@ var Daemon = GObject.registerClass({
         );
 
         // Monitor extensions
-        gsconnect.settings.connect('changed::nautilus-integration', () => {
-            this.toggleNautilusExtension();
-        });
-        this.toggleNautilusExtension();
-
         gsconnect.settings.connect('changed::webbrowser-integration', () => {
             this.toggleWebExtension();
         });

@@ -10,6 +10,12 @@ const Gtk = imports.gi.Gtk;
 
 
 /**
+ * Determing if GSConnect is installed as a user extension
+ */
+gsconnect.is_local = gsconnect.datadir.startsWith(GLib.get_user_data_dir());
+
+
+/**
  * Application Id and Path
  * TODO: these should mirror package.js
  */
@@ -154,6 +160,24 @@ gsconnect.checkCommand = function(cmd) {
  *     - Register sms:// scheme handler
  */
 gsconnect.installService = function() {
+    // Skip if installed as a system extension
+    if (!gsconnect.is_local) {
+        return;
+    }
+
+    // Nautilus Extension
+    let path = GLib.get_user_data_dir() + '/nautilus-python/extensions';
+    let script = Gio.File.new_for_path(path).get_child('nautilus-gsconnect.py');
+
+    if (!script.query_exists(null)) {
+        GLib.mkdir_with_parents(path, 493); // 0755 in octal
+
+        script.make_symbolic_link(
+            gsconnect.datadir + '/nautilus-gsconnect.py',
+            null
+        );
+    }
+
     // systemd service file
     let systemdDir = GLib.get_user_data_dir() + '/systemd/user/';
     let systemdFile = gsconnect.app_id + '.service';
