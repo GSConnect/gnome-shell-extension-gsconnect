@@ -631,7 +631,7 @@ var DeviceSettings = GObject.registerClass({
             );
         }
 
-        this.device_paired.sensitive = this.connected;
+        this._onPaired();
     }
 
     _onPaired() {
@@ -642,6 +642,8 @@ var DeviceSettings = GObject.registerClass({
                 // TRANSLATORS: eg. Unpair <b>Google Pixel</b>
                 _('Unpair <b>%s</b>').format(this.device.name)
             );
+
+            this.device_paired.sensitive = true;
         } else {
             this.device_paired_image.icon_name = 'channel-insecure-symbolic';
             this.device_paired_text.label = _('Device is unpaired');
@@ -664,6 +666,8 @@ var DeviceSettings = GObject.registerClass({
                     this.service.fingerprint
                 )
             );
+
+            this.device_paired.sensitive = this.connected;
         }
 
         if (this.row) {
@@ -965,27 +969,23 @@ var DeviceSettings = GObject.registerClass({
      * Notification Settings
      */
     _notificationSettings() {
-        let notification = this._getSettings('notification');
+        let settings = this._getSettings('notification');
 
-        if (notification) {
-            mapSwitch(notification, this.notification_allow, [ 6, 4 ]);
+        mapSwitch(settings, this.notification_allow, [ 6, 4 ]);
 
-            // Populate, sort and separate
-            this._populateApplications(notification);
-            this.notification_apps.set_sort_func((row1, row2) => {
-                return row1.title.label.localeCompare(row2.title.label);
-            });
-            this.notification_apps.set_header_func(section_separators);
+        // Populate, sort and separate
+        this._populateApplications(settings);
+        this.notification_apps.set_sort_func((row1, row2) => {
+            return row1.title.label.localeCompare(row2.title.label);
+        });
+        this.notification_apps.set_header_func(section_separators);
 
-            this.notification_allow.bind_property(
-                'active',
-                this.notification_apps,
-                'sensitive',
-                GObject.BindingFlags.SYNC_CREATE
-            );
-        } else {
-            this.notification.visible = false;
-        }
+        this.notification_allow.bind_property(
+            'active',
+            this.notification_apps,
+            'sensitive',
+            GObject.BindingFlags.SYNC_CREATE
+        );
     }
 
     _onNotificationRowActivated(box, row) {
@@ -1003,8 +1003,8 @@ var DeviceSettings = GObject.registerClass({
         settings.set_string('applications', JSON.stringify(applications));
     }
 
-    _populateApplications(notification) {
-        let applications = this._queryApplications(notification);
+    _populateApplications(settings) {
+        let applications = this._queryApplications(settings);
 
         for (let name in applications) {
             let row = new SectionRow({
