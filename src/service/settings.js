@@ -48,7 +48,7 @@ Gio.Settings.prototype.bind_with_mapping = function(key, object, property, flags
             'notify::' + property,
             () => set_mapping(object[property])
         );
-        object.connect('destroy', () => object.disconnect(_setChanged));
+        object.connect('destroy', (obj) => obj.disconnect(_setChanged));
     }
 };
 
