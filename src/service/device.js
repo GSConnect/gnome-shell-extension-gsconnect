@@ -30,18 +30,16 @@ var Action = GObject.registerClass({
 }, class Action extends Gio.SimpleAction {
 
     _init(params, meta) {
-        this.meta = meta;
-        this._allow = this.meta.allow;
-
         super._init(params);
+        this._meta = meta;
     }
 
     get allow() {
-        return this._allow;
+        return this._meta.allow;
     }
 
-    getMeta() {
-        return this.meta;
+    get meta() {
+        return this._meta;
     }
 });
 

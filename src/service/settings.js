@@ -1153,14 +1153,13 @@ var DeviceSettings = GObject.registerClass({
                 });
                 widget.get_style_context().add_class('dim-label');
 
-                let meta = (action.getMeta) ? action.getMeta() : {};
                 let row = new SectionRow({
-                    title: meta.summary || name,
-                    subtitle: meta.description || name,
+                    title: action.meta.summary,
+                    subtitle: action.meta.description,
                     widget: widget
                 });
-                row.name = name;
-                row.meta = meta;
+                row.name = action.name;
+                row.meta = action.meta;
                 this.shortcuts_list.add(row);
             }
         }
@@ -1277,14 +1276,13 @@ var EventEditor = GObject.registerClass({
                 visible: true
             });
 
-            let meta = (action.getMeta) ? action.getMeta() : {};
             let row = new SectionRow({
-                title: meta.summary || actionName,
-                subtitle: meta.description || actionName,
+                title: action.meta.summary,
+                subtitle: action.meta.description,
                 widget: widget
             });
-            row.name = actionName;
-            row.meta = meta;
+            row.name = action.name;
+            row.meta = action.meta;
 
             this.action_list.add(row);
         }
