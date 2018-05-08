@@ -78,11 +78,15 @@ var Plugin = GObject.registerClass({
 
             // TODO: other triggers...
             // We enabled/disable actions based on user settings
-            this.settings.connect("changed::allow", () => {
-                this._gactions.map(action => {
-                    action.set_enabled(action.allow & this.allow);
-                });
-            });
+            this.settings.connect(
+                'changed::allow',
+                this._changeAction.bind(this)
+            );
+
+            this.device.settings.connect(
+                'changed::action-blacklist',
+                this._changeAction.bind(this)
+            );
         }
     }
 
@@ -96,6 +100,18 @@ var Plugin = GObject.registerClass({
         } catch(e) {
             debug(e);
         }
+    }
+
+    _changeAction() {
+        let blacklist = this.device.settings.get_strv('action-blacklist');
+
+        this._gactions.map(action => {
+            if (blacklist.indexOf(action.name) > -1) {
+                action.set_enabled(false);
+            } else {
+                action.set_enabled(action.allow & this.allow);
+            }
+        });
     }
 
     _registerAction(name, meta) {
