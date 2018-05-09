@@ -273,6 +273,131 @@ var Interface = GObject.registerClass({
 /**
  *
  */
+
+/**
+ * Create proxy wrappers for the properties on an interface
+ */
+function _proxyGetter(name) {
+    let variant;
+
+    try {
+        // Returns Variant('(v)')...
+        variant = this.call_sync(
+            'org.freedesktop.DBus.Properties.Get',
+            new GLib.Variant('(ss)', [this.g_interface_name, name]),
+            Gio.DBusCallFlags.NONE,
+            -1,
+            this.cancellable
+        );
+
+        // ...so unpack that to get the real variant and unpack the value
+        return variant.deep_unpack()[0].deep_unpack();
+    // Fallback to cached property...
+    } catch (e) {
+        let value = this.get_cached_property(name);
+        return value ? value.deep_unpack() : null;
+    }
+}
+
+
+function _proxySetter(name, signature, value) {
+    // Pack the new value
+    let variant = new GLib.Variant(signature, value);
+
+    // Set the cached property first
+    this.set_cached_property(name, variant);
+
+    // Let it run and just log any errors
+    this.call(
+        'org.freedesktop.DBus.Properties.Set',
+        new GLib.Variant('(ssv)', [this.g_interface_name, name, variant]),
+        Gio.DBusCallFlags.NONE,
+        -1,
+        this.cancellable,
+        (proxy, result) => {
+            try {
+                this.call_finish(result);
+            } catch (e) {
+                log(`Error setting ${name} on ${this.g_object_path}: ${e.message}`);
+            }
+        }
+    );
+}
+
+
+function proxyProperties(iface, info) {
+    info.properties.map(property => {
+        Object.defineProperty(iface, property.name, {
+            get: _proxyGetter.bind(iface, property.name),
+            set: _proxyGetter.bind(iface, property.name, property.signature),
+            enumerable: true
+        });
+    });
+}
+
+
+/**
+ * Create proxy wrappers for the methods on an interface
+ */
+function _proxyInvoker(info) {
+    let args = Array.prototype.slice.call(arguments, 1);
+    let signature = info.in_args.map(arg => arg.signature).join('');
+    let variant = new GLib.Variant(`(${signature})`, args);
+
+    //
+    let retval;
+
+    try {
+        let ret = this.call_sync(info.name, variant, 0, -1, null);
+        retval = ret.deep_unpack();
+    } catch (e) {
+        debug(`Error calling ${info.name} on ${this.g_object_path}: ${e.message}`);
+        retval = undefined;
+    }
+
+    return retval;
+}
+
+
+function _proxyInvokerAsync(info) {
+    return new Promise((resolve, reject) => {
+        let args = Array.prototype.slice.call(arguments, 1);
+        let signature = info.in_args.map(arg => arg.signature).join('');
+        let variant = new GLib.Variant(`(${signature})`, args);
+
+        this.call(info.name, variant, 0, -1, null, (proxy, result) => {
+            let ret;
+
+            try {
+                ret = this.call_finish(result);
+            } catch (e) {
+                debug(`Error calling ${info.name} on ${this.g_object_path}: ${e.message}`);
+                reject(e);
+            }
+
+            // If return has single arg, only return that or null
+            if (info.out_args.length === 1) {
+                resolve((ret) ? ret.deep_unpack()[0] : null);
+            // Otherwise return an array (possibly empty)
+            } else {
+                resolve((ret) ? ret.deep_unpack() : []);
+            }
+        });
+    });
+}
+
+
+function proxyMethods(iface, info) {
+    let i, methods = info.methods;
+
+    for (i = 0; i < methods.length; i++) {
+        var method = methods[i];
+        iface[method.name] = _proxyInvokerAsync.bind(iface, method);
+        iface[`${method.name}Sync`] = _proxyInvoker.bind(iface, method);
+    }
+}
+
+
 var Proxies = {};
 
 
@@ -295,9 +420,8 @@ var ProxyBase = GObject.registerClass({
         // Proxy all members
         let info = this.g_interface_info;
 
-        this._proxyMethods(info);
-        this._proxyProperties(info);
-        this._proxySignals(info);
+        proxyMethods(this, info);
+        proxyProperties(this, info);
 
         // Destroy the proxy if the g_name_owner dies
         this.connect('notify::g-name-owner', () => {
@@ -318,26 +442,6 @@ var ProxyBase = GObject.registerClass({
                 }
             });
         });
-    }
-
-    _call_sync(info) {
-        // TODO: do this in _proxyMethod()???
-        let args = Array.prototype.slice.call(arguments, 1);
-        let signature = info.in_args.map(arg => arg.signature).join('');
-        let variant = new GLib.Variant(`(${signature})`, args);
-
-        //
-        let retval;
-
-        try {
-            let ret = this.call_sync(info.name, variant, 0, -1, null);
-            retval = ret.deep_unpack();
-        } catch (e) {
-            debug(`Error calling ${info.name} on ${this.g_object_path}: ${e.message}`);
-            retval = undefined;
-        }
-
-        return retval;
     }
 
     _call(info) {
@@ -368,64 +472,6 @@ var ProxyBase = GObject.registerClass({
     }
 
     /**
-     * Synchronous Uncached Getter
-     */
-    _get(name, signature) {
-        let variant;
-
-        try {
-            // Returns Variant('(v)')...
-            variant = this.call_sync(
-                'org.freedesktop.DBus.Properties.Get',
-                new GLib.Variant('(ss)', [this.g_interface_name, name]),
-                Gio.DBusCallFlags.NONE,
-                -1,
-                this.cancellable
-            );
-
-            // ...so unpack that to get the real variant and unpack the value
-            return variant.deep_unpack()[0].deep_unpack();
-        // Fallback to cached property...
-        } catch (e) {
-            debug(`Failed to get ${name} on ${this.g_interface_name}; falling back to cache...`);
-
-            try {
-                return this.get_cached_property(name).deep_unpack();
-            } catch (e) {
-                debug(e);
-                return null;
-            }
-        }
-    }
-
-    /**
-     * Asynchronous Setter
-     */
-    _set(name, value, signature) {
-        // Pack the new value
-        let variant = new GLib.Variant(signature, value);
-
-        // Set the cached property first
-        this.set_cached_property(name, variant);
-
-        // Let it run and just log any errors
-        this.call(
-            'org.freedesktop.DBus.Properties.Set',
-            new GLib.Variant('(ssv)', [this.g_interface_name, name, variant]),
-            Gio.DBusCallFlags.NONE,
-            -1,
-            this.cancellable,
-            (proxy, result) => {
-                try {
-                    this.call_finish(result);
-                } catch (e) {
-                    log(`Error setting ${name} on ${this.g_object_path}: ${e.message}`);
-                }
-            }
-        );
-    }
-
-    /**
      * Wrap a method in this._call()
      * @param {Gio.DBusMethodInfo} info - The interface expected to be
      *                                    implemented by this object
@@ -434,60 +480,6 @@ var ProxyBase = GObject.registerClass({
         return function () {
             return this._call.call(this, info, ...arguments);
         };
-    }
-
-    /**
-     * Wrap each method in this._call()
-     * @param {Gio.DBusInterfaceInfo} info - The interface expected to be
-     *                                       implemented by this object
-     */
-    _proxyMethods(info) {
-        let i, methods = info.methods;
-
-        for (i = 0; i < methods.length; i++) {
-            var method = methods[i];
-            this[method.name] = this._proxyMethod(method);
-        }
-    }
-
-    /**
-     * Wrap each property with this._get()/this._set() and call notify();
-     * requires each property to have a GObject.ParamSpec defined.
-     *
-     * @param {Gio.DBusInterfaceInfo} info - The interface expected to be
-     *                                       implemented by this object
-     */
-    _proxyProperties(info) {
-        if (info.properties.length > 0) {
-            for (let property of info.properties) {
-                Object.defineProperty(this, property.name, {
-                    get: () => this._get(property.name, property.signature),
-                    set: (value) => this._set(property.name, value, property.signature),
-                    configurable: true,
-                    enumerable: true
-                });
-            }
-
-            this.connect('g-properties-changed', (proxy, properties) => {
-                for (let name in properties.deep_unpack()) {
-                    this.notify(name);
-                }
-            });
-        }
-    }
-
-    /**
-     * Wrap 'g-signal' with GObject.emit(); requires each signal to be defined
-     * @param {Gio.DBusInterfaceInfo} info - The interface expected to be
-     *                                       implemented by this object
-     */
-    _proxySignals(info) {
-        if (info.signals.length > 0) {
-            this.connect('g-signal', (proxy, sender, name, parameters) => {
-                let args = [name].concat(parameters.deep_unpack());
-                this.emit(...args);
-            });
-        }
     }
 
     destroy() {
@@ -588,6 +580,17 @@ function makeInterfaceProxy(info) {
                 g_interface_info: info,
                 g_interface_name: info.name
             }, params));
+
+            this.connect('g-properties-changed', (proxy, properties) => {
+                for (let name in properties.deep_unpack()) {
+                    proxy.notify(name);
+                }
+            });
+
+            this.connect('g-signal', (proxy, sender, name, parameters) => {
+                let args = [name].concat(parameters.deep_unpack());
+                this.emit(...args);
+            });
         }
     });
 

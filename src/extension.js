@@ -456,7 +456,7 @@ class DeviceIndicator extends PanelMenu.Button {
 }
 
 
-var ServiceProxy = DBus.makeInterfaceProxy(
+const ServiceProxy = DBus.makeInterfaceProxy(
     gsconnect.dbusinfo.lookup_interface(gsconnect.app_id)
 );
 
@@ -483,23 +483,6 @@ function _proxyMethods(info, iface) {
                 }
             });
         };
-    });
-};
-
-
-// TODO: better
-function _proxyProperties(info, iface) {
-    info.properties.map(property => {
-        Object.defineProperty(iface, property.name, {
-            get: () => {
-                return gsconnect.full_unpack(
-                    iface.get_cached_property(property.name)
-                );
-            },
-            //set: (value) => iface.set_cached_property(property.name, value),
-            configurable: true,
-            enumerable: true
-        });
     });
 };
 
@@ -653,11 +636,11 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
 
         // We only setup properties for GSConnect interfaces
         if (info) {
-            _proxyProperties(info, iface);
+            DBus.proxyProperties(iface, info);
         }
 
         // It's a device
-        if (iface.g_interface_name === "org.gnome.Shell.Extensions.GSConnect.Device") {
+        if (iface.g_interface_name === 'org.gnome.Shell.Extensions.GSConnect.Device') {
             log(`GSConnect: Adding ${iface.Name}`);
 
             this._devices[iface.Id] = iface;
@@ -680,8 +663,8 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
             iface.service = this.service;
 
             // Currently we only setup methods for Device interfaces, and
-            // we only really use it for activate() and openSettings()
-            _proxyMethods(info, iface);
+            // we only really use it for Activate() and OpenSettings()
+            DBus.proxyMethods(iface, info);
 
             // Device Indicator
             let indicator = new DeviceIndicator(object, iface);
@@ -696,7 +679,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
             this._sync(menu);
 
             // Properties
-            iface.connect("g-properties-changed", () => this._sync(menu));
+            iface.connect('g-properties-changed', () => this._sync(menu));
 
             // Try activating the device
             iface.Activate();
@@ -712,7 +695,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
             this._indicators[iface.g_object_path].destroy();
             this._menus[iface.g_object_path].destroy();
 
-            delete this._devices[iface.id];
+            delete this._devices[iface.Id];
             delete this._indicators[iface.g_object_path];
             delete this._menus[iface.g_object_path];
         }
