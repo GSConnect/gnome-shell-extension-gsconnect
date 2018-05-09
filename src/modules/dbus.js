@@ -345,17 +345,22 @@ function _proxyInvoker(info) {
     let variant = new GLib.Variant(`(${signature})`, args);
 
     //
-    let retval;
+    let ret;
 
     try {
-        let ret = this.call_sync(info.name, variant, 0, -1, null);
-        retval = ret.deep_unpack();
+        ret = this.call_sync(info.name, variant, 0, -1, null);
     } catch (e) {
         debug(`Error calling ${info.name} on ${this.g_object_path}: ${e.message}`);
-        retval = undefined;
+        ret = undefined;
     }
 
-    return retval;
+    // If return has single arg, only return that or null
+    if (info.out_args.length === 1) {
+        return ret ? ret.deep_unpack()[0] : null;
+    // Otherwise return an array (possibly empty)
+    } else {
+        return ret ? ret.deep_unpack() : [];
+    }
 }
 
 
