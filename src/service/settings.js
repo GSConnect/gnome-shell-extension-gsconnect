@@ -53,16 +53,19 @@ Gio.Settings.prototype.bind_with_mapping = function(key, object, property, flags
 };
 
 
-function mapSwitch(settings, widget, [on, off]=[6, 4]) {
+function mapSwitch(settings, widget, on) {
     settings.bind_with_mapping(
         'allow',
         widget,
         'active',
         0,
-        variant => { widget.active = (variant.unpack() === on); },
-        value => settings.set_uint('allow', (value) ? on : off)
+        variant => { widget.active = (variant.unpack() & on); },
+        value => {
+            let current = settings.get_uint('allow');
+            settings.set_uint('allow', (value) ? current | on : current ^ on)
+        }
     );
-    widget.active = (settings.get_uint('allow') === on);
+    widget.active = (settings.get_uint('allow') & on);
 };
 
 
@@ -971,7 +974,7 @@ var DeviceSettings = GObject.registerClass({
     _notificationSettings() {
         let settings = this._getSettings('notification');
 
-        mapSwitch(settings, this.notification_allow, [ 6, 4 ]);
+        mapSwitch(settings, this.notification_allow, 2);
 
         // Populate, sort and separate
         this._populateApplications(settings);
