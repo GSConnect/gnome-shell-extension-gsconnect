@@ -1186,7 +1186,7 @@ var DeviceSettings = GObject.registerClass({
                 keybindings[row.name] = dialog.accelerator;
             // Reset (Backspace)
             } else if (response === 1) {
-                keybindings[row.name] = '';
+                delete keybindings[row.name];
             }
 
             this.device.settings.set_string(
@@ -1488,6 +1488,10 @@ var ShortcutEditor = GObject.registerClass({
         return this.response(Gtk.ResponseType.OK);
     }
 
+    _onRemove() {
+        return this.response(1);
+    }
+
     response(id) {
         this.hide();
         this.ungrab();
@@ -1498,24 +1502,10 @@ var ShortcutEditor = GObject.registerClass({
 
     check(accelerator) {
         // Check someone else isn't already using the binding
-        let action = this.shell.GrabAccelerator(accelerator, 0);
-//        let action = this.shell.call_sync(
-//            'GrabAccelerator',
-//            new GLib.Variant('(su)', [accelerator, 0]),
-//            0,
-//            -1,
-//            null
-//        ).deep_unpack()[0];
+        let action = this.shell.GrabAcceleratorSync(accelerator, 0);
 
         if (action !== 0) {
-            this.shell.UngrabAccelerator(action);
-//            this.shell.call_sync(
-//                'UngrabAccelerator',
-//                new GLib.Variant('(u)', [action]),
-//                0,
-//                -1,
-//                null
-//            );
+            this.shell.UngrabAcceleratorSync(action);
             return true;
         }
 
@@ -1532,8 +1522,6 @@ var ShortcutEditor = GObject.registerClass({
             null
         );
 
-        log('Seat Grab: ' + success);
-
         if (success !== Gdk.GrabStatus.SUCCESS) {
             this._onCancel();
         }
@@ -1549,10 +1537,8 @@ var ShortcutEditor = GObject.registerClass({
         delete this._grabId;
     }
 
-    // A non-blocking version of run()
+    // Override with a non-blocking version of Gtk.Dialog.run()
     run() {
-        this.set_button.visible = false;
-
         this.show();
 
         GLib.timeout_add(GLib.PRIORITY_DEFAULT, 100, () => {
