@@ -137,9 +137,20 @@ var Menu = GObject.registerClass({
         return index;
     }
 
+    /**
+     * Replace the item with the action name @name with @item
+     * @param {String} name - Action name of the item to remove
+     * @param {Gio.MenuItem} item - The replacement menu item
+     * @return {Number} - The index of the replaced item or -1 if not found
+     */
     replace_action(name, item) {
         let index = this.remove_action(name);
-        this.insert_item(index, item);
+
+        if (index > -1) {
+            this.insert_item(index, item);
+        }
+
+        return index;
     }
 
     /**
