@@ -61,18 +61,24 @@ var Metadata = {
         receivedFile: {
             summary: _('Received File'),
             description: _('A file was received'),
+            icon_name: 'document-send-symbolic',
+
             incoming: ['kdeconnect.share.request'],
             allow: 4
         },
         receivedText: {
             summary: _('Received Text'),
             description: _('Text content was received'),
+            icon_name: 'send-to-symbolic',
+
             incoming: ['kdeconnect.share.request'],
             allow: 4
         },
         receivedUrl: {
             summary: _('Received Url'),
             description: _('A URL was received'),
+            icon_name: 'send-to-symbolic',
+
             incoming: ['kdeconnect.share.request'],
             allow: 4
         }
