@@ -1433,8 +1433,7 @@ var ShortcutEditor = GObject.registerClass({
         }
 
         // A single Escape press cancels the editing
-        // FIXME: or does it...
-        if (realMask === 0 && keyvalLower === Gdk.KEY_Esc) {
+        if (realMask === 0 && keyvalLower === Gdk.KEY_Escape) {
             return this._onCancel();
         }
 
