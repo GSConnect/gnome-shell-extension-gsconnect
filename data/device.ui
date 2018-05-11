@@ -1155,8 +1155,7 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="valign">start</property>
-                                    <property name="margin_top">3</property>
-                                    <property name="margin_bottom">3</property>
+                                    <property name="margin_top">2</property>
                                     <property name="pixel_size">32</property>
                                     <property name="icon_name">application-x-executable</property>
                                   </object>
