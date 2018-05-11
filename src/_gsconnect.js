@@ -154,6 +154,8 @@ gsconnect.checkCommand = function(cmd) {
 
 
 function installWebExtensionManifests() {
+    let nmhPath = gsconnect.datadir + '/service/nativeMessagingHost.js';
+
     let google = {
         'name': 'org.gnome.shell.extensions.gsconnect',
         'description': 'Native messaging host for GSConnect WebExtension',
@@ -188,7 +190,6 @@ function installWebExtensionManifests() {
         );
     }
 
-    let nmhPath = gsconnect.datadir + '/service/nativeMessagingHost.js';
     GLib.spawn_command_line_async(`chmod 0755 ${nmhPath}`);
 }
 
@@ -258,18 +259,6 @@ gsconnect.installService = function() {
     );
     appInfo.add_supports_type('x-scheme-handler/sms');
     appInfo.add_supports_type('x-scheme-handler/tel');
-};
-
-
-// FIXME: Not used anymore, should just be ignored by the shell
-gsconnect.uninstallService = function() {
-    // DBus service file
-    let serviceDir = GLib.get_user_data_dir() + '/dbus-1/services/';
-    GLib.unlink(serviceDir + gsconnect.app_id + '.service');
-
-    // Application desktop file
-    let applicationsDir = GLib.get_user_data_dir() + '/applications/';
-    GLib.unlink(applicationsDir + gsconnect.app_id + '.desktop');
 };
 
 
