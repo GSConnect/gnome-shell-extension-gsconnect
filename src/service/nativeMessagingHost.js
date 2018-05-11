@@ -21,12 +21,12 @@ function getPath() {
 }
 
 window.gsconnect = { datadir: getPath() };
-imports.searchPath.push(gsconnect.datadir);
+imports.searchPath.unshift(gsconnect.datadir);
 const _gsconnect = imports._gsconnect;
 const DBus = imports.modules.dbus;
 
 
-function fromInt32 (byteArray) {
+function fromInt32(byteArray) {
     var value = 0;
 
     for (var i = byteArray.length - 1; i >= 0; i--) {
@@ -37,7 +37,7 @@ function fromInt32 (byteArray) {
 };
 
 
-function toInt32 (number) {
+function toInt32(number) {
     var byteArray = [0, 0, 0, 0];
 
     for (var index_ = 0; index_ < byteArray.length; index_++) {
@@ -50,22 +50,7 @@ function toInt32 (number) {
 };
 
 
-function _proxyProperties(info, iface) {
-    info.properties.map(property => {
-        Object.defineProperty(iface, property.name.toUnderscoreCase(), {
-            get: () => {
-                return gsconnect.full_unpack(
-                    iface.get_cached_property(property.name)
-                );
-            },
-            configurable: true,
-            enumerable: true
-        });
-    });
-};
-
-
-var DeviceInterface = gsconnect.dbusinfo.lookup_interface(
+const DeviceInterface = gsconnect.dbusinfo.lookup_interface(
     'org.gnome.Shell.Extensions.GSConnect.Device'
 );
 
@@ -115,27 +100,29 @@ var NativeMessagingHost = GObject.registerClass({
             gsconnect.app_path,
             null, // get-proxy-type-func
             null,
-            (obj, res) => {
-                this.manager = Gio.DBusObjectManagerClient.new_finish(res);
-
-                for (let object of this.manager.get_objects()) {
-                    for (let iface of object.get_interfaces()) {
-                        this._interfaceAdded(object, iface);
-                    }
-                }
-
-                this.manager.connect('interface-added', this._interfaceAdded.bind(this));
-                this.manager.connect('interface-removed', this._interfaceRemoved.bind(this));
-
-                // Watch device property changes (connected, paired, plugins, etc)
-                // FIXME: this could get crazy
-                this.manager.connect('interface-proxy-properties-changed', () => {
-                    this.sendDeviceList();
-                });
-            }
+            this._setupObjectManager.bind(this)
         );
 
         this.send({ type: 'connected', data: true });
+    }
+
+    _setupObjectManager(obj, res) {
+        this.manager = Gio.DBusObjectManagerClient.new_finish(res);
+
+        for (let object of this.manager.get_objects()) {
+            for (let iface of object.get_interfaces()) {
+                this._interfaceAdded(this.manager, object, iface);
+            }
+        }
+
+        this.manager.connect('interface-added', this._interfaceAdded.bind(this));
+        this.manager.connect('interface-removed', this._interfaceRemoved.bind(this));
+
+        // Watch device property changes (connected, paired, plugins, etc)
+        this.manager.connect(
+            'interface-proxy-properties-changed',
+            this.sendDeviceList.bind(this)
+        );
     }
 
     receive() {
@@ -172,7 +159,7 @@ var NativeMessagingHost = GObject.registerClass({
 
                 device.actions.activate_action(
                     actionName,
-                    gsconnect.full_pack([message.data.url])
+                    gsconnect.full_pack(message.data.url)
                 );
             }
         }
@@ -208,11 +195,11 @@ var NativeMessagingHost = GObject.registerClass({
             // FIXME: need new telephony action for this
             let telephony = device.actions.get_action_enabled('newSms');
 
-            if (device.connected && device.paired && (share || telephony)) {
+            if (device.Connected && device.Paired && (share || telephony)) {
                 devices.push({
-                    id: device.id,
-                    name: device.name,
-                    type: device.type,
+                    id: device.Id,
+                    name: device.Name,
+                    type: device.Type,
                     share: share,
                     telephony: telephony
                 });
@@ -222,9 +209,9 @@ var NativeMessagingHost = GObject.registerClass({
         this.send({ type: 'devices', data: devices });
     }
 
-    _interfaceAdded(object, iface) {
+    _interfaceAdded(manager, object, iface) {
         if (iface.g_interface_name === 'org.gnome.Shell.Extensions.GSConnect.Device') {
-            _proxyProperties(DeviceInterface, iface);
+            DBus.proxyProperties(iface, DeviceInterface);
 
             iface.actions = Gio.DBusActionGroup.get(
                 iface.g_connection,
@@ -232,13 +219,13 @@ var NativeMessagingHost = GObject.registerClass({
                 iface.g_object_path
             );
 
-            this._devices[iface.id] = iface;
+            this._devices[iface.Id] = iface;
         }
     }
 
-    _interfaceRemoved(object, iface) {
+    _interfaceRemoved(manager, object, iface) {
         if (iface.g_interface_name === 'org.gnome.Shell.Extensions.GSConnect.Device') {
-            delete this._devices[iface.id];
+            delete this._devices[iface.Id];
         }
     }
 });
