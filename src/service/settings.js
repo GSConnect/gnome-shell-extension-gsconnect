@@ -1341,7 +1341,7 @@ var ShortcutEditor = GObject.registerClass({
             g_name: 'org.gnome.Shell',
             g_object_path: '/org/gnome/Shell'
         });
-        this.shell.init_promise().catch(e => debug(e));
+        this.shell.init(null);
 
         this.seat = Gdk.Display.get_default().get_default_seat();
 
@@ -1386,7 +1386,7 @@ var ShortcutEditor = GObject.registerClass({
 //    }
 
     _onKeyPressEvent(widget, event) {
-        if (!this._grabId) {
+        if (!this._gdkDevice) {
             return false;
         }
 
@@ -1526,15 +1526,15 @@ var ShortcutEditor = GObject.registerClass({
             this._onCancel();
         }
 
-        this._grabId = this.seat.get_keyboard();
-        this._grabId = this._grabId || this.seat.get_pointer();
+        this._gdkDevice = this.seat.get_keyboard();
+        this._gdkDevice = this._gdkDevice || this.seat.get_pointer();
         this.grab_add();
     }
 
     ungrab() {
         this.seat.ungrab();
         this.grab_remove();
-        delete this._grabId;
+        delete this._gdkDevice;
     }
 
     // Override with a non-blocking version of Gtk.Dialog.run()
@@ -1543,7 +1543,7 @@ var ShortcutEditor = GObject.registerClass({
 
         GLib.timeout_add(GLib.PRIORITY_DEFAULT, 100, () => {
             this.grab();
-            return false;
+            return GLib.SOURCE_REMOVE;
         });
     }
 });
