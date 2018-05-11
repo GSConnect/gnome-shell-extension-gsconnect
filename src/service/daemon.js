@@ -680,54 +680,6 @@ var Daemon = GObject.registerClass({
         this.send_notification('nautilus-integration', notif);
     }
 
-    toggleWebExtension() {
-        let nmhPath = gsconnect.datadir + '/service/nativeMessagingHost.js';
-
-        let google = {
-            'name': 'org.gnome.shell.extensions.gsconnect',
-            'description': 'Native messaging host for GSConnect WebExtension',
-            'path': nmhPath,
-            'type': 'stdio',
-            'allowed_origins': [ 'chrome-extension://jfnifeihccihocjbfcfhicmmgpjicaec/' ]
-        };
-
-        let mozilla = {
-            'name': 'org.gnome.shell.extensions.gsconnect',
-            'description': 'Native messaging host for GSConnect WebExtension',
-            'path': nmhPath,
-            'type': 'stdio',
-            'allowed_extensions': [ 'gsconnect@andyholmes.github.io' ]
-        };
-
-        let basename = 'org.gnome.shell.extensions.gsconnect.json';
-        let userConfDir = GLib.get_user_config_dir();
-        let browsers = [
-            [userConfDir + '/chromium/NativeMessagingHosts/', google],
-            [userConfDir + '/google-chrome/NativeMessagingHosts/', google],
-            [userConfDir + '/google-chrome-beta/NativeMessagingHosts/', google],
-            [userConfDir + '/google-chrome-unstable/NativeMessagingHosts/', google],
-            [GLib.get_home_dir() + '/.mozilla/native-messaging-hosts/', mozilla]
-        ];
-
-        if (gsconnect.settings.get_boolean('webbrowser-integration')) {
-            for (let browser of browsers) {
-                GLib.mkdir_with_parents(browser[0], 493);
-                GLib.file_set_contents(
-                    browser[0] + basename,
-                    JSON.stringify(browser[1])
-                );
-            }
-
-            GLib.spawn_command_line_async(`chmod 0755 ${nmhPath}`);
-        } else {
-            for (let browser of browsers) {
-                GLib.unlink(browser[0] + basename);
-            }
-
-            GLib.spawn_command_line_async(`chmod 0744 ${nmhPath}`);
-        }
-    }
-
     /**
      * Open the application settings, for @device if given.
      * @param {String} [device] - DBus object path of the device
@@ -841,12 +793,6 @@ var Daemon = GObject.registerClass({
             'name',
             Gio.SettingsBindFlags.DEFAULT
         );
-
-        // Monitor extensions
-        gsconnect.settings.connect('changed::webbrowser-integration', () => {
-            this.toggleWebExtension();
-        });
-        this.toggleWebExtension();
 
         // Monitor network changes
         this._netmonitor = Gio.NetworkMonitor.get_default();

@@ -153,6 +153,46 @@ gsconnect.checkCommand = function(cmd) {
 };
 
 
+function installWebExtensionManifests() {
+    let google = {
+        'name': 'org.gnome.shell.extensions.gsconnect',
+        'description': 'Native messaging host for GSConnect WebExtension',
+        'path': nmhPath,
+        'type': 'stdio',
+        'allowed_origins': [ 'chrome-extension://jfnifeihccihocjbfcfhicmmgpjicaec/' ]
+    };
+
+    let mozilla = {
+        'name': 'org.gnome.shell.extensions.gsconnect',
+        'description': 'Native messaging host for GSConnect WebExtension',
+        'path': nmhPath,
+        'type': 'stdio',
+        'allowed_extensions': [ 'gsconnect@andyholmes.github.io' ]
+    };
+
+    let basename = 'org.gnome.shell.extensions.gsconnect.json';
+    let userConfDir = GLib.get_user_config_dir();
+    let browsers = [
+        [userConfDir + '/chromium/NativeMessagingHosts/', google],
+        [userConfDir + '/google-chrome/NativeMessagingHosts/', google],
+        [userConfDir + '/google-chrome-beta/NativeMessagingHosts/', google],
+        [userConfDir + '/google-chrome-unstable/NativeMessagingHosts/', google],
+        [GLib.get_home_dir() + '/.mozilla/native-messaging-hosts/', mozilla]
+    ];
+
+    for (let browser of browsers) {
+        GLib.mkdir_with_parents(browser[0], 493);
+        GLib.file_set_contents(
+            browser[0] + basename,
+            JSON.stringify(browser[1])
+        );
+    }
+
+    let nmhPath = gsconnect.datadir + '/service/nativeMessagingHost.js';
+    GLib.spawn_command_line_async(`chmod 0755 ${nmhPath}`);
+}
+
+
 /**
  * Install/Uninstall desktop files for user installs
  *     - XDG .desktop file
@@ -177,6 +217,9 @@ gsconnect.installService = function() {
             null
         );
     }
+
+    // Web Extension
+    installWebExtensionManifests();
 
     // systemd service file
     let systemdDir = GLib.get_user_data_dir() + '/systemd/user/';
