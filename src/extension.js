@@ -41,17 +41,21 @@ const Menu = imports.shell.menu;
  */
 class KeybindingManager {
 
-    constructor(devices) {
+    constructor() {
         this.bindings = new Map();
 
         this._acceleratorId = global.display.connect(
             'accelerator-activated',
-            (display, action, deviceId, timestamp) => {
-                if (this.bindings.has(action)) {
-                    this.bindings.get(action).callback()
-                }
-            }
+            this._onAcceleratorActivated.bind(this)
         );
+    }
+
+    _onAcceleratorActivated(display, action, deviceId, timestamp) {
+        let binding = this.bindings.get(action);
+
+        if (binding) {
+            binding.callback();
+        }
     }
 
     add(accelerator, callback) {
@@ -66,7 +70,6 @@ class KeybindingManager {
 
             this.bindings.set(action, {
                 name: name,
-                accelerator: accelerator,
                 callback: callback
             });
         } else {
@@ -77,24 +80,21 @@ class KeybindingManager {
     }
 
     remove(action) {
-        if (action !== 0) {
-            let binding = this.bindings.get(action);
+        let binding = this.bindings.get(action);
 
+        if (binding) {
             global.display.ungrab_accelerator(action);
             Main.wm.allowKeybinding(binding.name, Shell.ActionMode.NONE);
             this.bindings.delete(action);
         }
     }
 
-    removeAll() {
+    destroy() {
+        global.display.disconnect(this._acceleratorId);
+
         for (let action of this.bindings.keys()) {
             this.remove(action);
         }
-    }
-
-    destroy() {
-        this.removeAll();
-        global.display.disconnect(this._acceleratorId);
     }
 }
 
@@ -461,32 +461,6 @@ const ServiceProxy = DBus.makeInterfaceProxy(
 );
 
 
-// TODO: better
-function _proxyMethods(info, iface) {
-    info.methods.map(method => {
-        iface[method.name] = function () {
-            iface.call(method.name, null, 0, -1, null, (proxy, res) => {
-                let ret;
-
-                try {
-                    ret = this.call_finish(res);
-                } catch (e) {
-                    debug(`Error calling ${method.name} on ${proxy.g_object_path}: ${e.message}`);
-                }
-
-                // If return has single arg, only return that or null
-                if (method.out_args.length === 1) {
-                    (ret) ? ret.deep_unpack()[0] : null;
-                // Otherwise return an array (possibly empty)
-                } else {
-                    (ret) ? ret.deep_unpack() : [];
-                }
-            });
-        };
-    });
-};
-
-
 /**
  * A System Indicator used as the hub for spawning device indicators and
  * indicating that the extension is active when there are none.
@@ -497,7 +471,6 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         super._init();
 
         this._devices = {};
-        this._indicators = {};
         this._menus = {};
 
         // Extension Indicator
@@ -595,16 +568,15 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
             return;
         }
 
-        this.service = new ServiceProxy({
+        new ServiceProxy({
             g_connection: Gio.DBus.session,
             g_name: gsconnect.app_id,
             g_object_path: gsconnect.app_path
-        });
-        this.service.init(null);
-
-        this.devices.map(device => { device.service = this.service; });
-
-        this.extensionIndicator.visible = true;
+        }).init_promise().then(service => {
+            this.service = service;
+            this.devices.map(device => { device.service = service; });
+            this.extensionIndicator.visible = true;
+        }).catch(debug);
     }
 
     _onNameOwnerChanged() {
@@ -612,13 +584,8 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
 
         if (this.manager.name_owner === null) {
             // Destroy any device proxies
-            for (let path in this._indicators) {
-                debug('name-owner destroy');
-
-                this._indicators[path].destroy();
-                this._menus[path].destroy();
-                delete this._indicators[path];
-                delete this._menus[path];
+            for (let iface of Object.values(this._devices)) {
+                this._interfaceRemoved(this.manager, iface.get_object(), iface);
             }
 
             if (this.service) {
@@ -668,7 +635,6 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
 
             // Device Indicator
             let indicator = new DeviceIndicator(object, iface);
-            this._indicators[iface.g_object_path] = indicator;
             Main.panel.addToStatusArea(iface.g_object_path, indicator);
 
             // Device Menu
@@ -692,12 +658,12 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         if (iface.g_interface_name === 'org.gnome.Shell.Extensions.GSConnect.Device') {
             log(`GSConnect: Removing ${iface.Name}`);
 
-            this._indicators[iface.g_object_path].destroy();
+            Main.panel.statusArea[iface.g_object_path].destroy();
+
             this._menus[iface.g_object_path].destroy();
+            delete this._menus[iface.g_object_path];
 
             delete this._devices[iface.Id];
-            delete this._indicators[iface.g_object_path];
-            delete this._menus[iface.g_object_path];
         }
     }
 
@@ -745,11 +711,8 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         GObject.signal_handlers_destroy(this.manager);
 
         // Destroy any device proxies
-        for (let path in this._indicators) {
-            this._indicators[path].destroy();
-            this._menus[path].destroy();
-            delete this._indicators[path];
-            delete this._menus[path];
+        for (let iface of Object.values(this._devices)) {
+            this._interfaceRemoved(this.manager, iface.get_object(), iface);
         }
 
         // Disconnect from any GSettings changes
