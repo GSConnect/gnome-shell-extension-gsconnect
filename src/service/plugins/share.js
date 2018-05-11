@@ -29,7 +29,9 @@ var Metadata = {
         shareFile: {
             summary: _('Share File'),
             description: _('Directly share a file'),
-            signature: 'av',
+            icon_name: 'document-send-symbolic',
+
+            signature: 's',
             incoming: [],
             outgoing: ['kdeconnect.share.request'],
             allow: 2
@@ -37,7 +39,9 @@ var Metadata = {
         shareText: {
             summary: _('Share Text'),
             description: _('Directly share text'),
-            signature: 'av',
+            icon_name: 'send-to-symbolic',
+
+            signature: 's',
             incoming: [],
             outgoing: ['kdeconnect.share.request'],
             allow: 2
@@ -45,7 +49,9 @@ var Metadata = {
         shareUrl: {
             summary: _('Share URL'),
             description: _('Directly share a Url'),
-            signature: 'av',
+            icon_name: 'send-to-symbolic',
+
+            signature: 's',
             incoming: [],
             outgoing: ['kdeconnect.share.request'],
             allow: 2
@@ -475,7 +481,7 @@ var Plugin = GObject.registerClass({
 
         // Re-direct file:// uri's
         if (url.startsWith('file://')) {
-            return this.sendFile(uri);
+            return this.sendFile(url);
         // ...
         } else if (!url.startsWith('http://') && !url.startsWith('https://')) {
             url = 'https://' + url;
@@ -484,7 +490,7 @@ var Plugin = GObject.registerClass({
         this.device.sendPacket({
             id: 0,
             type: 'kdeconnect.share.request',
-            body: { url: uri }
+            body: { url: url }
         });
     }
 });
