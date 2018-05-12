@@ -1,6 +1,6 @@
-"use strict";
+'use strict';
 
-const Gettext = imports.gettext.domain("org.gnome.Shell.Extensions.GSConnect");
+const Gettext = imports.gettext.domain('org.gnome.Shell.Extensions.GSConnect');
 const _ = Gettext.gettext;
 
 const Gdk = imports.gi.Gdk;
@@ -13,13 +13,13 @@ const Gtk = imports.gi.Gtk;
 
 // TODO: folks, prefs check Contacts.GData, etc
 try {
-    imports.gi.versions.GData = "0.0";
-    imports.gi.versions.Goa = "1.0";
+    imports.gi.versions.GData = '0.0';
+    imports.gi.versions.Goa = '1.0';
 
     var GData = imports.gi.GData;
     var Goa = imports.gi.Goa;
 } catch (e) {
-    debug("Warning: Goa-1.0.typelib and GData-0.0.typelib required for Google contacts: " + e);
+    debug('Warning: Goa-1.0.typelib and GData-0.0.typelib required for Google contacts: ' + e);
     var GData = undefined;
     var Goa = undefined;
 }
@@ -30,7 +30,7 @@ const Color = imports.modules.color;
 
 
 //
-var CACHE_DIR = GLib.build_filenamev([gsconnect.cachedir, "_contacts"]);
+var CACHE_DIR = GLib.build_filenamev([gsconnect.cachedir, '_contacts']);
 
 
 // Return a singleton
@@ -57,7 +57,7 @@ function getPixbuf(path) {
     try {
         loader.close();
     } catch (e) {
-        debug("Warning: " + e.message);
+        debug(`Warning: ${e.message}`);
     }
 
     return loader.get_pixbuf();
@@ -79,7 +79,7 @@ function mergeContacts(current, update) {
 
 //        // Update contact
 //        if (current.hasOwnProperty(id)) {
-//            ["name", "origin", "avatar", "folk_id"].forEach(prop => {
+//            ['name', 'origin', 'avatar', 'folk_id'].forEach(prop => {
 //                current[id][prop] = update[id][prop] || current[id][prop];
 //            });
 
@@ -88,7 +88,7 @@ function mergeContacts(current, update) {
 
 //                for (let centry of current[id].numbers) {
 //                    if (entry.number === centry.number) {
-//                        ["type", "uri"].forEach(prop => {
+//                        ['type', 'uri'].forEach(prop => {
 //                            centry[prop] = entry[prop] || centry[prop];
 //                        });
 //                        found = true;
@@ -111,35 +111,35 @@ function mergeContacts(current, update) {
 
 
 var Store = GObject.registerClass({
-    GTypeName: "GSConnectContactsStore",
+    GTypeName: 'GSConnectContactsStore',
     Implements: [ Gio.ListModel ],
     Properties: {
-        "contacts": GObject.param_spec_variant(
-            "contacts",
-            "ContactsList",
-            "A list of cached contacts",
-            new GLib.VariantType("as"),
-            new GLib.Variant("as", []),
+        'contacts': GObject.param_spec_variant(
+            'contacts',
+            'ContactsList',
+            'A list of cached contacts',
+            new GLib.VariantType('as'),
+            new GLib.Variant('as', []),
             GObject.ParamFlags.READABLE
         ),
-        "provider-icon": GObject.ParamSpec.string(
-            "provider-icon",
-            "ContactsProvider",
-            "The contact provider icon name",
+        'provider-icon': GObject.ParamSpec.string(
+            'provider-icon',
+            'ContactsProvider',
+            'The contact provider icon name',
             GObject.ParamFlags.READABLE,
-            ""
+            ''
         ),
-        "provider-name": GObject.ParamSpec.string(
-            "provider-name",
-            "ContactsProvider",
-            "The contact provider name (eg. Google)",
+        'provider-name': GObject.ParamSpec.string(
+            'provider-name',
+            'ContactsProvider',
+            'The contact provider name (eg. Google)',
             GObject.ParamFlags.READABLE,
-            ""
+            ''
         )
     },
     Signals: {
-        "destroy": { flags: GObject.SignalFlags.NO_HOOKS },
-        "ready": { flags: GObject.SignalFlags.RUN_FIRST }
+        'destroy': { flags: GObject.SignalFlags.NO_HOOKS },
+        'ready': { flags: GObject.SignalFlags.RUN_FIRST }
     }
 }, class Store extends GObject.Object {
 
@@ -150,7 +150,7 @@ var Store = GObject.registerClass({
         GLib.mkdir_with_parents(CACHE_DIR, 448);
 
         this._cacheFile = Gio.File.new_for_path(
-            GLib.build_filenamev([CACHE_DIR, "contacts.json"])
+            GLib.build_filenamev([CACHE_DIR, 'contacts.json'])
         );
 
         // Read cache
@@ -158,12 +158,12 @@ var Store = GObject.registerClass({
             let cache = this._cacheFile.load_contents(null)[1];
             this._contacts = JSON.parse(cache);
         } catch (e) {
-            debug("Cache: Error reading %s cache: " + e.message + "\n" + e.stack);
+            debug(`Cache: Error reading contact cache: ${e.message}`);
             this._contacts = {};
         }
 
-        this.connect("notify::contacts", () => {
-            //this.notify("items-changed");
+        this.connect('notify::contacts', () => {
+            //this.notify('items-changed');
             // FIXME
             this._writeCache()
         });
@@ -176,11 +176,11 @@ var Store = GObject.registerClass({
     }
 
     get provider_icon() {
-        return this._provider_icon || "call-start-symbolic";
+        return this._provider_icon || 'call-start-symbolic';
     }
 
     get provider_name() {
-        return this._provider_name || _("GSConnect");
+        return this._provider_name || _('GSConnect');
     }
 
     /**
@@ -201,15 +201,15 @@ var Store = GObject.registerClass({
      * Addition ListModel-like function
      */
     add_item() {
-        this.notify("contacts");
+        this.notify('contacts');
     }
 
     remove_item() {
-        this.notify("contacts");
+        this.notify('contacts');
     }
 
     query(query) {
-        let number = (query.number) ? query.number.replace(/\D/g, "") : null;
+        let number = (query.number) ? query.number.replace(/\D/g, '') : null;
 
         let matches = {};
 
@@ -220,7 +220,7 @@ var Store = GObject.registerClass({
             if (number) {
                 for (let num of contact.numbers) {
                     // Match by number stripped of non-digits
-                    if (number === num.number.replace(/\D/g, "")) {
+                    if (number === num.number.replace(/\D/g, '')) {
                         matches[id] = this._contacts[id];
 
                         // Number match & exact name match; must be it
@@ -250,8 +250,8 @@ var Store = GObject.registerClass({
             // Add the contact & save to cache
             this._contacts[id] = {
                 name: query.name || query.number,
-                numbers: [{ number: query.number, type: "unknown" }],
-                origin: "gsconnect"
+                numbers: [{ number: query.number, type: 'unknown' }],
+                origin: 'gsconnect'
             };
             this._writeCache();
 
@@ -272,26 +272,26 @@ var Store = GObject.registerClass({
 
     update() {
         this._updateFolksContacts().then((result) => {
-            debug("contacts read from folks");
+            debug('contacts read from folks');
 
             this._writeCache();
             [this._provider_icon, this._provider_name] = result;
-            this.notify("provider-icon");
-            this.notify("provider-name");
-            this.notify("contacts");
-        }).catch((error) => {
-            debug("Warning: Failed to update Folks contacts: " + error.message);
+            this.notify('provider-icon');
+            this.notify('provider-name');
+            this.notify('contacts');
+        }).catch(e => {
+            debug(`Warning: Failed to update Folks contacts: ${e.message}`);
 
             this._updateGoogleContacts().then((result) => {
-                debug("contacts read from google");
+                debug('contacts read from google');
 
                 this._writeCache();
                 [this._provider_icon, this._provider_name] = result;
-                this.notify("provider-icon");
-                this.notify("provider-name");
-                this.notify("contacts");
-            }).catch((error) => {
-                debug("Warning: Failed to update Google contacts: " + error.message);
+                this.notify('provider-icon');
+                this.notify('provider-name');
+                this.notify('contacts');
+            }).catch(e => {
+                debug(`Warning: Failed to update Google contacts: ${e.message}`);
             });
         });
     }
@@ -314,11 +314,11 @@ var Store = GObject.registerClass({
     _updateFolksContacts() {
         return new Promise((resolve, reject) => {
             let envp = GLib.get_environ();
-            envp.push("FOLKS_BACKENDS_DISABLED=telepathy")
+            envp.push('FOLKS_BACKENDS_DISABLED=telepathy')
 
             let proc = GLib.spawn_async_with_pipes(
                 null,
-                ["python3", gsconnect.datadir + "/modules/folks.py"],
+                ['python3', gsconnect.datadir + '/modules/folks.py'],
                 envp,
                 GLib.SpawnFlags.SEARCH_PATH,
                 null
@@ -329,17 +329,17 @@ var Store = GObject.registerClass({
             });
 
             stderr.read_line_async(GLib.PRIORITY_DEFAULT, null, (source, res) => {
-                debug("reading stderr...");
+                debug('reading stderr...');
                 let [result, length] = source.read_line_finish(res);
 
                 if (result === null) {
                     return;
                 } else {
-                    result = "\n" + result.toString();
+                    result = '\n' + result.toString();
                     let line;
 
                     while ((line = stderr.read_line(null)[0]) !== null) {
-                        result = result + "\n" + line.toString();
+                        result = result + '\n' + line.toString();
                     }
 
                     reject(new Error(result));
@@ -360,7 +360,7 @@ var Store = GObject.registerClass({
                 folks = JSON.parse(folks);
                 //Object.assign(this._contacts, folks);
                 this._contacts = mergeContacts(this._contacts, folks);
-                resolve(["gnome-contacts-symbolic", _("Gnome")]);
+                resolve(['gnome-contacts-symbolic', _('Gnome')]);
             } catch (e) {
                 reject(e);
             }
@@ -376,7 +376,7 @@ var Store = GObject.registerClass({
             for (let id in goaAccounts) {
                 let account = goaAccounts[id].get_account();
 
-                if (account.provider_type === "google") {
+                if (account.provider_type === 'google') {
                     let accountObj = goaClient.lookup_by_id(account.id);
                     let accountAuth = new GData.GoaAuthorizer({
                         goa_object: accountObj
@@ -393,13 +393,13 @@ var Store = GObject.registerClass({
 
             this._contacts = mergeContacts(this._contacts, contacts);
 
-            resolve(["goa-account-google", _("Google")]);
+            resolve(['goa-account-google', _('Google')]);
         });
     }
 
     /** Query a Google account for contacts via GData */
     _getGoogleContacts(account) {
-        let query = new GData.ContactsQuery({ q: "" });
+        let query = new GData.ContactsQuery({ q: '' });
         let count = 0;
         let contacts = {};
 
@@ -417,14 +417,14 @@ var Store = GObject.registerClass({
                         return {
                             number: n.number,
                             uri: n.uri || null,
-                            type: n.relation_type || "unknown"
+                            type: n.relation_type || 'unknown'
                         };
                     });
 
                     contacts[contact.id] = {
                         name: contact.title || contact.name,
                         numbers: numbers,
-                        origin: "google"
+                        origin: 'google'
                     };
                 }
             );
@@ -453,7 +453,7 @@ var Store = GObject.registerClass({
     }
 
     destroy() {
-        this.emit("destroy");
+        this.emit('destroy');
 
         this._writeCache();
     }
@@ -464,7 +464,7 @@ var Store = GObject.registerClass({
  * Contact Avatar
  */
 var Avatar = GObject.registerClass({
-    GTypeName: "GSConnectContactAvatar"
+    GTypeName: 'GSConnectContactAvatar'
 }, class Avatar extends Gtk.DrawingArea {
 
     _init(contact, size=32) {
@@ -490,7 +490,7 @@ var Avatar = GObject.registerClass({
             try {
                 loader.close();
             } catch (e) {
-                debug("Warning: " + e.message);
+                debug(`Warning: ${e.message}`);
             }
 
             let pixbuf = loader.get_pixbuf().scale_simple(
@@ -508,7 +508,7 @@ var Avatar = GObject.registerClass({
         } else {
             let theme = Gtk.IconTheme.get_default();
             this.surface = theme.load_surface(
-                "avatar-default-symbolic",
+                'avatar-default-symbolic',
                 this.size/1.5,
                 1,
                 null,
@@ -519,10 +519,10 @@ var Avatar = GObject.registerClass({
         // Popover
         // TODO: use 'popup' signal
         this.add_events(Gdk.EventMask.BUTTON_PRESS_MASK | Gdk.EventMask.BUTTON_RELEASE_MASK);
-        this.connect("button-release-event", (widget, event) => this._popover(widget, event));
+        this.connect('button-release-event', this._popover.bind(this));
 
         // Image
-        this.connect("draw", this._onDraw.bind(this));
+        this.connect('draw', this._onDraw.bind(this));
         this.queue_draw();
     }
 
@@ -564,40 +564,40 @@ var Avatar = GObject.registerClass({
             margin: 10,
             visible: true
         });
-        box.get_style_context().add_class("linked");
+        box.get_style_context().add_class('linked');
         popover.add(box);
 
         // Gnome Contacts
-        if (gsconnect.checkCommand("gnome-contacts") && this.contact.folks_id) {
+        if (gsconnect.checkCommand('gnome-contacts') && this.contact.folks_id) {
             let contactsItem = new Gtk.ModelButton({
                 centered: true,
-                icon: new Gio.ThemedIcon({ name: "gnome-contacts-symbolic" }),
+                icon: new Gio.ThemedIcon({ name: 'gnome-contacts-symbolic' }),
                 iconic: true,
                 visible: true
             });
-            contactsItem.connect("clicked", () => this._popoverContacts());
+            contactsItem.connect('clicked', this._popoverContacts.bind(this));
             box.add(contactsItem);
         }
 
         // Contact Color
         let colorItem = new Gtk.ModelButton({
             centered: true,
-            icon: new Gio.ThemedIcon({ name: "color-select-symbolic" }),
+            icon: new Gio.ThemedIcon({ name: 'color-select-symbolic' }),
             iconic: true,
             visible: true
         });
-        colorItem.connect("clicked", () => this._popoverColor());
+        colorItem.connect('clicked', this._popoverColor.bind(this));
         box.add(colorItem);
 
         // Delete Contact
-        if (this.contact.origin === "gsconnect") {
+        if (this.contact.origin === 'gsconnect') {
             let deleteItem = new Gtk.ModelButton({
                 centered: true,
-                icon: new Gio.ThemedIcon({ name: "user-trash-symbolic" }),
+                icon: new Gio.ThemedIcon({ name: 'user-trash-symbolic' }),
                 iconic: true,
                 visible: true
             });
-            deleteItem.connect("clicked", () => this._popoverDelete());
+            deleteItem.connect('clicked', this._popoverDelete.bind(this));
             box.add(deleteItem);
         }
 
@@ -606,7 +606,7 @@ var Avatar = GObject.registerClass({
 
     _popoverContacts() {
         GLib.spawn_command_line_async(
-            "gnome-contacts -i " + this.contact.folks_id
+            'gnome-contacts -i ' + this.contact.folks_id
         );
     }
 
@@ -619,13 +619,13 @@ var Avatar = GObject.registerClass({
 
         // Set the current color
         let rgba = colorChooser.get_rgba().copy();
-        rgba.parse("rgb(" + this.contact.rgb.map(c => c*255).join(",") + ")");
+        rgba.parse(`rgb(${this.contact.rgb.map(c => c*255).join(',')})`);
         colorChooser.set_rgba(rgba)
 
-        colorChooser.connect("delete-event", () => {
-            this.emit("response", Gtk.ResponseType.CANCEL);
+        colorChooser.connect('delete-event', () => {
+            this.emit('response', Gtk.ResponseType.CANCEL);
         });
-        colorChooser.connect("response", (dialog, response) => {
+        colorChooser.connect('response', (dialog, response) => {
             if (response !== Gtk.ResponseType.CANCEL) {
                 let rgba = dialog.get_rgba();
                 this.contact.rgb = [rgba.red, rgba.green, rgba.blue];
@@ -650,25 +650,25 @@ var Avatar = GObject.registerClass({
         }
 
         store._writeCache();
-        store.notify("contacts");
+        store.notify('contacts');
     }
 });
 
 
 var ContactChooser = GObject.registerClass({
-    GTypeName: "GSConnectContactChooser",
+    GTypeName: 'GSConnectContactChooser',
     Properties: {
-        "selected": GObject.param_spec_variant(
-            "selected",
-            "selectedContacts",
-            "A list of selected contacts",
-            new GLib.VariantType("as"),
+        'selected': GObject.param_spec_variant(
+            'selected',
+            'selectedContacts',
+            'A list of selected contacts',
+            new GLib.VariantType('as'),
             null,
             GObject.ParamFlags.READABLE
         )
     },
     Signals: {
-        "number-selected": {
+        'number-selected': {
             flags: GObject.SignalFlags.RUN_FIRST,
             param_types: [ GObject.TYPE_STRING ]
         }
@@ -685,24 +685,24 @@ var ContactChooser = GObject.registerClass({
         });
 
         this.contacts = getStore();
-        this.contacts.connect("notify::contacts", () => this._populate());
+        this.contacts.connect('notify::contacts', this._populate.bind(this));
 
         // Search Entry
         this.entry = new Gtk.Entry({
             hexpand: true,
-            placeholder_text: _("Type a phone number or name"),
-            tooltip_text: _("Type a phone number or name"),
+            placeholder_text: _('Type a phone number or name'),
+            tooltip_text: _('Type a phone number or name'),
             primary_icon_name: this.contacts.provider_icon,
             primary_icon_activatable: false,
             primary_icon_sensitive: true,
             input_purpose: Gtk.InputPurpose.PHONE,
             visible: true
         });
-        this.entry.connect("changed", (entry) => this._onEntryChanged());
+        this.entry.connect('changed', this._onEntryChanged.bind(this));
         this.contacts.bind_property(
-            "provider-icon",
+            'provider-icon',
             this.entry,
-            "primary-icon-name",
+            'primary-icon-name',
             GObject.BindingFlags.SYNC_CREATE
         );
 
@@ -729,22 +729,22 @@ var ContactChooser = GObject.registerClass({
         });
 
         let placeholderImage = new Gtk.Image({
-            icon_name: "avatar-default-symbolic",
+            icon_name: 'avatar-default-symbolic',
             pixel_size: 48,
             visible: true
         });
-        placeholderImage.get_style_context().add_class("dim-label");
+        placeholderImage.get_style_context().add_class('dim-label');
         box.add(placeholderImage);
 
         let placeholderLabel = new Gtk.Label({
-            label: "<b>" + _("Add people to start a conversation") + "</b>",
+            label: '<b>' + _('Add people to start a conversation') + '</b>',
             visible: true,
             use_markup: true,
             wrap: true,
             justify: Gtk.Justification.CENTER,
             visible: true
         });
-        placeholderLabel.get_style_context().add_class("dim-label");
+        placeholderLabel.get_style_context().add_class('dim-label');
 
         box.add(placeholderLabel);
         this.list.set_placeholder(box);
@@ -844,24 +844,24 @@ var ContactChooser = GObject.registerClass({
     }
 
     _onEntryChanged(entry) {
-        if (this.entry.text.replace(/\D/g, "").length > 2) {
-            if (this._dynamic) {
-                this._dynamic._name.label = _("Send to %s").format(this.entry.text);
-                let num = this._dynamic.numbers.get_children()[0];
+        if (this.entry.text.replace(/\D/g, '').length > 2) {
+            if (this._temporary) {
+                this._temporary._name.label = _('Send to %s').format(this.entry.text);
+                let num = this._temporary.numbers.get_children()[0];
                 num._number.label = this.entry.text;
-                num.contact.number = this.entry.text;
+                this._temporary.contact.number = this.entry.text;
             } else {
-                this._dynamic = this._addContact({
-                    name: _("Unknown Contact"),
-                    numbers: [{ type: "unknown", number: this.entry.text }],
+                this._temporary = this._addContact({
+                    name: _('Unknown Contact'),
+                    numbers: [{ type: 'unknown', number: this.entry.text }],
                     rgb: [0.8, 0.8, 0.8]
                 });
-                this._dynamic._name.label = _("Send to %s").format(this.entry.text);
-                this._dynamic.dynamic = true;
+                this._temporary._name.label = _('Send to %s').format(this.entry.text);
+                this._temporary.dynamic = true;
             }
-        } else if (this._dynamic) {
-            this._dynamic.destroy();
-            delete this._dynamic;
+        } else if (this._temporary) {
+            this._temporary.destroy();
+            delete this._temporary;
         }
 
         this.list.invalidate_sort();
@@ -870,7 +870,7 @@ var ContactChooser = GObject.registerClass({
 
     _filter(row) {
         let queryName = this.entry.text.toLowerCase();
-        let queryNumber = this.entry.text.replace(/\D/g, "");
+        let queryNumber = this.entry.text.replace(/\D/g, '');
 
         // Dynamic contact always shown
         if (row.dynamic) {
@@ -884,7 +884,7 @@ var ContactChooser = GObject.registerClass({
             let matched = false
 
             for (let num of row.numbers.get_children()) {
-                let number = num._number.label.replace(/\D/g, "");
+                let number = num._number.label.replace(/\D/g, '');
                 if (number.indexOf(queryNumber) > -1) {
                     num.visible = true;
                     matched = true;
@@ -964,26 +964,26 @@ var ContactChooser = GObject.registerClass({
             }
         }
 
-        return row1._name.label.localeCompare(row2._name.label);
+        return row1.name.localeCompare(row2.name);
     }
 
     _toggle(row, box) {
         if (box.recipient.active) {
             if (row.dynamic) {
-                row._name.label = box.contact.name;
-                delete this._dynamic;
+                row.name = row.contact.name;
+                delete this._temporary;
             }
 
             // FIXME: better signals...
             this._selected.set(box.number.number, row.contact);
-            this.notify("selected");
-            this.emit("number-selected", box.number.number);
+            this.notify('selected');
+            this.emit('number-selected', box.number.number);
         } else {
             this._selected.delete(box.number.number);
-            this.notify("selected");
+            this.notify('selected');
         }
 
-        this.entry.text = "";
+        this.entry.text = '';
         this.list.invalidate_sort();
     }
 });
