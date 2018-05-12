@@ -188,6 +188,7 @@ var Channel = GObject.registerClass({
     }
 
     get type() {
+        // TODO: This seems like a pretty flaky test
         if (typeof this._connection.get_local_address === 'function') {
             return 'bluetooth';
         } else {
@@ -465,7 +466,7 @@ var Channel = GObject.registerClass({
         try {
             [data, length] = this._input_stream.read_line(null);
         } catch (e) {
-            debug(`${this.identity.body.deviceName}: ${e.message}`);
+            debug(`${this.identity.body.deviceId}: ${e.message}`);
             this.close();
             return false;
         }
@@ -665,3 +666,4 @@ var Transfer = GObject.registerClass({
         );
     }
 });
+
