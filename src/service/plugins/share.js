@@ -108,8 +108,6 @@ var Plugin = GObject.registerClass({
         }
 
         this.transfers = new Map();
-
-        this.device.menu.add_action('shareDialog', Metadata.actions.shareDialog);
     }
 
     /**

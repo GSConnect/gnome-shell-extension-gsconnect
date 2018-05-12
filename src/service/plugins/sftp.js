@@ -89,8 +89,6 @@ var Plugin = GObject.registerClass({
         }
 
         this._setup();
-
-        this.device.menu.add_action('mount', Metadata.actions.mount);
     }
 
     handlePacket(packet) {

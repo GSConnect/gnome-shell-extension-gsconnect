@@ -60,8 +60,6 @@ var Plugin = GObject.registerClass({
 
         this._cancellable = null;
         this._dialog = null;
-
-        this.device.menu.add_action('find', Metadata.actions.find);
     }
 
     handlePacket(packet) {

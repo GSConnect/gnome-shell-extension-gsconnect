@@ -166,7 +166,6 @@ var Plugin = GObject.registerClass({
 
         this.contacts = Contacts.getStore();
 
-        this.device.menu.add_action('newSms', Metadata.actions.newSms);
     }
 
     handlePacket(packet) {
