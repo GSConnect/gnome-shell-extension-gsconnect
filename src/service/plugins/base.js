@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
@@ -14,33 +14,33 @@ const Device = imports.service.device;
  * Base class for plugins
  */
 var Plugin = GObject.registerClass({
-    GTypeName: "GSConnectPlugin",
+    GTypeName: 'GSConnectPlugin',
     Properties: {
-        "allow": GObject.ParamSpec.int(
-            "allow",
-            "AllowTraffic",
-            "The directions in which to allow traffic",
+        'allow': GObject.ParamSpec.int(
+            'allow',
+            'AllowTraffic',
+            'The directions in which to allow traffic',
             GObject.ParamFlags.READABLE,
             1, 8,
             1
         ),
-        "device": GObject.ParamSpec.object(
-            "device",
-            "WindowDevice",
-            "The device associated with this window",
+        'device': GObject.ParamSpec.object(
+            'device',
+            'WindowDevice',
+            'The device associated with this window',
             GObject.ParamFlags.READABLE,
             GObject.Object
         ),
-        "name": GObject.ParamSpec.string(
-            "name",
-            "PluginName",
-            "The name of the plugin",
+        'name': GObject.ParamSpec.string(
+            'name',
+            'PluginName',
+            'The name of the plugin',
             GObject.ParamFlags.READABLE,
-            ""
+            ''
         )
     },
     Signals: {
-        "destroy": {
+        'destroy': {
             flags: GObject.SignalFlags.NO_HOOKS
         }
     }
@@ -132,15 +132,15 @@ var Plugin = GObject.registerClass({
      * A convenience for retrieving the allow flags for a packet handler
      */
     get allow() {
-        return this.settings.get_uint("allow");
+        return this.settings.get_uint('allow');
     }
 
     set allow(value) {
-        if (typeof value !== "number") {
-            throw TypeError("expected uint not " + typeof value);
+        if (typeof value !== 'number') {
+            throw TypeError('expected uint not ' + typeof value);
         }
 
-        this.settings.set_uint("allow", value);
+        this.settings.set_uint('allow', value);
     }
 
     get device() {
@@ -155,13 +155,13 @@ var Plugin = GObject.registerClass({
      * Emit an event on the device
      */
     event(type, data) {
-        this.device.emit("event", type, gsconnect.full_pack(data));
+        this.device.emit('event', type, gsconnect.full_pack(data));
     }
 
     /**
      *
      */
-    handlePacket(packet) { throw Error("Not implemented"); }
+    handlePacket(packet) { throw Error('Not implemented'); }
 
     /**
      * Cache JSON parseable properties on this object for persistence. The
@@ -179,7 +179,7 @@ var Plugin = GObject.registerClass({
         GLib.mkdir_with_parents(this._cacheDir, 448);
 
         this._cacheFile = Gio.File.new_for_path(
-            GLib.build_filenamev([this._cacheDir, this.device.id + ".json"])
+            GLib.build_filenamev([this._cacheDir, this.device.id + '.json'])
         );
 
         this._cacheProperties = {};
@@ -250,7 +250,7 @@ var Plugin = GObject.registerClass({
      * The destroy function
      */
     destroy() {
-        this.emit("destroy");
+        this.emit('destroy');
 
         this._gactions.map(action => {
             this.device.menu.remove_action(action.name);

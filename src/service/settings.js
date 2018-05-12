@@ -295,7 +295,7 @@ var Window = GObject.registerClass({
         'shell-list',
         'show-indicators', 'show-offline', 'show-unpaired', 'show-battery',
         'extensions-list',
-        'nautilus-integration', 'webbrowser-integration',
+        'nautilus-integration',
         'advanced-list',
         'debug', 'debug-window', 'debug-restart',
         'help', 'help-list'
