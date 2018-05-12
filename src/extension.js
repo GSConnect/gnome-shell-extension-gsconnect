@@ -782,7 +782,7 @@ function enable() {
     log('Enabling GSConnect');
 
     gsconnect.installService();
-    Gtk.IconTheme.get_default().add_resource_path(gsconnect.app_path);
+    Gtk.IconTheme.get_default().add_resource_path(gsconnect.app_path + '/icons');
     serviceIndicator = new ServiceIndicator();
 };
 

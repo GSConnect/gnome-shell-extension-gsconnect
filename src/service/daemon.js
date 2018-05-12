@@ -264,7 +264,6 @@ var Daemon = GObject.registerClass({
             provider,
             Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
         );
-        Gtk.IconTheme.get_default().add_resource_path(gsconnect.app_path);
     }
 
     /**
