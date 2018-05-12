@@ -473,6 +473,8 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         this._devices = {};
         this._menus = {};
 
+        this.keybindingManager = new KeybindingManager();
+
         // Extension Indicator
         this.extensionIndicator = this._addIndicator();
         this.extensionIndicator.icon_name = 'org.gnome.Shell.Extensions.GSConnect-symbolic';
@@ -714,6 +716,8 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         for (let iface of Object.values(this._devices)) {
             this._interfaceRemoved(this.manager, iface.get_object(), iface);
         }
+
+        this.keybindingManager.destroy();
 
         // Disconnect from any GSettings changes
         gsconnect.settings.disconnect(this._gsettingsId);
