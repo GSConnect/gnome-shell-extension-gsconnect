@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 const Tweener = imports.tweener.tweener;
 
@@ -94,7 +94,7 @@ var _numberRegex = new RegExp(
  */
 var URI = class URI {
     constructor(uri) {
-        debug("Sms.URI: _init(" + uri + ")");
+        debug('Sms.URI: _init(' + uri + ')');
 
         let full, recipients, query;
 
@@ -102,19 +102,19 @@ var URI = class URI {
             _smsRegex.lastIndex = 0;
             [full, recipients, query] = _smsRegex.exec(uri);
         } catch (e) {
-            throw URIError("malformed sms URI");
+            throw URIError('malformed sms URI');
         }
 
-        this.recipients = recipients.split(",").map((recipient) => {
+        this.recipients = recipients.split(',').map((recipient) => {
             _numberRegex.lastIndex = 0;
             let [full, number, params] = _numberRegex.exec(recipient);
 
             if (params) {
-                for (let param of params.substr(1).split(";")) {
-                    let [key, value] = param.split("=");
+                for (let param of params.substr(1).split(';')) {
+                    let [key, value] = param.split('=');
 
                     // add phone-context to beginning of
-                    if (key === "phone-context" && value.startsWith("+")) {
+                    if (key === 'phone-context' && value.startsWith('+')) {
                         return value + unescape(number);
                     }
                 }
@@ -124,10 +124,10 @@ var URI = class URI {
         });
 
         if (query) {
-            for (let field of query.split("&")) {
-                let [key, value] = field.split("=");
+            for (let field of query.split('&')) {
+                let [key, value] = field.split('=');
 
-                if (key === "body") {
+                if (key === 'body') {
                     if (this.body) {
                         throw URIError('duplicate "body" field');
                     }
@@ -139,9 +139,9 @@ var URI = class URI {
     }
 
     toString() {
-        let uri = "sms:" + this.recipients.join(",");
+        let uri = 'sms:' + this.recipients.join(',');
 
-        return (this.body) ? uri + "?body=" + escape(this.body) : uri;
+        return (this.body) ? uri + '?body=' + escape(this.body) : uri;
     }
 }
 
@@ -150,7 +150,7 @@ var URI = class URI {
  *
  */
 var ConversationMessage = GObject.registerClass({
-    GTypeName: "GSConnectConversationMessage"
+    GTypeName: 'GSConnectConversationMessage'
 }, class ConversationMessage extends Gtk.Grid {
 
     _init(params) {
@@ -178,15 +178,15 @@ var ConversationMessage = GObject.registerClass({
             wrap_mode: Pango.WrapMode.WORD_CHAR,
             xalign: (params.direction) ? 0 : 1
         });
-        messageContent.connect("activate-link", (label, uri) => {
+        messageContent.connect('activate-link', (label, uri) => {
             Gtk.show_uri_on_window(
                 this.get_toplevel(),
-                (uri.indexOf("://") < 0) ? "http://" + uri : uri,
+                (uri.indexOf('://') < 0) ? 'http://' + uri : uri,
                 Gdk.get_current_event_time()
             );
             return true;
         });
-        this.connect("draw", this._onDraw.bind(this));
+        this.connect('draw', this._onDraw.bind(this));
         this.add(messageContent);
     }
 
@@ -232,7 +232,7 @@ var ConversationMessage = GObject.registerClass({
             '$1<a href="$2">$2</a>'
         ).replace(
             /&(?!amp;)/g,
-            "&amp;"
+            '&amp;'
         );
     }
 });
@@ -242,21 +242,28 @@ var ConversationMessage = GObject.registerClass({
  * A Gtk.ApplicationWindow for SMS conversations
  */
 var ConversationWindow = GObject.registerClass({
-    GTypeName: "GSConnectConversationWindow",
+    GTypeName: 'GSConnectConversationWindow',
     Properties: {
-        "device": GObject.ParamSpec.object(
-            "device",
-            "WindowDevice",
-            "The device associated with this window",
+        'connected': GObject.ParamSpec.boolean(
+            'connected',
+            'deviceConnected',
+            'Whether the device is connected',
+            GObject.ParamFlags.READWRITE,
+            false
+        ),
+        'device': GObject.ParamSpec.object(
+            'device',
+            'WindowDevice',
+            'The device associated with this window',
             GObject.ParamFlags.READABLE,
             GObject.Object
         ),
-        "number": GObject.ParamSpec.string(
-            "number",
-            "RecipientPhoneNumber",
-            "The conversation recipient's phone number",
+        'number': GObject.ParamSpec.string(
+            'number',
+            'RecipientPhoneNumber',
+            'The conversation recipient phone number',
             GObject.ParamFlags.READABLE,
-            ""
+            ''
         )
     }
 }, class ConversationWindow extends Gtk.ApplicationWindow {
@@ -264,7 +271,7 @@ var ConversationWindow = GObject.registerClass({
     _init(device) {
         super._init({
             application: Gio.Application.get_default(),
-            title: _("SMS Conversation"),
+            title: _('SMS Conversation'),
             default_width: 300,
             default_height: 300,
             urgency_hint: true
@@ -274,9 +281,13 @@ var ConversationWindow = GObject.registerClass({
         this._notifications = [];
         this._thread = null;
 
+        // Device Status
+        this.connect('notify::connected', this._onConnected.bind(this));
+        this.device.bind_property('connected', this, 'connected', GObject.BindingFlags.DEFAULT);
+
         // Header Bar
         this.headerBar = new Gtk.HeaderBar({ show_close_button: true });
-        this.connect("notify::number", () => this._setHeaderBar());
+        this.connect('notify::number', this._setHeaderBar.bind(this));
         this.set_titlebar(this.headerBar);
 
         // Content Layout
@@ -285,33 +296,21 @@ var ConversationWindow = GObject.registerClass({
 
         // InfoBar
         this.infoBar = new Gtk.InfoBar({
-            message_type: Gtk.MessageType.WARNING
+            message_type: Gtk.MessageType.WARNING,
+            revealed: false,
+            visible: false
         });
         this.infoBar.get_content_area().add(
-            new Gtk.Image({ icon_name: "dialog-warning-symbolic" })
+            new Gtk.Image({ icon_name: 'dialog-warning-symbolic' })
         );
         this.infoBar.get_content_area().add(
             new Gtk.Label({
                 // TRANSLATORS: eg. <b>Google Pixel</b> is disconnected
-                label: _("<b>%s</b> is disconnected").format(this.device.name),
+                label: _('<b>%s</b> is disconnected').format(this.device.name),
                 use_markup: true
             })
         );
-        // See: https://bugzilla.gnome.org/show_bug.cgi?id=710888
-        this.device.connect("notify::connected", () => {
-            let connected = this.device.connected;
-
-            this.contactList.entry.sensitive = connected;
-            this.stack.sensitive = connected;
-
-            if (!connected) {
-                this.layout.attach(this.infoBar, 0, 0, 1, 1);
-                this.infoBar.show_all();
-            } else if (connected) {
-                this.infoBar.hide();
-                this.layout.remove(this.infoBar);
-            }
-        });
+        this.layout.attach(this.infoBar, 0, 0, 1, 1);
 
         // Conversation Stack (Recipients/Threads)
         this.stack = new Gtk.Stack({
@@ -325,14 +324,14 @@ var ConversationWindow = GObject.registerClass({
 
         // Contacts
         this.contactList = new Contacts.ContactChooser();
-        this.contactList.connect("number-selected", (widget, number) => {
+        this.contactList.connect('number-selected', (widget, number) => {
             // FIXME FIXME
             this._setRecipient(
                 widget.selected.get(number),
                 number
             );
         });
-        this.stack.add_named(this.contactList, "contacts");
+        this.stack.add_named(this.contactList, 'contacts');
 
         // Messages
         let messageView = new Gtk.Box({
@@ -340,7 +339,7 @@ var ConversationWindow = GObject.registerClass({
             margin: 6,
             spacing: 6
         });
-        this.stack.add_named(messageView, "messages");
+        this.stack.add_named(messageView, 'messages');
 
         // Messages List
         let messageWindow = new Gtk.ScrolledWindow({
@@ -356,7 +355,7 @@ var ConversationWindow = GObject.registerClass({
             visible: true,
             halign: Gtk.Align.FILL
         });
-        this.messageList.connect("size-allocate", (widget) => {
+        this.messageList.connect('size-allocate', (widget) => {
             let vadj = messageWindow.get_vadjustment();
             vadj.set_value(vadj.get_upper() - vadj.get_page_size());
         });
@@ -365,20 +364,20 @@ var ConversationWindow = GObject.registerClass({
         // Message Entry
         this.entry = new Gtk.Entry({
             hexpand: true,
-            placeholder_text: _("Type an SMS message"),
-            secondary_icon_name: "sms-send",
+            placeholder_text: _('Type an SMS message'),
+            secondary_icon_name: 'sms-send',
             secondary_icon_activatable: true,
             secondary_icon_sensitive: false
         });
-        this.entry.connect("changed", (entry, signal_id, data) => {
+        this.entry.connect('changed', (entry, signal_id, data) => {
             entry.secondary_icon_sensitive = (entry.text.length);
         });
-        this.entry.connect("activate", entry => this.sendMessage());
-        this.entry.connect("icon-release", entry => this.sendMessage());
+        this.entry.connect('activate', this.sendMessage.bind(this));
+        this.entry.connect('icon-release', this.sendMessage.bind(this));
         messageView.add(this.entry);
 
         // Clear pending notifications on focus
-        this.entry.connect("notify::has-focus", () => {
+        this.entry.connect('notify::has-focus', () => {
             while (this._notifications.length) {
                 this.device.withdraw_notification(
                     this._notifications.pop()
@@ -403,8 +402,11 @@ var ConversationWindow = GObject.registerClass({
         return this._recipient || null;
     }
 
-    getRecipient() {
-        return this.recipient;
+    _onConnected() {
+        this.contactList.entry.sensitive = this.connected;
+        this.stack.sensitive = this.connected;
+        this.infoBar.revealed = !this.connected;
+        this.infoBar.visible = !this.connected;
     }
 
     /**
@@ -413,7 +415,7 @@ var ConversationWindow = GObject.registerClass({
     _setHeaderBar() {
         if (this.recipient) {
             this.headerBar.custom_title = null;
-            this.contactList.entry.text = "";
+            this.contactList.entry.text = '';
 
             if (this.recipient.name) {
                 this.headerBar.set_title(this.recipient.name);
@@ -435,13 +437,13 @@ var ConversationWindow = GObject.registerClass({
             Tweener.addTween(avatar, {
                 opacity: 1,
                 time: 0.4,
-                transition: "easeOutCubic"
+                transition: 'easeOutCubic'
             });
-            this.stack.set_visible_child_name("messages");
+            this.stack.set_visible_child_name('messages');
         } else {
             this.headerBar.custom_title = this.contactList.entry;
             this.contactList.entry.has_focus = true;
-            this.stack.set_visible_child_name("contacts");
+            this.stack.set_visible_child_name('contacts');
         }
     }
 
@@ -541,16 +543,16 @@ var ConversationWindow = GObject.registerClass({
         this._recipient = contact;
 
         // See if we have a nicer display number
-        let strippedNumber = phoneNumber.replace(/\D/g, "");
+        let strippedNumber = phoneNumber.replace(/\D/g, '');
 
         for (let contactNumber of contact.numbers) {
-            if (strippedNumber === contactNumber.number.replace(/\D/g, "")) {
+            if (strippedNumber === contactNumber.number.replace(/\D/g, '')) {
                 this._displayNumber = contactNumber.number;
                 break;
             }
         }
 
-        this.notify("number");
+        this.notify('number');
     }
 
     /**
@@ -573,25 +575,29 @@ var ConversationWindow = GObject.registerClass({
      * Send the contents of the message entry to the recipient
      */
     sendMessage(entry, signal_id, event) {
-        if (!this.entry.text.length) {
+        if (!entry.text.length) {
             return;
         }
 
         // Send messages
-        let plugin = this.device._plugins.get("telephony");
-        plugin.sendSms(this.number, this.entry.text);
+        let action = this.device.lookup_action('sendSms');
 
-        // Log the outgoing message
-        this._logMessage(this.entry.text, MessageDirection.OUT);
-        this.entry.text = "";
+        if (action && action.enabled) {
+            action.activate([this.number, entry.text]);
+
+            // Log the outgoing message
+            this._logMessage(entry.text, MessageDirection.OUT);
+            this.entry.text = '';
+        }
     }
 
     /**
-     * Send the contents of the message entry to @text
+     * Send the contents of the message entry and place the cursor at the end
+     * @param {String} text - The text to place in the entry
      */
     setMessage(text) {
         this.entry.text = text;
-        this.entry.emit("move-cursor", 0, text.length, false);
+        this.entry.emit('move-cursor', 0, text.length, false);
     }
 });
 
@@ -600,13 +606,13 @@ var ConversationWindow = GObject.registerClass({
  * A Gtk.ApplicationWindow for sharing links via SMS
  */
 var ShareWindow = GObject.registerClass({
-    GTypeName: "GSConnectContactShareWindow"
+    GTypeName: 'GSConnectContactShareWindow'
 }, class ShareWindow extends Gtk.ApplicationWindow {
 
     _init(device, url) {
         super._init({
             application: Gio.Application.get_default(),
-            title: _("Share Link"),
+            title: _('Share Link'),
             default_width: 300,
             default_height: 200
         });
@@ -617,7 +623,7 @@ var ShareWindow = GObject.registerClass({
 
         // HeaderBar
         let headerbar = new Gtk.HeaderBar({
-            title: _("Share Link"),
+            title: _('Share Link'),
             subtitle: url,
             show_close_button: true,
             tooltip_text: url
@@ -625,11 +631,11 @@ var ShareWindow = GObject.registerClass({
         this.set_titlebar(headerbar);
 
         let newButton = new Gtk.Button({
-            image: new Gtk.Image({ icon_name: "list-add-symbolic" }),
-            tooltip_text: _("New Message"),
+            image: new Gtk.Image({ icon_name: 'list-add-symbolic' }),
+            tooltip_text: _('New Message'),
             always_show_image: true
         });
-        newButton.connect("clicked", () => {
+        newButton.connect('clicked', () => {
             let window = new ConversationWindow(this.device);
             window.setMessage(url);
             this.destroy();
@@ -647,8 +653,8 @@ var ShareWindow = GObject.registerClass({
         this.add(scrolledWindow);
 
         this.list = new Gtk.ListBox({ activate_on_single_click: false });
-        this.list.connect("row-activated", (list, row) => this._select(row.window_));
-        this.list.connect("selected-rows-changed", () => {
+        this.list.connect('row-activated', (list, row) => this._select(row.window_));
+        this.list.connect('selected-rows-changed', () => {
             // TODO: not a button anymore
             sendButton.sensitive = (this.list.get_selected_rows().length);
         });
@@ -676,7 +682,7 @@ var ShareWindow = GObject.registerClass({
             }
 
             if (window.number) {
-                let recipient = window.getRecipient();
+                let recipient = window.recipient;
 
                 let row = new Gtk.ListBoxRow();
                 row.window_ = window;
@@ -700,7 +706,7 @@ var ShareWindow = GObject.registerClass({
                     label: window.number,
                     halign: Gtk.Align.START
                 });
-                number.get_style_context().add_class("dim-label");
+                number.get_style_context().add_class('dim-label');
                 grid.attach(number, 1, 1, 1, 1);
 
                 row.show_all();
