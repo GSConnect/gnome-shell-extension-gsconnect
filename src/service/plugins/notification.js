@@ -20,6 +20,8 @@ var Metadata = {
         showNotification: {
             summary: _("Show Notification"),
             description: _("Display a remote notification locally"),
+            icon_name: 'preferences-system-notifications-symbolic',
+
             signature: "av",
             incoming: ["kdeconnect.notification"],
             outgoing: [],
@@ -28,6 +30,8 @@ var Metadata = {
         closeNotification: {
             summary: _("Close Notification"),
             description: _("Close a remote notification by Id"),
+            icon_name: 'preferences-system-notifications-symbolic',
+
             signature: "s",
             incoming: [],
             outgoing: ["kdeconnect.notification.request"],
@@ -36,6 +40,8 @@ var Metadata = {
         sendNotification: {
             summary: _("Send Notification"),
             description: _("Display a local notification remotely"),
+            icon_name: 'preferences-system-notifications-symbolic',
+
             signature: "a{sv}",
             incoming: [],
             outgoing: ["kdeconnect.notification"],

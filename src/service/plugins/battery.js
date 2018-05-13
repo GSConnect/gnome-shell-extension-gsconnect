@@ -19,6 +19,8 @@ var Metadata = {
         reportStatus: {
             summary: _('Report Battery'),
             description: _('Provide battery update'),
+            icon_name: 'battery-symbolic',
+
             signature: 'av',
             incoming: ['kdeconnect.battery.request'],
             outgoing: ['kdeconnect.battery'],
@@ -27,6 +29,8 @@ var Metadata = {
         requestStatus: {
             summary: _('Update Battery'),
             description: _('Request battery update'),
+            icon_name: 'battery-symbolic',
+
             signature: 'av',
             incoming: ['kdeconnect.battery'],
             outgoing: ['kdeconnect.battery.request'],

@@ -17,7 +17,9 @@ var Metadata = {
         ping: {
             summary: _('Ping'),
             description: _('Ping a device with an optional message'),
-            signature: 'av',
+            icon_name: 'dialog-information-symbolic',
+
+            signature: 's',
             incoming: [],
             outgoing: ['kdeconnect.ping'],
             allow: 2
@@ -27,6 +29,7 @@ var Metadata = {
         ping: {
             summary: _('Ping'),
             description: _('Ping a device with an optional message'),
+            icon_name: 'dialog-information-symbolic',
             incoming: ['kdeconnect.ping'],
             outgoing: [],
             allow: 4

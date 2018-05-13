@@ -54,7 +54,7 @@ var Metadata = {
             description: _('Reply to an SMS message'),
             icon_name: 'sms-symbolic',
 
-            signature: 'v',
+            signature: 'a{sv}',
             incoming: ['kdeconnect.telephony'],
             outgoing: ['kdeconnect.sms.request'],
             allow: Allow.OUT | Allow.IN | Allow.SMS
@@ -74,7 +74,7 @@ var Metadata = {
             description: _('Show a notification tailored for phone calls'),
             icon_name: 'sms-symbolic',
 
-            signature: 'v',
+            signature: 'a{sv}',
             incoming: ['kdeconnect.telephony'],
             outgoing: ['kdeconnect.sms.request'],
             allow: Allow.OUT | Allow.IN | Allow.CALLS | Allow.SMS
@@ -95,24 +95,28 @@ var Metadata = {
         missedCall: {
             summary: _('Missed Call'),
             description: _('An incoming call was missed'),
+            icon_name: 'call-missed-symbolic',
             incoming: ['kdeconnect.telephony'],
             allow: 4
         },
         ringing: {
             summary: _('Incoming Call'),
             description: _('An incoming call'),
+            icon_name: 'call-start-symbolic',
             incoming: ['kdeconnect.telephony'],
             allow: 4
         },
         sms: {
             summary: _('SMS Message'),
             description: _('An incoming SMS message'),
+            icon_name: 'sms-symbolic',
             incoming: ['kdeconnect.telephony'],
             allow: 4
         },
         talking: {
             summary: _('Call In Progress'),
             description: _('An incoming call was answered'),
+            icon_name: 'call-start-symbolic',
             incoming: ['kdeconnect.telephony'],
             allow: 4
         },
@@ -120,6 +124,7 @@ var Metadata = {
         ended: {
             summary: _('Call Ended'),
             description: _('An incoming call ended'),
+            icon_name: 'call-stop-symbolic',
             incoming: ['kdeconnect.telephony'],
             allow: 4
         }
