@@ -108,8 +108,8 @@ var DeviceChooser = GObject.registerClass({
         this.list.connect('row-activated', (list, row) => {
             this.response(Gtk.ResponseType.OK);
         });
-        this.list.connect('selected-rows-changed', () => {
-            selectButton.sensitive = (this.list.get_selected_rows().length);
+        this.list.connect('selected-rows-changed', (list) => {
+            selectButton.sensitive = (list.get_selected_rows().length);
         });
         scrolledWindow.add(this.list);
 
@@ -240,9 +240,7 @@ var SectionRow = GObject.registerClass({
 
         if (icon_name) {
             this.icon = new Gtk.Image({
-                gicon: new Gio.ThemedIcon({
-                    names: [ icon_name, 'system-run-symbolic' ]
-                }),
+                icon_name: icon_name,
                 pixel_size: 32,
                 visible: true
             });
@@ -809,12 +807,15 @@ var DeviceSettings = GObject.registerClass({
      * TODO: maybe action<->commands?
      */
     _runcommandSettings() {
-        let runcommand = this._getSettings('runcommand');
+        let runcommand = (this.device.supportedPlugins().indexOf('runcommand') > -1);
 
         if (runcommand) {
+            let settings = this._getSettings('runcommand');
+            mapSwitch(settings, this.runcommand_allow, 4);
+
             // Local Command List
             this._commands = gsconnect.full_unpack(
-                runcommand.get_value('command-list')
+                settings.get_value('command-list')
             );
 
             this.command_list.set_sort_func((row1, row2) => {
@@ -863,7 +864,8 @@ var DeviceSettings = GObject.registerClass({
                 valign: Gtk.Align.CENTER,
                 vexpand: true,
                 visible: true
-            })
+            }),
+            activatable: false
         });
         row.set_name(uuid);
         row.subtitle.ellipsize = Pango.EllipsizeMode.MIDDLE;
@@ -1157,10 +1159,12 @@ var DeviceSettings = GObject.registerClass({
                 widget.get_style_context().add_class('dim-label');
 
                 let row = new SectionRow({
+                    icon_name: action.meta.icon_name,
                     title: action.meta.summary,
                     subtitle: action.meta.description,
                     widget: widget
                 });
+                row.icon.pixel_size = 16;
                 row.name = action.name;
                 row.meta = action.meta;
                 this.shortcuts_list.add(row);
@@ -1358,33 +1362,6 @@ var ShortcutEditor = GObject.registerClass({
         this.confirm_shortcut.attach(this.shortcut_label, 0, 0, 1, 1);
     }
 
-//    /*
-//     * Stolen from GtkCellRendererAccel:
-//     * https://git.gnome.org/browse/gtk+/tree/gtk/gtkcellrendereraccel.c#n261
-//     */
-//    gchar*
-//    convert_keysym_state_to_string (CcKeyCombo *combo)
-//    {
-//      gchar *name;
-
-//      if (combo->keyval == 0 && combo->keycode == 0)
-//        {
-//          /* This label is displayed in a treeview cell displaying
-//           * a disabled accelerator key combination.
-//           */
-//          name = g_strdup (_('Disabled'));
-//        }
-//      else
-//        {
-//          name = gtk_accelerator_get_label_with_keycode (NULL, combo->keyval, combo->keycode, combo->mask);
-
-//          if (name == NULL)
-//            name = gtk_accelerator_name_with_keycode (NULL, combo->keyval, combo->keycode, combo->mask);
-//        }
-
-//      return name;
-//    }
-
     _onKeyPressEvent(widget, event) {
         if (!this._gdkDevice) {
             return false;
@@ -1450,12 +1427,6 @@ var ShortcutEditor = GObject.registerClass({
             this.ungrab();
 
             this.accelerator = Gtk.accelerator_name(keyvalLower, realMask);
-            this.accelerator_label = Gtk.accelerator_get_label(keyvalLower, realMask);
-
-            log('KEYVAL: ' + keyvalLower);
-            log('MASK: ' + realMask);
-            log('SHORTCUT: ' + this.accelerator);
-            log('SHORTCUT: ' + this.accelerator_label);
 
             // Switch to confirm/conflict page
             this.stack.set_visible_child_name('confirm-shortcut');
@@ -1466,8 +1437,9 @@ var ShortcutEditor = GObject.registerClass({
             // If not available, show confliction
             if (!this.check(this.accelerator)) {
                 this.conflict_label.visible = true;
-                //_('The requested keyboard shortcut is already in use and can't be overridden.')
-                this.conflict_label.label = _('%s is already being used').format(this.accelerator_label);
+                this.conflict_label.label = _('%s is already being used').format(
+                    Gtk.accelerator_get_label(keyvalLower, realMask)
+                );
             // Otherwise the set button
             } else {
                 this.set_button.visible = true;
