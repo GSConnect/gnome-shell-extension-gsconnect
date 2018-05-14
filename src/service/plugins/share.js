@@ -21,7 +21,7 @@ var Metadata = {
             description: _('Select a file or URL to share'),
             icon_name: 'send-to-symbolic',
 
-            signature: null,
+            parameter_type: null,
             incoming: [],
             outgoing: ['kdeconnect.share.request'],
             allow: 2
@@ -31,7 +31,7 @@ var Metadata = {
             description: _('Directly share a file'),
             icon_name: 'document-send-symbolic',
 
-            signature: 's',
+            parameter_type: new GLib.VariantType('s'),
             incoming: [],
             outgoing: ['kdeconnect.share.request'],
             allow: 2
@@ -41,7 +41,7 @@ var Metadata = {
             description: _('Directly share text'),
             icon_name: 'send-to-symbolic',
 
-            signature: 's',
+            parameter_type: new GLib.VariantType('s'),
             incoming: [],
             outgoing: ['kdeconnect.share.request'],
             allow: 2
@@ -51,7 +51,7 @@ var Metadata = {
             description: _('Directly share a Url'),
             icon_name: 'send-to-symbolic',
 
-            signature: 's',
+            parameter_type: new GLib.VariantType('s'),
             incoming: [],
             outgoing: ['kdeconnect.share.request'],
             allow: 2
@@ -64,6 +64,7 @@ var Metadata = {
             icon_name: 'document-send-symbolic',
 
             incoming: ['kdeconnect.share.request'],
+            outgoing: [],
             allow: 4
         },
         receivedText: {
@@ -72,6 +73,7 @@ var Metadata = {
             icon_name: 'send-to-symbolic',
 
             incoming: ['kdeconnect.share.request'],
+            outgoing: [],
             allow: 4
         },
         receivedUrl: {
@@ -80,6 +82,7 @@ var Metadata = {
             icon_name: 'send-to-symbolic',
 
             incoming: ['kdeconnect.share.request'],
+            outgoing: [],
             allow: 4
         }
     }
@@ -332,13 +335,17 @@ var Plugin = GObject.registerClass({
         }
 
         let info = file.query_info('standard::size', 0, null);
+        let transfer;
 
-        let transfer = new Lan.Transfer({
-            device: this.device,
-            input_stream: file.read(null),
-            size: info.get_size(),
-            interactive: true
-        });
+        if (this.device._channel.type === 'bluetooth') {
+        } else if (this.device._channel.type === 'tcp') {
+            transfer = new Lan.Transfer({
+                device: this.device,
+                input_stream: file.read(null),
+                size: info.get_size(),
+                interactive: true
+            });
+        }
 
         transfer.connect('connected', () => {
             transfer.start();

@@ -19,7 +19,7 @@ var Metadata = {
             description: _('Ping a device with an optional message'),
             icon_name: 'dialog-information-symbolic',
 
-            signature: 's',
+            parameter_type: new GLib.VariantType('s'),
             incoming: [],
             outgoing: ['kdeconnect.ping'],
             allow: 2

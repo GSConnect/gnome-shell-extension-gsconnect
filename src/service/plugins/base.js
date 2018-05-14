@@ -66,13 +66,14 @@ var Plugin = GObject.registerClass({
             // We register actions based on the device capabilities
             let deviceHandles = this.device.incomingCapabilities;
             let deviceProvides = this.device.outgoingCapabilities;
+            let blacklist = this.device.settings.get_strv('action-blacklist');
 
             for (let name in this._meta.actions) {
                 let meta = this._meta.actions[name];
 
                 if (meta.incoming.every(p => deviceProvides.indexOf(p) > -1) &&
                     meta.outgoing.every(p => deviceHandles.indexOf(p) > -1)) {
-                    this._registerAction(name, meta);
+                    this._registerAction(name, meta, blacklist);
                 }
             }
 
@@ -92,8 +93,12 @@ var Plugin = GObject.registerClass({
 
     _activateAction(action, parameter) {
         try {
-            if (parameter) {
-                this[action.name].call(this, gsconnect.full_unpack(parameter));
+            parameter = parameter ? gsconnect.full_unpack(parameter) : null;
+
+            if (Array.isArray(parameter)) {
+                this[action.name].apply(this, parameter);
+            } else if (parameter) {
+                this[action.name].call(this, parameter);
             } else {
                 this[action.name].call(this);
             }
@@ -114,18 +119,46 @@ var Plugin = GObject.registerClass({
         });
     }
 
-    _registerAction(name, meta) {
-        let action = new Device.Action({
-            name: name,
-            parameter_type: (meta.signature) ? new GLib.VariantType(meta.signature) : null
-        }, meta);
-        action.set_enabled(action.allow & this.allow);
+    _registerAction(name, meta, blacklist) {
+        let action = new Device.Action(Object.assign({ name: name }, meta));
 
-        action.connect("activate", this._activateAction.bind(this));
+        // Set the enabled state
+        if (blacklist.indexOf(action.name) > -1) {
+            action.set_enabled(false);
+        } else {
+            action.set_enabled(action.allow & this.allow);
+        }
+
+        // Bind the activation
+        action.connect('activate', this._activateAction.bind(this));
 
         this.device.add_action(action);
 
         this._gactions.push(action);
+    }
+
+    _eventActions(type, parameter) {
+        let events = gsconnect.full_unpack(
+            this.settings.get_value('events')
+        );
+
+        let actions = events.hasOwnProperty(type) ? events[type] : {};
+
+        for (let name in actions) {
+            if (actions[name] && name === 'dbusEmit') {
+                this.device.emit('event', type, gsconnect.full_pack(data));
+            } else if (actions[name]) {
+                let action = this.device.lookup_action(name);
+
+                if (action && action.enabled) {
+                    if (action.parameter_type) {
+                        action.activate(gsconnect.full_pack(event));
+                    } else if (action) {
+                        action.activate(null);
+                    }
+                }
+            }
+        }
     }
 
     /**

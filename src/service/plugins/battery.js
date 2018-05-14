@@ -16,22 +16,22 @@ var Metadata = {
     incomingCapabilities: ['kdeconnect.battery', 'kdeconnect.battery.request'],
     outgoingCapabilities: ['kdeconnect.battery', 'kdeconnect.battery.request'],
     actions: {
-        reportStatus: {
+        batteryReport: {
             summary: _('Report Battery'),
             description: _('Provide battery update'),
             icon_name: 'battery-symbolic',
 
-            signature: 'av',
+            parameter_type: null,
             incoming: ['kdeconnect.battery.request'],
             outgoing: ['kdeconnect.battery'],
             allow: 2
         },
-        requestStatus: {
+        batteryRequest: {
             summary: _('Update Battery'),
             description: _('Request battery update'),
             icon_name: 'battery-symbolic',
 
-            signature: 'av',
+            parameter_type: null,
             incoming: ['kdeconnect.battery'],
             outgoing: ['kdeconnect.battery.request'],
             allow: 4
@@ -119,7 +119,7 @@ var Plugin = GObject.registerClass({
         this.notify('time');
         this.notify('icon-name');
 
-        this.requestStatus();
+        this.batteryRequest();
 
         // Local Battery (UPower)
         if ((this.allow & 2) && this.device.service.type === 'laptop') {
@@ -224,19 +224,16 @@ var Plugin = GObject.registerClass({
             buttons = [{
                 label: _('Locate'),
                 action: 'find',
-                params: null
+                parameter: null
             }];
         }
 
         this.device.showNotification({
             id: 'battery|threshold',
-            // TRANSLATORS: Low Battery Warning
-            title: _('Low Battery Warning'),
-            // TRANSLATORS: eg. Google Pixel's battery level is 15%
-            body: _('%s: battery level is %d%%').format(
-                this.device.name,
-                this.level
-            ),
+            // TRANSLATORS: eg. Google Pixel: Battery is low
+            title: _('%s: Battery is low').format(this.device.name),
+            // TRANSLATORS: eg. 15% remaining
+            body: _('%d%% remaining').format(this.level),
             icon: new Gio.ThemedIcon({ name: 'battery-caution-symbolic' }),
             buttons: buttons
         });
@@ -280,7 +277,7 @@ var Plugin = GObject.registerClass({
     /**
      * Report the local battery's current charge/state
      */
-    reportStatus() {
+    batteryReport() {
         if (!this._upower) { return; }
 
         debug([this._upower.percentage, this._upower.state]);
@@ -307,7 +304,7 @@ var Plugin = GObject.registerClass({
     /**
      * Request the remote battery's current charge/state
      */
-    requestStatus() {
+    batteryRequest() {
         this.device.sendPacket({
             id: 0,
             type: 'kdeconnect.battery.request',

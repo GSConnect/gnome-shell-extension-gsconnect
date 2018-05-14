@@ -14,15 +14,43 @@ var Metadata = {
     incomingCapabilities: ['kdeconnect.clipboard'],
     outgoingCapabilities: ['kdeconnect.clipboard'],
     actions: {
-        provideClipboard: {
-            summary: _('Provide Clipboard'),
-            description: _('Provide clipboard update'),
-            signature: 'av',
+        clipboardCopy: {
+            summary: _('Clipboard Copy'),
+            description: _('Copy from local clipboard to remote clipboard'),
+            icon_name: 'edit-copy-symbolic',
+
+            parameter_type: null,
+            incoming: [],
+            outgoing: ['kdeconnect.clipboard'],
+            allow: 4
+        },
+        clipboardPaste: {
+            summary: _('Clipboard Paste'),
+            description: _('Paste from remote clipboard to local clipboard'),
+            icon_name: 'edit-paste-symbolic',
+
+            parameter_type: null,
+            incoming: ['kdeconnect.clipboard'],
+            outgoing: [],
+            allow: 2
+        }
+    },
+    events: {
+        clipboardUpdateLocal: {
+            summary: _('Clipboard Update (Local)'),
+            description: _('The local clipboard changed'),
+            icon_name: 'edit-paste-symbolic',
+            incoming: ['kdeconnect.clipboard'],
+            outgoing: ['kdeconnect.clipboard']
+        },
+        clipboardUpdateRemote: {
+            summary: _('Clipboard Update (Remote)'),
+            description: _('The remote clipboard changed'),
+            icon_name: 'edit-paste-symbolic',
             incoming: ['kdeconnect.clipboard'],
             outgoing: ['kdeconnect.clipboard']
         }
-    },
-    events: {}
+    }
 };
 
 
@@ -51,56 +79,67 @@ var Plugin = GObject.registerClass({
             throw Error(_('Failed to get Clipboard'));
         }
 
-        this._clipboard.connect('owner-change', (clipboard, event) => {
-            this._clipboard.request_text((clipboard, text) => {
-                // FIXME
-                if (!(this.allow & 2)) {
-                    debug('Operation not permitted');
-                    return;
-                }
+        this._localContent = '';
+        this._remoteContent = '';
 
-                this.provideClipboard(text);
-            });
-        });
+        // Watch local clipboard for changes
+        this._ownerChangeId = this._clipboard.connect(
+            'owner-change',
+            this._updateLocal.bind(this)
+        );
     }
 
     handlePacket(packet) {
         debug(packet);
 
-        if (packet.body.content && (this.allow & 4)) {
-            this._handleContent(packet.body.content);
+        if (packet.body.content) {
+            this._updateRemote(packet.body.content);
         }
     }
 
     /**
      * Remote Methods
      */
-    _handleContent(text) {
+    _updateLocal(clipboard, event) {
+        clipboard.request_text((clipboard, text) => {
+            debug(text);
+
+            this._localContent = text;
+            this._eventActions('clipboardUpdateLocal', null);
+        });
+    }
+
+    _updateRemote(text) {
         debug(text);
 
-        this._currentContent = text;
-        this._clipboard.set_text(text, -1);
+        this._remoteContent = text;
+        this._eventActions('clipboardUpdateRemote', null);
     }
 
     /**
-     * Local Methods
+     * Copy to the remote clipboard
      */
-    provideClipboard(text) {
-        if (text !== this._currentContent) {
-            debug(text);
-
-            this._currentContent = text;
-
+    clipboardCopy() {
+        if (this._localContent !== this._remoteContent) {
             this.device.sendPacket({
                 id: 0,
                 type: 'kdeconnect.clipboard',
-                body: { content: text }
+                body: { content: this._localContent }
             });
         }
     }
 
+    /**
+     * Paste from the remote clipboard
+     */
+    clipboardPaste() {
+        if (this._localContent !== this._remoteContent) {
+            this._clipboard.set_text(this._remoteContent, -1);
+        }
+    }
+
     destroy() {
-        GObject.signal_handlers_destroy(this._clipboard);
+        this._clipboard.disconnect(this._ownerChangeId);
 
         PluginsBase.Plugin.prototype.destroy.call(this);
     }

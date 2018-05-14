@@ -32,7 +32,7 @@ var Metadata = {
             description: _('Silence an incoming call'),
             icon_name: 'audio-volume-muted-symbolic',
 
-            signature: null,
+            parameter_type: null,
             incoming: ['kdeconnect.telephony'],
             outgoing: ['kdeconnect.telephony.request'],
             allow: Allow.OUT | Allow.IN | Allow.CALLS
@@ -44,7 +44,7 @@ var Metadata = {
             description: _('Start a new SMS conversation'),
             icon_name: 'sms-symbolic',
 
-            signature: null,
+            parameter_type: null,
             incoming: ['kdeconnect.telephony'],
             outgoing: ['kdeconnect.sms.request'],
             allow: Allow.OUT | Allow.IN | Allow.SMS
@@ -54,7 +54,7 @@ var Metadata = {
             description: _('Reply to an SMS message'),
             icon_name: 'sms-symbolic',
 
-            signature: 'a{sv}',
+            parameter_type: new GLib.VariantType('a{sv}'),
             incoming: ['kdeconnect.telephony'],
             outgoing: ['kdeconnect.sms.request'],
             allow: Allow.OUT | Allow.IN | Allow.SMS
@@ -64,7 +64,7 @@ var Metadata = {
             description: _('Send an SMS message'),
             icon_name: 'sms-send',
 
-            signature: '(ss)',
+            parameter_type: new GLib.VariantType('(ss)'),
             incoming: ['kdeconnect.telephony'],
             outgoing: ['kdeconnect.sms.request'],
             allow: Allow.OUT | Allow.IN | Allow.SMS
@@ -74,17 +74,17 @@ var Metadata = {
             description: _('Show a notification tailored for phone calls'),
             icon_name: 'sms-symbolic',
 
-            signature: 'a{sv}',
+            parameter_type: new GLib.VariantType('a{sv}'),
             incoming: ['kdeconnect.telephony'],
             outgoing: ['kdeconnect.sms.request'],
             allow: Allow.OUT | Allow.IN | Allow.CALLS | Allow.SMS
         },
         smsNotification: {
             summary: _('SMS Notification'),
-            description: _('Show a notification that opens a new conversation when activated'),
+            description: _('Show a notification'),
             icon_name: 'sms-symbolic',
 
-            signature: 'a{sv}',
+            parameter_type: new GLib.VariantType('a{sv}'),
             incoming: ['kdeconnect.telephony'],
             outgoing: ['kdeconnect.sms.request'],
             allow: Allow.OUT | Allow.IN | Allow.SMS
@@ -93,17 +93,19 @@ var Metadata = {
     events: {
         // SMS Events
         missedCall: {
-            summary: _('Missed Call'),
+            summary: _('Call Missed'),
             description: _('An incoming call was missed'),
             icon_name: 'call-missed-symbolic',
             incoming: ['kdeconnect.telephony'],
+            outgoing: [],
             allow: 4
         },
         ringing: {
-            summary: _('Incoming Call'),
+            summary: _('Call Incoming'),
             description: _('An incoming call'),
             icon_name: 'call-start-symbolic',
             incoming: ['kdeconnect.telephony'],
+            outgoing: [],
             allow: 4
         },
         sms: {
@@ -111,13 +113,15 @@ var Metadata = {
             description: _('An incoming SMS message'),
             icon_name: 'sms-symbolic',
             incoming: ['kdeconnect.telephony'],
+            outgoing: [],
             allow: 4
         },
         talking: {
-            summary: _('Call In Progress'),
+            summary: _('Call Answered'),
             description: _('An incoming call was answered'),
             icon_name: 'call-start-symbolic',
             incoming: ['kdeconnect.telephony'],
+            outgoing: [],
             allow: 4
         },
         // FIXME: isCancel???
@@ -126,6 +130,7 @@ var Metadata = {
             description: _('An incoming call ended'),
             icon_name: 'call-stop-symbolic',
             incoming: ['kdeconnect.telephony'],
+            outgoing: [],
             allow: 4
         }
     }
@@ -277,7 +282,7 @@ var Plugin = GObject.registerClass({
                 action: 'replySms',
                 // TRANSLATORS: Reply to a missed call by SMS
                 label: _('Message'),
-                params: event
+                parameter: event
             }];
             icon = icon || new Gio.ThemedIcon({ name: 'call-missed-symbolic' });
         } else if (event.type === 'ringing') {
@@ -285,7 +290,7 @@ var Plugin = GObject.registerClass({
                 action: 'muteCall',
                 // TRANSLATORS: Silence an incoming call
                 label: _('Mute'),
-                params: event
+                parameter: event
             }];
             icon = icon || new Gio.ThemedIcon({ name: 'call-start-symbolic' });
             priority = Gio.NotificationPriority.URGENT;
@@ -330,7 +335,7 @@ var Plugin = GObject.registerClass({
             priority: Gio.NotificationPriority.HIGH,
             action: {
                 name: 'replySms',
-                params: event
+                parameter: event
             }
         });
     }
@@ -387,13 +392,13 @@ var Plugin = GObject.registerClass({
             }
         }
 
-        this._telephonyAction(event);
+        this._eventActions(event.type, event);
     }
 
     _onRinging(event) {
         debug(event);
 
-        this._telephonyAction(event);
+        this._eventActions(event.type, event);
         this._setMediaState(2); // TODO
     }
 
@@ -435,7 +440,7 @@ var Plugin = GObject.registerClass({
             }
         }
 
-        this._telephonyAction(event);
+        this._eventActions(event.type, event);
     }
 
     _onTalking(event) {
@@ -444,26 +449,8 @@ var Plugin = GObject.registerClass({
         // TODO: need this, or done by isCancel?
         this.device.withdraw_notification('ringing|' + event.contact.name);
 
-        this._telephonyAction(event);
+        this._eventActions(event.type, event);
         this._setMediaState(2); // TODO
-    }
-
-    _telephonyAction(event) {
-        let actions = gsconnect.full_unpack(
-            this.settings.get_value('events')
-        )[event.type];
-
-        for (let name in actions) {
-            if (actions[name]) {
-                let action = this.device.lookup_action(name);
-
-                if (action && action.parameter_type) {
-                    action.activate(gsconnect.full_pack(event));
-                } else if (action) {
-                    action.activate();
-                }
-            }
-        }
     }
 
     /**

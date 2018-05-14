@@ -16,30 +16,21 @@ const Bluetooth = imports.service.bluetooth;
  * Base class for plugin actions
  */
 var Action = GObject.registerClass({
-    GTypeName: 'GSConnectDeviceAction',
-    Properties: {
-        'allow': GObject.ParamSpec.int(
-            'allow',
-            'AllowTraffic',
-            'The required permissions for this action',
-            GObject.ParamFlags.READABLE,
-            1, 8,
-            1
-        )
-    }
+    GTypeName: 'GSConnectDeviceAction'
 }, class Action extends Gio.SimpleAction {
 
-    _init(params, meta) {
-        super._init(params);
-        this._meta = meta;
-    }
+    _init(params) {
+        super._init({
+            name: params.name,
+            parameter_type: params.parameter_type
+        });
 
-    get allow() {
-        return this._meta.allow;
-    }
-
-    get meta() {
-        return this._meta;
+        this.summary = params.summary;
+        this.description = params.description;
+        this.icon_name = params.icon_name;
+        this.incoming = params.incoming;
+        this.outgoing = params.outgoing;
+        this.allow = params.allow;
     }
 });
 
@@ -107,7 +98,7 @@ var Menu = GObject.registerClass({
      * @param {Object} action - The action meta
      * @return {Number} - The index of the added item
      */
-    add_action(name, action) {
+    add_action(action, index=-1) {
         let item = new Gio.MenuItem();
         item.set_label(action.summary);
         item.set_icon(
@@ -115,7 +106,7 @@ var Menu = GObject.registerClass({
                 name: action.icon_name || 'application-x-executable-symbolic'
             })
         );
-        item.set_detailed_action(`device.${name}`);
+        item.set_detailed_action(`device.${action.name}`);
 
         this.append_item(item);
 
@@ -599,45 +590,33 @@ var Device = GObject.registerClass({
      * Stock device actions
      */
     _registerActions() {
-        let acceptPair = new Action(
-            {
-                name: 'acceptPair',
-                parameter_type: new GLib.VariantType('v')
-            },
-            {
-                summary: _('Accept Pair'),
-                description: _('Accept an incoming pair request'),
-                icon_name: 'channel-insecure-symbolic'
-            }
-        );
+        let acceptPair = new Action({
+            name: 'acceptPair',
+            parameter_type: new GLib.VariantType('v'),
+            summary: _('Accept Pair'),
+            description: _('Accept an incoming pair request'),
+            icon_name: 'channel-insecure-symbolic'
+        });
         acceptPair.connect('activate', this.acceptPair.bind(this));
         this.add_action(acceptPair);
 
-        let rejectPair = new Action(
-            {
-                name: 'rejectPair',
-                parameter_type: new GLib.VariantType('v')
-            },
-            {
-                summary: _('Reject Pair'),
-                description: _('Reject an incoming pair request'),
-                icon_name: 'channel-insecure-symbolic'
-            }
-        );
+        let rejectPair = new Action({
+            name: 'rejectPair',
+            parameter_type: new GLib.VariantType('v'),
+            summary: _('Reject Pair'),
+            description: _('Reject an incoming pair request'),
+            icon_name: 'channel-insecure-symbolic'
+        });
         rejectPair.connect('activate', this.rejectPair.bind(this));
         this.add_action(rejectPair);
 
-        let viewFolder = new Action(
-            {
-                name: 'viewFolder',
-                parameter_type: new GLib.VariantType('s')
-            },
-            {
-                summary: _('View Folder'),
-                description: _('Open a folder for viewing'),
-                icon_name: 'folder-open-symbolic'
-            }
-        );
+        let viewFolder = new Action({
+            name: 'viewFolder',
+            parameter_type: new GLib.VariantType('s'),
+            summary: _('View Folder'),
+            description: _('Open a folder for viewing'),
+            icon_name: 'folder-open-symbolic'
+        });
         viewFolder.connect('activate', this.viewFolder.bind(this));
         this.add_action(viewFolder);
     }
@@ -676,8 +655,8 @@ var Device = GObject.registerClass({
         notif.set_priority(params.priority);
 
         if (params.action) {
-            if (!params.action.params && params.action.params !== false) {
-                params.action.params = '';
+            if (!params.action.parameter && params.action.parameter !== false) {
+                params.action.parameter = '';
             }
 
             notif.set_default_action_and_target(
@@ -685,23 +664,23 @@ var Device = GObject.registerClass({
                 new GLib.Variant('(ssv)', [
                     this._dbus.get_object_path(),
                     params.action.name,
-                    gsconnect.full_pack(params.action.params)
+                    gsconnect.full_pack(params.action.parameter)
                 ])
             );
         }
 
         for (let button of params.buttons) {
-            if (!button.params && button.params !== false) {
-                button.params = '';
+            if (!button.parameter && button.parameter !== false) {
+                button.parameter = '';
             }
 
             notif.add_button_with_target(
-                button.summary,
+                button.label,
                 'app.deviceAction',
                 new GLib.Variant('(ssv)', [
                     this._dbus.get_object_path(),
                     button.action,
-                    gsconnect.full_pack(button.params)
+                    gsconnect.full_pack(button.parameter)
                 ])
             );
         }

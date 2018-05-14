@@ -18,7 +18,9 @@ var Metadata = {
         executeCommand: {
             summary: _('Run Command'),
             description: _('Execute a command on the device'),
-            signature: 's',
+            icon_name: 'system-run-symbolic',
+
+            parameter_type: new GLib.VariantType('s'),
             incoming: ['kdeconnect.runcommand'],
             outgoing: ['kdeconnect.runcommand.request'],
             allow: 2

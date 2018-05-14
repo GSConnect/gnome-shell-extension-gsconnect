@@ -22,22 +22,29 @@ var Metadata = {
             description: _('Find a device by making it ring'),
             icon_name: 'find-location-symbolic',
 
-            signature: null,
+            parameter_type: null,
             incoming: [],
             outgoing: ['kdeconnect.findmyphone.request'],
             allow: 2
+        },
+        locationAnnounce: {
+            summary: _('Announce Location'),
+            description: _('Play a sound locally'),
+            icon_name: 'find-location-symbolic',
+            incoming: ['kdeconnect.findmyphone.request'],
+            outgoing: [],
+            allow: 4
         }
     },
     events: {
-        find: {
-            summary: _('Locate'),
-            description: _('Find a device by making it ring'),
+        locationRequest: {
+            summary: _('Location Request'),
+            description: _('A request to locate this device'),
             icon_name: 'find-location-symbolic',
 
-            signature: null,
-            incoming: [],
-            outgoing: ['kdeconnect.findmyphone.request'],
-            allow: 4
+            parameter_type: null,
+            incoming: ['kdeconnect.findmyphone.request'],
+            outgoing: []
         }
     }
 };
@@ -66,14 +73,14 @@ var Plugin = GObject.registerClass({
         debug('FindMyPhone: handlePacket()');
 
         if (packet.type === 'kdeconnect.findmyphone.request' && (this.allow & 4)) {
-            this._handleFind();
+            this._eventActions('locationRequest', null);
         }
     }
 
     /**
      * Local Methods
      */
-    _handleFind() {
+    locationAnnounce() {
         debug('FindMyPhone: _ring()');
 
         if (this._cancellable || this._dialog) {

@@ -21,7 +21,7 @@ var Metadata = {
             description: _('Mount a remote device'),
             icon_name: 'folder-remote-symbolic',
 
-            signature: null,
+            parameter_type: null,
             incoming: ['kdeconnect.sftp'],
             outgoing: ['kdeconnect.sftp.request'],
             allow: 6
@@ -31,7 +31,7 @@ var Metadata = {
             description: _('Unmount a remote device'),
             icon_name: 'media-eject-symbolic',
 
-            signature: null,
+            parameter_type: null,
             incoming: ['kdeconnect.sftp'],
             outgoing: ['kdeconnect.sftp.request'],
             allow: 6

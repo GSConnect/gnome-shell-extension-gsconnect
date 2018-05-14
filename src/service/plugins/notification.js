@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
@@ -13,38 +13,38 @@ const PluginsBase = imports.service.plugins.base;
 
 
 var Metadata = {
-    id: "org.gnome.Shell.Extensions.GSConnect.Plugin.Notification",
-    incomingCapabilities: ["kdeconnect.notification", "kdeconnect.notification.request"],
-    outgoingCapabilities: ["kdeconnect.notification", "kdeconnect.notification.reply", "kdeconnect.notification.request"],
+    id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.Notification',
+    incomingCapabilities: ['kdeconnect.notification', 'kdeconnect.notification.request'],
+    outgoingCapabilities: ['kdeconnect.notification', 'kdeconnect.notification.reply', 'kdeconnect.notification.request'],
     actions: {
-        showNotification: {
-            summary: _("Show Notification"),
-            description: _("Display a remote notification locally"),
+        receiveNotification: {
+            summary: _('Receive Notification'),
+            description: _('Display a remote notification locally'),
             icon_name: 'preferences-system-notifications-symbolic',
 
-            signature: "av",
-            incoming: ["kdeconnect.notification"],
+            parameter_type: new GLib.VariantType('a{sv}'),
+            incoming: ['kdeconnect.notification'],
             outgoing: [],
             allow: 4
         },
         closeNotification: {
-            summary: _("Close Notification"),
-            description: _("Close a remote notification by Id"),
+            summary: _('Close Notification'),
+            description: _('Close a remote notification by Id'),
             icon_name: 'preferences-system-notifications-symbolic',
 
-            signature: "s",
+            parameter_type: new GLib.VariantType('s'),
             incoming: [],
-            outgoing: ["kdeconnect.notification.request"],
+            outgoing: ['kdeconnect.notification.request'],
             allow: 6
         },
         sendNotification: {
-            summary: _("Send Notification"),
-            description: _("Display a local notification remotely"),
+            summary: _('Send Notification'),
+            description: _('Display a local notification remotely'),
             icon_name: 'preferences-system-notifications-symbolic',
 
-            signature: "a{sv}",
+            parameter_type: new GLib.VariantType('a{sv}'),
             incoming: [],
-            outgoing: ["kdeconnect.notification"],
+            outgoing: ['kdeconnect.notification'],
             allow: 2
         }
     },
@@ -61,27 +61,27 @@ var Metadata = {
  *
  *  {
  *      id: 1517817309016,
- *      type: "kdeconnect.notification",
+ *      type: 'kdeconnect.notification',
  *      body: {
  *          payloadHash: {String} MD5 Hash of payload data
- *                                (eg. "85ac3d1f77feb592f38dff6ae4f843e1"),
+ *                                (eg. '85ac3d1f77feb592f38dff6ae4f843e1'),
  *          requestReplyId: {String} UUID for repliable notifications aka
- *                                   Quick Reply (eg. "91bce2ab-873f-4056-8e91-16fd2f5781ec"),
+ *                                   Quick Reply (eg. '91bce2ab-873f-4056-8e91-16fd2f5781ec'),
  *          id: {String} The remote notification's Id
- *                       (eg. "0|com.google.android.apps.messaging|0|com.google.android.apps.messaging:sms:22|10109"),
- *          appName: {String} The application name (eg. "Messages"),
+ *                       (eg. '0|com.google.android.apps.messaging|0|com.google.android.apps.messaging:sms:22|10109'),
+ *          appName: {String} The application name (eg. 'Messages'),
  *          isClearable: {Boolean} Whether the notification can be closed,
- *          ticker: {String} Usually <title> and <text> joined with ": ". For
- *                           SMS it's "<contactName|phoneNumber>: <messageBody>",
+ *          ticker: {String} Usually <title> and <text> joined with ': '. For
+ *                           SMS it's '<contactName|phoneNumber>: <messageBody>',
  *          title: {String} Notification title, or <contactName|phoneNumber> for SMS,
  *          text: {String} Notification body, or <messageBody> for SMS,
  *          time: {String} String of epoch microseconds the notification
- *                         was *posted* (eg. "1517817308985"); this resets when
+ *                         was *posted* (eg. '1517817308985'); this resets when
  *                         an Android device resets.
  *      },
- *      "payloadSize": {Number} Payload size in bytes,
- *      "payloadTransferInfo": {
- *          "port": {Number} Port number between 1739-1764 for transfer
+ *      'payloadSize': {Number} Payload size in bytes,
+ *      'payloadTransferInfo': {
+ *          'port': {Number} Port number between 1739-1764 for transfer
  *      }
  *  }
  *
@@ -91,13 +91,13 @@ var Metadata = {
  *       requestReplyId {string} - a UUID for replying (?)
  */
 var Plugin = GObject.registerClass({
-    GTypeName: "GSConnectNotificationsPlugin",
+    GTypeName: 'GSConnectNotificationsPlugin',
     Properties: {
-        "notifications": GObject.param_spec_variant(
-            "notifications",
-            "NotificationList",
-            "A list of active or expected notifications",
-            new GLib.VariantType("aa{sv}"),
+        'notifications': GObject.param_spec_variant(
+            'notifications',
+            'NotificationList',
+            'A list of active or expected notifications',
+            new GLib.VariantType('aa{sv}'),
             null,
             GObject.ParamFlags.READABLE
         )
@@ -105,12 +105,12 @@ var Plugin = GObject.registerClass({
 }, class Plugin extends PluginsBase.Plugin {
 
     _init(device) {
-        super._init(device, "notification");
+        super._init(device, 'notification');
 
         this.contacts = Contacts.getStore();
 
         this._notifications = [];
-        this.cacheProperties(["_notifications"]);
+        this.cacheProperties(['_notifications']);
 
         // Request remote notifications (if permitted)
         this.request();
@@ -123,7 +123,7 @@ var Plugin = GObject.registerClass({
     handlePacket(packet) {
         debug(packet);
 
-        if (packet.type === "kdeconnect.notification.request") {
+        if (packet.type === 'kdeconnect.notification.request') {
             if (this.allow & 4) {
                 // TODO: A request for our notifications; NotImplemented
                 return;
@@ -133,21 +133,21 @@ var Plugin = GObject.registerClass({
                 // TODO: call org.gtk.Notifications->RemoveNotification()
                 this.device.withdraw_notification(packet.body.id);
                 this.untrackNotification(packet.body);
-                debug("closed notification");
+                debug('closed notification');
             // Ignore previously posted notifications
             } else if (this._matchNotification(packet.body)) {
-                debug("ignored cached notification");
+                debug('ignored cached notification');
             } else if (packet.payloadSize) {
-                debug("new notification with payload");
+                debug('new notification with payload');
                 this._downloadIcon(packet).then(icon => {
-                    return this.showNotification(packet, icon);
+                    return this.receiveNotification(packet, icon);
                 }).catch(e => {
                     debug(e);
-                    this.showNotification(packet);
+                    this.receiveNotification(packet);
                 });
             } else {
-                debug("new notification");
-                this.showNotification(packet);
+                debug('new notification');
+                this.receiveNotification(packet);
             }
         }
     }
@@ -181,7 +181,7 @@ var Plugin = GObject.registerClass({
 
                         this.device.sendPacket({
                             id: 0,
-                            type: "kdeconnect.notification.request",
+                            type: 'kdeconnect.notification.request',
                             body: { cancel: notif.id }
                         });
                         this.untrackNotification(notif);
@@ -226,7 +226,7 @@ var Plugin = GObject.registerClass({
     _uploadIcon(packet, icon) {
         debug(icon);
 
-        if (typeof icon === "string") {
+        if (typeof icon === 'string') {
             this._uploadNamedIcon(packet, icon);
         } else if (icon instanceof Gio.BytesIcon) {
             this._uploadBytesIcon(packet, icon.get_bytes());
@@ -274,7 +274,7 @@ var Plugin = GObject.registerClass({
         this._uploadIconStream(
             packet,
             gfile.read(null),
-            gfile.query_info("standard::size", 0, null).get_size(),
+            gfile.query_info('standard::size', 0, null).get_size(),
             GLib.compute_checksum_for_bytes(
                 GLib.ChecksumType.MD5,
                 gfile.load_contents(null)[1]
@@ -289,7 +289,7 @@ var Plugin = GObject.registerClass({
             input_stream: stream
         });
 
-        transfer.connect("connected", (channel) => transfer.start());
+        transfer.connect('connected', (channel) => transfer.start());
 
         transfer.upload().then(port => {
             packet.payloadSize = size;
@@ -307,19 +307,19 @@ var Plugin = GObject.registerClass({
         debug(`(${notif.appName}) ${notif.title}: ${notif.text}`);
 
         return new Promise((resolve, reject) => {
-            let applications = JSON.parse(this.settings.get_string("applications"));
+            let applications = JSON.parse(this.settings.get_string('applications'));
 
             // New application
             if (!applications.hasOwnProperty(notif.appName)) {
                 debug(`new application: ${notif.appName}`);
 
                 applications[notif.appName] = {
-                    iconName: (typeof notif.icon === "string") ? notif.icon : "system-run-symbolic",
+                    iconName: (typeof notif.icon === 'string') ? notif.icon : 'system-run-symbolic',
                     enabled: true
                 };
 
                 this.settings.set_string(
-                    "applications",
+                    'applications',
                     JSON.stringify(applications)
                 );
             }
@@ -330,7 +330,7 @@ var Plugin = GObject.registerClass({
 
                 let packet = {
                     id: 0,
-                    type: "kdeconnect.notification",
+                    type: 'kdeconnect.notification',
                     body: notif
                 };
 
@@ -364,9 +364,9 @@ var Plugin = GObject.registerClass({
                     output_stream: iconStream
                 });
 
-                transfer.connect("connected", (transfer) => transfer.start());
-                transfer.connect("failed", (transfer) => resolve(null));
-                transfer.connect("succeeded", (transfer) => {
+                transfer.connect('connected', (transfer) => transfer.start());
+                transfer.connect('failed', (transfer) => resolve(null));
+                transfer.connect('succeeded', (transfer) => {
                     iconStream.close(null);
                     resolve(Gio.BytesIcon.new(iconStream.steal_as_bytes()));
                 });
@@ -391,10 +391,10 @@ var Plugin = GObject.registerClass({
 
         // Update contact avatar
         if (!contact.avatar && icon instanceof Gio.BytesIcon) {
-            debug("updating avatar for " + event.contact.name);
+            debug('updating avatar for ' + event.contact.name);
             contact.avatar = GLib.build_filenamev([
                 Contacts.CACHE_DIR,
-                GLib.uuid_string_random() + ".jpeg"
+                GLib.uuid_string_random() + '.jpeg'
             ]);
             GLib.file_set_contents(
                 contact.avatar,
@@ -403,17 +403,17 @@ var Plugin = GObject.registerClass({
             this.contacts._writeCache();
         }
 
-        if (event.type === "sms") {
+        if (event.type === 'sms') {
             event.content = notif.text;
-        } else if (event.type === "missedCall") {
+        } else if (event.type === 'missedCall') {
             // TRANSLATORS: eg. Missed call from John Smith on Google Pixel
-            event.content = _("Missed call at %s").format(event.time);
+            event.content = _('Missed call at %s').format(event.time);
         }
 
         return event;
     }
 
-    showNotification(packet, icon) {
+    receiveNotification(packet, icon) {
         return new Promise((resolve, reject) => {
             // We use the timestamp as an the effective ID, since phone apps
             // reuse their ID's at whim.
@@ -423,41 +423,41 @@ var Plugin = GObject.registerClass({
             };
 
             // Check if this is a missed call or SMS notification
-            let isMissedCall = (packet.body.id.indexOf("MissedCall") > -1);
-            let isSms = (packet.body.id.indexOf("sms") > -1);
+            let isMissedCall = (packet.body.id.indexOf('MissedCall') > -1);
+            let isSms = (packet.body.id.indexOf('sms') > -1);
 
             // If it's an event we support, look for a known contact, but don't
             // create a new one since we'll only have name *or* number with no
             // decent way to tell which
             let action, contact;
 
-            if (isSms && this.device.get_action_enabled("smsNotification")) {
-                debug("An SMS notification");
+            if (isSms && this.device.get_action_enabled('smsNotification')) {
+                debug('An SMS notification');
                 contact = this.contacts.query({
                     name: packet.body.title,
                     number: packet.body.title,
                     single: true
                 });
-                action = this.device.lookup_action("smsNotification");
-            } else if (isMissedCall && this.device.get_action_enabled("callNotification")) {
-                debug("A missed call notification");
+                action = this.device.lookup_action('smsNotification');
+            } else if (isMissedCall && this.device.get_action_enabled('callNotification')) {
+                debug('A missed call notification');
                 contact = this.contacts.query({
                     name: packet.body.text,
                     number: packet.body.text,
                     single: true
                 });
-                action = this.device.lookup_action("callNotification");
+                action = this.device.lookup_action('callNotification');
             }
 
             // This is a missed call or SMS from a known contact
             if (contact) {
-                debug("Found known contact");
+                debug('Found known contact');
 
                 let event = this._parseTelephonyNotification(
                     packet.body,
                     contact,
                     icon,
-                    (isMissedCall) ? "missedCall" : "sms"
+                    (isMissedCall) ? 'missedCall' : 'sms'
                 );
 
                 action.activate(gsconnect.full_pack(event));
@@ -480,14 +480,14 @@ var Plugin = GObject.registerClass({
             // notification type, appName then device type
             if (!notif.icon) {
                 if (isMissedCall) {
-                    notif.icon = new Gio.ThemedIcon({ name: "call-missed-symbolic" });
+                    notif.icon = new Gio.ThemedIcon({ name: 'call-missed-symbolic' });
                 } else if (isSms) {
-                    notif.icon = new Gio.ThemedIcon({ name: "sms-symbolic" });
+                    notif.icon = new Gio.ThemedIcon({ name: 'sms-symbolic' });
                 } else {
                     notif.icon = new Gio.ThemedIcon({
                         names: [
-                            packet.body.appName.toLowerCase().replace(" ", "-"),
-                            this.device.type + "-symbolic"
+                            packet.body.appName.toLowerCase().replace(' ', '-'),
+                            this.device.type + '-symbolic'
                         ]
                     });
                 }
@@ -497,7 +497,7 @@ var Plugin = GObject.registerClass({
             this.device.showNotification(notif);
 
             resolve(true);
-        }).catch(e => debug(e));
+        }).catch(debug);
     }
 
     /**
@@ -505,7 +505,7 @@ var Plugin = GObject.registerClass({
      */
     trackNotification(notif) {
         this._notifications.push(notif);
-        this.notify("notifications");
+        this.notify('notifications');
     }
 
     untrackNotification(notif) {
@@ -514,7 +514,7 @@ var Plugin = GObject.registerClass({
         if (cachedNotif) {
             let index_ = this._notifications.indexOf(cachedNotif);
             this._notifications.splice(index_, 1);
-            this.notify("notifications");
+            this.notify('notifications');
         }
     }
 
@@ -539,12 +539,12 @@ var Plugin = GObject.registerClass({
                 this.closeNotification(cachedNotif.id);
             // ...or mark it to be closed when we do
             } else {
-                debug("marking duplicate notification to be closed");
+                debug('marking duplicate notification to be closed');
                 cachedNotif.isCancel = true;
             }
         // Start tracking it now
         } else {
-            log("FIXME: shouldn't be reached");
+            log('FIXME: shouldn\'t be reached');
             this.trackNotification(notif);
         }
     }
@@ -566,15 +566,14 @@ var Plugin = GObject.registerClass({
 
         // Check if this is a known notification
         //let cachedNotif = this._matchNotification({ id: query });
-        log("cachedNotif: " + cachedNotif);
 
         // If it is known and we have the remote id we can close it...
-        if (cachedNotif && cachedNotif.hasOwnProperty("id")) {
+        if (cachedNotif && cachedNotif.hasOwnProperty('id')) {
             debug(`${this.device.name}: closing duplicate notification ${cachedNotif.id}`);
 
             this.device.sendPacket({
                 id: 0,
-                type: "kdeconnect.notification.request",
+                type: 'kdeconnect.notification.request',
                 body: { cancel: cachedNotif.id }
             });
             this.untrackNotification(cachedNotif);
@@ -594,12 +593,12 @@ var Plugin = GObject.registerClass({
         debug(arguments);
 
         let dialog = new ReplyDialog(this.device, appName, title, text);
-        dialog.connect("delete-event", dialog.destroy);
-        dialog.connect("response", (dialog, response) => {
+        dialog.connect('delete-event', dialog.destroy);
+        dialog.connect('response', (dialog, response) => {
             if (response === Gtk.ResponseType.OK) {
                 this.device.sendPacket({
                     id: 0,
-                    type: "kdeconnect.notification.reply",
+                    type: 'kdeconnect.notification.reply',
                     body: {
                         replyId: id,
                         messageBody: dialog.entry.buffer.text
@@ -623,7 +622,7 @@ var Plugin = GObject.registerClass({
 
         this.device.sendPacket({
             id: 0,
-            type: "kdeconnect.notification.request",
+            type: 'kdeconnect.notification.request',
             body: { request: true }
         });
     }
@@ -631,7 +630,7 @@ var Plugin = GObject.registerClass({
 
 
 var ReplyDialog = GObject.registerClass({
-    GTypeName: "GSConnectNotificationReplyDialog",
+    GTypeName: 'GSConnectNotificationReplyDialog',
 }, class ReplyDialog extends Gtk.Dialog {
 
     _init(device, appName, title, text) {
@@ -647,9 +646,9 @@ var ReplyDialog = GObject.registerClass({
         headerBar.subtitle = device.name;
         headerBar.show_close_button = false;
 
-        let sendButton = this.add_button(_("Send"), Gtk.ResponseType.OK);
+        let sendButton = this.add_button(_('Send'), Gtk.ResponseType.OK);
         sendButton.sensitive = false;
-        this.add_button(_("Cancel"), Gtk.ResponseType.CANCEL);
+        this.add_button(_('Cancel'), Gtk.ResponseType.CANCEL);
         this.set_default_response(Gtk.ResponseType.OK);
 
         let content = this.get_content_area();
@@ -658,7 +657,7 @@ var ReplyDialog = GObject.registerClass({
 
         let messageFrame = new Gtk.Frame({
             label_widget: new Gtk.Label({
-                label: "<b>" + title + "</b>",
+                label: '<b>' + title + '</b>',
                 use_markup: true
             }),
             label_xalign: 0.02
@@ -691,7 +690,7 @@ var ReplyDialog = GObject.registerClass({
         });
         scrolledWindow.add(this.entry);
 
-        this.entry.buffer.connect("changed", (buffer) => {
+        this.entry.buffer.connect('changed', (buffer) => {
             sendButton.sensitive = (buffer.text.trim());
         });
     }
