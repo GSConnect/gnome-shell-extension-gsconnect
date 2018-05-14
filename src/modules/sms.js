@@ -583,7 +583,8 @@ var ConversationWindow = GObject.registerClass({
         let action = this.device.lookup_action('sendSms');
 
         if (action && action.enabled) {
-            action.activate([this.number, entry.text]);
+            let parameter = new GLib.Variant('(ss)', [this.number, entry.text]);
+            action.activate(parameter);
 
             // Log the outgoing message
             this._logMessage(entry.text, MessageDirection.OUT);
