@@ -270,30 +270,26 @@ var Store = GObject.registerClass({
         return matches;
     }
 
-    update() {
-        this._updateFolksContacts().then((result) => {
-            debug('contacts read from folks');
+    async update() {
+        let result = ['call-start-symbolic', _('GSConnect')];
 
+        try {
+            result = await this._updateFolksContacts();
+        } catch (e) {
+            debug(`Warning: Failed to update Folks contacts: ${e.message}`);
+
+            try {
+                result = await this._updateGoogleContacts();
+            } catch (e) {
+                debug(`Warning: Failed to update Google contacts: ${e.message}`);
+            }
+        } finally {
             this._writeCache();
             [this._provider_icon, this._provider_name] = result;
             this.notify('provider-icon');
             this.notify('provider-name');
             this.notify('contacts');
-        }).catch(e => {
-            debug(`Warning: Failed to update Folks contacts: ${e.message}`);
-
-            this._updateGoogleContacts().then((result) => {
-                debug('contacts read from google');
-
-                this._writeCache();
-                [this._provider_icon, this._provider_name] = result;
-                this.notify('provider-icon');
-                this.notify('provider-name');
-                this.notify('contacts');
-            }).catch(e => {
-                debug(`Warning: Failed to update Google contacts: ${e.message}`);
-            });
-        });
+        }
     }
 
     /**
@@ -453,9 +449,8 @@ var Store = GObject.registerClass({
     }
 
     destroy() {
-        this.emit('destroy');
-
         this._writeCache();
+        this.emit('destroy');
     }
 });
 
