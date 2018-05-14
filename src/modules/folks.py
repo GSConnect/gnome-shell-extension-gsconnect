@@ -26,15 +26,11 @@ pythonapi.PyCapsule_GetPointer.argtypes = (pyc.py_object, pyc.c_char_p)
 
 class _PyGObject_Functions(pyc.Structure):
     _fields_ = [
-        ('pygobject_register_class',
-            pyc.PYFUNCTYPE(pyc.c_void_p)),
-        ('pygobject_register_wrapper',
-            pyc.PYFUNCTYPE(pyc.c_void_p)),
-        ('pygobject_lookup_class',
-            pyc.PYFUNCTYPE(pyc.c_void_p)),
-        ('pygobject_new',
-            pyc.PYFUNCTYPE(pyc.py_object, pyc.c_void_p)),
-        ]
+        ('pygobject_register_class', pyc.PYFUNCTYPE(pyc.c_void_p)),
+        ('pygobject_register_wrapper', pyc.PYFUNCTYPE(pyc.c_void_p)),
+        ('pygobject_lookup_class', pyc.PYFUNCTYPE(pyc.c_void_p)),
+        ('pygobject_new', pyc.PYFUNCTYPE(pyc.py_object, pyc.c_void_p)),
+    ]
 
 
 def capsule_name(capsule):
