@@ -650,6 +650,126 @@ var Avatar = GObject.registerClass({
 });
 
 
+var ContactChooserRow = GObject.registerClass({
+    GTypeName: 'GSConnectContactChooserRow',
+    Signals: {
+        'number-selected': {
+            flags: GObject.SignalFlags.RUN_FIRST,
+            param_types: [ GObject.TYPE_OBJECT ]
+        }
+    }
+}, class ContactChooserRow extends Gtk.ListBoxRow {
+
+    _init(contact) {
+        super._init({
+            activatable: false,
+            visible: true
+        });
+
+        this.contact = contact;
+
+        let grid = new Gtk.Grid({
+            margin: 6,
+            column_spacing: 6,
+            visible: true
+        });
+        this.add(grid);
+
+        grid.attach(new Avatar(contact), 0, 0, 1, 2);
+
+        this._name = new Gtk.Label({
+            label: contact.name || _('Unknown Contact'),
+            halign: Gtk.Align.START,
+            hexpand: true,
+            visible: true
+        });
+        grid.attach(this._name, 1, 0, 1, 1);
+
+        this.numbers = new Gtk.Box({
+            orientation: Gtk.Orientation.VERTICAL,
+            spacing: 3,
+            visible: true
+        });
+        grid.attach(this.numbers, 1, 1, 1, 1);
+
+        for (let entry of contact.numbers) {
+            this.addNumber(entry);
+        }
+    }
+
+    get name() {
+        return this._name.label;
+    }
+
+    set name(value) {
+        this._name.label = value;
+    }
+
+    addNumber(entry) {
+        let box = new Gtk.Box({ visible: true });
+        box.number = entry;
+        this.numbers.add(box);
+
+        box._number = new Gtk.Label({
+            label: entry.number || _('Unknown Number'),
+            halign: Gtk.Align.START,
+            hexpand: true,
+            visible: true
+        });
+        box._number.get_style_context().add_class('dim-label');
+        box.add(box._number);
+
+        box._type = new Gtk.Label({
+            label: this._localizeType(entry.type),
+            margin_right: 12,
+            use_markup: true,
+            visible: true
+        });
+        box._type.get_style_context().add_class('dim-label');
+        box.add(box._type);
+
+        box.checkbutton = new Gtk.CheckButton({
+            active: false,
+            margin_right: 12,
+            visible: true
+        });
+        box.checkbutton.connect('toggled', (checkbutton) => {
+            this.emit('number-selected', checkbutton.get_parent());
+        });
+        box.add(box.checkbutton);
+
+        this.show_all();
+    }
+
+    /**
+     * Return a localized string for a phone number type
+     * See: https://developers.google.com/gdata/docs/2.0/elements#rel-values_71
+     *      http://www.ietf.org/rfc/rfc2426.txt
+     */
+    _localizeType(type) {
+        if (!type) { return _('Other'); }
+
+        if (type.indexOf('fax') > -1) {
+            // TRANSLATORS: A phone number type
+            return _('Fax');
+        // Sometimes libfolks->voice === GData->work
+        } else if (type.indexOf('work') > -1 || type.indexOf('voice') > -1) {
+            // TRANSLATORS: A phone number type
+            return _('Work');
+        } else if (type.indexOf('cell') > -1 || type.indexOf('mobile') > -1) {
+            // TRANSLATORS: A phone number type
+            return _('Mobile');
+        } else if (type.indexOf('home') > -1 ) {
+            // TRANSLATORS: A phone number type
+            return _('Home');
+        } else {
+            // TRANSLATORS: A phone number type
+            return _('Other');
+        }
+    }
+});
+
+
 var ContactChooser = GObject.registerClass({
     GTypeName: 'GSConnectContactChooser',
     Properties: {
@@ -760,82 +880,10 @@ var ContactChooser = GObject.registerClass({
      * Add a new contact row to the list
      */
     _addContact(contact) {
-        let row = new Gtk.ListBoxRow({
-            activatable: false,
-            visible: true
-        });
-        row.contact = contact;
-
-        let grid = new Gtk.Grid({
-            margin: 6,
-            column_spacing: 6,
-            visible: true
-        });
-        row.add(grid);
-
-        grid.attach(new Avatar(contact), 0, 0, 1, 2);
-
-        row._name = new Gtk.Label({
-            label: contact.name || _("Unknown Contact"),
-            halign: Gtk.Align.START,
-            hexpand: true,
-            visible: true
-        });
-        grid.attach(row._name, 1, 0, 1, 1);
-
-        row.numbers = new Gtk.Box({
-            orientation: Gtk.Orientation.VERTICAL,
-            spacing: 3,
-            visible: true
-        });
-        grid.attach(row.numbers, 1, 1, 1, 1);
-
+        let row = new ContactChooserRow(contact);
+        row.connect('number-selected', this._toggle.bind(this));
         this.list.add(row);
-
-        for (let number of contact.numbers) {
-            this._addContactNumber(row, number);
-        }
-
         return row;
-    }
-
-    /**
-     * Add a contact number to a row
-     */
-    _addContactNumber(row, number) {
-        let box = new Gtk.Box({ visible: true });
-        box.number = number;
-        row.numbers.add(box);
-
-        box._number = new Gtk.Label({
-            label: number.number || _("Unknown Number"),
-            halign: Gtk.Align.START,
-            hexpand: true,
-            visible: true
-        });
-        box._number.get_style_context().add_class("dim-label");
-        box.add(box._number);
-
-        box._type = new Gtk.Label({
-            label: this._localizeType(number.type),
-            margin_right: 12,
-            use_markup: true,
-            visible: true
-        });
-        box._type.get_style_context().add_class("dim-label");
-        box.add(box._type);
-
-        box.recipient = new Gtk.CheckButton({
-            active: false,
-            margin_right: 12,
-            visible: true
-        });
-        box.recipient.connect("toggled", () => {
-            this._toggle(row, box);
-        });
-        box.add(box.recipient);
-
-        row.show_all();
     }
 
     _onEntryChanged(entry) {
@@ -845,6 +893,7 @@ var ContactChooser = GObject.registerClass({
                 let num = this._temporary.numbers.get_children()[0];
                 num._number.label = this.entry.text;
                 this._temporary.contact.number = this.entry.text;
+                this._temporary.contact.numbers[0].number = this.entry.text;
             } else {
                 this._temporary = this._addContact({
                     name: _('Unknown Contact'),
@@ -894,34 +943,6 @@ var ContactChooser = GObject.registerClass({
         return false;
     }
 
-    /**
-     * Return a localized string for a phone number type
-     *
-     * See: https://developers.google.com/gdata/docs/2.0/elements#rel-values_71
-     *      http://www.ietf.org/rfc/rfc2426.txt
-     */
-    _localizeType(type) {
-        if (!type) { return _("Other"); }
-
-        if (type.indexOf("fax") > -1) {
-            // TRANSLATORS: A phone number type
-            return _("Fax");
-        // Sometimes libfolks->voice === GData->work
-        } else if (type.indexOf("work") > -1 || type.indexOf("voice") > -1) {
-            // TRANSLATORS: A phone number type
-            return _("Work");
-        } else if (type.indexOf("cell") > -1 || type.indexOf("mobile") > -1) {
-            // TRANSLATORS: A phone number type
-            return _("Mobile");
-        } else if (type.indexOf("home") > -1 ) {
-            // TRANSLATORS: A phone number type
-            return _("Home");
-        } else {
-            // TRANSLATORS: A phone number type
-            return _("Other");
-        }
-    }
-
     _populate() {
         this.list.foreach(child => child.destroy());
 
@@ -939,14 +960,14 @@ var ContactChooser = GObject.registerClass({
             let row1active, row2active;
 
             for (let num of row1.numbers.get_children()) {
-                if (num.recipient.active) {
+                if (num.checkbutton.active) {
                     row1active = true;
                     break;
                 }
             }
 
             for (let num of row2.numbers.get_children()) {
-                if (num.recipient.active) {
+                if (num.checkbutton.active) {
                     row2active = true;
                     break;
                 }
@@ -959,13 +980,13 @@ var ContactChooser = GObject.registerClass({
             }
         }
 
-        return row1.name.localeCompare(row2.name);
+        return row1._name.label.localeCompare(row2._name.label);
     }
 
     _toggle(row, box) {
-        if (box.recipient.active) {
+        if (box.checkbutton.active) {
             if (row.dynamic) {
-                row.name = row.contact.name;
+                row._name.label = row.contact.name;
                 delete this._temporary;
             }
 
