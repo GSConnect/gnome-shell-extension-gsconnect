@@ -599,13 +599,13 @@ var Avatar = GObject.registerClass({
         popover.popup();
     }
 
-    _popoverContacts() {
+    _popoverContacts(button, event) {
         GLib.spawn_command_line_async(
-            'gnome-contacts -i ' + this.contact.folks_id
+            `gnome-contacts -i ${this.contact.folks_id}`
         );
     }
 
-    _popoverColor(event) {
+    _popoverColor(button, event) {
         let colorChooser = new Gtk.ColorChooserDialog({
             modal: true,
             transient_for: this.get_toplevel(),
@@ -633,7 +633,7 @@ var Avatar = GObject.registerClass({
         colorChooser.show();
     }
 
-    _popoverDelete() {
+    _popoverDelete(button, event) {
         let store = getStore();
         let contacts = store._contacts;
 

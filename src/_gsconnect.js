@@ -308,7 +308,6 @@ gsconnect.full_unpack = function(obj) {
         return unpacked;
     }
 
-    // FIXME: huh?
     return obj;
 };
 
