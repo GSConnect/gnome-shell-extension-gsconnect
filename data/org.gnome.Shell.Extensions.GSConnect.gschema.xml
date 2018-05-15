@@ -139,14 +139,6 @@
       <description>Actions to be invoked when events are emitted</description>
     </key>
   </schema>
-  <!-- TODO this plugin hasn't been written yet -->
-  <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Contacts">
-    <key name="allow" type="u">
-      <default>1</default>
-      <summary>Allow Traffic</summary>
-      <description>Allow flags for directional traffic</description>
-    </key>
-  </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.FindMyPhone">
     <key name="allow" type="u">
       <default>2</default>
