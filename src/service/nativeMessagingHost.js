@@ -109,18 +109,25 @@ var NativeMessagingHost = GObject.registerClass({
     _setupObjectManager(obj, res) {
         this.manager = Gio.DBusObjectManagerClient.new_finish(res);
 
+        // Add currently managed devices
         for (let object of this.manager.get_objects()) {
             for (let iface of object.get_interfaces()) {
                 this._interfaceAdded(this.manager, object, iface);
             }
         }
 
+        // Watch for new and removed devices
         this.manager.connect('interface-added', this._interfaceAdded.bind(this));
         this.manager.connect('interface-removed', this._interfaceRemoved.bind(this));
 
-        // Watch device property changes (connected, paired, plugins, etc)
+        // Watch for device property changes
         this.manager.connect(
             'interface-proxy-properties-changed',
+            this.sendDeviceList.bind(this)
+        );
+
+        // Watch for service restarts
+        this.manager.connect('notify::name-owner',
             this.sendDeviceList.bind(this)
         );
     }
@@ -182,8 +189,8 @@ var NativeMessagingHost = GObject.registerClass({
     }
 
     sendDeviceList() {
-        if (!this.manager || this.manager.name_owner === null) {
-            // Inform the WebExtension we're disconnected from the service
+        // Inform the WebExtension we're disconnected from the service
+        if (this.manager.name_owner === null) {
             this.send({ type: 'connected', data: false });
             return;
         }
@@ -220,12 +227,14 @@ var NativeMessagingHost = GObject.registerClass({
             );
 
             this._devices[iface.Id] = iface;
+            this.sendDeviceList();
         }
     }
 
     _interfaceRemoved(manager, object, iface) {
         if (iface.g_interface_name === 'org.gnome.Shell.Extensions.GSConnect.Device') {
             delete this._devices[iface.Id];
+            this.sendDeviceList();
         }
     }
 });
