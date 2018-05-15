@@ -160,15 +160,16 @@ var Plugin = GObject.registerClass({
         for (let i = 0; i < this._notifications.length; i++) {
             let notif = this._notifications[i];
 
+            // Check for telephony duplicates first
             if (notif.telId) {
                 // @query is a duplicate stub matching a GNotification id
-                // closeNotification(id|telId) or markDuplicate(telId)
-                if (query.telId && query.telId === notif.telId ) {
+                // closeNotification(telId) or markDuplicate(telId)
+                if (query.telId && query.telId === notif.telId) {
                     debug(`duplicate/matching telId: ${query.telId}`);
-                    return notif;
-                // @query is a full notification matching an expected duplicate
+                    return Object.assign(notif, query);
+                // @query is a duplicate notification matching a known ticker
                 // handlePacket(id)
-                } else if (query.appName && notif.ticker === query.ticker) {
+                } else if ((notif.id || query.id) && query.ticker === notif.ticker) {
                     debug(`duplicate/matching ticker: ${query.ticker}`);
 
                     // Update the duplicate stub
@@ -193,30 +194,32 @@ var Plugin = GObject.registerClass({
             // We check for timestamp first since the device controls id
             // turnover and timestamps only change if the phone resets.
             } else if (notif.time && notif.time === query.time) {
-                debug(`notification/matching timestamp: ${notif.id}`);
-                Object.assign(notif, query);
-                return notif;
-            // @query is a full notification matching an id (shown)
-            // We also have to check for id, since some applications update
-            // notifications (desktop-style) by reusing the id...
+                debug(`notification/matching timestamp`);
+                return Object.assign(notif, query);
+            // @query is a full notification matching an id
             } else if (notif.id && notif.id === query.id) {
                 debug(`notification/matching id: ${notif.id}`);
 
-                // Same id, but different timestamp & ticker means it's likely
-                // an updated notification, so update the cache and return
-                // %false to re-send (update) the local notification
+                // Same id, but different ticker means it's likely an updated
+                // notification, so update the cache and return %false to update
                 if (notif.ticker !== query.ticker) {
                     debug(`notification/matching id/updated ticker: ${notif.ticker}`);
                     Object.assign(notif, query);
-                    return notif;
+                    return false;
                 }
 
+                // Otherwise it's likely a duplicate with an updated timestamp
                 debug(`notification/matching id/matching ticker: ${notif.ticker}`);
-                Object.assign(notif, query);
-                return notif;
+                return Object.assign(notif, query);
+            // @query has a matching ticker
+            } else if (notif.ticker === query.ticker) {
+                debug(`notification/matching ticker: ${notif.ticker}`);
+                return Object.assign(notif, query);
             }
         }
 
+        // Start tracking the new notification and return %false
+        this.trackNotification(query);
         return false;
     }
 
@@ -415,10 +418,9 @@ var Plugin = GObject.registerClass({
 
     receiveNotification(packet, icon) {
         return new Promise((resolve, reject) => {
-            // We use the timestamp as an the effective ID, since phone apps
-            // reuse their ID's at whim.
+            //
             let notif = {
-                id: packet.body.time, // WTF: really...
+                id: packet.id,
                 icon: icon
             };
 
@@ -461,8 +463,7 @@ var Plugin = GObject.registerClass({
                 );
 
                 action.activate(gsconnect.full_pack(event));
-                this.trackNotification(packet.body);
-                resolve(true);
+                return;
             // A regular notification or notification from an unknown contact
             } else {
                 // Ignore 'appName' if it's the same as 'title' or this is SMS
@@ -493,21 +494,24 @@ var Plugin = GObject.registerClass({
                 }
             }
 
-            this.trackNotification(packet.body);
             this.device.showNotification(notif);
-
-            resolve(true);
+            return;
         }).catch(debug);
     }
 
     /**
      * Start tracking a notification as active or expected
+     * @param {Object} notif - The body or facsimile from a notification packet
      */
     trackNotification(notif) {
         this._notifications.push(notif);
         this.notify('notifications');
     }
 
+    /**
+     * Stop track a notification
+     * @param {Object} notif - The body or facsimile from a notification packet
+     */
     untrackNotification(notif) {
         let cachedNotif = this._matchNotification(notif);
 
@@ -525,28 +529,20 @@ var Plugin = GObject.registerClass({
      * @param {String} notif.ticker - The expected 'ticker' field
      * @param {Boolean} [notif.isCancel] - Whether the notification should be closed
      */
-    markDuplicate(notif) {
-        debug(notif);
+    markDuplicate(stub) {
+        debug(stub);
 
-        // Check if this is a known duplicate
-        let cachedNotif = this._matchNotification(notif);
+        let notif = this._matchNotification(stub);
 
-        // If we're asking to close it...
-        if (cachedNotif && notif.isCancel) {
-            // ...close it now if we know the remote id
-            if (cachedNotif.id) {
-                debug(`${this.device.name}: closing duplicate notification ${cachedNotif.id}`);
-                this.closeNotification(cachedNotif.id);
-            // ...or mark it to be closed when we do
-            } else {
-                debug('marking duplicate notification to be closed');
-                cachedNotif.isCancel = true;
+        // If it's a known notification...
+        if (notif) {
+            // ...with a remote id, marked to be closed
+            if (notif.id && notif.isCancel) {
+                this.closeNotification(stub.telId);
             }
-        // Start tracking it now
-        } else {
-            log('FIXME: shouldn\'t be reached');
-            this.trackNotification(notif);
         }
+
+        return notif;
     }
 
     /**
@@ -556,31 +552,32 @@ var Plugin = GObject.registerClass({
     closeNotification(query) {
         debug(query);
 
-        let cachedNotif;
+        // Check if this is a known notification
+        let notif;
 
         if (query.startsWith('sms') || query.startsWith('missedCall')) {
-            cachedNotif = this._matchNotification({ telId: query });
+            notif = this._matchNotification({
+                telId: query,
+                ticker: query.split(/_(.+)/)[1]
+            });
         } else {
-            cachedNotif = this._matchNotification({ id: query });
+            notif = this._matchNotification({ id: query });
         }
 
-        // Check if this is a known notification
-        //let cachedNotif = this._matchNotification({ id: query });
-
         // If it is known and we have the remote id we can close it...
-        if (cachedNotif && cachedNotif.hasOwnProperty('id')) {
-            debug(`${this.device.name}: closing duplicate notification ${cachedNotif.id}`);
+        if (notif && notif.hasOwnProperty('id')) {
+            debug(`${this.device.name}: closing notification ${notif.id}`);
 
             this.device.sendPacket({
                 id: 0,
                 type: 'kdeconnect.notification.request',
-                body: { cancel: cachedNotif.id }
+                body: { cancel: notif.id }
             });
-            this.untrackNotification(cachedNotif);
+            this.untrackNotification(notif);
         // ...or we mark it to be closed on arrival if it is known
-        } else if (cachedNotif) {
-            debug(`${this.device.name}: marking duplicate notification to be closed`);
-            cachedNotif.isCancel = true;
+        } else if (notif) {
+            debug(`${this.device.name}: marking notification to be closed`);
+            notif.isCancel = true;
         }
     }
 

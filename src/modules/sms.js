@@ -379,9 +379,7 @@ var ConversationWindow = GObject.registerClass({
         // Clear pending notifications on focus
         this.entry.connect('notify::has-focus', () => {
             while (this._notifications.length) {
-                this.device.withdraw_notification(
-                    this._notifications.pop()
-                );
+                this.device.withdraw_notification(this._notifications.pop());
             }
         });
 

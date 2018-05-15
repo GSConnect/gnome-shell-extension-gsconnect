@@ -328,7 +328,7 @@ var Plugin = GObject.registerClass({
         }
 
         this.device.showNotification({
-            id: event.type + '|'  + event.time,
+            id: `sms|${event.contact.name}: ${event.content}`,
             title: event.contact.name,
             body: event.content,
             icon: icon,
@@ -407,11 +407,12 @@ var Plugin = GObject.registerClass({
 
         // Start tracking the duplicate as soon as possible
         let notification = this.device._plugins.get('notification');
+        let duplicate;
 
         if (notification) {
-            notification.markDuplicate({
-                telId: event.type + '|' + event.time,
-                ticker: event.contact.name + ': ' + event.content
+            duplicate = notification.markDuplicate({
+                telId: `sms|${event.contact.name}: ${event.content}`,
+                ticker: `${event.contact.name}: ${event.content}`
             });
         }
 
@@ -425,22 +426,21 @@ var Plugin = GObject.registerClass({
                 event.content
             );
             window.urgency_hint = true;
-            window._notifications.push([
-                event.type,
-                event.contact.name + ": " + event.content
-            ].join("|"));
+            window._notifications.push(`sms|${event.contact.name}: ${event.content}`);
 
             // Tell the notification plugin to mark any duplicate read
             if (notification) {
-                notification.markDuplicate({
-                    telId: 'sms|' + event.time,
-                    ticker: event.contact.name + ': ' + event.content,
+                duplicate = notification.markDuplicate({
+                    telId: `sms|${event.contact.name}: ${event.content}`,
+                    ticker: `${event.contact.name}: ${event.content}`,
                     isCancel: true
                 });
             }
         }
 
-        this._eventActions(event.type, event);
+        if (!duplicate) {
+            this._eventActions(event.type, event);
+        }
     }
 
     _onTalking(event) {
@@ -601,8 +601,8 @@ var Plugin = GObject.registerClass({
 
             if (notification) {
                 notification.markDuplicate({
-                    telId: event.type + '|' + event.time,
-                    ticker: event.contact.name + ': ' + event.content,
+                    telId: `sms|${event.contact.name}: ${event.content}`,
+                    ticker: `${event.contact.name}: ${event.content}`,
                     isCancel: true
                 });
             }
