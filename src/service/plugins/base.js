@@ -152,7 +152,7 @@ var Plugin = GObject.registerClass({
 
                 if (action && action.enabled) {
                     if (action.parameter_type) {
-                        action.activate(gsconnect.full_pack(event));
+                        action.activate(gsconnect.full_pack(parameter));
                     } else if (action) {
                         action.activate(null);
                     }
