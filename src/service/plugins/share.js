@@ -347,10 +347,6 @@ var Plugin = GObject.registerClass({
             });
         }
 
-        transfer.connect('connected', () => {
-            transfer.start();
-        });
-
         transfer.connect('connected', (transfer) => {
             this.transfers.set(transfer.uuid, transfer);
 
