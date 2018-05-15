@@ -348,7 +348,9 @@ var Daemon = GObject.registerClass({
 
     _pruneDevices() {
         // Don't prune devices while the settings window is open
-        if (this._window) { return; }
+        if (this._window.visible) {
+            return;
+        }
 
         let knownDevices = gsconnect.settings.get_strv('devices');
 
@@ -689,8 +691,12 @@ var Daemon = GObject.registerClass({
     openSettings(device=null) {
         if (!this._window) {
             this._window = new Settings.Window({ application: this });
-            this._window.connect_after('destroy', () => {
-                this._window = undefined;
+            this._window.connect('delete-event', (window) => {
+                window.visible = false;
+                this._pruneDevices();
+                System.gc();
+
+                return true;
             });
         }
 
@@ -704,6 +710,9 @@ var Daemon = GObject.registerClass({
                     return;
                 }
             });
+        // Open the main page
+        } else {
+            this._window._onPrevious();
         }
     }
 

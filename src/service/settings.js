@@ -304,12 +304,7 @@ var Window = GObject.registerClass({
         this._refreshSource = GLib.timeout_add_seconds(
             GLib.PRIORITY_DEFAULT,
             5,
-            () => {
-                if (this.sidebar.get_visible_child_name() === 'switcher') {
-                    this.application.broadcast();
-                }
-                return true;
-            }
+            this._onRefresh.bind(this)
         );
 
         // Setup devices
@@ -318,12 +313,14 @@ var Window = GObject.registerClass({
             this._onDevicesChanged.bind(this)
         );
         this._onDevicesChanged();
+    }
 
-        // Cleanup
-        this.connect('destroy', (widget) => {
-            GLib.source_remove(widget._refreshSource);
-            widget.application.disconnect(widget._serviceDevices);
-        });
+    _onRefresh() {
+        if (this.visible && this.sidebar.get_visible_child_name() === 'switcher') {
+            this.application.broadcast();
+        }
+
+        return true;
     }
 
     /**
@@ -553,12 +550,34 @@ var DeviceSettings = GObject.registerClass({
         this._eventsSettings();
         this._keyboardShortcuts();
 
+        // Device Changes
+        this._actionAddedId = this.device.connect(
+            'action-added',
+            this._onActionsChanged.bind(this)
+        );
+        this._actionRemovedId = this.device.connect(
+            'action-removed',
+            this._onActionsChanged.bind(this)
+        );
+        this._actionEnabledId = this.device.connect(
+            'action-enabled-changed',
+            this._onActionsChanged.bind(this)
+        );
+
+        this._keybindingsId = this.device.settings.connect(
+            'changed::shortcuts',
+            this._populateKeybindings.bind(this)
+        );
+
         // Cleanup
         this.connect('destroy', (widget) => {
-            widget.device.settings.disconnect(widget._keybindingsId);
 
             widget.switcher.destroy();
             widget.row.destroy();
+            widget.device.disconnect(widget._actionAddedId);
+            widget.device.disconnect(widget._actionRemovedId);
+            widget.device.disconnect(widget._actionEnabledId);
+            widget.device.settings.disconnect(widget._keybindingsId);
 
             if (widget._batteryId) {
                 widget.device._plugins.get('battery').disconnect(
@@ -597,6 +616,11 @@ var DeviceSettings = GObject.registerClass({
         }
 
         return this._gsettings[name] || false;
+    }
+
+    _onActionsChanged() {
+        this._populateKeybindings();
+        this._populateActions();
     }
 
     _onConnected() {
@@ -1108,15 +1132,11 @@ var DeviceSettings = GObject.registerClass({
      * Keyboard Shortcuts
      */
     _keyboardShortcuts() {
-        this._keybindingsId = this.device.settings.connect(
-            'changed::keybindings',
-            this._populateKeyboardShortcuts.bind(this)
-        );
-        this._populateKeyboardShortcuts();
+        this._populateKeybindings();
     }
 
-    _populateKeyboardShortcuts() {
-        this.shortcuts_list.foreach(row => row.destroy());
+    _populateKeybindings() {
+        this.action_shortcuts_list.foreach(row => row.destroy());
 
         //
         let keybindings = {};
@@ -1152,7 +1172,10 @@ var DeviceSettings = GObject.registerClass({
             }
         }
 
-        this.shortcuts_list.set_header_func(section_separators);
+        this.action_shortcuts_list.set_header_func(section_separators);
+        this.action_shortcuts_list.set_sort_func((row1, row2) => {
+            return row1.title.label.localeCompare(row2.title.label);
+        });
     }
 
     _onShortcutRowActivated(box, row) {
