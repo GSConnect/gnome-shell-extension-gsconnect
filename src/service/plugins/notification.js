@@ -17,16 +17,6 @@ var Metadata = {
     incomingCapabilities: ['kdeconnect.notification', 'kdeconnect.notification.request'],
     outgoingCapabilities: ['kdeconnect.notification', 'kdeconnect.notification.reply', 'kdeconnect.notification.request'],
     actions: {
-        receiveNotification: {
-            summary: _('Receive Notification'),
-            description: _('Display a remote notification locally'),
-            icon_name: 'preferences-system-notifications-symbolic',
-
-            parameter_type: new GLib.VariantType('a{sv}'),
-            incoming: ['kdeconnect.notification'],
-            outgoing: [],
-            allow: 4
-        },
         closeNotification: {
             summary: _('Close Notification'),
             description: _('Close a remote notification by Id'),
@@ -36,6 +26,16 @@ var Metadata = {
             incoming: [],
             outgoing: ['kdeconnect.notification.request'],
             allow: 6
+        },
+        receiveNotification: {
+            summary: _('Receive Notification'),
+            description: _('Display a remote notification locally'),
+            icon_name: 'preferences-system-notifications-symbolic',
+
+            parameter_type: new GLib.VariantType('a{sv}'),
+            incoming: ['kdeconnect.notification'],
+            outgoing: [],
+            allow: 4
         },
         sendNotification: {
             summary: _('Send Notification'),
