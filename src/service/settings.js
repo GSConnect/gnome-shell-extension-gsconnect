@@ -1142,8 +1142,8 @@ var DeviceSettings = GObject.registerClass({
         let keybindings = {};
 
         try {
-            keybindings = JSON.parse(
-                this.device.settings.get_string('keybindings')
+            keybindings = gsconnect.full_unpack(
+                this.device.settings.get_value('shortcuts')
             );
         } catch (e) {
             keybindings = {};
@@ -1152,23 +1152,27 @@ var DeviceSettings = GObject.registerClass({
         for (let name of this.device.list_actions().sort()) {
             let action = this.device.lookup_action(name)
 
-            if (!action.parameter_type) {
+            if (action.parameter_type === null) {
                 let widget = new Gtk.Label({
-                    label: keybindings[action.name] || _('Disabled'),
+                    label: _('Disabled'),
                     visible: true
                 });
                 widget.get_style_context().add_class('dim-label');
 
+                if (keybindings[action.name]) {
+                    let accel = Gtk.accelerator_parse(keybindings[action.name]);
+                    widget.label = Gtk.accelerator_get_label(...accel);
+                }
+
                 let row = new SectionRow({
-                    icon_name: action.meta.icon_name,
-                    title: action.meta.summary,
-                    subtitle: action.meta.description,
+                    icon_name: action.icon_name,
+                    title: action.summary,
+                    subtitle: action.description,
                     widget: widget
                 });
                 row.icon.pixel_size = 16;
-                row.name = action.name;
-                row.meta = action.meta;
-                this.shortcuts_list.add(row);
+                row.action = action;
+                this.action_shortcuts_list.add(row);
             }
         }
 
@@ -1180,27 +1184,29 @@ var DeviceSettings = GObject.registerClass({
 
     _onShortcutRowActivated(box, row) {
         let dialog = new ShortcutEditor({
-            summary: row.meta.summary,
+            summary: row.action.summary,
             transient_for: box.get_toplevel()
         });
 
         dialog.connect('response', (dialog, response) => {
-            let keybindings = JSON.parse(
-                this.device.settings.get_string('keybindings')
-            );
+            if (response !== Gtk.ResponseType.CANCEL) {
+                // Get current keybindings
+                let keybindings = gsconnect.full_unpack(
+                    this.device.settings.get_value('shortcuts')
+                );
 
-            // Set
-            if (response === Gtk.ResponseType.OK) {
-                keybindings[row.name] = dialog.accelerator;
-            // Reset (Backspace)
-            } else if (response === 1) {
-                delete keybindings[row.name];
+                if (response === Gtk.ResponseType.OK) {
+                    keybindings[row.action.name] = dialog.accelerator;
+                // Reset (Backspace)
+                } else if (response === 1) {
+                    delete keybindings[row.action.name];
+                }
+
+                this.device.settings.set_value(
+                    'shortcuts',
+                    gsconnect.full_pack(keybindings)
+                );
             }
-
-            this.device.settings.set_string(
-                'keybindings',
-                JSON.stringify(keybindings)
-            );
 
             dialog.destroy();
         });
@@ -1307,7 +1313,7 @@ var ShellProxy = DBus.makeInterfaceProxy(
 
 
 /**
- *
+ * Keyboard Shortcut Editor Dialog
  */
 var ShortcutEditor = GObject.registerClass({
     GTypeName: 'GSConnectShortcutEditor',
@@ -1341,8 +1347,7 @@ var ShortcutEditor = GObject.registerClass({
             modal: true
         });
 
-        this.summary = params.summary;
-        this.result = '';
+        this.seat = Gdk.Display.get_default().get_default_seat();
 
         this.shell = new ShellProxy({
             g_connection: Gio.DBus.session,
@@ -1351,10 +1356,10 @@ var ShortcutEditor = GObject.registerClass({
         });
         this.shell.init(null);
 
-        this.seat = Gdk.Display.get_default().get_default_seat();
-
         // Content
-        this.shortcut_summary.label = _('Enter a new shortcut to change <b>%s</b>').format(this.summary);
+        this.shortcut_summary.label = _('Enter a new shortcut to change <b>%s</b>').format(
+            params.summary
+        );
 
         this.shortcut_label = new Gtk.ShortcutLabel({
             accelerator: '',
@@ -1430,6 +1435,7 @@ var ShortcutEditor = GObject.registerClass({
         if (keyvalLower !== 0 && realMask !== 0) {
             this.ungrab();
 
+            this.cancel_button.visible = true;
             this.accelerator = Gtk.accelerator_name(keyvalLower, realMask);
 
             // Switch to confirm/conflict page
@@ -1437,7 +1443,6 @@ var ShortcutEditor = GObject.registerClass({
             // Show shortcut icons
             this.shortcut_label.accelerator = this.accelerator;
 
-            //FIXME
             // If not available, show confliction
             if (!this.check(this.accelerator)) {
                 this.conflict_label.visible = true;
