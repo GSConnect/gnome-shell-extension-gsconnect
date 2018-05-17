@@ -718,7 +718,7 @@ msgstr "Ajouter des personnes pour démarrer une conversation"
 #: src/widgets/telephony.js:264 src/widgets/telephony.js:285
 #: src/widgets/telephony.js:340
 msgid "Unknown Contact"
-msgstr "Contacte inconnu"
+msgstr "Contact inconnu"
 
 #: src/widgets/telephony.js:334
 #, javascript-format
