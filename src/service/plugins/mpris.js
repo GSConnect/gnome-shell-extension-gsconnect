@@ -13,8 +13,7 @@ var Metadata = {
     id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.MPRIS',
     incomingCapabilities: ['kdeconnect.mpris.request'],
     outgoingCapabilities: ['kdeconnect.mpris'],
-    actions: {},
-    events: {}
+    actions: {}
 };
 
 
@@ -78,11 +77,6 @@ var Plugin = GObject.registerClass({
      */
     _handleCommand(packet) {
         debug(packet);
-
-        // FIXME: AllowTraffic constant??
-        if (!(this.allow & 4)) {
-            debug('Not allowed');
-        }
 
         let player = this.mpris.players[packet.body.player].Player;
 

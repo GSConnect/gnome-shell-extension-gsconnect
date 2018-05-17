@@ -25,8 +25,7 @@ var Metadata = {
             outgoing: ['kdeconnect.runcommand.request'],
             allow: 2
         }
-    },
-    events: {}
+    }
 };
 
 

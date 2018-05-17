@@ -47,8 +47,7 @@ var Metadata = {
             outgoing: ['kdeconnect.notification'],
             allow: 2
         }
-    },
-    events: {}
+    }
 };
 
 

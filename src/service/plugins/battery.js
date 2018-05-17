@@ -36,8 +36,7 @@ var Metadata = {
             outgoing: ['kdeconnect.battery.request'],
             allow: 4
         }
-    },
-    events: {}
+    }
 };
 
 

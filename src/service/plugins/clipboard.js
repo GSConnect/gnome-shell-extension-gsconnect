@@ -34,22 +34,6 @@ var Metadata = {
             outgoing: [],
             allow: 2
         }
-    },
-    events: {
-        clipboardUpdateLocal: {
-            summary: _('Clipboard Update (Local)'),
-            description: _('The local clipboard changed'),
-            icon_name: 'edit-paste-symbolic',
-            incoming: ['kdeconnect.clipboard'],
-            outgoing: ['kdeconnect.clipboard']
-        },
-        clipboardUpdateRemote: {
-            summary: _('Clipboard Update (Remote)'),
-            description: _('The remote clipboard changed'),
-            icon_name: 'edit-paste-symbolic',
-            incoming: ['kdeconnect.clipboard'],
-            outgoing: ['kdeconnect.clipboard']
-        }
     }
 };
 
@@ -105,7 +89,6 @@ var Plugin = GObject.registerClass({
             debug(text);
 
             this._localContent = text;
-            this._eventActions('clipboardUpdateLocal', null);
         });
     }
 
@@ -113,7 +96,6 @@ var Plugin = GObject.registerClass({
         debug(text);
 
         this._remoteContent = text;
-        this._eventActions('clipboardUpdateRemote', null);
     }
 
     /**

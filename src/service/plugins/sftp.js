@@ -36,8 +36,7 @@ var Metadata = {
             outgoing: ['kdeconnect.sftp.request'],
             allow: 6
         }
-    },
-    events: {}
+    }
 };
 
 

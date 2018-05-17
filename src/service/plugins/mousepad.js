@@ -14,8 +14,7 @@ var Metadata = {
     id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.Mousepad',
     incomingCapabilities: ['kdeconnect.mousepad.request'],
     outgoingCapabilities: [],
-    actions: {},
-    events: {}
+    actions: {}
 };
 
 
@@ -69,12 +68,6 @@ var Plugin = GObject.registerClass({
         debug(packet);
 
         if (packet.type === 'kdeconnect.mousepad.request') {
-            // TODO
-            if (!(this.allow & 4)) {
-                debug('Not allowed: ' + packet.type);
-                return;
-            }
-
             this._handleInput(packet);
         }
     }

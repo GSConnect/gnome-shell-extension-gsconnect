@@ -24,16 +24,6 @@ var Metadata = {
             outgoing: ['kdeconnect.ping'],
             allow: 2
         }
-    },
-    events: {
-        ping: {
-            summary: _('Ping'),
-            description: _('Ping a device with an optional message'),
-            icon_name: 'dialog-information-symbolic',
-            incoming: ['kdeconnect.ping'],
-            outgoing: [],
-            allow: 4
-        }
     }
 };
 
@@ -52,12 +42,6 @@ var Plugin = GObject.registerClass({
 
     handlePacket(packet) {
         debug(packet);
-
-        if (!(this.allow & 4)) {
-            return;
-        }
-
-        this.event('ping', packet.body.message || '');
 
         // Notification
         let notif = {

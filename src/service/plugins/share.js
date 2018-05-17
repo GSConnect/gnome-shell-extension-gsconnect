@@ -56,34 +56,6 @@ var Metadata = {
             outgoing: ['kdeconnect.share.request'],
             allow: 2
         }
-    },
-    events: {
-        receivedFile: {
-            summary: _('Received File'),
-            description: _('A file was received'),
-            icon_name: 'document-send-symbolic',
-
-            incoming: ['kdeconnect.share.request'],
-            outgoing: [],
-            allow: 4
-        },
-        receivedText: {
-            summary: _('Received Text'),
-            description: _('Text content was received'),
-            icon_name: 'send-to-symbolic',
-
-            incoming: ['kdeconnect.share.request'],
-            outgoing: [],
-            allow: 4
-        },
-        receivedUrl: {
-            summary: _('Received Url'),
-            description: _('A URL was received'),
-            icon_name: 'send-to-symbolic',
-
-            incoming: ['kdeconnect.share.request'],
-            outgoing: [],
-            allow: 4
         }
     }
 };
@@ -198,8 +170,6 @@ var Plugin = GObject.registerClass({
 
                 this.device.send_notification(transfer.uuid, transfer.notif);
 
-                this.event('receivedFile', file.get_uri());
-
                 this.transfers.delete(transfer.uuid);
             });
 
@@ -256,15 +226,10 @@ var Plugin = GObject.registerClass({
 
     _handleUrl(packet) {
         Gio.AppInfo.launch_default_for_uri(packet.body.url, null);
-
-        this.event('receivedUrl', packet.body.url);
     }
 
     _handleText(packet) {
-        log('IMPLEMENT: ' + packet.toString());
         log(`receiving text: "${packet.body.text}"`);
-
-        this.event('receivedText', packet.body.text);
     }
 
     /**
@@ -273,9 +238,7 @@ var Plugin = GObject.registerClass({
     handlePacket(packet) {
         debug('Share: handlePacket()');
 
-        if (!(this.allow & 4)) {
-            return
-        } else if (packet.body.hasOwnProperty('filename')) {
+        if (packet.body.hasOwnProperty('filename')) {
             this._handleFile(packet);
         } else if (packet.body.hasOwnProperty('text')) {
             this._handleText(packet);
@@ -299,12 +262,6 @@ var Plugin = GObject.registerClass({
      * Remote methods
      */
     shareDialog() {
-        // FIXME
-        if (!(this.allow & 2)) {
-            debug('Operation not permitted');
-            return;
-        }
-
         debug('opening FileChooserDialog');
 
         let dialog = new FileChooserDialog(this.device);
@@ -313,12 +270,6 @@ var Plugin = GObject.registerClass({
 
     // TODO: check file existence...
     shareFile(path) {
-        // FIXME
-        if (!(this.allow & 2)) {
-            debug('Operation not permitted');
-            return;
-        }
-
         debug(path);
 
         let file;
@@ -461,12 +412,6 @@ var Plugin = GObject.registerClass({
     }
 
     shareText(text) {
-        // FIXME
-        if (!(this.allow & 2)) {
-            debug('Operation not permitted');
-            return;
-        }
-
         debug(text);
 
         this.device.sendPacket({
@@ -478,12 +423,6 @@ var Plugin = GObject.registerClass({
 
     // TODO: check URL validity...
     shareUrl(url) {
-        // FIXME
-        if (!(this.allow & 2)) {
-            debug('Operation not permitted');
-            return;
-        }
-
         debug(url);
 
         // Re-direct file:// uri's

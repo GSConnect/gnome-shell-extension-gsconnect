@@ -34,16 +34,6 @@ var Metadata = {
             incoming: ['kdeconnect.findmyphone.request'],
             outgoing: [],
             allow: 4
-        }
-    },
-    events: {
-        locationRequest: {
-            summary: _('Location Request'),
-            description: _('A request to locate this device'),
-            icon_name: 'find-location-symbolic',
-
-            parameter_type: null,
-            incoming: ['kdeconnect.findmyphone.request'],
             outgoing: []
         }
     }
@@ -72,8 +62,8 @@ var Plugin = GObject.registerClass({
     handlePacket(packet) {
         debug('FindMyPhone: handlePacket()');
 
-        if (packet.type === 'kdeconnect.findmyphone.request' && (this.allow & 4)) {
-            this._eventActions('locationRequest', null);
+        if (packet.type === 'kdeconnect.findmyphone.request') {
+            this.locationAnnounce();
         }
     }
 

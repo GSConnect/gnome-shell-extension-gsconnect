@@ -89,49 +89,6 @@ var Metadata = {
             outgoing: ['kdeconnect.sms.request'],
             allow: Allow.OUT | Allow.IN | Allow.SMS
         }
-    },
-    events: {
-        // SMS Events
-        missedCall: {
-            summary: _('Call Missed'),
-            description: _('An incoming call was missed'),
-            icon_name: 'call-missed-symbolic',
-            incoming: ['kdeconnect.telephony'],
-            outgoing: [],
-            allow: 4
-        },
-        ringing: {
-            summary: _('Call Incoming'),
-            description: _('An incoming call'),
-            icon_name: 'call-start-symbolic',
-            incoming: ['kdeconnect.telephony'],
-            outgoing: [],
-            allow: 4
-        },
-        sms: {
-            summary: _('SMS Message'),
-            description: _('An incoming SMS message'),
-            icon_name: 'sms-symbolic',
-            incoming: ['kdeconnect.telephony'],
-            outgoing: [],
-            allow: 4
-        },
-        talking: {
-            summary: _('Call Answered'),
-            description: _('An incoming call was answered'),
-            icon_name: 'call-start-symbolic',
-            incoming: ['kdeconnect.telephony'],
-            outgoing: [],
-            allow: 4
-        },
-        // FIXME: isCancel???
-        ended: {
-            summary: _('Call Ended'),
-            description: _('An incoming call ended'),
-            icon_name: 'call-stop-symbolic',
-            incoming: ['kdeconnect.telephony'],
-            outgoing: [],
-            allow: 4
         }
     }
 };
@@ -183,30 +140,26 @@ var Plugin = GObject.registerClass({
 
         let event = this._parsePacket(packet);
 
-        // Event handling
         // The event has ended (ringing stopped or call ended)
         if (packet.body.isCancel) {
-            this._onCancel(packet)
+            this._onCancel(event)
         // An event was triggered
         } else {
-            this.event(event.type, event);
-
-            if (event.type === 'sms' && (this.allow & Allow.SMS)) {
-                this._onSms(event);
-            } else if (this.allow & Allow.CALLS) {
-                switch (event.type) {
-                    case 'missedCall':
-                        this._onMissedCall(event);
-                        break;
-                    case 'ringing':
-                        this._onRinging(event);
-                        break;
-                    case 'talking':
-                        this._onTalking(event);
-                        break;
-                    default:
-                        log('Unknown telephony event');
-                }
+            switch (event.type) {
+                case 'sms':
+                    this._onSms(event);
+                    break;
+                case 'missedCall':
+                    this._onMissedCall(event);
+                    break;
+                case 'ringing':
+                    this._onRinging(event);
+                    break;
+                case 'talking':
+                    this._onTalking(event);
+                    break;
+                default:
+                    log('Unknown telephony event');
             }
         }
     }
@@ -299,7 +252,7 @@ var Plugin = GObject.registerClass({
         }
 
         this.device.showNotification({
-            id: event.type + '|' + event.time,
+            id: `${event.type}|${event.contact.name}`,
             title: event.contact.name,
             body: event.content,
             icon: icon,
@@ -338,6 +291,22 @@ var Plugin = GObject.registerClass({
                 parameter: event
             }
         });
+    }
+
+    _setMediaState(state) {
+        if (state === 1) {
+            // TODO: restore state here
+            this._state = 1;
+        } else {
+            // TODO: set state here base on flags
+            this._state = 2;
+
+            if (state & 2) {
+                this._state &= state;
+            } else if (state & 4) {
+                this._state &= state;
+            }
+        }
     }
 
     _onCancel(event) {
@@ -392,13 +361,13 @@ var Plugin = GObject.registerClass({
             }
         }
 
-        this._eventActions(event.type, event);
+        this.callNotification(event);
     }
 
     _onRinging(event) {
         debug(event);
 
-        this._eventActions(event.type, event);
+        this.callNotification(event);
         this._setMediaState(2); // TODO
     }
 
@@ -439,7 +408,7 @@ var Plugin = GObject.registerClass({
         }
 
         if (!duplicate) {
-            this._eventActions(event.type, event);
+            this.smsNotification(event);
         }
     }
 
@@ -449,7 +418,7 @@ var Plugin = GObject.registerClass({
         // TODO: need this, or done by isCancel?
         this.device.withdraw_notification('ringing|' + event.contact.name);
 
-        this._eventActions(event.type, event);
+        this.callNotification(event);
         this._setMediaState(2); // TODO
     }
 
@@ -482,23 +451,6 @@ var Plugin = GObject.registerClass({
         }
 
         return conversation;
-    }
-
-    // FIXME FIXME FIXME
-    _setMediaState(state) {
-        if (state === 1) {
-            // TODO: restore state here
-            this._state = 1;
-        } else {
-            // TODO: set state here base on flags
-            this._state = 2;
-
-            if (state & 2) {
-                this._state &= state;
-            } else if (state & 4) {
-                this._state &= state;
-            }
-        }
     }
 
     /**
