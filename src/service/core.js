@@ -468,12 +468,12 @@ var Channel = GObject.registerClass({
         } catch (e) {
             debug(`${this.identity.body.deviceId}: ${e.message}`);
             this.close();
-            return false;
+            return GLib.SOURCE_REMOVE;
         }
 
         if (!data) {
             this.close();
-            return false;
+            return GLib.SOURCE_REMOVE;
         }
 
         let packet = new Packet(data.toString());
@@ -483,7 +483,8 @@ var Channel = GObject.registerClass({
         }
 
         this.emit('received', packet);
-        return true;
+
+        return GLib.SOURCE_CONTINUE;
     }
 });
 
