@@ -420,9 +420,9 @@ var Channel = GObject.registerClass({
 
     close() {
         try {
-            if (this._monitor > 0) {
-                GLib.Source.remove(this._monitor);
-                this._monitor = 0;
+            if (this._monitor) {
+                this._monitor.destroy();
+                this._monitor = undefined;
             }
         } catch (e) {
             debug(e.message);
