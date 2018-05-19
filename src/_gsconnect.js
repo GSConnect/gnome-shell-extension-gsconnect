@@ -222,6 +222,9 @@ gsconnect.installService = function() {
     // Web Extension
     installWebExtensionManifests();
 
+    // Ensure daemon.js is executable
+    GLib.spawn_command_line_async('chmod u+x ' + gsconnect.datadir + '/service/daemon.js');
+
     // systemd service file
     let systemdDir = GLib.get_user_data_dir() + '/systemd/user/';
     let systemdFile = gsconnect.app_id + '.service';
