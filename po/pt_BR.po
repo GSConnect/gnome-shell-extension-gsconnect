@@ -1,15 +1,15 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# Brazilian Portuguese translation for GSConnect.
+# Copyright (C) 2018 Andy Holmes
 # This file is distributed under the same license as the org.gnome.Shell.Extensions.GSConnect package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Ricardo Silva Veloso <ricvelozo@gmail.com>, 2018.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-05-07 18:45+0300\n"
-"PO-Revision-Date: 2018-03-31 00:26-0300\n"
-"Last-Translator: \n"
+"PO-Revision-Date: 2018-05-17 23:04-0300\n"
+"Last-Translator: Ricardo Silva Veloso <ricvelozo@gmail.com>\n"
 "Language-Team: \n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
@@ -173,13 +173,13 @@ msgstr "Reiniciar"
 
 #: src/service/daemon.js:927
 msgid "Dial Phone Number"
-msgstr ""
+msgstr "Ligar para número de telefone"
 
 #. TRANSLATORS: eg. Pair Request from Google Pixel
 #: src/service/device.js:381
 #, javascript-format
 msgid "Pair Request from %s"
-msgstr "Convite de pareia de %s"
+msgstr "Convite de pareamento de %s"
 
 #. TRANSLATORS: Remote and local TLS Certificate fingerprint
 #. PLEASE KEEP NEWLINE CHARACTERS (\n)
@@ -577,7 +577,7 @@ msgid ""
 "an issue</a> on Github to report a problem."
 msgstr ""
 "Por favor, veja a <a href=\"%s\">Wiki</a> para mais ajuda ou <a href=\"%s"
-"\">abra uma issue</a> no Github para reportar um problema."
+"\">abra um chamado</a> no GitHub para reportar um problema."
 
 #: src/widgets/device.js:128
 #, javascript-format
