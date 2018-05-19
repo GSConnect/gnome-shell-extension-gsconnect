@@ -352,15 +352,15 @@ var Channel = GObject.registerClass({
      */
     _initPacketIO(connection) {
         return new Promise((resolve, reject) => {
-            this._input_stream = new Gio.DataInputStream({
+            this.input_stream = new Gio.DataInputStream({
                 base_stream: connection.input_stream
             });
 
-            this._output_stream = new Gio.DataOutputStream({
+            this.output_stream = new Gio.DataOutputStream({
                 base_stream: connection.output_stream
             });
 
-            this._monitor = this._input_stream.base_stream.create_source(null);
+            this._monitor = this.input_stream.base_stream.create_source(null);
             this._monitor.set_callback(this.receive.bind(this));
             this._monitor.attach(null);
 
@@ -451,7 +451,7 @@ var Channel = GObject.registerClass({
         debug(`${this.identity.body.deviceId}, ${packet}`);
 
         try {
-            this._output_stream.put_string(packet.toString(), null);
+            this.output_stream.put_string(packet.toString(), null);
         } catch (e) {
             debug(e.message);
         }
@@ -464,7 +464,7 @@ var Channel = GObject.registerClass({
         let data, length;
 
         try {
-            [data, length] = this._input_stream.read_line(null);
+            [data, length] = this.input_stream.read_line(null);
         } catch (e) {
             debug(`${this.identity.body.deviceId}: ${e.message}`);
             this.close();
@@ -555,8 +555,8 @@ var Transfer = GObject.registerClass({
         this._cancellable = new Gio.Cancellable();
 
         this._device = params.device;
-        this._input_stream = params.input_stream;
-        this._output_stream = params.output_stream;
+        this.input_stream = params.input_stream;
+        this.output_stream = params.output_stream;
         this._size = params.size;
 
         this.checksum = params.checksum;
@@ -608,7 +608,7 @@ var Transfer = GObject.registerClass({
     _read() {
         if (this._cancellable.is_cancelled()) { return; }
 
-        this._input_stream.read_bytes_async(
+        this.input_stream.read_bytes_async(
             4096,
             GLib.PRIORITY_DEFAULT,
             this._cancellable,
@@ -648,7 +648,7 @@ var Transfer = GObject.registerClass({
     _write(bytes) {
         if (this._cancellable.is_cancelled()) { return; }
 
-        this._output_stream.write_bytes_async(
+        this.output_stream.write_bytes_async(
             bytes,
             GLib.PRIORITY_DEFAULT,
             this._cancellable,

@@ -353,7 +353,7 @@ var Transfer = GObject.registerClass({
             });
             this._connection = await this._initSocket(this._connection);
             this._connection = await this._clientEncryption(this._connection);
-            this._input_stream = this._connection.get_input_stream();
+            this.input_stream = this._connection.get_input_stream();
             this.emit('connected');
         } catch (e) {
             log('Error downloading: ' + e.message);
