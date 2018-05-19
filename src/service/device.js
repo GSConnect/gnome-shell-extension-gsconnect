@@ -918,10 +918,6 @@ var Device = GObject.registerClass({
         debug(`${name} (${this.name})`);
 
         return new Promise((resolve, reject) => {
-            if (!this.paired) {
-                reject();
-            }
-
             try {
                 // Unregister handlers
                 let handler = imports.service.plugins[name];
