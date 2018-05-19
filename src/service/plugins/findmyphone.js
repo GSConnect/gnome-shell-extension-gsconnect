@@ -24,16 +24,13 @@ var Metadata = {
 
             parameter_type: null,
             incoming: [],
-            outgoing: ['kdeconnect.findmyphone.request'],
-            allow: 2
+            outgoing: ['kdeconnect.findmyphone.request']
         },
         locationAnnounce: {
             summary: _('Announce Location'),
             description: _('Play a sound locally'),
             icon_name: 'find-location-symbolic',
             incoming: ['kdeconnect.findmyphone.request'],
-            outgoing: [],
-            allow: 4
             outgoing: []
         }
     }

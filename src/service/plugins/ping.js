@@ -21,8 +21,7 @@ var Metadata = {
 
             parameter_type: new GLib.VariantType('s'),
             incoming: [],
-            outgoing: ['kdeconnect.ping'],
-            allow: 2
+            outgoing: ['kdeconnect.ping']
         }
     }
 };

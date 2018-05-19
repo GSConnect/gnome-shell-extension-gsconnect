@@ -23,8 +23,7 @@ var Metadata = {
 
             parameter_type: null,
             incoming: ['kdeconnect.sftp'],
-            outgoing: ['kdeconnect.sftp.request'],
-            allow: 6
+            outgoing: ['kdeconnect.sftp.request']
         },
         unmount: {
             summary: _('Unmount'),
@@ -33,8 +32,7 @@ var Metadata = {
 
             parameter_type: null,
             incoming: ['kdeconnect.sftp'],
-            outgoing: ['kdeconnect.sftp.request'],
-            allow: 6
+            outgoing: ['kdeconnect.sftp.request']
         }
     }
 };

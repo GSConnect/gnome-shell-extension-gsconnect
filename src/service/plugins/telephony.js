@@ -12,15 +12,6 @@ const Sound = imports.modules.sound;
 const PluginsBase = imports.service.plugins.base;
 
 
-var Allow = {
-    NONE: 1,
-    OUT: 2,
-    IN: 4,
-    CALLS: 8,
-    SMS: 16
-};
-
-
 var Metadata = {
     id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.Telephony',
     incomingCapabilities: ['kdeconnect.telephony'],
@@ -34,8 +25,7 @@ var Metadata = {
 
             parameter_type: null,
             incoming: ['kdeconnect.telephony'],
-            outgoing: ['kdeconnect.telephony.request'],
-            allow: Allow.OUT | Allow.IN | Allow.CALLS
+            outgoing: ['kdeconnect.telephony.request']
         },
 
         // SMS Actions
@@ -46,8 +36,7 @@ var Metadata = {
 
             parameter_type: null,
             incoming: ['kdeconnect.telephony'],
-            outgoing: ['kdeconnect.sms.request'],
-            allow: Allow.OUT | Allow.IN | Allow.SMS
+            outgoing: ['kdeconnect.sms.request']
         },
         replySms: {
             summary: _('Reply SMS'),
@@ -56,8 +45,7 @@ var Metadata = {
 
             parameter_type: new GLib.VariantType('a{sv}'),
             incoming: ['kdeconnect.telephony'],
-            outgoing: ['kdeconnect.sms.request'],
-            allow: Allow.OUT | Allow.IN | Allow.SMS
+            outgoing: ['kdeconnect.sms.request']
         },
         sendSms: {
             summary: _('Send SMS'),
@@ -66,8 +54,7 @@ var Metadata = {
 
             parameter_type: new GLib.VariantType('(ss)'),
             incoming: ['kdeconnect.telephony'],
-            outgoing: ['kdeconnect.sms.request'],
-            allow: Allow.OUT | Allow.IN | Allow.SMS
+            outgoing: ['kdeconnect.sms.request']
         },
         callNotification: {
             summary: _('Call Notification'),
@@ -76,8 +63,7 @@ var Metadata = {
 
             parameter_type: new GLib.VariantType('a{sv}'),
             incoming: ['kdeconnect.telephony'],
-            outgoing: ['kdeconnect.sms.request'],
-            allow: Allow.OUT | Allow.IN | Allow.CALLS | Allow.SMS
+            outgoing: ['kdeconnect.sms.request']
         },
         smsNotification: {
             summary: _('SMS Notification'),
@@ -86,9 +72,7 @@ var Metadata = {
 
             parameter_type: new GLib.VariantType('a{sv}'),
             incoming: ['kdeconnect.telephony'],
-            outgoing: ['kdeconnect.sms.request'],
-            allow: Allow.OUT | Allow.IN | Allow.SMS
-        }
+            outgoing: ['kdeconnect.sms.request']
         }
     }
 };

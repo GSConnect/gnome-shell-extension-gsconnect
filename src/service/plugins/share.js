@@ -23,8 +23,7 @@ var Metadata = {
 
             parameter_type: null,
             incoming: [],
-            outgoing: ['kdeconnect.share.request'],
-            allow: 2
+            outgoing: ['kdeconnect.share.request']
         },
         shareFile: {
             summary: _('Share File'),
@@ -33,8 +32,7 @@ var Metadata = {
 
             parameter_type: new GLib.VariantType('s'),
             incoming: [],
-            outgoing: ['kdeconnect.share.request'],
-            allow: 2
+            outgoing: ['kdeconnect.share.request']
         },
         shareText: {
             summary: _('Share Text'),
@@ -43,8 +41,7 @@ var Metadata = {
 
             parameter_type: new GLib.VariantType('s'),
             incoming: [],
-            outgoing: ['kdeconnect.share.request'],
-            allow: 2
+            outgoing: ['kdeconnect.share.request']
         },
         shareUrl: {
             summary: _('Share URL'),
@@ -53,9 +50,7 @@ var Metadata = {
 
             parameter_type: new GLib.VariantType('s'),
             incoming: [],
-            outgoing: ['kdeconnect.share.request'],
-            allow: 2
-        }
+            outgoing: ['kdeconnect.share.request']
         }
     }
 };

@@ -21,8 +21,7 @@ var Metadata = {
 
             parameter_type: null,
             incoming: [],
-            outgoing: ['kdeconnect.clipboard'],
-            allow: 4
+            outgoing: ['kdeconnect.clipboard']
         },
         clipboardPaste: {
             summary: _('Clipboard Paste'),
@@ -31,8 +30,7 @@ var Metadata = {
 
             parameter_type: null,
             incoming: ['kdeconnect.clipboard'],
-            outgoing: [],
-            allow: 2
+            outgoing: []
         }
     }
 };

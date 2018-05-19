@@ -23,8 +23,7 @@ var Metadata = {
 
             parameter_type: null,
             incoming: ['kdeconnect.battery.request'],
-            outgoing: ['kdeconnect.battery'],
-            allow: 2
+            outgoing: ['kdeconnect.battery']
         },
         batteryRequest: {
             summary: _('Update Battery'),
@@ -33,8 +32,7 @@ var Metadata = {
 
             parameter_type: null,
             incoming: ['kdeconnect.battery'],
-            outgoing: ['kdeconnect.battery.request'],
-            allow: 4
+            outgoing: ['kdeconnect.battery.request']
         }
     }
 };
@@ -121,18 +119,10 @@ var Plugin = GObject.registerClass({
         this.batteryRequest();
 
         // Local Battery (UPower)
-        if ((this.allow & 2) && this.device.service.type === 'laptop') {
+        if (this.device.service.type === 'laptop') {
             this._monitor();
         }
 
-        this.settings.connect('changed::allow', () => {
-            if ((this.allow & 2) && !this._upower) {
-                this._monitor();
-            } else if (!(this.allow & 2) && this._upower) {
-                GObject.signal_handlers_destroy(this._upower);
-                delete this._upower;
-            }
-        });
     }
 
     get charging() { return this._charging || false; }
@@ -174,9 +164,9 @@ var Plugin = GObject.registerClass({
     handlePacket(packet) {
         debug(packet);
 
-        if (packet.type === 'kdeconnect.battery' && (this.allow & 4)) {
+        if (packet.type === 'kdeconnect.battery') {
             return this._handleUpdate(packet.body);
-        } else if (packet.type === 'kdeconnect.battery.request' && (this.allow & 2)) {
+        } else if (packet.type === 'kdeconnect.battery.request') {
             return this.requestUpdate();
         }
     }

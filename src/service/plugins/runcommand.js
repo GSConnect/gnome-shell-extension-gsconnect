@@ -22,8 +22,7 @@ var Metadata = {
 
             parameter_type: new GLib.VariantType('s'),
             incoming: ['kdeconnect.runcommand'],
-            outgoing: ['kdeconnect.runcommand.request'],
-            allow: 2
+            outgoing: ['kdeconnect.runcommand.request']
         }
     }
 };

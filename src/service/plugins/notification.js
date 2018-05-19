@@ -24,8 +24,7 @@ var Metadata = {
 
             parameter_type: new GLib.VariantType('s'),
             incoming: [],
-            outgoing: ['kdeconnect.notification.request'],
-            allow: 6
+            outgoing: ['kdeconnect.notification.request']
         },
         receiveNotification: {
             summary: _('Receive Notification'),
@@ -34,8 +33,7 @@ var Metadata = {
 
             parameter_type: new GLib.VariantType('a{sv}'),
             incoming: ['kdeconnect.notification'],
-            outgoing: [],
-            allow: 4
+            outgoing: []
         },
         sendNotification: {
             summary: _('Send Notification'),
@@ -44,8 +42,7 @@ var Metadata = {
 
             parameter_type: new GLib.VariantType('a{sv}'),
             incoming: [],
-            outgoing: ['kdeconnect.notification'],
-            allow: 2
+            outgoing: ['kdeconnect.notification']
         }
     }
 };
@@ -123,11 +120,8 @@ var Plugin = GObject.registerClass({
         debug(packet);
 
         if (packet.type === 'kdeconnect.notification.request') {
-            if (this.allow & 4) {
-                // TODO: A request for our notifications; NotImplemented
-                return;
-            }
-        } else if (this.allow & 2) {
+            return;
+        } else if (packet.type === 'kdeconnect.notification') {
             if (packet.body.isCancel) {
                 // TODO: call org.gtk.Notifications->RemoveNotification()
                 this.device.withdraw_notification(packet.body.id);
@@ -326,9 +320,8 @@ var Plugin = GObject.registerClass({
                 );
             }
 
-            if ((this.allow & 2) && applications[notif.appName].enabled) {
-                let icon = notif.icon;
-                delete notif.icon;
+            if (applications[notif.appName].enabled) {
+                let icon = null;
 
                 let packet = {
                     id: 0,
