@@ -449,10 +449,10 @@ var DeviceIcon = new Lang.Class({
         // Device Type
         let type = (this.device.type === "desktop") ? "computer" : this.device.type;
         this._theme = Gtk.IconTheme.get_default();
-        this.icon = this._theme.load_surface(type, 32, 1, null, 0);
+        this.icon = this._theme.load_surface(type, 32, 1, null, 16);
 
         this._themeSignal = this._theme.connect("changed", () => {
-            this.icon = this._theme.load_surface(type, 32, 1, null, 0);
+            this.icon = this._theme.load_surface(type, 32, 1, null, 16);
             this.queue_repaint();
         });
 
