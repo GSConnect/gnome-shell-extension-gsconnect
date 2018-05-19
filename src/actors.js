@@ -292,10 +292,22 @@ var DeviceIcon = GObject.registerClass({
 
         // Device Type
         this._theme = Gtk.IconTheme.get_default();
-        this.icon = this._theme.load_surface(this.device.IconName, 32, 1, null, 0);
+        this.icon = this._theme.load_surface(
+            this.device.IconName,
+            32,
+            1,
+            null,
+            Gtk.IconLookupFlags.FORCE_SIZE
+        );
 
         this._themeSignal = this._theme.connect('changed', () => {
-            this.icon = this._theme.load_surface(this.device.IconName, 32, 1, null, 0);
+            this.icon = this._theme.load_surface(
+                this.device.IconName,
+                32,
+                1,
+                null,
+                Gtk.IconLookupFlags.FORCE_SIZE
+            );
             this.queue_repaint();
         });
 
