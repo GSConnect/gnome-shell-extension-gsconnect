@@ -17,7 +17,7 @@
         <property name="can_focus">False</property>
         <property name="title">Set Shortcut</property>
         <child>
-          <object class="GtkButton" id="cancel_button">
+          <object class="GtkButton" id="cancel-button">
             <property name="label" translatable="yes">Cancel</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
@@ -25,14 +25,16 @@
           </object>
         </child>
         <child>
-          <object class="GtkButton" id="set_button">
+          <object class="GtkButton" id="set-button">
             <property name="label" translatable="yes">Set</property>
             <property name="can_focus">True</property>
             <property name="can_default">True</property>
+            <property name="has_default">True</property>
             <property name="receives_default">True</property>
             <signal name="clicked" handler="_onSet" swapped="no"/>
             <style>
               <class name="suggested-action"/>
+              <class name="default"/>
             </style>
           </object>
           <packing>

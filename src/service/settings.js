@@ -1320,19 +1320,13 @@ var ShortcutEditor = GObject.registerClass({
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/shortcut-editor.ui',
     Children: [
         // HeaderBar
-        'cancel_button', 'set_button',
+        'cancel-button', 'set-button',
         //
         'stack',
         'shortcut-summary',
         'edit-shortcut', 'confirm-shortcut',
         'conflict-label'
-    ],
-    Signals: {
-        'result': {
-            flags: GObject.SignalFlags.RUN_FIRST,
-            param_types: [ GObject.TYPE_STRING ]
-        }
-    }
+    ]
 }, class ShortcutEditor extends Gtk.Dialog {
 
     _init(params) {
@@ -1382,7 +1376,6 @@ var ShortcutEditor = GObject.registerClass({
         let state = event.get_state()[1];
         let realMask = state & Gtk.accelerator_get_default_mod_mask();
 
-        // FIXME: Remove modifier keys
         let mods = [
             Gdk.KEY_Alt_L,
             Gdk.KEY_Alt_R,
@@ -1398,7 +1391,6 @@ var ShortcutEditor = GObject.registerClass({
             Gdk.KEY_Super_R
         ];
         if (mods.indexOf(keyvalLower) > -1) {
-            log('returning');
             return true;
         }
 
@@ -1443,18 +1435,16 @@ var ShortcutEditor = GObject.registerClass({
             // Show shortcut icons
             this.shortcut_label.accelerator = this.accelerator;
 
-            // If not available, show confliction
-            if (!this.check(this.accelerator)) {
+            // Show the Set button if available
+            if (this.check(this.accelerator)) {
+                this.set_button.visible = true;
+            // Otherwise report the conflict
+            } else {
                 this.conflict_label.visible = true;
                 this.conflict_label.label = _('%s is already being used').format(
                     Gtk.accelerator_get_label(keyvalLower, realMask)
                 );
-            // Otherwise the set button
-            } else {
-                this.set_button.visible = true;
             }
-
-            return true;
         }
 
         return true;
