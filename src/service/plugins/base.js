@@ -16,14 +16,6 @@ const Device = imports.service.device;
 var Plugin = GObject.registerClass({
     GTypeName: 'GSConnectPlugin',
     Properties: {
-        'allow': GObject.ParamSpec.int(
-            'allow',
-            'AllowTraffic',
-            'The directions in which to allow traffic',
-            GObject.ParamFlags.READABLE,
-            1, 8,
-            1
-        ),
         'device': GObject.ParamSpec.object(
             'device',
             'WindowDevice',
@@ -79,11 +71,6 @@ var Plugin = GObject.registerClass({
 
             // TODO: other triggers...
             // We enabled/disable actions based on user settings
-            this.settings.connect(
-                'changed::allow',
-                this._changeAction.bind(this)
-            );
-
             this.device.settings.connect(
                 'changed::action-blacklist',
                 this._changeAction.bind(this)
@@ -113,8 +100,6 @@ var Plugin = GObject.registerClass({
         this._gactions.map(action => {
             if (blacklist.indexOf(action.name) > -1) {
                 action.set_enabled(false);
-            } else {
-                action.set_enabled(action.allow & this.allow);
             }
         });
     }
@@ -125,8 +110,6 @@ var Plugin = GObject.registerClass({
         // Set the enabled state
         if (blacklist.indexOf(action.name) > -1) {
             action.set_enabled(false);
-        } else {
-            action.set_enabled(action.allow & this.allow);
         }
 
         // Bind the activation
@@ -159,21 +142,7 @@ var Plugin = GObject.registerClass({
                 }
             }
         }
-    }
 
-    /**
-     * A convenience for retrieving the allow flags for a packet handler
-     */
-    get allow() {
-        return this.settings.get_uint('allow');
-    }
-
-    set allow(value) {
-        if (typeof value !== 'number') {
-            throw TypeError('expected uint not ' + typeof value);
-        }
-
-        this.settings.set_uint('allow', value);
     }
 
     get device() {
