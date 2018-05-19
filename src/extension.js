@@ -647,7 +647,10 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
             this._sync(menu);
 
             // Properties
-            iface.connect('g-properties-changed', () => this._sync(menu));
+            iface._propertiesId = iface.connect(
+                'g-properties-changed',
+                this._sync.bind(this, menu)
+            );
 
             // Try activating the device
             iface.Activate();
@@ -660,6 +663,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         if (iface.g_interface_name === 'org.gnome.Shell.Extensions.GSConnect.Device') {
             log(`GSConnect: Removing ${iface.Name}`);
 
+            iface.disconnect(iface._propertiesId);
             Main.panel.statusArea[iface.g_object_path].destroy();
 
             this._menus[iface.g_object_path].destroy();
