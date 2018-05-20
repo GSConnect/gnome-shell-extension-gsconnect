@@ -661,7 +661,7 @@ var Device = GObject.registerClass({
 
             notif.set_default_action_and_target(
                 'app.deviceAction',
-                new GLib.Variant('(ssv)', [
+                new GLib.Variant('(osv)', [
                     this._dbus.get_object_path(),
                     params.action.name,
                     gsconnect.full_pack(params.action.parameter)
@@ -677,7 +677,7 @@ var Device = GObject.registerClass({
             notif.add_button_with_target(
                 button.label,
                 'app.deviceAction',
-                new GLib.Variant('(ssv)', [
+                new GLib.Variant('(osv)', [
                     this._dbus.get_object_path(),
                     button.action,
                     gsconnect.full_pack(button.parameter)

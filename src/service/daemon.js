@@ -638,7 +638,7 @@ var Daemon = GObject.registerClass({
     _initActions() {
         this._addActions([
             // Device
-            ['deviceAction', this._deviceAction, '(ssv)'],
+            ['deviceAction', this._deviceAction, '(osv)'],
             // Daemon
             ['openSettings', this.openSettings],
             ['cancelTransfer', this._cancelTransferAction, '(ss)'],
