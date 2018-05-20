@@ -315,7 +315,7 @@ class DeviceMenu extends PopupMenu.PopupMenuSection {
         this.titleBar.add_child(this.deviceBattery);
 
         // Plugin Bar
-        this.pluginBar = new Menu.IconFlowBox(iface.gmenu, iface.gactions);
+        this.pluginBar = new Menu.FlowBox(iface.gmenu, iface.gactions);
         this.pluginBar.connect('submenu-toggle', this._onSubmenuToggle.bind(this));
         this.controlBox.add_child(this.pluginBar);
 

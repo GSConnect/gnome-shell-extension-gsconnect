@@ -70,7 +70,7 @@ var ModelMenuItem = class ModelMenuItem extends PopupMenu.PopupMenuItem {
 }
 
 
-var MenuListBox = class MenuListBox extends PopupMenu.PopupMenuSection {
+var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
 
     _init(parentActor, model, gactions) {
         super._init();
@@ -206,7 +206,7 @@ var Button = GObject.registerClass({
             debug('link: ' + JSON.stringify(link));
 
             if (link.name === 'submenu') {
-                this.submenu = new MenuListBox(this, link.value, this._gactions);
+                this.submenu = new ListBox(this, link.value, this._gactions);
                 this.toggle_mode = true;
                 this.submenu.actor.bind_property(
                     'mapped',
@@ -219,7 +219,6 @@ var Button = GObject.registerClass({
             }
         }
 
-        // TODO: this is kind of pointless due to the hack in IconFlowBox
 //        this._gactions.connect('action-enabled-changed', (group, name, enabled) => {
 //            log('action-enabled-changed: ' + name);
 //            if (name === this._action) {
@@ -241,15 +240,15 @@ var Button = GObject.registerClass({
 
 
 // FIXME: this needs to be a flowbox now
-var IconFlowBox = GObject.registerClass({
-    GTypeName: 'GSConnectIconFlowBox',
+var FlowBox = GObject.registerClass({
+    GTypeName: 'GSConnectShellMenuFlowBox',
     Signals: {
         'submenu-toggle': {
             flags: GObject.SignalFlags.RUN_FIRST,
             param_types: [ GObject.TYPE_OBJECT ]
         }
     }
-}, class IconFlowBox extends St.BoxLayout {
+}, class FlowBox extends St.BoxLayout {
     _init(model, gactions) {
         super._init({ style_class: 'gsconnect-plugin-bar' });
 
