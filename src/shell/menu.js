@@ -51,7 +51,7 @@ class ItemInfo {
 }
 
 
-var ModelMenuItem = class ModelMenuItem extends PopupMenu.PopupMenuItem {
+var ListBoxItem = class ListBoxItem extends PopupMenu.PopupMenuItem {
     _init(info, actions) {
         super._init(info.label);
 
@@ -61,8 +61,7 @@ var ModelMenuItem = class ModelMenuItem extends PopupMenu.PopupMenuItem {
                 style_class: 'popup-menu-icon'
             });
 
-            let emblem = this.actor.get_child_at_index(0);
-            this.actor.replace_child(emblem, icon);
+            this.actor.replace_child(this.actor.get_child_at_index(0), icon);
         }
 
         this.actor.get_child_at_index(0).style = 'padding-left: 0.5em';
@@ -92,7 +91,7 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
     }
 
     _addModelItem(info) {
-        let menuItem = new ModelMenuItem(info, this._gactions);
+        let menuItem = new ListBoxItem(info, this._gactions);
 
         menuItem.connect('activate', (item) => {
             this._gactions.activate_action(
