@@ -77,11 +77,18 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
         this.actor.style_class = 'popup-sub-menu';
 
         this.parentActor = parentActor;
-
         this._gactions = gactions;
         this._model = model;
-        this._model.connect('items-changed', this._onItemsChanged.bind(this));
+
+        this._itemsChangedId = this._model.connect(
+            'items-changed',
+            this._onItemsChanged.bind(this)
+        );
         this._onItemsChanged(model, 0, 0, model.get_n_items());
+
+        this.connect('destroy', (listbox) => {
+            listbox._model.disconnect(listbox._itemsChangedId);
+        });
     }
 
     _addModelItem(info) {
@@ -215,7 +222,9 @@ var Button = GObject.registerClass({
                     GObject.BindingFlags.SYNC_CREATE
                 );
                 this.connect('clicked', () => this.emit('submenu-toggle'));
-                this.connect('destroy', () => this.submenu.destroy());
+                this.connect('destroy', (button) => {
+                    button.submenu.destroy()
+                });
             }
         }
 
@@ -262,9 +271,9 @@ var FlowBox = GObject.registerClass({
 
         // HACK: It would be great not to have to do this, but GDBusActionGroup
         // often seems to not be ready when the buttons are created
-        this.connect('notify::mapped', (actor) => {
-            if (actor.mapped) {
-                actor.get_children().map(child => child.update());
+        this.connect('notify::mapped', (flowbox) => {
+            if (flowbox.mapped) {
+                flowbox.get_children().map(child => child.update());
             }
         });
 
