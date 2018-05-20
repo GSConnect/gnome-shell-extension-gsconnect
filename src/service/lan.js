@@ -53,12 +53,9 @@ var ChannelService = GObject.registerClass({
     _init(port=1716) {
         super._init();
 
+        this._port = 0;
         this._initTcpListener();
         this._initUdpListener();
-    }
-
-    get discovering() {
-        return this._tcp.active;
     }
 
     set discovering(bool) {
@@ -66,7 +63,7 @@ var ChannelService = GObject.registerClass({
     }
 
     get port() {
-        return this._port || 0;
+        return this._port;
     }
 
     _initTcpListener() {
@@ -94,8 +91,13 @@ var ChannelService = GObject.registerClass({
             }
         }
 
-        this._tcp.connect('incoming', (l, c) => this._receiveChannel(l, c));
-        this._tcp.connect('notify::active', () => this.notify('discovering'));
+        this._tcp.connect('incoming', this._receiveChannel.bind(this));
+        this._tcp.bind_property(
+            'active',
+            this,
+            'discovering',
+            GObject.BindingFlags.SYNC_CREATE
+        );
 
         debug('Using port ' + port + ' for TCP');
     }
@@ -165,7 +167,7 @@ var ChannelService = GObject.registerClass({
 
         // Watch input stream for incoming packets
         let source = this._udp.create_source(GLib.IOCondition.IN, null);
-        source.set_callback(() => this._receivePacket());
+        source.set_callback(this._receivePacket.bind(this));
         source.attach(null);
 
         debug('Using port ' + port + ' for UDP');
@@ -173,7 +175,6 @@ var ChannelService = GObject.registerClass({
 
     /**
      * Receive an identity packet and emit 'packet::'
-     * @param {Packet} identity - the identity packet to broadcast
      */
     _receivePacket() {
         let addr, data, flags, size;
@@ -208,10 +209,9 @@ var ChannelService = GObject.registerClass({
 
     /**
      * Broadcast an identity packet
-     * @param {Packet} identity - the identity packet to broadcast
+     * @param {Core.Packet} identity - the identity packet to broadcast
      */
     broadcast(identity) {
-        //debug(packet);
         //debug(identity);
 
         try {
