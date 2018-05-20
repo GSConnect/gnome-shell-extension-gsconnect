@@ -605,10 +605,6 @@ var Plugin = GObject.registerClass({
      * Request the remote notifications be sent
      */
     request() {
-        if (!(this.allow & 4)) {
-            return;
-        }
-
         this.device.sendPacket({
             id: 0,
             type: 'kdeconnect.notification.request',
