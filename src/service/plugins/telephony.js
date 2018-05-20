@@ -219,7 +219,7 @@ var Plugin = GObject.registerClass({
                 action: 'replySms',
                 // TRANSLATORS: Reply to a missed call by SMS
                 label: _('Message'),
-                parameter: event
+                parameter: gsconnect.full_pack(event)
             }];
             icon = icon || new Gio.ThemedIcon({ name: 'call-missed-symbolic' });
         } else if (event.type === 'ringing') {
@@ -227,7 +227,7 @@ var Plugin = GObject.registerClass({
                 action: 'muteCall',
                 // TRANSLATORS: Silence an incoming call
                 label: _('Mute'),
-                parameter: event
+                parameter: gsconnect.full_pack(event)
             }];
             icon = icon || new Gio.ThemedIcon({ name: 'call-start-symbolic' });
             priority = Gio.NotificationPriority.URGENT;
@@ -272,7 +272,7 @@ var Plugin = GObject.registerClass({
             priority: Gio.NotificationPriority.HIGH,
             action: {
                 name: 'replySms',
-                parameter: event
+                parameter: gsconnect.full_pack(event)
             }
         });
     }

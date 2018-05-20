@@ -592,7 +592,7 @@ var Device = GObject.registerClass({
     _registerActions() {
         let acceptPair = new Action({
             name: 'acceptPair',
-            parameter_type: new GLib.VariantType('v'),
+            parameter_type: null,
             summary: _('Accept Pair'),
             description: _('Accept an incoming pair request'),
             icon_name: 'channel-insecure-symbolic'
@@ -602,7 +602,7 @@ var Device = GObject.registerClass({
 
         let rejectPair = new Action({
             name: 'rejectPair',
-            parameter_type: new GLib.VariantType('v'),
+            parameter_type: null,
             summary: _('Reject Pair'),
             description: _('Reject an incoming pair request'),
             icon_name: 'channel-insecure-symbolic'
@@ -655,32 +655,24 @@ var Device = GObject.registerClass({
         notif.set_priority(params.priority);
 
         if (params.action) {
-            if (!params.action.parameter && params.action.parameter !== false) {
-                params.action.parameter = '';
-            }
-
             notif.set_default_action_and_target(
                 'app.deviceAction',
                 new GLib.Variant('(osv)', [
                     this._dbus.get_object_path(),
                     params.action.name,
-                    gsconnect.full_pack(params.action.parameter)
+                    params.action.parameter
                 ])
             );
         }
 
         for (let button of params.buttons) {
-            if (!button.parameter && button.parameter !== false) {
-                button.parameter = '';
-            }
-
             notif.add_button_with_target(
                 button.label,
                 'app.deviceAction',
                 new GLib.Variant('(osv)', [
                     this._dbus.get_object_path(),
                     button.action,
-                    gsconnect.full_pack(button.parameter)
+                    button.parameter
                 ])
             );
         }
@@ -745,12 +737,12 @@ var Device = GObject.registerClass({
                 {
                     action: 'rejectPair',
                     summary: _('Reject'),
-                    params: '.'
+                    parameter: new GLib.Variant('mv', null)
                 },
                 {
                     action: 'acceptPair',
                     summary: _('Accept'),
-                    params: '.'
+                    parameter: new GLib.Variant('mv', null)
                 }
             ]
         });

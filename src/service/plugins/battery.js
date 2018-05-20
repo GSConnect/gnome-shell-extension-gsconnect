@@ -213,7 +213,7 @@ var Plugin = GObject.registerClass({
             buttons = [{
                 label: _('Locate'),
                 action: 'find',
-                parameter: null
+                parameter: new GLib.Variant('mv', null)
             }];
         }
 
