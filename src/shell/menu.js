@@ -255,7 +255,10 @@ var IconFlowBox = GObject.registerClass({
 
         this._gactions = gactions;
         this._model = model;
-        this._model.connect('items-changed', this._onItemsChanged.bind(this));
+        this._itemsChangedId = this._model.connect(
+            'items-changed',
+            this._onItemsChanged.bind(this)
+        );
         this._onItemsChanged(this._model, 0, 0, this._model.get_n_items());
 
         // HACK: It would be great not to have to do this, but GDBusActionGroup
@@ -264,6 +267,10 @@ var IconFlowBox = GObject.registerClass({
             if (actor.mapped) {
                 actor.get_children().map(child => child.update());
             }
+        });
+
+        this.connect('destroy', (flowbox) => {
+            flowbox._model.disconnect(this._itemsChangedId);
         });
     }
 
