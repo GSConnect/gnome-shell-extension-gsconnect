@@ -107,7 +107,6 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
                 (info.target === undefined) ? null : info.target
             );
 
-            // The signal chain here is embarassing
             this.parentActor.emit('submenu-toggle');
         });
 
@@ -119,19 +118,18 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
         this.addMenuItem(section);
     }
 
-    // TODO: use ::items-changed arguments properly
-    _onItemsChanged(model, position, removed, added) {
-        debug(`(${position}, ${removed}, ${added})`);
+    _addGMenuSubmenu(model) {
+    }
 
+    _onItemsChanged(model, position, removed, added) {
+        // Using ::items-changed is arduous and probably not worth the trouble
         this.removeAll();
 
         let len = model.get_n_items();
 
         for (let i = 0; i < len; i++) {
             let info = new ItemInfo(model, i);
-            log('item: ' + JSON.stringify(gsconnect.full_unpack(info)));
 
-            // FIXME: better section/submenu detection
             // A regular item
             if (info.hasOwnProperty('label')) {
                 this._addGMenuItem(info);
@@ -140,7 +138,7 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
                 this._addGMenuSection(info.links[0].value);
 
                 // len is length starting at 1
-                if (i + 1 < len) {r
+                if (i + 1 < len) {
                     this.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
                 }
             }
@@ -149,6 +147,9 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
 }
 
 
+/**
+ * A St.Button subclass for icon representations of GMenu items
+ */
 var Button = GObject.registerClass({
     GTypeName: 'GSConnectShellGMenuButton',
     Signals: {
@@ -177,6 +178,8 @@ var Button = GObject.registerClass({
             }
         });
 
+        this.connect('clicked', this._onClicked.bind(this));
+
         // GIcon
         if (this._info.hasOwnProperty('icon')) {
             this.child = new St.Icon({ gicon: this._info.icon });
@@ -191,8 +194,6 @@ var Button = GObject.registerClass({
         // Action
         if (this._info.hasOwnProperty('action')) {
             this._actionName = this._info.action.split('.')[1];
-
-            this.connect('clicked', this.activate.bind(this));
             this.visible = this._gactions.get_action_enabled(this._actionName);
         }
 
@@ -220,7 +221,6 @@ var Button = GObject.registerClass({
                     'checked',
                     GObject.BindingFlags.SYNC_CREATE
                 );
-                this.connect('clicked', () => this.emit('submenu-toggle'));
                 this.connect('destroy', (button) => {
                     button.submenu.destroy()
                 });
@@ -236,14 +236,25 @@ var Button = GObject.registerClass({
 //        });
     }
 
-    update() {
-        if (this._actionName) {
-            this.visible = this._gactions.get_action_enabled(this._actionName);
+    _onClicked(button) {
+        if (this._actionName !== undefined) {
+            let parent = button.get_parent();
+
+            while (!parent.hasOwnProperty('_delegate')) {
+                parent = parent.get_parent();
+            }
+
+            parent._delegate._getTopMenu().close();
+            button._gactions.activate_action(button._actionName, null);
+        } else if (this.submenu !== null) {
+            this.emit('submenu-toggle');
         }
     }
 
-    activate(button) {
-        button._gactions.activate_action(button._action, null);
+    update() {
+        if (this._actionName !== undefined) {
+            this.visible = this._gactions.get_action_enabled(this._actionName);
+        }
     }
 });
 
@@ -271,9 +282,9 @@ var FlowBox = GObject.registerClass({
 
         // HACK: It would be great not to have to do this, but GDBusActionGroup
         // often seems to not be ready when the buttons are created
-        this.connect('notify::mapped', (flowbox) => {
-            if (flowbox.mapped) {
-                flowbox.get_children().map(child => child.update());
+        this.connect('notify::mapped', (actor) => {
+            if (actor.mapped) {
+                actor.get_children().map(child => child.update());
             }
         });
 
@@ -283,8 +294,6 @@ var FlowBox = GObject.registerClass({
     }
 
     _onItemsChanged(model, position, removed, added) {
-        debug(`(${position}, ${removed}, ${added})`);
-
         while (removed > 0) {
             this.get_child_at_index(position).destroy();
             removed--;
