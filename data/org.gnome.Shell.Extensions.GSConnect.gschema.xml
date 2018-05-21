@@ -101,11 +101,6 @@
     </key>
   </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Battery">
-    <key name="events" type="a{sv}">
-      <default>{}</default>
-      <summary>Event Handlers</summary>
-      <description>Actions to be invoked when events are emitted</description>
-    </key>
   </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Clipboard">
     <key name="receive-content" type="b">
@@ -120,11 +115,6 @@
     </key>
   </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.FindMyPhone">
-    <key name="events" type="a{sv}">
-      <default>{}</default>
-      <summary>Event Handlers</summary>
-      <description>Actions to be invoked when events are emitted</description>
-    </key>
   </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Mousepad">
   </schema>
@@ -136,36 +126,15 @@
     </key>
   </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Ping">
-    <key name="events" type="a{sv}">
-      <default>{}</default>
-      <summary>Event Handlers</summary>
-      <description>Actions to be invoked when events are emitted</description>
-    </key>
   </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.RunCommand">
-    <key name="events" type="a{sv}">
-      <default>{}</default>
-      <summary>Event Handlers</summary>
-      <description>Actions to be invoked when events are emitted</description>
-    </key>
-
     <key name="command-list" type="a{sv}">
       <default>{}</default>
     </key>
   </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.SFTP">
-    <key name="events" type="a{sv}">
-      <default>{}</default>
-      <summary>Event Handlers</summary>
-      <description>Actions to be invoked when events are emitted</description>
-    </key>
   </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Share">
-    <key name="events" type="a{sv}">
-      <default>{}</default>
-      <summary>Event Handlers</summary>
-      <description>Actions to be invoked when events are emitted</description>
-    </key>
   </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Telephony">
     <key name="events" type="a{sv}">
