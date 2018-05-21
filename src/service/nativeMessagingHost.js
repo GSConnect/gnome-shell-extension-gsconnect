@@ -69,7 +69,9 @@ var NativeMessagingHost = GObject.registerClass({
         this._devices = {};
     }
 
-    get devices() { return Object.values(this._devices); }
+    get devices() {
+        return Object.values(this._devices);
+    }
 
     vfunc_activate() {
         super.vfunc_activate();
@@ -98,7 +100,7 @@ var NativeMessagingHost = GObject.registerClass({
             Gio.DBusObjectManagerClientFlags.NONE,
             gsconnect.app_id,
             gsconnect.app_path,
-            null, // get-proxy-type-func
+            null,
             null,
             this._setupObjectManager.bind(this)
         );
@@ -117,8 +119,14 @@ var NativeMessagingHost = GObject.registerClass({
         }
 
         // Watch for new and removed devices
-        this.manager.connect('interface-added', this._interfaceAdded.bind(this));
-        this.manager.connect('interface-removed', this._interfaceRemoved.bind(this));
+        this.manager.connect(
+            'interface-added',
+            this._interfaceAdded.bind(this)
+        );
+        this.manager.connect(
+            'interface-removed',
+            this._interfaceRemoved.bind(this)
+        );
 
         // Watch for device property changes
         this.manager.connect(
@@ -127,7 +135,8 @@ var NativeMessagingHost = GObject.registerClass({
         );
 
         // Watch for service restarts
-        this.manager.connect('notify::name-owner',
+        this.manager.connect(
+            'notify::name-owner',
             this.sendDeviceList.bind(this)
         );
     }
@@ -190,7 +199,7 @@ var NativeMessagingHost = GObject.registerClass({
 
     sendDeviceList() {
         // Inform the WebExtension we're disconnected from the service
-        if (this.manager.name_owner === null) {
+        if (this.manager && this.manager.name_owner === null) {
             this.send({ type: 'connected', data: false });
             return;
         }
