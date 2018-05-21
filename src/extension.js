@@ -29,6 +29,7 @@ imports._gsconnect;
 const _ = gsconnect._;
 const Actors = imports.actors;
 const DBus = imports.modules.dbus;
+const Device = imports.shell.device;
 const Menu = imports.shell.menu;
 
 
@@ -278,7 +279,7 @@ class DeviceMenu extends PopupMenu.PopupMenuSection {
         this.deviceBox.actor.vertical = false;
         this.addMenuItem(this.deviceBox);
 
-        this.deviceButton = new Actors.DeviceButton(object, iface);
+        this.deviceButton = new Device.Button(object, iface);
         this.deviceBox.actor.add_child(this.deviceButton);
 
         this.controlBox = new St.BoxLayout({
@@ -311,7 +312,7 @@ class DeviceMenu extends PopupMenu.PopupMenuSection {
         this.titleBar.add_child(nameSeparator);
 
         // Title Bar -> Device Battery
-        this.deviceBattery = new Actors.DeviceBattery(object, iface);
+        this.deviceBattery = new Device.Battery(object, iface);
         this.titleBar.add_child(this.deviceBattery);
 
         // Plugin Bar
