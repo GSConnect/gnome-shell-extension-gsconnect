@@ -1,12 +1,8 @@
 <node>
   <!-- Service -->
   <interface name="org.gnome.Shell.Extensions.GSConnect">
-    <property type="as" name="Devices" access="read"/>
     <property type="b" name="Discovering" access="readwrite"/>
     <property type="s" name="Fingerprint" access="read"/>
-    <property type="s" name="SymbolicIconName" access="read"/>
-    <property type="s" name="Name" access="readwrite"/>
-    <property type="s" name="Type" access="read"/>
 
     <method name="Broadcast"/>
     <method name="GetShareable">

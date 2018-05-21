@@ -78,13 +78,6 @@ var Daemon = GObject.registerClass({
             GObject.ParamFlags.READABLE,
             ''
         ),
-        'symbolic-icon-name': GObject.ParamSpec.string(
-            'symbolic-icon-name',
-            'ServiceIconName',
-            'Icon name representing the service device',
-            GObject.ParamFlags.READABLE,
-            ''
-        ),
         'name': GObject.ParamSpec.string(
             'name',
             'DeviceName',
@@ -205,10 +198,6 @@ var Daemon = GObject.registerClass({
         }
 
         return this._identity;
-    }
-
-    get symbolic_icon_name() {
-        return (this.type === 'laptop') ? 'laptop' : 'computer';
     }
 
     get name() {
