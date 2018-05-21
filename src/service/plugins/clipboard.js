@@ -67,7 +67,7 @@ var Plugin = GObject.registerClass({
         // Watch local clipboard for changes
         this._ownerChangeId = this._clipboard.connect(
             'owner-change',
-            this._updateLocal.bind(this)
+            this._onLocalClipboardChanged.bind(this)
         );
     }
 
@@ -75,25 +75,36 @@ var Plugin = GObject.registerClass({
         debug(packet);
 
         if (packet.body.content) {
-            this._updateRemote(packet.body.content);
+            this._onRemoteClipboardChanged(packet.body.content);
         }
     }
 
     /**
-     * Remote Methods
+     * Store the updated clipboard content and forward it if enabled
      */
-    _updateLocal(clipboard, event) {
+    _onLocalClipboardChanged(clipboard, event) {
         clipboard.request_text((clipboard, text) => {
-            debug(text);
+            //debug(text);
 
             this._localContent = text;
+
+            if (this.settings.get_boolean('send-content')) {
+                this.device.activate_action('clipboardPaste', null);
+            }
         });
     }
 
-    _updateRemote(text) {
-        debug(text);
+    /**
+     * Store the updated clipboard content and apply it if enabled
+     */
+    _onRemoteClipboardChanged(text) {
+        //debug(text);
 
         this._remoteContent = text;
+
+        if (this.settings.get_boolean('receive-content')) {
+            this.device.activate_action('clipboardCopy', null);
+        }
     }
 
     /**

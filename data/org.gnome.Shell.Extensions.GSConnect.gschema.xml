@@ -108,10 +108,15 @@
     </key>
   </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Clipboard">
-    <key name="events" type="a{sv}">
-      <default>{}</default>
-      <summary>Event Handlers</summary>
-      <description>Actions to be invoked when events are emitted</description>
+    <key name="receive-content" type="b">
+      <default>true</default>
+      <summary>Receive Content</summary>
+      <description></description>
+    </key>
+    <key name="send-content" type="b">
+      <default>true</default>
+      <summary>Send Content</summary>
+      <description></description>
     </key>
   </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.FindMyPhone">
