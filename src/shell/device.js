@@ -9,12 +9,14 @@ const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 const St = imports.gi.St;
 
-const ModalDialog = imports.ui.modalDialog;
+const PanelMenu = imports.ui.panelMenu;
+const PopupMenu = imports.ui.popupMenu;
 
 // Local Imports
 imports.searchPath.unshift(gsconnect.datadir);
 const _ = gsconnect._;
 const Color = imports.modules.color;
+const GMenu = imports.shell.gmenu;
 const Tooltip = imports.shell.tooltip;
 
 
@@ -349,3 +351,204 @@ var Button = GObject.registerClass({
         });
     }
 });
+
+
+/**
+ * A PopupMenu used as an information and control center for a device
+ */
+var Menu = class Menu extends PopupMenu.PopupMenuSection {
+
+    _init(object, iface) {
+        super._init();
+
+        this.object = object;
+        this.device = iface;
+        this._keybindings = [];
+
+        // Device Box
+        this.deviceBox = new PopupMenu.PopupBaseMenuItem({
+            can_focus: false,
+            reactive: false,
+            style_class: 'popup-menu-item gsconnect-device-box'
+        });
+        this.deviceBox.actor.remove_child(this.deviceBox._ornamentLabel);
+        this.deviceBox.actor.vertical = false;
+        this.addMenuItem(this.deviceBox);
+
+        this.deviceButton = new Button(object, iface);
+        this.deviceBox.actor.add_child(this.deviceButton);
+
+        this.controlBox = new St.BoxLayout({
+            style_class: 'gsconnect-control-box',
+            vertical: true,
+            x_expand: true
+        });
+        this.deviceBox.actor.add_child(this.controlBox);
+
+        // Title Bar
+        this.titleBar = new St.BoxLayout({
+            style_class: 'gsconnect-title-bar'
+        });
+        this.controlBox.add_child(this.titleBar);
+
+        // Title Bar -> Device Name
+        this.nameLabel = new St.Label({
+            style_class: 'gsconnect-device-name',
+            text: this.device.Name
+        });
+        this.titleBar.add_child(this.nameLabel);
+
+        // Title Bar -> Separator
+        let nameSeparator = new St.Widget({
+            style_class: 'popup-separator-menu-item gsconnect-title-separator',
+            x_expand: true,
+            y_expand: true,
+            y_align: Clutter.ActorAlign.CENTER
+        });
+        this.titleBar.add_child(nameSeparator);
+
+        // Title Bar -> Device Battery
+        this.deviceBattery = new Battery(object, iface);
+        this.titleBar.add_child(this.deviceBattery);
+
+        // Plugin Bar
+        this.pluginBar = new GMenu.FlowBox(iface.gmenu, iface.gactions);
+        this.pluginBar.connect('submenu-toggle', this._onSubmenuToggle.bind(this));
+        this.controlBox.add_child(this.pluginBar);
+
+        // Status Bar
+        this.statusBar = new St.BoxLayout({
+            style_class: 'gsconnect-status-bar',
+            y_align: Clutter.ActorAlign.FILL,
+            y_expand: true
+        });
+        this.controlBox.add_child(this.statusBar);
+
+        this.statusLabel = new St.Label({
+            text: '',
+            y_align: Clutter.ActorAlign.CENTER
+        });
+        this.statusBar.add_child(this.statusLabel);
+
+        // Hide the submenu when the device menu is closed
+        this._getTopMenu().connect('open-state-changed', (actor, open) => {
+            if (!open && this._submenu) {
+                this.box.remove_child(this._submenu.actor);
+                this._submenu = undefined;
+            }
+        });
+
+        // Watch GSettings & Properties
+        this._gsettingsId = gsconnect.settings.connect('changed', this._sync.bind(this));
+        this._propertiesId = this.device.connect('g-properties-changed', this._sync.bind(this));
+        this.actor.connect('notify::mapped', this._sync.bind(this));
+
+        // Init
+        this._sync();
+    }
+
+    _onSubmenuToggle(box, button) {
+        if (this._submenu) {
+            this.box.remove_child(this._submenu.actor);
+        }
+
+        if (this._submenu !== button.submenu) {
+            this._submenu = button.submenu;
+            this.box.add_child(this._submenu.actor);
+        } else {
+            this._submenu = undefined;
+        }
+    }
+
+    _sync() {
+        debug(`${this.device.Name} (${this.device.Id})`);
+
+        if (!this.actor.visible) { return; }
+
+        let { Connected, Paired } = this.device;
+
+        // Title Bar
+        this.nameLabel.text = this.device.Name;
+
+        // TODO: might as well move this to actors.js
+        if (Connected && Paired && gsconnect.settings.get_boolean('show-battery')) {
+            this.deviceBattery.visible = true;
+            this.deviceBattery.update();
+        } else {
+            this.deviceBattery.visible = false;
+        }
+
+        // Plugin/Status Bar visibility
+        this.pluginBar.visible = (Connected && Paired);
+        this.statusBar.visible = (!Connected || !Paired);
+
+        if (!Connected) {
+            this.statusLabel.text = _('Device is disconnected');
+        } else if (!Paired) {
+            this.statusLabel.text = _('Device is unpaired');
+        }
+    }
+
+    destroy() {
+        this.device.disconnect(this._propertiesId);
+        gsconnect.settings.disconnect(this._gsettingsId);
+
+        PopupMenu.PopupMenuSection.prototype.destroy.call(this);
+    }
+}
+
+
+/** An indicator representing a Device in the Status Area */
+var Indicator = class Indicator extends PanelMenu.Button {
+
+    _init(object, iface) {
+        super._init(null, `${iface.Name} Indicator`, false);
+
+        this.object = object;
+        this.device = iface;
+
+        // Device Icon
+        this.icon = new St.Icon({
+            icon_name: this.device.SymbolicIconName,
+            style_class: 'system-status-icon'
+        });
+        this.actor.add_actor(this.icon);
+
+        // Menu
+        this.deviceMenu = new Menu(object, iface);
+        this.menu.addMenuItem(this.deviceMenu);
+
+        // Watch GSettings & Properties
+        this._gsettingsId = gsconnect.settings.connect('changed', this._sync.bind(this));
+        this._propertiesId = this.device.connect('g-properties-changed', this._sync.bind(this));
+
+        this._sync();
+    }
+
+    _sync() {
+        debug(`${this.device.Name} (${this.device.Id})`);
+
+        let { Connected, Paired } = this.device;
+
+        // Device Indicator Visibility
+        if (!gsconnect.settings.get_boolean('show-indicators')) {
+            this.actor.visible = false;
+        } else if (!Paired && !gsconnect.settings.get_boolean('show-unpaired')) {
+            this.actor.visible = false;
+        } else if (!Connected && !gsconnect.settings.get_boolean('show-offline')) {
+            this.actor.visible = false;
+        } else {
+            this.actor.visible = true;
+        }
+
+        this.icon.icon_name = this.device.SymbolicIconName;
+    }
+
+    destroy() {
+        this.device.disconnect(this._propertiesId);
+        gsconnect.settings.disconnect(this._gsettingsId);
+
+        PanelMenu.Button.prototype.destroy.call(this);
+    }
+}
+

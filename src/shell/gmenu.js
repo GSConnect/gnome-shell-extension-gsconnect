@@ -51,6 +51,10 @@ class ItemInfo {
 }
 
 
+/**
+ * A PopupMenuItem subclass for GMenu items
+ * TODO: GActions?
+ */
 var ListBoxItem = class ListBoxItem extends PopupMenu.PopupMenuItem {
     _init(info, actions) {
         super._init(info.label);
@@ -61,36 +65,40 @@ var ListBoxItem = class ListBoxItem extends PopupMenu.PopupMenuItem {
                 style_class: 'popup-menu-icon'
             });
 
+            // Replace the usual emblem child with the icon
             this.actor.replace_child(this.actor.get_child_at_index(0), icon);
         }
 
+        // TODO: maybe do this is stylesheet.css
         this.actor.get_child_at_index(0).style = 'padding-left: 0.5em';
     }
 }
 
 
+/**
+ *
+ */
 var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
 
     _init(parentActor, model, gactions) {
         super._init();
-        this.actor.style_class = 'popup-sub-menu';
 
         this.parentActor = parentActor;
         this._gactions = gactions;
-        this._model = model;
+        this._gmenu = model;
 
-        this._itemsChangedId = this._model.connect(
+        this._itemsChangedId = this._gmenu.connect(
             'items-changed',
             this._onItemsChanged.bind(this)
         );
         this._onItemsChanged(model, 0, 0, model.get_n_items());
 
         this.connect('destroy', (listbox) => {
-            listbox._model.disconnect(listbox._itemsChangedId);
+            listbox._gmenu.disconnect(listbox._itemsChangedId);
         });
     }
 
-    _addModelItem(info) {
+    _addGMenuItem(info) {
         let menuItem = new ListBoxItem(info, this._gactions);
 
         menuItem.connect('activate', (item) => {
@@ -106,6 +114,12 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
         this.addMenuItem(menuItem);
     }
 
+    _addGMenuSection(model) {
+        let section = new ListBox(this.parentActor, model, this._gactions);
+        this.addMenuItem(section);
+    }
+
+    // TODO: use ::items-changed arguments properly
     _onItemsChanged(model, position, removed, added) {
         debug(`(${position}, ${removed}, ${added})`);
 
@@ -118,40 +132,25 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
             log('item: ' + JSON.stringify(gsconnect.full_unpack(info)));
 
             // FIXME: better section/submenu detection
+            // A regular item
             if (info.hasOwnProperty('label')) {
-                this._addModelItem(info);
+                this._addGMenuItem(info);
+            // A section or submenu
             } else {
-                this._addModelSection(info.links[0].value);
+                this._addGMenuSection(info.links[0].value);
 
-                // FIXME
-                if (i + 1 <= len) {
-                    let sep = new PopupMenu.PopupSeparatorMenuItem();
-                    this.addMenuItem(sep);
+                // len is length starting at 1
+                if (i + 1 < len) {r
+                    this.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
                 }
             }
-        }
-    }
-
-    _addModelSection(model) {
-        model.connect('items-changed', this._onSectionItemsChanged.bind(this));
-        this._onItemsChanged(model, 0, 0, model.get_n_items());
-    }
-
-    _onSectionItemsChanged(model, position, removed, added) {
-        debug(`(${position}, ${removed}, ${added})`);
-
-        let len = model.get_n_items();
-
-        for (let i = 0; i < len; i++) {
-            let info = new ItemInfo(model, i);
-            this._addModelItem(info);
         }
     }
 }
 
 
 var Button = GObject.registerClass({
-    GTypeName: 'GSConnectShellMenuButton',
+    GTypeName: 'GSConnectShellGMenuButton',
     Signals: {
         'submenu-toggle': {
             flags: GObject.SignalFlags.RUN_FIRST
@@ -165,18 +164,18 @@ var Button = GObject.registerClass({
             can_focus: true
         });
 
+        this._gactions = params.gactions;
+        this._info = params.info;
+
         // StButton adds the :checked pseudo class, but some themes don't apply
         // it to .system-menu-action
         this.connect('notify::checked', (button) => {
             if (button.checked) {
-                this.add_style_pseudo_class('active');
+                button.add_style_pseudo_class('active');
             } else {
-                this.remove_style_pseudo_class('active');
+                button.remove_style_pseudo_class('active');
             }
         });
-
-        this._gactions = params.gactions;
-        this._info = params.info;
 
         // GIcon
         if (this._info.hasOwnProperty('icon')) {
@@ -191,10 +190,10 @@ var Button = GObject.registerClass({
 
         // Action
         if (this._info.hasOwnProperty('action')) {
-            this._action = this._info.action.split('.')[1];
+            this._actionName = this._info.action.split('.')[1];
 
             this.connect('clicked', this.activate.bind(this));
-            this.visible = this._gactions.get_action_enabled(this._action);
+            this.visible = this._gactions.get_action_enabled(this._actionName);
         }
 
         // Label
@@ -213,6 +212,7 @@ var Button = GObject.registerClass({
 
             if (link.name === 'submenu') {
                 this.submenu = new ListBox(this, link.value, this._gactions);
+                this.submenu.actor.style_class = 'popup-sub-menu';
                 this.toggle_mode = true;
                 this.submenu.actor.bind_property(
                     'mapped',
@@ -227,29 +227,30 @@ var Button = GObject.registerClass({
             }
         }
 
+        // TODO: this is kind of pointless due to the hack in FlowBox
 //        this._gactions.connect('action-enabled-changed', (group, name, enabled) => {
 //            log('action-enabled-changed: ' + name);
-//            if (name === this._action) {
+//            if (name === this._actionName) {
 //                this.visible = enabled;
 //            }
 //        });
     }
 
     update() {
-        if (this._action) {
-            this.visible = this._gactions.get_action_enabled(this._action);
+        if (this._actionName) {
+            this.visible = this._gactions.get_action_enabled(this._actionName);
         }
     }
 
-    activate() {
-        this._gactions.activate_action(this._action, null);
+    activate(button) {
+        button._gactions.activate_action(button._action, null);
     }
 });
 
 
-// FIXME: this needs to be a flowbox now
+// FIXME: this needs a flowbox layout
 var FlowBox = GObject.registerClass({
-    GTypeName: 'GSConnectShellMenuFlowBox',
+    GTypeName: 'GSConnectShellGMenuFlowBox',
     Signals: {
         'submenu-toggle': {
             flags: GObject.SignalFlags.RUN_FIRST,
@@ -261,12 +262,12 @@ var FlowBox = GObject.registerClass({
         super._init({ style_class: 'gsconnect-plugin-bar' });
 
         this._gactions = gactions;
-        this._model = model;
-        this._itemsChangedId = this._model.connect(
+        this._gmenu = model;
+        this._itemsChangedId = this._gmenu.connect(
             'items-changed',
             this._onItemsChanged.bind(this)
         );
-        this._onItemsChanged(this._model, 0, 0, this._model.get_n_items());
+        this._onItemsChanged(this._gmenu, 0, 0, this._gmenu.get_n_items());
 
         // HACK: It would be great not to have to do this, but GDBusActionGroup
         // often seems to not be ready when the buttons are created
@@ -277,7 +278,7 @@ var FlowBox = GObject.registerClass({
         });
 
         this.connect('destroy', (flowbox) => {
-            flowbox._model.disconnect(this._itemsChangedId);
+            flowbox._gmenu.disconnect(this._itemsChangedId);
         });
     }
 
