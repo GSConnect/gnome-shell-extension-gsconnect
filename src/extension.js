@@ -5,9 +5,7 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
-const Meta = imports.gi.Meta;
 const Pango = imports.gi.Pango;
-const Shell = imports.gi.Shell;
 const St = imports.gi.St;
 
 const Main = imports.ui.main;
@@ -30,73 +28,6 @@ const _ = gsconnect._;
 const Actors = imports.actors;
 const DBus = imports.modules.dbus;
 const Device = imports.shell.device;
-
-
-/**
- * Keyboard shortcuts
- *
- * References:
- *     https://developer.gnome.org/meta/stable/MetaDisplay.html
- *     https://developer.gnome.org/meta/stable/meta-MetaKeybinding.html
- */
-class KeybindingManager {
-
-    constructor() {
-        this.bindings = new Map();
-
-        this._acceleratorId = global.display.connect(
-            'accelerator-activated',
-            this._onAcceleratorActivated.bind(this)
-        );
-    }
-
-    _onAcceleratorActivated(display, action, deviceId, timestamp) {
-        let binding = this.bindings.get(action);
-
-        if (binding) {
-            binding.callback();
-        }
-    }
-
-    add(accelerator, callback) {
-        debug(arguments);
-
-        let action = global.display.grab_accelerator(accelerator);
-
-        if (action !== Meta.KeyBindingAction.NONE) {
-            let name = Meta.external_binding_name_for_action(action);
-
-            Main.wm.allowKeybinding(name, Shell.ActionMode.ALL)
-
-            this.bindings.set(action, {
-                name: name,
-                callback: callback
-            });
-        } else {
-            debug(`Failed to grab accelerator '${accelerator}'`);
-        }
-
-        return action;
-    }
-
-    remove(action) {
-        let binding = this.bindings.get(action);
-
-        if (binding) {
-            global.display.ungrab_accelerator(action);
-            Main.wm.allowKeybinding(binding.name, Shell.ActionMode.NONE);
-            this.bindings.delete(action);
-        }
-    }
-
-    destroy() {
-        global.display.disconnect(this._acceleratorId);
-
-        for (let action of this.bindings.keys()) {
-            this.remove(action);
-        }
-    }
-}
 
 
 /** ... FIXME FIXME FIXME */
@@ -254,6 +185,7 @@ class DoNotDisturbDialog extends Actors.Dialog {
         );
     }
 }
+const Keybindings = imports.shell.keybindings;
 
 
 const ServiceProxy = DBus.makeInterfaceProxy(
@@ -273,7 +205,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         this._devices = {};
         this._menus = {};
 
-        this.keybindingManager = new KeybindingManager();
+        this.keybindingManager = new Keybindings.Manager();
 
         // Extension Indicator
         this.extensionIndicator = this._addIndicator();
