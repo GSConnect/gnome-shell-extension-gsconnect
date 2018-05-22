@@ -137,10 +137,30 @@
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Share">
   </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Telephony">
-    <key name="events" type="a{sv}">
-      <default><![CDATA[{'missedCall': <{'callNotification': <true>}>, 'ringing': <{'callNotification': <true>}>, 'sms': <{'smsNotification':<true>}>, 'talking': <{'callNotification': <true>}>}]]></default>
-      <summary>Event Handlers</summary>
-      <description>Actions to be invoked when events are emitted</description>
+    <key name="ringing-volume" type="s">
+      <default>"lower"</default>
+      <summary>System Volume</summary>
+      <description></description>
+    </key>
+    <key name="ringing-pause" type="b">
+      <default>false</default>
+      <summary>Pause Media</summary>
+      <description></description>
+    </key>
+    <key name="talking-volume" type="s">
+      <default>"mute"</default>
+      <summary>System Volume</summary>
+      <description></description>
+    </key>
+    <key name="talking-microphone" type="b">
+      <default>true</default>
+      <summary>Mute Microphone</summary>
+      <description></description>
+    </key>
+    <key name="talking-pause" type="b">
+      <default>true</default>
+      <summary>Pause Media</summary>
+      <description></description>
     </key>
   </schema>
 </schemalist>

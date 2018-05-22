@@ -1095,37 +1095,53 @@ var DeviceSettings = GObject.registerClass({
     }
 
     /**
-     * Events Settings
+     * Telephony Settings
      */
-    _eventsSettings() {
-        for (let name of this.device.supportedPlugins()) {
-            let meta = imports.service.plugins[name].Metadata;
+    _telephonySettings() {
+        if (this.device.supportedPlugins().indexOf('telephony') > -1) {
+            let settings = this._getSettings('telephony');
 
-            if (!meta.events) {
-                continue;
-            }
+            // SMS
+            this.sms_list.set_header_func(section_separators);
 
-            for (let eventName in meta.events) {
-                let event = meta.events[eventName];
+            // Incoming Calls
+            settings.bind(
+                'ringing-volume',
+                this.ringing_volume,
+                'active-id',
+                Gio.SettingsBindFlags.DEFAULT
+            );
+            settings.bind(
+                'ringing-pause',
+                this.ringing_pause,
+                'active',
+                Gio.SettingsBindFlags.DEFAULT
+            );
+            this.ringing_list.set_header_func(section_separators);
 
-                let row = new SectionRow({
-                    title: event.summary,
-                    subtitle: event.description
-                });
-                row.name = eventName;
-                row.event = event;
-                row.plugin = name;
-
-                this.events_list.add(row);
-            }
+            // In Progress Calls
+            settings.bind(
+                'talking-volume',
+                this.talking_volume,
+                'active-id',
+                Gio.SettingsBindFlags.DEFAULT
+            );
+            settings.bind(
+                'talking-microphone',
+                this.talking_microphone,
+                'active',
+                Gio.SettingsBindFlags.DEFAULT
+            );
+            settings.bind(
+                'talking-pause',
+                this.talking_pause,
+                'active',
+                Gio.SettingsBindFlags.DEFAULT
+            );
+            this.talking_list.set_header_func(section_separators);
+        } else {
+            this.telephony.visible = false;
         }
-
-        this.events_list.set_header_func(section_separators);
-    }
-
-    _onEventRowActivated(box, row) {
-        let dialog = new EventEditor(this, row);
-        dialog.show();
     }
 
     /**
@@ -1213,95 +1229,69 @@ var DeviceSettings = GObject.registerClass({
 
         dialog.run();
     }
-});
 
-
-var EventEditor = GObject.registerClass({
-    GTypeName: 'GSConnectEventEditor',
-    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/event-editor.ui',
-    Children: [
-        // HeaderBar
-        //'cancel_button', 'set_button',
-        'headerbar', 'action-add', 'action-list', 'command-editor'
-    ]
-}, class EventEditor extends Gtk.Dialog {
-
-    _init(page, row) {
-        Gtk.Widget.set_connect_func.call(this, (builder, obj, signalName, handlerName, connectObj, flags) => {
-            obj.connect(signalName, this[handlerName].bind(this));
-        });
-
-        super._init({
-            transient_for: page.get_toplevel(),
-            use_header_bar: true
-        });
-        this.get_content_area().border_width = 0;
-
-        this.headerbar.title = row.event.summary;
-        this.headerbar.subtitle = row.event.description;
-
-        this._page = page;
-        this.device = page.device;
-        this._eventName = row.name;
-        this._pluginName = row.plugin;
-
-        this.settings = page._getSettings(this._pluginName);
-        this._settingsId = this.settings.connect('changed::events', () => this._populate());
-        this.connect('destroy', () => this.settings.disconnect(this._settingsId));
-
-        // Action List
-        this.action_list.set_sort_func(this._sort);
-        this.action_list.set_header_func(section_separators);
-
-        this._populate();
+    /**
+     * Events Settings
+     */
+    _eventsSettings() {
+        this.events_list.set_header_func(section_separators);
     }
 
-    _onRowActivated(box, row) {
-        if (row === this.command_editor) { return; }
-
-        let events = gsconnect.full_unpack(this.settings.get_value('events'));
-        let eventActions = events[this._eventName];
-
-        eventActions[row.name] = !eventActions[row.name];
-        this.settings.set_value('events', gsconnect.full_pack(events));
+    _onEventRowActivated(box, row) {
     }
 
-    _sort(row1, row2) {
-        if (!row1.title || !row2.title) { return 0; }
-        return row1.title.label.localeCompare(row2.title.label);
-    }
+    /**
+     * Actions
+     */
+    _actionSettings() {
+        this._populateActions();
 
-    _populate() {
-        this.action_list.foreach(row => {
-            if (row !== this.command_editor) {
-                row.destroy();
+        this.action_blacklist.connect('row-activated', (box, row) => {
+            let action = this.device.lookup_action(row.action.name);
+            let blacklist = this.device.settings.get_strv('action-blacklist');
+            let index = blacklist.indexOf(row.action.name);
+
+            if (index < 0) {
+                blacklist.push(row.action.name);
+            } else {
+                blacklist.splice(index, 1);
             }
+
+            this.device.settings.set_strv('action-blacklist', blacklist);
         });
 
-        let eventActions = gsconnect.full_unpack(
-            this.settings.get_value('events')
-        )[this._eventName];
+        this.action_blacklist.set_header_func(section_separators);
+    }
 
-        for (let actionName of this.device.list_actions().sort()) {
-            log(JSON.stringify(eventActions));
+    _populateActions() {
+        this.action_blacklist.foreach(row => row.destroy());
 
-            let action = this.device.lookup_action(actionName);
-            let active = (eventActions[actionName]);
+        for (let name of this.device.list_actions().sort()) {
+            let action = this.device.lookup_action(name);
+            let blacklist = this.device.settings.get_strv('action-blacklist');
+            let status;
 
-            let widget = new Gtk.Image({
-                icon_name: (active) ? 'emblem-ok-symbolic' : '',
+            if (blacklist.indexOf(name) > -1) {
+                status = _('Blocked');
+            } else {
+                status = action.enabled ? _('Enabled'): _('Disabled');
+            }
+
+            let widget = new Gtk.Label({
+                label: status,
                 visible: true
             });
+            widget.get_style_context().add_class('dim-label');
 
             let row = new SectionRow({
-                title: action.meta.summary,
-                subtitle: action.meta.description,
+                icon_name: action.icon_name,
+                title: action.summary,
+                subtitle: action.description,
                 widget: widget
             });
-            row.name = action.name;
-            row.meta = action.meta;
-
-            this.action_list.add(row);
+            row._icon.pixel_size = 16;
+            row.action = action;
+            this.action_blacklist.add(row);
         }
     }
 });
