@@ -15,22 +15,6 @@ const Device = imports.service.device;
  */
 var Plugin = GObject.registerClass({
     GTypeName: 'GSConnectPlugin',
-    Properties: {
-        'device': GObject.ParamSpec.object(
-            'device',
-            'WindowDevice',
-            'The device associated with this window',
-            GObject.ParamFlags.READABLE,
-            GObject.Object
-        ),
-        'name': GObject.ParamSpec.string(
-            'name',
-            'PluginName',
-            'The name of the plugin',
-            GObject.ParamFlags.READABLE,
-            ''
-        )
-    },
     Signals: {
         'destroy': {
             flags: GObject.SignalFlags.NO_HOOKS
@@ -55,7 +39,7 @@ var Plugin = GObject.registerClass({
         this._gactions = [];
 
         if (this._meta.actions) {
-            // We register actions based on the device capabilities
+            // Register based on device capabilities, which shouldn't change
             let deviceHandles = this.device.incomingCapabilities;
             let deviceProvides = this.device.outgoingCapabilities;
             let blacklist = this.device.settings.get_strv('action-blacklist');
@@ -69,7 +53,6 @@ var Plugin = GObject.registerClass({
                 }
             }
 
-            // TODO: other triggers...
             // We enabled/disable actions based on user settings
             this.device.settings.connect(
                 'changed::action-blacklist',
@@ -98,9 +81,7 @@ var Plugin = GObject.registerClass({
         let blacklist = this.device.settings.get_strv('action-blacklist');
 
         this._gactions.map(action => {
-            if (blacklist.indexOf(action.name) > -1) {
-                action.set_enabled(false);
-            }
+            action.set_enabled(!blacklist.includes(action.name));
         });
     }
 
@@ -108,41 +89,22 @@ var Plugin = GObject.registerClass({
         let action = new Device.Action(Object.assign({ name: name }, meta));
 
         // Set the enabled state
-        if (blacklist.indexOf(action.name) > -1) {
-            action.set_enabled(false);
-        }
+        action.set_enabled(!blacklist.includes(action.name));
 
         // Bind the activation
         action.connect('activate', this._activateAction.bind(this));
 
         this.device.add_action(action);
 
-        this._gactions.push(action);
-    }
+        // Menu
+        let menu = this.device.settings.get_strv('menu');
+        let index = menu.indexOf(action.name);
 
-    _eventActions(type, parameter) {
-        let events = gsconnect.full_unpack(
-            this.settings.get_value('events')
-        );
-
-        let actions = events.hasOwnProperty(type) ? events[type] : {};
-
-        for (let name in actions) {
-            if (actions[name] && name === 'dbusEmit') {
-                this.device.emit('event', type, gsconnect.full_pack(data));
-            } else if (actions[name]) {
-                let action = this.device.lookup_action(name);
-
-                if (action && action.enabled) {
-                    if (action.parameter_type) {
-                        action.activate(gsconnect.full_pack(parameter));
-                    } else if (action) {
-                        action.activate(null);
-                    }
-                }
-            }
+        if (index > -1) {
+            this.device.menu.add_action(action, index);
         }
 
+        this._gactions.push(action);
     }
 
     get device() {
@@ -151,13 +113,6 @@ var Plugin = GObject.registerClass({
 
     get name() {
         return this._name;
-    }
-
-    /**
-     * Emit an event on the device
-     */
-    event(type, data) {
-        this.device.emit('event', type, gsconnect.full_pack(data));
     }
 
     /**
