@@ -1,20 +1,15 @@
 'use strict';
 
-const Clutter = imports.gi.Clutter;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
-const Pango = imports.gi.Pango;
-const St = imports.gi.St;
 
 const Main = imports.ui.main;
 const MessageTray = imports.ui.messageTray;
-const ModalDialog = imports.ui.modalDialog;
 const NotificationDaemon = imports.ui.notificationDaemon;
 const PanelMenu = imports.ui.panelMenu;
 const PopupMenu = imports.ui.popupMenu;
-const Util = imports.misc.util;
 
 // Bootstrap
 window.gsconnect = {
@@ -25,166 +20,9 @@ imports._gsconnect;
 
 // Local Imports
 const _ = gsconnect._;
-const Actors = imports.actors;
 const DBus = imports.modules.dbus;
 const Device = imports.shell.device;
-
-
-/** ... FIXME FIXME FIXME */
-class DoNotDisturbItem extends PopupMenu.PopupSwitchMenuItem {
-
-    _init() {
-        super._init(_('Do Not Disturb'), false);
-
-        // Update the toggle state when 'paintable'
-        this.actor.connect('notify::mapped', () => {
-            let now = GLib.DateTime.new_now_local().to_unix();
-            this.setToggleState(gsconnect.settings.get_int('donotdisturb') > now);
-        });
-
-        this.connect('toggled', () => {
-            // The state has already been changed when this is emitted
-            if (this.state) {
-                let dialog = new DoNotDisturbDialog();
-                dialog.open();
-            } else {
-                gsconnect.settings.set_int('donotdisturb', 0);
-            }
-
-            this._getTopMenu().close(true);
-        });
-    }
-}
-
-
-class DoNotDisturbDialog extends Actors.Dialog {
-
-    _init() {
-        super._init({
-            icon: 'preferences-system-time-symbolic',
-            title: _('Do Not Disturb'),
-            subtitle: _('Silence Mobile Device Notifications')
-        });
-
-        //
-        this._time = 1*60*60; // 1 hour in seconds
-
-        this.permButton = new Actors.RadioButton({
-            text: _('Until you turn this off')
-        });
-        this.content.add(this.permButton);
-
-        // Duration Timer
-        this.timerWidget = new St.BoxLayout({
-            vertical: false,
-            x_expand: true
-        });
-
-        let now = GLib.DateTime.new_now_local();
-        this.timerLabel = new St.Label({
-            text: _('Until %s (%s)').format(
-                Util.formatTime(now.add_seconds(this._time)),
-                this._getDurationLabel()
-            ),
-            x_expand: true,
-            y_align: Clutter.ActorAlign.CENTER,
-            style: 'margin-right: 6px;'
-        });
-        this.timerWidget.add_child(this.timerLabel);
-
-        this.minusTime = new St.Button({
-            style_class: 'pager-button',
-            child: new St.Icon({
-                icon_name: 'list-remove-symbolic',
-                icon_size: 16
-            })
-        });
-        this.minusTime.connect('clicked', this._minusTime.bind(this));
-        this.timerWidget.add_child(this.minusTime);
-
-        this.plusTime = new St.Button({
-            style_class: 'pager-button',
-            child: new St.Icon({
-                icon_name: 'list-add-symbolic',
-                icon_size: 16
-            })
-        });
-        this.plusTime.connect('clicked', this._plusTime.bind(this));
-        this.timerWidget.add_child(this.plusTime);
-
-        this.timerButton = new Actors.RadioButton({
-            widget: this.timerWidget,
-            group: this.permButton.group,
-            active: true
-        });
-        this.content.add(this.timerButton);
-
-        // Dialog Buttons
-        this.setButtons([
-            { label: _('Cancel'), action: this._cancel.bind(this), default: true },
-            { label: _('Done'), action: this._done.bind(this) }
-        ]);
-    }
-
-    _cancel() {
-        gsconnect.settings.set_int('donotdisturb', 0);
-        this.close();
-    }
-
-    _done() {
-        let time;
-
-        if (this.timerButton.active) {
-            let now = GLib.DateTime.new_now_local();
-            time = now.add_seconds(this._time).to_unix();
-        } else {
-            time = GLib.MAXINT32;
-        }
-
-        gsconnect.settings.set_int('donotdisturb', time);
-        this.close();
-    }
-
-    _minusTime() {
-        if (this._time <= 60*60) {
-            this._time -= 15*60;
-        } else {
-            this._time -= 60*60;
-        }
-
-        this._setTimeLabel();
-    }
-
-    _plusTime() {
-        if (this._time < 60*60) {
-            this._time += 15*60;
-        } else {
-            this._time += 60*60;
-        }
-
-        this._setTimeLabel();
-    }
-
-    _getDurationLabel() {
-        if (this._time >= 60*60) {
-            let hours = this._time / 3600;
-            return gsconnect.ngettext('%d Hour', '%d Hours', hours).format(hours);
-        } else {
-            return _('%d Minutes').format(this._time / 60);
-        }
-    }
-
-    _setTimeLabel() {
-        this.minusTime.reactive = (this._time > 15*60);
-        this.plusTime.reactive = (this._time < 12*60*60);
-
-        let now = GLib.DateTime.new_now_local();
-        this.timerLabel.text = _('Until %s (%s)').format(
-            Util.formatTime(now.add_seconds(this._time)),
-            this._getDurationLabel()
-        );
-    }
-}
+const DoNotDisturb = imports.shell.donotdisturb;
 const Keybindings = imports.shell.keybindings;
 
 
@@ -233,7 +71,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
 
         // FIXME finish donotdisturb stuff
         // Do Not Disturb Item
-        this.dndItem = new DoNotDisturbItem();
+        this.dndItem = new DoNotDisturb.MenuItem();
         this.extensionMenu.menu.addMenuItem(this.dndItem);
 
         this.extensionMenu.menu.addAction(_('Mobile Settings'), () => {
