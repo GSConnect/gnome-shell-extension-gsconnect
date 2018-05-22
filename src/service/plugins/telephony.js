@@ -304,9 +304,7 @@ var Plugin = GObject.registerClass({
 
     _onCancel(event) {
         this._setMediaState(1);
-        this.device.withdraw_notification(
-            event.type + '|' + event.contact.name // FIXME
-        );
+        this.device.withdraw_notification(`${event.type}|${event.contact.name}`);
     }
 
     /**
