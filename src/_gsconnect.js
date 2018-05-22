@@ -279,6 +279,8 @@ gsconnect.full_pack = function(obj) {
         return GLib.Variant.new('b', obj);
     } else if (typeof obj.map === 'function') {
         return GLib.Variant.new('av', obj.map(i => gsconnect.full_pack(i)));
+    } else if (obj === null) {
+        return GLib.Variant.new('mv', null);
     } else if (typeof obj === 'object' && typeof obj !== null) {
         let packed = {};
 
@@ -287,6 +289,8 @@ gsconnect.full_pack = function(obj) {
         }
 
         return GLib.Variant.new('a{sv}', packed);
+    } else if (obj instanceof Gio.Icon) {
+        return obj.serialize()
     }
 
     return null;
