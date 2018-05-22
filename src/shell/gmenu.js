@@ -221,23 +221,48 @@ var Button = GObject.registerClass({
                     'checked',
                     GObject.BindingFlags.SYNC_CREATE
                 );
-                this.connect('destroy', (button) => {
-                    button.submenu.destroy()
-                });
             }
         }
 
-        // TODO: this is kind of pointless due to the hack in FlowBox
-//        this._gactions.connect('action-enabled-changed', (group, name, enabled) => {
-//            log('action-enabled-changed: ' + name);
-//            if (name === this._actionName) {
-//                this.visible = enabled;
-//            }
-//        });
+        this._actionEnabledId = this._gactions.connect(
+            'action-enabled-changed',
+            this._onActionChanged.bind(this)
+        );
+        this._actionAddedId = this._gactions.connect(
+            'action-added',
+            this._onActionChanged.bind(this)
+        );
+        this._actionRemovedId = this._gactions.connect(
+            'action-removed',
+            this._onActionChanged.bind(this)
+        );
+
+        this.connect('destroy', (button) => {
+            button.disconnect(button._actionEnabledId);
+            button.disconnect(button._actionAddedId);
+            button.disconnect(button._actionRemovedId);
+
+            if (button.submenu !== null) {
+                button.submenu.destroy();
+            }
+        });
     }
 
+    _onActionChanged(group, name, enabled) {
+        if (name === this._actionName) {
+            if (enabled === undefined) {
+                enabled = this._gactions.get_action_enabled(name);
+            }
+
+            this.visible = enabled;
+        }
+    }
+
+    // TODO: fix super ugly delegation chain
     _onClicked(button) {
+        // If this is an actionable item...
         if (this._actionName !== undefined) {
+            // ...close the top menu
             let parent = button.get_parent();
 
             while (!parent.hasOwnProperty('_delegate')) {
@@ -245,15 +270,11 @@ var Button = GObject.registerClass({
             }
 
             parent._delegate._getTopMenu().close();
+
+            // ...then activate the action
             button._gactions.activate_action(button._actionName, null);
         } else if (this.submenu !== null) {
             this.emit('submenu-toggle');
-        }
-    }
-
-    update() {
-        if (this._actionName !== undefined) {
-            this.visible = this._gactions.get_action_enabled(this._actionName);
         }
     }
 });
@@ -279,14 +300,6 @@ var FlowBox = GObject.registerClass({
             this._onItemsChanged.bind(this)
         );
         this._onItemsChanged(this._gmenu, 0, 0, this._gmenu.get_n_items());
-
-        // HACK: It would be great not to have to do this, but GDBusActionGroup
-        // often seems to not be ready when the buttons are created
-        this.connect('notify::mapped', (actor) => {
-            if (actor.mapped) {
-                actor.get_children().map(child => child.update());
-            }
-        });
 
         this.connect('destroy', (flowbox) => {
             flowbox._gmenu.disconnect(this._itemsChangedId);
