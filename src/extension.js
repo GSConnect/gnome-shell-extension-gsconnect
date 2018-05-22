@@ -429,6 +429,15 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
                 iface.g_object_path
             );
 
+            // GSettings
+            iface.settings = new Gio.Settings({
+                settings_schema: gsconnect.gschema.lookup(
+                    'org.gnome.Shell.Extensions.GSConnect.Device',
+                    true
+                ),
+                path: `/org/gnome/shell/extensions/gsconnect/device/${iface.Id}/`
+            });
+
             iface.service = this.service;
 
             // Currently we only setup methods for Device interfaces, and
