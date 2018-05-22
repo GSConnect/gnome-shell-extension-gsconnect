@@ -562,7 +562,7 @@ var Daemon = GObject.registerClass({
             ],
             comments: gsconnect.metadata.description,
             logo: GdkPixbuf.Pixbuf.new_from_resource_at_scale(
-                gsconnect.app_path + '/' + gsconnect.app_id + '.svg',
+                gsconnect.app_path + '/icons/' + gsconnect.app_id + '.svg',
                 128,
                 128,
                 true
