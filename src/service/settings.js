@@ -888,8 +888,8 @@ var DeviceSettings = GObject.registerClass({
         if (row === this.command_new) {
             let uuid = GLib.uuid_string_random();
             this._commands[uuid] = { name: '', command: '' };
-            this._onEditCommand(this._insertCommand(uuid), uuid);
-        }
+      this._onEditCommand(this._insertCommand(uuid).widget, uuid);
+              }
     }
 
     // The 'edit' icon in the GtkListBoxRow of a command
