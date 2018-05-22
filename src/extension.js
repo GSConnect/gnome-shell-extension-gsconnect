@@ -493,12 +493,10 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
 
         if (serviceIndicator._devices[deviceId]) {
             let device = serviceIndicator._devices[deviceId];
-            if (device.actions.get_action_enabled('closeNotification')) {
-                device.actions.activate_action(
-                    'closeNotification',
-                    gsconnect.full_pack(id)
-                );
-            }
+            device.gactions.activate_action(
+                'closeNotification',
+                gsconnect.full_pack(id)
+            );
         }
     }
 
