@@ -201,23 +201,14 @@ var SectionRow = GObject.registerClass({
 }, class SidebarRow extends Gtk.ListBoxRow {
 
     _init(params) {
-        let icon_name = params.icon_name;
-        let title = params.title;
-        let subtitle = params.subtitle;
-        let widget = params.widget;
-        delete params.icon_name;
-        delete params.title;
-        delete params.subtitle;
-        delete params.widget;
-
-        super._init(Object.assign({
+        super._init({
             activatable: true,
             selectable: false,
             height_request: 56,
             visible: true
-        }, params));
+        });
 
-        this.grid = new Gtk.Grid({
+        this._grid = new Gtk.Grid({
             column_spacing: 12,
             margin_top: 8,
             margin_right: 12,
@@ -225,48 +216,74 @@ var SectionRow = GObject.registerClass({
             margin_left: 12,
             visible: true
         });
-        this.add(this.grid);
+        this.add(this._grid);
 
-        if (icon_name) {
-            this.icon = new Gtk.Image({
-                icon_name: icon_name,
-                pixel_size: 32,
-                visible: true
-            });
+        // Row Icon
+        this._icon = new Gtk.Image({
+            pixel_size: 32
+        });
+        this._grid.attach(this._icon, 0, 0, 1, 2);
 
-            this.height_request = 56;
-            this.grid.attach(this.icon, 0, 0, 1, 2);
+        // Row Title
+        this._title = new Gtk.Label({
+            halign: Gtk.Align.START,
+            hexpand: true,
+            valign: Gtk.Align.CENTER,
+            vexpand: true
+        });
+        this._grid.attach(this._title, 1, 0, 1, 1);
+
+        // Row Subtitle
+        this._subtitle = new Gtk.Label({
+            halign: Gtk.Align.START,
+            hexpand: true,
+            valign: Gtk.Align.CENTER,
+            vexpand: true
+        });
+        this._subtitle.get_style_context().add_class('dim-label');
+        this._grid.attach(this._subtitle, 1, 1, 1, 1);
+
+        Object.assign(this, params);
+    }
+
+    get icon_name() {
+        return this._icon.icon_name;
+    }
+
+    set icon_name(text) {
+        this._icon.visible = (text);
+        this._icon.icon_name = text;
+    }
+
+    get title() {
+        return this._title.label;
+    }
+
+    set title(text) {
+        this._title.visible = (text);
+        this._title.label = text;
+    }
+
+    get subtitle() {
+        return this._subtitle.label;
+    }
+
+    set subtitle(text) {
+        this._subtitle.visible = (text);
+        this._subtitle.label = text;
+    }
+
+    get widget() {
+        return this._widget;
+    }
+
+    set widget(widget) {
+        if (this._widget instanceof Gtk.Widget) {
+            this._widget.destroy();
         }
 
-        if (title) {
-            this.title = new Gtk.Label({
-                label: title,
-                halign: Gtk.Align.START,
-                hexpand: true,
-                valign: Gtk.Align.CENTER,
-                vexpand: true,
-                visible: true
-            });
-            this.grid.attach(this.title, 1, 0, 1, 1);
-        }
-
-        if (subtitle) {
-            this.subtitle = new Gtk.Label({
-                label: subtitle,
-                halign: Gtk.Align.START,
-                hexpand: true,
-                valign: Gtk.Align.CENTER,
-                vexpand: true,
-                visible: true
-            });
-            this.subtitle.get_style_context().add_class('dim-label');
-            this.grid.attach(this.subtitle, 1, 1, 1, 1);
-        }
-
-        if (widget) {
-            this.widget = widget;
-            this.grid.attach(this.widget, 2, 0, 1, 2);
-        }
+        this._widget = widget;
+        this._grid.attach(this.widget, 2, 0, 1, 2);
     }
 });
 
@@ -696,7 +713,7 @@ var DeviceSettings = GObject.registerClass({
         }
 
         if (this.row) {
-            this.row.icon.icon_name = this._getSymbolicIcon();
+            this.row.icon_name = this._getSymbolicIcon();
         }
     }
 
@@ -908,7 +925,7 @@ var DeviceSettings = GObject.registerClass({
                     return 0;
                 }
 
-                return row1.title.label.localeCompare(row2.title.label);
+                return row1.title.localeCompare(row2.title);
             });
             this.command_list.set_header_func(section_separators);
             this._populateCommands();
@@ -942,7 +959,7 @@ var DeviceSettings = GObject.registerClass({
             activatable: false
         });
         row.set_name(uuid);
-        row.subtitle.ellipsize = Pango.EllipsizeMode.MIDDLE;
+        row._subtitle.ellipsize = Pango.EllipsizeMode.MIDDLE;
         row.widget.get_style_context().add_class('circular');
         row.widget.get_style_context().add_class('flat');
         row.widget.connect('clicked', this._onEditCommand.bind(this));
@@ -1252,7 +1269,7 @@ var DeviceSettings = GObject.registerClass({
                     subtitle: action.description,
                     widget: widget
                 });
-                row.icon.pixel_size = 16;
+                row._icon.pixel_size = 16;
                 row.action = action;
                 this.action_shortcuts_list.add(row);
             }
@@ -1260,7 +1277,7 @@ var DeviceSettings = GObject.registerClass({
 
         this.action_shortcuts_list.set_header_func(section_separators);
         this.action_shortcuts_list.set_sort_func((row1, row2) => {
-            return row1.title.label.localeCompare(row2.title.label);
+            return row1.title.localeCompare(row2.title);
         });
     }
 
