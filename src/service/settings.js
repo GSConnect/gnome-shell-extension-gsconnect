@@ -34,20 +34,28 @@ function switcher_separators(row, before) {
 };
 
 
-function mapSwitch(settings, widget, on) {
+function actionSwitch(settings, widget, name) {
+    widget.active = (settings.get_strv('action-blacklist').indexOf(name) < 0);
+
     settings.bind_with_mapping(
-        'allow',
+        'action-blacklist',
         widget,
         'active',
         0,
-        variant => { widget.active = (variant.unpack() & on); },
+        variant => { widget.active = (variant.deep_unpack().indexOf(name) < 0); },
         value => {
-            let current = settings.get_uint('allow');
-            settings.set_uint('allow', (value) ? current | on : current ^ on)
+            let current = settings.get_strv('action-blacklist');
+
+            if (!value) {
+                current.push(name);
+            } else {
+                current.splice(current.indexOf(name), 1);
+            }
+
+            settings.set_strv('action-blacklist', current)
         }
     );
-    widget.active = (settings.get_uint('allow') & on);
-};
+}
 
 
 /**
@@ -298,7 +306,7 @@ var Window = GObject.registerClass({
         this.switcher.select_row(this.switcher.get_row_at_index(0));
 
         // Init UI Elements
-        this._bindSettings();
+        this._serviceSettings();
 
         // Broadcasting
         this._refreshSource = GLib.timeout_add_seconds(
@@ -388,7 +396,7 @@ var Window = GObject.registerClass({
     /**
      * UI Setup and template connecting
      */
-    _bindSettings() {
+    _serviceSettings() {
         // Shell
         this.shell_list.foreach(this._setGlobalRow);
         this.shell_list.set_header_func(section_separators);
@@ -491,7 +499,8 @@ var DeviceSettings = GObject.registerClass({
         'device-connected', 'device-connected-image', 'device-connected-text',
         'device-paired', 'device-paired-image', 'device-paired-text',
         // RunCommand
-        'commands', 'command-list', 'command-new', 'command-editor',
+        'commands', 'runcommand-allow', 'command-list',
+        'command-new', 'command-editor',
         'command-icon', 'command-name', 'command-line',
         'command-trash', 'command-save',
         // Notifications
@@ -501,11 +510,18 @@ var DeviceSettings = GObject.registerClass({
         'sharing', 'sharing-page', 'sharing-list',
         'battery-allow', 'share-allow', 'clipboard-allow', 'mpris-allow',
         'mousepad-allow', 'findmyphone-allow',
+        // Telephony
+        'telephony',
+        'sms-list',
+        'ringing-list', 'ringing-volume', 'ringing-pause',
+        'talking-list', 'talking-volume', 'talking-microphone', 'talking-pause',
         // Events
         'events-list',
         //TODO
         // Shortcuts
-        'shortcuts-list'
+        'action-shortcuts-list', 'command-shortcuts-list',
+        // Advanced
+        'action-blacklist', 'event-blacklist'
     ]
 }, class DeviceSettings extends Gtk.Stack {
 
@@ -547,8 +563,11 @@ var DeviceSettings = GObject.registerClass({
         this._sharingSettings();
         this._runcommandSettings();
         this._notificationSettings();
-        this._eventsSettings();
+        this._telephonySettings();
+
         this._keyboardShortcuts();
+        this._eventsSettings();
+        this._actionSettings();
 
         // Device Changes
         this._actionAddedId = this.device.connect(
@@ -762,13 +781,33 @@ var DeviceSettings = GObject.registerClass({
             let label = row.get_child().get_child_at(1, 0);
             let name = label.get_name().split('-')[0];
             let settings = this._getSettings(name);
+            let blacklist = this.device.settings.get_strv('action-blacklist');
 
             if (name === 'clipboard') {
-                label.label = AllowMap.get(settings.get_uint('allow'));
-            } else if (name === 'battery') {
-                label.label = (settings.get_uint('allow') & 2) ? _('On') : _('Off');
-            } else {
-                label.label = (settings.get_uint('allow') & 4) ? _('On') : _('Off');
+                let send = settings.get_boolean('send-content');
+                let receive = settings.get_boolean('receive-content');
+
+                if (send && receive) {
+                    label.label = _('Both');
+                } else if (send) {
+                    label.label = _('To Device');
+                } else if (receive) {
+                    label.label = _('From Device');
+                } else {
+                    label.label = _('Off');
+                }
+            } else if (name ==='findmyphone') {
+                if (blacklist.indexOf('locationAnnounce') < 0) {
+                    label.label = _('On');
+                } else {
+                    label.label = _('Off');
+                }
+            } else if (name === 'share') {
+                if (blacklist.indexOf('shareDialog') < 0) {
+                    label.label = _('On');
+                } else {
+                    label.label = _('Off');
+                }
             }
         });
     }
@@ -777,33 +816,56 @@ var DeviceSettings = GObject.registerClass({
         let label = row.get_child().get_child_at(1, 0);
         let name = label.get_name().split('-')[0];
         let settings = this._getSettings(name);
+        let blacklist = this.device.settings.get_strv('action-blacklist');
 
         if (name === 'clipboard') {
-            let currentValue = settings.get_uint('allow');
-            let next = false;
-            let newValue;
+            let send = settings.get_boolean('send-content');
+            let receive = settings.get_boolean('receive-content');
 
-            for (let [k, v] of AllowMap) {
-                if (next) {
-                    newValue = k;
-                    break;
-                } else if (k === currentValue) {
-                    next = true;
-                }
+            if (send && receive) {
+                send = false;
+                receive = false;
+                label.label = _('Off');
+            } else if (send) {
+                send = false;
+                receive = true;
+                label.label = _('From Device');
+            } else if (receive) {
+                send = true;
+                receive = true;
+                label.label = _('Both');
+            } else {
+                send = true;
+                receive = false;
+                label.label = _('To Device');
             }
 
-            if (newValue === undefined) {
-                newValue = AllowMap.keys().next().value;
+            settings.set_boolean('send-content', send);
+            settings.set_boolean('receive-content', receive);
+        } else if (name === 'findmyphone') {
+            let index = blacklist.indexOf('locationAnnounce');
+
+            if (index < 0) {
+                blacklist.push('locationAnnounce');
+                label.label = _('Off');
+            } else {
+                blacklist.splice(index, 1);
+                label.label = _('On');
             }
 
-            settings.set_uint('allow', newValue);
-            label.label = AllowMap.get(newValue);
-        } else if (name === 'battery') {
-            settings.set_uint('allow', settings.get_uint('allow') ^ 2);
-            label.label = (label.label === _('On')) ? _('Off') : _('On');
-        } else {
-            settings.set_uint('allow', settings.get_uint('allow') ^ 4);
-            label.label = (label.label === _('On')) ? _('Off') : _('On');
+            this.device.settings.set_strv('action-blacklist', blacklist);
+        } else if (name === 'share') {
+            let index = blacklist.indexOf('shareDialog');
+
+            if (index < 0) {
+                blacklist.push('shareDialog');
+                label.label = _('Off');
+            } else {
+                blacklist.splice(index, 1);
+                label.label = _('On');
+            }
+
+            this.device.settings.set_strv('action-blacklist', blacklist);
         }
     }
 
@@ -816,11 +878,18 @@ var DeviceSettings = GObject.registerClass({
 
         if (runcommand) {
             let settings = this._getSettings('runcommand');
-            mapSwitch(settings, this.runcommand_allow, 4);
+            actionSwitch(this.device.settings, this.runcommand_allow, 'executionRequest');
 
             // Local Command List
             this._commands = gsconnect.full_unpack(
                 settings.get_value('command-list')
+            );
+
+            this.runcommand_allow.bind_property(
+                'active',
+                this.command_list,
+                'sensitive',
+                GObject.BindingFlags.SYNC_CREATE
             );
 
             this.command_list.set_sort_func((row1, row2) => {
@@ -981,14 +1050,11 @@ var DeviceSettings = GObject.registerClass({
     _notificationSettings() {
         let settings = this._getSettings('notification');
 
-        mapSwitch(settings, this.notification_allow, 2);
-
-        // Populate, sort and separate
-        this._populateApplications(settings);
-        this.notification_apps.set_sort_func((row1, row2) => {
-            return row1.title.label.localeCompare(row2.title.label);
-        });
-        this.notification_apps.set_header_func(section_separators);
+        actionSwitch(
+            this.device.settings,
+            this.notification_allow,
+            'sendNotification'
+        );
 
         this.notification_allow.bind_property(
             'active',
@@ -996,19 +1062,21 @@ var DeviceSettings = GObject.registerClass({
             'sensitive',
             GObject.BindingFlags.SYNC_CREATE
         );
+
+        // Populate, sort and separate
+        this._populateApplications(settings);
+        this.notification_apps.set_sort_func((row1, row2) => {
+            return row1.title.localeCompare(row2.title);
+        });
+        this.notification_apps.set_header_func(section_separators);
     }
 
     _onNotificationRowActivated(box, row) {
         let settings = this._getSettings('notification');
         let applications = JSON.parse(settings.get_string('applications'));
+        applications[row.title].enabled = !applications[row.title].enabled;
+        row.widget.label = (applications[row.title].enabled) ? _('On') : _('Off');
 
-        if (row.enabled.label === _('On')) {
-            applications[row.title.label].enabled = false;
-            row.enabled.label = _('Off');
-        } else {
-            applications[row.title.label].enabled = true;
-            row.enabled.label = _('On');
-        }
 
         settings.set_string('applications', JSON.stringify(applications));
     }
@@ -1020,19 +1088,17 @@ var DeviceSettings = GObject.registerClass({
             let row = new SectionRow({
                 icon_name: applications[name].iconName,
                 title: name,
-                height_request: 48
+                height_request: 48,
+                widget: new Gtk.Label({
+                    label: applications[name].enabled ? _('On') : _('Off'),
+                    margin_end: 12,
+                    halign: Gtk.Align.END,
+                    hexpand: true,
+                    valign: Gtk.Align.CENTER,
+                    vexpand: true,
+                    visible: true
+                })
             });
-
-            row.enabled = new Gtk.Label({
-                label: applications[name].enabled ? _('On') : _('Off'),
-                margin_end: 12,
-                halign: Gtk.Align.END,
-                hexpand: true,
-                valign: Gtk.Align.CENTER,
-                vexpand: true,
-                visible: true
-            });
-            row.grid.attach(row.enabled, 2, 0, 1, 1);
 
             this.notification_apps.add(row);
         }
