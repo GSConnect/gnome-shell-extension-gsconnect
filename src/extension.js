@@ -2,7 +2,6 @@
 
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
-const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
 const Main = imports.ui.main;
@@ -123,14 +122,23 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         // Setup currently managed objects
         for (let obj of this.manager.get_objects()) {
             for (let iface of obj.get_interfaces()) {
-                this._interfaceAdded(this.manager, obj, iface);
+                this._onInterfaceAdded(this.manager, obj, iface);
             }
         }
 
         // Watch for new and removed
-        this.manager.connect('interface-added', this._interfaceAdded.bind(this));
-        this.manager.connect('interface-removed', this._interfaceRemoved.bind(this));
-        this.manager.connect('notify::name-owner', this._onNameOwnerChanged.bind(this));
+        this._interfaceAddedId = this.manager.connect(
+            'interface-added',
+            this._onInterfaceAdded.bind(this)
+        );
+        this._interfaceRemovedId = this.manager.connect(
+            'interface-removed',
+            this._onInterfaceRemoved.bind(this)
+        );
+        this._nameOwnerId = this.manager.connect(
+            'notify::name-owner',
+            this._onNameOwnerChanged.bind(this)
+        );
     }
 
     _startService() {
@@ -157,7 +165,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         if (this.manager.name_owner === null) {
             // Destroy any device proxies
             for (let iface of Object.values(this._devices)) {
-                this._interfaceRemoved(this.manager, iface.get_object(), iface);
+                this._onInterfaceRemoved(this.manager, iface.get_object(), iface);
             }
 
             if (this.service) {
@@ -170,7 +178,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         this._startService();
     }
 
-    _interfaceAdded(manager, object, iface) {
+    _onInterfaceAdded(manager, object, iface) {
         let info = gsconnect.dbusinfo.lookup_interface(iface.g_interface_name);
 
         // We only setup properties for GSConnect interfaces
@@ -236,7 +244,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         }
     }
 
-    _interfaceRemoved(manager, object, iface) {
+    _onInterfaceRemoved(manager, object, iface) {
         debug(iface.g_interface_name);
 
         if (iface.g_interface_name === 'org.gnome.Shell.Extensions.GSConnect.Device') {
@@ -291,11 +299,13 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
 
     destroy() {
         // Unhook from any ObjectManager events
-        GObject.signal_handlers_destroy(this.manager);
+        this.manager.disconnect(this._interfaceAddedId);
+        this.manager.disconnect(this._interfaceRemovedId);
+        this.manager.disconnect(this._nameOwnerId);
 
         // Destroy any device proxies
         for (let iface of Object.values(this._devices)) {
-            this._interfaceRemoved(this.manager, iface.get_object(), iface);
+            this._onInterfaceRemoved(this.manager, iface.get_object(), iface);
         }
 
         this.keybindingManager.destroy();
