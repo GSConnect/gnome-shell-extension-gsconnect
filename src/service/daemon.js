@@ -751,17 +751,17 @@ var Daemon = GObject.registerClass({
         try {
             this.lanService = new Lan.ChannelService();
 
+            // TCP
+            this.lanService.connect('channel', (service, channel) => {
+                this._addDevice(channel.identity, channel);
+            });
+
             // UDP
             this.lanService.connect('packet', (service, packet) => {
                 // Ignore our broadcasts
                 if (packet.body.deviceId !== this.identity.body.deviceId) {
                     this._addDevice(packet);
                 }
-            });
-
-            // TCP
-            this.lanService.connect('channel', (service, channel) => {
-                this._addDevice(channel.identity, channel);
             });
         } catch (e) {
             debug(e);
