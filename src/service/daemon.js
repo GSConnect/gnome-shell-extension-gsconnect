@@ -596,14 +596,8 @@ var Daemon = GObject.registerClass({
 
             // If it has the action enabled
             if (deviceAction && deviceAction.enabled) {
-                try {
-                    deviceAction.activate(parameter[2]);
-                } catch (e) {
-                    debug(e);
-                }
+                deviceAction.activate(parameter[2].unpack());
             }
-        } else {
-            debug(`${parameters[0]}: ${parameter[1].unpack()}`);
         }
     }
 
