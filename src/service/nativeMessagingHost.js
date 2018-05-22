@@ -170,7 +170,7 @@ var NativeMessagingHost = GObject.registerClass({
                 if (message.data.action === 'share') {
                     actionName = 'shareUrl';
                 } else if (message.data.action === 'telephony') {
-                    actionName = ''; // FIXME
+                    actionName = 'shareSms'; // FIXME
                 }
 
                 device.actions.activate_action(
@@ -208,8 +208,7 @@ var NativeMessagingHost = GObject.registerClass({
 
         for (let device of this.devices) {
             let share = device.actions.get_action_enabled('shareUrl');
-            // FIXME: need new telephony action for this
-            let telephony = device.actions.get_action_enabled('newSms');
+            let telephony = device.actions.get_action_enabled('shareSms');
 
             if (device.Connected && device.Paired && (share || telephony)) {
                 devices.push({

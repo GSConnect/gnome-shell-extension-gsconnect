@@ -56,6 +56,15 @@ var Metadata = {
             incoming: ['kdeconnect.telephony'],
             outgoing: ['kdeconnect.sms.request']
         },
+        shareSms: {
+            summary: _('Share SMS'),
+            description: _('Share something by SMS message'),
+            icon_name: 'sms-send',
+
+            parameter_type: new GLib.VariantType('s'),
+            incoming: ['kdeconnect.telephony'],
+            outgoing: ['kdeconnect.sms.request']
+        },
         callNotification: {
             summary: _('Call Notification'),
             description: _('Show a notification tailored for phone calls'),
@@ -573,7 +582,7 @@ var Plugin = GObject.registerClass({
      * @param {string} url - The link to be shared
      */
     // FIXME: re-check
-    shareUri(url) {
+    shareSms(url) {
         // Get the current open windows
         let windows = this.device.service.get_windows();
         let hasConversations = false;
