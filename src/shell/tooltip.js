@@ -99,8 +99,17 @@ var Tooltip = class Tooltip {
 
         // TODO: oddly fuzzy on menu items, sometimes
         if (this._parent.actor) { this._parent = this._parent.actor; }
-        this._parent.connect('notify::hover', this._hover.bind(this));
-        this._parent.connect('button-press-event', this._hide.bind(this));
+
+        this._hoverId = this._parent.connect(
+            'notify::hover',
+            this._onHover.bind(this)
+        );
+
+        this._pressId = this._parent.connect(
+            'button-press-event',
+            this._hide.bind(this)
+        );
+
         this._parent.connect('destroy', this.destroy.bind(this));
     }
 
@@ -242,7 +251,7 @@ var Tooltip = class Tooltip {
         this._hoverTimeoutId = 0;
     }
 
-    _hover() {
+    _onHover() {
         if (this._parent.hover) {
             if (!this._hoverTimeoutId) {
                 if (this._showing) {
@@ -265,6 +274,9 @@ var Tooltip = class Tooltip {
     }
 
     destroy() {
+        this._parent.disconnect(this._hoverId);
+        this._parent.disconnect(this._pressId);
+
         if (this.custom) {
             this.custom.destroy();
         }
