@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-05-23 23:53+0900\n"
-"PO-Revision-Date: 2018-05-24 00:05+0900\n"
+"PO-Revision-Date: 2018-05-24 00:30+0900\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ja\n"
@@ -296,8 +296,7 @@ msgstr "Atspiの初期化に失敗しました"
 
 #: src/service/plugins/mousepad.js:69
 msgid "Cannot load Caribou virtual keyboard for Unicode support"
-msgstr ""
-"UnicodeをサポートするためにCaribou仮想キーボードをロードできませんでした"
+msgstr "UnicodeサポートのためのCaribou仮想キーボードのロードが出来ませんでした"
 
 #: src/service/plugins/mpris.js:19
 msgid "Media Player Control"
