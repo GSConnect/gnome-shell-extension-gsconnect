@@ -235,9 +235,7 @@ var Plugin = GObject.registerClass({
      */
     _monitor() {
         // FIXME
-        let action = this.device.lookup_action('reportStatus');
-
-        if (!action || !action.enabled) {
+        if (!this.device.get_action_enabled('reportStatus')) {
             return;
         }
 
