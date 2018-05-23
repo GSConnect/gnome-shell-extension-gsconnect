@@ -1,0 +1,904 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the org.gnome.Shell.Extensions.GSConnect package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-05-23 23:53+0900\n"
+"PO-Revision-Date: 2018-05-24 00:30+0900\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: ja\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Poedit 2.0.6\n"
+
+#. TRANSLATORS: Open a new SMS window
+#: src/extension.js:176 src/service/daemon.js:912 src/widgets/device.js:199
+msgid "Send SMS"
+msgstr "SMSを送信"
+
+#. TRANSLATORS: eg. Locate Google Pixel
+#: src/extension.js:183 src/widgets/device.js:201
+#, javascript-format
+msgid "Locate %s"
+msgstr "%sを探す"
+
+#. TRANSLATORS: Open the device's list of browseable directories
+#: src/extension.js:191 src/service/plugins/sftp.js:21
+#: src/widgets/device.js:203
+msgid "Browse Files"
+msgstr "ファイルを閲覧"
+
+#. TRANSLATORS: Open the file chooser for sending files/links
+#: src/extension.js:198 src/widgets/device.js:205
+msgid "Share File/URL"
+msgstr "ファイル/URLを共有"
+
+#: src/extension.js:206 src/service/plugins/runcommand.js:20
+msgid "Run Commands"
+msgstr "コマンドを実行"
+
+#: src/extension.js:214 src/service/plugins/mousepad.js:20
+msgid "Remote Input"
+msgstr "リモート入力"
+
+#: src/extension.js:300
+msgid "Device is disconnected"
+msgstr "端末は切断"
+
+#: src/extension.js:302
+msgid "Device is unpaired"
+msgstr "端末はペア解除"
+
+#: src/extension.js:304
+msgid "No plugins enabled"
+msgstr "プラグインは有効化されていません"
+
+#. TRANSLATORS: eg. Failed to mount Google Pixel
+#: src/extension.js:385
+#, javascript-format
+msgid "Failed to mount %s"
+msgstr "%sのマウントに失敗しました"
+
+#: src/extension.js:417
+msgid "Unmount"
+msgstr "アンマウント"
+
+#: src/extension.js:535
+msgid "Mobile Devices"
+msgstr "モバイル端末"
+
+#: src/extension.js:550
+msgid "Mobile Settings"
+msgstr "モバイル設定"
+
+#: src/nautilus-gsconnect.py:86
+msgid "Send To Mobile Device"
+msgstr "モバイル端末に送信"
+
+#: src/prefs.js:51 src/service/daemon.js:211
+msgid "GSConnect"
+msgstr "GSConnect"
+
+#: src/prefs.js:60
+msgid "KDE Connect implementation with Gnome Shell integration"
+msgstr "Gnome Shellと統合されたKDE Connectの実装"
+
+#: src/prefs.js:67
+msgid "GSConnect Website"
+msgstr "GSConnectのウェブサイト"
+
+#: src/prefs.js:74
+msgid "Copyright © 2017 Andy Holmes"
+msgstr "Copyright © 2017 Andy Holmes"
+
+#: src/prefs.js:81
+msgid "This program comes with absolutely no warranty."
+msgstr "This program comes with absolutely no warranty."
+
+#: src/prefs.js:82
+msgid ""
+"See the <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html"
+"\">GNU General Public License, version 2 or later</a> for details."
+msgstr ""
+"See the <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html"
+"\">GNU General Public License, version 2 or later</a> for details."
+
+#: src/prefs.js:106
+msgid "Devices"
+msgstr "端末"
+
+#. Preferences Page
+#: src/prefs.js:110
+msgid "Preferences"
+msgstr "設定"
+
+#: src/prefs.js:112
+msgid "Appearance"
+msgstr "外観"
+
+#: src/prefs.js:119
+msgid "Extensions"
+msgstr "拡張機能"
+
+#: src/prefs.js:126 data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:39
+msgid "Web Browser Integration"
+msgstr "ウェブブラウザ統合"
+
+#: src/prefs.js:127
+#, javascript-format
+msgid ""
+"Requires <a href=\"%s\">Chrome Extension</a> or <a href=\"%s\">Firefox Add-"
+"On</a>"
+msgstr ""
+"<a href=\"%s\">Chromeの拡張機能</a>または<a href=\"%s\">Firefoxのアドオン</a>"
+"が必要"
+
+#: src/prefs.js:137
+msgid "About"
+msgstr "概要"
+
+#: src/service/daemon.js:66
+msgid "Select a Device"
+msgstr "端末を選択"
+
+#: src/service/daemon.js:72 src/service/plugins/base.js:169
+#: src/service/plugins/notification.js:501 src/service/plugins/share.js:100
+#: src/service/plugins/share.js:331 src/service/plugins/share.js:480
+msgid "Cancel"
+msgstr "キャンセル"
+
+#: src/service/daemon.js:77
+msgid "Select"
+msgstr "選択"
+
+#: src/service/daemon.js:693
+msgid "Nautilus extensions changed"
+msgstr "Nautilus拡張が変更されました"
+
+#: src/service/daemon.js:694
+msgid "Restart Nautilus to apply changes"
+msgstr "Nautilusを再起動して変更を適用します"
+
+#. TRANSLATORS: Notification button to restart Nautilus
+#: src/service/daemon.js:700
+msgid "Restart"
+msgstr "再起動"
+
+#: src/service/daemon.js:927
+msgid "Dial Phone Number"
+msgstr "電話番号をダイヤル"
+
+#. TRANSLATORS: eg. Pair Request from Google Pixel
+#: src/service/device.js:381
+#, javascript-format
+msgid "Pair Request from %s"
+msgstr "%sからのペアリクエスト"
+
+#. TRANSLATORS: Remote and local TLS Certificate fingerprint
+#. PLEASE KEEP NEWLINE CHARACTERS (\n)
+#.
+#. Example:
+#.
+#. Google Pixel Fingerprint:
+#. 00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
+#.
+#. Local Fingerprint:
+#. 00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
+#: src/service/device.js:393
+#, javascript-format
+msgid ""
+"%s Fingerprint:\n"
+"%s\n"
+"\n"
+"Local Fingerprint:\n"
+"%s"
+msgstr ""
+"%sのフィンガープリント:\n"
+"%s\n"
+"\n"
+"ローカルフィンガープリント:\n"
+"%s"
+
+#: src/service/device.js:403
+msgid "Reject"
+msgstr "拒否"
+
+#: src/service/device.js:407
+msgid "Accept"
+msgstr "承認"
+
+#: src/service/plugins/base.js:168
+msgid "Apply"
+msgstr "適用"
+
+#: src/service/plugins/battery.js:21
+msgid "Battery"
+msgstr "電池"
+
+#: src/service/plugins/battery.js:22
+msgid "Send and receive battery statistics"
+msgstr "電池統計を送受信"
+
+#. TRANSLATORS: Low Battery Warning
+#: src/service/plugins/battery.js:251
+msgid "Low Battery Warning"
+msgstr "電池の残量が少なくなっています"
+
+#. TRANSLATORS: eg. Google Pixel's battery level is 15%
+#: src/service/plugins/battery.js:254
+#, javascript-format
+msgid "%s's battery level is %d%%"
+msgstr "%sの電池残量は%d%%"
+
+#: src/service/plugins/battery.js:260
+msgid "Locate"
+msgstr "探す"
+
+#: src/service/plugins/clipboard.js:20
+msgid "Clipboard"
+msgstr "クリップボード"
+
+#: src/service/plugins/clipboard.js:21
+msgid "Sync the clipboard between devices"
+msgstr "端末間でクリップボードを共有"
+
+#: src/service/plugins/clipboard.js:43 src/service/plugins/mousepad.js:58
+msgid "Failed to get Gdk.Display"
+msgstr "Gdk.Displayの取得に失敗しました"
+
+#: src/service/plugins/clipboard.js:50
+msgid "Failed to get Clipboard"
+msgstr "クリップボードの取得に失敗しました"
+
+#: src/service/plugins/findmyphone.js:21 src/service/plugins/findmyphone.js:55
+msgid "Locate Device"
+msgstr "端末を探す"
+
+#: src/service/plugins/findmyphone.js:22
+msgid "Find a device by making it ring"
+msgstr "端末を鳴らして探す"
+
+#: src/service/plugins/findmyphone.js:56
+#, javascript-format
+msgid "%s asked to locate this device"
+msgstr "%sがこの端末を探すよう要求しました"
+
+#: src/service/plugins/findmyphone.js:69
+msgid "Found"
+msgstr "発見"
+
+#: src/service/plugins/lock.js:20
+msgid "Screen Lock"
+msgstr "スクリーンロック"
+
+#: src/service/plugins/lock.js:21
+msgid "Lock and unlock devices"
+msgstr "端末をロック・アンロック"
+
+#: src/service/plugins/mousepad.js:21
+msgid "Control the mouse and keyboard remotely"
+msgstr "マウスとキーボードを遠隔操作"
+
+#: src/service/plugins/mousepad.js:44
+msgid "Can't run in Wayland session"
+msgstr "Waylandセッションでは動作しません"
+
+#: src/service/plugins/mousepad.js:51
+msgid "Failed to initialize Atspi"
+msgstr "Atspiの初期化に失敗しました"
+
+#: src/service/plugins/mousepad.js:69
+msgid "Cannot load Caribou virtual keyboard for Unicode support"
+msgstr "UnicodeサポートのためのCaribou仮想キーボードのロードが出来ませんでした"
+
+#: src/service/plugins/mpris.js:19
+msgid "Media Player Control"
+msgstr "メディアプレーヤーコントロール"
+
+#: src/service/plugins/mpris.js:20
+msgid "Control MPRIS2 enabled media players"
+msgstr "MPRIS2対応のメディアプレーヤーをコントロール"
+
+#: src/service/plugins/notification.js:22
+msgid "Notifications"
+msgstr "通知"
+
+#: src/service/plugins/notification.js:23
+msgid "Sync notifications between devices"
+msgstr "端末間で通知を共有"
+
+#. Check if this is a missed call or SMS notification
+#. TRANSLATORS: This is specifically for matching missed call notifications on Android.
+#. You should translate this (or not) to match the string on your phone that in english looks like "Missed call: John Lennon"
+#: src/service/plugins/notification.js:92 src/service/plugins/telephony.js:199
+#: src/service/plugins/telephony.js:203 src/service/plugins/telephony.js:592
+msgid "Missed call"
+msgstr "不在着信"
+
+#. TRANSLATORS: Missed Call
+#: src/service/plugins/notification.js:118 src/service/plugins/telephony.js:174
+msgid "Missed Call"
+msgstr "不在着信"
+
+#. TRANSLATORS: eg. Missed call from John Smith on Google Pixel
+#: src/service/plugins/notification.js:120 src/service/plugins/telephony.js:177
+#, javascript-format
+msgid "Missed call from %s on %s"
+msgstr "%sからの%sの不在着信"
+
+#. TRANSLATORS: Reply to a missed call by SMS
+#: src/service/plugins/notification.js:127 src/service/plugins/telephony.js:184
+msgid "Message"
+msgstr "メッセージ"
+
+#: src/service/plugins/notification.js:499 src/service/plugins/share.js:481
+#: src/widgets/telephony.js:1072
+msgid "Send"
+msgstr "送信"
+
+#: src/service/plugins/notification.js:567
+msgid "Applications"
+msgstr "アプリケーション"
+
+#: src/service/plugins/ping.js:20 src/service/plugins/ping.js:66
+msgid "Ping"
+msgstr "Ping"
+
+#: src/service/plugins/ping.js:21
+msgid "Send and receive pings"
+msgstr "Pingを送受信"
+
+#. TRANSLATORS: An optional message accompanying a ping, rarely if ever used
+#. eg. Ping: A message sent with ping
+#: src/service/plugins/ping.js:64
+#, javascript-format
+msgid "Ping: %s"
+msgstr "Ping: %s"
+
+#: src/service/plugins/runcommand.js:21
+msgid "Execute local commands remotely"
+msgstr "コマンドを遠隔実行"
+
+#. TRANSLATORS: Column header for RunCommand command list
+#: src/service/plugins/runcommand.js:175
+msgid "Name"
+msgstr "名前"
+
+#. TRANSLATORS: Column header for RunCommand command list
+#: src/service/plugins/runcommand.js:191
+msgid "Command"
+msgstr "コマンド"
+
+#: src/service/plugins/sftp.js:22
+msgid "Mount and browse device filesystems"
+msgstr "端末のファイルシステムをマウントして閲覧"
+
+#: src/service/plugins/sftp.js:61
+msgid "SSHFS not installed"
+msgstr "SSHFSがインストールされていません"
+
+#: src/service/plugins/share.js:22
+msgid "Share"
+msgstr "共有"
+
+#: src/service/plugins/share.js:23
+msgid "Send and receive files and URLs"
+msgstr "ファイルやURLを送受信"
+
+#: src/service/plugins/share.js:87 src/service/plugins/share.js:318
+msgid "Starting Transfer"
+msgstr "転送開始"
+
+#. TRANSLATORS: eg. Receiving "book.pdf" from Google Pixel
+#: src/service/plugins/share.js:90
+#, javascript-format
+msgid "Receiving \"%s\" from %s"
+msgstr "\"%s\"を%sから受信しています"
+
+#: src/service/plugins/share.js:115 src/service/plugins/share.js:346
+msgid "Transfer Successful"
+msgstr "転送成功"
+
+#. TRANSLATORS: eg. Received "book.pdf" from Google Pixel
+#: src/service/plugins/share.js:118
+#, javascript-format
+msgid "Received \"%s\" from %s"
+msgstr "\"%s\"を%sから受信しました"
+
+#: src/service/plugins/share.js:128
+msgid "Open Folder"
+msgstr "フォルダーを開く"
+
+#: src/service/plugins/share.js:135
+msgid "Open File"
+msgstr "ファイルを開く"
+
+#: src/service/plugins/share.js:157 src/service/plugins/share.js:374
+msgid "Transfer Failed"
+msgstr "転送失敗"
+
+#. TRANSLATORS: eg. Failed to receive "book.pdf" from Google Pixel: Some error
+#: src/service/plugins/share.js:160
+#, javascript-format
+msgid "Failed to receive \"%s\" from %s: %s"
+msgstr "\"%s\"を%sから受信失敗: %s"
+
+#: src/service/plugins/share.js:181 src/service/plugins/share.js:397
+msgid "Transfer Cancelled"
+msgstr "転送中断"
+
+#. TRANSLATORS: eg. Cancelled transfer of "book.pdf" from Google Pixel
+#: src/service/plugins/share.js:184
+#, javascript-format
+msgid "Cancelled transfer of \"%s\" from %s"
+msgstr "\"%s\"を%sから受信中にキャンセルしました"
+
+#. TRANSLATORS: eg. Sending "book.pdf" to Google Pixel
+#: src/service/plugins/share.js:321
+#, javascript-format
+msgid "Sending \"%s\" to %s"
+msgstr "\"%s\"を%sに送信しています"
+
+#. TRANSLATORS: eg. Send "book.pdf" to Google Pixel
+#: src/service/plugins/share.js:349
+#, javascript-format
+msgid "Sent \"%s\" to %s"
+msgstr "\"%s\"を%sに送信しました"
+
+#. TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel: Some error
+#: src/service/plugins/share.js:377
+#, javascript-format
+msgid "Failed to send \"%s\" to %s: %s"
+msgstr "\"%s\"を%sに送信失敗: %s"
+
+#. TRANSLATORS: eg. Cancelled transfer of "book.pdf" to Google Pixel
+#: src/service/plugins/share.js:400
+#, javascript-format
+msgid "Cancelled transfer of \"%s\" to %s"
+msgstr "\"%s\"を%sに送信中にキャンセルしました"
+
+#. TRANSLATORS: eg. Send files to Google Pixel
+#: src/service/plugins/share.js:450
+#, javascript-format
+msgid "Send files to %s"
+msgstr "%sにファイルを送信"
+
+#. TRANSLATORS: eg. Send a link to Google Pixel
+#: src/service/plugins/share.js:469
+#, javascript-format
+msgid "Send a link to %s"
+msgstr "%sにリンクを送信"
+
+#. TRANSLATORS: eg. Use a subdirectory named <b>Google Pixel<b>
+#: src/service/plugins/share.js:528
+#, javascript-format
+msgid "Use a subdirectory named <b>%s</b>"
+msgstr "<b>%s</b>という名前のサブディレクトリを使用"
+
+#: src/service/plugins/telephony.js:35
+msgid "Telephony"
+msgstr "電話"
+
+#: src/service/plugins/telephony.js:36
+msgid "Call notification and SMS messaging"
+msgstr "着信通知とSMSメッセージ"
+
+#. TRANSLATORS: Incoming Call
+#: src/service/plugins/telephony.js:212
+msgid "Incoming Call"
+msgstr "着信"
+
+#. TRANSLATORS: eg. Incoming call from John Smith on Google Pixel
+#: src/service/plugins/telephony.js:215
+#, javascript-format
+msgid "Incoming call from %s on %s"
+msgstr "%sからの%sの着信"
+
+#. TRANSLATORS: Silence an incoming call
+#: src/service/plugins/telephony.js:222 src/service/plugins/telephony.js:1054
+#: src/service/plugins/telephony.js:1078
+msgid "Mute"
+msgstr "ミュート"
+
+#. TRANSLATORS: Talking on the phone
+#: src/service/plugins/telephony.js:294
+msgid "Call In Progress"
+msgstr "通話中"
+
+#. TRANSLATORS: eg. Call in progress with John Smith on Google Pixel
+#: src/service/plugins/telephony.js:297
+#, javascript-format
+msgid "Call in progress with %s on %s"
+msgstr "%sからの%sの電話に出ています"
+
+#: src/service/plugins/telephony.js:449 src/widgets/telephony.js:302
+msgid "Unknown Number"
+msgstr "不明な番号"
+
+#: src/service/plugins/telephony.js:1041
+msgid "Incoming Calls"
+msgstr "着信中"
+
+#: src/service/plugins/telephony.js:1052 src/service/plugins/telephony.js:1076
+msgid "Nothing"
+msgstr "何もしない"
+
+#: src/service/plugins/telephony.js:1053 src/service/plugins/telephony.js:1077
+msgid "Lower"
+msgstr "下げる"
+
+#: src/service/plugins/telephony.js:1061 src/service/plugins/telephony.js:1085
+#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:143
+#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:153
+msgid "System Volume"
+msgstr "システムの音量"
+
+#: src/service/plugins/telephony.js:1065
+msgid "In Progress Calls"
+msgstr "通話中"
+
+#: src/service/plugins/telephony.js:1094 src/service/plugins/telephony.js:1099
+msgid "The <b>Media Player Control</b> plugin must be enabled"
+msgstr "メディアプレーヤーコントロールプラグインを有効にしてください"
+
+#: src/service/plugins/telephony.js:1106 src/service/plugins/telephony.js:1109
+#: src/service/plugins/telephony.js:1112
+msgid "Gvc not available"
+msgstr "Gvcが利用できません"
+
+#: src/widgets/device.js:28
+msgid ""
+"Ensure that devices are on the same local network with ports 1716 to 1764 "
+"open for TCP and UDP connections."
+msgstr ""
+"端末が同じネットワークに存在していて、TCP/UDPのポート1716から1764が開放されて"
+"いることを確認してください。"
+
+#: src/widgets/device.js:30
+#, javascript-format
+msgid ""
+"To connect an Android device, install the KDE Connect Android app from the "
+"<a href=\"%s\">Google Play Store</a> or <a href=\"%s\">F-Droid</a>."
+msgstr ""
+"Android端末を接続するには、<a href=\"%s\">Google Play ストア</a>または<a "
+"href=\"%s\">F-Droid</a>からKDE Connectアプリをインストールしてください。"
+
+#: src/widgets/device.js:35
+#, javascript-format
+msgid ""
+"Please see the <a href=\"%s\">Wiki</a> for more help or <a href=\"%s\">open "
+"an issue</a> on Github to report a problem."
+msgstr ""
+"助けが必要な場合には、<a href=\"%s\">Wiki</a>を見るか、GitHubで<a href=\"%s"
+"\">Issueを開いて</a>問題を報告してください。"
+
+#: src/widgets/device.js:128
+#, javascript-format
+msgid "Error: %s"
+msgstr "エラー： %s"
+
+#. TRANSLATORS: Open the device menu
+#: src/widgets/device.js:197
+msgid "Open Menu"
+msgstr "メニューを開く"
+
+#: src/widgets/device.js:243
+msgid "Refresh"
+msgstr "更新"
+
+#: src/widgets/device.js:317
+msgid "Connecting Devices"
+msgstr "端末を接続"
+
+#. TRANSLATORS: eg. Reconnect <b>Google Pixel</b>
+#: src/widgets/device.js:436 src/widgets/shell.js:599
+#, javascript-format
+msgid "Reconnect <b>%s</b>"
+msgstr "<b>%s</b>を再接続"
+
+#. TRANSLATORS: eg. Unpair <b>Google Pixel</b>
+#: src/widgets/device.js:477
+#, javascript-format
+msgid "Unpair <b>%s</b>"
+msgstr "<b>%s</b>をペア解除"
+
+#. TRANSLATORS: eg. Pair <b>Google Pixel</b>
+#: src/widgets/device.js:486 src/widgets/shell.js:609
+#, javascript-format
+msgid "Pair <b>%s</b>"
+msgstr "<b>%s</b>をペアリング"
+
+#. TRANSLATORS: Remote and local TLS Certificate fingerprint
+#. PLEASE KEEP NEWLINE CHARACTERS (\n)
+#.
+#. Example:
+#.
+#. <b>Google Pixel Fingerprint:</b>
+#. 00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
+#.
+#. <b>Local Fingerprint:</b>
+#. 00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
+#: src/widgets/device.js:497 src/widgets/shell.js:609
+#, javascript-format
+msgid ""
+"<b>%s Fingerprint:</b>\n"
+"%s\n"
+"\n"
+"<b>Local Fingerprint:</b>\n"
+"%s"
+msgstr ""
+"<b>%sのフィンガープリント：</b>\n"
+"%s\n"
+"\n"
+"<b>ローカルフィンガープリント：</b>\n"
+"%s"
+
+#. Plugins
+#: src/widgets/device.js:506
+msgid "Plugins"
+msgstr "プラグイン"
+
+#. Keyboard Shortcuts
+#: src/widgets/device.js:509
+msgid "Keyboard Shortcuts"
+msgstr "キーボードショートカット"
+
+#: src/widgets/device.js:519
+msgid "Desktop"
+msgstr "デスクトップ"
+
+#: src/widgets/device.js:525
+msgid "Laptop"
+msgstr "ラップトップ"
+
+#: src/widgets/device.js:531
+msgid "Smartphone"
+msgstr "スマートフォン"
+
+#: src/widgets/device.js:537
+msgid "Tablet"
+msgstr "タブレット"
+
+#: src/widgets/device.js:543
+msgid "Unknown"
+msgstr "不明"
+
+#: src/widgets/keybindings.js:170
+msgid "Keyboard Shortcut Unavailable"
+msgstr "キーボードショートカットが利用できません"
+
+#: src/widgets/keybindings.js:171
+msgid ""
+"The requested keyboard shortcut is already in use and can't be overridden."
+msgstr "そのキーボードショートカットは使用済みです。"
+
+#. TRANSLATORS: Fully Charged
+#: src/widgets/shell.js:549
+msgid "Fully Charged"
+msgstr "充電完了"
+
+#. TRANSLATORS: <percentage> (Estimating…)
+#: src/widgets/shell.js:552
+#, javascript-format
+msgid "%d%% (Estimating…)"
+msgstr "%d%% (計測中…)"
+
+#. TRANSLATORS: <percentage> (<hours>:<minutes> Until Full)
+#: src/widgets/shell.js:561
+#, javascript-format
+msgid "%d%% (%d∶%02d Until Full)"
+msgstr "%d%% (フルまで %d∶%02d)"
+
+#. TRANSLATORS: <percentage> (<hours>:<minutes> Remaining)
+#: src/widgets/shell.js:568
+#, javascript-format
+msgid "%d%% (%d∶%02d Remaining)"
+msgstr "%d%% (残り %d∶%02d)"
+
+#: src/widgets/shell.js:651
+#, javascript-format
+msgid "Configure <b>%s</b>"
+msgstr "<b>%s</b>を設定"
+
+#: src/widgets/telephony.js:231
+msgid "Add people to start a conversation"
+msgstr "他の人を招待して会議を始める"
+
+#: src/widgets/telephony.js:264 src/widgets/telephony.js:285
+#: src/widgets/telephony.js:340
+msgid "Unknown Contact"
+msgstr "不明な連絡先"
+
+#: src/widgets/telephony.js:334
+#, javascript-format
+msgid "Send to %s"
+msgstr "%sに送信"
+
+#: src/widgets/telephony.js:343
+#, javascript-format
+msgid "Send to %d"
+msgstr "%dに送信"
+
+#. TRANSLATORS: A phone number type
+#: src/widgets/telephony.js:390 src/widgets/telephony.js:407
+msgid "Other"
+msgstr "その他"
+
+#. TRANSLATORS: A phone number type
+#: src/widgets/telephony.js:394
+msgid "Fax"
+msgstr "FAX"
+
+#. TRANSLATORS: A phone number type
+#: src/widgets/telephony.js:398
+msgid "Work"
+msgstr "仕事"
+
+#. TRANSLATORS: A phone number type
+#: src/widgets/telephony.js:401
+msgid "Mobile"
+msgstr "モバイル"
+
+#. TRANSLATORS: A phone number type
+#: src/widgets/telephony.js:404
+msgid "Home"
+msgstr "家"
+
+#: src/widgets/telephony.js:507
+msgid "Type an SMS message"
+msgstr "SMSメッセージを入力"
+
+#: src/widgets/telephony.js:684
+msgid "SMS Conversation"
+msgstr "SMS会議"
+
+#. TRANSLATORS: Tooltip for a button to add/remove people from a conversation
+#: src/widgets/telephony.js:706
+msgid "Add and remove people"
+msgstr "他の人を追加・削除"
+
+#: src/widgets/telephony.js:726 src/widgets/telephony.js:727
+msgid "Type a phone number or name"
+msgstr "電話番号または名前を入力"
+
+#. TRANSLATORS: eg. <b>Google Pixel</b> is disconnected
+#: src/widgets/telephony.js:752
+#, javascript-format
+msgid "<b>%s</b> is disconnected"
+msgstr "<b>%s</b>は切断しました"
+
+#: src/widgets/telephony.js:838 src/widgets/telephony.js:1127
+#, javascript-format
+msgid "And one other person"
+msgid_plural "And %d other people"
+msgstr[0] "あと%d人"
+
+#. TRANSLATORS: eg. SMS Conversation with John, Paul, George, Ringo
+#: src/widgets/telephony.js:853 src/widgets/telephony.js:1138
+#, javascript-format
+msgid "SMS Conversation with %s"
+msgstr "%sとのSMS会議"
+
+#: src/widgets/telephony.js:858
+msgid "New SMS Conversation"
+msgstr "新しいSMS会議"
+
+#: src/widgets/telephony.js:1010 src/widgets/telephony.js:1022
+msgid "Share Link"
+msgstr "リンクを共有"
+
+#: src/widgets/telephony.js:1060
+msgid "New Message"
+msgstr "新しいメッセージ"
+
+#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:6
+msgid "Debug Mode"
+msgstr "デバッグモード"
+
+#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:7
+msgid "Enable debug features and logging"
+msgstr "デバッグ機能とログを有効化"
+
+#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:11
+msgid "Show Indicators"
+msgstr "インジケータを表示"
+
+#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:12
+msgid "Display devices in the panel instead of the User Menu"
+msgstr "ユーザーメニューの代わりにパネルに端末を表示します"
+
+#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:16
+msgid "Show Offline"
+msgstr "オフラインの端末を表示"
+
+#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:17
+msgid "Display devices even if offline"
+msgstr "オフラインでも端末を表示します"
+
+#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:21
+msgid "Show Unpaired"
+msgstr "ペア解除した端末を表示"
+
+#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:22
+msgid "Display devices even if unpaired"
+msgstr "ペアされていなくても端末を表示します"
+
+#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:26
+msgid "Show Battery Icon"
+msgstr "電池アイコンを表示"
+
+#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:27
+msgid "Display an icon with percentage in the Device Menu"
+msgstr "端末メニューに電池残量とアイコンを表示します"
+
+#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:34
+msgid "Nautilus Integration"
+msgstr "Nautilus統合"
+
+#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:35
+msgid "Send files from the file browser context menu"
+msgstr "ファイルブラウザのコンテキストメニューからファイルを送信"
+
+#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:40
+msgid "Share links with devices and contacts from the web browser"
+msgstr "ウェブブラウザから端末や連絡先とリンクを共有"
+
+#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:44
+msgid "Public Name"
+msgstr "パブリックネーム"
+
+#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:45
+msgid "The name visible to other devices"
+msgstr "他の端末から見れる名前"
+
+#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:80
+msgid "Receive Statistics"
+msgstr "統計を受信"
+
+#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:85
+msgid "Send Statistics"
+msgstr "統計を送信"
+
+#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:92
+msgid "Receive Content"
+msgstr "コンテンツを受信"
+
+#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:97
+msgid "Send Content"
+msgstr "コンテンツを送信"
+
+#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:104
+msgid "Receive Notifications"
+msgstr "通知を受信"
+
+#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:109
+msgid "Send Notifications"
+msgstr "通知を送信"
+
+#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:124
+msgid "Automatically Mount"
+msgstr "自動マウント"
+
+#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:131
+msgid "Download Directory"
+msgstr "ダウンロードディレクトリ"
+
+#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:136
+msgid "Use Subdirectory"
+msgstr "サブディレクトリを使う"
+
+#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:148
+#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:163
+msgid "Pause Media"
+msgstr "メディアを一時停止"
+
+#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:158
+msgid "Mute Microphone"
+msgstr "マイクをミュート"
