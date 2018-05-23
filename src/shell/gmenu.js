@@ -238,9 +238,9 @@ var Button = GObject.registerClass({
         );
 
         this.connect('destroy', (button) => {
-            button.disconnect(button._actionEnabledId);
-            button.disconnect(button._actionAddedId);
-            button.disconnect(button._actionRemovedId);
+            button._gactions.disconnect(button._actionEnabledId);
+            button._gactions.disconnect(button._actionAddedId);
+            button._gactions.disconnect(button._actionRemovedId);
 
             if (button.submenu !== null) {
                 button.submenu.destroy();
