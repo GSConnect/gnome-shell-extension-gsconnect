@@ -337,7 +337,7 @@ var Daemon = GObject.registerClass({
 
     _pruneDevices() {
         // Don't prune devices while the settings window is open
-        if (this._window.visible) {
+        if (this._window && this._window.visible) {
             return;
         }
 
