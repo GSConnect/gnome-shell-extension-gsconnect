@@ -278,7 +278,7 @@ var SectionRow = GObject.registerClass({
     }
 
     set widget(widget) {
-        if (this._widget instanceof Gtk.Widget) {
+        if (this._widget && this._widget instanceof Gtk.Widget) {
             this._widget.destroy();
         }
 
@@ -829,55 +829,62 @@ var DeviceSettings = GObject.registerClass({
         let name = label.get_name().split('-')[0];
         let settings = this._getSettings(name);
         let blacklist = this.device.settings.get_strv('action-blacklist');
+        let index;
 
-        if (name === 'clipboard') {
-            let send = settings.get_boolean('send-content');
-            let receive = settings.get_boolean('receive-content');
+        switch (name) {
+            case 'clipboard':
+                let send = settings.get_boolean('send-content');
+                let receive = settings.get_boolean('receive-content');
 
-            if (send && receive) {
-                send = false;
-                receive = false;
-                label.label = _('Off');
-            } else if (send) {
-                send = false;
-                receive = true;
-                label.label = _('From Device');
-            } else if (receive) {
-                send = true;
-                receive = true;
-                label.label = _('Both');
-            } else {
-                send = true;
-                receive = false;
-                label.label = _('To Device');
-            }
+                if (send && receive) {
+                    send = false;
+                    receive = false;
+                    label.label = _('Off');
+                } else if (send) {
+                    send = false;
+                    receive = true;
+                    label.label = _('From Device');
+                } else if (receive) {
+                    send = true;
+                    receive = true;
+                    label.label = _('Both');
+                } else {
+                    send = true;
+                    receive = false;
+                    label.label = _('To Device');
+                }
 
-            settings.set_boolean('send-content', send);
-            settings.set_boolean('receive-content', receive);
-        } else if (name === 'findmyphone') {
-            let index = blacklist.indexOf('locationAnnounce');
+                settings.set_boolean('send-content', send);
+                settings.set_boolean('receive-content', receive);
+                break;
 
-            if (index < 0) {
-                blacklist.push('locationAnnounce');
-                label.label = _('Off');
-            } else {
-                blacklist.splice(index, 1);
-                label.label = _('On');
-            }
+            case 'findmyphone':
+                index = blacklist.indexOf('locationAnnounce');
 
-            this.device.settings.set_strv('action-blacklist', blacklist);
-        } else if (name === 'share') {
-            let index = blacklist.indexOf('shareDialog');
+                if (index < 0) {
+                    blacklist.push('locationAnnounce');
+                    label.label = _('Off');
+                } else {
+                    blacklist.splice(index, 1);
+                    label.label = _('On');
+                }
 
-            if (index < 0) {
-                blacklist.push('shareDialog');
-                label.label = _('Off');
-            } else {
-                blacklist.splice(index, 1);
-                label.label = _('On');
-            }
+                this.device.settings.set_strv('action-blacklist', blacklist);
+                break;
 
-            this.device.settings.set_strv('action-blacklist', blacklist);
+            case 'share':
+                index = blacklist.indexOf('shareDialog');
+
+                if (index < 0) {
+                    blacklist.push('shareDialog');
+                    label.label = _('Off');
+                } else {
+                    blacklist.splice(index, 1);
+                    label.label = _('On');
+                }
+
+                this.device.settings.set_strv('action-blacklist', blacklist);
+                break;
         }
     }
 
