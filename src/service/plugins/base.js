@@ -98,7 +98,11 @@ var Plugin = GObject.registerClass({
 
         // Menu
         let menu = this.device.settings.get_strv('menu');
-        this.device.menu.add_action(action, menu.indexOf(action.name));
+        let index = menu.indexOf(action.name);
+
+        if (index > -1) {
+            this.device.menu.add_action(action, index);
+        }
 
         this._gactions.push(action);
     }
