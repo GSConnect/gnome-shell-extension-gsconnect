@@ -286,24 +286,25 @@ var ChannelService = GObject.registerClass({
 
     _setupObjManager(obj, res) {
         this._objManager = Gio.DBusObjectManagerClient.new_finish(res);
-        this._objManager.connect(
-            'interface-added',
-            this._onInterfaceAdded.bind(this)
-        );
-        this._objManager.connect(
-            'interface-removed',
-            this._onInterfaceRemoved.bind(this)
-        );
-        this._objManager.connect(
-            'interface-proxy-properties-changed',
-            this._onPropertiesChanged.bind(this)
-        );
 
         for (let obj of this._objManager.get_objects()) {
             for (let iface of obj.get_interfaces()) {
                 this._onInterfaceAdded(this._objManager, obj, iface);
             }
         }
+
+        this._objManager._interfaceAddedId = this._objManager.connect(
+            'interface-added',
+            this._onInterfaceAdded.bind(this)
+        );
+        this._objManager._interfaceRemovedId = this._objManager.connect(
+            'interface-removed',
+            this._onInterfaceRemoved.bind(this)
+        );
+        this._objManager._interfacePropertiesId = this._objManager.connect(
+            'interface-proxy-properties-changed',
+            this._onPropertiesChanged.bind(this)
+        );
     }
 
     /**
@@ -368,7 +369,9 @@ var ChannelService = GObject.registerClass({
     }
 
     destroy() {
-        GObject.signal_handlers_destroy(this._objManager);
+        this._objManager.disconnect(this._objManager._interfaceAddedId);
+        this._objManager.disconnect(this._objManager._interfaceRemovedId);
+        this._objManager.disconnect(this._objManager._interfacePropertiesId);
 
         for (let object_path of this.devices.keys()) {
             this.RequestDisconnection(object_path);

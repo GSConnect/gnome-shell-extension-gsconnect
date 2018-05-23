@@ -249,16 +249,33 @@ var Plugin = GObject.registerClass({
                 null
             );
 
-            for (let property of ['percentage', 'state', 'warning_level']) {
-                this._upower.connect('notify::' + property, () => {
-                    this.reportStatus();
-                });
-            }
+            this._upower._percentageId = this._upower.connect(
+                'notify::percentage',
+                this.reportStatus.bind(this)
+            );
+
+            this._upower._stateId = this._upower.connect(
+                'notify::state',
+                this.reportStatus.bind(this)
+            );
+
+            this._upower._warningId = this._upower.connect(
+                'notify::warning_level',
+                this.reportStatus.bind(this)
+            );
 
             this.reportStatus();
         } catch(e) {
-            debug('Battery: Failed to initialize UPower: ' + e);
-            GObject.signal_handlers_destroy(this._upower);
+            debug('Battery: Failed to initialize UPower: ' + e.message);
+            this._unmonitor();
+        }
+    }
+
+    _unmonitor() {
+        if (this._upower) {
+            this._upower.disconnect(this._upower._percentageId);
+            this._upower.disconnect(this._upower._stateId);
+            this._upower.disconnect(this._upower._warningId);
             delete this._upower;
         }
     }
@@ -370,11 +387,7 @@ var Plugin = GObject.registerClass({
     }
 
     destroy() {
-        if (this._upower) {
-            GObject.signal_handlers_destroy(this._upower);
-            delete this._upower;
-        }
-
+        this._unmonitor();
         this.device._dbus_object.remove_interface(this._dbus);
 
         PluginsBase.Plugin.prototype.destroy.call(this);
