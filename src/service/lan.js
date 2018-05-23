@@ -309,7 +309,7 @@ var Transfer = GObject.registerClass({
             });
             this._connection = await this._initSocket(this._connection);
             this._connection = await this._serverEncryption(this._connection);
-            this._output_stream = this._connection.get_output_stream();
+            this.output_stream = this._connection.get_output_stream();
             this.emit('connected');
         } catch(e) {
             log('Error uploading: ' + e.message);
