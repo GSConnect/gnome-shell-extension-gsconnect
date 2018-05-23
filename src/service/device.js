@@ -108,7 +108,11 @@ var Menu = GObject.registerClass({
         );
         item.set_detailed_action(`device.${action.name}`);
 
-        this.append_item(item);
+        if (index === -1) {
+            this.append_item(item);
+        } else {
+            this.insert_item(index, item);
+        }
 
         return this.get_n_items();
     }

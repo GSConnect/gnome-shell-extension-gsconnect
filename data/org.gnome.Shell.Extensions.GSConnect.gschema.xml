@@ -72,6 +72,9 @@
     <key name="keybindings" type="a{sv}">
       <default>{}</default>
     </key>
+    <key name="menu" type="as">
+      <default>["newSms", "find", "mount", "shareDialog", "command"]</default>
+    </key>
     <key name="name" type="s">
       <default>""</default>
     </key>
