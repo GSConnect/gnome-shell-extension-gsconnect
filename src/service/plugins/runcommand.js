@@ -16,13 +16,22 @@ var Metadata = {
     outgoingCapabilities: ['kdeconnect.runcommand', 'kdeconnect.runcommand.request'],
     actions: {
         executeCommand: {
-            summary: _('Run Command'),
-            description: _('Execute a command on the device'),
+            summary: _('Run Command (Remote)'),
+            description: _('Execute a remote command'),
             icon_name: 'system-run-symbolic',
 
             parameter_type: new GLib.VariantType('s'),
             incoming: ['kdeconnect.runcommand'],
             outgoing: ['kdeconnect.runcommand.request']
+        },
+        executionRequest: {
+            summary: _('Run Command (Local)'),
+            description: _('Execute a local command'),
+            icon_name: 'system-run-symbolic',
+
+            parameter_type: new GLib.VariantType('s'),
+            incoming: ['kdeconnect.runcommand.request'],
+            outgoing: ['kdeconnect.runcommand']
         }
     }
 };
@@ -56,9 +65,9 @@ var Plugin = GObject.registerClass({
         // Local Commands
         this.settings.connect(
             'changed::command-list',
-            this._sendCommandList.bind(this)
+            this.sendCommandList.bind(this)
         );
-        this._sendCommandList();
+        this.sendCommandList();
 
         // Remote Commands
         this.requestCommandList();
@@ -70,9 +79,12 @@ var Plugin = GObject.registerClass({
         // A request for command list or execution
         if (packet.type === 'kdeconnect.runcommand.request') {
             if (packet.body.requestCommandList) {
-                this._sendCommandList();
+                this.sendCommandList();
             } else if (packet.body.key) {
-                this._handleCommand(packet.body.key);
+                this.device.activate_action(
+                    'executionRequest',
+                    gsconnect.full_pack(packet.body.key)
+                );
             }
         // An answer to a request for the remote command list
         } else if (packet.type === 'kdeconnect.runcommand') {
@@ -83,10 +95,14 @@ var Plugin = GObject.registerClass({
     /**
      * Send the local command list
      */
-    _sendCommandList() {
-        let commands = gsconnect.full_unpack(
-            this.settings.get_value('command-list')
-        );
+    sendCommandList() {
+        let commands = {};
+
+        if (this.device.get_action_enabled('executionRequest')) {
+            commands = gsconnect.full_unpack(
+                this.settings.get_value('command-list')
+            );
+        }
 
         this.device.sendPacket({
             id: 0,
@@ -99,7 +115,7 @@ var Plugin = GObject.registerClass({
      * Handle a request to execute the local command with the UUID @key
      * @param {String} key - The UUID of the local command
      */
-    _handleCommand(key) {
+    executionRequest(key) {
         let commandList = gsconnect.full_unpack(
             this.settings.get_value('command-list')
         );
