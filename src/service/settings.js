@@ -246,6 +246,15 @@ var SectionRow = GObject.registerClass({
         Object.assign(this, params);
     }
 
+    get icon() {
+        return this._icon.gicon;
+    }
+
+    set icon(gicon) {
+        this._icon.visible = (gicon);
+        this._icon.gicon = gicon;
+    }
+
     get icon_name() {
         return this._icon.icon_name;
     }
@@ -944,7 +953,12 @@ var DeviceSettings = GObject.registerClass({
 
     _insertCommand(uuid) {
         let row = new SectionRow({
-            icon_name: this._commands[uuid].name.toLowerCase(),
+            icon: new Gio.ThemedIcon({
+                names: [
+                    this._commands[uuid].name.toLowerCase(),
+                    'application-x-executable'
+                ]
+            }),
             title: this._commands[uuid].name,
             subtitle: this._commands[uuid].command,
             widget: new Gtk.Button({
