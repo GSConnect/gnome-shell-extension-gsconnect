@@ -582,7 +582,7 @@ var DeviceSettings = GObject.registerClass({
         this._notificationSettings();
         this._telephonySettings();
 
-        this._keyboardShortcuts();
+        this._keybindingSettings();
         this._eventsSettings();
         this._actionSettings();
 
@@ -598,11 +598,6 @@ var DeviceSettings = GObject.registerClass({
         this._actionEnabledId = this.device.connect(
             'action-enabled-changed',
             this._onActionsChanged.bind(this)
-        );
-
-        this._keybindingsId = this.device.settings.connect(
-            'changed::shortcuts',
-            this._populateKeybindings.bind(this)
         );
 
         // Cleanup
@@ -1230,22 +1225,27 @@ var DeviceSettings = GObject.registerClass({
     /**
      * Keyboard Shortcuts
      */
-    _keyboardShortcuts() {
+    _keybindingSettings() {
+        this._keybindingsId = this.device.settings.connect(
+            'changed::keybindings',
+            this._populateKeybindings.bind(this)
+        );
         this._populateKeybindings();
     }
 
     _populateKeybindings() {
         this.action_shortcuts_list.foreach(row => row.destroy());
 
-        //
-        let keybindings = {};
+        let keybindings = gsconnect.full_unpack(
+            this.device.settings.get_value('keybindings')
+        );
 
-        try {
-            keybindings = gsconnect.full_unpack(
-                this.device.settings.get_value('shortcuts')
+        if (typeof keybindings === 'string') {
+            iface.settings.set_value(
+                'keybindings',
+                new GLib.Variant('a{sv}', {})
             );
-        } catch (e) {
-            keybindings = {};
+            return;
         }
 
         for (let name of this.device.list_actions().sort()) {
@@ -1291,7 +1291,7 @@ var DeviceSettings = GObject.registerClass({
             if (response !== Gtk.ResponseType.CANCEL) {
                 // Get current keybindings
                 let keybindings = gsconnect.full_unpack(
-                    this.device.settings.get_value('shortcuts')
+                    this.device.settings.get_value('keybindings')
                 );
 
                 if (response === Gtk.ResponseType.OK) {
@@ -1302,7 +1302,7 @@ var DeviceSettings = GObject.registerClass({
                 }
 
                 this.device.settings.set_value(
-                    'shortcuts',
+                    'keybindings',
                     gsconnect.full_pack(keybindings)
                 );
             }

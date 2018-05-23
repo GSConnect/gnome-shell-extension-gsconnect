@@ -218,6 +218,13 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
 
             iface.service = this.service;
 
+            // Keyboard Shortcuts
+            iface._keybindingsId = iface.settings.connect(
+                'changed::keybindings',
+                this._deviceKeybindings.bind(this, iface)
+            );
+            this._deviceKeybindings(iface);
+
             // Currently we only setup methods for Device interfaces, and
             // we only really use it for Activate() and OpenSettings()
             DBus.proxyMethods(iface, info);
@@ -250,13 +257,57 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         if (iface.g_interface_name === 'org.gnome.Shell.Extensions.GSConnect.Device') {
             log(`GSConnect: Removing ${iface.Name}`);
 
+            // Disconnect properties
             iface.disconnect(iface._propertiesId);
+
+            // Disconnect keybindings
+            iface.settings.disconnect(iface._keybindingsId);
+            iface._keybindings.map(id => this.keybindingManager.remove(id));
+
+            // Destroy the indicator
             Main.panel.statusArea[iface.g_object_path].destroy();
 
+            // Destroy the menu
             this._menus[iface.g_object_path].destroy();
             delete this._menus[iface.g_object_path];
 
             delete this._devices[iface.Id];
+        }
+    }
+
+    /**
+     * Setup device keybindings
+     */
+    _deviceKeybindings(iface) {
+        // Reset grabbed accelerators
+        if (iface.hasOwnProperty('_keybindings')) {
+            iface._keybindings.map(id => this.keybindingManager.remove(id));
+        }
+
+        iface._keybindings = [];
+
+        let keybindings = gsconnect.full_unpack(
+            iface.settings.get_value('keybindings')
+        );
+
+        // Backwards compatible check for old keybindings
+        if (typeof keybindings === 'string') {
+            iface.settings.set_value(
+                'keybindings',
+                new GLib.Variant('a{sv}', {})
+            );
+            return;
+        }
+
+        for (let name in keybindings) {
+            let action = this.keybindingManager.add(
+                keybindings[name],
+                () => iface.gactions.activate_action(name, null)
+            );
+
+            if (action !== 0) {
+                iface._keybindings.push(action);
+            }
         }
     }
 

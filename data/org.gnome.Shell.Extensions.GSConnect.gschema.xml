@@ -69,8 +69,8 @@
     <key name="id" type="s">
       <default>""</default>
     </key>
-    <key name="keybindings" type="s">
-      <default>"{}"</default>
+    <key name="keybindings" type="a{sv}">
+      <default>{}</default>
     </key>
     <key name="name" type="s">
       <default>""</default>
