@@ -7,16 +7,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-05-07 18:45+0300\n"
-"PO-Revision-Date: 2018-05-23 23:16+0900\n"
+"POT-Creation-Date: 2018-05-23 23:53+0900\n"
+"PO-Revision-Date: 2018-05-24 00:05+0900\n"
+"Last-Translator: \n"
 "Language-Team: \n"
+"Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Poedit 2.0.6\n"
-"Last-Translator: \n"
-"Language: ja\n"
 
 #. TRANSLATORS: Open a new SMS window
 #: src/extension.js:176 src/service/daemon.js:912 src/widgets/device.js:199
@@ -88,7 +88,7 @@ msgstr "GSConnect"
 
 #: src/prefs.js:60
 msgid "KDE Connect implementation with Gnome Shell integration"
-msgstr "KDE ConnectのGnome Shell 拡張機能による実装"
+msgstr "Gnome Shellと統合されたKDE Connectの実装"
 
 #: src/prefs.js:67
 msgid "GSConnect Website"
@@ -683,7 +683,7 @@ msgstr "そのキーボードショートカットは使用済みです。"
 #. TRANSLATORS: Fully Charged
 #: src/widgets/shell.js:549
 msgid "Fully Charged"
-msgstr "充電フル"
+msgstr "充電完了"
 
 #. TRANSLATORS: <percentage> (Estimating…)
 #: src/widgets/shell.js:552
@@ -775,13 +775,11 @@ msgstr "電話番号または名前を入力"
 msgid "<b>%s</b> is disconnected"
 msgstr "<b>%s</b>は切断しました"
 
-# なぜかPoedit2.0.6だとエラーになるので直接編集しました
 #: src/widgets/telephony.js:838 src/widgets/telephony.js:1127
 #, javascript-format
 msgid "And one other person"
 msgid_plural "And %d other people"
-msgstr[0] "あともう一人"
-msgstr[1] "あと%d人"
+msgstr[0] "あと%d人"
 
 #. TRANSLATORS: eg. SMS Conversation with John, Paul, George, Ringo
 #: src/widgets/telephony.js:853 src/widgets/telephony.js:1138
