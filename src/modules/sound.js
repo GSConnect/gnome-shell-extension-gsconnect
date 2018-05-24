@@ -37,7 +37,7 @@ function playThemeSound (name) {
     if (_gsoundContext) {
         _gsoundContext.play_simple({ 'event.id' : name }, null);
         return true;
-    } else if (gsconnect.checkCommand('canberra-gtk-play')) {
+    } else if (gsconnect.hasCommand('canberra-gtk-play')) {
         GLib.spawn_command_line_async('canberra-gtk-play -i ' + name);
         return true;
     }
@@ -59,7 +59,7 @@ function loopThemeSound (name, cancellable) {
                 }
             }
         );
-    } else if (gsconnect.checkCommand('canberra-gtk-play')) {
+    } else if (gsconnect.hasCommand('canberra-gtk-play')) {
         let [ok, pid] = GLib.spawn_async(
             null,
             ['canberra-gtk-play', '-i', name],

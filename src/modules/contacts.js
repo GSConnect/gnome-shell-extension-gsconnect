@@ -539,7 +539,7 @@ var Avatar = GObject.registerClass({
         popover.add(box);
 
         // Gnome Contacts
-        if (gsconnect.checkCommand('gnome-contacts') && this.contact.folks_id) {
+        if (gsconnect.hasCommand('gnome-contacts') && this.contact.folks_id) {
             let contactsItem = new Gtk.ModelButton({
                 centered: true,
                 icon: new Gio.ThemedIcon({ name: 'gnome-contacts-symbolic' }),

@@ -134,22 +134,18 @@ gsconnect.settings.emit('changed::debug', 'debug');
  * Check if a command is in the PATH
  * @param {string} name - the name of the command
  */
-gsconnect.checkCommand = function(cmd) {
-    let proc = GLib.spawn_async_with_pipes(
-        null,                           // working dir
-        ['which', cmd],                // argv
-        null,                           // envp
-        GLib.SpawnFlags.SEARCH_PATH,    // enables PATH
-        null                            // child_setup (func)
-    );
-
-    let stdout = new Gio.DataInputStream({
-        base_stream: new Gio.UnixInputStream({ fd: proc[3] })
+gsconnect.hasCommand = function(cmd) {
+    let proc = new Gio.Subprocess({
+        argv: ['which', cmd],
+        flags: Gio.SubprocessFlags.STDOUT_PIPE
     });
-    let [result, length] = stdout.read_line(null);
-    stdout.close(null);
+    proc.init(null);
 
-    return (result !== null);
+    let stdout = proc.communicate_utf8(null, null)[1];
+    proc.force_exit();
+    proc.wait(null);
+
+    return (stdout.length);
 };
 
 

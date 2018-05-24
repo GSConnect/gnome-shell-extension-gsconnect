@@ -80,7 +80,7 @@ var Plugin = GObject.registerClass({
             throw Error(_('Can\'t run on bluetooth connection'));
         }
 
-        if (!gsconnect.checkCommand('sshfs')) {
+        if (!gsconnect.hasCommand('sshfs')) {
             this.destroy();
             throw Error(_('SSHFS not installed'));
         }
@@ -279,7 +279,7 @@ var Plugin = GObject.registerClass({
 
         // Make sure it's actually unmounted
         if (this._mountpoint) {
-            if (gsconnect.checkCommand('fusermount')) {
+            if (gsconnect.hasCommand('fusermount')) {
                 GLib.spawn_command_line_async(`fusermount -uz ${this._mountpoint}`);
             } else {
                 GLib.spawn_command_line_async(`umount ${this._mountpoint}`);
