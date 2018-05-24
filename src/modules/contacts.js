@@ -306,60 +306,36 @@ var Store = GObject.registerClass({
         });
     }
 
-    // FIXME FIXME FIXME: cleanup, stderr
     _updateFolksContacts() {
         return new Promise((resolve, reject) => {
-            let envp = GLib.get_environ();
-            envp.push('FOLKS_BACKENDS_DISABLED=telepathy')
-
-            let proc = GLib.spawn_async_with_pipes(
-                null,
-                ['python3', gsconnect.datadir + '/modules/folks.py'],
-                envp,
-                GLib.SpawnFlags.SEARCH_PATH,
-                null
-            );
-
-            let stderr = new Gio.DataInputStream({
-                base_stream: new Gio.UnixInputStream({ fd: proc[4] })
+            let launcher = new Gio.SubprocessLauncher({
+                flags: Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDERR_PIPE
             });
 
-            stderr.read_line_async(GLib.PRIORITY_DEFAULT, null, (source, res) => {
-                debug('reading stderr...');
-                let [result, length] = source.read_line_finish(res);
+            launcher.setenv('FOLKS_BACKENDS_DISABLED', 'telepathy', true);
 
-                if (result === null) {
-                    return;
-                } else {
-                    result = '\n' + result.toString();
-                    let line;
+            let proc = launcher.spawnv([
+                'python3',
+                gsconnect.datadir + '/modules/folks.py'
+            ]);
 
-                    while ((line = stderr.read_line(null)[0]) !== null) {
-                        result = result + '\n' + line.toString();
+            proc.communicate_utf8_async(null, null, (proc, res) => {
+                try {
+                    let [ok, stdout, stderr] = proc.communicate_utf8_finish(res);
+                    proc.force_exit();
+                    proc.wait(null);
+
+                    if (stderr.length > 0) {
+                        throw new Error(stderr)
                     }
 
-                    reject(new Error(result));
+                    let folks = JSON.parse(stdout);
+                    this._contacts = mergeContacts(this._contacts, folks);
+                    resolve(['gnome-contacts-symbolic', _('Gnome')]);
+                } catch (e) {
+                    reject(e);
                 }
             });
-
-            let stdout = new Gio.DataInputStream({
-                base_stream: new Gio.UnixInputStream({ fd: proc[3] })
-            });
-
-            let folks, line;
-
-            while ((line = stdout.read_line(null)[0]) !== null) {
-                folks = line.toString();
-            }
-
-            try {
-                folks = JSON.parse(folks);
-                //Object.assign(this._contacts, folks);
-                this._contacts = mergeContacts(this._contacts, folks);
-                resolve(['gnome-contacts-symbolic', _('Gnome')]);
-            } catch (e) {
-                reject(e);
-            }
         });
     }
 
