@@ -348,25 +348,17 @@ Gio.Settings.prototype.bind_with_mapping = function(key, object, property, flags
  */
 Gio.TlsCertificate.prototype.fingerprint = function() {
     if (!this.__fingerprint) {
-        let proc = GLib.spawn_async_with_pipes(
-            null,
-            ['openssl', 'x509', '-noout', '-fingerprint', '-sha1', '-inform', 'pem'],
-            null,
-            GLib.SpawnFlags.SEARCH_PATH,
-            null
-        );
-
-        let stdin = new Gio.DataOutputStream({
-            base_stream: new Gio.UnixOutputStream({ fd: proc[2] })
+        let proc = new Gio.Subprocess({
+            argv: ['openssl', 'x509', '-noout', '-fingerprint', '-sha1', '-inform', 'pem'],
+            flags: Gio.SubprocessFlags.STDIN_PIPE | Gio.SubprocessFlags.STDOUT_PIPE
         });
-        stdin.put_string(this.certificate_pem, null);
-        stdin.close(null);
+        proc.init(null);
 
-        let stdout = new Gio.DataInputStream({
-            base_stream: new Gio.UnixInputStream({ fd: proc[3] })
-        });
-        this.__fingerprint = stdout.read_line(null)[0].toString().split('=')[1];
-        stdout.close(null);
+        let stdout = proc.communicate_utf8(this.certificate_pem, null)[1];
+        this.__fingerprint = stdout.split('=')[1].replace('\n', '');
+
+        proc.force_exit();
+        proc.wait(null);
     }
 
     return this.__fingerprint;
@@ -374,31 +366,22 @@ Gio.TlsCertificate.prototype.fingerprint = function() {
 
 
 /**
- * Extend Gio.TlsCertificate with a property holding the serial number of the
- * certificate.
+ * Extend Gio.TlsCertificate with a property holding the serial number.
  */
 Object.defineProperty(Gio.TlsCertificate.prototype, 'serial', {
     get: function() {
         if (!this.__serial) {
-            let proc = GLib.spawn_async_with_pipes(
-                null,
-                ['openssl', 'x509', '-noout', '-serial', '-inform', 'pem'],
-                null,
-                GLib.SpawnFlags.SEARCH_PATH,
-                null
-            );
-
-            let stdin = new Gio.DataOutputStream({
-                base_stream: new Gio.UnixOutputStream({ fd: proc[2] })
+            let proc = new Gio.Subprocess({
+                argv: ['openssl', 'x509', '-noout', '-serial', '-inform', 'pem'],
+                flags: Gio.SubprocessFlags.STDIN_PIPE | Gio.SubprocessFlags.STDOUT_PIPE
             });
-            stdin.put_string(this.certificate_pem, null);
-            stdin.close(null);
+            proc.init(null);
 
-            let stdout = new Gio.DataInputStream({
-                base_stream: new Gio.UnixInputStream({ fd: proc[3] })
-            });
-            this.__serial = stdout.read_line(null)[0].toString().split('=')[1];
-            stdout.close(null);
+            let stdout = proc.communicate_utf8(this.certificate_pem, null)[1];
+            this.__serial = stdout.split('=')[1].replace('\n', '');
+
+            proc.force_exit();
+            proc.wait(null);
         }
 
         return this.__serial;
