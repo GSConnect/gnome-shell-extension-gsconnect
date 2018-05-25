@@ -290,22 +290,13 @@ var Plugin = GObject.registerClass({
     }
 
     _read_stream(stream) {
-        if (!stream) {
+        try {
+            debug(stream.read_line(null)[0].toString());
+            return GLib.SOURCE_CONTINUE;
+        } catch (e) {
+            debug(e.message);
             return GLib.SOURCE_REMOVE;
         }
-
-        stream.read_line_async(GLib.PRIORITY_DEFAULT, null, (source, res) => {
-            let [data, len] = source.read_line_finish(res);
-
-            if (data === null) {
-                debug('sshfs: stream closed');
-                this.unmount();
-            } else {
-                debug(data.toString());
-            }
-        });
-
-        return GLib.SOURCE_CONTINUE;
     }
 
     /**
