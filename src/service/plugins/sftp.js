@@ -180,14 +180,13 @@ var Plugin = GObject.registerClass({
             this._directories[_('Camera pictures')] =  this._mountpoint + '/DCIM/Camera';
         }
 
-        // FIXME: shouldn't automount, but should auto-probe for info
         this._mount(packet);
     }
 
     /**
      * Start the sshfs process and send the password
      */
-    _sshfsExec() {
+    _sshfs() {
         let args = [
             'sshfs',
             `${this._user}@${this._ip}:${this._root}`,
@@ -219,84 +218,68 @@ var Plugin = GObject.registerClass({
             '-o', 'password_stdin'
         ];
 
+        // Only open stdout/stderr if in debug mode
+        let flags = Gio.SubprocessFlags.STDIN_PIPE;
+
+        if (gsconnect.settings.get_boolean('debug')) {
+            flags |= Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDERR_MERGE;
+        }
+
         // Execute sshfs
-        this._proc = GLib.spawn_async_with_pipes(
-            null,                                   // working dir
-            args,                                   // argv
-            null,                                   // envp
-            GLib.SpawnFlags.SEARCH_PATH,            // enables PATH
-            null                                    // child_setup (func)
-        );
-
-        // Watching stdout/stderr
-        this._stdout = new Gio.DataInputStream({
-            base_stream: new Gio.UnixInputStream({ fd: this._proc[3] })
+        this._proc = new Gio.Subprocess({
+            argv: args,
+            flags: flags
         });
+        this._proc.init(null);
 
-        let outsrc = this._stdout.base_stream.create_source(null);
-        outsrc.set_callback(() => this._read_stream(this._stdout));
-        outsrc.attach(null);
+        // Cleanup when the process exits
+        this._proc.wait_async(null, this._sshfs_finish.bind(this));
 
-        this._stderr = new Gio.DataInputStream({
-            base_stream: new Gio.UnixInputStream({ fd: this._proc[4] })
-        });
-
-        let errsrc = this._stderr.base_stream.create_source(null);
-        errsrc.set_callback(() => this._read_stream(this._stderr));
-        errsrc.attach(null);
+        // Print output to log if the pipes are open (debug enabled)
+        if (flags & Gio.SubprocessFlags.STDOUT_PIPE) {
+            let stdout = new Gio.DataInputStream({
+                base_stream: this._proc.get_stdout_pipe()
+            });
+            this._read_output(stdout);
+        }
 
         // Send session password
-        let stdin = new Gio.DataOutputStream({
-            base_stream: new Gio.UnixOutputStream({
-                close_fd: false,
-                fd: this._proc[2]
-            })
-        });
-        stdin.put_string(`${this._password}\n`, null);
-        stdin.close(null);
+        this._proc.get_stdin_pipe().write_all(`${this._password}\n`, null);
     }
 
-    _sshfsKill() {
+    _sshfs_finish(proc, res) {
         try {
-            GLib.spawn_command_line_async(`kill -9 ${this._proc[1]}`);
+            proc.wait_finish(res);
         } catch (e) {
             debug(e);
-        }
+        } finally {
+            this._proc = undefined;
 
-        this._proc = undefined;
+            // Make sure it's actually unmounted
+            this._umount();
 
-        // Close streams
-        for (let stream of [this._stdout, this._stderr]) {
-            try {
-                stream.close(null);
-            } catch (e) {
-                debug(e);
-            }
-        }
+            // Reset the directories and 'mounted'
+            this._directories = {};
+            this._mounted = false;
 
-        this._stdout = undefined;
-        this._stderr = undefined;
-
-        // Make sure it's actually unmounted
-        if (this._mountpoint) {
-            if (gsconnect.hasCommand('fusermount')) {
-                GLib.spawn_command_line_async(`fusermount -uz ${this._mountpoint}`);
-            } else {
-                GLib.spawn_command_line_async(`umount ${this._mountpoint}`);
-            }
-
-            this._mountpoint = undefined;
+            // Replace the menu item
+            this._removeSubmenu();
         }
     }
 
-    _read_stream(stream) {
-        try {
-            debug(stream.read_line(null)[0].toString());
-            return GLib.SOURCE_CONTINUE;
-        } catch (e) {
-            debug(e.message);
-            return GLib.SOURCE_REMOVE;
-        }
+    _read_output(stream) {
+        stream.read_line_async(GLib.PRIORITY_DEFAULT, null, (stream, res) => {
+            try {
+                debug(stream.read_line_finish(res)[0].toString());
+                this._read_output(stream);
+            } catch (e) {
+                try {
+                    stream.close(null);
+                } catch (e) {
+                    debug(e);
+                }
+            }
+        });
     }
 
     /**
@@ -339,36 +322,12 @@ var Plugin = GObject.registerClass({
         foldersItem.set_label(_('List Folders'));
         foldersItem.set_submenu(foldersSubmenu);
 
-        this.device.menu.replace_action('mount', foldersItem);
+        this.device.menu.replace_action('device.mount', foldersItem);
     }
 
-    /**
-     * Run sshfs and replace the
-     */
-    _mount() {
-        // If mounting is already in progress, but we received a new browse
-        // packet, we should probably unmount and start over
-        if (this._mounting) {
-            this.unmount();
-        }
-
-        this._mounting = true;
-
-        // Start sshfs
-        try {
-            this._sshfsExec();
-        } catch (e) {
-            this.unmount();
-            logError(e);
-            return;
-        }
-
-        // Add the directories to the menu
-        this._addSubmenu();
-
-        // Set 'mounted'
-        this._mounting = false;
-        this._mounted = true;
+    _removeSubmenu() {
+        let index = this.device.menu.remove_named(_('List Folders'));
+        this.device.menu.add_action(this.device.lookup_action('mount'), index);
     }
 
     /**
@@ -383,6 +342,51 @@ var Plugin = GObject.registerClass({
     }
 
     /**
+     * Run sshfs and replace the
+     */
+    _mount() {
+        // If mounting is already in progress, let that fail before retrying
+        if (this._mounting) {
+            return;
+        }
+
+        try {
+            this._mounting = true;
+
+            // Start sshfs
+            this._sshfs();
+
+            // Add the directories to the menu
+            this._addSubmenu();
+
+            // Set 'mounted'
+            this._mounted = true;
+            this._mounting = false;
+        } catch (e) {
+            this.unmount();
+            logError(e);
+        }
+    }
+
+    /**
+     * On Linux `fusermount` will always be available but BSD uses `umount`
+     * See: https://phabricator.kde.org/D6945
+     */
+    _umount() {
+        try {
+            if (gsconnect.hasCommand('fusermount')) {
+                GLib.spawn_command_line_async(`fusermount -uz ${this._mountpoint}`);
+            } else {
+                GLib.spawn_command_line_async(`umount ${this._mountpoint}`);
+            }
+
+            this._mounted = false;
+        } catch (e) {
+            debug(e.message);
+        }
+    }
+
+    /**
      * Remove the menu items, kill sshfs, replace the mount item
      */
     unmount() {
@@ -390,31 +394,18 @@ var Plugin = GObject.registerClass({
             return;
         }
 
-        // Remove the directories from the menu first
-        let itemPosition = this.device.menu.remove_named(_('List Folders'));
+        this._umount();
 
-        // Stop sshfs
-        this._sshfsKill();
-
-        // Reset the directories and 'mounted'
-        this._directories = {};
-        this._mounted = false;
-
-        // Add the mount item back to the menu
-        let mountItem = new Gio.MenuItem();
-        mountItem.set_label(_('Mount'));
-        mountItem.set_icon(
-            new Gio.ThemedIcon({ name: 'folder-remote-symbolic' })
-        );
-        mountItem.set_detailed_action('device.mount');
-        this.device.menu.insert_item(itemPosition, mountItem);
+        if (this._mounted) {
+            this._proc.force_exit();
+        }
     }
 
     destroy() {
         // This should also ensure that only the 'mount' item is in the menu
-        if (this.mounted) {
-            this.unmount();
-        }
+        this._removeSubmenu();
+        this.device.menu.remove_action('device.mount');
+        this.unmount();
 
         PluginsBase.Plugin.prototype.destroy.call(this);
     }
