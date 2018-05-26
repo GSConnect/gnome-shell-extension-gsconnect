@@ -427,13 +427,6 @@ var ProxyBase = GObject.registerClass({
 
         proxyMethods(this, info);
         proxyProperties(this, info);
-
-        // Destroy the proxy if the g_name_owner dies
-        this.connect('notify::g-name-owner', () => {
-            if (this.g_name_owner === null) {
-                debug(`NAME OWNER CHANGED: ${this.g_object_path}: ${this.g_interface_name}`);
-            }
-        });
     }
 
     init_promise() {
