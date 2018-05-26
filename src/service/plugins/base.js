@@ -210,7 +210,7 @@ var Plugin = GObject.registerClass({
         this.emit('destroy');
 
         this._gactions.map(action => {
-            this.device.menu.remove_action(action.name);
+            this.device.menu.remove_action(`device.${action.name}`);
             this.device.remove_action(action.name);
         });
 
