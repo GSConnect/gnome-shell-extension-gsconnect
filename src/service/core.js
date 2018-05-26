@@ -562,6 +562,7 @@ var Transfer = GObject.registerClass({
         this.checksum = params.checksum;
         this._checksum = new GLib.Checksum(GLib.ChecksumType.MD5);
         this._written = 0;
+        this._progress = 0;
     }
 
     get device() {
@@ -595,14 +596,34 @@ var Transfer = GObject.registerClass({
     download() {
     }
 
+    /**
+     * Start the transfer and emit the 'started' signal
+     */
     start() {
         this.emit('started');
         this._read();
     }
 
+    /**
+     * Cancel the transfer in progress
+     */
     cancel() {
         this._cancellable.cancel();
         this.emit('cancelled');
+    }
+
+    /**
+     * Emit the progress signal with an integer between 0-100
+     * @param {Number} increment - The increment to emit progress signals at
+     */
+    progress(increment=1) {
+        let progress = Math.floor(this._written / this.size * 100);
+
+        if (progress - this._progress >= increment) {
+            this.emit('progress', progress);
+        }
+
+        this._progress = progress;
     }
 
     _read() {
