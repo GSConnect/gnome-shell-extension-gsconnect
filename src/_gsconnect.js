@@ -104,7 +104,7 @@ gsconnect.dbusinfo.nodes.forEach(info => info.cache_build());
  */
 gsconnect.settings.connect('changed::debug', () => {
     if (gsconnect.settings.get_boolean('debug')) {
-        window.debug = function (msg) {
+        window.debug = function(msg) {
             // Stack regexp
             let _dbgRegexp = /(?:(?:([^<.]+)<\.)?([^@]+))?@(.+):(\d+):\d+/g;
             let e = (msg.stack) ? msg : new Error();
@@ -124,7 +124,7 @@ gsconnect.settings.connect('changed::debug', () => {
             log(`[${hdr}]: ${msg}`);
         };
     } else {
-        window.debug = function () { return; };
+        window.debug = function() {};
     }
 });
 gsconnect.settings.emit('changed::debug', 'debug');
@@ -338,7 +338,7 @@ Gio.Settings.prototype.bind_with_mapping = function(key, object, property, flags
 
 /**
  * Extend Gio.TlsCertificate with a method for computing a SHA1 fingerprint.
- * See: https://bugzilla.gnome.org/show_bug.cgi?id=788315
+ * See: https://gitlab.gnome.org/GNOME/glib/issues/1290
  *
  * @return {string} - A SHA1 fingerprint of the certificate.
  */
@@ -351,7 +351,7 @@ Gio.TlsCertificate.prototype.fingerprint = function() {
         proc.init(null);
 
         let stdout = proc.communicate_utf8(this.certificate_pem, null)[1];
-        this.__fingerprint = stdout.split('=')[1].replace('\n', '');
+        this.__fingerprint = /[a-zA-Z0-9\:]{59}/.exec(stdout)[0];
 
         proc.force_exit();
         proc.wait(null);
