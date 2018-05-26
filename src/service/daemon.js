@@ -626,7 +626,6 @@ var Daemon = GObject.registerClass({
             ['openSettings', this.openSettings],
             ['cancelTransfer', this._cancelTransferAction, '(ss)'],
             ['openTransfer', this._openTransferAction, 's'],
-            ['restartNautilus', this._restartNautilus],
             ['about', this._aboutAction]
         ]);
 
@@ -642,26 +641,6 @@ var Daemon = GObject.registerClass({
         } else {
             this._mixer = null;
         }
-    }
-
-    /**
-     * Extensions
-     */
-    _restartNautilus(action, parameter) {
-        GLib.spawn_command_line_async('nautilus -q');
-    }
-
-    _notifyRestartNautilus() {
-        let notif = new Gio.Notification();
-        notif.set_title(_('Nautilus extensions changed'));
-        notif.set_body(_('Restart Nautilus to apply changes'));
-        notif.set_icon(
-            new Gio.ThemedIcon({ name: 'system-file-manager-symbolic' })
-        );
-        // TRANSLATORS: Notification button to restart Nautilus
-        notif.add_button(_('Restart'), 'app.restartNautilus');
-
-        this.send_notification('nautilus-integration', notif);
     }
 
     /**
