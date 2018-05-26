@@ -175,8 +175,6 @@ var Channel = GObject.registerClass({
 
         // We need this to lookup the certificate in GSettings
         this.identity = { body: { deviceId: deviceId } };
-
-        this._monitor = 0;
     }
 
     get certificate() {
@@ -365,7 +363,9 @@ var Channel = GObject.registerClass({
                 base_stream: connection.output_stream
             });
 
-            this.receive();
+            this._monitor = connection.input_stream.create_source(null);
+            this._monitor.set_callback(this.receive.bind(this));
+            this._monitor.attach(null);
 
             resolve(connection);
         });
@@ -422,13 +422,12 @@ var Channel = GObject.registerClass({
     }
 
     close() {
-        try {
-            if (this._monitor) {
+        if (this._monitor) {
+            try {
                 this._monitor.destroy();
-                this._monitor = undefined;
+            } catch (e) {
+                debug(e.message);
             }
-        } catch (e) {
-            debug(e.message);
         }
 
         try {
@@ -464,27 +463,21 @@ var Channel = GObject.registerClass({
      * Receive a packet from a device, emitting 'received::' with the packet
      */
     receive() {
-        this.input_stream.read_line_async(
-            GLib.PRIORITY_DEFAULT + 10,
-            null,
-            (stream, res) => {
-                try {
-                    let data = stream.read_line_finish(res)[0];
-                    let packet = new Packet(data.toString());
+        try {
+            let data = this.input_stream.read_line(null)[0];
+            let packet = new Packet(data.toString());
 
-                    if (packet.type === 'kdeconnect.identity') {
-                        this.identity = packet;
-                    }
-
-                    this.emit('received', packet);
-
-                    this.receive();
-                } catch (e) {
-                    debug(e);
-                    this.close();
-                }
+            if (packet.type === 'kdeconnect.identity') {
+                this.identity = packet;
             }
-        );
+
+            this.emit('received', packet);
+
+            return GLib.SOURCE_CONTINUE;
+        } catch (e) {
+            debug(e.message);
+            this.close();
+        }
     }
 });
 
