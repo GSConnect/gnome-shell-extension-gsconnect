@@ -243,14 +243,19 @@ var Channel = GObject.registerClass({
      */
     _sendIdent(connection) {
         return new Promise((resolve, reject) => {
-            let stream = new Gio.DataOutputStream({
-                base_stream: connection.output_stream,
-                close_base_stream: false
-            });
-            stream.put_string(this.service.identity.toString(), null);
-            stream.close(null);
-
-            resolve(connection);
+            connection.output_stream.write_all_async(
+                this.service.identity.toString(),
+                GLib.PRIORITY_DEFAULT,
+                null,
+                (stream, res) => {
+                    try {
+                        stream.write_all_finish(res);
+                        resolve(connection);
+                    } catch (e) {
+                        reject(e);
+                    }
+                }
+            );
         });
     }
 
