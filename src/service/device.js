@@ -740,12 +740,12 @@ var Device = GObject.registerClass({
             buttons: [
                 {
                     action: 'rejectPair',
-                    summary: _('Reject'),
+                    label: _('Reject'),
                     parameter: new GLib.Variant('mv', null)
                 },
                 {
                     action: 'acceptPair',
-                    summary: _('Accept'),
+                    label: _('Accept'),
                     parameter: new GLib.Variant('mv', null)
                 }
             ]
