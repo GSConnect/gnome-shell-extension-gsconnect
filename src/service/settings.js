@@ -572,7 +572,7 @@ var DeviceSettings = GObject.registerClass({
 
         // Sidebar Row
         this.row = new SidebarRow({
-            icon: this._getSymbolicIcon(),
+            icon: this.symbolic_icon,
             title: device.name,
             type: 'device',
             name: device._dbus.get_object_path(),
@@ -627,7 +627,7 @@ var DeviceSettings = GObject.registerClass({
         });
     }
 
-    _getSymbolicIcon(widget) {
+    get symbolic_icon() {
         if (!this.paired) {
             let icon = this.device.icon_name;
             icon = (icon === 'computer') ? 'desktop' : icon;
@@ -717,7 +717,7 @@ var DeviceSettings = GObject.registerClass({
         }
 
         if (this.row) {
-            this.row.icon_name = this._getSymbolicIcon();
+            this.row.icon_name = this.symbolic_icon;
         }
     }
 
