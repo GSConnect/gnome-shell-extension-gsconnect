@@ -10,8 +10,6 @@ const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 const Pango = imports.gi.Pango;
 
-// Local Imports
-imports.searchPath.push(gsconnect.datadir);
 const Color = imports.modules.color;
 const Contacts = imports.modules.contacts;
 

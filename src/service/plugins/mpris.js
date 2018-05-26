@@ -3,8 +3,6 @@
 const Gio = imports.gi.Gio;
 const GObject = imports.gi.GObject;
 
-// Local Imports
-imports.searchPath.push(gsconnect.datadir);
 const MPRIS = imports.modules.mpris;
 const PluginsBase = imports.service.plugins.base;
 

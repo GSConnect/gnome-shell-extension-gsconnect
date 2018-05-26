@@ -5,8 +5,6 @@ const Gdk = imports.gi.Gdk;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 
-// Local Imports
-imports.searchPath.push(gsconnect.datadir);
 const PluginsBase = imports.service.plugins.base;
 
 

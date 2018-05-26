@@ -24,8 +24,6 @@ try {
     var Goa = undefined;
 }
 
-// Local Imports
-imports.searchPath.push(gsconnect.datadir);
 const Color = imports.modules.color;
 
 

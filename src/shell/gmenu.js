@@ -6,7 +6,6 @@ const St = imports.gi.St;
 
 const PopupMenu = imports.ui.popupMenu;
 
-imports.searchPath.push('.');
 const Tooltip = imports.shell.tooltip;
 
 

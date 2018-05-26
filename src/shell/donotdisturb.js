@@ -11,9 +11,7 @@ const ModalDialog = imports.ui.modalDialog;
 const PopupMenu = imports.ui.popupMenu;
 const Util = imports.misc.util;
 
-imports.searchPath.unshift(gsconnect.datadir);
 const _ = gsconnect._;
-const Color = imports.modules.color;
 const Tooltip = imports.shell.tooltip;
 
 

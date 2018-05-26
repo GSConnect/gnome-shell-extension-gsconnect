@@ -5,8 +5,6 @@ const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
-// Local Imports
-imports.searchPath.push(gsconnect.datadir);
 const Core = imports.service.core;
 const DBus = imports.modules.dbus;
 const Bluetooth = imports.service.bluetooth;

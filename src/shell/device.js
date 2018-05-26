@@ -12,8 +12,6 @@ const St = imports.gi.St;
 const PanelMenu = imports.ui.panelMenu;
 const PopupMenu = imports.ui.popupMenu;
 
-// Local Imports
-imports.searchPath.unshift(gsconnect.datadir);
 const _ = gsconnect._;
 const Color = imports.modules.color;
 const GMenu = imports.shell.gmenu;

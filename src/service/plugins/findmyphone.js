@@ -5,9 +5,6 @@ const Gio = imports.gi.Gio;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
-// Local Imports
-imports.searchPath.push(gsconnect.datadir);
-
 const Sound = imports.modules.sound;
 const PluginsBase = imports.service.plugins.base;
 

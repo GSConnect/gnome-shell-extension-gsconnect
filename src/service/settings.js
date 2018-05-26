@@ -7,17 +7,7 @@ const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 const Pango = imports.gi.Pango;
 
-// Local Imports
-imports.searchPath.unshift(gsconnect.datadir);
 const DBus = imports.modules.dbus;
-
-
-const AllowMap = new Map([
-    [1, _('Off')],
-    [2, _('To Device')],
-    [4, _('From Device')],
-    [6, _('Both')]
-]);
 
 
 function section_separators(row, before) {

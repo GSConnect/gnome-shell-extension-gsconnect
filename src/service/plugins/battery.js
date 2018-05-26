@@ -5,8 +5,6 @@ const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const UPower = imports.gi.UPowerGlib;
 
-// Local Imports
-imports.searchPath.push(gsconnect.datadir);
 const DBus = imports.modules.dbus;
 const PluginsBase = imports.service.plugins.base;
 

@@ -1,9 +1,5 @@
 'use-strict';
 
-// Local Imports
-imports.searchPath.push(gsconnect.datadir);
-
-
 var OFF_WHITE_CLASS = 'light-text';
 var OFF_WHITE_LUMINANCE = 0.07275541795665634;
 var OFF_WHITE_VALUE = 0.94;
