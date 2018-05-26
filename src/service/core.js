@@ -171,10 +171,9 @@ var Channel = GObject.registerClass({
     _init(deviceId) {
         super._init();
 
-        this.service = Gio.Application.get_default();
-
         // We need this to lookup the certificate in GSettings
         this.identity = { body: { deviceId: deviceId } };
+        this.service = Gio.Application.get_default();
     }
 
     get certificate() {
