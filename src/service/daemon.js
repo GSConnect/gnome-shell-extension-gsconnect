@@ -287,6 +287,7 @@ var Daemon = GObject.registerClass({
                     if (!device.connected) { this._pruneDevices(); }
                 });
                 this._devices.set(dbusPath, device);
+                this.notify('devices');
 
                 device.update(packet, channel);
 
@@ -310,6 +311,7 @@ var Daemon = GObject.registerClass({
 
             device.destroy();
             this._devices.delete(dbusPath);
+            this.notify('devices');
         }
     }
 
@@ -793,8 +795,6 @@ var Daemon = GObject.registerClass({
             connection: connection,
             object_path: object_path
         });
-        this.objectManager.connect('object-added', () => this.notify('devices'));
-        this.objectManager.connect('object-removed', () => this.notify('devices'));
 
         // org.gnome.Shell.Extensions.GSConnect interface
         this._dbus = new DBus.Interface({
