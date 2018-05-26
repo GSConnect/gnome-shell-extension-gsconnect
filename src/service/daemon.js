@@ -270,7 +270,7 @@ var Daemon = GObject.registerClass({
     _addDevice(packet, channel=null) {
         debug(packet);
 
-        let dbusPath = gsconnect.app_path + '/Device/' + packet.body.deviceId.replace(/\W+/g, '_');
+        let dbusPath = `${gsconnect.app_path}/Device/${packet.body.deviceId.replace(/\W+/g, '_')}`;
 
         if (this._devices.has(dbusPath)) {
             log(`GSConnect: Updating ${packet.body.deviceName}`);
@@ -318,7 +318,7 @@ var Daemon = GObject.registerClass({
 
         // New devices
         let newDevices = knownDevices.map(id => {
-            let dbusPath = gsconnect.app_path + '/Device/' + id.replace(/\W+/g, '_');
+            let dbusPath = `${gsconnect.app_path}/Device/${id.replace(/\W+/g, '_')}`;
 
             if (!this._devices.has(dbusPath)) {
                 return this._addDevice({ body: { deviceId: id } });
@@ -837,7 +837,6 @@ var Daemon = GObject.registerClass({
 
         // Must be done before g_name_owner === null
         for (let device of this._devices.values()) {
-            log(`Calling Device.destroy() on '${device.name}'`);
             device.destroy();
         }
 
