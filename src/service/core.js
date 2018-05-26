@@ -365,9 +365,7 @@ var Channel = GObject.registerClass({
                 base_stream: connection.output_stream
             });
 
-            this._monitor = this.input_stream.base_stream.create_source(null);
-            this._monitor.set_callback(this.receive.bind(this));
-            this._monitor.attach(null);
+            this.receive();
 
             resolve(connection);
         });
@@ -466,30 +464,27 @@ var Channel = GObject.registerClass({
      * Receive a packet from a device, emitting 'received::' with the packet
      */
     receive() {
-        let data, length;
+        this.input_stream.read_line_async(
+            GLib.PRIORITY_DEFAULT + 10,
+            null,
+            (stream, res) => {
+                try {
+                    let data = stream.read_line_finish(res)[0];
+                    let packet = new Packet(data.toString());
 
-        try {
-            [data, length] = this.input_stream.read_line(null);
-        } catch (e) {
-            debug(`${this.identity.body.deviceId}: ${e.message}`);
-            this.close();
-            return GLib.SOURCE_REMOVE;
-        }
+                    if (packet.type === 'kdeconnect.identity') {
+                        this.identity = packet;
+                    }
 
-        if (!data) {
-            this.close();
-            return GLib.SOURCE_REMOVE;
-        }
+                    this.emit('received', packet);
 
-        let packet = new Packet(data.toString());
-
-        if (packet.type === 'kdeconnect.identity') {
-            this.identity = packet;
-        }
-
-        this.emit('received', packet);
-
-        return GLib.SOURCE_CONTINUE;
+                    this.receive();
+                } catch (e) {
+                    debug(e);
+                    this.close();
+                }
+            }
+        );
     }
 });
 
