@@ -213,7 +213,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
                     'org.gnome.Shell.Extensions.GSConnect.Device',
                     true
                 ),
-                path: `/org/gnome/shell/extensions/gsconnect/device/${iface.Id}/`
+                path: '/org/gnome/shell/extensions/gsconnect/device/' + iface.Id + '/'
             });
 
             iface.service = this.service;
