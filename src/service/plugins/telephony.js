@@ -66,7 +66,7 @@ var Metadata = {
         callNotification: {
             summary: _('Call Notification'),
             description: _('Show a notification tailored for phone calls'),
-            icon_name: 'sms-symbolic',
+            icon_name: 'call-start-symbolic',
 
             parameter_type: new GLib.VariantType('a{sv}'),
             incoming: ['kdeconnect.telephony'],
