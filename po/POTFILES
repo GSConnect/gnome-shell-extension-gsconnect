@@ -1,13 +1,14 @@
 data/device.ui
 data/settings.ui
+data/shortcut-editor.ui
 src/extension.js
 src/nautilus-gsconnect.py
 src/prefs.js
 src/modules/contacts.js
+src/modules/sms.js
 src/service/daemon.js
 src/service/device.js
 src/service/settings.js
-src/service/plugins/base.js
 src/service/plugins/battery.js
 src/service/plugins/clipboard.js
 src/service/plugins/findmyphone.js
@@ -19,4 +20,6 @@ src/service/plugins/runcommand.js
 src/service/plugins/sftp.js
 src/service/plugins/share.js
 src/service/plugins/telephony.js
+src/shell/device.js
+src/shell/donotdisturb.js
 
