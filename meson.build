@@ -16,7 +16,6 @@ extension_source = files(
   'src/stylesheet.css',
   # non-standard files
   'src/_gsconnect.js',
-  'src/actors.js',
   # non-GJS files
   'src/nautilus-gsconnect.py'
 )
