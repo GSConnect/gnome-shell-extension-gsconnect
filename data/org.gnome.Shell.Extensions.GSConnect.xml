@@ -52,6 +52,7 @@
       <method name="Quit" />
       <property name="CanQuit" type="b" access="read" />
       <property name="Fullscreen" type="b" access="readwrite" />
+      <property name="CanSetFullscreen" type="b" access="read" />
       <property name="CanRaise" type="b" access="read" />
       <property name="HasTrackList" type="b" access="read"/>
       <property name="Identity" type="s" access="read"/>
