@@ -641,6 +641,8 @@ const FdoNode = Gio.DBusNodeInfo.new_for_xml(
       <arg direction="in" type="s"/> \
       <arg direction="out" type="a{sv}"/> \
     </method> \
+    <property name="Features" access="read" type="as"/> \
+    <property name="Interfaces" access="read" type="as"/> \
     <signal name="NameOwnerChanged"> \
       <arg type="s"/> \
       <arg type="s"/> \
