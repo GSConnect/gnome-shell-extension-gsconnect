@@ -553,7 +553,7 @@ function makeInterfaceProxy(info) {
 
             this.connect('g-signal', (proxy, sender, name, parameters) => {
                 let args = [name].concat(parameters.deep_unpack());
-                this.emit(...args);
+                proxy.emit(...args);
             });
         }
     });
