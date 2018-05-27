@@ -96,12 +96,12 @@ var Manager = GObject.registerClass({
     }
 
     get identities () {
-        return Array.from(Object.keys(this.players));
+        return Array.from(this.players.keys());
     }
 
     get players () {
         if (!this._players) {
-            this._players = {};
+            this._players = new Map();
         }
 
         return this._players;
@@ -112,7 +112,7 @@ var Manager = GObject.registerClass({
             if (new_owner.length) {
                 this._addPlayer(name);
             } else {
-                for (let mediaPlayer of Object.values(this.players)) {
+                for (let mediaPlayer of this.players.values()) {
                     if (mediaPlayer.g_name === old_owner) {
                         this._removePlayer(mediaPlayer);
                         break;
@@ -130,7 +130,7 @@ var Manager = GObject.registerClass({
         });
         mediaPlayer.init(null);
 
-        if (!this.players.hasOwnProperty(mediaPlayer.Identity)) {
+        if (!this.players.has(mediaPlayer.Identity)) {
             debug(`Adding MPRIS Player ${mediaPlayer.Identity}`);
 
             mediaPlayer.Player = new PlayerProxy({
@@ -162,7 +162,7 @@ var Manager = GObject.registerClass({
                 }
             );
 
-            this.players[mediaPlayer.Identity] = mediaPlayer;
+            this.players.set(mediaPlayer.Identity, mediaPlayer);
             this.notify('players');
         } else {
             mediaPlayer.destroy();
@@ -170,17 +170,17 @@ var Manager = GObject.registerClass({
     }
 
     _removePlayer(mediaPlayer) {
-        let name = mediaPlayer.Identity;
-
-        if (this._players.hasOwnProperty(name)) {
+        if (this.players.has(mediaPlayer.Identity)) {
             debug(`Removing MPRIS Player ${mediaPlayer.Identity}`);
+
+            let name = mediaPlayer.Identity;
 
             mediaPlayer.Player.disconnect(mediaPlayer.Player._propertiesId);
             mediaPlayer.Player.disconnect(mediaPlayer.Player._seekedId);
             mediaPlayer.Player.destroy();
             mediaPlayer.destroy();
 
-            delete this.players[name];
+            this.players.delete(name);
             this.notify('players');
         }
     }
@@ -188,7 +188,7 @@ var Manager = GObject.registerClass({
     destroy() {
         this._fdo.disconnect(this._nameOwnerChangedId);
 
-        for (let mediaPlayer of Object.values(this.players)) {
+        for (let mediaPlayer of this.players.values()) {
             this._removePlayer(mediaPlayer);
         }
     }
