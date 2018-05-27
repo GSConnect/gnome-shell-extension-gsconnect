@@ -72,27 +72,28 @@ var Manager = GObject.registerClass({
     _init() {
         super._init();
 
-        try {
-            this._fdo = new DBus.FdoProxy({
-                g_connection: Gio.DBus.session,
-                g_name: 'org.freedesktop.DBus',
-                g_object_path: '/'
+        new DBus.FdoProxy({
+            g_connection: Gio.DBus.session,
+            g_name: 'org.freedesktop.DBus',
+            g_object_path: '/org/freedesktop/DBus'
+        }).init_promise().then(proxy => {
+            this._fdo = proxy;
+
+            this._nameOwnerChangedId = proxy.connect(
+                'NameOwnerChanged',
+                this._onNameOwnerChanged.bind(this)
+            );
+
+            return proxy.ListNames();
+        }).then(names => {
+            names.map(name => {
+                if (name.startsWith('org.mpris.MediaPlayer2')) {
+                    this._addPlayer(name);
+                }
             });
 
-            this._fdo.init_promise().then(result => {
-                this._nameOwnerChanged = this._fdo.connect(
-                    'NameOwnerChanged',
-                    (proxy, name, oldOwner, newOwner) => {
-                        if (name.startsWith('org.mpris.MediaPlayer2')) {
-                            this._updatePlayers();
-                        }
-                    }
-                );
-                this._updatePlayers();
-            }).catch(debug);
-        } catch (e) {
-            debug('MPRIS ERROR: ' + e);
-        }
+            return;
+        }).catch(debug);
     }
 
     get identities () {
