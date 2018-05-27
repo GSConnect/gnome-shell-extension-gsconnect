@@ -442,44 +442,6 @@ var ProxyBase = GObject.registerClass({
         });
     }
 
-    _call(info) {
-        return new Promise((resolve, reject) => {
-            let args = Array.prototype.slice.call(arguments, 1);
-            let signature = info.in_args.map(arg => arg.signature).join('');
-            let variant = new GLib.Variant(`(${signature})`, args);
-
-            this.call(info.name, variant, 0, -1, null, (proxy, result) => {
-                let ret;
-
-                try {
-                    ret = this.call_finish(result);
-                } catch (e) {
-                    debug(`Error calling ${info.name} on ${this.g_object_path}: ${e.message}`);
-                    reject(e);
-                }
-
-                // If return has single arg, only return that or null
-                if (info.out_args.length === 1) {
-                    resolve((ret) ? ret.deep_unpack()[0] : null);
-                // Otherwise return an array (possibly empty)
-                } else {
-                    resolve((ret) ? ret.deep_unpack() : []);
-                }
-            });
-        });
-    }
-
-    /**
-     * Wrap a method in this._call()
-     * @param {Gio.DBusMethodInfo} info - The interface expected to be
-     *                                    implemented by this object
-     */
-    _proxyMethod(info) {
-        return function () {
-            return this._call.call(this, info, ...arguments);
-        };
-    }
-
     destroy() {
         debug(this.g_interface_name);
 
