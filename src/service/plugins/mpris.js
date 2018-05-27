@@ -37,17 +37,18 @@ var Plugin = GObject.registerClass({
 
         try {
             this.mpris = MPRIS.get_default();
-            this.mpris.connect('notify::players', () => this._sendPlayerList());
+
+            this._playersChangedId = this.mpris.connect(
+                'notify::players',
+                this._sendPlayerList.bind(this)
+            );
+
+            this._playerChangedId = this.mpris.connect(
+                'player-changed',
+                this._onPlayerChanged.bind(this)
+            );
+
             this._sendPlayerList();
-            this.mpris.connect('player-changed', (mpris, player, names) => {
-                this._handleCommand({
-                    body: {
-                        player: player.Identity,
-                        requestNowPlaying: true,
-                        requestVolume: true
-                    }
-                });
-            });
         } catch (e) {
             this.destroy();
             throw Error('MPRIS: ' + e.message);
@@ -163,6 +164,16 @@ var Plugin = GObject.registerClass({
         }
     }
 
+    _onPlayerChanged(mpris, player, names) {
+        this._handleCommand({
+            body: {
+                player: player.Identity,
+                requestNowPlaying: true,
+                requestVolume: true
+            }
+        });
+    }
+
     _sendPlayerList() {
         debug('MPRIS: _sendPlayerList()');
 
@@ -171,6 +182,13 @@ var Plugin = GObject.registerClass({
             type: 'kdeconnect.mpris',
             body: { playerList: this.mpris.identities }
         });
+    }
+
+    destroy() {
+        this.mpris.disconnect(this._playersChangedId);
+        this.mpris.disconnect(this._playerChangedId);
+
+        PluginsBase.Plugin.prototype.destroy.call(this);
     }
 });
 
