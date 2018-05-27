@@ -107,81 +107,89 @@ var Manager = GObject.registerClass({
         return this._players;
     }
 
-    // FIXME: could actually use this
-    _onNameOwnerChanged(proxy, name, oldOwner, newOwner) {
+    _onNameOwnerChanged(fdo, name, old_owner, new_owner) {
         if (name.startsWith('org.mpris.MediaPlayer2')) {
-            this._updatePlayers();
+            if (new_owner.length) {
+                this._addPlayer(name);
+            } else {
+                for (let mediaPlayer of Object.values(this.players)) {
+                    if (mediaPlayer.g_name === old_owner) {
+                        this._removePlayer(mediaPlayer);
+                        break;
+                    }
+                }
+            }
         }
     }
 
-    _addPlayer() {
-    }
+    _addPlayer(busName) {
+        let mediaPlayer = new MediaPlayer2Proxy({
+            g_connection: Gio.DBus.session,
+            g_name: busName,
+            g_object_path: '/org/mpris/MediaPlayer2'
+        });
+        mediaPlayer.init(null);
 
-    _removePlayer() {
-    }
+        if (!this.players.hasOwnProperty(mediaPlayer.Identity)) {
+            debug(`Adding MPRIS Player ${mediaPlayer.Identity}`);
 
-    _updatePlayers() {
-        debug('MPRIS: _updatePlayers()');
+            mediaPlayer.Player = new PlayerProxy({
+                g_connection: Gio.DBus.session,
+                g_name: busName,
+                g_object_path: '/org/mpris/MediaPlayer2'
+            });
+            mediaPlayer.Player.init(null);
 
-        // Add new players
-        this._fdo.ListNames().then(names => {
-            names = names.filter(n => n.startsWith('org.mpris.MediaPlayer2'));
-            log('NAMES: ' + names);
-
-            for (let busName of names) {
-                let mediaPlayer = new MediaPlayer2Proxy({
-                    g_connection: Gio.DBus.session,
-                    g_name: busName,
-                    g_object_path: '/org/mpris/MediaPlayer2'
-                });
-
-                mediaPlayer.Player = new PlayerProxy({
-                    g_connection: Gio.DBus.session,
-                    g_name: busName,
-                    g_object_path: '/org/mpris/MediaPlayer2'
-                });
-
-                if (!this._players[mediaPlayer.identity]) {
-                    mediaPlayer.Player.connect('notify', (player, properties) => {
-                        this.emit(
-                            'player-changed',
-                            mediaPlayer,
-                            new GLib.Variant('as', [])
-                        );
-                    });
-                    mediaPlayer.Player.connect('seeked', (player) => {
-                        this.emit(
-                            'player-changed',
-                            mediaPlayer,
-                            new GLib.Variant('as', ['Position'])
-                        );
-                    });
-
-                    this.players[mediaPlayer.Identity] = mediaPlayer;
+            mediaPlayer.Player._propertiesId = mediaPlayer.Player.connect(
+                'notify',
+                (player) => {
+                    this.emit(
+                        'player-changed',
+                        mediaPlayer,
+                        new GLib.Variant('as', [])
+                    );
                 }
-            }
+            );
 
-            // Remove old players
-            // TODO: use NameOwnerChanged
-            for (let name in this.players) {
-                debug(`removing player ${name}`);
-                let player = this.players[name];
-
-                if (names.indexOf(player.g_name) < 0) {
-                    player.destroy();
-                    delete this.players[name];
+            mediaPlayer.Player._seekedId = mediaPlayer.Player.connect(
+                'Seeked',
+                (player) => {
+                    this.emit(
+                        'player-changed',
+                        mediaPlayer,
+                        new GLib.Variant('as', ['Position'])
+                    );
                 }
-            }
+            );
 
+            this.players[mediaPlayer.Identity] = mediaPlayer;
             this.notify('players');
-        }).catch(debug);
+        } else {
+            mediaPlayer.destroy();
+        }
+    }
+
+    _removePlayer(mediaPlayer) {
+        let name = mediaPlayer.Identity;
+
+        if (this._players.hasOwnProperty(name)) {
+            debug(`Removing MPRIS Player ${mediaPlayer.Identity}`);
+
+            mediaPlayer.Player.disconnect(mediaPlayer.Player._propertiesId);
+            mediaPlayer.Player.disconnect(mediaPlayer.Player._seekedId);
+            mediaPlayer.Player.destroy();
+            mediaPlayer.destroy();
+
+            delete this.players[name];
+            this.notify('players');
+        }
     }
 
     destroy() {
-        this._fdo.disconnect(this._nameOwnerChanged);
+        this._fdo.disconnect(this._nameOwnerChangedId);
 
-        for (let proxy of Object.values(this._players)) {
-            proxy.destroy()
+        for (let mediaPlayer of Object.values(this.players)) {
+            this._removePlayer(mediaPlayer);
         }
     }
 });
