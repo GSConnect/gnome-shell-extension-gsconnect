@@ -688,7 +688,7 @@ function get_default() {
         _default = new FdoProxy({
             g_connection: Gio.DBus.session,
             g_name: 'org.freedesktop.DBus',
-            g_object_path: '/'
+            g_object_path: '/org/freedesktop/DBus'
         });
         _default.init(null);
     }
