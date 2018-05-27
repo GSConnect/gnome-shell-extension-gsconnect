@@ -3,7 +3,6 @@
 const Gio = imports.gi.Gio;
 const GObject = imports.gi.GObject;
 
-const Core = imports.service.core;
 const MPRIS = imports.modules.mpris;
 const PluginsBase = imports.service.plugins.base;
 
@@ -122,11 +121,11 @@ var Plugin = GObject.registerClass({
         // Information Request
         let hasResponse = false;
 
-        let response = new Core.Packet({
+        let response = {
             id: 0,
             type: 'kdeconnect.mpris',
             body: {}
-        });
+        };
 
         if (packet.body.hasOwnProperty('requestNowPlaying')) {
             hasResponse = true;
