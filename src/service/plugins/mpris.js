@@ -63,9 +63,9 @@ var Plugin = GObject.registerClass({
             this._sendPlayerList();
         } else if (packet.body.hasOwnProperty('player')) {
             // If we have this player
-            if (this.mpris.players[packet.body.player]) {
+            if (this.mpris.players.has(packet.body.player)) {
                 this._handleCommand(packet);
-            // If we don't, send an updated list to the device
+            // If we don't, send an updated list to the device instead
             } else {
                 this._sendPlayerList();
             }
@@ -78,7 +78,7 @@ var Plugin = GObject.registerClass({
     _handleCommand(packet) {
         debug(packet);
 
-        let player = this.mpris.players[packet.body.player].Player;
+        let player = this.mpris.players.get(packet.body.player).Player;
 
         // Player Actions
         if (packet.body.hasOwnProperty('action')) {
