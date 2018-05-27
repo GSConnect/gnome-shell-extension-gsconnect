@@ -38,12 +38,16 @@ function dbus_variant_to_gtype(types) {
                 break;
             case 'h' || 'i':
                 gtypes.push(GObject.TYPE_INT);
+                break;
             case 'u':
                 gtypes.push(GObject.TYPE_UINT);
+                break;
             case 'x':
                 gtypes.push(GObject.TYPE_INT64);
+                break;
             case 't':
                 gtypes.push(GObject.TYPE_UINT64);
+                break;
             case 'd':
                 gtypes.push(GObject.TYPE_DOUBLE);
                 break;
