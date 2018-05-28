@@ -130,19 +130,7 @@ var Plugin = GObject.registerClass({
         if (packet.body.hasOwnProperty('requestNowPlaying')) {
             hasResponse = true;
 
-            // Unpack variants
-            let Metadata = {};
-            for (let entry in player.Metadata) {
-                Metadata[entry] = player.Metadata[entry].deep_unpack();
-            }
-
-            let nowPlaying = Metadata['xesam:title'];
-            if (Metadata.hasOwnProperty('xesam:artist')) {
-                nowPlaying = Metadata['xesam:artist'] + ' - ' + nowPlaying;
-            }
-
             response.body = {
-                nowPlaying: nowPlaying,
                 pos: Math.floor(player.Position / 1000),
                 isPlaying: (player.PlaybackStatus === 'Playing'),
                 canPause: player.CanPause,
@@ -151,6 +139,8 @@ var Plugin = GObject.registerClass({
                 canGoPrevious: player.CanGoPrevious,
                 canSeek: player.CanSeek
             };
+
+            Object.assign(response.body, this._getPlayerMetadata(player));
         }
 
         if (packet.body.hasOwnProperty('requestVolume')) {
@@ -162,6 +152,35 @@ var Plugin = GObject.registerClass({
             response.body.player = packet.body.player;
             this.device.sendPacket(response);
         }
+    }
+
+    /**
+     * Get the track metadata for a player
+     * @param {Gio.DBusProxy} player - The player to get track info for
+     * @return {Object} - An object of track data in MPRIS packet body format
+     */
+    _getPlayerMetadata(player) {
+        let metadata = {};
+
+        if (player.Metadata !== null) {
+            let nowPlaying = player.Metadata['xesam:title'];
+
+            if (player.Metadata.hasOwnProperty('xesam:artist')) {
+                nowPlaying = `${player.Metadata['xesam:artist']} - ${nowPlaying}`;
+            }
+
+            metadata.nowPlaying = nowPlaying;
+
+            if (player.Metadata.hasOwnProperty('mpris:artUrl')) {
+                metadata.albumArtUrl = player.Metadata['mpris:artUrl'];
+            }
+
+            if (player.Metadata.hasOwnProperty('mpris:length')) {
+                metadata.length = Math.floor(player.Metadata['mpris:length'] / 1000);
+            }
+        }
+
+        return metadata;
     }
 
     _onPlayerChanged(mpris, mediaPlayer) {
