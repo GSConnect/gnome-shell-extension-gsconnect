@@ -64,7 +64,7 @@ var Manager = GObject.registerClass({
     Signals: {
         'player-changed': {
             flags: GObject.SignalFlags.RUN_FIRST,
-            param_types: [ GObject.TYPE_OBJECT, GObject.TYPE_VARIANT ]
+            param_types: [ GObject.TYPE_OBJECT ]
         }
     }
 }, class Manager extends GObject.Object {
@@ -142,25 +142,13 @@ var Manager = GObject.registerClass({
             mediaPlayer.Player.init(null);
 
             mediaPlayer.Player._propertiesId = mediaPlayer.Player.connect(
-                'notify',
-                (player) => {
-                    this.emit(
-                        'player-changed',
-                        mediaPlayer,
-                        new GLib.Variant('as', [])
-                    );
-                }
+                'g-properties-changed',
+                (player) => this.emit('player-changed', mediaPlayer)
             );
 
             mediaPlayer.Player._seekedId = mediaPlayer.Player.connect(
                 'Seeked',
-                (player) => {
-                    this.emit(
-                        'player-changed',
-                        mediaPlayer,
-                        new GLib.Variant('as', ['Position'])
-                    );
-                }
+                (player) => this.emit('player-changed', mediaPlayer)
             );
 
             this.players.set(mediaPlayer.Identity, mediaPlayer);
