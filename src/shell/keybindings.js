@@ -6,16 +6,24 @@ const Shell = imports.gi.Shell;
 
 
 /**
- * Keyboard shortcuts
+ * Keybindings.Manager is a simple convenience class for managing keyboard
+ * shortcuts in Gnome Shell. You bind a shortcut using add(), which on success
+ * will return a non-zero action id that can later be used with remove() to
+ * unbind the shortcut.
+ *
+ * Accelerators are accepted in the form returned by Gtk.accelerator_name() and
+ * callbacks are invoked directly, so should be complete closures.
  *
  * References:
+ *     https://developer.gnome.org/gtk3/stable/gtk3-Keyboard-Accelerators.html
  *     https://developer.gnome.org/meta/stable/MetaDisplay.html
  *     https://developer.gnome.org/meta/stable/meta-MetaKeybinding.html
+ *     https://gitlab.gnome.org/GNOME/gnome-shell/blob/master/js/ui/windowManager.js#L1093-1112
  */
 var Manager = class Manager {
 
     constructor() {
-        this.bindings = new Map();
+        this._keybindings = new Map();
 
         this._acceleratorActivatedId = global.display.connect(
             'accelerator-activated',
@@ -24,48 +32,65 @@ var Manager = class Manager {
     }
 
     _onAcceleratorActivated(display, action, deviceId, timestamp) {
-        let binding = this.bindings.get(action);
-
-        if (binding) {
-            binding.callback();
+        try {
+            this._keybindings.get(action).callback();
+        } catch (e) {
+            logError(e);
         }
     }
 
+    /**
+     * Add a keybinding with callback
+     *
+     * @param {String} accelerator - An accelerator in the form '<Control>q'
+     * @param {Function} callback - A callback for the accelerator
+     * @return {Number} - A non-zero action id on success, or 0 on failure
+     */
     add(accelerator, callback) {
         let action = global.display.grab_accelerator(accelerator);
 
         if (action !== Meta.KeyBindingAction.NONE) {
             let name = Meta.external_binding_name_for_action(action);
-
-            Main.wm.allowKeybinding(name, Shell.ActionMode.ALL)
-
-            this.bindings.set(action, {
-                name: name,
-                callback: callback
-            });
+            Main.wm.allowKeybinding(name, Shell.ActionMode.ALL);
+            this._keybindings.set(action, { name: name, callback: callback });
         } else {
-            logError(new Error(`Failed to grab accelerator '${accelerator}'`));
+            logError(new Error(`Failed to add keybinding: '${accelerator}'`));
         }
 
         return action;
     }
 
+    /**
+     * Remove a keybinding
+     *
+     * @param {Number} accelerator - A non-zero action id returned by add()
+     */
     remove(action) {
-        let binding = this.bindings.get(action);
-
-        if (binding) {
+        try {
+            let binding = this._keybindings.get(action);
             global.display.ungrab_accelerator(action);
             Main.wm.allowKeybinding(binding.name, Shell.ActionMode.NONE);
-            this.bindings.delete(action);
+            this._keybindings.delete(action);
+        } catch (e) {
+            logError(new Error(`Failed to remove keybinding: ${e.message}`));
         }
     }
 
-    destroy() {
-        global.display.disconnect(this._acceleratorActivatedId);
-
-        for (let action of this.bindings.keys()) {
+    /**
+     * Remove all keybindings
+     */
+    removeAll() {
+        for (let action of this._keybindings.keys()) {
             this.remove(action);
         }
+    }
+
+    /**
+     * Destroy the keybinding manager and remove all keybindings
+     */
+    destroy() {
+        global.display.disconnect(this._acceleratorActivatedId);
+        this.removeAll();
     }
 }
 
