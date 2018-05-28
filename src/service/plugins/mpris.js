@@ -3,6 +3,7 @@
 const Gio = imports.gi.Gio;
 const GObject = imports.gi.GObject;
 
+const Lan = imports.service.lan;
 const MPRIS = imports.modules.mpris;
 const PluginsBase = imports.service.plugins.base;
 
@@ -78,6 +79,11 @@ var Plugin = GObject.registerClass({
         debug(packet);
 
         let player = this.mpris.players.get(packet.body.player).Player;
+
+        // Send Album Art
+        if (packet.body.hasOwnProperty('albumArtUrl')) {
+            this._sendAlbumArt(packet);
+        }
 
         // Player Actions
         if (packet.body.hasOwnProperty('action')) {
@@ -193,12 +199,61 @@ var Plugin = GObject.registerClass({
         });
     }
 
+    _sendAlbumArt(packet) {
+        // Reject concurrent requests for album art
+        if (this._transferring) {
+            return;
+        }
+
+        let player = this.mpris.players.get(packet.body.player).Player;
+
+        if (player.Metadata === null) {
+            return;
+        }
+
+        // Ensure the requested albumArtUrl matches the current mpris:artUrl
+        if (packet.body.albumArtUrl !== player.Metadata['mpris:artUrl']) {
+            return;
+        }
+
+        if (this.device._channel.type === 'tcp') {
+            this._transferring = true;
+
+            let file = Gio.File.new_for_uri(packet.body.albumArtUrl);
+
+            let transfer = new Lan.Transfer({
+                device: this.device,
+                size: file.query_info('standard::size', 0, null).get_size(),
+                input_stream: file.read(null)
+            });
+
+            transfer.connect('connected', () => transfer.start());
+            transfer.connect('disconnected', () => { delete this._transferring });
+
+            transfer.upload().then(port => {
+                this.device.sendPacket({
+                    id: 0,
+                    type: 'kdeconnect.mpris',
+                    body: {
+                        transferringAlbumArt: true,
+                        player: packet.body.player,
+                        albumArtUrl: packet.body.albumArtUrl
+                    },
+                    payloadSize: transfer.size,
+                    payloadTransferInfo: { port: port }
+                });
+            });
+        }
+    }
 
     _sendPlayerList() {
         this.device.sendPacket({
             id: 0,
             type: 'kdeconnect.mpris',
-            body: { playerList: this.mpris.identities }
+            body: {
+                playerList: this.mpris.identities,
+                supportAlbumArtPayload: (this.device._channel.type === 'tcp')
+            }
         });
     }
 
