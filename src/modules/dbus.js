@@ -75,7 +75,7 @@ function _makeOutSignature(args) {
         ret += args[i].signature;
 
     return ret + ')';
-};
+}
 
 
 function dbus_variant_to_gtype(types) {
@@ -367,12 +367,12 @@ function _proxySetter(name, signature, value) {
         new GLib.Variant('(ssv)', [this.g_interface_name, name, variant]),
         Gio.DBusCallFlags.NONE,
         -1,
-        this.cancellable,
+        null,
         (proxy, result) => {
             try {
                 this.call_finish(result);
             } catch (e) {
-                log(`Error setting ${name} on ${this.g_object_path}: ${e.message}`);
+                logError(e);
             }
         }
     );
@@ -474,13 +474,9 @@ var ProxyBase = GObject.registerClass({
             g_connection: Gio.DBus.session
         }, params));
 
-        this.cancellable = new Gio.Cancellable();
-
-        // Proxy all members
-        let info = this.g_interface_info;
-
-        proxyMethods(this, info);
-        proxyProperties(this, info);
+        // Proxy methods and properties
+        proxyMethods(this, this.g_interface_info);
+        proxyProperties(this, this.g_interface_info);
     }
 
     init_promise() {
@@ -590,7 +586,6 @@ function makeInterfaceProxy(info) {
 
         _init(params) {
             super._init(Object.assign({
-                g_connection: Gio.DBus.session,
                 g_interface_info: info,
                 g_interface_name: info.name
             }, params));
