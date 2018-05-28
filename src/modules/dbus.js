@@ -332,16 +332,14 @@ var Interface = GObject.registerClass({
  * Create proxy wrappers for the properties on an interface
  */
 function _proxyGetter(name) {
-    let variant;
-
     try {
         // Returns Variant('(v)')...
-        variant = this.call_sync(
+        let variant = this.call_sync(
             'org.freedesktop.DBus.Properties.Get',
             new GLib.Variant('(ss)', [this.g_interface_name, name]),
             Gio.DBusCallFlags.NONE,
             -1,
-            this.cancellable
+            null
         );
 
         // ...so unpack that to get the real variant and unpack the value
@@ -349,7 +347,7 @@ function _proxyGetter(name) {
     // Fallback to cached property...
     } catch (e) {
         let value = this.get_cached_property(name);
-        return value ? value.deep_unpack() : null;
+        return value ? _full_unpack(value) : null;
     }
 }
 
