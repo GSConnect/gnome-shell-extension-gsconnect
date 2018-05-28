@@ -387,23 +387,14 @@ Object.defineProperty(Gio.TlsCertificate.prototype, 'serial', {
 
 
 /**
+ */
+
+
+
+
+/**
  * String.format API supporting %s, %d, %x and %f
  * See: https://github.com/GNOME/gjs/blob/master/modules/format.js
  */
 String.prototype.format = Format.format;
-
-
-/**
- * String tranformation prototypes
- */
-String.prototype.toDBusSafe = function(string) {
-    string = string || this;
-    return string.replace(/[^A-Za-z0-9_]+/g, '_');
-};
-
-
-String.prototype.toGSettingsSafe = function(string) {
-    string = string || this;
-    return string.replace(/[^a-z0-9-]+/g, '_');
-};
 
