@@ -535,7 +535,8 @@ var DeviceSettings = GObject.registerClass({
         'events-list',
         //TODO
         // Shortcuts
-        'action-shortcuts-list', 'command-shortcuts-list',
+        'action-shortcuts-list', 'action-shortcuts-reset',
+        'command-shortcuts-list',
         // Advanced
         'action-blacklist', 'event-blacklist'
     ]
@@ -1251,6 +1252,7 @@ var DeviceSettings = GObject.registerClass({
             this.device.settings.get_value('keybindings')
         );
 
+        // Backwards compatibility
         if (typeof keybindings === 'string') {
             iface.settings.set_value(
                 'keybindings',
@@ -1290,6 +1292,10 @@ var DeviceSettings = GObject.registerClass({
         this.action_shortcuts_list.set_sort_func((row1, row2) => {
             return row1.title.localeCompare(row2.title);
         });
+    }
+
+    _onActionShortcutsResetClicked(button) {
+        this.device.settings.reset('keybindings');
     }
 
     _onShortcutRowActivated(box, row) {
