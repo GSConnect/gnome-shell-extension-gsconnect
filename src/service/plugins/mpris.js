@@ -143,7 +143,7 @@ var Plugin = GObject.registerClass({
 
             response.body = {
                 nowPlaying: nowPlaying,
-                pos: Math.round(player.Position / 1000), /* TODO: really? */
+                pos: Math.floor(player.Position / 1000),
                 isPlaying: (player.PlaybackStatus === 'Playing'),
                 canPause: player.CanPause,
                 canPlay: player.CanPlay,
@@ -164,19 +164,18 @@ var Plugin = GObject.registerClass({
         }
     }
 
-    _onPlayerChanged(mpris, player, names) {
+    _onPlayerChanged(mpris, mediaPlayer) {
         this._handleCommand({
             body: {
-                player: player.Identity,
+                player: mediaPlayer.Identity,
                 requestNowPlaying: true,
                 requestVolume: true
             }
         });
     }
 
-    _sendPlayerList() {
-        debug('MPRIS: _sendPlayerList()');
 
+    _sendPlayerList() {
         this.device.sendPacket({
             id: 0,
             type: 'kdeconnect.mpris',
