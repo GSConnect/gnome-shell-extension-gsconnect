@@ -117,10 +117,11 @@ var Plugin = GObject.registerClass({
         this.batteryRequest();
 
         // Local Battery (UPower)
-        if (this.device.service.type === 'laptop') {
-            this._monitor();
-        }
-
+        this._sendStatisticsId = this.settings.connect(
+            'changed::send-statistics',
+            this._onSendStatisticsChanged.bind(this)
+        );
+        this._onSendStatisticsChanged(this.settings);
     }
 
     get charging() { return this._charging || false; }
@@ -155,6 +156,14 @@ var Plugin = GObject.registerClass({
     }
     get time() { return this._time || 0; }
     get threshold () { return this._thresholdLevel }
+
+    _onSendStatisticsChanged(settings) {
+        if (this.settings.get_boolean('send-statistics')) {
+            this._monitor();
+        } else {
+            this._unmonitor();
+        }
+    }
 
     /**
      * Packet dispatch
@@ -233,7 +242,7 @@ var Plugin = GObject.registerClass({
      */
     _monitor() {
         // FIXME
-        if (!this.device.get_action_enabled('reportStatus')) {
+        if (!this.device.get_action_enabled('batteryReport')) {
             return;
         }
 
@@ -383,6 +392,7 @@ var Plugin = GObject.registerClass({
     }
 
     destroy() {
+        this.settings.disconnect(this._sendStatisticsId);
         this._unmonitor();
         this.device._dbus_object.remove_interface(this._dbus);
 

@@ -104,6 +104,11 @@
     </key>
   </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Battery">
+    <key name="send-statistics" type="b">
+      <default>false</default>
+      <summary>Send Statistics</summary>
+      <description></description>
+    </key>
   </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Clipboard">
     <key name="receive-content" type="b">
