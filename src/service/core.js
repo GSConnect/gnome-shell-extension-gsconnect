@@ -464,13 +464,16 @@ var Channel = GObject.registerClass({
     receive() {
         try {
             let data = this.input_stream.read_line(null)[0];
-            let packet = new Packet(data.toString());
 
-            if (packet.type === 'kdeconnect.identity') {
-                this.identity = packet;
+            if (data) {
+                let packet = new Packet(data.toString());
+
+                if (packet.type === 'kdeconnect.identity') {
+                    this.identity = packet;
+                }
+
+                this.emit('received', packet);
             }
-
-            this.emit('received', packet);
 
             return GLib.SOURCE_CONTINUE;
         } catch (e) {
