@@ -151,22 +151,18 @@ var Plugin = GObject.registerClass({
     }
 
     clickPointer(button) {
-        let event = 'b%dc'.format(button);
-
         try {
             let [screen, x, y] = this._pointer.get_position();
-            Atspi.generate_mouse_event(x, y, event);
+            Atspi.generate_mouse_event(x, y, `b${button}c`);
         } catch (e) {
             logError(e);
         }
     }
 
     doubleclickPointer(button) {
-        let event = 'b%dd'.format(button);
-
         try {
             let [screen, x, y] = this._pointer.get_position();
-            Atspi.generate_mouse_event(x, y, event);
+            Atspi.generate_mouse_event(x, y, `b${button}d`);
         } catch (e) {
             logError(e);
         }
@@ -181,22 +177,18 @@ var Plugin = GObject.registerClass({
     }
 
     pressPointer(button) {
-        let event = 'b%dp'.format(button);
-
         try {
             let [screen, x, y] = this._pointer.get_position();
-            Atspi.generate_mouse_event(x, y, event);
+            Atspi.generate_mouse_event(x, y, `b${button}p`);
         } catch (e) {
             logError(e);
         }
     }
 
     releasePointer(button) {
-        let event = 'b%dr'.format(button);
-
         try {
             let [screen, x, y] = this._pointer.get_position();
-            Atspi.generate_mouse_event(x, y, event);
+            Atspi.generate_mouse_event(x, y, `b${button}r`);
         } catch (e) {
             logError(e);
         }
