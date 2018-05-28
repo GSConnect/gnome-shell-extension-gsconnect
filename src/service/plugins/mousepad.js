@@ -196,9 +196,9 @@ var Plugin = GObject.registerClass({
 
     pressKey(key) {
         try {
-            if ( !Atspi.generate_keyboard_event(0, key, Atspi.KeySynthType.STRING) ) {
+            if (!Atspi.generate_keyboard_event(0, key, Atspi.KeySynthType.STRING)) {
                 throw Error('Unknown/invalid key');
-            };
+            }
         } catch (e) {
             logError(e);
         }
