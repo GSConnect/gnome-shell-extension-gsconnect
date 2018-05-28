@@ -127,82 +127,68 @@ var Plugin = GObject.registerClass({
     }
 
     clickPointer(button) {
-        debug('Mousepad: clickPointer(' + button + ')');
-
         let event = 'b%dc'.format(button);
 
         try {
             let [screen, x, y] = this._pointer.get_position();
             Atspi.generate_mouse_event(x, y, event);
         } catch (e) {
-            log('Mousepad: Error simulating mouse click: ' + e);
+            logError(e);
         }
     }
 
     doubleclickPointer(button) {
-        debug('Mousepad: doubleclickPointer(' + button + ')');
-
         let event = 'b%dd'.format(button);
 
         try {
             let [screen, x, y] = this._pointer.get_position();
             Atspi.generate_mouse_event(x, y, event);
         } catch (e) {
-            log('Mousepad: Error simulating mouse double click: ' + e);
+            logError(e);
         }
     }
 
     movePointer(dx, dy) {
-        debug('Mousepad: movePointer(' + dx + ', ' + dy + ')');
-
         try {
             Atspi.generate_mouse_event(dx, dy, 'rel');
         } catch (e) {
-            log('Mousepad: Error simulating mouse movement: ' + e);
+            logError(e);
         }
     }
 
     pressPointer(button) {
-        debug('Mousepad: pressPointer()');
-
         let event = 'b%dp'.format(button);
 
         try {
             let [screen, x, y] = this._pointer.get_position();
             Atspi.generate_mouse_event(x, y, event);
         } catch (e) {
-            log('Mousepad: Error simulating mouse press: ' + e);
+            logError(e);
         }
     }
 
     releasePointer(button) {
-        debug('Mousepad: releasePointer()');
-
         let event = 'b%dr'.format(button);
 
         try {
             let [screen, x, y] = this._pointer.get_position();
             Atspi.generate_mouse_event(x, y, event);
         } catch (e) {
-            log('Mousepad: Error simulating mouse release: ' + e);
+            logError(e);
         }
     }
 
     pressKey(key) {
-        debug('Mousepad: pressKey(' + key + ')');
-
         try {
             if ( !Atspi.generate_keyboard_event(0, key, Atspi.KeySynthType.STRING) ) {
                 throw Error('Unknown/invalid key');
             };
         } catch (e) {
-            log('Mousepad: Error simulating keypress: ' + e);
+            logError(e);
         }
     }
 
     pressSpecialKey(key) {
-        debug('Mousepad: pressSpecialKey(' + key + ')');
-
         try {
             if (!KeyMap.has(key) || key === 0) {
                 throw Error('Unknown/invalid key');
@@ -214,7 +200,7 @@ var Plugin = GObject.registerClass({
                 Atspi.KeySynthType.PRESSRELEASE | Atspi.KeySynthType.SYM
             );
         } catch (e) {
-            log('Mousepad: Error simulating special keypress: ' + e);
+            logError(e);
         }
     }
 
@@ -229,7 +215,7 @@ var Plugin = GObject.registerClass({
                 this.vkbd.mod_unlock(mask);
             }
         } catch (e) {
-            log('Mousepad: Error simulating keyboard event with virtual keyboard: ' + e);
+            logError(e);
         }
     }
 });
