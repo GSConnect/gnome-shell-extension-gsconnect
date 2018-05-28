@@ -32,8 +32,6 @@ var Manager = class Manager {
     }
 
     add(accelerator, callback) {
-        debug(arguments);
-
         let action = global.display.grab_accelerator(accelerator);
 
         if (action !== Meta.KeyBindingAction.NONE) {
@@ -46,7 +44,7 @@ var Manager = class Manager {
                 callback: callback
             });
         } else {
-            debug(`Failed to grab accelerator '${accelerator}'`);
+            logError(new Error(`Failed to grab accelerator '${accelerator}'`));
         }
 
         return action;
