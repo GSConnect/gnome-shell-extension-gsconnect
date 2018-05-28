@@ -47,6 +47,28 @@ String.prototype.toUnderscoreCase = function(string) {
 };
 
 
+/**
+ * Recursively unpack a GVariant
+ */
+function _full_unpack(obj) {
+    if (typeof obj.deep_unpack === 'function') {
+        return _full_unpack(obj.deep_unpack());
+    } else if (typeof obj.map === 'function') {
+        return obj.map(i => _full_unpack(i));
+    } else if (typeof obj === 'object' && typeof obj !== null) {
+        let unpacked = {};
+
+        for (let key in obj) {
+            unpacked[key] = _full_unpack(obj[key]);
+        }
+
+        return unpacked;
+    }
+
+    return obj;
+}
+
+
 function _makeOutSignature(args) {
     var ret = '(';
     for (var i = 0; i < args.length; i++)
@@ -166,7 +188,7 @@ var Interface = GObject.registerClass({
                     let idx = parameter.deep_unpack();
                     return fds.get(idx);
                 } else {
-                    return gsconnect.full_unpack(parameter);
+                    return _full_unpack(parameter);
                 }
             });
 
@@ -239,7 +261,7 @@ var Interface = GObject.registerClass({
     }
 
     _set(info, name, value) {
-        value = gsconnect.full_unpack(value);
+        value = _full_unpack(value);
 
         if (!this._propertyCase) {
             if (this[name.toUnderscoreCase()]) {
@@ -323,7 +345,7 @@ function _proxyGetter(name) {
         );
 
         // ...so unpack that to get the real variant and unpack the value
-        return variant.deep_unpack()[0].deep_unpack();
+        return _full_unpack(variant.deep_unpack()[0]);
     // Fallback to cached property...
     } catch (e) {
         let value = this.get_cached_property(name);
