@@ -19,6 +19,34 @@ String.prototype.toDBusCase = function(string) {
 };
 
 
+String.prototype.toCamelCase = function(string) {
+    string = string || this;
+
+    return string.replace(/(?:^\w|[A-Z]|\b\w)/g, (ltr, offset) => {
+        return (offset === 0) ? ltr.toLowerCase() : ltr.toUpperCase();
+    }).replace(/[\s_-]+/g, '');
+};
+
+
+String.prototype.toHyphenCase = function(string) {
+    string = string || this;
+
+	return string.replace(/(?:[A-Z])/g, (ltr, offset) => {
+        return (offset > 0) ? '-' + ltr.toLowerCase() : ltr.toLowerCase();
+	}).replace(/[\s_]+/g, '');
+};
+
+
+String.prototype.toUnderscoreCase = function(string) {
+    string = string || this;
+
+	return string.replace(/(?:^\w|[A-Z]|_|\b\w)/g, (ltr, offset) => {
+	    if (ltr === '_') return '';
+        return (offset > 0) ? '_' + ltr.toLowerCase() : ltr.toLowerCase();
+	}).replace(/[\s-]+/g, '');
+};
+
+
 function _makeOutSignature(args) {
     var ret = '(';
     for (var i = 0; i < args.length; i++)
