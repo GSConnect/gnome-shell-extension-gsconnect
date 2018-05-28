@@ -129,6 +129,14 @@ gsconnect.settings.connect('changed::debug', () => {
 });
 gsconnect.settings.emit('changed::debug', 'debug');
 
+window.warning = function(message) {
+    GLib.log_structured(
+        'gsconnect',
+        GLib.LogLevelFlags.LEVEL_WARNING,
+        { MESSAGE: `WARNING: ${message}` }
+    );
+};
+
 
 /**
  * Check if a command is in the PATH
