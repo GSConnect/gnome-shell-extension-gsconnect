@@ -114,7 +114,7 @@ var Manager = GObject.registerClass({
                 this._addPlayer(name);
             } else {
                 for (let mediaPlayer of this.players.values()) {
-                    if (mediaPlayer.g_name === old_owner) {
+                    if (mediaPlayer.g_name_owner === old_owner) {
                         this._removePlayer(mediaPlayer);
                         break;
                     }
