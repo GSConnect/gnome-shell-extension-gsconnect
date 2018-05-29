@@ -881,25 +881,24 @@ var Device = GObject.registerClass({
         return supported.sort();
     }
 
+    // TODO: Plugins already throw errors in _init() for known
+    // problems, but nothing is really done with them. They should
+    // be reported to the user, preferrably by way of some device
+    // log that can be reviewed.
     _loadPlugin(name) {
         debug(`${name} (${this.name})`);
 
         return new Promise((resolve, reject) => {
-            if (!this.paired) {
+            if (!this.connected || !this.paired) {
                 reject();
+                return;
             }
 
             // Instantiate the handler
             if (!this._plugins.has(name)) {
-                let handler, plugin;
-
-                // TODO: Plugins already throw errors in _init() for known
-                // problems, but nothing is really done with them. They should
-                // be reported to the user, preferrably by way of some device
-                // log that can be reviewed.
                 try {
-                    handler = imports.service.plugins[name];
-                    plugin = new handler.Plugin(this);
+                    let handler = imports.service.plugins[name];
+                    let plugin = new handler.Plugin(this);
 
                     // Register packet handlers
                     for (let packetType of handler.Metadata.incomingCapabilities) {
@@ -912,11 +911,12 @@ var Device = GObject.registerClass({
                     this._plugins.set(name, plugin);
                 } catch (e) {
                     logError(e);
-                    reject(e);
+                    reject([name, e]);
+                    return;
                 }
             }
 
-            resolve();
+            resolve([name, true]);
         });
     }
 
