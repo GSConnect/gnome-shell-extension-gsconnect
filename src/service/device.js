@@ -800,10 +800,14 @@ var Device = GObject.registerClass({
         }
 
         if (bool) {
-            this.settings.set_string(
-                'certificate-pem',
-                this._channel.certificate.certificate_pem
-            );
+            if (this._channel.type === 'bluetooth') {
+                debug(`Skip storing certificate for bluetooth connection`);
+            } else {
+                this.settings.set_string(
+                    'certificate-pem',
+                    this._channel.certificate.certificate_pem
+                );
+            }
         } else {
             this.settings.reset('certificate-pem');
         }
