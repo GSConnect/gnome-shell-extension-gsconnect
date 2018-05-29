@@ -657,23 +657,37 @@ var Device = GObject.registerClass({
         notif.set_priority(params.priority);
 
         if (params.action) {
+            let hasParameter = (button.parameter !== null);
+
+            if (!hasParameter) {
+                params.action.parameter = new GLib.Variant('s', '');
+            }
+
             notif.set_default_action_and_target(
                 'app.deviceAction',
-                new GLib.Variant('(osv)', [
+                new GLib.Variant('(osbv)', [
                     this._dbus.get_object_path(),
                     params.action.name,
+                    hasParameter,
                     params.action.parameter
                 ])
             );
         }
 
         for (let button of params.buttons) {
+            let hasParameter = (button.parameter !== null);
+
+            if (!hasParameter) {
+                button.parameter = new GLib.Variant('s', '');
+            }
+
             notif.add_button_with_target(
                 button.label,
                 'app.deviceAction',
-                new GLib.Variant('(osv)', [
+                new GLib.Variant('(osbv)', [
                     this._dbus.get_object_path(),
                     button.action,
+                    hasParameter,
                     button.parameter
                 ])
             );

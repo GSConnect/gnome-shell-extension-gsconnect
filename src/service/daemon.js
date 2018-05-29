@@ -582,10 +582,11 @@ var Daemon = GObject.registerClass({
      * A meta-action for routing device actions.
      *
      * @param {Gio.Action} action - ...
-     * @param {GLib.Variant[]} parameter - ...
-     * @param {GLib.Variant(s)} parameter[0] - DBus object path of the device
-     * @param {GLib.Variant(s)} parameter[1] - GAction/Method name
-     * @param {GLib.Variant(v)} parameter[2] - The device action parameter
+     * @param {GLib.Variant(av)} parameter - ...
+     * @param {GLib.Variant(o)} parameter[0] - Object path of the device
+     * @param {GLib.Variant(s)} parameter[1] - GAction name
+     * @param {GLib.Variant(b)} parameter[2] - %false if the parameter is null
+     * @param {GLib.Variant(v)} parameter[3] - GAction parameter
      */
     _deviceAction(action, parameter) {
         parameter = parameter.unpack();
@@ -594,12 +595,10 @@ var Daemon = GObject.registerClass({
 
         // If the device is available
         if (device) {
-            let deviceAction = device.lookup_action(parameter[1].unpack());
-
-            // If it has the action enabled
-            if (deviceAction && deviceAction.enabled) {
-                deviceAction.activate(parameter[2].unpack());
-            }
+            device.activate_action(
+                parameter[1].unpack(),
+                parameter[2].unpack() ? parameter[3].unpack() : null
+            );
         }
     }
 
