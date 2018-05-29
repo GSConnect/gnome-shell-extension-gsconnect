@@ -66,85 +66,85 @@ var Plugin = GObject.registerClass({
         debug(packet);
 
         if (packet.type === 'kdeconnect.mousepad.request') {
-            this._handleInput(packet);
+            this._handleInput(packet.body);
         }
     }
 
     /**
      * Local Methods
      */
-    _handleInput(packet) {
+    _handleInput(input) {
         switch (true) {
-            case packet.body.hasOwnProperty('scroll'):
-                if (packet.body.dy < 0) {
+            case input.hasOwnProperty('scroll'):
+                if (input.dy < 0) {
                     this.clickPointer(5);
-                } else if (packet.body.dy > 0) {
+                } else if (input.dy > 0) {
                     this.clickPointer(4);
                 }
                 break;
 
-            case (packet.body.hasOwnProperty('dx') && packet.body.hasOwnProperty('dy')):
-                this.movePointer(packet.body.dx, packet.body.dy);
+            case (input.hasOwnProperty('dx') && input.hasOwnProperty('dy')):
+                this.movePointer(input.dx, input.dy);
                 break;
 
-            case (packet.body.hasOwnProperty('key') || packet.body.hasOwnProperty('specialKey')):
+            case (input.hasOwnProperty('key') || input.hasOwnProperty('specialKey')):
                 if (this._vkbd ) {
                     // Set Gdk.ModifierType
                     let mask = 0;
 
                     switch (true) {
-                        case packet.body.ctrl:
+                        case input.ctrl:
                             mask |= Gdk.ModifierType.CONTROL_MASK;
-                        case packet.body.shift:
+                        case input.shift:
                             mask |= Gdk.ModifierType.SHIFT_MASK;
-                        case packet.body.alt:
+                        case input.alt:
                             mask |= Gdk.ModifierType.MOD1_MASK;
-                        case packet.body.super:
+                        case input.super:
                             mask |= Gdk.ModifierType.SUPER_MASK;
                     }
 
                     // Transform key to keysym
                     let keysym;
 
-                    if (packet.body.key && packet.body.key !== '\u0000') {
-                        keysym = Gdk.unicode_to_keyval(packet.body.key.codePointAt(0));
-                    } else if (packet.body.specialKey && KeyMap.has(packet.body.specialKey)) {
-                        keysym = KeyMap.get(packet.body.specialKey);
+                    if (input.key && input.key !== '\u0000') {
+                        keysym = Gdk.unicode_to_keyval(input.key.codePointAt(0));
+                    } else if (input.specialKey && KeyMap.has(input.specialKey)) {
+                        keysym = KeyMap.get(input.specialKey);
                     }
 
                     this.pressKeySym(keysym, mask);
                 } else {
                     // This is sometimes sent in advance of a specialKey packet
-                    if (packet.body.key && packet.body.key !== '\u0000') {
-                        this.pressKey(packet.body.key);
-                    } else if (packet.body.specialKey) {
-                        this.pressSpecialKey(packet.body.specialKey);
+                    if (input.key && input.key !== '\u0000') {
+                        this.pressKey(input.key);
+                    } else if (input.specialKey) {
+                        this.pressSpecialKey(input.specialKey);
                     }
                 }
                 break;
 
-            case packet.body.hasOwnProperty('singleclick'):
+            case input.hasOwnProperty('singleclick'):
                 this.clickPointer(1);
                 break;
 
-            case packet.body.hasOwnProperty('doubleclick'):
+            case input.hasOwnProperty('doubleclick'):
                 this.doubleclickPointer(1);
                 break;
 
-            case packet.body.hasOwnProperty('middleclick'):
+            case input.hasOwnProperty('middleclick'):
                 this.clickPointer(2);
                 break;
 
-            case packet.body.hasOwnProperty('rightclick'):
+            case input.hasOwnProperty('rightclick'):
                 this.clickPointer(3);
                 break;
 
-            case packet.body.hasOwnProperty('singlehold'):
+            case input.hasOwnProperty('singlehold'):
                 this.pressPointer(1);
                 break;
 
             // This is not used, hold is released with a regular click instead
-            case packet.body.hasOwnProperty('singlerelease'):
+            case input.hasOwnProperty('singlerelease'):
                 this.releasePointer(1);
                 break;
         }
