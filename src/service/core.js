@@ -24,35 +24,30 @@ var Packet = GObject.registerClass({
     _init(data=false) {
         super._init();
 
-        this.id = 0;
-        this.type = '';
-        this.body = {};
+        Object.assign(this, {
+            id: 0,
+            type: '',
+            body: {}
+        });
 
         if (data === false) {
             return;
         } else if (typeof data === 'string') {
             this.fromData(data);
-        } else if (typeof data === 'object') {
-            this.fromPacket(data);
         } else {
-            log('Error: unsupported packet source: ' + typeof data);
+            this.fromPacket(data);
         }
     }
 
-    // TODO: this means *complete* packets have to be set at construction
-    _check(obj) {
-        if (!obj.hasOwnProperty('type')) {
-            debug('Packet: missing type field');
-            return false;
-        } else if (!obj.hasOwnProperty('body')) {
-            debug('Packet: missing body field');
-            return false;
-        } else if (!obj.hasOwnProperty('id')) {
-            debug('Packet: missing id field');
-            return false;
+    _validate(obj) {
+        switch (false) {
+            case obj.hasOwnProperty('type'):
+                throw new Error();
+            case obj.hasOwnProperty('body'):
+                throw new Error();
+            case obj.hasOwnProperty('id'):
+                throw new Error();
         }
-
-        return true;
     }
 
     // TODO
@@ -87,44 +82,35 @@ var Packet = GObject.registerClass({
     }
 
     fromData(data) {
-        let json;
-
         try {
-            json = JSON.parse(data);
-        } catch (e) {
-            logError(e);
-            log('Data: %s'.format(data));
-            return;
-        }
-
-        if (this._check(json)) {
+            let json = JSON.parse(data);
+            this._validate(json);
             Object.assign(this, json);
-        } else {
-            throw Error('Packet.fromData(): Malformed packet');
+        } catch (e) {
+            throw Error('Malformed packet');
         }
     }
 
-    // TODO: better merging than this
     fromPacket(packet) {
-        if (this._check(packet)) {
+        try {
+            this._validate(packet);
             Object.assign(this, JSON.parse(JSON.stringify(packet)));
-        } else {
-            throw Error('Packet.fromPacket(): Malformed packet');
+        } catch (e) {
+            throw Error('Malformed packet');
         }
     }
 
     [Symbol.toPrimitive](hint) {
-        if (hint === 'number') {
-            this.id = GLib.DateTime.new_now_local().to_unix();
-            return `${JSON.stringify(this)}\n`.length;
-        }
+        this.id = GLib.DateTime.new_now_local().to_unix();
 
-        if (hint === 'string') {
-            this.id = GLib.DateTime.new_now_local().to_unix();
-            return `${JSON.stringify(this)}\n`;
+        switch (hint) {
+            case 'string':
+                return `${JSON.stringify(this)}\n`;
+            case 'number':
+                return `${JSON.stringify(this)}\n`.length;
+            default:
+                return true;
         }
-
-        return true;
     }
 
     toString() {
