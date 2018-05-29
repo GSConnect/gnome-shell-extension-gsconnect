@@ -696,7 +696,9 @@ var Device = GObject.registerClass({
                 return this._loadPlugins().then(values => this.notify('plugins'));
             // The device thinks we're unpaired
             } else if (this.paired) {
-                this.acceptPair();
+                this._setPaired(true);
+                this.pair();
+                this._loadPlugins().then(values => this.notify('plugins'));
             // The device is requesting pairing
             } else {
                 log(`Pair request from ${this.name}`);
@@ -793,21 +795,11 @@ var Device = GObject.registerClass({
     }
 
     pair() {
-        debug(`${this.name} (${this.id})`);
-
         // The pair button was pressed during an incoming pair request
         if (this._incomingPairRequest) {
-            this.acceptPair();
+            this._setPaired(true);
+            this._loadPlugins().then(values => this.notify('plugins'));
             return;
-        }
-
-        // We're initiating an outgoing request
-        if (!this.paired) {
-            this._outgoingPairRequest = GLib.timeout_add_seconds(
-                GLib.PRIORITY_DEFAULT,
-                30,
-                () => this._setPaired(false)
-            );
         }
 
         // Send a pair packet
@@ -816,6 +808,17 @@ var Device = GObject.registerClass({
             type: 'kdeconnect.pair',
             body: { pair: true }
         });
+
+        // We're initiating an outgoing request
+        if (!this.paired) {
+            this._outgoingPairRequest = GLib.timeout_add_seconds(
+                GLib.PRIORITY_DEFAULT,
+                30,
+                this._setPaired.bind(this, false)
+            );
+
+            log(`Pair request sent to ${this.name}`);
+        }
     }
 
     unpair() {
