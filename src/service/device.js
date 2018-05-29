@@ -704,14 +704,14 @@ var Device = GObject.registerClass({
      * Pairing Functions
      */
     _handlePair(packet) {
-        // A pair has been requested
+        // A pair has been requested/confirmed
         if (packet.body.pair) {
             // The device is accepting our request
             if (this._outgoingPairRequest) {
                 log(`Pair accepted by ${this.name}`);
 
                 this._setPaired(true);
-                return this._loadPlugins().then(values => this.notify('plugins'));
+                this._loadPlugins().then(values => this.notify('plugins'));
             // The device thinks we're unpaired
             } else if (this.paired) {
                 this._setPaired(true);
@@ -726,7 +726,7 @@ var Device = GObject.registerClass({
         } else {
             log(`Pair rejected by ${this.name}`);
 
-            this._unloadPlugins().then((values) => {
+            this._unloadPlugins().then(values => {
                 this.notify('plugins');
                 this._setPaired(false);
             });
@@ -778,10 +778,10 @@ var Device = GObject.registerClass({
     }
 
     _pairAction(action, parameter) {
+        // Accept pair request
         if (parameter.get_boolean()) {
-            this._setPaired(true);
             this.pair();
-            this._loadPlugins().then(values => this.notify('plugins'));
+        // Reject pair request
         } else {
             this.unpair();
         }
@@ -813,9 +813,11 @@ var Device = GObject.registerClass({
     }
 
     pair() {
-        // The pair button was pressed during an incoming pair request
+        // We're accepting an incoming pair request...
         if (this._incomingPairRequest) {
             this._setPaired(true);
+            // ...so loop back around to send confirmation
+            this.pair();
             this._loadPlugins().then(values => this.notify('plugins'));
             return;
         }
@@ -827,7 +829,7 @@ var Device = GObject.registerClass({
             body: { pair: true }
         });
 
-        // We're initiating an outgoing request
+        // We're initiating an outgoing pair request
         if (!this.paired) {
             this._outgoingPairRequest = GLib.timeout_add_seconds(
                 GLib.PRIORITY_DEFAULT,
