@@ -594,22 +594,22 @@ var Device = GObject.registerClass({
     _registerActions() {
         let acceptPair = new Action({
             name: 'acceptPair',
-            parameter_type: null,
+            parameter_type: new GLib.VariantType('b'),
             summary: _('Accept Pair'),
             description: _('Accept an incoming pair request'),
             icon_name: 'channel-insecure-symbolic'
         });
-        acceptPair.connect('activate', this.acceptPair.bind(this));
+        acceptPair.connect('activate', this._pairAction.bind(this));
         this.add_action(acceptPair);
 
         let rejectPair = new Action({
             name: 'rejectPair',
-            parameter_type: null,
+            parameter_type: new GLib.VariantType('b'),
             summary: _('Reject Pair'),
             description: _('Reject an incoming pair request'),
             icon_name: 'channel-insecure-symbolic'
         });
-        rejectPair.connect('activate', this.rejectPair.bind(this));
+        rejectPair.connect('activate', this._pairAction.bind(this));
         this.add_action(rejectPair);
 
         let viewFolder = new Action({
@@ -739,12 +739,12 @@ var Device = GObject.registerClass({
                 {
                     action: 'rejectPair',
                     label: _('Reject'),
-                    parameter: new GLib.Variant('mv', null)
+                    parameter: new GLib.Variant('b', false)
                 },
                 {
                     action: 'acceptPair',
                     label: _('Accept'),
-                    parameter: new GLib.Variant('mv', null)
+                    parameter: new GLib.Variant('b', true)
                 }
             ]
         });
@@ -753,8 +753,18 @@ var Device = GObject.registerClass({
         this._incomingPairRequest = GLib.timeout_add_seconds(
             GLib.PRIORITY_DEFAULT,
             30,
-            () => this._setPaired(false)
+            this._setPaired.bind(this, false)
         );
+    }
+
+    _pairAction(action, parameter) {
+        if (parameter.get_boolean()) {
+            this._setPaired(true);
+            this.pair();
+            this._loadPlugins().then(values => this.notify('plugins'));
+        } else {
+            this.unpair();
+        }
     }
 
     _setPaired(bool) {
@@ -824,20 +834,6 @@ var Device = GObject.registerClass({
             this.notify('plugins');
             this._setPaired(false);
         });
-    }
-
-    acceptPair() {
-        debug(`${this.name} (${this.id})`);
-
-        this._setPaired(true);
-        this.pair();
-        this._loadPlugins().then(values => this.notify('plugins'));
-    }
-
-    rejectPair() {
-        debug(`${this.name} (${this.id})`);
-
-        this.unpair();
     }
 
     /**

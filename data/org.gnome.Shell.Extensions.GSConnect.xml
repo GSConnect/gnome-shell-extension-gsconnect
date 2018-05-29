@@ -27,8 +27,6 @@
     <method name="Activate"/>
     <method name="Pair"/>
     <method name="Unpair"/>
-    <method name="AcceptPair"/>
-    <method name="RejectPair"/>
     <method name="OpenSettings"/>
 
     <!-- Signals -->
