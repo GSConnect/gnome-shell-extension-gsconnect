@@ -241,17 +241,6 @@ var Plugin = GObject.registerClass({
     }
 
     /**
-     * Actions FIXME
-     */
-    _openFile(path) {
-        Gio.AppInfo.launch_default_for_uri(path, null);
-    }
-
-    _openDirectory(path) {
-        Gio.AppInfo.launch_default_for_uri(path, null);
-    }
-
-    /**
      * Remote methods
      */
     shareDialog() {
