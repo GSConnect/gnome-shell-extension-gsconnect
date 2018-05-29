@@ -355,6 +355,10 @@ var Device = GObject.registerClass({
     // TODO: This will have to be revisited when upstream makes a decision on
     //       how pairing will work with bluetooth connections
     get paired() {
+        if (this._channel && this._channel.type === 'bluetooth') {
+            return true;
+        }
+
         return (this.settings.get_string('certificate-pem'));
     }
     get plugins() { return Array.from(this._plugins.keys()) || []; }
