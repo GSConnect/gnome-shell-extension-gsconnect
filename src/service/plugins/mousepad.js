@@ -75,7 +75,7 @@ var Plugin = GObject.registerClass({
      */
     _handleInput(packet) {
         switch (true) {
-            case packet.body.scroll:
+            case packet.body.hasOwnProperty('scroll'):
                 if (packet.body.dy < 0) {
                     this.clickPointer(5);
                 } else if (packet.body.dy > 0) {
@@ -87,7 +87,7 @@ var Plugin = GObject.registerClass({
                 this.movePointer(packet.body.dx, packet.body.dy);
                 break;
 
-            case (packet.body.key || packet.body.specialKey):
+            case (packet.body.hasOwnProperty('key') || packet.body.hasOwnProperty('specialKey')):
                 if (this._vkbd ) {
                     // Set Gdk.ModifierType
                     let mask = 0;
@@ -123,28 +123,28 @@ var Plugin = GObject.registerClass({
                 }
                 break;
 
-            case packet.body.singleclick:
+            case packet.body.hasOwnProperty('singleclick'):
                 this.clickPointer(1);
                 break;
 
-            case packet.body.doubleclick:
+            case packet.body.hasOwnProperty('doubleclick'):
                 this.doubleclickPointer(1);
                 break;
 
-            case packet.body.middleclick:
+            case packet.body.hasOwnProperty('middleclick'):
                 this.clickPointer(2);
                 break;
 
-            case packet.body.rightclick:
+            case packet.body.hasOwnProperty('rightclick'):
                 this.clickPointer(3);
                 break;
 
-            case packet.body.singlehold:
+            case packet.body.hasOwnProperty('singlehold'):
                 this.pressPointer(1);
                 break;
 
             // This is not used, hold is released with a regular click instead
-            case packet.body.singlerelease:
+            case packet.body.hasOwnProperty('singlerelease'):
                 this.releasePointer(1);
                 break;
         }
@@ -196,9 +196,7 @@ var Plugin = GObject.registerClass({
 
     pressKey(key) {
         try {
-            if (!Atspi.generate_keyboard_event(0, key, Atspi.KeySynthType.STRING)) {
-                throw Error('Unknown/invalid key');
-            }
+            Atspi.generate_keyboard_event(0, key, Atspi.KeySynthType.STRING);
         } catch (e) {
             logError(e);
         }
