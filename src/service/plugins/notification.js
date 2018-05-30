@@ -218,17 +218,25 @@ var Plugin = GObject.registerClass({
      * Sending Notifications
      */
     _uploadIcon(packet, icon) {
-        debug(icon);
+        return new Promise((resolve, reject) => {
+            if (typeof icon === 'string') {
+                this._uploadNamedIcon(packet, icon);
+            } else if (icon instanceof Gio.BytesIcon) {
+                this._uploadBytesIcon(packet, icon.get_bytes());
+            } else if (icon instanceof Gio.FileIcon) {
+                this._uploadFileIcon(packet, icon.get_file());
+            } else if (icon instanceof Gio.ThemedIcon) {
+                if (icon.hasOwnProperty('name')) {
+                    this._uploadNamedIcon(packet, icon.name);
+                } else {
+                    this._uploadNamedIcon(packet, icon.names[0]);
+                }
+            } else {
+                this.device.sendPacket(packet);
+            }
 
-        if (typeof icon === 'string') {
-            this._uploadNamedIcon(packet, icon);
-        } else if (icon instanceof Gio.BytesIcon) {
-            this._uploadBytesIcon(packet, icon.get_bytes());
-        } else if (icon instanceof Gio.FileIcon) {
-            this._uploadFileIcon(packet, icon.get_file());
-        } else if (icon instanceof Gio.ThemedIcon) {
-            this._uploadNamedIcon(packet, icon.name);
-        }
+            resolve();
+        }).catch(logError);
     }
 
     _uploadBytesIcon(packet, gbytes) {
@@ -297,47 +305,57 @@ var Plugin = GObject.registerClass({
     /**
      * This is called by the daemon; See Daemon._sendNotification()
      */
-    sendNotification(notif) {
+    async sendNotification(notif) {
         debug(`(${notif.appName}) ${notif.title}: ${notif.text}`);
 
-        return new Promise((resolve, reject) => {
-            let applications = JSON.parse(this.settings.get_string('applications'));
+        let applications = JSON.parse(this.settings.get_string('applications'));
 
-            // New application
-            if (!applications.hasOwnProperty(notif.appName)) {
-                debug(`new application: ${notif.appName}`);
+        // New application
+        if (!applications.hasOwnProperty(notif.appName)) {
+            debug(`new application: ${notif.appName}`);
 
-                applications[notif.appName] = {
-                    iconName: (typeof notif.icon === 'string') ? notif.icon : 'system-run-symbolic',
-                    enabled: true
-                };
+            applications[notif.appName] = {
+                iconName: (typeof notif.icon === 'string') ? notif.icon : 'system-run-symbolic',
+                enabled: true
+            };
 
-                this.settings.set_string(
-                    'applications',
-                    JSON.stringify(applications)
-                );
-            }
+            this.settings.set_string(
+                'applications',
+                JSON.stringify(applications)
+            );
+        }
 
-            if (applications[notif.appName].enabled) {
-                let icon = null;
+        if (applications[notif.appName].enabled) {
+            let icon = null;
 
-                let packet = {
-                    id: 0,
-                    type: 'kdeconnect.notification',
-                    body: notif
-                };
+            // Named/Themed Icon
+            if (typeof notif.icon === 'string') {
+                icon = notif.icon;
+                delete notif.icon;
 
-                if (icon) {
-                    this._uploadIcon(packet, icon);
-                } else {
-                    this.device.sendPacket(packet);
+            // Probably a GIcon
+            } else if (typeof notif.icon === 'object') {
+                debug(notif.icon);
+
+                if (notif.icon[0] === 'themed') {
+                    icon = Gio.Icon.deserialize(
+                        new GLib.Variant('(sv)', [
+                            notif.icon[0],
+                            new GLib.Variant('as', notif.icon[1])
+                        ])
+                    );
                 }
 
-                resolve(`'${notif.appName}' notification forwarded`);
-            } else {
-                resolve(true);
             }
-        }).catch(debug);
+
+            let packet = {
+                id: 0,
+                type: 'kdeconnect.notification',
+                body: notif
+            };
+            await this._uploadIcon(packet, icon);
+            debug(`'${notif.appName}' notification forwarded`);
+        }
     }
 
     /**

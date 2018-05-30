@@ -484,11 +484,7 @@ var Daemon = GObject.registerClass({
         let variant = gsconnect.full_pack(notif);
 
         for (let device of this._devices.values()) {
-            let action = device.lookup_action('sendNotification');
-
-            if (action && action.enabled) {
-                action.activate(variant);
-            }
+            device.activate_action('sendNotification', variant);
         }
     }
 
@@ -509,25 +505,32 @@ var Daemon = GObject.registerClass({
         });
     }
 
-    AddNotification() {
-        // [ appId, notificationId, { title, body, icon, ... } ]
-        let notif = gsconnect.full_unpack(Array.from(arguments));
-
+    AddNotification(application, id, notification) {
         // Ignore our own notifications (otherwise things could get loopy)
-        if (notif[0] === 'org.gnome.Shell.Extensions.GSConnect') {
+        if (application === 'org.gnome.Shell.Extensions.GSConnect') {
             return;
         }
 
-        let appInfo = Gio.DesktopAppInfo.new(`${notif[0]}.desktop`);
+        let appInfo = Gio.DesktopAppInfo.new(`${application}.desktop`);
+
+        // Try to get an icon for the notification
+        let icon = null;
+
+        if (notification.hasOwnProperty('icon')) {
+            icon = notification.icon;
+        // Fallback to GAppInfo icon
+        } else {
+            icon = appInfo.get_icon().to_string();
+        }
 
         this._sendNotification({
             appName: appInfo.get_display_name(),
-            id: notif[1],
-            title: notif[2].title,
-            text: notif[2].body,
-            ticker: `${notif[2].title}: ${notif[2].body}`,
+            id: id,
+            title: notification.title,
+            text: notification.body,
+            ticker: `${notification.title}: ${notification.body}`,
             isClearable: true,
-            icon: Gio.Icon.deserialize(notif[2].icon)
+            icon: icon
         });
     }
 
