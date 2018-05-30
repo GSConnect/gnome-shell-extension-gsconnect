@@ -828,39 +828,44 @@ var Daemon = GObject.registerClass({
         super.vfunc_open(files, hint);
 
         for (let file of files) {
+            let devices = [];
+            let action, parameter, title;
+
             try {
                 if (file.get_uri_scheme() === 'sms') {
-                    let uri = new Sms.URI(file.get_uri());
-                    let devices = [];
+                    title = _('Send SMS');
+                    action = 'uriSms';
+                    parameter = new GLib.Variant('s', file.get_uri());
+                } else if (file.get_uri_scheme() === 'tel') {
+                    title = _('Dial Number');
+                    action = 'shareUrl';
+                    parameter = new GLib.Variant('s', file.get_uri());
+                } else {
+                    throw new Error('Unsupported file type');
+                }
 
-                    for (let device of this._devices.values()) {
-                        let action = device.lookup_action('openUri');
-
-                        if (action && action.enabled) {
-                            devices.push(device);
-                        }
-                    }
-
-                    if (devices.length === 1) {
-                        let action = device[0].lookup_action('openUri');
-                        action.activate(uri);
-                    } else if (devices.length > 1) {
-                        let win = new Settings.DeviceChooser({
-                            title: _('Send SMS'),
-                            devices: devices
-                        });
-
-                        if (win.run() === Gtk.ResponseType.OK) {
-                            let device = win.list.get_selected_row().device;
-                            let action = device.lookup_action('openUri');
-                            action.activate(uri);
-                        }
-
-                        win.destroy();
+                for (let device of this._devices.values()) {
+                    if (device.get_action_enabled(action)) {
+                        devices.push(device);
                     }
                 }
+
+                if (devices.length === 1) {
+                    devices[0].activate_action(action, parameter);
+                } else if (devices.length > 1) {
+                    let win = new Settings.DeviceChooser({
+                        title: title,
+                        devices: devices
+                    });
+
+                    if (win.run() === Gtk.ResponseType.OK) {
+                        win.get_device().activate_action(action, parameter);
+                    }
+
+                    win.destroy();
+                }
             } catch (e) {
-                log('Error opening file/uri: ' + e.message);
+                logError(e);
             }
         }
     }
