@@ -534,6 +534,24 @@ var Device = GObject.registerClass({
     }
 
     /**
+     * Send a pair packet to the device
+     * @param {bool} pair - Pair or unpair packet
+     */
+    sendPairPacket(pair) {
+
+        debug(`${this.name} (${this.id}): send ${pair?"pair":"unpair"} packet`);
+
+        if (this.connected && (this.paired !== pair)) {
+            let packet = new Core.Packet({
+                id: 0,
+                type: 'kdeconnect.pair',
+                body: { pair: pair }
+            });
+            this._channel.send(packet);
+        }
+    }
+
+    /**
      * Send a packet to the device
      * @param {Object} packet - An object of packet data...
      * @param {Gio.Stream} payload - A payload stream // TODO
@@ -801,7 +819,10 @@ var Device = GObject.registerClass({
 
         if (bool) {
             if (this._channel.type === 'bluetooth') {
-                debug(`Skip storing certificate for bluetooth connection`);
+                this.settings.set_string(
+                    'certificate-pem',
+                    'NA'
+                );
             } else {
                 this.settings.set_string(
                     'certificate-pem',
@@ -827,11 +848,7 @@ var Device = GObject.registerClass({
         }
 
         // Send a pair packet
-        this.sendPacket({
-            id: 0,
-            type: 'kdeconnect.pair',
-            body: { pair: true }
-        });
+        this.sendPairPacket(true);
 
         // We're initiating an outgoing pair request
         if (!this.paired) {
@@ -850,11 +867,7 @@ var Device = GObject.registerClass({
 
         // Send the unpair packet only if we're connected
         if (this._channel !== null) {
-            this.sendPacket({
-                id: 0,
-                type: 'kdeconnect.pair',
-                body: { pair: false }
-            });
+            this.sendPairPacket(false);
         }
 
         this._unloadPlugins().then(values => {
