@@ -70,7 +70,7 @@ var Plugin = GObject.registerClass({
     _init(device) {
         super._init(device, 'share');
 
-        if (this.device._channel.type === 'bluetooth') {
+        if (this.device.connection_type === 'bluetooth') {
             this.destroy();
             throw Error(_('Can\'t run on bluetooth connection'));
         }
@@ -270,8 +270,8 @@ var Plugin = GObject.registerClass({
         let info = file.query_info('standard::size', 0, null);
         let transfer;
 
-        if (this.device._channel.type === 'bluetooth') {
-        } else if (this.device._channel.type === 'tcp') {
+        if (this.device.connection_type === 'bluetooth') {
+        } else if (this.device.connection_type === 'tcp') {
             transfer = new Lan.Transfer({
                 device: this.device,
                 input_stream: file.read(null),
@@ -377,9 +377,9 @@ var Plugin = GObject.registerClass({
         transfer.upload().then(transferChannel => {
             let transferInfo = {};
 
-            if (this.device._channel.type === 'bluetooth') {
+            if (this.device.connection_type === 'bluetooth') {
                 transferInfo.uuid = transferChannel;
-            } else if (this.device._channel.type === 'tcp') {
+            } else if (this.device.connection_type === 'tcp') {
                 transferInfo.port = transferChannel;
             }
 

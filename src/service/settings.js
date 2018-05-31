@@ -687,21 +687,7 @@ var DeviceSettings = GObject.registerClass({
             this.device_paired.set_tooltip_markup(
                 // TRANSLATORS: eg. Pair <b>Google Pixel</b>
                 _('Pair <b>%s</b>').format(this.device.name) + '\n\n' +
-                // TRANSLATORS: Remote and local TLS Certificate fingerprint
-                // PLEASE KEEP NEWLINE CHARACTERS (\n)
-                //
-                // Example:
-                //
-                // <b>Google Pixel Fingerprint:</b>
-                // 00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
-                //
-                // <b>Local Fingerprint:</b>
-                // 00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
-                _('<b>%s Fingerprint:</b>\n%s\n\n<b>Local Fingerprint:</b>\n%s').format(
-                    this.device.name,
-                    this.device.fingerprint,
-                    this.service.fingerprint
-                )
+                this.device.encryption_info
             );
 
             this.device_paired.sensitive = this.connected;

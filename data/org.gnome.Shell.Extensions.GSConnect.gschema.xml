@@ -78,6 +78,9 @@
     <key name="name" type="s">
       <default>""</default>
     </key>
+    <key name="paired" type="b">
+      <default>false</default>
+    </key>
     <key name="type" type="s">
       <default>"unknown"</default>
     </key>

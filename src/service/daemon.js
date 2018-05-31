@@ -163,7 +163,7 @@ var Daemon = GObject.registerClass({
     }
 
     get fingerprint() {
-        return this.certificate.fingerprint()
+        return this.certificate.fingerprint();
     }
 
     get identity() {
@@ -172,7 +172,7 @@ var Daemon = GObject.registerClass({
                 id: 0,
                 type: 'kdeconnect.identity',
                 body: {
-                    deviceId: this.certificate.serial,
+                    deviceId: this.certificate.common_name,
                     deviceName: gsconnect.settings.get_string('public-name'),
                     deviceType: this.type,
                     tcpPort: this.lanService.port,

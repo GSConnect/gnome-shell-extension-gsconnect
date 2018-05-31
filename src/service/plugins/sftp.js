@@ -73,7 +73,7 @@ var Plugin = GObject.registerClass({
         this._mounting = false;
         this._port = 0;
 
-        if (this.device._channel.type === 'bluetooth') {
+        if (this.device.connection_type === 'bluetooth') {
             this.destroy();
             throw Error(_('Can\'t run on bluetooth connection'));
         }

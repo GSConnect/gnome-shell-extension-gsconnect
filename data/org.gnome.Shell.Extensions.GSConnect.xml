@@ -2,7 +2,6 @@
   <!-- Service -->
   <interface name="org.gnome.Shell.Extensions.GSConnect">
     <property type="b" name="Discovering" access="readwrite"/>
-    <property type="s" name="Fingerprint" access="read"/>
 
     <method name="Broadcast"/>
     <method name="GetShareable">
@@ -15,7 +14,7 @@
   <!-- Device -->
   <interface name="org.gnome.Shell.Extensions.GSConnect.Device">
     <property type="b" name="Connected" access="read"/>
-    <property type="s" name="Fingerprint" access="read"/>
+    <property type="s" name="EncryptionInfo" access="read"/>
     <property type="s" name="Id" access="read"/>
     <property type="s" name="Name" access="read"/>
     <property type="b" name="Paired" access="read"/>

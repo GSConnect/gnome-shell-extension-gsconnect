@@ -261,7 +261,9 @@ var Icon = GObject.registerClass({
             cr.arc(xc, yc, r, 1.48 * Math.PI, 1.47 * Math.PI);
             cr.stroke();
         } else if (!this.device.Paired) {
-            this.tooltip.markup = _('Pair <b>%s</b>').format(this.device.Name) + '\n\n' + _('<b>%s Fingerprint:</b>\n%s\n\n<b>Local Fingerprint:</b>\n%s').format(this.device.Name, this.device.Fingerprint, this.device.service.Fingerprint);
+            // TRANSLATORS: eg. Pair <b>Google Pixel</b>
+            this.tooltip.markup = _('Pair <b>%s</b>').format(this.device.Name) +
+                                 '\n\n' + this.device.EncryptionInfo;
             this.tooltip.icon_name = 'channel-insecure-symbolic';
 
             cr.setSourceRGB(0.95, 0.0, 0.0);

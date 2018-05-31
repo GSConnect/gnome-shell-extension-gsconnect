@@ -370,34 +370,28 @@ Gio.TlsCertificate.prototype.fingerprint = function() {
 
 
 /**
- * Extend Gio.TlsCertificate with a property holding the serial number.
+ * Extend Gio.TlsCertificate with a property holding the common name.
  */
-Object.defineProperty(Gio.TlsCertificate.prototype, 'serial', {
+Object.defineProperty(Gio.TlsCertificate.prototype, 'common_name', {
     get: function() {
-        if (!this.__serial) {
+        if (!this.__common_name) {
             let proc = new Gio.Subprocess({
-                argv: ['openssl', 'x509', '-noout', '-serial', '-inform', 'pem'],
+                argv: ['openssl', 'x509', '-noout', '-subject', '-inform', 'pem'],
                 flags: Gio.SubprocessFlags.STDIN_PIPE | Gio.SubprocessFlags.STDOUT_PIPE
             });
             proc.init(null);
 
             let stdout = proc.communicate_utf8(this.certificate_pem, null)[1];
-            this.__serial = stdout.split('=')[1].replace('\n', '');
+            this.__common_name = /[a-zA-Z0-9\-]{36}/.exec(stdout)[0];
 
             proc.force_exit();
             proc.wait(null);
         }
 
-        return this.__serial;
+        return this.__common_name;
     },
     enumerable: true
 });
-
-
-/**
- */
-
-
 
 
 /**

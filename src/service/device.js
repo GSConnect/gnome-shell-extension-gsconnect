@@ -191,10 +191,10 @@ var Device = GObject.registerClass({
             GObject.ParamFlags.READABLE,
             false
         ),
-        'fingerprint': GObject.ParamSpec.string(
-            'fingerprint',
-            'deviceFingerprint',
-            'SHA1 fingerprint for the device certificate',
+        'encryption-info': GObject.ParamSpec.string(
+            'encryption-info',
+            'Encryption Info',
+            'A formatted string with the local and remote fingerprints',
             GObject.ParamFlags.READABLE,
             ''
         ),
@@ -294,6 +294,11 @@ var Device = GObject.registerClass({
             path: `/org/gnome/shell/extensions/gsconnect/device/${deviceId}/`
         });
 
+        // TODO: Backwards compatibility; remove after a few releases
+        if (this.settings.get_string('certificate-pem') !== '') {
+            this.settings.set_boolean('paired', true);
+        }
+
         // Parse identity if initialized with a proper packet
         if (identity.type) {
             this._handleIdentity(identity);
@@ -331,22 +336,47 @@ var Device = GObject.registerClass({
 
     /** Device Properties */
     get connected () { return this._connected && this._channel; }
-    get fingerprint () {
-        // TODO: this isn't really useful, and kind of misleading since it looks
-        // like a fingerprint when it's actually a MAC Address
-        if (this.connected && this._channel.type === 'bluetooth') {
-            return this._channel.identity.body.bluetoothHost;
-        } else if (this.connected && this._channel.type === 'tcp') {
-            return this._channel.certificate.fingerprint();
-        } else if (this.paired) {
-            let cert = Gio.TlsCertificate.new_from_pem(
-                this.settings.get_string('certificate-pem'),
-                -1
-            );
-            return cert.fingerprint();
+
+    get connection_type() {
+        if (this.connected) {
+            return this._channel.type;
         }
 
-        return '';
+        return this.settings.get_string('last-connection');
+    }
+
+    get encryption_info() {
+        let fingerprint = _('Not available');
+
+        if (this.connection_type === 'bluetooth') {
+            // TRANSLATORS: Bluetooth address for remote device
+            return _('Bluetooth device at %s').format(
+                this.settings.get_string('bluetooth-host')
+            );
+        } else if (this.connected) {
+            fingerprint = this._channel.certificate.fingerprint();
+        } else if (this.paired) {
+            fingerprint = Gio.TlsCertificate.new_from_pem(
+                this.settings.get_string('certificate-pem'),
+                -1
+            ).fingerprint();
+        }
+
+        // TRANSLATORS: Remote and local TLS Certificate fingerprint
+        // PLEASE KEEP NEWLINE CHARACTERS (\n)
+        //
+        // Example:
+        //
+        // Google Pixel Fingerprint:
+        // 00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
+        //
+        // Local Fingerprint:
+        // 00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
+        return _('%s Fingerprint:\n%s\n\nLocal Fingerprint:\n%s').format(
+            this.name,
+            fingerprint,
+            this.service.fingerprint
+        );
     }
 
     get id() { return this.settings.get_string('id'); }
@@ -354,13 +384,8 @@ var Device = GObject.registerClass({
 
     // TODO: This will have to be revisited when upstream makes a decision on
     //       how pairing will work with bluetooth connections
-    get paired() {
-        if (this._channel && this._channel.type === 'bluetooth') {
-            return true;
-        }
+    get paired() { return this.settings.get_boolean('paired'); }
 
-        return (this.settings.get_string('certificate-pem'));
-    }
     get plugins() { return Array.from(this._plugins.keys()) || []; }
 
     get incomingCapabilities() {
@@ -436,7 +461,7 @@ var Device = GObject.registerClass({
     activate() {
         debug(`${this.name} (${this.id})`);
 
-        // Already connected
+        // A channel is already connected/connecting
 		if (this._channel !== null) {
 			debug(`${this.name} (${this.id}) already active`);
 			return;
@@ -444,7 +469,7 @@ var Device = GObject.registerClass({
 
 		// FIXME: There's no contingency for falling back to another connection
 		//        type if one fails
-		if (this.settings.get_string('last-connection') === 'bluetooth') {
+		if (this.connection_type === 'bluetooth') {
             let bluezDevice = this.service.bluetoothService.devices.get(
 		        this.settings.get_string('bluetooth-path')
 		    );
@@ -491,9 +516,9 @@ var Device = GObject.registerClass({
             this._channel.connect('disconnected', this._onDisconnected.bind(this));
             this._channel.connect('received', this._onReceived.bind(this));
 
-            // Verify the certificate since it was TOFU'd by the listener
+            // Verify the channel since it was TOFU'd by the listener
             if (!this.verify()) {
-                this._channel.emit('disconnected');
+                this._channel.close();
             } else if (!this.connected) {
                 this._channel.emit('connected');
             }
@@ -502,35 +527,42 @@ var Device = GObject.registerClass({
         }
     }
 
+    /**
+     * Verify the current channel
+     */
     verify() {
         log(`Authenticating ${this.name}`);
 
-        // Consider paired bluetooth connections verified
-        if (this._channel.type === 'bluetooth') {
-            debug(`Allowing paired Bluetooth connection for ${this.name}`);
-            return true;
+        switch (true) {
+            // Consider all Bluetooth connections trusted
+            case (this._channel.type === 'bluetooth'):
+                log(`Authenticated Bluetooth connection for ${this.name}`);
+                return true;
+
+            // If we have a certificate-pem, verify the certificate
+            case (this.settings.get_string('certificate-pem') !== ''):
+                log(`Verifying TLS certificate for ${this.name}`);
+
+                return Gio.TlsCertificate.new_from_pem(
+                    this.settings.get_string('certificate-pem'),
+                    -1
+                ).is_same(this._channel.certificate);
+
+            // If we were paired over bluetooth consider the certificate trusted
+            case (this.paired):
+                log(`Trusting TLS certificate from ${this.name} paired by Bluetooth`);
+
+                this.settings.set_string(
+                    'certificate-pem',
+                    this._channel.certificate.certificate_pem
+                );
+                return true;
+
+            // If it's a new certificate then trust-on-first-use (pair later)
+            default:
+                log(`Trusting TLS certificate on first use for ${this.name}`);
+                return true;
         }
-
-        let cert;
-
-        if (this.settings.get_string('certificate-pem')) {
-            cert = Gio.TlsCertificate.new_from_pem(
-                this.settings.get_string('certificate-pem'),
-                -1
-            );
-        }
-
-        if (cert) {
-            debug(`Authenticating TLS certificate for ${this.name}`);
-
-            if (cert.verify(null, this._channel.certificate) > 0) {
-                log(`Failed to authenticate ${this.name}`);
-                this._channel.close();
-                return false;
-            }
-        }
-
-        return true;
     }
 
     /**
@@ -541,7 +573,7 @@ var Device = GObject.registerClass({
     sendPacket(packet, payload=null) {
         debug(`${this.name} (${this.id}): ${JSON.stringify(packet, null, 2)}`);
 
-        if (this.connected && this.paired) {
+        if (this.connected && (this.paired || packet.type === 'kdeconnect.pair')) {
             packet = new Core.Packet(packet);
             this._channel.send(packet);
         }
@@ -557,15 +589,13 @@ var Device = GObject.registerClass({
         this.notify('connected');
         this.notify('symbolic-icon-name');
 
-        // Ensure fingerprint is available right away
-        this.notify('fingerprint');
-
         this._loadPlugins().then(values => this.notify('plugins'));
     }
 
     _onDisconnected(channel) {
         log(`Disconnected from ${this.name} (${this.id})`);
 
+        GObject.signal_handlers_destroy(this._channel);
         this._channel = null;
 
         this._unloadPlugins().then(values => {
@@ -597,23 +627,23 @@ var Device = GObject.registerClass({
      */
     _registerActions() {
         let acceptPair = new Action({
-            name: 'acceptPair',
-            parameter_type: new GLib.VariantType('b'),
-            summary: _('Accept Pair'),
-            description: _('Accept an incoming pair request'),
+            name: 'pair',
+            parameter_type: null,
+            summary: _('Pair'),
+            description: _('Send or accept a pair request'),
             icon_name: 'channel-insecure-symbolic'
         });
-        acceptPair.connect('activate', this._pairAction.bind(this));
+        acceptPair.connect('activate', this.pair.bind(this));
         this.add_action(acceptPair);
 
         let rejectPair = new Action({
-            name: 'rejectPair',
-            parameter_type: new GLib.VariantType('b'),
-            summary: _('Reject Pair'),
-            description: _('Reject an incoming pair request'),
+            name: 'unpair',
+            parameter_type: null,
+            summary: _('Unpair'),
+            description: _('Unpair or reject a pair request'),
             icon_name: 'channel-insecure-symbolic'
         });
-        rejectPair.connect('activate', this._pairAction.bind(this));
+        rejectPair.connect('activate', this.unpair.bind(this));
         this.add_action(rejectPair);
 
         let viewFolder = new Action({
@@ -701,7 +731,9 @@ var Device = GObject.registerClass({
     }
 
     /**
-     * Pairing Functions
+     * Pair request handler
+     *
+     * @param {Core.Packet} packet - A complete kdeconnect.pair packet
      */
     _handlePair(packet) {
         // A pair has been requested/confirmed
@@ -720,7 +752,7 @@ var Device = GObject.registerClass({
             // The device is requesting pairing
             } else {
                 log(`Pair request from ${this.name}`);
-                this._notifyPair(packet);
+                this._notifyPairRequest();
             }
         // Device is requesting unpairing/rejecting our request
         } else {
@@ -733,43 +765,34 @@ var Device = GObject.registerClass({
         }
     }
 
-    _notifyPair(packet) {
+    /**
+     * Notify the user of an incoming pair request and set a 30s timeout
+     */
+    _notifyPairRequest() {
         this.showNotification({
             id: 'pair-request',
             // TRANSLATORS: eg. Pair Request from Google Pixel
             title: _('Pair Request from %s').format(this.name),
-            // TRANSLATORS: Remote and local TLS Certificate fingerprint
-            // PLEASE KEEP NEWLINE CHARACTERS (\n)
-            //
-            // Example:
-            //
-            // Google Pixel Fingerprint:
-            // 00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
-            //
-            // Local Fingerprint:
-            // 00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
-            body: _('%s Fingerprint:\n%s\n\nLocal Fingerprint:\n%s').format(
-                this.name,
-                this.fingerprint,
-                this.service.fingerprint
-            ),
+            body: this.encryption_info,
             icon: new Gio.ThemedIcon({ name: 'channel-insecure-symbolic' }),
             priority: Gio.NotificationPriority.URGENT,
             buttons: [
                 {
-                    action: 'rejectPair',
+                    action: 'unpair',
                     label: _('Reject'),
-                    parameter: new GLib.Variant('b', false)
+                    parameter: null
                 },
                 {
-                    action: 'acceptPair',
+                    action: 'pair',
                     label: _('Accept'),
-                    parameter: new GLib.Variant('b', true)
+                    parameter: null
                 }
             ]
         });
 
         // Start a 30s countdown
+        this._resetPairRequest();
+
         this._incomingPairRequest = GLib.timeout_add_seconds(
             GLib.PRIORITY_DEFAULT,
             30,
@@ -777,17 +800,10 @@ var Device = GObject.registerClass({
         );
     }
 
-    _pairAction(action, parameter) {
-        // Accept pair request
-        if (parameter.get_boolean()) {
-            this.pair();
-        // Reject pair request
-        } else {
-            this.unpair();
-        }
-    }
-
-    _setPaired(bool) {
+    /**
+     * Reset pair request timeouts and withdraw any notifications
+     */
+    _resetPairRequest() {
         if (this._incomingPairRequest) {
             this.withdraw_notification('pair-request');
             GLib.source_remove(this._incomingPairRequest);
@@ -798,24 +814,36 @@ var Device = GObject.registerClass({
             GLib.source_remove(this._outgoingPairRequest);
             this._outgoingPairRequest = 0;
         }
+    }
 
-        if (bool) {
-            if (this._channel.type === 'bluetooth') {
-                debug(`Skip storing certificate for bluetooth connection`);
-            } else {
+    /**
+     * Set the internal paired state of the device and emit ::notify
+     *
+     * @param {Boolean} bool - The paired state to set
+     */
+    _setPaired(bool) {
+        this._resetPairRequest();
+
+        this.settings.set_boolean('paired', bool);
+
+        if (this.connection_type === 'tcp') {
+            if (bool) {
                 this.settings.set_string(
                     'certificate-pem',
                     this._channel.certificate.certificate_pem
                 );
+            } else {
+                this.settings.reset('certificate-pem');
             }
-        } else {
-            this.settings.reset('certificate-pem');
         }
 
         this.notify('paired');
         this.notify('symbolic-icon-name');
     }
 
+    /**
+     * Send or accept an incoming pair request
+     */
     pair() {
         // We're accepting an incoming pair request...
         if (this._incomingPairRequest) {
@@ -835,6 +863,8 @@ var Device = GObject.registerClass({
 
         // We're initiating an outgoing pair request
         if (!this.paired) {
+            this._resetPairRequest();
+
             this._outgoingPairRequest = GLib.timeout_add_seconds(
                 GLib.PRIORITY_DEFAULT,
                 30,
@@ -845,11 +875,14 @@ var Device = GObject.registerClass({
         }
     }
 
+    /**
+     * Unpair or reject an incoming pair request
+     */
     unpair() {
         debug(`${this.name} (${this.id})`);
 
         // Send the unpair packet only if we're connected
-        if (this._channel !== null) {
+        if (this.connected) {
             this.sendPacket({
                 id: 0,
                 type: 'kdeconnect.pair',

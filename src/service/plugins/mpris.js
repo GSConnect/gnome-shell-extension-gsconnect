@@ -216,7 +216,7 @@ var Plugin = GObject.registerClass({
             return;
         }
 
-        if (this.device._channel.type === 'tcp') {
+        if (this.device.connection_type === 'tcp') {
             this._transferring = true;
 
             let file = Gio.File.new_for_uri(packet.body.albumArtUrl);
@@ -252,7 +252,7 @@ var Plugin = GObject.registerClass({
             type: 'kdeconnect.mpris',
             body: {
                 playerList: this.mpris.identities,
-                supportAlbumArtPayload: (this.device._channel.type === 'tcp')
+                supportAlbumArtPayload: (this.device.connection_type === 'tcp')
             }
         });
     }
