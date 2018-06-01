@@ -8,13 +8,13 @@ msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-05-24 12:42+0800\n"
-"PO-Revision-Date: 2018-05-24 07:05+0800\n"
+"PO-Revision-Date: 2018-06-01 18:14+0800\n"
 "Language-Team: plexpt\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 2.0.2\n"
+"X-Generator: Poedit 2.0.6\n"
 "Last-Translator: plexpt <plexpt@gmail.com>\n"
 "Language: zh\n"
 
@@ -72,11 +72,11 @@ msgstr "卸载"
 
 #: src/extension.js:535
 msgid "Mobile Devices"
-msgstr "手机设备"
+msgstr "移动设备"
 
 #: src/extension.js:550
 msgid "Mobile Settings"
-msgstr "手机设置"
+msgstr "设置"
 
 #: src/nautilus-gsconnect.py:86
 msgid "Send To Mobile Device"
@@ -84,11 +84,11 @@ msgstr "发送到手机"
 
 #: src/prefs.js:51 src/service/daemon.js:211
 msgid "GSConnect"
-msgstr "GSConnect"
+msgstr "GS Connect"
 
 #: src/prefs.js:60
 msgid "KDE Connect implementation with Gnome Shell integration"
-msgstr "KDE连接实现的GNOME 桌面集成"
+msgstr "KDE连接手机集成的GNOME桌面插件"
 
 #: src/prefs.js:67
 msgid "GSConnect Website"
@@ -100,7 +100,7 @@ msgstr "Copyright © 2017 Andy Holmes"
 
 #: src/prefs.js:81
 msgid "This program comes with absolutely no warranty."
-msgstr "这个程序没有绝对保证."
+msgstr "中文翻译者: <a href=\"https://github.com/plexpt\">Plexpt</a>"
 
 #: src/prefs.js:82
 msgid ""
@@ -108,7 +108,7 @@ msgid ""
 "\">GNU General Public License, version 2 or later</a> for details."
 msgstr ""
 "详细说明参见 <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html"
-"\">GNU通用公共许可证，版本2或更高版本</a> for details."
+"\">GNU通用公共许可证，版本2或更高版本</a>"
 
 #: src/prefs.js:106
 msgid "Devices"
@@ -526,11 +526,11 @@ msgstr "来电"
 
 #: src/service/plugins/telephony.js:1052 src/service/plugins/telephony.js:1076
 msgid "Nothing"
-msgstr "没有任何东西"
+msgstr "不作操作"
 
 #: src/service/plugins/telephony.js:1053 src/service/plugins/telephony.js:1077
 msgid "Lower"
-msgstr "Lower"
+msgstr "逐渐降低"
 
 #: src/service/plugins/telephony.js:1061 src/service/plugins/telephony.js:1085
 #: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:143
@@ -555,7 +555,7 @@ msgstr "GVC不可用"
 msgid ""
 "Ensure that devices are on the same local network with ports 1716 to 1764 "
 "open for TCP and UDP connections."
-msgstr "确保设备在同一本地网络上，端口1716到1764开放."
+msgstr "确保设备在同一本地网络上，端口1716 - 1764开放."
 
 #: src/widgets/device.js:30
 #, javascript-format
@@ -563,8 +563,8 @@ msgid ""
 "To connect an Android device, install the KDE Connect Android app from the "
 "<a href=\"%s\">Google Play Store</a> or <a href=\"%s\">F-Droid</a>."
 msgstr ""
-"要连接Android设备，请安装 KDE Connect 这个 Android应用 <a href=\"%s\">Google "
-"Play Store</a> or <a href=\"%s\">F-Droid</a>."
+"要连接Android设备，请先安装 KDE Connect 这个Android应用 <a href=\"%s"
+"\">Google Play Store</a> 或者 <a href=\"%s\">F-Droid</a>."
 
 #: src/widgets/device.js:35
 #, javascript-format
@@ -603,7 +603,7 @@ msgstr "重连 <b>%s</b>"
 #: src/widgets/device.js:477
 #, javascript-format
 msgid "Unpair <b>%s</b>"
-msgstr "未配对<b>%s</b>"
+msgstr "取消配对<b>%s</b>"
 
 #. TRANSLATORS: eg. Pair <b>Google Pixel</b>
 #: src/widgets/device.js:486 src/widgets/shell.js:609
@@ -816,7 +816,7 @@ msgstr "显示离线"
 
 #: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:17
 msgid "Display devices even if offline"
-msgstr "显示设备，即使以离线"
+msgstr "显示已离线设备"
 
 #: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:21
 msgid "Show Unpaired"
@@ -824,7 +824,7 @@ msgstr "显示未配对"
 
 #: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:22
 msgid "Display devices even if unpaired"
-msgstr "显示设备即使未配对"
+msgstr "显示未配对设备"
 
 #: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:26
 msgid "Show Battery Icon"
@@ -840,7 +840,7 @@ msgstr "整合到Nautilus"
 
 #: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:35
 msgid "Send files from the file browser context menu"
-msgstr "从文件浏览器菜单发送文件"
+msgstr "文件浏览器右键菜单发送文件"
 
 #: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:40
 msgid "Share links with devices and contacts from the web browser"
@@ -848,7 +848,7 @@ msgstr "从Web浏览器中共享链接给设备和联系人"
 
 #: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:44
 msgid "Public Name"
-msgstr "公共名称"
+msgstr "本机名称"
 
 #: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:45
 msgid "The name visible to other devices"
