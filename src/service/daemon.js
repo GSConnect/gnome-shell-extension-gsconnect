@@ -187,13 +187,13 @@ var Daemon = GObject.registerClass({
 
                 if (!meta) continue;
 
-                for (let packetType of meta.incomingCapabilities) {
-                    this._identity.body.incomingCapabilities.push(packetType);
-                }
+                meta.incomingCapabilities.map(type => {
+                    this._identity.body.incomingCapabilities.push(type);
+                });
 
-                for (let packetType of meta.outgoingCapabilities) {
-                    this._identity.body.outgoingCapabilities.push(packetType);
-                }
+                meta.outgoingCapabilities.map(type => {
+                    this._identity.body.outgoingCapabilities.push(type);
+                });
             }
         }
 
