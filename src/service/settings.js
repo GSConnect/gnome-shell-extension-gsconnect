@@ -788,31 +788,42 @@ var DeviceSettings = GObject.registerClass({
             let settings = this._getSettings(name);
             let blacklist = this.device.settings.get_strv('action-blacklist');
 
-            if (name === 'clipboard') {
-                let send = settings.get_boolean('send-content');
-                let receive = settings.get_boolean('receive-content');
+            switch (name) {
+                case 'battery':
+                    let statistics = settings.get_boolean('send-statistics');
+                    label.label = (statistics) ? _('On') : _('Off');
+                    break;
 
-                if (send && receive) {
-                    label.label = _('Both');
-                } else if (send) {
-                    label.label = _('To Device');
-                } else if (receive) {
-                    label.label = _('From Device');
-                } else {
-                    label.label = _('Off');
-                }
-            } else if (name ==='findmyphone') {
-                if (blacklist.indexOf('locationAnnounce') < 0) {
-                    label.label = _('On');
-                } else {
-                    label.label = _('Off');
-                }
-            } else if (name === 'share') {
-                if (blacklist.indexOf('shareDialog') < 0) {
-                    label.label = _('On');
-                } else {
-                    label.label = _('Off');
-                }
+                case 'clipboard':
+                    let send = settings.get_boolean('send-content');
+                    let receive = settings.get_boolean('receive-content');
+
+                    if (send && receive) {
+                        label.label = _('Both');
+                    } else if (send) {
+                        label.label = _('To Device');
+                    } else if (receive) {
+                        label.label = _('From Device');
+                    } else {
+                        label.label = _('Off');
+                    }
+                    break;
+
+                case 'findmyphone':
+                    if (blacklist.indexOf('locationAnnounce') < 0) {
+                        label.label = _('On');
+                    } else {
+                        label.label = _('Off');
+                    }
+                    break;
+
+                case 'share':
+                    if (blacklist.indexOf('shareDialog') < 0) {
+                        label.label = _('On');
+                    } else {
+                        label.label = _('Off');
+                    }
+                    break;
             }
         });
     }
@@ -825,6 +836,12 @@ var DeviceSettings = GObject.registerClass({
         let index;
 
         switch (name) {
+            case 'battery':
+                let statistics = !settings.get_boolean('send-statistics');
+                label.label = (statistics) ? _('On') : _('Off');
+                settings.set_boolean('send-statistics', statistics);
+                break;
+
             case 'clipboard':
                 let send = settings.get_boolean('send-content');
                 let receive = settings.get_boolean('receive-content');
