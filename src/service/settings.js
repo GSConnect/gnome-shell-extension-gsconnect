@@ -96,6 +96,13 @@ var DeviceChooser = GObject.registerClass({
         scrolledWindow.show_all();
     }
 
+    /**
+     * Return the selected device
+     */
+    get_device() {
+        return this.list.get_selected_row().device;
+    }
+
     _populate(devices) {
         for (let device of devices) {
             let row = new Gtk.ListBoxRow();
