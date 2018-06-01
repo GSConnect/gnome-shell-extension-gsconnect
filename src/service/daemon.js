@@ -609,15 +609,13 @@ var Daemon = GObject.registerClass({
      * Add a list of [name, callback, parameter_type], with callback bound to
      * @scope or 'this'.
      */
-    _addActions(actions, context) {
-        context = context || this;
-
-        actions.map((entry) => {
+    _addActions(actions) {
+        actions.map(entry => {
             let action = new Gio.SimpleAction({
                 name: entry[0],
                 parameter_type: (entry[2]) ? new GLib.VariantType(entry[2]) : null
             });
-            action.connect('activate', entry[1].bind(context));
+            action.connect('activate', entry[1]);
             this.add_action(action);
         });
     }
@@ -625,23 +623,23 @@ var Daemon = GObject.registerClass({
     _initActions() {
         this._addActions([
             // Device
-            ['deviceAction', this._deviceAction, '(osv)'],
+            ['deviceAction', this._deviceAction.bind(this), '(osbv)'],
             // Daemon
-            ['openSettings', this.openSettings],
-            ['cancelTransfer', this._cancelTransferAction, '(ss)'],
-            ['openTransfer', this._openTransferAction, 's'],
-            ['about', this._aboutAction]
+            ['openSettings', this.openSettings.bind(this)],
+            ['cancelTransfer', this._cancelTransferAction.bind(this), '(ss)'],
+            ['openTransfer', this._openTransferAction.bind(this), 's'],
+            ['about', this._aboutAction.bind(this)]
         ]);
 
         // Mixer actions
         if (Sound._mixerControl) {
             this._mixer = new Sound.Mixer();
             this._addActions([
-                ['lowerVolume', this._mixer.lowerVolume],
-                ['muteVolume', this._mixer.muteVolume],
-                ['muteMicrophone', this._mixer.muteMicrophone],
-                ['restoreMixer', this._mixer.restoreMixer]
-            ], this._mixer);
+                ['lowerVolume', this._mixer.lowerVolume.bind(this._mixer)],
+                ['muteVolume', this._mixer.muteVolume.bind(this._mixer)],
+                ['muteMicrophone', this._mixer.muteMicrophone.bind(this._mixer)],
+                ['restoreMixer', this._mixer.restoreMixer.bind(this._mixer)]
+            ]);
         } else {
             this._mixer = null;
         }
