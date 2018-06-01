@@ -142,6 +142,8 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
     }
 
     _startService() {
+        // Prevent a hard hang if trying to start the service after it's been
+        // uninstalled.
         let path = gsconnect.datadir + '/service/daemon.js';
 
         if (this.service || !GLib.file_test(path, GLib.FileTest.EXISTS)) {
@@ -154,7 +156,6 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
             g_object_path: gsconnect.app_path
         }).init_promise().then(service => {
             this.service = service;
-            this.devices.map(device => { device.service = service; });
             this.extensionIndicator.visible = true;
         }).catch(debug);
     }
@@ -215,8 +216,6 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
                 ),
                 path: '/org/gnome/shell/extensions/gsconnect/device/' + iface.Id + '/'
             });
-
-            iface.service = this.service;
 
             // Keyboard Shortcuts
             iface._keybindingsId = iface.settings.connect(
