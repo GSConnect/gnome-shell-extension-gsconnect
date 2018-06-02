@@ -298,14 +298,16 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
             return;
         }
 
-        for (let name in keybindings) {
-            let action = this.keybindingManager.add(
-                keybindings[name],
-                () => iface.gactions.activate_action(name, null)
+        for (let action in keybindings) {
+            let [ok, name, parameter] = Gio.Action.parse_detailed_name(action);
+
+            let actionId = this.keybindingManager.add(
+                keybindings[action],
+                () => iface.gactions.activate_action(name, parameter)
             );
 
-            if (action !== 0) {
-                iface._keybindings.push(action);
+            if (actionId !== 0) {
+                iface._keybindings.push(actionId);
             }
         }
     }
