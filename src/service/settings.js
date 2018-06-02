@@ -919,29 +919,31 @@ var DeviceSettings = GObject.registerClass({
                 GObject.BindingFlags.SYNC_CREATE
             );
 
-            this.command_list.set_sort_func((row1, row2) => {
-                // The [+] button
-                if (row1.get_child() instanceof Gtk.Image) {
-                    return 1;
-                } else if (row2.get_child() instanceof Gtk.Image) {
-                    return -1;
-                // Compare uuid???
-                } else if (row1.uuid && row1.uuid === row2.get_name()) {
-                    return 1;
-                } else if (row2.uuid && row2.uuid === row1.get_name()) {
-                    return -1;
-                // Shouldn't happen?!
-                } else if (!row1.title || !row2.title) {
-                    return 0;
-                }
-
-                return row1.title.localeCompare(row2.title);
-            });
+            this.command_list.set_sort_func(this._commandSortFunc.bind(this));
             this.command_list.set_header_func(section_separators);
             this._populateCommands();
         } else {
             this.commands.visible = false;
         }
+    }
+
+    _commandSortFunc(row1, row2) {
+        // The [+] button
+        if (row1 === this.command_new) {
+            return 1;
+        } else if (row2 === this.command_new) {
+            return -1;
+        // Placing the command editor next the row it's editing
+        } else if (row1.uuid && row1.uuid === row2.get_name()) {
+            return 1;
+        } else if (row2.uuid && row2.uuid === row1.get_name()) {
+            return -1;
+        // Command editor when in disuse
+        } else if (!row1.title || !row2.title) {
+            return 0;
+        }
+
+        return row1.title.localeCompare(row2.title);
     }
 
     _onCommandNameChanged(entry) {
@@ -984,13 +986,11 @@ var DeviceSettings = GObject.registerClass({
         return row;
     }
 
-    // The '+' row at the bottom of the command list
+    // The '+' row at the bottom of the command list, the only activatable row
     _onAddCommand(box, row) {
-        if (row === this.command_new) {
-            let uuid = GLib.uuid_string_random();
-            this._commands[uuid] = { name: '', command: '' };
-            this._onEditCommand(this._insertCommand(uuid).widget, uuid);
-        }
+        let uuid = GLib.uuid_string_random();
+        this._commands[uuid] = { name: '', command: '' };
+        this._onEditCommand(this._insertCommand(uuid).widget);
     }
 
     // The 'edit' icon in the GtkListBoxRow of a command
@@ -998,19 +998,18 @@ var DeviceSettings = GObject.registerClass({
         let row = button.get_parent().get_parent();
         let uuid = row.get_name();
 
+        this.command_editor.title = this.command_name.text;
         this.command_editor.uuid = uuid;
         this.command_name.text = this._commands[uuid].name.slice(0);
         this.command_line.text = this._commands[uuid].command.slice(0);
 
-        this.command_editor.title = { label: this.command_name.text };
         row.visible = false;
-
         this.command_new.visible = false;
         this.command_editor.visible = true;
         this.command_list.invalidate_sort();
     }
 
-    // The 'folder' GtkEntry icon in the command editor
+    // The 'folder' icon in the command editor GtkEntry
     _onBrowseCommand(entry, icon_pos, event) {
         let filter = new Gtk.FileFilter();
         filter.add_mime_type('application/x-executable');
