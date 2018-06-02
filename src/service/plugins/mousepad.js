@@ -155,7 +155,7 @@ var Plugin = GObject.registerClass({
             let [screen, x, y] = this._pointer.get_position();
             Atspi.generate_mouse_event(x, y, `b${button}c`);
         } catch (e) {
-            logError(e);
+            logError(e, this.device.name);
         }
     }
 
@@ -164,7 +164,7 @@ var Plugin = GObject.registerClass({
             let [screen, x, y] = this._pointer.get_position();
             Atspi.generate_mouse_event(x, y, `b${button}d`);
         } catch (e) {
-            logError(e);
+            logError(e, this.device.name);
         }
     }
 
@@ -172,7 +172,7 @@ var Plugin = GObject.registerClass({
         try {
             Atspi.generate_mouse_event(dx, dy, 'rel');
         } catch (e) {
-            logError(e);
+            logError(e, this.device.name);
         }
     }
 
@@ -181,7 +181,7 @@ var Plugin = GObject.registerClass({
             let [screen, x, y] = this._pointer.get_position();
             Atspi.generate_mouse_event(x, y, `b${button}p`);
         } catch (e) {
-            logError(e);
+            logError(e, this.device.name);
         }
     }
 
@@ -190,7 +190,7 @@ var Plugin = GObject.registerClass({
             let [screen, x, y] = this._pointer.get_position();
             Atspi.generate_mouse_event(x, y, `b${button}r`);
         } catch (e) {
-            logError(e);
+            logError(e, this.device.name);
         }
     }
 
@@ -198,7 +198,7 @@ var Plugin = GObject.registerClass({
         try {
             Atspi.generate_keyboard_event(0, key, Atspi.KeySynthType.STRING);
         } catch (e) {
-            logError(e);
+            logError(e, this.device.name);
         }
     }
 
@@ -214,7 +214,7 @@ var Plugin = GObject.registerClass({
                 Atspi.KeySynthType.PRESSRELEASE | Atspi.KeySynthType.SYM
             );
         } catch (e) {
-            logError(e);
+            logError(e, this.device.name);
         }
     }
 
@@ -229,7 +229,7 @@ var Plugin = GObject.registerClass({
                 this._vkbd.mod_unlock(mask);
             }
         } catch (e) {
-            logError(e);
+            logError(e, this.device.name);
         }
     }
 });

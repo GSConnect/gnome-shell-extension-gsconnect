@@ -362,7 +362,7 @@ var Plugin = GObject.registerClass({
             this._mounting = false;
         } catch (e) {
             this.unmount();
-            logError(e);
+            logError(e, this.device.name);
         }
     }
 
