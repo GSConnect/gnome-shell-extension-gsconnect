@@ -644,7 +644,7 @@ var DeviceSettings = GObject.registerClass({
             return this._gsettings[name];
         }
 
-        if (this.device.supportedPlugins().indexOf(name) > -1) {
+        if (this.device.get_plugin_supported(name)) {
             let meta = imports.service.plugins[name].Metadata;
 
             this._gsettings[name] = new Gio.Settings({
@@ -721,7 +721,7 @@ var DeviceSettings = GObject.registerClass({
      * Battery Level
      */
     _batteryBar() {
-        let battery = this.device._plugins.get('battery');
+        let battery = this.device.lookup_plugin('battery');
 
         if (battery) {
             this.battery_level.get_style_context().add_class('battery-bar');
@@ -903,9 +903,7 @@ var DeviceSettings = GObject.registerClass({
      * TODO: maybe action<->commands?
      */
     _runcommandSettings() {
-        let runcommand = (this.device.supportedPlugins().indexOf('runcommand') > -1);
-
-        if (runcommand) {
+        if (this.device.get_plugin_supported('runcommand')) {
             let settings = this._getSettings('runcommand');
             actionSwitch(this.device.settings, this.runcommand_allow, 'executionRequest');
 
@@ -1198,7 +1196,7 @@ var DeviceSettings = GObject.registerClass({
      * Telephony Settings
      */
     _telephonySettings() {
-        if (this.device.supportedPlugins().indexOf('telephony') > -1) {
+        if (this.device.get_plugin_supported('telephony')) {
             let settings = this._getSettings('telephony');
 
             // SMS

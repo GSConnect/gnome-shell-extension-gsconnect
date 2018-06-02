@@ -90,6 +90,9 @@
     <key name="outgoing-capabilities" type="as">
       <default>[]</default>
     </key>
+    <key name="supported-plugins" type="as">
+      <default>[]</default>
+    </key>
     <key name="tcp-host" type="s">
       <default>""</default>
     </key>

@@ -394,6 +394,9 @@ var Device = GObject.registerClass({
     get outgoingCapabilities() {
         return this.settings.get_strv('outgoing-capabilities');
     }
+    get supported_plugins() {
+        return this.settings.get_strv('supported-plugins');
+    }
 
     get icon_name() {
         let icon = (this.type === 'desktop') ? 'computer' : this.type;
@@ -453,6 +456,25 @@ var Device = GObject.registerClass({
             'outgoing-capabilities',
             packet.body.outgoingCapabilities.sort()
         );
+
+        let supported = [];
+
+        for (let name in imports.service.plugins) {
+            let meta = imports.service.plugins[name].Metadata;
+
+            // Skip base.js
+            if (!meta) { continue; }
+
+            // If it sends packets we can handle
+            if (meta.incomingCapabilities.some(v => this.outgoingCapabilities.includes(v))) {
+                supported.push(name);
+            // Or handles packets we can send
+            } else if (meta.outgoingCapabilities.some(v => this.incomingCapabilities.includes(v))) {
+                supported.push(name);
+            }
+        }
+
+        this.settings.set_strv('supported-plugins', supported.sort());
     }
 
     /**
@@ -589,7 +611,7 @@ var Device = GObject.registerClass({
         this.notify('connected');
         this.notify('symbolic-icon-name');
 
-        this._loadPlugins().then(values => this.notify('plugins'));
+        this._loadPlugins();
     }
 
     _onDisconnected(channel) {
@@ -599,7 +621,6 @@ var Device = GObject.registerClass({
         this._channel = null;
 
         this._unloadPlugins().then(values => {
-            this.notify('plugins');
             this._connected = false;
             this.notify('connected');
             this.notify('symbolic-icon-name');
@@ -743,12 +764,12 @@ var Device = GObject.registerClass({
                 log(`Pair accepted by ${this.name}`);
 
                 this._setPaired(true);
-                this._loadPlugins().then(values => this.notify('plugins'));
+                this._loadPlugins();
             // The device thinks we're unpaired
             } else if (this.paired) {
                 this._setPaired(true);
                 this.pair();
-                this._loadPlugins().then(values => this.notify('plugins'));
+                this._loadPlugins();
             // The device is requesting pairing
             } else {
                 log(`Pair request from ${this.name}`);
@@ -758,10 +779,8 @@ var Device = GObject.registerClass({
         } else {
             log(`Pair rejected by ${this.name}`);
 
-            this._unloadPlugins().then(values => {
-                this.notify('plugins');
-                this._setPaired(false);
-            });
+            this._setPaired(false);
+            this._unloadPlugins();
         }
     }
 
@@ -850,7 +869,7 @@ var Device = GObject.registerClass({
             this._setPaired(true);
             // ...so loop back around to send confirmation
             this.pair();
-            this._loadPlugins().then(values => this.notify('plugins'));
+            this._loadPlugins();
             return;
         }
 
@@ -890,34 +909,23 @@ var Device = GObject.registerClass({
             });
         }
 
-        this._unloadPlugins().then(values => {
-            this.notify('plugins');
-            this._setPaired(false);
-        });
+        this._setPaired(false);
+        this._unloadPlugins();
     }
 
     /**
      * Plugin Functions
      */
-    supportedPlugins() {
-        let supported = [];
+    get_plugin_enabled(name) {
+        return this._plugins.has(name);
+    }
 
-        for (let name in imports.service.plugins) {
-            let meta = imports.service.plugins[name].Metadata;
+    get_plugin_supported(name) {
+        return this.supported_plugins.includes(name);
+    }
 
-            // Skip base.js
-            if (!meta) { continue; }
-
-            // If it sends packets we can handle
-            if (meta.incomingCapabilities.some(v => this.outgoingCapabilities.indexOf(v) > -1)) {
-                supported.push(name);
-            // Or handles packets we can send
-            } else if (meta.outgoingCapabilities.some(v => this.incomingCapabilities.indexOf(v) > -1)) {
-                supported.push(name);
-            }
-        }
-
-        return supported.sort();
+    lookup_plugin(name) {
+        return this._plugins.get(name) || null;
     }
 
     // TODO: Plugins already throw errors in _init() for known
@@ -929,8 +937,7 @@ var Device = GObject.registerClass({
 
         return new Promise((resolve, reject) => {
             if (!this.connected || !this.paired) {
-                reject();
-                return;
+                resolve([name, new Error(_('Device not connected or paired'))]);
             }
 
             // Instantiate the handler
@@ -949,19 +956,18 @@ var Device = GObject.registerClass({
                     // Register plugin
                     this._plugins.set(name, plugin);
                 } catch (e) {
-                    logError(e);
-                    reject([name, e]);
-                    return;
+                    resolve([name, e]);
                 }
             }
 
-            resolve([name, true]);
+            resolve([name, null]);
         });
     }
 
-    _loadPlugins() {
-        let promises = this.supportedPlugins().map(name => this._loadPlugin(name));
-        return Promise.all(promises.map(p => p.catch(() => undefined)));
+    async _loadPlugins() {
+        let promises = this.supported_plugins.map(this._loadPlugin.bind(this));
+        let results = await Promise.all(promises);
+        this.notify('plugins');
     }
 
     _unloadPlugin(name) {
@@ -981,16 +987,15 @@ var Device = GObject.registerClass({
                 this._plugins.delete(name);
             } catch (e) {
                 logError(e);
-                reject(e);
             }
 
             resolve([name, true]);
         });
     }
 
-    _unloadPlugins() {
-        let promises = this.plugins.map(name => this._unloadPlugin(name));
-        return Promise.all(promises.map(p => p.catch(() => undefined)));
+    async _unloadPlugins() {
+        await Promise.all(this.plugins.map(this._unloadPlugin.bind(this)));
+        this.notify('plugins');
     }
 
     openSettings() {
