@@ -1259,17 +1259,18 @@ var DeviceSettings = GObject.registerClass({
             this.device.settings.get_value('keybindings')
         );
 
-        // Backwards compatibility
+        // TODO: Backwards compatibility; remove later
         if (typeof keybindings === 'string') {
-            iface.settings.set_value(
+            this.device.settings.set_value(
                 'keybindings',
                 new GLib.Variant('a{sv}', {})
             );
+            // A ::changed signal should be emitted so we'll return
             return;
         }
 
         for (let name of this.device.list_actions().sort()) {
-            let action = this.device.lookup_action(name)
+            let action = this.device.lookup_action(name);
 
             if (action.parameter_type === null) {
                 let widget = new Gtk.Label({
