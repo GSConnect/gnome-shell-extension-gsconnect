@@ -14,22 +14,13 @@ var Metadata = {
     outgoingCapabilities: ['kdeconnect.runcommand', 'kdeconnect.runcommand.request'],
     actions: {
         executeCommand: {
-            summary: _('Run Command (Remote)'),
+            summary: _('Run Command'),
             description: _('Execute a remote command'),
             icon_name: 'system-run-symbolic',
 
             parameter_type: new GLib.VariantType('s'),
             incoming: ['kdeconnect.runcommand'],
             outgoing: ['kdeconnect.runcommand.request']
-        },
-        executionRequest: {
-            summary: _('Run Command (Local)'),
-            description: _('Execute a local command'),
-            icon_name: 'system-run-symbolic',
-
-            parameter_type: new GLib.VariantType('s'),
-            incoming: ['kdeconnect.runcommand.request'],
-            outgoing: ['kdeconnect.runcommand']
         }
     }
 };
@@ -55,6 +46,16 @@ var Metadata = {
  */
 var Plugin = GObject.registerClass({
     GTypeName: 'GSConnectRunCommandPlugin',
+    Properties: {
+        'remote-commands': GObject.param_spec_variant(
+            'remote-commands',
+            'Remote Command List',
+            'A list of the device\'s remote commands',
+            new GLib.VariantType('a{sv}'),
+            null,
+            GObject.ParamFlags.READABLE
+        )
+    }
 }, class Plugin extends PluginsBase.Plugin {
 
     _init(device) {
@@ -65,60 +66,58 @@ var Plugin = GObject.registerClass({
             'changed::command-list',
             this.sendCommandList.bind(this)
         );
+        this.settings.connect(
+            'changed::share-commands',
+            this.sendCommandList.bind(this)
+        );
         this.sendCommandList();
 
         // Remote Commands
         this.requestCommandList();
     }
 
-    handlePacket(packet) {
-        debug(packet);
+    get remote_commands() {
+        if (this._remote_commands === undefined) {
+            return {};
+        }
 
-        // A request for command list or execution
+        return this._remote_commands;
+    }
+
+    handlePacket(packet) {
+        // A request...
         if (packet.type === 'kdeconnect.runcommand.request') {
-            if (packet.body.requestCommandList) {
+            // ...for the local command list
+            if (packet.body.hasOwnProperty('requestCommandList')) {
                 this.sendCommandList();
-            } else if (packet.body.key) {
-                this.device.activate_action(
-                    'executionRequest',
-                    gsconnect.full_pack(packet.body.key)
-                );
+            // ...to execute a command
+            } else if (packet.body.hasOwnProperty('key')) {
+                this._handleCommand(packet.body.key);
             }
-        // An answer to a request for the remote command list
+        // A response to a request for the remote command list
         } else if (packet.type === 'kdeconnect.runcommand') {
             this._handleCommandList(packet.body.commandList);
         }
     }
 
     /**
-     * Send the local command list
-     */
-    sendCommandList() {
-        let commands = {};
-
-        if (this.device.get_action_enabled('executionRequest')) {
-            commands = gsconnect.full_unpack(
-                this.settings.get_value('command-list')
-            );
-        }
-
-        this.device.sendPacket({
-            id: 0,
-            type: 'kdeconnect.runcommand',
-            body: { commandList: commands }
-        });
-    }
-
-    /**
      * Handle a request to execute the local command with the UUID @key
      * @param {String} key - The UUID of the local command
      */
-    executionRequest(key) {
-        let commandList = gsconnect.full_unpack(
-            this.settings.get_value('command-list')
-        );
+    _handleCommand(key) {
+        try {
+            if (!this.settings.get_boolean('share-commands')) {
+                throw new Error(`Permission denied: ${key}`);
+            }
 
-        if (commandList.hasOwnProperty(key)) {
+            let commandList = gsconnect.full_unpack(
+                this.settings.get_value('command-list')
+            );
+
+            if (!commandList.hasOwnProperty(key)) {
+                throw new Error(`Unknown command: ${key}`);
+            }
+
             GLib.spawn_async(
                 null,
                 ['/bin/sh', '-c', commandList[key].command],
@@ -126,20 +125,9 @@ var Plugin = GObject.registerClass({
                 GLib.SpawnFlags.DEFAULT,
                 null
             );
-        } else {
-            logError(new Error(`Unknown command ${key}`));
+        } catch (e) {
+            logError(e, this.device.name);
         }
-    }
-
-    /**
-     * Send a request for the remote command list
-     */
-    requestCommandList() {
-        this.device.sendPacket({
-            id: 0,
-            type: 'kdeconnect.runcommand.request',
-            body: { requestCommandList: true }
-        });
     }
 
     /**
@@ -147,6 +135,9 @@ var Plugin = GObject.registerClass({
      * command menu if there are no commands, otherwise amend the menu.
      */
     _handleCommandList(commandList) {
+        this._remote_commands = commandList;
+        this.notify('remote-commands');
+
         let commandEntries = Object.entries(commandList);
 
         // Remove the menu if there are no commands
@@ -194,6 +185,36 @@ var Plugin = GObject.registerClass({
             id: 0,
             type: 'kdeconnect.runcommand.request',
             body: { key: key }
+        });
+    }
+
+    /**
+     * Send a request for the remote command list
+     */
+    requestCommandList() {
+        this.device.sendPacket({
+            id: 0,
+            type: 'kdeconnect.runcommand.request',
+            body: { requestCommandList: true }
+        });
+    }
+
+    /**
+     * Send the local command list
+     */
+    sendCommandList() {
+        let commands = {};
+
+        if (this.settings.get_boolean('share-commands')) {
+            commands = gsconnect.full_unpack(
+                this.settings.get_value('command-list')
+            );
+        }
+
+        this.device.sendPacket({
+            id: 0,
+            type: 'kdeconnect.runcommand',
+            body: { commandList: commands }
         });
     }
 

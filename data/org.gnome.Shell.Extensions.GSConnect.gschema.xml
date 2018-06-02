@@ -142,6 +142,9 @@
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Ping">
   </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.RunCommand">
+    <key name="share-commands" type="b">
+      <default>false</default>
+    </key>
     <key name="command-list" type="a{sv}">
       <default>{}</default>
     </key>

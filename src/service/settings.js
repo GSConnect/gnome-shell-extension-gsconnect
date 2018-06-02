@@ -900,23 +900,27 @@ var DeviceSettings = GObject.registerClass({
 
     /**
      * RunCommand Page
-     * TODO: maybe action<->commands?
      */
     _runcommandSettings() {
         if (this.device.get_plugin_supported('runcommand')) {
             let settings = this._getSettings('runcommand');
-            actionSwitch(this.device.settings, this.runcommand_allow, 'executionRequest');
+            settings.bind(
+                'share-commands',
+                this.runcommand_allow,
+                'active',
+                Gio.SettingsBindFlags.DEFAULT
+            );
+
+            settings.bind(
+                'share-commands',
+                this.command_list,
+                'sensitive',
+                Gio.SettingsBindFlags.DEFAULT
+            );
 
             // Local Command List
             this._commands = gsconnect.full_unpack(
                 settings.get_value('command-list')
-            );
-
-            this.runcommand_allow.bind_property(
-                'active',
-                this.command_list,
-                'sensitive',
-                GObject.BindingFlags.SYNC_CREATE
             );
 
             this.command_list.set_sort_func(this._commandSortFunc.bind(this));
