@@ -24,15 +24,6 @@ var Metadata = {
             incoming: [],
             outgoing: ['kdeconnect.notification.request']
         },
-        receiveNotification: {
-            summary: _('Receive Notification'),
-            description: _('Display a remote notification locally'),
-            icon_name: 'preferences-system-notifications-symbolic',
-
-            parameter_type: new GLib.VariantType('a{sv}'),
-            incoming: ['kdeconnect.notification'],
-            outgoing: []
-        },
         sendNotification: {
             summary: _('Send Notification'),
             description: _('Display a local notification remotely'),
