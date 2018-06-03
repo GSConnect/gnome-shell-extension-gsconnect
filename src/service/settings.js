@@ -786,7 +786,6 @@ var DeviceSettings = GObject.registerClass({
             let label = row.get_child().get_child_at(1, 0);
             let name = label.get_name().split('-')[0];
             let settings = this._getSettings(name);
-            let blacklist = this.device.settings.get_strv('action-blacklist');
 
             switch (name) {
                 case 'battery':
@@ -810,19 +809,21 @@ var DeviceSettings = GObject.registerClass({
                     break;
 
                 case 'findmyphone':
-                    if (blacklist.indexOf('locationAnnounce') < 0) {
-                        label.label = _('On');
-                    } else {
-                        label.label = _('Off');
-                    }
+                    let location = settings.get_boolean('share-location');
+                    label.label = (location) ? _('On') : _('Off');
+                    break;
+
+                case 'mpris':
+                    let control = settings.get_boolean('share-players');
+                    label.label = (control) ? _('On') : _('Off');
+                    break;
+
+                case 'mousepad':
                     break;
 
                 case 'share':
-                    if (blacklist.indexOf('shareDialog') < 0) {
-                        label.label = _('On');
-                    } else {
-                        label.label = _('Off');
-                    }
+                    let accept = settings.get_boolean('accept-content');
+                    label.label = (accept) ? _('On') : _('Off');
                     break;
             }
         });
@@ -832,7 +833,6 @@ var DeviceSettings = GObject.registerClass({
         let label = row.get_child().get_child_at(1, 0);
         let name = label.get_name().split('-')[0];
         let settings = this._getSettings(name);
-        let blacklist = this.device.settings.get_strv('action-blacklist');
         let index;
 
         switch (name) {
@@ -869,31 +869,21 @@ var DeviceSettings = GObject.registerClass({
                 break;
 
             case 'findmyphone':
-                index = blacklist.indexOf('locationAnnounce');
+                let location = !settings.get_boolean('share-location');
+                label.label = (location) ? _('On') : _('Off');
+                settings.set_boolean('share-location', location);
+                break;
 
-                if (index < 0) {
-                    blacklist.push('locationAnnounce');
-                    label.label = _('Off');
-                } else {
-                    blacklist.splice(index, 1);
-                    label.label = _('On');
-                }
-
-                this.device.settings.set_strv('action-blacklist', blacklist);
+            case 'mpris':
+                let control = !settings.get_boolean('share-players');
+                label.label = (control) ? _('On') : _('Off');
+                settings.set_boolean('share-players', control);
                 break;
 
             case 'share':
-                index = blacklist.indexOf('shareDialog');
-
-                if (index < 0) {
-                    blacklist.push('shareDialog');
-                    label.label = _('Off');
-                } else {
-                    blacklist.splice(index, 1);
-                    label.label = _('On');
-                }
-
-                this.device.settings.set_strv('action-blacklist', blacklist);
+                let accept = !settings.get_boolean('accept-content');
+                label.label = (accept) ? _('On') : _('Off');
+                settings.set_boolean('accept-content', accept);
                 break;
         }
     }

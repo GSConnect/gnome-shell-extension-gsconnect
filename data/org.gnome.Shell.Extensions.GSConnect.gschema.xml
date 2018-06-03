@@ -118,21 +118,27 @@
   </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Clipboard">
     <key name="receive-content" type="b">
-      <default>true</default>
+      <default>false</default>
       <summary>Receive Content</summary>
       <description></description>
     </key>
     <key name="send-content" type="b">
-      <default>true</default>
+      <default>false</default>
       <summary>Send Content</summary>
       <description></description>
     </key>
   </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.FindMyPhone">
+    <key name="share-location" type="b">
+      <default>false</default>
+    </key>
   </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Mousepad">
   </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.MPRIS">
+    <key name="share-players" type="b">
+      <default>false</default>
+    </key>
   </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Notification">
     <key name="applications" type="s">
@@ -152,6 +158,9 @@
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.SFTP">
   </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Share">
+    <key name="accept-content" type="b">
+      <default>false</default>
+    </key>
   </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Telephony">
     <key name="ringing-volume" type="s">

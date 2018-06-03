@@ -75,6 +75,10 @@ var Plugin = GObject.registerClass({
     /**
      * Local
      */
+    /**
+     * Handle an incoming player command or information request
+     * @param {Core.Packet} -
+     */
     _handleCommand(packet) {
         debug(packet);
 
@@ -190,6 +194,10 @@ var Plugin = GObject.registerClass({
     }
 
     _onPlayerChanged(mpris, mediaPlayer) {
+        if (!this.settings.get_boolean('share-players')) {
+            return;
+        }
+
         this._handleCommand({
             body: {
                 player: mediaPlayer.Identity,
@@ -202,6 +210,10 @@ var Plugin = GObject.registerClass({
     _sendAlbumArt(packet) {
         // Reject concurrent requests for album art
         if (this._transferring) {
+            logError(
+                new Error('Rejecting concurrent album art request'),
+                this.device.name
+            );
             return;
         }
 
@@ -247,12 +259,21 @@ var Plugin = GObject.registerClass({
     }
 
     _sendPlayerList() {
+        let playerList = [];
+        let supportAlbumArtPayload = false;
+
+        if (this.settings.get_boolean('share-players')) {
+            playerlist = this.mpris.identities;
+            // TODO: bluetooth
+            supportAlbumArtPayload = (this.device.connection_type === 'tcp');
+        }
+
         this.device.sendPacket({
             id: 0,
             type: 'kdeconnect.mpris',
             body: {
-                playerList: this.mpris.identities,
-                supportAlbumArtPayload: (this.device.connection_type === 'tcp')
+                playerList: playerList,
+                supportAlbumArtPayload: supportAlbumArtPayload
             }
         });
     }

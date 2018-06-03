@@ -497,7 +497,7 @@
                                     <property name="valign">center</property>
                                     <property name="hexpand">True</property>
                                     <property name="vexpand">True</property>
-                                    <property name="label">Allow direct file and URL sharing</property>
+                                    <property name="label">Accept files and links from this device</property>
                                     <property name="wrap">True</property>
                                     <style>
                                       <class name="dim-label"/>
@@ -638,7 +638,7 @@
                                     <property name="valign">center</property>
                                     <property name="hexpand">True</property>
                                     <property name="vexpand">True</property>
-                                    <property name="label">Allow control of MPRIS players</property>
+                                    <property name="label">Share status and control of MPRIS players</property>
                                     <property name="wrap">True</property>
                                     <style>
                                       <class name="dim-label"/>
@@ -709,7 +709,7 @@
                                     <property name="valign">center</property>
                                     <property name="hexpand">True</property>
                                     <property name="vexpand">True</property>
-                                    <property name="label">Allow control of mouse and keyboard</property>
+                                    <property name="label">Share control of mouse and keyboard</property>
                                     <style>
                                       <class name="dim-label"/>
                                     </style>
@@ -1101,7 +1101,6 @@
                   <object class="GtkFrame">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="margin_bottom">32</property>
                     <property name="label_xalign">0</property>
                     <child>
                       <object class="GtkListBox" id="command-list">
@@ -2177,7 +2176,6 @@
                   <object class="GtkFrame">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="margin_bottom">32</property>
                     <property name="label_xalign">0</property>
                     <child>
                       <object class="GtkListBox" id="action-blacklist">
@@ -2194,46 +2192,6 @@
                     <property name="expand">False</property>
                     <property name="fill">True</property>
                     <property name="position">1</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLabel">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="halign">start</property>
-                    <property name="margin_bottom">12</property>
-                    <property name="hexpand">True</property>
-                    <property name="label" translatable="yes">Event Blacklist</property>
-                    <attributes>
-                      <attribute name="weight" value="bold"/>
-                    </attributes>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">2</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkFrame">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="label_xalign">0</property>
-                    <child>
-                      <object class="GtkListBox" id="event-blacklist">
-                        <property name="width_request">320</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="hexpand">True</property>
-                        <property name="vexpand">False</property>
-                        <property name="selection_mode">none</property>
-                      </object>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">3</property>
                   </packing>
                 </child>
               </object>
