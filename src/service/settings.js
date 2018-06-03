@@ -545,7 +545,7 @@ var DeviceSettings = GObject.registerClass({
         'action-shortcuts-list', 'action-shortcuts-reset',
         'command-shortcuts-list',
         // Advanced
-        'action-blacklist', 'event-blacklist'
+        'action-blacklist'
     ]
 }, class DeviceSettings extends Gtk.Stack {
 
