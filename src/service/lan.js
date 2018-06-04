@@ -56,6 +56,10 @@ var ChannelService = GObject.registerClass({
         this._initUdpListener();
     }
 
+    get discovering() {
+        return this._tcp.active;
+    }
+
     set discovering(bool) {
         (bool) ? this._tcp.start() : this._tcp.stop();
     }
@@ -90,14 +94,8 @@ var ChannelService = GObject.registerClass({
         }
 
         this._tcp.connect('incoming', this._receiveChannel.bind(this));
-        this._tcp.bind_property(
-            'active',
-            this,
-            'discovering',
-            GObject.BindingFlags.SYNC_CREATE
-        );
 
-        debug('Using port ' + port + ' for TCP');
+        log(`GSConnect: Using TCP port ${port}`);
     }
 
     /**
@@ -168,7 +166,7 @@ var ChannelService = GObject.registerClass({
         source.set_callback(this._receivePacket.bind(this));
         source.attach(null);
 
-        debug('Using port ' + port + ' for UDP');
+        log(`GSConnect: Using UDP port ${port}`);
     }
 
     /**
