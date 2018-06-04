@@ -25,11 +25,6 @@ const DoNotDisturb = imports.shell.donotdisturb;
 const Keybindings = imports.shell.keybindings;
 
 
-const ServiceProxy = DBus.makeInterfaceProxy(
-    gsconnect.dbusinfo.lookup_interface(gsconnect.app_id)
-);
-
-
 /**
  * A System Indicator used as the hub for spawning device indicators and
  * indicating that the extension is active when there are none.
@@ -73,9 +68,10 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         this.dndItem = new DoNotDisturb.MenuItem();
         this.extensionMenu.menu.addMenuItem(this.dndItem);
 
-        this.extensionMenu.menu.addAction(_('Mobile Settings'), () => {
-            this.service.OpenSettings();
-        });
+        this.extensionMenu.menu.addAction(
+            _('Mobile Settings'),
+            () => this.service.activate_action('openSettings', null)
+        );
 
         Main.panel.statusArea.aggregateMenu.menu.addMenuItem(this.menu, 4);
 
@@ -150,14 +146,17 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
             return;
         }
 
-        new ServiceProxy({
-            g_connection: Gio.DBus.session,
-            g_name: gsconnect.app_id,
-            g_object_path: gsconnect.app_path
-        }).init_promise().then(service => {
-            this.service = service;
+        this.service = Gio.DBusActionGroup.get(
+            Gio.DBus.session,
+            gsconnect.app_id,
+            gsconnect.app_path
+        );
+
+        new Promise((resolve, reject) => {
+            resolve(this.service.list_actions())
+        }).then(result => {
             this.extensionIndicator.visible = true;
-        }).catch(debug);
+        }).catch(logError);
     }
 
     _onNameOwnerChanged() {
@@ -170,7 +169,6 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
             }
 
             if (this.service) {
-                this.service.destroy();
                 delete this.service;
                 this.extensionIndicator.visible = false;
             }
@@ -199,7 +197,6 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
                 iface.g_name,
                 iface.g_object_path
             );
-            iface.gactions.list_actions();
 
             // GMenu
             iface.gmenu = Gio.DBusMenuModel.get(
@@ -360,6 +357,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
             this._onInterfaceRemoved(this.manager, iface.get_object(), iface);
         }
 
+        // Disconnect any keybindings
         this.keybindingManager.destroy();
 
         // Disconnect from any GSettings changes
@@ -418,7 +416,7 @@ var serviceIndicator = null;
 
 
 function init() {
-    debug('initializing extension');
+    debug('Initializing GSConnect');
 
     // TODO: restore prototype???
     NotificationDaemon.GtkNotificationDaemonAppSource.prototype.pushNotification = pushNotification;
