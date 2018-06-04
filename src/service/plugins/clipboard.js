@@ -70,9 +70,7 @@ var Plugin = GObject.registerClass({
     }
 
     handlePacket(packet) {
-        debug(packet);
-
-        if (packet.body.content) {
+        if (packet.body.hasOwnProperty('content')) {
             this._onRemoteClipboardChanged(packet.body.content);
         }
     }
@@ -82,12 +80,12 @@ var Plugin = GObject.registerClass({
      */
     _onLocalClipboardChanged(clipboard, event) {
         clipboard.request_text((clipboard, text) => {
-            //debug(text);
+            debug(text);
 
             this._localContent = text;
 
             if (this.settings.get_boolean('send-content')) {
-                this.device.activate_action('clipboardPaste', null);
+                this.clipboardCopy();
             }
         });
     }
@@ -96,20 +94,22 @@ var Plugin = GObject.registerClass({
      * Store the updated clipboard content and apply it if enabled
      */
     _onRemoteClipboardChanged(text) {
-        //debug(text);
+        debug(text);
 
         this._remoteContent = text;
 
         if (this.settings.get_boolean('receive-content')) {
-            this.device.activate_action('clipboardCopy', null);
+            this.clipboardPaste();
         }
     }
 
     /**
-     * Copy to the remote clipboard
+     * Copy to the remote clipboard; called by _onLocalClipboardChanged()
      */
     clipboardCopy() {
-        if (this._localContent !== this._remoteContent) {
+        if (this._remoteContent !== this._localContent) {
+            this._remoteContent = this._localContent;
+
             this.device.sendPacket({
                 id: 0,
                 type: 'kdeconnect.clipboard',
@@ -119,10 +119,12 @@ var Plugin = GObject.registerClass({
     }
 
     /**
-     * Paste from the remote clipboard
+     * Paste from the remote clipboard; called by _onRemoteClipboardChanged()
      */
     clipboardPaste() {
         if (this._localContent !== this._remoteContent) {
+            this._localContent = this._remoteContent;
+
             this._clipboard.set_text(this._remoteContent, -1);
         }
     }
