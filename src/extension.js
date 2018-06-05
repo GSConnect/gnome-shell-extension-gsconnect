@@ -63,11 +63,10 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         );
         this.extensionMenu.menu.addMenuItem(this.devicesSection);
 
-        // FIXME finish donotdisturb stuff
-        // Do Not Disturb Item
-        this.dndItem = new DoNotDisturb.MenuItem();
-        this.extensionMenu.menu.addMenuItem(this.dndItem);
+        // "Do Not Disturb" Item
+        this.extensionMenu.menu.addMenuItem(new DoNotDisturb.MenuItem());
 
+        // "Mobile Settings" Item
         this.extensionMenu.menu.addAction(
             _('Mobile Settings'),
             () => this.service.activate_action('openSettings', null)
@@ -116,9 +115,9 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         this._startService();
 
         // Setup currently managed objects
-        for (let obj of this.manager.get_objects()) {
-            for (let iface of obj.get_interfaces()) {
-                this._onInterfaceAdded(this.manager, obj, iface);
+        for (let object of this.manager.get_objects()) {
+            for (let iface of object.get_interfaces()) {
+                this._onInterfaceAdded(this.manager, object, iface);
             }
         }
 
