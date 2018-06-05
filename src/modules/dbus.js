@@ -200,9 +200,9 @@ var Interface = GObject.registerClass({
                 let name = e.name;
                 if (name.indexOf('.') < 0) {
                     // likely to be a normal JS error
-                    name = 'org.gnome.gjs.JSError.' + name;
+                    name = `org.gnome.gjs.JSError.${name}`;
                 }
-                logError(e, 'Exception in method call: ' + memberName);
+                logError(e, `Exception in method call: ${memberName}`);
                 invocation.return_dbus_error(name, e.message);
             }
             return;
