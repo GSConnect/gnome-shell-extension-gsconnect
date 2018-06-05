@@ -13,26 +13,7 @@ var Metadata = {
     id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.Battery',
     incomingCapabilities: ['kdeconnect.battery', 'kdeconnect.battery.request'],
     outgoingCapabilities: ['kdeconnect.battery', 'kdeconnect.battery.request'],
-    actions: {
-        batteryReport: {
-            summary: _('Report Battery'),
-            description: _('Provide battery update'),
-            icon_name: 'battery-symbolic',
-
-            parameter_type: null,
-            incoming: ['kdeconnect.battery.request'],
-            outgoing: ['kdeconnect.battery']
-        },
-        batteryRequest: {
-            summary: _('Update Battery'),
-            description: _('Request battery update'),
-            icon_name: 'battery-symbolic',
-
-            parameter_type: null,
-            incoming: ['kdeconnect.battery'],
-            outgoing: ['kdeconnect.battery.request']
-        }
-    }
+    actions: {}
 };
 
 
@@ -89,8 +70,8 @@ var Plugin = GObject.registerClass({
 
         // Export DBus
         this._dbus = new DBus.Interface({
-            g_interface_info: gsconnect.dbusinfo.lookup_interface(Metadata.id),
-            g_instance: this
+            g_instance: this,
+            g_interface_info: gsconnect.dbusinfo.lookup_interface(Metadata.id)
         });
         this.device._dbus_object.add_interface(this._dbus);
 
@@ -212,7 +193,7 @@ var Plugin = GObject.registerClass({
     }
 
     _handleThreshold() {
-        debug(this._level);
+        debug(`${this.device.name}: ${this.level}`);
 
         let buttons = [];
 
@@ -220,7 +201,7 @@ var Plugin = GObject.registerClass({
             buttons = [{
                 label: _('Locate'),
                 action: 'find',
-                parameter: new GLib.Variant('mv', null)
+                parameter: null
             }];
         }
 
@@ -271,13 +252,13 @@ var Plugin = GObject.registerClass({
 
             this.reportStatus();
         } catch(e) {
-            debug('Battery: Failed to initialize UPower: ' + e.message);
+            logError(e, this.device.name);
             this._unmonitor();
         }
     }
 
     _unmonitor() {
-        if (this._upower) {
+        if (this.hasOwnProperty('_upower')) {
             this._upower.disconnect(this._upower._percentageId);
             this._upower.disconnect(this._upower._stateId);
             this._upower.disconnect(this._upower._warningId);
