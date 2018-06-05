@@ -87,8 +87,6 @@ var Plugin = GObject.registerClass({
     }
 
     handlePacket(packet) {
-        debug(packet);
-
         if (packet.type === 'kdeconnect.sftp') {
             this._parseConnectionData(packet);
         }
@@ -109,7 +107,7 @@ var Plugin = GObject.registerClass({
             this._uid = info.get_attribute_uint32('unix::uid').toString();
             this._gid = info.get_attribute_uint32('unix::gid').toString();
         } catch (e) {
-            debug(e);
+            logError(e);
             return false;
         }
 
@@ -242,7 +240,18 @@ var Plugin = GObject.registerClass({
         }
 
         // Send session password
-        this._proc.get_stdin_pipe().write_all(`${this._password}\n`, null);
+        this._proc.get_stdin_pipe().write_all_async(
+            `${this._password}\n`,
+            GLib.PRIORITY_DEFAULT,
+            null,
+            (stream, res) => {
+                try {
+                    stream.write_all_finish(res);
+                } catch (e) {
+                    this.unmount();
+                }
+            }
+        );
     }
 
     _sshfs_finish(proc, res) {
