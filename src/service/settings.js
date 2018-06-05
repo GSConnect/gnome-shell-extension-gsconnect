@@ -768,20 +768,7 @@ var DeviceSettings = GObject.registerClass({
      * Basic Settings
      */
     _sharingSettings() {
-        // Battery
-        if (!this.device.get_action_enabled('reportStatus')) {
-            this.battery_allow.get_parent().get_parent().visible = false;
-        }
-
-        // Separators & Sorting
-        this.sharing_list.set_header_func(section_separators);
-
-        this.sharing_list.set_sort_func((row1, row2) => {
-            row1 = row1.get_child().get_child_at(0, 0);
-            row2 = row2.get_child().get_child_at(0, 0);
-            return row1.label.localeCompare(row2.label);
-        });
-
+        // Setup current values
         this.sharing_list.foreach(row => {
             let label = row.get_child().get_child_at(1, 0);
             let name = label.get_name().split('-')[0];
@@ -789,6 +776,11 @@ var DeviceSettings = GObject.registerClass({
 
             switch (name) {
                 case 'battery':
+                    if (!this.device.get_incoming_supported('battery')) {
+                        row.destroy();
+                        break;
+                    }
+
                     let statistics = settings.get_boolean('send-statistics');
                     label.label = (statistics) ? _('On') : _('Off');
                     break;
@@ -809,23 +801,54 @@ var DeviceSettings = GObject.registerClass({
                     break;
 
                 case 'findmyphone':
+                    if (!this.device.get_outgoing_supported('findmyphone.request')) {
+                        row.destroy();
+                        break;
+                    }
+
                     let location = settings.get_boolean('share-location');
                     label.label = (location) ? _('On') : _('Off');
                     break;
 
-                case 'mpris':
-                    let control = settings.get_boolean('share-players');
+                case 'mousepad':
+                    if (!this.device.get_outgoing_supported('mousepad.request')) {
+                        row.destroy();
+                        break;
+                    }
+
+                    let control = settings.get_boolean('share-control');
                     label.label = (control) ? _('On') : _('Off');
                     break;
 
-                case 'mousepad':
+                case 'mpris':
+                    if (!this.device.get_outgoing_supported('mpris.request')) {
+                        row.destroy();
+                        break;
+                    }
+
+                    let players = settings.get_boolean('share-players');
+                    label.label = (players) ? _('On') : _('Off');
                     break;
 
                 case 'share':
+                    if (!this.device.get_outgoing_supported('share.request')) {
+                        row.destroy();
+                        break;
+                    }
+
                     let accept = settings.get_boolean('accept-content');
                     label.label = (accept) ? _('On') : _('Off');
                     break;
             }
+        });
+
+        // Separators & Sorting
+        this.sharing_list.set_header_func(section_separators);
+
+        this.sharing_list.set_sort_func((row1, row2) => {
+            row1 = row1.get_child().get_child_at(0, 0);
+            row2 = row2.get_child().get_child_at(0, 0);
+            return row1.label.localeCompare(row2.label);
         });
     }
 
@@ -874,10 +897,16 @@ var DeviceSettings = GObject.registerClass({
                 settings.set_boolean('share-location', location);
                 break;
 
-            case 'mpris':
-                let control = !settings.get_boolean('share-players');
+            case 'mousepad':
+                let control = !settings.get_boolean('share-control');
                 label.label = (control) ? _('On') : _('Off');
-                settings.set_boolean('share-players', control);
+                settings.set_boolean('share-control', control);
+                break;
+
+            case 'mpris':
+                let players = !settings.get_boolean('share-players');
+                label.label = (players) ? _('On') : _('Off');
+                settings.set_boolean('share-players', players);
                 break;
 
             case 'share':
