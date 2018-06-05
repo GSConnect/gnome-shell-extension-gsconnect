@@ -99,11 +99,7 @@ var Menu = GObject.registerClass({
     add_action(action, index=-1) {
         let item = new Gio.MenuItem();
         item.set_label(action.summary);
-        item.set_icon(
-            new Gio.ThemedIcon({
-                name: action.icon_name || 'application-x-executable-symbolic'
-            })
-        );
+        item.set_icon(new Gio.ThemedIcon({ name: action.icon_name }));
         item.set_detailed_action(`device.${action.name}`);
 
         if (index === -1) {
@@ -994,7 +990,7 @@ var Device = GObject.registerClass({
                 this._plugins.get(name).destroy();
                 this._plugins.delete(name);
             } catch (e) {
-                logError(e);
+                logError(e, this.device.name);
             }
 
             resolve([name, true]);
@@ -1002,7 +998,12 @@ var Device = GObject.registerClass({
     }
 
     async _unloadPlugins() {
-        await Promise.all(this.plugins.map(this._unloadPlugin.bind(this)));
+        try {
+            await Promise.all(this.plugins.map(this._unloadPlugin.bind(this)));
+        } catch (e) {
+            logError(e, this.device.name);
+        }
+
         this.notify('plugins');
     }
 
