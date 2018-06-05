@@ -153,7 +153,7 @@ var Daemon = GObject.registerClass({
         return this.objectManager.get_objects().map(obj => obj.g_object_path);
     }
 
-    // FIXME: implement bluetooth discovery
+    // TODO: implement bluetooth discovery
     get discovering() {
         return this.lanService.discovering;
     }
@@ -461,6 +461,12 @@ var Daemon = GObject.registerClass({
 
         if (appSettings && !appSettings.get_boolean('enable')) {
             return;
+        }
+
+        // Remove empty icon
+        // TODO: recheck this
+        if (notif.icon === null) {
+            delete notif.icon;
         }
 
         // Send the notification to each supporting device
@@ -810,6 +816,7 @@ var Daemon = GObject.registerClass({
 
             try {
                 if (file.get_uri_scheme() === 'sms') {
+                    //let uri = new Sms.URI(file.get_uri()); // TODO
                     title = _('Send SMS');
                     action = 'uriSms';
                     parameter = new GLib.Variant('s', file.get_uri());
