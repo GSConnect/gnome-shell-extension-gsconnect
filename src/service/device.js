@@ -916,6 +916,14 @@ var Device = GObject.registerClass({
     /**
      * Plugin Functions
      */
+    get_incoming_supported(type) {
+        return this.incomingCapabilities.includes(`kdeconnect.${type}`);
+    }
+
+    get_outgoing_supported(type) {
+        return this.outgoingCapabilities.includes(`kdeconnect.${type}`);
+    }
+
     get_plugin_enabled(name) {
         return this._plugins.has(name);
     }
