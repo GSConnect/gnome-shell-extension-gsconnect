@@ -7,8 +7,6 @@
     <method name="GetShareable">
       <arg name="shareable" type="a(ss)" direction="out"/>
     </method>
-    <method name="OpenSettings"/>
-    <method name="Quit"/>
   </interface>
 
   <!-- Device -->
