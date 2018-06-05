@@ -56,41 +56,72 @@ class GSConnectShareExtension(GObject.GObject, Nautilus.MenuProvider):
             schema = schema_src.lookup('org.gnome.Shell.Extensions.GSConnect', True)
             self.settings = Gio.Settings(settings_schema=schema)
 
-        self.dbus = Gio.DBusProxy.new_for_bus_sync(
-			Gio.BusType.SESSION,
-			Gio.DBusProxyFlags.NONE,
-			None,
-			'org.gnome.Shell.Extensions.GSConnect',
-			'/org/gnome/Shell/Extensions/GSConnect',
-			'org.gnome.Shell.Extensions.GSConnect',
-			None)
+        self.devices = {}
 
-    def send_files(self, menu, files, devicePath):
+        Gio.DBusObjectManagerClient.new_for_bus(
+            Gio.BusType.SESSION,
+            Gio.DBusObjectManagerClientFlags.NONE,
+            'org.gnome.Shell.Extensions.GSConnect',
+            '/org/gnome/Shell/Extensions/GSConnect',
+            None,
+            None,
+            None,
+            self._prepare_object_manager,
+            None)
+
+    def _prepare_object_manager(self, source_object, res, user_data):
+        try:
+            self.manager = source_object.new_for_bus_finish(res)
+        except:
+            pass
+
+        for obj in self.manager.get_objects():
+            for interface in obj.get_interfaces():
+                self._on_interface_added(self.manager, obj, interface)
+
+        self.manager.connect('interface-added', self._on_interface_added)
+        self.manager.connect('interface-removed', self._on_interface_removed)
+        self.manager.connect('notify::name-owner', self._on_name_owner_changed)
+
+    def _on_interface_added(self, manager, obj, interface):
+        if interface.props.g_interface_name == 'org.gnome.Shell.Extensions.GSConnect.Device':
+            self.devices[interface.props.g_object_path] = (
+                interface.get_cached_property('Name').unpack(),
+                Gio.DBusActionGroup.get(
+                    interface.get_connection(),
+                    'org.gnome.Shell.Extensions.GSConnect',
+                    interface.props.g_object_path))
+
+    def _on_interface_removed(self, manager, obj, interface):
+        if interface.props.g_interface_name == 'org.gnome.Shell.Extensions.GSConnect.Device':
+            del self.devices[interface.props.g_object_path]
+
+    def _on_name_owner_changed(self, manager, param_string):
+        if manager.props.name_owner == None:
+            self.devices = {}
+
+    def send_files(self, menu, files, action_group):
         """Send *files* to *device_id*"""
-
-        device_actions = Gio.DBusActionGroup.get(
-			self.dbus.get_connection(),
-			'org.gnome.Shell.Extensions.GSConnect',
-			devicePath)
 
         for file in files:
             variant = GLib.Variant('s', file.get_uri())
-            device_actions.activate_action('shareFile', variant)
+            action_group.activate_action('shareFile', variant)
 
     def get_file_items(self, window, files):
         """Return a list of select files to be sent"""
 
+        # Bail if integration is disabled
         if not self.settings.get_boolean('nautilus-integration'):
             return
 
-        # Try to get devices
-        try:
-            devices = self.dbus.call_sync('GetShareable', None, 0, -1, None)
-            devices = devices.unpack()[0]
-        except Exception as e:
-            raise Exception('Error while getting reachable devices: ')
+        # Enumerate capable devices
+        devices = []
 
-        # No devices, don't show menu entry
+        for name, actions in self.devices.values():
+            if actions.get_action_enabled('shareFile'):
+                devices.append([name, actions])
+
+        # No capable devices; don't show menu entry
         if not devices:
             return
 
@@ -111,14 +142,14 @@ class GSConnectShareExtension(GObject.GObject, Nautilus.MenuProvider):
         menu.set_submenu(submenu)
 
         # Context Submenu Items
-        for devicePath, deviceName in devices:
+        for name, action_group in devices:
             item = Nautilus.MenuItem(
-                name='GSConnectShareExtension::Device' + deviceName,
-                label=deviceName,
+                name='GSConnectShareExtension::Device' + name,
+                label=name,
                 icon='smartphone-symbolic'
             )
 
-            item.connect('activate', self.send_files, files, devicePath)
+            item.connect('activate', self.send_files, files, action_group)
 
             submenu.append_item(item)
 

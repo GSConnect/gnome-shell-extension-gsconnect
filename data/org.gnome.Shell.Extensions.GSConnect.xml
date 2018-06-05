@@ -1,14 +1,4 @@
 <node>
-  <!-- Service -->
-  <interface name="org.gnome.Shell.Extensions.GSConnect">
-    <property type="b" name="Discovering" access="readwrite"/>
-
-    <method name="Broadcast"/>
-    <method name="GetShareable">
-      <arg name="shareable" type="a(ss)" direction="out"/>
-    </method>
-  </interface>
-
   <!-- Device -->
   <interface name="org.gnome.Shell.Extensions.GSConnect.Device">
     <property type="b" name="Connected" access="read"/>

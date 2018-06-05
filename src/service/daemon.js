@@ -226,23 +226,6 @@ var Daemon = GObject.registerClass({
         return this._type;
     }
 
-    /**
-     * Special method to accomodate nautilus-gsconnect.py
-     */
-    getShareable() {
-        let shareable = [];
-
-        for (let [busPath, device] of this._devices.entries()) {
-            let action = device.lookup_action('shareFile');
-
-            if (action && action.enabled) {
-                shareable.push([busPath, device.name]);
-            }
-        }
-
-        return shareable;
-    }
-
     _applyResources() {
         let provider = new Gtk.CssProvider();
         provider.load_from_file(
@@ -625,6 +608,7 @@ var Daemon = GObject.registerClass({
             // Device
             ['deviceAction', this._deviceAction.bind(this), '(osbv)'],
             // Daemon
+            ['broadcast', this.broadcast.bind(this)],
             ['openSettings', this.openSettings.bind(this)],
             ['cancelTransfer', this._cancelTransferAction.bind(this), '(ss)'],
             ['openTransfer', this._openTransferAction.bind(this), 's'],
@@ -796,13 +780,6 @@ var Daemon = GObject.registerClass({
             object_path: object_path
         });
 
-        // org.gnome.Shell.Extensions.GSConnect interface
-        this._dbus = new DBus.Interface({
-            g_connection: connection,
-            g_instance: this,
-            g_interface_info: gsconnect.dbusinfo.lookup_interface(gsconnect.app_id),
-            g_object_path: gsconnect.app_path
-        });
 
         // Start the notification listeners
         this._startNotificationListener();
@@ -819,7 +796,6 @@ var Daemon = GObject.registerClass({
             device.destroy();
         }
 
-        this._dbus.destroy();
 
         super.vfunc_dbus_unregister(connection, object_path);
     }
