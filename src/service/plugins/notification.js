@@ -210,20 +210,28 @@ var Plugin = GObject.registerClass({
      */
     _uploadIcon(packet, icon) {
         return new Promise((resolve, reject) => {
-            if (typeof icon === 'string') {
-                this._uploadNamedIcon(packet, icon);
-            } else if (icon instanceof Gio.BytesIcon) {
-                this._uploadBytesIcon(packet, icon.get_bytes());
-            } else if (icon instanceof Gio.FileIcon) {
-                this._uploadFileIcon(packet, icon.get_file());
-            } else if (icon instanceof Gio.ThemedIcon) {
-                if (icon.hasOwnProperty('name')) {
-                    this._uploadNamedIcon(packet, icon.name);
-                } else {
-                    this._uploadNamedIcon(packet, icon.names[0]);
-                }
-            } else {
-                this.device.sendPacket(packet);
+            switch (true) {
+                case (this.device.connection_type === 'bluetooth'):
+                    this.device.sendPacket(packet);
+                    break;
+                case (typeof icon === 'string'):
+                    this._uploadNamedIcon(packet, icon);
+                    break;
+                case (icon instanceof Gio.BytesIcon):
+                    this._uploadBytesIcon(packet, icon.get_bytes());
+                    break;
+                case (icon instanceof Gio.FileIcon):
+                    this._uploadFileIcon(packet, icon.get_file());
+                    break;
+                case (icon instanceof Gio.ThemedIcon):
+                    if (icon.hasOwnProperty('name')) {
+                        this._uploadNamedIcon(packet, icon.name);
+                    } else {
+                        this._uploadNamedIcon(packet, icon.names[0]);
+                    }
+                    break;
+                default:
+                    this.device.sendPacket(packet);
             }
 
             resolve();
