@@ -80,7 +80,7 @@ var Plugin = GObject.registerClass({
      */
     _onLocalClipboardChanged(clipboard, event) {
         clipboard.request_text((clipboard, text) => {
-            debug(text);
+            debug(`${this.device.name}: ${text}`);
 
             this._localContent = text;
 
@@ -94,7 +94,7 @@ var Plugin = GObject.registerClass({
      * Store the updated clipboard content and apply it if enabled
      */
     _onRemoteClipboardChanged(text) {
-        debug(text);
+        debug(`${this.device.name}: ${text}`);
 
         this._remoteContent = text;
 
