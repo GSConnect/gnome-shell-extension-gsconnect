@@ -81,7 +81,7 @@ var Battery = GObject.registerClass({
     }
 
     update(battery) {
-        if (!this.visible) { return; }
+        if (!this.mapped) { return; }
 
         this.icon.visible = (this.battery && this.battery.Level > -1);
         this.label.visible = (this.battery && this.battery.Level > -1);
@@ -465,7 +465,7 @@ var Menu = class Menu extends PopupMenu.PopupMenuSection {
     _sync() {
         debug(`${this.device.Name} (${this.device.Id})`);
 
-        if (!this.actor.visible) { return; }
+        if (!this.actor.mapped) { return; }
 
         let { Connected, Paired } = this.device;
 
