@@ -6,7 +6,7 @@ Terminal=false
 NoDisplay=true
 Icon=org.gnome.Shell.Extensions.GSConnect
 Categories=Network;
-MimeType=x-scheme-handler/sms;
+MimeType=x-scheme-handler/sms;x-scheme-handler/tel;
 DBusActivatable=true
 X-GNOME-UsesNotifications=true
 

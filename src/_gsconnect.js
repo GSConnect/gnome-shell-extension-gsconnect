@@ -258,13 +258,6 @@ gsconnect.installService = function() {
 
     GLib.mkdir_with_parents(applicationsDir, 493);
     GLib.file_set_contents(applicationsDir + desktopFile, desktopBytes);
-
-    // sms:// scheme handler
-    let appInfo = Gio.DesktopAppInfo.new_from_filename(
-        applicationsDir + desktopFile
-    );
-    appInfo.add_supports_type('x-scheme-handler/sms');
-    appInfo.add_supports_type('x-scheme-handler/tel');
 };
 
 
