@@ -129,6 +129,8 @@ var Plugin = GObject.registerClass({
         return icon;
     }
     get level() {
+        // This is what KDE Connect returns if the remote battery plugin is
+        // disabled or still being loaded
         if (this._level === undefined) {
             return -1;
         }
@@ -150,8 +152,6 @@ var Plugin = GObject.registerClass({
      * Packet dispatch
      */
     handlePacket(packet) {
-        debug(packet);
-
         if (packet.type === 'kdeconnect.battery') {
             return this._handleUpdate(packet.body);
         } else if (packet.type === 'kdeconnect.battery.request') {
@@ -163,8 +163,6 @@ var Plugin = GObject.registerClass({
      * Remote methods
      */
     _handleUpdate(update) {
-        debug(update);
-
         if (update.thresholdEvent > 0) {
             this._handleThreshold();
         }
@@ -222,8 +220,9 @@ var Plugin = GObject.registerClass({
      * Local Methods
      */
     _monitor() {
-        // FIXME
-        if (!this.device.get_action_enabled('batteryReport')) {
+        if (this.device.service.type !== 'laptop' || this._upower) {
+            return;
+        } else if (!this.device.get_incoming_supported('battery')) {
             return;
         }
 
