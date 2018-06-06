@@ -134,6 +134,9 @@
     </key>
   </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Mousepad">
+    <key name="share-control" type="b">
+      <default>false</default>
+    </key>
   </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.MPRIS">
     <key name="share-players" type="b">

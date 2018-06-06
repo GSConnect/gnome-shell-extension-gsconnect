@@ -2,6 +2,7 @@
 
 const Atspi = imports.gi.Atspi;
 const Gdk = imports.gi.Gdk;
+const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 
@@ -24,6 +25,15 @@ var Metadata = {
  */
 var Plugin = GObject.registerClass({
     GTypeName: 'GSConnectMousepadPlugin',
+    Properties: {
+        'share-control': GObject.ParamSpec.boolean(
+            'share-control',
+            'Share Control',
+            'Share control of mouse & keyboard',
+            GObject.ParamFlags.READWRITE,
+            false
+        )
+    }
 }, class Plugin extends PluginsBase.Plugin {
 
     _init(device) {
@@ -60,12 +70,17 @@ var Plugin = GObject.registerClass({
         } catch (e) {
             warning(`Mousepad: Failed load unicode support: ${e.message}`);
         }
+
+        this.settings.bind(
+            'share-control',
+            this,
+            'share-control',
+            Gio.SettingsBindFlags.GET
+        );
     }
 
     handlePacket(packet) {
-        debug(packet);
-
-        if (packet.type === 'kdeconnect.mousepad.request') {
+        if (packet.type === 'kdeconnect.mousepad.request' && this.share_control) {
             this._handleInput(packet.body);
         }
     }
