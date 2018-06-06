@@ -273,10 +273,12 @@ gsconnect.full_pack = function(obj) {
         return GLib.Variant.new('d', obj);
     } else if (typeof obj === 'boolean') {
         return GLib.Variant.new('b', obj);
-    } else if (typeof obj.map === 'function') {
-        return GLib.Variant.new('av', obj.map(i => gsconnect.full_pack(i)));
     } else if (obj === null) {
         return GLib.Variant.new('mv', null);
+    } else if (typeof obj.map === 'function') {
+        return GLib.Variant.new('av', obj.map(i => gsconnect.full_pack(i)));
+    } else if (obj instanceof Gio.Icon) {
+        return obj.serialize();
     } else if (typeof obj === 'object' && typeof obj !== null) {
         let packed = {};
 
@@ -285,8 +287,6 @@ gsconnect.full_pack = function(obj) {
         }
 
         return GLib.Variant.new('a{sv}', packed);
-    } else if (obj instanceof Gio.Icon) {
-        return obj.serialize()
     }
 
     return null;
@@ -297,7 +297,9 @@ gsconnect.full_pack = function(obj) {
  * Recursively deep_unpack() a GLib.Variant
  */
 gsconnect.full_unpack = function(obj) {
-    if (typeof obj.deep_unpack === 'function') {
+    if (obj === null) {
+        return obj;
+    } else if (typeof obj.deep_unpack === 'function') {
         return gsconnect.full_unpack(obj.deep_unpack());
     } else if (typeof obj.map === 'function') {
         return obj.map(i => gsconnect.full_unpack(i));
