@@ -38,10 +38,6 @@ var Plugin = GObject.registerClass({
     _init(device) {
         super._init(device, 'findmyphone');
 
-        this._desktop = new Gio.Settings({
-            schema_id: 'org.gnome.system.location'
-        });
-
         this._cancellable = null;
         this._dialog = null;
     }
