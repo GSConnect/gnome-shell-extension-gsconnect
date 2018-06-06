@@ -263,7 +263,7 @@ var Plugin = GObject.registerClass({
         let supportAlbumArtPayload = false;
 
         if (this.settings.get_boolean('share-players')) {
-            playerlist = this.mpris.identities;
+            playerList = this.mpris.identities;
             // TODO: bluetooth
             supportAlbumArtPayload = (this.device.connection_type === 'tcp');
         }
