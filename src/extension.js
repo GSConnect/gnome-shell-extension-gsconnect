@@ -151,6 +151,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
             gsconnect.app_path
         );
 
+        // This is how we actually activate the service
         new Promise((resolve, reject) => {
             resolve(this.service.list_actions())
         }).then(result => {
@@ -242,7 +243,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
             );
 
             // Try activating the device
-            iface.Activate();
+            iface.gactions.activate_action('activate', null);
         }
     }
 

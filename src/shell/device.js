@@ -339,16 +339,18 @@ var Button = GObject.registerClass({
         this.object = object;
         this.device = device;
 
-        this.connect('clicked', (button) => {
-            if (!button.device.Connected) {
-                button.device.Activate();
-            } else if (!button.device.Paired) {
-                button.device.Pair();
-            } else {
-                button.get_parent()._delegate._getTopMenu().close(true);
-                button.device.OpenSettings();
-            }
-        });
+        this.connect('clicked', this._onClicked.bind(this));
+    }
+
+    _onClicked(button) {
+        if (!button.device.Connected) {
+            button.device.gactions.activate_action('activate', null);
+        } else if (!button.device.Paired) {
+            button.device.gactions.activate_action('pair', null);
+        } else {
+            button.get_parent()._delegate._getTopMenu().close(true);
+            button.device.gactions.activate_action('openSettings', null);
+        }
     }
 });
 

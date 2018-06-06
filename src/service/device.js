@@ -643,6 +643,26 @@ var Device = GObject.registerClass({
      * Stock device actions
      */
     _registerActions() {
+        let activate = new Action({
+            name: 'activate',
+            parameter_type: null,
+            summary: _('Activate'),
+            description: _('Attempt reconnection'),
+            icon_name: 'view-refresh-symbolic'
+        });
+        activate.connect('activate', this.activate.bind(this));
+        this.add_action(activate);
+
+        let openSettings = new Action({
+            name: 'openSettings',
+            parameter_type: null,
+            summary: _('Open Settings'),
+            description: _('Open the settings window for the device'),
+            icon_name: 'view-refresh-symbolic'
+        });
+        openSettings.connect('activate', this.openSettings.bind(this));
+        this.add_action(openSettings);
+
         let acceptPair = new Action({
             name: 'pair',
             parameter_type: null,

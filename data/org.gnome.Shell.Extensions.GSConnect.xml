@@ -11,11 +11,6 @@
     <property type="s" name="SymbolicIconName" access="read"/>
     <property type="s" name="Type" access="read"/>
 
-    <method name="Activate"/>
-    <method name="Pair"/>
-    <method name="Unpair"/>
-    <method name="OpenSettings"/>
-
     <!-- Signals -->
     <signal name="Event">
       <arg type="s" name="Type"/>
