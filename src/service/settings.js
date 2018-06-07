@@ -856,7 +856,6 @@ var DeviceSettings = GObject.registerClass({
         let label = row.get_child().get_child_at(1, 0);
         let name = label.get_name().split('-')[0];
         let settings = this._getSettings(name);
-        let index;
 
         switch (name) {
             case 'battery':
