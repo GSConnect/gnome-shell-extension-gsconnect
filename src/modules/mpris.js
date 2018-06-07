@@ -108,6 +108,14 @@ var Manager = GObject.registerClass({
         return this._players;
     }
 
+    get paused() {
+        if (this._paused === undefined) {
+            this._paused = new Map();
+        }
+
+        return this._paused;
+    }
+
     _onNameOwnerChanged(fdo, name, old_owner, new_owner) {
         if (name.startsWith('org.mpris.MediaPlayer2')) {
             if (new_owner.length) {
@@ -164,15 +172,41 @@ var Manager = GObject.registerClass({
                 player.disconnect(player._seekedId);
                 player.destroy();
 
+                this.paused.delete(identity);
                 this.players.delete(identity);
                 this.notify('players');
             }
-
         }
+    }
+
+    /**
+     * A convenience function for pausing all players currently playing.
+     */
+    pauseAll() {
+        for (let [identity, player] of this.players.entries()) {
+            if (player.CanPause && player.PlaybackStatus === 'Playing') {
+                player.Pause();
+                this.paused.set(identity, player);
+            }
+        }
+    }
+
+    /**
+     * A convenience function for restarting all players paused with pauseAll().
+     */
+    unpauseAll() {
+        for (let [identity, player] of this.paused.entries()) {
+            if (player.CanPlay && player.PlaybackStatus === 'Paused') {
+                player.Play();
+            }
+        }
+
+        this.paused.clear();
     }
 
     destroy() {
         this._fdo.disconnect(this._nameOwnerChangedId);
+        this._fdo.destroy();
 
         for (let player of this.players.values()) {
             player.disconnect(player._propertiesId);
