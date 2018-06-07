@@ -1331,7 +1331,7 @@
                     <property name="margin_bottom">32</property>
                     <property name="label_xalign">0</property>
                     <child>
-                      <object class="GtkListBox" id="sms-list">
+                      <object class="GtkListBox" id="messaging-list">
                         <property name="width_request">320</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
@@ -1365,7 +1365,7 @@
                                     <property name="valign">center</property>
                                     <property name="hexpand">True</property>
                                     <property name="vexpand">True</property>
-                                    <property name="label">System Volume</property>
+                                    <property name="label">Handle Messaging</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">0</property>
@@ -1373,64 +1373,7 @@
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkMenuButton">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">True</property>
-                                    <property name="receives_default">True</property>
-                                    <property name="relief">none</property>
-                                    <child>
-                                      <placeholder/>
-                                    </child>
-                                    <style>
-                                      <class name="flat"/>
-                                      <class name="circular"/>
-                                    </style>
-                                  </object>
-                                  <packing>
-                                    <property name="left_attach">1</property>
-                                    <property name="top_attach">0</property>
-                                  </packing>
-                                </child>
-                              </object>
-                            </child>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkListBoxRow">
-                            <property name="height_request">56</property>
-                            <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="hexpand">True</property>
-                            <property name="activatable">False</property>
-                            <property name="selectable">False</property>
-                            <child>
-                              <object class="GtkGrid">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="margin_left">12</property>
-                                <property name="margin_right">12</property>
-                                <property name="margin_top">8</property>
-                                <property name="margin_bottom">8</property>
-                                <property name="hexpand">True</property>
-                                <property name="vexpand">True</property>
-                                <property name="column_spacing">12</property>
-                                <child>
-                                  <object class="GtkLabel">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
-                                    <property name="halign">start</property>
-                                    <property name="valign">center</property>
-                                    <property name="hexpand">True</property>
-                                    <property name="vexpand">True</property>
-                                    <property name="label">Show Notification</property>
-                                  </object>
-                                  <packing>
-                                    <property name="left_attach">0</property>
-                                    <property name="top_attach">0</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <object class="GtkSwitch" id="incoming-pause4">
+                                  <object class="GtkSwitch" id="handle-sms">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="valign">center</property>

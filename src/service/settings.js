@@ -535,7 +535,7 @@ var DeviceSettings = GObject.registerClass({
         'mousepad-allow', 'findmyphone-allow',
         // Telephony
         'telephony',
-        'sms-list',
+        'messaging-list', 'handle-sms',
         'ringing-list', 'ringing-volume', 'ringing-pause',
         'talking-list', 'talking-volume', 'talking-microphone', 'talking-pause',
         // Events

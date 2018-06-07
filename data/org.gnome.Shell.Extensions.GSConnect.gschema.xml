@@ -166,6 +166,9 @@
     </key>
   </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Telephony">
+    <key name="handle-sms" type="b">
+      <default>true</default>
+    </key>
     <key name="ringing-volume" type="s">
       <default>"lower"</default>
       <summary>System Volume</summary>
