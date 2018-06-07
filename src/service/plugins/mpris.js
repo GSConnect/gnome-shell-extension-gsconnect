@@ -80,8 +80,6 @@ var Plugin = GObject.registerClass({
      * @param {Core.Packet} -
      */
     _handleCommand(packet) {
-        debug(packet);
-
         let player = this.mpris.players.get(packet.body.player);
 
         // Send Album Art
