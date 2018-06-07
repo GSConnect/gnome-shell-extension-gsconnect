@@ -101,7 +101,7 @@ var Manager = GObject.registerClass({
     }
 
     get players () {
-        if (!this._players) {
+        if (this._players === undefined) {
             this._players = new Map();
         }
 
@@ -113,20 +113,15 @@ var Manager = GObject.registerClass({
             if (new_owner.length) {
                 this._addPlayer(name);
             } else {
-                for (let mediaPlayer of this.players.values()) {
-                    if (mediaPlayer.g_name_owner === old_owner) {
-                        this._removePlayer(mediaPlayer);
-                        break;
-                    }
-                }
+                this._removePlayer(name);
             }
         }
     }
 
-    _addPlayer(busName) {
+    _addPlayer(name) {
         let mediaPlayer = new MediaPlayer2Proxy({
             g_connection: Gio.DBus.session,
-            g_name: busName,
+            g_name: name,
             g_object_path: '/org/mpris/MediaPlayer2'
         });
         mediaPlayer.init(null);
@@ -134,51 +129,55 @@ var Manager = GObject.registerClass({
         if (!this.players.has(mediaPlayer.Identity)) {
             debug(`Adding MPRIS Player ${mediaPlayer.Identity}`);
 
-            mediaPlayer.Player = new PlayerProxy({
+            let player = new PlayerProxy({
                 g_connection: Gio.DBus.session,
-                g_name: busName,
+                g_name: name,
                 g_object_path: '/org/mpris/MediaPlayer2'
             });
-            mediaPlayer.Player.init(null);
+            player.init(null);
 
-            mediaPlayer.Player._propertiesId = mediaPlayer.Player.connect(
+            player.Identity = mediaPlayer.Identity.slice(0);
+
+            player._propertiesId = player.connect(
                 'g-properties-changed',
-                (player) => this.emit('player-changed', mediaPlayer)
+                (player) => this.emit('player-changed', player)
             );
 
-            mediaPlayer.Player._seekedId = mediaPlayer.Player.connect(
+            player._seekedId = player.connect(
                 'Seeked',
-                (player) => this.emit('player-changed', mediaPlayer)
+                (player) => this.emit('player-changed', player)
             );
 
-            this.players.set(mediaPlayer.Identity, mediaPlayer);
+            this.players.set(player.Identity, player);
             this.notify('players');
-        } else {
-            mediaPlayer.destroy();
         }
+
+        mediaPlayer.destroy();
     }
 
-    _removePlayer(mediaPlayer) {
-        if (this.players.has(mediaPlayer.Identity)) {
-            debug(`Removing MPRIS Player ${mediaPlayer.Identity}`);
+    _removePlayer(name) {
+        for (let [identity, player] of this.players.entries()) {
+            if (player.g_name === name) {
+                debug(`Removing MPRIS Player ${mediaPlayer.Identity}`);
 
-            let name = mediaPlayer.Identity;
+                player.disconnect(player._propertiesId);
+                player.disconnect(player._seekedId);
+                player.destroy();
 
-            mediaPlayer.Player.disconnect(mediaPlayer.Player._propertiesId);
-            mediaPlayer.Player.disconnect(mediaPlayer.Player._seekedId);
-            mediaPlayer.Player.destroy();
-            mediaPlayer.destroy();
+                this.players.delete(identity);
+                this.notify('players');
+            }
 
-            this.players.delete(name);
-            this.notify('players');
         }
     }
 
     destroy() {
         this._fdo.disconnect(this._nameOwnerChangedId);
 
-        for (let mediaPlayer of this.players.values()) {
-            this._removePlayer(mediaPlayer);
+        for (let player of this.players.values()) {
+            player.disconnect(player._propertiesId);
+            player.disconnect(player._seekedId);
+            player.destroy();
         }
     }
 });

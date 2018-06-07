@@ -82,7 +82,7 @@ var Plugin = GObject.registerClass({
     _handleCommand(packet) {
         debug(packet);
 
-        let player = this.mpris.players.get(packet.body.player).Player;
+        let player = this.mpris.players.get(packet.body.player);
 
         // Send Album Art
         if (packet.body.hasOwnProperty('albumArtUrl')) {
@@ -193,14 +193,14 @@ var Plugin = GObject.registerClass({
         return metadata;
     }
 
-    _onPlayerChanged(mpris, mediaPlayer) {
+    _onPlayerChanged(mpris, player) {
         if (!this.settings.get_boolean('share-players')) {
             return;
         }
 
         this._handleCommand({
             body: {
-                player: mediaPlayer.Identity,
+                player: player.Identity,
                 requestNowPlaying: true,
                 requestVolume: true
             }
@@ -210,14 +210,11 @@ var Plugin = GObject.registerClass({
     _sendAlbumArt(packet) {
         // Reject concurrent requests for album art
         if (this._transferring) {
-            logError(
-                new Error('Rejecting concurrent album art request'),
-                this.device.name
-            );
+            logWarning('Rejecting concurrent album art request', this.device.name);
             return;
         }
 
-        let player = this.mpris.players.get(packet.body.player).Player;
+        let player = this.mpris.players.get(packet.body.player);
 
         if (player.Metadata === null) {
             return;
