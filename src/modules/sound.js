@@ -33,7 +33,15 @@ try {
 }
 
 
-function playThemeSound (name) {
+/**
+ * Play a themed sound
+ *
+ * @param {String} name - The name of a themed sound, from the current theme
+ * @return {Boolean} - %true on success or %false if playback unavailable
+ *
+ * See also https://freedesktop.org/wiki/Specifications/sound-theme-spec/
+ */
+function playThemeSound(name) {
     if (_gsoundContext) {
         _gsoundContext.play_simple({ 'event.id' : name }, null);
         return true;
@@ -43,10 +51,18 @@ function playThemeSound (name) {
     }
 
     return false;
-};
+}
 
 
-function loopThemeSound (name, cancellable) {
+/**
+ * Play a themed sound on a loop. Works like playThemeSound(), but will repeat
+ * until @cancellable is triggered.
+ *
+ * @param {String} name - The name of a themed sound, from the current theme
+ * @param {Gio.Cancellable} - A cancellable object used to stop playback
+ * @return {Boolean} - %false if playback unavailable
+ */
+function loopThemeSound(name, cancellable) {
     if (_gsoundContext) {
         _gsoundContext.play_full(
             { 'event.id' : name },
@@ -60,6 +76,7 @@ function loopThemeSound (name, cancellable) {
             }
         );
     } else if (gsconnect.hasCommand('canberra-gtk-play')) {
+        // FIXME: use Gio.Subprocess
         let [ok, pid] = GLib.spawn_async(
             null,
             ['canberra-gtk-play', '-i', name],
@@ -68,14 +85,14 @@ function loopThemeSound (name, cancellable) {
             null
         );
         GLib.child_watch_add(GLib.PRIORITY_DEFAULT, pid, () => {
-            if (!cancellable.is_cancelled()) {
+            if (!cancellable || !cancellable.is_cancelled()) {
                 loopThemeSound(name, cancellable);
             }
         });
     }
 
     return false;
-};
+}
 
 
 var Stream = GObject.registerClass({
@@ -92,7 +109,7 @@ var Stream = GObject.registerClass({
             'volume',
             'StreamVolume',
             'Stream Volume',
-            GObject.ParamFlags.READABLE,
+            GObject.ParamFlags.READWRITE,
             0
         )
     }
@@ -130,7 +147,7 @@ var Stream = GObject.registerClass({
             volume: value,
             time: 1,
             transition: 'easeOutCubic',
-            onComplete: () => { Tweener.removeTweens(this); }
+            onComplete: () => Tweener.removeTweens(this)
         });
     }
 
@@ -140,103 +157,152 @@ var Stream = GObject.registerClass({
             volume: value,
             time: 1,
             transition: 'easeInCubic',
-            onComplete: () => { Tweener.removeTweens(this); }
+            onComplete: () => Tweener.removeTweens(this)
         });
     }
 });
 
 
+/**
+ * A simple class for abstracting volume control.
+ *
+ * The Mixer class uses Gnome Shell's Gvc library to control the system volume
+ * and offers a few convenience functions.
+ */
 var Mixer = class Mixer {
 
     constructor() {
         this._control = _mixerControl;
 
-        this._control.connect('default-sink-changed', () => {
-            this.output = new Stream(this._control.get_default_sink());
-        });
+        if (this._control) {
+            this._defaultSinkChangedId = this._control.connect(
+                'default-sink-changed',
+                this._onDefaultSinkChanged.bind(this)
+            );
 
-        this._control.connect('default-source-changed', () => {
-            this.input = new Stream(this._control.get_default_source());
-        });
+            this._defaultSourceChangedId = this._control.connect(
+                'default-sink-changed',
+                this._onDefaultSourceChanged.bind(this)
+            );
 
-        this._control.connect('state-changed', () => {
-            if (this._control.get_state() == Gvc.MixerControlState.READY) {
-                this.output = new Stream(this._control.get_default_sink());
-                this.input = new Stream(this._control.get_default_source());
-            }
-        });
+            this._stateChangedId = this._control.connect(
+                'state-changed',
+                this._onStateChanged.bind(this)
+            );
 
-        this.output = new Stream(this._control.get_default_sink());
-        this.input = new Stream(this._control.get_default_source());
+            this._output = new Stream(this._control.get_default_sink());
+            this._input = new Stream(this._control.get_default_source());
+        }
 
-        this._previousState = null;
-        this._volumeChanged = 0;
+        this._previousVolume = undefined;
         this._volumeMuted = false;
         this._microphoneMuted = false;
     }
 
+    get input() {
+        return this._input;
+    }
+
+    get output() {
+        return this._output;
+    }
+
+    _onDefaultSinkChanged() {
+        this._output = new Stream(this._control.get_default_sink());
+    }
+
+    _onDefaultSourceChanged() {
+        this._input = new Stream(this._control.get_default_source());
+    }
+
+    _onStateChanged() {
+        if (this._control.get_state() == Gvc.MixerControlState.READY) {
+            this._onDefaultSinkChanged();
+            this._onDefaultSourceChanged();
+        }
+    }
+
     /**
-     * Convenience methods
+     * Lower or raise the output volume to a specified level.
+     *
+     * @param {Number} level - Level to set the output volume to
      */
-    _adjustVolume(action) {
-        debug(action);
+    setVolume(level) {
+        if (!this._control) { return; }
 
-        if (!this._mixer) { return; }
-
-        if (action === 'lower' && !this._prevVolume) {
-            if (this._mixer.output.volume > 0.15) {
-                this._prevVolume = Number(this._mixer.output.volume);
-                this._mixer.output.lower(0.15);
-            }
-        } else if (action === 'mute' && !this._mixer.output.muted) {
-            this._mixer.output.muted = true;
-            this._prevMute = true;
+        if (this.output.volume > level) {
+            this.output.lower(level);
+        } else if (this.output.volume < level) {
+            this.output.raise(level);
         }
     }
 
+    /**
+     * Store the current output volume then lower it to %15
+     */
     lowerVolume() {
-        debug('Lowering system volume to 15%');
+        if (!this._control) { return; }
 
-        if (this._mixer.output.volume > 0.15) {
-            this._volumeChanged = Number(this._mixer.output.volume);
-            this._mixer.output.lower(0.15);
+        if (this.output.volume > 0.15) {
+            this._previousVolume = Number(this.output.volume);
+            this.output.lower(0.15);
         }
     }
 
+    /**
+     * Mute the output volume (speakers)
+     */
     muteVolume() {
-        debug('Muting system volume');
+        if (!this._control) { return; }
 
-        if (!this._mixer.output.muted) {
-            this._mixer.output.muted = true;
+        if (!this.output.muted) {
+            this.output.muted = true;
             this._volumeMuted = true;
         }
     }
 
+    /**
+     * Mute the input volume (microphone)
+     */
     muteMicrophone() {
-        debug('Muting microphone');
+        if (!this._control) { return; }
 
-        if (!this._mixer.input.muted) {
-            this._mixer.input.muted = true;
+        if (!this.input.muted) {
+            this.input.muted = true;
             this._microphoneMuted = true;
         }
     }
 
-    restoreMixer() {
-        debug('');
+    /**
+     * Restore all mixer levels to their previous state
+     */
+    restore() {
+        if (!this._control) { return; }
 
+        // If we muted the microphone, unmute it before restoring the volume
+        if (this._microphoneMuted) {
+            this.input.muted = false;
+            this._microphoneMuted = false;
+        }
+
+        // If we muted the volume, unmute it before restoring the volume
         if (this._volumeMuted) {
-            this._mixer.output.muted = false;
+            this.output.muted = false;
             this._volumeMuted = false;
         }
 
-        if (this._previousVolume > 0) {
-            this._mixer.output.raise(this._previousVolume);
-            this._previousVolume = 0;
+        // If a previous volume is defined, raise it back up to that level
+        if (this._previousVolume !== undefined) {
+            this.output.raise(this._previousVolume);
+            this._previousVolume = undefined;
         }
+    }
 
-        if (this._microphoneMuted) {
-            this._mixer.input.muted = false;
-            this._microphoneMuted = false;
+    destroy() {
+        if (this._control) {
+            this._control.disconnect(this._defaultSinkChangedId);
+            this._control.disconnect(this._defaultSourceChangedId);
+            this._control.disconnect(this._stateChangedId);
         }
     }
 }
