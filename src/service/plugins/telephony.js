@@ -5,6 +5,7 @@ const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 
 const Contacts = imports.modules.contacts;
+const MPRIS = imports.modules.mpris;
 const Sms = imports.modules.sms;
 const Sound = imports.modules.sound;
 const PluginsBase = imports.service.plugins.base;
@@ -67,15 +68,6 @@ var Metadata = {
 };
 
 
-var MediaState = {
-    NONE: 1,
-    VOLUME_LOWERED: 2,
-    VOLUME_MUTED: 4,
-    MICROPHONE_MUTED: 8,
-    MEDIA_PAUSED: 16
-};
-
-
 /**
  * Telephony Plugin
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/telephony
@@ -105,6 +97,8 @@ var Plugin = GObject.registerClass({
         super._init(device, 'telephony');
 
         this.contacts = Contacts.getStore();
+        this.mixer = new Sound.Mixer();
+        this.mpris = MPRIS.get_default();
 
     }
 
@@ -266,25 +260,31 @@ var Plugin = GObject.registerClass({
         });
     }
 
-    _setMediaState(state) {
-        if (state === 1) {
-            // TODO: restore state here
-            this._state = 1;
-        } else {
-            // TODO: set state here base on flags
-            this._state = 2;
+    _setMediaState(event) {
+        switch (this.settings.get_string(`${event}-volume`)) {
+            case 'lower':
+                this.mixer.lowerVolume();
+                break;
 
-            if (state & 2) {
-                this._state &= state;
-            } else if (state & 4) {
-                this._state &= state;
-            }
+            case 'mute':
+                this.mixer.muteVolume();
+                break;
+        }
+
+        if (this.settings.get_boolean(`${event}-pause`)) {
+            this.mpris.pauseAll();
+        }
+
+        if (event === 'talking' && this.settings.get_boolean('talking-microphone')) {
+            this.mixer.muteMicrophone();
         }
     }
 
     _onCancel(event) {
-        this._setMediaState(1);
         this.device.withdraw_notification(`${event.type}|${event.contact.name}`);
+        // Unpause before restoring volume
+        this.mpris.unpauseAll();
+        this.mixer.restore();
     }
 
     /**
@@ -339,7 +339,7 @@ var Plugin = GObject.registerClass({
         debug(event);
 
         this.callNotification(event);
-        this._setMediaState(2); // TODO
+        this._setMediaState('ringing');
     }
 
     _onSms(event) {
@@ -390,7 +390,7 @@ var Plugin = GObject.registerClass({
         this.device.withdraw_notification('ringing|' + event.contact.name);
 
         this.callNotification(event);
-        this._setMediaState(2); // TODO
+        this._setMediaState('talking');
     }
 
     /**
