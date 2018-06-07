@@ -129,7 +129,22 @@ gsconnect.settings.connect('changed::debug', () => {
 });
 gsconnect.settings.emit('changed::debug', 'debug');
 
-window.warning = function(message) {
+
+/**
+ * A simple warning function along the lines of logError()
+ *
+ * @param {Error|String} message - A string or Error to log
+ * @param {String} prefix - An optional prefix for the warning
+ */
+window.logWarning = function(message, prefix=null) {
+    if (message.hasOwnProperty('message')) {
+        message = message.message;
+    }
+
+    if (typeof prefix === 'string') {
+        message = `${prefix}: ${message}`
+    }
+
     GLib.log_structured(
         'gsconnect',
         GLib.LogLevelFlags.LEVEL_WARNING,

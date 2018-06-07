@@ -68,7 +68,7 @@ var Plugin = GObject.registerClass({
             const Caribou = imports.gi.Caribou;
             this._vkbd = Caribou.DisplayAdapter.get_default();
         } catch (e) {
-            warning(`Mousepad: Failed load unicode support: ${e.message}`);
+            logWarning(e, this.device.name);
         }
 
         this.settings.bind(
