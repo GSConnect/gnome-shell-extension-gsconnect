@@ -192,14 +192,14 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
             this._devices[iface.Id] = iface;
 
             // GActions
-            iface.gactions = Gio.DBusActionGroup.get(
+            iface.action_group = Gio.DBusActionGroup.get(
                 iface.g_connection,
                 iface.g_name,
                 iface.g_object_path
             );
 
             // GMenu
-            iface.gmenu = Gio.DBusMenuModel.get(
+            iface.menu_model = Gio.DBusMenuModel.get(
                 iface.g_connection,
                 iface.g_name,
                 iface.g_object_path
@@ -243,7 +243,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
             );
 
             // Try activating the device
-            iface.gactions.activate_action('activate', null);
+            iface.action_group.activate_action('activate', null);
         }
     }
 
@@ -300,7 +300,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
 
             let actionId = this.keybindingManager.add(
                 keybindings[action],
-                () => iface.gactions.activate_action(name, parameter)
+                () => iface.action_group.activate_action(name, parameter)
             );
 
             if (actionId !== 0) {
@@ -329,7 +329,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
 
         if (serviceIndicator._devices[deviceId]) {
             let device = serviceIndicator._devices[deviceId];
-            device.gactions.activate_action(
+            device.action_group.activate_action(
                 'closeNotification',
                 gsconnect.full_pack(id)
             );

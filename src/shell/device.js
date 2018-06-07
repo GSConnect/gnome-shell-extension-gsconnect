@@ -344,12 +344,12 @@ var Button = GObject.registerClass({
 
     _onClicked(button) {
         if (!button.device.Connected) {
-            button.device.gactions.activate_action('activate', null);
+            button.device.action_group.activate_action('activate', null);
         } else if (!button.device.Paired) {
-            button.device.gactions.activate_action('pair', null);
+            button.device.action_group.activate_action('pair', null);
         } else {
             button.get_parent()._delegate._getTopMenu().close(true);
-            button.device.gactions.activate_action('openSettings', null);
+            button.device.action_group.activate_action('openSettings', null);
         }
     }
 });
@@ -414,8 +414,14 @@ var Menu = class Menu extends PopupMenu.PopupMenuSection {
         this.titleBar.add_child(this.deviceBattery);
 
         // Plugin Bar
-        this.pluginBar = new GMenu.FlowBox(iface.gmenu, iface.gactions);
-        this.pluginBar.connect('submenu-toggle', this._onSubmenuToggle.bind(this));
+        this.pluginBar = new GMenu.FlowBox({
+            action_group: iface.action_group,
+            menu_model: iface.menu_model
+        });
+        this.pluginBar.connect(
+            'submenu-toggle',
+            this._onSubmenuToggle.bind(this)
+        );
         this.controlBox.add_child(this.pluginBar);
 
         // Status Bar
@@ -441,12 +447,18 @@ var Menu = class Menu extends PopupMenu.PopupMenuSection {
         });
 
         // Watch GSettings & Properties
-        this._gsettingsId = gsconnect.settings.connect('changed', this._sync.bind(this));
-        this._propertiesId = this.device.connect('g-properties-changed', this._sync.bind(this));
-        this.actor.connect('notify::mapped', this._sync.bind(this));
-
-        // Init
-        this._sync();
+        this._gsettingsId = gsconnect.settings.connect(
+            'changed',
+            this._sync.bind(this)
+        );
+        this._propertiesId = this.device.connect(
+            'g-properties-changed',
+            this._sync.bind(this)
+        );
+        this._mappedId = this.actor.connect(
+            'notify::mapped',
+            this._sync.bind(this)
+        );
     }
 
     _onSubmenuToggle(box, button) {
@@ -492,6 +504,7 @@ var Menu = class Menu extends PopupMenu.PopupMenuSection {
     }
 
     destroy() {
+        this.actor.disconnect(this._mappedId);
         this.device.disconnect(this._propertiesId);
         gsconnect.settings.disconnect(this._gsettingsId);
 
