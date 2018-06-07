@@ -439,23 +439,22 @@ var Plugin = GObject.registerClass({
             // create a new one since we'll only have name *or* number with no
             // decent way to tell which
             let action, contact;
+            let telephony = this.device.lookup_plugin('telephony');
 
-            if (isSms && this.device.get_action_enabled('smsNotification')) {
+            if (isSms && telephony) {
                 debug('An SMS notification');
                 contact = this.contacts.query({
                     name: packet.body.title,
                     number: packet.body.title,
                     single: true
                 });
-                action = this.device.lookup_action('smsNotification');
-            } else if (isMissedCall && this.device.get_action_enabled('callNotification')) {
+            } else if (isMissedCall && telephony) {
                 debug('A missed call notification');
                 contact = this.contacts.query({
                     name: packet.body.text,
                     number: packet.body.text,
                     single: true
                 });
-                action = this.device.lookup_action('callNotification');
             }
 
             // This is a missed call or SMS from a known contact
@@ -469,7 +468,12 @@ var Plugin = GObject.registerClass({
                     (isMissedCall) ? 'missedCall' : 'sms'
                 );
 
-                action.activate(gsconnect.full_pack(event));
+                if (isMissedCall) {
+                    telephony.callNotification(event);
+                } else if (isSms) {
+                    telephony.smsNotification(event);
+                }
+
                 return;
             // A regular notification or notification from an unknown contact
             } else {
@@ -503,7 +507,7 @@ var Plugin = GObject.registerClass({
 
             this.device.showNotification(notif);
             return;
-        }).catch(debug);
+        }).catch(e => logError(e, this.device.name));
     }
 
     /**

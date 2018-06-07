@@ -62,24 +62,6 @@ var Metadata = {
             parameter_type: new GLib.VariantType('s'),
             incoming: ['kdeconnect.telephony'],
             outgoing: ['kdeconnect.sms.request']
-        },
-        callNotification: {
-            summary: _('Call Notification'),
-            description: _('Show a notification tailored for phone calls'),
-            icon_name: 'call-start-symbolic',
-
-            parameter_type: new GLib.VariantType('a{sv}'),
-            incoming: ['kdeconnect.telephony'],
-            outgoing: ['kdeconnect.sms.request']
-        },
-        smsNotification: {
-            summary: _('SMS Notification'),
-            description: _('Show a notification'),
-            icon_name: 'sms-symbolic',
-
-            parameter_type: new GLib.VariantType('a{sv}'),
-            incoming: ['kdeconnect.telephony'],
-            outgoing: ['kdeconnect.sms.request']
         }
     }
 };
