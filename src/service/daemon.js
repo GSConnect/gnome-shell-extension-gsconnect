@@ -339,9 +339,10 @@ var Daemon = GObject.registerClass({
     _watchDevices() {
         this._devices = new Map();
 
-        gsconnect.settings.connect('changed::devices', () => {
-            this._onDevicesChanged();
-        });
+        gsconnect.settings.connect(
+            'changed::devices',
+            this._onDevicesChanged.bind(this)
+        );
 
         this._onDevicesChanged();
         log(`${this._devices.size} devices loaded from cache`);
