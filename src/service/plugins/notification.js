@@ -417,7 +417,7 @@ var Plugin = GObject.registerClass({
         return new Promise((resolve, reject) => {
             //
             let notif = {
-                id: packet.id,
+                id: packet.body.id,
                 icon: icon
             };
 
