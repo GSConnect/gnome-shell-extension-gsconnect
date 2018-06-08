@@ -76,17 +76,7 @@ var Metadata = {
  *       requestReplyId {string} - a UUID for replying (?)
  */
 var Plugin = GObject.registerClass({
-    GTypeName: 'GSConnectNotificationsPlugin',
-    Properties: {
-        'notifications': GObject.param_spec_variant(
-            'notifications',
-            'NotificationList',
-            'A list of active or expected notifications',
-            new GLib.VariantType('aa{sv}'),
-            null,
-            GObject.ParamFlags.READABLE
-        )
-    }
+    GTypeName: 'GSConnectNotificationPlugin'
 }, class Plugin extends PluginsBase.Plugin {
 
     _init(device) {
@@ -516,7 +506,6 @@ var Plugin = GObject.registerClass({
      */
     trackNotification(notif) {
         this._notifications.push(notif);
-        this.notify('notifications');
     }
 
     /**
@@ -529,7 +518,6 @@ var Plugin = GObject.registerClass({
         if (cachedNotif) {
             let index_ = this._notifications.indexOf(cachedNotif);
             this._notifications.splice(index_, 1);
-            this.notify('notifications');
         }
     }
 
