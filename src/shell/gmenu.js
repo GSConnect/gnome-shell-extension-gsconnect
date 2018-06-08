@@ -52,11 +52,13 @@ class ItemInfo {
 
 /**
  * A PopupMenuItem subclass for GMenu items
- * TODO: GActions?
  */
 var ListBoxItem = class ListBoxItem extends PopupMenu.PopupMenuItem {
-    _init(info, actions) {
+    _init(info, action_group) {
         super._init(info.label);
+
+        this._action_group = action_group;
+        this._action_name = info.action.split('.')[1];
 
         if (info.hasOwnProperty('icon')) {
             let icon = new St.Icon({
@@ -71,6 +73,30 @@ var ListBoxItem = class ListBoxItem extends PopupMenu.PopupMenuItem {
         // TODO: maybe do this is stylesheet.css
         this.actor.get_child_at_index(0).style = 'padding-left: 0.5em';
     }
+
+    get action_group() {
+        if (this._action_group === undefined) {
+            return this.get_parent().action_group;
+        }
+
+        return this._action_group;
+    }
+
+    get action_name() {
+        if (this._action_name === undefined) {
+            return null;
+        }
+
+        return this._action_name;
+    }
+
+    get action_target() {
+        if (this._action_target === undefined) {
+            return null;
+        }
+
+        return this._action_target;
+    }
 }
 
 
@@ -79,45 +105,93 @@ var ListBoxItem = class ListBoxItem extends PopupMenu.PopupMenuItem {
  */
 var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
 
-    _init(parentActor, model, gactions) {
+    _init(parentActor, menu_model, action_group) {
         super._init();
 
         this.parentActor = parentActor;
-        this._gactions = gactions;
-        this._gmenu = model;
+        this._action_group = action_group;
+        this._menu_model = menu_model;
+        this._menu_items = new Map();
 
-        this._itemsChangedId = this._gmenu.connect(
+        this._itemsChangedId = this.menu_model.connect(
             'items-changed',
             this._onItemsChanged.bind(this)
         );
-        this._onItemsChanged(model, 0, 0, model.get_n_items());
+        this._onItemsChanged(menu_model, 0, 0, menu_model.get_n_items());
+
+        // GActions
+        this._actionAddedId = this.action_group.connect(
+            'action-added',
+            this._onActionChanged.bind(this)
+        );
+        this._actionEnabledChangedId = this.action_group.connect(
+            'action-enabled-changed',
+            this._onActionChanged.bind(this)
+        );
+        this._actionRemovedId = this.action_group.connect(
+            'action-removed',
+            this._onActionChanged.bind(this)
+        );
+        this._actionStateChangedId = this.action_group.connect(
+            'action-removed',
+            this._onActionChanged.bind(this)
+        );
 
         this.connect('destroy', (listbox) => {
-            listbox._gmenu.disconnect(listbox._itemsChangedId);
+            listbox.menu_model.disconnect(listbox._itemsChangedId);
         });
+    }
+
+    get action_group() {
+        if (this._action_group === undefined) {
+            return this.actor.get_parent().action_group;
+        }
+
+        return this._action_group;
+    }
+
+    get menu_model() {
+        return this._menu_model;
     }
 
     _addGMenuItem(info) {
-        let menuItem = new ListBoxItem(info, this._gactions);
+        let item = new ListBoxItem(info, this.action_group);
 
-        menuItem.connect('activate', (item) => {
-            this._gactions.activate_action(
-                info.action.split('.')[1],
-                (info.target === undefined) ? null : info.target
+        item.connect('activate', (item) => {
+            item.action_group.activate_action(
+                item.action_name,
+                item.action_target
             );
 
+            // TODO: The signal chain here is embarassing
             this.parentActor.emit('submenu-toggle');
         });
 
-        this.addMenuItem(menuItem);
+        this.addMenuItem(item);
+        item.actor.reactive = this.action_group.get_action_enabled(item.action_name);
+        this._menu_items.set(item.action_name, item);
     }
 
     _addGMenuSection(model) {
-        let section = new ListBox(this.parentActor, model, this._gactions);
+        let section = new ListBox(this.parentActor, model, this.action_group);
         this.addMenuItem(section);
     }
 
     _addGMenuSubmenu(model) {
+    }
+
+    _onActionChanged(group, name, enabled) {
+        let menuItem = this._menu_items.get(name);
+
+        if (menuItem !== undefined) {
+            if (typeof enabled !== 'boolean') {
+                enabled = this.action_group.get_action_enabled(name);
+            }
+
+            //menuItem.visible = enabled;
+            menuItem.actor.reactive = enabled;
+            menuItem.actor.opacity = (menuItem.actor.reactive) ? 255 : 128;
+        }
     }
 
     _onItemsChanged(model, position, removed, added) {
@@ -129,6 +203,7 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
         for (let i = 0; i < len; i++) {
             let info = new ItemInfo(model, i);
 
+            // TODO: better section/submenu detection
             // A regular item
             if (info.hasOwnProperty('label')) {
                 this._addGMenuItem(info);
@@ -142,6 +217,15 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
                 }
             }
         }
+    }
+
+    onDestroy(actor) {
+        actor.menu_model.disconnect(actor._itemsChangedId);
+
+        actor.action_group.disconnect(actor._actionAddedId);
+        actor.action_group.disconnect(actor._actionEnabledChangedId);
+        actor.action_group.disconnect(actor._actionRemovedId);
+        actor.action_group.disconnect(actor._actionStateChangedId);
     }
 }
 
@@ -164,8 +248,7 @@ var Button = GObject.registerClass({
             can_focus: true
         });
 
-        this._gactions = params.gactions;
-        this._info = params.info;
+        this._action_group = params.action_group;
 
         // StButton adds the :checked pseudo class, but some themes don't apply
         // it to .system-menu-action
@@ -180,8 +263,8 @@ var Button = GObject.registerClass({
         this.connect('clicked', this._onClicked.bind(this));
 
         // GIcon
-        if (this._info.hasOwnProperty('icon')) {
-            this.child = new St.Icon({ gicon: this._info.icon });
+        if (params.info.hasOwnProperty('icon')) {
+            this.child = new St.Icon({ gicon: params.info.icon });
         } else {
             this.child = new St.Icon({
                 gicon: new Gio.ThemedIcon({
@@ -190,28 +273,27 @@ var Button = GObject.registerClass({
             });
         }
 
-        // Action
-        if (this._info.hasOwnProperty('action')) {
-            this._actionName = this._info.action.split('.')[1];
-            this.visible = this._gactions.get_action_enabled(this._actionName);
+        // Action & Target
+        if (params.info.hasOwnProperty('action')) {
+            this._action_name = params.info.action.split('.')[1];
+        }
+
+        if (params.info.hasOwnProperty('target')) {
+            this._action_target = params.info.target;
         }
 
         // Label
-        if (this._info.hasOwnProperty('label')) {
+        if (params.info.hasOwnProperty('label')) {
             this.tooltip = new Tooltip.Tooltip({
                 parent: this,
-                markup: this._info.label
+                markup: params.info.label
             });
         }
 
         // Submenu
-        this.submenu = null;
-
-        for (let link of this._info.links) {
-            debug('link: ' + JSON.stringify(link));
-
+        for (let link of params.info.links) {
             if (link.name === 'submenu') {
-                this.submenu = new ListBox(this, link.value, this._gactions);
+                this.submenu = new ListBox(this, link.value, this.action_group);
                 this.submenu.actor.style_class = 'popup-sub-menu';
                 this.toggle_mode = true;
                 this.submenu.actor.bind_property(
@@ -223,57 +305,62 @@ var Button = GObject.registerClass({
             }
         }
 
-        this._actionEnabledId = this._gactions.connect(
-            'action-enabled-changed',
-            this._onActionChanged.bind(this)
-        );
-        this._actionAddedId = this._gactions.connect(
-            'action-added',
-            this._onActionChanged.bind(this)
-        );
-        this._actionRemovedId = this._gactions.connect(
-            'action-removed',
-            this._onActionChanged.bind(this)
-        );
-
-        this.connect('destroy', (button) => {
-            button._gactions.disconnect(button._actionEnabledId);
-            button._gactions.disconnect(button._actionAddedId);
-            button._gactions.disconnect(button._actionRemovedId);
-
-            if (button.submenu !== null) {
-                button.submenu.destroy();
-            }
-        });
+        this.connect('destroy', this._onDestroy.bind(this));
     }
 
-    _onActionChanged(group, name, enabled) {
-        if (name === this._actionName) {
-            if (enabled === undefined) {
-                enabled = this._gactions.get_action_enabled(name);
-            }
-
-            this.visible = enabled;
+    get action_group() {
+        if (this._action_group === undefined) {
+            return this.get_parent().action_group;
         }
+
+        return this._action_group;
+    }
+
+    get action_name() {
+        if (this._action_name === undefined) {
+            return null;
+        }
+
+        return this._action_name;
+    }
+
+    get action_target() {
+        if (this._action_target === undefined) {
+            return null;
+        }
+
+        return this._action_target;
+    }
+
+    _getTopMenu() {
+        let parent = this.get_parent();
+
+        while (!parent.hasOwnProperty('_delegate')) {
+            parent = parent.get_parent();
+        }
+
+        return parent._delegate._getTopMenu()
     }
 
     // TODO: fix super ugly delegation chain
     _onClicked(button) {
-        // If this is an actionable item...
-        if (this._actionName !== undefined) {
-            // ...close the top menu
-            let parent = button.get_parent();
+        // If this is an actionable item close the top menu and activate
+        if (button.action_name) {
+            this._getTopMenu().close();
 
-            while (!parent.hasOwnProperty('_delegate')) {
-                parent = parent.get_parent();
-            }
+            button.action_group.activate_action(
+                button.action_name,
+                button.action_target
+            );
+        // Otherwise emit if it has a submenu
+        } else if (button.submenu !== null) {
+            button.emit('submenu-toggle');
+        }
+    }
 
-            parent._delegate._getTopMenu().close();
-
-            // ...then activate the action
-            button._gactions.activate_action(button._actionName, null);
-        } else if (this.submenu !== null) {
-            this.emit('submenu-toggle');
+    _onDestroy(button) {
+        if (button.hasOwnProperty('submenu')) {
+            button.submenu.destroy();
         }
     }
 });
@@ -289,38 +376,105 @@ var FlowBox = GObject.registerClass({
         }
     }
 }, class FlowBox extends St.BoxLayout {
-    _init(model, gactions) {
-        super._init({ style_class: 'gsconnect-plugin-bar' });
+    _init(params) {
+        super._init();
+        Object.assign(this, params);
 
-        this._gactions = gactions;
-        this._gmenu = model;
-        this._itemsChangedId = this._gmenu.connect(
+        this._menu_items = new Map();
+
+        // GMenu
+        this._itemsChangedId = this.menu_model.connect(
             'items-changed',
             this._onItemsChanged.bind(this)
         );
-        this._onItemsChanged(this._gmenu, 0, 0, this._gmenu.get_n_items());
+        this._onItemsChanged(this.menu_model, 0, 0, this.menu_model.get_n_items());
 
-        this.connect('destroy', (flowbox) => {
-            flowbox._gmenu.disconnect(this._itemsChangedId);
-        });
+        // GActions
+        this._actionAddedId = this.action_group.connect(
+            'action-added',
+            this._onActionChanged.bind(this)
+        );
+        this._actionEnabledChangedId = this.action_group.connect(
+            'action-enabled-changed',
+            this._onActionChanged.bind(this)
+        );
+        this._actionRemovedId = this.action_group.connect(
+            'action-removed',
+            this._onActionChanged.bind(this)
+        );
+        this._actionStateChangedId = this.action_group.connect(
+            'action-removed',
+            this._onActionChanged.bind(this)
+        );
+
+        this.connect('destroy', this._onDestroy.bind(this));
+    }
+
+    get action_group() {
+        return this._action_group;
+    }
+
+    set action_group(group) {
+        this._action_group = group;
+    }
+
+    get menu_model() {
+        return this._menu_model;
+    }
+
+    set menu_model(model) {
+        this._menu_model = model
+    }
+
+    _onActionChanged(group, name, enabled) {
+        let menuItem = this._menu_items.get(name);
+
+        if (menuItem !== undefined) {
+            if (typeof enabled !== 'boolean') {
+                enabled = this.action_group.get_action_enabled(name);
+            }
+
+            //menuItem.visible = enabled;
+            menuItem.reactive = enabled;
+            menuItem.opacity = (menuItem.reactive) ? 255 : 128;
+        }
     }
 
     _onItemsChanged(model, position, removed, added) {
         while (removed > 0) {
-            this.get_child_at_index(position).destroy();
+            let button = this.get_child_at_index(position);
+            this._menu_items.delete(button.action_name);
+            button.destroy();
             removed--;
         }
 
         for (let i = 0; i < added; i++) {
             let index = position + i;
             let button = new Button({
-                gactions: this._gactions,
+                action_group: this.action_group,
                 info: new ItemInfo(model, index)
             });
+
+            if (button.action_name) {
+                button.reactive = this.action_group.get_action_enabled(
+                    button.action_name
+                );
+                button.opacity = (button.reactive) ? 255 : 128;
+            }
+
             button.connect('submenu-toggle', this._toggleList.bind(this));
+            this._menu_items.set(button.action_name, button);
 
             this.insert_child_at_index(button, index);
         }
+    }
+
+    _onDestroy(actor) {
+        actor.menu_model.disconnect(actor._itemsChangedId);
+        actor.action_group.disconnect(actor._actionAddedId);
+        actor.action_group.disconnect(actor._actionEnabledChangedId);
+        actor.action_group.disconnect(actor._actionRemovedId);
+        actor.action_group.disconnect(actor._actionStateChangedId);
     }
 
     _toggleList(button) {

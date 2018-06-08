@@ -365,7 +365,7 @@ var Menu = class Menu extends PopupMenu.PopupMenuSection {
 
         this.object = object;
         this.device = iface;
-        this._keybindings = [];
+        this._submenu = undefined;
 
         // Device Box
         this.deviceBox = new PopupMenu.PopupBaseMenuItem({
@@ -416,7 +416,8 @@ var Menu = class Menu extends PopupMenu.PopupMenuSection {
         // Plugin Bar
         this.pluginBar = new GMenu.FlowBox({
             action_group: iface.action_group,
-            menu_model: iface.menu_model
+            menu_model: iface.menu_model,
+            style_class: 'gsconnect-plugin-bar'
         });
         this.pluginBar.connect(
             'submenu-toggle',
@@ -440,7 +441,7 @@ var Menu = class Menu extends PopupMenu.PopupMenuSection {
 
         // Hide the submenu when the device menu is closed
         this._getTopMenu().connect('open-state-changed', (actor, open) => {
-            if (!open && this._submenu) {
+            if (!open && this._submenu !== undefined) {
                 this.box.remove_child(this._submenu.actor);
                 this._submenu = undefined;
             }
@@ -461,14 +462,17 @@ var Menu = class Menu extends PopupMenu.PopupMenuSection {
         );
     }
 
-    _onSubmenuToggle(box, button) {
-        if (this._submenu) {
+    _onSubmenuToggle(flowbox, button) {
+        // Close (remove) any currently opened submenu
+        if (this._submenu !== undefined) {
             this.box.remove_child(this._submenu.actor);
         }
 
+        // Open (add) the submenu if it's a new menu...
         if (this._submenu !== button.submenu) {
             this._submenu = button.submenu;
             this.box.add_child(this._submenu.actor);
+        // ...otherwise unset the current submenu
         } else {
             this._submenu = undefined;
         }
