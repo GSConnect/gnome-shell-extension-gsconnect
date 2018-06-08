@@ -166,7 +166,7 @@ var Plugin = GObject.registerClass({
         if (event.type === 'sms') {
             event.content = packet.body.messageBody;
         } else if (event.type === 'missedCall') {
-            // TRANSLATORS: eg. Missed call from John Smith on Google Pixel
+            // TRANSLATORS: eg. Missed call from John Smith
             event.content = _('Missed call at %s').format(event.time);
         } else if (event.type === 'ringing') {
             // TRANSLATORS: eg. Incoming call from John Smith
@@ -256,7 +256,8 @@ var Plugin = GObject.registerClass({
             action: {
                 name: 'replySms',
                 parameter: gsconnect.full_pack(event)
-            }
+            },
+            buttons: []
         });
     }
 
@@ -294,7 +295,7 @@ var Plugin = GObject.registerClass({
         debug(event);
 
         // Start tracking the duplicate early
-        let notification = this.device._plugins.get('notification');
+        let notification = this.device.lookup_plugin('notification');
 
         if (notification) {
             notification.markDuplicate({
