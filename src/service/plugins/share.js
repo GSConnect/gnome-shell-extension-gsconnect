@@ -401,7 +401,9 @@ var Plugin = GObject.registerClass({
         if (url.startsWith('file://')) {
             return this.sendFile(url);
         // ...
-        } else if (!url.startsWith('http://') && !url.startsWith('https://')) {
+        } else if (!url.startsWith('http://') &&
+                   !url.startsWith('https://') &&
+                   !url.startsWith('tel:')) {
             url = 'https://' + url;
         }
 
@@ -429,14 +431,14 @@ var FileChooserDialog = GObject.registerClass({
         });
         this.device = device;
 
-        this.webEntry = new Gtk.Entry({
+        this._urlEntry = new Gtk.Entry({
             placeholder_text: 'https://',
             hexpand: true,
             visible: true
         });
-        this.webEntry.connect('activate', this._sendLink.bind(this));
+        this._urlEntry.connect('activate', this._sendLink.bind(this));
 
-        this.webButton = new Gtk.ToggleButton({
+        this._urlButton = new Gtk.ToggleButton({
             image: new Gtk.Image({
                 icon_name: 'web-browser-symbolic',
                 pixel_size: 16
@@ -445,28 +447,26 @@ var FileChooserDialog = GObject.registerClass({
             tooltip_text: _('Send a link to %s').format(device.name),
             visible: true
         });
-        this.webButton.connect('toggled', () => {
-            if (this.webButton.active) {
-                this.get_header_bar().set_custom_title(this.webEntry);
-            } else {
-                this.get_header_bar().set_custom_title(null);
-            }
-        });
+        this._urlButton.connect('toggled', this._onUrlButtonToggled.bind(this));
 
         this.add_button(_('Cancel'), Gtk.ResponseType.CANCEL);
         let sendButton = this.add_button(_('Send'), Gtk.ResponseType.OK);
         sendButton.connect('clicked', this._sendLink.bind(this));
 
-
-        this.get_header_bar().pack_end(this.webButton);
+        this.get_header_bar().pack_end(this._urlButton);
         this.set_default_response(Gtk.ResponseType.OK);
         this.connect('delete-event', () => {
             this.emit('response', Gtk.ResponseType.CANCEL);
         });
     }
 
+    _onUrlButtonToggled(button) {
+        let header = this.get_header_bar();
+        header.set_custom_title(button.active ? this._urlEntry : null);
+    }
+
     _sendLink(widget) {
-        if (this.webButton.active && this.webEntry.text.length) {
+        if (this._urlButton.active && this._urlEntry.text.length) {
             this.emit('response', 1);
         }
     }
@@ -475,16 +475,18 @@ var FileChooserDialog = GObject.registerClass({
     run() {
         this.connect('response', (dialog, response) => {
             if (response === Gtk.ResponseType.OK) {
+                let action = this.device.lookup_action('shareFile');
                 let uris = this.get_uris();
-
-                for (let uri of uris) {
-                    this.device._plugins.get('share').shareFile(uri.toString());
-                }
+                uris.map(uri => {
+                    let parameter = new GLib.Variant('s', uri.toString());
+                    this.device.activate_action('shareFile', parameter);
+                });
             } else if (response === 1) {
-                this.device._plugins.get('share').shareUrl(this.webEntry.text);
+                let parameter = new GLib.Variant('s', this._urlEntry.text);
+                this.device.activate_action('shareUrl', parameter);
             }
 
-            this.destroy();
+            dialog.destroy();
         });
         this.show();
     }
