@@ -377,11 +377,7 @@ var Device = GObject.registerClass({
 
     get id() { return this.settings.get_string('id'); }
     get name() { return this.settings.get_string('name'); }
-
-    // TODO: This will have to be revisited when upstream makes a decision on
-    //       how pairing will work with bluetooth connections
     get paired() { return this.settings.get_boolean('paired'); }
-
     get plugins() { return Array.from(this._plugins.keys()) || []; }
 
     get incomingCapabilities() {
@@ -462,10 +458,10 @@ var Device = GObject.registerClass({
             if (!meta) { continue; }
 
             // If it sends packets we can handle
-            if (meta.incomingCapabilities.some(v => this.outgoingCapabilities.includes(v))) {
+            if (meta.incomingCapabilities.some(this.outgoingCapabilities.includes)) {
                 supported.push(name);
             // Or handles packets we can send
-            } else if (meta.outgoingCapabilities.some(v => this.incomingCapabilities.includes(v))) {
+            } else if (meta.outgoingCapabilities.some(this.incomingCapabilities.includes)) {
                 supported.push(name);
             }
         }
@@ -658,7 +654,7 @@ var Device = GObject.registerClass({
             parameter_type: null,
             summary: _('Open Settings'),
             description: _('Open the settings window for the device'),
-            icon_name: 'view-refresh-symbolic'
+            icon_name: 'preferences-system-symbolic'
         });
         openSettings.connect('activate', this.openSettings.bind(this));
         this.add_action(openSettings);
@@ -703,11 +699,11 @@ var Device = GObject.registerClass({
      * Device notifications
      */
     send_notification(id, notification) {
-        this.service.send_notification(this.id + '|' + id, notification);
+        this.service.send_notification(`${this.id}|${id}`, notification);
     }
 
     withdraw_notification(id) {
-        this.service.withdraw_notification(this.id + '|' + id);
+        this.service.withdraw_notification(`${this.id}|${id}`);
     }
 
     showNotification(params) {
@@ -728,7 +724,7 @@ var Device = GObject.registerClass({
         notif.set_priority(params.priority);
 
         if (params.action) {
-            let hasParameter = (button.parameter !== null);
+            let hasParameter = (params.action.parameter !== null);
 
             if (!hasParameter) {
                 params.action.parameter = new GLib.Variant('s', '');
@@ -877,7 +873,7 @@ var Device = GObject.registerClass({
     }
 
     /**
-     * Send or accept an incoming pair request
+     * Send or accept an incoming pair request; also exported as a GAction
      */
     pair() {
         // We're accepting an incoming pair request...
@@ -911,7 +907,7 @@ var Device = GObject.registerClass({
     }
 
     /**
-     * Unpair or reject an incoming pair request
+     * Unpair or reject an incoming pair request; also exported as a GAction
      */
     unpair() {
         debug(`${this.name} (${this.id})`);
@@ -991,7 +987,6 @@ var Device = GObject.registerClass({
     async _loadPlugins() {
         let promises = this.supported_plugins.map(this._loadPlugin.bind(this));
         let results = await Promise.all(promises);
-        this.notify('plugins');
     }
 
     _unloadPlugin(name) {
@@ -1023,8 +1018,6 @@ var Device = GObject.registerClass({
         } catch (e) {
             logError(e, this.device.name);
         }
-
-        this.notify('plugins');
     }
 
     openSettings() {
@@ -1034,13 +1027,16 @@ var Device = GObject.registerClass({
     destroy() {
         this.emit('destroy');
 
+        // Unexport the GActions and GMenu
         Gio.DBus.session.unexport_action_group(this._actionsId);
         Gio.DBus.session.unexport_menu_model(this._menuId);
 
+        // Unexport the Device interface
         this._dbus.flush();
         this._dbus_object.remove_interface(this._dbus);
         this.service.objectManager.unexport(this._dbus_object.g_object_path);
 
+        // Close the channel if still connected
         if (this.connected) {
             this._channel.close();
         }
