@@ -21,6 +21,7 @@ const DBus = imports.modules.dbus;
 const Device = imports.shell.device;
 const DoNotDisturb = imports.shell.donotdisturb;
 const Keybindings = imports.shell.keybindings;
+const Notification = imports.shell.notification;
 
 
 /**
@@ -344,6 +345,8 @@ var serviceIndicator = null;
 function init() {
     debug('Initializing GSConnect');
 
+    Notification.patchNotificationSource();
+    Notification.patchNotificationDaemon();
 };
 
 
