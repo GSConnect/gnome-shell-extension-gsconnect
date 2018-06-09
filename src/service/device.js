@@ -322,7 +322,7 @@ var Device = GObject.registerClass({
         );
 
         this.menu = new Menu();
-        this._menuId = this._dbus.get_connection().export_menu_model(
+        this._menuId = Gio.DBus.session.export_menu_model(
             this._dbus.get_object_path(),
             this.menu
         );
