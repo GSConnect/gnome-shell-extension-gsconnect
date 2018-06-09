@@ -421,10 +421,12 @@ var Channel = GObject.registerClass({
             debug(e.message);
         }
 
-        try {
-            this._listener.close();
-        } catch (e) {
-            debug(e.message);
+        if (this._listener) {
+            try {
+                this._listener.close();
+            } catch (e) {
+                debug(e.message);
+            }
         }
 
         this.emit('disconnected');
