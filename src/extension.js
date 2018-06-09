@@ -32,7 +32,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
     _init() {
         super._init();
 
-        this._devices = {};
+        this._devices = new Set();
         this._menus = {};
 
         this.keybindingManager = new Keybindings.Manager();
@@ -92,7 +92,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
     }
 
     get devices() {
-        return Object.values(this._devices);
+        return this._devices;
     }
 
     _sync(menu) {
@@ -158,11 +158,11 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
     }
 
     _onNameOwnerChanged() {
-        debug(`${this.manager.name_owner}`);
-
         if (this.manager.name_owner === null) {
+            debug(`Service Stopped`);
+
             // Destroy any device proxies
-            for (let iface of Object.values(this._devices)) {
+            for (let iface of this.devices) {
                 this._onInterfaceRemoved(this.manager, iface.get_object(), iface);
             }
 
@@ -187,7 +187,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         if (iface.g_interface_name === 'org.gnome.Shell.Extensions.GSConnect.Device') {
             log(`GSConnect: Adding ${iface.Name}`);
 
-            this._devices[iface.Id] = iface;
+            this.devices.add(iface);
 
             // GActions
             iface.action_group = Gio.DBusActionGroup.get(
@@ -265,7 +265,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
             this._menus[iface.g_object_path].destroy();
             delete this._menus[iface.g_object_path];
 
-            delete this._devices[iface.Id];
+            this.devices.delete(iface);
         }
     }
 
@@ -324,7 +324,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         this.manager.disconnect(this._nameOwnerId);
 
         // Destroy any device proxies
-        for (let iface of Object.values(this._devices)) {
+        for (let iface of this.devices) {
             this._onInterfaceRemoved(this.manager, iface.get_object(), iface);
         }
 
