@@ -138,30 +138,28 @@ var Plugin = GObject.registerClass({
             transfer.connect('succeeded', (transfer) => {
                 this.device.withdraw_notification(transfer.uuid);
 
-                transfer.notif = new Gio.Notification();
-                transfer.notif.set_title(_('Transfer Successful'));
-                transfer.notif.set_body(
+                this.device.showNotification({
+                    id: transfer.uuid,
+                    title: _('Transfer Successful'),
                     // TRANSLATORS: eg. Received 'book.pdf' from Google Pixel
-                    _('Received \'%s\' from %s').format(
+                    body: _('Received \'%s\' from %s').format(
                         packet.body.filename,
                         this.device.name
-                    )
-                );
-                transfer.notif.set_icon(
-                    new Gio.ThemedIcon({ name: 'send-to-symbolic' })
-                );
-
-                transfer.notif.add_button(
-                    _('Open Folder'),
-                    `app.openTransfer('${escape(file.get_parent().get_uri())}')`
-                );
-
-                transfer.notif.add_button(
-                    _('Open File'),
-                    `app.openTransfer('${escape(file.get_uri())}')`
-                );
-
-                this.device.send_notification(transfer.uuid, transfer.notif);
+                    ),
+                    icon: new Gio.ThemedIcon({ name: 'send-to-symbolic' }),
+                    buttons: [
+                        {
+                            label: _('Open Folder'),
+                            action: 'viewFolder',
+                            parameter: new GLib.Variant('s', file.get_parent().get_uri())
+                        },
+                        {
+                            label: _('Open File'),
+                            action: 'viewFolder',
+                            parameter: new GLib.Variant('s', file.get_uri())
+                        }
+                    ]
+                });
 
                 this.transfers.delete(transfer.uuid);
             });
@@ -169,21 +167,17 @@ var Plugin = GObject.registerClass({
             transfer.connect('failed', (transfer, error) => {
                 this.device.withdraw_notification(transfer.uuid);
 
-                transfer.notif = new Gio.Notification();
-                transfer.notif.set_title(_('Transfer Failed'));
-                transfer.notif.set_body(
+                this.device.showNotification({
+                    id: transfer.uuid,
+                    title: _('Transfer Failed'),
                     // TRANSLATORS: eg. Failed to receive 'book.pdf' from Google Pixel: Some error
-                    _('Failed to receive \'%s\' from %s: %s').format(
+                    body: _('Failed to receive \'%s\' from %s: %s').format(
                         packet.body.filename,
                         this.device.name,
                         error
-                    )
-                );
-                transfer.notif.set_icon(
-                    new Gio.ThemedIcon({ name: 'send-to-symbolic' })
-                );
-
-                this.device.send_notification(transfer.uuid, transfer.notif);
+                    ),
+                    icon: new Gio.ThemedIcon({ name: 'send-to-symbolic' })
+                });
 
                 GLib.unlink(filepath);
                 this.transfers.delete(transfer.uuid);
@@ -192,20 +186,16 @@ var Plugin = GObject.registerClass({
             transfer.connect('cancelled', (transfer) => {
                 this.device.withdraw_notification(transfer.uuid);
 
-                transfer.notif = new Gio.Notification();
-                transfer.notif.set_title(_('Transfer Cancelled'));
-                transfer.notif.set_body(
+                this.device.showNotification({
+                    id: transfer.uuid,
+                    title: _('Transfer Cancelled'),
                     // TRANSLATORS: eg. Cancelled transfer of 'book.pdf' from Google Pixel
-                    _('Cancelled transfer of \'%s\' from %s').format(
+                    body: _('Cancelled transfer of \'%s\' from %s').format(
                         packet.body.filename,
                         this.device.name
-                    )
-                );
-                transfer.notif.set_icon(
-                    new Gio.ThemedIcon({ name: 'send-to-symbolic' })
-                );
-
-                this.device.send_notification(transfer.uuid, transfer.notif);
+                    ),
+                    icon: new Gio.ThemedIcon({ name: 'send-to-symbolic' })
+                });
 
                 GLib.unlink(filepath);
                 this.transfers.delete(transfer.uuid);
