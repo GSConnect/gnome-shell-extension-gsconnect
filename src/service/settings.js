@@ -733,42 +733,50 @@ var DeviceSettings = GObject.registerClass({
         if (battery) {
             this.battery_level.get_style_context().add_class('battery-bar');
 
-            this._batteryId = battery.connect('notify', (plugin) => {
-                let level = plugin.level;
-
-                this.battery_level.visible = (level > -1);
-                this.battery_condition.visible = (level > -1);
-                this.battery_percent.visible = (level > -1);
-
-                if (level > -1) {
-                    this.battery_level.value = level;
-                    this.battery_percent.label = _('%d%%').format(level);
-
-                    if (battery.charging) {
-                        this.battery_condition.label = _('Charging…');
-                    } else if (level < 10) {
-                        this.battery_condition.label = _('Caution');
-                    } else if (level < 30) {
-                        this.battery_condition.label = _('Low');
-                    } else if (level < 60) {
-                        this.battery_condition.label = _('Good');
-                    } else if (level >= 60) {
-                        this.battery_condition.label = _('Full');
-                    }
-                }
-            });
+            this._batteryId = battery.connect(
+                'notify',
+                this._onBatteryChanged.bind(this)
+            );
 
             battery.notify('level');
-            battery.connect('destroy', () => {
-                this.battery_level.visible = false;
-                this.battery_condition.visible = false;
-                this.battery_percent.visible = false;
-            });
+            battery.connect('destroy', this._onBatteryDestroy.bind(this));
         } else {
             this.battery_level.visible = false;
             this.battery_condition.visible = false;
             this.battery_percent.visible = false;
         }
+    }
+
+    _onBatteryChanged(battery) {
+        let level = battery.level;
+
+        this.battery_level.visible = (level > -1);
+        this.battery_condition.visible = (level > -1);
+        this.battery_percent.visible = (level > -1);
+
+        if (level > -1) {
+            this.battery_level.value = level;
+            this.battery_percent.label = _('%d%%').format(level);
+
+            if (battery.charging) {
+                this.battery_condition.label = _('Charging…');
+            } else if (level < 10) {
+                this.battery_condition.label = _('Caution');
+            } else if (level < 30) {
+                this.battery_condition.label = _('Low');
+            } else if (level < 60) {
+                this.battery_condition.label = _('Good');
+            } else if (level >= 60) {
+                this.battery_condition.label = _('Full');
+            }
+        }
+    }
+
+    _onBatteryDestroy(battery) {
+        battery.disconnect(this._batteryId);
+        this.battery_level.visible = false;
+        this.battery_condition.visible = false;
+        this.battery_percent.visible = false;
     }
 
     /**
