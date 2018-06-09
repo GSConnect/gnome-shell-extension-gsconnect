@@ -543,7 +543,7 @@ var DeviceSettings = GObject.registerClass({
         //TODO
         // Shortcuts
         'action-shortcuts-list', 'action-shortcuts-reset',
-        'command-shortcuts-list',
+        'command-shortcuts-list', 'command-shortcuts-reset', 'command-shortcuts-title',
         // Advanced
         'action-blacklist'
     ]
@@ -1129,8 +1129,6 @@ var DeviceSettings = GObject.registerClass({
         let applications = JSON.parse(settings.get_string('applications'));
         applications[row.title].enabled = !applications[row.title].enabled;
         row.widget.label = (applications[row.title].enabled) ? _('On') : _('Off');
-
-
         settings.set_string('applications', JSON.stringify(applications));
     }
 
@@ -1221,7 +1219,7 @@ var DeviceSettings = GObject.registerClass({
             let settings = this._getSettings('telephony');
 
             // SMS
-            this.sms_list.set_header_func(section_separators);
+            this.messaging_list.set_header_func(section_separators);
 
             // Incoming Calls
             settings.bind(
@@ -1272,6 +1270,11 @@ var DeviceSettings = GObject.registerClass({
             this._populateKeybindings.bind(this)
         );
         this._populateKeybindings();
+
+        this.action_shortcuts_list.set_header_func(section_separators);
+        this.action_shortcuts_list.set_sort_func((row1, row2) => {
+            return row1.title.localeCompare(row2.title);
+        });
     }
 
     _populateKeybindings() {
@@ -1313,15 +1316,11 @@ var DeviceSettings = GObject.registerClass({
                     widget: widget
                 });
                 row._icon.pixel_size = 16;
-                row.action = action;
+                row.action = action.name;
+                row.summary = action.summary;
                 this.action_shortcuts_list.add(row);
             }
         }
-
-        this.action_shortcuts_list.set_header_func(section_separators);
-        this.action_shortcuts_list.set_sort_func((row1, row2) => {
-            return row1.title.localeCompare(row2.title);
-        });
     }
 
     _onActionShortcutsResetClicked(button) {
@@ -1330,7 +1329,7 @@ var DeviceSettings = GObject.registerClass({
 
     _onShortcutRowActivated(box, row) {
         let dialog = new ShortcutEditor({
-            summary: row.action.summary,
+            summary: row.summary,
             transient_for: box.get_toplevel()
         });
 
@@ -1342,10 +1341,10 @@ var DeviceSettings = GObject.registerClass({
                 );
 
                 if (response === Gtk.ResponseType.OK) {
-                    keybindings[row.action.name] = dialog.accelerator;
+                    keybindings[row.action] = dialog.accelerator;
                 // Reset (Backspace)
                 } else if (response === 1) {
-                    delete keybindings[row.action.name];
+                    delete keybindings[row.action];
                 }
 
                 this.device.settings.set_value(

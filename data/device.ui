@@ -1086,7 +1086,7 @@
                     <property name="can_focus">False</property>
                     <property name="halign">start</property>
                     <property name="margin_bottom">12</property>
-                    <property name="label" translatable="yes">Local Commands</property>
+                    <property name="label" translatable="yes">Commands</property>
                     <attributes>
                       <attribute name="weight" value="bold"/>
                     </attributes>
@@ -1758,7 +1758,7 @@
                 <property name="margin_bottom">32</property>
                 <property name="orientation">vertical</property>
                 <child>
-                  <object class="GtkGrid">
+                  <object class="GtkGrid" id="action-shortcuts-title">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="margin_bottom">12</property>
@@ -1768,7 +1768,7 @@
                         <property name="can_focus">False</property>
                         <property name="halign">start</property>
                         <property name="hexpand">True</property>
-                        <property name="label" translatable="yes">Actions</property>
+                        <property name="label" translatable="yes">Action Shortcuts</property>
                         <attributes>
                           <attribute name="weight" value="bold"/>
                         </attributes>
@@ -1823,15 +1823,39 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkLabel">
+                  <object class="GtkGrid" id="command-shortcuts-title">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="halign">start</property>
                     <property name="margin_bottom">12</property>
-                    <property name="label" translatable="yes">Commands</property>
-                    <attributes>
-                      <attribute name="weight" value="bold"/>
-                    </attributes>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="halign">start</property>
+                        <property name="hexpand">True</property>
+                        <property name="label" translatable="yes">Command Shortcuts</property>
+                        <attributes>
+                          <attribute name="weight" value="bold"/>
+                        </attributes>
+                      </object>
+                      <packing>
+                        <property name="left_attach">0</property>
+                        <property name="top_attach">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="command-shortcuts-reset">
+                        <property name="label" translatable="yes">Reset All...</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <signal name="clicked" handler="_onActionShortcutsResetClicked" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="left_attach">1</property>
+                        <property name="top_attach">0</property>
+                      </packing>
+                    </child>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -2119,6 +2143,7 @@
                   <object class="GtkFrame">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="margin_bottom">32</property>
                     <property name="label_xalign">0</property>
                     <child>
                       <object class="GtkListBox" id="action-blacklist">
