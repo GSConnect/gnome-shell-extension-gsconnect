@@ -5,8 +5,6 @@ const GLib = imports.gi.GLib;
 const Gtk = imports.gi.Gtk;
 
 const Main = imports.ui.main;
-const MessageTray = imports.ui.messageTray;
-const NotificationDaemon = imports.ui.notificationDaemon;
 const PanelMenu = imports.ui.panelMenu;
 const PopupMenu = imports.ui.popupMenu;
 
@@ -309,33 +307,6 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         }
     }
 
-    /**
-     * This is connected to the Shell notification's destroy signal by
-     * overriding MessageTray.Source.pushNotification().
-     *
-     * TODO:
-     * If the session state has changed the daemon should have already stopped
-     * and the remote notification shouldn't be closed.
-     */
-    _onNotificationDestroyed(id) {
-        if (!serviceIndicator || !id) { return; }
-
-        debug(id);
-
-        // Separate the device id from the notification id
-        id = id.split('|');
-        let deviceId = id.splice(0, 1)[0];
-        id = id.join('|');
-
-        if (serviceIndicator._devices[deviceId]) {
-            let device = serviceIndicator._devices[deviceId];
-            device.action_group.activate_action(
-                'closeNotification',
-                gsconnect.full_pack(id)
-            );
-        }
-    }
-
     _openDeviceMenu(indicator) {
         if (gsconnect.settings.get_boolean('show-indicators')) {
             indicator.menu.toggle();
@@ -371,55 +342,12 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
 }
 
 
-/**
- * Monkey-patch for Gnome Shell notifications
- *
- * This removes the notification limit (3) for GSConnect and connects DISMISSED
- * events to the notification plugin so closing Shell notifications works as
- * expected.
- */
-var pushNotification = function (notification) {
-    if (this.notifications.indexOf(notification) >= 0)
-        return;
-
-    if (this._appId === 'org.gnome.Shell.Extensions.GSConnect') {
-        // Look for the GNotification id
-        for (let id in this._notifications) {
-            if (this._notifications[id] === notification) {
-                debug('connecting to shell notification: ' + id);
-
-                // Close the notification remotely when dismissed
-                notification.connect('destroy', (notification, reason) => {
-                    if (reason === MessageTray.NotificationDestroyedReason.DISMISSED) {
-                        serviceIndicator._onNotificationDestroyed(id);
-                    }
-                });
-                break;
-            }
-        }
-    } else {
-        while (this.notifications.length >= MessageTray.MAX_NOTIFICATIONS_PER_SOURCE) {
-            this.notifications.shift().destroy(MessageTray.NotificationDestroyedReason.EXPIRED);
-        }
-    }
-
-    notification.connect('destroy', this._onNotificationDestroy.bind(this));
-    notification.connect('acknowledged-changed', this.countUpdated.bind(this));
-    this.notifications.push(notification);
-    this.emit('notification-added', notification);
-
-    this.countUpdated();
-};
-
-
 var serviceIndicator = null;
 
 
 function init() {
     debug('Initializing GSConnect');
 
-    // TODO: restore prototype???
-    NotificationDaemon.GtkNotificationDaemonAppSource.prototype.pushNotification = pushNotification;
 };
 
 
