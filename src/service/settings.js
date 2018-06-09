@@ -588,10 +588,17 @@ var DeviceSettings = GObject.registerClass({
         this._runcommandSettings();
         this._notificationSettings();
         this._telephonySettings();
-
+        // --------------------------
         this._keybindingSettings();
         this._eventsSettings();
         this._actionSettings();
+
+        // Separate plugins and other settings
+        this.switcher.set_header_func((row, before) => {
+            if (row.get_name() === 'shortcuts') {
+                row.set_header(new Gtk.Separator({ visible: true }));
+            }
+        });
 
         // Device Changes
         this._actionAddedId = this.device.connect(
