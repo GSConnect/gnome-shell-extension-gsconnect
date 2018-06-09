@@ -219,10 +219,6 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
             );
             this._deviceKeybindings(iface);
 
-            // Currently we only setup methods for Device interfaces, and
-            // we only really use it for Activate() and OpenSettings()
-            DBus.proxyMethods(iface, info);
-
             // Device Indicator
             let indicator = new Device.Indicator(object, iface);
             Main.panel.addToStatusArea(iface.g_object_path, indicator);
