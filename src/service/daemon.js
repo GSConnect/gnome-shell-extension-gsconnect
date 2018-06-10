@@ -486,7 +486,7 @@ var Daemon = GObject.registerClass({
 
         this._sendNotification({
             appName: appName,
-            id: replacesId,
+            id: `fdo|null|${replacesId}`,
             title: summary,
             text: body,
             ticker: `${summary}: ${body}`,
@@ -515,7 +515,7 @@ var Daemon = GObject.registerClass({
 
         this._sendNotification({
             appName: appInfo.get_display_name(),
-            id: id,
+            id: `gtk|${application}|${id}`,
             title: notification.title,
             text: notification.body,
             ticker: `${notification.title}: ${notification.body}`,
@@ -689,6 +689,40 @@ var Daemon = GObject.registerClass({
         this._notificationSettings.set_boolean('show-banners', dnd);
 
         Gtk.Application.prototype.send_notification.call(this, id, notification);
+    }
+
+    /**
+     * Remove a local libnotify or Gtk notification.
+     *
+     * @param {String|Number} id - Gtk (string) or libnotify id (uint32)
+     * @param {String|null} application - Application Id if Gtk or null
+     */
+    remove_notification(id, application=null) {
+        return new Promise((resolve, reject) => {
+            let name, path, method, variant;
+
+            if (application !== null) {
+                name = 'org.gtk.Notifications';
+                method = 'RemoveNotification';
+                path = '/org/gtk/Notifications';
+                variant = new GLib.Variant('(ss)', [application, id]);
+            } else {
+                name = 'org.freedesktop.Notifications';
+                path = '/org/freedesktop/Notifications';
+                method = 'CloseNotification';
+                variant = new GLib.Variant('(u)', [id]);
+            }
+
+            Gio.DBus.session.call(
+                name, path, name, method, variant, null,
+                Gio.DBusCallFlags.NONE, -1, null, (connection, res) => {
+                try {
+                    resolve(connection.call_finish(res));
+                } catch (e) {
+                    reject(e);
+                }
+            });
+        }).catch(logError);
     }
 
     vfunc_startup() {
