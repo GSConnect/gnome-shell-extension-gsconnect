@@ -458,10 +458,10 @@ var Device = GObject.registerClass({
             if (!meta) { continue; }
 
             // If it sends packets we can handle
-            if (meta.incomingCapabilities.some(this.outgoingCapabilities.includes)) {
+            if (meta.incomingCapabilities.some(t => this.outgoingCapabilities.includes(t))) {
                 supported.push(name);
             // Or handles packets we can send
-            } else if (meta.outgoingCapabilities.some(this.incomingCapabilities.includes)) {
+            } else if (meta.outgoingCapabilities.some(t => this.incomingCapabilities.includes(t))) {
                 supported.push(name);
             }
         }
