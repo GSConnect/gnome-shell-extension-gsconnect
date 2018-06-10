@@ -101,7 +101,7 @@ var Packet = GObject.registerClass({
     }
 
     [Symbol.toPrimitive](hint) {
-        this.id = GLib.DateTime.new_now_local().to_unix();
+        this.id = Date.now();
 
         switch (hint) {
             case 'string':
