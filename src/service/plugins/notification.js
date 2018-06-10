@@ -463,8 +463,8 @@ var Plugin = GObject.registerClass({
             let isMissedCall = packet.body.id.includes('MissedCall');
             let isSms = packet.body.id.includes('sms');
 
+            // Track the notification so the telephony action can close it later
             if (isSms || isMissedCall) {
-                // Track the notification so the telephony action can close it later
                 let duplicate;
 
                 if ((duplicate = this._duplicates.get(packet.body.ticker))) {
@@ -560,14 +560,28 @@ var Plugin = GObject.registerClass({
     }
 
     /**
-     * Report that a local notification has been closed/dismissed
+     * Report that a local notification has been closed/dismissed.
+     *
+     * NOTE: kdeconnect-android doesn't handle incoming isCancel packets.
+     *
      * @param {String} id - The local notification id
      */
     cancelNotification(id) {
+        debug(id)
+
+        this.device.sendPacket({
+            id: 0,
+            type: 'kdeconnect.notification',
+            body: {
+                isCancel: true,
+                id: id
+            }
+        });
     }
 
     /**
-     * Close a remote notification
+     * Close a remote notification.
+     *
      * @param {String} id - The remote notification id
      */
     closeNotification(id) {
@@ -583,16 +597,19 @@ var Plugin = GObject.registerClass({
     /**
      * Reply to a notification sent with a requestReplyId UUID
      * TODO: this is untested and not used yet
+     *
+     * @param {String} uuid - The requestReplyId for the repliable notification
+     * @param {String} message - The message to reply with
      */
-    replyNotification(id, text) {
+    replyNotification(uuid, message) {
         debug(arguments);
 
         this.device.sendPacket({
             id: 0,
             type: 'kdeconnect.notification.reply',
             body: {
-                replyId: id,
-                messageBody: text
+                requestReplyId: uuid,
+                message: message
             }
         });
     }
