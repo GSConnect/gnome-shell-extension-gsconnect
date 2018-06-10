@@ -545,8 +545,6 @@ var Daemon = GObject.registerClass({
         Gio.AppInfo.launch_default_for_uri(unescape(path), null);
     }
 
-    // TODO: it would be nice to populate this entirely from metadata.json, and
-    //       in turn populate that during meson.build
     _aboutAction() {
         let dialog = new Gtk.AboutDialog({
             application: this,
@@ -563,6 +561,8 @@ var Daemon = GObject.registerClass({
                 true
             ),
             program_name: _('GSConnect'),
+            // TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
+            translator_credits: _('translator-credits'),
             version: gsconnect.metadata.version,
             website: gsconnect.metadata.url,
             license_type: Gtk.License.GPL_2_0
