@@ -37,6 +37,9 @@ var Metadata = {
 };
 
 
+var ID_REGEX = /^(fdo|gtk)\|([^\|]+)\|(.*)$/;
+
+
 /**
  * Notification Plugin
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/notifications
@@ -83,116 +86,122 @@ var Plugin = GObject.registerClass({
         super._init(device, 'notification');
 
         this.contacts = Contacts.getStore();
-
-        this._notifications = [];
-        this.cacheProperties(['_notifications']);
+        this._duplicates = new Map();
 
         // Request remote notifications (if permitted)
-        this.request();
-    }
-
-    get notifications () {
-        return this._notifications;
+        this.requestNotifications();
     }
 
     handlePacket(packet) {
-        debug(packet);
+        switch (packet.type) {
+            case 'kdeconnect.notification':
+                return this._handleNotification(packet);
 
-        if (packet.type === 'kdeconnect.notification.request') {
-            return;
-        } else if (packet.type === 'kdeconnect.notification') {
-            if (packet.body.isCancel) {
-                // TODO: call org.gtk.Notifications->RemoveNotification()
-                this.device.withdraw_notification(packet.body.id);
-                this.untrackNotification(packet.body);
-                debug('closed notification');
-            // Ignore previously posted notifications
-            } else if (this._matchNotification(packet.body)) {
-                debug('ignored cached notification');
-            } else if (packet.payloadSize) {
-                debug('new notification with payload');
-                this._downloadIcon(packet).then(icon => {
-                    return this.receiveNotification(packet, icon);
-                }).catch(e => {
-                    debug(e);
-                    this.receiveNotification(packet);
-                });
-            } else {
-                debug('new notification');
+            case 'kdeconnect.notification.request':
+                return this._handleRequest(packet);
+
+            default:
+                logWarning('Unknown notification packet', this.device.name);
+        }
+    }
+
+    /**
+     * Handle an incoming notification or closed report.
+     */
+    _handleNotification(packet) {
+        // A report that a remote notification has been dismissed
+        if (packet.body.hasOwnProperty('isCancel')) {
+            this.device.withdraw_notification(packet.body.id);
+
+        // A notification with an icon
+        } else if (packet.hasOwnProperty('payloadSize')) {
+            this._downloadIcon(packet).then(icon => {
+                return this.receiveNotification(packet, icon);
+            }).catch(e => {
+                debug(e);
                 this.receiveNotification(packet);
+            });
+
+        // A notification without an icon
+        } else {
+            this.receiveNotification(packet);
+        }
+    }
+
+    /**
+     * Handle an incoming request to close or list notifications.
+     */
+    _handleRequest(packet) {
+        // A request for our notifications. This isnt implemented and would be
+        // pretty hard to without somehow communicating with Gnome Shell and
+        // tallying all it's notifications.
+        if (packet.body.hasOwnProperty('request')) {
+            return;
+
+        // A request to close a local notification
+        //
+        // TODO: kdeconnect-android doesn't send these, and will instead send a
+        // kdeconnect.notification packet with isCancel and an id of "0". Other
+        // than GSConnect, clients might only support uint32 ids anyways since
+        // kdeconnect-kde only explicitly supports libnotify.
+        //
+        // For clients that do support it, we report notification ids in the
+        // form "type|application-id|notification-id" so we can close it with
+        // the appropriate service.
+        } else if (packet.body.hasOwnProperty('cancel')) {
+            let [m, type, application, id] = ID_REGEX.exec(packet.body.cancel);
+
+            switch (type) {
+                case 'fdo':
+                    this.device.service.remove_notification(parseInt(id));
+                    break;
+
+                case 'gtk':
+                    this.device.service.remove_notification(id, application);
+                    break;
+
+                default:
+                    logWarning('Unknown notification type', this.device.name);
             }
         }
     }
 
     /**
-     * Search the cache for a notification by data and return it or %false if
-     * not found
+     * Mark a notification to be closed if received (not shown locally and
+     * closed remotely)
+     *
+     * @param {String} ticker - The notification's expected content
      */
-    _matchNotification(query) {
-        for (let i = 0; i < this._notifications.length; i++) {
-            let notif = this._notifications[i];
+    closeDuplicate(ticker) {
+        debug(ticker);
 
-            // Check for telephony duplicates first
-            if (notif.telId) {
-                // @query is a duplicate stub matching a GNotification id
-                // closeNotification(telId) or markDuplicate(telId)
-                if (query.telId && query.telId === notif.telId) {
-                    debug(`duplicate/matching telId: ${query.telId}`);
-                    return Object.assign(notif, query);
-                // @query is a duplicate notification matching a known ticker
-                // handlePacket(id)
-                } else if ((notif.id || query.id) && query.ticker === notif.ticker) {
-                    debug(`duplicate/matching ticker: ${query.ticker}`);
+        if (this._duplicates.has(ticker)) {
+            let duplicate = this._duplicates.get(ticker);
 
-                    // Update the duplicate stub
-                    Object.assign(notif, query);
-
-                    // It's marked to be closed
-                    if (notif.isCancel) {
-                        debug(`duplicate/isCancel: ${notif.id}`);
-                        //this.closeNotification(notif.id);
-
-                        this.device.sendPacket({
-                            id: 0,
-                            type: 'kdeconnect.notification.request',
-                            body: { cancel: notif.id }
-                        });
-                        this.untrackNotification(notif);
-                    }
-
-                    return notif;
-                }
-            // @query is a full notification matching a timestamp (shown)
-            // We check for timestamp first since the device controls id
-            // turnover and timestamps only change if the phone resets.
-            } else if (notif.time && notif.time === query.time) {
-                debug(`notification/matching timestamp`);
-                return Object.assign(notif, query);
-            // @query is a full notification matching an id
-            } else if (notif.id && notif.id === query.id) {
-                debug(`notification/matching id: ${notif.id}`);
-
-                // Same id, but different ticker means it's likely an updated
-                // notification, so update the cache and return %false to update
-                if (notif.ticker !== query.ticker) {
-                    debug(`notification/matching id/updated ticker: ${notif.ticker}`);
-                    Object.assign(notif, query);
-                    return false;
-                }
-
-                // Otherwise it's likely a duplicate with an updated timestamp
-                debug(`notification/matching id/matching ticker: ${notif.ticker}`);
-                return Object.assign(notif, query);
-            // @query has a matching ticker
-            } else if (notif.ticker === query.ticker) {
-                debug(`notification/matching ticker: ${notif.ticker}`);
-                return Object.assign(notif, query);
+            if (duplicate.id) {
+                this.closeNotification(duplicate.id);
+                this._duplicates.delete(ticker);
+            } else {
+                duplicate.close = true;
             }
+        } else {
+            this._duplicates.set(ticker, { close: true });
         }
+    }
 
-        // Start tracking the new notification and return %false
-        this.trackNotification(query);
-        return false;
+    /**
+     * Mark a notification to be silenced if received (not shown locally)
+     *
+     * @param {String} ticker - The notification's expected content
+     */
+    silenceDuplicate(ticker) {
+        debug(ticker);
+
+        if (this._duplicates.has(ticker)) {
+            this._duplicates.get(ticker).silence = true;
+        } else {
+            this._duplicates.set(ticker, { silence: true });
+        }
     }
 
     /**
@@ -228,24 +237,36 @@ var Plugin = GObject.registerClass({
         }).catch(logError);
     }
 
-    _uploadBytesIcon(packet, gbytes) {
+    /**
+     * A function for uploading named icons from a GLib.Bytes object.
+     *
+     * @param {Core.Packet} packet - The packet for the notification
+     * @param {GLib.Bytes} bytes - The themed icon name
+     */
+    _uploadBytesIcon(packet, bytes) {
         this._uploadIconStream(
             packet,
-            Gio.MemoryInputStream.new_from_bytes(gbytes),
-            gbytes.get_size(),
+            Gio.MemoryInputStream.new_from_bytes(bytes),
+            bytes.get_size(),
             GLib.compute_checksum_for_bytes(
                 GLib.ChecksumType.MD5,
-                gbytes.toArray()
+                bytes.toArray()
             )
         );
     }
 
-    _uploadNamedIcon(packet, name) {
+    /**
+     * A function for uploading named icons. kdeconnect-android can't handle SVG
+     * icons, so if another is not found the notification will be sent without.
+     *
+     * @param {Core.Packet} packet - The packet for the notification
+     * @param {String} icon_name - The themed icon name
+     */
+    _uploadNamedIcon(packet, icon_name) {
         let theme = Gtk.IconTheme.get_default();
-        let sizes = theme.get_icon_sizes(name);
         let info = theme.lookup_icon(
-            name,
-            Math.max.apply(null, sizes),
+            icon_name,
+            Math.max.apply(null, theme.get_icon_sizes(icon_name)),
             Gtk.IconLookupFlags.NO_SVG
         );
 
@@ -259,20 +280,32 @@ var Plugin = GObject.registerClass({
         }
     }
 
-    _uploadFileIcon(packet, gfile) {
-        //debug(gfile);
-
+    /**
+     * A function for uploading icons as Gio.File objects
+     *
+     * @param {Core.Packet} packet - The packet for the notification
+     * @param {Gio.File} file - A Gio.File object for the icon
+     */
+    _uploadFileIcon(packet, file) {
         this._uploadIconStream(
             packet,
-            gfile.read(null),
-            gfile.query_info('standard::size', 0, null).get_size(),
+            file.read(null),
+            file.query_info('standard::size', 0, null).get_size(),
             GLib.compute_checksum_for_bytes(
                 GLib.ChecksumType.MD5,
-                gfile.load_contents(null)[1]
+                file.load_contents(null)[1]
             )
         );
     }
 
+    /**
+     * All icon types end up being uploaded in this function.
+     *
+     * @param {Core.Packet} packet - The packet for the notification
+     * @param {Gio.InputStream} stream - A stream to read the icon bytes from
+     * @param {Number} size - Size of the icon in bytes
+     * @param {String} checksum - MD5 hash of the icon data
+     */
     _uploadIconStream(packet, stream, size, checksum) {
         let transfer = new Lan.Transfer({
             device: this.device,
@@ -335,6 +368,7 @@ var Plugin = GObject.registerClass({
                     );
                 }
 
+                delete notif.icon;
             }
 
             let packet = {
@@ -342,8 +376,8 @@ var Plugin = GObject.registerClass({
                 type: 'kdeconnect.notification',
                 body: notif
             };
-            await this._uploadIcon(packet, icon);
-            debug(`'${notif.appName}' notification forwarded`);
+
+            return await this._uploadIcon(packet, icon);
         }
     }
 
@@ -379,10 +413,14 @@ var Plugin = GObject.registerClass({
     }
 
     /**
-     *
+     * This mimics _parsePacket() from the telephony plugin, then calls either
+     * telephony.Plugin.callNotification() or telephony.Plugin.smsNotification()
      */
-    _parseTelephonyNotification(notif, contact, icon, type) {
+    _showTelephonyNotification(notif, contact, icon, type) {
+        let telephony = this.device.lookup_plugin('telephony');
+
         let event = {
+            id: notif.id,
             type: type,
             contact: contact,
             number: contact.numbers[0].number,
@@ -405,12 +443,12 @@ var Plugin = GObject.registerClass({
 
         if (event.type === 'sms') {
             event.content = notif.text;
+            return telephony.smsNotification(event);
         } else if (event.type === 'missedCall') {
             // TRANSLATORS: eg. Missed call from John Smith on Google Pixel
             event.content = _('Missed call at %s').format(event.time);
+            return telephony.callNotification(event);
         }
-
-        return event;
     }
 
     receiveNotification(packet, icon) {
@@ -422,13 +460,24 @@ var Plugin = GObject.registerClass({
             };
 
             // Check if this is a missed call or SMS notification
-            let isMissedCall = (packet.body.id.indexOf('MissedCall') > -1);
-            let isSms = (packet.body.id.indexOf('sms') > -1);
+            let isMissedCall = packet.body.id.includes('MissedCall');
+            let isSms = packet.body.id.includes('sms');
+
+            if (isSms || isMissedCall) {
+                // Track the notification so the telephony action can close it later
+                let duplicate;
+
+                if ((duplicate = this._duplicates.get(packet.body.ticker))) {
+                    duplicate.id = packet.body.id;
+                } else {
+                    this._duplicates.set(packet.body.ticker, { id: packet.body.id });
+                }
+            }
 
             // If it's an event we support, look for a known contact, but don't
             // create a new one since we'll only have name *or* number with no
             // decent way to tell which
-            let action, contact;
+            let contact;
             let telephony = this.device.lookup_plugin('telephony');
 
             if (isSms && telephony) {
@@ -451,20 +500,12 @@ var Plugin = GObject.registerClass({
             if (contact) {
                 debug('Found known contact');
 
-                let event = this._parseTelephonyNotification(
+                return this._showTelephonyNotification(
                     packet.body,
                     contact,
                     icon,
                     (isMissedCall) ? 'missedCall' : 'sms'
                 );
-
-                if (isMissedCall) {
-                    telephony.callNotification(event);
-                } else if (isSms) {
-                    telephony.smsNotification(event);
-                }
-
-                return;
             // A regular notification or notification from an unknown contact
             } else {
                 // Ignore 'appName' if it's the same as 'title' or this is SMS
@@ -495,89 +536,48 @@ var Plugin = GObject.registerClass({
                 }
             }
 
-            this.device.showNotification(notif);
+            let duplicate;
+
+            if ((duplicate = this._duplicates.get(packet.body.ticker))) {
+                // We've been asked to close this
+                if (duplicate.close) {
+                    this.closeNotification(packet.body.id);
+                    this._duplicates.delete(packet.body.ticker);
+                // We've been asked to silence this (we'll still track it)
+                } else if (duplicate.silence) {
+                    duplicate.id = packet.body.id;
+                // This is a missed call/SMS notification
+                } else {
+                    this.device.showNotification(notif);
+                }
+            // We can show this as normal
+            } else {
+                this.device.showNotification(notif);
+            }
+
             return;
         }).catch(e => logError(e, this.device.name));
     }
 
     /**
-     * Start tracking a notification as active or expected
-     * @param {Object} notif - The body or facsimile from a notification packet
+     * Report that a local notification has been closed/dismissed
+     * @param {String} id - The local notification id
      */
-    trackNotification(notif) {
-        this._notifications.push(notif);
+    cancelNotification(id) {
     }
 
     /**
-     * Stop track a notification
-     * @param {Object} notif - The body or facsimile from a notification packet
+     * Close a remote notification
+     * @param {String} id - The remote notification id
      */
-    untrackNotification(notif) {
-        let cachedNotif = this._matchNotification(notif);
+    closeNotification(id) {
+        debug(id)
 
-        if (cachedNotif) {
-            let index_ = this._notifications.indexOf(cachedNotif);
-            this._notifications.splice(index_, 1);
-        }
-    }
-
-    /**
-     * Mark a notification as handled by Telephony.
-     * @param {Object} notif - A notification stub
-     * @param {String} notif.telId - The local GNotification Id
-     * @param {String} notif.ticker - The expected 'ticker' field
-     * @param {Boolean} [notif.isCancel] - Whether the notification should be closed
-     */
-    markDuplicate(stub) {
-        debug(stub);
-
-        let notif = this._matchNotification(stub);
-
-        // If it's a known notification...
-        if (notif) {
-            // ...with a remote id, marked to be closed
-            if (notif.id && notif.isCancel) {
-                this.closeNotification(stub.telId);
-            }
-        }
-
-        return notif;
-    }
-
-    /**
-     * Close a remote notification and remove it from the cache
-     * @param {string} query - The data used to find the notification
-     */
-    closeNotification(query) {
-        debug(query);
-
-        // Check if this is a known notification
-        let notif;
-
-        if (query.startsWith('sms') || query.startsWith('missedCall')) {
-            notif = this._matchNotification({
-                telId: query,
-                ticker: query.split(/_(.+)/)[1]
-            });
-        } else {
-            notif = this._matchNotification({ id: query });
-        }
-
-        // If it is known and we have the remote id we can close it...
-        if (notif && notif.hasOwnProperty('id')) {
-            debug(`${this.device.name}: closing notification ${notif.id}`);
-
-            this.device.sendPacket({
-                id: 0,
-                type: 'kdeconnect.notification.request',
-                body: { cancel: notif.id }
-            });
-            this.untrackNotification(notif);
-        // ...or we mark it to be closed on arrival if it is known
-        } else if (notif) {
-            debug(`${this.device.name}: marking notification to be closed`);
-            notif.isCancel = true;
-        }
+        this.device.sendPacket({
+            id: 0,
+            type: 'kdeconnect.notification.request',
+            body: { cancel: id }
+        });
     }
 
     /**
@@ -600,7 +600,7 @@ var Plugin = GObject.registerClass({
     /**
      * Request the remote notifications be sent
      */
-    request() {
+    requestNotifications() {
         this.device.sendPacket({
             id: 0,
             type: 'kdeconnect.notification.request',
