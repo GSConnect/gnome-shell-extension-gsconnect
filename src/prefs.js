@@ -11,17 +11,10 @@ function getPath() {
     return Gio.File.new_for_path(m[1]).get_parent().get_path();
 }
 
+// Local Imports
 window.gsconnect = { datadir: getPath() };
 imports.searchPath.unshift(gsconnect.datadir);
 imports._gsconnect;
-
-// Local Imports
-const DBus = imports.modules.dbus;
-
-
-const ServiceProxy = DBus.makeInterfaceProxy(
-    gsconnect.dbusinfo.lookup_interface(gsconnect.app_id)
-);
 
 
 function init() {
@@ -36,12 +29,13 @@ function buildPrefsWidget() {
         return false;
     });
 
-    let daemon = new ServiceProxy({
-        g_connection: Gio.DBus.session,
-        g_name: gsconnect.app_id,
-        g_object_path: gsconnect.app_path
-    });
-    daemon.OpenSettings().then(result => daemon.destroy());
+    let service = Gio.DBusActionGroup.get(
+        Gio.DBus.session,
+        'org.gnome.Shell.Extensions.GSConnect',
+        '/org/gnome/Shell/Extensions/GSConnect'
+    );
+    service.list_actions();
+    service.activate_action('openSettings', null);
 
     return label;
 }
