@@ -44,9 +44,7 @@ class Source extends NotificationDaemon.GtkNotificationDaemonAppSource {
 
             // Separate the device id and the notification id
             // TODO: maybe this should all be done in daemon.js
-            let notifId = id.split('|');
-            let deviceId = notifId.splice(0, 1)[0];
-            notifId = notifId.join('|');
+            let [deviceId, notifId] = id.split(/[\|](.+)/, 2);
 
             let target = new GLib.Variant('(osbv)', [
                 `${gsconnect.app_path}/Device/${deviceId.replace(/\W+/g, '_')}`,
@@ -101,7 +99,7 @@ class Source extends NotificationDaemon.GtkNotificationDaemonAppSource {
      * See: https://gitlab.gnome.org/GNOME/gnome-shell/blob/master/js/ui/messageTray.js#L787-800
      */
     pushNotification(notification) {
-        if (this.notifications.indexOf(notification) >= 0)
+        if (this.notifications.includes(notification))
             return;
 
         notification.connect('destroy', this._onNotificationDestroy.bind(this));
@@ -110,6 +108,29 @@ class Source extends NotificationDaemon.GtkNotificationDaemonAppSource {
         this.emit('notification-added', notification);
 
         this.countUpdated();
+    }
+}
+
+
+/**
+ * If there is an active GtkNotificationDaemonAppSource for GSConnect when the
+ * extension is loaded, it has to be patched in place.
+ */
+function patchGSConnectNotificationSource() {
+    let source = Main.notificationDaemon._gtkNotificationDaemon._sources[gsconnect.app_id];
+
+    if (source !== undefined) {
+        // Patch in the subclassed methods
+        source._closeDeviceNotification = Source.prototype._closeDeviceNotification;
+        source.addNotification = Source.prototype.addNotification;
+        source.pushNotification = Source.prototype.pushNotification;
+
+        // Connect to existing notifications
+        for (let [id, notification] of Object.entries(source._notifications)) {
+            notification.connect('destroy', (notification, reason) => {
+                source._closeDeviceNotification(id, reason);
+            });
+        }
     }
 }
 
@@ -145,35 +166,15 @@ var newEnsureAppSource = function(appId) {
 }
 
 
-function patchNotificationDaemon() {
+/**
+ * Patch/unpatch the Gtk notification daemon to spawn GSConnect sources
+ */
+function patchGtkNotificationDaemon() {
     NotificationDaemon.GtkNotificationDaemon.prototype._ensureAppSource = newEnsureAppSource;
 }
 
 
-function unpatchNotificationDaemon() {
+function unpatchGtkNotificationDaemon() {
     NotificationDaemon.GtkNotificationDaemon.prototype._ensureAppSource = oldEnsureAppSource;
-}
-
-
-/**
- * If there is an active GtkNotificationDaemonAppSource for GSConnect when the
- * extension is loaded, it has to be patched in place.
- */
-function patchNotificationSource() {
-    let source = Main.notificationDaemon._gtkNotificationDaemon._sources[gsconnect.app_id];
-
-    if (source !== undefined) {
-        // Patch in the subclassed methods
-        source._closeDeviceNotification = Source.prototype._closeDeviceNotification;
-        source.addNotification = Source.prototype.addNotification;
-        source.pushNotification = Source.prototype.pushNotification;
-
-        // Connect to existing notifications
-        for (let [id, notification] of Object.entries(source._notifications)) {
-            notification.connect('destroy', (notification, reason) => {
-                source._closeDeviceNotification(id, reason);
-            });
-        }
-    }
 }
 

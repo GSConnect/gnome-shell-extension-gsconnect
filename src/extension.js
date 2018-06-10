@@ -345,15 +345,24 @@ var serviceIndicator = null;
 function init() {
     debug('Initializing GSConnect');
 
-    Notification.patchNotificationSource();
-    Notification.patchNotificationDaemon();
+    // If installed as a user extension, this will install the Desktop entry,
+    // DBus and systemd service files necessary for DBus activation and
+    // GNotifications. Since there's no uninit()/uninstall() hook for extensions
+    // and they're only used *by* GSConnect, they should be okay to leave.
+    gsconnect.installService();
+
+    // These modify the notification source for GSConnect's GNotifications and
+    // need to be active even when the extension is disabled (eg. lock screen).
+    // Since they *only* affect notifications from GSConnect, it should be okay
+    // to leave them applied.
+    Notification.patchGSConnectNotificationSource();
+    Notification.patchGtkNotificationDaemon();
 };
 
 
 function enable() {
     log('Enabling GSConnect');
 
-    gsconnect.installService();
     Gtk.IconTheme.get_default().add_resource_path(gsconnect.app_path + '/icons');
     serviceIndicator = new ServiceIndicator();
 };
