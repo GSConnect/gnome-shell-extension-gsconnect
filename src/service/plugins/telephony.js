@@ -298,12 +298,9 @@ var Plugin = GObject.registerClass({
         let notification = this.device.lookup_plugin('notification');
 
         if (notification) {
-            notification.markDuplicate({
-                telId: event.type + '|' + event.time,
-                // TRANSLATORS: This is _specifically_ for matching missed call notifications on Android.
-                // This should _exactly_ match the Android notification that in english looks like 'Missed call: John Lennon'
-                ticker: _('Missed call') + ': ' + event.contact.name,
-            });
+            // TRANSLATORS: This is _specifically_ for matching missed call notifications on Android.
+            // This should _exactly_ match the Android notification that in english looks like 'Missed call: John Lennon'
+            notification.silenceDuplicate(_('Missed call') + `: ${event.contact.name}`);
         }
 
         // Check for an extant window
@@ -325,11 +322,7 @@ var Plugin = GObject.registerClass({
 
             // Tell the notification plugin to mark any duplicate read
             if (notification) {
-                notification.markDuplicate({
-                    telId: event.type + '|' + event.time,
-                    ticker: event.contact.name + ': ' + event.content,
-                    isCancel: true
-                });
+                notification.closeDuplicate(_('Missed call') + `: ${event.contact.name}`);
             }
         }
 
@@ -347,14 +340,10 @@ var Plugin = GObject.registerClass({
         debug(event);
 
         // Start tracking the duplicate as soon as possible
-        let notification = this.device._plugins.get('notification');
-        let duplicate;
+        let notification = this.device.lookup_plugin('notification');
 
         if (notification) {
-            duplicate = notification.markDuplicate({
-                telId: `sms|${event.contact.name}: ${event.content}`,
-                ticker: `${event.contact.name}: ${event.content}`
-            });
+            notification.silenceDuplicate(`${event.contact.name}: ${event.content}`);
         }
 
         // Check for an extant window
@@ -371,17 +360,11 @@ var Plugin = GObject.registerClass({
 
             // Tell the notification plugin to mark any duplicate read
             if (notification) {
-                duplicate = notification.markDuplicate({
-                    telId: `sms|${event.contact.name}: ${event.content}`,
-                    ticker: `${event.contact.name}: ${event.content}`,
-                    isCancel: true
-                });
+                notification.closeDuplicate(`${event.contact.name}: ${event.content}`);
             }
         }
 
-        if (!duplicate) {
-            this.smsNotification(event);
-        }
+        this.smsNotification(event);
     }
 
     _onTalking(event) {
@@ -521,14 +504,10 @@ var Plugin = GObject.registerClass({
             }
 
             // Tell the notification plugin to mark any duplicate read
-            let notification = this.device._plugins.get('notification');
+            let notification = this.device.lookup_plugin('notification');
 
             if (notification) {
-                notification.markDuplicate({
-                    telId: `sms|${event.contact.name}: ${event.content}`,
-                    ticker: `${event.contact.name}: ${event.content}`,
-                    isCancel: true
-                });
+                notification.closeDuplicate(`${event.contact.name}: ${event.content}`);
             }
         }
 
