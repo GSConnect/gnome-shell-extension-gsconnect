@@ -113,17 +113,8 @@ var Plugin = GObject.registerClass({
         if (packet.body.hasOwnProperty('isCancel')) {
             this.device.withdraw_notification(packet.body.id);
 
-        // A notification with an icon
-        } else if (packet.hasOwnProperty('payloadSize')) {
-            this._downloadIcon(packet).then(icon => {
-                return this.receiveNotification(packet, icon);
-            }).catch(e => {
-                debug(e);
-                this.receiveNotification(packet);
-            });
-
-        // A notification without an icon
-        } else {
+        // A remote notification (that hasn't been marked silent)
+        } else if (!packet.body.hasOwnProperty('silent')) {
             this.receiveNotification(packet);
         }
     }
@@ -132,9 +123,8 @@ var Plugin = GObject.registerClass({
      * Handle an incoming request to close or list notifications.
      */
     _handleRequest(packet) {
-        // A request for our notifications. This isnt implemented and would be
-        // pretty hard to without somehow communicating with Gnome Shell and
-        // tallying all it's notifications.
+        // A request for our notifications. This isn't implemented and would be
+        // pretty hard to without communicating with Gnome Shell.
         if (packet.body.hasOwnProperty('request')) {
             return;
 
@@ -142,8 +132,8 @@ var Plugin = GObject.registerClass({
         //
         // TODO: kdeconnect-android doesn't send these, and will instead send a
         // kdeconnect.notification packet with isCancel and an id of "0". Other
-        // than GSConnect, clients might only support uint32 ids anyways since
-        // kdeconnect-kde only explicitly supports libnotify.
+        // clients might only support uint32 ids anyways since kdeconnect-kde
+        // only explicitly supports libnotify.
         //
         // For clients that do support it, we report notification ids in the
         // form "type|application-id|notification-id" so we can close it with
@@ -210,6 +200,7 @@ var Plugin = GObject.registerClass({
     _uploadIcon(packet, icon) {
         return new Promise((resolve, reject) => {
             switch (true) {
+                // TODO: skipping icons for bluetooth connections currently
                 case (this.device.connection_type === 'bluetooth'):
                     this.device.sendPacket(packet);
                     break;
@@ -307,21 +298,27 @@ var Plugin = GObject.registerClass({
      * @param {String} checksum - MD5 hash of the icon data
      */
     _uploadIconStream(packet, stream, size, checksum) {
-        let transfer = new Lan.Transfer({
-            device: this.device,
-            size: size,
-            input_stream: stream
-        });
+        if (this.device.connection_type === 'tcp') {
+            let transfer = new Lan.Transfer({
+                device: this.device,
+                size: size,
+                input_stream: stream
+            });
 
-        transfer.connect('connected', (channel) => transfer.start());
+            transfer.connect('connected', (channel) => transfer.start());
 
-        transfer.upload().then(port => {
-            packet.payloadSize = size;
-            packet.payloadTransferInfo = { port: port };
-            packet.body.payloadHash = checksum;
+            transfer.upload().then(port => {
+                packet.payloadSize = size;
+                packet.payloadTransferInfo = { port: port };
+                packet.body.payloadHash = checksum;
 
+                this.device.sendPacket(packet);
+            });
+
+        // TODO: skipping icons for bluetooth connections currently
+        } else if (this.device.connection_type === 'bluetooth') {
             this.device.sendPacket(packet);
-        });
+        }
     }
 
     /**
@@ -385,12 +382,14 @@ var Plugin = GObject.registerClass({
      * Receiving Notifications
      */
     _downloadIcon(packet) {
-        debug([packet.payloadTransferInfo.port, packet.payloadSize, packet.body.payloadHash]);
-
         return new Promise((resolve, reject) => {
-            if (packet.payloadTransferInfo.hasOwnProperty('port')) {
-                let iconStream = Gio.MemoryOutputStream.new_resizable();
+            if (!packet.hasOwnProperty('payloadTransferInfo')) {
+                resolve(null);
+            }
 
+            let iconStream = Gio.MemoryOutputStream.new_resizable();
+
+            if (packet.payloadTransferInfo.hasOwnProperty('port')) {
                 let transfer = new Lan.Transfer({
                     device: this.device,
                     size: packet.payloadSize,
@@ -405,7 +404,7 @@ var Plugin = GObject.registerClass({
                     resolve(Gio.BytesIcon.new(iconStream.steal_as_bytes()));
                 });
 
-                transfer.download(packet.payloadTransferInfo.port).catch(e => debug(e));
+                transfer.download(packet.payloadTransferInfo.port).catch(debug);
             } else if (packet.payloadTransferInfo.hasOwnProperty('uuid')) {
                 resolve(null);
             }
@@ -415,6 +414,11 @@ var Plugin = GObject.registerClass({
     /**
      * This mimics _parsePacket() from the telephony plugin, then calls either
      * telephony.Plugin.callNotification() or telephony.Plugin.smsNotification()
+     *
+     * @param {Object} notif - The body of a notification packet
+     * @param {Object} contact - A contact object
+     * @param {Gio.Icon|null} icon - The notification icon (nullable)
+     * @param {String} type - The event type; either "missedCall" or "sms"
      */
     _showTelephonyNotification(notif, contact, icon, type) {
         let telephony = this.device.lookup_plugin('telephony');
@@ -445,58 +449,62 @@ var Plugin = GObject.registerClass({
             event.content = notif.text;
             return telephony.smsNotification(event);
         } else if (event.type === 'missedCall') {
-            // TRANSLATORS: eg. Missed call from John Smith on Google Pixel
+            // TRANSLATORS: eg. Missed call from John Smith
             event.content = _('Missed call at %s').format(event.time);
             return telephony.callNotification(event);
         }
     }
 
-    receiveNotification(packet, icon) {
-        return new Promise((resolve, reject) => {
-            //
-            let notif = {
-                id: packet.body.id,
-                icon: icon
-            };
+    /**
+     * Receive an incoming notification, either handling it as a duplicate of a
+     * telephony notification or displaying to the user.
+     *
+     * @param {Core.Packet} packet - The notification packet
+     */
+    async receiveNotification(packet) {
+        //
+        let icon = await this._downloadIcon(packet);
 
-            // Check if this is a missed call or SMS notification
-            let isMissedCall = packet.body.id.includes('MissedCall');
-            let isSms = packet.body.id.includes('sms');
+        // Check if this is a missed call or SMS notification
+        let isMissedCall = packet.body.id.includes('MissedCall');
+        let isSms = packet.body.id.includes('sms');
+        let telephony = this.device.get_plugin_enabled('telephony');
+        let isTelephony = (telephony && (isMissedCall || isSms));
 
-            // Track the notification so the telephony action can close it later
-            if (isSms || isMissedCall) {
-                let duplicate;
+        // Check if it's a duplicate early so we can skip unnecessary work
+        let duplicate = this._duplicates.get(packet.body.ticker);
 
-                if ((duplicate = this._duplicates.get(packet.body.ticker))) {
-                    duplicate.id = packet.body.id;
-                } else {
-                    this._duplicates.set(packet.body.ticker, { id: packet.body.id });
-                }
+        // This has been marked as a duplicate by the telephony plugin
+        if (isTelephony && duplicate) {
+            // We've been asked to close this
+            if (duplicate.close) {
+                this.closeNotification(packet.body.id);
+                this._duplicates.delete(packet.body.ticker);
+                return;
+            // We've been asked to silence this (we'll still track it)
+            } else if (duplicate.silence) {
+                duplicate.id = packet.body.id;
+                return;
             }
+        }
 
-            // If it's an event we support, look for a known contact, but don't
-            // create a new one since we'll only have name *or* number with no
-            // decent way to tell which
-            let contact;
-            let telephony = this.device.lookup_plugin('telephony');
+        // If it's an event we support, look for a known contact, but don't
+        // create a new one since we'll only have name *or* number with no
+        // decent way to tell which
+        if (isTelephony) {
+            // Track the notification so a telephony action can close it
+            this._duplicates.set(packet.body.ticker, { id: packet.body.id });
 
-            if (isSms && telephony) {
-                debug('An SMS notification');
-                contact = this.contacts.query({
-                    name: packet.body.title,
-                    number: packet.body.title,
-                    single: true
-                });
-            } else if (isMissedCall && telephony) {
-                debug('A missed call notification');
-                contact = this.contacts.query({
-                    name: packet.body.text,
-                    number: packet.body.text,
-                    single: true
-                });
-            }
+            // Look for a contact with a single phone number. We're only getting
+            // a name *or* a number and it's hard to tell which, so we don't
+            // create contacts based on notifications
+            let contact = this.contacts.query({
+                name: (isSms) ? packet.body.title : packet.body.text,
+                number: (isSms) ? packet.body.title : packet.body.text,
+                single: true
+            });
 
-            // This is a missed call or SMS from a known contact
+            // If found, send this as a telephony notification
             if (contact) {
                 debug('Found known contact');
 
@@ -506,63 +514,48 @@ var Plugin = GObject.registerClass({
                     icon,
                     (isMissedCall) ? 'missedCall' : 'sms'
                 );
-            // A regular notification or notification from an unknown contact
+            }
+        }
+
+        // A regular notification or notification from an unknown contact
+        let notif = {
+            id: packet.body.id,
+            icon: icon
+        };
+
+        // Ignore 'appName' if it's the same as 'title' or this is SMS
+        if (packet.body.appName === packet.body.title || isSms) {
+            notif.title = packet.body.title;
+            notif.body = packet.body.text;
+        // Otherwise use the appName as the title
+        } else {
+            notif.title = packet.body.appName;
+            notif.body = packet.body.ticker;
+        }
+
+        // If we don't have an avatar or payload icon, fallback on notification
+        // type, appName then device type
+        if (!notif.icon) {
+            if (isMissedCall) {
+                notif.icon = new Gio.ThemedIcon({ name: 'call-missed-symbolic' });
+            } else if (isSms) {
+                notif.icon = new Gio.ThemedIcon({ name: 'sms-symbolic' });
             } else {
-                // Ignore 'appName' if it's the same as 'title' or this is SMS
-                if (packet.body.appName === packet.body.title || isSms) {
-                    notif.title = packet.body.title;
-                    notif.body = packet.body.text;
-                // Otherwise use the appName as the title
-                } else {
-                    notif.title = packet.body.appName;
-                    notif.body = packet.body.ticker;
-                }
+                notif.icon = new Gio.ThemedIcon({
+                    names: [
+                        packet.body.appName.toLowerCase().replace(' ', '-'),
+                        this.device.type + '-symbolic'
+                    ]
+                });
             }
+        }
 
-            // If we don't have an avatar or payload icon, fallback on
-            // notification type, appName then device type
-            if (!notif.icon) {
-                if (isMissedCall) {
-                    notif.icon = new Gio.ThemedIcon({ name: 'call-missed-symbolic' });
-                } else if (isSms) {
-                    notif.icon = new Gio.ThemedIcon({ name: 'sms-symbolic' });
-                } else {
-                    notif.icon = new Gio.ThemedIcon({
-                        names: [
-                            packet.body.appName.toLowerCase().replace(' ', '-'),
-                            this.device.type + '-symbolic'
-                        ]
-                    });
-                }
-            }
-
-            let duplicate;
-
-            if ((duplicate = this._duplicates.get(packet.body.ticker))) {
-                // We've been asked to close this
-                if (duplicate.close) {
-                    this.closeNotification(packet.body.id);
-                    this._duplicates.delete(packet.body.ticker);
-                // We've been asked to silence this (we'll still track it)
-                } else if (duplicate.silence) {
-                    duplicate.id = packet.body.id;
-                // This is a missed call/SMS notification
-                } else {
-                    this.device.showNotification(notif);
-                }
-            // We can show this as normal
-            } else {
-                this.device.showNotification(notif);
-            }
-
-            return;
-        }).catch(e => logError(e, this.device.name));
+        this.device.showNotification(notif);
     }
 
     /**
      * Report that a local notification has been closed/dismissed.
-     *
-     * NOTE: kdeconnect-android doesn't handle incoming isCancel packets.
+     * TODO: kdeconnect-android doesn't handle incoming isCancel packets.
      *
      * @param {String} id - The local notification id
      */
