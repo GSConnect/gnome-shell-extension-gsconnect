@@ -284,9 +284,8 @@ var ConversationWindow = GObject.registerClass({
         this.device.bind_property('connected', this, 'connected', GObject.BindingFlags.DEFAULT);
 
         // Header Bar
-        this.headerBar = new Gtk.HeaderBar({ show_close_button: true });
+        this.set_titlebar(new Gtk.HeaderBar({ show_close_button: true }));
         this.connect('notify::number', this._setHeaderBar.bind(this));
-        this.set_titlebar(this.headerBar);
 
         // Content Layout
         this.layout = new Gtk.Grid();
@@ -409,23 +408,25 @@ var ConversationWindow = GObject.registerClass({
      * Set the Header Bar and stack child
      */
     _setHeaderBar() {
+        let headerbar = this.get_titlebar();
+
         if (this.recipient) {
-            this.headerBar.custom_title = null;
+            headerbar.custom_title = null;
             this.contactList.entry.text = '';
 
             if (this.recipient.name) {
-                this.headerBar.set_title(this.recipient.name);
-                this.headerBar.set_subtitle(this._displayNumber);
+                headerbar.set_title(this.recipient.name);
+                headerbar.set_subtitle(this._displayNumber);
             } else {
-                this.headerBar.set_title(this._displayNumber);
-                this.headerBar.set_subtitle(null);
+                headerbar.set_title(this._displayNumber);
+                headerbar.set_subtitle(null);
             }
 
             let avatar = new Contacts.Avatar(this.recipient);
             avatar.opacity = 0;
             avatar.halign = Gtk.Align.CENTER;
             avatar.valign = Gtk.Align.CENTER;
-            this.headerBar.pack_start(avatar);
+            headerbar.pack_start(avatar);
 
             this.entry.has_focus = true;
 
@@ -437,7 +438,7 @@ var ConversationWindow = GObject.registerClass({
             });
             this.stack.set_visible_child_name('messages');
         } else {
-            this.headerBar.custom_title = this.contactList.entry;
+            headerbar.custom_title = this.contactList.entry;
             this.contactList.entry.has_focus = true;
             this.stack.set_visible_child_name('contacts');
         }
@@ -501,7 +502,6 @@ var ConversationWindow = GObject.registerClass({
         layout.add(row.messages);
 
         this._thread = row;
-        return row;
     }
 
     /**
@@ -513,12 +513,8 @@ var ConversationWindow = GObject.registerClass({
      */
     _logMessage(message, direction=MessageDirection.OUT) {
         // Check if we need a new thread
-        let thread;
-
-        if (this._thread && this._thread.direction === direction) {
-            thread = this._thread;
-        } else {
-            thread = this._addThread(direction)
+        if (!this._thread || this._thread.direction !== direction) {
+            this._addThread(direction)
         }
 
         let conversationMessage = new ConversationMessage({
@@ -526,7 +522,7 @@ var ConversationWindow = GObject.registerClass({
             direction: direction,
             message: message
         });
-        thread.messages.add(conversationMessage);
+        this._thread.messages.add(conversationMessage);
     }
 
     /**
