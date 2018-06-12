@@ -176,16 +176,18 @@ var ConversationMessage = GObject.registerClass({
             wrap_mode: Pango.WrapMode.WORD_CHAR,
             xalign: (params.direction) ? 0 : 1
         });
-        messageContent.connect('activate-link', (label, uri) => {
-            Gtk.show_uri_on_window(
-                this.get_toplevel(),
-                (uri.indexOf('://') < 0) ? 'http://' + uri : uri,
-                Gdk.get_current_event_time()
-            );
-            return true;
-        });
+        messageContent.connect('activate-link', this._onActivateLink.bind(this));
         this.connect('draw', this._onDraw.bind(this));
         this.add(messageContent);
+    }
+
+    _onActivateLink(label, uri) {
+        Gtk.show_uri_on_window(
+            this.get_toplevel(),
+            (uri.indexOf('://') < 0) ? 'http://' + uri : uri,
+            Gdk.get_current_event_time()
+        );
+        return true;
     }
 
     _onDraw(widget, cr) {
