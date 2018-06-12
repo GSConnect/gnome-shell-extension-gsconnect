@@ -48,17 +48,23 @@ function getStore() {
  *
  * @param {string} path - A local file path
  */
-function getPixbuf(path) {
+function getPixbuf(path, size=null) {
     let loader = new GdkPixbuf.PixbufLoader();
     loader.write(GLib.file_get_contents(path)[1]);
 
     try {
         loader.close();
     } catch (e) {
-        debug(`Warning: ${e.message}`);
+        logWarning(e);
     }
 
-    return loader.get_pixbuf();
+    let pixbuf = loader.get_pixbuf();
+
+    if (size !== null) {
+        return pixbuf.scale_simple(size, size, GdkPixbuf.InterpType.HYPER);
+    }
+
+    return pixbuf;
 };
 
 
@@ -452,24 +458,8 @@ var Avatar = GObject.registerClass({
 
         // Image
         if (this.contact.avatar) {
-            let loader = new GdkPixbuf.PixbufLoader();
-            loader.write(GLib.file_get_contents(this.contact.avatar)[1]);
-
-            // Consider errors at this point to be warnings
-            try {
-                loader.close();
-            } catch (e) {
-                debug(`Warning: ${e.message}`);
-            }
-
-            let pixbuf = loader.get_pixbuf().scale_simple(
-                this.size,
-                this.size,
-                GdkPixbuf.InterpType.HYPER
-            );
-
             this.surface = Gdk.cairo_surface_create_from_pixbuf(
-                pixbuf,
+                getPixbuf(this.contact.avatar, this.size),
                 0,
                 this.get_window()
             );
