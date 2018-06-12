@@ -263,13 +263,22 @@ var ConversationWindow = GObject.registerClass({
             GObject.ParamFlags.READABLE,
             ''
         )
-    }
+    },
+    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/conversation-window.ui',
+    Children: [
+        'headerbar',
+        'overlay', 'info-box', 'info-box', 'info-button', 'info-label', 'stack',
+        'message-window', 'message-list', 'message-entry'
+    ]
 }, class ConversationWindow extends Gtk.ApplicationWindow {
 
     _init(device) {
+        Gtk.Widget.set_connect_func.call(this, (builder, obj, signalName, handlerName, connectObj, flags) => {
+            obj.connect(signalName, this[handlerName].bind(this));
+        });
+
         super._init({
             application: Gio.Application.get_default(),
-            title: _('SMS Conversation'),
             default_width: 300,
             default_height: 300,
             urgency_hint: true
@@ -279,156 +288,117 @@ var ConversationWindow = GObject.registerClass({
         this._notifications = [];
         this._thread = null;
 
-        // Device Status
-        this.connect('notify::connected', this._onConnected.bind(this));
-        this.device.bind_property('connected', this, 'connected', GObject.BindingFlags.DEFAULT);
-
-        // Header Bar
-        this.set_titlebar(new Gtk.HeaderBar({ show_close_button: true }));
-        this.connect('notify::number', this._setHeaderBar.bind(this));
-
-        // Content Layout
-        this.layout = new Gtk.Grid();
-        this.add(this.layout);
-
-        // InfoBar
-        this.infoBar = new Gtk.InfoBar({
-            message_type: Gtk.MessageType.WARNING,
-            revealed: false,
-            visible: false
-        });
-        this.infoBar.get_content_area().add(
-            new Gtk.Image({ icon_name: 'dialog-warning-symbolic' })
-        );
-        this.infoBar.get_content_area().add(
-            new Gtk.Label({
-                // TRANSLATORS: eg. <b>Google Pixel</b> is disconnected
-                label: _('<b>%s</b> is disconnected').format(this.device.name),
-                use_markup: true
-            })
-        );
-        this.layout.attach(this.infoBar, 0, 0, 1, 1);
-
-        // Conversation Stack (Recipients/Threads)
-        this.stack = new Gtk.Stack({
-            transition_type: Gtk.StackTransitionType.SLIDE_UP_DOWN,
-            halign: Gtk.Align.FILL,
-            valign: Gtk.Align.FILL,
-            hexpand: true,
-            vexpand: true
-        });
-        this.layout.attach(this.stack, 0, 1, 1, 1);
+        // TRANSLATORS: eg. <b>Google Pixel</b> is disconnected
+        this.info_label.label = _('%s is disconnected').format(this.device.name);
 
         // Contacts
-        this.contactList = new Contacts.ContactChooser();
-        this.contactList.connect('number-selected', (widget, number) => {
-            // FIXME FIXME
-            this._setRecipient(
-                widget.selected.get(number),
-                number
-            );
-        });
-        this.stack.add_named(this.contactList, 'contacts');
+        this.contact_list = new Contacts.ContactChooser();
+        this._numberSelectedId = this.contact_list.connect(
+            'number-selected',
+            this._onNumberSelected.bind(this)
+        );
+        this.stack.add_named(this.contact_list, 'contacts');
+        this.stack.child_set_property(this.contact_list, 'position', 0);
+        this.stack.set_visible_child_name('contacts');
 
-        // Messages
-        let messageView = new Gtk.Box({
-            orientation: Gtk.Orientation.VERTICAL,
-            margin: 6,
-            spacing: 6
-        });
-        this.stack.add_named(messageView, 'messages');
-
-        // Messages List
-        let messageWindow = new Gtk.ScrolledWindow({
-            can_focus: false,
-            hexpand: true,
-            vexpand: true,
-            hscrollbar_policy: Gtk.PolicyType.NEVER,
-            shadow_type: Gtk.ShadowType.IN
-        });
-        messageView.add(messageWindow);
-
-        this.messageList = new Gtk.ListBox({
-            visible: true,
-            halign: Gtk.Align.FILL
-        });
-        this.messageList.connect('size-allocate', (widget) => {
-            let vadj = messageWindow.get_vadjustment();
-            vadj.set_value(vadj.get_upper() - vadj.get_page_size());
-        });
-        messageWindow.add(this.messageList);
-
-        // Message Entry
-        this.entry = new Gtk.Entry({
-            hexpand: true,
-            placeholder_text: _('Type an SMS message'),
-            secondary_icon_name: 'sms-send',
-            secondary_icon_activatable: true,
-            secondary_icon_sensitive: false
-        });
-        this.entry.connect('changed', (entry, signal_id, data) => {
-            entry.secondary_icon_sensitive = (entry.text.length);
-        });
-        this.entry.connect('activate', this.sendMessage.bind(this));
-        this.entry.connect('icon-release', this.sendMessage.bind(this));
-        messageView.add(this.entry);
-
-        // Clear pending notifications on focus
-        this.entry.connect('notify::has-focus', () => {
-            while (this._notifications.length) {
-                this.device.withdraw_notification(this._notifications.pop());
-            }
-        });
+        // Device Status
+        this._deviceBinding = this.device.bind_property(
+            'connected', this, 'connected', GObject.BindingFlags.SYNC_CREATE
+        );
+        this.info_box.reveal_child = !this.connected;
 
         // Finish initing
         this.show_all();
-        this._setHeaderBar();
+        this._onNumberChanged();
     }
 
-    get device () {
+    get device() {
         return this._device;
     }
 
-    get number () {
+    get number() {
         return this._number || null;
     }
 
-    get recipient () {
+    get recipient() {
         return this._recipient || null;
     }
 
-    _onConnected() {
-        this.contactList.entry.sensitive = this.connected;
-        this.stack.sensitive = this.connected;
-        this.infoBar.revealed = !this.connected;
-        this.infoBar.visible = !this.connected;
+    _onConnected(window) {
+        window.contact_list.entry.sensitive = window.connected;
+        window.stack.sensitive = window.connected;
+        window.stack.opacity = (window.connected) ? 1 : 0.5;
+        window.info_box.reveal_child = !window.connected;
+    }
+
+    /**
+     * Add/Remove the infobox after the reveal completes
+     */
+    _onRevealed(revealer) {
+        let children = this.overlay.get_children();
+
+        if (this.connected && children.includes(this.info_box)) {
+            this.overlay.remove(this.info_box);
+        } else if (!this.connected && !children.includes(this.info_box)) {
+            this.overlay.add_overlay(this.info_box);
+        }
+    }
+
+    _onDestroy(window) {
+        window.get_titlebar().remove(window.contact_list.entry);
+        window.contact_list.disconnect(window._numberSelectedId);
+        window.contact_list.destroy();
+        delete window.contact_list;
+
+        window._deviceBinding.unbind();
+    }
+
+    _onEntryChanged(entry) {
+        entry.secondary_icon_sensitive = (entry.text.length);
+    }
+
+    _onEntryHasFocus(entry) {
+        while (this._notifications.length) {
+            this.device.withdraw_notification(this._notifications.pop());
+        }
+    }
+
+    _onInfoButtonClicked(button) {
+        this.device.activate();
+    }
+
+    _onMessageLogged(listbox) {
+        let vadj = this.message_window.get_vadjustment();
+        vadj.set_value(vadj.get_upper() - vadj.get_page_size());
+    }
+
+    _onNumberSelected(contact_list, number) {
+        this._setRecipient(contact_list.selected.get(number), number);
     }
 
     /**
      * Set the Header Bar and stack child
      */
-    _setHeaderBar() {
-        let headerbar = this.get_titlebar();
-
+    _onNumberChanged(window) {
         if (this.recipient) {
-            headerbar.custom_title = null;
-            this.contactList.entry.text = '';
+            this.headerbar.custom_title = null;
+            this.contact_list.entry.text = '';
 
             if (this.recipient.name) {
-                headerbar.set_title(this.recipient.name);
-                headerbar.set_subtitle(this._displayNumber);
+                this.headerbar.set_title(this.recipient.name);
+                this.headerbar.set_subtitle(this._displayNumber);
             } else {
-                headerbar.set_title(this._displayNumber);
-                headerbar.set_subtitle(null);
+                this.headerbar.set_title(this._displayNumber);
+                this.headerbar.set_subtitle(null);
             }
 
             let avatar = new Contacts.Avatar(this.recipient);
             avatar.opacity = 0;
             avatar.halign = Gtk.Align.CENTER;
             avatar.valign = Gtk.Align.CENTER;
-            headerbar.pack_start(avatar);
+            this.headerbar.pack_start(avatar);
 
-            this.entry.has_focus = true;
+            this.message_entry.has_focus = true;
 
             // Totally unnecessary animation
             Tweener.addTween(avatar, {
@@ -438,8 +408,8 @@ var ConversationWindow = GObject.registerClass({
             });
             this.stack.set_visible_child_name('messages');
         } else {
-            headerbar.custom_title = this.contactList.entry;
-            this.contactList.entry.has_focus = true;
+            this.headerbar.custom_title = this.contact_list.entry;
+            this.contact_list.entry.has_focus = true;
             this.stack.set_visible_child_name('contacts');
         }
     }
@@ -448,10 +418,8 @@ var ConversationWindow = GObject.registerClass({
      * Add a new thread, which is a series of sequential messages from one user
      * with a single instance of the sender's avatar.
      *
-     * @param {object} contact - The contact object
      * @param {MessageDirection} - The direction of the message; one of the
      *     MessageDirection enums (either OUT [0] or IN [1])
-     * @return {Gtk.ListBoxRow} - The new thread
      */
     _addThread(direction) {
         let sender;
@@ -571,26 +539,26 @@ var ConversationWindow = GObject.registerClass({
             return;
         }
 
-        // Send messages
-        let action = this.device.lookup_action('sendSms');
-
-        if (action && action.enabled) {
-            let parameter = new GLib.Variant('(ss)', [this.number, entry.text]);
-            action.activate(parameter);
+        if (this.device.get_action_enabled('sendSms')) {
+            this.device.activate_action(
+                'sendSms',
+                new GLib.Variant('(ss)', [this.number, entry.text])
+            );
 
             // Log the outgoing message
             this._logMessage(entry.text, MessageDirection.OUT);
-            this.entry.text = '';
+            this.message_entry.text = '';
         }
     }
 
     /**
      * Send the contents of the message entry and place the cursor at the end
+     *
      * @param {String} text - The text to place in the entry
      */
     setMessage(text) {
-        this.entry.text = text;
-        this.entry.emit('move-cursor', 0, text.length, false);
+        this.message_entry.text = text;
+        this.message_entry.emit('move-cursor', 0, text.length, false);
     }
 });
 
