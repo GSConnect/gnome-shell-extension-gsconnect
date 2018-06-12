@@ -621,21 +621,6 @@ var DeviceSettings = GObject.registerClass({
         );
 
         // Cleanup
-        this.connect('destroy', (widget) => {
-
-            widget.switcher.destroy();
-            widget.row.destroy();
-            widget.device.disconnect(widget._actionAddedId);
-            widget.device.disconnect(widget._actionRemovedId);
-            widget.device.disconnect(widget._actionEnabledId);
-            widget.device.settings.disconnect(widget._keybindingsId);
-
-            if (widget._batteryId) {
-                widget.device._plugins.get('battery').disconnect(
-                    widget._batteryId
-                );
-            }
-        });
     }
 
     get symbolic_icon() {
@@ -719,6 +704,13 @@ var DeviceSettings = GObject.registerClass({
             this.row.icon.gicon = this.symbolic_icon;
             this.row.icon.opacity = this.connected ? 1 : 0.5;
         }
+    }
+
+    _onDestroy(widget) {
+        widget.device.disconnect(widget._actionAddedId);
+        widget.device.disconnect(widget._actionRemovedId);
+        widget.device.disconnect(widget._actionEnabledId);
+        widget.device.settings.disconnect(widget._keybindingsId);
     }
 
     _onStatusRowActivated(box, row) {

@@ -8,6 +8,7 @@
     <property name="hexpand">True</property>
     <property name="vexpand">True</property>
     <property name="transition_type">crossfade</property>
+    <signal name="destroy" handler="_onDestroy" swapped="no"/>
     <child>
       <object class="GtkScrolledWindow" id="information-page">
         <property name="visible">True</property>
