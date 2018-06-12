@@ -307,7 +307,7 @@ var ConversationWindow = GObject.registerClass({
         this._deviceBinding = this.device.bind_property(
             'connected', this, 'connected', GObject.BindingFlags.SYNC_CREATE
         );
-        this.info_box.reveal_child = !this.connected;
+        this.overlay.remove(this.info_box);
 
         // Finish initing
         this.show_all();
@@ -327,9 +327,15 @@ var ConversationWindow = GObject.registerClass({
     }
 
     _onConnected(window) {
+        let children = this.overlay.get_children();
+
+        // If disconnected, add the info box before revealing
+        if (!window.connected && !children.includes(this.info_box)) {
+            window.overlay.add_overlay(window.info_box);
+        }
+
         window.contact_list.entry.sensitive = window.connected;
-        window.stack.sensitive = window.connected;
-        window.stack.opacity = (window.connected) ? 1 : 0.5;
+        window.stack.opacity = (window.connected) ? 1 : 0.3;
         window.info_box.reveal_child = !window.connected;
     }
 
@@ -339,10 +345,9 @@ var ConversationWindow = GObject.registerClass({
     _onRevealed(revealer) {
         let children = this.overlay.get_children();
 
+        // If connected, remove the info box after revealing
         if (this.connected && children.includes(this.info_box)) {
             this.overlay.remove(this.info_box);
-        } else if (!this.connected && !children.includes(this.info_box)) {
-            this.overlay.add_overlay(this.info_box);
         }
     }
 
@@ -441,7 +446,7 @@ var ConversationWindow = GObject.registerClass({
             margin: 6
         });
         row.direction = direction;
-        this.messageList.add(row);
+        this.message_list.add(row);
 
         let layout = new Gtk.Box({
             visible: true,
