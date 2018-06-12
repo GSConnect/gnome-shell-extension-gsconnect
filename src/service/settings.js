@@ -159,8 +159,14 @@ var SidebarRow = GObject.registerClass({
         });
         this.add(this.box);
 
+        if (params.icon === 'string') {
+            params.icon = new Gio.ThemedIcon({
+                name: params.icon
+            });
+        }
+
         this.icon = new Gtk.Image({
-            icon_name: params.icon,
+            gicon: params.icon,
             pixel_size: 16,
             visible: true
         });
@@ -633,13 +639,15 @@ var DeviceSettings = GObject.registerClass({
     }
 
     get symbolic_icon() {
+        let icon_name = `${this.device.icon_name}-symbolic`;
+
         if (!this.paired) {
-            let icon = this.device.icon_name;
-            icon = (icon === 'computer') ? 'desktop' : icon;
-            return icon + 'disconnected';
+            let rgba = new Gdk.RGBA({ red: 0.95, green: 0, blue: 0, alpha: 0.9 });
+            let info = Gtk.IconTheme.get_default().lookup_icon(icon_name, 16, 0);
+            return info.load_symbolic(rgba, null, null, null)[0];
         }
 
-        return this.device.icon_name + '-symbolic';
+        return new Gio.ThemedIcon({ name: icon_name });
     }
 
     _getSettings(name) {
@@ -708,7 +716,8 @@ var DeviceSettings = GObject.registerClass({
         }
 
         if (this.row) {
-            this.row.icon_name = this.symbolic_icon;
+            this.row.icon.gicon = this.symbolic_icon;
+            this.row.icon.opacity = this.connected ? 1 : 0.5;
         }
     }
 
