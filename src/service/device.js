@@ -302,7 +302,7 @@ var Device = GObject.registerClass({
 
         // Export an object path for the device
         this._dbus_object = new Gio.DBusObjectSkeleton({
-            g_object_path: `${gsconnect.app_path}/Device/${deviceId.replace(/\W+/g, '_')}`
+            g_object_path: this.object_path
         });
         this.service.objectManager.export(this._dbus_object);
 
@@ -317,13 +317,13 @@ var Device = GObject.registerClass({
 
         // GActions/GMenu
         this._actionsId = Gio.DBus.session.export_action_group(
-            this._dbus.get_object_path(),
+            this.object_path,
             this
         );
 
         this.menu = new Menu();
         this._menuId = Gio.DBus.session.export_menu_model(
-            this._dbus.get_object_path(),
+            this.object_path,
             this.menu
         );
 
@@ -418,7 +418,7 @@ var Device = GObject.registerClass({
     }
 
     get object_path() {
-        return this._dbus.get_object_path();
+        return `${gsconnect.app_path}/Device/${this.id.replace(/\W+/g, '_')}`;
     }
 
     _handleIdentity(packet) {
@@ -729,7 +729,7 @@ var Device = GObject.registerClass({
 
             notif.set_default_action_and_target(
                 'app.deviceAction',
-                new GLib.Variant('(osbv)', [
+                new GLib.Variant('(ssbv)', [
                     this._dbus.get_object_path(),
                     params.action.name,
                     hasParameter,
@@ -748,7 +748,7 @@ var Device = GObject.registerClass({
             notif.add_button_with_target(
                 button.label,
                 'app.deviceAction',
-                new GLib.Variant('(osbv)', [
+                new GLib.Variant('(ssbv)', [
                     this._dbus.get_object_path(),
                     button.action,
                     hasParameter,
@@ -1018,7 +1018,7 @@ var Device = GObject.registerClass({
     }
 
     openSettings() {
-        this.service.openSettings(this._dbus.get_object_path());
+        this.service.openSettings(this.id);
     }
 
     destroy() {

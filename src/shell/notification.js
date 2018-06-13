@@ -46,8 +46,8 @@ class Source extends NotificationDaemon.GtkNotificationDaemonAppSource {
             // TODO: maybe this should all be done in daemon.js
             let [deviceId, notifId] = id.split(/[\|](.+)/, 2);
 
-            let target = new GLib.Variant('(osbv)', [
-                `${gsconnect.app_path}/Device/${deviceId.replace(/\W+/g, '_')}`,
+            let target = new GLib.Variant('(ssbv)', [
+                deviceId,
                 'closeNotification',
                 true,
                 new GLib.Variant('s', notifId)

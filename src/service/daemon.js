@@ -574,7 +574,7 @@ var Daemon = GObject.registerClass({
      *
      * @param {Gio.Action} action - ...
      * @param {GLib.Variant(av)} parameter - ...
-     * @param {GLib.Variant(o)} parameter[0] - Object path of the device
+     * @param {GLib.Variant(s)} parameter[0] - Device Id
      * @param {GLib.Variant(s)} parameter[1] - GAction name
      * @param {GLib.Variant(b)} parameter[2] - %false if the parameter is null
      * @param {GLib.Variant(v)} parameter[3] - GAction parameter
@@ -599,7 +599,7 @@ var Daemon = GObject.registerClass({
     _initActions() {
         let actions = [
             // Device
-            ['deviceAction', this._deviceAction.bind(this), '(osbv)'],
+            ['deviceAction', this._deviceAction.bind(this), '(ssbv)'],
             // Daemon
             ['broadcast', this.broadcast.bind(this)],
             ['openSettings', this.openSettings.bind(this)],
@@ -620,7 +620,7 @@ var Daemon = GObject.registerClass({
 
     /**
      * Open the application settings, for @device if given.
-     * @param {String} [device] - DBus object path of the device
+     * @param {String} [device] - Device id
      *
      * The DBus method takes no arguments; Device.openSettings() calls this and
      * populates @device.
