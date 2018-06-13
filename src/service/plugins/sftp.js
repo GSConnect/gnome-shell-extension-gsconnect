@@ -107,7 +107,7 @@ var Plugin = GObject.registerClass({
             this._uid = info.get_attribute_uint32('unix::uid').toString();
             this._gid = info.get_attribute_uint32('unix::gid').toString();
         } catch (e) {
-            logError(e);
+            logError(e, this.device.name);
             return false;
         }
 
@@ -389,7 +389,7 @@ var Plugin = GObject.registerClass({
 
             this._mounted = false;
         } catch (e) {
-            debug(e.message);
+            logWarning(e, this.device.name);
         }
     }
 
@@ -409,10 +409,10 @@ var Plugin = GObject.registerClass({
     }
 
     destroy() {
-        // This should also ensure that only the 'mount' item is in the menu
+        // Make extra sure we remove all menu items
+        this.unmount();
         this._removeSubmenu();
         this.device.menu.remove_action('device.mount');
-        this.unmount();
 
         PluginsBase.Plugin.prototype.destroy.call(this);
     }
