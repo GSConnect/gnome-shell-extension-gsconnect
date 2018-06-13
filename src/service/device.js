@@ -730,7 +730,7 @@ var Device = GObject.registerClass({
             notif.set_default_action_and_target(
                 'app.deviceAction',
                 new GLib.Variant('(ssbv)', [
-                    this._dbus.get_object_path(),
+                    this.id,
                     params.action.name,
                     hasParameter,
                     params.action.parameter
@@ -749,7 +749,7 @@ var Device = GObject.registerClass({
                 button.label,
                 'app.deviceAction',
                 new GLib.Variant('(ssbv)', [
-                    this._dbus.get_object_path(),
+                    this.id,
                     button.action,
                     hasParameter,
                     button.parameter
