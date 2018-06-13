@@ -1,7 +1,5 @@
 'use strict';
 
-const Tweener = imports.tweener.tweener;
-
 const Gdk = imports.gi.Gdk;
 const GdkPixbuf = imports.gi.GdkPixbuf;
 const Gio = imports.gi.Gio;
@@ -399,21 +397,19 @@ var ConversationWindow = GObject.registerClass({
                 this.headerbar.set_subtitle(null);
             }
 
-            let avatar = new Contacts.Avatar(this.recipient);
-            avatar.opacity = 0;
-            avatar.halign = Gtk.Align.CENTER;
-            avatar.valign = Gtk.Align.CENTER;
-            this.headerbar.pack_start(avatar);
-
-            this.message_entry.has_focus = true;
-
-            // Totally unnecessary animation
-            Tweener.addTween(avatar, {
-                opacity: 1,
-                time: 0.4,
-                transition: 'easeOutCubic'
+            let revealer = new Gtk.Revealer({
+                halign: Gtk.Align.CENTER,
+                valign: Gtk.Align.CENTER,
+                transition_duration: 400,
+                transition_type: Gtk.RevealerTransitionType.SLIDE_UP,
+                visible: true,
+                child: new Contacts.Avatar(this.recipient)
             });
+            this.headerbar.pack_start(revealer);
+            revealer.reveal_child = true;
+
             this.stack.set_visible_child_name('messages');
+            this.message_entry.has_focus = true;
         } else {
             this.headerbar.custom_title = this.contact_list.entry;
             this.contact_list.entry.has_focus = true;
