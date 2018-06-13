@@ -533,7 +533,7 @@ var Device = GObject.registerClass({
             } else if (!this.connected) {
                 this._channel.emit('connected');
             }
-        } else {
+        } else if (packet.hasOwnProperty('type')) {
             this._onReceived(this._channel, packet);
         }
     }

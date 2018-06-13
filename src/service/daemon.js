@@ -250,41 +250,49 @@ var Daemon = GObject.registerClass({
     /**
      * Device Methods
      */
-    _addDevice(packet, channel=null) {
-        debug(packet);
+    _ensureDevice(packet) {
+        return new Promise((resolve, reject) => {
+            let device = this._devices.get(packet.body.deviceId);
 
-        let id = packet.body.deviceId;
+            if (device === undefined) {
+                log(`GSConnect: Adding ${packet.body.deviceName}`);
 
-        if (this._devices.has(id)) {
-            log(`GSConnect: Updating ${packet.body.deviceName}`);
+                device = new Device.Device(packet);
 
-            this._devices.get(id).update(packet, channel);
-        } else {
-            log(`GSConnect: Adding ${packet.body.deviceName}`);
+                device._pruneId = device.connect(
+                    'notify::connected',
+                    this._pruneDevices.bind(this)
+                );
 
-            return new Promise((resolve, reject) => {
-                resolve(new Device.Device(packet));
-            }).then(device => {
-                // TODO: better
-                device.connect('notify::connected', (device) => {
-                    if (!device.connected) { this._pruneDevices(); }
-                });
-                this._devices.set(id, device);
+                this._devices.set(device.id, device);
                 this.notify('devices');
-
-                device.update(packet, channel);
 
                 let knownDevices = gsconnect.settings.get_strv('devices');
 
-                if (knownDevices.indexOf(device.id) < 0) {
+                if (!knownDevices.includes(device.id)) {
                     knownDevices.push(device.id);
                     gsconnect.settings.set_strv('devices', knownDevices);
                 }
-            }).catch(debug);
+            } else {
+                log(`GSConnect: Updating ${packet.body.deviceName}`);
+            }
+
+            resolve(device);
+        });
+    }
+
+    async _addDevice(packet, channel=null) {
+        try {
+            let device = await this._ensureDevice(packet);
+            device.update(packet, channel);
+            return device;
+        } catch (e) {
+            logError(e);
+            return;
         }
     }
 
-    _removeDevice(id) {
+    async _removeDevice(id) {
         debug(id);
 
         let device = this._devices.get(id);
@@ -296,29 +304,11 @@ var Daemon = GObject.registerClass({
             this._devices.delete(id);
             this.notify('devices');
         }
+
+        return id;
     }
 
-    _onDevicesChanged() {
-        let knownDevices = gsconnect.settings.get_strv('devices');
-
-        // New devices
-        let newDevices = knownDevices.map(id => {
-            if (!this._devices.has(id)) {
-                return this._addDevice({ body: { deviceId: id } });
-            }
-        });
-
-        // Old devices
-        Promise.all(newDevices).then(result => {
-            for (let device of this._devices.values()) {
-                if (knownDevices.indexOf(device.id) < 0) {
-                    this._removeDevice(device.id);
-                }
-            }
-        }).catch(debug);
-    }
-
-    _pruneDevices() {
+    async _pruneDevices() {
         // Don't prune devices while the settings window is open
         if (this._window && this._window.visible) {
             return;
@@ -328,22 +318,11 @@ var Daemon = GObject.registerClass({
 
         for (let device of this._devices.values()) {
             if (!device.connected && !device.paired) {
+                let id = await this._removeDevice(device.id);
                 knownDevices.splice(knownDevices.indexOf(device.id), 1);
                 gsconnect.settings.set_strv('devices', knownDevices);
             }
         }
-    }
-
-    _watchDevices() {
-        this._devices = new Map();
-
-        gsconnect.settings.connect(
-            'changed::devices',
-            this._onDevicesChanged.bind(this)
-        );
-
-        this._onDevicesChanged();
-        log(`${this._devices.size} devices loaded from cache`);
     }
 
     /**
@@ -723,8 +702,14 @@ var Daemon = GObject.registerClass({
         }).catch(logError);
     }
 
+    vfunc_activate() {
+        this.broadcast();
+    }
+
     vfunc_startup() {
         super.vfunc_startup();
+
+        this.hold();
 
         // Watch the file 'daemon.js' to know when we're updated
         this._watchDaemon();
@@ -735,7 +720,7 @@ var Daemon = GObject.registerClass({
         // GActions
         this._initActions();
 
-        // LanChannelService
+        // Lan.ChannelService
         try {
             this.lanService = new Lan.ChannelService();
 
@@ -755,7 +740,7 @@ var Daemon = GObject.registerClass({
             debug(e);
         }
 
-        // BluetoothChannelService
+        // Bluetooth.ChannelService
         try {
             this.bluetoothService = new Bluetooth.ChannelService();
 
@@ -781,15 +766,12 @@ var Daemon = GObject.registerClass({
             }
         });
 
-        // Track devices, DBus object path as key
-        // FIXME: there's now some overlap with use of ObjectManager here...
-        this._watchDevices();
-    }
+        // Track devices with id as key
+        this._devices = new Map();
 
-    vfunc_activate() {
-        super.vfunc_activate();
-        // FIXME: this.broadcast();
-        this.hold();
+        let cachedDevices = gsconnect.settings.get_strv('devices');
+        log(`Loading ${cachedDevices.length} devices from cache`);
+        cachedDevices.map(id => this._ensureDevice({ body: { deviceId: id } }));
     }
 
     vfunc_dbus_register(connection, object_path) {
@@ -818,7 +800,6 @@ var Daemon = GObject.registerClass({
         for (let device of this._devices.values()) {
             device.destroy();
         }
-
 
         super.vfunc_dbus_unregister(connection, object_path);
     }
