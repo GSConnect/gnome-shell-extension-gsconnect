@@ -1,5 +1,7 @@
 'use-strict';
 
+const Gdk = imports.gi.Gdk;
+
 var OFF_WHITE_CLASS = 'light-text';
 var OFF_WHITE_LUMINANCE = 0.07275541795665634;
 var OFF_WHITE_VALUE = 0.94;
@@ -35,12 +37,12 @@ function getFgRGB(r, g, b) {
     let darkContrast = (bgLuminance + 0.05) / (OFF_BLACK_LUMINANCE + 0.05);
 
     let value = (darkContrast > lightContrast) ? 0.06 : 0.94;
-    return [value, value, value];
+    return new Gdk.RGBA({ red: value, green: value, blue: value, alpha: 0.75 });
 };
 
 
 function setFgClass(widget, backgroundColor) {
-    let dark = (getFgRGB(backgroundColor)[0] === 0.06);
+    let dark = (getFgRGB(backgroundColor).red === 0.06);
 
     let style = widget.get_style_context();
     style.remove_class(dark ? OFF_WHITE_CLASS : OFF_BLACK_CLASS);

@@ -442,10 +442,10 @@ var Avatar = GObject.registerClass({
     GTypeName: 'GSConnectContactAvatar'
 }, class Avatar extends Gtk.DrawingArea {
 
-    _init(contact, size=32) {
+    _init(contact) {
         super._init({
-            height_request: size,
-            width_request: size,
+            height_request: 32,
+            width_request: 32,
             vexpand: false,
             hexpand: false,
             visible: true
@@ -453,27 +453,6 @@ var Avatar = GObject.registerClass({
 
         this.contact = contact;
         this.contact.rgb = this.contact.rgb || Color.randomRGB();
-        this.size = size;
-        this.center = size/2;
-
-        // Image
-        if (this.contact.avatar) {
-            this.surface = Gdk.cairo_surface_create_from_pixbuf(
-                getPixbuf(this.contact.avatar, this.size),
-                0,
-                this.get_window()
-            );
-        // Default with color
-        } else {
-            let theme = Gtk.IconTheme.get_default();
-            this.surface = theme.load_surface(
-                'avatar-default-symbolic',
-                this.size/1.5,
-                1,
-                null,
-                0
-            );
-        }
 
         // Popover
         // TODO: use 'popup' signal
@@ -482,33 +461,47 @@ var Avatar = GObject.registerClass({
 
         // Image
         this.connect('draw', this._onDraw.bind(this));
-        this.queue_draw();
     }
 
-    // Image
-    _onDraw(widget, cr) {
-        let offset = 0;
-
+    _loadPixbuf() {
         if (this.contact.avatar) {
-            cr.setSourceSurface(this.surface, offset, offset);
-            cr.arc(this.size/2, this.size/2, this.size/2, 0, 2*Math.PI);
-            cr.clip();
-            cr.paint();
+            this._pixbuf = getPixbuf(this.contact.avatar, 32);
         } else {
-            offset = (this.size - this.size/1.5) / 2;
+            let info = Gtk.IconTheme.get_default().lookup_icon(
+               'avatar-default',
+               24,
+               Gtk.IconLookupFlags.FORCE_SYMBOLIC
+            );
 
-            // Colored circle
+            this._pixbuf = info.load_symbolic(
+                Color.getFgRGB(this.contact.rgb),
+                null,
+                null,
+                null
+            )[0];
+        }
+
+        this._offset = (32 - this._pixbuf.width) / 2;
+    }
+
+    _onDraw(widget, cr) {
+        if (this._pixbuf === undefined) {
+            this._loadPixbuf();
+        }
+
+        cr.arc(16, 16, 16, 0, 2*Math.PI);
+        cr.clipPreserve();
+
+        // Fill the background if we don't have an avatar
+        if (!this.contact.avatar) {
             cr.setSourceRGB(...this.contact.rgb);
-            cr.arc(this.size/2, this.size/2, this.size/2, 0, 2*Math.PI);
-            cr.fill();
-
-            // Avatar matched for color
-            cr.setSourceRGB(...Color.getFgRGB(this.contact.rgb));
-            cr.maskSurface(this.surface, offset, offset);
             cr.fill();
         }
 
+        Gdk.cairo_set_source_pixbuf(cr, this._pixbuf, this._offset, this._offset);
+        cr.paint();
         cr.$dispose();
+
         return false;
     }
 
