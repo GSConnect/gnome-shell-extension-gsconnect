@@ -129,6 +129,10 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
             'interface-removed',
             this._onInterfaceRemoved.bind(this)
         );
+        this._objectRemovedId = this.manager.connect(
+            'object-removed',
+            this._onObjectRemoved.bind(this)
+        );
         this._nameOwnerId = this.manager.connect(
             'notify::name-owner',
             this._onNameOwnerChanged.bind(this)
@@ -266,6 +270,16 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         }
     }
 
+    // TODO: The device's DBusObject is unexported in Device.destroy() before
+    // the 'interface-removed' handler is resolved, so for now we catch it here.
+    _onObjectRemoved(manager, object) {
+        for (let iface of this.devices) {
+            if (iface.g_object_path === object.g_object_path) {
+                this._onInterfaceRemoved(manager, object, iface);
+            }
+        }
+    }
+
     /**
      * Setup device keybindings
      */
@@ -318,6 +332,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         // Unhook from any ObjectManager events
         this.manager.disconnect(this._interfaceAddedId);
         this.manager.disconnect(this._interfaceRemovedId);
+        this.manager.disconnect(this._objectRemovedId);
         this.manager.disconnect(this._nameOwnerId);
 
         // Destroy any device proxies

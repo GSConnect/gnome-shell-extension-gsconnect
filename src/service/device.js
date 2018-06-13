@@ -1031,6 +1031,7 @@ var Device = GObject.registerClass({
         // Unexport the Device interface
         this._dbus.flush();
         this._dbus_object.remove_interface(this._dbus);
+        this._dbus_object.flush();
         this.service.objectManager.unexport(this._dbus_object.g_object_path);
 
         // Close the channel if still connected
