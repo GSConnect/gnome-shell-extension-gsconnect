@@ -150,7 +150,7 @@ var Daemon = GObject.registerClass({
     }
 
     get devices() {
-        return this.objectManager.get_objects().map(obj => obj.g_object_path);
+        return Array.from(this._devices.keys())
     }
 
     // TODO: implement bluetooth discovery
@@ -253,12 +253,12 @@ var Daemon = GObject.registerClass({
     _addDevice(packet, channel=null) {
         debug(packet);
 
-        let dbusPath = `${gsconnect.app_path}/Device/${packet.body.deviceId.replace(/\W+/g, '_')}`;
+        let id = packet.body.deviceId;
 
-        if (this._devices.has(dbusPath)) {
+        if (this._devices.has(id)) {
             log(`GSConnect: Updating ${packet.body.deviceName}`);
 
-            this._devices.get(dbusPath).update(packet, channel);
+            this._devices.get(id).update(packet, channel);
         } else {
             log(`GSConnect: Adding ${packet.body.deviceName}`);
 
@@ -269,7 +269,7 @@ var Daemon = GObject.registerClass({
                 device.connect('notify::connected', (device) => {
                     if (!device.connected) { this._pruneDevices(); }
                 });
-                this._devices.set(dbusPath, device);
+                this._devices.set(id, device);
                 this.notify('devices');
 
                 device.update(packet, channel);
@@ -284,16 +284,16 @@ var Daemon = GObject.registerClass({
         }
     }
 
-    _removeDevice(dbusPath) {
-        debug(dbusPath);
+    _removeDevice(id) {
+        debug(id);
 
-        let device = this._devices.get(dbusPath);
+        let device = this._devices.get(id);
 
         if (device) {
             log(`GSConnect: Removing ${device.name}`);
 
             device.destroy();
-            this._devices.delete(dbusPath);
+            this._devices.delete(id);
             this.notify('devices');
         }
     }
@@ -303,18 +303,16 @@ var Daemon = GObject.registerClass({
 
         // New devices
         let newDevices = knownDevices.map(id => {
-            let dbusPath = `${gsconnect.app_path}/Device/${id.replace(/\W+/g, '_')}`;
-
-            if (!this._devices.has(dbusPath)) {
+            if (!this._devices.has(id)) {
                 return this._addDevice({ body: { deviceId: id } });
             }
         });
 
         // Old devices
         Promise.all(newDevices).then(result => {
-            for (let [dbusPath, device] of this._devices.entries()) {
+            for (let device of this._devices.values()) {
                 if (knownDevices.indexOf(device.id) < 0) {
-                    this._removeDevice(dbusPath);
+                    this._removeDevice(device.id);
                 }
             }
         }).catch(debug);

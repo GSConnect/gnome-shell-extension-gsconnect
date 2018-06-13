@@ -468,16 +468,16 @@ var Window = GObject.registerClass({
     }
 
     _onDevicesChanged() {
-        for (let dbusPath of this.application.devices) {
-            if (!this.stack.get_child_by_name(dbusPath)) {
-                this.addDevice(dbusPath);
+        for (let id of this.application.devices) {
+            if (!this.stack.get_child_by_name(id)) {
+                this.addDevice(id);
             }
         }
 
         this.stack.foreach(child => {
             if (child.row) {
                 let name = child.row.get_name();
-                if (this.application.devices.indexOf(name) < 0) {
+                if (!this.application.devices.includes(name)) {
                     this.stack.get_child_by_name(name).destroy();
                 }
             }
@@ -486,15 +486,15 @@ var Window = GObject.registerClass({
         this.help.visible = !this.application.devices.length;
     }
 
-    addDevice(dbusPath) {
-        let device = this.application._devices.get(dbusPath);
+    addDevice(id) {
+        let device = this.application._devices.get(id);
 
         // Create a new device widget
         let panel = new DeviceSettings(device);
 
         // Add device to switcher, and panel stack
-        this.stack.add_titled(panel, dbusPath, device.name);
-        this.sidebar.add_named(panel.switcher, dbusPath);
+        this.stack.add_titled(panel, id, device.name);
+        this.sidebar.add_named(panel.switcher, id);
         this.switcher.add(panel.row);
     }
 });
@@ -579,7 +579,7 @@ var DeviceSettings = GObject.registerClass({
             icon: this.symbolic_icon,
             title: device.name,
             type: 'device',
-            name: device._dbus.get_object_path(),
+            name: device.id,
             show_go_next: true
         });
 
