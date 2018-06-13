@@ -624,7 +624,7 @@ var DeviceSettings = GObject.registerClass({
     }
 
     get symbolic_icon() {
-        let icon_name = `${this.device.icon_name}-symbolic`;
+        let icon_name = this.device.symbolic_icon_name;
 
         if (!this.paired) {
             let rgba = new Gdk.RGBA({ red: 0.95, green: 0, blue: 0, alpha: 0.9 });

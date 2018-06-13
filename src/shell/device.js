@@ -3,6 +3,7 @@
 const Cairo = imports.cairo;
 
 const Clutter = imports.gi.Clutter;
+const Gdk = imports.gi.Gdk;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
@@ -528,7 +529,7 @@ var Indicator = class Indicator extends PanelMenu.Button {
 
         // Device Icon
         this.icon = new St.Icon({
-            icon_name: this.device.SymbolicIconName,
+            gicon: this.symbolic_icon,
             style_class: 'system-status-icon'
         });
         this.actor.add_actor(this.icon);
@@ -542,6 +543,18 @@ var Indicator = class Indicator extends PanelMenu.Button {
         this._propertiesId = this.device.connect('g-properties-changed', this._sync.bind(this));
 
         this._sync();
+    }
+
+    get symbolic_icon() {
+        let icon_name = this.device.SymbolicIconName;
+
+        if (!this.device.Paired) {
+            let rgba = new Gdk.RGBA({ red: 0.95, green: 0, blue: 0, alpha: 0.9 });
+            let info = Gtk.IconTheme.get_default().lookup_icon(icon_name, 16, 0);
+            return info.load_symbolic(rgba, null, null, null)[0];
+        }
+
+        return new Gio.ThemedIcon({ name: icon_name });
     }
 
     _sync() {
@@ -560,7 +573,8 @@ var Indicator = class Indicator extends PanelMenu.Button {
             this.actor.visible = true;
         }
 
-        this.icon.icon_name = this.device.SymbolicIconName;
+        this.icon.gicon = this.symbolic_icon;
+        this.icon.opacity = Connected ? 255 : 128;
     }
 
     destroy() {

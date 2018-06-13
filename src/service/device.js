@@ -391,20 +391,17 @@ var Device = GObject.registerClass({
     }
 
     get icon_name() {
-        let icon = (this.type === 'desktop') ? 'computer' : this.type;
-        return (icon === 'phone') ? 'smartphone' : icon;
+        switch (this.type) {
+            case 'phone':
+                return 'smartphone';
+            case 'tablet':
+                return this.type;
+            default:
+                return 'computer';
+        }
     }
     get symbolic_icon_name() {
-        let icon = (this.type === 'phone') ? 'smartphone' : this.type;
-        icon = (this.type === 'unknown') ? 'desktop' : icon;
-
-        if (this.paired && this.connected) {
-            return icon + 'connected';
-        } else if (this.paired) {
-            return icon + 'trusted';
-        } else {
-            return icon + 'disconnected';
-        }
+        return `${this.icon_name}-symbolic`;
     }
     get type() { return this.settings.get_string('type'); }
     get display_type() {
