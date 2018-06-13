@@ -559,7 +559,7 @@ var Plugin = GObject.registerClass({
         let window;
 
         if (hasConversations) {
-            window = new Sms.ShareWindow(this.device, url);
+            window = new Sms.ConversationChooser(this.device, url);
         } else {
             window = new Sms.ConversationWindow(this.device);
             window.setMessage(url);

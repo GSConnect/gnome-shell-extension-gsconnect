@@ -567,11 +567,11 @@ var ConversationWindow = GObject.registerClass({
 
 
 /**
- * A Gtk.ApplicationWindow for sharing links via SMS
+ * A Gtk.ApplicationWindow for selecting from open conversations
  */
-var ShareWindow = GObject.registerClass({
-    GTypeName: 'GSConnectContactShareWindow'
-}, class ShareWindow extends Gtk.ApplicationWindow {
+var ConversationChooser = GObject.registerClass({
+    GTypeName: 'GSConnectConversationChooser'
+}, class ConversationChooser extends Gtk.ApplicationWindow {
 
     _init(device, url) {
         super._init({
