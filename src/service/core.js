@@ -39,17 +39,6 @@ var Packet = GObject.registerClass({
         }
     }
 
-    _validate(obj) {
-        switch (false) {
-            case obj.hasOwnProperty('type'):
-                throw new Error();
-            case obj.hasOwnProperty('body'):
-                throw new Error();
-            case obj.hasOwnProperty('id'):
-                throw new Error();
-        }
-    }
-
     // TODO
     setPayload(file) {
         if (!file instanceof Gio.File) {
@@ -84,7 +73,6 @@ var Packet = GObject.registerClass({
     fromData(data) {
         try {
             let json = JSON.parse(data);
-            this._validate(json);
             Object.assign(this, json);
         } catch (e) {
             throw Error('Malformed packet');
@@ -93,8 +81,8 @@ var Packet = GObject.registerClass({
 
     fromPacket(packet) {
         try {
-            this._validate(packet);
-            Object.assign(this, JSON.parse(JSON.stringify(packet)));
+            let json = JSON.parse(JSON.stringify(packet));
+            Object.assign(this, json);
         } catch (e) {
             throw Error('Malformed packet');
         }
