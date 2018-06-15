@@ -25,6 +25,9 @@
                 <property name="icon_name">go-previous-symbolic</property>
               </object>
             </child>
+            <style>
+              <class name="titlebutton"/>
+            </style>
           </object>
         </child>
         <child type="title">
