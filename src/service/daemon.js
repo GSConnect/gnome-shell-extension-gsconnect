@@ -226,18 +226,6 @@ var Daemon = GObject.registerClass({
         return this._type;
     }
 
-    _applyResources() {
-        let provider = new Gtk.CssProvider();
-        provider.load_from_file(
-            Gio.File.new_for_uri('resource://' + gsconnect.app_path + '/application.css')
-        );
-        Gtk.StyleContext.add_provider_for_screen(
-            Gdk.Screen.get_default(),
-            provider,
-            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
-        );
-    }
-
     /**
      * Discovery Methods
      */
@@ -267,11 +255,11 @@ var Daemon = GObject.registerClass({
                 this._devices.set(device.id, device);
                 this.notify('devices');
 
-                let knownDevices = gsconnect.settings.get_strv('devices');
+                let cached = gsconnect.settings.get_strv('devices');
 
-                if (!knownDevices.includes(device.id)) {
-                    knownDevices.push(device.id);
-                    gsconnect.settings.set_strv('devices', knownDevices);
+                if (device.id !== '' && !cached.includes(device.id)) {
+                    cached.push(device.id);
+                    gsconnect.settings.set_strv('devices', cached);
                 }
             } else {
                 log(`GSConnect: Updating ${packet.body.deviceName}`);
@@ -293,8 +281,6 @@ var Daemon = GObject.registerClass({
     }
 
     async _removeDevice(id) {
-        debug(id);
-
         let device = this._devices.get(id);
 
         if (device) {
@@ -314,13 +300,14 @@ var Daemon = GObject.registerClass({
             return;
         }
 
-        let knownDevices = gsconnect.settings.get_strv('devices');
+        let cached = gsconnect.settings.get_strv('devices');
 
         for (let device of this._devices.values()) {
-            if (!device.connected && !device.paired) {
+            if (!device.connected && !device.paired && cached.includes(device.id)) {
+                device.disconnect(device._pruneId);
                 let id = await this._removeDevice(device.id);
-                knownDevices.splice(knownDevices.indexOf(device.id), 1);
-                gsconnect.settings.set_strv('devices', knownDevices);
+                cached.splice(cached.indexOf(id), 1);
+                gsconnect.settings.set_strv('devices', cached);
             }
         }
     }
@@ -544,7 +531,6 @@ var Daemon = GObject.registerClass({
             website: gsconnect.metadata.url,
             license_type: Gtk.License.GPL_2_0
         });
-        dialog.connect('delete-event', dialog => dialog.destroy());
         dialog.show();
     }
 
@@ -633,21 +619,6 @@ var Daemon = GObject.registerClass({
     }
 
     /**
-     * Watch 'daemon.js' in case the extension is uninstalled
-     * TODO: remove .desktop (etc) on delete
-     */
-    _watchDaemon() {
-        this.daemonMonitor = Gio.File.new_for_path(
-            gsconnect.datadir + '/service/daemon.js'
-        ).monitor(
-            Gio.FileMonitorFlags.WATCH_MOVES,
-            null
-        );
-
-        this.daemonMonitor.connect('changed', () => this.quit());
-    }
-
-    /**
      * Override Gio.Application.send_notification() to respect donotdisturb
      */
     send_notification(id, notification) {
@@ -661,7 +632,7 @@ var Daemon = GObject.registerClass({
         let now = GLib.DateTime.new_now_local().to_unix();
         let dnd = (gsconnect.settings.get_int('donotdisturb') <= now);
 
-        // Maybe the 'enable-sound-alerts' should be left alone/queried
+        // TODO: Maybe the 'enable-sound-alerts' should be left alone/queried
         this._notificationSettings.set_boolean('enable-sound-alerts', dnd);
         this._notificationSettings.set_boolean('show-banners', dnd);
 
@@ -711,14 +682,37 @@ var Daemon = GObject.registerClass({
 
         this.hold();
 
-        // Watch the file 'daemon.js' to know when we're updated
-        this._watchDaemon();
+        // We watch this file (daemon.js) for changes so we can stop the daemon
+        // if it's ever updated or uninstalled.
+        this._daemonMonitor = Gio.File.new_for_path(
+            gsconnect.datadir + '/service/daemon.js'
+        ).monitor(
+            Gio.FileMonitorFlags.WATCH_MOVES,
+            null
+        );
+
+        this._daemonMonitor.connect('changed', () => this.quit());
 
         // Init some resources
-        this._applyResources();
+        let provider = new Gtk.CssProvider();
+        provider.load_from_file(
+            Gio.File.new_for_uri('resource://' + gsconnect.app_path + '/application.css')
+        );
+        Gtk.StyleContext.add_provider_for_screen(
+            Gdk.Screen.get_default(),
+            provider,
+            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+        );
 
         // GActions
         this._initActions();
+
+        // Track devices with id as key
+        this._devices = new Map();
+
+        let cached = gsconnect.settings.get_strv('devices');
+        log(`Loading ${cached.length} devices from cache`);
+        cached.map(id => this._ensureDevice({ body: { deviceId: id } }));
 
         // Lan.ChannelService
         try {
@@ -757,21 +751,6 @@ var Daemon = GObject.registerClass({
             'name',
             Gio.SettingsBindFlags.DEFAULT
         );
-
-        // Monitor network changes
-        this._netmonitor = Gio.NetworkMonitor.get_default();
-        this._netmonitor.connect('network-changed', (monitor, available) => {
-            if (available) {
-                this.broadcast();
-            }
-        });
-
-        // Track devices with id as key
-        this._devices = new Map();
-
-        let cachedDevices = gsconnect.settings.get_strv('devices');
-        log(`Loading ${cachedDevices.length} devices from cache`);
-        cachedDevices.map(id => this._ensureDevice({ body: { deviceId: id } }));
     }
 
     vfunc_dbus_register(connection, object_path) {
@@ -784,7 +763,6 @@ var Daemon = GObject.registerClass({
             connection: connection,
             object_path: object_path
         });
-
 
         // Start the notification listeners
         this._startNotificationListener();

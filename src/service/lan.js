@@ -48,12 +48,20 @@ var ChannelService = GObject.registerClass({
     }
 }, class ChannelService extends GObject.Object {
 
-    _init(port=1716) {
+    _init() {
         super._init();
 
         this._port = 0;
+        this._service = Gio.Application.get_default();
         this._initTcpListener();
         this._initUdpListener();
+
+        // Monitor network changes
+        this._networkMonitor = Gio.NetworkMonitor.get_default();
+        this._networkChangedId = this._networkMonitor.connect(
+            'network-changed',
+            this._onNetworkChanged.bind(this)
+        );
     }
 
     get discovering() {
@@ -66,6 +74,12 @@ var ChannelService = GObject.registerClass({
 
     get port() {
         return this._port;
+    }
+
+    _onNetworkChanged(monitor, network_available) {
+        if (network_available) {
+            this.broadcast();
+        }
     }
 
     _initTcpListener() {
@@ -211,14 +225,19 @@ var ChannelService = GObject.registerClass({
         //debug(identity);
 
         try {
-            this._udp.send_to(this._udp_address, identity.toString(), null);
+            this._udp.send_to(
+                this._udp_address,
+                this._service.identity.toString(),
+                null
+            );
         } catch (e) {
-            debug(e);
-            log('Error sending identity packet: ' + e.message);
+            logWarning(e);
         }
     }
 
     destroy() {
+        this._networkMonitor.disconnect(this._networkChangedId);
+
         this._tcp.stop();
         this._tcp.close();
         this._udp.close();
