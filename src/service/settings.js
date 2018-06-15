@@ -313,7 +313,7 @@ var Window = GObject.registerClass({
         'extensions-list',
         'nautilus-integration',
         'advanced-list',
-        'debug', 'debug-window', 'debug-restart',
+        'debug', 'debug-window',
         'help', 'help-list'
     ]
 }, class Window extends Gtk.ApplicationWindow {
@@ -444,7 +444,6 @@ var Window = GObject.registerClass({
                 '--tab --title "Gnome Shell" --command "journalctl -f -o cat /usr/bin/gnome-shell"'
             );
         });
-        this.debug_restart.connect('clicked', () => this.application.quit());
         this.advanced_list.set_header_func(section_separators);
     }
 

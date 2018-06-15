@@ -894,13 +894,14 @@
                                           </packing>
                                         </child>
                                         <child>
-                                          <object class="GtkButton" id="debug-restart">
+                                          <object class="GtkButton">
                                             <property name="visible">True</property>
                                             <property name="can_focus">True</property>
                                             <property name="receives_default">True</property>
                                             <property name="halign">end</property>
                                             <property name="valign">center</property>
                                             <property name="vexpand">True</property>
+                                            <property name="action_name">app.quit</property>
                                             <property name="always_show_image">True</property>
                                             <child>
                                               <object class="GtkImage">

@@ -570,6 +570,7 @@ var Daemon = GObject.registerClass({
             ['openSettings', this.openSettings.bind(this)],
             ['cancelTransfer', this._cancelTransferAction.bind(this), '(ss)'],
             ['openTransfer', this._openTransferAction.bind(this), 's'],
+            ['quit', this.quit.bind(this)],
             ['about', this._aboutAction.bind(this)]
         ];
 
