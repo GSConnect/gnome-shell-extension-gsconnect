@@ -243,7 +243,9 @@ var Plugin = GObject.registerClass({
 
         if (event.contact.avatar) {
             icon = Contacts.getPixbuf(event.contact.avatar);
-        } else {
+        }
+
+        if (icon === undefined) {
             icon = new Gio.ThemedIcon({ name: 'sms-symbolic' });
         }
 

@@ -49,13 +49,23 @@ function getStore() {
  * @param {string} path - A local file path
  */
 function getPixbuf(path, size=null) {
-    let loader = new GdkPixbuf.PixbufLoader();
-    loader.write(GLib.file_get_contents(path)[1]);
+    let data, loader;
 
+    // Catch missing avatar files
     try {
+        data = GLib.file_get_contents(path)[1];
+    } catch (e) {
+        logWarning(e.message, path);
+        return undefined;
+    }
+
+    // Consider errors from partially corrupt JPEGs to be warnings
+    try {
+        loader = new GdkPixbuf.PixbufLoader();
+        loader.write(data);
         loader.close();
     } catch (e) {
-        logWarning(e);
+        logWarning(e, path);
     }
 
     let pixbuf = loader.get_pixbuf();
@@ -466,7 +476,11 @@ var Avatar = GObject.registerClass({
     _loadPixbuf() {
         if (this.contact.avatar) {
             this._pixbuf = getPixbuf(this.contact.avatar, 32);
-        } else {
+        }
+
+        if (this._pixbuf === undefined) {
+            this._fallback = true;
+
             let info = Gtk.IconTheme.get_default().lookup_icon(
                'avatar-default',
                24,
@@ -493,7 +507,7 @@ var Avatar = GObject.registerClass({
         cr.clipPreserve();
 
         // Fill the background if we don't have an avatar
-        if (!this.contact.avatar) {
+        if (this._fallback) {
             cr.setSourceRGB(...this.contact.rgb);
             cr.fill();
         }
