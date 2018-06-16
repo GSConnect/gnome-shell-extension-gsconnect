@@ -140,10 +140,12 @@ var Plugin = GObject.registerClass({
     _parsePacket(packet) {
         let event = {
             type: packet.body.event,
-            contact: this.contacts.getContact(
-                packet.body.contactName,
-                packet.body.phoneNumber
-            ),
+            contact: this.contacts.query({
+                name: packet.body.contactName,
+                number: packet.body.phoneNumber,
+                single: true,
+                create: true
+            }),
             number: packet.body.phoneNumber,
             time: GLib.DateTime.new_now_local().to_unix()
         };

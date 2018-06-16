@@ -126,7 +126,6 @@ function mergeContacts(current, update) {
 
 var Store = GObject.registerClass({
     GTypeName: 'GSConnectContactsStore',
-    Implements: [ Gio.ListModel ],
     Properties: {
         'contacts': GObject.param_spec_variant(
             'contacts',
@@ -161,21 +160,17 @@ var Store = GObject.registerClass({
         );
 
         // Read cache
-        try {
-            let cache = this._cacheFile.load_contents(null)[1];
-            this._contacts = JSON.parse(cache);
-        } catch (e) {
-            debug(`Cache: Error reading contact cache: ${e.message}`);
-            this._contacts = {};
-        }
-
-        this.connect('notify::contacts', () => {
-            //this.notify('items-changed');
-            // FIXME
-            this._writeCache()
+        this._cacheFile.load_contents_async(null, (file, res) => {
+            try {
+                let contents = file.load_contents_finish(res)[1];
+                this._contacts = JSON.parse(contents);
+            } catch (e) {
+                this._contacts = {};
+            } finally {
+                this.connect('notify::contacts', this._writeCache.bind(this));
+                this.update();
+            }
         });
-
-        this.update();
     }
 
     get contacts() {
@@ -183,34 +178,22 @@ var Store = GObject.registerClass({
     }
 
     get provider_icon() {
-        return this._provider_icon || 'call-start-symbolic';
+        if (this._provider_icon === undefined) {
+            return 'call-start-symbolic';
+        }
+
+        return this._provider_icon;
     }
 
     /**
-     * Gio.ListModel interface
+     * Query the Store for a contact by name and/or number.
+     *
+     * @param {Object} query - A query object
+     * @param {String} [query.name] - The contact's name
+     * @param {String} [query.number] - The contact's number
+     * @param {Boolean} [query.single] - Only return if there is a single match
+     * @param {Boolean} [query.create] - Create and return a new contact if none
      */
-    vfunc_get_item() {
-    }
-
-    vfunc_get_item_type() {
-        return Contact;
-    }
-
-    vfunc_get_n_items() {
-        return Object.keys(this._contacts).length;
-    }
-
-    /**
-     * Addition ListModel-like function
-     */
-    add_item() {
-        this.notify('contacts');
-    }
-
-    remove_item() {
-        this.notify('contacts');
-    }
-
     query(query) {
         let number = (query.number) ? query.number.replace(/\D/g, '') : null;
 
@@ -224,13 +207,11 @@ var Store = GObject.registerClass({
                 for (let num of contact.numbers) {
                     // Match by number stripped of non-digits
                     if (number === num.number.replace(/\D/g, '')) {
-                        matches[id] = this._contacts[id];
+                        matches[id] = contact;
 
                         // Number match & exact name match; must be it
                         if (query.name && query.name === contact.name) {
-                            matches = {};
-                            matches[id] = contact
-                            return matches[id];
+                            return contact;
                         }
                     }
                 }
@@ -243,7 +224,7 @@ var Store = GObject.registerClass({
         //
         let keys = Object.keys(matches);
 
-        if (query.create && keys.length === 0) {
+        if (keys.length === 0 && query.create) {
             // Create a unique ID for this contact
             let id = GLib.uuid_string_random();
             while (this._contacts.hasOwnProperty(id)) {
@@ -287,25 +268,10 @@ var Store = GObject.registerClass({
                 logWarning(e, 'Reading contacts from Google');
             }
         } finally {
-            this._writeCache();
             this._provider_icon = result;
             this.notify('provider-icon');
             this.notify('contacts');
         }
-    }
-
-    /**
-     * Convenience Methods
-     */
-    getContact(name, number) {
-        debug(arguments);
-
-        return this.query({
-            name: name,
-            number: number,
-            single: true,
-            create: true
-        });
     }
 
     _updateFolksContacts() {
@@ -413,6 +379,24 @@ var Store = GObject.registerClass({
     }
 
     _writeCache() {
+        this._cacheFile.replace_contents_async(
+            JSON.stringify(this._contacts),
+            null,
+            false,
+            Gio.FileCreateFlags.REPLACE_DESTINATION,
+            null,
+            (file, res) => {
+                try {
+                    file.replace_contents_finish(res);
+                } catch (e) {
+                    logError(e);
+                }
+            }
+        );
+    }
+
+    destroy() {
+        // Write synchronously on destroy
         try {
             this._cacheFile.replace_contents(
                 JSON.stringify(this._contacts),
@@ -424,10 +408,7 @@ var Store = GObject.registerClass({
         } catch (e) {
             logError(e);
         }
-    }
 
-    destroy() {
-        this._writeCache();
         this.emit('destroy');
     }
 });
