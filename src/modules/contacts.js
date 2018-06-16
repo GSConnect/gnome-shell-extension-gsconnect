@@ -450,7 +450,6 @@ var Avatar = GObject.registerClass({
         });
 
         this.contact = contact;
-        this.contact.rgb = this.contact.rgb || Color.randomRGB();
 
         // Popover
         // TODO: use 'popup' signal
@@ -469,6 +468,8 @@ var Avatar = GObject.registerClass({
         if (this._pixbuf === undefined) {
             this._fallback = true;
 
+            this.bg_color = Color.randomRGBA(this.contact.name);
+
             let info = Gtk.IconTheme.get_default().lookup_icon(
                'avatar-default',
                24,
@@ -476,7 +477,7 @@ var Avatar = GObject.registerClass({
             );
 
             this._pixbuf = info.load_symbolic(
-                Color.getFgRGB(this.contact.rgb),
+                Color.getFgRGBA(this.bg_color),
                 null,
                 null,
                 null
@@ -491,19 +492,21 @@ var Avatar = GObject.registerClass({
             this._loadPixbuf();
         }
 
+        // Clip to a circle
         cr.arc(16, 16, 16, 0, 2*Math.PI);
         cr.clipPreserve();
 
         // Fill the background if we don't have an avatar
         if (this._fallback) {
-            cr.setSourceRGB(...this.contact.rgb);
+            Gdk.cairo_set_source_rgba(cr, this.bg_color);
             cr.fill();
         }
 
+        // Draw the avatar/icon
         Gdk.cairo_set_source_pixbuf(cr, this._pixbuf, this._offset, this._offset);
         cr.paint();
-        cr.$dispose();
 
+        cr.$dispose();
         return false;
     }
 
@@ -533,16 +536,6 @@ var Avatar = GObject.registerClass({
             box.add(contactsItem);
         }
 
-        // Contact Color
-        let colorItem = new Gtk.ModelButton({
-            centered: true,
-            icon: new Gio.ThemedIcon({ name: 'color-select-symbolic' }),
-            iconic: true,
-            visible: true
-        });
-        colorItem.connect('clicked', this._popoverColor.bind(this));
-        box.add(colorItem);
-
         // Delete Contact
         if (this.contact.origin === 'gsconnect') {
             let deleteItem = new Gtk.ModelButton({
@@ -562,34 +555,6 @@ var Avatar = GObject.registerClass({
         GLib.spawn_command_line_async(
             `gnome-contacts -i ${this.contact.folks_id}`
         );
-    }
-
-    _popoverColor(button, event) {
-        let colorChooser = new Gtk.ColorChooserDialog({
-            modal: true,
-            transient_for: this.get_toplevel(),
-            use_alpha: false
-        });
-
-        // Set the current color
-        let rgba = colorChooser.get_rgba().copy();
-        rgba.parse(`rgb(${this.contact.rgb.map(c => c*255).join(',')})`);
-        colorChooser.set_rgba(rgba)
-
-        colorChooser.connect('delete-event', () => {
-            this.emit('response', Gtk.ResponseType.CANCEL);
-        });
-        colorChooser.connect('response', (dialog, response) => {
-            if (response !== Gtk.ResponseType.CANCEL) {
-                let rgba = dialog.get_rgba();
-                this.contact.rgb = [rgba.red, rgba.green, rgba.blue];
-                this.queue_draw();
-            }
-
-            dialog.destroy();
-        });
-
-        colorChooser.show();
     }
 
     _popoverDelete(button, event) {
