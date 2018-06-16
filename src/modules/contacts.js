@@ -19,7 +19,7 @@ try {
     var GData = imports.gi.GData;
     var Goa = imports.gi.Goa;
 } catch (e) {
-    debug('Warning: Goa-1.0.typelib and GData-0.0.typelib required for Google contacts: ' + e);
+    logWarning(e);
     var GData = undefined;
     var Goa = undefined;
 }
@@ -35,7 +35,7 @@ var CACHE_DIR = GLib.build_filenamev([gsconnect.cachedir, '_contacts']);
 var _contactsStore;
 
 function getStore() {
-    if (!_contactsStore) {
+    if (_contactsStore === undefined) {
         _contactsStore = new Store();
     }
 
@@ -142,13 +142,6 @@ var Store = GObject.registerClass({
             'The contact provider icon name',
             GObject.ParamFlags.READABLE,
             ''
-        ),
-        'provider-name': GObject.ParamSpec.string(
-            'provider-name',
-            'ContactsProvider',
-            'The contact provider name (eg. Google)',
-            GObject.ParamFlags.READABLE,
-            ''
         )
     },
     Signals: {
@@ -191,10 +184,6 @@ var Store = GObject.registerClass({
 
     get provider_icon() {
         return this._provider_icon || 'call-start-symbolic';
-    }
-
-    get provider_name() {
-        return this._provider_name || _('GSConnect');
     }
 
     /**
@@ -285,23 +274,22 @@ var Store = GObject.registerClass({
     }
 
     async update() {
-        let result = ['call-start-symbolic', _('GSConnect')];
+        let result = 'call-start-symbolic';
 
         try {
             result = await this._updateFolksContacts();
         } catch (e) {
-            debug(`Warning: Failed to update Folks contacts: ${e.message}`);
+            logWarning(e, 'Reading contacts from Folks');
 
             try {
                 result = await this._updateGoogleContacts();
             } catch (e) {
-                debug(`Warning: Failed to update Google contacts: ${e.message}`);
+                logWarning(e, 'Reading contacts from Google');
             }
         } finally {
             this._writeCache();
-            [this._provider_icon, this._provider_name] = result;
+            this._provider_icon = result;
             this.notify('provider-icon');
-            this.notify('provider-name');
             this.notify('contacts');
         }
     }
@@ -345,7 +333,7 @@ var Store = GObject.registerClass({
 
                     let folks = JSON.parse(stdout);
                     this._contacts = mergeContacts(this._contacts, folks);
-                    resolve(['gnome-contacts-symbolic', _('Gnome')]);
+                    resolve('gnome-contacts-symbolic');
                 } catch (e) {
                     reject(e);
                 }
@@ -379,7 +367,7 @@ var Store = GObject.registerClass({
 
             this._contacts = mergeContacts(this._contacts, contacts);
 
-            resolve(['goa-account-google', _('Google')]);
+            resolve('goa-account-google');
         });
     }
 
@@ -421,7 +409,7 @@ var Store = GObject.registerClass({
             if (count >= feed.total_results) { break; }
         }
 
-        return contacts
+        return contacts;
     }
 
     _writeCache() {
@@ -434,7 +422,7 @@ var Store = GObject.registerClass({
                 null
             );
         } catch (e) {
-            debug(e);
+            logError(e);
         }
     }
 
@@ -615,7 +603,6 @@ var Avatar = GObject.registerClass({
             }
         }
 
-        store._writeCache();
         store.notify('contacts');
     }
 });
