@@ -90,8 +90,6 @@ var ChannelService = GObject.registerClass({
             try {
                 this._tcp.add_inet_port(port, null);
             } catch (e) {
-                debug('TcpListener: failed to bind to port ' + port + ': ' + e);
-
                 if (port < 1764) {
                     port += 1;
                     continue;
@@ -107,15 +105,12 @@ var ChannelService = GObject.registerClass({
             }
         }
 
-        this._tcp.connect('incoming', this._receiveChannel.bind(this));
+        this._tcp.connect('incoming', this._onIncomingChannel.bind(this));
 
         log(`GSConnect: Using TCP port ${port}`);
     }
 
-    /**
-     * Receive a TCP connection and emit a Channel with 'channel::'
-     */
-    _receiveChannel(listener, connection) {
+    _onIncomingChannel(listener, connection) {
         let channel = new Core.Channel();
         let _tmp = channel.connect('connected', (channel) => {
             channel.disconnect(_tmp);
@@ -162,10 +157,10 @@ var ChannelService = GObject.registerClass({
         }
 
         // Broadcast Address
-        this._udp_address = new Gio.InetSocketAddress({
-            address: Gio.InetAddress.new_from_string('255.255.255.255'),
-            port: this._udp.local_address.port
-        });
+        this._udp_address = Gio.InetSocketAddress.new_from_string(
+            '255.255.255.255',
+            this._udp.local_address.port
+        );
 
         // Input stream
         this._input_stream = new Gio.DataInputStream({
@@ -177,18 +172,13 @@ var ChannelService = GObject.registerClass({
 
         // Watch input stream for incoming packets
         let source = this._udp.create_source(GLib.IOCondition.IN, null);
-        source.set_callback(this._receivePacket.bind(this));
+        source.set_callback(this._onIncomingPacket.bind(this));
         source.attach(null);
 
         log(`GSConnect: Using UDP port ${port}`);
     }
 
-    /**
-     * Receive an identity packet and emit 'packet::'
-     */
-    _receivePacket() {
-        let addr, data, flags, size;
-
+    _onIncomingPacket(socket, condition) {
         try {
             // 'Peek' the incoming address
             [size, addr, data, flags] = this._udp.receive_message(
