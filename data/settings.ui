@@ -789,7 +789,7 @@
                                             <property name="valign">center</property>
                                             <property name="hexpand">True</property>
                                             <property name="vexpand">True</property>
-                                            <property name="label">Debug Log</property>
+                                            <property name="label">Debugger</property>
                                           </object>
                                           <packing>
                                             <property name="left_attach">0</property>
@@ -804,7 +804,7 @@
                                             <property name="valign">center</property>
                                             <property name="hexpand">True</property>
                                             <property name="vexpand">True</property>
-                                            <property name="label">Open a terminal to inspect debug logs</property>
+                                            <property name="label">Open debug window</property>
                                             <property name="wrap">True</property>
                                             <style>
                                               <class name="dim-label"/>
@@ -823,6 +823,7 @@
                                             <property name="halign">end</property>
                                             <property name="valign">center</property>
                                             <property name="vexpand">True</property>
+                                            <property name="action_name">app.debugger</property>
                                             <property name="always_show_image">True</property>
                                             <child>
                                               <object class="GtkImage">

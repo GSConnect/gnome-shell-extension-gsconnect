@@ -313,7 +313,6 @@ var Window = GObject.registerClass({
         'extensions-list',
         'nautilus-integration',
         'advanced-list',
-        'debug', 'debug-window',
         'help', 'help-list'
     ]
 }, class Window extends Gtk.ApplicationWindow {
@@ -437,13 +436,6 @@ var Window = GObject.registerClass({
 
         // Advanced/Debug
         this.advanced_list.foreach(this._setGlobalRow);
-        this.debug_window.connect('clicked', () => {
-            GLib.spawn_command_line_async(
-                'gnome-terminal ' +
-                '--tab --title "GJS" --command "journalctl -f -o cat /usr/bin/gjs" ' +
-                '--tab --title "Gnome Shell" --command "journalctl -f -o cat /usr/bin/gnome-shell"'
-            );
-        });
         this.advanced_list.set_header_func(section_separators);
     }
 

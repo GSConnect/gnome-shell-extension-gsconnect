@@ -571,6 +571,7 @@ var Daemon = GObject.registerClass({
             ['cancelTransfer', this._cancelTransferAction.bind(this), '(ss)'],
             ['openTransfer', this._openTransferAction.bind(this), 's'],
             ['quit', this.quit.bind(this)],
+            ['debugger', this._debugger.bind(this)],
             ['about', this._aboutAction.bind(this)]
         ];
 
@@ -582,6 +583,10 @@ var Daemon = GObject.registerClass({
             action.connect('activate', entry[1]);
             this.add_action(action);
         });
+    }
+
+    _debugger() {
+        (new imports.modules.debug.Window()).present();
     }
 
     /**
