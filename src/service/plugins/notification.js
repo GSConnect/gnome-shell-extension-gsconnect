@@ -75,6 +75,8 @@ var Plugin = GObject.registerClass({
         super._init(device, 'notification');
 
         this.contacts = Contacts.getStore();
+
+        // Duplicate tracking of telephony notifications
         this._duplicates = new Map();
 
         // Request remote notifications (if permitted)
@@ -401,8 +403,9 @@ var Plugin = GObject.registerClass({
     }
 
     /**
-     * This mimics _parsePacket() from the telephony plugin, then calls either
-     * telephony.Plugin.callNotification() or telephony.Plugin.smsNotification()
+     * This mimics _parseEvent() from the telephony plugin, updates the contact
+     * avatar (if necessary), then calls either callNotification() or
+     * smsNotification() from the telephony plugin.
      *
      * @param {Object} notif - The body of a notification packet
      * @param {Object} contact - A contact object
@@ -412,17 +415,20 @@ var Plugin = GObject.registerClass({
     _showTelephonyNotification(notif, contact, icon, type) {
         let telephony = this.device.lookup_plugin('telephony');
 
-        let event = {
-            id: notif.id,
-            type: type,
-            contact: contact,
-            number: contact.numbers[0].number,
-            time: parseInt(notif.time)
+        // Fabricate a message packet from what we know
+        let message = {
+            contactName: contact.name,
+            _id: 0,
+            thread_id: 0,
+            address: contact.numbers[0].number,
+            date: parseInt(notif.time),
+            event: type,
+            read: 0,    // Sms.MessageStatus.UNREAD
+            type: 2     // Sms.MessageType.IN
         };
 
         // Update contact avatar
-        if (!contact.avatar && icon instanceof Gio.BytesIcon) {
-            debug('updating avatar for ' + event.contact.name);
+        if (!contact.avatar && (icon instanceof Gio.BytesIcon)) {
             contact.avatar = GLib.build_filenamev([
                 Contacts.CACHE_DIR,
                 GLib.uuid_string_random() + '.jpeg'
@@ -434,13 +440,13 @@ var Plugin = GObject.registerClass({
             this.contacts._writeCache();
         }
 
-        if (event.type === 'sms') {
-            event.content = notif.text;
-            return telephony.smsNotification(event);
-        } else if (event.type === 'missedCall') {
+        if (message.event === 'sms') {
+            message.body = notif.text;
+            return telephony.smsNotification(contact, message);
+        } else if (message.event === 'missedCall') {
             // TRANSLATORS: eg. Missed call from John Smith
-            event.content = _('Missed call at %s').format(event.time);
-            return telephony.callNotification(event);
+            message.body = _('Missed call from %s').format(contact.name);
+            return telephony.callNotification(contact, message);
         }
     }
 
@@ -448,7 +454,7 @@ var Plugin = GObject.registerClass({
      * Receive an incoming notification, either handling it as a duplicate of a
      * telephony notification or displaying to the user.
      *
-     * @param {Core.Packet} packet - The notification packet
+     * @param {kdeconnect.notification} packet - The notification packet
      */
     async receiveNotification(packet) {
         //
@@ -470,16 +476,14 @@ var Plugin = GObject.registerClass({
                 this.closeNotification(packet.body.id);
                 this._duplicates.delete(packet.body.ticker);
                 return;
-            // We've been asked to silence this (we'll still track it)
+            // We've been asked to silence this, so just track the ID
             } else if (duplicate.silence) {
                 duplicate.id = packet.body.id;
                 return;
             }
         }
 
-        // If it's an event we support, look for a known contact, but don't
-        // create a new one since we'll only have name *or* number with no
-        // decent way to tell which
+        // If it's an event we support
         if (isTelephony) {
             // Track the notification so a telephony action can close it
             this._duplicates.set(packet.body.ticker, { id: packet.body.id });
