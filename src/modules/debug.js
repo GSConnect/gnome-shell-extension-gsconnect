@@ -27,13 +27,13 @@ var Window = GObject.registerClass({
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/debug.ui',
     Children: [
         'headerbar', 'stack', 'switcher',
-        'send-packet',
         'send-packet-device', 'send-packet-type', 'send-packet-body', 'send-packet-button',
-        'receive-packet',
         'receive-packet-device', 'receive-packet-type', 'receive-packet-body', 'receive-packet-button',
-        'telephony',
-        'telephony-device', 'telephony-event', 'telephony-name', 'telephony-number', 'telephony-body', 'telephony-iscancel', 'telephony-receive',
-        'system',
+        'notification-device', 'notification-id', 'notification-time',
+        'notification-appname', 'notification-title', 'notification-text',
+        'notification-ticker', 'notification-requestreplyid', 'notification-isclearable',
+        'telephony-device', 'telephony-event', 'telephony-name', 'telephony-number',
+        'telephony-body', 'telephony-iscancel', 'telephony-receive',
         'heap-path', 'heap-save'
     ]
 }, class Window extends Gtk.ApplicationWindow {
@@ -67,6 +67,14 @@ var Window = GObject.registerClass({
             this._onPacketBodyChanged.bind(this)
         );
 
+        // Bind notification id to tooltip
+        this.notification_id.bind_property(
+            'active-id',
+            this.notification_id,
+            'tooltip-text',
+            GObject.BindingFlags.SYNC_CREATE
+        );
+
         // Set default heap path
         this.heap_path.set_current_folder(GLib.get_home_dir());
 
@@ -79,17 +87,20 @@ var Window = GObject.registerClass({
     _onDevicesChanged(application) {
         this.send_packet_device.remove_all();
         this.receive_packet_device.remove_all();
+        this.notification_device.remove_all();
         this.telephony_device.remove_all();
 
         for (let device of this.application._devices.values()) {
             this.send_packet_device.append(device.id, device.name);
             this.receive_packet_device.append(device.id, device.name);
+            this.notification_device.append(device.id, device.name);
             this.telephony_device.append(device.id, device.name);
         }
 
         if (this.application.devices.length > 0) {
             this.send_packet_device.active = 0;
             this.receive_packet_device.active = 0;
+            this.notification_device.active = 0;
             this.telephony_device.active = 0;
         }
     }
@@ -182,6 +193,73 @@ var Window = GObject.registerClass({
                 id: Date.now(),
                 type: this.receive_packet_type.active_id,
                 body: body
+            });
+        } catch (e) {
+            logError(e);
+        }
+    }
+
+    _onNotificationIdChanged(combobox) {
+        if (this.notification_id.active_id === '0|com.google.android.apps.messaging|0|com.google.android.apps.messaging:sms:22|10109') {
+            this.notification_appname.text = 'Messages';
+            this.notification_title.text = 'Contact Name';
+            this.notification_text.text = 'SMS Message Body';
+        } else if (this.notification_id.active_id === '0|com.google.android.dialer|1|MissedCall_content://call_log/calls/163?allow_voicemails=true|10073') {
+            this.notification_appname.text = 'Phone';
+            this.notification_title.text = 'Missed call';
+            this.notification_text.text = 'Contact Name';
+        } else {
+            this.notification_appname.text = '';
+            this.notification_title.text = '';
+            this.notification_text.text = '';
+        }
+    }
+
+    _onNotificationTickerChanged(entry) {
+        this.notification_ticker.text = [
+            this.notification_title.text,
+            this.notification_text.text
+        ].join(': ');
+    }
+
+    _onNotificationReceive(button) {
+        try {
+            let device = this.application._devices.get(
+                this.notification_device.active_id
+            );
+
+            device._onReceived(null, {
+                id: Date.now(),
+                type: 'kdeconnect.notification',
+                body: {
+                    id: this.notification_id.active_id,
+                    time: this.notification_time.text,
+                    appName: this.notification_appname.text,
+                    title: this.notification_title.text,
+                    text: this.notification_text.text,
+                    ticker: this.notification_ticker.text,
+                    requestReplyId: this.notification_requestreplyid.text,
+                    isClearable: this.notification_isclearable.active
+                }
+            });
+        } catch (e) {
+            logError(e);
+        }
+    }
+
+    _onNotificationIsCancel(button) {
+        try {
+            let device = this.application._devices.get(
+                this.notification_device.active_id
+            );
+
+            device._onReceived(null, {
+                id: Date.now(),
+                type: 'kdeconnect.notification',
+                body: {
+                    id: this.notification_id.active_id,
+                    isCancel: true
+                }
             });
         } catch (e) {
             logError(e);
