@@ -104,24 +104,40 @@ gsconnect.dbusinfo.nodes.forEach(info => info.cache_build());
  */
 gsconnect.settings.connect('changed::debug', () => {
     if (gsconnect.settings.get_boolean('debug')) {
-        window.debug = function(msg) {
+        window.debug = function(msg, prefix=null) {
             // Stack regexp
-            let _dbgRegexp = /(?:(?:([^<.]+)<\.)?([^@]+))?@(.+):(\d+):\d+/g;
-            let e = (msg.stack) ? msg : new Error();
-            let [m, k, f, fn, l] = _dbgRegexp.exec(e.stack.split('\n')[1]);
-            fn = GLib.path_get_basename(fn);
+            let _dbgRegexp = /(?:(?:[^<.]+<\.)?([^@]+))?@(.+):(\d+):\d+/g;
+
+            // Grab the second line of a stack trace
+            let trace = ((msg.stack) ? msg : new Error()).stack.split('\n')[1];
+            let [m, func, file, line] = _dbgRegexp.exec(trace);
+            file = GLib.path_get_basename(file);
 
             // There's a better way...
-            let hdr = [gsconnect.metadata.name, fn, k, f, l].filter(k => (k)).join(':');
+            let hdr = [file, func, line].filter(k => (k)).join(':');
 
-            // fix msg if not string
+            // Ensure @msg is a string
             if (msg.stack) {
                 msg = `${msg.message}\n${msg.stack}`;
             } else if (typeof msg !== 'string') {
                 msg = JSON.stringify(msg, null, 2);
             }
 
-            log(`[${hdr}]: ${msg}`);
+            // Append a prefix for context
+            if (prefix !== null) {
+                msg = `${prefix}: ${msg}`;
+            }
+
+            GLib.log_structured(
+                'gsconnect',
+                GLib.LogLevelFlags.LEVEL_MESSAGE,
+                {
+                    CODE_FILE: file,
+                    CODE_FUNC: `${func}`,
+                    CODE_LINE: `${line}`,
+                    MESSAGE: `DEBUG: [${hdr}]: ${msg}`
+                }
+            );
         };
     } else {
         window.debug = function() {};
@@ -141,7 +157,7 @@ window.logWarning = function(message, prefix=null) {
         message = message.message;
     }
 
-    if (typeof prefix === 'string') {
+    if (prefix !== null) {
         message = `${prefix}: ${message}`
     }
 
