@@ -83,7 +83,6 @@ var Metadata = {
  * Packets:
  *  {
  *      type: 'kdeconnect.telephony'
- *      id: {Number microseconds timestamp}
  *      body: {
  *          event: {String} missedCall | ringing | sms | talking,
  *          [contactName]: {String} Sender's name (optional),

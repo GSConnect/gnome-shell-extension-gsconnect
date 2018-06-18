@@ -48,35 +48,24 @@ var ID_REGEX = /^(fdo|gtk)\|([^\|]+)\|(.*)$/;
  * Incoming Notifications
  *
  *  {
- *      id: 1517817309016,
  *      type: 'kdeconnect.notification',
  *      body: {
- *          payloadHash: {String} MD5 Hash of payload data
- *                                (eg. '85ac3d1f77feb592f38dff6ae4f843e1'),
- *          requestReplyId: {String} UUID for repliable notifications aka
- *                                   Quick Reply (eg. '91bce2ab-873f-4056-8e91-16fd2f5781ec'),
- *          id: {String} The remote notification's Id
- *                       (eg. '0|com.google.android.apps.messaging|0|com.google.android.apps.messaging:sms:22|10109'),
- *          appName: {String} The application name (eg. 'Messages'),
+ *          id: {String} The remote notification's Id,
+ *          appName: {String} The application name,
  *          isClearable: {Boolean} Whether the notification can be closed,
- *          ticker: {String} Usually <title> and <text> joined with ': '. For
- *                           SMS it's '<contactName|phoneNumber>: <messageBody>',
  *          title: {String} Notification title, or <contactName|phoneNumber> for SMS,
  *          text: {String} Notification body, or <messageBody> for SMS,
- *          time: {String} String of epoch microseconds the notification
- *                         was *posted* (eg. '1517817308985'); this resets when
- *                         an Android device resets.
+ *          ticker: {String} Usually <title> and <text> joined with ': ',
+ *          time: {String} local timestamp (ms) the notification was posted,
+ *          requestReplyId: {String} UUID for repliable notifications,
+ *          payloadHash: {String} MD5 Hash of payload data (optional)
  *      },
  *      'payloadSize': {Number} Payload size in bytes,
  *      'payloadTransferInfo': {
- *          'port': {Number} Port number between 1739-1764 for transfer
+ *          'port': {Number} Port number between 1739-1764 for transfer (TCP),
+ *          'uuid': {String} Service UUID for transfer (Bluetooth)
  *      }
  *  }
- *
- *
- * TODO: consider allowing clients to handle notifications/use signals
- *       make local notifications closeable (serial/reply_serial)
- *       requestReplyId {string} - a UUID for replying (?)
  */
 var Plugin = GObject.registerClass({
     GTypeName: 'GSConnectNotificationPlugin'
@@ -506,8 +495,6 @@ var Plugin = GObject.registerClass({
 
             // If found, send this as a telephony notification
             if (contact) {
-                debug('Found known contact');
-
                 return this._showTelephonyNotification(
                     packet.body,
                     contact,

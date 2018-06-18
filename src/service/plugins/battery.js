@@ -128,6 +128,7 @@ var Plugin = GObject.registerClass({
         icon += (this._charging) ? '-charging-symbolic' : '-symbolic';
         return icon;
     }
+
     get level() {
         // This is what KDE Connect returns if the remote battery plugin is
         // disabled or still being loaded
@@ -148,9 +149,6 @@ var Plugin = GObject.registerClass({
         }
     }
 
-    /**
-     * Packet dispatch
-     */
     handlePacket(packet) {
         if (packet.type === 'kdeconnect.battery') {
             return this._handleUpdate(packet.body);
@@ -191,8 +189,6 @@ var Plugin = GObject.registerClass({
     }
 
     _handleThreshold() {
-        debug(`${this.device.name}: ${this.level}`);
-
         let buttons = [];
 
         if (this.device.get_action_enabled('find')) {

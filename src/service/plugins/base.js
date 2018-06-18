@@ -214,7 +214,7 @@ var Plugin = GObject.registerClass({
             this.device.remove_action(action.name);
         });
 
-        if (this._cacheFile) {
+        if (this._cacheFile !== undefined) {
             this._writeCache();
         }
 

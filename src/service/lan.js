@@ -142,8 +142,6 @@ var ChannelService = GObject.registerClass({
             try {
                 this._udp.bind(addr, false);
             } catch (e) {
-                debug('UdpListener: failed to bind to port ' + port + ': ' + e);
-
                 if (port < 1764) {
                     port += 1;
                     continue;

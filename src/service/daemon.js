@@ -217,7 +217,7 @@ var Daemon = GObject.registerClass({
                     GLib.file_get_contents('/sys/class/dmi/id/chassis_type')[1]
                 );
 
-                this._type = ([8, 9, 10, 14].indexOf(type) > -1) ? 'laptop' : 'desktop';
+                this._type = ([8, 9, 10, 14].includes(type)) ? 'laptop' : 'desktop';
             } catch (e) {
                 this._type = 'desktop';
             }
@@ -652,7 +652,7 @@ var Daemon = GObject.registerClass({
      * @param {String|null} application - Application Id if Gtk or null
      */
     remove_notification(id, application=null) {
-        return new Promise((resolve, reject) => {
+        new Promise((resolve, reject) => {
             let name, path, method, variant;
 
             if (application !== null) {

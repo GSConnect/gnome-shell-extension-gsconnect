@@ -112,7 +112,7 @@ var Menu = GObject.registerClass({
     }
 
     /**
-     * Remove a GMenuItem by action name, with or without group prefix
+     * Remove a GMenuItem by action name
      * @param {String} name - Action name of the item to remove
      * @return {Number} - The index of the removed item or -1 if not found
      */
@@ -395,7 +395,7 @@ var Device = GObject.registerClass({
             case 'phone':
                 return 'smartphone';
             case 'tablet':
-                return this.type;
+                return 'tablet';
             default:
                 return 'computer';
         }
@@ -449,15 +449,16 @@ var Device = GObject.registerClass({
         let supported = [];
 
         for (let name in imports.service.plugins) {
+            // Skip base.js
+            if (name === 'base')
+                continue;
+
             let meta = imports.service.plugins[name].Metadata;
 
-            // Skip base.js
-            if (!meta) { continue; }
-
-            // If it sends packets we can handle
+            // If it sends packets we can handle...
             if (meta.incomingCapabilities.some(t => this.outgoingCapabilities.includes(t))) {
                 supported.push(name);
-            // Or handles packets we can send
+            // ...or handles packets we can send
             } else if (meta.outgoingCapabilities.some(t => this.incomingCapabilities.includes(t))) {
                 supported.push(name);
             }
@@ -495,12 +496,10 @@ var Device = GObject.registerClass({
             this._channel.connect('disconnected', this._onDisconnected.bind(this));
 		    this._channel.connect('received', this._onReceived.bind(this));
 
-		    let addr = new Gio.InetSocketAddress({
-                address: Gio.InetAddress.new_from_string(
-                    this.settings.get_string('tcp-host')
-                ),
-                port: this.settings.get_uint('tcp-port')
-            });
+		    let addr = Gio.InetSocketAddress.new_from_string(
+                this.settings.get_string('tcp-host'),
+                this.settings.get_uint('tcp-port')
+            );
 
             this._channel.open(addr);
         }

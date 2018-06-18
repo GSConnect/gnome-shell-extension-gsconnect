@@ -59,9 +59,7 @@ var Metadata = {
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/share
  *
  * TODO: receiving 'text' TODO: Window with textview & 'Copy to Clipboard..
- *       expand signals to cover Lan.Transfer signals
  *       https://github.com/KDE/kdeconnect-kde/commit/28f11bd5c9a717fb9fbb3f02ddd6cea62021d055
- *       Support tel: uris
  */
 var Plugin = GObject.registerClass({
     GTypeName: 'GSConnectSharePlugin',
