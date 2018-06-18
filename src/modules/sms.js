@@ -1,7 +1,6 @@
 'use strict';
 
 const Gdk = imports.gi.Gdk;
-const GdkPixbuf = imports.gi.GdkPixbuf;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
@@ -13,11 +12,30 @@ const Contacts = imports.modules.contacts;
 
 
 /**
- * SMS Message direction
+ * SMS Message status. READ/UNREAD match the 'read' field from the Android App
+ * message packet.
+ *
+ * UNREAD: A message not marked as read
+ * READ: A message marked as read
  */
-var MessageDirection = {
-    OUT: 0,
-    IN: 1
+var MessageStatus = {
+    UNREAD: 0,
+    READ: 1
+};
+
+
+/**
+ * SMS Message direction. IN/OUT match the 'type' field from the Android App
+ * message packet.
+ *
+ * NOTICE: A general message (eg. timestamp, missed call)
+ * IN: An incoming message
+ * OUT: An outgoing message
+ */
+var MessageType = {
+    NOTICE: 0,
+    IN: 1,
+    OUT: 2
 };
 
 
@@ -143,76 +161,119 @@ var URI = class URI {
 
 
 /**
+ * Return a human-readable timestamp.
  *
+ * @param {Number} time - Milliseconds since the epoch (local time)
+ * @return {String} - A timestamp similar to what Android Messages uses
+ */
+function getTime(time) {
+    time = GLib.DateTime.new_from_unix_local(time/1000);
+    let now = GLib.DateTime.new_now_local();
+    let diff = now.difference(time);
+
+    switch (true) {
+        // Super recent
+        case (diff < GLib.TIME_SPAN_MINUTE):
+            // TRANSLATORS: Less than a minute ago
+            return _('Just now');
+
+        // Under an hour
+        case (diff < GLib.TIME_SPAN_HOUR):
+            // TRANSLATORS: Abbreviation for minutes (eg. 10 mins)
+            return _('%d mins').format(
+                GLib.DateTime.new_from_unix_local(diff).get_minute()
+            );
+
+        // Yesterday, but less than 24 hours ago
+        case (diff < GLib.TIME_SPAN_DAY && (now.get_day_of_month() !== time.get_day_of_month())):
+            // TRANSLATORS: Yesterday, but less than 24 hours (eg. Yesterday · 11:29 PM)
+            return _('Yesterday・%s').format(time.format('%l:%M %p'));
+
+        // Less than a day ago
+        case (diff < GLib.TIME_SPAN_DAY):
+            return time.format('%l:%M %p');
+
+        // Less than a week ago
+        case (diff < (GLib.TIME_SPAN_DAY * 7)):
+            return time.format('%A・%l:%M %p');
+
+        default:
+            return time.format('%b %e');
+    }
+}
+
+
+function getShortTime(time) {
+    time = GLib.DateTime.new_from_unix_local(time/1000);
+    let now = GLib.DateTime.new_now_local();
+    let diff = now.difference(time);
+
+    switch (true) {
+        // Super recent
+        case (diff < GLib.TIME_SPAN_MINUTE):
+            // TRANSLATORS: Less than a minute ago
+            return _('Just now');
+
+        // Under an hour
+        case (diff < GLib.TIME_SPAN_HOUR):
+            // TRANSLATORS: Abbreviation for minutes (eg. 10 mins)
+            return _('%d mins').format(
+                GLib.DateTime.new_from_unix_local(diff).get_minute()
+            );
+
+        // Less than a week ago
+        case (diff < (GLib.TIME_SPAN_DAY * 7)):
+            return time.format('%a');
+
+        default:
+            return time.format('%b %e');
+    }
+}
+
+
+/**
+ * A simple GtkLabel subclass with a chat bubble appearance
  */
 var ConversationMessage = GObject.registerClass({
     GTypeName: 'GSConnectConversationMessage'
-}, class ConversationMessage extends Gtk.Grid {
+}, class ConversationMessage extends Gtk.Label {
 
-    _init(params) {
-        Object.assign(this, {
-            contact: null,
-            direction: MessageDirection.OUT,
-            message: null
-        }, params);
-
+    _init(message) {
         super._init({
-            visible: true,
-            halign: (this.direction) ? Gtk.Align.START : Gtk.Align.END
-        });
-
-        let messageContent = new Gtk.Label({
-            label: this._linkify(this.message),
-            margin_top: 6,
-            margin_bottom: 6,
-            margin_right: 12,
-            margin_left: 12,
+            label: this._linkify(message.body),
             selectable: true,
             use_markup: true,
             visible: true,
             wrap: true,
             wrap_mode: Pango.WrapMode.WORD_CHAR,
-            xalign: (params.direction) ? 0 : 1
+            xalign: 0,
+            visible: true,
+            halign: (message.type === MessageType.IN) ? Gtk.Align.START : Gtk.Align.END,
+            tooltip_text: getTime(message.date)
         });
-        messageContent.connect('activate-link', this._onActivateLink.bind(this));
-        this.connect('draw', this._onDraw.bind(this));
-        this.add(messageContent);
+
+        if (message.type === MessageType.IN) {
+            this.get_style_context().add_class('message-in');
+        } else {
+            this.get_style_context().add_class('message-out');
+        }
+
+        this.message = message;
+
+        this.connect('activate-link', this._onActivateLink);
     }
 
     _onActivateLink(label, uri) {
         Gtk.show_uri_on_window(
-            this.get_toplevel(),
+            label.get_toplevel(),
             (uri.indexOf('://') < 0) ? 'http://' + uri : uri,
             Gdk.get_current_event_time()
         );
         return true;
     }
 
-    _onDraw(widget, cr) {
-        let [size, baseline] = widget.get_allocated_size();
-
-        let color = (this.direction) ? this.contact.rgb : [ 0.83, 0.84, 0.81 ];
-
-        cr.setSourceRGB(...color);
-        cr.moveTo(12, 0);
-        // Top right
-        cr.lineTo(size.width - 12, 0);
-        cr.arc(size.width - 12, 12, 12, 1.5 * Math.PI, 0);
-        // Bottom right
-        cr.lineTo(size.width, size.height - 12);
-        cr.arc(size.width - 12, size.height - 12, 12, 0, 0.5 * Math.PI);
-        // Bottom left
-        cr.lineTo(12, size.height);
-        cr.arc(12, size.height - 12, 12, 0.5 * Math.PI, 1.0 * Math.PI);
-        // Top left
-        cr.lineTo(0, 12);
-        cr.arc(12, 12, 12, 1.0 * Math.PI, 1.5 * Math.PI);
-        cr.fill();
-
-        // Foreground
-        Color.setFgClass(this, color);
-
-        cr.$dispose();
+    _onQueryTooltip(widget) {
+        widget.tooltip_text = getTime(widget.message.date);
         return false;
     }
 
@@ -232,6 +293,71 @@ var ConversationMessage = GObject.registerClass({
             /&(?!amp;)/g,
             '&amp;'
         );
+    }
+});
+
+
+var ConversationSummary = GObject.registerClass({
+    GTypeName: 'GSConnectConversationSummary'
+}, class ConversationSummary extends Gtk.ListBoxRow {
+    _init(contact, message) {
+        super._init();
+
+        this.contact = contact;
+        this.message = message;
+
+        let grid = new Gtk.Grid({
+            margin: 6,
+            column_spacing: 6,
+            visible: true
+        });
+        this.add(grid);
+
+        let nameLabel = contact.name;
+        let bodyLabel = '<small>' + message.body + '</small>';
+
+        if (message.read === MessageStatus.UNREAD) {
+            nameLabel = '<b>' + nameLabel + '</b>';
+            bodyLabel = '<b>' + bodyLabel + '</b>';
+        }
+
+        grid.attach(new Contacts.Avatar(contact), 0, 0, 1, 3);
+
+        let name = new Gtk.Label({
+            label: nameLabel,
+            halign: Gtk.Align.START,
+            hexpand: true,
+            ellipsize: Pango.EllipsizeMode.END,
+            use_markup: true,
+            xalign: 0
+        });
+        grid.attach(name, 1, 0, 1, 1);
+
+        let time = new Gtk.Label({
+            label: '<small>' + getShortTime(message.date) + '</small>',
+            halign: Gtk.Align.END,
+            ellipsize: Pango.EllipsizeMode.END,
+            use_markup: true,
+            xalign: 0
+        });
+        time.connect('map', (widget) => {
+            widget.label = '<small>' + getShortTime(message.date) + '</small>';
+            return false;
+        });
+
+        time.get_style_context().add_class('dim-label');
+        grid.attach(time, 2, 0, 1, 1);
+
+        let body = new Gtk.Label({
+            label: bodyLabel,
+            halign: Gtk.Align.START,
+            ellipsize: Pango.EllipsizeMode.END,
+            use_markup: true,
+            xalign: 0
+        });
+        grid.attach(body, 1, 1, 2, 1);
+
+        this.show_all();
     }
 });
 
@@ -262,12 +388,32 @@ var ConversationWindow = GObject.registerClass({
             'The conversation recipient phone number',
             GObject.ParamFlags.READABLE,
             ''
+        ),
+        'message-id': GObject.ParamSpec.uint(
+            'message-id',
+            'Message ID',
+            'The ID of the last message of the current conversation thread',
+            GObject.ParamFlags.READWRITE,
+            0, GLib.MAXINT32,
+            null
+        ),
+        'thread-id': GObject.ParamSpec.uint(
+            'thread-id',
+            'Thread ID',
+            'The ID of the current conversation thread',
+            GObject.ParamFlags.READWRITE,
+            0, GLib.MAXINT32,
+            null
         )
     },
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/conversation-window.ui',
     Children: [
         'headerbar',
-        'overlay', 'info-box', 'info-box', 'info-button', 'info-label', 'stack',
+        'overlay',
+        'info-box', 'info-box', 'info-button', 'info-label',
+        'stack',
+        'go-previous',
+        'conversation-window', 'conversation-list', 'conversation-add',
         'message-window', 'message-list', 'message-entry'
     ]
 }, class ConversationWindow extends Gtk.ApplicationWindow {
@@ -286,10 +432,21 @@ var ConversationWindow = GObject.registerClass({
 
         this._device = device;
         this._notifications = [];
-        this._thread = null;
+
+        this.insert_action_group('device', this.device);
+
+        // Header Bar
+        let headerbar = this.get_titlebar();
+        headerbar.title = _('Conversations');
+        headerbar.subtitle = this.device.name;
 
         // TRANSLATORS: eg. <b>Google Pixel</b> is disconnected
         this.info_label.label = _('%s is disconnected').format(this.device.name);
+
+        // Conversations
+        this.conversation_list.set_sort_func((row1, row2) => {
+            return (row1.message.date > row2.message.date) ? -1 : 1;
+        });
 
         // Contacts
         this.contact_list = new Contacts.ContactChooser();
@@ -298,8 +455,7 @@ var ConversationWindow = GObject.registerClass({
             this._onNumberSelected.bind(this)
         );
         this.stack.add_named(this.contact_list, 'contacts');
-        this.stack.child_set_property(this.contact_list, 'position', 0);
-        this.stack.set_visible_child_name('contacts');
+        this.stack.child_set_property(this.contact_list, 'position', 1);
 
         // Device Status
         this._deviceBinding = this.device.bind_property(
@@ -307,9 +463,12 @@ var ConversationWindow = GObject.registerClass({
         );
         this.overlay.remove(this.info_box);
 
-        // Finish initing
-        this.show_all();
-        this._onNumberChanged();
+        // Show the contact list if there are no conversations
+        if (this.device.lookup_plugin('telephony').threads.length === 0) {
+            this._showContacts();
+        };
+
+        this._populateConversations();
     }
 
     get device() {
@@ -317,13 +476,112 @@ var ConversationWindow = GObject.registerClass({
     }
 
     get number() {
-        return this._number || null;
+        if (this._number === undefined) {
+            return null;
+        }
+
+        return this._number;
     }
 
     get recipient() {
-        return this._recipient || null;
+        if (this._recipient === undefined) {
+            return null;
+        }
+
+        return this._recipient;
     }
 
+    get message_id() {
+        if (this._message_id === undefined) {
+            return 0;
+        }
+
+        return this._message_id;
+    }
+
+    set message_id(id) {
+        this._message_id = id;
+        this.notify('message-id');
+    }
+
+    get thread_id() {
+        if (this._thread_id === undefined) {
+            return 0;
+        }
+
+        return this._thread_id;
+    }
+
+    set thread_id(id) {
+        this._thread_id = id;
+        this.notify('thread-id');
+    }
+
+    _onDestroy(window) {
+        window.get_titlebar().remove(window.contact_list.entry);
+        window.contact_list.disconnect(window._numberSelectedId);
+        window.contact_list.destroy();
+        delete window.contact_list;
+
+        window._deviceBinding.unbind();
+        delete window._device;
+
+        window.run_dispose();
+        log('IS DESTROYED: ' + window);
+
+        imports.system.gc();
+        imports.system.gc();
+        imports.system.gc();
+    }
+
+    /**
+     * View selection
+     */
+    _showContacts() {
+        this.conversation_add.visible = false;
+        this.go_previous.visible = true;
+
+        this.headerbar.custom_title = this.contact_list.entry;
+        this.contact_list.entry.has_focus = true;
+        this.stack.set_visible_child_name('contacts');
+    }
+
+    _showConversations() {
+        this.conversation_add.visible = true;
+        this.go_previous.visible = false;
+
+        this._populateConversations();
+
+        this.contact_list.entry.text = '';
+        this.headerbar.custom_title = null;
+
+        this.headerbar.title = _('Conversations');
+        this.headerbar.subtitle = this.device.name;
+        this.stack.set_visible_child_name('conversations');
+    }
+
+    _showMessages() {
+        this.conversation_add.visible = false;
+        this.go_previous.visible = true;
+
+        this.contact_list.entry.text = '';
+        this.headerbar.custom_title = null;
+
+        if (this.recipient.name) {
+            this.headerbar.title = this.recipient.name;
+            this.headerbar.subtitle = this._displayNumber;
+        } else {
+            this.headerbar.title = this._displayNumber;
+            this.headerbar.subtitle = null;
+        }
+
+        this.stack.set_visible_child_name('messages');
+        this.message_entry.has_focus = true;
+    }
+
+    /**
+     * "Disconnected" overlay
+     */
     _onConnected(window) {
         let children = this.overlay.get_children();
 
@@ -337,9 +595,6 @@ var ConversationWindow = GObject.registerClass({
         window.info_box.reveal_child = !window.connected;
     }
 
-    /**
-     * Add/Remove the infobox after the reveal completes
-     */
     _onRevealed(revealer) {
         let children = this.overlay.get_children();
 
@@ -349,13 +604,61 @@ var ConversationWindow = GObject.registerClass({
         }
     }
 
-    _onDestroy(window) {
-        window.get_titlebar().remove(window.contact_list.entry);
-        window.contact_list.disconnect(window._numberSelectedId);
-        window.contact_list.destroy();
-        delete window.contact_list;
+    /**
+     * Conversation List
+     */
+    _populateConversations() {
+        let telephony = this.device.lookup_plugin('telephony');
 
-        window._deviceBinding.unbind();
+        if (!telephony) {
+            return;
+        }
+
+        // Clear any current threads
+        this.conversation_list.foreach(row => row.destroy());
+
+        for (let message of telephony.threads) {
+            // Ensure we have a contact for each thread
+            let contact = this.contact_list.contacts.query({
+                name: message.address,
+                number: message.address,
+                single: true,
+                create: true
+            });
+
+            // Create a summary row and add it to the list
+            let summary = new ConversationSummary(contact, message);
+            this.conversation_list.add(summary);
+        }
+    }
+
+    _onConversationActivated(box, row) {
+        this.setRecipient(row.contact, row.message.address);
+    }
+
+    /**
+     * Message List
+     */
+
+    /**
+     * Populate the message list with the messages from the thread for @number
+     *
+     * @param {String} number - Phone number reported by KDE Connect (stripped)
+     */
+    _populateMessages(number) {
+        this.message_list.foreach(row => row.destroy());
+        this._thread = undefined;
+
+        let telephony = this.device.lookup_plugin('telephony');
+
+        if (telephony.conversations.hasOwnProperty(number)) {
+            let conversation = telephony.conversations[number];
+            conversation.map(message => this._addMessage(message));
+
+            let lastMessage = conversation[conversation.length - 1];
+            this._thread_id = lastMessage.thread_id;
+            this._message_id = lastMessage._id;
+        }
     }
 
     _onEntryChanged(entry) {
@@ -363,7 +666,7 @@ var ConversationWindow = GObject.registerClass({
     }
 
     _onEntryHasFocus(entry) {
-        while (this._notifications.length) {
+        while (this._notifications.length > 0) {
             this.device.withdraw_notification(this._notifications.pop());
         }
     }
@@ -378,129 +681,109 @@ var ConversationWindow = GObject.registerClass({
     }
 
     _onNumberSelected(contact_list, number) {
-        this._setRecipient(contact_list.selected.get(number), number);
-    }
-
-    /**
-     * Set the Header Bar and stack child
-     */
-    _onNumberChanged(window) {
-        if (this.recipient) {
-            this.headerbar.custom_title = null;
-            this.contact_list.entry.text = '';
-
-            if (this.recipient.name) {
-                this.headerbar.set_title(this.recipient.name);
-                this.headerbar.set_subtitle(this._displayNumber);
-            } else {
-                this.headerbar.set_title(this._displayNumber);
-                this.headerbar.set_subtitle(null);
-            }
-
-            let revealer = new Gtk.Revealer({
-                halign: Gtk.Align.CENTER,
-                valign: Gtk.Align.CENTER,
-                transition_duration: 400,
-                transition_type: Gtk.RevealerTransitionType.SLIDE_UP,
-                visible: true,
-                child: new Contacts.Avatar(this.recipient)
-            });
-            this.headerbar.pack_start(revealer);
-            revealer.reveal_child = true;
-
-            this.stack.set_visible_child_name('messages');
-            this.message_entry.has_focus = true;
-        } else {
-            this.headerbar.custom_title = this.contact_list.entry;
-            this.contact_list.entry.has_focus = true;
-            this.stack.set_visible_child_name('contacts');
-        }
+        this.setRecipient(contact_list.selected.get(number), number);
     }
 
     /**
      * Add a new thread, which is a series of sequential messages from one user
      * with a single instance of the sender's avatar.
      *
-     * @param {MessageDirection} - The direction of the message; one of the
-     *     MessageDirection enums (either OUT [0] or IN [1])
+     * @param {MessageType} direction - The direction of the message
      */
     _addThread(direction) {
-        let sender;
-
-        if (direction === MessageDirection.IN) {
-            sender = this.recipient.name || this.number;
-        } else {
-            sender = null;
-        }
-
         let row = new Gtk.ListBoxRow({
             activatable: false,
             selectable: false,
             hexpand: true,
-            halign: Gtk.Align.FILL,
-            visible: true,
             margin: 6
         });
         row.direction = direction;
         this.message_list.add(row);
 
         let layout = new Gtk.Box({
-            visible: true,
             can_focus: false,
             hexpand: true,
             spacing: 3,
-            halign: (direction) ? Gtk.Align.START : Gtk.Align.END
+            halign: (direction === MessageType.IN) ? Gtk.Align.START : Gtk.Align.END
         });
         row.add(layout);
 
-        // Contact Avatar
-        row.avatar = new Contacts.Avatar(this.recipient);
-        row.avatar.tooltip_text = sender;
-        row.avatar.valign = Gtk.Align.END;
-        row.avatar.visible = direction;
-        layout.add(row.avatar);
+        // Add avatar for incoming messages
+        if (direction === MessageType.IN) {
+            row.avatar = new Contacts.Avatar(this.recipient);
+            row.avatar.valign = Gtk.Align.END;
+            layout.add(row.avatar);
+        }
 
         // Messages
         row.messages = new Gtk.Box({
-            visible: true,
             can_focus: false,
             orientation: Gtk.Orientation.VERTICAL,
             spacing: 3,
-            halign: (direction) ? Gtk.Align.START : Gtk.Align.END,
-            margin_right: (direction) ? 38 : 0,
-            margin_left: (direction) ? 0: 38
+            halign: (direction === MessageType.IN) ? Gtk.Align.START : Gtk.Align.END,
+            margin_right: (direction === MessageType.IN) ? 38 : 0,
+            margin_left: (direction === MessageType.IN) ? 0: 38
         });
         layout.add(row.messages);
 
         this._thread = row;
+        this._thread.show_all();
     }
 
     /**
      * Log a new message in the conversation
      *
-     * @param {string} message - The message content
-     * @param {MessageDirection} - The direction of the message; one of the
-     *     MessageDirection enums (either OUT [0] or IN [1])
+     * @param {Object} message - A telephony message object
      */
-    _logMessage(message, direction=MessageDirection.OUT) {
+    _addMessage(message) {
         // Check if we need a new thread
-        if (!this._thread || this._thread.direction !== direction) {
-            this._addThread(direction)
+        if (this._thread === undefined) {
+            this._addThread(message.type);
         }
 
-        let conversationMessage = new ConversationMessage({
-            contact: this.recipient,
-            direction: direction,
-            message: message
-        });
+        // If the current thread is dated...
+        if (this._thread.date !== undefined) {
+            // ...check if there was a span greater than hour between messages
+            if ((message.date - this._thread.date) > GLib.TIME_SPAN_HOUR) {
+                let row = new ListBoxRow({
+                    activatable: false,
+                    visible: true
+                });
+                this.message_list.add(row);
+
+                let label = new Gtk.Label({
+                    label: '<small>' + getTime(message.date) + '</small>',
+                    halign: Gtk.Align.CENTER,
+                    hexpand: true,
+                    use_markup: true,
+                    visible: true
+                });
+                label.get_style_context().add_class('dim-label');
+                row.add(label);
+
+                // Now start a new thread
+                this._addThread(message.type);
+            }
+        }
+
+        // Start a new thread if the message is from a different direction
+        if (this._thread.direction !== message.type) {
+            this._addThread(message.type)
+        }
+
+        // Log the message and set the thread date
+        let conversationMessage = new ConversationMessage(message);
         this._thread.messages.add(conversationMessage);
+        this._thread.date = message.date;
     }
 
     /**
      * Set the conversation recipient
+     *
+     * @param {Object} contact - A contact object for the message
+     * @param {String} phoneNumber - The phone number (provided by Android)
      */
-    _setRecipient(contact, phoneNumber) {
-        // We use the number from kdeconnect for transmission and comparisons
+    setRecipient(contact, phoneNumber) {
         this._number = phoneNumber;
         this._displayNumber = phoneNumber;
         this._recipient = contact;
@@ -515,49 +798,71 @@ var ConversationWindow = GObject.registerClass({
             }
         }
 
-        this.notify('number');
+        // Populate the conversation
+        this._populateMessages(strippedNumber);
+        this._showMessages();
     }
 
     /**
      * Log an incoming message in the MessageList
+     * TODO: this is being deprecated by 'kdeconnect.telephony.message', but we
+     *       keep it for now so the telephony plugin can use it to fake support.
+     *
      * @param {Object} contact - A contact object for this message
-     * @param {String} phoneNumber - The original phone number for this event
-     * @param {String|Pango markup} messageBody - The message to be logged
+     * @param {Object} message - A telephony message object
      */
-    receiveMessage(contact, phoneNumber, message) {
-        this._number = phoneNumber;
+    receiveMessage(contact, message) {
+        this._number = message.address;
 
         if (!this.recipient) {
-            this._setRecipient(contact, phoneNumber);
+            this.setRecipient(contact, message.address);
         }
 
-        this._logMessage(message, MessageDirection.IN);
+        // Log an incoming telepony message (fabricated by the telephony plugin)
+        this._addMessage({
+            _id: ++this.message_id,     // message id (increment as we fetch)
+            thread_id: this.thread_id,  // conversation id
+            address: message.address,   // always the outgoing number
+            body: message.body,
+            date: message.date,
+            event: 'sms',
+            read: MessageStatus.UNREAD,
+            type: MessageType.IN,
+        });
     }
 
     /**
      * Send the contents of the message entry to the recipient
      */
     sendMessage(entry, signal_id, event) {
-        if (!entry.text.length) {
-            return;
-        }
-
+        // Ensure the action is enabled so we don't log messages without sending
         if (this.device.get_action_enabled('sendSms')) {
             this.device.activate_action(
                 'sendSms',
                 new GLib.Variant('(ss)', [this.number, entry.text])
             );
 
-            // Log the outgoing message
-            this._logMessage(entry.text, MessageDirection.OUT);
+            // Log the outgoing message as a fabricated message packet
+            this._addMessage({
+                _id: ++this.message_id,    // message id (increment as we fetch)
+                thread_id: this.thread_id,  // conversation id
+                address: this.number,       // always the outgoing number?
+                body: entry.text,
+                date: Date.now(),
+                event: 'sms',
+                read: MessageStatus.READ,
+                type: MessageType.OUT,
+            });
+
+            // Clear the entry
             this.message_entry.text = '';
         }
     }
 
     /**
-     * Send the contents of the message entry and place the cursor at the end
+     * Set the contents of the message entry and place the cursor at the end
      *
-     * @param {String} text - The text to place in the entry
+     * @param {String} text - The message to place in the entry
      */
     setMessage(text) {
         this.message_entry.text = text;

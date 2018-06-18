@@ -427,7 +427,8 @@ var Avatar = GObject.registerClass({
             width_request: 32,
             vexpand: false,
             hexpand: false,
-            visible: true
+            visible: true,
+            tooltip_text: contact.name
         });
 
         this.contact = contact;
@@ -449,7 +450,11 @@ var Avatar = GObject.registerClass({
         if (this._pixbuf === undefined) {
             this._fallback = true;
 
-            this.bg_color = Color.randomRGBA(this.contact.name);
+            if (this.contact.name === _('Unknown Contact')) {
+                this.bg_color = new Gdk.RGBA({ red: 0.8, green: 0.8, blue: 0.8, alpha: 1 });
+            } else {
+                this.bg_color = Color.randomRGBA(this.contact.name);
+            }
 
             let info = Gtk.IconTheme.get_default().lookup_icon(
                'avatar-default',
@@ -801,8 +806,7 @@ var ContactChooser = GObject.registerClass({
             } else {
                 this._temporary = this._addContact({
                     name: _('Unknown Contact'),
-                    numbers: [{ type: 'unknown', number: this.entry.text }],
-                    rgb: [0.8, 0.8, 0.8]
+                    numbers: [{ type: 'unknown', number: this.entry.text }]
                 });
                 this._temporary._name.label = _('Send to %s').format(this.entry.text);
                 this._temporary.dynamic = true;
