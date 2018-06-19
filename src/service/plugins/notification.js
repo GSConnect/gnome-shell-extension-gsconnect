@@ -412,8 +412,8 @@ var Plugin = GObject.registerClass({
      * @param {Gio.Icon|null} icon - The notification icon (nullable)
      * @param {string} type - The event type; either "missedCall" or "sms"
      */
-    _showTelephonyNotification(notif, contact, icon, type) {
-        let telephony = this.device.lookup_plugin('telephony');
+    _telephonyNotification(notif, contact, icon, type) {
+        let telephony = imports.service.plugins.telephony.Plugin;
 
         // Fabricate a message packet from what we know
         let message = {
@@ -442,11 +442,11 @@ var Plugin = GObject.registerClass({
 
         if (message.event === 'sms') {
             message.body = notif.text;
-            return telephony.smsNotification(contact, message);
+            telephony.prototype.smsNotification.call(this, contact, message);
         } else if (message.event === 'missedCall') {
             // TRANSLATORS: eg. Missed call from John Smith
             message.body = _('Missed call from %s').format(contact.name);
-            return telephony.callNotification(contact, message);
+            telephony.prototype.callNotification.call(this, contact, message);
         }
     }
 
@@ -458,19 +458,19 @@ var Plugin = GObject.registerClass({
      */
     async receiveNotification(packet) {
         //
+        let id = packet.body.id;
+        let body, contact, title;
         let icon = await this._downloadIcon(packet);
 
         // Check if this is a missed call or SMS notification
         let isMissedCall = packet.body.id.includes('MissedCall');
         let isSms = packet.body.id.includes('sms');
-        let telephony = this.device.get_plugin_enabled('telephony');
-        let isTelephony = (telephony && (isMissedCall || isSms));
 
         // Check if it's a duplicate early so we can skip unnecessary work
         let duplicate = this._duplicates.get(packet.body.ticker);
 
         // This has been marked as a duplicate by the telephony plugin
-        if (isTelephony && duplicate) {
+        if ((isMissedCall || isSms) && duplicate) {
             // We've been asked to close this
             if (duplicate.close) {
                 this.closeNotification(packet.body.id);
@@ -483,22 +483,22 @@ var Plugin = GObject.registerClass({
             }
         }
 
-        // If it's an event we support
-        if (isTelephony) {
-            // Track the notification so a telephony action can close it
+        // If it's a telephony event not marked as a duplicate...
+        if (isMissedCall || isSms) {
+            // Track the id so it can be closed with a telephony notification.
             this._duplicates.set(packet.body.ticker, { id: packet.body.id });
 
             // Look for a contact with a single phone number, but don't create
             // one since we only get a number or a name
-            let contact = this.contacts.query({
+            contact = this.contacts.query({
                 name: (isSms) ? packet.body.title : packet.body.text,
                 number: (isSms) ? packet.body.title : packet.body.text,
                 single: true
             });
 
-            // If found, send this as a telephony notification
+            // If found, send this using a telephony plugin method
             if (contact) {
-                return this._showTelephonyNotification(
+                return this._telephonyNotification(
                     packet.body,
                     contact,
                     icon,
@@ -507,40 +507,49 @@ var Plugin = GObject.registerClass({
             }
         }
 
-        // A regular notification or notification from an unknown contact
-        let notif = {
-            id: packet.body.id,
-            icon: icon
-        };
-
-        // Ignore 'appName' if it's the same as 'title' or this is SMS
-        if (packet.body.appName === packet.body.title || isSms) {
-            notif.title = packet.body.title;
-            notif.body = packet.body.text;
+        // Ignore 'appName' if it's the same as 'title'
+        if (packet.body.appName === packet.body.title) {
+            title = packet.body.title;
+            body = packet.body.text;
+        // Emulate a 'missedCall' notification
+        } else if (isMissedCall) {
+            id = packet.body.ticker;
+            title = packet.body.text;
+            body = _('Missed call from %s').format(packet.body.text);
+        // Emulate an 'sms' notification
+        } else if (isSms) {
+            id = packet.body.ticker;
+            title = packet.body.title;
+            body = packet.body.text;
         // Otherwise use the appName as the title
         } else {
-            notif.title = packet.body.appName;
-            notif.body = packet.body.ticker;
+            title = packet.body.appName;
+            body = packet.body.ticker;
         }
 
-        // If we don't have an avatar or payload icon, fallback on notification
-        // type, appName then device type
-        if (!notif.icon) {
+        // If we don't have a payload icon, fallback on notification type,
+        // appName then device type
+        if (!icon) {
             if (isMissedCall) {
-                notif.icon = new Gio.ThemedIcon({ name: 'call-missed-symbolic' });
+                icon = new Gio.ThemedIcon({ name: 'call-missed-symbolic' });
             } else if (isSms) {
-                notif.icon = new Gio.ThemedIcon({ name: 'sms-symbolic' });
+                icon = new Gio.ThemedIcon({ name: 'sms-symbolic' });
             } else {
-                notif.icon = new Gio.ThemedIcon({
+                icon = new Gio.ThemedIcon({
                     names: [
                         packet.body.appName.toLowerCase().replace(' ', '-'),
-                        this.device.type + '-symbolic'
+                        this.device.symbolic_icon_name
                     ]
                 });
             }
         }
 
-        this.device.showNotification(notif);
+        this.device.showNotification({
+            id: id,
+            title: title,
+            body: body,
+            icon: icon
+        });
     }
 
     /**
@@ -569,6 +578,14 @@ var Plugin = GObject.registerClass({
      */
     closeNotification(id) {
         debug(id)
+
+        // If we're closing a duplicate, get the real ID first
+        let duplicate = this._duplicates.get(id);
+
+        if (duplicate && duplicate.hasOwnProperty('id')) {
+            this._duplicates.delete(id);
+            id = duplicate.id;
+        }
 
         this.device.sendPacket({
             id: 0,
