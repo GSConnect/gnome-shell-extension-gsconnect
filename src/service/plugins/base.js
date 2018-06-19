@@ -16,9 +16,6 @@ const Device = imports.service.device;
 var Plugin = GObject.registerClass({
     GTypeName: 'GSConnectPlugin',
     Signals: {
-        'cache-loaded': {
-            flags: GObject.SignalFlags.NO_HOOKS
-        },
         'destroy': {
             flags: GObject.SignalFlags.NO_HOOKS
         }
@@ -151,12 +148,7 @@ var Plugin = GObject.registerClass({
             }
         }
 
-        this._cacheLoadedId = this.connect(
-            'cache-loaded',
-            this._onCacheLoaded
-        );
-
-        this._readCache();
+        this._readCache().then(this._cacheLoaded.bind(this)).catch(logError);
     }
 
     cacheFile(bytes) {
@@ -176,26 +168,26 @@ var Plugin = GObject.registerClass({
     }
 
     // An overridable callback that is invoked when the cache is done loading
-    _onCacheLoaded(plugin) {
-        plugin.disconnect(plugin._cacheLoadedId);
-    }
+    _cacheLoaded() {}
 
     _readCache() {
-        this._cacheFile.load_contents_async(null, (file, res) => {
-            try {
-                let cache = file.load_contents_finish(res)[1];
-                cache = JSON.parse(cache);
+        return new Promise((resolve, reject) => {
+            this._cacheFile.load_contents_async(null, (file, res) => {
+                try {
+                    let cache = file.load_contents_finish(res)[1];
+                    cache = JSON.parse(cache);
 
-                for (let name in this._cacheProperties) {
-                    if (typeof this[name] === typeof cache[name]) {
-                        this[name] = cache[name];
+                    for (let name in this._cacheProperties) {
+                        if (typeof this[name] === typeof cache[name]) {
+                            this[name] = cache[name];
+                        }
                     }
+                } catch (e) {
+                    logWarning(`${this.name} cache: ${e.message}`, this.device.name);
+                } finally {
+                    resolve();
                 }
-            } catch (e) {
-                logWarning(`${this.name} cache: ${e.message}`, this.device.name);
-            } finally {
-                this.emit('cache-loaded');
-            }
+            });
         });
     }
 

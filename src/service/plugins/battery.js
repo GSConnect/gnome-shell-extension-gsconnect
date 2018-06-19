@@ -137,15 +137,14 @@ var Plugin = GObject.registerClass({
         return this._time;
     }
 
-    _onCacheLoaded(plugin) {
-        plugin._extrapolateTime();
+    _cacheLoaded() {
+        log('CACHE LOADED');
+        this._extrapolateTime();
 
-        plugin.notify('charging');
-        plugin.notify('level');
-        plugin.notify('icon-name');
-        plugin.notify('time');
-
-        plugin.disconnect(plugin._cacheLoadedId);
+        this.notify('charging');
+        this.notify('level');
+        this.notify('icon-name');
+        this.notify('time');
     }
 
     _onSendStatisticsChanged(settings) {
