@@ -25,126 +25,18 @@
         <property name="can_focus">False</property>
         <property name="transition_type">slide-left-right</property>
         <child>
-          <object class="GtkGrid" id="send-packet">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="margin_left">6</property>
-            <property name="margin_right">6</property>
-            <property name="margin_top">6</property>
-            <property name="margin_bottom">6</property>
-            <property name="row_spacing">6</property>
-            <property name="column_spacing">6</property>
-            <child>
-              <object class="GtkLabel">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="halign">end</property>
-                <property name="label" translatable="yes">Device:</property>
-              </object>
-              <packing>
-                <property name="left_attach">0</property>
-                <property name="top_attach">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="halign">end</property>
-                <property name="label" translatable="yes">type:</property>
-              </object>
-              <packing>
-                <property name="left_attach">0</property>
-                <property name="top_attach">1</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="halign">end</property>
-                <property name="valign">start</property>
-                <property name="label" translatable="yes">body:</property>
-              </object>
-              <packing>
-                <property name="left_attach">0</property>
-                <property name="top_attach">2</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkButton" id="send-packet-button">
-                <property name="label" translatable="yes">Send</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="halign">end</property>
-                <signal name="clicked" handler="_onSendPacket" swapped="no"/>
-              </object>
-              <packing>
-                <property name="left_attach">0</property>
-                <property name="top_attach">3</property>
-                <property name="width">2</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkComboBoxText" id="send-packet-device">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <signal name="changed" handler="_onDeviceSelected" swapped="no"/>
-              </object>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="top_attach">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkComboBoxText" id="send-packet-type">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-              </object>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="top_attach">1</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkScrolledWindow">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="hexpand">True</property>
-                <property name="vexpand">True</property>
-                <property name="hscrollbar_policy">never</property>
-                <property name="shadow_type">in</property>
-                <child>
-                  <object class="GtkTextView" id="send-packet-body">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="hexpand">True</property>
-                    <property name="vexpand">True</property>
-                  </object>
-                </child>
-              </object>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="top_attach">2</property>
-              </packing>
-            </child>
-          </object>
-          <packing>
-            <property name="name">send-packet</property>
-            <property name="title" translatable="yes">Send Packet</property>
-          </packing>
+          <placeholder/>
         </child>
         <child>
-          <object class="GtkGrid" id="receive-packet">
+          <object class="GtkGrid" id="packet">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="margin_left">6</property>
-            <property name="margin_right">6</property>
-            <property name="margin_top">6</property>
-            <property name="margin_bottom">6</property>
+            <property name="margin_left">18</property>
+            <property name="margin_right">18</property>
+            <property name="margin_top">18</property>
+            <property name="margin_bottom">18</property>
             <property name="row_spacing">6</property>
-            <property name="column_spacing">6</property>
+            <property name="column_spacing">12</property>
             <child>
               <object class="GtkLabel">
                 <property name="visible">True</property>
@@ -166,7 +58,7 @@
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">1</property>
+                <property name="top_attach">2</property>
               </packing>
             </child>
             <child>
@@ -179,29 +71,31 @@
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">2</property>
+                <property name="top_attach">3</property>
               </packing>
             </child>
             <child>
-              <object class="GtkButton" id="receive-packet-button">
-                <property name="label" translatable="yes">Receive</property>
+              <object class="GtkButton" id="packet-button">
+                <property name="label">gtk-execute</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="halign">end</property>
-                <signal name="clicked" handler="_onReceivePacket" swapped="no"/>
+                <property name="use_stock">True</property>
+                <property name="always_show_image">True</property>
+                <signal name="clicked" handler="_onPacketExecute" swapped="no"/>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">3</property>
+                <property name="top_attach">4</property>
                 <property name="width">2</property>
               </packing>
             </child>
             <child>
-              <object class="GtkComboBoxText" id="receive-packet-device">
+              <object class="GtkComboBoxText" id="packet-device">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <signal name="changed" handler="_onDeviceSelected" swapped="no"/>
+                <signal name="changed" handler="_onPacketDestinationChanged" swapped="no"/>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -209,13 +103,13 @@
               </packing>
             </child>
             <child>
-              <object class="GtkComboBoxText" id="receive-packet-type">
+              <object class="GtkComboBoxText" id="packet-type">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">1</property>
+                <property name="top_attach">2</property>
               </packing>
             </child>
             <child>
@@ -227,7 +121,7 @@
                 <property name="hscrollbar_policy">never</property>
                 <property name="shadow_type">in</property>
                 <child>
-                  <object class="GtkTextView" id="receive-packet-body">
+                  <object class="GtkTextView" id="packet-body">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="hexpand">True</property>
@@ -237,13 +131,41 @@
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">2</property>
+                <property name="top_attach">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkComboBoxText" id="packet-direction">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="active_id">incoming</property>
+                <items>
+                  <item id="incoming" translatable="yes">Outgoing (To Device)</item>
+                  <item id="outgoing" translatable="yes">Incoming (From Device)</item>
+                </items>
+                <signal name="changed" handler="_onPacketDestinationChanged" swapped="no"/>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="halign">end</property>
+                <property name="label" translatable="yes">Direction:</property>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">1</property>
               </packing>
             </child>
           </object>
           <packing>
-            <property name="name">receive-packet</property>
-            <property name="title" translatable="yes">Receive Packet</property>
+            <property name="name">packet</property>
+            <property name="title" translatable="yes">Raw Packet</property>
             <property name="position">1</property>
           </packing>
         </child>
@@ -251,12 +173,12 @@
           <object class="GtkGrid" id="notification">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="margin_left">6</property>
-            <property name="margin_right">6</property>
-            <property name="margin_top">6</property>
-            <property name="margin_bottom">6</property>
+            <property name="margin_left">18</property>
+            <property name="margin_right">18</property>
+            <property name="margin_top">18</property>
+            <property name="margin_bottom">18</property>
             <property name="row_spacing">6</property>
-            <property name="column_spacing">6</property>
+            <property name="column_spacing">12</property>
             <child>
               <object class="GtkLabel">
                 <property name="visible">True</property>
@@ -541,12 +463,12 @@
           <object class="GtkGrid" id="telephony">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="margin_left">6</property>
-            <property name="margin_right">6</property>
-            <property name="margin_top">6</property>
-            <property name="margin_bottom">6</property>
+            <property name="margin_left">18</property>
+            <property name="margin_right">18</property>
+            <property name="margin_top">18</property>
+            <property name="margin_bottom">18</property>
             <property name="row_spacing">6</property>
-            <property name="column_spacing">6</property>
+            <property name="column_spacing">12</property>
             <child>
               <object class="GtkLabel">
                 <property name="visible">True</property>
@@ -759,12 +681,12 @@
           <object class="GtkGrid" id="system">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="margin_left">6</property>
-            <property name="margin_right">6</property>
-            <property name="margin_top">6</property>
-            <property name="margin_bottom">6</property>
+            <property name="margin_left">18</property>
+            <property name="margin_right">18</property>
+            <property name="margin_top">18</property>
+            <property name="margin_bottom">18</property>
             <property name="row_spacing">6</property>
-            <property name="column_spacing">6</property>
+            <property name="column_spacing">12</property>
             <child>
               <object class="GtkLabel">
                 <property name="visible">True</property>

@@ -27,8 +27,7 @@ var Window = GObject.registerClass({
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/debug.ui',
     Children: [
         'headerbar', 'stack', 'switcher',
-        'send-packet-device', 'send-packet-type', 'send-packet-body', 'send-packet-button',
-        'receive-packet-device', 'receive-packet-type', 'receive-packet-body', 'receive-packet-button',
+        'packet-device', 'packet-direction', 'packet-type', 'packet-body', 'packet-button',
         'notification-device', 'notification-id', 'notification-time',
         'notification-appname', 'notification-title', 'notification-text',
         'notification-ticker', 'notification-requestreplyid', 'notification-isclearable',
@@ -58,11 +57,7 @@ var Window = GObject.registerClass({
         this._onDevicesChanged(this.application);
 
         // Validate packet entry
-        this.send_packet_body.buffer.connect(
-            'changed',
-            this._onPacketBodyChanged.bind(this)
-        );
-        this.receive_packet_body.buffer.connect(
+        this.packet_body.buffer.connect(
             'changed',
             this._onPacketBodyChanged.bind(this)
         );
@@ -85,48 +80,35 @@ var Window = GObject.registerClass({
     }
 
     _onDevicesChanged(application) {
-        this.send_packet_device.remove_all();
-        this.receive_packet_device.remove_all();
+        this.packet_device.remove_all();
         this.notification_device.remove_all();
         this.telephony_device.remove_all();
 
         for (let device of this.application._devices.values()) {
-            this.send_packet_device.append(device.id, device.name);
-            this.receive_packet_device.append(device.id, device.name);
+            this.packet_device.append(device.id, device.name);
             this.notification_device.append(device.id, device.name);
             this.telephony_device.append(device.id, device.name);
         }
 
         if (this.application.devices.length > 0) {
-            this.send_packet_device.active = 0;
-            this.receive_packet_device.active = 0;
+            this.packet_device.active = 0;
             this.notification_device.active = 0;
             this.telephony_device.active = 0;
         }
     }
 
-    _onDeviceSelected(combobox) {
-        if (combobox === this.send_packet_device) {
-            this.send_packet_type.remove_all();
+    _onPacketDestinationChanged(combobox) {
+        this.packet_type.remove_all();
 
-            let device = this.application._devices.get(this.send_packet_device.active_id);
+        let device = this.application._devices.get(this.packet_device.active_id);
 
-            for (let type of device.incomingCapabilities) {
-                this.send_packet_type.append(type, type);
-            }
-
-            this.send_packet_type.active = 0;
-        } else {
-            this.receive_packet_type.remove_all();
-
-            let device = this.application._devices.get(this.receive_packet_device.active_id);
-
-            for (let type of device.outgoingCapabilities) {
-                this.receive_packet_type.append(type, type);
-            }
-
-            this.receive_packet_type.active = 0;
+        if (this.packet_direction.active_id === 'incoming') {
+            device.incomingCapabilities.map(c => this.packet_type.append(c, c));
+        } else if (this.packet_direction.active_id === 'outgoing') {
+            device.outgoingCapabilities.map(c => this.packet_type.append(c, c));
         }
+
+        this.packet_type.active = 0;
     }
 
     _onPacketBodyChanged(buffer) {
@@ -155,45 +137,31 @@ var Window = GObject.registerClass({
         }
     }
 
-    _onSendPacket(button) {
+    _onPacketExecute(button) {
         try {
             let body = {};
 
-            if (this.send_packet_body.buffer.text.length > 0) {
-                body = JSON.parse(this.send_packet_body.buffer.text);
+            if (this.packet_body.buffer.text.length > 0) {
+                body = JSON.parse(this.packet_body.buffer.text);
             }
 
             let device = this.application._devices.get(
-                this.send_packet_device.active_id
+                this.packet_device.active_id
             );
 
-            device.sendPacket({
-                id: 0,
-                type: this.send_packet_type.active_id,
-                body: body
-            });
-        } catch (e) {
-            logError(e);
-        }
-    }
-
-    _onReceivePacket(button) {
-        try {
-            let body = {};
-
-            if (this.receive_packet_body.buffer.text.length > 0) {
-                body = JSON.parse(this.receive_packet_body.buffer.text);
+            if (this.packet_direction.active_id === 'incoming') {
+                device._onReceived(null, {
+                    id: Date.now(),
+                    type: this.packet_type.active_id,
+                    body: body
+                });
+            } else if (this.packet_direction.active_id === 'outgoing') {
+                device.sendPacket({
+                    id: 0,
+                    type: this.packet_type.active_id,
+                    body: body
+                });
             }
-
-            let device = this.application._devices.get(
-                this.receive_packet_device.active_id
-            );
-
-            device._onReceived(null, {
-                id: Date.now(),
-                type: this.receive_packet_type.active_id,
-                body: body
-            });
         } catch (e) {
             logError(e);
         }
