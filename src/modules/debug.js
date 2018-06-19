@@ -33,7 +33,7 @@ var Window = GObject.registerClass({
         'notification-appname', 'notification-title', 'notification-text',
         'notification-ticker', 'notification-requestreplyid', 'notification-isclearable',
         'telephony-device', 'telephony-event', 'telephony-name', 'telephony-number',
-        'telephony-body', 'telephony-iscancel', 'telephony-receive',
+        'telephony-body', 'telephony-duplicate', 'telephony-iscancel', 'telephony-receive',
         'heap-path', 'heap-save'
     ]
 }, class Window extends Gtk.ApplicationWindow {
@@ -266,11 +266,50 @@ var Window = GObject.registerClass({
         }
     }
 
+    _onTelephonyEventChanged(combobox) {
+        this.telephony_duplicate.sensitive = ['missedCall', 'sms'].includes(combobox.active_id);
+    }
+
     _onTelephonyReceive(button) {
         try {
             let device = this.application._devices.get(
                 this.telephony_device.active_id
             );
+
+            let nid, nappname, ntime, ntitle, ntext;
+
+            if (this.telephony_duplicate.active_id !== 0) {
+                if (this.telephony_event.active_id === 'missedCall') {
+                    nid = '0|com.google.android.dialer|1|MissedCall_content://call_log/calls/163?allow_voicemails=true|10073';
+                    nappname = 'Phone';
+                    ntitle = 'Missed call';
+                    ntext = (this.telephony_name.text) ? this.telephony_name.text : this.telephony_number.text;
+                } else if (this.telephony_event.active_id === 'sms') {
+                    nid = '0|com.google.android.apps.messaging|0|com.google.android.apps.messaging:sms:22|10109';
+                    nappname = 'Messages';
+                    ntitle = (this.telephony_name.text) ? this.telephony_name.text : this.telephony_number.text;
+                    ntext = this.telephony_body.text;
+                }
+
+                ntime = `${Date.now() - 1000}`;
+            }
+
+            if (this.telephony_duplicate.active_id === 2) {
+                device._onReceived(null, {
+                    id: Date.now(),
+                    type: 'kdeconnect.notification',
+                    body: {
+                        id: nid,
+                        time: ntime,
+                        appName: nappname,
+                        title: ntitle,
+                        text: ntext,
+                        ticker: `${ntitle}: ${ntext}`,
+                        requestReplyId: '00000000-0000-4000-0000-000000000000',
+                        isClearable: true
+                    }
+                });
+            }
 
             device._onReceived(null, {
                 id: Date.now(),
@@ -282,6 +321,23 @@ var Window = GObject.registerClass({
                     messageBody: this.telephony_body.text
                 }
             });
+
+            if (this.telephony_duplicate.active_id === 1) {
+                device._onReceived(null, {
+                    id: Date.now(),
+                    type: 'kdeconnect.notification',
+                    body: {
+                        id: nid,
+                        time: ntime,
+                        appName: nappname,
+                        title: ntitle,
+                        text: ntext,
+                        ticker: `${ntitle}: ${ntext}`,
+                        requestReplyId: '00000000-0000-4000-0000-000000000000',
+                        isClearable: true
+                    }
+                });
+            }
         } catch (e) {
             logError(e);
         }

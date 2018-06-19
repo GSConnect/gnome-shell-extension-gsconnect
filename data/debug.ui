@@ -630,6 +630,7 @@
                   <item id="sms" translatable="yes">sms</item>
                   <item id="talking" translatable="yes">talking</item>
                 </items>
+                <signal name="changed" handler="_onTelephonyEventChanged" swapped="no"/>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -691,7 +692,7 @@
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">5</property>
+                <property name="top_attach">6</property>
                 <property name="width">2</property>
               </packing>
             </child>
@@ -716,6 +717,35 @@
               <packing>
                 <property name="left_attach">1</property>
                 <property name="top_attach">4</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="halign">end</property>
+                <property name="label" translatable="yes">Duplicate:</property>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">5</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkComboBoxText" id="telephony-duplicate">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="active">0</property>
+                <property name="active_id">0</property>
+                <items>
+                  <item id="0" translatable="yes">Disabled</item>
+                  <item id="1" translatable="yes">After</item>
+                  <item id="2" translatable="yes">Before</item>
+                </items>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">5</property>
               </packing>
             </child>
           </object>
