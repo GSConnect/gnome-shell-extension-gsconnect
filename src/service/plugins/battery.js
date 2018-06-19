@@ -46,14 +46,6 @@ var Plugin = GObject.registerClass({
             -1, 100,
             -1
         ),
-        'threshold': GObject.ParamSpec.int(
-            'theshold',
-            'thresholdLevel',
-            'The level considered critical',
-            GObject.ParamFlags.READABLE,
-            -1, 100,
-            25
-        ),
         'time': GObject.ParamSpec.int(
             'time',
             'timeRemaining',
@@ -75,10 +67,7 @@ var Plugin = GObject.registerClass({
         });
         this.device._dbus_object.add_interface(this._dbus);
 
-        this._charging = false;
-        this._level = -1;
-        this._time = 0;
-
+        // Setup Cache
         this._chargeStats = [];
         this._dischargeStats = [];
         this._thresholdLevel = 25;
@@ -88,12 +77,6 @@ var Plugin = GObject.registerClass({
             '_dischargeStats',
             '_thresholdLevel'
         ]);
-
-        // Remote Battery
-        this.notify('charging');
-        this.notify('level');
-        this.notify('time');
-        this.notify('icon-name');
 
         this.batteryRequest();
 
@@ -105,27 +88,34 @@ var Plugin = GObject.registerClass({
         this._onSendStatisticsChanged(this.settings);
     }
 
-    get charging() { return this._charging || false; }
+    get charging() {
+        if (this._charging === undefined) {
+            this._charging = false;
+        }
+
+        return this._charging;
+    }
+
     get icon_name() {
-        let icon = 'battery';
+        let icon;
 
         if (this.level === -1) {
             return 'battery-missing-symbolic';
         } else if (this.level === 100) {
             return 'battery-full-charged-symbolic';
         } else if (this.level < 3) {
-            icon += '-empty';
+            icon = 'battery-empty';
         } else if (this.level < 10) {
-            icon += '-caution';
+            icon = 'battery-caution';
         } else if (this.level < 30) {
-            icon += '-low';
+            icon = 'battery-low';
         } else if (this.level < 60) {
-            icon += '-good';
+            icon = 'battery-good';
         } else if (this.level >= 60) {
-            icon += '-full';
+            icon = 'battery-full';
         }
 
-        icon += (this._charging) ? '-charging-symbolic' : '-symbolic';
+        icon += this.charging ? '-charging-symbolic' : '-symbolic';
         return icon;
     }
 
@@ -133,13 +123,19 @@ var Plugin = GObject.registerClass({
         // This is what KDE Connect returns if the remote battery plugin is
         // disabled or still being loaded
         if (this._level === undefined) {
-            return -1;
+            this._level = -1;
         }
 
         return this._level;
     }
-    get time() { return this._time || 0; }
-    get threshold () { return this._thresholdLevel }
+
+    get time() {
+        if (this._time === undefined) {
+            this._time = 0;
+        }
+
+        return this._time;
+    }
 
     _onSendStatisticsChanged(settings) {
         if (this.settings.get_boolean('send-statistics')) {
@@ -151,14 +147,72 @@ var Plugin = GObject.registerClass({
 
     handlePacket(packet) {
         if (packet.type === 'kdeconnect.battery') {
-            return this._handleUpdate(packet.body);
+            this._handleUpdate(packet.body);
         } else if (packet.type === 'kdeconnect.battery.request') {
-            return this.requestUpdate();
+            this._handleRequest();
         }
     }
 
     /**
-     * Remote methods
+     * Report the local battery's current charge/state
+     */
+    _handleRequest() {
+        if (!this._upower) { return; }
+
+        debug([this._upower.percentage, this._upower.state]);
+
+        let packet = {
+            id: 0,
+            type: 'kdeconnect.battery',
+            body: {
+                currentCharge: this._upower.percentage,
+                isCharging: (this._upower.state !== UPower.DeviceState.DISCHARGING),
+                thresholdEvent: 0
+            }
+        };
+
+        if (this._upower.percentage === 15) {
+            if (!packet.body.isCharging) {
+                packet.body.thresholdEvent = 1;
+            }
+        }
+
+        this.device.sendPacket(packet);
+    }
+
+    /**
+     * Notify that the remote device considers the battery level low
+     */
+    _handleThreshold() {
+        let buttons = [];
+
+        // Offer the option to locate the device, if available
+        if (this.device.get_action_enabled('find')) {
+            buttons = [{
+                label: _('Locate'),
+                action: 'find',
+                parameter: null
+            }];
+        }
+
+        this.device.showNotification({
+            id: 'battery|threshold',
+            // TRANSLATORS: eg. Google Pixel: Battery is low
+            title: _('%s: Battery is low').format(this.device.name),
+            // TRANSLATORS: eg. 15% remaining
+            body: _('%d%% remaining').format(this.level),
+            icon: new Gio.ThemedIcon({ name: 'battery-caution-symbolic' }),
+            buttons: buttons
+        });
+
+        // Save the threshold level
+        this._thresholdLevel = this.level;
+    }
+
+    /**
+     * Handle a remote battery update.
+     *
+     * @param {object} update - The body of a kdeconnect.battery packet
      */
     _handleUpdate(update) {
         if (update.thresholdEvent > 0) {
@@ -181,39 +235,13 @@ var Plugin = GObject.registerClass({
 
         this._logStatus(update.currentCharge, update.isCharging);
 
-        //this._icon_name = this._updateIcon();
-        this.notify('icon-name');
-
         this._time = this._extrapolateTime();
         this.notify('time');
-    }
-
-    _handleThreshold() {
-        let buttons = [];
-
-        if (this.device.get_action_enabled('find')) {
-            buttons = [{
-                label: _('Locate'),
-                action: 'find',
-                parameter: null
-            }];
-        }
-
-        this.device.showNotification({
-            id: 'battery|threshold',
-            // TRANSLATORS: eg. Google Pixel: Battery is low
-            title: _('%s: Battery is low').format(this.device.name),
-            // TRANSLATORS: eg. 15% remaining
-            body: _('%d%% remaining').format(this.level),
-            icon: new Gio.ThemedIcon({ name: 'battery-caution-symbolic' }),
-            buttons: buttons
-        });
-
-        this._thresholdLevel = this.level;
+        this.notify('icon-name');
     }
 
     /**
-     * Local Methods
+     * UPower monitoring methods
      */
     _monitor() {
         if (this.device.service.type !== 'laptop' || this._upower) {
@@ -232,20 +260,20 @@ var Plugin = GObject.registerClass({
 
             this._upower._percentageId = this._upower.connect(
                 'notify::percentage',
-                this.reportStatus.bind(this)
+                this._handleRequest.bind(this)
             );
 
             this._upower._stateId = this._upower.connect(
                 'notify::state',
-                this.reportStatus.bind(this)
+                this._handleRequest.bind(this)
             );
 
             this._upower._warningId = this._upower.connect(
                 'notify::warning_level',
-                this.reportStatus.bind(this)
+                this._handleRequest.bind(this)
             );
 
-            this.reportStatus();
+            this._handleRequest();
         } catch(e) {
             logError(e, this.device.name);
             this._unmonitor();
@@ -259,33 +287,6 @@ var Plugin = GObject.registerClass({
             this._upower.disconnect(this._upower._warningId);
             delete this._upower;
         }
-    }
-
-    /**
-     * Report the local battery's current charge/state
-     */
-    batteryReport() {
-        if (!this._upower) { return; }
-
-        debug([this._upower.percentage, this._upower.state]);
-
-        let packet = {
-            id: 0,
-            type: 'kdeconnect.battery',
-            body: {
-                currentCharge: this._upower.percentage,
-                isCharging: (this._upower.state !== UPower.DeviceState.DISCHARGING),
-                thresholdEvent: 0
-            }
-        };
-
-        if (this._upower.percentage === 15) {
-            if (!packet.body.isCharging) {
-                packet.body.thresholdEvent = 1;
-            }
-        }
-
-        this.device.sendPacket(packet);
     }
 
     /**
