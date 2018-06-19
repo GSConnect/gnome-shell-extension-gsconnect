@@ -617,14 +617,11 @@ var ConversationWindow = GObject.registerClass({
      * Conversation List
      */
     _populateConversations() {
-        let telephony = this.device.lookup_plugin('telephony');
-
-        if (!telephony) {
-            return;
-        }
-
         // Clear any current threads
         this.conversation_list.foreach(row => row.destroy());
+
+        // Populate the new threads
+        let telephony = this.device.lookup_plugin('telephony');
 
         for (let message of telephony.threads) {
             // Ensure we have a contact for each thread
