@@ -464,11 +464,7 @@ var ConversationWindow = GObject.registerClass({
         this.overlay.remove(this.info_box);
 
         // Show the contact list if there are no conversations
-        if (this.device.lookup_plugin('telephony').threads.length === 0) {
-            this._showContacts();
-        };
-
-        this._populateConversations();
+        this._showPrevious();
     }
 
     get device() {
@@ -579,6 +575,16 @@ var ConversationWindow = GObject.registerClass({
         this.message_entry.has_focus = true;
     }
 
+    _showPrevious() {
+        let telephony = this.device.lookup_plugin('telephony');
+
+        if (!telephony || telephony.threads.length === 0) {
+            this._showContacts();
+        } else {
+            this._showConversations();
+        }
+    }
+
     /**
      * "Disconnected" overlay
      */
@@ -590,7 +596,10 @@ var ConversationWindow = GObject.registerClass({
             window.overlay.add_overlay(window.info_box);
         }
 
+        window.conversation_add.sensitive = window.connected;
         window.contact_list.entry.sensitive = window.connected;
+        window.go_previous.sensitive = window.connected;
+
         window.stack.opacity = (window.connected) ? 1 : 0.3;
         window.info_box.reveal_child = !window.connected;
     }
@@ -671,10 +680,6 @@ var ConversationWindow = GObject.registerClass({
         }
     }
 
-    _onInfoButtonClicked(button) {
-        this.device.activate();
-    }
-
     _onMessageLogged(listbox) {
         let vadj = this.message_window.get_vadjustment();
         vadj.set_value(vadj.get_upper() - vadj.get_page_size());
@@ -703,26 +708,26 @@ var ConversationWindow = GObject.registerClass({
         let layout = new Gtk.Box({
             can_focus: false,
             hexpand: true,
-            spacing: 3,
+            spacing: 6,
             halign: (direction === MessageType.IN) ? Gtk.Align.START : Gtk.Align.END
         });
         row.add(layout);
 
         // Add avatar for incoming messages
         if (direction === MessageType.IN) {
-            row.avatar = new Contacts.Avatar(this.recipient);
-            row.avatar.valign = Gtk.Align.END;
-            layout.add(row.avatar);
+            let avatar = new Contacts.Avatar(this.recipient);
+            avatar.valign = Gtk.Align.END;
+            layout.add(avatar);
         }
 
         // Messages
         row.messages = new Gtk.Box({
-            can_focus: false,
             orientation: Gtk.Orientation.VERTICAL,
-            spacing: 3,
-            halign: (direction === MessageType.IN) ? Gtk.Align.START : Gtk.Align.END,
-            margin_right: (direction === MessageType.IN) ? 38 : 0,
-            margin_left: (direction === MessageType.IN) ? 0: 38
+            spacing: 6,
+            halign: layout.halign,
+            // Avatar width (32px) + layout spacing (6px) + 6px
+            margin_right: (direction === MessageType.IN) ? 44 : 0,
+            margin_left: (direction === MessageType.IN) ? 0: 44
         });
         layout.add(row.messages);
 

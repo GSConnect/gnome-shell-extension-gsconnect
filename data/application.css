@@ -1,4 +1,18 @@
 
+.connection-status, .connection-status:hover:active {
+    background: alpha(@theme_bg_color, 0);
+    color: @theme_fg_color;
+    border: 0px;
+    padding: 0px;
+}
+
+.connection-status:hover {
+    background: alpha(@theme_selected_bg_color, 0.25);
+    color: @theme_selected_fg_color;
+    border: 0px;
+    padding: 0px;
+}
+
 .message-in {
   background: @theme_selected_bg_color;
   border-radius: 0.25em 1em 1em 0.25em;
