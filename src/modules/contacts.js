@@ -709,7 +709,10 @@ var ContactChooser = GObject.registerClass({
         });
 
         this.contacts = getStore();
-        this.contacts.connect('notify::contacts', this._populate.bind(this));
+        this._contactsNotifyId = this.contacts.connect(
+            'notify::contacts',
+            this._populate.bind(this)
+        );
 
         // Search Entry
         this.entry = new Gtk.Entry({
@@ -722,12 +725,9 @@ var ContactChooser = GObject.registerClass({
             input_purpose: Gtk.InputPurpose.PHONE,
             visible: true
         });
-        this.entry.connect('changed', this._onEntryChanged.bind(this));
-        this.contacts.bind_property(
-            'provider-icon',
-            this.entry,
-            'primary-icon-name',
-            GObject.BindingFlags.SYNC_CREATE
+        this._entryChangedId = this.entry.connect(
+            'changed',
+            this._onEntryChanged.bind(this)
         );
 
         // ListBox
@@ -773,6 +773,8 @@ var ContactChooser = GObject.registerClass({
         box.add(placeholderLabel);
         this.list.set_placeholder(box);
 
+        this.connect('destroy', this._onDestroy.bind(this));
+
         // Populate and setup
         this._selected = new Map();
         this._populate();
@@ -793,6 +795,14 @@ var ContactChooser = GObject.registerClass({
         row.connect('number-selected', this._toggle.bind(this));
         this.list.add(row);
         return row;
+    }
+
+    _onDestroy() {
+        this.disconnect(this._entryChangedId);
+        this.entry.destroy();
+
+        this.contacts.disconnect(this._contactsNotifyId);
+        delete this.contacts;
     }
 
     _onEntryChanged(entry) {
@@ -816,8 +826,8 @@ var ContactChooser = GObject.registerClass({
             delete this._temporary;
         }
 
-        this.list.invalidate_sort();
         this.list.invalidate_filter();
+        this.list.invalidate_sort();
     }
 
     _filter(row) {
