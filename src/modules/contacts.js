@@ -788,6 +788,14 @@ var ContactChooser = GObject.registerClass({
     }
 
     /**
+     * Reset the selected contacts and re-populate the list
+     */
+    reset() {
+        this.selected.clear();
+        this._populate();
+    }
+
+    /**
      * Add a new contact row to the list
      */
     _addContact(contact) {

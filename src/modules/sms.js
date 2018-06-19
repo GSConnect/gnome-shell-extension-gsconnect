@@ -435,12 +435,7 @@ var ConversationWindow = GObject.registerClass({
 
         this.insert_action_group('device', this.device);
 
-        // Header Bar
-        let headerbar = this.get_titlebar();
-        headerbar.title = _('Conversations');
-        headerbar.subtitle = this.device.name;
-
-        // TRANSLATORS: eg. <b>Google Pixel</b> is disconnected
+        // TRANSLATORS: eg. Google Pixel is disconnected
         this.info_label.label = _('%s is disconnected').format(this.device.name);
 
         // Conversations
@@ -576,6 +571,8 @@ var ConversationWindow = GObject.registerClass({
     }
 
     _showPrevious() {
+        this.contact_list.reset();
+
         let telephony = this.device.lookup_plugin('telephony');
 
         if (!telephony || telephony.threads.length === 0) {
