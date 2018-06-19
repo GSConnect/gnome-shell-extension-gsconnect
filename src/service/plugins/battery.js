@@ -137,6 +137,17 @@ var Plugin = GObject.registerClass({
         return this._time;
     }
 
+    _onCacheLoaded(plugin) {
+        plugin._extrapolateTime();
+
+        plugin.notify('charging');
+        plugin.notify('level');
+        plugin.notify('icon-name');
+        plugin.notify('time');
+
+        plugin.disconnect(plugin._cacheLoadedId);
+    }
+
     _onSendStatisticsChanged(settings) {
         if (this.settings.get_boolean('send-statistics')) {
             this._monitor();

@@ -16,6 +16,9 @@ const Device = imports.service.device;
 var Plugin = GObject.registerClass({
     GTypeName: 'GSConnectPlugin',
     Signals: {
+        'cache-loaded': {
+            flags: GObject.SignalFlags.NO_HOOKS
+        },
         'destroy': {
             flags: GObject.SignalFlags.NO_HOOKS
         }
@@ -129,10 +132,10 @@ var Plugin = GObject.registerClass({
      * properties and values onto the current instance. When destroy()
      * is called the properties are automatically stored in the same file.
      *
-     * @param {array} names - A list of this object's property names to cache
+     * @param {Array} names - A list of this object's property names to cache
      */
     cacheProperties(names) {
-        this._cacheDir =  GLib.build_filenamev([gsconnect.cachedir, this.name]);
+        this._cacheDir = GLib.build_filenamev([gsconnect.cachedir, this.name]);
         GLib.mkdir_with_parents(this._cacheDir, 448);
 
         this._cacheFile = Gio.File.new_for_path(
@@ -148,13 +151,18 @@ var Plugin = GObject.registerClass({
             }
         }
 
+        this._cacheLoadedId = this.connect(
+            'cache-loaded',
+            this._onCacheLoaded
+        );
+
         this._readCache();
     }
 
     cacheFile(bytes) {
     }
 
-    // A DBus method for clearing the cache
+    // A method for clearing the cache
     clearCache() {
         for (let name in this._cacheProperties) {
             debug(`clearing ${name} from ${this.name}`);
@@ -167,30 +175,40 @@ var Plugin = GObject.registerClass({
         return;
     }
 
-    _readCache() {
-        try {
-            let cache = JSON.parse(this._cacheFile.load_contents(null)[1]);
+    // An overridable callback that is invoked when the cache is done loading
+    _onCacheLoaded(plugin) {
+        plugin.disconnect(plugin._cacheLoadedId);
+    }
 
-            for (let name in this._cacheProperties) {
-                if (typeof this[name] === typeof cache[name]) {
-                    this[name] = cache[name];
+    _readCache() {
+        this._cacheFile.load_contents_async(null, (file, res) => {
+            try {
+                let cache = file.load_contents_finish(res)[1];
+                cache = JSON.parse(cache);
+
+                for (let name in this._cacheProperties) {
+                    if (typeof this[name] === typeof cache[name]) {
+                        this[name] = cache[name];
+                    }
                 }
+            } catch (e) {
+                logWarning(`${this.name} cache: ${e.message}`, this.device.name);
+            } finally {
+                this.emit('cache-loaded');
             }
-        } catch (e) {
-            debug(`error reading ${this.name} cache: ${e.message}`);
-        }
+        });
     }
 
     _writeCache() {
-        this._filterCache(this._cacheProperties);
-
-        let cache = {};
-
-        for (let name in this._cacheProperties) {
-            cache[name] = this[name];
-        }
-
         try {
+            this._filterCache(this._cacheProperties);
+
+            let cache = {};
+
+            for (let name in this._cacheProperties) {
+                cache[name] = this[name];
+            }
+
             this._cacheFile.replace_contents(
                 JSON.stringify(cache),
                 null,
