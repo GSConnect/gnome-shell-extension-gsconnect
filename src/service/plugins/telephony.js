@@ -371,7 +371,7 @@ var Plugin = GObject.registerClass({
      * @param {Object} message - A telephony message object
      */
     callNotification(contact, message) {
-        let buttons, icon, priority;
+        let buttons, icon, id, priority;
 
         if (contact && contact.avatar) {
             icon = Contacts.getPixbuf(contact.avatar);
@@ -385,6 +385,8 @@ var Plugin = GObject.registerClass({
                 parameter: gsconnect.full_pack(message)
             }];
             icon = icon || new Gio.ThemedIcon({ name: 'call-missed-symbolic' });
+            // Use the notification ticker style for the id
+            id = _('Missed call') + `: ${contact.name}`;
         } else if (message.event === 'ringing') {
             buttons = [{
                 action: 'muteCall',
@@ -399,7 +401,7 @@ var Plugin = GObject.registerClass({
         }
 
         this.device.showNotification({
-            id: `${message.event}|${contact.name}`,
+            id: id || `${message.event}|${contact.name}`,
             title: contact.name,
             body: message.body,
             icon: icon,
@@ -426,6 +428,7 @@ var Plugin = GObject.registerClass({
         }
 
         this.device.showNotification({
+            // Use the notification ticker style for the id
             id: `${contact.name}: ${message.body}`,
             title: contact.name,
             body: message.body,
