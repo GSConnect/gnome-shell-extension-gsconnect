@@ -50,20 +50,20 @@ var ID_REGEX = /^(fdo|gtk)\|([^\|]+)\|(.*)$/;
  *  {
  *      type: 'kdeconnect.notification',
  *      body: {
- *          id: {String} The remote notification's Id,
- *          appName: {String} The application name,
- *          isClearable: {Boolean} Whether the notification can be closed,
- *          title: {String} Notification title, or <contactName|phoneNumber> for SMS,
- *          text: {String} Notification body, or <messageBody> for SMS,
- *          ticker: {String} Usually <title> and <text> joined with ': ',
- *          time: {String} local timestamp (ms) the notification was posted,
- *          requestReplyId: {String} UUID for repliable notifications,
- *          payloadHash: {String} MD5 Hash of payload data (optional)
+ *          id: {string} The remote notification's Id,
+ *          appName: {string} The application name,
+ *          isClearable: {boolean} Whether the notification can be closed,
+ *          title: {string} Notification title, or <contactName|phoneNumber> for SMS,
+ *          text: {string} Notification body, or <messageBody> for SMS,
+ *          ticker: {string} Usually <title> and <text> joined with ': ',
+ *          time: {string} local timestamp (ms) the notification was posted,
+ *          requestReplyId: {string} UUID for repliable notifications,
+ *          payloadHash: {string} MD5 Hash of payload data (optional)
  *      },
- *      'payloadSize': {Number} Payload size in bytes,
+ *      'payloadSize': {number} Payload size in bytes,
  *      'payloadTransferInfo': {
- *          'port': {Number} Port number between 1739-1764 for transfer (TCP),
- *          'uuid': {String} Service UUID for transfer (Bluetooth)
+ *          'port': {number} Port number between 1739-1764 for transfer (TCP),
+ *          'uuid': {string} Service UUID for transfer (Bluetooth)
  *      }
  *  }
  */
@@ -151,7 +151,7 @@ var Plugin = GObject.registerClass({
      * Mark a notification to be closed if received (not shown locally and
      * closed remotely)
      *
-     * @param {String} ticker - The notification's expected content
+     * @param {string} ticker - The notification's expected content
      */
     closeDuplicate(ticker) {
         debug(ticker);
@@ -173,7 +173,7 @@ var Plugin = GObject.registerClass({
     /**
      * Mark a notification to be silenced if received (not shown locally)
      *
-     * @param {String} ticker - The notification's expected content
+     * @param {string} ticker - The notification's expected content
      */
     silenceDuplicate(ticker) {
         debug(ticker);
@@ -242,7 +242,7 @@ var Plugin = GObject.registerClass({
      * icons, so if another is not found the notification will be sent without.
      *
      * @param {Core.Packet} packet - The packet for the notification
-     * @param {String} icon_name - The themed icon name
+     * @param {string} icon_name - The themed icon name
      */
     _uploadNamedIcon(packet, icon_name) {
         let theme = Gtk.IconTheme.get_default();
@@ -285,8 +285,8 @@ var Plugin = GObject.registerClass({
      *
      * @param {Core.Packet} packet - The packet for the notification
      * @param {Gio.InputStream} stream - A stream to read the icon bytes from
-     * @param {Number} size - Size of the icon in bytes
-     * @param {String} checksum - MD5 hash of the icon data
+     * @param {number} size - Size of the icon in bytes
+     * @param {string} checksum - MD5 hash of the icon data
      */
     _uploadIconStream(packet, stream, size, checksum) {
         if (this.device.connection_type === 'tcp') {
@@ -407,10 +407,10 @@ var Plugin = GObject.registerClass({
      * avatar (if necessary), then calls either callNotification() or
      * smsNotification() from the telephony plugin.
      *
-     * @param {Object} notif - The body of a notification packet
-     * @param {Object} contact - A contact object
+     * @param {object} notif - The body of a kdeconnect.notification packet
+     * @param {object} contact - A contact object
      * @param {Gio.Icon|null} icon - The notification icon (nullable)
-     * @param {String} type - The event type; either "missedCall" or "sms"
+     * @param {string} type - The event type; either "missedCall" or "sms"
      */
     _showTelephonyNotification(notif, contact, icon, type) {
         let telephony = this.device.lookup_plugin('telephony');
@@ -488,9 +488,8 @@ var Plugin = GObject.registerClass({
             // Track the notification so a telephony action can close it
             this._duplicates.set(packet.body.ticker, { id: packet.body.id });
 
-            // Look for a contact with a single phone number. We're only getting
-            // a name *or* a number and it's hard to tell which, so we don't
-            // create contacts based on notifications
+            // Look for a contact with a single phone number, but don't create
+            // one since we only get a number or a name
             let contact = this.contacts.query({
                 name: (isSms) ? packet.body.title : packet.body.text,
                 number: (isSms) ? packet.body.title : packet.body.text,
@@ -548,7 +547,7 @@ var Plugin = GObject.registerClass({
      * Report that a local notification has been closed/dismissed.
      * TODO: kdeconnect-android doesn't handle incoming isCancel packets.
      *
-     * @param {String} id - The local notification id
+     * @param {string} id - The local notification id
      */
     cancelNotification(id) {
         debug(id)
@@ -566,7 +565,7 @@ var Plugin = GObject.registerClass({
     /**
      * Close a remote notification.
      *
-     * @param {String} id - The remote notification id
+     * @param {string} id - The remote notification id
      */
     closeNotification(id) {
         debug(id)
@@ -582,8 +581,8 @@ var Plugin = GObject.registerClass({
      * Reply to a notification sent with a requestReplyId UUID
      * TODO: this is untested and not used yet
      *
-     * @param {String} uuid - The requestReplyId for the repliable notification
-     * @param {String} message - The message to reply with
+     * @param {string} uuid - The requestReplyId for the repliable notification
+     * @param {string} message - The message to reply with
      */
     replyNotification(uuid, message) {
         debug(arguments);
