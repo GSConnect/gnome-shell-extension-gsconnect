@@ -30,6 +30,8 @@ class GSConnectShareExtension(GObject.GObject, Nautilus.MenuProvider):
     def __init__(self):
         """Initialize translations"""
 
+        GObject.Object.__init__(self)
+
         try:
             locale.setlocale(locale.LC_ALL, '')
             gettext.bindtextdomain('org.gnome.Shell.Extensions.GSConnect', LOCALE_DIR)
