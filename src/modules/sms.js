@@ -410,7 +410,7 @@ var ConversationWindow = GObject.registerClass({
     Children: [
         'headerbar',
         'overlay',
-        'info-box', 'info-box', 'info-button', 'info-label',
+        'info-box', 'info-button', 'info-label',
         'stack',
         'go-previous',
         'conversation-window', 'conversation-list', 'conversation-add',
@@ -431,9 +431,11 @@ var ConversationWindow = GObject.registerClass({
         });
 
         this._device = device;
-        this._notifications = [];
+        this.insert_action_group('device', device);
 
-        this.insert_action_group('device', this.device);
+        // We track the local id's of remote telephony notifications so we can
+        // withdraw them locally (thus closing them remotely) when focused.
+        this._notifications = [];
 
         // TRANSLATORS: eg. Google Pixel is disconnected
         this.info_label.label = _('%s is disconnected').format(this.device.name);
@@ -484,7 +486,7 @@ var ConversationWindow = GObject.registerClass({
 
     get message_id() {
         if (this._message_id === undefined) {
-            return 0;
+            this._message_id = 0;
         }
 
         return this._message_id;
@@ -497,7 +499,7 @@ var ConversationWindow = GObject.registerClass({
 
     get thread_id() {
         if (this._thread_id === undefined) {
-            return 0;
+            this._thread_id = 0;
         }
 
         return this._thread_id;
@@ -509,20 +511,14 @@ var ConversationWindow = GObject.registerClass({
     }
 
     _onDestroy(window) {
-        window.get_titlebar().remove(window.contact_list.entry);
+        // We explicity call destroy() in case the instance is not currently
+        // attached to the window
         window.contact_list.disconnect(window._numberSelectedId);
         window.contact_list.destroy();
         delete window.contact_list;
 
         window._deviceBinding.unbind();
         delete window._device;
-
-        window.run_dispose();
-        log('IS DESTROYED: ' + window);
-
-        imports.system.gc();
-        imports.system.gc();
-        imports.system.gc();
     }
 
     /**
@@ -693,8 +689,7 @@ var ConversationWindow = GObject.registerClass({
         let row = new Gtk.ListBoxRow({
             activatable: false,
             selectable: false,
-            hexpand: true,
-            margin: 6
+            hexpand: true
         });
         row.direction = direction;
         this.message_list.add(row);
@@ -702,6 +697,7 @@ var ConversationWindow = GObject.registerClass({
         let layout = new Gtk.Box({
             can_focus: false,
             hexpand: true,
+            margin: 6,
             spacing: 6,
             halign: (direction === MessageType.IN) ? Gtk.Align.START : Gtk.Align.END
         });

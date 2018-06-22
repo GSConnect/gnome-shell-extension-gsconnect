@@ -778,9 +778,8 @@ var ContactChooser = GObject.registerClass({
         // Populate and setup
         this._selected = new Map();
         this._populate();
+
         this.show_all();
-        this.entry.has_focus = true;
-        this.list.unselect_all();
     }
 
     get selected () {
@@ -816,20 +815,24 @@ var ContactChooser = GObject.registerClass({
     _onEntryChanged(entry) {
         if (this.entry.text.replace(/\D/g, '').length > 2) {
             if (this._temporary) {
-                this._temporary._name.label = _('Send to %s').format(this.entry.text);
-                let num = this._temporary.numbers.get_children()[0];
-                num._number.label = this.entry.text;
+                this._temporary.name = _('Send to %s').format(this.entry.text);
+
+                // Update UI
+                let entry = this._temporary.numbers.get_children()[0];
+                entry.number = this.entry.text;
+                entry._number.label = this.entry.text;
+
+                // Update contact object
                 this._temporary.contact.number = this.entry.text;
                 this._temporary.contact.numbers[0].number = this.entry.text;
             } else {
                 this._temporary = this._addContact({
-                    name: _('Unknown Contact'),
+                    name: _('Send to %s').format(this.entry.text),
                     numbers: [{ type: 'unknown', number: this.entry.text }]
                 });
-                this._temporary._name.label = _('Send to %s').format(this.entry.text);
                 this._temporary.dynamic = true;
             }
-        } else if (this._temporary) {
+        } else if (this._temporary !== undefined) {
             this._temporary.destroy();
             delete this._temporary;
         }
@@ -846,7 +849,7 @@ var ContactChooser = GObject.registerClass({
         if (row.dynamic) {
             return true;
         // Show if text is substring of name
-        } else if (row._name.label.toLowerCase().indexOf(queryName) > -1) {
+        } else if (row.name.toLowerCase().includes(queryName)) {
             row.show_all();
             return true;
         // Show or hide numbers based on substring
@@ -855,7 +858,7 @@ var ContactChooser = GObject.registerClass({
 
             for (let num of row.numbers.get_children()) {
                 let number = num._number.label.replace(/\D/g, '');
-                if (number.indexOf(queryNumber) > -1) {
+                if (number.includes(queryNumber)) {
                     num.visible = true;
                     matched = true;
                 } else {
