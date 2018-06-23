@@ -1,6 +1,5 @@
 'use strict';
 
-const Gdk = imports.gi.Gdk;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
@@ -260,15 +259,15 @@ var ConversationMessage = GObject.registerClass({
 
         this.message = message;
 
-        this.connect('activate-link', this._onActivateLink);
     }
 
-    _onActivateLink(label, uri) {
+    vfunc_activate_link(uri) {
         Gtk.show_uri_on_window(
-            label.get_toplevel(),
+            this.get_toplevel(),
             (uri.indexOf('://') < 0) ? 'http://' + uri : uri,
-            Gdk.get_current_event_time()
+            Gtk.get_current_event_time()
         );
+
         return true;
     }
 
