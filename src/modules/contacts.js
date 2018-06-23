@@ -19,7 +19,7 @@ try {
     var GData = imports.gi.GData;
     var Goa = imports.gi.Goa;
 } catch (e) {
-    logWarning(e);
+    logWarning(e, 'Contacts');
     var GData = undefined;
     var Goa = undefined;
 }
@@ -254,6 +254,21 @@ var Store = GObject.registerClass({
         return matches;
     }
 
+    async remove(query) {
+        if (typeof query === 'object') {
+            for (let [id, contact] of Object.entries(this._contacts)) {
+                if (query === contact) {
+                    delete this._contacts[id];
+                    break;
+                }
+            }
+        } else {
+            delete this._contacts[query];
+        }
+
+        this.notify('contacts');
+    }
+
     async update() {
         let result = 'call-start-symbolic';
 
@@ -437,9 +452,6 @@ var Avatar = GObject.registerClass({
         // TODO: use 'popup' signal
         this.add_events(Gdk.EventMask.BUTTON_PRESS_MASK | Gdk.EventMask.BUTTON_RELEASE_MASK);
         this.connect('button-release-event', this._popover.bind(this));
-
-        // Image
-        this.connect('draw', this._onDraw.bind(this));
     }
 
     _loadPixbuf() {
@@ -473,7 +485,7 @@ var Avatar = GObject.registerClass({
         this._offset = (32 - this._pixbuf.width) / 2;
     }
 
-    _onDraw(widget, cr) {
+    vfunc_draw(cr) {
         if (this._pixbuf === undefined) {
             this._loadPixbuf();
         }
@@ -511,7 +523,7 @@ var Avatar = GObject.registerClass({
         popover.add(box);
 
         // Gnome Contacts
-        if (gsconnect.hasCommand('gnome-contacts') && this.contact.folks_id) {
+        if (this.contact.folks_id && gsconnect.hasCommand('gnome-contacts')) {
             let contactsItem = new Gtk.ModelButton({
                 centered: true,
                 icon: new Gio.ThemedIcon({ name: 'gnome-contacts-symbolic' }),
@@ -545,16 +557,7 @@ var Avatar = GObject.registerClass({
 
     _popoverDelete(button, event) {
         let store = getStore();
-        let contacts = store._contacts;
-
-        for (let id in contacts) {
-            if (contacts[id] === this.contact) {
-                delete contacts[id];
-                break;
-            }
-        }
-
-        store.notify('contacts');
+        store.remove(this.contact);
     }
 });
 
