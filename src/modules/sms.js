@@ -300,7 +300,7 @@ var ConversationSummary = GObject.registerClass({
     GTypeName: 'GSConnectConversationSummary'
 }, class ConversationSummary extends Gtk.ListBoxRow {
     _init(contact, message) {
-        super._init();
+        super._init({ visible: true });
 
         this.contact = contact;
         this.message = message;
@@ -328,7 +328,8 @@ var ConversationSummary = GObject.registerClass({
             hexpand: true,
             ellipsize: Pango.EllipsizeMode.END,
             use_markup: true,
-            xalign: 0
+            xalign: 0,
+            visible: true
         });
         grid.attach(name, 1, 0, 1, 1);
 
@@ -337,11 +338,8 @@ var ConversationSummary = GObject.registerClass({
             halign: Gtk.Align.END,
             ellipsize: Pango.EllipsizeMode.END,
             use_markup: true,
-            xalign: 0
-        });
-        time.connect('map', (widget) => {
-            widget.label = '<small>' + getShortTime(message.date) + '</small>';
-            return false;
+            xalign: 0,
+            visible: true
         });
 
         time.get_style_context().add_class('dim-label');
@@ -352,11 +350,10 @@ var ConversationSummary = GObject.registerClass({
             halign: Gtk.Align.START,
             ellipsize: Pango.EllipsizeMode.END,
             use_markup: true,
-            xalign: 0
+            xalign: 0,
+            visible: true
         });
         grid.attach(body, 1, 1, 2, 1);
-
-        this.show_all();
     }
 });
 
