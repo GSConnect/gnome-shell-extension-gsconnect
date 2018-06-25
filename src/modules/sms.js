@@ -179,9 +179,7 @@ function getTime(time) {
         // Under an hour
         case (diff < GLib.TIME_SPAN_HOUR):
             // TRANSLATORS: Abbreviation for minutes (eg. 10 mins)
-            return _('%d mins').format(
-                GLib.DateTime.new_from_unix_local(diff).get_minute()
-            );
+            return _('%d mins').format(diff/GLib.TIME_SPAN_MINUTE);
 
         // Yesterday, but less than 24 hours ago
         case (diff < GLib.TIME_SPAN_DAY && (now.get_day_of_month() !== time.get_day_of_month())):
@@ -204,8 +202,7 @@ function getTime(time) {
 
 function getShortTime(time) {
     time = GLib.DateTime.new_from_unix_local(time/1000);
-    let now = GLib.DateTime.new_now_local();
-    let diff = now.difference(time);
+    let diff = GLib.DateTime.new_now_local().difference(time);
 
     switch (true) {
         // Super recent
@@ -216,9 +213,7 @@ function getShortTime(time) {
         // Under an hour
         case (diff < GLib.TIME_SPAN_HOUR):
             // TRANSLATORS: Abbreviation for minutes (eg. 10 mins)
-            return _('%d mins').format(
-                GLib.DateTime.new_from_unix_local(diff).get_minute()
-            );
+            return _('%d mins').format(diff/GLib.TIME_SPAN_MINUTE);
 
         // Less than a week ago
         case (diff < (GLib.TIME_SPAN_DAY * 7)):
@@ -258,7 +253,6 @@ var ConversationMessage = GObject.registerClass({
         }
 
         this.message = message;
-
     }
 
     vfunc_activate_link(uri) {
