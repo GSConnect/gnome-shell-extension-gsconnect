@@ -237,7 +237,7 @@ var Store = GObject.registerClass({
                 numbers: [{ number: query.number, type: 'unknown' }],
                 origin: 'gsconnect'
             };
-            this._writeCache();
+            this.notify('contacts');
 
             matches[id] = this._contacts[id];
             keys = Object.keys(matches);
@@ -440,8 +440,6 @@ var Avatar = GObject.registerClass({
         super._init({
             height_request: 32,
             width_request: 32,
-            vexpand: false,
-            hexpand: false,
             visible: true,
             tooltip_text: contact.name
         });
@@ -575,6 +573,7 @@ var ContactChooserRow = GObject.registerClass({
     _init(contact) {
         super._init({
             activatable: false,
+            selectable: false,
             visible: true
         });
 
@@ -599,6 +598,7 @@ var ContactChooserRow = GObject.registerClass({
 
         this.numbers = new Gtk.Box({
             orientation: Gtk.Orientation.VERTICAL,
+            margin_right: 12,
             spacing: 3,
             visible: true
         });
@@ -618,9 +618,11 @@ var ContactChooserRow = GObject.registerClass({
     }
 
     addNumber(entry) {
-        let box = new Gtk.Box({ visible: true });
-        box.number = entry;
-        this.numbers.add(box);
+        let box = new Gtk.Grid({
+            column_spacing: 12,
+            visible: true
+        });
+        this.get_child().get_child_at(1, 1).add(box);
 
         box._number = new Gtk.Label({
             label: entry.number || _('Unknown Number'),
@@ -633,7 +635,6 @@ var ContactChooserRow = GObject.registerClass({
 
         box._type = new Gtk.Label({
             label: this._localizeType(entry.type),
-            margin_right: 12,
             use_markup: true,
             visible: true
         });
@@ -641,16 +642,12 @@ var ContactChooserRow = GObject.registerClass({
         box.add(box._type);
 
         box.checkbutton = new Gtk.CheckButton({
-            active: false,
-            margin_right: 12,
             visible: true
         });
         box.checkbutton.connect('toggled', (checkbutton) => {
             this.emit('number-selected', checkbutton.get_parent());
         });
         box.add(box.checkbutton);
-
-        this.show_all();
     }
 
     /**
@@ -708,7 +705,8 @@ var ContactChooser = GObject.registerClass({
             hexpand: true,
             vexpand: true,
             hscrollbar_policy: Gtk.PolicyType.NEVER,
-            shadow_type: Gtk.ShadowType.IN
+            shadow_type: Gtk.ShadowType.IN,
+            visible: true
         });
 
         this.contacts = getStore();
@@ -745,11 +743,10 @@ var ContactChooser = GObject.registerClass({
         // Placeholder
         let box = new Gtk.Box({
             orientation: Gtk.Orientation.VERTICAL,
-            visible: true,
-            hexpand: true,
             halign: Gtk.Align.CENTER,
-            vexpand: true,
+            hexpand: true,
             valign: Gtk.Align.CENTER,
+            vexpand: true,
             margin: 12,
             spacing: 12,
             visible: true
@@ -765,7 +762,6 @@ var ContactChooser = GObject.registerClass({
 
         let placeholderLabel = new Gtk.Label({
             label: '<b>' + _('Add people to start a conversation') + '</b>',
-            visible: true,
             use_markup: true,
             wrap: true,
             justify: Gtk.Justification.CENTER,
@@ -781,8 +777,6 @@ var ContactChooser = GObject.registerClass({
         // Populate and setup
         this._selected = new Map();
         this._populate();
-
-        this.show_all();
     }
 
     get selected () {
