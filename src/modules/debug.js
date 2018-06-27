@@ -284,9 +284,9 @@ var Window = GObject.registerClass({
                 type: 'kdeconnect.telephony',
                 body: {
                     event: this.telephony_event.active_id,
-                    phoneNumber: this.telephony_number.text,
-                    contactName: this.telephony_name.text,
-                    messageBody: this.telephony_body.text
+                    phoneNumber: this.telephony_number.text || undefined,
+                    contactName: this.telephony_name.text || undefined,
+                    messageBody: this.telephony_body.text || undefined
                 }
             });
 
@@ -371,7 +371,7 @@ var Window = GObject.registerClass({
 
     dumpHeap() {
         let path = GLib.build_filenamev([
-            this.heap_path.get_current_folder(),
+            GLib.filename_from_uri(this.heap_path.get_uri())[0],
             'gsconnect.heap'
         ]);
 
