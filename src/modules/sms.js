@@ -235,15 +235,14 @@ var ConversationMessage = GObject.registerClass({
     _init(message) {
         super._init({
             label: this._linkify(message.body),
+            halign: (message.type === MessageType.IN) ? Gtk.Align.START : Gtk.Align.END,
             selectable: true,
+            tooltip_text: getTime(message.date),
             use_markup: true,
             visible: true,
             wrap: true,
             wrap_mode: Pango.WrapMode.WORD_CHAR,
-            xalign: 0,
-            visible: true,
-            halign: (message.type === MessageType.IN) ? Gtk.Align.START : Gtk.Align.END,
-            tooltip_text: getTime(message.date)
+            xalign: 0
         });
 
         if (message.type === MessageType.IN) {
@@ -437,20 +436,20 @@ var ConversationWindow = GObject.registerClass({
 
         // Contacts
         this.contact_list = new Contacts.ContactChooser();
-        this._numberSelectedId = this.contact_list.connect(
-            'number-selected',
-            this._onNumberSelected.bind(this)
+        this._selectedNumbersChangedId = this.contact_list.connect(
+            'selected-numbers-changed',
+            this._onSelectedNumbersChanged.bind(this)
         );
         this.stack.add_named(this.contact_list, 'contacts');
         this.stack.child_set_property(this.contact_list, 'position', 1);
 
         // Device Status
-        this._deviceBinding = this.device.bind_property(
+        this.device.bind_property(
             'connected', this, 'connected', GObject.BindingFlags.SYNC_CREATE
         );
         this.overlay.remove(this.info_box);
 
-        // Show the contact list if there are no conversations
+        // Set the default view
         this._showPrevious();
     }
 
@@ -501,14 +500,14 @@ var ConversationWindow = GObject.registerClass({
     }
 
     _onDestroy(window) {
-        // We explicity call destroy() in case the instance is not currently
-        // attached to the window
-        window.contact_list.disconnect(window._numberSelectedId);
-        window.contact_list.destroy();
-        delete window.contact_list;
+        Gtk.Widget.set_connect_func.call(this, function(){});
+        this.$templateHandlers.map(([obj, id]) => obj.disconnect(id));
+        delete this.$templateHandlers;
 
-        window._deviceBinding.unbind();
-        delete window._device;
+        this.contact_list._destroy();
+        this.contact_list.disconnect(this._selectedNumbersChangedId);
+
+        return false;
     }
 
     /**
@@ -552,8 +551,8 @@ var ConversationWindow = GObject.registerClass({
             this.headerbar.subtitle = null;
         }
 
-        this.stack.set_visible_child_name('messages');
         this.message_entry.has_focus = true;
+        this.stack.set_visible_child_name('messages');
     }
 
     _showPrevious() {
@@ -575,16 +574,16 @@ var ConversationWindow = GObject.registerClass({
         let children = this.overlay.get_children();
 
         // If disconnected, add the info box before revealing
-        if (!window.connected && !children.includes(this.info_box)) {
-            window.overlay.add_overlay(window.info_box);
+        if (!this.connected && !children.includes(this.info_box)) {
+            this.overlay.add_overlay(this.info_box);
         }
 
-        window.conversation_add.sensitive = window.connected;
-        window.contact_list.entry.sensitive = window.connected;
-        window.go_previous.sensitive = window.connected;
+        this.conversation_add.sensitive = this.connected;
+        this.contact_list.entry.sensitive = this.connected;
+        this.go_previous.sensitive = this.connected;
 
-        window.stack.opacity = (window.connected) ? 1 : 0.3;
-        window.info_box.reveal_child = !window.connected;
+        this.stack.opacity = this.connected ? 1 : 0.3;
+        this.info_box.reveal_child = !this.connected;
     }
 
     _onRevealed(revealer) {
@@ -665,8 +664,11 @@ var ConversationWindow = GObject.registerClass({
         vadj.set_value(vadj.get_upper() - vadj.get_page_size());
     }
 
-    _onNumberSelected(contact_list, number) {
-        this.setRecipient(contact_list.selected.get(number), number);
+    _onSelectedNumbersChanged(contact_list) {
+        if (this.contact_list.selected.size > 0) {
+            let number = this.contact_list.selected.keys().next().value;
+            this.setRecipient(this.contact_list.selected.get(number), number);
+        }
     }
 
     /**
@@ -728,10 +730,11 @@ var ConversationWindow = GObject.registerClass({
 
         // If the current thread is dated...
         if (this._thread.date !== undefined) {
-            // ...check if there was a span greater than hour between messages
-            if ((message.date - this._thread.date) > GLib.TIME_SPAN_HOUR) {
-                let row = new ListBoxRow({
+            // ...check if the last message was more than an hour ago
+            if ((message.date - this._thread.date) > GLib.TIME_SPAN_HOUR/1000) {
+                let row = new Gtk.ListBoxRow({
                     activatable: false,
+                    selectable: false,
                     visible: true
                 });
                 this.message_list.add(row);
