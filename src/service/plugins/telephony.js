@@ -458,10 +458,10 @@ var Plugin = GObject.registerClass({
 
         // Fabricate a message packet from what we know
         let message = {
-            contactName: packet.body.contactName,
+            contactName: contact.name,
             _id: 0,         // might be updated by sms.js
             thread_id: 0,   // might be updated by sms.js
-            address: packet.body.phoneNumber,
+            address: packet.body.phoneNumber || '',
             body: packet.body.messageBody,
             date: packet.id,
             event: packet.body.event,
