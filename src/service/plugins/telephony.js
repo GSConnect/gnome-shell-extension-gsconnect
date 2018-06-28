@@ -349,6 +349,15 @@ var Plugin = GObject.registerClass({
     }
 
     /**
+     * Restore volume, microphone and media player state (if changed), making
+     * sure to unpause before raising volume.
+     */
+    _restoreMediaState() {
+        this.mpris.unpauseAll();
+        this.mixer.restore();
+    }
+
+    /**
      * Update the conversations in any open windows for this device.
      */
     _updateConversations() {
@@ -486,10 +495,7 @@ var Plugin = GObject.registerClass({
     _onCancel(packet) {
         // Withdraw the (probably) open notification.
         this.device.withdraw_notification(`${packet.body.event}|${packet.body.contactName}`);
-
-        // Unpause before restoring volume
-        this.mpris.unpauseAll();
-        this.mixer.restore();
+        this._restoreMediaState();
     }
 
     _onMissedCall(packet) {
@@ -575,6 +581,8 @@ var Plugin = GObject.registerClass({
             type: 'kdeconnect.telephony.request',
             body: { action: 'mute' }
         });
+
+        this._restoreMediaState();
     }
 
     /**
