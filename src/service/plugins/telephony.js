@@ -171,7 +171,7 @@ var Plugin = GObject.registerClass({
 
             // HACK: If we sent to a *slightly* different number than what KDE
             // Connect uses, we check each message until we find one.
-            for (let message in messages) {
+            for (let message of messages) {
                 let contact = this.contacts.query({
                     number: message.address,
                     single: true
