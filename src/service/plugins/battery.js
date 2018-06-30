@@ -257,6 +257,7 @@ var Plugin = GObject.registerClass({
         if (this.device.service.type !== 'laptop' || this._upower) {
             return;
         } else if (!this.device.get_incoming_supported('battery')) {
+            debug('incoming battery statistics not supported', this.device.name);
             return;
         }
 
