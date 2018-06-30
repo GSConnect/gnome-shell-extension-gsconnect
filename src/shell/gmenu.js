@@ -59,6 +59,7 @@ var ListBoxItem = class ListBoxItem extends PopupMenu.PopupMenuItem {
 
         this._action_group = action_group;
         this._action_name = info.action.split('.')[1];
+        this._action_target = info.target;
 
         if (info.hasOwnProperty('icon')) {
             let icon = new St.Icon({
@@ -137,9 +138,7 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
             this._onActionChanged.bind(this)
         );
 
-        this.connect('destroy', (listbox) => {
-            listbox.menu_model.disconnect(listbox._itemsChangedId);
-        });
+        this.connect('destroy', this._onDestroy);
     }
 
     get action_group() {
@@ -196,6 +195,7 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
 
     _onItemsChanged(model, position, removed, added) {
         // Using ::items-changed is arduous and probably not worth the trouble
+        this._menu_items.clear();
         this.removeAll();
 
         let len = model.get_n_items();
@@ -219,9 +219,8 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
         }
     }
 
-    onDestroy(actor) {
+    _onDestroy(actor) {
         actor.menu_model.disconnect(actor._itemsChangedId);
-
         actor.action_group.disconnect(actor._actionAddedId);
         actor.action_group.disconnect(actor._actionEnabledChangedId);
         actor.action_group.disconnect(actor._actionRemovedId);
