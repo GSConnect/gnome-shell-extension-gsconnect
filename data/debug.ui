@@ -25,9 +25,6 @@
         <property name="can_focus">False</property>
         <property name="transition_type">slide-left-right</property>
         <child>
-          <placeholder/>
-        </child>
-        <child>
           <object class="GtkGrid" id="packet">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
@@ -126,6 +123,7 @@
                     <property name="can_focus">True</property>
                     <property name="hexpand">True</property>
                     <property name="vexpand">True</property>
+                    <property name="monospace">True</property>
                   </object>
                 </child>
               </object>
@@ -166,7 +164,6 @@
           <packing>
             <property name="name">packet</property>
             <property name="title" translatable="yes">Raw Packet</property>
-            <property name="position">1</property>
           </packing>
         </child>
         <child>
@@ -456,7 +453,7 @@
           <packing>
             <property name="name">notification</property>
             <property name="title" translatable="yes">Notification</property>
-            <property name="position">2</property>
+            <property name="position">1</property>
           </packing>
         </child>
         <child>
@@ -674,7 +671,7 @@
           <packing>
             <property name="name">telephony</property>
             <property name="title" translatable="yes">Telephony</property>
-            <property name="position">3</property>
+            <property name="position">2</property>
           </packing>
         </child>
         <child>
@@ -832,7 +829,7 @@
           <packing>
             <property name="name">system</property>
             <property name="title" translatable="yes">System</property>
-            <property name="position">4</property>
+            <property name="position">3</property>
           </packing>
         </child>
       </object>

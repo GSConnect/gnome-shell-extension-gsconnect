@@ -102,6 +102,10 @@ var Window = GObject.registerClass({
 
         let device = this.application._devices.get(this.packet_device.active_id);
 
+        if (device === undefined) {
+            return;
+        }
+
         if (this.packet_direction.active_id === 'incoming') {
             device.incomingCapabilities.map(c => this.packet_type.append(c, c));
         } else if (this.packet_direction.active_id === 'outgoing') {
@@ -114,8 +118,8 @@ var Window = GObject.registerClass({
     _onPacketBodyChanged(buffer) {
         let style, button;
 
-        if (buffer === this.send_packet_body.buffer) {
-            button = this.send_packet_button;
+        if (buffer === this.packet_body.buffer) {
+            button = this.packet_button;
             style = button.get_style_context();
         } else {
             button = this.receive_packet_button;
@@ -149,13 +153,13 @@ var Window = GObject.registerClass({
                 this.packet_device.active_id
             );
 
-            if (this.packet_direction.active_id === 'incoming') {
+            if (this.packet_direction.active_id === 'outgoing') {
                 device._onReceived(null, {
                     id: Date.now(),
                     type: this.packet_type.active_id,
                     body: body
                 });
-            } else if (this.packet_direction.active_id === 'outgoing') {
+            } else if (this.packet_direction.active_id === 'incoming') {
                 device.sendPacket({
                     id: 0,
                     type: this.packet_type.active_id,
