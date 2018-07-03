@@ -26,9 +26,6 @@
                 <property name="icon_name">list-add-symbolic</property>
               </object>
             </child>
-            <style>
-              <class name="titlebutton"/>
-            </style>
           </object>
         </child>
         <child>
@@ -44,9 +41,6 @@
                 <property name="icon_name">go-previous-symbolic</property>
               </object>
             </child>
-            <style>
-              <class name="titlebutton"/>
-            </style>
           </object>
           <packing>
             <property name="position">1</property>
