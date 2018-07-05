@@ -80,7 +80,7 @@ gsconnect.settings = new Gio.Settings({
  * TODO: these should mirror package.js
  */
 gsconnect.resource = Gio.Resource.load(
-    GLib.build_filenamev([gsconnect.datadir, gsconnect.app_id + '.data.gresource'])
+    GLib.build_filenamev([gsconnect.datadir, gsconnect.app_id + '.gresource'])
 );
 gsconnect.resource._register();
 
@@ -189,31 +189,21 @@ gsconnect.hasCommand = function(cmd) {
 
 
 function installWebExtensionManifests() {
-    let nmhPath = gsconnect.datadir + '/service/nativeMessagingHost.js';
+    let chrome = Gio.resources_lookup_data(
+        gsconnect.app_path + '/org.gnome.shell.extensions.gsconnect.json-chrome', 0
+    ).toArray().toString().replace('@DATADIR@', gsconnect.datadir);
 
-    let google = {
-        'name': 'org.gnome.shell.extensions.gsconnect',
-        'description': 'Native messaging host for GSConnect WebExtension',
-        'path': nmhPath,
-        'type': 'stdio',
-        'allowed_origins': [ 'chrome-extension://jfnifeihccihocjbfcfhicmmgpjicaec/' ]
-    };
-
-    let mozilla = {
-        'name': 'org.gnome.shell.extensions.gsconnect',
-        'description': 'Native messaging host for GSConnect WebExtension',
-        'path': nmhPath,
-        'type': 'stdio',
-        'allowed_extensions': [ 'gsconnect@andyholmes.github.io' ]
-    };
+    let mozilla = Gio.resources_lookup_data(
+        gsconnect.app_path + '/org.gnome.shell.extensions.gsconnect.json-mozilla', 0
+    ).toArray().toString().replace('@DATADIR@', gsconnect.datadir);
 
     let basename = 'org.gnome.shell.extensions.gsconnect.json';
     let userConfDir = GLib.get_user_config_dir();
     let browsers = [
-        [userConfDir + '/chromium/NativeMessagingHosts/', google],
-        [userConfDir + '/google-chrome/NativeMessagingHosts/', google],
-        [userConfDir + '/google-chrome-beta/NativeMessagingHosts/', google],
-        [userConfDir + '/google-chrome-unstable/NativeMessagingHosts/', google],
+        [userConfDir + '/chromium/NativeMessagingHosts/', chrome],
+        [userConfDir + '/google-chrome/NativeMessagingHosts/', chrome],
+        [userConfDir + '/google-chrome-beta/NativeMessagingHosts/', chrome],
+        [userConfDir + '/google-chrome-unstable/NativeMessagingHosts/', chrome],
         [GLib.get_home_dir() + '/.mozilla/native-messaging-hosts/', mozilla]
     ];
 
@@ -224,17 +214,9 @@ function installWebExtensionManifests() {
             JSON.stringify(browser[1])
         );
     }
-
-    GLib.spawn_command_line_async(`chmod 0755 ${nmhPath}`);
 }
 
 
-/**
- * Install/Uninstall desktop files for user installs
- *     - XDG .desktop file
- *     - DBus .service file
- *     - Register sms:// scheme handler
- */
 gsconnect.installService = function() {
     // Skip if installed as a system extension
     if (!gsconnect.is_local) {

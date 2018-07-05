@@ -16,6 +16,9 @@
     <file compressed="true" preprocess="xml-stripblanks">org.gnome.Shell.Extensions.GSConnect.xml</file>
     <!-- Bluetooth SDP -->
     <file compressed="true" preprocess="xml-stripblanks">org.gnome.Shell.Extensions.GSConnect.sdp.xml</file>
+    <!-- WebExtension Manifests -->
+    <file compressed="true">org.gnome.shell.extensions.gsconnect.json-chrome</file>
+    <file compressed="true">org.gnome.shell.extensions.gsconnect.json-mozilla</file>
   </gresource>
   <gresource prefix="/org/gnome/Shell/Extensions/GSConnect/icons">
     <!-- Application Icons -->

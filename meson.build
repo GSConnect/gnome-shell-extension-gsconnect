@@ -53,8 +53,8 @@ install_data(
 
 # GResource
 gnome.compile_resources(
-  'org.gnome.Shell.Extensions.GSConnect.data',
-  join_paths('data', 'org.gnome.Shell.Extensions.GSConnect.data.gresource.xml'),
+  'org.gnome.Shell.Extensions.GSConnect',
+  join_paths('data', 'org.gnome.Shell.Extensions.GSConnect.gresource.xml'),
   source_dir: 'data',
   gresource_bundle: true,
   install: true,
