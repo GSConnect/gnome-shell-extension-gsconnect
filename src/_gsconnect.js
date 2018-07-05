@@ -381,6 +381,30 @@ Object.defineProperty(Gio.TlsCertificate.prototype, 'common_name', {
 
 
 /**
+ * A convenience function for connecting template callbacks
+ */
+Gtk.Widget.prototype.connect_template = function() {
+    this.$templateHandlers = [];
+
+    Gtk.Widget.set_connect_func.call(this, (builder, obj, signalName, handlerName, connectObj, flags) => {
+        this.$templateHandlers.push([
+            obj,
+            obj.connect(signalName, this[handlerName].bind(this))
+        ]);
+    });
+};
+
+
+/**
+ * A convenience function for disconnecting template callbacks
+ */
+Gtk.Widget.prototype.disconnect_template = function() {
+    Gtk.Widget.set_connect_func.call(this, function(){});
+    this.$templateHandlers.map(([obj, id]) => obj.disconnect(id));
+};
+
+
+/**
  * String.format API supporting %s, %d, %x and %f
  * See: https://github.com/GNOME/gjs/blob/master/modules/format.js
  */
