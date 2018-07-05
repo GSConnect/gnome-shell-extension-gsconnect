@@ -24,30 +24,6 @@ function switcher_separators(row, before) {
 };
 
 
-function actionSwitch(settings, widget, name) {
-    widget.active = (settings.get_strv('action-blacklist').indexOf(name) < 0);
-
-    settings.bind_with_mapping(
-        'action-blacklist',
-        widget,
-        'active',
-        0,
-        variant => { widget.active = (variant.deep_unpack().indexOf(name) < 0); },
-        value => {
-            let current = settings.get_strv('action-blacklist');
-
-            if (!value) {
-                current.push(name);
-            } else {
-                current.splice(current.indexOf(name), 1);
-            }
-
-            settings.set_strv('action-blacklist', current)
-        }
-    );
-}
-
-
 /**
  * A simple dialog for selecting a device
  */
@@ -1110,17 +1086,18 @@ var DeviceSettings = GObject.registerClass({
     _notificationSettings() {
         let settings = this._getSettings('notification');
 
-        actionSwitch(
-            this.device.settings,
-            this.notification_allow,
-            'sendNotification'
+        settings.bind(
+            'share-notifications',
+            this.share_notifications,
+            'active',
+            Gio.SettingsBindFlags.DEFAULT
         );
 
-        this.notification_allow.bind_property(
-            'active',
+        settings.bind(
+            'share-notifications',
             this.notification_apps,
             'sensitive',
-            GObject.BindingFlags.SYNC_CREATE
+            Gio.SettingsBindFlags.DEFAULT
         );
 
         // Populate, sort and separate
@@ -1133,7 +1110,14 @@ var DeviceSettings = GObject.registerClass({
 
     _onNotificationRowActivated(box, row) {
         let settings = this._getSettings('notification');
-        let applications = JSON.parse(settings.get_string('applications'));
+        let applications = {};
+
+        try {
+            applications = JSON.parse(settings.get_string('applications'));
+        } catch (e) {
+            applications = {};
+        }
+
         applications[row.title].enabled = !applications[row.title].enabled;
         row.widget.label = (applications[row.title].enabled) ? _('On') : _('Off');
         settings.set_string('applications', JSON.stringify(applications));
@@ -1175,12 +1159,7 @@ var DeviceSettings = GObject.registerClass({
         let ignoreId = 'org.gnome.Shell.Extensions.GSConnect.desktop';
 
         // Query Gnome's notification settings
-        for (let app of this.service._desktopNotificationSettings.get_strv('application-children')) {
-            let appSettings = new Gio.Settings({
-                schema_id: 'org.gnome.desktop.notifications.application',
-                path: '/org/gnome/desktop/notifications/application/' + app + '/'
-            });
-
+        for (let appSettings of Object.values(this.service.notificationListener.applications)) {
             let appId = appSettings.get_string('application-id');
 
             if (appId !== ignoreId) {

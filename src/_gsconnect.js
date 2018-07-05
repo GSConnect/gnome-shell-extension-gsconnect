@@ -331,28 +331,6 @@ gsconnect.full_unpack = function(obj) {
 
 
 /**
- * Extend Gio.Settings with an implementation of bind_with_mapping()
- */
-Gio.Settings.prototype.bind_with_mapping = function(key, object, property, flags=0, get_mapping, set_mapping) {
-    if ((flags & Gio.SettingsBindFlags.GET) || flags === 0) {
-        let _getChanged = this.connect(
-            `changed::${key}`,
-            () => get_mapping(this.get_value(key))
-        );
-        object.connect('destroy', () => this.disconnect(_getChanged));
-    }
-
-    if ((flags & Gio.SettingsBindFlags.SET) || flags === 0) {
-        let _setChanged = object.connect(
-            `notify::${property}`,
-            () => set_mapping(object[property])
-        );
-        object.connect('destroy', (obj) => obj.disconnect(_setChanged));
-    }
-};
-
-
-/**
  * Extend Gio.TlsCertificate with a method for computing a SHA1 fingerprint.
  * See: https://gitlab.gnome.org/GNOME/glib/issues/1290
  *
