@@ -41,6 +41,7 @@ const Core = imports.service.core;
 const DBus = imports.modules.dbus;
 const Device = imports.service.device;
 const Lan = imports.service.lan;
+const Notification = imports.modules.notification;
 const Settings = imports.service.settings;
 const Sms = imports.modules.sms;
 const Sound = imports.modules.sound;
@@ -313,182 +314,6 @@ var Daemon = GObject.registerClass({
     }
 
     /**
-     * Local Notifications
-     *
-     * There are two buses we watch for notifications:
-     *   1) org.freedesktop.Notifications (libnotify)
-     *   2) org.gtk.Notifications (GNotification)
-     */
-    _getAppNotificationSettings() {
-        this._appNotificationSettings = {};
-
-        for (let app of this._desktopNotificationSettings.get_strv('application-children')) {
-            let appSettings = new Gio.Settings({
-                schema_id: 'org.gnome.desktop.notifications.application',
-                path: '/org/gnome/desktop/notifications/application/' + app + '/'
-            });
-
-            let appInfo = Gio.DesktopAppInfo.new(
-                appSettings.get_string('application-id')
-            );
-
-            if (appInfo) {
-                this._appNotificationSettings[appInfo.get_display_name()] = appSettings;
-            }
-        }
-    }
-
-    _startNotificationListener() {
-        // Respect desktop notification settings
-        this._desktopNotificationSettings = new Gio.Settings({
-            schema_id: 'org.gnome.desktop.notifications'
-        });
-        this._desktopNotificationSettings.connect(
-            'changed::application-children',
-            this._getAppNotificationSettings.bind(this)
-        );
-        this._getAppNotificationSettings();
-
-        // Special connection for monitoring
-        this._dbusMonitor = Gio.DBusConnection.new_for_address_sync(
-            Gio.dbus_address_get_for_bus_sync(Gio.BusType.SESSION, null),
-            Gio.DBusConnectionFlags.AUTHENTICATION_CLIENT,
-            null,
-            null
-        );
-
-        // Introduce the connection to DBus
-        this._dbusMonitor.call_sync(
-            "org.freedesktop.DBus",
-            "/org/freedesktop/DBus",
-            "org.freedesktop.DBus",
-            "Hello",
-            null,
-            null,
-            Gio.DBusCallFlags.NONE,
-            -1,
-            null
-        );
-
-        // libnotify (org.freedesktop.Notifications)
-        this._fdoNotifications = new DBus.Interface({
-            g_connection: this._dbusMonitor,
-            g_instance: this,
-            g_interface_info: gsconnect.dbusinfo.lookup_interface(
-                'org.freedesktop.Notifications'
-            ),
-            g_object_path: '/org/freedesktop/Notifications'
-        });
-
-        let fdoMatch = 'interface=\'org.freedesktop.Notifications\',' +
-                       'member=\'Notify\',' +
-                       'type=\'method_call\'';
-
-        // GNotification (org.gtk.Notifications)
-        this._gtkNotifications = new DBus.Interface({
-            g_connection: this._dbusMonitor,
-            g_instance: this,
-            g_interface_info: gsconnect.dbusinfo.lookup_interface(
-                'org.gtk.Notifications'
-            ),
-            g_object_path: '/org/gtk/Notifications'
-        });
-
-        let gtkMatch = 'interface=\'org.gtk.Notifications\',' +
-                       'member=\'AddNotification\',' +
-                       'type=\'method_call\'';
-
-        // Become a monitor for Fdo & Gtk notifications
-        this._dbusMonitor.call_sync(
-            "org.freedesktop.DBus",
-            "/org/freedesktop/DBus",
-            "org.freedesktop.DBus.Monitoring",
-            "BecomeMonitor",
-            new GLib.Variant("(asu)", [[fdoMatch, gtkMatch], 0]),
-            null,
-            Gio.DBusCallFlags.NONE,
-            -1,
-            null
-        );
-    }
-
-    _stopNotificationListener() {
-        this._fdoNotifications.destroy();
-        this._gtkNotifications.destroy();
-        this._dbusMonitor.close_sync(null);
-    }
-
-    _sendNotification(notif) {
-        debug(notif);
-
-        // Check if notifications are disabled in desktop settings
-        let appSettings = this._appNotificationSettings[notif.appName];
-
-        if (appSettings && !appSettings.get_boolean('enable')) {
-            return;
-        }
-
-        // Remove empty icon
-        // TODO: recheck this
-        if (notif.icon === null) {
-            delete notif.icon;
-        }
-
-        // Send the notification to each supporting device
-        let variant = gsconnect.full_pack(notif);
-
-        for (let device of this._devices.values()) {
-            device.activate_action('sendNotification', variant);
-        }
-    }
-
-    Notify(appName, replacesId, iconName, summary, body, actions, hints, timeout) {
-        // Ignore notifications without an appName
-        if (!appName) {
-            return;
-        }
-
-        this._sendNotification({
-            appName: appName,
-            id: `fdo|null|${replacesId}`,
-            title: summary,
-            text: body,
-            ticker: `${summary}: ${body}`,
-            isClearable: (replacesId !== '0'),
-            icon: iconName
-        });
-    }
-
-    AddNotification(application, id, notification) {
-        // Ignore our own notifications (otherwise things could get loopy)
-        if (application === 'org.gnome.Shell.Extensions.GSConnect') {
-            return;
-        }
-
-        let appInfo = Gio.DesktopAppInfo.new(`${application}.desktop`);
-
-        // Try to get an icon for the notification
-        let icon = null;
-
-        if (notification.hasOwnProperty('icon')) {
-            icon = notification.icon;
-        // Fallback to GAppInfo icon
-        } else {
-            icon = appInfo.get_icon().to_string();
-        }
-
-        this._sendNotification({
-            appName: appInfo.get_display_name(),
-            id: `gtk|${application}|${id}`,
-            title: notification.title,
-            text: notification.body,
-            ticker: `${notification.title}: ${notification.body}`,
-            isClearable: true,
-            icon: icon
-        });
-    }
-
-    /**
      * Only used by plugins/share.js
      */
     _cancelTransferAction(action, parameter) {
@@ -751,6 +576,9 @@ var Daemon = GObject.registerClass({
             debug(e);
         }
 
+        // Notification Listener
+        this.notificationListener = new Notification.Listener();
+
         gsconnect.settings.bind(
             'public-name',
             this,
@@ -770,16 +598,10 @@ var Daemon = GObject.registerClass({
             object_path: object_path
         });
 
-        // Start the notification listeners
-        this._startNotificationListener();
-
         return true;
     }
 
     vfunc_dbus_unregister(connection, object_path) {
-        // Stop the notification listeners
-        this._stopNotificationListener();
-
         // Must be done before g_name_owner === null
         for (let device of this._devices.values()) {
             device.destroy();
@@ -843,6 +665,7 @@ var Daemon = GObject.registerClass({
 
         this.lanService.destroy();
         this.bluetoothService.destroy();
+        this.notificationListener.destroy();
     }
 });
 
