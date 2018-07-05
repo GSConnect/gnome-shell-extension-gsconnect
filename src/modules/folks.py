@@ -10,8 +10,14 @@ import re
 import ctypes as pyc
 from ctypes import pythonapi
 from gi.repository import Folks, GLib, GObject
-pyc.cdll.LoadLibrary('libgobject-2.0.so')
-lego = pyc.CDLL('libgobject-2.0.so')
+
+try:
+    pyc.cdll.LoadLibrary('libgobject-2.0.so')
+    lego = pyc.CDLL('libgobject-2.0.so')
+except:
+    pyc.cdll.LoadLibrary('libgobject-2.0.so.0')
+    lego = pyc.CDLL('libgobject-2.0.so.0')
+
 lego.g_type_name.restype = pyc.c_char_p
 lego.g_type_name.argtypes = (pyc.c_ulonglong,)
 pythonapi.PyCapsule_GetName.restype = pyc.c_char_p
