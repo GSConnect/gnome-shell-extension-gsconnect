@@ -1,39 +1,35 @@
-project('gsconnect', 'c', version: '13', meson_version: '>= 0.40.1')
+project('gsconnect', 'c', version: '13', meson_version: '>= 0.45.0')
 
 gnome = import('gnome')
-extuuid = meson.project_name() + '@andyholmes.github.io'
-extdatadir = join_paths(get_option('datadir'), 'gnome-shell/extensions', extuuid)
+
+extuuid = 'gsconnect@andyholmes.github.io'
+prefix = get_option('prefix')
+datadir = join_paths(prefix, get_option('datadir'))
+extdatadir = join_paths(datadir, 'gnome-shell/extensions', extuuid)
 
 # ZIP targets
-run_target('make-zip', command: ['meson/zip.sh', extuuid])
-run_target('install-zip', command: ['meson/zip.sh', extuuid, 'install'])
-
-# Source Files
-extension_source = files(
-  # standard files
-  'src/extension.js',
-  'src/prefs.js',
-  'src/stylesheet.css',
-  # non-standard files
-  'src/_gsconnect.js',
-  # non-GJS files
-  'src/nautilus-gsconnect.py'
+run_target(
+    'make-zip',
+    command: ['meson/zip.sh', extuuid, datadir]
 )
-
-install_data(
-  extension_source,
-  install_dir: extdatadir,
-  install_mode: 'rw-r--r--'
+run_target(
+    'install-zip',
+    command: ['meson/zip.sh', extuuid, datadir, 'install']
 )
-
-install_subdir('src/modules', install_dir: extdatadir)
-install_subdir('src/service', install_dir: extdatadir)
-install_subdir('src/shell', install_dir: extdatadir)
 
 # metadata.json
 extmetadata = configuration_data()
 extmetadata.set('VERSION', meson.project_version())
+extmetadata.set('EXTDATADIR', extdatadir)
 
+# Extension Source
+install_subdir(
+  'src',
+  install_dir: extdatadir,
+  strip_directory: true
+)
+
+# metadata.json
 metadata_json = configure_file(
   input: 'data/metadata.json.in',
   output: 'metadata.json',
@@ -45,20 +41,42 @@ install_data(
   install_mode: 'rw-r--r--'
 )
 
+# Desktop Entry
+configure_file(
+  input: 'data/org.gnome.Shell.Extensions.GSConnect.desktop',
+  output: 'org.gnome.Shell.Extensions.GSConnect.desktop',
+  configuration: extmetadata,
+  install_dir: join_paths(datadir, 'applications')
+)
+
+# DBus Service
+configure_file(
+  input: 'data/org.gnome.Shell.Extensions.GSConnect.service',
+  output: 'org.gnome.Shell.Extensions.GSConnect.service',
+  configuration: extmetadata,
+  install_dir: join_paths(datadir, 'dbus-1', 'services')
+)
+
+# Nautilus Extension
+install_data(
+  'src/nautilus-gsconnect.py',
+  install_dir: join_paths(datadir, 'nautilus-python', 'extensions')
+)
+
 # GSettings
 install_data(
-    join_paths('data', 'org.gnome.Shell.Extensions.GSConnect.gschema.xml'),
-    install_dir: join_paths(extdatadir, 'schemas')
+    'data/org.gnome.Shell.Extensions.GSConnect.gschema.xml',
+    install_dir: join_paths(datadir, 'glib-2.0', 'schemas')
 )
 
 # GResource
 gnome.compile_resources(
   'org.gnome.Shell.Extensions.GSConnect',
-  join_paths('data', 'org.gnome.Shell.Extensions.GSConnect.gresource.xml'),
+  'data/org.gnome.Shell.Extensions.GSConnect.gresource.xml',
   source_dir: 'data',
   gresource_bundle: true,
   install: true,
-  install_dir : extdatadir
+  install_dir: extdatadir
 )
 
 # Gettext Translations

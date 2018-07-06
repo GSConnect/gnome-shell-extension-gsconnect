@@ -4,4 +4,4 @@ Description=GSConnect
 [Service]
 Type=dbus
 BusName=org.gnome.Shell.Extensions.GSConnect
-ExecStart=@DATADIR@/service/daemon.js
+ExecStart=@EXTDATADIR@/service/daemon.js

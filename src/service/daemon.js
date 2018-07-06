@@ -31,8 +31,8 @@ function getPath() {
     return Gio.File.new_for_path(m[1]).get_parent().get_parent().get_path();
 }
 
-window.gsconnect = { datadir: getPath() };
-imports.searchPath.unshift(gsconnect.datadir);
+window.gsconnect = { extdatadir: getPath() };
+imports.searchPath.unshift(gsconnect.extdatadir);
 imports._gsconnect;
 
 // Local Imports
@@ -516,7 +516,7 @@ var Daemon = GObject.registerClass({
         // We watch this file (daemon.js) for changes so we can stop the daemon
         // if it's ever updated or uninstalled.
         this._daemonMonitor = Gio.File.new_for_path(
-            gsconnect.datadir + '/service/daemon.js'
+            gsconnect.extdatadir + '/service/daemon.js'
         ).monitor(
             Gio.FileMonitorFlags.WATCH_MOVES,
             null

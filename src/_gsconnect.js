@@ -12,7 +12,7 @@ const Gtk = imports.gi.Gtk;
 /**
  * Determing if GSConnect is installed as a user extension
  */
-gsconnect.is_local = gsconnect.datadir.startsWith(GLib.get_user_data_dir());
+gsconnect.is_local = gsconnect.extdatadir.startsWith(GLib.get_user_data_dir());
 
 
 /**
@@ -21,7 +21,7 @@ gsconnect.is_local = gsconnect.datadir.startsWith(GLib.get_user_data_dir());
  */
 gsconnect.app_id = 'org.gnome.Shell.Extensions.GSConnect';
 gsconnect.app_path = '/org/gnome/Shell/Extensions/GSConnect';
-gsconnect.metadata = JSON.parse(GLib.file_get_contents(gsconnect.datadir + '/metadata.json')[1]);
+gsconnect.metadata = JSON.parse(GLib.file_get_contents(gsconnect.extdatadir + '/metadata.json')[1]);
 
 
 /**
@@ -40,7 +40,7 @@ for (let path of [gsconnect.cachedir, gsconnect.configdir, gsconnect.runtimedir]
  * Gettext
  * TODO: these should mirror package.js
  */
-gsconnect.localedir = GLib.build_filenamev([gsconnect.datadir, 'locale']);
+gsconnect.localedir = GLib.build_filenamev([gsconnect.extdatadir, 'locale']);
 
 Gettext.bindtextdomain(gsconnect.app_id, gsconnect.localedir);
 Gettext.textdomain(gsconnect.app_id);
@@ -64,11 +64,15 @@ if (typeof _ !== 'function') {
  * Init GSettings
  * TODO: these should mirror package.js
  */
-gsconnect.gschema = Gio.SettingsSchemaSource.new_from_directory(
-    GLib.build_filenamev([gsconnect.datadir, 'schemas']),
-    Gio.SettingsSchemaSource.get_default(),
-    false
-);
+if (gsconnect.is_local) {
+    gsconnect.gschema = Gio.SettingsSchemaSource.new_from_directory(
+        GLib.build_filenamev([gsconnect.extdatadir, 'schemas']),
+        Gio.SettingsSchemaSource.get_default(),
+        false
+    );
+} else {
+    gsconnect.gschema = Gio.SettingsSchemaSource.get_default();
+}
 
 gsconnect.settings = new Gio.Settings({
     settings_schema: gsconnect.gschema.lookup(gsconnect.app_id, true)
@@ -80,7 +84,7 @@ gsconnect.settings = new Gio.Settings({
  * TODO: these should mirror package.js
  */
 gsconnect.resource = Gio.Resource.load(
-    GLib.build_filenamev([gsconnect.datadir, gsconnect.app_id + '.gresource'])
+    GLib.build_filenamev([gsconnect.extdatadir, gsconnect.app_id + '.gresource'])
 );
 gsconnect.resource._register();
 
@@ -191,11 +195,11 @@ gsconnect.hasCommand = function(cmd) {
 function installWebExtensionManifests() {
     let chrome = Gio.resources_lookup_data(
         gsconnect.app_path + '/org.gnome.shell.extensions.gsconnect.json-chrome', 0
-    ).toArray().toString().replace('@DATADIR@', gsconnect.datadir);
+    ).toArray().toString().replace('@EXTDATADIR@', gsconnect.extdatadir);
 
     let mozilla = Gio.resources_lookup_data(
         gsconnect.app_path + '/org.gnome.shell.extensions.gsconnect.json-mozilla', 0
-    ).toArray().toString().replace('@DATADIR@', gsconnect.datadir);
+    ).toArray().toString().replace('@EXTDATADIR@', gsconnect.extdatadir);
 
     let basename = 'org.gnome.shell.extensions.gsconnect.json';
     let userConfDir = GLib.get_user_config_dir();
@@ -231,7 +235,7 @@ gsconnect.installService = function() {
         GLib.mkdir_with_parents(path, 493); // 0755 in octal
 
         script.make_symbolic_link(
-            gsconnect.datadir + '/nautilus-gsconnect.py',
+            gsconnect.extdatadir + '/nautilus-gsconnect.py',
             null
         );
     }
@@ -257,7 +261,7 @@ gsconnect.installService = function() {
     let dbusFile = gsconnect.app_id + '.service';
     let dbusBytes = Gio.resources_lookup_data(
         gsconnect.app_path + '/' + dbusFile + '-dbus', 0
-    ).toArray().toString().replace('@DATADIR@', gsconnect.datadir);
+    ).toArray().toString().replace('@EXTDATADIR@', gsconnect.extdatadir);
 
     GLib.mkdir_with_parents(dbusDir, 493);
     GLib.file_set_contents(dbusDir + dbusFile, dbusBytes);
@@ -267,7 +271,7 @@ gsconnect.installService = function() {
     let desktopFile = gsconnect.app_id + '.desktop';
     let desktopBytes = Gio.resources_lookup_data(
         gsconnect.app_path + '/' + desktopFile, 0
-    ).toArray().toString().replace('@DATADIR@', gsconnect.datadir);
+    ).toArray().toString().replace('@EXTDATADIR@', gsconnect.extdatadir);
 
     GLib.mkdir_with_parents(applicationsDir, 493);
     GLib.file_set_contents(applicationsDir + desktopFile, desktopBytes);

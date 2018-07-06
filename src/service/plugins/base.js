@@ -6,7 +6,6 @@ const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
 // Local Imports
-imports.searchPath.push(gsconnect.datadir);
 const Device = imports.service.device;
 
 

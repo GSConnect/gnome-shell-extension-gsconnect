@@ -12,7 +12,7 @@ const PopupMenu = imports.ui.popupMenu;
 window.gsconnect = {
     datadir: imports.misc.extensionUtils.getCurrentExtension().path
 };
-imports.searchPath.unshift(gsconnect.datadir);
+imports.searchPath.unshift(gsconnect.extdatadir);
 imports._gsconnect;
 
 // Local Imports
@@ -142,7 +142,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
     _startService() {
         // Prevent a hard hang if trying to start the service after it's been
         // uninstalled.
-        let path = gsconnect.datadir + '/service/daemon.js';
+        let path = gsconnect.extdatadir + '/service/daemon.js';
 
         if (this.service || !GLib.file_test(path, GLib.FileTest.EXISTS)) {
             return;

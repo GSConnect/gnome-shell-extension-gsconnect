@@ -20,8 +20,8 @@ function getPath() {
     return Gio.File.new_for_path(m[1]).get_parent().get_parent().get_path();
 }
 
-window.gsconnect = { datadir: getPath() };
-imports.searchPath.unshift(gsconnect.datadir);
+window.gsconnect = { extdatadir: getPath() };
+imports.searchPath.unshift(gsconnect.extdatadir);
 const _gsconnect = imports._gsconnect;
 const DBus = imports.modules.dbus;
 

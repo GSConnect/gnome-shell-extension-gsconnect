@@ -1,7 +1,7 @@
 [Desktop Entry]
 Type=Application
 Name=GSConnect
-Exec=@DATADIR@/service/daemon.js %u
+Exec=@EXTDATADIR@/service/daemon.js %u
 Terminal=false
 NoDisplay=true
 Icon=org.gnome.Shell.Extensions.GSConnect
