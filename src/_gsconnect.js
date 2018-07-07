@@ -99,12 +99,10 @@ gsconnect.resource = Gio.Resource.load(
 );
 gsconnect.resource._register();
 gsconnect.get_resource = function(path) {
-    let bytes = Gio.resources_lookup_data(
+    return Gio.resources_lookup_data(
         GLib.build_filenamev([gsconnect.app_path, path]),
         Gio.ResourceLookupFlags.NONE
-    );
-
-    return bytes.toArray().toString().replace('@EXTDATADIR@', gsconnect.extdatadir);
+    ).toArray().toString().replace('@EXTDATADIR@', gsconnect.extdatadir);
 };
 
 /**
@@ -271,11 +269,11 @@ gsconnect.installService = function() {
         }
 
         // WebExtension Manifests
-        for (let [dir, obj] of manifests) {
+        for (let [dir, manifest] of manifests) {
             GLib.mkdir_with_parents(dir, 493);
             GLib.file_set_contents(
                 GLib.build_filenamev([dir, manifestFile]),
-                JSON.stringify(obj)
+                manifest
             );
         }
 
