@@ -1,7 +1,0 @@
-[Unit]
-Description=GSConnect
-
-[Service]
-Type=dbus
-BusName=org.gnome.Shell.Extensions.GSConnect
-ExecStart=@EXTDATADIR@/service/daemon.js

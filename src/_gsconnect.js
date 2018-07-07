@@ -243,19 +243,6 @@ gsconnect.installService = function() {
     // Web Extension
     installWebExtensionManifests();
 
-    // Ensure daemon.js is executable
-
-    // systemd service file
-    let systemdDir = GLib.get_user_data_dir() + '/systemd/user/';
-    let systemdFile = gsconnect.app_id + '.service';
-    let systemdBytes = Gio.resources_lookup_data(
-        gsconnect.app_path + '/' + systemdFile + '-systemd', 0
-    ).toArray().toString().replace('@DATADIR@', gsconnect.datadir);
-
-    GLib.mkdir_with_parents(systemdDir, 493);
-    GLib.file_set_contents(systemdDir + systemdFile, systemdBytes);
-    GLib.spawn_command_line_async('systemctl --user daemon-reload');
-
     // DBus service file
     let dbusDir = GLib.get_user_data_dir() + '/dbus-1/services/';
     let dbusFile = gsconnect.app_id + '.service';
