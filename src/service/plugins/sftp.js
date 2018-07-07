@@ -75,7 +75,7 @@ var Plugin = GObject.registerClass({
 
         if (this.device.connection_type === 'bluetooth') {
             this.destroy();
-            throw Error(_('Can\'t run on bluetooth connection'));
+            throw Error(_('Not supported for bluetooth connections'));
         }
 
         if (!gsconnect.hasCommand('sshfs')) {

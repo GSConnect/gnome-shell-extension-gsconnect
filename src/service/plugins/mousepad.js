@@ -42,13 +42,15 @@ var Plugin = GObject.registerClass({
         // See: https://wiki.gnome.org/Accessibility/Wayland#Bugs.2FIssues_We_Must_Address
         if (GLib.getenv('XDG_SESSION_TYPE') === 'wayland') {
             this.destroy();
-            throw Error(_('Can\'t run in Wayland session'));
+            throw Error(_('Not supported in Wayland sessions'));
         }
 
-        // Sometimes AT-SPI goes down and there's nothing we can do about that
-        let ret = Atspi.init();
-
-        if (ret !== 0 && ret !== 1) {
+        // Atspi.init() return 2 on fail, but still marks itself as inited. We
+        // uninit before throwing an error otherwise any future call to init()
+        // will appear successful and other calls will cause GSConnect to exit.
+        // See: https://gitlab.gnome.org/GNOME/at-spi2-core/blob/master/atspi/atspi-misc.c
+        if (Atspi.init() === 2) {
+            Atspi.exit();
             this.destroy();
             throw Error(_('Failed to initialize Atspi'));
         }
