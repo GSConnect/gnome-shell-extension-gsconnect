@@ -25,10 +25,8 @@ USER_DIR = os.path.join(GLib.get_user_data_dir(), 'gnome-shell/extensions/gsconn
 
 if os.path.exists(USER_DIR):
     LOCALE_DIR = os.path.join(USER_DIR, 'locale')
-    SCHEMA_DIR = os.path.join(USER_DIR, 'schemas')
 else:
     LOCALE_DIR = None
-    SCHEMA_DIR = None
 
 
 
@@ -45,16 +43,6 @@ class GSConnectShareExtension(GObject.GObject, Nautilus.MenuProvider):
             gettext.bindtextdomain('org.gnome.Shell.Extensions.GSConnect', LOCALE_DIR)
         except:
             pass
-
-        if SCHEMA_DIR == None:
-            self.settings = Gio.Settings.new('org.gnome.Shell.Extensions.GSConnect')
-        else:
-            schema_src = Gio.SettingsSchemaSource.new_from_directory(
-                SCHEMA_DIR,
-                Gio.SettingsSchemaSource.get_default(),
-                False)
-            schema = schema_src.lookup('org.gnome.Shell.Extensions.GSConnect', True)
-            self.settings = Gio.Settings(settings_schema=schema)
 
         self.devices = {}
 
@@ -109,10 +97,6 @@ class GSConnectShareExtension(GObject.GObject, Nautilus.MenuProvider):
 
     def get_file_items(self, window, files):
         """Return a list of select files to be sent"""
-
-        # Bail if integration is disabled
-        if not self.settings.get_boolean('nautilus-integration'):
-            return
 
         # Enumerate capable devices
         devices = []

@@ -41,18 +41,6 @@
       <summary>Debug Mode</summary>
       <description>Enable debug features and logging</description>
     </key>
-
-    <!-- Application Extensions (TODO: should be automatic) -->
-    <key name="nautilus-integration" type="b">
-      <default>false</default>
-      <summary>Nautilus Integration</summary>
-      <description>Send files from the file browser context menu</description>
-    </key>
-    <key name="webbrowser-integration" type="b">
-      <default>false</default>
-      <summary>Web Browser Integration</summary>
-      <description>Share links with devices and contacts from the web browser</description>
-    </key>
   </schema>
 
   <!-- Device Settings -->
