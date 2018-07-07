@@ -284,10 +284,7 @@ var Window = GObject.registerClass({
         'headerbar-title', 'headerbar-subtitle', 'headerbar-edit', 'headerbar-entry',
         'prev-button', 'device-menu',
         'stack', 'switcher', 'sidebar',
-        'shell-list',
-        'show-indicators', 'show-offline', 'show-unpaired', 'show-battery',
-        'extensions-list',
-        'nautilus-integration',
+        'shell-list', 'display-mode',
         'advanced-list',
         'help', 'help-list'
     ]
@@ -399,37 +396,29 @@ var Window = GObject.registerClass({
      * UI Setup and template connecting
      */
     _serviceSettings() {
-        // Shell
-        this.shell_list.foreach(this._setGlobalRow);
+        //
+        let settings = new Gio.SimpleActionGroup();
+        settings.add_action(gsconnect.settings.create_action('show-offline'));
+        settings.add_action(gsconnect.settings.create_action('show-unpaired'));
+        settings.add_action(gsconnect.settings.create_action('show-battery'));
+        settings.add_action(gsconnect.settings.create_action('debug'));
+        this.insert_action_group('settings', settings);
+
         this.shell_list.set_header_func(section_separators);
-
-        // Extensions
-        // TODO: these should go..
-        this.extensions_list.foreach(this._setGlobalRow);
-        this.extensions_list.set_header_func(section_separators);
-
-        // Advanced/Debug
-        this.advanced_list.foreach(this._setGlobalRow);
         this.advanced_list.set_header_func(section_separators);
+
+        this._setDisplayMode();
     }
 
-    _setGlobalRow(row) {
-        let label = row.get_child().get_child_at(1, 0);
-        let name = label.get_name();
+    _setDisplayMode(box, row) {
+        let state = gsconnect.settings.get_boolean('show-indicators');
 
-        if (!(label instanceof Gtk.Label)) {
-            return;
+        if (row) {
+            state = !state;
+            gsconnect.settings.set_boolean('show-indicators', state);
         }
 
-        label.label = gsconnect.settings.get_boolean(name) ? _('On') : _('Off');
-    }
-
-    _onGlobalRowActivated(box, row) {
-        let label = row.get_child().get_child_at(1, 0);
-        let name = label.get_name();
-
-        gsconnect.settings.set_boolean(name, !gsconnect.settings.get_boolean(name));
-        label.label = (label.label === _('On')) ? _('Off') : _('On');
+        this.display_mode.label = state ? _('Panel') : _('User Menu');
     }
 
     _onDevicesChanged() {
