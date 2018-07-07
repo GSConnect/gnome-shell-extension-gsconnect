@@ -294,9 +294,7 @@ var Window = GObject.registerClass({
 }, class Window extends Gtk.ApplicationWindow {
 
     _init(params) {
-        Gtk.Widget.set_connect_func.call(this, (builder, obj, signalName, handlerName, connectObj, flags) => {
-            obj.connect(signalName, this[handlerName].bind(this));
-        });
+        this.connect_template();
 
         super._init(params);
 
@@ -523,9 +521,7 @@ var DeviceSettings = GObject.registerClass({
 }, class DeviceSettings extends Gtk.Stack {
 
     _init(device) {
-        Gtk.Widget.set_connect_func.call(this, (builder, obj, signalName, handlerName, connectObj, flags) => {
-            obj.connect(signalName, this[handlerName].bind(this));
-        });
+        this.connect_template();
 
         super._init();
 
@@ -673,11 +669,28 @@ var DeviceSettings = GObject.registerClass({
         }
     }
 
-    _onDestroy(widget) {
-        widget.device.disconnect(widget._actionAddedId);
-        widget.device.disconnect(widget._actionRemovedId);
-        widget.device.disconnect(widget._actionEnabledId);
-        widget.device.settings.disconnect(widget._keybindingsId);
+    _onDeleteDevice(button) {
+        let application = Gio.Application.get_default();
+        application.deleteDevice(this.device.id);
+    }
+
+    _destroy() {
+        this.disconnect_template();
+
+        this.switcher.destroy();
+        this.row.destroy();
+
+        this.device.disconnect(this._actionAddedId);
+        this.device.disconnect(this._actionRemovedId);
+        this.device.disconnect(this._actionEnabledId);
+
+        this.device.settings.disconnect(this._bluetoothHostChangedId);
+        this.device.settings.disconnect(this._tcpHostChangedId);
+        this.device.settings.disconnect(this._keybindingsId);
+
+        for (let settings of Object.values(this._gsettings)) {
+            settings.run_dispose();
+        }
     }
 
     _onStatusRowActivated(box, row) {
@@ -1435,10 +1448,7 @@ var ShortcutEditor = GObject.registerClass({
 }, class ShortcutEditor extends Gtk.Dialog {
 
     _init(params) {
-        // Hack until template callbacks are supported (GJS 1.54?)
-        Gtk.Widget.set_connect_func.call(this, (builder, obj, signalName, handlerName, connectObj, flags) => {
-            obj.connect(signalName, this[handlerName].bind(this));
-        });
+        this.connect_template();
 
         super._init({
             transient_for: params.transient_for,
@@ -1468,6 +1478,11 @@ var ShortcutEditor = GObject.registerClass({
             visible: true
         });
         this.confirm_shortcut.attach(this.shortcut_label, 0, 0, 1, 1);
+    }
+
+    _onDeleteEvent() {
+        this.disconnect_template();
+        return false;
     }
 
     _onKeyPressEvent(widget, event) {

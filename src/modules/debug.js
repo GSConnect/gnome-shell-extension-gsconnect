@@ -38,9 +38,7 @@ var Window = GObject.registerClass({
 }, class Window extends Gtk.ApplicationWindow {
 
     _init() {
-        Gtk.Widget.set_connect_func.call(this, (builder, obj, signalName, handlerName, connectObj, flags) => {
-            obj.connect(signalName, this[handlerName].bind(this));
-        });
+        this.connect_template();
 
         super._init({
             application: Gio.Application.get_default(),
@@ -338,6 +336,7 @@ var Window = GObject.registerClass({
     }
 
     _onDestroy() {
+        this.disconnect_template();
         this.application.disconnect(this._devicesChangedId);
     }
 

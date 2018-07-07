@@ -118,7 +118,7 @@ var URI = class URI {
             throw URIError('malformed sms URI');
         }
 
-        this.recipients = recipients.split(',').map((recipient) => {
+        this.recipients = recipients.split(',').map(recipient => {
             _numberRegex.lastIndex = 0;
             let [full, number, params] = _numberRegex.exec(recipient);
 
@@ -408,9 +408,7 @@ var ConversationWindow = GObject.registerClass({
 }, class ConversationWindow extends Gtk.ApplicationWindow {
 
     _init(device) {
-        Gtk.Widget.set_connect_func.call(this, (builder, obj, signalName, handlerName, connectObj, flags) => {
-            obj.connect(signalName, this[handlerName].bind(this));
-        });
+        this.connect_template();
 
         super._init({
             application: Gio.Application.get_default(),
@@ -430,9 +428,7 @@ var ConversationWindow = GObject.registerClass({
         this.info_label.label = _('%s is disconnected').format(this.device.name);
 
         // Conversations
-        this.conversation_list.set_sort_func((row1, row2) => {
-            return (row1.message.date > row2.message.date) ? -1 : 1;
-        });
+        this.conversation_list.set_sort_func(this._sortConversations);
 
         // Contacts
         this.contact_list = new Contacts.ContactChooser();
@@ -499,10 +495,8 @@ var ConversationWindow = GObject.registerClass({
         this.notify('thread-id');
     }
 
-    _onDestroy(window) {
-        Gtk.Widget.set_connect_func.call(this, function(){});
-        this.$templateHandlers.map(([obj, id]) => obj.disconnect(id));
-        delete this.$templateHandlers;
+    _onDeleteEvent(window, event) {
+        this.disconnect_template();
 
         this.contact_list._destroy();
         this.contact_list.disconnect(this._selectedNumbersChangedId);
@@ -618,6 +612,10 @@ var ConversationWindow = GObject.registerClass({
             let summary = new ConversationSummary(contact, message);
             this.conversation_list.add(summary);
         }
+    }
+
+    _sortConversations(row1, row2) {
+        return (row1.message.date > row2.message.date) ? -1 : 1;
     }
 
     _onConversationActivated(box, row) {

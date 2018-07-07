@@ -10,6 +10,7 @@
     <property name="modal">True</property>
     <property name="window_position">center</property>
     <property name="type_hint">dialog</property>
+    <signal name="delete-event" handler="_onDeleteEvent" swapped="no"/>
     <signal name="key-press-event" handler="_onKeyPressEvent" swapped="no"/>
     <child type="titlebar">
       <object class="GtkHeaderBar" id="headerbar">
