@@ -414,7 +414,7 @@ var Plugin = GObject.registerClass({
         this._removeSubmenu();
         this.device.menu.remove_action('device.mount');
 
-        PluginsBase.Plugin.prototype.destroy.call(this);
+        super.destroy();
     }
 });
 

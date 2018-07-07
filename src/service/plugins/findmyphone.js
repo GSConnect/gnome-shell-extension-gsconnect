@@ -122,7 +122,7 @@ var Plugin = GObject.registerClass({
     destroy() {
         this._endFind();
 
-        PluginsBase.Plugin.prototype.destroy.call(this);
+        super.destroy();
     }
 });
 

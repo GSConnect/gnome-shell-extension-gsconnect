@@ -1574,9 +1574,7 @@ var ShortcutEditor = GObject.registerClass({
     response(id) {
         this.hide();
         this.ungrab();
-        Gtk.Dialog.prototype.response.call(this, id);
-
-        return true;
+        super.response(id);
     }
 
     check(accelerator) {

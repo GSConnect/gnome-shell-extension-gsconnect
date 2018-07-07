@@ -467,7 +467,7 @@ var Daemon = GObject.registerClass({
         this._notificationSettings.set_boolean('enable-sound-alerts', dnd);
         this._notificationSettings.set_boolean('show-banners', dnd);
 
-        Gtk.Application.prototype.send_notification.call(this, id, notification);
+        super.send_notification(id, notification);
     }
 
     /**

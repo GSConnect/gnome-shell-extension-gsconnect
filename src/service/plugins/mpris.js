@@ -277,7 +277,7 @@ var Plugin = GObject.registerClass({
         this.mpris.disconnect(this._playersChangedId);
         this.mpris.disconnect(this._playerChangedId);
 
-        PluginsBase.Plugin.prototype.destroy.call(this);
+        super.destroy();
     }
 });
 

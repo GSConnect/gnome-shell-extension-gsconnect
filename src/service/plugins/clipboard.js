@@ -132,7 +132,7 @@ var Plugin = GObject.registerClass({
     destroy() {
         this._clipboard.disconnect(this._ownerChangeId);
 
-        PluginsBase.Plugin.prototype.destroy.call(this);
+        super.destroy();
     }
 });
 

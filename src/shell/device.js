@@ -513,7 +513,7 @@ var Menu = class Menu extends PopupMenu.PopupMenuSection {
         this.device.disconnect(this._propertiesId);
         gsconnect.settings.disconnect(this._gsettingsId);
 
-        PopupMenu.PopupMenuSection.prototype.destroy.call(this);
+        super.destroy();
     }
 }
 
@@ -581,7 +581,7 @@ var Indicator = class Indicator extends PanelMenu.Button {
         this.device.disconnect(this._propertiesId);
         gsconnect.settings.disconnect(this._gsettingsId);
 
-        PanelMenu.Button.prototype.destroy.call(this);
+        super.destroy();
     }
 }
 

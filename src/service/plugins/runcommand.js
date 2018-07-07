@@ -221,7 +221,7 @@ var Plugin = GObject.registerClass({
     destroy() {
         this.device.menu.remove_named(_('Commands'));
 
-        PluginsBase.Plugin.prototype.destroy.call(this);
+        super.destroy();
     }
 });
 

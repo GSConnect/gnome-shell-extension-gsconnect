@@ -384,7 +384,7 @@ var Plugin = GObject.registerClass({
         this._unmonitor();
         this.device._dbus_object.remove_interface(this._dbus);
 
-        PluginsBase.Plugin.prototype.destroy.call(this);
+        super.destroy();
     }
 });
 
