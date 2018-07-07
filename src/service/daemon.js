@@ -314,6 +314,39 @@ var Daemon = GObject.registerClass({
     }
 
     /**
+     * Delete a known device.
+     *
+     * This will remove the device from the cache of known devices, then unpair,
+     * disconnect and delete all GSettings and cached files.
+     *
+     * @param {String} id - The id of the device to delete
+     */
+    deleteDevice(id) {
+        let device = this._devices.get(id);
+
+        if (device) {
+            let cached = gsconnect.settings.get_strv('devices');
+
+            if (cached.includes(id)) {
+                cached.splice(cached.indexOf(id), 1);
+                gsconnect.settings.set_strv('devices', cached);
+            }
+
+            device.unpair();
+            this._removeDevice(id);
+
+            // Delete all GSettings
+            GLib.spawn_command_line_async(
+                `dconf reset -f /org/gnome/shell/extensions/gsconnect/device/${id}/`
+            );
+
+            // Delete the cache
+            let cache = GLib.build_filenamev([gsconnect.cachedir, id]);
+            GLib.spawn_command_line_async(`rm -rf ${cache}`);
+        }
+    }
+
+    /**
      * Only used by plugins/share.js
      */
     _cancelTransferAction(action, parameter) {

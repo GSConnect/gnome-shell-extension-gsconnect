@@ -121,8 +121,8 @@ var Plugin = GObject.registerClass({
 
     /**
      * Cache JSON parseable properties on this object for persistence. The
-     * filename ~/.cache/gsconnect/<plugin>/<device-id>.json will be used to
-     * store the properties and values.
+     * filename ~/.cache/gsconnect/<device-id>/<plugin-name>.json will be used
+     * to store the properties and values.
      *
      * Calling cacheProperties() opens a JSON cache file and reads any stored
      * properties and values onto the current instance. When destroy()
@@ -131,11 +131,15 @@ var Plugin = GObject.registerClass({
      * @param {Array} names - A list of this object's property names to cache
      */
     cacheProperties(names) {
-        this._cacheDir = GLib.build_filenamev([gsconnect.cachedir, this.name]);
+        // Ensure the device's cache directory exists
+        this._cacheDir = GLib.build_filenamev([
+            gsconnect.cachedir,
+            this.device.id
+        ]);
         GLib.mkdir_with_parents(this._cacheDir, 448);
 
         this._cacheFile = Gio.File.new_for_path(
-            GLib.build_filenamev([this._cacheDir, this.device.id + '.json'])
+            GLib.build_filenamev([this._cacheDir, `${this.name}.json`])
         );
 
         this._cacheProperties = {};
