@@ -64,12 +64,13 @@ var NativeMessagingHost = GObject.registerClass({
             application_id: 'org.gnome.Shell.Extensions.GSConnect.NativeMessagingHost',
             flags: Gio.ApplicationFlags.NON_UNIQUE
         });
-        gsconnect.installService();
-
-        this._devices = {};
     }
 
     get devices() {
+        if (this._devices === undefined) {
+            this._devices = {};
+        }
+
         return Object.values(this._devices);
     }
 
@@ -97,7 +98,7 @@ var NativeMessagingHost = GObject.registerClass({
         // ObjectManager
         Gio.DBusObjectManagerClient.new(
             Gio.DBus.session,
-            Gio.DBusObjectManagerClientFlags.NONE,
+            Gio.DBusObjectManagerClientFlags.DO_NOT_AUTO_START,
             gsconnect.app_id,
             gsconnect.app_path,
             null,

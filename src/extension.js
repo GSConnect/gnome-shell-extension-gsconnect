@@ -10,7 +10,7 @@ const PopupMenu = imports.ui.popupMenu;
 
 // Bootstrap
 window.gsconnect = {
-    datadir: imports.misc.extensionUtils.getCurrentExtension().path
+    extdatadir: imports.misc.extensionUtils.getCurrentExtension().path
 };
 imports.searchPath.unshift(gsconnect.extdatadir);
 imports._gsconnect;

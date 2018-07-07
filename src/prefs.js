@@ -12,8 +12,8 @@ function getPath() {
 }
 
 // Local Imports
-window.gsconnect = { datadir: getPath() };
-imports.searchPath.unshift(gsconnect.datadir);
+window.gsconnect = { extdatadir: getPath() };
+imports.searchPath.unshift(gsconnect.extdatadir);
 imports._gsconnect;
 
 

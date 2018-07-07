@@ -60,7 +60,7 @@ class GSConnectShareExtension(GObject.GObject, Nautilus.MenuProvider):
 
         Gio.DBusObjectManagerClient.new_for_bus(
             Gio.BusType.SESSION,
-            Gio.DBusObjectManagerClientFlags.NONE,
+            Gio.DBusObjectManagerClientFlags.DO_NOT_AUTO_START,
             'org.gnome.Shell.Extensions.GSConnect',
             '/org/gnome/Shell/Extensions/GSConnect',
             None,

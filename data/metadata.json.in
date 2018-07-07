@@ -5,5 +5,8 @@
 "description": "KDE Connect implementation with Gnome Shell integration",
 "version": "@VERSION@",
 "shell-version": [ "3.26", "3.28" ],
-"url": "https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki"
+"url": "https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki",
+"libdir": "@LIBDIR@",
+"localedir": "@LOCALEDIR@",
+"gschemadir": "@GSCHEMADIR@"
 }

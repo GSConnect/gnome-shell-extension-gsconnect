@@ -5,22 +5,18 @@ const Gettext = imports.gettext;
 
 const Gdk = imports.gi.Gdk;
 const Gio = imports.gi.Gio;
+const GIRepository = imports.gi.GIRepository;
 const GLib = imports.gi.GLib;
 const Gtk = imports.gi.Gtk;
 
 
 /**
- * Determing if GSConnect is installed as a user extension
- */
-gsconnect.is_local = gsconnect.extdatadir.startsWith(GLib.get_user_data_dir());
-
-
-/**
- * Application Id and Path
+ * Application Variables
  * TODO: these should mirror package.js
  */
 gsconnect.app_id = 'org.gnome.Shell.Extensions.GSConnect';
 gsconnect.app_path = '/org/gnome/Shell/Extensions/GSConnect';
+gsconnect.is_local = gsconnect.extdatadir.startsWith(GLib.get_user_data_dir());
 gsconnect.metadata = JSON.parse(GLib.file_get_contents(gsconnect.extdatadir + '/metadata.json')[1]);
 
 
@@ -37,16 +33,42 @@ for (let path of [gsconnect.cachedir, gsconnect.configdir, gsconnect.runtimedir]
 }
 
 /**
- * Gettext
- * TODO: these should mirror package.js
+ * Setup global object for user or system install
  */
-gsconnect.localedir = GLib.build_filenamev([gsconnect.extdatadir, 'locale']);
+if (gsconnect.is_local) {
+    gsconnect.libdir = GIRepository.Repository.get_search_path().find(path => {
+        return path.endsWith('/gjs/girepository-1.0');
+    }).replace('/gjs/girepository-1.0', '');
 
+    gsconnect.localedir = GLib.build_filenamev([
+        gsconnect.extdatadir,
+        'locale'
+    ]);
+    gsconnect.gschema = Gio.SettingsSchemaSource.new_from_directory(
+        GLib.build_filenamev([gsconnect.extdatadir, 'schemas']),
+        Gio.SettingsSchemaSource.get_default(),
+        false
+    );
+} else {
+    gsconnect.libdir = gsconnect.metadata.libdir;
+    gsconnect.localedir = gsconnect.metadata.localedir;
+    gsconnect.gschema = Gio.SettingsSchemaSource.new_from_directory(
+        gsconnect.metadata.gschemadir,
+        Gio.SettingsSchemaSource.get_default(),
+        false
+    );
+}
+
+
+/**
+ * Init Gettext
+ *
+ * If we aren't inside the Gnome Shell process we'll set gettext functions on
+ * the global object, otherwise we'll set them on the global 'gsconnect' object
+ */
 Gettext.bindtextdomain(gsconnect.app_id, gsconnect.localedir);
 Gettext.textdomain(gsconnect.app_id);
 
-// If we aren't inside the Gnome Shell process, set gettext on the global,
-// otherwise we'll set in on the global 'gsconnect' object
 if (typeof _ !== 'function') {
     window._ = Gettext.gettext;
     window.ngettext = Gettext.ngettext;
@@ -62,18 +84,7 @@ if (typeof _ !== 'function') {
 
 /**
  * Init GSettings
- * TODO: these should mirror package.js
  */
-if (gsconnect.is_local) {
-    gsconnect.gschema = Gio.SettingsSchemaSource.new_from_directory(
-        GLib.build_filenamev([gsconnect.extdatadir, 'schemas']),
-        Gio.SettingsSchemaSource.get_default(),
-        false
-    );
-} else {
-    gsconnect.gschema = Gio.SettingsSchemaSource.get_default();
-}
-
 gsconnect.settings = new Gio.Settings({
     settings_schema: gsconnect.gschema.lookup(gsconnect.app_id, true)
 });
@@ -84,19 +95,23 @@ gsconnect.settings = new Gio.Settings({
  * TODO: these should mirror package.js
  */
 gsconnect.resource = Gio.Resource.load(
-    GLib.build_filenamev([gsconnect.extdatadir, gsconnect.app_id + '.gresource'])
+    GLib.build_filenamev([gsconnect.extdatadir, `${gsconnect.app_id}.gresource`])
 );
 gsconnect.resource._register();
+gsconnect.get_resource = function(path) {
+    let bytes = Gio.resources_lookup_data(
+        GLib.build_filenamev([gsconnect.app_path, path]),
+        Gio.ResourceLookupFlags.NONE
+    );
 
+    return bytes.toArray().toString().replace('@EXTDATADIR@', gsconnect.extdatadir);
+};
 
 /**
  * DBus Interface Introspection
  */
 gsconnect.dbusinfo = new Gio.DBusNodeInfo.new_for_xml(
-    Gio.resources_lookup_data(
-        gsconnect.app_path + '/' + gsconnect.app_id + '.xml',
-        Gio.ResourceLookupFlags.NONE
-    ).toArray().toString()
+    gsconnect.get_resource(`${gsconnect.app_id}.xml`)
 );
 gsconnect.dbusinfo.nodes.forEach(info => info.cache_build());
 
@@ -104,7 +119,9 @@ gsconnect.dbusinfo.nodes.forEach(info => info.cache_build());
 /**
  * If 'debug' is enabled in GSettings, Print a message to the log, prepended
  * with the UUID of the extension.
- * @param {String} msg - the debugging message
+ *
+ * @param {string} msg - the debugging message
+ * @param {string} [prefix] - An optional prefix for the message
  */
 gsconnect.settings.connect('changed::debug', () => {
     if (gsconnect.settings.get_boolean('debug')) {
@@ -153,8 +170,8 @@ gsconnect.settings.emit('changed::debug', 'debug');
 /**
  * A simple warning function along the lines of logError()
  *
- * @param {Error|String} message - A string or Error to log
- * @param {String} prefix - An optional prefix for the warning
+ * @param {Error|string} message - A string or Error to log
+ * @param {string} [prefix] - An optional prefix for the warning
  */
 window.logWarning = function(message, prefix=null) {
     if (message.hasOwnProperty('message')) {
@@ -192,76 +209,87 @@ gsconnect.hasCommand = function(cmd) {
 };
 
 
-function installWebExtensionManifests() {
-    let chrome = Gio.resources_lookup_data(
-        gsconnect.app_path + '/org.gnome.shell.extensions.gsconnect.json-chrome', 0
-    ).toArray().toString().replace('@EXTDATADIR@', gsconnect.extdatadir);
-
-    let mozilla = Gio.resources_lookup_data(
-        gsconnect.app_path + '/org.gnome.shell.extensions.gsconnect.json-mozilla', 0
-    ).toArray().toString().replace('@EXTDATADIR@', gsconnect.extdatadir);
-
-    let basename = 'org.gnome.shell.extensions.gsconnect.json';
-    let userConfDir = GLib.get_user_config_dir();
-    let browsers = [
-        [userConfDir + '/chromium/NativeMessagingHosts/', chrome],
-        [userConfDir + '/google-chrome/NativeMessagingHosts/', chrome],
-        [userConfDir + '/google-chrome-beta/NativeMessagingHosts/', chrome],
-        [userConfDir + '/google-chrome-unstable/NativeMessagingHosts/', chrome],
-        [GLib.get_home_dir() + '/.mozilla/native-messaging-hosts/', mozilla]
-    ];
-
-    for (let browser of browsers) {
-        GLib.mkdir_with_parents(browser[0], 493);
-        GLib.file_set_contents(
-            browser[0] + basename,
-            JSON.stringify(browser[1])
-        );
-    }
-}
-
-
+/**
+ * Install desktop files for user installs
+ */
 gsconnect.installService = function() {
-    // Skip if installed as a system extension
-    if (!gsconnect.is_local) {
-        return;
-    }
+    let confDir = GLib.get_user_config_dir();
+    let dataDir = GLib.get_user_data_dir();
+    let homeDir = GLib.get_home_dir();
+
+    // DBus Service
+    let dbusDir = GLib.build_filenamev([dataDir, 'dbus-1', 'services']);
+    let dbusFile = `${gsconnect.app_id}.service`;
+
+    // Desktop Entry
+    let desktopDir = GLib.build_filenamev([dataDir, 'applications']);
+    let desktopFile = `${gsconnect.app_id}.desktop`;
 
     // Nautilus Extension
-    let path = GLib.get_user_data_dir() + '/nautilus-python/extensions';
-    let script = Gio.File.new_for_path(path).get_child('nautilus-gsconnect.py');
+    let nautDir = GLib.build_filenamev([dataDir, 'nautilus-python/extensions']);
+    let nautScript = GLib.build_filenamev([nautDir, 'nautilus-gsconnect.py']);
 
-    if (!script.query_exists(null)) {
-        GLib.mkdir_with_parents(path, 493); // 0755 in octal
+    // WebExtension Manifests
+    let manifestFile = 'org.gnome.shell.extensions.gsconnect.json';
+    let chrome = gsconnect.get_resource(`${manifestFile}-chrome`);
+    let mozilla = gsconnect.get_resource(`${manifestFile}-mozilla`);
+    let manifests = [
+        [confDir + '/chromium/NativeMessagingHosts/', chrome],
+        [confDir + '/google-chrome/NativeMessagingHosts/', chrome],
+        [confDir + '/google-chrome-beta/NativeMessagingHosts/', chrome],
+        [confDir + '/google-chrome-unstable/NativeMessagingHosts/', chrome],
+        [homeDir + '/.mozilla/native-messaging-hosts/', mozilla]
+    ];
 
-        script.make_symbolic_link(
-            gsconnect.extdatadir + '/nautilus-gsconnect.py',
-            null
+    // If running as a user extension, ensure the DBus service, desktop entry,
+    // Nautilus script and WebExtension manifests are installed.
+    if (gsconnect.is_local) {
+        // DBus Service
+        GLib.mkdir_with_parents(dbusDir, 493);
+        GLib.file_set_contents(
+            GLib.build_filenamev([dbusDir, dbusFile]),
+            gsconnect.get_resource(dbusFile)
         );
+
+        // Desktop Entry
+        GLib.mkdir_with_parents(desktopDir, 493);
+        GLib.file_set_contents(
+            GLib.build_filenamev([desktopDir, desktopFile]),
+            gsconnect.get_resource(desktopFile)
+        );
+
+        // Nautilus Extension
+        let script = Gio.File.new_for_path(nautScript);
+
+        if (!script.query_exists(null)) {
+            GLib.mkdir_with_parents(nautDir, 493); // 0755 in octal
+
+            script.make_symbolic_link(
+                gsconnect.extdatadir + '/nautilus-gsconnect.py',
+                null
+            );
+        }
+
+        // WebExtension Manifests
+        for (let [dir, obj] of manifests) {
+            GLib.mkdir_with_parents(dir, 493);
+            GLib.file_set_contents(
+                GLib.build_filenamev([dir, manifestFile]),
+                JSON.stringify(obj)
+            );
+        }
+
+    // Otherwise, if running as a system extension, ensure anything previously
+    // installed when running as a user extension is removed.
+    } else {
+        GLib.unlink(GLib.build_filenamev([dbusDir, dbusFile]));
+        GLib.unlink(GLib.build_filenamev([desktopDir, desktopFile]));
+        GLib.unlink(nautScript);
+
+        for (let [dir, obj] of manifests) {
+            GLib.unlink(GLib.build_filenamev([dir, manifestFile]));
+        }
     }
-
-    // Web Extension
-    installWebExtensionManifests();
-
-    // DBus service file
-    let dbusDir = GLib.get_user_data_dir() + '/dbus-1/services/';
-    let dbusFile = gsconnect.app_id + '.service';
-    let dbusBytes = Gio.resources_lookup_data(
-        gsconnect.app_path + '/' + dbusFile + '-dbus', 0
-    ).toArray().toString().replace('@EXTDATADIR@', gsconnect.extdatadir);
-
-    GLib.mkdir_with_parents(dbusDir, 493);
-    GLib.file_set_contents(dbusDir + dbusFile, dbusBytes);
-
-    // Application desktop file
-    let applicationsDir = GLib.get_user_data_dir() + '/applications/';
-    let desktopFile = gsconnect.app_id + '.desktop';
-    let desktopBytes = Gio.resources_lookup_data(
-        gsconnect.app_path + '/' + desktopFile, 0
-    ).toArray().toString().replace('@EXTDATADIR@', gsconnect.extdatadir);
-
-    GLib.mkdir_with_parents(applicationsDir, 493);
-    GLib.file_set_contents(applicationsDir + desktopFile, desktopBytes);
 };
 
 
