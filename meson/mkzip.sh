@@ -1,9 +1,5 @@
 #!/bin/bash
 
-UUID=${1}
-DATADIR=${2}
-MODE=${3}
-
 ZIP_DESTDIR="${MESON_BUILD_ROOT}/_zip"
 ZIP_DIR="${MESON_BUILD_ROOT}/${UUID}"
 ZIP_FILE="${MESON_BUILD_ROOT}/${UUID}.zip"
@@ -34,7 +30,7 @@ cd ${ZIP_DIR}
 zip -qr ${ZIP_FILE} .
 
 # INSTALL
-if [[ ${MODE} == "install" ]]; then
+if [ "$INSTALL" = true ]; then
     INSTALL_DIR="${HOME}/.local/share/gnome-shell/extensions/${UUID}"
     rm -rf ${INSTALL_DIR}
     unzip ${ZIP_FILE} -d ${INSTALL_DIR}

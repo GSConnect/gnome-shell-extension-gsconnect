@@ -21,11 +21,23 @@ extconfig.set('GSCHEMADIR', gschemadir)
 # ZIP targets for user extension builds
 run_target(
     'make-zip',
-    command: ['meson/mkzip.sh', extuuid, datadir]
+    command: [
+        find_program('env'),
+        'UUID=' + extuuid,
+        'DATADIR=' + datadir,
+        'INSTALL=false',
+        'meson/mkzip.sh'
+    ]
 )
 run_target(
     'install-zip',
-    command: ['meson/mkzip.sh', extuuid, datadir, 'install']
+    command: [
+        find_program('env'),
+        'UUID=' + extuuid,
+        'DATADIR=' + datadir,
+        'INSTALL=true',
+        'meson/mkzip.sh'
+    ]
 )
 
 # Extension Source
