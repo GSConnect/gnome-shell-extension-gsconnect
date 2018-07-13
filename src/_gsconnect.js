@@ -121,48 +121,49 @@ gsconnect.dbusinfo.nodes.forEach(info => info.cache_build());
  * @param {string} msg - the debugging message
  * @param {string} [prefix] - An optional prefix for the message
  */
+var _debugFunc = function(msg, prefix=null) {
+    // Grab the second line of a stack trace
+    let regex = /(?:(?:[^<.]+<\.)?([^@]+))?@(.+):(\d+):\d+/g;
+    let trace = ((msg.stack) ? msg : new Error()).stack.split('\n')[1];
+    let [m, func, file, line] = regex.exec(trace);
+    file = GLib.path_get_basename(file);
+
+    // There's a better way...
+    let hdr = [file, func, line].filter(k => (k)).join(':');
+
+    // Ensure @msg is a string
+    if (msg.stack) {
+        msg = `${msg.message}\n${msg.stack}`;
+    } else if (typeof msg !== 'string') {
+        msg = JSON.stringify(msg, null, 2);
+    }
+
+    // Append a prefix for context
+    if (prefix !== null) {
+        msg = `${prefix}: ${msg}`;
+    }
+
+    GLib.log_structured(
+        'gsconnect',
+        GLib.LogLevelFlags.LEVEL_MESSAGE,
+        {
+            CODE_FILE: file,
+            CODE_FUNC: `${func}`,
+            CODE_LINE: `${line}`,
+            MESSAGE: `DEBUG: [${hdr}]: ${msg}`
+        }
+    );
+};
+
 gsconnect.settings.connect('changed::debug', () => {
     if (gsconnect.settings.get_boolean('debug')) {
-        window.debug = function(msg, prefix=null) {
-            // Stack regexp
-            let _dbgRegexp = /(?:(?:[^<.]+<\.)?([^@]+))?@(.+):(\d+):\d+/g;
-
-            // Grab the second line of a stack trace
-            let trace = ((msg.stack) ? msg : new Error()).stack.split('\n')[1];
-            let [m, func, file, line] = _dbgRegexp.exec(trace);
-            file = GLib.path_get_basename(file);
-
-            // There's a better way...
-            let hdr = [file, func, line].filter(k => (k)).join(':');
-
-            // Ensure @msg is a string
-            if (msg.stack) {
-                msg = `${msg.message}\n${msg.stack}`;
-            } else if (typeof msg !== 'string') {
-                msg = JSON.stringify(msg, null, 2);
-            }
-
-            // Append a prefix for context
-            if (prefix !== null) {
-                msg = `${prefix}: ${msg}`;
-            }
-
-            GLib.log_structured(
-                'gsconnect',
-                GLib.LogLevelFlags.LEVEL_MESSAGE,
-                {
-                    CODE_FILE: file,
-                    CODE_FUNC: `${func}`,
-                    CODE_LINE: `${line}`,
-                    MESSAGE: `DEBUG: [${hdr}]: ${msg}`
-                }
-            );
-        };
+        window.debug = _debugFunc;
     } else {
         window.debug = function() {};
     }
 });
-gsconnect.settings.emit('changed::debug', 'debug');
+
+window.debug = gsconnect.settings.get_boolean('debug') ? _debugFunc : function() {};
 
 
 /**
