@@ -191,7 +191,7 @@ var Channel = GObject.registerClass({
             let stream = new Gio.DataInputStream({
                 base_stream: connection.input_stream,
                 close_base_stream: false
-            })
+            });
 
             stream.read_line_async(GLib.PRIORITY_DEFAULT, null, (stream, res) => {
                 try {
@@ -241,14 +241,11 @@ var Channel = GObject.registerClass({
             settings_schema: gsconnect.gschema.lookup(gsconnect.app_id + '.Device', true),
             path: gsconnect.settings.path + 'device/' + this.identity.body.deviceId + '/'
         });
+        let cert_pem = settings.get_string('certificate-pem');
 
         // If this device is paired, verify the connection certificate
-        if (settings.get_string('certificate-pem')) {
-            let cert = Gio.TlsCertificate.new_from_pem(
-                settings.get_string('certificate-pem'),
-                -1
-            );
-
+        if (cert_pem) {
+            let cert = Gio.TlsCertificate.new_from_pem(cert_pem, -1);
             return (cert.verify(null, peer_cert) === 0);
         }
 
@@ -273,9 +270,8 @@ var Channel = GObject.registerClass({
                 null,
                 (connection, res) => {
                     try {
-                        if (connection.handshake_finish(res)) {
-                            resolve(connection);
-                        }
+                        connection.handshake_finish(res);
+                        resolve(connection);
                     } catch (e) {
                         reject(e);
                     }
@@ -352,7 +348,6 @@ var Channel = GObject.registerClass({
         log(`Connecting to ${this.identity.body.deviceId}`);
 
         try {
-            // Open a new outgoing connection
             this._connection = await new Promise((resolve, reject) => {
                 let client = new Gio.SocketClient();
 
@@ -360,7 +355,7 @@ var Channel = GObject.registerClass({
                     try {
                         resolve(client.connect_finish(res));
                     } catch (e) {
-                        reject(e)
+                        reject(e);
                     }
                 });
             });

@@ -65,10 +65,10 @@ var Daemon = GObject.registerClass({
             null,
             GObject.ParamFlags.READABLE
         ),
-        'discovering': GObject.ParamSpec.boolean(
-            'discovering',
-            'discoveringDevices',
-            'Whether the daemon is discovering new devices',
+        'discoverable': GObject.ParamSpec.boolean(
+            'discoverable',
+            'Discoverable',
+            'Whether the service responds to discovery requests',
             GObject.ParamFlags.READWRITE,
             false
         ),
@@ -152,15 +152,6 @@ var Daemon = GObject.registerClass({
 
     get devices() {
         return Array.from(this._devices.keys())
-    }
-
-    // TODO: implement bluetooth discovery
-    get discovering() {
-        return this.lanService.discovering;
-    }
-
-    set discovering(bool) {
-        this.lanService.discovering = bool;
     }
 
     get fingerprint() {
@@ -441,6 +432,14 @@ var Daemon = GObject.registerClass({
             action.connect('activate', entry[1]);
             this.add_action(action);
         });
+
+        this.add_action(
+            new Gio.PropertyAction({
+                name: 'discoverable',
+                object: this,
+                property_name: 'discoverable'
+            })
+        );
     }
 
     _debugger() {
@@ -546,6 +545,13 @@ var Daemon = GObject.registerClass({
 
         this.hold();
 
+        // Properties
+        gsconnect.settings.bind(
+            'discoverable',
+            this,
+            'discoverable',
+            Gio.SettingsBindFlags.DEFAULT
+        );
         // We watch this file (daemon.js) for changes so we can stop the daemon
         // if it's ever updated or uninstalled.
         this._daemonMonitor = Gio.File.new_for_path(
@@ -559,9 +565,7 @@ var Daemon = GObject.registerClass({
 
         // Init some resources
         let provider = new Gtk.CssProvider();
-        provider.load_from_file(
-            Gio.File.new_for_uri('resource://' + gsconnect.app_path + '/application.css')
-        );
+        provider.load_from_resource(gsconnect.app_path + '/application.css');
         Gtk.StyleContext.add_provider_for_screen(
             Gdk.Screen.get_default(),
             provider,

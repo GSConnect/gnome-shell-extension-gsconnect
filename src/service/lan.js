@@ -20,13 +20,6 @@ const Core = imports.service.core;
 var ChannelService = GObject.registerClass({
     GTypeName: 'GSConnectLanChannelService',
     Properties: {
-        'discovering': GObject.ParamSpec.boolean(
-            'discovering',
-            'ServiceDiscovering',
-            'Whether the TCP Listener is active',
-            GObject.ParamFlags.READWRITE,
-            true
-        ),
         'port': GObject.ParamSpec.uint(
             'port',
             'TCP Port',
@@ -62,14 +55,6 @@ var ChannelService = GObject.registerClass({
             'network-changed',
             this._onNetworkChanged.bind(this)
         );
-    }
-
-    get discovering() {
-        return this._tcp.active;
-    }
-
-    set discovering(bool) {
-        (bool) ? this._tcp.start() : this._tcp.stop();
     }
 
     get port() {
