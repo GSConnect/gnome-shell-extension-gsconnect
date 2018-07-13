@@ -41,6 +41,11 @@
       <summary>Debug Mode</summary>
       <description>Enable debug features and logging</description>
     </key>
+    <key name="discoverable" type="b">
+      <default>true</default>
+      <summary>Discoverable</summary>
+      <description>Whether the service responds to discovery requests</description>
+    </key>
   </schema>
 
   <!-- Device Settings -->
