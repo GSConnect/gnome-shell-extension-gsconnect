@@ -2,9 +2,6 @@
 
 'use strict';
 
-const ByteArray = imports.byteArray;
-const System = imports.system;
-
 imports.gi.versions.Gio = '2.0';
 imports.gi.versions.GLib = '2.0';
 imports.gi.versions.GObject = '2.0';
@@ -12,6 +9,7 @@ imports.gi.versions.GObject = '2.0';
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
+const System = imports.system;
 
 // Local Imports
 function getPath() {
@@ -22,32 +20,8 @@ function getPath() {
 
 window.gsconnect = { extdatadir: getPath() };
 imports.searchPath.unshift(gsconnect.extdatadir);
-const _gsconnect = imports._gsconnect;
+imports._gsconnect;
 const DBus = imports.modules.dbus;
-
-
-function fromInt32(byteArray) {
-    var value = 0;
-
-    for (var i = byteArray.length - 1; i >= 0; i--) {
-        value = (value * 256) + byteArray[i];
-    }
-
-    return value;
-};
-
-
-function toInt32(number) {
-    var byteArray = [0, 0, 0, 0];
-
-    for (var index_ = 0; index_ < byteArray.length; index_++) {
-        var byte = number & 0xff;
-        byteArray [index_] = byte;
-        number = (number - byte) / 256 ;
-    }
-
-    return ByteArray.fromArray(byteArray);
-};
 
 
 const DeviceInterface = gsconnect.dbusinfo.lookup_interface(
@@ -76,19 +50,21 @@ var NativeMessagingHost = GObject.registerClass({
 
     vfunc_activate() {
         super.vfunc_activate();
-        this.hold();
     }
 
     vfunc_startup() {
         super.vfunc_startup();
+        this.hold();
 
         // IO Channels
         this.stdin = new Gio.DataInputStream({
-            base_stream: new Gio.UnixInputStream({ fd: 0 })
+            base_stream: new Gio.UnixInputStream({ fd: 0 }),
+            byte_order: Gio.DataStreamByteOrder.HOST_ENDIAN
         });
 
         this.stdout = new Gio.DataOutputStream({
-            base_stream: new Gio.UnixOutputStream({ fd: 1 })
+            base_stream: new Gio.UnixOutputStream({ fd: 1 }),
+            byte_order: Gio.DataStreamByteOrder.HOST_ENDIAN
         });
 
         let source = this.stdin.base_stream.create_source(null);
@@ -115,18 +91,18 @@ var NativeMessagingHost = GObject.registerClass({
         // Add currently managed devices
         for (let object of this.manager.get_objects()) {
             for (let iface of object.get_interfaces()) {
-                this._interfaceAdded(this.manager, object, iface);
+                this._onInterfaceAdded(this.manager, object, iface);
             }
         }
 
         // Watch for new and removed devices
         this.manager.connect(
             'interface-added',
-            this._interfaceAdded.bind(this)
+            this._onInterfaceAdded.bind(this)
         );
         this.manager.connect(
             'interface-removed',
-            this._interfaceRemoved.bind(this)
+            this._onInterfaceRemoved.bind(this)
         );
 
         // Watch for device property changes
@@ -146,13 +122,8 @@ var NativeMessagingHost = GObject.registerClass({
         let message;
 
         try {
-            let int32 = this.stdin.read_bytes(4, null).toArray();
-
-            if (!int32.length) { this.quit(); }
-
-            let length = fromInt32(int32);
+            let length = this.stdin.read_int32(null);
             message = this.stdin.read_bytes(length, null).toArray().toString();
-
             message = JSON.parse(message);
         } catch (e) {
             debug(e);
@@ -189,9 +160,7 @@ var NativeMessagingHost = GObject.registerClass({
 
         try {
             let data = JSON.stringify(message);
-
-            let length = toInt32(data.length);
-            this.stdout.write(length, null);
+            this.stdout.put_int32(data.length, null);
             this.stdout.put_string(data, null);
         } catch (e) {
             debug(e);
@@ -225,7 +194,7 @@ var NativeMessagingHost = GObject.registerClass({
         this.send({ type: 'devices', data: devices });
     }
 
-    _interfaceAdded(manager, object, iface) {
+    _onInterfaceAdded(manager, object, iface) {
         if (iface.g_interface_name === 'org.gnome.Shell.Extensions.GSConnect.Device') {
             DBus.proxyProperties(iface, DeviceInterface);
 
@@ -240,7 +209,7 @@ var NativeMessagingHost = GObject.registerClass({
         }
     }
 
-    _interfaceRemoved(manager, object, iface) {
+    _onInterfaceRemoved(manager, object, iface) {
         if (iface.g_interface_name === 'org.gnome.Shell.Extensions.GSConnect.Device') {
             delete this._devices[iface.Id];
             this.sendDeviceList();
