@@ -176,7 +176,7 @@ var NativeMessagingHost = GObject.registerClass({
 
                 device.actions.activate_action(
                     actionName,
-                    gsconnect.full_pack(message.data.url)
+                    new GLib.Variant('s', message.data.url)
                 );
             }
         }
