@@ -20,7 +20,7 @@ const Tooltip = imports.shell.tooltip;
 
 
 
-var BATTERY_INTERFACE = 'org.gnome.Shell.Extensions.GSConnect.Plugin.Battery';
+var BATTERY_INTERFACE = 'org.gnome.Shell.Extensions.GSConnect.Battery';
 
 
 /** St.BoxLayout subclass for a battery icon with text percentage */

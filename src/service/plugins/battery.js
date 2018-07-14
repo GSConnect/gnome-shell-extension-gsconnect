@@ -63,7 +63,9 @@ var Plugin = GObject.registerClass({
         // Export DBus
         this._dbus = new DBus.Interface({
             g_instance: this,
-            g_interface_info: gsconnect.dbusinfo.lookup_interface(Metadata.id)
+            g_interface_info: gsconnect.dbusinfo.lookup_interface(
+                'org.gnome.Shell.Extensions.GSConnect.Battery'
+            )
         });
         this.device._dbus_object.add_interface(this._dbus);
 
