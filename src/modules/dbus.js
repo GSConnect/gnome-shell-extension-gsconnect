@@ -391,7 +391,7 @@ function proxyProperties(iface, info) {
     info.properties.map(property => {
         Object.defineProperty(iface, property.name, {
             get: _proxyGetter.bind(iface, property.name),
-            set: _proxyGetter.bind(iface, property.name, property.signature),
+            set: _proxySetter.bind(iface, property.name, property.signature),
             enumerable: true
         });
     });
