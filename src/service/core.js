@@ -21,7 +21,7 @@ var Packet = GObject.registerClass({
     }
 }, class Packet extends GObject.Object {
 
-    _init(data=false) {
+    _init(data=null) {
         super._init();
 
         Object.assign(this, {
@@ -30,7 +30,7 @@ var Packet = GObject.registerClass({
             body: {}
         });
 
-        if (data === false) {
+        if (data === null) {
             return;
         } else if (typeof data === 'string') {
             this.fromData(data);
@@ -159,8 +159,10 @@ var Channel = GObject.registerClass({
     }
 
     get type() {
+        if (!this._connection) {
+            return null;
         // TODO: This seems like a pretty flaky test
-        if (typeof this._connection.get_local_address === 'function') {
+        } else if (typeof this._connection.get_local_address === 'function') {
             return 'bluetooth';
         } else {
             return 'tcp';
@@ -184,7 +186,9 @@ var Channel = GObject.registerClass({
     }
 
     /**
-     * Read the identity packet from the Gio.SocketConnection file descriptor
+     * Read the identity packet from the new connection
+     *
+     * @param {Gio.SocketConnection} connection - An unencrypted socket
      */
     _receiveIdent(connection) {
         return new Promise((resolve, reject) => {
@@ -210,7 +214,9 @@ var Channel = GObject.registerClass({
     }
 
     /**
-     * Write our identity packet to the Gio.SocketConnection file descriptor
+     * Write our identity packet to the new connection
+     *
+     * @param {Gio.SocketConnection} connection - An unencrypted socket
      */
     _sendIdent(connection) {
         return new Promise((resolve, reject) => {
@@ -236,6 +242,14 @@ var Channel = GObject.registerClass({
     _onAcceptCertificate(connection, peer_cert, flags) {
         log(`Authenticating ${this.identity.body.deviceId}`);
 
+        connection.disconnect(connection._authenticateCertificateId);
+
+        // TODO: this is a hack for my mistake in GSConnect <= v10; it can
+        //       be removed when it's safe to assume v10 is out of the wild
+        if (!this.identity.body.deviceId) {
+            return false;
+        }
+
         // Get the settings for this deviceId
         let settings = new Gio.Settings({
             settings_schema: gsconnect.gschema.lookup(gsconnect.app_id + '.Device', true),
@@ -260,7 +274,7 @@ var Channel = GObject.registerClass({
         return new Promise((resolve, reject) => {
             connection.validation_flags = 0;
             connection.authentication_mode = 1;
-            connection.connect(
+            connection._acceptCertificateId = connection.connect(
                 'accept-certificate',
                 this._onAcceptCertificate.bind(this)
             );
@@ -341,11 +355,16 @@ var Channel = GObject.registerClass({
     }
 
     /**
-     * Open a channel (outgoing connection)
-     * @param {Gio.InetSocketAddress} address - ...
+     * Open an outgoing connection
+     *
+     * Outgoing connections are opened in response to a received (or cached) UDP
+     * packet, with a mandatory kdeconnect.identity packet being sent when the
+     * connection is accepted.
+     *
+     * @param {Gio.InetSocketAddress} address - The address to open a connection
      */
     async open(address) {
-        log(`Connecting to ${this.identity.body.deviceId}`);
+        log(`GSConnect: Connecting to ${address.to_string()}`);
 
         try {
             this._connection = await new Promise((resolve, reject) => {
@@ -363,19 +382,27 @@ var Channel = GObject.registerClass({
             this._connection = await this._sendIdent(this._connection);
             this._connection = await this._serverEncryption(this._connection);
             this._connection = await this._initPacketIO(this._connection);
+
             this.emit('connected');
         } catch (e) {
-            log(`GSConnect: Error opening connection: ${e.message}`);
+            log(`GSConnect: ${e.message}`);
             debug(e);
             this.close();
         }
     }
 
     /**
-     * Accept a channel (incoming connection)
-     * @param {Gio.TcpConnection} connection - ...
+     * Accept an incoming connection
+     *
+     * Incoming connections are opened in response to a sent (or cached) UDP
+     * packet, with a mandatory kdeconnect.identity packet being sent when the
+     * connection is accepted.
+     *
+     * @param {Gio.TcpConnection} connection - The incoming connection
      */
     async accept(connection) {
+        log(`GSConnect: Connecting to ${connection.get_remote_address().to_string()}`);
+
         try {
             this._connection = await this._initSocket(connection);
             this._connection = await this._receiveIdent(this._connection);
@@ -383,32 +410,37 @@ var Channel = GObject.registerClass({
             this._connection = await this._initPacketIO(this._connection);
             this.emit('connected');
         } catch(e) {
-            log(`GSConnect: Error accepting connection: ${e.message}`);
+            log(`GSConnect: ${e.message}`);
             debug(e);
             this.close();
         }
     }
 
+    /**
+     * Close all streams associated with this channel and emit 'disconnected::'
+     */
     close() {
         if (this._monitor) {
             try {
                 this._monitor.destroy();
             } catch (e) {
-                debug(e.message);
+                debug(e, this.identity.body.deviceName);
             }
         }
 
-        try {
-            this._connection.close(null);
-        } catch (e) {
-            debug(e.message);
-        }
+        [this._connection, this.input_stream, this.output_stream].map(stream => {
+            try {
+                stream.close(null);
+            } catch (e) {
+                debug(e, this.identity.body.deviceName);
+            }
+        });
 
         if (this._listener) {
             try {
                 this._listener.close();
             } catch (e) {
-                debug(e.message);
+                debug(e, this.identity.body.deviceName);
             }
         }
 
@@ -416,16 +448,21 @@ var Channel = GObject.registerClass({
     }
 
     /**
-     * Send a packet to a device
+     * Send a packet to a device.
+     *
+     * TODO: Currently, we don't consider failed writes to consititute a broken
+     * connection and just log a warning. This should be investigated and tested
+     * over a period of time.
+     *
      * @param {Packet} packet - A packet object
      */
     send(packet) {
-        debug(`${this.identity.body.deviceId}, ${packet}`);
+        debug(packet, this.identity.body.deviceName);
 
         try {
             this.output_stream.put_string(packet.toString(), null);
         } catch (e) {
-            debug(e.message);
+            logWarning(e, this.identity.body.deviceName);
         }
     }
 
@@ -437,6 +474,9 @@ var Channel = GObject.registerClass({
             let data = this.input_stream.read_line(null)[0];
             let packet = new Packet(data.toString());
 
+            debug(packet, this.identity.body.deviceName);
+
+            // Update the channel property
             if (packet.type === 'kdeconnect.identity') {
                 this.identity = packet;
             }
@@ -445,6 +485,7 @@ var Channel = GObject.registerClass({
 
             return GLib.SOURCE_CONTINUE;
         } catch (e) {
+            debug(e, this.identity.body.deviceName);
             this.close();
             return GLib.SOURCE_REMOVE;
         }

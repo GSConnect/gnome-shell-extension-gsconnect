@@ -334,7 +334,8 @@ var Device = GObject.registerClass({
     get connected () { return this._connected && this._channel; }
 
     get connection_type() {
-        if (this.connected) {
+        // We check the actual channel in case we're changing connection types
+        if (this._channel && this._channel.type !== null) {
             return this._channel.type;
         }
 
@@ -581,7 +582,6 @@ var Device = GObject.registerClass({
      * @param {Gio.Stream} payload - A payload stream // TODO
      */
     sendPacket(packet, payload=null) {
-        debug(`${this.name} (${this.id}): ${JSON.stringify(packet, null, 2)}`);
 
         if (this.connected && (this.paired || packet.type === 'kdeconnect.pair')) {
             packet = new Core.Packet(packet);
@@ -616,8 +616,6 @@ var Device = GObject.registerClass({
     }
 
     _onReceived(channel, packet) {
-        debug(`Received ${packet.type} from ${this.name} (${this.id})`);
-
         if (packet.type === 'kdeconnect.identity') {
             this._handleIdentity(packet);
             this.activate();
@@ -627,7 +625,7 @@ var Device = GObject.registerClass({
 	        let handler = this._handlers.get(packet.type);
             handler.handlePacket(packet);
         } else {
-            debug(`Received unsupported packet type: ${packet.type}`);
+            logWarning(`Unsupported packet type: ${packet.type}`, this.name);
         }
     }
 
@@ -853,6 +851,7 @@ var Device = GObject.registerClass({
 
         this.settings.set_boolean('paired', bool);
 
+        // For TCP connections we store or reset the TLS Certificate
         if (this.connection_type === 'tcp') {
             if (bool) {
                 this.settings.set_string(

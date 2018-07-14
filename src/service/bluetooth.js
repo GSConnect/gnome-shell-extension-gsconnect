@@ -156,16 +156,6 @@ var ChannelService = GObject.registerClass({
             GObject.ParamFlags.READWRITE,
             true
         )
-    },
-    Signals: {
-        'channel': {
-            flags: GObject.SignalFlags.RUN_FIRST,
-            param_types: [ GObject.TYPE_OBJECT ]
-        },
-        'packet': {
-            flags: GObject.SignalFlags.RUN_FIRST,
-            param_types: [ GObject.TYPE_OBJECT ]
-        }
     }
 }, class ChannelService extends GObject.Object {
     _init() {
@@ -325,11 +315,19 @@ var ChannelService = GObject.registerClass({
         let device = this.devices.get(object_path);
 
         device._channel = new Core.Channel();
-        let _tmp = device._channel.connect('connected', (channel) => {
-            channel.disconnect(_tmp);
+        let _connectedId = device._channel.connect('connected', (channel) => {
+            channel.disconnect(_connectedId);
+            channel.disconnect(_disconnectedId);
+
             channel.identity.body.bluetoothHost = device.Address;
             channel.identity.body.bluetoothPath = device.g_object_path;
-            this.emit('channel', channel);
+
+            this.service._addDevice(channel.identity, channel);
+        });
+
+        let _disconnectedId = device._channel.connect('disconnected', (channel) => {
+            channel.disconnect(_connectedId);
+            channel.disconnect(_disconnectedId);
         });
 
         // Create a Gio.SocketConnection from the file-descriptor

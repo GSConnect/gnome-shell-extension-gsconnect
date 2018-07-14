@@ -38,7 +38,6 @@ imports._gsconnect;
 // Local Imports
 const Bluetooth = imports.service.bluetooth;
 const Core = imports.service.core;
-const DBus = imports.modules.dbus;
 const Device = imports.service.device;
 const Lan = imports.service.lan;
 const Notification = imports.modules.notification;
@@ -221,9 +220,9 @@ var Daemon = GObject.registerClass({
     /**
      * Discovery Methods
      */
-    broadcast() {
+    broadcast(address=null) {
         if (this.identity) {
-            this.lanService.broadcast(this.identity);
+            this.lanService.broadcast(address);
         }
     }
 
@@ -585,19 +584,6 @@ var Daemon = GObject.registerClass({
         // Lan.ChannelService
         try {
             this.lanService = new Lan.ChannelService();
-
-            // TCP
-            this.lanService.connect('channel', (service, channel) => {
-                this._addDevice(channel.identity, channel);
-            });
-
-            // UDP
-            this.lanService.connect('packet', (service, packet) => {
-                // Ignore our broadcasts
-                if (packet.body.deviceId !== this.identity.body.deviceId) {
-                    this._addDevice(packet);
-                }
-            });
         } catch (e) {
             debug(e);
         }
@@ -605,10 +591,6 @@ var Daemon = GObject.registerClass({
         // Bluetooth.ChannelService
         try {
             this.bluetoothService = new Bluetooth.ChannelService();
-
-            this.bluetoothService.connect('channel', (service, channel) => {
-                this._addDevice(channel.identity, channel);
-            });
         } catch (e) {
             debug(e);
         }
