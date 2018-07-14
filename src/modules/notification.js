@@ -187,7 +187,7 @@ var Listener = class Listener {
         }
 
         // Send the notification to each supporting device
-        let variant = gsconnect.full_pack(notif);
+        let variant = GLib.Variant.full_pack(notif);
 
         for (let device of this.application._devices.values()) {
             device.activate_action('sendNotification', variant);

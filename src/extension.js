@@ -291,7 +291,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
 
         iface._keybindings = [];
 
-        let keybindings = gsconnect.full_unpack(
+        let keybindings = DBus.full_unpack(
             iface.settings.get_value('keybindings')
         );
 

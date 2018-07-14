@@ -685,8 +685,9 @@ var Device = GObject.registerClass({
     }
 
     viewFolder(action, parameter) {
-        let path = gsconnect.full_unpack(parameter);
-        Gio.AppInfo.launch_default_for_uri(`file://${path}`, null);
+        let path = parameter.get_string()[0];
+        path = path.startsWith('file://') ? path : `file://${path}`;
+        Gio.AppInfo.launch_default_for_uri(path, null);
     }
 
     /**

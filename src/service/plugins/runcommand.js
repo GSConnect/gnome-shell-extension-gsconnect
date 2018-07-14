@@ -110,9 +110,7 @@ var Plugin = GObject.registerClass({
                 throw new Error(`Permission denied: ${key}`);
             }
 
-            let commandList = gsconnect.full_unpack(
-                this.settings.get_value('command-list')
-            );
+            let commandList = this.settings.get_value('command-list').full_unpack();
 
             if (!commandList.hasOwnProperty(key)) {
                 throw new Error(`Unknown command: ${key}`);
@@ -206,9 +204,7 @@ var Plugin = GObject.registerClass({
         let commands = {};
 
         if (this.settings.get_boolean('share-commands')) {
-            commands = gsconnect.full_unpack(
-                this.settings.get_value('command-list')
-            );
+            commands = this.settings.get_value('command-list').full_unpack();
         }
 
         this.device.sendPacket({

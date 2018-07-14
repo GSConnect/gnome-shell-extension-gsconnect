@@ -1056,7 +1056,7 @@ var DeviceSettings = GObject.registerClass({
 
         this._getSettings('runcommand').set_value(
             'command-list',
-            gsconnect.full_pack(this._commands)
+            GLib.Variant.full_pack(this._commands)
         );
 
         this._populateCommands();
@@ -1268,9 +1268,7 @@ var DeviceSettings = GObject.registerClass({
     _populateKeybindings() {
         this.action_shortcuts_list.foreach(row => row.destroy());
 
-        let keybindings = gsconnect.full_unpack(
-            this.device.settings.get_value('keybindings')
-        );
+        let keybindings = this.device.settings.get_value('keybindings').full_unpack();
 
         // TODO: Backwards compatibility; remove later
         if (typeof keybindings === 'string') {
@@ -1324,9 +1322,7 @@ var DeviceSettings = GObject.registerClass({
         dialog.connect('response', (dialog, response) => {
             if (response !== Gtk.ResponseType.CANCEL) {
                 // Get current keybindings
-                let keybindings = gsconnect.full_unpack(
-                    this.device.settings.get_value('keybindings')
-                );
+                let keybindings = this.device.settings.get_value('keybindings').full_unpack();
 
                 if (response === Gtk.ResponseType.OK) {
                     keybindings[row.action] = dialog.accelerator;
@@ -1337,7 +1333,7 @@ var DeviceSettings = GObject.registerClass({
 
                 this.device.settings.set_value(
                     'keybindings',
-                    gsconnect.full_pack(keybindings)
+                    GLib.Variant.full_pack(keybindings)
                 );
             }
 

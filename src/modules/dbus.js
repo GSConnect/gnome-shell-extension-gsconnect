@@ -48,24 +48,34 @@ String.prototype.toUnderscoreCase = function(string) {
 
 
 /**
- * Recursively unpack a GVariant
+ * A convenience function to recursively unpack a GVariant
+ *
+ * @param {*} obj - May be a GLib.Variant, Array, standard Object or literal.
+ * @return {*} - Returns the contents of @obj with any GVariants unpacked to
+ *               their native JavaScript equivalents.
  */
-function _full_unpack(obj) {
-    if (typeof obj.deep_unpack === 'function') {
-        return _full_unpack(obj.deep_unpack());
-    } else if (typeof obj.map === 'function') {
-        return obj.map(i => _full_unpack(i));
-    } else if (typeof obj === 'object' && typeof obj !== null) {
-        let unpacked = {};
+function full_unpack(obj) {
+    switch (true) {
+        case (obj === null):
+            return obj;
 
-        for (let key in obj) {
-            unpacked[key] = _full_unpack(obj[key]);
-        }
+        case (typeof obj.deep_unpack === 'function'):
+            return full_unpack(obj.deep_unpack());
 
-        return unpacked;
+        case (typeof obj.map === 'function'):
+            return obj.map(e => full_unpack(e));
+
+        case (typeof obj === 'object' && typeof obj !== null):
+            let unpacked = {};
+
+            for (let key in obj) {
+                unpacked[key] = full_unpack(obj[key]);
+            }
+
+            return unpacked;
+        default:
+            return obj;
     }
-
-    return obj;
 }
 
 
@@ -188,7 +198,7 @@ var Interface = GObject.registerClass({
                     let idx = parameter.deep_unpack();
                     return fds.get(idx);
                 } else {
-                    return _full_unpack(parameter);
+                    return full_unpack(parameter);
                 }
             });
 
@@ -261,7 +271,7 @@ var Interface = GObject.registerClass({
     }
 
     _set(info, name, value) {
-        value = _full_unpack(value);
+        value = full_unpack(value);
 
         if (!this._propertyCase) {
             if (this[name.toUnderscoreCase()]) {
@@ -343,11 +353,11 @@ function _proxyGetter(name) {
         );
 
         // ...so unpack that to get the real variant and unpack the value
-        return _full_unpack(variant.deep_unpack()[0]);
+        return full_unpack(variant.deep_unpack()[0]);
     // Fallback to cached property...
     } catch (e) {
         let value = this.get_cached_property(name);
-        return value ? _full_unpack(value) : null;
+        return value ? full_unpack(value) : null;
     }
 }
 
@@ -359,7 +369,7 @@ function _proxySetter(name, signature, value) {
     // Set the cached property first
     this.set_cached_property(name, variant);
 
-    // Let it run and just log any errors
+    // Let it run asynchronously and just log any errors
     this.call(
         'org.freedesktop.DBus.Properties.Set',
         new GLib.Variant('(ssv)', [this.g_interface_name, name, variant]),

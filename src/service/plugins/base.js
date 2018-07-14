@@ -62,7 +62,7 @@ var Plugin = GObject.registerClass({
 
     _activateAction(action, parameter) {
         try {
-            parameter = parameter ? gsconnect.full_unpack(parameter) : null;
+            parameter = parameter ? parameter.full_unpack() : null;
 
             if (Array.isArray(parameter)) {
                 this[action.name].apply(this, parameter);

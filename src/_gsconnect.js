@@ -11,6 +11,13 @@ const Gtk = imports.gi.Gtk;
 
 
 /**
+ * String.format API supporting %s, %d, %x and %f. Used exclusively for gettext.
+ * See: https://github.com/GNOME/gjs/blob/master/modules/format.js
+ */
+String.prototype.format = Format.format;
+
+
+/**
  * Application Variables
  * TODO: these should mirror package.js
  */
@@ -155,6 +162,8 @@ var _debugFunc = function(msg, prefix=null) {
     );
 };
 
+window.debug = gsconnect.settings.get_boolean('debug') ? _debugFunc : function() {};
+
 gsconnect.settings.connect('changed::debug', () => {
     if (gsconnect.settings.get_boolean('debug')) {
         window.debug = _debugFunc;
@@ -162,8 +171,6 @@ gsconnect.settings.connect('changed::debug', () => {
         window.debug = function() {};
     }
 });
-
-window.debug = gsconnect.settings.get_boolean('debug') ? _debugFunc : function() {};
 
 
 /**
@@ -290,141 +297,4 @@ gsconnect.installService = function() {
         }
     }
 };
-
-
-/**
- * Recursively pack a GLib.Variant from a JSON-compatible object
- */
-gsconnect.full_pack = function(obj) {
-    if (obj instanceof GLib.Variant) {
-        return obj;
-    } else if (typeof obj === 'string') {
-        return GLib.Variant.new('s', obj);
-    } else if (typeof obj === 'number') {
-        return GLib.Variant.new('d', obj);
-    } else if (typeof obj === 'boolean') {
-        return GLib.Variant.new('b', obj);
-    } else if (obj === null) {
-        return GLib.Variant.new('mv', null);
-    } else if (typeof obj.map === 'function') {
-        return GLib.Variant.new('av', obj.map(i => gsconnect.full_pack(i)));
-    } else if (obj instanceof Gio.Icon) {
-        return obj.serialize();
-    } else if (typeof obj === 'object' && typeof obj !== null) {
-        let packed = {};
-
-        for (let key in obj) {
-            packed[key] = gsconnect.full_pack(obj[key]);
-        }
-
-        return GLib.Variant.new('a{sv}', packed);
-    }
-
-    return null;
-};
-
-
-/**
- * Recursively deep_unpack() a GLib.Variant
- */
-gsconnect.full_unpack = function(obj) {
-    if (obj === null) {
-        return obj;
-    } else if (typeof obj.deep_unpack === 'function') {
-        return gsconnect.full_unpack(obj.deep_unpack());
-    } else if (typeof obj.map === 'function') {
-        return obj.map(i => gsconnect.full_unpack(i));
-    } else if (typeof obj === 'object' && typeof obj !== null) {
-        let unpacked = {};
-
-        for (let key in obj) {
-            unpacked[key] = gsconnect.full_unpack(obj[key]);
-        }
-
-        return unpacked;
-    }
-
-    return obj;
-};
-
-
-/**
- * Extend Gio.TlsCertificate with a method for computing a SHA1 fingerprint.
- * See: https://gitlab.gnome.org/GNOME/glib/issues/1290
- *
- * @return {string} - A SHA1 fingerprint of the certificate.
- */
-Gio.TlsCertificate.prototype.fingerprint = function() {
-    if (!this.__fingerprint) {
-        let proc = new Gio.Subprocess({
-            argv: ['openssl', 'x509', '-noout', '-fingerprint', '-sha1', '-inform', 'pem'],
-            flags: Gio.SubprocessFlags.STDIN_PIPE | Gio.SubprocessFlags.STDOUT_PIPE
-        });
-        proc.init(null);
-
-        let stdout = proc.communicate_utf8(this.certificate_pem, null)[1];
-        this.__fingerprint = /[a-zA-Z0-9\:]{59}/.exec(stdout)[0];
-
-        proc.force_exit();
-        proc.wait(null);
-    }
-
-    return this.__fingerprint;
-};
-
-
-/**
- * Extend Gio.TlsCertificate with a property holding the common name.
- */
-Object.defineProperty(Gio.TlsCertificate.prototype, 'common_name', {
-    get: function() {
-        if (!this.__common_name) {
-            let proc = new Gio.Subprocess({
-                argv: ['openssl', 'x509', '-noout', '-subject', '-inform', 'pem'],
-                flags: Gio.SubprocessFlags.STDIN_PIPE | Gio.SubprocessFlags.STDOUT_PIPE
-            });
-            proc.init(null);
-
-            let stdout = proc.communicate_utf8(this.certificate_pem, null)[1];
-            this.__common_name = /[a-zA-Z0-9\-]{36}/.exec(stdout)[0];
-
-            proc.force_exit();
-            proc.wait(null);
-        }
-
-        return this.__common_name;
-    },
-    enumerable: true
-});
-
-
-/**
- * A convenience function for connecting template callbacks
- */
-Gtk.Widget.prototype.connect_template = function() {
-    this.$templateHandlers = [];
-
-    Gtk.Widget.set_connect_func.call(this, (builder, obj, signalName, handlerName, connectObj, flags) => {
-        this.$templateHandlers.push([
-            obj,
-            obj.connect(signalName, this[handlerName].bind(this))
-        ]);
-    });
-};
-
-
-/**
- * A convenience function for disconnecting template callbacks
- */
-Gtk.Widget.prototype.disconnect_template = function() {
-    Gtk.Widget.set_connect_func.call(this, function(){});
-    this.$templateHandlers.map(([obj, id]) => obj.disconnect(id));
-};
-
-
-/**
- * String.format API supporting %s, %d, %x and %f
- * See: https://github.com/GNOME/gjs/blob/master/modules/format.js
- */
-String.prototype.format = Format.format;
 

@@ -240,7 +240,7 @@ var ChannelService = GObject.registerClass({
 
     _onPropertiesChanged(manager, object, iface, changed, invalidated) {
         if (iface.g_interface_name === 'org.bluez.Device1') {
-            let properties = gsconnect.full_unpack(changed);
+            let properties = changed.full_unpack();
             let device = this.devices.get(iface.g_object_path);
 
             if (properties.hasOwnProperty('Connected')) {

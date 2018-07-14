@@ -323,7 +323,7 @@ var Plugin = GObject.registerClass({
     }
 
     /**
-     * Change the volume, microphone and media player state in response to an
+     * Change volume, microphone and media player state in response to an
      * incoming or answered call.
      *
      * @param {String} eventType - 'ringing' or 'talking'
@@ -391,7 +391,7 @@ var Plugin = GObject.registerClass({
                 action: 'replySms',
                 // TRANSLATORS: Reply to a missed call by SMS
                 label: _('Message'),
-                parameter: gsconnect.full_pack(message)
+                parameter: GLib.Variant.full_pack(message)
             }];
             icon = icon || new Gio.ThemedIcon({ name: 'call-missed-symbolic' });
             // Use the notification ticker style for the id
@@ -445,7 +445,7 @@ var Plugin = GObject.registerClass({
             priority: Gio.NotificationPriority.HIGH,
             action: {
                 name: 'replySms',
-                parameter: gsconnect.full_pack(message)
+                parameter: GLib.Variant.full_pack(message)
             }
         });
     }
