@@ -307,27 +307,12 @@ var Window = GObject.registerClass({
         // Init UI Elements
         this._serviceSettings();
 
-        // Broadcasting
-        this._refreshSource = GLib.timeout_add_seconds(
-            GLib.PRIORITY_DEFAULT,
-            5,
-            this._onRefresh.bind(this)
-        );
-
         // Setup devices
         this._serviceDevices = this.application.connect(
             'notify::devices',
             this._onDevicesChanged.bind(this)
         );
         this._onDevicesChanged();
-    }
-
-    _onRefresh() {
-        if (this.visible && this.sidebar.get_visible_child_name() === 'switcher') {
-            this.application.broadcast();
-        }
-
-        return true;
     }
 
     /**
