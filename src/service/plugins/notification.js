@@ -188,35 +188,33 @@ var Plugin = GObject.registerClass({
     /**
      * Sending Notifications
      */
-    _uploadIcon(packet, icon) {
-        return new Promise((resolve, reject) => {
-            switch (true) {
-                // TODO: skipping icons for bluetooth connections currently
-                case (this.device.connection_type === 'bluetooth'):
-                    this.device.sendPacket(packet);
-                    break;
-                case (typeof icon === 'string'):
-                    this._uploadNamedIcon(packet, icon);
-                    break;
-                case (icon instanceof Gio.BytesIcon):
-                    this._uploadBytesIcon(packet, icon.get_bytes());
-                    break;
-                case (icon instanceof Gio.FileIcon):
-                    this._uploadFileIcon(packet, icon.get_file());
-                    break;
-                case (icon instanceof Gio.ThemedIcon):
-                    if (icon.hasOwnProperty('name')) {
-                        this._uploadNamedIcon(packet, icon.name);
-                    } else {
-                        this._uploadNamedIcon(packet, icon.names[0]);
-                    }
-                    break;
-                default:
-                    this.device.sendPacket(packet);
-            }
+    async _uploadIcon(packet, icon) {
+        switch (true) {
+            // TODO: skipping icons for bluetooth connections currently
+            case (this.device.connection_type === 'bluetooth'):
+                this.device.sendPacket(packet);
+                break;
+            case (typeof icon === 'string'):
+                this._uploadNamedIcon(packet, icon);
+                break;
+            case (icon instanceof Gio.BytesIcon):
+                this._uploadBytesIcon(packet, icon.get_bytes());
+                break;
+            case (icon instanceof Gio.FileIcon):
+                this._uploadFileIcon(packet, icon.get_file());
+                break;
+            case (icon instanceof Gio.ThemedIcon):
+                if (icon.hasOwnProperty('name')) {
+                    this._uploadNamedIcon(packet, icon.name);
+                } else {
+                    this._uploadNamedIcon(packet, icon.names[0]);
+                }
+                break;
+            default:
+                this.device.sendPacket(packet);
+        }
 
-            resolve();
-        }).catch(logError);
+        return;
     }
 
     /**

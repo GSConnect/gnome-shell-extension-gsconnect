@@ -165,41 +165,39 @@ var Plugin = GObject.registerClass({
      *
      * @param {Array} messages - A list of telephony message objects
      */
-    _handleConversation(messages) {
-        new Promise((resolve, reject) => {
-            let number = messages[0].address;
+    async _handleConversation(messages) {
+        let number = messages[0].address;
 
-            // HACK: If we sent to a *slightly* different number than what KDE
-            // Connect uses, we check each message until we find one.
-            for (let message of messages) {
-                let contact = this.contacts.query({
-                    number: message.address,
-                    single: true
-                });
-
-                if (contact) {
-                    number = message.address;
-                    break;
-                }
-            }
-
-            // TODO: sms.js could just do this on demand, but this way it
-            // happens in a Promise and we know the last is the most recent...
-            this._conversations[number] = messages.sort((a, b) => {
-                return (a.date < b.date) ? -1 : 1;
+        // HACK: If we sent to a *slightly* different number than what KDE
+        // Connect uses, we check each message until we find one.
+        for (let message of messages) {
+            let contact = this.contacts.query({
+                number: message.address,
+                single: true
             });
 
-            // Update any open windows...
-            let window = this._hasWindow(number);
-
-            if (window) {
-                window._populateMessages(number);
+            if (contact && contact.origin !== 'gsconnect') {
+                number = message.address;
+                break;
             }
+        }
 
-            this.notify('conversations');
+        // TODO: sms.js could just do this on demand, but this way it
+        // happens in a Promise and we know the last is the most recent...
+        this._conversations[number] = messages.sort((a, b) => {
+            return (a.date < b.date) ? -1 : 1;
+        });
 
-            resolve(messages[messages.length - 1]);
-        }).catch(logError);
+        // Update any open windows...
+        let window = this._hasWindow(number);
+
+        if (window) {
+            window._populateMessages(number);
+        }
+
+        this.notify('conversations');
+
+        return messages[messages.length - 1];
     }
 
     /**

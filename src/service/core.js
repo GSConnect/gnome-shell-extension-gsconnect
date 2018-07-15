@@ -172,17 +172,18 @@ var Channel = GObject.registerClass({
     /**
      * Set socket options
      */
-    _initSocket(connection) {
-        return new Promise((resolve, reject) => {
-            if (connection instanceof Gio.TcpConnection) {
-                connection.socket.set_keepalive(true);
-                connection.socket.set_option(6, 4, 10); // TCP_KEEPIDLE
-                connection.socket.set_option(6, 5, 5);  // TCP_KEEPINTVL
-                connection.socket.set_option(6, 6, 3);  // TCP_KEEPCNT
-            }
+    async _initSocket(connection) {
+        if (connection instanceof Gio.TcpConnection) {
+            connection.socket.set_keepalive(true);
+            connection.socket.set_option(6, 4, 10); // TCP_KEEPIDLE
+            connection.socket.set_option(6, 5, 5);  // TCP_KEEPINTVL
+            connection.socket.set_option(6, 6, 3);  // TCP_KEEPCNT
 
-            resolve(connection);
-        });
+            //
+            //connection.socket.blocking = false;
+        }
+
+        return connection;
     }
 
     /**
@@ -298,60 +299,54 @@ var Channel = GObject.registerClass({
      * If @connection is a Gio.TcpConnection, wrap it in Gio.TlsClientConnection
      * and initiate handshake, otherwise just return it.
      */
-    _clientEncryption(connection) {
-        return new Promise((resolve, reject) => {
-            if (connection instanceof Gio.TcpConnection) {
-                connection = Gio.TlsClientConnection.new(
-                    connection,
-                    connection.socket.remote_address
-                );
-                connection.set_certificate(this.service.certificate);
+    async _clientEncryption(connection) {
+        if (connection instanceof Gio.TcpConnection) {
+            connection = Gio.TlsClientConnection.new(
+                connection,
+                connection.socket.remote_address
+            );
+            connection.set_certificate(this.service.certificate);
 
-                resolve(this._handshakeTls(connection));
-            } else {
-                resolve(connection);
-            }
-        });
+            return this._handshakeTls(connection);
+        } else {
+            return connection;
+        }
     }
 
     /**
      * If @connection is a Gio.TcpConnection, wrap it in Gio.TlsServerConnection
      * and initiate handshake, otherwise just return it.
      */
-    _serverEncryption(connection) {
-        return new Promise((resolve, reject) => {
-            if (connection instanceof Gio.TcpConnection) {
-                connection = Gio.TlsServerConnection.new(
-                    connection,
-                    this.service.certificate
-                );
+    async _serverEncryption(connection) {
+        if (connection instanceof Gio.TcpConnection) {
+            connection = Gio.TlsServerConnection.new(
+                connection,
+                this.service.certificate
+            );
 
-                resolve(this._handshakeTls(connection));
-            } else {
-                resolve(connection);
-            }
-        });
+            return this._handshakeTls(connection);
+        } else {
+            return connection;
+        }
     }
 
     /**
      * Init streams for reading/writing packets and monitor the input stream
      */
-    _initPacketIO(connection) {
-        return new Promise((resolve, reject) => {
-            this.input_stream = new Gio.DataInputStream({
-                base_stream: connection.input_stream
-            });
-
-            this.output_stream = new Gio.DataOutputStream({
-                base_stream: connection.output_stream
-            });
-
-            this._monitor = connection.input_stream.create_source(null);
-            this._monitor.set_callback(this.receive.bind(this));
-            this._monitor.attach(null);
-
-            resolve(connection);
+    async _initPacketIO(connection) {
+        this.input_stream = new Gio.DataInputStream({
+            base_stream: connection.input_stream
         });
+
+        this.output_stream = new Gio.DataOutputStream({
+            base_stream: connection.output_stream
+        });
+
+        this._monitor = connection.input_stream.create_source(null);
+        this._monitor.set_callback(this.receive.bind(this));
+        this._monitor.attach(null);
+
+        return connection;
     }
 
     /**

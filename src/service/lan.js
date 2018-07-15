@@ -331,34 +331,32 @@ var Transfer = GObject.registerClass({
      *      device._channel.send(packet);
      *  });
      */
-    upload(port=1739) {
+    async upload(port=1739) {
         debug(this.identity.body.deviceId);
 
-        return new Promise((resolve, reject) => {
-            // Start listening on new socket on a port between 1739-1764
-            this._listener = new Gio.SocketListener();
+        // Start listening on new socket on a port between 1739-1764
+        this._listener = new Gio.SocketListener();
 
-            while (true) {
-                try {
-                    this._listener.add_inet_port(port, null);
-                } catch (e) {
-                    if (port < 1764) {
-                        port += 1;
-                        continue;
-                    } else {
-                        reject(new Error('Failed to open port'));
-                    }
+        while (true) {
+            try {
+                this._listener.add_inet_port(port, null);
+            } catch (e) {
+                if (port < 1764) {
+                    port += 1;
+                    continue;
+                } else {
+                    reject(new Error('Failed to open port'));
                 }
-
-                break;
             }
 
-            // Wait for an incoming connection
-            this._listener.accept_async(null, this.upload_accept.bind(this));
+            break;
+        }
 
-            // Return the incoming port for payloadTransferInfo
-            resolve(port);
-        });
+        // Wait for an incoming connection
+        this._listener.accept_async(null, this.upload_accept.bind(this));
+
+        // Return the incoming port for payloadTransferInfo
+        return port;
     }
 
     async upload_accept(listener, res) {

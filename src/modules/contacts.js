@@ -352,34 +352,32 @@ var Store = GObject.registerClass({
         });
     }
 
-    _updateGoogleContacts() {
-        return new Promise((resolve, reject) => {
-            let contacts = {};
-            let goaClient = Goa.Client.new_sync(null);
-            let goaAccounts = goaClient.get_accounts();
+    async _updateGoogleContacts() {
+        let contacts = {};
+        let goaClient = Goa.Client.new_sync(null);
+        let goaAccounts = goaClient.get_accounts();
 
-            for (let id in goaAccounts) {
-                let account = goaAccounts[id].get_account();
+        for (let id in goaAccounts) {
+            let account = goaAccounts[id].get_account();
 
-                if (account.provider_type === 'google') {
-                    let accountObj = goaClient.lookup_by_id(account.id);
-                    let accountAuth = new GData.GoaAuthorizer({
-                        goa_object: accountObj
-                    });
-                    let accountContacts = new GData.ContactsService({
-                        authorizer: accountAuth
-                    });
-                    mergeContacts(
-                        contacts,
-                        this._getGoogleContacts(accountContacts)
-                    );
-                }
+            if (account.provider_type === 'google') {
+                let accountObj = goaClient.lookup_by_id(account.id);
+                let accountAuth = new GData.GoaAuthorizer({
+                    goa_object: accountObj
+                });
+                let accountContacts = new GData.ContactsService({
+                    authorizer: accountAuth
+                });
+                mergeContacts(
+                    contacts,
+                    this._getGoogleContacts(accountContacts)
+                );
             }
+        }
 
-            this._contacts = mergeContacts(this._contacts, contacts);
+        this._contacts = mergeContacts(this._contacts, contacts);
 
-            resolve('goa-account-google');
-        });
+        return 'goa-account-google';
     }
 
     /** Query a Google account for contacts via GData */
