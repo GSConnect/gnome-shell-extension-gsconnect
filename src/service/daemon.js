@@ -49,13 +49,6 @@ const Sound = imports.modules.sound;
 var Daemon = GObject.registerClass({
     GTypeName: 'GSConnectDaemon',
     Properties: {
-        'certificate': GObject.ParamSpec.object(
-            'certificate',
-            'TlsCertificate',
-            'The local TLS Certificate',
-            GObject.ParamFlags.READABLE,
-            Gio.TlsCertificate
-        ),
         'devices': GObject.param_spec_variant(
             'devices',
             'DevicesList',
@@ -70,13 +63,6 @@ var Daemon = GObject.registerClass({
             'Whether the service responds to discovery requests',
             GObject.ParamFlags.READWRITE,
             false
-        ),
-        'fingerprint': GObject.ParamSpec.string(
-            'fingerprint',
-            'LocalFingerprint',
-            'SHA1 fingerprint for the local certificate',
-            GObject.ParamFlags.READABLE,
-            ''
         ),
         'name': GObject.ParamSpec.string(
             'name',
@@ -143,7 +129,6 @@ var Daemon = GObject.registerClass({
 
             // Load the certificate
             this._certificate = Gio.TlsCertificate.new_from_files(certPath, keyPath);
-            this.notify('fingerprint');
         }
 
         return this._certificate;
