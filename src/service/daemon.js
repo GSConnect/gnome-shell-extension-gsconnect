@@ -107,20 +107,20 @@ var Daemon = GObject.registerClass({
             let keyExists = GLib.file_test(keyPath, GLib.FileTest.EXISTS);
 
             if (!keyExists || !certExists) {
-                let cmd = [
-                    'openssl', 'req', '-new', '-x509', '-sha256',
-                    '-newkey', 'rsa:2048', '-nodes', '-keyout', 'private.pem',
-                    '-days', '3650', '-out', 'certificate.pem', '-subj',
-                    '/O=andyholmes.github.io/OU=GSConnect/CN=' + GLib.uuid_string_random()
-                ];
-
-                let proc = GLib.spawn_sync(
-                    gsconnect.configdir,
-                    cmd,
-                    null,
-                    GLib.SpawnFlags.SEARCH_PATH,
-                    null
-                );
+                let proc = new Gio.Subprocess({
+                    argv: [
+                        'openssl', 'req',
+                        '-new', '-x509', '-sha256',
+                        '-out', certPath,
+                        '-newkey', 'rsa:2048', '-nodes',
+                        '-keyout', keyPath,
+                        '-days', '3650',
+                        '-subj', '/O=andyholmes.github.io/OU=GSConnect/CN=' + GLib.uuid_string_random()
+                    ],
+                    flags: Gio.SubprocessFlags.STDOUT_SILENCE | Gio.SubprocessFlags.STDERR_SILENCE
+                });
+                proc.init(null);
+                proc.wait_check(null);
             }
 
             // Ensure permissions are restrictive
