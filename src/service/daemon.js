@@ -343,28 +343,32 @@ var Daemon = GObject.registerClass({
     }
 
     _aboutAction() {
-        let dialog = new Gtk.AboutDialog({
-            application: this,
-            authors: [
-                'Andy Holmes <andrew.g.r.holmes@gmail.com>',
-                'Bertrand Lacoste <getzze@gmail.com>',
-                'Peter Oliver'
-            ],
-            comments: gsconnect.metadata.description,
-            logo: GdkPixbuf.Pixbuf.new_from_resource_at_scale(
-                gsconnect.app_path + '/icons/' + gsconnect.app_id + '.svg',
-                128,
-                128,
-                true
-            ),
-            program_name: _('GSConnect'),
-            // TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
-            translator_credits: _('translator-credits'),
-            version: gsconnect.metadata.version,
-            website: gsconnect.metadata.url,
-            license_type: Gtk.License.GPL_2_0
-        });
-        dialog.show();
+        if (this._about === undefined) {
+            this._about = new Gtk.AboutDialog({
+                application: this,
+                authors: [
+                    'Andy Holmes <andrew.g.r.holmes@gmail.com>',
+                    'Bertrand Lacoste <getzze@gmail.com>',
+                    'Peter Oliver'
+                ],
+                comments: gsconnect.metadata.description,
+                logo: GdkPixbuf.Pixbuf.new_from_resource_at_scale(
+                    gsconnect.app_path + '/icons/' + gsconnect.app_id + '.svg',
+                    128,
+                    128,
+                    true
+                ),
+                program_name: _('GSConnect'),
+                // TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
+                translator_credits: _('translator-credits'),
+                version: gsconnect.metadata.version,
+                website: gsconnect.metadata.url,
+                license_type: Gtk.License.GPL_2_0
+            });
+            this._about.connect('delete-event', dialog => dialog.hide_on_delete());
+        }
+
+        this._about.present();
     }
 
     /**
