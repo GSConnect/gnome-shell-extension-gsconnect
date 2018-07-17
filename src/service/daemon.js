@@ -123,10 +123,6 @@ var Daemon = GObject.registerClass({
                 proc.wait_check(null);
             }
 
-            // Ensure permissions are restrictive
-            GLib.spawn_command_line_async(`chmod 0600 ${keyPath}`);
-            GLib.spawn_command_line_async(`chmod 0600 ${certPath}`);
-
             // Load the certificate
             this._certificate = Gio.TlsCertificate.new_from_files(certPath, keyPath);
         }
