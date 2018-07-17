@@ -529,6 +529,15 @@ var Daemon = GObject.registerClass({
 
         this.hold();
 
+        // Watch *this* file and stop the daemon if it's changed/removed
+        this._daemonMonitor = Gio.File.new_for_path(
+            gsconnect.extdatadir + '/service/daemon.js'
+        ).monitor(
+            Gio.FileMonitorFlags.WATCH_MOVES,
+            null
+        );
+        this._daemonMonitor.connect('changed', () => this.quit());
+
         // Properties
         gsconnect.settings.bind(
             'discoverable',
@@ -536,16 +545,7 @@ var Daemon = GObject.registerClass({
             'discoverable',
             Gio.SettingsBindFlags.DEFAULT
         );
-        // We watch this file (daemon.js) for changes so we can stop the daemon
-        // if it's ever updated or uninstalled.
-        this._daemonMonitor = Gio.File.new_for_path(
-            gsconnect.extdatadir + '/service/daemon.js'
-        ).monitor(
-            Gio.FileMonitorFlags.WATCH_MOVES,
-            null
-        );
 
-        this._daemonMonitor.connect('changed', () => this.quit());
 
         // Init some resources
         let provider = new Gtk.CssProvider();
