@@ -8,83 +8,48 @@ const GObject = imports.gi.GObject;
 /**
  * Packet
  */
-var Packet = GObject.registerClass({
-    GTypeName: 'GSConnectCorePacket',
-    Properties: {
-        'file': GObject.ParamSpec.object(
-            'file',
-            'PacketFile',
-            'The file associated with the packet',
-            GObject.ParamFlags.READABLE,
-            Gio.File
-        )
-    }
-}, class Packet extends GObject.Object {
+var Packet = class Packet {
 
-    _init(data=null) {
-        super._init();
-
-        Object.assign(this, {
-            id: 0,
-            type: '',
-            body: {}
-        });
+    constructor(data=null) {
+        this.id = 0;
+        this.type = undefined;
+        this.body = {};
 
         if (data === null) {
             return;
         } else if (typeof data === 'string') {
-            this.fromData(data);
+            this.fromString(data);
         } else {
-            this.fromPacket(data);
+            this.fromObject(data);
         }
     }
 
-    // TODO
-    setPayload(file) {
-        if (!file instanceof Gio.File) {
-            throw TypeError('must be Gio.File');
-        }
-
-        let info = file.query_info('standard::size', 0, null);
-        this.payloadSize = file.query_info('standard::size', 0, null).get_size();
-
-        let transfer = new Transfer({
-            device: device,
-            size: this.payloadSize,
-            input_stream: file.read(null)
-        });
-
-        transfer.upload().then(port => {
-            let packet = new Protocol.Packet({
-                id: 0,
-                type: 'kdeconnect.share.request',
-                body: { filename: file.get_basename() },
-                payloadSize: info.get_size(),
-                payloadTransferInfo: { port: port }
-            });
-
-            device._channel.send(packet);
-        });
-
-        this._payloadFile = file;
-        this._payloadStream = file.read(null);
-    }
-
-    fromData(data) {
+    /**
+     * Update the packet from a string of JSON
+     *
+     * @param {string} data - A string of text
+     */
+    fromString(data) {
         try {
             let json = JSON.parse(data);
             Object.assign(this, json);
         } catch (e) {
-            throw Error('Malformed packet');
+            throw Error(`Malformed packet: ${e.message}`);
         }
     }
 
-    fromPacket(packet) {
+    /**
+     * Update the packet from an Object, using and intermediate call to
+     * JSON.stringify() to deep-copy the object, avoiding reference entanglement
+     *
+     * @param {string} data - An object
+     */
+    fromObject(data) {
         try {
-            let json = JSON.parse(JSON.stringify(packet));
+            let json = JSON.parse(JSON.stringify(data));
             Object.assign(this, json);
         } catch (e) {
-            throw Error('Malformed packet');
+            throw Error(`Malformed packet: ${e.message}`);
         }
     }
 
@@ -104,7 +69,7 @@ var Packet = GObject.registerClass({
     toString() {
         return `${this}`;
     }
-});
+};
 
 
 /**
