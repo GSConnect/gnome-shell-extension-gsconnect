@@ -9,6 +9,9 @@ const Core = imports.service.core;
 const DBus = imports.modules.dbus;
 const Bluetooth = imports.service.bluetooth;
 
+const UUID = 'org.gnome.Shell.Extensions.GSConnect.Device';
+const INTERFACE_INFO = gsconnect.dbusinfo.lookup_interface(UUID);
+
 
 /**
  * Base class for plugin actions
@@ -29,142 +32,6 @@ var Action = GObject.registerClass({
         this.incoming = params.incoming;
         this.outgoing = params.outgoing;
         this.allow = params.allow;
-    }
-});
-
-
-var Menu = GObject.registerClass({
-    GTypeName: 'GSConnectDeviceMenu'
-}, class Menu extends Gio.Menu {
-
-    _init() {
-        super._init();
-    }
-
-    /**
-     * Return the index of an item in the menu by attribute and value
-     * @param {String} name - The attribute name (eg. 'label', 'action')
-     * @param {*} - The value of the attribute
-     * @return {Number} - The index of the item or %-1 if not found
-     */
-    _get(name, value) {
-        let len = this.get_n_items();
-
-        for (let i = 0; i < len; i++) {
-            try {
-                let item = this.get_item_attribute_value(i, name, null).unpack();
-
-                if (item === value) {
-                    return i;
-                }
-            } catch (e) {
-                continue;
-            }
-        }
-
-        return -1;
-    }
-
-    /**
-     * Remove an item from the menu by attribute and value
-     * @param {String} name - The attribute name (eg. 'label', 'action')
-     * @param {*} - The value of the attribute
-     * @return {Number} - The index of the removed item or %-1 if not found
-     */
-    _remove(name, value) {
-        let index = this._get(name, value);
-
-        if (index > -1) {
-            this.remove(index);
-        }
-
-        return index;
-    }
-
-    /**
-     * Return the index of the first GMenuItem found with @action
-     * @param {String} name - The action name (without scope)
-     * @return {Number} - The index of the action
-     */
-    get_action(name) {
-        return this._get('action', `device.${name}`);
-    }
-
-    /**
-     * Add a GMenuItem for a plugin action
-     * @param {String} name - The action name (without scope)
-     * @param {Object} action - The action meta
-     * @return {Number} - The index of the added item
-     */
-    add_action(action, index=-1) {
-        let item = new Gio.MenuItem();
-        item.set_label(action.summary);
-        item.set_icon(new Gio.ThemedIcon({ name: action.icon_name }));
-        item.set_detailed_action(`device.${action.name}`);
-
-        if (index === -1) {
-            this.append_item(item);
-        } else {
-            this.insert_item(index, item);
-        }
-
-        return this.get_n_items();
-    }
-
-    /**
-     * Remove a GMenuItem by action name
-     * @param {String} name - Action name of the item to remove
-     * @return {Number} - The index of the removed item or -1 if not found
-     */
-    remove_action(name) {
-        let index = this._remove('action', name);
-
-        if (index < 0) {
-            return this._remove('action', `device.${name}`);
-        }
-
-        return index;
-    }
-
-    /**
-     * Replace the item with the action name @name with @item
-     * @param {String} name - Action name of the item to remove
-     * @param {Gio.MenuItem} item - The replacement menu item
-     * @return {Number} - The index of the replaced item or -1 if not found
-     */
-    replace_action(name, item) {
-        let index = this.remove_action(name);
-
-        if (index > -1) {
-            this.insert_item(index, item);
-        }
-
-        return index;
-    }
-
-    /**
-     * Remove a GMenuItem by label
-     * @param {String} name - Label of the item to remove
-     * @return {Number} - The index of the removed item or -1 if not found
-     */
-    remove_named(name) {
-        return this._remove('label', name);
-    }
-
-    /**
-     * Replace a GMenuItem by label with another. If @name is not found @item
-     * will be appended to the end of the menu.
-     * @param {String} name - Label of the item to replace
-     * @param {Gio.MenuItem} item - Menu item to replace the removed item
-     */
-    replace_named(name, item) {
-        let index = this.remove_named(name);
-
-        if (index > -1) {
-            this.insert_item(index, item);
-        } else {
-            this.append_item(item);
-        }
     }
 });
 
@@ -194,6 +61,14 @@ var Device = GObject.registerClass({
             GObject.ParamFlags.READABLE,
             ''
         ),
+        'errors': GObject.param_spec_variant(
+            'errors',
+            'Device Errors',
+            'A list of device errors',
+            new GLib.VariantType('as'),
+            null,
+            GObject.ParamFlags.READABLE
+        ),
         'icon-name': GObject.ParamSpec.string(
             'icon-name',
             'IconName',
@@ -222,18 +97,10 @@ var Device = GObject.registerClass({
             GObject.ParamFlags.READABLE,
             false
         ),
-        'plugins': GObject.param_spec_variant(
-            'plugins',
-            'PluginsList',
-            'A list of enabled plugins',
-            new GLib.VariantType('as'),
-            null,
-            GObject.ParamFlags.READABLE
-        ),
         'symbolic-icon-name': GObject.ParamSpec.string(
             'symbolic-icon-name',
-            'ServiceIconName',
-            'Symbolic icon name representing the service device',
+            'SybolicIconName',
+            'Symbolic icon name representing the device',
             GObject.ParamFlags.READABLE,
             ''
         ),
@@ -243,23 +110,7 @@ var Device = GObject.registerClass({
             'The device type',
             GObject.ParamFlags.READABLE,
             'unknown'
-        ),
-        'display-type': GObject.ParamSpec.string(
-            'display-type',
-            'Display Type',
-            'The device type, formatted for display',
-            GObject.ParamFlags.READABLE,
-            'Desktop'
         )
-    },
-    Signals: {
-        'event': {
-            flags: GObject.SignalFlags.RUN_FIRST,
-            param_types: [ GObject.TYPE_STRING, GObject.TYPE_VARIANT ]
-        },
-        'destroy': {
-            flags: GObject.SignalFlags.NO_HOOKS
-        }
     }
 }, class Device extends Gio.SimpleActionGroup {
 
@@ -274,19 +125,17 @@ var Device = GObject.registerClass({
         this._incomingPairRequest = 0;
         this._outgoingPairRequest = 0;
 
-        // Maps of pluginName->pluginObject & packetType->pluginObject
+        // Maps of name->plugin, packet->plugin, name->Error
         this._plugins = new Map();
         this._handlers = new Map();
+        this._errors = new Map();
 
         // We at least need the device Id for GSettings and the DBus interface
         let deviceId = identity.body.deviceId;
 
         // GSettings
         this.settings = new Gio.Settings({
-            settings_schema: gsconnect.gschema.lookup(
-                'org.gnome.Shell.Extensions.GSConnect.Device',
-                true
-            ),
+            settings_schema: gsconnect.gschema.lookup(UUID, true),
             path: `/org/gnome/shell/extensions/gsconnect/device/${deviceId}/`
         });
 
@@ -296,7 +145,7 @@ var Device = GObject.registerClass({
         }
 
         // Parse identity if initialized with a proper packet
-        if (identity.type) {
+        if (identity.id !== undefined) {
             this._handleIdentity(identity);
         }
 
@@ -306,12 +155,10 @@ var Device = GObject.registerClass({
         });
         this.service.objectManager.export(this._dbus_object);
 
-        // Export org.gnome.Shell.Extensions.GSConnect.Device interface
+        // Export the Device interface
         this._dbus = new DBus.Interface({
             g_instance: this,
-            g_interface_info: gsconnect.dbusinfo.lookup_interface(
-                'org.gnome.Shell.Extensions.GSConnect.Device'
-            )
+            g_interface_info: INTERFACE_INFO
         });
         this._dbus_object.add_interface(this._dbus);
 
@@ -321,17 +168,20 @@ var Device = GObject.registerClass({
             this
         );
 
-        this.menu = new Menu();
+        this.menu = new Gio.Menu();
         this._menuId = Gio.DBus.session.export_menu_model(
             this.object_path,
             this.menu
         );
 
         this._registerActions();
+        this._loadPlugins();
     }
 
     /** Device Properties */
-    get connected () { return this._connected && this._channel; }
+    get connected () {
+        return this._connected;
+    }
 
     get connection_type() {
         if (this._channel !== null) {
@@ -375,19 +225,32 @@ var Device = GObject.registerClass({
         );
     }
 
-    get id() { return this.settings.get_string('id'); }
-    get name() { return this.settings.get_string('name'); }
-    get paired() { return this.settings.get_boolean('paired'); }
-    get plugins() { return Array.from(this._plugins.keys()) || []; }
+    get errors() {
+        return this._errors;
+    }
 
-    get incomingCapabilities() {
-        return this.settings.get_strv('incoming-capabilities');
+    get id() {
+        return this.settings.get_string('id');
     }
-    get outgoingCapabilities() {
-        return this.settings.get_strv('outgoing-capabilities');
+
+    get name() {
+        return this.settings.get_string('name');
     }
+
+    get paired() {
+        return this.settings.get_boolean('paired');
+    }
+
     get supported_plugins() {
         return this.settings.get_strv('supported-plugins');
+    }
+
+    get allowed_plugins() {
+        let blacklist = this.settings.get_strv('plugin-blacklist');
+
+        return this.supported_plugins.filter(name => {
+            return !blacklist.includes(name);
+        });
     }
 
     get icon_name() {
@@ -400,10 +263,15 @@ var Device = GObject.registerClass({
                 return 'computer';
         }
     }
+
     get symbolic_icon_name() {
         return `${this.icon_name}-symbolic`;
     }
-    get type() { return this.settings.get_string('type'); }
+
+    get type() {
+        return this.settings.get_string('type');
+    }
+
     get display_type() {
         switch (this.type) {
             case 'laptop':
@@ -455,11 +323,11 @@ var Device = GObject.registerClass({
 
             let meta = imports.service.plugins[name].Metadata;
 
-            // If it sends packets we can handle...
-            if (meta.incomingCapabilities.some(t => this.outgoingCapabilities.includes(t))) {
+            // If we can handle packets it sends...
+            if (meta.incomingCapabilities.some(t => packet.body.outgoingCapabilities.includes(t))) {
                 supported.push(name);
-            // ...or handles packets we can send
-            } else if (meta.outgoingCapabilities.some(t => this.incomingCapabilities.includes(t))) {
+            // ...or we send packets it can handle
+            } else if (meta.outgoingCapabilities.some(t => packet.body.incomingCapabilities.includes(t))) {
                 supported.push(name);
             }
         }
@@ -488,7 +356,6 @@ var Device = GObject.registerClass({
 
 		debug(`${this.name}: requesting ${lastConnection} connection`);
 
-		// TODO: fall back to another connection type on failure?
 		if (lastConnection === 'bluetooth') {
 		    this.service.broadcast(this.settings.get_string('bluetooth-path'));
 		} else {
@@ -503,15 +370,31 @@ var Device = GObject.registerClass({
 
     /**
      * Receive a packet from the attached channel and route it to its handler
+     *
+     * @param {Core.Packet} packet - The incoming packet object
      */
     receivePacket(packet) {
-        if (packet.type === 'kdeconnect.pair') {
-	        this._handlePair(packet);
-	    } else if (this._handlers.has(packet.type)) {
-	        let handler = this._handlers.get(packet.type);
-            handler.handlePacket(packet);
-        } else {
-            logWarning(`Unsupported packet type (${packet.type})`, this.name);
+        let handler = this._handlers.get(packet.type);
+
+        switch (true) {
+            // We handle pair requests
+            case (packet.type === 'kdeconnect.pair'):
+                this._handlePair(packet);
+                break;
+
+            // The device thinks we're paired; send an unpair packet and bail
+            case !this.paired:
+                this.unpair();
+                break;
+
+            // This is a supported packet
+            case (handler !== undefined):
+                handler.handlePacket(packet);
+                break;
+
+            // This is an unsupported packet or disabled plugin
+            default:
+                logWarning(`Unsupported packet type (${packet.type})`, this.name);
         }
     }
 
@@ -535,8 +418,6 @@ var Device = GObject.registerClass({
         this._connected = true;
         this.notify('connected');
         this.notify('symbolic-icon-name');
-
-        this._loadPlugins();
     }
 
     _onDisconnected(channel) {
@@ -544,12 +425,6 @@ var Device = GObject.registerClass({
 
         GObject.signal_handlers_destroy(channel);
         this._channel = null;
-
-        this._unloadPlugins().then(values => {
-            this._connected = false;
-            this.notify('connected');
-            this.notify('symbolic-icon-name');
-        });
 
         this._connected = false;
         this.notify('connected');
@@ -628,6 +503,10 @@ var Device = GObject.registerClass({
         this.service.withdraw_notification(`${this.id}|${id}`);
     }
 
+    hideNotification(id) {
+        this.service.withdraw_notification(`${this.id}|${id}`);
+    }
+
     showNotification(params) {
         params = Object.assign({
             id: GLib.DateTime.new_now_local().to_unix(),
@@ -645,6 +524,7 @@ var Device = GObject.registerClass({
         notif.set_icon(params.icon);
         notif.set_priority(params.priority);
 
+        // Default Action
         if (params.action) {
             let hasParameter = (params.action.parameter !== null);
 
@@ -663,6 +543,7 @@ var Device = GObject.registerClass({
             );
         }
 
+        // Buttons
         for (let button of params.buttons) {
             let hasParameter = (button.parameter !== null);
 
@@ -682,7 +563,7 @@ var Device = GObject.registerClass({
             );
         }
 
-        this.send_notification(params.id, notif);
+        this.service.send_notification(`${this.id}|${params.id}`, notif);
     }
 
     /**
@@ -801,9 +682,11 @@ var Device = GObject.registerClass({
     pair() {
         // We're accepting an incoming pair request...
         if (this._incomingPairRequest) {
+            // so set the paired state to true...
             this._setPaired(true);
-            // ...so loop back around to send confirmation
+            // then loop back around to send confirmation...
             this.pair();
+            // ...before loading plugins
             this._loadPlugins();
             return;
         }
@@ -852,95 +735,80 @@ var Device = GObject.registerClass({
      * Plugin Functions
      */
     get_incoming_supported(type) {
-        return this.incomingCapabilities.includes(`kdeconnect.${type}`);
+        let incoming = this.settings.get_strv('incoming-capabilities');
+        return incoming.includes(`kdeconnect.${type}`);
     }
 
     get_outgoing_supported(type) {
-        return this.outgoingCapabilities.includes(`kdeconnect.${type}`);
-    }
-
-    get_plugin_enabled(name) {
-        return this._plugins.has(name);
+        let outgoing = this.settings.get_strv('outgoing-capabilities');
+        return outgoing.includes(`kdeconnect.${type}`);
     }
 
     get_plugin_supported(name) {
         return this.supported_plugins.includes(name);
     }
 
+    get_plugin_allowed(name) {
+        return this.allowed_plugins.includes(name);
+    }
+
     lookup_plugin(name) {
         return this._plugins.get(name) || null;
     }
 
-    // TODO: Plugins already throw errors in _init() for known
-    // problems, but nothing is really done with them. They should
-    // be reported to the user, preferrably by way of some device
-    // log that can be reviewed.
-    _loadPlugin(name) {
-        debug(`${name} (${this.name})`);
+    async loadPlugin(name) {
+        debug(`loading '${name}' plugin`, this.name);
 
-        return new Promise((resolve, reject) => {
-            if (!this.connected || !this.paired) {
-                resolve([name, new Error(_('Device not connected or paired'))]);
-            }
+        if (this.paired && !this._plugins.has(name)) {
+            try {
+                // Instantiate the handler
+                let handler = imports.service.plugins[name];
+                let plugin = new handler.Plugin(this);
 
-            // Instantiate the handler
-            if (!this._plugins.has(name)) {
-                try {
-                    let handler = imports.service.plugins[name];
-                    let plugin = new handler.Plugin(this);
-
-                    // Register packet handlers
-                    for (let packetType of handler.Metadata.incomingCapabilities) {
-                        if (!this._handlers.has(packetType)) {
-                            this._handlers.set(packetType, plugin);
-                        }
+                // Register packet handlers
+                for (let packetType of handler.Metadata.incomingCapabilities) {
+                    if (!this._handlers.has(packetType)) {
+                        this._handlers.set(packetType, plugin);
                     }
-
-                    // Register plugin
-                    this._plugins.set(name, plugin);
-                } catch (e) {
-                    resolve([name, e]);
                 }
-            }
 
-            resolve([name, null]);
-        });
+                // Register plugin
+                this._plugins.set(name, plugin);
+                this.errors.delete(name);
+            } catch (e) {
+                logWarning(`loading ${name}: ${e.message}`, this.name);
+                this.errors.set(name, e);
+            }
+        }
+
+        this.notify('errors');
     }
 
     async _loadPlugins() {
-        let promises = this.supported_plugins.map(this._loadPlugin.bind(this));
-        let results = await Promise.all(promises);
+        this.allowed_plugins.map(name => this.loadPlugin(name));
     }
 
-    _unloadPlugin(name) {
-        debug(`${name} (${this.name})`);
+    async unloadPlugin(name) {
+        debug(`unloading '${name}' plugin`, this.name);
 
-        return new Promise((resolve, reject) => {
-            try {
-                // Unregister handlers
-                let handler = imports.service.plugins[name];
+        try {
+            // Unregister packet handlers
+            let handler = imports.service.plugins[name];
 
-                for (let packetType of handler.Metadata.incomingCapabilities) {
-                    this._handlers.delete(packetType);
-                }
-
-                // Unregister plugin
-                this._plugins.get(name).destroy();
-                this._plugins.delete(name);
-            } catch (e) {
-                logError(e, this.device.name);
+            for (let packetType of handler.Metadata.incomingCapabilities) {
+                this._handlers.delete(packetType);
             }
 
-            resolve([name, true]);
-        });
+            // Unregister plugin
+            this._plugins.get(name).destroy();
+            this._plugins.delete(name);
+        } catch (e) {
+            logWarning(`unloading ${name}: ${e.message}`, this.name);
+        }
     }
 
     async _unloadPlugins() {
-        try {
-            await Promise.all(this.plugins.map(this._unloadPlugin.bind(this)));
-        } catch (e) {
-            logError(e, this.device.name);
-        }
+        this._plugins.forEach((plugin, name) => this.unloadPlugin(name));
     }
 
     openSettings() {
@@ -948,7 +816,13 @@ var Device = GObject.registerClass({
     }
 
     destroy() {
-        this.emit('destroy');
+        // Close the channel if still connected
+        if (this.connected) {
+            this._channel.close();
+        }
+
+        // Synchronously destroy plugins
+        this._plugins.forEach(plugin => plugin.destroy());
 
         // Unexport the GActions and GMenu
         Gio.DBus.session.unexport_action_group(this._actionsId);
@@ -960,12 +834,9 @@ var Device = GObject.registerClass({
         this._dbus_object.flush();
         this.service.objectManager.unexport(this._dbus_object.g_object_path);
 
-        // Close the channel if still connected
-        if (this.connected) {
-            this._channel.close();
-        }
-
+        // Try to avoid any cyclic references from signal handlers
         GObject.signal_handlers_destroy(this);
+        GObject.signal_handlers_destroy(this.settings);
     }
 });
 

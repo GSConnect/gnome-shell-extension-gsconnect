@@ -309,7 +309,7 @@ var Daemon = GObject.registerClass({
         parameter = parameter.deep_unpack();
 
         let device = this._devices.get(parameter['0']);
-        let plugin = (device) ? device._plugins.get('share') : false;
+        let plugin = (device) ? device.lookup_plugin('share') : false;
 
         if (plugin) {
             if (plugin.transfers.has(parameter['1'])) {

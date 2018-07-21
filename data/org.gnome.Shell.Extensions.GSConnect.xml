@@ -9,12 +9,6 @@
     <property type="s" name="IconName" access="read"/>
     <property type="s" name="SymbolicIconName" access="read"/>
     <property type="s" name="Type" access="read"/>
-
-    <!-- Signals -->
-    <signal name="Event">
-      <arg type="s" name="Type"/>
-      <arg type="v" name="Data"/>
-    </signal>
   </interface>
 
   <!-- Battery -->
