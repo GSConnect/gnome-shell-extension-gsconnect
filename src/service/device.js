@@ -334,8 +334,7 @@ var Device = GObject.registerClass({
     get connected () { return this._connected && this._channel; }
 
     get connection_type() {
-        // We check the actual channel in case we're changing connection types
-        if (this._channel && this._channel.type !== null) {
+        if (this._channel !== null) {
             return this._channel.type;
         }
 
@@ -469,110 +468,50 @@ var Device = GObject.registerClass({
     }
 
     /**
-     * Open a new Channel and try to connect to the device
+     * Request a connection from the device
      */
     activate() {
-        debug(`${this.name} (${this.id})`);
+        let lastConnection = this.settings.get_string('last-connection');
 
-        // A channel is already connected/connecting
-		if (this._channel !== null) {
-			debug(`${this.name} (${this.id}) already active`);
-			return;
+        // If a channel is currently open...
+        if (this._channel !== null) {
+            // Bail if it's the same type as requested
+		    if (this.connection_type === lastConnection) {
+			    debug(`${this.name}: ${lastConnection} connection already active`);
+			    return;
+			}
+
+		    // Otherwise disconnect it first
+		    // TODO: let the channel service do it and just reload plugins
+		    this._channel.close();
 		}
 
-		// FIXME: There's no contingency for falling back to another connection
-		//        type if one fails
-		if (this.connection_type === 'bluetooth') {
-            let bluezDevice = this.service.bluetoothService.devices.get(
-		        this.settings.get_string('bluetooth-path')
-		    );
+		debug(`${this.name}: requesting ${lastConnection} connection`);
 
-		    if (bluezDevice) {
-		        bluezDevice.ConnectProfile(Bluetooth.SERVICE_UUID).catch(debug);
-		    }
+		// TODO: fall back to another connection type on failure?
+		if (lastConnection === 'bluetooth') {
+		    this.service.broadcast(this.settings.get_string('bluetooth-path'));
 		} else {
-            // Create a new channel
-            this._channel = new Core.Channel(this.id);
-            this._channel.connect('connected', this._onConnected.bind(this));
-            this._channel.connect('disconnected', this._onDisconnected.bind(this));
-		    this._channel.connect('received', this._onReceived.bind(this));
-
-		    let addr = Gio.InetSocketAddress.new_from_string(
+		    let tcpAddress = Gio.InetSocketAddress.new_from_string(
                 this.settings.get_string('tcp-host'),
                 this.settings.get_uint('tcp-port')
             );
 
-            this._channel.open(addr);
-        }
+		    this.service.broadcast(tcpAddress);
+	    }
     }
 
     /**
-     * Update the device with a UDP packet or replacement Core.Channel
+     * Receive a packet from the attached channel and route it to its handler
      */
-    update(packet, channel=null) {
-        debug(`${this.name} (${this.id})`);
-
-        if (channel) {
-            this._handleIdentity(channel.identity);
-
-            // Disconnect from the current channel
-            if (this._channel !== null) {
-                GObject.signal_handlers_destroy(this._channel);
-                this._channel.close();
-            }
-
-            // Connect to the new channel
-            this._channel = channel;
-            this._channel.connect('connected', this._onConnected.bind(this));
-            this._channel.connect('disconnected', this._onDisconnected.bind(this));
-            this._channel.connect('received', this._onReceived.bind(this));
-
-            // Verify the channel since it was TOFU'd by the listener
-            if (!this.verify()) {
-                this._channel.close();
-            } else if (!this.connected) {
-                this._channel.emit('connected');
-            }
-        } else if (packet.hasOwnProperty('type')) {
-            this._onReceived(this._channel, packet);
-        }
-    }
-
-    /**
-     * Verify the current channel
-     */
-    verify() {
-        log(`Authenticating ${this.name}`);
-
-        switch (true) {
-            // Consider all Bluetooth connections trusted
-            case (this._channel.type === 'bluetooth'):
-                log(`Authenticated Bluetooth connection for ${this.name}`);
-                return true;
-
-            // If we have a certificate-pem, verify the certificate
-            case (this.settings.get_string('certificate-pem') !== ''):
-                log(`Verifying TLS certificate for ${this.name}`);
-
-                return Gio.TlsCertificate.new_from_pem(
-                    this.settings.get_string('certificate-pem'),
-                    -1
-                ).is_same(this._channel.certificate);
-
-            // If we were paired over bluetooth consider the certificate trusted
-            case (this.paired):
-                log(`Trusting TLS certificate from ${this.name} paired by Bluetooth`);
-
-                this.settings.set_string(
-                    'certificate-pem',
-                    this._channel.certificate.certificate_pem
-                );
-                return true;
-
-            // If it's a new certificate then trust-on-first-use (pair later)
-            default:
-                log(`Trusting TLS certificate on first use for ${this.name}`);
-                return true;
+    receivePacket(packet) {
+        if (packet.type === 'kdeconnect.pair') {
+	        this._handlePair(packet);
+	    } else if (this._handlers.has(packet.type)) {
+	        let handler = this._handlers.get(packet.type);
+            handler.handlePacket(packet);
+        } else {
+            logWarning(`Unsupported packet type (${packet.type})`, this.name);
         }
     }
 
@@ -582,9 +521,7 @@ var Device = GObject.registerClass({
      * @param {Gio.Stream} payload - A payload stream // TODO
      */
     sendPacket(packet, payload=null) {
-
         if (this.connected && (this.paired || packet.type === 'kdeconnect.pair')) {
-            packet = new Core.Packet(packet);
             this._channel.send(packet);
         }
     }
@@ -605,7 +542,7 @@ var Device = GObject.registerClass({
     _onDisconnected(channel) {
         log(`Disconnected from ${this.name} (${this.id})`);
 
-        GObject.signal_handlers_destroy(this._channel);
+        GObject.signal_handlers_destroy(channel);
         this._channel = null;
 
         this._unloadPlugins().then(values => {
@@ -613,20 +550,10 @@ var Device = GObject.registerClass({
             this.notify('connected');
             this.notify('symbolic-icon-name');
         });
-    }
 
-    _onReceived(channel, packet) {
-        if (packet.type === 'kdeconnect.identity') {
-            this._handleIdentity(packet);
-            this.activate();
-        } else if (packet.type === 'kdeconnect.pair') {
-	        this._handlePair(packet);
-	    } else if (this._handlers.has(packet.type)) {
-	        let handler = this._handlers.get(packet.type);
-            handler.handlePacket(packet);
-        } else {
-            logWarning(`Unsupported packet type: ${packet.type}`, this.name);
-        }
+        this._connected = false;
+        this.notify('connected');
+        this.notify('symbolic-icon-name');
     }
 
     /**

@@ -7,6 +7,11 @@ const GObject = imports.gi.GObject;
 
 /**
  * Packet
+ *
+ * The packet class is a simple Object-derived class. It only exists to offer
+ * conveniences for coercing to a string writable to a channel and constructing
+ * from Strings and Objects. In future, it could probably be optimized to avoid
+ * excessive shape-trees since it's the most common object in the protocol.
  */
 var Packet = class Packet {
 
@@ -83,10 +88,6 @@ var Channel = GObject.registerClass({
         },
         'disconnected': {
             flags: GObject.SignalFlags.RUN_FIRST
-        },
-        'received': {
-            flags: GObject.SignalFlags.RUN_FIRST,
-            param_types: [ GObject.TYPE_OBJECT ]
         }
     },
     Properties: {
@@ -102,21 +103,22 @@ var Channel = GObject.registerClass({
             'Data Channel Type',
             'The protocol this data channel uses',
             GObject.ParamFlags.READABLE,
-            'tcp'
+            null
         )
     }
 }, class Channel extends GObject.Object {
 
-    _init(deviceId) {
+    _init(deviceId, type) {
         super._init();
 
         // We need this to lookup the certificate in GSettings
         this.identity = { body: { deviceId: deviceId } };
         this.service = Gio.Application.get_default();
+        this._type = type;
     }
 
     get certificate() {
-        if (typeof this._connection.get_peer_certificate === 'function') {
+        if (this.type === 'tcp') {
             return this._connection.get_peer_certificate();
         }
 
@@ -124,14 +126,7 @@ var Channel = GObject.registerClass({
     }
 
     get type() {
-        if (!this._connection) {
-            return null;
-        // TODO: This seems like a pretty flaky test
-        } else if (typeof this._connection.get_local_address === 'function') {
-            return 'bluetooth';
-        } else {
-            return 'tcp';
-        }
+        return this._type;
     }
 
     /**
@@ -143,9 +138,6 @@ var Channel = GObject.registerClass({
             connection.socket.set_option(6, 4, 10); // TCP_KEEPIDLE
             connection.socket.set_option(6, 5, 5);  // TCP_KEEPINTVL
             connection.socket.set_option(6, 6, 3);  // TCP_KEEPCNT
-
-            //
-            //connection.socket.blocking = false;
         }
 
         return connection;
@@ -187,7 +179,7 @@ var Channel = GObject.registerClass({
     _sendIdent(connection) {
         return new Promise((resolve, reject) => {
             connection.output_stream.write_all_async(
-                this.service.identity.toString(),
+                `${this.service.identity}`,
                 GLib.PRIORITY_DEFAULT,
                 null,
                 (stream, res) => {
@@ -210,26 +202,25 @@ var Channel = GObject.registerClass({
 
         connection.disconnect(connection._authenticateCertificateId);
 
-        // TODO: this is a hack for my mistake in GSConnect <= v10; it can
-        //       be removed when it's safe to assume v10 is out of the wild
-        if (!this.identity.body.deviceId) {
+        // Bail if the deviceId is missing
+        if (this.identity.body.deviceId === undefined) {
+            logWarning('missing deviceId', connection.get_remote_address().to_string());
             return false;
         }
 
-        // Get the settings for this deviceId
+        // Get (or create) the settings for this deviceId
         let settings = new Gio.Settings({
             settings_schema: gsconnect.gschema.lookup(gsconnect.app_id + '.Device', true),
             path: gsconnect.settings.path + 'device/' + this.identity.body.deviceId + '/'
         });
         let cert_pem = settings.get_string('certificate-pem');
 
-        // If this device is paired, verify the connection certificate
-        if (cert_pem) {
-            let cert = Gio.TlsCertificate.new_from_pem(cert_pem, -1);
-            return (cert.verify(null, peer_cert) === 0);
+        // Verify the connection certificate if we have one
+        if (cert_pem !== '') {
+            return Gio.TlsCertificate.new_from_pem(cert_pem, -1).is_same(peer_cert);
         }
 
-        // Otherwise trust on first use, we pair later
+        // Otherwise trust on first use
         return true;
     }
 
@@ -296,22 +287,47 @@ var Channel = GObject.registerClass({
     }
 
     /**
-     * Init streams for reading/writing packets and monitor the input stream
+     * Attach the channel to a device and monitor the input stream for packets
+     *
+     * @param {Device.Device} - The device to attach to
      */
-    async _initPacketIO(connection) {
+    attach(device) {
+        // Disconnect any existing channel
+        if (device._channel !== null) {
+            GObject.signal_handlers_destroy(device._channel);
+            device._channel.close();
+            device._channel = null;
+        }
+
+        device._channel = this;
+
+        // Parse the channel's identity packet and connect signals to the device
+        device._handleIdentity(this.identity);
+        this.connect('connected', device._onConnected.bind(device));
+        this.connect('disconnected', device._onDisconnected.bind(device));
+
+        // Setup pollable streams for packet exchange
         this.input_stream = new Gio.DataInputStream({
-            base_stream: connection.input_stream
+            base_stream: this._connection.input_stream
         });
 
         this.output_stream = new Gio.DataOutputStream({
-            base_stream: connection.output_stream
+            base_stream: this._connection.output_stream
         });
 
-        this._monitor = connection.input_stream.create_source(null);
-        this._monitor.set_callback(this.receive.bind(this));
+        // Attach a source to the input channel, bound to the device
+        this._monitor = this._connection.input_stream.create_source(null);
+        this._monitor.set_callback(this.receive.bind(this, device));
         this._monitor.attach(null);
 
-        return connection;
+        // TODO: Plugins should be reloaded if we're handing the connection off
+        //       to a different channel type. This is flakey in general, which
+        //       may be Android's fault or possibly inherent in the protocol.
+
+        // Emit connected:: if necessary
+        if (!device.connected) {
+            this.emit('connected');
+        }
     }
 
     /**
@@ -324,7 +340,7 @@ var Channel = GObject.registerClass({
      * @param {Gio.InetSocketAddress} address - The address to open a connection
      */
     async open(address) {
-        log(`GSConnect: Connecting to ${address.to_string()}`);
+        log(`GSConnect: Opening connection to ${address.to_string()}`);
 
         try {
             this._connection = await new Promise((resolve, reject) => {
@@ -341,13 +357,14 @@ var Channel = GObject.registerClass({
             this._connection = await this._initSocket(this._connection);
             this._connection = await this._sendIdent(this._connection);
             this._connection = await this._serverEncryption(this._connection);
-            this._connection = await this._initPacketIO(this._connection);
 
             this.emit('connected');
+            return true;
         } catch (e) {
             log(`GSConnect: ${e.message}`);
             debug(e);
             this.close();
+            return false;
         }
     }
 
@@ -361,30 +378,38 @@ var Channel = GObject.registerClass({
      * @param {Gio.TcpConnection} connection - The incoming connection
      */
     async accept(connection) {
-        log(`GSConnect: Connecting to ${connection.get_remote_address().to_string()}`);
+        if (this.type === 'tcp') {
+            let addr = connection.get_remote_address().to_string();
+            log(`GSConnect: Accepting connection from ${addr}`);
+        } else {
+            log(`GSConnect: Accepting connection from Bluez`);
+        }
 
         try {
             this._connection = await this._initSocket(connection);
             this._connection = await this._receiveIdent(this._connection);
             this._connection = await this._clientEncryption(this._connection);
-            this._connection = await this._initPacketIO(this._connection);
+
             this.emit('connected');
+            return true;
         } catch(e) {
             log(`GSConnect: ${e.message}`);
             debug(e);
             this.close();
+            return false;
         }
     }
 
     /**
-     * Close all streams associated with this channel and emit 'disconnected::'
+     * Close all streams associated with this channel, silencing any errors, and
+     * emit 'disconnected::'
      */
     close() {
         if (this._monitor) {
             try {
                 this._monitor.destroy();
             } catch (e) {
-                debug(e, this.identity.body.deviceName);
+                debug(e.message);
             }
         }
 
@@ -392,7 +417,7 @@ var Channel = GObject.registerClass({
             try {
                 stream.close(null);
             } catch (e) {
-                debug(e, this.identity.body.deviceName);
+                debug(e.message);
             }
         });
 
@@ -400,7 +425,7 @@ var Channel = GObject.registerClass({
             try {
                 this._listener.close();
             } catch (e) {
-                debug(e, this.identity.body.deviceName);
+                debug(e.message);
             }
         }
 
@@ -414,12 +439,13 @@ var Channel = GObject.registerClass({
      * connection and just log a warning. This should be investigated and tested
      * over a period of time.
      *
-     * @param {Packet} packet - A packet object
+     * @param {object} packet - An object containing the packet data
      */
     send(packet) {
         debug(packet, this.identity.body.deviceName);
 
         try {
+            packet = new Packet(packet);
             this.output_stream.put_string(packet.toString(), null);
         } catch (e) {
             logWarning(e, this.identity.body.deviceName);
@@ -427,21 +453,16 @@ var Channel = GObject.registerClass({
     }
 
     /**
-     * Receive a packet from a device, emitting 'received::' with the packet
+     * Receive a packet from the channel and call receivePacket() on the device
      */
-    receive() {
+    receive(device) {
         try {
             let data = this.input_stream.read_line(null)[0];
             let packet = new Packet(data.toString());
 
-            debug(packet, this.identity.body.deviceName);
+            debug(packet, device.name);
 
-            // Update the channel property
-            if (packet.type === 'kdeconnect.identity') {
-                this.identity = packet;
-            }
-
-            this.emit('received', packet);
+            device.receivePacket(packet);
 
             return GLib.SOURCE_CONTINUE;
         } catch (e) {
@@ -514,7 +535,7 @@ var Transfer = GObject.registerClass({
 }, class Transfer extends Channel {
 
     _init(params) {
-        super._init(params.device.id);
+        super._init(params.device.id, 'transfer');
 
         this._cancellable = new Gio.Cancellable();
 
@@ -548,16 +569,16 @@ var Transfer = GObject.registerClass({
     /**
      * Override in protocol implementation
      */
-    upload() {
+    async upload() {
     }
 
-    upload_accept() {
+    async upload_accept() {
     }
 
     /**
      * Override in protocol implementation
      */
-    download() {
+    async download() {
     }
 
     /**

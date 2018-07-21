@@ -202,8 +202,18 @@ var Daemon = GObject.registerClass({
      * Discovery Methods
      */
     broadcast(address=null) {
-        if (this.identity) {
-            this.lanService.broadcast(address);
+        switch (true) {
+            case (address instanceof Gio.InetSocketAddress):
+                this.lanService.broadcast(address);
+                break;
+
+            case (typeof address === 'string'):
+                this.bluetoothService.broadcast(address);
+                break;
+
+            default:
+                this.lanService.broadcast();
+                this.bluetoothService.broadcast();
         }
     }
 
@@ -211,45 +221,30 @@ var Daemon = GObject.registerClass({
      * Device Methods
      */
     _ensureDevice(packet) {
-        return new Promise((resolve, reject) => {
-            let device = this._devices.get(packet.body.deviceId);
+        let device = this._devices.get(packet.body.deviceId);
 
-            if (device === undefined) {
-                log(`GSConnect: Adding ${packet.body.deviceName}`);
+        if (device === undefined) {
+            log(`GSConnect: Adding ${packet.body.deviceName}`);
 
-                device = new Device.Device(packet);
+            device = new Device.Device(packet);
 
-                device._pruneId = device.connect(
-                    'notify::connected',
-                    this._pruneDevices.bind(this)
-                );
+            device._pruneId = device.connect(
+                'notify::connected',
+                this._pruneDevices.bind(this)
+            );
 
-                this._devices.set(device.id, device);
-                this.notify('devices');
+            this._devices.set(device.id, device);
+            this.notify('devices');
 
-                let cached = gsconnect.settings.get_strv('devices');
+            let cached = gsconnect.settings.get_strv('devices');
 
-                if (device.id !== '' && !cached.includes(device.id)) {
-                    cached.push(device.id);
-                    gsconnect.settings.set_strv('devices', cached);
-                }
-            } else {
-                log(`GSConnect: Updating ${packet.body.deviceName}`);
+            if (!cached.includes(device.id)) {
+                cached.push(device.id);
+                gsconnect.settings.set_strv('devices', cached);
             }
-
-            resolve(device);
-        });
-    }
-
-    async _addDevice(packet, channel=null) {
-        try {
-            let device = await this._ensureDevice(packet);
-            device.update(packet, channel);
-            return device;
-        } catch (e) {
-            logError(e);
-            return;
         }
+
+        return device;
     }
 
     async _removeDevice(id) {
@@ -570,14 +565,14 @@ var Daemon = GObject.registerClass({
         try {
             this.lanService = new Lan.ChannelService();
         } catch (e) {
-            debug(e);
+            logError(e, 'Lan.ChannelService');
         }
 
         // Bluetooth.ChannelService
         try {
             this.bluetoothService = new Bluetooth.ChannelService();
         } catch (e) {
-            debug(e);
+            logError(e, 'Bluetooth.ChannelService');
         }
 
         // Notification Listener

@@ -104,23 +104,10 @@ var BluezNode = Gio.DBusNodeInfo.new_for_xml(
 /**
  * Proxy for org.bluez.Adapter1 interface
  */
-var ProfileManager1Proxy = DBus.makeInterfaceProxy(
-    BluezNode.lookup_interface('org.bluez.ProfileManager1')
-);
+const DEVICE_INFO = BluezNode.lookup_interface('org.bluez.Device1');
+const PROFILE_MANAGER_INFO = BluezNode.lookup_interface('org.bluez.ProfileManager1');
 
-var Adapter1Proxy = DBus.makeInterfaceProxy(
-    BluezNode.lookup_interface('org.bluez.Adapter1')
-);
-
-var Device1Proxy = DBus.makeInterfaceProxy(
-    BluezNode.lookup_interface('org.bluez.Device1')
-);
-
-
-/**
- * KDE Connect Service UUID
- */
-var SERVICE_UUID = '185f3df4-3268-4e3f-9fca-d4d5059915bd';
+const ProfileManager1Proxy = DBus.makeInterfaceProxy(PROFILE_MANAGER_INFO);
 
 
 /**
@@ -144,27 +131,36 @@ function makeSdpRecord(uuid) {
 
 
 /**
+ * KDE Connect Service UUID & SDP
+ */
+const SERVICE_UUID = '185f3df4-3268-4e3f-9fca-d4d5059915bd';
+const SERVICE_RECORD = makeSdpRecord(SERVICE_UUID);
+
+
+/**
  * Bluez Channel Service
  */
 var ChannelService = GObject.registerClass({
     GTypeName: 'GSConnectBluetoothChannelService',
     Properties: {
-        'discovering': GObject.ParamSpec.boolean(
-            'discovering',
-            'ServiceDiscovering',
-            'Whether the Bluetooth Listener is active',
-            GObject.ParamFlags.READWRITE,
-            true
+        'devices': GObject.param_spec_variant(
+            'devices',
+            'DevicesList',
+            'A list of known devices',
+            new GLib.VariantType('as'),
+            null,
+            GObject.ParamFlags.READABLE
         )
     }
 }, class ChannelService extends GObject.Object {
+
     _init() {
         super._init();
 
         this.service = Gio.Application.get_default();
 
         //
-        this.devices = new Map();
+        this._devices = new Map();
 
         // Export the org.bluez.Profile1 interface for the KDE Connect service
         this._profile = new DBus.Interface({
@@ -174,15 +170,25 @@ var ChannelService = GObject.registerClass({
             g_object_path: gsconnect.app_path
         });
 
-        // Setup profile
-        new ProfileManager1Proxy({
-            g_connection: Gio.DBus.system,
-            g_name: 'org.bluez',
-            g_object_path: '/org/bluez'
-        }).init_promise().then(profileManager => {
-            this._profileManager = profileManager;
-            return this._registerProfile(SERVICE_UUID);
-        }).then(result => {
+        this._setup();
+    }
+
+    get devices() {
+        let devices = Array.from(this._devices.values());
+        return devices.filter(device => device.UUIDs.includes(SERVICE_UUID));
+    }
+
+    async _setup() {
+        try {
+            this._profileManager = new ProfileManager1Proxy({
+                g_connection: Gio.DBus.system,
+                g_name: 'org.bluez',
+                g_object_path: '/org/bluez'
+            });
+
+            await this._profileManager.init_promise();
+            await this._registerProfile(SERVICE_UUID);
+
             Gio.DBusObjectManagerClient.new(
                 Gio.DBus.system,
                 Gio.DBusObjectManagerClientFlags.NONE,
@@ -192,87 +198,104 @@ var ChannelService = GObject.registerClass({
                 null,
                 this._setupObjManager.bind(this)
             );
-        }).catch(debug);
+        } catch (e) {
+            logWarning(e, 'Bluetooth.ChannelService');
+        }
     }
 
-    _registerProfile(uuid) {
+    async _registerProfile(uuid) {
         let profileOptions = {
             // Don't require confirmation
             RequireAuthorization: new GLib.Variant('b', false),
             // Only allow paired devices
             RequireAuthentication: new GLib.Variant('b', true),
             // Service Record (customized to work with Android)
-            ServiceRecord: new GLib.Variant('s', makeSdpRecord(uuid))
+            ServiceRecord: new GLib.Variant('s', SERVICE_RECORD)
         };
 
         // Register KDE Connect bluez profile
-        return this._profileManager.RegisterProfile(
+        debug('registering service', 'Bluetooth.ChannelService');
+        await this._profileManager.RegisterProfile(
             this._profile.get_object_path(),
             uuid,
             profileOptions
         );
     }
 
-    _onInterfaceAdded(manager, object, iface) {
-        if (iface.g_interface_name === 'org.bluez.Device1') {
-            debug(`Device on ${iface.g_object_path}`);
+    async _onInterfaceAdded(manager, object, iface) {
+        try {
+            if (iface.g_interface_name === 'org.bluez.Device1') {
+                debug(`Device on ${iface.g_object_path}`);
 
-            new Device1Proxy({
-                g_connection: Gio.DBus.system,
-                g_name: 'org.bluez',
-                g_object_path: iface.g_object_path
-            }).init_promise().then(device => {
-                if (!this.devices.has(device.g_object_path)) {
-                    debug('adding device');
+                DBus.proxyMethods(iface, DEVICE_INFO);
+                DBus.proxyProperties(iface, DEVICE_INFO);
 
-                    this.devices.set(device.g_object_path, device);
-                    this._onDeviceChanged(device);
+                if (!this._devices.has(iface.g_object_path)) {
+                    iface._channel = null;
+                    this._devices.set(iface.g_object_path, iface);
+                    this.notify('devices');
+                    this._onDeviceChanged(iface);
                 }
-            }).catch(debug);
+            }
+        } catch (e) {
+            logWarning(e, 'Bluetooth.ChannelService');
         }
     }
 
-    _onInterfaceRemoved(manager, object, iface) {
+    async _onInterfaceRemoved(manager, object, iface) {
         if (iface.g_interface_name === 'org.bluez.Device1') {
-            this.devices.delete(iface.g_object_path);
+            this.RequestDisconnection(iface.g_object_path);
+            this._devices.delete(iface.g_object_path);
         }
     }
 
-    _onPropertiesChanged(manager, object, iface, changed, invalidated) {
+    async _onPropertiesChanged(manager, object, iface, changed, invalidated) {
         if (iface.g_interface_name === 'org.bluez.Device1') {
-            let properties = changed.full_unpack();
-            let device = this.devices.get(iface.g_object_path);
+            changed = changed.full_unpack();
 
-            if (properties.hasOwnProperty('Connected')) {
-                if (device.Connected) {
-                    log('Connected changed');
-                    this._onDeviceChanged(device);
-                } else {
-                    this.RequestDisconnection(iface.g_object_path);
-                }
-            } else if (properties.hasOwnProperty('ServicesResolved') &&
-                       properties.ServicesResolved) {
-                    log('ServicesResolved changed');
-                    this._onDeviceChanged(device);
+            switch (true) {
+                case changed.hasOwnProperty('Connected'):
+                    if (changed.Connected) {
+                        this._onDeviceChanged(iface);
+                    } else {
+                        this.RequestDisconnection(iface.g_object_path);
+                    }
+                    break;
+
+                case changed.hasOwnProperty('ServicesResolved'):
+                    if (changed.ServicesResolved) {
+                        this._onDeviceChanged(iface);
+                    }
             }
         }
     }
 
-    _onDeviceChanged(device) {
-        if (device._channel !== undefined) {
-            return;
-        }
+    async _onDeviceChanged(device) {
+        try {
+            switch (false) {
+                case (device._channel === null):
+                    debug('already connected', device.Alias);
+                    return;
 
-        if (device.Connected && device.Paired && device.UUIDs.indexOf(SERVICE_UUID) > -1) {
-            debug('Trying to connect profile...');
-            device.ConnectProfile(SERVICE_UUID).then(result=> {
+                case device.Connected:
+                    return;
 
-                debug(`Profile connected for to ${device.Name}`);
-            }).catch(e => debug(e.message));
+                case device.Paired:
+                    return;
+
+                case device.UUIDs.includes(SERVICE_UUID):
+                    return;
+
+                default:
+                    debug('requesting bluetooth connection', device.Alias);
+                    await device.ConnectProfile(SERVICE_UUID);
+            }
+        } catch (e) {
+            debug(e, device.Alias);
         }
     }
 
-    _setupObjManager(obj, res) {
+    async _setupObjManager(obj, res) {
         this._objManager = Gio.DBusObjectManagerClient.new_finish(res);
 
         for (let obj of this._objManager.get_objects()) {
@@ -300,45 +323,99 @@ var ChannelService = GObject.registerClass({
      * A profile can use it to do cleanup tasks. There is no need to unregister
      * the profile, because when this method gets called it has already been
      * unregistered.
+     *
+     * @param {undefined} - No parameters
+     * @return {undefined} - void return value
      */
     Release() {
-        debug(arguments);
+        debug('Release');
+
+        // Return undefined immediately so the interface can reply
+        return undefined;
     }
 
     /**
      * This method gets called when a new service level connection has been
      * made and authorized.
+     *
+     * @param {string} - DBus object path
+     * @param {number} - A number for the incoming connection's file-descriptor
+     * @param {object} - An object of properties for the file-descriptor
+     * @return {undefined} - void return value
      */
     NewConnection(object_path, fd, fd_properties) {
         debug(`(${object_path}, ${fd}, ${JSON.stringify(fd_properties)})`);
 
-        let device = this.devices.get(object_path);
+        // TODO: Use a separate method until DBus.Interface can handle Promises
+        this._NewConnection(object_path, fd, fd_properties);
 
-        device._channel = new Core.Channel();
-        let _connectedId = device._channel.connect('connected', (channel) => {
-            channel.disconnect(_connectedId);
-            channel.disconnect(_disconnectedId);
+        // Return undefined immediately so the interface can reply
+        return undefined;
+    }
 
-            channel.identity.body.bluetoothHost = device.Address;
-            channel.identity.body.bluetoothPath = device.g_object_path;
+    async _NewConnection(object_path, fd, fd_properties) {
+        let bdevice = this._devices.get(object_path);
 
-            this.service._addDevice(channel.identity, channel);
-        });
+        try {
+            // Create a Gio.SocketConnection from the file-descriptor
+            let socket = Gio.Socket.new_from_fd(fd);
+            let connection = socket.connection_factory_create_connection();
+            let channel = new Core.Channel(null, 'bluetooth');
 
-        let _disconnectedId = device._channel.connect('disconnected', (channel) => {
-            channel.disconnect(_connectedId);
-            channel.disconnect(_disconnectedId);
-        });
+            // FIXME: Bluetooth connections are always "incoming" from our
+            // perspective so we try checking the IOCondition of the socket to
+            // determine direction
+            let condition = connection.socket.condition_check(
+                GLib.IOCondition.IN | GLib.IOCondition.OUT
+            );
 
-        // Create a Gio.SocketConnection from the file-descriptor
-        let socket = Gio.Socket.new_from_fd(fd);
-        let connection = socket.connection_factory_create_connection();
+            if (condition === GLib.IOCondition.OUT) {
+                connection = await channel._sendIdent(connection);
+            }
 
-        // NewConnection() is actually called in response to ConnectProfile()
-        // so maybe it makes more sense for this to use open() somehow?
-        device._channel._sendIdent(connection).then(connection => {
-            return device._channel.accept(connection);
-        });
+            // Accept the connection
+            let success = await channel.accept(connection);
+
+            if (success) {
+                bdevice._channel = channel;
+                let _id = channel.connect('disconnected', () => {
+                    channel.disconnect(_id);
+                    bdevice._channel = null;
+                });
+            } else {
+                logWarning(`Bluetooth.ChannelService: failed to connect ${bdevice.Alias}`);
+                return;
+            }
+
+            channel.identity.body.bluetoothHost = bdevice.Address;
+            channel.identity.body.bluetoothPath = bdevice.g_object_path;
+
+            // Bail if the deviceId is missing
+            if (!channel.identity.body.hasOwnProperty('deviceId')) {
+                channel.close();
+                bdevice._channel = null;
+                logWarning('missing deviceId', channel.identity.body.deviceName);
+                return;
+            }
+
+            // Unlike Lan channels, we accept all new connections since they
+            // have to be paired over bluetooth anyways
+            let device = this.service._devices.get(channel.identity.body.deviceId);
+
+            if (device === undefined) {
+                device = await this.service._ensureDevice(channel.identity);
+            }
+
+            // Attach a device to the channel
+            channel.attach(device);
+        } catch (e) {
+            if (bdevice._channel !== null) {
+                bdevice._channel.close();
+                bdevice._channel = null;
+            }
+
+            logWarning(e, bdevice.Alias);
+        }
     }
 
     /**
@@ -351,16 +428,36 @@ var ChannelService = GObject.registerClass({
 	 * If multiple file descriptors are indicated via NewConnection, it is
 	 * expected that all of them are disconnected before returning from this
 	 * method call.
+	 *
+	 * @param {string} object_path - DBus object path
+     * @return {undefined} - void return value
      */
     RequestDisconnection(object_path) {
         debug(object_path);
 
-        let device = this.devices.get(object_path);
+        let device = this._devices.get(object_path);
 
-        if (device && device._channel !== undefined) {
-            log(`GSConnect: Disconnecting ${device.Name}`);
+        if (device && device._channel !== null) {
+            log(`GSConnect: Disconnecting ${device.Alias}`);
             device._channel.close();
-            device._channel = undefined;
+            device._channel = null;
+        }
+
+        // Return undefined immediately so the interface can reply
+        return undefined;
+    }
+
+    broadcast(object_path=null) {
+        try {
+            let devices = this.devices;
+
+            if (typeof object_path === 'string') {
+                devices = [this._devices.get(object_path)];
+            }
+
+            devices.map(this._onDeviceChanged);
+        } catch (e) {
+            logWarning(e, 'Bluetooth.ChannelService');
         }
     }
 
@@ -369,7 +466,7 @@ var ChannelService = GObject.registerClass({
         this._objManager.disconnect(this._objManager._interfaceRemovedId);
         this._objManager.disconnect(this._objManager._interfacePropertiesId);
 
-        for (let object_path of this.devices.keys()) {
+        for (let object_path of this._devices.keys()) {
             this.RequestDisconnection(object_path);
         }
 
@@ -377,8 +474,7 @@ var ChannelService = GObject.registerClass({
             this._profile.get_object_path()
         ).then(result => {
             this._profile.destroy();
-            debug('Successfully unregistered bluez profile');
-        }).catch(debug);
+        }).catch(logError);
     }
 });
 

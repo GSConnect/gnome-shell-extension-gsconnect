@@ -36,17 +36,7 @@ function ip_is_valid(address) {
  * sender, emitting 'packet::'. It also broadcasts these packets to 255.255.255.255.
  */
 var ChannelService = GObject.registerClass({
-    GTypeName: 'GSConnectLanChannelService',
-    Properties: {
-        'port': GObject.ParamSpec.uint(
-            'port',
-            'TCP Port',
-            'The TCP port number the service is listening on',
-            GObject.ParamFlags.READABLE,
-            0, 1764,
-            1716
-        )
-    }
+    GTypeName: 'GSConnectLanChannelService'
 }, class ChannelService extends GObject.Object {
 
     _init() {
@@ -122,45 +112,57 @@ var ChannelService = GObject.registerClass({
         log(`GSConnect: Using TCP port ${port}`);
     }
 
-    _onIncomingChannel(listener, connection) {
-        let channel = new Core.Channel();
-        let host = connection.get_remote_address().address.to_string();
+    async _onIncomingChannel(listener, connection) {
+        try {
+            let channel = new Core.Channel(null, 'tcp');
+            let host = connection.get_remote_address().address.to_string();
 
-        let _connectedId = channel.connect('connected', (channel) => {
-            channel.disconnect(_connectedId);
-            channel.disconnect(_disconnectedId);
+            debug(host, 'incoming channel');
 
-            // TODO: this is a hack for my mistake in GSConnect <= v10; it can
-            //       be removed when it's safe to assume v10 is out of the wild
-            if (!channel.identity.body.hasOwnProperty('deviceId')) {
-                connection.close(null);
-                return;
+            // Accept the connection
+            let success = await channel.accept(connection);
+
+            if (!success) {
+                throw Error('failed to accept connection');
             }
 
-            let devices = gsconnect.settings.get_strv('devices');
-
-            // If this is a known device proceed...
-            if (devices.includes(channel.identity.body.deviceId)) {
-                // pass
-            // ...but bail if it's not allowed and we're not discoverable
-            } else if (!this.allowed.has(host) && !this.service.discoverable) {
-                connection.close(null);
-                return;
-            }
-
-            // Save the host address with default port for reconnecting later
             channel.identity.body.tcpHost = host;
             channel.identity.body.tcpPort = '1716';
 
-            this.service._addDevice(channel.identity, channel);
-        });
+            // Bail if the deviceId is missing
+            if (!channel.identity.body.hasOwnProperty('deviceId')) {
+                logWarning('missing deviceId', channel.identity.body.deviceName);
+                channel.close();
+                return;
+            }
 
-        let _disconnectedId = channel.connect('disconnected', (channel) => {
-            channel.disconnect(_connectedId);
-            channel.disconnect(_disconnectedId);
-        });
+            let device = this.service._devices.get(channel.identity.body.deviceId);
 
-        channel.accept(connection);
+            switch (true) {
+                // An existing device
+                case (device !== undefined):
+                    break;
+
+                // The host is allowed (responding to a "direct" broadcast)
+                case this.allowed.has(host):
+                    device = await this.service._ensureDevice(channel.identity);
+                    break;
+
+                // The service is discoverable
+                case this.service.discoverable:
+                    device = await this.service._ensureDevice(channel.identity);
+                    break;
+
+                // ...otherwise bail
+                default:
+                    throw Error('device not allowed');
+            }
+
+            // Attach a device to the channel
+            channel.attach(device);
+        } catch (e) {
+            logWarning(e, connection.get_remote_address().address.to_string());
+        }
     }
 
     // TODO: support IPv6?
@@ -189,7 +191,7 @@ var ChannelService = GObject.registerClass({
         // Default broadcast address
         this._udp_address = Gio.InetSocketAddress.new_from_string(
             '255.255.255.255',
-            1716
+            UDP_PORT
         );
 
         // Input stream
@@ -208,47 +210,85 @@ var ChannelService = GObject.registerClass({
         log(`GSConnect: Using UDP port 1716`);
     }
 
-    _onIncomingPacket(socket, condition) {
+    async _onIncomingPacket() {
         try {
-            // We "peek" for the host address first, then read the packet from a
-            // stream since most of the socket methods don't work for us.
+            // Most of the datagram methods don't work in GJS, so we "peek" for
+            // the host address first...
             let host = this._udp.receive_message(
                 [],
                 Gio.SocketMsgFlags.PEEK,
                 null
             )[1].address.to_string();
 
-            let data = this._udp_stream.read_line(null)[0].toString();
-            let packet = new Core.Packet(data);
-
-            // TODO: this is a hack for my mistake in GSConnect <= v10; it can
-            //       be removed when it's safe to assume v10 is out of the wild
-            if (!packet.body.hasOwnProperty('deviceId')) {
-                return GLib.SOURCE_CONTINUE;
-            }
-
-            // Ignore our own broadcasts
-            if (packet.body.deviceId === this.service.identity.body.deviceId) {
-                return GLib.SOURCE_CONTINUE;
-            }
-
-            let devices = gsconnect.settings.get_strv('devices');
-
-            // If this is a known device proceed...
-            if (devices.includes(packet.body.deviceId)) {
-                // pass
-            // ...but bail if it's not allowed and we're not discoverable
-            } else if (!this.allowed.has(host) && !this.service.discoverable) {
-                return GLib.SOURCE_CONTINUE;
-            }
-
-            // Save the remote address for reconnecting
+            // ...then read the packet from a stream, filling in the tcpHost
+            let data = this._udp_stream.read_line(null)[0];
+            let packet = new Core.Packet(data.toString());
             packet.body.tcpHost = host;
-            this.service._addDevice(packet, null);
+
+            // Bail if the deviceId is missing
+            if (!packet.body.hasOwnProperty('deviceId')) {
+                logWarning('missing deviceId', packet.body.deviceName);
+                return;
+            }
+
+            // Silently ignore our own broadcasts
+            if (packet.body.deviceId === this.service.identity.body.deviceId) {
+                return;
+            }
+
+            debug(packet.body.deviceName, 'Received broadcast');
+
+            let device = this.service._devices.get(packet.body.deviceId);
+
+            switch (true) {
+                // Proceed if this is an existing device...
+                case (device !== undefined):
+                    break;
+
+                // Or the host is explicitly allowed...
+                case this.allowed.has(host):
+                    device = await this.service._ensureDevice(packet);
+                    break;
+
+                // Or the service is discoverable...
+                case this.service.discoverable:
+                    device = await this.service._ensureDevice(packet);
+                    break;
+
+                // ...otherwise bail
+                default:
+                    logWarning('device not allowed', packet.body.deviceName);
+                    return;
+            }
+
+            // Silently ignore broadcasts from connected devices, but update
+            // from the identity packet
+            if (device._channel !== null) {
+                debug('already connected');
+                device._handleIdentity(packet);
+                return;
+            }
+
+            // Create a new channel
+            let channel = new Core.Channel(packet.body.deviceId, 'tcp');
+            channel.identity = packet;
+            device._channel = channel;
+
+            let addr = Gio.InetSocketAddress.new_from_string(
+                packet.body.tcpHost,
+                packet.body.tcpPort
+            );
+
+            // Connect the channel and attach it to the device on success
+            let success = await channel.open(addr);
+
+            if (success) {
+                channel.attach(device);
+            } else {
+                device._channel = null;
+            }
         } catch (e) {
             logWarning(e, 'Reading UDP Packet');
-        } finally {
-            return GLib.SOURCE_CONTINUE;
         }
     }
 
@@ -272,11 +312,7 @@ var ChannelService = GObject.registerClass({
                 address = this._udp_address;
             }
 
-            this._udp.send_to(
-                address,
-                this.service.identity.toString(),
-                null
-            );
+            this._udp.send_to(address, `${this.service.identity}`, null);
         } catch (e) {
             logWarning(e);
         }
@@ -332,7 +368,7 @@ var Transfer = GObject.registerClass({
      *  });
      */
     async upload(port=1739) {
-        debug(this.identity.body.deviceId);
+        debug(this.device.name);
 
         // Start listening on new socket on a port between 1739-1764
         this._listener = new Gio.SocketListener();
@@ -360,7 +396,7 @@ var Transfer = GObject.registerClass({
     }
 
     async upload_accept(listener, res) {
-        debug(this.identity.body.deviceId);
+        debug(this.device.name);
 
         try {
             this._connection = await new Promise((resolve, reject) => {
@@ -373,11 +409,14 @@ var Transfer = GObject.registerClass({
             this._connection = await this._initSocket(this._connection);
             this._connection = await this._serverEncryption(this._connection);
             this.output_stream = this._connection.get_output_stream();
+
             this.emit('connected');
+            return true;
         } catch(e) {
             log('Error uploading: ' + e.message);
             debug(e);
             this.close();
+            return false;
         }
     }
 
@@ -391,7 +430,7 @@ var Transfer = GObject.registerClass({
      *  transfer.download(packet.payloadTransferInfo.port).catch(e => debug(e));
      */
     async download(port) {
-        log(`Connecting to ${this.identity.body.deviceId}`);
+        debug(this.device.name);
 
         try {
             this._connection = await new Promise((resolve, reject) => {
@@ -417,11 +456,14 @@ var Transfer = GObject.registerClass({
             this._connection = await this._initSocket(this._connection);
             this._connection = await this._clientEncryption(this._connection);
             this.input_stream = this._connection.get_input_stream();
+
             this.emit('connected');
+            return true;
         } catch (e) {
             log('Error downloading: ' + e.message);
             debug(e);
             this.close();
+            return false;
         }
     }
 });
