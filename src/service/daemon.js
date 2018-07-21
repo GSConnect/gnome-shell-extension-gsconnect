@@ -172,16 +172,6 @@ var Daemon = GObject.registerClass({
         return this._identity;
     }
 
-    get name() {
-        return this.identity.body.deviceName;
-    }
-
-    set name(name) {
-        this.identity.body.deviceName = name;
-        this.notify('name');
-        this.broadcast();
-    }
-
     get type() {
         if (this._type === undefined) {
             try {
@@ -359,6 +349,8 @@ var Daemon = GObject.registerClass({
             this._about.connect('delete-event', dialog => dialog.hide_on_delete());
         }
 
+        this._about.modal = (this._window && this._window.visible);
+        this._about.transient_for = modal ? this._window : null;
         this._about.present();
     }
 
@@ -487,32 +479,30 @@ var Daemon = GObject.registerClass({
      * @param {String|Number} id - Gtk (string) or libnotify id (uint32)
      * @param {String|null} application - Application Id if Gtk or null
      */
-    remove_notification(id, application=null) {
-        new Promise((resolve, reject) => {
-            let name, path, method, variant;
+    async remove_notification(id, application=null) {
+        let name, path, method, variant;
 
-            if (application !== null) {
-                name = 'org.gtk.Notifications';
-                method = 'RemoveNotification';
-                path = '/org/gtk/Notifications';
-                variant = new GLib.Variant('(ss)', [application, id]);
-            } else {
-                name = 'org.freedesktop.Notifications';
-                path = '/org/freedesktop/Notifications';
-                method = 'CloseNotification';
-                variant = new GLib.Variant('(u)', [id]);
+        if (application !== null) {
+            name = 'org.gtk.Notifications';
+            method = 'RemoveNotification';
+            path = '/org/gtk/Notifications';
+            variant = new GLib.Variant('(ss)', [application, id]);
+        } else {
+            name = 'org.freedesktop.Notifications';
+            path = '/org/freedesktop/Notifications';
+            method = 'CloseNotification';
+            variant = new GLib.Variant('(u)', [id]);
+        }
+
+        Gio.DBus.session.call(
+            name, path, name, method, variant, null,
+            Gio.DBusCallFlags.NONE, -1, null, (connection, res) => {
+            try {
+                connection.call_finish(res);
+            } catch (e) {
+                logError(e);
             }
-
-            Gio.DBus.session.call(
-                name, path, name, method, variant, null,
-                Gio.DBusCallFlags.NONE, -1, null, (connection, res) => {
-                try {
-                    resolve(connection.call_finish(res));
-                } catch (e) {
-                    reject(e);
-                }
-            });
-        }).catch(logError);
+        });
     }
 
     vfunc_activate() {
@@ -541,6 +531,12 @@ var Daemon = GObject.registerClass({
             Gio.SettingsBindFlags.DEFAULT
         );
 
+        gsconnect.settings.bind(
+            'public-name',
+            this,
+            'name',
+            Gio.SettingsBindFlags.DEFAULT
+        );
 
         // Init some resources
         let provider = new Gtk.CssProvider();
@@ -551,15 +547,18 @@ var Daemon = GObject.registerClass({
             Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
         );
 
-        // GActions
-        this._initActions();
-
         // Track devices with id as key
         this._devices = new Map();
 
+        // Load cached devices
         let cached = gsconnect.settings.get_strv('devices');
-        log(`Loading ${cached.length} devices from cache`);
-        cached.map(id => this._ensureDevice({ body: { deviceId: id } }));
+        log(`Loading ${cached.length} device(s) from cache`);
+        cached.map(id => this._ensureDevice({
+            body: {
+                deviceId: id,
+                deviceName: 'cached device'
+            }
+        }));
 
         // Lan.ChannelService
         try {
@@ -575,15 +574,11 @@ var Daemon = GObject.registerClass({
             logError(e, 'Bluetooth.ChannelService');
         }
 
+        // GActions
+        this._initActions();
+
         // Notification Listener
         this.notificationListener = new Notification.Listener();
-
-        gsconnect.settings.bind(
-            'public-name',
-            this,
-            'name',
-            Gio.SettingsBindFlags.DEFAULT
-        );
     }
 
     vfunc_dbus_register(connection, object_path) {
@@ -652,7 +647,7 @@ var Daemon = GObject.registerClass({
                     win.destroy();
                 }
             } catch (e) {
-                logError(e);
+                logError(e, 'Opening file');
             }
         }
     }
