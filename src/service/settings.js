@@ -7,8 +7,6 @@ const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 const Pango = imports.gi.Pango;
 
-const DBus = imports.modules.dbus;
-
 
 function section_separators(row, before) {
     if (before) {
@@ -1395,13 +1393,10 @@ var DeviceSettings = GObject.registerClass({
 });
 
 
-var ShellProxy = DBus.makeInterfaceProxy(
-    gsconnect.dbusinfo.lookup_interface('org.gnome.Shell')
-);
 
 
 /**
- * Keyboard Shortcut Editor Dialog
+ * A simplified version of the shortcut editor from Gnome Control Center
  */
 var ShortcutEditor = GObject.registerClass({
     GTypeName: 'GSConnectShortcutEditor',
@@ -1428,13 +1423,6 @@ var ShortcutEditor = GObject.registerClass({
 
         this.seat = Gdk.Display.get_default().get_default_seat();
 
-        this.shell = new ShellProxy({
-            g_connection: Gio.DBus.session,
-            g_name: 'org.gnome.Shell',
-            g_object_path: '/org/gnome/Shell'
-        });
-        this.shell.init(null);
-
         // Content
         this.shortcut_summary.label = _('Enter a new shortcut to change <b>%s</b>').format(
             params.summary
@@ -1448,6 +1436,10 @@ var ShortcutEditor = GObject.registerClass({
             visible: true
         });
         this.confirm_shortcut.attach(this.shortcut_label, 0, 0, 1, 1);
+    }
+
+    get accelerator() {
+        return this.shortcut_label.accelerator;
     }
 
     _onDeleteEvent() {
@@ -1518,22 +1510,24 @@ var ShortcutEditor = GObject.registerClass({
             this.ungrab();
 
             this.cancel_button.visible = true;
-            this.accelerator = Gtk.accelerator_name(keyvalLower, realMask);
 
             // Switch to confirm/conflict page
             this.stack.set_visible_child_name('confirm-shortcut');
             // Show shortcut icons
-            this.shortcut_label.accelerator = this.accelerator;
+            this.shortcut_label.accelerator = Gtk.accelerator_name(
+                keyvalLower,
+                realMask
+            );
 
             // Show the Set button if available
             if (this.check(this.accelerator)) {
                 this.set_button.visible = true;
             // Otherwise report the conflict
             } else {
-                this.conflict_label.visible = true;
                 this.conflict_label.label = _('%s is already being used').format(
                     Gtk.accelerator_get_label(keyvalLower, realMask)
                 );
+                this.conflict_label.visible = true;
             }
         }
 
@@ -1552,18 +1546,47 @@ var ShortcutEditor = GObject.registerClass({
         return this.response(1);
     }
 
-    response(id) {
+    _grabAccelerator(accelerator, flags=0) {
+        return Gio.DBus.session.call_sync(
+            'org.gnome.Shell',
+            '/org/gnome/Shell',
+            'org.gnome.Shell',
+            'GrabAccelerator',
+            new GLib.Variant('(su)', [accelerator, flags]),
+            null,
+            Gio.DBusCallFlags.NONE,
+            -1,
+            null
+        ).deep_unpack()[0];
+    }
+
+    _ungrabAccelerator(action) {
+        return Gio.DBus.session.call_sync(
+            'org.gnome.Shell',
+            '/org/gnome/Shell',
+            'org.gnome.Shell',
+            'UngrabAccelerator',
+            new GLib.Variant('(u)', [action]),
+            null,
+            Gio.DBusCallFlags.NONE,
+            -1,
+            null
+        ).deep_unpack()[0];
+    }
+
+    response(response_id) {
         this.hide();
         this.ungrab();
-        super.response(id);
+
+        super.response(response_id);
     }
 
     check(accelerator) {
         // Check someone else isn't already using the binding
-        let action = this.shell.GrabAcceleratorSync(accelerator, 0);
+        let action = this._grabAccelerator(accelerator);
 
         if (action !== 0) {
-            this.shell.UngrabAcceleratorSync(action);
+            this._ungrabAccelerator(action);
             return true;
         }
 
