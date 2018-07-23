@@ -74,13 +74,13 @@ var Plugin = GObject.registerClass({
 
         // Remote Commands
         this.requestCommandList();
+        // We cache remote commands so they can be used in the settings even
+        // when the device is offline.
+        this._remote_commands = {};
+        this.cacheProperties(['_remote_commands']);
     }
 
     get remote_commands() {
-        if (this._remote_commands === undefined) {
-            return {};
-        }
-
         return this._remote_commands;
     }
 
@@ -140,7 +140,7 @@ var Plugin = GObject.registerClass({
 
         // Remove the menu if there are no commands
         if (commandEntries.length < 1) {
-            this.device.menu.remove_named(_('Commands'));
+            this.device.menu.remove_labeled(_('Commands'));
             return;
         }
 
@@ -171,7 +171,7 @@ var Plugin = GObject.registerClass({
 
         // If the Commands item is already present it will be replaced,
         // otherwise it will be appended to the end of the menu.
-        this.device.menu.replace_named(_('Commands'), commandItem);
+        this.device.menu.replace_labeled(_('Commands'), commandItem);
     }
 
     /**
@@ -215,7 +215,7 @@ var Plugin = GObject.registerClass({
     }
 
     destroy() {
-        this.device.menu.remove_named(_('Commands'));
+        this.device.menu.remove_labeled(_('Commands'));
 
         super.destroy();
     }
