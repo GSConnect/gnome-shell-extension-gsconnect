@@ -114,28 +114,33 @@ var Plugin = GObject.registerClass({
      *
      * @param {Array} names - A list of this object's property names to cache
      */
-    cacheProperties(names) {
-        // Ensure the device's cache directory exists
-        this._cacheDir = GLib.build_filenamev([
-            gsconnect.cachedir,
-            this.device.id
-        ]);
-        GLib.mkdir_with_parents(this._cacheDir, 448);
+    async cacheProperties(names) {
+        try {
+            // Ensure the device's cache directory exists
+            this._cacheDir = GLib.build_filenamev([
+                gsconnect.cachedir,
+                this.device.id
+            ]);
+            GLib.mkdir_with_parents(this._cacheDir, 448);
 
-        this._cacheFile = Gio.File.new_for_path(
-            GLib.build_filenamev([this._cacheDir, `${this.name}.json`])
-        );
+            this._cacheFile = Gio.File.new_for_path(
+                GLib.build_filenamev([this._cacheDir, `${this.name}.json`])
+            );
 
-        this._cacheProperties = {};
+            this._cacheProperties = {};
 
-        for (let name of names) {
-            // Make a copy of the default, if it exists
-            if (this.hasOwnProperty(name)) {
-                this._cacheProperties[name] = JSON.parse(JSON.stringify(this[name]));
+            for (let name of names) {
+                // Make a copy of the default, if it exists
+                if (this.hasOwnProperty(name)) {
+                    this._cacheProperties[name] = JSON.parse(JSON.stringify(this[name]));
+                }
             }
-        }
 
-        this._readCache().then(this._cacheLoaded.bind(this)).catch(logError);
+            await this._readCache();
+            await this.cacheLoaded();
+        } catch (e) {
+            logWarning(e.message, `${this.device.name}: ${this.name}`);
+        }
     }
 
     cacheFile(bytes) {
@@ -149,13 +154,13 @@ var Plugin = GObject.registerClass({
         }
     }
 
+    // An overridable callback that is invoked when the cache is done loading
+    cacheLoaded() {}
+
     // An overridable function that gets called before the cache is written
     _filterCache(names) {
         return;
     }
-
-    // An overridable callback that is invoked when the cache is done loading
-    _cacheLoaded() {}
 
     _readCache() {
         return new Promise((resolve, reject) => {

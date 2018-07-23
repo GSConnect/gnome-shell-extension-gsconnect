@@ -123,16 +123,10 @@ var Plugin = GObject.registerClass({
         this.mixer = new Sound.Mixer();
         this.mpris = MPRIS.get_default();
 
-        // Cache conversations
+        // We cache converations/threads so they can be used immediately, even
+        // though we'll request them at every connection
         this._conversations = {};
-        this._threads = [];
-
-        this.cacheProperties([
-            '_conversations',
-            '_threads'
-        ]);
-
-        this.requestConversations();
+        this.cacheProperties(['_conversations']);
     }
 
     get conversations() {
@@ -140,7 +134,13 @@ var Plugin = GObject.registerClass({
     }
 
     get threads() {
-        return this._threads;
+        let threads = [];
+
+        for (let conversation of Object.values(this.conversations)) {
+            threads.push(conversation[conversation.length - 1]);
+        }
+
+        return threads;
     }
 
     handlePacket(packet) {
@@ -215,17 +215,17 @@ var Plugin = GObject.registerClass({
 
         // If there are differing thread_id's then this is a list of threads
         if (packet.body.messages.some(msg => msg.thread_id !== thread_id)) {
-            this._threads = packet.body.messages;
+            let threads = packet.body.messages;
 
             // Request each thread
-            for (let message of this._threads) {
+            for (let message of threads) {
                 this.requestConversation(message.thread_id);
             }
 
             // Prune conversations
             // TODO: this might always prune because of the HACK in
             // _handleConversation()
-            let numbers = this._threads.map(t => t.address);
+            let numbers = threads.map(t => t.address);
 
             for (let number in this._conversations) {
                 if (!numbers.includes(number)) {

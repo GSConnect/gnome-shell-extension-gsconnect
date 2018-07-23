@@ -139,8 +139,7 @@ var Plugin = GObject.registerClass({
         return this._time;
     }
 
-    _cacheLoaded() {
-        log('CACHE LOADED');
+    cacheLoaded() {
         this._extrapolateTime();
 
         this.notify('charging');
