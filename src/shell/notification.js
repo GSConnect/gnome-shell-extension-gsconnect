@@ -1,5 +1,6 @@
 'use strict';
 
+const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 
 const Main = imports.ui.main;
@@ -20,7 +21,7 @@ class Source extends NotificationDaemon.GtkNotificationDaemonAppSource {
         super._init(appId);
     }
 
-    _closeDeviceNotification(id, notification, reason) {
+    _closeGSConnectNotification(id, notification, reason) {
         if (reason !== MessageTray.NotificationDestroyedReason.DISMISSED) {
             return;
         }
@@ -78,7 +79,7 @@ class Source extends NotificationDaemon.GtkNotificationDaemonAppSource {
         if (!notification) {
             notification = new NotificationDaemon.GtkNotificationDaemonNotification(this, notificationParams);
             notification.connect('destroy', (notification, reason) => {
-                this._closeDeviceNotification(notificationId, notification, reason);
+                this._closeGSConnectNotification(notificationId, notification, reason);
                 delete this._notifications[notificationId];
             });
             this._notifications[notificationId] = notification;
@@ -121,14 +122,14 @@ function patchGSConnectNotificationSource() {
 
     if (source !== undefined) {
         // Patch in the subclassed methods
-        source._closeDeviceNotification = Source.prototype._closeDeviceNotification;
+        source._closeGSConnectNotification = Source.prototype._closeGSConnectNotification;
         source.addNotification = Source.prototype.addNotification;
         source.pushNotification = Source.prototype.pushNotification;
 
         // Connect to existing notifications
         for (let [id, notification] of Object.entries(source._notifications)) {
             notification.connect('destroy', (notification, reason) => {
-                source._closeDeviceNotification(id, reason);
+                source._closeGSConnectNotification(id, reason);
             });
         }
     }
@@ -136,9 +137,8 @@ function patchGSConnectNotificationSource() {
 
 
 /**
- * It's necessary to override GtkNotificationDaemon._ensureAppSource() so that
- * we can create our custom notification source when the notification is coming
- * from GSConnect.
+ * It's necessary to override GtkNotificationDaemon._ensureAppSource() so we can
+ * create a custom notification source for handling GSConnect notifications.
  *
  * See: https://gitlab.gnome.org/GNOME/gnome-shell/blob/master/js/ui/notificationDaemon.js#L805-819
  */
@@ -176,5 +176,74 @@ function patchGtkNotificationDaemon() {
 
 function unpatchGtkNotificationDaemon() {
     NotificationDaemon.GtkNotificationDaemon.prototype._ensureAppSource = oldEnsureAppSource;
+}
+
+/**
+ * If there is an active GtkNotificationDaemonAppSource for GSConnect when the
+ * extension is loaded, it has to be patched in place.
+ *
+ * TODO: need less divergent overrides for regular notification sources
+ */
+var _addNotification = NotificationDaemon.GtkNotificationDaemonAppSource.prototype.addNotification;
+
+function patchGtkNotificationSources() {
+    let notificationDaemon = Main.notificationDaemon._gtkNotificationDaemon;
+
+    let _createGSConnectApp = function(callback) {
+        return new NotificationDaemon.FdoApplicationProxy(
+            Gio.DBus.session,
+            'org.gnome.Shell.Extensions.GSConnect',
+            '/org/gnome/Shell/Extensions/GSConnect',
+            callback
+        );
+    }
+
+    let _closeServiceNotification = function(id, notification, reason) {
+        if (reason !== MessageTray.NotificationDestroyedReason.DISMISSED) {
+            return;
+        }
+
+        // Avoid sending the request multiple times if destroy() is called on
+        // the notification more than once
+        if (notification._remoteWithdrawn) {
+            return;
+        }
+
+        notification._remoteWithdrawn = true;
+
+        this._createGSConnectApp((app, error) => {
+            // Bail on error and reset in case we can try again
+            if (error !== null) {
+                notification._remoteWithdrawn = false;
+                return;
+            }
+
+            // Recreate the notification id as it would've been sent
+            let target = new GLib.Variant('(ssbv)', [
+                '*',
+                'withdrawNotification',
+                true,
+                // Recreate the notification id as it would've been sent
+                new GLib.Variant('s', `gtk|${this._appId}|${id}`)
+            ]);
+
+            app.ActivateActionRemote(
+                'deviceAction',
+                [target],
+                NotificationDaemon.getPlatformData()
+            );
+        });
+    }
+
+    NotificationDaemon.GtkNotificationDaemonAppSource.prototype._closeGSConnectNotification = _closeServiceNotification;
+    NotificationDaemon.GtkNotificationDaemonAppSource.prototype._createGSConnectApp = _createGSConnectApp;
+    NotificationDaemon.GtkNotificationDaemonAppSource.prototype.addNotification = Source.prototype.addNotification;
+}
+
+
+function unpatchGtkNotificationSources() {
+    delete NotificationDaemon.GtkNotificationDaemonAppSource.prototype._closeGSConnectNotification;
+    delete NotificationDaemon.GtkNotificationDaemonAppSource.prototype._createGSConnectApp;
+    NotificationDaemon.GtkNotificationDaemonAppSource.prototype.addNotification = _addNotification;
 }
 

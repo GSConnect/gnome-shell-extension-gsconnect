@@ -15,6 +15,15 @@ var Metadata = {
     incomingCapabilities: ['kdeconnect.notification', 'kdeconnect.notification.request'],
     outgoingCapabilities: ['kdeconnect.notification', 'kdeconnect.notification.reply', 'kdeconnect.notification.request'],
     actions: {
+        withdrawNotification: {
+            summary: _('Cancel Notification'),
+            description: _('Close a local notification remotely by Id'),
+            icon_name: 'preferences-system-notifications-symbolic',
+
+            parameter_type: new GLib.VariantType('s'),
+            incoming: [],
+            outgoing: ['kdeconnect.notification']
+        },
         closeNotification: {
             summary: _('Close Notification'),
             description: _('Close a remote notification by Id'),
@@ -556,7 +565,7 @@ var Plugin = GObject.registerClass({
      *
      * @param {string} id - The local notification id
      */
-    cancelNotification(id) {
+    withdrawNotification(id) {
         debug(id)
 
         this.device.sendPacket({

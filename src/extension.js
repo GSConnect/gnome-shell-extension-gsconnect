@@ -375,6 +375,7 @@ function enable() {
     log('Enabling GSConnect');
 
     serviceIndicator = new ServiceIndicator();
+    Notification.patchGtkNotificationSources();
 }
 
 
@@ -383,5 +384,6 @@ function disable() {
 
     serviceIndicator.destroy();
     serviceIndicator = null;
+    Notification.unpatchGtkNotificationSources();
 }
 

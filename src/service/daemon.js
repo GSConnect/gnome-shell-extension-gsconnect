@@ -368,14 +368,17 @@ var Daemon = GObject.registerClass({
     _deviceAction(action, parameter) {
         parameter = parameter.unpack();
 
-        let device = this._devices.get(parameter[0].unpack());
+        let id = parameter[0].unpack();
+        let devices = (id === '*') ? this._devices.values() : [this._devices.get(id)];
 
-        // If the device is available
-        if (device) {
-            device.activate_action(
-                parameter[1].unpack(),
-                parameter[2].unpack() ? parameter[3].unpack() : null
-            );
+        for (let device of devices) {
+            // If the device is available
+            if (device) {
+                device.activate_action(
+                    parameter[1].unpack(),
+                    parameter[2].unpack() ? parameter[3].unpack() : null
+                );
+            }
         }
     }
 
