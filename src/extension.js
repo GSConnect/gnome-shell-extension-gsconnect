@@ -108,10 +108,10 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         }
     }
 
-    _setupObjManager(obj, res) {
+    async _setupObjManager(obj, res) {
         this.manager = Gio.DBusObjectManagerClient.new_finish(res);
 
-        this._startService();
+        await this._startService();
 
         // Setup currently managed objects
         for (let object of this.manager.get_objects()) {
@@ -139,7 +139,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         );
     }
 
-    _startService() {
+    async _startService() {
         // Prevent a hard hang if trying to start the service after it's been
         // uninstalled.
         let path = gsconnect.extdatadir + '/service/daemon.js';
@@ -154,12 +154,8 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
             gsconnect.app_path
         );
 
-        // This is how we actually activate the service
-        new Promise((resolve, reject) => {
-            resolve(this.service.list_actions())
-        }).then(result => {
-            this.extensionIndicator.visible = true;
-        }).catch(logError);
+        await this.service.list_actions();
+        this.extensionIndicator.visible = true;
     }
 
     _onNameOwnerChanged() {
@@ -180,7 +176,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         this._startService();
     }
 
-    _onInterfaceAdded(manager, object, iface) {
+    async _onInterfaceAdded(manager, object, iface) {
         let info = gsconnect.dbusinfo.lookup_interface(iface.g_interface_name);
 
         // We only setup properties for GSConnect interfaces
@@ -246,9 +242,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         }
     }
 
-    _onInterfaceRemoved(manager, object, iface) {
-        debug(iface.g_interface_name);
-
+    async _onInterfaceRemoved(manager, object, iface) {
         if (iface.g_interface_name === 'org.gnome.Shell.Extensions.GSConnect.Device') {
             log(`GSConnect: Removing ${iface.Name}`);
 
@@ -270,9 +264,9 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         }
     }
 
-    // TODO: The device's DBusObject is unexported in Device.destroy() before
+    // FIXME: The device's DBusObject is unexported in Device.destroy() before
     // the 'interface-removed' handler is resolved, so for now we catch it here.
-    _onObjectRemoved(manager, object) {
+    async _onObjectRemoved(manager, object) {
         for (let iface of this.devices) {
             if (iface.g_object_path === object.g_object_path) {
                 this._onInterfaceRemoved(manager, object, iface);
@@ -283,7 +277,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
     /**
      * Setup device keybindings
      */
-    _deviceKeybindings(iface) {
+    async _deviceKeybindings(iface) {
         // Reset grabbed accelerators
         if (iface.hasOwnProperty('_keybindings')) {
             iface._keybindings.map(id => this.keybindingManager.remove(id));
@@ -295,7 +289,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
             iface.settings.get_value('keybindings')
         );
 
-        // Backwards compatible check for old keybindings
+        // TODO: Backwards compatible check for keybindings <= v12
         if (typeof keybindings === 'string') {
             iface.settings.set_value(
                 'keybindings',
@@ -360,6 +354,8 @@ var serviceIndicator = null;
 function init() {
     debug('Initializing GSConnect');
 
+    Gtk.IconTheme.get_default().add_resource_path(gsconnect.app_path + '/icons');
+
     // If installed as a user extension, this will install the Desktop entry,
     // DBus and systemd service files necessary for DBus activation and
     // GNotifications. Since there's no uninit()/uninstall() hook for extensions
@@ -372,15 +368,14 @@ function init() {
     // to leave them applied.
     Notification.patchGSConnectNotificationSource();
     Notification.patchGtkNotificationDaemon();
-};
+}
 
 
 function enable() {
     log('Enabling GSConnect');
 
-    Gtk.IconTheme.get_default().add_resource_path(gsconnect.app_path + '/icons');
     serviceIndicator = new ServiceIndicator();
-};
+}
 
 
 function disable() {
@@ -388,5 +383,5 @@ function disable() {
 
     serviceIndicator.destroy();
     serviceIndicator = null;
-};
+}
 
