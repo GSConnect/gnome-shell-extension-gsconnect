@@ -153,7 +153,7 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
         return this._menu_model;
     }
 
-    _addGMenuItem(info) {
+    async _addGMenuItem(info) {
         let item = new ListBoxItem(info, this.action_group);
 
         item.connect('activate', (item) => {
@@ -171,7 +171,7 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
         this._menu_items.set(item.action_name, item);
     }
 
-    _addGMenuSection(model) {
+    async _addGMenuSection(model) {
         let section = new ListBox(this.parentActor, model, this.action_group);
         this.addMenuItem(section);
     }
@@ -179,7 +179,7 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
     _addGMenuSubmenu(model) {
     }
 
-    _onActionChanged(group, name, enabled) {
+    async _onActionChanged(group, name, enabled) {
         let menuItem = this._menu_items.get(name);
 
         if (menuItem !== undefined) {
@@ -193,7 +193,7 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
         }
     }
 
-    _onItemsChanged(model, position, removed, added) {
+    async _onItemsChanged(model, position, removed, added) {
         // Using ::items-changed is arduous and probably not worth the trouble
         this._menu_items.clear();
         this.removeAll();
@@ -425,7 +425,7 @@ var FlowBox = GObject.registerClass({
         this._menu_model = model
     }
 
-    _onActionChanged(group, name, enabled) {
+    async _onActionChanged(group, name, enabled) {
         let menuItem = this._menu_items.get(name);
 
         if (menuItem !== undefined) {
@@ -439,7 +439,7 @@ var FlowBox = GObject.registerClass({
         }
     }
 
-    _onItemsChanged(model, position, removed, added) {
+    async _onItemsChanged(model, position, removed, added) {
         while (removed > 0) {
             let button = this.get_child_at_index(position);
             this._menu_items.delete(button.action_name);
