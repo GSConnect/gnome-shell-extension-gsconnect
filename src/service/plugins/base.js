@@ -13,12 +13,7 @@ const Device = imports.service.device;
  * Base class for plugins
  */
 var Plugin = GObject.registerClass({
-    GTypeName: 'GSConnectPlugin',
-    Signals: {
-        'destroy': {
-            flags: GObject.SignalFlags.NO_HOOKS
-        }
-    }
+    GTypeName: 'GSConnectDevicePlugin'
 }, class Plugin extends GObject.Object {
 
     _init(device, name) {
@@ -54,11 +49,6 @@ var Plugin = GObject.registerClass({
                 }
             }
 
-            // We enabled/disable actions based on user settings
-            this.device.settings.connect(
-                'changed::action-blacklist',
-                this._changeAction.bind(this)
-            );
         }
     }
 
@@ -84,14 +74,6 @@ var Plugin = GObject.registerClass({
         } catch(e) {
             debug(e);
         }
-    }
-
-    _changeAction() {
-        let blacklist = this.device.settings.get_strv('action-blacklist');
-
-        this._gactions.map(action => {
-            action.set_enabled(!blacklist.includes(action.name));
-        });
     }
 
     _registerAction(name, meta, blacklist) {
@@ -222,8 +204,6 @@ var Plugin = GObject.registerClass({
      * The destroy function
      */
     destroy() {
-        this.emit('destroy');
-
         this._gactions.map(action => {
             this.device.menu.remove_action(`device.${action.name}`);
             this.device.remove_action(action.name);
@@ -233,8 +213,9 @@ var Plugin = GObject.registerClass({
             this._writeCache();
         }
 
-        GObject.signal_handlers_destroy(this.settings);
+        // Try to avoid any cyclic references from signal handlers
         GObject.signal_handlers_destroy(this);
+        GObject.signal_handlers_destroy(this.settings);
     }
 });
 
