@@ -41,6 +41,7 @@ const Core = imports.service.core;
 const Device = imports.service.device;
 const Lan = imports.service.lan;
 const Notification = imports.modules.notification;
+const ServiceUI = imports.service.ui.service;
 const Settings = imports.service.settings;
 const Sms = imports.modules.sms;
 const Sound = imports.modules.sound;
@@ -635,7 +636,7 @@ var Daemon = GObject.registerClass({
                 if (devices.length === 1) {
                     devices[0].activate_action(action, parameter);
                 } else if (devices.length > 1) {
-                    let win = new Settings.DeviceChooser({
+                    let win = new ServiceUI.DeviceChooserDialog({
                         title: title,
                         devices: devices
                     });

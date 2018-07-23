@@ -2,14 +2,109 @@
   <menu id="app-menu">
     <section>
       <item>
+        <attribute name="label" translatable="yes">Connect to…</attribute>
+        <attribute name="action">app.connect-device</attribute>
+      </item>
+      <item>
         <attribute name="label" translatable="yes">Preferences</attribute>
         <attribute name="action">app.openSettings</attribute>
+        <attribute name='hidden-when'>action-disabled</attribute>
       </item>
     </section>
     <section>
       <item>
         <attribute name="label" translatable="yes">About</attribute>
         <attribute name="action">app.about</attribute>
+      </item>
+    </section>
+  </menu>
+
+  <menu id="device-status">
+    <section>
+      <attribute name="display-hint">horizontal-buttons</attribute>
+      <item>
+        <attribute name="label" translatable="yes">Connect Bluetooth</attribute>
+        <attribute name="action">misc.connect-bluetooth</attribute>
+        <attribute name="verb-icon">bluetooth-symbolic</attribute>
+        <attribute name='hidden-when'>action-disabled</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Connect LAN</attribute>
+        <attribute name="action">misc.connect-lan</attribute>
+        <attribute name="verb-icon">network-wireless-symbolic</attribute>
+        <attribute name='hidden-when'>action-disabled</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Pair</attribute>
+        <attribute name="action">device.pair</attribute>
+        <attribute name="verb-icon">channel-insecure-symbolic</attribute>
+        <attribute name='hidden-when'>action-disabled</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Unpair</attribute>
+        <attribute name="action">device.unpair</attribute>
+        <attribute name="verb-icon">channel-secure-symbolic</attribute>
+        <attribute name='hidden-when'>action-disabled</attribute>
+      </item>
+    </section>
+  </menu>
+
+  <!-- Media Preferences - Incoming Call -->
+  <menu id="ringing-popover">
+    <section>
+      <attribute name="label" translatable="yes">System Volume</attribute>
+      <item>
+        <attribute name="label" translatable="yes">Nothing</attribute>
+        <attribute name="action">telephony.ringing-volume</attribute>
+        <attribute name="target">nothing</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Lower</attribute>
+        <attribute name="action">telephony.ringing-volume</attribute>
+        <attribute name="target">lower</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Mute</attribute>
+        <attribute name="action">telephony.ringing-volume</attribute>
+        <attribute name="target">mute</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">Pause Media</attribute>
+        <attribute name="action">telephony.ringing-pause</attribute>
+      </item>
+    </section>
+  </menu>
+
+  <!-- Media Preferences - In Progress Call -->
+  <menu id="talking-popover">
+    <section>
+      <attribute name="label" translatable="yes">System Volume</attribute>
+      <item>
+        <attribute name="label" translatable="yes">Nothing</attribute>
+        <attribute name="action">telephony.talking-volume</attribute>
+        <attribute name="target">nothing</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Lower</attribute>
+        <attribute name="action">telephony.talking-volume</attribute>
+        <attribute name="target">lower</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Mute</attribute>
+        <attribute name="action">telephony.talking-volume</attribute>
+        <attribute name="target">mute</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">Mute Microphone</attribute>
+        <attribute name="action">telephony.talking-microphone</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Pause Media</attribute>
+        <attribute name="action">telephony.talking-pause</attribute>
       </item>
     </section>
   </menu>
