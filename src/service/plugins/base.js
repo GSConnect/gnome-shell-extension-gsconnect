@@ -24,6 +24,8 @@ var Plugin = GObject.registerClass({
     _init(device, name) {
         super._init();
 
+        this.service = Gio.Application.get_default();
+
         this._device = device;
         this._name = name;
         this._meta = imports.service.plugins[name].Metadata;
@@ -39,15 +41,15 @@ var Plugin = GObject.registerClass({
 
         if (this._meta.actions) {
             // Register based on device capabilities, which shouldn't change
-            let deviceHandles = this.device.incomingCapabilities;
-            let deviceProvides = this.device.outgoingCapabilities;
+            let deviceHandles = this.device.settings.get_strv('incoming-capabilities');
+            let deviceProvides = this.device.settings.get_strv('outgoing-capabilities');
             let blacklist = this.device.settings.get_strv('action-blacklist');
 
             for (let name in this._meta.actions) {
                 let meta = this._meta.actions[name];
 
-                if (meta.incoming.every(p => deviceProvides.indexOf(p) > -1) &&
-                    meta.outgoing.every(p => deviceHandles.indexOf(p) > -1)) {
+                if (meta.incoming.every(p => deviceProvides.includes(p)) &&
+                    meta.outgoing.every(p => deviceHandles.includes(p))) {
                     this._registerAction(name, meta, blacklist);
                 }
             }
@@ -58,6 +60,14 @@ var Plugin = GObject.registerClass({
                 this._changeAction.bind(this)
             );
         }
+    }
+
+    get device() {
+        return this._device;
+    }
+
+    get name() {
+        return this._name;
     }
 
     _activateAction(action, parameter) {
@@ -104,14 +114,6 @@ var Plugin = GObject.registerClass({
         }
 
         this._gactions.push(action);
-    }
-
-    get device() {
-        return this._device;
-    }
-
-    get name() {
-        return this._name;
     }
 
     /**
