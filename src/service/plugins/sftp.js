@@ -333,7 +333,7 @@ var Plugin = GObject.registerClass({
     }
 
     _removeSubmenu() {
-        let index = this.device.menu.remove_named(_('List Folders'));
+        let index = this.device.menu.remove_labeled(_('List Folders'));
         this.device.menu.add_action(this.device.lookup_action('mount'), index);
     }
 
