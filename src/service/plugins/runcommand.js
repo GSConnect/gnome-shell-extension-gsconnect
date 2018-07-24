@@ -70,10 +70,7 @@ var Plugin = GObject.registerClass({
             'changed::share-commands',
             this.sendCommandList.bind(this)
         );
-        this.sendCommandList();
 
-        // Remote Commands
-        this.requestCommandList();
         // We cache remote commands so they can be used in the settings even
         // when the device is offline.
         this._remote_commands = {};

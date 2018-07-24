@@ -1174,7 +1174,6 @@ var Device = GObject.registerClass({
             'changed::keybindings',
             this._populateKeybindings.bind(this)
         );
-        this._populateKeybindings();
 
         this.shortcuts_actions_list.set_header_func(section_separators);
         this.shortcuts_actions_list.set_sort_func((row1, row2) => {
@@ -1185,6 +1184,8 @@ var Device = GObject.registerClass({
         this.shortcuts_commands_list.set_sort_func((row1, row2) => {
             return row1.title.localeCompare(row2.title);
         });
+
+        this._populateKeybindings();
     }
 
     async _populateKeybindings() {
@@ -1284,7 +1285,7 @@ var Device = GObject.registerClass({
         let remoteCommands = (runcommand) ? runcommand.remote_commands : {};
         let hasCommands = (Object.keys(remoteCommands).length > 0);
         this.shortcuts_commands_title.visible = hasCommands;
-        this.shortcuts_commands_list.visible = hasCommands;
+        this.shortcuts_commands.visible = hasCommands;
 
         for (let uuid in remoteCommands) {
             let command = remoteCommands[uuid];

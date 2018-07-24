@@ -57,8 +57,6 @@ var Plugin = GObject.registerClass({
     }
 
     handlePacket(packet) {
-        debug(packet);
-
         if (packet.body.requestPlayerList) {
             this._sendPlayerList();
         } else if (packet.body.hasOwnProperty('player')) {
