@@ -177,8 +177,6 @@ var Icon = GObject.registerClass({
             () => this.queue_repaint()
         );
 
-        this.connect('repaint', this._draw.bind(this));
-
         // Cleanup
         this.connect('destroy', (actor) => {
             actor.device.disconnect(actor._propertiesId);
@@ -230,7 +228,7 @@ var Icon = GObject.registerClass({
         }
     }
 
-    _draw() {
+    vfunc_repaint() {
         if (!this.visible) { return; }
 
         let [width, height] = this.get_surface_size();
