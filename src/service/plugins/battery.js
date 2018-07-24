@@ -80,8 +80,6 @@ var Plugin = GObject.registerClass({
             '_thresholdLevel'
         ]);
 
-        this.batteryRequest();
-
         // Local Battery (UPower)
         this._sendStatisticsId = this.settings.connect(
             'changed::send-statistics',
@@ -226,10 +224,6 @@ var Plugin = GObject.registerClass({
      * @param {object} update - The body of a kdeconnect.battery packet
      */
     _handleUpdate(update) {
-        if (update.thresholdEvent > 0) {
-            this._handleThreshold();
-        }
-
         if (this._charging !== update.isCharging) {
             this._charging = update.isCharging;
             this.notify('charging');
@@ -244,6 +238,10 @@ var Plugin = GObject.registerClass({
             }
         }
 
+        if (update.thresholdEvent > 0) {
+            this._handleThreshold();
+        }
+
         this._logStatus(update.currentCharge, update.isCharging);
 
         this._time = this._extrapolateTime();
@@ -255,7 +253,7 @@ var Plugin = GObject.registerClass({
      * UPower monitoring methods
      */
     _monitor() {
-        if (this.device.service.type !== 'laptop' || this._upower) {
+        if (this.service.type !== 'laptop' || this._upower) {
             return;
         } else if (!this.device.get_incoming_supported('battery')) {
             debug('incoming battery statistics not supported', this.device.name);
