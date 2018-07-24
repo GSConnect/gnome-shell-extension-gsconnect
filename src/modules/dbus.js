@@ -150,24 +150,13 @@ var Interface = GObject.registerClass({
 
         // Bind Object
         let info = this.get_info();
-
-        switch (true) {
-            case (info.methods.length > 0):
-                this._exportMethods(info);
-
-            case (info.properties.length > 0):
-                this._exportProperties(info);
-
-            case (info.signals.length > 0):
-                this._exportSignals(info);
-        }
+        this._exportMethods(info);
+        this._exportProperties(info);
+        this._exportSignals(info);
 
         // Export if connection and object path were given
         if (params.g_connection && params.g_object_path) {
-            this.export(
-                params.g_connection,
-                params.g_object_path
-            );
+            this.export(params.g_connection, params.g_object_path);
         }
     }
 
@@ -210,10 +199,12 @@ var Interface = GObject.registerClass({
                 invocation.return_gerror(e);
             } else {
                 let name = e.name;
-                if (name.indexOf('.') < 0) {
+
+                if (name.includes('.')) {
                     // likely to be a normal JS error
                     name = `org.gnome.gjs.JSError.${name}`;
                 }
+
                 logError(e, `Exception in method call: ${memberName}`);
                 invocation.return_dbus_error(name, e.message);
             }
@@ -246,7 +237,11 @@ var Interface = GObject.registerClass({
         }
     }
 
-    _exportMethods() {
+    _exportMethods(info) {
+        if (info.methods.length === 0) {
+            return;
+        }
+
         this.connect('handle-method-call', (impl, name, parameters, invocation) => {
             return this._call.call(
                 this._exportee,
@@ -288,6 +283,10 @@ var Interface = GObject.registerClass({
     }
 
     _exportProperties(info) {
+        if (info.properties.length === 0) {
+            return;
+        }
+
         this.connect('handle-property-get', (impl, name) => {
             return this._get.call(this._exportee, info, name);
         });

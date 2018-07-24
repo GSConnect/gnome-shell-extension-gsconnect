@@ -140,11 +140,11 @@ var Listener = class Listener {
 
             // Become a monitor for Fdo & Gtk notifications
             this._connection.call(
-                "org.freedesktop.DBus",
-                "/org/freedesktop/DBus",
-                "org.freedesktop.DBus.Monitoring",
-                "BecomeMonitor",
-                new GLib.Variant("(asu)", [[fdoMatch, gtkMatch], 0]),
+                'org.freedesktop.DBus',
+                '/org/freedesktop/DBus',
+                'org.freedesktop.DBus.Monitoring',
+                'BecomeMonitor',
+                new GLib.Variant('(asu)', [[fdoMatch, gtkMatch], 0]),
                 null,
                 Gio.DBusCallFlags.NONE,
                 -1,
@@ -166,7 +166,7 @@ var Listener = class Listener {
             await this._helloConnection();
             await this._monitorConnection();
         } catch (e) {
-            logError(e);
+            logError(e, 'Notification Listener');
         }
     }
 
