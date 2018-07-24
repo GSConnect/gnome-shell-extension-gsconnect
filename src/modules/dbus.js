@@ -134,12 +134,7 @@ function dbus_variant_to_gtype(types) {
  * all members to TitleCase.
  */
 var Interface = GObject.registerClass({
-    GTypeName: 'GSConnectDBusInterface',
-    Signals: {
-        'destroy': {
-            flags: GObject.SignalFlags.NO_HOOKS
-        }
-    }
+    GTypeName: 'GSConnectDBusInterface'
 }, class Interface extends GjsPrivate.DBusImplementation {
 
     _init(params) {
@@ -156,9 +151,16 @@ var Interface = GObject.registerClass({
         // Bind Object
         let info = this.get_info();
 
-        this._exportMethods(info);
-        this._exportProperties(info);
-        this._exportSignals(info);
+        switch (true) {
+            case (info.methods.length > 0):
+                this._exportMethods(info);
+
+            case (info.properties.length > 0):
+                this._exportProperties(info);
+
+            case (info.signals.length > 0):
+                this._exportSignals(info);
+        }
 
         // Export if connection and object path were given
         if (params.g_connection && params.g_object_path) {
@@ -192,7 +194,7 @@ var Interface = GObject.registerClass({
         let retval;
 
         try {
-            let params = parameters.unpack().map(parameter => {
+            parameters = parameters.unpack().map(parameter => {
                 if (parameter.get_type_string() === 'h') {
                     let fds = invocation.get_message().get_unix_fd_list();
                     let idx = parameter.deep_unpack();
@@ -202,7 +204,7 @@ var Interface = GObject.registerClass({
                 }
             });
 
-            retval = this[nativeName].apply(this, params);
+            retval = this[nativeName].apply(this, parameters);
         } catch (e) {
             if (e instanceof GLib.Error) {
                 invocation.return_gerror(e);
@@ -326,7 +328,6 @@ var Interface = GObject.registerClass({
     }
 
     destroy() {
-        this.emit('destroy');
         this.flush();
         this.unexport();
         GObject.signal_handlers_destroy(this);
@@ -465,9 +466,6 @@ function proxyMethods(iface, info) {
 }
 
 
-var Proxies = {};
-
-
 var ProxyBase = GObject.registerClass({
     GTypeName: 'GSConnectDBusProxyBase',
     Signals: {
@@ -510,6 +508,12 @@ var ProxyBase = GObject.registerClass({
 
 
 /**
+ * We store built proxies to avoid unnecessary work
+ */
+var Proxies = {};
+
+
+/**
  * Return a DBusProxy class prepped with GProperties, GSignals...
  * based on @info
  * @param {Gio.DBusInterfaceInfo} info - The supported interface
@@ -534,42 +538,49 @@ function makeInterfaceProxy(info) {
             flags |= GObject.ParamFlags.WRITABLE;
         }
 
-        if (property.signature === 'b') {
-            properties_[property.name] = GObject.ParamSpec.boolean(
-                property.name,
-                property.name,
-                property.name + ': automatically populated',
-                flags,
-                false
-            );
-        } else if ('sog'.indexOf(property.signature) > -1) {
-            properties_[property.name] = GObject.ParamSpec.string(
-                property.name,
-                property.name,
-                property.name + ': automatically populated',
-                flags,
-                ''
-            );
-        // TODO: all number types are converted to Number which is a double,
-        //       but there may be a case where type is relevant on the proxy
-        } else if ('hiuxtd'.indexOf(property.signature) > -1) {
-            properties_[property.name] = GObject.ParamSpec.double(
-                property.name,
-                property.name,
-                property.name + ': automatically populated',
-                flags,
-                GLib.MININT32, GLib.MAXINT32,
-                0.0
-            );
-        } else {
-            properties_[property.name] = GObject.param_spec_variant(
-                property.name,
-                property.name,
-                property.name + ': automatically populated',
-                new GLib.VariantType(property.signature),
-                null,
-                flags
-            );
+        switch (true) {
+            case (property.signature === 'b'):
+                properties_[property.name] = GObject.ParamSpec.boolean(
+                    property.name,
+                    property.name,
+                    property.name + ': automatically populated',
+                    flags,
+                    false
+                );
+                break;
+
+            case 'sog'.includes(property.signature):
+                properties_[property.name] = GObject.ParamSpec.string(
+                    property.name,
+                    property.name,
+                    property.name + ': automatically populated',
+                    flags,
+                    ''
+                );
+                break;
+
+            // TODO: all number types are converted to Number which is a double,
+            //       but there may be a case where type is relevant on the proxy
+            case 'hiuxtd'.includes(property.signature):
+                properties_[property.name] = GObject.ParamSpec.double(
+                    property.name,
+                    property.name,
+                    property.name + ': automatically populated',
+                    flags,
+                    GLib.MININT32, GLib.MAXINT32,
+                    0.0
+                );
+                break;
+
+            default:
+                properties_[property.name] = GObject.param_spec_variant(
+                    property.name,
+                    property.name,
+                    property.name + ': automatically populated',
+                    new GLib.VariantType(property.signature),
+                    null,
+                    flags
+                );
         }
     }
 
@@ -597,17 +608,17 @@ function makeInterfaceProxy(info) {
                 g_interface_info: info,
                 g_interface_name: info.name
             }, params));
+        }
 
-            this.connect('g-properties-changed', (proxy, properties) => {
-                for (let name in properties.deep_unpack()) {
-                    proxy.notify(name);
-                }
-            });
+        vfunc_g_properties_changed(changed, invalidated) {
+            for (let name in changed.deep_unpack()) {
+                this.notify(name);
+            }
+        }
 
-            this.connect('g-signal', (proxy, sender, name, parameters) => {
-                let args = [name].concat(parameters.deep_unpack());
-                proxy.emit(...args);
-            });
+        vfunc_g_signal(sender, name, parameters) {
+            let args = [name].concat(parameters.deep_unpack());
+            this.emit(...args);
         }
     });
 
