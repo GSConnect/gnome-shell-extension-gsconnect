@@ -1002,14 +1002,14 @@ var Device = GObject.registerClass({
         let settings = this._getSettings('notification');
 
         settings.bind(
-            'share-notifications',
+            'send-notifications',
             this.share_notifications,
             'active',
             Gio.SettingsBindFlags.DEFAULT
         );
 
         settings.bind(
-            'share-notifications',
+            'send-notifications',
             this.notification_apps,
             'sensitive',
             Gio.SettingsBindFlags.DEFAULT

@@ -87,6 +87,13 @@ var Plugin = GObject.registerClass({
 
         // Duplicate tracking of telephony notifications
         this._duplicates = new Map();
+
+        this.settings.bind(
+            'send-notifications',
+            this.device.lookup_action('sendNotification'),
+            'enabled',
+            Gio.SettingsBindFlags.GET
+        );
     }
 
     handlePacket(packet) {

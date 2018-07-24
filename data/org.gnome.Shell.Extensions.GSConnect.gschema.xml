@@ -140,6 +140,9 @@
     </key>
   </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Notification">
+    <key name="send-notifications" type="b">
+      <default>true</default>
+    </key>
     <key name="applications" type="s">
       <default>'{}'</default>
     </key>
