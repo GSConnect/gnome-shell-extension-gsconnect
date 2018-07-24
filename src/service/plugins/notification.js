@@ -87,9 +87,6 @@ var Plugin = GObject.registerClass({
 
         // Duplicate tracking of telephony notifications
         this._duplicates = new Map();
-
-        // Request remote notifications (if permitted)
-        this.requestNotifications();
     }
 
     handlePacket(packet) {
@@ -143,11 +140,11 @@ var Plugin = GObject.registerClass({
 
             switch (type) {
                 case 'fdo':
-                    this.device.service.remove_notification(parseInt(id));
+                    this.service.remove_notification(parseInt(id));
                     break;
 
                 case 'gtk':
-                    this.device.service.remove_notification(id, application);
+                    this.service.remove_notification(id, application);
                     break;
 
                 default:
@@ -222,8 +219,6 @@ var Plugin = GObject.registerClass({
             default:
                 this.device.sendPacket(packet);
         }
-
-        return;
     }
 
     /**
@@ -295,7 +290,7 @@ var Plugin = GObject.registerClass({
      * @param {number} size - Size of the icon in bytes
      * @param {string} checksum - MD5 hash of the icon data
      */
-    _uploadIconStream(packet, stream, size, checksum) {
+    async _uploadIconStream(packet, stream, size, checksum) {
         if (this.device.connection_type === 'tcp') {
             let transfer = new Lan.Transfer({
                 device: this.device,
@@ -304,14 +299,13 @@ var Plugin = GObject.registerClass({
             });
 
             transfer.connect('connected', (channel) => transfer.start());
+            let port = await transfer.upload();
 
-            transfer.upload().then(port => {
-                packet.payloadSize = size;
-                packet.payloadTransferInfo = { port: port };
-                packet.body.payloadHash = checksum;
+            packet.payloadSize = size;
+            packet.payloadTransferInfo = { port: port };
+            packet.body.payloadHash = checksum;
 
-                this.device.sendPacket(packet);
-            });
+            this.device.sendPacket(packet);
 
         // TODO: skipping icons for bluetooth connections currently
         } else if (this.device.connection_type === 'bluetooth') {
@@ -383,12 +377,14 @@ var Plugin = GObject.registerClass({
         return new Promise((resolve, reject) => {
             if (!packet.hasOwnProperty('payloadTransferInfo')) {
                 resolve(null);
+                return;
             }
 
             let iconStream = Gio.MemoryOutputStream.new_resizable();
+            let transfer;
 
             if (packet.payloadTransferInfo.hasOwnProperty('port')) {
-                let transfer = new Lan.Transfer({
+                transfer = new Lan.Transfer({
                     device: this.device,
                     size: packet.payloadSize,
                     checksum: packet.body.payloadHash,
@@ -514,18 +510,18 @@ var Plugin = GObject.registerClass({
             }
         }
 
-        // Ignore 'appName' if it's the same as 'title'
-        if (packet.body.appName === packet.body.title) {
-            title = packet.body.title;
-            body = packet.body.text;
         // Emulate a 'missedCall' notification
-        } else if (isMissedCall) {
+        if (isMissedCall) {
             id = packet.body.ticker;
             title = packet.body.text;
             body = _('Missed call from %s').format(packet.body.text);
         // Emulate an 'sms' notification
         } else if (isSms) {
             id = packet.body.ticker;
+            title = packet.body.title;
+            body = packet.body.text;
+        // Ignore 'appName' if it's the same as 'title'
+        } else if (packet.body.appName === packet.body.title) {
             title = packet.body.title;
             body = packet.body.text;
         // Otherwise use the appName as the title
