@@ -105,9 +105,11 @@ var Window = GObject.registerClass({
         }
 
         if (this.packet_direction.active_id === 'incoming') {
-            device.incomingCapabilities.map(c => this.packet_type.append(c, c));
+            let incoming = device.settings.get_strv('incoming-capabilities');
+            incoming.map(c => this.packet_type.append(c, c));
         } else if (this.packet_direction.active_id === 'outgoing') {
-            device.outgoingCapabilities.map(c => this.packet_type.append(c, c));
+            let outgoing = device.settings.get_strv('outgoing-capabilities');
+            outgoing.map(c => this.packet_type.append(c, c));
         }
 
         this.packet_type.active = 0;
@@ -346,7 +348,7 @@ var Window = GObject.registerClass({
     clearNotificationCache(device) {
         if (!device) {
             for (let device of this.application._devices.values()) {
-                let notification = device._plugins.get('notification');
+                let notification = device.lookup_plugin('notification');
 
                 if (notification) {
                     notification.clearCache();
