@@ -209,7 +209,11 @@ var Daemon = GObject.registerClass({
     }
 
     /**
-     * Device Methods
+     * Return a device for @packet, creating it and adding it to the list of
+     * of known devices if it doesn't exist.
+     *
+     * @param {kdeconnect.identity} packet - An identity packet for the device
+     * @return {Device.Device} - A device object
      */
     _ensureDevice(packet) {
         let device = this._devices.get(packet.body.deviceId);
@@ -324,6 +328,10 @@ var Daemon = GObject.registerClass({
         Gio.AppInfo.launch_default_for_uri(unescape(path), null);
     }
 
+    _connectDeviceAction() {
+        (new ServiceUI.DeviceConnectDialog()).show_all();
+    }
+
     _aboutAction() {
         if (this._about === undefined) {
             this._about = new Gtk.AboutDialog({
@@ -390,6 +398,7 @@ var Daemon = GObject.registerClass({
             // Device
             ['deviceAction', this._deviceAction.bind(this), '(ssbv)'],
             // Daemon
+            ['connectDevice', this._connectDeviceAction.bind(this)],
             ['broadcast', this.broadcast.bind(this)],
             ['openSettings', this.openSettings.bind(this)],
             ['cancelTransfer', this._cancelTransferAction.bind(this), '(ss)'],

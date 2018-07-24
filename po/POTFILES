@@ -1,5 +1,6 @@
 data/conversation-window.ui
 data/device.ui
+data/menus.ui
 data/settings.ui
 data/shortcut-editor.ui
 src/extension.js

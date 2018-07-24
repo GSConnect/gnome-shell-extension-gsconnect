@@ -3,7 +3,7 @@
     <section>
       <item>
         <attribute name="label" translatable="yes">Connect to…</attribute>
-        <attribute name="action">app.connect-device</attribute>
+        <attribute name="action">app.connectDevice</attribute>
       </item>
       <item>
         <attribute name="label" translatable="yes">Preferences</attribute>

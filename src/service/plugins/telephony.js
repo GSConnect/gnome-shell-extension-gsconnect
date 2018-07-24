@@ -261,15 +261,21 @@ var Plugin = GObject.registerClass({
                 break;
 
             case 'missedCall':
-                this._onMissedCall(packet);
+                if (this.settings.get_boolean('handle-calls')) {
+                    this._onMissedCall(packet);
+                }
                 break;
 
             case 'ringing':
-                this._onRinging(packet);
+                if (this.settings.get_boolean('handle-calls')) {
+                    this._onRinging(packet);
+                }
                 break;
 
             case 'talking':
-                this._onTalking(packet);
+                if (this.settings.get_boolean('handle-calls')) {
+                    this._onTalking(packet);
+                }
                 break;
         }
     }
@@ -292,7 +298,7 @@ var Plugin = GObject.registerClass({
                 contact.avatar,
                 GLib.base64_decode(packet.body.phoneThumbnail)
             );
-            this.contacts._writeCache();
+            this.contacts.notify('contacts');
         }
     }
 
@@ -307,7 +313,7 @@ var Plugin = GObject.registerClass({
         number = number.replace(/\D/g, '');
 
         // Look for an open window with this contact
-        for (let win of this.device.service.get_windows()) {
+        for (let win of this.service.get_windows()) {
             if (!win.device || win.device.id !== this.device.id) {
                 continue;
             }
@@ -359,7 +365,7 @@ var Plugin = GObject.registerClass({
      * Update the conversations in any open windows for this device.
      */
     _updateConversations() {
-        for (let window of this.device.service.get_windows()) {
+        for (let window of this.service.get_windows()) {
             let isConversation = (window instanceof Sms.ConversationWindow);
 
             if (isConversation && window.device === this.device) {
@@ -684,7 +690,7 @@ var Plugin = GObject.registerClass({
      */
     shareSms(url) {
         // Get the current open windows
-        let windows = this.device.service.get_windows();
+        let windows = this.service.get_windows();
         let hasConversations = false;
 
         for (let index_ in windows) {
