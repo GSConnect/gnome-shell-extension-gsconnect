@@ -184,50 +184,57 @@ Object.defineProperties(Gio.Menu.prototype, {
 
 
 /**
- * Extend Gio.TlsCertificate with a method for computing a SHA1 fingerprint.
- * See: https://gitlab.gnome.org/GNOME/glib/issues/1290
- *
- * @return {string} - A SHA1 fingerprint of the certificate.
+ * Extend Gio.TlsCertificate with some convenience methods
  */
-Gio.TlsCertificate.prototype.fingerprint = function() {
-    if (!this.__fingerprint) {
-        let proc = new Gio.Subprocess({
-            argv: ['openssl', 'x509', '-noout', '-fingerprint', '-sha1', '-inform', 'pem'],
-            flags: Gio.SubprocessFlags.STDIN_PIPE | Gio.SubprocessFlags.STDOUT_PIPE
-        });
-        proc.init(null);
+Object.defineProperties(Gio.TlsCertificate.prototype, {
+    /**
+     * Compute a SHA1 fingerprint of the certificate.
+     * See: https://gitlab.gnome.org/GNOME/glib/issues/1290
+     *
+     * @return {string} - A SHA1 fingerprint of the certificate.
+     */
+    'fingerprint': {
+        value: function() {
+            if (!this.__fingerprint) {
+                let proc = new Gio.Subprocess({
+                    argv: ['openssl', 'x509', '-noout', '-fingerprint', '-sha1', '-inform', 'pem'],
+                    flags: Gio.SubprocessFlags.STDIN_PIPE | Gio.SubprocessFlags.STDOUT_PIPE
+                });
+                proc.init(null);
 
-        let stdout = proc.communicate_utf8(this.certificate_pem, null)[1];
-        this.__fingerprint = /[a-zA-Z0-9\:]{59}/.exec(stdout)[0];
+                let stdout = proc.communicate_utf8(this.certificate_pem, null)[1];
+                this.__fingerprint = /[a-zA-Z0-9\:]{59}/.exec(stdout)[0];
 
-        proc.wait_check(null);
-    }
+                proc.wait_check(null);
+            }
 
-    return this.__fingerprint;
-};
-
-
-/**
- * Extend Gio.TlsCertificate with a property holding the common name.
- */
-Object.defineProperty(Gio.TlsCertificate.prototype, 'common_name', {
-    get: function() {
-        if (!this.__common_name) {
-            let proc = new Gio.Subprocess({
-                argv: ['openssl', 'x509', '-noout', '-subject', '-inform', 'pem'],
-                flags: Gio.SubprocessFlags.STDIN_PIPE | Gio.SubprocessFlags.STDOUT_PIPE
-            });
-            proc.init(null);
-
-            let stdout = proc.communicate_utf8(this.certificate_pem, null)[1];
-            this.__common_name = /[a-zA-Z0-9\-]{36}/.exec(stdout)[0];
-
-            proc.wait_check(null);
-        }
-
-        return this.__common_name;
+            return this.__fingerprint;
+        },
+        enumerable: false
     },
-    enumerable: true
+
+    /**
+     * The common name of the certificate.
+     */
+    'common_name': {
+        get: function() {
+            if (!this.__common_name) {
+                let proc = new Gio.Subprocess({
+                    argv: ['openssl', 'x509', '-noout', '-subject', '-inform', 'pem'],
+                    flags: Gio.SubprocessFlags.STDIN_PIPE | Gio.SubprocessFlags.STDOUT_PIPE
+                });
+                proc.init(null);
+
+                let stdout = proc.communicate_utf8(this.certificate_pem, null)[1];
+                this.__common_name = /[a-zA-Z0-9\-]{36}/.exec(stdout)[0];
+
+                proc.wait_check(null);
+            }
+
+            return this.__common_name;
+        },
+        enumerable: true
+    }
 });
 
 
