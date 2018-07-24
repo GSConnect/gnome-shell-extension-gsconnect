@@ -289,13 +289,13 @@ var Daemon = GObject.registerClass({
                 gsconnect.settings.set_strv('devices', cached);
             }
 
+            // Stash the settings path before unpairing and removing
+            let settings_path = device.settings.path;
             device.unpair();
             this._removeDevice(id);
 
             // Delete all GSettings
-            GLib.spawn_command_line_async(
-                `dconf reset -f /org/gnome/shell/extensions/gsconnect/device/${id}/`
-            );
+            GLib.spawn_command_line_async(`dconf reset -f ${settings_path}`);
 
             // Delete the cache
             let cache = GLib.build_filenamev([gsconnect.cachedir, id]);
