@@ -98,50 +98,5 @@
       <arg type="s" direction="in"/>
     </method>
   </interface>
-
-  <!-- Gnome Shell (org.gnome.Shell) -->
-  <interface name="org.gnome.Shell">
-    <method name="Eval">
-      <arg type="s" name="script" direction="in" />
-      <arg type="b" name="success" direction="out" />
-      <arg type="s" name="result" direction="out" />
-    </method>
-    <method name="FocusSearch" />
-    <method name="ShowOSD">
-      <arg type="a{sv}" name="params" direction="in" />
-    </method>
-    <method name="ShowMonitorLabels">
-      <arg type="a{uv}" name="params" direction="in" />
-    </method>
-    <method name="ShowMonitorLabels2">
-      <arg type="a{sv}" name="params" direction="in" />
-    </method>
-    <method name="HideMonitorLabels">
-    </method>
-    <method name="FocusApp">
-      <arg type="s" name="id" direction="in" />
-    </method>
-    <method name="ShowApplications" />
-    <method name="GrabAccelerator">
-      <arg type="s" name="accelerator" direction="in" />
-      <arg type="u" name="flags" direction="in" />
-      <arg type="u" name="action" direction="out" />
-    </method>
-    <method name="GrabAccelerators">
-      <arg type="a(su)" name="accelerators" direction="in" />
-      <arg type="au" name="actions" direction="out" />
-    </method>
-    <method name="UngrabAccelerator">
-      <arg type="u" name="action" direction="in" />
-      <arg type="b" name="success" direction="out" />
-    </method>
-    <signal name="AcceleratorActivated">
-      <arg type="u" name="action" />
-      <arg type="a{sv}" name="parameters" />
-    </signal>
-    <property type="s" name="Mode" access="read" />
-    <property type="b" name="OverviewActive" access="readwrite" />
-    <property type="s" name="ShellVersion" access="read" />
-  </interface>
 </node>
 
