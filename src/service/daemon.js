@@ -41,10 +41,11 @@ const Core = imports.service.core;
 const Device = imports.service.device;
 const Lan = imports.service.lan;
 const Notification = imports.modules.notification;
-const ServiceUI = imports.service.ui.service;
-const Settings = imports.service.settings;
 const Sms = imports.modules.sms;
 const Sound = imports.modules.sound;
+
+const ServiceUI = imports.service.ui.service;
+const Settings = imports.service.ui.settings;
 
 
 var Daemon = GObject.registerClass({
