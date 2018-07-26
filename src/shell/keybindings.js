@@ -33,7 +33,11 @@ var Manager = class Manager {
 
     _onAcceleratorActivated(display, action, deviceId, timestamp) {
         try {
-            this._keybindings.get(action).callback();
+            let binding = this._keybindings.get(action);
+
+            if (binding !== undefined) {
+                binding.callback();
+            }
         } catch (e) {
             logError(e);
         }
