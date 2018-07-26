@@ -490,22 +490,9 @@ var Channel = GObject.registerClass({
 var Transfer = GObject.registerClass({
     GTypeName: 'GSConnectCoreTransfer',
     Signals: {
-        'started': {
-            flags: GObject.SignalFlags.RUN_FIRST
-        },
         'progress': {
             flags: GObject.SignalFlags.RUN_FIRST,
             param_types: [ GObject.TYPE_INT ]
-        },
-        'cancelled': {
-            flags: GObject.SignalFlags.RUN_FIRST
-        },
-        'failed': {
-            flags: GObject.SignalFlags.RUN_FIRST,
-            param_types: [ GObject.TYPE_STRING ]
-        },
-        'succeeded': {
-            flags: GObject.SignalFlags.RUN_FIRST
         }
     },
     Properties: {
@@ -548,6 +535,8 @@ var Transfer = GObject.registerClass({
         this._checksum = new GLib.Checksum(GLib.ChecksumType.MD5);
         this._written = 0;
         this._progress = 0;
+
+        this.device._transfers.set(this.uuid, this);
     }
 
     get device() {
@@ -559,7 +548,7 @@ var Transfer = GObject.registerClass({
     }
 
     get uuid() {
-        if (!this._uuid) {
+        if (this._uuid === undefined) {
             this._uuid = GLib.uuid_string_random();
         }
 
@@ -570,23 +559,14 @@ var Transfer = GObject.registerClass({
      * Override in protocol implementation
      */
     async upload() {
-    }
-
-    async upload_accept() {
+        throw new GObject.NotImplementedError();
     }
 
     /**
      * Override in protocol implementation
      */
     async download() {
-    }
-
-    /**
-     * Start the transfer and emit the 'started' signal
-     */
-    start() {
-        this.emit('started');
-        this._read();
+        throw new GObject.NotImplementedError();
     }
 
     /**
@@ -594,7 +574,11 @@ var Transfer = GObject.registerClass({
      */
     cancel() {
         this._cancellable.cancel();
-        this.emit('cancelled');
+    }
+
+    close() {
+        super.close();
+        this.device._transfers.delete(this.uuid);
     }
 
     /**
@@ -611,66 +595,43 @@ var Transfer = GObject.registerClass({
         this._progress = progress;
     }
 
-    _read() {
-        if (this._cancellable.is_cancelled()) { return; }
+    /**
+     * For transfers without a checksum (currently all but notification icons)
+     * we use g_output_stream_splice() which basically loops our read/writes
+     * in 8192 byte chunks.
+     *
+     * @return {Boolean} - %true on success, %false on failure.
+     */
+    async _transfer() {
+        let result;
 
-        this.input_stream.read_bytes_async(
-            4096,
-            GLib.PRIORITY_DEFAULT,
-            this._cancellable,
-            (source, res) => {
-                let bytes;
-
-                try {
-                    bytes = source.read_bytes_finish(res);
-                } catch (e) {
-                    debug(e);
-                    this.emit('failed', e.message);
-                    return;
-                }
-
-                // Data to write
-                if (bytes.get_size()) {
-                    this._write(bytes);
-                    this._checksum.update(bytes.unref_to_array());
-                // Expected more data
-                } else if (this.size > this._written) {
-                    this.close();
-                    this.emit('failed', 'Incomplete transfer');
-                // Data should match the checksum
-                } else if (this.checksum && this.checksum !== this._checksum.get_string()) {
-                    this.close();
-                    this.emit('failed', 'Checksum mismatch');
-                // All done
-                } else {
-                    debug('Completed transfer of ' + this.size + ' bytes');
-                    this.close();
-                    this.emit('succeeded');
-                }
-            }
-        );
-    }
-
-    _write(bytes) {
-        if (this._cancellable.is_cancelled()) { return; }
-
-        this.output_stream.write_bytes_async(
-            bytes,
-            GLib.PRIORITY_DEFAULT,
-            this._cancellable,
-            (source, res) => {
-                try {
-                    this._written += source.write_bytes_finish(res);
-                } catch (e) {
-                    debug(e);
-                    this.emit('failed', e.message);
-                    return;
-                }
-
-                this.emit('progress', (this._written / this.size) * 100);
-                this._read();
-            }
-        );
+        try {
+            result = await new Promise((resolve, reject) => {
+                this.output_stream.splice_async(
+                    this.input_stream,
+                    Gio.OutputStreamSpliceFlags.NONE,
+                    GLib.PRIORITY_DEFAULT,
+                    this._cancellable,
+                    (source, res) => {
+                        try {
+                            if (source.splice_finish(res) < this.size) {
+                                throw new Error('expected more');
+                            } else {
+                                resolve(true);
+                            }
+                        } catch (e) {
+                            reject(e);
+                        }
+                    }
+                );
+            });
+        } catch (e) {
+            logError(e, this.device.name);
+            result = false;
+        } finally {
+            this.close();
+            return result;
+        }
     }
 });
 

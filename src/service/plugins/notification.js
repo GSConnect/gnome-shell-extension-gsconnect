@@ -53,28 +53,6 @@ var ID_REGEX = /^(fdo|gtk)\|([^\|]+)\|(.*)$/;
  * Notification Plugin
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/notifications
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/sendnotifications
- *
- * Incoming Notifications
- *
- *  {
- *      type: 'kdeconnect.notification',
- *      body: {
- *          id: {string} The remote notification's Id,
- *          appName: {string} The application name,
- *          isClearable: {boolean} Whether the notification can be closed,
- *          title: {string} Notification title, or <contactName|phoneNumber> for SMS,
- *          text: {string} Notification body, or <messageBody> for SMS,
- *          ticker: {string} Usually <title> and <text> joined with ': ',
- *          time: {string} local timestamp (ms) the notification was posted,
- *          requestReplyId: {string} UUID for repliable notifications,
- *          payloadHash: {string} MD5 Hash of payload data (optional)
- *      },
- *      'payloadSize': {number} Payload size in bytes,
- *      'payloadTransferInfo': {
- *          'port': {number} Port number between 1739-1764 for transfer (TCP),
- *          'uuid': {string} Service UUID for transfer (Bluetooth)
- *      }
- *  }
  */
 var Plugin = GObject.registerClass({
     GTypeName: 'GSConnectNotificationPlugin'
@@ -302,17 +280,15 @@ var Plugin = GObject.registerClass({
             let transfer = new Lan.Transfer({
                 device: this.device,
                 size: size,
-                input_stream: stream
+                input_stream: stream,
+                checksum: checksum
             });
 
-            transfer.connect('connected', (channel) => transfer.start());
-            let port = await transfer.upload();
+            let success = await transfer.upload(packet);
 
-            packet.payloadSize = size;
-            packet.payloadTransferInfo = { port: port };
-            packet.body.payloadHash = checksum;
-
-            this.device.sendPacket(packet);
+            if (!success) {
+                this.device.sendPacket(packet);
+            }
 
         // TODO: skipping icons for bluetooth connections currently
         } else if (this.device.connection_type === 'bluetooth') {
@@ -321,7 +297,8 @@ var Plugin = GObject.registerClass({
     }
 
     /**
-     * This is called by the daemon; See Daemon._sendNotification()
+     * This is called by the notification listener.
+     * See Notification.Listener._sendNotification()
      */
     async sendNotification(notif) {
         debug(`(${notif.appName}) ${notif.title}: ${notif.text}`);
@@ -380,15 +357,15 @@ var Plugin = GObject.registerClass({
     /**
      * Receiving Notifications
      */
-    _downloadIcon(packet) {
-        return new Promise((resolve, reject) => {
+    async _downloadIcon(packet) {
+        try {
             if (!packet.hasOwnProperty('payloadTransferInfo')) {
-                resolve(null);
-                return;
+                return null;
             }
 
             let iconStream = Gio.MemoryOutputStream.new_resizable();
-            let transfer;
+            let icon = null;
+            let success, transfer;
 
             if (packet.payloadTransferInfo.hasOwnProperty('port')) {
                 transfer = new Lan.Transfer({
@@ -398,18 +375,23 @@ var Plugin = GObject.registerClass({
                     output_stream: iconStream
                 });
 
-                transfer.connect('connected', (transfer) => transfer.start());
-                transfer.connect('failed', (transfer) => resolve(null));
-                transfer.connect('succeeded', (transfer) => {
-                    iconStream.close(null);
-                    resolve(Gio.BytesIcon.new(iconStream.steal_as_bytes()));
-                });
+                success = await transfer.download(packet.payloadTransferInfo.port);
 
-                transfer.download(packet.payloadTransferInfo.port).catch(debug);
+            // We ignore bluetooth icon downloads for now
             } else if (packet.payloadTransferInfo.hasOwnProperty('uuid')) {
-                resolve(null);
+                return null;
             }
-        });
+
+            iconStream.close(null);
+
+            if (success) {
+                icon = new Gio.BytesIcon({ bytes: iconStream.steal_as_bytes() });
+            }
+        } catch (e) {
+            logWarning('Failed to download icon', this.device.name);
+        } finally {
+            return icon;
+        }
     }
 
     /**

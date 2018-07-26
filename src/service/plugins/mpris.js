@@ -203,10 +203,9 @@ var Plugin = GObject.registerClass({
         });
     }
 
-    _sendAlbumArt(packet) {
+    async _sendAlbumArt(packet) {
         // Reject concurrent requests for album art
         if (this._transferring) {
-            logWarning('Rejecting concurrent album art request', this.device.name);
             return;
         }
 
@@ -221,6 +220,7 @@ var Plugin = GObject.registerClass({
             return;
         }
 
+        // TODO: Ignore requests for bluetooth connections, currently
         if (this.device.connection_type === 'tcp') {
             this._transferring = true;
 
@@ -232,22 +232,17 @@ var Plugin = GObject.registerClass({
                 input_stream: file.read(null)
             });
 
-            transfer.connect('connected', () => transfer.start());
-            transfer.connect('disconnected', () => { delete this._transferring });
-
-            transfer.upload().then(port => {
-                this.device.sendPacket({
-                    id: 0,
-                    type: 'kdeconnect.mpris',
-                    body: {
-                        transferringAlbumArt: true,
-                        player: packet.body.player,
-                        albumArtUrl: packet.body.albumArtUrl
-                    },
-                    payloadSize: transfer.size,
-                    payloadTransferInfo: { port: port }
-                });
+            await transfer.upload({
+                id: 0,
+                type: 'kdeconnect.mpris',
+                body: {
+                    transferringAlbumArt: true,
+                    player: packet.body.player,
+                    albumArtUrl: packet.body.albumArtUrl
+                }
             });
+
+            this._transferring = false;
         }
     }
 

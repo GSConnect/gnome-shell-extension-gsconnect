@@ -129,6 +129,7 @@ var Device = GObject.registerClass({
         this._plugins = new Map();
         this._handlers = new Map();
         this._errors = new Map();
+        this._transfers = new Map();
 
         // We at least need the device Id for GSettings and the DBus interface
         let deviceId = identity.body.deviceId;
@@ -445,6 +446,16 @@ var Device = GObject.registerClass({
         activate.connect('activate', this.activate.bind(this));
         this.add_action(activate);
 
+        let cancelTransfer = new Action({
+            name: 'cancelTransfer',
+            parameter_type: new GLib.VariantType('s'),
+            summary: _('Cancel Transfer'),
+            description: _('Stop an in progress transfer'),
+            icon_name: 'process-stop-symbolic'
+        });
+        cancelTransfer.connect('activate', this.cancelTransfer.bind(this));
+        this.add_action(cancelTransfer);
+
         let openSettings = new Action({
             name: 'openSettings',
             parameter_type: null,
@@ -484,6 +495,16 @@ var Device = GObject.registerClass({
         });
         viewFolder.connect('activate', this.viewFolder.bind(this));
         this.add_action(viewFolder);
+    }
+
+    cancelTransfer(action, parameter) {
+        let uuid = parameter.unpack();
+        let transfer = this._transfers.get(uuid);
+
+        if (transfer !== undefined) {
+            this._transfers.delete(uuid);
+            transfer.cancel();
+        }
     }
 
     viewFolder(action, parameter) {

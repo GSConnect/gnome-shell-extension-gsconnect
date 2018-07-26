@@ -308,27 +308,6 @@ var Daemon = GObject.registerClass({
         }
     }
 
-    /**
-     * Only used by plugins/share.js
-     */
-    _cancelTransferAction(action, parameter) {
-        parameter = parameter.deep_unpack();
-
-        let device = this._devices.get(parameter['0']);
-        let plugin = (device) ? device.lookup_plugin('share') : false;
-
-        if (plugin) {
-            if (plugin.transfers.has(parameter['1'])) {
-                plugin.transfers.get(parameter['1']).cancel();
-            }
-        }
-    }
-
-    _openTransferAction(action, parameter) {
-        let path = parameter.deep_unpack().toString();
-        Gio.AppInfo.launch_default_for_uri(unescape(path), null);
-    }
-
     _connectDeviceAction() {
         (new ServiceUI.DeviceConnectDialog()).show_all();
     }
@@ -402,8 +381,6 @@ var Daemon = GObject.registerClass({
             ['connectDevice', this._connectDeviceAction.bind(this)],
             ['broadcast', this.broadcast.bind(this)],
             ['openSettings', this.openSettings.bind(this)],
-            ['cancelTransfer', this._cancelTransferAction.bind(this), '(ss)'],
-            ['openTransfer', this._openTransferAction.bind(this), 's'],
             ['quit', this.quit.bind(this)],
             ['debugger', this._debugger.bind(this)],
             ['about', this._aboutAction.bind(this)]

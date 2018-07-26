@@ -332,124 +332,41 @@ var ChannelService = GObject.registerClass({
 
 
 /**
- * File Transfers
- *
- * NOTE: transfers are always closed on completion
- *
- * Example Contruction:
- *  let transfer = new Protocol.Transfer({
- *      device: {Device.Device},
- *      size: {Number} size in bytes,
- *      input_stream: {Gio.InputStream} readable stream for uploads,
- *      output_stream: {Gio.OutputStream} writable stream for downloads
- *  });
+ * Lan File Transfers
  */
 var Transfer = GObject.registerClass({
     GTypeName: 'GSConnectLanTransfer',
 }, class Transfer extends Core.Transfer {
 
     /**
-     * Open a new channel for uploading (incoming connection)
-     * @param {Number} port - A port between 1739-1764 for uploading
+     * Connect to @port and read from the remote output stream into the local
+     * input stream.
      *
-     * Example usage:
-     *  transfer.connect('connected', transfer => transfer.start());
-     *  transfer.connect('succeeded'|'failed'|'cancelled', transfer => func());
-     *  transfer.upload().then(port => {
-     *      let packet = new Protocol.Packet({
-     *          id: 0,
-     *          type: 'kdeconnect.share.request',
-     *          body: { filename: file.get_basename() },
-     *          payloadSize: info.get_size(),
-     *          payloadTransferInfo: { port: port }
-     *      });
+     * When finished the channel and local input stream will be closed whether
+     * or not the transfer succeeds.
      *
-     *      device._channel.send(packet);
-     *  });
-     */
-    async upload(port=1739) {
-        debug(this.device.name);
-
-        // Start listening on new socket on a port between 1739-1764
-        this._listener = new Gio.SocketListener();
-
-        while (true) {
-            try {
-                this._listener.add_inet_port(port, null);
-            } catch (e) {
-                if (port < 1764) {
-                    port += 1;
-                    continue;
-                } else {
-                    reject(new Error('Failed to open port'));
-                }
-            }
-
-            break;
-        }
-
-        // Wait for an incoming connection
-        this._listener.accept_async(null, this.upload_accept.bind(this));
-
-        // Return the incoming port for payloadTransferInfo
-        return port;
-    }
-
-    async upload_accept(listener, res) {
-        debug(this.device.name);
-
-        try {
-            this._connection = await new Promise((resolve, reject) => {
-                try {
-                    resolve(this._listener.accept_finish(res)[0]);
-                } catch (e) {
-                    reject(e);
-                }
-            });
-            this._connection = await this._initSocket(this._connection);
-            this._connection = await this._serverEncryption(this._connection);
-            this.output_stream = this._connection.get_output_stream();
-
-            this.emit('connected');
-            return true;
-        } catch(e) {
-            log('Error uploading: ' + e.message);
-            debug(e);
-            this.close();
-            return false;
-        }
-    }
-
-    /**
-     * Open a new channel for downloading (outgoing connection)
-     * @param {Number} port - The port to connect to
-     *
-     * Example usage:
-     *  transfer.connect('connected', transfer => transfer.start());
-     *  transfer.connect('succeeded'|'failed'|'cancelled', transfer => func());
-     *  transfer.download(packet.payloadTransferInfo.port).catch(e => debug(e));
+     * @param {Number} port - The port the transfer is listening for connection
+     * @return {Boolean} - %true on success or %false on fail
      */
     async download(port) {
-        debug(this.device.name);
+        let result;
 
         try {
             this._connection = await new Promise((resolve, reject) => {
-                // Use @port and the address from GSettings
-                let address = new Gio.InetSocketAddress({
-                    address: Gio.InetAddress.new_from_string(
-                        this.device.settings.get_string('tcp-host')
-                    ),
-                    port: port
-                });
-
                 // Connect
                 let client = new Gio.SocketClient();
+
+                // Use the address from GSettings with @port
+                let address = Gio.InetSocketAddress.new_from_string(
+                    this.device.settings.get_string('tcp-host'),
+                    port
+                );
 
                 client.connect_async(address, null, (client, res) => {
                     try {
                         resolve(client.connect_finish(res));
                     } catch (e) {
-                        reject(e)
+                        reject(e);
                     }
                 });
             });
@@ -457,13 +374,82 @@ var Transfer = GObject.registerClass({
             this._connection = await this._clientEncryption(this._connection);
             this.input_stream = this._connection.get_input_stream();
 
-            this.emit('connected');
-            return true;
+            // Start the transfer
+            result = await this._transfer();
         } catch (e) {
-            log('Error downloading: ' + e.message);
-            debug(e);
+            logError(e, this.device.name);
+            result = false;
+        } finally {
             this.close();
-            return false;
+            return result;
+        }
+    }
+
+    /**
+     * Start listening on the first available port for an incoming connection,
+     * then send @packet with the payload transfer info. When the connection is
+     * accepted write to the remote input stream from the local output stream.
+     *
+     * When finished the channel and local output stream will be closed whether
+     * or not the transfer succeeds.
+     *
+     * @param {Core.Packet} packet - The packet to send the transfer with
+     * @return {Boolean} - %true on success or %false on fail
+     */
+    async upload(packet) {
+        let port = 1739;
+        let result;
+
+        try {
+            // Start listening on the first available port between 1739-1764
+            this._listener = new Gio.SocketListener();
+
+            while (true) {
+                try {
+                    this._listener.add_inet_port(port, null);
+                } catch (e) {
+                    if (port < TCP_MAX_PORT) {
+                        port += 1;
+                        continue;
+                    } else {
+                        throw new Error('Failed to open port');
+                    }
+                }
+
+                break;
+            }
+
+            // Await the incoming connection
+            let connection = new Promise((resolve, reject) => {
+                this._listener.accept_async(null, (source, res) => {
+                    try {
+                        resolve(this._listener.accept_finish(res)[0]);
+                    } catch (e) {
+                        reject(e);
+                    }
+                });
+            });
+
+            // Notify the device we're ready
+            packet.body.payloadHash = this.checksum;
+            packet.payloadSize = this.size;
+            packet.payloadTransferInfo = { port: port };
+            this.device.sendPacket(packet);
+
+            // Accept the connection and configure the channel
+            this._connection = await connection;
+            this._connection = await this._initSocket(this._connection);
+            this._connection = await this._serverEncryption(this._connection);
+            this.output_stream = this._connection.get_output_stream();
+
+            // Start the transfer
+            result = await this._transfer();
+        } catch (e) {
+            logError(e, this.device.name);
+            result = false;
+        } finally {
+            this.close();
+            return result;
         }
     }
 });
