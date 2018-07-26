@@ -162,6 +162,7 @@ var Plugin = GObject.registerClass({
 
     /**
      * Get the track metadata for a player
+     *
      * @param {Gio.DBusProxy} player - The player to get track info for
      * @return {Object} - An object of track data in MPRIS packet body format
      */
@@ -204,45 +205,49 @@ var Plugin = GObject.registerClass({
     }
 
     async _sendAlbumArt(packet) {
-        // Reject concurrent requests for album art
-        if (this._transferring) {
-            return;
-        }
+        try {
+            // Reject concurrent requests for album art
+            if (this._transferring) {
+                return;
+            }
 
-        let player = this.mpris.players.get(packet.body.player);
+            let player = this.mpris.players.get(packet.body.player);
 
-        if (player.Metadata === null) {
-            return;
-        }
+            if (player.Metadata === null) {
+                return;
+            }
 
-        // Ensure the requested albumArtUrl matches the current mpris:artUrl
-        if (packet.body.albumArtUrl !== player.Metadata['mpris:artUrl']) {
-            return;
-        }
+            // Ensure the requested albumArtUrl matches the current mpris:artUrl
+            if (packet.body.albumArtUrl !== player.Metadata['mpris:artUrl']) {
+                return;
+            }
 
-        // TODO: Ignore requests for bluetooth connections, currently
-        if (this.device.connection_type === 'tcp') {
-            this._transferring = true;
+            // TODO: Ignore requests for bluetooth connections, currently
+            if (this.device.connection_type === 'tcp') {
+                this._transferring = true;
 
-            let file = Gio.File.new_for_uri(packet.body.albumArtUrl);
+                let file = Gio.File.new_for_uri(packet.body.albumArtUrl);
 
-            let transfer = new Lan.Transfer({
-                device: this.device,
-                size: file.query_info('standard::size', 0, null).get_size(),
-                input_stream: file.read(null)
-            });
+                let transfer = new Lan.Transfer({
+                    device: this.device,
+                    input_stream: file.read(null),
+                    size: file.query_info('standard::size', 0, null).get_size()
+                });
 
-            await transfer.upload({
-                id: 0,
-                type: 'kdeconnect.mpris',
-                body: {
-                    transferringAlbumArt: true,
-                    player: packet.body.player,
-                    albumArtUrl: packet.body.albumArtUrl
-                }
-            });
+                await transfer.upload({
+                    id: 0,
+                    type: 'kdeconnect.mpris',
+                    body: {
+                        transferringAlbumArt: true,
+                        player: packet.body.player,
+                        albumArtUrl: packet.body.albumArtUrl
+                    }
+                });
 
-            this._transferring = false;
+                this._transferring = false;
+            }
+        } catch (e) {
+            logWarning(e, `${this.device.name}: transferring album art`);
         }
     }
 
