@@ -157,7 +157,7 @@ var Channel = GObject.registerClass({
 
             stream.read_line_async(GLib.PRIORITY_DEFAULT, null, (stream, res) => {
                 try {
-                    let [data, len] = stream.read_line_finish(res);
+                    let data = stream.read_line_finish(res)[0];
                     stream.close(null);
 
                     // Store the identity as an object property
@@ -200,7 +200,7 @@ var Channel = GObject.registerClass({
     _onAcceptCertificate(connection, peer_cert, flags) {
         log(`Authenticating ${this.identity.body.deviceId}`);
 
-        connection.disconnect(connection._authenticateCertificateId);
+        connection.disconnect(connection._acceptCertificateId);
 
         // Bail if the deviceId is missing
         if (this.identity.body.deviceId === undefined) {
@@ -227,7 +227,7 @@ var Channel = GObject.registerClass({
     /**
      * Handshake Gio.TlsConnection
      */
-    _handshakeTls(connection) {
+    _handshake(connection) {
         return new Promise((resolve, reject) => {
             connection.validation_flags = 0;
             connection.authentication_mode = 1;
@@ -263,7 +263,7 @@ var Channel = GObject.registerClass({
             );
             connection.set_certificate(this.service.certificate);
 
-            return this._handshakeTls(connection);
+            return this._handshake(connection);
         } else {
             return connection;
         }
@@ -280,7 +280,7 @@ var Channel = GObject.registerClass({
                 this.service.certificate
             );
 
-            return this._handshakeTls(connection);
+            return this._handshake(connection);
         } else {
             return connection;
         }
@@ -293,7 +293,7 @@ var Channel = GObject.registerClass({
      */
     attach(device) {
         // Disconnect any existing channel
-        if (device._channel !== null) {
+        if (device._channel !== null && device._channel !== this) {
             GObject.signal_handlers_destroy(device._channel);
             device._channel.close();
             device._channel = null;
@@ -320,9 +320,9 @@ var Channel = GObject.registerClass({
         this._monitor.set_callback(this.receive.bind(this, device));
         this._monitor.attach(null);
 
-        // TODO: Plugins should be reloaded if we're handing the connection off
-        //       to a different channel type. This is flakey in general, which
-        //       may be Android's fault or possibly inherent in the protocol.
+        // TODO: Plugins should be reloaded if we're swapping channel types.
+        //       This is flakey in general, which may be Android's fault or
+        //       possibly inherent in the protocol.
 
         // Emit connected:: if necessary
         if (!device.connected) {
