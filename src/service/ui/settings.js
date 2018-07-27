@@ -556,10 +556,6 @@ var Device = GObject.registerClass({
         });
 
         for (let [name, error] of this.device.errors) {
-            if (value === null) {
-                continue;
-            }
-
             let row = new SectionRow({
                 title: name,
                 subtitle: error.message,
@@ -590,7 +586,7 @@ var Device = GObject.registerClass({
             this.error_list.add(row);
         }
 
-        if (this.error_list.get_children().length > 0) {
+        if (this.device.errors.size > 0) {
             this.errata.visible = true;
         } else {
             if (this.visible_child_name === 'errata') {
