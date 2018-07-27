@@ -12,7 +12,7 @@
   </interface>
 
   <!-- Battery -->
-  <interface name="org.gnome.Shell.Extensions.GSConnect.Plugin.Battery">
+  <interface name="org.gnome.Shell.Extensions.GSConnect.Battery">
     <property type="b" name="Charging" access="read"/>
     <property type="s" name="IconName" access="read"/>
     <property type="i" name="Level" access="read"/>
