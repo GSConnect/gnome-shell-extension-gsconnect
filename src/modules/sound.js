@@ -181,7 +181,7 @@ var Mixer = class Mixer {
             );
 
             this._defaultSourceChangedId = this._control.connect(
-                'default-sink-changed',
+                'default-source-changed',
                 this._onDefaultSourceChanged.bind(this)
             );
 
@@ -190,8 +190,7 @@ var Mixer = class Mixer {
                 this._onStateChanged.bind(this)
             );
 
-            this._output = new Stream(this._control.get_default_sink());
-            this._input = new Stream(this._control.get_default_source());
+            this._onStateChanged();
         }
 
         this._previousVolume = undefined;
