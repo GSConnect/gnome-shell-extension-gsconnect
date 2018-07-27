@@ -166,7 +166,7 @@ var Manager = GObject.registerClass({
     _removePlayer(name) {
         for (let [identity, player] of this.players.entries()) {
             if (player.g_name === name) {
-                debug(`Removing MPRIS Player ${mediaPlayer.Identity}`);
+                debug(`Removing MPRIS Player ${identity}`);
 
                 player.disconnect(player._propertiesId);
                 player.disconnect(player._seekedId);
@@ -184,7 +184,7 @@ var Manager = GObject.registerClass({
      */
     pauseAll() {
         for (let [identity, player] of this.players.entries()) {
-            if (player.CanPause && player.PlaybackStatus === 'Playing') {
+            if (player.PlaybackStatus === 'Playing' && player.CanPause) {
                 player.Pause();
                 this.paused.set(identity, player);
             }
@@ -196,7 +196,7 @@ var Manager = GObject.registerClass({
      */
     unpauseAll() {
         for (let [identity, player] of this.paused.entries()) {
-            if (player.CanPlay && player.PlaybackStatus === 'Paused') {
+            if (player.PlaybackStatus === 'Paused' && player.CanPlay) {
                 player.Play();
             }
         }
