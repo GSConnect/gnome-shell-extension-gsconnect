@@ -423,9 +423,8 @@ var Device = GObject.registerClass({
         'mousepad', 'mousepad-allow',
         // RunCommand
         'runcommand', 'share-commands', 'command-list',
-        'command-toolbar', 'command-add', 'command-remove', 'command-editor',
-        'command-lock-screen',
-        'command-name', 'command-line',
+        'command-toolbar', 'command-add', 'command-remove', 'command-edit',
+        'command-editor', 'command-name', 'command-line',
         'command-trash', 'command-save',
         // Notifications
         'notification', 'notification-page',
@@ -837,7 +836,7 @@ var Device = GObject.registerClass({
         // TODO: backwards compatibility?
         this._commands = settings.get_value('command-list').full_unpack();
 
-        this.command_list.set_sort_func(this._commandSortFunc.bind(this));
+        this.command_list.set_sort_func(this._commandSortFunc);
         this.command_list.set_header_func(section_separators);
         this._populateCommands();
     }
@@ -856,43 +855,15 @@ var Device = GObject.registerClass({
         return row1.title.localeCompare(row2.title);
     }
 
-    _onAddLockScreen(button) {
-        this._commands['lock'] = {
-            name: _('Lock Screen'),
-            command: 'loginctl lock-session'
-        };
-
-        this._getSettings('runcommand').set_value(
-            'command-list',
-            GLib.Variant.full_pack(this._commands)
-        );
-
-        this._populateCommands();
-    }
-
     async _insertCommand(uuid) {
         let row = new SectionRow({
             title: this._commands[uuid].name,
             subtitle: this._commands[uuid].command,
-            widget: new Gtk.Button({
-                image: new Gtk.Image({
-                    icon_name: 'document-edit-symbolic',
-                    pixel_size: 16,
-                    visible: true
-                }),
-                halign: Gtk.Align.END,
-                valign: Gtk.Align.CENTER,
-                vexpand: true,
-                visible: true
-            }),
             activatable: false,
             selectable: true
         });
         row.set_name(uuid);
         row._subtitle.ellipsize = Pango.EllipsizeMode.MIDDLE;
-        row.widget.get_style_context().add_class('circular');
-        row.widget.get_style_context().add_class('flat');
-        row.widget.connect('clicked', this._onEditCommand.bind(this));
 
         this.command_list.add(row);
 
@@ -900,6 +871,7 @@ var Device = GObject.registerClass({
     }
 
     _onCommandSelected(box) {
+        this.command_edit.sensitive = (box.get_selected_rows().length > 0);
         this.command_remove.sensitive = (box.get_selected_rows().length > 0);
     }
 
@@ -909,10 +881,11 @@ var Device = GObject.registerClass({
         this._commands[uuid] = { name: '', command: '' };
 
         let command = await this._insertCommand(uuid);
-        this._onEditCommand(command.widget);
+        this.command_list.select_row(command);
+        this._onEditCommand();
     }
 
-    _onRemoveCommand(button) {
+    _onRemoveCommand() {
         let row = this.command_list.get_selected_row();
         delete this._commands[row.get_name()];
 
@@ -926,7 +899,7 @@ var Device = GObject.registerClass({
 
     // The 'edit' icon in the GtkListBoxRow of a command
     _onEditCommand(button) {
-        let row = button.get_parent().get_parent();
+        let row = this.command_list.get_selected_row();
         let uuid = row.get_name();
 
         this.command_editor.title = this.command_name.text;
@@ -991,8 +964,6 @@ var Device = GObject.registerClass({
         for (let uuid in this._commands) {
             this._insertCommand(uuid);
         }
-
-        this.command_lock_screen.sensitive = !this._commands.hasOwnProperty('lock');
     }
 
     /**
