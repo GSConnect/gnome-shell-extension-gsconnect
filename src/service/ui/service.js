@@ -98,7 +98,7 @@ var BluetoothComboBox = GObject.registerClass({
 
             this.active_id = this.bluetoothService.devices[0].g_object_path;
         } else {
-            this.model.set(this.model.append(), [1, 2], _('No Devices'), '0');
+            this.model.set(this.model.append(), [1, 2], [_('No Devices'), '0']);
             this.active_id = '0';
         }
 
