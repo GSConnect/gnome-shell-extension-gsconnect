@@ -425,7 +425,6 @@ var Device = GObject.registerClass({
         'runcommand', 'share-commands', 'command-list',
         'command-toolbar', 'command-add', 'command-remove', 'command-edit',
         'command-editor', 'command-name', 'command-line',
-        'command-trash', 'command-save',
         // Notifications
         'notification', 'notification-page',
         'share-notifications', 'notification-apps',
@@ -832,8 +831,37 @@ var Device = GObject.registerClass({
         // TODO: backwards compatibility?
         this._commands = settings.get_value('command-list').full_unpack();
 
+        let placeholder = new Gtk.Grid({
+            hexpand: true,
+            halign: Gtk.Align.CENTER,
+            margin: 12,
+            column_spacing: 12,
+            visible: true
+        });
+        placeholder.get_style_context().add_class('dim-label');
+
+        placeholder.attach(
+            new Gtk.Image({
+                icon_name: 'system-run-symbolic',
+                pixel_size: 32,
+                visible: true
+            }),
+            0, 0, 1, 1
+        );
+
+        placeholder.attach(
+            new Gtk.Label({
+                label: '<b>' + _('No Commands') + '</b>',
+                use_markup: true,
+                visible: true
+            }),
+            1, 0, 1, 1
+        );
+
+        this.command_list.set_placeholder(placeholder);
         this.command_list.set_sort_func(this._commandSortFunc);
         this.command_list.set_header_func(section_separators);
+
         this._populateCommands();
     }
 
@@ -867,21 +895,23 @@ var Device = GObject.registerClass({
     }
 
     _onCommandSelected(box) {
-        this.command_edit.sensitive = (box.get_selected_rows().length > 0);
-        this.command_remove.sensitive = (box.get_selected_rows().length > 0);
+        let selected = (box.get_selected_row() !== null);
+        this.command_edit.sensitive = selected;
+        this.command_remove.sensitive = selected;
     }
 
-    // The '+' row at the bottom of the command list, the only activatable row
+    // The [+] button in the toolbar
     async _onAddCommand(button) {
         let uuid = GLib.uuid_string_random();
         this._commands[uuid] = { name: '', command: '' };
 
-        let command = await this._insertCommand(uuid);
-        this.command_list.select_row(command);
+        let row = await this._insertCommand(uuid);
+        this.command_list.select_row(row);
         this._onEditCommand();
     }
 
-    _onRemoveCommand() {
+    // The [-] button in the toolbar
+    _onRemoveCommand(button) {
         let row = this.command_list.get_selected_row();
         delete this._commands[row.get_name()];
 
@@ -893,20 +923,43 @@ var Device = GObject.registerClass({
         this._populateCommands();
     }
 
-    // The 'edit' icon in the GtkListBoxRow of a command
+    // The 'edit' icon in the toolbar
     _onEditCommand(button) {
         let row = this.command_list.get_selected_row();
         let uuid = row.get_name();
 
-        this.command_editor.title = this.command_name.text;
-        this.command_editor.uuid = uuid;
-        this.command_name.text = this._commands[uuid].name.slice(0);
-        this.command_line.text = this._commands[uuid].command.slice(0);
+        // The editor is open so we're being asked to save
+        if (this.command_editor.visible) {
+            if (this.command_name.text && this.command_line.text) {
+                this._commands[uuid] = {
+                    name: this.command_name.text,
+                    command: this.command_line.text
+                };
+            } else {
+                delete this._commands[uuid];
+            }
 
-        row.visible = false;
-        this.command_editor.visible = true;
-        this.command_name.has_focus = true;
-        this.command_list.invalidate_sort();
+            this._getSettings('runcommand').set_value(
+                'command-list',
+                GLib.Variant.full_pack(this._commands)
+            );
+
+            this._populateCommands();
+
+        // The editor is closed so we're being asked to edit
+        } else {
+            this.command_editor.uuid = uuid;
+            this.command_name.text = this._commands[uuid].name;
+            this.command_line.text = this._commands[uuid].command;
+
+            this.command_edit.get_child().icon_name = 'document-save-symbolic';
+
+            row.visible = false;
+            this.command_editor.visible = true;
+            this.command_name.has_focus = true;
+
+            this.command_list.invalidate_sort();
+        }
     }
 
     // The 'folder' icon in the command editor GtkEntry
@@ -925,29 +978,12 @@ var Device = GObject.registerClass({
         dialog.destroy();
     }
 
-    // The 'save' icon in the command editor
-    async _onSaveCommand() {
-        if (this.command_name.text && this.command_line.text) {
-            let cmd = this._commands[this.command_editor.uuid];
-            cmd.name = this.command_name.text.slice(0);
-            cmd.command = this.command_line.text.slice(0);
-        } else {
-            delete this._commands[this.command_editor.uuid];
-        }
-
-        this._getSettings('runcommand').set_value(
-            'command-list',
-            GLib.Variant.full_pack(this._commands)
-        );
-
-        this._populateCommands();
-    }
-
     async _populateCommands() {
-        delete this.command_editor.title;
         delete this.command_editor.uuid;
         this.command_name.text = '';
         this.command_line.text = '';
+        this.command_edit.get_child().icon_name = 'document-edit-symbolic';
+        this.command_editor.visible = false;
 
         this.command_list.foreach(row => {
             if (row !== this.command_editor) {
@@ -955,11 +991,8 @@ var Device = GObject.registerClass({
             }
         });
 
-        this.command_editor.visible = false;
-
-        for (let uuid in this._commands) {
-            this._insertCommand(uuid);
-        }
+        let uuids = Object.keys(this._commands);
+        uuids.map(uuid => this._insertCommand(uuid));
     }
 
     /**
