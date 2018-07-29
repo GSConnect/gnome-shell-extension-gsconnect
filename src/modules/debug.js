@@ -154,7 +154,7 @@ var Window = GObject.registerClass({
             );
 
             if (this.packet_direction.active_id === 'outgoing') {
-                device._onReceived(null, {
+                device.receivePacket({
                     id: Date.now(),
                     type: this.packet_type.active_id,
                     body: body
@@ -200,7 +200,7 @@ var Window = GObject.registerClass({
                 this.notification_device.active_id
             );
 
-            device._onReceived(null, {
+            device.receivePacket({
                 id: Date.now(),
                 type: 'kdeconnect.notification',
                 body: {
@@ -225,7 +225,7 @@ var Window = GObject.registerClass({
                 this.notification_device.active_id
             );
 
-            device._onReceived(null, {
+            device.receivePacket({
                 id: Date.now(),
                 type: 'kdeconnect.notification',
                 body: {
@@ -267,7 +267,7 @@ var Window = GObject.registerClass({
             }
 
             if (this.telephony_duplicate.active_id === 2) {
-                device._onReceived(null, {
+                device.receivePacket({
                     id: Date.now(),
                     type: 'kdeconnect.notification',
                     body: {
@@ -283,7 +283,7 @@ var Window = GObject.registerClass({
                 });
             }
 
-            device._onReceived(null, {
+            device.receivePacket({
                 id: Date.now(),
                 type: 'kdeconnect.telephony',
                 body: {
@@ -295,7 +295,7 @@ var Window = GObject.registerClass({
             });
 
             if (this.telephony_duplicate.active_id === 1) {
-                device._onReceived(null, {
+                device.receivePacket({
                     id: Date.now(),
                     type: 'kdeconnect.notification',
                     body: {
@@ -321,7 +321,7 @@ var Window = GObject.registerClass({
                 this.telephony_device.active_id
             );
 
-            device._onReceived(null, {
+            device.receivePacket({
                 id: Date.now(),
                 type: 'kdeconnect.telephony',
                 body: {
