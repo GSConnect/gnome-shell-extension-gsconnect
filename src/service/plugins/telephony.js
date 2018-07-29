@@ -79,20 +79,7 @@ var Metadata = {
 /**
  * Telephony Plugin
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/telephony
- *
- * Packets:
- *  {
- *      type: 'kdeconnect.telephony'
- *      body: {
- *          event: {String} missedCall | ringing | sms | talking,
- *          [contactName]: {String} Sender's name (optional),
- *          phoneNumber: {String} Sender's phone number (mandatory?),
- *          [messageBody]: {String} SMS message body (mandatory for 'sms' events),
- *          [phoneThumbnail]: {String} base64 encoded JPEG bytes,
- *          [isCancel]: {Boolean} Marks the end of a 'ringing'/'talking' event
- *      }
- *  }
- *
+ * https://github.com/KDE/kdeconnect-android/tree/master/src/org/kde/kdeconnect/Plugins/TelephonyPlugin
  */
 var Plugin = GObject.registerClass({
     GTypeName: 'GSConnectTelephonyPlugin',
@@ -688,7 +675,11 @@ var Plugin = GObject.registerClass({
     }
 
     /**
-     * Share a link by SMS message
+     * Share a text content by SMS message. This is used by the WebExtension to
+     * share URLs from the browser, but could be used to initiate sharing of any
+     * text content.
+     *
+     * TODO: integrate new telephony.message functionality
      *
      * @param {string} url - The link to be shared
      */
@@ -710,8 +701,11 @@ var Plugin = GObject.registerClass({
 
         let window;
 
+        // Show an intermediate dialog to allow choosing from open conversations
         if (hasConversations) {
             window = new Sms.ConversationChooser(this.device, url);
+
+        // Open the list of contacts to start a new conversation
         } else {
             window = new Sms.ConversationWindow(this.device);
             window.setMessage(url);
