@@ -82,6 +82,10 @@ var Plugin = GObject.registerClass({
             case 'kdeconnect.notification.request':
                 return this._handleRequest(packet);
 
+            case 'kdeconnect.notification.reply':
+                logWarning('Not implemented', packet.type);
+                return;
+
             default:
                 logWarning('Unknown notification packet', this.device.name);
         }
@@ -358,14 +362,15 @@ var Plugin = GObject.registerClass({
      * Receiving Notifications
      */
     async _downloadIcon(packet) {
+        let icon = null;
+        let success, transfer;
+
         try {
             if (!packet.hasOwnProperty('payloadTransferInfo')) {
                 return null;
             }
 
             let iconStream = Gio.MemoryOutputStream.new_resizable();
-            let icon = null;
-            let success, transfer;
 
             if (packet.payloadTransferInfo.hasOwnProperty('port')) {
                 transfer = new Lan.Transfer({
@@ -449,99 +454,103 @@ var Plugin = GObject.registerClass({
      * @param {kdeconnect.notification} packet - The notification packet
      */
     async receiveNotification(packet) {
-        //
-        let id = packet.body.id;
-        let body, contact, title;
-        let icon = await this._downloadIcon(packet);
+        try {
+            //
+            let id = packet.body.id;
+            let body, contact, title;
+            let icon = await this._downloadIcon(packet);
 
-        // Check if this is a missed call or SMS notification
-        let isMissedCall = packet.body.id.includes('MissedCall');
-        let isSms = packet.body.id.includes('sms');
+            // Check if this is a missed call or SMS notification
+            let isMissedCall = packet.body.id.includes('MissedCall');
+            let isSms = packet.body.id.includes('sms');
 
-        // Check if it's a duplicate early so we can skip unnecessary work
-        let duplicate = this._duplicates.get(packet.body.ticker);
+            // Check if it's a duplicate early so we can skip unnecessary work
+            let duplicate = this._duplicates.get(packet.body.ticker);
 
-        // This has been marked as a duplicate by the telephony plugin
-        if ((isMissedCall || isSms) && duplicate) {
-            // We've been asked to close this
-            if (duplicate.close) {
-                this.closeNotification(packet.body.id);
-                this._duplicates.delete(packet.body.ticker);
-                return;
-            // We've been asked to silence this, so just track the ID
-            } else if (duplicate.silence) {
-                duplicate.id = packet.body.id;
-                return;
+            // This has been marked as a duplicate by the telephony plugin
+            if ((isMissedCall || isSms) && duplicate) {
+                // We've been asked to close this
+                if (duplicate.close) {
+                    this.closeNotification(packet.body.id);
+                    this._duplicates.delete(packet.body.ticker);
+                    return;
+                // We've been asked to silence this, so just track the ID
+                } else if (duplicate.silence) {
+                    duplicate.id = packet.body.id;
+                    return;
+                }
             }
-        }
 
-        // If it's a telephony event not marked as a duplicate...
-        if (isMissedCall || isSms) {
-            // Track the id so it can be closed with a telephony notification.
-            this._duplicates.set(packet.body.ticker, { id: packet.body.id });
+            // If it's a telephony event not marked as a duplicate...
+            if (isMissedCall || isSms) {
+                // Track the id so it can be closed with a telephony notification.
+                this._duplicates.set(packet.body.ticker, { id: packet.body.id });
 
-            // Look for a contact with a single phone number, but don't create
-            // one since we only get a number or a name
-            contact = this.contacts.query({
-                name: (isSms) ? packet.body.title : packet.body.text,
-                number: (isSms) ? packet.body.title : packet.body.text,
-                single: true
-            });
-
-            // If found, send this using a telephony plugin method
-            if (contact) {
-                return this._telephonyNotification(
-                    packet.body,
-                    contact,
-                    icon,
-                    (isMissedCall) ? 'missedCall' : 'sms'
-                );
-            }
-        }
-
-        // Emulate a 'missedCall' notification
-        if (isMissedCall) {
-            id = packet.body.ticker;
-            title = packet.body.text;
-            body = _('Missed call from %s').format(packet.body.text);
-        // Emulate an 'sms' notification
-        } else if (isSms) {
-            id = packet.body.ticker;
-            title = packet.body.title;
-            body = packet.body.text;
-        // Ignore 'appName' if it's the same as 'title'
-        } else if (packet.body.appName === packet.body.title) {
-            title = packet.body.title;
-            body = packet.body.text;
-        // Otherwise use the appName as the title
-        } else {
-            title = packet.body.appName;
-            body = packet.body.ticker;
-        }
-
-        // If we don't have a payload icon, fallback on notification type,
-        // appName then device type
-        if (!icon) {
-            if (isMissedCall) {
-                icon = new Gio.ThemedIcon({ name: 'call-missed-symbolic' });
-            } else if (isSms) {
-                icon = new Gio.ThemedIcon({ name: 'sms-symbolic' });
-            } else {
-                icon = new Gio.ThemedIcon({
-                    names: [
-                        packet.body.appName.toLowerCase().replace(' ', '-'),
-                        this.device.symbolic_icon_name
-                    ]
+                // Look for a contact with a single phone number, but don't create
+                // one since we only get a number or a name
+                contact = this.contacts.query({
+                    name: (isSms) ? packet.body.title : packet.body.text,
+                    number: (isSms) ? packet.body.title : packet.body.text,
+                    single: true
                 });
-            }
-        }
 
-        this.device.showNotification({
-            id: id,
-            title: title,
-            body: body,
-            icon: icon
-        });
+                // If found, send this using a telephony plugin method
+                if (contact) {
+                    return this._telephonyNotification(
+                        packet.body,
+                        contact,
+                        icon,
+                        (isMissedCall) ? 'missedCall' : 'sms'
+                    );
+                }
+            }
+
+            // Emulate a 'missedCall' notification
+            if (isMissedCall) {
+                id = packet.body.ticker;
+                title = packet.body.text;
+                body = _('Missed call from %s').format(packet.body.text);
+            // Emulate an 'sms' notification
+            } else if (isSms) {
+                id = packet.body.ticker;
+                title = packet.body.title;
+                body = packet.body.text;
+            // Ignore 'appName' if it's the same as 'title'
+            } else if (packet.body.appName === packet.body.title) {
+                title = packet.body.title;
+                body = packet.body.text;
+            // Otherwise use the appName as the title
+            } else {
+                title = packet.body.appName;
+                body = packet.body.ticker;
+            }
+
+            // If we don't have a payload icon, fallback on notification type,
+            // appName then device type
+            if (!icon) {
+                if (isMissedCall) {
+                    icon = new Gio.ThemedIcon({ name: 'call-missed-symbolic' });
+                } else if (isSms) {
+                    icon = new Gio.ThemedIcon({ name: 'sms-symbolic' });
+                } else {
+                    icon = new Gio.ThemedIcon({
+                        names: [
+                            packet.body.appName.toLowerCase().replace(' ', '-'),
+                            this.device.symbolic_icon_name
+                        ]
+                    });
+                }
+            }
+
+            this.device.showNotification({
+                id: id,
+                title: title,
+                body: body,
+                icon: icon
+            });
+        } catch (e) {
+            logError(e);
+        }
     }
 
     /**
