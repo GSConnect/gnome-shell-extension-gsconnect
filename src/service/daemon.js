@@ -224,6 +224,7 @@ var Daemon = GObject.registerClass({
 
             device = new Device.Device(packet);
 
+            // TODO :(
             device._pruneId = device.connect(
                 'notify::connected',
                 this._pruneDevices.bind(this)
@@ -287,6 +288,7 @@ var Daemon = GObject.registerClass({
         let device = this._devices.get(id);
 
         if (device) {
+            // Remove from the list of known devices
             let cached = gsconnect.settings.get_strv('devices');
 
             if (cached.includes(id)) {
@@ -529,6 +531,12 @@ var Daemon = GObject.registerClass({
             Gio.SettingsBindFlags.DEFAULT
         );
 
+        // Keep identity updated and broadcast any name changes
+        gsconnect.settings.connect('changed::public-name', (settings) => {
+            this.identity.body.deviceName = this.name;
+            this.broadcast();
+        });
+
         // Init some resources
         let provider = new Gtk.CssProvider();
         provider.load_from_resource(gsconnect.app_path + '/application.css');
@@ -595,7 +603,6 @@ var Daemon = GObject.registerClass({
         super.vfunc_dbus_unregister(connection, object_path);
     }
 
-    // FIXME: this is all garbage
     vfunc_open(files, hint) {
         super.vfunc_open(files, hint);
 
@@ -605,7 +612,6 @@ var Daemon = GObject.registerClass({
 
             try {
                 if (file.get_uri_scheme() === 'sms') {
-                    //let uri = new Sms.URI(file.get_uri()); // TODO
                     title = _('Send SMS');
                     action = 'uriSms';
                     parameter = new GLib.Variant('s', file.get_uri());
@@ -614,7 +620,7 @@ var Daemon = GObject.registerClass({
                     action = 'shareUrl';
                     parameter = new GLib.Variant('s', file.get_uri());
                 } else {
-                    throw new Error('Unsupported file type');
+                    throw new Error('Unsupported file/URI type');
                 }
 
                 for (let device of this._devices.values()) {
@@ -638,7 +644,7 @@ var Daemon = GObject.registerClass({
                     win.destroy();
                 }
             } catch (e) {
-                logError(e, 'Opening file');
+                logWarning(e, `GSConnect: Opening ${file.get_uri()}:`);
             }
         }
     }
