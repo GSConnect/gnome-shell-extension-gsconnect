@@ -77,6 +77,12 @@ var Plugin = GObject.registerClass({
         this.cacheProperties(['_remote_commands']);
     }
 
+    cacheLoaded() {
+        if (this.device.connected) {
+            this.connected();
+        }
+    }
+
     get remote_commands() {
         return this._remote_commands;
     }
@@ -95,6 +101,11 @@ var Plugin = GObject.registerClass({
         } else if (packet.type === 'kdeconnect.runcommand') {
             this._handleCommandList(packet.body.commandList);
         }
+    }
+
+    connected() {
+        this.sendCommandList();
+        this.requestCommandList();
     }
 
     /**

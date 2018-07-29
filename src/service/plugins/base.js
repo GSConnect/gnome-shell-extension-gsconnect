@@ -206,6 +206,13 @@ var Plugin = GObject.registerClass({
     }
 
     /**
+     * These two methods are optional and called by the device in response to
+     * the connection state changing.
+     */
+    connected() {}
+    disconnected() {}
+
+    /**
      * The destroy function
      */
     destroy() {

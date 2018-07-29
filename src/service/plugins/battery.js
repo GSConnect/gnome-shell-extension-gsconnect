@@ -162,6 +162,11 @@ var Plugin = GObject.registerClass({
         }
     }
 
+    connected() {
+        this.batteryRequest();
+        this._handleRequest();
+    }
+
     /**
      * Report the local battery's current charge/state
      */

@@ -91,6 +91,10 @@ var Plugin = GObject.registerClass({
         }
     }
 
+    connected() {
+        this.requestNotifications();
+    }
+
     /**
      * Handle an incoming notification or closed report.
      */

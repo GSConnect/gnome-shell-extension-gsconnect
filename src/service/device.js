@@ -419,6 +419,8 @@ var Device = GObject.registerClass({
         this._connected = true;
         this.notify('connected');
         this.notify('symbolic-icon-name');
+
+        this._plugins.forEach(plugin => plugin.connected());
     }
 
     _onDisconnected(channel) {
@@ -430,6 +432,8 @@ var Device = GObject.registerClass({
         this._connected = false;
         this.notify('connected');
         this.notify('symbolic-icon-name');
+
+        this._plugins.forEach(plugin => plugin.disconnected());
     }
 
     /**
@@ -796,13 +800,18 @@ var Device = GObject.registerClass({
                 // Register plugin
                 this._plugins.set(name, plugin);
                 this.errors.delete(name);
+
+                // Run the connected() handler
+                if (this.connected) {
+                    plugin.connected();
+                }
             } catch (e) {
                 logWarning(`loading ${name}: ${e.message}`, this.name);
                 this.errors.set(name, e);
+            } finally {
+                this.notify('errors');
             }
         }
-
-        this.notify('errors');
     }
 
     async _loadPlugins() {

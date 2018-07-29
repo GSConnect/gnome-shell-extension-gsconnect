@@ -160,6 +160,10 @@ var Plugin = GObject.registerClass({
         }
     }
 
+    connected() {
+        this.requestConversations();
+    }
+
     /**
      * Parse a conversation (thread of messages) and sort them
      *

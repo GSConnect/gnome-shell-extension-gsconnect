@@ -70,6 +70,10 @@ var Plugin = GObject.registerClass({
         }
     }
 
+    connected() {
+        this._sendPlayerList();
+    }
+
     /**
      * Local
      */
