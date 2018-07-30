@@ -312,6 +312,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         }
     }
 
+    // TODO: need hardcoded keybinding for this
     _openDeviceMenu(indicator) {
         if (gsconnect.settings.get_boolean('show-indicators')) {
             indicator.menu.toggle();
