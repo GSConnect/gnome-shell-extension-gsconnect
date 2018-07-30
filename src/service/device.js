@@ -841,6 +841,15 @@ var Device = GObject.registerClass({
         this._plugins.forEach((plugin, name) => this.unloadPlugin(name));
     }
 
+    async reloadPlugin(name) {
+        await this.unloadPlugin(name);
+        await this.loadPlugin(name);
+    }
+
+    async reloadPlugins() {
+        this.allowed_plugins.map(name => this.reloadPlugin(name));
+    }
+
     openSettings() {
         this.service.openSettings(this.id);
     }
