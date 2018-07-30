@@ -288,7 +288,7 @@ var ChannelService = GObject.registerClass({
                 device._channel = null;
             }
         } catch (e) {
-            logWarning(e, 'Reading UDP Packet');
+            logError(e);
         }
     }
 
@@ -314,7 +314,7 @@ var ChannelService = GObject.registerClass({
 
             this._udp.send_to(address, `${this.service.identity}`, null);
         } catch (e) {
-            logWarning(e);
+            logError(e);
         }
     }
 
@@ -375,6 +375,7 @@ var Transfer = GObject.registerClass({
             this.input_stream = this._connection.get_input_stream();
 
             // Start the transfer
+            // TODO: _transfer_with_checksum()
             result = await this._transfer();
         } catch (e) {
             logError(e, this.device.name);
