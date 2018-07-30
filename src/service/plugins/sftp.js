@@ -41,25 +41,7 @@ var Metadata = {
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/sftp
  * https://github.com/KDE/kdeconnect-android/tree/master/src/org/kde/kdeconnect/Plugins/SftpPlugin
  *
- * {
- *     'id': 1518956413092,
- *     'type':'kdeconnect.sftp',
- *     'body': {
- *         'ip': '192.168.1.71',
- *         'port': 1743,
- *         'user': 'kdeconnect',
- *         'password': 'UzcNCrI7T668JyxUFjOxQncBPNcO',
- *         'path': '/storage/emulated/0',
- *         'multiPaths': [
- *             '/storage/0000-0000','/storage/0000-0000/DCIM/Camera',
- *             '/storage/emulated/0','/storage/emulated/0/DCIM/Camera'
- *         ],
- *         'pathNames':[
- *             'SD Card', 'Camera Pictures (SD Card)',
- *             'All files','Camera pictures'
- *         ]
- *     }
- * }
+ * TODO: reimplement automount?
  */
 var Plugin = GObject.registerClass({
     Name: 'GSConnectSFTPPlugin'
@@ -82,14 +64,20 @@ var Plugin = GObject.registerClass({
             this.destroy();
             throw Error(_('SSHFS not installed'));
         }
-
-        this._setup();
     }
 
     handlePacket(packet) {
         if (packet.type === 'kdeconnect.sftp') {
             this._parseConnectionData(packet);
         }
+    }
+
+    connected() {
+        this._setup();
+    }
+
+    disconnected() {
+        this.unmount();
     }
 
     /**
@@ -216,30 +204,22 @@ var Plugin = GObject.registerClass({
             '-o', 'password_stdin'
         ];
 
-        // Only open stdout/stderr if in debug mode
-        let flags = Gio.SubprocessFlags.STDIN_PIPE;
-
-        if (gsconnect.settings.get_boolean('debug')) {
-            flags |= Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDERR_MERGE;
-        }
-
         // Execute sshfs
         this._proc = new Gio.Subprocess({
             argv: args,
-            flags: flags
+            flags: Gio.SubprocessFlags.STDIN_PIPE | Gio.SubprocessFlags.STDERR_PIPE
         });
         this._proc.init(null);
 
         // Cleanup when the process exits
         this._proc.wait_async(null, this._sshfs_finish.bind(this));
 
-        // Print output to log if the pipes are open (debug enabled)
-        if (flags & Gio.SubprocessFlags.STDOUT_PIPE) {
-            let stdout = new Gio.DataInputStream({
-                base_stream: this._proc.get_stdout_pipe()
-            });
-            this._read_output(stdout);
-        }
+        // Since we're using '-o reconnect' we watch stderr so we can quit on
+        // errors *we* consider fatal, otherwise the process may dangle
+        let stderr = new Gio.DataInputStream({
+            base_stream: this._proc.get_stderr_pipe()
+        });
+        this._read_output(stderr);
 
         // Send session password
         this._proc.get_stdin_pipe().write_all_async(
@@ -279,14 +259,19 @@ var Plugin = GObject.registerClass({
     _read_output(stream) {
         stream.read_line_async(GLib.PRIORITY_DEFAULT, null, (stream, res) => {
             try {
-                debug(stream.read_line_finish(res)[0].toString());
+                let msg = stream.read_line_finish(res)[0].toString();
+                debug(msg);
+
+                // Currently we only consider these messages to be fatal, but
+                // more could be added later
+                if (msg.startsWith('ssh_dispatch_run_fatal')) {
+                    throw new Error(msg);
+                }
+
                 this._read_output(stream);
             } catch (e) {
-                try {
-                    stream.close(null);
-                } catch (e) {
-                    debug(e);
-                }
+                logError(e, this.device.name);
+                this.unmount();
             }
         });
     }
