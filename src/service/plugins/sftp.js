@@ -195,7 +195,7 @@ var Plugin = GObject.registerClass({
             '-f',
             // Do not use ~/.ssh/config
             '-F', '/dev/null',
-            // Sketchy?
+            // Use the private key from the service certificate
             '-o', 'IdentityFile=' + gsconnect.configdir + '/private.pem',
             // Don't prompt for new host confirmation (we know the host)
             '-o', 'StrictHostKeyChecking=no',
@@ -206,6 +206,8 @@ var Plugin = GObject.registerClass({
             '-o', 'HostKeyAlgorithms=ssh-dss',
             // Match keepalive for kdeconnect connection (30sx3)
             '-o', 'ServerAliveInterval=30',
+            // Don't immediately connect to server, wait until mountpoint is first accessed.
+            '-o', 'delay_connect',
             // Automatically reconnect to server if connection is interrupted
             '-o', 'reconnect',
             // Set user/group permissions to allow readwrite access
