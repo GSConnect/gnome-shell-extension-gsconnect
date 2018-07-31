@@ -16,7 +16,7 @@ var Metadata = {
     actions: {
         find: {
             summary: _('Locate'),
-            description: _('Find a device by making it ring'),
+            description: _('Request the device announce its location'),
             icon_name: 'find-location-symbolic',
 
             parameter_type: null,
@@ -75,7 +75,6 @@ var Plugin = GObject.registerClass({
                 window_position: Gtk.WindowPosition.CENTER_ALWAYS,
                 application: Gio.Application.get_default(),
                 skip_pager_hint: true,
-                skip_taskbar_hint: true,
                 visible: true
             });
             this._dialog.connect('delete-event', this._endFind.bind(this));
