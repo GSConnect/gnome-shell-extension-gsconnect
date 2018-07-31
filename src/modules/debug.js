@@ -342,21 +342,6 @@ var Window = GObject.registerClass({
         this.application.disconnect(this._devicesChangedId);
     }
 
-    /**
-     *
-     */
-    clearNotificationCache(device) {
-        if (!device) {
-            for (let device of this.application._devices.values()) {
-                let notification = device.lookup_plugin('notification');
-
-                if (notification) {
-                    notification.clearCache();
-                }
-            }
-        }
-    }
-
     debugLog() {
         GLib.spawn_command_line_async(
             'gnome-terminal ' +

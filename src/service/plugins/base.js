@@ -27,7 +27,7 @@ var Plugin = GObject.registerClass({
 
         // Init GSettings
         this.settings = new Gio.Settings({
-            settings_schema: gsconnect.gschema.lookup(this._meta.id, -1),
+            settings_schema: gsconnect.gschema.lookup(this._meta.id, false),
             path: `${gsconnect.settings.path}device/${device.id}/plugin/${name}/`
         });
 
@@ -48,7 +48,6 @@ var Plugin = GObject.registerClass({
                     this._registerAction(name, meta, blacklist);
                 }
             }
-
         }
     }
 
@@ -99,9 +98,18 @@ var Plugin = GObject.registerClass({
     }
 
     /**
-     *
+     * This is called when a packet is received the plugin is a handler for
      */
-    handlePacket(packet) { throw Error('Not implemented'); }
+    handlePacket(packet) {
+        throw new GObject.NotImplementedError();
+    }
+
+    /**
+     * These two methods are optional and called by the device in response to
+     * the connection state changing.
+     */
+    connected() {}
+    disconnected() {}
 
     /**
      * Cache JSON parseable properties on this object for persistence. The
@@ -143,25 +151,40 @@ var Plugin = GObject.registerClass({
         }
     }
 
-    cacheFile(bytes) {
-    }
-
     // A method for clearing the cache
-    clearCache() {
+    cacheClear() {
+        log(`${this.device.name}: clearing cache for ${this.name} plugin`);
+
         for (let name in this._cacheProperties) {
-            debug(`clearing ${name} from ${this.name}`);
             this[name] = JSON.parse(JSON.stringify(this._cacheProperties[name]));
+            this._writeCache();
         }
     }
 
-    // An overridable callback that is invoked when the cache is done loading
+    /**
+     * An overridable function that is invoked when the cache is done loading
+     */
     cacheLoaded() {}
 
-    // An overridable function that gets called before the cache is written
-    _filterCache(names) {
-        return;
+    /**
+     * Build a dictionary of properties and values to cache. This can be
+     * overridden to filter what is written to disk.
+     *
+     * @return {Object} - A dictionary of the properties to cache
+     */
+    cacheBuild() {
+        let cache = {};
+
+        for (let name in this._cacheProperties) {
+            cache[name] = this[name];
+        }
+
+        return cache;
     }
 
+    /**
+     * Read the plugin's cache from disk, asynchronously
+     */
     _readCache() {
         return new Promise((resolve, reject) => {
             this._cacheFile.load_contents_async(null, (file, res) => {
@@ -183,15 +206,12 @@ var Plugin = GObject.registerClass({
         });
     }
 
+    /**
+     * Write the plugin's cache to disk, synchronously
+     */
     _writeCache() {
         try {
-            this._filterCache(this._cacheProperties);
-
-            let cache = {};
-
-            for (let name in this._cacheProperties) {
-                cache[name] = this[name];
-            }
+            let cache = this.cacheBuild();
 
             this._cacheFile.replace_contents(
                 JSON.stringify(cache),
@@ -206,14 +226,8 @@ var Plugin = GObject.registerClass({
     }
 
     /**
-     * These two methods are optional and called by the device in response to
-     * the connection state changing.
-     */
-    connected() {}
-    disconnected() {}
-
-    /**
-     * The destroy function
+     * Unregister plugin actions, write the cache (if applicable) and destroy
+     * any dangling signal handlers.
      */
     destroy() {
         this._gactions.map(action => {
@@ -221,6 +235,7 @@ var Plugin = GObject.registerClass({
             this.device.remove_action(action.name);
         });
 
+        // Write the cache to disk, if applicable
         if (this._cacheFile !== undefined) {
             this._writeCache();
         }

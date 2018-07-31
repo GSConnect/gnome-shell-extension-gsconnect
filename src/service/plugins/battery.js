@@ -372,14 +372,19 @@ var Plugin = GObject.registerClass({
         return (time === NaN) ? 0 : Math.floor(time);
     }
 
-    _limit_func() {
+    /**
+     * Override Plugin.cacheBuild() to limit statistics to three days
+     */
+    cacheBuild() {
+        let cache = super.cacheFilter();
+
         // Limit stats to 3 days
         let limit = (Date.now() / 1000) - (3*24*60*60);
 
         return {
-            charging: this._chargeStats.filter(stat => stat.time > limit),
-            discharging: this._dischargeStats.filter(stat => stat.time > limit),
-            threshold: this._thresholdLevel
+            _chargeStats: cache._chargeStats.filter(stat => stat.time > limit),
+            _dischargeStats: cache._dischargeStats.filter(stat => stat.time > limit),
+            _thresholdLevel: cache._thresholdLevel
         };
     }
 
