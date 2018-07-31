@@ -17,7 +17,7 @@ debug('loading service/__init__.js');
  */
 Object.defineProperties(Gio.Menu.prototype, {
     /**
-     * Return the index of an item in the menu by attribute and value
+     * Return the position of an item in the menu by attribute and value
      *
      * @param {String} name - The attribute name (eg. 'label', 'action')
      * @param {*} - The value of the attribute
@@ -66,18 +66,6 @@ Object.defineProperties(Gio.Menu.prototype, {
     },
 
     /**
-     * Return the index of the first GMenuItem found with @action
-     * @param {String} name - The action name (without scope)
-     * @return {Number} - The index of the action
-     */
-    'get_action': {
-        value: function(name) {
-            return this._get('action', `device.${name}`);
-        },
-        enumerable: false
-    },
-
-    /**
      * Add a GMenuItem for a plugin action
      *
      * @param {Device.Action} action - The device action to add
@@ -119,7 +107,7 @@ Object.defineProperties(Gio.Menu.prototype, {
         value: function(name) {
             let index = this._remove('action', name);
 
-            if (index > -1) {
+            if (index === -1) {
                 index = this._remove('action', `device.${name}`);
             }
 
