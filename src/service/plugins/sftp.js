@@ -81,21 +81,34 @@ var Plugin = GObject.registerClass({
     }
 
     /**
+     * Ensure the mountpoint exists with the proper permissions and get the
+     * UID and GID from the folder.
      *
+     * TODO: If #607706 (https://bugzilla.gnome.org/show_bug.cgi?id=607706)
+     *       is fixed in gvfs we can mount under $HOME and show in Nautilus
      */
     _setup() {
         try {
-            // https://bugzilla.gnome.org/show_bug.cgi?id=607706
-            //this._mountpoint = GLib.build_filenamev([GLib.get_home_dir(), this.device.name]);
-            this._mountpoint = gsconnect.runtimedir + '/' + this.device.id;
-            GLib.mkdir_with_parents(this._mountpoint, 448);
+            // Mounting is done under /run/user/$UID/gsconnect/<device-id>
+            this._mountpoint = GLib.build_filenamev([
+                gsconnect.runtimedir,
+                this.device.id
+            ]);
 
             let dir = Gio.File.new_for_path(this._mountpoint);
-            let info = dir.query_info('unix::uid,unix::gid', 0, null);
-            this._uid = info.get_attribute_uint32('unix::uid').toString();
-            this._gid = info.get_attribute_uint32('unix::gid').toString();
+
+            try {
+                dir.make_directory_with_parents(null);
+                dir.set_attribute_uint32('unix::mode', 448, 0, null);
+            } catch (e) {
+            } finally {
+                let info = dir.query_info('unix::uid,unix::gid', 0, null);
+                this._uid = info.get_attribute_uint32('unix::uid').toString();
+                this._gid = info.get_attribute_uint32('unix::gid').toString();
+            }
         } catch (e) {
-            logError(e, this.device.name);
+            logWarning(e, `${this.device.name}: ${this.name}`);
+            this._umount();
             return false;
         }
 
@@ -119,12 +132,10 @@ var Plugin = GObject.registerClass({
         this._user = packet.body.user;
         this._password = packet.body.password;
 
-        // Directories
-        // If 'multiPaths' is present, stack up common path prefixes to use as
-        // the remote root to pass to sshfs
+        // If 'multiPaths' is present find the common path prefix
         if (packet.body.hasOwnProperty('multiPaths')) {
             let prefix = [];
-            let paths = packet.body.multiPaths.map(p => p.split('/'));
+            let paths = packet.body.multiPaths.map(path => path.split('/'));
 
             // Find the common prefixes
             for (let dir of paths[0]) {
@@ -136,9 +147,9 @@ var Plugin = GObject.registerClass({
                 }
             }
 
-            // Rejoin the prefix and multiPaths
-            this._root = prefix.join('/');
-            paths = paths.map(path => '/' + path.join('/'));
+            // Rejoin the prefix and paths
+            this._root = GLib.build_filenamev(prefix);
+            paths = paths.map(path => '/' + GLib.build_filenamev(path));
 
             // Set the directories
             for (let i = 0; i < paths.length; i++) {
@@ -146,32 +157,26 @@ var Plugin = GObject.registerClass({
                 this._directories[name] = this._mountpoint + paths[i];
             }
 
-            // The kdeconnect-kde way
-//            this._root = '/';
-
-//            for (let i = 0; i < packet.body.multiPaths.length; i++) {
-//                let name = packet.body.pathNames[i];
-//                let path = packet.body.multiPaths[i];
-//                this._directories[name] = this._mountpoint + path;
-//            }
-        // If 'multiPaths' is missing, just use 'path' and assume there's a
-        // a Camera folder. See also:
-        //     https://github.com/KDE/kdeconnect-android/blob/master/src/org/kde/kdeconnect/Helpers/StorageHelper.java#L62
-        //     https://github.com/KDE/kdeconnect-kde/blob/master/plugins/sftp/sftpplugin.cpp#L128
+        // If 'multiPaths' is missing use 'path' and assume a Camera folder
         } else {
             this._root = packet.body.path;
             this._directories[_('All files')] = this._mountpoint;
-            this._directories[_('Camera pictures')] =  this._mountpoint + '/DCIM/Camera';
+            this._directories[_('Camera pictures')] =  GLib.build_filenamev([
+                this._mountpoint,
+                'DCIM',
+                'Camera'
+            ]);
         }
 
-        this._mount(packet);
+        // Start the mounting process
+        this._mount();
     }
 
     /**
      * Start the sshfs process and send the password
      */
     _sshfs() {
-        let args = [
+        let argv = [
             'sshfs',
             `${this._user}@${this._ip}:${this._root}`,
             this._mountpoint,
@@ -189,7 +194,7 @@ var Plugin = GObject.registerClass({
             '-o', 'StrictHostKeyChecking=no',
             // Prevent storing as a known host
             '-o', 'UserKnownHostsFile=/dev/null',
-            // ssh-dss (DSA) keys are deprecated since openssh-7.0p1
+            // Force ssh-dss (DSA) keys (deprecated >= openssh-7.0p1)
             // See: https://bugs.kde.org/show_bug.cgi?id=351725
             '-o', 'HostKeyAlgorithms=ssh-dss',
             // Match keepalive for kdeconnect connection (30sx3)
@@ -206,7 +211,7 @@ var Plugin = GObject.registerClass({
 
         // Execute sshfs
         this._proc = new Gio.Subprocess({
-            argv: args,
+            argv: argv,
             flags: Gio.SubprocessFlags.STDIN_PIPE | Gio.SubprocessFlags.STDERR_PIPE
         });
         this._proc.init(null);
@@ -219,7 +224,7 @@ var Plugin = GObject.registerClass({
         let stderr = new Gio.DataInputStream({
             base_stream: this._proc.get_stderr_pipe()
         });
-        this._read_output(stderr);
+        this._sshfs_check(stderr);
 
         // Send session password
         this._proc.get_stdin_pipe().write_all_async(
@@ -256,21 +261,26 @@ var Plugin = GObject.registerClass({
         }
     }
 
-    _read_output(stream) {
+    /**
+     * Watch stderr output from the sshfs process for fatal errors
+     */
+    _sshfs_check(stream) {
         stream.read_line_async(GLib.PRIORITY_DEFAULT, null, (stream, res) => {
             try {
-                let msg = stream.read_line_finish(res)[0].toString();
-                debug(msg);
+                let msg = stream.read_line_finish(res)[0];
 
-                // Currently we only consider these messages to be fatal, but
-                // more could be added later
-                if (msg.startsWith('ssh_dispatch_run_fatal')) {
-                    throw new Error(msg);
+                if (msg !== null) {
+                    msg = msg.toString();
+
+                    if (msg.startsWith('ssh_dispatch_run_fatal')) {
+                        throw new Error(msg);
+                    }
+
+                    logWarning(msg, `${this.device.name}: ${this.name}`);
+                    this._sshfs_check(stream);
                 }
-
-                this._read_output(stream);
             } catch (e) {
-                logError(e, this.device.name);
+                logWarning(e, `${this.device.name}: ${this.name}`);
                 this.unmount();
             }
         });
@@ -280,8 +290,8 @@ var Plugin = GObject.registerClass({
      * Replace the 'Mount' item with a submenu of directories
      */
     _addSubmenu() {
-        // Directory Submenu
-        let foldersSubmenu = new Gio.Menu();
+        // Sftp Submenu
+        let submenu = new Gio.Menu();
 
         // Directories Section
         let dirSection = new Gio.Menu();
@@ -289,34 +299,29 @@ var Plugin = GObject.registerClass({
         for (let [name, path] of Object.entries(this._directories)) {
             dirSection.append(name, `device.viewFolder::${path}`);
         }
-        foldersSubmenu.append_section(null, dirSection);
+
+        submenu.append_section(null, dirSection);
 
         // Unmount Section & Item
         let unmountSection = new Gio.Menu();
-        let unmountItem = new Gio.MenuItem();
-        unmountItem.set_icon(
-            new Gio.ThemedIcon({ name: 'media-eject-symbolic' })
-        );
-        unmountItem.set_label(_('Unmount'));
-        unmountItem.set_detailed_action('device.unmount');
-        unmountSection.append_item(unmountItem);
-        foldersSubmenu.append_section(null, unmountSection);
+        unmountSection.add_action(this.device.lookup_action('unmount'));
+        submenu.append_section(null, unmountSection);
 
         // Directories Item
-        let foldersIcon = new Gio.EmblemedIcon({
+        let icon = new Gio.EmblemedIcon({
             gicon: new Gio.ThemedIcon({ name: 'folder-remote-symbolic' })
         });
         let emblem = new Gio.Emblem({
             icon: new Gio.ThemedIcon({ name: 'emblem-default' })
         });
-        foldersIcon.add_emblem(emblem);
+        icon.add_emblem(emblem);
 
-        let foldersItem = new Gio.MenuItem();
-        foldersItem.set_icon(foldersIcon);
-        foldersItem.set_label(_('List Folders'));
-        foldersItem.set_submenu(foldersSubmenu);
+        let item = new Gio.MenuItem();
+        item.set_icon(icon);
+        item.set_label(_('List Folders'));
+        item.set_submenu(submenu);
 
-        this.device.menu.replace_action('device.mount', foldersItem);
+        this.device.menu.replace_action('device.mount', item);
     }
 
     _removeSubmenu() {
@@ -339,12 +344,12 @@ var Plugin = GObject.registerClass({
      * Run sshfs and replace the
      */
     _mount() {
-        // If mounting is already in progress, let that fail before retrying
-        if (this._mounting) {
-            return;
-        }
-
         try {
+            // If mounting is already in progress, let that fail before retrying
+            if (this._mounting) {
+                return;
+            }
+
             this._mounting = true;
 
             // Start sshfs
