@@ -264,8 +264,12 @@ var ConversationMessage = GObject.registerClass({
         return true;
     }
 
-    _onQueryTooltip(widget) {
-        widget.tooltip_text = getTime(widget.message.date);
+    vfunc_query_tooltip(x, y, keyboard_tooltip, tooltip) {
+        if (super.vfunc_query_tooltip(x, y, keyboard_tooltip, tooltip)) {
+            tooltip.set_text(getTime(this.message.date));
+            return true;
+        }
+
         return false;
     }
 
