@@ -5,6 +5,7 @@ const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
+const Bluetooth = imports.service.bluetooth;
 const Lan = imports.service.lan;
 const PluginsBase = imports.service.plugins.base;
 
@@ -145,12 +146,12 @@ var Plugin = GObject.registerClass({
                 buttons = [
                     {
                         label: _('Open Folder'),
-                        action: 'viewFolder',
+                        action: 'openPath',
                         parameter: new GLib.Variant('s', file.get_parent().get_uri())
                     },
                     {
                         label: _('Open File'),
-                        action: 'viewFolder',
+                        action: 'openPath',
                         parameter: new GLib.Variant('s', file.get_uri())
                     }
                 ];
@@ -185,6 +186,7 @@ var Plugin = GObject.registerClass({
         Gio.AppInfo.launch_default_for_uri(packet.body.url, null);
     }
 
+    // FIXME: copy to clipboard?
     _handleText(packet) {
         log(`receiving text: "${packet.body.text}"`);
     }

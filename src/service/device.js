@@ -490,15 +490,12 @@ var Device = GObject.registerClass({
         rejectPair.connect('activate', this.unpair.bind(this));
         this.add_action(rejectPair);
 
-        let viewFolder = new Action({
-            name: 'viewFolder',
-            parameter_type: new GLib.VariantType('s'),
-            summary: _('View Folder'),
-            description: _('Open a folder for viewing'),
-            icon_name: 'folder-open-symbolic'
+        let openPath = new Gio.SimpleAction({
+            name: 'openPath',
+            parameter_type: new GLib.VariantType('s')
         });
-        viewFolder.connect('activate', this.viewFolder.bind(this));
-        this.add_action(viewFolder);
+        openPath.connect('activate', this.openPath.bind(this));
+        this.add_action(openPath);
     }
 
     cancelTransfer(action, parameter) {
@@ -511,7 +508,7 @@ var Device = GObject.registerClass({
         }
     }
 
-    viewFolder(action, parameter) {
+    openPath(action, parameter) {
         let path = parameter.get_string()[0];
         path = path.startsWith('file://') ? path : `file://${path}`;
         Gio.AppInfo.launch_default_for_uri(path, null);

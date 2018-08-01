@@ -297,7 +297,7 @@ var Plugin = GObject.registerClass({
         let dirSection = new Gio.Menu();
 
         for (let [name, path] of Object.entries(this._directories)) {
-            dirSection.append(name, `device.viewFolder::${path}`);
+            dirSection.append(name, `device.openPath::${path}`);
         }
 
         submenu.append_section(null, dirSection);
