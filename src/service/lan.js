@@ -236,7 +236,7 @@ var ChannelService = GObject.registerClass({
                 return;
             }
 
-            debug(packet.body.deviceName, 'Received broadcast');
+            debug(packet);
 
             let device = this.service._devices.get(packet.body.deviceId);
 
