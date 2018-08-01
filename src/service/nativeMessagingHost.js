@@ -126,8 +126,8 @@ var NativeMessagingHost = GObject.registerClass({
             message = this.stdin.read_bytes(length, null).toArray().toString();
             message = JSON.parse(message);
         } catch (e) {
-            debug(e);
-            return;
+            logError(e);
+            this.quit();
         }
 
         debug(message);
@@ -142,7 +142,7 @@ var NativeMessagingHost = GObject.registerClass({
                 if (message.data.action === 'share') {
                     actionName = 'shareUrl';
                 } else if (message.data.action === 'telephony') {
-                    actionName = 'shareSms'; // FIXME
+                    actionName = 'shareSms';
                 }
 
                 device.actions.activate_action(
@@ -163,7 +163,8 @@ var NativeMessagingHost = GObject.registerClass({
             this.stdout.put_int32(data.length, null);
             this.stdout.put_string(data, null);
         } catch (e) {
-            debug(e);
+            logError(e);
+            this.quit();
         }
     }
 

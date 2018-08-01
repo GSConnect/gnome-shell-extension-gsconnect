@@ -581,16 +581,6 @@ var Plugin = GObject.registerClass({
     }
 
     /**
-     * Request a list of conversations, which is a list of the last message in
-     * each unarchived thread.
-     */
-    requestConversations() {
-        this.device.sendPacket({
-            type: 'kdeconnect.telephony.request_conversations'
-        });
-    }
-
-    /**
      * Request a conversation, which is a list of messages from a single thread.
      *
      * @param {Number} thread_id - The thread_id of the conversation to request
@@ -601,6 +591,16 @@ var Plugin = GObject.registerClass({
             body: {
                 threadID: thread_id
             }
+        });
+    }
+
+    /**
+     * Request a list of conversations, which is a list of the last message in
+     * each unarchived thread.
+     */
+    requestConversations() {
+        this.device.sendPacket({
+            type: 'kdeconnect.telephony.request_conversations'
         });
     }
 

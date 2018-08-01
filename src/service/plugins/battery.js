@@ -376,7 +376,7 @@ var Plugin = GObject.registerClass({
      * Override Plugin.cacheBuild() to limit statistics to three days
      */
     cacheBuild() {
-        let cache = super.cacheFilter();
+        let cache = super.cacheBuild();
 
         // Limit stats to 3 days
         let limit = (Date.now() / 1000) - (3*24*60*60);

@@ -358,7 +358,7 @@ var Plugin = GObject.registerClass({
                 body: notif
             };
 
-            return await this._uploadIcon(packet, icon);
+            await this._uploadIcon(packet, icon);
         }
     }
 

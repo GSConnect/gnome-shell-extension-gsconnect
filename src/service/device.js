@@ -450,12 +450,9 @@ var Device = GObject.registerClass({
         activate.connect('activate', this.activate.bind(this));
         this.add_action(activate);
 
-        let cancelTransfer = new Action({
+        let cancelTransfer = new Gio.SimpleAction({
             name: 'cancelTransfer',
-            parameter_type: new GLib.VariantType('s'),
-            summary: _('Cancel Transfer'),
-            description: _('Stop an in progress transfer'),
-            icon_name: 'process-stop-symbolic'
+            parameter_type: new GLib.VariantType('s')
         });
         cancelTransfer.connect('activate', this.cancelTransfer.bind(this));
         this.add_action(cancelTransfer);

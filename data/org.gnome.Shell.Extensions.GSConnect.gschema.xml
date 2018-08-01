@@ -59,9 +59,6 @@
     <key name="certificate-pem" type="s">
       <default>""</default>
     </key>
-    <key name="identity" type="a{sv}">
-      <default>{}</default>
-    </key>
     <key name="id" type="s">
       <default>""</default>
     </key>
@@ -126,17 +123,17 @@
   </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.FindMyPhone">
     <key name="share-location" type="b">
-      <default>false</default>
+      <default>true</default>
     </key>
   </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Mousepad">
     <key name="share-control" type="b">
-      <default>false</default>
+      <default>true</default>
     </key>
   </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.MPRIS">
     <key name="share-players" type="b">
-      <default>false</default>
+      <default>true</default>
     </key>
   </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Notification">
@@ -147,18 +144,16 @@
       <default>'{}'</default>
     </key>
   </schema>
-  <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Ping">
-  </schema>
+  <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Ping"/>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.RunCommand">
     <key name="share-commands" type="b">
-      <default>false</default>
+      <default>true</default>
     </key>
     <key name="command-list" type="a{sv}">
       <default>{}</default>
     </key>
   </schema>
-  <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.SFTP">
-  </schema>
+  <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.SFTP"/>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Share">
     <key name="accept-content" type="b">
       <default>false</default>
