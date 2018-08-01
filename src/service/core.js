@@ -338,6 +338,7 @@ var Channel = GObject.registerClass({
      * connection is accepted.
      *
      * @param {Gio.InetSocketAddress} address - The address to open a connection
+     * @return {Boolean} - %true on connected, %false otherwise
      */
     async open(address) {
         log(`GSConnect: Opening connection to ${address.to_string()}`);
@@ -358,7 +359,6 @@ var Channel = GObject.registerClass({
             this._connection = await this._sendIdent(this._connection);
             this._connection = await this._serverEncryption(this._connection);
 
-            this.emit('connected');
             return true;
         } catch (e) {
             log(`GSConnect: ${e.message}`);
@@ -376,6 +376,7 @@ var Channel = GObject.registerClass({
      * connection is accepted.
      *
      * @param {Gio.TcpConnection} connection - The incoming connection
+     * @return {Boolean} - %true on connected, %false otherwise
      */
     async accept(connection) {
         if (this.type === 'tcp') {
@@ -390,7 +391,6 @@ var Channel = GObject.registerClass({
             this._connection = await this._receiveIdent(this._connection);
             this._connection = await this._clientEncryption(this._connection);
 
-            this.emit('connected');
             return true;
         } catch(e) {
             log(`GSConnect: ${e.message}`);
@@ -615,10 +615,10 @@ var Transfer = GObject.registerClass({
                     (source, res) => {
                         try {
                             if (source.splice_finish(res) < this.size) {
-                                throw new Error('expected more');
-                            } else {
-                                resolve(true);
+                                throw new Error('incomplete data');
                             }
+
+                            resolve(true);
                         } catch (e) {
                             reject(e);
                         }

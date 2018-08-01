@@ -13,7 +13,6 @@ var Metadata = {
     incomingCapabilities: ['kdeconnect.sftp'],
     outgoingCapabilities: ['kdeconnect.sftp.request'],
     actions: {
-        // TODO: stateful action???
         mount: {
             summary: _('Mount'),
             description: _('Mount a remote device'),

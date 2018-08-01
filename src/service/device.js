@@ -437,9 +437,10 @@ var Device = GObject.registerClass({
     }
 
     /**
-     * Stock device actions
+     * Actions
      */
     _registerActions() {
+        // Stock device actions
         let activate = new Action({
             name: 'activate',
             parameter_type: null,
@@ -449,13 +450,6 @@ var Device = GObject.registerClass({
         });
         activate.connect('activate', this.activate.bind(this));
         this.add_action(activate);
-
-        let cancelTransfer = new Gio.SimpleAction({
-            name: 'cancelTransfer',
-            parameter_type: new GLib.VariantType('s')
-        });
-        cancelTransfer.connect('activate', this.cancelTransfer.bind(this));
-        this.add_action(cancelTransfer);
 
         let openSettings = new Action({
             name: 'openSettings',
@@ -486,6 +480,14 @@ var Device = GObject.registerClass({
         });
         rejectPair.connect('activate', this.unpair.bind(this));
         this.add_action(rejectPair);
+
+        // Some general utility actions
+        let cancelTransfer = new Gio.SimpleAction({
+            name: 'cancelTransfer',
+            parameter_type: new GLib.VariantType('s')
+        });
+        cancelTransfer.connect('activate', this.cancelTransfer.bind(this));
+        this.add_action(cancelTransfer);
 
         let openPath = new Gio.SimpleAction({
             name: 'openPath',
