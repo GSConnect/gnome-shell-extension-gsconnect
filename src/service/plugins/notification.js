@@ -101,7 +101,7 @@ var Plugin = GObject.registerClass({
     _handleNotification(packet) {
         // A report that a remote notification has been dismissed
         if (packet.body.hasOwnProperty('isCancel')) {
-            this.device.withdraw_notification(packet.body.id);
+            this.device.hideNotification(packet.body.id);
 
         // A remote notification (that hasn't been marked silent)
         } else if (!packet.body.hasOwnProperty('silent')) {

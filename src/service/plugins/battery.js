@@ -239,7 +239,7 @@ var Plugin = GObject.registerClass({
             this.notify('level');
 
             if (this._level > this._thresholdLevel) {
-                this.device.withdraw_notification('battery|threshold');
+                this.device.hideNotification('battery|threshold');
             }
         }
 

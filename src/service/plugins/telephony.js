@@ -489,7 +489,7 @@ var Plugin = GObject.registerClass({
 
     _onCancel(packet) {
         // Withdraw the (probably) open notification.
-        this.device.withdraw_notification(`${packet.body.event}|${packet.body.contactName}`);
+        this.device.hideNotification(`${packet.body.event}|${packet.body.contactName}`);
         this._restoreMediaState();
     }
 
@@ -561,7 +561,7 @@ var Plugin = GObject.registerClass({
         let [contact, message] = this._parseEvent(packet);
 
         // Withdraw the 'ringing' notification
-        this.device.withdraw_notification(`ringing|${contact.name}`);
+        this.device.hideNotification(`ringing|${contact.name}`);
 
         this._setMediaState('talking');
         this.callNotification(contact, message);

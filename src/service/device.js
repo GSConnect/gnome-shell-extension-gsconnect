@@ -520,14 +520,6 @@ var Device = GObject.registerClass({
     /**
      * Device notifications
      */
-    send_notification(id, notification) {
-        this.service.send_notification(`${this.id}|${id}`, notification);
-    }
-
-    withdraw_notification(id) {
-        this.service.withdraw_notification(`${this.id}|${id}`);
-    }
-
     hideNotification(id) {
         this.service.withdraw_notification(`${this.id}|${id}`);
     }

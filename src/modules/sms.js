@@ -657,7 +657,7 @@ var ConversationWindow = GObject.registerClass({
 
     _onEntryHasFocus(entry) {
         while (this._notifications.length > 0) {
-            this.device.withdraw_notification(this._notifications.pop());
+            this.device.hideNotification(this._notifications.pop());
         }
     }
 
