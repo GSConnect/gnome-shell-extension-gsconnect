@@ -121,11 +121,7 @@
       <description></description>
     </key>
   </schema>
-  <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.FindMyPhone">
-    <key name="share-location" type="b">
-      <default>true</default>
-    </key>
-  </schema>
+  <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.FindMyPhone"/>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Mousepad">
     <key name="share-control" type="b">
       <default>true</default>
@@ -146,9 +142,6 @@
   </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Ping"/>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.RunCommand">
-    <key name="share-commands" type="b">
-      <default>true</default>
-    </key>
     <key name="command-list" type="a{sv}">
       <default>{}</default>
     </key>

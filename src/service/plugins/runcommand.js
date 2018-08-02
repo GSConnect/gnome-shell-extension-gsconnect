@@ -66,10 +66,6 @@ var Plugin = GObject.registerClass({
             'changed::command-list',
             this.sendCommandList.bind(this)
         );
-        this.settings.connect(
-            'changed::share-commands',
-            this.sendCommandList.bind(this)
-        );
 
         // We cache remote commands so they can be used in the settings even
         // when the device is offline.
@@ -114,10 +110,6 @@ var Plugin = GObject.registerClass({
      */
     _handleCommand(key) {
         try {
-            if (!this.settings.get_boolean('share-commands')) {
-                throw new Error(`Permission denied: ${key}`);
-            }
-
             let commandList = this.settings.get_value('command-list').full_unpack();
 
             if (!commandList.hasOwnProperty(key)) {
@@ -209,11 +201,7 @@ var Plugin = GObject.registerClass({
      * Send the local command list
      */
     sendCommandList() {
-        let commands = {};
-
-        if (this.settings.get_boolean('share-commands')) {
-            commands = this.settings.get_value('command-list').full_unpack();
-        }
+        let commands = this.settings.get_value('command-list').full_unpack();
 
         this.device.sendPacket({
             id: 0,

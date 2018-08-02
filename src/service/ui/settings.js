@@ -422,7 +422,7 @@ var Device = GObject.registerClass({
         'mpris', 'mpris-allow',
         'mousepad', 'mousepad-allow',
         // RunCommand
-        'runcommand', 'share-commands', 'command-list',
+        'runcommand', 'command-list',
         'command-toolbar', 'command-add', 'command-remove', 'command-edit',
         'command-editor', 'command-name', 'command-line',
         // Notifications
@@ -798,27 +798,6 @@ var Device = GObject.registerClass({
     async _runcommandSettings() {
         let settings = this._getSettings('runcommand');
 
-        settings.bind(
-            'share-commands',
-            this.share_commands,
-            'active',
-            Gio.SettingsBindFlags.DEFAULT
-        );
-
-        settings.bind(
-            'share-commands',
-            this.command_list,
-            'sensitive',
-            Gio.SettingsBindFlags.DEFAULT
-        );
-
-        settings.bind(
-            'share-commands',
-            this.command_toolbar,
-            'sensitive',
-            Gio.SettingsBindFlags.DEFAULT
-        );
-
         // Exclusively enable the editor or add button
         this.command_editor.bind_property(
             'visible',
@@ -831,32 +810,15 @@ var Device = GObject.registerClass({
         // TODO: backwards compatibility?
         this._commands = settings.get_value('command-list').full_unpack();
 
-        let placeholder = new Gtk.Grid({
+        let placeholder = new Gtk.Image({
+            icon_name: 'system-run-symbolic',
             hexpand: true,
             halign: Gtk.Align.CENTER,
             margin: 12,
-            column_spacing: 12,
+            pixel_size: 32,
             visible: true
         });
         placeholder.get_style_context().add_class('dim-label');
-
-        placeholder.attach(
-            new Gtk.Image({
-                icon_name: 'system-run-symbolic',
-                pixel_size: 32,
-                visible: true
-            }),
-            0, 0, 1, 1
-        );
-
-        placeholder.attach(
-            new Gtk.Label({
-                label: '<b>' + _('No Commands') + '</b>',
-                use_markup: true,
-                visible: true
-            }),
-            1, 0, 1, 1
-        );
 
         this.command_list.set_placeholder(placeholder);
         this.command_list.set_sort_func(this._commandSortFunc);

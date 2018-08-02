@@ -59,10 +59,6 @@ var Plugin = GObject.registerClass({
                 return;
             }
 
-            if (!this.settings.get_boolean('share-location')) {
-                throw new Error('Permission denied');
-            }
-
             this._cancellable = new Gio.Cancellable();
             Sound.loopThemeSound('phone-incoming-call', this._cancellable);
 
