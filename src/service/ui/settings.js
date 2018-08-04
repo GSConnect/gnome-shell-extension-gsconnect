@@ -25,17 +25,41 @@ function switcher_separators(row, before) {
 /**
  * A row for a stack sidebar
  */
-var SidebarRow = GObject.registerClass({
-    GTypeName: 'GSConnectSidebarRow'
-}, class SidebarRow extends Gtk.ListBoxRow {
+var DeviceRow = GObject.registerClass({
+    GTypeName: 'GSConnectSettingsDeviceRow',
+    Properties: {
+        'connected': GObject.ParamSpec.boolean(
+            'connected',
+            'deviceConnected',
+            'Whether the device is connected',
+            GObject.ParamFlags.READWRITE,
+            false
+        ),
+        'paired': GObject.ParamSpec.boolean(
+            'paired',
+            'devicePaired',
+            'Whether the device is paired',
+            GObject.ParamFlags.READWRITE,
+            false
+        ),
+        'symbolic-icon':GObject.ParamSpec.object(
+            'symbolic-icon',
+            'Symbolic Icon',
+            'Icon representing the device type and state',
+            GObject.ParamFlags.READWRITE,
+            Gio.Icon
+        )
+    }
+}, class GSConnectSettingsDeviceRow extends Gtk.ListBoxRow {
 
-    _init(panel) {
+    _init(device) {
         super._init({
             selectable: true,
             visible: true
         });
 
-        this.set_name(panel.device.id);
+        this.set_name(device.id);
+        this.device = device;
 
         let grid = new Gtk.Grid({
             orientation: Gtk.Orientation.HORIZONTAL,
@@ -52,7 +76,7 @@ var SidebarRow = GObject.registerClass({
             pixel_size: 16,
             visible: true
         });
-        panel.bind_property('symbolic-icon', icon, 'gicon', GObject.BindingFlags.SYNC_CREATE);
+        this.bind_property('symbolic-icon', icon, 'gicon', 2);
         grid.attach(icon, 0, 0, 1, 1);
 
         let title = new Gtk.Label({
@@ -62,7 +86,7 @@ var SidebarRow = GObject.registerClass({
             vexpand: true,
             visible: true
         });
-        panel.device.bind_property('name', title, 'label', GObject.BindingFlags.SYNC_CREATE);
+        device.settings.bind('name', title, 'label', 0);
         grid.attach(title, 1, 0, 1, 1);
 
         // A '>' image for rows that are like submenus
@@ -73,14 +97,25 @@ var SidebarRow = GObject.registerClass({
             visible: true
         });
         grid.attach(go_next, 2, 0, 1, 1);
+
+        this.connect('notify::connected', () => this.notify('symbolic-icon'));
+        device.bind_property('connected', this, 'connected', 2);
+        this.connect('notify::paired', () => this.notify('symbolic-icon'));
+        device.bind_property('paired', this, 'paired', 2);
     }
 
-    get icon() {
-        return this.get_child().get_child_at(0, 0);
-    }
+    get symbolic_icon() {
+        let name = this.device.symbolic_icon_name;
 
-    get title() {
-        return this.get_child().get_child_at(1, 0).label;
+        if (!this.paired) {
+            let rgba = new Gdk.RGBA({ red: 0.95, green: 0, blue: 0, alpha: 0.9 });
+            let info = Gtk.IconTheme.get_default().lookup_icon(name, 16, 0);
+            return info.load_symbolic(rgba, null, null, null)[0];
+        }
+
+        this.get_child().get_child_at(0, 0).opacity = this.connected ? 1 : 0.5;
+
+        return new Gio.ThemedIcon({ name: name });
     }
 
     get type() {
@@ -390,29 +425,6 @@ var Window = GObject.registerClass({
 
 var Device = GObject.registerClass({
     GTypeName: 'GSConnectSettingsDevice',
-    Properties: {
-        'connected': GObject.ParamSpec.boolean(
-            'connected',
-            'deviceConnected',
-            'Whether the device is connected',
-            GObject.ParamFlags.READWRITE,
-            false
-        ),
-        'paired': GObject.ParamSpec.boolean(
-            'paired',
-            'devicePaired',
-            'Whether the device is paired',
-            GObject.ParamFlags.READWRITE,
-            false
-        ),
-        'symbolic-icon':GObject.ParamSpec.object(
-            'symbolic-icon',
-            'Symbolic Icon',
-            'Icon representing the device type and state',
-            GObject.ParamFlags.READWRITE,
-            Gio.Icon
-        )
-    },
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/device.ui',
     Children: [
         'switcher',
@@ -478,15 +490,8 @@ var Device = GObject.registerClass({
         this.menu = builder.get_object('device-status');
         this.menu.append_section(null, this.device.menu);
 
-        // Device Status
-        this.connect('notify::connected', this._onStatusChanged.bind(this));
-        this.device.bind_property('connected', this, 'connected', GObject.BindingFlags.SYNC_CREATE);
-
-        this.connect('notify::paired', this._onStatusChanged.bind(this));
-        this.device.bind_property('paired', this, 'paired', GObject.BindingFlags.SYNC_CREATE);
-
         // Sidebar Row
-        this.row = new SidebarRow(this);
+        this.row = new DeviceRow(this.device);
 
         this.insert_action_group('device', this.device);
 
@@ -532,8 +537,6 @@ var Device = GObject.registerClass({
             this._onTcpHostChanged.bind(this)
         );
         this._onTcpHostChanged(this.device.settings);
-
-        this._onStatusChanged();
 
         // Errors/Warnings
         this.device.connect('notify::errors', this._errataPage.bind(this));
@@ -616,18 +619,6 @@ var Device = GObject.registerClass({
         this.device.activate();
     }
 
-    get symbolic_icon() {
-        let name = this.device.symbolic_icon_name;
-
-        if (!this.paired) {
-            let rgba = new Gdk.RGBA({ red: 0.95, green: 0, blue: 0, alpha: 0.9 });
-            let info = Gtk.IconTheme.get_default().lookup_icon(name, 16, 0);
-            return info.load_symbolic(rgba, null, null, null)[0];
-        }
-
-        return new Gio.ThemedIcon({ name: name });
-    }
-
     _getSettings(name) {
         if (this._gsettings === undefined) {
             this._gsettings = {};
@@ -649,15 +640,6 @@ var Device = GObject.registerClass({
 
     _onActionsChanged() {
         this._populateActionKeybindings();
-    }
-
-    _onStatusChanged() {
-        this.notify('symbolic-icon');
-
-        if (this.row) {
-            //this.row.icon.gicon = this.symbolic_icon;
-            this.row.icon.opacity = this.connected ? 1 : 0.5;
-        }
     }
 
     _onDeleteDevice(button) {
