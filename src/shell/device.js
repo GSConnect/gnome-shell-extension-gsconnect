@@ -38,11 +38,23 @@ var Battery = GObject.registerClass({
         this.object = object;
         this.device = device;
 
+        gsconnect.settings.bind(
+            'show-battery',
+            this,
+            'visible',
+            Gio.SettingsBindFlags.GET
+        );
+
         this.label = new St.Label({ text: '' });
         this.add_child(this.label);
 
         this.icon = new St.Icon({ icon_size: 16 });
         this.add_child(this.icon);
+
+        this._deviceId = this.device.connect(
+            'g-properties-changed',
+            this.update.bind(this)
+        );
 
         // Battery proxy
         this.battery = this.object.get_interface(BATTERY_INTERFACE);
@@ -73,8 +85,12 @@ var Battery = GObject.registerClass({
             }
         });
 
+        this.connect('notify::mapped', this.update.bind(this));
+
         // Cleanup
         this.connect('destroy', (actor) => {
+            actor.device.disconnect(actor._deviceId);
+
             if (actor._batteryId && actor.battery) {
                 actor.battery.disconnect(actor._batteryId);
             }
@@ -84,10 +100,12 @@ var Battery = GObject.registerClass({
     update(battery) {
         if (!this.mapped) { return; }
 
-        this.icon.visible = (this.battery && this.battery.Level > -1);
-        this.label.visible = (this.battery && this.battery.Level > -1);
+        let connected = (this.device.Connected && this.device.Paired);
+        let visible = (connected && this.battery && this.battery.Level > -1);
+        this.icon.visible = visible;
+        this.label.visible = visible;
 
-        if (!this.icon.visible || !this.label.visible) { return; }
+        if (!visible) { return; }
 
         this.icon.icon_name = this.battery.IconName;
         this.label.text = this.battery.Level + '%';
@@ -486,14 +504,6 @@ var Menu = class Menu extends PopupMenu.PopupMenuSection {
 
         // Title Bar
         this.nameLabel.text = this.device.Name;
-
-        // TODO: might as well move this to actors.js
-        if (Connected && Paired && gsconnect.settings.get_boolean('show-battery')) {
-            this.deviceBattery.visible = true;
-            this.deviceBattery.update();
-        } else {
-            this.deviceBattery.visible = false;
-        }
 
         // Plugin/Status Bar visibility
         this.pluginBar.visible = (Connected && Paired);
