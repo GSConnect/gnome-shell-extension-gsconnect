@@ -139,7 +139,7 @@ var SectionRow = GObject.registerClass({
             visible: true
         });
 
-        this._grid = new Gtk.Grid({
+        let grid = new Gtk.Grid({
             column_spacing: 12,
             margin_top: 8,
             margin_right: 12,
@@ -147,13 +147,13 @@ var SectionRow = GObject.registerClass({
             margin_left: 12,
             visible: true
         });
-        this.add(this._grid);
+        this.add(grid);
 
         // Row Icon
         this._icon = new Gtk.Image({
             pixel_size: 32
         });
-        this._grid.attach(this._icon, 0, 0, 1, 2);
+        grid.attach(this._icon, 0, 0, 1, 2);
 
         // Row Title
         this._title = new Gtk.Label({
@@ -162,7 +162,7 @@ var SectionRow = GObject.registerClass({
             valign: Gtk.Align.CENTER,
             vexpand: true
         });
-        this._grid.attach(this._title, 1, 0, 1, 1);
+        grid.attach(this._title, 1, 0, 1, 1);
 
         // Row Subtitle
         this._subtitle = new Gtk.Label({
@@ -172,7 +172,7 @@ var SectionRow = GObject.registerClass({
             vexpand: true
         });
         this._subtitle.get_style_context().add_class('dim-label');
-        this._grid.attach(this._subtitle, 1, 1, 1, 1);
+        grid.attach(this._subtitle, 1, 1, 1, 1);
 
         Object.assign(this, params);
     }
@@ -223,7 +223,7 @@ var SectionRow = GObject.registerClass({
         }
 
         this._widget = widget;
-        this._grid.attach(this.widget, 2, 0, 1, 2);
+        this.get_child().attach(this.widget, 2, 0, 1, 2);
     }
 });
 
@@ -232,10 +232,12 @@ var Window = GObject.registerClass({
     GTypeName: 'GSConnectSettingsWindow',
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/settings.ui',
     Children: [
+        // HeaderBar
         'headerbar', 'headerbar-stack',
         'service-name', 'headerbar-edit', 'headerbar-entry',
         'device-name', 'device-type',
         'prev-button', 'device-menu', 'service-menu',
+        // Sidebar
         'stack', 'switcher', 'sidebar',
         'shell-list', 'display-mode',
         'network-list',
@@ -397,9 +399,10 @@ var Window = GObject.registerClass({
 
         this.stack.foreach(child => {
             if (child.row) {
-                let name = child.row.get_name();
-                if (!this.application.devices.includes(name)) {
-                    let panel = this.stack.get_child_by_name(name);
+                let id = child.row.get_name();
+
+                if (!this.application.devices.includes(id)) {
+                    let panel = this.stack.get_child_by_name(id);
                     panel._destroy();
                     panel.destroy();
                 }
@@ -428,11 +431,12 @@ var Device = GObject.registerClass({
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/device.ui',
     Children: [
         'switcher',
-        // General Settings
-        'general-list',
+        // Sharing
+        'sharing-list',
         'clipboard', 'clipboard-allow',
-        'mpris', 'mpris-allow',
         'mousepad', 'mousepad-allow',
+        'mpris', 'mpris-allow',
+        'systemvolume', 'systemvolume-allow',
         // RunCommand
         'runcommand', 'command-list',
         'command-toolbar', 'command-add', 'command-remove', 'command-edit',
@@ -496,7 +500,7 @@ var Device = GObject.registerClass({
         this.insert_action_group('device', this.device);
 
         // Settings Pages
-        this._generalSettings();
+        this._sharingSettings();
         this._runcommandSettings();
         this._notificationSettings();
         this._telephonySettings();
@@ -543,9 +547,9 @@ var Device = GObject.registerClass({
         this._errataPage();
 
         // Hide elements for any disabled plugins
-        for (let name of this.device.settings.get_strv('plugin-blacklist')) {
+        for (let name of this.device.supported_plugins) {
             if (this.hasOwnProperty(name)) {
-                this[name].visible = false;
+                this[name].visible = this.device.get_plugin_allowed(name);
             }
         }
     }
@@ -671,11 +675,10 @@ var Device = GObject.registerClass({
     }
 
     /**
-     * General Settings
+     * Sharing Settings
      */
-    async _generalSettings() {
-        // Setup current values
-        this.general_list.foreach(row => {
+    async _sharingSettings() {
+        this.sharing_list.foreach(row => {
             let label = row.get_child().get_child_at(1, 0);
             let name = label.get_name().split('-')[0];
             let settings = this._getSettings(name);
@@ -719,16 +722,16 @@ var Device = GObject.registerClass({
         });
 
         // Separators & Sorting
-        this.general_list.set_header_func(section_separators);
+        this.sharing_list.set_header_func(section_separators);
 
-        this.general_list.set_sort_func((row1, row2) => {
+        this.sharing_list.set_sort_func((row1, row2) => {
             row1 = row1.get_child().get_child_at(0, 0);
             row2 = row2.get_child().get_child_at(0, 0);
             return row1.label.localeCompare(row2.label);
         });
     }
 
-    async _onGeneralRowActivated(box, row) {
+    async _onSharingRowActivated(box, row) {
         let label = row.get_child().get_child_at(1, 0);
         let name = label.get_name().split('-')[0];
         let settings = this._getSettings(name);
@@ -907,6 +910,7 @@ var Device = GObject.registerClass({
     }
 
     // The 'folder' icon in the command editor GtkEntry
+    // TODO: non-blocking dialog
     _onBrowseCommand(entry, icon_pos, event) {
         let filter = new Gtk.FileFilter();
         filter.add_mime_type('application/x-executable');
@@ -1157,7 +1161,6 @@ var Device = GObject.registerClass({
         }
 
         // TODO: Device Menu shortcut
-
         for (let name of this.device.list_actions().sort()) {
             let action = this.device.lookup_action(name);
 
