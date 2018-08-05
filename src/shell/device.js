@@ -226,7 +226,7 @@ var Icon = GObject.registerClass({
         }
 
         Time = Time / 60;
-        let minutes = Time % 60;
+        let minutes = Math.floor(Time % 60);
         let hours = Math.floor(Time / 60);
 
         if (Charging) {
@@ -547,8 +547,14 @@ var Indicator = class Indicator extends PanelMenu.Button {
         this.menu.addMenuItem(this.deviceMenu);
 
         // Watch GSettings & Properties
-        this._gsettingsId = gsconnect.settings.connect('changed', this._sync.bind(this));
-        this._propertiesId = this.device.connect('g-properties-changed', this._sync.bind(this));
+        this._gsettingsId = gsconnect.settings.connect(
+            'changed',
+            this._sync.bind(this)
+        );
+        this._propertiesId = this.device.connect(
+            'g-properties-changed',
+            this._sync.bind(this)
+        );
 
         this._sync();
     }
@@ -565,8 +571,8 @@ var Indicator = class Indicator extends PanelMenu.Button {
         return new Gio.ThemedIcon({ name: icon_name });
     }
 
-    _sync() {
-        debug(`${this.device.Name} (${this.device.Id})`);
+    async _sync() {
+        debug(`${this.device.Name}`);
 
         let { Connected, Paired } = this.device;
 
