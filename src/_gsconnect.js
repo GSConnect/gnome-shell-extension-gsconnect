@@ -19,7 +19,6 @@ String.prototype.format = Format.format;
 
 /**
  * Application Variables
- * TODO: these should mirror package.js
  */
 gsconnect.app_id = 'org.gnome.Shell.Extensions.GSConnect';
 gsconnect.app_path = '/org/gnome/Shell/Extensions/GSConnect';
@@ -29,7 +28,6 @@ gsconnect.metadata = JSON.parse(GLib.file_get_contents(gsconnect.extdatadir + '/
 
 /**
  * User Directories
- * TODO: these should mirror package.js
  */
 gsconnect.cachedir = GLib.build_filenamev([GLib.get_user_cache_dir(), 'gsconnect']);
 gsconnect.configdir = GLib.build_filenamev([GLib.get_user_config_dir(), 'gsconnect']);
@@ -43,20 +41,25 @@ for (let path of [gsconnect.cachedir, gsconnect.configdir, gsconnect.runtimedir]
  * Setup global object for user or system install
  */
 if (gsconnect.is_local) {
+    // Infer libdir from GJS's search path
     gsconnect.libdir = GIRepository.Repository.get_search_path().find(path => {
         return path.endsWith('/gjs/girepository-1.0');
     }).replace('/gjs/girepository-1.0', '');
 
+    // localedir will be a subdirectory of the extension root
     gsconnect.localedir = GLib.build_filenamev([
         gsconnect.extdatadir,
         'locale'
     ]);
+
+    // schemadir will be a subdirectory of the extension root
     gsconnect.gschema = Gio.SettingsSchemaSource.new_from_directory(
         GLib.build_filenamev([gsconnect.extdatadir, 'schemas']),
         Gio.SettingsSchemaSource.get_default(),
         false
     );
 } else {
+    // All dir paths should be populated by meson for this system at build time
     gsconnect.libdir = gsconnect.metadata.libdir;
     gsconnect.localedir = gsconnect.metadata.localedir;
     gsconnect.gschema = Gio.SettingsSchemaSource.new_from_directory(
@@ -99,18 +102,18 @@ gsconnect.settings = new Gio.Settings({
 
 /**
  * Register resources
- * TODO: these should mirror package.js
  */
-gsconnect.resource = Gio.Resource.load(
+Gio.Resource.load(
     GLib.build_filenamev([gsconnect.extdatadir, `${gsconnect.app_id}.gresource`])
-);
-gsconnect.resource._register();
+)._register();
+
 gsconnect.get_resource = function(path) {
     return Gio.resources_lookup_data(
         GLib.build_filenamev([gsconnect.app_path, path]),
         Gio.ResourceLookupFlags.NONE
     ).toArray().toString().replace('@EXTDATADIR@', gsconnect.extdatadir);
 };
+
 
 /**
  * DBus Interface Introspection
