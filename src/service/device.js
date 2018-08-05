@@ -652,7 +652,7 @@ var Device = GObject.registerClass({
      */
     _resetPairRequest() {
         if (this._incomingPairRequest) {
-            this.withdraw_notification('pair-request');
+            this.hideNotification('pair-request');
             GLib.source_remove(this._incomingPairRequest);
             this._incomingPairRequest = 0;
         }
