@@ -6,8 +6,8 @@ const GObject = imports.gi.GObject;
 
 const Contacts = imports.modules.contacts;
 const MPRIS = imports.modules.mpris;
-const Sms = imports.modules.sms;
 const Sound = imports.modules.sound;
+const Sms = imports.service.ui.sms;
 const PluginsBase = imports.service.plugins.base;
 
 

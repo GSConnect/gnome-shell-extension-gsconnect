@@ -338,6 +338,10 @@ var ConversationSummary = GObject.registerClass({
             xalign: 0,
             visible: true
         });
+//        time.connect('map', (widget) => {
+//            widget.label = '<small>' + getShortTime(this.message.date) + '</small>';
+//            return false;
+//        });
 
         time.get_style_context().add_class('dim-label');
         grid.attach(time, 2, 0, 1, 1);
@@ -558,6 +562,7 @@ var ConversationWindow = GObject.registerClass({
 
         let telephony = this.device.lookup_plugin('telephony');
 
+        // Show the contact list if there are no conversations
         if (!telephony || telephony.threads.length === 0) {
             this._showContacts();
         } else {
@@ -596,7 +601,7 @@ var ConversationWindow = GObject.registerClass({
     /**
      * Conversation List
      */
-    _populateConversations() {
+    async _populateConversations() {
         // Clear any current threads
         this.conversation_list.foreach(row => row.destroy());
 
@@ -635,7 +640,7 @@ var ConversationWindow = GObject.registerClass({
      *
      * @param {String} number - Phone number reported by KDE Connect (stripped)
      */
-    _populateMessages(number) {
+    async _populateMessages(number) {
         this.message_list.foreach(row => row.destroy());
         this._thread = undefined;
 
@@ -666,6 +671,7 @@ var ConversationWindow = GObject.registerClass({
         vadj.set_value(vadj.get_upper() - vadj.get_page_size());
     }
 
+    // TODO: this is kind of awkward...
     _onSelectedNumbersChanged(contact_list) {
         if (this.contact_list.selected.size > 0) {
             let number = this.contact_list.selected.keys().next().value;
@@ -724,7 +730,7 @@ var ConversationWindow = GObject.registerClass({
      *
      * @param {Object} message - A telephony message object
      */
-    _addMessage(message) {
+    async _addMessage(message) {
         // Check if we need a new thread
         if (this._thread === undefined) {
             this._addThread(message.type);

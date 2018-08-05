@@ -41,7 +41,6 @@ const Core = imports.service.core;
 const Device = imports.service.device;
 const Lan = imports.service.lan;
 const Notification = imports.modules.notification;
-const Sms = imports.modules.sms;
 const Sound = imports.modules.sound;
 
 const ServiceUI = imports.service.ui.service;
