@@ -7,6 +7,8 @@ const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 const Pango = imports.gi.Pango;
 
+const Keybindings = imports.service.ui.keybindings;
+
 
 function section_separators(row, before) {
     if (before) {
@@ -1271,33 +1273,22 @@ var Device = GObject.registerClass({
     }
 
     async _onShortcutRowActivated(box, row) {
-        let dialog = new ShortcutEditor({
-            summary: row.summary,
-            transient_for: box.get_toplevel()
-        });
+        try {
+            let keybindings = this.device.settings.get_value('keybindings').full_unpack();
 
-        dialog.connect('response', (dialog, response) => {
-            if (response !== Gtk.ResponseType.CANCEL) {
-                // Get current keybindings
-                let keybindings = this.device.settings.get_value('keybindings').full_unpack();
+            keybindings[row.action] = await Keybindings.get_keybinding(
+                box.get_toplevel(),
+                row.summary,
+                keybindings[row.action]
+            );
 
-                if (response === Gtk.ResponseType.OK) {
-                    keybindings[row.action] = dialog.accelerator;
-                // Reset (Backspace)
-                } else if (response === 1) {
-                    delete keybindings[row.action];
-                }
-
-                this.device.settings.set_value(
-                    'keybindings',
-                    GLib.Variant.full_pack(keybindings)
-                );
-            }
-
-            dialog.destroy();
-        });
-
-        dialog.run();
+            this.device.settings.set_value(
+                'keybindings',
+                GLib.Variant.full_pack(keybindings)
+            );
+        } catch (e) {
+            logError(e);
+        }
     }
 
     /**
@@ -1367,242 +1358,6 @@ var Device = GObject.registerClass({
         if (this.hasOwnProperty(name)) {
             this[name].visible = this.device.get_plugin_allowed(name);
         }
-    }
-});
-
-
-/**
- * A simplified version of the shortcut editor from Gnome Control Center
- */
-var ShortcutEditor = GObject.registerClass({
-    GTypeName: 'GSConnectShortcutEditor',
-    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/shortcut-editor.ui',
-    Children: [
-        // HeaderBar
-        'cancel-button', 'set-button',
-        //
-        'stack',
-        'shortcut-summary',
-        'edit-shortcut', 'confirm-shortcut',
-        'conflict-label'
-    ]
-}, class ShortcutEditor extends Gtk.Dialog {
-
-    _init(params) {
-        this.connect_template();
-
-        super._init({
-            transient_for: params.transient_for,
-            use_header_bar: true,
-            modal: true
-        });
-
-        this.seat = Gdk.Display.get_default().get_default_seat();
-
-        // Content
-        this.shortcut_summary.label = _('Enter a new shortcut to change <b>%s</b>').format(
-            params.summary
-        );
-
-        this.shortcut_label = new Gtk.ShortcutLabel({
-            accelerator: '',
-            disabled_text: _('Disabled'),
-            hexpand: true,
-            halign: Gtk.Align.CENTER,
-            visible: true
-        });
-        this.confirm_shortcut.attach(this.shortcut_label, 0, 0, 1, 1);
-    }
-
-    get accelerator() {
-        return this.shortcut_label.accelerator;
-    }
-
-    _onDeleteEvent() {
-        this.disconnect_template();
-        return false;
-    }
-
-    _onKeyPressEvent(widget, event) {
-        if (!this._gdkDevice) {
-            return false;
-        }
-
-        let keyval = event.get_keyval()[1];
-        let keyvalLower = Gdk.keyval_to_lower(keyval);
-
-        let state = event.get_state()[1];
-        let realMask = state & Gtk.accelerator_get_default_mod_mask();
-
-        // TODO: Remove modifier keys
-        let mods = [
-            Gdk.KEY_Alt_L,
-            Gdk.KEY_Alt_R,
-            Gdk.KEY_Caps_Lock,
-            Gdk.KEY_Control_L,
-            Gdk.KEY_Control_R,
-            Gdk.KEY_Meta_L,
-            Gdk.KEY_Meta_R,
-            Gdk.KEY_Num_Lock,
-            Gdk.KEY_Shift_L,
-            Gdk.KEY_Shift_R,
-            Gdk.KEY_Super_L,
-            Gdk.KEY_Super_R
-        ];
-        if (mods.indexOf(keyvalLower) > -1) {
-            return true;
-        }
-
-        // Normalize Tab
-        if (keyvalLower === Gdk.KEY_ISO_Left_Tab) {
-            keyvalLower = Gdk.KEY_Tab;
-        }
-
-        // Put shift back if it changed the case of the key, not otherwise.
-        if (keyvalLower !== keyval) {
-            realMask |= Gdk.ModifierType.SHIFT_MASK;
-        }
-
-        // HACK: we don't want to use SysRq as a keybinding (but we do want
-        // Alt+Print), so we avoid translation from Alt+Print to SysRq
-        if (keyvalLower === Gdk.KEY_Sys_Req && (realMask & Gdk.ModifierType.MOD1_MASK) !== 0) {
-            keyvalLower = Gdk.KEY_Print;
-        }
-
-        // A single Escape press cancels the editing
-        if (realMask === 0 && keyvalLower === Gdk.KEY_Escape) {
-            return this._onCancel();
-        }
-
-        // Backspace disables the current shortcut
-        if (realMask === 0 && keyvalLower === Gdk.KEY_BackSpace) {
-            return this._onRemove();
-        }
-
-        // CapsLock isn't supported as a keybinding modifier, so keep it from
-        // confusing us
-        realMask &= ~Gdk.ModifierType.LOCK_MASK;
-
-        if (keyvalLower !== 0 && realMask !== 0) {
-            this.ungrab();
-
-            this.cancel_button.visible = true;
-
-            // Switch to confirm/conflict page
-            this.stack.set_visible_child_name('confirm-shortcut');
-            // Show shortcut icons
-            this.shortcut_label.accelerator = Gtk.accelerator_name(
-                keyvalLower,
-                realMask
-            );
-
-            // Show the Set button if available
-            if (this.check(this.accelerator)) {
-                this.set_button.visible = true;
-            // Otherwise report the conflict
-            } else {
-                this.conflict_label.label = _('%s is already being used').format(
-                    Gtk.accelerator_get_label(keyvalLower, realMask)
-                );
-                this.conflict_label.visible = true;
-            }
-        }
-
-        return true;
-    }
-
-    _onCancel() {
-        return this.response(Gtk.ResponseType.CANCEL);
-    }
-
-    _onSet() {
-        return this.response(Gtk.ResponseType.OK);
-    }
-
-    _onRemove() {
-        return this.response(1);
-    }
-
-    _grabAccelerator(accelerator, flags=0) {
-        return Gio.DBus.session.call_sync(
-            'org.gnome.Shell',
-            '/org/gnome/Shell',
-            'org.gnome.Shell',
-            'GrabAccelerator',
-            new GLib.Variant('(su)', [accelerator, flags]),
-            null,
-            Gio.DBusCallFlags.NONE,
-            -1,
-            null
-        ).deep_unpack()[0];
-    }
-
-    _ungrabAccelerator(action) {
-        return Gio.DBus.session.call_sync(
-            'org.gnome.Shell',
-            '/org/gnome/Shell',
-            'org.gnome.Shell',
-            'UngrabAccelerator',
-            new GLib.Variant('(u)', [action]),
-            null,
-            Gio.DBusCallFlags.NONE,
-            -1,
-            null
-        ).deep_unpack()[0];
-    }
-
-    response(response_id) {
-        this.hide();
-        this.ungrab();
-
-        super.response(response_id);
-    }
-
-    check(accelerator) {
-        // Check someone else isn't already using the binding
-        let action = this._grabAccelerator(accelerator);
-
-        if (action !== 0) {
-            this._ungrabAccelerator(action);
-            return true;
-        }
-
-        return false;
-    }
-
-    grab() {
-        let success = this.seat.grab(
-            this.get_window(),
-            Gdk.SeatCapabilities.KEYBOARD,
-            true, // owner_events
-            null, // cursor
-            null, // event
-            null
-        );
-
-        if (success !== Gdk.GrabStatus.SUCCESS) {
-            this._onCancel();
-        }
-
-        this._gdkDevice = this.seat.get_keyboard();
-        this._gdkDevice = this._gdkDevice || this.seat.get_pointer();
-        this.grab_add();
-    }
-
-    ungrab() {
-        this.seat.ungrab();
-        this.grab_remove();
-        delete this._gdkDevice;
-    }
-
-    // Override with a non-blocking version of Gtk.Dialog.run()
-    run() {
-        this.show();
-
-        GLib.timeout_add(GLib.PRIORITY_DEFAULT, 100, () => {
-            this.grab();
-            return GLib.SOURCE_REMOVE;
-        });
     }
 });
 
