@@ -251,18 +251,21 @@ let _full_pack = function(obj) {
             return GLib.Variant.new('mv', null);
 
         case (typeof obj.map === 'function'):
-            return GLib.Variant.new('av', obj.map(e => _full_pack(e)));
+            return GLib.Variant.new(
+                'av',
+                obj.filter(e => e !== undefined).map(e => _full_pack(e))
+            );
 
-        // TODO: test
         case (obj instanceof Gio.Icon):
             return obj.serialize();
 
-        // TODO: test
-        case (type === 'object' && typeof obj !== null):
+        case (type === 'object'):
             let packed = {};
 
-            for (let key in obj) {
-                packed[key] = _full_pack(obj[key]);
+            for (let [key, val] of Object.entries(obj)) {
+                if (val !== undefined) {
+                    packed[key] = _full_pack(val);
+                }
             }
 
             return GLib.Variant.new('a{sv}', packed);
