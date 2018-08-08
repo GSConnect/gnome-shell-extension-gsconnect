@@ -7,78 +7,119 @@ const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
 
+// Don't require gettext
+if (typeof _ !== 'function') {
+    var _ = function (s) { return s; }
+}
+
+
 /**
- * Response enum for the Shortcut Editor
+ * Response enum for ShortcutChooserDialog
  */
-const ResponseType = {
-    CANCEL: 0,
-    DELETE: 1,
-    SAVE:   2
+var ResponseType = {
+    CANCEL: Gtk.ResponseType.CANCEL,
+    SET:   Gtk.ResponseType.APPLY,
+    UNSET: 2
 };
 
 
 /**
  * A simplified version of the shortcut editor from Gnome Control Center
  */
-var ShortcutEditor = GObject.registerClass({
-    GTypeName: 'GSConnectShortcutEditor',
-    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/shortcut-editor.ui',
-    Children: [
-        // HeaderBar
-        'cancel-button', 'set-button',
-        //
-        'stack',
-        'shortcut-summary',
-        'edit-shortcut', 'confirm-shortcut',
-        'conflict-label'
-    ]
-}, class ShortcutEditor extends Gtk.Dialog {
+var ShortcutChooserDialog = GObject.registerClass({
+    GTypeName: 'ShortcutChooserDialog'
+}, class ShortcutChooserDialog extends Gtk.Dialog {
 
     _init(params) {
-        this.connect_template();
-
         super._init({
-            transient_for: params.transient_for,
+            transient_for: params.transient_for || null,
             use_header_bar: true,
-            modal: true
+            modal: true,
+            title: _('Set Shortcut')
         });
 
         this.seat = Gdk.Display.get_default().get_default_seat();
 
         // Content
-        this.shortcut_summary.label = _('Enter a new shortcut to change <b>%s</b>').format(
-            params.summary
-        );
+        let content = this.get_content_area();
+        content.spacing = 18;
+        content.margin = 12;
+
+        // Action Buttons
+        this.cancel_button = this.add_button(_('Cancel'), ResponseType.CANCEL);
+        this.cancel_button.visible = false;
+        this.set_button = this.add_button(_('Set'), ResponseType.SET);
+        this.set_button.visible = false;
+        this.set_default_response(ResponseType.SET);
+
+        let summaryLabel = new Gtk.Label({
+            label: _('Enter a new shortcut to change <b>%s</b>').format(
+                params.summary
+            ),
+            use_markup: true,
+            visible: true
+        });
+        content.add(summaryLabel);
+
+        this.stack = new Gtk.Stack({
+            transition_type: Gtk.StackTransitionType.CROSSFADE,
+            visible: true
+        });
+        content.add(this.stack);
+
+        // Edit page
+        let editPage = new Gtk.Grid({
+            row_spacing: 18,
+            visible: true
+        });
+        this.stack.add_named(editPage, 'edit');
+
+        let editImage = new Gtk.Image({
+            resource: '/org/gnome/Shell/Extensions/GSConnect/enter-keyboard-shortcut.svg',
+            visible: true
+        });
+        editPage.attach(editImage, 0, 0, 1, 1);
+
+        let editLabel = new Gtk.Label({
+            label: _('Press Esc to cancel or Backspace to reset the keyboard shortcut.'),
+            visible: true
+        });
+        editLabel.get_style_context().add_class('dim-label');
+        editPage.attach(editLabel, 0, 1, 1, 1);
+
+        // Confirm page
+        let confirmPage = new Gtk.Grid({
+            row_spacing: 18,
+            visible: true
+        });
+        this.stack.add_named(confirmPage, 'confirm');
 
         this.shortcut_label = new Gtk.ShortcutLabel({
             accelerator: params.accelerator,
-            disabled_text: _('Disabled'),
             hexpand: true,
             halign: Gtk.Align.CENTER,
             visible: true
         });
-        this.confirm_shortcut.attach(this.shortcut_label, 0, 0, 1, 1);
+        confirmPage.attach(this.shortcut_label, 0, 0, 1, 1);
+
+        this.conflict_label = new Gtk.Label({
+            hexpand: true,
+            halign: Gtk.Align.CENTER
+        });
+        confirmPage.attach(this.conflict_label, 0, 1, 1, 1);
     }
 
     get accelerator() {
         return this.shortcut_label.accelerator;
     }
 
-    _onDeleteEvent() {
-        this.disconnect_template();
-        return false;
+    set accelerator(value) {
+        this.shortcut_label.accelerator = value;
     }
 
-    _onKeyPressEvent(widget, event) {
-        if (!this._gdkDevice) {
-            return false;
-        }
-
-        let keyval = event.get_keyval()[1];
-        let keyvalLower = Gdk.keyval_to_lower(keyval);
-
-        let state = event.get_state()[1];
-        let realMask = state & Gtk.accelerator_get_default_mod_mask();
+    vfunc_key_press_event(event) {
+        let keyvalLower = Gdk.keyval_to_lower(event.keyval);
+        let realMask = event.state & Gtk.accelerator_get_default_mod_mask();
 
         // TODO: Remove modifier keys
         let mods = [
@@ -95,7 +136,7 @@ var ShortcutEditor = GObject.registerClass({
             Gdk.KEY_Super_L,
             Gdk.KEY_Super_R
         ];
-        if (mods.indexOf(keyvalLower) > -1) {
+        if (mods.includes(keyvalLower)) {
             return true;
         }
 
@@ -105,7 +146,7 @@ var ShortcutEditor = GObject.registerClass({
         }
 
         // Put shift back if it changed the case of the key, not otherwise.
-        if (keyvalLower !== keyval) {
+        if (keyvalLower !== event.keyval) {
             realMask |= Gdk.ModifierType.SHIFT_MASK;
         }
 
@@ -117,12 +158,14 @@ var ShortcutEditor = GObject.registerClass({
 
         // A single Escape press cancels the editing
         if (realMask === 0 && keyvalLower === Gdk.KEY_Escape) {
-            return this._onCancel();
+            this.response(ResponseType.CANCEL);
+            return false;
         }
 
         // Backspace disables the current shortcut
         if (realMask === 0 && keyvalLower === Gdk.KEY_BackSpace) {
-            return this._onRemove();
+            this.response(ResponseType.UNSET);
+            return false;
         }
 
         // CapsLock isn't supported as a keybinding modifier, so keep it from
@@ -130,94 +173,40 @@ var ShortcutEditor = GObject.registerClass({
         realMask &= ~Gdk.ModifierType.LOCK_MASK;
 
         if (keyvalLower !== 0 && realMask !== 0) {
-            this.ungrab();
+            this._ungrab();
 
-            this.cancel_button.visible = true;
+            // Set the accelerator property/label
+            this.accelerator = Gtk.accelerator_name(keyvalLower, realMask);
 
-            // Switch to confirm/conflict page
-            this.stack.set_visible_child_name('confirm-shortcut');
-            // Show shortcut icons
-            this.shortcut_label.accelerator = Gtk.accelerator_name(
-                keyvalLower,
-                realMask
+            // TRANSLATORS: When a keyboard shortcut is unavailable
+            this.conflict_label.label = _('%s is already being used').format(
+                Gtk.accelerator_get_label(keyvalLower, realMask)
             );
 
-            // Show the Set button if available
-            if (this.check(this.accelerator)) {
-                this.set_button.visible = true;
-            // Otherwise report the conflict
-            } else {
-                this.conflict_label.label = _('%s is already being used').format(
-                    Gtk.accelerator_get_label(keyvalLower, realMask)
-                );
-                this.conflict_label.visible = true;
-            }
+            // Show Cancel button and switch to confirm/conflict page
+            this.cancel_button.visible = true;
+            this.stack.visible_child_name = 'confirm';
+
+            this._check();
         }
 
         return true;
     }
 
-    _onCancel() {
-        return this.response(ResponseType.CANCEL);
-    }
-
-    _onSet() {
-        return this.response(ResponseType.SAVE);
-    }
-
-    _onRemove() {
-        return this.response(ResponseType.DELETE);
-    }
-
-    _grabAccelerator(accelerator, flags=0) {
-        return Gio.DBus.session.call_sync(
-            'org.gnome.Shell',
-            '/org/gnome/Shell',
-            'org.gnome.Shell',
-            'GrabAccelerator',
-            new GLib.Variant('(su)', [accelerator, flags]),
-            null,
-            Gio.DBusCallFlags.NONE,
-            -1,
-            null
-        ).deep_unpack()[0];
-    }
-
-    _ungrabAccelerator(action) {
-        return Gio.DBus.session.call_sync(
-            'org.gnome.Shell',
-            '/org/gnome/Shell',
-            'org.gnome.Shell',
-            'UngrabAccelerator',
-            new GLib.Variant('(u)', [action]),
-            null,
-            Gio.DBusCallFlags.NONE,
-            -1,
-            null
-        ).deep_unpack()[0];
-    }
-
-    response(response_id) {
-        this.hide();
-        this.ungrab();
-
-        super.response(response_id);
-    }
-
-    check(accelerator) {
-        // Check someone else isn't already using the binding
-        let action = this._grabAccelerator(accelerator);
-
-        if (action !== 0) {
-            this._ungrabAccelerator(action);
-            return true;
+    async _check() {
+        try {
+            let available = await check_accelerator(this.accelerator);
+            this.set_button.visible = available;
+            this.conflict_label.visible = !available;
+        } catch (e) {
+            logError(e);
+            this.response(ResponseType.CANCEL);
         }
-
-        return false;
     }
 
-    grab() {
-        let success = this.seat.grab(
+    _grab() {
+        let seat = Gdk.Display.get_default().get_default_seat();
+        let success = seat.grab(
             this.get_window(),
             Gdk.SeatCapabilities.KEYBOARD,
             true, // owner_events
@@ -227,18 +216,29 @@ var ShortcutEditor = GObject.registerClass({
         );
 
         if (success !== Gdk.GrabStatus.SUCCESS) {
-            this._onCancel();
+            return this.response(ResponseType.CANCEL);
         }
 
-        this._gdkDevice = this.seat.get_keyboard();
-        this._gdkDevice = this._gdkDevice || this.seat.get_pointer();
+        let device = seat.get_keyboard() || seat.get_pointer();
+
+        if (!device) {
+            return this.response(ResponseType.CANCEL);
+        }
+
         this.grab_add();
     }
 
-    ungrab() {
+    _ungrab() {
         this.seat.ungrab();
         this.grab_remove();
-        delete this._gdkDevice;
+    }
+
+    // Override to use our own ungrab process
+    response(response_id) {
+        this.hide();
+        this._ungrab();
+
+        return super.response(response_id);
     }
 
     // Override with a non-blocking version of Gtk.Dialog.run()
@@ -247,99 +247,93 @@ var ShortcutEditor = GObject.registerClass({
 
         // Wait a bit before attempting grab
         GLib.timeout_add(GLib.PRIORITY_DEFAULT, 100, () => {
-            this.grab();
+            this._grab();
             return GLib.SOURCE_REMOVE;
         });
     }
 });
 
 
-
-function _grabAccelerator(accelerator, flags=0) {
-    return new Promise((resolve, reject) => {
-        Gio.DBus.session.call(
-            'org.gnome.Shell',
-            '/org/gnome/Shell',
-            'org.gnome.Shell',
-            'GrabAccelerator',
-            new GLib.Variant('(su)', [accelerator, flags]),
-            null,
-            Gio.DBusCallFlags.NONE,
-            -1,
-            null,
-            (connection, res) => {
-                try {
-                    res = connection.call_finish(res);
-                    resolve(res.deep_unpack[0]);
-                } catch (e) {
-                    reject(e);
-                }
-            }
-        );
-    });
-}
-
-function _ungrabAccelerator(action) {
-    return new Promise((resolve, reject) => {
-        Gio.DBus.session.call_sync(
-            'org.gnome.Shell',
-            '/org/gnome/Shell',
-            'org.gnome.Shell',
-            'UngrabAccelerator',
-            new GLib.Variant('(u)', [action]),
-            null,
-            Gio.DBusCallFlags.NONE,
-            -1,
-            null,
-            (connection, res) => {
-                try {
-                    res = connection.call_finish(res);
-                    resolve(res.deep_unpack[0]);
-                } catch (e) {
-                    reject(e);
-                }
-            }
-        );
-    });
-}
-
-
 /**
- * A convenience function for checking the availability of an accelerator.
+ * Check the availability of an accelerator using Gnome Shell's DBus interface.
  *
  * @param {string} - An accelerator
+ * @param {number} - Flags
+ * @param {boolean} - %true if available, %false on error or unavailable
  */
-async function check_keybinding(accelerator) {
+async function check_accelerator(accelerator, flags=0) {
+    let action;
+    let result = false;
+
     try {
-        // Check someone else isn't already using the binding
-        let action = await _grabAccelerator(accelerator);
+        // Use gnome-shell's DBus interface to try and grab the accelerator
+        action = await new Promise((resolve, reject) => {
+            Gio.DBus.session.call(
+                'org.gnome.Shell',
+                '/org/gnome/Shell',
+                'org.gnome.Shell',
+                'GrabAccelerator',
+                new GLib.Variant('(su)', [accelerator, flags]),
+                null,
+                Gio.DBusCallFlags.NONE,
+                -1,
+                null,
+                (connection, res) => {
+                    try {
+                        res = connection.call_finish(res);
+                        resolve(res.deep_unpack()[0]);
+                    } catch (e) {
+                        reject(e);
+                    }
+                }
+            );
+        });
 
+        // If successful, use the result of ungrabbing as our return
         if (action !== 0) {
-            await _ungrabAccelerator(action);
-            return true;
+            result = await new Promise((resolve, reject) => {
+                Gio.DBus.session.call(
+                    'org.gnome.Shell',
+                    '/org/gnome/Shell',
+                    'org.gnome.Shell',
+                    'UngrabAccelerator',
+                    new GLib.Variant('(u)', [action]),
+                    null,
+                    Gio.DBusCallFlags.NONE,
+                    -1,
+                    null,
+                    (connection, res) => {
+                        try {
+                            res = connection.call_finish(res);
+                            resolve(res.deep_unpack()[0]);
+                        } catch (e) {
+                            reject(e);
+                        }
+                    }
+                );
+            });
         }
-
-        return false;
     } catch (e) {
-        return false;
+        result = false;
+    } finally {
+        return result;
     }
 }
 
 
 /**
- * A function for using a dialog to get a keyboard shortcut from a user.
+ * Show a dialog to get a keyboard shortcut from a user.
  *
  * @param {Gtk.Widget} parent - The top-level widget to be transient of or %null
  * @param {string} summary - A description of the keybinding's function
  * @param {string} accelerator - An accelerator as taken by Gtk.ShortcutLabel
- * @return {string} - Will return a accelerator, possibly modifed @accelerator,
- *                    or %undefined if it should be deleted.
+ * @return {string} - An accelerator or %null if it should be unset.
  */
-async function get_keybinding(parent, summary, accelerator=null) {
+async function get_accelerator(parent, summary, accelerator=null) {
     let dialog;
 
     try {
-        dialog = new ShortcutEditor({
+        dialog = new ShortcutChooserDialog({
             transient_for: parent,
             summary: summary,
             accelerator: accelerator
@@ -347,29 +341,29 @@ async function get_keybinding(parent, summary, accelerator=null) {
 
         accelerator = await new Promise((resolve, reject) => {
             dialog.connect('response', (dialog, response) => {
-                let accelerator;
-
                 switch (response) {
-                    case ResponseType.SAVE:
+                    case ResponseType.SET:
                         accelerator = dialog.accelerator;
                         break;
 
-                    case ResponseType.DELETE:
-                        accelerator = undefined;
+                    case ResponseType.UNSET:
+                        accelerator = null;
                         break;
 
                     case ResponseType.CANCEL:
-                        accelerator = dialog.accelerator;
+                        // leave the accelerator as passed in
                         break;
                 }
 
                 dialog.destroy();
+
                 resolve(accelerator);
             });
 
             dialog.run();
         });
     } catch (e) {
+        logError(e);
     } finally {
         return accelerator;
     }
