@@ -340,7 +340,7 @@ var Daemon = GObject.registerClass({
         }
 
         this._about.modal = (this._window && this._window.visible);
-        this._about.transient_for = modal ? this._window : null;
+        this._about.transient_for = this._about.modal ? this._window : null;
         this._about.present();
     }
 
