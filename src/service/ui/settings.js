@@ -435,10 +435,7 @@ var Device = GObject.registerClass({
         'switcher',
         // Sharing
         'sharing-list',
-        'clipboard', 'clipboard-allow',
-        'mousepad', 'mousepad-allow',
-        'mpris', 'mpris-allow',
-        'systemvolume', 'systemvolume-allow',
+        'clipboard', 'mousepad', 'mpris', 'systemvolume',
         // RunCommand
         'runcommand', 'command-list',
         'command-toolbar', 'command-add', 'command-remove', 'command-edit',
@@ -455,7 +452,6 @@ var Device = GObject.registerClass({
         'errata', 'errata-page', 'error-list',
         // Events
         'events-list',
-        //TODO
         // Shortcuts
         'shortcuts-actions', 'shortcuts-actions-title', 'shortcuts-actions-list',
         'shortcuts-commands', 'shortcuts-commands-title', 'shortcuts-commands-list',
@@ -735,7 +731,7 @@ var Device = GObject.registerClass({
 
     async _onSharingRowActivated(box, row) {
         let label = row.get_child().get_child_at(1, 0);
-        let name = label.get_name().split('-')[0];
+        let name = row.get_name();
         let settings = this._getSettings(name);
 
         switch (name) {
@@ -1275,12 +1271,17 @@ var Device = GObject.registerClass({
     async _onShortcutRowActivated(box, row) {
         try {
             let keybindings = this.device.settings.get_value('keybindings').full_unpack();
-
-            keybindings[row.action] = await Keybindings.get_keybinding(
+            let accelerator = await Keybindings.get_accelerator(
                 box.get_toplevel(),
                 row.summary,
                 keybindings[row.action]
             );
+
+            if (accelerator) {
+                keybindings[row.action] = accelerator;
+            } else {
+                delete keybindings[row.action];
+            }
 
             this.device.settings.set_value(
                 'keybindings',

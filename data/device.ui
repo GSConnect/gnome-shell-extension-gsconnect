@@ -91,7 +91,7 @@
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkLabel" id="clipboard-allow">
+                                  <object class="GtkLabel">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="halign">end</property>
@@ -160,7 +160,7 @@
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkLabel" id="mpris-allow">
+                                  <object class="GtkLabel">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="halign">end</property>
@@ -229,7 +229,7 @@
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkLabel" id="systemvolume-allow">
+                                  <object class="GtkLabel">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="halign">end</property>
@@ -297,7 +297,7 @@
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkLabel" id="mousepad-allow">
+                                  <object class="GtkLabel">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="halign">end</property>
