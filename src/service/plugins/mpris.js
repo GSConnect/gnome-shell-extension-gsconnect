@@ -75,11 +75,9 @@ var Plugin = GObject.registerClass({
     }
 
     /**
-     * Local
-     */
-    /**
      * Handle an incoming player command or information request
-     * @param {Core.Packet} -
+     *
+     * @param {kdeconnect.mpris.request} - A command for a specific player
      */
     _handleCommand(packet) {
         let player = this.mpris.players.get(packet.body.player);
@@ -247,11 +245,11 @@ var Plugin = GObject.registerClass({
                         albumArtUrl: packet.body.albumArtUrl
                     }
                 });
-
-                this._transferring = false;
             }
         } catch (e) {
             logWarning(e, `${this.device.name}: transferring album art`);
+        } finally {
+            this._transferring = false;
         }
     }
 

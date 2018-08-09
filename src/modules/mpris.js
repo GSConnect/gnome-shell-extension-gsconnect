@@ -72,28 +72,7 @@ var Manager = GObject.registerClass({
     _init() {
         super._init();
 
-        new DBus.FdoProxy({
-            g_connection: Gio.DBus.session,
-            g_name: 'org.freedesktop.DBus',
-            g_object_path: '/org/freedesktop/DBus'
-        }).init_promise().then(proxy => {
-            this._fdo = proxy;
-
-            this._nameOwnerChangedId = proxy.connect(
-                'NameOwnerChanged',
-                this._onNameOwnerChanged.bind(this)
-            );
-
-            return proxy.ListNames();
-        }).then(names => {
-            names.map(name => {
-                if (name.startsWith('org.mpris.MediaPlayer2')) {
-                    this._addPlayer(name);
-                }
-            });
-
-            return;
-        }).catch(debug);
+        this._setup();
     }
 
     get identities () {
@@ -116,66 +95,138 @@ var Manager = GObject.registerClass({
         return this._paused;
     }
 
-    _onNameOwnerChanged(fdo, name, old_owner, new_owner) {
-        if (name.startsWith('org.mpris.MediaPlayer2')) {
-            if (new_owner.length) {
-                this._addPlayer(name);
-            } else {
-                this._removePlayer(name);
-            }
+    async _setup() {
+        try {
+            this._fdo = new Gio.DBusProxy({
+                g_connection: Gio.DBus.session,
+                g_name: 'org.freedesktop.DBus',
+                g_object_path: '/org/freedesktop/DBus'
+            });
+
+            await this._fdo.init_promise();
+
+            // Watch for new players
+            this._nameOwnerChangedId = this._fdo.connect(
+                'g-signal',
+                this._onGSignal.bind(this)
+            );
+
+            // Add the current players
+            let names = await this._listNames();
+
+            names.map(name => {
+                if (name.startsWith('org.mpris.MediaPlayer2')) {
+                    this._addPlayer(name);
+                }
+            });
+        } catch (e) {
+            logError(e);
         }
     }
 
-    _addPlayer(name) {
-        let mediaPlayer = new MediaPlayer2Proxy({
-            g_connection: Gio.DBus.session,
-            g_name: name,
-            g_object_path: '/org/mpris/MediaPlayer2'
+    _listNames() {
+        return new Promise((resolve, reject) => {
+            this._fdo.call(
+                'org.freedesktop.DBus.ListNames',
+                null,
+                Gio.DBusCallFlags.NONE,
+                -1,
+                null,
+                (proxy, res) => {
+                    try {
+                        res = proxy.call_finish(res);
+                        resolve(res.deep_unpack()[0]);
+                    } catch (e) {
+                        reject(e);
+                    }
+                }
+            );
         });
-        mediaPlayer.init(null);
+    }
 
-        if (!this.players.has(mediaPlayer.Identity)) {
-            debug(`Adding MPRIS Player ${mediaPlayer.Identity}`);
+    async _onGSignal(proxy, sender_name, signal_name, parameters) {
+        try {
+            if (signal_name === 'NameOwnerChanged') {
+                this._onNameOwnerChanged(proxy, ...parameters.deep_unpack());
+            }
+        } catch (e) {
+            logError(e);
+        }
+    }
 
-            let player = new PlayerProxy({
+    async _onNameOwnerChanged(proxy, name, old_owner, new_owner) {
+        try {
+            if (name.startsWith('org.mpris.MediaPlayer2')) {
+                if (new_owner.length) {
+                    this._addPlayer(name);
+                } else {
+                    this._removePlayer(name);
+                }
+            }
+        } catch (e) {
+            logError(e);
+        }
+    }
+
+    async _addPlayer(name) {
+        try {
+            let mediaPlayer = new MediaPlayer2Proxy({
                 g_connection: Gio.DBus.session,
                 g_name: name,
                 g_object_path: '/org/mpris/MediaPlayer2'
             });
-            player.init(null);
 
-            player.Identity = mediaPlayer.Identity.slice(0);
+            await mediaPlayer.init_promise();
 
-            player._propertiesId = player.connect(
-                'g-properties-changed',
-                (player) => this.emit('player-changed', player)
-            );
+            if (!this.players.has(mediaPlayer.Identity)) {
+                debug(`Adding MPRIS Player ${mediaPlayer.Identity}`);
 
-            player._seekedId = player.connect(
-                'Seeked',
-                (player) => this.emit('player-changed', player)
-            );
+                let player = new PlayerProxy({
+                    g_connection: Gio.DBus.session,
+                    g_name: name,
+                    g_object_path: '/org/mpris/MediaPlayer2',
+                    proxy_flags: DBus.ProxyFlags.DO_NOT_CACHE_PROPERTIES
+                });
 
-            this.players.set(player.Identity, player);
-            this.notify('players');
-        }
+                await player.init_promise()
 
-        mediaPlayer.destroy();
-    }
+                player.Identity = mediaPlayer.Identity.slice(0);
 
-    _removePlayer(name) {
-        for (let [identity, player] of this.players.entries()) {
-            if (player.g_name === name) {
-                debug(`Removing MPRIS Player ${identity}`);
+                player._propertiesId = player.connect(
+                    'g-properties-changed',
+                    (player) => this.emit('player-changed', player)
+                );
 
-                player.disconnect(player._propertiesId);
-                player.disconnect(player._seekedId);
-                player.destroy();
+                player._seekedId = player.connect(
+                    'Seeked',
+                    (player) => this.emit('player-changed', player)
+                );
 
-                this.paused.delete(identity);
-                this.players.delete(identity);
+                this.players.set(player.Identity, player);
                 this.notify('players');
             }
+        } catch (e) {
+            logError(e);
+        }
+    }
+
+    async _removePlayer(name) {
+        try {
+            for (let [identity, player] of this.players.entries()) {
+                if (player.g_name === name) {
+                    debug(`Removing MPRIS Player ${identity}`);
+
+                    player.disconnect(player._propertiesId);
+                    player.disconnect(player._seekedId);
+                    player.destroy();
+
+                    this.paused.delete(identity);
+                    this.players.delete(identity);
+                    this.notify('players');
+                }
+            }
+        } catch (e) {
+            logError(e);
         }
     }
 

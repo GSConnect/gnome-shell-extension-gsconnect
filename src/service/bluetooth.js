@@ -159,7 +159,7 @@ var ChannelService = GObject.registerClass({
 
         this.service = Gio.Application.get_default();
 
-        //
+        // The full device map
         this._devices = new Map();
 
         // Export the org.bluez.Profile1 interface for the KDE Connect service
@@ -176,6 +176,25 @@ var ChannelService = GObject.registerClass({
     get devices() {
         let devices = Array.from(this._devices.values());
         return devices.filter(device => device.UUIDs.includes(SERVICE_UUID));
+    }
+
+    async _registerProfile(uuid) {
+        let profileOptions = {
+            // Don't require confirmation
+            RequireAuthorization: new GLib.Variant('b', false),
+            // Only allow paired devices
+            RequireAuthentication: new GLib.Variant('b', true),
+            // Service Record (customized to work with Android)
+            ServiceRecord: new GLib.Variant('s', SERVICE_RECORD)
+        };
+
+        // Register KDE Connect bluez profile
+        debug('registering service', 'Bluetooth.ChannelService');
+        await this._profileManager.RegisterProfile(
+            this._profile.get_object_path(),
+            uuid,
+            profileOptions
+        );
     }
 
     async _setup() {
@@ -203,23 +222,29 @@ var ChannelService = GObject.registerClass({
         }
     }
 
-    async _registerProfile(uuid) {
-        let profileOptions = {
-            // Don't require confirmation
-            RequireAuthorization: new GLib.Variant('b', false),
-            // Only allow paired devices
-            RequireAuthentication: new GLib.Variant('b', true),
-            // Service Record (customized to work with Android)
-            ServiceRecord: new GLib.Variant('s', SERVICE_RECORD)
-        };
+    async _setup() {
+        try {
+            this._profileManager = new ProfileManager1Proxy({
+                g_connection: Gio.DBus.system,
+                g_name: 'org.bluez',
+                g_object_path: '/org/bluez'
+            });
 
-        // Register KDE Connect bluez profile
-        debug('registering service', 'Bluetooth.ChannelService');
-        await this._profileManager.RegisterProfile(
-            this._profile.get_object_path(),
-            uuid,
-            profileOptions
-        );
+            await this._profileManager.init_promise();
+            await this._registerProfile(SERVICE_UUID);
+
+            Gio.DBusObjectManagerClient.new(
+                Gio.DBus.system,
+                Gio.DBusObjectManagerClientFlags.NONE,
+                'org.bluez',
+                '/',
+                null,
+                null,
+                this._setupObjManager.bind(this)
+            );
+        } catch (e) {
+            logWarning(e, 'Bluetooth.ChannelService');
+        }
     }
 
     async _onInterfaceAdded(manager, object, iface) {
@@ -327,11 +352,16 @@ var ChannelService = GObject.registerClass({
      * @param {undefined} - No parameters
      * @return {undefined} - void return value
      */
-    Release() {
+    async Release() {
         debug('Release');
 
-        // Return undefined immediately so the interface can reply
-        return undefined;
+        try {
+            // TODO
+        } catch (e) {
+            logError(e);
+        } finally {
+            return;
+        }
     }
 
     /**
@@ -343,17 +373,9 @@ var ChannelService = GObject.registerClass({
      * @param {object} - An object of properties for the file-descriptor
      * @return {undefined} - void return value
      */
-    NewConnection(object_path, fd, fd_properties) {
+    async NewConnection(object_path, fd, fd_properties) {
         debug(`(${object_path}, ${fd}, ${JSON.stringify(fd_properties)})`);
 
-        // TODO: Use a separate method until DBus.Interface can handle Promises
-        this._NewConnection(object_path, fd, fd_properties);
-
-        // Return undefined immediately so the interface can reply
-        return undefined;
-    }
-
-    async _NewConnection(object_path, fd, fd_properties) {
         let bdevice = this._devices.get(object_path);
 
         try {
@@ -415,6 +437,8 @@ var ChannelService = GObject.registerClass({
             }
 
             logWarning(e, bdevice.Alias);
+        } finally {
+            return;
         }
     }
 
@@ -432,19 +456,22 @@ var ChannelService = GObject.registerClass({
 	 * @param {string} object_path - DBus object path
      * @return {undefined} - void return value
      */
-    RequestDisconnection(object_path) {
+    async RequestDisconnection(object_path) {
         debug(object_path);
 
-        let device = this._devices.get(object_path);
+        try {
+            let device = this._devices.get(object_path);
 
-        if (device && device._channel !== null) {
-            log(`GSConnect: Disconnecting ${device.Alias}`);
-            device._channel.close();
-            device._channel = null;
+            if (device && device._channel !== null) {
+                log(`GSConnect: Disconnecting ${device.Alias}`);
+                device._channel.close();
+                device._channel = null;
+            }
+        } catch (e) {
+            logError(e);
+        } finally {
+            return;
         }
-
-        // Return undefined immediately so the interface can reply
-        return undefined;
     }
 
     broadcast(object_path=null) {

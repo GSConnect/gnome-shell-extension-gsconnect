@@ -88,42 +88,66 @@ function _makeOutSignature(args) {
 }
 
 
-function dbus_variant_to_gtype(types) {
-    let gtypes = [];
+
+/**
+ * Convert a string of GVariantType to a list of GType
+ *
+ * @param {string} types - A string of GVariantType characters (eg. a{sv})
+ */
+function vtype_to_gtype(types) {
+    if (!vtype_to_gtype._cache) {
+        vtype_to_gtype._cache = {};
+    }
+
+    if (vtype_to_gtype._cache.hasOwnProperty(types)) {
+        return vtype_to_gtype._cache[types];
+    }
+
+    vtype_to_gtype._cache[types] = [];
 
     for (let i = 0; i < types.length; i++) {
         switch (types[i]) {
             case 'b':
                 gtypes.push(GObject.TYPE_BOOLEAN);
                 break;
+
+            case 's':
+            case 'o':
+            case 'g':
+                gtypes.push(GObject.TYPE_STRING);
+                break;
+
             case 'h' || 'i':
                 gtypes.push(GObject.TYPE_INT);
                 break;
+
             case 'u':
                 gtypes.push(GObject.TYPE_UINT);
                 break;
+
             case 'x':
                 gtypes.push(GObject.TYPE_INT64);
                 break;
+
             case 't':
                 gtypes.push(GObject.TYPE_UINT64);
                 break;
+
             case 'd':
                 gtypes.push(GObject.TYPE_DOUBLE);
                 break;
-            case 's':
-                gtypes.push(GObject.TYPE_STRING);
-                break;
+
             case 'y':
                 gtypes.push(GObject.TYPE_UCHAR);
                 break;
+
             // FIXME: assume it's a variant
             default:
                 gtypes.push(GObject.TYPE_VARIANT);
         }
     }
 
-    return gtypes;
+    return vtype_to_gtype._cache[types];
 };
 
 
@@ -166,9 +190,9 @@ var Interface = GObject.registerClass({
     }
 
     /**
-     *
+     * Invoke an instance's method for a DBus method call. Supports promises.
      */
-    _call(info, memberName, parameters, invocation) {
+    async _call(info, memberName, parameters, invocation) {
         // Convert member casing to native casing
         let nativeName;
 
@@ -185,7 +209,8 @@ var Interface = GObject.registerClass({
         try {
             parameters = parameters.unpack().map(parameter => {
                 if (parameter.get_type_string() === 'h') {
-                    let fds = invocation.get_message().get_unix_fd_list();
+                    let message = invocation.get_message();
+                    let fds = message.get_unix_fd_list();
                     let idx = parameter.deep_unpack();
                     return fds.get(idx);
                 } else {
@@ -193,7 +218,8 @@ var Interface = GObject.registerClass({
                 }
             });
 
-            retval = this[nativeName].apply(this, parameters);
+            // await all method invocations to support Promise returns
+            retval = await this[nativeName].apply(this, parameters);
         } catch (e) {
             if (e instanceof GLib.Error) {
                 invocation.return_gerror(e);
@@ -205,9 +231,10 @@ var Interface = GObject.registerClass({
                     name = `org.gnome.gjs.JSError.${name}`;
                 }
 
-                logError(e, `Exception in method call: ${memberName}`);
                 invocation.return_dbus_error(name, e.message);
+                logError(e, `${this}: ${memberName}`);
             }
+
             return;
         }
 
@@ -225,15 +252,17 @@ var Interface = GObject.registerClass({
                     (outArgs.length == 1) ? [retval] : retval
                 );
             }
+
             invocation.return_value(retval);
 
         // Without a response, the client will wait for timeout
         } catch(e) {
-            debug(e);
             invocation.return_dbus_error(
                 'org.gnome.gjs.JSError.ValueError',
                 'Service implementation returned an incorrect value type'
             );
+
+            logError(e);
         }
     }
 
@@ -337,31 +366,51 @@ var Interface = GObject.registerClass({
 /**
  *
  */
+var ProxyFlags = {
+    DO_NOT_CACHE_PROPERTIES: 1,
+};
+
 
 /**
- * Create proxy wrappers for the properties on an interface
+ * Wrapper for org.freedesktop.DBus.Properties.Get
+ *
+ * @param {string} name - The property name
+ * @return {*} - A native property value
  */
 function _proxyGetter(name) {
-    try {
-        // Returns Variant('(v)')...
-        let variant = this.call_sync(
-            'org.freedesktop.DBus.Properties.Get',
-            new GLib.Variant('(ss)', [this.g_interface_name, name]),
-            Gio.DBusCallFlags.NONE,
-            -1,
-            null
-        );
+    let variant;
 
-        // ...so unpack that to get the real variant and unpack the value
-        return full_unpack(variant.deep_unpack()[0]);
-    // Fallback to cached property...
+    try {
+        if (this.proxy_flags & ProxyFlags.DO_NOT_CACHE_PROPERTIES) {
+            // Call returns '(v)' so unpack the tuple and return the variant
+            variant = this.call_sync(
+                'org.freedesktop.DBus.Properties.Get',
+                new GLib.Variant('(ss)', [this.g_interface_name, name]),
+                Gio.DBusCallFlags.NONE,
+                -1,
+                null
+            ).deep_unpack()[0];
+
+            return full_unpack(variant);
+        }
     } catch (e) {
-        let value = this.get_cached_property(name);
-        return value ? full_unpack(value) : null;
+        logError(e);
+
+    // Fallback to cached property...
+    } finally {
+        variant = this.get_cached_property(name);
+        return variant ? full_unpack(variant) : null;
     }
 }
 
 
+/**
+ * Wrapper for org.freedesktop.DBus.Properties.Set
+ *
+ * @param {string} name - The property name
+ * @param {string} signature - The property signature
+ * @param {string} value - A native property value
+ */
 function _proxySetter(name, signature, value) {
     // Pack the new value
     let variant = new GLib.Variant(signature, value);
@@ -388,66 +437,42 @@ function _proxySetter(name, signature, value) {
 
 
 function proxyProperties(iface, info) {
-    info.properties.map(property => {
+    let i, properties = info.properties;
+
+    for (i = 0; i < properties.length; i++) {
+        let property = properties[i];
+
         Object.defineProperty(iface, property.name, {
             get: _proxyGetter.bind(iface, property.name),
             set: _proxySetter.bind(iface, property.name, property.signature),
             enumerable: true
         });
-    });
+    }
 }
 
 
 /**
  * Create proxy wrappers for the methods on an interface
  */
-function _proxyInvoker(info) {
-    let args = Array.prototype.slice.call(arguments, 1);
-    let signature = info.in_args.map(arg => arg.signature).join('');
-    let variant = new GLib.Variant(`(${signature})`, args);
-
-    //
-    let ret;
-
-    try {
-        ret = this.call_sync(info.name, variant, 0, -1, null);
-    } catch (e) {
-        debug(`Error calling ${info.name} on ${this.g_object_path}: ${e.message}`);
-        ret = undefined;
-    }
-
-    // If return has single arg, only return that or null
-    if (info.out_args.length === 1) {
-        return ret ? ret.deep_unpack()[0] : null;
-    // Otherwise return an array (possibly empty)
-    } else {
-        return ret ? ret.deep_unpack() : [];
-    }
-}
-
-
-function _proxyInvokerAsync(info) {
+function _proxyInvoker(method) {
     return new Promise((resolve, reject) => {
         let args = Array.prototype.slice.call(arguments, 1);
-        let signature = info.in_args.map(arg => arg.signature).join('');
+        let signature = method.in_args.map(arg => arg.signature).join('');
         let variant = new GLib.Variant(`(${signature})`, args);
 
-        this.call(info.name, variant, 0, -1, null, (proxy, result) => {
-            let ret;
-
+        this.call(method.name, variant, 0, -1, null, (proxy, res) => {
             try {
-                ret = this.call_finish(result);
-            } catch (e) {
-                debug(`Error calling ${info.name} on ${this.g_object_path}: ${e.message}`);
-                reject(e);
-            }
+                res = proxy.call_finish(res);
 
-            // If return has single arg, only return that or null
-            if (info.out_args.length === 1) {
-                resolve((ret) ? ret.deep_unpack()[0] : null);
-            // Otherwise return an array (possibly empty)
-            } else {
-                resolve((ret) ? ret.deep_unpack() : []);
+                // If return has single arg, only return that or null
+                if (method.out_args.length === 1) {
+                    resolve((res) ? res.deep_unpack()[0] : null);
+                // Otherwise return an array (possibly empty)
+                } else {
+                    resolve((res) ? res.deep_unpack() : []);
+                }
+            } catch (e) {
+                reject(e);
             }
         });
     });
@@ -458,72 +483,63 @@ function proxyMethods(iface, info) {
     let i, methods = info.methods;
 
     for (i = 0; i < methods.length; i++) {
-        var method = methods[i];
-        iface[method.name] = _proxyInvokerAsync.bind(iface, method);
-        iface[`${method.name}Sync`] = _proxyInvoker.bind(iface, method);
+        let method = methods[i];
+        iface[method.name] = _proxyInvoker.bind(iface, method);
     }
 }
 
 
-var ProxyBase = GObject.registerClass({
-    GTypeName: 'GSConnectDBusProxyBase',
-    Signals: {
-        'destroy': {
-            flags: GObject.SignalFlags.NO_HOOKS
-        }
-    }
-}, class ProxyBase extends Gio.DBusProxy {
-
-    _init(params) {
-        super._init(Object.assign({
-            g_connection: Gio.DBus.session
-        }, params));
-
-        // Proxy methods and properties
-        proxyMethods(this, this.g_interface_info);
-        proxyProperties(this, this.g_interface_info);
-    }
-
-    init_promise() {
-        return new Promise((resolve, reject) => {
-            this.init_async(GLib.PRIORITY_DEFAULT, null, (proxy, res) => {
-                try {
-                    proxy.init_finish(res);
-                    resolve(proxy);
-                } catch (e) {
-                    reject(e);
-                }
-            });
-        });
-    }
-
-    destroy() {
-        debug(this.g_interface_name);
-
-        this.emit('destroy');
-        GObject.signal_handlers_destroy(this);
-    }
-});
-
-
 /**
- * We store built proxies to avoid unnecessary work
+ * A convenience Promise wrapper for Gio.AsyncInitable.init_async(). Unlike the
+ * generic function, this will return the proxy on success instead of a boolean.
+ *
+ * @param {Gio.Cancellable} cancellable - A cancellable or %null
+ * @return {Gio.DBusProxy} - The initted proxy object
  */
-var Proxies = {};
+Gio.DBusProxy.prototype.init_promise = function(cancellable=null) {
+    return new Promise((resolve, reject) => {
+        this.init_async(GLib.PRIORITY_DEFAULT, cancellable, (source_object, res) => {
+            try {
+                source_object.init_finish(res);
+                resolve(source_object);
+            } catch (e) {
+                reject(e);
+            }
+        });
+    });
+}
 
 
 /**
- * Return a DBusProxy class prepped with GProperties, GSignals...
- * based on @info
+ * Return a "heavy" Gio.DBusProxy subclass prepped with methods, properties and
+ * signals described by @info. Methods will be wrapped as async functions,
+ * properties as GProperties with notify/bind support and signals as GSignals.
+ *
  * @param {Gio.DBusInterfaceInfo} info - The supported interface
+ * @return {Gio.DBusProxyClass} - The constructor object for the subclass
  */
 function makeInterfaceProxy(info) {
-    if (Proxies.hasOwnProperty(info.name)) {
-        return Proxies[info.name];
+    // Cache built proxies to avoid unnecessary work and GType collisions
+    if (makeInterfaceProxy._cache === undefined) {
+        makeInterfaceProxy._cache = {};
+    }
+
+    // Check if we've already prepared a proxy for this interface
+    if (makeInterfaceProxy._cache.hasOwnProperty(info.name)) {
+        return makeInterfaceProxy._cache[info.name];
     }
 
     // GProperty ParamSpec's
-    let properties_ = {};
+    let properties_ = {
+        'proxy-flags': GObject.ParamSpec.int(
+            'proxy-flags',
+            'ProxyFlags',
+            'Implementation specific flags',
+            GObject.ParamFlags.READWRITE,
+            0, GLib.MAXINT32,
+            0
+        )
+    };
 
     for (let i = 0; i < info.properties.length; i++) {
         let property = info.properties[i]
@@ -542,7 +558,7 @@ function makeInterfaceProxy(info) {
                 properties_[property.name] = GObject.ParamSpec.boolean(
                     property.name,
                     property.name,
-                    property.name + ': automatically populated',
+                    `${property.name}: automatically populated`,
                     flags,
                     false
                 );
@@ -552,30 +568,31 @@ function makeInterfaceProxy(info) {
                 properties_[property.name] = GObject.ParamSpec.string(
                     property.name,
                     property.name,
-                    property.name + ': automatically populated',
+                    `${property.name}: automatically populated`,
                     flags,
                     ''
                 );
                 break;
 
-            // TODO: all number types are converted to Number which is a double,
+            // TODO: all number types are converted to Number (double) anyways,
             //       but there may be a case where type is relevant on the proxy
             case 'hiuxtd'.includes(property.signature):
                 properties_[property.name] = GObject.ParamSpec.double(
                     property.name,
                     property.name,
-                    property.name + ': automatically populated',
+                    `${property.name}: automatically populated`,
                     flags,
                     GLib.MININT32, GLib.MAXINT32,
                     0.0
                 );
                 break;
 
+            // Fallback to GVariant if it's not a native type
             default:
                 properties_[property.name] = GObject.param_spec_variant(
                     property.name,
                     property.name,
-                    property.name + ': automatically populated',
+                    `${property.name}: automatically populated`,
                     new GLib.VariantType(property.signature),
                     null,
                     flags
@@ -591,171 +608,53 @@ function makeInterfaceProxy(info) {
 
         signals_[signal.name] = {
             flags: GObject.SignalFlags.RUN_FIRST,
-            param_types: dbus_variant_to_gtype(signal.args.map(arg => arg.signature).join(''))
+            param_types: vtype_to_gtype(signal.args.map(arg => arg.signature).join(''))
         };
     }
 
-    // Register and store the proxy class to avoid more work or GType collisions
-    Proxies[info.name] = GObject.registerClass({
-        GTypeName: 'Proxy_' + info.name.split('.').join(''),
+    // Register and store the proxy class
+    makeInterfaceProxy._cache[info.name] = GObject.registerClass({
+        GTypeName: 'PROXY_' + info.name.split('.').join(''),
         Properties: properties_,
         Signals: signals_
-    }, class ProxyExtension extends ProxyBase {
+    }, class InterfaceProxy extends Gio.DBusProxy {
 
         _init(params) {
             super._init(Object.assign({
+                g_connection: Gio.DBus.session,
                 g_interface_info: info,
                 g_interface_name: info.name
             }, params));
+
+            // Proxy methods and properties
+            proxyMethods(this, this.g_interface_info);
+            proxyProperties(this, this.g_interface_info);
         }
 
         vfunc_g_properties_changed(changed, invalidated) {
             for (let name in changed.deep_unpack()) {
-                this.notify(name);
+                try {
+                    this.notify(name);
+                } catch (e) {
+                    logError(e, name);
+                }
             }
         }
 
-        vfunc_g_signal(sender, name, parameters) {
-            let args = [name].concat(parameters.deep_unpack());
-            this.emit(...args);
+        vfunc_g_signal(sender_name, signal_name, parameters) {
+            try {
+                parameters = parameters.deep_unpack();
+                this.emit(signal_name, ...parameters);
+            } catch (e) {
+                logError(e, signal_name);
+            }
+        }
+
+        destroy() {
+            GObject.signal_handlers_destroy(this);
         }
     });
 
-    return Proxies[info.name];
-};
-
-
-/**
- * org.freedesktop.DBus Proxy and ProxyBase usage example
- */
-const FdoNode = Gio.DBusNodeInfo.new_for_xml(
-'<node> \
-  <interface name="org.freedesktop.DBus"> \
-    <method name="Hello"> \
-      <arg direction="out" type="s"/> \
-    </method> \
-    <method name="RequestName"> \
-      <arg direction="in" type="s"/> \
-      <arg direction="in" type="u"/> \
-      <arg direction="out" type="u"/> \
-    </method> \
-    <method name="ReleaseName"> \
-      <arg direction="in" type="s"/> \
-      <arg direction="out" type="u"/> \
-    </method> \
-    <method name="StartServiceByName"> \
-      <arg direction="in" type="s"/> \
-      <arg direction="in" type="u"/> \
-      <arg direction="out" type="u"/> \
-    </method> \
-    <method name="UpdateActivationEnvironment"> \
-      <arg direction="in" type="a{ss}"/> \
-    </method> \
-    <method name="NameHasOwner"> \
-      <arg direction="in" type="s"/> \
-      <arg direction="out" type="b"/> \
-    </method> \
-    <method name="ListNames"> \
-      <arg direction="out" type="as"/> \
-    </method> \
-    <method name="ListActivatableNames"> \
-      <arg direction="out" type="as"/> \
-    </method> \
-    <method name="AddMatch"> \
-      <arg direction="in" type="s"/> \
-    </method> \
-    <method name="RemoveMatch"> \
-      <arg direction="in" type="s"/> \
-    </method> \
-    <method name="GetNameOwner"> \
-      <arg direction="in" type="s"/> \
-      <arg direction="out" type="s"/> \
-    </method> \
-    <method name="ListQueuedOwners"> \
-      <arg direction="in" type="s"/> \
-      <arg direction="out" type="as"/> \
-    </method> \
-    <method name="GetConnectionUnixUser"> \
-      <arg direction="in" type="s"/> \
-      <arg direction="out" type="u"/> \
-    </method> \
-    <method name="GetConnectionUnixProcessID"> \
-      <arg direction="in" type="s"/> \
-      <arg direction="out" type="u"/> \
-    </method> \
-    <method name="GetAdtAuditSessionData"> \
-      <arg direction="in" type="s"/> \
-      <arg direction="out" type="ay"/> \
-    </method> \
-    <method name="GetConnectionSELinuxSecurityContext"> \
-      <arg direction="in" type="s"/> \
-      <arg direction="out" type="ay"/> \
-    </method> \
-    <method name="GetConnectionAppArmorSecurityContext"> \
-      <arg direction="in" type="s"/> \
-      <arg direction="out" type="s"/> \
-    </method> \
-    <method name="ReloadConfig"> \
-    </method> \
-    <method name="GetId"> \
-      <arg direction="out" type="s"/> \
-    </method> \
-    <method name="GetConnectionCredentials"> \
-      <arg direction="in" type="s"/> \
-      <arg direction="out" type="a{sv}"/> \
-    </method> \
-    <property name="Features" access="read" type="as"/> \
-    <property name="Interfaces" access="read" type="as"/> \
-    <signal name="NameOwnerChanged"> \
-      <arg type="s"/> \
-      <arg type="s"/> \
-      <arg type="s"/> \
-    </signal> \
-    <signal name="NameLost"> \
-      <arg type="s"/> \
-    </signal> \
-    <signal name="NameAcquired"> \
-      <arg type="s"/> \
-    </signal> \
-  </interface> \
-  <interface name="org.freedesktop.DBus.Monitoring"> \
-    <method name="BecomeMonitor"> \
-      <arg direction="in" type="as"/> \
-      <arg direction="in" type="u"/> \
-    </method> \
-  </interface> \
-</node>'
-);
-
-
-/**
- * Proxy for org.freedesktop.DBus Interface
- */
-var FdoProxy = makeInterfaceProxy(
-    FdoNode.lookup_interface('org.freedesktop.DBus')
-);
-
-// TODO not used?
-var FdoMonitoringProxy = makeInterfaceProxy(
-    FdoNode.lookup_interface('org.freedesktop.DBus.Monitoring')
-);
-
-
-/**
- * Implementing a singleton
- */
-var _default;
-
-function get_default() {
-    if (!_default) {
-        _default = new FdoProxy({
-            g_connection: Gio.DBus.session,
-            g_name: 'org.freedesktop.DBus',
-            g_object_path: '/org/freedesktop/DBus'
-        });
-        _default.init(null);
-    }
-
-    return _default;
+    return makeInterfaceProxy._cache[info.name];
 };
 
