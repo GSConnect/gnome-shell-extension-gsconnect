@@ -24,25 +24,25 @@
       <attribute name="display-hint">horizontal-buttons</attribute>
       <item>
         <attribute name="label" translatable="yes">Connect Bluetooth</attribute>
-        <attribute name="action">misc.connect-bluetooth</attribute>
+        <attribute name="action">status.connect-bluetooth</attribute>
         <attribute name="verb-icon">bluetooth-symbolic</attribute>
         <attribute name='hidden-when'>action-disabled</attribute>
       </item>
       <item>
         <attribute name="label" translatable="yes">Connect LAN</attribute>
-        <attribute name="action">misc.connect-lan</attribute>
+        <attribute name="action">status.connect-lan</attribute>
         <attribute name="verb-icon">network-wireless-symbolic</attribute>
         <attribute name='hidden-when'>action-disabled</attribute>
       </item>
       <item>
         <attribute name="label" translatable="yes">Pair</attribute>
-        <attribute name="action">device.pair</attribute>
+        <attribute name="action">status.pair</attribute>
         <attribute name="verb-icon">channel-insecure-symbolic</attribute>
         <attribute name='hidden-when'>action-disabled</attribute>
       </item>
       <item>
         <attribute name="label" translatable="yes">Unpair</attribute>
-        <attribute name="action">device.unpair</attribute>
+        <attribute name="action">status.unpair</attribute>
         <attribute name="verb-icon">channel-secure-symbolic</attribute>
         <attribute name='hidden-when'>action-disabled</attribute>
       </item>

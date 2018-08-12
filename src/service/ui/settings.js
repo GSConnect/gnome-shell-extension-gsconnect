@@ -334,12 +334,12 @@ var Window = GObject.registerClass({
      */
     _setDeviceMenu(panel=null) {
         this.device_menu.insert_action_group('device', null);
-        this.device_menu.insert_action_group('misc', null);
+        this.device_menu.insert_action_group('status', null);
         this.device_menu.set_menu_model(null);
 
         if (panel) {
             this.device_menu.insert_action_group('device', panel.device);
-            this.device_menu.insert_action_group('misc', panel.actions);
+            this.device_menu.insert_action_group('status', panel.actions);
             this.device_menu.set_menu_model(panel.menu);
         }
     }
@@ -469,23 +469,40 @@ var Device = GObject.registerClass({
         this.service = Gio.Application.get_default();
         this.device = device;
 
-        // GActions
+        // Connect Actions
         this.actions = new Gio.SimpleActionGroup();
-        this.insert_action_group('misc', this.actions);
+        this.insert_action_group('status', this.actions);
 
-        let connect_bluetooth = new Gio.SimpleAction({
+        let status_bluetooth = new Gio.SimpleAction({
             name: 'connect-bluetooth',
             parameter_type: null
         });
-        connect_bluetooth.connect('activate', this._onActivateBluetooth.bind(this));
-        this.actions.add_action(connect_bluetooth);
+        status_bluetooth.connect('activate', this._onActivateBluetooth.bind(this));
+        this.actions.add_action(status_bluetooth);
 
-        let connect_lan = new Gio.SimpleAction({
+        let status_lan = new Gio.SimpleAction({
             name: 'connect-lan',
             parameter_type: null
         });
-        connect_lan.connect('activate', this._onActivateLan.bind(this));
-        this.actions.add_action(connect_lan);
+        status_lan.connect('activate', this._onActivateLan.bind(this));
+        this.actions.add_action(status_lan);
+
+        // Pair Actions
+        let status_pair = new Gio.SimpleAction({
+            name: 'pair',
+            parameter_type: null
+        });
+        status_pair.connect('activate', this.device.pair.bind(this.device));
+        this.device.bind_property('paired', status_pair, 'enabled', 6);
+        this.actions.add_action(status_pair);
+
+        let status_unpair = new Gio.SimpleAction({
+            name: 'unpair',
+            parameter_type: null
+        });
+        status_unpair.connect('activate', this.device.unpair.bind(this.device));
+        this.device.bind_property('paired', status_unpair, 'enabled', 2);
+        this.actions.add_action(status_unpair);
 
         // GMenu
         let builder = Gtk.Builder.new_from_resource(gsconnect.app_path + '/gtk/menus.ui');
@@ -678,7 +695,7 @@ var Device = GObject.registerClass({
     async _sharingSettings() {
         this.sharing_list.foreach(row => {
             let label = row.get_child().get_child_at(1, 0);
-            let name = label.get_name().split('-')[0];
+            let name = row.get_name();
             let settings = this._getSettings(name);
 
             switch (name) {
