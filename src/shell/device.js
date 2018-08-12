@@ -66,35 +66,50 @@ var Battery = GObject.registerClass({
             );
         }
 
-        this.object.connect('interface-added', (obj, iface) => {
-            if (iface.g_interface_name === BATTERY_INTERFACE) {
-                this.battery = iface;
-                this._batteryId = this.battery.connect(
-                    'g-properties-changed',
-                    this.update.bind(this)
-                );
-            }
-        });
+        this._interfaceAddedId = this.object.connect(
+            'interface-added',
+            this._onInterfaceAdded.bind(this)
+        );
 
-        this.object.connect('interface-removed', (obj, iface) => {
-            if (iface.g_interface_name === BATTERY_INTERFACE) {
-                this.battery = iface;
-                this.battery.disconnect(this._batteryId);
-                delete this._batteryId;
-                delete this.battery;
-            }
-        });
+        this._interfaceRemovedId = this.object.connect(
+            'interface-removed',
+            this._onInterfaceRemoved.bind(this)
+        );
 
         this.connect('notify::mapped', this.update.bind(this));
 
         // Cleanup
-        this.connect('destroy', (actor) => {
-            actor.device.disconnect(actor._deviceId);
+        this.connect('destroy', this._onDestroy);
+    }
 
-            if (actor._batteryId && actor.battery) {
-                actor.battery.disconnect(actor._batteryId);
-            }
-        });
+    _onDestroy(actor) {
+        actor.device.disconnect(actor._deviceId);
+
+        if (actor._batteryId && actor.battery) {
+            actor.battery.disconnect(actor._batteryId);
+        }
+
+        actor.object.disconnect(actor._interfaceAddedId);
+        actor.object.disconnect(actor._interfaceRemovedId);
+    }
+
+    _onInterfaceAdded(object, iface) {
+        if (iface.g_interface_name === BATTERY_INTERFACE) {
+            this.battery = iface;
+            this._batteryId = this.battery.connect(
+                'g-properties-changed',
+                this.update.bind(this)
+            );
+        }
+    }
+
+    _onInterfaceRemoved(object, iface) {
+        if (iface.g_interface_name === BATTERY_INTERFACE) {
+            this.battery = iface;
+            this.battery.disconnect(this._batteryId);
+            delete this._batteryId;
+            delete this.battery;
+        }
     }
 
     update(battery) {
@@ -141,24 +156,17 @@ var Icon = GObject.registerClass({
 
         // Device Type
         this._theme = Gtk.IconTheme.get_default();
-        this.icon = this._theme.load_surface(
-            this.device.IconName,
-            32,
-            1,
-            null,
-            Gtk.IconLookupFlags.FORCE_SIZE
+        this._themeChangedId = this._theme.connect(
+            'changed',
+            this._onThemeChanged.bind(this)
         );
+        this._onThemeChanged(this._theme);
 
-        this._themeSignal = this._theme.connect('changed', () => {
-            this.icon = this._theme.load_surface(
-                this.device.IconName,
-                32,
-                1,
-                null,
-                Gtk.IconLookupFlags.FORCE_SIZE
-            );
-            this.queue_repaint();
-        });
+        // Device Status
+        this._propertiesId = device.connect(
+            'g-properties-changed',
+            () => this.queue_repaint()
+        );
 
         // Battery proxy
         this.battery = this.object.get_interface(BATTERY_INTERFACE);
@@ -170,40 +178,60 @@ var Icon = GObject.registerClass({
             );
         }
 
-        this.object.connect('interface-added', (obj, iface) => {
-            if (iface.g_interface_name === BATTERY_INTERFACE) {
-                this.battery = iface;
-                this._batteryId = this.battery.connect(
-                    'g-properties-changed',
-                    () => this.queue_repaint()
-                );
-            }
-        });
+        this._interfaceAddedId = this.object.connect(
+            'interface-added',
+            this._onInterfaceAdded.bind(this)
+        );
 
-        this.object.connect('interface-removed', (obj, iface) => {
-            if (iface.g_interface_name === BATTERY_INTERFACE) {
-                this.battery = iface;
-                this.battery.disconnect(this._batteryId);
-                delete this._batteryId;
-                delete this.battery;
-            }
-        });
-
-        // Device Status
-        this._propertiesId = device.connect(
-            'g-properties-changed',
-            () => this.queue_repaint()
+        this._interfaceRemovedId = this.object.connect(
+            'interface-removed',
+            this._onInterfaceRemoved.bind(this)
         );
 
         // Cleanup
-        this.connect('destroy', (actor) => {
-            actor.device.disconnect(actor._propertiesId);
-            actor._theme.disconnect(actor._themeSignal);
+        this.connect('destroy', this._onDestroy);
+    }
 
-            if (actor._batteryId && actor.battery) {
-                actor.battery.disconnect(actor._batteryId);
-            }
-        });
+    _onDestroy(actor) {
+        actor.device.disconnect(actor._propertiesId);
+        actor._theme.disconnect(actor._themeChangedId);
+
+        if (actor._batteryId && actor.battery) {
+            actor.battery.disconnect(actor._batteryId);
+        }
+
+        actor.object.disconnect(actor._interfaceAddedId);
+        actor.object.disconnect(actor._interfaceRemovedId);
+    }
+
+    _onInterfaceAdded(object, iface) {
+        if (iface.g_interface_name === BATTERY_INTERFACE) {
+            this.battery = iface;
+            this._batteryId = this.battery.connect(
+                'g-properties-changed',
+                () => this.queue_repaint()
+            );
+        }
+    }
+
+    _onInterfaceRemoved(object, iface) {
+        if (iface.g_interface_name === BATTERY_INTERFACE) {
+            this.battery = iface;
+            this.battery.disconnect(this._batteryId);
+            delete this._batteryId;
+            delete this.battery;
+        }
+    }
+
+    _onThemeChanged(theme) {
+        this.icon = this._theme.load_surface(
+            this.device.IconName,
+            32,
+            1,
+            null,
+            Gtk.IconLookupFlags.FORCE_SIZE
+        );
+        this.queue_repaint();
     }
 
     get battery_color() {
@@ -457,12 +485,10 @@ var Menu = class Menu extends PopupMenu.PopupMenuSection {
         this.statusBar.add_child(this.statusLabel);
 
         // Hide the submenu when the device menu is closed
-        this._getTopMenu().connect('open-state-changed', (actor, open) => {
-            if (!open && this._submenu !== undefined) {
-                this.box.remove_child(this._submenu.actor);
-                this._submenu = undefined;
-            }
-        });
+        this._getTopMenu().connect(
+            'open-state-changed',
+            this._onOpenStateChanged.bind(this)
+        );
 
         // Watch GSettings & Properties
         this._gsettingsId = gsconnect.settings.connect(
@@ -477,6 +503,13 @@ var Menu = class Menu extends PopupMenu.PopupMenuSection {
             'notify::mapped',
             this._sync.bind(this)
         );
+    }
+
+    _onOpenStateChanged(actor, open) {
+        if (!open && this._submenu !== undefined) {
+            this.box.remove_child(this._submenu.actor);
+            this._submenu = undefined;
+        }
     }
 
     _onSubmenuToggle(flowbox, button) {
