@@ -383,6 +383,7 @@ var Daemon = GObject.registerClass({
             ['broadcast', this.broadcast.bind(this)],
             ['openSettings', this.openSettings.bind(this)],
             ['quit', this.quit.bind(this)],
+            ['debug-log', this._debug_log.bind(this)],
             ['debugger', this._debugger.bind(this)],
             ['about', this._aboutAction.bind(this)]
         ];
@@ -402,6 +403,15 @@ var Daemon = GObject.registerClass({
                 object: this,
                 property_name: 'discoverable'
             })
+        );
+    }
+
+    _debug_log() {
+        GLib.spawn_command_line_async(
+            'gnome-terminal ' +
+            //`--tab --title "GJS" --command "journalctl _PID=${getPID()} -f -o cat" ` +
+            `--tab --title "GJS" --command "journalctl -f -o cat /usr/bin/gjs" ` +
+            '--tab --title "Gnome Shell" --command "journalctl -f -o cat /usr/bin/gnome-shell"'
         );
     }
 
