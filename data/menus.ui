@@ -21,7 +21,6 @@
 
   <menu id="device-status">
     <section>
-      <attribute name="display-hint">horizontal-buttons</attribute>
       <item>
         <attribute name="label" translatable="yes">Connect Bluetooth</attribute>
         <attribute name="action">status.connect-bluetooth</attribute>
