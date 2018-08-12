@@ -442,11 +442,10 @@ var Channel = GObject.registerClass({
      * @param {object} packet - An object containing the packet data
      */
     send(packet) {
-        debug(packet, this.identity.body.deviceName);
-
         try {
             packet = new Packet(packet);
             this.output_stream.put_string(packet.toString(), null);
+            debug(packet, this.identity.body.deviceName);
         } catch (e) {
             logWarning(e, this.identity.body.deviceName);
         }
