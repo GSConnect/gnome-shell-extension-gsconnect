@@ -30,19 +30,6 @@ var Metadata = {
  * RunCommand Plugin
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/remotecommands
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/runcommand
- *
- * {
- *      'id':0,
- *      'type': 'kdeconnect.runcommand',
- *      'body': {
- *          'commandList': {
- *              '98482d76-8409-4ea3-9263-d812f000a19a': {
- *                  'name': 'Kodi',
- *                  'command': '/home/andrew/scripts/kodi'
- *              }
- *          }
- *      }
- * }
  */
 var Plugin = GObject.registerClass({
     GTypeName: 'GSConnectRunCommandPlugin',

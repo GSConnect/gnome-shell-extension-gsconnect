@@ -132,7 +132,7 @@ var Battery = GObject.registerClass({
  * A Device Icon
  */
 var Icon = GObject.registerClass({
-    GtypeName: 'GSConnectShellDeviceIcon'
+    GTypeName: 'GSConnectShellDeviceIcon'
 }, class Icon extends St.DrawingArea {
 
     _init(object, device) {
@@ -422,9 +422,11 @@ var Menu = class Menu extends PopupMenu.PopupMenuSection {
         this.deviceBox.actor.vertical = false;
         this.addMenuItem(this.deviceBox);
 
+        // Device Icon with Battery Circle
         this.deviceButton = new Button(object, iface);
         this.deviceBox.actor.add_child(this.deviceButton);
 
+        // Title Bar & Plugin/Status Bar
         this.controlBox = new St.BoxLayout({
             style_class: 'gsconnect-control-box',
             vertical: true,
@@ -464,10 +466,6 @@ var Menu = class Menu extends PopupMenu.PopupMenuSection {
             menu_model: iface.menu_model,
             style_class: 'gsconnect-plugin-bar'
         });
-        this.pluginBar.connect(
-            'submenu-toggle',
-            this._onSubmenuToggle.bind(this)
-        );
         this.controlBox.add_child(this.pluginBar);
 
         // Status Bar
@@ -484,17 +482,19 @@ var Menu = class Menu extends PopupMenu.PopupMenuSection {
         });
         this.statusBar.add_child(this.statusLabel);
 
+        //
+        this.pluginBar.connect(
+            'notify::submenu',
+            this._onSubmenuChanged.bind(this)
+        );
+
         // Hide the submenu when the device menu is closed
         this._getTopMenu().connect(
             'open-state-changed',
             this._onOpenStateChanged.bind(this)
         );
 
-        // Watch GSettings & Properties
-        this._gsettingsId = gsconnect.settings.connect(
-            'changed',
-            this._sync.bind(this)
-        );
+        // Watch Properties
         this._propertiesId = this.device.connect(
             'g-properties-changed',
             this._sync.bind(this)
@@ -507,40 +507,36 @@ var Menu = class Menu extends PopupMenu.PopupMenuSection {
 
     _onOpenStateChanged(actor, open) {
         if (!open && this._submenu !== undefined) {
-            this.box.remove_child(this._submenu.actor);
-            this._submenu = undefined;
+            this.pluginBar.submenu = undefined;
         }
     }
 
-    _onSubmenuToggle(flowbox, button) {
+    _onSubmenuChanged(flowbox) {
         // Close (remove) any currently opened submenu
         if (this._submenu !== undefined) {
-            this.box.remove_child(this._submenu.actor);
+            this.box.remove_child(this._submenu);
         }
 
+        this._submenu = flowbox.submenu;
+
         // Open (add) the submenu if it's a new menu...
-        if (this._submenu !== button.submenu) {
-            this._submenu = button.submenu;
-            this.box.add_child(this._submenu.actor);
-        // ...otherwise unset the current submenu
-        } else {
-            this._submenu = undefined;
+        if (this._submenu !== undefined) {
+            this.box.add_child(this._submenu);
         }
     }
 
-    _sync() {
-        debug(`${this.device.Name} (${this.device.Id})`);
-
+    _sync(proxy, changed, invalidated) {
         if (!this.actor.mapped) { return; }
 
-        let { Connected, Paired } = this.device;
+        debug(`${this.device.Name} menu`);
 
         // Title Bar
         this.nameLabel.text = this.device.Name;
 
         // Plugin/Status Bar visibility
+        let { Connected, Paired } = this.device;
         this.pluginBar.visible = (Connected && Paired);
-        this.statusBar.visible = (!Connected || !Paired);
+        this.statusBar.visible = !this.pluginBar.visible;
 
         if (!Connected) {
             this.statusLabel.text = _('Device is disconnected');
@@ -552,7 +548,6 @@ var Menu = class Menu extends PopupMenu.PopupMenuSection {
     destroy() {
         this.actor.disconnect(this._mappedId);
         this.device.disconnect(this._propertiesId);
-        gsconnect.settings.disconnect(this._gsettingsId);
 
         super.destroy();
     }
@@ -605,7 +600,7 @@ var Indicator = class Indicator extends PanelMenu.Button {
     }
 
     async _sync() {
-        debug(`${this.device.Name}`);
+        debug(`${this.device.Name} indicator`);
 
         let { Connected, Paired } = this.device;
 

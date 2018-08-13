@@ -10,43 +10,49 @@ const Tooltip = imports.shell.tooltip;
 
 
 /**
- * GMenu helper classes
+ * Get a dictionary of a GMenuItem's attributes
+ *
+ * @param {Gio.MenuModel} model - The menu model containing the item
+ * @param {number} index - The index of the item in @model
+ * @return {object} - A dictionary of the item's attributes
  */
-class ItemInfo {
-    constructor(model, index) {
-        this.model = model;
-        this.index = index;
-        this.links = [];
+function getItemInfo(model, index) {
+    let info = {
+        links: []
+    };
 
-        //
-        let iter = this.model.iterate_item_attributes(this.index);
+    //
+    let iter = model.iterate_item_attributes(index);
 
-        while (iter.next()) {
-            let name = iter.get_name();
-            let value = iter.get_value();
+    while (iter.next()) {
+        let name = iter.get_name();
+        let value = iter.get_value();
 
-            switch (name) {
-                case 'icon':
-                    this[name] = Gio.Icon.deserialize(value);
-                    break;
-                case 'target':
-                    this[name] = value;
-                    break;
-                default:
-                    this[name] = value.unpack();
-            }
-        }
+        switch (name) {
+            case 'icon':
+                info[name] = Gio.Icon.deserialize(value);
+                break;
 
-        //
-        iter = this.model.iterate_item_links(this.index);
+            case 'target':
+                info[name] = value;
+                break;
 
-        while (iter.next()) {
-            this.links.push({
-                name: iter.get_name(),
-                value: iter.get_value()
-            });
+            default:
+                info[name] = value.unpack();
         }
     }
+
+    // Submenus & Sections
+    iter = model.iterate_item_links(index);
+
+    while (iter.next()) {
+        info.links.push({
+            name: iter.get_name(),
+            value: iter.get_value()
+        });
+    }
+
+    return info;
 }
 
 
@@ -133,12 +139,6 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
             'action-removed',
             this._onActionChanged.bind(this)
         );
-        this._actionStateChangedId = this.action_group.connect(
-            'action-removed',
-            this._onActionChanged.bind(this)
-        );
-
-        this.connect('destroy', this._onDestroy);
     }
 
     get action_group() {
@@ -162,8 +162,7 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
                 item.action_target
             );
 
-            // TODO: The signal chain here is embarassing
-            this.parentActor.emit('submenu-toggle');
+            this._getTopMenu().close();
         });
 
         this.addMenuItem(item);
@@ -177,6 +176,10 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
     }
 
     _addGMenuSubmenu(model) {
+    }
+
+    _getTopMenu() {
+        return this.parentActor._getTopMenu();
     }
 
     async _onActionChanged(group, name, enabled) {
@@ -201,7 +204,7 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
         let len = model.get_n_items();
 
         for (let i = 0; i < len; i++) {
-            let info = new ItemInfo(model, i);
+            let info = getItemInfo(model, i);
 
             // TODO: better section/submenu detection
             // A regular item
@@ -219,12 +222,13 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
         }
     }
 
-    _onDestroy(actor) {
-        actor.menu_model.disconnect(actor._itemsChangedId);
-        actor.action_group.disconnect(actor._actionAddedId);
-        actor.action_group.disconnect(actor._actionEnabledChangedId);
-        actor.action_group.disconnect(actor._actionRemovedId);
-        actor.action_group.disconnect(actor._actionStateChangedId);
+    destroy() {
+        this.menu_model.disconnect(this._itemsChangedId);
+        this.action_group.disconnect(this._actionAddedId);
+        this.action_group.disconnect(this._actionEnabledChangedId);
+        this.action_group.disconnect(this._actionRemovedId);
+
+        super.destroy();
     }
 }
 
@@ -249,62 +253,38 @@ var Button = GObject.registerClass({
 
         this._action_group = params.action_group;
 
-        // StButton adds the :checked pseudo class, but some themes don't apply
-        // it to .system-menu-action
-        this.connect('notify::checked', (button) => {
-            if (button.checked) {
-                button.add_style_pseudo_class('active');
-            } else {
-                button.remove_style_pseudo_class('active');
-            }
-        });
+        // Item attributes
+        switch (true) {
+            case params.info.hasOwnProperty('action'):
+                this._action_name = params.info.action.split('.')[1];
 
-        this.connect('clicked', this._onClicked.bind(this));
+            case params.info.hasOwnProperty('target'):
+                this._action_target = params.info.target;
 
-        // GIcon
-        if (params.info.hasOwnProperty('icon')) {
-            this.child = new St.Icon({ gicon: params.info.icon });
-        } else {
-            this.child = new St.Icon({
-                gicon: new Gio.ThemedIcon({
-                    name: 'application-x-addon-symbolic'
-                })
-            });
-        }
+            case params.info.hasOwnProperty('label'):
+                this.tooltip = new Tooltip.Tooltip({
+                    parent: this,
+                    markup: params.info.label
+                });
 
-        // Action & Target
-        if (params.info.hasOwnProperty('action')) {
-            this._action_name = params.info.action.split('.')[1];
-        }
-
-        if (params.info.hasOwnProperty('target')) {
-            this._action_target = params.info.target;
-        }
-
-        // Label
-        if (params.info.hasOwnProperty('label')) {
-            this.tooltip = new Tooltip.Tooltip({
-                parent: this,
-                markup: params.info.label
-            });
+            case params.info.hasOwnProperty('icon'):
+                this.child = new St.Icon({ gicon: params.info.icon });
         }
 
         // Submenu
         for (let link of params.info.links) {
             if (link.name === 'submenu') {
+                this.toggle_mode = true;
                 this.submenu = new ListBox(this, link.value, this.action_group);
                 this.submenu.actor.style_class = 'popup-sub-menu';
-                this.toggle_mode = true;
-                this.submenu.actor.bind_property(
-                    'mapped',
-                    this,
-                    'checked',
-                    GObject.BindingFlags.SYNC_CREATE
-                );
+                this.submenu.actor.bind_property('mapped', this, 'checked', 0);
             }
         }
 
-        this.connect('destroy', this._onDestroy.bind(this));
+        // StButton adds the :checked pseudo class, but some themes don't apply
+        // it to .system-menu-action
+        this.connect('notify::checked', this._onChecked);
+        this.connect('clicked', this._onClicked);
     }
 
     get action_group() {
@@ -338,29 +318,44 @@ var Button = GObject.registerClass({
             parent = parent.get_parent();
         }
 
-        return parent._delegate._getTopMenu()
+        return parent._delegate._getTopMenu();
+    }
+
+    _onChecked(button) {
+        if (button.checked) {
+            button.add_style_pseudo_class('active');
+        } else {
+            button.remove_style_pseudo_class('active');
+        }
     }
 
     // TODO: fix super ugly delegation chain
     _onClicked(button) {
+        // Emit if this button has a submenu
+        if (button.submenu !== undefined) {
+            if (button.get_parent().submenu !== button.submenu.actor) {
+                button.get_parent().submenu = button.submenu.actor;
+            } else {
+                button.get_parent().submenu = undefined;
+            }
+
         // If this is an actionable item close the top menu and activate
-        if (button.action_name) {
-            this._getTopMenu().close();
+        } else if (button.action_name) {
+            button._getTopMenu().close();
 
             button.action_group.activate_action(
                 button.action_name,
                 button.action_target
             );
-        // Otherwise emit if it has a submenu
-        } else if (button.submenu !== null) {
-            button.emit('submenu-toggle');
         }
     }
 
-    _onDestroy(button) {
+    destroy() {
         if (button.hasOwnProperty('submenu')) {
             button.submenu.destroy();
         }
+
+        super.destroy();
     }
 });
 
@@ -368,11 +363,14 @@ var Button = GObject.registerClass({
 // FIXME: this needs a flowbox layout
 var FlowBox = GObject.registerClass({
     GTypeName: 'GSConnectShellGMenuFlowBox',
-    Signals: {
-        'submenu-toggle': {
-            flags: GObject.SignalFlags.RUN_FIRST,
-            param_types: [ GObject.TYPE_OBJECT ]
-        }
+    Properties: {
+        'submenu': GObject.ParamSpec.object(
+            'submenu',
+            'Submenu',
+            'The active submenu',
+            GObject.ParamFlags.READWRITE,
+            GObject.Object
+        )
     }
 }, class FlowBox extends St.BoxLayout {
     _init(params) {
@@ -401,28 +399,21 @@ var FlowBox = GObject.registerClass({
             'action-removed',
             this._onActionChanged.bind(this)
         );
-        this._actionStateChangedId = this.action_group.connect(
-            'action-removed',
-            this._onActionChanged.bind(this)
-        );
 
-        this.connect('destroy', this._onDestroy.bind(this));
+        this.connect('destroy', this._onDestroy);
     }
 
-    get action_group() {
-        return this._action_group;
+    get submenu() {
+        if (this._submenu === undefined) {
+            return undefined;
+        }
+
+        return this._submenu;
     }
 
-    set action_group(group) {
-        this._action_group = group;
-    }
-
-    get menu_model() {
-        return this._menu_model;
-    }
-
-    set menu_model(model) {
-        this._menu_model = model
+    set submenu(menu) {
+        this._submenu = menu;
+        this.notify('submenu');
     }
 
     async _onActionChanged(group, name, enabled) {
@@ -433,9 +424,7 @@ var FlowBox = GObject.registerClass({
                 enabled = this.action_group.get_action_enabled(name);
             }
 
-            //menuItem.visible = enabled;
-            menuItem.reactive = enabled;
-            menuItem.opacity = (menuItem.reactive) ? 255 : 128;
+            menuItem.visible = enabled;
         }
     }
 
@@ -451,17 +440,15 @@ var FlowBox = GObject.registerClass({
             let index = position + i;
             let button = new Button({
                 action_group: this.action_group,
-                info: new ItemInfo(model, index)
+                info: getItemInfo(model, index)
             });
 
             if (button.action_name) {
-                button.reactive = this.action_group.get_action_enabled(
+                button.visible = this.action_group.get_action_enabled(
                     button.action_name
                 );
-                button.opacity = (button.reactive) ? 255 : 128;
             }
 
-            button.connect('submenu-toggle', this._toggleList.bind(this));
             this._menu_items.set(button.action_name, button);
 
             this.insert_child_at_index(button, index);
@@ -473,11 +460,6 @@ var FlowBox = GObject.registerClass({
         actor.action_group.disconnect(actor._actionAddedId);
         actor.action_group.disconnect(actor._actionEnabledChangedId);
         actor.action_group.disconnect(actor._actionRemovedId);
-        actor.action_group.disconnect(actor._actionStateChangedId);
-    }
-
-    _toggleList(button) {
-        this.emit('submenu-toggle', button);
     }
 });
 

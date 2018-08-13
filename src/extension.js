@@ -38,13 +38,20 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
 
         this.keybindingManager = new Keybindings.Manager();
 
-        // Extension Indicator
+        // Service Actions
+        this.service = Gio.DBusActionGroup.get(
+            Gio.DBus.session,
+            gsconnect.app_id,
+            gsconnect.app_path
+        );
+
+        // Service Indicator
         this.extensionIndicator = this._addIndicator();
         this.extensionIndicator.icon_name = 'org.gnome.Shell.Extensions.GSConnect-symbolic';
         let userMenuTray = Main.panel.statusArea.aggregateMenu._indicators;
         userMenuTray.insert_child_at_index(this.indicators, 0);
 
-        // Extension Menu
+        // Service Menu
         this.extensionMenu = new PopupMenu.PopupSubMenuMenuItem(
             _('Mobile Devices'),
             true
@@ -80,20 +87,59 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
             }
         });
 
-        // org.freedesktop.ObjectManager
-        Gio.DBusObjectManagerClient.new(
-            Gio.DBus.session,
-            Gio.DBusObjectManagerClientFlags.NONE,
-            gsconnect.app_id,
-            gsconnect.app_path,
-            null,
-            null,
-            this._setupObjManager.bind(this)
-        );
+        // Async setup
+        this._setup();
     }
 
     get devices() {
         return this._devices;
+    }
+
+    async _setup() {
+        try {
+            // Init the ObjectManager
+            this.manager = await new Promise((resolve, reject) => {
+                Gio.DBusObjectManagerClient.new(
+                    Gio.DBus.session,
+                    Gio.DBusObjectManagerClientFlags.NONE,
+                    gsconnect.app_id,
+                    gsconnect.app_path,
+                    null,
+                    null,
+                    (manager, res) => {
+                        try {
+                            resolve(Gio.DBusObjectManagerClient.new_finish(res));
+                        } catch (e) {
+                            reject(e);
+                        }
+                    }
+                );
+            });
+
+            // Setup currently managed devices
+            for (let object of this.manager.get_objects()) {
+                for (let iface of object.get_interfaces()) {
+                    this._onInterfaceAdded(this.manager, object, iface);
+                }
+            }
+
+            // Watch for new and removed
+            this._interfaceAddedId = this.manager.connect(
+                'interface-added',
+                this._onInterfaceAdded.bind(this)
+            );
+            this._objectRemovedId = this.manager.connect(
+                'object-removed',
+                this._onObjectRemoved.bind(this)
+            );
+            this._nameOwnerId = this.manager.connect(
+                'notify::name-owner',
+                this._onNameOwnerChanged.bind(this)
+            );
+        } catch (e) {
+            // TODO: fatal error notification?
+            logError(e);
+        }
     }
 
     _sync(menu) {
@@ -108,57 +154,44 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         }
     }
 
-    async _setupObjManager(obj, res) {
-        this.manager = Gio.DBusObjectManagerClient.new_finish(res);
-
-        await this._startService();
-
-        // Setup currently managed objects
-        for (let object of this.manager.get_objects()) {
-            for (let iface of object.get_interfaces()) {
-                this._onInterfaceAdded(this.manager, object, iface);
-            }
-        }
-
-        // Watch for new and removed
-        this._interfaceAddedId = this.manager.connect(
-            'interface-added',
-            this._onInterfaceAdded.bind(this)
-        );
-        this._interfaceRemovedId = this.manager.connect(
-            'interface-removed',
-            this._onInterfaceRemoved.bind(this)
-        );
-        this._objectRemovedId = this.manager.connect(
-            'object-removed',
-            this._onObjectRemoved.bind(this)
-        );
-        this._nameOwnerId = this.manager.connect(
-            'notify::name-owner',
-            this._onNameOwnerChanged.bind(this)
-        );
-    }
-
-    async _startService() {
-        // Prevent a hard hang if trying to start the service after it's been
-        // uninstalled.
-        let path = gsconnect.extdatadir + '/service/daemon.js';
-
-        if (this.service || !GLib.file_test(path, GLib.FileTest.EXISTS)) {
+    async _activate() {
+        if (this._activating) {
             return;
         }
 
-        this.service = Gio.DBusActionGroup.get(
-            Gio.DBus.session,
-            gsconnect.app_id,
-            gsconnect.app_path
-        );
+        try {
+            // Avoid concurrent calls
+            this._activating = true;
 
-        await this.service.list_actions();
-        this.extensionIndicator.visible = true;
+            // Wait for a result before continuing
+            await new Promise((resolve, reject) => {
+                Gio.DBus.session.call(
+                    'org.freedesktop.DBus',
+                    '/org/freedesktop/DBus',
+                    'org.freedesktop.DBus',
+                    'StartServiceByName',
+                    new GLib.Variant('(su)', [gsconnect.app_id, 0]),
+                    null,
+                    Gio.DBusCallFlags.NONE,
+                    -1,
+                    null,
+                    (connection, res) => {
+                        try {
+                            resolve(connection.call_finish(res));
+                        } catch (e) {
+                            reject(e);
+                        }
+                    }
+                );
+            });
+        } catch (e) {
+            logError(e);
+        } finally {
+            this._activating = false;
+        }
     }
 
-    _onNameOwnerChanged() {
+    async _onNameOwnerChanged() {
         if (this.manager.name_owner === null) {
             debug(`Service Stopped`);
 
@@ -167,78 +200,79 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
                 this._onInterfaceRemoved(this.manager, iface.get_object(), iface);
             }
 
-            if (this.service) {
-                delete this.service;
-                this.extensionIndicator.visible = false;
-            }
-        }
+            this.extensionIndicator.visible = false;
 
-        this._startService();
+            // Try restart the service
+            await this._activate();
+        } else {
+            this.extensionIndicator.visible = true;
+        }
     }
 
     async _onInterfaceAdded(manager, object, iface) {
-        let info = gsconnect.dbusinfo.lookup_interface(iface.g_interface_name);
-
-        // We only setup properties for GSConnect interfaces
-        if (info) {
+        try {
+            // We only setup properties for GSConnect interfaces
+            let info = gsconnect.dbusinfo.lookup_interface(iface.g_interface_name);
             DBus.proxyProperties(iface, info);
-        }
 
-        // It's a device
-        if (iface.g_interface_name === 'org.gnome.Shell.Extensions.GSConnect.Device') {
-            log(`GSConnect: Adding ${iface.Name}`);
+            // It's a device
+            if (iface.g_interface_name === 'org.gnome.Shell.Extensions.GSConnect.Device') {
+                log(`GSConnect: Adding ${iface.Name}`);
 
-            this.devices.add(iface);
+                this.devices.add(iface);
 
-            // GActions
-            iface.action_group = Gio.DBusActionGroup.get(
-                iface.g_connection,
-                iface.g_name,
-                iface.g_object_path
-            );
+                // GActions
+                iface.action_group = Gio.DBusActionGroup.get(
+                    iface.g_connection,
+                    iface.g_name,
+                    iface.g_object_path
+                );
 
-            // GMenu
-            iface.menu_model = Gio.DBusMenuModel.get(
-                iface.g_connection,
-                iface.g_name,
-                iface.g_object_path
-            );
+                // GMenu
+                iface.menu_model = Gio.DBusMenuModel.get(
+                    iface.g_connection,
+                    iface.g_name,
+                    iface.g_object_path
+                );
 
-            // GSettings
-            iface.settings = new Gio.Settings({
-                settings_schema: gsconnect.gschema.lookup(
-                    'org.gnome.Shell.Extensions.GSConnect.Device',
-                    true
-                ),
-                path: '/org/gnome/shell/extensions/gsconnect/device/' + iface.Id + '/'
-            });
+                // GSettings
+                iface.settings = new Gio.Settings({
+                    settings_schema: gsconnect.gschema.lookup(
+                        'org.gnome.Shell.Extensions.GSConnect.Device',
+                        true
+                    ),
+                    path: '/org/gnome/shell/extensions/gsconnect/device/' + iface.Id + '/'
+                });
 
-            // Keyboard Shortcuts
-            iface._keybindingsId = iface.settings.connect(
-                'changed::keybindings',
-                this._deviceKeybindings.bind(this, iface)
-            );
-            this._deviceKeybindings(iface);
+                // Keyboard Shortcuts
+                iface._keybindingsChangedId = iface.settings.connect(
+                    'changed::keybindings',
+                    this._onKeybindingsChanged.bind(this, iface)
+                );
+                this._onKeybindingsChanged(iface);
 
-            // Device Indicator
-            let indicator = new Device.Indicator(object, iface);
-            Main.panel.addToStatusArea(iface.g_object_path, indicator);
+                // Device Indicator
+                let indicator = new Device.Indicator(object, iface);
+                Main.panel.addToStatusArea(iface.g_object_path, indicator);
 
-            // Device Menu
-            let menu = new Device.Menu(object, iface);
-            this._menus[iface.g_object_path] = menu;
+                // Device Menu
+                let menu = new Device.Menu(object, iface);
+                this._menus[iface.g_object_path] = menu;
 
-            this.devicesSection.addMenuItem(menu);
-            this._sync(menu);
+                this.devicesSection.addMenuItem(menu);
+                this._sync(menu);
 
-            // Properties
-            iface._propertiesId = iface.connect(
-                'g-properties-changed',
-                this._sync.bind(this, menu)
-            );
+                // Properties
+                iface._propertiesId = iface.connect(
+                    'g-properties-changed',
+                    this._sync.bind(this, menu)
+                );
 
-            // Try activating the device
-            iface.action_group.activate_action('activate', null);
+                // Try activating the device
+                iface.action_group.activate_action('activate', null);
+            }
+        } catch (e) {
+            logError(e);
         }
     }
 
@@ -250,7 +284,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
             iface.disconnect(iface._propertiesId);
 
             // Disconnect keybindings
-            iface.settings.disconnect(iface._keybindingsId);
+            iface.settings.disconnect(iface._keybindingsChangedId);
             iface._keybindings.map(id => this.keybindingManager.remove(id));
 
             // Destroy the indicator
@@ -267,48 +301,48 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
     // FIXME: The device's DBusObject is unexported in Device.destroy() before
     // the 'interface-removed' handler is resolved, so for now we catch it here.
     async _onObjectRemoved(manager, object) {
-        for (let iface of this.devices) {
-            if (iface.g_object_path === object.g_object_path) {
-                this._onInterfaceRemoved(manager, object, iface);
-            }
-        }
+        let iface = object.get_interface('org.gnome.Shell.Extensions.GSConnect.Device');
+        this._onInterfaceRemoved(this.manager, object, iface);
     }
 
-    /**
-     * Setup device keybindings
-     */
-    async _deviceKeybindings(iface) {
-        // Reset grabbed accelerators
-        if (iface.hasOwnProperty('_keybindings')) {
-            iface._keybindings.map(id => this.keybindingManager.remove(id));
-        }
-
-        iface._keybindings = [];
-
-        let keybindings = DBus.full_unpack(
-            iface.settings.get_value('keybindings')
-        );
-
-        // TODO: Backwards compatible check for keybindings <= v12
-        if (typeof keybindings === 'string') {
-            iface.settings.set_value(
-                'keybindings',
-                new GLib.Variant('a{sv}', {})
-            );
-            return;
-        }
-
-        for (let action in keybindings) {
-            let [ok, name, parameter] = Gio.Action.parse_detailed_name(action);
-
-            let actionId = this.keybindingManager.add(
-                keybindings[action],
-                () => iface.action_group.activate_action(name, parameter)
-            );
-
-            if (actionId !== 0) {
-                iface._keybindings.push(actionId);
+    async _onKeybindingsChanged(iface) {
+        try {
+            // Reset any existing keybindings
+            if (iface.hasOwnProperty('_keybindings')) {
+                iface._keybindings.map(id => this.keybindingManager.remove(id));
             }
+
+            iface._keybindings = [];
+
+            // Get the keybindings
+            let keybindings = DBus.full_unpack(
+                iface.settings.get_value('keybindings')
+            );
+
+            // TODO: Backwards compatible check for keybindings <= v12
+            if (typeof keybindings === 'string') {
+                iface.settings.set_value(
+                    'keybindings',
+                    new GLib.Variant('a{sv}', {})
+                );
+                return;
+            }
+
+            // Apply the keybindings
+            for (let [action, accelerator] of Object.entries(keybindings)) {
+                let [ok, name, parameter] = Gio.Action.parse_detailed_name(action);
+
+                let actionId = this.keybindingManager.add(
+                    accelerator,
+                    () => iface.action_group.activate_action(name, parameter)
+                );
+
+                if (actionId !== 0) {
+                    iface._keybindings.push(actionId);
+                }
+            }
+        } catch (e) {
+            logError(e);
         }
     }
 
@@ -330,9 +364,9 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         this.manager.disconnect(this._objectRemovedId);
         this.manager.disconnect(this._nameOwnerId);
 
-        // Destroy any device proxies
-        for (let iface of this.devices) {
-            this._onInterfaceRemoved(this.manager, iface.get_object(), iface);
+        // Destroy any remaining devices
+        for (let object of this.manager.get_objects()) {
+            this._onObjectRemoved(this.manager, object,);
         }
 
         // Disconnect any keybindings
