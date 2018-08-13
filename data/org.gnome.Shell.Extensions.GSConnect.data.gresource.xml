@@ -4,8 +4,7 @@
     <file compressed="true">application.css</file>
     <!-- DBus Files -->
     <file compressed="true">org.gnome.Shell.Extensions.GSConnect.desktop</file>
-    <file compressed="true">org.gnome.Shell.Extensions.GSConnect.service-dbus</file>
-    <file compressed="true">org.gnome.Shell.Extensions.GSConnect.service-systemd</file>
+    <file compressed="true">org.gnome.Shell.Extensions.GSConnect.service</file>
     <file compressed="true" preprocess="xml-stripblanks">org.gnome.Shell.Extensions.GSConnect.xml</file>
     <!-- Application Icons -->
     <file compressed="true" preprocess="xml-stripblanks">org.gnome.Shell.Extensions.GSConnect.svg</file>

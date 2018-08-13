@@ -1,12 +1,12 @@
 [Desktop Entry]
 Type=Application
 Name=GSConnect
-Exec=/usr/bin/env gjs @DATADIR@/service/daemon.js %u
+Exec=@DATADIR@/service/daemon.js %u
 Terminal=false
 NoDisplay=true
 Icon=org.gnome.Shell.Extensions.GSConnect
 Categories=Network;
-MimeType=x-scheme-handler/sms;
+MimeType=x-scheme-handler/sms;x-scheme-handler/tel;
 DBusActivatable=true
 X-GNOME-UsesNotifications=true
 

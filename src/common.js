@@ -103,23 +103,11 @@ function checkCommand (cmd) {
  *     - Register sms:// scheme handler
  */
 function installService () {
-    // systemd service file
-    let systemdDir = GLib.get_user_data_dir() + "/systemd/user/";
-    let systemdFile = ext.app_id + ".service";
-    let systemdBytes = Gio.resources_lookup_data(
-        ext.app_path + "/" + systemdFile + "-systemd", 0
-    ).toArray().toString().replace("@DATADIR@", ext.datadir);
-
-    GLib.mkdir_with_parents(systemdDir, 493);
-    GLib.file_set_contents(systemdDir + systemdFile, systemdBytes);
-
-    GLib.spawn_command_line_async("systemctl --user daemon-reload");
-
     // DBus service file
     let serviceDir = GLib.get_user_data_dir() + "/dbus-1/services/";
     let serviceFile = ext.app_id + ".service";
     let serviceBytes = Gio.resources_lookup_data(
-        ext.app_path + "/" + serviceFile + "-dbus", 0
+        ext.app_path + "/" + serviceFile, 0
     ).toArray().toString().replace("@DATADIR@", ext.datadir);
 
     GLib.mkdir_with_parents(serviceDir, 493);
@@ -134,13 +122,6 @@ function installService () {
 
     GLib.mkdir_with_parents(applicationsDir, 493);
     GLib.file_set_contents(applicationsDir + desktopFile, desktopBytes);
-
-    // sms:// scheme handler
-    let appinfo = Gio.DesktopAppInfo.new_from_filename(
-        applicationsDir + desktopFile
-    );
-    appinfo.add_supports_type("x-scheme-handler/sms");
-    appinfo.add_supports_type("x-scheme-handler/tel");
 };
 
 
