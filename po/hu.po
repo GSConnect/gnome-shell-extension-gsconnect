@@ -7,16 +7,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-05-07 18:45+0300\n"
+"POT-Creation-Date: 2018-08-13 10:56-0700\n"
 "PO-Revision-Date: 2018-05-15 22:55+0200\n"
+"Last-Translator: Báthory Péter <bathory86p@gmail.com>\n"
 "Language-Team: \n"
+"Language: hu\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 2.0.6\n"
-"Last-Translator: Báthory Péter <bathory86p@gmail.com>\n"
-"Language: hu\n"
 
 #. TRANSLATORS: Open a new SMS window
 #: src/extension.js:176 src/service/daemon.js:912 src/widgets/device.js:199
@@ -78,7 +78,7 @@ msgstr "Mobil eszközök"
 msgid "Mobile Settings"
 msgstr "Mobil beállítások"
 
-#: src/nautilus-gsconnect.py:86
+#: src/nautilus-gsconnect.py:88
 msgid "Send To Mobile Device"
 msgstr "Küldés mobil eszközre"
 
