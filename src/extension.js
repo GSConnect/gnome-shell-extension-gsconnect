@@ -778,13 +778,14 @@ var systemIndicator;
 
 function init() {
     debug("initializing extension");
+
+    Common.installService();
+    Gtk.IconTheme.get_default().add_resource_path(ext.app_path);
 }
 
 function enable() {
     debug("enabling extension");
 
-    Common.installService();
-    Gtk.IconTheme.get_default().add_resource_path(ext.app_path);
     systemIndicator = new SystemIndicator();
 }
 
@@ -792,6 +793,5 @@ function disable() {
     debug("disabling extension");
 
     systemIndicator.destroy();
-    Common.uninstallService()
 }
 
