@@ -198,6 +198,22 @@ Gio.TlsCertificate.prototype.fingerprint = function () {
 
 
 /**
+ * Polyfill for GLib.uuid_string_random() (GLib v2.52+)
+ *
+ * Source: https://gist.github.com/jed/982883
+ */
+if (typeof GLib.uuid_string_random !== 'function') {
+    GLib.uuid_string_random = function(salt=null) {
+        if (salt) {
+            return (salt ^ Math.random() * 16 >> salt / 4).toString(16);
+        } else {
+            return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, GLib.uuid_string_random);
+        }
+    }
+}
+
+
+/**
  * String.format API supporting %s, %d, %x and %f
  * See: https://github.com/GNOME/gjs/blob/master/modules/format.js
  */
