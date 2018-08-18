@@ -60,12 +60,6 @@ var Plugin = GObject.registerClass({
         this.cacheProperties(['_remote_commands']);
     }
 
-    cacheLoaded() {
-        if (this.device.connected) {
-            this.connected();
-        }
-    }
-
     get remote_commands() {
         return this._remote_commands;
     }
@@ -89,6 +83,14 @@ var Plugin = GObject.registerClass({
     connected() {
         this.sendCommandList();
         this.requestCommandList();
+    }
+
+    cacheLoaded() {
+        if (this.device.connected) {
+            this.connected();
+        }
+
+        this._handleCommandList(this.remote_commands);
     }
 
     /**
@@ -123,13 +125,10 @@ var Plugin = GObject.registerClass({
         this._remote_commands = commandList;
         this.notify('remote-commands');
 
-        let commandEntries = Object.entries(commandList);
+        let commandEntries = Object.entries(this.remote_commands);
 
-        // Remove the menu if there are no commands
-        if (commandEntries.length < 1) {
-            this.device.menu.remove_labeled(_('Commands'));
-            return;
-        }
+        // If there are no commands, hide the menu by disabling the action
+        this.device.lookup_action('executeCommand').enabled = (commandEntries.length > 0);
 
         // Commands Submenu
         let commandSubmenu = new Gio.Menu();
@@ -150,15 +149,19 @@ var Plugin = GObject.registerClass({
 
         // Commands Item
         let commandItem = new Gio.MenuItem();
+        commandItem.set_detailed_action(`device.executeCommand::menu`);
+        commandItem.set_attribute_value(
+            'hidden-when',
+            new GLib.Variant('s', 'action-disabled')
+        );
         commandItem.set_icon(
             new Gio.ThemedIcon({ name: 'system-run-symbolic' })
         );
-        commandItem.set_label(_('Commands'));
+        commandItem.set_label(_('Run Command'));
         commandItem.set_submenu(commandSubmenu);
 
-        // If the Commands item is already present it will be replaced,
-        // otherwise it will be appended to the end of the menu.
-        this.device.menu.replace_labeled(_('Commands'), commandItem);
+        // If the submenu item is already present it will be replaced
+        this.device.menu.replace_action('executeCommand', commandItem);
     }
 
     /**
@@ -198,7 +201,7 @@ var Plugin = GObject.registerClass({
     }
 
     destroy() {
-        this.device.menu.remove_labeled(_('Commands'));
+        this.device.menu.remove_labeled(_('Run Command'));
 
         super.destroy();
     }
