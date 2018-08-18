@@ -194,52 +194,70 @@ var Listener = class Listener {
         }
     }
 
-    Notify(appName, replacesId, iconName, summary, body, actions, hints, timeout) {
-        // Ignore notifications without an appName
-        if (!appName) {
-            return;
-        }
+    async Notify(appName, replacesId, iconName, summary, body, actions, hints, timeout) {
+        try {
+            // Ignore notifications without an appName
+            if (!appName) {
+                return;
+            }
 
-        this._sendNotification({
-            appName: appName,
-            id: `fdo|null|${replacesId}`,
-            title: summary,
-            text: body,
-            ticker: `${summary}: ${body}`,
-            isClearable: (replacesId !== '0'),
-            icon: iconName
-        });
+            this._sendNotification({
+                appName: appName,
+                id: `fdo|null|${replacesId}`,
+                title: summary,
+                text: body,
+                ticker: `${summary}: ${body}`,
+                isClearable: (replacesId !== '0'),
+                icon: iconName
+            });
+        } catch (e) {
+            logError(e);
+        }
     }
 
-    AddNotification(application, id, notification) {
-        // Ignore our own notifications
-        if (application === 'org.gnome.Shell.Extensions.GSConnect') {
-            return;
+    /**
+     * org.gtk.Notifications.AddNotification
+     *
+     * @param {string} application - The application ID
+     * @param {string} id - The notification ID
+     * @param {object} notification - The notification properties
+     * @param {string} notification.title - The notification title
+     * @param {string} notification.body - The notification body
+     * @param {Gio.Icon (serialized)} notification.icon - The notification icon
+     */
+    async AddNotification(application, id, notification) {
+        try {
+            // Ignore our own notifications
+            if (application === 'org.gnome.Shell.Extensions.GSConnect') {
+                return;
+            }
+
+            // KDE Connect notifications packets are in the form of libnotify so
+            // we have to reformat GNotification properties
+            let appInfo = Gio.DesktopAppInfo.new(`${application}.desktop`);
+
+            // Try to get an icon for the notification
+            let icon = null;
+
+            if (notification.hasOwnProperty('icon')) {
+                icon = notification.icon;
+            // Fallback to GAppInfo icon
+            } else {
+                icon = appInfo.get_icon().to_string();
+            }
+
+            this._sendNotification({
+                appName: appInfo.get_display_name(),
+                id: `gtk|${application}|${id}`,
+                title: notification.title,
+                text: notification.body,
+                ticker: `${notification.title}: ${notification.body}`,
+                isClearable: true,
+                icon: icon
+            });
+        } catch (e) {
+            logError(e);
         }
-
-        // KDE Connect notifications packets are in the form of libnotify so we
-        // have to reformat GNotification properties
-        let appInfo = Gio.DesktopAppInfo.new(`${application}.desktop`);
-
-        // Try to get an icon for the notification
-        let icon = null;
-
-        if (notification.hasOwnProperty('icon')) {
-            icon = notification.icon;
-        // Fallback to GAppInfo icon
-        } else {
-            icon = appInfo.get_icon().to_string();
-        }
-
-        this._sendNotification({
-            appName: appInfo.get_display_name(),
-            id: `gtk|${application}|${id}`,
-            title: notification.title,
-            text: notification.body,
-            ticker: `${notification.title}: ${notification.body}`,
-            isClearable: true,
-            icon: icon
-        });
     }
 
     destroy() {
