@@ -108,42 +108,42 @@ function vtype_to_gtype(types) {
     for (let i = 0; i < types.length; i++) {
         switch (types[i]) {
             case 'b':
-                gtypes.push(GObject.TYPE_BOOLEAN);
+                vtype_to_gtype._cache[types].push(GObject.TYPE_BOOLEAN);
                 break;
 
             case 's':
             case 'o':
             case 'g':
-                gtypes.push(GObject.TYPE_STRING);
+                vtype_to_gtype._cache[types].push(GObject.TYPE_STRING);
                 break;
 
             case 'h' || 'i':
-                gtypes.push(GObject.TYPE_INT);
+                vtype_to_gtype._cache[types].push(GObject.TYPE_INT);
                 break;
 
             case 'u':
-                gtypes.push(GObject.TYPE_UINT);
+                vtype_to_gtype._cache[types].push(GObject.TYPE_UINT);
                 break;
 
             case 'x':
-                gtypes.push(GObject.TYPE_INT64);
+                vtype_to_gtype._cache[types].push(GObject.TYPE_INT64);
                 break;
 
             case 't':
-                gtypes.push(GObject.TYPE_UINT64);
+                vtype_to_gtype._cache[types].push(GObject.TYPE_UINT64);
                 break;
 
             case 'd':
-                gtypes.push(GObject.TYPE_DOUBLE);
+                vtype_to_gtype._cache[types].push(GObject.TYPE_DOUBLE);
                 break;
 
             case 'y':
-                gtypes.push(GObject.TYPE_UCHAR);
+                vtype_to_gtype._cache[types].push(GObject.TYPE_UCHAR);
                 break;
 
             // FIXME: assume it's a variant
             default:
-                gtypes.push(GObject.TYPE_VARIANT);
+                vtype_to_gtype._cache[types].push(GObject.TYPE_VARIANT);
         }
     }
 
@@ -366,7 +366,7 @@ var Interface = GObject.registerClass({
 /**
  *
  */
-var ProxyFlags = {
+var ExtendedFlags = {
     DO_NOT_CACHE_PROPERTIES: 1,
 };
 
@@ -381,7 +381,7 @@ function _proxyGetter(name) {
     let variant;
 
     try {
-        if (this.proxy_flags & ProxyFlags.DO_NOT_CACHE_PROPERTIES) {
+        if (this.extended_flags & ExtendedFlags.DO_NOT_CACHE_PROPERTIES) {
             // Call returns '(v)' so unpack the tuple and return the variant
             variant = this.call_sync(
                 'org.freedesktop.DBus.Properties.Get',
@@ -531,10 +531,10 @@ function makeInterfaceProxy(info) {
 
     // GProperty ParamSpec's
     let properties_ = {
-        'proxy-flags': GObject.ParamSpec.int(
-            'proxy-flags',
-            'ProxyFlags',
-            'Implementation specific flags',
+        'extended-flags': GObject.ParamSpec.int(
+            'extended-flags',
+            'ExtendedFlags',
+            'Flags specific to this extended proxy',
             GObject.ParamFlags.READWRITE,
             0, GLib.MAXINT32,
             0
@@ -625,6 +625,8 @@ function makeInterfaceProxy(info) {
                 g_interface_info: info,
                 g_interface_name: info.name
             }, params));
+
+            this.extended_flags = 0;
 
             // Proxy methods and properties
             proxyMethods(this, this.g_interface_info);
