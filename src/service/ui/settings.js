@@ -481,7 +481,7 @@ var Device = GObject.registerClass({
         this.actions.add_action(status_bluetooth);
 
         let status_lan = new Gio.SimpleAction({
-            name: 'connect-lan',
+            name: 'connect-tcp',
             parameter_type: null
         });
         status_lan.connect('activate', this._onActivateLan.bind(this));
@@ -507,7 +507,7 @@ var Device = GObject.registerClass({
         // GMenu
         let builder = Gtk.Builder.new_from_resource(gsconnect.app_path + '/gtk/menus.ui');
         this.menu = builder.get_object('device-status');
-        this.menu.append_section(null, this.device.menu);
+        this.menu.prepend_section(null, this.device.menu);
 
         // Sidebar Row
         this.row = new DeviceRow(this.device);
@@ -556,6 +556,12 @@ var Device = GObject.registerClass({
             this._onTcpHostChanged.bind(this)
         );
         this._onTcpHostChanged(this.device.settings);
+
+        this._connectedId = this.device.connect(
+            'notify::connected',
+            this._onConnected.bind(this)
+        );
+        this._onConnected(this.device);
 
         // Errors/Warnings
         this.device.connect('notify::errors', this._errataPage.bind(this));
@@ -618,6 +624,18 @@ var Device = GObject.registerClass({
         }
     }
 
+    _onConnected(device) {
+        let type = device.connection_type;
+        let action = this.actions.lookup_action(`connect-${type}`);
+        action.enabled = !device.connected;
+
+        if (type === 'bluetooth') {
+            this._onTcpHostChanged(device.settings);
+        } else if (type === 'tcp') {
+            this._onBluetoothHostChanged(device.settings);
+        }
+    }
+
     _onBluetoothHostChanged(settings) {
         let hasBluetooth = (settings.get_string('bluetooth-host').length);
         this.actions.lookup_action('connect-bluetooth').enabled = hasBluetooth;
@@ -630,7 +648,7 @@ var Device = GObject.registerClass({
 
     _onTcpHostChanged(settings) {
         let hasLan = (settings.get_string('tcp-host').length);
-        this.actions.lookup_action('connect-lan').enabled = hasLan;
+        this.actions.lookup_action('connect-tcp').enabled = hasLan;
     }
 
     _onActivateLan(button) {
@@ -676,6 +694,7 @@ var Device = GObject.registerClass({
         this.device.disconnect(this._actionRemovedId);
         this.device.disconnect(this._actionEnabledId);
 
+        this.device.disconnect(this._connectedId);
         this.device.settings.disconnect(this._bluetoothHostChangedId);
         this.device.settings.disconnect(this._tcpHostChangedId);
         this.device.settings.disconnect(this._keybindingsId);

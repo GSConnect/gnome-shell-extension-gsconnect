@@ -29,7 +29,7 @@
       </item>
       <item>
         <attribute name="label" translatable="yes">Connect LAN</attribute>
-        <attribute name="action">status.connect-lan</attribute>
+        <attribute name="action">status.connect-tcp</attribute>
         <attribute name="verb-icon">network-wireless-symbolic</attribute>
         <attribute name='hidden-when'>action-disabled</attribute>
       </item>
