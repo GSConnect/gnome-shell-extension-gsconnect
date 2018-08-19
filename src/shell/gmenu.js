@@ -67,17 +67,17 @@ var ListBoxItem = class ListBoxItem extends PopupMenu.PopupMenuItem {
         this._action_name = info.action.split('.')[1];
         this._action_target = info.target;
 
+        // Replace the usual emblem with an icon if present
         if (info.hasOwnProperty('icon')) {
             let icon = new St.Icon({
                 gicon: info.icon,
                 style_class: 'popup-menu-icon'
             });
 
-            // Replace the usual emblem child with the icon
             this.actor.replace_child(this.actor.get_child_at_index(0), icon);
         }
 
-        // TODO: maybe do this is stylesheet.css
+        // TODO: maybe do this in stylesheet.css
         this.actor.get_child_at_index(0).style = 'padding-left: 0.5em';
     }
 
@@ -166,7 +166,7 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
         });
 
         this.addMenuItem(item);
-        item.actor.reactive = this.action_group.get_action_enabled(item.action_name);
+        item.actor.visible = this.action_group.get_action_enabled(item.action_name);
         this._menu_items.set(item.action_name, item);
     }
 
@@ -209,14 +209,14 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
             // TODO: better section/submenu detection
             // A regular item
             if (info.hasOwnProperty('label')) {
-                this._addGMenuItem(info);
+                await this._addGMenuItem(info);
             // A section or submenu
             } else {
-                this._addGMenuSection(info.links[0].value);
+                await this._addGMenuSection(info.links[0].value);
 
                 // len is length starting at 1
                 if (i + 1 < len) {
-                    this.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
+                    await this.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
                 }
             }
         }

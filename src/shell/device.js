@@ -384,7 +384,7 @@ var Button = GObject.registerClass({
         this.object = object;
         this.device = device;
 
-        this.connect('clicked', this._onClicked.bind(this));
+        this.connect('clicked', this._onClicked);
     }
 
     _onClicked(button) {
