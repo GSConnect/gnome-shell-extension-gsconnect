@@ -53,9 +53,6 @@
     <key name="action-blacklist" type="as">
       <default>[]</default>
     </key>
-    <key name="plugin-blacklist" type="as">
-      <default>[]</default>
-    </key>
     <key name="certificate-pem" type="s">
       <default>""</default>
     </key>
@@ -81,6 +78,9 @@
       <default>[]</default>
     </key>
     <key name="outgoing-capabilities" type="as">
+      <default>[]</default>
+    </key>
+    <key name="disabled-plugins" type="as">
       <default>[]</default>
     </key>
     <key name="supported-plugins" type="as">

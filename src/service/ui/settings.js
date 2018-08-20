@@ -456,7 +456,7 @@ var Device = GObject.registerClass({
         'shortcuts-actions', 'shortcuts-actions-title', 'shortcuts-actions-list',
         'shortcuts-commands', 'shortcuts-commands-title', 'shortcuts-commands-list',
         // Advanced
-        'plugin-blacklist',
+        'plugin-list',
         'danger-list', 'device-delete-button',
     ]
 }, class Device extends Gtk.Stack {
@@ -1343,7 +1343,7 @@ var Device = GObject.registerClass({
         this.actions.add_action(reloadPlugins);
 
 //        this.device.settings.connect(
-//            'changed::plugins-blacklist',
+//            'changed::disabled-plugins',
 //            this._populatePlugins.bind(this)
 //        );
 
@@ -1351,7 +1351,7 @@ var Device = GObject.registerClass({
     }
 
     async _populatePlugins() {
-        this.plugin_blacklist.foreach(row => {
+        this.plugin_list.foreach(row => {
             row.widget.disconnect(row.widget._togglePluginId);
             row.destroy()
         });
@@ -1362,7 +1362,7 @@ var Device = GObject.registerClass({
                 selectable: false,
                 visible: true
             });
-            this.plugin_blacklist.add(row);
+            this.plugin_list.add(row);
 
             let widget = new Gtk.CheckButton({
                 label: plugin,
@@ -1380,17 +1380,17 @@ var Device = GObject.registerClass({
 
     async _togglePlugin(widget) {
         let name = widget.label;
-        let blacklist = this.device.settings.get_strv('plugin-blacklist');
+        let disabled = this.device.settings.get_strv('disabled-plugins');
 
-        if (blacklist.includes(name)) {
-            blacklist.splice(blacklist.indexOf(name), 1);
+        if (disabled.includes(name)) {
+            disabled.splice(disabled.indexOf(name), 1);
             this.device.loadPlugin(name);
         } else {
             this.device.unloadPlugin(name);
-            blacklist.push(name);
+            disabled.push(name);
         }
 
-        this.device.settings.set_strv('plugin-blacklist', blacklist);
+        this.device.settings.set_strv('disabled-plugins', disabled);
 
         if (this.hasOwnProperty(name)) {
             this[name].visible = this.device.get_plugin_allowed(name);

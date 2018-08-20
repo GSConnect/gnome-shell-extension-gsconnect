@@ -247,10 +247,10 @@ var Device = GObject.registerClass({
     }
 
     get allowed_plugins() {
-        let blacklist = this.settings.get_strv('plugin-blacklist');
+        let disabled = this.settings.get_strv('disabled-plugins');
 
         return this.supported_plugins.filter(name => {
-            return !blacklist.includes(name);
+            return !disabled.includes(name);
         });
     }
 

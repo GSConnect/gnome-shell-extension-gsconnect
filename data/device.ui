@@ -1526,7 +1526,7 @@
                     <property name="margin_bottom">32</property>
                     <property name="label_xalign">0</property>
                     <child>
-                      <object class="GtkListBox" id="plugin-blacklist">
+                      <object class="GtkListBox" id="plugin-list">
                         <property name="width_request">320</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
