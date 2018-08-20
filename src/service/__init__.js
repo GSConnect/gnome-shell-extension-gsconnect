@@ -84,14 +84,14 @@ Object.defineProperties(Gio.Menu.prototype, {
             // TODO: targetted actions
             item.set_detailed_action(`device.${action.name}`);
 
-            // FIXME: need GSettings for this, and editor :'(
+            // TODO: menu editor?
             if (index === -1) {
                 this.append_item(item);
+                return this.get_n_items();
             } else {
                 this.insert_item(index, item);
+                return index;
             }
-
-            return this.get_n_items();
         },
         enumerable: false
     },
@@ -132,39 +132,6 @@ Object.defineProperties(Gio.Menu.prototype, {
             }
 
             return index;
-        },
-        enumerable: false
-    },
-
-    /**
-     * Remove a GMenuItem by label
-     *
-     * @param {String} name - Label of the item to remove
-     * @return {Number} - The index of the removed item or -1 if not found
-     */
-    'remove_labeled': {
-        value: function(name) {
-            return this._remove('label', name);
-        },
-        enumerable: false
-    },
-
-    /**
-     * Replace a GMenuItem by label with another. If @name is not found @item
-     * will be appended to the end of the menu.
-     *
-     * @param {String} name - Label of the item to replace
-     * @param {Gio.MenuItem} item - Menu item to replace the removed item
-     */
-    'replace_labeled': {
-        value: function(name, item) {
-            let index = this.remove_labeled(name);
-
-            if (index > -1) {
-                this.insert_item(index, item);
-            } else {
-                this.append_item(item);
-            }
         },
         enumerable: false
     }
@@ -231,7 +198,7 @@ Object.defineProperties(Gio.TlsCertificate.prototype, {
  *
  * @param {*} [obj] - May be a GLib.Variant, Array, standard Object or literal.
  */
-let _full_pack = function(obj) {
+function _full_pack(obj) {
     let type = typeof obj;
 
     switch (true) {
@@ -283,7 +250,7 @@ GLib.Variant.full_pack = _full_pack;
  *
  * @param {*} [obj] - May be a GLib.Variant, Array, standard Object or literal.
  */
-let _full_unpack = function(obj) {
+function _full_unpack(obj) {
     obj = (obj === undefined) ? this : obj;
 
     switch (true) {

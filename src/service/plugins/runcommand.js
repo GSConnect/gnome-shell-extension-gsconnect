@@ -131,7 +131,7 @@ var Plugin = GObject.registerClass({
         this.device.lookup_action('executeCommand').enabled = (commandEntries.length > 0);
 
         // Commands Submenu
-        let commandSubmenu = new Gio.Menu();
+        let submenu = new Gio.Menu();
 
         for (let [uuid, info] of commandEntries) {
             let item = new Gio.MenuItem();
@@ -144,24 +144,24 @@ var Plugin = GObject.registerClass({
                 })
             );
             item.set_detailed_action(`device.executeCommand::${uuid}`);
-            commandSubmenu.append_item(item);
+            submenu.append_item(item);
         }
 
         // Commands Item
-        let commandItem = new Gio.MenuItem();
-        commandItem.set_detailed_action(`device.executeCommand::menu`);
-        commandItem.set_attribute_value(
+        let item = new Gio.MenuItem();
+        item.set_detailed_action('device.executeCommand::menu');
+        item.set_attribute_value(
             'hidden-when',
             new GLib.Variant('s', 'action-disabled')
         );
-        commandItem.set_icon(
+        item.set_icon(
             new Gio.ThemedIcon({ name: 'system-run-symbolic' })
         );
-        commandItem.set_label(_('Run Command'));
-        commandItem.set_submenu(commandSubmenu);
+        item.set_label(_('Run Command'));
+        item.set_submenu(submenu);
 
         // If the submenu item is already present it will be replaced
-        this.device.menu.replace_action('executeCommand', commandItem);
+        this.device.menu.replace_action('executeCommand', item);
     }
 
     /**
@@ -201,7 +201,7 @@ var Plugin = GObject.registerClass({
     }
 
     destroy() {
-        this.device.menu.remove_labeled(_('Run Command'));
+        this.device.menu.remove_action('executeCommand');
 
         super.destroy();
     }

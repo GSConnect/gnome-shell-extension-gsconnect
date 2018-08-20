@@ -18,6 +18,7 @@ const Tooltip = imports.shell.tooltip;
  */
 function getItemInfo(model, index) {
     let info = {
+        target: null,
         links: []
     };
 
@@ -61,12 +62,12 @@ function getItemInfo(model, index) {
  */
 var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
 
-    _init(parentActor, menu_model, action_group) {
+    _init(submenu_for, menu_model, action_group) {
         super._init();
 
-        this.parentActor = parentActor;
-        this._action_group = action_group;
-        this._menu_model = menu_model;
+        this.submenu_for = submenu_for;
+        this.action_group = action_group;
+        this.menu_model = menu_model;
         this._menu_items = new Map();
 
         this._itemsChangedId = this.menu_model.connect(
@@ -88,18 +89,6 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
             'action-removed',
             this._onActionChanged.bind(this)
         );
-    }
-
-    get action_group() {
-        if (this._action_group === undefined) {
-            return this.actor.get_parent().action_group;
-        }
-
-        return this._action_group;
-    }
-
-    get menu_model() {
-        return this._menu_model;
     }
 
     async _addGMenuItem(info) {
@@ -132,12 +121,12 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
     }
 
     async _addGMenuSection(model) {
-        let section = new ListBox(this.parentActor, model, this.action_group);
+        let section = new ListBox(this.submenu_for, model, this.action_group);
         this.addMenuItem(section);
     }
 
     _getTopMenu() {
-        return this.parentActor._getTopMenu();
+        return this.submenu_for._getTopMenu();
     }
 
     async _onActionChanged(group, name, enabled) {
@@ -284,14 +273,15 @@ var Button = GObject.registerClass({
         }
     }
 
-    // TODO: fix super ugly delegation chain
     _onClicked(button) {
-        // Emit if this button has a submenu
+        // If this button has a submenu...
         if (button.submenu !== undefined) {
-            if (button.get_parent().submenu !== button.submenu.actor) {
-                button.get_parent().submenu = button.submenu.actor;
-            } else {
+            // ...remove it (close submenu) if it's already set on the parent
+            if (button.get_parent().submenu === button.submenu.actor) {
                 button.get_parent().submenu = undefined;
+            // ...otherwise add it (open submenu)
+            } else {
+                button.get_parent().submenu = button.submenu.actor;
             }
 
         // If this is an actionable item close the top menu and activate
@@ -306,8 +296,8 @@ var Button = GObject.registerClass({
     }
 
     destroy() {
-        if (button.hasOwnProperty('submenu')) {
-            button.submenu.destroy();
+        if (this.hasOwnProperty('submenu')) {
+            this.submenu.destroy();
         }
 
         super.destroy();

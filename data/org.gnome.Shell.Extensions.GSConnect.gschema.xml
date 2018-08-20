@@ -146,7 +146,13 @@
       <default>{}</default>
     </key>
   </schema>
-  <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.SFTP"/>
+  <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.SFTP">
+    <key name="automount" type="b">
+      <default>true</default>
+      <summary>Automatically Mount</summary>
+      <description>Attempt to mount the device when connected</description>
+    </key>
+  </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Share">
     <key name="accept-content" type="b">
       <default>false</default>

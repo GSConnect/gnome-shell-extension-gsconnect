@@ -73,6 +73,10 @@ var Plugin = GObject.registerClass({
 
     connected() {
         this._setup();
+
+        if (this.settings.get_boolean('automount')) {
+            this.mount();
+        }
     }
 
     disconnected() {
@@ -293,20 +297,25 @@ var Plugin = GObject.registerClass({
         let submenu = new Gio.Menu();
 
         // Directories Section
-        let dirSection = new Gio.Menu();
+        let directories = new Gio.Menu();
 
         for (let [name, path] of Object.entries(this._directories)) {
-            dirSection.append(name, `device.openPath::${path}`);
+            directories.append(name, `device.openPath::${path}`);
         }
 
-        submenu.append_section(null, dirSection);
+        submenu.append_section(null, directories);
 
-        // Unmount Section & Item
-        let unmountSection = new Gio.Menu();
-        unmountSection.add_action(this.device.lookup_action('unmount'));
-        submenu.append_section(null, unmountSection);
+        // Unmount Section/Item
+        let unmount = new Gio.Menu();
+        unmount.add_action(this.device.lookup_action('unmount'));
+        submenu.append_section(null, unmount);
 
-        // Directories Item
+        // Files Item
+        let item = new Gio.MenuItem();
+        item.set_detailed_action('device.mount');
+
+        // Icon with check emblem
+        // TODO: better?
         let icon = new Gio.EmblemedIcon({
             gicon: new Gio.ThemedIcon({ name: 'folder-remote-symbolic' })
         });
@@ -314,17 +323,20 @@ var Plugin = GObject.registerClass({
             icon: new Gio.ThemedIcon({ name: 'emblem-default' })
         });
         icon.add_emblem(emblem);
-
-        let item = new Gio.MenuItem();
         item.set_icon(icon);
-        item.set_label(_('List Folders'));
+
+        item.set_attribute_value(
+            'hidden-when',
+            new GLib.Variant('s', 'action-disabled')
+        );
+        item.set_label(_('Files'));
         item.set_submenu(submenu);
 
         this.device.menu.replace_action('device.mount', item);
     }
 
     _removeSubmenu() {
-        let index = this.device.menu.remove_labeled(_('List Folders'));
+        let index = this.device.menu.remove_action('device.mount');
         this.device.menu.add_action(this.device.lookup_action('mount'), index);
     }
 
@@ -402,7 +414,6 @@ var Plugin = GObject.registerClass({
     destroy() {
         // Make extra sure we remove all menu items
         this.unmount();
-        this._removeSubmenu();
         this.device.menu.remove_action('device.mount');
 
         super.destroy();
