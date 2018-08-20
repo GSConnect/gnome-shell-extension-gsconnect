@@ -57,57 +57,6 @@ function getItemInfo(model, index) {
 
 
 /**
- * A PopupMenuItem subclass for GMenu items
- */
-var ListBoxItem = class ListBoxItem extends PopupMenu.PopupMenuItem {
-    _init(info, action_group) {
-        super._init(info.label);
-
-        this._action_group = action_group;
-        this._action_name = info.action.split('.')[1];
-        this._action_target = info.target;
-
-        // Replace the usual emblem with an icon if present
-        if (info.hasOwnProperty('icon')) {
-            let icon = new St.Icon({
-                gicon: info.icon,
-                style_class: 'popup-menu-icon'
-            });
-
-            this.actor.replace_child(this.actor.get_child_at_index(0), icon);
-        }
-
-        // TODO: maybe do this in stylesheet.css
-        this.actor.get_child_at_index(0).style = 'padding-left: 0.5em';
-    }
-
-    get action_group() {
-        if (this._action_group === undefined) {
-            return this.get_parent().action_group;
-        }
-
-        return this._action_group;
-    }
-
-    get action_name() {
-        if (this._action_name === undefined) {
-            return null;
-        }
-
-        return this._action_name;
-    }
-
-    get action_target() {
-        if (this._action_target === undefined) {
-            return null;
-        }
-
-        return this._action_target;
-    }
-}
-
-
-/**
  *
  */
 var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
@@ -154,28 +103,37 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
     }
 
     async _addGMenuItem(info) {
-        let item = new ListBoxItem(info, this.action_group);
+        let item = new PopupMenu.PopupMenuItem(info.label);
+        let action_name = info.action.split('.')[1];
+        let action_target = info.target;
 
+        item.actor.visible = this.action_group.get_action_enabled(action_name);
+
+        // Replace the usual emblem with the GMenuItem's icon
+        if (info.hasOwnProperty('icon')) {
+            let icon = new St.Icon({
+                gicon: info.icon,
+                style_class: 'popup-menu-icon'
+            });
+
+            item.actor.replace_child(item.actor.get_child_at_index(0), icon);
+            item.actor.get_child_at_index(0).style = 'padding-left: 0.5em';
+        }
+
+        // Connect the menu item to it's GAction
         item.connect('activate', (item) => {
-            item.action_group.activate_action(
-                item.action_name,
-                item.action_target
-            );
-
+            this.action_group.activate_action(action_name, action_target);
             this._getTopMenu().close();
         });
 
+        // Add and track the item
         this.addMenuItem(item);
-        item.actor.visible = this.action_group.get_action_enabled(item.action_name);
-        this._menu_items.set(item.action_name, item);
+        this._menu_items.set(action_name, item);
     }
 
     async _addGMenuSection(model) {
         let section = new ListBox(this.parentActor, model, this.action_group);
         this.addMenuItem(section);
-    }
-
-    _addGMenuSubmenu(model) {
     }
 
     _getTopMenu() {
@@ -190,9 +148,7 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
                 enabled = this.action_group.get_action_enabled(name);
             }
 
-            //menuItem.visible = enabled;
-            menuItem.actor.reactive = enabled;
-            menuItem.actor.opacity = (menuItem.actor.reactive) ? 255 : 128;
+            menuItem.visible = enabled;
         }
     }
 
@@ -206,11 +162,10 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
         for (let i = 0; i < len; i++) {
             let info = getItemInfo(model, i);
 
-            // TODO: better section/submenu detection
             // A regular item
             if (info.hasOwnProperty('label')) {
                 await this._addGMenuItem(info);
-            // A section or submenu
+            // Our menus only have sections
             } else {
                 await this._addGMenuSection(info.links[0].value);
 
