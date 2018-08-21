@@ -140,7 +140,7 @@ var NativeMessagingHost = GObject.registerClass({
 
             if (device) {
                 if (message.data.action === 'share') {
-                    actionName = 'shareUrl';
+                    actionName = 'shareUri';
                 } else if (message.data.action === 'telephony') {
                     actionName = 'shareSms';
                 }
@@ -178,7 +178,7 @@ var NativeMessagingHost = GObject.registerClass({
         let devices = [];
 
         for (let device of this.devices) {
-            let share = device.actions.get_action_enabled('shareUrl');
+            let share = device.actions.get_action_enabled('shareUri');
             let telephony = device.actions.get_action_enabled('shareSms');
 
             if (device.Connected && device.Paired && (share || telephony)) {

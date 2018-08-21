@@ -107,7 +107,7 @@ var DeviceRow = GObject.registerClass({
     }
 
     get symbolic_icon() {
-        let name = this.device.symbolic_icon_name;
+        let name = `${this.device.icon_name}-symbolic`;
 
         if (!this.paired) {
             let rgba = new Gdk.RGBA({ red: 0.95, green: 0, blue: 0, alpha: 0.9 });
@@ -1212,13 +1212,12 @@ var Device = GObject.registerClass({
 
                 let row = new SectionRow({
                     icon_name: action.icon_name,
-                    title: action.summary,
-                    subtitle: action.description,
+                    title: action.label,
                     widget: widget
                 });
                 row._icon.pixel_size = 16;
                 row.action = action.name;
-                row.summary = action.summary;
+                row.summary = action.label;
                 this.shortcuts_actions_list.add(row);
             }
         }

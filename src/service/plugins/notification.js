@@ -16,8 +16,7 @@ var Metadata = {
     outgoingCapabilities: ['kdeconnect.notification', 'kdeconnect.notification.reply', 'kdeconnect.notification.request'],
     actions: {
         withdrawNotification: {
-            summary: _('Cancel Notification'),
-            description: _('Close a local notification remotely by Id'),
+            label: _('Cancel Notification'),
             icon_name: 'preferences-system-notifications-symbolic',
 
             parameter_type: new GLib.VariantType('s'),
@@ -25,8 +24,7 @@ var Metadata = {
             outgoing: ['kdeconnect.notification']
         },
         closeNotification: {
-            summary: _('Close Notification'),
-            description: _('Close a remote notification by Id'),
+            label: _('Close Notification'),
             icon_name: 'preferences-system-notifications-symbolic',
 
             parameter_type: new GLib.VariantType('s'),
@@ -34,8 +32,7 @@ var Metadata = {
             outgoing: ['kdeconnect.notification.request']
         },
         sendNotification: {
-            summary: _('Send Notification'),
-            description: _('Display a local notification remotely'),
+            label: _('Send Notification'),
             icon_name: 'preferences-system-notifications-symbolic',
 
             parameter_type: new GLib.VariantType('a{sv}'),
@@ -540,7 +537,7 @@ var Plugin = GObject.registerClass({
                     icon = new Gio.ThemedIcon({
                         names: [
                             packet.body.appName.toLowerCase().replace(' ', '-'),
-                            this.device.symbolic_icon_name
+                            `${this.device.icon_name}-symbolic`
                         ]
                     });
                 }

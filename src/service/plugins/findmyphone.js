@@ -15,8 +15,7 @@ var Metadata = {
     outgoingCapabilities: ['kdeconnect.findmyphone.request'],
     actions: {
         find: {
-            summary: _('Locate'),
-            description: _('Request the device announce its location'),
+            label: _('Locate'),
             icon_name: 'find-location-symbolic',
 
             parameter_type: null,

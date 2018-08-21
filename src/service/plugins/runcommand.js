@@ -14,8 +14,7 @@ var Metadata = {
     outgoingCapabilities: ['kdeconnect.runcommand', 'kdeconnect.runcommand.request'],
     actions: {
         executeCommand: {
-            summary: _('Run Command'),
-            description: _('Execute a remote command'),
+            label: _('Commands'),
             icon_name: 'system-run-symbolic',
 
             parameter_type: new GLib.VariantType('s'),
@@ -157,7 +156,7 @@ var Plugin = GObject.registerClass({
         item.set_icon(
             new Gio.ThemedIcon({ name: 'system-run-symbolic' })
         );
-        item.set_label(_('Run Command'));
+        item.set_label(_('Commands'));
         item.set_submenu(submenu);
 
         // If the submenu item is already present it will be replaced

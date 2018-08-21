@@ -588,7 +588,7 @@ var Indicator = class Indicator extends PanelMenu.Button {
     }
 
     get symbolic_icon() {
-        let icon_name = this.device.SymbolicIconName;
+        let icon_name = `${this.device.IconName}-symbolic`;
 
         if (!this.device.Paired) {
             let rgba = new Gdk.RGBA({ red: 0.95, green: 0, blue: 0, alpha: 0.9 });

@@ -74,7 +74,7 @@ Object.defineProperties(Gio.Menu.prototype, {
     'add_action': {
         value: function(action, index=-1) {
             let item = new Gio.MenuItem();
-            item.set_label(action.summary);
+            item.set_label(action.label);
             item.set_icon(new Gio.ThemedIcon({ name: action.icon_name }));
             item.set_attribute_value(
                 'hidden-when',

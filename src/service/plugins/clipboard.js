@@ -13,8 +13,7 @@ var Metadata = {
     outgoingCapabilities: ['kdeconnect.clipboard'],
     actions: {
         clipboardCopy: {
-            summary: _('Clipboard Copy'),
-            description: _('Copy from local clipboard to remote clipboard'),
+            label: _('Clipboard Copy'),
             icon_name: 'edit-copy-symbolic',
 
             parameter_type: null,
@@ -22,8 +21,7 @@ var Metadata = {
             outgoing: ['kdeconnect.clipboard']
         },
         clipboardPaste: {
-            summary: _('Clipboard Paste'),
-            description: _('Paste from remote clipboard to local clipboard'),
+            label: _('Clipboard Paste'),
             icon_name: 'edit-paste-symbolic',
 
             parameter_type: null,

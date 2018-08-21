@@ -626,7 +626,7 @@ var Daemon = GObject.registerClass({
                     parameter = new GLib.Variant('s', file.get_uri());
                 } else if (file.get_uri_scheme() === 'tel') {
                     title = _('Dial Number');
-                    action = 'shareUrl';
+                    action = 'shareUri';
                     parameter = new GLib.Variant('s', file.get_uri());
                 } else {
                     throw new Error('Unsupported file/URI type');

@@ -13,8 +13,7 @@ var Metadata = {
     outgoingCapabilities: ['kdeconnect.ping'],
     actions: {
         ping: {
-            summary: _('Ping'),
-            description: _('Ping a device with an optional message'),
+            label: _('Ping'),
             icon_name: 'dialog-information-symbolic',
 
             parameter_type: new GLib.VariantType('s'),
@@ -44,7 +43,7 @@ var Plugin = GObject.registerClass({
         let notif = {
             title: this.device.name,
             body: _('Ping'),
-            icon: new Gio.ThemedIcon({ name: this.device.type + '-symbolic' })
+            icon: new Gio.ThemedIcon({ name: `${this.device.icon_name}-symbolic` })
         };
 
         if (packet.body.message) {

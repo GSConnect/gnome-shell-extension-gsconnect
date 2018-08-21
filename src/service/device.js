@@ -26,12 +26,10 @@ var Action = GObject.registerClass({
             parameter_type: params.parameter_type
         });
 
-        this.summary = params.summary;
-        this.description = params.description;
+        this.label = params.label;
         this.icon_name = params.icon_name;
         this.incoming = params.incoming;
         this.outgoing = params.outgoing;
-        this.allow = params.allow;
     }
 });
 
@@ -444,8 +442,7 @@ var Device = GObject.registerClass({
         let activate = new Action({
             name: 'activate',
             parameter_type: null,
-            summary: _('Activate'),
-            description: _('Attempt reconnection'),
+            label: _('Reconnect'),
             icon_name: 'view-refresh-symbolic'
         });
         activate.connect('activate', this.activate.bind(this));
@@ -454,8 +451,7 @@ var Device = GObject.registerClass({
         let openSettings = new Action({
             name: 'openSettings',
             parameter_type: null,
-            summary: _('Open Settings'),
-            description: _('Open the settings window for the device'),
+            label: _('Open Settings'),
             icon_name: 'preferences-system-symbolic'
         });
         openSettings.connect('activate', this.openSettings.bind(this));
@@ -464,9 +460,8 @@ var Device = GObject.registerClass({
         let acceptPair = new Action({
             name: 'pair',
             parameter_type: null,
-            summary: _('Pair'),
-            description: _('Send or accept a pair request'),
-            icon_name: 'channel-insecure-symbolic'
+            label: _('Pair'),
+            icon_name: 'channel-secure-symbolic'
         });
         acceptPair.connect('activate', this.pair.bind(this));
         this.add_action(acceptPair);
@@ -474,8 +469,7 @@ var Device = GObject.registerClass({
         let rejectPair = new Action({
             name: 'unpair',
             parameter_type: null,
-            summary: _('Unpair'),
-            description: _('Unpair or reject a pair request'),
+            label: _('Unpair'),
             icon_name: 'channel-insecure-symbolic'
         });
         rejectPair.connect('activate', this.unpair.bind(this));
@@ -525,7 +519,7 @@ var Device = GObject.registerClass({
             id: GLib.DateTime.new_now_local().to_unix(),
             title: this.name,
             body: '',
-            icon: new Gio.ThemedIcon({ name: this.symbolic_icon_name }),
+            icon: new Gio.ThemedIcon({ name: `${this.icon_name}-symbolic` }),
             priority: Gio.NotificationPriority.NORMAL,
             action: null,
             buttons: []

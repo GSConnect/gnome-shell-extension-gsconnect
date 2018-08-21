@@ -26,8 +26,7 @@ var Metadata = {
     actions: {
         // Call Actions
         muteCall: {
-            summary: _('Mute Call'),
-            description: _('Silence an incoming call'),
+            label: _('Mute Call'),
             icon_name: 'audio-volume-muted-symbolic',
 
             parameter_type: null,
@@ -37,8 +36,7 @@ var Metadata = {
 
         // SMS Actions
         newSms: {
-            summary: _('New SMS'),
-            description: _('Start a new SMS conversation'),
+            label: _('Open SMS Window'),
             icon_name: 'sms-symbolic',
 
             parameter_type: null,
@@ -46,8 +44,7 @@ var Metadata = {
             outgoing: ['kdeconnect.sms.request']
         },
         replySms: {
-            summary: _('Reply SMS'),
-            description: _('Reply to an SMS message'),
+            label: _('Reply SMS'),
             icon_name: 'sms-symbolic',
 
             parameter_type: new GLib.VariantType('a{sv}'),
@@ -55,8 +52,7 @@ var Metadata = {
             outgoing: ['kdeconnect.sms.request']
         },
         sendSms: {
-            summary: _('Send SMS'),
-            description: _('Send an SMS message'),
+            label: _('Send SMS'),
             icon_name: 'sms-send',
 
             parameter_type: new GLib.VariantType('(ss)'),
@@ -64,8 +60,7 @@ var Metadata = {
             outgoing: ['kdeconnect.sms.request']
         },
         shareSms: {
-            summary: _('Share SMS'),
-            description: _('Share something by SMS message'),
+            label: _('Share SMS'),
             icon_name: 'sms-send',
 
             parameter_type: new GLib.VariantType('s'),

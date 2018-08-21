@@ -16,8 +16,7 @@ var Metadata = {
     outgoingCapabilities: ['kdeconnect.share.request'],
     actions: {
         shareDialog: {
-            summary: _('Share'),
-            description: _('Select a file or URL to share'),
+            label: _('Share'),
             icon_name: 'send-to-symbolic',
 
             parameter_type: null,
@@ -25,8 +24,7 @@ var Metadata = {
             outgoing: ['kdeconnect.share.request']
         },
         shareFile: {
-            summary: _('Share File'),
-            description: _('Directly share a file'),
+            label: _('Share File'),
             icon_name: 'document-send-symbolic',
 
             parameter_type: new GLib.VariantType('s'),
@@ -34,17 +32,15 @@ var Metadata = {
             outgoing: ['kdeconnect.share.request']
         },
         shareText: {
-            summary: _('Share Text'),
-            description: _('Directly share text'),
+            label: _('Share Text'),
             icon_name: 'send-to-symbolic',
 
             parameter_type: new GLib.VariantType('s'),
             incoming: [],
             outgoing: ['kdeconnect.share.request']
         },
-        shareUrl: {
-            summary: _('Share URL'),
-            description: _('Directly share a Url'),
+        shareUri: {
+            label: _('Share URL'),
             icon_name: 'send-to-symbolic',
 
             parameter_type: new GLib.VariantType('s'),
@@ -311,7 +307,7 @@ var Plugin = GObject.registerClass({
     }
 
     // TODO: check URL validity...
-    shareUrl(url) {
+    shareUri(url) {
         debug(url);
 
         // Re-direct file:// uri's
@@ -396,7 +392,7 @@ var FileChooserDialog = GObject.registerClass({
             });
         } else if (response_id === 1) {
             let parameter = new GLib.Variant('s', this._urlEntry.text);
-            this.device.activate_action('shareUrl', parameter);
+            this.device.activate_action('shareUri', parameter);
         }
 
         this.destroy();
