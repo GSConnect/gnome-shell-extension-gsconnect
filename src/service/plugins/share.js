@@ -40,7 +40,7 @@ var Metadata = {
             outgoing: ['kdeconnect.share.request']
         },
         shareUri: {
-            label: _('Share URL'),
+            label: _('Share Link'),
             icon_name: 'send-to-symbolic',
 
             parameter_type: new GLib.VariantType('s'),
@@ -64,13 +64,17 @@ var Plugin = GObject.registerClass({
 
     _init(device) {
         super._init(device, 'share');
+    }
 
+    connected() {
         if (this.device.connection_type === 'bluetooth') {
+            this.device._errors.set(
+                'share',
+                Error(_('Not supported for bluetooth connections'))
+            );
+            this.device.notify('errors');
             this.destroy();
-            throw Error(_('Not supported for bluetooth connections'));
         }
-
-        this.transfers = new Map();
     }
 
     /**
@@ -120,7 +124,6 @@ var Plugin = GObject.registerClass({
                     packet.body.filename,
                     this.device.name
                 ),
-                // FIXME: cancelTransfer
                 buttons: [{
                     label: _('Cancel'),
                     action: 'cancelTransfer',
@@ -178,13 +181,24 @@ var Plugin = GObject.registerClass({
         }
     }
 
-    _handleUrl(packet) {
-        Gio.AppInfo.launch_default_for_uri(packet.body.url, null);
+    _handleUri(packet) {
+        Gio.AppInfo.launch_default_for_uri_async(
+            packet.body.url,
+            null,
+            null,
+            (src, res) => {
+                try {
+                    Gio.AppInfo.launch_default_for_uri_finish(res);
+                } catch (e) {
+                    logError(e);
+                }
+            }
+        );
     }
 
-    // FIXME: copy to clipboard?
+    // TODO: Not implemented
     _handleText(packet) {
-        log(`receiving text: "${packet.body.text}"`);
+        log(`Not Implemented: receiving text "${packet.body.text}"`);
     }
 
     /**
@@ -198,7 +212,7 @@ var Plugin = GObject.registerClass({
         } else if (packet.body.hasOwnProperty('text')) {
             this._handleText(packet);
         } else if (packet.body.hasOwnProperty('url')) {
-            this._handleUrl(packet);
+            this._handleUri(packet);
         }
     }
 
@@ -209,10 +223,14 @@ var Plugin = GObject.registerClass({
         debug('opening FileChooserDialog');
 
         let dialog = new FileChooserDialog(this.device);
-        dialog.run();
+        dialog.show();
     }
 
-    // TODO: check file existence...
+    /**
+     * Share local file path or URI
+     *
+     * @param {string} path - Local file path or file URI
+     */
     async shareFile(path) {
         debug(path);
 
@@ -296,6 +314,11 @@ var Plugin = GObject.registerClass({
         }
     }
 
+    /**
+     * Share a string of text. Remote behaviour is undefined.
+     *
+     * @param {string} text - A string of unicode text
+     */
     shareText(text) {
         debug(text);
 
@@ -306,24 +329,34 @@ var Plugin = GObject.registerClass({
         });
     }
 
-    // TODO: check URL validity...
-    shareUri(url) {
-        debug(url);
+    /**
+     * Share a URI. Generally the remote device opens it with the scheme default
+     *
+     * @param {string} uri - Currently http(s) and tel: URIs are supported
+     */
+    shareUri(uri) {
+        debug(uri);
 
-        // Re-direct file:// uri's
-        if (url.startsWith('file://')) {
-            return this.sendFile(url);
-        // ...
-        } else if (!url.startsWith('http://') &&
-                   !url.startsWith('https://') &&
-                   !url.startsWith('tel:')) {
-            url = 'https://' + url;
+        switch (true) {
+            // Currently only pass http(s)/tel URIs
+            case uri.startsWith('http://'):
+            case uri.startsWith('https://'):
+            case uri.startsWith('tel:'):
+                break;
+
+            // Redirect local file URIs
+            case uri.startsWith('file://'):
+                return this.sendFile(uri);
+
+            // Assume HTTPS
+            default:
+                uri = `https://${uri}`;
         }
 
         this.device.sendPacket({
             id: 0,
             type: 'kdeconnect.share.request',
-            body: { url: url }
+            body: { url: uri }
         });
     }
 });
@@ -338,20 +371,18 @@ var FileChooserDialog = GObject.registerClass({
         super._init({
             // TRANSLATORS: eg. Send files to Google Pixel
             title: _('Send files to %s').format(device.name),
-            action: Gtk.FileChooserAction.OPEN,
-            select_multiple: true,
-            icon_name: 'document-send'
+            select_multiple: true
         });
         this.device = device;
 
-        this._urlEntry = new Gtk.Entry({
+        this._uriEntry = new Gtk.Entry({
             placeholder_text: 'https://',
             hexpand: true,
             visible: true
         });
-        this._urlEntry.connect('activate', this._sendLink.bind(this));
+        this._uriEntry.connect('activate', this._sendLink.bind(this));
 
-        this._urlButton = new Gtk.ToggleButton({
+        this._uriButton = new Gtk.ToggleButton({
             image: new Gtk.Image({
                 icon_name: 'web-browser-symbolic',
                 pixel_size: 16
@@ -360,24 +391,24 @@ var FileChooserDialog = GObject.registerClass({
             tooltip_text: _('Send a link to %s').format(device.name),
             visible: true
         });
-        this._urlButton.connect('toggled', this._onUrlButtonToggled.bind(this));
+        this._uriButton.connect('toggled', this._onUriButtonToggled.bind(this));
 
         this.add_button(_('Cancel'), Gtk.ResponseType.CANCEL);
         let sendButton = this.add_button(_('Send'), Gtk.ResponseType.OK);
         sendButton.connect('clicked', this._sendLink.bind(this));
 
-        this.get_header_bar().pack_end(this._urlButton);
+        this.get_header_bar().pack_end(this._uriButton);
         this.set_default_response(Gtk.ResponseType.OK);
         this.connect('delete-event', () => this.response(Gtk.ResponseType.CANCEL));
     }
 
-    _onUrlButtonToggled(button) {
+    _onUriButtonToggled(button) {
         let header = this.get_header_bar();
-        header.set_custom_title(button.active ? this._urlEntry : null);
+        header.set_custom_title(button.active ? this._uriEntry : null);
     }
 
     _sendLink(widget) {
-        if (this._urlButton.active && this._urlEntry.text.length) {
+        if (this._uriButton.active && this._uriEntry.text.length) {
             this.response(1);
         }
     }
@@ -385,22 +416,16 @@ var FileChooserDialog = GObject.registerClass({
     vfunc_response(response_id) {
         if (response_id === Gtk.ResponseType.OK) {
             let action = this.device.lookup_action('shareFile');
-            let uris = this.get_uris();
-            uris.map(uri => {
+            this.get_uris().map(uri => {
                 let parameter = new GLib.Variant('s', uri.toString());
                 this.device.activate_action('shareFile', parameter);
             });
         } else if (response_id === 1) {
-            let parameter = new GLib.Variant('s', this._urlEntry.text);
+            let parameter = new GLib.Variant('s', this._uriEntry.text);
             this.device.activate_action('shareUri', parameter);
         }
 
         this.destroy();
-    }
-
-    // A non-blocking version of run()
-    run() {
-        this.show();
     }
 });
 
