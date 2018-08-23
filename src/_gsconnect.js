@@ -118,7 +118,7 @@ gsconnect.get_resource = function(path) {
 /**
  * DBus Interface Introspection
  */
-gsconnect.dbusinfo = new Gio.DBusNodeInfo.new_for_xml(
+gsconnect.dbusinfo = Gio.DBusNodeInfo.new_for_xml(
     gsconnect.get_resource(`${gsconnect.app_id}.xml`)
 );
 gsconnect.dbusinfo.nodes.forEach(info => info.cache_build());

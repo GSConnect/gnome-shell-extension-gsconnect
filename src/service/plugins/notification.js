@@ -118,9 +118,7 @@ var Plugin = GObject.registerClass({
         // A request to close a local notification
         //
         // TODO: kdeconnect-android doesn't send these, and will instead send a
-        // kdeconnect.notification packet with isCancel and an id of "0". Other
-        // clients might only support uint32 ids anyways since kdeconnect-kde
-        // only explicitly supports libnotify.
+        // kdeconnect.notification packet with isCancel and an id of "0".
         //
         // For clients that do support it, we report notification ids in the
         // form "type|application-id|notification-id" so we can close it with
@@ -185,29 +183,40 @@ var Plugin = GObject.registerClass({
      * Sending Notifications
      */
     async _uploadIcon(packet, icon) {
-        switch (true) {
-            // TODO: skipping icons for bluetooth connections currently
-            case (this.device.connection_type === 'bluetooth'):
-                this.device.sendPacket(packet);
-                break;
-            case (typeof icon === 'string'):
-                this._uploadNamedIcon(packet, icon);
-                break;
-            case (icon instanceof Gio.BytesIcon):
-                this._uploadBytesIcon(packet, icon.get_bytes());
-                break;
-            case (icon instanceof Gio.FileIcon):
-                this._uploadFileIcon(packet, icon.get_file());
-                break;
-            case (icon instanceof Gio.ThemedIcon):
-                if (icon.hasOwnProperty('name')) {
-                    this._uploadNamedIcon(packet, icon.name);
-                } else {
-                    this._uploadNamedIcon(packet, icon.names[0]);
-                }
-                break;
-            default:
-                this.device.sendPacket(packet);
+        try {
+            // TODO: Currently we skip icons for bluetooth connections
+            if (this.device.connection_type === 'bluetooth') {
+                return this.device.sendPacket(packet);
+            }
+
+            // Normalize icon-name strings into GIcons
+            if (typeof icon === 'string') {
+                icon = new Gio.ThemedIcon({ name: icon });
+            }
+
+            switch (true) {
+                // GBytesIcon
+                case (icon instanceof Gio.BytesIcon):
+                    let bytes = icon.get_bytes();
+                    return this._uploadBytesIcon(packet, bytes);
+                    break;
+
+                // GFileIcon
+                case (icon instanceof Gio.FileIcon):
+                    let file = icon.get_file();
+                    return this._uploadFileIcon(packet, file);
+                    break;
+
+                // GThemedIcon
+                case (icon instanceof Gio.ThemedIcon):
+                    return this._uploadThemedIcon(packet, icon);
+                    break;
+
+                default:
+                    return this.device.sendPacket(packet);
+            }
+        } catch (e) {
+            logError(e);
         }
     }
 
@@ -218,7 +227,7 @@ var Plugin = GObject.registerClass({
      * @param {GLib.Bytes} bytes - The themed icon name
      */
     _uploadBytesIcon(packet, bytes) {
-        this._uploadIconStream(
+        return this._uploadIconStream(
             packet,
             Gio.MemoryInputStream.new_from_bytes(bytes),
             bytes.get_size(),
@@ -230,38 +239,13 @@ var Plugin = GObject.registerClass({
     }
 
     /**
-     * A function for uploading named icons. kdeconnect-android can't handle SVG
-     * icons, so if another is not found the notification will be sent without.
-     *
-     * @param {Core.Packet} packet - The packet for the notification
-     * @param {string} icon_name - The themed icon name
-     */
-    _uploadNamedIcon(packet, icon_name) {
-        let theme = Gtk.IconTheme.get_default();
-        let info = theme.lookup_icon(
-            icon_name,
-            Math.max.apply(null, theme.get_icon_sizes(icon_name)),
-            Gtk.IconLookupFlags.NO_SVG
-        );
-
-        if (info) {
-            this._uploadFileIcon(
-                packet,
-                Gio.File.new_for_path(info.get_filename())
-            );
-        } else {
-            this.device.sendPacket(packet);
-        }
-    }
-
-    /**
      * A function for uploading icons as Gio.File objects
      *
      * @param {Core.Packet} packet - The packet for the notification
      * @param {Gio.File} file - A Gio.File object for the icon
      */
     _uploadFileIcon(packet, file) {
-        this._uploadIconStream(
+        return this._uploadIconStream(
             packet,
             file.read(null),
             file.query_info('standard::size', 0, null).get_size(),
@@ -273,6 +257,36 @@ var Plugin = GObject.registerClass({
     }
 
     /**
+     * A function for uploading GThemedIcons
+     *
+     * @param {Core.Packet} packet - The packet for the notification
+     * @param {Gio.ThemedIcon} file - The GIcon to upload
+     */
+    _uploadThemedIcon(packet, icon) {
+        let theme = Gtk.IconTheme.get_default();
+
+        for (let name of icon.get_names()) {
+            // kdeconnect-android doesn't support SVGs so find the largest other
+            let info = theme.lookup_icon(
+                name,
+                Math.max.apply(null, theme.get_icon_sizes(name)),
+                Gtk.IconLookupFlags.NO_SVG
+            );
+
+            // Send the first icon we find from the options
+            if (info) {
+                return this._uploadFileIcon(
+                    packet,
+                    Gio.File.new_for_path(info.get_filename())
+                );
+            }
+        }
+
+        // Fallback to icon-less notification
+        return this.device.sendPacket(packet);
+    }
+
+    /**
      * All icon types end up being uploaded in this function.
      *
      * @param {Core.Packet} packet - The packet for the notification
@@ -281,22 +295,24 @@ var Plugin = GObject.registerClass({
      * @param {string} checksum - MD5 hash of the icon data
      */
     async _uploadIconStream(packet, stream, size, checksum) {
-        if (this.device.connection_type === 'tcp') {
-            let transfer = new Lan.Transfer({
-                device: this.device,
-                size: size,
-                input_stream: stream,
-                checksum: checksum
-            });
+        try {
+            // TODO: device negotiated transfers
+            if (this.device.connection_type === 'tcp') {
+                let transfer = new Lan.Transfer({
+                    device: this.device,
+                    size: size,
+                    input_stream: stream,
+                    checksum: checksum
+                });
 
-            let success = await transfer.upload(packet);
+                let success = await transfer.upload(packet);
 
-            if (!success) {
-                this.device.sendPacket(packet);
+                if (!success) {
+                    this.device.sendPacket(packet);
+                }
             }
-
-        // TODO: skipping icons for bluetooth connections currently
-        } else if (this.device.connection_type === 'bluetooth') {
+        } catch (e) {
+            logError(e);
             this.device.sendPacket(packet);
         }
     }
@@ -306,56 +322,47 @@ var Plugin = GObject.registerClass({
      * See Notification.Listener._sendNotification()
      */
     async sendNotification(notif) {
-        debug(`(${notif.appName}) ${notif.title}: ${notif.text}`);
+        try {
+            debug(`(${notif.appName}) ${notif.title}: ${notif.text}`);
 
-        let applications = JSON.parse(this.settings.get_string('applications'));
+            // TODO: revisit application notification settings
+            let applications = JSON.parse(this.settings.get_string('applications'));
 
-        // New application
-        if (!applications.hasOwnProperty(notif.appName)) {
-            debug(`new application: ${notif.appName}`);
+            // An unknown application
+            if (!applications.hasOwnProperty(notif.appName)) {
+                applications[notif.appName] = {
+                    iconName: 'system-run-symbolic',
+                    enabled: true
+                };
 
-            applications[notif.appName] = {
-                iconName: (typeof notif.icon === 'string') ? notif.icon : 'system-run-symbolic',
-                enabled: true
-            };
-
-            this.settings.set_string(
-                'applications',
-                JSON.stringify(applications)
-            );
-        }
-
-        if (applications[notif.appName].enabled) {
-            let icon = null;
-
-            // Named/Themed Icon
-            if (typeof notif.icon === 'string') {
-                icon = notif.icon;
-                delete notif.icon;
-
-            // Probably a GIcon
-            } else if (typeof notif.icon === 'object') {
-                debug(notif.icon);
-
-                if (notif.icon[0] === 'themed') {
-                    icon = Gio.Icon.deserialize(
-                        new GLib.Variant('(sv)', [
-                            notif.icon[0],
-                            new GLib.Variant('as', notif.icon[1])
-                        ])
-                    );
+                // Only catch icons for strings and GThemedIcon
+                if (typeof notif.icon === 'string') {
+                    applications[notif.appName].iconName = notif.icon;
+                } else if (notif.icon instanceof Gio.ThemedIcon) {
+                    applications[notif.appName].iconName = notif.icon.get_names()[0];
                 }
 
-                delete notif.icon;
+                this.settings.set_string(
+                    'applications',
+                    JSON.stringify(applications)
+                );
             }
 
-            let packet = {
-                id: 0,
-                type: 'kdeconnect.notification',
-                body: notif
-            };
+            // An enabled application
+            if (applications[notif.appName].enabled) {
+                let icon = notif.icon || null;
+                delete notif.icon;
 
-            await this._uploadIcon(packet, icon);
+                let packet = {
+                    id: 0,
+                    type: 'kdeconnect.notification',
+                    body: notif
+                };
+
+                await this._uploadIcon(packet, icon);
+            }
+        } catch (e) {
+            logError(e);
         }
     }
 
@@ -383,7 +390,7 @@ var Plugin = GObject.registerClass({
 
                 success = await transfer.download(packet.payloadTransferInfo.port);
 
-            // We ignore bluetooth icon downloads for now
+            // TODO: Currently we skip icons for bluetooth connections
             } else if (packet.payloadTransferInfo.hasOwnProperty('uuid')) {
                 return null;
             }

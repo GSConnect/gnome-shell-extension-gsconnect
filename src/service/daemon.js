@@ -40,8 +40,9 @@ const Bluetooth = imports.service.bluetooth;
 const Core = imports.service.core;
 const Device = imports.service.device;
 const Lan = imports.service.lan;
-const Notification = imports.modules.notification;
 const Sound = imports.modules.sound;
+
+const Notification = imports.service.components.notification;
 
 const ServiceUI = imports.service.ui.service;
 const Settings = imports.service.ui.settings;
@@ -586,7 +587,11 @@ var Daemon = GObject.registerClass({
         this._initActions();
 
         // Notification Listener
-        this.notificationListener = new Notification.Listener();
+        try {
+            this.notificationListener = new Notification.Listener();
+        } catch (e) {
+            logError(e, 'Notification.Listener');
+        }
     }
 
     vfunc_dbus_register(connection, object_path) {

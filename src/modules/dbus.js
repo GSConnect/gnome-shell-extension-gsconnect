@@ -59,20 +59,33 @@ function full_unpack(obj) {
         case (obj === null):
             return obj;
 
-        case (typeof obj.deep_unpack === 'function'):
+        case (obj instanceof GLib.Variant):
             return full_unpack(obj.deep_unpack());
+
+        case (obj instanceof imports.byteArray.ByteArray):
+            return obj;
 
         case (typeof obj.map === 'function'):
             return obj.map(e => full_unpack(e));
 
-        case (typeof obj === 'object' && typeof obj !== null):
+        case (typeof obj === 'object'):
             let unpacked = {};
 
-            for (let key in obj) {
-                unpacked[key] = full_unpack(obj[key]);
+            for (let [key, value] of Object.entries(obj)) {
+                // Try to detect and deserialize GIcons
+                try {
+                    if (key === 'icon' && value.get_type_string() === '(sv)') {
+                        unpacked[key] = Gio.Icon.deserialize(value);
+                    } else {
+                        unpacked[key] = full_unpack(value);
+                    }
+                } catch (e) {
+                    unpacked[key] = full_unpack(value);
+                }
             }
 
             return unpacked;
+
         default:
             return obj;
     }
