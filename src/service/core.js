@@ -453,6 +453,11 @@ var Channel = GObject.registerClass({
 
     /**
      * Receive a packet from the channel and call receivePacket() on the device
+     *
+     * @param {Device.Device} device - The device which will handle the packet
+     *
+     * TODO: there is a bug sometimes with new outgoing connections to unpaired
+     *       devices where %null is returned
      */
     receive(device) {
         try {
@@ -576,8 +581,8 @@ var Transfer = GObject.registerClass({
     }
 
     close() {
-        super.close();
         this.device._transfers.delete(this.uuid);
+        super.close();
     }
 
     /**

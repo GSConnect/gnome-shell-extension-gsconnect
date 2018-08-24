@@ -14,7 +14,6 @@ const PanelMenu = imports.ui.panelMenu;
 const PopupMenu = imports.ui.popupMenu;
 
 const _ = gsconnect._;
-const Color = imports.modules.color;
 const GMenu = imports.shell.gmenu;
 const Tooltip = imports.shell.tooltip;
 
@@ -178,6 +177,7 @@ var Icon = GObject.registerClass({
             );
         }
 
+        // Watch for interface changes
         this._interfaceAddedId = this.object.connect(
             'interface-added',
             this._onInterfaceAdded.bind(this)
@@ -207,7 +207,7 @@ var Icon = GObject.registerClass({
     _onInterfaceAdded(object, iface) {
         if (iface.g_interface_name === BATTERY_INTERFACE) {
             this.battery = iface;
-            this._batteryId = this.battery.connect(
+            iface._batteryId = iface.connect(
                 'g-properties-changed',
                 () => this.queue_repaint()
             );
@@ -216,10 +216,8 @@ var Icon = GObject.registerClass({
 
     _onInterfaceRemoved(object, iface) {
         if (iface.g_interface_name === BATTERY_INTERFACE) {
-            this.battery = iface;
-            this.battery.disconnect(this._batteryId);
-            delete this._batteryId;
-            delete this.battery;
+            iface.disconnect(iface._batteryId);
+            this.battery = null;
         }
     }
 
@@ -235,11 +233,28 @@ var Icon = GObject.registerClass({
     }
 
     get battery_color() {
-        return Color.hsv2rgb(
-            this.battery.Level / 100 * 120,
-            100,
-            100 - (this.battery.Level / 100 * 15)
-        );
+        let h = (this.battery.Level / 100 * 120) / 360;
+        let s = 1;
+        let v = (100 - (this.battery.Level / 100 * 15)) / 100;
+
+        let i = Math.floor(h * 6);
+        let f = h * 6 - i;
+        let p = v * (1 - s);
+        let q = v * (1 - f * s);
+        let t = v * (1 - (1 - f) * s);
+
+        let r, g, b;
+
+        switch (i % 6) {
+            case 0: r = v, g = t, b = p; break;
+            case 1: r = q, g = v, b = p; break;
+            case 2: r = p, g = v, b = t; break;
+            case 3: r = p, g = q, b = v; break;
+            case 4: r = t, g = p, b = v; break;
+            case 5: r = v, g = p, b = q; break;
+        }
+
+        return [r, g, b];
     }
 
     get battery_label() {

@@ -28,6 +28,7 @@ var Action = GObject.registerClass({
 
         this.label = params.label;
         this.icon_name = params.icon_name;
+        this.icon = new Gio.ThemedIcon({ name: params.icon_name });
         this.incoming = params.incoming;
         this.outgoing = params.outgoing;
     }
@@ -138,7 +139,7 @@ var Device = GObject.registerClass({
             path: `/org/gnome/shell/extensions/gsconnect/device/${deviceId}/`
         });
 
-        // TODO: Backwards compatibility; remove after a few releases
+        // TODO: Backwards compatibility <= v12; remove after a few releases
         if (this.settings.get_string('certificate-pem') !== '') {
             this.settings.set_boolean('paired', true);
         }
@@ -173,6 +174,7 @@ var Device = GObject.registerClass({
             this.menu
         );
 
+        // Register default actions and load plugins
         this._registerActions();
         this._loadPlugins();
     }
@@ -502,18 +504,30 @@ var Device = GObject.registerClass({
     }
 
     openPath(action, parameter) {
-        let path = parameter.get_string()[0];
+        let path = parameter.unpack();
         path = path.startsWith('file://') ? path : `file://${path}`;
-        Gio.AppInfo.launch_default_for_uri(path, null);
+
+        Gio.AppInfo.launch_default_for_uri_async(path, null, null, (src, res) => {
+            try {
+                Gio.AppInfo.launch_default_for_uri_finish(res);
+            } catch (e) {
+                logError(e);
+            }
+        });
     }
 
     /**
-     * Device notifications
+     * Hide a notification, device analog for GApplication.withdraw_notification()
+     *
+     * @param {string} id - Id for the notification to withdraw
      */
     hideNotification(id) {
         this.service.withdraw_notification(`${this.id}|${id}`);
     }
 
+    /**
+     * Show a notification, device analog for GApplication.send_notification()
+     */
     showNotification(params) {
         params = Object.assign({
             id: GLib.DateTime.new_now_local().to_unix(),

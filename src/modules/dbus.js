@@ -112,52 +112,52 @@ function vtype_to_gtype(types) {
         vtype_to_gtype._cache = {};
     }
 
-    if (vtype_to_gtype._cache.hasOwnProperty(types)) {
-        return vtype_to_gtype._cache[types];
-    }
+    if (!vtype_to_gtype._cache.hasOwnProperty(types)) {
+        let gtypes = []
 
-    vtype_to_gtype._cache[types] = [];
+        for (let i = 0; i < types.length; i++) {
+            switch (types[i]) {
+                case 'b':
+                    gtypes.push(GObject.TYPE_BOOLEAN);
+                    break;
 
-    for (let i = 0; i < types.length; i++) {
-        switch (types[i]) {
-            case 'b':
-                vtype_to_gtype._cache[types].push(GObject.TYPE_BOOLEAN);
-                break;
+                case 's':
+                case 'o':
+                case 'g':
+                    gtypes.push(GObject.TYPE_STRING);
+                    break;
 
-            case 's':
-            case 'o':
-            case 'g':
-                vtype_to_gtype._cache[types].push(GObject.TYPE_STRING);
-                break;
+                case 'h' || 'i':
+                    gtypes.push(GObject.TYPE_INT);
+                    break;
 
-            case 'h' || 'i':
-                vtype_to_gtype._cache[types].push(GObject.TYPE_INT);
-                break;
+                case 'u':
+                    gtypes.push(GObject.TYPE_UINT);
+                    break;
 
-            case 'u':
-                vtype_to_gtype._cache[types].push(GObject.TYPE_UINT);
-                break;
+                case 'x':
+                    gtypes.push(GObject.TYPE_INT64);
+                    break;
 
-            case 'x':
-                vtype_to_gtype._cache[types].push(GObject.TYPE_INT64);
-                break;
+                case 't':
+                    gtypes.push(GObject.TYPE_UINT64);
+                    break;
 
-            case 't':
-                vtype_to_gtype._cache[types].push(GObject.TYPE_UINT64);
-                break;
+                case 'd':
+                    gtypes.push(GObject.TYPE_DOUBLE);
+                    break;
 
-            case 'd':
-                vtype_to_gtype._cache[types].push(GObject.TYPE_DOUBLE);
-                break;
+                case 'y':
+                    gtypes.push(GObject.TYPE_UCHAR);
+                    break;
 
-            case 'y':
-                vtype_to_gtype._cache[types].push(GObject.TYPE_UCHAR);
-                break;
-
-            // FIXME: assume it's a variant
-            default:
-                vtype_to_gtype._cache[types].push(GObject.TYPE_VARIANT);
+                // FIXME: assume it's a variant
+                default:
+                    gtypes.push(GObject.TYPE_VARIANT);
+            }
         }
+
+        vtype_to_gtype._cache[types] = gtypes;
     }
 
     return vtype_to_gtype._cache[types];
@@ -166,9 +166,7 @@ function vtype_to_gtype(types) {
 
 /**
  * DBus.Interface represents a DBus interface bound to an object instance, meant
- * to be exported over DBus. It will automatically bind to all methods, signals
- * and properties (include notify::) defined in the interface and transforms
- * all members to TitleCase.
+ * to be exported over DBus.
  */
 var Interface = GObject.registerClass({
     GTypeName: 'GSConnectDBusInterface'

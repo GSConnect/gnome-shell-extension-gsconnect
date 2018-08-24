@@ -34,7 +34,9 @@
     </key>
     <!-- TODO: WIP -->
     <key name="donotdisturb" type="i">
-        <default>0</default>
+      <default>0</default>
+      <summary>Do Not Disturb</summary>
+      <description>Unix time (ms since epoch) to silence until</description>
     </key>
     <key name="debug" type="b">
       <default>false</default>

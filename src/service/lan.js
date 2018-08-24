@@ -302,16 +302,15 @@ var ChannelService = GObject.registerClass({
      * @param {string} [address] - An optional target IPv4 or IPv6 address
      */
     broadcast(address=null) {
-        debug('broadcasting...');
-
         try {
             // Remember manual addresses so we know to accept connections
             if (address instanceof Gio.InetSocketAddress) {
+                debug(`Identify to ${address.address.to_string()}`);
                 this.allowed.add(address.address.to_string());
             } else {
+                debug('Identify to network');
                 address = this._udp_address;
             }
-
             this._udp.send_to(address, `${this.service.identity}`, null);
         } catch (e) {
             logError(e);

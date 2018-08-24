@@ -48,8 +48,6 @@ var Plugin = GObject.registerClass({
                 'player-changed',
                 this._onPlayerChanged.bind(this)
             );
-
-            this._sendPlayerList();
         } catch (e) {
             this.destroy();
             throw Error('MPRIS: ' + e.message);

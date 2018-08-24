@@ -293,6 +293,9 @@ var ConversationMessage = GObject.registerClass({
 });
 
 
+/**
+ * A ListBoxRow for a preview of a conversation
+ */
 var ConversationSummary = GObject.registerClass({
     GTypeName: 'GSConnectConversationSummary'
 }, class ConversationSummary extends Gtk.ListBoxRow {
