@@ -253,8 +253,6 @@ var Window = GObject.registerClass({
 
         super._init(params);
 
-        this.settings = new Gio.SimpleActionGroup();
-        this.insert_action_group('settings', this.settings);
 
         // Service HeaderBar
         gsconnect.settings.bind(
@@ -369,10 +367,10 @@ var Window = GObject.registerClass({
      * UI Setup and template connecting
      */
     _serviceSettings() {
-        this.settings.add_action(gsconnect.settings.create_action('show-offline'));
-        this.settings.add_action(gsconnect.settings.create_action('show-unpaired'));
-        this.settings.add_action(gsconnect.settings.create_action('show-battery'));
-        this.settings.add_action(gsconnect.settings.create_action('debug'));
+        this.add_action(gsconnect.settings.create_action('show-offline'));
+        this.add_action(gsconnect.settings.create_action('show-unpaired'));
+        this.add_action(gsconnect.settings.create_action('show-battery'));
+        this.add_action(gsconnect.settings.create_action('debug'));
 
         this.shell_list.set_header_func(section_separators);
         this.network_list.set_header_func(section_separators);
@@ -718,6 +716,15 @@ var Device = GObject.registerClass({
             let settings = this._getSettings(name);
 
             switch (name) {
+                case 'battery':
+                    if (!this.device.get_outgoing_supported('battery.request')) {
+                        row.destroy();
+                        break;
+                    }
+
+                    settings.bind('send-statistics', label, 'active', 0);
+                    break;
+
                 case 'clipboard':
                     let send = settings.get_boolean('send-content');
                     let receive = settings.get_boolean('receive-content');
@@ -739,8 +746,7 @@ var Device = GObject.registerClass({
                         break;
                     }
 
-                    let control = settings.get_boolean('share-control');
-                    label.label = (control) ? _('On') : _('Off');
+                    settings.bind('share-control', label, 'active', 0);
                     break;
 
                 case 'mpris':
@@ -749,8 +755,7 @@ var Device = GObject.registerClass({
                         break;
                     }
 
-                    let players = settings.get_boolean('share-players');
-                    label.label = (players) ? _('On') : _('Off');
+                    settings.bind('share-players', label, 'active', 0);
                     break;
             }
         });
@@ -795,18 +800,6 @@ var Device = GObject.registerClass({
 
                 settings.set_boolean('send-content', send);
                 settings.set_boolean('receive-content', receive);
-                break;
-
-            case 'mousepad':
-                let control = !settings.get_boolean('share-control');
-                label.label = (control) ? _('On') : _('Off');
-                settings.set_boolean('share-control', control);
-                break;
-
-            case 'mpris':
-                let players = !settings.get_boolean('share-players');
-                label.label = (players) ? _('On') : _('Off');
-                settings.set_boolean('share-players', players);
                 break;
         }
     }
@@ -1021,29 +1014,34 @@ var Device = GObject.registerClass({
     }
 
     async _populateApplications(settings) {
-        let applications = await this._queryApplications(settings);
+        try {
+            let applications = await this._queryApplications(settings);
 
-        for (let name in applications) {
-            let row = new SectionRow({
-                icon_name: applications[name].iconName,
-                title: name,
-                height_request: 48,
-                widget: new Gtk.Label({
-                    label: applications[name].enabled ? _('On') : _('Off'),
-                    margin_end: 12,
-                    halign: Gtk.Align.END,
-                    hexpand: true,
-                    valign: Gtk.Align.CENTER,
-                    vexpand: true,
-                    visible: true
-                })
-            });
+            for (let name in applications) {
+                let row = new SectionRow({
+                    icon: Gio.Icon.new_for_string(applications[name].iconName),
+                    title: name,
+                    height_request: 48,
+                    widget: new Gtk.Label({
+                        label: applications[name].enabled ? _('On') : _('Off'),
+                        margin_end: 12,
+                        halign: Gtk.Align.END,
+                        hexpand: true,
+                        valign: Gtk.Align.CENTER,
+                        vexpand: true,
+                        visible: true
+                    })
+                });
 
-            this.notification_apps.add(row);
+                this.notification_apps.add(row);
+            }
+        } catch (e) {
+            // TODO: reset settings on failure?
+            logError(e);
         }
     }
 
-    // TODO: move to notifications.js
+    // TODO: move to components/notification.js
     async _queryApplications(settings) {
         let applications = {};
 
@@ -1069,27 +1067,29 @@ var Device = GObject.registerClass({
             }
         }
 
-        // Include applications that statically declare to show notifications
+        // Scan applications that statically declare to show notifications
         // TODO: if g-s-d does this already, maybe we don't have to
-        Gio.AppInfo.get_all().map(appInfo => {
+        for (let appInfo of Gio.AppInfo.get_all()) {
             if (appInfo.get_id() !== ignoreId &&
                 appInfo.get_boolean('X-GNOME-UsesNotifications')) {
                 appInfos.push(appInfo);
             }
-        });
+        }
 
         // Update GSettings
-        appInfos.map(appInfo => {
+        for (let appInfo of appInfos) {
             let appName = appInfo.get_name();
-            let icon = appInfo.get_icon();
 
             if (appName && !applications[appName]) {
+                let icon = appInfo.get_icon();
+                icon = (icon) ? icon.to_string() : 'application-x-executable';
+
                 applications[appName] = {
-                    iconName: (icon) ? icon.to_string() : 'application-x-executable',
+                    iconName: icon,
                     enabled: true
                 };
             }
-        });
+        }
 
         settings.set_string('applications', JSON.stringify(applications));
 
@@ -1211,10 +1211,11 @@ var Device = GObject.registerClass({
                 }
 
                 let row = new SectionRow({
-                    icon_name: action.icon_name,
+                    icon: action.icon,
                     title: action.label,
                     widget: widget
                 });
+                row.height_request = 48;
                 row._icon.pixel_size = 16;
                 row.action = action.name;
                 row.summary = action.label;
