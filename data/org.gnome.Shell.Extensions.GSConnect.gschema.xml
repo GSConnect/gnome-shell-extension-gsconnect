@@ -61,7 +61,7 @@
     <key name="id" type="s">
       <default>""</default>
     </key>
-    <key name="keybindings" type="a{sv}">
+    <key name="keybindings" type="a{ss}">
       <default>{}</default>
     </key>
     <key name="menu" type="as">

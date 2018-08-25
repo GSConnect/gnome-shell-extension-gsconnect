@@ -8,7 +8,7 @@ const DBus = imports.modules.dbus;
 
 
 /**
- * Default
+ * Singleton
  */
 var _default;
 
@@ -72,6 +72,7 @@ var Manager = GObject.registerClass({
     _init() {
         super._init();
 
+        // Asynchronous setup
         this._setup();
     }
 

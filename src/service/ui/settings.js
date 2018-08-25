@@ -253,7 +253,6 @@ var Window = GObject.registerClass({
 
         super._init(params);
 
-
         // Service HeaderBar
         gsconnect.settings.bind(
             'public-name',
@@ -1182,13 +1181,13 @@ var Device = GObject.registerClass({
     async _populateActionKeybindings() {
         this.shortcuts_actions_list.foreach(row => row.destroy());
 
-        let keybindings = this.device.settings.get_value('keybindings').full_unpack();
+        let keybindings = this.device.settings.get_value('keybindings').deep_unpack();
 
         // TODO: Backwards compatibility; remove later
         if (typeof keybindings === 'string') {
             this.device.settings.set_value(
                 'keybindings',
-                new GLib.Variant('a{sv}', {})
+                new GLib.Variant('a{ss}', {})
             );
             // A ::changed signal should be emitted so we'll return
             return;
@@ -1227,7 +1226,7 @@ var Device = GObject.registerClass({
     }
 
     async _onResetActionsShortcuts(button) {
-        let keybindings = this.device.settings.get_value('keybindings').full_unpack();
+        let keybindings = this.device.settings.get_value('keybindings').deep_unpack();
 
         for (let action in keybindings) {
             if (!action.includes('::')) {
@@ -1237,7 +1236,7 @@ var Device = GObject.registerClass({
 
         this.device.settings.set_value(
             'keybindings',
-            GLib.Variant.full_pack(keybindings)
+            new GLib.Variant('a{ss}', keybindings)
         );
     }
 
@@ -1252,7 +1251,7 @@ var Device = GObject.registerClass({
 
         this.device.settings.set_value(
             'keybindings',
-            GLib.Variant.full_pack(keybindings)
+            new GLib.Variant('a{ss}', keybindings)
         );
     }
 
@@ -1321,7 +1320,7 @@ var Device = GObject.registerClass({
 
             this.device.settings.set_value(
                 'keybindings',
-                GLib.Variant.full_pack(keybindings)
+                new GLib.Variant('a{ss}', keybindings)
             );
         } catch (e) {
             logError(e);

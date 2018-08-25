@@ -17,7 +17,6 @@ imports._gsconnect;
 
 // Local Imports
 const _ = gsconnect._;
-const DBus = imports.modules.dbus;
 const Device = imports.shell.device;
 const DoNotDisturb = imports.shell.donotdisturb;
 const Keybindings = imports.shell.keybindings;
@@ -209,11 +208,32 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         }
     }
 
+    _proxyGetter(name) {
+        let value = null;
+
+        try {
+            value = this.get_cached_property(name);
+            value = value.deep_unpack();
+        } catch (e) {
+            logError(e);
+            value = null;
+        } finally {
+            return value;
+        }
+    }
+
     async _onInterfaceAdded(manager, object, iface) {
         try {
-            // We only setup properties for GSConnect interfaces
+            // Setup properties
             let info = gsconnect.dbusinfo.lookup_interface(iface.g_interface_name);
-            DBus.proxyProperties(iface, info);
+
+            for (let property of info.properties) {
+                Object.defineProperty(iface, property.name, {
+                    get: this._proxyGetter.bind(iface, property.name),
+                    enumerable: true,
+                    configurable: false
+                });
+            }
 
             // It's a device
             if (iface.g_interface_name === 'org.gnome.Shell.Extensions.GSConnect.Device') {
@@ -315,15 +335,13 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
             iface._keybindings = [];
 
             // Get the keybindings
-            let keybindings = DBus.full_unpack(
-                iface.settings.get_value('keybindings')
-            );
+            let keybindings = iface.settings.get_value('keybindings').deep_unpack();
 
             // TODO: Backwards compatible check for keybindings <= v12
             if (typeof keybindings === 'string') {
                 iface.settings.set_value(
                     'keybindings',
-                    new GLib.Variant('a{sv}', {})
+                    new GLib.Variant('a{ss}', {})
                 );
                 return;
             }

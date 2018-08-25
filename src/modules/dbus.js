@@ -530,7 +530,7 @@ Gio.DBusProxy.prototype.init_promise = function(cancellable=null) {
  * @return {Gio.DBusProxyClass} - The constructor object for the subclass
  */
 function makeInterfaceProxy(info) {
-    // Cache built proxies to avoid unnecessary work and GType collisions
+    // Cache built proxies (also avoids GType collisions)
     if (makeInterfaceProxy._cache === undefined) {
         makeInterfaceProxy._cache = {};
     }
@@ -669,5 +669,5 @@ function makeInterfaceProxy(info) {
     });
 
     return makeInterfaceProxy._cache[info.name];
-};
+}
 
