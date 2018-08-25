@@ -2,6 +2,7 @@
 
 const Tweener = imports.tweener.tweener;
 
+const Gio = imports.gi.Gio;
 const GIRepository = imports.gi.GIRepository;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
@@ -76,17 +77,18 @@ function loopThemeSound(name, cancellable) {
             }
         );
     } else if (gsconnect.hasCommand('canberra-gtk-play')) {
-        // FIXME: use Gio.Subprocess
-        let [ok, pid] = GLib.spawn_async(
-            null,
-            ['canberra-gtk-play', '-i', name],
-            null,
-            GLib.SpawnFlags.SEARCH_PATH | GLib.SpawnFlags.DO_NOT_REAP_CHILD,
-            null
-        );
-        GLib.child_watch_add(GLib.PRIORITY_DEFAULT, pid, () => {
-            if (!cancellable || !cancellable.is_cancelled()) {
+        let proc = new Gio.Subprocess({
+            argv: ['canberra-gtk-play', '-i', name],
+            flags: Gio.SubprocessFlags.NONE
+        });
+        proc.init(null);
+
+        proc.wait_check_async(cancellable, (proc, res) => {
+            try {
+                proc.wait_check_finish(res);
                 loopThemeSound(name, cancellable);
+            } catch (e) {
+                logError(e);
             }
         });
     }
