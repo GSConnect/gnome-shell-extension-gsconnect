@@ -134,7 +134,6 @@ function makeSdpRecord(uuid) {
  * KDE Connect Service UUID & SDP
  */
 const SERVICE_UUID = '185f3df4-3268-4e3f-9fca-d4d5059915bd';
-const SERVICE_RECORD = makeSdpRecord(SERVICE_UUID);
 
 
 /**
@@ -162,68 +161,54 @@ var ChannelService = GObject.registerClass({
         // The full device map
         this._devices = new Map();
 
-        // Export the org.bluez.Profile1 interface for the KDE Connect service
-        this._profile = new DBus.Interface({
-            g_connection: Gio.DBus.system,
-            g_instance: this,
-            g_interface_info: BluezNode.lookup_interface('org.bluez.Profile1'),
-            g_object_path: gsconnect.app_path
-        });
-
+        // Asynchronous init
         this._setup();
     }
 
+    // A list of device proxies supporting the KDE Connect Service UUID
     get devices() {
         let devices = Array.from(this._devices.values());
         return devices.filter(device => device.UUIDs.includes(SERVICE_UUID));
     }
 
-    async _registerProfile(uuid) {
-        let profileOptions = {
-            // Don't require confirmation
-            RequireAuthorization: new GLib.Variant('b', false),
-            // Only allow paired devices
-            RequireAuthentication: new GLib.Variant('b', true),
-            // Service Record (customized to work with Android)
-            ServiceRecord: new GLib.Variant('s', SERVICE_RECORD)
-        };
-
-        // Register KDE Connect bluez profile
-        debug('registering service', 'Bluetooth.ChannelService');
-        await this._profileManager.RegisterProfile(
-            this._profile.get_object_path(),
-            uuid,
-            profileOptions
-        );
-    }
-
-    async _setup() {
+    /**
+     * Create a service record and register a profile
+     *
+     *
+     */
+    async _register(uuid) {
         try {
-            this._profileManager = new ProfileManager1Proxy({
+            // Export the org.bluez.Profile1 interface for the KDE Connect service
+            this._profile = new DBus.Interface({
                 g_connection: Gio.DBus.system,
-                g_name: 'org.bluez',
-                g_object_path: '/org/bluez'
+                g_instance: this,
+                g_interface_info: BluezNode.lookup_interface('org.bluez.Profile1'),
+                g_object_path: gsconnect.app_path + uuid.replace(/\-/gi, '')
             });
 
-            await this._profileManager.init_promise();
-            await this._registerProfile(SERVICE_UUID);
+            // Register our exported profile path
+            let profile = this._profile.get_object_path();
 
-            Gio.DBusObjectManagerClient.new(
-                Gio.DBus.system,
-                Gio.DBusObjectManagerClientFlags.NONE,
-                'org.bluez',
-                '/',
-                null,
-                null,
-                this._setupObjManager.bind(this)
-            );
+            // Set profile options
+            let options = {
+                // Don't require confirmation
+                RequireAuthorization: new GLib.Variant('b', false),
+                // Only allow paired devices
+                RequireAuthentication: new GLib.Variant('b', true),
+                // Service Record (customized to work with Android)
+                ServiceRecord: new GLib.Variant('s', makeSdpRecord(uuid))
+            };
+
+            // Register KDE Connect bluez profile
+            await this._profileManager.RegisterProfile(profile, uuid, options);
         } catch (e) {
-            logWarning(e, 'Bluetooth.ChannelService');
+            logError(e);
         }
     }
 
     async _setup() {
         try {
+            // Get a ProfileManager
             this._profileManager = new ProfileManager1Proxy({
                 g_connection: Gio.DBus.system,
                 g_name: 'org.bluez',
@@ -231,18 +216,49 @@ var ChannelService = GObject.registerClass({
             });
 
             await this._profileManager.init_promise();
-            await this._registerProfile(SERVICE_UUID);
 
-            Gio.DBusObjectManagerClient.new(
-                Gio.DBus.system,
-                Gio.DBusObjectManagerClientFlags.NONE,
-                'org.bluez',
-                '/',
-                null,
-                null,
-                this._setupObjManager.bind(this)
+            // Register the service profile
+            await this._register(SERVICE_UUID);
+
+            // Setup the object manager
+            this._objectManager = await new Promise((resolve, reject) => {
+                Gio.DBusObjectManagerClient.new(
+                    Gio.DBus.system,
+                    Gio.DBusObjectManagerClientFlags.NONE,
+                    'org.bluez',
+                    '/',
+                    null,
+                    null,
+                    (manager, res) => {
+                        try {
+                            resolve(Gio.DBusObjectManagerClient.new_finish(res));
+                        } catch (e) {
+                            reject(e);
+                        }
+                    }
+                );
+            });
+
+            for (let obj of this._objectManager.get_objects()) {
+                for (let iface of obj.get_interfaces()) {
+                    this._onInterfaceAdded(this._objectManager, obj, iface);
+                }
+            }
+
+            this._objectManager._interfaceAddedId = this._objectManager.connect(
+                'interface-added',
+                this._onInterfaceAdded.bind(this)
+            );
+            this._objectManager._interfaceRemovedId = this._objectManager.connect(
+                'interface-removed',
+                this._onInterfaceRemoved.bind(this)
+            );
+            this._objectManager._interfacePropertiesId = this._objectManager.connect(
+                'interface-proxy-properties-changed',
+                this._onPropertiesChanged.bind(this)
             );
         } catch (e) {
+            // TODO: fatal error
             logWarning(e, 'Bluetooth.ChannelService');
         }
     }
@@ -250,14 +266,15 @@ var ChannelService = GObject.registerClass({
     async _onInterfaceAdded(manager, object, iface) {
         try {
             if (iface.g_interface_name === 'org.bluez.Device1') {
-                debug(`Device on ${iface.g_object_path}`);
-
-                DBus.proxyMethods(iface, DEVICE_INFO);
-                DBus.proxyProperties(iface, DEVICE_INFO);
-
                 if (!this._devices.has(iface.g_object_path)) {
+                    // Setup the device proxy
+                    DBus.proxyMethods(iface, DEVICE_INFO);
+                    DBus.proxyProperties(iface, DEVICE_INFO);
                     iface._channel = null;
+
                     this._devices.set(iface.g_object_path, iface);
+
+                    // Notify and init the device
                     this.notify('devices');
                     this._onDeviceChanged(iface);
                 }
@@ -318,29 +335,6 @@ var ChannelService = GObject.registerClass({
         } catch (e) {
             debug(e, device.Alias);
         }
-    }
-
-    async _setupObjManager(obj, res) {
-        this._objManager = Gio.DBusObjectManagerClient.new_finish(res);
-
-        for (let obj of this._objManager.get_objects()) {
-            for (let iface of obj.get_interfaces()) {
-                this._onInterfaceAdded(this._objManager, obj, iface);
-            }
-        }
-
-        this._objManager._interfaceAddedId = this._objManager.connect(
-            'interface-added',
-            this._onInterfaceAdded.bind(this)
-        );
-        this._objManager._interfaceRemovedId = this._objManager.connect(
-            'interface-removed',
-            this._onInterfaceRemoved.bind(this)
-        );
-        this._objManager._interfacePropertiesId = this._objManager.connect(
-            'interface-proxy-properties-changed',
-            this._onPropertiesChanged.bind(this)
-        );
     }
 
     /**
@@ -489,9 +483,9 @@ var ChannelService = GObject.registerClass({
     }
 
     destroy() {
-        this._objManager.disconnect(this._objManager._interfaceAddedId);
-        this._objManager.disconnect(this._objManager._interfaceRemovedId);
-        this._objManager.disconnect(this._objManager._interfacePropertiesId);
+        this._objectManager.disconnect(this._objectManager._interfaceAddedId);
+        this._objectManager.disconnect(this._objectManager._interfaceRemovedId);
+        this._objectManager.disconnect(this._objectManager._interfacePropertiesId);
 
         for (let object_path of this._devices.keys()) {
             this.RequestDisconnection(object_path);
