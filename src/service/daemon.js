@@ -575,21 +575,30 @@ var Service = GObject.registerClass({
         try {
             this.notification = new Notification.Listener();
         } catch (e) {
-            logError(e, 'Notification.Listener');
+            logError(e, 'Notification Component');
         }
 
         // MPRIS Manager
         try {
             this.mpris = new MPRIS.Manager();
         } catch (e) {
-            logError(e, 'MPRIS.Manager');
+            logError(e, 'MPRIS Component');
         }
 
         // Mixer
         try {
-            var Audio = imports.service.components.audio;
-            this.mixer = new Audio.Mixer();
+            var PulseAudio = imports.service.components.pulseaudio;
+            this.mixer = new PulseAudio.Mixer();
         } catch (e) {
+            logError(e, 'PulseAudio Component');
+        }
+
+        // Sound
+        try {
+            var Sound = imports.service.components.sound;
+            this.sound = Sound;
+        } catch (e) {
+            logError(e, 'Sound Component');
         }
 
         // Track devices with id as key
