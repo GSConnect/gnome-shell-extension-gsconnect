@@ -3,11 +3,11 @@
     <section>
       <item>
         <attribute name="label" translatable="yes">Connect to…</attribute>
-        <attribute name="action">app.connectDevice</attribute>
+        <attribute name="action">app.connect</attribute>
       </item>
       <item>
         <attribute name="label" translatable="yes">Preferences</attribute>
-        <attribute name="action">app.openSettings</attribute>
+        <attribute name="action">app.preferences</attribute>
         <attribute name='hidden-when'>action-disabled</attribute>
       </item>
     </section>

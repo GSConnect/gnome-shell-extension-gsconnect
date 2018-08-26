@@ -312,8 +312,112 @@ var Service = GObject.registerClass({
         }
     }
 
-    _connectDeviceAction() {
+    /**
+     * Service GActions
+     */
+    _initActions() {
+        let actions = [
+            // Device
+            ['deviceAction', this._deviceAction.bind(this), '(ssbv)'],
+
+            // App Menu
+            ['connect', this._connectAction.bind(this)],
+            ['preferences', this._preferencesAction.bind(this)],
+            ['help', this._helpAction.bind(this)],
+            ['about', this._aboutAction.bind(this)],
+
+            // Misc service actions
+            ['broadcast', this.broadcast.bind(this)],
+            ['log', this._logAction.bind(this)],
+            ['debugger', this._debugger.bind(this)],
+            ['quit', this.quit.bind(this)]
+        ];
+
+        actions.map(entry => {
+            let action = new Gio.SimpleAction({
+                name: entry[0],
+                parameter_type: (entry[2]) ? new GLib.VariantType(entry[2]) : null
+            });
+            action.connect('activate', entry[1]);
+            this.add_action(action);
+        });
+
+        this.add_action(
+            new Gio.PropertyAction({
+                name: 'discoverable',
+                object: this,
+                property_name: 'discoverable'
+            })
+        );
+    }
+
+    /**
+     * A wrapper for Device GActions. This is used to route device notification
+     * actions to their device, since GNotifications need an 'app' level action.
+     *
+     * @param {Gio.Action} action - ...
+     * @param {GLib.Variant(av)} parameter - ...
+     * @param {GLib.Variant(s)} parameter[0] - Device Id or '*' for all
+     * @param {GLib.Variant(s)} parameter[1] - GAction name
+     * @param {GLib.Variant(b)} parameter[2] - %false if the parameter is null
+     * @param {GLib.Variant(v)} parameter[3] - GAction parameter
+     */
+    _deviceAction(action, parameter) {
+        parameter = parameter.unpack();
+
+        let id = parameter[0].unpack();
+        let devices = (id === '*') ? this._devices.values() : [this._devices.get(id)];
+
+        for (let device of devices) {
+            // If the device is available
+            if (device) {
+                device.activate_action(
+                    parameter[1].unpack(),
+                    parameter[2].unpack() ? parameter[3].unpack() : null
+                );
+            }
+        }
+    }
+
+    _connectAction() {
         (new ServiceUI.DeviceConnectDialog()).show_all();
+    }
+
+    _preferencesAction(device=null) {
+        if (!this._window) {
+            this._window = new Settings.Window({
+                application: this,
+                height_request: 480,
+                width_request: 640
+            });
+            this._window.connect('delete-event', (window) => {
+                window.visible = false;
+                this._pruneDevices();
+                System.gc();
+
+                return true;
+            });
+        }
+
+        this._window.present();
+
+        // Open to a device page
+        if (device) {
+            this._window.switcher.foreach(row => {
+                if (row.get_name() === device) {
+                    this._window.switcher.select_row(row);
+                    return;
+                }
+            });
+        // Open the main page
+        } else {
+            this._window._onPrevious();
+        }
+    }
+
+    _helpAction() {
+        this._preferencesAction();
+        this._window.stack.visible_child_name = 'help';
     }
 
     _aboutAction() {
@@ -339,7 +443,7 @@ var Service = GObject.registerClass({
                 website: gsconnect.metadata.url,
                 license_type: Gtk.License.GPL_2_0
             });
-            this._about.connect('delete-event', dialog => dialog.hide_on_delete());
+            this._about.connect('delete-event', () => this._about.hide_on_delete());
         }
 
         this._about.modal = (this._window && this._window.visible);
@@ -347,72 +451,13 @@ var Service = GObject.registerClass({
         this._about.present();
     }
 
-    /**
-     * A meta-action for routing device actions.
-     *
-     * @param {Gio.Action} action - ...
-     * @param {GLib.Variant(av)} parameter - ...
-     * @param {GLib.Variant(s)} parameter[0] - Device Id
-     * @param {GLib.Variant(s)} parameter[1] - GAction name
-     * @param {GLib.Variant(b)} parameter[2] - %false if the parameter is null
-     * @param {GLib.Variant(v)} parameter[3] - GAction parameter
-     */
-    _deviceAction(action, parameter) {
-        parameter = parameter.unpack();
+    _logAction() {
+        // Ensure debugging is enabled
+        gsconnect.settings.set_boolean('debug', true);
 
-        let id = parameter[0].unpack();
-        let devices = (id === '*') ? this._devices.values() : [this._devices.get(id)];
-
-        for (let device of devices) {
-            // If the device is available
-            if (device) {
-                device.activate_action(
-                    parameter[1].unpack(),
-                    parameter[2].unpack() ? parameter[3].unpack() : null
-                );
-            }
-        }
-    }
-
-    /**
-     * Service GActions
-     */
-    _initActions() {
-        let actions = [
-            // Device
-            ['deviceAction', this._deviceAction.bind(this), '(ssbv)'],
-            // Service
-            ['connectDevice', this._connectDeviceAction.bind(this)],
-            ['broadcast', this.broadcast.bind(this)],
-            ['openSettings', this.openSettings.bind(this)],
-            ['quit', this.quit.bind(this)],
-            ['debug-log', this._debug_log.bind(this)],
-            ['debugger', this._debugger.bind(this)],
-            ['about', this._aboutAction.bind(this)]
-        ];
-
-        actions.map(entry => {
-            let action = new Gio.SimpleAction({
-                name: entry[0],
-                parameter_type: (entry[2]) ? new GLib.VariantType(entry[2]) : null
-            });
-            action.connect('activate', entry[1]);
-            this.add_action(action);
-        });
-
-        this.add_action(
-            new Gio.PropertyAction({
-                name: 'discoverable',
-                object: this,
-                property_name: 'discoverable'
-            })
-        );
-    }
-
-    _debug_log() {
+        // Launch a terminal with tabs for GJS and Gnome Shell
         GLib.spawn_command_line_async(
             'gnome-terminal ' +
-            //`--tab --title "GJS" --command "journalctl _PID=${getPID()} -f -o cat" ` +
             `--tab --title "GJS" --command "journalctl -f -o cat /usr/bin/gjs" ` +
             '--tab --title "Gnome Shell" --command "journalctl -f -o cat /usr/bin/gnome-shell"'
         );
@@ -420,41 +465,6 @@ var Service = GObject.registerClass({
 
     _debugger() {
         (new imports.modules.debug.Window()).present();
-    }
-
-    /**
-     * Open the application settings, for @device if given.
-     * @param {String} [device] - Device id
-     *
-     * The DBus method takes no arguments; Device.openSettings() calls this and
-     * populates @device.
-     */
-    openSettings(device=null) {
-        if (!this._window) {
-            this._window = new Settings.Window({ application: this });
-            this._window.connect('delete-event', (window) => {
-                window.visible = false;
-                this._pruneDevices();
-                System.gc();
-
-                return true;
-            });
-        }
-
-        this._window.present();
-
-        // Open to a device page
-        if (device) {
-            this._window.switcher.foreach(row => {
-                if (row.get_name() === device) {
-                    this._window.switcher.select_row(row);
-                    return;
-                }
-            });
-        // Open the main page
-        } else {
-            this._window._onPrevious();
-        }
     }
 
     /**
@@ -563,10 +573,9 @@ var Service = GObject.registerClass({
 
         // Notification Listener
         try {
-            this.notificationListener = new Notification.Listener();
+            this.notification = new Notification.Listener();
         } catch (e) {
             logError(e, 'Notification.Listener');
-            this.notificationListener = null;
         }
 
         // MPRIS Manager
@@ -685,9 +694,10 @@ var Service = GObject.registerClass({
 
         log('GSConnect: Shutting down');
 
+        this.mpris.destroy();
+        this.notification.destroy();
         this.lanService.destroy();
         this.bluetoothService.destroy();
-        this.notificationListener.destroy();
     }
 });
 

@@ -96,13 +96,6 @@ var Device = GObject.registerClass({
             GObject.ParamFlags.READABLE,
             false
         ),
-        'symbolic-icon-name': GObject.ParamSpec.string(
-            'symbolic-icon-name',
-            'SybolicIconName',
-            'Symbolic icon name representing the device',
-            GObject.ParamFlags.READABLE,
-            ''
-        ),
         'type': GObject.ParamSpec.string(
             'type',
             'deviceType',
@@ -265,10 +258,6 @@ var Device = GObject.registerClass({
         }
     }
 
-    get symbolic_icon_name() {
-        return `${this.icon_name}-symbolic`;
-    }
-
     get type() {
         return this.settings.get_string('type');
     }
@@ -375,27 +364,31 @@ var Device = GObject.registerClass({
      * @param {Core.Packet} packet - The incoming packet object
      */
     receivePacket(packet) {
-        let handler = this._handlers.get(packet.type);
+        try {
+            let handler = this._handlers.get(packet.type);
 
-        switch (true) {
-            // We handle pair requests
-            case (packet.type === 'kdeconnect.pair'):
-                this._handlePair(packet);
-                break;
+            switch (true) {
+                // We handle pair requests
+                case (packet.type === 'kdeconnect.pair'):
+                    this._handlePair(packet);
+                    break;
 
-            // The device thinks we're paired; send an unpair packet and bail
-            case !this.paired:
-                this.unpair();
-                break;
+                // The device must think we're paired; inform it we are not
+                case !this.paired:
+                    this.unpair();
+                    break;
 
-            // This is a supported packet
-            case (handler !== undefined):
-                handler.handlePacket(packet);
-                break;
+                // This is a supported packet
+                case (handler !== undefined):
+                    handler.handlePacket(packet);
+                    break;
 
-            // This is an unsupported packet or disabled plugin
-            default:
-                logWarning(`Unsupported packet type (${packet.type})`, this.name);
+                // This is an unsupported packet or disabled plugin
+                default:
+                    throw new Error(`Unsupported packet type (${packet.type})`);
+            }
+        } catch (e) {
+            logError(e, this.name);
         }
     }
 
@@ -405,8 +398,12 @@ var Device = GObject.registerClass({
      * @param {Gio.Stream} payload - A payload stream // TODO
      */
     sendPacket(packet, payload=null) {
-        if (this.connected && (this.paired || packet.type === 'kdeconnect.pair')) {
-            this._channel.send(packet);
+        try {
+            if (this.connected && (this.paired || packet.type === 'kdeconnect.pair')) {
+                this._channel.send(packet);
+            }
+        } catch (e) {
+            logError(e, this.name);
         }
     }
 
@@ -418,7 +415,6 @@ var Device = GObject.registerClass({
 
         this._connected = true;
         this.notify('connected');
-        this.notify('symbolic-icon-name');
 
         this._plugins.forEach(plugin => plugin.connected());
     }
@@ -431,7 +427,6 @@ var Device = GObject.registerClass({
 
         this._connected = false;
         this.notify('connected');
-        this.notify('symbolic-icon-name');
 
         this._plugins.forEach(plugin => plugin.disconnected());
     }
@@ -679,8 +674,6 @@ var Device = GObject.registerClass({
     _setPaired(bool) {
         this._resetPairRequest();
 
-        this.settings.set_boolean('paired', bool);
-
         // For TCP connections we store or reset the TLS Certificate
         if (this.connection_type === 'tcp') {
             if (bool) {
@@ -693,8 +686,8 @@ var Device = GObject.registerClass({
             }
         }
 
+        this.settings.set_boolean('paired', bool);
         this.notify('paired');
-        this.notify('symbolic-icon-name');
     }
 
     /**
@@ -780,11 +773,13 @@ var Device = GObject.registerClass({
     async loadPlugin(name) {
         debug(`loading '${name}' plugin`, this.name);
 
-        if (this.paired && !this._plugins.has(name)) {
-            try {
+        let handler, plugin;
+
+        try {
+            if (this.paired && !this._plugins.has(name)) {
                 // Instantiate the handler
-                let handler = imports.service.plugins[name];
-                let plugin = new handler.Plugin(this);
+                handler = imports.service.plugins[name];
+                plugin = new handler.Plugin(this);
 
                 // Register packet handlers
                 for (let packetType of handler.Metadata.incomingCapabilities) {
@@ -801,12 +796,12 @@ var Device = GObject.registerClass({
                 if (this.connected) {
                     plugin.connected();
                 }
-            } catch (e) {
-                logWarning(`loading ${name}: ${e.message}`, this.name);
-                this.errors.set(name, e);
-            } finally {
-                this.notify('errors');
             }
+        } catch (e) {
+            logWarning(`loading ${name}: ${e.message}`, this.name);
+            this.errors.set(name, e);
+        } finally {
+            this.notify('errors');
         }
     }
 
@@ -847,7 +842,7 @@ var Device = GObject.registerClass({
     }
 
     openSettings() {
-        this.service.openSettings(this.id);
+        this.service._preferencesAction(this.id);
     }
 
     destroy() {

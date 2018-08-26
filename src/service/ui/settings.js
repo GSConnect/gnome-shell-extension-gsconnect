@@ -1054,7 +1054,7 @@ var Device = GObject.registerClass({
         let ignoreId = 'org.gnome.Shell.Extensions.GSConnect.desktop';
 
         // Query Gnome's notification settings
-        for (let appSettings of Object.values(this.service.notificationListener.applications)) {
+        for (let appSettings of Object.values(this.service.notification.applications)) {
             let appId = appSettings.get_string('application-id');
 
             if (appId !== ignoreId) {
