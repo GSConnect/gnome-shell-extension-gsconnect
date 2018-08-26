@@ -48,8 +48,8 @@ const ServiceUI = imports.service.ui.service;
 const Settings = imports.service.ui.settings;
 
 
-var Daemon = GObject.registerClass({
-    GTypeName: 'GSConnectDaemon',
+var Service = GObject.registerClass({
+    GTypeName: 'GSConnectService',
     Properties: {
         'devices': GObject.param_spec_variant(
             'devices',
@@ -81,7 +81,7 @@ var Daemon = GObject.registerClass({
             'desktop'
         )
     }
-}, class Daemon extends Gtk.Application {
+}, class Service extends Gtk.Application {
 
     _init() {
         super._init({
@@ -191,7 +191,9 @@ var Daemon = GObject.registerClass({
     }
 
     /**
-     * Discovery Methods
+     * Send identity to @address or broadcast if %null
+     *
+     * @param {string|Gio.InetSocketAddress} - TCP address, bluez path or %null
      */
     broadcast(address=null) {
         switch (true) {
@@ -379,7 +381,7 @@ var Daemon = GObject.registerClass({
         let actions = [
             // Device
             ['deviceAction', this._deviceAction.bind(this), '(ssbv)'],
-            // Daemon
+            // Service
             ['connectDevice', this._connectDeviceAction.bind(this)],
             ['broadcast', this.broadcast.bind(this)],
             ['openSettings', this.openSettings.bind(this)],
@@ -517,14 +519,14 @@ var Daemon = GObject.registerClass({
 
         this.hold();
 
-        // Watch *this* file and stop the daemon if it's changed/removed
-        this._daemonMonitor = Gio.File.new_for_path(
-            gsconnect.extdatadir + '/service/daemon.js'
+        // Watch *this* file and stop the service if it's changed/removed
+        this._serviceMonitor = Gio.File.new_for_path(
+            gsconnect.extdatadir + '/service/service.js'
         ).monitor(
             Gio.FileMonitorFlags.WATCH_MOVES,
             null
         );
-        this._daemonMonitor.connect('changed', () => this.quit());
+        this._serviceMonitor.connect('changed', () => this.quit());
 
         // Properties
         gsconnect.settings.bind(
@@ -674,5 +676,5 @@ var Daemon = GObject.registerClass({
     }
 });
 
-(new Daemon()).run([System.programInvocationName].concat(ARGV));
+(new Service()).run([System.programInvocationName].concat(ARGV));
 
