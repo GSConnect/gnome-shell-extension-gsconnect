@@ -143,25 +143,21 @@ var Manager = GObject.registerClass({
 
     async _addPlayer(name) {
         try {
-            let mediaPlayer = new MediaPlayer2Proxy({
+            let mediaPlayer = await new MediaPlayer2Proxy({
                 g_connection: Gio.DBus.session,
                 g_name: name,
                 g_object_path: '/org/mpris/MediaPlayer2'
-            });
-
-            await mediaPlayer.init_promise();
+            }).init_promise();
 
             if (!this.players.has(mediaPlayer.Identity)) {
                 debug(`Adding MPRIS Player ${mediaPlayer.Identity}`);
 
-                let player = new PlayerProxy({
+                let player = await new PlayerProxy({
                     g_connection: Gio.DBus.session,
                     g_name: name,
                     g_object_path: '/org/mpris/MediaPlayer2',
                     extended_flags: DBus.ExtendedFlags.DO_NOT_CACHE_PROPERTIES
-                });
-
-                await player.init_promise()
+                }).init_promise();
 
                 player.Identity = mediaPlayer.Identity.slice(0);
 
