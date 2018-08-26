@@ -8,20 +8,6 @@ const DBus = imports.modules.dbus;
 
 
 /**
- * Singleton
- */
-var _default;
-
-function get_default() {
-    if (!_default) {
-        _default = new Manager();
-    }
-
-    return _default;
-};
-
-
-/**
  * org.mpris.MediaPlayer2 Proxy
  * https://specifications.freedesktop.org/mpris-spec/latest/Media_Player.html
  */
@@ -67,13 +53,34 @@ var Manager = GObject.registerClass({
             param_types: [ GObject.TYPE_OBJECT ]
         }
     }
-}, class Manager extends GObject.Object {
+}, class Manager extends Gio.DBusProxy {
 
     _init() {
-        super._init();
+        super._init({
+            g_connection: Gio.DBus.session,
+            g_name: 'org.freedesktop.DBus',
+            g_object_path: '/org/freedesktop/DBus'
+        });
 
         // Asynchronous setup
-        this._setup();
+        this._init_async();
+    }
+
+    async _init_async() {
+        try {
+            await this.init_promise();
+
+            // Add the current players
+            let names = await this._listNames();
+
+            names.map(name => {
+                if (name.startsWith('org.mpris.MediaPlayer2')) {
+                    this._addPlayer(name);
+                }
+            });
+        } catch (e) {
+            logError(e);
+        }
     }
 
     get identities () {
@@ -96,30 +103,19 @@ var Manager = GObject.registerClass({
         return this._paused;
     }
 
-    async _setup() {
+    vfunc_g_signal(sender_name, signal_name, parameters) {
         try {
-            this._fdo = new Gio.DBusProxy({
-                g_connection: Gio.DBus.session,
-                g_name: 'org.freedesktop.DBus',
-                g_object_path: '/org/freedesktop/DBus'
-            });
+            if (signal_name === 'NameOwnerChanged') {
+                let [name, old_owner, new_owner] = parameters.deep_unpack();
 
-            await this._fdo.init_promise();
-
-            // Watch for new players
-            this._nameOwnerChangedId = this._fdo.connect(
-                'g-signal',
-                this._onGSignal.bind(this)
-            );
-
-            // Add the current players
-            let names = await this._listNames();
-
-            names.map(name => {
                 if (name.startsWith('org.mpris.MediaPlayer2')) {
-                    this._addPlayer(name);
+                    if (new_owner.length) {
+                        this._addPlayer(name);
+                    } else {
+                        this._removePlayer(name);
+                    }
                 }
-            });
+            }
         } catch (e) {
             logError(e);
         }
@@ -127,7 +123,7 @@ var Manager = GObject.registerClass({
 
     _listNames() {
         return new Promise((resolve, reject) => {
-            this._fdo.call(
+            this.call(
                 'org.freedesktop.DBus.ListNames',
                 null,
                 Gio.DBusCallFlags.NONE,
@@ -143,30 +139,6 @@ var Manager = GObject.registerClass({
                 }
             );
         });
-    }
-
-    async _onGSignal(proxy, sender_name, signal_name, parameters) {
-        try {
-            if (signal_name === 'NameOwnerChanged') {
-                this._onNameOwnerChanged(proxy, ...parameters.deep_unpack());
-            }
-        } catch (e) {
-            logError(e);
-        }
-    }
-
-    async _onNameOwnerChanged(proxy, name, old_owner, new_owner) {
-        try {
-            if (name.startsWith('org.mpris.MediaPlayer2')) {
-                if (new_owner.length) {
-                    this._addPlayer(name);
-                } else {
-                    this._removePlayer(name);
-                }
-            }
-        } catch (e) {
-            logError(e);
-        }
     }
 
     async _addPlayer(name) {
@@ -257,14 +229,13 @@ var Manager = GObject.registerClass({
     }
 
     destroy() {
-        this._fdo.disconnect(this._nameOwnerChangedId);
-        this._fdo.destroy();
-
         for (let player of this.players.values()) {
             player.disconnect(player._propertiesId);
             player.disconnect(player._seekedId);
             player.destroy();
         }
+
+        GObject.signal_handlers_destroy(this);
     }
 });
 

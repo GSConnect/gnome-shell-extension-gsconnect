@@ -4,7 +4,6 @@ const Gio = imports.gi.Gio;
 const GObject = imports.gi.GObject;
 
 const Lan = imports.service.lan;
-const MPRIS = imports.modules.mpris;
 const PluginsBase = imports.service.plugins.base;
 
 
@@ -37,20 +36,18 @@ var Plugin = GObject.registerClass({
         super._init(device, 'mpris');
 
         try {
-            this.mpris = MPRIS.get_default();
-
-            this._playersChangedId = this.mpris.connect(
+            this._playersChangedId = this.service.mpris.connect(
                 'notify::players',
                 this._sendPlayerList.bind(this)
             );
 
-            this._playerChangedId = this.mpris.connect(
+            this._playerChangedId = this.service.mpris.connect(
                 'player-changed',
                 this._onPlayerChanged.bind(this)
             );
         } catch (e) {
             this.destroy();
-            throw Error('MPRIS: ' + e.message);
+            throw new Error('mpris-error');
         }
     }
 
@@ -59,7 +56,7 @@ var Plugin = GObject.registerClass({
             this._sendPlayerList();
         } else if (packet.body.hasOwnProperty('player')) {
             // If we have this player
-            if (this.mpris.players.has(packet.body.player)) {
+            if (this.service.mpris.players.has(packet.body.player)) {
                 this._handleCommand(packet);
             // If we don't, send an updated list to the device instead
             } else {
@@ -78,85 +75,93 @@ var Plugin = GObject.registerClass({
      * @param {kdeconnect.mpris.request} - A command for a specific player
      */
     _handleCommand(packet) {
-        let player = this.mpris.players.get(packet.body.player);
-
-        // Send Album Art
-        if (packet.body.hasOwnProperty('albumArtUrl')) {
-            this._sendAlbumArt(packet);
+        if (!this.settings.get_boolean('share-players')) {
+            return;
         }
 
-        // Player Actions
-        if (packet.body.hasOwnProperty('action')) {
-            switch (packet.body.action) {
-                case 'PlayPause':
-                    player.PlayPause();
-                    break;
-                case 'Play':
-                    player.Play();
-                    break;
-                case 'Pause':
-                    player.Pause();
-                    break;
-                case 'Next':
-                    player.Next();
-                    break;
-                case 'Previous':
-                    player.Previous();
-                    break;
-                case 'Stop':
-                    player.Stop();
-                    break;
-                default:
-                    debug('unknown action: ' + packet.body.action);
+        try {
+            let player = this.service.mpris.players.get(packet.body.player);
+
+            // Send Album Art
+            if (packet.body.hasOwnProperty('albumArtUrl')) {
+                this._sendAlbumArt(packet);
             }
-        }
 
-        // Player Properties
-        if (packet.body.hasOwnProperty('setVolume')) {
-            player.Volume = packet.body.setVolume / 100;
-        }
+            // Player Actions
+            if (packet.body.hasOwnProperty('action')) {
+                switch (packet.body.action) {
+                    case 'PlayPause':
+                        player.PlayPause();
+                        break;
+                    case 'Play':
+                        player.Play();
+                        break;
+                    case 'Pause':
+                        player.Pause();
+                        break;
+                    case 'Next':
+                        player.Next();
+                        break;
+                    case 'Previous':
+                        player.Previous();
+                        break;
+                    case 'Stop':
+                        player.Stop();
+                        break;
+                    default:
+                        logError(new Error(`unknown action: ${packet.body.action}`));
+                }
+            }
 
-        if (packet.body.hasOwnProperty('Seek')) {
-            player.Seek(packet.body.Seek);
-        }
+            // Player Properties
+            if (packet.body.hasOwnProperty('setVolume')) {
+                player.Volume = packet.body.setVolume / 100;
+            }
 
-        if (packet.body.hasOwnProperty('SetPosition')) {
-            player.Seek((packet.body.SetPosition * 1000) - player.Position);
-        }
+            if (packet.body.hasOwnProperty('Seek')) {
+                player.Seek(packet.body.Seek);
+            }
 
-        // Information Request
-        let hasResponse = false;
+            if (packet.body.hasOwnProperty('SetPosition')) {
+                player.Seek((packet.body.SetPosition * 1000) - player.Position);
+            }
 
-        let response = {
-            id: 0,
-            type: 'kdeconnect.mpris',
-            body: {}
-        };
+            // Information Request
+            let hasResponse = false;
 
-        if (packet.body.hasOwnProperty('requestNowPlaying')) {
-            hasResponse = true;
-
-            response.body = {
-                pos: Math.floor(player.Position / 1000),
-                isPlaying: (player.PlaybackStatus === 'Playing'),
-                canPause: player.CanPause,
-                canPlay: player.CanPlay,
-                canGoNext: player.CanGoNext,
-                canGoPrevious: player.CanGoPrevious,
-                canSeek: player.CanSeek
+            let response = {
+                id: 0,
+                type: 'kdeconnect.mpris',
+                body: {}
             };
 
-            Object.assign(response.body, this._getPlayerMetadata(player));
-        }
+            if (packet.body.hasOwnProperty('requestNowPlaying')) {
+                hasResponse = true;
 
-        if (packet.body.hasOwnProperty('requestVolume')) {
-            hasResponse = true;
-            response.body.volume = player.Volume * 100;
-        }
+                response.body = {
+                    pos: Math.floor(player.Position / 1000),
+                    isPlaying: (player.PlaybackStatus === 'Playing'),
+                    canPause: player.CanPause,
+                    canPlay: player.CanPlay,
+                    canGoNext: player.CanGoNext,
+                    canGoPrevious: player.CanGoPrevious,
+                    canSeek: player.CanSeek
+                };
 
-        if (hasResponse) {
-            response.body.player = packet.body.player;
-            this.device.sendPacket(response);
+                Object.assign(response.body, this._getPlayerMetadata(player));
+            }
+
+            if (packet.body.hasOwnProperty('requestVolume')) {
+                hasResponse = true;
+                response.body.volume = player.Volume * 100;
+            }
+
+            if (hasResponse) {
+                response.body.player = packet.body.player;
+                this.device.sendPacket(response);
+            }
+        } catch (e) {
+            logError(e);
         }
     }
 
@@ -169,22 +174,26 @@ var Plugin = GObject.registerClass({
     _getPlayerMetadata(player) {
         let metadata = {};
 
-        if (player.Metadata !== null) {
-            let nowPlaying = player.Metadata['xesam:title'];
+        try {
+            if (player.Metadata !== null) {
+                let nowPlaying = player.Metadata['xesam:title'];
 
-            if (player.Metadata.hasOwnProperty('xesam:artist')) {
-                nowPlaying = `${player.Metadata['xesam:artist']} - ${nowPlaying}`;
+                if (player.Metadata.hasOwnProperty('xesam:artist')) {
+                    nowPlaying = `${player.Metadata['xesam:artist']} - ${nowPlaying}`;
+                }
+
+                metadata.nowPlaying = nowPlaying;
+
+                if (player.Metadata.hasOwnProperty('mpris:artUrl')) {
+                    metadata.albumArtUrl = player.Metadata['mpris:artUrl'];
+                }
+
+                if (player.Metadata.hasOwnProperty('mpris:length')) {
+                    metadata.length = Math.floor(player.Metadata['mpris:length'] / 1000);
+                }
             }
-
-            metadata.nowPlaying = nowPlaying;
-
-            if (player.Metadata.hasOwnProperty('mpris:artUrl')) {
-                metadata.albumArtUrl = player.Metadata['mpris:artUrl'];
-            }
-
-            if (player.Metadata.hasOwnProperty('mpris:length')) {
-                metadata.length = Math.floor(player.Metadata['mpris:length'] / 1000);
-            }
+        } catch (e) {
+            logError(e);
         }
 
         return metadata;
@@ -211,7 +220,7 @@ var Plugin = GObject.registerClass({
                 return;
             }
 
-            let player = this.mpris.players.get(packet.body.player);
+            let player = this.service.mpris.players.get(packet.body.player);
 
             if (player.Metadata === null) {
                 return;
@@ -251,12 +260,20 @@ var Plugin = GObject.registerClass({
         }
     }
 
+    /**
+     * Send the list of player identities and indicate whether we support
+     * transferring album art
+     */
     _sendPlayerList() {
+        if (!this.settings.get_boolean('share-players')) {
+            return;
+        }
+
         let playerList = [];
         let supportAlbumArtPayload = false;
 
         if (this.settings.get_boolean('share-players')) {
-            playerList = this.mpris.identities;
+            playerList = this.service.mpris.identities;
             // TODO: bluetooth
             supportAlbumArtPayload = (this.device.connection_type === 'tcp');
         }
@@ -272,8 +289,11 @@ var Plugin = GObject.registerClass({
     }
 
     destroy() {
-        this.mpris.disconnect(this._playersChangedId);
-        this.mpris.disconnect(this._playerChangedId);
+        try {
+            this.service.mpris.disconnect(this._playersChangedId);
+            this.service.mpris.disconnect(this._playerChangedId);
+        } catch (e) {
+        }
 
         super.destroy();
     }

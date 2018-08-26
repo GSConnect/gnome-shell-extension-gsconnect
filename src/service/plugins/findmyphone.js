@@ -5,7 +5,6 @@ const Gio = imports.gi.Gio;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
-const Sound = imports.modules.sound;
 const PluginsBase = imports.service.plugins.base;
 
 
@@ -59,7 +58,7 @@ var Plugin = GObject.registerClass({
             }
 
             this._cancellable = new Gio.Cancellable();
-            Sound.loopThemeSound('phone-incoming-call', this._cancellable);
+            loop_theme_sound('phone-incoming-call', this._cancellable);
 
             this._dialog = new Gtk.MessageDialog({
                 text: _('Locate Device'),

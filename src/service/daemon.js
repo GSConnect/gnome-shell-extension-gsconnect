@@ -40,8 +40,8 @@ const Bluetooth = imports.service.bluetooth;
 const Core = imports.service.core;
 const Device = imports.service.device;
 const Lan = imports.service.lan;
-const Sound = imports.modules.sound;
 
+const MPRIS = imports.service.components.mpris;
 const Notification = imports.service.components.notification;
 
 const ServiceUI = imports.service.ui.service;
@@ -519,9 +519,9 @@ var Service = GObject.registerClass({
 
         this.hold();
 
-        // Watch *this* file and stop the service if it's changed/removed
+        // Watch *this* file and stop the service if it's updated/uninstalled
         this._serviceMonitor = Gio.File.new_for_path(
-            gsconnect.extdatadir + '/service/service.js'
+            gsconnect.extdatadir + '/service/daemon.js'
         ).monitor(
             Gio.FileMonitorFlags.WATCH_MOVES,
             null
@@ -558,6 +558,31 @@ var Service = GObject.registerClass({
             Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
         );
 
+        // GActions
+        this._initActions();
+
+        // Notification Listener
+        try {
+            this.notificationListener = new Notification.Listener();
+        } catch (e) {
+            logError(e, 'Notification.Listener');
+            this.notificationListener = null;
+        }
+
+        // MPRIS Manager
+        try {
+            this.mpris = new MPRIS.Manager();
+        } catch (e) {
+            logError(e, 'MPRIS.Manager');
+        }
+
+        // Mixer
+        try {
+            var Audio = imports.service.components.audio;
+            this.mixer = new Audio.Mixer();
+        } catch (e) {
+        }
+
         // Track devices with id as key
         this._devices = new Map();
 
@@ -583,16 +608,6 @@ var Service = GObject.registerClass({
             this.bluetoothService = new Bluetooth.ChannelService();
         } catch (e) {
             logError(e, 'Bluetooth.ChannelService');
-        }
-
-        // GActions
-        this._initActions();
-
-        // Notification Listener
-        try {
-            this.notificationListener = new Notification.Listener();
-        } catch (e) {
-            logError(e, 'Notification.Listener');
         }
     }
 

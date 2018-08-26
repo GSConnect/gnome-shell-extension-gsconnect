@@ -29,46 +29,51 @@ var Plugin = GObject.registerClass({
     _init(device) {
         super._init(device, 'systemvolume');
 
-        // Cache stream properties
-        this._cache = new WeakMap();
+        try {
+            // Cache stream properties
+            this._cache = new WeakMap();
 
-        // Connect to the mixer
-        this._streamChangedId = this.service.mixer.connect(
-            'stream-changed',
-            this.sendSink.bind(this)
-        );
+            // Connect to the mixer
+            this._streamChangedId = this.service.mixer.connect(
+                'stream-changed',
+                this._sendSink.bind(this)
+            );
 
-        this._outputAddedId = this.service.mixer.connect(
-            'output-added',
-            this.sendSinkList.bind(this)
-        );
+            this._outputAddedId = this.service.mixer.connect(
+                'output-added',
+                this._sendSinkList.bind(this)
+            );
 
-        this._outputRemovedId = this.service.mixer.connect(
-            'output-removed',
-            this.sendSinkList.bind(this)
-        );
+            this._outputRemovedId = this.service.mixer.connect(
+                'output-removed',
+                this._sendSinkList.bind(this)
+            );
+        } catch (e) {
+            this.destroy();
+            throw new Error('service-error');
+        }
     }
 
     handlePacket(packet) {
         switch (true) {
             case packet.body.hasOwnProperty('requestSinks'):
-                this.sendSinkList();
+                this._sendSinkList();
                 break;
 
             case packet.body.hasOwnProperty('name'):
-                this.changeSink(packet);
+                this._changeSink(packet);
                 break;
         }
     }
 
     connected() {
-        this.sendSinkList();
+        this._sendSinkList();
     }
 
     /**
      * Handle a request to change an output
      */
-    changeSink(packet) {
+    _changeSink(packet) {
         let stream;
 
         for (let sink of this.service.mixer.get_sinks()) {
@@ -80,7 +85,7 @@ var Plugin = GObject.registerClass({
 
         // No sink with the given name
         if (stream === undefined) {
-            this.sendSinkList();
+            this._sendSinkList();
             return;
         }
 
@@ -107,17 +112,17 @@ var Plugin = GObject.registerClass({
      * @param {Gvc.MixerControl} mixer - The mixer that owns the stream
      * @param {Number} id - The Id of the stream that changed
      */
-    sendSink(mixer, id) {
+    _sendSink(mixer, id) {
         let stream = this.service.mixer.lookup_stream_id(id);
 
-        // Check if we've already sent these details
+        // Get a cache to check for changes
         let cache = this._cache.get(stream) || [null, null, null];
 
         switch (true) {
             // If the port (we show in the description) has changed we have to
             // send the whole list to show the change
             case (cache[2] != stream.get_port().human_port):
-                this.sendSinkList();
+                this._sendSinkList();
                 return;
 
             // If only volume and/or mute are set, we can send a single update
@@ -149,7 +154,7 @@ var Plugin = GObject.registerClass({
     /**
      * Send a list of local sinks
      */
-    sendSinkList() {
+    _sendSinkList() {
         let sinkList = this.service.mixer.get_sinks().map(sink => {
             // Cache the sink state
             this._cache.set(sink, [
@@ -179,9 +184,12 @@ var Plugin = GObject.registerClass({
     }
 
     destroy() {
-        this.service.mixer.disconnect(this._streamChangedId);
-        this.service.mixer.disconnect(this._outputAddedId);
-        this.service.mixer.disconnect(this._outputRemovedId);
+        try {
+            this.service.mixer.disconnect(this._streamChangedId);
+            this.service.mixer.disconnect(this._outputAddedId);
+            this.service.mixer.disconnect(this._outputRemovedId);
+        } catch (e) {
+        }
 
         super.destroy();
     }

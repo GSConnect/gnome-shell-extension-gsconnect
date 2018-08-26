@@ -5,8 +5,6 @@ const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 
 const Contacts = imports.modules.contacts;
-const MPRIS = imports.modules.mpris;
-const Sound = imports.modules.sound;
 const Sms = imports.service.ui.sms;
 const PluginsBase = imports.service.plugins.base;
 
@@ -102,8 +100,6 @@ var Plugin = GObject.registerClass({
         super._init(device, 'telephony');
 
         this.contacts = Contacts.getStore();
-        this.mixer = new Sound.Mixer();
-        this.mpris = MPRIS.get_default();
 
         // We cache converations/threads so they can be used immediately, even
         // though we'll request them at every connection
@@ -319,22 +315,24 @@ var Plugin = GObject.registerClass({
      * @param {String} eventType - 'ringing' or 'talking'
      */
     _setMediaState(eventType) {
-        switch (this.settings.get_string(`${eventType}-volume`)) {
-            case 'lower':
-                this.mixer.lowerVolume();
-                break;
+        if (this.service.mixer) {
+            switch (this.settings.get_string(`${eventType}-volume`)) {
+                case 'lower':
+                    this.service.mixer.lowerVolume();
+                    break;
 
-            case 'mute':
-                this.mixer.muteVolume();
-                break;
+                case 'mute':
+                    this.service.mixer.muteVolume();
+                    break;
+            }
+
+            if (eventType === 'talking' && this.settings.get_boolean('talking-microphone')) {
+                this.service.mixer.muteMicrophone();
+            }
         }
 
-        if (this.settings.get_boolean(`${eventType}-pause`)) {
-            this.mpris.pauseAll();
-        }
-
-        if (eventType === 'talking' && this.settings.get_boolean('talking-microphone')) {
-            this.mixer.muteMicrophone();
+        if (this.service.mpris && this.settings.get_boolean(`${eventType}-pause`)) {
+            this.service.mpris.pauseAll();
         }
     }
 
@@ -343,8 +341,13 @@ var Plugin = GObject.registerClass({
      * sure to unpause before raising volume.
      */
     _restoreMediaState() {
-        this.mpris.unpauseAll();
-        this.mixer.restore();
+        if (this.service.mpris) {
+            this.service.mpris.unpauseAll();
+        }
+
+        if (this.service.mixer) {
+            this.service.mixer.restore();
+        }
     }
 
     /**
