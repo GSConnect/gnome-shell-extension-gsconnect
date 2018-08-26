@@ -344,7 +344,7 @@ var Plugin = new Lang.Class({
                 pos: Math.round( pos / 1000),
                 isPlaying: (player.PlaybackStatus === "Playing"),
                 canPause: (player.CanPause === true),
-                canPlay: (player.CanPlay === true),
+                canPlay: (player.CanPlay === true || player.PlaybackStatus === "Paused"),
                 canGoNext: (player.CanGoNext === true),
                 canGoPrevious: (player.CanGoPrevious === true),
                 canSeek: (player.CanSeek === true)
@@ -387,4 +387,3 @@ var Plugin = new Lang.Class({
         PluginsBase.Plugin.prototype.destroy.call(this);
     }
 });
-
