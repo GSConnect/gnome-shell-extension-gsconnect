@@ -52,7 +52,7 @@ var Plugin = new Lang.Class({
         }
 
         this._display = Gdk.Display.get_default();
-        
+
         if (this._display === null) {
             this.destroy();
             throw Error(_("Failed to get Gdk.Display"));
@@ -110,7 +110,7 @@ var Plugin = new Lang.Class({
                 } else if (packet.body.specialKey && KeyMap.has(packet.body.specialKey)) {
                     keysym = KeyMap.get(packet.body.specialKey);
                 }
-                
+
                 this.pressKeySym(keysym, mask);
             } else {
                 // This is sometimes sent in advance of a specialKey packet
@@ -130,7 +130,8 @@ var Plugin = new Lang.Class({
 
         try {
             let [screen, x, y] = this._pointer.get_position();
-            Atspi.generate_mouse_event(x, y, event);
+            let scale_factor = this._display.get_monitor(screen.get_monitor_at_point(x, y)).get_scale_factor();
+            Atspi.generate_mouse_event(x * scale_factor, y * scale_factor, event);
         } catch (e) {
             log("Mousepad: Error simulating mouse click: " + e);
         }
@@ -143,7 +144,8 @@ var Plugin = new Lang.Class({
 
         try {
             let [screen, x, y] = this._pointer.get_position();
-            Atspi.generate_mouse_event(x, y, event);
+            let scale_factor = this._display.get_monitor(screen.get_monitor_at_point(x, y)).get_scale_factor();
+            Atspi.generate_mouse_event(x*scale_factor, y*scale_factor, event);
         } catch (e) {
             log("Mousepad: Error simulating mouse double click: " + e);
         }
@@ -166,7 +168,8 @@ var Plugin = new Lang.Class({
 
         try {
             let [screen, x, y] = this._pointer.get_position();
-            Atspi.generate_mouse_event(x, y, event);
+            let scale_factor = this._display.get_monitor(screen.get_monitor_at_point(x, y)).get_scale_factor();
+            Atspi.generate_mouse_event(x*scale_factor, y*scale_factor, event);
         } catch (e) {
             log("Mousepad: Error simulating mouse press: " + e);
         }
@@ -179,7 +182,8 @@ var Plugin = new Lang.Class({
 
         try {
             let [screen, x, y] = this._pointer.get_position();
-            Atspi.generate_mouse_event(x, y, event);
+            let scale_factor = this._display.get_monitor(screen.get_monitor_at_point(x, y)).get_scale_factor();
+            Atspi.generate_mouse_event(x*scale_factor, y*scale_factor, event);
         } catch (e) {
             log("Mousepad: Error simulating mouse release: " + e);
         }
@@ -214,7 +218,7 @@ var Plugin = new Lang.Class({
             log("Mousepad: Error simulating special keypress: " + e);
         }
     },
-    
+
     pressKeySym: function (keysym, mask) {
         debug("Mousepad: pressKeySym(" + keysym + ", " + mask + ")");
 
