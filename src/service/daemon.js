@@ -520,6 +520,47 @@ var Service = GObject.registerClass({
         });
     }
 
+    _loadComponents() {
+
+        // Notification Listener
+        try {
+            this.notification = new Notification.Listener();
+        } catch (e) {
+            logError(e, 'Notification Component');
+        }
+
+        // MPRIS Manager
+        try {
+            this.mpris = new MPRIS.Manager();
+        } catch (e) {
+            logError(e, 'MPRIS Component');
+        }
+
+        // Mixer
+        try {
+            var PulseAudio = imports.service.components.pulseaudio;
+            this.mixer = new PulseAudio.Mixer();
+        } catch (e) {
+            logError(e, 'PulseAudio Component');
+        }
+
+        // Sound
+        try {
+            var Sound = imports.service.components.sound;
+            this.sound = Sound;
+        } catch (e) {
+            logError(e, 'Sound Component');
+        }
+
+        // UPower
+        try {
+            var UPower = imports.service.components.upower;
+            this.upower = new UPower.Component();
+        } catch (e) {
+            logError(e, 'UPower Component');
+        }
+    }
+
     vfunc_activate() {
         this.broadcast();
     }
@@ -571,43 +612,8 @@ var Service = GObject.registerClass({
         // GActions
         this._initActions();
 
-        // Notification Listener
-        try {
-            this.notification = new Notification.Listener();
-        } catch (e) {
-            logError(e, 'Notification Component');
-        }
-
-        // MPRIS Manager
-        try {
-            this.mpris = new MPRIS.Manager();
-        } catch (e) {
-            logError(e, 'MPRIS Component');
-        }
-
-        // Mixer
-        try {
-            var PulseAudio = imports.service.components.pulseaudio;
-            this.mixer = new PulseAudio.Mixer();
-        } catch (e) {
-            logError(e, 'PulseAudio Component');
-        }
-
-        // Sound
-        try {
-            var Sound = imports.service.components.sound;
-            this.sound = Sound;
-        } catch (e) {
-            logError(e, 'Sound Component');
-        }
-
-        // UPower
-        try {
-            var UPower = imports.service.components.upower;
-            this.upower = new UPower.Component();
-        } catch (e) {
-            logError(e, 'UPower Component');
-        }
+        // Components (PulseAudio, UPower, etc)
+        this._loadComponents();
 
         // Track devices with id as key
         this._devices = new Map();
