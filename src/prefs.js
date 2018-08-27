@@ -35,7 +35,7 @@ function buildPrefsWidget() {
         '/org/gnome/Shell/Extensions/GSConnect'
     );
     service.list_actions();
-    service.activate_action('openSettings', null);
+    service.activate_action('preferences', null);
 
     return label;
 }

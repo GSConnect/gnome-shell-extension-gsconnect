@@ -32,6 +32,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
     _init() {
         super._init();
 
+        this._activating = false;
         this._devices = new Set();
         this._menus = {};
 
@@ -74,7 +75,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         // "Mobile Settings" Item
         this.extensionMenu.menu.addAction(
             _('Mobile Settings'),
-            () => this.service.activate_action('openSettings', null)
+            () => this.service.activate_action('preferences', null)
         );
 
         Main.panel.statusArea.aggregateMenu.menu.addMenuItem(this.menu, 4);

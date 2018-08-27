@@ -601,6 +601,14 @@ var Service = GObject.registerClass({
             logError(e, 'Sound Component');
         }
 
+        // UPower
+        try {
+            var UPower = imports.service.components.upower;
+            this.upower = new UPower.Component();
+        } catch (e) {
+            logError(e, 'UPower Component');
+        }
+
         // Track devices with id as key
         this._devices = new Map();
 

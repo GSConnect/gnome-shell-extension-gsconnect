@@ -241,7 +241,7 @@ function _full_pack(obj) {
             return GLib.Variant.new('a{sv}', packed);
 
         default:
-            throw Error('Unsupported type');
+            throw Error(`Unsupported type '${type}': ${obj}`);
     }
 }
 

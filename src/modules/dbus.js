@@ -106,9 +106,10 @@ function _makeOutSignature(args) {
  * Convert a string of GVariantType to a list of GType
  *
  * @param {string} types - A string of GVariantType characters (eg. a{sv})
+ * @return {Array} - A list of GType constants
  */
 function vtype_to_gtype(types) {
-    if (!vtype_to_gtype._cache) {
+    if (vtype_to_gtype._cache === undefined) {
         vtype_to_gtype._cache = {};
     }
 
