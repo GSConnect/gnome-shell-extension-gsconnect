@@ -3,7 +3,6 @@
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
-const UPower = imports.gi.UPowerGlib;
 
 const DBus = imports.modules.dbus;
 const PluginsBase = imports.service.plugins.base;
@@ -69,18 +68,19 @@ var Plugin = GObject.registerClass({
         });
         this.device._dbus_object.add_interface(this._dbus);
 
-        // Setup Cache
-        this._chargeStats = [];
-        this._dischargeStats = [];
+        // Setup Cache; defaults are 90 minute charge, 1 day discharge
+        this._chargeState = [54, 0, -1];
+        this._dischargeState = [864, 0, -1];
         this._thresholdLevel = 25;
 
         this.cacheProperties([
-            '_chargeStats',
-            '_dischargeStats',
+            '_chargeState',
+            '_dischargeState',
             '_thresholdLevel'
         ]);
 
         // Local Battery (UPower)
+        this._upowerId = 0;
         this._sendStatisticsId = this.settings.connect(
             'changed::send-statistics',
             this._onSendStatisticsChanged.bind(this)
@@ -138,66 +138,45 @@ var Plugin = GObject.registerClass({
     }
 
     cacheLoaded() {
-        this._extrapolateTime();
+        this._estimateTime();
 
         this.notify('charging');
         this.notify('level');
         this.notify('icon-name');
         this.notify('time');
+
+        this.connected();
     }
 
-    _onSendStatisticsChanged(settings) {
+    _onSendStatisticsChanged() {
         if (this.settings.get_boolean('send-statistics')) {
-            this._monitor();
+            this._monitorState();
         } else {
-            this._unmonitor();
+            this._unmonitorState();
         }
     }
 
     handlePacket(packet) {
-        if (packet.type === 'kdeconnect.battery') {
-            this._handleUpdate(packet.body);
-        } else if (packet.type === 'kdeconnect.battery.request') {
-            this._handleRequest();
+        switch (packet.type) {
+            case 'kdeconnect.battery':
+                this._receiveState(packet);
+                break;
+
+            case 'kdeconnect.battery.request':
+                this._sendState();
+                break;
         }
     }
 
     connected() {
-        this.batteryRequest();
-        this._handleRequest();
-    }
-
-    /**
-     * Report the local battery's current charge/state
-     */
-    _handleRequest() {
-        if (!this._upower) { return; }
-
-        debug([this._upower.percentage, this._upower.state]);
-
-        let packet = {
-            id: 0,
-            type: 'kdeconnect.battery',
-            body: {
-                currentCharge: this._upower.percentage,
-                isCharging: (this._upower.state !== UPower.DeviceState.DISCHARGING),
-                thresholdEvent: 0
-            }
-        };
-
-        if (this._upower.percentage === 15) {
-            if (!packet.body.isCharging) {
-                packet.body.thresholdEvent = 1;
-            }
-        }
-
-        this.device.sendPacket(packet);
+        this._requestState();
+        this._sendState();
     }
 
     /**
      * Notify that the remote device considers the battery level low
      */
-    _handleThreshold() {
+    _notifyState() {
         let buttons = [];
 
         // Offer the option to locate the device, if available
@@ -226,16 +205,18 @@ var Plugin = GObject.registerClass({
     /**
      * Handle a remote battery update.
      *
-     * @param {object} update - The body of a kdeconnect.battery packet
+     * @param {kdeconnect.battery} packet - A kdeconnect.battery packet
      */
-    _handleUpdate(update) {
-        if (this._charging !== update.isCharging) {
-            this._charging = update.isCharging;
+    _receiveState(packet) {
+        // Charging state changed
+        if (this._charging !== packet.body.isCharging) {
+            this._charging = packet.body.isCharging;
             this.notify('charging');
         }
 
-        if (this._level !== update.currentCharge) {
-            this._level = update.currentCharge;
+        // Level changed
+        if (this._level !== packet.body.currentCharge) {
+            this._level = packet.body.currentCharge;
             this.notify('level');
 
             if (this._level > this._thresholdLevel) {
@@ -243,71 +224,19 @@ var Plugin = GObject.registerClass({
             }
         }
 
-        if (update.thresholdEvent > 0) {
-            this._handleThreshold();
+        // Device considers the level low
+        if (packet.body.thresholdEvent > 0) {
+            this._notifyState();
         }
 
-        this._logStatus(update.currentCharge, update.isCharging);
-
-        this._time = this._extrapolateTime();
-        this.notify('time');
+        this._updateEstimate();
         this.notify('icon-name');
-    }
-
-    /**
-     * UPower monitoring methods
-     */
-    _monitor() {
-        if (this.service.type !== 'laptop' || this._upower) {
-            return;
-        } else if (!this.device.get_incoming_supported('battery')) {
-            debug('incoming battery statistics not supported', this.device.name);
-            return;
-        }
-
-        try {
-            this._upower = new UPower.Device();
-
-            this._upower.set_object_path_sync(
-                '/org/freedesktop/UPower/devices/DisplayDevice',
-                null
-            );
-
-            this._upower._percentageId = this._upower.connect(
-                'notify::percentage',
-                this._handleRequest.bind(this)
-            );
-
-            this._upower._stateId = this._upower.connect(
-                'notify::state',
-                this._handleRequest.bind(this)
-            );
-
-            this._upower._warningId = this._upower.connect(
-                'notify::warning_level',
-                this._handleRequest.bind(this)
-            );
-
-            this._handleRequest();
-        } catch(e) {
-            logError(e, this.device.name);
-            this._unmonitor();
-        }
-    }
-
-    _unmonitor() {
-        if (this.hasOwnProperty('_upower')) {
-            this._upower.disconnect(this._upower._percentageId);
-            this._upower.disconnect(this._upower._stateId);
-            this._upower.disconnect(this._upower._warningId);
-            delete this._upower;
-        }
     }
 
     /**
      * Request the remote battery's current charge/state
      */
-    batteryRequest() {
+    _requestState() {
         this.device.sendPacket({
             id: 0,
             type: 'kdeconnect.battery.request',
@@ -316,81 +245,131 @@ var Plugin = GObject.registerClass({
     }
 
     /**
-     * Cache methods for battery statistics
+     * Report the local battery's current charge/state
      *
-     * See also: https://android.googlesource.com/platform/frameworks/base/+/master/core/java/android/os/BatteryStats.java#1036
+     * TODO: find a decent source for threshold level
      */
-    _logStatus(level, charging) {
-        // Edge case
-        if (!level) {
-            return;
-        // Reset stats when fully charged
-        } else if (level === 100) {
-            this._chargeStats.length = 0;
-            this._dischargeStats.length = 0;
-        }
+    _sendState() {
+        if (!this.service.upower) { return; }
 
-        let stats = (charging) ? this._chargeStats : this._dischargeStats;
-        let time = Math.floor(Date.now() / 1000);
-
-        if (!stats.length) {
-            stats.push({ time: time, level: level });
-        } else if (stats[stats.length - 1].level !== level) {
-            stats.push({ time: time, level: level });
-        }
-    }
-
-    _extrapolateTime() {
-        let tdelta, ldelta;
-        let rate = 0;
-        let time = 0;
-
-        let stats = (this.charging) ? this._chargeStats : this._dischargeStats;
-
-        for (let i = 0; i + 1 <= stats.length - 1; i++) {
-            tdelta = stats[i + 1].time - stats[i].time;
-
-            if (this.charging) {
-                ldelta = stats[i + 1].level - stats[i].level;
-            } else {
-                ldelta = stats[i].level - stats[i + 1].level;
+        let packet = {
+            id: 0,
+            type: 'kdeconnect.battery',
+            body: {
+                currentCharge: this.service.upower.percentage,
+                isCharging: (this.service.upower.state !== UPower.DeviceState.DISCHARGING),
+                thresholdEvent: 0
             }
+        };
 
-            if (ldelta > 0 && rate > 0) {
-                rate = (rate * 0.4) + ((tdelta/ldelta) * 0.6);
-            } else if (ldelta > 0) {
-                rate = tdelta/ldelta;
-            }
+        if (this.service.upower.percentage === 15 && !packet.body.isCharging) {
+            packet.body.thresholdEvent = 1;
         }
 
-        if (rate && this.charging) {
-            time = rate * (100 - stats[stats.length - 1].level);
-        } else if (rate && !this.charging) {
-            time = rate * stats[stats.length - 1].level;
-        }
-
-        return (time === NaN) ? 0 : Math.floor(time);
+        this.device.sendPacket(packet);
     }
 
     /**
-     * Override Plugin.cacheBuild() to limit statistics to three days
+     * UPower monitoring methods
      */
-    cacheBuild() {
-        let cache = super.cacheBuild();
+    _monitorState() {
+        try {
+            switch (true) {
+                // The component failed to load
+                case (!this.service.upower):
+                // Already monitoring
+                case (this._upowerId > 0):
+                // Not a battery capable device
+                case (this.service.type !== 'laptop'):
+                // Device doesn't support receiving battery statistics
+                case (!this.device.get_incoming_supported('battery')):
+                    return;
+            }
 
-        // Limit stats to 3 days
-        let limit = (Date.now() / 1000) - (3*24*60*60);
+            this._upowerId = this.service.upower.connect(
+                'changed',
+                this._sendState.bind(this)
+            );
 
-        return {
-            _chargeStats: cache._chargeStats.filter(stat => stat.time > limit),
-            _dischargeStats: cache._dischargeStats.filter(stat => stat.time > limit),
-            _thresholdLevel: cache._thresholdLevel
-        };
+            this._sendState();
+        } catch(e) {
+            logError(e, this.device.name);
+            this._unmonitorState();
+        }
+    }
+
+    _unmonitorState() {
+        if (this._upowerId > 0) {
+            this.service.upower.disconnect(this._upowerId);
+            this._upowerId = 0;
+        }
+    }
+
+    /**
+     * Recalculate the (dis)charge rate and update the estimated time remaining
+     * See also: https://android.googlesource.com/platform/frameworks/base/+/master/core/java/android/os/BatteryStats.java#1036
+     */
+    _updateEstimate() {
+        let new_time = Math.floor(Date.now()/1000);
+        let new_level = this.level;
+
+        // Read the state; rate has a default, time and level default to current
+        let [rate, time, level] = this.charging ? this._chargeState : this._dischargeState;
+        time = (Number.isFinite(time) && time > 0) ? time : new_time;
+        level = (Number.isFinite(level) && level > -1) ? level : new_level;
+
+        if (!Number.isFinite(rate) || rate < 1) {
+            rate = this.charging ? 54 : 864;
+        }
+
+        // Derive rate from time/level diffs (rate = seconds/percent)
+        let ldiff = this.charging ? new_level - level : level - new_level;
+        let tdiff = new_time - time;
+        let new_rate = tdiff/ldiff;
+
+        // Update the rate if it seems valid. Use a weighted average in favour
+        // of the new rate to account for possible missed level changes
+        if (new_rate && Number.isFinite(new_rate)) {
+            rate = Math.floor((rate * 0.4) + (new_rate * 0.6));
+        }
+
+        // Save the state
+        if (this.charging) {
+            this._chargeState = [rate, new_time, new_level];
+        } else {
+            this._dischargeState = [rate, new_time, new_level];
+        }
+
+        // Notify of the change
+        if (rate && this.charging) {
+            this._time = Math.floor(rate * (100 - new_level));
+        } else if (rate && !this.charging) {
+            this._time = Math.floor(rate * new_level);
+        }
+
+        this.notify('time');
+    }
+
+    _estimateTime() {
+        let [rate, time, level] = this.charging ? this._chargeState : this._dischargeState;
+        level = (level > -1) ? level : this.level;
+
+        if (!Number.isFinite(rate) || rate < 1) {
+            rate = this.charging ? 864 : 90;
+        }
+
+        if (rate && this.charging) {
+            this._time = Math.floor(rate * (100 - level));
+        } else if (rate && !this.charging) {
+            this._time = Math.floor(rate * level);
+        }
+
+        this.notify('time');
     }
 
     destroy() {
         this.settings.disconnect(this._sendStatisticsId);
-        this._unmonitor();
+        this._unmonitorState();
         this.device._dbus_object.remove_interface(this._dbus);
 
         super.destroy();
