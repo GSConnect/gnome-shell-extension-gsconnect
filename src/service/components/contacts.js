@@ -329,7 +329,7 @@ var Store = GObject.registerClass({
 
             let proc = launcher.spawnv([
                 'python3',
-                gsconnect.extdatadir + '/modules/folks.py'
+                gsconnect.extdatadir + '/service/components/folks.py'
             ]);
 
             proc.communicate_utf8_async(null, null, (proc, res) => {

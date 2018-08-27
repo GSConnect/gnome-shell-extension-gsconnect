@@ -4,7 +4,7 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 
-const Contacts = imports.modules.contacts;
+const Contacts = imports.service.components.contacts;
 const Sms = imports.service.ui.sms;
 const PluginsBase = imports.service.plugins.base;
 

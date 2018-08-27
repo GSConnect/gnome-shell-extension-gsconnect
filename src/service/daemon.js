@@ -41,9 +41,6 @@ const Core = imports.service.core;
 const Device = imports.service.device;
 const Lan = imports.service.lan;
 
-const MPRIS = imports.service.components.mpris;
-const Notification = imports.service.components.notification;
-
 const ServiceUI = imports.service.ui.service;
 const Settings = imports.service.ui.settings;
 
@@ -329,7 +326,7 @@ var Service = GObject.registerClass({
             // Misc service actions
             ['broadcast', this.broadcast.bind(this)],
             ['log', this._logAction.bind(this)],
-            ['debugger', this._debugger.bind(this)],
+            ['debugger', this._debuggerAction.bind(this)],
             ['quit', this.quit.bind(this)]
         ];
 
@@ -463,7 +460,7 @@ var Service = GObject.registerClass({
         );
     }
 
-    _debugger() {
+    _debuggerAction() {
         (new imports.modules.debug.Window()).present();
     }
 
@@ -521,22 +518,23 @@ var Service = GObject.registerClass({
     }
 
     _loadComponents() {
-
-        // Notification Listener
-        try {
-            this.notification = new Notification.Listener();
-        } catch (e) {
-            logError(e, 'Notification Component');
-        }
-
         // MPRIS Manager
         try {
+            var MPRIS = imports.service.components.mpris;
             this.mpris = new MPRIS.Manager();
         } catch (e) {
             logError(e, 'MPRIS Component');
         }
 
-        // Mixer
+        // Notification Listener
+        try {
+            var Notification = imports.service.components.notification;
+            this.notification = new Notification.Listener();
+        } catch (e) {
+            logError(e, 'Notification Component');
+        }
+
+        // PulseAudio
         try {
             var PulseAudio = imports.service.components.pulseaudio;
             this.mixer = new PulseAudio.Mixer();

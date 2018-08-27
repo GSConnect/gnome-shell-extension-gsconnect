@@ -5,7 +5,7 @@ const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
-const Contacts = imports.modules.contacts;
+const Contacts = imports.service.components.contacts;
 const Lan = imports.service.lan;
 const PluginsBase = imports.service.plugins.base;
 
