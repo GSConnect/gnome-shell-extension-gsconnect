@@ -315,19 +315,19 @@ var Plugin = GObject.registerClass({
      * @param {String} eventType - 'ringing' or 'talking'
      */
     _setMediaState(eventType) {
-        if (this.service.mixer) {
+        if (this.service.pulseaudio) {
             switch (this.settings.get_string(`${eventType}-volume`)) {
                 case 'lower':
-                    this.service.mixer.lowerVolume();
+                    this.service.pulseaudio.lowerVolume();
                     break;
 
                 case 'mute':
-                    this.service.mixer.muteVolume();
+                    this.service.pulseaudio.muteVolume();
                     break;
             }
 
             if (eventType === 'talking' && this.settings.get_boolean('talking-microphone')) {
-                this.service.mixer.muteMicrophone();
+                this.service.pulseaudio.muteMicrophone();
             }
         }
 
@@ -345,8 +345,8 @@ var Plugin = GObject.registerClass({
             this.service.mpris.unpauseAll();
         }
 
-        if (this.service.mixer) {
-            this.service.mixer.restore();
+        if (this.service.pulseaudio) {
+            this.service.pulseaudio.restore();
         }
     }
 
