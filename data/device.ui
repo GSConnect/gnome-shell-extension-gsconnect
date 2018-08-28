@@ -46,6 +46,8 @@
                             <property name="height_request">56</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
+                            <property name="activatable">False</property>
+                            <property name="selectable">False</property>
                             <child>
                               <object class="GtkGrid">
                                 <property name="visible">True</property>
@@ -142,6 +144,7 @@
                           <object class="GtkListBoxRow" id="mpris">
                             <property name="height_request">56</property>
                             <property name="can_focus">True</property>
+                            <property name="activatable">False</property>
                             <property name="selectable">False</property>
                             <child>
                               <object class="GtkGrid">
@@ -188,6 +191,7 @@
                           <object class="GtkListBoxRow" id="mousepad">
                             <property name="height_request">56</property>
                             <property name="can_focus">True</property>
+                            <property name="activatable">False</property>
                             <property name="selectable">False</property>
                             <child>
                               <object class="GtkGrid">
@@ -235,6 +239,7 @@
                           <object class="GtkListBoxRow" id="systemvolume">
                             <property name="height_request">56</property>
                             <property name="can_focus">True</property>
+                            <property name="activatable">False</property>
                             <property name="selectable">False</property>
                             <child>
                               <object class="GtkGrid">
