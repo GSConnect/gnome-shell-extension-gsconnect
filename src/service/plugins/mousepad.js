@@ -130,7 +130,9 @@ var Plugin = new Lang.Class({
 
         try {
             let [screen, x, y] = this._pointer.get_position();
-            Atspi.generate_mouse_event(x, y, event);
+            let monitor = this._display.get_monitor(screen.get_monitor_at_point(x, y));
+            let dpi = monitor.get_scale_factor();
+            Atspi.generate_mouse_event(x * dpi, y * dpi, event);
         } catch (e) {
             log("Mousepad: Error simulating mouse click: " + e);
         }
@@ -143,7 +145,9 @@ var Plugin = new Lang.Class({
 
         try {
             let [screen, x, y] = this._pointer.get_position();
-            Atspi.generate_mouse_event(x, y, event);
+            let monitor = this._display.get_monitor(screen.get_monitor_at_point(x, y));
+            let dpi = monitor.get_scale_factor();
+            Atspi.generate_mouse_event(x * dpi, y * dpi, event);
         } catch (e) {
             log("Mousepad: Error simulating mouse double click: " + e);
         }
@@ -153,7 +157,10 @@ var Plugin = new Lang.Class({
         debug("Mousepad: movePointer(" + dx + ", " + dy + ")");
 
         try {
-            Atspi.generate_mouse_event(dx, dy, "rel");
+            let [screen, x, y] = this._pointer.get_position();
+            let monitor = this._display.get_monitor(screen.get_monitor_at_point(x, y));
+            let dpi = monitor.get_scale_factor();
+            Atspi.generate_mouse_event(dx * dpi, dy * dpi, "rel");
         } catch (e) {
             log("Mousepad: Error simulating mouse movement: " + e);
         }
@@ -166,7 +173,9 @@ var Plugin = new Lang.Class({
 
         try {
             let [screen, x, y] = this._pointer.get_position();
-            Atspi.generate_mouse_event(x, y, event);
+            let monitor = this._display.get_monitor(screen.get_monitor_at_point(x, y));
+            let dpi = monitor.get_scale_factor();
+            Atspi.generate_mouse_event(x * dpi, y * dpi, event);
         } catch (e) {
             log("Mousepad: Error simulating mouse press: " + e);
         }
@@ -179,7 +188,9 @@ var Plugin = new Lang.Class({
 
         try {
             let [screen, x, y] = this._pointer.get_position();
-            Atspi.generate_mouse_event(x, y, event);
+            let monitor = this._display.get_monitor(screen.get_monitor_at_point(x, y));
+            let dpi = monitor.get_scale_factor();
+            Atspi.generate_mouse_event(x * dpi, y * dpi, event);
         } catch (e) {
             log("Mousepad: Error simulating mouse release: " + e);
         }
