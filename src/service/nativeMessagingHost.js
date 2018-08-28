@@ -21,7 +21,7 @@ function getPath() {
 window.gsconnect = { extdatadir: getPath() };
 imports.searchPath.unshift(gsconnect.extdatadir);
 imports._gsconnect;
-const DBus = imports.modules.dbus;
+const DBus = imports.service.components.dbus;
 
 
 const DeviceInterface = gsconnect.dbusinfo.lookup_interface(

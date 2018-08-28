@@ -6,7 +6,7 @@ const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
 const Core = imports.service.core;
-const DBus = imports.modules.dbus;
+const DBus = imports.service.components.dbus;
 const Bluetooth = imports.service.bluetooth;
 
 const UUID = 'org.gnome.Shell.Extensions.GSConnect.Device';

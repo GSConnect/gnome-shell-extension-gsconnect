@@ -5,7 +5,7 @@ const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 
 const Core = imports.service.core;
-const DBus = imports.modules.dbus;
+const DBus = imports.service.components.dbus;
 
 
 /**
