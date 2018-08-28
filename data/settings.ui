@@ -814,7 +814,7 @@
                                             <property name="receives_default">True</property>
                                             <property name="halign">end</property>
                                             <property name="valign">center</property>
-                                            <property name="action_name">app.debug-log</property>
+                                            <property name="action_name">app.log</property>
                                             <child>
                                               <object class="GtkImage">
                                                 <property name="visible">True</property>

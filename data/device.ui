@@ -255,7 +255,7 @@
                                     <property name="valign">center</property>
                                     <property name="hexpand">True</property>
                                     <property name="vexpand">True</property>
-                                    <property name="label">System Volume</property>
+                                    <property name="label">Volume Control</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">0</property>
