@@ -170,7 +170,9 @@ var Plugin = GObject.registerClass({
     clickPointer(button) {
         try {
             let [screen, x, y] = this._pointer.get_position();
-            Atspi.generate_mouse_event(x, y, `b${button}c`);
+            let monitor = this._display.get_monitor_at_point(x, y);
+            let scale = monitor.get_scale_factor();
+            Atspi.generate_mouse_event(scale * x, scale * y, `b${button}c`);
         } catch (e) {
             logError(e, this.device.name);
         }
@@ -179,7 +181,9 @@ var Plugin = GObject.registerClass({
     doubleclickPointer(button) {
         try {
             let [screen, x, y] = this._pointer.get_position();
-            Atspi.generate_mouse_event(x, y, `b${button}d`);
+            let monitor = this._display.get_monitor_at_point(x, y);
+            let scale = monitor.get_scale_factor();
+            Atspi.generate_mouse_event(scale * x, scale * y, `b${button}d`);
         } catch (e) {
             logError(e, this.device.name);
         }
@@ -187,7 +191,10 @@ var Plugin = GObject.registerClass({
 
     movePointer(dx, dy) {
         try {
-            Atspi.generate_mouse_event(dx, dy, 'rel');
+            let [screen, x, y] = this._pointer.get_position();
+            let monitor = this._display.get_monitor_at_point(x, y);
+            let scale = monitor.get_scale_factor();
+            Atspi.generate_mouse_event(scale * dx, scale * dy, `rel`);
         } catch (e) {
             logError(e, this.device.name);
         }
@@ -196,7 +203,9 @@ var Plugin = GObject.registerClass({
     pressPointer(button) {
         try {
             let [screen, x, y] = this._pointer.get_position();
-            Atspi.generate_mouse_event(x, y, `b${button}p`);
+            let monitor = this._display.get_monitor_at_point(x, y);
+            let scale = monitor.get_scale_factor();
+            Atspi.generate_mouse_event(scale * x, scale * y, `b${button}p`);
         } catch (e) {
             logError(e, this.device.name);
         }
@@ -205,7 +214,9 @@ var Plugin = GObject.registerClass({
     releasePointer(button) {
         try {
             let [screen, x, y] = this._pointer.get_position();
-            Atspi.generate_mouse_event(x, y, `b${button}r`);
+            let monitor = this._display.get_monitor_at_point(x, y);
+            let scale = monitor.get_scale_factor();
+            Atspi.generate_mouse_event(scale * x, scale * y, `b${button}r`);
         } catch (e) {
             logError(e, this.device.name);
         }
