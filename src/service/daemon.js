@@ -518,44 +518,16 @@ var Service = GObject.registerClass({
     }
 
     _loadComponents() {
-        // MPRIS Manager
-        try {
-            var MPRIS = imports.service.components.mpris;
-            this.mpris = new MPRIS.Manager();
-        } catch (e) {
-            logError(e, 'MPRIS Component');
-        }
+        for (let name in imports.service.components) {
+            try {
+                let module = imports.service.components[name];
 
-        // Notification Listener
-        try {
-            var Notification = imports.service.components.notification;
-            this.notification = new Notification.Listener();
-        } catch (e) {
-            logError(e, 'Notification Component');
-        }
-
-        // PulseAudio
-        try {
-            var PulseAudio = imports.service.components.pulseaudio;
-            this.mixer = new PulseAudio.Mixer();
-        } catch (e) {
-            logError(e, 'PulseAudio Component');
-        }
-
-        // Sound
-        try {
-            var Sound = imports.service.components.sound;
-            this.sound = Sound;
-        } catch (e) {
-            logError(e, 'Sound Component');
-        }
-
-        // UPower
-        try {
-            var UPower = imports.service.components.upower;
-            this.upower = new UPower.Component();
-        } catch (e) {
-            logError(e, 'UPower Component');
+                if (module.hasOwnProperty('Service')) {
+                    this[name] = new module.Component();
+                }
+            } catch (e) {
+                logError(e, name);
+            }
         }
     }
 

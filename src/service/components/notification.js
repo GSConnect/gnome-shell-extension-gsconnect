@@ -462,3 +462,9 @@ var Listener = class Listener {
     }
 };
 
+
+/**
+ * The service class for this component
+ */
+var Service = Listener;
+

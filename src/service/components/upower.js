@@ -10,12 +10,12 @@ var Metadata = {
 };
 
 
-var Component = GObject.registerClass({
-    GTypeName: 'GSConnectUPowerComponent',
+var Battery = GObject.registerClass({
+    GTypeName: 'GSConnectSystemBattery',
     Signals: {
         'changed': { flags: GObject.SignalFlags.RUN_FIRST }
     }
-}, class UPowerComponent extends UPower.Device {
+}, class Battery extends UPower.Device {
 
     _init() {
         super._init();
@@ -41,4 +41,10 @@ var Component = GObject.registerClass({
         }
     }
 });
+
+
+/**
+ * The service class for this component
+ */
+var Service = Battery;
 

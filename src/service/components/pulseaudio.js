@@ -206,3 +206,10 @@ var Mixer = GObject.registerClass({
         }
     }
 });
+
+
+/**
+ * The service class for this component
+ */
+var Service = Mixer;
+
