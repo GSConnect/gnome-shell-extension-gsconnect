@@ -307,11 +307,9 @@ var Device = GObject.registerClass({
         let supported = [];
 
         for (let name in imports.service.plugins) {
-            // Skip base.js
-            if (name === 'base')
-                continue;
-
             let meta = imports.service.plugins[name].Metadata;
+
+            if (!meta) continue;
 
             // If we can handle packets it sends...
             if (meta.incomingCapabilities.some(t => packet.body.outgoingCapabilities.includes(t))) {

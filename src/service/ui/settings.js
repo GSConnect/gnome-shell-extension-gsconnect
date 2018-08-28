@@ -614,7 +614,7 @@ var Device = GObject.registerClass({
             this.errata.visible = true;
         } else {
             if (this.visible_child_name === 'errata') {
-                this.visible_child_name = 'general';
+                this.switcher.get_row_at_index(0).activate();
             }
 
             this.errata.visible = false;

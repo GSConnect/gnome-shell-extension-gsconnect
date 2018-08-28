@@ -523,7 +523,7 @@ var Service = GObject.registerClass({
                 let module = imports.service.components[name];
 
                 if (module.hasOwnProperty('Service')) {
-                    this[name] = new module.Component();
+                    this[name] = new module.Service();
                 }
             } catch (e) {
                 logError(e, name);
