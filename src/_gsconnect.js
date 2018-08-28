@@ -204,25 +204,6 @@ window.logWarning = function(message, prefix=null) {
 
 
 /**
- * Check if a command is in the PATH
- * @param {string} name - the name of the command
- */
-gsconnect.hasCommand = function(cmd) {
-    let proc = new Gio.Subprocess({
-        argv: ['which', cmd],
-        flags: Gio.SubprocessFlags.STDOUT_PIPE
-    });
-    proc.init(null);
-
-    let stdout = proc.communicate_utf8(null, null)[1];
-    proc.force_exit();
-    proc.wait(null);
-
-    return (stdout.length);
-};
-
-
-/**
  * Install desktop files for user installs
  */
 gsconnect.installService = function() {

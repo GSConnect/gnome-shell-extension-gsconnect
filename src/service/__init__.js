@@ -5,10 +5,40 @@ const GLib = imports.gi.GLib;
 const Gtk = imports.gi.Gtk;
 
 /**
- * Overrides and polyfills are kept here so we don't mangle or collide with the
- * prototypes of other processes (eg. gnome-shell).
+ * Globals, overrides and polyfills are kept here so we don't mangle or collide
+ * with the prototypes of other processes (eg. gnome-shell). This means only
+ *
  */
 debug('loading service/__init__.js');
+
+
+/**
+ * Global functions
+ */
+
+/**
+ * Check if a command is in the PATH
+ * @param {string} name - the name of the command
+ */
+window.hasCommand = function(cmd) {
+    let result;
+
+    try {
+        let proc = new Gio.Subprocess({
+            argv: ['which', cmd],
+            flags: Gio.SubprocessFlags.STDOUT_PIPE
+        });
+        proc.init(null);
+
+        let stdout = proc.communicate_utf8(null, null)[1];
+        result = (stdout.length);
+    } catch (e) {
+        logError(e);
+        result = false;
+    } finally {
+        return result;
+    }
+};
 
 
 /**

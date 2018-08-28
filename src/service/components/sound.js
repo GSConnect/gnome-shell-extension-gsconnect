@@ -12,7 +12,7 @@ try {
     var _gsoundContext = undefined;
 
     // Try falling back to libcanberra
-    if (!gsconnect.hasCommand('canberra-gtk-play')) {
+    if (!hasCommand('canberra-gtk-play')) {
         throw new Error('sound-error');
     }
 }
@@ -32,7 +32,7 @@ function play_theme_sound(name) {
     if (_gsoundContext) {
         _gsoundContext.play_simple({ 'event.id' : name }, null);
         return true;
-    } else if (gsconnect.hasCommand('canberra-gtk-play')) {
+    } else if (hasCommand('canberra-gtk-play')) {
         let proc = new Gio.Subprocess({
             argv: ['canberra-gtk-play', '-i', name],
             flags: Gio.SubprocessFlags.NONE
@@ -74,7 +74,7 @@ function loop_theme_sound(name, cancellable) {
                 }
             }
         );
-    } else if (gsconnect.hasCommand('canberra-gtk-play')) {
+    } else if (hasCommand('canberra-gtk-play')) {
         let proc = new Gio.Subprocess({
             argv: ['canberra-gtk-play', '-i', name],
             flags: Gio.SubprocessFlags.NONE
