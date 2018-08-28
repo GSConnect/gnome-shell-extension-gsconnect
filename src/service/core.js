@@ -479,26 +479,10 @@ var Channel = GObject.registerClass({
 
 
 /**
- * File Transfers
- *
- * NOTE: transfers are always closed on completion
- *
- * Example Contruction:
- *  let transfer = new Protocol.Transfer({
- *      device: {Device.Device},
- *      size: {Number} size in bytes,
- *      input_stream: {Gio.InputStream} readable stream for uploads,
- *      output_stream: {Gio.OutputStream} writable stream for downloads
- *  });
+ * File Transfer base class
  */
 var Transfer = GObject.registerClass({
     GTypeName: 'GSConnectCoreTransfer',
-    Signals: {
-        'progress': {
-            flags: GObject.SignalFlags.RUN_FIRST,
-            param_types: [ GObject.TYPE_INT ]
-        }
-    },
     Properties: {
         'device': GObject.ParamSpec.object(
             'device',
@@ -583,20 +567,6 @@ var Transfer = GObject.registerClass({
     close() {
         this.device._transfers.delete(this.uuid);
         super.close();
-    }
-
-    /**
-     * Emit the progress signal with an integer between 0-100
-     * @param {Number} increment - The increment to emit progress signals at
-     */
-    progress(increment=1) {
-        let progress = Math.floor(this._written / this.size * 100);
-
-        if (progress - this._progress >= increment) {
-            this.emit('progress', progress);
-        }
-
-        this._progress = progress;
     }
 
     /**
