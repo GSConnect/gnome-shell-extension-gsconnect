@@ -178,7 +178,7 @@ var Plugin = GObject.registerClass({
                 icon: new Gio.ThemedIcon({ name: iconName })
             });
         } catch (e) {
-            logWarning(e, this.device.name);
+            logError(e, this.device.name);
         }
     }
 
@@ -233,8 +233,6 @@ var Plugin = GObject.registerClass({
      * @param {string} path - Local file path or file URI
      */
     async shareFile(path) {
-        debug(path);
-
         let file, transfer;
 
         try {
@@ -321,8 +319,6 @@ var Plugin = GObject.registerClass({
      * @param {string} text - A string of unicode text
      */
     shareText(text) {
-        debug(text);
-
         this.device.sendPacket({
             id: 0,
             type: 'kdeconnect.share.request',
@@ -336,8 +332,6 @@ var Plugin = GObject.registerClass({
      * @param {string} uri - Currently http(s) and tel: URIs are supported
      */
     shareUri(uri) {
-        debug(uri);
-
         switch (true) {
             // Currently only pass http(s)/tel URIs
             case uri.startsWith('http://'):
