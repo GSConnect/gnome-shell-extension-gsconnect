@@ -11,6 +11,7 @@ const PluginsBase = imports.service.plugins.base;
 
 
 var Metadata = {
+    label: _('Share'),
     id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.Share',
     incomingCapabilities: ['kdeconnect.share.request'],
     outgoingCapabilities: ['kdeconnect.share.request'],

@@ -8,6 +8,7 @@ const PluginsBase = imports.service.plugins.base;
 
 
 var Metadata = {
+    label: _('Ping'),
     id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.Ping',
     incomingCapabilities: ['kdeconnect.ping'],
     outgoingCapabilities: ['kdeconnect.ping'],

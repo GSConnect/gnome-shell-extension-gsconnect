@@ -9,6 +9,7 @@ const PluginsBase = imports.service.plugins.base;
 
 
 var Metadata = {
+    label: _('Run Commands'),
     id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.RunCommand',
     incomingCapabilities: ['kdeconnect.runcommand', 'kdeconnect.runcommand.request'],
     outgoingCapabilities: ['kdeconnect.runcommand', 'kdeconnect.runcommand.request'],

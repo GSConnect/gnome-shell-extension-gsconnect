@@ -8,7 +8,7 @@ const PluginsBase = imports.service.plugins.base;
 
 
 var Metadata = {
-    summary: _('System Volume'),
+    label: _('System Volume'),
     id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.SystemVolume',
     incomingCapabilities: ['kdeconnect.systemvolume.request'],
     outgoingCapabilities: ['kdeconnect.systemvolume'],

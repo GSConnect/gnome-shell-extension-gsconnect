@@ -8,6 +8,7 @@ const PluginsBase = imports.service.plugins.base;
 
 
 var Metadata = {
+    label: _('MPRIS'),
     id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.MPRIS',
     incomingCapabilities: ['kdeconnect.mpris.request'],
     outgoingCapabilities: ['kdeconnect.mpris'],

@@ -10,6 +10,7 @@ const PluginsBase = imports.service.plugins.base;
 
 
 var Metadata = {
+    label: _("Remote Input"),
     id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.Mousepad',
     incomingCapabilities: ['kdeconnect.mousepad.request'],
     outgoingCapabilities: [],

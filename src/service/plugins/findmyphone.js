@@ -9,6 +9,7 @@ const PluginsBase = imports.service.plugins.base;
 
 
 var Metadata = {
+    label: _('Find My Phone'),
     id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.FindMyPhone',
     incomingCapabilities: ['kdeconnect.findmyphone.request'],
     outgoingCapabilities: ['kdeconnect.findmyphone.request'],

@@ -9,6 +9,7 @@ const PluginsBase = imports.service.plugins.base;
 
 
 var Metadata = {
+    label: _('SFTP'),
     id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.SFTP',
     incomingCapabilities: ['kdeconnect.sftp'],
     outgoingCapabilities: ['kdeconnect.sftp.request'],
@@ -59,7 +60,7 @@ var Plugin = GObject.registerClass({
 
         if (!hasCommand('sshfs')) {
             this.destroy();
-            throw Error(_('SSHFS not installed'));
+            throw Error('sshfs-error');
         }
     }
 

@@ -1372,6 +1372,7 @@ var Device = GObject.registerClass({
                 this.plugin_list.add(row);
 
                 let widget = new Gtk.CheckButton({
+                    label: meta.label,
                     active: this.device.get_plugin_allowed(plugin),
                     valign: Gtk.Align.CENTER,
                     visible: true

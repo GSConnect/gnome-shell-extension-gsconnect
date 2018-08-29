@@ -9,6 +9,7 @@ const PluginsBase = imports.service.plugins.base;
 
 
 var Metadata = {
+    label: _('Battery'),
     id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.Battery',
     incomingCapabilities: ['kdeconnect.battery', 'kdeconnect.battery.request'],
     outgoingCapabilities: ['kdeconnect.battery', 'kdeconnect.battery.request'],

@@ -10,6 +10,7 @@ const PluginsBase = imports.service.plugins.base;
 
 
 var Metadata = {
+    label: _('Telephony'),
     id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.Telephony',
     incomingCapabilities: [
         'kdeconnect.telephony',

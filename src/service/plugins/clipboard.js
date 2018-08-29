@@ -8,6 +8,7 @@ const PluginsBase = imports.service.plugins.base;
 
 
 var Metadata = {
+    label: _('Clipboard'),
     id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.Clipboard',
     incomingCapabilities: ['kdeconnect.clipboard'],
     outgoingCapabilities: ['kdeconnect.clipboard'],
