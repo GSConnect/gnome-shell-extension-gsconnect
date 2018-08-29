@@ -6,7 +6,6 @@ const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 const Pango = imports.gi.Pango;
 
-const Color = imports.modules.color;
 const Contacts = imports.service.components.contacts;
 
 

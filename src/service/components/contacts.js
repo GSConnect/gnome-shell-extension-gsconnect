@@ -24,7 +24,7 @@ try {
     var Goa = undefined;
 }
 
-const Color = imports.modules.color;
+const Color = imports.service.components.color;
 
 
 //
