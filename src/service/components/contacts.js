@@ -369,9 +369,7 @@ var Avatar = GObject.registerClass({
         this.contact = contact;
 
         // Popover
-        // TODO: use 'popup' signal
         this.add_events(Gdk.EventMask.BUTTON_PRESS_MASK | Gdk.EventMask.BUTTON_RELEASE_MASK);
-        this.connect('button-release-event', this._popover.bind(this));
     }
 
     _loadPixbuf() {
@@ -405,6 +403,11 @@ var Avatar = GObject.registerClass({
         this._offset = (32 - this._pixbuf.width) / 2;
     }
 
+    vfunc_button_press_event(event) {
+        this.vfunc_popup_menu();
+        return true;
+    }
+
     vfunc_draw(cr) {
         if (this._pixbuf === undefined) {
             this._loadPixbuf();
@@ -428,12 +431,13 @@ var Avatar = GObject.registerClass({
         return false;
     }
 
-    // Popover
-    _popover(widget, event) {
-        let popover = new Gtk.PopoverMenu({
+    vfunc_popup_menu() {
+        let popover = new Gtk.Popover({
             relative_to: this,
             visible: true
         });
+        // FIXME popover closes before button callback executes
+        //popover.connect('closed', (popover) => popover.destroy());
 
         let box = new Gtk.Box({
             margin: 10,
@@ -454,7 +458,7 @@ var Avatar = GObject.registerClass({
             box.add(contactsItem);
         }
 
-        // Delete Contact
+        // Delete Contact (local only)
         if (this.contact.origin === 'gsconnect') {
             let deleteItem = new Gtk.ModelButton({
                 centered: true,
@@ -466,7 +470,13 @@ var Avatar = GObject.registerClass({
             box.add(deleteItem);
         }
 
-        popover.popup();
+        if (box.get_children().length > 0) {
+            popover.popup();
+            return true;
+        } else {
+            popover.emit('closed');
+            return false;
+        }
     }
 
     _popoverContacts(button, event) {
@@ -571,6 +581,7 @@ var ContactChooserRow = GObject.registerClass({
         this.get_child().get_child_at(1, 1).add(box);
 
         let number = new Gtk.Label({
+            // TODO: we have no use for unknown numbers
             label: entry.number || _('Unknown Number'),
             halign: Gtk.Align.START,
             hexpand: true,
@@ -590,6 +601,7 @@ var ContactChooserRow = GObject.registerClass({
         box.checkbutton = new Gtk.CheckButton({
             visible: true
         });
+        box.checkbutton.connect('toggled', () => this._toggled());
         box.add(box.checkbutton);
     }
 
@@ -728,6 +740,7 @@ var ContactChooser = GObject.registerClass({
         delete this.contacts;
     }
 
+    // FIXME: one bugly hack job right here
     _onEntryChanged(entry) {
         // If the entry contains string with more than 2 digits...
         if (this.entry.text.replace(/\D/g, '').length > 2) {
