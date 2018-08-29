@@ -338,7 +338,7 @@ var Window = GObject.registerClass({
         }
     }
 
-    async _onSwitcherRowSelected(box, row) {
+    _onSwitcherRowSelected(box, row) {
         row = row || this.switcher.get_row_at_index(0);
         let name = row.get_name();
 
@@ -386,11 +386,11 @@ var Window = GObject.registerClass({
         this.display_mode.label = state ? _('Panel') : _('User Menu');
     }
 
-    async _onDevicesChanged() {
+    _onDevicesChanged() {
         try {
             for (let id of this.application.devices) {
                 if (!this.stack.get_child_by_name(id)) {
-                    await this.addDevice(id);
+                    this.addDevice(id);
                 }
             }
 
@@ -416,7 +416,7 @@ var Window = GObject.registerClass({
         }
     }
 
-    async addDevice(id) {
+    addDevice(id) {
         let device = this.application._devices.get(id);
 
         // Create a new device widget
