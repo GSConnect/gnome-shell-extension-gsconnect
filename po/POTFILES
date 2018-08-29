@@ -4,9 +4,7 @@ data/menus.ui
 data/settings.ui
 src/extension.js
 src/nautilus-gsconnect.py
-src/prefs.js
 src/modules/contacts.js
-src/modules/sms.js
 src/service/daemon.js
 src/service/device.js
 src/service/plugins/battery.js
@@ -24,6 +22,7 @@ src/service/ui/keybindings.js
 src/service/ui/service.js
 src/service/ui/settings.js
 src/service/ui/sms.js
+src/service/ui/software.js
 src/shell/device.js
 src/shell/donotdisturb.js
 
