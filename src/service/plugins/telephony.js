@@ -134,7 +134,7 @@ var Plugin = GObject.registerClass({
                 break;
 
             default:
-                logWarning('Unknown telephony packet', this.device.name);
+                logError('Unknown telephony packet', this.device.name);
         }
     }
 

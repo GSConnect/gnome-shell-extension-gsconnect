@@ -204,7 +204,7 @@ var Channel = GObject.registerClass({
 
         // Bail if the deviceId is missing
         if (this.identity.body.deviceId === undefined) {
-            logWarning('missing deviceId', connection.get_remote_address().to_string());
+            logError('missing deviceId', connection.get_remote_address().to_string());
             return false;
         }
 
@@ -447,7 +447,7 @@ var Channel = GObject.registerClass({
             this.output_stream.put_string(packet.toString(), null);
             debug(packet, this.identity.body.deviceName);
         } catch (e) {
-            logWarning(e, this.identity.body.deviceName);
+            logError(e, this.identity.body.deviceName);
         }
     }
 

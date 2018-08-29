@@ -457,7 +457,7 @@ var Listener = class Listener {
             this._settings.disconnect(this._settingsId);
             this._monitor.close_sync(null);
         } catch (e) {
-            logWarning(e);
+            logError(e);
         }
     }
 };

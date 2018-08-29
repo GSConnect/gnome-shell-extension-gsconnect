@@ -267,7 +267,7 @@ var DeviceConnectDialog = GObject.registerClass({
 
                 this.service.broadcast(address);
             } catch (e) {
-                logWarning(e);
+                logError(e);
             }
         }
 

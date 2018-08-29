@@ -677,7 +677,7 @@ var Service = GObject.registerClass({
                     win.destroy();
                 }
             } catch (e) {
-                logWarning(e, `GSConnect: Opening ${file.get_uri()}:`);
+                logError(e, `GSConnect: Opening ${file.get_uri()}:`);
             }
         }
     }
