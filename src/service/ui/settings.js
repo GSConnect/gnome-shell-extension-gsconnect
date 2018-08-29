@@ -62,6 +62,7 @@ var DeviceRow = GObject.registerClass({
 
         this.set_name(device.id);
         this.device = device;
+        this.type = 'device';
 
         let grid = new Gtk.Grid({
             orientation: Gtk.Orientation.HORIZONTAL,
@@ -119,10 +120,6 @@ var DeviceRow = GObject.registerClass({
 
         return new Gio.ThemedIcon({ name: name });
     }
-
-    get type() {
-        return 'device';
-    }
 });
 
 
@@ -135,7 +132,7 @@ var SectionRow = GObject.registerClass({
 
     _init(params) {
         super._init({
-            activatable: true,
+            activatable: false,
             selectable: false,
             height_request: 56,
             visible: true
@@ -390,25 +387,33 @@ var Window = GObject.registerClass({
     }
 
     async _onDevicesChanged() {
-        for (let id of this.application.devices) {
-            if (!this.stack.get_child_by_name(id)) {
-                await this.addDevice(id);
-            }
-        }
-
-        this.stack.foreach(child => {
-            if (child.row) {
-                let id = child.row.get_name();
-
-                if (!this.application.devices.includes(id)) {
-                    let panel = this.stack.get_child_by_name(id);
-                    panel._destroy();
-                    panel.destroy();
+        try {
+            for (let id of this.application.devices) {
+                if (!this.stack.get_child_by_name(id)) {
+                    await this.addDevice(id);
                 }
             }
-        });
+
+            this.stack.foreach(child => {
+                if (child.row) {
+                    let id = child.row.get_name();
+
+                    if (!this.application.devices.includes(id)) {
+                        if (this.stack.visible_child_name === id) {
+                            this._onPrevious();
+                        }
+
+                        let panel = this.stack.get_child_by_name(id);
+                        panel._destroy();
+                        panel.destroy();
+                    }
+                }
+            });
 
         this.help.visible = !this.application.devices.length;
+        } catch (e) {
+            logError(e);
+        }
     }
 
     async addDevice(id) {
@@ -593,9 +598,7 @@ var Device = GObject.registerClass({
                     valign: Gtk.Align.CENTER,
                     vexpand: true,
                     visible: true
-                }),
-                activatable: false,
-                selectable: false
+                })
             });
             row._subtitle.tooltip_text = error.message;
             row._subtitle.ellipsize = Pango.EllipsizeMode.MIDDLE;
@@ -856,7 +859,6 @@ var Device = GObject.registerClass({
         let row = new SectionRow({
             title: this._commands[uuid].name,
             subtitle: this._commands[uuid].command,
-            activatable: false,
             selectable: true
         });
         row.set_name(uuid);
@@ -1029,7 +1031,8 @@ var Device = GObject.registerClass({
                         valign: Gtk.Align.CENTER,
                         vexpand: true,
                         visible: true
-                    })
+                    }),
+                    activatable: true
                 });
 
                 this.notification_apps.add(row);
@@ -1212,7 +1215,8 @@ var Device = GObject.registerClass({
                 let row = new SectionRow({
                     icon: action.icon,
                     title: action.label,
-                    widget: widget
+                    widget: widget,
+                    activatable: true
                 });
                 row.height_request = 48;
                 row._icon.pixel_size = 16;
@@ -1285,7 +1289,8 @@ var Device = GObject.registerClass({
             let row = new SectionRow({
                 title: command.name,
                 subtitle: command.command,
-                widget: widget
+                widget: widget,
+                activatable: true
             });
             row.action = commandAction;
             row.summary = command.name;
@@ -1350,49 +1355,59 @@ var Device = GObject.registerClass({
     }
 
     async _populatePlugins() {
-        this.plugin_list.foreach(row => {
-            row.widget.disconnect(row.widget._togglePluginId);
-            row.destroy()
-        });
-
-        for (let plugin of this.device.supported_plugins) {
-            let row = new Gtk.ListBoxRow({
-                activatable: true,
-                selectable: false,
-                visible: true
+        try {
+            this.plugin_list.foreach(row => {
+                row.widget.disconnect(row.widget._togglePluginId);
+                row.destroy()
             });
-            this.plugin_list.add(row);
 
-            let widget = new Gtk.CheckButton({
-                label: plugin,
-                active: this.device.get_plugin_allowed(plugin),
-                valign: Gtk.Align.CENTER,
-                visible: true
-            });
-            widget._togglePluginId = widget.connect(
-                'notify::active',
-                this._togglePlugin.bind(this)
-            );
-            row.add(widget);
+            for (let plugin of this.device.supported_plugins) {
+                let meta = imports.service.plugins[plugin].Metadata;
+
+                let row = new Gtk.ListBoxRow({
+                    activatable: true,
+                    selectable: false,
+                    visible: true
+                });
+                this.plugin_list.add(row);
+
+                let widget = new Gtk.CheckButton({
+                    active: this.device.get_plugin_allowed(plugin),
+                    valign: Gtk.Align.CENTER,
+                    visible: true
+                });
+                widget.name = plugin;
+                widget._togglePluginId = widget.connect(
+                    'notify::active',
+                    this._togglePlugin.bind(this)
+                );
+                row.add(widget);
+            }
+        } catch (e) {
+            logError(e);
         }
     }
 
     async _togglePlugin(widget) {
-        let name = widget.label;
-        let disabled = this.device.settings.get_strv('disabled-plugins');
+        try {
+            let name = widget.name;
+            let disabled = this.device.settings.get_strv('disabled-plugins');
 
-        if (disabled.includes(name)) {
-            disabled.splice(disabled.indexOf(name), 1);
-            this.device.loadPlugin(name);
-        } else {
-            this.device.unloadPlugin(name);
-            disabled.push(name);
-        }
+            if (disabled.includes(name)) {
+                disabled.splice(disabled.indexOf(name), 1);
+                this.device.loadPlugin(name);
+            } else {
+                this.device.unloadPlugin(name);
+                disabled.push(name);
+            }
 
-        this.device.settings.set_strv('disabled-plugins', disabled);
+            this.device.settings.set_strv('disabled-plugins', disabled);
 
-        if (this.hasOwnProperty(name)) {
-            this[name].visible = this.device.get_plugin_allowed(name);
+            if (this.hasOwnProperty(name)) {
+                this[name].visible = this.device.get_plugin_allowed(name);
+            }
+        } catch (e) {
+            logError(e);
         }
     }
 });
