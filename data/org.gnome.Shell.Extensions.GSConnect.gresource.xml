@@ -34,8 +34,6 @@
     <!-- SMS Icons -->
     <file compressed="true" preprocess="xml-stripblanks">sms-send.svg</file>
     <file compressed="true" preprocess="xml-stripblanks">sms-symbolic.svg</file>
-    <!-- Miscellaneous Fallback Icons -->
-    <file compressed="true" preprocess="xml-stripblanks">gnome-contacts-symbolic.svg</file>
   </gresource>
   <gresource prefix="/org/gnome/Shell/Extensions/GSConnect/gtk">
     <file compressed="true" preprocess="xml-stripblanks">menus.ui</file>
