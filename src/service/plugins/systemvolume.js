@@ -9,7 +9,6 @@ const PluginsBase = imports.service.plugins.base;
 
 var Metadata = {
     summary: _('System Volume'),
-    description: _('Control system volume and input levels'),
     id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.SystemVolume',
     incomingCapabilities: ['kdeconnect.systemvolume.request'],
     outgoingCapabilities: ['kdeconnect.systemvolume'],
