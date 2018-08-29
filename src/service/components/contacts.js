@@ -1,28 +1,11 @@
 'use strict';
 
-const Gettext = imports.gettext.domain('org.gnome.Shell.Extensions.GSConnect');
-const _ = Gettext.gettext;
-
 const Gdk = imports.gi.Gdk;
 const GdkPixbuf = imports.gi.GdkPixbuf;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
-
-
-// TODO: folks, prefs check Contacts.GData, etc
-try {
-    imports.gi.versions.GData = '0.0';
-    imports.gi.versions.Goa = '1.0';
-
-    var GData = imports.gi.GData;
-    var Goa = imports.gi.Goa;
-} catch (e) {
-    logWarning(e, 'Contacts');
-    var GData = undefined;
-    var Goa = undefined;
-}
 
 const Color = imports.service.components.color;
 
@@ -80,30 +63,33 @@ function getPixbuf(path, size=null) {
 
 /**
  * Return a localized string for a phone number type
- * TODO: move to a Map()
+ * See: http://www.ietf.org/rfc/rfc2426.txt
  *
- * See: https://developers.google.com/gdata/docs/2.0/elements#rel-values_71
- *      http://www.ietf.org/rfc/rfc2426.txt
+ * @param {string} type - An RFC2426 phone number type
  */
 function localizeNumberType(type) {
     if (!type) { return _('Other'); }
 
-    if (type.includes('fax')) {
-        // TRANSLATORS: A phone number type
-        return _('Fax');
-    // Sometimes libfolks->voice === GData->work
-    } else if (type.includes('work') || type.includes('voice')) {
-        // TRANSLATORS: A phone number type
-        return _('Work');
-    } else if (type.includes('cell') || type.includes('mobile')) {
-        // TRANSLATORS: A phone number type
-        return _('Mobile');
-    } else if (type.includes('home')) {
-        // TRANSLATORS: A phone number type
-        return _('Home');
-    } else {
-        // TRANSLATORS: A phone number type
-        return _('Other');
+    switch (true) {
+        case type.includes('fax'):
+            // TRANSLATORS: A phone number type
+            return _('Fax');
+
+        case type.includes('work'):
+            // TRANSLATORS: A phone number type
+            return _('Work');
+
+        case type.includes('cell'):
+            // TRANSLATORS: A phone number type
+            return _('Mobile');
+
+        case type.includes('home'):
+            // TRANSLATORS: A phone number type
+            return _('Home');
+
+        default:
+            // TRANSLATORS: A phone number type
+            return _('Other');
     }
 }
 
@@ -172,10 +158,6 @@ var Store = GObject.registerClass({
             GObject.ParamFlags.READABLE,
             ''
         )
-    },
-    Signals: {
-        'destroy': { flags: GObject.SignalFlags.NO_HOOKS },
-        'ready': { flags: GObject.SignalFlags.RUN_FIRST }
     }
 }, class Store extends GObject.Object {
 
@@ -254,6 +236,8 @@ var Store = GObject.registerClass({
         //
         let keys = Object.keys(matches);
 
+        // Create a new contact
+        // TODO: use folks to add contact
         if (keys.length === 0 && query.create) {
             // Create a unique ID for this contact
             let id = GLib.uuid_string_random();
@@ -273,6 +257,7 @@ var Store = GObject.registerClass({
             keys = Object.keys(matches);
         }
 
+        // Check for a single match
         if (query.single) {
             if (keys.length === 1) {
                 return matches[keys[0]];
@@ -305,13 +290,7 @@ var Store = GObject.registerClass({
         try {
             result = await this._updateFolksContacts();
         } catch (e) {
-            logWarning(e, 'Reading contacts from Folks');
-
-            try {
-                result = await this._updateGoogleContacts();
-            } catch (e) {
-                logWarning(e, 'Reading contacts from Google');
-            }
+            Gio.Application.get_default().send_error(e, 'folks-error');
         } finally {
             this._provider_icon = result;
             this.notify('provider-icon');
@@ -335,8 +314,6 @@ var Store = GObject.registerClass({
             proc.communicate_utf8_async(null, null, (proc, res) => {
                 try {
                     let [ok, stdout, stderr] = proc.communicate_utf8_finish(res);
-                    proc.force_exit();
-                    proc.wait(null);
 
                     if (stderr.length > 0) {
                         throw new Error(stderr)
@@ -346,79 +323,13 @@ var Store = GObject.registerClass({
                     this._contacts = mergeContacts(this._contacts, folks);
                     resolve('gnome-contacts-symbolic');
                 } catch (e) {
+                    // format python errors
+                    e.stack = e.message;
+                    e.message = e.stack.split('\n').filter(l => l).pop();
                     reject(e);
                 }
             });
         });
-    }
-
-    async _updateGoogleContacts() {
-        let contacts = {};
-        let goaClient = Goa.Client.new_sync(null);
-        let goaAccounts = goaClient.get_accounts();
-
-        for (let id in goaAccounts) {
-            let account = goaAccounts[id].get_account();
-
-            if (account.provider_type === 'google') {
-                let accountObj = goaClient.lookup_by_id(account.id);
-                let accountAuth = new GData.GoaAuthorizer({
-                    goa_object: accountObj
-                });
-                let accountContacts = new GData.ContactsService({
-                    authorizer: accountAuth
-                });
-                mergeContacts(
-                    contacts,
-                    this._getGoogleContacts(accountContacts)
-                );
-            }
-        }
-
-        this._contacts = mergeContacts(this._contacts, contacts);
-
-        return 'goa-account-google';
-    }
-
-    /** Query a Google account for contacts via GData */
-    _getGoogleContacts(account) {
-        let query = new GData.ContactsQuery({ q: '' });
-        let count = 0;
-        let contacts = {};
-
-        while (true) {
-            let feed = account.query_contacts(
-                query, // query,
-                null, // cancellable
-                (contact) => {
-                    let phoneNumbers = contact.get_phone_numbers();
-
-                    // Skip contacts without phone numbers
-                    if (!phoneNumbers.length) { return; }
-
-                    let numbers = phoneNumbers.map(n => {
-                        return {
-                            number: n.number,
-                            uri: n.uri || null,
-                            type: n.relation_type || 'unknown'
-                        };
-                    });
-
-                    contacts[contact.id] = {
-                        name: contact.title || contact.name,
-                        numbers: numbers,
-                        origin: 'google'
-                    };
-                }
-            );
-
-            count += feed.get_entries().length;
-            query.start_index = count;
-
-            if (count >= feed.total_results) { break; }
-        }
-
-        return contacts;
     }
 
     _writeCache() {
@@ -436,23 +347,6 @@ var Store = GObject.registerClass({
                 }
             }
         );
-    }
-
-    destroy() {
-        // Write synchronously on destroy
-        try {
-            this._cacheFile.replace_contents(
-                JSON.stringify(this._contacts),
-                null,
-                false,
-                Gio.FileCreateFlags.REPLACE_DESTINATION,
-                null
-            );
-        } catch (e) {
-            logError(e);
-        }
-
-        this.emit('destroy');
     }
 });
 
