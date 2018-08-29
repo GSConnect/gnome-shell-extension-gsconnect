@@ -822,7 +822,7 @@ var Device = GObject.registerClass({
             this._plugins.get(name).destroy();
             this._plugins.delete(name);
         } catch (e) {
-            logWarning(`unloading ${name}: ${e.message}`, this.name);
+            logError(`unloading ${name}: ${e.message}`, this.name);
         }
     }
 
