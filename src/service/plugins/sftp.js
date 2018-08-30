@@ -198,7 +198,7 @@ var Plugin = GObject.registerClass({
             '-o', 'UserKnownHostsFile=/dev/null',
             // Force ssh-dss (DSA) keys (deprecated >= openssh-7.0p1)
             // See: https://bugs.kde.org/show_bug.cgi?id=351725
-            '-o', 'HostKeyAlgorithms=ssh-dss',
+            '-o', 'HostKeyAlgorithms=+ssh-dss',
             // Match keepalive for kdeconnect connection (30sx3)
             '-o', 'ServerAliveInterval=30',
             // Don't immediately connect to server, wait until mountpoint is first accessed.
