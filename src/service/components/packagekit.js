@@ -4,7 +4,33 @@ const PackageKit = imports.gi.PackageKitGlib;
 
 
 /**
- * Find and return a list of installable packages included in @names
+ * Return a list of packages from @names that are available
+ *
+ * @param {Array of string} names - The names of the packages to find
+ * @return {Array of PackageKit.Package} - The packages found
+ */
+PackageKit.Client.prototype.getAvailable = function(names) {
+    return new Promise((resolve, reject) => {
+        this.resolve_async(
+            PackageKit.filter_bitfield_from_string('arch'),
+            names,
+            null,
+            () => {},
+            (client, res) => {
+                try {
+                    res = client.generic_finish(res);
+                    resolve(res.get_package_array());
+                } catch (e) {
+                    reject(e);
+                }
+            }
+        );
+    });
+}
+
+
+/**
+ * Return a list of packages from @names that are installable
  *
  * @param {string} name - The name of the package to find
  * @return {Array of PackageKit.Package} - The packages found
@@ -44,7 +70,13 @@ PackageKit.Client.prototype.installPackages = function(package_ids) {
             () => {},
             (client, res) => {
                 try {
-                    resolve(client.generic_finish(res));
+                    res = client.generic_finish(res);
+
+                    if (res.get_error_code() !== null) {
+                        throw new Error(res.get_error_code());
+                    }
+
+                    resolve(res);
                 } catch (e) {
                     reject(e);
                 }
