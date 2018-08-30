@@ -4,12 +4,6 @@ const GObject = imports.gi.GObject;
 const UPower = imports.gi.UPowerGlib;
 
 
-var Metadata = {
-    summary: _('UPower'),
-    description: _('Power statistics and monitoring')
-};
-
-
 var Battery = GObject.registerClass({
     GTypeName: 'GSConnectSystemBattery',
     Signals: {
@@ -38,6 +32,21 @@ var Battery = GObject.registerClass({
                     return;
             }
         } catch (e) {
+        }
+    }
+
+    get charging() {
+        return (this.state !== UPower.DeviceState.DISCHARGING);
+    }
+
+    get level() {
+        return this.percentage;
+    }
+
+    // TODO: reset on charging
+    get threshold() {
+        if (!this.charging && this.warning_level >= UPower.DeviceLevel.LOW) {
+            return 1;
         }
     }
 });

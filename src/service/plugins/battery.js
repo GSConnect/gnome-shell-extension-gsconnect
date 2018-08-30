@@ -247,8 +247,6 @@ var Plugin = GObject.registerClass({
 
     /**
      * Report the local battery's current charge/state
-     *
-     * TODO: find a decent source for threshold level
      */
     _sendState() {
         if (!this.service.upower) { return; }
@@ -257,15 +255,11 @@ var Plugin = GObject.registerClass({
             id: 0,
             type: 'kdeconnect.battery',
             body: {
-                currentCharge: this.service.upower.percentage,
-                isCharging: (this.service.upower.state !== UPower.DeviceState.DISCHARGING),
-                thresholdEvent: 0
+                currentCharge: this.service.upower.level,
+                isCharging: this.service.upower.charging,
+                thresholdEvent: this.service.upower.threshold
             }
         };
-
-        if (this.service.upower.percentage === 15 && !packet.body.isCharging) {
-            packet.body.thresholdEvent = 1;
-        }
 
         this.device.sendPacket(packet);
     }
