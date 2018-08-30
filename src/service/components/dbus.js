@@ -1,6 +1,5 @@
 'use strict';
 
-const Gi = imports._gi;
 const Gio = imports.gi.Gio;
 const GjsPrivate = imports.gi.GjsPrivate;
 const GLib = imports.gi.GLib;
