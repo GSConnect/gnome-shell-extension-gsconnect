@@ -1469,7 +1469,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
-                        <property name="action_name">misc.reload-plugins</property>
+                        <property name="action_name">status.reload-plugins</property>
                         <style>
                           <class name="suggested-action"/>
                         </style>
