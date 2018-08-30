@@ -23,6 +23,7 @@ var Metadata = {
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/mousepad
  *
  * TODO: support outgoing mouse/keyboard events
+ *       remove Caribou
  */
 var Plugin = GObject.registerClass({
     GTypeName: 'GSConnectMousepadPlugin',

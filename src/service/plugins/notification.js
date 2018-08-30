@@ -583,6 +583,7 @@ var Plugin = GObject.registerClass({
 
     /**
      * Close a remote notification.
+     * TODO: ignore local notifications
      *
      * @param {string} id - The remote notification id
      */
