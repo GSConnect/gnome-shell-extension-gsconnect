@@ -63,7 +63,7 @@
     <key name="keybindings" type="a{ss}">
       <default>{}</default>
     </key>
-    <key name="menu" type="as">
+    <key name="menu-actions" type="as">
       <default>["newSms", "find", "mount", "executeCommand", "shareDialog"]</default>
     </key>
     <key name="name" type="s">
