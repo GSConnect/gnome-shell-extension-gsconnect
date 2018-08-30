@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist gettext-domain="org.gnome.Shell.Extensions.GSConnect">
   <schema id="org.gnome.Shell.Extensions.GSConnect" path="/org/gnome/shell/extensions/gsconnect/">
-    <!-- Extension Preferences -->
+    <!-- Extension Settings -->
     <key name="show-indicators" type="b">
       <default>false</default>
       <summary>Show Indicators</summary>
@@ -23,7 +23,7 @@
       <description>Display an icon with percentage in the Device Menu</description>
     </key>
 
-    <!-- Service Settings (TODO: better default) -->
+    <!-- Service Settings -->
     <key name="public-name" type="s">
       <default>"GSConnect"</default>
       <summary>Public Name</summary>
@@ -32,7 +32,6 @@
     <key name="devices" type="as">
       <default>[]</default>
     </key>
-    <!-- TODO: WIP -->
     <key name="donotdisturb" type="i">
       <default>0</default>
       <summary>Do Not Disturb</summary>
@@ -160,6 +159,7 @@
       <default>false</default>
     </key>
   </schema>
+  <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.SystemVolume"/>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Telephony">
     <key name="handle-sms" type="b">
       <default>true</default>
