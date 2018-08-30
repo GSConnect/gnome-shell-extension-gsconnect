@@ -450,12 +450,14 @@ var Listener = class Listener {
             this._fdoNotifications.flush();
             this._fdoNotifications.unexport();
 
-            this._gtkNotifications.disconnect(this._fdoMethodCallId);
+            this._gtkNotifications.disconnect(this._gtkMethodCallId);
             this._gtkNotifications.flush();
             this._gtkNotifications.unexport();
 
             this._settings.disconnect(this._settingsId);
-            this._monitor.close_sync(null);
+
+            // TODO: Gio.IOErrorEnum: The connection is closed
+            //this._monitor.close_sync(null);
         } catch (e) {
             logError(e);
         }
