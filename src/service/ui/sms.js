@@ -6,7 +6,7 @@ const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 const Pango = imports.gi.Pango;
 
-const Contacts = imports.service.components.contacts;
+const Contacts = imports.service.ui.contacts;
 
 
 /**

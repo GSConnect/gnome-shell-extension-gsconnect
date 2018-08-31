@@ -1,49 +1,12 @@
 'use strict';
 
 const Gdk = imports.gi.Gdk;
-const GdkPixbuf = imports.gi.GdkPixbuf;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
 const Color = imports.service.components.color;
-
-
-/**
- * Get Gdk.Pixbuf for @path, allowing for partially corrupt JPEG's KDE Connect
- * sometimes sends.
- *
- * @param {string} path - A local file path
- */
-function getPixbuf(path, size=null) {
-    let data, loader;
-
-    // Catch missing avatar files
-    try {
-        data = GLib.file_get_contents(path)[1];
-    } catch (e) {
-        logWarning(e.message, path);
-        return undefined;
-    }
-
-    // Consider errors from partially corrupt JPEGs to be warnings
-    try {
-        loader = new GdkPixbuf.PixbufLoader();
-        loader.write(data);
-        loader.close();
-    } catch (e) {
-        logWarning(e, path);
-    }
-
-    let pixbuf = loader.get_pixbuf();
-
-    if (size !== null) {
-        return pixbuf.scale_simple(size, size, GdkPixbuf.InterpType.HYPER);
-    }
-
-    return pixbuf;
-};
 
 
 /**
@@ -102,7 +65,8 @@ var Avatar = GObject.registerClass({
 
     _loadPixbuf() {
         if (this.contact.avatar) {
-            this._pixbuf = getPixbuf(this.contact.avatar, 32);
+            let service = Gio.Application.get_default();
+            this._pixbuf = service.contacts.getPixbuf(this.contact.avatar, 32);
         }
 
         if (this._pixbuf === undefined) {

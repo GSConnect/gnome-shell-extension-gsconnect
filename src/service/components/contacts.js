@@ -1,5 +1,6 @@
 'use strict';
 
+const GdkPixbuf = imports.gi.GdkPixbuf;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
@@ -110,6 +111,82 @@ var Store = GObject.registerClass({
         }
 
         return this._provider_icon;
+    }
+
+    /**
+     * Get Gdk.Pixbuf for @path, allowing for the corrupt JPEG's KDE Connect
+     * sometimes sends. This function must be synchronous since it is used in
+     * Contacts.Avatar::draw and Promises have a higher priority in the loop.
+     *
+     * @param {string} path - A local file path
+     */
+    getPixbuf(path, size=null) {
+        let data, loader;
+
+        // Catch missing avatar files
+        try {
+            data = GLib.file_get_contents(path)[1];
+        } catch (e) {
+            logWarning(e.message, path);
+            return undefined;
+        }
+
+        // Consider errors from partially corrupt JPEGs to be warnings
+        try {
+            loader = new GdkPixbuf.PixbufLoader();
+            loader.write(data);
+            loader.close();
+        } catch (e) {
+            logWarning(e, path);
+        }
+
+        let pixbuf = loader.get_pixbuf();
+
+        if (size !== null) {
+            return pixbuf.scale_simple(size, size, GdkPixbuf.InterpType.HYPER);
+        }
+
+        return pixbuf;
+    }
+
+    /**
+     * Set Gdk.Pixbuf for @contact
+     *
+     * @param {object} contact - A contact dictionary object
+     * @param {string} contents - The contents of the pixbuf
+     */
+    setPixbuf(contact, contents) {
+        return new Promise((resolve, reject) => {
+            if (contact.avatar) {
+                resolve(contact);
+            } else {
+                let path = GLib.build_filenamev([
+                    CACHE_DIR,
+                    GLib.uuid_string_random() + '.jpeg'
+                ]);
+
+                let file = Gio.File.new_for_path(path);
+
+                file.replace_contents_async(
+                    contents,
+                    null,
+                    false,
+                    Gio.FileCreateFlags.REPLACE_DESTINATION,
+                    null,
+                    (file, res) => {
+                        try {
+                            file.replace_contents_finish(res);
+                            contact.avatar = path;
+                            resolve(contact);
+                        } catch (e) {
+                            reject(e);
+                        }
+                    }
+                );
+
+                this.notify('contacts');
+            }
+        });
     }
 
     /**

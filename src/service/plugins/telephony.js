@@ -4,9 +4,8 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 
-const Contacts = imports.service.components.contacts;
-const Sms = imports.service.ui.sms;
 const PluginsBase = imports.service.plugins.base;
+const Sms = imports.service.ui.sms;
 
 
 var Metadata = {
@@ -100,7 +99,7 @@ var Plugin = GObject.registerClass({
     _init(device) {
         super._init(device, 'telephony');
 
-        this.contacts = Contacts.getStore();
+        this.contacts = this.service.contacts;
 
         // We cache converations/threads so they can be used immediately, even
         // though we'll request them at every connection
@@ -229,59 +228,44 @@ var Plugin = GObject.registerClass({
     /**
      * Handle a regular telephony event.
      */
-    _handleEvent(packet) {
-        // This is the end of a 'ringing' or 'talking' event
-        if (packet.body.hasOwnProperty('isCancel') && packet.body.isCancel) {
-            this._onCancel(packet);
-            return;
-        }
+    async _handleEvent(packet) {
+        try {
+            // This is the end of a 'ringing' or 'talking' event
+            if (packet.body.hasOwnProperty('isCancel') && packet.body.isCancel) {
+                this._onCancel(packet);
+                return;
+            }
 
-        switch (packet.body.event) {
-            case 'sms':
-                if (this.settings.get_boolean('handle-sms')) {
-                    this._onSms(packet);
-                }
-                break;
+            // Always parse events in case an avatar has been updated
+            let [contact, message] = await this._parseEvent(packet);
 
-            case 'missedCall':
-                if (this.settings.get_boolean('handle-calls')) {
-                    this._onMissedCall(packet);
-                }
-                break;
+            switch (packet.body.event) {
+                case 'sms':
+                    if (this.settings.get_boolean('handle-sms')) {
+                        this._onSms(contact, message);
+                    }
+                    break;
 
-            case 'ringing':
-                if (this.settings.get_boolean('handle-calls')) {
-                    this._onRinging(packet);
-                }
-                break;
+                case 'missedCall':
+                    if (this.settings.get_boolean('handle-calls')) {
+                        this._onMissedCall(contact, message);
+                    }
+                    break;
 
-            case 'talking':
-                if (this.settings.get_boolean('handle-calls')) {
-                    this._onTalking(packet);
-                }
-                break;
-        }
-    }
+                case 'ringing':
+                    if (this.settings.get_boolean('handle-calls')) {
+                        this._onRinging(contact, message);
+                    }
+                    break;
 
-    /**
-     * Update a contact's avatar from a JPEG ByteArray
-     *
-     * @param {kdeconnect.telephony} packet - A telephony packet
-     * @param {Object} contact - A contact object
-     */
-    _updateAvatar(packet, contact) {
-        if (packet.body.hasOwnProperty('phoneThumbnail') && !contact.avatar) {
-            debug('updating avatar for ' + contact.name);
-
-            contact.avatar = GLib.build_filenamev([
-                Contacts.CACHE_DIR,
-                GLib.uuid_string_random() + '.jpeg'
-            ]);
-            GLib.file_set_contents(
-                contact.avatar,
-                GLib.base64_decode(packet.body.phoneThumbnail)
-            );
-            this.contacts.notify('contacts');
+                case 'talking':
+                    if (this.settings.get_boolean('handle-calls')) {
+                        this._onTalking(contact, message);
+                    }
+                    break;
+            }
+        } catch (e) {
+            logError(e);
         }
     }
 
@@ -377,7 +361,7 @@ var Plugin = GObject.registerClass({
         let buttons, icon, id, priority;
 
         if (contact && contact.avatar) {
-            icon = Contacts.getPixbuf(contact.avatar);
+            icon = this.service.contacts.getPixbuf(contact.avatar);
         }
 
         if (message.event === 'missedCall') {
@@ -423,7 +407,7 @@ var Plugin = GObject.registerClass({
         let icon;
 
         if (contact.avatar) {
-            icon = Contacts.getPixbuf(contact.avatar);
+            icon = this.service.contacts.getPixbuf(contact.avatar);
         }
 
         if (icon === undefined) {
@@ -447,43 +431,52 @@ var Plugin = GObject.registerClass({
     /**
      * Telephony event handlers
      */
-    _parseEvent(packet) {
-        // Ensure a contact exists for this event
-        let contact = this.contacts.query({
-            name: packet.body.contactName,
-            number: packet.body.phoneNumber,
-            single: true,
-            create: true
-        });
+    async _parseEvent(packet) {
+        try {
+            // Ensure a contact exists for this event
+            let contact = this.contacts.query({
+                name: packet.body.contactName,
+                number: packet.body.phoneNumber,
+                single: true,
+                create: true
+            });
 
-        // Update the avatar (if necessary)
-        this._updateAvatar(packet, contact);
+            // Update contact avatar
+            if (packet.body.hasOwnProperty('phoneThumbnail')) {
+                contact = await this.service.contacts.setPixbuf(
+                    contact,
+                    GLib.base64_decode(packet.body.phoneThumbnail)
+                );
+            }
 
-        // Fabricate a message packet from what we know
-        let message = {
-            contactName: contact.name,
-            _id: 0,         // might be updated by sms.js
-            thread_id: 0,   // might be updated by sms.js
-            address: packet.body.phoneNumber || '',
-            body: packet.body.messageBody,
-            date: packet.id,
-            event: packet.body.event,
-            read: Sms.MessageStatus.UNREAD,
-            type: Sms.MessageType.IN
-        };
+            // Fabricate a message packet from what we know
+            let message = {
+                contactName: contact.name,
+                _id: 0,         // might be updated by sms.js
+                thread_id: 0,   // might be updated by sms.js
+                address: packet.body.phoneNumber || '',
+                body: packet.body.messageBody,
+                date: packet.id,
+                event: packet.body.event,
+                read: Sms.MessageStatus.UNREAD,
+                type: Sms.MessageType.IN
+            };
 
-        if (message.event === 'missedCall') {
-            // TRANSLATORS: eg. Missed call from John Smith
-            message.body = _('Missed call from %s').format(contact.name);
-        } else if (message.event === 'ringing') {
-            // TRANSLATORS: eg. Incoming call from John Smith
-            message.body = _('Incoming call from %s').format(contact.name);
-        } else if (message.event === 'talking') {
-            // TRANSLATORS: eg. Call in progress with John Smith
-            message.body = _('Call in progress with %s').format(contact.name);
+            if (message.event === 'missedCall') {
+                // TRANSLATORS: eg. Missed call from John Smith
+                message.body = _('Missed call from %s').format(contact.name);
+            } else if (message.event === 'ringing') {
+                // TRANSLATORS: eg. Incoming call from John Smith
+                message.body = _('Incoming call from %s').format(contact.name);
+            } else if (message.event === 'talking') {
+                // TRANSLATORS: eg. Call in progress with John Smith
+                message.body = _('Call in progress with %s').format(contact.name);
+            }
+
+            return [contact, message];
+        } catch (e) {
+            logError(e);
         }
-
-        return [contact, message];
     }
 
     _onCancel(packet) {
@@ -492,9 +485,7 @@ var Plugin = GObject.registerClass({
         this._restoreMediaState();
     }
 
-    _onMissedCall(packet) {
-        let [contact, message] = this._parseEvent(packet);
-
+    _onMissedCall(contact, message) {
         // Start tracking the duplicate early
         let notification = this.device.lookup_plugin('notification');
 
@@ -507,16 +498,12 @@ var Plugin = GObject.registerClass({
         this.callNotification(contact, message);
     }
 
-    _onRinging(packet) {
-        let [contact, message] = this._parseEvent(packet);
-
+    _onRinging(contact, message) {
         this._setMediaState('ringing');
         this.callNotification(contact, message);
     }
 
-    _onSms(packet) {
-        let [contact, message] = this._parseEvent(packet);
-
+    _onSms(contact, message) {
         // Silence the duplicate as soon as possible
         let notification = this.device.lookup_plugin('notification');
 
@@ -554,11 +541,7 @@ var Plugin = GObject.registerClass({
         this.smsNotification(contact, message);
     }
 
-    _onTalking(packet) {
-        debug(packet);
-
-        let [contact, message] = this._parseEvent(packet);
-
+    _onTalking(contact, message) {
         // Withdraw the 'ringing' notification
         this.device.hideNotification(`ringing|${contact.name}`);
 

@@ -5,7 +5,6 @@ const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
-const Contacts = imports.service.components.contacts;
 const Lan = imports.service.lan;
 const PluginsBase = imports.service.plugins.base;
 
@@ -59,7 +58,7 @@ var Plugin = GObject.registerClass({
     _init(device) {
         super._init(device, 'notification');
 
-        this.contacts = Contacts.getStore();
+        this.contacts = this.service.contacts;
 
         // Duplicate tracking of telephony notifications
         this._duplicates = new Map();
@@ -418,41 +417,38 @@ var Plugin = GObject.registerClass({
      * @param {Gio.Icon|null} icon - The notification icon (nullable)
      * @param {string} type - The event type; either "missedCall" or "sms"
      */
-    _telephonyNotification(notif, contact, icon, type) {
-        let telephony = imports.service.plugins.telephony.Plugin;
+    async _telephonyNotification(notif, contact, icon, type) {
+        try {
+            let telephony = imports.service.plugins.telephony.Plugin;
 
-        // Fabricate a message packet from what we know
-        let message = {
-            contactName: contact.name,
-            _id: 0,
-            thread_id: 0,
-            address: contact.numbers[0].number,
-            date: parseInt(notif.time),
-            event: type,
-            read: 0,    // Sms.MessageStatus.UNREAD
-            type: 2     // Sms.MessageType.IN
-        };
+            // Fabricate a message packet from what we know
+            let message = {
+                contactName: contact.name,
+                _id: 0,
+                thread_id: 0,
+                address: contact.numbers[0].number,
+                date: parseInt(notif.time),
+                event: type,
+                read: 0,    // Sms.MessageStatus.UNREAD
+                type: 2     // Sms.MessageType.IN
+            };
 
-        // Update contact avatar
-        if (!contact.avatar && (icon instanceof Gio.BytesIcon)) {
-            contact.avatar = GLib.build_filenamev([
-                Contacts.CACHE_DIR,
-                GLib.uuid_string_random() + '.jpeg'
-            ]);
-            GLib.file_set_contents(
-                contact.avatar,
-                icon.get_bytes().toArray().toString()
-            );
-            this.contacts._writeCache();
-        }
+            // Update contact avatar
+            if (icon instanceof Gio.BytesIcon) {
+                let contents = icon.get_bytes().toArray().toString();
+                contact = await this.service.contacts.setPixbuf(contact, contents);
+            }
 
-        if (message.event === 'sms') {
-            message.body = notif.text;
-            telephony.prototype.smsNotification.call(this, contact, message);
-        } else if (message.event === 'missedCall') {
-            // TRANSLATORS: eg. Missed call from John Smith
-            message.body = _('Missed call from %s').format(contact.name);
-            telephony.prototype.callNotification.call(this, contact, message);
+            if (message.event === 'sms') {
+                message.body = notif.text;
+                telephony.prototype.smsNotification.call(this, contact, message);
+            } else if (message.event === 'missedCall') {
+                // TRANSLATORS: eg. Missed call from John Smith
+                message.body = _('Missed call from %s').format(contact.name);
+                telephony.prototype.callNotification.call(this, contact, message);
+            }
+        } catch (e) {
+            logError(e);
         }
     }
 
