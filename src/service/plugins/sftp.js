@@ -196,7 +196,7 @@ var Plugin = GObject.registerClass({
             '-o', 'StrictHostKeyChecking=no',
             // Prevent storing as a known host
             '-o', 'UserKnownHostsFile=/dev/null',
-            // Force ssh-dss (DSA) keys (deprecated >= openssh-7.0p1)
+            // Allow ssh-dss (DSA) keys (deprecated >= openssh-7.0p1)
             // See: https://bugs.kde.org/show_bug.cgi?id=351725
             '-o', 'HostKeyAlgorithms=+ssh-dss',
             // Match keepalive for kdeconnect connection (30sx3)
