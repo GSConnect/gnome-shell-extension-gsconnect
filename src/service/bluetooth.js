@@ -11,94 +11,70 @@ const DBus = imports.service.components.dbus;
 /**
  * org.bluez Interfaces
  */
-var BluezNode = Gio.DBusNodeInfo.new_for_xml(
-'<node> \
-  <interface name="org.bluez.ProfileManager1"> \
-    <method name="RegisterProfile"> \
-      <arg name="profile" type="o" direction="in"/> \
-      <arg name="UUID" type="s" direction="in"/> \
-      <arg name="options" type="a{sv}" direction="in"/> \
-    </method> \
-    <method name="UnregisterProfile"> \
-      <arg name="profile" type="o" direction="in"/> \
-    </method> \
-  </interface> \
-  \
-  <!-- Adapter (eg. /org/bluez/hci0) --> \
-  <interface name="org.bluez.Adapter1"> \
-    <method name="StartDiscovery"/> \
-    <method name="SetDiscoveryFilter"> \
-      <arg name="properties" type="a{sv}" direction="in"/> \
-    </method> \
-    <method name="StopDiscovery"/> \
-    <method name="RemoveDevice"> \
-      <arg name="device" type="o" direction="in"/> \
-    </method> \
-    <property name="Address" type="s" access="read"/> \
-    <property name="Name" type="s" access="read"/> \
-    <property name="Alias" type="s" access="readwrite"/> \
-    <property name="Class" type="u" access="read"/> \
-    <property name="Powered" type="b" access="readwrite"/> \
-    <property name="Discoverable" type="b" access="readwrite"/> \
-    <property name="DiscoverableTimeout" type="u" access="readwrite"/> \
-    <property name="Pairable" type="b" access="readwrite"/> \
-    <property name="PairableTimeout" type="u" access="readwrite"/> \
-    <property name="Discovering" type="b" access="read"/> \
-    <property name="UUIDs" type="as" access="read"/> \
-    <property name="Modalias" type="s" access="read"/> \
-  </interface> \
-  \
-  <!-- Device (eg. /org/bluez/hci0/dev_00_00_00_00_00_00) --> \
-  <interface name="org.bluez.Device1"> \
-    <!-- Methods --> \
-    <method name="Disconnect"/> \
-    <method name="Connect"/> \
-    <method name="ConnectProfile"> \
-      <arg name="UUID" type="s" direction="in"/> \
-    </method> \
-    <method name="DisconnectProfile"> \
-      <arg name="UUID" type="s" direction="in"/> \
-    </method> \
-    <method name="Pair"/> \
-    <method name="CancelPairing"/> \
-    <!-- Properties --> \
-    <property name="Address" type="s" access="read"/> \
-    <property name="AddressType" type="s" access="read"/> \
-    <property name="Name" type="s" access="read"/> \
-    <property name="Alias" type="s" access="readwrite"/> \
-    <property name="Class" type="u" access="read"/> \
-    <property name="Appearance" type="q" access="read"/> \
-    <property name="Icon" type="s" access="read"/> \
-    <property name="Paired" type="b" access="read"/> \
-    <property name="Trusted" type="b" access="readwrite"/> \
-    <property name="Blocked" type="b" access="readwrite"/> \
-    <property name="LegacyPairing" type="b" access="read"/> \
-    <property name="RSSI" type="n" access="read"/> \
-    <property name="Connected" type="b" access="read"/> \
-    <property name="UUIDs" type="as" access="read"/> \
-    <property name="Modalias" type="s" access="read"/> \
-    <property name="Adapter" type="o" access="read"/> \
-    <property name="ManufacturerData" type="a{qv}" access="read"/> \
-    <property name="ServiceData" type="a{sv}" access="read"/> \
-    <property name="TxPower" type="n" access="read"/> \
-    <property name="ServicesResolved" type="b" access="read"/> \
-  </interface> \
-  \
-  <!-- Profile (to be exported) --> \
-  <interface name="org.bluez.Profile1"> \
-    <!-- Methods --> \
-    <method name="Release"/> \
-    <method name="NewConnection"> \
-      <arg name="device" type="o" direction="in"/> \
-      <arg name="fd" type="h" direction="in"/> \
-      <arg name="fd_properties" type="a{sv}" direction="in"/> \
-    </method> \
-    <method name="RequestDisconnection"> \
-      <arg name="object_path" type="o" direction="in"/> \
-    </method> \
-  </interface> \
-</node>'
-);
+var BluezNode = Gio.DBusNodeInfo.new_for_xml(`
+<node>
+  <interface name="org.bluez.ProfileManager1">
+    <method name="RegisterProfile">
+      <arg name="profile" type="o" direction="in"/>
+      <arg name="UUID" type="s" direction="in"/>
+      <arg name="options" type="a{sv}" direction="in"/>
+    </method>
+    <method name="UnregisterProfile">
+      <arg name="profile" type="o" direction="in"/>
+    </method>
+  </interface>
+
+  <!-- Device (eg. /org/bluez/hci0/dev_00_00_00_00_00_00) -->
+  <interface name="org.bluez.Device1">
+    <!-- Methods -->
+    <method name="Disconnect"/>
+    <method name="Connect"/>
+    <method name="ConnectProfile">
+      <arg name="UUID" type="s" direction="in"/>
+    </method>
+    <method name="DisconnectProfile">
+      <arg name="UUID" type="s" direction="in"/>
+    </method>
+    <method name="Pair"/>
+    <method name="CancelPairing"/>
+    <!-- Properties -->
+    <property name="Address" type="s" access="read"/>
+    <property name="AddressType" type="s" access="read"/>
+    <property name="Name" type="s" access="read"/>
+    <property name="Alias" type="s" access="readwrite"/>
+    <property name="Class" type="u" access="read"/>
+    <property name="Appearance" type="q" access="read"/>
+    <property name="Icon" type="s" access="read"/>
+    <property name="Paired" type="b" access="read"/>
+    <property name="Trusted" type="b" access="readwrite"/>
+    <property name="Blocked" type="b" access="readwrite"/>
+    <property name="LegacyPairing" type="b" access="read"/>
+    <property name="RSSI" type="n" access="read"/>
+    <property name="Connected" type="b" access="read"/>
+    <property name="UUIDs" type="as" access="read"/>
+    <property name="Modalias" type="s" access="read"/>
+    <property name="Adapter" type="o" access="read"/>
+    <property name="ManufacturerData" type="a{qv}" access="read"/>
+    <property name="ServiceData" type="a{sv}" access="read"/>
+    <property name="TxPower" type="n" access="read"/>
+    <property name="ServicesResolved" type="b" access="read"/>
+  </interface>
+
+  <!-- Profile (to be exported) -->
+  <interface name="org.bluez.Profile1">
+    <!-- Methods -->
+    <method name="Release"/>
+    <method name="NewConnection">
+      <arg name="device" type="o" direction="in"/>
+      <arg name="fd" type="h" direction="in"/>
+      <arg name="fd_properties" type="a{sv}" direction="in"/>
+    </method>
+    <method name="RequestDisconnection">
+      <arg name="object_path" type="o" direction="in"/>
+    </method>
+  </interface>
+</node>
+`);
 
 
 /**
@@ -151,10 +127,14 @@ var ChannelService = GObject.registerClass({
             GObject.ParamFlags.READABLE
         )
     }
-}, class ChannelService extends GObject.Object {
+}, class ChannelService extends Gio.DBusObjectManagerClient {
 
     _init() {
-        super._init();
+        super._init({
+            connection: Gio.DBus.system,
+            name: 'org.bluez',
+            object_path: '/'
+        });
 
         this.service = Gio.Application.get_default();
 
@@ -208,6 +188,17 @@ var ChannelService = GObject.registerClass({
 
     async _setup() {
         try {
+            await new Promise((resolve, reject) => {
+                this.init_async(GLib.PRIORITY_DEFAULT, null, (obj, res) => {
+                    try {
+                        obj.init_finish(res);
+                        resolve();
+                    } catch (e) {
+                        reject(e);
+                    }
+                });
+            });
+
             // Get a ProfileManager
             this._profileManager = new ProfileManager1Proxy({
                 g_connection: Gio.DBus.system,
@@ -220,78 +211,43 @@ var ChannelService = GObject.registerClass({
             // Register the service profile
             await this._register(SERVICE_UUID);
 
-            // Setup the object manager
-            this._objectManager = await new Promise((resolve, reject) => {
-                Gio.DBusObjectManagerClient.new(
-                    Gio.DBus.system,
-                    Gio.DBusObjectManagerClientFlags.NONE,
-                    'org.bluez',
-                    '/',
-                    null,
-                    null,
-                    (manager, res) => {
-                        try {
-                            resolve(Gio.DBusObjectManagerClient.new_finish(res));
-                        } catch (e) {
-                            reject(e);
-                        }
-                    }
-                );
-            });
-
-            for (let obj of this._objectManager.get_objects()) {
+            for (let obj of this.get_objects()) {
                 for (let iface of obj.get_interfaces()) {
-                    this._onInterfaceAdded(this._objectManager, obj, iface);
+                    this.vfunc_interface_added(obj, iface);
                 }
             }
 
-            this._objectManager._interfaceAddedId = this._objectManager.connect(
-                'interface-added',
-                this._onInterfaceAdded.bind(this)
-            );
-            this._objectManager._interfaceRemovedId = this._objectManager.connect(
-                'interface-removed',
-                this._onInterfaceRemoved.bind(this)
-            );
-            this._objectManager._interfacePropertiesId = this._objectManager.connect(
-                'interface-proxy-properties-changed',
-                this._onPropertiesChanged.bind(this)
-            );
-        } catch (e) {
-            // TODO: fatal error
-            logWarning(e, 'Bluetooth.ChannelService');
-        }
-    }
-
-    async _onInterfaceAdded(manager, object, iface) {
-        try {
-            if (iface.g_interface_name === 'org.bluez.Device1') {
-                if (!this._devices.has(iface.g_object_path)) {
-                    // Setup the device proxy
-                    DBus.proxyMethods(iface, DEVICE_INFO);
-                    DBus.proxyProperties(iface, DEVICE_INFO);
-                    iface._channel = null;
-
-                    this._devices.set(iface.g_object_path, iface);
-
-                    // Notify and init the device
-                    this.notify('devices');
-                    this._onDeviceChanged(iface);
-                }
-            }
+            //throw new Error('Something something');
         } catch (e) {
             logWarning(e, 'Bluetooth.ChannelService');
         }
     }
 
-    async _onInterfaceRemoved(manager, object, iface) {
+    vfunc_interface_added(object, iface) {
+        if (iface.g_interface_name === 'org.bluez.Device1') {
+            if (!this._devices.has(iface.g_object_path)) {
+                // Setup the device proxy
+                DBus.proxyMethods(iface, DEVICE_INFO);
+                DBus.proxyProperties(iface, DEVICE_INFO);
+                iface._channel = null;
+
+                this._devices.set(iface.g_object_path, iface);
+
+                // Notify and init the device
+                this.notify('devices');
+                this._onDeviceChanged(iface);
+            }
+        }
+    }
+
+    vfunc_interface_removed(manager, object, iface) {
         if (iface.g_interface_name === 'org.bluez.Device1') {
             this.RequestDisconnection(iface.g_object_path);
             this._devices.delete(iface.g_object_path);
         }
     }
 
-    async _onPropertiesChanged(manager, object, iface, changed, invalidated) {
+    vfunc_interface_proxy_properties_changed(object, iface, changed, invalidated) {
         if (iface.g_interface_name === 'org.bluez.Device1') {
             changed = changed.full_unpack();
 
@@ -304,10 +260,9 @@ var ChannelService = GObject.registerClass({
                     }
                     break;
 
-                case changed.hasOwnProperty('ServicesResolved'):
-                    if (changed.ServicesResolved) {
-                        this._onDeviceChanged(iface);
-                    }
+                case (changed.ServicesResolved):
+                    this._onDeviceChanged(iface);
+                    break;
             }
         }
     }
@@ -416,11 +371,7 @@ var ChannelService = GObject.registerClass({
 
             // Unlike Lan channels, we accept all new connections since they
             // have to be paired over bluetooth anyways
-            let device = this.service._devices.get(channel.identity.body.deviceId);
-
-            if (device === undefined) {
-                device = await this.service._ensureDevice(channel.identity);
-            }
+            let device = await this.service._ensureDevice(channel.identity);
 
             // Attach a device to the channel
             channel.attach(device);
@@ -483,10 +434,6 @@ var ChannelService = GObject.registerClass({
     }
 
     destroy() {
-        this._objectManager.disconnect(this._objectManager._interfaceAddedId);
-        this._objectManager.disconnect(this._objectManager._interfaceRemovedId);
-        this._objectManager.disconnect(this._objectManager._interfacePropertiesId);
-
         for (let object_path of this._devices.keys()) {
             this.RequestDisconnection(object_path);
         }
