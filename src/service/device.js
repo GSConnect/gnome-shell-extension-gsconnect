@@ -109,7 +109,6 @@ var Device = GObject.registerClass({
     _init(identity) {
         super._init();
 
-        this.service = Gio.Application.get_default();
         this._channel = null;
         this._connected = false;
 
@@ -256,6 +255,10 @@ var Device = GObject.registerClass({
             default:
                 return 'computer';
         }
+    }
+
+    get service() {
+        return Gio.Application.get_default();
     }
 
     get type() {

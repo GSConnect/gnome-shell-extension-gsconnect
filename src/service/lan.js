@@ -42,8 +42,6 @@ var ChannelService = GObject.registerClass({
     _init() {
         super._init();
 
-        this.service = Gio.Application.get_default();
-
         this._initTcpListener();
         this._initUdpListener();
 
@@ -74,6 +72,10 @@ var ChannelService = GObject.registerClass({
         }
 
         return this._port;
+    }
+
+    get service() {
+        return Gio.Application.get_default();
     }
 
     _onNetworkChanged(monitor, network_available) {

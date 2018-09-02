@@ -136,8 +136,6 @@ var ChannelService = GObject.registerClass({
             object_path: '/'
         });
 
-        this.service = Gio.Application.get_default();
-
         // The full device map
         this._devices = new Map();
 
@@ -149,6 +147,10 @@ var ChannelService = GObject.registerClass({
     get devices() {
         let devices = Array.from(this._devices.values());
         return devices.filter(device => device.UUIDs.includes(SERVICE_UUID));
+    }
+
+    get service() {
+        return Gio.Application.get_default();
     }
 
     /**

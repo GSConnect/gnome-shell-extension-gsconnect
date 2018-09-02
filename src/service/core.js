@@ -113,7 +113,6 @@ var Channel = GObject.registerClass({
 
         // We need this to lookup the certificate in GSettings
         this.identity = { body: { deviceId: deviceId } };
-        this.service = Gio.Application.get_default();
         this._type = type;
     }
 
@@ -123,6 +122,10 @@ var Channel = GObject.registerClass({
         }
 
         return null;
+    }
+
+    get service() {
+        return Gio.Application.get_default();
     }
 
     get type() {

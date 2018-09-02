@@ -468,7 +468,6 @@ var Device = GObject.registerClass({
 
         super._init();
 
-        this.service = Gio.Application.get_default();
         this.device = device;
 
         // Connect Actions
@@ -575,6 +574,10 @@ var Device = GObject.registerClass({
                 this[name].visible = this.device.get_plugin_allowed(name);
             }
         }
+    }
+
+    get service() {
+        return Gio.Application.get_default();
     }
 
     // FIXME: bogus

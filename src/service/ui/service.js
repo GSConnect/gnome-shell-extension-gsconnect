@@ -115,7 +115,6 @@ var DeviceConnectDialog = GObject.registerClass({
 }, class DeviceConnectDialog extends Gtk.Dialog {
 
     _init() {
-        this.service = Gio.Application.get_default();
         let modal = (this.service._window && this.service._window.visible);
         let parent = modal ? this.service._window : null;
 
@@ -236,6 +235,10 @@ var DeviceConnectDialog = GObject.registerClass({
         }
 
         this._error = bool;
+    }
+
+    get service() {
+        return Gio.Application.get_default();
     }
 
     _onFocus(entry) {

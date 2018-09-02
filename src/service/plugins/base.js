@@ -19,8 +19,6 @@ var Plugin = GObject.registerClass({
     _init(device, name) {
         super._init();
 
-        this.service = Gio.Application.get_default();
-
         this._device = device;
         this._name = name;
         this._meta = imports.service.plugins[name].Metadata;
@@ -57,6 +55,10 @@ var Plugin = GObject.registerClass({
 
     get name() {
         return this._name;
+    }
+
+    get service() {
+        return Gio.Application.get_default();
     }
 
     _activateAction(action, parameter) {
