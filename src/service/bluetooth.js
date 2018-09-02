@@ -271,17 +271,12 @@ var ChannelService = GObject.registerClass({
 
     async _onDeviceChanged(device) {
         try {
+            // None of these may be false
             switch (false) {
                 case (device._channel === null):
                     debug('already connected', device.Alias);
-                    return;
-
                 case device.Connected:
-                    return;
-
                 case device.Paired:
-                    return;
-
                 case device.UUIDs.includes(SERVICE_UUID):
                     return;
 
