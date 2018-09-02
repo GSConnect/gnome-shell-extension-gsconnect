@@ -41,7 +41,7 @@ for (let path of [gsconnect.cachedir, gsconnect.configdir, gsconnect.runtimedir]
  * Setup global object for user or system install
  */
 if (gsconnect.is_local) {
-    // Infer libdir from GJS's search path
+    // Infer libdir by assuming gnome-shell shares a common prefix with gjs
     gsconnect.libdir = GIRepository.Repository.get_search_path().find(path => {
         return path.endsWith('/gjs/girepository-1.0');
     }).replace('/gjs/girepository-1.0', '');
@@ -59,8 +59,24 @@ if (gsconnect.is_local) {
         false
     );
 } else {
-    // All dir paths should be populated by meson for this system at build time
-    gsconnect.libdir = gsconnect.metadata.libdir;
+    let gvc_typelib = GLib.build_filenamev([
+        gsconnect.metadata.libdir,
+        'gnome-shell',
+        'Gvc-1.0.typelib'
+    ]);
+
+    // Check for the Gvc TypeLib to verify the defined libdir
+    if (GLib.file_test(gvc_typelib, GLib.FileTest.EXISTS)) {
+        gsconnect.libdir = gsconnect.metadata.libdir;
+    // Fallback to assuming a common prefix with GJS
+    } else {
+        let searchPath = GIRepository.Repository.get_search_path();
+        gsconnect.libdir = searchPath.find(path => {
+            return path.endsWith('/gjs/girepository-1.0');
+        }).replace('/gjs/girepository-1.0', '');
+    }
+
+    // These two should be populated by meson for this system at build time
     gsconnect.localedir = gsconnect.metadata.localedir;
     gsconnect.gschema = Gio.SettingsSchemaSource.new_from_directory(
         gsconnect.metadata.gschemadir,
