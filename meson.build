@@ -2,11 +2,13 @@ project('gsconnect', 'c', version: '13', meson_version: '>= 0.45.0')
 
 gnome = import('gnome')
 
-extuuid = 'gsconnect@andyholmes.github.io'
 prefix = get_option('prefix')
 datadir = join_paths(prefix, get_option('datadir'))
 libdir = join_paths(prefix, get_option('libdir'))
 localedir = join_paths(prefix, get_option('localedir'))
+sysconfdir = get_option('sysconfdir')
+
+extuuid = 'gsconnect@andyholmes.github.io'
 extdatadir = join_paths(datadir, 'gnome-shell', 'extensions', extuuid)
 gschemadir = join_paths(datadir, 'glib-2.0', 'schemas')
 
@@ -97,13 +99,13 @@ if get_option('webextension')
     configuration: extconfig
   )
   # HACK: use 'rename' in meson >=0.46.0
-  meson.add_install_script('meson/nmh.sh')
+  meson.add_install_script('meson/nmh.sh', sysconfdir)
 
   configure_file(
     input: 'data/org.gnome.shell.extensions.gsconnect.json-mozilla',
     output: 'org.gnome.shell.extensions.gsconnect.json',
     configuration: extconfig,
-    install_dir: '/usr/lib/mozilla/native-messaging-hosts'
+    install_dir: join_paths(libdir, 'mozilla', 'native-messaging-hosts')
   )
 endif
 

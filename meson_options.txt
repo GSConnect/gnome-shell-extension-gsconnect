@@ -1,4 +1,3 @@
 option('session_bus_services_dir', type: 'string', value: '', description: 'DBus session services directory')
-option('systemduserunitdir', type: 'string', value: '', description: 'systemd user units directory')
 option('nautilus', type: 'boolean', value: true, description: 'enable nautilus-python extension')
 option('webextension', type: 'boolean', value: true, description: 'enable WebExtension for Chrome/Firefox')
