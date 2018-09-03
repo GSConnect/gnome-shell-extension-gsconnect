@@ -13,17 +13,17 @@ var Metadata = {
     incomingCapabilities: ['kdeconnect.clipboard'],
     outgoingCapabilities: ['kdeconnect.clipboard'],
     actions: {
-        clipboardCopy: {
-            label: _('Clipboard Copy'),
-            icon_name: 'edit-copy-symbolic',
+        clipboardPush: {
+            label: _('Clipboard Push'),
+            icon_name: 'edit-paste-symbolic',
 
             parameter_type: null,
             incoming: [],
             outgoing: ['kdeconnect.clipboard']
         },
-        clipboardPaste: {
-            label: _('Clipboard Paste'),
-            icon_name: 'edit-paste-symbolic',
+        clipboardPull: {
+            label: _('Clipboard Pull'),
+            icon_name: 'edit-copy-symbolic',
 
             parameter_type: null,
             incoming: ['kdeconnect.clipboard'],
@@ -84,7 +84,7 @@ var Plugin = GObject.registerClass({
             this._localContent = text;
 
             if (this.settings.get_boolean('send-content')) {
-                this.clipboardCopy();
+                this.clipboardPush();
             }
         });
     }
@@ -98,14 +98,14 @@ var Plugin = GObject.registerClass({
         this._remoteContent = text;
 
         if (this.settings.get_boolean('receive-content')) {
-            this.clipboardPaste();
+            this.clipboardPull();
         }
     }
 
     /**
      * Copy to the remote clipboard; called by _onLocalClipboardChanged()
      */
-    clipboardCopy() {
+    clipboardPush() {
         if (this._remoteContent !== this._localContent) {
             this._remoteContent = this._localContent;
 
@@ -120,7 +120,7 @@ var Plugin = GObject.registerClass({
     /**
      * Paste from the remote clipboard; called by _onRemoteClipboardChanged()
      */
-    clipboardPaste() {
+    clipboardPull() {
         if (this._localContent !== this._remoteContent) {
             this._localContent = this._remoteContent;
 
