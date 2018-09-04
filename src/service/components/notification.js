@@ -64,8 +64,8 @@ var Listener = class Listener {
         // Cache for appName->desktop-id lookups
         this._names = {};
 
-        // Start the listener
-        this._setup();
+        // Asynchronous setup
+        this._init_async();
     }
 
     get applications() {
@@ -367,7 +367,7 @@ var Listener = class Listener {
         });
     }
 
-    async _setup() {
+    async _init_async() {
         try {
             this._session = await this._getConnection();
             this._monitor = await this._newConnection();

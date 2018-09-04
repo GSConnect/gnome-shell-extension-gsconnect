@@ -87,18 +87,27 @@ var Store = GObject.registerClass({
             GLib.build_filenamev([CACHE_DIR, 'contacts.json'])
         );
 
-        // Read cache
-        this._cacheFile.load_contents_async(null, (file, res) => {
-            try {
-                let contents = file.load_contents_finish(res)[1];
-                this._contacts = JSON.parse(contents);
-            } catch (e) {
-                this._contacts = {};
-            } finally {
-                this.connect('notify::contacts', this._writeCache.bind(this));
-                this.update();
-            }
-        });
+        // Asynchronous setup
+        this._init_async();
+    }
+
+    async _init_async() {
+        try {
+            // Load the cache
+            this._cacheFile.load_contents_async(null, (file, res) => {
+                try {
+                    let contents = file.load_contents_finish(res)[1];
+                    this._contacts = JSON.parse(contents);
+                } catch (e) {
+                    this._contacts = {};
+                } finally {
+                    this.connect('notify::contacts', this._writeCache.bind(this));
+                    this.update();
+                }
+            });
+        } catch (e) {
+            logError(e);
+        }
     }
 
     get contacts() {
