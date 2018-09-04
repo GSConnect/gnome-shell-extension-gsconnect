@@ -120,17 +120,17 @@ var Plugin = GObject.registerClass({
         switch (true) {
             // If the port (we show in the description) has changed we have to
             // send the whole list to show the change
-            case (cache[2] != stream.get_port().human_port):
+            case (cache[2] !== stream.display_name):
                 this._sendSinkList();
                 return;
 
-            // If only volume and/or mute are set, we can send a single update
-            case (cache[0] != stream.volume):
-            case (cache[1] != stream.is_muted):
+            // If only volume and/or mute are set, send a single update
+            case (cache[0] !== stream.volume):
+            case (cache[1] !== stream.is_muted):
                 this._cache.set(stream, [
                     stream.volume,
                     stream.is_muted,
-                    stream.get_port().human_port
+                    stream.display_name
                 ]);
                 break;
 
@@ -159,13 +159,13 @@ var Plugin = GObject.registerClass({
             this._cache.set(sink, [
                 sink.volume,
                 sink.is_muted,
-                sink.get_port().human_port
+                sink.display_name
             ]);
 
             // return a sinkList entry
             return {
                 name: sink.name,
-                description: `${sink.get_port().human_port} (${sink.description})`,
+                description: sink.display_name,
                 muted: sink.is_muted,
                 volume: sink.volume,
                 maxVolume: this.service.pulseaudio.get_vol_max_norm()
