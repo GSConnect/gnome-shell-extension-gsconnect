@@ -140,7 +140,7 @@ var ChannelService = GObject.registerClass({
         this._devices = new Map();
 
         // Asynchronous init
-        this._setup();
+        this._init_async();
     }
 
     // A list of device proxies supporting the KDE Connect Service UUID
@@ -188,7 +188,7 @@ var ChannelService = GObject.registerClass({
         }
     }
 
-    async _setup() {
+    async _init_async() {
         try {
             await new Promise((resolve, reject) => {
                 this.init_async(GLib.PRIORITY_DEFAULT, null, (obj, res) => {
@@ -219,26 +219,24 @@ var ChannelService = GObject.registerClass({
                 }
             }
 
-            //throw new Error('Something something');
         } catch (e) {
             logWarning(e, 'Bluetooth.ChannelService');
         }
     }
 
     vfunc_interface_added(object, iface) {
+        // We track all devices in case their service UUIDs change later
         if (iface.g_interface_name === 'org.bluez.Device1') {
-            if (!this._devices.has(iface.g_object_path)) {
-                // Setup the device proxy
-                DBus.proxyMethods(iface, DEVICE_INFO);
-                DBus.proxyProperties(iface, DEVICE_INFO);
-                iface._channel = null;
+            // Setup the device proxy
+            DBus.proxyMethods(iface, DEVICE_INFO);
+            DBus.proxyProperties(iface, DEVICE_INFO);
+            iface._channel = null;
 
-                this._devices.set(iface.g_object_path, iface);
+            this._devices.set(iface.g_object_path, iface);
 
-                // Notify and init the device
-                this.notify('devices');
-                this._onDeviceChanged(iface);
-            }
+            // Notify and try connecting the new device
+            this.notify('devices');
+            this._connectDevice(iface);
         }
     }
 
@@ -254,38 +252,39 @@ var ChannelService = GObject.registerClass({
             changed = changed.full_unpack();
 
             switch (true) {
-                case changed.hasOwnProperty('Connected'):
-                    if (changed.Connected) {
-                        this._onDeviceChanged(iface);
-                    } else {
-                        this.RequestDisconnection(iface.g_object_path);
-                    }
+                // Try connecting if the device has just connected or resolved services
+                case changed.Connected:
+                case changed.ServicesResolved:
+                    this._connectDevice(iface);
                     break;
 
-                case (changed.ServicesResolved):
-                    this._onDeviceChanged(iface);
+                case (changed.Connected === false):
+                    this.RequestDisconnection(iface.g_object_path);
                     break;
             }
         }
     }
 
-    async _onDeviceChanged(device) {
+    /**
+     * Attempt to connect the service profile to @iface
+     *
+     * @param {Gio.DBusProxy} iface - A org.bluez.Device1 interface proxy
+     */
+    async _connectDevice(iface) {
         try {
-            // None of these may be false
-            switch (false) {
-                case (device._channel === null):
-                    debug('already connected', device.Alias);
-                case device.Connected:
-                case device.Paired:
-                case device.UUIDs.includes(SERVICE_UUID):
-                    return;
+            // This device already has a connected or connecting channel
+            if (iface._channel !== null) {
+                debug('already connected', iface.Alias);
+                return;
+            }
 
-                default:
-                    debug('requesting bluetooth connection', device.Alias);
-                    await device.ConnectProfile(SERVICE_UUID);
+            // Only try connecting paired bluetooth devices
+            if (iface.Paired) {
+                debug('requesting bluetooth connection', iface.Alias);
+                await iface.ConnectProfile(SERVICE_UUID);
             }
         } catch (e) {
-            debug(e, device.Alias);
+            debug(e, iface.Alias);
         }
     }
 
@@ -418,13 +417,13 @@ var ChannelService = GObject.registerClass({
 
     broadcast(object_path=null) {
         try {
-            let devices = this.devices;
+            let devices = this._devices;
 
             if (typeof object_path === 'string') {
                 devices = [this._devices.get(object_path)];
             }
 
-            devices.map(this._onDeviceChanged);
+            devices.forEach(this._connectDevice);
         } catch (e) {
             logWarning(e, 'Bluetooth.ChannelService');
         }
