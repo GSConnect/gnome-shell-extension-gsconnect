@@ -465,11 +465,10 @@ function proxyProperties(iface, info) {
 /**
  * Create proxy wrappers for the methods on an interface
  */
-function _proxyInvoker(method) {
+function _proxyInvoker(method, ...argv) {
     return new Promise((resolve, reject) => {
-        let args = Array.prototype.slice.call(arguments, 1);
         let signature = method.in_args.map(arg => arg.signature).join('');
-        let variant = new GLib.Variant(`(${signature})`, args);
+        let variant = new GLib.Variant(`(${signature})`, argv);
 
         this.call(method.name, variant, 0, -1, null, (proxy, res) => {
             try {
