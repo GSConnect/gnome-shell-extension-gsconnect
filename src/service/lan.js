@@ -42,13 +42,8 @@ var ChannelService = GObject.registerClass({
     _init() {
         super._init();
 
-        this._initTcpListener();
         this._initUdpListener();
-
-        // If we can't receive channels
-        if (this._tcp === undefined && this._udp === undefined) {
-            throw new Error();
-        }
+        this._initTcpListener();
 
         // Monitor network changes
         this._networkMonitor = Gio.NetworkMonitor.get_default();

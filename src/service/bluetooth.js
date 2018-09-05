@@ -218,7 +218,6 @@ var ChannelService = GObject.registerClass({
                     this.vfunc_interface_added(obj, iface);
                 }
             }
-
         } catch (e) {
             logWarning(e, 'Bluetooth.ChannelService');
         }
