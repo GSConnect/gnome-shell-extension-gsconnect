@@ -207,18 +207,19 @@ var Listener = class Listener {
     }
 
     /**
-     * Try and find a well-known name for @sender
+     * Try and find a well-known name for @sender on the session bus
      *
-     * @param {string} sender - A DBus unique name
-     * @param {string} appName - (Optional) appName supplied by Notify()
+     * @param {string} sender - A DBus unique name (eg. :1.2282)
+     * @param {string} appName - @appName passed to Notify() (Optional)
      * @return {string} - A well-known name or %null
      */
     async _getAppId(sender, appName) {
         try {
+            // Get a list of well-known names, ignoring @sender
             let names = await this._listNames();
             names.splice(names.indexOf(sender), 1);
 
-            // Make a short list for obvious matches, fractal/org.gnome.Fractal
+            // Make a short list for substring matches (fractal/org.gnome.Fractal)
             let appLower = appName.toLowerCase();
 
             let shortList = names.filter(name => {
