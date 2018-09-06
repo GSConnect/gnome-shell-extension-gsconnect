@@ -51,6 +51,9 @@ var ChannelService = GObject.registerClass({
             'network-changed',
             this._onNetworkChanged.bind(this)
         );
+
+        // Log success
+        log(`GSConnect: Using TCP/UDP port 1716`);
     }
 
     get allowed() {
@@ -81,32 +84,23 @@ var ChannelService = GObject.registerClass({
 
     _initTcpListener() {
         this._tcp = new Gio.SocketService();
-        let port = TCP_MIN_PORT;
 
-        while (true) {
-            try {
-                this._tcp.add_inet_port(port, null);
-            } catch (e) {
-                if (port < TCP_MAX_PORT) {
-                    port += 1;
-                    continue;
-                } else {
-                    logWarning('Unable to bind to TCP port', 'Lan.ChannelService');
-                    this._tcp.stop();
-                    this._tcp.close();
-                    return;
-                }
-            }
+        try {
+            this._tcp.add_inet_port(TCP_MIN_PORT, null);
+            this._port = TCP_MIN_PORT;
+        } catch (e) {
+            this._tcp.stop();
+            this._tcp.close();
 
-            if (this._tcp.active) {
-                this._port = port;
-                break;
-            }
+            // The UDP listener must have succeeded so shut it down, too
+            this._udp_source.destroy();
+            this._udp_stream.close(null);
+            this._udp.close();
+
+            throw e;
         }
 
         this._tcp.connect('incoming', this._onIncomingChannel.bind(this));
-
-        log(`GSConnect: Using TCP port ${port}`);
     }
 
     async _onIncomingChannel(listener, connection) {
@@ -180,9 +174,9 @@ var ChannelService = GObject.registerClass({
 
             this._udp.bind(addr, false);
         } catch (e) {
-            logWarning('Unable to bind to UDP port 1716', 'Lan.ChannelService');
             this._udp.close();
-            return;
+
+            throw e;
         }
 
         // Default broadcast address
@@ -199,15 +193,13 @@ var ChannelService = GObject.registerClass({
             })
         });
 
-        // Watch input stream for incoming packets
+        // Watch input socket for incoming packets
         this._udp_source = this._udp.create_source(GLib.IOCondition.IN, null);
-        this._udp_source.set_callback(this._onIncomingPacket.bind(this));
+        this._udp_source.set_callback(this._onIncomingIdentity.bind(this));
         this._udp_source.attach(null);
-
-        log(`GSConnect: Using UDP port 1716`);
     }
 
-    async _onIncomingPacket() {
+    async _onIncomingIdentity() {
         try {
             // Most of the datagram methods don't work in GJS, so we "peek" for
             // the host address first...
@@ -242,13 +234,13 @@ var ChannelService = GObject.registerClass({
                 case (device !== undefined):
                     break;
 
-                // Or the host is explicitly allowed...
-                case this.allowed.has(host):
+                // Or the service is discoverable...
+                case this.service.discoverable:
                     device = await this.service._ensureDevice(packet);
                     break;
 
-                // Or the service is discoverable...
-                case this.service.discoverable:
+                // Or if the host is explicitly allowed...
+                case this.allowed.has(host):
                     device = await this.service._ensureDevice(packet);
                     break;
 
@@ -308,6 +300,7 @@ var ChannelService = GObject.registerClass({
                 debug('Identify to network');
                 address = this._udp_address;
             }
+
             this._udp.send_to(address, `${this.service.identity}`, null);
         } catch (e) {
             logError(e);
