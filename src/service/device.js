@@ -596,12 +596,12 @@ var Device = GObject.registerClass({
                 log(`Pair accepted by ${this.name}`);
 
                 this._setPaired(true);
-                this._loadPlugins();
+                this.loadPlugins();
             // The device thinks we're unpaired
             } else if (this.paired) {
                 this._setPaired(true);
                 this.pair();
-                this._loadPlugins();
+                this.loadPlugins();
             // The device is requesting pairing
             } else {
                 log(`Pair request from ${this.name}`);
@@ -612,7 +612,7 @@ var Device = GObject.registerClass({
             log(`Pair rejected by ${this.name}`);
 
             this._setPaired(false);
-            this._unloadPlugins();
+            this.unloadPlugins();
         }
     }
 
@@ -702,7 +702,7 @@ var Device = GObject.registerClass({
             // then loop back around to send confirmation...
             this.pair();
             // ...before loading plugins
-            this._loadPlugins();
+            this.loadPlugins();
             return;
         }
 
@@ -743,7 +743,7 @@ var Device = GObject.registerClass({
         }
 
         this._setPaired(false);
-        this._unloadPlugins();
+        this.unloadPlugins();
     }
 
     /**
@@ -771,7 +771,7 @@ var Device = GObject.registerClass({
         return this._plugins.get(name) || null;
     }
 
-    async loadPlugin(name) {
+    loadPlugin(name) {
         debug(`loading '${name}' plugin`, this.name);
 
         let handler, plugin;
@@ -806,11 +806,13 @@ var Device = GObject.registerClass({
         }
     }
 
-    async _loadPlugins() {
-        this.allowed_plugins.map(name => this.loadPlugin(name));
+    async loadPlugins() {
+        for (let name of this.allowed_plugins) {
+            await this.loadPlugin(name);
+        }
     }
 
-    async unloadPlugin(name) {
+    unloadPlugin(name) {
         debug(`unloading '${name}' plugin`, this.name);
 
         try {
@@ -829,17 +831,21 @@ var Device = GObject.registerClass({
         }
     }
 
-    async _unloadPlugins() {
-        this._plugins.forEach((plugin, name) => this.unloadPlugin(name));
+    async unloadPlugins() {
+        for (let name of this._plugins.keys()) {
+            await this.unloadPlugin(name);
+        }
     }
 
-    async reloadPlugin(name) {
-        await this.unloadPlugin(name);
-        await this.loadPlugin(name);
+    reloadPlugin(name) {
+        this.unloadPlugin(name);
+        this.loadPlugin(name);
     }
 
     async reloadPlugins() {
-        this.allowed_plugins.map(name => this.reloadPlugin(name));
+        for (let name of this.allowed_plugins) {
+            await this.reloadPlugin(name);
+        }
     }
 
     openSettings() {
@@ -855,11 +861,11 @@ var Device = GObject.registerClass({
         // Synchronously destroy plugins
         this._plugins.forEach(plugin => plugin.destroy());
 
-        // Unexport the GActions and GMenu
+        // Unexport GActions and GMenu
         Gio.DBus.session.unexport_action_group(this._actionsId);
         Gio.DBus.session.unexport_menu_model(this._menuId);
 
-        // Unexport the Device interface
+        // Unexport the Device interface and object
         this._dbus.flush();
         this._dbus_object.remove_interface(this._dbus);
         this._dbus_object.flush();
