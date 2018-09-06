@@ -819,15 +819,15 @@ var Device = GObject.registerClass({
             // Unregister packet handlers
             let handler = imports.service.plugins[name];
 
-            for (let packetType of handler.Metadata.incomingCapabilities) {
-                this._handlers.delete(packetType);
+            for (let type of handler.Metadata.incomingCapabilities) {
+                this._handlers.delete(type);
             }
 
             // Unregister plugin
             this._plugins.get(name).destroy();
             this._plugins.delete(name);
         } catch (e) {
-            logError(`unloading ${name}: ${e.message}`, this.name);
+            logError(e, `${this.name}: unloading ${name}`);
         }
     }
 
