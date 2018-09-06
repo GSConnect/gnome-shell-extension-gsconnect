@@ -193,18 +193,22 @@ var Service = GObject.registerClass({
      * @param {string|Gio.InetSocketAddress} - TCP address, bluez path or %null
      */
     broadcast(address=null) {
-        switch (true) {
-            case (address instanceof Gio.InetSocketAddress):
-                this.lanService.broadcast(address);
-                break;
+        try {
+            switch (true) {
+                case (address instanceof Gio.InetSocketAddress):
+                    this.lanService.broadcast(address);
+                    break;
 
-            case (typeof address === 'string'):
-                this.bluetoothService.broadcast(address);
-                break;
+                case (typeof address === 'string'):
+                    this.bluetoothService.broadcast(address);
+                    break;
 
-            default:
-                this.lanService.broadcast();
-                this.bluetoothService.broadcast();
+                default:
+                    this.lanService.broadcast();
+                    this.bluetoothService.broadcast();
+            }
+        } catch (e) {
+            logError(e);
         }
     }
 
@@ -320,7 +324,7 @@ var Service = GObject.registerClass({
             // App Menu
             ['connect', this._connectAction.bind(this)],
             ['preferences', this._preferencesAction.bind(this)],
-            ['help', this._helpAction.bind(this)],
+            ['help', this._preferencesAction.bind(this, 'help')],
             ['about', this._aboutAction.bind(this)],
 
             // Misc service actions
@@ -410,11 +414,6 @@ var Service = GObject.registerClass({
         } else {
             this._window._onPrevious();
         }
-    }
-
-    _helpAction() {
-        this._preferencesAction();
-        this._window.stack.visible_child_name = 'help';
     }
 
     _aboutAction() {
