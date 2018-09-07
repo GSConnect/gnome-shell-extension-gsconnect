@@ -70,11 +70,18 @@ class Source extends NotificationDaemon.GtkNotificationDaemonAppSource {
      * TODO: This is the place we'll have to handle spawning different types of
      *       notifications (eg. Telepathy/repliable notifications.
      *
-     * https://gitlab.gnome.org/GNOME/gnome-shell/blob/master/js/ui/notificationDaemon.js#L736-754
+     * See: https://gitlab.gnome.org/GNOME/gnome-shell/blob/master/js/ui/notificationDaemon.js#L736-754
      */
     addNotification(notificationId, notificationParams, showBanner) {
         this._notificationPending = true;
         let notification = this._notifications[notificationId];
+
+        // Check if @notificationParams represents an exact repeat
+        let repeat = (
+            notification &&
+            notification.title === notificationParams.title.unpack() &&
+            notification.bannerBodyText === notificationParams.body.unpack()
+        );
 
         if (!notification) {
             notification = new NotificationDaemon.GtkNotificationDaemonNotification(this, notificationParams);
@@ -85,7 +92,7 @@ class Source extends NotificationDaemon.GtkNotificationDaemonAppSource {
             this._notifications[notificationId] = notification;
         }
 
-        if (showBanner)
+        if (showBanner && !repeat)
             this.notify(notification);
         else
             this.pushNotification(notification);
