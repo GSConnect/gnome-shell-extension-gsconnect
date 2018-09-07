@@ -34,7 +34,7 @@ var Metadata = {
 
         // SMS Actions
         newSms: {
-            label: _('Open SMS Window'),
+            label: _('Messaging'),
             icon_name: 'sms-symbolic',
 
             parameter_type: null,
@@ -103,12 +103,8 @@ var Plugin = GObject.registerClass({
 
         // We cache converations/threads so they can be used immediately, even
         // though we'll request them at every connection
-        this._conversations = {};
-        this.cacheProperties(['_conversations']);
-    }
-
-    get conversations() {
-        return this._conversations;
+        this.conversations = {};
+        this.cacheProperties(['conversations']);
     }
 
     get threads() {
@@ -166,7 +162,7 @@ var Plugin = GObject.registerClass({
 
         // TODO: sms.js could just do this on demand, but this way it
         // happens in a Promise and we know the last is the most recent...
-        this._conversations[number] = messages.sort((a, b) => {
+        this.conversations[number] = messages.sort((a, b) => {
             return (a.date < b.date) ? -1 : 1;
         });
 
@@ -209,9 +205,9 @@ var Plugin = GObject.registerClass({
             // _handleConversation()
             let numbers = threads.map(t => t.address);
 
-            for (let number in this._conversations) {
+            for (let number in this.conversations) {
                 if (!numbers.includes(number)) {
-                    delete this._conversations[number];
+                    delete this.conversations[number];
                 }
             }
 
@@ -443,8 +439,8 @@ var Plugin = GObject.registerClass({
 
             // Update contact avatar
             if (packet.body.hasOwnProperty('phoneThumbnail')) {
-                contact = await this.service.contacts.setPixbuf(
-                    contact,
+                contact = await this.service.contacts.setAvatarContents(
+                    contact.id,
                     GLib.base64_decode(packet.body.phoneThumbnail)
                 );
             }

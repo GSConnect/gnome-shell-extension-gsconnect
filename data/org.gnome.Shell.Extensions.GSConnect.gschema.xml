@@ -51,9 +51,6 @@
 
   <!-- Device Settings -->
   <schema id="org.gnome.Shell.Extensions.GSConnect.Device">
-    <key name="action-blacklist" type="as">
-      <default>[]</default>
-    </key>
     <key name="certificate-pem" type="s">
       <default>""</default>
     </key>
@@ -82,6 +79,9 @@
       <default>[]</default>
     </key>
     <key name="disabled-plugins" type="as">
+      <default>[]</default>
+    </key>
+    <key name="disabled-actions" type="as">
       <default>[]</default>
     </key>
     <key name="supported-plugins" type="as">

@@ -233,6 +233,8 @@ var Listener = class Listener {
                 if (nameOwner === sender) {
                     return name;
                 }
+
+                names.splice(names.indexOf(name), 1);
             }
 
             // Run the full list

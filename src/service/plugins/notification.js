@@ -231,11 +231,7 @@ var Plugin = GObject.registerClass({
         return this._uploadIconStream(
             packet,
             Gio.MemoryInputStream.new_from_bytes(bytes),
-            bytes.get_size(),
-            GLib.compute_checksum_for_bytes(
-                GLib.ChecksumType.MD5,
-                bytes.toArray()
-            )
+            bytes.get_size()
         );
     }
 
@@ -262,11 +258,7 @@ var Plugin = GObject.registerClass({
             return this._uploadIconStream(
                 packet,
                 stream,
-                file.query_info('standard::size', 0, null).get_size(),
-                GLib.compute_checksum_for_bytes(
-                    GLib.ChecksumType.MD5,
-                    file.load_contents(null)[1]
-                )
+                file.query_info('standard::size', 0, null).get_size()
             );
         } catch (e) {
             logError(e);
@@ -310,9 +302,8 @@ var Plugin = GObject.registerClass({
      * @param {Core.Packet} packet - The packet for the notification
      * @param {Gio.InputStream} stream - A stream to read the icon bytes from
      * @param {number} size - Size of the icon in bytes
-     * @param {string} checksum - MD5 hash of the icon data
      */
-    async _uploadIconStream(packet, stream, size, checksum) {
+    async _uploadIconStream(packet, stream, size) {
         try {
             // TODO: device negotiated transfers
             if (this.device.connection_type === 'tcp') {
@@ -395,13 +386,27 @@ var Plugin = GObject.registerClass({
                 return null;
             }
 
-            let iconStream = Gio.MemoryOutputStream.new_resizable();
+            let path = GLib.build_filenamev([
+                gsconnect.cachedir,
+                packet.body.payloadHash || `${Date.now()}`
+            ]);
+            let file = Gio.File.new_for_path(path);
+
+            let stream = await new Promise((resolve, reject) => {
+                file.replace_async(null, false, 2, 0, null, (file, res) => {
+                    try {
+                        resolve(file.replace_finish(res));
+                    } catch (e) {
+                        reject(e);
+                    }
+                });
+            });
 
             if (packet.payloadTransferInfo.hasOwnProperty('port')) {
                 transfer = new Lan.Transfer({
                     device: this.device,
                     size: packet.payloadSize,
-                    output_stream: iconStream
+                    output_stream: stream
                 });
 
                 success = await transfer.download(packet.payloadTransferInfo.port);
@@ -411,10 +416,8 @@ var Plugin = GObject.registerClass({
                 return null;
             }
 
-            iconStream.close(null);
-
             if (success) {
-                icon = new Gio.BytesIcon({ bytes: iconStream.steal_as_bytes() });
+                icon = new Gio.FileIcon({ file: file });
             }
         } catch (e) {
             logWarning('Failed to download icon', this.device.name);
@@ -451,8 +454,10 @@ var Plugin = GObject.registerClass({
 
             // Update contact avatar
             if (icon instanceof Gio.BytesIcon) {
-                let contents = icon.get_bytes().toArray().toString();
-                contact = await this.service.contacts.setPixbuf(contact, contents);
+                contact = await this.service.contacts.setAvatarPath(
+                    contact.id,
+                    icon.file.get_path()
+                );
             }
 
             if (message.event === 'sms') {
@@ -485,10 +490,9 @@ var Plugin = GObject.registerClass({
             let isMissedCall = packet.body.id.includes('MissedCall');
             let isSms = packet.body.id.includes('sms');
 
-            // Check if it's a duplicate early so we can skip unnecessary work
+            // Check if it's been marked a duplicate by the telephony plugin
             let duplicate = this._duplicates.get(packet.body.ticker);
 
-            // This has been marked as a duplicate by the telephony plugin
             if ((isMissedCall || isSms) && duplicate) {
                 // We've been asked to close this
                 if (duplicate.close) {

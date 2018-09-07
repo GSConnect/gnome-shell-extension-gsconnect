@@ -111,10 +111,8 @@ Object.defineProperties(Gio.Menu.prototype, {
                 new GLib.Variant('s', 'action-disabled')
             );
 
-            // TODO: targetted actions
             item.set_detailed_action(`device.${action.name}`);
 
-            // TODO: menu editor?
             if (index === -1) {
                 this.append_item(item);
                 return this.get_n_items();

@@ -239,7 +239,6 @@ var Window = GObject.registerClass({
         // Sidebar
         'stack', 'switcher', 'sidebar',
         'shell-list', 'display-mode',
-        'network-list',
         'advanced-list',
         'help', 'help-list'
     ]
@@ -261,7 +260,6 @@ var Window = GObject.registerClass({
         this.service_menu.set_menu_model(this.application.app_menu);
 
         // Sidebar
-        this.help.type = 'device';
         this.switcher.set_header_func(this._headerFunc);
         this.switcher.select_row(this.switcher.get_row_at_index(0));
 
@@ -277,7 +275,7 @@ var Window = GObject.registerClass({
     }
 
     _headerFunc(row, before) {
-        if (before !== null && before.get_name() === 'advanced') {
+        if (row.get_index() === 3) {
             row.set_header(new Gtk.Separator({ visible: true }));
         }
     }
@@ -369,7 +367,6 @@ var Window = GObject.registerClass({
         this.add_action(gsconnect.settings.create_action('debug'));
 
         this.shell_list.set_header_func(section_separators);
-        this.network_list.set_header_func(section_separators);
         this.advanced_list.set_header_func(section_separators);
 
         this._setDisplayMode();
@@ -452,8 +449,6 @@ var Device = GObject.registerClass({
         'ringing-button', 'talking-button',
         // Errata
         'errata', 'errata-page', 'error-list',
-        // Events
-        'events-list',
         // Shortcuts
         'shortcuts-actions', 'shortcuts-actions-title', 'shortcuts-actions-list',
         'shortcuts-commands', 'shortcuts-commands-title', 'shortcuts-commands-list',
@@ -522,7 +517,7 @@ var Device = GObject.registerClass({
         this._telephonySettings();
         // --------------------------
         this._keybindingSettings();
-        this._pluginSettings();
+        this._advancedSettings();
 
         // Separate plugins and other settings
         this.switcher.set_header_func((row, before) => {
@@ -1104,7 +1099,7 @@ var Device = GObject.registerClass({
     /**
      * Telephony Settings
      */
-    async _telephonySettings() {
+    _telephonySettings() {
         let settings = this._getSettings('telephony');
 
         // SMS
@@ -1248,7 +1243,7 @@ var Device = GObject.registerClass({
     }
 
     async _onResetCommandsShortcuts(button) {
-        let keybindings = this.device.settings.get_value('keybindings').full_unpack();
+        let keybindings = this.device.settings.get_value('keybindings').deep_unpack();
 
         for (let action in keybindings) {
             if (action.includes('::')) {
@@ -1265,7 +1260,7 @@ var Device = GObject.registerClass({
     async _populateCommandKeybindings() {
         this.shortcuts_commands_list.foreach(row => row.destroy());
 
-        let keybindings = this.device.settings.get_value('keybindings').full_unpack();
+        let keybindings = this.device.settings.get_value('keybindings').deep_unpack();
 
         // Commands
         let runcommand = this.device.lookup_plugin('runcommand');
@@ -1313,7 +1308,7 @@ var Device = GObject.registerClass({
 
     async _onShortcutRowActivated(box, row) {
         try {
-            let keybindings = this.device.settings.get_value('keybindings').full_unpack();
+            let keybindings = this.device.settings.get_value('keybindings').deep_unpack();
             let accelerator = await Keybindings.get_accelerator(
                 box.get_toplevel(),
                 row.summary,
@@ -1338,23 +1333,36 @@ var Device = GObject.registerClass({
     /**
      * Advanced Page
      */
-    async _pluginSettings() {
-        let reloadPlugins = new Gio.SimpleAction({
-            name: 'reload-plugins',
-            parameter_type: null
-        });
-        reloadPlugins.connect(
-            'activate',
-            () => this.device.reloadPlugins()
+    _advancedSettings() {
+        this.settings.connect(
+            'changed::supported-plugins',
+            this._populatePlugins.bind(this)
         );
-        this.actions.add_action(reloadPlugins);
-
-//        this.device.settings.connect(
-//            'changed::disabled-plugins',
-//            this._populatePlugins.bind(this)
-//        );
-
         this._populatePlugins();
+    }
+
+    _addPlugin(plugin) {
+        let meta = imports.service.plugins[plugin].Metadata;
+
+        let row = new Gtk.ListBoxRow({
+            activatable: true,
+            selectable: false,
+            visible: true
+        });
+        this.plugin_list.add(row);
+
+        let widget = new Gtk.CheckButton({
+            label: meta.label,
+            active: this.device.get_plugin_allowed(plugin),
+            valign: Gtk.Align.CENTER,
+            visible: true
+        });
+        widget.name = plugin;
+        widget._togglePluginId = widget.connect(
+            'notify::active',
+            this._togglePlugin.bind(this)
+        );
+        row.add(widget);
     }
 
     async _populatePlugins() {
@@ -1365,27 +1373,7 @@ var Device = GObject.registerClass({
             });
 
             for (let plugin of this.device.supported_plugins) {
-                let meta = imports.service.plugins[plugin].Metadata;
-
-                let row = new Gtk.ListBoxRow({
-                    activatable: true,
-                    selectable: false,
-                    visible: true
-                });
-                this.plugin_list.add(row);
-
-                let widget = new Gtk.CheckButton({
-                    label: meta.label,
-                    active: this.device.get_plugin_allowed(plugin),
-                    valign: Gtk.Align.CENTER,
-                    visible: true
-                });
-                widget.name = plugin;
-                widget._togglePluginId = widget.connect(
-                    'notify::active',
-                    this._togglePlugin.bind(this)
-                );
-                row.add(widget);
+                await this._addPlugin(plugin);
             }
         } catch (e) {
             logError(e);

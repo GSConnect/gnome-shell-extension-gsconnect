@@ -47,6 +47,8 @@ var Window = GObject.registerClass({
             visible: true
         });
 
+        this.add_action(gsconnect.settings.create_action('debug'));
+
         // Watch for device changes
         this._devicesChangedId = this.application.connect(
             'notify::devices',
@@ -70,9 +72,6 @@ var Window = GObject.registerClass({
 
         // Set default heap path
         this.heap_path.set_current_folder(GLib.get_home_dir());
-
-        // Make sure debug is enabled
-        gsconnect.settings.set_boolean('debug', true);
 
         this.show_all();
     }

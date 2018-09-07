@@ -43,14 +43,14 @@ var Plugin = GObject.registerClass({
 
     handlePacket(packet) {
         if (packet.type === 'kdeconnect.findmyphone.request') {
-            this._handleLocationRequest();
+            this._handleRequest();
         }
     }
 
     /**
      * Handle an incoming location request.
      */
-    _handleLocationRequest() {
+    _handleRequest() {
         try {
             // If this is a second request, stop announcing and return
             if (this._cancellable !== null || this._dialog !== null) {
@@ -68,20 +68,10 @@ var Plugin = GObject.registerClass({
                 ),
                 urgency_hint: true,
                 window_position: Gtk.WindowPosition.CENTER_ALWAYS,
-                application: Gio.Application.get_default(),
-                skip_pager_hint: true,
                 visible: true
             });
-            this._dialog.connect('delete-event', this._endFind.bind(this));
-            this._dialog.connect('key-press-event', (dialog, event) => {
-                if (event.get_keyval()[1] === Gdk.KEY_Escape) {
-                    this._endFind();
-                }
-            });
-            this._dialog.add_button(_('Found'), -4).connect(
-                'clicked',
-                this._endFind.bind(this)
-            );
+            this._dialog.connect('response', (dialog) => this._endFind());
+            this._dialog.add_button(_('Found'), -4);
             this._dialog.set_keep_above(true);
             this._dialog.present();
         } catch (e) {

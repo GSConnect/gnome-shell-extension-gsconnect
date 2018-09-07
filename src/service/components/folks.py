@@ -66,7 +66,7 @@ class _PyGO_CAPI(object):
 
 
 ###############################################################################
-# GType
+# GType Conversion
 ###############################################################################
 
 INT, ADDRESS, NONE, NOT_IMPLEMENTED = range(4)
@@ -136,13 +136,16 @@ def gtype_and_ctype_of(gtype_id=0):
     '''
     _default = (None, None, NOT_IMPLEMENTED)
     g_and_c_type = TYPES_ID.get(hash(gtype_id), _default)
+
     if not g_and_c_type[0]:
         name = gtype_name_of(gtype_id)
+
         if name:
             gtype = GObject.GType.from_name(name)
             parent_id = hash(gtype.parent)
             parent = TYPES_ID.get(parent_id, _default)
             g_and_c_type = (gtype, pyc.c_void_p, parent[2])
+
     return g_and_c_type
 
 
@@ -150,6 +153,7 @@ def from_int(value, gtype_id):
     py_value = value
     types = gtype_and_ctype_of(gtype_id)
     gtype, ctype, ctg = types
+
     if gtype and ctype:
         if gtype.is_a(GObject.TYPE_OBJECT):
             py_value = _PyGO_CAPI.to_object(value)
@@ -161,6 +165,7 @@ def from_int(value, gtype_id):
             py_value = ctype(value).value
         elif ctg == ADDRESS:
             py_value = ctype.from_address(value)
+
     return py_value, gtype, ctype, ctg
 
 
@@ -169,7 +174,7 @@ def c_to_py(value, gtype_id):
 
 
 ###############################################################################
-# GeeIterator
+# Gee Iterator Wrappers
 ###############################################################################
 
 class _GeeIterator(object):
@@ -177,11 +182,13 @@ class _GeeIterator(object):
         self.it = it
         self.obj = obj
         self.size = None
+
         if hasattr(obj, 'get_size'):
             self.size = obj.get_size()
 
     def __iter__(self):
         it = self.it
+
         while it and it.has_next():
             it.next()
             yield it
@@ -200,6 +207,7 @@ class GeeListIterator(_GeeIterator):
 
     def __iter__(self):
         i = 0
+
         for it in _GeeIterator.__iter__(self):
             value = it.get()
 
@@ -238,10 +246,12 @@ class GeeMapIterator(_GeeIterator):
 
 
 def get_iterator(obj):
-    if hasattr(obj, "map_iterator"):
+    if hasattr(obj, 'map_iterator'):
         return GeeMapIterator(obj)
-    if hasattr(obj, "iterator"):
+
+    if hasattr(obj, 'iterator'):
         return GeeListIterator(obj)
+
     return []
 
 
@@ -318,14 +328,6 @@ class Individual(object):
 class Aggregator(object):
     def __init__(self, loop):
         self.loop = loop
-        self.cache_dir = os.path.expanduser("~/.cache/gsconnect/contacts/")
-#        self.cache_path = os.path.join(self.cache_dir, "contacts.json")
-
-#        try:
-#            with open(self.cache_path, 'r') as cache_file:
-#                self.cache = json.load(cache_file);
-#        except:
-#            self.cache = {}
 
         self.contacts = {}
 
@@ -336,9 +338,12 @@ class Aggregator(object):
         self._aggregator.prepare()
 
     def _on_quiescent(self, *args):
-        self._get_individuals()
+        try:
+            self._get_individuals()
 
         self.contacts = self.get_contacts()
+        except:
+            pass
 
         self.print(self.contacts)
         self.loop.quit()
@@ -355,66 +360,38 @@ class Aggregator(object):
 
     def get_contacts(self):
         contacts = {};
-        account_id = ''
 
         for folk in self.individuals.values():
-            # Skip contacts without phone numbers
-            if not len(folk.phone_numbers):
-                continue
+            try:
+                # Skip contacts without phone numbers
+                if not len(folk.phone_numbers):
+                    continue
 
-            contact_id = ''
+                # Avatar
+                avatar = None
 
-            # We take a local_id, which is <contact-id>:<urn>, and split it
-            # so that if we get the same contacts from a different source, like
-            # GData, we use the same ID's and don't duplicate contacts.
-            if len(folk.local_ids) == 1:
-                fid, urn = folk.local_ids[0].split(':', 1)
-                #print(folk.display_name + ': ' + folk.local_ids[0])
-                contact_id = urn
+                if folk.avatar != None:
+                    if hasattr(folk.avatar, 'get_file'):
+                        avatar = folk.avatar.get_file().get_path()
+                    elif hasattr(avatar, 'get_bytes'):
+                        folk_id = folk.id or GLib.uuid_string_random()
+                        path = os.path.join(self.cache_dir, folk_id + '.jpeg')
 
-                if not account_id:
-                    account_id = fid
+                        with open(path, 'wb') as fobj:
+                            fobj.write(folk.avatar.get_bytes().get_data())
 
-            elif len(folk.local_ids) > 1:
-                for local_id in folk.local_ids:
-                    #print(folk.display_name + ': ' + local_id)
-                    fid, urn = local_id.split(':', 1)
+                        avatar = path
 
-                    if fid != account_id:
-                        account_id = fid
-                        #print(account_id)
-
-                    contact_id = urn
-                    #print(contact_id)
-                    break
-
-            # Numbers
-            #for number in folk.phone_numbers:
-
-            # Avatar
-            avatar = None
-
-            if folk.avatar != None:
-                if hasattr(folk.avatar, 'get_file'):
-                    avatar = folk.avatar.get_file().get_path()
-                elif hasattr(avatar, 'get_bytes'):
-                    folk_id = folk.id or GLib.uuid_string_random()
-                    path = os.path.join(self.cache_dir, folk_id + '.jpeg')
-
-                    with open(path, 'wb') as fobj:
-                        fobj.write(folk.avatar.get_bytes().get_data())
-
-                    avatar = path
-
-            # Add the contact
-            contact = {
-                'avatar': avatar or "",
-                'folks_id': folk.id or None,
-                'name': folk.display_name,
-                'numbers': folk.phone_numbers,
-                'origin': 'folks'
-            }
-            contacts[contact_id] = contact
+                # Add the contact
+                contacts[folk.id] = {
+                    'id': folk.id or None,
+                    'avatar': avatar or "",
+                    'name': folk.display_name,
+                    'numbers': folk.phone_numbers,
+                    'origin': 'folks'
+                }
+            except:
+                pass
 
         return contacts
 

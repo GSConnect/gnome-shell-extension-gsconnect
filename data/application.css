@@ -51,9 +51,3 @@
     border-bottom-right-radius: 1em;
 }
 
-.battery-bar block.filled {
-    background-color: #00ff00;
-    border-style: solid;
-    border-color: black;
-    border-width: 1px;
-}
