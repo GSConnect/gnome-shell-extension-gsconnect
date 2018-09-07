@@ -116,6 +116,14 @@ var Channel = GObject.registerClass({
         this._type = type;
     }
 
+    get cancellable() {
+        if (this._cancellable === undefined) {
+            this._cancellable = new Gio.Cancellable();
+        }
+
+        return this._cancellable;
+    }
+
     get certificate() {
         if (this.type === 'tcp') {
             return this._connection.get_peer_certificate();
@@ -135,7 +143,7 @@ var Channel = GObject.registerClass({
     /**
      * Set socket options
      */
-    async _initSocket(connection) {
+    _initSocket(connection) {
         if (connection instanceof Gio.TcpConnection) {
             connection.socket.set_keepalive(true);
             connection.socket.set_option(6, 4, 10); // TCP_KEEPIDLE
@@ -258,7 +266,7 @@ var Channel = GObject.registerClass({
      * If @connection is a Gio.TcpConnection, wrap it in Gio.TlsClientConnection
      * and initiate handshake, otherwise just return it.
      */
-    async _clientEncryption(connection) {
+    _clientEncryption(connection) {
         if (connection instanceof Gio.TcpConnection) {
             connection = Gio.TlsClientConnection.new(
                 connection,
@@ -276,7 +284,7 @@ var Channel = GObject.registerClass({
      * If @connection is a Gio.TcpConnection, wrap it in Gio.TlsServerConnection
      * and initiate handshake, otherwise just return it.
      */
-    async _serverEncryption(connection) {
+    _serverEncryption(connection) {
         if (connection instanceof Gio.TcpConnection) {
             connection = Gio.TlsServerConnection.new(
                 connection,
@@ -318,11 +326,6 @@ var Channel = GObject.registerClass({
             base_stream: this._connection.output_stream
         });
 
-        // Attach a source to the input channel, bound to the device
-        this._monitor = this._connection.input_stream.create_source(null);
-        this._monitor.set_callback(this.receive.bind(this, device));
-        this._monitor.attach(null);
-
         // TODO: Plugins should be reloaded if we're swapping channel types.
         //       This is flakey in general, which may be Android's fault or
         //       possibly inherent in the protocol.
@@ -331,6 +334,9 @@ var Channel = GObject.registerClass({
         if (!device.connected) {
             this.emit('connected');
         }
+
+        // Start listening for packets
+        this.receive(device);
     }
 
     /**
@@ -408,14 +414,14 @@ var Channel = GObject.registerClass({
      * emit 'disconnected::'
      */
     close() {
-        if (this._monitor) {
-            try {
-                this._monitor.destroy();
-            } catch (e) {
-                debug(e.message);
-            }
+        // Cancel any queued operations
+        try {
+            this.cancellable.cancel();
+        } catch (e) {
+            debug(e.message);
         }
 
+        // Close any streams
         [this._connection, this.input_stream, this.output_stream].map(stream => {
             try {
                 stream.close(null);
@@ -436,25 +442,6 @@ var Channel = GObject.registerClass({
     }
 
     /**
-     * Send a packet to a device.
-     *
-     * TODO: Currently, we don't consider failed writes to consititute a broken
-     * connection and just log a warning. This should be investigated and tested
-     * over a period of time.
-     *
-     * @param {object} packet - An object containing the packet data
-     */
-    send(packet) {
-        try {
-            packet = new Packet(packet);
-            this.output_stream.put_string(packet.toString(), null);
-            debug(packet, this.identity.body.deviceName);
-        } catch (e) {
-            logError(e, this.identity.body.deviceName);
-        }
-    }
-
-    /**
      * Receive a packet from the channel and call receivePacket() on the device
      *
      * @param {Device.Device} device - The device which will handle the packet
@@ -463,19 +450,68 @@ var Channel = GObject.registerClass({
      *       devices where %null is returned
      */
     receive(device) {
+        this.input_stream.read_line_async(
+            GLib.PRIORITY_DEFAULT,
+            this.cancellable,
+            (stream, res) => {
+                try {
+                    // Try to read and parse a packet
+                    let data = stream.read_line_finish(res)[0];
+                    let packet = new Packet(data.toString());
+
+                    debug(packet, this.identity.body.deviceName);
+
+                    // Queue another receive() (async) before passing the packet
+                    // to the device to handle (sync)
+                    this.receive(device);
+                    device.receivePacket(packet);
+                } catch (e) {
+                    // Another operation is pending, queue another receive()
+                    if (e.code === Gio.IOErrorEnum.PENDING) {
+                        this.receive(device);
+
+                    // Something else went wrong; disconnect
+                    } else {
+                        logError(e, this.identity.body.deviceName);
+                        this.close();
+                    }
+                }
+            }
+        );
+    }
+
+    /**
+     * Send a packet to a device.
+     *
+     * TODO: Currently, we don't consider failed writes to consititute a broken
+     * connection and just log a warning. This should be investigated and tested
+     * over a period of time.
+     *
+     * @param {object} packet - An dictionary of packet data
+     */
+    send(packet) {
         try {
-            let data = this.input_stream.read_line(null)[0];
-            let packet = new Packet(data.toString());
+            packet = new Packet(packet);
 
-            debug(packet, device.name);
-
-            device.receivePacket(packet);
-
-            return GLib.SOURCE_CONTINUE;
+            this._connection.output_stream.write_all_async(
+                packet.toString(),
+                GLib.PRIORITY_DEFAULT,
+                this.cancellable,
+                (stream, res) => {
+                    try {
+                        stream.write_all_finish(res);
+                        debug(packet, this.identity.body.deviceName);
+                    } catch (e) {
+                        if (e.code === Gio.IOErrorEnum.PENDING) {
+                            this.send(packet);
+                        } else {
+                            logError(e, this.identity.body.deviceName);
+                        }
+                    }
+                }
+            );
         } catch (e) {
-            debug(e, this.identity.body.deviceName);
-            this.close();
-            return GLib.SOURCE_REMOVE;
+            logError(e, 'Malformed Packet');
         }
     }
 });
@@ -514,8 +550,6 @@ var Transfer = GObject.registerClass({
 
     _init(params) {
         super._init(params.device.id, 'transfer');
-
-        this._cancellable = new Gio.Cancellable();
 
         this._device = params.device;
         this.input_stream = params.input_stream;
@@ -564,7 +598,7 @@ var Transfer = GObject.registerClass({
      * Cancel the transfer in progress
      */
     cancel() {
-        this._cancellable.cancel();
+        this.cancellable.cancel();
     }
 
     close() {
@@ -588,7 +622,7 @@ var Transfer = GObject.registerClass({
                     this.input_stream,
                     Gio.OutputStreamSpliceFlags.NONE,
                     GLib.PRIORITY_DEFAULT,
-                    this._cancellable,
+                    this.cancellable,
                     (source, res) => {
                         try {
                             if (source.splice_finish(res) < this.size) {
