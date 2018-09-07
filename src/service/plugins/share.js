@@ -86,10 +86,12 @@ var Plugin = GObject.registerClass({
      * @return {Gio.File} - A new GFile for the given @filename in ~/Downloads
      */
     _getFile(filename) {
-        let path = GLib.build_filenamev([
-            GLib.get_user_special_dir(GLib.UserDirectory.DIRECTORY_DOWNLOAD),
-            filename
-        ]);
+        let path = GLib.get_user_special_dir(GLib.UserDirectory.DIRECTORY_DOWNLOAD);
+
+        // Account for some corner cases with a fallback
+        if (!download_dir || download_dir === GLib.get_home_dir()) {
+            path = GLib.build_filenamev([GLib.get_home_dir(), 'Downloads']);
+        }
 
         let filepath = path;
         let copyNum = 0;
@@ -103,16 +105,26 @@ var Plugin = GObject.registerClass({
     }
 
     async _handleFile(packet) {
-        let file, success, transfer;
+        let file, stream, success, transfer;
         let title, body, iconName;
         let buttons = [];
 
         try {
             file = this._getFile(packet.body.filename);
 
+            stream = await new Promise((resolve, reject) => {
+                file.replace_async(null, false, 0, 0, null, (file, res) => {
+                    try {
+                        resolve(file.replace_finish(res));
+                    } catch (e) {
+                        reject(e);
+                    }
+                });
+            });
+
             transfer = new Lan.Transfer({
                 device: this.device,
-                output_stream: file.replace(null, false, Gio.FileCreateFlags.NONE, null),
+                output_stream: stream,
                 size: packet.payloadSize
             });
 
@@ -233,7 +245,8 @@ var Plugin = GObject.registerClass({
      * @param {string} path - Local file path or file URI
      */
     async shareFile(path) {
-        let file, transfer;
+        let file, stream, success, transfer;
+        let title, body, iconName;
 
         try {
             if (path.startsWith('file://')) {
@@ -242,18 +255,28 @@ var Plugin = GObject.registerClass({
                 file = Gio.File.new_for_path(path);
             }
 
+            stream = await new Promise((resolve, reject) => {
+                file.read_async(GLib.PRIORITY_DEFAULT, null, (file, res) => {
+                    try {
+                        resolve(file.read_finish(res));
+                    } catch (e) {
+                        reject(e);
+                    }
+                });
+            });
+
             let info = file.query_info('standard::size', 0, null);
 
             if (this.device.connection_type === 'bluetooth') {
                 transfer = new Bluetooth.Transfer({
                     device: this.device,
-                    input_stream: file.read(null),
+                    input_stream: stream,
                     size: info.get_size()
                 });
             } else if (this.device.connection_type === 'tcp') {
                 transfer = new Lan.Transfer({
                     device: this.device,
-                    input_stream: file.read(null),
+                    input_stream: stream,
                     size: info.get_size()
                 });
             }
@@ -275,13 +298,11 @@ var Plugin = GObject.registerClass({
                 icon: new Gio.ThemedIcon({ name: 'send-to-symbolic' })
             });
 
-            let success = await transfer.upload({
+            success = await transfer.upload({
                 id: 0,
                 type: 'kdeconnect.share.request',
                 body: { filename: file.get_basename() }
             });
-
-            let title, body, iconName;
 
             if (success) {
                 title = _('Transfer Successful');
