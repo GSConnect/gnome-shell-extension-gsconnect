@@ -217,6 +217,7 @@ var Plugin = GObject.registerClass({
             }
         } catch (e) {
             logError(e);
+            return this.device.sendPacket(packet);
         }
     }
 
@@ -244,16 +245,33 @@ var Plugin = GObject.registerClass({
      * @param {Core.Packet} packet - The packet for the notification
      * @param {Gio.File} file - A Gio.File object for the icon
      */
-    _uploadFileIcon(packet, file) {
-        return this._uploadIconStream(
-            packet,
-            file.read(null),
-            file.query_info('standard::size', 0, null).get_size(),
-            GLib.compute_checksum_for_bytes(
-                GLib.ChecksumType.MD5,
-                file.load_contents(null)[1]
-            )
-        );
+    async _uploadFileIcon(packet, file) {
+        let stream;
+
+        try {
+            stream = await new Promise((resolve, reject) => {
+                file.read_async(GLib.PRIORITY_DEFAULT, null, (file, res) => {
+                    try {
+                        resolve(file.read_finish(res));
+                    } catch (e) {
+                        reject(e);
+                    }
+                });
+            });
+
+            return this._uploadIconStream(
+                packet,
+                stream,
+                file.query_info('standard::size', 0, null).get_size(),
+                GLib.compute_checksum_for_bytes(
+                    GLib.ChecksumType.MD5,
+                    file.load_contents(null)[1]
+                )
+            );
+        } catch (e) {
+            logError(e);
+            this.device.sendPacket(packet);
+        }
     }
 
     /**
@@ -301,8 +319,7 @@ var Plugin = GObject.registerClass({
                 let transfer = new Lan.Transfer({
                     device: this.device,
                     size: size,
-                    input_stream: stream,
-                    checksum: checksum
+                    input_stream: stream
                 });
 
                 let success = await transfer.upload(packet);
@@ -384,7 +401,6 @@ var Plugin = GObject.registerClass({
                 transfer = new Lan.Transfer({
                     device: this.device,
                     size: packet.payloadSize,
-                    checksum: packet.body.payloadHash,
                     output_stream: iconStream
                 });
 
