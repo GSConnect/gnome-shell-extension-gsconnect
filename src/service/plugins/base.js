@@ -36,14 +36,15 @@ var Plugin = GObject.registerClass({
             // Register based on device capabilities, which shouldn't change
             let deviceHandles = this.device.settings.get_strv('incoming-capabilities');
             let deviceProvides = this.device.settings.get_strv('outgoing-capabilities');
-            let blacklist = this.device.settings.get_strv('action-blacklist');
+            let menu = this.device.settings.get_strv('menu-actions');
+            let disabled = this.device.settings.get_strv('disabled-actions');
 
             for (let name in this._meta.actions) {
                 let meta = this._meta.actions[name];
 
                 if (meta.incoming.every(p => deviceProvides.includes(p)) &&
                     meta.outgoing.every(p => deviceHandles.includes(p))) {
-                    this._registerAction(name, meta, blacklist);
+                    this._registerAction(name, meta, menu, disabled);
                 }
             }
         }
@@ -77,11 +78,16 @@ var Plugin = GObject.registerClass({
         }
     }
 
-    _registerAction(name, meta, blacklist) {
-        let action = new Device.Action(Object.assign({ name: name }, meta));
+    _registerAction(name, meta, menu, disabled) {
+        let action = new Device.Action({
+            name: name,
+            parameter_type: meta.parameter_type,
+            icon: new Gio.ThemedIcon({ name: meta.icon_name }),
+            label: meta.label
+        });
 
         // Set the enabled state
-        action.set_enabled(!blacklist.includes(action.name));
+        action.set_enabled(!disabled.includes(action.name));
 
         // Bind the activation
         action.connect('activate', this._activateAction.bind(this));
@@ -89,7 +95,6 @@ var Plugin = GObject.registerClass({
         this.device.add_action(action);
 
         // Menu
-        let menu = this.device.settings.get_strv('menu-actions');
         let index = menu.indexOf(action.name);
 
         if (index > -1) {

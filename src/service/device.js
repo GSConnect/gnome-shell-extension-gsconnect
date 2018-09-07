@@ -17,21 +17,24 @@ const INTERFACE_INFO = gsconnect.dbusinfo.lookup_interface(UUID);
  * Base class for plugin actions
  */
 var Action = GObject.registerClass({
-    GTypeName: 'GSConnectDeviceAction'
-}, class Action extends Gio.SimpleAction {
-
-    _init(params) {
-        super._init({
-            name: params.name,
-            parameter_type: params.parameter_type
-        });
-
-        this.label = params.label;
-        this.icon_name = params.icon_name;
-        this.icon = new Gio.ThemedIcon({ name: params.icon_name });
-        this.incoming = params.incoming;
-        this.outgoing = params.outgoing;
+    GTypeName: 'GSConnectDeviceAction',
+    Properties: {
+        'icon': GObject.ParamSpec.object(
+            'icon',
+            'icon',
+            'The GIcon for this action',
+            GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
+            Gio.Icon
+        ),
+        'label': GObject.ParamSpec.string(
+            'label',
+            'Label',
+            'The display name for this action',
+            GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
+            null
+        )
     }
+}, class Action extends Gio.SimpleAction {
 });
 
 
@@ -441,7 +444,7 @@ var Device = GObject.registerClass({
             name: 'activate',
             parameter_type: null,
             label: _('Reconnect'),
-            icon_name: 'view-refresh-symbolic'
+            icon: new Gio.ThemedIcon({ name: 'view-refresh-symbolic' })
         });
         activate.connect('activate', this.activate.bind(this));
         this.add_action(activate);
@@ -450,7 +453,7 @@ var Device = GObject.registerClass({
             name: 'openSettings',
             parameter_type: null,
             label: _('Open Settings'),
-            icon_name: 'preferences-system-symbolic'
+            icon: new Gio.ThemedIcon({ name: 'preferences-system-symbolic' })
         });
         openSettings.connect('activate', this.openSettings.bind(this));
         this.add_action(openSettings);
@@ -459,7 +462,7 @@ var Device = GObject.registerClass({
             name: 'pair',
             parameter_type: null,
             label: _('Pair'),
-            icon_name: 'channel-secure-symbolic'
+            icon: new Gio.ThemedIcon({ name: 'channel-secure-symbolic' })
         });
         acceptPair.connect('activate', this.pair.bind(this));
         this.add_action(acceptPair);
@@ -468,7 +471,7 @@ var Device = GObject.registerClass({
             name: 'unpair',
             parameter_type: null,
             label: _('Unpair'),
-            icon_name: 'channel-insecure-symbolic'
+            icon: new Gio.ThemedIcon({ name: 'channel-insecure-symbolic' })
         });
         rejectPair.connect('activate', this.unpair.bind(this));
         this.add_action(rejectPair);
