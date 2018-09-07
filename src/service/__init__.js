@@ -219,6 +219,29 @@ Object.defineProperties(Gio.TlsCertificate.prototype, {
             return this.__common_name;
         },
         enumerable: true
+    },
+
+    /**
+     * The common name of the certificate.
+     */
+    'certificate_der': {
+        get: function() {
+            if (!this.__certificate_der) {
+                let proc = new Gio.Subprocess({
+                    argv: ['openssl', 'x509', '-outform', 'der', '-inform', 'pem'],
+                    flags: Gio.SubprocessFlags.STDIN_PIPE | Gio.SubprocessFlags.STDOUT_PIPE
+                });
+                proc.init(null);
+
+                let stdout = proc.communicate(new GLib.Bytes(this.certificate_pem), null)[1];
+                this.__certificate_der = stdout.toArray();
+
+                proc.wait_check(null);
+            }
+
+            return this.__certificate_der;
+        },
+        enumerable: true
     }
 });
 
