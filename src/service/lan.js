@@ -105,7 +105,7 @@ var ChannelService = GObject.registerClass({
 
     async _onIncomingChannel(listener, connection) {
         try {
-            let channel = new Core.Channel(null, 'tcp');
+            let channel = new Core.Channel({ type: 'tcp' });
             let host = connection.get_remote_address().address.to_string();
 
             debug(host, 'incoming channel');
@@ -259,7 +259,7 @@ var ChannelService = GObject.registerClass({
             }
 
             // Create a new channel
-            let channel = new Core.Channel(packet.body.deviceId, 'tcp');
+            let channel = new Core.Channel({ type: 'tcp' });
             channel.identity = packet;
             device._channel = channel;
 

@@ -101,20 +101,12 @@ var Channel = GObject.registerClass({
         'type': GObject.ParamSpec.string(
             'type',
             'Data Channel Type',
-            'The protocol this data channel uses',
-            GObject.ParamFlags.READABLE,
+            'The transport the channel uses; bluetooth or tcp',
+            GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
             null
         )
     }
 }, class Channel extends GObject.Object {
-
-    _init(deviceId, type) {
-        super._init();
-
-        // We need this to lookup the certificate in GSettings
-        this.identity = { body: { deviceId: deviceId } };
-        this._type = type;
-    }
 
     get cancellable() {
         if (this._cancellable === undefined) {
@@ -134,10 +126,6 @@ var Channel = GObject.registerClass({
 
     get service() {
         return Gio.Application.get_default();
-    }
-
-    get type() {
-        return this._type;
     }
 
     /**
@@ -206,60 +194,54 @@ var Channel = GObject.registerClass({
     }
 
     /**
-     * Verify connection certificate
-     */
-    _onAcceptCertificate(connection, peer_cert, flags) {
-        log(`Authenticating ${this.identity.body.deviceId}`);
-
-        connection.disconnect(connection._acceptCertificateId);
-
-        // Bail if the deviceId is missing
-        if (this.identity.body.deviceId === undefined) {
-            logError('missing deviceId', connection.get_remote_address().to_string());
-            return false;
-        }
-
-        // Get (or create) the settings for this deviceId
-        let settings = new Gio.Settings({
-            settings_schema: gsconnect.gschema.lookup(gsconnect.app_id + '.Device', true),
-            path: gsconnect.settings.path + 'device/' + this.identity.body.deviceId + '/'
-        });
-        let cert_pem = settings.get_string('certificate-pem');
-
-        // Verify the connection certificate if we have one
-        if (cert_pem !== '') {
-            return Gio.TlsCertificate.new_from_pem(cert_pem, -1).is_same(peer_cert);
-        }
-
-        // Otherwise trust on first use
-        return true;
-    }
-
-    /**
      * Handshake Gio.TlsConnection
      */
-    _handshake(connection) {
-        return new Promise((resolve, reject) => {
-            connection.validation_flags = 0;
-            connection.authentication_mode = 1;
-            connection._acceptCertificateId = connection.connect(
-                'accept-certificate',
-                this._onAcceptCertificate.bind(this)
-            );
+    async _authenticate(connection) {
+        log(`GSConnect: Authenticating ${this.identity.body.deviceName}`);
+
+        // Standard TLS Handshake
+        await new Promise((resolve, reject) => {
+            connection.validation_flags = Gio.TlsCertificateFlags.EXPIRED;
+            connection.authentication_mode = Gio.TlsAuthenticationMode.REQUIRED;
 
             connection.handshake_async(
                 GLib.PRIORITY_DEFAULT,
                 null,
                 (connection, res) => {
                     try {
-                        connection.handshake_finish(res);
-                        resolve(connection);
+                        resolve(connection.handshake_finish(res));
                     } catch (e) {
                         reject(e);
                     }
                 }
             );
         });
+
+        // Bail if deviceId is missing
+        if (!this.identity.body.hasOwnProperty('deviceId')) {
+            throw new Error('missing deviceId');
+        }
+
+        // Get a GSettings object for this deviceId
+        let settings = new Gio.Settings({
+            settings_schema: gsconnect.gschema.lookup(gsconnect.app_id + '.Device', true),
+            path: gsconnect.settings.path + 'device/' + this.identity.body.deviceId + '/'
+        });
+        let cert_pem = settings.get_string('certificate-pem');
+
+        // If we have a certificate for this deviceId, we can verify it
+        if (cert_pem !== '') {
+            let certificate = Gio.TlsCertificate.new_from_pem(cert_pem, -1);
+            let valid = certificate.is_same(connection.peer_certificate);
+
+            // This is a fraudulent certificate; notify the user
+            if (!valid) {
+                let error = new Error();
+                throw error;
+            }
+        }
+
+        return connection;
     }
 
     /**
@@ -274,7 +256,7 @@ var Channel = GObject.registerClass({
             );
             connection.set_certificate(this.service.certificate);
 
-            return this._handshake(connection);
+            return this._authenticate(connection);
         } else {
             return connection;
         }
@@ -291,7 +273,12 @@ var Channel = GObject.registerClass({
                 this.service.certificate
             );
 
-            return this._handshake(connection);
+            let _id = connection.connect('accept-certificate', (conn) => {
+                conn.disconnect(_id);
+                return true;
+            });
+
+            return this._authenticate(connection);
         } else {
             return connection;
         }
@@ -530,6 +517,20 @@ var Transfer = GObject.registerClass({
             GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
             GObject.Object
         ),
+        'input-stream': GObject.ParamSpec.object(
+            'input-stream',
+            'TransferDevice',
+            'The device associated with this transfer',
+            GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
+            Gio.InputStream
+        ),
+        'output-stream': GObject.ParamSpec.object(
+            'output-stream',
+            'TransferDevice',
+            'The device associated with this transfer',
+            GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
+            Gio.OutputStream
+        ),
         'size': GObject.ParamSpec.uint(
             'size',
             'TransferSize',
@@ -549,27 +550,16 @@ var Transfer = GObject.registerClass({
 }, class Transfer extends Channel {
 
     _init(params) {
-        super._init(params.device.id, 'transfer');
-
-        this._device = params.device;
-        this.input_stream = params.input_stream;
-        this.output_stream = params.output_stream;
-        this._size = params.size;
-
-        this.checksum = params.checksum;
-        this._checksum = new GLib.Checksum(GLib.ChecksumType.MD5);
-        this._written = 0;
-        this._progress = 0;
-
+        super._init(params);
         this.device._transfers.set(this.uuid, this);
     }
 
-    get device() {
-        return this._device;
+    get identity() {
+        return this.device._channel.identity;
     }
 
-    get size() {
-        return this._size || 0;
+    get type() {
+        return 'transfer';
     }
 
     get uuid() {

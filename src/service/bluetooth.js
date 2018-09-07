@@ -326,7 +326,7 @@ var ChannelService = GObject.registerClass({
             // Create a Gio.SocketConnection from the file-descriptor
             let socket = Gio.Socket.new_from_fd(fd);
             let connection = socket.connection_factory_create_connection();
-            let channel = new Core.Channel(null, 'bluetooth');
+            let channel = new Core.Channel({ type: 'bluetooth' });
 
             // FIXME: Bluetooth connections are always "incoming" from our
             // perspective so we try checking the IOCondition of the socket to
