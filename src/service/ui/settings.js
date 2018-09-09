@@ -465,6 +465,12 @@ var Device = GObject.registerClass({
 
         this.device = device;
 
+        // GSettings
+        this.settings = new Gio.Settings({
+            settings_schema: gsconnect.gschema.lookup('org.gnome.Shell.Extensions.GSConnect.Device', true),
+            path: `/org/gnome/shell/extensions/gsconnect/device/${this.device.id}/`
+        });
+
         // Connect Actions
         this.actions = new Gio.SimpleActionGroup();
         this.insert_action_group('status', this.actions);
@@ -541,17 +547,17 @@ var Device = GObject.registerClass({
         );
 
         // Connected/Paired
-        this._bluetoothHostChangedId = this.device.settings.connect(
+        this._bluetoothHostChangedId = this.settings.connect(
             'changed::bluetooth-host',
             this._onBluetoothHostChanged.bind(this)
         );
-        this._onBluetoothHostChanged(this.device.settings);
+        this._onBluetoothHostChanged(this.settings);
 
-        this._tcpHostChangedId = this.device.settings.connect(
+        this._tcpHostChangedId = this.settings.connect(
             'changed::tcp-host',
             this._onTcpHostChanged.bind(this)
         );
-        this._onTcpHostChanged(this.device.settings);
+        this._onTcpHostChanged(this.settings);
 
         this._connectedId = this.device.connect(
             'notify::connected',
@@ -640,7 +646,7 @@ var Device = GObject.registerClass({
     }
 
     _onActivateBluetooth(button) {
-        this.device.settings.set_string('last-connection', 'bluetooth');
+        this.settings.set_string('last-connection', 'bluetooth');
         this.device.activate();
     }
 
@@ -650,7 +656,7 @@ var Device = GObject.registerClass({
     }
 
     _onActivateLan(button) {
-        this.device.settings.set_string('last-connection', 'tcp');
+        this.settings.set_string('last-connection', 'tcp');
         this.device.activate();
     }
 
@@ -667,7 +673,7 @@ var Device = GObject.registerClass({
 
         this._gsettings[name] = new Gio.Settings({
             settings_schema: gsconnect.gschema.lookup(meta.id, -1),
-            path: this.device.settings.path + 'plugin/' + name + '/'
+            path: this.settings.path + 'plugin/' + name + '/'
         });
 
         return this._gsettings[name];
@@ -693,9 +699,9 @@ var Device = GObject.registerClass({
         this.device.disconnect(this._actionEnabledId);
 
         this.device.disconnect(this._connectedId);
-        this.device.settings.disconnect(this._bluetoothHostChangedId);
-        this.device.settings.disconnect(this._tcpHostChangedId);
-        this.device.settings.disconnect(this._keybindingsId);
+        this.settings.disconnect(this._bluetoothHostChangedId);
+        this.settings.disconnect(this._tcpHostChangedId);
+        this.settings.disconnect(this._keybindingsId);
 
         for (let settings of Object.values(this._gsettings)) {
             settings.run_dispose();
@@ -709,7 +715,7 @@ var Device = GObject.registerClass({
     /**
      * Sharing Settings
      */
-    async _sharingSettings() {
+    _sharingSettings() {
         this.sharing_list.foreach(row => {
             let label = row.get_child().get_child_at(1, 0);
             let name = row.get_name();
@@ -770,7 +776,7 @@ var Device = GObject.registerClass({
         });
     }
 
-    async _onSharingRowActivated(box, row) {
+    _onSharingRowActivated(box, row) {
         let label = row.get_child().get_child_at(1, 0);
         let name = row.get_name();
         let settings = this._getSettings(name);
@@ -807,7 +813,7 @@ var Device = GObject.registerClass({
     /**
      * RunCommand Page
      */
-    async _runcommandSettings() {
+    _runcommandSettings() {
         let settings = this._getSettings('runcommand');
 
         // Exclusively enable the editor or add button
@@ -853,7 +859,7 @@ var Device = GObject.registerClass({
         return row1.title.localeCompare(row2.title);
     }
 
-    async _insertCommand(uuid) {
+    _insertCommand(uuid) {
         let row = new SectionRow({
             title: this._commands[uuid].name,
             subtitle: this._commands[uuid].command,
@@ -874,11 +880,11 @@ var Device = GObject.registerClass({
     }
 
     // The [+] button in the toolbar
-    async _onAddCommand(button) {
+    _onAddCommand(button) {
         let uuid = GLib.uuid_string_random();
         this._commands[uuid] = { name: '', command: '' };
 
-        let row = await this._insertCommand(uuid);
+        let row = this._insertCommand(uuid);
         this.command_list.select_row(row);
         this._onEditCommand();
     }
@@ -896,7 +902,7 @@ var Device = GObject.registerClass({
         this._populateCommands();
     }
 
-    // The 'edit' icon in the toolbar
+    // The 'edit'/'save' icon in the toolbar
     _onEditCommand(button) {
         let row = this.command_list.get_selected_row();
         let uuid = row.get_name();
@@ -965,8 +971,9 @@ var Device = GObject.registerClass({
             }
         });
 
-        let uuids = Object.keys(this._commands);
-        uuids.map(uuid => this._insertCommand(uuid));
+        for (let uuid of Object.keys(this._commands)) {
+            await this._insertCommand(uuid);
+        }
     }
 
     /**
@@ -1152,7 +1159,7 @@ var Device = GObject.registerClass({
      * Keyboard Shortcuts
      */
     async _keybindingSettings() {
-        this._keybindingsId = this.device.settings.connect(
+        this._keybindingsId = this.settings.connect(
             'changed::keybindings',
             this._populateKeybindings.bind(this)
         );
@@ -1179,14 +1186,43 @@ var Device = GObject.registerClass({
         }
     }
 
+    _addActionKeybinding(name, keybindings) {
+        if (this.device.get_action_parameter_type(name) === null) {
+            let [label, icon_name] = this.device.get_action_state(name).deep_unpack();
+
+            let widget = new Gtk.Label({
+                label: _('Disabled'),
+                visible: true
+            });
+            widget.get_style_context().add_class('dim-label');
+
+            if (keybindings[name]) {
+                let accel = Gtk.accelerator_parse(keybindings[name]);
+                widget.label = Gtk.accelerator_get_label(...accel);
+            }
+
+            let row = new SectionRow({
+                icon: new Gio.ThemedIcon({ name: icon_name }),
+                title: label,
+                widget: widget,
+                activatable: true
+            });
+            row.height_request = 48;
+            row._icon.pixel_size = 16;
+            row.action = name;
+            row.summary = label;
+            this.shortcuts_actions_list.add(row);
+        }
+    }
+
     async _populateActionKeybindings() {
         this.shortcuts_actions_list.foreach(row => row.destroy());
 
-        let keybindings = this.device.settings.get_value('keybindings').deep_unpack();
+        let keybindings = this.settings.get_value('keybindings').deep_unpack();
 
         // TODO: Backwards compatibility; remove later
         if (typeof keybindings === 'string') {
-            this.device.settings.set_value(
+            this.settings.set_value(
                 'keybindings',
                 new GLib.Variant('a{ss}', {})
             );
@@ -1196,39 +1232,18 @@ var Device = GObject.registerClass({
 
         // TODO: Device Menu shortcut
         for (let name of this.device.list_actions().sort()) {
-            let action = this.device.lookup_action(name);
-
-            if (action.parameter_type === null) {
-                let widget = new Gtk.Label({
-                    label: _('Disabled'),
-                    visible: true
-                });
-                widget.get_style_context().add_class('dim-label');
-
-                if (keybindings[action.name]) {
-                    let accel = Gtk.accelerator_parse(keybindings[action.name]);
-                    widget.label = Gtk.accelerator_get_label(...accel);
-                }
-
-                let row = new SectionRow({
-                    icon: action.icon,
-                    title: action.label,
-                    widget: widget,
-                    activatable: true
-                });
-                row.height_request = 48;
-                row._icon.pixel_size = 16;
-                row.action = action.name;
-                row.summary = action.label;
-                this.shortcuts_actions_list.add(row);
+            try {
+                await this._addActionKeybinding(name, keybindings);
+            } catch (e) {
+                logError(e);
             }
         }
 
         this.shortcuts_actions_list.invalidate_headers();
     }
 
-    async _onResetActionsShortcuts(button) {
-        let keybindings = this.device.settings.get_value('keybindings').deep_unpack();
+    _onResetActionsShortcuts(button) {
+        let keybindings = this.settings.get_value('keybindings').deep_unpack();
 
         for (let action in keybindings) {
             if (!action.includes('::')) {
@@ -1236,14 +1251,14 @@ var Device = GObject.registerClass({
             }
         }
 
-        this.device.settings.set_value(
+        this.settings.set_value(
             'keybindings',
             new GLib.Variant('a{ss}', keybindings)
         );
     }
 
-    async _onResetCommandsShortcuts(button) {
-        let keybindings = this.device.settings.get_value('keybindings').deep_unpack();
+    _onResetCommandsShortcuts(button) {
+        let keybindings = this.settings.get_value('keybindings').deep_unpack();
 
         for (let action in keybindings) {
             if (action.includes('::')) {
@@ -1251,7 +1266,7 @@ var Device = GObject.registerClass({
             }
         }
 
-        this.device.settings.set_value(
+        this.settings.set_value(
             'keybindings',
             new GLib.Variant('a{ss}', keybindings)
         );
@@ -1260,7 +1275,7 @@ var Device = GObject.registerClass({
     async _populateCommandKeybindings() {
         this.shortcuts_commands_list.foreach(row => row.destroy());
 
-        let keybindings = this.device.settings.get_value('keybindings').deep_unpack();
+        let keybindings = this.settings.get_value('keybindings').deep_unpack();
 
         // Commands
         let runcommand = this.device.lookup_plugin('runcommand');
@@ -1308,7 +1323,7 @@ var Device = GObject.registerClass({
 
     async _onShortcutRowActivated(box, row) {
         try {
-            let keybindings = this.device.settings.get_value('keybindings').deep_unpack();
+            let keybindings = this.settings.get_value('keybindings').deep_unpack();
             let accelerator = await Keybindings.get_accelerator(
                 box.get_toplevel(),
                 row.summary,
@@ -1321,7 +1336,7 @@ var Device = GObject.registerClass({
                 delete keybindings[row.action];
             }
 
-            this.device.settings.set_value(
+            this.settings.set_value(
                 'keybindings',
                 new GLib.Variant('a{ss}', keybindings)
             );
@@ -1368,7 +1383,8 @@ var Device = GObject.registerClass({
     async _populatePlugins() {
         try {
             this.plugin_list.foreach(row => {
-                row.widget.disconnect(row.widget._togglePluginId);
+                let checkbutton = row.get_child();
+                checkbutton.disconnect(checkbutton._togglePluginId);
                 row.destroy()
             });
 
@@ -1380,10 +1396,10 @@ var Device = GObject.registerClass({
         }
     }
 
-    async _togglePlugin(widget) {
+    _togglePlugin(widget) {
         try {
             let name = widget.name;
-            let disabled = this.device.settings.get_strv('disabled-plugins');
+            let disabled = this.settings.get_strv('disabled-plugins');
 
             if (disabled.includes(name)) {
                 disabled.splice(disabled.indexOf(name), 1);
@@ -1393,7 +1409,7 @@ var Device = GObject.registerClass({
                 disabled.push(name);
             }
 
-            this.device.settings.set_strv('disabled-plugins', disabled);
+            this.settings.set_strv('disabled-plugins', disabled);
 
             if (this.hasOwnProperty(name)) {
                 this[name].visible = this.device.get_plugin_allowed(name);
