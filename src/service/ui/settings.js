@@ -331,7 +331,7 @@ var Window = GObject.registerClass({
 
         if (panel) {
             this.device_menu.insert_action_group('device', panel.device);
-            this.device_menu.insert_action_group('status', panel.actions);
+            this.device_menu.insert_action_group('status', panel.status);
             this.device_menu.set_menu_model(panel.menu);
         }
     }
@@ -472,39 +472,35 @@ var Device = GObject.registerClass({
         });
 
         // Connect Actions
-        this.actions = new Gio.SimpleActionGroup();
-        this.insert_action_group('status', this.actions);
+        this.status = new Gio.SimpleActionGroup();
+        this.insert_action_group('status', this.status);
 
         let status_bluetooth = new Gio.SimpleAction({
-            name: 'connect-bluetooth',
-            parameter_type: null
+            name: 'connect-bluetooth'
         });
         status_bluetooth.connect('activate', this._onActivateBluetooth.bind(this));
-        this.actions.add_action(status_bluetooth);
+        this.status.add_action(status_bluetooth);
 
         let status_lan = new Gio.SimpleAction({
-            name: 'connect-tcp',
-            parameter_type: null
+            name: 'connect-tcp'
         });
         status_lan.connect('activate', this._onActivateLan.bind(this));
-        this.actions.add_action(status_lan);
+        this.status.add_action(status_lan);
 
         // Pair Actions
         let status_pair = new Gio.SimpleAction({
-            name: 'pair',
-            parameter_type: null
+            name: 'pair'
         });
         status_pair.connect('activate', this.device.pair.bind(this.device));
-        this.device.bind_property('paired', status_pair, 'enabled', 6);
-        this.actions.add_action(status_pair);
+        this.settings.bind('paired', status_pair, 'enabled', 16);
+        this.status.add_action(status_pair);
 
         let status_unpair = new Gio.SimpleAction({
-            name: 'unpair',
-            parameter_type: null
+            name: 'unpair'
         });
         status_unpair.connect('activate', this.device.unpair.bind(this.device));
-        this.device.bind_property('paired', status_unpair, 'enabled', 2);
-        this.actions.add_action(status_unpair);
+        this.settings.bind('paired', status_unpair, 'enabled', 0);
+        this.status.add_action(status_unpair);
 
         // GMenu
         let builder = Gtk.Builder.new_from_resource(gsconnect.app_path + '/gtk/menus.ui');
@@ -630,7 +626,7 @@ var Device = GObject.registerClass({
 
     _onConnected(device) {
         let type = device.connection_type;
-        let action = this.actions.lookup_action(`connect-${type}`);
+        let action = this.status.lookup_action(`connect-${type}`);
         action.enabled = !device.connected;
 
         if (type === 'bluetooth') {
@@ -642,7 +638,7 @@ var Device = GObject.registerClass({
 
     _onBluetoothHostChanged(settings) {
         let hasBluetooth = (settings.get_string('bluetooth-host').length);
-        this.actions.lookup_action('connect-bluetooth').enabled = hasBluetooth;
+        this.status.lookup_action('connect-bluetooth').enabled = hasBluetooth;
     }
 
     _onActivateBluetooth(button) {
@@ -652,7 +648,7 @@ var Device = GObject.registerClass({
 
     _onTcpHostChanged(settings) {
         let hasLan = (settings.get_string('tcp-host').length);
-        this.actions.lookup_action('connect-tcp').enabled = hasLan;
+        this.status.lookup_action('connect-tcp').enabled = hasLan;
     }
 
     _onActivateLan(button) {
@@ -1210,7 +1206,6 @@ var Device = GObject.registerClass({
             row.height_request = 48;
             row._icon.pixel_size = 16;
             row.action = name;
-            row.summary = label;
             this.shortcuts_actions_list.add(row);
         }
     }
@@ -1242,7 +1237,7 @@ var Device = GObject.registerClass({
         this.shortcuts_actions_list.invalidate_headers();
     }
 
-    _onResetActionsShortcuts(button) {
+    _onResetActionShortcuts(button) {
         let keybindings = this.settings.get_value('keybindings').deep_unpack();
 
         for (let action in keybindings) {
@@ -1257,7 +1252,7 @@ var Device = GObject.registerClass({
         );
     }
 
-    _onResetCommandsShortcuts(button) {
+    _onResetCommandShortcuts(button) {
         let keybindings = this.settings.get_value('keybindings').deep_unpack();
 
         for (let action in keybindings) {
@@ -1277,6 +1272,17 @@ var Device = GObject.registerClass({
 
         let keybindings = this.settings.get_value('keybindings').deep_unpack();
 
+        // Exclude defunct commands
+        for (let action in keybindings) {
+            if (action.includes('::')) {
+                let uuid = action.split('::')[1];
+
+                if (!remoteCommands.hasOwnProperty(uuid)) {
+                    delete keybindings[action];
+                }
+            }
+        }
+
         // Commands
         let runcommand = this.device.lookup_plugin('runcommand');
         let remoteCommands = (runcommand) ? runcommand.remote_commands : {};
@@ -1284,9 +1290,8 @@ var Device = GObject.registerClass({
         this.shortcuts_commands_title.visible = hasCommands;
         this.shortcuts_commands.visible = hasCommands;
 
-        for (let uuid in remoteCommands) {
-            let command = remoteCommands[uuid];
-            let commandAction = `executeCommand::${uuid}`;
+        for (let [uuid, command] of Object.entries(remoteCommands)) {
+            let action = `executeCommand::${uuid}`;
 
             let widget = new Gtk.Label({
                 label: _('Disabled'),
@@ -1294,8 +1299,8 @@ var Device = GObject.registerClass({
             });
             widget.get_style_context().add_class('dim-label');
 
-            if (keybindings[commandAction]) {
-                let accel = Gtk.accelerator_parse(keybindings[commandAction]);
+            if (keybindings[action]) {
+                let accel = Gtk.accelerator_parse(keybindings[action]);
                 widget.label = Gtk.accelerator_get_label(...accel);
             }
 
@@ -1305,8 +1310,7 @@ var Device = GObject.registerClass({
                 widget: widget,
                 activatable: true
             });
-            row.action = commandAction;
-            row.summary = command.name;
+            row.action = action;
             this.shortcuts_commands_list.add(row);
         }
 
@@ -1326,7 +1330,7 @@ var Device = GObject.registerClass({
             let keybindings = this.settings.get_value('keybindings').deep_unpack();
             let accelerator = await Keybindings.get_accelerator(
                 box.get_toplevel(),
-                row.summary,
+                row.title,
                 keybindings[row.action]
             );
 
