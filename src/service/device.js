@@ -14,31 +14,6 @@ const INTERFACE_INFO = gsconnect.dbusinfo.lookup_interface(UUID);
 
 
 /**
- * Base class for plugin actions
- */
-var Action = GObject.registerClass({
-    GTypeName: 'GSConnectDeviceAction',
-    Properties: {
-        'icon': GObject.ParamSpec.object(
-            'icon',
-            'icon',
-            'The GIcon for this action',
-            GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
-            Gio.Icon
-        ),
-        'label': GObject.ParamSpec.string(
-            'label',
-            'Label',
-            'The display name for this action',
-            GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
-            null
-        )
-    }
-}, class Action extends Gio.SimpleAction {
-});
-
-
-/**
  * An object representing a remote device.
  *
  * Device class is subclassed from Gio.SimpleActionGroup so it implements the
@@ -440,38 +415,34 @@ var Device = GObject.registerClass({
      */
     _registerActions() {
         // Stock device actions
-        let activate = new Action({
+        let activate = new Gio.SimpleAction({
             name: 'activate',
             parameter_type: null,
-            label: _('Reconnect'),
-            icon: new Gio.ThemedIcon({ name: 'view-refresh-symbolic' })
+            state: new GLib.Variant('(ss)', [_('Reconnect'), 'view-refresh-symbolic']),
         });
         activate.connect('activate', this.activate.bind(this));
         this.add_action(activate);
 
-        let openSettings = new Action({
+        let openSettings = new Gio.SimpleAction({
             name: 'openSettings',
             parameter_type: null,
-            label: _('Open Settings'),
-            icon: new Gio.ThemedIcon({ name: 'preferences-system-symbolic' })
+            state: new GLib.Variant('(ss)', [_('Settings'), 'preferences-system-symbolic'])
         });
         openSettings.connect('activate', this.openSettings.bind(this));
         this.add_action(openSettings);
 
-        let acceptPair = new Action({
+        let acceptPair = new Gio.SimpleAction({
             name: 'pair',
             parameter_type: null,
-            label: _('Pair'),
-            icon: new Gio.ThemedIcon({ name: 'channel-secure-symbolic' })
+            state: new GLib.Variant('(ss)', [_('Pair'), 'channel-secure-symbolic'])
         });
         acceptPair.connect('activate', this.pair.bind(this));
         this.add_action(acceptPair);
 
-        let rejectPair = new Action({
+        let rejectPair = new Gio.SimpleAction({
             name: 'unpair',
             parameter_type: null,
-            label: _('Unpair'),
-            icon: new Gio.ThemedIcon({ name: 'channel-insecure-symbolic' })
+            state: new GLib.Variant('(ss)', [_('Unpair'), 'channel-insecure-symbolic'])
         });
         rejectPair.connect('activate', this.unpair.bind(this));
         this.add_action(rejectPair);

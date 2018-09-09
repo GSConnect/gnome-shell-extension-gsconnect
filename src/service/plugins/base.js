@@ -5,9 +5,6 @@ const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
-// Local Imports
-const Device = imports.service.device;
-
 
 /**
  * Base class for plugins
@@ -79,11 +76,10 @@ var Plugin = GObject.registerClass({
     }
 
     _registerAction(name, meta, menu, disabled) {
-        let action = new Device.Action({
+        let action = new Gio.SimpleAction({
             name: name,
             parameter_type: meta.parameter_type,
-            icon: new Gio.ThemedIcon({ name: meta.icon_name }),
-            label: meta.label
+            state: new GLib.Variant('(ss)', [meta.label, meta.icon_name])
         });
 
         // Set the enabled state
