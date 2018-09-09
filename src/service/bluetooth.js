@@ -117,6 +117,7 @@ const SERVICE_UUID = '185f3df4-3268-4e3f-9fca-d4d5059915bd';
  */
 var ChannelService = GObject.registerClass({
     GTypeName: 'GSConnectBluetoothChannelService',
+    Implements: [ Gio.DBusObjectManager ],
     Properties: {
         'devices': GObject.param_spec_variant(
             'devices',
