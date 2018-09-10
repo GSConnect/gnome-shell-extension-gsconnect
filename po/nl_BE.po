@@ -33,12 +33,12 @@ msgstr "Lokaliseer %s"
 #: src/extension.js:191 src/service/plugins/sftp.js:21
 #: src/widgets/device.js:203
 msgid "Browse Files"
-msgstr "Blader door bestanden"
+msgstr "Blader door uw bestanden"
 
 #. TRANSLATORS: Open the file chooser for sending files/links
 #: src/extension.js:198 src/widgets/device.js:205
 msgid "Share File/URL"
-msgstr "Deel bestand/URL"
+msgstr "Deel bestand of URL"
 
 #: src/extension.js:206 src/service/plugins/runcommand.js:20
 msgid "Run Commands"
@@ -378,7 +378,7 @@ msgstr "Commando"
 
 #: src/service/plugins/sftp.js:22
 msgid "Mount and browse device filesystems"
-msgstr "Koppel en blader door bestandssystemen van GSM"
+msgstr "Koppel en blader door bestandssystemen van uw GSM"
 
 #: src/service/plugins/sftp.js:61
 msgid "SSHFS not installed"
@@ -428,7 +428,7 @@ msgstr "Overzetten niet gelukt"
 #: src/service/plugins/share.js:160
 #, javascript-format
 msgid "Failed to receive \"%s\" from %s: %s"
-msgstr "Kan \"%s\" niet ontvangen van %s: %s"
+msgstr "Kon \"%s\" niet ontvangen van %s: %s"
 
 #: src/service/plugins/share.js:181 src/service/plugins/share.js:397
 msgid "Transfer Cancelled"
@@ -551,7 +551,7 @@ msgstr "De <b>mediaspeler</b>-invoegtoepassing moet zijn ingeschakeld"
 #: src/service/plugins/telephony.js:1106 src/service/plugins/telephony.js:1109
 #: src/service/plugins/telephony.js:1112
 msgid "Gvc not available"
-msgstr "Gvc niet beschikbaar"
+msgstr "Gvc onbeschikbaar"
 
 #: src/widgets/device.js:28
 msgid ""
@@ -568,7 +568,7 @@ msgid ""
 "<a href=\"%s\">Google Play Store</a> or <a href=\"%s\">F-Droid</a>."
 msgstr ""
 "Om een Android-apparaat te connecteren, installeert u de KDE Connect Android-"
-"app uit de <a href=\"%s\">Google Play Store</a> of <a href=\"%s\">F-Droid</"
+"app van de <a href=\"%s\">Google Play Store</a> of <a href=\"%s\">F-Droid</"
 "a>."
 
 #: src/widgets/device.js:35
