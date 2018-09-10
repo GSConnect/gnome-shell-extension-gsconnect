@@ -154,7 +154,7 @@ var Channel = GObject.registerClass({
                 close_base_stream: false
             });
 
-            stream.read_line_async(GLib.PRIORITY_DEFAULT, null, (stream, res) => {
+            stream.read_line_async(GLib.PRIORITY_DEFAULT, this.cancellable, (stream, res) => {
                 try {
                     let data = stream.read_line_finish(res)[0];
                     stream.close(null);
@@ -180,7 +180,7 @@ var Channel = GObject.registerClass({
             connection.output_stream.write_all_async(
                 `${this.service.identity}`,
                 GLib.PRIORITY_DEFAULT,
-                null,
+                this.cancellable,
                 (stream, res) => {
                     try {
                         stream.write_all_finish(res);
@@ -206,7 +206,7 @@ var Channel = GObject.registerClass({
 
             connection.handshake_async(
                 GLib.PRIORITY_DEFAULT,
-                null,
+                this.cancellable,
                 (connection, res) => {
                     try {
                         resolve(connection.handshake_finish(res));
@@ -343,7 +343,7 @@ var Channel = GObject.registerClass({
             this._connection = await new Promise((resolve, reject) => {
                 let client = new Gio.SocketClient();
 
-                client.connect_async(address, null, (client, res) => {
+                client.connect_async(address, this.cancellable, (client, res) => {
                     try {
                         resolve(client.connect_finish(res));
                     } catch (e) {
@@ -432,9 +432,6 @@ var Channel = GObject.registerClass({
      * Receive a packet from the channel and call receivePacket() on the device
      *
      * @param {Device.Device} device - The device which will handle the packet
-     *
-     * TODO: there is a bug sometimes with new outgoing connections to unpaired
-     *       devices where %null is returned
      */
     receive(device) {
         this.input_stream.read_line_async(
@@ -453,13 +450,18 @@ var Channel = GObject.registerClass({
                     this.receive(device);
                     device.receivePacket(packet);
                 } catch (e) {
+                    // TODO: sometimes a new, unpaired device will send null
+                    //       after the connection is established
+                    if (e instanceof TypeError && !device.paired) {
+                        this.receive(device);
+
                     // Another operation is pending, queue another receive()
-                    if (e.code === Gio.IOErrorEnum.PENDING) {
+                    } else if (e.code === Gio.IOErrorEnum.PENDING) {
                         this.receive(device);
 
                     // Something else went wrong; disconnect
                     } else {
-                        logError(e, this.identity.body.deviceName);
+                        debug(e, this.identity.body.deviceName);
                         this.close();
                     }
                 }
@@ -597,9 +599,7 @@ var Transfer = GObject.registerClass({
     }
 
     /**
-     * For transfers without a checksum (currently all but notification icons)
-     * we use g_output_stream_splice() which basically loops our read/writes
-     * in 8192 byte chunks.
+     * Transfer using g_output_stream_splice()
      *
      * @return {Boolean} - %true on success, %false on failure.
      */

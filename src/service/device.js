@@ -746,12 +746,12 @@ var Device = GObject.registerClass({
     }
 
     loadPlugin(name) {
-        debug(`loading '${name}' plugin`, this.name);
-
         let handler, plugin;
 
         try {
             if (this.paired && !this._plugins.has(name)) {
+                debug(`loading '${name}' plugin`, this.name);
+
                 // Instantiate the handler
                 handler = imports.service.plugins[name];
                 plugin = new handler.Plugin(this);
@@ -787,19 +787,25 @@ var Device = GObject.registerClass({
     }
 
     unloadPlugin(name) {
-        debug(`unloading '${name}' plugin`, this.name);
+        let handler, plugin;
 
         try {
-            // Unregister packet handlers
-            let handler = imports.service.plugins[name];
+            if (this._plugins.has(name)) {
+                debug(`unloading '${name}' plugin`, this.name);
 
-            for (let type of handler.Metadata.incomingCapabilities) {
-                this._handlers.delete(type);
+                // Unregister packet handlers
+                handler = imports.service.plugins[name];
+
+                for (let type of handler.Metadata.incomingCapabilities) {
+                    this._handlers.delete(type);
+                }
+
+                // Unregister plugin
+                plugin = this._plugins.get(name);
+                plugin.destroy();
+                this._plugins.delete(name);
+                plugin.run_dispose();
             }
-
-            // Unregister plugin
-            this._plugins.get(name).destroy();
-            this._plugins.delete(name);
         } catch (e) {
             logError(e, `${this.name}: unloading ${name}`);
         }

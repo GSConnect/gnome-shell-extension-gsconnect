@@ -8,12 +8,13 @@ try {
     var GSound = imports.gi.GSound;
     var _gsoundContext = new GSound.Context();
     _gsoundContext.init(null);
+
+// Try falling back to libcanberra
 } catch (e) {
     var _gsoundContext = undefined;
 
-    // Try falling back to libcanberra
     if (!hasCommand('canberra-gtk-play')) {
-        throw new Error('sound-error');
+        throw new Error();
     }
 }
 

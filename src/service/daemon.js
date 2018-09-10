@@ -300,7 +300,7 @@ var Service = GObject.registerClass({
 
             // Stash the settings path before unpairing and removing
             let settings_path = device.settings.path;
-            device.unpair();
+            device.sendPacket({ type: 'kdeconnect.pair', pair: 'false' });
             this._removeDevice(id);
 
             // Delete all GSettings
@@ -333,22 +333,16 @@ var Service = GObject.registerClass({
             ['quit', this.quit.bind(this)]
         ];
 
-        actions.map(entry => {
+        for (let [name, callback, type] of actions) {
             let action = new Gio.SimpleAction({
-                name: entry[0],
-                parameter_type: (entry[2]) ? new GLib.VariantType(entry[2]) : null
+                name: name,
+                parameter_type: (type) ? new GLib.VariantType(type) : null
             });
-            action.connect('activate', entry[1]);
+            action.connect('activate', callback);
             this.add_action(action);
-        });
+        }
 
-        this.add_action(
-            new Gio.PropertyAction({
-                name: 'discoverable',
-                object: this,
-                property_name: 'discoverable'
-            })
-        );
+        this.add_action(gsconnect.settings.create_action('discoverable'));
     }
 
     /**
@@ -383,7 +377,11 @@ var Service = GObject.registerClass({
         (new ServiceUI.DeviceConnectDialog()).show_all();
     }
 
-    _preferencesAction(device=null) {
+    _preferencesAction(page=null, parameter=null) {
+        if (parameter instanceof GLib.Variant) {
+            page = parameter.unpack();
+        }
+
         if (!this._window) {
             this._window = new Settings.Window({
                 application: this,
@@ -399,12 +397,10 @@ var Service = GObject.registerClass({
             });
         }
 
-        this._window.present();
-
-        // Open to a device page
-        if (device) {
+        // Open to a specific page
+        if (page) {
             this._window.switcher.foreach(row => {
-                if (row.get_name() === device) {
+                if (row.get_name() === page) {
                     this._window.switcher.select_row(row);
                     return;
                 }
@@ -413,6 +409,8 @@ var Service = GObject.registerClass({
         } else {
             this._window._onPrevious();
         }
+
+        this._window.present();
     }
 
     _aboutAction() {
@@ -547,6 +545,15 @@ var Service = GObject.registerClass({
         );
         this._serviceMonitor.connect('changed', () => this.quit());
 
+        // Init some resources
+        let provider = new Gtk.CssProvider();
+        provider.load_from_resource(gsconnect.app_path + '/application.css');
+        Gtk.StyleContext.add_provider_for_screen(
+            Gdk.Screen.get_default(),
+            provider,
+            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+        );
+
         // Properties
         gsconnect.settings.bind(
             'discoverable',
@@ -565,17 +572,7 @@ var Service = GObject.registerClass({
         // Keep identity updated and broadcast any name changes
         gsconnect.settings.connect('changed::public-name', (settings) => {
             this.identity.body.deviceName = this.name;
-            this.broadcast();
         });
-
-        // Init some resources
-        let provider = new Gtk.CssProvider();
-        provider.load_from_resource(gsconnect.app_path + '/application.css');
-        Gtk.StyleContext.add_provider_for_screen(
-            Gdk.Screen.get_default(),
-            provider,
-            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
-        );
 
         // GActions
         this._initActions();

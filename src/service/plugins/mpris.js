@@ -26,7 +26,6 @@ var Metadata = {
  *     https://github.com/JasonLG1979/gnome-shell-extensions-mediaplayer/wiki/Known-Player-Bugs
  *
  * TODO: It's probably possible to mirror a remote MPRIS2 player on local DBus
- *       See #39 https://github.com/andyholmes/gnome-shell-extension-gsconnect/pull/39
  *       https://github.com/KDE/kdeconnect-kde/commit/9e0d4874c072646f1018ad413d59d1f43e590777
  */
 var Plugin = GObject.registerClass({
