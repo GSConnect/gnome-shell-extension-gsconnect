@@ -412,7 +412,7 @@ var Window = GObject.registerClass({
                 }
             });
 
-        this.help.visible = !this.application.devices.length;
+            this.help.visible = !this.application.devices.length;
         } catch (e) {
             logError(e);
         }
@@ -645,15 +645,12 @@ var Device = GObject.registerClass({
         this.device.disconnect(this._actionAddedId);
         this.device.disconnect(this._actionRemovedId);
         this.device.disconnect(this._actionEnabledId);
-
         this.device.disconnect(this._connectedId);
+
         this.settings.disconnect(this._bluetoothHostChangedId);
         this.settings.disconnect(this._tcpHostChangedId);
         this.settings.disconnect(this._keybindingsId);
-
-        for (let settings of Object.values(this._gsettings)) {
-            settings.run_dispose();
-        }
+        this.settings.disconnect(this._pluginsId);
     }
 
     _onSwitcherRowSelected(box, row) {
@@ -1309,7 +1306,7 @@ var Device = GObject.registerClass({
      * Advanced Page
      */
     _advancedSettings() {
-        this.settings.connect(
+        this._pluginsId = this.settings.connect(
             'changed::supported-plugins',
             this._populatePlugins.bind(this)
         );

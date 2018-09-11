@@ -4,15 +4,14 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const Gtk = imports.gi.Gtk;
 
-// Bootstrap
-function getPath() {
-    // Diced from: https://github.com/optimisme/gjs-examples/
-    let m = new RegExp("@(.+):\\d+").exec((new Error()).stack.split("\n")[1]);
+// Find the root datadir of the extension
+function get_datadir() {
+    let m = /@(.+):\d+/.exec((new Error()).stack.split('\n')[1]);
     return Gio.File.new_for_path(m[1]).get_parent().get_path();
 }
 
 // Local Imports
-window.gsconnect = { extdatadir: getPath() };
+window.gsconnect = { extdatadir: get_datadir() };
 imports.searchPath.unshift(gsconnect.extdatadir);
 imports._gsconnect;
 
