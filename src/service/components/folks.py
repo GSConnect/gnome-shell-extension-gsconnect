@@ -192,7 +192,8 @@ class _GeeIterator(object):
         while it and it.has_next():
             it.next()
             yield it
-        raise StopIteration
+
+        return
 
 
 class GeeListIterator(_GeeIterator):
@@ -367,12 +368,18 @@ class Aggregator(object):
                 if not len(folk.phone_numbers):
                     continue
 
-                # Avatar
-                avatar = None
+                # Add the contact
+                contacts[folk.id] = {
+                    'id': folk.id or None,
+                    'name': folk.display_name,
+                    'numbers': folk.phone_numbers,
+                    'origin': 'folks'
+                }
 
+                # Avatar
                 if folk.avatar != None:
                     if hasattr(folk.avatar, 'get_file'):
-                        avatar = folk.avatar.get_file().get_path()
+                        contacts[folk.id]['avatar'] = folk.avatar.get_file().get_path()
                     elif hasattr(avatar, 'get_bytes'):
                         folk_id = folk.id or GLib.uuid_string_random()
                         path = os.path.join(self.cache_dir, folk_id + '.jpeg')
@@ -380,16 +387,7 @@ class Aggregator(object):
                         with open(path, 'wb') as fobj:
                             fobj.write(folk.avatar.get_bytes().get_data())
 
-                        avatar = path
-
-                # Add the contact
-                contacts[folk.id] = {
-                    'id': folk.id or None,
-                    'avatar': avatar or "",
-                    'name': folk.display_name,
-                    'numbers': folk.phone_numbers,
-                    'origin': 'folks'
-                }
+                        contacts[folk.id]['avatar'] = path
             except:
                 pass
 
