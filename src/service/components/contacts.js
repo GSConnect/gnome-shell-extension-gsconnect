@@ -302,8 +302,8 @@ var Store = GObject.registerClass({
     }
 
     _writeCache(store) {
-        store._cacheFile.replace_contents_async(
-            JSON.stringify(store._contacts),
+        store._cacheFile.replace_contents_bytes_async(
+            new GLib.Bytes(JSON.stringify(store._contacts)),
             null,
             false,
             Gio.FileCreateFlags.REPLACE_DESTINATION,
