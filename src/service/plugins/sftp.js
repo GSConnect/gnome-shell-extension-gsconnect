@@ -72,10 +72,7 @@ var Plugin = GObject.registerClass({
 
     connected() {
         this._setup();
-
-        if (this.settings.get_boolean('automount')) {
-            this.mount();
-        }
+        this.mount();
     }
 
     disconnected() {

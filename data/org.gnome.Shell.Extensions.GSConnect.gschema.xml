@@ -148,6 +148,7 @@
     </key>
   </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.SFTP">
+    <!-- TODO DEPRECATED -->
     <key name="automount" type="b">
       <default>true</default>
       <summary>Automatically Mount</summary>
