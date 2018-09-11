@@ -4,7 +4,6 @@ data/menus.ui
 data/settings.ui
 src/extension.js
 src/nautilus-gsconnect.py
-src/modules/contacts.js
 src/service/daemon.js
 src/service/device.js
 src/service/plugins/battery.js
@@ -17,7 +16,9 @@ src/service/plugins/ping.js
 src/service/plugins/runcommand.js
 src/service/plugins/sftp.js
 src/service/plugins/share.js
+src/service/plugins/systemvolume.js
 src/service/plugins/telephony.js
+src/service/ui/contacts.js
 src/service/ui/keybindings.js
 src/service/ui/service.js
 src/service/ui/settings.js
