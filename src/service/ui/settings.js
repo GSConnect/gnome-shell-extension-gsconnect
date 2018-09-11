@@ -452,8 +452,6 @@ var Device = GObject.registerClass({
         'telephony-list', 'handle-sms', 'handle-calls',
         'calls-list',
         'ringing-button', 'talking-button',
-        // Errata
-        'errata', 'errata-page', 'error-list',
         // Shortcuts
         'shortcuts-actions', 'shortcuts-actions-title', 'shortcuts-actions-list',
         'shortcuts-commands', 'shortcuts-commands-title', 'shortcuts-commands-list',
@@ -566,10 +564,6 @@ var Device = GObject.registerClass({
         );
         this._onConnected(this.device);
 
-        // Errors/Warnings
-        this.device.connect('notify::errors', this._errataPage.bind(this));
-        this._errataPage();
-
         // Hide elements for any disabled plugins
         for (let name of this.device.supported_plugins) {
             if (this.hasOwnProperty(name)) {
@@ -580,53 +574,6 @@ var Device = GObject.registerClass({
 
     get service() {
         return Gio.Application.get_default();
-    }
-
-    // FIXME: bogus
-    _errataPage() {
-        this.error_list.foreach(row => {
-            row.widget.disconnect(row._loadPluginId);
-            row.destroy()
-        });
-
-        for (let [name, error] of this.device.errors) {
-            let row = new SectionRow({
-                title: name,
-                subtitle: error.message,
-                widget: new Gtk.Button({
-                    image: new Gtk.Image({
-                        icon_name: 'view-refresh-symbolic',
-                        pixel_size: 16,
-                        visible: true
-                    }),
-                    halign: Gtk.Align.END,
-                    valign: Gtk.Align.CENTER,
-                    vexpand: true,
-                    visible: true
-                })
-            });
-            row._subtitle.tooltip_text = error.message;
-            row._subtitle.ellipsize = Pango.EllipsizeMode.MIDDLE;
-
-            row.widget.get_style_context().add_class('circular');
-            row.widget.get_style_context().add_class('flat');
-            row._loadPluginId = row.widget.connect(
-                'clicked',
-                this.device.loadPlugin.bind(this.device, name)
-            );
-
-            this.error_list.add(row);
-        }
-
-        if (this.device.errors.size > 0) {
-            this.errata.visible = true;
-        } else {
-            if (this.visible_child_name === 'errata') {
-                this.switcher.get_row_at_index(0).activate();
-            }
-
-            this.errata.visible = false;
-        }
     }
 
     _onConnected(device) {

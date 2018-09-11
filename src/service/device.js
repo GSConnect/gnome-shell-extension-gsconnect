@@ -38,14 +38,6 @@ var Device = GObject.registerClass({
             GObject.ParamFlags.READABLE,
             ''
         ),
-        'errors': GObject.param_spec_variant(
-            'errors',
-            'Device Errors',
-            'A list of device errors',
-            new GLib.VariantType('as'),
-            null,
-            GObject.ParamFlags.READABLE
-        ),
         'icon-name': GObject.ParamSpec.string(
             'icon-name',
             'IconName',
@@ -97,7 +89,6 @@ var Device = GObject.registerClass({
         // Maps of name->plugin, packet->plugin, name->Error
         this._plugins = new Map();
         this._handlers = new Map();
-        this._errors = new Map();
         this._transfers = new Map();
 
         // We at least need the device Id for GSettings and the DBus interface
@@ -194,10 +185,6 @@ var Device = GObject.registerClass({
             fingerprint,
             this.service.fingerprint
         );
-    }
-
-    get errors() {
-        return this._errors;
     }
 
     get id() {
@@ -765,7 +752,6 @@ var Device = GObject.registerClass({
 
                 // Register plugin
                 this._plugins.set(name, plugin);
-                this.errors.delete(name);
 
                 // Run the connected() handler
                 if (this.connected) {
@@ -773,10 +759,7 @@ var Device = GObject.registerClass({
                 }
             }
         } catch (e) {
-            logWarning(`loading ${name}: ${e.message}`, this.name);
-            this.errors.set(name, e);
-        } finally {
-            this.notify('errors');
+            logError(e, `${this.name}: loading ${name}`);
         }
     }
 
