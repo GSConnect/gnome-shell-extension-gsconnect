@@ -78,11 +78,9 @@ configure_file(
 )
 
 # Desktop Entry
-configure_file(
-  input: 'data/org.gnome.Shell.Extensions.GSConnect.desktop',
-  output: 'org.gnome.Shell.Extensions.GSConnect.desktop',
-  configuration: extconfig,
-  install_dir: join_paths(datadir, 'applications')
+install_data(
+    'data/org.gnome.Shell.Extensions.GSConnect.desktop',
+    install_dir: join_paths(datadir, 'applications')
 )
 
 # DBus Service
