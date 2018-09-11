@@ -431,6 +431,8 @@
                           <object class="GtkBox">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
+                            <property name="halign">start</property>
+                            <property name="hexpand">True</property>
                             <child>
                               <object class="GtkButton" id="command-add">
                                 <property name="visible">True</property>
@@ -442,7 +444,7 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="icon_name">list-add-symbolic</property>
-                                    <property name="icon_size">1</property>
+                                    <property name="icon_size">2</property>
                                   </object>
                                 </child>
                               </object>
@@ -464,7 +466,7 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="icon_name">list-remove-symbolic</property>
-                                    <property name="icon_size">1</property>
+                                    <property name="icon_size">2</property>
                                   </object>
                                 </child>
                               </object>
@@ -1103,7 +1105,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
-                        <signal name="clicked" handler="_onResetActionsShortcuts" swapped="no"/>
+                        <signal name="clicked" handler="_onResetActionShortcuts" swapped="no"/>
                       </object>
                       <packing>
                         <property name="left_attach">1</property>
@@ -1168,7 +1170,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
-                        <signal name="clicked" handler="_onResetCommandsShortcuts" swapped="no"/>
+                        <signal name="clicked" handler="_onResetCommandShortcuts" swapped="no"/>
                       </object>
                       <packing>
                         <property name="left_attach">1</property>
@@ -1218,9 +1220,6 @@
       </packing>
     </child>
     <child>
-      <placeholder/>
-    </child>
-    <child>
       <object class="GtkScrolledWindow" id="advanced-page">
         <property name="visible">True</property>
         <property name="can_focus">True</property>
@@ -1266,7 +1265,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
-                        <property name="action_name">status.reload-plugins</property>
+                        <property name="action_name">app.reload-plugins</property>
                         <style>
                           <class name="suggested-action"/>
                         </style>
@@ -1409,7 +1408,7 @@
         <property name="name">advanced</property>
         <property name="title" translatable="yes">Advanced</property>
         <property name="icon_name">preferences-system-symbolic</property>
-        <property name="position">7</property>
+        <property name="position">6</property>
       </packing>
     </child>
   </template>
