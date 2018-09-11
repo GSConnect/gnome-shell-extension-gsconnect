@@ -239,8 +239,9 @@ var Window = GObject.registerClass({
         // Sidebar
         'stack', 'switcher', 'sidebar',
         'shell-list', 'display-mode',
-        'advanced-list',
-        'help', 'help-list'
+        // Software
+        'software-list', 'sshfs', 'sound', 'folks', 'nautilus',
+        'help'
     ]
 }, class Window extends Gtk.ApplicationWindow {
 
@@ -280,12 +281,18 @@ var Window = GObject.registerClass({
         }
     }
 
+    _onLinkButton(button) {
+        try {
+            Gtk.show_uri_on_window(this, button.tooltip_text, Gdk.CURRENT_TIME);
+        } catch (e) {
+            logError(e);
+        }
+    }
+
     /**
      * HeaderBar Callbacks
      */
     _onPrevious(button, event) {
-        //
-        this.prev_button.visible = false;
         this.headerbar_stack.visible_child_name = 'headerbar-service';
 
         // Select the general page
@@ -348,7 +355,6 @@ var Window = GObject.registerClass({
             this._setDeviceMenu(panel);
 
             // Transition the headerbar & sidebar
-            this.prev_button.visible = true;
             this.device_name.label = device.name;
             this.device_type.label = device.display_type;
             this.headerbar_stack.visible_child_name = 'headerbar-device';
@@ -364,10 +370,9 @@ var Window = GObject.registerClass({
         this.add_action(gsconnect.settings.create_action('show-offline'));
         this.add_action(gsconnect.settings.create_action('show-unpaired'));
         this.add_action(gsconnect.settings.create_action('show-battery'));
-        this.add_action(gsconnect.settings.create_action('debug'));
 
         this.shell_list.set_header_func(section_separators);
-        this.advanced_list.set_header_func(section_separators);
+        this.software_list.set_header_func(section_separators);
 
         this._setDisplayMode();
     }
@@ -1183,34 +1188,40 @@ var Device = GObject.registerClass({
     }
 
     _addActionKeybinding(name, keybindings) {
-        if (this.device.get_action_parameter_type(name) === null) {
-            let [label, icon_name] = this.device.get_action_state(name).deep_unpack();
-
-            let widget = new Gtk.Label({
-                label: _('Disabled'),
-                visible: true
-            });
-            widget.get_style_context().add_class('dim-label');
-
-            if (keybindings[name]) {
-                let accel = Gtk.accelerator_parse(keybindings[name]);
-                widget.label = Gtk.accelerator_get_label(...accel);
-            }
-
-            let row = new SectionRow({
-                icon: new Gio.ThemedIcon({ name: icon_name }),
-                title: label,
-                widget: widget,
-                activatable: true
-            });
-            row.height_request = 48;
-            row._icon.pixel_size = 16;
-            row.action = name;
-            this.shortcuts_actions_list.add(row);
+        if (!this.device.get_action_enabled(name)) {
+            return;
         }
+
+        if (this.device.get_action_parameter_type(name) !== null) {
+            return;
+        }
+
+        let [label, icon_name] = this.device.get_action_state(name).deep_unpack();
+
+        let widget = new Gtk.Label({
+            label: _('Disabled'),
+            visible: true
+        });
+        widget.get_style_context().add_class('dim-label');
+
+        if (keybindings[name]) {
+            let accel = Gtk.accelerator_parse(keybindings[name]);
+            widget.label = Gtk.accelerator_get_label(...accel);
+        }
+
+        let row = new SectionRow({
+            icon: new Gio.ThemedIcon({ name: icon_name }),
+            title: label,
+            widget: widget,
+            activatable: true
+        });
+        row.height_request = 48;
+        row._icon.pixel_size = 16;
+        row.action = name;
+        this.shortcuts_actions_list.add(row);
     }
 
-    async _populateActionKeybindings() {
+    _populateActionKeybindings() {
         this.shortcuts_actions_list.foreach(row => row.destroy());
 
         let keybindings = this.settings.get_value('keybindings').deep_unpack();
@@ -1228,13 +1239,11 @@ var Device = GObject.registerClass({
         // TODO: Device Menu shortcut
         for (let name of this.device.list_actions().sort()) {
             try {
-                await this._addActionKeybinding(name, keybindings);
+                this._addActionKeybinding(name, keybindings);
             } catch (e) {
                 logError(e);
             }
         }
-
-        this.shortcuts_actions_list.invalidate_headers();
     }
 
     _onResetActionShortcuts(button) {
