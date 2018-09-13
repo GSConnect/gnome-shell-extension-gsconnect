@@ -910,7 +910,7 @@ var ContactsCache = new Lang.Class({
     },
 
     /** Get all google accounts in Goa */
-    _getGoogleAccounts: function () {
+    _getGoogleAccounts: function* () {
         let goaClient = Goa.Client.new_sync(null);
         let goaAccounts = goaClient.get_accounts();
 
