@@ -482,8 +482,7 @@ var Setting = new Lang.Class({
             this.grid.attach(this.description, 0, 1, 1, 1);
         }
 
-        this.widget = widget;
-        this.grid.attach(this.widget, 1, 0, 1, (description) ? 2 : 1);
+        this.grid.attach(widget, 1, 0, 1, (description) ? 2 : 1);
     }
 });
 
