@@ -68,7 +68,7 @@ class GSConnectShareExtension(GObject.GObject, Nautilus.MenuProvider):
                 self._on_interface_added(self.manager, obj, interface)
 
         self.manager.connect('interface-added', self._on_interface_added)
-        self.manager.connect('interface-removed', self._on_interface_removed)
+        self.manager.connect('object-removed', self._on_object_removed)
         self.manager.connect('notify::name-owner', self._on_name_owner_changed)
 
     def _on_interface_added(self, manager, obj, interface):
@@ -80,9 +80,8 @@ class GSConnectShareExtension(GObject.GObject, Nautilus.MenuProvider):
                     'org.gnome.Shell.Extensions.GSConnect',
                     interface.props.g_object_path))
 
-    def _on_interface_removed(self, manager, obj, interface):
-        if interface.props.g_interface_name == 'org.gnome.Shell.Extensions.GSConnect.Device':
-            del self.devices[interface.props.g_object_path]
+    def _on_object_removed(self, manager, obj):
+        del self.devices[obj.props.g_object_path]
 
     def _on_name_owner_changed(self, manager, param_string):
         if manager.props.name_owner == None:
