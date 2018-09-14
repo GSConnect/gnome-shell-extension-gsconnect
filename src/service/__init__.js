@@ -247,6 +247,20 @@ Object.defineProperties(Gio.TlsCertificate.prototype, {
 
 
 /**
+ * Polyfill for GLib.uuid_string_random() (GLib v2.52+)
+ *
+ * Source: https://gist.github.com/jed/982883
+ */
+if (typeof GLib.uuid_string_random !== 'function') {
+    GLib.uuid_string_random = function() {
+        return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, (salt) => {
+            return (salt ^ Math.random() * 16 >> salt / 4).toString(16);
+        });
+    }
+}
+
+
+/**
  * Extend GLib.Variant with a static method to recursively pack a variant
  *
  * @param {*} [obj] - May be a GLib.Variant, Array, standard Object or literal.
