@@ -142,7 +142,7 @@ var Plugin = GObject.registerClass({
                     action: 'cancelTransfer',
                     parameter: new GLib.Variant('s', transfer.uuid)
                 }],
-                icon: new Gio.ThemedIcon({ name: 'send-to-symbolic' })
+                icon: new Gio.ThemedIcon({ name: 'document-save-symbolic' })
             });
 
             // Start transfer
@@ -167,7 +167,7 @@ var Plugin = GObject.registerClass({
                         parameter: new GLib.Variant('s', file.get_uri())
                     }
                 ];
-                iconName = 'send-to-symbolic';
+                iconName = 'document-save-symbolic';
             } else {
                 title = _('Transfer Failed');
                 // TRANSLATORS: eg. Failed to receive 'book.pdf' from Google Pixel
@@ -295,7 +295,7 @@ var Plugin = GObject.registerClass({
                     action: 'cancelTransfer',
                     parameter: new GLib.Variant('s', transfer.uuid)
                 }],
-                icon: new Gio.ThemedIcon({ name: 'send-to-symbolic' })
+                icon: new Gio.ThemedIcon({ name: 'document-send-symbolic' })
             });
 
             success = await transfer.upload({
@@ -311,7 +311,7 @@ var Plugin = GObject.registerClass({
                     file.get_basename(),
                     this.device.name
                 );
-                iconName = 'send-to-symbolic';
+                iconName = 'document-send-symbolic';
             } else {
                 title = _('Transfer Failed');
                 // TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel
