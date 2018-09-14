@@ -27,13 +27,12 @@ function ip_is_valid(address) {
  * Lan.ChannelService consists of two parts.
  *
  * The TCP Listener listens on a port (usually 1716) and constructs a Channel
- * object from the incoming Gio.TcpConnection, emitting 'channel::'.
+ * object from the incoming Gio.TcpConnection.
  *
  * The UDP Listener listens on a port 1716 for incoming JSON identity packets
- * which will have the TCP port for connections, while the TCP address is taken
- * from the UDP packet itself. If the device is not known, the address not
- * explicitly allowed and we're not "discoverable", we respond to  a TCP port for connection, taking the address from the
- * sender, emitting 'packet::'. It also broadcasts these packets to 255.255.255.255.
+ * which include the TCP port for connections, while the IP address is taken
+ * from the UDP packet itself. We respond to incoming packets by opening a TCP
+ * connection and broadcast outgoing packets to 255.255.255.255.
  */
 var ChannelService = GObject.registerClass({
     GTypeName: 'GSConnectLanChannelService'
@@ -52,7 +51,6 @@ var ChannelService = GObject.registerClass({
             this._onNetworkChanged.bind(this)
         );
 
-        // Log success
         log(`GSConnect: Using TCP/UDP port 1716`);
     }
 
@@ -323,9 +321,7 @@ var ChannelService = GObject.registerClass({
 /**
  * Lan File Transfers
  */
-var Transfer = GObject.registerClass({
-    GTypeName: 'GSConnectLanTransfer',
-}, class Transfer extends Core.Transfer {
+var Transfer = class Transfer extends Core.Transfer {
 
     /**
      * Connect to @port and read from the remote output stream into the local
@@ -364,7 +360,6 @@ var Transfer = GObject.registerClass({
             this.input_stream = this._connection.get_input_stream();
 
             // Start the transfer
-            // TODO: _transfer_with_checksum()
             result = await this._transfer();
         } catch (e) {
             logError(e, this.device.name);
@@ -442,5 +437,5 @@ var Transfer = GObject.registerClass({
             return result;
         }
     }
-});
+}
 

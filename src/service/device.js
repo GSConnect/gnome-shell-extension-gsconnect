@@ -388,9 +388,7 @@ var Device = GObject.registerClass({
     _onDisconnected(channel) {
         log(`Disconnected from ${this.name} (${this.id})`);
 
-        GObject.signal_handlers_destroy(channel);
         this._channel = null;
-
         this._connected = false;
         this.notify('connected');
 

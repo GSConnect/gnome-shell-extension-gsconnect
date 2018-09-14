@@ -80,33 +80,11 @@ var Packet = class Packet {
 /**
  * Data Channel
  */
-var Channel = GObject.registerClass({
-    GTypeName: 'GSConnectCoreChannel',
-    Signals: {
-        'connected': {
-            flags: GObject.SignalFlags.RUN_FIRST
-        },
-        'disconnected': {
-            flags: GObject.SignalFlags.RUN_FIRST
-        }
-    },
-    Properties: {
-        'certificate': GObject.ParamSpec.object(
-            'certificate',
-            'TlsCertificate',
-            'The TLS Certificate for this connection',
-            GObject.ParamFlags.READABLE,
-            Gio.TlsCertificate
-        ),
-        'type': GObject.ParamSpec.string(
-            'type',
-            'Data Channel Type',
-            'The transport the channel uses; bluetooth or tcp',
-            GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
-            null
-        )
+var Channel = class Channel {
+
+    constructor(params) {
+        Object.assign(this, params);
     }
-}, class Channel extends GObject.Object {
 
     get cancellable() {
         if (this._cancellable === undefined) {
@@ -197,8 +175,6 @@ var Channel = GObject.registerClass({
      * Handshake Gio.TlsConnection
      */
     async _authenticate(connection) {
-        log(`GSConnect: Authenticating ${this.identity.body.deviceName}`);
-
         // Standard TLS Handshake
         await new Promise((resolve, reject) => {
             connection.validation_flags = Gio.TlsCertificateFlags.EXPIRED;
@@ -299,10 +275,9 @@ var Channel = GObject.registerClass({
 
         device._channel = this;
 
-        // Parse the channel's identity packet and connect signals to the device
+        // Parse the channel's identity packet and connect the device
         device._handleIdentity(this.identity);
-        this.connect('connected', device._onConnected.bind(device));
-        this.connect('disconnected', device._onDisconnected.bind(device));
+        this.cancellable.connect(device._onDisconnected.bind(device));
 
         // Setup pollable streams for packet exchange
         this.input_stream = new Gio.DataInputStream({
@@ -313,13 +288,14 @@ var Channel = GObject.registerClass({
             base_stream: this._connection.output_stream
         });
 
-        // TODO: Plugins should be reloaded if we're swapping channel types.
-        //       This is flakey in general, which may be Android's fault or
-        //       possibly inherent in the protocol.
+        // TODO: If we're swapping channel types, which is pretty flakey, we
+        //       should reload plugins or at least disable plugins that don't
+        //       support bluetooth connections (if applicable).
+        //device.reloadPlugins();
 
         // Emit connected:: if necessary
         if (!device.connected) {
-            this.emit('connected');
+            device._onConnected(this);
         }
 
         // Start listening for packets
@@ -329,16 +305,10 @@ var Channel = GObject.registerClass({
     /**
      * Open an outgoing connection
      *
-     * Outgoing connections are opened in response to a received (or cached) UDP
-     * packet, with a mandatory kdeconnect.identity packet being sent when the
-     * connection is accepted.
-     *
-     * @param {Gio.InetSocketAddress} address - The address to open a connection
+     * @param {Gio.InetSocketAddress} address - The remote address
      * @return {Boolean} - %true on connected, %false otherwise
      */
     async open(address) {
-        log(`GSConnect: Opening connection to ${address.to_string()}`);
-
         try {
             this._connection = await new Promise((resolve, reject) => {
                 let client = new Gio.SocketClient();
@@ -357,8 +327,7 @@ var Channel = GObject.registerClass({
 
             return true;
         } catch (e) {
-            log(`GSConnect: ${e.message}`);
-            debug(e);
+            log(`GSConnect: Error opening connection to ${address.to_string()}: ${e.message}`);
             this.close();
             return false;
         }
@@ -367,21 +336,10 @@ var Channel = GObject.registerClass({
     /**
      * Accept an incoming connection
      *
-     * Incoming connections are opened in response to a sent (or cached) UDP
-     * packet, with a mandatory kdeconnect.identity packet being sent when the
-     * connection is accepted.
-     *
      * @param {Gio.TcpConnection} connection - The incoming connection
      * @return {Boolean} - %true on connected, %false otherwise
      */
     async accept(connection) {
-        if (this.type === 'tcp') {
-            let addr = connection.get_remote_address().to_string();
-            log(`GSConnect: Accepting connection from ${addr}`);
-        } else {
-            log(`GSConnect: Accepting connection from Bluez`);
-        }
-
         try {
             this._connection = await this._initSocket(connection);
             this._connection = await this._receiveIdent(this._connection);
@@ -389,7 +347,6 @@ var Channel = GObject.registerClass({
 
             return true;
         } catch(e) {
-            log(`GSConnect: ${e.message}`);
             debug(e);
             this.close();
             return false;
@@ -397,16 +354,11 @@ var Channel = GObject.registerClass({
     }
 
     /**
-     * Close all streams associated with this channel, silencing any errors, and
-     * emit 'disconnected::'
+     * Close all streams associated with this channel, silencing any errors
      */
     close() {
         // Cancel any queued operations
-        try {
-            this.cancellable.cancel();
-        } catch (e) {
-            debug(e.message);
-        }
+        this.cancellable.cancel();
 
         // Close any streams
         [this._connection, this.input_stream, this.output_stream].map(stream => {
@@ -424,8 +376,6 @@ var Channel = GObject.registerClass({
                 debug(e.message);
             }
         }
-
-        this.emit('disconnected');
     }
 
     /**
@@ -445,17 +395,16 @@ var Channel = GObject.registerClass({
 
                     debug(packet, this.identity.body.deviceName);
 
-                    // Queue another receive() (async) before passing the packet
-                    // to the device to handle (sync)
+                    // Queue another receive() before handling the packet
                     this.receive(device);
                     device.receivePacket(packet);
                 } catch (e) {
                     // TODO: sometimes a new, unpaired device will send null
-                    //       after the connection is established
+                    //       after the connection is established?
                     if (e instanceof TypeError && !device.paired) {
                         this.receive(device);
 
-                    // Another operation is pending, queue another receive()
+                    // Another operation is pending, re-queue the receive()
                     } else if (e.code === Gio.IOErrorEnum.PENDING) {
                         this.receive(device);
 
@@ -472,9 +421,7 @@ var Channel = GObject.registerClass({
     /**
      * Send a packet to a device.
      *
-     * TODO: Currently, we don't consider failed writes to consititute a broken
-     * connection and just log a warning. This should be investigated and tested
-     * over a period of time.
+     * See: https://github.com/KDE/kdeconnect-kde/blob/master/core/backends/lan/landevicelink.cpp#L92-L94
      *
      * @param {object} packet - An dictionary of packet data
      */
@@ -491,6 +438,7 @@ var Channel = GObject.registerClass({
                         stream.write_all_finish(res);
                         debug(packet, this.identity.body.deviceName);
                     } catch (e) {
+                        // Another operation is pending, re-queue the send()
                         if (e.code === Gio.IOErrorEnum.PENDING) {
                             this.send(packet);
                         } else {
@@ -503,56 +451,23 @@ var Channel = GObject.registerClass({
             logError(e, 'Malformed Packet');
         }
     }
-});
+}
 
 
 /**
  * File Transfer base class
  */
-var Transfer = GObject.registerClass({
-    GTypeName: 'GSConnectCoreTransfer',
-    Properties: {
-        'device': GObject.ParamSpec.object(
-            'device',
-            'TransferDevice',
-            'The device associated with this transfer',
-            GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
-            GObject.Object
-        ),
-        'input-stream': GObject.ParamSpec.object(
-            'input-stream',
-            'TransferDevice',
-            'The device associated with this transfer',
-            GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
-            Gio.InputStream
-        ),
-        'output-stream': GObject.ParamSpec.object(
-            'output-stream',
-            'TransferDevice',
-            'The device associated with this transfer',
-            GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
-            Gio.OutputStream
-        ),
-        'size': GObject.ParamSpec.uint(
-            'size',
-            'TransferSize',
-            'The size in bytes of the transfer',
-            GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
-            0, GLib.MAXUINT32,
-            0
-        ),
-        'uuid': GObject.ParamSpec.string(
-            'uuid',
-            'TransferUUID',
-            'The UUID of this transfer',
-            GObject.ParamFlags.READABLE,
-            ''
-        )
-    }
-}, class Transfer extends Channel {
+var Transfer = class Transfer extends Channel {
 
-    _init(params) {
-        super._init(params);
+    /**
+     * @param {object} params - Transfer parameters
+     * @param {Device.Device} params.device - The device that owns this transfer
+     * @param {Gio.InputStream} params.input_stream - The input stream (read)
+     * @param {Gio.OutputStrea} params.output_stream - The output stream (write)
+     * @param {number} params.size - The size of the transfer in bytes
+     */
+    constructor(params) {
+        super(params);
         this.device._transfers.set(this.uuid, this);
     }
 
@@ -579,9 +494,6 @@ var Transfer = GObject.registerClass({
         throw new GObject.NotImplementedError();
     }
 
-    /**
-     * Override in protocol implementation
-     */
     async download() {
         throw new GObject.NotImplementedError();
     }
@@ -590,7 +502,7 @@ var Transfer = GObject.registerClass({
      * Cancel the transfer in progress
      */
     cancel() {
-        this.cancellable.cancel();
+        this.close();
     }
 
     close() {
@@ -634,5 +546,5 @@ var Transfer = GObject.registerClass({
             return result;
         }
     }
-});
+}
 
