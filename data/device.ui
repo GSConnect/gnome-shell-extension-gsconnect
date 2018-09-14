@@ -987,9 +987,6 @@
       </packing>
     </child>
     <child>
-      <placeholder/>
-    </child>
-    <child>
       <object class="GtkScrolledWindow" id="shortcuts-page">
         <property name="visible">True</property>
         <property name="can_focus">True</property>
@@ -1146,7 +1143,7 @@
         <property name="name">shortcuts</property>
         <property name="title" translatable="yes">Shortcuts</property>
         <property name="icon_name">preferences-desktop-keyboard-shortcuts-symbolic</property>
-        <property name="position">5</property>
+        <property name="position">4</property>
       </packing>
     </child>
     <child>
@@ -1196,9 +1193,6 @@
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
                         <property name="action_name">app.reload-plugins</property>
-                        <style>
-                          <class name="suggested-action"/>
-                        </style>
                       </object>
                       <packing>
                         <property name="left_attach">1</property>
@@ -1338,7 +1332,7 @@
         <property name="name">advanced</property>
         <property name="title" translatable="yes">Advanced</property>
         <property name="icon_name">preferences-system-symbolic</property>
-        <property name="position">6</property>
+        <property name="position">5</property>
       </packing>
     </child>
   </template>

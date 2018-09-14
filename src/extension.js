@@ -238,7 +238,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
 
             // It's a device
             if (iface.g_interface_name === 'org.gnome.Shell.Extensions.GSConnect.Device') {
-                log(`GSConnect: Adding ${iface.Name}`);
+                debug(`GSConnect: Adding ${iface.Name}`);
 
                 this.devices.add(iface);
 
@@ -299,7 +299,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
 
     async _onInterfaceRemoved(manager, object, iface) {
         if (iface.g_interface_name === 'org.gnome.Shell.Extensions.GSConnect.Device') {
-            log(`GSConnect: Removing ${iface.Name}`);
+            debug(`GSConnect: Removing ${iface.Name}`);
 
             // Disconnect properties
             iface.disconnect(iface._propertiesId);

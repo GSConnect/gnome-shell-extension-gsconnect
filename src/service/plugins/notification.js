@@ -420,7 +420,7 @@ var Plugin = GObject.registerClass({
                 icon = new Gio.FileIcon({ file: file });
             }
         } catch (e) {
-            logWarning('Failed to download icon', this.device.name);
+            debug(e, this.device.name);
         } finally {
             return icon;
         }
@@ -561,7 +561,7 @@ var Plugin = GObject.registerClass({
                     icon = new Gio.ThemedIcon({
                         names: [
                             packet.body.appName.toLowerCase().replace(' ', '-'),
-                            `${this.device.icon_name}-symbolic`
+                            `${this.device.icon_name}`
                         ]
                     });
                 }

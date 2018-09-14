@@ -431,7 +431,6 @@ var FileChooserDialog = GObject.registerClass({
 
     vfunc_response(response_id) {
         if (response_id === Gtk.ResponseType.OK) {
-            let action = this.device.lookup_action('shareFile');
             this.get_uris().map(uri => {
                 let parameter = new GLib.Variant('s', uri.toString());
                 this.device.activate_action('shareFile', parameter);

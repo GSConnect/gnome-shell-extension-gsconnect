@@ -49,7 +49,7 @@ var Service = GObject.registerClass({
     Properties: {
         'devices': GObject.param_spec_variant(
             'devices',
-            'DevicesList',
+            'Devices',
             'A list of known devices',
             new GLib.VariantType('as'),
             null,
@@ -64,14 +64,14 @@ var Service = GObject.registerClass({
         ),
         'name': GObject.ParamSpec.string(
             'name',
-            'DeviceName',
+            'deviceName',
             'The name announced to the network',
             GObject.ParamFlags.READWRITE,
             'GSConnect'
         ),
         'type': GObject.ParamSpec.string(
             'type',
-            'DeviceType',
+            'deviceType',
             'The service device type',
             GObject.ParamFlags.READABLE,
             'desktop'
@@ -177,7 +177,7 @@ var Service = GObject.registerClass({
                     GLib.file_get_contents('/sys/class/dmi/id/chassis_type')[1]
                 );
 
-                this._type = ([8, 9, 10, 14].includes(type)) ? 'laptop' : 'desktop';
+                this._type = [8, 9, 10, 14].includes(type) ? 'laptop' : 'desktop';
             } catch (e) {
                 this._type = 'desktop';
             }
@@ -391,11 +391,7 @@ var Service = GObject.registerClass({
         }
 
         if (!this._window) {
-            this._window = new Settings.Window({
-                application: this,
-                height_request: 480,
-                width_request: 640
-            });
+            this._window = new Settings.Window({ application: this });
             this._window.connect('delete-event', (window) => {
                 window.visible = false;
                 this._pruneDevices();
@@ -495,7 +491,7 @@ var Service = GObject.registerClass({
      * @param {String|Number} id - Gtk (string) or libnotify id (uint32)
      * @param {String|null} application - Application Id if Gtk or null
      */
-    async remove_notification(id, application=null) {
+    remove_notification(id, application=null) {
         let name, path, method, variant;
 
         if (application !== null) {

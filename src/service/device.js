@@ -26,29 +26,29 @@ var Device = GObject.registerClass({
     Properties: {
         'connected': GObject.ParamSpec.boolean(
             'connected',
-            'deviceConnected',
+            'Connected',
             'Whether the device is connected',
             GObject.ParamFlags.READABLE,
-            false
+            null
         ),
         'encryption-info': GObject.ParamSpec.string(
             'encryption-info',
             'Encryption Info',
             'A formatted string with the local and remote fingerprints',
             GObject.ParamFlags.READABLE,
-            ''
+            null
         ),
         'icon-name': GObject.ParamSpec.string(
             'icon-name',
-            'IconName',
-            'Icon name representing the service device',
+            'Icon Name',
+            'Icon name representing the device',
             GObject.ParamFlags.READABLE,
-            ''
+            null
         ),
         'id': GObject.ParamSpec.string(
             'id',
             'deviceId',
-            'The device id/hostname',
+            'The device hostname or other unique id',
             GObject.ParamFlags.READABLE,
             ''
         ),
@@ -57,21 +57,21 @@ var Device = GObject.registerClass({
             'deviceName',
             'The device name',
             GObject.ParamFlags.READABLE,
-            ''
+            null
         ),
         'paired': GObject.ParamSpec.boolean(
             'paired',
-            'devicePaired',
+            'Paired',
             'Whether the device is paired',
             GObject.ParamFlags.READABLE,
-            false
+            null
         ),
         'type': GObject.ParamSpec.string(
             'type',
             'deviceType',
             'The device type',
             GObject.ParamFlags.READABLE,
-            'unknown'
+            null
         )
     }
 }, class Device extends Gio.SimpleActionGroup {
