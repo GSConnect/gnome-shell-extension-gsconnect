@@ -26,6 +26,11 @@ class Source extends NotificationDaemon.GtkNotificationDaemonAppSource {
             return;
         }
 
+        // Ignore notifications that can't be device notifications
+        if (!id.includes('|')) {
+            return;
+        }
+
         // Avoid sending the request multiple times if destroy() is called on
         // the notification more than once
         if (notification._remoteClosed) {
