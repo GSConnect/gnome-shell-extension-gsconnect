@@ -231,6 +231,14 @@ var Service = GObject.registerClass({
                 'notify::connected',
                 this._pruneDevices.bind(this)
             );
+            // TODO: This should be possible to remove once all implementations
+            //       support a bluetooth-like discovery mode.
+            //
+            // If this is the third device to connect, disable discovery to
+            // avoid choking on networks with a large amount of devices
+            if (this._devices.size === 2 && this.discoverable) {
+                this.activate_action('discoverable', null);
+            }
 
             this._devices.set(device.id, device);
             this.notify('devices');
