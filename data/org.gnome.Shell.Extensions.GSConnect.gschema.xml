@@ -4,48 +4,32 @@
     <!-- Extension Settings -->
     <key name="show-indicators" type="b">
       <default>false</default>
-      <summary>Show Indicators</summary>
-      <description>Display devices in the panel instead of the User Menu</description>
     </key>
     <key name="show-offline" type="b">
       <default>true</default>
-      <summary>Show Offline</summary>
-      <description>Display devices even if offline</description>
     </key>
     <key name="show-unpaired" type="b">
       <default>true</default>
-      <summary>Show Unpaired</summary>
-      <description>Display devices even if unpaired</description>
     </key>
     <key name="show-battery" type="b">
       <default>false</default>
-      <summary>Show Battery Icon</summary>
-      <description>Display an icon with percentage in the Device Menu</description>
     </key>
 
     <!-- Service Settings -->
     <key name="public-name" type="s">
       <default>"GSConnect"</default>
-      <summary>Public Name</summary>
-      <description>The name visible to other devices</description>
     </key>
     <key name="devices" type="as">
       <default>[]</default>
     </key>
     <key name="donotdisturb" type="i">
       <default>0</default>
-      <summary>Do Not Disturb</summary>
-      <description>Unix time (ms since epoch) to silence until</description>
     </key>
     <key name="debug" type="b">
       <default>false</default>
-      <summary>Debug Mode</summary>
-      <description>Enable debug features and logging</description>
     </key>
     <key name="discoverable" type="b">
       <default>true</default>
-      <summary>Discoverable</summary>
-      <description>Whether the service responds to discovery requests</description>
     </key>
   </schema>
 
@@ -106,20 +90,14 @@
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Battery">
     <key name="send-statistics" type="b">
       <default>false</default>
-      <summary>Send Statistics</summary>
-      <description></description>
     </key>
   </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Clipboard">
     <key name="receive-content" type="b">
-      <default>false</default>
-      <summary>Receive Content</summary>
       <description></description>
     </key>
     <key name="send-content" type="b">
       <default>false</default>
-      <summary>Send Content</summary>
-      <description></description>
     </key>
   </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.FindMyPhone"/>
@@ -147,14 +125,7 @@
       <default>{}</default>
     </key>
   </schema>
-  <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.SFTP">
-    <!-- TODO DEPRECATED -->
-    <key name="automount" type="b">
-      <default>true</default>
-      <summary>Automatically Mount</summary>
-      <description>Attempt to mount the device when connected</description>
-    </key>
-  </schema>
+  <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.SFTP"/>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Share">
     <key name="accept-content" type="b">
       <default>false</default>
@@ -170,28 +141,18 @@
     </key>
     <key name="ringing-volume" type="s">
       <default>"lower"</default>
-      <summary>System Volume</summary>
-      <description></description>
     </key>
     <key name="ringing-pause" type="b">
       <default>false</default>
-      <summary>Pause Media</summary>
-      <description></description>
     </key>
     <key name="talking-volume" type="s">
       <default>"mute"</default>
-      <summary>System Volume</summary>
-      <description></description>
     </key>
     <key name="talking-microphone" type="b">
       <default>true</default>
-      <summary>Mute Microphone</summary>
-      <description></description>
     </key>
     <key name="talking-pause" type="b">
       <default>true</default>
-      <summary>Pause Media</summary>
-      <description></description>
     </key>
   </schema>
 </schemalist>
