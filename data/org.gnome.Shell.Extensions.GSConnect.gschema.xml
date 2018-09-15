@@ -94,7 +94,7 @@
   </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Clipboard">
     <key name="receive-content" type="b">
-      <description></description>
+      <default>false</default>
     </key>
     <key name="send-content" type="b">
       <default>false</default>
