@@ -86,13 +86,16 @@ var Plugin = GObject.registerClass({
      * @return {Gio.File} - A new GFile for the given @filename in ~/Downloads
      */
     _getFile(filename) {
-        let path = GLib.get_user_special_dir(GLib.UserDirectory.DIRECTORY_DOWNLOAD);
+        let download_dir = GLib.get_user_special_dir(
+            GLib.UserDirectory.DIRECTORY_DOWNLOAD
+        );
 
         // Account for some corner cases with a fallback
         if (!download_dir || download_dir === GLib.get_home_dir()) {
-            path = GLib.build_filenamev([GLib.get_home_dir(), 'Downloads']);
+            download_dir = GLib.build_filenamev([GLib.get_home_dir(), 'Downloads']);
         }
 
+        let path = GLib.build_filenamev([download_dir, filename]);
         let filepath = path;
         let copyNum = 0;
 
