@@ -329,9 +329,8 @@ var ChannelService = GObject.registerClass({
             let connection = socket.connection_factory_create_connection();
             let channel = new Core.Channel({ type: 'bluetooth' });
 
-            // FIXME: Bluetooth connections are always "incoming" from our
-            // perspective so we try checking the IOCondition of the socket to
-            // determine direction
+            // FIXME: We can't differentiate between incoming or outgoing
+            //        connections and GLib.IOConditon.OUT always seems to be set
             let condition = connection.socket.condition_check(
                 GLib.IOCondition.IN | GLib.IOCondition.OUT
             );
