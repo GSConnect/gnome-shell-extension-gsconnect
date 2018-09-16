@@ -124,6 +124,7 @@ var Device = GObject.registerClass({
         this._dbus_object.add_interface(this._dbus);
 
         // GActions/GMenu
+        this._registerActions();
         this._actionsId = Gio.DBus.session.export_action_group(
             this.object_path,
             this
@@ -134,10 +135,6 @@ var Device = GObject.registerClass({
             this.object_path,
             this.menu
         );
-
-        // Register default actions and load plugins
-        this._registerActions();
-        this._loadPlugins();
     }
 
     /** Device Properties */
@@ -292,6 +289,36 @@ var Device = GObject.registerClass({
     }
 
     /**
+     * This is invoked by Core.Channel.attach() which also sets this._channel
+     */
+    _setConnected() {
+        log(`Connected to ${this.name} (${this.id})`);
+
+        this.settings.set_string('last-connection', this._channel.type);
+
+        this._connected = true;
+        this.notify('connected');
+
+        this._plugins.forEach(plugin => plugin.connected());
+    }
+
+    /**
+     * This is the callback for the Core.Channel's cancellable object
+     */
+    _setDisconnected() {
+        log(`Disconnected from ${this.name} (${this.id})`);
+
+        this._channel = null;
+        this._connected = false;
+        this.notify('connected');
+
+        this._plugins.forEach(plugin => plugin.disconnected());
+
+        // TODO: not ideal calling back and forth like this
+        this.service._pruneDevices();
+    }
+
+    /**
      * Request a connection from the device
      */
     activate() {
@@ -371,28 +398,6 @@ var Device = GObject.registerClass({
         } catch (e) {
             logError(e, this.name);
         }
-    }
-
-    /** Channel Callbacks */
-    _onConnected(channel) {
-        log(`Connected to ${this.name} (${this.id})`);
-
-        this.settings.set_string('last-connection', channel.type);
-
-        this._connected = true;
-        this.notify('connected');
-
-        this._plugins.forEach(plugin => plugin.connected());
-    }
-
-    _onDisconnected(channel) {
-        log(`Disconnected from ${this.name} (${this.id})`);
-
-        this._channel = null;
-        this._connected = false;
-        this.notify('connected');
-
-        this._plugins.forEach(plugin => plugin.disconnected());
     }
 
     /**
@@ -815,7 +820,7 @@ var Device = GObject.registerClass({
 
     destroy() {
         // Close the channel if still connected
-        if (this.connected) {
+        if (this._channel !== null) {
             this._channel.close();
         }
 

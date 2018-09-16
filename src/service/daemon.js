@@ -224,13 +224,6 @@ var Service = GObject.registerClass({
         if (device === undefined) {
             log(`GSConnect: Adding ${packet.body.deviceName}`);
 
-            device = new Device.Device(packet);
-
-            // TODO :(
-            device._pruneId = device.connect(
-                'notify::connected',
-                this._pruneDevices.bind(this)
-            );
             // TODO: This should be possible to remove once all implementations
             //       support a bluetooth-like discovery mode.
             //
@@ -240,6 +233,7 @@ var Service = GObject.registerClass({
                 this.activate_action('discoverable', null);
             }
 
+            device = new Device.Device(packet);
             this._devices.set(device.id, device);
             this.notify('devices');
 
@@ -249,6 +243,8 @@ var Service = GObject.registerClass({
                 cached.push(device.id);
                 gsconnect.settings.set_strv('devices', cached);
             }
+
+            device.loadPlugins();
         }
 
         return device;
@@ -269,7 +265,8 @@ var Service = GObject.registerClass({
     }
 
     async _pruneDevices() {
-        // Don't prune devices while the settings window is open
+        // Don't prune devices while the settings window is open; this also
+        // prevents devices from being pruned while being deleted.
         if (this._window && this._window.visible) {
             return;
         }
@@ -278,7 +275,6 @@ var Service = GObject.registerClass({
 
         for (let device of this._devices.values()) {
             if (!device.connected && !device.paired && cached.includes(device.id)) {
-                device.disconnect(device._pruneId);
                 let id = await this._removeDevice(device.id);
                 cached.splice(cached.indexOf(id), 1);
                 gsconnect.settings.set_strv('devices', cached);

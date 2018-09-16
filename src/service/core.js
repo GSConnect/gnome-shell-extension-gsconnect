@@ -132,19 +132,23 @@ var Channel = class Channel {
                 close_base_stream: false
             });
 
-            stream.read_line_async(GLib.PRIORITY_DEFAULT, this.cancellable, (stream, res) => {
-                try {
-                    let data = stream.read_line_finish(res)[0];
-                    stream.close(null);
+            stream.read_line_async(
+                GLib.PRIORITY_DEFAULT,
+                this.cancellable,
+                (stream, res) => {
+                    try {
+                        let data = stream.read_line_finish(res)[0];
+                        stream.close(null);
 
-                    // Store the identity as an object property
-                    this.identity = new Packet(data.toString());
+                        // Store the identity as an object property
+                        this.identity = new Packet(data.toString());
 
-                    resolve(connection);
-                } catch (e) {
-                    reject(e);
+                        resolve(connection);
+                    } catch (e) {
+                        reject(e);
+                    }
                 }
-            });
+            );
         });
     }
 
@@ -266,36 +270,32 @@ var Channel = class Channel {
      * @param {Device.Device} - The device to attach to
      */
     attach(device) {
-        // Disconnect any existing channel
+        // Detach any existing channel
         if (device._channel !== null && device._channel !== this) {
-            GObject.signal_handlers_destroy(device._channel);
+            device._channel.cancellable.disconnect(device._channel._id);
             device._channel.close();
             device._channel = null;
         }
 
+        // Attach the new channel and parse it's identity
         device._channel = this;
-
-        // Parse the channel's identity packet and connect the device
+        this._id = this.cancellable.connect(device._setDisconnected.bind(device));
         device._handleIdentity(this.identity);
-        this.cancellable.connect(device._onDisconnected.bind(device));
 
-        // Setup pollable streams for packet exchange
+        // Setup streams for packet exchange
         this.input_stream = new Gio.DataInputStream({
             base_stream: this._connection.input_stream
         });
 
-        this.output_stream = new Gio.DataOutputStream({
-            base_stream: this._connection.output_stream
-        });
+        this.output_stream = this._connection.output_stream;
 
-        // TODO: If we're swapping channel types, which is pretty flakey, we
-        //       should reload plugins or at least disable plugins that don't
-        //       support bluetooth connections (if applicable).
+        // TODO: If we're swapping in a different channel type, which is already
+        // flakey, we should reload or disable plugins it doesn't support
         //device.reloadPlugins();
 
         // Emit connected:: if necessary
         if (!device.connected) {
-            device._onConnected(this);
+            device._setConnected();
         }
 
         // Start listening for packets
@@ -388,24 +388,28 @@ var Channel = class Channel {
             GLib.PRIORITY_DEFAULT,
             this.cancellable,
             (stream, res) => {
+                let data, packet;
+
                 try {
                     // Try to read and parse a packet
-                    let data = stream.read_line_finish(res)[0];
-                    let packet = new Packet(data.toString());
+                    data = stream.read_line_finish(res)[0];
 
-                    debug(packet, this.identity.body.deviceName);
+                    // In case %null is returned we don't want an error thrown
+                    // when trying to parse it as a packet
+                    if (data !== null) {
+                        packet = new Packet(data.toString());
+                        debug(packet, this.identity.body.deviceName);
+                    }
 
                     // Queue another receive() before handling the packet
                     this.receive(device);
-                    device.receivePacket(packet);
-                } catch (e) {
-                    // TODO: sometimes a new, unpaired device will send null
-                    //       after the connection is established?
-                    if (e instanceof TypeError && !device.paired) {
-                        this.receive(device);
 
+                    if (packet) {
+                        device.receivePacket(packet);
+                    }
+                } catch (e) {
                     // Another operation is pending, re-queue the receive()
-                    } else if (e.code === Gio.IOErrorEnum.PENDING) {
+                    if (e.code === Gio.IOErrorEnum.PENDING) {
                         this.receive(device);
 
                     // Something else went wrong; disconnect
@@ -429,7 +433,7 @@ var Channel = class Channel {
         try {
             packet = new Packet(packet);
 
-            this._connection.output_stream.write_all_async(
+            this.output_stream.write_all_async(
                 packet.toString(),
                 GLib.PRIORITY_DEFAULT,
                 this.cancellable,
@@ -479,12 +483,17 @@ var Transfer = class Transfer extends Channel {
         return 'transfer';
     }
 
+    // For bluetooth transfers this also serves as the per-transfer profile UUID
     get uuid() {
         if (this._uuid === undefined) {
             this._uuid = GLib.uuid_string_random();
         }
 
         return this._uuid;
+    }
+
+    set uuid(uuid) {
+        this._uuid = uuid;
     }
 
     /**

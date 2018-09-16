@@ -150,7 +150,7 @@ var ChannelService = GObject.registerClass({
             // Attach a device to the channel
             channel.attach(device);
         } catch (e) {
-            logWarning(e, connection.get_remote_address().address.to_string());
+            debug(e, connection.get_remote_address().address.to_string());
         }
     }
 
@@ -208,9 +208,22 @@ var ChannelService = GObject.registerClass({
             )[1].address.to_string();
 
             // ...then read the packet from a stream, filling in the tcpHost
-            let data = this._udp_stream.read_line(null)[0];
-            let packet = new Core.Packet(data.toString());
-            packet.body.tcpHost = host;
+            let packet = await new Promise((resolve, reject) => {
+                this._udp_stream.read_line_async(
+                    GLib.PRIORITY_DEFAULT,
+                    null,
+                    (stream, res) => {
+                    try {
+                        let data = stream.read_line_finish(res)[0];
+                        let packet = new Core.Packet(data.toString());
+                        packet.body.tcpHost = host;
+
+                        resolve(packet);
+                    } catch (e) {
+                        reject(e);
+                    }
+                });
+            });
 
             // Bail if the deviceId is missing
             if (!packet.body.hasOwnProperty('deviceId')) {
@@ -237,7 +250,7 @@ var ChannelService = GObject.registerClass({
                     device = await this.service._ensureDevice(packet);
                     break;
 
-                // Or if the host is explicitly allowed...
+                // Or the host is explicitly allowed...
                 case this.allowed.has(host):
                     device = await this.service._ensureDevice(packet);
                     break;
@@ -259,7 +272,6 @@ var ChannelService = GObject.registerClass({
             // Create a new channel
             let channel = new Core.Channel({ type: 'tcp' });
             channel.identity = packet;
-            device._channel = channel;
 
             let addr = Gio.InetSocketAddress.new_from_string(
                 packet.body.tcpHost,
