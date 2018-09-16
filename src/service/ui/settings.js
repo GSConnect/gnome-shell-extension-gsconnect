@@ -8,6 +8,7 @@ const Gtk = imports.gi.Gtk;
 const Pango = imports.gi.Pango;
 
 const Keybindings = imports.service.ui.keybindings;
+const PackageKit = imports.service.ui.packagekit;
 
 
 function section_separators(row, before) {
@@ -266,6 +267,7 @@ var Window = GObject.registerClass({
 
         // Init UI Elements
         this._serviceSettings();
+        this._softwareSettings();
 
         // Setup devices
         this._serviceDevices = this.application.connect(
@@ -279,6 +281,26 @@ var Window = GObject.registerClass({
         if (row.get_index() === 3) {
             row.set_header(new Gtk.Separator({ visible: true }));
         }
+    }
+
+    /**
+     * Software dependency installation with PackageKit
+     */
+    _softwareSettings() {
+        // Required Software
+        for (let name of ['sshfs', 'sound', 'folks', 'nautilus']) {
+            // Inject a button for each package group
+            let button = new PackageKit.DependencyButton({
+                halign: Gtk.Align.END,
+                valign: Gtk.Align.CENTER,
+                names: name,
+                visible: true
+            });
+            this[name].get_child().attach(button, 1, 0, 1, 1);
+        }
+
+        // Optional Software
+        this.software_list.set_header_func(section_separators);
     }
 
     _onLinkButton(button) {
