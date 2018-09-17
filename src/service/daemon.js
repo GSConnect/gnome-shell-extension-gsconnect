@@ -235,33 +235,14 @@ var Service = GObject.registerClass({
 
             device = new Device.Device(packet);
             this._devices.set(device.id, device);
+
+            gsconnect.settings.set_strv('devices', this.devices);
             this.notify('devices');
-
-            let cached = gsconnect.settings.get_strv('devices');
-
-            if (!cached.includes(device.id)) {
-                cached.push(device.id);
-                gsconnect.settings.set_strv('devices', cached);
-            }
 
             device.loadPlugins();
         }
 
         return device;
-    }
-
-    async _removeDevice(id) {
-        let device = this._devices.get(id);
-
-        if (device) {
-            log(`GSConnect: Removing ${device.name}`);
-
-            device.destroy();
-            this._devices.delete(id);
-            this.notify('devices');
-        }
-
-        return id;
     }
 
     async _pruneDevices() {
@@ -271,22 +252,22 @@ var Service = GObject.registerClass({
             return;
         }
 
-        let cached = gsconnect.settings.get_strv('devices');
-
-        for (let device of this._devices.values()) {
-            if (!device.connected && !device.paired && cached.includes(device.id)) {
-                let id = await this._removeDevice(device.id);
-                cached.splice(cached.indexOf(id), 1);
-                gsconnect.settings.set_strv('devices', cached);
+        for (let [id, device] of this._devices.entries()) {
+            if (!device.connected && !device.paired) {
+                device.destroy();
+                this._devices.delete(id);
+                gsconnect.settings.set_strv('devices', this.devices);
             }
         }
+
+        this.notify('devices');
     }
 
     /**
      * Delete a known device.
      *
-     * This will remove the device from the cache of known devices, then unpair,
-     * disconnect and delete all GSettings and cached files.
+     * Removes the device from the list of known devices, unpairs it, destroys
+     * it and deletes all GSettings and cached files.
      *
      * @param {String} id - The id of the device to delete
      */
@@ -294,18 +275,13 @@ var Service = GObject.registerClass({
         let device = this._devices.get(id);
 
         if (device) {
-            // Remove from the list of known devices
-            let cached = gsconnect.settings.get_strv('devices');
-
-            if (cached.includes(id)) {
-                cached.splice(cached.indexOf(id), 1);
-                gsconnect.settings.set_strv('devices', cached);
-            }
-
             // Stash the settings path before unpairing and removing
             let settings_path = device.settings.path;
             device.sendPacket({ type: 'kdeconnect.pair', pair: 'false' });
-            this._removeDevice(id);
+
+            //
+            device.destroy();
+            this._devices.delete(id);
 
             // Delete all GSettings
             GLib.spawn_command_line_async(`dconf reset -f ${settings_path}`);
@@ -313,6 +289,10 @@ var Service = GObject.registerClass({
             // Delete the cache
             let cache = GLib.build_filenamev([gsconnect.cachedir, id]);
             GLib.spawn_command_line_async(`rm -rf ${cache}`);
+
+            // Notify
+            gsconnect.settings.set_strv('devices', this.devices);
+            this.notify('devices');
         }
     }
 
