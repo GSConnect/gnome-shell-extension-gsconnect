@@ -62,14 +62,6 @@ var ChannelService = GObject.registerClass({
         return this._allowed;
     }
 
-    get port() {
-        if (this._port === undefined) {
-            return 0;
-        }
-
-        return this._port;
-    }
-
     get service() {
         return Gio.Application.get_default();
     }
@@ -85,7 +77,6 @@ var ChannelService = GObject.registerClass({
 
         try {
             this._tcp.add_inet_port(TCP_MIN_PORT, null);
-            this._port = TCP_MIN_PORT;
         } catch (e) {
             this._tcp.stop();
             this._tcp.close();

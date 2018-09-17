@@ -145,7 +145,7 @@ var Service = GObject.registerClass({
                     deviceId: this.certificate.common_name,
                     deviceName: gsconnect.settings.get_string('public-name'),
                     deviceType: this.type,
-                    tcpPort: this.lanService.port,
+                    tcpPort: 1716,
                     protocolVersion: 7,
                     incomingCapabilities: [],
                     outgoingCapabilities: []
