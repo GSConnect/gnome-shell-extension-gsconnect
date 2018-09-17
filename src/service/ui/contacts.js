@@ -440,6 +440,7 @@ var ContactChooser = GObject.registerClass({
             // ...ensure we have a temporary contact for it
             if (this._temporary === undefined) {
                 this._temporary = this.add_contact({
+                    // TRANSLATORS: A phone number (eg. "Send to 555-5555")
                     name: _('Send to %s').format(this.entry.text),
                     numbers: [{ type: 'unknown', number: this.entry.text }]
                 });

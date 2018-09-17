@@ -209,11 +209,11 @@ var Dialog = class Dialog extends SimpleDialog {
             subtitle: _('Silence Mobile Device Notifications')
         });
 
-        //
-        this._time = 1*60*60; // 1 hour in seconds
+        // 1 hour in seconds
+        this._time = 1*60*60;
 
         this.permButton = new RadioButton({
-            text: _('Until you turn this off')
+            text: _('Until you turn off Do Not Disturb')
         });
         this.content.add(this.permButton);
 
@@ -311,9 +311,11 @@ var Dialog = class Dialog extends SimpleDialog {
     _getDurationLabel() {
         if (this._time >= 60*60) {
             let hours = this._time / 3600;
-            return gsconnect.ngettext('%d Hour', '%d Hours', hours).format(hours);
+            // TRANSLATORS: Time duration in hours (eg. 2 hours)
+            return gsconnect.ngettext('One hour', '%d hours', hours).format(hours);
         } else {
-            return _('%d Minutes').format(this._time / 60);
+            // TRANSLATORS: Time duration in minutes (eg. 15 minutes)
+            return _('%d minutes').format(this._time / 60);
         }
     }
 
@@ -322,6 +324,9 @@ var Dialog = class Dialog extends SimpleDialog {
         this.plusTime.reactive = (this._time < 12*60*60);
 
         let now = GLib.DateTime.new_now_local();
+
+        // TRANSLATORS: Time until change with time duration
+        // EXAMPLE: Until 10:00 (2 hours)
         this.timerLabel.text = _('Until %s (%s)').format(
             Util.formatTime(now.add_seconds(this._time)),
             this._getDurationLabel()

@@ -158,8 +158,7 @@ var DeviceConnectDialog = GObject.registerClass({
 
         this.ip = new Gtk.Entry({
             activates_default: true,
-            placeholder_text: _('An IPv4 or IPv6 address'),
-            tooltip_text: _('An IPv4 or IPv6 address')
+            placeholder_text: '0.0.0.0'
         });
         this.ip.connect('focus-in-event', this._onFocus.bind(this));
         lanBox.add(this.ip);
@@ -348,7 +347,7 @@ var DeviceChooserDialog = GObject.registerClass({
             row.add(box);
 
             let icon = new Gtk.Image({
-                icon_name: device.type,
+                icon_name: device.icon_name,
                 pixel_size: 32
             });
             box.add(icon);

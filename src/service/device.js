@@ -167,21 +167,16 @@ var Device = GObject.registerClass({
             ).fingerprint();
         }
 
-        // TRANSLATORS: Remote and local TLS Certificate fingerprint
-        // PLEASE KEEP NEWLINE CHARACTERS (\n)
+        // TRANSLATORS: Label for TLS Certificate fingerprint
         //
         // Example:
         //
         // Google Pixel Fingerprint:
         // 00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
-        //
-        // Local Fingerprint:
-        // 00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
-        return _('%s Fingerprint:\n%s\n\nLocal Fingerprint:\n%s').format(
-            this.name,
-            fingerprint,
-            this.service.fingerprint
-        );
+        return _('%s Fingerprint:').format(this.name) + '\n' +
+            fingerprint + '\n\n' +
+            _('%s Fingerprint:').format(this.service.name) + '\n' +
+            this.service.fingerprint;
     }
 
     get id() {

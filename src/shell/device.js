@@ -261,10 +261,11 @@ var Icon = GObject.registerClass({
         let { Charging, Level, Time } = this.battery;
 
         if (Level === 100) {
-            // TRANSLATORS: Fully Charged
+            // TRANSLATORS: When the battery level is 100%
             return _('Fully Charged');
         } else if (Time === 0) {
-            // TRANSLATORS: <percentage> (Estimating…)
+            // TRANSLATORS: When no time estimate for the battery is available
+            // EXAMPLE: 42% (Estimating…)
             return _('%d%% (Estimating…)').format(Level);
         }
 
@@ -273,14 +274,16 @@ var Icon = GObject.registerClass({
         let hours = Math.floor(Time / 60);
 
         if (Charging) {
-            // TRANSLATORS: <percentage> (<hours>:<minutes> Until Full)
+            // TRANSLATORS: Estimated time until battery is charged
+            // EXAMPLE: 42% (1:15 Until Full)
             return _('%d%% (%d\u2236%02d Until Full)').format(
                 Level,
                 hours,
                 minutes
             );
         } else {
-            // TRANSLATORS: <percentage> (<hours>:<minutes> Remaining)
+            // TRANSLATORS: Estimated time until battery is empty
+            // EXAMPLE: 42% (12:15 Remaining)
             return _('%d%% (%d\u2236%02d Remaining)').format(
                 Level,
                 hours,
@@ -311,7 +314,7 @@ var Icon = GObject.registerClass({
             cr.maskSurface(this.icon, xc - 16, yc - 16);
             cr.fill();
 
-            this.tooltip.markup = _('Reconnect <b>%s</b>').format(this.device.Name);
+            this.tooltip.markup = _('Reconnect');
             this.tooltip.icon_name = 'view-refresh-symbolic';
 
             cr.setSourceRGB(0.8, 0.8, 0.8);
@@ -321,9 +324,7 @@ var Icon = GObject.registerClass({
             cr.arc(xc, yc, r, 1.48 * Math.PI, 1.47 * Math.PI);
             cr.stroke();
         } else if (!this.device.Paired) {
-            // TRANSLATORS: eg. Pair <b>Google Pixel</b>
-            this.tooltip.markup = _('Pair <b>%s</b>').format(this.device.Name) +
-                                 '\n\n' + this.device.EncryptionInfo;
+            this.tooltip.markup = _('Pair') + '\n\n' + this.device.EncryptionInfo;
             this.tooltip.icon_name = 'channel-insecure-symbolic';
 
             cr.setSourceRGB(0.95, 0.0, 0.0);
@@ -365,8 +366,8 @@ var Icon = GObject.registerClass({
                 cr.fill();
             }
         } else {
-            this.tooltip.markup = _('Configure <b>%s</b>').format(this.device.Name);
-            this.tooltip.icon_name = 'preferences-other-symbolic';
+            this.tooltip.markup = _('Settings');
+            this.tooltip.icon_name = 'preferences-system-symbolic';
             cr.setSourceRGB(0.8, 0.8, 0.8);
             cr.arc(xc, yc, r, 0, 2 * Math.PI);
             cr.stroke();

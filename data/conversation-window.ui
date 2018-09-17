@@ -124,11 +124,11 @@
                   <object class="GtkEntry" id="message-entry">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="tooltip_text" translatable="yes">Type an SMS message</property>
+                    <property name="tooltip_text" translatable="yes">Type a message</property>
                     <property name="caps_lock_warning">False</property>
                     <property name="secondary_icon_name">sms-send</property>
                     <property name="secondary_icon_sensitive">False</property>
-                    <property name="placeholder_text" translatable="yes">Type an SMS message</property>
+                    <property name="placeholder_text" translatable="yes">Type a message</property>
                     <signal name="activate" handler="sendMessage" swapped="no"/>
                     <signal name="changed" handler="_onEntryChanged" swapped="no"/>
                     <signal name="icon-release" handler="sendMessage" swapped="no"/>

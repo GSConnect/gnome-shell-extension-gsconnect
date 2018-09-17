@@ -35,6 +35,7 @@ var ShortcutChooserDialog = GObject.registerClass({
             transient_for: params.transient_for || null,
             use_header_bar: true,
             modal: true,
+            // TRANSLATORS: Title of keyboard shortcut dialog
             title: _('Set Shortcut')
         });
 
@@ -48,11 +49,14 @@ var ShortcutChooserDialog = GObject.registerClass({
         // Action Buttons
         this.cancel_button = this.add_button(_('Cancel'), ResponseType.CANCEL);
         this.cancel_button.visible = false;
+        // TRANSLATORS: Button to confirm the new shortcut
         this.set_button = this.add_button(_('Set'), ResponseType.SET);
         this.set_button.visible = false;
         this.set_default_response(ResponseType.SET);
 
         let summaryLabel = new Gtk.Label({
+            // TRANSLATORS: Summary of a keyboard shortcut function
+            // Example: Enter a new shortcut to change Messaging
             label: _('Enter a new shortcut to change <b>%s</b>').format(
                 params.summary
             ),
@@ -81,6 +85,7 @@ var ShortcutChooserDialog = GObject.registerClass({
         editPage.attach(editImage, 0, 0, 1, 1);
 
         let editLabel = new Gtk.Label({
+            // TRANSLATORS: Keys for cancelling (␛) or resetting (␈) a shortcut
             label: _('Press Esc to cancel or Backspace to reset the keyboard shortcut.'),
             visible: true
         });
@@ -179,6 +184,7 @@ var ShortcutChooserDialog = GObject.registerClass({
             this.accelerator = Gtk.accelerator_name(keyvalLower, realMask);
 
             // TRANSLATORS: When a keyboard shortcut is unavailable
+            // Example: [Ctrl]+[S] is already being used
             this.conflict_label.label = _('%s is already being used').format(
                 Gtk.accelerator_get_label(keyvalLower, realMask)
             );
