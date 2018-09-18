@@ -17,7 +17,9 @@
 
 ## Overview
 
-> **NOTE:** The current stable release (v12) does not support Gnome Shell 3.30
+> **NOTE:** The current stable release (v12) does not support Gnome Shell 3.30.
+> Please see [Issue #186](https://github.com/andyholmes/gnome-shell-extension-gsconnect/issues/186)
+> for a fixed Zip.
 
 The [KDE Connect][kdeconnect] project allows devices to securely share content
 such as notifications and files as well as interactive features such as SMS
