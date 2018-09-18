@@ -333,7 +333,11 @@ var Plugin = GObject.registerClass({
 
     _removeSubmenu() {
         let index = this.device.menu.remove_action('device.mount');
-        this.device.menu.add_action(this.device.lookup_action('mount'), index);
+        let action = this.device.lookup_action('mount')
+
+        if (action !== null) {
+            this.device.menu.add_action(action, index);
+        }
     }
 
     /**
@@ -375,7 +379,7 @@ var Plugin = GObject.registerClass({
     }
 
     /**
-     * On Linux `fusermount` will always be available but BSD uses `umount`
+     * On Linux `fusermount` should be available, but BSD uses `umount`
      * See: https://phabricator.kde.org/D6945
      */
     _umount() {
@@ -408,10 +412,8 @@ var Plugin = GObject.registerClass({
     }
 
     destroy() {
-        // Make extra sure we remove all menu items
+        // FIXME: _sshfs_finish() accesses plugin variables after finalization
         this.unmount();
-        this.device.menu.remove_action('device.mount');
-
         super.destroy();
     }
 });
