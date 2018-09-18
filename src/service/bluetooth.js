@@ -343,8 +343,8 @@ var ChannelService = GObject.registerClass({
 
             if (success) {
                 bdevice._channel = channel;
-                let _id = channel.connect('disconnected', () => {
-                    channel.disconnect(_id);
+                let _id = channel.cancellable.connect(() => {
+                    channel.cancellable.disconnect(_id);
                     bdevice._channel = null;
                 });
             } else {
@@ -357,7 +357,7 @@ var ChannelService = GObject.registerClass({
 
             // Bail if the deviceId is missing
             if (!channel.identity.body.hasOwnProperty('deviceId')) {
-                channel.close();
+                bdevice._channel.close();
                 bdevice._channel = null;
                 logWarning('missing deviceId', channel.identity.body.deviceName);
                 return;
