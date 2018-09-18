@@ -87,8 +87,10 @@ const ProfileManager1Proxy = DBus.makeInterfaceProxy(PROFILE_MANAGER_INFO);
 
 
 /**
- * Service Discovery Protocol Record template
+ * Service Discovery Protocol Record template and Service UUID
  */
+const SERVICE_UUID = '185f3df4-3268-4e3f-9fca-d4d5059915bd';
+
 const SDP_TEMPLATE = Gio.resources_lookup_data(
     gsconnect.app_path + '/' + gsconnect.app_id + '.sdp.xml',
     Gio.ResourceLookupFlags.NONE
@@ -107,9 +109,18 @@ function makeSdpRecord(uuid) {
 
 
 /**
- * KDE Connect Service UUID & SDP
+ * A org.bluez.ProfileManager1 singleton
  */
-const SERVICE_UUID = '185f3df4-3268-4e3f-9fca-d4d5059915bd';
+try {
+    var _profileManager = new ProfileManager1Proxy({
+        g_connection: Gio.DBus.system,
+        g_name: 'org.bluez',
+        g_object_path: '/org/bluez'
+    });
+    _profileManager.init(null);
+} catch (e) {
+    Gio.Application.get_default().notify_error(e);
+}
 
 
 /**
@@ -121,8 +132,8 @@ var ChannelService = GObject.registerClass({
     Properties: {
         'devices': GObject.param_spec_variant(
             'devices',
-            'DevicesList',
-            'A list of known devices',
+            'Devices',
+            'A list of Bluez devices supporting the KDE Connect protocol',
             new GLib.VariantType('as'),
             null,
             GObject.ParamFlags.READABLE
@@ -156,8 +167,6 @@ var ChannelService = GObject.registerClass({
 
     /**
      * Create a service record and register a profile
-     *
-     *
      */
     async _register(uuid) {
         try {
@@ -183,7 +192,7 @@ var ChannelService = GObject.registerClass({
             };
 
             // Register KDE Connect bluez profile
-            await this._profileManager.RegisterProfile(profile, uuid, options);
+            await _profileManager.RegisterProfile(profile, uuid, options);
         } catch (e) {
             logError(e);
         }
@@ -202,15 +211,6 @@ var ChannelService = GObject.registerClass({
                 });
             });
 
-            // Get a ProfileManager
-            this._profileManager = new ProfileManager1Proxy({
-                g_connection: Gio.DBus.system,
-                g_name: 'org.bluez',
-                g_object_path: '/org/bluez'
-            });
-
-            await this._profileManager.init_promise();
-
             // Register the service profile
             await this._register(SERVICE_UUID);
 
@@ -220,7 +220,6 @@ var ChannelService = GObject.registerClass({
                 }
             }
         } catch (e) {
-            logWarning(e, 'Bluetooth.ChannelService');
         }
     }
 
@@ -428,16 +427,17 @@ var ChannelService = GObject.registerClass({
         }
     }
 
-    destroy() {
-        for (let object_path of this._devices.keys()) {
-            this.RequestDisconnection(object_path);
-        }
+    async destroy() {
+        try {
+            for (let object_path of this._devices.keys()) {
+                await this.RequestDisconnection(object_path);
+            }
 
-        this._profileManager.UnregisterProfile(
-            this._profile.get_object_path()
-        ).then(result => {
+            await _profileManager.UnregisterProfile(this._profile.g_object_path);
             this._profile.destroy();
-        }).catch(logError);
+        } catch (e) {
+            logError(e);
+        }
     }
 });
 
