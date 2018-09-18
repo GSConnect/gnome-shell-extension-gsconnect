@@ -1,4 +1,13 @@
 
+.icon-button {
+    border: 0px;
+    padding: 0px;
+    background: transparent;
+}
+
+/**
+ * Messaging CSS
+ */
 .connection-status, .connection-status:hover:active {
     background: alpha(@theme_bg_color, 0);
     color: @theme_fg_color;

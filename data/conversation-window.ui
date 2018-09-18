@@ -212,7 +212,7 @@
                         <property name="halign">center</property>
                         <property name="valign">center</property>
                         <property name="vexpand">True</property>
-                        <property name="label" translatable="yes">Click to reconnect</property>
+                        <property name="label" translatable="yes">Reconnect</property>
                         <attributes>
                           <attribute name="weight" value="bold"/>
                           <attribute name="size" value="12000"/>

@@ -860,6 +860,7 @@
                           <object class="GtkFrame">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
+                            <property name="margin_bottom">32</property>
                             <property name="label_xalign">0</property>
                             <child>
                               <object class="GtkListBox" id="software-list">
@@ -1013,6 +1014,28 @@
                                     </child>
                                   </object>
                                 </child>
+                              </object>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="left_attach">0</property>
+                            <property name="top_attach">1</property>
+                            <property name="width">3</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkFrame">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="label_xalign">0</property>
+                            <child>
+                              <object class="GtkListBox">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="hexpand">True</property>
+                                <property name="vexpand">False</property>
+                                <property name="selection_mode">none</property>
+                                <property name="activate_on_single_click">False</property>
                                 <child>
                                   <object class="GtkListBoxRow" id="webextension">
                                     <property name="height_request">56</property>
@@ -1134,58 +1157,39 @@
                                           <packing>
                                             <property name="left_attach">0</property>
                                             <property name="top_attach">0</property>
+                                            <property name="height">2</property>
                                           </packing>
                                         </child>
                                         <child>
-                                          <object class="GtkButton">
+                                          <object class="GtkLabel">
                                             <property name="visible">True</property>
-                                            <property name="can_focus">True</property>
-                                            <property name="receives_default">True</property>
-                                            <property name="tooltip_text">https://openrepos.net/content/piggz/kde-connect</property>
-                                            <property name="valign">center</property>
-                                            <signal name="clicked" handler="_onLinkButton" swapped="no"/>
-                                            <child>
-                                              <object class="GtkImage">
-                                                <property name="visible">True</property>
-                                                <property name="can_focus">False</property>
-                                                <property name="icon_name">sailfishos</property>
-                                                <property name="icon_size">5</property>
-                                              </object>
-                                            </child>
-                                            <style>
-                                              <class name="circular"/>
-                                              <class name="icon-button"/>
-                                            </style>
-                                          </object>
-                                          <packing>
-                                            <property name="left_attach">2</property>
-                                            <property name="top_attach">0</property>
-                                          </packing>
-                                        </child>
-                                        <child>
-                                          <object class="GtkButton">
-                                            <property name="visible">True</property>
-                                            <property name="can_focus">True</property>
-                                            <property name="receives_default">True</property>
+                                            <property name="can_focus">False</property>
                                             <property name="tooltip_text">https://play.google.com/store/apps/details?id=org.kde.kdeconnect_tp</property>
+                                            <property name="halign">end</property>
                                             <property name="valign">center</property>
-                                            <signal name="activate" handler="_onLinkButton" swapped="no"/>
-                                            <child>
-                                              <object class="GtkImage">
-                                                <property name="visible">True</property>
-                                                <property name="can_focus">False</property>
-                                                <property name="icon_name">android</property>
-                                                <property name="icon_size">5</property>
-                                              </object>
-                                            </child>
-                                            <style>
-                                              <class name="circular"/>
-                                              <class name="icon-button"/>
-                                            </style>
+                                            <property name="vexpand">True</property>
+                                            <property name="label">&lt;a href="https://play.google.com/store/apps/details?id=org.kde.kdeconnect_tp"&gt;Android&lt;/a&gt;</property>
+                                            <property name="use_markup">True</property>
                                           </object>
                                           <packing>
                                             <property name="left_attach">1</property>
                                             <property name="top_attach">0</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <object class="GtkLabel">
+                                            <property name="visible">True</property>
+                                            <property name="can_focus">False</property>
+                                            <property name="tooltip_text">https://openrepos.net/content/piggz/kde-connect</property>
+                                            <property name="halign">end</property>
+                                            <property name="valign">center</property>
+                                            <property name="vexpand">True</property>
+                                            <property name="label">&lt;a href="https://openrepos.net/content/piggz/kde-connect"&gt;SailfishOS&lt;/a&gt;</property>
+                                            <property name="use_markup">True</property>
+                                          </object>
+                                          <packing>
+                                            <property name="left_attach">1</property>
+                                            <property name="top_attach">1</property>
                                           </packing>
                                         </child>
                                       </object>
@@ -1197,7 +1201,26 @@
                           </object>
                           <packing>
                             <property name="left_attach">0</property>
-                            <property name="top_attach">1</property>
+                            <property name="top_attach">3</property>
+                            <property name="width">3</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel">
+                            <property name="height_request">32</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="halign">start</property>
+                            <property name="valign">center</property>
+                            <property name="hexpand">True</property>
+                            <property name="label" translatable="yes">Other</property>
+                            <attributes>
+                              <attribute name="weight" value="bold"/>
+                            </attributes>
+                          </object>
+                          <packing>
+                            <property name="left_attach">0</property>
+                            <property name="top_attach">2</property>
                             <property name="width">3</property>
                           </packing>
                         </child>
@@ -1262,6 +1285,7 @@
                                 <property name="halign">end</property>
                                 <property name="valign">center</property>
                                 <property name="relief">none</property>
+                                <signal name="clicked" handler="_onLinkButton" swapped="no"/>
                                 <child>
                                   <object class="GtkImage">
                                     <property name="visible">True</property>
