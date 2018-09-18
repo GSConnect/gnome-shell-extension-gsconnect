@@ -664,6 +664,10 @@ const Service = GObject.registerClass({
         this.mpris.destroy();
         this.notification.destroy();
         this.lanService.destroy();
+
+        // FIXME: Really, really bad hack, but sometimes hangs in bluez can
+        // prevent the service from stopping or even hang the desktop.
+        System.exit(0);
         this.bluetoothService.destroy();
     }
 });
