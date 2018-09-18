@@ -44,7 +44,7 @@ const ServiceUI = imports.service.ui.service;
 const Settings = imports.service.ui.settings;
 
 
-var Service = GObject.registerClass({
+const Service = GObject.registerClass({
     GTypeName: 'GSConnectService',
     Properties: {
         'devices': GObject.param_spec_variant(
@@ -224,8 +224,7 @@ var Service = GObject.registerClass({
         if (device === undefined) {
             log(`GSConnect: Adding ${packet.body.deviceName}`);
 
-            // TODO: This should be possible to remove once all implementations
-            //       support a bluetooth-like discovery mode.
+            // TODO: Remove when all clients support bluetooth-like discovery
             //
             // If this is the third device to connect, disable discovery to
             // avoid choking on networks with a large amount of devices

@@ -203,6 +203,7 @@ var Plugin = GObject.registerClass({
             // Prune conversations
             // TODO: this might always prune because of the HACK in
             // _handleConversation()
+            // FIXME: 'address' undefined
             let numbers = threads.map(t => t.address);
 
             for (let number in this.conversations) {
@@ -477,6 +478,7 @@ var Plugin = GObject.registerClass({
 
     _onCancel(packet) {
         // Withdraw the (probably) open notification.
+        // TODO: it might choke on contactName here...
         this.device.hideNotification(`${packet.body.event}|${packet.body.contactName}`);
         this._restoreMediaState();
     }
@@ -702,6 +704,7 @@ var Plugin = GObject.registerClass({
 
     /**
      * This is the sms: URI scheme handler.
+     * TODO: very likely broken right now
      */
     uriSms(uri) {
         debug(uri);
@@ -722,7 +725,9 @@ var Plugin = GObject.registerClass({
         if (!window) {
             window = new Sms.ConversationWindow(this.device);
 
+            // FIXME: need batch SMS window now
             for (let recipient of uri.recipients) {
+                // FIXME
                 let contact = this.contacts.query({
                     number: recipient,
                     name: '',
