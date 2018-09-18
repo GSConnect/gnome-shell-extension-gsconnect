@@ -311,6 +311,7 @@ const Service = GObject.registerClass({
 
             // Misc service actions
             ['broadcast', this.broadcast.bind(this)],
+            ['error', this._errorAction.bind(this), 'a{ss}'],
             ['log', this._logAction.bind(this)],
             ['debugger', this._debuggerAction.bind(this)],
             ['quit', this.quit.bind(this)]
@@ -421,6 +422,29 @@ const Service = GObject.registerClass({
         this._about.modal = (this._window && this._window.visible);
         this._about.transient_for = this._about.modal ? this._window : null;
         this._about.present();
+    }
+
+    _errorAction(action, parameter) {
+        try {
+            let error = parameter.deep_unpack();
+            let dialog = new Gtk.MessageDialog({
+                text: error.message.trim(),
+                secondary_text: error.stack.trim(),
+                buttons: Gtk.ButtonsType.CLOSE,
+                message_type: Gtk.MessageType.ERROR,
+            });
+            dialog.set_keep_above(true);
+            dialog.connect('response', (dialog) => dialog.destroy());
+
+            let [message, stack] = dialog.get_message_area().get_children();
+            message.halign = Gtk.Align.START;
+            message.selectable = true;
+            stack.selectable = true;
+
+            dialog.show();
+        } catch (e) {
+            logError(e);
+        }
     }
 
     _logAction() {
