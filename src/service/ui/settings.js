@@ -492,7 +492,7 @@ var Device = GObject.registerClass({
         // GSettings
         this.settings = new Gio.Settings({
             settings_schema: gsconnect.gschema.lookup('org.gnome.Shell.Extensions.GSConnect.Device', true),
-            path: `/org/gnome/shell/extensions/gsconnect/device/${this.device.id}`
+            path: '/org/gnome/shell/extensions/gsconnect/device/' + this.device.id + '/'
         });
 
         // Connect Actions
