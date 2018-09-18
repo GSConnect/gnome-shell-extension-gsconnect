@@ -270,15 +270,15 @@ var Window = GObject.registerClass({
         this._softwareSettings();
 
         // Setup devices
-        this._serviceDevices = this.application.connect(
-            'notify::devices',
+        this._devicesChangedId = gsconnect.settings.connect(
+            'changed::devices',
             this._onDevicesChanged.bind(this)
         );
         this._onDevicesChanged();
     }
 
     _headerFunc(row, before) {
-        if (row.get_index() === 3) {
+        if ([3, 4].includes(row.get_index())) {
             row.set_header(new Gtk.Separator({ visible: true }));
         }
     }
@@ -326,7 +326,7 @@ var Window = GObject.registerClass({
     }
 
     _onEditServiceName(button, event) {
-        this.headerbar_entry.text = this.application.name;
+        this.headerbar_entry.text = gsconnect.settings.get_string('public-name');
         this.headerbar_stack.visible_child_name = 'headerbar-entry';
     }
 
@@ -478,8 +478,7 @@ var Device = GObject.registerClass({
         'shortcuts-actions', 'shortcuts-actions-title', 'shortcuts-actions-list',
         'shortcuts-commands', 'shortcuts-commands-title', 'shortcuts-commands-list',
         // Advanced
-        'plugin-list',
-        'danger-list', 'device-delete-button',
+        'plugin-list', 'danger-list'
     ]
 }, class Device extends Gtk.Stack {
 
@@ -493,7 +492,7 @@ var Device = GObject.registerClass({
         // GSettings
         this.settings = new Gio.Settings({
             settings_schema: gsconnect.gschema.lookup('org.gnome.Shell.Extensions.GSConnect.Device', true),
-            path: `/org/gnome/shell/extensions/gsconnect/device/${this.device.id}/`
+            path: `/org/gnome/shell/extensions/gsconnect/device/${this.device.id}`
         });
 
         // Connect Actions
@@ -690,11 +689,9 @@ var Device = GObject.registerClass({
 
             switch (name) {
                 case 'battery':
-                    if (!this.device.get_outgoing_supported('battery.request')) {
-                        row.destroy();
-                        break;
-                    }
-
+                    row.visible = this.device.get_outgoing_supported(
+                        'battery.request'
+                    );
                     settings.bind('send-statistics', label, 'active', 0);
                     break;
 
@@ -714,20 +711,16 @@ var Device = GObject.registerClass({
                     break;
 
                 case 'mousepad':
-                    if (!this.device.get_outgoing_supported('mousepad.request')) {
-                        row.destroy();
-                        break;
-                    }
-
+                    row.visible = this.device.get_outgoing_supported(
+                        'mousepad.request'
+                    );
                     settings.bind('share-control', label, 'active', 0);
                     break;
 
                 case 'mpris':
-                    if (!this.device.get_outgoing_supported('mpris.request')) {
-                        row.destroy();
-                        break;
-                    }
-
+                    row.visible = this.device.get_outgoing_supported(
+                        'mpris.request'
+                    );
                     settings.bind('share-players', label, 'active', 0);
                     break;
             }
@@ -1145,6 +1138,10 @@ var Device = GObject.registerClass({
     }
 
     async _populateKeybindings() {
+        if (this.device.list_actions().length === 0) {
+            return;
+        }
+
         try {
             await this._populateActionKeybindings();
             await this._populateCommandKeybindings();
@@ -1227,19 +1224,28 @@ var Device = GObject.registerClass({
         );
     }
 
-    _onResetCommandShortcuts(button) {
-        let keybindings = this.settings.get_value('keybindings').deep_unpack();
+    _addCommandKeybinding(uuid, command, keybindings) {
+            let action = `executeCommand::${uuid}`;
 
-        for (let action in keybindings) {
-            if (action.includes('::')) {
-                delete keybindings[action];
+            let widget = new Gtk.Label({
+                label: _('Disabled'),
+                visible: true
+            });
+            widget.get_style_context().add_class('dim-label');
+
+            if (keybindings[action]) {
+                let accel = Gtk.accelerator_parse(keybindings[action]);
+                widget.label = Gtk.accelerator_get_label(...accel);
             }
-        }
 
-        this.settings.set_value(
-            'keybindings',
-            new GLib.Variant('a{ss}', keybindings)
-        );
+            let row = new SectionRow({
+                title: command.name,
+                subtitle: command.command,
+                widget: widget,
+                activatable: true
+            });
+            row.action = action;
+            this.shortcuts_commands_list.add(row);
     }
 
     async _populateCommandKeybindings() {
@@ -1266,27 +1272,7 @@ var Device = GObject.registerClass({
         this.shortcuts_commands.visible = hasCommands;
 
         for (let [uuid, command] of Object.entries(remoteCommands)) {
-            let action = `executeCommand::${uuid}`;
-
-            let widget = new Gtk.Label({
-                label: _('Disabled'),
-                visible: true
-            });
-            widget.get_style_context().add_class('dim-label');
-
-            if (keybindings[action]) {
-                let accel = Gtk.accelerator_parse(keybindings[action]);
-                widget.label = Gtk.accelerator_get_label(...accel);
-            }
-
-            let row = new SectionRow({
-                title: command.name,
-                subtitle: command.command,
-                widget: widget,
-                activatable: true
-            });
-            row.action = action;
-            this.shortcuts_commands_list.add(row);
+            await this._addCommandKeybinding(uuid, command, keybindings);
         }
 
         for (let action in keybindings) {
@@ -1298,6 +1284,21 @@ var Device = GObject.registerClass({
                 }
             }
         }
+    }
+
+    _onResetCommandShortcuts(button) {
+        let keybindings = this.settings.get_value('keybindings').deep_unpack();
+
+        for (let action in keybindings) {
+            if (action.includes('::')) {
+                delete keybindings[action];
+            }
+        }
+
+        this.settings.set_value(
+            'keybindings',
+            new GLib.Variant('a{ss}', keybindings)
+        );
     }
 
     async _onShortcutRowActivated(box, row) {
