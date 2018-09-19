@@ -81,6 +81,8 @@ var Plugin = GObject.registerClass({
     }
 
     connected() {
+        super.connected();
+
         this.sendCommandList();
         this.requestCommandList();
     }
@@ -198,12 +200,6 @@ var Plugin = GObject.registerClass({
             type: 'kdeconnect.runcommand',
             body: { commandList: commands }
         });
-    }
-
-    destroy() {
-        this.device.menu.remove_action('executeCommand');
-
-        super.destroy();
     }
 });
 

@@ -135,6 +135,8 @@ var Plugin = GObject.registerClass({
     }
 
     connected() {
+        super.connected();
+
         this.requestConversations();
     }
 

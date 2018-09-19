@@ -68,13 +68,10 @@ var Plugin = GObject.registerClass({
     }
 
     connected() {
+        super.connected();
+
         if (this.device.connection_type === 'bluetooth') {
-            this.device._errors.set(
-                'share',
-                Error(_('Not supported for bluetooth connections'))
-            );
-            this.device.notify('errors');
-            this.destroy();
+            this.device.lookup_action('shareFile').enabled = false;
         }
     }
 

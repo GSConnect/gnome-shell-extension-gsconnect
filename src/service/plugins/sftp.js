@@ -53,14 +53,12 @@ var Plugin = GObject.registerClass({
         this._mounting = false;
         this._port = 0;
 
-        if (this.device.connection_type === 'bluetooth') {
-            this.destroy();
-            throw Error(_('Not supported for bluetooth connections'));
-        }
-
         if (!hasCommand('sshfs')) {
             this.destroy();
-            throw Error('sshfs-error');
+
+            let error = new Error('sshfs');
+            error.name = 'DependencyError';
+            throw error;
         }
     }
 
@@ -71,11 +69,18 @@ var Plugin = GObject.registerClass({
     }
 
     connected() {
-        this._setup();
-        this.mount();
+        super.connected();
+
+        if (this.device.connection_type === 'bluetooth') {
+            this.device.lookup_action('mount').enabled = false;
+        } else {
+            this._setup();
+            this.mount();
+        }
     }
 
     disconnected() {
+        super.disconnected();
         this.unmount();
     }
 
@@ -271,8 +276,15 @@ var Plugin = GObject.registerClass({
                 if (msg !== null) {
                     msg = msg.toString();
 
-                    if (msg.startsWith('ssh_dispatch_run_fatal')) {
-                        throw new Error(msg);
+                    if (msg.includes('ssh_dispatch_run_fatal')) {
+                        let e = new Error(msg);
+
+                        if (msg.includes('incorrect signature')) {
+                            e.name = 'SshSignatureError';
+                            this.service.notify_error(e);
+                        }
+
+                        throw e;
                     }
 
                     logWarning(msg, `${this.device.name}: ${this.name}`);

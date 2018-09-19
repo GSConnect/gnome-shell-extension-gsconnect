@@ -43,6 +43,8 @@ const Lan = imports.service.lan;
 const ServiceUI = imports.service.ui.service;
 const Settings = imports.service.ui.settings;
 
+const _GITHUB = 'https://github.com/andyholmes/gnome-shell-extension-gsconnect';
+
 
 const Service = GObject.registerClass({
     GTypeName: 'GSConnectService',
@@ -230,6 +232,10 @@ const Service = GObject.registerClass({
             // avoid choking on networks with a large amount of devices
             if (this._devices.size === 2 && this.discoverable) {
                 this.activate_action('discoverable', null);
+
+                let error = new Error();
+                error.name = 'DiscoveryWarning';
+                this.notify_error(error);
             }
 
             device = new Device.Device(packet);
@@ -305,6 +311,7 @@ const Service = GObject.registerClass({
 
             // App Menu
             ['connect', this._connectAction.bind(this)],
+            ['preference', this._preferencesAction.bind(this), 's'],
             ['preferences', this._preferencesAction.bind(this)],
             ['help', this._preferencesAction.bind(this, 'help')],
             ['about', this._aboutAction.bind(this)],
@@ -314,6 +321,7 @@ const Service = GObject.registerClass({
             ['error', this._errorAction.bind(this), 'a{ss}'],
             ['log', this._logAction.bind(this)],
             ['debugger', this._debuggerAction.bind(this)],
+            ['wiki', this._wikiAction.bind(this), 's'],
             ['quit', this.quit.bind(this)]
         ];
 
@@ -433,13 +441,22 @@ const Service = GObject.registerClass({
                 buttons: Gtk.ButtonsType.CLOSE,
                 message_type: Gtk.MessageType.ERROR,
             });
+            let issues = dialog.add_button(_('Report'), 1);
             dialog.set_keep_above(true);
-            dialog.connect('response', (dialog) => dialog.destroy());
 
             let [message, stack] = dialog.get_message_area().get_children();
             message.halign = Gtk.Align.START;
             message.selectable = true;
             stack.selectable = true;
+
+            dialog.connect('response', (dialog, id) => {
+                if (id === 1) {
+                    let query = encodeURIComponent(dialog.text).replace('%20', '+');
+                    this._github(`issues?q=is%3Aissue+${query}`);
+                } else {
+                    dialog.destroy();
+                }
+            });
 
             dialog.show();
         } catch (e) {
@@ -461,6 +478,22 @@ const Service = GObject.registerClass({
 
     _debuggerAction() {
         (new imports.service.components.debug.Window()).present();
+    }
+
+    _wikiAction(action, parameter) {
+        this._github(`wiki/${parameter.unpack()}`);
+    }
+
+    _github(path=[]) {
+        let uri = [_GITHUB].concat(path.split('/')).join('/');
+
+        Gio.AppInfo.launch_default_for_uri_async(uri, null, null, (src, res) => {
+            try {
+                Gio.AppInfo.launch_default_for_uri_finish(res);
+            } catch (e) {
+                logError(e);
+            }
+        });
     }
 
     /**
@@ -516,6 +549,142 @@ const Service = GObject.registerClass({
         });
     }
 
+    /**
+     * Report a service-level error
+     *
+     * @param {object} error - An Error or object with name, message and stack
+     * @param {string} context - The scope of the error
+     */
+    notify_error(error) {
+        try {
+            // Always log the error
+            logError(error);
+
+            // Create an new notification
+            let id, title, body, icon, action;
+            let notif = new Gio.Notification();
+            notif.set_priority(Gio.NotificationPriority.URGENT);
+
+            switch (error.name) {
+                // A TLS certificate failure
+                case 'AuthenticationError':
+                    id = `${Date.now()}`;
+                    title = _('Authentication Failure');
+                    let time = GLib.DateTime.new_now_local().format('%F %R');
+                    body = `"${error.deviceName}"@${error.deviceHost} (${time})`;
+                    icon = new Gio.ThemedIcon({ name: 'dialog-error' });
+                    break;
+
+                case 'LanError':
+                case 'ProxyError':
+                    id = error.name;
+                    title = _('Network Error');
+                    body = error.message + '\n\n' + _('Click for help troubleshooting');
+                    icon = new Gio.ThemedIcon({ name: 'network-error' });
+                    notif.set_default_action(
+                        `app.wiki('Troubleshooting#${error.name}")`
+                    );
+                    break;
+
+                case 'BluetoothError':
+                    id = error.name;
+                    title = _('Bluetooth Error');
+                    body = _('Click for help troubleshooting');
+                    icon = new Gio.ThemedIcon({ name: 'bluetooth-disabled-symbolic' });
+                    notif.set_default_action(
+                        `app.wiki('Troubleshooting#${error.name}")`
+                    );
+                    notif.set_priority(Gio.NotificationPriority.NORMAL);
+                    break;
+
+                case 'GvcError':
+                    id = error.name;
+                    title = _('PulseAudio Error');
+                    body = _('Click for help troubleshooting');
+                    icon = new Gio.ThemedIcon({ name: 'dialog-error' });
+                    notif.set_default_action(
+                        `app.wiki('Troubleshooting#${error.name}")`
+                    );
+                    break;
+
+                case 'DiscoveryWarning':
+                    id = 'discovery-warning';
+                    title = _('Discovery Disabled');
+                    body = _('Discovery has been disabled due to the number of devices on this network.') +
+                           '\n\n' +
+                           _('Click to open preferences');
+                    icon = new Gio.ThemedIcon({ name: 'dialog-warning' });
+                    notif.set_default_action('app.preference::service');
+                    notif.set_priority(Gio.NotificationPriority.NORMAL);
+                    break;
+
+                // Missing sshfs, libcanberra
+                case 'DependencyError':
+                    id = 'dependency-error';
+                    title = _('Additional Software Required');
+                    body = _('Click to open preferences');
+                    icon = new Gio.ThemedIcon({ name: 'system-software-install-symbolic' });
+                    notif.set_default_action('app.preference::software');
+                    notif.set_priority(Gio.NotificationPriority.HIGH);
+                    break;
+
+                case 'PluginError':
+                    id = `${error.plugin}-error`;
+                    title = _('%s Plugin Failed To Load').format(error.label);
+                    body = error.message + '\n\n' + _('Click for more information');
+                    icon = new Gio.ThemedIcon({ name: 'dialog-error' });
+
+                    error = new GLib.Variant('a{ss}', {
+                        name: error.name,
+                        message: error.message,
+                        stack: error.stack
+                    });
+
+                    notif.set_default_action_and_target('app.error', error);
+                    notif.set_priority(Gio.NotificationPriority.HIGH);
+                    break;
+
+                case 'WaylandNotSupported':
+                    id = error.name;
+                    title = _('Wayland Not Supported');
+                    body = _('Remote input not supported on Wayland') + '\n\n' +
+                           _('Click for more information');
+                    icon = new Gio.ThemedIcon({ name: 'preferences-desktop-display-symbolic' });
+                    notif.set_default_action(
+                        `app.wiki('Troubleshooting#${error.name}")`
+                    );
+                    notif.set_priority(Gio.NotificationPriority.HIGH);
+                    break;
+
+                default:
+                    id = `${Date.now()}`;
+                    title = _('Error');
+                    body = error.message.trim();
+                    icon = new Gio.ThemedIcon({ name: 'dialog-error' });
+                    error = new GLib.Variant('a{ss}', {
+                        name: error.name,
+                        message: error.message,
+                        stack: error.stack
+                    });
+                    notif.set_default_action_and_target('app.error', error);
+                    notif.set_priority(Gio.NotificationPriority.HIGH);
+            }
+
+            // Create an urgent notification
+            notif.set_title(_('GSConnect: %s').format(title));
+            notif.set_body(body);
+            notif.set_icon(icon);
+
+            // Bypass override
+            super.send_notification(id, notif);
+        } catch (e) {
+            logError(e);
+        }
+    }
+
+    /**
+     * Load each script in components/ and instantiate a Service if it has one
+     */
     _loadComponents() {
         for (let name in imports.service.components) {
             try {
@@ -525,7 +694,7 @@ const Service = GObject.registerClass({
                     this[name] = new module.Service();
                 }
             } catch (e) {
-                logError(e, name);
+                this.notify_error(e);
             }
         }
     }
@@ -600,14 +769,17 @@ const Service = GObject.registerClass({
         try {
             this.lanService = new Lan.ChannelService();
         } catch (e) {
-            logError(e, 'Lan.ChannelService');
+            e.name = 'LanError';
+            this.notify_error(e);
         }
 
         // Bluetooth.ChannelService
         try {
             this.bluetoothService = new Bluetooth.ChannelService();
         } catch (e) {
-            logError(e, 'Bluetooth.ChannelService');
+            this.bluetoothService.destroy();
+            e.name = 'BluetoothError';
+            this.notify_error(e);
         }
     }
 

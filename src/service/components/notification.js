@@ -377,7 +377,8 @@ var Listener = class Listener {
             await this._helloConnection();
             await this._monitorConnection();
         } catch (e) {
-            logError(e, 'Notification Listener');
+            this.service.notify_error(e);
+            this.destroy();
         }
     }
 

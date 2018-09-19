@@ -16,7 +16,8 @@ try {
 
     var Gvc = imports.gi.Gvc;
 } catch (e) {
-    throw new Error('gvc-error');
+    e.name = 'GvcError';
+    throw e;
 }
 
 

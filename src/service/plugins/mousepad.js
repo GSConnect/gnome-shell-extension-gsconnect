@@ -44,7 +44,9 @@ var Plugin = GObject.registerClass({
         // See: https://wiki.gnome.org/Accessibility/Wayland#Bugs.2FIssues_We_Must_Address
         if (GLib.getenv('XDG_SESSION_TYPE') === 'wayland') {
             this.destroy();
-            throw Error(_('Not supported in Wayland sessions'));
+            let e = new Error();
+            e.name = 'WaylandNotSupported';
+            throw e;
         }
 
         // Atspi.init() return 2 on fail, but still marks itself as inited. We
@@ -54,25 +56,28 @@ var Plugin = GObject.registerClass({
         if (Atspi.init() === 2) {
             Atspi.exit();
             this.destroy();
-            throw Error(_('Failed to initialize Atspi'));
+
+            let e = new Error();
+            e.name = 'WaylandNotSupported';
+            throw e;
         }
 
-        this._display = Gdk.Display.get_default();
-
-        if (this._display === null) {
-            this.destroy();
-            throw Error(_('Failed to get Gdk.Display'));
-        } else {
+        try {
+            this._display = Gdk.Display.get_default();
             this._seat = this._display.get_default_seat();
             this._pointer = this._seat.get_pointer();
+        } catch (e) {
+            e.name = 'DisplayError';
+            throw e;
         }
 
         // Try import Caribou
+        // FIXME: deprecated
         try {
             const Caribou = imports.gi.Caribou;
             this._vkbd = Caribou.DisplayAdapter.get_default();
         } catch (e) {
-            logError(e, this.device.name);
+            debug(e);
         }
 
         this.settings.bind(

@@ -83,7 +83,7 @@ var Plugin = GObject.registerClass({
         });
 
         // Set the enabled state
-        action.set_enabled(!disabled.includes(action.name));
+        action.set_enabled(this.device.connected && !disabled.includes(action.name));
 
         // Bind the activation
         action.connect('activate', this._activateAction.bind(this));
@@ -111,8 +111,19 @@ var Plugin = GObject.registerClass({
      * These two methods are optional and called by the device in response to
      * the connection state changing.
      */
-    connected() {}
-    disconnected() {}
+    connected() {
+        let disabled = this.device.settings.get_strv('disabled-actions');
+
+        for (let action of this._gactions) {
+            action.set_enabled(!disabled.includes(action.name));
+        }
+    }
+
+    disconnected() {
+        for (let action of this._gactions) {
+            action.set_enabled(false);
+        }
+    }
 
     /**
      * Cache JSON parseable properties on this object for persistence. The

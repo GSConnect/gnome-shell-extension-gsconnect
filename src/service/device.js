@@ -294,7 +294,7 @@ var Device = GObject.registerClass({
         this._connected = true;
         this.notify('connected');
 
-        this._plugins.forEach(plugin => plugin.connected());
+        this._plugins.forEach(async (plugin) => plugin.connected());
     }
 
     /**
@@ -307,7 +307,7 @@ var Device = GObject.registerClass({
         this._connected = false;
         this.notify('connected');
 
-        this._plugins.forEach(plugin => plugin.disconnected());
+        this._plugins.forEach(async (plugin) => plugin.disconnected());
 
         // TODO: not ideal calling back and forth like this
         this.service._pruneDevices();
@@ -757,7 +757,12 @@ var Device = GObject.registerClass({
                 }
             }
         } catch (e) {
-            logError(e, `${this.name}: loading ${name}`);
+            e.name = (e.name === 'Error') ? 'PluginError' : e.name;
+            e.device = this.id;
+            e.plugin = name;
+            e.label = handler.Metadata.label;
+
+            this.service.notify_error(e);
         }
     }
 
@@ -831,10 +836,6 @@ var Device = GObject.registerClass({
         this._dbus_object.remove_interface(this._dbus);
         this._dbus_object.flush();
         this.service.objectManager.unexport(this._dbus_object.g_object_path);
-
-        // Try to avoid any cyclic references from signal handlers
-        GObject.signal_handlers_destroy(this);
-        GObject.signal_handlers_destroy(this.settings);
     }
 });
 

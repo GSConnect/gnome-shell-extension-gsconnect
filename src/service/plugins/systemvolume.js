@@ -49,7 +49,8 @@ var Plugin = GObject.registerClass({
             );
         } catch (e) {
             this.destroy();
-            throw new Error('service-error');
+            e.name = 'GvcError';
+            throw e;
         }
     }
 
@@ -66,6 +67,8 @@ var Plugin = GObject.registerClass({
     }
 
     connected() {
+        super.connected();
+
         this._sendSinkList();
     }
 

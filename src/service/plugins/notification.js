@@ -89,6 +89,8 @@ var Plugin = GObject.registerClass({
     }
 
     connected() {
+        super.connected();
+
         this.requestNotifications();
     }
 
@@ -275,7 +277,7 @@ var Plugin = GObject.registerClass({
     _uploadThemedIcon(packet, icon) {
         let theme = Gtk.IconTheme.get_default();
 
-        for (let name of icon.get_names()) {
+        for (let name of icon.names) {
             // kdeconnect-android doesn't support SVGs so find the largest other
             let info = theme.lookup_icon(
                 name,
@@ -347,7 +349,7 @@ var Plugin = GObject.registerClass({
                 if (typeof notif.icon === 'string') {
                     applications[notif.appName].iconName = notif.icon;
                 } else if (notif.icon instanceof Gio.ThemedIcon) {
-                    applications[notif.appName].iconName = notif.icon.get_names()[0];
+                    applications[notif.appName].iconName = notif.icon.names[0];
                 }
 
                 this.settings.set_string(
@@ -441,6 +443,7 @@ var Plugin = GObject.registerClass({
             let telephony = imports.service.plugins.telephony.Plugin;
 
             // Fabricate a message packet from what we know
+            // TODO: revisit created values
             let message = {
                 contactName: contact.name,
                 _id: 0,

@@ -264,6 +264,8 @@ var Store = GObject.registerClass({
             this._provider_icon = 'x-office-address-book-symbolic.symbolic';
             this.notify('provider-icon');
             this.notify('contacts');
+        } catch (e) {
+            logError(e);
         }
     }
 

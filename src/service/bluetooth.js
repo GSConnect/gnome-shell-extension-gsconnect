@@ -220,6 +220,8 @@ var ChannelService = GObject.registerClass({
                 }
             }
         } catch (e) {
+            this.service.notify_error(e);
+            this.destroy();
         }
     }
 

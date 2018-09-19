@@ -264,13 +264,24 @@ var ChannelService = GObject.registerClass({
             let channel = new Core.Channel({ type: 'tcp' });
             channel.identity = packet;
 
-            let addr = Gio.InetSocketAddress.new_from_string(
-                packet.body.tcpHost,
-                packet.body.tcpPort
-            );
+            let connection = await new Promise((resolve, reject) => {
+                let address = Gio.InetSocketAddress.new_from_string(
+                    packet.body.tcpHost,
+                    packet.body.tcpPort
+                );
+                let client = new Gio.SocketClient();
+
+                client.connect_async(address, null, (client, res) => {
+                    try {
+                        resolve(client.connect_finish(res));
+                    } catch (e) {
+                        reject(e);
+                    }
+                });
+            });
 
             // Connect the channel and attach it to the device on success
-            let success = await channel.open(addr);
+            let success = await channel.open(connection);
 
             if (success) {
                 channel.attach(device);
@@ -279,6 +290,12 @@ var ChannelService = GObject.registerClass({
             }
         } catch (e) {
             logError(e);
+
+            // Notify the user of Proxy errors
+            if ([40, 41, 42, 43].includes(e.code)) {
+                e.name = 'ProxyError';
+                this.service.notify_error(e);
+            }
         }
     }
 

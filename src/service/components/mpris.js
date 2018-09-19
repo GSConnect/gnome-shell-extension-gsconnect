@@ -79,7 +79,8 @@ var Manager = GObject.registerClass({
                 }
             });
         } catch (e) {
-            logError(e);
+            this.service.notify_error(e);
+            this.destroy();
         }
     }
 
@@ -101,6 +102,10 @@ var Manager = GObject.registerClass({
         }
 
         return this._paused;
+    }
+
+    get service() {
+        return Gio.Application.get_default();
     }
 
     vfunc_g_signal(sender_name, signal_name, parameters) {

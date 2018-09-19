@@ -66,6 +66,8 @@ var Plugin = GObject.registerClass({
     }
 
     connected() {
+        super.connected();
+
         this._sendPlayerList();
     }
 

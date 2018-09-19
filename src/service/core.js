@@ -217,6 +217,11 @@ var Channel = class Channel {
             // This is a fraudulent certificate; notify the user
             if (!valid) {
                 let error = new Error();
+                error.name = 'AuthenticationError';
+                error.deviceName = this.identity.body.deviceName;
+                error.deviceHost = connection.base_io_stream.get_remote_address().address.to_string();
+                this.service.notify_error(error);
+
                 throw error;
             }
         }
@@ -305,29 +310,18 @@ var Channel = class Channel {
     /**
      * Open an outgoing connection
      *
-     * @param {Gio.InetSocketAddress} address - The remote address
+     * @param {Gio.SocketConnection} connection - The remote connection
      * @return {Boolean} - %true on connected, %false otherwise
      */
-    async open(address) {
+    async open(connection) {
         try {
-            this._connection = await new Promise((resolve, reject) => {
-                let client = new Gio.SocketClient();
-
-                client.connect_async(address, this.cancellable, (client, res) => {
-                    try {
-                        resolve(client.connect_finish(res));
-                    } catch (e) {
-                        reject(e);
-                    }
-                });
-            });
-            this._connection = await this._initSocket(this._connection);
+            this._connection = await this._initSocket(connection);
             this._connection = await this._sendIdent(this._connection);
             this._connection = await this._serverEncryption(this._connection);
 
             return true;
         } catch (e) {
-            log(`GSConnect: Error opening connection to ${address.to_string()}: ${e.message}`);
+            debug(e);
             this.close();
             return false;
         }
@@ -347,7 +341,12 @@ var Channel = class Channel {
 
             return true;
         } catch(e) {
-            debug(e);
+            if (this.type === 'tcp') {
+                logError(e, connection.get_remote_address().to_string());
+            } else {
+                logError(e);
+            }
+
             this.close();
             return false;
         }
