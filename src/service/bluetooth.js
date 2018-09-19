@@ -429,17 +429,166 @@ var ChannelService = GObject.registerClass({
         }
     }
 
-    async destroy() {
+    destroy() {
         try {
-            for (let object_path of this._devices.keys()) {
-                await this.RequestDisconnection(object_path);
+            for (let device of this._devices.values()) {
+                if (device._channel !== null) {
+                    device._channel.close();
+                    device._channel = null;
+                }
             }
 
-            await _profileManager.UnregisterProfile(this._profile.g_object_path);
             this._profile.destroy();
         } catch (e) {
             logError(e);
         }
     }
 });
+
+
+/**
+ * Bluetooth File Transfers
+ *
+ * FIXME: All of this should be assumed broken
+ */
+var Transfer = class Transfer extends Core.Transfer {
+
+    constructor(params) {
+        super(params);
+    }
+
+    async _registerProfile(uuid) {
+        // Export the org.bluez.Profile1 interface for the socket
+        this._profile = new DBus.Interface({
+            g_connection: Gio.DBus.system,
+            g_instance: this,
+            g_interface_info: BluezNode.lookup_interface('org.bluez.Profile1'),
+            g_object_path: gsconnect.app_path + '/' + uuid.replace(/\-/gi, '')
+        });
+
+        let profileOptions = {
+            // TODO: just do it all manually?
+            AutoConnect: new GLib.Variant('b', true),
+            Role: new GLib.Variant('s', 'client'),
+            // Don't require confirmation
+            RequireAuthorization: new GLib.Variant('b', false),
+            // Only allow paired devices
+            RequireAuthentication: new GLib.Variant('b', true),
+            // Service Record (customized to work with Android)
+            ServiceRecord: new GLib.Variant('s', makeSdpRecord(uuid))
+        };
+
+        // Register KDE Connect bluez profile
+        await _profileManager.RegisterProfile(
+            this._profile.get_object_path(),
+            uuid,
+            profileOptions
+        );
+
+        return uuid;
+    }
+
+    async upload(packet) {
+        debug(this.identity.body.deviceId);
+
+        try {
+            // Start "listening" for uuid
+            this._profile = new DBus.Interface({
+                g_connection: Gio.DBus.system,
+                g_instance: this,
+                g_interface_info: BluezNode.lookup_interface('org.bluez.Profile1'),
+                g_object_path: gsconnect.app_path + '/' + this.uuid.replace(/\-/gi, '')
+            });
+
+            await this._registerProfile(this.uuid);
+
+            // Notify the device we're ready
+            packet.body.payloadHash = this.checksum;
+            packet.payloadSize = this.size;
+            packet.payloadTransferInfo = { uuid: uuid };
+            this.device.sendPacket(packet);
+
+            // Return the uuid for payloadTransferInfo
+            return this.uuid;
+        } catch (e) {
+            logError(e);
+            this.close();
+        }
+    }
+
+    /**
+     * Presumably for bluetooth connections this will handle accepting
+     * uploads and downloads...
+     */
+    async NewConnection(object_path, fd, fd_properties) {
+        debug(`(${object_path}, ${fd}, ${JSON.stringify(fd_properties)})`);
+        try {
+
+            // Create a Gio.SocketConnection from the file-descriptor
+            let socket = Gio.Socket.new_from_fd(fd);
+            this._connection = socket.connection_factory_create_connection();
+            let channel = new Core.Channel({ type: 'bluetooth' });
+
+            // Accept the connection and configure the channel
+            this._connection = await connection;
+            this._connection = await this._initSocket(this._connection);
+            this._connection = await this._serverEncryption(this._connection);
+            this.output_stream = this._connection.get_output_stream();
+
+            // NewConnection() is actually called in response to ConnectProfile()
+            // so maybe it makes more sense for this to use open() somehow?
+            log('TRANSFER CONNECTED: ' + this._connection);
+            this.emit('connected');
+        } catch (e) {
+            logError(e);
+        }
+    }
+
+    async upload_accept(listener, res) {
+        debug(this.identity.body.deviceId);
+
+        try {
+            this._connection = await new Promise((resolve, reject) => {
+                try {
+                    resolve(this._listener.accept_finish(res)[0]);
+                } catch (e) {
+                    reject(e);
+                }
+            });
+            this._connection = await this._initSocket(this._connection);
+            this._connection = await this._serverEncryption(this._connection);
+            this.output_stream = this._connection.get_output_stream();
+            this.emit('connected');
+        } catch(e) {
+            log('Error uploading: ' + e.message);
+            debug(e);
+            this.close();
+        }
+    }
+
+    async download(uuid) {
+        log(`Connecting to ${this.identity.body.deviceId}`);
+
+        try {
+            uuid = await this._registerProfile(uuid);
+            let service = Gio.Application.get_default().bluetoothService;
+            let device = service._devices.get(this.device.settings.get_string('bluetooth-path'));
+            await device.ConnectProfile(uuid);
+        } catch (e) {
+            log('Error downloading: ' + e.message);
+            debug(e);
+            this.close();
+        }
+    }
+
+    async Release() {
+        debug(arguments);
+    }
+
+    async RequestDisconnection(object_path) {
+        debug(object_path);
+
+        this.close();
+    }
+}
 
