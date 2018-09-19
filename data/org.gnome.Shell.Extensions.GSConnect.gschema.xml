@@ -126,11 +126,7 @@
     </key>
   </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.SFTP"/>
-  <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Share">
-    <key name="accept-content" type="b">
-      <default>false</default>
-    </key>
-  </schema>
+  <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Share"/>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.SystemVolume"/>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Telephony">
     <key name="handle-sms" type="b">
