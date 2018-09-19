@@ -582,7 +582,7 @@ const Service = GObject.registerClass({
                     body = error.message + '\n\n' + _('Click for help troubleshooting');
                     icon = new Gio.ThemedIcon({ name: 'network-error' });
                     notif.set_default_action(
-                        `app.wiki('Troubleshooting#${error.name}")`
+                        `app.wiki('Troubleshooting#${error.name}')`
                     );
                     break;
 
@@ -592,7 +592,7 @@ const Service = GObject.registerClass({
                     body = _('Click for help troubleshooting');
                     icon = new Gio.ThemedIcon({ name: 'bluetooth-disabled-symbolic' });
                     notif.set_default_action(
-                        `app.wiki('Troubleshooting#${error.name}")`
+                        `app.wiki('Troubleshooting#${error.name}')`
                     );
                     notif.set_priority(Gio.NotificationPriority.NORMAL);
                     break;
@@ -603,7 +603,7 @@ const Service = GObject.registerClass({
                     body = _('Click for help troubleshooting');
                     icon = new Gio.ThemedIcon({ name: 'dialog-error' });
                     notif.set_default_action(
-                        `app.wiki('Troubleshooting#${error.name}")`
+                        `app.wiki('Troubleshooting#${error.name}')`
                     );
                     break;
 
@@ -651,7 +651,7 @@ const Service = GObject.registerClass({
                            _('Click for more information');
                     icon = new Gio.ThemedIcon({ name: 'preferences-desktop-display-symbolic' });
                     notif.set_default_action(
-                        `app.wiki('Troubleshooting#${error.name}")`
+                        `app.wiki('Troubleshooting#${error.name}')`
                     );
                     notif.set_priority(Gio.NotificationPriority.HIGH);
                     break;
