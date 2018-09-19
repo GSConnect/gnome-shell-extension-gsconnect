@@ -275,6 +275,8 @@ var Channel = class Channel {
      * @param {Device.Device} - The device to attach to
      */
     attach(device) {
+        this._queue = [];
+
         // Detach any existing channel
         if (device._channel !== null && device._channel !== this) {
             device._channel.cancellable.disconnect(device._channel._id);
@@ -421,15 +423,8 @@ var Channel = class Channel {
         );
     }
 
-    /**
-     * Send a packet to a device.
-     *
-     * See: https://github.com/KDE/kdeconnect-kde/blob/master/core/backends/lan/landevicelink.cpp#L92-L94
-     *
-     * @param {object} packet - An dictionary of packet data
-     */
-    send(packet) {
-        try {
+    _send(packet) {
+        return new Promise((resolve, reject) => {
             packet = new Packet(packet);
 
             this.output_stream.write_all_async(
@@ -440,18 +435,43 @@ var Channel = class Channel {
                     try {
                         stream.write_all_finish(res);
                         debug(packet, this.identity.body.deviceName);
+
+                        packet = this._queue.pop();
+                        resolve(packet ? this._send(packet) : true);
                     } catch (e) {
                         // Another operation is pending, re-queue the send()
                         if (e.code === Gio.IOErrorEnum.PENDING) {
                             this.send(packet);
                         } else {
-                            logError(e, this.identity.body.deviceName);
+                            reject(e);
                         }
                     }
                 }
             );
+        });
+    }
+
+    /**
+     * Send a packet to a device, queueing it if necessary
+     *
+     * See: https://github.com/KDE/kdeconnect-kde/blob/master/core/backends/lan/landevicelink.cpp#L92-L94
+     *
+     * @param {object} packet - An dictionary of packet data
+     */
+    async send(packet) {
+        try {
+            this._queue.push(packet);
+
+            if (this._queue.length === 1) {
+                while (this._queue[0]) {
+                    await this._send(this._queue[0]);
+                    this._queue.shift();
+                }
+            }
+
         } catch (e) {
-            logError(e, 'Malformed Packet');
+            debug(e);
+            this.close();
         }
     }
 }
