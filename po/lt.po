@@ -1,132 +1,137 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the org.gnome.Shell.Extensions.GSConnect package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-08-19 11:53+0200\n"
-"PO-Revision-Date: 2018-03-03 15:23+0100\n"
-"Last-Translator: Слободан Терзић  <slobodan.terzic@zoho.eu>\n"
+"PO-Revision-Date: 2018-09-01 00:27+0300\n"
 "Language-Team: \n"
-"Language: sr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n"
+"%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Poedit 2.0.6\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Last-Translator: Moo\n"
+"Language: lt\n"
 
 #. TRANSLATORS: Open a new SMS window
 #: src/extension.js:176 src/service/daemon.js:912 src/widgets/device.js:199
 msgid "Send SMS"
-msgstr "Пошаљи СМС"
+msgstr "Siųsti SMS"
 
 #. TRANSLATORS: eg. Locate Google Pixel
 #: src/extension.js:183 src/widgets/device.js:201
 #, javascript-format
 msgid "Locate %s"
-msgstr "Пронађи %s"
+msgstr "Nustatyti %s vietą"
 
 #. TRANSLATORS: Open the device's list of browseable directories
 #: src/extension.js:191 src/service/plugins/sftp.js:21
 #: src/widgets/device.js:203
 msgid "Browse Files"
-msgstr "Преглед фајлова"
+msgstr "Naršyti failus"
 
 #. TRANSLATORS: Open the file chooser for sending files/links
 #: src/extension.js:198 src/widgets/device.js:205
 msgid "Share File/URL"
-msgstr "Дели фајл/УРЛ"
+msgstr "Bendrinti failą/URL"
 
 #: src/extension.js:206 src/service/plugins/runcommand.js:20
 msgid "Run Commands"
-msgstr "Извршавање нареби"
+msgstr "Vykdyti komandas"
 
 #: src/extension.js:214 src/service/plugins/mousepad.js:20
 msgid "Remote Input"
-msgstr "Даљински унос"
+msgstr "Nuotolinė įvestis"
 
 #: src/extension.js:300
 msgid "Device is disconnected"
-msgstr "Уређај није повезан"
+msgstr "Įrenginys yra atsijungęs"
 
 #: src/extension.js:302
 msgid "Device is unpaired"
-msgstr "Уређај није упарен"
+msgstr "Įrenginys yra išporuotas"
 
 #: src/extension.js:304
 msgid "No plugins enabled"
-msgstr "Нема омогућених прикључака"
+msgstr "Nėra jokių įjungtų įskiepių"
 
 #. TRANSLATORS: eg. Failed to mount Google Pixel
 #: src/extension.js:385
 #, javascript-format
 msgid "Failed to mount %s"
-msgstr "Неуспело монтирање %s"
+msgstr "Nepavyko prijungti %s"
 
 #: src/extension.js:417
 msgid "Unmount"
-msgstr "Демонтирај"
+msgstr "Atjungti"
 
 #: src/extension.js:535
 msgid "Mobile Devices"
-msgstr "Мобилни уређаји"
+msgstr "Mobilieji įrenginiai"
 
 #: src/extension.js:550
 msgid "Mobile Settings"
-msgstr "Подешавање"
+msgstr "Mobiliųjų nustatymai"
 
 #: src/nautilus-gsconnect.py:88
 msgid "Send To Mobile Device"
-msgstr "Пошаљи на мобилни уређај"
+msgstr "Siųsti į mobilųjį įrenginį"
 
-# Leaving the name in original form for About dialog.
 #: src/prefs.js:51 src/service/daemon.js:211
 msgid "GSConnect"
 msgstr "GSConnect"
 
 #: src/prefs.js:60
 msgid "KDE Connect implementation with Gnome Shell integration"
-msgstr "Имплементација КДЕ Конекта уграђена у Гномову шкољку"
+msgstr "KDE Connect įgyvendinimas naudojant Gnome apvalkalo integraciją"
 
 #: src/prefs.js:67
 msgid "GSConnect Website"
-msgstr "Домаћа страница"
+msgstr "GSConnect internetinė svetainė"
 
 #: src/prefs.js:74
 msgid "Copyright © 2017 Andy Holmes"
-msgstr "Copyright © 2017 Andy Holmes"
+msgstr "Autorių teisės © 2017 Andy Holmes"
 
 #: src/prefs.js:81
 msgid "This program comes with absolutely no warranty."
-msgstr "Овај програм не доставља никакве гаранције."
+msgstr "Ši programa yra pateikiama absoliučiai be jokios garantijos."
 
 #: src/prefs.js:82
 msgid ""
 "See the <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html"
 "\">GNU General Public License, version 2 or later</a> for details."
 msgstr ""
-"Погледајте <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html"
-"\">ГНУову општу јавну лиценцу, верзије 2 или новију</a> за више детаља."
+"Išsamesnei informacijai, žiūrėkite <a href=\"https://www.gnu.org/licenses/"
+"old-licenses/gpl-2.0.html\">GNU Bendrąją Viešąją Licenciją, versiją 2 arba "
+"vėlesnę</a>."
 
 #: src/prefs.js:106
 msgid "Devices"
-msgstr "Уређаји"
+msgstr "Įrenginiai"
 
 #. Preferences Page
 #: src/prefs.js:110
 msgid "Preferences"
-msgstr "Поставке"
+msgstr "Nuostatos"
 
 #: src/prefs.js:112
 msgid "Appearance"
-msgstr "Изглед"
+msgstr "Išvaizda"
 
 #: src/prefs.js:119
 msgid "Extensions"
-msgstr "Проширења"
+msgstr "Plėtiniai"
 
 #: src/prefs.js:126 data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:39
 msgid "Web Browser Integration"
-msgstr "Уградња у веб прегледач"
+msgstr "Saityno naršyklės integracija"
 
 #: src/prefs.js:127
 #, javascript-format
@@ -134,49 +139,49 @@ msgid ""
 "Requires <a href=\"%s\">Chrome Extension</a> or <a href=\"%s\">Firefox Add-"
 "On</a>"
 msgstr ""
-"Захтева <a href=\"%s\">проширење Хрома</a> или <a href=\"%s\">додатак за "
-"Фајерфокс</a>"
+"Reikalauja <a href=\"%s\">Chrome plėtinio</a> arba <a href=\"%s\">Firefox "
+"priedo</a>"
 
 #: src/prefs.js:137
 msgid "About"
-msgstr "О програму"
+msgstr "Apie"
 
 #: src/service/daemon.js:66
 msgid "Select a Device"
-msgstr "Изаберите уређај"
+msgstr "Pasirinkti įrenginį"
 
 #: src/service/daemon.js:72 src/service/plugins/base.js:169
 #: src/service/plugins/notification.js:501 src/service/plugins/share.js:100
 #: src/service/plugins/share.js:331 src/service/plugins/share.js:480
 msgid "Cancel"
-msgstr "Откажи"
+msgstr "Atsisakyti"
 
 #: src/service/daemon.js:77
 msgid "Select"
-msgstr "Изаберите"
+msgstr "Pasirinkti"
 
 #: src/service/daemon.js:693
 msgid "Nautilus extensions changed"
-msgstr "Измењена су проширења Нутилуса"
+msgstr "Pasikeitė Nautilus plėtiniai"
 
 #: src/service/daemon.js:694
 msgid "Restart Nautilus to apply changes"
-msgstr "Поново покрените Наутилус да би применили измене"
+msgstr "Norėdami taikyti pakeitimus, paleiskite Nautilus iš naujo"
 
 #. TRANSLATORS: Notification button to restart Nautilus
 #: src/service/daemon.js:700
 msgid "Restart"
-msgstr "Поново покрени"
+msgstr "Paleisti iš naujo"
 
 #: src/service/daemon.js:927
 msgid "Dial Phone Number"
-msgstr ""
+msgstr "Rinkti telefono numerį"
 
 #. TRANSLATORS: eg. Pair Request from Google Pixel
 #: src/service/device.js:381
 #, javascript-format
 msgid "Pair Request from %s"
-msgstr "Захтев за упаривање од %s"
+msgstr "Suporavimo užklausa nuo %s"
 
 #. TRANSLATORS: Remote and local TLS Certificate fingerprint
 #. PLEASE KEEP NEWLINE CHARACTERS (\n)
@@ -197,119 +202,120 @@ msgid ""
 "Local Fingerprint:\n"
 "%s"
 msgstr ""
-"Отисак за %s:\n"
+"%s kontrolinis kodas:\n"
 "%s\n"
 "\n"
-"Локални отисак:\n"
+"Vietinis kontrolinis kodas:\n"
 "%s"
 
 #: src/service/device.js:403
 msgid "Reject"
-msgstr "Одбиј"
+msgstr "Atmesti"
 
 #: src/service/device.js:407
 msgid "Accept"
-msgstr "Прихвати"
+msgstr "Priimti"
 
 #: src/service/plugins/base.js:168
 msgid "Apply"
-msgstr "Примени"
+msgstr "Taikyti"
 
 #: src/service/plugins/battery.js:21
 msgid "Battery"
-msgstr "Батерија"
+msgstr "Baterija"
 
 #: src/service/plugins/battery.js:22
 msgid "Send and receive battery statistics"
-msgstr "Слање и пријем стања батерије"
+msgstr "Siųsti ir gauti baterijos statistiką"
 
 #. TRANSLATORS: Low Battery Warning
 #: src/service/plugins/battery.js:251
 msgid "Low Battery Warning"
-msgstr "Упозорење о скоро празној батерији"
+msgstr "Žemos baterijos įkrovos įspėjimas"
 
 #. TRANSLATORS: eg. Google Pixel's battery level is 15%
 #: src/service/plugins/battery.js:254
 #, javascript-format
 msgid "%s's battery level is %d%%"
-msgstr "Ниво батерије за %s је %d%%"
+msgstr "Įrenginio %s baterijos lygis yra %d%%"
 
 #: src/service/plugins/battery.js:260
 msgid "Locate"
-msgstr "Лоцирај"
+msgstr "Nustatyti vietą"
 
 #: src/service/plugins/clipboard.js:20
 msgid "Clipboard"
-msgstr "Остава"
+msgstr "Iškarpinė"
 
 #: src/service/plugins/clipboard.js:21
 msgid "Sync the clipboard between devices"
-msgstr "Синхронизација оставе између уређаја"
+msgstr "Sinchronizuoti iškarpinę tarp įrenginių"
 
 #: src/service/plugins/clipboard.js:43 src/service/plugins/mousepad.js:58
 msgid "Failed to get Gdk.Display"
-msgstr "Не моги да добавим get Gdk.Display"
+msgstr "Nepavyko gauti Gdk.Display"
 
 #: src/service/plugins/clipboard.js:50
 msgid "Failed to get Clipboard"
-msgstr "Не могу да добавим оставу"
+msgstr "Nepavyko gauti iškarpinės"
 
 #: src/service/plugins/findmyphone.js:21 src/service/plugins/findmyphone.js:55
 msgid "Locate Device"
-msgstr "Лоцирање уређаја"
+msgstr "Nustatyti įrenginio vietą"
 
 #: src/service/plugins/findmyphone.js:22
 msgid "Find a device by making it ring"
-msgstr "Проналажење уређаја уључивањем звона"
+msgstr "Rasti įrenginį priverčiant jį skambėti"
 
 #: src/service/plugins/findmyphone.js:56
 #, javascript-format
 msgid "%s asked to locate this device"
-msgstr "%s тражи овај уређај"
+msgstr "%s paprašė nustatyti šio įrenginio vietą"
 
 #: src/service/plugins/findmyphone.js:69
 msgid "Found"
-msgstr "Нађен"
+msgstr "Rastas"
 
 #: src/service/plugins/lock.js:20
 msgid "Screen Lock"
-msgstr "Закључавање екрана"
+msgstr "Ekrano užraktas"
 
 #: src/service/plugins/lock.js:21
 msgid "Lock and unlock devices"
-msgstr "Закључавање и откључавање уређаја"
+msgstr "Užrakinti ir atrakinti įrenginius"
 
 #: src/service/plugins/mousepad.js:21
 msgid "Control the mouse and keyboard remotely"
-msgstr "Удаљено управљање мишем и тастатуром"
+msgstr "Valdyti pelę ir klaviatūrą nuotoliniu būdu"
 
 #: src/service/plugins/mousepad.js:44
 msgid "Can't run in Wayland session"
-msgstr "Не ради у Вејланд сесији"
+msgstr "Nepavyksta paleisti Wayland seanse"
 
 #: src/service/plugins/mousepad.js:51
 msgid "Failed to initialize Atspi"
-msgstr "Неуспела иницијелизација Atspi"
+msgstr "Nepavyko inicijuoti Atspi"
 
 #: src/service/plugins/mousepad.js:69
 msgid "Cannot load Caribou virtual keyboard for Unicode support"
-msgstr "Не могу да учитам виртуелну тастатуру Карибу за Уникод подршку"
+msgstr ""
+"Nepavyksta įkelti Caribou virtualios klaviatūros, skirtos Unikodo palaikymui"
 
 #: src/service/plugins/mpris.js:19
 msgid "Media Player Control"
-msgstr "Управљање медијским плејерима"
+msgstr "Medijos leistuvės valdymas"
 
 #: src/service/plugins/mpris.js:20
 msgid "Control MPRIS2 enabled media players"
-msgstr "Управљање уређајима који подржавају МПРИС2"
+msgstr "Valdyti MPRIS2 įgalintas medijos leistuves"
 
 #: src/service/plugins/notification.js:22
 msgid "Notifications"
-msgstr "Обавештења"
+msgstr "Pranešimai"
 
 #: src/service/plugins/notification.js:23
 msgid "Sync notifications between devices"
-msgstr "Синхронизација обавештења између уређаја"
+msgstr "Sinchronizuoti pranešimus tarp įrenginių"
 
 #. Check if this is a missed call or SMS notification
 #. TRANSLATORS: This is specifically for matching missed call notifications on Android.
@@ -317,246 +323,246 @@ msgstr "Синхронизација обавештења између уређ�
 #: src/service/plugins/notification.js:92 src/service/plugins/telephony.js:199
 #: src/service/plugins/telephony.js:203 src/service/plugins/telephony.js:592
 msgid "Missed call"
-msgstr "Пропуштен позив"
+msgstr "Neatsakytas skambutis"
 
 #. TRANSLATORS: Missed Call
 #: src/service/plugins/notification.js:118 src/service/plugins/telephony.js:174
 msgid "Missed Call"
-msgstr "Пропуштен позив"
+msgstr "Neatsakytas skambutis"
 
 #. TRANSLATORS: eg. Missed call from John Smith on Google Pixel
 #: src/service/plugins/notification.js:120 src/service/plugins/telephony.js:177
 #, javascript-format
 msgid "Missed call from %s on %s"
-msgstr "Пропуштен позив од %s на %s"
+msgstr "Neatsakytas skambutis nuo %s įrenginyje %s"
 
 #. TRANSLATORS: Reply to a missed call by SMS
 #: src/service/plugins/notification.js:127 src/service/plugins/telephony.js:184
 msgid "Message"
-msgstr "Порука"
+msgstr "Žinutė"
 
 #: src/service/plugins/notification.js:499 src/service/plugins/share.js:481
 #: src/widgets/telephony.js:1072
 msgid "Send"
-msgstr "Пошаљи"
+msgstr "Siųsti"
 
 #: src/service/plugins/notification.js:567
 msgid "Applications"
-msgstr "Програми"
+msgstr "Programos"
 
 #: src/service/plugins/ping.js:20 src/service/plugins/ping.js:66
 msgid "Ping"
-msgstr "Пинг"
+msgstr "Ryšio patikrinimas"
 
 #: src/service/plugins/ping.js:21
 msgid "Send and receive pings"
-msgstr "Слање и пријем пингова"
+msgstr "Siųsti ir gauti ryšio patikrinimus"
 
 #. TRANSLATORS: An optional message accompanying a ping, rarely if ever used
 #. eg. Ping: A message sent with ping
 #: src/service/plugins/ping.js:64
 #, javascript-format
 msgid "Ping: %s"
-msgstr "Пинг: %s"
+msgstr "Ryšio patikrinimas: %s"
 
 #: src/service/plugins/runcommand.js:21
 msgid "Execute local commands remotely"
-msgstr "Удаљено извршавање локалних наредби"
+msgstr "Vykdyti vietines komandas nuotoliniu būdu"
 
 #. TRANSLATORS: Column header for RunCommand command list
 #: src/service/plugins/runcommand.js:175
 msgid "Name"
-msgstr "Име"
+msgstr "Pavadinimas"
 
 #. TRANSLATORS: Column header for RunCommand command list
 #: src/service/plugins/runcommand.js:191
 msgid "Command"
-msgstr "Наредба"
+msgstr "Komanda"
 
 #: src/service/plugins/sftp.js:22
 msgid "Mount and browse device filesystems"
-msgstr "Монтирање и преглед система фајлова на уређају"
+msgstr "Prijungti ir naršyti įrenginio failų sistemas"
 
 #: src/service/plugins/sftp.js:61
 msgid "SSHFS not installed"
-msgstr "ССХФС није инсталиран"
+msgstr "SSHFS neįdiegta"
 
 #: src/service/plugins/share.js:22
 msgid "Share"
-msgstr "Дељење"
+msgstr "Bendrinti"
 
 #: src/service/plugins/share.js:23
 msgid "Send and receive files and URLs"
-msgstr "Слање и пријем фалова и УРЛ-ова"
+msgstr "Siųsti ir gauti failus bei URL"
 
 #: src/service/plugins/share.js:87 src/service/plugins/share.js:318
 msgid "Starting Transfer"
-msgstr "Започињем пренос"
+msgstr "Pradedamas persiuntimas"
 
 #. TRANSLATORS: eg. Receiving "book.pdf" from Google Pixel
 #: src/service/plugins/share.js:90
 #, javascript-format
 msgid "Receiving \"%s\" from %s"
-msgstr "Примам „%s“ од %s"
+msgstr "Gaunama \"%s\" iš %s"
 
 #: src/service/plugins/share.js:115 src/service/plugins/share.js:346
 msgid "Transfer Successful"
-msgstr "Успешан пренос"
+msgstr "Persiuntimas sėkmingas"
 
 #. TRANSLATORS: eg. Received "book.pdf" from Google Pixel
 #: src/service/plugins/share.js:118
 #, javascript-format
 msgid "Received \"%s\" from %s"
-msgstr "Примих „%s“ од %s"
+msgstr "Gautas \"%s\" iš %s"
 
 #: src/service/plugins/share.js:128
 msgid "Open Folder"
-msgstr "Отвори фасциклу"
+msgstr "Atverti aplanką"
 
 #: src/service/plugins/share.js:135
 msgid "Open File"
-msgstr "Отвори фајл"
+msgstr "Atverti failą"
 
 #: src/service/plugins/share.js:157 src/service/plugins/share.js:374
 msgid "Transfer Failed"
-msgstr "Пренос није успео"
+msgstr "Persiuntimas nepavyko"
 
 #. TRANSLATORS: eg. Failed to receive "book.pdf" from Google Pixel: Some error
 #: src/service/plugins/share.js:160
 #, javascript-format
 msgid "Failed to receive \"%s\" from %s: %s"
-msgstr "Неуспешан пријем „%s“ од %s: %s"
+msgstr "Nepavyko gauti \"%s\" iš %s: %s"
 
 #: src/service/plugins/share.js:181 src/service/plugins/share.js:397
 msgid "Transfer Cancelled"
-msgstr "Пренос је отказан"
+msgstr "Persiuntimo atsisakyta"
 
 #. TRANSLATORS: eg. Cancelled transfer of "book.pdf" from Google Pixel
 #: src/service/plugins/share.js:184
 #, javascript-format
 msgid "Cancelled transfer of \"%s\" from %s"
-msgstr "Отказан пренос „%s“ од %s"
+msgstr "\"%s\" persiuntimo iš %s atsisakyta"
 
 #. TRANSLATORS: eg. Sending "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:321
 #, javascript-format
 msgid "Sending \"%s\" to %s"
-msgstr "Слање „%s“ за %s"
+msgstr "Siunčiama \"%s\" į %s"
 
 #. TRANSLATORS: eg. Send "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:349
 #, javascript-format
 msgid "Sent \"%s\" to %s"
-msgstr "Послах „%s“ за %s"
+msgstr "Išsiųsta \"%s\" į %s"
 
 #. TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel: Some error
 #: src/service/plugins/share.js:377
 #, javascript-format
 msgid "Failed to send \"%s\" to %s: %s"
-msgstr "Неуспело слање „%s“ за %s: %s"
+msgstr "Nepavyko išsiųsti \"%s\" į %s: %s"
 
 #. TRANSLATORS: eg. Cancelled transfer of "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:400
 #, javascript-format
 msgid "Cancelled transfer of \"%s\" to %s"
-msgstr "Отказано слање „%s“ за %s"
+msgstr "\"%s\" persiuntimo į %s atsisakyta"
 
 #. TRANSLATORS: eg. Send files to Google Pixel
 #: src/service/plugins/share.js:450
 #, javascript-format
 msgid "Send files to %s"
-msgstr "Пошаљи фајлове на %s"
+msgstr "Siųsti failus į %s"
 
 #. TRANSLATORS: eg. Send a link to Google Pixel
 #: src/service/plugins/share.js:469
 #, javascript-format
 msgid "Send a link to %s"
-msgstr "Пошаљи везе на %s"
+msgstr "Siųsti nuorodą į %s"
 
 #. TRANSLATORS: eg. Use a subdirectory named <b>Google Pixel<b>
 #: src/service/plugins/share.js:528
 #, javascript-format
 msgid "Use a subdirectory named <b>%s</b>"
-msgstr "Користи подфасциклу названу <b>%s</b>"
+msgstr "Naudoti pakatalogį, pavadinimu <b>%s</b>"
 
 #: src/service/plugins/telephony.js:35
 msgid "Telephony"
-msgstr "Телефонија"
+msgstr "Telefonija"
 
 #: src/service/plugins/telephony.js:36
 msgid "Call notification and SMS messaging"
-msgstr "Обавештења о позивима и СМС порукама"
+msgstr "Skambučių pranešimai ir SMS susirašinėjimas"
 
 #. TRANSLATORS: Incoming Call
 #: src/service/plugins/telephony.js:212
 msgid "Incoming Call"
-msgstr "Долазни позив"
+msgstr "Gaunamas skambutis"
 
 #. TRANSLATORS: eg. Incoming call from John Smith on Google Pixel
 #: src/service/plugins/telephony.js:215
 #, javascript-format
 msgid "Incoming call from %s on %s"
-msgstr "Долазни позив од %s на %s"
+msgstr "Gaunamas skambutis nuo %s, įrenginyje %s"
 
 #. TRANSLATORS: Silence an incoming call
 #: src/service/plugins/telephony.js:222 src/service/plugins/telephony.js:1054
 #: src/service/plugins/telephony.js:1078
 msgid "Mute"
-msgstr "Утишај"
+msgstr "Nutildyti"
 
 #. TRANSLATORS: Talking on the phone
 #: src/service/plugins/telephony.js:294
 msgid "Call In Progress"
-msgstr "Позив у току"
+msgstr "Einamasis skambutis"
 
 #. TRANSLATORS: eg. Call in progress with John Smith on Google Pixel
 #: src/service/plugins/telephony.js:297
 #, javascript-format
 msgid "Call in progress with %s on %s"
-msgstr "У току је разговор са %s на %s"
+msgstr "Einamasis skambutis su %s, įrenginyje %s"
 
 #: src/service/plugins/telephony.js:449 src/widgets/telephony.js:302
 msgid "Unknown Number"
-msgstr "Непознат број"
+msgstr "Nežinomas numeris"
 
 #: src/service/plugins/telephony.js:1041
 msgid "Incoming Calls"
-msgstr "Долазни позиви"
+msgstr "Gaunami skambučiai"
 
 #: src/service/plugins/telephony.js:1052 src/service/plugins/telephony.js:1076
 msgid "Nothing"
-msgstr "Ништа"
+msgstr "Nieko"
 
 #: src/service/plugins/telephony.js:1053 src/service/plugins/telephony.js:1077
 msgid "Lower"
-msgstr "Утишај"
+msgstr "Sumažinti"
 
 #: src/service/plugins/telephony.js:1061 src/service/plugins/telephony.js:1085
 #: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:143
 #: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:153
 msgid "System Volume"
-msgstr "Системска јачина"
+msgstr "Sistemos garsis"
 
 #: src/service/plugins/telephony.js:1065
 msgid "In Progress Calls"
-msgstr "Током текућих позива"
+msgstr "Einamieji skambučiai"
 
 #: src/service/plugins/telephony.js:1094 src/service/plugins/telephony.js:1099
 msgid "The <b>Media Player Control</b> plugin must be enabled"
-msgstr "Прикључак <b>Управљање медијским плејерима</b> мора бити омогућен"
+msgstr "Privalo būti įjungtas įskiepis <b>Medijos leistuvės valdymas</b>"
 
 #: src/service/plugins/telephony.js:1106 src/service/plugins/telephony.js:1109
 #: src/service/plugins/telephony.js:1112
 msgid "Gvc not available"
-msgstr "Gvc није доступан"
+msgstr "Gvc neprieinama"
 
 #: src/widgets/device.js:28
 msgid ""
 "Ensure that devices are on the same local network with ports 1716 to 1764 "
 "open for TCP and UDP connections."
 msgstr ""
-"Постарајте се да су уређаји на истој локалној мрежи и да су портови од 1716 "
-"до 1764 отворени за ТЦП и УДП везе."
+"Užtikrinkite, kad įrenginiai yra tame pačiame vietiniame tinkle ir TCP bei "
+"UDP ryšiams turi atvertus prievadus nuo 1716 iki 1764."
 
 #: src/widgets/device.js:30
 #, javascript-format
@@ -564,9 +570,8 @@ msgid ""
 "To connect an Android device, install the KDE Connect Android app from the "
 "<a href=\"%s\">Google Play Store</a> or <a href=\"%s\">F-Droid</a>."
 msgstr ""
-"Да би се повезали са Андроид уређајем, инсталирајте КДЕ Конект апликацију за "
-"Андроид из <a href=\"%s\">Гугл Плеј продавнице</a> или <a href=\"%s\">Ф-"
-"Дроида</a>."
+"Norėdami prijungti Android įrenginį, įdiekite KDE Connect Android programėlę "
+"iš <a href=\"%s\">Google Play Store</a> arba <a href=\"%s\">F-Droid</a>."
 
 #: src/widgets/device.js:35
 #, javascript-format
@@ -574,44 +579,45 @@ msgid ""
 "Please see the <a href=\"%s\">Wiki</a> for more help or <a href=\"%s\">open "
 "an issue</a> on Github to report a problem."
 msgstr ""
-"Погледајте <a href=\"%s\">вики</a> за додатну помоћ или <a href=\"%s"
-"\">пријавите проблем</a> на Гитхабу."
+"Išsamesnei informacijai, žiūrėkite <a href=\"%s\">Vikį</a> arba <a href=\"%s"
+"\">atverkite pranešimą apie klaidą</a>, norėdami Github svetainėje pranešti "
+"apie problemą."
 
 #: src/widgets/device.js:128
 #, javascript-format
 msgid "Error: %s"
-msgstr "Грешка: %s"
+msgstr "Klaida: %s"
 
 #. TRANSLATORS: Open the device menu
 #: src/widgets/device.js:197
 msgid "Open Menu"
-msgstr "Отвори мени"
+msgstr "Atverti meniu"
 
 #: src/widgets/device.js:243
 msgid "Refresh"
-msgstr "Освежи"
+msgstr "Įkelti iš naujo"
 
 #: src/widgets/device.js:317
 msgid "Connecting Devices"
-msgstr "Повезивање уређаја"
+msgstr "Įrenginių prijungimas"
 
 #. TRANSLATORS: eg. Reconnect <b>Google Pixel</b>
 #: src/widgets/device.js:436 src/widgets/shell.js:599
 #, javascript-format
 msgid "Reconnect <b>%s</b>"
-msgstr "Поново повежи <b>%s</b>"
+msgstr "Prijungti iš naujo <b>%s</b>"
 
 #. TRANSLATORS: eg. Unpair <b>Google Pixel</b>
 #: src/widgets/device.js:477
 #, javascript-format
 msgid "Unpair <b>%s</b>"
-msgstr "Распари <b>%s</b>"
+msgstr "Išporuoti <b>%s</b>"
 
 #. TRANSLATORS: eg. Pair <b>Google Pixel</b>
 #: src/widgets/device.js:486 src/widgets/shell.js:609
 #, javascript-format
 msgid "Pair <b>%s</b>"
-msgstr "Упари <b>%s</b>"
+msgstr "Suporuoti <b>%s</b>"
 
 #. TRANSLATORS: Remote and local TLS Certificate fingerprint
 #. PLEASE KEEP NEWLINE CHARACTERS (\n)
@@ -632,283 +638,275 @@ msgid ""
 "<b>Local Fingerprint:</b>\n"
 "%s"
 msgstr ""
-"<b>Отисак за %s:</b>\n"
+"<b>%s kontrolinis kodas:</b>\n"
 "%s\n"
 "\n"
-"<b>Локални отисак:</b>\n"
+"<b>Vietinis kontrolinis kodas:</b>\n"
 "%s"
 
 #. Plugins
 #: src/widgets/device.js:506
 msgid "Plugins"
-msgstr "Прикључци"
+msgstr "Įskiepiai"
 
 #. Keyboard Shortcuts
 #: src/widgets/device.js:509
 msgid "Keyboard Shortcuts"
-msgstr "Пречице тастатуре"
+msgstr "Klaviatūros trumpiniai"
 
 #: src/widgets/device.js:519
 msgid "Desktop"
-msgstr "Радна површ"
+msgstr "Stalinis kompiuteris"
 
 #: src/widgets/device.js:525
 msgid "Laptop"
-msgstr "Лаптоп"
+msgstr "Nešiojamas kompiuteris"
 
 #: src/widgets/device.js:531
 msgid "Smartphone"
-msgstr "Паметни телефон"
+msgstr "Išmanusis telefonas"
 
 #: src/widgets/device.js:537
 msgid "Tablet"
-msgstr "Таблет"
+msgstr "Planšetė"
 
 #: src/widgets/device.js:543
 msgid "Unknown"
-msgstr "Непознато"
+msgstr "Nežinoma"
 
 #: src/widgets/keybindings.js:170
 msgid "Keyboard Shortcut Unavailable"
-msgstr "Пречица тастатуре није доступна"
+msgstr "Klaviatūros trumpinys neprieinamas"
 
 #: src/widgets/keybindings.js:171
 msgid ""
 "The requested keyboard shortcut is already in use and can't be overridden."
 msgstr ""
-"Захтевана пречица тастатуре је већ у употреби и не може бити поново додељена."
+"Užklaustas klaviatūros trumpinys jau yra naudojamas ir negali būti "
+"nustelbtas."
 
 #. TRANSLATORS: Fully Charged
 #: src/widgets/shell.js:549
 msgid "Fully Charged"
-msgstr "Потпуно пуна"
+msgstr "Pilnai įkrauta"
 
 #. TRANSLATORS: <percentage> (Estimating…)
 #: src/widgets/shell.js:552
 #, javascript-format
 msgid "%d%% (Estimating…)"
-msgstr "%d%% (Процењујем…)"
+msgstr "%d%% (Apskaičiuojama…)"
 
 #. TRANSLATORS: <percentage> (<hours>:<minutes> Until Full)
 #: src/widgets/shell.js:561
 #, javascript-format
 msgid "%d%% (%d∶%02d Until Full)"
-msgstr "%d%% (%d∶%02d до пуне)"
+msgstr "%d%% (%d∶%02d iki pilnos)"
 
 #. TRANSLATORS: <percentage> (<hours>:<minutes> Remaining)
 #: src/widgets/shell.js:568
 #, javascript-format
 msgid "%d%% (%d∶%02d Remaining)"
-msgstr "%d%% (%d∶%02d преостаје)"
+msgstr "%d%% (Liko %d∶%02d)"
 
 #: src/widgets/shell.js:651
 #, javascript-format
 msgid "Configure <b>%s</b>"
-msgstr "Подеси <b>%s</b>"
+msgstr "Konfigūruoti <b>%s</b>"
 
 #: src/widgets/telephony.js:231
 msgid "Add people to start a conversation"
-msgstr "Додајте особе да започнете разговор"
+msgstr "Norėdami pradėti pokalbį, pridėkite žmones"
 
 #: src/widgets/telephony.js:264 src/widgets/telephony.js:285
 #: src/widgets/telephony.js:340
 msgid "Unknown Contact"
-msgstr "Непознат контакт"
+msgstr "Nežinomas adresatas"
 
 #: src/widgets/telephony.js:334
 #, javascript-format
 msgid "Send to %s"
-msgstr "Пошаљи на %s"
+msgstr "Siųsti %s"
 
 #: src/widgets/telephony.js:343
 #, javascript-format
 msgid "Send to %d"
-msgstr "Пошаљи на %d"
+msgstr "Siųsti %d"
 
 #. TRANSLATORS: A phone number type
 #: src/widgets/telephony.js:390 src/widgets/telephony.js:407
 msgid "Other"
-msgstr "Друго"
+msgstr "Kita"
 
 #. TRANSLATORS: A phone number type
 #: src/widgets/telephony.js:394
 msgid "Fax"
-msgstr "Факс"
+msgstr "Faksas"
 
 #. TRANSLATORS: A phone number type
 #: src/widgets/telephony.js:398
 msgid "Work"
-msgstr "Посао"
+msgstr "Darbo"
 
 #. TRANSLATORS: A phone number type
 #: src/widgets/telephony.js:401
 msgid "Mobile"
-msgstr "Мобилни"
+msgstr "Mobilusis"
 
 #. TRANSLATORS: A phone number type
 #: src/widgets/telephony.js:404
 msgid "Home"
-msgstr "Кућни"
+msgstr "Namų"
 
 #: src/widgets/telephony.js:507
 msgid "Type an SMS message"
-msgstr "Унесите СМС поруку"
+msgstr "Rašykite SMS žinutę"
 
 #: src/widgets/telephony.js:684
 msgid "SMS Conversation"
-msgstr "СМС разговор"
+msgstr "SMS pokalbis"
 
 #. TRANSLATORS: Tooltip for a button to add/remove people from a conversation
 #: src/widgets/telephony.js:706
 msgid "Add and remove people"
-msgstr "Додавање и уклањање особа"
+msgstr "Pridėti ir šalinti žmones"
 
 #: src/widgets/telephony.js:726 src/widgets/telephony.js:727
 msgid "Type a phone number or name"
-msgstr "Унеите број телефона или име"
+msgstr "Įrašykite telefono numerį ar vardą"
 
 #. TRANSLATORS: eg. <b>Google Pixel</b> is disconnected
 #: src/widgets/telephony.js:752
 #, javascript-format
 msgid "<b>%s</b> is disconnected"
-msgstr "%s је развезан"
+msgstr "<b>%s</b> yra atjungtas"
 
 #: src/widgets/telephony.js:838 src/widgets/telephony.js:1127
 #, javascript-format
 msgid "And one other person"
 msgid_plural "And %d other people"
-msgstr[0] "И још %d особа"
-msgstr[1] "И још %d особе"
-msgstr[2] "И још %d особа"
+msgstr[0] "ir dar %d žmogus"
+msgstr[1] "ir dar %d žmonės"
+msgstr[2] "ir dar %d žmonių"
 
 #. TRANSLATORS: eg. SMS Conversation with John, Paul, George, Ringo
 #: src/widgets/telephony.js:853 src/widgets/telephony.js:1138
 #, javascript-format
 msgid "SMS Conversation with %s"
-msgstr "СМС разговор са %s"
+msgstr "SMS pokalbis su %s"
 
 #: src/widgets/telephony.js:858
 msgid "New SMS Conversation"
-msgstr "Нови СМС разговор"
+msgstr "Naujas SMS pokalbis"
 
 #: src/widgets/telephony.js:1010 src/widgets/telephony.js:1022
 msgid "Share Link"
-msgstr "Подели везу"
+msgstr "Bendrinti nuorodą"
 
 #: src/widgets/telephony.js:1060
 msgid "New Message"
-msgstr "Нова порука"
+msgstr "Nauja žinutė"
 
 #: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:6
 msgid "Debug Mode"
-msgstr "Режим за исправљање грешака"
+msgstr "Derinimo veiksena"
 
 #: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:7
 msgid "Enable debug features and logging"
-msgstr "Укључује исправљање грешака и дневник"
+msgstr "Įjungti derinimo ypatybes ir registravimą"
 
 #: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:11
 msgid "Show Indicators"
-msgstr "Индикатори"
+msgstr "Rodyti indikatorius"
 
 #: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:12
 msgid "Display devices in the panel instead of the User Menu"
-msgstr "Приказ уређаја на панелу уместо у корисничком менију"
+msgstr "Vietoj naudotojų meniu, rodyti įrenginius skydelyje"
 
 #: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:16
 msgid "Show Offline"
-msgstr "Уређаји ван везе"
+msgstr "Rodyti atsijungusius"
 
 #: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:17
 msgid "Display devices even if offline"
-msgstr "Приказ уређаја чак и кад су ван везе"
+msgstr "Rodyti įrenginius net atsijungus"
 
 #: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:21
 msgid "Show Unpaired"
-msgstr "Неупарени уређаји"
+msgstr "Rodyti nesuporuotus"
 
 #: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:22
 msgid "Display devices even if unpaired"
-msgstr "Приказ уређаја чак и ако нису упарени"
+msgstr "Rodyti įrenginius net nesuporavus"
 
 #: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:26
 msgid "Show Battery Icon"
-msgstr "Икона батерије"
+msgstr "Rodyti baterijos piktogramą"
 
 #: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:27
 msgid "Display an icon with percentage in the Device Menu"
-msgstr "Приказ иконе са процентом стања у менију уређаја"
+msgstr "Įrenginio meniu rodyti piktogramą su procentine reikšme"
 
 #: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:34
 msgid "Nautilus Integration"
-msgstr "Уграђивање у Наутилус"
+msgstr "Nautilus integracija"
 
 #: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:35
 msgid "Send files from the file browser context menu"
-msgstr "Слање фајлова из контекстонг менија управника фајлова"
+msgstr "Siųsti failus iš failų naršyklės kontekstinio meniu"
 
 #: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:40
 msgid "Share links with devices and contacts from the web browser"
-msgstr "Дељење веза са уређајима и контактима путем веб прегледача"
+msgstr "Bendrinti nuorodas iš saityno naršyklės su įrenginiais ir adresatais"
 
 #: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:44
 msgid "Public Name"
-msgstr "Јавно име"
+msgstr "Viešasis pavadinimas"
 
 #: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:45
 msgid "The name visible to other devices"
-msgstr "Име видљиво другим уређајима"
+msgstr "Kitiems įrenginiams matomas pavadinimas"
 
 #: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:80
 msgid "Receive Statistics"
-msgstr "Пријем статистике"
+msgstr "Gauti statistiką"
 
 #: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:85
 msgid "Send Statistics"
-msgstr "Слање статистике"
+msgstr "Siųsti statistiką"
 
 #: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:92
 msgid "Receive Content"
-msgstr "Пријем садржаја"
+msgstr "Gauti turinį"
 
 #: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:97
 msgid "Send Content"
-msgstr "Слање садржаја"
+msgstr "Siųsti turinį"
 
 #: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:104
 msgid "Receive Notifications"
-msgstr "Пријем обавештења"
+msgstr "Gauti pranešimus"
 
 #: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:109
 msgid "Send Notifications"
-msgstr "Слање обавештења"
+msgstr "Siųsti pranešimus"
 
 #: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:124
 msgid "Automatically Mount"
-msgstr "Аутоматско монтирање"
+msgstr "Automatiškai prijungti"
 
 #: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:131
 msgid "Download Directory"
-msgstr "Пријемна фасцикла"
+msgstr "Atsiuntimo katalogas"
 
 #: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:136
 msgid "Use Subdirectory"
-msgstr "Користи подфасциклу"
+msgstr "Naudoti pakatalogį"
 
 #: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:148
 #: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:163
 msgid "Pause Media"
-msgstr "Паузирај медије"
+msgstr "Pristabdyti mediją"
 
 #: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:158
 msgid "Mute Microphone"
-msgstr "Утишај микрофон"
-
-#~ msgid "True"
-#~ msgstr "Тачно"
-
-#~ msgid "False"
-#~ msgstr "Нетачно"
-
-#~ msgid "Sync Icons"
-#~ msgstr "Синхронизација икона"
+msgstr "Nutildyti mikrofoną"
