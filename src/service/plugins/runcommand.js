@@ -14,7 +14,7 @@ var Metadata = {
     incomingCapabilities: ['kdeconnect.runcommand', 'kdeconnect.runcommand.request'],
     outgoingCapabilities: ['kdeconnect.runcommand', 'kdeconnect.runcommand.request'],
     actions: {
-        executeCommand: {
+        commands: {
             label: _('Commands'),
             icon_name: 'system-run-symbolic',
 
@@ -58,6 +58,15 @@ var Plugin = GObject.registerClass({
         // when the device is offline.
         this._remote_commands = {};
         this.cacheProperties(['_remote_commands']);
+
+        // Define executeCommand here so since plugin actions are all stateful
+        let executeCommand = new Gio.SimpleAction({
+            name: 'executeCommand',
+            parameter_type: new GLib.VariantType('s')
+        });
+        executeCommand.connect('activate', this._activateAction.bind(this));
+        this.device.add_action(executeCommand);
+        this._gactions.push(executeCommand);
     }
 
     get remote_commands() {
@@ -130,7 +139,7 @@ var Plugin = GObject.registerClass({
         let commandEntries = Object.entries(this.remote_commands);
 
         // If there are no commands, hide the menu by disabling the action
-        this.device.lookup_action('executeCommand').enabled = (commandEntries.length > 0);
+        this.device.lookup_action('commands').enabled = (commandEntries.length > 0);
 
         // Commands Submenu
         let submenu = new Gio.Menu();
@@ -151,7 +160,7 @@ var Plugin = GObject.registerClass({
 
         // Commands Item
         let item = new Gio.MenuItem();
-        item.set_detailed_action('device.executeCommand::menu');
+        item.set_detailed_action('device.commands::menu');
         item.set_attribute_value(
             'hidden-when',
             new GLib.Variant('s', 'action-disabled')
@@ -163,8 +172,13 @@ var Plugin = GObject.registerClass({
         item.set_submenu(submenu);
 
         // If the submenu item is already present it will be replaced
-        this.device.menu.replace_action('executeCommand', item);
+        this.device.menu.replace_action('commands', item);
     }
+
+    /**
+     * Placeholder function for command action
+     */
+    commands() {}
 
     /**
      * Send a request to execute the remote command with the UUID @key
