@@ -41,6 +41,14 @@ var Metadata = {
             incoming: ['kdeconnect.telephony'],
             outgoing: ['kdeconnect.sms.request']
         },
+        uriSms: {
+            label: _('New SMS (URI)'),
+            icon_name: 'sms-symbolic',
+
+            parameter_type: new GLib.VariantType('s'),
+            incoming: ['kdeconnect.telephony'],
+            outgoing: ['kdeconnect.sms.request']
+        },
         replySms: {
             label: _('Reply SMS'),
             icon_name: 'sms-symbolic',
