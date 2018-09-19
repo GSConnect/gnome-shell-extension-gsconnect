@@ -758,12 +758,12 @@ const Service = GObject.registerClass({
         // Load cached devices
         let cached = gsconnect.settings.get_strv('devices');
         log(`Loading ${cached.length} device(s) from cache`);
-        cached.map(id => this._ensureDevice({
-            body: {
-                deviceId: id,
-                deviceName: 'cached device'
-            }
-        }));
+        cached.map(id => {
+            let device = new Device.Device({ body: { deviceId: id } });
+            this._devices.set(device.id, device);
+            device.loadPlugins();
+        });
+        this.notify('devices');
 
         // Lan.ChannelService
         try {
