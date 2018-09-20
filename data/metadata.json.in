@@ -6,7 +6,7 @@
 "version": "@VERSION@",
 "shell-version": [ "3.28", "3.30" ],
 "url": "https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki",
-"libdir": "@LIBDIR@",
+"libdir": "@GNOME_SHELL_LIBDIR@",
 "localedir": "@LOCALEDIR@",
 "gschemadir": "@GSCHEMADIR@"
 }

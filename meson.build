@@ -12,10 +12,26 @@ extuuid = 'gsconnect@andyholmes.github.io'
 extdatadir = join_paths(datadir, 'gnome-shell', 'extensions', extuuid)
 gschemadir = join_paths(datadir, 'glib-2.0', 'schemas')
 
+# Gnome Shell LIBDIR
+if get_option('gnome_shell_libdir') != ''
+  gnome_shell_libdir = get_option('gnome_shell_libdir')
+else
+  gnome_shell_dir = libdir
+endif
+
+# Mozilla LIBDIR
+if get_option('mozilla_libdir') != ''
+  mozilla_libdir = get_option('mozilla_libdir')
+else
+  mozilla_dir = libdir
+endif
+
 # Configuration
 extconfig = configuration_data()
 extconfig.set('VERSION', meson.project_version())
 extconfig.set('LIBDIR', libdir)
+extconfig.set('GNOME_SHELL_LIBDIR', gnome_shell_libdir)
+extconfig.set('MOZILLA_LIBDIR', mozilla_libdir)
 extconfig.set('LOCALEDIR', localedir)
 extconfig.set('EXTDATADIR', extdatadir)
 extconfig.set('GSCHEMADIR', gschemadir)
@@ -103,7 +119,7 @@ if get_option('webextension')
     input: 'data/org.gnome.shell.extensions.gsconnect.json-mozilla',
     output: 'org.gnome.shell.extensions.gsconnect.json',
     configuration: extconfig,
-    install_dir: join_paths(libdir, 'mozilla', 'native-messaging-hosts')
+    install_dir: join_paths(mozilla_libdir, 'mozilla', 'native-messaging-hosts')
   )
 endif
 
