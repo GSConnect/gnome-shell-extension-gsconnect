@@ -138,7 +138,7 @@ gsconnect.get_resource = function(rel_path) {
     ).toArray();
 
     if (array instanceof Uint8Array) {
-        array = imports.byteArray.toString(data);
+        array = imports.byteArray.toString(array);
     } else {
         array = array.toString();
     }
