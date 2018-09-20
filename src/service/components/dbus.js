@@ -482,6 +482,7 @@ function _proxyInvoker(method, ...argv) {
                     resolve((res) ? res.deep_unpack() : []);
                 }
             } catch (e) {
+                e.stack = `${method.name}@${this.g_object_path}\n${e.stack}`;
                 reject(e);
             }
         });
