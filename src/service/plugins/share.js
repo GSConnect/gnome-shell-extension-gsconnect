@@ -420,7 +420,17 @@ var FileChooserDialog = GObject.registerClass({
 
     _onUriButtonToggled(button) {
         let header = this.get_header_bar();
-        header.set_custom_title(button.active ? this._uriEntry : null);
+
+        if (button.active) {
+            header.set_custom_title(this._uriEntry);
+            this.set_response_sensitive(Gtk.ResponseType.OK, true);
+        } else {
+            header.set_custom_title(null);
+            this.set_response_sensitive(
+                Gtk.ResponseType.OK,
+                this.get_uris().length > 1
+            );
+        }
     }
 
     _sendLink(widget) {
@@ -432,7 +442,7 @@ var FileChooserDialog = GObject.registerClass({
     vfunc_response(response_id) {
         if (response_id === Gtk.ResponseType.OK) {
             this.get_uris().map(uri => {
-                let parameter = new GLib.Variant('s', uri.toString());
+                let parameter = new GLib.Variant('s', uri);
                 this.device.activate_action('shareFile', parameter);
             });
         } else if (response_id === 1) {
