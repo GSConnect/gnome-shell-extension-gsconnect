@@ -54,8 +54,6 @@ var Store = GObject.registerClass({
 
                     if (contents instanceof Uint8Array) {
                         contents = imports.byteArray.toString(contents);
-                    } else {
-                        contents = contents.toString();
                     }
 
                     this._contacts = JSON.parse(contents);

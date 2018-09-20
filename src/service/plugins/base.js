@@ -204,7 +204,12 @@ var Plugin = GObject.registerClass({
             this._cacheFile.load_contents_async(null, (file, res) => {
                 try {
                     let cache = file.load_contents_finish(res)[1];
-                    cache = JSON.parse(cache);
+
+                    if (cache instanceof Uint8Array) {
+                        cache = imports.byteArray.toString(cache);
+                    }
+
+                    JSON.parse(cache);
 
                     for (let name in this._cacheProperties) {
                         if (typeof this[name] === typeof cache[name]) {

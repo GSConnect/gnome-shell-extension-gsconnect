@@ -78,43 +78,48 @@ var NativeMessagingHost = GObject.registerClass({
             gsconnect.app_path,
             null,
             null,
-            this._setupObjectManager.bind(this)
+            this._init_async.bind(this)
         );
 
         this.send({ type: 'connected', data: true });
     }
 
-    _setupObjectManager(obj, res) {
-        this.manager = Gio.DBusObjectManagerClient.new_finish(res);
+    _init_async(obj, res) {
+        try {
+            this.manager = Gio.DBusObjectManagerClient.new_finish(res);
 
-        // Add currently managed devices
-        for (let object of this.manager.get_objects()) {
-            for (let iface of object.get_interfaces()) {
-                this._onInterfaceAdded(this.manager, object, iface);
+            // Add currently managed devices
+            for (let object of this.manager.get_objects()) {
+                for (let iface of object.get_interfaces()) {
+                    this._onInterfaceAdded(this.manager, object, iface);
+                }
             }
+
+            // Watch for new and removed devices
+            this.manager.connect(
+                'interface-added',
+                this._onInterfaceAdded.bind(this)
+            );
+            this.manager.connect(
+                'interface-removed',
+                this._onInterfaceRemoved.bind(this)
+            );
+
+            // Watch for device property changes
+            this.manager.connect(
+                'interface-proxy-properties-changed',
+                this.sendDeviceList.bind(this)
+            );
+
+            // Watch for service restarts
+            this.manager.connect(
+                'notify::name-owner',
+                this.sendDeviceList.bind(this)
+            );
+        } catch (e) {
+            logError(e);
+            this.quit();
         }
-
-        // Watch for new and removed devices
-        this.manager.connect(
-            'interface-added',
-            this._onInterfaceAdded.bind(this)
-        );
-        this.manager.connect(
-            'interface-removed',
-            this._onInterfaceRemoved.bind(this)
-        );
-
-        // Watch for device property changes
-        this.manager.connect(
-            'interface-proxy-properties-changed',
-            this.sendDeviceList.bind(this)
-        );
-
-        // Watch for service restarts
-        this.manager.connect(
-            'notify::name-owner',
-            this.sendDeviceList.bind(this)
-        );
     }
 
     receive() {
@@ -122,7 +127,12 @@ var NativeMessagingHost = GObject.registerClass({
 
         try {
             let length = this.stdin.read_int32(null);
-            message = this.stdin.read_bytes(length, null).toArray().toString();
+            message = this.stdin.read_bytes(length, null).toArray();
+
+            if (message instanceof Uint8Array) {
+                message = imports.byteArray.toString(message);
+            }
+
             message = JSON.parse(message);
         } catch (e) {
             logError(e);

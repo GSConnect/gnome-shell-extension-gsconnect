@@ -175,10 +175,13 @@ const Service = GObject.registerClass({
     get type() {
         if (this._type === undefined) {
             try {
-                let type = Number(
-                    GLib.file_get_contents('/sys/class/dmi/id/chassis_type')[1]
-                );
+                let type = GLib.file_get_contents('/sys/class/dmi/id/chassis_type')[1];
 
+                if (type instanceof Uint8Array) {
+                    type = imports.byteArray.toString(type);
+                }
+
+                type = Number(type);
                 this._type = [8, 9, 10, 14].includes(type) ? 'laptop' : 'desktop';
             } catch (e) {
                 this._type = 'desktop';

@@ -23,7 +23,15 @@ String.prototype.format = Format.format;
 gsconnect.app_id = 'org.gnome.Shell.Extensions.GSConnect';
 gsconnect.app_path = '/org/gnome/Shell/Extensions/GSConnect';
 gsconnect.is_local = gsconnect.extdatadir.startsWith(GLib.get_user_data_dir());
-gsconnect.metadata = JSON.parse(GLib.file_get_contents(gsconnect.extdatadir + '/metadata.json')[1]);
+gsconnect.metadata = (() => {
+    let data = GLib.file_get_contents(gsconnect.extdatadir + '/metadata.json')[1];
+
+    if (data instanceof Uint8Array) {
+        data = imports.byteArray.toString(data);
+    }
+
+    return JSON.parse(data);
+})()
 
 
 /**
