@@ -101,7 +101,9 @@ var Plugin = GObject.registerClass({
             this.connected();
         }
 
-        this._handleCommandList(this.remote_commands);
+        if (this.device.get_incoming_supported('runcommand.request')) {
+            this._handleCommandList(this.remote_commands);
+        }
     }
 
     /**
