@@ -11,7 +11,7 @@ const DBus = imports.service.components.dbus;
 /**
  * org.bluez Interfaces
  */
-var BluezNode = Gio.DBusNodeInfo.new_for_xml(`
+const BluezNode = Gio.DBusNodeInfo.new_for_xml(`
 <node>
   <interface name="org.bluez.ProfileManager1">
     <method name="RegisterProfile">
@@ -90,11 +90,7 @@ const ProfileManager1Proxy = DBus.makeInterfaceProxy(PROFILE_MANAGER_INFO);
  * Service Discovery Protocol Record template and Service UUID
  */
 const SERVICE_UUID = '185f3df4-3268-4e3f-9fca-d4d5059915bd';
-
-const SDP_TEMPLATE = Gio.resources_lookup_data(
-    gsconnect.app_path + '/' + gsconnect.app_id + '.sdp.xml',
-    Gio.ResourceLookupFlags.NONE
-).toArray().toString();
+const SDP_TEMPLATE = gsconnect.get_resource(`${gsconnect.app_id}.sdp.xml`);
 
 
 function makeSdpRecord(uuid) {

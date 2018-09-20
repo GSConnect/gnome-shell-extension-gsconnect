@@ -123,11 +123,19 @@ Gio.Resource.load(
     GLib.build_filenamev([gsconnect.extdatadir, `${gsconnect.app_id}.gresource`])
 )._register();
 
-gsconnect.get_resource = function(path) {
-    return Gio.resources_lookup_data(
-        GLib.build_filenamev([gsconnect.app_path, path]),
+gsconnect.get_resource = function(rel_path) {
+    let array = Gio.resources_lookup_data(
+        GLib.build_filenamev([gsconnect.app_path, rel_path]),
         Gio.ResourceLookupFlags.NONE
-    ).toArray().toString().replace('@EXTDATADIR@', gsconnect.extdatadir);
+    ).toArray();
+
+    if (array instanceof Uint8Array) {
+        array = imports.byteArray.toString(data);
+    } else {
+        array = array.toString();
+    }
+
+    return array.replace('@EXTDATADIR@', gsconnect.extdatadir);
 };
 
 
