@@ -42,26 +42,6 @@ run_target(
     ]
 )
 
-# DEB targets for system extension builds
-run_target(
-    'make-deb',
-    command: [
-        find_program('env'),
-        'VERSION=' + meson.project_version(),
-        'INSTALL=no',
-        'meson/mkdeb.sh'
-    ]
-)
-run_target(
-    'install-deb',
-    command: [
-        find_program('env'),
-        'VERSION=' + meson.project_version(),
-        'INSTALL=yes',
-        'meson/mkdeb.sh'
-    ]
-)
-
 # Extension Source
 install_subdir(
   'src',
