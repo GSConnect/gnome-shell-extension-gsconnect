@@ -6,6 +6,7 @@ import json
 import os.path
 import re
 import sys
+import uuid
 
 import gi
 gi.require_version('Folks', '0.6')
@@ -333,7 +334,7 @@ class Aggregator(object):
         self.loop = loop
         self.action = action
 
-        self.cache_dir = os.path.expanduser('~/.cache/gsconnect/')
+        self.cache_dir = os.path.expanduser('~/.cache/gsconnect/_contacts')
         self.cache_path = os.path.join('contacts.json')
 
         self._individuals = {}
@@ -375,9 +376,11 @@ class Aggregator(object):
                 if not len(folk.phone_numbers):
                     continue
 
+                folk_id = folk.id or str(uuid.uuid4())
+
                 # Add the contact
-                contacts[folk.id] = {
-                    'id': folk.id or None,
+                contacts[folk_id] = {
+                    'id': folk_id,
                     'name': folk.display_name,
                     'numbers': folk.phone_numbers,
                     'origin': 'folks'
@@ -386,15 +389,14 @@ class Aggregator(object):
                 # Avatar
                 if folk.avatar != None:
                     if hasattr(folk.avatar, 'get_file'):
-                        contacts[folk.id]['avatar'] = folk.avatar.get_file().get_path()
+                        contacts[folk_id]['avatar'] = folk.avatar.get_file().get_path()
                     elif hasattr(avatar, 'get_bytes'):
-                        folk_id = folk.id or GLib.uuid_string_random()
                         path = os.path.join(self.cache_dir, folk_id + '.jpeg')
 
                         with open(path, 'wb') as fobj:
                             fobj.write(folk.avatar.get_bytes().get_data())
 
-                        contacts[folk.id]['avatar'] = path
+                        contacts[folk_id]['avatar'] = path
             except:
                 pass
 
