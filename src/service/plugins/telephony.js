@@ -520,9 +520,9 @@ var Plugin = GObject.registerClass({
         }
 
         // Try to update the conversation in time to open the window
-        if (this.conversations.hasOwnProperty(packet.body.phoneNumber)) {
+        if (this.conversations.hasOwnProperty(message.address)) {
             this.requestConversation(
-                this.conversations[packet.body.phoneNumber][0].thread_id
+                this.conversations[message.address][0].thread_id
             );
         } else {
             this.requestConversations();

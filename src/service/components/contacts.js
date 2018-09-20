@@ -51,6 +51,13 @@ var Store = GObject.registerClass({
             this._cacheFile.load_contents_async(null, (file, res) => {
                 try {
                     let contents = file.load_contents_finish(res)[1];
+
+                    if (contents instanceof Uint8Array) {
+                        contents = imports.byteArray.toString(contents);
+                    } else {
+                        contents = contents.toString();
+                    }
+
                     this._contacts = JSON.parse(contents);
                 } catch (e) {
                     this._contacts = {};
@@ -128,8 +135,8 @@ var Store = GObject.registerClass({
             } else {
                 let path = GLib.build_filenamev([CACHE_DIR, `${id}.jpeg`]);
 
-                Gio.File.new_for_path(path).replace_contents_async(
-                    contents,
+                Gio.File.new_for_path(path).replace_contents_bytes_async(
+                    new GLib.Bytes(contents),
                     null,
                     false,
                     Gio.FileCreateFlags.REPLACE_DESTINATION,
@@ -145,7 +152,6 @@ var Store = GObject.registerClass({
                         }
                     }
                 );
-
             }
         });
     }
