@@ -700,7 +700,9 @@ const Service = GObject.registerClass({
     }
 
     vfunc_activate() {
-        this.broadcast();
+        // TODO: this causes problems right now because the bluetooth service
+        // clobbers open TCP channels sometimes, and this gets called often
+        //this.broadcast();
     }
 
     vfunc_startup() {
