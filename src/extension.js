@@ -155,12 +155,12 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
     }
 
     async _activate() {
+        // Avoid concurrent calls
         if (this._activating) {
             return;
         }
 
         try {
-            // Avoid concurrent calls
             this._activating = true;
 
             // Wait for a result before continuing
@@ -185,6 +185,8 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
                 );
             });
         } catch (e) {
+            // FIXME: can do better/more here
+            Main.notifyError(_('GSConnect'), 'The service failed to start');
             logError(e);
         } finally {
             this._activating = false;
