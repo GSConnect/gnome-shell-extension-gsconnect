@@ -13,10 +13,6 @@ debug('loading service/__init__.js');
 
 
 /**
- * Global functions
- */
-
-/**
  * Check if a command is in the PATH
  * @param {string} name - the name of the command
  */

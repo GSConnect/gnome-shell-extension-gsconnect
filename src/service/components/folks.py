@@ -1,12 +1,14 @@
 # This has been modified from the work shimming Gee by Hugo Sena Ribeiro. The
 # original code is available here: https://github.com/hugosenari/folks
 
-import gi
-gi.require_version('Folks', '0.6')
 import itertools
 import json
 import os.path
 import re
+import sys
+
+import gi
+gi.require_version('Folks', '0.6')
 import ctypes as pyc
 from ctypes import pythonapi
 from gi.repository import Folks, GLib, GObject
@@ -327,10 +329,12 @@ class Individual(object):
 
 
 class Aggregator(object):
-    def __init__(self, loop):
+    def __init__(self, loop, action):
         self.loop = loop
+        self.action = action
 
-        self.contacts = {}
+        self.cache_dir = os.path.expanduser('~/.cache/gsconnect/')
+        self.cache_path = os.path.join('contacts.json')
 
         self._individuals = {}
 
@@ -342,11 +346,11 @@ class Aggregator(object):
         try:
             self._get_individuals()
 
-        self.contacts = self.get_contacts()
+            if not self.action or self.action == 'list':
+                self.dump_contacts()
         except:
             pass
 
-        self.print(self.contacts)
         self.loop.quit()
 
     def _get_individuals(self):
@@ -357,12 +361,15 @@ class Aggregator(object):
 
     @property
     def individuals(self):
-        return self._individuals
+        individuals = self._aggregator.get_individuals()
+
+        for uid, folk in get_iterator(individuals):
+            yield Individual(folk)
 
     def get_contacts(self):
         contacts = {};
 
-        for folk in self.individuals.values():
+        for folk in self._individuals.values():
             try:
                 # Skip contacts without phone numbers
                 if not len(folk.phone_numbers):
@@ -393,8 +400,9 @@ class Aggregator(object):
 
         return contacts
 
-    def print(self, new_cache):
-        print(json.dumps(new_cache))
+    def dump_contacts(self):
+        contacts = self.get_contacts()
+        print(json.dumps(contacts))
 
     def write(self, new_cache):
         # if new_cache is empty goa might not be running, avoid wiping contacts
@@ -412,7 +420,10 @@ class Aggregator(object):
 if __name__ == '__main__':
     loop = GObject.MainLoop()
 
-    Aggregator(loop)
+    # Default to dumping contacts
+    action = 'list' if len(sys.argv) == 1 else sys.argv[1]
+
+    Aggregator(loop, action)
 
     loop.run()
 
