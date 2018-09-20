@@ -109,21 +109,6 @@ function makeSdpRecord(uuid) {
 
 
 /**
- * A org.bluez.ProfileManager1 singleton
- */
-try {
-    var _profileManager = new ProfileManager1Proxy({
-        g_connection: Gio.DBus.system,
-        g_name: 'org.bluez',
-        g_object_path: '/org/bluez'
-    });
-    _profileManager.init(null);
-} catch (e) {
-    Gio.Application.get_default().notify_error(e);
-}
-
-
-/**
  * Bluez Channel Service
  */
 var ChannelService = GObject.registerClass({
@@ -151,8 +136,19 @@ var ChannelService = GObject.registerClass({
         // The full device map
         this._devices = new Map();
 
-        // Asynchronous init
-        this._init_async();
+        try {
+            this._profileManager = new ProfileManager1Proxy({
+                g_connection: Gio.DBus.system,
+                g_name: 'org.bluez',
+                g_object_path: '/org/bluez'
+            });
+            this._profileManager.init(null);
+
+            // Asynchronous init
+            this._init_async();
+        } catch (e) {
+            logError(e, 'GSConnect: Failed to connect to bluez');
+        }
     }
 
     // A list of device proxies supporting the KDE Connect Service UUID
@@ -192,7 +188,7 @@ var ChannelService = GObject.registerClass({
             };
 
             // Register KDE Connect bluez profile
-            await _profileManager.RegisterProfile(profile, uuid, options);
+            await this._profileManager.RegisterProfile(profile, uuid, options);
         } catch (e) {
             logError(e);
         }
@@ -455,6 +451,13 @@ var Transfer = class Transfer extends Core.Transfer {
 
     constructor(params) {
         super(params);
+
+        this._profileManager = new ProfileManager1Proxy({
+            g_connection: Gio.DBus.system,
+            g_name: 'org.bluez',
+            g_object_path: '/org/bluez'
+        });
+        this._profileManager.init(null);
     }
 
     async _registerProfile(uuid) {
@@ -479,7 +482,7 @@ var Transfer = class Transfer extends Core.Transfer {
         };
 
         // Register KDE Connect bluez profile
-        await _profileManager.RegisterProfile(
+        await this._profileManager.RegisterProfile(
             this._profile.get_object_path(),
             uuid,
             profileOptions
