@@ -205,8 +205,8 @@ var ChannelService = GObject.registerClass({
                     null,
                     (stream, res) => {
                     try {
-                        let data = stream.read_line_finish(res)[0];
-                        let packet = new Core.Packet(data.toString());
+                        let data = stream.read_line_finish_utf8(res)[0];
+                        let packet = new Core.Packet(data);
                         packet.body.tcpHost = host;
 
                         resolve(packet);

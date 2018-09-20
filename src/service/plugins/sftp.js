@@ -271,11 +271,9 @@ var Plugin = GObject.registerClass({
     _sshfs_check(stream) {
         stream.read_line_async(GLib.PRIORITY_DEFAULT, null, (stream, res) => {
             try {
-                let msg = stream.read_line_finish(res)[0];
+                let msg = stream.read_line_finish_utf8(res)[0];
 
                 if (msg !== null) {
-                    msg = msg.toString();
-
                     if (msg.includes('ssh_dispatch_run_fatal')) {
                         let e = new Error(msg);
 

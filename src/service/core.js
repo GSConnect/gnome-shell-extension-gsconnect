@@ -137,11 +137,11 @@ var Channel = class Channel {
                 this.cancellable,
                 (stream, res) => {
                     try {
-                        let data = stream.read_line_finish(res)[0];
+                        let data = stream.read_line_finish_utf8(res)[0];
                         stream.close(null);
 
                         // Store the identity as an object property
-                        this.identity = new Packet(data.toString());
+                        this.identity = new Packet(data);
 
                         resolve(connection);
                     } catch (e) {
@@ -391,12 +391,12 @@ var Channel = class Channel {
 
                 try {
                     // Try to read and parse a packet
-                    data = stream.read_line_finish(res)[0];
+                    data = stream.read_line_finish_utf8(res)[0];
 
                     // In case %null is returned we don't want an error thrown
                     // when trying to parse it as a packet
                     if (data !== null) {
-                        packet = new Packet(data.toString());
+                        packet = new Packet(data);
                         debug(packet, this.identity.body.deviceName);
                     }
 
