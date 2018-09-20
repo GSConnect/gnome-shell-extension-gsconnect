@@ -3,6 +3,7 @@
 const Lang = imports.lang;
 const Format = imports.format;
 const Gettext = imports.gettext;
+const ByteArray = imports.byteArray;
 
 const Gdk = imports.gi.Gdk;
 const Gio = imports.gi.Gio;
@@ -13,7 +14,10 @@ const Gtk = imports.gi.Gtk;
 ext.app_id = "org.gnome.Shell.Extensions.GSConnect";
 ext.app_path = "/org/gnome/Shell/Extensions/GSConnect";
 
-ext.metadata = JSON.parse(GLib.file_get_contents(ext.datadir + "/metadata.json")[1]);
+ext.metadata = JSON.parse(
+    ByteArray.toString(
+        GLib.file_get_contents(ext.datadir + "/metadata.json")[1]
+    ));
 ext.localedir = GLib.build_filenamev([ext.datadir, "locale"]);
 Gettext.bindtextdomain(ext.app_id, ext.localedir);
 
@@ -53,10 +57,12 @@ ext.resource._register();
  * DBus Interface Introspection
  */
 ext.dbusinfo = new Gio.DBusNodeInfo.new_for_xml(
-    Gio.resources_lookup_data(
-        ext.app_path + "/" + ext.app_id + ".xml",
-        0
-    ).toArray().toString()
+    ByteArray.toString(
+        Gio.resources_lookup_data(
+             ext.app_path + "/" + ext.app_id + ".xml",
+             0
+        ).toArray()
+    )
 );
 ext.dbusinfo.nodes.forEach((ifaceInfo) => { ifaceInfo.cache_build(); });
 
@@ -106,9 +112,10 @@ function installService () {
     // DBus service file
     let serviceDir = GLib.get_user_data_dir() + "/dbus-1/services/";
     let serviceFile = ext.app_id + ".service";
-    let serviceBytes = Gio.resources_lookup_data(
-        ext.app_path + "/" + serviceFile, 0
-    ).toArray().toString().replace("@DATADIR@", ext.datadir);
+    let serviceBytes = ByteArray.toString(
+        Gio.resources_lookup_data(
+            ext.app_path + "/" + serviceFile, 0
+        ).toArray()).replace("@DATADIR@", ext.datadir);
 
     GLib.mkdir_with_parents(serviceDir, 493);
     GLib.file_set_contents(serviceDir + serviceFile, serviceBytes);
@@ -116,9 +123,10 @@ function installService () {
     // Application desktop file
     let applicationsDir = GLib.get_user_data_dir() + "/applications/";
     let desktopFile = ext.app_id + ".desktop";
-    let desktopBytes = Gio.resources_lookup_data(
-        ext.app_path + "/" + desktopFile, 0
-    ).toArray().toString().replace("@DATADIR@", ext.datadir);
+    let desktopBytes = ByteArray.toString(
+        Gio.resources_lookup_data(
+            ext.app_path + "/" + desktopFile, 0
+        ).toArray()).replace("@DATADIR@", ext.datadir);
 
     GLib.mkdir_with_parents(applicationsDir, 493);
     GLib.file_set_contents(applicationsDir + desktopFile, desktopBytes);
