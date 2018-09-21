@@ -88,14 +88,14 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         });
 
         // Async setup
-        this._setup();
+        this._init_async();
     }
 
     get devices() {
         return this._devices;
     }
 
-    async _setup() {
+    async _init_async() {
         try {
             // Init the ObjectManager
             this.manager = await new Promise((resolve, reject) => {
@@ -185,9 +185,9 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
                 );
             });
         } catch (e) {
-            // FIXME: can do better/more here
-            Main.notifyError(_('GSConnect'), 'The service failed to start');
             logError(e);
+            Gio.DBusError.strip_remote_error(e);
+            Main.notifyError(_('GSConnect'), e.message);
         } finally {
             this._activating = false;
         }
