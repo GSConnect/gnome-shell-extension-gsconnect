@@ -430,8 +430,8 @@ var Plugin = GObject.registerClass({
 
     /**
      * This mimics _parseEvent() from the telephony plugin, updates the contact
-     * avatar (if necessary), then calls either callNotification() or
-     * smsNotification() from the telephony plugin.
+     * avatar (if necessary), then calls either callNotification() from the
+     * telephony plugin or smsNotification() from the sms plugin.
      *
      * @param {object} notif - The body of a kdeconnect.notification packet
      * @param {object} contact - A contact object
@@ -440,8 +440,6 @@ var Plugin = GObject.registerClass({
      */
     async _telephonyNotification(notif, contact, icon, type) {
         try {
-            let telephony = imports.service.plugins.telephony.Plugin;
-
             // Fabricate a message packet from what we know
             // TODO: revisit created values
             let message = {
@@ -465,10 +463,12 @@ var Plugin = GObject.registerClass({
 
             if (message.event === 'sms') {
                 message.body = notif.text;
-                telephony.prototype.smsNotification.call(this, contact, message);
+                let sms = imports.service.plugins.sms.Plugin;
+                sms.prototype.smsNotification.call(this, contact, message);
             } else if (message.event === 'missedCall') {
                 // TRANSLATORS: eg. Missed call from John Smith
                 message.body = _('Missed call from %s').format(contact.name);
+                let telephony = imports.service.plugins.telephony.Plugin;
                 telephony.prototype.callNotification.call(this, contact, message);
             }
         } catch (e) {

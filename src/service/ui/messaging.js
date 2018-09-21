@@ -66,99 +66,6 @@ const _urlRegexp = new RegExp(
 
 
 /**
- * sms/tel URI RegExp (https://tools.ietf.org/html/rfc5724)
- *
- * A fairly lenient regexp for sms: URIs that allows tel: numbers with chars
- * from global-number, local-number (without phone-context) and single spaces.
- * This allows passing numbers directly from libfolks or GData without
- * pre-processing. It also makes an allowance for URIs passed from Gio.File
- * that always come in the form "sms:///".
- */
-let _smsParam = "[\\w.!~*'()-]+=(?:[\\w.!~*'()-]|%[0-9A-F]{2})*";
-let _telParam = ";[a-zA-Z0-9-]+=(?:[\\w\\[\\]/:&+$.!~*'()-]|%[0-9A-F]{2})+";
-let _lenientDigits = "[+]?(?:[0-9A-F*#().-]| (?! )|%20(?!%20))+";
-let _lenientNumber = _lenientDigits + "(?:" + _telParam + ")*";
-
-var _smsRegex = new RegExp(
-    "^" +
-    "sms:" +                                // scheme
-    "(?:[/]{2,3})?" +                       // Gio.File returns ":///"
-    "(" +                                   // one or more...
-        _lenientNumber +                    // phone numbers
-        "(?:," + _lenientNumber + ")*" +    // separated by commas
-    ")" +
-    "(?:\\?(" +                             // followed by optional...
-        _smsParam +                         // parameters...
-        "(?:&" + _smsParam + ")*" +         // separated by "&" (unescaped)
-    "))?" +
-    "$", "g");                              // fragments (#foo) not allowed
-
-
-var _numberRegex = new RegExp(
-    "^" +
-    "(" + _lenientDigits + ")" +            // phone number digits
-    "((?:" + _telParam + ")*)" +            // followed by optional parameters
-    "$", "g");
-
-
-/**
- * A simple parsing class for sms: URI's (https://tools.ietf.org/html/rfc5724)
- */
-var URI = class URI {
-    constructor(uri) {
-        debug('Sms.URI: _init(' + uri + ')');
-
-        let full, recipients, query;
-
-        try {
-            _smsRegex.lastIndex = 0;
-            [full, recipients, query] = _smsRegex.exec(uri);
-        } catch (e) {
-            throw URIError('malformed sms URI');
-        }
-
-        this.recipients = recipients.split(',').map(recipient => {
-            _numberRegex.lastIndex = 0;
-            let [full, number, params] = _numberRegex.exec(recipient);
-
-            if (params) {
-                for (let param of params.substr(1).split(';')) {
-                    let [key, value] = param.split('=');
-
-                    // add phone-context to beginning of
-                    if (key === 'phone-context' && value.startsWith('+')) {
-                        return value + unescape(number);
-                    }
-                }
-            }
-
-            return unescape(number);
-        });
-
-        if (query) {
-            for (let field of query.split('&')) {
-                let [key, value] = field.split('=');
-
-                if (key === 'body') {
-                    if (this.body) {
-                        throw URIError('duplicate "body" field');
-                    }
-
-                    this.body = (value) ? decodeURIComponent(value) : undefined;
-                }
-            }
-        }
-    }
-
-    toString() {
-        let uri = 'sms:' + this.recipients.join(',');
-
-        return (this.body) ? uri + '?body=' + escape(this.body) : uri;
-    }
-}
-
-
-/**
  * Return a human-readable timestamp.
  *
  * @param {Number} time - Milliseconds since the epoch (local time)
@@ -430,7 +337,7 @@ var ConversationWindow = GObject.registerClass({
         this._device = device;
         this.insert_action_group('device', device);
 
-        // We track the local id's of remote telephony notifications so we can
+        // We track the local id's of remote sms notifications so we can
         // withdraw them locally (thus closing them remotely) when focused.
         this._notifications = [];
 
@@ -562,10 +469,10 @@ var ConversationWindow = GObject.registerClass({
     _showPrevious() {
         this.contact_list.reset();
 
-        let telephony = this.device.lookup_plugin('telephony');
+        let sms = this.device.lookup_plugin('sms');
 
         // Show the contact list if there are no conversations
-        if (!telephony || telephony.threads.length === 0) {
+        if (!sms || sms.threads.length === 0) {
             this._showContacts();
         } else {
             this._showConversations();
@@ -608,9 +515,9 @@ var ConversationWindow = GObject.registerClass({
         this.conversation_list.foreach(row => row.destroy());
 
         // Populate the new threads
-        let telephony = this.device.lookup_plugin('telephony');
+        let sms = this.device.lookup_plugin('sms');
 
-        for (let message of telephony.threads) {
+        for (let message of sms.threads) {
             // Ensure we have a contact for each thread
             let contact = this.contact_list.contacts.query({
                 name: message.address,
@@ -646,10 +553,10 @@ var ConversationWindow = GObject.registerClass({
         this.message_list.foreach(row => row.destroy());
         this._thread = undefined;
 
-        let telephony = this.device.lookup_plugin('telephony');
+        let sms = this.device.lookup_plugin('sms');
 
-        if (telephony.conversations.hasOwnProperty(number)) {
-            let conversation = telephony.conversations[number];
+        if (sms.conversations.hasOwnProperty(number)) {
+            let conversation = sms.conversations[number];
             conversation.map(message => this._addMessage(message));
 
             let lastMessage = conversation[conversation.length - 1];
@@ -730,7 +637,7 @@ var ConversationWindow = GObject.registerClass({
     /**
      * Log a new message in the conversation
      *
-     * @param {Object} message - A telephony message object
+     * @param {Object} message - A sms message object
      */
     async _addMessage(message) {
         // Check if we need a new thread
@@ -803,11 +710,11 @@ var ConversationWindow = GObject.registerClass({
 
     /**
      * Log an incoming message in the MessageList
-     * TODO: this is being deprecated by 'kdeconnect.telephony.message', but we
-     *       keep it for now so the telephony plugin can use it to fake support.
+     * TODO: this is being deprecated by 'kdeconnect.sms.message', but we
+     *       keep it for now so the sms plugin can use it to fake support.
      *
      * @param {Object} contact - A contact object for this message
-     * @param {Object} message - A telephony message object
+     * @param {Object} message - A sms message object
      */
     receiveMessage(contact, message) {
         this._number = message.address;
@@ -816,7 +723,7 @@ var ConversationWindow = GObject.registerClass({
             this.setRecipient(contact, message.address);
         }
 
-        // Log an incoming telepony message (fabricated by the telephony plugin)
+        // Log an incoming telepony message (fabricated by the sms plugin)
         this._addMessage({
             _id: ++this.message_id,     // message id (increment as we fetch)
             thread_id: this.thread_id,  // conversation id
