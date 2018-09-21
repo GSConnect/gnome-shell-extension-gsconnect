@@ -209,8 +209,16 @@ var Plugin = GObject.registerClass({
         );
     }
 
-    // TODO: Not implemented
     _handleText(packet) {
+        let dialog = new Gtk.MessageDialog({
+            text: _('Text Shared By %s').format(this.device.name),
+            secondary_text: packet.body.text,
+            buttons: Gtk.ButtonsType.CLOSE
+        });
+        dialog.message_area.get_children()[1].selectable = true;
+        dialog.set_keep_above(true);
+        dialog.connect('response', (dialog) => dialog.destroy());
+        dialog.show();
     }
 
     /**
