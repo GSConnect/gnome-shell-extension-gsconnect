@@ -1,11 +1,25 @@
 #!/bin/bash
 
-DESTDIR_SYSCONFDIR=${DESTDIR}/${1}
+# Use DESTDIR if defined
+if [ -n "${DESTDIR}" ]; then
+    CHROME_NMHDIR=${DESTDIR}/${1}
+else
+    CHROME_NMHDIR=${1}
+fi
 
-mkdir -p ${DESTDIR_SYSCONFDIR}/opt/chrome/native-messaging-hosts/
+mkdir -p ${CHROME_NMHDIR}
 cp ${MESON_BUILD_ROOT}/org.gnome.shell.extensions.gsconnect.json-chrome \
-   ${DESTDIR_SYSCONFDIR}/opt/chrome/native-messaging-hosts/org.gnome.shell.extensions.gsconnect.json
+   ${CHROME_NMHDIR}/org.gnome.shell.extensions.gsconnect.json
 
-mkdir -p ${DESTDIR_SYSCONFDIR}/chromium/native-messaging-hosts/
+
+# Use DESTDIR if defined
+if [ -n "${DESTDIR}" ]; then
+    CHROMIUM_NMHDIR=${DESTDIR}/${2}
+else
+    CHROME_NMHDIR=${2}
+fi
+
+mkdir -p ${CHROMIUM_NMHDIR}/chromium/native-messaging-hosts
 cp ${MESON_BUILD_ROOT}/org.gnome.shell.extensions.gsconnect.json-chrome \
-   ${DESTDIR_SYSCONFDIR}/chromium/native-messaging-hosts/org.gnome.shell.extensions.gsconnect.json
+   ${CHROMIUM_NMHDIR}/org.gnome.shell.extensions.gsconnect.json
+

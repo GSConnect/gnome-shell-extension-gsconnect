@@ -16,22 +16,13 @@ gschemadir = join_paths(datadir, 'glib-2.0', 'schemas')
 if get_option('gnome_shell_libdir') != ''
   gnome_shell_libdir = get_option('gnome_shell_libdir')
 else
-  gnome_shell_dir = libdir
-endif
-
-# Mozilla LIBDIR
-if get_option('mozilla_libdir') != ''
-  mozilla_libdir = get_option('mozilla_libdir')
-else
-  mozilla_dir = libdir
+  gnome_shell_libdir = libdir
 endif
 
 # Configuration
 extconfig = configuration_data()
 extconfig.set('VERSION', meson.project_version())
-extconfig.set('LIBDIR', libdir)
 extconfig.set('GNOME_SHELL_LIBDIR', gnome_shell_libdir)
-extconfig.set('MOZILLA_LIBDIR', mozilla_libdir)
 extconfig.set('LOCALEDIR', localedir)
 extconfig.set('EXTDATADIR', extdatadir)
 extconfig.set('GSCHEMADIR', gschemadir)
@@ -107,19 +98,46 @@ endif
 
 # WebExtension Manifests
 if get_option('webextension')
+
+  # Chrome
+  if get_option('chrome_nmhdir') != ''
+    chrome_nmhdir = get_option('chrome_nmhdir')
+  else
+    chrome_nmhdir = sysconfdir
+  endif
+
+  # Chromium
+  if get_option('chromium_nmhdir') != ''
+    chromium_nmhdir = get_option('chromium_nmhdir')
+  else
+    chromium_nmhdir = sysconfdir
+  endif
+
   configure_file(
     input: 'data/org.gnome.shell.extensions.gsconnect.json-chrome',
     output: 'org.gnome.shell.extensions.gsconnect.json-chrome',
     configuration: extconfig
   )
+
   # HACK: use 'rename' in meson >=0.46.0
-  meson.add_install_script('meson/nmh.sh', sysconfdir)
+  meson.add_install_script(
+    'meson/nmh.sh',
+    join_paths(chrome_nmhdir, 'opt', 'chrome', 'native-messaging-hosts'),
+    join_paths(chromium_nmhdir, 'chromium', 'native-messaging-hosts')
+  )
+
+  # Mozilla
+  if get_option('mozilla_nmhdir') != ''
+    mozilla_nmhdir = get_option('mozilla_nmhdir')
+  else
+    mozilla_nmhdir = libdir
+  endif
 
   configure_file(
     input: 'data/org.gnome.shell.extensions.gsconnect.json-mozilla',
     output: 'org.gnome.shell.extensions.gsconnect.json',
     configuration: extconfig,
-    install_dir: join_paths(mozilla_libdir, 'mozilla', 'native-messaging-hosts')
+    install_dir: join_paths(mozilla_nmhdir, 'mozilla', 'native-messaging-hosts')
   )
 endif
 

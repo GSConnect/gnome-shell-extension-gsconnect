@@ -1,5 +1,12 @@
+# See https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Packaging
+
 option('gnome_shell_libdir', type: 'string', value: '', description: 'LIBDIR for Gnome Shell')
-option('mozilla_libdir', type: 'string', value: '', description: 'LIBDIR for Mozilla')
+
 option('session_bus_services_dir', type: 'string', value: '', description: 'DBus session services directory')
 option('nautilus', type: 'boolean', value: true, description: 'enable nautilus-python extension')
+
 option('webextension', type: 'boolean', value: true, description: 'enable WebExtension for Chrome/Firefox')
+option('chrome_nmhdir', type: 'string', value: '', description: 'Native Messaging Host directory for Chrome')
+option('chromium_nmhdir', type: 'string', value: '', description: 'Native Messaging Host directory for Chromium')
+option('mozilla_nmhdir', type: 'string', value: '', description: 'Native Messaging Host directory for Mozilla')
+
