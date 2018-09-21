@@ -211,7 +211,6 @@ var Plugin = GObject.registerClass({
 
     // TODO: Not implemented
     _handleText(packet) {
-        log(`Not Implemented: receiving text "${packet.body.text}"`);
     }
 
     /**

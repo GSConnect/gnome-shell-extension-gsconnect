@@ -396,7 +396,7 @@ var ChannelService = GObject.registerClass({
             let device = this._devices.get(object_path);
 
             if (device && device._channel !== null) {
-                log(`GSConnect: Disconnecting ${device.Alias}`);
+                debug(`GSConnect: Disconnecting ${device.Alias}`);
                 device._channel.close();
                 device._channel = null;
             }

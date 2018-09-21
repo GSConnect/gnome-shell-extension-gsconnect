@@ -50,8 +50,6 @@ var ChannelService = GObject.registerClass({
             'network-changed',
             this._onNetworkChanged.bind(this)
         );
-
-        log(`GSConnect: Using TCP/UDP port 1716`);
     }
 
     get allowed() {

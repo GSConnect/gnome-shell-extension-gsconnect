@@ -287,7 +287,7 @@ var Device = GObject.registerClass({
      * This is invoked by Core.Channel.attach() which also sets this._channel
      */
     _setConnected() {
-        log(`Connected to ${this.name} (${this.id})`);
+        debug(`Connected to ${this.name} (${this.id})`);
 
         this.settings.set_string('last-connection', this._channel.type);
 
@@ -301,7 +301,7 @@ var Device = GObject.registerClass({
      * This is the callback for the Core.Channel's cancellable object
      */
     _setDisconnected() {
-        log(`Disconnected from ${this.name} (${this.id})`);
+        debug(`Disconnected from ${this.name} (${this.id})`);
 
         this._channel = null;
         this._connected = false;
@@ -552,7 +552,7 @@ var Device = GObject.registerClass({
         if (packet.body.pair) {
             // The device is accepting our request
             if (this._outgoingPairRequest) {
-                log(`Pair accepted by ${this.name}`);
+                debug(`Pair accepted by ${this.name}`);
 
                 this._setPaired(true);
                 this.loadPlugins();
@@ -563,12 +563,12 @@ var Device = GObject.registerClass({
                 this.loadPlugins();
             // The device is requesting pairing
             } else {
-                log(`Pair request from ${this.name}`);
+                debug(`Pair request from ${this.name}`);
                 this._notifyPairRequest();
             }
         // Device is requesting unpairing/rejecting our request
         } else {
-            log(`Pair rejected by ${this.name}`);
+            debug(`Pair rejected by ${this.name}`);
 
             this._setPaired(false);
             this.unloadPlugins();
@@ -682,7 +682,7 @@ var Device = GObject.registerClass({
                 this._setPaired.bind(this, false)
             );
 
-            log(`Pair request sent to ${this.name}`);
+            debug(`Pair request sent to ${this.name}`);
         }
     }
 

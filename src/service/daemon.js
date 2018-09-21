@@ -227,7 +227,7 @@ const Service = GObject.registerClass({
         let device = this._devices.get(packet.body.deviceId);
 
         if (device === undefined) {
-            log(`GSConnect: Adding ${packet.body.deviceName}`);
+            debug(`GSConnect: Adding ${packet.body.deviceName}`);
 
             // TODO: Remove when all clients support bluetooth-like discovery
             //
@@ -762,7 +762,7 @@ const Service = GObject.registerClass({
 
         // Load cached devices
         let cached = gsconnect.settings.get_strv('devices');
-        log(`Loading ${cached.length} device(s) from cache`);
+        debug(`Loading ${cached.length} device(s) from cache`);
         cached.map(id => {
             let device = new Device.Device({ body: { deviceId: id } });
             this._devices.set(device.id, device);
@@ -860,7 +860,7 @@ const Service = GObject.registerClass({
     vfunc_shutdown() {
         super.vfunc_shutdown();
 
-        log('GSConnect: Shutting down');
+        debug('GSConnect: Shutting down');
 
         this.mpris.destroy();
         this.notification.destroy();
