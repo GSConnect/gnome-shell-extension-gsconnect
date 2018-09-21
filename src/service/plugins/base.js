@@ -123,6 +123,10 @@ var Plugin = GObject.registerClass({
         for (let action of this._gactions) {
             action.set_enabled(false);
         }
+
+        if (this._cacheFile !== undefined) {
+            this._writeCache();
+        }
     }
 
     /**
