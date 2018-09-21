@@ -101,7 +101,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
             this.manager = await new Promise((resolve, reject) => {
                 Gio.DBusObjectManagerClient.new(
                     Gio.DBus.session,
-                    Gio.DBusObjectManagerClientFlags.NONE,
+                    Gio.DBusObjectManagerClientFlags.DO_NOT_AUTO_START,
                     gsconnect.app_id,
                     gsconnect.app_path,
                     null,
@@ -136,6 +136,8 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
                 'notify::name-owner',
                 this._onNameOwnerChanged.bind(this)
             );
+
+            await this._activate();
         } catch (e) {
             // TODO: fatal error notification?
             logError(e);
