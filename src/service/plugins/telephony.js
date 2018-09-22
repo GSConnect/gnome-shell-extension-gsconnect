@@ -279,7 +279,7 @@ var Plugin = GObject.registerClass({
                 body: {}
             });
 
-        // TODO: backwards-compatibility <= 1.8.4
+        // TODO: backwards-compatibility kdeconnect-android <= 1.8.4
         } else {
             this.device.sendPacket({
                 id: 0,

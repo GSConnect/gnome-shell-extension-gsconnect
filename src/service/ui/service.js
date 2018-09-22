@@ -27,8 +27,6 @@ var BluetoothComboBox = GObject.registerClass({
     _init(params) {
         super._init(params);
 
-        this.bluetoothService = Gio.Application.get_default().bluetoothService;
-
         this._theme = Gtk.IconTheme.get_default();
 
         let model = new Gtk.ListStore();
@@ -43,7 +41,7 @@ var BluetoothComboBox = GObject.registerClass({
         this.set_id_column(2);
 
         // Type Icon
-        let iconCell = new Gtk.CellRendererPixbuf();
+        let iconCell = new Gtk.CellRendererPixbuf({ xpad: 6 });
         this.pack_start(iconCell, false);
         this.add_attribute(iconCell, 'pixbuf', 0);
 
@@ -52,30 +50,33 @@ var BluetoothComboBox = GObject.registerClass({
         this.pack_start(nameCell, true);
         this.add_attribute(nameCell, 'text', 1);
 
+        if (this.service.bluetoothService) {
+            this._devicesId = this.service.bluetoothService.connect(
+                'notify::devices',
+                this.populate.bind(this)
+            );
+        }
+
         this.populate();
-
-        this._devicesId = this.bluetoothService.connect(
-            'notify::devices',
-            this.populate.bind(this)
-        );
-
-        this._destroyId = this.connect(
-            'destroy',
-            this._onDestroy.bind(this)
-        );
-    }
-
-    get devices() {
-        return this.bluetoothService.devices;
     }
 
     get has_devices() {
-        return this.bluetoothService.devices.length > 0;
+        if (!this.service.bluetoothService) {
+            return false;
+        }
+
+        return this.service.bluetoothService.devices.length > 0;
     }
 
-    _onDestroy() {
-        this.disconnect(this._destroyId);
-        this.bluetoothService.disconnect(this._devicesId);
+    get service() {
+        return Gio.Application.get_default();
+    }
+
+    _destroy() {
+        try {
+            this.service.bluetoothService.disconnect(this._devicesId);
+        } catch (e) {
+        }
     }
 
     populate() {
@@ -168,7 +169,7 @@ var DeviceConnectDialog = GObject.registerClass({
             numeric: true,
             width_chars: 4
         });
-        this.port.adjustment.configure(1716, 1716, 1764, 1, 1, 1);
+        this.port.adjustment.configure(1716, 1716, 1765, 1, 1, 1);
         lanBox.add(this.port);
 
         // Bluetooth Devices
@@ -273,6 +274,7 @@ var DeviceConnectDialog = GObject.registerClass({
             }
         }
 
+        this.bluez._destroy();
         this.destroy();
         return false;
     }
