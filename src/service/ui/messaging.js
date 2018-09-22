@@ -426,7 +426,9 @@ var ConversationWindow = GObject.registerClass({
      */
     _showContacts() {
         this.conversation_add.visible = false;
-        this.go_previous.visible = true;
+
+        let sms = this.device.lookup_plugin('sms');
+        this.go_previous.visible = (sms && sms.threads.length > 0);
 
         this.headerbar.custom_title = this.contact_list.entry;
         this.contact_list.entry.has_focus = true;
