@@ -420,7 +420,7 @@ class Aggregator(object):
 ###############################################################################
 
 if __name__ == '__main__':
-    loop = GObject.MainLoop()
+    loop = GLib.MainLoop()
 
     # Default to dumping contacts
     action = 'list' if len(sys.argv) == 1 else sys.argv[1]
