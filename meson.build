@@ -113,14 +113,14 @@ if get_option('webextension')
   if get_option('chrome_nmhdir') != ''
     chrome_nmhdir = get_option('chrome_nmhdir')
   else
-    chrome_nmhdir = sysconfdir
+    chrome_nmhdir = join_paths(sysconfdir, 'opt', 'chrome', 'native-messaging-hosts')
   endif
 
   # Chromium
   if get_option('chromium_nmhdir') != ''
     chromium_nmhdir = get_option('chromium_nmhdir')
   else
-    chromium_nmhdir = sysconfdir
+    chromium_nmhdir = join_paths(sysconfdir, 'chromium', 'native-messaging-hosts')
   endif
 
   configure_file(
@@ -140,14 +140,14 @@ if get_option('webextension')
   if get_option('mozilla_nmhdir') != ''
     mozilla_nmhdir = get_option('mozilla_nmhdir')
   else
-    mozilla_nmhdir = libdir
+    mozilla_nmhdir = join_paths(libdir, 'mozilla', 'native-messaging-hosts')
   endif
 
   configure_file(
     input: 'data/org.gnome.shell.extensions.gsconnect.json-mozilla',
     output: 'org.gnome.shell.extensions.gsconnect.json',
     configuration: extconfig,
-    install_dir: join_paths(mozilla_nmhdir, 'mozilla', 'native-messaging-hosts')
+    install_dir: mozilla_nmhdir
   )
 endif
 
@@ -175,3 +175,4 @@ meson.add_install_script(
   'GSCHEMADIR=' + gschemadir,
   join_paths(meson.source_root(), 'meson/post-install.sh')
 )
+
