@@ -161,33 +161,29 @@ var ChannelService = GObject.registerClass({
      * Create a service record and register a profile
      */
     async _register(uuid) {
-        try {
-            // Export the org.bluez.Profile1 interface for the KDE Connect service
-            this._profile = new DBus.Interface({
-                g_connection: Gio.DBus.system,
-                g_instance: this,
-                g_interface_info: BluezNode.lookup_interface('org.bluez.Profile1'),
-                g_object_path: gsconnect.app_path + uuid.replace(/\-/gi, '')
-            });
+        // Export the org.bluez.Profile1 interface for the KDE Connect service
+        this._profile = new DBus.Interface({
+            g_connection: Gio.DBus.system,
+            g_instance: this,
+            g_interface_info: BluezNode.lookup_interface('org.bluez.Profile1'),
+            g_object_path: gsconnect.app_path + uuid.replace(/\-/gi, '')
+        });
 
-            // Register our exported profile path
-            let profile = this._profile.get_object_path();
+        // Register our exported profile path
+        let profile = this._profile.get_object_path();
 
-            // Set profile options
-            let options = {
-                // Don't require confirmation
-                RequireAuthorization: new GLib.Variant('b', false),
-                // Only allow paired devices
-                RequireAuthentication: new GLib.Variant('b', true),
-                // Service Record (customized to work with Android)
-                ServiceRecord: new GLib.Variant('s', makeSdpRecord(uuid))
-            };
+        // Set profile options
+        let options = {
+            // Don't require confirmation
+            RequireAuthorization: new GLib.Variant('b', false),
+            // Only allow paired devices
+            RequireAuthentication: new GLib.Variant('b', true),
+            // Service Record (customized to work with Android)
+            ServiceRecord: new GLib.Variant('s', makeSdpRecord(uuid))
+        };
 
-            // Register KDE Connect bluez profile
-            await this._profileManager.RegisterProfile(profile, uuid, options);
-        } catch (e) {
-            logError(e);
-        }
+        // Register KDE Connect bluez profile
+        await this._profileManager.RegisterProfile(profile, uuid, options);
     }
 
     async _init_async() {
@@ -212,7 +208,7 @@ var ChannelService = GObject.registerClass({
                 }
             }
         } catch (e) {
-            this.service.notify_error(e);
+            logWarning(`GSConnect: Bluetooth failed to start: ${e.message}`);
             this.destroy();
         }
     }
@@ -295,7 +291,7 @@ var ChannelService = GObject.registerClass({
         try {
             // TODO
         } catch (e) {
-            logError(e);
+            debug(e);
         } finally {
             return;
         }
@@ -341,7 +337,7 @@ var ChannelService = GObject.registerClass({
                     bdevice._channel = null;
                 });
             } else {
-                logWarning(`Bluetooth.ChannelService: failed to connect ${bdevice.Alias}`);
+                logWarning(`GSConnect: failed to connect to ${bdevice.Address}`);
                 return;
             }
 
@@ -352,7 +348,7 @@ var ChannelService = GObject.registerClass({
             if (!channel.identity.body.hasOwnProperty('deviceId')) {
                 bdevice._channel.close();
                 bdevice._channel = null;
-                logWarning('missing deviceId', channel.identity.body.deviceName);
+                debug('missing deviceId', channel.identity.body.deviceName);
                 return;
             }
 
@@ -400,7 +396,7 @@ var ChannelService = GObject.registerClass({
                 device._channel = null;
             }
         } catch (e) {
-            logError(e);
+            debug(e);
         } finally {
             return;
         }
@@ -414,7 +410,7 @@ var ChannelService = GObject.registerClass({
                 this._connectDevice(device);
             }
         } catch (e) {
-            logWarning(e, 'Bluetooth.ChannelService');
+            debug(e, 'Bluetooth.ChannelService');
         }
     }
 
@@ -429,7 +425,7 @@ var ChannelService = GObject.registerClass({
 
             this._profile.destroy();
         } catch (e) {
-            logError(e);
+            debug(e);
         }
     }
 });

@@ -589,17 +589,6 @@ const Service = GObject.registerClass({
                     );
                     break;
 
-                case 'BluetoothError':
-                    id = error.name;
-                    title = _('Bluetooth Error');
-                    body = _('Click for help troubleshooting');
-                    icon = new Gio.ThemedIcon({ name: 'bluetooth-disabled-symbolic' });
-                    notif.set_default_action(
-                        `app.wiki('Troubleshooting#${error.name}')`
-                    );
-                    notif.set_priority(Gio.NotificationPriority.NORMAL);
-                    break;
-
                 case 'GvcError':
                     id = error.name;
                     title = _('PulseAudio Error');
