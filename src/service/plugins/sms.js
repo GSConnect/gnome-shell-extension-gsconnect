@@ -26,7 +26,7 @@ var Metadata = {
             icon_name: 'sms-symbolic',
 
             parameter_type: null,
-            incoming: ['kdeconnect.sms.messages'],
+            incoming: [],
             outgoing: ['kdeconnect.sms.request']
         },
         uriSms: {
@@ -34,7 +34,7 @@ var Metadata = {
             icon_name: 'sms-symbolic',
 
             parameter_type: new GLib.VariantType('s'),
-            incoming: ['kdeconnect.sms.messages'],
+            incoming: [],
             outgoing: ['kdeconnect.sms.request']
         },
         replySms: {
@@ -42,7 +42,7 @@ var Metadata = {
             icon_name: 'sms-symbolic',
 
             parameter_type: new GLib.VariantType('a{sv}'),
-            incoming: ['kdeconnect.sms.messages'],
+            incoming: [],
             outgoing: ['kdeconnect.sms.request']
         },
         sendSms: {
@@ -50,7 +50,7 @@ var Metadata = {
             icon_name: 'sms-send',
 
             parameter_type: new GLib.VariantType('(ss)'),
-            incoming: ['kdeconnect.sms.messages'],
+            incoming: [],
             outgoing: ['kdeconnect.sms.request']
         },
         shareSms: {
@@ -58,7 +58,7 @@ var Metadata = {
             icon_name: 'sms-send',
 
             parameter_type: new GLib.VariantType('s'),
-            incoming: ['kdeconnect.sms.messages'],
+            incoming: [],
             outgoing: ['kdeconnect.sms.request']
         }
     }
