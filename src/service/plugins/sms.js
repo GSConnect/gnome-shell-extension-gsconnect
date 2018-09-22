@@ -405,15 +405,6 @@ var Plugin = GObject.registerClass({
             notification.silenceDuplicate(`${contact.name}: ${message.body}`);
         }
 
-        // Try to update the conversation in time to open the window
-        if (this.conversations.hasOwnProperty(message.address)) {
-            this.requestConversation(
-                this.conversations[message.address][0].thread_id
-            );
-        } else {
-            this.requestConversations();
-        }
-
         // Check for an extant window
         let window = this._hasWindow(message.address);
 
