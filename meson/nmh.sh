@@ -16,7 +16,7 @@ cp ${MESON_BUILD_ROOT}/org.gnome.shell.extensions.gsconnect.json-chrome \
 if [ -n "${DESTDIR}" ]; then
     CHROMIUM_NMHDIR=${DESTDIR}/${2}
 else
-    CHROME_NMHDIR=${2}
+    CHROMIUM_NMHDIR=${2}
 fi
 
 mkdir -p ${CHROMIUM_NMHDIR}/chromium/native-messaging-hosts
