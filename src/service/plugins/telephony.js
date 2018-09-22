@@ -58,13 +58,30 @@ var Plugin = GObject.registerClass({
                 return;
             }
 
-            // Always parse events in case an avatar has been updated
-            let [contact, message] = await this._parseEvent(packet);
+            // Ensure a contact exists for this event
+            let contact = this.contacts.query({
+                name: packet.body.contactName,
+                number: packet.body.phoneNumber,
+                single: true,
+                create: true
+            });
 
-            // TODO: this is a backward compatible re-direct
+            // Update contact avatar
+            if (packet.body.hasOwnProperty('phoneThumbnail')) {
+                contact = await this.service.contacts.setAvatarContents(
+                    contact.id,
+                    GLib.base64_decode(packet.body.phoneThumbnail)
+                );
+            }
+
+            let message = this._parseEvent(packet);
+
+            // TODO: this is a backwards-compatiblity re-direct
+            let sms_support = this.device.get_supported_outgoing('sms.messages');
+
             if (packet.body.event === 'sms') {
                 // Only forward if the device doesn't support new packets
-                if (!this.device.get_supported_outgoing('sms.messages')) {
+                if (!sms_support) {
                     let sms = this.device.lookup_plugin('sms');
 
                     if (sms !== null) {
@@ -72,6 +89,12 @@ var Plugin = GObject.registerClass({
                     }
                 }
 
+                return;
+            }
+
+            // TODO: this is for backwards-compatibility until SMS doesn't rely
+            // on telephony packets. Then the plugin can just be disabled.
+            if (!this.settings.get_boolean('handle-calls')) {
                 return;
             }
 
@@ -91,6 +114,74 @@ var Plugin = GObject.registerClass({
         } catch (e) {
             logError(e);
         }
+    }
+
+    /**
+     * Parse a telephony event and return an object like sms.messages
+     *
+     * @param {kdeconnect.telephony} packet - The telephony packet
+     */
+    _parseEvent(packet) {
+        let contactName = packet.body.contactName || packet.body.phoneNumber;
+
+        // Fabricate a message packet from what we know
+        let message = {
+            contactName: contactName,
+            _id: 0,         // might be updated by sms.js
+            thread_id: 0,   // might be updated by sms.js
+            address: packet.body.phoneNumber || 'unknown',
+            body: packet.body.messageBody,
+            date: packet.id,
+            event: packet.body.event,
+            read: Sms.MessageStatus.UNREAD,
+            type: Sms.MessageType.IN
+        };
+
+        if (message.event === 'missedCall') {
+            // TRANSLATORS: eg. Missed call from John Smith
+            message.body = _('Missed call from %s').format(contactName);
+        } else if (message.event === 'ringing') {
+            // TRANSLATORS: eg. Incoming call from John Smith
+            message.body = _('Incoming call from %s').format(contactName);
+        } else if (message.event === 'talking') {
+            // TRANSLATORS: eg. Call in progress with John Smith
+            message.body = _('Call in progress with %s').format(contactName);
+        }
+
+        return message;
+    }
+
+    _onCancel(packet) {
+        // Withdraw the (probably) open notification.
+        // TODO: it might choke on contactName here...
+        this.device.hideNotification(`${packet.body.event}|${packet.body.contactName}`);
+        this._restoreMediaState();
+    }
+
+    _onMissedCall(contact, message) {
+        // Start tracking the duplicate early
+        let notification = this.device.lookup_plugin('notification');
+
+        if (notification) {
+            // TRANSLATORS: This is _specifically_ for matching missed call notifications on Android.
+            // This should _exactly_ match the Android notification that in english looks like 'Missed call: John Lennon'
+            notification.silenceDuplicate(_('Missed call') + `: ${contact.name}`);
+        }
+
+        this.callNotification(contact, message);
+    }
+
+    _onRinging(contact, message) {
+        this._setMediaState('ringing');
+        this.callNotification(contact, message);
+    }
+
+    _onTalking(contact, message) {
+        // Withdraw the 'ringing' notification
+        this.device.hideNotification(`ringing|${contact.name}`);
+
+        this._setMediaState('talking');
+        this.callNotification(contact, message);
     }
 
     /**
@@ -182,90 +273,6 @@ var Plugin = GObject.registerClass({
             priority: priority ? priority : Gio.NotificationPriority.NORMAL,
             buttons: (buttons) ? buttons : []
         });
-    }
-
-    /**
-     * Telephony event handlers
-     */
-    async _parseEvent(packet) {
-        try {
-            // Ensure a contact exists for this event
-            let contact = this.contacts.query({
-                name: packet.body.contactName,
-                number: packet.body.phoneNumber,
-                single: true,
-                create: true
-            });
-
-            // Update contact avatar
-            if (packet.body.hasOwnProperty('phoneThumbnail')) {
-                contact = await this.service.contacts.setAvatarContents(
-                    contact.id,
-                    GLib.base64_decode(packet.body.phoneThumbnail)
-                );
-            }
-
-            // Fabricate a message packet from what we know
-            let message = {
-                contactName: contact.name,
-                _id: 0,         // might be updated by sms.js
-                thread_id: 0,   // might be updated by sms.js
-                address: packet.body.phoneNumber || '',
-                body: packet.body.messageBody,
-                date: packet.id,
-                event: packet.body.event,
-                read: Sms.MessageStatus.UNREAD,
-                type: Sms.MessageType.IN
-            };
-
-            if (message.event === 'missedCall') {
-                // TRANSLATORS: eg. Missed call from John Smith
-                message.body = _('Missed call from %s').format(contact.name);
-            } else if (message.event === 'ringing') {
-                // TRANSLATORS: eg. Incoming call from John Smith
-                message.body = _('Incoming call from %s').format(contact.name);
-            } else if (message.event === 'talking') {
-                // TRANSLATORS: eg. Call in progress with John Smith
-                message.body = _('Call in progress with %s').format(contact.name);
-            }
-
-            return [contact, message];
-        } catch (e) {
-            logError(e);
-        }
-    }
-
-    _onCancel(packet) {
-        // Withdraw the (probably) open notification.
-        // TODO: it might choke on contactName here...
-        this.device.hideNotification(`${packet.body.event}|${packet.body.contactName}`);
-        this._restoreMediaState();
-    }
-
-    _onMissedCall(contact, message) {
-        // Start tracking the duplicate early
-        let notification = this.device.lookup_plugin('notification');
-
-        if (notification) {
-            // TRANSLATORS: This is _specifically_ for matching missed call notifications on Android.
-            // This should _exactly_ match the Android notification that in english looks like 'Missed call: John Lennon'
-            notification.silenceDuplicate(_('Missed call') + `: ${contact.name}`);
-        }
-
-        this.callNotification(contact, message);
-    }
-
-    _onRinging(contact, message) {
-        this._setMediaState('ringing');
-        this.callNotification(contact, message);
-    }
-
-    _onTalking(contact, message) {
-        // Withdraw the 'ringing' notification
-        this.device.hideNotification(`ringing|${contact.name}`);
-
-        this._setMediaState('talking');
-        this.callNotification(contact, message);
     }
 
     /**
