@@ -10,7 +10,13 @@ sysconfdir = get_option('sysconfdir')
 
 extuuid = 'gsconnect@andyholmes.github.io'
 extdatadir = join_paths(datadir, 'gnome-shell', 'extensions', extuuid)
-gschemadir = join_paths(datadir, 'glib-2.0', 'schemas')
+
+# GSettings schema dir
+if get_option('gsettings_schemadir') != ''
+  gschemadir = get_option('gsettings_schemadir')
+else
+  gschemadir = join_paths(datadir, 'glib-2.0', 'schemas')
+endif
 
 # Gnome Shell LIBDIR
 if get_option('gnome_shell_libdir') != ''
@@ -34,6 +40,8 @@ run_target(
         find_program('env'),
         'UUID=' + extuuid,
         'DATADIR=' + datadir,
+        'LOCALEDIR=' + localedir,
+        'GSCHEMADIR=' + gschemadir,
         'INSTALL=false',
         'meson/mkzip.sh'
     ]
@@ -44,6 +52,8 @@ run_target(
         find_program('env'),
         'UUID=' + extuuid,
         'DATADIR=' + datadir,
+        'LOCALEDIR=' + localedir,
+        'GSCHEMADIR=' + gschemadir,
         'INSTALL=true',
         'meson/mkzip.sh'
     ]
@@ -144,7 +154,7 @@ endif
 # GSettings
 install_data(
     'data/org.gnome.Shell.Extensions.GSConnect.gschema.xml',
-    install_dir: join_paths(datadir, 'glib-2.0', 'schemas')
+    install_dir: gschemadir
 )
 
 # GResource
