@@ -47,11 +47,6 @@ var Plugin = GObject.registerClass({
 
     async handlePacket(packet) {
         try {
-            if (packet.type !== 'kdeconnect.telephony') {
-                logError('Unknown telephony packet', this.device.name);
-                return;
-            }
-
             // This is the end of a 'ringing' or 'talking' event
             if (packet.body.hasOwnProperty('isCancel') && packet.body.isCancel) {
                 this._onCancel(packet);
@@ -77,11 +72,9 @@ var Plugin = GObject.registerClass({
             let message = this._parseEvent(packet);
 
             // TODO: this is a backwards-compatiblity re-direct
-            let sms_support = this.device.get_supported_outgoing('sms.messages');
-
             if (packet.body.event === 'sms') {
                 // Only forward if the device doesn't support new packets
-                if (!sms_support) {
+                if (!this.device.get_outgoing_supported('sms.messages')) {
                     let sms = this.device.lookup_plugin('sms');
 
                     if (sms !== null) {
