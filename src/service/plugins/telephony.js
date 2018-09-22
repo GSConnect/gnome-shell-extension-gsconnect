@@ -283,8 +283,10 @@ var Plugin = GObject.registerClass({
             this.device.sendPacket({
                 id: 0,
                 type: 'kdeconnect.telephony.request_mute',
-                body: { action: 'mute' }
+                body: {}
             });
+
+        // TODO: backwards-compatibility <= 1.8.4
         } else {
             this.device.sendPacket({
                 id: 0,
