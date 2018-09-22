@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # This has been modified from the work shimming Gee by Hugo Sena Ribeiro. The
 # original code is available here: https://github.com/hugosenari/folks
 
