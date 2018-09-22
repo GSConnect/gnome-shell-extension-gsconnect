@@ -12,13 +12,12 @@ var Metadata = {
     label: _('SMS'),
     id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.SMS',
     incomingCapabilities: [
-        'kdeconnect.telephony.message'
+        'kdeconnect.sms.messages'
     ],
     outgoingCapabilities: [
-        'kdeconnect.telephony.request',
-        'kdeconnect.telephony.request_conversation',
-        'kdeconnect.telephony.request_conversations',
-        'kdeconnect.sms.request'
+        'kdeconnect.sms.request',
+        'kdeconnect.sms.request_conversation',
+        'kdeconnect.sms.request_conversations'
     ],
     actions: {
         // SMS Actions
@@ -27,7 +26,7 @@ var Metadata = {
             icon_name: 'sms-symbolic',
 
             parameter_type: null,
-            incoming: ['kdeconnect.telephony'],
+            incoming: ['kdeconnect.sms.messages'],
             outgoing: ['kdeconnect.sms.request']
         },
         uriSms: {
@@ -35,7 +34,7 @@ var Metadata = {
             icon_name: 'sms-symbolic',
 
             parameter_type: new GLib.VariantType('s'),
-            incoming: ['kdeconnect.telephony'],
+            incoming: ['kdeconnect.sms.messages'],
             outgoing: ['kdeconnect.sms.request']
         },
         replySms: {
@@ -43,7 +42,7 @@ var Metadata = {
             icon_name: 'sms-symbolic',
 
             parameter_type: new GLib.VariantType('a{sv}'),
-            incoming: ['kdeconnect.telephony'],
+            incoming: ['kdeconnect.sms.messages'],
             outgoing: ['kdeconnect.sms.request']
         },
         sendSms: {
@@ -51,7 +50,7 @@ var Metadata = {
             icon_name: 'sms-send',
 
             parameter_type: new GLib.VariantType('(ss)'),
-            incoming: ['kdeconnect.telephony'],
+            incoming: ['kdeconnect.sms.messages'],
             outgoing: ['kdeconnect.sms.request']
         },
         shareSms: {
@@ -59,7 +58,7 @@ var Metadata = {
             icon_name: 'sms-send',
 
             parameter_type: new GLib.VariantType('s'),
-            incoming: ['kdeconnect.telephony'],
+            incoming: ['kdeconnect.sms.messages'],
             outgoing: ['kdeconnect.sms.request']
         }
     }
@@ -237,13 +236,8 @@ var Plugin = GObject.registerClass({
 
     handlePacket(packet) {
         switch (packet.type) {
-            // A telephony event, or end of one
-            case 'kdeconnect.telephony':
-                this._handleEvent(packet);
-                break;
-
             // (Currently) this is always an answer to a request
-            case 'kdeconnect.telephony.message':
+            case 'kdeconnect.sms.messages':
                 this._handleMessage(packet);
                 break;
 
@@ -314,7 +308,7 @@ var Plugin = GObject.registerClass({
     /**
      * Handle a response to telephony.request_conversation(s)
      *
-     * @param {kdeconnect.telephony.message} packet - An incoming packet
+     * @param {kdeconnect.sms.messages} packet - An incoming packet
      */
     _handleMessage(packet) {
         // If messages is empty there's nothing to do...
@@ -386,7 +380,7 @@ var Plugin = GObject.registerClass({
      */
     requestConversation(thread_id) {
         this.device.sendPacket({
-            type: 'kdeconnect.telephony.request_conversation',
+            type: 'kdeconnect.sms.request_conversation',
             body: {
                 threadID: thread_id
             }
@@ -399,7 +393,7 @@ var Plugin = GObject.registerClass({
      */
     requestConversations() {
         this.device.sendPacket({
-            type: 'kdeconnect.telephony.request_conversations'
+            type: 'kdeconnect.sms.request_conversations'
         });
     }
 
@@ -475,11 +469,10 @@ var Plugin = GObject.registerClass({
     /**
      * A notification action for replying to SMS messages (or missed calls).
      *
-     * TODO: If the newer telephony.message packet is not supported, a mock
-     *       packet fabricated by _onSms() will be logged in the window to
-     * emulate it. If it is, the thread should have already been synced and only
-     * the recipient will be set. Neither of these will happen if the window is
-     * already open.
+     * TODO: If kdeconnect.sms.message packet is not supported, @message was
+     * populated by Telephony._parseEvent() and we log it in the window. If it
+     * is supported, the thread should be up to date and only the recipient will
+     * be set. Do neither if a window is already open for this thread.
      *
      * @param {Object} message - A telephony message object
      */
@@ -500,11 +493,10 @@ var Plugin = GObject.registerClass({
                 create: true
             });
 
-            // Check if telephony.message packets are supported
-            let msgs = this.device.get_outgoing_supported('telephony.message');
-
             // Set the recipient if it's a missed call or messages are supported
-            if (message.event === 'missedCall' || msgs) {
+            let msgs = this.device.get_outgoing_supported('telephony.sms.messages');
+
+            if (msgs || message.event === 'missedCall') {
                 window.setRecipient(contact, message.address);
             // Otherwise log the fabricated message object
             } else {
