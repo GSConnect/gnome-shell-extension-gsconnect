@@ -132,8 +132,8 @@ if get_option('webextension')
   # HACK: use 'rename' in meson >=0.46.0
   meson.add_install_script(
     'meson/nmh.sh',
-    join_paths(chrome_nmhdir, 'opt', 'chrome', 'native-messaging-hosts'),
-    join_paths(chromium_nmhdir, 'chromium', 'native-messaging-hosts')
+    join_paths(chrome_nmhdir),
+    join_paths(chromium_nmhdir)
   )
 
   # Mozilla
