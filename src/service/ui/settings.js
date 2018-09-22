@@ -242,6 +242,7 @@ var Window = GObject.registerClass({
         'shell-list', 'display-mode',
         // Software
         'software-list', 'sshfs', 'sound', 'folks', 'nautilus',
+        'other-list',
         'help'
     ]
 }, class Window extends Gtk.ApplicationWindow {
@@ -299,8 +300,8 @@ var Window = GObject.registerClass({
             this[name].get_child().attach(button, 1, 0, 1, 1);
         }
 
-        // Optional Software
         this.software_list.set_header_func(section_separators);
+        this.other_list.set_header_func(section_separators);
     }
 
     _onLinkButton(button) {

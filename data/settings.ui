@@ -959,7 +959,7 @@
                             <property name="can_focus">False</property>
                             <property name="label_xalign">0</property>
                             <child>
-                              <object class="GtkListBox">
+                              <object class="GtkListBox" id="other-list">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="hexpand">True</property>
@@ -967,7 +967,7 @@
                                 <property name="selection_mode">none</property>
                                 <property name="activate_on_single_click">False</property>
                                 <child>
-                                  <object class="GtkListBoxRow" id="webextension">
+                                  <object class="GtkListBoxRow">
                                     <property name="height_request">56</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
@@ -1114,7 +1114,7 @@
                                             <property name="halign">end</property>
                                             <property name="valign">center</property>
                                             <property name="vexpand">True</property>
-                                            <property name="label">&lt;a href="https://openrepos.net/content/piggz/kde-connect"&gt;SailfishOS&lt;/a&gt;</property>
+                                            <property name="label">&lt;a href="https://openrepos.net/content/piggz/kde-connect"&gt;Sailfish&lt;/a&gt;</property>
                                             <property name="use_markup">True</property>
                                           </object>
                                           <packing>
