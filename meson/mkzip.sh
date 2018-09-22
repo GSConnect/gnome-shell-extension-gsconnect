@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 ZIP_DESTDIR="${MESON_BUILD_ROOT}/_zip"
 ZIP_DIR="${MESON_BUILD_ROOT}/${UUID}"
