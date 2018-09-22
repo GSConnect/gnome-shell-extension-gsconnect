@@ -11,8 +11,11 @@ const Sms = imports.service.plugins.sms;
 var Metadata = {
     label: _('Telephony'),
     id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.Telephony',
-    incomingCapabilities: [ 'kdeconnect.telephony' ],
-    outgoingCapabilities: [],
+    incomingCapabilities: ['kdeconnect.telephony'],
+    outgoingCapabilities: [
+        'kdeconnect.telephony.request',
+        'kdeconnect.telephony.request_mute'
+    ],
     actions: {
         // Call Actions
         muteCall: {
@@ -38,6 +41,8 @@ var Plugin = GObject.registerClass({
 
     _init(device) {
         super._init(device, 'telephony');
+
+        this.contacts = this.service.contacts;
     }
 
     async handlePacket(packet) {
@@ -58,10 +63,13 @@ var Plugin = GObject.registerClass({
 
             // TODO: this is a backward compatible re-direct
             if (packet.body.event === 'sms') {
-                let sms = this.device.lookup_plugin('sms');
+                // Only forward if the device doesn't support new packets
+                if (!this.device.get_supported_outgoing('sms.messages')) {
+                    let sms = this.device.lookup_plugin('sms');
 
-                if (sms !== null) {
-                    sms._onSms(contact, message);
+                    if (sms !== null) {
+                        sms._onSms(contact, message);
+                    }
                 }
 
                 return;
@@ -264,11 +272,19 @@ var Plugin = GObject.registerClass({
      * Silence an incoming call
      */
     muteCall() {
-        this.device.sendPacket({
-            id: 0,
-            type: 'kdeconnect.telephony.request',
-            body: { action: 'mute' }
-        });
+        if (this.device.get_incoming_supported('telephony.request_mute')) {
+            this.device.sendPacket({
+                id: 0,
+                type: 'kdeconnect.telephony.request_mute',
+                body: { action: 'mute' }
+            });
+        } else {
+            this.device.sendPacket({
+                id: 0,
+                type: 'kdeconnect.telephony.request',
+                body: { action: 'mute' }
+            });
+        }
 
         this._restoreMediaState();
     }
