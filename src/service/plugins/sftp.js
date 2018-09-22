@@ -278,10 +278,11 @@ var Plugin = GObject.registerClass({
                         let e = new Error(msg);
 
                         if (msg.includes('incorrect signature')) {
-                            e.name = 'SshSignatureError';
-                            this.service.notify_error(e);
+                            e.name = 'SSHSignatureError';
+                            e.deviceName = this.device.name;
                         }
 
+                        this.service.notify_error(e);
                         throw e;
                     }
 
@@ -289,7 +290,7 @@ var Plugin = GObject.registerClass({
                     this._sshfs_check(stream);
                 }
             } catch (e) {
-                logWarning(e, `${this.device.name}: ${this.name}`);
+                debug(e);
                 this.unmount();
             }
         });

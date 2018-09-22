@@ -207,6 +207,7 @@ const Service = GObject.registerClass({
                     this.bluetoothService.broadcast(address);
                     break;
 
+                // We only do true "broadcasts" for LAN
                 default:
                     this.lanService.broadcast();
             }
@@ -643,6 +644,18 @@ const Service = GObject.registerClass({
                     });
 
                     notif.set_default_action_and_target('app.error', error);
+                    notif.set_priority(Gio.NotificationPriority.HIGH);
+                    break;
+
+                case 'SSHSignatureError':
+                    id = error.name;
+                    title = _('Remote Filesystem Error');
+                    body = _('%s is using an incompatible SSH library').format(error.deviceName) + '\n\n' +
+                           _('Click for more information');
+                    icon = new Gio.ThemedIcon({ name: 'dialog-error' });
+                    notif.set_default_action(
+                        `app.wiki('Troubleshooting#${error.name}')`
+                    );
                     notif.set_priority(Gio.NotificationPriority.HIGH);
                     break;
 
