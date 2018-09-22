@@ -19,7 +19,7 @@ else
     CHROMIUM_NMHDIR=${2}
 fi
 
-mkdir -p ${CHROMIUM_NMHDIR}/chromium/native-messaging-hosts
+mkdir -p ${CHROMIUM_NMHDIR}
 cp ${MESON_BUILD_ROOT}/org.gnome.shell.extensions.gsconnect.json-chrome \
    ${CHROMIUM_NMHDIR}/org.gnome.shell.extensions.gsconnect.json
 
