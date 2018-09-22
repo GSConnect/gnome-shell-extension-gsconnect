@@ -105,9 +105,9 @@ var Battery = GObject.registerClass({
     _onInterfaceRemoved(object, iface) {
         if (iface.g_interface_name === BATTERY_INTERFACE) {
             this.battery = iface;
+            this.battery = null;
             this.battery.disconnect(this._batteryId);
-            delete this._batteryId;
-            delete this.battery;
+            this._batteryId = 0;
         }
     }
 
@@ -136,8 +136,6 @@ var Icon = GObject.registerClass({
 
     _init(object, device) {
         super._init({
-            width: 48,
-            height: 48,
             reactive: true,
             track_hover: true,
             y_align: Clutter.ActorAlign.START,
@@ -207,7 +205,7 @@ var Icon = GObject.registerClass({
     _onInterfaceAdded(object, iface) {
         if (iface.g_interface_name === BATTERY_INTERFACE) {
             this.battery = iface;
-            iface._batteryId = iface.connect(
+            this._batteryId = iface.connect(
                 'g-properties-changed',
                 () => this.queue_repaint()
             );
@@ -216,16 +214,16 @@ var Icon = GObject.registerClass({
 
     _onInterfaceRemoved(object, iface) {
         if (iface.g_interface_name === BATTERY_INTERFACE) {
-            iface.disconnect(iface._batteryId);
+            iface.disconnect(this._batteryId);
             this.battery = null;
         }
     }
 
-    _onThemeChanged(theme) {
-        this.icon = this._theme.load_surface(
+    _onThemeChanged() {
+        this._surface = this._theme.load_surface(
             this.device.IconName,
             32,
-            1,
+            St.ThemeContext.get_for_stage(global.stage).scale_factor,
             null,
             Gtk.IconLookupFlags.FORCE_SIZE
         );
@@ -305,13 +303,13 @@ var Icon = GObject.registerClass({
         cr.setLineWidth(thickness);
 
         // Icon
-        cr.setSourceSurface(this.icon, xc - 16, yc - 16);
+        cr.setSourceSurface(this._surface, xc - 16, yc - 16);
         cr.paint();
 
         if (!this.device.Connected) {
             cr.setOperator(Cairo.Operator.HSL_SATURATION);
             cr.setSourceRGB(0, 0, 0);
-            cr.maskSurface(this.icon, xc - 16, yc - 16);
+            cr.maskSurface(this._surface, xc - 16, yc - 16);
             cr.fill();
 
             this.tooltip.markup = _('Reconnect');

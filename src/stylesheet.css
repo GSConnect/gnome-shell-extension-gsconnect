@@ -35,6 +35,11 @@
     padding: 0px;
 }
 
+.gsconnect-device-button > StDrawingArea {
+    width: 48px;
+    height: 48px;
+}
+
 .gsconnect-control-box {
     spacing: 0.25em;
 }
