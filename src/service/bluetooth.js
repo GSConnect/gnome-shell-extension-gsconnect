@@ -407,15 +407,13 @@ var ChannelService = GObject.registerClass({
         }
     }
 
-    broadcast(object_path=null) {
+    broadcast(object_path) {
         try {
-            let devices = this._devices;
+            let device = this._devices.get(object_path);
 
-            if (typeof object_path === 'string') {
-                devices = [this._devices.get(object_path)];
+            if (device) {
+                this._connectDevice(device);
             }
-
-            devices.forEach(this._connectDevice);
         } catch (e) {
             logWarning(e, 'Bluetooth.ChannelService');
         }

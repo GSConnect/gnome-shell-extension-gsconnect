@@ -209,7 +209,6 @@ const Service = GObject.registerClass({
 
                 default:
                     this.lanService.broadcast();
-                    this.bluetoothService.broadcast();
             }
         } catch (e) {
             logError(e);
