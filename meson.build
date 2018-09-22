@@ -40,6 +40,8 @@ run_target(
         find_program('env'),
         'UUID=' + extuuid,
         'DATADIR=' + datadir,
+        'LOCALEDIR=' + localedir,
+        'GSCHEMADIR=' + gschemadir,
         'INSTALL=false',
         'meson/mkzip.sh'
     ]
@@ -50,6 +52,8 @@ run_target(
         find_program('env'),
         'UUID=' + extuuid,
         'DATADIR=' + datadir,
+        'LOCALEDIR=' + localedir,
+        'GSCHEMADIR=' + gschemadir,
         'INSTALL=true',
         'meson/mkzip.sh'
     ]
