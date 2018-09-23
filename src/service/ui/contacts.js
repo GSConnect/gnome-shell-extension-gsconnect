@@ -135,11 +135,10 @@ var Avatar = GObject.registerClass({
             margin: 10,
             visible: true
         });
-        box.get_style_context().add_class('linked');
         popover.add(box);
 
         // Gnome Contacts
-        if (this.contact.folks_id && hasCommand('gnome-contacts')) {
+        if (this.contact.origin === 'folks' && hasCommand('gnome-contacts')) {
             let contactsItem = new Gtk.ModelButton({
                 centered: true,
                 icon: new Gio.ThemedIcon({ name: 'gnome-contacts-symbolic' }),
@@ -166,14 +165,14 @@ var Avatar = GObject.registerClass({
             popover.popup();
             return true;
         } else {
-            popover.emit('closed');
+            popover.destroy();
             return false;
         }
     }
 
     _popoverContacts(button, event) {
         GLib.spawn_command_line_async(
-            `gnome-contacts -i ${this.contact.folks_id}`
+            `gnome-contacts -i ${this.contact.id}`
         );
     }
 

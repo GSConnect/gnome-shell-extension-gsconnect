@@ -512,6 +512,20 @@ var ConversationWindow = GObject.registerClass({
     /**
      * Conversation List
      */
+    _addSummary(message) {
+        // Ensure we have a contact for each thread
+        let contact = this.contact_list.contacts.query({
+            name: message.address,
+            number: message.address,
+            single: true,
+            create: true
+        });
+
+        // Create a summary row and add it to the list
+        let summary = new ConversationSummary(contact, message);
+        this.conversation_list.add(summary);
+    }
+
     async _populateConversations() {
         // Clear any current threads
         this.conversation_list.foreach(row => row.destroy());
@@ -520,17 +534,7 @@ var ConversationWindow = GObject.registerClass({
         let sms = this.device.lookup_plugin('sms');
 
         for (let message of sms.threads) {
-            // Ensure we have a contact for each thread
-            let contact = this.contact_list.contacts.query({
-                name: message.address,
-                number: message.address,
-                single: true,
-                create: true
-            });
-
-            // Create a summary row and add it to the list
-            let summary = new ConversationSummary(contact, message);
-            this.conversation_list.add(summary);
+            await this._addSummary(message);
         }
     }
 

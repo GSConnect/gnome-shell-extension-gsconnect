@@ -238,7 +238,7 @@ var Plugin = GObject.registerClass({
         switch (packet.type) {
             // (Currently) this is always an answer to a request
             case 'kdeconnect.sms.messages':
-                this._handleMessage(packet);
+                this._handleMessages(packet);
                 break;
 
             default:
@@ -273,25 +273,38 @@ var Plugin = GObject.registerClass({
     _handleConversation(messages) {
         let number = messages[0].address;
 
-        // HACK: If we sent to a *slightly* different number than what KDE
-        // Connect uses, we check each message until we find one.
+        // HACK: If we send to a *slightly* different number than reported back,
+        // we check each message.address for a known contact.
         for (let message of messages) {
             let contact = this.contacts.query({
                 number: message.address,
                 single: true
             });
 
-            if (contact && contact.origin !== 'gsconnect') {
+            if (contact && contact.origin === 'folks') {
                 number = message.address;
                 break;
             }
         }
 
-        // TODO: messaging.js could just do this on demand, but this way it
-        // happens in a Promise and we know the last is the most recent...
-        this.conversations[number] = messages.sort((a, b) => {
-            return (a.date < b.date) ? -1 : 1;
-        });
+        let thread = this.conversations[number];
+
+        // Single messages might be a new message, if there's an existing thread
+        if (messages.length === 1 && thread) {
+            let id = messages[0]._id;
+
+            // A new message for an existing thread
+            if (thread.every(msg => msg._id !== id)) {
+                this.conversations[number].push(messages[0]);
+            }
+
+        // But multiples or new threads are always digests
+        } else {
+            // TODO: messaging.js could just do this on demand...
+            this.conversations[number] = messages.sort((a, b) => {
+                return (a.date < b.date) ? -1 : 1;
+            });
+        }
 
         // Update any open windows...
         let window = this._hasWindow(number);
@@ -310,16 +323,18 @@ var Plugin = GObject.registerClass({
      *
      * @param {kdeconnect.sms.messages} packet - An incoming packet
      */
-    _handleMessage(packet) {
+    _handleMessages(packet) {
         // If messages is empty there's nothing to do...
-        if (packet.body.messages.length < 1) {
+        if (packet.body.messages.length === 0) {
             return;
         }
 
+        let threads = packet.body.messages;
         let thread_id = packet.body.messages[0].thread_id;
+        let isSummary = threads.some(msg => msg.thread_id !== thread_id)
 
-        // If there are differing thread_id's then this is a list of threads
-        if (packet.body.messages.some(msg => msg.thread_id !== thread_id)) {
+        // If there's multiple thread_id's this is a list of threads (summary)
+        if (isSummary) {
             let threads = packet.body.messages;
 
             // Request each thread
