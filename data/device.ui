@@ -846,14 +846,13 @@
                         <property name="hexpand">True</property>
                         <property name="vexpand">False</property>
                         <property name="selection_mode">none</property>
-                        <property name="activate_on_single_click">False</property>
+                        <signal name="row-activated" handler="_onTelephonyRowActivated" swapped="no"/>
                         <child>
                           <object class="GtkListBoxRow">
                             <property name="height_request">56</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="hexpand">True</property>
-                            <property name="activatable">False</property>
                             <property name="selectable">False</property>
                             <child>
                               <object class="GtkGrid">

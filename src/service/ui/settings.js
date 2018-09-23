@@ -1116,6 +1116,11 @@ var Device = GObject.registerClass({
         this.calls_list.set_header_func(section_separators);
     }
 
+    _onTelephonyRowActivated(box, row) {
+        let button = row.get_child().get_child_at(1, 0);
+        button.active = !button.active;
+    }
+
     /**
      * Keyboard Shortcuts
      */
