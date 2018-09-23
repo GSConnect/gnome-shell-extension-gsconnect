@@ -282,7 +282,6 @@ var Store = GObject.registerClass({
             launcher.setenv('FOLKS_BACKENDS_DISABLED', 'telepathy', true);
 
             let proc = launcher.spawnv([
-                'python3',
                 gsconnect.extdatadir + '/service/components/folks.py'
             ]);
 
