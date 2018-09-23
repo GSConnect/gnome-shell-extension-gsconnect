@@ -102,29 +102,12 @@ const Service = GObject.registerClass({
         // https://github.com/KDE/kdeconnect-kde/blob/master/core/kdeconnectconfig.cpp#L119
         if (this._certificate === undefined) {
             let certPath = gsconnect.configdir + '/certificate.pem';
-            let certExists = GLib.file_test(certPath, GLib.FileTest.EXISTS);
             let keyPath = gsconnect.configdir + '/private.pem';
-            let keyExists = GLib.file_test(keyPath, GLib.FileTest.EXISTS);
 
-            if (!keyExists || !certExists) {
-                let proc = new Gio.Subprocess({
-                    argv: [
-                        'openssl', 'req',
-                        '-new', '-x509', '-sha256',
-                        '-out', certPath,
-                        '-newkey', 'rsa:2048', '-nodes',
-                        '-keyout', keyPath,
-                        '-days', '3650',
-                        '-subj', '/O=andyholmes.github.io/OU=GSConnect/CN=' + GLib.uuid_string_random()
-                    ],
-                    flags: Gio.SubprocessFlags.STDOUT_SILENCE | Gio.SubprocessFlags.STDERR_SILENCE
-                });
-                proc.init(null);
-                proc.wait_check(null);
-            }
-
-            // Load the certificate
-            this._certificate = Gio.TlsCertificate.new_from_files(certPath, keyPath);
+            this._certificate = Gio.TlsCertificate.new_for_files(
+                certPath,
+                keyPath
+            );
         }
 
         return this._certificate;

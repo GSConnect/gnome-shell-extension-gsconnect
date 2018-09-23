@@ -32,6 +32,28 @@ option(
   description: 'DBus session services directory'
 )
 
+# External program paths
+option(
+  'fusermount_path',
+  type: 'string',
+  value: 'fusermount',
+  description: 'Path to fusermount binary'
+)
+
+option(
+  'openssl_path',
+  type: 'string',
+  value: 'openssl',
+  description: 'Path to openssl binary'
+)
+
+option(
+  'sshfs_path',
+  type: 'string',
+  value: 'sshfs',
+  description: 'Path to sshfs binary'
+)
+
 # Enable/Disable Nautilus extension installation
 option(
   'nautilus',

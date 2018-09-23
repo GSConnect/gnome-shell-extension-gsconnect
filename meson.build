@@ -32,6 +32,9 @@ extconfig.set('GNOME_SHELL_LIBDIR', gnome_shell_libdir)
 extconfig.set('LOCALEDIR', localedir)
 extconfig.set('EXTDATADIR', extdatadir)
 extconfig.set('GSCHEMADIR', gschemadir)
+extconfig.set('FUSERMOUNT_PATH', get_option('fusermount_path'))
+extconfig.set('OPENSSL_PATH', get_option('openssl_path'))
+extconfig.set('SSHFS_PATH', get_option('sshfs_path'))
 
 # ZIP targets for user extension builds
 run_target(

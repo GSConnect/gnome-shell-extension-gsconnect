@@ -17,22 +17,10 @@ debug('loading service/__init__.js');
  * @param {string} name - the name of the command
  */
 window.hasCommand = function(cmd) {
-    let result;
-
     try {
-        let proc = new Gio.Subprocess({
-            argv: ['which', cmd],
-            flags: Gio.SubprocessFlags.STDOUT_PIPE
-        });
-        proc.init(null);
-
-        let stdout = proc.communicate_utf8(null, null)[1];
-        result = (stdout.length);
+        return (GLib.find_program_in_path(cmd) !== null);
     } catch (e) {
-        logError(e);
-        result = false;
-    } finally {
-        return result;
+        return false;
     }
 };
 
@@ -167,6 +155,30 @@ Object.defineProperties(Gio.Menu.prototype, {
 /**
  * Extend Gio.TlsCertificate with some convenience methods
  */
+Gio.TlsCertificate.new_for_files = function (certPath, keyPath) {
+    let certExists = GLib.file_test(certPath, GLib.FileTest.EXISTS);
+    let keyExists = GLib.file_test(keyPath, GLib.FileTest.EXISTS);
+
+    if (!certExists || !keyExists) {
+        let proc = new Gio.Subprocess({
+            argv: [
+                gsconnect.metadata.bin.openssl, 'req',
+                '-new', '-x509', '-sha256',
+                '-out', certPath,
+                '-newkey', 'rsa:2048', '-nodes',
+                '-keyout', keyPath,
+                '-days', '3650',
+                '-subj', '/O=andyholmes.github.io/OU=GSConnect/CN=' + GLib.uuid_string_random()
+            ],
+            flags: Gio.SubprocessFlags.STDOUT_SILENCE | Gio.SubprocessFlags.STDERR_SILENCE
+        });
+        proc.init(null);
+        proc.wait_check(null);
+    }
+
+    return Gio.TlsCertificate.new_from_files(certPath, keyPath);
+}
+
 Object.defineProperties(Gio.TlsCertificate.prototype, {
     /**
      * Compute a SHA1 fingerprint of the certificate.
@@ -178,7 +190,7 @@ Object.defineProperties(Gio.TlsCertificate.prototype, {
         value: function() {
             if (!this.__fingerprint) {
                 let proc = new Gio.Subprocess({
-                    argv: ['openssl', 'x509', '-noout', '-fingerprint', '-sha1', '-inform', 'pem'],
+                    argv: [gsconnect.metadata.bin.openssl, 'x509', '-noout', '-fingerprint', '-sha1', '-inform', 'pem'],
                     flags: Gio.SubprocessFlags.STDIN_PIPE | Gio.SubprocessFlags.STDOUT_PIPE
                 });
                 proc.init(null);
@@ -201,7 +213,7 @@ Object.defineProperties(Gio.TlsCertificate.prototype, {
         get: function() {
             if (!this.__common_name) {
                 let proc = new Gio.Subprocess({
-                    argv: ['openssl', 'x509', '-noout', '-subject', '-inform', 'pem'],
+                    argv: [gsconnect.metadata.bin.openssl, 'x509', '-noout', '-subject', '-inform', 'pem'],
                     flags: Gio.SubprocessFlags.STDIN_PIPE | Gio.SubprocessFlags.STDOUT_PIPE
                 });
                 proc.init(null);
@@ -224,7 +236,7 @@ Object.defineProperties(Gio.TlsCertificate.prototype, {
         get: function() {
             if (!this.__certificate_der) {
                 let proc = new Gio.Subprocess({
-                    argv: ['openssl', 'x509', '-outform', 'der', '-inform', 'pem'],
+                    argv: [gsconnect.metadata.bin.openssl, 'x509', '-outform', 'der', '-inform', 'pem'],
                     flags: Gio.SubprocessFlags.STDIN_PIPE | Gio.SubprocessFlags.STDOUT_PIPE
                 });
                 proc.init(null);

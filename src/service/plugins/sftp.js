@@ -181,7 +181,7 @@ var Plugin = GObject.registerClass({
      */
     _sshfs() {
         let argv = [
-            'sshfs',
+            gsconnect.metadata.bin.sshfs,
             `${this._user}@${this._ip}:${this._root}`,
             this._mountpoint,
             '-p', this._port.toString(),
@@ -396,7 +396,7 @@ var Plugin = GObject.registerClass({
     _umount() {
         try {
             if (hasCommand('fusermount')) {
-                GLib.spawn_command_line_async(`fusermount -uz ${this._mountpoint}`);
+                GLib.spawn_command_line_async(`${gsconnect.metadata.bin.fusermount} -uz ${this._mountpoint}`);
             } else {
                 GLib.spawn_command_line_async(`umount ${this._mountpoint}`);
             }
