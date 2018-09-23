@@ -77,7 +77,7 @@ var Plugin = GObject.registerClass({
             const Caribou = imports.gi.Caribou;
             this._vkbd = Caribou.DisplayAdapter.get_default();
         } catch (e) {
-            debug(e);
+            logWarning(e);
         }
 
         this.settings.bind(

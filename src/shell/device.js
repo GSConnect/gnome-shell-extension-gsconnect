@@ -104,9 +104,8 @@ var Battery = GObject.registerClass({
 
     _onInterfaceRemoved(object, iface) {
         if (iface.g_interface_name === BATTERY_INTERFACE) {
-            this.battery = iface;
+            iface.disconnect(this._batteryId);
             this.battery = null;
-            this.battery.disconnect(this._batteryId);
             this._batteryId = 0;
         }
     }

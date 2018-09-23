@@ -182,18 +182,17 @@ var _debugFunc = function(msg, prefix=null) {
         }
 
         // Append a prefix for context
-        if (prefix !== null) {
-            msg = `${prefix}: ${msg}`;
-        }
+        msg = (prefix !== null) ? `${prefix}: ${msg}`: msg;
 
         GLib.log_structured(
-            'gsconnect',
+            'GSConnect',
             GLib.LogLevelFlags.LEVEL_MESSAGE,
             {
+                MESSAGE: `DEBUG: [${hdr}]: ${msg}`,
+                SYSLOG_IDENTIFIER: 'org.gnome.Shell.Extensions.GSConnect',
                 CODE_FILE: file,
                 CODE_FUNC: `${func}`,
-                CODE_LINE: `${line}`,
-                MESSAGE: `DEBUG: [${hdr}]: ${msg}`
+                CODE_LINE: `${line}`
             }
         );
     } catch (e) {
@@ -201,7 +200,7 @@ var _debugFunc = function(msg, prefix=null) {
     }
 };
 
-window.debug = gsconnect.settings.get_boolean('debug') ? _debugFunc : function() {};
+window.debug = gsconnect.settings.get_boolean('debug') ? _debugFunc : () => {};
 
 gsconnect.settings.connect('changed::debug', () => {
     if (gsconnect.settings.get_boolean('debug')) {

@@ -383,7 +383,6 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
     destroy() {
         // Unhook from any ObjectManager events
         this.manager.disconnect(this._interfaceAddedId);
-        this.manager.disconnect(this._interfaceRemovedId);
         this.manager.disconnect(this._objectRemovedId);
         this.manager.disconnect(this._nameOwnerId);
 

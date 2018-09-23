@@ -446,8 +446,7 @@ var Channel = class Channel {
                             debug('queued', packet.type);
                             this.send(packet);
                         } else {
-                            logError(e, this.identity.body.deviceName);
-                            reject(e);
+                            debug(e);
                         }
                     }
                 }

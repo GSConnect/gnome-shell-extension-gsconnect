@@ -237,18 +237,18 @@ var ChannelService = GObject.registerClass({
 
     vfunc_interface_proxy_properties_changed(object, iface, changed, invalidated) {
         if (iface.g_interface_name === 'org.bluez.Device1') {
+
+            // Try connecting if the device has just connected or resolved services
             changed = changed.full_unpack();
 
-            switch (true) {
-                // Try connecting if the device has just connected or resolved services
-                case changed.Connected:
-                case changed.ServicesResolved:
+            if (changed.hasOwnProperty('Connected')) {
+                if (changed.Connected) {
                     this._connectDevice(iface);
-                    break;
-
-                case (changed.Connected === false):
+                } else {
                     this.RequestDisconnection(iface.g_object_path);
-                    break;
+                }
+            } else if (changed.ServicesResolved) {
+                this._connectDevice(iface);
             }
         }
     }
@@ -261,7 +261,7 @@ var ChannelService = GObject.registerClass({
     async _connectDevice(iface) {
         try {
             // This device already has a connected or connecting channel
-            if (iface._channel !== null) {
+            if (iface._channel) {
                 debug('already connected', iface.Alias);
                 return;
             }

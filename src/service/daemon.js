@@ -325,7 +325,7 @@ const Service = GObject.registerClass({
             ['log', this._logAction.bind(this)],
             ['debugger', this._debuggerAction.bind(this)],
             ['wiki', this._wikiAction.bind(this), 's'],
-            ['quit', this.quit.bind(this)]
+            ['quit', () => this.quit()]
         ];
 
         for (let [name, callback, type] of actions) {

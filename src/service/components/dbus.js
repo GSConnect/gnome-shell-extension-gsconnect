@@ -375,14 +375,6 @@ var Interface = GObject.registerClass({
 
 
 /**
- *
- */
-var ExtendedFlags = {
-    DO_NOT_CACHE_PROPERTIES: 1,
-};
-
-
-/**
  * Wrapper for org.freedesktop.DBus.Properties.Get
  *
  * @param {string} name - The property name
@@ -392,8 +384,8 @@ function _proxyGetter(name) {
     let variant;
 
     try {
-        if (this.extended_flags & ExtendedFlags.DO_NOT_CACHE_PROPERTIES) {
-            // Call returns '(v)' so unpack the tuple and return the variant
+        if (this.no_cache) {
+            // Call returns '(v)' so unpack the tuple and return that variant
             variant = this.call_sync(
                 'org.freedesktop.DBus.Properties.Get',
                 new GLib.Variant('(ss)', [this.g_interface_name, name]),
@@ -401,15 +393,13 @@ function _proxyGetter(name) {
                 -1,
                 null
             ).deep_unpack()[0];
-
-            return full_unpack(variant);
         }
     } catch (e) {
         logError(e);
 
     // Fallback to cached property...
     } finally {
-        variant = this.get_cached_property(name);
+        variant = variant ? variant : this.get_cached_property(name);
         return variant ? full_unpack(variant) : null;
     }
 }
@@ -477,6 +467,7 @@ function _proxyInvoker(method, ...argv) {
                 // If return has single arg, only return that or null
                 if (method.out_args.length === 1) {
                     resolve((res) ? res.deep_unpack()[0] : null);
+
                 // Otherwise return an array (possibly empty)
                 } else {
                     resolve((res) ? res.deep_unpack() : []);
@@ -542,13 +533,12 @@ function makeInterfaceProxy(info) {
 
     // GProperty ParamSpec's
     let properties_ = {
-        'extended-flags': GObject.ParamSpec.int(
-            'extended-flags',
-            'ExtendedFlags',
-            'Flags specific to this extended proxy',
+        'no-cache': GObject.ParamSpec.boolean(
+            'no-cache',
+            'No Cache',
+            'Fetch properties synchronously',
             GObject.ParamFlags.READWRITE,
-            0, GLib.MAXINT32,
-            0
+            null
         )
     };
 
@@ -634,10 +624,9 @@ function makeInterfaceProxy(info) {
             super._init(Object.assign({
                 g_connection: Gio.DBus.session,
                 g_interface_info: info,
-                g_interface_name: info.name
+                g_interface_name: info.name,
+                no_cache: false
             }, params));
-
-            this.extended_flags = 0;
 
             // Proxy methods and properties
             proxyMethods(this, this.g_interface_info);

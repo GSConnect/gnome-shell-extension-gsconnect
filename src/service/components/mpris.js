@@ -161,7 +161,7 @@ var Manager = GObject.registerClass({
                     g_connection: Gio.DBus.session,
                     g_name: name,
                     g_object_path: '/org/mpris/MediaPlayer2',
-                    extended_flags: DBus.ExtendedFlags.DO_NOT_CACHE_PROPERTIES
+                    no_cache: true
                 }).init_promise();
 
                 player.Identity = mediaPlayer.Identity.slice(0);

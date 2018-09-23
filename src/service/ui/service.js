@@ -83,7 +83,7 @@ var BluetoothComboBox = GObject.registerClass({
         this.model.clear();
 
         if (this.has_devices) {
-            for (let device of this.bluetoothService.devices) {
+            for (let device of this.service.bluetoothService.devices) {
                 let pixbuf = this._theme.load_icon(
                     device.Icon,
                     16,
@@ -97,7 +97,7 @@ var BluetoothComboBox = GObject.registerClass({
                 );
             }
 
-            this.active_id = this.bluetoothService.devices[0].g_object_path;
+            this.active_id = this.service.bluetoothService.devices[0].g_object_path;
         } else {
             this.model.set(this.model.append(), [1, 2], [_('No Devices'), '0']);
             this.active_id = '0';
