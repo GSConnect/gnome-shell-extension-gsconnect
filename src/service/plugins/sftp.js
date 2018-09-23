@@ -53,7 +53,7 @@ var Plugin = GObject.registerClass({
         this._mounting = false;
         this._port = 0;
 
-        if (!hasCommand('sshfs')) {
+        if (!hasCommand(gsconnect.metadata.bin.sshfs)) {
             this.destroy();
 
             let error = new Error('sshfs');
@@ -394,17 +394,27 @@ var Plugin = GObject.registerClass({
      * See: https://phabricator.kde.org/D6945
      */
     _umount() {
-        try {
-            if (hasCommand('fusermount')) {
-                GLib.spawn_command_line_async(`${gsconnect.metadata.bin.fusermount} -uz ${this._mountpoint}`);
-            } else {
-                GLib.spawn_command_line_async(`umount ${this._mountpoint}`);
-            }
+        let argv = ['umount', this._mountpoint];
 
-            this._mounted = false;
-        } catch (e) {
-            logWarning(e, this.device.name);
+        if (hasCommand(gsconnect.metadata.bin.fusermount)) {
+            argv = [gsconnect.metadata.bin.fusermount, '-uz', this._mountpoint]
         }
+
+        let proc = new Gio.Subprocess({
+            argv: argv,
+            flags: Gio.SubprocessFlags.NONE
+        });
+        proc.init(null);
+
+        proc.wait_check_async(null, (proc, res) => {
+            try {
+                proc.wait_check_finish(res);
+            } catch (e) {
+                // Silence errors
+            } finally {
+                this._mounted = false;
+            }
+        });
     }
 
     /**
