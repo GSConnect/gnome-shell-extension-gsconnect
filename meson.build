@@ -170,9 +170,12 @@ gnome.compile_resources(
 # Gettext Translations
 subdir('po')
 
-meson.add_install_script(
-  find_program('env').path(),
-  'GSCHEMADIR=' + gschemadir,
-  join_paths(meson.source_root(), 'meson/post-install.sh')
-)
+# Post-Install Script for distributions without the hooks
+if get_option('post_install')
+    meson.add_install_script(
+      find_program('env').path(),
+      'GSCHEMADIR=' + gschemadir,
+      join_paths(meson.source_root(), 'meson/post-install.sh')
+    )
+endif
 
