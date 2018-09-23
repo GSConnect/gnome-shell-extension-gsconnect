@@ -12,8 +12,16 @@ const PluginsBase = imports.service.plugins.base;
 var Metadata = {
     label: _('Notifications'),
     id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.Notification',
-    incomingCapabilities: ['kdeconnect.notification', 'kdeconnect.notification.request'],
-    outgoingCapabilities: ['kdeconnect.notification', 'kdeconnect.notification.reply', 'kdeconnect.notification.request'],
+    incomingCapabilities: [
+        'kdeconnect.notification',
+        'kdeconnect.notification.request'
+    ],
+    outgoingCapabilities: [
+        'kdeconnect.notification',
+        // TODO: not supported
+        'kdeconnect.notification.reply',
+        'kdeconnect.notification.request'
+    ],
     actions: {
         withdrawNotification: {
             label: _('Cancel Notification'),

@@ -271,18 +271,12 @@ var Listener = class Listener {
         try {
             appId = await this._getAppId(sender, appName);
             appInfo = Gio.DesktopAppInfo.new(`${appId}.desktop`);
-
-            let appInfoName = appInfo.get_name();
-
-            // Cache name lookup
-            if (appName) {
-                this._names[appName] = appInfoName;
-            }
-
-            return appInfoName;
+            this._names[appName] = appInfo.get_name();
+            appName = appInfo.get_name();
         } catch (e) {
-            debug(e);
-            return appName
+            // Silence errors
+        } finally {
+            return appName;
         }
     }
 
