@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+
 # This has been modified from the work shimming Gee by Hugo Sena Ribeiro. The
 # original code is available here: https://github.com/hugosenari/folks
 
@@ -11,35 +12,36 @@ import uuid
 
 import gi
 gi.require_version('Folks', '0.6')
-import ctypes as pyc
-from ctypes import pythonapi
 from gi.repository import Folks, GLib, GObject
 
-try:
-    pyc.cdll.LoadLibrary('libgobject-2.0.so')
-    lego = pyc.CDLL('libgobject-2.0.so')
-except:
-    pyc.cdll.LoadLibrary('libgobject-2.0.so.0')
-    lego = pyc.CDLL('libgobject-2.0.so.0')
+import ctypes
+from ctypes import pythonapi
 
-lego.g_type_name.restype = pyc.c_char_p
-lego.g_type_name.argtypes = (pyc.c_ulonglong,)
-pythonapi.PyCapsule_GetName.restype = pyc.c_char_p
-pythonapi.PyCapsule_GetName.argtypes = (pyc.py_object,)
-pythonapi.PyCapsule_GetPointer.restype = pyc.c_void_p
-pythonapi.PyCapsule_GetPointer.argtypes = (pyc.py_object, pyc.c_char_p)
+try:
+    ctypes.cdll.LoadLibrary('libgobject-2.0.so')
+    lego = ctypes.CDLL('libgobject-2.0.so')
+except:
+    ctypes.cdll.LoadLibrary('libgobject-2.0.so.0')
+    lego = ctypes.CDLL('libgobject-2.0.so.0')
+
+lego.g_type_name.restype = ctypes.c_char_p
+lego.g_type_name.argtypes = (ctypes.c_ulonglong,)
+pythonapi.PyCapsule_GetName.restype = ctypes.c_char_p
+pythonapi.PyCapsule_GetName.argtypes = (ctypes.py_object,)
+pythonapi.PyCapsule_GetPointer.restype = ctypes.c_void_p
+pythonapi.PyCapsule_GetPointer.argtypes = (ctypes.py_object, ctypes.c_char_p)
 
 
 ###############################################################################
 # GObject
 ###############################################################################
 
-class _PyGObject_Functions(pyc.Structure):
+class _PyGObject_Functions(ctypes.Structure):
     _fields_ = [
-        ('pygobject_register_class', pyc.PYFUNCTYPE(pyc.c_void_p)),
-        ('pygobject_register_wrapper', pyc.PYFUNCTYPE(pyc.c_void_p)),
-        ('pygobject_lookup_class', pyc.PYFUNCTYPE(pyc.c_void_p)),
-        ('pygobject_new', pyc.PYFUNCTYPE(pyc.py_object, pyc.c_void_p)),
+        ('pygobject_register_class', ctypes.PYFUNCTYPE(ctypes.c_void_p)),
+        ('pygobject_register_wrapper', ctypes.PYFUNCTYPE(ctypes.c_void_p)),
+        ('pygobject_lookup_class', ctypes.PYFUNCTYPE(ctypes.c_void_p)),
+        ('pygobject_new', ctypes.PYFUNCTYPE(ctypes.py_object, ctypes.c_void_p)),
     ]
 
 
@@ -76,27 +78,27 @@ class _PyGO_CAPI(object):
 INT, ADDRESS, NONE, NOT_IMPLEMENTED = range(4)
 
 G_PY_INT = {
-    (GObject.TYPE_BOOLEAN,   pyc.c_bool),
-    (GObject.TYPE_UNICHAR,   pyc.c_ubyte),
-    (GObject.TYPE_UCHAR,     pyc.c_ubyte),
-    (GObject.TYPE_CHAR,      pyc.c_char),
-    (GObject.TYPE_INT,       pyc.c_int),
-    (GObject.TYPE_UINT,      pyc.c_uint),
-    (GObject.TYPE_FLAGS,     pyc.c_uint),
+    (GObject.TYPE_BOOLEAN,   ctypes.c_bool),
+    (GObject.TYPE_UNICHAR,   ctypes.c_ubyte),
+    (GObject.TYPE_UCHAR,     ctypes.c_ubyte),
+    (GObject.TYPE_CHAR,      ctypes.c_char),
+    (GObject.TYPE_INT,       ctypes.c_int),
+    (GObject.TYPE_UINT,      ctypes.c_uint),
+    (GObject.TYPE_FLAGS,     ctypes.c_uint),
 }
 
 G_PY_ADDRESS = {
-    (GObject.TYPE_LONG,      pyc.c_long),
-    (GObject.TYPE_DOUBLE,    pyc.c_double),
-    (GObject.TYPE_ULONG,     pyc.c_ulong),
-    (GObject.TYPE_INT64,     pyc.c_longlong),
-    (GObject.TYPE_UINT64,    pyc.c_ulonglong),
-    (GObject.TYPE_ENUM,      pyc.c_ulonglong),
-    (GObject.TYPE_FLOAT,     pyc.c_float),
-    (GObject.TYPE_STRING,    pyc.c_char_p),
-    (GObject.TYPE_POINTER,   pyc.c_void_p),
-    (GObject.TYPE_OBJECT,    pyc.c_void_p),
-    (GObject.TYPE_PYOBJECT,  pyc.py_object),
+    (GObject.TYPE_LONG,      ctypes.c_long),
+    (GObject.TYPE_DOUBLE,    ctypes.c_double),
+    (GObject.TYPE_ULONG,     ctypes.c_ulong),
+    (GObject.TYPE_INT64,     ctypes.c_longlong),
+    (GObject.TYPE_UINT64,    ctypes.c_ulonglong),
+    (GObject.TYPE_ENUM,      ctypes.c_ulonglong),
+    (GObject.TYPE_FLOAT,     ctypes.c_float),
+    (GObject.TYPE_STRING,    ctypes.c_char_p),
+    (GObject.TYPE_POINTER,   ctypes.c_void_p),
+    (GObject.TYPE_OBJECT,    ctypes.c_void_p),
+    (GObject.TYPE_PYOBJECT,  ctypes.py_object),
 }
 
 G_PY_NONE = {
@@ -148,7 +150,7 @@ def gtype_and_ctype_of(gtype_id=0):
             gtype = GObject.GType.from_name(name)
             parent_id = hash(gtype.parent)
             parent = TYPES_ID.get(parent_id, _default)
-            g_and_c_type = (gtype, pyc.c_void_p, parent[2])
+            g_and_c_type = (gtype, ctypes.c_void_p, parent[2])
 
     return g_and_c_type
 
