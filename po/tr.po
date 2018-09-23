@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-01-05 18:43-0800\n"
-"PO-Revision-Date: 2018-09-21 18:27+0300\n"
-"Language-Team: \n"
+"PO-Revision-Date: 2018-09-24 00:12+0300\n"
+"Language-Team: <orhanenginokay@hotmail.com>, <abtektas@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -27,13 +27,13 @@ msgstr "SMS Gönder"
 #: src/extension.js:183 src/widgets/device.js:201
 #, javascript-format
 msgid "Locate %s"
-msgstr "%s yerini sapta"
+msgstr "%s yerini bul"
 
 #. TRANSLATORS: Open the device's list of browseable directories
 #: src/extension.js:191 src/service/plugins/sftp.js:21
 #: src/widgets/device.js:203
 msgid "Browse Files"
-msgstr "Dosyaları Tara"
+msgstr "Dosyaları Görüntüle"
 
 #. TRANSLATORS: Open the file chooser for sending files/links
 #: src/extension.js:198 src/widgets/device.js:205
@@ -68,7 +68,7 @@ msgstr "Bağla %s başarısız oldu"
 
 #: src/extension.js:417
 msgid "Unmount"
-msgstr "Çöz"
+msgstr "Ayır"
 
 #: src/extension.js:535
 msgid "Mobile Devices"
@@ -204,7 +204,7 @@ msgstr ""
 
 #: src/service/device.js:386
 msgid "Reject"
-msgstr "Reddetmek"
+msgstr "Reddet"
 
 #: src/service/device.js:390
 msgid "Accept"
@@ -255,7 +255,7 @@ msgstr "Pano alımı başırısız oldu"
 
 #: src/service/plugins/findmyphone.js:21 src/service/plugins/findmyphone.js:55
 msgid "Locate Device"
-msgstr "Cihazın Yerini Sapta"
+msgstr "Cihazın Yerini Bul"
 
 #: src/service/plugins/findmyphone.js:22
 msgid "Find a device by making it ring"
@@ -264,7 +264,7 @@ msgstr "Zil sesi çalarak cihazı bul"
 #: src/service/plugins/findmyphone.js:56
 #, javascript-format
 msgid "%s asked to locate this device"
-msgstr " %s cihazın yerini belirlemek için sor"
+msgstr " %s cihazın yerini bulmak için sor"
 
 #: src/service/plugins/findmyphone.js:69
 msgid "Found"
@@ -284,7 +284,7 @@ msgstr "Fare ve klavyeyi uzaktan kontrol et"
 
 #: src/service/plugins/mousepad.js:44
 msgid "Can't run in Wayland session"
-msgstr "Wayland sezonunda çalıştırma"
+msgstr "Wayland oturumunda çalışmaz"
 
 #: src/service/plugins/mousepad.js:51
 msgid "Failed to initialize Atspi"
@@ -292,11 +292,11 @@ msgstr "Atspi başlatılamadı"
 
 #: src/service/plugins/mpris.js:19
 msgid "Media Player Control"
-msgstr "Medya Oyantıcı Kontrolü"
+msgstr "Medya Oynatıcı Kontrolü"
 
 #: src/service/plugins/mpris.js:20
 msgid "Control MPRIS2 enabled media players"
-msgstr "MPRIS2 etkin medya oynatıcılarını kontro et"
+msgstr "MPRIS2 etkin medya oynatıcılarını kontrol et"
 
 #: src/service/plugins/notification.js:22
 msgid "Notifications"
@@ -370,11 +370,11 @@ msgstr "Komut"
 
 #: src/service/plugins/sftp.js:22
 msgid "Mount and browse device filesystems"
-msgstr "Cihaz dosya sistemini bağla ve araştır"
+msgstr "Cihaz dosya sistemini bağla ve görüntüle"
 
 #: src/service/plugins/sftp.js:61
 msgid "SSHFS not installed"
-msgstr "SSHFS yüklenemedi"
+msgstr "SSHFS yüklü değil"
 
 #: src/service/plugins/share.js:22
 msgid "Share"
@@ -406,11 +406,11 @@ msgstr "\"%s\" tarafından %s alındı"
 
 #: src/service/plugins/share.js:131
 msgid "Open Folder"
-msgstr "Klasör Aç"
+msgstr "Klasörü Aç"
 
 #: src/service/plugins/share.js:138
 msgid "Open File"
-msgstr "Dosya Aç"
+msgstr "Dosyayı Aç"
 
 #: src/service/plugins/share.js:163 src/service/plugins/share.js:392
 msgid "Transfer Failed"
@@ -485,7 +485,7 @@ msgstr "Arama bildirimi ve SMS mesajlaşma"
 #. TRANSLATORS: Incoming Call
 #: src/service/plugins/telephony.js:213
 msgid "Incoming Call"
-msgstr "Genel Çağrı"
+msgstr "Gelen Çağrı"
 
 #. TRANSLATORS: eg. Incoming call from John Smith on Google Pixel
 #: src/service/plugins/telephony.js:216
@@ -508,7 +508,7 @@ msgstr "Devam Eden Çağrı"
 #: src/service/plugins/telephony.js:297
 #, javascript-format
 msgid "Call in progress with %s on %s"
-msgstr "%s üzerinden %s ile devam eden çağrı"
+msgstr "%s üzerinde %s ile devam eden çağrı"
 
 #: src/service/plugins/telephony.js:449 src/widgets/telephony.js:302
 msgid "Unknown Number"
@@ -539,7 +539,7 @@ msgstr "Devam Eden Çağrılar"
 
 #: src/service/plugins/telephony.js:1096 src/service/plugins/telephony.js:1101
 msgid "The <b>Media Player Control</b> plugin must be enabled"
-msgstr "Eklenti <b>Medya Oynatıcı Kontorlü</b> etkin olmalı"
+msgstr "Eklenti <b>Medya Oynatıcı Kontrolü</b> etkin olmalı"
 
 #: src/service/plugins/telephony.js:1108 src/service/plugins/telephony.js:1111
 #: src/service/plugins/telephony.js:1114
@@ -551,7 +551,7 @@ msgid ""
 "Ensure that devices are on the same local network with ports 1716 to 1764 "
 "open for TCP and UDP connections."
 msgstr ""
-"Cihazların aynı yerel ağda 1716 ile 1764 TCP ve UDP portlarının açık "
+"Cihazların TCP ve UDP bağlantılarının 1716 ve 1764 portuyla aynı bağlantıda "
 "olduğundan emin olun."
 
 #: src/widgets/device.js:30
@@ -560,7 +560,7 @@ msgid ""
 "To connect an Android device, install the KDE Connect Android app from the "
 "<a href=\"%s\">Google Play Store</a> or <a href=\"%s\">F-Droid</a>."
 msgstr ""
-"Android cihaza bağlanabilmek için, KDE Connect Android uygulamasını <a href="
+"Android cihazınızı bağlamak için, KDE Connect Android uygulamasını <a href="
 "\"%s\">Google Play Store</a> ya da <a href=\"%s\">F-Droid</a>. üzerinden "
 "yükleyin."
 
@@ -581,7 +581,7 @@ msgstr "Hata: %s"
 #. TRANSLATORS: Open the device menu
 #: src/widgets/device.js:197
 msgid "Open Menu"
-msgstr "Menü Aç"
+msgstr "Menüyü Aç"
 
 #: src/widgets/device.js:243
 msgid "Refresh"
@@ -595,19 +595,19 @@ msgstr "Bağlanılan Cihazlar"
 #: src/widgets/device.js:438 src/widgets/shell.js:599
 #, javascript-format
 msgid "Reconnect <b>%s</b>"
-msgstr "Yeniden bağlanıldı <b>%s</b>"
+msgstr "<b>%s</b> cihaza yeniden bağlanın"
 
 #. TRANSLATORS: eg. Unpair <b>Google Pixel</b>
 #: src/widgets/device.js:479
 #, javascript-format
 msgid "Unpair <b>%s</b>"
-msgstr "Eşleşemedi <b>%s</b>"
+msgstr "<b>%s</b> cihazla eşleşmeyi kaldır"
 
 #. TRANSLATORS: eg. Pair <b>Google Pixel</b>
 #: src/widgets/device.js:488 src/widgets/shell.js:609
 #, javascript-format
 msgid "Pair <b>%s</b>"
-msgstr "Eşleşti <b>%s</b>"
+msgstr " <b>%s</b> cihazı ile eşleş"
 
 #. TRANSLATORS: Remote and local TLS Certificate fingerprint
 #. PLEASE KEEP NEWLINE CHARACTERS (\n)
@@ -642,7 +642,7 @@ msgstr "Eklentiler"
 #. Keyboard Shortcuts
 #: src/widgets/device.js:511
 msgid "Keyboard Shortcuts"
-msgstr "Klavye Kısayolu"
+msgstr "Klavye Kısayolları"
 
 #: src/widgets/device.js:521
 msgid "Desktop"
@@ -679,7 +679,7 @@ msgstr "Klavye Kısayolu Mevcut Değil"
 #: src/widgets/keybindings.js:171
 msgid ""
 "The requested keyboard shortcut is already in use and can't be overridden."
-msgstr "İstenen klavye kısayolu kullanılmakta ve üzerine yazılamaz."
+msgstr "İstenen klavye kısayolu kullanılmakta ve üzerine atanamaz."
 
 #. TRANSLATORS: Fully Charged
 #: src/widgets/shell.js:549
@@ -690,13 +690,13 @@ msgstr "Tamamen Dolu"
 #: src/widgets/shell.js:552
 #, javascript-format
 msgid "%d%% (Estimating…)"
-msgstr "%d%% (Tahmin ediliyor…)"
+msgstr "%d%% (Hesaplanıyor…)"
 
 #. TRANSLATORS: <percentage> (<hours>:<minutes> Until Full)
 #: src/widgets/shell.js:561
 #, javascript-format
 msgid "%d%% (%d∶%02d Until Full)"
-msgstr "%d%% (%d∶%02d Dolacak)"
+msgstr "%d%% (Tam olu olmasına kalan süre: %d∶%02d)"
 
 #. TRANSLATORS: <percentage> (<hours>:<minutes> Remaining)
 #: src/widgets/shell.js:568
@@ -716,7 +716,7 @@ msgstr "Konuşma başlatmak için kişi ekle"
 #: src/widgets/telephony.js:264 src/widgets/telephony.js:285
 #: src/widgets/telephony.js:340
 msgid "Unknown Contact"
-msgstr "Bilinmeyen Bağlantı"
+msgstr "Bilinmeyen Kişi"
 
 #: src/widgets/telephony.js:334
 #, javascript-format
@@ -795,7 +795,7 @@ msgstr "Yeni SMS Görüşmesi"
 
 #: src/widgets/telephony.js:1012 src/widgets/telephony.js:1024
 msgid "Share Link"
-msgstr "Bağlantı Paylaşımı"
+msgstr "Bağlantıyı Paylaş"
 
 #: src/widgets/telephony.js:1062
 msgid "New Message"
@@ -847,7 +847,7 @@ msgstr "Nautilus Entegrasyonu"
 
 #: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:35
 msgid "Send files from the file browser context menu"
-msgstr "Dosya tarayıcı durum menüsünden dosya gönder"
+msgstr "Dosya görüntüleme menüsünden dosya gönder"
 
 #: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:40
 msgid "Share links with devices and contacts from the web browser"
@@ -895,7 +895,7 @@ msgstr "Otomatik Bağla"
 
 #: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:136
 msgid "Download Directory"
-msgstr "Rehberi İndir"
+msgstr "Dizini İndir"
 
 #: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:141
 msgid "Use Subdirectory"
