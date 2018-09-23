@@ -144,19 +144,25 @@ var Icon = GObject.registerClass({
         this.object = object;
         this.device = device;
 
-        this.tooltip = new Tooltip.Tooltip({
-            parent: this,
-            markup: this.device.Name,
-            y_offset: 16
-        });
+        // Watch for scale changes
+        this._themeContext = St.ThemeContext.get_for_stage(global.stage);
+        this._themeContextId = this._themeContext.connect(
+            'notify::scale-factor',
+            this._onThemeChanged.bind(this)
+        );
 
-        // Device Type
-        this._theme = Gtk.IconTheme.get_default();
-        this._themeChangedId = this._theme.connect(
+        // Watch for icon theme changes
+        this._iconTheme = Gtk.IconTheme.get_default();
+        this._iconThemeId = this._iconTheme.connect(
             'changed',
             this._onThemeChanged.bind(this)
         );
-        this._onThemeChanged(this._theme);
+
+        this.tooltip = new Tooltip.Tooltip({
+            parent: this,
+            markup: this.device.Name,
+            y_offset: 16 * this._themeContext.scale_factor
+        });
 
         // Device Status
         this._propertiesId = device.connect(
@@ -191,7 +197,8 @@ var Icon = GObject.registerClass({
 
     _onDestroy(actor) {
         actor.device.disconnect(actor._propertiesId);
-        actor._theme.disconnect(actor._themeChangedId);
+        actor._iconTheme.disconnect(actor._iconThemeId);
+        actor._themeContext.disconnect(actor._themeContextId);
 
         if (actor._batteryId && actor.battery) {
             actor.battery.disconnect(actor._batteryId);
@@ -218,15 +225,43 @@ var Icon = GObject.registerClass({
         }
     }
 
-    _onThemeChanged() {
-        this._surface = this._theme.load_surface(
+    _update() {
+        let scale = this._themeContext.scale_factor;
+
+        // Get the unscaled size as defined in CSS
+        if (this._width === undefined) {
+            [this._width, this._height] = this.get_size();
+            this._width = this._width / scale;
+            this._height = this._height / scale;
+        }
+
+        // Resize the actor if the scale has changed
+        if (!this._scale || this._scale !== scale) {
+            this._scale = scale;
+            this.tooltip.y_offset = 16 * scale;
+            this.width = this._width * scale;
+            this.height = this._height * scale;
+        }
+
+        // Size icon 2/3 of total, scaled and rounded up to multiple of 8
+        let size = Math.ceil((this._width / 1.5 * scale) / 8) * 8;
+        this._offset = size / 2;
+
+        this._icon = this._iconTheme.load_surface(
             this.device.IconName,
-            32,
-            St.ThemeContext.get_for_stage(global.stage).scale_factor,
+            size,
+            scale,
             null,
             Gtk.IconLookupFlags.FORCE_SIZE
         );
-        this.queue_repaint();
+    }
+
+    _onThemeChanged() {
+        // Only update after we've been added to the stage
+        if (this.width) {
+            this._update();
+            this.queue_repaint();
+        }
     }
 
     get battery_color() {
@@ -290,25 +325,32 @@ var Icon = GObject.registerClass({
     }
 
     vfunc_repaint() {
-        if (!this.visible) { return; }
+        if (!this.mapped) { return; }
 
-        let [width, height] = this.get_surface_size();
+        if (this._icon === undefined) {
+            this._update();
+        }
+
+        let cr = this.get_context();
+
+        // Dimensions have already been scaled
+        let [width, height] = this.get_size();
         let xc = width / 2;
         let yc = height / 2;
 
-        let cr = this.get_context();
-        let thickness = 3;
+        // Colored circle width
+        let thickness = Math.ceil(this.width / 16);
         let r = Math.min(xc, yc) - (thickness / 2);
         cr.setLineWidth(thickness);
 
         // Icon
-        cr.setSourceSurface(this._surface, xc - 16, yc - 16);
+        cr.setSourceSurface(this._icon, xc - this._offset, yc - this._offset);
         cr.paint();
 
         if (!this.device.Connected) {
             cr.setOperator(Cairo.Operator.HSL_SATURATION);
             cr.setSourceRGB(0, 0, 0);
-            cr.maskSurface(this._surface, xc - 16, yc - 16);
+            cr.maskSurface(this._icon, xc - this._offset, yc - this._offset);
             cr.fill();
 
             this.tooltip.markup = _('Reconnect');
