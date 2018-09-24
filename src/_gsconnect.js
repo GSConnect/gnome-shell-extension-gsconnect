@@ -1,7 +1,5 @@
 'use strict';
 
-const Format = imports.format;
-
 const Gdk = imports.gi.Gdk;
 const Gio = imports.gi.Gio;
 const GIRepository = imports.gi.GIRepository;
@@ -13,7 +11,7 @@ const Gtk = imports.gi.Gtk;
  * String.format API supporting %s, %d, %x and %f. Used exclusively for gettext.
  * See: https://github.com/GNOME/gjs/blob/master/modules/format.js
  */
-String.prototype.format = Format.format;
+String.prototype.format = imports.format.format;
 
 
 /**
@@ -181,7 +179,7 @@ var _debugFunc = function(msg, prefix=null) {
         }
 
         // Append a prefix for context
-        msg = (prefix !== null) ? `${prefix}: ${msg}`: msg;
+        msg = (prefix !== null) ? `${prefix}: ${msg}` : msg;
 
         GLib.log_structured(
             'GSConnect',
@@ -217,13 +215,8 @@ gsconnect.settings.connect('changed::debug', () => {
  * @param {string} [prefix] - An optional prefix for the warning
  */
 window.logWarning = function(message, prefix=null) {
-    if (message.hasOwnProperty('message')) {
-        message = message.message;
-    }
-
-    if (prefix !== null) {
-        message = `${prefix}: ${message}`
-    }
+    message = message.hasOwnProperty('message') ? message.message : message;
+    message = (prefix) ? `${prefix}: ${message}` : message;
 
     GLib.log_structured(
         'gsconnect',
