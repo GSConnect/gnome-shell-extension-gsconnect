@@ -153,20 +153,28 @@ Object.defineProperties(Gio.Menu.prototype, {
 
 
 /**
- * Extend Gio.TlsCertificate with some convenience methods
  */
-Gio.TlsCertificate.new_for_files = function (certPath, keyPath) {
-    let certExists = GLib.file_test(certPath, GLib.FileTest.EXISTS);
-    let keyExists = GLib.file_test(keyPath, GLib.FileTest.EXISTS);
+/**
+ * Creates a GTlsCertificate from the PEM-encoded data in @cert_path and
+ * @key_path. If either are missing a new pair will be generated.
+ *
+ * @param {string} cert_path - Absolute path to a x509 certificate in PEM format
+ * @param {string} key_path = Absolute path to a private key in PEM format
+ *
+ * See :https://github.com/KDE/kdeconnect-kde/blob/master/core/kdeconnectconfig.cpp#L119
+ */
+Gio.TlsCertificate.new_for_paths = function (cert_path, key_path) {
+    let cert_exists = GLib.file_test(cert_path, GLib.FileTest.EXISTS);
+    let key_exists = GLib.file_test(key_path, GLib.FileTest.EXISTS);
 
     if (!certExists || !keyExists) {
         let proc = new Gio.Subprocess({
             argv: [
                 gsconnect.metadata.bin.openssl, 'req',
                 '-new', '-x509', '-sha256',
-                '-out', certPath,
+                '-out', cert_path,
                 '-newkey', 'rsa:2048', '-nodes',
-                '-keyout', keyPath,
+                '-keyout', key_path,
                 '-days', '3650',
                 '-subj', '/O=andyholmes.github.io/OU=GSConnect/CN=' + GLib.uuid_string_random()
             ],

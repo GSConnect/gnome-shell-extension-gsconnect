@@ -99,12 +99,11 @@ const Service = GObject.registerClass({
 
     // Properties
     get certificate() {
-        // https://github.com/KDE/kdeconnect-kde/blob/master/core/kdeconnectconfig.cpp#L119
         if (this._certificate === undefined) {
             let certPath = gsconnect.configdir + '/certificate.pem';
             let keyPath = gsconnect.configdir + '/private.pem';
 
-            this._certificate = Gio.TlsCertificate.new_for_files(
+            this._certificate = Gio.TlsCertificate.new_for_paths(
                 certPath,
                 keyPath
             );
