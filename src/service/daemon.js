@@ -278,7 +278,7 @@ const Service = GObject.registerClass({
 
             // Delete the cache
             let cache = GLib.build_filenamev([gsconnect.cachedir, id]);
-            GLib.spawn_command_line_async(`rm -rf ${cache}`);
+            Gio.File.rm_rf(cache);
 
             // Notify
             gsconnect.settings.set_strv('devices', this.devices);

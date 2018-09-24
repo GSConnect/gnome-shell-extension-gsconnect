@@ -26,6 +26,40 @@ window.hasCommand = function(cmd) {
 
 
 /**
+ * An implementation of `rm -rf` in Gio
+ */
+Gio.File.rm_rf = function(file) {
+    try {
+        if (typeof file === 'string') {
+            file = Gio.File.new_for_path(file);
+        }
+
+        try {
+            let iter = file.enumerate_children(
+                'standard::name',
+                Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
+                null
+            );
+
+            let info;
+
+            while (info = iter.next_file(null)) {
+                Gio.File.rm_rf(iter.get_child(info));
+            }
+
+            iter.close(null);
+        } catch (e) {
+            // Silence errors
+        }
+
+        file.delete(null);
+    } catch (e) {
+        // Silence errors
+    }
+}
+
+
+/**
  * Extend Gio.Menu with some convenience methods for Device menus and working
  * with menu items.
  */
