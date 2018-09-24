@@ -132,19 +132,15 @@ var ChannelService = GObject.registerClass({
         // The full device map
         this._devices = new Map();
 
-        try {
-            this._profileManager = new ProfileManager1Proxy({
-                g_connection: Gio.DBus.system,
-                g_name: 'org.bluez',
-                g_object_path: '/org/bluez'
-            });
-            this._profileManager.init(null);
+        this._profileManager = new ProfileManager1Proxy({
+            g_connection: Gio.DBus.system,
+            g_name: 'org.bluez',
+            g_object_path: '/org/bluez'
+        });
+        this._profileManager.init(null);
 
-            // Asynchronous init
-            this._init_async();
-        } catch (e) {
-            logError(e, 'GSConnect: Failed to connect to bluez');
-        }
+        // Asynchronous init
+        this._init_async();
     }
 
     // A list of device proxies supporting the KDE Connect Service UUID
