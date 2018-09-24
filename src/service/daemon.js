@@ -298,7 +298,6 @@ const Service = GObject.registerClass({
             ['connect', this._connectAction.bind(this)],
             ['preference', this._preferencesAction.bind(this), 's'],
             ['preferences', this._preferencesAction.bind(this)],
-            ['help', this._preferencesAction.bind(this, 'help')],
             ['about', this._aboutAction.bind(this)],
 
             // Misc service actions

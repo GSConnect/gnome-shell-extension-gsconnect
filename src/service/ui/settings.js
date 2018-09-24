@@ -434,10 +434,10 @@ var Window = GObject.registerClass({
                     }
                 }
             });
-
-            this.help.visible = !this.application.devices.length;
         } catch (e) {
             logError(e);
+        } finally {
+            this.help.visible = !this.application.devices.length;
         }
     }
 
