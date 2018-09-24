@@ -1,7 +1,6 @@
 'use strict';
 
 const Format = imports.format;
-const Gettext = imports.gettext;
 
 const Gdk = imports.gi.Gdk;
 const Gio = imports.gi.Gio;
@@ -100,19 +99,19 @@ if (gsconnect.is_local) {
  * If we aren't inside the Gnome Shell process we'll set gettext functions on
  * the global object, otherwise we'll set them on the global 'gsconnect' object
  */
-Gettext.bindtextdomain(gsconnect.app_id, gsconnect.localedir);
-Gettext.textdomain(gsconnect.app_id);
+imports.gettext.bindtextdomain(gsconnect.app_id, gsconnect.localedir);
+const Gettext = imports.gettext.domain(gsconnect.app_id);
 
 if (typeof _ !== 'function') {
     window._ = Gettext.gettext;
     window.ngettext = Gettext.ngettext;
-    window.N_ = function (s) { return s; };
     window.C_ = Gettext.pgettext;
+    window.N_ = (s) => s;
 } else {
     gsconnect._ = Gettext.gettext;
     gsconnect.ngettext = Gettext.ngettext;
-    gsconnect.N_ = function (s) { return s; };
     gsconnect.C_ = Gettext.pgettext;
+    gsconnect.N_ = (s) => s;
 }
 
 
