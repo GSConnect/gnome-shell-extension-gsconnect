@@ -769,7 +769,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkScrolledWindow" id="software-page">
+              <object class="GtkScrolledWindow" id="other-page">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="hscrollbar_policy">never</property>
@@ -951,7 +951,7 @@
                           <packing>
                             <property name="left_attach">0</property>
                             <property name="top_attach">1</property>
-                            <property name="width">3</property>
+                            <property name="width">2</property>
                           </packing>
                         </child>
                         <child>
@@ -970,7 +970,7 @@
                           <packing>
                             <property name="left_attach">0</property>
                             <property name="top_attach">3</property>
-                            <property name="width">3</property>
+                            <property name="width">2</property>
                           </packing>
                         </child>
                         <child>
@@ -988,7 +988,6 @@
                           <packing>
                             <property name="left_attach">0</property>
                             <property name="top_attach">0</property>
-                            <property name="width">2</property>
                           </packing>
                         </child>
                         <child>
@@ -1015,7 +1014,7 @@
                             </style>
                           </object>
                           <packing>
-                            <property name="left_attach">2</property>
+                            <property name="left_attach">1</property>
                             <property name="top_attach">0</property>
                           </packing>
                         </child>
@@ -1045,7 +1044,6 @@
                           <packing>
                             <property name="left_attach">0</property>
                             <property name="top_attach">2</property>
-                            <property name="width">2</property>
                           </packing>
                         </child>
                         <child>
@@ -1055,7 +1053,7 @@
                             <property name="receives_default">True</property>
                             <property name="tooltip_text">https://chrome.google.com/webstore/detail/gsconnect/jfnifeihccihocjbfcfhicmmgpjicaec</property>
                             <property name="halign">end</property>
-                            <property name="valign">center</property>
+                            <property name="valign">end</property>
                             <property name="margin_bottom">32</property>
                             <signal name="clicked" handler="_onLinkButton" swapped="no"/>
                             <child>
@@ -1072,7 +1070,7 @@
                             </style>
                           </object>
                           <packing>
-                            <property name="left_attach">2</property>
+                            <property name="left_attach">1</property>
                             <property name="top_attach">2</property>
                           </packing>
                         </child>
@@ -1102,7 +1100,7 @@
                             </style>
                           </object>
                           <packing>
-                            <property name="left_attach">2</property>
+                            <property name="left_attach">1</property>
                             <property name="top_attach">4</property>
                           </packing>
                         </child>
@@ -1134,7 +1132,6 @@
                           <packing>
                             <property name="left_attach">0</property>
                             <property name="top_attach">4</property>
-                            <property name="width">2</property>
                           </packing>
                         </child>
                         <child>
@@ -1162,12 +1159,9 @@
                             </style>
                           </object>
                           <packing>
-                            <property name="left_attach">2</property>
+                            <property name="left_attach">1</property>
                             <property name="top_attach">5</property>
                           </packing>
-                        </child>
-                        <child>
-                          <placeholder/>
                         </child>
                         <child>
                           <placeholder/>
@@ -1178,8 +1172,8 @@
                 </child>
               </object>
               <packing>
-                <property name="name">software</property>
-                <property name="title" translatable="yes">Software</property>
+                <property name="name">other</property>
+                <property name="title" translatable="yes">Other</property>
                 <property name="position">2</property>
               </packing>
             </child>
@@ -1295,7 +1289,7 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkListBoxRow" id="software">
+                      <object class="GtkListBoxRow" id="other">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <child>
@@ -1324,7 +1318,7 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="halign">start</property>
-                                <property name="label">Software</property>
+                                <property name="label">Other</property>
                                 <property name="use_markup">True</property>
                               </object>
                               <packing>
