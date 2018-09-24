@@ -43,7 +43,7 @@ Gio.File.rm_rf = function(file) {
 
             let info;
 
-            while (info = iter.next_file(null)) {
+            while ((info = iter.next_file(null))) {
                 Gio.File.rm_rf(iter.get_child(info));
             }
 
