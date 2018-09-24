@@ -248,7 +248,7 @@ var Listener = class Listener {
 
             return null;
         } catch (e) {
-            logError(e);
+            debug(e);
             return null;
         }
     }
@@ -307,7 +307,7 @@ var Listener = class Listener {
                 this.Notify(...parameters);
             }
         } catch (e) {
-            logError(e);
+            debug(e);
         }
     }
 
@@ -409,7 +409,7 @@ var Listener = class Listener {
                 icon: iconName
             });
         } catch (e) {
-            logError(e);
+            debug(e);
         }
     }
 
@@ -438,7 +438,7 @@ var Listener = class Listener {
                 icon: notification.icon
             });
         } catch (e) {
-            logError(e);
+            debug(e);
         }
     }
 
@@ -457,7 +457,7 @@ var Listener = class Listener {
             // TODO: Gio.IOErrorEnum: The connection is closed
             //this._monitor.close_sync(null);
         } catch (e) {
-            logError(e);
+            debug(e);
         }
     }
 };
