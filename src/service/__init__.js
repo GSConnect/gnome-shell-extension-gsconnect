@@ -167,7 +167,7 @@ Gio.TlsCertificate.new_for_paths = function (cert_path, key_path) {
     let cert_exists = GLib.file_test(cert_path, GLib.FileTest.EXISTS);
     let key_exists = GLib.file_test(key_path, GLib.FileTest.EXISTS);
 
-    if (!certExists || !keyExists) {
+    if (!cert_exists || !key_exists) {
         let proc = new Gio.Subprocess({
             argv: [
                 gsconnect.metadata.bin.openssl, 'req',
@@ -184,7 +184,7 @@ Gio.TlsCertificate.new_for_paths = function (cert_path, key_path) {
         proc.wait_check(null);
     }
 
-    return Gio.TlsCertificate.new_from_files(certPath, keyPath);
+    return Gio.TlsCertificate.new_from_files(cert_path, key_path);
 }
 
 Object.defineProperties(Gio.TlsCertificate.prototype, {
