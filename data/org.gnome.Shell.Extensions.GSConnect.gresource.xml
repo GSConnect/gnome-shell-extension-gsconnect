@@ -31,6 +31,12 @@
     <file compressed="true" preprocess="xml-stripblanks">smartphone-symbolic.svg</file>
     <file compressed="true" preprocess="xml-stripblanks">tablet.svg</file>
     <file compressed="true" preprocess="xml-stripblanks">tablet-symbolic.svg</file>
+    <!-- Browser Icons -->
+    <file>firefox-webextension.png</file>
+    <file>chrome-webextension.png</file>
+    <file>kdeconnect-fdroid.png</file>
+    <file>kdeconnect-google.png</file>
+
     <!-- SMS Icons -->
     <file compressed="true" preprocess="xml-stripblanks">sms-send.svg</file>
     <file compressed="true" preprocess="xml-stripblanks">sms-symbolic.svg</file>
