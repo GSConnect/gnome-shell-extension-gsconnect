@@ -132,13 +132,6 @@ var ChannelService = GObject.registerClass({
         // The full device map
         this._devices = new Map();
 
-        this._profileManager = new ProfileManager1Proxy({
-            g_connection: Gio.DBus.system,
-            g_name: 'org.bluez',
-            g_object_path: '/org/bluez'
-        });
-        this._profileManager.init(null);
-
         // Asynchronous init
         this._init_async();
     }
@@ -195,6 +188,13 @@ var ChannelService = GObject.registerClass({
                 });
             });
 
+            this._profileManager = new ProfileManager1Proxy({
+                g_connection: Gio.DBus.system,
+                g_name: 'org.bluez',
+                g_object_path: '/org/bluez'
+            });
+            await this._profileManager.init_promise();
+
             // Register the service profile
             await this._register(SERVICE_UUID);
 
@@ -204,7 +204,11 @@ var ChannelService = GObject.registerClass({
                 }
             }
         } catch (e) {
-            logWarning(`GSConnect: Bluetooth failed to start: ${e.message}`);
+            if (e instanceof Gio.DBusError) {
+                Gio.DBusError.strip_remote_error(e);
+            }
+
+            logWarning(`GSConnect: Bluetooth Error: ${e.message}`);
             this.destroy();
         }
     }
@@ -268,7 +272,7 @@ var ChannelService = GObject.registerClass({
                 await iface.ConnectProfile(SERVICE_UUID);
             }
         } catch (e) {
-            debug(e, iface.Alias);
+            // Silence errors (for now)
         }
     }
 
@@ -393,8 +397,6 @@ var ChannelService = GObject.registerClass({
             }
         } catch (e) {
             debug(e);
-        } finally {
-            return;
         }
     }
 
@@ -406,22 +408,20 @@ var ChannelService = GObject.registerClass({
                 this._connectDevice(device);
             }
         } catch (e) {
-            debug(e, 'Bluetooth.ChannelService');
+            debug(e, object_path);
         }
     }
 
     destroy() {
-        try {
-            for (let device of this._devices.values()) {
-                if (device._channel !== null) {
-                    device._channel.close();
-                    device._channel = null;
-                }
+        for (let device of this._devices.values()) {
+            if (device._channel !== null) {
+                device._channel.close();
+                device._channel = null;
             }
+        }
 
+        if (this._profile) {
             this._profile.destroy();
-        } catch (e) {
-            debug(e);
         }
     }
 });
