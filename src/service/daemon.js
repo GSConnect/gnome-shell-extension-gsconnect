@@ -182,16 +182,16 @@ const Service = GObject.registerClass({
         try {
             switch (true) {
                 case (address instanceof Gio.InetSocketAddress):
-                    this.lanService.broadcast(address);
+                    this.lan.broadcast(address);
                     break;
 
                 case (typeof address === 'string'):
-                    this.bluetoothService.broadcast(address);
+                    this.bluetooth.broadcast(address);
                     break;
 
                 // We only do true "broadcasts" for LAN
                 default:
-                    this.lanService.broadcast();
+                    this.lan.broadcast();
             }
         } catch (e) {
             logError(e);
@@ -643,7 +643,7 @@ const Service = GObject.registerClass({
 
                 default:
                     id = `${Date.now()}`;
-                    title = _('Error');
+                    title = error.name;
                     body = error.message.trim();
                     icon = new Gio.ThemedIcon({ name: 'dialog-error' });
                     error = new GLib.Variant('a{ss}', {
@@ -754,7 +754,7 @@ const Service = GObject.registerClass({
 
         // Lan.ChannelService
         try {
-            this.lanService = new Lan.ChannelService();
+            this.lan = new Lan.ChannelService();
         } catch (e) {
             e.name = 'LanError';
             this.notify_error(e);
@@ -762,11 +762,11 @@ const Service = GObject.registerClass({
 
         // Bluetooth.ChannelService
         try {
-            this.bluetoothService = new Bluetooth.ChannelService();
+            this.bluetooth = new Bluetooth.ChannelService();
         } catch (e) {
-            this.bluetoothService.destroy();
-            e.name = 'BluetoothError';
-            this.notify_error(e);
+            if (this.bluetooth) {
+                this.bluetooth.destroy();
+            }
         }
     }
 
@@ -842,16 +842,24 @@ const Service = GObject.registerClass({
     vfunc_shutdown() {
         super.vfunc_shutdown();
 
-        debug('GSConnect: Shutting down');
+        if (this.mpris) {
+            this.mpris.destroy();
+        }
 
-        this.mpris.destroy();
-        this.notification.destroy();
-        this.lanService.destroy();
+        if (this.notification) {
+            this.notification.destroy();
+        }
+
+        if (this.lan) {
+            this.lan.destroy();
+        }
 
         // FIXME: Really, really bad hack, but sometimes hangs in bluez can
         // prevent the service from stopping or even hang the desktop.
         System.exit(0);
-        this.bluetoothService.destroy();
+        if (this.bluetooth) {
+            this.bluetooth.destroy();
+        }
     }
 });
 

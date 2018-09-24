@@ -100,6 +100,7 @@
       <default>[]</default>
     </key>
   </schema>
+
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Battery">
     <key name="send-statistics" type="b">
       <default>false</default>

@@ -559,7 +559,7 @@ var Transfer = class Transfer extends Core.Transfer {
 
         try {
             uuid = await this._registerProfile(uuid);
-            let service = Gio.Application.get_default().bluetoothService;
+            let service = Gio.Application.get_default().bluetooth;
             let device = service._devices.get(this.device.settings.get_string('bluetooth-path'));
             await device.ConnectProfile(uuid);
         } catch (e) {
