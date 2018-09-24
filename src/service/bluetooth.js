@@ -396,7 +396,7 @@ var ChannelService = GObject.registerClass({
                 device._channel = null;
             }
         } catch (e) {
-            debug(e);
+            // Silence errors (for now)
         }
     }
 
