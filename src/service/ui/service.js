@@ -27,8 +27,6 @@ var BluetoothComboBox = GObject.registerClass({
     _init(params) {
         super._init(params);
 
-        this._theme = Gtk.IconTheme.get_default();
-
         let model = new Gtk.ListStore();
         model.set_column_types([
             GdkPixbuf.Pixbuf,       // Icon
@@ -73,18 +71,18 @@ var BluetoothComboBox = GObject.registerClass({
     }
 
     _destroy() {
-        try {
+        if (this._deviceId) {
             this.service.bluetoothService.disconnect(this._devicesId);
-        } catch (e) {
         }
     }
 
     populate() {
         this.model.clear();
+        let theme = Gtk.IconTheme.get_default();
 
         if (this.has_devices) {
             for (let device of this.service.bluetoothService.devices) {
-                let pixbuf = this._theme.load_icon(
+                let pixbuf = theme.load_icon(
                     device.Icon,
                     16,
                     Gtk.IconLookupFlags.FORCE_SIZE
@@ -98,9 +96,6 @@ var BluetoothComboBox = GObject.registerClass({
             }
 
             this.active_id = this.service.bluetoothService.devices[0].g_object_path;
-        } else {
-            this.model.set(this.model.append(), [1, 2], [_('No Devices'), '0']);
-            this.active_id = '0';
         }
 
         this.notify('has-devices');
