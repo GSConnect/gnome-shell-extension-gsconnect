@@ -138,8 +138,8 @@ var ChannelService = GObject.registerClass({
 
     // A list of device proxies supporting the KDE Connect Service UUID
     get devices() {
-        // devices.filter(device => device.UUIDs.includes(SERVICE_UUID));
-        return Array.from(this._devices.values());
+        let devices = Array.from(this._devices.values());
+        return  devices.filter(device => device.UUIDs.includes(SERVICE_UUID));
     }
 
     get service() {
