@@ -772,10 +772,8 @@ var Device = GObject.registerClass({
                 // Register plugin
                 this._plugins.set(name, plugin);
 
-                // Run the connected() handler
-                if (this.connected) {
-                    plugin.connected();
-                }
+                // Run the connected()/disconnected() handler
+                this.connected ? plugin.connected() : plugin.disconnected();
             }
         } catch (e) {
             e.name = (e.name === 'Error') ? 'PluginError' : e.name;
