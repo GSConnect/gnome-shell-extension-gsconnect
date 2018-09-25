@@ -60,6 +60,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         );
         this.extensionMenu.icon.icon_name = this._indicator.icon_name;
         this.menu.addMenuItem(this.extensionMenu);
+        AggregateMenu.menu.addMenuItem(this.menu, 4);
 
         // Devices Section
         this.devicesSection = new PopupMenu.PopupMenuSection();
@@ -79,8 +80,6 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
             _('Mobile Settings'),
             () => this.service.activate_action('preferences', null)
         );
-
-        AggregateMenu.menu.addMenuItem(this.menu, 4);
 
         // Menu Visibility
         this._gsettingsId = gsconnect.settings.connect('changed', () => {
