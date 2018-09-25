@@ -49,6 +49,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         // Service Indicator
         this._indicator = this._addIndicator();
         this._indicator.icon_name = 'org.gnome.Shell.Extensions.GSConnect-symbolic';
+        this._indicator.opacity = 128;
         AggregateMenu._indicators.insert_child_at_index(this.indicators, 0);
         AggregateMenu._gsconnect = this;
 
@@ -155,6 +156,12 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
             menu.actor.visible = false;
         } else {
             menu.actor.visible = true;
+        }
+
+        if (Object.values(this._menus).some(menu => menu.device.Connected)) {
+            this._indicator.opacity = 255;
+        } else {
+            this._indicator.opacity = 128;
         }
     }
 
