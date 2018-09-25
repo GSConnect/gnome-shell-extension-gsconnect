@@ -81,7 +81,7 @@ var Plugin = GObject.registerClass({
      *
      * @param {kdeconnect.mpris.request} - A command for a specific player
      */
-    _handleCommand(packet) {
+    async _handleCommand(packet) {
         if (!this.settings.get_boolean('share-players')) {
             return;
         }
@@ -126,11 +126,12 @@ var Plugin = GObject.registerClass({
             }
 
             if (packet.body.hasOwnProperty('Seek')) {
-                player.Seek(packet.body.Seek);
+                await player.Seek(packet.body.Seek);
             }
 
             if (packet.body.hasOwnProperty('SetPosition')) {
-                player.Seek((packet.body.SetPosition * 1000) - player.Position);
+                let offset = (packet.body.SetPosition * 1000) - player.Position;
+                await player.Seek(offset);
             }
 
             // Information Request
