@@ -616,6 +616,7 @@ function makeInterfaceProxy(info) {
     // Register and store the proxy class
     makeInterfaceProxy._cache[info.name] = GObject.registerClass({
         GTypeName: 'PROXY_' + info.name.split('.').join(''),
+        Implements: [ Gio.DBusInterface ],
         Properties: properties_,
         Signals: signals_
     }, class InterfaceProxy extends Gio.DBusProxy {

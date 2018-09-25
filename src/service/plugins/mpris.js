@@ -36,7 +36,7 @@ var Plugin = GObject.registerClass({
         super._init(device, 'mpris');
 
         try {
-            this._playersChangedId = this.service.mpris.connect(
+            this._notifyPlayersId = this.service.mpris.connect(
                 'notify::players',
                 this._sendPlayerList.bind(this)
             );
@@ -44,6 +44,11 @@ var Plugin = GObject.registerClass({
             this._playerChangedId = this.service.mpris.connect(
                 'player-changed',
                 this._onPlayerChanged.bind(this)
+            );
+
+            this._playerSeekedId = this.service.mpris.connect(
+                'player-seeked',
+                this._onPlayerSeeked.bind(this)
             );
         } catch (e) {
             this.destroy();
@@ -215,6 +220,16 @@ var Plugin = GObject.registerClass({
         });
     }
 
+    _onPlayerSeeked(mpris, player) {
+        this.device.sendPacket({
+            type: 'kdeconnect.mpris',
+            body: {
+                player: player.Identity,
+                pos: Math.floor(player.Position / 1000)
+            }
+        });
+    }
+
     async _sendAlbumArt(packet) {
         try {
             // Reject concurrent requests for album art
@@ -292,8 +307,9 @@ var Plugin = GObject.registerClass({
 
     destroy() {
         try {
-            this.service.mpris.disconnect(this._playersChangedId);
+            this.service.mpris.disconnect(this._notifyPlayersId);
             this.service.mpris.disconnect(this._playerChangedId);
+            this.service.mpris.disconnect(this._playerSeekedId);
         } catch (e) {
         }
 
