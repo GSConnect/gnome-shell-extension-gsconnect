@@ -187,8 +187,6 @@ Object.defineProperties(Gio.Menu.prototype, {
 
 
 /**
- */
-/**
  * Creates a GTlsCertificate from the PEM-encoded data in @cert_path and
  * @key_path. If either are missing a new pair will be generated.
  *
