@@ -56,16 +56,18 @@ var Plugin = GObject.registerClass({
     }
 
     handlePacket(packet) {
-        if (packet.body.requestPlayerList) {
-            this._sendPlayerList();
-        } else if (packet.body.hasOwnProperty('player')) {
-            // If we have this player
-            if (this.service.mpris.players.has(packet.body.player)) {
-                this._handleCommand(packet);
-            // If we don't, send an updated list to the device instead
-            } else {
+        switch (true) {
+            case packet.body.requestPlayerList:
+            case !this.service.mpris.players.has(packet.body.player):
                 this._sendPlayerList();
-            }
+                break;
+
+            case packet.body.hasOwnProperty('albumArtUrl'):
+                this._sendAlbumArt(packet);
+                break;
+
+            default:
+                this._sendPlayerList();
         }
     }
 
@@ -89,11 +91,6 @@ var Plugin = GObject.registerClass({
             this._updating = true;
 
             let player = this.service.mpris.players.get(packet.body.player);
-
-            // Send Album Art
-            if (packet.body.hasOwnProperty('albumArtUrl')) {
-                this._sendAlbumArt(packet);
-            }
 
             // Player Actions
             if (packet.body.hasOwnProperty('action')) {
@@ -139,7 +136,6 @@ var Plugin = GObject.registerClass({
             let hasResponse = false;
 
             let response = {
-                id: 0,
                 type: 'kdeconnect.mpris',
                 body: {}
             };
@@ -283,17 +279,10 @@ var Plugin = GObject.registerClass({
      * transferring album art
      */
     _sendPlayerList() {
-        if (!this.settings.get_boolean('share-players')) {
-            return;
-        }
-
         let playerList = [];
-        let supportAlbumArtPayload = false;
 
         if (this.settings.get_boolean('share-players')) {
             playerList = this.service.mpris.identities;
-            // TODO: bluetooth
-            supportAlbumArtPayload = (this.device.connection_type === 'tcp');
         }
 
         this.device.sendPacket({
@@ -301,7 +290,7 @@ var Plugin = GObject.registerClass({
             type: 'kdeconnect.mpris',
             body: {
                 playerList: playerList,
-                supportAlbumArtPayload: supportAlbumArtPayload
+                supportAlbumArtPayload: (this.device.connection_type === 'tcp')
             }
         });
     }
