@@ -26,19 +26,20 @@
         }
     },
     "popupMenuDisconnected": {
-        "message": "Disconnected from GSConnect.",
+        "message": "Service Unavailable",
         "description": "Popup Menu label when disconnected from the Gnome Shell extension"
     },
     "popupMenuNoDevices": {
-        "message": "No devices found...",
+        "message": "No Device Found",
         "description": "Popup Menu label when no devices are connected or have supported plugins enabled"
     },
     "shareMessage": {
         "message": "Open in Browser",
         "description": "Context Menu label for opening a link in the device's web browser"
     },
-    "telephonyMessage": {
+    "smsMessage": {
         "message": "Send SMS",
         "description": "Context Menu label for sharing a link in an SMS message"
     }
 }
+

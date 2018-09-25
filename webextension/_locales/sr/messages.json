@@ -37,7 +37,7 @@
         "message": "Отвори у прегледачу",
         "description": "Context Menu label for opening a link in the device's web browser"
     },
-    "telephonyMessage": {
+    "smsMessage": {
         "message": "Пошаљи СМС",
         "description": "Context Menu label for sharing a link in an SMS message"
     }
