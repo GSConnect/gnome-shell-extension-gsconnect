@@ -7,6 +7,7 @@ const Gtk = imports.gi.Gtk;
 
 const Core = imports.service.core;
 const DBus = imports.service.components.dbus;
+const Lan = imports.service.lan;
 const Bluetooth = imports.service.bluetooth;
 
 const UUID = 'org.gnome.Shell.Extensions.GSConnect.Device';
@@ -448,16 +449,6 @@ var Device = GObject.registerClass({
         this.add_action(openPath);
     }
 
-    cancelTransfer(action, parameter) {
-        let uuid = parameter.unpack();
-        let transfer = this._transfers.get(uuid);
-
-        if (transfer !== undefined) {
-            this._transfers.delete(uuid);
-            transfer.cancel();
-        }
-    }
-
     openPath(action, parameter) {
         let path = parameter.unpack();
         path = path.startsWith('file://') ? path : `file://${path}`;
@@ -540,6 +531,36 @@ var Device = GObject.registerClass({
         }
 
         this.service.send_notification(`${this.id}|${params.id}`, notif);
+    }
+
+    cancelTransfer(action, parameter) {
+        let uuid = parameter.unpack();
+        let transfer = this._transfers.get(uuid);
+
+        if (transfer !== undefined) {
+            this._transfers.delete(uuid);
+            transfer.cancel();
+        }
+    }
+
+    createTransfer(params) {
+        params.device = this;
+
+        switch (true) {
+            case (this.connection_type === 'tcp'):
+                return new Lan.Transfer(params);
+
+            case (this.connection_type === 'bluetooth'):
+                //return new Bluetooth.Transfer(params);
+
+            // The default is a mock transfer that always appears to fail
+            default:
+                return {
+                    uuid: 'mock-transfer',
+                    download: () => false,
+                    upload: () => false
+                };
+        }
     }
 
     /**

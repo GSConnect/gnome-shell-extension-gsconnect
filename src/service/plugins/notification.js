@@ -5,7 +5,6 @@ const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
-const Lan = imports.service.lan;
 const PluginsBase = imports.service.plugins.base;
 
 
@@ -315,22 +314,18 @@ var Plugin = GObject.registerClass({
      */
     async _uploadIconStream(packet, stream, size) {
         try {
-            // TODO: device negotiated transfers
-            if (this.device.connection_type === 'tcp') {
-                let transfer = new Lan.Transfer({
-                    device: this.device,
-                    size: size,
-                    input_stream: stream
-                });
+            let transfer = this.device.createTransfer({
+                input_stream: stream,
+                size: size
+            });
 
-                let success = await transfer.upload(packet);
+            let success = await transfer.upload(packet);
 
-                if (!success) {
-                    this.device.sendPacket(packet);
-                }
+            if (!success) {
+                this.device.sendPacket(packet);
             }
         } catch (e) {
-            logError(e);
+            debug(e);
             this.device.sendPacket(packet);
         }
     }
@@ -412,17 +407,17 @@ var Plugin = GObject.registerClass({
                 });
             });
 
-            if (packet.payloadTransferInfo.hasOwnProperty('port')) {
-                transfer = new Lan.Transfer({
-                    device: this.device,
-                    size: packet.payloadSize,
-                    output_stream: stream
-                });
+            let transfer = this.device.createTransfer({
+                output_stream: stream,
+                size: packet.payloadSize
+            });
 
+            if (packet.payloadTransferInfo.hasOwnProperty('port')) {
                 success = await transfer.download(packet.payloadTransferInfo.port);
 
-            // TODO: Currently we skip icons for bluetooth connections
+            // TODO: Skip icons for bluetooth since there's no action to disable
             } else if (packet.payloadTransferInfo.hasOwnProperty('uuid')) {
+                transfer.close();
                 return null;
             }
 

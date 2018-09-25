@@ -5,8 +5,6 @@ const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
-const Bluetooth = imports.service.bluetooth;
-const Lan = imports.service.lan;
 const PluginsBase = imports.service.plugins.base;
 
 
@@ -122,8 +120,7 @@ var Plugin = GObject.registerClass({
                 });
             });
 
-            transfer = new Lan.Transfer({
-                device: this.device,
+            transfer = this.device.createTransfer({
                 output_stream: stream,
                 size: packet.payloadSize
             });
@@ -274,19 +271,10 @@ var Plugin = GObject.registerClass({
 
             let info = file.query_info('standard::size', 0, null);
 
-            if (this.device.connection_type === 'bluetooth') {
-                transfer = new Bluetooth.Transfer({
-                    device: this.device,
-                    input_stream: stream,
-                    size: info.get_size()
-                });
-            } else if (this.device.connection_type === 'tcp') {
-                transfer = new Lan.Transfer({
-                    device: this.device,
-                    input_stream: stream,
-                    size: info.get_size()
-                });
-            }
+            transfer = this.device.createTransfer({
+                input_stream: stream,
+                size: info.get_size()
+            });
 
             // Notify that we're about to start the transfer
             this.device.showNotification({

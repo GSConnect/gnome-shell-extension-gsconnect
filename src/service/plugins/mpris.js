@@ -3,7 +3,6 @@
 const Gio = imports.gi.Gio;
 const GObject = imports.gi.GObject;
 
-const Lan = imports.service.lan;
 const PluginsBase = imports.service.plugins.base;
 
 
@@ -249,28 +248,25 @@ var Plugin = GObject.registerClass({
                 return;
             }
 
-            // TODO: Ignore requests for bluetooth connections, currently
-            if (this.device.connection_type === 'tcp') {
-                this._transferring = true;
+            // Start the transfer process
+            this._transferring = true;
 
-                let file = Gio.File.new_for_uri(packet.body.albumArtUrl);
+            let file = Gio.File.new_for_uri(packet.body.albumArtUrl);
 
-                let transfer = new Lan.Transfer({
-                    device: this.device,
-                    input_stream: file.read(null),
-                    size: file.query_info('standard::size', 0, null).get_size()
-                });
+            let transfer = this.device.createTransfer({
+                input_stream: file.read(null),
+                size: file.query_info('standard::size', 0, null).get_size()
+            });
 
-                await transfer.upload({
-                    id: 0,
-                    type: 'kdeconnect.mpris',
-                    body: {
-                        transferringAlbumArt: true,
-                        player: packet.body.player,
-                        albumArtUrl: packet.body.albumArtUrl
-                    }
-                });
-            }
+            await transfer.upload({
+                id: 0,
+                type: 'kdeconnect.mpris',
+                body: {
+                    transferringAlbumArt: true,
+                    player: packet.body.player,
+                    albumArtUrl: packet.body.albumArtUrl
+                }
+            });
         } catch (e) {
             logWarning(e, `${this.device.name}: transferring album art`);
         } finally {
