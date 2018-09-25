@@ -81,11 +81,13 @@ var Plugin = GObject.registerClass({
      * @param {kdeconnect.mpris.request} - A command for a specific player
      */
     async _handleCommand(packet) {
-        if (!this.settings.get_boolean('share-players')) {
+        if (this._updating || !this.settings.get_boolean('share-players')) {
             return;
         }
 
         try {
+            this._updating = true;
+
             let player = this.service.mpris.players.get(packet.body.player);
 
             // Send Album Art
@@ -169,6 +171,8 @@ var Plugin = GObject.registerClass({
             }
         } catch (e) {
             logError(e);
+        } finally {
+            this._updating = false;
         }
     }
 
