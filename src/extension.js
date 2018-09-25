@@ -7,6 +7,7 @@ const Gtk = imports.gi.Gtk;
 const Main = imports.ui.main;
 const PanelMenu = imports.ui.panelMenu;
 const PopupMenu = imports.ui.popupMenu;
+const AggregateMenu = Main.panel.statusArea.aggregateMenu;
 
 // Bootstrap
 window.gsconnect = {
@@ -46,17 +47,17 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         );
 
         // Service Indicator
-        this.extensionIndicator = this._addIndicator();
-        this.extensionIndicator.icon_name = 'org.gnome.Shell.Extensions.GSConnect-symbolic';
-        let userMenuTray = Main.panel.statusArea.aggregateMenu._indicators;
-        userMenuTray.insert_child_at_index(this.indicators, 0);
+        this._indicator = this._addIndicator();
+        this._indicator.icon_name = 'org.gnome.Shell.Extensions.GSConnect-symbolic';
+        AggregateMenu._indicators.insert_child_at_index(this.indicators, 0);
+        AggregateMenu._gsconnect = this;
 
         // Service Menu
         this.extensionMenu = new PopupMenu.PopupSubMenuMenuItem(
             _('Mobile Devices'),
             true
         );
-        this.extensionMenu.icon.icon_name = this.extensionIndicator.icon_name;
+        this.extensionMenu.icon.icon_name = this._indicator.icon_name;
         this.menu.addMenuItem(this.extensionMenu);
 
         // Devices Section
@@ -78,7 +79,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
             () => this.service.activate_action('preferences', null)
         );
 
-        Main.panel.statusArea.aggregateMenu.menu.addMenuItem(this.menu, 4);
+        AggregateMenu.menu.addMenuItem(this.menu, 4);
 
         // Menu Visibility
         this._gsettingsId = gsconnect.settings.connect('changed', () => {
@@ -204,12 +205,12 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
                 this._onInterfaceRemoved(this.manager, iface.get_object(), iface);
             }
 
-            this.extensionIndicator.visible = false;
+            this._indicator.visible = false;
 
             // Try restart the service
             await this._activate();
         } else {
-            this.extensionIndicator.visible = true;
+            this._indicator.visible = true;
         }
     }
 
@@ -374,7 +375,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         if (gsconnect.settings.get_boolean('show-indicators')) {
             indicator.menu.toggle();
         } else {
-            Main.panel._toggleMenu(Main.panel.statusArea.aggregateMenu);
+            Main.panel._toggleMenu(AggregateMenu);
             this.extensionMenu.menu.toggle();
             this.extensionMenu.actor.grab_key_focus();
         }
@@ -398,8 +399,9 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         gsconnect.settings.disconnect(this._gsettingsId);
 
         // Destroy the UI
-        this.extensionMenu.destroy();
+        delete AggregateMenu._gsconnect;
         this.indicators.destroy();
+        this.extensionMenu.destroy();
         this.menu.destroy();
     }
 }
