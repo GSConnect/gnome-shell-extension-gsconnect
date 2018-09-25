@@ -140,8 +140,9 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
 
             await this._activate();
         } catch (e) {
-            // TODO: fatal error notification?
             logError(e);
+            Gio.DBusError.strip_remote_error(e);
+            Main.notifyError(_('GSConnect'), e.message);
         }
     }
 
@@ -218,11 +219,8 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         let value = null;
 
         try {
-            value = this.get_cached_property(name);
-            value = value.deep_unpack();
+            value = this.get_cached_property(name).deep_unpack();
         } catch (e) {
-            logError(e);
-            value = null;
         } finally {
             return value;
         }
@@ -236,8 +234,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
             for (let property of info.properties) {
                 Object.defineProperty(iface, property.name, {
                     get: this._proxyGetter.bind(iface, property.name),
-                    enumerable: true,
-                    configurable: false
+                    enumerable: true
                 });
             }
 
