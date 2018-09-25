@@ -52,14 +52,6 @@ var Plugin = GObject.registerClass({
         this._mounted = false;
         this._mounting = false;
         this._port = 0;
-
-        if (!hasCommand(gsconnect.metadata.bin.sshfs)) {
-            this.destroy();
-
-            let error = new Error('sshfs');
-            error.name = 'DependencyError';
-            throw error;
-        }
     }
 
     handlePacket(packet) {
@@ -71,8 +63,18 @@ var Plugin = GObject.registerClass({
     connected() {
         super.connected();
 
-        if (this.device.connection_type === 'bluetooth') {
+        // Disable mounting and notify if `sshfs` is not available
+        if (!hasCommand(gsconnect.metadata.bin.sshfs)) {
             this.device.lookup_action('mount').enabled = false;
+            let error = new Error();
+            error.name = 'DependencyError';
+            this.service.notify_error(error);
+
+        // Disable mounting on bluetooth connections
+        } else if (this.device.connection_type === 'bluetooth') {
+            this.device.lookup_action('mount').enabled = false;
+
+        // Request a mount so we can delay-connect to the device
         } else {
             this._setup();
             this.mount();
@@ -107,8 +109,8 @@ var Plugin = GObject.registerClass({
             } catch (e) {
             } finally {
                 let info = dir.query_info('unix::uid,unix::gid', 0, null);
-                this._uid = info.get_attribute_uint32('unix::uid').toString();
-                this._gid = info.get_attribute_uint32('unix::gid').toString();
+                this._uid = info.get_attribute_uint32('unix::uid');
+                this._gid = info.get_attribute_uint32('unix::gid');
             }
         } catch (e) {
             logWarning(e, `${this.device.name}: ${this.name}`);

@@ -597,7 +597,7 @@ const Service = GObject.registerClass({
                     title = _('Additional Software Required');
                     body = _('Click to open preferences');
                     icon = new Gio.ThemedIcon({ name: 'system-software-install-symbolic' });
-                    notif.set_default_action('app.preference::software');
+                    notif.set_default_action('app.preference::other');
                     notif.set_priority(Gio.NotificationPriority.HIGH);
                     break;
 
