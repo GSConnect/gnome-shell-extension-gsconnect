@@ -8,7 +8,7 @@
         "description": "The extension description"
     },
     "contextMenuMultipleDevices": {
-        "message": "Wyślij do urządzenia mobilnego",
+        "message": "Wyślij na urządzenie mobilne",
         "description": "Top-level Context Menu label when multiple devices are available"
     },
     "contextMenuSinglePlugin": {
@@ -42,3 +42,4 @@
         "description": "Context Menu label for sharing a link in an SMS message"
     }
 }
+

@@ -26,4 +26,5 @@ src/service/ui/settings.js
 src/service/ui/messaging.js
 src/shell/device.js
 src/shell/donotdisturb.js
+webextension/gettext.js
 

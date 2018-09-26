@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-09-21 21:33-0700\n"
+"POT-Creation-Date: 2018-09-25 17:05-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -26,13 +26,13 @@ msgstr ""
 msgid "Type a message"
 msgstr ""
 
-#: data/conversation-window.ui:215 src/service/device.js:406
-#: src/shell/device.js:317
+#: data/conversation-window.ui:215 src/service/device.js:407
+#: src/shell/device.js:356
 msgid "Reconnect"
 msgstr ""
 
-#: data/device.ui:132 src/service/ui/settings.js:979
-#: src/service/ui/settings.js:993
+#: data/device.ui:132 src/service/ui/settings.js:977
+#: src/service/ui/settings.js:991
 msgid "On"
 msgstr ""
 
@@ -61,7 +61,7 @@ msgstr ""
 msgid "Applications"
 msgstr ""
 
-#: data/device.ui:674 src/service/plugins/notification.js:13
+#: data/device.ui:674 src/service/plugins/notification.js:12
 msgid "Notifications"
 msgstr ""
 
@@ -69,104 +69,100 @@ msgstr ""
 msgid "Media Control & Volume"
 msgstr ""
 
-#: data/device.ui:984 src/service/plugins/telephony.js:12
+#: data/device.ui:983 src/service/plugins/telephony.js:12
 msgid "Telephony"
 msgstr ""
 
-#: data/device.ui:1019
+#: data/device.ui:1018
 msgid "Device Actions"
 msgstr ""
 
-#: data/device.ui:1031 data/device.ui:1096
+#: data/device.ui:1030 data/device.ui:1095
 msgid "Reset All…"
 msgstr ""
 
-#: data/device.ui:1084
+#: data/device.ui:1083
 msgid "Device Commands"
 msgstr ""
 
-#: data/device.ui:1144
+#: data/device.ui:1143
 msgid "Shortcuts"
 msgstr ""
 
-#: data/device.ui:1175
+#: data/device.ui:1174
 msgid "Plugins"
 msgstr ""
 
-#: data/device.ui:1241
+#: data/device.ui:1240
 msgid "Delete"
 msgstr ""
 
-#: data/device.ui:1266
+#: data/device.ui:1265
 msgid "Delete this device"
 msgstr ""
 
-#: data/device.ui:1281
+#: data/device.ui:1280
 msgid "Unpair and remove all settings and files"
 msgstr ""
 
-#: data/device.ui:1311
+#: data/device.ui:1310
 msgid "Advanced"
 msgstr ""
 
-#: data/menus.ui:5 src/service/ui/service.js:122
+#: data/menus.ui:5 src/service/ui/service.js:118
 msgid "Connect to…"
 msgstr ""
 
-#: data/menus.ui:9
-msgid "Preferences"
-msgstr ""
-
-#: data/menus.ui:16 data/settings.ui:1503
+#: data/menus.ui:11
 msgid "Help"
 msgstr ""
 
-#: data/menus.ui:20
+#: data/menus.ui:16
 msgid "Debugger"
 msgstr ""
 
-#: data/menus.ui:24
+#: data/menus.ui:20
 msgid "About"
 msgstr ""
 
-#: data/menus.ui:33
+#: data/menus.ui:29
 msgid "Connect Bluetooth"
 msgstr ""
 
-#: data/menus.ui:39
+#: data/menus.ui:35
 msgid "Connect LAN"
 msgstr ""
 
-#: data/menus.ui:45 src/service/device.js:422 src/shell/device.js:327
+#: data/menus.ui:41 src/service/device.js:423 src/shell/device.js:366
 msgid "Pair"
 msgstr ""
 
-#: data/menus.ui:51 src/service/device.js:430
+#: data/menus.ui:47 src/service/device.js:431
 msgid "Unpair"
 msgstr ""
 
-#: data/menus.ui:62 data/menus.ui:90 src/service/plugins/systemvolume.js:11
+#: data/menus.ui:58 data/menus.ui:86 src/service/plugins/systemvolume.js:11
 msgid "System Volume"
 msgstr ""
 
-#: data/menus.ui:64 data/menus.ui:92
+#: data/menus.ui:60 data/menus.ui:88
 msgid "Nothing"
 msgstr ""
 
-#: data/menus.ui:69 data/menus.ui:97
+#: data/menus.ui:65 data/menus.ui:93
 msgid "Lower"
 msgstr ""
 
 #. TRANSLATORS: Silence an incoming call
-#: data/menus.ui:74 data/menus.ui:102 src/service/plugins/telephony.js:259
+#: data/menus.ui:70 data/menus.ui:98 src/service/plugins/telephony.js:252
 msgid "Mute"
 msgstr ""
 
-#: data/menus.ui:81 data/menus.ui:113
+#: data/menus.ui:77 data/menus.ui:109
 msgid "Pause Media"
 msgstr ""
 
-#: data/menus.ui:109
+#: data/menus.ui:105
 msgid "Mute Microphone"
 msgstr ""
 
@@ -182,152 +178,143 @@ msgstr ""
 msgid "Service"
 msgstr ""
 
-#: data/settings.ui:826
+#: data/settings.ui:827
 msgid "Access Remote Filesystems"
 msgstr ""
 
+#: data/settings.ui:965
+msgid "KDE Connect for Other Devices"
+msgstr ""
+
+#: data/settings.ui:983
+msgid "Additional Features"
+msgstr ""
+
 #. TRANSLATORS: A phone number type
-#: data/settings.ui:1146 src/service/ui/contacts.js:19
+#: data/settings.ui:1170 src/service/ui/contacts.js:19
 #: src/service/ui/contacts.js:40
 msgid "Other"
 msgstr ""
 
-#: data/settings.ui:1164
-msgid "Additional Software"
+#. TRANSLATORS: No devices are known or available
+#: data/settings.ui:1363 webextension/gettext.js:35
+msgid "No Device Found"
 msgstr ""
 
-#: data/settings.ui:1210
-msgid "Software"
-msgstr ""
-
-#: data/settings.ui:1244
-msgid "Troubleshooting"
-msgstr ""
-
-#: data/settings.ui:1344
-msgid "Devices are on the same local network"
-msgstr ""
-
-#: data/settings.ui:1361
-msgid "Ports 1716-1764 are open for TCP/UDP"
-msgstr ""
-
-#: data/settings.ui:1378 data/settings.ui:1467
-msgid "Router, Firewall and VPN configured"
-msgstr ""
-
-#: data/settings.ui:1450
-msgid "(Android) Manually enter IP"
-msgstr ""
-
-#: data/settings.ui:1729
+#: data/settings.ui:1399
 msgid "Refresh"
 msgstr ""
 
-#: src/extension.js:56
+#: src/extension.js:58
 msgid "Mobile Devices"
 msgstr ""
 
-#: src/extension.js:77
+#: src/extension.js:80
 msgid "Mobile Settings"
 msgstr ""
 
-#: src/extension.js:192 src/service/daemon.js:95 src/service/daemon.js:423
+#. TRANSLATORS: Extension name
+#: src/extension.js:145 src/extension.js:200 src/service/daemon.js:95
+#: src/service/daemon.js:404 webextension/gettext.js:27
 msgid "GSConnect"
 msgstr ""
 
-#: src/nautilus-gsconnect.py:119
+#. TRANSLATORS: Top-level context menu item for GSConnect
+#: src/nautilus-gsconnect.py:119 webextension/gettext.js:31
 msgid "Send To Mobile Device"
 msgstr ""
 
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
-#: src/service/daemon.js:425
+#: src/service/daemon.js:406
 msgid "translator-credits"
 msgstr ""
 
-#: src/service/daemon.js:447
+#: src/service/daemon.js:428
 msgid "Report"
 msgstr ""
 
-#: src/service/daemon.js:575
+#: src/service/daemon.js:556
 msgid "Authentication Failure"
 msgstr ""
 
-#: src/service/daemon.js:584
+#: src/service/daemon.js:565
 msgid "Network Error"
 msgstr ""
 
-#: src/service/daemon.js:585 src/service/daemon.js:595
-#: src/service/daemon.js:606
+#: src/service/daemon.js:566 src/service/daemon.js:576
 msgid "Click for help troubleshooting"
 msgstr ""
 
-#: src/service/daemon.js:594
-msgid "Bluetooth Error"
-msgstr ""
-
-#: src/service/daemon.js:605
+#: src/service/daemon.js:575
 msgid "PulseAudio Error"
 msgstr ""
 
-#: src/service/daemon.js:615
+#: src/service/daemon.js:585
 msgid "Discovery Disabled"
 msgstr ""
 
-#: src/service/daemon.js:616
+#: src/service/daemon.js:586
 msgid ""
 "Discovery has been disabled due to the number of devices on this network."
 msgstr ""
 
-#: src/service/daemon.js:618 src/service/daemon.js:628
+#: src/service/daemon.js:588 src/service/daemon.js:598
 msgid "Click to open preferences"
 msgstr ""
 
-#: src/service/daemon.js:627
+#: src/service/daemon.js:597
 msgid "Additional Software Required"
 msgstr ""
 
-#: src/service/daemon.js:636
+#: src/service/daemon.js:606
 #, javascript-format
 msgid "%s Plugin Failed To Load"
 msgstr ""
 
-#: src/service/daemon.js:637 src/service/daemon.js:654
+#: src/service/daemon.js:607 src/service/daemon.js:624
+#: src/service/daemon.js:636
 msgid "Click for more information"
 msgstr ""
 
-#: src/service/daemon.js:652
+#: src/service/daemon.js:622
+msgid "Remote Filesystem Error"
+msgstr ""
+
+#: src/service/daemon.js:623
+#, javascript-format
+msgid "%s is using an incompatible SSH library"
+msgstr ""
+
+#: src/service/daemon.js:634
 msgid "Wayland Not Supported"
 msgstr ""
 
-#: src/service/daemon.js:653
+#: src/service/daemon.js:635
 msgid "Remote input not supported on Wayland"
 msgstr ""
 
-#: src/service/daemon.js:664
-msgid "Error"
-msgstr ""
-
 #. Create an urgent notification
-#: src/service/daemon.js:677
+#: src/service/daemon.js:659
 #, javascript-format
 msgid "GSConnect: %s"
 msgstr ""
 
-#: src/service/daemon.js:823 src/service/plugins/sms.js:49
+#. TRANSLATORS: Share URL by SMS
+#: src/service/daemon.js:805 src/service/plugins/sms.js:49
+#: webextension/gettext.js:39
 msgid "Send SMS"
 msgstr ""
 
-#: src/service/daemon.js:827
+#: src/service/daemon.js:809
 msgid "Dial Number"
 msgstr ""
 
-#: src/service/device.js:154
+#: src/service/device.js:155
 msgid "Not available"
 msgstr ""
 
 #. TRANSLATORS: Bluetooth address for remote device
-#: src/service/device.js:158
+#: src/service/device.js:159
 #, javascript-format
 msgid "Bluetooth device at %s"
 msgstr ""
@@ -338,42 +325,42 @@ msgstr ""
 #.
 #. Google Pixel Fingerprint:
 #. 00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
-#: src/service/device.js:176 src/service/device.js:178
+#: src/service/device.js:177 src/service/device.js:179
 #, javascript-format
 msgid "%s Fingerprint:"
 msgstr ""
 
-#: src/service/device.js:228
+#: src/service/device.js:229
 msgid "Laptop"
 msgstr ""
 
-#: src/service/device.js:230
+#: src/service/device.js:231
 msgid "Smartphone"
 msgstr ""
 
-#: src/service/device.js:232
+#: src/service/device.js:233
 msgid "Tablet"
 msgstr ""
 
-#: src/service/device.js:234
+#: src/service/device.js:235
 msgid "Desktop"
 msgstr ""
 
-#: src/service/device.js:414 src/shell/device.js:369
+#: src/service/device.js:415 src/shell/device.js:408
 msgid "Settings"
 msgstr ""
 
 #. TRANSLATORS: eg. Pair Request from Google Pixel
-#: src/service/device.js:585
+#: src/service/device.js:606
 #, javascript-format
 msgid "Pair Request from %s"
 msgstr ""
 
-#: src/service/device.js:592
+#: src/service/device.js:613
 msgid "Reject"
 msgstr ""
 
-#: src/service/device.js:597
+#: src/service/device.js:618
 msgid "Accept"
 msgstr ""
 
@@ -381,18 +368,18 @@ msgstr ""
 msgid "Battery"
 msgstr ""
 
-#: src/service/plugins/battery.js:186 src/service/plugins/findmyphone.js:18
+#: src/service/plugins/battery.js:188 src/service/plugins/findmyphone.js:18
 msgid "Locate"
 msgstr ""
 
 #. TRANSLATORS: eg. Google Pixel: Battery is low
-#: src/service/plugins/battery.js:195
+#: src/service/plugins/battery.js:197
 #, javascript-format
 msgid "%s: Battery is low"
 msgstr ""
 
 #. TRANSLATORS: eg. 15% remaining
-#: src/service/plugins/battery.js:197
+#: src/service/plugins/battery.js:199
 #, javascript-format
 msgid "%d%% remaining"
 msgstr ""
@@ -438,25 +425,25 @@ msgstr ""
 msgid "Remote Input"
 msgstr ""
 
-#: src/service/plugins/mpris.js:11
+#: src/service/plugins/mpris.js:10
 msgid "MPRIS"
 msgstr ""
 
-#: src/service/plugins/notification.js:19
+#: src/service/plugins/notification.js:26
 msgid "Cancel Notification"
 msgstr ""
 
-#: src/service/plugins/notification.js:27
+#: src/service/plugins/notification.js:34
 msgid "Close Notification"
 msgstr ""
 
-#: src/service/plugins/notification.js:35
+#: src/service/plugins/notification.js:42
 msgid "Send Notification"
 msgstr ""
 
 #. TRANSLATORS: eg. Missed call from John Smith
-#: src/service/plugins/notification.js:470
-#: src/service/plugins/notification.js:540 src/service/plugins/telephony.js:142
+#: src/service/plugins/notification.js:473
+#: src/service/plugins/notification.js:543 src/service/plugins/telephony.js:135
 #, javascript-format
 msgid "Missed call from %s"
 msgstr ""
@@ -489,117 +476,117 @@ msgstr ""
 msgid "Unmount"
 msgstr ""
 
-#: src/service/plugins/sftp.js:167
+#: src/service/plugins/sftp.js:169
 msgid "All files"
 msgstr ""
 
-#: src/service/plugins/sftp.js:168
+#: src/service/plugins/sftp.js:170
 msgid "Camera pictures"
 msgstr ""
 
-#: src/service/plugins/sftp.js:338
+#: src/service/plugins/sftp.js:341
 msgid "Files"
 msgstr ""
 
-#: src/service/plugins/share.js:14 src/service/plugins/share.js:20
+#: src/service/plugins/share.js:12 src/service/plugins/share.js:18
 msgid "Share"
 msgstr ""
 
-#: src/service/plugins/share.js:28
+#: src/service/plugins/share.js:26
 msgid "Share File"
 msgstr ""
 
-#: src/service/plugins/share.js:36
+#: src/service/plugins/share.js:34
 msgid "Share Text"
 msgstr ""
 
-#: src/service/plugins/share.js:44 src/service/ui/messaging.js:791
-#: src/service/ui/messaging.js:802
+#: src/service/plugins/share.js:42 src/service/ui/messaging.js:795
+#: src/service/ui/messaging.js:806
 msgid "Share Link"
 msgstr ""
 
-#: src/service/plugins/share.js:134 src/service/plugins/share.js:294
+#: src/service/plugins/share.js:131 src/service/plugins/share.js:282
 msgid "Starting Transfer"
 msgstr ""
 
 #. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
-#: src/service/plugins/share.js:136
+#: src/service/plugins/share.js:133
 #, javascript-format
 msgid "Receiving \"%s\" from %s"
 msgstr ""
 
 #. Action Buttons
-#: src/service/plugins/share.js:141 src/service/plugins/share.js:301
-#: src/service/plugins/share.js:419 src/service/ui/keybindings.js:50
-#: src/service/ui/service.js:128 src/service/ui/service.js:306
-#: src/service/ui/settings.js:912 src/shell/donotdisturb.js:267
+#: src/service/plugins/share.js:138 src/service/plugins/share.js:289
+#: src/service/plugins/share.js:407 src/service/ui/keybindings.js:50
+#: src/service/ui/service.js:124 src/service/ui/service.js:303
+#: src/service/ui/settings.js:910 src/shell/donotdisturb.js:267
 msgid "Cancel"
 msgstr ""
 
-#: src/service/plugins/share.js:152 src/service/plugins/share.js:315
+#: src/service/plugins/share.js:149 src/service/plugins/share.js:303
 msgid "Transfer Successful"
 msgstr ""
 
 #. TRANSLATORS: eg. Received 'book.pdf' from Google Pixel
-#: src/service/plugins/share.js:154
+#: src/service/plugins/share.js:151
 #, javascript-format
 msgid "Received \"%s\" from %s"
 msgstr ""
 
-#: src/service/plugins/share.js:160
+#: src/service/plugins/share.js:157
 msgid "Open Folder"
 msgstr ""
 
-#: src/service/plugins/share.js:165
+#: src/service/plugins/share.js:162
 msgid "Open File"
 msgstr ""
 
-#: src/service/plugins/share.js:172 src/service/plugins/share.js:323
+#: src/service/plugins/share.js:169 src/service/plugins/share.js:311
 msgid "Transfer Failed"
 msgstr ""
 
 #. TRANSLATORS: eg. Failed to receive 'book.pdf' from Google Pixel
-#: src/service/plugins/share.js:174
+#: src/service/plugins/share.js:171
 #, javascript-format
 msgid "Failed to receive \"%s\" from %s"
 msgstr ""
 
-#: src/service/plugins/share.js:214
+#: src/service/plugins/share.js:211
 #, javascript-format
 msgid "Text Shared By %s"
 msgstr ""
 
 #. TRANSLATORS: eg. Sending 'book.pdf' to Google Pixel
-#: src/service/plugins/share.js:296
+#: src/service/plugins/share.js:284
 #, javascript-format
 msgid "Sending \"%s\" to %s"
 msgstr ""
 
 #. TRANSLATORS: eg. Sent "book.pdf" to Google Pixel
-#: src/service/plugins/share.js:317
+#: src/service/plugins/share.js:305
 #, javascript-format
 msgid "Sent \"%s\" to %s"
 msgstr ""
 
 #. TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel
-#: src/service/plugins/share.js:325
+#: src/service/plugins/share.js:313
 #, javascript-format
 msgid "Failed to send \"%s\" to %s"
 msgstr ""
 
 #. TRANSLATORS: eg. Send files to Google Pixel
-#: src/service/plugins/share.js:396
+#: src/service/plugins/share.js:384
 #, javascript-format
 msgid "Send files to %s"
 msgstr ""
 
 #. TRANSLATORS: eg. Send a link to Google Pixel
-#: src/service/plugins/share.js:414
+#: src/service/plugins/share.js:402
 #, javascript-format
 msgid "Send a link to %s"
 msgstr ""
 
-#: src/service/plugins/share.js:420
+#: src/service/plugins/share.js:408
 msgid "Send"
 msgstr ""
 
@@ -628,13 +615,13 @@ msgid "Mute Call"
 msgstr ""
 
 #. TRANSLATORS: eg. Incoming call from John Smith
-#: src/service/plugins/telephony.js:145
+#: src/service/plugins/telephony.js:138
 #, javascript-format
 msgid "Incoming call from %s"
 msgstr ""
 
 #. TRANSLATORS: eg. Call in progress with John Smith
-#: src/service/plugins/telephony.js:148
+#: src/service/plugins/telephony.js:141
 #, javascript-format
 msgid "Call in progress with %s"
 msgstr ""
@@ -642,12 +629,12 @@ msgstr ""
 #. TRANSLATORS: This is _specifically_ for matching missed call notifications on Android.
 #. This should _exactly_ match the Android notification that in english looks like 'Missed call: John Lennon'
 #. Use the notification ticker style for the id
-#: src/service/plugins/telephony.js:168 src/service/plugins/telephony.js:254
+#: src/service/plugins/telephony.js:161 src/service/plugins/telephony.js:247
 msgid "Missed call"
 msgstr ""
 
 #. TRANSLATORS: Reply to a missed call by SMS
-#: src/service/plugins/telephony.js:249
+#: src/service/plugins/telephony.js:242
 msgid "Message"
 msgstr ""
 
@@ -671,26 +658,26 @@ msgstr ""
 msgid "Home"
 msgstr ""
 
-#: src/service/ui/contacts.js:75 src/service/ui/contacts.js:220
+#: src/service/ui/contacts.js:75 src/service/ui/contacts.js:219
 msgid "Unknown Contact"
 msgstr ""
 
 #. TODO: we have no use for unknown numbers
-#: src/service/ui/contacts.js:277
+#: src/service/ui/contacts.js:276
 msgid "Unknown Number"
 msgstr ""
 
-#: src/service/ui/contacts.js:349 src/service/ui/contacts.js:350
+#: src/service/ui/contacts.js:348 src/service/ui/contacts.js:349
 msgid "Type a phone number or name"
 msgstr ""
 
-#: src/service/ui/contacts.js:393
+#: src/service/ui/contacts.js:392
 msgid "Add people to start a conversation"
 msgstr ""
 
 #. TRANSLATORS: A phone number (eg. "Send to 555-5555")
 #. Update UI
-#: src/service/ui/contacts.js:444 src/service/ui/contacts.js:451
+#: src/service/ui/contacts.js:443 src/service/ui/contacts.js:450
 #, javascript-format
 msgid "Send to %s"
 msgstr ""
@@ -724,52 +711,48 @@ msgstr ""
 msgid "%s is already being used"
 msgstr ""
 
-#: src/service/ui/service.js:101
-msgid "No Devices"
-msgstr ""
-
-#: src/service/ui/service.js:129
+#: src/service/ui/service.js:125
 msgid "Connect"
 msgstr ""
 
-#: src/service/ui/service.js:300
+#: src/service/ui/service.js:297
 msgid "Select a Device"
 msgstr ""
 
-#: src/service/ui/service.js:304
+#: src/service/ui/service.js:301
 msgid "Select"
 msgstr ""
 
-#: src/service/ui/settings.js:411
+#: src/service/ui/settings.js:409
 msgid "Panel"
 msgstr ""
 
-#: src/service/ui/settings.js:411
+#: src/service/ui/settings.js:409
 msgid "User Menu"
 msgstr ""
 
-#: src/service/ui/settings.js:704 src/service/ui/settings.js:761
+#: src/service/ui/settings.js:702 src/service/ui/settings.js:759
 msgid "Both"
 msgstr ""
 
-#: src/service/ui/settings.js:706 src/service/ui/settings.js:765
+#: src/service/ui/settings.js:704 src/service/ui/settings.js:763
 msgid "To Device"
 msgstr ""
 
-#: src/service/ui/settings.js:708 src/service/ui/settings.js:757
+#: src/service/ui/settings.js:706 src/service/ui/settings.js:755
 msgid "From Device"
 msgstr ""
 
-#: src/service/ui/settings.js:710 src/service/ui/settings.js:753
-#: src/service/ui/settings.js:979 src/service/ui/settings.js:993
+#: src/service/ui/settings.js:708 src/service/ui/settings.js:751
+#: src/service/ui/settings.js:977 src/service/ui/settings.js:991
 msgid "Off"
 msgstr ""
 
-#: src/service/ui/settings.js:913
+#: src/service/ui/settings.js:911
 msgid "Open"
 msgstr ""
 
-#: src/service/ui/settings.js:1166 src/service/ui/settings.js:1232
+#: src/service/ui/settings.js:1169 src/service/ui/settings.js:1235
 msgid "Disabled"
 msgstr ""
 
@@ -797,41 +780,41 @@ msgstr ""
 msgid "%s is disconnected"
 msgstr ""
 
-#: src/service/ui/messaging.js:811
+#: src/service/ui/messaging.js:815
 msgid "New Message"
 msgstr ""
 
 #. TRANSLATORS: When the battery level is 100%
-#: src/shell/device.js:265
+#: src/shell/device.js:297
 msgid "Fully Charged"
 msgstr ""
 
 #. TRANSLATORS: When no time estimate for the battery is available
 #. EXAMPLE: 42% (Estimating…)
-#: src/shell/device.js:269
+#: src/shell/device.js:301
 #, javascript-format
 msgid "%d%% (Estimating…)"
 msgstr ""
 
 #. TRANSLATORS: Estimated time until battery is charged
 #. EXAMPLE: 42% (1:15 Until Full)
-#: src/shell/device.js:279
+#: src/shell/device.js:311
 #, javascript-format
 msgid "%d%% (%d∶%02d Until Full)"
 msgstr ""
 
 #. TRANSLATORS: Estimated time until battery is empty
 #. EXAMPLE: 42% (12:15 Remaining)
-#: src/shell/device.js:287
+#: src/shell/device.js:319
 #, javascript-format
 msgid "%d%% (%d∶%02d Remaining)"
 msgstr ""
 
-#: src/shell/device.js:558
+#: src/shell/device.js:597
 msgid "Device is disconnected"
 msgstr ""
 
-#: src/shell/device.js:560
+#: src/shell/device.js:599
 msgid "Device is unpaired"
 msgstr ""
 
@@ -865,3 +848,18 @@ msgid "One hour"
 msgid_plural "%d hours"
 msgstr[0] ""
 msgstr[1] ""
+
+#. TRANSLATORS: Chrome/Firefox WebExtension description
+#: webextension/gettext.js:29
+msgid "Share links with GSConnect, direct to the browser or by SMS."
+msgstr ""
+
+#. TRANSLATORS: WebExtension can't connect to GSConnect
+#: webextension/gettext.js:33
+msgid "Service Unavailable"
+msgstr ""
+
+#. TRANSLATORS: Open URL with the device's browser
+#: webextension/gettext.js:37
+msgid "Open in Browser"
+msgstr ""

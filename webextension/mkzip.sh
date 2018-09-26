@@ -13,6 +13,9 @@ fi
 # Clean-up old files
 rm -rf ${1}.zip
 
+# Update translations
+./gettext.js
+
 # Copy relevant files
 mkdir ${1}
 
