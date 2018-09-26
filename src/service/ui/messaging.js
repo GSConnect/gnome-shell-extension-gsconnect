@@ -132,6 +132,14 @@ function getShortTime(time) {
 
 
 /**
+ * A convenience function to prepare a string for Pango markup
+ */
+String.prototype.toPango = function() {
+    return this.replace(/&(?!amp;)/g, '&amp;');
+}
+
+
+/**
  * A simple GtkLabel subclass with a chat bubble appearance
  */
 var ConversationMessage = GObject.registerClass({
@@ -191,10 +199,7 @@ var ConversationMessage = GObject.registerClass({
         return text.replace(
             _urlRegexp,
             '$1<a href="$2">$2</a>'
-        ).replace(
-            /&(?!amp;)/g,
-            '&amp;'
-        );
+        ).toPango();
     }
 });
 
@@ -219,7 +224,7 @@ var ConversationSummary = GObject.registerClass({
         this.add(grid);
 
         let nameLabel = contact.name;
-        let bodyLabel = '<small>' + message.body + '</small>';
+        let bodyLabel = '<small>' + message.body.toPango() + '</small>';
 
         if (message.read === MessageStatus.UNREAD) {
             nameLabel = '<b>' + nameLabel + '</b>';
