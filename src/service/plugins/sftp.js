@@ -66,6 +66,8 @@ var Plugin = GObject.registerClass({
         // Disable mounting and notify if `sshfs` is not available
         if (!hasCommand(gsconnect.metadata.bin.sshfs)) {
             this.device.lookup_action('mount').enabled = false;
+            this.device.lookup_action('unmount').enabled = false;
+
             let error = new Error();
             error.name = 'DependencyError';
             this.service.notify_error(error);
@@ -73,6 +75,7 @@ var Plugin = GObject.registerClass({
         // Disable mounting on bluetooth connections
         } else if (this.device.connection_type === 'bluetooth') {
             this.device.lookup_action('mount').enabled = false;
+            this.device.lookup_action('unmount').enabled = false;
 
         // Request a mount so we can delay-connect to the device
         } else {
