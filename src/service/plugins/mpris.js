@@ -67,7 +67,7 @@ var Plugin = GObject.registerClass({
                 break;
 
             default:
-                this._sendPlayerList();
+                this._handleCommand(packet);
         }
     }
 
