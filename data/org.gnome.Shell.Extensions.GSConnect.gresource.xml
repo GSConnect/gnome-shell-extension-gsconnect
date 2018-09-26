@@ -22,6 +22,7 @@
     <!-- Application Icons -->
     <file compressed="true" preprocess="xml-stripblanks">org.gnome.Shell.Extensions.GSConnect.svg</file>
     <file compressed="true" preprocess="xml-stripblanks">org.gnome.Shell.Extensions.GSConnect-symbolic.svg</file>
+
     <!-- Device Icons c/o Numix -->
     <file compressed="true" preprocess="xml-stripblanks">computer.svg</file>
     <file compressed="true" preprocess="xml-stripblanks">computer-symbolic.svg</file>
@@ -31,11 +32,10 @@
     <file compressed="true" preprocess="xml-stripblanks">smartphone-symbolic.svg</file>
     <file compressed="true" preprocess="xml-stripblanks">tablet.svg</file>
     <file compressed="true" preprocess="xml-stripblanks">tablet-symbolic.svg</file>
-    <!-- Browser Icons -->
-    <file>firefox-webextension.png</file>
-    <file>chrome-webextension.png</file>
-    <file>kdeconnect-fdroid.png</file>
-    <file>kdeconnect-google.png</file>
+
+    <!-- Browser Badges -->
+    <file>firefox-badge.png</file>
+    <file>chrome-badge.png</file>
 
     <!-- SMS Icons -->
     <file compressed="true" preprocess="xml-stripblanks">sms-send.svg</file>
