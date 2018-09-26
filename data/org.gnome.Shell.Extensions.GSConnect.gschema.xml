@@ -144,12 +144,6 @@
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.SMS"/>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.SystemVolume"/>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Telephony">
-    <key name="handle-sms" type="b">
-      <default>true</default>
-    </key>
-    <key name="handle-calls" type="b">
-      <default>true</default>
-    </key>
     <key name="ringing-volume" type="s">
       <default>"lower"</default>
     </key>

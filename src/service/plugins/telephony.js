@@ -85,12 +85,6 @@ var Plugin = GObject.registerClass({
                 return;
             }
 
-            // TODO: this is for backwards-compatibility until SMS doesn't rely
-            // on telephony packets. Then the plugin can just be disabled.
-            if (!this.settings.get_boolean('handle-calls')) {
-                return;
-            }
-
             switch (packet.body.event) {
                 case 'missedCall':
                     this._onMissedCall(contact, message);

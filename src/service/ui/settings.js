@@ -470,9 +470,8 @@ var Device = GObject.registerClass({
         'share-notifications', 'notification-apps',
         // Telephony
         'telephony',
-        'telephony-list', 'handle-sms', 'handle-calls',
-        'calls-list',
-        'ringing-button', 'talking-button',
+        'ringing-list', 'ringing-volume', 'ringing-pause',
+        'talking-list', 'talking-volume', 'talking-microphone', 'talking-pause',
         // Shortcuts
         'shortcuts-actions', 'shortcuts-actions-title', 'shortcuts-actions-list',
         'shortcuts-commands', 'shortcuts-commands-title', 'shortcuts-commands-list',
@@ -1067,51 +1066,43 @@ var Device = GObject.registerClass({
      */
     _telephonySettings() {
         let settings = this._getSettings('telephony');
-
-        // SMS
-        settings.bind(
-            'handle-sms',
-            this.handle_sms,
-            'active',
-            Gio.SettingsBindFlags.DEFAULT
-        );
-
-        settings.bind(
-            'handle-calls',
-            this.handle_calls,
-            'active',
-            Gio.SettingsBindFlags.DEFAULT
-        );
-
-        settings.bind(
-            'handle-calls',
-            this.calls_list,
-            'sensitive',
-            Gio.SettingsBindFlags.DEFAULT
-        );
-        this.telephony_list.set_header_func(section_separators);
+        this.ringing_list.set_header_func(section_separators);
+        this.talking_list.set_header_func(section_separators);
 
         // Settings Actions
         let actions = new Gio.SimpleActionGroup();
-        actions.add_action(settings.create_action('ringing-volume'));
-        actions.add_action(settings.create_action('ringing-pause'));
-
-        actions.add_action(settings.create_action('talking-volume'));
-        actions.add_action(settings.create_action('talking-microphone'));
-        actions.add_action(settings.create_action('talking-pause'));
-
-        // Menu Models
-        this.ringing_button.set_menu_model(
-            this.service.get_menu_by_id('ringing-popover')
-        );
-
-        this.talking_button.set_menu_model(
-            this.service.get_menu_by_id('talking-popover')
-        );
-
         this.insert_action_group('telephony', actions);
 
-        this.calls_list.set_header_func(section_separators);
+        actions.add_action(settings.create_action('ringing-volume'));
+        this.ringing_volume.set_menu_model(
+            this.service.get_menu_by_id('volume-popover')
+        );
+
+        settings.bind(
+            'ringing-pause',
+            this.ringing_pause,
+            'active',
+            Gio.SettingsBindFlags.DEFAULT
+        );
+
+        actions.add_action(settings.create_action('talking-volume'));
+        this.talking_volume.set_menu_model(
+            this.service.get_menu_by_id('volume-popover')
+        );
+
+        settings.bind(
+            'talking-microphone',
+            this.talking_microphone,
+            'active',
+            Gio.SettingsBindFlags.DEFAULT
+        );
+
+        settings.bind(
+            'talking-pause',
+            this.talking_pause,
+            'active',
+            Gio.SettingsBindFlags.DEFAULT
+        );
     }
 
     _onTelephonyRowActivated(box, row) {
