@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-09-25 17:05-0700\n"
+"POT-Creation-Date: 2018-09-25 20:03-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -166,42 +166,62 @@ msgstr ""
 msgid "Mute Microphone"
 msgstr ""
 
-#: data/settings.ui:313
+#: data/settings.ui:333
 msgid "Appearance"
 msgstr ""
 
-#: data/settings.ui:560
+#: data/settings.ui:580
 msgid "Shell"
 msgstr ""
 
-#: data/settings.ui:767
+#: data/settings.ui:787
 msgid "Service"
 msgstr ""
 
-#: data/settings.ui:827
+#: data/settings.ui:847
 msgid "Access Remote Filesystems"
 msgstr ""
 
-#: data/settings.ui:965
+#: data/settings.ui:985
 msgid "KDE Connect for Other Devices"
 msgstr ""
 
-#: data/settings.ui:983
+#: data/settings.ui:1003
 msgid "Additional Features"
 msgstr ""
 
+#: data/settings.ui:1105
+msgid "Android"
+msgstr ""
+
+#: data/settings.ui:1114
+msgid "Google Play"
+msgstr ""
+
+#: data/settings.ui:1130
+msgid "F-Droid"
+msgstr ""
+
+#: data/settings.ui:1148
+msgid "Sailfish"
+msgstr ""
+
+#: data/settings.ui:1157
+msgid "OpenRepos.net"
+msgstr ""
+
 #. TRANSLATORS: A phone number type
-#: data/settings.ui:1170 src/service/ui/contacts.js:19
+#: data/settings.ui:1194 src/service/ui/contacts.js:19
 #: src/service/ui/contacts.js:40
 msgid "Other"
 msgstr ""
 
 #. TRANSLATORS: No devices are known or available
-#: data/settings.ui:1363 webextension/gettext.js:35
+#: data/settings.ui:1387 webextension/gettext.js:35
 msgid "No Device Found"
 msgstr ""
 
-#: data/settings.ui:1399
+#: data/settings.ui:1423
 msgid "Refresh"
 msgstr ""
 
@@ -476,15 +496,15 @@ msgstr ""
 msgid "Unmount"
 msgstr ""
 
-#: src/service/plugins/sftp.js:169
+#: src/service/plugins/sftp.js:172
 msgid "All files"
 msgstr ""
 
-#: src/service/plugins/sftp.js:170
+#: src/service/plugins/sftp.js:173
 msgid "Camera pictures"
 msgstr ""
 
-#: src/service/plugins/sftp.js:341
+#: src/service/plugins/sftp.js:344
 msgid "Files"
 msgstr ""
 
