@@ -191,11 +191,19 @@ var Icon = GObject.registerClass({
             this._onInterfaceRemoved.bind(this)
         );
 
+        // Redraw when mapped
+        this._mappedId = this.connect(
+            'notify::mapped',
+            () => this.queue_repaint()
+        );
+
         // Cleanup
         this.connect('destroy', this._onDestroy);
     }
 
     _onDestroy(actor) {
+        actor.disconnect(actor._mappedId);
+
         actor.device.disconnect(actor._propertiesId);
         actor._iconTheme.disconnect(actor._iconThemeId);
         actor._themeContext.disconnect(actor._themeContextId);
