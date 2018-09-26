@@ -116,16 +116,19 @@ var Plugin = GObject.registerClass({
                     // Set Gdk.ModifierType
                     let mask = 0;
 
-                    switch (true) {
-                        case input.ctrl:
-                            mask |= Gdk.ModifierType.CONTROL_MASK;
-                        case input.shift:
-                            mask |= Gdk.ModifierType.SHIFT_MASK;
-                        case input.alt:
-                            mask |= Gdk.ModifierType.MOD1_MASK;
-                        case input.super:
-                            mask |= Gdk.ModifierType.SUPER_MASK;
+                    if (input.hasOwnProperty('ctrl') && input.ctrl) {
+                        mask |= Gdk.ModifierType.CONTROL_MASK;
                     }
+                    if (input.hasOwnProperty('shift') && input.shift) {
+                        mask |= Gdk.ModifierType.SHIFT_MASK;
+                    }
+                    if (input.hasOwnProperty('alt') && input.alt) {
+                        mask |= Gdk.ModifierType.MOD1_MASK;
+                    }
+                    if (input.hasOwnProperty('super') && input.super) {
+                        mask |= Gdk.ModifierType.MOD4_MASK;
+                    }
+
 
                     // Transform key to keysym
                     let keysym;
@@ -136,7 +139,9 @@ var Plugin = GObject.registerClass({
                         keysym = KeyMap.get(input.specialKey);
                     }
 
-                    this.pressKeySym(keysym, mask);
+                    if (keysym) {
+                        this.pressKeySym(keysym, mask);
+                    }
                 } else {
                     // This is sometimes sent in advance of a specialKey packet
                     if (input.key && input.key !== '\u0000') {
