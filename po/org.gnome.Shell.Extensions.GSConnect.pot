@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-09-26 15:52-0700\n"
+"POT-Creation-Date: 2018-09-26 16:10-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: data/conversation-window.ui:13 src/service/ui/messaging.js:447
+#: data/conversation-window.ui:13 src/service/ui/messaging.js:452
 msgid "Conversations"
 msgstr ""
 
@@ -27,12 +27,12 @@ msgid "Type a message"
 msgstr ""
 
 #: data/conversation-window.ui:215 src/service/device.js:407
-#: src/shell/device.js:356
+#: src/shell/device.js:364
 msgid "Reconnect"
 msgstr ""
 
-#: data/device.ui:132 src/service/ui/settings.js:977
-#: src/service/ui/settings.js:991
+#: data/device.ui:132 src/service/ui/settings.js:978
+#: src/service/ui/settings.js:992
 msgid "On"
 msgstr ""
 
@@ -65,47 +65,51 @@ msgstr ""
 msgid "Notifications"
 msgstr ""
 
-#: data/device.ui:825
-msgid "Media Control & Volume"
+#: data/device.ui:704
+msgid "Incoming Calls"
 msgstr ""
 
-#: data/device.ui:983 src/service/plugins/telephony.js:12
+#: data/device.ui:852
+msgid "Answered Calls"
+msgstr ""
+
+#: data/device.ui:1047 src/service/plugins/telephony.js:12
 msgid "Telephony"
 msgstr ""
 
-#: data/device.ui:1018
-msgid "Device Actions"
+#: data/device.ui:1082
+msgid "Action Shortcuts"
 msgstr ""
 
-#: data/device.ui:1030 data/device.ui:1095
+#: data/device.ui:1094 data/device.ui:1159
 msgid "Reset All…"
 msgstr ""
 
-#: data/device.ui:1083
-msgid "Device Commands"
+#: data/device.ui:1147
+msgid "Command Shortcuts"
 msgstr ""
 
-#: data/device.ui:1143
+#: data/device.ui:1207
 msgid "Shortcuts"
 msgstr ""
 
-#: data/device.ui:1174
+#: data/device.ui:1238
 msgid "Plugins"
 msgstr ""
 
-#: data/device.ui:1240
+#: data/device.ui:1304
 msgid "Delete"
 msgstr ""
 
-#: data/device.ui:1265
+#: data/device.ui:1329
 msgid "Delete this device"
 msgstr ""
 
-#: data/device.ui:1280
+#: data/device.ui:1344
 msgid "Unpair and remove all settings and files"
 msgstr ""
 
-#: data/device.ui:1310
+#: data/device.ui:1374
 msgid "Advanced"
 msgstr ""
 
@@ -133,7 +137,7 @@ msgstr ""
 msgid "Connect LAN"
 msgstr ""
 
-#: data/menus.ui:41 src/service/device.js:423 src/shell/device.js:366
+#: data/menus.ui:41 src/service/device.js:423 src/shell/device.js:374
 msgid "Pair"
 msgstr ""
 
@@ -141,29 +145,17 @@ msgstr ""
 msgid "Unpair"
 msgstr ""
 
-#: data/menus.ui:58 data/menus.ui:86 src/service/plugins/systemvolume.js:11
-msgid "System Volume"
-msgstr ""
-
-#: data/menus.ui:60 data/menus.ui:88
+#: data/menus.ui:59 data/menus.ui:82
 msgid "Nothing"
 msgstr ""
 
-#: data/menus.ui:65 data/menus.ui:93
+#: data/menus.ui:65 data/menus.ui:88
 msgid "Lower"
 msgstr ""
 
 #. TRANSLATORS: Silence an incoming call
-#: data/menus.ui:70 data/menus.ui:98 src/service/plugins/telephony.js:252
+#: data/menus.ui:71 data/menus.ui:94 src/service/plugins/telephony.js:246
 msgid "Mute"
-msgstr ""
-
-#: data/menus.ui:77 data/menus.ui:109
-msgid "Pause Media"
-msgstr ""
-
-#: data/menus.ui:105
-msgid "Mute Microphone"
 msgstr ""
 
 #: data/settings.ui:333
@@ -190,38 +182,38 @@ msgstr ""
 msgid "Additional Features"
 msgstr ""
 
-#: data/settings.ui:1105
+#: data/settings.ui:1106
 msgid "Android"
 msgstr ""
 
-#: data/settings.ui:1114
+#: data/settings.ui:1115
 msgid "Google Play"
 msgstr ""
 
-#: data/settings.ui:1130
+#: data/settings.ui:1131
 msgid "F-Droid"
 msgstr ""
 
-#: data/settings.ui:1148
+#: data/settings.ui:1149
 msgid "Sailfish"
 msgstr ""
 
-#: data/settings.ui:1157
+#: data/settings.ui:1158
 msgid "OpenRepos.net"
 msgstr ""
 
 #. TRANSLATORS: A phone number type
-#: data/settings.ui:1194 src/service/ui/contacts.js:19
+#: data/settings.ui:1195 src/service/ui/contacts.js:19
 #: src/service/ui/contacts.js:40
 msgid "Other"
 msgstr ""
 
 #. TRANSLATORS: No devices are known or available
-#: data/settings.ui:1387 webextension/gettext.js:35
+#: data/settings.ui:1388 webextension/gettext.js:35
 msgid "No Device Found"
 msgstr ""
 
-#: data/settings.ui:1423
+#: data/settings.ui:1424
 msgid "Refresh"
 msgstr ""
 
@@ -366,7 +358,7 @@ msgstr ""
 msgid "Desktop"
 msgstr ""
 
-#: src/service/device.js:415 src/shell/device.js:408
+#: src/service/device.js:415 src/shell/device.js:416
 msgid "Settings"
 msgstr ""
 
@@ -463,7 +455,7 @@ msgstr ""
 
 #. TRANSLATORS: eg. Missed call from John Smith
 #: src/service/plugins/notification.js:473
-#: src/service/plugins/notification.js:543 src/service/plugins/telephony.js:135
+#: src/service/plugins/notification.js:543 src/service/plugins/telephony.js:129
 #, javascript-format
 msgid "Missed call from %s"
 msgstr ""
@@ -520,8 +512,8 @@ msgstr ""
 msgid "Share Text"
 msgstr ""
 
-#: src/service/plugins/share.js:42 src/service/ui/messaging.js:795
-#: src/service/ui/messaging.js:806
+#: src/service/plugins/share.js:42 src/service/ui/messaging.js:800
+#: src/service/ui/messaging.js:811
 msgid "Share Link"
 msgstr ""
 
@@ -539,7 +531,7 @@ msgstr ""
 #: src/service/plugins/share.js:138 src/service/plugins/share.js:289
 #: src/service/plugins/share.js:407 src/service/ui/keybindings.js:50
 #: src/service/ui/service.js:124 src/service/ui/service.js:303
-#: src/service/ui/settings.js:910 src/shell/donotdisturb.js:267
+#: src/service/ui/settings.js:911 src/shell/donotdisturb.js:267
 msgid "Cancel"
 msgstr ""
 
@@ -630,18 +622,22 @@ msgstr ""
 msgid "Share SMS"
 msgstr ""
 
+#: src/service/plugins/systemvolume.js:11
+msgid "System Volume"
+msgstr ""
+
 #: src/service/plugins/telephony.js:22
 msgid "Mute Call"
 msgstr ""
 
 #. TRANSLATORS: eg. Incoming call from John Smith
-#: src/service/plugins/telephony.js:138
+#: src/service/plugins/telephony.js:132
 #, javascript-format
 msgid "Incoming call from %s"
 msgstr ""
 
 #. TRANSLATORS: eg. Call in progress with John Smith
-#: src/service/plugins/telephony.js:141
+#: src/service/plugins/telephony.js:135
 #, javascript-format
 msgid "Call in progress with %s"
 msgstr ""
@@ -649,12 +645,12 @@ msgstr ""
 #. TRANSLATORS: This is _specifically_ for matching missed call notifications on Android.
 #. This should _exactly_ match the Android notification that in english looks like 'Missed call: John Lennon'
 #. Use the notification ticker style for the id
-#: src/service/plugins/telephony.js:161 src/service/plugins/telephony.js:247
+#: src/service/plugins/telephony.js:155 src/service/plugins/telephony.js:241
 msgid "Missed call"
 msgstr ""
 
 #. TRANSLATORS: Reply to a missed call by SMS
-#: src/service/plugins/telephony.js:242
+#: src/service/plugins/telephony.js:236
 msgid "Message"
 msgstr ""
 
@@ -743,36 +739,36 @@ msgstr ""
 msgid "Select"
 msgstr ""
 
-#: src/service/ui/settings.js:409
+#: src/service/ui/settings.js:402
 msgid "Panel"
 msgstr ""
 
-#: src/service/ui/settings.js:409
+#: src/service/ui/settings.js:402
 msgid "User Menu"
 msgstr ""
 
-#: src/service/ui/settings.js:702 src/service/ui/settings.js:759
+#: src/service/ui/settings.js:694 src/service/ui/settings.js:760
 msgid "Both"
 msgstr ""
 
-#: src/service/ui/settings.js:704 src/service/ui/settings.js:763
+#: src/service/ui/settings.js:696 src/service/ui/settings.js:766
 msgid "To Device"
 msgstr ""
 
-#: src/service/ui/settings.js:706 src/service/ui/settings.js:755
+#: src/service/ui/settings.js:698 src/service/ui/settings.js:754
 msgid "From Device"
 msgstr ""
 
-#: src/service/ui/settings.js:708 src/service/ui/settings.js:751
-#: src/service/ui/settings.js:977 src/service/ui/settings.js:991
+#: src/service/ui/settings.js:700 src/service/ui/settings.js:748
+#: src/service/ui/settings.js:978 src/service/ui/settings.js:992
 msgid "Off"
 msgstr ""
 
-#: src/service/ui/settings.js:911
+#: src/service/ui/settings.js:912
 msgid "Open"
 msgstr ""
 
-#: src/service/ui/settings.js:1169 src/service/ui/settings.js:1235
+#: src/service/ui/settings.js:1165 src/service/ui/settings.js:1231
 msgid "Disabled"
 msgstr ""
 
@@ -795,46 +791,46 @@ msgid "Yesterday・%s"
 msgstr ""
 
 #. TRANSLATORS: eg. Google Pixel is disconnected
-#: src/service/ui/messaging.js:345
+#: src/service/ui/messaging.js:350
 #, javascript-format
 msgid "%s is disconnected"
 msgstr ""
 
-#: src/service/ui/messaging.js:815
+#: src/service/ui/messaging.js:820
 msgid "New Message"
 msgstr ""
 
 #. TRANSLATORS: When the battery level is 100%
-#: src/shell/device.js:297
+#: src/shell/device.js:305
 msgid "Fully Charged"
 msgstr ""
 
 #. TRANSLATORS: When no time estimate for the battery is available
 #. EXAMPLE: 42% (Estimating…)
-#: src/shell/device.js:301
+#: src/shell/device.js:309
 #, javascript-format
 msgid "%d%% (Estimating…)"
 msgstr ""
 
 #. TRANSLATORS: Estimated time until battery is charged
 #. EXAMPLE: 42% (1:15 Until Full)
-#: src/shell/device.js:311
+#: src/shell/device.js:319
 #, javascript-format
 msgid "%d%% (%d∶%02d Until Full)"
 msgstr ""
 
 #. TRANSLATORS: Estimated time until battery is empty
 #. EXAMPLE: 42% (12:15 Remaining)
-#: src/shell/device.js:319
+#: src/shell/device.js:327
 #, javascript-format
 msgid "%d%% (%d∶%02d Remaining)"
 msgstr ""
 
-#: src/shell/device.js:597
+#: src/shell/device.js:605
 msgid "Device is disconnected"
 msgstr ""
 
-#: src/shell/device.js:599
+#: src/shell/device.js:607
 msgid "Device is unpaired"
 msgstr ""
 
