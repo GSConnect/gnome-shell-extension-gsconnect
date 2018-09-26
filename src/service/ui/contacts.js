@@ -273,7 +273,7 @@ var ContactChooserRow = GObject.registerClass({
 
         let number = new Gtk.Label({
             // TODO: we have no use for unknown numbers
-            label: entry.number || _('Unknown Number'),
+            label: entry.value || _('Unknown Number'),
             halign: Gtk.Align.START,
             hexpand: true,
             visible: true
@@ -448,11 +448,11 @@ var ContactChooser = GObject.registerClass({
             } else {
                 // Update UI
                 this._temporary.name = _('Send to %s').format(this.entry.text);
-                this._temporary.numbers[0].number = this.entry.text;
+                this._temporary.numbers[0].value = this.entry.text;
 
                 // Update contact object
                 this._temporary.contact.number = this.entry.text;
-                this._temporary.contact.numbers[0].number = this.entry.text;
+                this._temporary.contact.numbers[0].value = this.entry.text;
             }
 
         // ...otherwise remove any temporary contact that's been created

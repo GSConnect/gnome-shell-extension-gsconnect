@@ -708,8 +708,8 @@ var ConversationWindow = GObject.registerClass({
         let strippedNumber = phoneNumber.replace(/\D/g, '');
 
         for (let contactNumber of contact.numbers) {
-            if (strippedNumber === contactNumber.number.replace(/\D/g, '')) {
-                this._displayNumber = contactNumber.number;
+            if (strippedNumber === contactNumber.value.replace(/\D/g, '')) {
+                this._displayNumber = contactNumber.value;
                 break;
             }
         }

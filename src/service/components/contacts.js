@@ -7,7 +7,6 @@ const GObject = imports.gi.GObject;
 
 
 //
-var CACHE_DIR = GLib.build_filenamev([gsconnect.cachedir, '_contacts']);
 
 
 var Store = GObject.registerClass({
@@ -27,19 +26,21 @@ var Store = GObject.registerClass({
             'The contact provider icon name',
             GObject.ParamFlags.READABLE,
             ''
+        ),
+        'path': GObject.ParamSpec.string(
+            'path',
+            'Path',
+            'Cache path, relative to gsconnect.cachedir',
+            GObject.ParamFlags.READWRITE,
+            ''
         )
     }
 }, class Store extends GObject.Object {
 
-    _init() {
-        super._init();
-
-        // Init cache
-        GLib.mkdir_with_parents(CACHE_DIR, 448);
-
-        this._cacheFile = Gio.File.new_for_path(
-            GLib.build_filenamev([CACHE_DIR, 'contacts.json'])
-        );
+    _init(params) {
+        super._init(Object.assign({
+            path: 'folks'
+        }, params));
 
         // Asynchronous setup
         this._init_async();
@@ -48,7 +49,7 @@ var Store = GObject.registerClass({
     async _init_async() {
         try {
             // Load the cache
-            this._cacheFile.load_contents_async(null, (file, res) => {
+            this._file.load_contents_async(null, (file, res) => {
                 try {
                     let contents = file.load_contents_finish(res)[1];
 
@@ -67,6 +68,19 @@ var Store = GObject.registerClass({
         } catch (e) {
             logError(e);
         }
+    }
+
+    get path() {
+        return this._path;
+    }
+
+    set path(path) {
+        this._path = GLib.build_filenamev([gsconnect.cachedir, path]);
+        GLib.mkdir_with_parents(this._path, 448);
+
+        this._file = Gio.File.new_for_path(
+            GLib.build_filenamev([this._path, 'contacts.json'])
+        );
     }
 
     get contacts() {
@@ -131,7 +145,7 @@ var Store = GObject.registerClass({
             if (contact.avatar) {
                 resolve(contact);
             } else {
-                let path = GLib.build_filenamev([CACHE_DIR, `${id}.jpeg`]);
+                let path = GLib.build_filenamev([this._path, `${id}.jpeg`]);
 
                 Gio.File.new_for_path(path).replace_contents_bytes_async(
                     new GLib.Bytes(contents),
@@ -194,7 +208,7 @@ var Store = GObject.registerClass({
             if (number) {
                 for (let num of contact.numbers) {
                     // Match by number stripped of non-digits
-                    if (number === num.number.replace(/\D/g, '')) {
+                    if (number === num.value.replace(/\D/g, '')) {
                         matches[id] = contact;
 
                         // Number match & exact name match; must be it
@@ -224,7 +238,7 @@ var Store = GObject.registerClass({
             // Add the contact & save to cache
             this._contacts[id] = {
                 name: query.name || query.number,
-                numbers: [{ number: query.number, type: 'unknown' }],
+                numbers: [{ value: query.number, type: 'unknown' }],
                 id: id,
                 origin: 'gsconnect'
             };
@@ -307,7 +321,7 @@ var Store = GObject.registerClass({
     }
 
     _writeCache(store) {
-        store._cacheFile.replace_contents_bytes_async(
+        store._file.replace_contents_bytes_async(
             new GLib.Bytes(JSON.stringify(store._contacts)),
             null,
             false,

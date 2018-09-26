@@ -325,7 +325,7 @@ class Individual(object):
 
         for phone_number in self._get_phone_numbers():
             phone_numbers.append({
-                'number': phone_number.value,
+                'value': phone_number.value,
                 'type': phone_number.parameters.get('type', 'unknown')
             })
 
