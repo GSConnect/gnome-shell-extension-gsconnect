@@ -203,21 +203,16 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         }
     }
 
-    async _onNameOwnerChanged() {
-        if (this.manager.name_owner === null) {
-            debug(`Service Stopped`);
-
-            // Destroy any device proxies
-            for (let iface of this.devices) {
-                this._onInterfaceRemoved(this.manager, iface.get_object(), iface);
+    async _onNameOwnerChanged(manager) {
+        try {
+            if (manager.name_owner === null) {
+                this._indicator.visible = false;
+                await this._activate();
+            } else {
+                this._indicator.visible = true;
             }
-
-            this._indicator.visible = false;
-
-            // Try restart the service
-            await this._activate();
-        } else {
-            this._indicator.visible = true;
+        } catch (e) {
+            debug(e);
         }
     }
 
@@ -273,13 +268,6 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
                     path: '/org/gnome/shell/extensions/gsconnect/device/' + iface.Id + '/'
                 });
 
-                // Keyboard Shortcuts
-                iface._keybindingsChangedId = iface.settings.connect(
-                    'changed::keybindings',
-                    this._onKeybindingsChanged.bind(this, iface)
-                );
-                this._onKeybindingsChanged(iface);
-
                 // Device Indicator
                 let indicator = new Device.Indicator(object, iface);
                 Main.panel.addToStatusArea(iface.g_object_path, indicator);
@@ -287,15 +275,21 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
                 // Device Menu
                 let menu = new Device.Menu(object, iface);
                 this._menus[iface.g_object_path] = menu;
-
                 this.devicesSection.addMenuItem(menu);
-                this._sync(menu);
+
+                // Keyboard Shortcuts
+                iface._keybindingsChangedId = iface.settings.connect(
+                    'changed::keybindings',
+                    this._onKeybindingsChanged.bind(this, iface)
+                );
+                this._onKeybindingsChanged(iface);
 
                 // Properties
                 iface._propertiesId = iface.connect(
                     'g-properties-changed',
                     this._sync.bind(this, menu)
                 );
+                this._sync(menu);
 
                 // Try activating the device
                 iface.action_group.activate_action('activate', null);
@@ -307,31 +301,38 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
 
     async _onInterfaceRemoved(manager, object, iface) {
         if (iface.g_interface_name === 'org.gnome.Shell.Extensions.GSConnect.Device') {
-            debug(`GSConnect: Removing ${iface.Name}`);
+            try {
+                debug(`GSConnect: Removing ${iface.Name}`);
 
-            // Disconnect properties
-            iface.disconnect(iface._propertiesId);
+                // Disconnect properties
+                iface.disconnect(iface._propertiesId);
 
-            // Disconnect keybindings
-            iface.settings.disconnect(iface._keybindingsChangedId);
-            iface._keybindings.map(id => this.keybindingManager.remove(id));
+                // Release keybindings
+                iface.settings.disconnect(iface._keybindingsChangedId);
+                iface._keybindings.map(id => this.keybindingManager.remove(id));
 
-            // Destroy the indicator
-            Main.panel.statusArea[iface.g_object_path].destroy();
+                // Destroy the indicator
+                Main.panel.statusArea[iface.g_object_path].destroy();
 
-            // Destroy the menu
-            this._menus[iface.g_object_path].destroy();
-            delete this._menus[iface.g_object_path];
+                // Destroy the menu
+                this._menus[iface.g_object_path].destroy();
+                delete this._menus[iface.g_object_path];
 
-            this.devices.delete(iface);
+                this.devices.delete(iface);
+            } catch (e) {
+                logError(e);
+            }
         }
     }
 
     // FIXME: The device's DBusObject is unexported in Device.destroy() before
     // the 'interface-removed' handler is resolved, so for now we catch it here.
-    async _onObjectRemoved(manager, object) {
-        let iface = object.get_interface('org.gnome.Shell.Extensions.GSConnect.Device');
-        this._onInterfaceRemoved(this.manager, object, iface);
+    _onObjectRemoved(manager, object) {
+        this._onInterfaceRemoved(
+            manager,
+            object,
+            object.get_interface('org.gnome.Shell.Extensions.GSConnect.Device')
+        );
     }
 
     async _onKeybindingsChanged(iface) {
@@ -392,7 +393,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
 
         // Destroy any remaining devices
         for (let object of this.manager.get_objects()) {
-            this._onObjectRemoved(this.manager, object,);
+            this._onObjectRemoved(this.manager, object);
         }
 
         // Disconnect any keybindings
