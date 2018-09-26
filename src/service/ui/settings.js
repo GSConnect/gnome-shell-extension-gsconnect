@@ -18,13 +18,6 @@ function section_separators(row, before) {
 };
 
 
-function switcher_separators(row, before) {
-    if (before && (before.type === undefined || row.type !== before.type)) {
-        row.set_header(new Gtk.Separator({ visible: true }));
-    }
-};
-
-
 /**
  * A row for a stack sidebar
  */
@@ -721,6 +714,13 @@ var Device = GObject.registerClass({
                     );
                     settings.bind('share-players', label, 'active', 0);
                     break;
+
+                case 'systemvolume':
+                    row.visible = this.device.get_outgoing_supported(
+                        'systemvolume.request'
+                    );
+                    settings.bind('share-sinks', label, 'active', 0);
+                    break;
             }
         });
 
@@ -1066,13 +1066,12 @@ var Device = GObject.registerClass({
      */
     _telephonySettings() {
         let settings = this._getSettings('telephony');
-        this.ringing_list.set_header_func(section_separators);
-        this.talking_list.set_header_func(section_separators);
 
         // Settings Actions
         let actions = new Gio.SimpleActionGroup();
         this.insert_action_group('telephony', actions);
 
+        // Incoming calls
         actions.add_action(settings.create_action('ringing-volume'));
         this.ringing_volume.set_menu_model(
             this.service.get_menu_by_id('volume-popover')
@@ -1085,6 +1084,7 @@ var Device = GObject.registerClass({
             Gio.SettingsBindFlags.DEFAULT
         );
 
+        // In Progress Calls
         actions.add_action(settings.create_action('talking-volume'));
         this.talking_volume.set_menu_model(
             this.service.get_menu_by_id('volume-popover')
@@ -1103,6 +1103,9 @@ var Device = GObject.registerClass({
             'active',
             Gio.SettingsBindFlags.DEFAULT
         );
+
+        this.ringing_list.set_header_func(section_separators);
+        this.talking_list.set_header_func(section_separators);
     }
 
     _onTelephonyRowActivated(box, row) {

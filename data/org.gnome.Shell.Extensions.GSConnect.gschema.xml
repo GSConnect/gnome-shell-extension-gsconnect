@@ -142,7 +142,11 @@
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.SFTP"/>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Share"/>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.SMS"/>
-  <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.SystemVolume"/>
+  <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.SystemVolume">
+    <key name="share-sinks" type="b">
+      <default>true</default>
+    </key>
+  </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Telephony">
     <key name="ringing-volume" type="s">
       <default>"lower"</default>
