@@ -735,37 +735,39 @@ var Device = GObject.registerClass({
     }
 
     _onSharingRowActivated(box, row) {
-        let label = row.get_child().get_child_at(1, 0);
-        let name = row.get_name();
-        let settings = this._getSettings(name);
+        let settings = this._getSettings('clipboard');
+        let widget = row.get_child().get_child_at(1, 0);
 
-        switch (name) {
-            case 'clipboard':
-                let send = settings.get_boolean('send-content');
-                let receive = settings.get_boolean('receive-content');
+        let send = settings.get_boolean('send-content');
+        let receive = settings.get_boolean('receive-content');
 
-                if (send && receive) {
-                    send = false;
-                    receive = false;
-                    label.label = _('Off');
-                } else if (send) {
-                    send = false;
-                    receive = true;
-                    label.label = _('From Device');
-                } else if (receive) {
-                    send = true;
-                    receive = true;
-                    label.label = _('Both');
-                } else {
-                    send = true;
-                    receive = false;
-                    label.label = _('To Device');
-                }
-
-                settings.set_boolean('send-content', send);
-                settings.set_boolean('receive-content', receive);
+        switch (true) {
+            case (send && receive):
+                send = false;
+                receive = false;
+                widget.label = _('Off');
                 break;
+
+            case send:
+                send = false;
+                receive = true;
+                widget.label = _('From Device');
+                break;
+
+            case receive:
+                send = true;
+                receive = true;
+                widget.label = _('Both');
+                break;
+
+            default:
+                send = true;
+                receive = false;
+                widget.label = _('To Device');
         }
+
+        settings.set_boolean('send-content', send);
+        settings.set_boolean('receive-content', receive);
     }
 
     /**
