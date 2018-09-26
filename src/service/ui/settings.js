@@ -1074,7 +1074,7 @@ var Device = GObject.registerClass({
         // Incoming calls
         actions.add_action(settings.create_action('ringing-volume'));
         this.ringing_volume.set_menu_model(
-            this.service.get_menu_by_id('volume-popover')
+            this.service.get_menu_by_id('ringing-volume')
         );
 
         settings.bind(
@@ -1087,7 +1087,7 @@ var Device = GObject.registerClass({
         // In Progress Calls
         actions.add_action(settings.create_action('talking-volume'));
         this.talking_volume.set_menu_model(
-            this.service.get_menu_by_id('volume-popover')
+            this.service.get_menu_by_id('talking-volume')
         );
 
         settings.bind(

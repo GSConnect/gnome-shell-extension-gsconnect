@@ -52,8 +52,31 @@
     </section>
   </menu>
 
-  <!-- Media Preferences - Incoming Call -->
-  <menu id="volume-popover">
+  <!-- Volume Popover (eg. Telephony) -->
+  <menu id="ringing-volume">
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">Nothing</attribute>
+        <attribute name="icon">audio-volume-medium-symbolic</attribute>
+        <attribute name="action">telephony.ringing-volume</attribute>
+        <attribute name="target">nothing</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Lower</attribute>
+        <attribute name="icon">audio-volume-low-symbolic</attribute>
+        <attribute name="action">telephony.ringing-volume</attribute>
+        <attribute name="target">lower</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Mute</attribute>
+        <attribute name="icon">audio-volume-muted-symbolic</attribute>
+        <attribute name="action">telephony.ringing-volume</attribute>
+        <attribute name="target">mute</attribute>
+      </item>
+    </section>
+  </menu>
+
+  <menu id="talking-volume">
     <section>
       <item>
         <attribute name="label" translatable="yes">Nothing</attribute>
