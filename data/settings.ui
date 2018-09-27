@@ -844,7 +844,7 @@
                                             <property name="valign">center</property>
                                             <property name="hexpand">True</property>
                                             <property name="vexpand">True</property>
-                                            <property name="label" translatable="yes">Access Remote Filesystems</property>
+                                            <property name="label" translatable="yes">Remote Filesystems</property>
                                             <property name="wrap">True</property>
                                           </object>
                                           <packing>
@@ -880,7 +880,7 @@
                                             <property name="valign">center</property>
                                             <property name="hexpand">True</property>
                                             <property name="vexpand">True</property>
-                                            <property name="label">Play Sound Effects</property>
+                                            <property name="label">Sound Effects</property>
                                           </object>
                                           <packing>
                                             <property name="left_attach">0</property>
@@ -917,7 +917,7 @@
                                             <property name="valign">center</property>
                                             <property name="hexpand">True</property>
                                             <property name="vexpand">True</property>
-                                            <property name="label">Contacts Integration</property>
+                                            <property name="label">Desktop Contacts</property>
                                           </object>
                                           <packing>
                                             <property name="left_attach">0</property>
