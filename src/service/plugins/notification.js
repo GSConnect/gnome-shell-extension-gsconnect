@@ -521,8 +521,7 @@ var Plugin = GObject.registerClass({
                 // one since we only get a number or a name
                 contact = this.contacts.query({
                     name: (isSms) ? packet.body.title : packet.body.text,
-                    number: (isSms) ? packet.body.title : packet.body.text,
-                    single: true
+                    number: (isSms) ? packet.body.title : packet.body.text
                 });
 
                 // If found, send this using a telephony plugin method

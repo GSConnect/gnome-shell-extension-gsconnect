@@ -57,7 +57,6 @@ var Plugin = GObject.registerClass({
             let contact = this.contacts.query({
                 name: packet.body.contactName,
                 number: packet.body.phoneNumber,
-                single: true,
                 create: true
             });
 

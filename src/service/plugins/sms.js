@@ -277,8 +277,7 @@ var Plugin = GObject.registerClass({
         // we check each message.address for a known contact.
         for (let message of messages) {
             let contact = this.contacts.query({
-                number: message.address,
-                single: true
+                number: message.address
             });
 
             if (contact && contact.origin === 'folks') {
@@ -495,7 +494,6 @@ var Plugin = GObject.registerClass({
             let contact = this.contacts.query({
                 name: message.contactName,
                 number: message.address,
-                single: true,
                 create: true
             });
 
@@ -615,9 +613,7 @@ var Plugin = GObject.registerClass({
             for (let recipient of uri.recipients) {
                 // FIXME
                 let contact = this.contacts.query({
-                    number: recipient,
-                    name: '',
-                    single: false
+                    number: recipient
                 });
                 window.addRecipient(recipient, contact);
             }

@@ -522,7 +522,6 @@ var ConversationWindow = GObject.registerClass({
         let contact = this.contact_list.contacts.query({
             name: message.address,
             number: message.address,
-            single: true,
             create: true
         });
 

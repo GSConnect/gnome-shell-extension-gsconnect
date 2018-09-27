@@ -201,7 +201,7 @@ var Store = GObject.registerClass({
     query(query) {
         let number = (query.number) ? query.number.replace(/\D/g, '') : null;
 
-        let matches = {};
+        let matches = [];
 
         for (let [id, contact] of Object.entries(this._contacts)) {
             // Prioritize searching by number
@@ -209,7 +209,7 @@ var Store = GObject.registerClass({
                 for (let num of contact.numbers) {
                     // Match by number stripped of non-digits
                     if (number === num.value.replace(/\D/g, '')) {
-                        matches[id] = contact;
+                        matches.push(contact);
 
                         // Number match & exact name match; must be it
                         if (query.name && query.name === contact.name) {
@@ -219,16 +219,13 @@ var Store = GObject.registerClass({
                 }
             // Fallback to searching by exact name match
             } else if (query.name && query.name === contact.name) {
-                matches[id] = contact;
+                matches.push(contact);
             }
         }
 
-        //
-        let keys = Object.keys(matches);
-
         // Create a new contact
         // TODO: use folks to add contact
-        if (keys.length === 0 && query.create) {
+        if (matches.length === 0 && query.create) {
             // Create a unique ID for this contact
             let id = GLib.uuid_string_random();
             while (this._contacts.hasOwnProperty(id)) {
@@ -244,20 +241,11 @@ var Store = GObject.registerClass({
             };
             this.notify('contacts');
 
-            matches[id] = this._contacts[id];
-            keys = Object.keys(matches);
+            return this._contacts[id];
         }
 
         // Check for a single match
-        if (query.single) {
-            if (keys.length === 1) {
-                return matches[keys[0]];
-            }
-
-            return false;
-        }
-
-        return matches;
+        return matches[0];
     }
 
     async remove(query) {
@@ -304,7 +292,7 @@ var Store = GObject.registerClass({
                     let [ok, stdout, stderr] = proc.communicate_utf8_finish(res);
 
                     if (stderr.length > 0) {
-                        throw new Error(stderr)
+                        throw new Error(stderr);
                     }
 
                     let folks = JSON.parse(stdout);
