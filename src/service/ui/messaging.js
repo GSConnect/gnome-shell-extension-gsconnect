@@ -171,7 +171,7 @@ var ConversationMessage = GObject.registerClass({
     vfunc_activate_link(uri) {
         Gtk.show_uri_on_window(
             this.get_toplevel(),
-            (uri.indexOf('://') < 0) ? 'http://' + uri : uri,
+            uri.includes('://') ? uri : 'http://' + uri,
             Gtk.get_current_event_time()
         );
 

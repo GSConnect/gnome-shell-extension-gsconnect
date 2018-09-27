@@ -133,11 +133,7 @@ var RadioButton = GObject.registerClass({
 });
 
 
-/**
- * A class to simplify dialog creation in the Shell. Separate later if used
- * elsewhere.
- */
-var SimpleDialog = class SimpleDialog extends ModalDialog.ModalDialog {
+var Dialog = class Dialog extends ModalDialog.ModalDialog {
 
     _init(params) {
         super._init();
@@ -149,7 +145,9 @@ var SimpleDialog = class SimpleDialog extends ModalDialog.ModalDialog {
 
         this._icon = new St.Icon({
             style_class: 'nm-dialog-header-icon',
-            gicon: new Gio.ThemedIcon({ name: params.icon })
+            gicon: new Gio.ThemedIcon({
+                name: 'preferences-system-time-symbolic'
+            })
         });
         headerBar.add(this._icon);
 
@@ -158,56 +156,21 @@ var SimpleDialog = class SimpleDialog extends ModalDialog.ModalDialog {
 
         this._title = new St.Label({
             style_class: 'nm-dialog-header',
-            text: params.title
+            text: _('Do Not Disturb')
         });
         titleBox.add(this._title);
 
         this._subtitle = new St.Label({
             style_class: 'nm-dialog-subheader',
-            text: params.subtitle
+            text: _('Silence Mobile Device Notifications')
         });
         titleBox.add(this._subtitle);
 
-        this.contentLayout.style_class = 'nm-dialog-content';
-
-        this.content = new St.BoxLayout({ vertical: true });
-        this.contentLayout.add(this.content);
-    }
-
-    get icon () {
-        return this._icon.gicon.name;
-    }
-
-    set icon (name) {
-        this._icon.gicon.name = name;
-    }
-
-    get title () {
-        return this._title.text;
-    }
-
-    set title (text) {
-        this._title.text = text;
-    }
-
-    get subtitle () {
-        return this._title.text;
-    }
-
-    set subtitle (text) {
-        this._title.text = text;
-    }
-}
-
-
-var Dialog = class Dialog extends SimpleDialog {
-
-    _init() {
-        super._init({
-            icon: 'preferences-system-time-symbolic',
-            title: _('Do Not Disturb'),
-            subtitle: _('Silence Mobile Device Notifications')
+        this.content = new St.BoxLayout({
+            vertical: true
         });
+        this.contentLayout.style_class = 'nm-dialog-content gsconnect-dnd-dialog-content';
+        this.contentLayout.add(this.content);
 
         // 1 hour in seconds
         this._time = 1*60*60;
@@ -270,7 +233,7 @@ var Dialog = class Dialog extends SimpleDialog {
     }
 
     _cancel() {
-        gsconnect.settings.set_int('donotdisturb', 0);
+        gsconnect.settings.reset('donotdisturb');
         this.close();
     }
 
@@ -335,7 +298,6 @@ var Dialog = class Dialog extends SimpleDialog {
 }
 
 
-/** ... FIXME FIXME FIXME */
 var MenuItem = class MenuItem extends PopupMenu.PopupSwitchMenuItem {
 
     _init() {
@@ -347,16 +309,16 @@ var MenuItem = class MenuItem extends PopupMenu.PopupSwitchMenuItem {
             this.setToggleState(gsconnect.settings.get_int('donotdisturb') > now);
         });
 
-        this.connect('toggled', () => {
+        this.connect('toggled', (item) => {
             // The state has already been changed when this is emitted
-            if (this.state) {
+            if (item.state) {
                 let dialog = new Dialog();
                 dialog.open();
             } else {
-                gsconnect.settings.set_int('donotdisturb', 0);
+                gsconnect.settings.reset('donotdisturb');
             }
 
-            this._getTopMenu().close(true);
+            item._getTopMenu().close(true);
         });
     }
 }

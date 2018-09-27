@@ -36,7 +36,7 @@
 }
 
 /*
- * The device icon is 2/3 the StDrawingArea, rounded up to a multiple of 8.
+ * The device icon is 2/3 the StDrawingArea size, rounded up to a multiple of 8.
  * All drawn attributes are handled automatically and respect desktop scaling.
  */
 .gsconnect-device-button > StDrawingArea {

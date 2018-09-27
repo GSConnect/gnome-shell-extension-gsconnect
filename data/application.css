@@ -1,4 +1,7 @@
 
+/**
+ * Chrome/Firefox buttons in Preferences->Other
+ */
 .badge-button {
     border: 0px;
     padding: 0px;
@@ -6,7 +9,7 @@
 }
 
 /**
- * Messaging CSS
+ * Messaging Window - Device Offline overlay
  */
 .connection-status, .connection-status:hover:active {
     background: alpha(@theme_bg_color, 0);
@@ -22,6 +25,9 @@
     padding: 0px;
 }
 
+/**
+ * Incoming Message Bubbles (GtkLabel subclass)
+ */
 .message-in {
   background: @theme_selected_bg_color;
   border-radius: 0.25em 1em 1em 0.25em;
@@ -39,10 +45,17 @@
     border-bottom-left-radius: 1em;
 }
 
+/**
+ * Must contrast with .message-in background
+ */
 .message-in *:link {
   color: @theme_selected_fg_color;
 }
 
+
+/**
+ * Outgoing Message Bubbles (GtkLabel subclass)
+ */
 .message-out {
   background: alpha(@theme_selected_bg_color, 0.2);
   border-right: 3px solid @theme_selected_bg_color;
@@ -58,5 +71,12 @@
 
 .message-out:last-child {
     border-bottom-right-radius: 1em;
+}
+
+/**
+ * Must contrast with .message-out background
+ */
+.message-out *:link {
+  color: @theme_selected_fg_color;
 }
 
