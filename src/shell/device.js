@@ -47,7 +47,7 @@ var Battery = GObject.registerClass({
         this.label = new St.Label({ text: '' });
         this.add_child(this.label);
 
-        this.icon = new St.Icon({ icon_size: 16 });
+        this.icon = new St.Icon();
         this.add_child(this.icon);
 
         this._deviceId = this.device.connect(

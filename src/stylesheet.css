@@ -65,6 +65,10 @@
     spacing: 3px;
 }
 
+.gsconnect-device-battery StIcon {
+    icon-size: 16px;
+}
+
 .gsconnect-plugin-bar {
     spacing: 6px;
 }
