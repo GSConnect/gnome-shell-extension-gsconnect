@@ -85,6 +85,16 @@
 }
 
 .gsconnect-status-bar {
+/* Do Not Disturb Dialog
+
+ */
+.gsconnect-dnd-dialog .pager-button {
+    color: inherit;
+}
+
+.gsconnect-dnd-dialog .pager-button StIcon {
+    icon-size: 16px;
+}
 }
 
 /**
@@ -107,8 +117,8 @@
 
 StBin.gsconnect-tooltip (inherits from .osd-window)
     StBoxLayout || [ Custom ClutterActor ]
-        StIcon.gsconnect-tooltip-icon
-        StLabel.gsconnect-tooltip-text
+        StIcon
+        StLabel
 */
 .gsconnect-tooltip {
     border-radius: 3px;
@@ -121,15 +131,16 @@ StBin.gsconnect-tooltip (inherits from .osd-window)
     spacing: 6px;
 }
 
-.gsconnect-tooltip-icon {
+.gsconnect-tooltip > StBoxLayout > StIcon {
+    icon-size: 16px;
 }
 
-.gsconnect-tooltip-text {
+.gsconnect-tooltip > StBoxLayout > StLabel {
     font-weight: normal;
     text-align: left;
 }
 
-.gsconnect-tooltip-text:rtl {
+.gsconnect-tooltip > StBoxLayout > StLabel:rtl {
     text-align: right;
 }
 

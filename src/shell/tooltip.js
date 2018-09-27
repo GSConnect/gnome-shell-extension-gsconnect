@@ -139,17 +139,13 @@ var Tooltip = class Tooltip {
                 if (this.gicon) {
                     this.bin.child.icon = new St.Icon({
                         gicon: this.gicon,
-                        icon_size: 16,
                         y_align: St.Align.START
                     });
                     this.bin.child.icon.set_y_align(Clutter.ActorAlign.START);
                     this.bin.child.add_child(this.bin.child.icon);
                 }
 
-                this.label = new St.Label({
-                    style_class: 'gsconnect-tooltip-text',
-                    text: this.markup || this.text
-                });
+                this.label = new St.Label({ text: this.markup || this.text });
                 this.label.clutter_text.line_wrap = true;
                 this.label.clutter_text.line_wrap_mode = Pango.WrapMode.WORD;
                 this.label.clutter_text.ellipsize = Pango.EllipsizeMode.NONE;
@@ -165,11 +161,7 @@ var Tooltip = class Tooltip {
             if (this.bin.child.icon) { this.bin.child.icon.destroy(); }
 
             if (this.gicon) {
-                this.bin.child.icon = new St.Icon({
-                    gicon: this.gicon,
-                    icon_size: 16,
-                    style_class: 'gsconnect-tooltip-icon'
-                });
+                this.bin.child.icon = new St.Icon({ gicon: this.gicon });
                 this.bin.child.insert_child_at_index(this.bin.child.icon, 0);
             }
 

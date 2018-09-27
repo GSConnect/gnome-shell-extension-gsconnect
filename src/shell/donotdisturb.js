@@ -135,8 +135,8 @@ var RadioButton = GObject.registerClass({
 
 var Dialog = class Dialog extends ModalDialog.ModalDialog {
 
-    _init(params) {
-        super._init();
+    _init() {
+        super._init({ styleClass: 'gsconnect-dnd-dialog' });
 
         let headerBar = new St.BoxLayout({
             style_class: 'nm-dialog-header-hbox'
@@ -193,27 +193,20 @@ var Dialog = class Dialog extends ModalDialog.ModalDialog {
                 this._getDurationLabel()
             ),
             x_expand: true,
-            y_align: Clutter.ActorAlign.CENTER,
-            style: 'margin-right: 6px;'
+            y_align: Clutter.ActorAlign.CENTER
         });
         this.timerWidget.add_child(this.timerLabel);
 
         this.minusTime = new St.Button({
             style_class: 'pager-button',
-            child: new St.Icon({
-                icon_name: 'list-remove-symbolic',
-                icon_size: 16
-            })
+            child: new St.Icon({ icon_name: 'list-remove-symbolic' })
         });
         this.minusTime.connect('clicked', this._minusTime.bind(this));
         this.timerWidget.add_child(this.minusTime);
 
         this.plusTime = new St.Button({
             style_class: 'pager-button',
-            child: new St.Icon({
-                icon_name: 'list-add-symbolic',
-                icon_size: 16
-            })
+            child: new St.Icon({ icon_name: 'list-add-symbolic' })
         });
         this.plusTime.connect('clicked', this._plusTime.bind(this));
         this.timerWidget.add_child(this.plusTime);
