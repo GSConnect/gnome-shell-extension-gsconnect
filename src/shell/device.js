@@ -479,7 +479,7 @@ var Menu = class Menu extends PopupMenu.PopupMenuSection {
         this.deviceBox = new PopupMenu.PopupBaseMenuItem({
             can_focus: false,
             reactive: false,
-            style_class: 'popup-menu-item gsconnect-device-box'
+            style_class: 'popup-menu-item gsconnect-device'
         });
         this.deviceBox.actor.remove_child(this.deviceBox._ornamentLabel);
         this.deviceBox.actor.vertical = false;
@@ -491,7 +491,7 @@ var Menu = class Menu extends PopupMenu.PopupMenuSection {
 
         // Title Bar & Plugin/Status Bar
         this.controlBox = new St.BoxLayout({
-            style_class: 'gsconnect-control-box',
+            style_class: 'gsconnect-device-box',
             vertical: true,
             x_expand: true
         });
@@ -499,7 +499,7 @@ var Menu = class Menu extends PopupMenu.PopupMenuSection {
 
         // Title Bar
         this.titleBar = new St.BoxLayout({
-            style_class: 'gsconnect-title-bar'
+            style_class: 'gsconnect-device-title'
         });
         this.controlBox.add_child(this.titleBar);
 
@@ -512,7 +512,7 @@ var Menu = class Menu extends PopupMenu.PopupMenuSection {
 
         // Title Bar -> Separator
         let nameSeparator = new St.Widget({
-            style_class: 'popup-separator-menu-item gsconnect-title-separator',
+            style_class: 'popup-separator-menu-item',
             x_expand: true,
             y_expand: true,
             y_align: Clutter.ActorAlign.CENTER
@@ -527,13 +527,13 @@ var Menu = class Menu extends PopupMenu.PopupMenuSection {
         this.pluginBar = new GMenu.FlowBox({
             action_group: iface.action_group,
             menu_model: iface.menu_model,
-            style_class: 'gsconnect-plugin-bar'
+            style_class: 'gsconnect-device-actions'
         });
         this.controlBox.add_child(this.pluginBar);
 
         // Status Bar
         this.statusBar = new St.BoxLayout({
-            style_class: 'gsconnect-status-bar',
+            style_class: 'gsconnect-device-status',
             y_align: Clutter.ActorAlign.FILL,
             y_expand: true
         });

@@ -191,7 +191,7 @@ var Button = GObject.registerClass({
 
     _init(params) {
         super._init({
-            style_class: 'system-menu-action gsconnect-menu-button',
+            style_class: 'system-menu-action gsconnect-device-action',
             can_focus: true
         });
 
