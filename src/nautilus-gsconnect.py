@@ -21,7 +21,8 @@ import subprocess
 
 _ = gettext.gettext
 
-USER_DIR = os.path.join(GLib.get_user_data_dir(), 'gnome-shell/extensions/gsconnect@andyholmes.github.io')
+USER_DIR = os.path.join(GLib.get_user_data_dir(),
+                        'gnome-shell/extensions/gsconnect@andyholmes.github.io')
 
 if os.path.exists(USER_DIR):
     LOCALE_DIR = os.path.join(USER_DIR, 'locale')
@@ -34,7 +35,7 @@ class GSConnectShareExtension(GObject.GObject, Nautilus.MenuProvider):
     """A context menu for sending files via GSConnect."""
 
     def __init__(self):
-        """Initialize Gettext translations and GSettings"""
+        """Initialize Gettext translations"""
 
         GObject.Object.__init__(self)
 
@@ -54,14 +55,11 @@ class GSConnectShareExtension(GObject.GObject, Nautilus.MenuProvider):
             None,
             None,
             None,
-            self._prepare_object_manager,
+            self._init_async,
             None)
 
-    def _prepare_object_manager(self, source_object, res, user_data):
-        try:
-            self.manager = source_object.new_for_bus_finish(res)
-        except:
-            pass
+    def _init_async(self, source_object, res, user_data):
+        self.manager = source_object.new_for_bus_finish(res)
 
         for obj in self.manager.get_objects():
             for interface in obj.get_interfaces():
@@ -69,7 +67,6 @@ class GSConnectShareExtension(GObject.GObject, Nautilus.MenuProvider):
 
         self.manager.connect('interface-added', self._on_interface_added)
         self.manager.connect('object-removed', self._on_object_removed)
-        self.manager.connect('notify::name-owner', self._on_name_owner_changed)
 
     def _on_interface_added(self, manager, obj, interface):
         if interface.props.g_interface_name == 'org.gnome.Shell.Extensions.GSConnect.Device':
@@ -82,10 +79,6 @@ class GSConnectShareExtension(GObject.GObject, Nautilus.MenuProvider):
 
     def _on_object_removed(self, manager, obj):
         del self.devices[obj.props.g_object_path]
-
-    def _on_name_owner_changed(self, manager, param_string):
-        if manager.props.name_owner == None:
-            self.devices = {}
 
     def send_files(self, menu, files, action_group):
         """Send *files* to *device_id*"""
