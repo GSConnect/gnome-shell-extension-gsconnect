@@ -141,7 +141,7 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
         }
     }
 
-    async _onItemsChanged(model, position, removed, added) {
+    _onItemsChanged(model, position, removed, added) {
         // Using ::items-changed is arduous and probably not worth the trouble
         this._menu_items.clear();
         this.removeAll();
@@ -153,14 +153,14 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
 
             // A regular item
             if (info.hasOwnProperty('label')) {
-                await this._addGMenuItem(info);
+                this._addGMenuItem(info);
             // Our menus only have sections
             } else {
-                await this._addGMenuSection(info.links[0].value);
+                this._addGMenuSection(info.links[0].value);
 
                 // len is length starting at 1
                 if (i + 1 < len) {
-                    await this.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
+                    this.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
                 }
             }
         }
@@ -198,20 +198,22 @@ var Button = GObject.registerClass({
         this._action_group = params.action_group;
 
         // Item attributes
-        switch (true) {
-            case params.info.hasOwnProperty('action'):
-                this._action_name = params.info.action.split('.')[1];
+        if (params.info.hasOwnProperty('action')) {
+            this._action_name = params.info.action.split('.')[1];
+        }
 
-            case params.info.hasOwnProperty('target'):
-                this._action_target = params.info.target;
+        if (params.info.hasOwnProperty('target')) {
+            this._action_target = params.info.target;
+        }
 
-            case params.info.hasOwnProperty('label'):
-                this.tooltip = new Tooltip.Tooltip({
-                    parent: this,
-                    markup: params.info.label
-                });
+        if (params.info.hasOwnProperty('label')) {
+            this.tooltip = new Tooltip.Tooltip({
+                parent: this,
+                markup: params.info.label
+            });
+        }
 
-            case params.info.hasOwnProperty('icon'):
+        if (params.info.hasOwnProperty('icon')) {
                 this.child = new St.Icon({ gicon: params.info.icon });
         }
 
@@ -361,7 +363,7 @@ var FlowBox = GObject.registerClass({
         this.notify('submenu');
     }
 
-    async _onActionChanged(group, name, enabled) {
+    _onActionChanged(group, name, enabled) {
         let menuItem = this._menu_items.get(name);
 
         if (menuItem !== undefined) {
@@ -373,7 +375,7 @@ var FlowBox = GObject.registerClass({
         }
     }
 
-    async _onItemsChanged(model, position, removed, added) {
+    _onItemsChanged(model, position, removed, added) {
         while (removed > 0) {
             let button = this.get_child_at_index(position);
             this._menu_items.delete(button.action_name);
