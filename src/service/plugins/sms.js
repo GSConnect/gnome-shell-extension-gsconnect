@@ -266,17 +266,50 @@ var Plugin = GObject.registerClass({
     }
 
     /**
+     * Handle a new single message
+     */
+    _handleMessage(contact, message) {
+        // Silence the duplicate as soon as possible
+        let notification = this.device.lookup_plugin('notification');
+
+        if (notification) {
+            notification.silenceDuplicate(`${contact.name}: ${message.body}`);
+        }
+
+        // Check for an extant window
+        let window = this._hasWindow(message.address);
+
+        if (window) {
+            // We log the message even though the thread might be updated later
+            window.receiveMessage(contact, message);
+            window.urgency_hint = true;
+
+            // Track the smsNotification so the window can close it when focused
+            window._notifications.push(`${contact.name}: ${message.body}`);
+
+            // Tell the notification plugin to mark any duplicate read
+            if (notification) {
+                notification.closeDuplicate(`${contact.name}: ${message.body}`);
+            }
+        }
+
+        // Always show a notification
+        this.smsNotification(contact, message);
+    }
+
+    /**
      * Parse a conversation (thread of messages) and sort them
      *
      * @param {Array} messages - A list of telephony message objects
      */
     _handleConversation(messages) {
-        let number = messages[0].address;
+        let contact, number, thread, window;
 
-        // HACK: If we send to a *slightly* different number than reported back,
-        // we check each message.address for a known contact.
+        // HACK: Check each message.address for a known contact
+        number = messages[0].address;
+
         for (let message of messages) {
-            let contact = this.contacts.query({
+            contact = this.contacts.query({
                 number: message.address
             });
 
@@ -286,15 +319,24 @@ var Plugin = GObject.registerClass({
             }
         }
 
-        let thread = this.conversations[number];
+        // Create a contact if we still don't have one
+        if (!contact) {
+            contact = this.contacts.query({
+                number: message.address,
+                create: true
+            });
+        }
 
         // Single messages might be a new message, if there's an existing thread
+        thread = this.conversations[number];
+
         if (messages.length === 1 && thread) {
             let id = messages[0]._id;
 
             // A new message for an existing thread
             if (thread.every(msg => msg._id !== id)) {
                 this.conversations[number].push(messages[0]);
+                this._handleMessage(contact, messages[0]);
             }
 
         // But multiples or new threads are always digests
@@ -306,7 +348,7 @@ var Plugin = GObject.registerClass({
         }
 
         // Update any open windows...
-        let window = this._hasWindow(number);
+        window = this._hasWindow(number);
 
         if (window) {
             window._populateMessages(number);
@@ -330,10 +372,9 @@ var Plugin = GObject.registerClass({
 
         let threads = packet.body.messages;
         let thread_id = packet.body.messages[0].thread_id;
-        let isSummary = threads.some(msg => msg.thread_id !== thread_id)
 
         // If there's multiple thread_id's this is a list of threads (summary)
-        if (isSummary) {
+        if (threads.some(msg => msg.thread_id !== thread_id)) {
             let threads = packet.body.messages;
 
             // Request each thread
@@ -368,10 +409,10 @@ var Plugin = GObject.registerClass({
      *
      * @param {String} number - A string phone number
      */
-    _hasWindow(number) {
-        debug(number);
+    _hasWindow(address) {
+        debug(address);
 
-        number = number.replace(/\D/g, '');
+        let number = address.replace(/\D/g, '');
 
         // Look for an open window with this contact
         for (let win of this.service.get_windows()) {
@@ -388,7 +429,7 @@ var Plugin = GObject.registerClass({
     }
 
     /**
-     * Request a conversation, which is a list of messages from a single thread.
+     * Request a list of messages from a single thread.
      *
      * @param {Number} thread_id - The thread_id of the conversation to request
      */
@@ -402,42 +443,12 @@ var Plugin = GObject.registerClass({
     }
 
     /**
-     * Request a list of conversations, which is a list of the last message in
-     * each unarchived thread.
+     * Request a list of the last message in each unarchived thread.
      */
     requestConversations() {
         this.device.sendPacket({
             type: 'kdeconnect.sms.request_conversations'
         });
-    }
-
-    _onSms(contact, message) {
-        // Silence the duplicate as soon as possible
-        let notification = this.device.lookup_plugin('notification');
-
-        if (notification) {
-            notification.silenceDuplicate(`${contact.name}: ${message.body}`);
-        }
-
-        // Check for an extant window
-        let window = this._hasWindow(message.address);
-
-        if (window) {
-            // We log the message even though the thread might be updated later
-            window.receiveMessage(contact, message);
-            window.urgency_hint = true;
-
-            // Track the smsNotification so the window can close it when focused
-            window._notifications.push(`${contact.name}: ${message.body}`);
-
-            // Tell the notification plugin to mark any duplicate read
-            if (notification) {
-                notification.closeDuplicate(`${contact.name}: ${message.body}`);
-            }
-        }
-
-        // Always show a notification
-        this.smsNotification(contact, message);
     }
 
     /**

@@ -492,11 +492,11 @@ var Plugin = GObject.registerClass({
             let body, contact, title;
             let icon = await this._downloadIcon(packet);
 
-            // Check if this is a missed call or SMS notification
+            // Check if this is a sms/telephony notification
             let isMissedCall = packet.body.id.includes('MissedCall');
             let isSms = packet.body.id.includes('sms');
 
-            // Check if it's been marked a duplicate by the telephony plugin
+            // Check if it's been marked as a duplicate
             let duplicate = this._duplicates.get(packet.body.ticker);
 
             if ((isMissedCall || isSms) && duplicate) {
@@ -535,24 +535,31 @@ var Plugin = GObject.registerClass({
                 }
             }
 
-            // Emulate a 'missedCall' notification
-            if (isMissedCall) {
-                id = packet.body.ticker;
-                title = packet.body.text;
-                body = _('Missed call from %s').format(packet.body.text);
-            // Emulate an 'sms' notification
-            } else if (isSms) {
-                id = packet.body.ticker;
-                title = packet.body.title;
-                body = packet.body.text;
-            // Ignore 'appName' if it's the same as 'title'
-            } else if (packet.body.appName === packet.body.title) {
-                title = packet.body.title;
-                body = packet.body.text;
-            // Otherwise use the appName as the title
-            } else {
-                title = packet.body.appName;
-                body = packet.body.ticker;
+            switch (true) {
+                // Emulate a 'missedCall' notification
+                case isMissedCall:
+                    id = packet.body.ticker;
+                    title = packet.body.text;
+                    body = _('Missed call from %s').format(packet.body.text);
+                    break;
+
+                // Emulate an 'sms' notification
+                case isSms:
+                    id = packet.body.ticker;
+                    title = packet.body.title;
+                    body = packet.body.text;
+                    break;
+
+                // Ignore 'appName' if it's the same as 'title'
+                case (packet.body.appName === packet.body.title):
+                    title = packet.body.title;
+                    body = packet.body.text;
+                    break;
+
+                // Otherwise use the appName as the title
+                default:
+                    title = packet.body.appName;
+                    body = packet.body.ticker;
             }
 
             // If we don't have a payload icon, fallback on notification type,

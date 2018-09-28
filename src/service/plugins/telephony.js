@@ -77,7 +77,7 @@ var Plugin = GObject.registerClass({
                     let sms = this.device.lookup_plugin('sms');
 
                     if (sms !== null) {
-                        sms._onSms(contact, message);
+                        sms._handleMessage(contact, message);
                     }
                 }
 
@@ -113,8 +113,10 @@ var Plugin = GObject.registerClass({
         // Fabricate a message packet from what we know
         let message = {
             contactName: contactName,
-            _id: 0,         // might be updated by sms.js
-            thread_id: 0,   // might be updated by sms.js
+            // dummy values
+            _id: 0,
+            thread_id: 0,
+            // things will go wrong if this actually happens
             address: packet.body.phoneNumber || 'unknown',
             body: packet.body.messageBody,
             date: packet.id,
