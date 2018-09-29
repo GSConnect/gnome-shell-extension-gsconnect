@@ -245,7 +245,7 @@ var Store = GObject.registerClass({
         }
 
         // Check for a single match
-        return matches[0];
+        return (matches.length > 0) ? matches[0] : false;
     }
 
     async remove(query) {
