@@ -26,6 +26,86 @@ window.hasCommand = function(cmd) {
 
 
 /**
+ * Convenience function for loading JSON from a file
+ *
+ * @param {Gio.File|string} file - A Gio.File or path to a JSON file
+ * @param {boolean} sync - Default is %false, if %true load synchronously
+ * @return {object} - The parsed object
+ */
+JSON.load = function (file, sync=false) {
+    if (typeof file === 'string') {
+        file = Gio.File.new_for_path(file);
+    }
+
+    if (sync) {
+        let contents = file.load_contents(null)[1];
+
+        if (contents instanceof Uint8Array) {
+            contents = imports.byteArray.toString(contents);
+        }
+
+        return JSON.parse(contents);
+    } else {
+        return new Promise((resolve, reject) => {
+            file.load_contents_async(null, (file, res) => {
+                try {
+                    let contents = file.load_contents_finish(res)[1];
+
+                    if (contents instanceof Uint8Array) {
+                        contents = imports.byteArray.toString(contents);
+                    }
+
+                    resolve(JSON.parse(contents));
+                } catch (e) {
+                    reject(e);
+                }
+            });
+        });
+    }
+};
+
+
+/**
+ * Convenience function for dumping JSON to a file
+ *
+ * @param {Gio.File|string} file - A Gio.File or file path
+ * @param {boolean} sync - Default is %false, if %true load synchronously
+ */
+JSON.dump = function (obj, file, sync=false) {
+    if (typeof file === 'string') {
+        file = Gio.File.new_for_path(file);
+    }
+
+    if (sync) {
+        return file.replace_contents(
+            JSON.stringify(obj),
+            null,
+            false,
+            Gio.FileCreateFlags.REPLACE_DESTINATION,
+            null
+        )[1];
+    } else {
+        return new Promise((reject, resolve) => {
+            file.replace_contents_bytes_async(
+                new GLib.Bytes(JSON.stringify(obj)),
+                null,
+                false,
+                Gio.FileCreateFlags.REPLACE_DESTINATION,
+                null,
+                (file, res) => {
+                    try {
+                        resolve(file.replace_contents_finish(res)[1]);
+                    } catch (e) {
+                        reject(e);
+                    }
+                }
+            );
+        });
+    }
+};
+
+
+/**
  * An implementation of `rm -rf` in Gio
  */
 Gio.File.rm_rf = function(file) {
