@@ -87,7 +87,7 @@ var Device = GObject.registerClass({
         this._incomingPairRequest = 0;
         this._outgoingPairRequest = 0;
 
-        // Maps of name->plugin, packet->plugin, name->Error
+        // Maps of name->Plugin, packet->Plugin, uuid->Transfer
         this._plugins = new Map();
         this._handlers = new Map();
         this._transfers = new Map();
