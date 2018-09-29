@@ -69,23 +69,24 @@ JSON.load = function (file, sync=false) {
  * Convenience function for dumping JSON to a file
  *
  * @param {Gio.File|string} file - A Gio.File or file path
+ * @param {object} obj - The object to write to disk
  * @param {boolean} sync - Default is %false, if %true load synchronously
  */
-JSON.dump = function (obj, file, sync=false) {
+JSON.dump = function (file, obj, sync=false) {
     if (typeof file === 'string') {
         file = Gio.File.new_for_path(file);
     }
 
     if (sync) {
-        return file.replace_contents(
+        file.replace_contents(
             JSON.stringify(obj),
             null,
             false,
             Gio.FileCreateFlags.REPLACE_DESTINATION,
             null
-        )[1];
+        );
     } else {
-        return new Promise((reject, resolve) => {
+        return new Promise((resolve, reject) => {
             file.replace_contents_bytes_async(
                 new GLib.Bytes(JSON.stringify(obj)),
                 null,
@@ -94,7 +95,8 @@ JSON.dump = function (obj, file, sync=false) {
                 null,
                 (file, res) => {
                     try {
-                        resolve(file.replace_contents_finish(res)[1]);
+                        file.replace_contents_finish(res);
+                        resolve();
                     } catch (e) {
                         reject(e);
                     }
