@@ -26,14 +26,11 @@ var RadioButton = GObject.registerClass({
             text: null,
             widget: null,
             group: [],
-            active: false,
-            tooltip_markup: false,
-            tooltip_text: false
+            active: false
         }, params);
 
         super._init({
-            style_class: 'radio-button',
-            style: 'spacing: 6px;',
+            style_class: 'gsconnect-radio-button',
             vertical: false
         });
 
@@ -63,15 +60,6 @@ var RadioButton = GObject.registerClass({
         });
 
         this.active = params.active;
-
-        // Tooltip
-        this.tooltip = new Tooltip.Tooltip({ parent: this });
-
-        if (params.tooltip_markup) {
-            this.tooltip.markup = params.tooltip_markup;
-        } else if (params.tooltip_text) {
-            this.tooltip.text = params.tooltip_text;
-        }
     }
 
     get active() {
@@ -138,52 +126,57 @@ var Dialog = class Dialog extends ModalDialog.ModalDialog {
     _init() {
         super._init({ styleClass: 'gsconnect-dnd-dialog' });
 
-        let headerBar = new St.BoxLayout({
+        this.contentLayout.style_class = 'nm-dialog-content';
+
+        // Header
+        let headerBox = new St.BoxLayout({
             style_class: 'nm-dialog-header-hbox'
         });
-        this.contentLayout.add(headerBar);
+        this.contentLayout.add(headerBox);
 
-        this._icon = new St.Icon({
+        let icon = new St.Icon({
             style_class: 'nm-dialog-header-icon',
             gicon: new Gio.ThemedIcon({
                 name: 'preferences-system-time-symbolic'
             })
         });
-        headerBar.add(this._icon);
+        headerBox.add(icon);
 
         let titleBox = new St.BoxLayout({ vertical: true });
-        headerBar.add(titleBox);
+        headerBox.add(titleBox);
 
-        this._title = new St.Label({
+        let header = new St.Label({
             style_class: 'nm-dialog-header',
             text: _('Do Not Disturb')
         });
-        titleBox.add(this._title);
+        titleBox.add(header);
 
-        this._subtitle = new St.Label({
+        let subheader = new St.Label({
             style_class: 'nm-dialog-subheader',
             text: _('Silence Mobile Device Notifications')
         });
-        titleBox.add(this._subtitle);
+        titleBox.add(subheader);
 
-        this.content = new St.BoxLayout({
+        // Content
+        let radioList = new St.BoxLayout({
+            style_class: 'gsconnect-radio-list',
             vertical: true
         });
-        this.contentLayout.style_class = 'nm-dialog-content gsconnect-dnd-dialog-content';
-        this.contentLayout.add(this.content);
+        this.contentLayout.add(radioList);
 
         // 1 hour in seconds
         this._time = 1*60*60;
 
-        this.permButton = new RadioButton({
+        this._radioIndefinite = new RadioButton({
             text: _('Until you turn off Do Not Disturb')
         });
-        this.content.add(this.permButton);
+        radioList.add(this._radioIndefinite);
 
         // Duration Timer
-        this.timerWidget = new St.BoxLayout({
+        let timer = new St.BoxLayout({
             vertical: false,
-            x_expand: true
+            x_expand: true,
+            style_class: 'gsconnect-dnd-timer'
         });
 
         let now = GLib.DateTime.new_now_local();
@@ -192,31 +185,30 @@ var Dialog = class Dialog extends ModalDialog.ModalDialog {
                 Util.formatTime(now.add_seconds(this._time)),
                 this._getDurationLabel()
             ),
-            x_expand: true,
             y_align: Clutter.ActorAlign.CENTER
         });
-        this.timerWidget.add_child(this.timerLabel);
+        timer.add_child(this.timerLabel);
 
-        this.minusTime = new St.Button({
+        this._timerRemove = new St.Button({
             style_class: 'pager-button',
             child: new St.Icon({ icon_name: 'list-remove-symbolic' })
         });
-        this.minusTime.connect('clicked', this._minusTime.bind(this));
-        this.timerWidget.add_child(this.minusTime);
+        this._timerRemove.connect('clicked', this._removeTime.bind(this));
+        timer.add_child(this._timerRemove);
 
-        this.plusTime = new St.Button({
+        this._timerAdd = new St.Button({
             style_class: 'pager-button',
             child: new St.Icon({ icon_name: 'list-add-symbolic' })
         });
-        this.plusTime.connect('clicked', this._plusTime.bind(this));
-        this.timerWidget.add_child(this.plusTime);
+        this._timerAdd.connect('clicked', this._addTime.bind(this));
+        timer.add_child(this._timerAdd);
 
-        this.timerButton = new RadioButton({
-            widget: this.timerWidget,
-            group: this.permButton.group,
+        this._radioDuration = new RadioButton({
+            widget: timer,
+            group: this._radioIndefinite.group,
             active: true
         });
-        this.content.add(this.timerButton);
+        radioList.add(this._radioDuration);
 
         // Dialog Buttons
         this.setButtons([
@@ -233,7 +225,7 @@ var Dialog = class Dialog extends ModalDialog.ModalDialog {
     _done() {
         let time;
 
-        if (this.timerButton.active) {
+        if (this._radioDuration.active) {
             let now = GLib.DateTime.new_now_local();
             time = now.add_seconds(this._time).to_unix();
         } else {
@@ -244,21 +236,21 @@ var Dialog = class Dialog extends ModalDialog.ModalDialog {
         this.close();
     }
 
-    _minusTime() {
-        if (this._time <= 60*60) {
-            this._time -= 15*60;
+    _addTime() {
+        if (this._time < 60*60) {
+            this._time += 15*60;
         } else {
-            this._time -= 60*60;
+            this._time += 60*60;
         }
 
         this._setTimeLabel();
     }
 
-    _plusTime() {
-        if (this._time < 60*60) {
-            this._time += 15*60;
+    _removeTime() {
+        if (this._time <= 60*60) {
+            this._time -= 15*60;
         } else {
-            this._time += 60*60;
+            this._time -= 60*60;
         }
 
         this._setTimeLabel();
@@ -276,8 +268,8 @@ var Dialog = class Dialog extends ModalDialog.ModalDialog {
     }
 
     _setTimeLabel() {
-        this.minusTime.reactive = (this._time > 15*60);
-        this.plusTime.reactive = (this._time < 12*60*60);
+        this._timerRemove.reactive = (this._time > 15*60);
+        this._timerAdd.reactive = (this._time < 12*60*60);
 
         let now = GLib.DateTime.new_now_local();
 

@@ -88,15 +88,49 @@
 
 /* Do Not Disturb Dialog
 
+.gsconnect-dnd-dialog [ModalDialog.ModalDialog]
+    StBoxLayout.nm-dialog-header-hbox
+        StIcon.nm-dialog-header-icon
+        StBoxLayout
+            StLabel.nm-dialog-header
+            StLabel.nm-dialog-subheader
+    StBoxLayout.nm-dialog-content
+        StBoxLayout.gsconnect-radio-list
+            StBoxLayout.gsconnect-radio-button (Until you turn off...)
+                StButton.pager-button
+                    StIcon
+                StLabel
+            StBoxLayout.gsconnect-radio-button (Until 00:00)
+                StButton.pager-button
+                    StIcon
+                StBoxLayout.gsconnect-dnd-timer
+                    StLabel
+                    StButton.pager-button
+                        StIcon
+                    StButton.pager-button
+                        StIcon
  */
-.gsconnect-dnd-dialog .pager-button {
+
+.gsconnect-radio-list {
+    spacing: 0.25em;
+}
+
+.gsconnect-radio-button {
+    spacing: 0.25em;
+}
+
+.gsconnect-radio-button .pager-button {
+    /* fix for arc-theme */
     color: inherit;
 }
 
-.gsconnect-dnd-dialog .pager-button StIcon {
+.gsconnect-radio-button StIcon {
     icon-size: 16px;
 }
-.gsconnect-device-status {}
+
+.gsconnect-dnd-timer {
+    spacing: 0.25em;
+}
 
 /**
  * Account for a patch that landed in gnome-shell-3.28.0 that clobbered all
@@ -132,16 +166,16 @@ StBin.gsconnect-tooltip (inherits from .osd-window)
     spacing: 6px;
 }
 
-.gsconnect-tooltip > StBoxLayout > StIcon {
+.gsconnect-tooltip StIcon {
     icon-size: 16px;
 }
 
-.gsconnect-tooltip > StBoxLayout > StLabel {
+.gsconnect-tooltip StLabel {
     font-weight: normal;
     text-align: left;
 }
 
-.gsconnect-tooltip > StBoxLayout > StLabel:rtl {
+.gsconnect-tooltip StLabel:rtl {
     text-align: right;
 }
 
