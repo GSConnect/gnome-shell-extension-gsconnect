@@ -179,54 +179,59 @@ var Channel = class Channel {
      * Handshake Gio.TlsConnection
      */
     async _authenticate(connection) {
-        // Standard TLS Handshake
-        await new Promise((resolve, reject) => {
-            connection.validation_flags = Gio.TlsCertificateFlags.EXPIRED;
-            connection.authentication_mode = Gio.TlsAuthenticationMode.REQUIRED;
+        // FIXME: This is a hack, error propogation needs to be fixed
+        try {
+            // Standard TLS Handshake
+            await new Promise((resolve, reject) => {
+                connection.validation_flags = Gio.TlsCertificateFlags.EXPIRED;
+                connection.authentication_mode = Gio.TlsAuthenticationMode.REQUIRED;
 
-            connection.handshake_async(
-                GLib.PRIORITY_DEFAULT,
-                this.cancellable,
-                (connection, res) => {
-                    try {
-                        resolve(connection.handshake_finish(res));
-                    } catch (e) {
-                        reject(e);
+                connection.handshake_async(
+                    GLib.PRIORITY_DEFAULT,
+                    this.cancellable,
+                    (connection, res) => {
+                        try {
+                            resolve(connection.handshake_finish(res));
+                        } catch (e) {
+                            reject(e);
+                        }
                     }
-                }
-            );
-        });
+                );
+            });
 
-        // Bail if deviceId is missing
-        if (!this.identity.body.hasOwnProperty('deviceId')) {
-            throw new Error('missing deviceId');
-        }
-
-        // Get a GSettings object for this deviceId
-        let settings = new Gio.Settings({
-            settings_schema: gsconnect.gschema.lookup(gsconnect.app_id + '.Device', true),
-            path: gsconnect.settings.path + 'device/' + this.identity.body.deviceId + '/'
-        });
-        let cert_pem = settings.get_string('certificate-pem');
-
-        // If we have a certificate for this deviceId, we can verify it
-        if (cert_pem !== '') {
-            let certificate = Gio.TlsCertificate.new_from_pem(cert_pem, -1);
-            let valid = certificate.is_same(connection.peer_certificate);
-
-            // This is a fraudulent certificate; notify the user
-            if (!valid) {
-                let error = new Error();
-                error.name = 'AuthenticationError';
-                error.deviceName = this.identity.body.deviceName;
-                error.deviceHost = connection.base_io_stream.get_remote_address().address.to_string();
-                this.service.notify_error(error);
-
-                throw error;
+            // Bail if deviceId is missing
+            if (!this.identity.body.hasOwnProperty('deviceId')) {
+                throw new Error('missing deviceId');
             }
-        }
 
-        return connection;
+            // Get a GSettings object for this deviceId
+            let settings = new Gio.Settings({
+                settings_schema: gsconnect.gschema.lookup(gsconnect.app_id + '.Device', true),
+                path: gsconnect.settings.path + 'device/' + this.identity.body.deviceId + '/'
+            });
+            let cert_pem = settings.get_string('certificate-pem');
+
+            // If we have a certificate for this deviceId, we can verify it
+            if (cert_pem !== '') {
+                let certificate = Gio.TlsCertificate.new_from_pem(cert_pem, -1);
+                let valid = certificate.is_same(connection.peer_certificate);
+
+                // This is a fraudulent certificate; notify the user
+                if (!valid) {
+                    let error = new Error();
+                    error.name = 'AuthenticationError';
+                    error.deviceName = this.identity.body.deviceName;
+                    error.deviceHost = connection.base_io_stream.get_remote_address().address.to_string();
+                    this.service.notify_error(error);
+
+                    throw error;
+                }
+            }
+
+            return connection;
+        } catch (e) {
+            logError(e);
+        }
     }
 
     /**
@@ -258,6 +263,7 @@ var Channel = class Channel {
                 this.service.certificate
             );
 
+            // If we're the server, we trust-on-first-use and verify after
             let _id = connection.connect('accept-certificate', (conn) => {
                 conn.disconnect(_id);
                 return true;
