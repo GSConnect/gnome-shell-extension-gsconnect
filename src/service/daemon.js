@@ -842,6 +842,8 @@ const Service = GObject.registerClass({
     vfunc_shutdown() {
         super.vfunc_shutdown();
 
+        this._device.forEach(device => device.destroy());
+
         if (this.mpris) {
             this.mpris.destroy();
         }
