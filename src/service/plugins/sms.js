@@ -104,18 +104,10 @@ var _numberRegex = new RegExp(
 /**
  * A simple parsing class for sms: URI's (https://tools.ietf.org/html/rfc5724)
  */
-var URI = class URI {
+class URI {
     constructor(uri) {
-        debug('Sms.URI: _init(' + uri + ')');
-
-        let full, recipients, query;
-
-        try {
-            _smsRegex.lastIndex = 0;
-            [full, recipients, query] = _smsRegex.exec(uri);
-        } catch (e) {
-            throw URIError('malformed sms URI');
-        }
+        _smsRegex.lastIndex = 0;
+        let [full, recipients, query] = _smsRegex.exec(uri);
 
         this.recipients = recipients.split(',').map(recipient => {
             _numberRegex.lastIndex = 0;
@@ -198,7 +190,7 @@ var Plugin = GObject.registerClass({
             'conversations',
             'Conversation List',
             'A list of conversations',
-            new GLib.VariantType('as'),
+            new GLib.VariantType('aa{sv}'),
             null,
             GObject.ParamFlags.READABLE
         ),
@@ -248,7 +240,6 @@ var Plugin = GObject.registerClass({
 
     connected() {
         super.connected();
-
         this.requestConversations();
     }
 
@@ -598,45 +589,40 @@ var Plugin = GObject.registerClass({
     }
 
     /**
-     * This is the sms: URI scheme handler.
-     * TODO: very likely broken right now
+     * This is the sms: URI scheme handler
+     *
+     * @param {string} uri - The URI the handle (sms:|sms://|sms:///)
      */
     uriSms(uri) {
-        debug(uri);
-
-        if (!uri instanceof URI) {
-            try {
-                uri = new URI(uri);
-            } catch (e) {
-                debug('Error parsing sms URI: ' + e.message);
-                return;
-            }
-        }
-
-        // Check for an extant window
-        let window = this._hasWindow(uri.recipients[0]);
-
-        // None found; open one and add the contact(s)
-        if (!window) {
-            window = new Messaging.ConversationWindow(this.device);
+        try {
+            uri = new URI(uri);
 
             // FIXME: need batch SMS window now
             for (let recipient of uri.recipients) {
-                // FIXME
-                let contact = this.contacts.query({
-                    number: recipient
-                });
-                window.addRecipient(recipient, contact);
+                // Check for an extant window
+                let window = this._hasWindow(uri.recipients[0]);
+
+                // None found; open one and add the contact
+                if (!window) {
+                    window = new Messaging.ConversationWindow(this.device);
+
+                    let contact = this.contacts.query({
+                        number: recipient
+                    });
+                    window.setRecipient(contact, recipient);
+                    window.urgency_hint = true;
+                }
+
+                // Set the outgoing message if the uri has a body variable
+                if (uri.body) {
+                    window.setMessage(uri.body);
+                }
+
+                window.present();
             }
-            window.urgency_hint = true;
+        } catch (e) {
+            logError(e, `${this.device.name}: "${uri}"`);
         }
-
-        // Set the outgoing message if the uri has a body variable
-        if (uri.body) {
-            window.setMessage(uri.body);
-        }
-
-        window.present();
     }
 });
 
