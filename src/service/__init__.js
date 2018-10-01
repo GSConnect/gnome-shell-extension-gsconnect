@@ -72,7 +72,7 @@ JSON.load = function (file, sync=false) {
  * @param {object} obj - The object to write to disk
  * @param {boolean} sync - Default is %false, if %true load synchronously
  */
-JSON.dump = function (file, obj, sync=false) {
+JSON.dump = function (obj, file, sync=false) {
     if (typeof file === 'string') {
         file = Gio.File.new_for_path(file);
     }
