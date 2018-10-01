@@ -251,19 +251,18 @@ var Plugin = GObject.registerClass({
      * Report the local battery's current charge/state
      */
     _sendState() {
-        if (!this.service.upower) { return; }
+        if (this._upowerId === 0) {
+            return;
+        }
 
-        let packet = {
-            id: 0,
+        this.device.sendPacket({
             type: 'kdeconnect.battery',
             body: {
                 currentCharge: this.service.upower.level,
                 isCharging: this.service.upower.charging,
                 thresholdEvent: this.service.upower.threshold
             }
-        };
-
-        this.device.sendPacket(packet);
+        });
     }
 
     /**
