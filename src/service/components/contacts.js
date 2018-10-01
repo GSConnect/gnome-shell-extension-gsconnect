@@ -225,27 +225,30 @@ var Store = GObject.registerClass({
 
         // Create a new contact
         // TODO: use folks to add contact
-        if (matches.length === 0 && query.create) {
+        if (matches.length === 0) {
             // Create a unique ID for this contact
             let id = GLib.uuid_string_random();
             while (this._contacts.hasOwnProperty(id)) {
                 id = GLib.uuid_string_random();
             }
 
-            // Add the contact & save to cache
-            this._contacts[id] = {
+            // Populate a dummy contact
+            matches[0] = {
+                id: id,
                 name: query.name || query.number,
                 numbers: [{ value: query.number, type: 'unknown' }],
-                id: id,
                 origin: 'gsconnect'
             };
-            this.notify('contacts');
 
-            return this._contacts[id];
+            // Save if requested
+            if (query.create) {
+                this._contacts[id] = matches[0];
+                this.notify('contacts');
+            }
         }
 
-        // Check for a single match
-        return (matches.length > 0) ? matches[0] : false;
+        // Only return the first match (pretty much what Android does)
+        return matches[0];
     }
 
     async remove(query) {
