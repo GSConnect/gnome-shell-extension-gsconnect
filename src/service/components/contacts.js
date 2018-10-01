@@ -52,25 +52,34 @@ var Store = GObject.registerClass({
 
     async _init_async() {
         try {
-            // Load the cache
-            this._file.load_contents_async(null, (file, res) => {
-                try {
-                    let contents = file.load_contents_finish(res)[1];
-
-                    if (contents instanceof Uint8Array) {
-                        contents = imports.byteArray.toString(contents);
-                    }
-
-                    this._contacts = JSON.parse(contents);
-                } catch (e) {
-                    this._contacts = {};
-                } finally {
-                    this.connect('notify::contacts', this._writeCache);
-                    this.update();
-                }
-            });
+            this._contacts = await JSON.load(this.__cache_file);
         } catch (e) {
-            logError(e);
+            this._contacts = {};
+            logWarning(e);
+        } finally {
+            this.connect('notify::contacts', this.__cache_write.bind(this));
+            this.update();
+        }
+    }
+
+    async __cache_write() {
+        try {
+            if (this.__cache_lock) {
+                this.__cache_queue = true;
+                return;
+            }
+
+            this.__cache_lock = true;
+            await JSON.dump(this._contacts, this.__cache_file);
+        } catch (e) {
+            logWarning(e, 'Contacts.Store.__cache_write()');
+        } finally {
+            this.__cache_lock = false;
+
+            if (this.__cache_queue) {
+                this.__cache_queue = false;
+                this.__cache_write();
+            }
         }
     }
 
@@ -82,7 +91,7 @@ var Store = GObject.registerClass({
         this._path = GLib.build_filenamev([gsconnect.cachedir, path]);
         GLib.mkdir_with_parents(this._path, 448);
 
-        this._file = Gio.File.new_for_path(
+        this.__cache_file = Gio.File.new_for_path(
             GLib.build_filenamev([this._path, 'contacts.json'])
         );
     }
@@ -313,23 +322,6 @@ var Store = GObject.registerClass({
                 }
             });
         });
-    }
-
-    _writeCache(store) {
-        store._file.replace_contents_bytes_async(
-            new GLib.Bytes(JSON.stringify(store._contacts)),
-            null,
-            false,
-            Gio.FileCreateFlags.REPLACE_DESTINATION,
-            null,
-            (file, res) => {
-                try {
-                    file.replace_contents_finish(res);
-                } catch (e) {
-                    logError(e);
-                }
-            }
-        );
     }
 });
 
