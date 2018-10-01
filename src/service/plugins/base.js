@@ -153,29 +153,19 @@ var Plugin = GObject.registerClass({
                 GLib.build_filenamev([cachedir, `${this.name}.json`])
             );
 
+            // Setup the cache using existing properties
             this.__cache_properties = {};
 
             for (let name of names) {
-                // Make a copy of the default, if it exists
                 if (this.hasOwnProperty(name)) {
                     this.__cache_properties[name] = JSON.parse(JSON.stringify(this[name]));
                 }
             }
 
+            // Read the cache from disk
             await this.__cache_read();
-            await this.cacheLoaded();
         } catch (e) {
             logWarning(e.message, `${this.device.name}: ${this.name}`);
-        }
-    }
-
-    // A method for clearing the cache
-    cacheClear() {
-        log(`${this.device.name}: clearing cache for ${this.name} plugin`);
-
-        for (let name in this.__cache_properties) {
-            this[name] = JSON.parse(JSON.stringify(this.__cache_properties[name]));
-            this.__cache_write(true);
         }
     }
 
@@ -185,90 +175,53 @@ var Plugin = GObject.registerClass({
     cacheLoaded() {}
 
     /**
-     * Build a dictionary of properties and values to cache. This can be
-     * overridden to filter what is written to disk.
-     *
-     * @return {Object} - A dictionary of the properties to cache
-     */
-    cacheBuild() {
-        let cache = {};
-
-        for (let name in this.__cache_properties) {
-            cache[name] = this[name];
-        }
-
-        return cache;
-    }
-
-    /**
      * Read the plugin's cache from disk, asynchronously
      */
-    __cache_read() {
-        return new Promise((resolve, reject) => {
-            this.__cache_file.load_contents_async(null, (file, res) => {
-                try {
-                    let cache = file.load_contents_finish(res)[1];
+    async __cache_read() {
+        try {
+            let cache = await JSON.load(this.__cache_file);
 
-                    if (cache instanceof Uint8Array) {
-                        cache = imports.byteArray.toString(cache);
-                    }
-
-                    cache = JSON.parse(cache);
-
-                    for (let name in this.__cache_properties) {
-                        if (typeof this[name] === typeof cache[name]) {
-                            this[name] = cache[name];
-                        }
-                    }
-                } catch (e) {
-                    logWarning(`${this.name} cache: ${e.message}`, this.device.name);
-                } finally {
-                    resolve();
+            for (let name in this.__cache_properties) {
+                if (typeof this[name] === typeof cache[name]) {
+                    this[name] = cache[name];
                 }
-            });
-        });
+            }
+
+            this.cacheLoaded();
+        } catch (e) {
+            logWarning(e, `${this.device.name}->${this.name}`, );
+        }
     }
 
     /**
-     * Write the plugin's cache to disk, synchronously is @sync
+     * Write the plugin's cache to disk
      */
-    __cache_write(sync=false) {
-        if (this.__cache_lock) {
-            return;
-        }
-
+    async __cache_write() {
         try {
-            this.__cache_lock = true;
-            let cache = this.cacheBuild();
-
-            if (sync) {
-                this.__cache_file.replace_contents(
-                    JSON.stringify(cache),
-                    null,
-                    false,
-                    Gio.FileCreateFlags.REPLACE_DESTINATION,
-                    null
-                );
-            } else {
-                this.__cache_file.replace_contents_bytes_async(
-                    new GLib.Bytes(JSON.stringify(cache)),
-                    null,
-                    false,
-                    Gio.FileCreateFlags.REPLACE_DESTINATION,
-                    null,
-                    (file, res) => {
-                        try {
-                            file.replace_contents_finish(res);
-                        } catch (e) {
-                            logError(e);
-                        }
-                    }
-                );
+            if (this.__cache_lock) {
+                this.__cache_queue = true;
+                return;
             }
+
+            this.__cache_lock = true;
+
+            // Build the cache
+            let cache = {};
+
+            for (let name in this.__cache_properties) {
+                cache[name] = this[name];
+            }
+
+            await JSON.dump(cache, this.__cache_file);
         } catch (e) {
-            debug(`error writing ${this.name} cache: ${e.message}`);
+            debug(e);
         } finally {
             this.__cache_lock = false;
+
+            if (this.__cache_queue) {
+                this.__cache_queue = false;
+                this.__cache_write();
+            }
         }
     }
 
@@ -282,9 +235,20 @@ var Plugin = GObject.registerClass({
             this.device.remove_action(action.name);
         });
 
-        // Write the cache to disk, if applicable
-        if (this.__cache_file !== undefined) {
-            this.__cache_write(true);
+        // Write the cache to disk synchronously
+        if (this.__cache_file && !this.__cache_lock) {
+            try {
+                // Build the cache
+                let cache = {};
+
+                for (let name in this.__cache_properties) {
+                    cache[name] = this[name];
+                }
+
+                JSON.dump(cache, this.__cache_file, true);
+            } catch (e) {
+                debug(e);
+            }
         }
 
         // Try to avoid any cyclic references from signal handlers
