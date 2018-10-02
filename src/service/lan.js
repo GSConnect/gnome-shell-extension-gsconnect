@@ -143,7 +143,6 @@ var ChannelService = GObject.registerClass({
         }
     }
 
-    // TODO: support IPv6?
     _initUdpListener() {
         this._udp = new Gio.Socket({
             family: Gio.SocketFamily.IPV4,
@@ -197,22 +196,9 @@ var ChannelService = GObject.registerClass({
             )[1].address.to_string();
 
             // ...then read the packet from a stream, filling in the tcpHost
-            let packet = await new Promise((resolve, reject) => {
-                this._udp_stream.read_line_async(
-                    GLib.PRIORITY_DEFAULT,
-                    null,
-                    (stream, res) => {
-                    try {
-                        let data = stream.read_line_finish_utf8(res)[0];
-                        let packet = new Core.Packet(data);
-                        packet.body.tcpHost = host;
-
-                        resolve(packet);
-                    } catch (e) {
-                        reject(e);
-                    }
-                });
-            });
+            let data = this._udp_stream.read_line_utf8(null)[0];
+            let packet = new Core.Packet(data);
+            packet.body.tcpHost = host;
 
             // Bail if the deviceId is missing
             if (!packet.body.hasOwnProperty('deviceId')) {
