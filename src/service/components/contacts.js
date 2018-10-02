@@ -11,6 +11,24 @@ var _numberRegex = /\+(9[976]\d|8[987530]\d|6[987]\d|5[90]\d|42\d|3[875]\d|2[986
 
 
 //
+/**
+ * Try to seperate the international prefix from the local number, falling back
+ * to stripping non-digits. On error @number is returned as-is.
+ *
+ * @param {string} number - A string phone number
+ * @return {string} - The localized or normalized number
+ */
+function localizeNumber(number) {
+    try {
+        _numberRegex.lastIndex = 0;
+        let normalized = number.replace(/\D/g, '');
+        let localized = _numberRegex.match(normalized);
+
+        return (localized) ? localized[2] : normalized;
+    } catch (e) {
+        return number;
+    }
+}
 
 
 var Store = GObject.registerClass({
@@ -208,11 +226,10 @@ var Store = GObject.registerClass({
      * @param {Object} query - A query object
      * @param {String} [query.name] - The contact's name
      * @param {String} [query.number] - The contact's number
-     * @param {Boolean} [query.single] - Only return if there is a single match
-     * @param {Boolean} [query.create] - Create and return a new contact if none
+     * @param {Boolean} [query.create] - Save the contact if it's new
      */
     query(query) {
-        let number = (query.number) ? query.number.replace(/\D/g, '') : null;
+        let number = (query.number) ? localizeNumber(query.number) : null;
 
         let matches = [];
 
@@ -220,8 +237,7 @@ var Store = GObject.registerClass({
             // Prioritize searching by number
             if (number) {
                 for (let num of contact.numbers) {
-                    // Match by number stripped of non-digits
-                    if (number === num.value.replace(/\D/g, '')) {
+                    if (number === localizeNumber(num.value)) {
                         matches.push(contact);
 
                         // Number match & exact name match; must be it
