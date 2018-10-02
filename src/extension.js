@@ -34,6 +34,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         super._init();
 
         this._activating = false;
+        this._cancellable = new Gio.Cancellable();
         this._devices = new Set();
         this._menus = {};
 
@@ -106,7 +107,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
                     gsconnect.app_id,
                     gsconnect.app_path,
                     null,
-                    null,
+                    this._cancellable,
                     (manager, res) => {
                         try {
                             resolve(Gio.DBusObjectManagerClient.new_finish(res));
@@ -165,12 +166,11 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
     }
 
     async _activate() {
-        // Avoid concurrent calls
-        if (this._activating) {
-            return;
-        }
-
         try {
+            if (this._activating) {
+                return;
+            }
+
             this._activating = true;
 
             // Wait for a result before continuing
@@ -378,14 +378,18 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
     }
 
     destroy() {
-        // Unhook from any ObjectManager events
-        this.manager.disconnect(this._interfaceAddedId);
-        this.manager.disconnect(this._objectRemovedId);
-        this.manager.disconnect(this._nameOwnerId);
+        this._cancellable.cancel();
 
-        // Destroy any remaining devices
-        for (let object of this.manager.get_objects()) {
-            this._onObjectRemoved(this.manager, object);
+        // Unhook from any ObjectManager events
+        if (this.manager) {
+            this.manager.disconnect(this._interfaceAddedId);
+            this.manager.disconnect(this._objectRemovedId);
+            this.manager.disconnect(this._nameOwnerId);
+
+            // Destroy any remaining devices
+            for (let object of this.manager.get_objects()) {
+                this._onObjectRemoved(this.manager, object);
+            }
         }
 
         // Disconnect any keybindings
