@@ -445,7 +445,7 @@ var Device = GObject.registerClass({
             name: 'openPath',
             parameter_type: new GLib.VariantType('s')
         });
-        openPath.connect('activate', this.openPath.bind(this));
+        openPath.connect('activate', this.openPath);
         this.add_action(openPath);
     }
 
