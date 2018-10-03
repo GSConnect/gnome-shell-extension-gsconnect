@@ -293,59 +293,51 @@ var Plugin = GObject.registerClass({
      *
      * @param {Array} messages - A list of telephony message objects
      */
-    _handleConversation(messages) {
-        let contact, number, thread, window;
-
-        // HACK: Check each message.address for a known contact
-        number = messages[0].address;
-
-        for (let message of messages) {
-            contact = this.contacts.query({
-                number: message.address
-            });
-
-            if (contact && contact.origin === 'folks') {
-                number = message.address;
-                break;
-            }
-        }
-
-        // Create a contact if we still don't have one
-        if (!contact) {
-            contact = this.contacts.query({
-                number: message.address,
-                create: true
-            });
-        }
-
-        // Single messages might be a new message, if there's an existing thread
-        thread = this.conversations[number];
-
-        if (messages.length === 1 && thread) {
-            let id = messages[0]._id;
-
-            // A new message for an existing thread
-            if (thread.every(msg => msg._id !== id)) {
-                this.conversations[number].push(messages[0]);
-                this._handleMessage(contact, messages[0]);
+    async _handleConversation(messages) {
+        try {
+            if (messages.length === 0) {
+                return;
             }
 
-        // But multiples or new threads are always digests
-        } else {
-            // TODO: messaging.js could just do this on demand...
-            this.conversations[number] = messages.sort((a, b) => {
-                return (a.date < b.date) ? -1 : 1;
+            let contact, number, thread, window;
+
+            // HACK: Check each message.address for a known contact
+            number = messages[0].address;
+            contact = this.contacts.query({
+                number: messages[0].address
             });
+
+            // Single messages might be a new message, if there's an existing thread
+            thread = this.conversations[number];
+
+            if (messages.length === 1 && thread) {
+                let id = messages[0]._id;
+
+                // A new message for an existing thread
+                if (thread.every(msg => msg._id !== id)) {
+                    this.conversations[number].push(messages[0]);
+                    this._handleMessage(contact, messages[0]);
+                }
+
+            // But multiples or new threads are always digests
+            } else {
+                this.conversations[number] = messages.sort((a, b) => {
+                    return (a.date < b.date) ? -1 : 1;
+                });
+            }
+
+            // Update any open windows...
+            window = this._hasWindow(number);
+
+            if (window) {
+                window._populateMessages(number);
+            }
+
+            await this.__cache_write();
+            this.notify('conversations');
+        } catch (e) {
+            logError(e);
         }
-
-        // Update any open windows...
-        window = this._hasWindow(number);
-
-        if (window) {
-            window._populateMessages(number);
-        }
-
-        this.notify('conversations');
 
         return messages[messages.length - 1];
     }
@@ -374,16 +366,13 @@ var Plugin = GObject.registerClass({
             }
 
             // Prune conversations
-            // TODO: this might always prune because of the HACK in
-            // _handleConversation()
-            // FIXME: 'address' undefined
             let numbers = threads.map(t => t.address);
 
-            for (let number in this.conversations) {
-                if (!numbers.includes(number)) {
-                    delete this.conversations[number];
+            Object.keys(this.conversations).map(address => {
+                if (!numbers.includes(address)) {
+                    delete this.conversations[address];
                 }
-            }
+            });
 
             // We call this instead of notify::threads so the conversation
             // windows don't have to deal with the plugin loading/unloading.

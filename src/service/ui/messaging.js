@@ -520,9 +520,7 @@ var ConversationWindow = GObject.registerClass({
     _addSummary(message) {
         // Ensure we have a contact for each thread
         let contact = this.contact_list.contacts.query({
-            name: message.address,
-            number: message.address,
-            create: true
+            number: message.address
         });
 
         // Create a summary row and add it to the list
@@ -531,14 +529,18 @@ var ConversationWindow = GObject.registerClass({
     }
 
     async _populateConversations() {
-        // Clear any current threads
-        this.conversation_list.foreach(row => row.destroy());
+        try {
+            // Clear any current threads
+            this.conversation_list.foreach(row => row.destroy());
 
-        // Populate the new threads
-        let sms = this.device.lookup_plugin('sms');
+            // Populate the new threads
+            let sms = this.device.lookup_plugin('sms');
 
-        for (let message of sms.threads) {
-            await this._addSummary(message);
+            for (let message of sms.threads) {
+                await this._addSummary(message);
+            }
+        } catch (e) {
+            logError(e);
         }
     }
 
@@ -704,17 +706,19 @@ var ConversationWindow = GObject.registerClass({
         this._recipient = contact;
 
         // See if we have a nicer display number
-        let strippedNumber = phoneNumber.replace(/\D/g, '');
+        let number = phoneNumber.replace(/\D/g, '');
 
         for (let contactNumber of contact.numbers) {
-            if (strippedNumber === contactNumber.value.replace(/\D/g, '')) {
+            let cnumber = contactNumber.value.replace(/\D/g, '');
+
+            if (number.endsWith(cnumber) || cnumber.endsWith(number)) {
                 this._displayNumber = contactNumber.value;
                 break;
             }
         }
 
         // Populate the conversation
-        this._populateMessages(strippedNumber);
+        this._populateMessages(phoneNumber);
         this._showMessages();
     }
 

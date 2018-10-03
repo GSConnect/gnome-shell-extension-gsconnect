@@ -6,31 +6,9 @@ const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 
 
-// A simple regex for separating the international prefix from the local number
-var _numberRegex = /\+(9[976]\d|8[987530]\d|6[987]\d|5[90]\d|42\d|3[875]\d|2[98654321]\d|9[8543210]|8[6421]|6[6543210]|5[87654321]|4[987654310]|3[9643210]|2[70]|7|1)\W*(\d\W*\d\W*\d\W*\d\W*\d\W*\d\W*\d\W*\d\W*(\d{1,2}))$/;
-
-
-//
 /**
- * Try to seperate the international prefix from the local number, falling back
- * to stripping non-digits. On error @number is returned as-is.
- *
- * @param {string} number - A string phone number
- * @return {string} - The localized or normalized number
+ * A store for contacts
  */
-function localizeNumber(number) {
-    try {
-        _numberRegex.lastIndex = 0;
-        let normalized = number.replace(/\D/g, '');
-        let localized = _numberRegex.match(normalized);
-
-        return (localized) ? localized[2] : normalized;
-    } catch (e) {
-        return number;
-    }
-}
-
-
 var Store = GObject.registerClass({
     GTypeName: 'GSConnectContactsStore',
     Properties: {
@@ -42,17 +20,17 @@ var Store = GObject.registerClass({
             null,
             GObject.ParamFlags.READABLE
         ),
-        'provider-icon': GObject.ParamSpec.string(
-            'provider-icon',
-            'ContactsProvider',
-            'The contact provider icon name',
-            GObject.ParamFlags.READABLE,
-            ''
-        ),
         'path': GObject.ParamSpec.string(
             'path',
             'Path',
             'Cache path, relative to gsconnect.cachedir',
+            GObject.ParamFlags.READWRITE,
+            ''
+        ),
+        'provider-icon': GObject.ParamSpec.string(
+            'provider-icon',
+            'ContactsProvider',
+            'The contact provider icon name',
             GObject.ParamFlags.READWRITE,
             ''
         )
@@ -76,7 +54,7 @@ var Store = GObject.registerClass({
             logWarning(e);
         } finally {
             this.connect('notify::contacts', this.__cache_write.bind(this));
-            this.update();
+            this._loadFolks();
         }
     }
 
@@ -120,10 +98,15 @@ var Store = GObject.registerClass({
 
     get provider_icon() {
         if (this._provider_icon === undefined) {
-            return 'call-start-symbolic';
+            this._provider_icon = 'call-start-symbolic';
         }
 
         return this._provider_icon;
+    }
+
+    set provider_icon(icon_name) {
+        this._provider_icon = icon_name;
+        this.notify('provider-icon');
     }
 
     /**
@@ -229,23 +212,25 @@ var Store = GObject.registerClass({
      * @param {Boolean} [query.create] - Save the contact if it's new
      */
     query(query) {
-        let number = (query.number) ? localizeNumber(query.number) : null;
-
         let matches = [];
+        let number = (query.number) ? query.number.replace(/\D/g, '') : null;
 
-        for (let [id, contact] of Object.entries(this._contacts)) {
+        for (let contact of Object.values(this._contacts)) {
             // Prioritize searching by number
             if (number) {
                 for (let num of contact.numbers) {
-                    if (number === localizeNumber(num.value)) {
-                        matches.push(contact);
+                    let cnumber = num.value.replace(/\D/g, '');
 
+                    if (number.endsWith(cnumber) || cnumber.endsWith(number)) {
                         // Number match & exact name match; must be it
                         if (query.name && query.name === contact.name) {
                             return contact;
                         }
+
+                        matches.push(contact);
                     }
                 }
+
             // Fallback to searching by exact name match
             } else if (query.name && query.name === contact.name) {
                 matches.push(contact);
@@ -295,9 +280,9 @@ var Store = GObject.registerClass({
         }
     }
 
-    async update() {
+    async update(json) {
         try {
-            await this._dumpFolks();
+            this._contacts = Object.assign(this._contacts, json);
 
             this._provider_icon = 'x-office-address-book-symbolic.symbolic';
             this.notify('provider-icon');
@@ -307,37 +292,42 @@ var Store = GObject.registerClass({
         }
     }
 
-    _dumpFolks() {
-        return new Promise((resolve, reject) => {
-            let launcher = new Gio.SubprocessLauncher({
-                flags: Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDERR_PIPE
-            });
+    async _loadFolks() {
+        try {
+            let folks = await new Promise((resolve, reject) => {
+                let launcher = new Gio.SubprocessLauncher({
+                    flags: Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDERR_PIPE
+                });
 
-            launcher.setenv('FOLKS_BACKENDS_DISABLED', 'telepathy', true);
+                launcher.setenv('FOLKS_BACKENDS_DISABLED', 'telepathy', true);
 
-            let proc = launcher.spawnv([
-                gsconnect.extdatadir + '/service/components/folks.py'
-            ]);
+                let proc = launcher.spawnv([
+                    gsconnect.extdatadir + '/service/components/folks.py'
+                ]);
 
-            proc.communicate_utf8_async(null, null, (proc, res) => {
-                try {
-                    let [ok, stdout, stderr] = proc.communicate_utf8_finish(res);
+                proc.communicate_utf8_async(null, null, (proc, res) => {
+                    try {
+                        let [ok, stdout, stderr] = proc.communicate_utf8_finish(res);
 
-                    if (stderr.length > 0) {
-                        throw new Error(stderr);
+                        if (stderr.length > 0) {
+                            throw new Error(stderr);
+                        }
+
+                        resolve(JSON.parse(stdout));
+                    } catch (e) {
+                        // format python errors
+                        e.stack = e.message;
+                        e.message = e.stack.split('\n').filter(l => l).pop();
+
+                        reject(e);
                     }
-
-                    let folks = JSON.parse(stdout);
-                    this._contacts = Object.assign(this._contacts, folks);
-                    resolve();
-                } catch (e) {
-                    // format python errors
-                    e.stack = e.message;
-                    e.message = e.stack.split('\n').filter(l => l).pop();
-                    reject(e);
-                }
+                });
             });
-        });
+
+            this.update(folks);
+        } catch (e) {
+            logWarning(e, 'Contacts.Store._loadFolks()');
+        }
     }
 });
 
