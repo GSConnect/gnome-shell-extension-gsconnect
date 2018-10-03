@@ -89,6 +89,7 @@ var Channel = class Channel {
     get cancellable() {
         if (this._cancellable === undefined) {
             this._cancellable = new Gio.Cancellable();
+            this._cancellable.connect(this.close.bind(this));
         }
 
         return this._cancellable;
