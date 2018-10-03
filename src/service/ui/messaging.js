@@ -224,7 +224,7 @@ var ConversationSummary = GObject.registerClass({
         this.add(grid);
 
         let nameLabel = contact.name;
-        let bodyLabel = '<small>' + message.body.toPango() + '</small>';
+        let bodyLabel = '<small>' + message.body.split('\n')[0].toPango() + '</small>';
 
         if (message.read === MessageStatus.UNREAD) {
             nameLabel = '<b>' + nameLabel + '</b>';
