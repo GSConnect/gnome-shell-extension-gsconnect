@@ -436,7 +436,7 @@ const Service = GObject.registerClass({
             dialog.connect('response', (dialog, id) => {
                 if (id === 1) {
                     let query = encodeURIComponent(dialog.text).replace('%20', '+');
-                    this._github(`issues?q=is%3Aissue+${query}`);
+                    this._github(`issues?q=is%3Aissue+"${query}"`);
                 } else {
                     dialog.destroy();
                 }
