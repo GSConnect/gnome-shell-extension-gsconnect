@@ -234,6 +234,10 @@ var Plugin = GObject.registerClass({
         }
     }
 
+    cacheLoaded() {
+        this.notify('conversations');
+    }
+
     connected() {
         super.connected();
         this.requestConversations();
