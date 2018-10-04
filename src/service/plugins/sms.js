@@ -271,16 +271,19 @@ var Plugin = GObject.registerClass({
         let window = this._hasWindow(message.address);
 
         if (window) {
-            // We log the message even though the thread might be updated later
-            window.receiveMessage(contact, message);
-            window.urgency_hint = true;
-
-            // Track the smsNotification so the window can close it when focused
+            // Track the notification so the window can close it when focused
             window._notifications.push(`${contact.name}: ${message.body}`);
 
             // Tell the notification plugin to mark any duplicate read
             if (notification) {
                 notification.closeDuplicate(`${contact.name}: ${message.body}`);
+            }
+
+            if (this.device.get_outgoing_supported('sms.messages')) {
+                window._populateMessages(message.thread_id);
+            } else {
+                window.receiveMessage(contact, message);
+                window.urgency_hint = true;
             }
         }
 
@@ -299,32 +302,27 @@ var Plugin = GObject.registerClass({
                 return;
             }
 
-            let number, thread, window;
+            let contact = this.contacts.query({
+                number: messages[0].address,
+                create: true
+            });
 
             let thread_id = messages[0].thread_id;
-            thread = this.conversations[thread_id];
+            let thread = this.conversations[thread_id];
+            thread = thread || [];
 
-            // Single messages for existing threads may be new
-            if (messages.length === 1 && thread) {
-                let contact = this.contacts.query({
-                    number: messages[0].address,
-                    create: true
-                });
+            for (let message of messages) {
+                let message_id = message._id;
 
-                // A new message for an existing thread
-                let id = messages[0]._id;
-
-                if (thread.every(msg => msg._id !== id)) {
-                    this.conversations[thread_id].push(messages[0]);
-                    this._handleMessage(contact, messages[0]);
+                if (thread.every(msg => msg._id !== message_id)) {
+                    thread.push(message);
+                    this._handleMessage(contact, message);
                 }
-
-            // But multiples or new threads are always digests
-            } else {
-                this.conversations[thread_id] = messages.sort((a, b) => {
-                    return (a.date < b.date) ? -1 : 1;
-                });
             }
+
+            this.conversations[thread_id] = thread.sort((a, b) => {
+                return (a.date < b.date) ? -1 : 1;
+            });
 
             await this.__cache_write();
             this.notify('conversations');
@@ -378,15 +376,17 @@ var Plugin = GObject.registerClass({
     _hasWindow(address) {
         debug(address);
 
+        // Look for an open window with this phone number
         let number = address.replace(/\D/g, '').replace(/^[0]?/, '');
 
-        // Look for an open window with this contact
         for (let win of this.service.get_windows()) {
-            if (!win.device || win.device.id !== this.device.id) {
+            if (!win.device || win.device.id !== this.device.id || !win.number) {
                 continue;
             }
 
-            if (win.number !== null && number === win.number.replace(/\D/g, '')) {
+            let wnumber = win.number.replace(/\D/g, '').replace(/^[0]?/, '');
+
+            if (number.endsWith(wnumber) || wnumber.endsWith(number)) {
                 return win;
             }
         }
@@ -478,6 +478,7 @@ var Plugin = GObject.registerClass({
 
             if (msgs || message.event === 'missedCall') {
                 window.setRecipient(contact, message.address);
+
             // Otherwise log the fabricated message object
             } else {
                 window.receiveMessage(contact, message.address);

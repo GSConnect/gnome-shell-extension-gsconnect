@@ -171,7 +171,7 @@ var ConversationMessage = GObject.registerClass({
     vfunc_activate_link(uri) {
         Gtk.show_uri_on_window(
             this.get_toplevel(),
-            uri.includes('://') ? uri : 'http://' + uri,
+            uri.includes('://') ? uri : `http://${uri}`,
             Gtk.get_current_event_time()
         );
 
@@ -560,7 +560,7 @@ var ConversationWindow = GObject.registerClass({
 
         if (sms.conversations.hasOwnProperty(thread_id)) {
             let conversation = sms.conversations[thread_id];
-            conversation.map(message => this._addMessage(message));
+            conversation.map(message => this.logMessage(message));
 
             let lastMessage = conversation[conversation.length - 1];
             this._message_id = lastMessage._id;
@@ -642,7 +642,7 @@ var ConversationWindow = GObject.registerClass({
      *
      * @param {Object} message - A sms message object
      */
-    async _addMessage(message) {
+    async logMessage(message) {
         // Check if we need a new thread
         if (this._thread === undefined) {
             this._addThread(message.type);
@@ -743,7 +743,7 @@ var ConversationWindow = GObject.registerClass({
         }
 
         // Log an incoming telepony message (fabricated by the sms plugin)
-        this._addMessage({
+        this.logMessage({
             _id: ++this.message_id,     // message id (increment as we fetch)
             thread_id: this.thread_id,  // conversation id
             address: message.address,   // always the outgoing number
@@ -767,7 +767,7 @@ var ConversationWindow = GObject.registerClass({
             );
 
             // Log the outgoing message as a fabricated message packet
-            this._addMessage({
+            this.logMessage({
                 _id: ++this.message_id,    // message id (increment as we fetch)
                 thread_id: this.thread_id,  // conversation id
                 address: this.number,       // always the outgoing number?
