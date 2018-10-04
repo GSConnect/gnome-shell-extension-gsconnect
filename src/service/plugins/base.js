@@ -153,16 +153,8 @@ var Plugin = GObject.registerClass({
                 GLib.build_filenamev([cachedir, `${this.name}.json`])
             );
 
-            // Setup the cache using existing properties
-            this.__cache_properties = {};
-
-            for (let name of names) {
-                if (this.hasOwnProperty(name)) {
-                    this.__cache_properties[name] = JSON.parse(JSON.stringify(this[name]));
-                }
-            }
-
-            // Read the cache from disk
+            // Setup the cache using existing properties & read the cache
+            this.__cache_properties = names;
             await this.__cache_read();
         } catch (e) {
             logWarning(e.message, `${this.device.name}: ${this.name}`);
@@ -180,13 +172,7 @@ var Plugin = GObject.registerClass({
     async __cache_read() {
         try {
             let cache = await JSON.load(this.__cache_file);
-
-            for (let name in this.__cache_properties) {
-                if (typeof this[name] === typeof cache[name]) {
-                    this[name] = cache[name];
-                }
-            }
-
+            Object.assign(this, cache);
             this.cacheLoaded();
         } catch (e) {
             logWarning(e, `${this.device.name}->${this.name}`, );
@@ -208,7 +194,7 @@ var Plugin = GObject.registerClass({
             // Build the cache
             let cache = {};
 
-            for (let name in this.__cache_properties) {
+            for (let name of this.__cache_properties) {
                 cache[name] = this[name];
             }
 
@@ -241,8 +227,8 @@ var Plugin = GObject.registerClass({
                 // Build the cache
                 let cache = {};
 
-                for (let name in this.__cache_properties) {
-                    cache[name] = this[name];
+                for (let name of this.__cache_properties) {
+                    cache[name] = JSON.parse(JSON.stringify(this[name]));
                 }
 
                 JSON.dump(cache, this.__cache_file, true);
