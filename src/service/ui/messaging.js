@@ -515,19 +515,8 @@ var ConversationWindow = GObject.registerClass({
     }
 
     /**
-     * Conversation List
+     * Populate the conversation list with the last message of each thread
      */
-    _addSummary(message) {
-        // Ensure we have a contact for each thread
-        let contact = this.contact_list.contacts.query({
-            number: message.address
-        });
-
-        // Create a summary row and add it to the list
-        let summary = new ConversationSummary(contact, message);
-        this.conversation_list.add(summary);
-    }
-
     async _populateConversations() {
         try {
             // Clear any current threads
@@ -536,8 +525,14 @@ var ConversationWindow = GObject.registerClass({
             // Populate the new threads
             let sms = this.device.lookup_plugin('sms');
 
-            for (let message of sms.threads) {
-                await this._addSummary(message);
+            for (let thread of Object.values(sms.conversations)) {
+                let contact = this.contact_list.contacts.query({
+                    number: thread[0].address
+                });
+
+                await this.conversation_list.add(
+                    new ConversationSummary(contact, thread[thread.length-1])
+                );
             }
         } catch (e) {
             logError(e);
@@ -553,27 +548,23 @@ var ConversationWindow = GObject.registerClass({
     }
 
     /**
-     * Message List
-     */
-
-    /**
      * Populate the message list with the messages from the thread for @number
      *
-     * @param {String} number - Phone number reported by KDE Connect (stripped)
+     * @param {string} thread_id - The thread id for this conversation
      */
-    async _populateMessages(number) {
+    async _populateMessages(thread_id) {
         this.message_list.foreach(row => row.destroy());
         this._thread = undefined;
 
         let sms = this.device.lookup_plugin('sms');
 
-        if (sms.conversations.hasOwnProperty(number)) {
-            let conversation = sms.conversations[number];
+        if (sms.conversations.hasOwnProperty(thread_id)) {
+            let conversation = sms.conversations[thread_id];
             conversation.map(message => this._addMessage(message));
 
             let lastMessage = conversation[conversation.length - 1];
-            this._thread_id = lastMessage.thread_id;
             this._message_id = lastMessage._id;
+            this._thread_id = lastMessage.thread_id;
         }
     }
 
@@ -701,9 +692,9 @@ var ConversationWindow = GObject.registerClass({
      * @param {String} phoneNumber - The phone number (provided by Android)
      */
     setRecipient(contact, phoneNumber) {
+        this._recipient = contact;
         this._number = phoneNumber;
         this._displayNumber = phoneNumber;
-        this._recipient = contact;
 
         // See if we have a nicer display number
         let number = phoneNumber.replace(/\D/g, '');
@@ -718,7 +709,21 @@ var ConversationWindow = GObject.registerClass({
         }
 
         // Populate the conversation
-        this._populateMessages(phoneNumber);
+        let sms = this.device.lookup_plugin('sms');
+        let thread_id;
+
+        if (sms) {
+            for (let thread of Object.values(sms.conversations)) {
+                let tnumber = thread[0].address.replace(/\D/g, '').replace(/^[0]?/, '');
+
+                if (number.endsWith(tnumber) || tnumber.endsWith(number)) {
+                    thread_id = thread[0].thread_id;
+                    break;
+                }
+            }
+        }
+
+        this._populateMessages(thread_id);
         this._showMessages();
     }
 
