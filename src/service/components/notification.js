@@ -47,8 +47,6 @@ const GTK_MATCH = "interface='org.gtk.Notifications',member='AddNotification',ty
  */
 var Listener = class Listener {
     constructor() {
-        this.application = Gio.Application.get_default();
-
         // Respect desktop notification settings
         this._settings = new Gio.Settings({
             schema_id: 'org.gnome.desktop.notifications'
@@ -66,6 +64,10 @@ var Listener = class Listener {
 
         // Asynchronous setup
         this._init_async();
+    }
+
+    get application() {
+        return Gio.Application.get_default();
     }
 
     get applications() {
