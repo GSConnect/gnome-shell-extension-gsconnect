@@ -155,19 +155,13 @@ var Plugin = GObject.registerClass({
      *
      * @param {string} ticker - The notification's expected content
      */
-    trackDuplicate(ticker, contactName, phoneNumber) {
-        debug(ticker);
-
+    trackDuplicate(ticker, phoneNumber) {
         let duplicate = this._duplicates.get(ticker);
 
         if (duplicate) {
-            duplicate.contactName = contactName;
             duplicate.phoneNumber = phoneNumber;
         } else {
-            this._duplicates.set(ticker, {
-                contactName: contactName,
-                phoneNumber: phoneNumber
-            });
+            this._duplicates.set(ticker, { phoneNumber: phoneNumber });
         }
     }
 
@@ -467,6 +461,8 @@ var Plugin = GObject.registerClass({
                             contact.id,
                             icon.file.get_path()
                         );
+                    } else {
+                        icon = new Gio.ThemedIcon({ name: 'sms-symbolic' });
                     }
 
                     return this.device.showNotification({

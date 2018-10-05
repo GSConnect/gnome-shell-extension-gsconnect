@@ -5,7 +5,6 @@ const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 
 const PluginsBase = imports.service.plugins.base;
-const Sms = imports.service.plugins.sms;
 
 
 var Metadata = {
@@ -45,91 +44,65 @@ var Plugin = GObject.registerClass({
         this.contacts = this.service.contacts;
     }
 
-    async handlePacket(packet) {
-        try {
-            // This is the end of a 'ringing' or 'talking' event
-            // TODO: it might choke on contactName here...
-            if (packet.body.hasOwnProperty('isCancel') && packet.body.isCancel) {
-                this.device.hideNotification(`${packet.body.event}|${packet.body.contactName}`);
-                this._restoreMediaState();
+    handlePacket(packet) {
+        // This is the end of a 'ringing' or 'talking' event
+        // TODO: it might choke on contactName here...
+        if (packet.body.isCancel) {
+            this.device.hideNotification(`${packet.body.event}|${packet.body.contactName}`);
+            this._restoreMediaState();
+            return;
+        }
+
+        if (packet.body.event === 'sms' && packet.body.phoneNumber) {
+            // track the duplicate as soon as possible
+            let notification = this.device.lookup_plugin('notification');
+
+            if (notification) {
+                notification.trackDuplicate(
+                    `${packet.body.contactName}: ${packet.body.messageBody}`,
+                    packet.body.phoneNumber
+                );
+            }
+
+            // Bail if the device supports the new packets
+            if (this.device.get_outgoing_supported('sms.messages')) {
                 return;
             }
 
-            // Ensure a contact exists for this event
+            // Bail if SMS is disabled
+            let sms = this.device.lookup_plugin('sms');
+
+            if (!sms) {
+                return;
+            }
+
+            // Ensure there's a contact stored for this event
             let contact = this.contacts.query({
                 name: packet.body.contactName,
                 number: packet.body.phoneNumber,
                 create: true
             });
 
-            // Update contact avatar
-            if (packet.body.hasOwnProperty('phoneThumbnail')) {
-                contact = await this.service.contacts.setAvatarContents(
-                    contact.id,
-                    GLib.base64_decode(packet.body.phoneThumbnail)
-                );
-            }
+            // Fabricate a message packet from what we know
+            let message = {
+                _id: 0,
+                thread_id: GLib.MAXINT32,
+                address: packet.body.phoneNumber,
+                body: packet.body.messageBody,
+                date: packet.id,
+                event: packet.body.event,
+                read: 0,
+                type: 1
+            };
 
-            let message = this._parseEvent(packet);
+            sms._handleMessage(contact, message);
 
-            switch (packet.body.event) {
-                // TODO: this is a backwards-compatiblity re-direct
-                case 'sms':
-                    if (!this.device.get_outgoing_supported('sms.messages')) {
-                        let sms = this.device.lookup_plugin('sms');
-
-                        if (sms !== null) {
-                            sms._handleMessage(contact, message);
-                        }
-                    }
-                    break;
-
-                case 'ringing':
-                    this._setMediaState('ringing');
-                    this.callNotification(contact, message);
-                    break;
-
-                case 'talking':
-                    this.device.hideNotification(`ringing|${contact.name}`);
-                    this._setMediaState('talking');
-                    this.callNotification(contact, message);
-                    break;
-            }
-        } catch (e) {
-            logError(e);
-        }
-    }
-
-    /**
-     * Parse a telephony event and return an object like sms.messages
-     *
-     * @param {kdeconnect.telephony} packet - The telephony packet
-     */
-    _parseEvent(packet) {
-        let contactName = packet.body.contactName || packet.body.phoneNumber;
-
-        // Fabricate a message packet from what we know
-        let message = {
-            _id: 0,
-            thread_id: 0,
-            // things will go wrong if this actually happens
-            address: packet.body.phoneNumber || 'unknown',
-            body: packet.body.messageBody,
-            date: packet.id,
-            event: packet.body.event,
-            read: Sms.MessageStatus.UNREAD,
-            type: Sms.MessageType.IN
-        };
-
-        if (message.event === 'ringing') {
-            // TRANSLATORS: eg. Incoming call from John Smith
-            message.body = _('Incoming call from %s').format(contactName);
-        } else if (message.event === 'talking') {
-            // TRANSLATORS: eg. Call in progress with John Smith
-            message.body = _('Call in progress with %s').format(contactName);
+            return;
         }
 
-        return message;
+        if (['ringing', 'talking'].includes(packet.body.event)) {
+            this.callNotification(packet);
+        }
     }
 
     /**
@@ -174,6 +147,21 @@ var Plugin = GObject.registerClass({
         }
     }
 
+    _getPixbuf(data) {
+        // Catch errors from partially corrupt JPEGs as warnings
+        let loader;
+
+        try {
+            loader = new GdkPixbuf.PixbufLoader();
+            loader.write(data);
+            loader.close();
+        } catch (e) {
+            logWarning(e);
+        }
+
+        return loader.get_pixbuf();
+    }
+
     /**
      * Show a local notification with actions appropriate for the call type:
      *   - ringing: A button for muting the ringing
@@ -182,33 +170,46 @@ var Plugin = GObject.registerClass({
      * @param {Object} contact - A contact object
      * @param {Object} message - A telephony message object
      */
-    callNotification(contact, message) {
+    callNotification(packet) {
+        let body;
         let buttons = [];
         let icon = new Gio.ThemedIcon({ name: 'call-start-symbolic' });
         let priority = Gio.NotificationPriority.NORMAL;
 
-        if (contact && contact.avatar) {
-            icon = this.service.contacts.getPixbuf(contact.avatar);
+        if (packet.body.phoneThumbnail) {
+            let data = GLib.base64_decode(packet.body.phoneThumbnail);
+            icon = this._getPixbuf(data);
         }
 
-        if (message.event === 'ringing') {
+        if (packet.body.event === 'ringing') {
+            this._setMediaState('ringing');
+
+            // TRANSLATORS: eg. Incoming call from John Smith
+            body = _('Incoming call from %s').format(packet.body.contactName);
             buttons = [{
                 action: 'muteCall',
                 // TRANSLATORS: Silence an incoming call
                 label: _('Mute'),
                 parameter: null
             }];
-            icon = icon || new Gio.ThemedIcon({ name: 'call-start-symbolic' });
             priority = Gio.NotificationPriority.URGENT;
         }
 
+        if (packet.body.event === 'talking') {
+            this.device.hideNotification(`ringing|${contact.name}`);
+            this._setMediaState('talking');
+
+            // TRANSLATORS: eg. Call in progress with John Smith
+            body = _('Call in progress with %s').format(contactName);
+        }
+
         this.device.showNotification({
-            id: `${message.event}|${contact.name}`,
-            title: contact.name,
-            body: message.body,
+            id: `${packet.body.event}|${packet.body.contactName}`,
+            title: packet.body.contactName,
+            body: body,
             icon: icon,
             priority: priority,
-            buttons: []
+            buttons: buttons
         });
     }
 

@@ -259,18 +259,7 @@ var Plugin = GObject.registerClass({
     /**
      * Handle a new single message
      */
-    _handleMessage(contact, message) {
-        // Silence the duplicate as soon as possible
-        let notification = this.device.lookup_plugin('notification');
-
-        if (notification) {
-            notification.trackDuplicate(
-                `${contact.name}: ${message.body}`,
-                contact.name,
-                message.address
-            );
-        }
-
+    _handleMessage(message) {
         // Check for an extant window
         let window = this._hasWindow(message.address);
 
@@ -294,14 +283,9 @@ var Plugin = GObject.registerClass({
      */
     async _handleConversation(messages) {
         try {
-            if (messages.length === 0) {
+            if (messages.length === 0 || !messages[0].address) {
                 return;
             }
-
-            let contact = this.contacts.query({
-                number: messages[0].address,
-                create: true
-            });
 
             let thread_id = messages[0].thread_id;
             let thread = this.conversations[thread_id] || [];
@@ -311,7 +295,7 @@ var Plugin = GObject.registerClass({
 
                 if (thread.every(msg => msg._id !== message_id)) {
                     thread.push(message);
-                    this._handleMessage(contact, message);
+                    await this._handleMessage(message);
                 }
             }
 
