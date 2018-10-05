@@ -299,6 +299,7 @@ var Channel = class Channel {
             base_stream: this._connection.input_stream
         });
 
+        this.output_queue = [];
         this.output_stream = this._connection.output_stream;
 
         // TODO: If we're swapping in a different channel type, which is already
@@ -428,6 +429,23 @@ var Channel = class Channel {
         );
     }
 
+    _send(packet) {
+        return new Promise((resolve, reject) => {
+            this.output_stream.write_all_async(
+                packet.toString(),
+                GLib.PRIORITY_DEFAULT,
+                this.cancellable,
+                (stream, res) => {
+                    try {
+                        resolve(stream.write_all_finish(res));
+                    } catch (e) {
+                        reject(e);
+                    }
+                }
+            );
+        });
+    }
+
     /**
      * Send a packet to a device
      *
@@ -435,31 +453,24 @@ var Channel = class Channel {
      *
      * @param {object} packet - An dictionary of packet data
      */
-    send(packet) {
-        try {
-            packet = new Packet(packet);
+    async send(packet) {
+        let next;
 
-            this.output_stream.write_all_async(
-                packet.toString(),
-                GLib.PRIORITY_DEFAULT,
-                this.cancellable,
-                (stream, res) => {
-                    try {
-                        stream.write_all_finish(res);
-                        debug(packet, this.identity.body.deviceName);
-                    } catch (e) {
-                        // Another operation is pending, re-queue the send()
-                        if (e.code === Gio.IOErrorEnum.PENDING) {
-                            debug('queued', packet.type);
-                            this.send(packet);
-                        } else {
-                            debug(e);
-                        }
-                    }
+        try {
+            this.output_queue.push(new Packet(packet));
+
+            if (!this.__lock) {
+                this.__lock = true;
+
+                while ((next = this.output_queue.shift())) {
+                    await this._send(next);
+                    debug(next, this.identity.body.deviceName);
                 }
-            );
+
+                this.__lock = false;
+            }
         } catch (e) {
-            logError(e, 'Malformed packet');
+            debug(e);
         }
     }
 }
