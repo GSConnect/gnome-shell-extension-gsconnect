@@ -470,7 +470,8 @@ var Channel = class Channel {
                 this.__lock = false;
             }
         } catch (e) {
-            debug(e);
+            debug(e, this.identity.body.deviceName);
+            this.close();
         }
     }
 }
