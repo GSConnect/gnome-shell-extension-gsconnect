@@ -662,7 +662,7 @@ var Indicator = class Indicator extends PanelMenu.Button {
         return new Gio.ThemedIcon({ name: icon_name });
     }
 
-    async _sync() {
+    _sync() {
         debug(`${this.device.Name} indicator`);
 
         let { Connected, Paired } = this.device;
