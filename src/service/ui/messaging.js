@@ -697,10 +697,10 @@ var ConversationWindow = GObject.registerClass({
         this._displayNumber = phoneNumber;
 
         // See if we have a nicer display number
-        let number = phoneNumber.replace(/\D/g, '');
+        let number = phoneNumber.toPhoneNumber();
 
         for (let contactNumber of contact.numbers) {
-            let cnumber = contactNumber.value.replace(/\D/g, '');
+            let cnumber = contactNumber.value.toPhoneNumber();
 
             if (number.endsWith(cnumber) || cnumber.endsWith(number)) {
                 this._displayNumber = contactNumber.value;
@@ -714,7 +714,7 @@ var ConversationWindow = GObject.registerClass({
 
         if (sms) {
             for (let thread of Object.values(sms.conversations)) {
-                let tnumber = thread[0].address.replace(/\D/g, '').replace(/^[0]?/, '');
+                let tnumber = thread[0].address.toPhoneNumber();
 
                 if (number.endsWith(tnumber) || tnumber.endsWith(number)) {
                     thread_id = thread[0].thread_id;

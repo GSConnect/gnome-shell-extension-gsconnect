@@ -315,12 +315,10 @@ var Plugin = GObject.registerClass({
                 }
             }
 
+            // Sort and store the conversation
             this.conversations[thread_id] = thread.sort((a, b) => {
                 return (a.date < b.date) ? -1 : 1;
             });
-
-            await this.__cache_write();
-            this.notify('conversations');
         } catch (e) {
             logError(e);
         }
@@ -349,7 +347,6 @@ var Plugin = GObject.registerClass({
                         delete this.conversations[id];
                     }
                 });
-                await this.__cache_write();
 
                 // Request each thread
                 thread_ids.map(id => this.requestConversation(id));
@@ -362,6 +359,9 @@ var Plugin = GObject.registerClass({
             } else {
                 this._handleConversation(packet.body.messages);
             }
+
+            await this.__cache_write();
+            this.notify('conversations');
         } catch (e) {
             logError(e);
         }
@@ -373,17 +373,15 @@ var Plugin = GObject.registerClass({
      * @param {String} number - A string phone number
      */
     _hasWindow(address) {
-        debug(address);
-
         // Look for an open window with this phone number
-        let number = address.replace(/\D/g, '').replace(/^[0]?/, '');
+        let number = address.toPhoneNumber();
 
         for (let win of this.service.get_windows()) {
             if (!win.device || win.device.id !== this.device.id || !win.number) {
                 continue;
             }
 
-            let wnumber = win.number.replace(/\D/g, '').replace(/^[0]?/, '');
+            let wnumber = win.number.toPhoneNumber();
 
             if (number.endsWith(wnumber) || wnumber.endsWith(number)) {
                 return win;

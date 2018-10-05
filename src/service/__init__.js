@@ -108,6 +108,14 @@ JSON.dump = function (obj, file, sync=false) {
 
 
 /**
+ * A simple (for now) pre-comparison sanitizer for phone numbers
+ */
+String.prototype.toPhoneNumber = function() {
+    return this.replace(/\D/g, '').replace(/^[0]?/, '');
+};
+
+
+/**
  * An implementation of `rm -rf` in Gio
  */
 Gio.File.rm_rf = function(file) {

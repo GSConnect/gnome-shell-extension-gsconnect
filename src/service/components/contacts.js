@@ -215,13 +215,13 @@ var Store = GObject.registerClass({
      */
     query(query) {
         let matches = [];
-        let number = (query.number) ? query.number.replace(/\D/g, '') : null;
+        let number = (query.number) ? query.number.toPhoneNumber() : null;
 
         for (let contact of Object.values(this._contacts)) {
             // Prioritize searching by number
             if (number) {
                 for (let num of contact.numbers) {
-                    let cnumber = num.value.replace(/\D/g, '');
+                    let cnumber = num.value.toPhoneNumber();
 
                     if (number.endsWith(cnumber) || cnumber.endsWith(number)) {
                         // Number match & exact name match; must be it
