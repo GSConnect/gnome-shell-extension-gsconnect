@@ -428,10 +428,7 @@ var Plugin = GObject.registerClass({
      */
     replySms(message) {
         // Ensure we have a contact
-        let contact = this.contacts.query({
-            number: message.address,
-            create: true
-        });
+        let contact = this.contacts.query({ number: message.address });
 
         // Check for an extant window
         let window = this._hasWindow(message.address);
@@ -441,9 +438,9 @@ var Plugin = GObject.registerClass({
             window = new Messaging.ConversationWindow(this.device);
             window.urgency_hint = true;
 
-            // Set the recipient if it's a missed call or messages are supported
+            // Set the recipient if messages are supported
             if (this.device.get_outgoing_supported('sms.messages')) {
-                window.setRecipient(contact, address);
+                window.setRecipient(contact, message.address);
 
             // Otherwise log the fabricated message object
             } else {

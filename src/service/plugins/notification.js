@@ -439,10 +439,8 @@ var Plugin = GObject.registerClass({
                 duplicate.id = packet.body.id;
             }
 
-            // If it's a telephony event not marked to be closed...
+            // If it's an SMS look for a contact using the duplicate or title
             if (isSms) {
-                // Look for a contact with a single phone number, but don't create
-                // one since we only get a number or a name
                 contact = this.contacts.query({
                     name: (duplicate) ? duplicate.contactName : packet.body.title,
                     number: (duplicate) ? duplicate.phoneNumber : packet.body.title
