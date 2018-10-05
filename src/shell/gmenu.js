@@ -91,7 +91,7 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
         );
     }
 
-    async _addGMenuItem(info) {
+    _addGMenuItem(info) {
         let item = new PopupMenu.PopupMenuItem(info.label);
         let action_name = info.action.split('.')[1];
         let action_target = info.target;
@@ -120,7 +120,7 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
         this._menu_items.set(action_name, item);
     }
 
-    async _addGMenuSection(model) {
+    _addGMenuSection(model) {
         let section = new ListBox(this.submenu_for, model, this.action_group);
         this.addMenuItem(section);
     }
@@ -129,7 +129,7 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
         return this.submenu_for._getTopMenu();
     }
 
-    async _onActionChanged(group, name, enabled) {
+    _onActionChanged(group, name, enabled) {
         let menuItem = this._menu_items.get(name);
 
         if (menuItem !== undefined) {
