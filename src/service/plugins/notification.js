@@ -151,40 +151,23 @@ var Plugin = GObject.registerClass({
     }
 
     /**
-     * Mark a notification to be closed if received (not shown locally and
-     * closed remotely)
+     * Track a notification with extra metadata
      *
      * @param {string} ticker - The notification's expected content
      */
-    closeDuplicate(ticker) {
+    trackDuplicate(ticker, contactName, phoneNumber) {
         debug(ticker);
 
-        if (this._duplicates.has(ticker)) {
-            let duplicate = this._duplicates.get(ticker);
+        let duplicate = this._duplicates.get(ticker);
 
-            if (duplicate.id) {
-                this.closeNotification(duplicate.id);
-                this._duplicates.delete(ticker);
-            } else {
-                duplicate.close = true;
-            }
+        if (duplicate) {
+            duplicate.contactName = contactName;
+            duplicate.phoneNumber = phoneNumber;
         } else {
-            this._duplicates.set(ticker, { close: true });
-        }
-    }
-
-    /**
-     * Mark a notification to be silenced if received (not shown locally)
-     *
-     * @param {string} ticker - The notification's expected content
-     */
-    silenceDuplicate(ticker) {
-        debug(ticker);
-
-        if (this._duplicates.has(ticker)) {
-            this._duplicates.get(ticker).silence = true;
-        } else {
-            this._duplicates.set(ticker, { silence: true });
+            this._duplicates.set(ticker, {
+                contactName: contactName,
+                phoneNumber: phoneNumber
+            });
         }
     }
 
@@ -432,54 +415,6 @@ var Plugin = GObject.registerClass({
     }
 
     /**
-     * This mimics _parseEvent() from the telephony plugin, updates the contact
-     * avatar (if necessary), then calls either callNotification() from the
-     * telephony plugin or smsNotification() from the sms plugin.
-     *
-     * @param {object} notif - The body of a kdeconnect.notification packet
-     * @param {object} contact - A contact object
-     * @param {Gio.Icon|null} icon - The notification icon (nullable)
-     * @param {string} type - The event type; either "missedCall" or "sms"
-     */
-    async _telephonyNotification(notif, contact, icon, type) {
-        try {
-            // Fabricate a message packet from what we know
-            // TODO: revisit created values
-            let message = {
-                contactName: contact.name,
-                _id: 0,
-                thread_id: 0,
-                address: contact.numbers[0].number,
-                date: parseInt(notif.time),
-                event: type,
-                read: 0,    // Sms.MessageStatus.UNREAD
-                type: 2     // Sms.MessageType.IN
-            };
-
-            // Update contact avatar
-            if (icon instanceof Gio.BytesIcon) {
-                contact = await this.service.contacts.setAvatarPath(
-                    contact.id,
-                    icon.file.get_path()
-                );
-            }
-
-            if (message.event === 'sms') {
-                message.body = notif.text;
-                let sms = imports.service.plugins.sms.Plugin;
-                sms.prototype.smsNotification.call(this, contact, message);
-            } else if (message.event === 'missedCall') {
-                // TRANSLATORS: eg. Missed call from John Smith
-                message.body = _('Missed call from %s').format(contact.name);
-                let telephony = imports.service.plugins.telephony.Plugin;
-                telephony.prototype.callNotification.call(this, contact, message);
-            }
-        } catch (e) {
-            logError(e);
-        }
-    }
-
-    /**
      * Receive an incoming notification, either handling it as a duplicate of a
      * telephony notification or displaying to the user.
      *
@@ -499,46 +434,58 @@ var Plugin = GObject.registerClass({
             // Check if it's been marked as a duplicate
             let duplicate = this._duplicates.get(packet.body.ticker);
 
-            if ((isMissedCall || isSms) && duplicate) {
-                // We've been asked to close this
-                if (duplicate.close) {
-                    this.closeNotification(packet.body.id);
-                    this._duplicates.delete(packet.body.ticker);
-                    return;
-                // We've been asked to silence this, so just track the ID
-                } else if (duplicate.silence) {
-                    duplicate.id = packet.body.id;
-                    return;
-                }
+            // If it's a duplicate track the id
+            if (duplicate) {
+                duplicate.id = packet.body.id;
             }
 
-            // If it's a telephony event not marked as a duplicate...
-            if (isMissedCall || isSms) {
-                // Track the id so it can be closed with a telephony notification.
-                this._duplicates.set(packet.body.ticker, { id: packet.body.id });
-
+            // If it's a telephony event not marked to be closed...
+            if (isSms) {
                 // Look for a contact with a single phone number, but don't create
                 // one since we only get a number or a name
                 contact = this.contacts.query({
-                    name: (isSms) ? packet.body.title : packet.body.text,
-                    number: (isSms) ? packet.body.title : packet.body.text
+                    name: (duplicate) ? duplicate.contactName : packet.body.title,
+                    number: (duplicate) ? duplicate.phoneNumber : packet.body.title
                 });
 
                 // If found, send this using a telephony plugin method
-                if (contact) {
-                    return this._telephonyNotification(
-                        packet.body,
-                        contact,
-                        icon,
-                        (isMissedCall) ? 'missedCall' : 'sms'
-                    );
+                if (contact.origin !== 'gsconnect') {
+                    let message = {
+                        _id: 0,
+                        thread_id: 0,
+                        address: contact.numbers[0].number,
+                        date: parseInt(packet.body.time),
+                        body: packet.body.text,
+                        event: 'sms',
+                        read: 0,    // Sms.MessageStatus.UNREAD
+                        type: 2     // Sms.MessageType.IN
+                    };
+
+                    // Update contact avatar
+                    if (icon instanceof Gio.BytesIcon) {
+                        contact = await this.service.contacts.setAvatarPath(
+                            contact.id,
+                            icon.file.get_path()
+                        );
+                    }
+
+                    return this.device.showNotification({
+                        id: packet.body.ticker,
+                        title: contact.name,
+                        body: message.body,
+                        icon: icon,
+                        priority: Gio.NotificationPriority.HIGH,
+                        action: {
+                            name: 'replySms',
+                            parameter: GLib.Variant.full_pack(message)
+                        }
+                    });
                 }
             }
 
             switch (true) {
                 // Emulate a 'missedCall' notification
-                case isMissedCall:
-                    id = packet.body.ticker;
+                case packet.body.id.includes('MissedCall'):
                     title = packet.body.text;
                     body = _('Missed call from %s').format(packet.body.text);
                     break;
@@ -565,7 +512,7 @@ var Plugin = GObject.registerClass({
             // If we don't have a payload icon, fallback on notification type,
             // appName then device type
             if (!icon) {
-                if (isMissedCall) {
+                if (packet.body.id.includes('MissedCall')) {
                     icon = new Gio.ThemedIcon({ name: 'call-missed-symbolic' });
                 } else if (isSms) {
                     icon = new Gio.ThemedIcon({ name: 'sms-symbolic' });

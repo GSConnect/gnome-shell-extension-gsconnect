@@ -48,8 +48,10 @@ var Plugin = GObject.registerClass({
     async handlePacket(packet) {
         try {
             // This is the end of a 'ringing' or 'talking' event
+            // TODO: it might choke on contactName here...
             if (packet.body.hasOwnProperty('isCancel') && packet.body.isCancel) {
-                this._onCancel(packet);
+                this.device.hideNotification(`${packet.body.event}|${packet.body.contactName}`);
+                this._restoreMediaState();
                 return;
             }
 
@@ -70,31 +72,27 @@ var Plugin = GObject.registerClass({
 
             let message = this._parseEvent(packet);
 
-            // TODO: this is a backwards-compatiblity re-direct
-            if (packet.body.event === 'sms') {
-                // Only forward if the device doesn't support new packets
-                if (!this.device.get_outgoing_supported('sms.messages')) {
-                    let sms = this.device.lookup_plugin('sms');
-
-                    if (sms !== null) {
-                        sms._handleMessage(contact, message);
-                    }
-                }
-
-                return;
-            }
-
             switch (packet.body.event) {
-                case 'missedCall':
-                    this._onMissedCall(contact, message);
+                // TODO: this is a backwards-compatiblity re-direct
+                case 'sms':
+                    if (!this.device.get_outgoing_supported('sms.messages')) {
+                        let sms = this.device.lookup_plugin('sms');
+
+                        if (sms !== null) {
+                            sms._handleMessage(contact, message);
+                        }
+                    }
                     break;
 
                 case 'ringing':
-                    this._onRinging(contact, message);
+                    this._setMediaState('ringing');
+                    this.callNotification(contact, message);
                     break;
 
                 case 'talking':
-                    this._onTalking(contact, message);
+                    this.device.hideNotification(`ringing|${contact.name}`);
+                    this._setMediaState('talking');
+                    this.callNotification(contact, message);
                     break;
             }
         } catch (e) {
@@ -112,8 +110,6 @@ var Plugin = GObject.registerClass({
 
         // Fabricate a message packet from what we know
         let message = {
-            contactName: contactName,
-            // dummy values
             _id: 0,
             thread_id: 0,
             // things will go wrong if this actually happens
@@ -125,10 +121,7 @@ var Plugin = GObject.registerClass({
             type: Sms.MessageType.IN
         };
 
-        if (message.event === 'missedCall') {
-            // TRANSLATORS: eg. Missed call from John Smith
-            message.body = _('Missed call from %s').format(contactName);
-        } else if (message.event === 'ringing') {
+        if (message.event === 'ringing') {
             // TRANSLATORS: eg. Incoming call from John Smith
             message.body = _('Incoming call from %s').format(contactName);
         } else if (message.event === 'talking') {
@@ -137,39 +130,6 @@ var Plugin = GObject.registerClass({
         }
 
         return message;
-    }
-
-    _onCancel(packet) {
-        // Withdraw the (probably) open notification.
-        // TODO: it might choke on contactName here...
-        this.device.hideNotification(`${packet.body.event}|${packet.body.contactName}`);
-        this._restoreMediaState();
-    }
-
-    _onMissedCall(contact, message) {
-        // Start tracking the duplicate early
-        let notification = this.device.lookup_plugin('notification');
-
-        if (notification) {
-            // TRANSLATORS: This is _specifically_ for matching missed call notifications on Android.
-            // This should _exactly_ match the Android notification that in english looks like 'Missed call: John Lennon'
-            notification.silenceDuplicate(_('Missed call') + `: ${contact.name}`);
-        }
-
-        this.callNotification(contact, message);
-    }
-
-    _onRinging(contact, message) {
-        this._setMediaState('ringing');
-        this.callNotification(contact, message);
-    }
-
-    _onTalking(contact, message) {
-        // Withdraw the 'ringing' notification
-        this.device.hideNotification(`ringing|${contact.name}`);
-
-        this._setMediaState('talking');
-        this.callNotification(contact, message);
     }
 
     /**
@@ -216,7 +176,6 @@ var Plugin = GObject.registerClass({
 
     /**
      * Show a local notification with actions appropriate for the call type:
-     *   - missedCall: A button for replying by SMS
      *   - ringing: A button for muting the ringing
      *   - talking: none
      *
@@ -224,23 +183,15 @@ var Plugin = GObject.registerClass({
      * @param {Object} message - A telephony message object
      */
     callNotification(contact, message) {
-        let buttons, icon, id, priority;
+        let buttons = [];
+        let icon = new Gio.ThemedIcon({ name: 'call-start-symbolic' });
+        let priority = Gio.NotificationPriority.NORMAL;
 
         if (contact && contact.avatar) {
             icon = this.service.contacts.getPixbuf(contact.avatar);
         }
 
-        if (message.event === 'missedCall') {
-            buttons = [{
-                action: 'replySms',
-                // TRANSLATORS: Reply to a missed call by SMS
-                label: _('Message'),
-                parameter: GLib.Variant.full_pack(message)
-            }];
-            icon = icon || new Gio.ThemedIcon({ name: 'call-missed-symbolic' });
-            // Use the notification ticker style for the id
-            id = _('Missed call') + `: ${contact.name}`;
-        } else if (message.event === 'ringing') {
+        if (message.event === 'ringing') {
             buttons = [{
                 action: 'muteCall',
                 // TRANSLATORS: Silence an incoming call
@@ -249,17 +200,15 @@ var Plugin = GObject.registerClass({
             }];
             icon = icon || new Gio.ThemedIcon({ name: 'call-start-symbolic' });
             priority = Gio.NotificationPriority.URGENT;
-        } else if (message.event === 'talking') {
-            icon = icon || new Gio.ThemedIcon({ name: 'call-start-symbolic' });
         }
 
         this.device.showNotification({
-            id: id || `${message.event}|${contact.name}`,
+            id: `${message.event}|${contact.name}`,
             title: contact.name,
             body: message.body,
             icon: icon,
-            priority: priority ? priority : Gio.NotificationPriority.NORMAL,
-            buttons: (buttons) ? buttons : []
+            priority: priority,
+            buttons: []
         });
     }
 

@@ -264,7 +264,11 @@ var Plugin = GObject.registerClass({
         let notification = this.device.lookup_plugin('notification');
 
         if (notification) {
-            notification.silenceDuplicate(`${contact.name}: ${message.body}`);
+            notification.trackDuplicate(
+                `${contact.name}: ${message.body}`,
+                contact.name,
+                message.address
+            );
         }
 
         // Check for an extant window
@@ -274,11 +278,6 @@ var Plugin = GObject.registerClass({
             // Track the notification so the window can close it when focused
             window._notifications.push(`${contact.name}: ${message.body}`);
 
-            // Tell the notification plugin to mark any duplicate read
-            if (notification) {
-                notification.closeDuplicate(`${contact.name}: ${message.body}`);
-            }
-
             if (this.device.get_outgoing_supported('sms.messages')) {
                 window._populateMessages(message.thread_id);
             } else {
@@ -286,9 +285,6 @@ var Plugin = GObject.registerClass({
                 window.urgency_hint = true;
             }
         }
-
-        // Always show a notification
-        this.smsNotification(contact, message);
     }
 
     /**
@@ -308,8 +304,7 @@ var Plugin = GObject.registerClass({
             });
 
             let thread_id = messages[0].thread_id;
-            let thread = this.conversations[thread_id];
-            thread = thread || [];
+            let thread = this.conversations[thread_id] || [];
 
             for (let message of messages) {
                 let message_id = message._id;
@@ -336,35 +331,39 @@ var Plugin = GObject.registerClass({
      *
      * @param {kdeconnect.sms.messages} packet - An incoming packet
      */
-    _handleMessages(packet) {
-        // If messages is empty there's nothing to do...
-        if (packet.body.messages.length === 0) {
-            return;
-        }
+    async _handleMessages(packet) {
+        try {
+            // If messages is empty there's nothing to do...
+            if (packet.body.messages.length === 0) {
+                return;
+            }
 
-        let threads = packet.body.messages;
-        let thread_id = packet.body.messages[0].thread_id;
+            let thread_ids = packet.body.messages.map(msg => msg.thread_id);
 
-        // If there's multiple thread_id it's a conversation digest
-        if (threads.some(msg => msg.thread_id !== thread_id)) {
-            // Request each thread
-            let thread_ids = threads.map(thread => thread.thread_id);
-            thread_ids.map(id => this.requestConversation(id));
+            // If there's multiple thread_id's it's a summary of threads
+            if (thread_ids.some(id => id !== thread_ids[0])) {
 
-            // Prune conversations
-            Object.keys(this.conversations).map(id => {
-                if (!thread_ids.includes(id)) {
-                    delete this.conversations[id];
-                }
-            });
+                // Prune conversations
+                Object.keys(this.conversations).map(id => {
+                    if (!thread_ids.includes(id)) {
+                        delete this.conversations[id];
+                    }
+                });
+                await this.__cache_write();
 
-            // We call this instead of notify::threads so the conversation
-            // windows don't have to deal with the plugin loading/unloading.
-            this._updateConversations();
+                // Request each thread
+                thread_ids.map(id => this.requestConversation(id));
 
-        // Otherwise this is a thread digest or new message
-        } else {
-            this._handleConversation(packet.body.messages);
+                // We call this instead of notify::threads so the conversation
+                // windows don't have to deal with the plugin loading/unloading.
+                this._updateConversations();
+
+            // Otherwise this is single thread or new message
+            } else {
+                this._handleConversation(packet.body.messages);
+            }
+        } catch (e) {
+            logError(e);
         }
     }
 
@@ -418,37 +417,6 @@ var Plugin = GObject.registerClass({
     }
 
     /**
-     * Show a local notification that calls replySms(@message) when activated.
-     *
-     * @param {Object} contact - A contact object
-     * @param {Object} message - A telephony message object
-     */
-    smsNotification(contact, message) {
-        let icon;
-
-        if (contact.avatar) {
-            icon = this.service.contacts.getPixbuf(contact.avatar);
-        }
-
-        if (icon === undefined) {
-            icon = new Gio.ThemedIcon({ name: 'sms-symbolic' });
-        }
-
-        this.device.showNotification({
-            // Use the notification ticker style for the id
-            id: `${contact.name}: ${message.body}`,
-            title: contact.name,
-            body: message.body,
-            icon: icon,
-            priority: Gio.NotificationPriority.HIGH,
-            action: {
-                name: 'replySms',
-                parameter: GLib.Variant.full_pack(message)
-            }
-        });
-    }
-
-    /**
      * A notification action for replying to SMS messages (or missed calls).
      *
      * TODO: If kdeconnect.sms.message packet is not supported, @message was
@@ -474,22 +442,13 @@ var Plugin = GObject.registerClass({
             window.urgency_hint = true;
 
             // Set the recipient if it's a missed call or messages are supported
-            let msgs = this.device.get_outgoing_supported('sms.messages');
-
-            if (msgs || message.event === 'missedCall') {
-                window.setRecipient(contact, message.address);
+            if (this.device.get_outgoing_supported('sms.messages')) {
+                window.setRecipient(contact, address);
 
             // Otherwise log the fabricated message object
             } else {
-                window.receiveMessage(contact, message.address);
+                window.receiveMessage(contact, message);
             }
-        }
-
-        // Tell the notification plugin to mark any duplicate read
-        let notification = this.device.lookup_plugin('notification');
-
-        if (notification) {
-            notification.closeDuplicate(`${contact.name}: ${message.body}`);
         }
 
         window.present();
@@ -502,8 +461,6 @@ var Plugin = GObject.registerClass({
      * @param {string} messageBody - The message to send
      */
     sendSms(phoneNumber, messageBody) {
-        debug(phoneNumber + ', ' + messageBody);
-
         this.device.sendPacket({
             id: 0,
             type: 'kdeconnect.sms.request',
