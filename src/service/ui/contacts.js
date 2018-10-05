@@ -333,8 +333,7 @@ var ContactChooser = GObject.registerClass({
             visible: true
         });
 
-        let service = Gio.Application.get_default();
-        this.contacts = service.contacts;
+        this.contacts = Gio.Application.get_default().contacts;
         this._contactsNotifyId = this.contacts.connect(
             'notify::contacts',
             this._populate.bind(this)
@@ -363,8 +362,9 @@ var ContactChooser = GObject.registerClass({
             selection_mode: Gtk.SelectionMode.NONE,
             visible: true
         });
-        this._list.set_filter_func(this._filter.bind(this));
-        this._list.set_sort_func(this._sort.bind(this));
+        this._list._entry = this.entry.text;
+        this._list.set_filter_func(this._filter);
+        this._list.set_sort_func(this._sort);
         this.add(this._list);
 
         // Placeholder
@@ -417,10 +417,6 @@ var ContactChooser = GObject.registerClass({
     }
 
     _destroy() {
-        // Set to null to allow the bound context to be freed
-        this._list.set_filter_func(null);
-        this._list.set_sort_func(null);
-
         // Explicitly disconnect & destroy the entry in case it's floating
         this.entry.disconnect(this._entryChangedId);
 
@@ -429,29 +425,29 @@ var ContactChooser = GObject.registerClass({
         }
 
         this.contacts.disconnect(this._contactsNotifyId);
-        delete this.contacts;
     }
 
     // FIXME: one bugly hack job right here
     _onEntryChanged(entry) {
+        this._list._entry = entry.text;
+
         // If the entry contains string with more than 2 digits...
-        if (this.entry.text.replace(/\D/g, '').length > 2) {
+        if (entry.text.replace(/\D/g, '').length > 2) {
             // ...ensure we have a temporary contact for it
             if (this._temporary === undefined) {
                 this._temporary = this.add_contact({
                     // TRANSLATORS: A phone number (eg. "Send to 555-5555")
                     name: _('Send to %s').format(this.entry.text),
-                    numbers: [{ type: 'unknown', number: this.entry.text }]
+                    numbers: [{ type: 'manual', number: this.entry.text }]
                 });
 
             // ...or if we already do, then update it
             } else {
                 // Update UI
                 this._temporary.name = _('Send to %s').format(this.entry.text);
-                this._temporary.numbers[0].value = this.entry.text;
+                this._temporary.numbers[0].number = this.entry.text;
 
                 // Update contact object
-                this._temporary.contact.number = this.entry.text;
                 this._temporary.contact.numbers[0].value = this.entry.text;
             }
 
@@ -466,11 +462,12 @@ var ContactChooser = GObject.registerClass({
     }
 
     _filter(row) {
-        let queryName = this.entry.text.toLocaleLowerCase();
-        let queryNumber = this.entry.text.replace(/\D/g, '');
+        let list = row.get_parent();
+        let queryName = list._entry.toLocaleLowerCase();
+        let queryNumber = list._entry.replace(/\D/g, '');
 
         // Dynamic contact always shown
-        if (row === this._temporary) {
+        if (row.contact.numbers[0].type === 'manual') {
             return true;
         // Show contact and all numbers if text is substring of name
         } else if (row.name.toLocaleLowerCase().includes(queryName)) {
@@ -506,9 +503,9 @@ var ContactChooser = GObject.registerClass({
     }
 
     _sort(row1, row2) {
-        if (row1 === this._temporary) {
+        if (row1.contact.numbers[0].type === 'manual') {
             return -1;
-        } else if (row2 === this._temporary) {
+        } else if (row2.contact.numbers[0].type === 'manual') {
             return 1;
         } else {
             let row1active, row2active;
