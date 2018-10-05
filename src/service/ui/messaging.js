@@ -587,7 +587,16 @@ var ConversationWindow = GObject.registerClass({
     _onSelectedNumbersChanged(contact_list) {
         if (this.contact_list.selected.size > 0) {
             let number = this.contact_list.selected.keys().next().value;
-            this.setRecipient(this.contact_list.selected.get(number), number);
+            let contact = this.contact_list.selected.get(number);
+
+            if (!contact.id) {
+                contact = this.contact_list.contacts.query({
+                    number: number,
+                    create: true
+                });
+            }
+
+            this.setRecipient(contact, number);
         }
     }
 
