@@ -33,8 +33,8 @@ var Plugin = GObject.registerClass({
             // Register based on device capabilities, which shouldn't change
             let deviceHandles = this.device.settings.get_strv('incoming-capabilities');
             let deviceProvides = this.device.settings.get_strv('outgoing-capabilities');
-            let menu = this.device.settings.get_strv('menu-actions');
             let disabled = this.device.settings.get_strv('disabled-actions');
+            let menu = this.device.settings.get_strv('menu-actions');
 
             for (let name in this._meta.actions) {
                 let meta = this._meta.actions[name];
@@ -123,10 +123,6 @@ var Plugin = GObject.registerClass({
         for (let action of this._gactions) {
             action.set_enabled(false);
         }
-
-        if (this.__cache_file !== undefined) {
-            this.__cache_write(true);
-        }
     }
 
     /**
@@ -142,6 +138,8 @@ var Plugin = GObject.registerClass({
      */
     async cacheProperties(names) {
         try {
+            this.__cache_properties = names;
+
             // Ensure the device's cache directory exists
             let cachedir = GLib.build_filenamev([
                 gsconnect.cachedir,
@@ -153,11 +151,13 @@ var Plugin = GObject.registerClass({
                 GLib.build_filenamev([cachedir, `${this.name}.json`])
             );
 
-            // Setup the cache using existing properties & read the cache
-            this.__cache_properties = names;
-            await this.__cache_read();
+            // Read the cache from disk
+            let cache = await JSON.load(this.__cache_file);
+            Object.assign(this, cache);
         } catch (e) {
             logWarning(e.message, `${this.device.name}: ${this.name}`);
+        } finally {
+            this.cacheLoaded();
         }
     }
 
@@ -165,19 +165,6 @@ var Plugin = GObject.registerClass({
      * An overridable function that is invoked when the cache is done loading
      */
     cacheLoaded() {}
-
-    /**
-     * Read the plugin's cache from disk, asynchronously
-     */
-    async __cache_read() {
-        try {
-            let cache = await JSON.load(this.__cache_file);
-            Object.assign(this, cache);
-            this.cacheLoaded();
-        } catch (e) {
-            logWarning(e, `${this.device.name}->${this.name}`, );
-        }
-    }
 
     /**
      * Write the plugin's cache to disk
@@ -200,7 +187,7 @@ var Plugin = GObject.registerClass({
 
             await JSON.dump(cache, this.__cache_file);
         } catch (e) {
-            debug(e);
+            logWarning(e.message, `${this.device.name}: ${this.name}`);
         } finally {
             this.__cache_lock = false;
 
@@ -228,7 +215,7 @@ var Plugin = GObject.registerClass({
                 let cache = {};
 
                 for (let name of this.__cache_properties) {
-                    cache[name] = JSON.parse(JSON.stringify(this[name]));
+                    cache[name] = this[name];
                 }
 
                 JSON.dump(cache, this.__cache_file, true);
