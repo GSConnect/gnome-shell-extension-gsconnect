@@ -448,12 +448,12 @@ var Plugin = GObject.registerClass({
                     number: (duplicate) ? duplicate.phoneNumber : packet.body.title
                 });
 
-                // If found, send this using a telephony plugin method
+                // If found, fabricate a message packet
                 if (contact.origin !== 'gsconnect') {
                     let message = {
                         _id: 0,
                         thread_id: 0,
-                        address: contact.numbers[0].number,
+                        address: contact.numbers[0].value,
                         date: parseInt(packet.body.time),
                         body: packet.body.text,
                         event: 'sms',
