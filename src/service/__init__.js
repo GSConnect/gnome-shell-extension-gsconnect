@@ -79,7 +79,7 @@ JSON.dump = function (obj, file, sync=false) {
 
     if (sync) {
         file.replace_contents(
-            JSON.stringify(obj),
+            JSON.stringify(obj, null, 2),
             null,
             false,
             Gio.FileCreateFlags.REPLACE_DESTINATION,
@@ -88,7 +88,7 @@ JSON.dump = function (obj, file, sync=false) {
     } else {
         return new Promise((resolve, reject) => {
             file.replace_contents_bytes_async(
-                new GLib.Bytes(JSON.stringify(obj)),
+                new GLib.Bytes(JSON.stringify(obj, null, 2)),
                 null,
                 false,
                 Gio.FileCreateFlags.REPLACE_DESTINATION,
