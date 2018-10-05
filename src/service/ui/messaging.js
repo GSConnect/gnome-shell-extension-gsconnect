@@ -479,7 +479,7 @@ var ConversationWindow = GObject.registerClass({
         let sms = this.device.lookup_plugin('sms');
 
         // Show the contact list if there are no conversations
-        if (!sms || sms.threads.length === 0) {
+        if (!sms || Object.values(sms.conversations).length === 0) {
             this._showContacts();
         } else {
             this._showConversations();
