@@ -182,11 +182,6 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
  */
 var Button = GObject.registerClass({
     GTypeName: 'GSConnectShellGMenuButton',
-    Signals: {
-        'submenu-toggle': {
-            flags: GObject.SignalFlags.RUN_FIRST
-        }
-    }
 }, class Button extends St.Button {
 
     _init(params) {
@@ -214,7 +209,7 @@ var Button = GObject.registerClass({
         }
 
         if (params.info.hasOwnProperty('icon')) {
-                this.child = new St.Icon({ gicon: params.info.icon });
+            this.child = new St.Icon({ gicon: params.info.icon });
         }
 
         // Submenu
