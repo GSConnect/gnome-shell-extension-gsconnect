@@ -79,6 +79,12 @@ var Store = GObject.registerClass({
         }
     }
 
+    *[Symbol.iterator]() {
+        for (let contact of Object.values(this._contacts)) {
+            yield contact;
+        }
+    }
+
     get path() {
         return this._path;
     }
@@ -90,10 +96,6 @@ var Store = GObject.registerClass({
         this.__cache_file = Gio.File.new_for_path(
             GLib.build_filenamev([this._path, 'contacts.json'])
         );
-    }
-
-    get contacts() {
-        return Object.keys(this._contacts);
     }
 
     get provider_icon() {
