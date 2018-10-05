@@ -427,27 +427,29 @@ var Plugin = GObject.registerClass({
             let body, contact, title;
             let icon = await this._downloadIcon(packet);
 
-            // Check if this is a sms/telephony notification
+            // Check if this is a sms/missedCall notification
             let isMissedCall = packet.body.id.includes('MissedCall');
             let isSms = packet.body.id.includes('sms');
 
-            // Check if it's been marked as a duplicate
-            let duplicate = this._duplicates.get(packet.body.ticker);
-
-            // If it's a duplicate track the id
-            if (duplicate) {
-                duplicate.id = packet.body.id;
-            }
-
             // If it's an SMS look for a contact using the duplicate or title
             if (isSms) {
+                // Check if it's been marked as a duplicate
+                let duplicate = this._duplicates.get(packet.body.ticker);
+
+                if (duplicate) {
+                    duplicate.id = packet.body.id;
+                } else {
+                    duplicate = { id: packet.body.id };
+                    this._duplicates.set(packet.body.ticker, duplicate);
+                }
+
                 contact = this.contacts.query({
-                    name: (duplicate) ? duplicate.contactName : packet.body.title,
-                    number: (duplicate) ? duplicate.phoneNumber : packet.body.title
+                    name: packet.body.title,
+                    number: duplicate.phoneNumber || packet.body.title
                 });
 
                 // If found, fabricate a message packet
-                if (contact.origin !== 'gsconnect') {
+                if (contact.numbers[0].value) {
                     let message = {
                         _id: 0,
                         thread_id: 0,
