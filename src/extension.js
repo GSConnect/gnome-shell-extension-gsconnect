@@ -227,104 +227,96 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         }
     }
 
-    async _onInterfaceAdded(manager, object, iface) {
-        try {
-            // Setup properties
-            let info = gsconnect.dbusinfo.lookup_interface(iface.g_interface_name);
+    _onInterfaceAdded(manager, object, iface) {
+        // Setup properties
+        let info = gsconnect.dbusinfo.lookup_interface(iface.g_interface_name);
 
-            for (let property of info.properties) {
-                Object.defineProperty(iface, property.name, {
-                    get: this._proxyGetter.bind(iface, property.name),
-                    enumerable: true
-                });
-            }
-
-            // If it's not a device we're done
-            if (iface.g_interface_name !== 'org.gnome.Shell.Extensions.GSConnect.Device') {
-                return;
-            }
-
-            debug(`GSConnect: Adding ${iface.Name}`);
-
-            this.devices.add(iface);
-
-            // GActions
-            iface.action_group = Gio.DBusActionGroup.get(
-                iface.g_connection,
-                iface.g_name,
-                iface.g_object_path
-            );
-
-            // GMenu
-            iface.menu_model = Gio.DBusMenuModel.get(
-                iface.g_connection,
-                iface.g_name,
-                iface.g_object_path
-            );
-
-            // GSettings
-            iface.settings = new Gio.Settings({
-                settings_schema: gsconnect.gschema.lookup(
-                    'org.gnome.Shell.Extensions.GSConnect.Device',
-                    true
-                ),
-                path: '/org/gnome/shell/extensions/gsconnect/device/' + iface.Id + '/'
+        for (let property of info.properties) {
+            Object.defineProperty(iface, property.name, {
+                get: this._proxyGetter.bind(iface, property.name),
+                enumerable: true
             });
-
-            // Device Indicator
-            let indicator = new Device.Indicator(object, iface);
-            Main.panel.addToStatusArea(iface.g_object_path, indicator);
-
-            // Device Menu
-            let menu = new Device.Menu(object, iface);
-            this._menus[iface.g_object_path] = menu;
-            this.devicesSection.addMenuItem(menu);
-
-            // Keyboard Shortcuts
-            iface._keybindingsChangedId = iface.settings.connect(
-                'changed::keybindings',
-                this._onKeybindingsChanged.bind(this, iface)
-            );
-            this._onKeybindingsChanged(iface);
-
-            // Properties
-            iface._propertiesId = iface.connect(
-                'g-properties-changed',
-                this._sync.bind(this, menu)
-            );
-            this._sync(menu);
-
-            // Try activating the device
-            iface.action_group.activate_action('activate', null);
-        } catch (e) {
-            logError(e);
         }
+
+        // If it's not a device we're done
+        if (iface.g_interface_name !== 'org.gnome.Shell.Extensions.GSConnect.Device') {
+            return;
+        }
+
+        debug(`GSConnect: Adding ${iface.Name}`);
+
+        this.devices.add(iface);
+
+        // GActions
+        iface.action_group = Gio.DBusActionGroup.get(
+            iface.g_connection,
+            iface.g_name,
+            iface.g_object_path
+        );
+
+        // GMenu
+        iface.menu_model = Gio.DBusMenuModel.get(
+            iface.g_connection,
+            iface.g_name,
+            iface.g_object_path
+        );
+
+        // GSettings
+        iface.settings = new Gio.Settings({
+            settings_schema: gsconnect.gschema.lookup(
+                'org.gnome.Shell.Extensions.GSConnect.Device',
+                true
+            ),
+            path: '/org/gnome/shell/extensions/gsconnect/device/' + iface.Id + '/'
+        });
+
+        // Device Indicator
+        let indicator = new Device.Indicator(object, iface);
+        Main.panel.addToStatusArea(iface.g_object_path, indicator);
+
+        // Device Menu
+        let menu = new Device.Menu(object, iface);
+        this._menus[iface.g_object_path] = menu;
+        this.devicesSection.addMenuItem(menu);
+
+        // Keyboard Shortcuts
+        iface._keybindingsChangedId = iface.settings.connect(
+            'changed::keybindings',
+            this._onKeybindingsChanged.bind(this, iface)
+        );
+        this._onKeybindingsChanged(iface);
+
+        // Properties
+        iface._propertiesId = iface.connect(
+            'g-properties-changed',
+            this._sync.bind(this, menu)
+        );
+        this._sync(menu);
+
+        // Try activating the device
+        iface.action_group.activate_action('activate', null);
     }
 
-    async _onObjectRemoved(manager, object) {
-        try {
-            let iface = object.get_interface('org.gnome.Shell.Extensions.GSConnect.Device');
+    _onObjectRemoved(manager, object) {
+        let iface = object.get_interface('org.gnome.Shell.Extensions.GSConnect.Device');
 
-            debug(`GSConnect: Removing ${iface.Name}`);
+        debug(`GSConnect: Removing ${iface.Name}`);
 
-            // Disconnect properties
-            iface.disconnect(iface._propertiesId);
+        // Disconnect properties
+        iface.disconnect(iface._propertiesId);
 
-            // Release keybindings
-            iface.settings.disconnect(iface._keybindingsChangedId);
-            iface._keybindings.map(id => this.keybindingManager.remove(id));
+        // Release keybindings
+        iface.settings.disconnect(iface._keybindingsChangedId);
+        iface._keybindings.map(id => this.keybindingManager.remove(id));
 
-            // Destroy the indicator
-            Main.panel.statusArea[iface.g_object_path].destroy();
+        // Destroy the indicator
+        Main.panel.statusArea[iface.g_object_path].destroy();
 
-            // Destroy the menu
-            this._menus[iface.g_object_path].destroy();
-            delete this._menus[iface.g_object_path];
+        // Destroy the menu
+        this._menus[iface.g_object_path].destroy();
+        delete this._menus[iface.g_object_path];
 
-            this.devices.delete(iface);
-        } catch (e) {
-            logError(e);
-        }
+        this.devices.delete(iface);
     }
 
     async _onKeybindingsChanged(iface) {
