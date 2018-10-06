@@ -70,25 +70,34 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
         this.menu_model = menu_model;
         this._menu_items = new Map();
 
-        this._itemsChangedId = this.menu_model.connect(
+        let _itemsChangedId = menu_model.connect(
             'items-changed',
             this._onItemsChanged.bind(this)
         );
-        this._onItemsChanged(menu_model, 0, 0, menu_model.get_n_items());
 
         // GActions
-        this._actionAddedId = this.action_group.connect(
+        let _actionAddedId = this.action_group.connect(
             'action-added',
             this._onActionChanged.bind(this)
         );
-        this._actionEnabledChangedId = this.action_group.connect(
+        let _actionEnabledChangedId = this.action_group.connect(
             'action-enabled-changed',
             this._onActionChanged.bind(this)
         );
-        this._actionRemovedId = this.action_group.connect(
+        let _actionRemovedId = this.action_group.connect(
             'action-removed',
             this._onActionChanged.bind(this)
         );
+
+        this.connect('destroy', () => {
+            menu_model.disconnect(_itemsChangedId);
+            action_group.disconnect(_actionAddedId);
+            action_group.disconnect(_actionEnabledChangedId);
+            action_group.disconnect(_actionRemovedId);
+        });
+
+        // Setup the menu
+        this._onItemsChanged(menu_model, 0, 0, menu_model.get_n_items());
     }
 
     _addGMenuItem(info) {
@@ -133,11 +142,7 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
         let menuItem = this._menu_items.get(name);
 
         if (menuItem !== undefined) {
-            if (typeof enabled !== 'boolean') {
-                enabled = this.action_group.get_action_enabled(name);
-            }
-
-            menuItem.visible = enabled;
+            menuItem.visible = group.get_action_enabled(name);
         }
     }
 
@@ -165,15 +170,6 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
             }
         }
     }
-
-    destroy() {
-        this.menu_model.disconnect(this._itemsChangedId);
-        this.action_group.disconnect(this._actionAddedId);
-        this.action_group.disconnect(this._actionEnabledChangedId);
-        this.action_group.disconnect(this._actionRemovedId);
-
-        super.destroy();
-    }
 }
 
 
@@ -181,7 +177,7 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
  * A St.Button subclass for icon representations of GMenu items
  */
 var Button = GObject.registerClass({
-    GTypeName: 'GSConnectShellGMenuButton',
+    GTypeName: 'GSConnectShellGMenuButton'
 }, class Button extends St.Button {
 
     _init(params) {
