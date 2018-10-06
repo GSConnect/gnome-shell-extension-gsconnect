@@ -774,8 +774,6 @@ var Device = GObject.registerClass({
      * RunCommand Page
      */
     _runcommandSettings() {
-        let settings = this._getSettings('runcommand');
-
         // Exclusively enable the editor or add button
         this.command_editor.bind_property(
             'visible',
@@ -785,8 +783,9 @@ var Device = GObject.registerClass({
         );
 
         // Local Command List
-        // TODO: backwards compatibility?
+        let settings = this._getSettings('runcommand');
         this._commands = settings.get_value('command-list').full_unpack();
+        this._commands = (typeof this._commands === 'string') ? {} : this._commands;
 
         let placeholder = new Gtk.Image({
             icon_name: 'system-run-symbolic',
@@ -806,13 +805,7 @@ var Device = GObject.registerClass({
     }
 
     _commandSortFunc(row1, row2) {
-        // Placing the command editor next the row it's editing
-        if (row1.uuid && row1.uuid === row2.get_name()) {
-            return 1;
-        } else if (row2.uuid && row2.uuid === row1.get_name()) {
-            return -1;
-        // Command editor when in disuse
-        } else if (!row1.title || !row2.title) {
+        if (!row1.title || !row2.title) {
             return 0;
         }
 
@@ -897,7 +890,9 @@ var Device = GObject.registerClass({
             this.command_editor.visible = true;
             this.command_name.has_focus = true;
 
-            this.command_list.invalidate_sort();
+            this.command_list.foreach(child => {
+                child.sensitive = (child === this.command_editor);
+            });
         }
     }
 
