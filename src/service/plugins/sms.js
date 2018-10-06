@@ -245,7 +245,7 @@ var Plugin = GObject.registerClass({
     /**
      * Handle a new single message
      */
-    _handleMessage(message) {
+    _handleMessage(contact, message) {
         // Check for an extant window
         let window = this._hasWindow(message.address);
 
@@ -274,19 +274,22 @@ var Plugin = GObject.registerClass({
             }
 
             let thread_id = messages[0].thread_id;
-            let thread = this.conversations[thread_id] || [];
+            let conversation = this.conversations[thread_id] || [];
+            let contact = this.service.contacts.query({
+                number: messages[0].address
+            });
 
             for (let message of messages) {
                 let message_id = message._id;
 
-                if (thread.every(msg => msg._id !== message_id)) {
-                    thread.push(message);
-                    await this._handleMessage(message);
+                if (conversation.every(msg => msg._id !== message_id)) {
+                    conversation.push(message);
+                    await this._handleMessage(contact, message);
                 }
             }
 
             // Sort and store the conversation
-            this.conversations[thread_id] = thread.sort((a, b) => {
+            this.conversations[thread_id] = conversation.sort((a, b) => {
                 return (a.date < b.date) ? -1 : 1;
             });
         } catch (e) {
