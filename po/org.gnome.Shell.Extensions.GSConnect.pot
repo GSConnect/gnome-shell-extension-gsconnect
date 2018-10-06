@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-09-26 16:10-0700\n"
+"POT-Creation-Date: 2018-10-05 23:49-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -31,8 +31,8 @@ msgstr ""
 msgid "Reconnect"
 msgstr ""
 
-#: data/device.ui:132 src/service/ui/settings.js:978
-#: src/service/ui/settings.js:992
+#: data/device.ui:132 src/service/ui/settings.js:973
+#: src/service/ui/settings.js:987
 msgid "On"
 msgstr ""
 
@@ -73,7 +73,7 @@ msgstr ""
 msgid "Answered Calls"
 msgstr ""
 
-#: data/device.ui:1047 src/service/plugins/telephony.js:12
+#: data/device.ui:1047 src/service/plugins/telephony.js:11
 msgid "Telephony"
 msgstr ""
 
@@ -154,7 +154,7 @@ msgid "Lower"
 msgstr ""
 
 #. TRANSLATORS: Silence an incoming call
-#: data/menus.ui:71 data/menus.ui:94 src/service/plugins/telephony.js:246
+#: data/menus.ui:71 data/menus.ui:94 src/service/plugins/telephony.js:192
 msgid "Mute"
 msgstr ""
 
@@ -171,7 +171,7 @@ msgid "Service"
 msgstr ""
 
 #: data/settings.ui:847
-msgid "Access Remote Filesystems"
+msgid "Remote Filesystems"
 msgstr ""
 
 #: data/settings.ui:985
@@ -217,22 +217,22 @@ msgstr ""
 msgid "Refresh"
 msgstr ""
 
-#: src/extension.js:58
+#: src/extension.js:59
 msgid "Mobile Devices"
 msgstr ""
 
-#: src/extension.js:80
+#: src/extension.js:81
 msgid "Mobile Settings"
 msgstr ""
 
 #. TRANSLATORS: Extension name
-#: src/extension.js:145 src/extension.js:200 src/service/daemon.js:95
+#: src/extension.js:146 src/extension.js:200 src/service/daemon.js:95
 #: src/service/daemon.js:404 webextension/gettext.js:27
 msgid "GSConnect"
 msgstr ""
 
 #. TRANSLATORS: Top-level context menu item for GSConnect
-#: src/nautilus-gsconnect.py:119 webextension/gettext.js:31
+#: src/nautilus-gsconnect.py:112 webextension/gettext.js:31
 msgid "Send To Mobile Device"
 msgstr ""
 
@@ -453,9 +453,7 @@ msgstr ""
 msgid "Send Notification"
 msgstr ""
 
-#. TRANSLATORS: eg. Missed call from John Smith
-#: src/service/plugins/notification.js:473
-#: src/service/plugins/notification.js:543 src/service/plugins/telephony.js:129
+#: src/service/plugins/notification.js:486
 #, javascript-format
 msgid "Missed call from %s"
 msgstr ""
@@ -512,8 +510,8 @@ msgstr ""
 msgid "Share Text"
 msgstr ""
 
-#: src/service/plugins/share.js:42 src/service/ui/messaging.js:800
-#: src/service/ui/messaging.js:811
+#: src/service/plugins/share.js:42 src/service/ui/messaging.js:817
+#: src/service/ui/messaging.js:828
 msgid "Share Link"
 msgstr ""
 
@@ -531,7 +529,7 @@ msgstr ""
 #: src/service/plugins/share.js:138 src/service/plugins/share.js:289
 #: src/service/plugins/share.js:407 src/service/ui/keybindings.js:50
 #: src/service/ui/service.js:124 src/service/ui/service.js:303
-#: src/service/ui/settings.js:911 src/shell/donotdisturb.js:267
+#: src/service/ui/settings.js:906 src/shell/donotdisturb.js:215
 msgid "Cancel"
 msgstr ""
 
@@ -626,32 +624,20 @@ msgstr ""
 msgid "System Volume"
 msgstr ""
 
-#: src/service/plugins/telephony.js:22
+#: src/service/plugins/telephony.js:21
 msgid "Mute Call"
 msgstr ""
 
 #. TRANSLATORS: eg. Incoming call from John Smith
-#: src/service/plugins/telephony.js:132
+#: src/service/plugins/telephony.js:188
 #, javascript-format
 msgid "Incoming call from %s"
 msgstr ""
 
 #. TRANSLATORS: eg. Call in progress with John Smith
-#: src/service/plugins/telephony.js:135
+#: src/service/plugins/telephony.js:203
 #, javascript-format
 msgid "Call in progress with %s"
-msgstr ""
-
-#. TRANSLATORS: This is _specifically_ for matching missed call notifications on Android.
-#. This should _exactly_ match the Android notification that in english looks like 'Missed call: John Lennon'
-#. Use the notification ticker style for the id
-#: src/service/plugins/telephony.js:155 src/service/plugins/telephony.js:241
-msgid "Missed call"
-msgstr ""
-
-#. TRANSLATORS: Reply to a missed call by SMS
-#: src/service/plugins/telephony.js:236
-msgid "Message"
 msgstr ""
 
 #. TRANSLATORS: A phone number type
@@ -683,7 +669,7 @@ msgstr ""
 msgid "Unknown Number"
 msgstr ""
 
-#: src/service/ui/contacts.js:348 src/service/ui/contacts.js:349
+#: src/service/ui/contacts.js:347 src/service/ui/contacts.js:348
 msgid "Type a phone number or name"
 msgstr ""
 
@@ -693,7 +679,7 @@ msgstr ""
 
 #. TRANSLATORS: A phone number (eg. "Send to 555-5555")
 #. Update UI
-#: src/service/ui/contacts.js:443 src/service/ui/contacts.js:450
+#: src/service/ui/contacts.js:440 src/service/ui/contacts.js:447
 #, javascript-format
 msgid "Send to %s"
 msgstr ""
@@ -760,15 +746,15 @@ msgid "From Device"
 msgstr ""
 
 #: src/service/ui/settings.js:700 src/service/ui/settings.js:748
-#: src/service/ui/settings.js:978 src/service/ui/settings.js:992
+#: src/service/ui/settings.js:973 src/service/ui/settings.js:987
 msgid "Off"
 msgstr ""
 
-#: src/service/ui/settings.js:912
+#: src/service/ui/settings.js:907
 msgid "Open"
 msgstr ""
 
-#: src/service/ui/settings.js:1165 src/service/ui/settings.js:1231
+#: src/service/ui/settings.js:1160 src/service/ui/settings.js:1226
 msgid "Disabled"
 msgstr ""
 
@@ -779,7 +765,7 @@ msgstr ""
 
 #. TRANSLATORS: Time duration in minutes (eg. 15 minutes)
 #: src/service/ui/messaging.js:88 src/service/ui/messaging.js:122
-#: src/shell/donotdisturb.js:318
+#: src/shell/donotdisturb.js:266
 #, javascript-format
 msgid "%d minutes"
 msgstr ""
@@ -796,7 +782,7 @@ msgstr ""
 msgid "%s is disconnected"
 msgstr ""
 
-#: src/service/ui/messaging.js:820
+#: src/service/ui/messaging.js:837
 msgid "New Message"
 msgstr ""
 
@@ -826,39 +812,39 @@ msgstr ""
 msgid "%d%% (%d∶%02d Remaining)"
 msgstr ""
 
-#: src/shell/device.js:605
+#: src/shell/device.js:578
 msgid "Device is disconnected"
 msgstr ""
 
-#: src/shell/device.js:607
+#: src/shell/device.js:580
 msgid "Device is unpaired"
 msgstr ""
 
-#: src/shell/donotdisturb.js:208 src/shell/donotdisturb.js:342
+#: src/shell/donotdisturb.js:150 src/shell/donotdisturb.js:289
 msgid "Do Not Disturb"
 msgstr ""
 
-#: src/shell/donotdisturb.js:209
+#: src/shell/donotdisturb.js:156
 msgid "Silence Mobile Device Notifications"
 msgstr ""
 
-#: src/shell/donotdisturb.js:216
+#: src/shell/donotdisturb.js:171
 msgid "Until you turn off Do Not Disturb"
 msgstr ""
 
 #. TRANSLATORS: Time until change with time duration
 #. EXAMPLE: Until 10:00 (2 hours)
-#: src/shell/donotdisturb.js:228 src/shell/donotdisturb.js:330
+#: src/shell/donotdisturb.js:184 src/shell/donotdisturb.js:278
 #, javascript-format
 msgid "Until %s (%s)"
 msgstr ""
 
-#: src/shell/donotdisturb.js:268
+#: src/shell/donotdisturb.js:216
 msgid "Done"
 msgstr ""
 
 #. TRANSLATORS: Time duration in hours (eg. 2 hours)
-#: src/shell/donotdisturb.js:315
+#: src/shell/donotdisturb.js:263
 #, javascript-format
 msgid "One hour"
 msgid_plural "%d hours"
