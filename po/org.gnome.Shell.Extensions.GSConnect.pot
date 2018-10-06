@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-05 23:49-0700\n"
+"POT-Creation-Date: 2018-10-06 08:07-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -434,7 +434,7 @@ msgid "Found"
 msgstr ""
 
 #: src/service/plugins/mousepad.js:13
-msgid "Remote Input"
+msgid "Mousepad"
 msgstr ""
 
 #: src/service/plugins/mpris.js:10
