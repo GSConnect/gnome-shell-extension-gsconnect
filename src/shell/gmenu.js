@@ -62,42 +62,23 @@ function getItemInfo(model, index) {
  */
 var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
 
-    _init(submenu_for, menu_model, action_group) {
+    _init(menu_model, action_group) {
         super._init();
 
-        this.submenu_for = submenu_for;
         this.action_group = action_group;
         this.menu_model = menu_model;
-        this._menu_items = new Map();
-
-        let _itemsChangedId = menu_model.connect(
-            'items-changed',
-            this._onItemsChanged.bind(this)
-        );
-
-        // GActions
-        let _actionAddedId = this.action_group.connect(
-            'action-added',
-            this._onActionChanged.bind(this)
-        );
-        let _actionEnabledChangedId = this.action_group.connect(
-            'action-enabled-changed',
-            this._onActionChanged.bind(this)
-        );
-        let _actionRemovedId = this.action_group.connect(
-            'action-removed',
-            this._onActionChanged.bind(this)
-        );
-
-        this.connect('destroy', () => {
-            menu_model.disconnect(_itemsChangedId);
-            action_group.disconnect(_actionAddedId);
-            action_group.disconnect(_actionEnabledChangedId);
-            action_group.disconnect(_actionRemovedId);
-        });
 
         // Setup the menu
         this._onItemsChanged(menu_model, 0, 0, menu_model.get_n_items());
+        this.actor.connect('notify::mapped', this._sync.bind(this));
+    }
+
+    _sync() {
+        if (!this.actor.mapped) {
+            return;
+        }
+
+        this._onItemsChanged(this.menu_model, 0, 0, this.menu_model.get_n_items());
     }
 
     _addGMenuItem(info) {
@@ -121,34 +102,17 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
         // Connect the menu item to it's GAction
         item.connect('activate', (item) => {
             this.action_group.activate_action(action_name, action_target);
-            this._getTopMenu().close();
         });
 
-        // Add and track the item
         this.addMenuItem(item);
-        this._menu_items.set(action_name, item);
     }
 
     _addGMenuSection(model) {
-        let section = new ListBox(this.submenu_for, model, this.action_group);
+        let section = new ListBox(model, this.action_group);
         this.addMenuItem(section);
     }
 
-    _getTopMenu() {
-        return this.submenu_for._getTopMenu();
-    }
-
-    _onActionChanged(group, name, enabled) {
-        let menuItem = this._menu_items.get(name);
-
-        if (menuItem !== undefined) {
-            menuItem.visible = group.get_action_enabled(name);
-        }
-    }
-
     _onItemsChanged(model, position, removed, added) {
-        // Using ::items-changed is arduous and probably not worth the trouble
-        this._menu_items.clear();
         this.removeAll();
 
         let len = model.get_n_items();
@@ -185,16 +149,15 @@ var Button = GObject.registerClass({
             style_class: 'system-menu-action gsconnect-device-action',
             can_focus: true
         });
-
-        this._action_group = params.action_group;
+        Object.assign(this, params);
 
         // Item attributes
         if (params.info.hasOwnProperty('action')) {
-            this._action_name = params.info.action.split('.')[1];
+            this.action_name = params.info.action.split('.')[1];
         }
 
         if (params.info.hasOwnProperty('target')) {
-            this._action_target = params.info.target;
+            this.action_target = params.info.target;
         }
 
         if (params.info.hasOwnProperty('label')) {
@@ -212,50 +175,12 @@ var Button = GObject.registerClass({
         for (let link of params.info.links) {
             if (link.name === 'submenu') {
                 this.toggle_mode = true;
-                this.submenu = new ListBox(this, link.value, this.action_group);
+                this.submenu = new ListBox(link.value, this.action_group);
                 this.submenu.actor.style_class = 'popup-sub-menu';
-                this.submenu.actor.bind_property('mapped', this, 'checked', 0);
+                this.bind_property('checked', this.submenu.actor, 'visible', 2);
+                this.connect('notify::checked', this._onChecked);
             }
         }
-
-        // StButton adds the :checked pseudo class, but some themes don't apply
-        // it to .system-menu-action
-        this.connect('notify::checked', this._onChecked);
-        this.connect('clicked', this._onClicked);
-    }
-
-    get action_group() {
-        if (this._action_group === undefined) {
-            return this.get_parent().action_group;
-        }
-
-        return this._action_group;
-    }
-
-    get action_name() {
-        if (this._action_name === undefined) {
-            return null;
-        }
-
-        return this._action_name;
-    }
-
-    get action_target() {
-        if (this._action_target === undefined) {
-            return null;
-        }
-
-        return this._action_target;
-    }
-
-    _getTopMenu() {
-        let parent = this.get_parent();
-
-        while (!parent.hasOwnProperty('_delegate')) {
-            parent = parent.get_parent();
-        }
-
-        return parent._delegate._getTopMenu();
     }
 
     _onChecked(button) {
@@ -265,51 +190,12 @@ var Button = GObject.registerClass({
             button.remove_style_pseudo_class('active');
         }
     }
-
-    _onClicked(button) {
-        // If this button has a submenu...
-        if (button.submenu !== undefined) {
-            // ...remove it (close submenu) if it's already set on the parent
-            if (button.get_parent().submenu === button.submenu.actor) {
-                button.get_parent().submenu = undefined;
-            // ...otherwise add it (open submenu)
-            } else {
-                button.get_parent().submenu = button.submenu.actor;
-            }
-
-        // If this is an actionable item close the top menu and activate
-        } else if (button.action_name) {
-            button._getTopMenu().close();
-
-            button.action_group.activate_action(
-                button.action_name,
-                button.action_target
-            );
-        }
-    }
-
-    destroy() {
-        if (this.hasOwnProperty('submenu')) {
-            this.submenu.destroy();
-        }
-
-        super.destroy();
-    }
 });
 
 
 // FIXME: this needs a flowbox layout
 var FlowBox = GObject.registerClass({
     GTypeName: 'GSConnectShellGMenuFlowBox',
-    Properties: {
-        'submenu': GObject.ParamSpec.object(
-            'submenu',
-            'Submenu',
-            'The active submenu',
-            GObject.ParamFlags.READWRITE,
-            GObject.Object
-        )
-    }
 }, class FlowBox extends St.BoxLayout {
     _init(params) {
         super._init();
@@ -318,51 +204,58 @@ var FlowBox = GObject.registerClass({
         this._menu_items = new Map();
 
         // GMenu
-        this._itemsChangedId = this.menu_model.connect(
+        let _itemsChangedId = this.menu_model.connect(
             'items-changed',
             this._onItemsChanged.bind(this)
         );
-        this._onItemsChanged(this.menu_model, 0, 0, this.menu_model.get_n_items());
 
         // GActions
-        this._actionAddedId = this.action_group.connect(
+        let _actionAddedId = this.action_group.connect(
             'action-added',
             this._onActionChanged.bind(this)
         );
-        this._actionEnabledChangedId = this.action_group.connect(
+        let _actionEnabledChangedId = this.action_group.connect(
             'action-enabled-changed',
             this._onActionChanged.bind(this)
         );
-        this._actionRemovedId = this.action_group.connect(
+        let _actionRemovedId = this.action_group.connect(
             'action-removed',
             this._onActionChanged.bind(this)
         );
 
-        this.connect('destroy', this._onDestroy);
+        this.connect('destroy', () => {
+            params.menu_model.disconnect(_itemsChangedId);
+            params.action_group.disconnect(_actionAddedId);
+            params.action_group.disconnect(_actionEnabledChangedId);
+            params.action_group.disconnect(_actionRemovedId);
+        });
+        this.connect('notify::mapped', this._onMapped);
+
+        this._onItemsChanged(this.menu_model, 0, 0, this.menu_model.get_n_items());
     }
 
-    get submenu() {
-        if (this._submenu === undefined) {
-            return undefined;
+    _onActionActivated(button) {
+        if (button.toggle_mode) {
+            for (let child of this.get_children()) {
+                if (child !== button) {
+                    child.checked = false;
+                }
+            }
+        } else {
+            button.root_menu._getTopMenu().close();
+
+            button.action_group.activate_action(
+                button.action_name,
+                button.action_target
+            );
         }
-
-        return this._submenu;
-    }
-
-    set submenu(menu) {
-        this._submenu = menu;
-        this.notify('submenu');
     }
 
     _onActionChanged(group, name, enabled) {
         let menuItem = this._menu_items.get(name);
 
         if (menuItem !== undefined) {
-            if (typeof enabled !== 'boolean') {
-                enabled = this.action_group.get_action_enabled(name);
-            }
-
-            menuItem.visible = enabled;
+            menuItem.visible = group.get_action_enabled(name);
         }
     }
 
@@ -378,13 +271,21 @@ var FlowBox = GObject.registerClass({
             let index = position + i;
             let button = new Button({
                 action_group: this.action_group,
-                info: getItemInfo(model, index)
+                info: getItemInfo(model, index),
+                root_menu: this.root_menu
             });
+
+            let _clickedId = button.connect('clicked', this._onActionActivated.bind(this));
+            button.connect('destroy', () => button.disconnect(_clickedId));
 
             if (button.action_name) {
                 button.visible = this.action_group.get_action_enabled(
                     button.action_name
                 );
+            }
+
+            if (button.submenu) {
+                this.root_menu.addMenuItem(button.submenu);
             }
 
             this._menu_items.set(button.action_name, button);
@@ -393,11 +294,12 @@ var FlowBox = GObject.registerClass({
         }
     }
 
-    _onDestroy(actor) {
-        actor.menu_model.disconnect(actor._itemsChangedId);
-        actor.action_group.disconnect(actor._actionAddedId);
-        actor.action_group.disconnect(actor._actionEnabledChangedId);
-        actor.action_group.disconnect(actor._actionRemovedId);
+    _onMapped(actor) {
+        if (!actor.mapped) {
+            for (let button of actor.get_children()) {
+                button.checked = false;
+            }
+        }
     }
 });
 

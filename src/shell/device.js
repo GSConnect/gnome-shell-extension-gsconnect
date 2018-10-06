@@ -527,7 +527,8 @@ var Menu = class Menu extends PopupMenu.PopupMenuSection {
         this.pluginBar = new GMenu.FlowBox({
             action_group: iface.action_group,
             menu_model: iface.menu_model,
-            style_class: 'gsconnect-device-actions'
+            style_class: 'gsconnect-device-actions',
+            root_menu: this
         });
         this.controlBox.add_child(this.pluginBar);
 
@@ -545,47 +546,19 @@ var Menu = class Menu extends PopupMenu.PopupMenuSection {
         });
         this.statusBar.add_child(this.statusLabel);
 
-        //
-        this.pluginBar.connect(
-            'notify::submenu',
-            this._onSubmenuChanged.bind(this)
-        );
-
-        // Hide the submenu when the device menu is closed
-        this._getTopMenu().connect(
-            'open-state-changed',
-            this._onOpenStateChanged.bind(this)
-        );
-
         // Watch Properties
-        this._propertiesId = this.device.connect(
-            'g-properties-changed',
-            this._sync.bind(this)
-        );
-        this._mappedId = this.actor.connect(
+        let _mappedId = this.actor.connect(
             'notify::mapped',
             this._sync.bind(this)
         );
-    }
+        let _propertiesId = this.device.connect(
+            'g-properties-changed',
+            this._sync.bind(this)
+        );
 
-    _onOpenStateChanged(actor, open) {
-        if (!open && this._submenu !== undefined) {
-            this.pluginBar.submenu = undefined;
-        }
-    }
-
-    _onSubmenuChanged(flowbox) {
-        // Close (remove) any currently opened submenu
-        if (this._submenu !== undefined) {
-            this.box.remove_child(this._submenu);
-        }
-
-        this._submenu = flowbox.submenu;
-
-        // Open (add) the submenu if it's a new menu...
-        if (this._submenu !== undefined) {
-            this.box.add_child(this._submenu);
-        }
+        this.connect('destroy', () => {
+            iface.disconnect(_propertiesId);
+        });
     }
 
     _sync(proxy, changed, invalidated) {
@@ -606,13 +579,6 @@ var Menu = class Menu extends PopupMenu.PopupMenuSection {
         } else if (!Paired) {
             this.statusLabel.text = _('Device is unpaired');
         }
-    }
-
-    destroy() {
-        this.actor.disconnect(this._mappedId);
-        this.device.disconnect(this._propertiesId);
-
-        super.destroy();
     }
 }
 
@@ -638,14 +604,19 @@ var Indicator = class Indicator extends PanelMenu.Button {
         this.menu.addMenuItem(this.deviceMenu);
 
         // Watch GSettings & Properties
-        this._gsettingsId = gsconnect.settings.connect(
+        let _gsettingsId = gsconnect.settings.connect(
             'changed',
             this._sync.bind(this)
         );
-        this._propertiesId = this.device.connect(
+        let _propertiesId = this.device.connect(
             'g-properties-changed',
             this._sync.bind(this)
         );
+
+        this.connect('destroy', () => {
+            gsconnect.settings.disconnect(_gsettingsId);
+            iface.disconnect(_propertiesId);
+        });
 
         this._sync();
     }
@@ -680,13 +651,6 @@ var Indicator = class Indicator extends PanelMenu.Button {
 
         this.icon.gicon = this.symbolic_icon;
         this.icon.opacity = Connected ? 255 : 128;
-    }
-
-    destroy() {
-        this.device.disconnect(this._propertiesId);
-        gsconnect.settings.disconnect(this._gsettingsId);
-
-        super.destroy();
     }
 }
 
