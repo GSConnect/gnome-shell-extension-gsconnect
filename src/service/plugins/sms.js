@@ -193,14 +193,6 @@ var Plugin = GObject.registerClass({
             new GLib.VariantType('aa{sv}'),
             null,
             GObject.ParamFlags.READABLE
-        ),
-        'threads': GObject.param_spec_variant(
-            'threads',
-            'Thread List',
-            'A list of active (unarchived) conversations',
-            new GLib.VariantType('as'),
-            null,
-            GObject.ParamFlags.READABLE
         )
     }
 }, class Plugin extends PluginsBase.Plugin {
@@ -214,12 +206,6 @@ var Plugin = GObject.registerClass({
         // though we'll request them at every connection
         this.conversations = {};
         this.cacheProperties(['conversations']);
-    }
-
-    get threads() {
-        return Object.values(this.conversations).map(conversation => {
-            return conversation[conversation.length - 1];
-        });
     }
 
     handlePacket(packet) {

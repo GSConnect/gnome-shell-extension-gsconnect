@@ -433,7 +433,7 @@ var ConversationWindow = GObject.registerClass({
         this.conversation_add.visible = false;
 
         let sms = this.device.lookup_plugin('sms');
-        this.go_previous.visible = (sms && sms.threads.length > 0);
+        this.go_previous.visible = (sms && sms.conversations.length > 0);
 
         this.headerbar.custom_title = this.contact_list.entry;
         this.contact_list.entry.has_focus = true;
@@ -552,19 +552,19 @@ var ConversationWindow = GObject.registerClass({
      *
      * @param {string} thread_id - The thread id for this conversation
      */
-    async _populateMessages(thread_id) {
+    _populateMessages(thread_id) {
         this.message_list.foreach(row => row.destroy());
         this._thread = undefined;
 
         let sms = this.device.lookup_plugin('sms');
 
-        if (sms.conversations.hasOwnProperty(thread_id)) {
+        if (sms && sms.conversations[thread_id]) {
             let conversation = sms.conversations[thread_id];
             conversation.map(message => this.logMessage(message));
 
             let lastMessage = conversation[conversation.length - 1];
-            this._message_id = lastMessage._id;
-            this._thread_id = lastMessage.thread_id;
+            this.message_id = lastMessage._id;
+            this.thread_id = lastMessage.thread_id;
         }
     }
 
