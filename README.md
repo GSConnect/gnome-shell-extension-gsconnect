@@ -13,7 +13,7 @@
 > Subscribe to the [Translations Discussion thread][translating] to receive
 > updates.
 >
-> For more information, see [v13 Status][v13-Status].
+> For more information, see [Roadmap][roadmap].
 
 ## Overview
 
@@ -108,7 +108,7 @@ especially those sharing GSConnect with non-English speaking users.
 
 [screenshot]: https://raw.githubusercontent.com/andyholmes/gnome-shell-extension-gsconnect/master/extra/screenshot.png
 [translating]: https://github.com/andyholmes/gnome-shell-extension-gsconnect/issues/1
-[v13-Status]: https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/v13-Status
+[roadmap]: https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Roadmap
 
 [ego-install]: https://extensions.gnome.org/extension/1319/gsconnect/
 [wiki-install]: https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Installation
