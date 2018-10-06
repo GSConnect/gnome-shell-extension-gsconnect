@@ -38,7 +38,7 @@ var DeviceRow = GObject.registerClass({
             GObject.ParamFlags.READWRITE,
             false
         ),
-        'symbolic-icon':GObject.ParamSpec.object(
+        'symbolic-icon': GObject.ParamSpec.object(
             'symbolic-icon',
             'Symbolic Icon',
             'Icon representing the device type and state',

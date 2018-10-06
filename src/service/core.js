@@ -231,7 +231,7 @@ var Channel = class Channel {
 
             return connection;
         } catch (e) {
-            logError(e);
+            return Promise.reject(e);
         }
     }
 
