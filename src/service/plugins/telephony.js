@@ -163,29 +163,29 @@ var Plugin = GObject.registerClass({
     }
 
     /**
-     * Show a local notification with actions appropriate for the call type:
-     *   - ringing: A button for muting the ringing
-     *   - talking: none
+     * Show a local notification, possibly with actions
      *
-     * @param {Object} contact - A contact object
-     * @param {Object} message - A telephony message object
+     * @param {object} packet - A telephony packet for this event
      */
     callNotification(packet) {
         let body;
         let buttons = [];
         let icon = new Gio.ThemedIcon({ name: 'call-start-symbolic' });
         let priority = Gio.NotificationPriority.NORMAL;
+        let sender = packet.body.contactName || packet.body.phoneNumber;
 
+        // If there's a photo, use it as the notification icon
         if (packet.body.phoneThumbnail) {
             let data = GLib.base64_decode(packet.body.phoneThumbnail);
             icon = this._getPixbuf(data);
         }
 
+        // An incoming call
         if (packet.body.event === 'ringing') {
             this._setMediaState('ringing');
 
             // TRANSLATORS: eg. Incoming call from John Smith
-            body = _('Incoming call from %s').format(packet.body.contactName);
+            body = _('Incoming call from %s').format(sender);
             buttons = [{
                 action: 'muteCall',
                 // TRANSLATORS: Silence an incoming call
@@ -195,17 +195,18 @@ var Plugin = GObject.registerClass({
             priority = Gio.NotificationPriority.URGENT;
         }
 
+        // An in progress call
         if (packet.body.event === 'talking') {
-            this.device.hideNotification(`ringing|${contact.name}`);
+            this.device.hideNotification(`ringing|${sender}`);
             this._setMediaState('talking');
 
             // TRANSLATORS: eg. Call in progress with John Smith
-            body = _('Call in progress with %s').format(contactName);
+            body = _('Call in progress with %s').format(sender);
         }
 
         this.device.showNotification({
-            id: `${packet.body.event}|${packet.body.contactName}`,
-            title: packet.body.contactName,
+            id: `${packet.body.event}|${sender}`,
+            title: sender,
             body: body,
             icon: icon,
             priority: priority,
