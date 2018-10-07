@@ -358,21 +358,26 @@ var Plugin = GObject.registerClass({
      * Receiving Notifications
      */
     async _downloadIcon(packet) {
-        let icon = null;
-        let success, transfer;
+        let file, path, stream, success, transfer;
 
         try {
-            if (!packet.hasOwnProperty('payloadTransferInfo')) {
+            if (!packet.payloadTransferInfo) {
                 return null;
             }
 
-            let path = GLib.build_filenamev([
+            path = GLib.build_filenamev([
                 gsconnect.cachedir,
                 packet.body.payloadHash || `${Date.now()}`
             ]);
-            let file = Gio.File.new_for_path(path);
+            file = Gio.File.new_for_path(path);
 
-            let stream = await new Promise((resolve, reject) => {
+            // Check if we've already downloaded this icon
+            if (file.query_exists(null)) {
+                return new Gio.FileIcon({ file: file });
+            }
+
+            // Open the file
+            stream = await new Promise((resolve, reject) => {
                 file.replace_async(null, false, 2, 0, null, (file, res) => {
                     try {
                         resolve(file.replace_finish(res));
@@ -382,27 +387,36 @@ var Plugin = GObject.registerClass({
                 });
             });
 
-            let transfer = this.device.createTransfer({
+            // Download the icon
+            transfer = this.device.createTransfer({
                 output_stream: stream,
                 size: packet.payloadSize
             });
 
-            if (packet.payloadTransferInfo.hasOwnProperty('port')) {
-                success = await transfer.download(packet.payloadTransferInfo.port);
+            success = await transfer.download(
+                packet.payloadTransferInfo.port || packet.payloadTransferInfo.uuid
+            );
 
-            // TODO: Skip icons for bluetooth since there's no action to disable
-            } else if (packet.payloadTransferInfo.hasOwnProperty('uuid')) {
-                transfer.close();
-                return null;
-            }
-
+            // Return the icon if successful, delete on failure
             if (success) {
-                icon = new Gio.FileIcon({ file: file });
+                return new Gio.FileIcon({ file: file });
             }
+
+            await new Promise((resolve, reject) => {
+                file.delete_async(GLib.PRIORITY_DEFAULT, null, (file, res) => {
+                    try {
+                        file.delete_finish(res);
+                    } catch (e) {
+                    }
+
+                    resolve();
+                });
+            });
+
+            return null;
         } catch (e) {
             debug(e, this.device.name);
-        } finally {
-            return icon;
+            return null;
         }
     }
 
