@@ -281,31 +281,27 @@ var Store = GObject.registerClass({
      *
      * @param {string} id - The id of the contact to delete
      */
-    async add(contact) {
-        try {
-            switch (false) {
-                case (contact.id):
-                case (contact.name):
-                case (contact.numbers):
-                case (contact.numbers[0]):
-                case (contact.numbers[0].type):
-                case (contact.numbers[0].value):
-                    return;
+    add(contact) {
+        switch (false) {
+            case (contact.id):
+            case (contact.name):
+            case (contact.numbers):
+            case (contact.numbers[0]):
+            case (contact.numbers[0].type):
+            case (contact.numbers[0].value):
+                return;
 
-                // New contact
-                case (this._contacts[contact.id]):
-                    this._contacts[contact.id] = contact;
-                    break;
+            // New contact
+            case (this._contacts[contact.id]):
+                this._contacts[contact.id] = contact;
+                break;
 
-                // Updated contact
-                default:
-                    Object.assign(this._contacts[contact.id], contact);
-            }
-
-            this.notify('contacts');
-        } catch (e) {
-            logError(e);
+            // Updated contact
+            default:
+                Object.assign(this._contacts[contact.id], contact);
         }
+
+        this.notify('contacts');
     }
 
     /**
@@ -313,26 +309,14 @@ var Store = GObject.registerClass({
      *
      * @param {string} id - The id of the contact to delete
      */
-    async remove(query) {
-        try {
-            if (typeof query === 'object') {
-                for (let [id, contact] of Object.entries(this._contacts)) {
-                    if (query === contact) {
-                        delete this._contacts[id];
-                        this.notify('contacts');
-                        break;
-                    }
-                }
-            } else {
-                delete this._contacts[query];
-                this.notify('contacts');
-            }
-        } catch (e) {
-            logError(e);
+    remove(id) {
+        if (this._contacts[id]) {
+            delete this._contacts[id];
+            this.notify('contacts');
         }
     }
 
-    async clear() {
+    clear() {
         try {
             this._contacts = {};
             this.notify('contacts');
