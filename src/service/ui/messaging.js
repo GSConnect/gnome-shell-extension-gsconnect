@@ -290,14 +290,21 @@ var ConversationWindow = GObject.registerClass({
             'device',
             'WindowDevice',
             'The device associated with this window',
-            GObject.ParamFlags.READABLE,
+            GObject.ParamFlags.READWRITE,
             GObject.Object
         ),
-        'number': GObject.ParamSpec.string(
-            'number',
-            'RecipientPhoneNumber',
-            'The conversation recipient phone number',
-            GObject.ParamFlags.READABLE,
+        'address': GObject.ParamSpec.string(
+            'address',
+            'Address',
+            'The target phone number or other address',
+            GObject.ParamFlags.READWRITE,
+            ''
+        ),
+        'contact': GObject.ParamSpec.string(
+            'contact',
+            'Contact',
+            'The target contact ID',
+            GObject.ParamFlags.READWRITE,
             ''
         ),
         'message-id': GObject.ParamSpec.uint(
@@ -329,18 +336,17 @@ var ConversationWindow = GObject.registerClass({
     ]
 }, class ConversationWindow extends Gtk.ApplicationWindow {
 
-    _init(device) {
+    _init(params) {
         this.connect_template();
 
-        super._init({
+        super._init(Object.assign({
             application: Gio.Application.get_default(),
             default_width: 300,
             default_height: 300,
             urgency_hint: true
-        });
+        }, params));
 
-        this._device = device;
-        this.insert_action_group('device', device);
+        this.insert_action_group('device', this.device);
 
         // We track the local id's of remote sms notifications so we can
         // withdraw them locally (thus closing them remotely) when focused.
@@ -371,24 +377,79 @@ var ConversationWindow = GObject.registerClass({
         this._showPrevious();
     }
 
-    get device() {
-        return this._device;
+    get address() {
+        return (this._address) ? this._address : null;
     }
 
-    get number() {
-        if (this._number === undefined) {
-            return null;
+    set address(value) {
+        if (value) {
+            this._address = value;
+            this._displayNumber = value;
+
+            let contact = this.service.contacts.query({
+                number: value,
+                create: true
+            });
+            this._contact = contact.id;
+
+            // See if we have a nicer display number
+            let number = value.toPhoneNumber();
+
+            for (let contactNumber of contact.numbers) {
+                let cnumber = contactNumber.value.toPhoneNumber();
+
+                if (number.endsWith(cnumber) || cnumber.endsWith(number)) {
+                    this._displayNumber = contactNumber.value;
+                    break;
+                }
+            }
+
+            // Populate the conversation
+            let sms = this.device.lookup_plugin('sms');
+            let thread_id;
+
+            if (sms) {
+                for (let thread of Object.values(sms.conversations)) {
+                    let tnumber = thread[0].address.toPhoneNumber();
+
+                    if (number.endsWith(tnumber) || tnumber.endsWith(number)) {
+                        thread_id = thread[0].thread_id;
+                        break;
+                    }
+                }
+            }
+
+            this._populateMessages(thread_id);
+            this._showMessages();
+        } else {
+            this._address = null;
+            this._contact = null;
+            this._displayNumber = null;
         }
 
-        return this._number;
+        this.notify('address');
     }
 
-    get recipient() {
-        if (this._recipient === undefined) {
-            return null;
+    get contact() {
+        if (this._contact) {
+            return this.service.contacts.get_item(this._contact);
         }
 
-        return this._recipient;
+        return null;
+    }
+
+    set contact(id) {
+        if (id in this.service.contact._contacts) {
+            this._contact = id;
+        } else {
+            this._contact = null;
+        }
+
+        this.notify('contact');
+    }
+
+    get service() {
+        return Gio.Application.get_default();
     }
 
     get message_id() {
@@ -461,13 +522,9 @@ var ConversationWindow = GObject.registerClass({
         this.contact_list.entry.text = '';
         this.headerbar.custom_title = null;
 
-        if (this.recipient.name) {
-            this.headerbar.title = this.recipient.name;
-            this.headerbar.subtitle = this._displayNumber;
-        } else {
-            this.headerbar.title = this._displayNumber;
-            this.headerbar.subtitle = null;
-        }
+        let contact = this.contact;
+        this.headerbar.title = (contact.name) ? contact.name : this._displayNumber;
+        this.headerbar.subtitle = (contact.name) ? this._displayNumber : null;
 
         this.message_entry.has_focus = true;
         this.stack.set_visible_child_name('messages');
@@ -544,7 +601,7 @@ var ConversationWindow = GObject.registerClass({
     }
 
     _onConversationActivated(box, row) {
-        this.setRecipient(row.contact, row.message.address);
+        this.address = row.message.address;
     }
 
     /**
@@ -596,7 +653,7 @@ var ConversationWindow = GObject.registerClass({
                 });
             }
 
-            this.setRecipient(contact, number);
+            this.address = number;
         }
     }
 
@@ -626,7 +683,7 @@ var ConversationWindow = GObject.registerClass({
 
         // Add avatar for incoming messages
         if (direction === MessageType.IN) {
-            let avatar = new Contacts.Avatar(this.recipient);
+            let avatar = new Contacts.Avatar(this.contact);
             avatar.valign = Gtk.Align.END;
             layout.add(avatar);
         }
@@ -651,7 +708,7 @@ var ConversationWindow = GObject.registerClass({
      *
      * @param {Object} message - A sms message object
      */
-    async logMessage(message) {
+    logMessage(message) {
         // Check if we need a new thread
         if (this._thread === undefined) {
             this._addThread(message.type);
@@ -695,48 +752,6 @@ var ConversationWindow = GObject.registerClass({
     }
 
     /**
-     * Set the conversation recipient
-     *
-     * @param {Object} contact - A contact object for the message
-     * @param {String} phoneNumber - The phone number (provided by Android)
-     */
-    setRecipient(contact, phoneNumber) {
-        this._recipient = contact;
-        this._number = phoneNumber;
-        this._displayNumber = phoneNumber;
-
-        // See if we have a nicer display number
-        let number = phoneNumber.toPhoneNumber();
-
-        for (let contactNumber of contact.numbers) {
-            let cnumber = contactNumber.value.toPhoneNumber();
-
-            if (number.endsWith(cnumber) || cnumber.endsWith(number)) {
-                this._displayNumber = contactNumber.value;
-                break;
-            }
-        }
-
-        // Populate the conversation
-        let sms = this.device.lookup_plugin('sms');
-        let thread_id;
-
-        if (sms) {
-            for (let thread of Object.values(sms.conversations)) {
-                let tnumber = thread[0].address.toPhoneNumber();
-
-                if (number.endsWith(tnumber) || tnumber.endsWith(number)) {
-                    thread_id = thread[0].thread_id;
-                    break;
-                }
-            }
-        }
-
-        this._populateMessages(thread_id);
-        this._showMessages();
-    }
-
-    /**
      * Log an incoming message in the MessageList
      * TODO: this is being deprecated by 'kdeconnect.sms.message', but we
      *       keep it for now so the sms plugin can use it to fake support.
@@ -745,11 +760,7 @@ var ConversationWindow = GObject.registerClass({
      * @param {Object} message - A sms message object
      */
     receiveMessage(contact, message) {
-        this._number = message.address;
-
-        if (!this.recipient) {
-            this.setRecipient(contact, message.address);
-        }
+        this.address = message.address;
 
         // Log an incoming telepony message (fabricated by the sms plugin)
         this.logMessage({
@@ -765,21 +776,21 @@ var ConversationWindow = GObject.registerClass({
     }
 
     /**
-     * Send the contents of the message entry to the recipient
+     * Send the contents of the message entry to the address
      */
     sendMessage(entry, signal_id, event) {
         // Ensure the action is enabled so we don't log messages without sending
         if (this.device.get_action_enabled('sendSms')) {
             this.device.activate_action(
                 'sendSms',
-                new GLib.Variant('(ss)', [this.number, entry.text])
+                new GLib.Variant('(ss)', [this.address, entry.text])
             );
 
             // Log the outgoing message as a fabricated message packet
             this.logMessage({
                 _id: ++this.message_id,    // message id (increment as we fetch)
                 thread_id: this.thread_id,  // conversation id
-                address: this.number,       // always the outgoing number?
+                address: this.address,
                 body: entry.text,
                 date: Date.now(),
                 event: 'sms',
@@ -793,7 +804,7 @@ var ConversationWindow = GObject.registerClass({
     }
 
     /**
-     * Set the contents of the message entry and place the cursor at the end
+     * Set the contents of the message entry
      *
      * @param {String} text - The message to place in the entry
      */
@@ -883,8 +894,8 @@ var ConversationChooser = GObject.registerClass({
                 continue;
             }
 
-            if (window.number) {
-                let recipient = window.recipient;
+            if (window.address) {
+                let recipient = window.contact;
 
                 let row = new Gtk.ListBoxRow();
                 row.window_ = window;
@@ -905,7 +916,7 @@ var ConversationChooser = GObject.registerClass({
                 grid.attach(name, 1, 0, 1, 1);
 
                 let number = new Gtk.Label({
-                    label: window.number,
+                    label: window.address,
                     halign: Gtk.Align.START
                 });
                 number.get_style_context().add_class('dim-label');

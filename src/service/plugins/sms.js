@@ -257,7 +257,6 @@ var Plugin = GObject.registerClass({
                 window._populateMessages(message.thread_id);
             } else {
                 window.receiveMessage(contact, message);
-                window.urgency_hint = true;
             }
         }
     }
@@ -347,16 +346,16 @@ var Plugin = GObject.registerClass({
      */
     _hasWindow(address) {
         // Look for an open window with this phone number
-        let number = address.toPhoneNumber();
+        address = address.toPhoneNumber();
 
         for (let win of this.service.get_windows()) {
-            if (!win.device || win.device.id !== this.device.id || !win.number) {
+            if (!win.device || win.device !== this.device || !win.address) {
                 continue;
             }
 
-            let wnumber = win.number.toPhoneNumber();
+            let waddress = win.address.toPhoneNumber();
 
-            if (number.endsWith(wnumber) || wnumber.endsWith(number)) {
+            if (address.endsWith(waddress) || waddress.endsWith(address)) {
                 return win;
             }
         }
@@ -391,9 +390,7 @@ var Plugin = GObject.registerClass({
      * A notification action for replying to SMS messages (or missed calls).
      *
      * TODO: If kdeconnect.sms.message packet is not supported, @message was
-     * populated by Telephony._parseEvent() and we log it in the window. If it
-     * is supported, the thread should be up to date and only the recipient will
-     * be set. Do neither if a window is already open for this thread.
+     * populated by Telephony and we use receiveMessage() to imitate a real one.
      *
      * @param {Object} message - A telephony message object
      */
@@ -406,16 +403,14 @@ var Plugin = GObject.registerClass({
 
         // Open a new window if not
         if (!window) {
-            window = new Messaging.ConversationWindow(this.device);
-            window.urgency_hint = true;
+            window = new Messaging.ConversationWindow({
+                device: this.device,
+                address: message.address
+            });
 
-            // Set the recipient if messages are supported
-            if (this.device.get_outgoing_supported('sms.messages')) {
-                window.setRecipient(contact, message.address);
-
-            // Otherwise log the fabricated message object
-            } else {
-                window.receiveMessage(contact, message);
+            // Log the message if SMS history is not supported
+            if (!this.device.get_outgoing_supported('sms.messages')) {
+                window.receiveMessage(message);
             }
         }
 
@@ -473,7 +468,9 @@ var Plugin = GObject.registerClass({
 
         // Open the list of contacts to start a new conversation
         } else {
-            window = new Messaging.ConversationWindow(this.device);
+            window = new Messaging.ConversationWindow({
+                device: this.device
+            });
             window.setMessage(url);
         }
 
@@ -484,7 +481,9 @@ var Plugin = GObject.registerClass({
      * Open and present a new SMS window
      */
     newSms() {
-        let window = new Messaging.ConversationWindow(this.device);
+        let window = new Messaging.ConversationWindow({
+            device: this.device
+        });
         window.present();
     }
 
@@ -500,17 +499,14 @@ var Plugin = GObject.registerClass({
             // FIXME: need batch SMS window now
             for (let recipient of uri.recipients) {
                 // Check for an extant window
-                let window = this._hasWindow(uri.recipients[0]);
+                let window = this._hasWindow(recipient);
 
                 // None found; open one and add the contact
                 if (!window) {
-                    window = new Messaging.ConversationWindow(this.device);
-
-                    let contact = this.contacts.query({
-                        number: recipient
+                    window = new Messaging.ConversationWindow({
+                        device: this.device,
+                        address: recipient
                     });
-                    window.setRecipient(contact, recipient);
-                    window.urgency_hint = true;
                 }
 
                 // Set the outgoing message if the uri has a body variable
