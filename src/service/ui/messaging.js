@@ -357,6 +357,7 @@ var ConversationWindow = GObject.registerClass({
 
         // Conversations
         this.conversation_list.set_sort_func(this._sortConversations);
+        this.message_list.set_header_func(this._headerMessages);
 
         // Contacts
         this.contact_list = new Contacts.ContactChooser();
@@ -625,6 +626,21 @@ var ConversationWindow = GObject.registerClass({
         }
     }
 
+    _headerMessages(row, before) {
+        // ...check if the last message was more than an hour ago
+        if (before && (row.date - before.date) > GLib.TIME_SPAN_HOUR/1000) {
+            let header = new Gtk.Label({
+                label: '<small>' + getTime(row.date) + '</small>',
+                halign: Gtk.Align.CENTER,
+                hexpand: true,
+                use_markup: true,
+                visible: true
+            });
+            header.get_style_context().add_class('dim-label');
+            row.set_header(header);
+        }
+    }
+
     _onEntryChanged(entry) {
         entry.secondary_icon_sensitive = (entry.text.length);
     }
@@ -663,13 +679,14 @@ var ConversationWindow = GObject.registerClass({
      *
      * @param {MessageType} direction - The direction of the message
      */
-    _addThread(direction) {
+    _addThread(direction, date) {
         let row = new Gtk.ListBoxRow({
             activatable: false,
             selectable: false,
             hexpand: true
         });
         row.direction = direction;
+        row.date = date;
         this.message_list.add(row);
 
         let layout = new Gtk.Box({
@@ -709,40 +726,9 @@ var ConversationWindow = GObject.registerClass({
      * @param {Object} message - A sms message object
      */
     logMessage(message) {
-        // Check if we need a new thread
-        if (this._thread === undefined) {
-            this._addThread(message.type);
-        }
-
-        // If the current thread is dated...
-        if (this._thread.date !== undefined) {
-            // ...check if the last message was more than an hour ago
-            if ((message.date - this._thread.date) > GLib.TIME_SPAN_HOUR/1000) {
-                let row = new Gtk.ListBoxRow({
-                    activatable: false,
-                    selectable: false,
-                    visible: true
-                });
-                this.message_list.add(row);
-
-                let label = new Gtk.Label({
-                    label: '<small>' + getTime(message.date) + '</small>',
-                    halign: Gtk.Align.CENTER,
-                    hexpand: true,
-                    use_markup: true,
-                    visible: true
-                });
-                label.get_style_context().add_class('dim-label');
-                row.add(label);
-
-                // Now start a new thread
-                this._addThread(message.type);
-            }
-        }
-
         // Start a new thread if the message is from a different direction
-        if (this._thread.direction !== message.type) {
-            this._addThread(message.type)
+        if (!this._thread || this._thread.direction !== message.type) {
+            this._addThread(message.type, message.date);
         }
 
         // Log the message and set the thread date
