@@ -20,10 +20,10 @@ var Store = GObject.registerClass({
             null,
             GObject.ParamFlags.READABLE
         ),
-        'path': GObject.ParamSpec.string(
-            'path',
-            'Path',
-            'Cache path, relative to gsconnect.cachedir',
+        'context': GObject.ParamSpec.string(
+            'context',
+            'Context',
+            'Used as the cache directory, relative to gsconnect.cachedir',
             GObject.ParamFlags.READWRITE,
             ''
         ),
@@ -39,7 +39,7 @@ var Store = GObject.registerClass({
 
     _init(params) {
         super._init(Object.assign({
-            path: 'folks'
+            context: '_service'
         }, params));
 
         // Asynchronous setup
@@ -85,12 +85,13 @@ var Store = GObject.registerClass({
         }
     }
 
-    get path() {
-        return this._path;
+    get context() {
+        return this._context || null;
     }
 
-    set path(path) {
-        this._path = GLib.build_filenamev([gsconnect.cachedir, path]);
+    set context(context) {
+        this._context = context;
+        this._path = GLib.build_filenamev([gsconnect.cachedir, context]);
         GLib.mkdir_with_parents(this._path, 448);
 
         this.__cache_file = Gio.File.new_for_path(
@@ -112,22 +113,22 @@ var Store = GObject.registerClass({
     }
 
     /**
-     * Set a contact avatar from a base64 encoded JPEG ByteArray
+     * Save an image ByteArray to file and return the path
      *
-     * @param {object} id - The contact id
-     * @param {ByteArray} contents - A base64 encoded JPEG ByteArray
-     * @return {object} - The updated contact
+     * @param {ByteArray} contents - An image ByteArray
+     * @return {string} - Path the the avatar file
      */
-    setAvatarContents(id, contents) {
+    cacheImage(contents) {
         return new Promise((resolve, reject) => {
-            let contact = this._contacts[id];
+            let md5 = GLib.compute_checksum_for_data(GLib.ChecksumType.MD5, contents);
 
-            if (contact.avatar) {
-                resolve(contact);
+            let path = GLib.build_filenamev([this._path, `${md5}`]);
+            let file = Gio.File.new_for_path(path);
+
+            if (file.query_exists(null)) {
+                resolve(path);
             } else {
-                let path = GLib.build_filenamev([this._path, `${id}.jpeg`]);
-
-                Gio.File.new_for_path(path).replace_contents_bytes_async(
+                file.replace_contents_bytes_async(
                     new GLib.Bytes(contents),
                     null,
                     false,
@@ -136,9 +137,7 @@ var Store = GObject.registerClass({
                     (file, res) => {
                         try {
                             file.replace_contents_finish(res);
-                            this._contacts[id].avatar = path;
-                            this.notify('contacts');
-                            resolve(this._contacts[id]);
+                            resolve(path);
                         } catch (e) {
                             reject(e);
                         }
