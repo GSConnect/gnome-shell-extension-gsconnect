@@ -742,17 +742,16 @@ var ConversationWindow = GObject.registerClass({
      * TODO: this is being deprecated by 'kdeconnect.sms.message', but we
      *       keep it for now so the sms plugin can use it to fake support.
      *
-     * @param {Object} contact - A contact object for this message
      * @param {Object} message - A sms message object
      */
-    receiveMessage(contact, message) {
+    receiveMessage(message) {
         this.address = message.address;
 
         // Log an incoming telepony message (fabricated by the sms plugin)
         this.logMessage({
-            _id: ++this.message_id,     // message id (increment as we fetch)
-            thread_id: this.thread_id,  // conversation id
-            address: message.address,   // always the outgoing number
+            _id: ++this.message_id,     // increment as we fetch
+            thread_id: this.thread_id,
+            address: message.address,
             body: message.body,
             date: message.date,
             event: 'sms',
