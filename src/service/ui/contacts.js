@@ -109,11 +109,7 @@ var Avatar = GObject.registerClass({
         if (this._pixbuf === undefined) {
             this._fallback = true;
 
-            if (this.contact.name === _('Unknown Contact')) {
-                this.bg_color = new Gdk.RGBA({ red: 0.8, green: 0.8, blue: 0.8, alpha: 1 });
-            } else {
-                this.bg_color = Color.randomRGBA(this.contact.name);
-            }
+            this.bg_color = Color.randomRGBA(this.contact.name);
 
             let info = Gtk.IconTheme.get_default().lookup_icon(
                'avatar-default',
@@ -129,7 +125,7 @@ var Avatar = GObject.registerClass({
             )[0];
         }
 
-        this._offset = (32 - this._pixbuf.width) / 2;
+        this._offset = (this.width_request - this._pixbuf.width) / 2;
     }
 
     vfunc_button_press_event(event) {
