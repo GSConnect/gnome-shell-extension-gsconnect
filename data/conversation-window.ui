@@ -98,6 +98,7 @@
                     <property name="vexpand">True</property>
                     <property name="hscrollbar_policy">never</property>
                     <property name="shadow_type">in</property>
+                    <signal name="edge-overshot" handler="_onLoadMessages" swapped="no"/>
                     <child>
                       <object class="GtkViewport">
                         <property name="visible">True</property>

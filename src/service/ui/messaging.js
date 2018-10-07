@@ -436,8 +436,8 @@ var ConversationWindow = GObject.registerClass({
                 }
             }
 
-            this._populateMessages(thread_id);
             this._showMessages();
+            this._populateMessages(thread_id);
         } else {
             this._address = null;
             this._contact = null;
@@ -522,7 +522,8 @@ var ConversationWindow = GObject.registerClass({
         this.conversation_add.visible = false;
 
         let sms = this.device.lookup_plugin('sms');
-        this.go_previous.visible = (sms && sms.conversations.length > 0);
+        sms = (sms && Object.keys(sms.conversations).length > 0);
+        this.go_previous.visible = sms;
 
         this.headerbar.custom_title = this.contact_list.entry;
         this.contact_list.entry.has_focus = true;
@@ -564,10 +565,10 @@ var ConversationWindow = GObject.registerClass({
         let sms = this.device.lookup_plugin('sms');
 
         // Show the contact list if there are no conversations
-        if (!sms || Object.values(sms.conversations).length === 0) {
-            this._showContacts();
-        } else {
+        if (sms && Object.keys(sms.conversations).length > 0) {
             this._showConversations();
+        } else {
+            this._showContacts();
         }
     }
 
@@ -602,25 +603,25 @@ var ConversationWindow = GObject.registerClass({
     /**
      * Populate the conversation list with the last message of each thread
      */
-    async _populateConversations() {
-        try {
-            // Clear any current threads
-            this.conversation_list.foreach(row => row.destroy());
+    _populateConversations() {
+        // Clear any current threads
+        this.conversation_list.foreach(row => row.destroy());
 
-            // Populate the new threads
-            let sms = this.device.lookup_plugin('sms');
+        // Populate the new threads
+        let sms = this.device.lookup_plugin('sms');
 
-            for (let thread of Object.values(sms.conversations)) {
+        for (let thread of Object.values(sms.conversations)) {
+            try {
                 let contact = this.device.contacts.query({
                     number: thread[0].address
                 });
 
-                await this.conversation_list.add(
+                this.conversation_list.add(
                     new ConversationSummary(contact, thread[thread.length-1])
                 );
+            } catch (e) {
+                logError(e);
             }
-        } catch (e) {
-            logError(e);
         }
     }
 
@@ -639,17 +640,34 @@ var ConversationWindow = GObject.registerClass({
      */
     _populateMessages(thread_id) {
         this.message_list.foreach(row => row.destroy());
-        this._thread = undefined;
+        this.__first = null
+        this.__last = null;
+        this.__messages = [];
 
         let sms = this.device.lookup_plugin('sms');
 
         if (sms && sms.conversations[thread_id]) {
-            let conversation = sms.conversations[thread_id];
-            conversation.map(message => this.logMessage(message));
-
-            let lastMessage = conversation[conversation.length - 1];
+            this.__messages = sms.conversations[thread_id].slice(0);
+            let lastMessage = this.__messages[this.__messages.length - 1];
             this.message_id = lastMessage._id;
             this.thread_id = lastMessage.thread_id;
+        }
+    }
+
+    _populateBack() {
+        let message = this.__messages.pop();
+
+        for (let i = 0; i < 10 && message; i++) {
+            this.logMessage(message);
+            message = this.__messages.pop();
+        }
+    }
+
+    // message-window::edge-overshot
+    _onLoadMessages(scrolled_window, pos) {
+        if (pos === Gtk.PositionType.TOP) {
+            this.__load_messages = true;
+            this._populateBack();
         }
     }
 
@@ -668,9 +686,22 @@ var ConversationWindow = GObject.registerClass({
         }
     }
 
-    _onMessageLogged(listbox) {
+    // message-list::size-allocate
+    _onMessageLogged(listbox, allocation) {
         let vadj = this.message_window.get_vadjustment();
-        vadj.set_value(vadj.get_upper() - vadj.get_page_size());
+
+        // Try loading more messages if there's room
+        if (allocation.height <= vadj.get_page_size()) {
+            this._populateBack();
+
+        // Skip if we've just populated backwards by request
+        } else if (this.__load_messages) {
+            this.__load_messages = false;
+
+        // Otherwise scroll to the bottom
+        } else {
+            vadj.set_value(vadj.get_upper() - vadj.get_page_size());
+        }
     }
 
     /**
@@ -709,7 +740,7 @@ var ConversationWindow = GObject.registerClass({
      *
      * @param {object} message - The message object to create a series for
      */
-    _appendSeries(message) {
+    _createSeries(message) {
         let row = new Gtk.ListBoxRow({
             activatable: false,
             selectable: false,
@@ -745,9 +776,9 @@ var ConversationWindow = GObject.registerClass({
         });
         layout.add(row.messages);
 
-        this._thread = row;
-        this._thread.show_all();
-        this.message_list.add(row);
+        row.show_all();
+
+        return row;
     }
 
     /**
@@ -756,15 +787,36 @@ var ConversationWindow = GObject.registerClass({
      * @param {Object} message - A sms message object
      */
     logMessage(message) {
-        // Start a new thread if the message is from a different direction
-        if (!this._thread || this._thread.type !== message.type) {
-            this._appendSeries(message);
+        // Start a new series if this is the first
+        if (!this.__first) {
+            this.__first = this._createSeries(message);
+            this.__last = this.__first;
+            this.message_list.add(this.__first);
         }
 
         // Log the message and set the thread date
-        let conversationMessage = new ConversationMessage(message);
-        this._thread.messages.add(conversationMessage);
-        this._thread.date = message.date;
+        let widget = new ConversationMessage(message);
+
+        // I this is the earliest message so far prepend it
+        if (message.date <= this.__first.date) {
+            if (message.type !== this.__first.type) {
+                this.__first = this._createSeries(message);
+                this.message_list.prepend(this.__first);
+            }
+
+            this.__first.messages.pack_end(widget, false, false, 0);
+            this.__first.date = message.date;
+
+        // Otherwise append it
+        } else {
+            if (message.type !== this.__last.type) {
+                this.__last = this._createSeries(message);
+                this.message_list.add(this.__last);
+            }
+
+            this.__last.messages.pack_start(widget, false, false, 0);
+            this.__last.date = message.date;
+        }
     }
 
     /**
