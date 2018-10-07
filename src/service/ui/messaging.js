@@ -665,8 +665,8 @@ var ConversationWindow = GObject.registerClass({
 
     // message-window::edge-overshot
     _onLoadMessages(scrolled_window, pos) {
-        if (pos === Gtk.PositionType.TOP) {
-            this.__load_messages = true;
+        if (pos === Gtk.PositionType.TOP) {this.message_window.vadjustment
+            this.__load_messages = this.message_window.vadjustment.get_upper();
             this._populateBack();
         }
     }
@@ -688,14 +688,15 @@ var ConversationWindow = GObject.registerClass({
 
     // message-list::size-allocate
     _onMessageLogged(listbox, allocation) {
-        let vadj = this.message_window.get_vadjustment();
+        let vadj = this.message_window.vadjustment;
 
         // Try loading more messages if there's room
         if (allocation.height <= vadj.get_page_size()) {
             this._populateBack();
 
-        // Skip if we've just populated backwards by request
+        // Keep position if we've just loaded old messages
         } else if (this.__load_messages) {
+            vadj.set_value(allocation.height - this.__load_messages);
             this.__load_messages = false;
 
         // Otherwise scroll to the bottom
