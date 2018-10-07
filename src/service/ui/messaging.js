@@ -224,7 +224,8 @@ var ConversationSummary = GObject.registerClass({
         this.add(grid);
 
         let nameLabel = contact.name;
-        let bodyLabel = '<small>' + message.body.split('\n')[0].toPango() + '</small>';
+        let bodyLabel = message.body.split(/\r|\n/)[0].toPango();
+        bodyLabel = '<small>' + bodyLabel + '</small>';
 
         if (message.read === MessageStatus.UNREAD) {
             nameLabel = '<b>' + nameLabel + '</b>';
@@ -349,7 +350,7 @@ var ConversationWindow = GObject.registerClass({
         this.insert_action_group('device', this.device);
 
         // Convenience actions for syncing Contacts/SMS from the menu
-        if (!this.device.get_outgoing_supported('contacts.response_vcards')) {
+        if (this.device.get_outgoing_supported('contacts.response_vcards')) {
             let sync_contacts = new Gio.SimpleAction({ name: 'sync-contacts' });
             sync_contacts.connect('activate', this._sync_contacts.bind(this));
             this.add_action(sync_contacts);
@@ -502,7 +503,7 @@ var ConversationWindow = GObject.registerClass({
         let contacts = this.device.lookup_plugin('contacts');
 
         if (contacts) {
-            contacts.requestUids();
+            contacts.connected();
         }
      }
 
@@ -510,7 +511,7 @@ var ConversationWindow = GObject.registerClass({
         let sms = this.device.lookup_plugin('sms');
 
         if (sms) {
-            sms.requestConversations();
+            sms.connected();
         }
      }
 
