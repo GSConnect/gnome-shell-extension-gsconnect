@@ -401,29 +401,19 @@ var Channel = class Channel {
                     // Try to read and parse a packet
                     data = stream.read_line_finish_utf8(res)[0];
 
+                    // Queue another receive() before handling the packet
+                    this.receive(device);
+
                     // In case %null is returned we don't want an error thrown
                     // when trying to parse it as a packet
                     if (data !== null) {
                         packet = new Packet(data);
                         debug(packet, this.identity.body.deviceName);
-                    }
-
-                    // Queue another receive() before handling the packet
-                    this.receive(device);
-
-                    if (packet) {
                         device.receivePacket(packet);
                     }
                 } catch (e) {
-                    // Another operation is pending, re-queue the receive()
-                    if (e.code === Gio.IOErrorEnum.PENDING) {
-                        this.receive(device);
-
-                    // Something else went wrong; disconnect
-                    } else {
-                        debug(e, this.identity.body.deviceName);
-                        this.close();
-                    }
+                    debug(e, this.identity.body.deviceName);
+                    this.close();
                 }
             }
         );
