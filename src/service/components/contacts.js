@@ -112,42 +112,6 @@ var Store = GObject.registerClass({
     }
 
     /**
-     * Get Gdk.Pixbuf for @path, allowing for the corrupt JPEG's KDE Connect
-     * sometimes sends. This function must be synchronous since it is used in
-     * Contacts.Avatar::draw and Promises have a higher priority in the loop.
-     *
-     * @param {string} path - A local file path
-     */
-    getPixbuf(path, size=null) {
-        let data, loader;
-
-        // Catch missing avatar files
-        try {
-            data = GLib.file_get_contents(path)[1];
-        } catch (e) {
-            logWarning(e.message, path);
-            return undefined;
-        }
-
-        // Consider errors from partially corrupt JPEGs to be warnings
-        try {
-            loader = new GdkPixbuf.PixbufLoader();
-            loader.write(data);
-            loader.close();
-        } catch (e) {
-            logWarning(e, path);
-        }
-
-        let pixbuf = loader.get_pixbuf();
-
-        if (size !== null) {
-            return pixbuf.scale_simple(size, size, GdkPixbuf.InterpType.HYPER);
-        }
-
-        return pixbuf;
-    }
-
-    /**
      * Set a contact avatar from a base64 encoded JPEG ByteArray
      *
      * @param {object} id - The contact id

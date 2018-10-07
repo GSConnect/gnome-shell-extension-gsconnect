@@ -200,8 +200,6 @@ var Plugin = GObject.registerClass({
     _init(device) {
         super._init(device, 'sms');
 
-        this.contacts = this.service.contacts;
-
         // We cache converations/threads so they can be used immediately, even
         // though we'll request them at every connection
         this.conversations = {};
@@ -274,7 +272,7 @@ var Plugin = GObject.registerClass({
 
             let thread_id = messages[0].thread_id;
             let conversation = this.conversations[thread_id] || [];
-            let contact = this.service.contacts.query({
+            let contact = this.device.contacts.query({
                 number: messages[0].address
             });
 
@@ -396,7 +394,7 @@ var Plugin = GObject.registerClass({
      */
     replySms(message) {
         // Ensure we have a contact
-        let contact = this.contacts.query({ number: message.address });
+        let contact = this.device.contacts.query({ number: message.address });
 
         // Check for an extant window
         let window = this._hasWindow(message.address);

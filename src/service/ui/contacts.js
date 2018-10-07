@@ -1,12 +1,50 @@
 'use strict';
 
 const Gdk = imports.gi.Gdk;
+const GdkPixbuf = imports.gi.GdkPixbuf;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
 const Color = imports.service.components.color;
+
+
+/**
+ * Get Gdk.Pixbuf for @path, allowing the corrupt JPEG's KDE Connect sometimes
+ * sends. This function is synchronous
+ *
+ * @param {string} path - A local file path
+ */
+function getPixbuf(path, size=null) {
+    let data, loader;
+
+    // Catch missing avatar files
+    try {
+        data = GLib.file_get_contents(path)[1];
+    } catch (e) {
+        logWarning(e.message, path);
+        return undefined;
+    }
+
+    // Consider errors from partially corrupt JPEGs to be warnings
+    try {
+        loader = new GdkPixbuf.PixbufLoader();
+        loader.write(data);
+        loader.close();
+    } catch (e) {
+        logWarning(e, path);
+    }
+
+    let pixbuf = loader.get_pixbuf();
+
+    // Scale if requested
+    if (size !== null) {
+        return pixbuf.scale_simple(size, size, GdkPixbuf.InterpType.HYPER);
+    } else {
+        return pixbuf;
+    }
+}
 
 
 /**
@@ -65,8 +103,7 @@ var Avatar = GObject.registerClass({
 
     _loadPixbuf() {
         if (this.contact.avatar) {
-            let service = Gio.Application.get_default();
-            this._pixbuf = service.contacts.getPixbuf(this.contact.avatar, 32);
+            this._pixbuf = getPixbuf(this.contact.avatar, 32);
         }
 
         if (this._pixbuf === undefined) {
@@ -307,6 +344,13 @@ var ContactChooserRow = GObject.registerClass({
 var ContactChooser = GObject.registerClass({
     GTypeName: 'GSConnectContactChooser',
     Properties: {
+        'store': GObject.ParamSpec.object(
+            'store',
+            'Store',
+            'The contacts store',
+            GObject.ParamFlags.READWRITE,
+            GObject.Object
+        ),
         'selected': GObject.param_spec_variant(
             'selected',
             'selectedContacts',
@@ -324,17 +368,16 @@ var ContactChooser = GObject.registerClass({
 }, class ContactChooser extends Gtk.ScrolledWindow {
 
     _init(params) {
-        super._init({
+        super._init(Object.assign({
             can_focus: false,
             hexpand: true,
             vexpand: true,
             hscrollbar_policy: Gtk.PolicyType.NEVER,
             shadow_type: Gtk.ShadowType.IN,
             visible: true
-        });
+        }, params));
 
-        this.contacts = Gio.Application.get_default().contacts;
-        this._contactsNotifyId = this.contacts.connect(
+        this._contactsNotifyId = this.store.connect(
             'notify::contacts',
             this._populate.bind(this)
         );
@@ -346,7 +389,7 @@ var ContactChooser = GObject.registerClass({
             hexpand: true,
             placeholder_text: _('Type a phone number or name'),
             tooltip_text: _('Type a phone number or name'),
-            primary_icon_name: this.contacts.provider_icon,
+            primary_icon_name: this.store.provider_icon,
             primary_icon_activatable: false,
             primary_icon_sensitive: true,
             input_purpose: Gtk.InputPurpose.PHONE,
@@ -424,7 +467,7 @@ var ContactChooser = GObject.registerClass({
             this.entry.destroy();
         }
 
-        this.contacts.disconnect(this._contactsNotifyId);
+        this.store.disconnect(this._contactsNotifyId);
     }
 
     // FIXME: one bugly hack job right here
@@ -497,7 +540,7 @@ var ContactChooser = GObject.registerClass({
     _populate() {
         this._list.foreach(row => row.destroy());
 
-        for (let contact of Object.values(this.contacts._contacts)) {
+        for (let contact of this.store) {
             this.add_contact(contact);
         }
     }

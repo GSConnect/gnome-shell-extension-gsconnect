@@ -40,8 +40,6 @@ var Plugin = GObject.registerClass({
 
     _init(device) {
         super._init(device, 'telephony');
-
-        this.contacts = this.service.contacts;
     }
 
     handlePacket(packet) {
@@ -77,7 +75,7 @@ var Plugin = GObject.registerClass({
             }
 
             // Ensure there's a contact stored for this event
-            let contact = this.contacts.query({
+            let contact = this.device.contacts.query({
                 name: packet.body.contactName,
                 number: packet.body.phoneNumber,
                 create: true

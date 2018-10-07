@@ -373,7 +373,9 @@ var ConversationWindow = GObject.registerClass({
         this.message_list.set_header_func(this._headerMessages);
 
         // Contacts
-        this.contact_list = new Contacts.ContactChooser();
+        this.contact_list = new Contacts.ContactChooser({
+            store: this.device.contacts
+        });
         this._selectedNumbersChangedId = this.contact_list.connect(
             'selected-numbers-changed',
             this._onSelectedNumbersChanged.bind(this)
@@ -400,7 +402,7 @@ var ConversationWindow = GObject.registerClass({
             this._address = value;
             this._displayNumber = value;
 
-            let contact = this.service.contacts.query({
+            let contact = this.device.contacts.query({
                 number: value,
                 create: true
             });
@@ -446,24 +448,16 @@ var ConversationWindow = GObject.registerClass({
 
     get contact() {
         if (this._contact) {
-            return this.service.contacts.get_item(this._contact);
+            return this.device.contacts.get_item(this._contact);
         }
 
         return null;
     }
 
     set contact(id) {
-        if (id in this.service.contact._contacts) {
-            this._contact = id;
-        } else {
-            this._contact = null;
-        }
-
+        let contact = this.device.contacts.get_item(id);
+        this._contact = (contact.id) ? contact.id : null;
         this.notify('contact');
-    }
-
-    get service() {
-        return Gio.Application.get_default();
     }
 
     get message_id() {
@@ -616,7 +610,7 @@ var ConversationWindow = GObject.registerClass({
             let sms = this.device.lookup_plugin('sms');
 
             for (let thread of Object.values(sms.conversations)) {
-                let contact = this.contact_list.contacts.query({
+                let contact = this.device.contacts.query({
                     number: thread[0].address
                 });
 
@@ -673,6 +667,14 @@ var ConversationWindow = GObject.registerClass({
         }
     }
 
+    _onMessageLogged(listbox) {
+        let vadj = this.message_window.get_vadjustment();
+        vadj.set_value(vadj.get_upper() - vadj.get_page_size());
+    }
+
+    /**
+     * Search Entry
+     */
     _onEntryChanged(entry) {
         entry.secondary_icon_sensitive = (entry.text.length);
     }
@@ -683,11 +685,6 @@ var ConversationWindow = GObject.registerClass({
         }
     }
 
-    _onMessageLogged(listbox) {
-        let vadj = this.message_window.get_vadjustment();
-        vadj.set_value(vadj.get_upper() - vadj.get_page_size());
-    }
-
     // TODO: this is kind of awkward...
     _onSelectedNumbersChanged(contact_list) {
         if (this.contact_list.selected.size > 0) {
@@ -695,7 +692,7 @@ var ConversationWindow = GObject.registerClass({
             let contact = this.contact_list.selected.get(number);
 
             if (!contact.id) {
-                contact = this.contact_list.contacts.query({
+                contact = this.device.contacts.query({
                     number: number,
                     create: true
                 });
@@ -709,29 +706,28 @@ var ConversationWindow = GObject.registerClass({
      * Add a new thread, which is a series of sequential messages from one user
      * with a single instance of the sender's avatar.
      *
-     * @param {MessageType} direction - The direction of the message
+     * @param {object} message - The message object to create a series for
      */
-    _addThread(direction, date) {
+    _appendSeries(message) {
         let row = new Gtk.ListBoxRow({
             activatable: false,
             selectable: false,
             hexpand: true
         });
-        row.direction = direction;
-        row.date = date;
-        this.message_list.add(row);
+        row.type = message.type;
+        row.date = message.date;
 
         let layout = new Gtk.Box({
             can_focus: false,
             hexpand: true,
             margin: 6,
             spacing: 6,
-            halign: (direction === MessageType.IN) ? Gtk.Align.START : Gtk.Align.END
+            halign: (row.type === MessageType.IN) ? Gtk.Align.START : Gtk.Align.END
         });
         row.add(layout);
 
         // Add avatar for incoming messages
-        if (direction === MessageType.IN) {
+        if (row.type === MessageType.IN) {
             let avatar = new Contacts.Avatar(this.contact);
             avatar.valign = Gtk.Align.END;
             layout.add(avatar);
@@ -743,13 +739,14 @@ var ConversationWindow = GObject.registerClass({
             spacing: 6,
             halign: layout.halign,
             // Avatar width (32px) + layout spacing (6px) + 6px
-            margin_right: (direction === MessageType.IN) ? 44 : 0,
-            margin_left: (direction === MessageType.IN) ? 0: 44
+            margin_right: (row.type === MessageType.IN) ? 44 : 0,
+            margin_left: (row.type === MessageType.IN) ? 0: 44
         });
         layout.add(row.messages);
 
         this._thread = row;
         this._thread.show_all();
+        this.message_list.add(row);
     }
 
     /**
@@ -759,8 +756,8 @@ var ConversationWindow = GObject.registerClass({
      */
     logMessage(message) {
         // Start a new thread if the message is from a different direction
-        if (!this._thread || this._thread.direction !== message.type) {
-            this._addThread(message.type, message.date);
+        if (!this._thread || this._thread.type !== message.type) {
+            this._appendSeries(message);
         }
 
         // Log the message and set the thread date

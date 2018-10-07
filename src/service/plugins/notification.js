@@ -65,8 +65,6 @@ var Plugin = GObject.registerClass({
     _init(device) {
         super._init(device, 'notification');
 
-        this.contacts = this.service.contacts;
-
         // Duplicate tracking of telephony notifications
         this._duplicates = new Map();
 
@@ -437,7 +435,7 @@ var Plugin = GObject.registerClass({
                     this._duplicates.set(packet.body.ticker, duplicate);
                 }
 
-                contact = this.contacts.query({
+                contact = this.device.contacts.query({
                     name: packet.body.title,
                     number: duplicate.phoneNumber || packet.body.title
                 });
@@ -457,7 +455,7 @@ var Plugin = GObject.registerClass({
 
                     // Update contact avatar
                     if (icon instanceof Gio.BytesIcon) {
-                        contact = await this.service.contacts.setAvatarPath(
+                        contact = await this.device.contacts.setAvatarPath(
                             contact.id,
                             icon.file.get_path()
                         );

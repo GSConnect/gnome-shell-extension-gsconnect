@@ -151,6 +151,11 @@ var Device = GObject.registerClass({
         return this.settings.get_string('last-connection');
     }
 
+    get contacts() {
+        let contacts = this.lookup_plugin('contacts');
+        return (contacts) ? contacts._store : this.service.contacts;
+    }
+
     get encryption_info() {
         let fingerprint = _('Not available');
 
