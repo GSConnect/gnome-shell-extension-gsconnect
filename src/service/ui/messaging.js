@@ -950,8 +950,6 @@ var ConversationChooser = GObject.registerClass({
             }
 
             if (window.address) {
-                let recipient = window.contact;
-
                 let row = new Gtk.ListBoxRow();
                 row.window_ = window;
                 this.list.add(row);
@@ -962,10 +960,10 @@ var ConversationChooser = GObject.registerClass({
                 });
                 row.add(grid);
 
-                grid.attach(new Contacts.Avatar(recipient), 0, 0, 1, 2);
+                grid.attach(new Contacts.Avatar(window.contact), 0, 0, 1, 2);
 
                 let name = new Gtk.Label({
-                    label: recipient.name,
+                    label: window.contact.name,
                     halign: Gtk.Align.START
                 });
                 grid.attach(name, 1, 0, 1, 1);

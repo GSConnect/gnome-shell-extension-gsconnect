@@ -95,21 +95,18 @@ var Avatar = GObject.registerClass({
             tooltip_text: contact.name
         });
 
-        this.contact = contact;
-
-        // Popover
-        this.add_events(Gdk.EventMask.BUTTON_PRESS_MASK | Gdk.EventMask.BUTTON_RELEASE_MASK);
+        this._path = contact.avatar;
     }
 
     _loadPixbuf() {
-        if (this.contact.avatar) {
-            this._pixbuf = getPixbuf(this.contact.avatar, 32);
+        if (this._path) {
+            this._pixbuf = getPixbuf(this._path, 32);
         }
 
         if (this._pixbuf === undefined) {
             this._fallback = true;
 
-            this.bg_color = Color.randomRGBA(this.contact.name);
+            this.bg_color = Color.randomRGBA(this.tooltip_text);
 
             let info = Gtk.IconTheme.get_default().lookup_icon(
                'avatar-default',
@@ -126,11 +123,6 @@ var Avatar = GObject.registerClass({
         }
 
         this._offset = (this.width_request - this._pixbuf.width) / 2;
-    }
-
-    vfunc_button_press_event(event) {
-        this.vfunc_popup_menu();
-        return true;
     }
 
     vfunc_draw(cr) {
@@ -153,187 +145,7 @@ var Avatar = GObject.registerClass({
         cr.paint();
 
         cr.$dispose();
-        return false;
-    }
-
-    vfunc_popup_menu() {
-        let popover = new Gtk.Popover({
-            relative_to: this,
-            visible: true
-        });
-        // FIXME popover closes before button callback executes
-        //popover.connect('closed', (popover) => popover.destroy());
-
-        let box = new Gtk.Box({
-            margin: 10,
-            visible: true
-        });
-        popover.add(box);
-
-        // Gnome Contacts
-        if (this.contact.origin === 'folks' && hasCommand('gnome-contacts')) {
-            let contactsItem = new Gtk.ModelButton({
-                centered: true,
-                icon: new Gio.ThemedIcon({ name: 'gnome-contacts-symbolic' }),
-                iconic: true,
-                visible: true
-            });
-            contactsItem.connect('clicked', this._popoverContacts.bind(this));
-            box.add(contactsItem);
-        }
-
-        // Delete Contact (local only)
-        if (this.contact.origin === 'gsconnect') {
-            let deleteItem = new Gtk.ModelButton({
-                centered: true,
-                icon: new Gio.ThemedIcon({ name: 'user-trash-symbolic' }),
-                iconic: true,
-                visible: true
-            });
-            deleteItem.connect('clicked', this._popoverDelete.bind(this));
-            box.add(deleteItem);
-        }
-
-        if (box.get_children().length > 0) {
-            popover.popup();
-            return true;
-        } else {
-            popover.destroy();
-            return false;
-        }
-    }
-
-    _popoverContacts(button, event) {
-        GLib.spawn_command_line_async(
-            `gnome-contacts -i ${this.contact.id}`
-        );
-    }
-
-    _popoverDelete(button, event) {
-        let service = Gio.Application.get_default();
-        service.contacts.remove(this.contact);
-    }
-});
-
-
-var ContactChooserRow = GObject.registerClass({
-    GTypeName: 'GSConnectContactChooserRow',
-    Properties: {
-        'selected': GObject.param_spec_variant(
-            'selected',
-            'Selected Numbers',
-            'A list of selected phone numbers',
-            new GLib.VariantType('as'),
-            null,
-            GObject.ParamFlags.READABLE
-        )
-    }
-}, class ContactChooserRow extends Gtk.ListBoxRow {
-
-    _init(contact) {
-        super._init({
-            activatable: false,
-            selectable: false,
-            visible: true
-        });
-
-        this.contact = contact;
-
-        let grid = new Gtk.Grid({
-            margin: 6,
-            column_spacing: 6,
-            visible: true
-        });
-        this.add(grid);
-
-        grid.attach(new Avatar(contact), 0, 0, 1, 2);
-
-        let name = new Gtk.Label({
-            label: contact.name || _('Unknown Contact'),
-            halign: Gtk.Align.START,
-            hexpand: true,
-            visible: true
-        });
-        grid.attach(name, 1, 0, 1, 1);
-
-        let numbers = new Gtk.Box({
-            orientation: Gtk.Orientation.VERTICAL,
-            margin_right: 12,
-            spacing: 3,
-            visible: true
-        });
-        grid.attach(numbers, 1, 1, 1, 1);
-
-        for (let entry of contact.numbers) {
-            this.addNumber(entry);
-        }
-    }
-
-    get name() {
-        return this.get_child().get_child_at(1, 0).label;
-    }
-
-    set name(value) {
-        this.get_child().get_child_at(1, 0).label = value;
-    }
-
-    get numbers() {
-        return this.get_child().get_child_at(1, 1).get_children();
-    }
-
-    get selected() {
-        return this.numbers.filter(
-            b => b.checkbutton.active
-        ).map(
-            b => b.number
-        );
-    }
-
-    addNumber(number) {
-        let grid = new Gtk.Grid({
-            column_spacing: 12,
-            visible: true
-        });
-        Object.defineProperty(grid, 'number', {
-            get: function() {
-                return this.get_child_at(0, 0).label;
-            },
-            set: function(value) {
-                this.get_child_at(0, 0).label = value;
-            }
-        });
-        this.get_child().get_child_at(1, 1).add(grid);
-
-        let value = new Gtk.Label({
-            label: number.value,
-            halign: Gtk.Align.START,
-            hexpand: true,
-            visible: true
-        });
-        value.get_style_context().add_class('dim-label');
-        grid.add(value);
-
-        let type = new Gtk.Label({
-            label: localizeNumberType(number.type),
-            use_markup: true,
-            visible: true
-        });
-        type.get_style_context().add_class('dim-label');
-        grid.add(type);
-
-        grid.checkbutton = new Gtk.CheckButton({
-            visible: true
-        });
-        grid.checkbutton.connect('toggled', this._toggled);
-        grid.add(grid.checkbutton);
-    }
-
-    _toggled(checkbutton) {
-        // Gtk.Grid (number) <- Gtk.Box (numbers) <- Gtk.Grid <- Gtk.ListBoxRow
-        let row = checkbutton.get_parent().get_parent().get_parent().get_parent();
-        // Gtk.ListBox <- Gtk.Viewport <- Gtk.ScrolledWindow
-        let chooser = row.get_parent().get_parent().get_parent();
-        chooser.notify('selected');
+        return Gdk.EVENT_PROPAGATE;
     }
 });
 
@@ -460,28 +272,26 @@ var ContactChooser = GObject.registerClass({
     _onEntryChanged(entry) {
         this._list._entry = entry.text;
 
-        // If the entry contains string with more than 2 digits...
-        if (entry.text.replace(/\D/g, '').length > 2) {
+        // If the entry contains string with 3 or more tdigits...
+        if (entry.text.replace(/\D/g, '').length >= 3) {
             // ...ensure we have a temporary contact for it
             if (this._temporary === undefined) {
                 this._temporary = this.add_contact({
                     // TRANSLATORS: A phone number (eg. "Send to 555-5555")
                     name: _('Send to %s').format(this.entry.text),
-                    numbers: [{ type: 'manual', number: this.entry.text }]
+                    numbers: [{ type: 'manual', value: this.entry.text }]
                 });
+                this._temporary.__manual = true;
 
             // ...or if we already do, then update it
             } else {
                 // Update UI
                 this._temporary.name = _('Send to %s').format(this.entry.text);
                 this._temporary.numbers[0].number = this.entry.text;
-
-                // Update contact object
-                this._temporary.contact.numbers[0].value = this.entry.text;
             }
 
         // ...otherwise remove any temporary contact that's been created
-        } else if (this._temporary !== undefined) {
+        } else if (this._temporary) {
             this._temporary.destroy();
             this._temporary = undefined;
         }
@@ -496,7 +306,7 @@ var ContactChooser = GObject.registerClass({
         let queryNumber = list._entry.replace(/\D/g, '');
 
         // Dynamic contact always shown
-        if (row.contact.numbers[0].type === 'manual') {
+        if (row.__manual) {
             return true;
         // Show contact and all numbers if text is substring of name
         } else if (row.name.toLocaleLowerCase().includes(queryName)) {
@@ -532,26 +342,13 @@ var ContactChooser = GObject.registerClass({
     }
 
     _sort(row1, row2) {
-        if (row1.contact.numbers[0].type === 'manual') {
+        if (row1.__manual) {
             return -1;
-        } else if (row2.contact.numbers[0].type === 'manual') {
+        } else if (row2.__manual) {
             return 1;
         } else {
-            let row1active, row2active;
-
-            for (let num of row1.numbers) {
-                if (num.checkbutton.active) {
-                    row1active = true;
-                    break;
-                }
-            }
-
-            for (let num of row2.numbers) {
-                if (num.checkbutton.active) {
-                    row2active = true;
-                    break;
-                }
-            }
+            let row1active = row1.numbers.some(number => number.selected);
+            let row2active = row1.numbers.some(number => number.selected);
 
             if (row1active && !row2active) {
                 return -1;
@@ -569,9 +366,110 @@ var ContactChooser = GObject.registerClass({
      * @param {Object} contact - A contact object
      */
     add_contact(contact) {
-        let row = new ContactChooserRow(contact);
+        //let row = new ContactChooserRow(contact);
+
+        let row = new Gtk.ListBoxRow({
+            activatable: false,
+            selectable: false,
+            visible: true
+        });
+
+        let grid = new Gtk.Grid({
+            margin: 6,
+            column_spacing: 6,
+            visible: true
+        });
+        row.add(grid);
+
+        grid.attach(new Avatar(contact), 0, 0, 1, 2);
+
+        let name = new Gtk.Label({
+            label: contact.name || _('Unknown Contact'),
+            halign: Gtk.Align.START,
+            hexpand: true,
+            visible: true
+        });
+        grid.attach(name, 1, 0, 1, 1);
+
+        let numbers = new Gtk.Box({
+            orientation: Gtk.Orientation.VERTICAL,
+            margin_right: 12,
+            spacing: 3,
+            visible: true
+        });
+        grid.attach(numbers, 1, 1, 1, 1);
+
+        Object.defineProperties(row, {
+            name: {
+                get: () => name.get_label(),
+                set: (value) => name.set_label(value)
+            },
+            numbers: {
+                get: () => numbers.get_children()
+            },
+            selected: {
+                get: () => numbers.get_children().filter(
+                    widget => widget.selected
+                ).map(
+                    widget => widget.number
+                )
+            }
+        });
+
+        contact.numbers.map(number => this._add_contact_number(numbers, number));
+
         this._list.add(row);
         return row;
+    }
+
+    _toggled(checkbutton) {
+        let chooser = checkbutton.get_parent();
+
+        while (!(chooser instanceof Gtk.ScrolledWindow)) {
+            chooser = chooser.get_parent();
+        }
+
+        chooser.notify('selected');
+    }
+
+    _add_contact_number(box, number) {
+        let grid = new Gtk.Grid({
+            column_spacing: 12
+        });
+        box.add(grid);
+
+        // Number
+        let value = new Gtk.Label({
+            label: number.value,
+            halign: Gtk.Align.START,
+            hexpand: true
+        });
+        value.get_style_context().add_class('dim-label');
+        grid.add(value);
+
+        // Type
+        let type = new Gtk.Label({ label: localizeNumberType(number.type) });
+        type.get_style_context().add_class('dim-label');
+        grid.add(type);
+
+        // Selected
+        let checkbutton = new Gtk.CheckButton();
+        checkbutton.connect('toggled', this._toggled);
+        grid.add(checkbutton);
+
+        // Convenience getter/setter
+        Object.defineProperties(grid, {
+            'number': {
+                get: () => value.get_label(),
+                set: (num) => value.set_label(num)
+            },
+            'selected': {
+                get: () => checkbutton.get_active(),
+                set: (bool) => checkbutton.set_active(bool)
+            }
+        });
+
+        grid.show_all();
     }
 
     /**
@@ -580,7 +478,7 @@ var ContactChooser = GObject.registerClass({
     reset() {
         this._list.foreach(row => {
             row.numbers.map(number => {
-                number.checkbutton.active = false;
+                number.selected = false;
             });
         });
     }
