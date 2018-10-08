@@ -44,9 +44,9 @@ var Plugin = GObject.registerClass({
 
     handlePacket(packet) {
         // This is the end of a 'ringing' or 'talking' event
-        // TODO: it might choke on contactName here...
         if (packet.body.isCancel) {
-            this.device.hideNotification(`${packet.body.event}|${packet.body.contactName}`);
+            let sender = packet.body.contactName || packet.body.phoneNumber;
+            this.device.hideNotification(`${packet.body.event}|${sender}`);
             this._restoreMediaState();
             return;
         }
