@@ -141,7 +141,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
 
             await this._activate();
         } catch (e) {
-            logError(e);
+            debug(e);
             Gio.DBusError.strip_remote_error(e);
             Main.notifyError(_('GSConnect'), e.message);
         }
@@ -158,6 +158,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
             menu.actor.visible = true;
         }
 
+        // Dim the indicator if no devices are connected
         if (Object.values(this._menus).some(menu => menu.device.Connected)) {
             this._indicator.opacity = 255;
         } else {
@@ -165,42 +166,35 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         }
     }
 
-    async _activate() {
-        try {
-            if (this._activating) {
-                return;
-            }
-
-            this._activating = true;
-
-            // Wait for a result before continuing
-            await new Promise((resolve, reject) => {
-                Gio.DBus.session.call(
-                    'org.freedesktop.DBus',
-                    '/org/freedesktop/DBus',
-                    'org.freedesktop.DBus',
-                    'StartServiceByName',
-                    new GLib.Variant('(su)', [gsconnect.app_id, 0]),
-                    null,
-                    Gio.DBusCallFlags.NONE,
-                    -1,
-                    null,
-                    (connection, res) => {
-                        try {
-                            resolve(connection.call_finish(res));
-                        } catch (e) {
-                            reject(e);
-                        }
-                    }
-                );
-            });
-        } catch (e) {
-            logError(e);
-            Gio.DBusError.strip_remote_error(e);
-            Main.notifyError(_('GSConnect'), e.message);
-        } finally {
-            this._activating = false;
+    _activate() {
+        if (this._activating) {
+            return;
         }
+
+        this._activating = true;
+
+        // Wait for a result before continuing
+        return new Promise((resolve, reject) => {
+            Gio.DBus.session.call(
+                'org.freedesktop.DBus',
+                '/org/freedesktop/DBus',
+                'org.freedesktop.DBus',
+                'StartServiceByName',
+                new GLib.Variant('(su)', [gsconnect.app_id, 0]),
+                null,
+                Gio.DBusCallFlags.NONE,
+                -1,
+                this._cancellable,
+                (connection, res) => {
+                    try {
+                        this._activating = false;
+                        resolve(connection.call_finish(res));
+                    } catch (e) {
+                        reject(e);
+                    }
+                }
+            );
+        });
     }
 
     async _onNameOwnerChanged(manager) {
@@ -213,6 +207,8 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
             }
         } catch (e) {
             debug(e);
+            Gio.DBusError.strip_remote_error(e);
+            Main.notifyError(_('GSConnect'), e.message);
         }
     }
 
