@@ -577,7 +577,7 @@ var Device = GObject.registerClass({
         this._onConnected(this.device);
 
         // Hide elements for any disabled plugins
-        for (let name of this.device.supported_plugins) {
+        for (let name of this.settings.get_strv('supported-plugins')) {
             if (this.hasOwnProperty(name)) {
                 this[name].visible = this.device.get_plugin_allowed(name);
             }
@@ -1348,26 +1348,21 @@ var Device = GObject.registerClass({
             visible: true
         });
         widget.name = plugin;
-        widget._togglePluginId = widget.connect(
+        row._togglePluginId = widget.connect(
             'notify::active',
             this._togglePlugin.bind(this)
         );
         row.add(widget);
     }
 
-    async _populatePlugins() {
-        try {
-            this.plugin_list.foreach(row => {
-                let checkbutton = row.get_child();
-                checkbutton.disconnect(checkbutton._togglePluginId);
-                row.destroy()
-            });
+    _populatePlugins() {
+        this.plugin_list.foreach(row => {
+            row.get_child().disconnect(row._togglePluginId);
+            row.destroy()
+        });
 
-            for (let plugin of this.device.supported_plugins) {
-                await this._addPlugin(plugin);
-            }
-        } catch (e) {
-            logError(e);
+        for (let name of this.settings.get_strv('supported-plugins')) {
+            this._addPlugin(name);
         }
     }
 
