@@ -717,8 +717,8 @@ var ConversationWindow = GObject.registerClass({
 
     // TODO: this is kind of awkward...
     _onSelectedNumbersChanged(contact_list) {
-        if (this.contact_list.selected.size > 0) {
-            this.address = this.contact_list.selected.keys().next().value;
+        if (this.contact_list.selected.length > 0) {
+            this.address = this.contact_list.selected[0];
         }
     }
 

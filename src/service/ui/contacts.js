@@ -442,7 +442,7 @@ var ContactChooser = GObject.registerClass({
         this._list.foreach(row => {
             row.selected.map(number => selected.add(number));
         });
-        return selected;
+        return Array.from(selected);
     }
 
     _destroy() {
