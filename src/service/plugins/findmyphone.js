@@ -14,7 +14,7 @@ var Metadata = {
     incomingCapabilities: ['kdeconnect.findmyphone.request'],
     outgoingCapabilities: ['kdeconnect.findmyphone.request'],
     actions: {
-        find: {
+        ring: {
             label: _('Locate'),
             icon_name: 'find-location-symbolic',
 
@@ -103,7 +103,7 @@ var Plugin = GObject.registerClass({
     /**
      * Request the remote device announce it's location
      */
-    find() {
+    ring() {
         this.device.sendPacket({
             id: 0,
             type: 'kdeconnect.findmyphone.request',

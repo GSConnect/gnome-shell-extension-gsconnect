@@ -21,7 +21,7 @@ var Metadata = {
     ],
     actions: {
         // SMS Actions
-        newSms: {
+        sms: {
             label: _('Messaging'),
             icon_name: 'sms-symbolic',
 
@@ -478,7 +478,7 @@ var Plugin = GObject.registerClass({
     /**
      * Open and present a new SMS window
      */
-    newSms() {
+    sms() {
         let window = new Messaging.ConversationWindow({
             device: this.device
         });

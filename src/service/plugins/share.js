@@ -14,7 +14,7 @@ var Metadata = {
     incomingCapabilities: ['kdeconnect.share.request'],
     outgoingCapabilities: ['kdeconnect.share.request'],
     actions: {
-        shareDialog: {
+        share: {
             label: _('Share'),
             icon_name: 'send-to-symbolic',
 
@@ -236,7 +236,7 @@ var Plugin = GObject.registerClass({
     /**
      * Remote methods
      */
-    shareDialog() {
+    share() {
         debug('opening FileChooserDialog');
 
         let dialog = new FileChooserDialog(this.device);

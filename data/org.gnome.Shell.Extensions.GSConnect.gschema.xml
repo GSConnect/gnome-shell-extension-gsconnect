@@ -53,7 +53,7 @@
       <default>{}</default>
     </key>
     <key name="menu-actions" type="as">
-      <default>["newSms", "find", "mount", "commands", "shareDialog"]</default>
+      <default>["sms", "ring", "mount", "commands", "share"]</default>
     </key>
     <key name="name" type="s">
       <default>""</default>
