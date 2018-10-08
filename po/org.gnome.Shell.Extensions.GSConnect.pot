@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-06 08:07-0700\n"
+"POT-Creation-Date: 2018-10-08 05:06-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,17 +18,16 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: data/conversation-window.ui:13 src/service/ui/messaging.js:452
+#: data/conversation-window.ui:13 src/service/ui/messaging.js:543
 msgid "Conversations"
 msgstr ""
 
-#: data/conversation-window.ui:127 data/conversation-window.ui:131
-msgid "Type a message"
+#: data/conversation-window.ui:101 src/shell/device.js:578
+msgid "Device is disconnected"
 msgstr ""
 
-#: data/conversation-window.ui:215 src/service/device.js:407
-#: src/shell/device.js:364
-msgid "Reconnect"
+#: data/conversation-window.ui:197 data/conversation-window.ui:201
+msgid "Type a message"
 msgstr ""
 
 #: data/device.ui:132 src/service/ui/settings.js:973
@@ -118,43 +117,51 @@ msgid "Connect to…"
 msgstr ""
 
 #: data/menus.ui:11
-msgid "Help"
+msgid "Sync Contacts"
 msgstr ""
 
 #: data/menus.ui:16
+msgid "Sync Messages"
+msgstr ""
+
+#: data/menus.ui:23
+msgid "Help"
+msgstr ""
+
+#: data/menus.ui:28
 msgid "Debugger"
 msgstr ""
 
-#: data/menus.ui:20
+#: data/menus.ui:32
 msgid "About"
 msgstr ""
 
-#: data/menus.ui:29
+#: data/menus.ui:41
 msgid "Connect Bluetooth"
 msgstr ""
 
-#: data/menus.ui:35
+#: data/menus.ui:47
 msgid "Connect LAN"
 msgstr ""
 
-#: data/menus.ui:41 src/service/device.js:423 src/shell/device.js:374
+#: data/menus.ui:53 src/service/device.js:428 src/shell/device.js:374
 msgid "Pair"
 msgstr ""
 
-#: data/menus.ui:47 src/service/device.js:431
+#: data/menus.ui:59 src/service/device.js:436
 msgid "Unpair"
 msgstr ""
 
-#: data/menus.ui:59 data/menus.ui:82
+#: data/menus.ui:71 data/menus.ui:94
 msgid "Nothing"
 msgstr ""
 
-#: data/menus.ui:65 data/menus.ui:88
+#: data/menus.ui:77 data/menus.ui:100
 msgid "Lower"
 msgstr ""
 
 #. TRANSLATORS: Silence an incoming call
-#: data/menus.ui:71 data/menus.ui:94 src/service/plugins/telephony.js:192
+#: data/menus.ui:83 data/menus.ui:106 src/service/plugins/telephony.js:190
 msgid "Mute"
 msgstr ""
 
@@ -203,8 +210,8 @@ msgid "OpenRepos.net"
 msgstr ""
 
 #. TRANSLATORS: A phone number type
-#: data/settings.ui:1195 src/service/ui/contacts.js:19
-#: src/service/ui/contacts.js:40
+#: data/settings.ui:1195 src/service/ui/contacts.js:57
+#: src/service/ui/contacts.js:78
 msgid "Other"
 msgstr ""
 
@@ -226,7 +233,7 @@ msgid "Mobile Settings"
 msgstr ""
 
 #. TRANSLATORS: Extension name
-#: src/extension.js:146 src/extension.js:200 src/service/daemon.js:95
+#: src/extension.js:146 src/extension.js:211 src/service/daemon.js:95
 #: src/service/daemon.js:404 webextension/gettext.js:27
 msgid "GSConnect"
 msgstr ""
@@ -321,12 +328,12 @@ msgstr ""
 msgid "Dial Number"
 msgstr ""
 
-#: src/service/device.js:155
+#: src/service/device.js:160
 msgid "Not available"
 msgstr ""
 
 #. TRANSLATORS: Bluetooth address for remote device
-#: src/service/device.js:159
+#: src/service/device.js:164
 #, javascript-format
 msgid "Bluetooth device at %s"
 msgstr ""
@@ -337,42 +344,46 @@ msgstr ""
 #.
 #. Google Pixel Fingerprint:
 #. 00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
-#: src/service/device.js:177 src/service/device.js:179
+#: src/service/device.js:182 src/service/device.js:184
 #, javascript-format
 msgid "%s Fingerprint:"
 msgstr ""
 
-#: src/service/device.js:229
+#: src/service/device.js:234
 msgid "Laptop"
 msgstr ""
 
-#: src/service/device.js:231
+#: src/service/device.js:236
 msgid "Smartphone"
 msgstr ""
 
-#: src/service/device.js:233
+#: src/service/device.js:238
 msgid "Tablet"
 msgstr ""
 
-#: src/service/device.js:235
+#: src/service/device.js:240
 msgid "Desktop"
 msgstr ""
 
-#: src/service/device.js:415 src/shell/device.js:416
+#: src/service/device.js:412 src/shell/device.js:364
+msgid "Reconnect"
+msgstr ""
+
+#: src/service/device.js:420 src/shell/device.js:416
 msgid "Settings"
 msgstr ""
 
 #. TRANSLATORS: eg. Pair Request from Google Pixel
-#: src/service/device.js:606
+#: src/service/device.js:611
 #, javascript-format
 msgid "Pair Request from %s"
 msgstr ""
 
-#: src/service/device.js:613
+#: src/service/device.js:618
 msgid "Reject"
 msgstr ""
 
-#: src/service/device.js:618
+#: src/service/device.js:623
 msgid "Accept"
 msgstr ""
 
@@ -453,7 +464,7 @@ msgstr ""
 msgid "Send Notification"
 msgstr ""
 
-#: src/service/plugins/notification.js:486
+#: src/service/plugins/notification.js:499
 #, javascript-format
 msgid "Missed call from %s"
 msgstr ""
@@ -510,8 +521,8 @@ msgstr ""
 msgid "Share Text"
 msgstr ""
 
-#: src/service/plugins/share.js:42 src/service/ui/messaging.js:817
-#: src/service/ui/messaging.js:828
+#: src/service/plugins/share.js:42 src/service/ui/messaging.js:863
+#: src/service/ui/messaging.js:874
 msgid "Share Link"
 msgstr ""
 
@@ -629,59 +640,54 @@ msgid "Mute Call"
 msgstr ""
 
 #. TRANSLATORS: eg. Incoming call from John Smith
-#: src/service/plugins/telephony.js:188
+#: src/service/plugins/telephony.js:186
 #, javascript-format
 msgid "Incoming call from %s"
 msgstr ""
 
 #. TRANSLATORS: eg. Call in progress with John Smith
-#: src/service/plugins/telephony.js:203
+#: src/service/plugins/telephony.js:202
 #, javascript-format
 msgid "Call in progress with %s"
 msgstr ""
 
 #. TRANSLATORS: A phone number type
-#: src/service/ui/contacts.js:24
+#: src/service/ui/contacts.js:62
 msgid "Fax"
 msgstr ""
 
 #. TRANSLATORS: A phone number type
-#: src/service/ui/contacts.js:28
+#: src/service/ui/contacts.js:66
 msgid "Work"
 msgstr ""
 
 #. TRANSLATORS: A phone number type
-#: src/service/ui/contacts.js:32
+#: src/service/ui/contacts.js:70
 msgid "Mobile"
 msgstr ""
 
 #. TRANSLATORS: A phone number type
-#: src/service/ui/contacts.js:36
+#: src/service/ui/contacts.js:74
 msgid "Home"
 msgstr ""
 
-#: src/service/ui/contacts.js:75 src/service/ui/contacts.js:219
-msgid "Unknown Contact"
-msgstr ""
-
-#. TODO: we have no use for unknown numbers
-#: src/service/ui/contacts.js:276
-msgid "Unknown Number"
-msgstr ""
-
-#: src/service/ui/contacts.js:347 src/service/ui/contacts.js:348
+#: src/service/ui/contacts.js:194 src/service/ui/contacts.js:195
 msgid "Type a phone number or name"
 msgstr ""
 
-#: src/service/ui/contacts.js:392
+#: src/service/ui/contacts.js:239
 msgid "Add people to start a conversation"
 msgstr ""
 
 #. TRANSLATORS: A phone number (eg. "Send to 555-5555")
 #. Update UI
-#: src/service/ui/contacts.js:440 src/service/ui/contacts.js:447
+#: src/service/ui/contacts.js:281 src/service/ui/contacts.js:289
 #, javascript-format
 msgid "Send to %s"
+msgstr ""
+
+#: src/service/ui/contacts.js:387
+msgid "Unknown Contact"
 msgstr ""
 
 #. TRANSLATORS: Title of keyboard shortcut dialog
@@ -776,13 +782,7 @@ msgstr ""
 msgid "Yesterday・%s"
 msgstr ""
 
-#. TRANSLATORS: eg. Google Pixel is disconnected
-#: src/service/ui/messaging.js:350
-#, javascript-format
-msgid "%s is disconnected"
-msgstr ""
-
-#: src/service/ui/messaging.js:837
+#: src/service/ui/messaging.js:883
 msgid "New Message"
 msgstr ""
 
@@ -810,10 +810,6 @@ msgstr ""
 #: src/shell/device.js:327
 #, javascript-format
 msgid "%d%% (%d∶%02d Remaining)"
-msgstr ""
-
-#: src/shell/device.js:578
-msgid "Device is disconnected"
 msgstr ""
 
 #: src/shell/device.js:580
