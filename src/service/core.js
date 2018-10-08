@@ -89,7 +89,6 @@ var Channel = class Channel {
     get cancellable() {
         if (this._cancellable === undefined) {
             this._cancellable = new Gio.Cancellable();
-            this._cancellable.connect(this.close.bind(this));
         }
 
         return this._cancellable;
@@ -249,7 +248,7 @@ var Channel = class Channel {
 
             return this._authenticate(connection);
         } else {
-            return connection;
+            return Promise.resolve(connection);
         }
     }
 
@@ -272,7 +271,7 @@ var Channel = class Channel {
 
             return this._authenticate(connection);
         } else {
-            return connection;
+            return Promise.resolve(connection);
         }
     }
 
@@ -349,12 +348,7 @@ var Channel = class Channel {
 
             return true;
         } catch(e) {
-            if (this.type === 'tcp') {
-                logError(e, connection.get_remote_address().to_string());
-            } else {
-                logError(e);
-            }
-
+            debug(e);
             this.close();
             return false;
         }
