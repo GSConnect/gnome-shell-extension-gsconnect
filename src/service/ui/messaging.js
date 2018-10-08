@@ -657,7 +657,7 @@ var ConversationWindow = GObject.registerClass({
     _populateBack() {
         let message = this.__messages.pop();
 
-        for (let i = 0; i < 10 && message; i++) {
+        for (let i = 0; i < 5 && message; i++) {
             this.logMessage(message);
             message = this.__messages.pop();
         }
@@ -665,7 +665,7 @@ var ConversationWindow = GObject.registerClass({
 
     // message-window::edge-overshot
     _onLoadMessages(scrolled_window, pos) {
-        if (pos === Gtk.PositionType.TOP) {this.message_window.vadjustment
+        if (pos === Gtk.PositionType.TOP) {
             this.__load_messages = this.message_window.vadjustment.get_upper();
             this._populateBack();
         }
