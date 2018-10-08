@@ -91,16 +91,16 @@ var Store = GObject.registerClass({
 
     set context(context) {
         this._context = context;
-        this._path = GLib.build_filenamev([gsconnect.cachedir, context]);
-        GLib.mkdir_with_parents(this._path, 448);
+        this.__cache_path = GLib.build_filenamev([gsconnect.cachedir, context]);
+        GLib.mkdir_with_parents(this.__cache_path, 448);
 
         this.__cache_file = Gio.File.new_for_path(
-            GLib.build_filenamev([this._path, 'contacts.json'])
+            GLib.build_filenamev([this.__cache_path, 'contact_store.json'])
         );
     }
 
     get provider_icon() {
-        if (this._provider_icon === undefined) {
+        if (!this._provider_icon) {
             this._provider_icon = 'call-start-symbolic';
         }
 
@@ -113,16 +113,15 @@ var Store = GObject.registerClass({
     }
 
     /**
-     * Save an image ByteArray to file and return the path
+     * Save a ByteArray to file and return the path
      *
      * @param {ByteArray} contents - An image ByteArray
      * @return {string} - Path the the avatar file
      */
-    cacheImage(contents) {
+    setAvatarContents(contents) {
         return new Promise((resolve, reject) => {
             let md5 = GLib.compute_checksum_for_data(GLib.ChecksumType.MD5, contents);
-
-            let path = GLib.build_filenamev([this._path, `${md5}`]);
+            let path = GLib.build_filenamev([this.__cache_path, `${md5}`]);
             let file = Gio.File.new_for_path(path);
 
             if (file.query_exists(null)) {
@@ -155,17 +154,13 @@ var Store = GObject.registerClass({
      * @return {object} - The updated contact
      */
     setAvatarPath(id, path) {
-        return new Promise((resolve, reject) => {
-            let contact = this._contacts[id];
+        let contact = this._contacts[id];
 
-            if (contact) {
-                this._contacts[id].avatar = path;
-                this.notify('contacts');
-                resolve(this._contacts[id]);
-            } else {
-                reject(new Error('no such contact'));
-            }
-        });
+        if (contact) {
+            this._contacts[id].avatar = path;
+            this.notify('contacts');
+            return this._contacts[id];
+        }
     }
 
     /**
@@ -245,23 +240,23 @@ var Store = GObject.registerClass({
      * @param {string} id - The id of the contact to delete
      */
     add(contact) {
-        switch (false) {
-            case (contact.id):
-            case (contact.name):
-            case (contact.numbers):
-            case (contact.numbers[0]):
-            case (contact.numbers[0].type):
-            case (contact.numbers[0].value):
+        switch (true) {
+            case !contact.id:
+            case !contact.name:
+            case !contact.numbers:
+            case !contact.numbers[0]:
+            case !contact.numbers[0].type:
+            case !contact.numbers[0].value:
                 return;
 
-            // New contact
-            case (this._contacts[contact.id]):
-                this._contacts[contact.id] = contact;
+            // Updated contact
+            case this._contacts.hasOwnProperty(contact.id):
+                Object.assign(this._contacts[contact.id], contact);
                 break;
 
-            // Updated contact
+            // New contact
             default:
-                Object.assign(this._contacts[contact.id], contact);
+                this._contacts[contact.id] = contact;
         }
 
         this.notify('contacts');
