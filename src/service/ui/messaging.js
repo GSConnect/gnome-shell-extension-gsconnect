@@ -327,10 +327,7 @@ var ConversationWindow = GObject.registerClass({
     },
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/conversation-window.ui',
     Children: [
-        'headerbar',
-        'overlay',
-        'info-box', 'info-button', 'info-label',
-        'stack',
+        'headerbar', 'infobar', 'stack',
         'go-previous',
         'conversation-window', 'conversation-list', 'conversation-add',
         'message-window', 'message-list', 'message-entry'
@@ -349,6 +346,13 @@ var ConversationWindow = GObject.registerClass({
 
         this.insert_action_group('device', this.device);
 
+        this.device.lookup_action('sendSms').bind_property(
+            'enabled',
+            this.message_entry,
+            'sensitive',
+            GObject.BindingFlags.BIDIRECTIONAL
+        );
+
         // Convenience actions for syncing Contacts/SMS from the menu
         if (this.device.get_outgoing_supported('contacts.response_vcards')) {
             let sync_contacts = new Gio.SimpleAction({ name: 'sync-contacts' });
@@ -365,9 +369,6 @@ var ConversationWindow = GObject.registerClass({
         // We track the local id's of remote sms notifications so we can
         // withdraw them locally (thus closing them remotely) when focused.
         this._notifications = [];
-
-        // TRANSLATORS: eg. Google Pixel is disconnected
-        this.info_label.label = _('%s is disconnected').format(this.device.name);
 
         // Conversations
         this.conversation_list.set_sort_func(this._sortConversations);
@@ -386,9 +387,11 @@ var ConversationWindow = GObject.registerClass({
 
         // Device Status
         this.device.bind_property(
-            'connected', this, 'connected', GObject.BindingFlags.SYNC_CREATE
+            'connected',
+            this.infobar,
+            'revealed',
+            GObject.BindingFlags.INVERT_BOOLEAN | GObject.BindingFlags.SYNC_CREATE
         );
-        this.overlay.remove(this.info_box);
 
         // Set the default view
         this._showPrevious();
@@ -569,34 +572,6 @@ var ConversationWindow = GObject.registerClass({
             this._showConversations();
         } else {
             this._showContacts();
-        }
-    }
-
-    /**
-     * "Disconnected" overlay
-     */
-    _onConnected(window) {
-        let children = this.overlay.get_children();
-
-        // If disconnected, add the info box before revealing
-        if (!this.connected && !children.includes(this.info_box)) {
-            this.overlay.add_overlay(this.info_box);
-        }
-
-        this.conversation_add.sensitive = this.connected;
-        this.contact_list.entry.sensitive = this.connected;
-        this.go_previous.sensitive = this.connected;
-
-        this.stack.opacity = this.connected ? 1 : 0.3;
-        this.info_box.reveal_child = !this.connected;
-    }
-
-    _onRevealed(revealer) {
-        let children = this.overlay.get_children();
-
-        // If connected, remove the info box after revealing
-        if (this.connected && children.includes(this.info_box)) {
-            this.overlay.remove(this.info_box);
         }
     }
 
