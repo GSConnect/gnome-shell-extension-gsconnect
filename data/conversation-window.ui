@@ -5,7 +5,6 @@
   <template class="GSConnectConversationWindow" parent="GtkApplicationWindow">
     <property name="can_focus">False</property>
     <signal name="delete-event" handler="_onDeleteEvent" swapped="no"/>
-    <signal name="notify::connected" handler="_onConnected" swapped="no"/>
     <child type="titlebar">
       <object class="GtkHeaderBar" id="headerbar">
         <property name="visible">True</property>
