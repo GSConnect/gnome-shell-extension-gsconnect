@@ -289,12 +289,12 @@ var ContactChooserRow = GObject.registerClass({
         );
     }
 
-    addNumber(entry) {
-        let box = new Gtk.Grid({
+    addNumber(number) {
+        let grid = new Gtk.Grid({
             column_spacing: 12,
             visible: true
         });
-        Object.defineProperty(box, 'number', {
+        Object.defineProperty(grid, 'number', {
             get: function() {
                 return this.get_child_at(0, 0).label;
             },
@@ -302,37 +302,38 @@ var ContactChooserRow = GObject.registerClass({
                 this.get_child_at(0, 0).label = value;
             }
         });
-        this.get_child().get_child_at(1, 1).add(box);
+        this.get_child().get_child_at(1, 1).add(grid);
 
-        let number = new Gtk.Label({
-            // TODO: we have no use for unknown numbers
-            label: entry.value || _('Unknown Number'),
+        let value = new Gtk.Label({
+            label: number.value,
             halign: Gtk.Align.START,
             hexpand: true,
             visible: true
         });
-        number.get_style_context().add_class('dim-label');
-        box.add(number);
+        value.get_style_context().add_class('dim-label');
+        grid.add(value);
 
         let type = new Gtk.Label({
-            label: localizeNumberType(entry.type),
+            label: localizeNumberType(number.type),
             use_markup: true,
             visible: true
         });
         type.get_style_context().add_class('dim-label');
-        box.add(type);
+        grid.add(type);
 
-        box.checkbutton = new Gtk.CheckButton({
+        grid.checkbutton = new Gtk.CheckButton({
             visible: true
         });
-        box.checkbutton.connect('toggled', () => this._toggled());
-        box.add(box.checkbutton);
+        grid.checkbutton.connect('toggled', this._toggled);
+        grid.add(grid.checkbutton);
     }
 
-    _toggled() {
+    _toggled(checkbutton) {
+        // Gtk.Grid (number) <- Gtk.Box (numbers) <- Gtk.Grid <- Gtk.ListBoxRow
+        let row = checkbutton.get_parent().get_parent().get_parent().get_parent();
         // Gtk.ListBox <- Gtk.Viewport <- Gtk.ScrolledWindow
-        let chooser = this.get_parent().get_parent().get_parent();
-        chooser.emit('selected-numbers-changed');
+        let chooser = row.get_parent().get_parent().get_parent();
+        chooser.notify('selected');
     }
 });
 
@@ -355,11 +356,6 @@ var ContactChooser = GObject.registerClass({
             null,
             GObject.ParamFlags.READABLE
         )
-    },
-    Signals: {
-        'selected-numbers-changed': {
-            flags: GObject.SignalFlags.RUN_FIRST
-        }
     }
 }, class ContactChooser extends Gtk.ScrolledWindow {
 
@@ -442,17 +438,11 @@ var ContactChooser = GObject.registerClass({
     }
 
     get selected () {
-        if (this._selected === undefined) {
-            this._selected = new Map();
-        }
-
+        let selected = new Set();
         this._list.foreach(row => {
-            for (let number of row.selected) {
-                this._selected.set(number, row.contact);
-            }
+            row.selected.map(number => selected.add(number));
         });
-
-        return this._selected;
+        return selected;
     }
 
     _destroy() {
@@ -593,7 +583,6 @@ var ContactChooser = GObject.registerClass({
                 number.checkbutton.active = false;
             });
         });
-        this.selected.clear();
     }
 });
 

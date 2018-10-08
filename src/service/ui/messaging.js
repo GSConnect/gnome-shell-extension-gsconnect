@@ -378,7 +378,7 @@ var ConversationWindow = GObject.registerClass({
             store: this.device.contacts
         });
         this._selectedNumbersChangedId = this.contact_list.connect(
-            'selected-numbers-changed',
+            'notify::selected',
             this._onSelectedNumbersChanged.bind(this)
         );
         this.stack.add_named(this.contact_list, 'contacts');
@@ -655,19 +655,8 @@ var ConversationWindow = GObject.registerClass({
     }
 
     _populateBack() {
-        let message = this.__messages.pop();
-
-        for (let i = 0; i < 5 && message; i++) {
-            this.logMessage(message);
-            message = this.__messages.pop();
-        }
-    }
-
-    // message-window::edge-overshot
-    _onLoadMessages(scrolled_window, pos) {
-        if (pos === Gtk.PositionType.TOP) {
-            this.__load_messages = this.message_window.vadjustment.get_upper();
-            this._populateBack();
+        for (let i = 0; i < 5 && this.__messages.length; i++) {
+            this.logMessage(this.__messages.pop());
         }
     }
 
@@ -696,12 +685,20 @@ var ConversationWindow = GObject.registerClass({
 
         // Keep position if we've just loaded old messages
         } else if (this.__load_messages) {
-            vadj.set_value(allocation.height - this.__load_messages);
+            vadj.set_value(vadj.get_upper() - this.__load_messages);
             this.__load_messages = false;
 
         // Otherwise scroll to the bottom
         } else {
             vadj.set_value(vadj.get_upper() - vadj.get_page_size());
+        }
+    }
+
+    // message-window::edge-overshot
+    _onMessageRequested(scrolled_window, pos) {
+        if (pos === Gtk.PositionType.TOP) {
+            this.__load_messages = this.message_window.vadjustment.get_upper();
+            this._populateBack();
         }
     }
 
@@ -721,17 +718,7 @@ var ConversationWindow = GObject.registerClass({
     // TODO: this is kind of awkward...
     _onSelectedNumbersChanged(contact_list) {
         if (this.contact_list.selected.size > 0) {
-            let number = this.contact_list.selected.keys().next().value;
-            let contact = this.contact_list.selected.get(number);
-
-            if (!contact.id) {
-                contact = this.device.contacts.query({
-                    number: number,
-                    create: true
-                });
-            }
-
-            this.address = number;
+            this.address = this.contact_list.selected.keys().next().value;
         }
     }
 
