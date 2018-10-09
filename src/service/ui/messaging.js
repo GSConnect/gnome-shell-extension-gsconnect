@@ -390,7 +390,7 @@ var ConversationWindow = GObject.registerClass({
             'connected',
             this.infobar,
             'revealed',
-            GObject.BindingFlags.INVERT_BOOLEAN | GObject.BindingFlags.SYNC_CREATE
+            GObject.BindingFlags.INVERT_BOOLEAN
         );
 
         // Set the default view
@@ -406,6 +406,7 @@ var ConversationWindow = GObject.registerClass({
             this._address = value;
             this._displayNumber = value;
 
+            // Ensure we have a contact stored
             let contact = this.device.contacts.query({
                 number: value,
                 create: true
@@ -617,6 +618,7 @@ var ConversationWindow = GObject.registerClass({
         this.message_list.foreach(row => row.destroy());
         this.__first = null
         this.__last = null;
+        this.__pos = 0;
         this.__messages = [];
 
         let sms = this.device.lookup_plugin('sms');
@@ -655,13 +657,14 @@ var ConversationWindow = GObject.registerClass({
         let vadj = this.message_window.vadjustment;
 
         // Try loading more messages if there's room
-        if (allocation.height <= vadj.get_page_size()) {
+        if (vadj.get_upper() <= vadj.get_page_size()) {
             this._populateBack();
+            this.message_window.get_child().check_resize();
 
-        // Keep position if we've just loaded old messages
-        } else if (this.__load_messages) {
-            vadj.set_value(vadj.get_upper() - this.__load_messages);
-            this.__load_messages = false;
+        // We've been asked to hold the position
+        } else if (this.__pos) {
+            vadj.set_value(vadj.get_upper() - this.__pos);
+            this.__pos = 0;
 
         // Otherwise scroll to the bottom
         } else {
@@ -672,7 +675,7 @@ var ConversationWindow = GObject.registerClass({
     // message-window::edge-overshot
     _onMessageRequested(scrolled_window, pos) {
         if (pos === Gtk.PositionType.TOP) {
-            this.__load_messages = this.message_window.vadjustment.get_upper();
+            this.__pos = this.message_window.vadjustment.get_upper();
             this._populateBack();
         }
     }
@@ -920,7 +923,7 @@ var ConversationChooser = GObject.registerClass({
         for (let index_ in windows) {
             let window = windows[index_];
 
-            if (!window.device || window.device.id !== this.device.id) {
+            if (!(window instanceof ConversationWindow) || window.device !== this.device) {
                 continue;
             }
 
