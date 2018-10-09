@@ -101,7 +101,7 @@ var Store = GObject.registerClass({
         }
 
         GLib.mkdir_with_parents(this.__cache_dir.get_path(), 448);
-        this.__cache_file = this.__cache_dir.get_child('contact_store.json');
+        this.__cache_file = this.__cache_dir.get_child('contacts.json');
     }
 
     get provider_icon() {
@@ -162,7 +162,7 @@ var Store = GObject.registerClass({
 
         if (contact) {
             this.__cache_data[id].avatar = path;
-            this.notify('contacts');
+            this.update();
             return this.__cache_data[id];
         }
     }
@@ -220,7 +220,7 @@ var Store = GObject.registerClass({
             // Save if requested
             if (query.create) {
                 this.__cache_data[id] = matches[0];
-                this.notify('contacts');
+                this.update();
             }
         }
 
@@ -262,7 +262,7 @@ var Store = GObject.registerClass({
                 this.__cache_data[contact.id] = contact;
         }
 
-        this.notify('contacts');
+        this.update();
     }
 
     /**
@@ -273,25 +273,22 @@ var Store = GObject.registerClass({
     remove(id) {
         if (this.__cache_data[id]) {
             delete this.__cache_data[id];
-            this.notify('contacts');
+            this.update();
         }
     }
 
     clear() {
         try {
             this.__cache_data = {};
-            this.notify('contacts');
+        this.update();
         } catch (e) {
             logError(e);
         }
     }
 
-    async update(json) {
+    update(json={}) {
         try {
             this.__cache_data = Object.assign(this.__cache_data, json);
-
-            this._provider_icon = 'x-office-address-book-symbolic.symbolic';
-            this.notify('provider-icon');
             this.notify('contacts');
         } catch (e) {
             logError(e);
@@ -329,6 +326,9 @@ var Store = GObject.registerClass({
                     }
                 });
             });
+
+            this._provider_icon = 'x-office-address-book-symbolic.symbolic';
+            this.notify('provider-icon');
 
             this.update(folks);
         } catch (e) {
