@@ -538,14 +538,14 @@ var ConversationWindow = GObject.registerClass({
         this.conversation_add.visible = true;
         this.go_previous.visible = false;
 
-        this._populateConversations();
-
         this.contact_list.entry.text = '';
         this.headerbar.custom_title = null;
 
         this.headerbar.title = _('Conversations');
         this.headerbar.subtitle = this.device.name;
         this.stack.set_visible_child_name('conversations');
+
+        this._populateConversations();
     }
 
     _showMessages() {
