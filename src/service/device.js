@@ -769,9 +769,7 @@ var Device = GObject.registerClass({
 
                 // Register packet handlers
                 for (let packetType of handler.Metadata.incomingCapabilities) {
-                    if (!this._handlers.has(packetType)) {
-                        this._handlers.set(packetType, plugin);
-                    }
+                    this._handlers.set(packetType, plugin);
                 }
 
                 // Register plugin
@@ -805,16 +803,15 @@ var Device = GObject.registerClass({
 
                 // Unregister packet handlers
                 handler = imports.service.plugins[name];
+                plugin = this._plugins.get(name);
 
                 for (let type of handler.Metadata.incomingCapabilities) {
                     this._handlers.delete(type);
                 }
 
                 // Unregister plugin
-                plugin = this._plugins.get(name);
-                plugin.destroy();
                 this._plugins.delete(name);
-                plugin.run_dispose();
+                plugin.destroy();
             }
         } catch (e) {
             logError(e, `${this.name}: unloading ${name}`);
@@ -824,17 +821,6 @@ var Device = GObject.registerClass({
     async unloadPlugins() {
         for (let name of this._plugins.keys()) {
             await this.unloadPlugin(name);
-        }
-    }
-
-    reloadPlugin(name) {
-        this.unloadPlugin(name);
-        this.loadPlugin(name);
-    }
-
-    async reloadPlugins() {
-        for (let name of this.allowed_plugins) {
-            await this.reloadPlugin(name);
         }
     }
 

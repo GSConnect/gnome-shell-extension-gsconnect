@@ -285,7 +285,6 @@ var Channel = class Channel {
         if (device._channel !== null && device._channel !== this) {
             device._channel.cancellable.disconnect(device._channel._id);
             device._channel.close();
-            device._channel = null;
         }
 
         // Attach the new channel and parse it's identity
@@ -301,17 +300,13 @@ var Channel = class Channel {
         this.output_queue = [];
         this.output_stream = this._connection.output_stream;
 
-        // TODO: If we're swapping in a different channel type, which is already
-        // flakey, we should reload or disable plugins it doesn't support
-        //device.reloadPlugins();
+        // Start listening for packets
+        this.receive(device);
 
         // Emit connected:: if necessary
         if (!device.connected) {
             device._setConnected();
         }
-
-        // Start listening for packets
-        this.receive(device);
     }
 
     /**
