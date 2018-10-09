@@ -54,7 +54,10 @@ var Store = GObject.registerClass({
             this.__cache_data = {};
         } finally {
             this.connect('notify::contacts', this.__cache_write.bind(this));
-            this._loadFolks();
+
+            if (this.context === null) {
+                this._loadFolks();
+            }
         }
     }
 
