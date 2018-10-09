@@ -111,13 +111,10 @@ var DeviceConnectDialog = GObject.registerClass({
 }, class DeviceConnectDialog extends Gtk.Dialog {
 
     _init() {
-        let modal = (this.service._window && this.service._window.visible);
-        let parent = modal ? this.service._window : null;
-
         super._init({
             title: _('Connect to…'),
-            modal: modal,
-            transient_for: parent,
+            modal: (this.service.get_active_window() !== null),
+            transient_for: this.service.get_active_window(),
             use_header_bar: true
         });
 

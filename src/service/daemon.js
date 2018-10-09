@@ -405,8 +405,8 @@ const Service = GObject.registerClass({
             this._about.connect('delete-event', () => this._about.hide_on_delete());
         }
 
-        this._about.modal = (this._window && this._window.visible);
-        this._about.transient_for = this._about.modal ? this._window : null;
+        this._about.modal = (this.get_active_window());
+        this._about.transient_for = this.get_active_window();
         this._about.present();
     }
 
