@@ -365,6 +365,7 @@ var Plugin = GObject.registerClass({
                 return null;
             }
 
+            // Save the file in the global cache
             path = GLib.build_filenamev([
                 gsconnect.cachedir,
                 packet.body.payloadHash || `${Date.now()}`
@@ -429,17 +430,15 @@ var Plugin = GObject.registerClass({
     async receiveNotification(packet) {
         try {
             //
-            let id = packet.body.id;
-            let body, contact, title;
             let icon = await this._downloadIcon(packet);
 
-            // Check if this is a sms/missedCall notification
+            // Check if this is a sms notification
             let isMissedCall = packet.body.id.includes('MissedCall');
             let isSms = packet.body.id.includes('sms');
 
-            // If it's an SMS look for a contact using the duplicate or title
+            // Special case for SMS notifications until replies are supported
             if (isSms) {
-                // Check if it's been marked as a duplicate
+                // Check if it's being tracked as a duplicate
                 let duplicate = this._duplicates.get(packet.body.ticker);
 
                 if (duplicate) {
@@ -449,7 +448,7 @@ var Plugin = GObject.registerClass({
                     this._duplicates.set(packet.body.ticker, duplicate);
                 }
 
-                contact = this.device.contacts.query({
+                let contact = this.device.contacts.query({
                     name: packet.body.title,
                     number: duplicate.phoneNumber || packet.body.title
                 });
@@ -491,14 +490,17 @@ var Plugin = GObject.registerClass({
                 }
             }
 
+            // Regular notification
+            let id = packet.body.id;
+            let title = packet.body.appName;
+            let body = packet.body.ticker;
+
             switch (true) {
-                // Emulate a 'missedCall' notification
-                case packet.body.id.includes('MissedCall'):
-                    title = packet.body.text;
-                    body = _('Missed call from %s').format(packet.body.text);
+                case isMissedCall:
+                    title = packet.body.title;
+                    body = packet.body.text;
                     break;
 
-                // Emulate an 'sms' notification
                 case isSms:
                     id = packet.body.ticker;
                     title = packet.body.title;
@@ -507,14 +509,8 @@ var Plugin = GObject.registerClass({
 
                 // Ignore 'appName' if it's the same as 'title'
                 case (packet.body.appName === packet.body.title):
-                    title = packet.body.title;
                     body = packet.body.text;
                     break;
-
-                // Otherwise use the appName as the title
-                default:
-                    title = packet.body.appName;
-                    body = packet.body.ticker;
             }
 
             // If we don't have a payload icon, fallback on notification type,

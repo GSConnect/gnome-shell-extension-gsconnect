@@ -586,18 +586,24 @@ var ConversationWindow = GObject.registerClass({
         // Populate the new threads
         let sms = this.device.lookup_plugin('sms');
 
-        for (let thread of Object.values(sms.conversations)) {
-            try {
-                let contact = this.device.contacts.query({
-                    number: thread[0].address
-                });
+        if (sms && Object.keys(sms.conversations).length > 0) {
+            for (let thread of Object.values(sms.conversations)) {
+                try {
+                    let contact = this.device.contacts.query({
+                        number: thread[0].address
+                    });
 
-                this.conversation_list.add(
-                    new ConversationSummary(contact, thread[thread.length-1])
-                );
-            } catch (e) {
-                logError(e);
+                    this.conversation_list.add(
+                        new ConversationSummary(contact, thread[thread.length-1])
+                    );
+                } catch (e) {
+                    logError(e);
+                }
             }
+
+            this.go_previous.visible = (this.stack.visible_child_name !== 'conversations');
+        } else {
+            this.go_previous.visible = false;
         }
     }
 

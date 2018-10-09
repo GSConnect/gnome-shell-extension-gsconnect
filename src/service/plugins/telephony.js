@@ -42,64 +42,45 @@ var Plugin = GObject.registerClass({
         super._init(device, 'telephony');
     }
 
-    handlePacket(packet) {
-        // This is the end of a 'ringing' or 'talking' event
-        if (packet.body.isCancel) {
-            let sender = packet.body.contactName || packet.body.phoneNumber;
-            this.device.hideNotification(`${packet.body.event}|${sender}`);
-            this._restoreMediaState();
-            return;
-        }
+    async handlePacket(packet) {
+        try {
+            let contact;
 
-        if (packet.body.event === 'sms' && packet.body.phoneNumber) {
-            // track the duplicate as soon as possible
-            let notification = this.device.lookup_plugin('notification');
-
-            if (notification) {
-                notification.trackDuplicate(
-                    `${packet.body.contactName}: ${packet.body.messageBody}`,
-                    packet.body.phoneNumber
-                );
-            }
-
-            // Bail if the device supports the new packets
-            if (this.device.get_outgoing_supported('sms.messages')) {
+            // This is the end of a 'ringing' or 'talking' event
+            if (packet.body.isCancel) {
+                let sender = packet.body.contactName || packet.body.phoneNumber;
+                this.device.hideNotification(`${packet.body.event}|${sender}`);
+                this._restoreMediaState();
                 return;
             }
 
-            // Bail if SMS is disabled
-            let sms = this.device.lookup_plugin('sms');
+            // Take the opportunity to store the contact
+            if (packet.body.phoneNumber) {
+                contact = this.device.contacts.query({
+                    name: packet.body.contactName,
+                    number: packet.body.phoneNumber,
+                    create: true
+                });
 
-            if (!sms) {
-                return;
+                if (packet.body.phoneThumbnail) {
+                    let data = GLib.base64_decode(packet.body.phoneThumbnail);
+                    contact.avatar = await this._store.setAvatarContents(data);
+                    this.device.contacts.notify('contacts');
+                }
             }
 
-            // Ensure there's a contact stored for this event
-            let contact = this.device.contacts.query({
-                name: packet.body.contactName,
-                number: packet.body.phoneNumber,
-                create: true
-            });
+            switch (packet.body.event) {
+                case 'ringing':
+                case 'talking':
+                    this._handleCall(packet);
+                    break;
 
-            // Fabricate a message packet from what we know
-            let message = {
-                _id: 0,
-                thread_id: GLib.MAXINT32,
-                address: packet.body.phoneNumber,
-                body: packet.body.messageBody,
-                date: packet.id,
-                event: packet.body.event,
-                read: 0,
-                type: 1
-            };
-
-            sms._handleMessage(contact, message);
-
-            return;
-        }
-
-        if (['ringing', 'talking'].includes(packet.body.event)) {
-            this.callNotification(packet);
+                case 'sms':
+                    this._handleMessage(packet);
+                    break;
+            }
+        } catch (e) {
+            logError(e);
         }
     }
 
@@ -165,7 +146,7 @@ var Plugin = GObject.registerClass({
      *
      * @param {object} packet - A telephony packet for this event
      */
-    callNotification(packet) {
+    _handleCall(packet) {
         let body;
         let buttons = [];
         let icon = new Gio.ThemedIcon({ name: 'call-start-symbolic' });
@@ -210,6 +191,44 @@ var Plugin = GObject.registerClass({
             priority: priority,
             buttons: buttons
         });
+    }
+
+    _handleMessage(packet) {
+        if (!packet.body.phoneNumber) {
+            return;
+        }
+
+        // track the duplicate as soon as possible
+        let notification = this.device.lookup_plugin('notification');
+
+        if (notification) {
+            let sender = packet.body.contactName || packet.body.phoneNumber;
+            notification.trackDuplicate(
+                `${sender}: ${packet.body.messageBody}`,
+                packet.body.phoneNumber
+            );
+        }
+
+        // Bail if SMS is disabled or the device supports the new packets
+        let sms = this.device.lookup_plugin('sms');
+
+        if (!sms || this.device.get_outgoing_supported('sms.messages')) {
+            return;
+        }
+
+        // Fabricate a message packet from what we know
+        let message = {
+            _id: 0,
+            thread_id: GLib.MAXINT32,
+            address: packet.body.phoneNumber,
+            body: packet.body.messageBody,
+            date: packet.id,
+            event: packet.body.event,
+            read: 0,
+            type: 1
+        };
+
+        sms._handleMessage(contact, message);
     }
 
     /**

@@ -1216,27 +1216,27 @@ var Device = GObject.registerClass({
     }
 
     _addCommandKeybinding(uuid, command, keybindings) {
-            let action = `executeCommand::${uuid}`;
+        let action = `executeCommand::${uuid}`;
 
-            let widget = new Gtk.Label({
-                label: _('Disabled'),
-                visible: true
-            });
-            widget.get_style_context().add_class('dim-label');
+        let widget = new Gtk.Label({
+            label: _('Disabled'),
+            visible: true
+        });
+        widget.get_style_context().add_class('dim-label');
 
-            if (keybindings[action]) {
-                let accel = Gtk.accelerator_parse(keybindings[action]);
-                widget.label = Gtk.accelerator_get_label(...accel);
-            }
+        if (keybindings[action]) {
+            let accel = Gtk.accelerator_parse(keybindings[action]);
+            widget.label = Gtk.accelerator_get_label(...accel);
+        }
 
-            let row = new SectionRow({
-                title: command.name,
-                subtitle: command.command,
-                widget: widget,
-                activatable: true
-            });
-            row.action = action;
-            this.shortcuts_commands_list.add(row);
+        let row = new SectionRow({
+            title: command.name,
+            subtitle: command.command,
+            widget: widget,
+            activatable: true
+        });
+        row.action = action;
+        this.shortcuts_commands_list.add(row);
     }
 
     async _populateCommandKeybindings() {
@@ -1263,7 +1263,7 @@ var Device = GObject.registerClass({
         this.shortcuts_commands.visible = hasCommands;
 
         for (let [uuid, command] of Object.entries(remoteCommands)) {
-            await this._addCommandKeybinding(uuid, command, keybindings);
+            this._addCommandKeybinding(uuid, command, keybindings);
         }
 
         for (let action in keybindings) {
@@ -1327,28 +1327,20 @@ var Device = GObject.registerClass({
         this._populatePlugins();
     }
 
-    _addPlugin(plugin) {
-        let meta = imports.service.plugins[plugin].Metadata;
-
-        let row = new Gtk.ListBoxRow({
-            activatable: true,
-            selectable: false,
-            visible: true
-        });
-        this.plugin_list.add(row);
-
+    _addPlugin(name) {
         let widget = new Gtk.CheckButton({
-            label: meta.label,
-            active: this.device.get_plugin_allowed(plugin),
+            label: imports.service.plugins[name].Metadata.label,
+            active: this.get_plugin_allowed(name),
+            tooltip_text: name,
             valign: Gtk.Align.CENTER,
             visible: true
         });
-        widget.name = plugin;
-        row._togglePluginId = widget.connect(
+        this.plugin_list.add(widget);
+
+        widget._togglePluginId = widget.connect(
             'notify::active',
             this._togglePlugin.bind(this)
         );
-        row.add(widget);
     }
 
     _populatePlugins() {
@@ -1364,7 +1356,7 @@ var Device = GObject.registerClass({
 
     _togglePlugin(widget) {
         try {
-            let name = widget.name;
+            let name = widget.tooltip_text;
             let disabled = this.settings.get_strv('disabled-plugins');
 
             if (disabled.includes(name)) {
@@ -1378,7 +1370,7 @@ var Device = GObject.registerClass({
             this.settings.set_strv('disabled-plugins', disabled);
 
             if (this.hasOwnProperty(name)) {
-                this[name].visible = this.device.get_plugin_allowed(name);
+                this[name].visible = disabled.includes(name);
             }
         } catch (e) {
             logError(e);

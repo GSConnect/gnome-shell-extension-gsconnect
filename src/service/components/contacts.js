@@ -48,10 +48,10 @@ var Store = GObject.registerClass({
 
     async _init_async() {
         try {
-            this._contacts = await JSON.load(this.__cache_file);
+            this.__cache_data = await JSON.load(this.__cache_file);
         } catch (e) {
-            this._contacts = {};
             logWarning(e);
+            this.__cache_data = {};
         } finally {
             this.connect('notify::contacts', this.__cache_write.bind(this));
             this._loadFolks();
@@ -66,9 +66,9 @@ var Store = GObject.registerClass({
             }
 
             this.__cache_lock = true;
-            await JSON.dump(this._contacts, this.__cache_file);
+            await JSON.dump(this.__cache_data, this.__cache_file);
         } catch (e) {
-            logWarning(e, 'Contacts.Store.__cache_write()');
+            logWarning(e);
         } finally {
             this.__cache_lock = false;
 
@@ -80,7 +80,7 @@ var Store = GObject.registerClass({
     }
 
     *[Symbol.iterator]() {
-        for (let contact of Object.values(this._contacts)) {
+        for (let contact of Object.values(this.__cache_data)) {
             yield contact;
         }
     }
@@ -90,13 +90,18 @@ var Store = GObject.registerClass({
     }
 
     set context(context) {
-        this._context = context;
-        this.__cache_path = GLib.build_filenamev([gsconnect.cachedir, context]);
-        GLib.mkdir_with_parents(this.__cache_path, 448);
+        if (!context) {
+            this._context = null;
+            this.__cache_dir = Gio.File.new_for_path(gsconnect.cachedir);
+        } else {
+            this._context = context;
+            this.__cache_dir = Gio.File.new_for_path(
+                GLib.build_filenamev([gsconnect.cachedir, context])
+            );
+        }
 
-        this.__cache_file = Gio.File.new_for_path(
-            GLib.build_filenamev([this.__cache_path, 'contact_store.json'])
-        );
+        GLib.mkdir_with_parents(this.__cache_dir.get_path(), 448);
+        this.__cache_file = this.__cache_dir.get_child('contact_store.json');
     }
 
     get provider_icon() {
@@ -121,11 +126,10 @@ var Store = GObject.registerClass({
     setAvatarContents(contents) {
         return new Promise((resolve, reject) => {
             let md5 = GLib.compute_checksum_for_data(GLib.ChecksumType.MD5, contents);
-            let path = GLib.build_filenamev([this.__cache_path, `${md5}`]);
-            let file = Gio.File.new_for_path(path);
+            let file = this.__cache_dir.get_child(`${md5}`);
 
             if (file.query_exists(null)) {
-                resolve(path);
+                resolve(file.get_path());
             } else {
                 file.replace_contents_bytes_async(
                     new GLib.Bytes(contents),
@@ -136,7 +140,7 @@ var Store = GObject.registerClass({
                     (file, res) => {
                         try {
                             file.replace_contents_finish(res);
-                            resolve(path);
+                            resolve(file.get_path());
                         } catch (e) {
                             reject(e);
                         }
@@ -154,12 +158,12 @@ var Store = GObject.registerClass({
      * @return {object} - The updated contact
      */
     setAvatarPath(id, path) {
-        let contact = this._contacts[id];
+        let contact = this.__cache_data[id];
 
         if (contact) {
-            this._contacts[id].avatar = path;
+            this.__cache_data[id].avatar = path;
             this.notify('contacts');
-            return this._contacts[id];
+            return this.__cache_data[id];
         }
     }
 
@@ -175,7 +179,7 @@ var Store = GObject.registerClass({
         let matches = [];
         let number = (query.number) ? query.number.toPhoneNumber() : null;
 
-        for (let contact of Object.values(this._contacts)) {
+        for (let contact of Object.values(this.__cache_data)) {
             // Prioritize searching by number
             if (number) {
                 for (let num of contact.numbers) {
@@ -198,11 +202,10 @@ var Store = GObject.registerClass({
         }
 
         // Create a new contact
-        // TODO: use folks to add contact
         if (matches.length === 0) {
             // Create a unique ID for this contact
             let id = GLib.uuid_string_random();
-            while (this._contacts.hasOwnProperty(id)) {
+            while (this.__cache_data.hasOwnProperty(id)) {
                 id = GLib.uuid_string_random();
             }
 
@@ -216,7 +219,7 @@ var Store = GObject.registerClass({
 
             // Save if requested
             if (query.create) {
-                this._contacts[id] = matches[0];
+                this.__cache_data[id] = matches[0];
                 this.notify('contacts');
             }
         }
@@ -228,7 +231,7 @@ var Store = GObject.registerClass({
     // FIXME: API compatible with GListModel
     get_item(position) {
         try {
-            return (this._contacts[position]) ? this._contacts[position] : null;
+            return (this.__cache_data[position]) ? this.__cache_data[position] : null;
         } catch (e) {
             return null;
         }
@@ -250,13 +253,13 @@ var Store = GObject.registerClass({
                 return;
 
             // Updated contact
-            case this._contacts.hasOwnProperty(contact.id):
-                Object.assign(this._contacts[contact.id], contact);
+            case this.__cache_data.hasOwnProperty(contact.id):
+                Object.assign(this.__cache_data[contact.id], contact);
                 break;
 
             // New contact
             default:
-                this._contacts[contact.id] = contact;
+                this.__cache_data[contact.id] = contact;
         }
 
         this.notify('contacts');
@@ -268,15 +271,15 @@ var Store = GObject.registerClass({
      * @param {string} id - The id of the contact to delete
      */
     remove(id) {
-        if (this._contacts[id]) {
-            delete this._contacts[id];
+        if (this.__cache_data[id]) {
+            delete this.__cache_data[id];
             this.notify('contacts');
         }
     }
 
     clear() {
         try {
-            this._contacts = {};
+            this.__cache_data = {};
             this.notify('contacts');
         } catch (e) {
             logError(e);
@@ -285,7 +288,7 @@ var Store = GObject.registerClass({
 
     async update(json) {
         try {
-            this._contacts = Object.assign(this._contacts, json);
+            this.__cache_data = Object.assign(this.__cache_data, json);
 
             this._provider_icon = 'x-office-address-book-symbolic.symbolic';
             this.notify('provider-icon');
@@ -329,7 +332,7 @@ var Store = GObject.registerClass({
 
             this.update(folks);
         } catch (e) {
-            logWarning(e, 'Contacts.Store._loadFolks()');
+            logWarning(e);
         }
     }
 });

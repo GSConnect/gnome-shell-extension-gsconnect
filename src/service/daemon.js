@@ -360,13 +360,7 @@ const Service = GObject.registerClass({
 
         if (!this._window) {
             this._window = new Settings.Window({ application: this });
-            this._window.connect('delete-event', (window) => {
-                window.visible = false;
-                this._pruneDevices();
-                System.gc();
-
-                return true;
-            });
+            this._window.connect('delete-event', (win) => win.hide_on_delete());
         }
 
         // Open to a specific page
@@ -810,7 +804,7 @@ const Service = GObject.registerClass({
                     action = 'shareUri';
                     parameter = new GLib.Variant('s', file.get_uri());
                 } else {
-                    throw new Error('Unsupported file/URI type');
+                    return;
                 }
 
                 for (let device of this._devices.values()) {
