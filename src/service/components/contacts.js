@@ -39,7 +39,7 @@ var Store = GObject.registerClass({
 
     _init(params) {
         super._init(Object.assign({
-            context: '_service'
+            context: null
         }, params));
 
         // Asynchronous setup
