@@ -252,7 +252,7 @@ var Plugin = GObject.registerClass({
             window._notifications.push(`${contact.name}: ${message.body}`);
 
             if (this.device.get_outgoing_supported('sms.messages')) {
-                window._populateMessages(message.thread_id);
+                window.logMessage(message);
             } else {
                 window.receiveMessage(contact, message);
             }

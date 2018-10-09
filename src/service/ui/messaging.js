@@ -763,13 +763,14 @@ var ConversationWindow = GObject.registerClass({
         if (!this.__first) {
             this.__first = this._createSeries(message);
             this.__last = this.__first;
+            this.message_id = message._id
             this.message_list.add(this.__first);
         }
 
         // Log the message and set the thread date
         let widget = new ConversationMessage(message);
 
-        // I this is the earliest message so far prepend it
+        // If this is the earliest message so far prepend it
         if (message.date <= this.__first.date) {
             if (message.type !== this.__first.type) {
                 this.__first = this._createSeries(message);
@@ -779,8 +780,8 @@ var ConversationWindow = GObject.registerClass({
             this.__first.messages.pack_end(widget, false, false, 0);
             this.__first.date = message.date;
 
-        // Otherwise append it
-        } else {
+        // Or append it if it's newer than the last known
+        } else if (message.date > this.__last.date) {
             if (message.type !== this.__last.type) {
                 this.__last = this._createSeries(message);
                 this.message_list.add(this.__last);
@@ -788,6 +789,7 @@ var ConversationWindow = GObject.registerClass({
 
             this.__last.messages.pack_start(widget, false, false, 0);
             this.__last.date = message.date;
+            this.message_id = message._id
         }
     }
 
