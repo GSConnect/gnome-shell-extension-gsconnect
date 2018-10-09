@@ -976,25 +976,6 @@
                         </child>
                         <child>
                           <object class="GtkLabel">
-                            <property name="height_request">32</property>
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="halign">start</property>
-                            <property name="valign">center</property>
-                            <property name="hexpand">True</property>
-                            <property name="label" translatable="yes">KDE Connect for Other Devices</property>
-                            <attributes>
-                              <attribute name="weight" value="bold"/>
-                            </attributes>
-                          </object>
-                          <packing>
-                            <property name="left_attach">0</property>
-                            <property name="top_attach">3</property>
-                            <property name="width">2</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkLabel">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="halign">start</property>
@@ -1015,38 +996,10 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
-                            <property name="tooltip_text">https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Installation#dependencies</property>
-                            <property name="halign">end</property>
-                            <property name="valign">center</property>
-                            <property name="relief">none</property>
-                            <signal name="clicked" handler="_onLinkButton" swapped="no"/>
-                            <child>
-                              <object class="GtkImage">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="halign">center</property>
-                                <property name="valign">center</property>
-                                <property name="icon_name">help-browser-symbolic</property>
-                              </object>
-                            </child>
-                            <style>
-                              <class name="suggested-action"/>
-                            </style>
-                          </object>
-                          <packing>
-                            <property name="left_attach">1</property>
-                            <property name="top_attach">0</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkButton">
-                            <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="receives_default">True</property>
                             <property name="tooltip_text">https://addons.mozilla.org/firefox/addon/gsconnect/</property>
                             <property name="halign">start</property>
                             <property name="valign">center</property>
-                            <property name="margin_bottom">32</property>
+                            <property name="margin_bottom">16</property>
                             <signal name="clicked" handler="_onLinkButton" swapped="no"/>
                             <child>
                               <object class="GtkImage">
@@ -1074,7 +1027,7 @@
                             <property name="tooltip_text">https://chrome.google.com/webstore/detail/gsconnect/jfnifeihccihocjbfcfhicmmgpjicaec</property>
                             <property name="halign">end</property>
                             <property name="valign">center</property>
-                            <property name="margin_bottom">32</property>
+                            <property name="margin_bottom">16</property>
                             <signal name="clicked" handler="_onLinkButton" swapped="no"/>
                             <child>
                               <object class="GtkImage">
@@ -1100,24 +1053,12 @@
                             <property name="can_focus">False</property>
                             <property name="column_spacing">12</property>
                             <child>
-                              <object class="GtkLabel">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="label" translatable="yes">Android</property>
-                              </object>
-                              <packing>
-                                <property name="left_attach">0</property>
-                                <property name="top_attach">0</property>
-                              </packing>
-                            </child>
-                            <child>
                               <object class="GtkLinkButton">
-                                <property name="label" translatable="yes">Google Play</property>
+                                <property name="label" translatable="yes">Android</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
                                 <property name="halign">start</property>
-                                <property name="hexpand">True</property>
                                 <property name="relief">none</property>
                                 <property name="uri">https://play.google.com/store/apps/details?id=org.kde.kdeconnect_tp</property>
                               </object>
@@ -1128,25 +1069,13 @@
                             </child>
                             <child>
                               <object class="GtkLinkButton">
-                                <property name="label" translatable="yes">F-Droid</property>
+                                <property name="label" translatable="yes">Sailfish OS</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
                                 <property name="halign">start</property>
-                                <property name="hexpand">True</property>
                                 <property name="relief">none</property>
-                                <property name="uri">https://f-droid.org/packages/org.kde.kdeconnect_tp/</property>
-                              </object>
-                              <packing>
-                                <property name="left_attach">1</property>
-                                <property name="top_attach">1</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkLabel">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="label" translatable="yes">Sailfish</property>
+                                <property name="uri">https://openrepos.net/content/piggz/kde-connect</property>
                               </object>
                               <packing>
                                 <property name="left_attach">2</property>
@@ -1154,35 +1083,43 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkLinkButton">
-                                <property name="label" translatable="yes">OpenRepos.net</property>
+                              <object class="GtkLabel">
+                                <property name="height_request">32</property>
                                 <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">True</property>
+                                <property name="can_focus">False</property>
                                 <property name="halign">start</property>
-                                <property name="hexpand">True</property>
-                                <property name="relief">none</property>
-                                <property name="uri">https://openrepos.net/content/piggz/kde-connect</property>
+                                <property name="valign">center</property>
+                                <property name="label" translatable="yes">KDE Connect</property>
+                                <attributes>
+                                  <attribute name="weight" value="bold"/>
+                                </attributes>
                               </object>
                               <packing>
-                                <property name="left_attach">3</property>
+                                <property name="left_attach">0</property>
                                 <property name="top_attach">0</property>
                               </packing>
-                            </child>
-                            <child>
-                              <placeholder/>
-                            </child>
-                            <child>
-                              <placeholder/>
-                            </child>
-                            <child>
-                              <placeholder/>
                             </child>
                           </object>
                           <packing>
                             <property name="left_attach">0</property>
-                            <property name="top_attach">4</property>
+                            <property name="top_attach">3</property>
                             <property name="width">2</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLinkButton">
+                            <property name="label" translatable="yes">Help</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="receives_default">True</property>
+                            <property name="halign">end</property>
+                            <property name="valign">center</property>
+                            <property name="relief">none</property>
+                            <property name="uri">https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Installation#dependencies</property>
+                          </object>
+                          <packing>
+                            <property name="left_attach">1</property>
+                            <property name="top_attach">0</property>
                           </packing>
                         </child>
                       </object>
