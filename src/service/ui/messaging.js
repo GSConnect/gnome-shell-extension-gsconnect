@@ -389,7 +389,7 @@ var ConversationWindow = GObject.registerClass({
         this.device.bind_property(
             'connected',
             this.infobar,
-            'revealed',
+            'reveal-child',
             GObject.BindingFlags.INVERT_BOOLEAN
         );
 
