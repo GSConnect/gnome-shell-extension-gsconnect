@@ -585,20 +585,14 @@ var Device = GObject.registerClass({
     }
 
     _onConnected(device) {
-        let type = device.connection_type;
-        let action = this.status.lookup_action(`connect-${type}`);
-        action.enabled = !device.connected;
-
-        if (type === 'bluetooth') {
-            this._onTcpHostChanged(device.settings);
-        } else if (type === 'tcp') {
-            this._onBluetoothHostChanged(device.settings);
-        }
+        this._onTcpHostChanged(device.settings);
+        this._onBluetoothHostChanged(device.settings);
     }
 
-    _onBluetoothHostChanged(settings) {
-        let hasBluetooth = (settings.get_string('bluetooth-host').length);
-        this.status.lookup_action('connect-bluetooth').enabled = hasBluetooth;
+    _onBluetoothHostChanged() {
+        let action = this.status.lookup_action(`connect-bluetooth`);
+        let hasBluetooth = (this.settings.get_string('bluetooth-host').length);
+        action.enabled = (hasBluetooth && !this.device.connected);
     }
 
     _onActivateBluetooth(button) {
@@ -606,9 +600,10 @@ var Device = GObject.registerClass({
         this.device.activate();
     }
 
-    _onTcpHostChanged(settings) {
-        let hasLan = (settings.get_string('tcp-host').length);
-        this.status.lookup_action('connect-tcp').enabled = hasLan;
+    _onTcpHostChanged() {
+        let action = this.status.lookup_action(`connect-tcp`);
+        let hasLan = (this.settings.get_string('tcp-host').length);
+        action.enabled = (hasLan && !this.device.connected);
     }
 
     _onActivateLan(button) {
@@ -669,6 +664,9 @@ var Device = GObject.registerClass({
      * Sharing Settings
      */
     _sharingSettings() {
+        let actions = new Gio.SimpleActionGroup();
+        this.insert_action_group('sharing', actions);
+
         this.sharing_list.foreach(row => {
             let label = row.get_child().get_child_at(1, 0);
             let name = row.get_name();
@@ -679,7 +677,7 @@ var Device = GObject.registerClass({
                     row.visible = this.device.get_outgoing_supported(
                         'battery.request'
                     );
-                    settings.bind('send-statistics', label, 'active', 0);
+                    actions.add_action(settings.create_action('send-statistics'));
                     break;
 
                 case 'clipboard':
@@ -701,21 +699,21 @@ var Device = GObject.registerClass({
                     row.visible = this.device.get_outgoing_supported(
                         'mousepad.request'
                     );
-                    settings.bind('share-control', label, 'active', 0);
+                    actions.add_action(settings.create_action('share-control'));
                     break;
 
                 case 'mpris':
                     row.visible = this.device.get_outgoing_supported(
                         'mpris.request'
                     );
-                    settings.bind('share-players', label, 'active', 0);
+                    actions.add_action(settings.create_action('share-players'));
                     break;
 
                 case 'systemvolume':
                     row.visible = this.device.get_outgoing_supported(
                         'systemvolume.request'
                     );
-                    settings.bind('share-sinks', label, 'active', 0);
+                    actions.add_action(settings.create_action('share-sinks'));
                     break;
             }
         });
@@ -922,9 +920,7 @@ var Device = GObject.registerClass({
             }
         });
 
-        for (let uuid of Object.keys(this._commands)) {
-            await this._insertCommand(uuid);
-        }
+        Object.keys(this._commands).map(uuid => this._insertCommand(uuid));
     }
 
     /**
@@ -955,7 +951,7 @@ var Device = GObject.registerClass({
         this._populateApplications(settings);
     }
 
-    async _onNotificationRowActivated(box, row) {
+    _onNotificationRowActivated(box, row) {
         let settings = this._getSettings('notification');
         let applications = {};
 
@@ -966,41 +962,36 @@ var Device = GObject.registerClass({
         }
 
         applications[row.title].enabled = !applications[row.title].enabled;
-        row.widget.label = (applications[row.title].enabled) ? _('On') : _('Off');
+        row.widget.label = applications[row.title].enabled ? _('On') : _('Off');
         settings.set_string('applications', JSON.stringify(applications));
     }
 
-    async _populateApplications(settings) {
-        try {
-            let applications = await this._queryApplications(settings);
+    _populateApplications(settings) {
+        let applications = this._queryApplications(settings);
 
-            for (let name in applications) {
-                let row = new SectionRow({
-                    icon: Gio.Icon.new_for_string(applications[name].iconName),
-                    title: name,
-                    height_request: 48,
-                    widget: new Gtk.Label({
-                        label: applications[name].enabled ? _('On') : _('Off'),
-                        margin_end: 12,
-                        halign: Gtk.Align.END,
-                        hexpand: true,
-                        valign: Gtk.Align.CENTER,
-                        vexpand: true,
-                        visible: true
-                    }),
-                    activatable: true
-                });
+        for (let name in applications) {
+            let row = new SectionRow({
+                icon: Gio.Icon.new_for_string(applications[name].iconName),
+                title: name,
+                height_request: 48,
+                widget: new Gtk.Label({
+                    label: applications[name].enabled ? _('On') : _('Off'),
+                    margin_end: 12,
+                    halign: Gtk.Align.END,
+                    hexpand: true,
+                    valign: Gtk.Align.CENTER,
+                    vexpand: true,
+                    visible: true
+                }),
+                activatable: true
+            });
 
-                this.notification_apps.add(row);
-            }
-        } catch (e) {
-            // TODO: reset settings on failure?
-            logError(e);
+            this.notification_apps.add(row);
         }
     }
 
     // TODO: move to components/notification.js
-    async _queryApplications(settings) {
+    _queryApplications(settings) {
         let applications = {};
 
         try {

@@ -111,17 +111,14 @@ function getShortTime(time) {
     let diff = GLib.DateTime.new_now_local().difference(time);
 
     switch (true) {
-        // Super recent
         case (diff < GLib.TIME_SPAN_MINUTE):
             // TRANSLATORS: Less than a minute ago
             return _('Just now');
 
-        // Under an hour
         case (diff < GLib.TIME_SPAN_HOUR):
             // TRANSLATORS: Time duration in minutes (eg. 15 minutes)
             return _('%d minutes').format(diff/GLib.TIME_SPAN_MINUTE);
 
-        // Less than a week ago
         case (diff < (GLib.TIME_SPAN_DAY * 7)):
             return time.format('%a');
 
@@ -282,9 +279,9 @@ var ConversationWindow = GObject.registerClass({
     Properties: {
         'device': GObject.ParamSpec.object(
             'device',
-            'WindowDevice',
+            'Device',
             'The device associated with this window',
-            GObject.ParamFlags.READWRITE,
+            GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
             GObject.Object
         ),
         'address': GObject.ParamSpec.string(
@@ -332,8 +329,6 @@ var ConversationWindow = GObject.registerClass({
 
         super._init(Object.assign({
             application: Gio.Application.get_default(),
-            default_width: 300,
-            default_height: 300,
             urgency_hint: true
         }, params));
 
@@ -433,6 +428,7 @@ var ConversationWindow = GObject.registerClass({
                 }
             }
 
+            // Switch to the messages view
             this._showMessages();
             this.thread_id = thread_id;
         } else {
@@ -459,7 +455,7 @@ var ConversationWindow = GObject.registerClass({
     }
 
     get message_id() {
-        if (this._message_id === undefined) {
+        if (!this._message_id) {
             this._message_id = 0;
         }
 
@@ -472,7 +468,7 @@ var ConversationWindow = GObject.registerClass({
     }
 
     get thread_id() {
-        if (this._thread_id === undefined) {
+        if (!this._thread_id) {
             this._thread_id = 0;
         }
 
@@ -736,7 +732,7 @@ var ConversationWindow = GObject.registerClass({
         // Messages
         row.messages = new Gtk.Box({
             orientation: Gtk.Orientation.VERTICAL,
-            spacing: 6,
+            spacing: 3,
             halign: layout.halign,
             // Avatar width (32px) + layout spacing (6px) + 6px
             margin_right: (row.type === MessageType.IN) ? 44 : 0,
@@ -856,20 +852,32 @@ var ConversationWindow = GObject.registerClass({
  * A Gtk.ApplicationWindow for selecting from open conversations
  */
 var ConversationChooser = GObject.registerClass({
-    GTypeName: 'GSConnectConversationChooser'
+    GTypeName: 'GSConnectConversationChooser',
+    Properties: {
+        'device': GObject.ParamSpec.object(
+            'device',
+            'Device',
+            'The device associated with this window',
+            GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
+            GObject.Object
+        ),
+        'message': GObject.ParamSpec.string(
+            'message',
+            'Message',
+            'The message to share',
+            GObject.ParamFlags.READWRITE,
+            ''
+        )
+    }
 }, class ConversationChooser extends Gtk.ApplicationWindow {
 
-    _init(device, url) {
-        super._init({
-            application: Gio.Application.get_default(),
+    _init(params) {
+        super._init(Object.assign({
             title: _('Share Link'),
             default_width: 300,
             default_height: 200
-        });
+        }, params));
         this.set_keep_above(true);
-
-        this.device = device;
-        this.url = url;
 
         // HeaderBar
         let headerbar = new Gtk.HeaderBar({
@@ -916,7 +924,7 @@ var ConversationChooser = GObject.registerClass({
     }
 
     _select(window) {
-        window.setMessage(this.url);
+        window.setMessage(this.message);
         this.destroy();
         window.present();
     }

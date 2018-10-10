@@ -460,7 +460,10 @@ var Plugin = GObject.registerClass({
 
         // Show an intermediate dialog to allow choosing from open conversations
         if (hasConversations) {
-            window = new Messaging.ConversationChooser(this.device, url);
+            window = new Messaging.ConversationChooser({
+                device: this.device,
+                message: url
+            });
 
         // Open the list of contacts to start a new conversation
         } else {

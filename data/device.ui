@@ -34,11 +34,9 @@
                     <property name="label_xalign">0</property>
                     <child>
                       <object class="GtkListBox" id="sharing-list">
-                        <property name="width_request">320</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="hexpand">True</property>
-                        <property name="vexpand">False</property>
                         <property name="selection_mode">none</property>
                         <signal name="row-activated" handler="_onSharingRowActivated" swapped="no"/>
                         <child>
@@ -46,7 +44,7 @@
                             <property name="height_request">56</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
-                            <property name="activatable">False</property>
+                            <property name="action_name">sharing.share-statistics</property>
                             <property name="selectable">False</property>
                             <child>
                               <object class="GtkGrid">
@@ -67,7 +65,7 @@
                                     <property name="valign">center</property>
                                     <property name="hexpand">True</property>
                                     <property name="vexpand">True</property>
-                                    <property name="label">Power Statistics</property>
+                                    <property name="label">Battery</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">0</property>
@@ -80,6 +78,7 @@
                                     <property name="can_focus">True</property>
                                     <property name="halign">end</property>
                                     <property name="valign">center</property>
+                                    <property name="action_name">sharing.share-statistics</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">1</property>
@@ -129,7 +128,7 @@
                                     <property name="valign">center</property>
                                     <property name="margin_right">12</property>
                                     <property name="vexpand">True</property>
-                                    <property name="label" translatable="yes">On</property>
+                                    <property name="label">Off</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">1</property>
@@ -144,7 +143,7 @@
                           <object class="GtkListBoxRow" id="mpris">
                             <property name="height_request">56</property>
                             <property name="can_focus">True</property>
-                            <property name="activatable">False</property>
+                            <property name="action_name">sharing.share-players</property>
                             <property name="selectable">False</property>
                             <child>
                               <object class="GtkGrid">
@@ -177,6 +176,7 @@
                                     <property name="can_focus">True</property>
                                     <property name="halign">end</property>
                                     <property name="valign">center</property>
+                                    <property name="action_name">sharing.share-players</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">1</property>
@@ -191,7 +191,7 @@
                           <object class="GtkListBoxRow" id="mousepad">
                             <property name="height_request">56</property>
                             <property name="can_focus">True</property>
-                            <property name="activatable">False</property>
+                            <property name="action_name">sharing.share-control</property>
                             <property name="selectable">False</property>
                             <child>
                               <object class="GtkGrid">
@@ -225,6 +225,7 @@
                                     <property name="can_focus">True</property>
                                     <property name="halign">end</property>
                                     <property name="valign">center</property>
+                                    <property name="action_name">sharing.share-control</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">1</property>
@@ -239,7 +240,7 @@
                           <object class="GtkListBoxRow" id="systemvolume">
                             <property name="height_request">56</property>
                             <property name="can_focus">True</property>
-                            <property name="activatable">False</property>
+                            <property name="action_name">sharing.share-sinks</property>
                             <property name="selectable">False</property>
                             <child>
                               <object class="GtkGrid">
@@ -273,6 +274,7 @@
                                     <property name="can_focus">True</property>
                                     <property name="halign">end</property>
                                     <property name="valign">center</property>
+                                    <property name="action_name">sharing.share-sinks</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">1</property>
@@ -346,11 +348,9 @@
                     <property name="label_xalign">0</property>
                     <child>
                       <object class="GtkListBox" id="command-list">
-                        <property name="width_request">320</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="hexpand">True</property>
-                        <property name="vexpand">False</property>
                         <property name="activate_on_single_click">False</property>
                         <signal name="selected-rows-changed" handler="_onCommandSelected" swapped="no"/>
                         <child>
@@ -559,11 +559,9 @@
                     <property name="label_xalign">0</property>
                     <child>
                       <object class="GtkListBox" id="notification-list">
-                        <property name="width_request">320</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="hexpand">True</property>
-                        <property name="vexpand">False</property>
                         <property name="selection_mode">none</property>
                         <child>
                           <object class="GtkListBoxRow">
@@ -648,11 +646,9 @@
                     <property name="label_xalign">0</property>
                     <child>
                       <object class="GtkListBox" id="notification-apps">
-                        <property name="width_request">320</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="hexpand">True</property>
-                        <property name="vexpand">False</property>
                         <property name="selection_mode">none</property>
                         <signal name="row-activated" handler="_onNotificationRowActivated" swapped="no"/>
                       </object>
@@ -720,11 +716,9 @@
                     <property name="label_xalign">0</property>
                     <child>
                       <object class="GtkListBox" id="ringing-list">
-                        <property name="width_request">320</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="hexpand">True</property>
-                        <property name="vexpand">False</property>
                         <property name="selection_mode">none</property>
                         <signal name="row-activated" handler="_onTelephonyRowActivated" swapped="no"/>
                         <child>
@@ -867,11 +861,9 @@
                     <property name="label_xalign">0</property>
                     <child>
                       <object class="GtkListBox" id="talking-list">
-                        <property name="width_request">320</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="hexpand">True</property>
-                        <property name="vexpand">False</property>
                         <property name="selection_mode">none</property>
                         <signal name="row-activated" handler="_onTelephonyRowActivated" swapped="no"/>
                         <child>
@@ -1116,11 +1108,9 @@
                     <property name="label_xalign">0</property>
                     <child>
                       <object class="GtkListBox" id="shortcuts-actions-list">
-                        <property name="width_request">320</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="hexpand">True</property>
-                        <property name="vexpand">False</property>
                         <property name="selection_mode">none</property>
                         <signal name="row-activated" handler="_onShortcutRowActivated" swapped="no"/>
                       </object>
@@ -1181,11 +1171,9 @@
                     <property name="label_xalign">0</property>
                     <child>
                       <object class="GtkListBox" id="shortcuts-commands-list">
-                        <property name="width_request">320</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="hexpand">True</property>
-                        <property name="vexpand">False</property>
                         <property name="selection_mode">none</property>
                         <signal name="row-activated" handler="_onShortcutRowActivated" swapped="no"/>
                       </object>
@@ -1254,11 +1242,9 @@
                     <property name="label_xalign">0</property>
                     <child>
                       <object class="GtkListBox" id="plugin-list">
-                        <property name="width_request">320</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="hexpand">True</property>
-                        <property name="vexpand">False</property>
                         <property name="selection_mode">none</property>
                       </object>
                     </child>
@@ -1276,15 +1262,12 @@
                     <property name="label_xalign">0</property>
                     <child>
                       <object class="GtkListBox" id="danger-list">
-                        <property name="width_request">320</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="hexpand">True</property>
-                        <property name="vexpand">False</property>
                         <property name="selection_mode">none</property>
                         <child>
                           <object class="GtkListBoxRow">
-                            <property name="width_request">100</property>
                             <property name="height_request">56</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
