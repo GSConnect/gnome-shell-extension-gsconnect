@@ -126,11 +126,16 @@ var Plugin = GObject.registerClass({
         }
     }
 
-    _getPixbuf(data) {
-        // Catch errors from partially corrupt JPEGs as warnings
+    /**
+     * Load a Gdk.Pixbuf from base64 encoded data
+     *
+     * @param {string} data - Base64 encoded JPEG data
+     */
+    _getThumbnailPixbuf(data) {
         let loader;
 
         try {
+            data = GLib.base64_decode(data);
             loader = new GdkPixbuf.PixbufLoader();
             loader.write(data);
             loader.close();
@@ -155,32 +160,29 @@ var Plugin = GObject.registerClass({
 
         // If there's a photo, use it as the notification icon
         if (packet.body.phoneThumbnail) {
-            let data = GLib.base64_decode(packet.body.phoneThumbnail);
-            icon = this._getPixbuf(data);
+            icon = this._getThumbnailPixbuf(packet.body.phoneThumbnail);
         }
 
-        // An incoming call
         if (packet.body.event === 'ringing') {
             this._setMediaState('ringing');
 
-            // TRANSLATORS: eg. Incoming call from John Smith
-            body = _('Incoming call from %s').format(sender);
+            // TRANSLATORS: The phone is ringing
+            body = _('Incoming call');
             buttons = [{
                 action: 'muteCall',
-                // TRANSLATORS: Silence an incoming call
+                // TRANSLATORS: Silence the phone ringer
                 label: _('Mute'),
                 parameter: null
             }];
             priority = Gio.NotificationPriority.URGENT;
         }
 
-        // An in progress call
         if (packet.body.event === 'talking') {
             this.device.hideNotification(`ringing|${sender}`);
             this._setMediaState('talking');
 
-            // TRANSLATORS: eg. Call in progress with John Smith
-            body = _('Call in progress with %s').format(sender);
+            // TRANSLATORS: A phone call is active
+            body = _('Ongoing call');
         }
 
         this.device.showNotification({
