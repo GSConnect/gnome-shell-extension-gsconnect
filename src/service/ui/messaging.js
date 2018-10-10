@@ -418,7 +418,7 @@ var ConversationWindow = GObject.registerClass({
                 }
             }
 
-            // Populate the conversation
+            // Try and find a conversation for this number
             let sms = this.device.lookup_plugin('sms');
             let thread_id;
 
@@ -434,7 +434,7 @@ var ConversationWindow = GObject.registerClass({
             }
 
             this._showMessages();
-            this._populateMessages(thread_id);
+            this.thread_id = thread_id;
         } else {
             this._address = null;
             this._contact = null;
@@ -480,8 +480,11 @@ var ConversationWindow = GObject.registerClass({
     }
 
     set thread_id(id) {
-        this._thread_id = id;
-        this.notify('thread-id');
+        if (id !== this.thread_id) {
+            this._thread_id = id;
+            this._populateMessages(id);
+            this.notify('thread-id');
+        }
     }
 
     _onDeleteEvent(window, event) {
