@@ -313,13 +313,19 @@ var Plugin = GObject.registerClass({
 
                 // Prune conversations
                 Object.keys(this.conversations).map(id => {
-                    if (!thread_ids.includes(id)) {
+                    if (!thread_ids.includes(parseInt(id))) {
                         delete this.conversations[id];
                     }
                 });
 
-                // Request each thread
-                thread_ids.map(id => this.requestConversation(id));
+                // Request each new or newer thread
+                packet.body.messages.map(message => {
+                    let cache = this.conversations[message.thread_id];
+
+                    if (!cache || cache[cache.length - 1].date < message.date) {
+                        this.requestConversation(message.thread_id);
+                    }
+                });
 
                 // We call this instead of notify::threads so the conversation
                 // windows don't have to deal with the plugin loading/unloading.
@@ -423,7 +429,6 @@ var Plugin = GObject.registerClass({
      */
     sendSms(phoneNumber, messageBody) {
         this.device.sendPacket({
-            id: 0,
             type: 'kdeconnect.sms.request',
             body: {
                 sendSms: true,
@@ -438,23 +443,16 @@ var Plugin = GObject.registerClass({
      * share URLs from the browser, but could be used to initiate sharing of any
      * text content.
      *
-     * TODO: integrate new telephony.message functionality
-     *
      * @param {string} url - The link to be shared
      */
     shareSms(url) {
         // Get the current open windows
-        let windows = this.service.get_windows();
         let hasConversations = false;
 
-        for (let index_ in windows) {
-            let window = windows[index_];
-
-            if (window.device && window.device.id === this.device.id) {
-                if (window.number) {
-                    hasConversations = true;
-                    break;
-                }
+        for (let window of this.service.get_windows()) {
+            if (window.address && window.device === this.device) {
+                hasConversations = true;
+                break;
             }
         }
 
