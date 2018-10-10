@@ -575,7 +575,7 @@ var Device = GObject.registerClass({
         // Hide elements for any disabled plugins
         for (let name of this.settings.get_strv('supported-plugins')) {
             if (this.hasOwnProperty(name)) {
-                this[name].visible = this.device.get_plugin_allowed(name);
+                this[name].visible = this.get_plugin_allowed(name);
             }
         }
     }
@@ -1327,6 +1327,13 @@ var Device = GObject.registerClass({
         this._populatePlugins();
     }
 
+    get_plugin_allowed(name) {
+        let disabled = this.settings.get_strv('disabled-plugins');
+        let supported = this.settings.get_strv('supported-plugins');
+
+        return supported.filter(name => !disabled.includes(name)).includes(name);
+    }
+
     _addPlugin(name) {
         let widget = new Gtk.CheckButton({
             label: imports.service.plugins[name].Metadata.label,
@@ -1361,9 +1368,7 @@ var Device = GObject.registerClass({
 
             if (disabled.includes(name)) {
                 disabled.splice(disabled.indexOf(name), 1);
-                this.device.loadPlugin(name);
             } else {
-                this.device.unloadPlugin(name);
                 disabled.push(name);
             }
 

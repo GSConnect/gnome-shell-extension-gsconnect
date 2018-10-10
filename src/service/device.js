@@ -101,6 +101,12 @@ var Device = GObject.registerClass({
             path: `/org/gnome/shell/extensions/gsconnect/device/${deviceId}/`
         });
 
+        // Watch for plugins changes
+        this._disabledPluginsId = this.settings.connect(
+            'changed::disabled-plugins',
+            this._onDisabledPlugins.bind(this)
+        );
+
         // TODO: Backwards compatibility <= v12; remove after a few releases
         if (this.settings.get_string('certificate-pem') !== '') {
             this.settings.set_boolean('paired', true);
@@ -756,6 +762,15 @@ var Device = GObject.registerClass({
         return this._plugins.get(name) || null;
     }
 
+    _onDisabledPlugins(settings) {
+        let disabled = this.settings.get_strv('disabled-plugins');
+        let supported = this.settings.get_strv('supported-plugins');
+        let allowed = supported.filter(name => !disabled.includes(name));
+
+        disabled.map(name => this.unloadPlugin(name));
+        allowed.map(name => this.loadPlugin(name));
+    }
+
     loadPlugin(name) {
         let handler, plugin;
 
@@ -829,6 +844,9 @@ var Device = GObject.registerClass({
     }
 
     destroy() {
+        //
+        this.settings.disconnect(this._disabledPluginsId);
+
         // Close the channel if still connected
         if (this._channel !== null) {
             this._channel.close();
