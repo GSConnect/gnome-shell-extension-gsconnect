@@ -280,13 +280,6 @@ var ConversationSummary = GObject.registerClass({
 var ConversationWindow = GObject.registerClass({
     GTypeName: 'GSConnectConversationWindow',
     Properties: {
-        'connected': GObject.ParamSpec.boolean(
-            'connected',
-            'deviceConnected',
-            'Whether the device is connected',
-            GObject.ParamFlags.READWRITE,
-            false
-        ),
         'device': GObject.ParamSpec.object(
             'device',
             'WindowDevice',
