@@ -114,6 +114,7 @@
       <default>false</default>
     </key>
   </schema>
+  <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Contacts"/>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.FindMyPhone"/>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Mousepad">
     <key name="share-control" type="b">
