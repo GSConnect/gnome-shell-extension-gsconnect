@@ -38,13 +38,12 @@
                         <property name="can_focus">False</property>
                         <property name="hexpand">True</property>
                         <property name="selection_mode">none</property>
-                        <signal name="row-activated" handler="_onSharingRowActivated" swapped="no"/>
+                        <signal name="row-activated" handler="_onToggleRowActivated" swapped="no"/>
                         <child>
                           <object class="GtkListBoxRow" id="battery">
                             <property name="height_request">56</property>
                             <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="action_name">sharing.share-statistics</property>
+                            <property name="can_focus">False</property>
                             <property name="selectable">False</property>
                             <child>
                               <object class="GtkGrid">
@@ -78,7 +77,7 @@
                                     <property name="can_focus">True</property>
                                     <property name="halign">end</property>
                                     <property name="valign">center</property>
-                                    <property name="action_name">sharing.share-statistics</property>
+                                    <property name="action_name">settings.share-statistics</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">1</property>
@@ -92,7 +91,7 @@
                         <child>
                           <object class="GtkListBoxRow" id="clipboard">
                             <property name="height_request">56</property>
-                            <property name="can_focus">True</property>
+                            <property name="can_focus">False</property>
                             <property name="selectable">False</property>
                             <child>
                               <object class="GtkGrid">
@@ -121,14 +120,21 @@
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkLabel">
+                                  <object class="GtkMenuButton" id="clipboard-sync">
                                     <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="receives_default">True</property>
                                     <property name="halign">end</property>
                                     <property name="valign">center</property>
-                                    <property name="margin_right">12</property>
-                                    <property name="vexpand">True</property>
-                                    <property name="label">Off</property>
+                                    <property name="vexpand">False</property>
+                                    <property name="relief">none</property>
+                                    <child>
+                                      <object class="GtkImage">
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">False</property>
+                                        <property name="icon_name">network-transmit-receive-symbolic</property>
+                                      </object>
+                                    </child>
                                   </object>
                                   <packing>
                                     <property name="left_attach">1</property>
@@ -142,8 +148,7 @@
                         <child>
                           <object class="GtkListBoxRow" id="mpris">
                             <property name="height_request">56</property>
-                            <property name="can_focus">True</property>
-                            <property name="action_name">sharing.share-players</property>
+                            <property name="can_focus">False</property>
                             <property name="selectable">False</property>
                             <child>
                               <object class="GtkGrid">
@@ -176,7 +181,7 @@
                                     <property name="can_focus">True</property>
                                     <property name="halign">end</property>
                                     <property name="valign">center</property>
-                                    <property name="action_name">sharing.share-players</property>
+                                    <property name="action_name">settings.share-players</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">1</property>
@@ -190,8 +195,7 @@
                         <child>
                           <object class="GtkListBoxRow" id="mousepad">
                             <property name="height_request">56</property>
-                            <property name="can_focus">True</property>
-                            <property name="action_name">sharing.share-control</property>
+                            <property name="can_focus">False</property>
                             <property name="selectable">False</property>
                             <child>
                               <object class="GtkGrid">
@@ -225,7 +229,7 @@
                                     <property name="can_focus">True</property>
                                     <property name="halign">end</property>
                                     <property name="valign">center</property>
-                                    <property name="action_name">sharing.share-control</property>
+                                    <property name="action_name">settings.share-control</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">1</property>
@@ -239,8 +243,7 @@
                         <child>
                           <object class="GtkListBoxRow" id="systemvolume">
                             <property name="height_request">56</property>
-                            <property name="can_focus">True</property>
-                            <property name="action_name">sharing.share-sinks</property>
+                            <property name="can_focus">False</property>
                             <property name="selectable">False</property>
                             <child>
                               <object class="GtkGrid">
@@ -274,7 +277,7 @@
                                     <property name="can_focus">True</property>
                                     <property name="halign">end</property>
                                     <property name="valign">center</property>
-                                    <property name="action_name">sharing.share-sinks</property>
+                                    <property name="action_name">settings.share-sinks</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">1</property>
@@ -720,7 +723,7 @@
                         <property name="can_focus">False</property>
                         <property name="hexpand">True</property>
                         <property name="selection_mode">none</property>
-                        <signal name="row-activated" handler="_onTelephonyRowActivated" swapped="no"/>
+                        <signal name="row-activated" handler="_onToggleRowActivated" swapped="no"/>
                         <child>
                           <object class="GtkListBoxRow">
                             <property name="height_request">56</property>
@@ -813,11 +816,12 @@
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkSwitch" id="ringing-pause">
+                                  <object class="GtkSwitch">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="valign">center</property>
                                     <property name="vexpand">True</property>
+                                    <property name="action_name">settings.ringing-pause</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">1</property>
@@ -865,7 +869,7 @@
                         <property name="can_focus">False</property>
                         <property name="hexpand">True</property>
                         <property name="selection_mode">none</property>
-                        <signal name="row-activated" handler="_onTelephonyRowActivated" swapped="no"/>
+                        <signal name="row-activated" handler="_onToggleRowActivated" swapped="no"/>
                         <child>
                           <object class="GtkListBoxRow">
                             <property name="height_request">56</property>
@@ -957,11 +961,12 @@
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkSwitch" id="talking-pause">
+                                  <object class="GtkSwitch">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="valign">center</property>
                                     <property name="vexpand">True</property>
+                                    <property name="action_name">settings.talking-pause</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">1</property>
@@ -1005,11 +1010,12 @@
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkSwitch" id="talking-microphone">
+                                  <object class="GtkSwitch">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="valign">center</property>
                                     <property name="vexpand">True</property>
+                                    <property name="action_name">settings.talking-microphone</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">1</property>

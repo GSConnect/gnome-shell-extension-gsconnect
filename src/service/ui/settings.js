@@ -347,12 +347,12 @@ var Window = GObject.registerClass({
      */
     _setDeviceMenu(panel=null) {
         this.device_menu.insert_action_group('device', null);
-        this.device_menu.insert_action_group('status', null);
+        this.device_menu.insert_action_group('settings', null);
         this.device_menu.set_menu_model(null);
 
         if (panel) {
             this.device_menu.insert_action_group('device', panel.device);
-            this.device_menu.insert_action_group('status', panel.status);
+            this.device_menu.insert_action_group('settings', panel.actions);
             this.device_menu.set_menu_model(panel.menu);
         }
     }
@@ -453,7 +453,7 @@ var Device = GObject.registerClass({
         'switcher',
         // Sharing
         'sharing-list',
-        'clipboard', 'mousepad', 'mpris', 'systemvolume',
+        'clipboard', 'clipboard-sync', 'mousepad', 'mpris', 'systemvolume',
         // RunCommand
         'runcommand', 'command-list',
         'command-toolbar', 'command-add', 'command-remove', 'command-edit',
@@ -463,8 +463,7 @@ var Device = GObject.registerClass({
         'share-notifications', 'notification-apps',
         // Telephony
         'telephony',
-        'ringing-list', 'ringing-volume', 'ringing-pause',
-        'talking-list', 'talking-volume', 'talking-microphone', 'talking-pause',
+        'ringing-list', 'ringing-volume', 'talking-list', 'talking-volume',
         // Shortcuts
         'shortcuts-actions', 'shortcuts-actions-title', 'shortcuts-actions-list',
         'shortcuts-commands', 'shortcuts-commands-title', 'shortcuts-commands-list',
@@ -486,36 +485,11 @@ var Device = GObject.registerClass({
             path: '/org/gnome/shell/extensions/gsconnect/device/' + this.device.id + '/'
         });
 
-        // Connect Actions
-        this.status = new Gio.SimpleActionGroup();
-        this.insert_action_group('status', this.status);
-
-        let status_bluetooth = new Gio.SimpleAction({
-            name: 'connect-bluetooth'
-        });
-        status_bluetooth.connect('activate', this._onActivateBluetooth.bind(this));
-        this.status.add_action(status_bluetooth);
-
-        let status_lan = new Gio.SimpleAction({
-            name: 'connect-tcp'
-        });
-        status_lan.connect('activate', this._onActivateLan.bind(this));
-        this.status.add_action(status_lan);
-
-        // Pair Actions
-        let status_pair = new Gio.SimpleAction({ name: 'pair' });
-        status_pair.connect('activate', this.device.pair.bind(this.device));
-        this.settings.bind('paired', status_pair, 'enabled', 16);
-        this.status.add_action(status_pair);
-
-        let status_unpair = new Gio.SimpleAction({ name: 'unpair' });
-        status_unpair.connect('activate', this.device.unpair.bind(this.device));
-        this.settings.bind('paired', status_unpair, 'enabled', 0);
-        this.status.add_action(status_unpair);
+        this._setupActions();
 
         // Device Menu
         let builder = Gtk.Builder.new_from_resource(gsconnect.app_path + '/gtk/menus.ui');
-        this.menu = builder.get_object('device-status');
+        this.menu = builder.get_object('device-settings');
         this.menu.prepend_section(null, this.device.menu);
 
         // Sidebar Row
@@ -539,7 +513,7 @@ var Device = GObject.registerClass({
             }
         });
 
-        // Device Changes
+        // Action Changes
         this._actionAddedId = this.device.connect(
             'action-added',
             this._onActionsChanged.bind(this)
@@ -584,13 +558,26 @@ var Device = GObject.registerClass({
         return Gio.Application.get_default();
     }
 
+    _onActionsChanged() {
+        this._populateActionKeybindings();
+    }
+
+    _onSwitcherRowSelected(box, row) {
+        this.set_visible_child_name(row.get_name());
+    }
+
+    _onToggleRowActivated(box, row) {
+        let widget = row.get_child().get_child_at(1, 0);
+        widget.active = !widget.active;
+    }
+
     _onConnected(device) {
         this._onTcpHostChanged(device.settings);
         this._onBluetoothHostChanged(device.settings);
     }
 
     _onBluetoothHostChanged() {
-        let action = this.status.lookup_action(`connect-bluetooth`);
+        let action = this.actions.lookup_action(`connect-bluetooth`);
         let hasBluetooth = (this.settings.get_string('bluetooth-host').length);
         action.enabled = (hasBluetooth && !this.device.connected);
     }
@@ -601,7 +588,7 @@ var Device = GObject.registerClass({
     }
 
     _onTcpHostChanged() {
-        let action = this.status.lookup_action(`connect-tcp`);
+        let action = this.actions.lookup_action(`connect-tcp`);
         let hasLan = (this.settings.get_string('tcp-host').length);
         action.enabled = (hasLan && !this.device.connected);
     }
@@ -609,29 +596,6 @@ var Device = GObject.registerClass({
     _onActivateLan(button) {
         this.settings.set_string('last-connection', 'tcp');
         this.device.activate();
-    }
-
-    _getSettings(name) {
-        if (this._gsettings === undefined) {
-            this._gsettings = {};
-        }
-
-        if (this._gsettings.hasOwnProperty(name)) {
-            return this._gsettings[name];
-        }
-
-        let meta = imports.service.plugins[name].Metadata;
-
-        this._gsettings[name] = new Gio.Settings({
-            settings_schema: gsconnect.gschema.lookup(meta.id, -1),
-            path: this.settings.path + 'plugin/' + name + '/'
-        });
-
-        return this._gsettings[name];
-    }
-
-    _onActionsChanged() {
-        this._populateActionKeybindings();
     }
 
     _onDeleteDevice(button) {
@@ -656,66 +620,89 @@ var Device = GObject.registerClass({
         this.settings.disconnect(this._pluginsId);
     }
 
-    _onSwitcherRowSelected(box, row) {
-        this.set_visible_child_name(row.get_name());
+    _getSettings(name) {
+        if (this._gsettings === undefined) {
+            this._gsettings = {};
+        }
+
+        if (this._gsettings.hasOwnProperty(name)) {
+            return this._gsettings[name];
+        }
+
+        let meta = imports.service.plugins[name].Metadata;
+
+        this._gsettings[name] = new Gio.Settings({
+            settings_schema: gsconnect.gschema.lookup(meta.id, -1),
+            path: this.settings.path + 'plugin/' + name + '/'
+        });
+
+        return this._gsettings[name];
+    }
+
+    _setupActions() {
+        this.actions = new Gio.SimpleActionGroup();
+        this.insert_action_group('settings', this.actions);
+
+        let settings = this._getSettings('battery');
+        this.actions.add_action(settings.create_action('send-statistics'));
+
+        settings = this._getSettings('clipboard');
+        this.actions.add_action(settings.create_action('send-content'));
+        this.actions.add_action(settings.create_action('receive-content'));
+        this.clipboard_sync.set_menu_model(
+            this.service.get_menu_by_id('clipboard-sync')
+        );
+
+        settings = this._getSettings('mousepad');
+        this.actions.add_action(settings.create_action('share-control'));
+
+        settings = this._getSettings('mpris');
+        this.actions.add_action(settings.create_action('share-players'));
+
+        settings = this._getSettings('systemvolume');
+        this.actions.add_action(settings.create_action('share-sinks'));
+
+        settings = this._getSettings('telephony');
+        this.actions.add_action(settings.create_action('ringing-volume'));
+        this.actions.add_action(settings.create_action('ringing-pause'));
+        this.ringing_volume.set_menu_model(
+            this.service.get_menu_by_id('ringing-volume')
+        );
+        this.actions.add_action(settings.create_action('talking-volume'));
+        this.actions.add_action(settings.create_action('talking-pause'));
+        this.actions.add_action(settings.create_action('talking-microphone'));
+        this.talking_volume.set_menu_model(
+            this.service.get_menu_by_id('talking-volume')
+        );
+
+        // Connect Actions
+        let status_bluetooth = new Gio.SimpleAction({name: 'connect-bluetooth'});
+        status_bluetooth.connect('activate', this._onActivateBluetooth.bind(this));
+        this.actions.add_action(status_bluetooth);
+
+        let status_lan = new Gio.SimpleAction({ name: 'connect-tcp' });
+        status_lan.connect('activate', this._onActivateLan.bind(this));
+        this.actions.add_action(status_lan);
+
+        // Pair Actions
+        let status_pair = new Gio.SimpleAction({ name: 'pair' });
+        status_pair.connect('activate', this.device.pair.bind(this.device));
+        this.settings.bind('paired', status_pair, 'enabled', 16);
+        this.actions.add_action(status_pair);
+
+        let status_unpair = new Gio.SimpleAction({ name: 'unpair' });
+        status_unpair.connect('activate', this.device.unpair.bind(this.device));
+        this.settings.bind('paired', status_unpair, 'enabled', 0);
+        this.actions.add_action(status_unpair);
     }
 
     /**
      * Sharing Settings
      */
     _sharingSettings() {
-        let actions = new Gio.SimpleActionGroup();
-        this.insert_action_group('sharing', actions);
-
         this.sharing_list.foreach(row => {
-            let label = row.get_child().get_child_at(1, 0);
             let name = row.get_name();
-            let settings = this._getSettings(name);
-
-            switch (name) {
-                case 'battery':
-                    row.visible = this.device.get_outgoing_supported(
-                        'battery.request'
-                    );
-                    actions.add_action(settings.create_action('send-statistics'));
-                    break;
-
-                case 'clipboard':
-                    let send = settings.get_boolean('send-content');
-                    let receive = settings.get_boolean('receive-content');
-
-                    if (send && receive) {
-                        label.label = _('Both');
-                    } else if (send) {
-                        label.label = _('To Device');
-                    } else if (receive) {
-                        label.label = _('From Device');
-                    } else {
-                        label.label = _('Off');
-                    }
-                    break;
-
-                case 'mousepad':
-                    row.visible = this.device.get_outgoing_supported(
-                        'mousepad.request'
-                    );
-                    actions.add_action(settings.create_action('share-control'));
-                    break;
-
-                case 'mpris':
-                    row.visible = this.device.get_outgoing_supported(
-                        'mpris.request'
-                    );
-                    actions.add_action(settings.create_action('share-players'));
-                    break;
-
-                case 'systemvolume':
-                    row.visible = this.device.get_outgoing_supported(
-                        'systemvolume.request'
-                    );
-                    actions.add_action(settings.create_action('share-sinks'));
-                    break;
-            }
+            row.visible = this.device.get_outgoing_supported(`${name}.request`);
         });
 
         // Separators & Sorting
@@ -726,42 +713,6 @@ var Device = GObject.registerClass({
             row2 = row2.get_child().get_child_at(0, 0);
             return row1.label.localeCompare(row2.label);
         });
-    }
-
-    _onSharingRowActivated(box, row) {
-        let settings = this._getSettings('clipboard');
-        let widget = row.get_child().get_child_at(1, 0);
-
-        let send = settings.get_boolean('send-content');
-        let receive = settings.get_boolean('receive-content');
-
-        switch (true) {
-            case (send && receive):
-                send = false;
-                receive = false;
-                widget.label = _('Off');
-                break;
-
-            case send:
-                send = false;
-                receive = true;
-                widget.label = _('From Device');
-                break;
-
-            case receive:
-                send = true;
-                receive = true;
-                widget.label = _('Both');
-                break;
-
-            default:
-                send = true;
-                receive = false;
-                widget.label = _('To Device');
-        }
-
-        settings.set_boolean('send-content', send);
-        settings.set_boolean('receive-content', receive);
     }
 
     /**
@@ -926,7 +877,7 @@ var Device = GObject.registerClass({
     /**
      * Notification Settings
      */
-    async _notificationSettings() {
+    _notificationSettings() {
         let settings = this._getSettings('notification');
 
         settings.bind(
@@ -1049,58 +1000,14 @@ var Device = GObject.registerClass({
      * Telephony Settings
      */
     _telephonySettings() {
-        let settings = this._getSettings('telephony');
-
-        // Settings Actions
-        let actions = new Gio.SimpleActionGroup();
-        this.insert_action_group('telephony', actions);
-
-        // Incoming calls
-        actions.add_action(settings.create_action('ringing-volume'));
-        this.ringing_volume.set_menu_model(
-            this.service.get_menu_by_id('ringing-volume')
-        );
-
-        settings.bind(
-            'ringing-pause',
-            this.ringing_pause,
-            'active',
-            Gio.SettingsBindFlags.DEFAULT
-        );
-
-        // In Progress Calls
-        actions.add_action(settings.create_action('talking-volume'));
-        this.talking_volume.set_menu_model(
-            this.service.get_menu_by_id('talking-volume')
-        );
-
-        settings.bind(
-            'talking-microphone',
-            this.talking_microphone,
-            'active',
-            Gio.SettingsBindFlags.DEFAULT
-        );
-
-        settings.bind(
-            'talking-pause',
-            this.talking_pause,
-            'active',
-            Gio.SettingsBindFlags.DEFAULT
-        );
-
         this.ringing_list.set_header_func(section_separators);
         this.talking_list.set_header_func(section_separators);
-    }
-
-    _onTelephonyRowActivated(box, row) {
-        let button = row.get_child().get_child_at(1, 0);
-        button.active = !button.active;
     }
 
     /**
      * Keyboard Shortcuts
      */
-    async _keybindingSettings() {
+    _keybindingSettings() {
         this._keybindingsId = this.settings.connect(
             'changed::keybindings',
             this._populateKeybindings.bind(this)
@@ -1119,17 +1026,13 @@ var Device = GObject.registerClass({
         this._populateKeybindings();
     }
 
-    async _populateKeybindings() {
+    _populateKeybindings() {
         if (this.device.list_actions().length === 0) {
             return;
         }
 
-        try {
-            await this._populateActionKeybindings();
-            await this._populateCommandKeybindings();
-        } catch (e) {
-            logError(e);
-        }
+        this._populateActionKeybindings();
+        this._populateCommandKeybindings();
     }
 
     _addActionKeybinding(name, keybindings) {
@@ -1230,7 +1133,7 @@ var Device = GObject.registerClass({
         this.shortcuts_commands_list.add(row);
     }
 
-    async _populateCommandKeybindings() {
+    _populateCommandKeybindings() {
         this.shortcuts_commands_list.foreach(row => row.destroy());
 
         let keybindings = this.settings.get_value('keybindings').deep_unpack();
@@ -1287,7 +1190,6 @@ var Device = GObject.registerClass({
         try {
             let keybindings = this.settings.get_value('keybindings').deep_unpack();
             let accelerator = await Keybindings.get_accelerator(
-                box.get_toplevel(),
                 row.title,
                 keybindings[row.action]
             );

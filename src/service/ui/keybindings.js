@@ -32,7 +32,7 @@ var ShortcutChooserDialog = GObject.registerClass({
 
     _init(params) {
         super._init({
-            transient_for: params.transient_for || null,
+            transient_for: Gio.Application.get_default().get_active_window(),
             use_header_bar: true,
             modal: true,
             // TRANSLATORS: Title of keyboard shortcut dialog
@@ -330,17 +330,15 @@ async function check_accelerator(accelerator, flags=0) {
 /**
  * Show a dialog to get a keyboard shortcut from a user.
  *
- * @param {Gtk.Widget} parent - The top-level widget to be transient of or %null
  * @param {string} summary - A description of the keybinding's function
  * @param {string} accelerator - An accelerator as taken by Gtk.ShortcutLabel
  * @return {string} - An accelerator or %null if it should be unset.
  */
-async function get_accelerator(parent, summary, accelerator=null) {
+async function get_accelerator(summary, accelerator=null) {
     let dialog;
 
     try {
         dialog = new ShortcutChooserDialog({
-            transient_for: parent,
             summary: summary,
             accelerator: accelerator
         });
