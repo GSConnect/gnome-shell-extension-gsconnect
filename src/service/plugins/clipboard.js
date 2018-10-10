@@ -44,22 +44,17 @@ var Plugin = GObject.registerClass({
     _init(device) {
         super._init(device, 'clipboard');
 
-        this._display = Gdk.Display.get_default();
-
-        if (this._display === null) {
+        try {
+            let display = Gdk.Display.get_default();
+            this._clipboard = Gtk.Clipboard.get_default(display);
+        } catch (e) {
             this.destroy();
-            throw Error(_('Failed to get Gdk.Display'));
+            throw e;
         }
 
-        this._clipboard = Gtk.Clipboard.get_default(this._display);
-
-        if (this._clipboard === null) {
-            this.destroy();
-            throw Error(_('Failed to get Clipboard'));
-        }
-
-        this._localContent = '';
-        this._remoteContent = '';
+        // Buffer content to allow selective sync
+        this._localBuffer = '';
+        this._remoteBuffer = '';
 
         // Watch local clipboard for changes
         this._ownerChangeId = this._clipboard.connect(
@@ -79,9 +74,7 @@ var Plugin = GObject.registerClass({
      */
     _onLocalClipboardChanged(clipboard, event) {
         clipboard.request_text((clipboard, text) => {
-            debug(`${this.device.name}: ${text}`);
-
-            this._localContent = text;
+            this._localBuffer = text;
 
             if (this.settings.get_boolean('send-content')) {
                 this.clipboardPush();
@@ -93,9 +86,7 @@ var Plugin = GObject.registerClass({
      * Store the updated clipboard content and apply it if enabled
      */
     _onRemoteClipboardChanged(text) {
-        debug(`${this.device.name}: ${text}`);
-
-        this._remoteContent = text;
+        this._remoteBuffer = text;
 
         if (this.settings.get_boolean('receive-content')) {
             this.clipboardPull();
@@ -106,25 +97,24 @@ var Plugin = GObject.registerClass({
      * Copy to the remote clipboard; called by _onLocalClipboardChanged()
      */
     clipboardPush() {
-        if (this._remoteContent !== this._localContent) {
-            this._remoteContent = this._localContent;
+        if (this._remoteBuffer !== this._localBuffer) {
+            this._remoteBuffer = this._localBuffer;
 
             this.device.sendPacket({
-                id: 0,
                 type: 'kdeconnect.clipboard',
-                body: { content: this._localContent }
+                body: { content: this._localBuffer }
             });
         }
     }
 
     /**
-     * Paste from the remote clipboard; called by _onRemoteClipboardChanged()
+     * Copy from the remote clipboard; called by _onRemoteClipboardChanged()
      */
     clipboardPull() {
-        if (this._localContent !== this._remoteContent) {
-            this._localContent = this._remoteContent;
+        if (this._localBuffer !== this._remoteBuffer) {
+            this._localBuffer = this._remoteBuffer;
 
-            this._clipboard.set_text(this._remoteContent, -1);
+            this._clipboard.set_text(this._remoteBuffer, -1);
         }
     }
 
