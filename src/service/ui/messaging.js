@@ -919,18 +919,9 @@ var ConversationChooser = GObject.registerClass({
     }
 
     _addWindows() {
-        let windows = Gio.Application.get_default().get_windows();
-
-        for (let index_ in windows) {
-            let window = windows[index_];
-
-            if (!(window instanceof ConversationWindow) || window.device !== this.device) {
-                continue;
-            }
-
-            if (window.address) {
+        for (let window of Gio.Application.get_default().get_windows()) {
+            if (window.address && window.device === this.device) {
                 let row = new Gtk.ListBoxRow();
-                row.window_ = window;
                 this.list.add(row);
 
                 let grid = new Gtk.Grid({
@@ -939,7 +930,8 @@ var ConversationChooser = GObject.registerClass({
                 });
                 row.add(grid);
 
-                grid.attach(new Contacts.Avatar(window.contact), 0, 0, 1, 2);
+                let avatar = new Contacts.Avatar(window.contact);
+                grid.attach(avatar, 0, 0, 1, 2);
 
                 let name = new Gtk.Label({
                     label: window.contact.name,
@@ -954,6 +946,7 @@ var ConversationChooser = GObject.registerClass({
                 number.get_style_context().add_class('dim-label');
                 grid.attach(number, 1, 1, 1, 1);
 
+                row.window_ = window;
                 row.show_all();
             }
         }
