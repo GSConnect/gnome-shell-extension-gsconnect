@@ -1,0 +1,7 @@
+{
+    "name": "org.gnome.shell.extensions.gsconnect",
+    "description": "Native messaging host for GSConnect WebExtension",
+    "path": "@EXTDATADIR@/service/nativeMessagingHost.js",
+    "type": "stdio",
+    "allowed_extensions": [ "gsconnect@andyholmes.github.io" ]
+}

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>GSConnect</short>
+  <description>GSConnect service</description>
+  <port port="1716" protocol="udp"/>
+  <port port="1716-1764" protocol="tcp"/>
+</service>

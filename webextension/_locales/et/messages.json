@@ -37,8 +37,9 @@
         "message": "Ava brauseris",
         "description": "Context Menu label for opening a link in the device's web browser"
     },
-    "telephonyMessage": {
+    "smsMessage": {
         "message": "Saada SMS",
         "description": "Context Menu label for sharing a link in an SMS message"
     }
 }
+

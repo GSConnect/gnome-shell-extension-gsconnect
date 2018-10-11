@@ -1,28 +1,34 @@
 
 /* Device Menu Hierarchy
 
-.gsconnect-device-box [ PopupMenu.PopupBaseMenuItem ]
+.gsconnect-device [ PopupMenu.PopupBaseMenuItem ]
     StButton.gsconnect-device-button
         StDrawingArea
-    StBoxLayout.gsconnect-control-box
-        StBoxLayout.gsconnect-title-bar
+    StBoxLayout.gsconnect-device-box
+        StBoxLayout.gsconnect-device-title
             StLabel.gsconnect-device-name
-            StWidget.gsconnect-title-separator (inherits from .popup-separator-menu-item)
+            StWidget.popup-separator-menu-item
             StBoxLayout.gsconnect-device-battery
                 StLabel
                 StIcon
-        StBoxLayout.gsconnect-plugin-bar
-            StButton.gsconnect-plugin-button (inherits from .system-menu-action)
+        StBoxLayout.gsconnect-device-actions
+            StButton.gsconnect-device-action (inherits from .system-menu-action)
                 StIcon
-        StBoxLayout.gsconnect-status-bar
+        StBoxLayout.gsconnect-device-status
             StLabel
 */
 
-.gsconnect-device-box {
+.gsconnect-device {
     padding: 0.5em 1em;
     spacing: 0.5em;
 }
 
+/**
+ * The button with device icon and circular battery level
+ *
+ * The device icon is sized to 2/3 the StDrawingArea, rounded up to a multiple
+ * of 8. All other measurements are also automatic and respect desktop scaling.
+ */
 .gsconnect-device-button {
     border: none;
     border-radius: 24px;
@@ -35,43 +41,95 @@
     padding: 0px;
 }
 
-.gsconnect-control-box {
+.gsconnect-device-button > StDrawingArea {
+    width: 48px;
+    height: 48px;
+}
+
+.gsconnect-device-box {
     spacing: 0.25em;
 }
 
-.gsconnect-title-bar {
+.gsconnect-device-title {
     spacing: 0.75em;
+}
+
+.gsconnect-device .popup-separator-menu-item {
+    margin-left: 0;
+    margin-right: 0;
 }
 
 .gsconnect-device-name {
     font-weight: bold;
 }
 
-.gsconnect-title-separator {
-    margin-left: 0;
-    margin-right: 0;
-}
-
 .gsconnect-device-battery {
     spacing: 3px;
 }
 
-.gsconnect-plugin-bar {
+.gsconnect-device-battery StIcon {
+    icon-size: 16px;
+}
+
+.gsconnect-device-actions {
     spacing: 6px;
 }
 
-.gsconnect-plugin-button {
+.gsconnect-device-action {
     border: none;
     border-radius: 16px;
     padding: 8px;
 }
 
-.gsconnect-plugin-button:hover, .gsconnect-plugin-button:focus {
+.gsconnect-device-action:hover, .gsconnect-device-action:focus {
     border: none;
     padding: 8px;
 }
 
-.gsconnect-status-bar {
+/* Do Not Disturb Dialog
+
+.gsconnect-dnd-dialog [ModalDialog.ModalDialog]
+    StBoxLayout.nm-dialog-header-hbox
+        StIcon.nm-dialog-header-icon
+        StBoxLayout
+            StLabel.nm-dialog-header
+            StLabel.nm-dialog-subheader
+    StBoxLayout.nm-dialog-content
+        StBoxLayout.gsconnect-radio-list
+            StBoxLayout.gsconnect-radio-button (Until you turn off...)
+                StButton.pager-button
+                    StIcon
+                StLabel
+            StBoxLayout.gsconnect-radio-button (Until 00:00)
+                StButton.pager-button
+                    StIcon
+                StBoxLayout.gsconnect-dnd-timer
+                    StLabel
+                    StButton.pager-button
+                        StIcon
+                    StButton.pager-button
+                        StIcon
+ */
+
+.gsconnect-radio-list {
+    spacing: 0.25em;
+}
+
+.gsconnect-radio-button {
+    spacing: 0.25em;
+}
+
+.gsconnect-radio-button .pager-button {
+    /* fix for arc-theme */
+    color: inherit;
+}
+
+.gsconnect-radio-button StIcon {
+    icon-size: 16px;
+}
+
+.gsconnect-dnd-timer {
+    spacing: 0.25em;
 }
 
 /**
@@ -79,12 +137,12 @@
  * :first-child descendants with margin/padding changes.
  * https://gitlab.gnome.org/GNOME/gnome-shell/commit/fb9db4e171778a63bd85ac6fde15b7acfdede2c2
  */
-.aggregate-menu .popup-sub-menu .gsconnect-device-box :first-child {
+.aggregate-menu .popup-sub-menu .gsconnect-device :first-child {
     padding: 0;
     margin: 0;
 }
 
-.aggregate-menu .popup-sub-menu .gsconnect-plugin-button:first-child {
+.aggregate-menu .popup-sub-menu .gsconnect-device-action:first-child {
     border: none;
     border-radius: 16px;
     padding: 8px;
@@ -94,8 +152,8 @@
 
 StBin.gsconnect-tooltip (inherits from .osd-window)
     StBoxLayout || [ Custom ClutterActor ]
-        StIcon.gsconnect-tooltip-icon
-        StLabel.gsconnect-tooltip-text
+        StIcon
+        StLabel
 */
 .gsconnect-tooltip {
     border-radius: 3px;
@@ -108,15 +166,16 @@ StBin.gsconnect-tooltip (inherits from .osd-window)
     spacing: 6px;
 }
 
-.gsconnect-tooltip-icon {
+.gsconnect-tooltip StIcon {
+    icon-size: 16px;
 }
 
-.gsconnect-tooltip-text {
+.gsconnect-tooltip StLabel {
     font-weight: normal;
     text-align: left;
 }
 
-.gsconnect-tooltip-text:rtl {
+.gsconnect-tooltip StLabel:rtl {
     text-align: right;
 }
 
