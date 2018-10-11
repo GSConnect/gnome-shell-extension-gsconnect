@@ -386,7 +386,10 @@ const Service = GObject.registerClass({
         if (this._about === undefined) {
             this._about = new Gtk.AboutDialog({
                 application: this,
-                authors: [ 'Andy Holmes <andrew.g.r.holmes@gmail.com>' ],
+                authors: [
+                    'Andy Holmes <andrew.g.r.holmes@gmail.com>',
+                    'Bertrand Lacoste <getzze@gmail.com>'
+                ],
                 comments: gsconnect.metadata.description,
                 logo: GdkPixbuf.Pixbuf.new_from_resource_at_scale(
                     gsconnect.app_path + '/icons/' + gsconnect.app_id + '.svg',
