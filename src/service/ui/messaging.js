@@ -291,13 +291,6 @@ var ConversationWindow = GObject.registerClass({
             GObject.ParamFlags.READWRITE,
             ''
         ),
-        'contact': GObject.ParamSpec.string(
-            'contact',
-            'Contact',
-            'The target contact ID',
-            GObject.ParamFlags.READWRITE,
-            ''
-        ),
         'message-id': GObject.ParamSpec.uint(
             'message-id',
             'Message ID',
@@ -411,11 +404,10 @@ var ConversationWindow = GObject.registerClass({
             }
 
             // Try and find a conversation for this number
-            let sms = this.device.lookup_plugin('sms');
-            let thread_id;
+            let thread_id = 0;
 
-            if (sms) {
-                for (let thread of Object.values(sms.conversations)) {
+            if (this.has_conversations) {
+                for (let thread of Object.values(this.sms.conversations)) {
                     let tnumber = thread[0].address.toPhoneNumber();
 
                     if (number.endsWith(tnumber) || tnumber.endsWith(number)) {
@@ -451,6 +443,10 @@ var ConversationWindow = GObject.registerClass({
         this.notify('contact');
     }
 
+    get has_conversations() {
+        return (this.sms && Object.keys(this.sms.conversations).length);
+    }
+
     get message_id() {
         if (!this._message_id) {
             this._message_id = 0;
@@ -462,6 +458,14 @@ var ConversationWindow = GObject.registerClass({
     set message_id(id) {
         this._message_id = id;
         this.notify('message-id');
+    }
+
+    get sms() {
+        if (this._sms === undefined) {
+            this._sms = this.device.lookup_plugin('sms');
+        }
+
+        return this._sms;
     }
 
     get thread_id() {
@@ -483,8 +487,8 @@ var ConversationWindow = GObject.registerClass({
     _onDeleteEvent(window, event) {
         this.disconnect_template();
 
-        this.contact_list._destroy();
         this.contact_list.disconnect(this._selectedNumbersChangedId);
+        this.contact_list._destroy();
 
         return false;
     }
@@ -501,9 +505,7 @@ var ConversationWindow = GObject.registerClass({
      }
 
      _sync_messages() {
-        let sms = this.device.lookup_plugin('sms');
-
-        if (sms) {
+        if (this.sms) {
             sms.connected();
         }
      }
@@ -513,10 +515,7 @@ var ConversationWindow = GObject.registerClass({
      */
     _showContacts() {
         this.conversation_add.visible = false;
-
-        let sms = this.device.lookup_plugin('sms');
-        sms = (sms && Object.keys(sms.conversations).length > 0);
-        this.go_previous.visible = sms;
+        this.go_previous.visible = this.has_conversations;
 
         this.headerbar.custom_title = this.contact_list.entry;
         this.contact_list.entry.has_focus = true;
@@ -555,10 +554,9 @@ var ConversationWindow = GObject.registerClass({
     _showPrevious() {
         this.contact_list.reset();
 
-        // Show the contact list if there are no conversations
-        let sms = this.device.lookup_plugin('sms');
 
-        if (sms && Object.keys(sms.conversations).length > 0) {
+        // Show the contact list if there are no conversations
+        if (this.has_conversations) {
             this._showConversations();
         } else {
             this._showContacts();
@@ -566,17 +564,13 @@ var ConversationWindow = GObject.registerClass({
     }
 
     /**
-     * Populate the conversation list with the last message of each thread
+     * Conversations
      */
     _populateConversations() {
-        // Clear any current threads
         this.conversation_list.foreach(row => row.destroy());
 
-        // Populate the new threads
-        let sms = this.device.lookup_plugin('sms');
-
-        if (sms && Object.keys(sms.conversations).length > 0) {
-            for (let thread of Object.values(sms.conversations)) {
+        if (this.has_conversations) {
+            for (let thread of Object.values(this.sms.conversations)) {
                 try {
                     let contact = this.device.contacts.query({
                         number: thread[0].address
@@ -616,13 +610,11 @@ var ConversationWindow = GObject.registerClass({
         this.__pos = 0;
         this.__messages = [];
 
-        let sms = this.device.lookup_plugin('sms');
-
-        if (sms && sms.conversations[thread_id]) {
-            this.__messages = sms.conversations[thread_id].slice(0);
+        if (this.sms.conversations[thread_id]) {
+            this.__messages = this.sms.conversations[thread_id].slice(0);
             let lastMessage = this.__messages[this.__messages.length - 1];
-            this.message_id = lastMessage._id;
-            this.thread_id = lastMessage.thread_id;
+
+            this._populateBack();
         }
     }
 
