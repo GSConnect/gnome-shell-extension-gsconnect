@@ -254,7 +254,6 @@ var ConversationSummary = GObject.registerClass({
 //            widget.label = '<small>' + getShortTime(this.message.date) + '</small>';
 //            return false;
 //        });
-
         time.get_style_context().add_class('dim-label');
         grid.attach(time, 2, 0, 1, 1);
 
@@ -403,23 +402,7 @@ var ConversationWindow = GObject.registerClass({
                 }
             }
 
-            // Try and find a conversation for this number
-            let thread_id = 0;
-
-            if (this.has_conversations) {
-                for (let thread of Object.values(this.sms.conversations)) {
-                    let tnumber = thread[0].address.toPhoneNumber();
-
-                    if (number.endsWith(tnumber) || tnumber.endsWith(number)) {
-                        thread_id = thread[0].thread_id;
-                        break;
-                    }
-                }
-            }
-
-            // Switch to the messages view
             this._showMessages();
-            this.thread_id = thread_id;
         } else {
             this._address = null;
             this._contact = null;
@@ -456,7 +439,7 @@ var ConversationWindow = GObject.registerClass({
     }
 
     set message_id(id) {
-        this._message_id = id;
+        this._message_id = id || 0;
         this.notify('message-id');
     }
 
@@ -477,11 +460,8 @@ var ConversationWindow = GObject.registerClass({
     }
 
     set thread_id(id) {
-        if (id !== this.thread_id) {
-            this._thread_id = id;
-            this._populateMessages(id);
-            this.notify('thread-id');
-        }
+        this._thread_id = id || 0;
+        this.notify('thread-id');
     }
 
     _onDeleteEvent(window, event) {
@@ -549,6 +529,8 @@ var ConversationWindow = GObject.registerClass({
 
         this.message_entry.has_focus = true;
         this.stack.set_visible_child_name('messages');
+
+        this._populateMessages();
     }
 
     _showPrevious() {
@@ -599,21 +581,32 @@ var ConversationWindow = GObject.registerClass({
     }
 
     /**
-     * Populate the message list with the messages from the thread for @number
-     *
-     * @param {string} thread_id - The thread id for this conversation
+     * Messages
      */
-    _populateMessages(thread_id) {
+    _populateMessages() {
         this.message_list.foreach(row => row.destroy());
+
         this.__first = null
         this.__last = null;
         this.__pos = 0;
         this.__messages = [];
 
-        if (this.sms.conversations[thread_id]) {
-            this.__messages = this.sms.conversations[thread_id].slice(0);
-            let lastMessage = this.__messages[this.__messages.length - 1];
+        // Try and find a conversation for this number
+        let number = this.address.toPhoneNumber();
 
+        if (this.has_conversations) {
+            for (let thread of Object.values(this.sms.conversations)) {
+                let tnumber = thread[0].address.toPhoneNumber();
+
+                if (number.endsWith(tnumber) || tnumber.endsWith(number)) {
+                    this.thread_id = thread[0].thread_id;
+                    break;
+                }
+            }
+        }
+
+        if (this.sms.conversations[this.thread_id]) {
+            this.__messages = this.sms.conversations[this.thread_id].slice(0);
             this._populateBack();
         }
     }
