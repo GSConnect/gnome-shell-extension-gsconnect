@@ -753,6 +753,9 @@ var ConversationWindow = GObject.registerClass({
                 this.__last.messages.pack_start(widget, false, false, 0);
                 this.__last.date = message.date;
                 this.message_id = message._id
+            } else {
+                let messages = this.__last.messages.get_children();
+                messages[messages.length - 1].opacity = 1.0;
             }
         }
     }
@@ -802,6 +805,12 @@ var ConversationWindow = GObject.registerClass({
                 read: MessageStatus.READ,
                 type: MessageType.OUT
             });
+
+            // If supported, fade the message until we receive confirmation
+            if (this.device.get_outgoing_supported('sms.messages')) {
+                let messages = this.__last.messages.get_children();
+                messages[messages.length - 1].opacity = 0.5;
+            }
 
             // Clear the entry
             this.message_entry.text = '';
