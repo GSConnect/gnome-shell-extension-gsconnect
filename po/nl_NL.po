@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-11 20:24+0200\n"
-"PO-Revision-Date: 2018-10-11 22:44+0200\n"
+"POT-Creation-Date: 2018-10-11 12:40-0700\n"
+"PO-Revision-Date: 2018-10-11 22:48+0200\n"
 "Last-Translator: Heimen Stoffels <vistausss@outlook.com>\n"
 "Language-Team: Dutch <vistausss@outlook.com>\n"
 "Language: nl_NL\n"
@@ -230,7 +230,7 @@ msgstr "Mobiele instellingen"
 
 #. TRANSLATORS: Extension name
 #: src/extension.js:146 src/extension.js:211 src/service/daemon.js:95
-#: src/service/daemon.js:397 webextension/gettext.js:27
+#: src/service/daemon.js:400 webextension/gettext.js:27
 msgid "GSConnect"
 msgstr "GSConnect"
 
@@ -240,86 +240,88 @@ msgid "Send To Mobile Device"
 msgstr "Versturen naar mobiel apparaat"
 
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
-#: src/service/daemon.js:399
+#: src/service/daemon.js:402
 msgid "translator-credits"
 msgstr "Heimen Stoffels"
 
-#: src/service/daemon.js:421
+#: src/service/daemon.js:424
 msgid "Report"
 msgstr "Rapporteren"
 
-#: src/service/daemon.js:549
+#: src/service/daemon.js:552
 msgid "Authentication Failure"
 msgstr "Authenticatiefout"
 
-#: src/service/daemon.js:558
+#: src/service/daemon.js:561
 msgid "Network Error"
 msgstr "Netwerkfout"
 
-#: src/service/daemon.js:559 src/service/daemon.js:569
+#: src/service/daemon.js:562 src/service/daemon.js:572
 msgid "Click for help troubleshooting"
 msgstr "Klik voor probleemoplossing"
 
-#: src/service/daemon.js:568
+#: src/service/daemon.js:571
 msgid "PulseAudio Error"
 msgstr "PulseAudio-fout"
 
-#: src/service/daemon.js:578
+#: src/service/daemon.js:581
 msgid "Discovery Disabled"
 msgstr "Herkenning uitgeschakeld"
 
-#: src/service/daemon.js:579
-msgid "Discovery has been disabled due to the number of devices on this network."
-msgstr "Herkenning is uitgeschakeld vanwege het aantal apparaten op dit netwerk."
+#: src/service/daemon.js:582
+msgid ""
+"Discovery has been disabled due to the number of devices on this network."
+msgstr ""
+"Herkenning is uitgeschakeld vanwege het aantal apparaten op dit netwerk."
 
-#: src/service/daemon.js:581 src/service/daemon.js:591
+#: src/service/daemon.js:584 src/service/daemon.js:594
 msgid "Click to open preferences"
 msgstr "Klik om voorkeuren te openen"
 
-#: src/service/daemon.js:590
+#: src/service/daemon.js:593
 msgid "Additional Software Required"
 msgstr "Extra software vereist"
 
-#: src/service/daemon.js:599
+#: src/service/daemon.js:602
 #, javascript-format
 msgid "%s Plugin Failed To Load"
 msgstr "Kan plug-in %s niet laden"
 
-#: src/service/daemon.js:600 src/service/daemon.js:617
-#: src/service/daemon.js:629
+#: src/service/daemon.js:603 src/service/daemon.js:620
+#: src/service/daemon.js:632
 msgid "Click for more information"
 msgstr "Klik voor meer informatie"
 
-#: src/service/daemon.js:615
+#: src/service/daemon.js:618
 msgid "Remote Filesystem Error"
 msgstr "Fout op extern bestandssysteem"
 
-#: src/service/daemon.js:616
+#: src/service/daemon.js:619
 #, javascript-format
 msgid "%s is using an incompatible SSH library"
 msgstr "%s gebruikt een incompatibele SSH-bibliotheek"
 
-#: src/service/daemon.js:627
+#: src/service/daemon.js:630
 msgid "Wayland Not Supported"
 msgstr "Geen Wayland-ondersteuning"
 
-#: src/service/daemon.js:628
+#: src/service/daemon.js:631
 msgid "Remote input not supported on Wayland"
 msgstr "Externe invoer wordt niet ondersteund op Wayland"
 
 #. Create an urgent notification
-#: src/service/daemon.js:652
+#: src/service/daemon.js:655
 #, javascript-format
 msgid "GSConnect: %s"
 msgstr "GSConnect: %s"
 
 #. TRANSLATORS: Share URL by SMS
-#: src/service/daemon.js:798 src/service/plugins/sms.js:49
+#: src/service/daemon.js:801 src/service/plugins/sms.js:49
 #: webextension/gettext.js:39
 msgid "Send SMS"
 msgstr "SMS versturen"
 
-#: src/service/daemon.js:802
+#: src/service/daemon.js:805
 msgid "Dial Number"
 msgstr "Nummer bellen"
 
@@ -413,6 +415,10 @@ msgstr "Klembord versturen"
 #: src/service/plugins/clipboard.js:25
 msgid "Clipboard Pull"
 msgstr "Klembord ophalen"
+
+#: src/service/plugins/contacts.js:12
+msgid "Contacts"
+msgstr "Contactpersonen"
 
 #: src/service/plugins/findmyphone.js:12
 msgid "Find My Phone"
@@ -690,7 +696,9 @@ msgstr "Voer een nieuwe sneltoets in om <b>%s</b> te wijzigen"
 #. TRANSLATORS: Keys for cancelling (␛) or resetting (␈) a shortcut
 #: src/service/ui/keybindings.js:89
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr "Druk op Esc om te annuleren of Backspace om de standaard sneltoets te herstellen."
+msgstr ""
+"Druk op Esc om te annuleren of Backspace om de standaard sneltoets te "
+"herstellen."
 
 #. TRANSLATORS: When a keyboard shortcut is unavailable
 #. Example: [Ctrl]+[S] is already being used
@@ -860,8 +868,12 @@ msgstr "Openen in browser"
 #~ msgid "This program comes with absolutely no warranty."
 #~ msgstr "Deze applicatie wordt geleverd zonder enige vorm van garantie."
 
-#~ msgid "See the <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html\">GNU General Public License, version 2 or later</a> for details."
-#~ msgstr "Bekijk de <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html\">GNU General Public License, versie 2 of hoger</a> voor meer informatie."
+#~ msgid ""
+#~ "See the <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html"
+#~ "\">GNU General Public License, version 2 or later</a> for details."
+#~ msgstr ""
+#~ "Bekijk de <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html"
+#~ "\">GNU General Public License, versie 2 of hoger</a> voor meer informatie."
 
 #~ msgid "Preferences"
 #~ msgstr "Voorkeuren"
@@ -872,8 +884,12 @@ msgstr "Openen in browser"
 #~ msgid "Web Browser Integration"
 #~ msgstr "Webbrowser-integratie"
 
-#~ msgid "Requires <a href=\"%s\">Chrome Extension</a> or <a href=\"%s\">Firefox Add-On</a>"
-#~ msgstr "Vereist de <a href=\"%s\">Chrome-extensie</a> of <a href=\"%s\">Firefox-add-on</a>"
+#~ msgid ""
+#~ "Requires <a href=\"%s\">Chrome Extension</a> or <a href=\"%s\">Firefox "
+#~ "Add-On</a>"
+#~ msgstr ""
+#~ "Vereist de <a href=\"%s\">Chrome-extensie</a> of <a href=\"%s\">Firefox-"
+#~ "add-on</a>"
 
 #~ msgid "Nautilus extensions changed"
 #~ msgstr "Nautilus-extensies zijn gewijzigd"
@@ -937,7 +953,8 @@ msgstr "Openen in browser"
 #~ msgstr "Initialiseren van Atspi mislukt"
 
 #~ msgid "Cannot load Caribou virtual keyboard for Unicode support"
-#~ msgstr "Kan Caribou virtueel toetsenbord voor Unicode-ondersteuning niet laden"
+#~ msgstr ""
+#~ "Kan Caribou virtueel toetsenbord voor Unicode-ondersteuning niet laden"
 
 #~ msgid "Media Player Control"
 #~ msgstr "Mediaspelerbeheer"
@@ -1002,14 +1019,27 @@ msgstr "Openen in browser"
 #~ msgid "The <b>Media Player Control</b> plugin must be enabled"
 #~ msgstr "De <b>Mediaspelerbeheer</b>-plug-in moet worden ingeschakeld"
 
-#~ msgid "Ensure that devices are on the same local network with ports 1716 to 1764 open for TCP and UDP connections."
-#~ msgstr "Zorg ervoor dat de apparaten zich op hetzelfde lokale netwerk bevinden en dat de poorten 1716-1764 geopend zijn voor TCP- en UDP-verbindingen."
+#~ msgid ""
+#~ "Ensure that devices are on the same local network with ports 1716 to 1764 "
+#~ "open for TCP and UDP connections."
+#~ msgstr ""
+#~ "Zorg ervoor dat de apparaten zich op hetzelfde lokale netwerk bevinden en "
+#~ "dat de poorten 1716-1764 geopend zijn voor TCP- en UDP-verbindingen."
 
-#~ msgid "To connect an Android device, install the KDE Connect Android app from the <a href=\"%s\">Google Play Store</a> or <a href=\"%s\">F-Droid</a>."
-#~ msgstr "Als je Android-apparaat wilt verbinden, installeer dan de KDE Connect Android-app uit de <a href=\"%s\">Google Play Store</a> of <a href=\"%s\">F-Droid</a>."
+#~ msgid ""
+#~ "To connect an Android device, install the KDE Connect Android app from "
+#~ "the <a href=\"%s\">Google Play Store</a> or <a href=\"%s\">F-Droid</a>."
+#~ msgstr ""
+#~ "Als je Android-apparaat wilt verbinden, installeer dan de KDE Connect "
+#~ "Android-app uit de <a href=\"%s\">Google Play Store</a> of <a href=\"%s"
+#~ "\">F-Droid</a>."
 
-#~ msgid "Please see the <a href=\"%s\">Wiki</a> for more help or <a href=\"%s\">open an issue</a> on Github to report a problem."
-#~ msgstr "Bekijk de <a href=\"%s\">Wiki</a> voor meer informatie of <a href=\"%s\">open een \"issue\"</a> op GitHub om een probleem te melden."
+#~ msgid ""
+#~ "Please see the <a href=\"%s\">Wiki</a> for more help or <a href=\"%s"
+#~ "\">open an issue</a> on Github to report a problem."
+#~ msgstr ""
+#~ "Bekijk de <a href=\"%s\">Wiki</a> voor meer informatie of <a href=\"%s"
+#~ "\">open een \"issue\"</a> op GitHub om een probleem te melden."
 
 #~ msgid "Error: %s"
 #~ msgstr "Fout: %s"
@@ -1045,7 +1075,8 @@ msgstr "Openen in browser"
 #~ msgid "Keyboard Shortcut Unavailable"
 #~ msgstr "Sneltoets niet beschikbaar"
 
-#~ msgid "The requested keyboard shortcut is already in use and can't be overridden."
+#~ msgid ""
+#~ "The requested keyboard shortcut is already in use and can't be overridden."
 #~ msgstr "De sneltoets wordt al gebruikt en kan niet worden overschreven."
 
 #~ msgid "Configure <b>%s</b>"
@@ -1099,7 +1130,8 @@ msgstr "Openen in browser"
 #~ msgstr "Nautilus-integratie"
 
 #~ msgid "Send files from the file browser context menu"
-#~ msgstr "Bestanden versturen via het rechtermuisknopmenu van de bestandsbeheerder"
+#~ msgstr ""
+#~ "Bestanden versturen via het rechtermuisknopmenu van de bestandsbeheerder"
 
 #~ msgid "Public Name"
 #~ msgstr "Openbare naam"
