@@ -399,9 +399,6 @@ var Plugin = GObject.registerClass({
      * @param {Object} message - A telephony message object
      */
     replySms(message) {
-        // Ensure we have a contact
-        let contact = this.device.contacts.query({ number: message.address });
-
         // Check for an extant window
         let window = this._hasWindow(message.address);
 

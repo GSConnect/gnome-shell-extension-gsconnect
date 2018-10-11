@@ -516,7 +516,7 @@ var Plugin = GObject.registerClass({
             // If we don't have a payload icon, fallback on notification type,
             // appName then device type
             if (!icon) {
-                if (packet.body.id.includes('MissedCall')) {
+                if (isMissedCall) {
                     icon = new Gio.ThemedIcon({ name: 'call-missed-symbolic' });
                 } else if (isSms) {
                     icon = new Gio.ThemedIcon({ name: 'sms-symbolic' });
