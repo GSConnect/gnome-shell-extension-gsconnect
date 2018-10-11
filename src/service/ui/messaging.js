@@ -615,6 +615,11 @@ var ConversationWindow = GObject.registerClass({
 
     // message-list::size-allocate
     _onMessageLogged(listbox, allocation) {
+        // Skip if there's no thread defined
+        if (this.thread_id === 0) {
+            return;
+        }
+
         let vadj = this.message_window.vadjustment;
 
         // Try loading more messages if there's room
@@ -635,7 +640,7 @@ var ConversationWindow = GObject.registerClass({
 
     // message-window::edge-overshot
     _onMessageRequested(scrolled_window, pos) {
-        if (pos === Gtk.PositionType.TOP) {
+        if (pos === Gtk.PositionType.TOP && this.thread_id) {
             this.__pos = this.message_window.vadjustment.get_upper();
             this._populateBack();
         }
