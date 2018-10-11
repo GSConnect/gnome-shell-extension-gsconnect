@@ -358,7 +358,7 @@ var ConversationWindow = GObject.registerClass({
     }
 
     get address() {
-        return (this._address) ? this._address : null;
+        return this._address || null;
     }
 
     set address(value) {
@@ -515,7 +515,11 @@ var ConversationWindow = GObject.registerClass({
 
     _showPrevious() {
         this.contact_list.reset();
+        this.message_list.foreach(row => row.destroy());
 
+        this.address = null;
+        this.message_id = 0;
+        this.thread_id = 0;
 
         // Show the contact list if there are no conversations
         if (this.has_conversations) {
