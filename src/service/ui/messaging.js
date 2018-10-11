@@ -302,17 +302,9 @@ var ConversationWindow = GObject.registerClass({
 
     _init(params) {
         this.connect_template();
-
         super._init(params);
 
         this.insert_action_group('device', this.device);
-
-        this.device.lookup_action('sendSms').bind_property(
-            'enabled',
-            this.message_entry,
-            'sensitive',
-            GObject.BindingFlags.BIDIRECTIONAL
-        );
 
         // Convenience actions for syncing Contacts/SMS from the menu
         if (this.device.get_outgoing_supported('contacts.response_vcards')) {
@@ -352,6 +344,13 @@ var ConversationWindow = GObject.registerClass({
             this.infobar,
             'reveal-child',
             GObject.BindingFlags.INVERT_BOOLEAN
+        );
+
+        this.device.bind_property(
+            'connected',
+            this.message_entry,
+            'sensitive',
+            GObject.BindingFlags.DEFAULT
         );
 
         // Set the default view
