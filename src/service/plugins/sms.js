@@ -200,8 +200,6 @@ var Plugin = GObject.registerClass({
     _init(device) {
         super._init(device, 'sms');
 
-        // We cache converations/threads so they can be used immediately, even
-        // though we'll request them at every connection
         this.conversations = {};
         this.cacheProperties(['conversations']);
     }
@@ -232,9 +230,7 @@ var Plugin = GObject.registerClass({
      */
     _updateConversations() {
         for (let window of this.service.get_windows()) {
-            let isConversation = window.hasOwnProperty('_populateConversations');
-
-            if (isConversation && window.device === this.device) {
+            if (window.device === this.device && window._populateConversations) {
                 window._populateConversations();
             }
         }
@@ -347,13 +343,14 @@ var Plugin = GObject.registerClass({
      * Check if there's an open conversation for a number
      *
      * @param {String} number - A string phone number
+     * @return {Gtk.Window|false} - The window or false if not found
      */
     _hasWindow(address) {
         // Look for an open window with this phone number
         address = address.toPhoneNumber();
 
         for (let win of this.service.get_windows()) {
-            if (!win.device || win.device !== this.device || !win.address) {
+            if (win.device !== this.device || !win.address) {
                 continue;
             }
 
@@ -405,6 +402,7 @@ var Plugin = GObject.registerClass({
         // Open a new window if not
         if (!window) {
             window = new Messaging.ConversationWindow({
+                application: this.service,
                 device: this.device,
                 address: message.address
             });
@@ -458,6 +456,7 @@ var Plugin = GObject.registerClass({
         // Show an intermediate dialog to allow choosing from open conversations
         if (hasConversations) {
             window = new Messaging.ConversationChooser({
+                application: this.service,
                 device: this.device,
                 message: url
             });
@@ -465,6 +464,7 @@ var Plugin = GObject.registerClass({
         // Open the list of contacts to start a new conversation
         } else {
             window = new Messaging.ConversationWindow({
+                application: this.service,
                 device: this.device
             });
             window.setMessage(url);
@@ -478,6 +478,7 @@ var Plugin = GObject.registerClass({
      */
     sms() {
         let window = new Messaging.ConversationWindow({
+            application: this.service,
             device: this.device
         });
         window.present();
@@ -500,6 +501,7 @@ var Plugin = GObject.registerClass({
                 // None found; open one and add the contact
                 if (!window) {
                     window = new Messaging.ConversationWindow({
+                        application: this.service,
                         device: this.device,
                         address: recipient
                     });
