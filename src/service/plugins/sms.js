@@ -254,7 +254,7 @@ var Plugin = GObject.registerClass({
             if (this.device.get_outgoing_supported('sms.messages')) {
                 window.logMessage(message);
             } else {
-                window.receiveMessage(contact, message);
+                window.receiveMessage(message);
             }
         }
     }
