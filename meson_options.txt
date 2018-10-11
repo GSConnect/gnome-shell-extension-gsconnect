@@ -1,0 +1,94 @@
+# See https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Packaging
+
+# Run meson/post-install.sh (glib-compile-schemas)
+option(
+  'post_install',
+  type: 'boolean',
+  value: false,
+  description: 'Run meson/post-install.sh'
+)
+
+# Gnome Shell LIBDIR
+option(
+  'gnome_shell_libdir',
+  type: 'string',
+  value: '',
+  description: 'LIBDIR for Gnome Shell'
+)
+
+# GSettings schema directory
+option(
+  'gsettings_schemadir',
+  type: 'string',
+  value: '',
+  description: 'GSettings Schema directory'
+)
+
+# DBus service file
+option(
+  'session_bus_services_dir',
+  type: 'string',
+  value: '',
+  description: 'DBus session services directory'
+)
+
+# External program paths
+option(
+  'fusermount_path',
+  type: 'string',
+  value: 'fusermount',
+  description: 'Path to fusermount binary'
+)
+
+option(
+  'openssl_path',
+  type: 'string',
+  value: 'openssl',
+  description: 'Path to openssl binary'
+)
+
+option(
+  'sshfs_path',
+  type: 'string',
+  value: 'sshfs',
+  description: 'Path to sshfs binary'
+)
+
+# Enable/Disable Nautilus extension installation
+option(
+  'nautilus',
+  type: 'boolean',
+  value: true,
+  description: 'Install nautilus-python extension'
+)
+
+# Enable/Disable WebExtension manifest installation
+option(
+  'webextension',
+  type: 'boolean',
+  value: true,
+  description: 'Install WebExtension manifest for Chrome/Chromium/Firefox'
+)
+
+# Override manifest install so that BROWSER_NMHDIR/foo.json
+option(
+  'chrome_nmhdir',
+  type: 'string',
+  value: '',
+  description: 'Native Messaging Host directory for Chrome'
+)
+
+option(
+  'chromium_nmhdir',
+  type: 'string',
+  value: '',
+  description: 'Native Messaging Host directory for Chromium'
+)
+
+option(
+  'mozilla_nmhdir',
+  type: 'string',
+  value: '',
+  description: 'Native Messaging Host directory for Mozilla'
+)
+

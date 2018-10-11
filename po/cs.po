@@ -3,16 +3,15 @@
 # This file is distributed under the same license as the org.gnome.Shell.Extensions.GSConnect package.
 # Petr Šimáček <petr.simacek@gmail.com>, 2018.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-05-07 18:45+0300\n"
+"POT-Creation-Date: 2018-08-19 11:53+0200\n"
 "PO-Revision-Date: 2018-05-02 09:22+1\n"
 "Last-Translator: Petr Šimáček <petr.simacek@gmail.com>\n"
 "Language-Team: Czech <LL@li.org>\n"
-"Language: Czech \n"
+"Language: cs\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -78,7 +77,7 @@ msgstr "Mobilní zařízení"
 msgid "Mobile Settings"
 msgstr "Nastavení telefonu"
 
-#: src/nautilus-gsconnect.py:86
+#: src/nautilus-gsconnect.py:88
 msgid "Send To Mobile Device"
 msgstr "Poslat do mobilního zařízení"
 

@@ -40,7 +40,7 @@ function toggleAction(tab) {
 
 function postMessage(message) {
     console.log("SEND: " + JSON.stringify(message));
-    
+
     if (!port || !message || !message.type) {
         console.error("Missing message parameters");
     }
@@ -62,11 +62,11 @@ function sendMessage(message) {
  */
 function onMessage(message, sender, sendResponse) {
     console.log("REQUEST: " + JSON.stringify(message));
-    
+
     if (sender.url.indexOf("/background.html") < 0 ) {
         postMessage(message);
     }
-    
+
     return Promise.resolve();
 };
 
@@ -76,7 +76,7 @@ function onMessage(message, sender, sendResponse) {
  */
 function contextMenuCallback(info, tab) {
     let [id, action] = info.menuItemId.split(":");
-    
+
     postMessage({
         type: "share",
         data: {
@@ -91,7 +91,7 @@ function contextMenuCallback(info, tab) {
 function createContextMenus(tab) {
     browser.contextMenus.removeAll().then(() => {
         let contexts = ["page", "frame", "link", "image", "video", "audio"];
-    
+
         // This is page we don't want the context menu on
         if (tab.url.indexOf("chrome://") > -1 || tab.url.indexOf("about:") > -1) {
             return;
@@ -102,7 +102,7 @@ function createContextMenus(tab) {
                 title: browser.i18n.getMessage("contextMenuMultipleDevices"),
                 contexts: contexts
             });
-            
+
             for (let device of devices) {
                 if (device.share && device.telephony) {
                     browser.contextMenus.create({
@@ -110,7 +110,7 @@ function createContextMenus(tab) {
                         title: device.name,
                         parentId: "contextMenuMultipleDevices"
                     });
-                    
+
                     browser.contextMenus.create({
                         id: device.id + ":share",
                         title: browser.i18n.getMessage("shareMessage"),
@@ -118,25 +118,25 @@ function createContextMenus(tab) {
                         contexts: contexts,
                         onclick: contextMenuCallback,
                     });
-                    
+
                     browser.contextMenus.create({
                         id: device.id + ":telephony",
-                        title: browser.i18n.getMessage("telephonyMessage"),
+                        title: browser.i18n.getMessage("smsMessage"),
                         parentId: device.id,
                         contexts: contexts,
                         onclick: contextMenuCallback,
                     });
                 } else {
                     let pluginAction, pluginName;
-                    
+
                     if (device.share) {
                         pluginAction = "share";
                         pluginName = browser.i18n.getMessage("shareMessage");
                     } else {
                         pluginAction = "telephony";
-                        pluginName = browser.i18n.getMessage("telephonyMessage");
+                        pluginName = browser.i18n.getMessage("smsMessage");
                     }
-                    
+
                     browser.contextMenus.create({
                         id: device.id + ":" + pluginAction,
                         title: browser.i18n.getMessage(
@@ -152,14 +152,14 @@ function createContextMenus(tab) {
         // There's only one device
         } else if (devices.length) {
             let device = devices[0];
-                
+
             if (device.share && device.telephony) {
                 browser.contextMenus.create({
                     id: device.id,
                     title: device.name,
                     contexts: contexts
                 });
-                
+
                 browser.contextMenus.create({
                     id: device.id + ":share",
                     title: browser.i18n.getMessage("shareMessage"),
@@ -167,25 +167,25 @@ function createContextMenus(tab) {
                     contexts: contexts,
                     onclick: contextMenuCallback,
                 });
-                
+
                 browser.contextMenus.create({
                     id: device.id + ":telephony",
-                    title: browser.i18n.getMessage("telephonyMessage"),
+                    title: browser.i18n.getMessage("smsMessage"),
                     parentId: device.id,
                     contexts: contexts,
                     onclick: contextMenuCallback,
                 });
             } else {
                 let pluginAction, pluginName;
-                
+
                 if (device.share) {
                     pluginAction = "share";
                     pluginName = browser.i18n.getMessage("shareMessage");
                 } else {
                     pluginAction = "telephony";
-                    pluginName = browser.i18n.getMessage("telephonyMessage");
+                    pluginName = browser.i18n.getMessage("smsMessage");
                 }
-                
+
                 browser.contextMenus.create({
                     id: device.id + ":" + pluginAction,
                     title: browser.i18n.getMessage(
@@ -197,7 +197,7 @@ function createContextMenus(tab) {
                 });
             }
         }
-        
+
     });
 };
 
@@ -207,11 +207,11 @@ function createContextMenus(tab) {
  */
 function onPortMessage(message) {
     console.log("RECEIVE: " + JSON.stringify(message));
-    
+
     // The native messaging host's connection to the service has changed
     if (message.type === "connected") {
         connected = message.data;
-        
+
         if (connected) {
             postMessage({ type: "devices" });
         } else {
@@ -222,14 +222,14 @@ function onPortMessage(message) {
         connected = true;
         devices = message.data;
     }
-    
+
     browser.tabs.query({ active: true, currentWindow: true}).then((tabs) => {
         createContextMenus(tabs[0]);
     });
-    
+
     // Forward the message to popup.html
     sendMessage(message);
-    
+
     return Promise.resolve();
 };
 
@@ -245,13 +245,13 @@ function onDisconnect() {
     browser.browserAction.setBadgeText({ text: "\u26D4" });
     browser.browserAction.setBadgeBackgroundColor({ color: [198, 40, 40, 255] });
     sendMessage({ type: "connected", data: false });
-    
+
     // Disconnected, cancel back-off reset
     if (typeof reconnectResetTimer === "number") {
         window.clearTimeout(reconnectResetTimer);
         reconnectResetTimer = null;
     }
-    
+
     // Don't queue more than one reconnect
     if (typeof reconnectTimer === "number") {
         window.clearTimeout(reconnectTimer);
@@ -259,7 +259,7 @@ function onDisconnect() {
     }
 
     var message;
-    
+
     if (browser.runtime.lastError) {
         message = browser.runtime.lastError.message;
     }
@@ -270,7 +270,7 @@ function onDisconnect() {
         connect();
     }, reconnectDelay);
     reconnectDelay = reconnectDelay * 2;
-    
+
     return Promise.resolve();
 };
 
@@ -280,7 +280,7 @@ function connect() {
     browser.browserAction.setBadgeText({ text: "" });
     browser.browserAction.setBadgeBackgroundColor({ color: [0, 0, 0, 0] });
     sendMessage({ type: "connected", data: false });
-    
+
     // Reset the back-off delay if we stay connected
     reconnectResetTimer = window.setTimeout(() => {
         reconnectDelay = 100;

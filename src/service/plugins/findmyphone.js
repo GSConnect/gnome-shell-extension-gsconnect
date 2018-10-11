@@ -1,28 +1,28 @@
-"use strict";
-
-const Gettext = imports.gettext.domain("org.gnome.Shell.Extensions.GSConnect");
-const _ = Gettext.gettext;
-const Lang = imports.lang;
+'use strict';
 
 const Gdk = imports.gi.Gdk;
 const Gio = imports.gi.Gio;
+const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
-// Local Imports
-imports.searchPath.push(ext.datadir);
-
-const Common = imports.common;
-const Sound = imports.sound;
-const Protocol = imports.service.protocol;
 const PluginsBase = imports.service.plugins.base;
 
 
-var METADATA = {
-    summary: _("Locate Device"),
-    description: _("Find a device by making it ring"),
-    uuid: "org.gnome.Shell.Extensions.GSConnect.Plugin.FindMyPhone",
-    incomingPackets: ["kdeconnect.findmyphone.request"],
-    outgoingPackets: ["kdeconnect.findmyphone.request"]
+var Metadata = {
+    label: _('Find My Phone'),
+    id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.FindMyPhone',
+    incomingCapabilities: ['kdeconnect.findmyphone.request'],
+    outgoingCapabilities: ['kdeconnect.findmyphone.request'],
+    actions: {
+        ring: {
+            label: _('Locate'),
+            icon_name: 'find-location-symbolic',
+
+            parameter_type: null,
+            incoming: [],
+            outgoing: ['kdeconnect.findmyphone.request']
+        }
+    }
 };
 
 
@@ -30,83 +30,91 @@ var METADATA = {
  * FindMyPhone Plugin
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/findmyphone
  */
-var Plugin = new Lang.Class({
-    Name: "GSConnectFindMyPhonePlugin",
-    Extends: PluginsBase.Plugin,
+var Plugin = GObject.registerClass({
+    GTypeName: 'GSConnectFindMyPhonePlugin',
+}, class Plugin extends PluginsBase.Plugin {
 
-    _init: function (device) {
-        this.parent(device, "findmyphone");
+    _init(device) {
+        super._init(device, 'findmyphone');
 
         this._cancellable = null;
         this._dialog = null;
-    },
+    }
 
-    _ring: function () {
-        debug("FindMyPhone: _ring()");
-
-        if (this._cancellable || this._dialog) {
-            this._closeDialog();
+    handlePacket(packet) {
+        if (packet.type === 'kdeconnect.findmyphone.request') {
+            this._handleRequest();
         }
+    }
 
-        this._cancellable = new Gio.Cancellable();
-        Sound.loopThemeSound("phone-incoming-call", this._cancellable);
-
-        this._dialog = new Gtk.MessageDialog({
-            text: _("Locate Device"),
-            secondary_text: _("%s asked to locate this device").format(this.device.name),
-            urgency_hint: true,
-            window_position: Gtk.WindowPosition.CENTER_ALWAYS,
-            application: this.device.daemon,
-            skip_pager_hint: true,
-            skip_taskbar_hint: true
-        });
-        this._dialog.connect("delete-event", () => { this._closeDialog(); });
-        this._dialog.connect("key-press-event", (dialog, event, user_data) => {
-            if (event.get_keyval()[1] === Gdk.KEY_Escape) {
-                this._closeDialog();
+    /**
+     * Handle an incoming location request.
+     */
+    _handleRequest() {
+        try {
+            // If this is a second request, stop announcing and return
+            if (this._cancellable !== null || this._dialog !== null) {
+                this._endFind();
+                return;
             }
-        });
-        this._dialog.add_button(_("Found"), -4).connect("clicked", () => {
-            this._closeDialog();
-        });
-        this._dialog.set_keep_above(true);
-        this._dialog.show();
-        this._dialog.present();
-    },
 
-    _closeDialog: function () {
-        this._cancellable.cancel();
-        this._cancellable = null;
-        this._dialog.destroy()
-        this._dialog = null;
-    },
+            // Check for this every time to avoid possibly endless ringing
+            if (typeof loop_theme_sound !== 'function') {
+                let error = new Error();
+                error.name = 'DependencyError';
+                this.service.notify_error(error);
+                return;
+            }
 
-    handlePacket: function (packet) {
-        debug("FindMyPhone: handlePacket()");
+            this._cancellable = new Gio.Cancellable();
+            loop_theme_sound('phone-incoming-call', this._cancellable);
 
-        this._ring();
-    },
-
-    find: function () {
-        debug("FindMyPhone: ring()");
-
-        if (this.device.connected && this.device.paired) {
-            let packet = new Protocol.Packet({
-                id: 0,
-                type: "kdeconnect.findmyphone.request",
-                body: {}
+            this._dialog = new Gtk.MessageDialog({
+                text: _('Locate Device'),
+                secondary_text: _('%s asked to locate this device').format(
+                    this.device.name
+                ),
+                urgency_hint: true,
+                window_position: Gtk.WindowPosition.CENTER_ALWAYS,
+                visible: true
             });
-
-            this.device._channel.send(packet);
+            this._dialog.connect('response', (dialog) => this._endFind());
+            this._dialog.add_button(_('Found'), -4);
+            this._dialog.set_keep_above(true);
+            this._dialog.present();
+        } catch (e) {
+            this._endFind();
+            logError(e, this.device.name);
         }
-    },
+    }
 
-    destroy: function () {
-        if (this._cancellable || this._dialog) {
-            this._closeDialog();
+    _endFind() {
+        if (this._cancellable !== null) {
+            this._cancellable.cancel();
+            this._cancellable = null;
         }
 
-        PluginsBase.Plugin.prototype.destroy.call(this);
+        if (this._dialog !== null) {
+            this._dialog.destroy()
+            this._dialog = null;
+        }
+    }
+
+    /**
+     * Request the remote device announce it's location
+     */
+    ring() {
+        this.device.sendPacket({
+            id: 0,
+            type: 'kdeconnect.findmyphone.request',
+            body: {}
+        });
+    }
+
+    destroy() {
+        this._endFind();
+
+        super.destroy();
     }
 });
 

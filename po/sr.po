@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-05-07 18:45+0300\n"
+"POT-Creation-Date: 2018-08-19 11:53+0200\n"
 "PO-Revision-Date: 2018-03-03 15:23+0100\n"
 "Last-Translator: Слободан Терзић  <slobodan.terzic@zoho.eu>\n"
 "Language-Team: \n"
@@ -74,7 +74,7 @@ msgstr "Мобилни уређаји"
 msgid "Mobile Settings"
 msgstr "Подешавање"
 
-#: src/nautilus-gsconnect.py:86
+#: src/nautilus-gsconnect.py:88
 msgid "Send To Mobile Device"
 msgstr "Пошаљи на мобилни уређај"
 

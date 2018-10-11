@@ -1,0 +1,138 @@
+<interface>
+  <menu id="app-menu">
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">Connect to…</attribute>
+        <attribute name="action">app.connect</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">Sync Contacts</attribute>
+        <attribute name="action">win.sync-contacts</attribute>
+        <attribute name='hidden-when'>action-disabled</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Sync Messages</attribute>
+        <attribute name="action">win.sync-messages</attribute>
+        <attribute name='hidden-when'>action-disabled</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">Help</attribute>
+        <attribute name="action">app.wiki</attribute>
+        <attribute name="target">Troubleshooting#connecting-an-android-device</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Debugger</attribute>
+        <attribute name="action">app.debugger</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">About</attribute>
+        <attribute name="action">app.about</attribute>
+      </item>
+    </section>
+  </menu>
+
+  <menu id="device-settings">
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">Connect Bluetooth</attribute>
+        <attribute name="action">settings.connect-bluetooth</attribute>
+        <attribute name="verb-icon">bluetooth-symbolic</attribute>
+        <attribute name='hidden-when'>action-disabled</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Connect LAN</attribute>
+        <attribute name="action">settings.connect-tcp</attribute>
+        <attribute name="verb-icon">network-wireless-symbolic</attribute>
+        <attribute name='hidden-when'>action-disabled</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Pair</attribute>
+        <attribute name="action">settings.pair</attribute>
+        <attribute name="verb-icon">channel-insecure-symbolic</attribute>
+        <attribute name='hidden-when'>action-disabled</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Unpair</attribute>
+        <attribute name="action">settings.unpair</attribute>
+        <attribute name="verb-icon">channel-secure-symbolic</attribute>
+        <attribute name='hidden-when'>action-disabled</attribute>
+      </item>
+    </section>
+  </menu>
+
+  <!-- Clipboard Popover -->
+  <menu id="clipboard-sync">
+    <section>
+      <item>
+        <!-- TRANSLATORS: Send clipboard content to device -->
+        <attribute name="label" translatable="yes">To Device</attribute>
+        <attribute name="icon">edit-paste-symbolic</attribute>
+        <attribute name="action">settings.send-content</attribute>
+      </item>
+      <item>
+        <!-- TRANSLATORS: Receive clipboard content from the device -->
+        <attribute name="label" translatable="yes">From Device</attribute>
+        <attribute name="icon">edit-copy-symbolic</attribute>
+        <attribute name="action">settings.receive-content</attribute>
+      </item>
+    </section>
+  </menu>
+
+  <!-- Volume Popover (eg. Telephony) -->
+  <menu id="ringing-volume">
+    <section>
+      <item>
+        <!-- TRANSLATORS: Don't change the system volume -->
+        <attribute name="label" translatable="yes">Nothing</attribute>
+        <attribute name="icon">audio-volume-medium-symbolic</attribute>
+        <attribute name="action">settings.ringing-volume</attribute>
+        <attribute name="target">nothing</attribute>
+      </item>
+      <item>
+        <!-- TRANSLATORS: Lower the system volume -->
+        <attribute name="label" translatable="yes">Lower</attribute>
+        <attribute name="icon">audio-volume-low-symbolic</attribute>
+        <attribute name="action">settings.ringing-volume</attribute>
+        <attribute name="target">lower</attribute>
+      </item>
+      <item>
+        <!-- TRANSLATORS: Mute the system volume -->
+        <attribute name="label" translatable="yes">Mute</attribute>
+        <attribute name="icon">audio-volume-muted-symbolic</attribute>
+        <attribute name="action">settings.ringing-volume</attribute>
+        <attribute name="target">mute</attribute>
+      </item>
+    </section>
+  </menu>
+
+  <menu id="talking-volume">
+    <section>
+      <item>
+        <!-- TRANSLATORS: Don't change the system volume -->
+        <attribute name="label" translatable="yes">Nothing</attribute>
+        <attribute name="icon">audio-volume-medium-symbolic</attribute>
+        <attribute name="action">settings.talking-volume</attribute>
+        <attribute name="target">nothing</attribute>
+      </item>
+      <item>
+        <!-- TRANSLATORS: Lower the system volume -->
+        <attribute name="label" translatable="yes">Lower</attribute>
+        <attribute name="icon">audio-volume-low-symbolic</attribute>
+        <attribute name="action">settings.talking-volume</attribute>
+        <attribute name="target">lower</attribute>
+      </item>
+      <item>
+        <!-- TRANSLATORS: Mute the system volume -->
+        <attribute name="label" translatable="yes">Mute</attribute>
+        <attribute name="icon">audio-volume-muted-symbolic</attribute>
+        <attribute name="action">settings.talking-volume</attribute>
+        <attribute name="target">mute</attribute>
+      </item>
+    </section>
+  </menu>
+</interface>
+

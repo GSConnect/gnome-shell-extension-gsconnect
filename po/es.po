@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-05-07 18:45+0300\n"
+"POT-Creation-Date: 2018-08-19 11:53+0200\n"
 "PO-Revision-Date: 2018-03-05 11:11-0600\n"
 "Last-Translator: Adolfo Jayme Barrientos <fitojb@ubuntu.com>\n"
 "Language-Team: \n"
@@ -78,7 +78,7 @@ msgstr "Dispositivos móviles"
 msgid "Mobile Settings"
 msgstr "Configuración de móviles"
 
-#: src/nautilus-gsconnect.py:86
+#: src/nautilus-gsconnect.py:88
 msgid "Send To Mobile Device"
 msgstr "Enviar a dispositivo móvil"
 

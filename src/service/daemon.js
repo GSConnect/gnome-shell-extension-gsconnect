@@ -1,963 +1,862 @@
 #!/usr/bin/env gjs
 
-"use strict";
+'use strict';
 
-const Gettext = imports.gettext.domain("org.gnome.Shell.Extensions.GSConnect");
+const Gettext = imports.gettext.domain('org.gnome.Shell.Extensions.GSConnect');
 const _ = Gettext.gettext;
-const Lang = imports.lang;
 const System = imports.system;
 
-imports.gi.versions.Atspi = "2.0";
-imports.gi.versions.Gdk = "3.0";
-imports.gi.versions.GdkPixbuf = "2.0";
-imports.gi.versions.Gio = "2.0";
-imports.gi.versions.GIRepository = "2.0";
-imports.gi.versions.GLib = "2.0";
-imports.gi.versions.GObject = "2.0";
-imports.gi.versions.Gtk = "3.0";
-imports.gi.versions.Pango = "1.0";
-imports.gi.versions.UPowerGlib = "1.0";
+imports.gi.versions.Atspi = '2.0';
+imports.gi.versions.Gdk = '3.0';
+imports.gi.versions.GdkPixbuf = '2.0';
+imports.gi.versions.Gio = '2.0';
+imports.gi.versions.GIRepository = '2.0';
+imports.gi.versions.GLib = '2.0';
+imports.gi.versions.GObject = '2.0';
+imports.gi.versions.Gtk = '3.0';
+imports.gi.versions.Pango = '1.0';
+imports.gi.versions.UPowerGlib = '1.0';
 
 const Gdk = imports.gi.Gdk;
+const GdkPixbuf = imports.gi.GdkPixbuf;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
-// Local Imports
-function getPath() {
-    // Diced from: https://github.com/optimisme/gjs-examples/
-    let m = new RegExp("@(.+):\\d+").exec((new Error()).stack.split("\n")[1]);
+// Find the root datadir of the extension
+function get_datadir() {
+    let m = /@(.+):\d+/.exec((new Error()).stack.split('\n')[1]);
     return Gio.File.new_for_path(m[1]).get_parent().get_parent().get_path();
 }
 
-window.ext = { datadir: getPath() };
+window.gsconnect = { extdatadir: get_datadir() };
+imports.searchPath.unshift(gsconnect.extdatadir);
+imports._gsconnect;
 
-imports.searchPath.push(ext.datadir);
-
-const Common = imports.common;
+// Local Imports
+const Bluetooth = imports.service.bluetooth;
+const Core = imports.service.core;
 const Device = imports.service.device;
-const Protocol = imports.service.protocol;
-const Telephony = imports.service.plugins.telephony;
+const Lan = imports.service.lan;
+
+const ServiceUI = imports.service.ui.service;
+const Settings = imports.service.ui.settings;
+
+const _GITHUB = 'https://github.com/andyholmes/gnome-shell-extension-gsconnect';
 
 
-var DeviceChooser = new Lang.Class({
-    Name: "GSConnectDeviceChooser",
-    Extends: Gtk.ApplicationWindow,
-    Signals: {
-        "selected": {
-            flags: GObject.SignalFlags.RUN_FIRST,
-            param_types: [ GObject.TYPE_OBJECT ]
-        }
-    },
-
-    _init: function (params) {
-        this.parent({
-            application: Gio.Application.get_default(),
-            default_width: 300,
-            default_height: 200
-        });
-        this.set_keep_above(true);
-
-        this.params = params;
-
-        // HeaderBar
-        let headerbar = new Gtk.HeaderBar({
-            title: _("Select a Device"),
-            subtitle: this.params.title,
-            show_close_button: false
-        });
-        this.set_titlebar(headerbar);
-
-        let cancelButton = new Gtk.Button({ label: _("Cancel") });
-        cancelButton.connect("clicked", () => this.destroy());
-        headerbar.pack_start(cancelButton);
-
-        let selectButton = new Gtk.Button({
-            label: _("Select"),
-            sensitive: false
-        });
-        selectButton.get_style_context().add_class("suggested-action");
-        selectButton.connect("clicked", () => {
-            this._select(this.list.get_selected_row().device)
-        });
-        headerbar.pack_end(selectButton);
-
-        // Device List
-        let scrolledWindow = new Gtk.ScrolledWindow({
-            can_focus: false,
-            hexpand: true,
-            vexpand: true,
-            hscrollbar_policy: Gtk.PolicyType.NEVER
-        });
-        this.add(scrolledWindow);
-
-        this.list = new Gtk.ListBox({ activate_on_single_click: false });
-        this.list.connect("row-activated", (list, row) => this._select(row.device));
-        this.list.connect("selected-rows-changed", () => {
-            selectButton.sensitive = (this.list.get_selected_rows().length);
-        });
-        scrolledWindow.add(this.list);
-
-        this.show_all();
-        this._populate();
-    },
-
-    _populate: function () {
-        for (let device of this.application._devices.values()) {
-            if (this.params.filter_func(device)) {
-                let row = new Gtk.ListBoxRow();
-                row.device = device;
-                this.list.add(row);
-
-                let box = new Gtk.Box({
-                    margin: 6,
-                    spacing: 6
-                });
-                row.add(box);
-
-                let icon = new Gtk.Image({
-                    icon_name: device.type,
-                    pixel_size: 32
-                });
-                box.add(icon);
-
-                let name = new Gtk.Label({
-                    label: device.name,
-                    halign: Gtk.Align.START,
-                    hexpand: true
-                });
-                box.add(name);
-
-                row.show_all();
-            }
-        }
-    },
-
-    _select: function (device) {
-        this.emit("selected", device);
-        this.destroy();
-    },
-
-    run: function () {
-        if (this.list.get_children().length === 1) {
-            this._select(this.list.get_children()[0].device);
-        } else if (!this.list.get_children().length) {
-            this.destroy();
-        }
-    }
-});
-
-
-var Daemon = new Lang.Class({
-    Name: "GSConnectDaemon",
-    Extends: Gtk.Application,
+const Service = GObject.registerClass({
+    GTypeName: 'GSConnectService',
     Properties: {
-        "name": GObject.ParamSpec.string(
-            "name",
-            "DeviceName",
-            "The name announced to the network",
-            GObject.ParamFlags.READWRITE,
-            "GSConnect"
-        ),
-        "certificate": GObject.ParamSpec.object(
-            "certificate",
-            "TlsCertificate",
-            "The local TLS Certificate",
-            GObject.ParamFlags.READABLE,
-            GObject.Object
-        ),
-        "devices": GObject.param_spec_variant(
-            "devices",
-            "DevicesList",
-            "A list of known devices",
-            new GLib.VariantType("as"),
+        'devices': GObject.param_spec_variant(
+            'devices',
+            'Devices',
+            'A list of known devices',
+            new GLib.VariantType('as'),
             null,
             GObject.ParamFlags.READABLE
         ),
-        "discovering": GObject.ParamSpec.boolean(
-            "discovering",
-            "discoveringDevices",
-            "Whether the daemon is discovering new devices",
+        'discoverable': GObject.ParamSpec.boolean(
+            'discoverable',
+            'Discoverable',
+            'Whether the service responds to discovery requests',
             GObject.ParamFlags.READWRITE,
             false
         ),
-        "fingerprint": GObject.ParamSpec.string(
-            "fingerprint",
-            "LocalFingerprint",
-            "SHA1 fingerprint for the local certificate",
-            GObject.ParamFlags.READABLE,
-            ""
+        'name': GObject.ParamSpec.string(
+            'name',
+            'deviceName',
+            'The name announced to the network',
+            GObject.ParamFlags.READWRITE,
+            'GSConnect'
         ),
-        "type": GObject.ParamSpec.string(
-            "type",
-            "DeviceType",
-            "The host's device type",
+        'type': GObject.ParamSpec.string(
+            'type',
+            'deviceType',
+            'The service device type',
             GObject.ParamFlags.READABLE,
-            "desktop"
+            'desktop'
         )
-    },
+    }
+}, class Service extends Gtk.Application {
 
-    _init: function() {
-        this.parent({
-            application_id: ext.app_id,
+    _init() {
+        super._init({
+            application_id: gsconnect.app_id,
             flags: Gio.ApplicationFlags.HANDLES_OPEN
         });
 
-        // This is currently required for clipboard to work under Wayland
-        Gdk.set_allowed_backends("x11,*");
+        // This is currently required for clipboard to work under Wayland, but
+        // in future will probably just be removed.
+        Gdk.set_allowed_backends('x11,*');
 
-        GLib.set_prgname(ext.app_id);
-        GLib.set_application_name(_("GSConnect"));
+        GLib.set_prgname(gsconnect.app_id);
+        GLib.set_application_name(_('GSConnect'));
 
         this.register(null);
-    },
+    }
 
     // Properties
-    get certificate () {
-        return this._certificate;
-    },
+    get certificate() {
+        if (this._certificate === undefined) {
+            let certPath = gsconnect.configdir + '/certificate.pem';
+            let keyPath = gsconnect.configdir + '/private.pem';
 
-    get devices () {
-        return Array.from(this._devices.keys());
-    },
-
-    get discovering () {
-        return this.tcpListener.active;
-    },
-
-    set discovering (bool) {
-        if (bool) {
-            this.tcpListener.start();
-            this.broadcast();
-        } else {
-            this.tcpListener.stop();
-            this._pruneDevices();
-        }
-    },
-
-    get fingerprint () {
-        return this.certificate.fingerprint()
-    },
-
-    get name() {
-        return this.identity.body.deviceName;
-    },
-
-    set name(name) {
-        this.identity.body.deviceName = name;
-        this.notify("name");
-        this._dbus.emit_property_changed("name", new GLib.Variant("s", name));
-        this.broadcast();
-    },
-
-    get type () {
-        try {
-            let type = Number(
-                GLib.file_get_contents("/sys/class/dmi/id/chassis_type")[1]
+            this._certificate = Gio.TlsCertificate.new_for_paths(
+                certPath,
+                keyPath
             );
+        }
 
-            if ([8, 9, 10, 14].indexOf(type) > -1) {
-                return "laptop";
+        return this._certificate;
+    }
+
+    get devices() {
+        return Array.from(this._devices.keys())
+    }
+
+    get fingerprint() {
+        return this.certificate.fingerprint();
+    }
+
+    get identity() {
+        if (this._identity === undefined) {
+            this._identity = new Core.Packet({
+                id: 0,
+                type: 'kdeconnect.identity',
+                body: {
+                    deviceId: this.certificate.common_name,
+                    deviceName: gsconnect.settings.get_string('public-name'),
+                    deviceType: this.type,
+                    tcpPort: 1716,
+                    protocolVersion: 7,
+                    incomingCapabilities: [],
+                    outgoingCapabilities: []
+                }
+            });
+
+            for (let name in imports.service.plugins) {
+                let meta = imports.service.plugins[name].Metadata;
+
+                if (!meta) continue;
+
+                meta.incomingCapabilities.map(type => {
+                    this._identity.body.incomingCapabilities.push(type);
+                });
+
+                meta.outgoingCapabilities.map(type => {
+                    this._identity.body.outgoingCapabilities.push(type);
+                });
+            }
+        }
+
+        return this._identity;
+    }
+
+    get type() {
+        if (this._type === undefined) {
+            try {
+                let type = GLib.file_get_contents('/sys/class/dmi/id/chassis_type')[1];
+
+                if (type instanceof Uint8Array) {
+                    type = imports.byteArray.toString(type);
+                }
+
+                type = Number(type);
+                this._type = [8, 9, 10, 14].includes(type) ? 'laptop' : 'desktop';
+            } catch (e) {
+                this._type = 'desktop';
+            }
+        }
+
+        return this._type;
+    }
+
+    /**
+     * Send identity to @address or broadcast if %null
+     *
+     * @param {string|Gio.InetSocketAddress} - TCP address, bluez path or %null
+     */
+    broadcast(address=null) {
+        try {
+            switch (true) {
+                case (address instanceof Gio.InetSocketAddress):
+                    this.lan.broadcast(address);
+                    break;
+
+                case (typeof address === 'string'):
+                    this.bluetooth.broadcast(address);
+                    break;
+
+                // We only do true "broadcasts" for LAN
+                default:
+                    this.lan.broadcast();
             }
         } catch (e) {
-            debug("Error reading chassis_type: " + e);
+            logError(e);
         }
-
-        return "desktop";
-    },
+    }
 
     /**
-     * Special method to accomodate nautilus-gsconnect.py
+     * Return a device for @packet, creating it and adding it to the list of
+     * of known devices if it doesn't exist.
+     *
+     * @param {kdeconnect.identity} packet - An identity packet for the device
+     * @return {Device.Device} - A device object
      */
-    getShareable: function () {
-        let shareable = [];
+    _ensureDevice(packet) {
+        let device = this._devices.get(packet.body.deviceId);
 
-        for (let [busPath, device] of this._devices.entries()) {
-            if (device.connected && device._plugins.has("share")) {
-                shareable.push([busPath, device.name]);
+        if (device === undefined) {
+            debug(`GSConnect: Adding ${packet.body.deviceName}`);
+
+            // TODO: Remove when all clients support bluetooth-like discovery
+            //
+            // If this is the third device to connect, disable discovery to
+            // avoid choking on networks with a large amount of devices
+            if (this._devices.size === 2 && this.discoverable) {
+                this.activate_action('discoverable', null);
+
+                let error = new Error();
+                error.name = 'DiscoveryWarning';
+                this.notify_error(error);
+            }
+
+            device = new Device.Device(packet);
+            this._devices.set(device.id, device);
+
+            gsconnect.settings.set_strv('devices', this.devices);
+            this.notify('devices');
+
+            device.loadPlugins();
+        }
+
+        return device;
+    }
+
+    async _pruneDevices() {
+        // Don't prune devices while the settings window is open; this also
+        // prevents devices from being pruned while being deleted.
+        if (this._window && this._window.visible) {
+            return;
+        }
+
+        for (let [id, device] of this._devices.entries()) {
+            if (!device.connected && !device.paired) {
+                device.destroy();
+                this._devices.delete(id);
+                gsconnect.settings.set_strv('devices', this.devices);
             }
         }
 
-        return shareable;
-    },
+        this.notify('devices');
+    }
 
     /**
-     * Generate a Private Key and TLS Certificate
+     * Delete a known device.
+     *
+     * Removes the device from the list of known devices, unpairs it, destroys
+     * it and deletes all GSettings and cached files.
+     *
+     * @param {String} id - The id of the device to delete
      */
-    _initEncryption: function () {
-        let certPath = ext.configdir + "/certificate.pem";
-        let keyPath = ext.configdir + "/private.pem";
+    deleteDevice(id) {
+        let device = this._devices.get(id);
 
-        let hasCertificate = GLib.file_test(certPath, GLib.FileTest.EXISTS);
-        let hasPrivateKey = GLib.file_test(keyPath, GLib.FileTest.EXISTS);
+        if (device) {
+            // Stash the settings path before unpairing and removing
+            let settings_path = device.settings.path;
+            device.sendPacket({ type: 'kdeconnect.pair', pair: 'false' });
 
-        if (!hasPrivateKey || !hasCertificate) {
-            let cmd = [
-                "openssl", "req", "-new", "-x509", "-sha256", "-newkey",
-                "rsa:2048", "-nodes", "-keyout", "private.pem", "-days", "3650",
-                "-out", "certificate.pem", "-subj",
-                "/CN=" + GLib.uuid_string_random()
-            ];
+            //
+            device.destroy();
+            this._devices.delete(id);
 
-            let proc = GLib.spawn_sync(
-                ext.configdir,
-                cmd,
-                null,
-                GLib.SpawnFlags.SEARCH_PATH,
-                null
-            );
+            // Delete all GSettings
+            GLib.spawn_command_line_async(`dconf reset -f ${settings_path}`);
+
+            // Delete the cache
+            let cache = GLib.build_filenamev([gsconnect.cachedir, id]);
+            Gio.File.rm_rf(cache);
+
+            // Notify
+            gsconnect.settings.set_strv('devices', this.devices);
+            this.notify('devices');
+        }
+    }
+
+    /**
+     * Service GActions
+     */
+    _initActions() {
+        let actions = [
+            // Device
+            ['deviceAction', this._deviceAction.bind(this), '(ssbv)'],
+
+            // App Menu
+            ['connect', this._connectAction.bind(this)],
+            ['preference', this._preferencesAction.bind(this), 's'],
+            ['preferences', this._preferencesAction.bind(this)],
+            ['about', this._aboutAction.bind(this)],
+
+            // Misc service actions
+            ['broadcast', this.broadcast.bind(this)],
+            ['error', this._errorAction.bind(this), 'a{ss}'],
+            ['log', this._logAction.bind(this)],
+            ['debugger', this._debuggerAction.bind(this)],
+            ['wiki', this._wikiAction.bind(this), 's'],
+            ['quit', () => this.quit()]
+        ];
+
+        for (let [name, callback, type] of actions) {
+            let action = new Gio.SimpleAction({
+                name: name,
+                parameter_type: (type) ? new GLib.VariantType(type) : null
+            });
+            action.connect('activate', callback);
+            this.add_action(action);
         }
 
-        // Ensure permissions are restrictive
-        GLib.spawn_command_line_async("chmod 0600 " + keyPath);
-        GLib.spawn_command_line_async("chmod 0600 " + certPath);
+        this.add_action(gsconnect.settings.create_action('discoverable'));
+    }
 
-        // Load the certificate
-        this._certificate = Gio.TlsCertificate.new_from_files(
-            certPath,
-            keyPath
+    /**
+     * A wrapper for Device GActions. This is used to route device notification
+     * actions to their device, since GNotifications need an 'app' level action.
+     *
+     * @param {Gio.Action} action - ...
+     * @param {GLib.Variant(av)} parameter - ...
+     * @param {GLib.Variant(s)} parameter[0] - Device Id or '*' for all
+     * @param {GLib.Variant(s)} parameter[1] - GAction name
+     * @param {GLib.Variant(b)} parameter[2] - %false if the parameter is null
+     * @param {GLib.Variant(v)} parameter[3] - GAction parameter
+     */
+    _deviceAction(action, parameter) {
+        parameter = parameter.unpack();
+
+        let id = parameter[0].unpack();
+        let devices = (id === '*') ? this._devices.values() : [this._devices.get(id)];
+
+        for (let device of devices) {
+            // If the device is available
+            if (device) {
+                device.activate_action(
+                    parameter[1].unpack(),
+                    parameter[2].unpack() ? parameter[3].unpack() : null
+                );
+            }
+        }
+    }
+
+    _connectAction() {
+        (new ServiceUI.DeviceConnectDialog()).show_all();
+    }
+
+    _preferencesAction(page=null, parameter=null) {
+        if (parameter instanceof GLib.Variant) {
+            page = parameter.unpack();
+        }
+
+        if (!this._window) {
+            this._window = new Settings.Window({ application: this });
+            this._window.connect('delete-event', (win) => win.hide_on_delete());
+        }
+
+        // Open to a specific page
+        if (page) {
+            this._window.switcher.foreach(row => {
+                if (row.get_name() === page) {
+                    this._window.switcher.select_row(row);
+                    return;
+                }
+            });
+        // Open the main page
+        } else {
+            this._window._onPrevious();
+        }
+
+        this._window.present();
+    }
+
+    _aboutAction() {
+        let modal = (this.get_active_window());
+        let transient_for = this.get_active_window();
+
+        if (this._about === undefined) {
+            this._about = new Gtk.AboutDialog({
+                application: this,
+                authors: [ 'Andy Holmes <andrew.g.r.holmes@gmail.com>' ],
+                comments: gsconnect.metadata.description,
+                logo: GdkPixbuf.Pixbuf.new_from_resource_at_scale(
+                    gsconnect.app_path + '/icons/' + gsconnect.app_id + '.svg',
+                    128,
+                    128,
+                    true
+                ),
+                program_name: _('GSConnect'),
+                // TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
+                translator_credits: _('translator-credits'),
+                version: gsconnect.metadata.version,
+                website: gsconnect.metadata.url,
+                license_type: Gtk.License.GPL_2_0
+            });
+            this._about.connect('delete-event', () => this._about.hide_on_delete());
+        }
+
+        this._about.modal = modal;
+        this._about.transient_for = transient_for;
+        this._about.present();
+    }
+
+    _errorAction(action, parameter) {
+        try {
+            let error = parameter.deep_unpack();
+            let dialog = new Gtk.MessageDialog({
+                text: error.message.trim(),
+                secondary_text: error.stack.trim(),
+                buttons: Gtk.ButtonsType.CLOSE,
+                message_type: Gtk.MessageType.ERROR,
+            });
+            let issues = dialog.add_button(_('Report'), 1);
+            dialog.set_keep_above(true);
+
+            let [message, stack] = dialog.get_message_area().get_children();
+            message.halign = Gtk.Align.START;
+            message.selectable = true;
+            stack.selectable = true;
+
+            dialog.connect('response', (dialog, id) => {
+                if (id === 1) {
+                    let query = encodeURIComponent(dialog.text).replace('%20', '+');
+                    this._github(`issues?q=is%3Aissue+"${query}"`);
+                } else {
+                    dialog.destroy();
+                }
+            });
+
+            dialog.show();
+        } catch (e) {
+            logError(e);
+        }
+    }
+
+    _logAction() {
+        // Ensure debugging is enabled
+        gsconnect.settings.set_boolean('debug', true);
+
+        // Launch a terminal with tabs for GJS and Gnome Shell
+        GLib.spawn_command_line_async(
+            'gnome-terminal ' +
+            `--tab --title "GJS" --command "journalctl -f -o cat /usr/bin/gjs" ` +
+            '--tab --title "Gnome Shell" --command "journalctl -f -o cat /usr/bin/gnome-shell"'
         );
-    },
+    }
 
-    _initCSS: function () {
+    _debuggerAction() {
+        (new imports.service.components.debug.Window()).present();
+    }
+
+    _wikiAction(action, parameter) {
+        this._github(`wiki/${parameter.unpack()}`);
+    }
+
+    _github(path=[]) {
+        let uri = [_GITHUB].concat(path.split('/')).join('/');
+
+        Gio.AppInfo.launch_default_for_uri_async(uri, null, null, (src, res) => {
+            try {
+                Gio.AppInfo.launch_default_for_uri_finish(res);
+            } catch (e) {
+                logError(e);
+            }
+        });
+    }
+
+    /**
+     * Override Gio.Application.send_notification() to respect donotdisturb
+     */
+    send_notification(id, notification) {
+        if (!this._notificationSettings) {
+            this._notificationSettings = new Gio.Settings({
+                schema_id: 'org.gnome.desktop.notifications.application',
+                path: '/org/gnome/desktop/notifications/application/org-gnome-shell-extensions-gsconnect/'
+            });
+        }
+
+        let now = GLib.DateTime.new_now_local().to_unix();
+        let dnd = (gsconnect.settings.get_int('donotdisturb') <= now);
+
+        // TODO: Maybe the 'enable-sound-alerts' should be left alone/queried
+        this._notificationSettings.set_boolean('enable-sound-alerts', dnd);
+        this._notificationSettings.set_boolean('show-banners', dnd);
+
+        super.send_notification(id, notification);
+    }
+
+    /**
+     * Remove a local libnotify or Gtk notification.
+     *
+     * @param {String|Number} id - Gtk (string) or libnotify id (uint32)
+     * @param {String|null} application - Application Id if Gtk or null
+     */
+    remove_notification(id, application=null) {
+        let name, path, method, variant;
+
+        if (application !== null) {
+            name = 'org.gtk.Notifications';
+            method = 'RemoveNotification';
+            path = '/org/gtk/Notifications';
+            variant = new GLib.Variant('(ss)', [application, id]);
+        } else {
+            name = 'org.freedesktop.Notifications';
+            path = '/org/freedesktop/Notifications';
+            method = 'CloseNotification';
+            variant = new GLib.Variant('(u)', [id]);
+        }
+
+        Gio.DBus.session.call(
+            name, path, name, method, variant, null,
+            Gio.DBusCallFlags.NONE, -1, null, (connection, res) => {
+            try {
+                connection.call_finish(res);
+            } catch (e) {
+                logError(e);
+            }
+        });
+    }
+
+    /**
+     * Report a service-level error
+     *
+     * @param {object} error - An Error or object with name, message and stack
+     * @param {string} context - The scope of the error
+     */
+    notify_error(error) {
+        try {
+            // Always log the error
+            logError(error);
+
+            // Create an new notification
+            let id, title, body, icon, action;
+            let notif = new Gio.Notification();
+            notif.set_priority(Gio.NotificationPriority.URGENT);
+
+            switch (error.name) {
+                // A TLS certificate failure
+                case 'AuthenticationError':
+                    id = `${Date.now()}`;
+                    title = _('Authentication Failure');
+                    let time = GLib.DateTime.new_now_local().format('%F %R');
+                    body = `"${error.deviceName}"@${error.deviceHost} (${time})`;
+                    icon = new Gio.ThemedIcon({ name: 'dialog-error' });
+                    break;
+
+                case 'LanError':
+                case 'ProxyError':
+                    id = error.name;
+                    title = _('Network Error');
+                    body = error.message + '\n\n' + _('Click for help troubleshooting');
+                    icon = new Gio.ThemedIcon({ name: 'network-error' });
+                    notif.set_default_action(
+                        `app.wiki('Troubleshooting#${error.name}')`
+                    );
+                    break;
+
+                case 'GvcError':
+                    id = error.name;
+                    title = _('PulseAudio Error');
+                    body = _('Click for help troubleshooting');
+                    icon = new Gio.ThemedIcon({ name: 'dialog-error' });
+                    notif.set_default_action(
+                        `app.wiki('Troubleshooting#${error.name}')`
+                    );
+                    break;
+
+                case 'DiscoveryWarning':
+                    id = 'discovery-warning';
+                    title = _('Discovery Disabled');
+                    body = _('Discovery has been disabled due to the number of devices on this network.') +
+                           '\n\n' +
+                           _('Click to open preferences');
+                    icon = new Gio.ThemedIcon({ name: 'dialog-warning' });
+                    notif.set_default_action('app.preference::service');
+                    notif.set_priority(Gio.NotificationPriority.NORMAL);
+                    break;
+
+                // Missing sshfs, libcanberra
+                case 'DependencyError':
+                    id = 'dependency-error';
+                    title = _('Additional Software Required');
+                    body = _('Click to open preferences');
+                    icon = new Gio.ThemedIcon({ name: 'system-software-install-symbolic' });
+                    notif.set_default_action('app.preference::other');
+                    notif.set_priority(Gio.NotificationPriority.HIGH);
+                    break;
+
+                case 'PluginError':
+                    id = `${error.plugin}-error`;
+                    title = _('%s Plugin Failed To Load').format(error.label);
+                    body = error.message + '\n\n' + _('Click for more information');
+                    icon = new Gio.ThemedIcon({ name: 'dialog-error' });
+
+                    error = new GLib.Variant('a{ss}', {
+                        name: error.name,
+                        message: error.message,
+                        stack: error.stack
+                    });
+
+                    notif.set_default_action_and_target('app.error', error);
+                    notif.set_priority(Gio.NotificationPriority.HIGH);
+                    break;
+
+                case 'SSHSignatureError':
+                    id = error.name;
+                    title = _('Remote Filesystem Error');
+                    body = _('%s is using an incompatible SSH library').format(error.deviceName) + '\n\n' +
+                           _('Click for more information');
+                    icon = new Gio.ThemedIcon({ name: 'dialog-error' });
+                    notif.set_default_action(
+                        `app.wiki('Troubleshooting#${error.name}')`
+                    );
+                    notif.set_priority(Gio.NotificationPriority.HIGH);
+                    break;
+
+                case 'WaylandNotSupported':
+                    id = error.name;
+                    title = _('Wayland Not Supported');
+                    body = _('Remote input not supported on Wayland') + '\n\n' +
+                           _('Click for more information');
+                    icon = new Gio.ThemedIcon({ name: 'preferences-desktop-display-symbolic' });
+                    notif.set_default_action(
+                        `app.wiki('Troubleshooting#${error.name}')`
+                    );
+                    notif.set_priority(Gio.NotificationPriority.HIGH);
+                    break;
+
+                default:
+                    id = `${Date.now()}`;
+                    title = error.name;
+                    body = error.message.trim();
+                    icon = new Gio.ThemedIcon({ name: 'dialog-error' });
+                    error = new GLib.Variant('a{ss}', {
+                        name: error.name,
+                        message: error.message,
+                        stack: error.stack
+                    });
+                    notif.set_default_action_and_target('app.error', error);
+                    notif.set_priority(Gio.NotificationPriority.HIGH);
+            }
+
+            // Create an urgent notification
+            notif.set_title(_('GSConnect: %s').format(title));
+            notif.set_body(body);
+            notif.set_icon(icon);
+
+            // Bypass override
+            super.send_notification(id, notif);
+        } catch (e) {
+            logError(e);
+        }
+    }
+
+    /**
+     * Load each script in components/ and instantiate a Service if it has one
+     */
+    _loadComponents() {
+        for (let name in imports.service.components) {
+            try {
+                let module = imports.service.components[name];
+
+                if (module.hasOwnProperty('Service')) {
+                    this[name] = new module.Service();
+                }
+            } catch (e) {
+                this.notify_error(e);
+            }
+        }
+    }
+
+    vfunc_activate() {
+        // TODO: this causes problems right now because the bluetooth service
+        // clobbers open TCP channels sometimes, and this gets called often
+        //this.broadcast();
+    }
+
+    vfunc_startup() {
+        super.vfunc_startup();
+
+        this.hold();
+
+        // Watch *this* file and stop the service if it's updated/uninstalled
+        this._serviceMonitor = Gio.File.new_for_path(
+            gsconnect.extdatadir + '/service/daemon.js'
+        ).monitor(
+            Gio.FileMonitorFlags.WATCH_MOVES,
+            null
+        );
+        this._serviceMonitor.connect('changed', () => this.quit());
+
+        // Init some resources
         let provider = new Gtk.CssProvider();
-        provider.load_from_file(
-            Gio.File.new_for_uri("resource://" + ext.app_path + "/application.css")
-        );
+        provider.load_from_resource(gsconnect.app_path + '/application.css');
         Gtk.StyleContext.add_provider_for_screen(
             Gdk.Screen.get_default(),
             provider,
             Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
         );
-    },
 
-    /**
-     * Build and return an identity packet for the local device
-     */
-    _getIdentityPacket: function () {
-        let packet = new Protocol.Packet({
-            id: 0,
-            type: Protocol.TYPE_IDENTITY,
-            body: {
-                deviceId: this.certificate.get_common_name(),
-                deviceName: ext.settings.get_string("public-name"),
-                deviceType: this.type,
-                tcpPort: this.tcpListener._port,
-                protocolVersion: 7,
-                incomingCapabilities: [],
-                outgoingCapabilities: []
-            }
-        });
-
-        for (let name in imports.service.plugins) {
-            if (imports.service.plugins[name].METADATA) {
-                let metadata = imports.service.plugins[name].METADATA;
-
-                for (let packetType of metadata.incomingPackets) {
-                    packet.body.incomingCapabilities.push(packetType);
-                }
-
-                for (let packetType of metadata.outgoingPackets) {
-                    packet.body.outgoingCapabilities.push(packetType);
-                }
-            }
-        }
-
-        return packet;
-    },
-
-    /**
-     * Discovery Methods
-     */
-    broadcast: function () {
-        this.udpListener.send(this.identity);
-    },
-
-    /**
-     * Device Methods
-     */
-    _watchDevices: function () {
-        ext.settings.connect("changed::devices", () => {
-            //
-            for (let id of ext.settings.get_strv("devices")) {
-                let dbusPath = ext.app_path + "/Device/" + id.replace(/\W+/g, "_");
-
-                if (!this._devices.has(dbusPath)) {
-                    let device = new Device.Device({ id: id})
-                    this._devices.set(dbusPath, device);
-
-                    this.notify("devices");
-                    this._dbus.emit_property_changed(
-                        "devices",
-                        new GLib.Variant("as", this.devices)
-                    );
-                }
-            }
-
-            //
-            let devices = ext.settings.get_strv("devices");
-
-            for (let [dbusPath, device] of this._devices.entries()) {
-                if (devices.indexOf(device.id) < 0) {
-                    this._removeDevice(dbusPath);
-                }
-            }
-        });
-
-        ext.settings.emit("changed::devices", "devices");
-    },
-
-    _pruneDevices: function () {
-        let devices = ext.settings.get_strv("devices");
-
-        for (let device of this._devices.values()) {
-            if (!device.connected && !device.paired) {
-                devices.splice(devices.indexOf(device.id), 1);
-                ext.settings.set_strv("devices", devices);
-            }
-        }
-    },
-
-    _addDevice: function (packet, channel=null) {
-        debug("Daemon._addDevice(" + packet.body.deviceName + ")");
-
-        if (!this.identity) { return; }
-        if (packet.body.deviceId === this.identity.body.deviceId) { return; }
-
-        let dbusPath = ext.app_path + "/Device/" + packet.body.deviceId.replace(/\W+/g, "_");
-
-        if (this._devices.has(dbusPath)) {
-            log("Daemon: Updating device");
-
-            let device = this._devices.get(dbusPath);
-            device.update(packet, channel);
-        } else {
-            log("Daemon: Adding device");
-
-            let device = new Device.Device({
-                packet: packet,
-                channel: channel
-            });
-            this._devices.set(dbusPath, device);
-
-            let knownDevices = ext.settings.get_strv("devices");
-
-            if (knownDevices.indexOf(device.id) < 0) {
-                knownDevices.push(device.id);
-                ext.settings.set_strv("devices", knownDevices);
-            }
-
-            this.notify("devices");
-            this._dbus.emit_property_changed(
-                "devices",
-                new GLib.Variant("as", this.devices)
-            );
-        }
-    },
-
-    _removeDevice: function (dbusPath) {
-        debug("Daemon._removeDevice(" + dbusPath + ")");
-
-        if (this._devices.has(dbusPath)) {
-            log("Daemon: Removing device");
-
-            let device = this._devices.get(dbusPath);
-
-            device.destroy();
-            this._devices.delete(dbusPath);
-
-            this.notify("devices");
-            this._dbus.emit_property_changed(
-                "devices",
-                new GLib.Variant("as", this.devices)
-            );
-        }
-    },
-
-    /**
-     * Notification listener
-     *
-     * This has to be a singleton since more than one device might want to
-     * receive our notifications, but we only have one Bus to work with.
-     */
-    _getAppNotificationSettings: function () {
-        this._appNotificationSettings = {};
-
-        for (let app of this._desktopNotificationSettings.get_strv("application-children")) {
-            let appSettings = new Gio.Settings({
-                schema_id: "org.gnome.desktop.notifications.application",
-                path: "/org/gnome/desktop/notifications/application/" + app + "/"
-            });
-
-            let appInfo = Gio.DesktopAppInfo.new(
-                appSettings.get_string("application-id")
-            );
-
-            if (appInfo) {
-                this._appNotificationSettings[appInfo.get_display_name()] = appSettings;
-            }
-        }
-    },
-
-    _initNotificationListener: function () {
-        this._desktopNotificationSettings = new Gio.Settings({
-            schema_id: "org.gnome.desktop.notifications"
-        });
-        this._desktopNotificationSettings.connect(
-            "changed::application-children",
-            () => this._getAppNotificationSettings()
-        );
-        this._getAppNotificationSettings();
-
-        // Special connection for monitoring
-        this._dbusMonitor = Gio.DBusConnection.new_for_address_sync(
-            Gio.dbus_address_get_for_bus_sync(Gio.BusType.SESSION, null),
-            Gio.DBusConnectionFlags.AUTHENTICATION_CLIENT,
-            null,
-            null
-        );
-
-        // Introduce the connection to DBus
-        this._dbusMonitor.call_sync(
-            "org.freedesktop.DBus",
-            "/org/freedesktop/DBus",
-            "org.freedesktop.DBus",
-            "Hello",
-            null,
-            null,
-            Gio.DBusCallFlags.NONE,
-            -1,
-            null
-        );
-
-        // Export our method handlers
-        this._ndbus = Gio.DBusExportedObject.wrapJSObject(
-            ext.dbusinfo.lookup_interface("org.freedesktop.Notifications"),
-            this
-        );
-        this._ndbus.export(this._dbusMonitor, "/org/freedesktop/Notifications");
-
-        // Become a monitor for Fdo notifications
-        this._dbusMonitor.call_sync(
-            "org.freedesktop.DBus",
-            "/org/freedesktop/DBus",
-            "org.freedesktop.DBus.Monitoring",
-            "BecomeMonitor",
-            new GLib.Variant("(asu)", [["interface='org.freedesktop.Notifications',member='Notify',type='method_call'"], 0]),
-            null,
-            Gio.DBusCallFlags.NONE,
-            -1,
-            null
-        );
-    },
-
-    Notify: function (appName, replacesId, iconName, summary, body, actions, hints, timeout) {
-        debug("Daemon: Notify()");
-
-        if (this._appNotificationSettings[appName] &&
-            !this._appNotificationSettings[appName].get_boolean("enable")) {
-            return;
-        }
-
-        for (let device of this._devices.values()) {
-            if (device._plugins.has("notification")) {
-                let plugin = device._plugins.get("notification");
-                // TODO: avoid spread operator if possible
-                plugin.Notify(...Array.from(arguments));
-            }
-        }
-    },
-
-    /**
-     * Notification Actions
-     */
-    _getPlugin: function (devicePath, pluginName) {
-        let device;
-
-        if ((device = this._devices.get(devicePath))) {
-            return device._plugins.get(pluginName);
-        }
-
-        return false;
-    },
-
-    _batteryWarningAction: function (action, parameter) {
-        let dbusPath = parameter.deep_unpack().toString();
-        let plugin = this._getPlugin(dbusPath, "findmyphone");
-
-        if (plugin) {
-            plugin.find();
-        }
-    },
-
-    _cancelTransferAction: function (action, parameter) {
-        parameter = parameter.deep_unpack();
-        let plugin = this._getPlugin(parameter["0"], "share");
-
-        if (plugin) {
-            if (plugin.transfers.has(parameter["1"])) {
-                plugin.transfers.get(parameter["1"]).cancel();
-            }
-        }
-    },
-
-    // TODO: check file existence, since the notification will persist while
-    //       the file could be moved/deleted
-    _openTransferAction: function (action, parameter) {
-        let path = parameter.deep_unpack().toString();
-        Gio.AppInfo.launch_default_for_uri(unescape(path), null);
-    },
-
-    _closeNotificationAction: function (action, parameter) {
-        parameter = parameter.deep_unpack();
-        let plugin = this._getPlugin(parameter["0"], "notification");
-
-        if (plugin) {
-            plugin.close(unescape(parameter["1"]));
-        }
-    },
-
-    _muteCallAction: function (action, parameter) {
-        let dbusPath = parameter.deep_unpack().toString();
-        let plugin = this._getPlugin(dbusPath, "telephony");
-
-        if (plugin) {
-            plugin.muteCall();
-        }
-    },
-
-    _replyMissedCallAction: function (action, parameter) {
-        parameter = parameter.deep_unpack();
-        let plugin = this._getPlugin(parameter["0"], "telephony");
-
-        if (plugin) {
-            plugin.replyMissedCall(parameter["1"], parameter["2"]);
-        }
-    },
-
-    _replySmsAction: function (action, parameter) {
-        parameter = parameter.deep_unpack();
-        let plugin = this._getPlugin(parameter["0"], "telephony");
-
-        if (plugin) {
-            plugin.replySms(parameter["1"], parameter["2"], parameter["3"]);
-        }
-    },
-
-    _pairAction: function (action, parameter) {
-        parameter = parameter.deep_unpack();
-        let device;
-
-        if ((device = this._devices.get(parameter["0"]))) {
-            if (parameter["1"] === "accept") {
-                device.acceptPair();
-            } else if (parameter["1"] === "reject") {
-                device.rejectPair();
-            }
-        }
-    },
-
-    _restartNautilusAction: function (action, parameter) {
-        GLib.spawn_command_line_async("nautilus -q");
-    },
-
-    _initNotificationActions: function () {
-        let entries = [
-            ["pairAction", "(ss)", this._pairAction],
-            ["batteryWarning", "s", this._batteryWarningAction],
-            ["cancelTransfer", "(ss)", this._cancelTransferAction],
-            ["openTransfer", "s", this._openTransferAction],
-            ["muteCall", "s", this._muteCallAction],
-            ["replyMissedCall", "(sss)", this._replyMissedCallAction],
-            ["replySms", "(ssss)", this._replySmsAction],
-            ["closeNotification", "(ss)", this._closeNotificationAction],
-            ["restartNautilus", "s", this._restartNautilusAction]
-        ];
-
-        entries.forEach((entry) => {
-            let action = new Gio.SimpleAction({
-                name: entry[0],
-                parameter_type: new GLib.VariantType(entry[1])
-            });
-            action.connect("activate", entry[2].bind(this));
-            this.add_action(action);
-        });
-    },
-
-    /**
-     *
-     */
-    notifyNautilusExtension: function () {
-        let notif = new Gio.Notification();
-        notif.set_title(_("Nautilus extensions changed"));
-        notif.set_body(_("Restart Nautilus to apply changes"));
-        notif.set_icon(
-            new Gio.ThemedIcon({ name: "system-file-manager-symbolic" })
-        );
-        notif.add_button(
-            // TRANSLATORS: Notification button to restart Nautilus
-            _("Restart"),
-            "app.restartNautilus('null')"
-        );
-
-        this.send_notification("nautilus-integration", notif);
-    },
-
-    toggleNautilusExtension: function () {
-        let path = GLib.get_user_data_dir() + "/nautilus-python/extensions";
-        let script = Gio.File.new_for_path(path).get_child("nautilus-gsconnect.py");
-        let install = ext.settings.get_boolean("nautilus-integration");
-
-        if (install && !script.query_exists(null)) {
-            GLib.mkdir_with_parents(path, 493); // 0755 in octal
-
-            script.make_symbolic_link(
-                ext.datadir + "/nautilus-gsconnect.py",
-                null
-            );
-
-            this.notifyNautilusExtension();
-        } else if (!install && script.query_exists(null)) {
-            script.delete(null);
-            this.notifyNautilusExtension();
-        }
-    },
-
-    toggleWebExtension: function () {
-        let nmhPath = ext.datadir + "/service/nativeMessagingHost.js";
-
-        let google = {
-            "name": "org.gnome.shell.extensions.gsconnect",
-            "description": "Native messaging host for GSConnect WebExtension",
-            "path": nmhPath,
-            "type": "stdio",
-            "allowed_origins": [ "chrome-extension://jfnifeihccihocjbfcfhicmmgpjicaec/" ]
-        };
-
-        let mozilla = {
-            "name": "org.gnome.shell.extensions.gsconnect",
-            "description": "Native messaging host for GSConnect WebExtension",
-            "path": nmhPath,
-            "type": "stdio",
-            "allowed_extensions": [ "gsconnect@andyholmes.github.io" ]
-        };
-
-        let basename = "org.gnome.shell.extensions.gsconnect.json";
-        let userConfDir = GLib.get_user_config_dir();
-        let browsers = [
-            [userConfDir + "/chromium/NativeMessagingHosts/", google],
-            [userConfDir + "/google-chrome/NativeMessagingHosts/", google],
-            [userConfDir + "/google-chrome-beta/NativeMessagingHosts/", google],
-            [userConfDir + "/google-chrome-unstable/NativeMessagingHosts/", google],
-            [GLib.get_home_dir() + "/.mozilla/native-messaging-hosts/", mozilla]
-        ];
-
-        if (ext.settings.get_boolean("webbrowser-integration")) {
-            for (let browser of browsers) {
-                GLib.mkdir_with_parents(browser[0], 493);
-                GLib.file_set_contents(
-                    browser[0] + basename,
-                    JSON.stringify(browser[1])
-                );
-            }
-
-            GLib.spawn_command_line_async("chmod 0755 " + nmhPath);
-        } else {
-            for (let browser of browsers) {
-                GLib.unlink(browser[0] + basename);
-            }
-
-            GLib.spawn_command_line_async("chmod 0744 " + nmhPath);
-        }
-    },
-
-    /**
-     * Watch 'daemon.js' in case the extension is uninstalled
-     */
-    _watchDaemon: function () {
-        let daemonFile = Gio.File.new_for_path(
-            ext.datadir + "/service/daemon.js"
-        );
-        this.daemonMonitor = daemonFile.monitor(
-            Gio.FileMonitorFlags.WATCH_MOVES,
-            null
-        );
-        this.daemonMonitor.connect("changed", () => this.quit());
-    },
-
-    /**
-     * GApplication functions
-     */
-    vfunc_startup: function() {
-        this.parent();
-
-        this._devices = new Map();
-        this._in = null;
-        this._listener = null;
-
-        // Initialize encryption
-        try {
-            this._initEncryption();
-        } catch (e) {
-            log("Error generating TLS Certificate: " + e.message);
-            this.quit();
-        }
-
-        this._initCSS();
-        Gtk.IconTheme.get_default().add_resource_path(ext.app_path);
-
-        this._initNotificationListener();
-        this._initNotificationActions();
-        this._watchDaemon();
-
-        // Export DBus
-        let iface = "org.gnome.Shell.Extensions.GSConnect";
-        this._dbus = Gio.DBusExportedObject.wrapJSObject(
-            ext.dbusinfo.lookup_interface(iface),
-            this
-        );
-        this._dbus.export(
-            Gio.DBus.session,
-            "/org/gnome/Shell/Extensions/GSConnect"
-        );
-
-        // Ensure fingerprint is available right away
-        this._dbus.emit_property_changed(
-            "fingerprint",
-            new GLib.Variant("s", this.fingerprint)
-        );
-
-        // Listen for new devices
-        try {
-            this.udpListener = new Protocol.UdpListener();
-            this.udpListener.connect("received", (server, packet) => {
-                this._addDevice(packet);
-            });
-        } catch (e) {
-            log("Error starting UDP listener: " + e);
-            this.quit();
-        }
-
-        try {
-            this.tcpListener = new Protocol.TcpListener();
-            this.tcpListener.connect("incoming", (listener, connection) => {
-                let channel = new Protocol.LanChannel(this);
-                let conn = channel.connect("connected", (channel) => {
-                    GObject.signal_handler_disconnect(channel, conn);
-                    this._addDevice(channel.identity, channel);
-                });
-                channel.accept(connection);
-            });
-            this.tcpListener.connect("notify::active", () => {
-                this._dbus.emit_property_changed(
-                    "discovering",
-                    new GLib.Variant("b", this.discovering)
-                );
-            });
-            this.tcpListener.stop();
-        } catch (e) {
-            log("Error starting TCP listener: " + e);
-            this.quit();
-        }
-
-        this.identity = this._getIdentityPacket();
-        ext.settings.bind(
-            "public-name",
+        // Properties
+        gsconnect.settings.bind(
+            'discoverable',
             this,
-            "name",
+            'discoverable',
             Gio.SettingsBindFlags.DEFAULT
         );
 
-        // Extensions
-        ext.settings.connect("changed::nautilus-integration", () => {
-            this.toggleNautilusExtension();
-        });
-        this.toggleNautilusExtension();
+        gsconnect.settings.bind(
+            'public-name',
+            this,
+            'name',
+            Gio.SettingsBindFlags.DEFAULT
+        );
 
-        ext.settings.connect("changed::webbrowser-integration", () => {
-            this.toggleWebExtension();
-        });
-        this.toggleWebExtension();
-
-        // Monitor network changes
-        this._netmonitor = Gio.NetworkMonitor.get_default();
-        this._netmonitor.connect("network-changed", (monitor, available) => {
-            if (available) {
-                this.broadcast();
-            }
+        // Keep identity updated and broadcast any name changes
+        gsconnect.settings.connect('changed::public-name', (settings) => {
+            this.identity.body.deviceName = this.name;
         });
 
-        // Load cached devices and watch for changes
-        this._watchDevices();
-        log(this._devices.size + " devices loaded from cache");
+        // GActions
+        this._initActions();
 
-        this.broadcast();
-    },
+        // Components (PulseAudio, UPower, etc)
+        this._loadComponents();
 
-    vfunc_activate: function() {
-        this.parent();
-        this.hold();
-    },
+        // Track devices with id as key
+        this._devices = new Map();
 
-    vfunc_open: function (files, hint) {
-        this.parent(files, hint);
+        // Load cached devices
+        let cached = gsconnect.settings.get_strv('devices');
+        debug(`Loading ${cached.length} device(s) from cache`);
+        cached.map(id => {
+            let device = new Device.Device({ body: { deviceId: id } });
+            this._devices.set(device.id, device);
+            device.loadPlugins();
+        });
+        this.notify('devices');
 
-        for (let file of files) {
-            try {
-                if (file.get_uri_scheme() === "sms") {
-                    let uri = new Telephony.SmsURI(file.get_uri());
+        // Lan.ChannelService
+        try {
+            this.lan = new Lan.ChannelService();
+        } catch (e) {
+            e.name = 'LanError';
+            this.notify_error(e);
+        }
 
-                    let win = new DeviceChooser({
-                        title: _("Send SMS"),
-                        filter_func: (device) => {
-                            return device._plugins.has("telephony");
-                        }
-                    });
-
-                    win.connect("selected", (window, device) => {
-                        device._plugins.get("telephony").openUri(uri);
-                    });
-
-                    win.run();
-                } else if (file.get_uri_scheme() === "tel") {
-                    let uri = file.get_uri();
-
-                    let win = new DeviceChooser({
-                        title: _("Dial Phone Number"),
-                        filter_func: (device) => {
-                            return device._plugins.has("share");
-                        }
-                    });
-
-                    win.connect("selected", (window, device) => {
-                        device._plugins.get("share").shareUri(uri);
-                    });
-
-                    win.run();
-                }
-            } catch (e) {
-                log("Error opening file/uri: " + e.message);
+        // Bluetooth.ChannelService
+        try {
+            this.bluetooth = new Bluetooth.ChannelService();
+        } catch (e) {
+            if (this.bluetooth) {
+                this.bluetooth.destroy();
             }
         }
-    },
+    }
 
-    vfunc_shutdown: function() {
-        this.parent();
+    vfunc_dbus_register(connection, object_path) {
+        if (!super.vfunc_dbus_register(connection, object_path)) {
+            return false;
+        }
 
-        log("GSConnect: Shutting down");
+        // org.freedesktop.ObjectManager interface; only devices currently
+        this.objectManager = new Gio.DBusObjectManagerServer({
+            connection: connection,
+            object_path: object_path
+        });
 
-        this.tcpListener.destroy();
-        this.udpListener.destroy();
+        return true;
+    }
 
+    vfunc_dbus_unregister(connection, object_path) {
+        // Must be done before g_name_owner === null
         for (let device of this._devices.values()) {
             device.destroy();
         }
 
-        this._ndbus.unexport();
-        this._dbus.unexport();
+        super.vfunc_dbus_unregister(connection, object_path);
+    }
+
+    vfunc_open(files, hint) {
+        super.vfunc_open(files, hint);
+
+        for (let file of files) {
+            let devices = [];
+            let action, parameter, title;
+
+            try {
+                if (file.get_uri_scheme() === 'sms') {
+                    title = _('Send SMS');
+                    action = 'uriSms';
+                    parameter = new GLib.Variant('s', file.get_uri());
+                } else if (file.get_uri_scheme() === 'tel') {
+                    title = _('Dial Number');
+                    action = 'shareUri';
+                    parameter = new GLib.Variant('s', file.get_uri());
+                } else {
+                    return;
+                }
+
+                for (let device of this._devices.values()) {
+                    if (device.get_action_enabled(action)) {
+                        devices.push(device);
+                    }
+                }
+
+                if (devices.length === 1) {
+                    devices[0].activate_action(action, parameter);
+                } else if (devices.length > 1) {
+                    let win = new ServiceUI.DeviceChooserDialog({
+                        title: title,
+                        devices: devices
+                    });
+
+                    if (win.run() === Gtk.ResponseType.OK) {
+                        win.get_device().activate_action(action, parameter);
+                    }
+
+                    win.destroy();
+                }
+            } catch (e) {
+                logError(e, `GSConnect: Opening ${file.get_uri()}:`);
+            }
+        }
+    }
+
+    vfunc_shutdown() {
+        super.vfunc_shutdown();
+
+        this._devices.forEach(device => device.destroy());
+
+        if (this.mpris) {
+            this.mpris.destroy();
+        }
+
+        if (this.notification) {
+            this.notification.destroy();
+        }
+
+        if (this.lan) {
+            this.lan.destroy();
+        }
+
+        // FIXME: Really, really bad hack, but sometimes hangs in bluez can
+        // prevent the service from stopping or even hang the desktop.
+        System.exit(0);
+        if (this.bluetooth) {
+            this.bluetooth.destroy();
+        }
     }
 });
 
-(new Daemon()).run([System.programInvocationName].concat(ARGV));
+(new Service()).run([System.programInvocationName].concat(ARGV));
 
