@@ -2,19 +2,6 @@
 
 ![Extension Screenshot][screenshot]
 
-> ## ATTENTION
->
-> GSConnect is in the process of merging a rewrite. It is approaching maturity,
-> but introduces major changes and has not been thoroughly tested. Support has
-> has always been positive and your patience is appreciated.
->
-> **Translators:** translatable strings are not finalized and pull requests for
-> translations will be considered work-in-progress until further notice.
-> Subscribe to the [Translations Discussion thread][translating] to receive
-> updates.
->
-> For more information, see [Roadmap][roadmap].
-
 ## Overview
 
 > **NOTE:** The current stable release (v12) does not support Gnome Shell 3.30.
