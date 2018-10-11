@@ -8,15 +8,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-09-19 16:34-0700\n"
+"POT-Creation-Date: 2018-10-11 23:44+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"X-Generator: Poedit 2.2\n"
 
 #: data/conversation-window.ui:13 src/service/ui/sms.js:538
 msgid "Conversations"
@@ -275,8 +275,7 @@ msgid "Discovery Disabled"
 msgstr ""
 
 #: src/service/daemon.js:613
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
+msgid "Discovery has been disabled due to the number of devices on this network."
 msgstr ""
 
 #: src/service/daemon.js:615 src/service/daemon.js:625
