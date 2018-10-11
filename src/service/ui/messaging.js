@@ -327,10 +327,7 @@ var ConversationWindow = GObject.registerClass({
     _init(params) {
         this.connect_template();
 
-        super._init(Object.assign({
-            application: Gio.Application.get_default(),
-            urgency_hint: true
-        }, params));
+        super._init(params);
 
         this.insert_action_group('device', this.device);
 
