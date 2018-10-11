@@ -558,9 +558,9 @@ var ConversationWindow = GObject.registerClass({
     _showPrevious() {
         this.contact_list.reset();
 
+        // Show the contact list if there are no conversations
         let sms = this.device.lookup_plugin('sms');
 
-        // Show the contact list if there are no conversations
         if (sms && Object.keys(sms.conversations).length > 0) {
             this._showConversations();
         } else {
@@ -691,7 +691,6 @@ var ConversationWindow = GObject.registerClass({
         }
     }
 
-    // TODO: this is kind of awkward...
     _onSelectedNumbersChanged(contact_list) {
         if (this.contact_list.selected.length > 0) {
             this.address = this.contact_list.selected[0];
@@ -710,8 +709,8 @@ var ConversationWindow = GObject.registerClass({
             selectable: false,
             hexpand: true
         });
-        row.type = message.type;
         row.date = message.date;
+        row.type = message.type;
 
         let layout = new Gtk.Box({
             can_focus: false,
@@ -779,9 +778,11 @@ var ConversationWindow = GObject.registerClass({
                 this.message_list.add(this.__last);
             }
 
-            this.__last.messages.pack_start(widget, false, false, 0);
-            this.__last.date = message.date;
-            this.message_id = message._id
+            if (this.message_id !== message._id) {
+                this.__last.messages.pack_start(widget, false, false, 0);
+                this.__last.date = message.date;
+                this.message_id = message._id
+            }
         }
     }
 
@@ -797,14 +798,14 @@ var ConversationWindow = GObject.registerClass({
 
         // Log an incoming telepony message (fabricated by the sms plugin)
         this.logMessage({
-            _id: ++this.message_id,     // increment as we fetch
+            _id: this.message_id + 1,
             thread_id: this.thread_id,
             address: message.address,
             body: message.body,
             date: message.date,
             event: 'sms',
             read: MessageStatus.UNREAD,
-            type: MessageType.IN,
+            type: MessageType.IN
         });
     }
 
@@ -821,14 +822,14 @@ var ConversationWindow = GObject.registerClass({
 
             // Log the outgoing message as a fabricated message packet
             this.logMessage({
-                _id: ++this.message_id,    // message id (increment as we fetch)
-                thread_id: this.thread_id,  // conversation id
+                _id: this.message_id + 1,
+                thread_id: this.thread_id,
                 address: this.address,
                 body: entry.text,
                 date: Date.now(),
                 event: 'sms',
                 read: MessageStatus.READ,
-                type: MessageType.OUT,
+                type: MessageType.OUT
             });
 
             // Clear the entry
