@@ -289,22 +289,6 @@ var ConversationWindow = GObject.registerClass({
             'The target phone number or other address',
             GObject.ParamFlags.READWRITE,
             ''
-        ),
-        'message-id': GObject.ParamSpec.uint(
-            'message-id',
-            'Message ID',
-            'The ID of the last message of the current conversation thread',
-            GObject.ParamFlags.READWRITE,
-            0, GLib.MAXINT32,
-            null
-        ),
-        'thread-id': GObject.ParamSpec.uint(
-            'thread-id',
-            'Thread ID',
-            'The ID of the current conversation thread',
-            GObject.ParamFlags.READWRITE,
-            0, GLib.MAXINT32,
-            null
         )
     },
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/conversation-window.ui',
@@ -423,7 +407,6 @@ var ConversationWindow = GObject.registerClass({
     set contact(id) {
         let contact = this.device.contacts.get_item(id);
         this._contact = (contact.id) ? contact.id : null;
-        this.notify('contact');
     }
 
     get has_conversations() {
@@ -440,7 +423,6 @@ var ConversationWindow = GObject.registerClass({
 
     set message_id(id) {
         this._message_id = id || 0;
-        this.notify('message-id');
     }
 
     get sms() {
@@ -461,7 +443,6 @@ var ConversationWindow = GObject.registerClass({
 
     set thread_id(id) {
         this._thread_id = id || 0;
-        this.notify('thread-id');
     }
 
     _onDeleteEvent(window, event) {
