@@ -1245,7 +1245,8 @@ var Device = GObject.registerClass({
 
     _populatePlugins() {
         this.plugin_list.foreach(row => {
-            row.get_child().disconnect(row._togglePluginId);
+            let checkbutton = row.get_child();
+            checkbutton.disconnect(checkbutton._togglePluginId);
             row.destroy()
         });
 
