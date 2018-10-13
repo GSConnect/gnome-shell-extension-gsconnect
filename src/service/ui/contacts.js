@@ -92,7 +92,7 @@ var Avatar = GObject.registerClass({
             height_request: 32,
             width_request: 32,
             visible: true,
-            tooltip_text: contact.name
+            tooltip_text: contact.name || _('Unknown Contact');
         });
 
         this._path = contact.avatar;
