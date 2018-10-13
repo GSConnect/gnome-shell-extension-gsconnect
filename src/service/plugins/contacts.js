@@ -84,13 +84,14 @@ var Plugin = GObject.registerClass({
     }
 
     /**
-     * Decode a string encoded as QUOTED-PRINTABLE and return a regular string
+     * Decode a string encoded as "QUOTED-PRINTABLE" and return a regular string
      *
      * See: https://github.com/mathiasbynens/quoted-printable/blob/master/src/quoted-printable.js
      *
      * @param {string} input - The QUOTED-PRINTABLE string
+     * @return {string} - The decoded string
      */
-    decodeQuotedPrintable(input) {
+    decode_quoted_printable(input) {
 		return input
 			// https://tools.ietf.org/html/rfc2045#section-6.7, rule 3
 			.replace(/[\t\x20]$/gm, '')
@@ -101,6 +102,16 @@ var Plugin = GObject.registerClass({
 				let codePoint = parseInt($1, 16);
 				return String.fromCharCode(codePoint);
 			});
+	}
+
+    /**
+     * Decode a string encoded as "UTF-8" and return a regular string
+     *
+     * @param {string} input - The UTF-8 string
+     * @return {string} - The decoded string
+     */
+	decode_utf8(input) {
+	    return decodeURIComponent(escape(input));
 	}
 
     /**
@@ -155,13 +166,15 @@ var Plugin = GObject.registerClass({
                 // Decode QUOTABLE-PRINTABLE
                 if (meta.ENCODING === 'QUOTED-PRINTABLE') {
                     delete meta.ENCODING;
-                    value = value.map(v => this.decodeQuotedPrintable(v));
+                    value = value.map(v => this.decode_quoted_printable(v));
                 }
 
-                vcard[key].push({
-                    meta: meta,
-                    value: value
-                })
+                if (meta.ENCODING === 'UTF-8') {
+                    delete meta.ENCODING;
+                    value = value.map(v => this.decode_utf8(v));
+                }
+
+                vcard[key].push({ meta: meta, value: value });
             }
         });
 
@@ -174,7 +187,7 @@ var Plugin = GObject.registerClass({
 
             let contact = {
                 id: uid,
-                name: vcard.fn,
+                name: Array.isArray(vcard.fn) ? vcard.fn[0].value : vcard.fn,
                 numbers: [],
                 origin: 'device',
                 timestamp: parseInt(vcard['x-kdeconnect-timestamp'])
