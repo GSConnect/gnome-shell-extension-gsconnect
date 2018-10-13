@@ -179,6 +179,7 @@ var Button = GObject.registerClass({
                 this.submenu.actor.style_class = 'popup-sub-menu';
                 this.bind_property('checked', this.submenu.actor, 'visible', 2);
                 this.connect('notify::checked', this._onChecked);
+                this.connect('destroy', (button) => button.submenu.actor.destroy());
             }
         }
     }
