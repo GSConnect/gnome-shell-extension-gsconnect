@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-11 21:08+0300\n"
+"POT-Creation-Date: 2018-10-13 12:22-0700\n"
 "PO-Revision-Date: 2018-10-12 18:59+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -230,7 +230,7 @@ msgstr "Mobiiliseaded"
 
 #. TRANSLATORS: Extension name
 #: src/extension.js:146 src/extension.js:211 src/service/daemon.js:95
-#: src/service/daemon.js:397 webextension/gettext.js:27
+#: src/service/daemon.js:400 webextension/gettext.js:27
 msgid "GSConnect"
 msgstr "GSConnect"
 
@@ -240,86 +240,87 @@ msgid "Send To Mobile Device"
 msgstr "Saada mobiilseadmesse"
 
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
-#: src/service/daemon.js:399
+#: src/service/daemon.js:402
 msgid "translator-credits"
 msgstr "Madis O, 2018."
 
-#: src/service/daemon.js:421
+#: src/service/daemon.js:424
 msgid "Report"
 msgstr "Teata"
 
-#: src/service/daemon.js:549
+#: src/service/daemon.js:552
 msgid "Authentication Failure"
 msgstr "Autentimise viga"
 
-#: src/service/daemon.js:558
+#: src/service/daemon.js:561
 msgid "Network Error"
 msgstr "Võrguviga"
 
-#: src/service/daemon.js:559 src/service/daemon.js:569
+#: src/service/daemon.js:562 src/service/daemon.js:572
 msgid "Click for help troubleshooting"
 msgstr "Klõpsa, et saada veaotsingul abi"
 
-#: src/service/daemon.js:568
+#: src/service/daemon.js:571
 msgid "PulseAudio Error"
 msgstr "PulseAudio viga"
 
-#: src/service/daemon.js:578
+#: src/service/daemon.js:581
 msgid "Discovery Disabled"
 msgstr "Avastamine keelatud"
 
-#: src/service/daemon.js:579
-msgid "Discovery has been disabled due to the number of devices on this network."
+#: src/service/daemon.js:582
+msgid ""
+"Discovery has been disabled due to the number of devices on this network."
 msgstr "Avastamine on keelatud selles võrgus olevate seadmete arvu tõttu."
 
-#: src/service/daemon.js:581 src/service/daemon.js:591
+#: src/service/daemon.js:584 src/service/daemon.js:594
 msgid "Click to open preferences"
 msgstr "Klõpsa eelistuste avamiseks"
 
-#: src/service/daemon.js:590
+#: src/service/daemon.js:593
 msgid "Additional Software Required"
 msgstr "Lisatarkvara on nõutud"
 
-#: src/service/daemon.js:599
+#: src/service/daemon.js:602
 #, javascript-format
 msgid "%s Plugin Failed To Load"
 msgstr "%s plugina laadimine ebaõnnestus"
 
-#: src/service/daemon.js:600 src/service/daemon.js:617
-#: src/service/daemon.js:629
+#: src/service/daemon.js:603 src/service/daemon.js:620
+#: src/service/daemon.js:632
 msgid "Click for more information"
 msgstr "Klõpsa rohkema teabe saamiseks"
 
-#: src/service/daemon.js:615
+#: src/service/daemon.js:618
 msgid "Remote Filesystem Error"
 msgstr "Kaugete failisüsteemide viga"
 
-#: src/service/daemon.js:616
+#: src/service/daemon.js:619
 #, javascript-format
 msgid "%s is using an incompatible SSH library"
 msgstr "%s kasutab ühildumatut SSH-teeki"
 
-#: src/service/daemon.js:627
+#: src/service/daemon.js:630
 msgid "Wayland Not Supported"
 msgstr "Wayland pole toetatud"
 
-#: src/service/daemon.js:628
+#: src/service/daemon.js:631
 msgid "Remote input not supported on Wayland"
 msgstr "Kaugsisestus pole Waylandil toetatud"
 
 #. Create an urgent notification
-#: src/service/daemon.js:652
+#: src/service/daemon.js:655
 #, javascript-format
 msgid "GSConnect: %s"
 msgstr "GSConnect: %s"
 
 #. TRANSLATORS: Share URL by SMS
-#: src/service/daemon.js:798 src/service/plugins/sms.js:49
+#: src/service/daemon.js:801 src/service/plugins/sms.js:49
 #: webextension/gettext.js:39
 msgid "Send SMS"
 msgstr "Saada SMS"
 
-#: src/service/daemon.js:802
+#: src/service/daemon.js:805
 msgid "Dial Number"
 msgstr "Helista telefoninumbrile"
 
@@ -413,6 +414,11 @@ msgstr "Lõikelaua saatmine"
 #: src/service/plugins/clipboard.js:25
 msgid "Clipboard Pull"
 msgstr "Lõikelaua vastuvõtmine"
+
+#: src/service/plugins/contacts.js:12
+#, fuzzy
+msgid "Contacts"
+msgstr "Sünkroniseeri kontaktid"
 
 #: src/service/plugins/findmyphone.js:12
 msgid "Find My Phone"
@@ -651,6 +657,10 @@ msgstr "Mobiil"
 msgid "Home"
 msgstr "Kodu"
 
+#: src/service/ui/contacts.js:95 src/service/ui/contacts.js:387
+msgid "Unknown Contact"
+msgstr "Tundmatu kontakt"
+
 #: src/service/ui/contacts.js:194 src/service/ui/contacts.js:195
 msgid "Type a phone number or name"
 msgstr "Kirjuta telefoninumber või nimi"
@@ -665,10 +675,6 @@ msgstr "Lisa inimesi vestluse alustamiseks"
 #, javascript-format
 msgid "Send to %s"
 msgstr "Saada seadmesse %s"
-
-#: src/service/ui/contacts.js:387
-msgid "Unknown Contact"
-msgstr "Tundmatu kontakt"
 
 #. TRANSLATORS: Title of keyboard shortcut dialog
 #: src/service/ui/keybindings.js:39
@@ -690,7 +696,8 @@ msgstr "Sisesta <b>%s</b> muutmiseks uus otsetee"
 #. TRANSLATORS: Keys for cancelling (␛) or resetting (␈) a shortcut
 #: src/service/ui/keybindings.js:89
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr "Vajuta tühistamiseks Esc või klaviatuuriotsetee lähtestamiseks Tagasilüke."
+msgstr ""
+"Vajuta tühistamiseks Esc või klaviatuuriotsetee lähtestamiseks Tagasilüke."
 
 #. TRANSLATORS: When a keyboard shortcut is unavailable
 #. Example: [Ctrl]+[S] is already being used
@@ -860,8 +867,13 @@ msgstr "Ava brauseris"
 #~ msgid "This program comes with absolutely no warranty."
 #~ msgstr "See programm ei paku mingit garantiid."
 
-#~ msgid "See the <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html\">GNU General Public License, version 2 or later</a> for details."
-#~ msgstr "Lisateabe saamiseks vaata litsentsi <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html\">GNU General Public License, versioon 2 või hilisem</a>."
+#~ msgid ""
+#~ "See the <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html"
+#~ "\">GNU General Public License, version 2 or later</a> for details."
+#~ msgstr ""
+#~ "Lisateabe saamiseks vaata litsentsi <a href=\"https://www.gnu.org/"
+#~ "licenses/old-licenses/gpl-2.0.html\">GNU General Public License, versioon "
+#~ "2 või hilisem</a>."
 
 #~ msgid "Preferences"
 #~ msgstr "Eelistused"
@@ -872,8 +884,12 @@ msgstr "Ava brauseris"
 #~ msgid "Web Browser Integration"
 #~ msgstr "Veebibrauseri integratsioon"
 
-#~ msgid "Requires <a href=\"%s\">Chrome Extension</a> or <a href=\"%s\">Firefox Add-On</a>"
-#~ msgstr "Nõuab <a href=\"%s\">Chrome’i</a> või <a href=\"%s\">Firefox’i</a> laiendust"
+#~ msgid ""
+#~ "Requires <a href=\"%s\">Chrome Extension</a> or <a href=\"%s\">Firefox "
+#~ "Add-On</a>"
+#~ msgstr ""
+#~ "Nõuab <a href=\"%s\">Chrome’i</a> või <a href=\"%s\">Firefox’i</a> "
+#~ "laiendust"
 
 #~ msgid "Nautilus extensions changed"
 #~ msgstr "Nautiluse laiendused muudetud"
@@ -937,7 +953,9 @@ msgstr "Ava brauseris"
 #~ msgstr "Atspi käivitamine ebaõnnestus"
 
 #~ msgid "Cannot load Caribou virtual keyboard for Unicode support"
-#~ msgstr "Caribou virtuaalse klaviatuuri laadimine Unicode’i toe saamiseks ebaõnnestus"
+#~ msgstr ""
+#~ "Caribou virtuaalse klaviatuuri laadimine Unicode’i toe saamiseks "
+#~ "ebaõnnestus"
 
 #~ msgid "Media Player Control"
 #~ msgstr "Meediamängija juhtimine"
@@ -1002,14 +1020,26 @@ msgstr "Ava brauseris"
 #~ msgid "The <b>Media Player Control</b> plugin must be enabled"
 #~ msgstr "Plugin <b>Meediamängija juhtimine</b> peab olema lubatud"
 
-#~ msgid "Ensure that devices are on the same local network with ports 1716 to 1764 open for TCP and UDP connections."
-#~ msgstr "Veendu, et seadmed on samas kohalikus võrgus ning pordid 1716 ja 1764 on avatud TCP- ja UDP-ühenduste jaoks."
+#~ msgid ""
+#~ "Ensure that devices are on the same local network with ports 1716 to 1764 "
+#~ "open for TCP and UDP connections."
+#~ msgstr ""
+#~ "Veendu, et seadmed on samas kohalikus võrgus ning pordid 1716 ja 1764 on "
+#~ "avatud TCP- ja UDP-ühenduste jaoks."
 
-#~ msgid "To connect an Android device, install the KDE Connect Android app from the <a href=\"%s\">Google Play Store</a> or <a href=\"%s\">F-Droid</a>."
-#~ msgstr "Android-seadme ühendamiseks paigalda KDE Connect Androidi rakendus <a href=\"%s\">Google Play poest</a> või <a href=\"%s\">F-Droidist</a>."
+#~ msgid ""
+#~ "To connect an Android device, install the KDE Connect Android app from "
+#~ "the <a href=\"%s\">Google Play Store</a> or <a href=\"%s\">F-Droid</a>."
+#~ msgstr ""
+#~ "Android-seadme ühendamiseks paigalda KDE Connect Androidi rakendus <a "
+#~ "href=\"%s\">Google Play poest</a> või <a href=\"%s\">F-Droidist</a>."
 
-#~ msgid "Please see the <a href=\"%s\">Wiki</a> for more help or <a href=\"%s\">open an issue</a> on Github to report a problem."
-#~ msgstr "Rohkema abi saamiseks palun loe <a href=\"%s\">vikit</a> või <a href=\"%s\">teata probleemist</a> GitHubi vahendusel."
+#~ msgid ""
+#~ "Please see the <a href=\"%s\">Wiki</a> for more help or <a href=\"%s"
+#~ "\">open an issue</a> on Github to report a problem."
+#~ msgstr ""
+#~ "Rohkema abi saamiseks palun loe <a href=\"%s\">vikit</a> või <a href=\"%s"
+#~ "\">teata probleemist</a> GitHubi vahendusel."
 
 #~ msgid "Error: %s"
 #~ msgstr "Viga: %s"
@@ -1045,8 +1075,11 @@ msgstr "Ava brauseris"
 #~ msgid "Keyboard Shortcut Unavailable"
 #~ msgstr "Klaviatuuri kiirklahv pole saadaval"
 
-#~ msgid "The requested keyboard shortcut is already in use and can't be overridden."
-#~ msgstr "Taotletud klaviatuuri kiirklahv on juba kasutusel ja seda ei saa üle kirjutada."
+#~ msgid ""
+#~ "The requested keyboard shortcut is already in use and can't be overridden."
+#~ msgstr ""
+#~ "Taotletud klaviatuuri kiirklahv on juba kasutusel ja seda ei saa üle "
+#~ "kirjutada."
 
 #~ msgid "Configure <b>%s</b>"
 #~ msgstr "Seadista <b>%s</b>"

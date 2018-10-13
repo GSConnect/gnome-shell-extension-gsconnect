@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-11 09:55-0700\n"
+"POT-Creation-Date: 2018-10-13 12:22-0700\n"
 "PO-Revision-Date: 2018-10-12 09:55-0700\n"
 "Last-Translator: Serdar Sağlam <teknomobil@yandex.com>\n"
 "Language-Team: Türkçe <teknomobil@yandex.com>\n"
@@ -230,7 +230,7 @@ msgstr "Mobil Ayarları"
 
 #. TRANSLATORS: Extension name
 #: src/extension.js:146 src/extension.js:211 src/service/daemon.js:95
-#: src/service/daemon.js:397 webextension/gettext.js:27
+#: src/service/daemon.js:400 webextension/gettext.js:27
 msgid "GSConnect"
 msgstr "GSConnect"
 
@@ -240,88 +240,87 @@ msgid "Send To Mobile Device"
 msgstr "Mobil Cihaza Gönder"
 
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
-#: src/service/daemon.js:399
+#: src/service/daemon.js:402
 msgid "translator-credits"
 msgstr "çevirmen"
 
-#: src/service/daemon.js:421
+#: src/service/daemon.js:424
 msgid "Report"
 msgstr "Raporla"
 
-#: src/service/daemon.js:549
+#: src/service/daemon.js:552
 msgid "Authentication Failure"
 msgstr "Kimlik Doğrulama Hatası"
 
-#: src/service/daemon.js:558
+#: src/service/daemon.js:561
 msgid "Network Error"
 msgstr "Ağ Hatası"
 
-#: src/service/daemon.js:559 src/service/daemon.js:569
+#: src/service/daemon.js:562 src/service/daemon.js:572
 msgid "Click for help troubleshooting"
 msgstr "Yardım sorun giderme için tıklayın"
 
-#: src/service/daemon.js:568
+#: src/service/daemon.js:571
 msgid "PulseAudio Error"
 msgstr "PulseAudio Hatası"
 
-#: src/service/daemon.js:578
+#: src/service/daemon.js:581
 msgid "Discovery Disabled"
 msgstr "Keşif Devre Dışı"
 
-#: src/service/daemon.js:579
+#: src/service/daemon.js:582
 msgid ""
 "Discovery has been disabled due to the number of devices on this network."
-msgstr ""
-"Bu ağdaki aygıt sayısı nedeniyle keşif devre dışı bırakıldı."
+msgstr "Bu ağdaki aygıt sayısı nedeniyle keşif devre dışı bırakıldı."
 
-#: src/service/daemon.js:581 src/service/daemon.js:591
+#: src/service/daemon.js:584 src/service/daemon.js:594
 msgid "Click to open preferences"
 msgstr "Tercihleri açmak için tıklayın"
 
-#: src/service/daemon.js:590
+#: src/service/daemon.js:593
 msgid "Additional Software Required"
 msgstr "Ek Yazılım Gerekli"
 
-#: src/service/daemon.js:599
+#: src/service/daemon.js:602
 #, javascript-format
 msgid "%s Plugin Failed To Load"
 msgstr "%s Eklentisi Yüklenemedi"
 
-#: src/service/daemon.js:600 src/service/daemon.js:617
-#: src/service/daemon.js:629
+#: src/service/daemon.js:603 src/service/daemon.js:620
+#: src/service/daemon.js:632
 msgid "Click for more information"
 msgstr "Daha fazla bilgi için tıklayın"
 
-#: src/service/daemon.js:615
+#: src/service/daemon.js:618
 msgid "Remote Filesystem Error"
 msgstr "Uzak Dosya Sistemi Hatası"
 
-#: src/service/daemon.js:616
+#: src/service/daemon.js:619
 #, javascript-format
 msgid "%s is using an incompatible SSH library"
 msgstr "%s uyumsuz bir SSH Kütüphanesi kullanıyor"
 
-#: src/service/daemon.js:627
+#: src/service/daemon.js:630
 msgid "Wayland Not Supported"
 msgstr "Wayland Desteklenmiyor"
 
-#: src/service/daemon.js:628
+#: src/service/daemon.js:631
 msgid "Remote input not supported on Wayland"
 msgstr "Wayland uzaktan giriş desteklenmiyor"
 
 #. Create an urgent notification
-#: src/service/daemon.js:652
+#: src/service/daemon.js:655
 #, javascript-format
 msgid "GSConnect: %s"
 msgstr "GSConnect: %s"
 
 #. TRANSLATORS: Share URL by SMS
-#: src/service/daemon.js:798 src/service/plugins/sms.js:49
+#: src/service/daemon.js:801 src/service/plugins/sms.js:49
 #: webextension/gettext.js:39
 msgid "Send SMS"
 msgstr "Sms Gönder"
 
-#: src/service/daemon.js:802
+#: src/service/daemon.js:805
 msgid "Dial Number"
 msgstr "Numara Çevir"
 
@@ -415,6 +414,11 @@ msgstr "Panoya Gönder"
 #: src/service/plugins/clipboard.js:25
 msgid "Clipboard Pull"
 msgstr "Panodan Al"
+
+#: src/service/plugins/contacts.js:12
+#, fuzzy
+msgid "Contacts"
+msgstr "Kişileri Eşitle"
 
 #: src/service/plugins/findmyphone.js:12
 msgid "Find My Phone"
@@ -653,6 +657,10 @@ msgstr "Mobil"
 msgid "Home"
 msgstr "Ev"
 
+#: src/service/ui/contacts.js:95 src/service/ui/contacts.js:387
+msgid "Unknown Contact"
+msgstr "Bilinmeyen İletişim"
+
 #: src/service/ui/contacts.js:194 src/service/ui/contacts.js:195
 msgid "Type a phone number or name"
 msgstr "Telefon numarası veya ad yazın"
@@ -667,10 +675,6 @@ msgstr "Konuşma başlatmak için kişileri ekle"
 #, javascript-format
 msgid "Send to %s"
 msgstr "Gönder %s"
-
-#: src/service/ui/contacts.js:387
-msgid "Unknown Contact"
-msgstr "Bilinmeyen İletişim"
 
 #. TRANSLATORS: Title of keyboard shortcut dialog
 #: src/service/ui/keybindings.js:39
@@ -692,7 +696,8 @@ msgstr "Değiştirmek için yeni bir kısayol girin <b>%s</b>"
 #. TRANSLATORS: Keys for cancelling (␛) or resetting (␈) a shortcut
 #: src/service/ui/keybindings.js:89
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr "Klavye kısayolunu sıfırlamak için iptal, geri almak için ESC tuşuna basın."
+msgstr ""
+"Klavye kısayolunu sıfırlamak için iptal, geri almak için ESC tuşuna basın."
 
 #. TRANSLATORS: When a keyboard shortcut is unavailable
 #. Example: [Ctrl]+[S] is already being used

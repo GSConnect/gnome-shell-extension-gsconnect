@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-11 12:40-0700\n"
+"POT-Creation-Date: 2018-10-13 12:22-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -656,6 +656,10 @@ msgstr ""
 msgid "Home"
 msgstr ""
 
+#: src/service/ui/contacts.js:95 src/service/ui/contacts.js:387
+msgid "Unknown Contact"
+msgstr ""
+
 #: src/service/ui/contacts.js:194 src/service/ui/contacts.js:195
 msgid "Type a phone number or name"
 msgstr ""
@@ -669,10 +673,6 @@ msgstr ""
 #: src/service/ui/contacts.js:281 src/service/ui/contacts.js:289
 #, javascript-format
 msgid "Send to %s"
-msgstr ""
-
-#: src/service/ui/contacts.js:387
-msgid "Unknown Contact"
 msgstr ""
 
 #. TRANSLATORS: Title of keyboard shortcut dialog

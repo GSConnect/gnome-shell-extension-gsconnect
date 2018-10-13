@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-11 12:40-0700\n"
+"POT-Creation-Date: 2018-10-13 12:22-0700\n"
 "PO-Revision-Date: 2018-10-11 22:48+0200\n"
 "Last-Translator: Heimen Stoffels <vistausss@outlook.com>\n"
 "Language-Team: Dutch <vistausss@outlook.com>\n"
@@ -657,6 +657,10 @@ msgstr "Mobiel"
 msgid "Home"
 msgstr "Thuis"
 
+#: src/service/ui/contacts.js:95 src/service/ui/contacts.js:387
+msgid "Unknown Contact"
+msgstr "Onbekende contactpersoon"
+
 #: src/service/ui/contacts.js:194 src/service/ui/contacts.js:195
 msgid "Type a phone number or name"
 msgstr "Typ een telefoonnummer of naam"
@@ -671,10 +675,6 @@ msgstr "Voeg personen toe om een gesprek te starten"
 #, javascript-format
 msgid "Send to %s"
 msgstr "Versturen naar %s"
-
-#: src/service/ui/contacts.js:387
-msgid "Unknown Contact"
-msgstr "Onbekende contactpersoon"
 
 #. TRANSLATORS: Title of keyboard shortcut dialog
 #: src/service/ui/keybindings.js:39

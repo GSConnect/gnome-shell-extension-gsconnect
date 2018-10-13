@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-11 12:40-0700\n"
+"POT-Creation-Date: 2018-10-13 12:22-0700\n"
 "PO-Revision-Date: 2018-10-11 21:55+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
@@ -661,6 +661,10 @@ msgstr "Komórkowy"
 msgid "Home"
 msgstr "Domowy"
 
+#: src/service/ui/contacts.js:95 src/service/ui/contacts.js:387
+msgid "Unknown Contact"
+msgstr "Nieznany kontakt"
+
 #: src/service/ui/contacts.js:194 src/service/ui/contacts.js:195
 msgid "Type a phone number or name"
 msgstr "Numer telefonu lub nazwa kontaktu"
@@ -675,10 +679,6 @@ msgstr "Dodanie osób rozpocznie rozmowę"
 #, javascript-format
 msgid "Send to %s"
 msgstr "Wyślij do „%s”"
-
-#: src/service/ui/contacts.js:387
-msgid "Unknown Contact"
-msgstr "Nieznany kontakt"
 
 #. TRANSLATORS: Title of keyboard shortcut dialog
 #: src/service/ui/keybindings.js:39
