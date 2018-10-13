@@ -4,11 +4,11 @@
         "description": "The extension name"
     },
     "extensionDescription": {
-        "message": "Jaga linke GSConnectiga, otse brauserisse või SMSi teel.",
+        "message": "Share links with GSConnect, direct to the browser or by SMS.",
         "description": "The extension description"
     },
     "contextMenuMultipleDevices": {
-        "message": "Saada mobiilseadmesse",
+        "message": "Enviar a dispositivo móvil",
         "description": "Top-level Context Menu label when multiple devices are available"
     },
     "contextMenuSinglePlugin": {
@@ -26,19 +26,19 @@
         }
     },
     "popupMenuDisconnected": {
-        "message": "Teenus pole saadaval",
+        "message": "Servicio no disponible",
         "description": "Popup Menu label when disconnected from the Gnome Shell extension"
     },
     "popupMenuNoDevices": {
-        "message": "Seadet ei leitud",
+        "message": "No se encontró ningún dispositivo",
         "description": "Popup Menu label when no devices are connected or have supported plugins enabled"
     },
     "shareMessage": {
-        "message": "Ava brauseris",
+        "message": "Abrir en el navegador",
         "description": "Context Menu label for opening a link in the device's web browser"
     },
     "smsMessage": {
-        "message": "Saada SMS",
+        "message": "Enviar SMS",
         "description": "Context Menu label for sharing a link in an SMS message"
     }
 }
