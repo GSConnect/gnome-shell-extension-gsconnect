@@ -174,7 +174,11 @@ var Plugin = GObject.registerClass({
                     value = value.map(v => this.decode_utf8(v));
                 }
 
-                vcard[key].push({ meta: meta, value: value });
+                if (key === 'fn') {
+                    vcard[key] = value[0];
+                } else {
+                    vcard[key].push({ meta: meta, value: value });
+                }
             }
         });
 
@@ -187,7 +191,7 @@ var Plugin = GObject.registerClass({
 
             let contact = {
                 id: uid,
-                name: Array.isArray(vcard.fn) ? vcard.fn[0].value : vcard.fn,
+                name: vcard.fn,
                 numbers: [],
                 origin: 'device',
                 timestamp: parseInt(vcard['x-kdeconnect-timestamp'])
