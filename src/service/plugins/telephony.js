@@ -64,7 +64,7 @@ var Plugin = GObject.registerClass({
 
                 if (packet.body.phoneThumbnail) {
                     let data = GLib.base64_decode(packet.body.phoneThumbnail);
-                    contact.avatar = await this._store.setAvatarContents(data);
+                    contact.avatar = await this.device.contacts.setAvatarContents(data);
                     this.device.contacts.update();
                 }
             }
