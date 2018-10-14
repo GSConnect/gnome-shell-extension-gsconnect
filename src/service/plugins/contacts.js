@@ -131,19 +131,15 @@ var Plugin = GObject.registerClass({
         vcard_data.split('\n').forEach(line => {
             let results, key, type, value;
 
-            // Static Keys (fn, x-kdeconnect-timestamp, etc)
-            results = line.match(VCARD_REGEX_META);
-
-            if (results) {
+            // Simple Keys (fn, x-kdeconnect-timestamp, etc)
+            if ((results = line.match(VCARD_REGEX_META))) {
                 [results, key, value] = results;
                 vcard[key.toLowerCase()] = value;
                 return;
             }
 
             // Typed Keys (tel, adr, etc)
-            results = line.match(VCARD_REGEX_PROP);
-
-            if (results) {
+            if ((results = line.match(VCARD_REGEX_PROP))) {
                 [results, key, type, value] = results;
                 key = key.replace(VCARD_REGEX_KEY, '').toLowerCase();
                 value = value.split(';');
@@ -169,8 +165,9 @@ var Plugin = GObject.registerClass({
                     value = value.map(v => this.decode_quoted_printable(v));
                 }
 
-                if (meta.ENCODING === 'UTF-8') {
-                    delete meta.ENCODING;
+                // Decode UTF-8
+                if (meta.CHARSET === 'UTF-8') {
+                    delete meta.CHARSET;
                     value = value.map(v => this.decode_utf8(v));
                 }
 
