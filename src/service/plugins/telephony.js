@@ -201,17 +201,6 @@ var Plugin = GObject.registerClass({
             return;
         }
 
-        // track the duplicate as soon as possible
-        let notification = this.device.lookup_plugin('notification');
-
-        if (notification) {
-            let sender = packet.body.contactName || packet.body.phoneNumber;
-            notification.trackDuplicate(
-                `${sender}: ${packet.body.messageBody}`,
-                packet.body.phoneNumber
-            );
-        }
-
         // Bail if SMS is disabled or the device supports the new packets
         let sms = this.device.lookup_plugin('sms');
 

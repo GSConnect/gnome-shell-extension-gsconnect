@@ -319,9 +319,6 @@ var ConversationWindow = GObject.registerClass({
             this.add_action(sync_messages);
         }
 
-        // We track the local id's of remote sms notifications so we can
-        // withdraw them locally (thus closing them remotely) when focused.
-        this._notifications = [];
 
         // Conversations
         this.conversation_list.set_sort_func(this._sortConversations);
@@ -354,7 +351,8 @@ var ConversationWindow = GObject.registerClass({
         );
 
         // Set the default view
-        this._showPrevious();
+        this._ready = true;
+        (this.address) ? this._showMessages() : this._showPrevious();
     }
 
     get address() {
@@ -365,6 +363,7 @@ var ConversationWindow = GObject.registerClass({
         if (value) {
             this._address = value;
             this._displayNumber = value;
+            this._notifications = [];
 
             // Ensure we have a contact stored
             let contact = this.device.contacts.query({
@@ -385,7 +384,9 @@ var ConversationWindow = GObject.registerClass({
                 }
             }
 
-            this._showMessages();
+            if (this._ready) {
+                this._showMessages();
+            }
         } else {
             this._address = null;
             this._contact = null;
@@ -650,9 +651,15 @@ var ConversationWindow = GObject.registerClass({
         entry.secondary_icon_sensitive = (entry.text.length);
     }
 
-    _onEntryHasFocus(entry) {
-        while (this._notifications.length > 0) {
-            this.device.hideNotification(this._notifications.pop());
+    _onEntryFocused(entry) {
+        if (entry.has_focus) {
+            let notification = this.device.lookup_plugin('notification');
+
+            if (notification) {
+                while (this._notifications.length > 0) {
+                    notification.closeNotification(this._notifications.pop());
+                }
+            }
         }
     }
 
