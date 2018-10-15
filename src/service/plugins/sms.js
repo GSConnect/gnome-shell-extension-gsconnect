@@ -320,6 +320,10 @@ var Plugin = GObject.registerClass({
                 packet.body.messages.map(message => {
                     let cache = this.conversations[message.thread_id];
 
+                    if (cache && message.read === MessageStatus.READ) {
+                        cache.forEach(message => message.read = MessageStatus.READ);
+                    }
+
                     if (!cache || cache[cache.length - 1].date < message.date) {
                         this.requestConversation(message.thread_id);
                     }
