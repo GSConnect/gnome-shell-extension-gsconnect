@@ -274,8 +274,11 @@ var Plugin = GObject.registerClass({
 
             for (let message of messages) {
                 let message_id = message._id;
+                let extant = conversation.find(msg => msg._id === message_id);
 
-                if (conversation.every(msg => msg._id !== message_id)) {
+                if (extant) {
+                    Object.assign(extant, message);
+                } else {
                     conversation.push(message);
                     await this._handleMessage(contact, message);
                 }
