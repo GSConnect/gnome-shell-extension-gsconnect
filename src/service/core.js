@@ -185,26 +185,30 @@ var Channel = class Channel {
     /**
      * Handshake Gio.TlsConnection
      */
+    _handshake(connection) {
+        return new Promise((resolve, reject) => {
+            connection.validation_flags = Gio.TlsCertificateFlags.EXPIRED;
+            connection.authentication_mode = Gio.TlsAuthenticationMode.REQUIRED;
+
+            connection.handshake_async(
+                GLib.PRIORITY_DEFAULT,
+                this.cancellable,
+                (connection, res) => {
+                    try {
+                        resolve(connection.handshake_finish(res));
+                    } catch (e) {
+                        reject(e);
+                    }
+                }
+            );
+        });
+    }
+
     async _authenticate(connection) {
         // FIXME: This is a hack, error propogation needs to be fixed
         try {
             // Standard TLS Handshake
-            await new Promise((resolve, reject) => {
-                connection.validation_flags = Gio.TlsCertificateFlags.EXPIRED;
-                connection.authentication_mode = Gio.TlsAuthenticationMode.REQUIRED;
-
-                connection.handshake_async(
-                    GLib.PRIORITY_DEFAULT,
-                    this.cancellable,
-                    (connection, res) => {
-                        try {
-                            resolve(connection.handshake_finish(res));
-                        } catch (e) {
-                            reject(e);
-                        }
-                    }
-                );
-            });
+            await this._handshake(connection);
 
             // Bail if deviceId is missing
             if (!this.identity.body.hasOwnProperty('deviceId')) {

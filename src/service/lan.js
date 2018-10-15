@@ -384,7 +384,7 @@ var Transfer = class Transfer extends Core.Transfer {
                         port += 1;
                         continue;
                     } else {
-                        throw new Error('Failed to open port');
+                        throw e;
                     }
                 }
 
