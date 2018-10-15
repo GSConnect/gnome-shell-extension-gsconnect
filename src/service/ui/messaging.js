@@ -309,13 +309,13 @@ var ConversationWindow = GObject.registerClass({
         // Convenience actions for syncing Contacts/SMS from the menu
         if (this.device.get_outgoing_supported('contacts.response_vcards')) {
             let sync_contacts = new Gio.SimpleAction({ name: 'sync-contacts' });
-            sync_contacts.connect('activate', this._sync_contacts.bind(this));
+            sync_contacts.connect('activate', () => this.device.lookup_plugin('contacts').connected());
             this.add_action(sync_contacts);
         }
 
         if (this.device.get_outgoing_supported('sms.messages')) {
             let sync_messages = new Gio.SimpleAction({ name: 'sync-messages' });
-            sync_messages.connect('activate', () => this.sms.connected());
+            sync_messages.connect('activate', () => this.device.lookup_plugin('sms').connected());
             this.add_action(sync_messages);
         }
 
@@ -453,17 +453,6 @@ var ConversationWindow = GObject.registerClass({
 
         return false;
     }
-
-    /**
-     * Sync Actions
-     */
-     _sync_contacts() {
-        let contacts = this.device.lookup_plugin('contacts');
-
-        if (contacts) {
-            contacts.connected();
-        }
-     }
 
     /**
      * View selection

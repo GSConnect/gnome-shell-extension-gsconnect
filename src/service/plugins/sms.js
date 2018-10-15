@@ -273,8 +273,7 @@ var Plugin = GObject.registerClass({
             });
 
             for (let message of messages) {
-                let message_id = message._id;
-                let extant = conversation.find(msg => msg._id === message_id);
+                let extant = conversation.find(msg => msg._id === message._id);
 
                 if (extant) {
                     Object.assign(extant, message);
