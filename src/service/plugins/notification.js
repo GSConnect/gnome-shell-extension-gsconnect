@@ -17,7 +17,6 @@ var Metadata = {
     ],
     outgoingCapabilities: [
         'kdeconnect.notification',
-        // TODO: not supported
         'kdeconnect.notification.reply',
         'kdeconnect.notification.request'
     ],
@@ -37,6 +36,14 @@ var Metadata = {
             parameter_type: new GLib.VariantType('s'),
             incoming: [],
             outgoing: ['kdeconnect.notification.request']
+        },
+        replyNotification: {
+            label: _('Reply Notification'),
+            icon_name: 'preferences-system-notifications-symbolic',
+
+            parameter_type: new GLib.VariantType('(ss)'),
+            incoming: ['kdeconnect.notification'],
+            outgoing: ['kdeconnect.notification.reply']
         },
         sendNotification: {
             label: _('Send Notification'),
@@ -65,8 +72,7 @@ var Plugin = GObject.registerClass({
     _init(device) {
         super._init(device, 'notification');
 
-        // Duplicate tracking of telephony notifications
-        this._duplicates = new Map();
+        this._sms = {};
 
         this.settings.bind(
             'send-notifications',
@@ -145,21 +151,6 @@ var Plugin = GObject.registerClass({
                 default:
                     logWarning('Unknown notification type', this.device.name);
             }
-        }
-    }
-
-    /**
-     * Track a notification with extra metadata
-     *
-     * @param {string} ticker - The notification's expected content
-     */
-    trackDuplicate(ticker, phoneNumber) {
-        let duplicate = this._duplicates.get(ticker);
-
-        if (duplicate) {
-            duplicate.phoneNumber = phoneNumber;
-        } else {
-            this._duplicates.set(ticker, { phoneNumber: phoneNumber });
         }
     }
 
@@ -422,119 +413,61 @@ var Plugin = GObject.registerClass({
     }
 
     /**
-     * Receive an incoming notification, either handling it as a duplicate of a
-     * telephony notification or displaying to the user.
+     * Receive an incoming notification
      *
      * @param {kdeconnect.notification} packet - The notification packet
      */
     async receiveNotification(packet) {
         try {
-            //
-            let icon = await this._downloadIcon(packet);
-
-            // Check if this is a sms notification
-            let isMissedCall = packet.body.id.includes('MissedCall');
-            let isSms = packet.body.id.includes('sms');
-
-            // Special case for SMS notifications until replies are supported
-            if (isSms) {
-                // Check if it's being tracked as a duplicate
-                let duplicate = this._duplicates.get(packet.body.ticker);
-
-                if (duplicate) {
-                    duplicate.id = packet.body.id;
-                } else {
-                    duplicate = { id: packet.body.id };
-                    this._duplicates.set(packet.body.ticker, duplicate);
-                }
-
-                let contact = this.device.contacts.query({
-                    name: packet.body.title,
-                    number: duplicate.phoneNumber || packet.body.title
-                });
-
-                // If found, fabricate a message packet
-                if (contact.numbers[0].value) {
-                    let message = {
-                        _id: 0,
-                        thread_id: 0,
-                        address: contact.numbers[0].value,
-                        date: parseInt(packet.body.time),
-                        body: packet.body.text,
-                        event: 'sms',
-                        read: 0,    // Sms.MessageStatus.UNREAD
-                        type: 2     // Sms.MessageType.IN
-                    };
-
-                    // Update contact avatar
-                    if (icon instanceof Gio.BytesIcon) {
-                        contact = await this.device.contacts.setAvatarPath(
-                            contact.id,
-                            icon.file.get_path()
-                        );
-                    } else {
-                        icon = new Gio.ThemedIcon({ name: 'sms-symbolic' });
-                    }
-
-                    return this.device.showNotification({
-                        id: packet.body.ticker,
-                        title: contact.name,
-                        body: message.body,
-                        icon: icon,
-                        priority: Gio.NotificationPriority.HIGH,
-                        action: {
-                            name: 'replySms',
-                            parameter: GLib.Variant.full_pack(message)
-                        }
-                    });
-                }
-            }
-
-            // Regular notification
+            // Set defaults
+            let action = null;
             let id = packet.body.id;
             let title = packet.body.appName;
-            let body = packet.body.ticker;
+            let body = `${packet.body.title}: ${packet.body.text}`;
+            let icon = await this._downloadIcon(packet);
 
-            switch (true) {
-                case isMissedCall:
-                    title = packet.body.title;
-                    body = packet.body.text;
-                    break;
-
-                case isSms:
-                    id = packet.body.ticker;
-                    title = packet.body.title;
-                    body = packet.body.text;
-                    break;
-
-                // Ignore 'appName' if it's the same as 'title'
-                case (packet.body.appName === packet.body.title):
-                    body = packet.body.text;
-                    break;
+            // Check if this is a repliable notification
+            if (packet.body.requestReplyId) {
+                id = `${packet.body.id}|${packet.body.requestReplyId}`;
             }
 
-            // If we don't have a payload icon, fallback on notification type,
-            // appName then device type
-            if (!icon) {
-                if (isMissedCall) {
-                    icon = new Gio.ThemedIcon({ name: 'call-missed-symbolic' });
-                } else if (isSms) {
-                    icon = new Gio.ThemedIcon({ name: 'sms-symbolic' });
-                } else {
-                    icon = new Gio.ThemedIcon({
-                        names: [
-                            packet.body.appName.toLowerCase().replace(' ', '-'),
-                            `${this.device.icon_name}`
-                        ]
-                    });
-                }
+            // Special case for SMS notifications
+            if (packet.body.id.includes(':sms')) {
+                title = packet.body.title;
+                body = packet.body.text;
+                action = {
+                    name: 'replySms',
+                    parameter: new GLib.Variant('s', packet.body.title)
+                };
+                icon = icon || new Gio.ThemedIcon({ name: 'sms-symbolic' });
+
+                this._sms[packet.body.ticker] = packet.body.id;
+
+            // Special case for Missed Calls
+            } else if (packet.body.id.includes('MissedCall')) {
+                title = packet.body.title;
+                body = packet.body.text;
+                action = {
+                    name: 'replySms',
+                    parameter: new GLib.Variant('s', packet.body.text)
+                };
+                icon = icon || new Gio.ThemedIcon({ name: 'call-missed-symbolic' });
+
+            // Ignore 'appName' if it's the same as 'title'
+            } else if (packet.body.appName === packet.body.title) {
+                body = packet.body.text;
             }
 
+            // If we still don't have an icon use the device icon
+            icon = icon || new Gio.ThemedIcon({ name: this.device.icon_name });
+
+            // Show the notification
             this.device.showNotification({
                 id: id,
                 title: title,
                 body: body,
-                icon: icon
+                icon: icon,
+                action: action
             });
         } catch (e) {
             logError(e);
@@ -551,7 +484,6 @@ var Plugin = GObject.registerClass({
         debug(id)
 
         this.device.sendPacket({
-            id: 0,
             type: 'kdeconnect.notification',
             body: {
                 isCancel: true,
@@ -569,16 +501,14 @@ var Plugin = GObject.registerClass({
     closeNotification(id) {
         debug(id)
 
-        // If we're closing a duplicate, get the real ID first
-        let duplicate = this._duplicates.get(id);
+        let tickerId = this._sms[id];
 
-        if (duplicate && duplicate.hasOwnProperty('id')) {
-            this._duplicates.delete(id);
-            id = duplicate.id;
+        if (tickerId) {
+            delete this._sms[id];
+            id = tickerId;
         }
 
         this.device.sendPacket({
-            id: 0,
             type: 'kdeconnect.notification.request',
             body: { cancel: id }
         });
@@ -586,16 +516,14 @@ var Plugin = GObject.registerClass({
 
     /**
      * Reply to a notification sent with a requestReplyId UUID
-     * TODO: this is untested and not used yet
      *
      * @param {string} uuid - The requestReplyId for the repliable notification
      * @param {string} message - The message to reply with
      */
     replyNotification(uuid, message) {
-        debug(arguments);
+        debug([uuid, message]);
 
         this.device.sendPacket({
-            id: 0,
             type: 'kdeconnect.notification.reply',
             body: {
                 requestReplyId: uuid,
@@ -609,7 +537,6 @@ var Plugin = GObject.registerClass({
      */
     requestNotifications() {
         this.device.sendPacket({
-            id: 0,
             type: 'kdeconnect.notification.request',
             body: { request: true }
         });
