@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-13 12:22-0700\n"
+"POT-Creation-Date: 2018-10-15 08:32-0700\n"
 "PO-Revision-Date: 2018-05-15 22:55+0200\n"
 "Last-Translator: Báthory Péter <bathory86p@gmail.com>\n"
 "Language-Team: \n"
@@ -73,7 +73,7 @@ msgstr "Bejövő hívások"
 msgid "Ongoing Calls"
 msgstr "Bejövő hívások"
 
-#: data/device.ui:1045 src/service/plugins/telephony.js:11
+#: data/device.ui:1045 src/service/plugins/telephony.js:12
 msgid "Telephony"
 msgstr "Telefonálás"
 
@@ -187,7 +187,7 @@ msgstr "Halkítás"
 
 #. TRANSLATORS: Mute the system volume
 #. TRANSLATORS: Silence the phone ringer
-#: data/menus.ui:104 data/menus.ui:130 src/service/plugins/telephony.js:174
+#: data/menus.ui:104 data/menus.ui:130 src/service/plugins/telephony.js:175
 msgid "Mute"
 msgstr "Némítás"
 
@@ -658,19 +658,19 @@ msgstr "Megosztás"
 msgid "System Volume"
 msgstr "Rendszerhangerő"
 
-#: src/service/plugins/telephony.js:21
+#: src/service/plugins/telephony.js:22
 #, fuzzy
 msgid "Mute Call"
 msgstr "Nem fogadott hívás"
 
 #. TRANSLATORS: The phone is ringing
-#: src/service/plugins/telephony.js:170
+#: src/service/plugins/telephony.js:171
 #, fuzzy
 msgid "Incoming call"
 msgstr "Bejövő hívás"
 
 #. TRANSLATORS: A phone call is active
-#: src/service/plugins/telephony.js:185
+#: src/service/plugins/telephony.js:186
 #, fuzzy
 msgid "Ongoing call"
 msgstr "Bejövő hívás"

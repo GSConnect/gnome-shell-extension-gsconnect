@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-13 12:22-0700\n"
+"POT-Creation-Date: 2018-10-15 08:32-0700\n"
 "PO-Revision-Date: 2018-03-03 15:23+0100\n"
 "Last-Translator: Слободан Терзић  <slobodan.terzic@zoho.eu>\n"
 "Language-Team: \n"
@@ -69,7 +69,7 @@ msgstr "Долазни позиви"
 msgid "Ongoing Calls"
 msgstr "Долазни позиви"
 
-#: data/device.ui:1045 src/service/plugins/telephony.js:11
+#: data/device.ui:1045 src/service/plugins/telephony.js:12
 msgid "Telephony"
 msgstr "Телефонија"
 
@@ -185,7 +185,7 @@ msgstr "Утишај"
 
 #. TRANSLATORS: Mute the system volume
 #. TRANSLATORS: Silence the phone ringer
-#: data/menus.ui:104 data/menus.ui:130 src/service/plugins/telephony.js:174
+#: data/menus.ui:104 data/menus.ui:130 src/service/plugins/telephony.js:175
 msgid "Mute"
 msgstr "Утишај"
 
@@ -659,19 +659,19 @@ msgstr "Дељење"
 msgid "System Volume"
 msgstr "Системска јачина"
 
-#: src/service/plugins/telephony.js:21
+#: src/service/plugins/telephony.js:22
 #, fuzzy
 msgid "Mute Call"
 msgstr "Пропуштен позив"
 
 #. TRANSLATORS: The phone is ringing
-#: src/service/plugins/telephony.js:170
+#: src/service/plugins/telephony.js:171
 #, fuzzy
 msgid "Incoming call"
 msgstr "Долазни позив"
 
 #. TRANSLATORS: A phone call is active
-#: src/service/plugins/telephony.js:185
+#: src/service/plugins/telephony.js:186
 #, fuzzy
 msgid "Ongoing call"
 msgstr "Долазни позив"

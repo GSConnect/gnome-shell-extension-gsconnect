@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-13 12:22-0700\n"
+"POT-Creation-Date: 2018-10-15 08:32-0700\n"
 "PO-Revision-Date: 2018-09-01 00:27+0300\n"
 "Last-Translator: Moo\n"
 "Language-Team: \n"
@@ -74,7 +74,7 @@ msgstr "Gaunami skambučiai"
 msgid "Ongoing Calls"
 msgstr "Gaunami skambučiai"
 
-#: data/device.ui:1045 src/service/plugins/telephony.js:11
+#: data/device.ui:1045 src/service/plugins/telephony.js:12
 msgid "Telephony"
 msgstr "Telefonija"
 
@@ -188,7 +188,7 @@ msgstr "Sumažinti"
 
 #. TRANSLATORS: Mute the system volume
 #. TRANSLATORS: Silence the phone ringer
-#: data/menus.ui:104 data/menus.ui:130 src/service/plugins/telephony.js:174
+#: data/menus.ui:104 data/menus.ui:130 src/service/plugins/telephony.js:175
 msgid "Mute"
 msgstr "Nutildyti"
 
@@ -659,19 +659,19 @@ msgstr "Bendrinti"
 msgid "System Volume"
 msgstr "Sistemos garsis"
 
-#: src/service/plugins/telephony.js:21
+#: src/service/plugins/telephony.js:22
 #, fuzzy
 msgid "Mute Call"
 msgstr "Neatsakytas skambutis"
 
 #. TRANSLATORS: The phone is ringing
-#: src/service/plugins/telephony.js:170
+#: src/service/plugins/telephony.js:171
 #, fuzzy
 msgid "Incoming call"
 msgstr "Gaunamas skambutis"
 
 #. TRANSLATORS: A phone call is active
-#: src/service/plugins/telephony.js:185
+#: src/service/plugins/telephony.js:186
 #, fuzzy
 msgid "Ongoing call"
 msgstr "Gaunamas skambutis"
