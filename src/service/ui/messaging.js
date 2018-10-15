@@ -315,7 +315,7 @@ var ConversationWindow = GObject.registerClass({
 
         if (this.device.get_outgoing_supported('sms.messages')) {
             let sync_messages = new Gio.SimpleAction({ name: 'sync-messages' });
-            sync_messages.connect('activate', this._sync_messages.bind(this));
+            sync_messages.connect('activate', () => this.sms.connected());
             this.add_action(sync_messages);
         }
 
@@ -461,12 +461,6 @@ var ConversationWindow = GObject.registerClass({
 
         if (contacts) {
             contacts.connected();
-        }
-     }
-
-     _sync_messages() {
-        if (this.sms) {
-            sms.connected();
         }
      }
 
