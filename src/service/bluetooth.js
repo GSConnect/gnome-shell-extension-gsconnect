@@ -328,29 +328,16 @@ var ChannelService = GObject.registerClass({
             }
 
             // Accept the connection
-            let success = await channel.accept(connection);
+            await channel.accept(connection);
 
-            if (success) {
-                bdevice._channel = channel;
-                let _id = channel.cancellable.connect(() => {
-                    channel.cancellable.disconnect(_id);
-                    bdevice._channel = null;
-                });
-            } else {
-                logWarning(`GSConnect: failed to connect to ${bdevice.Address}`);
-                return;
-            }
+            bdevice._channel = channel;
+            let _id = channel.cancellable.connect(() => {
+                channel.cancellable.disconnect(_id);
+                bdevice._channel = null;
+            });
 
             channel.identity.body.bluetoothHost = bdevice.Address;
             channel.identity.body.bluetoothPath = bdevice.g_object_path;
-
-            // Bail if the deviceId is missing
-            if (!channel.identity.body.hasOwnProperty('deviceId')) {
-                bdevice._channel.close();
-                bdevice._channel = null;
-                debug('missing deviceId', channel.identity.body.deviceName);
-                return;
-            }
 
             // Unlike Lan channels, we accept all new connections since they
             // have to be paired over bluetooth anyways

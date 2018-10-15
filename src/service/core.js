@@ -143,6 +143,11 @@ var Channel = class Channel {
                         // Store the identity as an object property
                         this.identity = new Packet(data);
 
+                        // Reject connections without a deviceId
+                        if (!this.identity.body.deviceId) {
+                            throw new Error('missing deviceId');
+                        }
+
                         resolve(connection);
                     } catch (e) {
                         reject(e);
@@ -282,7 +287,7 @@ var Channel = class Channel {
      */
     attach(device) {
         // Detach any existing channel
-        if (device._channel !== null && device._channel !== this) {
+        if (device._channel && device._channel !== this) {
             device._channel.cancellable.disconnect(device._channel._id);
             device._channel.close();
         }
@@ -333,19 +338,15 @@ var Channel = class Channel {
      * Accept an incoming connection
      *
      * @param {Gio.TcpConnection} connection - The incoming connection
-     * @return {Boolean} - %true on connected, %false otherwise
      */
     async accept(connection) {
         try {
             this._connection = await this._initSocket(connection);
             this._connection = await this._receiveIdent(this._connection);
             this._connection = await this._clientEncryption(this._connection);
-
-            return true;
         } catch(e) {
-            debug(e);
             this.close();
-            return false;
+            return Promise.reject(e);
         }
     }
 
