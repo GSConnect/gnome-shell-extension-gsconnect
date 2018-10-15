@@ -253,13 +253,8 @@ var ChannelService = GObject.registerClass({
             });
 
             // Connect the channel and attach it to the device on success
-            let success = await channel.open(connection);
-
-            if (success) {
-                channel.attach(device);
-            } else {
-                device._channel = null;
-            }
+            await channel.open(connection);
+            channel.attach(device);
         } catch (e) {
             logError(e);
 

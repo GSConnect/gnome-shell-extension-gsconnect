@@ -124,6 +124,7 @@ var Channel = class Channel {
      * Read the identity packet from the new connection
      *
      * @param {Gio.SocketConnection} connection - An unencrypted socket
+     * @return {Gio.SocketConnection} - The connection after success
      */
     _receiveIdent(connection) {
         return new Promise((resolve, reject) => {
@@ -161,6 +162,7 @@ var Channel = class Channel {
      * Write our identity packet to the new connection
      *
      * @param {Gio.SocketConnection} connection - An unencrypted socket
+     * @return {Gio.SocketConnection} - The connection after success
      */
     _sendIdent(connection) {
         return new Promise((resolve, reject) => {
@@ -325,12 +327,9 @@ var Channel = class Channel {
             this._connection = await this._initSocket(connection);
             this._connection = await this._sendIdent(this._connection);
             this._connection = await this._serverEncryption(this._connection);
-
-            return true;
         } catch (e) {
-            debug(e);
             this.close();
-            return false;
+            return Promise.reject(e);
         }
     }
 
