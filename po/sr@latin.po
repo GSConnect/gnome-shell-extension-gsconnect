@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-15 08:32-0700\n"
+"POT-Creation-Date: 2018-10-15 13:40-0700\n"
 "PO-Revision-Date: 2018-03-03 15:29+0100\n"
 "Last-Translator: Слободан Терзић  <slobodan.terzic@zoho.eu>\n"
 "Language-Team: \n"
@@ -14,7 +14,7 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: data/conversation-window.ui:15 src/service/ui/messaging.js:492
+#: data/conversation-window.ui:15 src/service/ui/messaging.js:476
 #, fuzzy
 msgid "Conversations"
 msgstr "SMS razgovor"
@@ -467,17 +467,22 @@ msgstr ""
 msgid "MPRIS"
 msgstr ""
 
-#: src/service/plugins/notification.js:26
+#: src/service/plugins/notification.js:25
 #, fuzzy
 msgid "Cancel Notification"
 msgstr "Slanje obaveštenja"
 
-#: src/service/plugins/notification.js:34
+#: src/service/plugins/notification.js:33
 #, fuzzy
 msgid "Close Notification"
 msgstr "Slanje obaveštenja"
 
-#: src/service/plugins/notification.js:42
+#: src/service/plugins/notification.js:41
+#, fuzzy
+msgid "Reply Notification"
+msgstr "Slanje obaveštenja"
+
+#: src/service/plugins/notification.js:49
 #, fuzzy
 msgid "Send Notification"
 msgstr "Slanje obaveštenja"
@@ -537,8 +542,8 @@ msgstr "Deli fajl/URL"
 msgid "Share Text"
 msgstr "Deljenje"
 
-#: src/service/plugins/share.js:42 src/service/ui/messaging.js:857
-#: src/service/ui/messaging.js:865
+#: src/service/plugins/share.js:42 src/service/ui/messaging.js:847
+#: src/service/ui/messaging.js:855
 msgid "Share Link"
 msgstr "Podeli vezu"
 
@@ -797,7 +802,7 @@ msgstr ""
 msgid "Yesterday・%s"
 msgstr ""
 
-#: src/service/ui/messaging.js:874
+#: src/service/ui/messaging.js:864
 msgid "New Message"
 msgstr "Nova poruka"
 

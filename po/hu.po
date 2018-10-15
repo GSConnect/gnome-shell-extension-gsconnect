@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-15 08:32-0700\n"
+"POT-Creation-Date: 2018-10-15 13:40-0700\n"
 "PO-Revision-Date: 2018-05-15 22:55+0200\n"
 "Last-Translator: Báthory Péter <bathory86p@gmail.com>\n"
 "Language-Team: \n"
@@ -18,7 +18,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 2.0.6\n"
 
-#: data/conversation-window.ui:15 src/service/ui/messaging.js:492
+#: data/conversation-window.ui:15 src/service/ui/messaging.js:476
 #, fuzzy
 msgid "Conversations"
 msgstr "SMS beszélgetés"
@@ -472,17 +472,22 @@ msgstr ""
 msgid "MPRIS"
 msgstr ""
 
-#: src/service/plugins/notification.js:26
+#: src/service/plugins/notification.js:25
 #, fuzzy
 msgid "Cancel Notification"
 msgstr "Értesítések küldése"
 
-#: src/service/plugins/notification.js:34
+#: src/service/plugins/notification.js:33
 #, fuzzy
 msgid "Close Notification"
 msgstr "Értesítések küldése"
 
-#: src/service/plugins/notification.js:42
+#: src/service/plugins/notification.js:41
+#, fuzzy
+msgid "Reply Notification"
+msgstr "Értesítések küldése"
+
+#: src/service/plugins/notification.js:49
 #, fuzzy
 msgid "Send Notification"
 msgstr "Értesítések küldése"
@@ -542,8 +547,8 @@ msgstr "Fájl/URL megosztása"
 msgid "Share Text"
 msgstr "Megosztás"
 
-#: src/service/plugins/share.js:42 src/service/ui/messaging.js:857
-#: src/service/ui/messaging.js:865
+#: src/service/plugins/share.js:42 src/service/ui/messaging.js:847
+#: src/service/ui/messaging.js:855
 msgid "Share Link"
 msgstr "Hivatkozás megosztása"
 
@@ -802,7 +807,7 @@ msgstr ""
 msgid "Yesterday・%s"
 msgstr ""
 
-#: src/service/ui/messaging.js:874
+#: src/service/ui/messaging.js:864
 msgid "New Message"
 msgstr "Új üzenet"
 

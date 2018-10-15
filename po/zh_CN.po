@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-15 08:32-0700\n"
+"POT-Creation-Date: 2018-10-15 13:40-0700\n"
 "PO-Revision-Date: 2018-05-24 07:05+0800\n"
 "Last-Translator: plexpt <plexpt@gmail.com>\n"
 "Language-Team: plexpt\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Poedit 2.0.2\n"
 
-#: data/conversation-window.ui:15 src/service/ui/messaging.js:492
+#: data/conversation-window.ui:15 src/service/ui/messaging.js:476
 #, fuzzy
 msgid "Conversations"
 msgstr "短信会话"
@@ -472,17 +472,22 @@ msgstr ""
 msgid "MPRIS"
 msgstr ""
 
-#: src/service/plugins/notification.js:26
+#: src/service/plugins/notification.js:25
 #, fuzzy
 msgid "Cancel Notification"
 msgstr "发送通知"
 
-#: src/service/plugins/notification.js:34
+#: src/service/plugins/notification.js:33
 #, fuzzy
 msgid "Close Notification"
 msgstr "发送通知"
 
-#: src/service/plugins/notification.js:42
+#: src/service/plugins/notification.js:41
+#, fuzzy
+msgid "Reply Notification"
+msgstr "发送通知"
+
+#: src/service/plugins/notification.js:49
 #, fuzzy
 msgid "Send Notification"
 msgstr "发送通知"
@@ -542,8 +547,8 @@ msgstr "共享文件/URL"
 msgid "Share Text"
 msgstr "共享"
 
-#: src/service/plugins/share.js:42 src/service/ui/messaging.js:857
-#: src/service/ui/messaging.js:865
+#: src/service/plugins/share.js:42 src/service/ui/messaging.js:847
+#: src/service/ui/messaging.js:855
 msgid "Share Link"
 msgstr "共享链接"
 
@@ -802,7 +807,7 @@ msgstr ""
 msgid "Yesterday・%s"
 msgstr ""
 
-#: src/service/ui/messaging.js:874
+#: src/service/ui/messaging.js:864
 msgid "New Message"
 msgstr "新消息"
 

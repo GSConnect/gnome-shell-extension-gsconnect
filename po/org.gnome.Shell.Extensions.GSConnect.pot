@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-15 08:32-0700\n"
+"POT-Creation-Date: 2018-10-15 13:40-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: data/conversation-window.ui:15 src/service/ui/messaging.js:492
+#: data/conversation-window.ui:15 src/service/ui/messaging.js:476
 msgid "Conversations"
 msgstr ""
 
@@ -444,15 +444,19 @@ msgstr ""
 msgid "MPRIS"
 msgstr ""
 
-#: src/service/plugins/notification.js:26
+#: src/service/plugins/notification.js:25
 msgid "Cancel Notification"
 msgstr ""
 
-#: src/service/plugins/notification.js:34
+#: src/service/plugins/notification.js:33
 msgid "Close Notification"
 msgstr ""
 
-#: src/service/plugins/notification.js:42
+#: src/service/plugins/notification.js:41
+msgid "Reply Notification"
+msgstr ""
+
+#: src/service/plugins/notification.js:49
 msgid "Send Notification"
 msgstr ""
 
@@ -508,8 +512,8 @@ msgstr ""
 msgid "Share Text"
 msgstr ""
 
-#: src/service/plugins/share.js:42 src/service/ui/messaging.js:857
-#: src/service/ui/messaging.js:865
+#: src/service/plugins/share.js:42 src/service/ui/messaging.js:847
+#: src/service/ui/messaging.js:855
 msgid "Share Link"
 msgstr ""
 
@@ -758,7 +762,7 @@ msgstr ""
 msgid "Yesterday・%s"
 msgstr ""
 
-#: src/service/ui/messaging.js:874
+#: src/service/ui/messaging.js:864
 msgid "New Message"
 msgstr ""
 

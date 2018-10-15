@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-15 08:32-0700\n"
+"POT-Creation-Date: 2018-10-15 13:40-0700\n"
 "PO-Revision-Date: 2018-05-17 23:04-0300\n"
 "Last-Translator: Ricardo Silva Veloso <ricvelozo@gmail.com>\n"
 "Language-Team: \n"
@@ -18,7 +18,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Generator: Poedit 2.0.4\n"
 
-#: data/conversation-window.ui:15 src/service/ui/messaging.js:492
+#: data/conversation-window.ui:15 src/service/ui/messaging.js:476
 #, fuzzy
 msgid "Conversations"
 msgstr "Conversa SMS"
@@ -472,17 +472,22 @@ msgstr ""
 msgid "MPRIS"
 msgstr ""
 
-#: src/service/plugins/notification.js:26
+#: src/service/plugins/notification.js:25
 #, fuzzy
 msgid "Cancel Notification"
 msgstr "Enviar notificações"
 
-#: src/service/plugins/notification.js:34
+#: src/service/plugins/notification.js:33
 #, fuzzy
 msgid "Close Notification"
 msgstr "Enviar notificações"
 
-#: src/service/plugins/notification.js:42
+#: src/service/plugins/notification.js:41
+#, fuzzy
+msgid "Reply Notification"
+msgstr "Enviar notificações"
+
+#: src/service/plugins/notification.js:49
 #, fuzzy
 msgid "Send Notification"
 msgstr "Enviar notificações"
@@ -542,8 +547,8 @@ msgstr "Compartilhar arquivo/URL"
 msgid "Share Text"
 msgstr "Compartilhar"
 
-#: src/service/plugins/share.js:42 src/service/ui/messaging.js:857
-#: src/service/ui/messaging.js:865
+#: src/service/plugins/share.js:42 src/service/ui/messaging.js:847
+#: src/service/ui/messaging.js:855
 msgid "Share Link"
 msgstr "Compartilhar link"
 
@@ -802,7 +807,7 @@ msgstr ""
 msgid "Yesterday・%s"
 msgstr ""
 
-#: src/service/ui/messaging.js:874
+#: src/service/ui/messaging.js:864
 msgid "New Message"
 msgstr "Nova mensagem"
 

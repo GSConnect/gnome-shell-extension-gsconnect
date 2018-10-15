@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-15 08:32-0700\n"
+"POT-Creation-Date: 2018-10-15 13:40-0700\n"
 "PO-Revision-Date: 2018-10-11 22:48+0200\n"
 "Last-Translator: Heimen Stoffels <vistausss@outlook.com>\n"
 "Language-Team: Dutch <vistausss@outlook.com>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 2.1.1\n"
 
-#: data/conversation-window.ui:15 src/service/ui/messaging.js:492
+#: data/conversation-window.ui:15 src/service/ui/messaging.js:476
 msgid "Conversations"
 msgstr "Gesprekken"
 
@@ -445,15 +445,20 @@ msgstr "Touchpad"
 msgid "MPRIS"
 msgstr "MPRIS"
 
-#: src/service/plugins/notification.js:26
+#: src/service/plugins/notification.js:25
 msgid "Cancel Notification"
 msgstr "Melding annuleren"
 
-#: src/service/plugins/notification.js:34
+#: src/service/plugins/notification.js:33
 msgid "Close Notification"
 msgstr "Melding sluiten"
 
-#: src/service/plugins/notification.js:42
+#: src/service/plugins/notification.js:41
+#, fuzzy
+msgid "Reply Notification"
+msgstr "Melding annuleren"
+
+#: src/service/plugins/notification.js:49
 msgid "Send Notification"
 msgstr "Melding versturen"
 
@@ -509,8 +514,8 @@ msgstr "Bestand delen"
 msgid "Share Text"
 msgstr "Tekst delen"
 
-#: src/service/plugins/share.js:42 src/service/ui/messaging.js:857
-#: src/service/ui/messaging.js:865
+#: src/service/plugins/share.js:42 src/service/ui/messaging.js:847
+#: src/service/ui/messaging.js:855
 msgid "Share Link"
 msgstr "Link delen"
 
@@ -761,7 +766,7 @@ msgstr "%d minuten"
 msgid "Yesterday・%s"
 msgstr "Gisteren - %s"
 
-#: src/service/ui/messaging.js:874
+#: src/service/ui/messaging.js:864
 msgid "New Message"
 msgstr "Nieuw bericht"
 
