@@ -3,12 +3,11 @@
 # This file is distributed under the same license as the org.gnome.Shell.Extensions.GSConnect package.
 # Serdar Sağlam <teknomobil@yandex.com>, Orhan Engin Okay <orhanenginokay@hotmail.com>, A. Burak Tektaş <abtektas@gmail.com>, 2018.
 #
-
 msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-16 08:23-0700\n"
+"POT-Creation-Date: 2018-10-16 22:39+0300\n"
 "PO-Revision-Date: 2018-10-12 09:55-0700\n"
 "Last-Translator: Serdar Sağlam <teknomobil@yandex.com>, Orhan Engin Okay "
 "<orhanenginokay@hotmail.com>, A. Burak Tektaş <abtektas@gmail.com>\n"
@@ -106,7 +105,7 @@ msgstr "Devam eden Çağrılar"
 msgid "Mute Microphone"
 msgstr "Mikrofonu Sustur"
 
-#: data/device.ui:1045 data/device.ui:1533 src/service/plugins/telephony.js:12 data/debug.ui:871
+#: data/device.ui:1045 data/device.ui:1533 src/service/plugins/telephony.js:12
 msgid "Telephony"
 msgstr "Telefon"
 
@@ -321,7 +320,9 @@ msgstr "Mobil Cihaza Gönder"
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
 #: src/service/daemon.js:402
 msgid "translator-credits"
-msgstr "Serdar Sağlam <teknomobil@yandex.com>, Orhan Engin Okay <orhanenginokay@hotmail.com>, A. Burak Tektaş <abtektas@gmail.com>"
+msgstr ""
+"Serdar Sağlam <teknomobil@yandex.com>, Orhan Engin Okay "
+"<orhanenginokay@hotmail.com>, A. Burak Tektaş <abtektas@gmail.com>"
 
 #: src/service/daemon.js:424
 msgid "Report"
@@ -348,7 +349,8 @@ msgid "Discovery Disabled"
 msgstr "Keşif Devre Dışı"
 
 #: src/service/daemon.js:582
-msgid "Discovery has been disabled due to the number of devices on this network."
+msgid ""
+"Discovery has been disabled due to the number of devices on this network."
 msgstr "Bu ağdaki aygıt sayısı nedeniyle keşif devre dışı bırakıldı."
 
 #: src/service/daemon.js:584 src/service/daemon.js:594
@@ -773,7 +775,8 @@ msgstr "Değiştirmek için yeni bir kısayol girin <b>%s</b>"
 #. TRANSLATORS: Keys for cancelling (␛) or resetting (␈) a shortcut
 #: src/service/ui/keybindings.js:83
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr "Klavye kısayolunu sıfırlamak için iptal, geri almak için ESC tuşuna basın."
+msgstr ""
+"Klavye kısayolunu sıfırlamak için iptal, geri almak için ESC tuşuna basın."
 
 #. TRANSLATORS: When a keyboard shortcut is unavailable
 #. Example: [Ctrl]+[S] is already being used
@@ -915,5 +918,3 @@ msgstr "Hizmet Kullanılamıyor"
 #: webextension/gettext.js:37
 msgid "Open in Browser"
 msgstr "Tarayıcıda Aç"
-
-
