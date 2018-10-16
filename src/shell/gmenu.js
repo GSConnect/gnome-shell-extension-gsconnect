@@ -240,7 +240,7 @@ var FlowBox = GObject.registerClass({
 
         if (button.toggle_mode) {
             for (let child of box.get_children()) {
-                child.checked = (child === button);
+                child.checked = (child === button) ? child.checked : false;
             }
         } else {
             box.root_menu._getTopMenu().close();
