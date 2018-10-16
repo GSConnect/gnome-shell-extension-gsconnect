@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-10-16 06:59-0700\n"
-"PO-Revision-Date: 2018-10-11 21:55+0200\n"
+"PO-Revision-Date: 2018-10-16 16:50+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -37,21 +37,20 @@ msgid "Battery"
 msgstr "Akumulator"
 
 #: data/device.ui:115
-#, fuzzy
 msgid "Clipboard Sync"
-msgstr "Schowek"
+msgstr "Synchronizacja schowka"
 
 #: data/device.ui:171
 msgid "Media Players"
-msgstr ""
+msgstr "Odtwarzacze multimediów"
 
 #: data/device.ui:219
 msgid "Mouse & Keyboard"
-msgstr ""
+msgstr "Mysz i klawiatura"
 
 #: data/device.ui:267
 msgid "Volume Control"
-msgstr ""
+msgstr "Sterowanie głośnością"
 
 #: data/device.ui:307 data/device.ui:1404
 msgid "Sharing"
@@ -75,9 +74,8 @@ msgid "Command Line"
 msgstr "Wiersz poleceń"
 
 #: data/device.ui:596
-#, fuzzy
 msgid "Share Notifications"
-msgstr "Wyślij powiadomienie"
+msgstr "Udostępnianie powiadomień"
 
 #: data/device.ui:634
 msgid "Applications"
@@ -93,13 +91,12 @@ msgid "Incoming Calls"
 msgstr "Połączenia przychodzące"
 
 #: data/device.ui:753 data/device.ui:898
-#, fuzzy
 msgid "Volume"
-msgstr "Głośność systemu"
+msgstr "Głośność"
 
 #: data/device.ui:811 data/device.ui:956
 msgid "Pause Media"
-msgstr ""
+msgstr "Wstrzymywanie multimediów"
 
 #: data/device.ui:850
 msgid "Ongoing Calls"
@@ -107,7 +104,7 @@ msgstr "Trwające połączenia"
 
 #: data/device.ui:1005
 msgid "Mute Microphone"
-msgstr ""
+msgstr "Wyciszanie mikrofonu"
 
 #: data/device.ui:1045 data/device.ui:1533 src/service/plugins/telephony.js:12
 msgid "Telephony"
@@ -150,9 +147,8 @@ msgid "Advanced"
 msgstr "Zaawansowane"
 
 #: data/device.ui:1576
-#, fuzzy
 msgid "Keyboard Shortcuts"
-msgstr "Skróty poleceń"
+msgstr "Skróty klawiszowe"
 
 #: data/menus.ui:5 src/service/ui/service.js:115
 msgid "Connect to…"
@@ -226,35 +222,31 @@ msgstr "Wygląd"
 
 #: data/settings.ui:383
 msgid "Display Mode"
-msgstr ""
+msgstr "Tryb wyświetlania"
 
 #: data/settings.ui:435
-#, fuzzy
 msgid "Show Offline Devices"
-msgstr "Urządzenia mobilne"
+msgstr "Rozłączone urządzenia"
 
 #: data/settings.ui:486
-#, fuzzy
 msgid "Show Unpaired Devices"
-msgstr "Urządzenia mobilne"
+msgstr "Niepowiązane urządzenia"
 
 #: data/settings.ui:537
 msgid "Show Battery Icon"
-msgstr ""
+msgstr "Ikona akumulatora"
 
 #: data/settings.ui:578 data/settings.ui:1167
 msgid "Shell"
 msgstr "Powłoka"
 
 #: data/settings.ui:639
-#, fuzzy
 msgid "Discoverable"
-msgstr "Wykrywanie jest wyłączone"
+msgstr "Wykrywalne"
 
 #: data/settings.ui:711
-#, fuzzy
 msgid "Restart Service"
-msgstr "Usługa"
+msgstr "Uruchom usługę ponownie"
 
 #: data/settings.ui:764 data/settings.ui:1210
 msgid "Service"
@@ -266,16 +258,15 @@ msgstr "Zdalne systemy plików"
 
 #: data/settings.ui:859
 msgid "Sound Effects"
-msgstr ""
+msgstr "Efekty dźwiękowe"
 
 #: data/settings.ui:896
-#, fuzzy
 msgid "Desktop Contacts"
-msgstr "Kontakty"
+msgstr "Integracja z książką adresową na komputerze"
 
 #: data/settings.ui:933
 msgid "Files Integration"
-msgstr ""
+msgstr "Integracja z menedżerem plików"
 
 #: data/settings.ui:960
 msgid "Additional Features"
@@ -540,9 +531,8 @@ msgid "Close Notification"
 msgstr "Zamknij powiadomienie"
 
 #: src/service/plugins/notification.js:41
-#, fuzzy
 msgid "Reply Notification"
-msgstr "Anuluj powiadomienie"
+msgstr "Odpowiedz na powiadomienie"
 
 #: src/service/plugins/notification.js:49
 msgid "Send Notification"
