@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-10-15 20:42-0700\n"
-"PO-Revision-Date: 2018-10-12 11:50+0200\n"
+"PO-Revision-Date: 2018-10-16 11:29+0200\n"
 "Last-Translator: Heimen Stoffels <vistausss@outlook.com>\n"
 "Language-Team: Dutch <vistausss@outlook.com>\n"
 "Language: nl_BE\n"
@@ -35,22 +35,20 @@ msgid "Battery"
 msgstr "Accu"
 
 #: data/device.ui:115
-#, fuzzy
 msgid "Clipboard Sync"
-msgstr "Klembord"
+msgstr "Klembordsynchronisatie"
 
 #: data/device.ui:171
-#, fuzzy
 msgid "Media Players"
-msgstr "Mediaspelerbediening"
+msgstr "Mediaspelers"
 
 #: data/device.ui:219
 msgid "Mouse & Keyboard"
-msgstr ""
+msgstr "Muis en klavier"
 
 #: data/device.ui:267
 msgid "Volume Control"
-msgstr ""
+msgstr "Volumebeheer"
 
 #: data/device.ui:307 data/device.ui:1404
 msgid "Sharing"
@@ -74,9 +72,8 @@ msgid "Command Line"
 msgstr "Commandoregel"
 
 #: data/device.ui:596
-#, fuzzy
 msgid "Share Notifications"
-msgstr "Verzend notificatie"
+msgstr "Deelnotificaties"
 
 #: data/device.ui:634
 msgid "Applications"
@@ -92,9 +89,8 @@ msgid "Incoming Calls"
 msgstr "Inkomende oproepen"
 
 #: data/device.ui:753 data/device.ui:898
-#, fuzzy
 msgid "Volume"
-msgstr "Systeemvolume"
+msgstr "Volume"
 
 #: data/device.ui:811 data/device.ui:956
 msgid "Pause Media"
@@ -149,9 +145,8 @@ msgid "Advanced"
 msgstr "Geavanceerd"
 
 #: data/device.ui:1576
-#, fuzzy
 msgid "Keyboard Shortcuts"
-msgstr "Commando-sneltoetsen"
+msgstr "Sneltoetsen"
 
 #: data/menus.ui:5 src/service/ui/service.js:115
 msgid "Connect to…"
@@ -225,17 +220,15 @@ msgstr "Uiterlijk"
 
 #: data/settings.ui:383
 msgid "Display Mode"
-msgstr ""
+msgstr "Weergavemodus"
 
 #: data/settings.ui:435
-#, fuzzy
 msgid "Show Offline Devices"
-msgstr "Tonen indien offline"
+msgstr "Toon offline toestellen"
 
 #: data/settings.ui:486
-#, fuzzy
 msgid "Show Unpaired Devices"
-msgstr "GSM's"
+msgstr "Toon onaangekoppelde toestellen"
 
 #: data/settings.ui:537
 msgid "Show Battery Icon"
@@ -246,14 +239,12 @@ msgid "Shell"
 msgstr "Shell"
 
 #: data/settings.ui:639
-#, fuzzy
 msgid "Discoverable"
-msgstr "Herkenning uitgeschakeld"
+msgstr "Zichtbaar"
 
 #: data/settings.ui:711
-#, fuzzy
 msgid "Restart Service"
-msgstr "Dienst"
+msgstr "Herstart dienst"
 
 #: data/settings.ui:764 data/settings.ui:1210
 msgid "Service"
@@ -265,17 +256,15 @@ msgstr "Externe bestandssystemen"
 
 #: data/settings.ui:859
 msgid "Sound Effects"
-msgstr ""
+msgstr "Geluidseffecten"
 
 #: data/settings.ui:896
-#, fuzzy
 msgid "Desktop Contacts"
-msgstr "Contacten"
+msgstr "Bureaubladcontacten"
 
 #: data/settings.ui:933
-#, fuzzy
 msgid "Files Integration"
-msgstr "Nautilus-integratie"
+msgstr "Bestanden-integratie"
 
 #: data/settings.ui:960
 msgid "Additional Features"
@@ -357,10 +346,8 @@ msgid "Discovery Disabled"
 msgstr "Herkenning uitgeschakeld"
 
 #: src/service/daemon.js:582
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
-msgstr ""
-"Herkenning is uitgeschakeld vanwege het aantal toestellen op dit netwerk."
+msgid "Discovery has been disabled due to the number of devices on this network."
+msgstr "Herkenning is uitgeschakeld vanwege het aantal toestellen op dit netwerk."
 
 #: src/service/daemon.js:584 src/service/daemon.js:594
 msgid "Click to open preferences"
@@ -538,13 +525,12 @@ msgid "Close Notification"
 msgstr "Sluit notificatie"
 
 #: src/service/plugins/notification.js:41
-#, fuzzy
 msgid "Reply Notification"
-msgstr "Annuleer notificatie"
+msgstr "Antwoordnotificatie"
 
 #: src/service/plugins/notification.js:49
 msgid "Send Notification"
-msgstr "Verzend notificatie"
+msgstr "Verzendnotificatie"
 
 #: src/service/plugins/ping.js:11 src/service/plugins/ping.js:17
 #: src/service/plugins/ping.js:46
@@ -785,8 +771,7 @@ msgstr "Voer een nieuwe sneltoets in voor het wijzigen van <b>%s</b>"
 #. TRANSLATORS: Keys for cancelling (␛) or resetting (␈) a shortcut
 #: src/service/ui/keybindings.js:89
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr ""
-"Druk op Esc om te annuleren of op Backspace om de sneltoets terug te zetten."
+msgstr "Druk op Esc om te annuleren of op Backspace om de sneltoets terug te zetten."
 
 #. TRANSLATORS: When a keyboard shortcut is unavailable
 #. Example: [Ctrl]+[S] is already being used
@@ -956,12 +941,8 @@ msgstr "Open in browser"
 #~ msgid "This program comes with absolutely no warranty."
 #~ msgstr "Dit programma kent geen enkele garantie."
 
-#~ msgid ""
-#~ "See the <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html"
-#~ "\">GNU General Public License, version 2 or later</a> for details."
-#~ msgstr ""
-#~ "Lees de <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html"
-#~ "\">GNU General Public License, version 2 of later</a> voor informatie."
+#~ msgid "See the <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html\">GNU General Public License, version 2 or later</a> for details."
+#~ msgstr "Lees de <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html\">GNU General Public License, version 2 of later</a> voor informatie."
 
 #~ msgid "Preferences"
 #~ msgstr "Voorkeuren"
@@ -972,12 +953,8 @@ msgstr "Open in browser"
 #~ msgid "Web Browser Integration"
 #~ msgstr "Browser-integratie"
 
-#~ msgid ""
-#~ "Requires <a href=\"%s\">Chrome Extension</a> or <a href=\"%s\">Firefox "
-#~ "Add-On</a>"
-#~ msgstr ""
-#~ "<a href=\"%s\">Chrome-extensie</a> of <a href=\"%s\">Firefox add-on</a> "
-#~ "vereist"
+#~ msgid "Requires <a href=\"%s\">Chrome Extension</a> or <a href=\"%s\">Firefox Add-On</a>"
+#~ msgstr "<a href=\"%s\">Chrome-extensie</a> of <a href=\"%s\">Firefox add-on</a> vereist"
 
 #~ msgid "Nautilus extensions changed"
 #~ msgstr "Nautilus-uitbreidingen aangepast"
@@ -1103,27 +1080,14 @@ msgstr "Open in browser"
 #~ msgid "The <b>Media Player Control</b> plugin must be enabled"
 #~ msgstr "De <b>mediaspeler</b>-invoegtoepassing moet zijn ingeschakeld"
 
-#~ msgid ""
-#~ "Ensure that devices are on the same local network with ports 1716 to 1764 "
-#~ "open for TCP and UDP connections."
-#~ msgstr ""
-#~ "Zorg ervoor dat de toestellen zijn geconnecteerd met hetzelfde netwerk "
-#~ "met poorten 1716-1764 geopend voor TCP- en UDP-verbindingen."
+#~ msgid "Ensure that devices are on the same local network with ports 1716 to 1764 open for TCP and UDP connections."
+#~ msgstr "Zorg ervoor dat de toestellen zijn geconnecteerd met hetzelfde netwerk met poorten 1716-1764 geopend voor TCP- en UDP-verbindingen."
 
-#~ msgid ""
-#~ "To connect an Android device, install the KDE Connect Android app from "
-#~ "the <a href=\"%s\">Google Play Store</a> or <a href=\"%s\">F-Droid</a>."
-#~ msgstr ""
-#~ "Om een Android-apparaat te connecteren, installeert u de KDE Connect "
-#~ "Android-app van de <a href=\"%s\">Google Play Store</a> of <a href=\"%s"
-#~ "\">F-Droid</a>."
+#~ msgid "To connect an Android device, install the KDE Connect Android app from the <a href=\"%s\">Google Play Store</a> or <a href=\"%s\">F-Droid</a>."
+#~ msgstr "Om een Android-apparaat te connecteren, installeert u de KDE Connect Android-app van de <a href=\"%s\">Google Play Store</a> of <a href=\"%s\">F-Droid</a>."
 
-#~ msgid ""
-#~ "Please see the <a href=\"%s\">Wiki</a> for more help or <a href=\"%s"
-#~ "\">open an issue</a> on Github to report a problem."
-#~ msgstr ""
-#~ "Lees de <a href=\"%s\">Wiki</a> voor hulp of <a href=\"%s\">open een "
-#~ "issue</a> op GitHub om een probleem te rapporteren."
+#~ msgid "Please see the <a href=\"%s\">Wiki</a> for more help or <a href=\"%s\">open an issue</a> on Github to report a problem."
+#~ msgstr "Lees de <a href=\"%s\">Wiki</a> voor hulp of <a href=\"%s\">open een issue</a> op GitHub om een probleem te rapporteren."
 
 #~ msgid "Error: %s"
 #~ msgstr "Fout: %s"
@@ -1159,10 +1123,8 @@ msgstr "Open in browser"
 #~ msgid "Keyboard Shortcut Unavailable"
 #~ msgstr "Sneltoets onbeschikbaar"
 
-#~ msgid ""
-#~ "The requested keyboard shortcut is already in use and can't be overridden."
-#~ msgstr ""
-#~ "De gevraagde sneltoets is al gebruikt en kan niet worden overschreven."
+#~ msgid "The requested keyboard shortcut is already in use and can't be overridden."
+#~ msgstr "De gevraagde sneltoets is al gebruikt en kan niet worden overschreven."
 
 #~ msgid "Configure <b>%s</b>"
 #~ msgstr "Stel <b>%s</b> in"

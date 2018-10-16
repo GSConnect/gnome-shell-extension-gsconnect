@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-10-15 20:42-0700\n"
-"PO-Revision-Date: 2018-10-11 22:48+0200\n"
+"PO-Revision-Date: 2018-10-16 11:30+0200\n"
 "Last-Translator: Heimen Stoffels <vistausss@outlook.com>\n"
 "Language-Team: Dutch <vistausss@outlook.com>\n"
 "Language: nl_NL\n"
@@ -35,22 +35,20 @@ msgid "Battery"
 msgstr "Batterij"
 
 #: data/device.ui:115
-#, fuzzy
 msgid "Clipboard Sync"
-msgstr "Klembord"
+msgstr "Klembordsynchronisatie"
 
 #: data/device.ui:171
-#, fuzzy
 msgid "Media Players"
-msgstr "Mediaspelerbeheer"
+msgstr "Mediaspelers"
 
 #: data/device.ui:219
 msgid "Mouse & Keyboard"
-msgstr ""
+msgstr "Muis en toetsenbord"
 
 #: data/device.ui:267
 msgid "Volume Control"
-msgstr ""
+msgstr "Volumebeheer"
 
 #: data/device.ui:307 data/device.ui:1404
 msgid "Sharing"
@@ -74,9 +72,8 @@ msgid "Command Line"
 msgstr "Opdrachtregel"
 
 #: data/device.ui:596
-#, fuzzy
 msgid "Share Notifications"
-msgstr "Melding versturen"
+msgstr "Deelmeldingen"
 
 #: data/device.ui:634
 msgid "Applications"
@@ -92,9 +89,8 @@ msgid "Incoming Calls"
 msgstr "Inkomende oproepen"
 
 #: data/device.ui:753 data/device.ui:898
-#, fuzzy
 msgid "Volume"
-msgstr "Volumeniveau van systeem"
+msgstr "Volume"
 
 #: data/device.ui:811 data/device.ui:956
 msgid "Pause Media"
@@ -149,9 +145,8 @@ msgid "Advanced"
 msgstr "Geavanceerd"
 
 #: data/device.ui:1576
-#, fuzzy
 msgid "Keyboard Shortcuts"
-msgstr "Opdracht-sneltoetsen"
+msgstr "Sneltoetsen"
 
 #: data/menus.ui:5 src/service/ui/service.js:115
 msgid "Connect to…"
@@ -225,17 +220,15 @@ msgstr "Uiterlijk"
 
 #: data/settings.ui:383
 msgid "Display Mode"
-msgstr ""
+msgstr "Weergavemodus"
 
 #: data/settings.ui:435
-#, fuzzy
 msgid "Show Offline Devices"
 msgstr "Offline apparaten tonen"
 
 #: data/settings.ui:486
-#, fuzzy
 msgid "Show Unpaired Devices"
-msgstr "Mobiele apparaten"
+msgstr "Niet-aangekoppelde apparaten tonen"
 
 #: data/settings.ui:537
 msgid "Show Battery Icon"
@@ -246,14 +239,12 @@ msgid "Shell"
 msgstr "Shell"
 
 #: data/settings.ui:639
-#, fuzzy
 msgid "Discoverable"
-msgstr "Herkenning uitgeschakeld"
+msgstr "Zichtbaar"
 
 #: data/settings.ui:711
-#, fuzzy
 msgid "Restart Service"
-msgstr "Dienst"
+msgstr "Dienst herstarten"
 
 #: data/settings.ui:764 data/settings.ui:1210
 msgid "Service"
@@ -265,17 +256,15 @@ msgstr "Externe bestandssystemen"
 
 #: data/settings.ui:859
 msgid "Sound Effects"
-msgstr ""
+msgstr "Geluidseffecten"
 
 #: data/settings.ui:896
-#, fuzzy
 msgid "Desktop Contacts"
-msgstr "Contactpersonen"
+msgstr "Bureaubladcontactpersonen"
 
 #: data/settings.ui:933
-#, fuzzy
 msgid "Files Integration"
-msgstr "Nautilus-integratie"
+msgstr "Bestanden-integratie"
 
 #: data/settings.ui:960
 msgid "Additional Features"
@@ -538,9 +527,8 @@ msgid "Close Notification"
 msgstr "Melding sluiten"
 
 #: src/service/plugins/notification.js:41
-#, fuzzy
 msgid "Reply Notification"
-msgstr "Melding annuleren"
+msgstr "Antwoordmelding"
 
 #: src/service/plugins/notification.js:49
 msgid "Send Notification"
