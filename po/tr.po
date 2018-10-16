@@ -1,14 +1,13 @@
 # Türkçe Çeviri rg.gnome.Shell.Extensions.GSConnect.
 # Copyright © 2018 the org.gnome.Shell.Extensions.GSConnect authors.
 # This file is distributed under the same license as the org.gnome.Shell.Extensions.GSConnect package.
-# Serdar Sağlam <teknomobil@yandex.com>, 2018.
+# Serdar Sağlam <teknomobil@yandex.com>, Orhan Engin Okay <orhanenginokay@hotmail.com>, A. Burak Tektaş <abtektas@gmail.com>, 2018.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-16 08:23-0700\n"
+"POT-Creation-Date: 2018-10-16 09:05-0700\n"
 "PO-Revision-Date: 2018-10-12 09:55-0700\n"
 "Last-Translator: Serdar Sağlam <teknomobil@yandex.com>, Orhan Engin Okay "
 "<orhanenginokay@hotmail.com>, A. Burak Tektaş <abtektas@gmail.com>\n"
@@ -37,7 +36,6 @@ msgid "Battery"
 msgstr "Pil"
 
 #: data/device.ui:115
-#, fuzzy
 msgid "Clipboard Sync"
 msgstr "Pano Eşitle"
 
@@ -75,7 +73,6 @@ msgid "Command Line"
 msgstr "Komut satırı"
 
 #: data/device.ui:596
-#, fuzzy
 msgid "Share Notifications"
 msgstr "Bildirimleri Paylaş"
 
@@ -93,7 +90,6 @@ msgid "Incoming Calls"
 msgstr "Gelen Aramalar"
 
 #: data/device.ui:753 data/device.ui:898
-#, fuzzy
 msgid "Volume"
 msgstr "Sistem Sesi"
 
@@ -150,13 +146,12 @@ msgid "Advanced"
 msgstr "Gelişmiş"
 
 #: data/device.ui:1576
-#, fuzzy
 msgid "Keyboard Shortcuts"
 msgstr "Komut Kısayolları"
 
 #: data/menus.ui:5 src/service/ui/service.js:115
 msgid "Connect to…"
-msgstr "Bağlanıyor…"
+msgstr "Bağlan…"
 
 #: data/menus.ui:11
 msgid "Sync Contacts"
@@ -229,12 +224,10 @@ msgid "Display Mode"
 msgstr "Görünüm Modu"
 
 #: data/settings.ui:435
-#, fuzzy
 msgid "Show Offline Devices"
 msgstr "Çevrim dışı Cihazları Göster"
 
 #: data/settings.ui:486
-#, fuzzy
 msgid "Show Unpaired Devices"
 msgstr "Eşleşmemiş Cihazları Göster"
 
@@ -247,12 +240,10 @@ msgid "Shell"
 msgstr "Kabuk"
 
 #: data/settings.ui:639
-#, fuzzy
 msgid "Discoverable"
 msgstr "Keşif Devre Dışı"
 
 #: data/settings.ui:711
-#, fuzzy
 msgid "Restart Service"
 msgstr "Servisi Yeniden Başlat"
 
@@ -269,7 +260,6 @@ msgid "Sound Effects"
 msgstr "Ses Efektleri"
 
 #: data/settings.ui:896
-#, fuzzy
 msgid "Desktop Contacts"
 msgstr "Kişileri Eşitle"
 
@@ -489,7 +479,7 @@ msgstr "%d%% kalan"
 
 #: src/service/plugins/clipboard.js:11
 msgid "Clipboard"
-msgstr "Pano"
+msgstr "Pano Eşitle"
 
 #: src/service/plugins/clipboard.js:17
 msgid "Clipboard Push"
@@ -500,7 +490,6 @@ msgid "Clipboard Pull"
 msgstr "Panodan Al"
 
 #: src/service/plugins/contacts.js:12
-#, fuzzy
 msgid "Contacts"
 msgstr "Kişiler"
 
@@ -538,7 +527,6 @@ msgid "Close Notification"
 msgstr "Bildirimi Kapat"
 
 #: src/service/plugins/notification.js:41
-#, fuzzy
 msgid "Reply Notification"
 msgstr "Bildirimi Yanıtla"
 
