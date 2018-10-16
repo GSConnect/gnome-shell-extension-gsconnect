@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-15 20:42-0700\n"
+"POT-Creation-Date: 2018-10-16 06:59-0700\n"
 "PO-Revision-Date: 2018-03-03 15:23+0100\n"
 "Last-Translator: Слободан Терзић  <slobodan.terzic@zoho.eu>\n"
 "Language-Team: \n"
@@ -650,7 +650,7 @@ msgstr "Примам „%s“ од %s"
 #: src/service/plugins/share.js:138 src/service/plugins/share.js:289
 #: src/service/plugins/share.js:407 src/service/ui/keybindings.js:50
 #: src/service/ui/service.js:121 src/service/ui/service.js:300
-#: src/service/ui/settings.js:851 src/shell/donotdisturb.js:215
+#: src/service/ui/settings.js:847 src/shell/donotdisturb.js:215
 msgid "Cancel"
 msgstr "Откажи"
 
@@ -857,20 +857,20 @@ msgstr ""
 msgid "User Menu"
 msgstr "Отвори мени"
 
-#: src/service/ui/settings.js:852
+#: src/service/ui/settings.js:848
 #, fuzzy
 msgid "Open"
 msgstr "Отвори фајл"
 
-#: src/service/ui/settings.js:916 src/service/ui/settings.js:929
+#: src/service/ui/settings.js:912 src/service/ui/settings.js:925
 msgid "On"
 msgstr ""
 
-#: src/service/ui/settings.js:916 src/service/ui/settings.js:929
+#: src/service/ui/settings.js:912 src/service/ui/settings.js:925
 msgid "Off"
 msgstr ""
 
-#: src/service/ui/settings.js:1050 src/service/ui/settings.js:1116
+#: src/service/ui/settings.js:1046 src/service/ui/settings.js:1112
 msgid "Disabled"
 msgstr ""
 
