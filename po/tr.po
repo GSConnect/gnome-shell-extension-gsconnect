@@ -3,11 +3,12 @@
 # This file is distributed under the same license as the org.gnome.Shell.Extensions.GSConnect package.
 # Serdar Sağlam <teknomobil@yandex.com>, Orhan Engin Okay <orhanenginokay@hotmail.com>, A. Burak Tektaş <abtektas@gmail.com>, 2018.
 #
+
 msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-16 09:05-0700\n"
+"POT-Creation-Date: 2018-10-16 08:23-0700\n"
 "PO-Revision-Date: 2018-10-12 09:55-0700\n"
 "Last-Translator: Serdar Sağlam <teknomobil@yandex.com>, Orhan Engin Okay "
 "<orhanenginokay@hotmail.com>, A. Burak Tektaş <abtektas@gmail.com>\n"
@@ -105,7 +106,7 @@ msgstr "Devam eden Çağrılar"
 msgid "Mute Microphone"
 msgstr "Mikrofonu Sustur"
 
-#: data/device.ui:1045 data/device.ui:1533 src/service/plugins/telephony.js:12
+#: data/device.ui:1045 data/device.ui:1533 src/service/plugins/telephony.js:12 data/debug.ui:871
 msgid "Telephony"
 msgstr "Telefon"
 
@@ -265,7 +266,7 @@ msgstr "Kişileri Eşitle"
 
 #: data/settings.ui:933
 msgid "Files Integration"
-msgstr ""
+msgstr "Dosya Entegrasyonu"
 
 #: data/settings.ui:960
 msgid "Additional Features"
@@ -320,7 +321,7 @@ msgstr "Mobil Cihaza Gönder"
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
 #: src/service/daemon.js:402
 msgid "translator-credits"
-msgstr "çevirmen"
+msgstr "Serdar Sağlam <teknomobil@yandex.com>, Orhan Engin Okay <orhanenginokay@hotmail.com>, A. Burak Tektaş <abtektas@gmail.com>"
 
 #: src/service/daemon.js:424
 msgid "Report"
@@ -347,8 +348,7 @@ msgid "Discovery Disabled"
 msgstr "Keşif Devre Dışı"
 
 #: src/service/daemon.js:582
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
+msgid "Discovery has been disabled due to the number of devices on this network."
 msgstr "Bu ağdaki aygıt sayısı nedeniyle keşif devre dışı bırakıldı."
 
 #: src/service/daemon.js:584 src/service/daemon.js:594
@@ -475,7 +475,7 @@ msgstr "%s: Pil düşük"
 #: src/service/plugins/battery.js:199
 #, javascript-format
 msgid "%d%% remaining"
-msgstr "%d%% kalan"
+msgstr "%d%% kaldı"
 
 #: src/service/plugins/clipboard.js:11
 msgid "Clipboard"
@@ -599,7 +599,7 @@ msgstr "Aktarımı Başlat"
 #: src/service/plugins/share.js:133
 #, javascript-format
 msgid "Receiving \"%s\" from %s"
-msgstr "Kabul \"%s\" kaynak %s"
+msgstr "Alınıyor \"%s\" kaynak %s"
 
 #. Action Buttons
 #: src/service/plugins/share.js:138 src/service/plugins/share.js:289
@@ -652,7 +652,7 @@ msgstr "Gönderiliyor \"%s\" hedef %s"
 #: src/service/plugins/share.js:305
 #, javascript-format
 msgid "Sent \"%s\" to %s"
-msgstr "Gönder \"%s\" hedef %s"
+msgstr "Gönderildi \"%s\" hedef %s"
 
 #. TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:313
@@ -690,11 +690,11 @@ msgstr "Yeni SMS (URI)"
 
 #: src/service/plugins/sms.js:41
 msgid "Reply SMS"
-msgstr "Sms Yanıtla"
+msgstr "SMS Yanıtla"
 
 #: src/service/plugins/sms.js:57
 msgid "Share SMS"
-msgstr "SSM Paylaş"
+msgstr "SMS Paylaş"
 
 #: src/service/plugins/systemvolume.js:11
 msgid "System Volume"
@@ -773,8 +773,7 @@ msgstr "Değiştirmek için yeni bir kısayol girin <b>%s</b>"
 #. TRANSLATORS: Keys for cancelling (␛) or resetting (␈) a shortcut
 #: src/service/ui/keybindings.js:83
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr ""
-"Klavye kısayolunu sıfırlamak için iptal, geri almak için ESC tuşuna basın."
+msgstr "Klavye kısayolunu sıfırlamak için iptal, geri almak için ESC tuşuna basın."
 
 #. TRANSLATORS: When a keyboard shortcut is unavailable
 #. Example: [Ctrl]+[S] is already being used
@@ -858,14 +857,14 @@ msgstr "%d%% (Tahmini…)"
 #: src/shell/device.js:319
 #, javascript-format
 msgid "%d%% (%d∶%02d Until Full)"
-msgstr "%d%% (%d∶%02d Dolmasına)"
+msgstr "%d%% (Dolma Süresi %d∶%02d)"
 
 #. TRANSLATORS: Estimated time until battery is empty
 #. EXAMPLE: 42% (12:15 Remaining)
 #: src/shell/device.js:327
 #, javascript-format
 msgid "%d%% (%d∶%02d Remaining)"
-msgstr "%d%% (%d∶%02d Kalan)"
+msgstr "%d%% (Kalan Süre %d∶%02d)"
 
 #: src/shell/device.js:580
 msgid "Device is unpaired"
@@ -881,7 +880,7 @@ msgstr "Mobil Cihaz Bildirimlerini Sessize Alma"
 
 #: src/shell/donotdisturb.js:171
 msgid "Until you turn off Do Not Disturb"
-msgstr "Rahatsız etme özelliğini kapatana kadar"
+msgstr "Kapatana kadar Rahatsız Etme"
 
 #. TRANSLATORS: Time until change with time duration
 #. EXAMPLE: Until 10:00 (2 hours)
@@ -899,7 +898,7 @@ msgstr "Tamam"
 #, javascript-format
 msgid "One hour"
 msgid_plural "%d hours"
-msgstr[0] "%d zaman"
+msgstr[0] "%d saat"
 msgstr[1] "%d saat"
 
 #. TRANSLATORS: Chrome/Firefox WebExtension description
@@ -916,3 +915,5 @@ msgstr "Hizmet Kullanılamıyor"
 #: webextension/gettext.js:37
 msgid "Open in Browser"
 msgstr "Tarayıcıda Aç"
+
+
