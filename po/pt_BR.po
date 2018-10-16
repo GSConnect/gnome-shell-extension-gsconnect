@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-10-15 20:42-0700\n"
-"PO-Revision-Date: 2018-05-17 23:04-0300\n"
+"PO-Revision-Date: 2018-10-16 02:27-0300\n"
 "Last-Translator: Ricardo Silva Veloso <ricvelozo@gmail.com>\n"
 "Language-Team: \n"
 "Language: pt_BR\n"
@@ -35,22 +35,20 @@ msgid "Battery"
 msgstr "Bateria"
 
 #: data/device.ui:115
-#, fuzzy
 msgid "Clipboard Sync"
-msgstr "Área de transferência"
+msgstr "Sincronização da área de transferência"
 
 #: data/device.ui:171
-#, fuzzy
 msgid "Media Players"
-msgstr "Controle multimídia"
+msgstr "Reprodutores de mídia"
 
 #: data/device.ui:219
 msgid "Mouse & Keyboard"
-msgstr ""
+msgstr "Mouse & teclado"
 
 #: data/device.ui:267
 msgid "Volume Control"
-msgstr ""
+msgstr "Controle de volume"
 
 #: data/device.ui:307 data/device.ui:1404
 msgid "Sharing"
@@ -74,9 +72,8 @@ msgid "Command Line"
 msgstr "Linha de comando"
 
 #: data/device.ui:596
-#, fuzzy
 msgid "Share Notifications"
-msgstr "Enviar notificações"
+msgstr "Compartilhar notificações"
 
 #: data/device.ui:634
 msgid "Applications"
@@ -92,9 +89,8 @@ msgid "Incoming Calls"
 msgstr "Chamadas recebidas"
 
 #: data/device.ui:753 data/device.ui:898
-#, fuzzy
 msgid "Volume"
-msgstr "Volume do sistema"
+msgstr "Volume"
 
 #: data/device.ui:811 data/device.ui:956
 msgid "Pause Media"
@@ -149,9 +145,8 @@ msgid "Advanced"
 msgstr "Avançado"
 
 #: data/device.ui:1576
-#, fuzzy
 msgid "Keyboard Shortcuts"
-msgstr "Atalhos do teclado"
+msgstr "Atalhos de teclado"
 
 #: data/menus.ui:5 src/service/ui/service.js:115
 msgid "Connect to…"
@@ -225,21 +220,19 @@ msgstr "Aparência"
 
 #: data/settings.ui:383
 msgid "Display Mode"
-msgstr ""
+msgstr "Modo de exibição"
 
 #: data/settings.ui:435
-#, fuzzy
 msgid "Show Offline Devices"
-msgstr "Exibir desconectados"
+msgstr "Mostrar dispositivos desconectados"
 
 #: data/settings.ui:486
-#, fuzzy
 msgid "Show Unpaired Devices"
-msgstr "Dispositivos móveis"
+msgstr "Mostrar dispositivos não pareados"
 
 #: data/settings.ui:537
 msgid "Show Battery Icon"
-msgstr "Exibir ícone de bateria"
+msgstr "Mostrar ícone de bateria"
 
 #: data/settings.ui:578 data/settings.ui:1167
 msgid "Shell"
@@ -247,12 +240,11 @@ msgstr "Shell"
 
 #: data/settings.ui:639
 msgid "Discoverable"
-msgstr ""
+msgstr "Visível"
 
 #: data/settings.ui:711
-#, fuzzy
 msgid "Restart Service"
-msgstr "Dispositivos"
+msgstr "Reiniciar serviço"
 
 #: data/settings.ui:764 data/settings.ui:1210
 msgid "Service"
@@ -264,17 +256,15 @@ msgstr "Sistemas de arquivos remotos"
 
 #: data/settings.ui:859
 msgid "Sound Effects"
-msgstr ""
+msgstr "Efeitos sonoros"
 
 #: data/settings.ui:896
-#, fuzzy
 msgid "Desktop Contacts"
-msgstr "Contato desconhecido"
+msgstr "Integração com contatos"
 
 #: data/settings.ui:933
-#, fuzzy
 msgid "Files Integration"
-msgstr "Integração com Nautilus"
+msgstr "Integração com arquivos"
 
 #: data/settings.ui:960
 msgid "Additional Features"
