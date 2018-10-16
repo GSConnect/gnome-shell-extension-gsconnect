@@ -4,7 +4,7 @@
         "description": "The extension name"
     },
     "extensionDescription": {
-        "message": "Дели везе ГСКонектом, директно у прегледач или путем СМС-а",
+        "message": "Дели везе ГСКонектом, директно у преглдач или путем СМС-а.",
         "description": "The extension description"
     },
     "contextMenuMultipleDevices": {
@@ -26,11 +26,11 @@
         }
     },
     "popupMenuDisconnected": {
-        "message": "Није повезано са ГСКонектом",
+        "message": "Сервис није доступан",
         "description": "Popup Menu label when disconnected from the Gnome Shell extension"
     },
     "popupMenuNoDevices": {
-        "message": "Нису нађени уређаји ...",
+        "message": "Нема нађених уређаја",
         "description": "Popup Menu label when no devices are connected or have supported plugins enabled"
     },
     "shareMessage": {
