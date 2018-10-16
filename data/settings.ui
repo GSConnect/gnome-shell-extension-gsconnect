@@ -380,7 +380,7 @@
                                             <property name="valign">center</property>
                                             <property name="hexpand">True</property>
                                             <property name="vexpand">True</property>
-                                            <property name="label">Display Mode</property>
+                                            <property name="label" translatable="yes">Display Mode</property>
                                           </object>
                                           <packing>
                                             <property name="left_attach">0</property>
@@ -432,7 +432,7 @@
                                             <property name="valign">center</property>
                                             <property name="hexpand">True</property>
                                             <property name="vexpand">True</property>
-                                            <property name="label">Show Offline Devices</property>
+                                            <property name="label" translatable="yes">Show Offline Devices</property>
                                           </object>
                                           <packing>
                                             <property name="left_attach">0</property>
@@ -483,7 +483,7 @@
                                             <property name="valign">center</property>
                                             <property name="hexpand">True</property>
                                             <property name="vexpand">True</property>
-                                            <property name="label">Show Unpaired Devices</property>
+                                            <property name="label" translatable="yes">Show Unpaired Devices</property>
                                           </object>
                                           <packing>
                                             <property name="left_attach">0</property>
@@ -534,7 +534,7 @@
                                             <property name="valign">center</property>
                                             <property name="hexpand">True</property>
                                             <property name="vexpand">True</property>
-                                            <property name="label">Show Battery Icon</property>
+                                            <property name="label" translatable="yes">Show Battery Icon</property>
                                           </object>
                                           <packing>
                                             <property name="left_attach">0</property>
@@ -636,7 +636,7 @@
                                             <property name="valign">center</property>
                                             <property name="hexpand">True</property>
                                             <property name="vexpand">True</property>
-                                            <property name="label">Discoverable</property>
+                                            <property name="label" translatable="yes">Discoverable</property>
                                           </object>
                                           <packing>
                                             <property name="left_attach">0</property>
@@ -708,7 +708,7 @@
                                             <property name="valign">center</property>
                                             <property name="hexpand">True</property>
                                             <property name="vexpand">True</property>
-                                            <property name="label">Restart Service</property>
+                                            <property name="label" translatable="yes">Restart Service</property>
                                           </object>
                                           <packing>
                                             <property name="left_attach">0</property>
@@ -856,7 +856,7 @@
                                             <property name="valign">center</property>
                                             <property name="hexpand">True</property>
                                             <property name="vexpand">True</property>
-                                            <property name="label">Sound Effects</property>
+                                            <property name="label" translatable="yes">Sound Effects</property>
                                           </object>
                                           <packing>
                                             <property name="left_attach">0</property>
@@ -893,7 +893,7 @@
                                             <property name="valign">center</property>
                                             <property name="hexpand">True</property>
                                             <property name="vexpand">True</property>
-                                            <property name="label">Desktop Contacts</property>
+                                            <property name="label" translatable="yes">Desktop Contacts</property>
                                           </object>
                                           <packing>
                                             <property name="left_attach">0</property>
@@ -930,7 +930,7 @@
                                             <property name="valign">center</property>
                                             <property name="hexpand">True</property>
                                             <property name="vexpand">True</property>
-                                            <property name="label">Files Integration</property>
+                                            <property name="label" translatable="yes">Files Integration</property>
                                           </object>
                                           <packing>
                                             <property name="left_attach">0</property>
@@ -1164,7 +1164,7 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="halign">start</property>
-                                <property name="label">Shell</property>
+                                <property name="label" translatable="yes">Shell</property>
                                 <property name="use_markup">True</property>
                               </object>
                               <packing>
@@ -1207,7 +1207,7 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="halign">start</property>
-                                <property name="label">Service</property>
+                                <property name="label" translatable="yes">Service</property>
                                 <property name="use_markup">True</property>
                               </object>
                               <packing>
@@ -1250,7 +1250,7 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="halign">start</property>
-                                <property name="label">Other</property>
+                                <property name="label" translatable="yes">Other</property>
                                 <property name="use_markup">True</property>
                               </object>
                               <packing>

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-15 13:40-0700\n"
+"POT-Creation-Date: 2018-10-15 20:42-0700\n"
 "PO-Revision-Date: 2018-05-15 22:55+0200\n"
 "Last-Translator: Báthory Péter <bathory86p@gmail.com>\n"
 "Language-Team: \n"
@@ -32,13 +32,35 @@ msgstr "Írja be az SMS üzenetet"
 msgid "Device is disconnected"
 msgstr "Az eszköz nincs csatlakoztatva"
 
-#: data/device.ui:307
+#: data/device.ui:67 src/service/plugins/battery.js:12
+msgid "Battery"
+msgstr "Akkumulátor"
+
+#: data/device.ui:115
+#, fuzzy
+msgid "Clipboard Sync"
+msgstr "Vágólap"
+
+#: data/device.ui:171
+#, fuzzy
+msgid "Media Players"
+msgstr "Médialejátszó vezérlés"
+
+#: data/device.ui:219
+msgid "Mouse & Keyboard"
+msgstr ""
+
+#: data/device.ui:267
+msgid "Volume Control"
+msgstr ""
+
+#: data/device.ui:307 data/device.ui:1404
 #, fuzzy
 msgid "Sharing"
 msgstr "Hivatkozás megosztása"
 
-#: data/device.ui:336 data/device.ui:533 src/service/plugins/runcommand.js:18
-#: src/service/plugins/runcommand.js:173
+#: data/device.ui:336 data/device.ui:533 data/device.ui:1447
+#: src/service/plugins/runcommand.js:18 src/service/plugins/runcommand.js:173
 #, fuzzy
 msgid "Commands"
 msgstr "Parancs"
@@ -56,11 +78,17 @@ msgstr ""
 msgid "Command Line"
 msgstr "Parancs"
 
+#: data/device.ui:596
+#, fuzzy
+msgid "Share Notifications"
+msgstr "Értesítések küldése"
+
 #: data/device.ui:634
 msgid "Applications"
 msgstr "Alkalmazások"
 
-#: data/device.ui:673 src/service/plugins/notification.js:12
+#: data/device.ui:673 data/device.ui:1490
+#: src/service/plugins/notification.js:12
 msgid "Notifications"
 msgstr "Értesítések"
 
@@ -68,12 +96,25 @@ msgstr "Értesítések"
 msgid "Incoming Calls"
 msgstr "Bejövő hívások"
 
+#: data/device.ui:753 data/device.ui:898
+#, fuzzy
+msgid "Volume"
+msgstr "Rendszerhangerő"
+
+#: data/device.ui:811 data/device.ui:956
+msgid "Pause Media"
+msgstr "Média szüneteltetése"
+
 #: data/device.ui:850
 #, fuzzy
 msgid "Ongoing Calls"
 msgstr "Bejövő hívások"
 
-#: data/device.ui:1045 src/service/plugins/telephony.js:12
+#: data/device.ui:1005
+msgid "Mute Microphone"
+msgstr "Mikrofon némítása"
+
+#: data/device.ui:1045 data/device.ui:1533 src/service/plugins/telephony.js:12
 msgid "Telephony"
 msgstr "Telefonálás"
 
@@ -113,9 +154,14 @@ msgstr "%s kérte ennek az eszköznek a megkeresését"
 msgid "Unpair and remove all settings and files"
 msgstr ""
 
-#: data/device.ui:1363
+#: data/device.ui:1363 data/device.ui:1619
 msgid "Advanced"
 msgstr ""
+
+#: data/device.ui:1576
+#, fuzzy
+msgid "Keyboard Shortcuts"
+msgstr "Gyorsbillentyűk"
 
 #: data/menus.ui:5 src/service/ui/service.js:115
 #, fuzzy
@@ -195,11 +241,38 @@ msgstr "Némítás"
 msgid "Appearance"
 msgstr "Megjelenítés"
 
-#: data/settings.ui:578
+#: data/settings.ui:383
+msgid "Display Mode"
+msgstr ""
+
+#: data/settings.ui:435
+#, fuzzy
+msgid "Show Offline Devices"
+msgstr "Offline eszközök megjelenítése"
+
+#: data/settings.ui:486
+#, fuzzy
+msgid "Show Unpaired Devices"
+msgstr "Mobil eszközök"
+
+#: data/settings.ui:537
+msgid "Show Battery Icon"
+msgstr "Akkumulátor ikon megjelenítése"
+
+#: data/settings.ui:578 data/settings.ui:1167
 msgid "Shell"
 msgstr ""
 
-#: data/settings.ui:764
+#: data/settings.ui:639
+msgid "Discoverable"
+msgstr ""
+
+#: data/settings.ui:711
+#, fuzzy
+msgid "Restart Service"
+msgstr "Eszközök"
+
+#: data/settings.ui:764 data/settings.ui:1210
 #, fuzzy
 msgid "Service"
 msgstr "Eszközök"
@@ -207,6 +280,20 @@ msgstr "Eszközök"
 #: data/settings.ui:823
 msgid "Remote Filesystems"
 msgstr ""
+
+#: data/settings.ui:859
+msgid "Sound Effects"
+msgstr ""
+
+#: data/settings.ui:896
+#, fuzzy
+msgid "Desktop Contacts"
+msgstr "Ismeretlen névjegy"
+
+#: data/settings.ui:933
+#, fuzzy
+msgid "Files Integration"
+msgstr "Nautlius integráció"
 
 #: data/settings.ui:960
 msgid "Additional Features"
@@ -226,7 +313,7 @@ msgid "KDE Connect"
 msgstr "GSConnect"
 
 #. TRANSLATORS: A phone number type
-#: data/settings.ui:1108 src/service/ui/contacts.js:57
+#: data/settings.ui:1108 data/settings.ui:1253 src/service/ui/contacts.js:57
 #: src/service/ui/contacts.js:78
 msgid "Other"
 msgstr "Egyéb"
@@ -407,10 +494,6 @@ msgstr "Elutasítás"
 #: src/service/device.js:629
 msgid "Accept"
 msgstr "Elfogadás"
-
-#: src/service/plugins/battery.js:12
-msgid "Battery"
-msgstr "Akkumulátor"
 
 #: src/service/plugins/battery.js:188 src/service/plugins/findmyphone.js:18
 msgid "Locate"
@@ -1007,9 +1090,6 @@ msgstr "Könyvtár megnyitása"
 #~ "Nem sikerült betölteni a Caribou virtuális billentyűzetet a Unicode "
 #~ "támogatáshoz"
 
-#~ msgid "Media Player Control"
-#~ msgstr "Médialejátszó vezérlés"
-
 #~ msgid "Control MPRIS2 enabled media players"
 #~ msgstr "MPRIS2-képes médialejátszók vezérlése"
 
@@ -1163,23 +1243,14 @@ msgstr "Könyvtár megnyitása"
 #~ msgid "Display devices in the panel instead of the User Menu"
 #~ msgstr "Az eszközöket a panelen jeleníti meg a Felhasználó menü helyett"
 
-#~ msgid "Show Offline"
-#~ msgstr "Offline eszközök megjelenítése"
-
 #~ msgid "Display devices even if offline"
 #~ msgstr "Mutassa az eszközt akkor is, ha az nem csatlakozik"
 
 #~ msgid "Display devices even if unpaired"
 #~ msgstr "Mutassa a még párosítatlan az eszközöket is"
 
-#~ msgid "Show Battery Icon"
-#~ msgstr "Akkumulátor ikon megjelenítése"
-
 #~ msgid "Display an icon with percentage in the Device Menu"
 #~ msgstr "Megjelenít egy százalék ikont az Eszköz menüben"
-
-#~ msgid "Nautilus Integration"
-#~ msgstr "Nautlius integráció"
 
 #~ msgid "Send files from the file browser context menu"
 #~ msgstr "Fájlok küldése a fájlkezelő helyi menüjéből"
@@ -1210,9 +1281,3 @@ msgstr "Könyvtár megnyitása"
 
 #~ msgid "Use Subdirectory"
 #~ msgstr "Alkönyvtár használata"
-
-#~ msgid "Pause Media"
-#~ msgstr "Média szüneteltetése"
-
-#~ msgid "Mute Microphone"
-#~ msgstr "Mikrofon némítása"

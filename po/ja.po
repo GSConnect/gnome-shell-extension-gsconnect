@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-15 13:40-0700\n"
+"POT-Creation-Date: 2018-10-15 20:42-0700\n"
 "PO-Revision-Date: 2018-05-24 00:30+0900\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -32,13 +32,35 @@ msgstr "SMSメッセージを入力"
 msgid "Device is disconnected"
 msgstr "端末は切断"
 
-#: data/device.ui:307
+#: data/device.ui:67 src/service/plugins/battery.js:12
+msgid "Battery"
+msgstr "電池"
+
+#: data/device.ui:115
+#, fuzzy
+msgid "Clipboard Sync"
+msgstr "クリップボード"
+
+#: data/device.ui:171
+#, fuzzy
+msgid "Media Players"
+msgstr "メディアプレーヤーコントロール"
+
+#: data/device.ui:219
+msgid "Mouse & Keyboard"
+msgstr ""
+
+#: data/device.ui:267
+msgid "Volume Control"
+msgstr ""
+
+#: data/device.ui:307 data/device.ui:1404
 #, fuzzy
 msgid "Sharing"
 msgstr "リンクを共有"
 
-#: data/device.ui:336 data/device.ui:533 src/service/plugins/runcommand.js:18
-#: src/service/plugins/runcommand.js:173
+#: data/device.ui:336 data/device.ui:533 data/device.ui:1447
+#: src/service/plugins/runcommand.js:18 src/service/plugins/runcommand.js:173
 #, fuzzy
 msgid "Commands"
 msgstr "コマンド"
@@ -56,11 +78,17 @@ msgstr ""
 msgid "Command Line"
 msgstr "コマンド"
 
+#: data/device.ui:596
+#, fuzzy
+msgid "Share Notifications"
+msgstr "通知を送信"
+
 #: data/device.ui:634
 msgid "Applications"
 msgstr "アプリケーション"
 
-#: data/device.ui:673 src/service/plugins/notification.js:12
+#: data/device.ui:673 data/device.ui:1490
+#: src/service/plugins/notification.js:12
 msgid "Notifications"
 msgstr "通知"
 
@@ -68,12 +96,25 @@ msgstr "通知"
 msgid "Incoming Calls"
 msgstr "着信中"
 
+#: data/device.ui:753 data/device.ui:898
+#, fuzzy
+msgid "Volume"
+msgstr "システムの音量"
+
+#: data/device.ui:811 data/device.ui:956
+msgid "Pause Media"
+msgstr "メディアを一時停止"
+
 #: data/device.ui:850
 #, fuzzy
 msgid "Ongoing Calls"
 msgstr "着信中"
 
-#: data/device.ui:1045 src/service/plugins/telephony.js:12
+#: data/device.ui:1005
+msgid "Mute Microphone"
+msgstr "マイクをミュート"
+
+#: data/device.ui:1045 data/device.ui:1533 src/service/plugins/telephony.js:12
 msgid "Telephony"
 msgstr "電話"
 
@@ -113,9 +154,14 @@ msgstr "%sがこの端末を探すよう要求しました"
 msgid "Unpair and remove all settings and files"
 msgstr ""
 
-#: data/device.ui:1363
+#: data/device.ui:1363 data/device.ui:1619
 msgid "Advanced"
 msgstr ""
+
+#: data/device.ui:1576
+#, fuzzy
+msgid "Keyboard Shortcuts"
+msgstr "キーボードショートカット"
 
 #: data/menus.ui:5 src/service/ui/service.js:115
 #, fuzzy
@@ -195,11 +241,38 @@ msgstr "ミュート"
 msgid "Appearance"
 msgstr "外観"
 
-#: data/settings.ui:578
+#: data/settings.ui:383
+msgid "Display Mode"
+msgstr ""
+
+#: data/settings.ui:435
+#, fuzzy
+msgid "Show Offline Devices"
+msgstr "オフラインの端末を表示"
+
+#: data/settings.ui:486
+#, fuzzy
+msgid "Show Unpaired Devices"
+msgstr "モバイル端末"
+
+#: data/settings.ui:537
+msgid "Show Battery Icon"
+msgstr "電池アイコンを表示"
+
+#: data/settings.ui:578 data/settings.ui:1167
 msgid "Shell"
 msgstr ""
 
-#: data/settings.ui:764
+#: data/settings.ui:639
+msgid "Discoverable"
+msgstr ""
+
+#: data/settings.ui:711
+#, fuzzy
+msgid "Restart Service"
+msgstr "端末"
+
+#: data/settings.ui:764 data/settings.ui:1210
 #, fuzzy
 msgid "Service"
 msgstr "端末"
@@ -207,6 +280,20 @@ msgstr "端末"
 #: data/settings.ui:823
 msgid "Remote Filesystems"
 msgstr ""
+
+#: data/settings.ui:859
+msgid "Sound Effects"
+msgstr ""
+
+#: data/settings.ui:896
+#, fuzzy
+msgid "Desktop Contacts"
+msgstr "不明な連絡先"
+
+#: data/settings.ui:933
+#, fuzzy
+msgid "Files Integration"
+msgstr "Nautilus統合"
 
 #: data/settings.ui:960
 msgid "Additional Features"
@@ -226,7 +313,7 @@ msgid "KDE Connect"
 msgstr "GSConnect"
 
 #. TRANSLATORS: A phone number type
-#: data/settings.ui:1108 src/service/ui/contacts.js:57
+#: data/settings.ui:1108 data/settings.ui:1253 src/service/ui/contacts.js:57
 #: src/service/ui/contacts.js:78
 msgid "Other"
 msgstr "その他"
@@ -407,10 +494,6 @@ msgstr "拒否"
 #: src/service/device.js:629
 msgid "Accept"
 msgstr "承認"
-
-#: src/service/plugins/battery.js:12
-msgid "Battery"
-msgstr "電池"
 
 #: src/service/plugins/battery.js:188 src/service/plugins/findmyphone.js:18
 msgid "Locate"
@@ -1005,9 +1088,6 @@ msgstr "フォルダーを開く"
 #~ msgstr ""
 #~ "UnicodeサポートのためのCaribou仮想キーボードのロードが出来ませんでした"
 
-#~ msgid "Media Player Control"
-#~ msgstr "メディアプレーヤーコントロール"
-
 #~ msgid "Control MPRIS2 enabled media players"
 #~ msgstr "MPRIS2対応のメディアプレーヤーをコントロール"
 
@@ -1158,23 +1238,14 @@ msgstr "フォルダーを開く"
 #~ msgid "Display devices in the panel instead of the User Menu"
 #~ msgstr "ユーザーメニューの代わりにパネルに端末を表示します"
 
-#~ msgid "Show Offline"
-#~ msgstr "オフラインの端末を表示"
-
 #~ msgid "Display devices even if offline"
 #~ msgstr "オフラインでも端末を表示します"
 
 #~ msgid "Display devices even if unpaired"
 #~ msgstr "ペアされていなくても端末を表示します"
 
-#~ msgid "Show Battery Icon"
-#~ msgstr "電池アイコンを表示"
-
 #~ msgid "Display an icon with percentage in the Device Menu"
 #~ msgstr "端末メニューに電池残量とアイコンを表示します"
-
-#~ msgid "Nautilus Integration"
-#~ msgstr "Nautilus統合"
 
 #~ msgid "Send files from the file browser context menu"
 #~ msgstr "ファイルブラウザのコンテキストメニューからファイルを送信"
@@ -1205,9 +1276,3 @@ msgstr "フォルダーを開く"
 
 #~ msgid "Use Subdirectory"
 #~ msgstr "サブディレクトリを使う"
-
-#~ msgid "Pause Media"
-#~ msgstr "メディアを一時停止"
-
-#~ msgid "Mute Microphone"
-#~ msgstr "マイクをミュート"

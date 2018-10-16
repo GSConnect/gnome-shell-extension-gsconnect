@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-15 13:40-0700\n"
+"POT-Creation-Date: 2018-10-15 20:42-0700\n"
 "PO-Revision-Date: 2018-03-03 15:23+0100\n"
 "Last-Translator: Слободан Терзић  <slobodan.terzic@zoho.eu>\n"
 "Language-Team: \n"
@@ -28,13 +28,35 @@ msgstr "Унесите СМС поруку"
 msgid "Device is disconnected"
 msgstr "Уређај није повезан"
 
-#: data/device.ui:307
+#: data/device.ui:67 src/service/plugins/battery.js:12
+msgid "Battery"
+msgstr "Батерија"
+
+#: data/device.ui:115
+#, fuzzy
+msgid "Clipboard Sync"
+msgstr "Остава"
+
+#: data/device.ui:171
+#, fuzzy
+msgid "Media Players"
+msgstr "Управљање медијским плејерима"
+
+#: data/device.ui:219
+msgid "Mouse & Keyboard"
+msgstr ""
+
+#: data/device.ui:267
+msgid "Volume Control"
+msgstr ""
+
+#: data/device.ui:307 data/device.ui:1404
 #, fuzzy
 msgid "Sharing"
 msgstr "Подели везу"
 
-#: data/device.ui:336 data/device.ui:533 src/service/plugins/runcommand.js:18
-#: src/service/plugins/runcommand.js:173
+#: data/device.ui:336 data/device.ui:533 data/device.ui:1447
+#: src/service/plugins/runcommand.js:18 src/service/plugins/runcommand.js:173
 #, fuzzy
 msgid "Commands"
 msgstr "Наредба"
@@ -52,11 +74,17 @@ msgstr ""
 msgid "Command Line"
 msgstr "Наредба"
 
+#: data/device.ui:596
+#, fuzzy
+msgid "Share Notifications"
+msgstr "Слање обавештења"
+
 #: data/device.ui:634
 msgid "Applications"
 msgstr "Програми"
 
-#: data/device.ui:673 src/service/plugins/notification.js:12
+#: data/device.ui:673 data/device.ui:1490
+#: src/service/plugins/notification.js:12
 msgid "Notifications"
 msgstr "Обавештења"
 
@@ -64,12 +92,25 @@ msgstr "Обавештења"
 msgid "Incoming Calls"
 msgstr "Долазни позиви"
 
+#: data/device.ui:753 data/device.ui:898
+#, fuzzy
+msgid "Volume"
+msgstr "Системска јачина"
+
+#: data/device.ui:811 data/device.ui:956
+msgid "Pause Media"
+msgstr "Паузирај медије"
+
 #: data/device.ui:850
 #, fuzzy
 msgid "Ongoing Calls"
 msgstr "Долазни позиви"
 
-#: data/device.ui:1045 src/service/plugins/telephony.js:12
+#: data/device.ui:1005
+msgid "Mute Microphone"
+msgstr "Утишај микрофон"
+
+#: data/device.ui:1045 data/device.ui:1533 src/service/plugins/telephony.js:12
 msgid "Telephony"
 msgstr "Телефонија"
 
@@ -109,9 +150,14 @@ msgstr "%s тражи овај уређај"
 msgid "Unpair and remove all settings and files"
 msgstr ""
 
-#: data/device.ui:1363
+#: data/device.ui:1363 data/device.ui:1619
 msgid "Advanced"
 msgstr ""
+
+#: data/device.ui:1576
+#, fuzzy
+msgid "Keyboard Shortcuts"
+msgstr "Пречице тастатуре"
 
 # Leaving the name in original form for About dialog.
 #: data/menus.ui:5 src/service/ui/service.js:115
@@ -193,11 +239,38 @@ msgstr "Утишај"
 msgid "Appearance"
 msgstr "Изглед"
 
-#: data/settings.ui:578
+#: data/settings.ui:383
+msgid "Display Mode"
+msgstr ""
+
+#: data/settings.ui:435
+#, fuzzy
+msgid "Show Offline Devices"
+msgstr "Уређаји ван везе"
+
+#: data/settings.ui:486
+#, fuzzy
+msgid "Show Unpaired Devices"
+msgstr "Мобилни уређаји"
+
+#: data/settings.ui:537
+msgid "Show Battery Icon"
+msgstr "Икона батерије"
+
+#: data/settings.ui:578 data/settings.ui:1167
 msgid "Shell"
 msgstr ""
 
-#: data/settings.ui:764
+#: data/settings.ui:639
+msgid "Discoverable"
+msgstr ""
+
+#: data/settings.ui:711
+#, fuzzy
+msgid "Restart Service"
+msgstr "Уређаји"
+
+#: data/settings.ui:764 data/settings.ui:1210
 #, fuzzy
 msgid "Service"
 msgstr "Уређаји"
@@ -205,6 +278,20 @@ msgstr "Уређаји"
 #: data/settings.ui:823
 msgid "Remote Filesystems"
 msgstr ""
+
+#: data/settings.ui:859
+msgid "Sound Effects"
+msgstr ""
+
+#: data/settings.ui:896
+#, fuzzy
+msgid "Desktop Contacts"
+msgstr "Непознат контакт"
+
+#: data/settings.ui:933
+#, fuzzy
+msgid "Files Integration"
+msgstr "Уграђивање у Наутилус"
 
 #: data/settings.ui:960
 msgid "Additional Features"
@@ -225,7 +312,7 @@ msgid "KDE Connect"
 msgstr "GSConnect"
 
 #. TRANSLATORS: A phone number type
-#: data/settings.ui:1108 src/service/ui/contacts.js:57
+#: data/settings.ui:1108 data/settings.ui:1253 src/service/ui/contacts.js:57
 #: src/service/ui/contacts.js:78
 msgid "Other"
 msgstr "Друго"
@@ -408,10 +495,6 @@ msgstr "Одбиј"
 #: src/service/device.js:629
 msgid "Accept"
 msgstr "Прихвати"
-
-#: src/service/plugins/battery.js:12
-msgid "Battery"
-msgstr "Батерија"
 
 #: src/service/plugins/battery.js:188 src/service/plugins/findmyphone.js:18
 msgid "Locate"
@@ -1009,9 +1092,6 @@ msgstr "Отвори фасциклу"
 #~ msgid "Cannot load Caribou virtual keyboard for Unicode support"
 #~ msgstr "Не могу да учитам виртуелну тастатуру Карибу за Уникод подршку"
 
-#~ msgid "Media Player Control"
-#~ msgstr "Управљање медијским плејерима"
-
 #~ msgid "Control MPRIS2 enabled media players"
 #~ msgstr "Управљање уређајима који подржавају МПРИС2"
 
@@ -1167,23 +1247,14 @@ msgstr "Отвори фасциклу"
 #~ msgid "Display devices in the panel instead of the User Menu"
 #~ msgstr "Приказ уређаја на панелу уместо у корисничком менију"
 
-#~ msgid "Show Offline"
-#~ msgstr "Уређаји ван везе"
-
 #~ msgid "Display devices even if offline"
 #~ msgstr "Приказ уређаја чак и кад су ван везе"
 
 #~ msgid "Display devices even if unpaired"
 #~ msgstr "Приказ уређаја чак и ако нису упарени"
 
-#~ msgid "Show Battery Icon"
-#~ msgstr "Икона батерије"
-
 #~ msgid "Display an icon with percentage in the Device Menu"
 #~ msgstr "Приказ иконе са процентом стања у менију уређаја"
-
-#~ msgid "Nautilus Integration"
-#~ msgstr "Уграђивање у Наутилус"
 
 #~ msgid "Send files from the file browser context menu"
 #~ msgstr "Слање фајлова из контекстонг менија управника фајлова"
@@ -1214,12 +1285,6 @@ msgstr "Отвори фасциклу"
 
 #~ msgid "Use Subdirectory"
 #~ msgstr "Користи подфасциклу"
-
-#~ msgid "Pause Media"
-#~ msgstr "Паузирај медије"
-
-#~ msgid "Mute Microphone"
-#~ msgstr "Утишај микрофон"
 
 #~ msgid "True"
 #~ msgstr "Тачно"

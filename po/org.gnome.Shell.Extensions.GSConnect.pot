@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-15 13:40-0700\n"
+"POT-Creation-Date: 2018-10-15 20:42-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -30,12 +30,32 @@ msgstr ""
 msgid "Device is disconnected"
 msgstr ""
 
-#: data/device.ui:307
+#: data/device.ui:67 src/service/plugins/battery.js:12
+msgid "Battery"
+msgstr ""
+
+#: data/device.ui:115
+msgid "Clipboard Sync"
+msgstr ""
+
+#: data/device.ui:171
+msgid "Media Players"
+msgstr ""
+
+#: data/device.ui:219
+msgid "Mouse & Keyboard"
+msgstr ""
+
+#: data/device.ui:267
+msgid "Volume Control"
+msgstr ""
+
+#: data/device.ui:307 data/device.ui:1404
 msgid "Sharing"
 msgstr ""
 
-#: data/device.ui:336 data/device.ui:533 src/service/plugins/runcommand.js:18
-#: src/service/plugins/runcommand.js:173
+#: data/device.ui:336 data/device.ui:533 data/device.ui:1447
+#: src/service/plugins/runcommand.js:18 src/service/plugins/runcommand.js:173
 msgid "Commands"
 msgstr ""
 
@@ -51,11 +71,16 @@ msgstr ""
 msgid "Command Line"
 msgstr ""
 
+#: data/device.ui:596
+msgid "Share Notifications"
+msgstr ""
+
 #: data/device.ui:634
 msgid "Applications"
 msgstr ""
 
-#: data/device.ui:673 src/service/plugins/notification.js:12
+#: data/device.ui:673 data/device.ui:1490
+#: src/service/plugins/notification.js:12
 msgid "Notifications"
 msgstr ""
 
@@ -63,11 +88,23 @@ msgstr ""
 msgid "Incoming Calls"
 msgstr ""
 
+#: data/device.ui:753 data/device.ui:898
+msgid "Volume"
+msgstr ""
+
+#: data/device.ui:811 data/device.ui:956
+msgid "Pause Media"
+msgstr ""
+
 #: data/device.ui:850
 msgid "Ongoing Calls"
 msgstr ""
 
-#: data/device.ui:1045 src/service/plugins/telephony.js:12
+#: data/device.ui:1005
+msgid "Mute Microphone"
+msgstr ""
+
+#: data/device.ui:1045 data/device.ui:1533 src/service/plugins/telephony.js:12
 msgid "Telephony"
 msgstr ""
 
@@ -103,8 +140,12 @@ msgstr ""
 msgid "Unpair and remove all settings and files"
 msgstr ""
 
-#: data/device.ui:1363
+#: data/device.ui:1363 data/device.ui:1619
 msgid "Advanced"
+msgstr ""
+
+#: data/device.ui:1576
+msgid "Keyboard Shortcuts"
 msgstr ""
 
 #: data/menus.ui:5 src/service/ui/service.js:115
@@ -177,16 +218,52 @@ msgstr ""
 msgid "Appearance"
 msgstr ""
 
-#: data/settings.ui:578
+#: data/settings.ui:383
+msgid "Display Mode"
+msgstr ""
+
+#: data/settings.ui:435
+msgid "Show Offline Devices"
+msgstr ""
+
+#: data/settings.ui:486
+msgid "Show Unpaired Devices"
+msgstr ""
+
+#: data/settings.ui:537
+msgid "Show Battery Icon"
+msgstr ""
+
+#: data/settings.ui:578 data/settings.ui:1167
 msgid "Shell"
 msgstr ""
 
-#: data/settings.ui:764
+#: data/settings.ui:639
+msgid "Discoverable"
+msgstr ""
+
+#: data/settings.ui:711
+msgid "Restart Service"
+msgstr ""
+
+#: data/settings.ui:764 data/settings.ui:1210
 msgid "Service"
 msgstr ""
 
 #: data/settings.ui:823
 msgid "Remote Filesystems"
+msgstr ""
+
+#: data/settings.ui:859
+msgid "Sound Effects"
+msgstr ""
+
+#: data/settings.ui:896
+msgid "Desktop Contacts"
+msgstr ""
+
+#: data/settings.ui:933
+msgid "Files Integration"
 msgstr ""
 
 #: data/settings.ui:960
@@ -206,7 +283,7 @@ msgid "KDE Connect"
 msgstr ""
 
 #. TRANSLATORS: A phone number type
-#: data/settings.ui:1108 src/service/ui/contacts.js:57
+#: data/settings.ui:1108 data/settings.ui:1253 src/service/ui/contacts.js:57
 #: src/service/ui/contacts.js:78
 msgid "Other"
 msgstr ""
@@ -381,10 +458,6 @@ msgstr ""
 
 #: src/service/device.js:629
 msgid "Accept"
-msgstr ""
-
-#: src/service/plugins/battery.js:12
-msgid "Battery"
 msgstr ""
 
 #: src/service/plugins/battery.js:188 src/service/plugins/findmyphone.js:18

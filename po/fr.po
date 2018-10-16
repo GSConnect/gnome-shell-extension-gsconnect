@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-15 13:40-0700\n"
+"POT-Creation-Date: 2018-10-15 20:42-0700\n"
 "PO-Revision-Date: 2018-03-04 15:36+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -32,13 +32,35 @@ msgstr "Taper un message SMS"
 msgid "Device is disconnected"
 msgstr "L'appareil est déconnecté"
 
-#: data/device.ui:307
+#: data/device.ui:67 src/service/plugins/battery.js:12
+msgid "Battery"
+msgstr "Batterie"
+
+#: data/device.ui:115
+#, fuzzy
+msgid "Clipboard Sync"
+msgstr "Presse-papiers"
+
+#: data/device.ui:171
+#, fuzzy
+msgid "Media Players"
+msgstr "Contrôle du lecteur multimédia"
+
+#: data/device.ui:219
+msgid "Mouse & Keyboard"
+msgstr ""
+
+#: data/device.ui:267
+msgid "Volume Control"
+msgstr ""
+
+#: data/device.ui:307 data/device.ui:1404
 #, fuzzy
 msgid "Sharing"
 msgstr "Partager un lien"
 
-#: data/device.ui:336 data/device.ui:533 src/service/plugins/runcommand.js:18
-#: src/service/plugins/runcommand.js:173
+#: data/device.ui:336 data/device.ui:533 data/device.ui:1447
+#: src/service/plugins/runcommand.js:18 src/service/plugins/runcommand.js:173
 #, fuzzy
 msgid "Commands"
 msgstr "Commande"
@@ -56,11 +78,17 @@ msgstr ""
 msgid "Command Line"
 msgstr "Commande"
 
+#: data/device.ui:596
+#, fuzzy
+msgid "Share Notifications"
+msgstr "Envoyer les notifications"
+
 #: data/device.ui:634
 msgid "Applications"
 msgstr "Applications"
 
-#: data/device.ui:673 src/service/plugins/notification.js:12
+#: data/device.ui:673 data/device.ui:1490
+#: src/service/plugins/notification.js:12
 msgid "Notifications"
 msgstr "Notifications"
 
@@ -68,12 +96,25 @@ msgstr "Notifications"
 msgid "Incoming Calls"
 msgstr "Appels entrants"
 
+#: data/device.ui:753 data/device.ui:898
+#, fuzzy
+msgid "Volume"
+msgstr "Volume du système"
+
+#: data/device.ui:811 data/device.ui:956
+msgid "Pause Media"
+msgstr "Mettre les médias en pause"
+
 #: data/device.ui:850
 #, fuzzy
 msgid "Ongoing Calls"
 msgstr "Appels entrants"
 
-#: data/device.ui:1045 src/service/plugins/telephony.js:12
+#: data/device.ui:1005
+msgid "Mute Microphone"
+msgstr "Mettre le microphone en sourdine"
+
+#: data/device.ui:1045 data/device.ui:1533 src/service/plugins/telephony.js:12
 msgid "Telephony"
 msgstr "Téléphonie"
 
@@ -113,9 +154,14 @@ msgstr "%s a demandé à localiser cet appareil"
 msgid "Unpair and remove all settings and files"
 msgstr ""
 
-#: data/device.ui:1363
+#: data/device.ui:1363 data/device.ui:1619
 msgid "Advanced"
 msgstr ""
+
+#: data/device.ui:1576
+#, fuzzy
+msgid "Keyboard Shortcuts"
+msgstr "Raccourcis clavier"
 
 #: data/menus.ui:5 src/service/ui/service.js:115
 #, fuzzy
@@ -195,11 +241,38 @@ msgstr "Mettre en sourdine"
 msgid "Appearance"
 msgstr "Apparence"
 
-#: data/settings.ui:578
+#: data/settings.ui:383
+msgid "Display Mode"
+msgstr ""
+
+#: data/settings.ui:435
+#, fuzzy
+msgid "Show Offline Devices"
+msgstr "Montrer hors connexion"
+
+#: data/settings.ui:486
+#, fuzzy
+msgid "Show Unpaired Devices"
+msgstr "Appareils mobiles"
+
+#: data/settings.ui:537
+msgid "Show Battery Icon"
+msgstr "Montrer l'icône de la batterie"
+
+#: data/settings.ui:578 data/settings.ui:1167
 msgid "Shell"
 msgstr ""
 
-#: data/settings.ui:764
+#: data/settings.ui:639
+msgid "Discoverable"
+msgstr ""
+
+#: data/settings.ui:711
+#, fuzzy
+msgid "Restart Service"
+msgstr "Appareils"
+
+#: data/settings.ui:764 data/settings.ui:1210
 #, fuzzy
 msgid "Service"
 msgstr "Appareils"
@@ -207,6 +280,20 @@ msgstr "Appareils"
 #: data/settings.ui:823
 msgid "Remote Filesystems"
 msgstr ""
+
+#: data/settings.ui:859
+msgid "Sound Effects"
+msgstr ""
+
+#: data/settings.ui:896
+#, fuzzy
+msgid "Desktop Contacts"
+msgstr "Contact inconnu"
+
+#: data/settings.ui:933
+#, fuzzy
+msgid "Files Integration"
+msgstr "Intégration Nautilus"
 
 #: data/settings.ui:960
 msgid "Additional Features"
@@ -226,7 +313,7 @@ msgid "KDE Connect"
 msgstr "GSConnect"
 
 #. TRANSLATORS: A phone number type
-#: data/settings.ui:1108 src/service/ui/contacts.js:57
+#: data/settings.ui:1108 data/settings.ui:1253 src/service/ui/contacts.js:57
 #: src/service/ui/contacts.js:78
 msgid "Other"
 msgstr "Autre"
@@ -406,10 +493,6 @@ msgstr "Rejeter"
 #: src/service/device.js:629
 msgid "Accept"
 msgstr "Accepter"
-
-#: src/service/plugins/battery.js:12
-msgid "Battery"
-msgstr "Batterie"
 
 #: src/service/plugins/battery.js:188 src/service/plugins/findmyphone.js:18
 msgid "Locate"
@@ -1008,9 +1091,6 @@ msgstr "Ouvrir le dossier"
 #~ msgstr ""
 #~ "Impossible de charger le clavier virtuel Caribou pour le support Unicode"
 
-#~ msgid "Media Player Control"
-#~ msgstr "Contrôle du lecteur multimédia"
-
 #~ msgid "Control MPRIS2 enabled media players"
 #~ msgstr "Contrôler les lecteurs multimédias compatibles MPRIS2"
 
@@ -1164,23 +1244,14 @@ msgstr "Ouvrir le dossier"
 #~ msgid "Display devices in the panel instead of the User Menu"
 #~ msgstr "Afficher les appareils dans le panneau au lieu du menu Utilisateur"
 
-#~ msgid "Show Offline"
-#~ msgstr "Montrer hors connexion"
-
 #~ msgid "Display devices even if offline"
 #~ msgstr "Afficher les appareils même hors ligne"
 
 #~ msgid "Display devices even if unpaired"
 #~ msgstr "Afficher les appareils même si non associés"
 
-#~ msgid "Show Battery Icon"
-#~ msgstr "Montrer l'icône de la batterie"
-
 #~ msgid "Display an icon with percentage in the Device Menu"
 #~ msgstr "Afficher une icône avec un pourcentage dans le menu de l'appareil"
-
-#~ msgid "Nautilus Integration"
-#~ msgstr "Intégration Nautilus"
 
 #~ msgid "Send files from the file browser context menu"
 #~ msgstr ""
@@ -1212,9 +1283,3 @@ msgstr "Ouvrir le dossier"
 
 #~ msgid "Use Subdirectory"
 #~ msgstr "Utiliser le sous-répertoire"
-
-#~ msgid "Pause Media"
-#~ msgstr "Mettre les médias en pause"
-
-#~ msgid "Mute Microphone"
-#~ msgstr "Mettre le microphone en sourdine"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-15 13:40-0700\n"
+"POT-Creation-Date: 2018-10-15 20:42-0700\n"
 "PO-Revision-Date: 2018-05-24 07:05+0800\n"
 "Last-Translator: plexpt <plexpt@gmail.com>\n"
 "Language-Team: plexpt\n"
@@ -32,13 +32,35 @@ msgstr "键入短信"
 msgid "Device is disconnected"
 msgstr "设备已断开"
 
-#: data/device.ui:307
+#: data/device.ui:67 src/service/plugins/battery.js:12
+msgid "Battery"
+msgstr "电池"
+
+#: data/device.ui:115
+#, fuzzy
+msgid "Clipboard Sync"
+msgstr "剪贴板"
+
+#: data/device.ui:171
+#, fuzzy
+msgid "Media Players"
+msgstr "媒体播放器控制"
+
+#: data/device.ui:219
+msgid "Mouse & Keyboard"
+msgstr ""
+
+#: data/device.ui:267
+msgid "Volume Control"
+msgstr ""
+
+#: data/device.ui:307 data/device.ui:1404
 #, fuzzy
 msgid "Sharing"
 msgstr "共享链接"
 
-#: data/device.ui:336 data/device.ui:533 src/service/plugins/runcommand.js:18
-#: src/service/plugins/runcommand.js:173
+#: data/device.ui:336 data/device.ui:533 data/device.ui:1447
+#: src/service/plugins/runcommand.js:18 src/service/plugins/runcommand.js:173
 #, fuzzy
 msgid "Commands"
 msgstr "命令"
@@ -56,11 +78,17 @@ msgstr ""
 msgid "Command Line"
 msgstr "命令"
 
+#: data/device.ui:596
+#, fuzzy
+msgid "Share Notifications"
+msgstr "发送通知"
+
 #: data/device.ui:634
 msgid "Applications"
 msgstr "应用"
 
-#: data/device.ui:673 src/service/plugins/notification.js:12
+#: data/device.ui:673 data/device.ui:1490
+#: src/service/plugins/notification.js:12
 msgid "Notifications"
 msgstr "通知"
 
@@ -68,12 +96,25 @@ msgstr "通知"
 msgid "Incoming Calls"
 msgstr "来电"
 
+#: data/device.ui:753 data/device.ui:898
+#, fuzzy
+msgid "Volume"
+msgstr "系统音量"
+
+#: data/device.ui:811 data/device.ui:956
+msgid "Pause Media"
+msgstr "暂停媒体"
+
 #: data/device.ui:850
 #, fuzzy
 msgid "Ongoing Calls"
 msgstr "来电"
 
-#: data/device.ui:1045 src/service/plugins/telephony.js:12
+#: data/device.ui:1005
+msgid "Mute Microphone"
+msgstr "静音麦克风"
+
+#: data/device.ui:1045 data/device.ui:1533 src/service/plugins/telephony.js:12
 msgid "Telephony"
 msgstr "电话"
 
@@ -113,9 +154,14 @@ msgstr "%s 被要求定位这个设备"
 msgid "Unpair and remove all settings and files"
 msgstr ""
 
-#: data/device.ui:1363
+#: data/device.ui:1363 data/device.ui:1619
 msgid "Advanced"
 msgstr ""
+
+#: data/device.ui:1576
+#, fuzzy
+msgid "Keyboard Shortcuts"
+msgstr "键盘快捷键"
 
 #: data/menus.ui:5 src/service/ui/service.js:115
 #, fuzzy
@@ -195,11 +241,38 @@ msgstr "静音"
 msgid "Appearance"
 msgstr "外观"
 
-#: data/settings.ui:578
+#: data/settings.ui:383
+msgid "Display Mode"
+msgstr ""
+
+#: data/settings.ui:435
+#, fuzzy
+msgid "Show Offline Devices"
+msgstr "显示离线"
+
+#: data/settings.ui:486
+#, fuzzy
+msgid "Show Unpaired Devices"
+msgstr "手机设备"
+
+#: data/settings.ui:537
+msgid "Show Battery Icon"
+msgstr "显示电池图标"
+
+#: data/settings.ui:578 data/settings.ui:1167
 msgid "Shell"
 msgstr ""
 
-#: data/settings.ui:764
+#: data/settings.ui:639
+msgid "Discoverable"
+msgstr ""
+
+#: data/settings.ui:711
+#, fuzzy
+msgid "Restart Service"
+msgstr "设备"
+
+#: data/settings.ui:764 data/settings.ui:1210
 #, fuzzy
 msgid "Service"
 msgstr "设备"
@@ -207,6 +280,20 @@ msgstr "设备"
 #: data/settings.ui:823
 msgid "Remote Filesystems"
 msgstr ""
+
+#: data/settings.ui:859
+msgid "Sound Effects"
+msgstr ""
+
+#: data/settings.ui:896
+#, fuzzy
+msgid "Desktop Contacts"
+msgstr "未知联系人"
+
+#: data/settings.ui:933
+#, fuzzy
+msgid "Files Integration"
+msgstr "整合到Nautilus"
 
 #: data/settings.ui:960
 msgid "Additional Features"
@@ -226,7 +313,7 @@ msgid "KDE Connect"
 msgstr "GSConnect"
 
 #. TRANSLATORS: A phone number type
-#: data/settings.ui:1108 src/service/ui/contacts.js:57
+#: data/settings.ui:1108 data/settings.ui:1253 src/service/ui/contacts.js:57
 #: src/service/ui/contacts.js:78
 msgid "Other"
 msgstr "其他"
@@ -407,10 +494,6 @@ msgstr "拒绝"
 #: src/service/device.js:629
 msgid "Accept"
 msgstr "接受"
-
-#: src/service/plugins/battery.js:12
-msgid "Battery"
-msgstr "电池"
 
 #: src/service/plugins/battery.js:188 src/service/plugins/findmyphone.js:18
 msgid "Locate"
@@ -1003,9 +1086,6 @@ msgstr "打开文件夹"
 #~ msgid "Cannot load Caribou virtual keyboard for Unicode support"
 #~ msgstr "不能加载用于Unicode支持的Caribou 虚拟键盘"
 
-#~ msgid "Media Player Control"
-#~ msgstr "媒体播放器控制"
-
 #~ msgid "Control MPRIS2 enabled media players"
 #~ msgstr "控制MPRI2启用媒体播放器"
 
@@ -1150,23 +1230,14 @@ msgstr "打开文件夹"
 #~ msgid "Display devices in the panel instead of the User Menu"
 #~ msgstr "在面板中显示设备而不是在用户菜单"
 
-#~ msgid "Show Offline"
-#~ msgstr "显示离线"
-
 #~ msgid "Display devices even if offline"
 #~ msgstr "显示设备，即使以离线"
 
 #~ msgid "Display devices even if unpaired"
 #~ msgstr "显示设备即使未配对"
 
-#~ msgid "Show Battery Icon"
-#~ msgstr "显示电池图标"
-
 #~ msgid "Display an icon with percentage in the Device Menu"
 #~ msgstr "在设备菜单中显示具有百分比的图标"
-
-#~ msgid "Nautilus Integration"
-#~ msgstr "整合到Nautilus"
 
 #~ msgid "Send files from the file browser context menu"
 #~ msgstr "从文件浏览器菜单发送文件"
@@ -1197,9 +1268,3 @@ msgstr "打开文件夹"
 
 #~ msgid "Use Subdirectory"
 #~ msgstr "使用子目录"
-
-#~ msgid "Pause Media"
-#~ msgstr "暂停媒体"
-
-#~ msgid "Mute Microphone"
-#~ msgstr "静音麦克风"

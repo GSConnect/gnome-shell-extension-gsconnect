@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-15 13:40-0700\n"
+"POT-Creation-Date: 2018-10-15 20:42-0700\n"
 "PO-Revision-Date: 2018-10-12 18:59+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -30,12 +30,34 @@ msgstr "Kirjuta sõnum"
 msgid "Device is disconnected"
 msgstr "Seade on lahti ühendatud"
 
-#: data/device.ui:307
+#: data/device.ui:67 src/service/plugins/battery.js:12
+msgid "Battery"
+msgstr "Aku"
+
+#: data/device.ui:115
+#, fuzzy
+msgid "Clipboard Sync"
+msgstr "Lõikelaud"
+
+#: data/device.ui:171
+#, fuzzy
+msgid "Media Players"
+msgstr "Meediamängija juhtimine"
+
+#: data/device.ui:219
+msgid "Mouse & Keyboard"
+msgstr ""
+
+#: data/device.ui:267
+msgid "Volume Control"
+msgstr ""
+
+#: data/device.ui:307 data/device.ui:1404
 msgid "Sharing"
 msgstr "Jagamine"
 
-#: data/device.ui:336 data/device.ui:533 src/service/plugins/runcommand.js:18
-#: src/service/plugins/runcommand.js:173
+#: data/device.ui:336 data/device.ui:533 data/device.ui:1447
+#: src/service/plugins/runcommand.js:18 src/service/plugins/runcommand.js:173
 msgid "Commands"
 msgstr "Käsklused"
 
@@ -51,11 +73,17 @@ msgstr "Vali käivitatav"
 msgid "Command Line"
 msgstr "Käsurida"
 
+#: data/device.ui:596
+#, fuzzy
+msgid "Share Notifications"
+msgstr "Saada teade"
+
 #: data/device.ui:634
 msgid "Applications"
 msgstr "Rakendused"
 
-#: data/device.ui:673 src/service/plugins/notification.js:12
+#: data/device.ui:673 data/device.ui:1490
+#: src/service/plugins/notification.js:12
 msgid "Notifications"
 msgstr "Teated"
 
@@ -63,11 +91,24 @@ msgstr "Teated"
 msgid "Incoming Calls"
 msgstr "Sissetulevad kõned"
 
+#: data/device.ui:753 data/device.ui:898
+#, fuzzy
+msgid "Volume"
+msgstr "Süsteemi helitugevus"
+
+#: data/device.ui:811 data/device.ui:956
+msgid "Pause Media"
+msgstr "Peata meedia"
+
 #: data/device.ui:850
 msgid "Ongoing Calls"
 msgstr "Käimasolevad kõned"
 
-#: data/device.ui:1045 src/service/plugins/telephony.js:12
+#: data/device.ui:1005
+msgid "Mute Microphone"
+msgstr "Vaigista mikrofon"
+
+#: data/device.ui:1045 data/device.ui:1533 src/service/plugins/telephony.js:12
 msgid "Telephony"
 msgstr "Telefonifunktsioon"
 
@@ -103,9 +144,14 @@ msgstr "Kustuta see seade"
 msgid "Unpair and remove all settings and files"
 msgstr "Eemalda paardumine ja kustuta kõik seadistused ning failid"
 
-#: data/device.ui:1363
+#: data/device.ui:1363 data/device.ui:1619
 msgid "Advanced"
 msgstr "Täpsemad"
+
+#: data/device.ui:1576
+#, fuzzy
+msgid "Keyboard Shortcuts"
+msgstr "Käskluste otseteed"
 
 #: data/menus.ui:5 src/service/ui/service.js:115
 msgid "Connect to…"
@@ -177,17 +223,59 @@ msgstr "Vaigista"
 msgid "Appearance"
 msgstr "Välimus"
 
-#: data/settings.ui:578
+#: data/settings.ui:383
+msgid "Display Mode"
+msgstr ""
+
+#: data/settings.ui:435
+#, fuzzy
+msgid "Show Offline Devices"
+msgstr "Kuva võrguta"
+
+#: data/settings.ui:486
+#, fuzzy
+msgid "Show Unpaired Devices"
+msgstr "Mobiilseadmed"
+
+#: data/settings.ui:537
+msgid "Show Battery Icon"
+msgstr "Kuva aku ikooni"
+
+#: data/settings.ui:578 data/settings.ui:1167
 msgid "Shell"
 msgstr "Shell (kest)"
 
-#: data/settings.ui:764
+#: data/settings.ui:639
+#, fuzzy
+msgid "Discoverable"
+msgstr "Avastamine keelatud"
+
+#: data/settings.ui:711
+#, fuzzy
+msgid "Restart Service"
+msgstr "Teenus"
+
+#: data/settings.ui:764 data/settings.ui:1210
 msgid "Service"
 msgstr "Teenus"
 
 #: data/settings.ui:823
 msgid "Remote Filesystems"
 msgstr "Kauged failisüsteemid"
+
+#: data/settings.ui:859
+msgid "Sound Effects"
+msgstr ""
+
+#: data/settings.ui:896
+#, fuzzy
+msgid "Desktop Contacts"
+msgstr "Sünkroniseeri kontaktid"
+
+#: data/settings.ui:933
+#, fuzzy
+msgid "Files Integration"
+msgstr "Nautiluse integratsioon"
 
 #: data/settings.ui:960
 msgid "Additional Features"
@@ -206,7 +294,7 @@ msgid "KDE Connect"
 msgstr "KDE Connect"
 
 #. TRANSLATORS: A phone number type
-#: data/settings.ui:1108 src/service/ui/contacts.js:57
+#: data/settings.ui:1108 data/settings.ui:1253 src/service/ui/contacts.js:57
 #: src/service/ui/contacts.js:78
 msgid "Other"
 msgstr "Muu"
@@ -382,10 +470,6 @@ msgstr "Keeldu"
 #: src/service/device.js:629
 msgid "Accept"
 msgstr "Nõustu"
-
-#: src/service/plugins/battery.js:12
-msgid "Battery"
-msgstr "Aku"
 
 #: src/service/plugins/battery.js:188 src/service/plugins/findmyphone.js:18
 msgid "Locate"
@@ -962,9 +1046,6 @@ msgstr "Ava brauseris"
 #~ "Caribou virtuaalse klaviatuuri laadimine Unicode’i toe saamiseks "
 #~ "ebaõnnestus"
 
-#~ msgid "Media Player Control"
-#~ msgstr "Meediamängija juhtimine"
-
 #~ msgid "Control MPRIS2 enabled media players"
 #~ msgstr "Juhi MPRIS2-toega meediamängijaid"
 
@@ -1118,23 +1199,14 @@ msgstr "Ava brauseris"
 #~ msgid "Display devices in the panel instead of the User Menu"
 #~ msgstr "Kuva seadmeid kasutajamenüü asemel paneelil"
 
-#~ msgid "Show Offline"
-#~ msgstr "Kuva võrguta"
-
 #~ msgid "Display devices even if offline"
 #~ msgstr "Kuva seadmeid ka siis, kui need on võrguta"
 
 #~ msgid "Display devices even if unpaired"
 #~ msgstr "Kuva seadmeid ka siis, kui need on paaritamata"
 
-#~ msgid "Show Battery Icon"
-#~ msgstr "Kuva aku ikooni"
-
 #~ msgid "Display an icon with percentage in the Device Menu"
 #~ msgstr "Kuva protsentidega ikooni seadme menüüs"
-
-#~ msgid "Nautilus Integration"
-#~ msgstr "Nautiluse integratsioon"
 
 #~ msgid "Send files from the file browser context menu"
 #~ msgstr "Saada faile failisirvija kontekstmenüüst"
@@ -1165,9 +1237,3 @@ msgstr "Ava brauseris"
 
 #~ msgid "Use Subdirectory"
 #~ msgstr "Kasuta alamkataloogi"
-
-#~ msgid "Pause Media"
-#~ msgstr "Peata meedia"
-
-#~ msgid "Mute Microphone"
-#~ msgstr "Vaigista mikrofon"

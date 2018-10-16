@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-15 13:40-0700\n"
+"POT-Creation-Date: 2018-10-15 20:42-0700\n"
 "PO-Revision-Date: 2018-09-01 00:27+0300\n"
 "Last-Translator: Moo\n"
 "Language-Team: \n"
@@ -33,13 +33,35 @@ msgstr "Rašykite SMS žinutę"
 msgid "Device is disconnected"
 msgstr "Įrenginys yra atsijungęs"
 
-#: data/device.ui:307
+#: data/device.ui:67 src/service/plugins/battery.js:12
+msgid "Battery"
+msgstr "Baterija"
+
+#: data/device.ui:115
+#, fuzzy
+msgid "Clipboard Sync"
+msgstr "Iškarpinė"
+
+#: data/device.ui:171
+#, fuzzy
+msgid "Media Players"
+msgstr "Medijos leistuvės valdymas"
+
+#: data/device.ui:219
+msgid "Mouse & Keyboard"
+msgstr ""
+
+#: data/device.ui:267
+msgid "Volume Control"
+msgstr ""
+
+#: data/device.ui:307 data/device.ui:1404
 #, fuzzy
 msgid "Sharing"
 msgstr "Bendrinti nuorodą"
 
-#: data/device.ui:336 data/device.ui:533 src/service/plugins/runcommand.js:18
-#: src/service/plugins/runcommand.js:173
+#: data/device.ui:336 data/device.ui:533 data/device.ui:1447
+#: src/service/plugins/runcommand.js:18 src/service/plugins/runcommand.js:173
 #, fuzzy
 msgid "Commands"
 msgstr "Komanda"
@@ -57,11 +79,17 @@ msgstr ""
 msgid "Command Line"
 msgstr "Komanda"
 
+#: data/device.ui:596
+#, fuzzy
+msgid "Share Notifications"
+msgstr "Siųsti pranešimus"
+
 #: data/device.ui:634
 msgid "Applications"
 msgstr "Programos"
 
-#: data/device.ui:673 src/service/plugins/notification.js:12
+#: data/device.ui:673 data/device.ui:1490
+#: src/service/plugins/notification.js:12
 msgid "Notifications"
 msgstr "Pranešimai"
 
@@ -69,12 +97,25 @@ msgstr "Pranešimai"
 msgid "Incoming Calls"
 msgstr "Gaunami skambučiai"
 
+#: data/device.ui:753 data/device.ui:898
+#, fuzzy
+msgid "Volume"
+msgstr "Sistemos garsis"
+
+#: data/device.ui:811 data/device.ui:956
+msgid "Pause Media"
+msgstr "Pristabdyti mediją"
+
 #: data/device.ui:850
 #, fuzzy
 msgid "Ongoing Calls"
 msgstr "Gaunami skambučiai"
 
-#: data/device.ui:1045 src/service/plugins/telephony.js:12
+#: data/device.ui:1005
+msgid "Mute Microphone"
+msgstr "Nutildyti mikrofoną"
+
+#: data/device.ui:1045 data/device.ui:1533 src/service/plugins/telephony.js:12
 msgid "Telephony"
 msgstr "Telefonija"
 
@@ -114,9 +155,14 @@ msgstr "%s paprašė nustatyti šio įrenginio vietą"
 msgid "Unpair and remove all settings and files"
 msgstr ""
 
-#: data/device.ui:1363
+#: data/device.ui:1363 data/device.ui:1619
 msgid "Advanced"
 msgstr ""
+
+#: data/device.ui:1576
+#, fuzzy
+msgid "Keyboard Shortcuts"
+msgstr "Klaviatūros trumpiniai"
 
 #: data/menus.ui:5 src/service/ui/service.js:115
 #, fuzzy
@@ -196,11 +242,38 @@ msgstr "Nutildyti"
 msgid "Appearance"
 msgstr "Išvaizda"
 
-#: data/settings.ui:578
+#: data/settings.ui:383
+msgid "Display Mode"
+msgstr ""
+
+#: data/settings.ui:435
+#, fuzzy
+msgid "Show Offline Devices"
+msgstr "Rodyti atsijungusius"
+
+#: data/settings.ui:486
+#, fuzzy
+msgid "Show Unpaired Devices"
+msgstr "Mobilieji įrenginiai"
+
+#: data/settings.ui:537
+msgid "Show Battery Icon"
+msgstr "Rodyti baterijos piktogramą"
+
+#: data/settings.ui:578 data/settings.ui:1167
 msgid "Shell"
 msgstr ""
 
-#: data/settings.ui:764
+#: data/settings.ui:639
+msgid "Discoverable"
+msgstr ""
+
+#: data/settings.ui:711
+#, fuzzy
+msgid "Restart Service"
+msgstr "Įrenginiai"
+
+#: data/settings.ui:764 data/settings.ui:1210
 #, fuzzy
 msgid "Service"
 msgstr "Įrenginiai"
@@ -208,6 +281,20 @@ msgstr "Įrenginiai"
 #: data/settings.ui:823
 msgid "Remote Filesystems"
 msgstr ""
+
+#: data/settings.ui:859
+msgid "Sound Effects"
+msgstr ""
+
+#: data/settings.ui:896
+#, fuzzy
+msgid "Desktop Contacts"
+msgstr "Nežinomas adresatas"
+
+#: data/settings.ui:933
+#, fuzzy
+msgid "Files Integration"
+msgstr "Nautilus integracija"
 
 #: data/settings.ui:960
 msgid "Additional Features"
@@ -227,7 +314,7 @@ msgid "KDE Connect"
 msgstr "GSConnect"
 
 #. TRANSLATORS: A phone number type
-#: data/settings.ui:1108 src/service/ui/contacts.js:57
+#: data/settings.ui:1108 data/settings.ui:1253 src/service/ui/contacts.js:57
 #: src/service/ui/contacts.js:78
 msgid "Other"
 msgstr "Kita"
@@ -408,10 +495,6 @@ msgstr "Atmesti"
 #: src/service/device.js:629
 msgid "Accept"
 msgstr "Priimti"
-
-#: src/service/plugins/battery.js:12
-msgid "Battery"
-msgstr "Baterija"
 
 #: src/service/plugins/battery.js:188 src/service/plugins/findmyphone.js:18
 msgid "Locate"
@@ -1010,9 +1093,6 @@ msgstr "Atverti aplanką"
 #~ "Nepavyksta įkelti Caribou virtualios klaviatūros, skirtos Unikodo "
 #~ "palaikymui"
 
-#~ msgid "Media Player Control"
-#~ msgstr "Medijos leistuvės valdymas"
-
 #~ msgid "Control MPRIS2 enabled media players"
 #~ msgstr "Valdyti MPRIS2 įgalintas medijos leistuves"
 
@@ -1169,23 +1249,14 @@ msgstr "Atverti aplanką"
 #~ msgid "Display devices in the panel instead of the User Menu"
 #~ msgstr "Vietoj naudotojų meniu, rodyti įrenginius skydelyje"
 
-#~ msgid "Show Offline"
-#~ msgstr "Rodyti atsijungusius"
-
 #~ msgid "Display devices even if offline"
 #~ msgstr "Rodyti įrenginius net atsijungus"
 
 #~ msgid "Display devices even if unpaired"
 #~ msgstr "Rodyti įrenginius net nesuporavus"
 
-#~ msgid "Show Battery Icon"
-#~ msgstr "Rodyti baterijos piktogramą"
-
 #~ msgid "Display an icon with percentage in the Device Menu"
 #~ msgstr "Įrenginio meniu rodyti piktogramą su procentine reikšme"
-
-#~ msgid "Nautilus Integration"
-#~ msgstr "Nautilus integracija"
 
 #~ msgid "Send files from the file browser context menu"
 #~ msgstr "Siųsti failus iš failų naršyklės kontekstinio meniu"
@@ -1216,9 +1287,3 @@ msgstr "Atverti aplanką"
 
 #~ msgid "Use Subdirectory"
 #~ msgstr "Naudoti pakatalogį"
-
-#~ msgid "Pause Media"
-#~ msgstr "Pristabdyti mediją"
-
-#~ msgid "Mute Microphone"
-#~ msgstr "Nutildyti mikrofoną"
