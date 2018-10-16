@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-15 20:42-0700\n"
+"POT-Creation-Date: 2018-10-16 06:59-0700\n"
 "PO-Revision-Date: 2018-10-12 09:55-0700\n"
 "Last-Translator: Serdar Sağlam <teknomobil@yandex.com>\n"
 "Language-Team: Türkçe <teknomobil@yandex.com>\n"
@@ -615,7 +615,7 @@ msgstr "Kabul \"%s\" kaynak %s"
 #: src/service/plugins/share.js:138 src/service/plugins/share.js:289
 #: src/service/plugins/share.js:407 src/service/ui/keybindings.js:50
 #: src/service/ui/service.js:121 src/service/ui/service.js:300
-#: src/service/ui/settings.js:851 src/shell/donotdisturb.js:215
+#: src/service/ui/settings.js:847 src/shell/donotdisturb.js:215
 msgid "Cancel"
 msgstr "İptal"
 
@@ -813,19 +813,19 @@ msgstr "Panel"
 msgid "User Menu"
 msgstr "Kullanıcı Menü"
 
-#: src/service/ui/settings.js:852
+#: src/service/ui/settings.js:848
 msgid "Open"
 msgstr "Aç"
 
-#: src/service/ui/settings.js:916 src/service/ui/settings.js:929
+#: src/service/ui/settings.js:912 src/service/ui/settings.js:925
 msgid "On"
 msgstr "Açık"
 
-#: src/service/ui/settings.js:916 src/service/ui/settings.js:929
+#: src/service/ui/settings.js:912 src/service/ui/settings.js:925
 msgid "Off"
 msgstr "Kapalı"
 
-#: src/service/ui/settings.js:1050 src/service/ui/settings.js:1116
+#: src/service/ui/settings.js:1046 src/service/ui/settings.js:1112
 msgid "Disabled"
 msgstr "Devre dışı"
 

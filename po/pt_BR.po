@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-15 20:42-0700\n"
+"POT-Creation-Date: 2018-10-16 06:59-0700\n"
 "PO-Revision-Date: 2018-10-16 02:27-0300\n"
 "Last-Translator: Ricardo Silva Veloso <ricvelozo@gmail.com>\n"
 "Language-Team: \n"
@@ -346,8 +346,10 @@ msgid "Discovery Disabled"
 msgstr "Descoberta desativada"
 
 #: src/service/daemon.js:582
-msgid "Discovery has been disabled due to the number of devices on this network."
-msgstr "A descoberta foi desativada devido ao número de dispositivos nesta rede."
+msgid ""
+"Discovery has been disabled due to the number of devices on this network."
+msgstr ""
+"A descoberta foi desativada devido ao número de dispositivos nesta rede."
 
 #: src/service/daemon.js:584 src/service/daemon.js:594
 msgid "Click to open preferences"
@@ -603,7 +605,7 @@ msgstr "Recebendo \"%s\" de %s"
 #: src/service/plugins/share.js:138 src/service/plugins/share.js:289
 #: src/service/plugins/share.js:407 src/service/ui/keybindings.js:50
 #: src/service/ui/service.js:121 src/service/ui/service.js:300
-#: src/service/ui/settings.js:851 src/shell/donotdisturb.js:215
+#: src/service/ui/settings.js:847 src/shell/donotdisturb.js:215
 msgid "Cancel"
 msgstr "Cancelar"
 
@@ -771,7 +773,8 @@ msgstr "Digite um novo atalho para mudar <b>%s</b>"
 #. TRANSLATORS: Keys for cancelling (␛) or resetting (␈) a shortcut
 #: src/service/ui/keybindings.js:89
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr "Pressione Esc para cancelar ou Backspace para redefinir o atalho de teclado."
+msgstr ""
+"Pressione Esc para cancelar ou Backspace para redefinir o atalho de teclado."
 
 #. TRANSLATORS: When a keyboard shortcut is unavailable
 #. Example: [Ctrl]+[S] is already being used
@@ -800,19 +803,19 @@ msgstr "Painel"
 msgid "User Menu"
 msgstr "Menu do usuário"
 
-#: src/service/ui/settings.js:852
+#: src/service/ui/settings.js:848
 msgid "Open"
 msgstr "Abrir"
 
-#: src/service/ui/settings.js:916 src/service/ui/settings.js:929
+#: src/service/ui/settings.js:912 src/service/ui/settings.js:925
 msgid "On"
 msgstr "Ativada"
 
-#: src/service/ui/settings.js:916 src/service/ui/settings.js:929
+#: src/service/ui/settings.js:912 src/service/ui/settings.js:925
 msgid "Off"
 msgstr "Desativada"
 
-#: src/service/ui/settings.js:1050 src/service/ui/settings.js:1116
+#: src/service/ui/settings.js:1046 src/service/ui/settings.js:1112
 msgid "Disabled"
 msgstr "Desativado"
 
@@ -902,7 +905,8 @@ msgstr[1] "%d horas"
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:29
 msgid "Share links with GSConnect, direct to the browser or by SMS."
-msgstr "Compartilhe links com o GSConnect, diretamente no navegador ou por SMS."
+msgstr ""
+"Compartilhe links com o GSConnect, diretamente no navegador ou por SMS."
 
 #. TRANSLATORS: WebExtension can't connect to GSConnect
 #: webextension/gettext.js:33
@@ -941,8 +945,12 @@ msgstr "Abrir no navegador"
 #~ msgid "This program comes with absolutely no warranty."
 #~ msgstr "Este programa vem com absolutamente nenhuma garantia."
 
-#~ msgid "See the <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html\">GNU General Public License, version 2 or later</a> for details."
-#~ msgstr "Veja a <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html\">GNU General Public License, versão 2 ou posterior</a> para detalhes."
+#~ msgid ""
+#~ "See the <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html"
+#~ "\">GNU General Public License, version 2 or later</a> for details."
+#~ msgstr ""
+#~ "Veja a <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html"
+#~ "\">GNU General Public License, versão 2 ou posterior</a> para detalhes."
 
 #~ msgid "Preferences"
 #~ msgstr "Preferências"
@@ -953,8 +961,12 @@ msgstr "Abrir no navegador"
 #~ msgid "Web Browser Integration"
 #~ msgstr "Integração com navegador"
 
-#~ msgid "Requires <a href=\"%s\">Chrome Extension</a> or <a href=\"%s\">Firefox Add-On</a>"
-#~ msgstr "Requer <a href=\"%s\">extensão do Chrome</a> ou <a href=\"%s\">complemento do Firefox</a>"
+#~ msgid ""
+#~ "Requires <a href=\"%s\">Chrome Extension</a> or <a href=\"%s\">Firefox "
+#~ "Add-On</a>"
+#~ msgstr ""
+#~ "Requer <a href=\"%s\">extensão do Chrome</a> ou <a href=\"%s"
+#~ "\">complemento do Firefox</a>"
 
 #~ msgid "Nautilus extensions changed"
 #~ msgstr "Extensões do Nautilus foram alteradas"
@@ -1018,7 +1030,8 @@ msgstr "Abrir no navegador"
 #~ msgstr "Não foi possível inicializar Atspi"
 
 #~ msgid "Cannot load Caribou virtual keyboard for Unicode support"
-#~ msgstr "Não é possível carregar teclado virtual Caribou para suporte a Unicode"
+#~ msgstr ""
+#~ "Não é possível carregar teclado virtual Caribou para suporte a Unicode"
 
 #~ msgid "Control MPRIS2 enabled media players"
 #~ msgstr "Controlar reprodutores de mídia com suporte a MPRIS2"
@@ -1080,14 +1093,26 @@ msgstr "Abrir no navegador"
 #~ msgid "The <b>Media Player Control</b> plugin must be enabled"
 #~ msgstr "O plugin <b>Controle multimídia</b> precisa ser ativado"
 
-#~ msgid "Ensure that devices are on the same local network with ports 1716 to 1764 open for TCP and UDP connections."
-#~ msgstr "Certifique-se que os dispositivos estão na mesma rede local com as portas 1716 a 1764 abertas para conexões TCP e UDP."
+#~ msgid ""
+#~ "Ensure that devices are on the same local network with ports 1716 to 1764 "
+#~ "open for TCP and UDP connections."
+#~ msgstr ""
+#~ "Certifique-se que os dispositivos estão na mesma rede local com as portas "
+#~ "1716 a 1764 abertas para conexões TCP e UDP."
 
-#~ msgid "To connect an Android device, install the KDE Connect Android app from the <a href=\"%s\">Google Play Store</a> or <a href=\"%s\">F-Droid</a>."
-#~ msgstr "Para conectar um dispositivo Android, instale o app KDE Connect da <a href=\"%s\">Google Play Store</a> ou <a href=\"%s\">F-Droid</a>."
+#~ msgid ""
+#~ "To connect an Android device, install the KDE Connect Android app from "
+#~ "the <a href=\"%s\">Google Play Store</a> or <a href=\"%s\">F-Droid</a>."
+#~ msgstr ""
+#~ "Para conectar um dispositivo Android, instale o app KDE Connect da <a "
+#~ "href=\"%s\">Google Play Store</a> ou <a href=\"%s\">F-Droid</a>."
 
-#~ msgid "Please see the <a href=\"%s\">Wiki</a> for more help or <a href=\"%s\">open an issue</a> on Github to report a problem."
-#~ msgstr "Por favor, veja a <a href=\"%s\">Wiki</a> para mais ajuda ou <a href=\"%s\">abra um chamado</a> no GitHub para reportar um problema."
+#~ msgid ""
+#~ "Please see the <a href=\"%s\">Wiki</a> for more help or <a href=\"%s"
+#~ "\">open an issue</a> on Github to report a problem."
+#~ msgstr ""
+#~ "Por favor, veja a <a href=\"%s\">Wiki</a> para mais ajuda ou <a href=\"%s"
+#~ "\">abra um chamado</a> no GitHub para reportar um problema."
 
 #~ msgid "Error: %s"
 #~ msgstr "Erro: %s"
@@ -1123,8 +1148,10 @@ msgstr "Abrir no navegador"
 #~ msgid "Keyboard Shortcut Unavailable"
 #~ msgstr "Atalhos de teclado indisponíveis"
 
-#~ msgid "The requested keyboard shortcut is already in use and can't be overridden."
-#~ msgstr "O atalho de teclado escolhido já está em uso e não pode ser sobrescrito."
+#~ msgid ""
+#~ "The requested keyboard shortcut is already in use and can't be overridden."
+#~ msgstr ""
+#~ "O atalho de teclado escolhido já está em uso e não pode ser sobrescrito."
 
 #~ msgid "Configure <b>%s</b>"
 #~ msgstr "Configurar <b>%s</b>"
