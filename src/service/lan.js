@@ -95,24 +95,12 @@ var ChannelService = GObject.registerClass({
             let channel = new Core.Channel({ type: 'tcp' });
             let host = connection.get_remote_address().address.to_string();
 
-            debug(host, 'incoming channel');
+            debug(host, 'remote address');
 
             // Accept the connection
-            let success = await channel.accept(connection);
-
-            if (!success) {
-                throw Error('failed to accept connection');
-            }
-
+            await channel.accept(connection);
             channel.identity.body.tcpHost = host;
             channel.identity.body.tcpPort = '1716';
-
-            // Bail if the deviceId is missing
-            if (!channel.identity.body.hasOwnProperty('deviceId')) {
-                logWarning('missing deviceId', channel.identity.body.deviceName);
-                channel.close();
-                return;
-            }
 
             let device = this.service._devices.get(channel.identity.body.deviceId);
 
@@ -139,7 +127,7 @@ var ChannelService = GObject.registerClass({
             // Attach a device to the channel
             channel.attach(device);
         } catch (e) {
-            debug(e, connection.get_remote_address().address.to_string());
+            debug(e);
         }
     }
 
@@ -265,13 +253,8 @@ var ChannelService = GObject.registerClass({
             });
 
             // Connect the channel and attach it to the device on success
-            let success = await channel.open(connection);
-
-            if (success) {
-                channel.attach(device);
-            } else {
-                device._channel = null;
-            }
+            await channel.open(connection);
+            channel.attach(device);
         } catch (e) {
             logError(e);
 
@@ -401,7 +384,7 @@ var Transfer = class Transfer extends Core.Transfer {
                         port += 1;
                         continue;
                     } else {
-                        throw new Error('Failed to open port');
+                        throw e;
                     }
                 }
 

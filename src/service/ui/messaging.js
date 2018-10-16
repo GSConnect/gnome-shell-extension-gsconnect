@@ -309,19 +309,16 @@ var ConversationWindow = GObject.registerClass({
         // Convenience actions for syncing Contacts/SMS from the menu
         if (this.device.get_outgoing_supported('contacts.response_vcards')) {
             let sync_contacts = new Gio.SimpleAction({ name: 'sync-contacts' });
-            sync_contacts.connect('activate', this._sync_contacts.bind(this));
+            sync_contacts.connect('activate', () => this.device.lookup_plugin('contacts').connected());
             this.add_action(sync_contacts);
         }
 
         if (this.device.get_outgoing_supported('sms.messages')) {
             let sync_messages = new Gio.SimpleAction({ name: 'sync-messages' });
-            sync_messages.connect('activate', this._sync_messages.bind(this));
+            sync_messages.connect('activate', () => this.device.lookup_plugin('sms').connected());
             this.add_action(sync_messages);
         }
 
-        // We track the local id's of remote sms notifications so we can
-        // withdraw them locally (thus closing them remotely) when focused.
-        this._notifications = [];
 
         // Conversations
         this.conversation_list.set_sort_func(this._sortConversations);
@@ -354,7 +351,8 @@ var ConversationWindow = GObject.registerClass({
         );
 
         // Set the default view
-        this._showPrevious();
+        this._ready = true;
+        (this.address) ? this._showMessages() : this._showPrevious();
     }
 
     get address() {
@@ -365,6 +363,7 @@ var ConversationWindow = GObject.registerClass({
         if (value) {
             this._address = value;
             this._displayNumber = value;
+            this._notifications = [];
 
             // Ensure we have a contact stored
             let contact = this.device.contacts.query({
@@ -385,7 +384,9 @@ var ConversationWindow = GObject.registerClass({
                 }
             }
 
-            this._showMessages();
+            if (this._ready) {
+                this._showMessages();
+            }
         } else {
             this._address = null;
             this._contact = null;
@@ -452,23 +453,6 @@ var ConversationWindow = GObject.registerClass({
 
         return false;
     }
-
-    /**
-     * Sync Actions
-     */
-     _sync_contacts() {
-        let contacts = this.device.lookup_plugin('contacts');
-
-        if (contacts) {
-            contacts.connected();
-        }
-     }
-
-     _sync_messages() {
-        if (this.sms) {
-            sms.connected();
-        }
-     }
 
     /**
      * View selection
@@ -656,9 +640,15 @@ var ConversationWindow = GObject.registerClass({
         entry.secondary_icon_sensitive = (entry.text.length);
     }
 
-    _onEntryHasFocus(entry) {
-        while (this._notifications.length > 0) {
-            this.device.hideNotification(this._notifications.pop());
+    _onEntryFocused(entry) {
+        if (entry.has_focus) {
+            let notification = this.device.lookup_plugin('notification');
+
+            if (notification) {
+                while (this._notifications.length > 0) {
+                    notification.closeNotification(this._notifications.pop());
+                }
+            }
         }
     }
 

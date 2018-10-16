@@ -22,7 +22,7 @@
       <item>
         <attribute name="label" translatable="yes">Help</attribute>
         <attribute name="action">app.wiki</attribute>
-        <attribute name="target">Troubleshooting#connecting-an-android-device</attribute>
+        <attribute name="target">Help</attribute>
       </item>
       <item>
         <attribute name="label" translatable="yes">Debugger</attribute>

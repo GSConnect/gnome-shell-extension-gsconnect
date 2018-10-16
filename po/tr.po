@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-11 09:55-0700\n"
+"POT-Creation-Date: 2018-10-15 20:42-0700\n"
 "PO-Revision-Date: 2018-10-12 09:55-0700\n"
 "Last-Translator: Serdar Sağlam <teknomobil@yandex.com>\n"
 "Language-Team: Türkçe <teknomobil@yandex.com>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: data/conversation-window.ui:15 src/service/ui/messaging.js:492
+#: data/conversation-window.ui:15 src/service/ui/messaging.js:476
 msgid "Conversations"
 msgstr "Konuşmalar"
 
@@ -30,12 +30,33 @@ msgstr "Bir mesaj yaz"
 msgid "Device is disconnected"
 msgstr "Cihaz bağlantısı kesildi"
 
-#: data/device.ui:307
+#: data/device.ui:67 src/service/plugins/battery.js:12
+msgid "Battery"
+msgstr "Pil"
+
+#: data/device.ui:115
+#, fuzzy
+msgid "Clipboard Sync"
+msgstr "Pano"
+
+#: data/device.ui:171
+msgid "Media Players"
+msgstr ""
+
+#: data/device.ui:219
+msgid "Mouse & Keyboard"
+msgstr ""
+
+#: data/device.ui:267
+msgid "Volume Control"
+msgstr ""
+
+#: data/device.ui:307 data/device.ui:1404
 msgid "Sharing"
 msgstr "Paylaşım"
 
-#: data/device.ui:336 data/device.ui:533 src/service/plugins/runcommand.js:18
-#: src/service/plugins/runcommand.js:173
+#: data/device.ui:336 data/device.ui:533 data/device.ui:1447
+#: src/service/plugins/runcommand.js:18 src/service/plugins/runcommand.js:173
 msgid "Commands"
 msgstr "Komutlar"
 
@@ -51,11 +72,17 @@ msgstr "Yürütülebilir dosya seçin"
 msgid "Command Line"
 msgstr "Komut satırı"
 
+#: data/device.ui:596
+#, fuzzy
+msgid "Share Notifications"
+msgstr "Bildirim Gönder"
+
 #: data/device.ui:634
 msgid "Applications"
 msgstr "Uygulamalar"
 
-#: data/device.ui:673 src/service/plugins/notification.js:12
+#: data/device.ui:673 data/device.ui:1490
+#: src/service/plugins/notification.js:12
 msgid "Notifications"
 msgstr "Bildirimler"
 
@@ -63,11 +90,24 @@ msgstr "Bildirimler"
 msgid "Incoming Calls"
 msgstr "Gelen Aramalar"
 
+#: data/device.ui:753 data/device.ui:898
+#, fuzzy
+msgid "Volume"
+msgstr "Sistem Sesi"
+
+#: data/device.ui:811 data/device.ui:956
+msgid "Pause Media"
+msgstr ""
+
 #: data/device.ui:850
 msgid "Ongoing Calls"
 msgstr "Aktif Aramalar"
 
-#: data/device.ui:1045 src/service/plugins/telephony.js:11
+#: data/device.ui:1005
+msgid "Mute Microphone"
+msgstr ""
+
+#: data/device.ui:1045 data/device.ui:1533 src/service/plugins/telephony.js:12
 msgid "Telephony"
 msgstr "Telefon"
 
@@ -103,9 +143,14 @@ msgstr "Aygıtı sil"
 msgid "Unpair and remove all settings and files"
 msgstr "Tüm ayarları sıfırla ve dosyaları kaldır"
 
-#: data/device.ui:1363
+#: data/device.ui:1363 data/device.ui:1619
 msgid "Advanced"
 msgstr "Gelişmiş"
+
+#: data/device.ui:1576
+#, fuzzy
+msgid "Keyboard Shortcuts"
+msgstr "Komut Kısayolları"
 
 #: data/menus.ui:5 src/service/ui/service.js:115
 msgid "Connect to…"
@@ -169,7 +214,7 @@ msgstr "Düşük"
 
 #. TRANSLATORS: Mute the system volume
 #. TRANSLATORS: Silence the phone ringer
-#: data/menus.ui:104 data/menus.ui:130 src/service/plugins/telephony.js:174
+#: data/menus.ui:104 data/menus.ui:130 src/service/plugins/telephony.js:175
 msgid "Mute"
 msgstr "Sessiz"
 
@@ -177,17 +222,58 @@ msgstr "Sessiz"
 msgid "Appearance"
 msgstr "Görünüm"
 
-#: data/settings.ui:578
+#: data/settings.ui:383
+msgid "Display Mode"
+msgstr ""
+
+#: data/settings.ui:435
+#, fuzzy
+msgid "Show Offline Devices"
+msgstr "Mobil Aygıtlar"
+
+#: data/settings.ui:486
+#, fuzzy
+msgid "Show Unpaired Devices"
+msgstr "Mobil Aygıtlar"
+
+#: data/settings.ui:537
+msgid "Show Battery Icon"
+msgstr ""
+
+#: data/settings.ui:578 data/settings.ui:1167
 msgid "Shell"
 msgstr "Kabuk"
 
-#: data/settings.ui:764
+#: data/settings.ui:639
+#, fuzzy
+msgid "Discoverable"
+msgstr "Keşif Devre Dışı"
+
+#: data/settings.ui:711
+#, fuzzy
+msgid "Restart Service"
+msgstr "Servis"
+
+#: data/settings.ui:764 data/settings.ui:1210
 msgid "Service"
 msgstr "Servis"
 
 #: data/settings.ui:823
 msgid "Remote Filesystems"
 msgstr "Uzak Dosya Sistemleri"
+
+#: data/settings.ui:859
+msgid "Sound Effects"
+msgstr ""
+
+#: data/settings.ui:896
+#, fuzzy
+msgid "Desktop Contacts"
+msgstr "Kişileri Eşitle"
+
+#: data/settings.ui:933
+msgid "Files Integration"
+msgstr ""
 
 #: data/settings.ui:960
 msgid "Additional Features"
@@ -206,7 +292,7 @@ msgid "KDE Connect"
 msgstr "KDE Connect"
 
 #. TRANSLATORS: A phone number type
-#: data/settings.ui:1108 src/service/ui/contacts.js:57
+#: data/settings.ui:1108 data/settings.ui:1253 src/service/ui/contacts.js:57
 #: src/service/ui/contacts.js:78
 msgid "Other"
 msgstr "Diğer"
@@ -230,7 +316,7 @@ msgstr "Mobil Ayarları"
 
 #. TRANSLATORS: Extension name
 #: src/extension.js:146 src/extension.js:211 src/service/daemon.js:95
-#: src/service/daemon.js:397 webextension/gettext.js:27
+#: src/service/daemon.js:400 webextension/gettext.js:27
 msgid "GSConnect"
 msgstr "GSConnect"
 
@@ -240,88 +326,87 @@ msgid "Send To Mobile Device"
 msgstr "Mobil Cihaza Gönder"
 
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
-#: src/service/daemon.js:399
+#: src/service/daemon.js:402
 msgid "translator-credits"
 msgstr "çevirmen"
 
-#: src/service/daemon.js:421
+#: src/service/daemon.js:424
 msgid "Report"
 msgstr "Raporla"
 
-#: src/service/daemon.js:549
+#: src/service/daemon.js:552
 msgid "Authentication Failure"
 msgstr "Kimlik Doğrulama Hatası"
 
-#: src/service/daemon.js:558
+#: src/service/daemon.js:561
 msgid "Network Error"
 msgstr "Ağ Hatası"
 
-#: src/service/daemon.js:559 src/service/daemon.js:569
+#: src/service/daemon.js:562 src/service/daemon.js:572
 msgid "Click for help troubleshooting"
 msgstr "Yardım sorun giderme için tıklayın"
 
-#: src/service/daemon.js:568
+#: src/service/daemon.js:571
 msgid "PulseAudio Error"
 msgstr "PulseAudio Hatası"
 
-#: src/service/daemon.js:578
+#: src/service/daemon.js:581
 msgid "Discovery Disabled"
 msgstr "Keşif Devre Dışı"
 
-#: src/service/daemon.js:579
+#: src/service/daemon.js:582
 msgid ""
 "Discovery has been disabled due to the number of devices on this network."
-msgstr ""
-"Bu ağdaki aygıt sayısı nedeniyle keşif devre dışı bırakıldı."
+msgstr "Bu ağdaki aygıt sayısı nedeniyle keşif devre dışı bırakıldı."
 
-#: src/service/daemon.js:581 src/service/daemon.js:591
+#: src/service/daemon.js:584 src/service/daemon.js:594
 msgid "Click to open preferences"
 msgstr "Tercihleri açmak için tıklayın"
 
-#: src/service/daemon.js:590
+#: src/service/daemon.js:593
 msgid "Additional Software Required"
 msgstr "Ek Yazılım Gerekli"
 
-#: src/service/daemon.js:599
+#: src/service/daemon.js:602
 #, javascript-format
 msgid "%s Plugin Failed To Load"
 msgstr "%s Eklentisi Yüklenemedi"
 
-#: src/service/daemon.js:600 src/service/daemon.js:617
-#: src/service/daemon.js:629
+#: src/service/daemon.js:603 src/service/daemon.js:620
+#: src/service/daemon.js:632
 msgid "Click for more information"
 msgstr "Daha fazla bilgi için tıklayın"
 
-#: src/service/daemon.js:615
+#: src/service/daemon.js:618
 msgid "Remote Filesystem Error"
 msgstr "Uzak Dosya Sistemi Hatası"
 
-#: src/service/daemon.js:616
+#: src/service/daemon.js:619
 #, javascript-format
 msgid "%s is using an incompatible SSH library"
 msgstr "%s uyumsuz bir SSH Kütüphanesi kullanıyor"
 
-#: src/service/daemon.js:627
+#: src/service/daemon.js:630
 msgid "Wayland Not Supported"
 msgstr "Wayland Desteklenmiyor"
 
-#: src/service/daemon.js:628
+#: src/service/daemon.js:631
 msgid "Remote input not supported on Wayland"
 msgstr "Wayland uzaktan giriş desteklenmiyor"
 
 #. Create an urgent notification
-#: src/service/daemon.js:652
+#: src/service/daemon.js:655
 #, javascript-format
 msgid "GSConnect: %s"
 msgstr "GSConnect: %s"
 
 #. TRANSLATORS: Share URL by SMS
-#: src/service/daemon.js:798 src/service/plugins/sms.js:49
+#: src/service/daemon.js:801 src/service/plugins/sms.js:49
 #: webextension/gettext.js:39
 msgid "Send SMS"
 msgstr "Sms Gönder"
 
-#: src/service/daemon.js:802
+#: src/service/daemon.js:805
 msgid "Dial Number"
 msgstr "Numara Çevir"
 
@@ -384,10 +469,6 @@ msgstr "Reddet"
 msgid "Accept"
 msgstr "Kabul Et"
 
-#: src/service/plugins/battery.js:12
-msgid "Battery"
-msgstr "Pil"
-
 #: src/service/plugins/battery.js:188 src/service/plugins/findmyphone.js:18
 msgid "Locate"
 msgstr "Bulma"
@@ -416,6 +497,11 @@ msgstr "Panoya Gönder"
 msgid "Clipboard Pull"
 msgstr "Panodan Al"
 
+#: src/service/plugins/contacts.js:12
+#, fuzzy
+msgid "Contacts"
+msgstr "Kişileri Eşitle"
+
 #: src/service/plugins/findmyphone.js:12
 msgid "Find My Phone"
 msgstr "Telefonumu bul"
@@ -441,15 +527,20 @@ msgstr "Fare Altlığı"
 msgid "MPRIS"
 msgstr "Müzikler"
 
-#: src/service/plugins/notification.js:26
+#: src/service/plugins/notification.js:25
 msgid "Cancel Notification"
 msgstr "Bildirimi İptal Et"
 
-#: src/service/plugins/notification.js:34
+#: src/service/plugins/notification.js:33
 msgid "Close Notification"
 msgstr "Bildirimi Kapat"
 
-#: src/service/plugins/notification.js:42
+#: src/service/plugins/notification.js:41
+#, fuzzy
+msgid "Reply Notification"
+msgstr "Bildirimi İptal Et"
+
+#: src/service/plugins/notification.js:49
 msgid "Send Notification"
 msgstr "Bildirim Gönder"
 
@@ -505,8 +596,8 @@ msgstr "Dosyayı Paylaşv"
 msgid "Share Text"
 msgstr "Yazıyı Paylaş"
 
-#: src/service/plugins/share.js:42 src/service/ui/messaging.js:857
-#: src/service/ui/messaging.js:865
+#: src/service/plugins/share.js:42 src/service/ui/messaging.js:847
+#: src/service/ui/messaging.js:855
 msgid "Share Link"
 msgstr "Linki Paylaş"
 
@@ -619,17 +710,17 @@ msgstr "Sms Paylaş"
 msgid "System Volume"
 msgstr "Sistem Sesi"
 
-#: src/service/plugins/telephony.js:21
+#: src/service/plugins/telephony.js:22
 msgid "Mute Call"
 msgstr "Sessiz Arama"
 
 #. TRANSLATORS: The phone is ringing
-#: src/service/plugins/telephony.js:170
+#: src/service/plugins/telephony.js:171
 msgid "Incoming call"
 msgstr "Gelen çağrı"
 
 #. TRANSLATORS: A phone call is active
-#: src/service/plugins/telephony.js:185
+#: src/service/plugins/telephony.js:186
 msgid "Ongoing call"
 msgstr "Sürekli arama"
 
@@ -653,6 +744,10 @@ msgstr "Mobil"
 msgid "Home"
 msgstr "Ev"
 
+#: src/service/ui/contacts.js:95 src/service/ui/contacts.js:387
+msgid "Unknown Contact"
+msgstr "Bilinmeyen İletişim"
+
 #: src/service/ui/contacts.js:194 src/service/ui/contacts.js:195
 msgid "Type a phone number or name"
 msgstr "Telefon numarası veya ad yazın"
@@ -667,10 +762,6 @@ msgstr "Konuşma başlatmak için kişileri ekle"
 #, javascript-format
 msgid "Send to %s"
 msgstr "Gönder %s"
-
-#: src/service/ui/contacts.js:387
-msgid "Unknown Contact"
-msgstr "Bilinmeyen İletişim"
 
 #. TRANSLATORS: Title of keyboard shortcut dialog
 #: src/service/ui/keybindings.js:39
@@ -692,7 +783,8 @@ msgstr "Değiştirmek için yeni bir kısayol girin <b>%s</b>"
 #. TRANSLATORS: Keys for cancelling (␛) or resetting (␈) a shortcut
 #: src/service/ui/keybindings.js:89
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr "Klavye kısayolunu sıfırlamak için iptal, geri almak için ESC tuşuna basın."
+msgstr ""
+"Klavye kısayolunu sıfırlamak için iptal, geri almak için ESC tuşuna basın."
 
 #. TRANSLATORS: When a keyboard shortcut is unavailable
 #. Example: [Ctrl]+[S] is already being used
@@ -755,7 +847,7 @@ msgstr "%d dakika"
 msgid "Yesterday・%s"
 msgstr "Dün・%s"
 
-#: src/service/ui/messaging.js:874
+#: src/service/ui/messaging.js:864
 msgid "New Message"
 msgstr "Yeni Mesaj"
 

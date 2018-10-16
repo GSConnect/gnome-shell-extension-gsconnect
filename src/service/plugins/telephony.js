@@ -1,5 +1,6 @@
 'use strict';
 
+const GdkPixbuf = imports.gi.GdkPixbuf;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
@@ -64,7 +65,7 @@ var Plugin = GObject.registerClass({
 
                 if (packet.body.phoneThumbnail) {
                     let data = GLib.base64_decode(packet.body.phoneThumbnail);
-                    contact.avatar = await this._store.setAvatarContents(data);
+                    contact.avatar = await this.device.contacts.setAvatarContents(data);
                     this.device.contacts.update();
                 }
             }
@@ -198,17 +199,6 @@ var Plugin = GObject.registerClass({
     _handleMessage(packet) {
         if (!packet.body.phoneNumber) {
             return;
-        }
-
-        // track the duplicate as soon as possible
-        let notification = this.device.lookup_plugin('notification');
-
-        if (notification) {
-            let sender = packet.body.contactName || packet.body.phoneNumber;
-            notification.trackDuplicate(
-                `${sender}: ${packet.body.messageBody}`,
-                packet.body.phoneNumber
-            );
         }
 
         // Bail if SMS is disabled or the device supports the new packets

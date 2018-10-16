@@ -26,11 +26,11 @@
         }
     },
     "popupMenuDisconnected": {
-        "message": "Rozłączono z GSConnect.",
+        "message": "Usługa jest niedostępna",
         "description": "Popup Menu label when disconnected from the Gnome Shell extension"
     },
     "popupMenuNoDevices": {
-        "message": "Nie odnaleziono urządzeń…",
+        "message": "Nie odnaleziono żadnego urządzenia",
         "description": "Popup Menu label when no devices are connected or have supported plugins enabled"
     },
     "shareMessage": {

@@ -520,11 +520,10 @@
             <child>
               <object class="GtkEntry" id="notification-requestreplyid">
                 <property name="visible">True</property>
-                <property name="sensitive">False</property>
                 <property name="can_focus">True</property>
                 <property name="hexpand">True</property>
                 <property name="editable">False</property>
-                <property name="text" translatable="yes">00000000-0000-4000-0000-000000000000</property>
+                <property name="text" translatable="yes">23b1b660-8eb8-4c13-a232-79104300c114</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>

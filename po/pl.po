@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-11 12:40-0700\n"
+"POT-Creation-Date: 2018-10-15 20:42-0700\n"
 "PO-Revision-Date: 2018-10-11 21:55+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
@@ -20,7 +20,7 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2);\n"
 
-#: data/conversation-window.ui:15 src/service/ui/messaging.js:492
+#: data/conversation-window.ui:15 src/service/ui/messaging.js:476
 msgid "Conversations"
 msgstr "Rozmowy"
 
@@ -32,12 +32,33 @@ msgstr "Napisz wiadomość"
 msgid "Device is disconnected"
 msgstr "Urządzenie jest rozłączone"
 
-#: data/device.ui:307
+#: data/device.ui:67 src/service/plugins/battery.js:12
+msgid "Battery"
+msgstr "Akumulator"
+
+#: data/device.ui:115
+#, fuzzy
+msgid "Clipboard Sync"
+msgstr "Schowek"
+
+#: data/device.ui:171
+msgid "Media Players"
+msgstr ""
+
+#: data/device.ui:219
+msgid "Mouse & Keyboard"
+msgstr ""
+
+#: data/device.ui:267
+msgid "Volume Control"
+msgstr ""
+
+#: data/device.ui:307 data/device.ui:1404
 msgid "Sharing"
 msgstr "Udostępnianie"
 
-#: data/device.ui:336 data/device.ui:533 src/service/plugins/runcommand.js:18
-#: src/service/plugins/runcommand.js:173
+#: data/device.ui:336 data/device.ui:533 data/device.ui:1447
+#: src/service/plugins/runcommand.js:18 src/service/plugins/runcommand.js:173
 msgid "Commands"
 msgstr "Polecenia"
 
@@ -53,11 +74,17 @@ msgstr "Wybiera plik wykonywalny"
 msgid "Command Line"
 msgstr "Wiersz poleceń"
 
+#: data/device.ui:596
+#, fuzzy
+msgid "Share Notifications"
+msgstr "Wyślij powiadomienie"
+
 #: data/device.ui:634
 msgid "Applications"
 msgstr "Programy"
 
-#: data/device.ui:673 src/service/plugins/notification.js:12
+#: data/device.ui:673 data/device.ui:1490
+#: src/service/plugins/notification.js:12
 msgid "Notifications"
 msgstr "Powiadomienia"
 
@@ -65,11 +92,24 @@ msgstr "Powiadomienia"
 msgid "Incoming Calls"
 msgstr "Połączenia przychodzące"
 
+#: data/device.ui:753 data/device.ui:898
+#, fuzzy
+msgid "Volume"
+msgstr "Głośność systemu"
+
+#: data/device.ui:811 data/device.ui:956
+msgid "Pause Media"
+msgstr ""
+
 #: data/device.ui:850
 msgid "Ongoing Calls"
 msgstr "Trwające połączenia"
 
-#: data/device.ui:1045 src/service/plugins/telephony.js:11
+#: data/device.ui:1005
+msgid "Mute Microphone"
+msgstr ""
+
+#: data/device.ui:1045 data/device.ui:1533 src/service/plugins/telephony.js:12
 msgid "Telephony"
 msgstr "Komunikacja"
 
@@ -105,9 +145,14 @@ msgstr "Usuń to urządzenie"
 msgid "Unpair and remove all settings and files"
 msgstr "Odwiąż i usuń wszystkie ustawienia i pliki"
 
-#: data/device.ui:1363
+#: data/device.ui:1363 data/device.ui:1619
 msgid "Advanced"
 msgstr "Zaawansowane"
+
+#: data/device.ui:1576
+#, fuzzy
+msgid "Keyboard Shortcuts"
+msgstr "Skróty poleceń"
 
 #: data/menus.ui:5 src/service/ui/service.js:115
 msgid "Connect to…"
@@ -171,7 +216,7 @@ msgstr "Ciszej"
 
 #. TRANSLATORS: Mute the system volume
 #. TRANSLATORS: Silence the phone ringer
-#: data/menus.ui:104 data/menus.ui:130 src/service/plugins/telephony.js:174
+#: data/menus.ui:104 data/menus.ui:130 src/service/plugins/telephony.js:175
 msgid "Mute"
 msgstr "Wycisz"
 
@@ -179,17 +224,58 @@ msgstr "Wycisz"
 msgid "Appearance"
 msgstr "Wygląd"
 
-#: data/settings.ui:578
+#: data/settings.ui:383
+msgid "Display Mode"
+msgstr ""
+
+#: data/settings.ui:435
+#, fuzzy
+msgid "Show Offline Devices"
+msgstr "Urządzenia mobilne"
+
+#: data/settings.ui:486
+#, fuzzy
+msgid "Show Unpaired Devices"
+msgstr "Urządzenia mobilne"
+
+#: data/settings.ui:537
+msgid "Show Battery Icon"
+msgstr ""
+
+#: data/settings.ui:578 data/settings.ui:1167
 msgid "Shell"
 msgstr "Powłoka"
 
-#: data/settings.ui:764
+#: data/settings.ui:639
+#, fuzzy
+msgid "Discoverable"
+msgstr "Wykrywanie jest wyłączone"
+
+#: data/settings.ui:711
+#, fuzzy
+msgid "Restart Service"
+msgstr "Usługa"
+
+#: data/settings.ui:764 data/settings.ui:1210
 msgid "Service"
 msgstr "Usługa"
 
 #: data/settings.ui:823
 msgid "Remote Filesystems"
 msgstr "Zdalne systemy plików"
+
+#: data/settings.ui:859
+msgid "Sound Effects"
+msgstr ""
+
+#: data/settings.ui:896
+#, fuzzy
+msgid "Desktop Contacts"
+msgstr "Kontakty"
+
+#: data/settings.ui:933
+msgid "Files Integration"
+msgstr ""
 
 #: data/settings.ui:960
 msgid "Additional Features"
@@ -208,7 +294,7 @@ msgid "KDE Connect"
 msgstr "KDE Connect"
 
 #. TRANSLATORS: A phone number type
-#: data/settings.ui:1108 src/service/ui/contacts.js:57
+#: data/settings.ui:1108 data/settings.ui:1253 src/service/ui/contacts.js:57
 #: src/service/ui/contacts.js:78
 msgid "Other"
 msgstr "Inne"
@@ -388,10 +474,6 @@ msgstr "Odrzuć"
 msgid "Accept"
 msgstr "Przyjmij"
 
-#: src/service/plugins/battery.js:12
-msgid "Battery"
-msgstr "Akumulator"
-
 #: src/service/plugins/battery.js:188 src/service/plugins/findmyphone.js:18
 msgid "Locate"
 msgstr "Znajdź"
@@ -449,15 +531,20 @@ msgstr "Podkładka pod mysz"
 msgid "MPRIS"
 msgstr "MPRIS"
 
-#: src/service/plugins/notification.js:26
+#: src/service/plugins/notification.js:25
 msgid "Cancel Notification"
 msgstr "Anuluj powiadomienie"
 
-#: src/service/plugins/notification.js:34
+#: src/service/plugins/notification.js:33
 msgid "Close Notification"
 msgstr "Zamknij powiadomienie"
 
-#: src/service/plugins/notification.js:42
+#: src/service/plugins/notification.js:41
+#, fuzzy
+msgid "Reply Notification"
+msgstr "Anuluj powiadomienie"
+
+#: src/service/plugins/notification.js:49
 msgid "Send Notification"
 msgstr "Wyślij powiadomienie"
 
@@ -513,8 +600,8 @@ msgstr "Udostępnij plik"
 msgid "Share Text"
 msgstr "Udostępnij tekst"
 
-#: src/service/plugins/share.js:42 src/service/ui/messaging.js:857
-#: src/service/ui/messaging.js:865
+#: src/service/plugins/share.js:42 src/service/ui/messaging.js:847
+#: src/service/ui/messaging.js:855
 msgid "Share Link"
 msgstr "Udostępnij odnośnik"
 
@@ -627,17 +714,17 @@ msgstr "Udostępnij SMS"
 msgid "System Volume"
 msgstr "Głośność systemu"
 
-#: src/service/plugins/telephony.js:21
+#: src/service/plugins/telephony.js:22
 msgid "Mute Call"
 msgstr "Wycisz połączenie"
 
 #. TRANSLATORS: The phone is ringing
-#: src/service/plugins/telephony.js:170
+#: src/service/plugins/telephony.js:171
 msgid "Incoming call"
 msgstr "Połączenie przychodzące"
 
 #. TRANSLATORS: A phone call is active
-#: src/service/plugins/telephony.js:185
+#: src/service/plugins/telephony.js:186
 msgid "Ongoing call"
 msgstr "Trwające połączenie"
 
@@ -661,6 +748,10 @@ msgstr "Komórkowy"
 msgid "Home"
 msgstr "Domowy"
 
+#: src/service/ui/contacts.js:95 src/service/ui/contacts.js:387
+msgid "Unknown Contact"
+msgstr "Nieznany kontakt"
+
 #: src/service/ui/contacts.js:194 src/service/ui/contacts.js:195
 msgid "Type a phone number or name"
 msgstr "Numer telefonu lub nazwa kontaktu"
@@ -675,10 +766,6 @@ msgstr "Dodanie osób rozpocznie rozmowę"
 #, javascript-format
 msgid "Send to %s"
 msgstr "Wyślij do „%s”"
-
-#: src/service/ui/contacts.js:387
-msgid "Unknown Contact"
-msgstr "Nieznany kontakt"
 
 #. TRANSLATORS: Title of keyboard shortcut dialog
 #: src/service/ui/keybindings.js:39
@@ -763,7 +850,7 @@ msgstr "%d min"
 msgid "Yesterday・%s"
 msgstr "Wczoraj・%s"
 
-#: src/service/ui/messaging.js:874
+#: src/service/ui/messaging.js:864
 msgid "New Message"
 msgstr "Nowa wiadomość"
 

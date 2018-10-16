@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-11 12:40-0700\n"
+"POT-Creation-Date: 2018-10-15 20:42-0700\n"
 "PO-Revision-Date: 2018-10-11 15:16-0500\n"
 "Last-Translator: Adolfo Jayme Barrientos <fitojb@ubuntu.com>\n"
 "Language-Team: \n"
@@ -18,7 +18,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 2.1.1\n"
 
-#: data/conversation-window.ui:15 src/service/ui/messaging.js:492
+#: data/conversation-window.ui:15 src/service/ui/messaging.js:476
 msgid "Conversations"
 msgstr "Conversaciones"
 
@@ -30,12 +30,33 @@ msgstr "Escriba un mensaje"
 msgid "Device is disconnected"
 msgstr "El dispositivo está desconectado"
 
-#: data/device.ui:307
+#: data/device.ui:67 src/service/plugins/battery.js:12
+msgid "Battery"
+msgstr "Batería"
+
+#: data/device.ui:115
+#, fuzzy
+msgid "Clipboard Sync"
+msgstr "Portapapeles"
+
+#: data/device.ui:171
+msgid "Media Players"
+msgstr ""
+
+#: data/device.ui:219
+msgid "Mouse & Keyboard"
+msgstr ""
+
+#: data/device.ui:267
+msgid "Volume Control"
+msgstr ""
+
+#: data/device.ui:307 data/device.ui:1404
 msgid "Sharing"
 msgstr "Compartición"
 
-#: data/device.ui:336 data/device.ui:533 src/service/plugins/runcommand.js:18
-#: src/service/plugins/runcommand.js:173
+#: data/device.ui:336 data/device.ui:533 data/device.ui:1447
+#: src/service/plugins/runcommand.js:18 src/service/plugins/runcommand.js:173
 msgid "Commands"
 msgstr "Órdenes"
 
@@ -51,11 +72,17 @@ msgstr "Elija un ejecutable"
 msgid "Command Line"
 msgstr "Línea de órdenes"
 
+#: data/device.ui:596
+#, fuzzy
+msgid "Share Notifications"
+msgstr "Enviar notificación"
+
 #: data/device.ui:634
 msgid "Applications"
 msgstr "Aplicaciones"
 
-#: data/device.ui:673 src/service/plugins/notification.js:12
+#: data/device.ui:673 data/device.ui:1490
+#: src/service/plugins/notification.js:12
 msgid "Notifications"
 msgstr "Notificaciones"
 
@@ -63,11 +90,24 @@ msgstr "Notificaciones"
 msgid "Incoming Calls"
 msgstr "Llamadas entrantes"
 
+#: data/device.ui:753 data/device.ui:898
+#, fuzzy
+msgid "Volume"
+msgstr "Volumen del sistema"
+
+#: data/device.ui:811 data/device.ui:956
+msgid "Pause Media"
+msgstr ""
+
 #: data/device.ui:850
 msgid "Ongoing Calls"
 msgstr "Llamadas en curso"
 
-#: data/device.ui:1045 src/service/plugins/telephony.js:11
+#: data/device.ui:1005
+msgid "Mute Microphone"
+msgstr ""
+
+#: data/device.ui:1045 data/device.ui:1533 src/service/plugins/telephony.js:12
 msgid "Telephony"
 msgstr "Telefonía"
 
@@ -103,9 +143,14 @@ msgstr "Eliminar este dispositivo"
 msgid "Unpair and remove all settings and files"
 msgstr "Desemparejar y eliminar todos los archivos y las configuraciones"
 
-#: data/device.ui:1363
+#: data/device.ui:1363 data/device.ui:1619
 msgid "Advanced"
 msgstr "Avanzado"
+
+#: data/device.ui:1576
+#, fuzzy
+msgid "Keyboard Shortcuts"
+msgstr "Atajos de órdenes"
 
 #: data/menus.ui:5 src/service/ui/service.js:115
 msgid "Connect to…"
@@ -169,7 +214,7 @@ msgstr "Disminuir"
 
 #. TRANSLATORS: Mute the system volume
 #. TRANSLATORS: Silence the phone ringer
-#: data/menus.ui:104 data/menus.ui:130 src/service/plugins/telephony.js:174
+#: data/menus.ui:104 data/menus.ui:130 src/service/plugins/telephony.js:175
 msgid "Mute"
 msgstr "Silenciar"
 
@@ -177,17 +222,58 @@ msgstr "Silenciar"
 msgid "Appearance"
 msgstr "Apariencia"
 
-#: data/settings.ui:578
+#: data/settings.ui:383
+msgid "Display Mode"
+msgstr ""
+
+#: data/settings.ui:435
+#, fuzzy
+msgid "Show Offline Devices"
+msgstr "Dispositivos móviles"
+
+#: data/settings.ui:486
+#, fuzzy
+msgid "Show Unpaired Devices"
+msgstr "Dispositivos móviles"
+
+#: data/settings.ui:537
+msgid "Show Battery Icon"
+msgstr ""
+
+#: data/settings.ui:578 data/settings.ui:1167
 msgid "Shell"
 msgstr "Consola"
 
-#: data/settings.ui:764
+#: data/settings.ui:639
+#, fuzzy
+msgid "Discoverable"
+msgstr "Descubrimiento desactivado"
+
+#: data/settings.ui:711
+#, fuzzy
+msgid "Restart Service"
+msgstr "Servicio"
+
+#: data/settings.ui:764 data/settings.ui:1210
 msgid "Service"
 msgstr "Servicio"
 
 #: data/settings.ui:823
 msgid "Remote Filesystems"
 msgstr "Sistemas de archivos remotos"
+
+#: data/settings.ui:859
+msgid "Sound Effects"
+msgstr ""
+
+#: data/settings.ui:896
+#, fuzzy
+msgid "Desktop Contacts"
+msgstr "Contactos"
+
+#: data/settings.ui:933
+msgid "Files Integration"
+msgstr ""
 
 #: data/settings.ui:960
 msgid "Additional Features"
@@ -206,7 +292,7 @@ msgid "KDE Connect"
 msgstr "KDE Connect"
 
 #. TRANSLATORS: A phone number type
-#: data/settings.ui:1108 src/service/ui/contacts.js:57
+#: data/settings.ui:1108 data/settings.ui:1253 src/service/ui/contacts.js:57
 #: src/service/ui/contacts.js:78
 msgid "Other"
 msgstr "Otro"
@@ -385,10 +471,6 @@ msgstr "Rechazar"
 msgid "Accept"
 msgstr "Aceptar"
 
-#: src/service/plugins/battery.js:12
-msgid "Battery"
-msgstr "Batería"
-
 #: src/service/plugins/battery.js:188 src/service/plugins/findmyphone.js:18
 msgid "Locate"
 msgstr "Localizar"
@@ -446,15 +528,20 @@ msgstr "Mousepad"
 msgid "MPRIS"
 msgstr "MPRIS"
 
-#: src/service/plugins/notification.js:26
+#: src/service/plugins/notification.js:25
 msgid "Cancel Notification"
 msgstr "Cancelar notificación"
 
-#: src/service/plugins/notification.js:34
+#: src/service/plugins/notification.js:33
 msgid "Close Notification"
 msgstr "Cerrar notificación"
 
-#: src/service/plugins/notification.js:42
+#: src/service/plugins/notification.js:41
+#, fuzzy
+msgid "Reply Notification"
+msgstr "Cancelar notificación"
+
+#: src/service/plugins/notification.js:49
 msgid "Send Notification"
 msgstr "Enviar notificación"
 
@@ -510,8 +597,8 @@ msgstr "Compartir archivo"
 msgid "Share Text"
 msgstr "Compartir texto"
 
-#: src/service/plugins/share.js:42 src/service/ui/messaging.js:857
-#: src/service/ui/messaging.js:865
+#: src/service/plugins/share.js:42 src/service/ui/messaging.js:847
+#: src/service/ui/messaging.js:855
 msgid "Share Link"
 msgstr "Compartir enlace"
 
@@ -624,17 +711,17 @@ msgstr "Compartir SMS"
 msgid "System Volume"
 msgstr "Volumen del sistema"
 
-#: src/service/plugins/telephony.js:21
+#: src/service/plugins/telephony.js:22
 msgid "Mute Call"
 msgstr "Silenciar llamada"
 
 #. TRANSLATORS: The phone is ringing
-#: src/service/plugins/telephony.js:170
+#: src/service/plugins/telephony.js:171
 msgid "Incoming call"
 msgstr "Llamada entrante"
 
 #. TRANSLATORS: A phone call is active
-#: src/service/plugins/telephony.js:185
+#: src/service/plugins/telephony.js:186
 msgid "Ongoing call"
 msgstr "Llamada en curso"
 
@@ -658,6 +745,10 @@ msgstr "Móvil"
 msgid "Home"
 msgstr "Casa"
 
+#: src/service/ui/contacts.js:95 src/service/ui/contacts.js:387
+msgid "Unknown Contact"
+msgstr "Contacto desconocido"
+
 #: src/service/ui/contacts.js:194 src/service/ui/contacts.js:195
 msgid "Type a phone number or name"
 msgstr "Escriba un número telefónico o un nombre"
@@ -672,10 +763,6 @@ msgstr "Añada personas para comenzar una conversación"
 #, javascript-format
 msgid "Send to %s"
 msgstr "Enviar a %s"
-
-#: src/service/ui/contacts.js:387
-msgid "Unknown Contact"
-msgstr "Contacto desconocido"
 
 #. TRANSLATORS: Title of keyboard shortcut dialog
 #: src/service/ui/keybindings.js:39
@@ -761,7 +848,7 @@ msgstr "%d minutos"
 msgid "Yesterday・%s"
 msgstr "Ayer・%s"
 
-#: src/service/ui/messaging.js:874
+#: src/service/ui/messaging.js:864
 msgid "New Message"
 msgstr "Mensaje nuevo"
 

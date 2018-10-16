@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-11 12:40-0700\n"
+"POT-Creation-Date: 2018-10-15 20:42-0700\n"
 "PO-Revision-Date: 2018-10-12 11:50+0200\n"
 "Last-Translator: Heimen Stoffels <vistausss@outlook.com>\n"
 "Language-Team: Dutch <vistausss@outlook.com>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 2.1.1\n"
 
-#: data/conversation-window.ui:15 src/service/ui/messaging.js:492
+#: data/conversation-window.ui:15 src/service/ui/messaging.js:476
 msgid "Conversations"
 msgstr "Conversaties"
 
@@ -30,12 +30,34 @@ msgstr "Typ een bericht"
 msgid "Device is disconnected"
 msgstr "Toestel is niet geconnecteerd"
 
-#: data/device.ui:307
+#: data/device.ui:67 src/service/plugins/battery.js:12
+msgid "Battery"
+msgstr "Accu"
+
+#: data/device.ui:115
+#, fuzzy
+msgid "Clipboard Sync"
+msgstr "Klembord"
+
+#: data/device.ui:171
+#, fuzzy
+msgid "Media Players"
+msgstr "Mediaspelerbediening"
+
+#: data/device.ui:219
+msgid "Mouse & Keyboard"
+msgstr ""
+
+#: data/device.ui:267
+msgid "Volume Control"
+msgstr ""
+
+#: data/device.ui:307 data/device.ui:1404
 msgid "Sharing"
 msgstr "Deling"
 
-#: data/device.ui:336 data/device.ui:533 src/service/plugins/runcommand.js:18
-#: src/service/plugins/runcommand.js:173
+#: data/device.ui:336 data/device.ui:533 data/device.ui:1447
+#: src/service/plugins/runcommand.js:18 src/service/plugins/runcommand.js:173
 msgid "Commands"
 msgstr "Commando's"
 
@@ -51,11 +73,17 @@ msgstr "Kies een uitvoerbaar bestand"
 msgid "Command Line"
 msgstr "Commandoregel"
 
+#: data/device.ui:596
+#, fuzzy
+msgid "Share Notifications"
+msgstr "Verzend notificatie"
+
 #: data/device.ui:634
 msgid "Applications"
 msgstr "Apps"
 
-#: data/device.ui:673 src/service/plugins/notification.js:12
+#: data/device.ui:673 data/device.ui:1490
+#: src/service/plugins/notification.js:12
 msgid "Notifications"
 msgstr "Notificaties"
 
@@ -63,11 +91,24 @@ msgstr "Notificaties"
 msgid "Incoming Calls"
 msgstr "Inkomende oproepen"
 
+#: data/device.ui:753 data/device.ui:898
+#, fuzzy
+msgid "Volume"
+msgstr "Systeemvolume"
+
+#: data/device.ui:811 data/device.ui:956
+msgid "Pause Media"
+msgstr "Pauzeer media"
+
 #: data/device.ui:850
 msgid "Ongoing Calls"
 msgstr "In gesprek"
 
-#: data/device.ui:1045 src/service/plugins/telephony.js:11
+#: data/device.ui:1005
+msgid "Mute Microphone"
+msgstr "Microfoon toedoen"
+
+#: data/device.ui:1045 data/device.ui:1533 src/service/plugins/telephony.js:12
 msgid "Telephony"
 msgstr "Telefonie"
 
@@ -103,9 +144,14 @@ msgstr "Verwijder deze GSM"
 msgid "Unpair and remove all settings and files"
 msgstr "Koppel af en wis alle instellingen en bestanden"
 
-#: data/device.ui:1363
+#: data/device.ui:1363 data/device.ui:1619
 msgid "Advanced"
 msgstr "Geavanceerd"
+
+#: data/device.ui:1576
+#, fuzzy
+msgid "Keyboard Shortcuts"
+msgstr "Commando-sneltoetsen"
 
 #: data/menus.ui:5 src/service/ui/service.js:115
 msgid "Connect to…"
@@ -169,7 +215,7 @@ msgstr "Verlagen"
 
 #. TRANSLATORS: Mute the system volume
 #. TRANSLATORS: Silence the phone ringer
-#: data/menus.ui:104 data/menus.ui:130 src/service/plugins/telephony.js:174
+#: data/menus.ui:104 data/menus.ui:130 src/service/plugins/telephony.js:175
 msgid "Mute"
 msgstr "Toedoen"
 
@@ -177,17 +223,59 @@ msgstr "Toedoen"
 msgid "Appearance"
 msgstr "Uiterlijk"
 
-#: data/settings.ui:578
+#: data/settings.ui:383
+msgid "Display Mode"
+msgstr ""
+
+#: data/settings.ui:435
+#, fuzzy
+msgid "Show Offline Devices"
+msgstr "Tonen indien offline"
+
+#: data/settings.ui:486
+#, fuzzy
+msgid "Show Unpaired Devices"
+msgstr "GSM's"
+
+#: data/settings.ui:537
+msgid "Show Battery Icon"
+msgstr "Toon accu-icoon"
+
+#: data/settings.ui:578 data/settings.ui:1167
 msgid "Shell"
 msgstr "Shell"
 
-#: data/settings.ui:764
+#: data/settings.ui:639
+#, fuzzy
+msgid "Discoverable"
+msgstr "Herkenning uitgeschakeld"
+
+#: data/settings.ui:711
+#, fuzzy
+msgid "Restart Service"
+msgstr "Dienst"
+
+#: data/settings.ui:764 data/settings.ui:1210
 msgid "Service"
 msgstr "Dienst"
 
 #: data/settings.ui:823
 msgid "Remote Filesystems"
 msgstr "Externe bestandssystemen"
+
+#: data/settings.ui:859
+msgid "Sound Effects"
+msgstr ""
+
+#: data/settings.ui:896
+#, fuzzy
+msgid "Desktop Contacts"
+msgstr "Contacten"
+
+#: data/settings.ui:933
+#, fuzzy
+msgid "Files Integration"
+msgstr "Nautilus-integratie"
 
 #: data/settings.ui:960
 msgid "Additional Features"
@@ -206,7 +294,7 @@ msgid "KDE Connect"
 msgstr "KDE Connect"
 
 #. TRANSLATORS: A phone number type
-#: data/settings.ui:1108 src/service/ui/contacts.js:57
+#: data/settings.ui:1108 data/settings.ui:1253 src/service/ui/contacts.js:57
 #: src/service/ui/contacts.js:78
 msgid "Other"
 msgstr "Ander"
@@ -269,8 +357,10 @@ msgid "Discovery Disabled"
 msgstr "Herkenning uitgeschakeld"
 
 #: src/service/daemon.js:582
-msgid "Discovery has been disabled due to the number of devices on this network."
-msgstr "Herkenning is uitgeschakeld vanwege het aantal toestellen op dit netwerk."
+msgid ""
+"Discovery has been disabled due to the number of devices on this network."
+msgstr ""
+"Herkenning is uitgeschakeld vanwege het aantal toestellen op dit netwerk."
 
 #: src/service/daemon.js:584 src/service/daemon.js:594
 msgid "Click to open preferences"
@@ -382,10 +472,6 @@ msgstr "Verwerp"
 msgid "Accept"
 msgstr "Accepteer"
 
-#: src/service/plugins/battery.js:12
-msgid "Battery"
-msgstr "Accu"
-
 #: src/service/plugins/battery.js:188 src/service/plugins/findmyphone.js:18
 msgid "Locate"
 msgstr "Lokaliseer"
@@ -443,15 +529,20 @@ msgstr "Touchpad"
 msgid "MPRIS"
 msgstr "MPRIS"
 
-#: src/service/plugins/notification.js:26
+#: src/service/plugins/notification.js:25
 msgid "Cancel Notification"
 msgstr "Annuleer notificatie"
 
-#: src/service/plugins/notification.js:34
+#: src/service/plugins/notification.js:33
 msgid "Close Notification"
 msgstr "Sluit notificatie"
 
-#: src/service/plugins/notification.js:42
+#: src/service/plugins/notification.js:41
+#, fuzzy
+msgid "Reply Notification"
+msgstr "Annuleer notificatie"
+
+#: src/service/plugins/notification.js:49
 msgid "Send Notification"
 msgstr "Verzend notificatie"
 
@@ -507,8 +598,8 @@ msgstr "Deel bestand"
 msgid "Share Text"
 msgstr "Deel tekst"
 
-#: src/service/plugins/share.js:42 src/service/ui/messaging.js:857
-#: src/service/ui/messaging.js:865
+#: src/service/plugins/share.js:42 src/service/ui/messaging.js:847
+#: src/service/ui/messaging.js:855
 msgid "Share Link"
 msgstr "Deel link"
 
@@ -621,17 +712,17 @@ msgstr "Deel SMS"
 msgid "System Volume"
 msgstr "Systeemvolume"
 
-#: src/service/plugins/telephony.js:21
+#: src/service/plugins/telephony.js:22
 msgid "Mute Call"
 msgstr "Demp oproep"
 
 #. TRANSLATORS: The phone is ringing
-#: src/service/plugins/telephony.js:170
+#: src/service/plugins/telephony.js:171
 msgid "Incoming call"
 msgstr "Inkomende oproep"
 
 #. TRANSLATORS: A phone call is active
-#: src/service/plugins/telephony.js:185
+#: src/service/plugins/telephony.js:186
 msgid "Ongoing call"
 msgstr "In gesprek"
 
@@ -655,6 +746,10 @@ msgstr "GSM"
 msgid "Home"
 msgstr "Thuis"
 
+#: src/service/ui/contacts.js:95 src/service/ui/contacts.js:387
+msgid "Unknown Contact"
+msgstr "Onbekend contact"
+
 #: src/service/ui/contacts.js:194 src/service/ui/contacts.js:195
 msgid "Type a phone number or name"
 msgstr "Typ een telefoonnummer of naam"
@@ -669,10 +764,6 @@ msgstr "Voeg personen toe om een conversatie aan te vatten"
 #, javascript-format
 msgid "Send to %s"
 msgstr "Verzend naar %s"
-
-#: src/service/ui/contacts.js:387
-msgid "Unknown Contact"
-msgstr "Onbekend contact"
 
 #. TRANSLATORS: Title of keyboard shortcut dialog
 #: src/service/ui/keybindings.js:39
@@ -694,7 +785,8 @@ msgstr "Voer een nieuwe sneltoets in voor het wijzigen van <b>%s</b>"
 #. TRANSLATORS: Keys for cancelling (␛) or resetting (␈) a shortcut
 #: src/service/ui/keybindings.js:89
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr "Druk op Esc om te annuleren of op Backspace om de sneltoets terug te zetten."
+msgstr ""
+"Druk op Esc om te annuleren of op Backspace om de sneltoets terug te zetten."
 
 #. TRANSLATORS: When a keyboard shortcut is unavailable
 #. Example: [Ctrl]+[S] is already being used
@@ -757,7 +849,7 @@ msgstr "%d minuten"
 msgid "Yesterday・%s"
 msgstr "Gisteren - %s"
 
-#: src/service/ui/messaging.js:874
+#: src/service/ui/messaging.js:864
 msgid "New Message"
 msgstr "Nieuw bericht"
 
@@ -864,8 +956,12 @@ msgstr "Open in browser"
 #~ msgid "This program comes with absolutely no warranty."
 #~ msgstr "Dit programma kent geen enkele garantie."
 
-#~ msgid "See the <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html\">GNU General Public License, version 2 or later</a> for details."
-#~ msgstr "Lees de <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html\">GNU General Public License, version 2 of later</a> voor informatie."
+#~ msgid ""
+#~ "See the <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html"
+#~ "\">GNU General Public License, version 2 or later</a> for details."
+#~ msgstr ""
+#~ "Lees de <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html"
+#~ "\">GNU General Public License, version 2 of later</a> voor informatie."
 
 #~ msgid "Preferences"
 #~ msgstr "Voorkeuren"
@@ -876,8 +972,12 @@ msgstr "Open in browser"
 #~ msgid "Web Browser Integration"
 #~ msgstr "Browser-integratie"
 
-#~ msgid "Requires <a href=\"%s\">Chrome Extension</a> or <a href=\"%s\">Firefox Add-On</a>"
-#~ msgstr "<a href=\"%s\">Chrome-extensie</a> of <a href=\"%s\">Firefox add-on</a> vereist"
+#~ msgid ""
+#~ "Requires <a href=\"%s\">Chrome Extension</a> or <a href=\"%s\">Firefox "
+#~ "Add-On</a>"
+#~ msgstr ""
+#~ "<a href=\"%s\">Chrome-extensie</a> of <a href=\"%s\">Firefox add-on</a> "
+#~ "vereist"
 
 #~ msgid "Nautilus extensions changed"
 #~ msgstr "Nautilus-uitbreidingen aangepast"
@@ -943,9 +1043,6 @@ msgstr "Open in browser"
 #~ msgid "Cannot load Caribou virtual keyboard for Unicode support"
 #~ msgstr "Kon Caribou virtueel keyboard niet laden voor Unicode-ondersteuning"
 
-#~ msgid "Media Player Control"
-#~ msgstr "Mediaspelerbediening"
-
 #~ msgid "Control MPRIS2 enabled media players"
 #~ msgstr "Bedien van MPRIS2 voorziene mediaspelers"
 
@@ -1006,14 +1103,27 @@ msgstr "Open in browser"
 #~ msgid "The <b>Media Player Control</b> plugin must be enabled"
 #~ msgstr "De <b>mediaspeler</b>-invoegtoepassing moet zijn ingeschakeld"
 
-#~ msgid "Ensure that devices are on the same local network with ports 1716 to 1764 open for TCP and UDP connections."
-#~ msgstr "Zorg ervoor dat de toestellen zijn geconnecteerd met hetzelfde netwerk met poorten 1716-1764 geopend voor TCP- en UDP-verbindingen."
+#~ msgid ""
+#~ "Ensure that devices are on the same local network with ports 1716 to 1764 "
+#~ "open for TCP and UDP connections."
+#~ msgstr ""
+#~ "Zorg ervoor dat de toestellen zijn geconnecteerd met hetzelfde netwerk "
+#~ "met poorten 1716-1764 geopend voor TCP- en UDP-verbindingen."
 
-#~ msgid "To connect an Android device, install the KDE Connect Android app from the <a href=\"%s\">Google Play Store</a> or <a href=\"%s\">F-Droid</a>."
-#~ msgstr "Om een Android-apparaat te connecteren, installeert u de KDE Connect Android-app van de <a href=\"%s\">Google Play Store</a> of <a href=\"%s\">F-Droid</a>."
+#~ msgid ""
+#~ "To connect an Android device, install the KDE Connect Android app from "
+#~ "the <a href=\"%s\">Google Play Store</a> or <a href=\"%s\">F-Droid</a>."
+#~ msgstr ""
+#~ "Om een Android-apparaat te connecteren, installeert u de KDE Connect "
+#~ "Android-app van de <a href=\"%s\">Google Play Store</a> of <a href=\"%s"
+#~ "\">F-Droid</a>."
 
-#~ msgid "Please see the <a href=\"%s\">Wiki</a> for more help or <a href=\"%s\">open an issue</a> on Github to report a problem."
-#~ msgstr "Lees de <a href=\"%s\">Wiki</a> voor hulp of <a href=\"%s\">open een issue</a> op GitHub om een probleem te rapporteren."
+#~ msgid ""
+#~ "Please see the <a href=\"%s\">Wiki</a> for more help or <a href=\"%s"
+#~ "\">open an issue</a> on Github to report a problem."
+#~ msgstr ""
+#~ "Lees de <a href=\"%s\">Wiki</a> voor hulp of <a href=\"%s\">open een "
+#~ "issue</a> op GitHub om een probleem te rapporteren."
 
 #~ msgid "Error: %s"
 #~ msgstr "Fout: %s"
@@ -1049,8 +1159,10 @@ msgstr "Open in browser"
 #~ msgid "Keyboard Shortcut Unavailable"
 #~ msgstr "Sneltoets onbeschikbaar"
 
-#~ msgid "The requested keyboard shortcut is already in use and can't be overridden."
-#~ msgstr "De gevraagde sneltoets is al gebruikt en kan niet worden overschreven."
+#~ msgid ""
+#~ "The requested keyboard shortcut is already in use and can't be overridden."
+#~ msgstr ""
+#~ "De gevraagde sneltoets is al gebruikt en kan niet worden overschreven."
 
 #~ msgid "Configure <b>%s</b>"
 #~ msgstr "Stel <b>%s</b> in"
@@ -1084,23 +1196,14 @@ msgstr "Open in browser"
 #~ msgid "Display devices in the panel instead of the User Menu"
 #~ msgstr "Toon toestellen op het paneel in plaats van het gebruikersmenu"
 
-#~ msgid "Show Offline"
-#~ msgstr "Tonen indien offline"
-
 #~ msgid "Display devices even if offline"
 #~ msgstr "Toon toestellen, ook als u offline bent"
 
 #~ msgid "Display devices even if unpaired"
 #~ msgstr "Toon toestellen, zelfs als ze niet gekoppeld zijn"
 
-#~ msgid "Show Battery Icon"
-#~ msgstr "Toon accu-icoon"
-
 #~ msgid "Display an icon with percentage in the Device Menu"
 #~ msgstr "Toon een accu-icoon met percentage in het toestelmenu"
-
-#~ msgid "Nautilus Integration"
-#~ msgstr "Nautilus-integratie"
 
 #~ msgid "Send files from the file browser context menu"
 #~ msgstr "Verzend bestanden via het contextmenu van de bestandsbeheerder"
@@ -1131,9 +1234,3 @@ msgstr "Open in browser"
 
 #~ msgid "Use Subdirectory"
 #~ msgstr "Gebruik subfolder"
-
-#~ msgid "Pause Media"
-#~ msgstr "Pauzeer media"
-
-#~ msgid "Mute Microphone"
-#~ msgstr "Microfoon toedoen"
