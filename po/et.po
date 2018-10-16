@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-16 06:59-0700\n"
+"POT-Creation-Date: 2018-10-16 08:08-0700\n"
 "PO-Revision-Date: 2018-10-12 18:59+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -615,7 +615,7 @@ msgstr "„%s” vastuvõtmine seadmelt %s"
 
 #. Action Buttons
 #: src/service/plugins/share.js:138 src/service/plugins/share.js:289
-#: src/service/plugins/share.js:407 src/service/ui/keybindings.js:50
+#: src/service/plugins/share.js:407 src/service/ui/keybindings.js:44
 #: src/service/ui/service.js:121 src/service/ui/service.js:300
 #: src/service/ui/settings.js:847 src/shell/donotdisturb.js:215
 msgid "Cancel"
@@ -766,31 +766,31 @@ msgid "Send to %s"
 msgstr "Saada seadmesse %s"
 
 #. TRANSLATORS: Title of keyboard shortcut dialog
-#: src/service/ui/keybindings.js:39
+#: src/service/ui/keybindings.js:33
 msgid "Set Shortcut"
 msgstr "Määra otsetee"
 
 #. TRANSLATORS: Button to confirm the new shortcut
-#: src/service/ui/keybindings.js:53
+#: src/service/ui/keybindings.js:47
 msgid "Set"
 msgstr "Määra"
 
 #. TRANSLATORS: Summary of a keyboard shortcut function
 #. Example: Enter a new shortcut to change Messaging
-#: src/service/ui/keybindings.js:60
+#: src/service/ui/keybindings.js:54
 #, javascript-format
 msgid "Enter a new shortcut to change <b>%s</b>"
 msgstr "Sisesta <b>%s</b> muutmiseks uus otsetee"
 
 #. TRANSLATORS: Keys for cancelling (␛) or resetting (␈) a shortcut
-#: src/service/ui/keybindings.js:89
+#: src/service/ui/keybindings.js:83
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
 msgstr ""
 "Vajuta tühistamiseks Esc või klaviatuuriotsetee lähtestamiseks Tagasilüke."
 
 #. TRANSLATORS: When a keyboard shortcut is unavailable
 #. Example: [Ctrl]+[S] is already being used
-#: src/service/ui/keybindings.js:188
+#: src/service/ui/keybindings.js:182
 #, javascript-format
 msgid "%s is already being used"
 msgstr "%s on juba kasutusel"

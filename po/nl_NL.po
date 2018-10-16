@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-15 20:42-0700\n"
+"POT-Creation-Date: 2018-10-16 08:08-0700\n"
 "PO-Revision-Date: 2018-10-16 11:30+0200\n"
 "Last-Translator: Heimen Stoffels <vistausss@outlook.com>\n"
 "Language-Team: Dutch <vistausss@outlook.com>\n"
@@ -603,7 +603,7 @@ msgstr "Bezig met ontvangen van \"%s\" van %s"
 
 #. Action Buttons
 #: src/service/plugins/share.js:138 src/service/plugins/share.js:289
-#: src/service/plugins/share.js:407 src/service/ui/keybindings.js:50
+#: src/service/plugins/share.js:407 src/service/ui/keybindings.js:44
 #: src/service/ui/service.js:121 src/service/ui/service.js:300
 #: src/service/ui/settings.js:847 src/shell/donotdisturb.js:215
 msgid "Cancel"
@@ -754,24 +754,24 @@ msgid "Send to %s"
 msgstr "Versturen naar %s"
 
 #. TRANSLATORS: Title of keyboard shortcut dialog
-#: src/service/ui/keybindings.js:39
+#: src/service/ui/keybindings.js:33
 msgid "Set Shortcut"
 msgstr "Sneltoets instellen"
 
 #. TRANSLATORS: Button to confirm the new shortcut
-#: src/service/ui/keybindings.js:53
+#: src/service/ui/keybindings.js:47
 msgid "Set"
 msgstr "Instellen"
 
 #. TRANSLATORS: Summary of a keyboard shortcut function
 #. Example: Enter a new shortcut to change Messaging
-#: src/service/ui/keybindings.js:60
+#: src/service/ui/keybindings.js:54
 #, javascript-format
 msgid "Enter a new shortcut to change <b>%s</b>"
 msgstr "Voer een nieuwe sneltoets in om <b>%s</b> te wijzigen"
 
 #. TRANSLATORS: Keys for cancelling (␛) or resetting (␈) a shortcut
-#: src/service/ui/keybindings.js:89
+#: src/service/ui/keybindings.js:83
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
 msgstr ""
 "Druk op Esc om te annuleren of Backspace om de standaard sneltoets te "
@@ -779,7 +779,7 @@ msgstr ""
 
 #. TRANSLATORS: When a keyboard shortcut is unavailable
 #. Example: [Ctrl]+[S] is already being used
-#: src/service/ui/keybindings.js:188
+#: src/service/ui/keybindings.js:182
 #, javascript-format
 msgid "%s is already being used"
 msgstr "%s wordt al gebruikt"
