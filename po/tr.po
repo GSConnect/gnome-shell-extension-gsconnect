@@ -8,10 +8,12 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-16 08:08-0700\n"
+"POT-Creation-Date: 2018-10-16 08:23-0700\n"
 "PO-Revision-Date: 2018-10-12 09:55-0700\n"
-"Last-Translator: Serdar Sağlam <teknomobil@yandex.com>\n"
-"Language-Team: Türkçe <teknomobil@yandex.com>\n"
+"Last-Translator: Serdar Sağlam <teknomobil@yandex.com>, Orhan Engin Okay "
+"<orhanenginokay@hotmail.com>, A. Burak Tektaş <abtektas@gmail.com>\n"
+"Language-Team: Türkçe <teknomobil@yandex.com>, <orhanenginokay@hotmail.com>, "
+"<abtektas@gmail.com>\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -37,19 +39,19 @@ msgstr "Pil"
 #: data/device.ui:115
 #, fuzzy
 msgid "Clipboard Sync"
-msgstr "Pano"
+msgstr "Pano Eşitle"
 
 #: data/device.ui:171
 msgid "Media Players"
-msgstr ""
+msgstr "Medya Oynatıcıları"
 
 #: data/device.ui:219
 msgid "Mouse & Keyboard"
-msgstr ""
+msgstr "Fare & Klavye"
 
 #: data/device.ui:267
 msgid "Volume Control"
-msgstr ""
+msgstr "Ses Kontrolü"
 
 #: data/device.ui:307 data/device.ui:1404
 msgid "Sharing"
@@ -62,7 +64,7 @@ msgstr "Komutlar"
 
 #: data/device.ui:384
 msgid "Name"
-msgstr "İsim"
+msgstr "Ad"
 
 #: data/device.ui:400 data/device.ui:401
 msgid "Choose an executable"
@@ -75,7 +77,7 @@ msgstr "Komut satırı"
 #: data/device.ui:596
 #, fuzzy
 msgid "Share Notifications"
-msgstr "Bildirim Gönder"
+msgstr "Bildirimleri Paylaş"
 
 #: data/device.ui:634
 msgid "Applications"
@@ -97,15 +99,15 @@ msgstr "Sistem Sesi"
 
 #: data/device.ui:811 data/device.ui:956
 msgid "Pause Media"
-msgstr ""
+msgstr "Medyayı Duraklat"
 
 #: data/device.ui:850
 msgid "Ongoing Calls"
-msgstr "Aktif Aramalar"
+msgstr "Devam eden Çağrılar"
 
 #: data/device.ui:1005
 msgid "Mute Microphone"
-msgstr ""
+msgstr "Mikrofonu Sustur"
 
 #: data/device.ui:1045 data/device.ui:1533 src/service/plugins/telephony.js:12
 msgid "Telephony"
@@ -170,7 +172,7 @@ msgstr "Yardım"
 
 #: data/menus.ui:28
 msgid "Debugger"
-msgstr "Hatalar"
+msgstr "Hata Ayıklayıcı"
 
 #: data/menus.ui:32
 msgid "About"
@@ -182,7 +184,7 @@ msgstr "Bluetooth Bağlantısı"
 
 #: data/menus.ui:47
 msgid "Connect LAN"
-msgstr "Ağ Bağlantısı"
+msgstr "Yerel Ağa Bağlan"
 
 #: data/menus.ui:53 src/service/device.js:434 src/shell/device.js:374
 msgid "Pair"
@@ -224,21 +226,21 @@ msgstr "Görünüm"
 
 #: data/settings.ui:383
 msgid "Display Mode"
-msgstr ""
+msgstr "Görünüm Modu"
 
 #: data/settings.ui:435
 #, fuzzy
 msgid "Show Offline Devices"
-msgstr "Mobil Aygıtlar"
+msgstr "Çevrim dışı Cihazları Göster"
 
 #: data/settings.ui:486
 #, fuzzy
 msgid "Show Unpaired Devices"
-msgstr "Mobil Aygıtlar"
+msgstr "Eşleşmemiş Cihazları Göster"
 
 #: data/settings.ui:537
 msgid "Show Battery Icon"
-msgstr ""
+msgstr "Pil Simgesini Göster"
 
 #: data/settings.ui:578 data/settings.ui:1167
 msgid "Shell"
@@ -252,7 +254,7 @@ msgstr "Keşif Devre Dışı"
 #: data/settings.ui:711
 #, fuzzy
 msgid "Restart Service"
-msgstr "Servis"
+msgstr "Servisi Yeniden Başlat"
 
 #: data/settings.ui:764 data/settings.ui:1210
 msgid "Service"
@@ -264,7 +266,7 @@ msgstr "Uzak Dosya Sistemleri"
 
 #: data/settings.ui:859
 msgid "Sound Effects"
-msgstr ""
+msgstr "Ses Efektleri"
 
 #: data/settings.ui:896
 #, fuzzy
@@ -344,7 +346,7 @@ msgstr "Ağ Hatası"
 
 #: src/service/daemon.js:562 src/service/daemon.js:572
 msgid "Click for help troubleshooting"
-msgstr "Yardım sorun giderme için tıklayın"
+msgstr "Sorun giderme yardımı için tıklayın"
 
 #: src/service/daemon.js:571
 msgid "PulseAudio Error"
@@ -404,7 +406,7 @@ msgstr "GSConnect: %s"
 #: src/service/daemon.js:801 src/service/plugins/sms.js:49
 #: webextension/gettext.js:39
 msgid "Send SMS"
-msgstr "Sms Gönder"
+msgstr "SMS Gönder"
 
 #: src/service/daemon.js:805
 msgid "Dial Number"
@@ -471,7 +473,7 @@ msgstr "Kabul Et"
 
 #: src/service/plugins/battery.js:188 src/service/plugins/findmyphone.js:18
 msgid "Locate"
-msgstr "Bulma"
+msgstr "Bul"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is low
 #: src/service/plugins/battery.js:197
@@ -500,7 +502,7 @@ msgstr "Panodan Al"
 #: src/service/plugins/contacts.js:12
 #, fuzzy
 msgid "Contacts"
-msgstr "Kişileri Eşitle"
+msgstr "Kişiler"
 
 #: src/service/plugins/findmyphone.js:12
 msgid "Find My Phone"
@@ -525,7 +527,7 @@ msgstr "Fare Altlığı"
 
 #: src/service/plugins/mpris.js:10
 msgid "MPRIS"
-msgstr "Müzikler"
+msgstr "MPRIS"
 
 #: src/service/plugins/notification.js:25
 msgid "Cancel Notification"
@@ -538,7 +540,7 @@ msgstr "Bildirimi Kapat"
 #: src/service/plugins/notification.js:41
 #, fuzzy
 msgid "Reply Notification"
-msgstr "Bildirimi İptal Et"
+msgstr "Bildirimi Yanıtla"
 
 #: src/service/plugins/notification.js:49
 msgid "Send Notification"
@@ -562,15 +564,15 @@ msgstr "Komutları Çalıştır"
 
 #: src/service/plugins/sftp.js:12
 msgid "SFTP"
-msgstr "Sftp"
+msgstr "SFTP"
 
 #: src/service/plugins/sftp.js:18
 msgid "Mount"
-msgstr "Takın"
+msgstr "Bağla"
 
 #: src/service/plugins/sftp.js:26
 msgid "Unmount"
-msgstr "Çıkarın"
+msgstr "Ayır"
 
 #: src/service/plugins/sftp.js:172
 msgid "All files"
@@ -599,7 +601,7 @@ msgstr "Yazıyı Paylaş"
 #: src/service/plugins/share.js:42 src/service/ui/messaging.js:847
 #: src/service/ui/messaging.js:855
 msgid "Share Link"
-msgstr "Linki Paylaş"
+msgstr "Bağlantıyı Paylaş"
 
 #: src/service/plugins/share.js:131 src/service/plugins/share.js:282
 msgid "Starting Transfer"
@@ -688,7 +690,7 @@ msgstr "Gönder"
 
 #: src/service/plugins/sms.js:12
 msgid "SMS"
-msgstr "Sms"
+msgstr "SMS"
 
 #: src/service/plugins/sms.js:25
 msgid "Messaging"
@@ -696,7 +698,7 @@ msgstr "Mesajlaşma"
 
 #: src/service/plugins/sms.js:33
 msgid "New SMS (URI)"
-msgstr "Yeni Sms"
+msgstr "Yeni SMS (URI)"
 
 #: src/service/plugins/sms.js:41
 msgid "Reply SMS"
@@ -704,7 +706,7 @@ msgstr "Sms Yanıtla"
 
 #: src/service/plugins/sms.js:57
 msgid "Share SMS"
-msgstr "Sms Paylaş"
+msgstr "SSM Paylaş"
 
 #: src/service/plugins/systemvolume.js:11
 msgid "System Volume"
@@ -722,7 +724,7 @@ msgstr "Gelen çağrı"
 #. TRANSLATORS: A phone call is active
 #: src/service/plugins/telephony.js:186
 msgid "Ongoing call"
-msgstr "Sürekli arama"
+msgstr "Devam eden çağrı"
 
 #. TRANSLATORS: A phone number type
 #: src/service/ui/contacts.js:62
@@ -868,7 +870,7 @@ msgstr "%d%% (Tahmini…)"
 #: src/shell/device.js:319
 #, javascript-format
 msgid "%d%% (%d∶%02d Until Full)"
-msgstr "%d%% (%d∶%02d Kadar Tam)"
+msgstr "%d%% (%d∶%02d Dolmasına)"
 
 #. TRANSLATORS: Estimated time until battery is empty
 #. EXAMPLE: 42% (12:15 Remaining)
