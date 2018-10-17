@@ -7,902 +7,1215 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-01-05 18:43-0800\n"
+"POT-Creation-Date: 2018-10-16 22:39+0300\n"
 "PO-Revision-Date: 2018-02-20 14:53+0100\n"
+"Last-Translator: \n"
 "Language-Team: \n"
+"Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 2.0.4\n"
-"Last-Translator: \n"
-"Language: de\n"
 
-#. TRANSLATORS: Open a new SMS window
-#: src/extension.js:176 src/service/daemon.js:853 src/widgets/device.js:199
-msgid "Send SMS"
-msgstr "SMS senden"
+#: data/conversation-window.ui:15 src/service/ui/messaging.js:476
+#, fuzzy
+msgid "Conversations"
+msgstr "SMS Unterhaltung"
 
-#. TRANSLATORS: eg. Locate Google Pixel
-#: src/extension.js:183 src/widgets/device.js:201
-#, javascript-format
-msgid "Locate %s"
-msgstr "%s finden"
+#: data/conversation-window.ui:132 data/conversation-window.ui:136
+#, fuzzy
+msgid "Type a message"
+msgstr "SMS Nachricht verfassen"
 
-#. TRANSLATORS: Open the device's list of browseable directories
-#: src/extension.js:191 src/service/plugins/sftp.js:21
-#: src/widgets/device.js:203
-msgid "Browse Files"
-msgstr "Dateien durchsuchen"
-
-#. TRANSLATORS: Open the file chooser for sending files/links
-#: src/extension.js:198 src/widgets/device.js:205
-msgid "Share File/URL"
-msgstr "Datei/URL teilen"
-
-#: src/extension.js:206 src/service/plugins/runcommand.js:20
-msgid "Run Commands"
-msgstr "Befehl ausführen"
-
-#: src/extension.js:214 src/service/plugins/mousepad.js:20
-msgid "Remote Input"
-msgstr "Remote Eingabe"
-
-#: src/extension.js:300
+#: data/conversation-window.ui:211 src/shell/device.js:578
 msgid "Device is disconnected"
 msgstr "Gerät ist getrennt"
 
-#: src/extension.js:302
-msgid "Device is unpaired"
-msgstr "Gerät ist nicht gekoppelt"
+#: data/device.ui:67 src/service/plugins/battery.js:12
+msgid "Battery"
+msgstr "Akku"
 
-#: src/extension.js:304
-msgid "No plugins enabled"
-msgstr "Keine Plugins aktiviert"
+#: data/device.ui:115
+#, fuzzy
+msgid "Clipboard Sync"
+msgstr "Zwischenablage"
 
-#. TRANSLATORS: eg. Failed to mount Google Pixel
-#: src/extension.js:385
-#, javascript-format
-msgid "Failed to mount %s"
-msgstr "Einhängen von %s gescheitert"
+#: data/device.ui:171
+#, fuzzy
+msgid "Media Players"
+msgstr "Media Player Steuerung"
 
-#: src/extension.js:417
-msgid "Unmount"
-msgstr "Aushängen"
+#: data/device.ui:219
+msgid "Mouse & Keyboard"
+msgstr ""
 
-#: src/extension.js:535
-msgid "Mobile Devices"
-msgstr "Mobile Geräte"
+#: data/device.ui:267
+msgid "Volume Control"
+msgstr ""
 
-#: src/extension.js:550
-msgid "Mobile Settings"
-msgstr "Einstellungen Mobile Geräte"
+#: data/device.ui:307 data/device.ui:1404
+#, fuzzy
+msgid "Sharing"
+msgstr "Link teilen"
 
-#: src/nautilus-gsconnect.py:86
-msgid "Send To Mobile Device"
-msgstr "An Mobilgerät senden"
+#: data/device.ui:336 data/device.ui:533 data/device.ui:1447
+#: src/service/plugins/runcommand.js:18 src/service/plugins/runcommand.js:173
+#, fuzzy
+msgid "Commands"
+msgstr "Befehl"
 
-#: src/prefs.js:52 src/service/daemon.js:208
-msgid "GSConnect"
+#: data/device.ui:384
+msgid "Name"
+msgstr "Name"
+
+#: data/device.ui:400 data/device.ui:401
+msgid "Choose an executable"
+msgstr ""
+
+#: data/device.ui:402
+#, fuzzy
+msgid "Command Line"
+msgstr "Befehl"
+
+#: data/device.ui:596
+#, fuzzy
+msgid "Share Notifications"
+msgstr "Benachrichtigungen senden"
+
+#: data/device.ui:634
+msgid "Applications"
+msgstr "Anwendungen"
+
+#: data/device.ui:673 data/device.ui:1490
+#: src/service/plugins/notification.js:12
+msgid "Notifications"
+msgstr "Benachrichtigungen"
+
+#: data/device.ui:703
+msgid "Incoming Calls"
+msgstr "Eingehende Anrufe"
+
+#: data/device.ui:753 data/device.ui:898
+#, fuzzy
+msgid "Volume"
+msgstr "System Lautstärke"
+
+#: data/device.ui:811 data/device.ui:956
+msgid "Pause Media"
+msgstr "Wiedergabe pausieren"
+
+#: data/device.ui:850
+#, fuzzy
+msgid "Ongoing Calls"
+msgstr "Eingehende Anrufe"
+
+#: data/device.ui:1005
+msgid "Mute Microphone"
+msgstr "Mikrofon stummschalten"
+
+#: data/device.ui:1045 data/device.ui:1533 src/service/plugins/telephony.js:12
+msgid "Telephony"
+msgstr "Telefonie"
+
+#: data/device.ui:1080
+#, fuzzy
+msgid "Action Shortcuts"
+msgstr "Tastenkürzel"
+
+#: data/device.ui:1092 data/device.ui:1155
+msgid "Reset All…"
+msgstr ""
+
+#: data/device.ui:1143
+#, fuzzy
+msgid "Command Shortcuts"
+msgstr "Tastenkürzel"
+
+#: data/device.ui:1201
+#, fuzzy
+msgid "Shortcuts"
+msgstr "Tastenkürzel"
+
+#: data/device.ui:1232
+msgid "Plugins"
+msgstr ""
+
+#: data/device.ui:1293
+msgid "Delete"
+msgstr ""
+
+#: data/device.ui:1318
+#, fuzzy
+msgid "Delete this device"
+msgstr "Anfrage von %s um dieses Gerät zu finden"
+
+#: data/device.ui:1333
+msgid "Unpair and remove all settings and files"
+msgstr ""
+
+#: data/device.ui:1363 data/device.ui:1619
+msgid "Advanced"
+msgstr ""
+
+#: data/device.ui:1576
+#, fuzzy
+msgid "Keyboard Shortcuts"
+msgstr "Tastenkürzel"
+
+#: data/menus.ui:5 src/service/ui/service.js:115
+#, fuzzy
+msgid "Connect to…"
 msgstr "GSConnect"
 
-#: src/prefs.js:61
-msgid "KDE Connect implementation with Gnome Shell integration"
-msgstr "KDE Connect Implementierung mit Gnome Shell Integration"
+#: data/menus.ui:11
+#, fuzzy
+msgid "Sync Contacts"
+msgstr "Symbole synchronisieren"
 
-#: src/prefs.js:68
-msgid "GSConnect Website"
-msgstr "GSConnect Website"
+#: data/menus.ui:16
+#, fuzzy
+msgid "Sync Messages"
+msgstr "Nachricht"
 
-#: src/prefs.js:75
-msgid "Copyright © 2017 Andy Holmes"
-msgstr "Copyright © 2017 Andy Holmes"
-
-#: src/prefs.js:82
-msgid "This program comes with absolutely no warranty."
-msgstr "Dieses Programm enthält keinerlei Garantie."
-
-#: src/prefs.js:83
-msgid ""
-"See the <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html"
-"\">GNU General Public License, version 2 or later</a> for details."
+#: data/menus.ui:23 data/settings.ui:1087
+msgid "Help"
 msgstr ""
-"Siehe die <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html"
-"\">GNU General Public License, Version 2 oder älter</a> für Details."
 
-#: src/prefs.js:107
-msgid "Devices"
-msgstr "Geräte"
+#: data/menus.ui:28
+#, fuzzy
+msgid "Debugger"
+msgstr "Entwicklermodus"
 
-#. Preferences Page
-#: src/prefs.js:111
-msgid "Preferences"
-msgstr "Einstellungen"
-
-#: src/prefs.js:113
-msgid "Appearance"
-msgstr "Erscheinungsbild"
-
-#: src/prefs.js:120
-msgid "Extensions"
-msgstr "Erweiterungen"
-
-#: src/prefs.js:129 data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:39
-msgid "Web Browser Integration"
-msgstr "Web Browser Integration"
-
-#: src/prefs.js:130
-#, javascript-format
-msgid ""
-"Requires <a href=\"%s\">Chrome Extension</a> or <a href=\"%s\">Firefox Add-"
-"On</a>"
-msgstr ""
-"Benötigt <a href=\"%s\">Chrome Extension</a> oder <a href=\"%s\">Firefox Add-"
-"On</a>"
-
-#: src/prefs.js:140
+#: data/menus.ui:32
 msgid "About"
 msgstr "Über"
 
-#: src/service/daemon.js:66
-msgid "Select a Device"
-msgstr "Gerät auswählen"
+#: data/menus.ui:41
+msgid "Connect Bluetooth"
+msgstr ""
 
-#: src/service/daemon.js:72 src/service/plugins/base.js:89
-#: src/service/plugins/notification.js:501 src/service/plugins/share.js:100
-#: src/service/plugins/share.js:343 src/service/plugins/share.js:504
-msgid "Cancel"
-msgstr "Abbruch"
+#: data/menus.ui:47
+#, fuzzy
+msgid "Connect LAN"
+msgstr "GSConnect"
 
-#: src/service/daemon.js:77
-msgid "Select"
-msgstr "Auswählen"
+#: data/menus.ui:53 src/service/device.js:434 src/shell/device.js:374
+msgid "Pair"
+msgstr ""
 
-#: src/service/daemon.js:634
-msgid "Nautilus extensions changed"
-msgstr "Nautilus-Erweiterungen wurden geändert"
+#: data/menus.ui:59 src/service/device.js:442
+msgid "Unpair"
+msgstr ""
 
-#: src/service/daemon.js:635
-msgid "Restart Nautilus to apply changes"
-msgstr "Nautilus neustarten, um Änderungen zu übernehmen"
+#. TRANSLATORS: Send clipboard content to device
+#: data/menus.ui:72
+#, fuzzy
+msgid "To Device"
+msgstr "Geräte"
 
-#. TRANSLATORS: Notification button to restart Nautilus
-#: src/service/daemon.js:641
-msgid "Restart"
-msgstr "Neustart"
+#. TRANSLATORS: Receive clipboard content from the device
+#: data/menus.ui:78
+#, fuzzy
+msgid "From Device"
+msgstr "Gerät finden"
 
-#. TRANSLATORS: eg. Pair Request from Google Pixel
-#: src/service/device.js:364
+#. TRANSLATORS: Don't change the system volume
+#: data/menus.ui:90 data/menus.ui:116
+msgid "Nothing"
+msgstr "Nichts"
+
+#. TRANSLATORS: Lower the system volume
+#: data/menus.ui:97 data/menus.ui:123
+msgid "Lower"
+msgstr "Leiser"
+
+#. TRANSLATORS: Mute the system volume
+#. TRANSLATORS: Silence the phone ringer
+#: data/menus.ui:104 data/menus.ui:130 src/service/plugins/telephony.js:175
+msgid "Mute"
+msgstr "Stumm schalten"
+
+#: data/settings.ui:333
+msgid "Appearance"
+msgstr "Erscheinungsbild"
+
+#: data/settings.ui:383
+msgid "Display Mode"
+msgstr ""
+
+#: data/settings.ui:435
+#, fuzzy
+msgid "Show Offline Devices"
+msgstr "Mobile Geräte"
+
+#: data/settings.ui:486
+#, fuzzy
+msgid "Show Unpaired Devices"
+msgstr "Mobile Geräte"
+
+#: data/settings.ui:537
+msgid "Show Battery Icon"
+msgstr "Akku Symbol anzeigen"
+
+#: data/settings.ui:578 data/settings.ui:1167
+msgid "Shell"
+msgstr ""
+
+#: data/settings.ui:639
+msgid "Discoverable"
+msgstr ""
+
+#: data/settings.ui:711
+#, fuzzy
+msgid "Restart Service"
+msgstr "Geräte"
+
+#: data/settings.ui:764 data/settings.ui:1210
+#, fuzzy
+msgid "Service"
+msgstr "Geräte"
+
+#: data/settings.ui:823
+msgid "Remote Filesystems"
+msgstr ""
+
+#: data/settings.ui:859
+msgid "Sound Effects"
+msgstr ""
+
+#: data/settings.ui:896
+#, fuzzy
+msgid "Desktop Contacts"
+msgstr "Symbole synchronisieren"
+
+#: data/settings.ui:933
+#, fuzzy
+msgid "Files Integration"
+msgstr "Nautilus Integration"
+
+#: data/settings.ui:960
+msgid "Additional Features"
+msgstr ""
+
+#: data/settings.ui:1033
+msgid "Android"
+msgstr ""
+
+#: data/settings.ui:1048
+msgid "Sailfish OS"
+msgstr ""
+
+#: data/settings.ui:1068
+#, fuzzy
+msgid "KDE Connect"
+msgstr "GSConnect"
+
+#. TRANSLATORS: A phone number type
+#: data/settings.ui:1108 data/settings.ui:1253 src/service/ui/contacts.js:57
+#: src/service/ui/contacts.js:78
+msgid "Other"
+msgstr "Sonstige"
+
+#. TRANSLATORS: No devices are known or available
+#: data/settings.ui:1301 webextension/gettext.js:35
+#, fuzzy
+msgid "No Device Found"
+msgstr "Gerät ist nicht gekoppelt"
+
+#: data/settings.ui:1337
+msgid "Refresh"
+msgstr "Aktualisieren"
+
+#: src/extension.js:59
+msgid "Mobile Devices"
+msgstr "Mobile Geräte"
+
+#: src/extension.js:81
+msgid "Mobile Settings"
+msgstr "Einstellungen Mobile Geräte"
+
+#. TRANSLATORS: Extension name
+#: src/extension.js:146 src/extension.js:211 src/service/daemon.js:95
+#: src/service/daemon.js:400 webextension/gettext.js:27
+msgid "GSConnect"
+msgstr "GSConnect"
+
+#. TRANSLATORS: Top-level context menu item for GSConnect
+#: src/nautilus-gsconnect.py:112 webextension/gettext.js:31
+msgid "Send To Mobile Device"
+msgstr "An Mobilgerät senden"
+
+#. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
+#: src/service/daemon.js:402
+msgid "translator-credits"
+msgstr ""
+
+#: src/service/daemon.js:424
+msgid "Report"
+msgstr ""
+
+#: src/service/daemon.js:552
+msgid "Authentication Failure"
+msgstr ""
+
+#: src/service/daemon.js:561
+msgid "Network Error"
+msgstr ""
+
+#: src/service/daemon.js:562 src/service/daemon.js:572
+msgid "Click for help troubleshooting"
+msgstr ""
+
+#: src/service/daemon.js:571
+msgid "PulseAudio Error"
+msgstr ""
+
+#: src/service/daemon.js:581
+msgid "Discovery Disabled"
+msgstr ""
+
+#: src/service/daemon.js:582
+msgid ""
+"Discovery has been disabled due to the number of devices on this network."
+msgstr ""
+
+#: src/service/daemon.js:584 src/service/daemon.js:594
+msgid "Click to open preferences"
+msgstr ""
+
+#: src/service/daemon.js:593
+msgid "Additional Software Required"
+msgstr ""
+
+#: src/service/daemon.js:602
 #, javascript-format
-msgid "Pair Request from %s"
-msgstr "Kopplung von %s angefordert"
+msgid "%s Plugin Failed To Load"
+msgstr ""
 
-#. TRANSLATORS: Remote and local TLS Certificate fingerprint
-#. PLEASE KEEP NEWLINE CHARACTERS (\n)
+#: src/service/daemon.js:603 src/service/daemon.js:620
+#: src/service/daemon.js:632
+msgid "Click for more information"
+msgstr ""
+
+#: src/service/daemon.js:618
+msgid "Remote Filesystem Error"
+msgstr ""
+
+#: src/service/daemon.js:619
+#, javascript-format
+msgid "%s is using an incompatible SSH library"
+msgstr ""
+
+#: src/service/daemon.js:630
+msgid "Wayland Not Supported"
+msgstr ""
+
+#: src/service/daemon.js:631
+msgid "Remote input not supported on Wayland"
+msgstr ""
+
+#. Create an urgent notification
+#: src/service/daemon.js:655
+#, fuzzy, javascript-format
+msgid "GSConnect: %s"
+msgstr "GSConnect"
+
+#. TRANSLATORS: Share URL by SMS
+#: src/service/daemon.js:801 src/service/plugins/sms.js:49
+#: webextension/gettext.js:39
+msgid "Send SMS"
+msgstr "SMS senden"
+
+#: src/service/daemon.js:805
+msgid "Dial Number"
+msgstr ""
+
+#: src/service/device.js:166
+#, fuzzy
+msgid "Not available"
+msgstr "Gvc nicht verfügbar"
+
+#. TRANSLATORS: Bluetooth address for remote device
+#: src/service/device.js:170
+#, javascript-format
+msgid "Bluetooth device at %s"
+msgstr ""
+
+#. TRANSLATORS: Label for TLS Certificate fingerprint
 #.
 #. Example:
 #.
 #. Google Pixel Fingerprint:
 #. 00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
-#.
-#. Local Fingerprint:
-#. 00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
-#: src/service/device.js:376
+#: src/service/device.js:188 src/service/device.js:190
 #, javascript-format
-msgid ""
-"%s Fingerprint:\n"
-"%s\n"
-"\n"
-"Local Fingerprint:\n"
-"%s"
+msgid "%s Fingerprint:"
 msgstr ""
-"%s Fingerabdruck:\n"
-"%s\n"
-"\n"
-"Lokaler Fingerabdruck:\n"
-"%s"
 
-#: src/service/device.js:386
+#: src/service/device.js:240
+msgid "Laptop"
+msgstr "Laptop"
+
+#: src/service/device.js:242
+msgid "Smartphone"
+msgstr "Smartphone"
+
+#: src/service/device.js:244
+msgid "Tablet"
+msgstr "Tablet"
+
+#: src/service/device.js:246
+msgid "Desktop"
+msgstr "Desktop"
+
+#: src/service/device.js:418 src/shell/device.js:364
+#, fuzzy
+msgid "Reconnect"
+msgstr "GSConnect"
+
+#: src/service/device.js:426 src/shell/device.js:416
+#, fuzzy
+msgid "Settings"
+msgstr "Einstellungen Mobile Geräte"
+
+#. TRANSLATORS: eg. Pair Request from Google Pixel
+#: src/service/device.js:617
+#, javascript-format
+msgid "Pair Request from %s"
+msgstr "Kopplung von %s angefordert"
+
+#: src/service/device.js:624
 msgid "Reject"
 msgstr "Ablehnen"
 
-#: src/service/device.js:390
+#: src/service/device.js:629
 msgid "Accept"
 msgstr "Annehmen"
 
-#: src/service/plugins/base.js:88
-msgid "Apply"
-msgstr "Übernehmen"
-
-#: src/service/plugins/battery.js:21
-msgid "Battery"
-msgstr "Akku"
-
-#: src/service/plugins/battery.js:22
-msgid "Send and receive battery statistics"
-msgstr "Sende und empfange Akku Statistiken"
-
-#. TRANSLATORS: Low Battery Warning
-#: src/service/plugins/battery.js:242
-msgid "Low Battery Warning"
-msgstr "Akkustand niedrig"
-
-#. TRANSLATORS: eg. Google Pixel's battery level is 15%
-#: src/service/plugins/battery.js:245
-#, javascript-format
-msgid "%s's battery level is %d%%"
-msgstr "%s's Akkustand ist bei %d%%"
-
-#: src/service/plugins/battery.js:251
+#: src/service/plugins/battery.js:188 src/service/plugins/findmyphone.js:18
 msgid "Locate"
 msgstr "Finden"
 
-#: src/service/plugins/clipboard.js:20
+#. TRANSLATORS: eg. Google Pixel: Battery is low
+#: src/service/plugins/battery.js:197
+#, javascript-format
+msgid "%s: Battery is low"
+msgstr ""
+
+#. TRANSLATORS: eg. 15% remaining
+#: src/service/plugins/battery.js:199
+#, javascript-format
+msgid "%d%% remaining"
+msgstr ""
+
+#: src/service/plugins/clipboard.js:11
 msgid "Clipboard"
 msgstr "Zwischenablage"
 
-#: src/service/plugins/clipboard.js:21
-msgid "Sync the clipboard between devices"
-msgstr "Zwischenablage synchronisieren"
+#: src/service/plugins/clipboard.js:17
+#, fuzzy
+msgid "Clipboard Push"
+msgstr "Zwischenablage"
 
-#: src/service/plugins/clipboard.js:43 src/service/plugins/mousepad.js:58
-msgid "Failed to get Gdk.Display"
+#: src/service/plugins/clipboard.js:25
+#, fuzzy
+msgid "Clipboard Pull"
+msgstr "Zwischenablage"
+
+#: src/service/plugins/contacts.js:12
+msgid "Contacts"
 msgstr ""
 
-#: src/service/plugins/clipboard.js:50
-msgid "Failed to get Clipboard"
+#: src/service/plugins/findmyphone.js:12
+msgid "Find My Phone"
 msgstr ""
 
-#: src/service/plugins/findmyphone.js:21 src/service/plugins/findmyphone.js:55
+#: src/service/plugins/findmyphone.js:73
 msgid "Locate Device"
 msgstr "Gerät finden"
 
-#: src/service/plugins/findmyphone.js:22
-msgid "Find a device by making it ring"
-msgstr "Gerät durch klingeln finden"
-
-#: src/service/plugins/findmyphone.js:56
+#: src/service/plugins/findmyphone.js:74
 #, javascript-format
 msgid "%s asked to locate this device"
 msgstr "Anfrage von %s um dieses Gerät zu finden"
 
-#: src/service/plugins/findmyphone.js:69
+#: src/service/plugins/findmyphone.js:82
 msgid "Found"
 msgstr "Gefunden"
 
-#: src/service/plugins/lock.js:20
-msgid "Screen Lock"
-msgstr "Bildschirmsperre"
+#: src/service/plugins/mousepad.js:13
+msgid "Mousepad"
+msgstr ""
 
-#: src/service/plugins/lock.js:21
-msgid "Lock and unlock devices"
-msgstr "Sperre und entsperre Gerät"
+#: src/service/plugins/mpris.js:10
+msgid "MPRIS"
+msgstr ""
 
-#: src/service/plugins/mousepad.js:21
-msgid "Control the mouse and keyboard remotely"
-msgstr "Mouse und Tastatur steuern"
+#: src/service/plugins/notification.js:25
+#, fuzzy
+msgid "Cancel Notification"
+msgstr "Benachrichtigungen senden"
 
-#: src/service/plugins/mousepad.js:44
-msgid "Can't run in Wayland session"
-msgstr "Läuft nicht unter Wayland"
+#: src/service/plugins/notification.js:33
+#, fuzzy
+msgid "Close Notification"
+msgstr "Benachrichtigungen senden"
 
-#: src/service/plugins/mousepad.js:51
-msgid "Failed to initialize Atspi"
-msgstr "Initialisierung von Atspi gescheitert"
+#: src/service/plugins/notification.js:41
+#, fuzzy
+msgid "Reply Notification"
+msgstr "Benachrichtigungen senden"
 
-#: src/service/plugins/mpris.js:19
-msgid "Media Player Control"
-msgstr "Media Player Steuerung"
+#: src/service/plugins/notification.js:49
+#, fuzzy
+msgid "Send Notification"
+msgstr "Benachrichtigungen senden"
 
-#: src/service/plugins/mpris.js:20
-msgid "Control MPRIS2 enabled media players"
-msgstr "MPRIS2-fähige Media Player steuern"
-
-#: src/service/plugins/notification.js:22
-msgid "Notifications"
-msgstr "Benachrichtigungen"
-
-#: src/service/plugins/notification.js:23
-msgid "Sync notifications between devices"
-msgstr "Benachrichtigungen zwischen Geräten synchronisieren"
-
-#. TRANSLATORS: This is specifically for matching missed call notifications on Android.
-#. You should translate this (or not) to match the string on your phone that in english looks like "Missed call: John Lennon"
-#: src/service/plugins/notification.js:130
-#: src/service/plugins/notification.js:203 src/service/plugins/telephony.js:199
-#: src/service/plugins/telephony.js:203 src/service/plugins/telephony.js:594
-msgid "Missed call"
-msgstr "Entgangener Anruf"
-
-#. TRANSLATORS: Missed Call
-#: src/service/plugins/notification.js:139 src/service/plugins/telephony.js:174
-msgid "Missed Call"
-msgstr "Entgangener Anruf"
-
-#. TRANSLATORS: eg. Missed call from John Smith on Google Pixel
-#: src/service/plugins/notification.js:141 src/service/plugins/telephony.js:177
-#, javascript-format
-msgid "Missed call from %s on %s"
-msgstr "Entgangener Anruf von %s auf %s"
-
-#. TRANSLATORS: Reply to a missed call by SMS
-#: src/service/plugins/notification.js:148 src/service/plugins/telephony.js:184
-msgid "Message"
-msgstr "Nachricht"
-
-#: src/service/plugins/notification.js:499 src/service/plugins/share.js:505
-#: src/widgets/telephony.js:1074
-msgid "Send"
-msgstr "Senden"
-
-#: src/service/plugins/notification.js:568
-msgid "Applications"
-msgstr "Anwendungen"
-
-#: src/service/plugins/ping.js:20 src/service/plugins/ping.js:66
+#: src/service/plugins/ping.js:11 src/service/plugins/ping.js:17
+#: src/service/plugins/ping.js:46
 msgid "Ping"
 msgstr "Ping"
 
-#: src/service/plugins/ping.js:21
-msgid "Send and receive pings"
-msgstr "Sende und empfange Pings"
-
 #. TRANSLATORS: An optional message accompanying a ping, rarely if ever used
 #. eg. Ping: A message sent with ping
-#: src/service/plugins/ping.js:64
+#: src/service/plugins/ping.js:53
 #, javascript-format
 msgid "Ping: %s"
 msgstr "Ping: %s"
 
-#: src/service/plugins/runcommand.js:21
-msgid "Execute local commands remotely"
-msgstr "Lokale Befehle via Remote ausführen"
+#: src/service/plugins/runcommand.js:12
+msgid "Run Commands"
+msgstr "Befehl ausführen"
 
-#. TRANSLATORS: Column header for RunCommand command list
-#: src/service/plugins/runcommand.js:175
-msgid "Name"
-msgstr "Name"
+#: src/service/plugins/sftp.js:12
+msgid "SFTP"
+msgstr ""
 
-#. TRANSLATORS: Column header for RunCommand command list
-#: src/service/plugins/runcommand.js:191
-msgid "Command"
-msgstr "Befehl"
+#: src/service/plugins/sftp.js:18
+#, fuzzy
+msgid "Mount"
+msgstr "Aushängen"
 
-#: src/service/plugins/sftp.js:22
-msgid "Mount and browse device filesystems"
-msgstr "Einhängen und durchsuchen von Dateisystemen"
+#: src/service/plugins/sftp.js:26
+msgid "Unmount"
+msgstr "Aushängen"
 
-#: src/service/plugins/sftp.js:61
-msgid "SSHFS not installed"
-msgstr "SSHFS nicht installiert"
+#: src/service/plugins/sftp.js:172
+msgid "All files"
+msgstr ""
 
-#: src/service/plugins/share.js:22
+#: src/service/plugins/sftp.js:173
+msgid "Camera pictures"
+msgstr ""
+
+#: src/service/plugins/sftp.js:344
+msgid "Files"
+msgstr ""
+
+#: src/service/plugins/share.js:12 src/service/plugins/share.js:18
 msgid "Share"
 msgstr "Teilen"
 
-#: src/service/plugins/share.js:23
-msgid "Send and receive files and URLs"
-msgstr "Senden und empfangen von Dateien und URLs"
+#: src/service/plugins/share.js:26
+#, fuzzy
+msgid "Share File"
+msgstr "Datei/URL teilen"
 
-#: src/service/plugins/share.js:87 src/service/plugins/share.js:330
+#: src/service/plugins/share.js:34
+#, fuzzy
+msgid "Share Text"
+msgstr "Teilen"
+
+#: src/service/plugins/share.js:42 src/service/ui/messaging.js:847
+#: src/service/ui/messaging.js:855
+msgid "Share Link"
+msgstr "Link teilen"
+
+#: src/service/plugins/share.js:131 src/service/plugins/share.js:282
 msgid "Starting Transfer"
 msgstr "Übertragung starten"
 
-#. TRANSLATORS: eg. Receiving "book.pdf" from Google Pixel
-#: src/service/plugins/share.js:90
+#. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
+#: src/service/plugins/share.js:133
 #, javascript-format
 msgid "Receiving \"%s\" from %s"
 msgstr "Empfange \"%s\" von %s"
 
-#: src/service/plugins/share.js:118 src/service/plugins/share.js:361
+#. Action Buttons
+#: src/service/plugins/share.js:138 src/service/plugins/share.js:289
+#: src/service/plugins/share.js:407 src/service/ui/keybindings.js:44
+#: src/service/ui/service.js:121 src/service/ui/service.js:300
+#: src/service/ui/settings.js:847 src/shell/donotdisturb.js:215
+msgid "Cancel"
+msgstr "Abbruch"
+
+#: src/service/plugins/share.js:149 src/service/plugins/share.js:303
 msgid "Transfer Successful"
 msgstr "Übertragung erfolgreich"
 
-#. TRANSLATORS: eg. Received "book.pdf" from Google Pixel
-#: src/service/plugins/share.js:121
+#. TRANSLATORS: eg. Received 'book.pdf' from Google Pixel
+#: src/service/plugins/share.js:151
 #, javascript-format
 msgid "Received \"%s\" from %s"
 msgstr "\"%s\" von %s empfangen"
 
-#: src/service/plugins/share.js:131
+#: src/service/plugins/share.js:157
 msgid "Open Folder"
 msgstr "Ordner öffnen"
 
-#: src/service/plugins/share.js:138
+#: src/service/plugins/share.js:162
 msgid "Open File"
 msgstr "Datei öffnen"
 
-#: src/service/plugins/share.js:163 src/service/plugins/share.js:392
+#: src/service/plugins/share.js:169 src/service/plugins/share.js:311
 msgid "Transfer Failed"
 msgstr "Übertragung gescheitert"
 
-#. TRANSLATORS: eg. Failed to receive "book.pdf" from Google Pixel: Some error
-#: src/service/plugins/share.js:166
-#, javascript-format
-msgid "Failed to receive \"%s\" from %s: %s"
+#. TRANSLATORS: eg. Failed to receive 'book.pdf' from Google Pixel
+#: src/service/plugins/share.js:171
+#, fuzzy, javascript-format
+msgid "Failed to receive \"%s\" from %s"
 msgstr "Empfang von \"%s\" von %s gescheitert: %s"
 
-#: src/service/plugins/share.js:190 src/service/plugins/share.js:418
-msgid "Transfer Cancelled"
-msgstr "Übertragung abgebrochen"
-
-#. TRANSLATORS: eg. Cancelled transfer of "book.pdf" from Google Pixel
-#: src/service/plugins/share.js:193
+#: src/service/plugins/share.js:211
 #, javascript-format
-msgid "Cancelled transfer of \"%s\" from %s"
-msgstr "Übertragung von \"%s\" von %s abgebrochen"
+msgid "Text Shared By %s"
+msgstr ""
 
-#. TRANSLATORS: eg. Sending "book.pdf" to Google Pixel
-#: src/service/plugins/share.js:333
+#. TRANSLATORS: eg. Sending 'book.pdf' to Google Pixel
+#: src/service/plugins/share.js:284
 #, javascript-format
 msgid "Sending \"%s\" to %s"
 msgstr "\"%s\" an %s senden"
 
-#. TRANSLATORS: eg. Send "book.pdf" to Google Pixel
-#: src/service/plugins/share.js:364
+#. TRANSLATORS: eg. Sent "book.pdf" to Google Pixel
+#: src/service/plugins/share.js:305
 #, javascript-format
 msgid "Sent \"%s\" to %s"
 msgstr "\"%s\" an %s gesendet"
 
-#. TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel: Some error
-#: src/service/plugins/share.js:395
-#, javascript-format
-msgid "Failed to send \"%s\" to %s: %s"
+#. TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel
+#: src/service/plugins/share.js:313
+#, fuzzy, javascript-format
+msgid "Failed to send \"%s\" to %s"
 msgstr "Senden von \"%s\" an %s gescheitert: %s"
 
-#. TRANSLATORS: eg. Cancelled transfer of "book.pdf" to Google Pixel
-#: src/service/plugins/share.js:421
-#, javascript-format
-msgid "Cancelled transfer of \"%s\" to %s"
-msgstr "Übertragung von \"%s\" an %s abgebrochen"
-
 #. TRANSLATORS: eg. Send files to Google Pixel
-#: src/service/plugins/share.js:474
+#: src/service/plugins/share.js:384
 #, javascript-format
 msgid "Send files to %s"
 msgstr "Sende Dateien an %s"
 
 #. TRANSLATORS: eg. Send a link to Google Pixel
-#: src/service/plugins/share.js:493
+#: src/service/plugins/share.js:402
 #, javascript-format
 msgid "Send a link to %s"
 msgstr "Sende Link an %s"
 
-#. TRANSLATORS: eg. Use a subdirectory named <b>Google Pixel<b>
-#: src/service/plugins/share.js:552
-#, javascript-format
-msgid "Use a subdirectory named <b>%s</b>"
-msgstr "Unterverzeichnis mit Namen <b>%s</b> benutzen"
+#: src/service/plugins/share.js:408
+msgid "Send"
+msgstr "Senden"
 
-#: src/service/plugins/telephony.js:35
-msgid "Telephony"
-msgstr "Telefonie"
-
-#: src/service/plugins/telephony.js:36
-msgid "Call notification and SMS messaging"
-msgstr "Anrufbenachrichtigung und SMS Nachrichten"
-
-#. TRANSLATORS: Incoming Call
-#: src/service/plugins/telephony.js:213
-msgid "Incoming Call"
-msgstr "Eingehender Anruf"
-
-#. TRANSLATORS: eg. Incoming call from John Smith on Google Pixel
-#: src/service/plugins/telephony.js:216
-#, javascript-format
-msgid "Incoming call from %s on %s"
-msgstr "Eingehender Anruf von %s auf %s"
-
-#. TRANSLATORS: Silence an incoming call
-#: src/service/plugins/telephony.js:223 src/service/plugins/telephony.js:1056
-#: src/service/plugins/telephony.js:1080
-msgid "Mute"
-msgstr "Stumm schalten"
-
-#. TRANSLATORS: Talking on the phone
-#: src/service/plugins/telephony.js:294
-msgid "Call In Progress"
+#: src/service/plugins/sms.js:12
+msgid "SMS"
 msgstr ""
 
-#. TRANSLATORS: eg. Call in progress with John Smith on Google Pixel
-#: src/service/plugins/telephony.js:297
-#, javascript-format
-msgid "Call in progress with %s on %s"
+#: src/service/plugins/sms.js:25
+#, fuzzy
+msgid "Messaging"
+msgstr "Nachricht"
+
+#: src/service/plugins/sms.js:33
+msgid "New SMS (URI)"
 msgstr ""
 
-#: src/service/plugins/telephony.js:449 src/widgets/telephony.js:302
-msgid "Unknown Number"
-msgstr "Unbekannte Rufnummer"
+#: src/service/plugins/sms.js:41
+msgid "Reply SMS"
+msgstr ""
 
-#: src/service/plugins/telephony.js:1043
-msgid "Incoming Calls"
-msgstr "Eingehende Anrufe"
+#: src/service/plugins/sms.js:57
+#, fuzzy
+msgid "Share SMS"
+msgstr "Teilen"
 
-#: src/service/plugins/telephony.js:1054 src/service/plugins/telephony.js:1078
-#: src/widgets/gsettings.js:138
-msgid "Nothing"
-msgstr "Nichts"
-
-#: src/service/plugins/telephony.js:1055 src/service/plugins/telephony.js:1079
-msgid "Lower"
-msgstr "Leiser"
-
-#: src/service/plugins/telephony.js:1063 src/service/plugins/telephony.js:1087
-#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:148
-#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:158
+#: src/service/plugins/systemvolume.js:11
 msgid "System Volume"
 msgstr "System Lautstärke"
 
-#: src/service/plugins/telephony.js:1067
-msgid "In Progress Calls"
-msgstr ""
+#: src/service/plugins/telephony.js:22
+#, fuzzy
+msgid "Mute Call"
+msgstr "Entgangener Anruf"
 
-#: src/service/plugins/telephony.js:1096 src/service/plugins/telephony.js:1101
-msgid "The <b>Media Player Control</b> plugin must be enabled"
-msgstr ""
+#. TRANSLATORS: The phone is ringing
+#: src/service/plugins/telephony.js:171
+#, fuzzy
+msgid "Incoming call"
+msgstr "Eingehender Anruf"
 
-#: src/service/plugins/telephony.js:1108 src/service/plugins/telephony.js:1111
-#: src/service/plugins/telephony.js:1114
-msgid "Gvc not available"
-msgstr "Gvc nicht verfügbar"
-
-#: src/widgets/device.js:28
-msgid ""
-"Ensure that devices are on the same local network with ports 1716 to 1764 "
-"open for TCP and UDP connections."
-msgstr ""
-"Stellen Sie sicher, dass sich beide Geräte im selben Netzwerk befinden und "
-"die Ports 1716 bis 1764 für TCP und UDP offen sind."
-
-#: src/widgets/device.js:30
-#, javascript-format
-msgid ""
-"To connect an Android device, install the KDE Connect Android app from the "
-"<a href=\"%s\">Google Play Store</a> or <a href=\"%s\">F-Droid</a>."
-msgstr ""
-"Um ein Android Gerät zu verbinden, installieren Sie die KDE Connect Android "
-"APP aus dem <a href=\"%s\">Google Play Store</a> oder <a href=\"%s\">F-"
-"Droid</a>."
-
-#: src/widgets/device.js:35
-#, javascript-format
-msgid ""
-"Please see the <a href=\"%s\">Wiki</a> for more help or <a href=\"%s\">open "
-"an issue</a> on Github to report a problem."
-msgstr ""
-"Für weitere Hilfe besuchen Sie das <a href=\"%s\">Wiki</a> oder <a href=\"%s"
-"\">erstellen einen Report</a> auf Github, um ein Problem zu melden."
-
-#: src/widgets/device.js:128
-#, javascript-format
-msgid "Error: %s"
-msgstr "Fehler: %s"
-
-#. TRANSLATORS: Open the device menu
-#: src/widgets/device.js:197
-msgid "Open Menu"
-msgstr "Menü öffnen"
-
-#: src/widgets/device.js:243
-msgid "Refresh"
-msgstr "Aktualisieren"
-
-#: src/widgets/device.js:319
-msgid "Connecting Devices"
-msgstr "Geräte verbinden"
-
-#. TRANSLATORS: eg. Reconnect <b>Google Pixel</b>
-#: src/widgets/device.js:438 src/widgets/shell.js:599
-#, javascript-format
-msgid "Reconnect <b>%s</b>"
-msgstr ""
-
-#. TRANSLATORS: eg. Unpair <b>Google Pixel</b>
-#: src/widgets/device.js:479
-#, javascript-format
-msgid "Unpair <b>%s</b>"
-msgstr "Entkopple <b>%s</b>"
-
-#. TRANSLATORS: eg. Pair <b>Google Pixel</b>
-#: src/widgets/device.js:488 src/widgets/shell.js:609
-#, javascript-format
-msgid "Pair <b>%s</b>"
-msgstr "Kopple <b>%s</b>"
-
-#. TRANSLATORS: Remote and local TLS Certificate fingerprint
-#. PLEASE KEEP NEWLINE CHARACTERS (\n)
-#.
-#. Example:
-#.
-#. <b>Google Pixel Fingerprint:</b>
-#. 00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
-#.
-#. <b>Local Fingerprint:</b>
-#. 00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
-#: src/widgets/device.js:499 src/widgets/shell.js:609
-#, javascript-format
-msgid ""
-"<b>%s Fingerprint:</b>\n"
-"%s\n"
-"\n"
-"<b>Local Fingerprint:</b>\n"
-"%s"
-msgstr ""
-
-#. Plugins
-#: src/widgets/device.js:508
-msgid "Plugins"
-msgstr ""
-
-#. Keyboard Shortcuts
-#: src/widgets/device.js:511
-msgid "Keyboard Shortcuts"
-msgstr "Tastenkürzel"
-
-#: src/widgets/device.js:521
-msgid "Desktop"
-msgstr "Desktop"
-
-#: src/widgets/device.js:527
-msgid "Laptop"
-msgstr "Laptop"
-
-#: src/widgets/device.js:533
-msgid "Smartphone"
-msgstr "Smartphone"
-
-#: src/widgets/device.js:539
-msgid "Tablet"
-msgstr "Tablet"
-
-#: src/widgets/device.js:545
-msgid "Unknown"
-msgstr "Unbekannt"
-
-#: src/widgets/gsettings.js:150
-msgid "True"
-msgstr "Wahr"
-
-#: src/widgets/gsettings.js:162
-msgid "False"
-msgstr "Falsch"
-
-#: src/widgets/keybindings.js:170
-msgid "Keyboard Shortcut Unavailable"
-msgstr "Tastenkürzel nicht verfügbar"
-
-#: src/widgets/keybindings.js:171
-msgid ""
-"The requested keyboard shortcut is already in use and can't be overridden."
-msgstr ""
-"Das angeforderte Tastenkürzel ist bereits in Verwendung und kann nicht "
-"überschrieben werden."
-
-#. TRANSLATORS: Fully Charged
-#: src/widgets/shell.js:549
-msgid "Fully Charged"
-msgstr "Vollständig geladen"
-
-#. TRANSLATORS: <percentage> (Estimating…)
-#: src/widgets/shell.js:552
-#, javascript-format
-msgid "%d%% (Estimating…)"
-msgstr ""
-
-#. TRANSLATORS: <percentage> (<hours>:<minutes> Until Full)
-#: src/widgets/shell.js:561
-#, javascript-format
-msgid "%d%% (%d∶%02d Until Full)"
-msgstr ""
-
-#. TRANSLATORS: <percentage> (<hours>:<minutes> Remaining)
-#: src/widgets/shell.js:568
-#, javascript-format
-msgid "%d%% (%d∶%02d Remaining)"
-msgstr ""
-
-#: src/widgets/shell.js:651
-#, javascript-format
-msgid "Configure <b>%s</b>"
-msgstr ""
-
-#: src/widgets/telephony.js:231
-msgid "Add people to start a conversation"
-msgstr ""
-
-#: src/widgets/telephony.js:264 src/widgets/telephony.js:285
-#: src/widgets/telephony.js:340
-msgid "Unknown Contact"
-msgstr ""
-
-#: src/widgets/telephony.js:334
-#, javascript-format
-msgid "Send to %s"
-msgstr "An %s senden"
-
-#: src/widgets/telephony.js:343
-#, javascript-format
-msgid "Send to %d"
-msgstr "An %d senden"
+#. TRANSLATORS: A phone call is active
+#: src/service/plugins/telephony.js:186
+#, fuzzy
+msgid "Ongoing call"
+msgstr "Eingehender Anruf"
 
 #. TRANSLATORS: A phone number type
-#: src/widgets/telephony.js:390 src/widgets/telephony.js:407
-msgid "Other"
-msgstr "Sonstige"
-
-#. TRANSLATORS: A phone number type
-#: src/widgets/telephony.js:394
+#: src/service/ui/contacts.js:62
 msgid "Fax"
 msgstr "Fax"
 
 #. TRANSLATORS: A phone number type
-#: src/widgets/telephony.js:398
+#: src/service/ui/contacts.js:66
 msgid "Work"
 msgstr "Arbeit"
 
 #. TRANSLATORS: A phone number type
-#: src/widgets/telephony.js:401
+#: src/service/ui/contacts.js:70
 msgid "Mobile"
 msgstr "Mobil"
 
 #. TRANSLATORS: A phone number type
-#: src/widgets/telephony.js:404
+#: src/service/ui/contacts.js:74
 msgid "Home"
 msgstr "Zuhause"
 
-#: src/widgets/telephony.js:507
-msgid "Type an SMS message"
-msgstr "SMS Nachricht verfassen"
+#: src/service/ui/contacts.js:95 src/service/ui/contacts.js:387
+msgid "Unknown Contact"
+msgstr ""
 
-#: src/widgets/telephony.js:684
-msgid "SMS Conversation"
-msgstr "SMS Unterhaltung"
-
-#. TRANSLATORS: Tooltip for a button to add/remove people from a conversation
-#: src/widgets/telephony.js:706
-msgid "Add and remove people"
-msgstr "Personen hinzufügen und entfernen"
-
-#: src/widgets/telephony.js:729 src/widgets/telephony.js:730
+#: src/service/ui/contacts.js:194 src/service/ui/contacts.js:195
 msgid "Type a phone number or name"
 msgstr "Telefonnummer oder Name eingeben"
 
-#. TRANSLATORS: eg. <b>Google Pixel</b> is disconnected
-#: src/widgets/telephony.js:755
+#: src/service/ui/contacts.js:239
+msgid "Add people to start a conversation"
+msgstr ""
+
+#. TRANSLATORS: A phone number (eg. "Send to 555-5555")
+#. Update UI
+#: src/service/ui/contacts.js:281 src/service/ui/contacts.js:289
 #, javascript-format
-msgid "<b>%s</b> is disconnected"
-msgstr "<b>%s</b> ist nicht verbunden"
+msgid "Send to %s"
+msgstr "An %s senden"
 
-#: src/widgets/telephony.js:841 src/widgets/telephony.js:1129
+#. TRANSLATORS: Title of keyboard shortcut dialog
+#: src/service/ui/keybindings.js:33
+#, fuzzy
+msgid "Set Shortcut"
+msgstr "Tastenkürzel"
+
+#. TRANSLATORS: Button to confirm the new shortcut
+#: src/service/ui/keybindings.js:47
+#, fuzzy
+msgid "Set"
+msgstr "Auswählen"
+
+#. TRANSLATORS: Summary of a keyboard shortcut function
+#. Example: Enter a new shortcut to change Messaging
+#: src/service/ui/keybindings.js:54
 #, javascript-format
-msgid "And one other person"
-msgid_plural "And %d other people"
-msgstr[0] ""
-msgstr[1] ""
+msgid "Enter a new shortcut to change <b>%s</b>"
+msgstr ""
 
-#. TRANSLATORS: eg. SMS Conversation with John, Paul, George, Ringo
-#: src/widgets/telephony.js:856 src/widgets/telephony.js:1140
+#. TRANSLATORS: Keys for cancelling (␛) or resetting (␈) a shortcut
+#: src/service/ui/keybindings.js:83
+msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
+msgstr ""
+
+#. TRANSLATORS: When a keyboard shortcut is unavailable
+#. Example: [Ctrl]+[S] is already being used
+#: src/service/ui/keybindings.js:182
 #, javascript-format
-msgid "SMS Conversation with %s"
-msgstr "SMS Unterhaltung mit %s"
+msgid "%s is already being used"
+msgstr ""
 
-#: src/widgets/telephony.js:861
-msgid "New SMS Conversation"
-msgstr "Neue SMS Unterhaltung"
+#: src/service/ui/service.js:122
+#, fuzzy
+msgid "Connect"
+msgstr "GSConnect"
 
-#: src/widgets/telephony.js:1012 src/widgets/telephony.js:1024
-msgid "Share Link"
-msgstr "Link teilen"
+#: src/service/ui/service.js:294
+msgid "Select a Device"
+msgstr "Gerät auswählen"
 
-#: src/widgets/telephony.js:1062
+#: src/service/ui/service.js:298
+msgid "Select"
+msgstr "Auswählen"
+
+#: src/service/ui/settings.js:402
+msgid "Panel"
+msgstr ""
+
+#: src/service/ui/settings.js:402
+#, fuzzy
+msgid "User Menu"
+msgstr "Menü öffnen"
+
+#: src/service/ui/settings.js:848
+#, fuzzy
+msgid "Open"
+msgstr "Datei öffnen"
+
+#: src/service/ui/settings.js:912 src/service/ui/settings.js:925
+msgid "On"
+msgstr ""
+
+#: src/service/ui/settings.js:912 src/service/ui/settings.js:925
+msgid "Off"
+msgstr ""
+
+#: src/service/ui/settings.js:1046 src/service/ui/settings.js:1112
+msgid "Disabled"
+msgstr ""
+
+#. TRANSLATORS: Less than a minute ago
+#: src/service/ui/messaging.js:83 src/service/ui/messaging.js:116
+msgid "Just now"
+msgstr ""
+
+#. TRANSLATORS: Time duration in minutes (eg. 15 minutes)
+#: src/service/ui/messaging.js:88 src/service/ui/messaging.js:120
+#: src/shell/donotdisturb.js:266
+#, javascript-format
+msgid "%d minutes"
+msgstr ""
+
+#. TRANSLATORS: Yesterday, but less than 24 hours (eg. Yesterday · 11:29 PM)
+#: src/service/ui/messaging.js:93
+#, javascript-format
+msgid "Yesterday・%s"
+msgstr ""
+
+#: src/service/ui/messaging.js:864
 msgid "New Message"
 msgstr "Neue Nachricht"
 
-#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:6
-msgid "Debug Mode"
-msgstr "Entwicklermodus"
+#. TRANSLATORS: When the battery level is 100%
+#: src/shell/device.js:305
+msgid "Fully Charged"
+msgstr "Vollständig geladen"
 
-#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:7
-msgid "Enable debug features and logging"
-msgstr "Entwicklermodus und Protokollierung aktivieren"
-
-#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:11
-msgid "Show Indicators"
-msgstr "Indikatoren anzeigen"
-
-#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:12
-msgid "Display devices in the panel instead of the User Menu"
+#. TRANSLATORS: When no time estimate for the battery is available
+#. EXAMPLE: 42% (Estimating…)
+#: src/shell/device.js:309
+#, javascript-format
+msgid "%d%% (Estimating…)"
 msgstr ""
 
-#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:16
-msgid "Show Offline"
+#. TRANSLATORS: Estimated time until battery is charged
+#. EXAMPLE: 42% (1:15 Until Full)
+#: src/shell/device.js:319
+#, javascript-format
+msgid "%d%% (%d∶%02d Until Full)"
 msgstr ""
 
-#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:17
-msgid "Display devices even if offline"
+#. TRANSLATORS: Estimated time until battery is empty
+#. EXAMPLE: 42% (12:15 Remaining)
+#: src/shell/device.js:327
+#, javascript-format
+msgid "%d%% (%d∶%02d Remaining)"
 msgstr ""
 
-#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:21
-msgid "Show Unpaired"
+#: src/shell/device.js:580
+msgid "Device is unpaired"
+msgstr "Gerät ist nicht gekoppelt"
+
+#: src/shell/donotdisturb.js:150 src/shell/donotdisturb.js:289
+msgid "Do Not Disturb"
 msgstr ""
 
-#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:22
-msgid "Display devices even if unpaired"
-msgstr ""
-
-#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:26
-msgid "Show Battery Icon"
-msgstr "Akku Symbol anzeigen"
-
-#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:27
-msgid "Display an icon with percentage in the Device Menu"
-msgstr ""
-
-#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:34
-msgid "Nautilus Integration"
-msgstr "Nautilus Integration"
-
-#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:35
-msgid "Send files from the file browser context menu"
-msgstr ""
-
-#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:40
-msgid "Share links with devices and contacts from the web browser"
-msgstr ""
-
-#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:44
-msgid "Public Name"
-msgstr "Öffentlicher Name"
-
-#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:45
-msgid "The name visible to other devices"
-msgstr ""
-
-#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:80
-msgid "Receive Statistics"
-msgstr "Statistiken empfangen"
-
-#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:85
-msgid "Send Statistics"
-msgstr "Statistiken senden"
-
-#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:92
-msgid "Receive Content"
-msgstr "Inhalt empfangen"
-
-#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:97
-msgid "Send Content"
-msgstr "Inhalt senden"
-
-#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:104
-msgid "Receive Notifications"
+#: src/shell/donotdisturb.js:156
+#, fuzzy
+msgid "Silence Mobile Device Notifications"
 msgstr "Benachrichtigungen empfangen"
 
-#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:109
-msgid "Send Notifications"
-msgstr "Benachrichtigungen senden"
+#: src/shell/donotdisturb.js:171
+msgid "Until you turn off Do Not Disturb"
+msgstr ""
 
-#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:114
-msgid "Sync Icons"
-msgstr "Symbole synchronisieren"
+#. TRANSLATORS: Time until change with time duration
+#. EXAMPLE: Until 10:00 (2 hours)
+#: src/shell/donotdisturb.js:184 src/shell/donotdisturb.js:278
+#, javascript-format
+msgid "Until %s (%s)"
+msgstr ""
 
-#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:129
-msgid "Automatically Mount"
-msgstr "Automatisch einhängen"
+#: src/shell/donotdisturb.js:216
+msgid "Done"
+msgstr ""
 
-#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:136
-msgid "Download Directory"
-msgstr "Verzeichnis herunterladen"
+#. TRANSLATORS: Time duration in hours (eg. 2 hours)
+#: src/shell/donotdisturb.js:263
+#, javascript-format
+msgid "One hour"
+msgid_plural "%d hours"
+msgstr[0] ""
+msgstr[1] ""
 
-#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:141
-msgid "Use Subdirectory"
-msgstr "Unterverzeichnis benutzen"
+#. TRANSLATORS: Chrome/Firefox WebExtension description
+#: webextension/gettext.js:29
+msgid "Share links with GSConnect, direct to the browser or by SMS."
+msgstr ""
 
-#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:153
-#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:168
-msgid "Pause Media"
-msgstr "Wiedergabe pausieren"
+#. TRANSLATORS: WebExtension can't connect to GSConnect
+#: webextension/gettext.js:33
+#, fuzzy
+msgid "Service Unavailable"
+msgstr "Gvc nicht verfügbar"
 
-#: data/org.gnome.Shell.Extensions.GSConnect.gschema.xml:163
-msgid "Mute Microphone"
-msgstr "Mikrofon stummschalten"
+#. TRANSLATORS: Open URL with the device's browser
+#: webextension/gettext.js:37
+#, fuzzy
+msgid "Open in Browser"
+msgstr "Ordner öffnen"
+
+#~ msgid "Locate %s"
+#~ msgstr "%s finden"
+
+#~ msgid "Browse Files"
+#~ msgstr "Dateien durchsuchen"
+
+#~ msgid "Remote Input"
+#~ msgstr "Remote Eingabe"
+
+#~ msgid "No plugins enabled"
+#~ msgstr "Keine Plugins aktiviert"
+
+#~ msgid "Failed to mount %s"
+#~ msgstr "Einhängen von %s gescheitert"
+
+#~ msgid "KDE Connect implementation with Gnome Shell integration"
+#~ msgstr "KDE Connect Implementierung mit Gnome Shell Integration"
+
+#~ msgid "GSConnect Website"
+#~ msgstr "GSConnect Website"
+
+#~ msgid "Copyright © 2017 Andy Holmes"
+#~ msgstr "Copyright © 2017 Andy Holmes"
+
+#~ msgid "This program comes with absolutely no warranty."
+#~ msgstr "Dieses Programm enthält keinerlei Garantie."
+
+#~ msgid ""
+#~ "See the <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html"
+#~ "\">GNU General Public License, version 2 or later</a> for details."
+#~ msgstr ""
+#~ "Siehe die <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html"
+#~ "\">GNU General Public License, Version 2 oder älter</a> für Details."
+
+#~ msgid "Preferences"
+#~ msgstr "Einstellungen"
+
+#~ msgid "Extensions"
+#~ msgstr "Erweiterungen"
+
+#~ msgid "Web Browser Integration"
+#~ msgstr "Web Browser Integration"
+
+#~ msgid ""
+#~ "Requires <a href=\"%s\">Chrome Extension</a> or <a href=\"%s\">Firefox "
+#~ "Add-On</a>"
+#~ msgstr ""
+#~ "Benötigt <a href=\"%s\">Chrome Extension</a> oder <a href=\"%s\">Firefox "
+#~ "Add-On</a>"
+
+#~ msgid "Nautilus extensions changed"
+#~ msgstr "Nautilus-Erweiterungen wurden geändert"
+
+#~ msgid "Restart Nautilus to apply changes"
+#~ msgstr "Nautilus neustarten, um Änderungen zu übernehmen"
+
+#~ msgid "Restart"
+#~ msgstr "Neustart"
+
+#~ msgid ""
+#~ "%s Fingerprint:\n"
+#~ "%s\n"
+#~ "\n"
+#~ "Local Fingerprint:\n"
+#~ "%s"
+#~ msgstr ""
+#~ "%s Fingerabdruck:\n"
+#~ "%s\n"
+#~ "\n"
+#~ "Lokaler Fingerabdruck:\n"
+#~ "%s"
+
+#~ msgid "Apply"
+#~ msgstr "Übernehmen"
+
+#~ msgid "Send and receive battery statistics"
+#~ msgstr "Sende und empfange Akku Statistiken"
+
+#~ msgid "Low Battery Warning"
+#~ msgstr "Akkustand niedrig"
+
+#~ msgid "%s's battery level is %d%%"
+#~ msgstr "%s's Akkustand ist bei %d%%"
+
+#~ msgid "Sync the clipboard between devices"
+#~ msgstr "Zwischenablage synchronisieren"
+
+#~ msgid "Find a device by making it ring"
+#~ msgstr "Gerät durch klingeln finden"
+
+#~ msgid "Screen Lock"
+#~ msgstr "Bildschirmsperre"
+
+#~ msgid "Lock and unlock devices"
+#~ msgstr "Sperre und entsperre Gerät"
+
+#~ msgid "Control the mouse and keyboard remotely"
+#~ msgstr "Mouse und Tastatur steuern"
+
+#~ msgid "Can't run in Wayland session"
+#~ msgstr "Läuft nicht unter Wayland"
+
+#~ msgid "Failed to initialize Atspi"
+#~ msgstr "Initialisierung von Atspi gescheitert"
+
+#~ msgid "Control MPRIS2 enabled media players"
+#~ msgstr "MPRIS2-fähige Media Player steuern"
+
+#~ msgid "Sync notifications between devices"
+#~ msgstr "Benachrichtigungen zwischen Geräten synchronisieren"
+
+#~ msgid "Missed call"
+#~ msgstr "Entgangener Anruf"
+
+#~ msgid "Missed call from %s on %s"
+#~ msgstr "Entgangener Anruf von %s auf %s"
+
+#~ msgid "Send and receive pings"
+#~ msgstr "Sende und empfange Pings"
+
+#~ msgid "Execute local commands remotely"
+#~ msgstr "Lokale Befehle via Remote ausführen"
+
+#~ msgid "Mount and browse device filesystems"
+#~ msgstr "Einhängen und durchsuchen von Dateisystemen"
+
+#~ msgid "SSHFS not installed"
+#~ msgstr "SSHFS nicht installiert"
+
+#~ msgid "Send and receive files and URLs"
+#~ msgstr "Senden und empfangen von Dateien und URLs"
+
+#~ msgid "Transfer Cancelled"
+#~ msgstr "Übertragung abgebrochen"
+
+#~ msgid "Cancelled transfer of \"%s\" from %s"
+#~ msgstr "Übertragung von \"%s\" von %s abgebrochen"
+
+#~ msgid "Cancelled transfer of \"%s\" to %s"
+#~ msgstr "Übertragung von \"%s\" an %s abgebrochen"
+
+#~ msgid "Use a subdirectory named <b>%s</b>"
+#~ msgstr "Unterverzeichnis mit Namen <b>%s</b> benutzen"
+
+#~ msgid "Call notification and SMS messaging"
+#~ msgstr "Anrufbenachrichtigung und SMS Nachrichten"
+
+#~ msgid "Incoming call from %s on %s"
+#~ msgstr "Eingehender Anruf von %s auf %s"
+
+#~ msgid "Unknown Number"
+#~ msgstr "Unbekannte Rufnummer"
+
+#~ msgid ""
+#~ "Ensure that devices are on the same local network with ports 1716 to 1764 "
+#~ "open for TCP and UDP connections."
+#~ msgstr ""
+#~ "Stellen Sie sicher, dass sich beide Geräte im selben Netzwerk befinden "
+#~ "und die Ports 1716 bis 1764 für TCP und UDP offen sind."
+
+#~ msgid ""
+#~ "To connect an Android device, install the KDE Connect Android app from "
+#~ "the <a href=\"%s\">Google Play Store</a> or <a href=\"%s\">F-Droid</a>."
+#~ msgstr ""
+#~ "Um ein Android Gerät zu verbinden, installieren Sie die KDE Connect "
+#~ "Android APP aus dem <a href=\"%s\">Google Play Store</a> oder <a href=\"%s"
+#~ "\">F-Droid</a>."
+
+#~ msgid ""
+#~ "Please see the <a href=\"%s\">Wiki</a> for more help or <a href=\"%s"
+#~ "\">open an issue</a> on Github to report a problem."
+#~ msgstr ""
+#~ "Für weitere Hilfe besuchen Sie das <a href=\"%s\">Wiki</a> oder <a href="
+#~ "\"%s\">erstellen einen Report</a> auf Github, um ein Problem zu melden."
+
+#~ msgid "Error: %s"
+#~ msgstr "Fehler: %s"
+
+#~ msgid "Connecting Devices"
+#~ msgstr "Geräte verbinden"
+
+#~ msgid "Unpair <b>%s</b>"
+#~ msgstr "Entkopple <b>%s</b>"
+
+#~ msgid "Pair <b>%s</b>"
+#~ msgstr "Kopple <b>%s</b>"
+
+#~ msgid "Unknown"
+#~ msgstr "Unbekannt"
+
+#~ msgid "True"
+#~ msgstr "Wahr"
+
+#~ msgid "False"
+#~ msgstr "Falsch"
+
+#~ msgid "Keyboard Shortcut Unavailable"
+#~ msgstr "Tastenkürzel nicht verfügbar"
+
+#~ msgid ""
+#~ "The requested keyboard shortcut is already in use and can't be overridden."
+#~ msgstr ""
+#~ "Das angeforderte Tastenkürzel ist bereits in Verwendung und kann nicht "
+#~ "überschrieben werden."
+
+#~ msgid "Send to %d"
+#~ msgstr "An %d senden"
+
+#~ msgid "Add and remove people"
+#~ msgstr "Personen hinzufügen und entfernen"
+
+#~ msgid "<b>%s</b> is disconnected"
+#~ msgstr "<b>%s</b> ist nicht verbunden"
+
+#~ msgid "SMS Conversation with %s"
+#~ msgstr "SMS Unterhaltung mit %s"
+
+#~ msgid "New SMS Conversation"
+#~ msgstr "Neue SMS Unterhaltung"
+
+#~ msgid "Enable debug features and logging"
+#~ msgstr "Entwicklermodus und Protokollierung aktivieren"
+
+#~ msgid "Show Indicators"
+#~ msgstr "Indikatoren anzeigen"
+
+#~ msgid "Public Name"
+#~ msgstr "Öffentlicher Name"
+
+#~ msgid "Receive Statistics"
+#~ msgstr "Statistiken empfangen"
+
+#~ msgid "Send Statistics"
+#~ msgstr "Statistiken senden"
+
+#~ msgid "Receive Content"
+#~ msgstr "Inhalt empfangen"
+
+#~ msgid "Send Content"
+#~ msgstr "Inhalt senden"
+
+#~ msgid "Automatically Mount"
+#~ msgstr "Automatisch einhängen"
+
+#~ msgid "Download Directory"
+#~ msgstr "Verzeichnis herunterladen"
+
+#~ msgid "Use Subdirectory"
+#~ msgstr "Unterverzeichnis benutzen"

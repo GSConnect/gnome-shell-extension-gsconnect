@@ -137,7 +137,7 @@
                     <signal name="activate" handler="sendMessage" swapped="no"/>
                     <signal name="changed" handler="_onEntryChanged" swapped="no"/>
                     <signal name="icon-release" handler="sendMessage" swapped="no"/>
-                    <signal name="notify::has-focus" handler="_onEntryHasFocus" swapped="no"/>
+                    <signal name="notify::has-focus" handler="_onEntryFocused" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>

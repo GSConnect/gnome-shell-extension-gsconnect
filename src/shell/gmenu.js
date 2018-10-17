@@ -179,6 +179,7 @@ var Button = GObject.registerClass({
                 this.submenu.actor.style_class = 'popup-sub-menu';
                 this.bind_property('checked', this.submenu.actor, 'visible', 2);
                 this.connect('notify::checked', this._onChecked);
+                this.connect('destroy', (button) => button.submenu.actor.destroy());
             }
         }
     }
@@ -223,11 +224,11 @@ var FlowBox = GObject.registerClass({
             this._onActionChanged.bind(this)
         );
 
-        this.connect('destroy', () => {
-            params.menu_model.disconnect(_itemsChangedId);
-            params.action_group.disconnect(_actionAddedId);
-            params.action_group.disconnect(_actionEnabledChangedId);
-            params.action_group.disconnect(_actionRemovedId);
+        this.connect('destroy', (box) => {
+            box.menu_model.disconnect(_itemsChangedId);
+            box.action_group.disconnect(_actionAddedId);
+            box.action_group.disconnect(_actionEnabledChangedId);
+            box.action_group.disconnect(_actionRemovedId);
         });
         this.connect('notify::mapped', this._onMapped);
 
@@ -235,14 +236,14 @@ var FlowBox = GObject.registerClass({
     }
 
     _onActionActivated(button) {
+        let box = button.get_parent();
+
         if (button.toggle_mode) {
-            for (let child of this.get_children()) {
-                if (child !== button) {
-                    child.checked = false;
-                }
+            for (let child of box.get_children()) {
+                child.checked = (child === button) ? child.checked : false;
             }
         } else {
-            button.root_menu._getTopMenu().close();
+            box.root_menu._getTopMenu().close();
 
             button.action_group.activate_action(
                 button.action_name,
@@ -275,7 +276,7 @@ var FlowBox = GObject.registerClass({
                 root_menu: this.root_menu
             });
 
-            let _clickedId = button.connect('clicked', this._onActionActivated.bind(this));
+            let _clickedId = button.connect('clicked', this._onActionActivated);
             button.connect('destroy', () => button.disconnect(_clickedId));
 
             if (button.action_name) {

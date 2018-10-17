@@ -386,7 +386,10 @@ const Service = GObject.registerClass({
         if (this._about === undefined) {
             this._about = new Gtk.AboutDialog({
                 application: this,
-                authors: [ 'Andy Holmes <andrew.g.r.holmes@gmail.com>' ],
+                authors: [
+                    'Andy Holmes <andrew.g.r.holmes@gmail.com>',
+                    'Bertrand Lacoste <getzze@gmail.com>'
+                ],
                 comments: gsconnect.metadata.description,
                 logo: GdkPixbuf.Pixbuf.new_from_resource_at_scale(
                     gsconnect.app_path + '/icons/' + gsconnect.app_id + '.svg',
@@ -559,7 +562,7 @@ const Service = GObject.registerClass({
                     body = error.message + '\n\n' + _('Click for help troubleshooting');
                     icon = new Gio.ThemedIcon({ name: 'network-error' });
                     notif.set_default_action(
-                        `app.wiki('Troubleshooting#${error.name}')`
+                        `app.wiki('Help#${error.name}')`
                     );
                     break;
 
@@ -569,7 +572,7 @@ const Service = GObject.registerClass({
                     body = _('Click for help troubleshooting');
                     icon = new Gio.ThemedIcon({ name: 'dialog-error' });
                     notif.set_default_action(
-                        `app.wiki('Troubleshooting#${error.name}')`
+                        `app.wiki('Help#${error.name}')`
                     );
                     break;
 
@@ -617,7 +620,7 @@ const Service = GObject.registerClass({
                            _('Click for more information');
                     icon = new Gio.ThemedIcon({ name: 'dialog-error' });
                     notif.set_default_action(
-                        `app.wiki('Troubleshooting#${error.name}')`
+                        `app.wiki('Help#${error.name}')`
                     );
                     notif.set_priority(Gio.NotificationPriority.HIGH);
                     break;
@@ -629,7 +632,7 @@ const Service = GObject.registerClass({
                            _('Click for more information');
                     icon = new Gio.ThemedIcon({ name: 'preferences-desktop-display-symbolic' });
                     notif.set_default_action(
-                        `app.wiki('Troubleshooting#${error.name}')`
+                        `app.wiki('Help#${error.name}')`
                     );
                     notif.set_priority(Gio.NotificationPriority.HIGH);
                     break;

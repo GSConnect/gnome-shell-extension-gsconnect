@@ -7,12 +7,6 @@ const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
 
-// Don't require gettext
-if (typeof _ !== 'function') {
-    var _ = function (s) { return s; }
-}
-
-
 /**
  * Response enum for ShortcutChooserDialog
  */

@@ -276,7 +276,7 @@ var Window = GObject.registerClass({
                         title: ntitle,
                         text: ntext,
                         ticker: `${ntitle}: ${ntext}`,
-                        requestReplyId: '00000000-0000-4000-0000-000000000000',
+                        requestReplyId: '23b1b660-8eb8-4c13-a232-79104300c114',
                         isClearable: true
                     }
                 });
@@ -304,7 +304,7 @@ var Window = GObject.registerClass({
                         title: ntitle,
                         text: ntext,
                         ticker: `${ntitle}: ${ntext}`,
-                        requestReplyId: '00000000-0000-4000-0000-000000000000',
+                        requestReplyId: '23b1b660-8eb8-4c13-a232-79104300c114',
                         isClearable: true
                     }
                 });

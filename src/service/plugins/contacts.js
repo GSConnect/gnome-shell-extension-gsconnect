@@ -84,13 +84,14 @@ var Plugin = GObject.registerClass({
     }
 
     /**
-     * Decode a string encoded as QUOTED-PRINTABLE and return a regular string
+     * Decode a string encoded as "QUOTED-PRINTABLE" and return a regular string
      *
      * See: https://github.com/mathiasbynens/quoted-printable/blob/master/src/quoted-printable.js
      *
      * @param {string} input - The QUOTED-PRINTABLE string
+     * @return {string} - The decoded string
      */
-    decodeQuotedPrintable(input) {
+    decode_quoted_printable(input) {
 		return input
 			// https://tools.ietf.org/html/rfc2045#section-6.7, rule 3
 			.replace(/[\t\x20]$/gm, '')
@@ -101,6 +102,16 @@ var Plugin = GObject.registerClass({
 				let codePoint = parseInt($1, 16);
 				return String.fromCharCode(codePoint);
 			});
+	}
+
+    /**
+     * Decode a string encoded as "UTF-8" and return a regular string
+     *
+     * @param {string} input - The UTF-8 string
+     * @return {string} - The decoded string
+     */
+	decode_utf8(input) {
+	    return decodeURIComponent(escape(input));
 	}
 
     /**
@@ -120,19 +131,15 @@ var Plugin = GObject.registerClass({
         vcard_data.split('\n').forEach(line => {
             let results, key, type, value;
 
-            // Static Keys (fn, x-kdeconnect-timestamp, etc)
-            results = line.match(VCARD_REGEX_META);
-
-            if (results) {
+            // Simple Keys (fn, x-kdeconnect-timestamp, etc)
+            if ((results = line.match(VCARD_REGEX_META))) {
                 [results, key, value] = results;
                 vcard[key.toLowerCase()] = value;
                 return;
             }
 
             // Typed Keys (tel, adr, etc)
-            results = line.match(VCARD_REGEX_PROP);
-
-            if (results) {
+            if ((results = line.match(VCARD_REGEX_PROP))) {
                 [results, key, type, value] = results;
                 key = key.replace(VCARD_REGEX_KEY, '').toLowerCase();
                 value = value.split(';');
@@ -155,13 +162,20 @@ var Plugin = GObject.registerClass({
                 // Decode QUOTABLE-PRINTABLE
                 if (meta.ENCODING === 'QUOTED-PRINTABLE') {
                     delete meta.ENCODING;
-                    value = value.map(v => this.decodeQuotedPrintable(v));
+                    value = value.map(v => this.decode_quoted_printable(v));
                 }
 
-                vcard[key].push({
-                    meta: meta,
-                    value: value
-                })
+                // Decode UTF-8
+                if (meta.CHARSET === 'UTF-8') {
+                    delete meta.CHARSET;
+                    value = value.map(v => this.decode_utf8(v));
+                }
+
+                if (key === 'fn') {
+                    vcard[key] = value[0];
+                } else {
+                    vcard[key].push({ meta: meta, value: value });
+                }
             }
         });
 

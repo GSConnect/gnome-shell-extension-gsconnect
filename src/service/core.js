@@ -124,6 +124,7 @@ var Channel = class Channel {
      * Read the identity packet from the new connection
      *
      * @param {Gio.SocketConnection} connection - An unencrypted socket
+     * @return {Gio.SocketConnection} - The connection after success
      */
     _receiveIdent(connection) {
         return new Promise((resolve, reject) => {
@@ -143,6 +144,11 @@ var Channel = class Channel {
                         // Store the identity as an object property
                         this.identity = new Packet(data);
 
+                        // Reject connections without a deviceId
+                        if (!this.identity.body.deviceId) {
+                            throw new Error('missing deviceId');
+                        }
+
                         resolve(connection);
                     } catch (e) {
                         reject(e);
@@ -156,6 +162,7 @@ var Channel = class Channel {
      * Write our identity packet to the new connection
      *
      * @param {Gio.SocketConnection} connection - An unencrypted socket
+     * @return {Gio.SocketConnection} - The connection after success
      */
     _sendIdent(connection) {
         return new Promise((resolve, reject) => {
@@ -178,26 +185,30 @@ var Channel = class Channel {
     /**
      * Handshake Gio.TlsConnection
      */
+    _handshake(connection) {
+        return new Promise((resolve, reject) => {
+            connection.validation_flags = Gio.TlsCertificateFlags.EXPIRED;
+            connection.authentication_mode = Gio.TlsAuthenticationMode.REQUIRED;
+
+            connection.handshake_async(
+                GLib.PRIORITY_DEFAULT,
+                this.cancellable,
+                (connection, res) => {
+                    try {
+                        resolve(connection.handshake_finish(res));
+                    } catch (e) {
+                        reject(e);
+                    }
+                }
+            );
+        });
+    }
+
     async _authenticate(connection) {
         // FIXME: This is a hack, error propogation needs to be fixed
         try {
             // Standard TLS Handshake
-            await new Promise((resolve, reject) => {
-                connection.validation_flags = Gio.TlsCertificateFlags.EXPIRED;
-                connection.authentication_mode = Gio.TlsAuthenticationMode.REQUIRED;
-
-                connection.handshake_async(
-                    GLib.PRIORITY_DEFAULT,
-                    this.cancellable,
-                    (connection, res) => {
-                        try {
-                            resolve(connection.handshake_finish(res));
-                        } catch (e) {
-                            reject(e);
-                        }
-                    }
-                );
-            });
+            await this._handshake(connection);
 
             // Bail if deviceId is missing
             if (!this.identity.body.hasOwnProperty('deviceId')) {
@@ -282,7 +293,7 @@ var Channel = class Channel {
      */
     attach(device) {
         // Detach any existing channel
-        if (device._channel !== null && device._channel !== this) {
+        if (device._channel && device._channel !== this) {
             device._channel.cancellable.disconnect(device._channel._id);
             device._channel.close();
         }
@@ -320,12 +331,9 @@ var Channel = class Channel {
             this._connection = await this._initSocket(connection);
             this._connection = await this._sendIdent(this._connection);
             this._connection = await this._serverEncryption(this._connection);
-
-            return true;
         } catch (e) {
-            debug(e);
             this.close();
-            return false;
+            return Promise.reject(e);
         }
     }
 
@@ -333,19 +341,15 @@ var Channel = class Channel {
      * Accept an incoming connection
      *
      * @param {Gio.TcpConnection} connection - The incoming connection
-     * @return {Boolean} - %true on connected, %false otherwise
      */
     async accept(connection) {
         try {
             this._connection = await this._initSocket(connection);
             this._connection = await this._receiveIdent(this._connection);
             this._connection = await this._clientEncryption(this._connection);
-
-            return true;
         } catch(e) {
-            debug(e);
             this.close();
-            return false;
+            return Promise.reject(e);
         }
     }
 

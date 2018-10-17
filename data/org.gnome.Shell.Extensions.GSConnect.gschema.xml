@@ -31,14 +31,6 @@
     <key name="discoverable" type="b">
       <default>true</default>
     </key>
-
-    <!-- TODO DEPRECATED AS OF V13 -->
-    <key name="nautilus-integration" type="b">
-      <default>false</default>
-    </key>
-    <key name="webbrowser-integration" type="b">
-      <default>false</default>
-    </key>
   </schema>
 
   <!-- Device Settings -->
@@ -93,11 +85,6 @@
     </key>
     <key name="last-connection" type="s">
       <default>""</default>
-    </key>
-
-    <!-- TODO DEPRECATED AS OF V13 -->
-    <key name="enabled-plugins" type="as">
-      <default>[]</default>
     </key>
   </schema>
 

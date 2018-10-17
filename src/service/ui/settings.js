@@ -478,6 +478,8 @@ var Device = GObject.registerClass({
         super._init();
 
         this.device = device;
+        this._menus = Gtk.Builder.new_from_resource(gsconnect.app_path + '/gtk/menus.ui');
+        this._menus.translation_domain = 'org.gnome.Shell.Extensions.GSConnect';
 
         // GSettings
         this.settings = new Gio.Settings({
@@ -488,8 +490,7 @@ var Device = GObject.registerClass({
         this._setupActions();
 
         // Device Menu
-        let builder = Gtk.Builder.new_from_resource(gsconnect.app_path + '/gtk/menus.ui');
-        this.menu = builder.get_object('device-settings');
+        this.menu = this._menus.get_object('device-settings');
         this.menu.prepend_section(null, this.device.menu);
 
         // Sidebar Row
@@ -649,9 +650,7 @@ var Device = GObject.registerClass({
         settings = this._getSettings('clipboard');
         this.actions.add_action(settings.create_action('send-content'));
         this.actions.add_action(settings.create_action('receive-content'));
-        this.clipboard_sync.set_menu_model(
-            this.service.get_menu_by_id('clipboard-sync')
-        );
+        this.clipboard_sync.set_menu_model(this._menus.get_object('clipboard-sync'));
 
         settings = this._getSettings('mousepad');
         this.actions.add_action(settings.create_action('share-control'));
@@ -665,15 +664,12 @@ var Device = GObject.registerClass({
         settings = this._getSettings('telephony');
         this.actions.add_action(settings.create_action('ringing-volume'));
         this.actions.add_action(settings.create_action('ringing-pause'));
-        this.ringing_volume.set_menu_model(
-            this.service.get_menu_by_id('ringing-volume')
-        );
+        this.ringing_volume.set_menu_model(this._menus.get_object('ringing-volume'));
+        
         this.actions.add_action(settings.create_action('talking-volume'));
         this.actions.add_action(settings.create_action('talking-pause'));
         this.actions.add_action(settings.create_action('talking-microphone'));
-        this.talking_volume.set_menu_model(
-            this.service.get_menu_by_id('talking-volume')
-        );
+        this.talking_volume.set_menu_model(this._menus.get_object('talking-volume'));
 
         // Connect Actions
         let status_bluetooth = new Gio.SimpleAction({name: 'connect-bluetooth'});

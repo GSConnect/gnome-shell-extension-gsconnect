@@ -41,7 +41,7 @@ var Metadata = {
             label: _('Reply SMS'),
             icon_name: 'sms-symbolic',
 
-            parameter_type: new GLib.VariantType('a{sv}'),
+            parameter_type: new GLib.VariantType('s'),
             incoming: [],
             outgoing: ['kdeconnect.sms.request']
         },
@@ -240,7 +240,7 @@ var Plugin = GObject.registerClass({
      * Handle a new single message
      */
     _handleMessage(contact, message) {
-        // Check for an extant window
+        // Check if there's a window open
         let window = this._hasWindow(message.address);
 
         if (window) {
@@ -273,9 +273,11 @@ var Plugin = GObject.registerClass({
             });
 
             for (let message of messages) {
-                let message_id = message._id;
+                let extant = conversation.find(msg => msg._id === message._id);
 
-                if (conversation.every(msg => msg._id !== message_id)) {
+                if (extant) {
+                    Object.assign(extant, message);
+                } else {
                     conversation.push(message);
                     await this._handleMessage(contact, message);
                 }
@@ -317,6 +319,10 @@ var Plugin = GObject.registerClass({
                 // Request each new or newer thread
                 packet.body.messages.map(message => {
                     let cache = this.conversations[message.thread_id];
+
+                    if (cache && message.read === MessageStatus.READ) {
+                        cache.forEach(message => message.read = MessageStatus.READ);
+                    }
 
                     if (!cache || cache[cache.length - 1].date < message.date) {
                         this.requestConversation(message.thread_id);
@@ -390,21 +396,25 @@ var Plugin = GObject.registerClass({
     /**
      * A notification action for replying to SMS messages (or missed calls).
      *
-     * TODO: If kdeconnect.sms.message packet is not supported, @message was
-     * populated by Telephony and we use receiveMessage() to imitate a real one.
-     *
-     * @param {Object} message - A telephony message object
+     * @param {string} hint - Could be either a contact name or phone number
      */
-    replySms(message) {
+    replySms(hint) {
+        debug(hint);
+
+        let contact = this.device.contacts.query({
+            name: hint,
+            number: hint
+        });
+
         // Check for an extant window
-        let window = this._hasWindow(message.address);
+        let window = this._hasWindow(contact.numbers[0].value);
 
         // Open a new window if not
         if (!window) {
             window = new Messaging.ConversationWindow({
                 application: this.service,
                 device: this.device,
-                address: message.address
+                address: contact.numbers[0].value
             });
 
             // Log the message if SMS history is not supported

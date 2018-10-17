@@ -64,7 +64,7 @@
                                     <property name="valign">center</property>
                                     <property name="hexpand">True</property>
                                     <property name="vexpand">True</property>
-                                    <property name="label">Battery</property>
+                                    <property name="label" translatable="yes">Battery</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">0</property>
@@ -112,7 +112,7 @@
                                     <property name="valign">center</property>
                                     <property name="hexpand">True</property>
                                     <property name="vexpand">True</property>
-                                    <property name="label">Clipboard Sync</property>
+                                    <property name="label" translatable="yes">Clipboard Sync</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">0</property>
@@ -168,7 +168,7 @@
                                     <property name="valign">center</property>
                                     <property name="hexpand">True</property>
                                     <property name="vexpand">True</property>
-                                    <property name="label">Media Players</property>
+                                    <property name="label" translatable="yes">Media Players</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">0</property>
@@ -216,7 +216,7 @@
                                     <property name="valign">center</property>
                                     <property name="hexpand">True</property>
                                     <property name="vexpand">True</property>
-                                    <property name="label">Mouse &amp; Keyboard</property>
+                                    <property name="label" translatable="yes">Mouse &amp; Keyboard</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">0</property>
@@ -264,7 +264,7 @@
                                     <property name="valign">center</property>
                                     <property name="hexpand">True</property>
                                     <property name="vexpand">True</property>
-                                    <property name="label">Volume Control</property>
+                                    <property name="label" translatable="yes">Volume Control</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">0</property>
@@ -593,7 +593,7 @@
                                     <property name="valign">center</property>
                                     <property name="hexpand">True</property>
                                     <property name="vexpand">True</property>
-                                    <property name="label">Share Notifications</property>
+                                    <property name="label" translatable="yes">Share Notifications</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">0</property>
@@ -750,7 +750,7 @@
                                     <property name="valign">center</property>
                                     <property name="hexpand">True</property>
                                     <property name="vexpand">True</property>
-                                    <property name="label">Volume</property>
+                                    <property name="label" translatable="yes">Volume</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">0</property>
@@ -808,7 +808,7 @@
                                     <property name="valign">center</property>
                                     <property name="hexpand">True</property>
                                     <property name="vexpand">True</property>
-                                    <property name="label">Pause Media</property>
+                                    <property name="label" translatable="yes">Pause Media</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">0</property>
@@ -895,7 +895,7 @@
                                     <property name="valign">center</property>
                                     <property name="hexpand">True</property>
                                     <property name="vexpand">True</property>
-                                    <property name="label">Volume</property>
+                                    <property name="label" translatable="yes">Volume</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">0</property>
@@ -953,7 +953,7 @@
                                     <property name="valign">center</property>
                                     <property name="hexpand">True</property>
                                     <property name="vexpand">True</property>
-                                    <property name="label">Pause Media</property>
+                                    <property name="label" translatable="yes">Pause Media</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">0</property>
@@ -1002,7 +1002,7 @@
                                     <property name="valign">center</property>
                                     <property name="hexpand">True</property>
                                     <property name="vexpand">True</property>
-                                    <property name="label">Mute Microphone</property>
+                                    <property name="label" translatable="yes">Mute Microphone</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">0</property>
@@ -1401,7 +1401,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
-                <property name="label">Sharing</property>
+                <property name="label" translatable="yes">Sharing</property>
                 <property name="use_markup">True</property>
               </object>
               <packing>
@@ -1444,7 +1444,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
-                <property name="label">Commands</property>
+                <property name="label" translatable="yes">Commands</property>
                 <property name="use_markup">True</property>
               </object>
               <packing>
@@ -1487,7 +1487,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
-                <property name="label">Notifications</property>
+                <property name="label" translatable="yes">Notifications</property>
                 <property name="use_markup">True</property>
               </object>
               <packing>
@@ -1530,7 +1530,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
-                <property name="label">Telephony</property>
+                <property name="label" translatable="yes">Telephony</property>
                 <property name="use_markup">True</property>
               </object>
               <packing>
@@ -1573,7 +1573,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
-                <property name="label">Keyboard Shortcuts</property>
+                <property name="label" translatable="yes">Keyboard Shortcuts</property>
                 <property name="use_markup">True</property>
               </object>
               <packing>
@@ -1616,7 +1616,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
-                <property name="label">Advanced</property>
+                <property name="label" translatable="yes">Advanced</property>
                 <property name="use_markup">True</property>
               </object>
               <packing>

@@ -1,274 +1,275 @@
-# Brazilian Portuguese translation for GSConnect.
-# Copyright (C) 2018 Andy Holmes
+# Türkçe Çeviri rg.gnome.Shell.Extensions.GSConnect.
+# Copyright © 2018 the org.gnome.Shell.Extensions.GSConnect authors.
 # This file is distributed under the same license as the org.gnome.Shell.Extensions.GSConnect package.
-# Ricardo Silva Veloso <ricvelozo@gmail.com>, 2018.
+# Serdar Sağlam <teknomobil@yandex.com>, Orhan Engin Okay <orhanenginokay@hotmail.com>, A. Burak Tektaş <abtektas@gmail.com>, 2018.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-10-16 22:39+0300\n"
-"PO-Revision-Date: 2018-10-16 02:27-0300\n"
-"Last-Translator: Ricardo Silva Veloso <ricvelozo@gmail.com>\n"
-"Language-Team: \n"
-"Language: pt_BR\n"
+"PO-Revision-Date: 2018-10-12 09:55-0700\n"
+"Last-Translator: Serdar Sağlam <teknomobil@yandex.com>, Orhan Engin Okay "
+"<orhanenginokay@hotmail.com>, A. Burak Tektaş <abtektas@gmail.com>\n"
+"Language-Team: Türkçe <teknomobil@yandex.com>, <orhanenginokay@hotmail.com>, "
+"<abtektas@gmail.com>\n"
+"Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 2.1.1\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
 #: data/conversation-window.ui:15 src/service/ui/messaging.js:476
 msgid "Conversations"
-msgstr "Bate-papos"
+msgstr "Konuşmalar"
 
 #: data/conversation-window.ui:132 data/conversation-window.ui:136
 msgid "Type a message"
-msgstr "Escrever uma mensagem"
+msgstr "Bir mesaj yaz"
 
 #: data/conversation-window.ui:211 src/shell/device.js:578
 msgid "Device is disconnected"
-msgstr "Dispositivo está desconectado"
+msgstr "Cihaz bağlantısı kesildi"
 
 #: data/device.ui:67 src/service/plugins/battery.js:12
 msgid "Battery"
-msgstr "Bateria"
+msgstr "Pil"
 
 #: data/device.ui:115
 msgid "Clipboard Sync"
-msgstr "Sincronização da área de transferência"
+msgstr "Pano Eşitle"
 
 #: data/device.ui:171
 msgid "Media Players"
-msgstr "Reprodutores de mídia"
+msgstr "Medya Oynatıcıları"
 
 #: data/device.ui:219
 msgid "Mouse & Keyboard"
-msgstr "Mouse & teclado"
+msgstr "Fare & Klavye"
 
 #: data/device.ui:267
 msgid "Volume Control"
-msgstr "Controle de volume"
+msgstr "Ses Kontrolü"
 
 #: data/device.ui:307 data/device.ui:1404
 msgid "Sharing"
-msgstr "Compartilhar"
+msgstr "Paylaşım"
 
 #: data/device.ui:336 data/device.ui:533 data/device.ui:1447
 #: src/service/plugins/runcommand.js:18 src/service/plugins/runcommand.js:173
 msgid "Commands"
-msgstr "Comandos"
+msgstr "Komutlar"
 
 #: data/device.ui:384
 msgid "Name"
-msgstr "Nome"
+msgstr "Ad"
 
 #: data/device.ui:400 data/device.ui:401
 msgid "Choose an executable"
-msgstr "Escolher um executável"
+msgstr "Yürütülebilir dosya seçin"
 
 #: data/device.ui:402
 msgid "Command Line"
-msgstr "Linha de comando"
+msgstr "Komut satırı"
 
 #: data/device.ui:596
 msgid "Share Notifications"
-msgstr "Compartilhar notificações"
+msgstr "Bildirimleri Paylaş"
 
 #: data/device.ui:634
 msgid "Applications"
-msgstr "Aplicativos"
+msgstr "Uygulamalar"
 
 #: data/device.ui:673 data/device.ui:1490
 #: src/service/plugins/notification.js:12
 msgid "Notifications"
-msgstr "Notificações"
+msgstr "Bildirimler"
 
 #: data/device.ui:703
 msgid "Incoming Calls"
-msgstr "Chamadas recebidas"
+msgstr "Gelen Aramalar"
 
 #: data/device.ui:753 data/device.ui:898
 msgid "Volume"
-msgstr "Volume"
+msgstr "Sistem Sesi"
 
 #: data/device.ui:811 data/device.ui:956
 msgid "Pause Media"
-msgstr "Pausar mídia"
+msgstr "Medyayı Duraklat"
 
 #: data/device.ui:850
 msgid "Ongoing Calls"
-msgstr "Chamadas em andamento"
+msgstr "Devam eden Çağrılar"
 
 #: data/device.ui:1005
 msgid "Mute Microphone"
-msgstr "Silenciar microfone"
+msgstr "Mikrofonu Sustur"
 
 #: data/device.ui:1045 data/device.ui:1533 src/service/plugins/telephony.js:12
 msgid "Telephony"
-msgstr "Telefonia"
+msgstr "Telefon"
 
 #: data/device.ui:1080
 msgid "Action Shortcuts"
-msgstr "Atalhos de ações"
+msgstr "Kısayol Eylemleri"
 
 #: data/device.ui:1092 data/device.ui:1155
 msgid "Reset All…"
-msgstr "Redefinir tudo…"
+msgstr "Tümünü Sıfırla…"
 
 #: data/device.ui:1143
 msgid "Command Shortcuts"
-msgstr "Atalhos de comandos"
+msgstr "Komut Kısayolları"
 
 #: data/device.ui:1201
 msgid "Shortcuts"
-msgstr "Atalhos"
+msgstr "Kısayollar"
 
 #: data/device.ui:1232
 msgid "Plugins"
-msgstr "Plugins"
+msgstr "Eklentiler"
 
 #: data/device.ui:1293
 msgid "Delete"
-msgstr "Excluir"
+msgstr "Sil"
 
 #: data/device.ui:1318
 msgid "Delete this device"
-msgstr "Excluir este dispositivo"
+msgstr "Aygıtı sil"
 
 #: data/device.ui:1333
 msgid "Unpair and remove all settings and files"
-msgstr "Esquecer e remover todas as configurações e arquivos"
+msgstr "Tüm ayarları sıfırla ve dosyaları kaldır"
 
 #: data/device.ui:1363 data/device.ui:1619
 msgid "Advanced"
-msgstr "Avançado"
+msgstr "Gelişmiş"
 
 #: data/device.ui:1576
 msgid "Keyboard Shortcuts"
-msgstr "Atalhos de teclado"
+msgstr "Komut Kısayolları"
 
 #: data/menus.ui:5 src/service/ui/service.js:115
 msgid "Connect to…"
-msgstr "Conectar a…"
+msgstr "Bağlan…"
 
 #: data/menus.ui:11
 msgid "Sync Contacts"
-msgstr "Sincronizar contatos"
+msgstr "Kişileri Eşitle"
 
 #: data/menus.ui:16
 msgid "Sync Messages"
-msgstr "Sincronizar mensagens"
+msgstr "Mesajları Eşitle"
 
 #: data/menus.ui:23 data/settings.ui:1087
 msgid "Help"
-msgstr "Ajuda"
+msgstr "Yardım"
 
 #: data/menus.ui:28
 msgid "Debugger"
-msgstr "Depurador"
+msgstr "Hata Ayıklayıcı"
 
 #: data/menus.ui:32
 msgid "About"
-msgstr "Sobre"
+msgstr "Hakkında"
 
 #: data/menus.ui:41
 msgid "Connect Bluetooth"
-msgstr "Conectar Bluetooth"
+msgstr "Bluetooth Bağlantısı"
 
 #: data/menus.ui:47
 msgid "Connect LAN"
-msgstr "Conectar LAN"
+msgstr "Yerel Ağa Bağlan"
 
 #: data/menus.ui:53 src/service/device.js:434 src/shell/device.js:374
 msgid "Pair"
-msgstr "Parear"
+msgstr "Eşleştir"
 
 #: data/menus.ui:59 src/service/device.js:442
 msgid "Unpair"
-msgstr "Esquecer"
+msgstr "Eşleşmeyi Bitir"
 
 #. TRANSLATORS: Send clipboard content to device
 #: data/menus.ui:72
 msgid "To Device"
-msgstr "Para dispositivo"
+msgstr "Cihaza"
 
 #. TRANSLATORS: Receive clipboard content from the device
 #: data/menus.ui:78
 msgid "From Device"
-msgstr "De dispositivo"
+msgstr "Cihazdan"
 
 #. TRANSLATORS: Don't change the system volume
 #: data/menus.ui:90 data/menus.ui:116
 msgid "Nothing"
-msgstr "Nada"
+msgstr "Hiç Biri"
 
 #. TRANSLATORS: Lower the system volume
 #: data/menus.ui:97 data/menus.ui:123
 msgid "Lower"
-msgstr "Baixo"
+msgstr "Düşük"
 
 #. TRANSLATORS: Mute the system volume
 #. TRANSLATORS: Silence the phone ringer
 #: data/menus.ui:104 data/menus.ui:130 src/service/plugins/telephony.js:175
 msgid "Mute"
-msgstr "Silenciar"
+msgstr "Sessiz"
 
 #: data/settings.ui:333
 msgid "Appearance"
-msgstr "Aparência"
+msgstr "Görünüm"
 
 #: data/settings.ui:383
 msgid "Display Mode"
-msgstr "Modo de exibição"
+msgstr "Görünüm Modu"
 
 #: data/settings.ui:435
 msgid "Show Offline Devices"
-msgstr "Mostrar dispositivos desconectados"
+msgstr "Çevrim dışı Cihazları Göster"
 
 #: data/settings.ui:486
 msgid "Show Unpaired Devices"
-msgstr "Mostrar dispositivos não pareados"
+msgstr "Eşleşmemiş Cihazları Göster"
 
 #: data/settings.ui:537
 msgid "Show Battery Icon"
-msgstr "Mostrar ícone de bateria"
+msgstr "Pil Simgesini Göster"
 
 #: data/settings.ui:578 data/settings.ui:1167
 msgid "Shell"
-msgstr "Shell"
+msgstr "Kabuk"
 
 #: data/settings.ui:639
 msgid "Discoverable"
-msgstr "Visível"
+msgstr "Keşif Devre Dışı"
 
 #: data/settings.ui:711
 msgid "Restart Service"
-msgstr "Reiniciar serviço"
+msgstr "Servisi Yeniden Başlat"
 
 #: data/settings.ui:764 data/settings.ui:1210
 msgid "Service"
-msgstr "Serviço"
+msgstr "Servis"
 
 #: data/settings.ui:823
 msgid "Remote Filesystems"
-msgstr "Sistemas de arquivos remotos"
+msgstr "Uzak Dosya Sistemleri"
 
 #: data/settings.ui:859
 msgid "Sound Effects"
-msgstr "Efeitos sonoros"
+msgstr "Ses Efektleri"
 
 #: data/settings.ui:896
 msgid "Desktop Contacts"
-msgstr "Integração com contatos"
+msgstr "Kişileri Eşitle"
 
 #: data/settings.ui:933
 msgid "Files Integration"
-msgstr "Integração com arquivos"
+msgstr "Dosya Entegrasyonu"
 
 #: data/settings.ui:960
 msgid "Additional Features"
-msgstr "Funcionalidades adicionais"
+msgstr "Ek Özellikler"
 
 #: data/settings.ui:1033
 msgid "Android"
@@ -286,24 +287,24 @@ msgstr "KDE Connect"
 #: data/settings.ui:1108 data/settings.ui:1253 src/service/ui/contacts.js:57
 #: src/service/ui/contacts.js:78
 msgid "Other"
-msgstr "Outro"
+msgstr "Diğer"
 
 #. TRANSLATORS: No devices are known or available
 #: data/settings.ui:1301 webextension/gettext.js:35
 msgid "No Device Found"
-msgstr "Nenhum dispositivo encontrado"
+msgstr "Aygıt Bulunamadı"
 
 #: data/settings.ui:1337
 msgid "Refresh"
-msgstr "Recarregar"
+msgstr "Yenile"
 
 #: src/extension.js:59
 msgid "Mobile Devices"
-msgstr "Dispositivos móveis"
+msgstr "Mobil Aygıtlar"
 
 #: src/extension.js:81
 msgid "Mobile Settings"
-msgstr "Configurações de dispositivos"
+msgstr "Mobil Ayarları"
 
 #. TRANSLATORS: Extension name
 #: src/extension.js:146 src/extension.js:211 src/service/daemon.js:95
@@ -314,77 +315,78 @@ msgstr "GSConnect"
 #. TRANSLATORS: Top-level context menu item for GSConnect
 #: src/nautilus-gsconnect.py:112 webextension/gettext.js:31
 msgid "Send To Mobile Device"
-msgstr "Enviar para dispositivo móvel"
+msgstr "Mobil Cihaza Gönder"
 
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
 #: src/service/daemon.js:402
 msgid "translator-credits"
-msgstr "Ricardo Silva Veloso <ricvelozo@gmail.com>"
+msgstr ""
+"Serdar Sağlam <teknomobil@yandex.com>, Orhan Engin Okay "
+"<orhanenginokay@hotmail.com>, A. Burak Tektaş <abtektas@gmail.com>"
 
 #: src/service/daemon.js:424
 msgid "Report"
-msgstr "Reportar"
+msgstr "Raporla"
 
 #: src/service/daemon.js:552
 msgid "Authentication Failure"
-msgstr "Falha de autenticação"
+msgstr "Kimlik Doğrulama Hatası"
 
 #: src/service/daemon.js:561
 msgid "Network Error"
-msgstr "Erro de rede"
+msgstr "Ağ Hatası"
 
 #: src/service/daemon.js:562 src/service/daemon.js:572
 msgid "Click for help troubleshooting"
-msgstr "Clique para ajuda na solução de problemas"
+msgstr "Sorun giderme yardımı için tıklayın"
 
 #: src/service/daemon.js:571
 msgid "PulseAudio Error"
-msgstr "Erro do PulseAudio"
+msgstr "PulseAudio Hatası"
 
 #: src/service/daemon.js:581
 msgid "Discovery Disabled"
-msgstr "Descoberta desativada"
+msgstr "Keşif Devre Dışı"
 
 #: src/service/daemon.js:582
 msgid ""
 "Discovery has been disabled due to the number of devices on this network."
-msgstr ""
-"A descoberta foi desativada devido ao número de dispositivos nesta rede."
+msgstr "Bu ağdaki aygıt sayısı nedeniyle keşif devre dışı bırakıldı."
 
 #: src/service/daemon.js:584 src/service/daemon.js:594
 msgid "Click to open preferences"
-msgstr "Clique para abrir preferências"
+msgstr "Tercihleri açmak için tıklayın"
 
 #: src/service/daemon.js:593
 msgid "Additional Software Required"
-msgstr "Necessário software adicional"
+msgstr "Ek Yazılım Gerekli"
 
 #: src/service/daemon.js:602
 #, javascript-format
 msgid "%s Plugin Failed To Load"
-msgstr "Falha ao carregar o plugin %s"
+msgstr "%s Eklentisi Yüklenemedi"
 
 #: src/service/daemon.js:603 src/service/daemon.js:620
 #: src/service/daemon.js:632
 msgid "Click for more information"
-msgstr "Clique para mais informação"
+msgstr "Daha fazla bilgi için tıklayın"
 
 #: src/service/daemon.js:618
 msgid "Remote Filesystem Error"
-msgstr "Erro no sistema de arquivos remotos"
+msgstr "Uzak Dosya Sistemi Hatası"
 
 #: src/service/daemon.js:619
 #, javascript-format
 msgid "%s is using an incompatible SSH library"
-msgstr "%s está usando uma biblioteca SSH incompatível"
+msgstr "%s uyumsuz bir SSH Kütüphanesi kullanıyor"
 
 #: src/service/daemon.js:630
 msgid "Wayland Not Supported"
-msgstr "Sem suporte a Wayland"
+msgstr "Wayland Desteklenmiyor"
 
 #: src/service/daemon.js:631
 msgid "Remote input not supported on Wayland"
-msgstr "Não há suporte para entrada remota no Wayland"
+msgstr "Wayland uzaktan giriş desteklenmiyor"
 
 #. Create an urgent notification
 #: src/service/daemon.js:655
@@ -396,21 +398,21 @@ msgstr "GSConnect: %s"
 #: src/service/daemon.js:801 src/service/plugins/sms.js:49
 #: webextension/gettext.js:39
 msgid "Send SMS"
-msgstr "Enviar SMS"
+msgstr "SMS Gönder"
 
 #: src/service/daemon.js:805
 msgid "Dial Number"
-msgstr "Ligar para número"
+msgstr "Numara Çevir"
 
 #: src/service/device.js:166
 msgid "Not available"
-msgstr "Indisponível"
+msgstr "Uygun değil"
 
 #. TRANSLATORS: Bluetooth address for remote device
 #: src/service/device.js:170
 #, javascript-format
 msgid "Bluetooth device at %s"
-msgstr "Dispositivo Bluetooth em %s"
+msgstr "Bluetooth cihazı %s"
 
 #. TRANSLATORS: Label for TLS Certificate fingerprint
 #.
@@ -421,15 +423,15 @@ msgstr "Dispositivo Bluetooth em %s"
 #: src/service/device.js:188 src/service/device.js:190
 #, javascript-format
 msgid "%s Fingerprint:"
-msgstr "Impressão digital de %s:"
+msgstr "%s Parmak İzi:"
 
 #: src/service/device.js:240
 msgid "Laptop"
-msgstr "Laptop"
+msgstr "Dizüstü"
 
 #: src/service/device.js:242
 msgid "Smartphone"
-msgstr "Smartphone"
+msgstr "Telefon"
 
 #: src/service/device.js:244
 msgid "Tablet"
@@ -437,82 +439,82 @@ msgstr "Tablet"
 
 #: src/service/device.js:246
 msgid "Desktop"
-msgstr "Computador"
+msgstr "Masaüstü"
 
 #: src/service/device.js:418 src/shell/device.js:364
 msgid "Reconnect"
-msgstr "Reconectar"
+msgstr "Yeniden bağlan"
 
 #: src/service/device.js:426 src/shell/device.js:416
 msgid "Settings"
-msgstr "Configurações"
+msgstr "Ayarlar"
 
 #. TRANSLATORS: eg. Pair Request from Google Pixel
 #: src/service/device.js:617
 #, javascript-format
 msgid "Pair Request from %s"
-msgstr "Convite de pareamento de %s"
+msgstr "Gelen İstek %s"
 
 #: src/service/device.js:624
 msgid "Reject"
-msgstr "Rejeitar"
+msgstr "Reddet"
 
 #: src/service/device.js:629
 msgid "Accept"
-msgstr "Aceitar"
+msgstr "Kabul Et"
 
 #: src/service/plugins/battery.js:188 src/service/plugins/findmyphone.js:18
 msgid "Locate"
-msgstr "Localizar"
+msgstr "Bul"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is low
 #: src/service/plugins/battery.js:197
 #, javascript-format
 msgid "%s: Battery is low"
-msgstr "%s: bateria fraca"
+msgstr "%s: Pil düşük"
 
 #. TRANSLATORS: eg. 15% remaining
 #: src/service/plugins/battery.js:199
 #, javascript-format
 msgid "%d%% remaining"
-msgstr "%d%% restante"
+msgstr "%d%% kaldı"
 
 #: src/service/plugins/clipboard.js:11
 msgid "Clipboard"
-msgstr "Área de transferência"
+msgstr "Pano Eşitle"
 
 #: src/service/plugins/clipboard.js:17
 msgid "Clipboard Push"
-msgstr "Enviar para área de transferência"
+msgstr "Panoya Gönder"
 
 #: src/service/plugins/clipboard.js:25
 msgid "Clipboard Pull"
-msgstr "Pegar da área de transferência"
+msgstr "Panodan Al"
 
 #: src/service/plugins/contacts.js:12
 msgid "Contacts"
-msgstr "Contatos"
+msgstr "Kişiler"
 
 #: src/service/plugins/findmyphone.js:12
 msgid "Find My Phone"
-msgstr "Encontrar meu smartphone"
+msgstr "Telefonumu bul"
 
 #: src/service/plugins/findmyphone.js:73
 msgid "Locate Device"
-msgstr "Localizar dispositivo"
+msgstr "Cihazı Bul"
 
 #: src/service/plugins/findmyphone.js:74
 #, javascript-format
 msgid "%s asked to locate this device"
-msgstr "%s pediu para localizar este dispositivo"
+msgstr "%s cihaz bulundu"
 
 #: src/service/plugins/findmyphone.js:82
 msgid "Found"
-msgstr "Encontrado"
+msgstr "Bulundu"
 
 #: src/service/plugins/mousepad.js:13
 msgid "Mousepad"
-msgstr "Mousepad"
+msgstr "Fare Altlığı"
 
 #: src/service/plugins/mpris.js:10
 msgid "MPRIS"
@@ -520,35 +522,35 @@ msgstr "MPRIS"
 
 #: src/service/plugins/notification.js:25
 msgid "Cancel Notification"
-msgstr "Cancelar notificação"
+msgstr "Bildirimi İptal Et"
 
 #: src/service/plugins/notification.js:33
 msgid "Close Notification"
-msgstr "Fechar notificação"
+msgstr "Bildirimi Kapat"
 
 #: src/service/plugins/notification.js:41
 msgid "Reply Notification"
-msgstr "Responder notificação"
+msgstr "Bildirimi Yanıtla"
 
 #: src/service/plugins/notification.js:49
 msgid "Send Notification"
-msgstr "Enviar notificação"
+msgstr "Bildirim Gönder"
 
 #: src/service/plugins/ping.js:11 src/service/plugins/ping.js:17
 #: src/service/plugins/ping.js:46
 msgid "Ping"
-msgstr "Ping"
+msgstr "Yokla"
 
 #. TRANSLATORS: An optional message accompanying a ping, rarely if ever used
 #. eg. Ping: A message sent with ping
 #: src/service/plugins/ping.js:53
 #, javascript-format
 msgid "Ping: %s"
-msgstr "Ping: %s"
+msgstr "Yokla: %s"
 
 #: src/service/plugins/runcommand.js:12
 msgid "Run Commands"
-msgstr "Executar comandos"
+msgstr "Komutları Çalıştır"
 
 #: src/service/plugins/sftp.js:12
 msgid "SFTP"
@@ -556,50 +558,50 @@ msgstr "SFTP"
 
 #: src/service/plugins/sftp.js:18
 msgid "Mount"
-msgstr "Montar"
+msgstr "Bağla"
 
 #: src/service/plugins/sftp.js:26
 msgid "Unmount"
-msgstr "Desmontar"
+msgstr "Ayır"
 
 #: src/service/plugins/sftp.js:172
 msgid "All files"
-msgstr "Todos os arquivos"
+msgstr "Tüm dosyalar"
 
 #: src/service/plugins/sftp.js:173
 msgid "Camera pictures"
-msgstr "Fotos da câmera"
+msgstr "Kamera resimleri"
 
 #: src/service/plugins/sftp.js:344
 msgid "Files"
-msgstr "Arquivos"
+msgstr "Dosyalar"
 
 #: src/service/plugins/share.js:12 src/service/plugins/share.js:18
 msgid "Share"
-msgstr "Compartilhar"
+msgstr "Paylaş"
 
 #: src/service/plugins/share.js:26
 msgid "Share File"
-msgstr "Compartilhar arquivo"
+msgstr "Dosyayı Paylaşv"
 
 #: src/service/plugins/share.js:34
 msgid "Share Text"
-msgstr "Compartilhar texto"
+msgstr "Yazıyı Paylaş"
 
 #: src/service/plugins/share.js:42 src/service/ui/messaging.js:847
 #: src/service/ui/messaging.js:855
 msgid "Share Link"
-msgstr "Compartilhar link"
+msgstr "Bağlantıyı Paylaş"
 
 #: src/service/plugins/share.js:131 src/service/plugins/share.js:282
 msgid "Starting Transfer"
-msgstr "Iniciando transferência"
+msgstr "Aktarımı Başlat"
 
 #. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:133
 #, javascript-format
 msgid "Receiving \"%s\" from %s"
-msgstr "Recebendo \"%s\" de %s"
+msgstr "Alınıyor \"%s\" kaynak %s"
 
 #. Action Buttons
 #: src/service/plugins/share.js:138 src/service/plugins/share.js:289
@@ -607,74 +609,74 @@ msgstr "Recebendo \"%s\" de %s"
 #: src/service/ui/service.js:121 src/service/ui/service.js:300
 #: src/service/ui/settings.js:847 src/shell/donotdisturb.js:215
 msgid "Cancel"
-msgstr "Cancelar"
+msgstr "İptal"
 
 #: src/service/plugins/share.js:149 src/service/plugins/share.js:303
 msgid "Transfer Successful"
-msgstr "Transferência completa"
+msgstr "Aktarım Tamamlandı"
 
 #. TRANSLATORS: eg. Received 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:151
 #, javascript-format
 msgid "Received \"%s\" from %s"
-msgstr "Recebido \"%s\" de %s"
+msgstr "Alınan \"%s\" kaynak %s"
 
 #: src/service/plugins/share.js:157
 msgid "Open Folder"
-msgstr "Abrir pasta"
+msgstr "Klasör Aç"
 
 #: src/service/plugins/share.js:162
 msgid "Open File"
-msgstr "Abrir arquivo"
+msgstr "Dosya Aç"
 
 #: src/service/plugins/share.js:169 src/service/plugins/share.js:311
 msgid "Transfer Failed"
-msgstr "Transferência falhou"
+msgstr "Aktarım Başarısız"
 
 #. TRANSLATORS: eg. Failed to receive 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:171
 #, javascript-format
 msgid "Failed to receive \"%s\" from %s"
-msgstr "Falha ao receber \"%s\" de %s"
+msgstr "Alma başarısız \"%s\" kaynak %s"
 
 #: src/service/plugins/share.js:211
 #, javascript-format
 msgid "Text Shared By %s"
-msgstr "Texto compartilhado por %s"
+msgstr "Paylaşılan Metin %s"
 
 #. TRANSLATORS: eg. Sending 'book.pdf' to Google Pixel
 #: src/service/plugins/share.js:284
 #, javascript-format
 msgid "Sending \"%s\" to %s"
-msgstr "Enviando \"%s\" para %s"
+msgstr "Gönderiliyor \"%s\" hedef %s"
 
 #. TRANSLATORS: eg. Sent "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:305
 #, javascript-format
 msgid "Sent \"%s\" to %s"
-msgstr "Enviado \"%s\" para %s"
+msgstr "Gönderildi \"%s\" hedef %s"
 
 #. TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:313
 #, javascript-format
 msgid "Failed to send \"%s\" to %s"
-msgstr "Falha ao enviar \"%s\" para %s"
+msgstr "Gönderilemedi \"%s\" hedef %s"
 
 #. TRANSLATORS: eg. Send files to Google Pixel
 #: src/service/plugins/share.js:384
 #, javascript-format
 msgid "Send files to %s"
-msgstr "Enviar arquivos para %s"
+msgstr "Dosyaları gönder %s"
 
 #. TRANSLATORS: eg. Send a link to Google Pixel
 #: src/service/plugins/share.js:402
 #, javascript-format
 msgid "Send a link to %s"
-msgstr "Enviar um link para %s"
+msgstr "Bağlantı gönder %s"
 
 #: src/service/plugins/share.js:408
 msgid "Send"
-msgstr "Enviar"
+msgstr "Gönder"
 
 #: src/service/plugins/sms.js:12
 msgid "SMS"
@@ -682,544 +684,237 @@ msgstr "SMS"
 
 #: src/service/plugins/sms.js:25
 msgid "Messaging"
-msgstr "Mensagens"
+msgstr "Mesajlaşma"
 
 #: src/service/plugins/sms.js:33
 msgid "New SMS (URI)"
-msgstr "Novo SMS (URI)"
+msgstr "Yeni SMS (URI)"
 
 #: src/service/plugins/sms.js:41
 msgid "Reply SMS"
-msgstr "Responder SMS"
+msgstr "SMS Yanıtla"
 
 #: src/service/plugins/sms.js:57
 msgid "Share SMS"
-msgstr "Compartilhar SMS"
+msgstr "SMS Paylaş"
 
 #: src/service/plugins/systemvolume.js:11
 msgid "System Volume"
-msgstr "Volume do sistema"
+msgstr "Sistem Sesi"
 
 #: src/service/plugins/telephony.js:22
 msgid "Mute Call"
-msgstr "Silenciar chamada"
+msgstr "Sessiz Arama"
 
 #. TRANSLATORS: The phone is ringing
 #: src/service/plugins/telephony.js:171
 msgid "Incoming call"
-msgstr "Recebendo chamada"
+msgstr "Gelen çağrı"
 
 #. TRANSLATORS: A phone call is active
 #: src/service/plugins/telephony.js:186
 msgid "Ongoing call"
-msgstr "Chamada em andamento"
+msgstr "Devam eden çağrı"
 
 #. TRANSLATORS: A phone number type
 #: src/service/ui/contacts.js:62
 msgid "Fax"
-msgstr "Fax"
+msgstr "Faks"
 
 #. TRANSLATORS: A phone number type
 #: src/service/ui/contacts.js:66
 msgid "Work"
-msgstr "Trabalho"
+msgstr "İş"
 
 #. TRANSLATORS: A phone number type
 #: src/service/ui/contacts.js:70
 msgid "Mobile"
-msgstr "Celular"
+msgstr "Mobil"
 
 #. TRANSLATORS: A phone number type
 #: src/service/ui/contacts.js:74
 msgid "Home"
-msgstr "Casa"
+msgstr "Ev"
 
 #: src/service/ui/contacts.js:95 src/service/ui/contacts.js:387
 msgid "Unknown Contact"
-msgstr "Contato desconhecido"
+msgstr "Bilinmeyen İletişim"
 
 #: src/service/ui/contacts.js:194 src/service/ui/contacts.js:195
 msgid "Type a phone number or name"
-msgstr "Digite um número de telefone ou nome"
+msgstr "Telefon numarası veya ad yazın"
 
 #: src/service/ui/contacts.js:239
 msgid "Add people to start a conversation"
-msgstr "Adicionar pessoas para iniciar uma conversa"
+msgstr "Konuşma başlatmak için kişileri ekle"
 
 #. TRANSLATORS: A phone number (eg. "Send to 555-5555")
 #. Update UI
 #: src/service/ui/contacts.js:281 src/service/ui/contacts.js:289
 #, javascript-format
 msgid "Send to %s"
-msgstr "Enviar para %s"
+msgstr "Gönder %s"
 
 #. TRANSLATORS: Title of keyboard shortcut dialog
 #: src/service/ui/keybindings.js:33
 msgid "Set Shortcut"
-msgstr "Definir atalho"
+msgstr "Kısayol Ayarla"
 
 #. TRANSLATORS: Button to confirm the new shortcut
 #: src/service/ui/keybindings.js:47
 msgid "Set"
-msgstr "Definir"
+msgstr "Ayarla"
 
 #. TRANSLATORS: Summary of a keyboard shortcut function
 #. Example: Enter a new shortcut to change Messaging
 #: src/service/ui/keybindings.js:54
 #, javascript-format
 msgid "Enter a new shortcut to change <b>%s</b>"
-msgstr "Digite um novo atalho para mudar <b>%s</b>"
+msgstr "Değiştirmek için yeni bir kısayol girin <b>%s</b>"
 
 #. TRANSLATORS: Keys for cancelling (␛) or resetting (␈) a shortcut
 #: src/service/ui/keybindings.js:83
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
 msgstr ""
-"Pressione Esc para cancelar ou Backspace para redefinir o atalho de teclado."
+"Klavye kısayolunu sıfırlamak için iptal, geri almak için ESC tuşuna basın."
 
 #. TRANSLATORS: When a keyboard shortcut is unavailable
 #. Example: [Ctrl]+[S] is already being used
 #: src/service/ui/keybindings.js:182
 #, javascript-format
 msgid "%s is already being used"
-msgstr "%s já está em uso"
+msgstr "%s zaten kullanılıyor"
 
 #: src/service/ui/service.js:122
 msgid "Connect"
-msgstr "Conectar"
+msgstr "Bağlan"
 
 #: src/service/ui/service.js:294
 msgid "Select a Device"
-msgstr "Selecione um dispositivo"
+msgstr "Aygıt Seç"
 
 #: src/service/ui/service.js:298
 msgid "Select"
-msgstr "Selecionar"
+msgstr "Seç"
 
 #: src/service/ui/settings.js:402
 msgid "Panel"
-msgstr "Painel"
+msgstr "Panel"
 
 #: src/service/ui/settings.js:402
 msgid "User Menu"
-msgstr "Menu do usuário"
+msgstr "Kullanıcı Menü"
 
 #: src/service/ui/settings.js:848
 msgid "Open"
-msgstr "Abrir"
+msgstr "Aç"
 
 #: src/service/ui/settings.js:912 src/service/ui/settings.js:925
 msgid "On"
-msgstr "Ativada"
+msgstr "Açık"
 
 #: src/service/ui/settings.js:912 src/service/ui/settings.js:925
 msgid "Off"
-msgstr "Desativada"
+msgstr "Kapalı"
 
 #: src/service/ui/settings.js:1046 src/service/ui/settings.js:1112
 msgid "Disabled"
-msgstr "Desativado"
+msgstr "Devre dışı"
 
 #. TRANSLATORS: Less than a minute ago
 #: src/service/ui/messaging.js:83 src/service/ui/messaging.js:116
 msgid "Just now"
-msgstr "Agora"
+msgstr "Sadece şimdi"
 
 #. TRANSLATORS: Time duration in minutes (eg. 15 minutes)
 #: src/service/ui/messaging.js:88 src/service/ui/messaging.js:120
 #: src/shell/donotdisturb.js:266
 #, javascript-format
 msgid "%d minutes"
-msgstr "%d minutos"
+msgstr "%d dakika"
 
 #. TRANSLATORS: Yesterday, but less than 24 hours (eg. Yesterday · 11:29 PM)
 #: src/service/ui/messaging.js:93
 #, javascript-format
 msgid "Yesterday・%s"
-msgstr "Ontem・%s"
+msgstr "Dün・%s"
 
 #: src/service/ui/messaging.js:864
 msgid "New Message"
-msgstr "Nova mensagem"
+msgstr "Yeni Mesaj"
 
 #. TRANSLATORS: When the battery level is 100%
 #: src/shell/device.js:305
 msgid "Fully Charged"
-msgstr "Carregado"
+msgstr "Şarj Oldu"
 
 #. TRANSLATORS: When no time estimate for the battery is available
 #. EXAMPLE: 42% (Estimating…)
 #: src/shell/device.js:309
 #, javascript-format
 msgid "%d%% (Estimating…)"
-msgstr "%d%% (Estimando…)"
+msgstr "%d%% (Tahmini…)"
 
 #. TRANSLATORS: Estimated time until battery is charged
 #. EXAMPLE: 42% (1:15 Until Full)
 #: src/shell/device.js:319
 #, javascript-format
 msgid "%d%% (%d∶%02d Until Full)"
-msgstr "%d%% (%d∶%02d até a carga completa)"
+msgstr "%d%% (Dolma Süresi %d∶%02d)"
 
 #. TRANSLATORS: Estimated time until battery is empty
 #. EXAMPLE: 42% (12:15 Remaining)
 #: src/shell/device.js:327
 #, javascript-format
 msgid "%d%% (%d∶%02d Remaining)"
-msgstr "%d%% (%d∶%02d restante)"
+msgstr "%d%% (Kalan Süre %d∶%02d)"
 
 #: src/shell/device.js:580
 msgid "Device is unpaired"
-msgstr "Dispositivo não está pareado"
+msgstr "Aygıt eşlenmemiş"
 
 #: src/shell/donotdisturb.js:150 src/shell/donotdisturb.js:289
 msgid "Do Not Disturb"
-msgstr "Não perturbe"
+msgstr "Rahatsız Etmeyin"
 
 #: src/shell/donotdisturb.js:156
 msgid "Silence Mobile Device Notifications"
-msgstr "Silenciar notificações de dispositivos móveis"
+msgstr "Mobil Cihaz Bildirimlerini Sessize Alma"
 
 #: src/shell/donotdisturb.js:171
 msgid "Until you turn off Do Not Disturb"
-msgstr "Até que você desative o \"Não perturbe\""
+msgstr "Kapatana kadar Rahatsız Etme"
 
 #. TRANSLATORS: Time until change with time duration
 #. EXAMPLE: Until 10:00 (2 hours)
 #: src/shell/donotdisturb.js:184 src/shell/donotdisturb.js:278
 #, javascript-format
 msgid "Until %s (%s)"
-msgstr "Até %s (%s)"
+msgstr "Kadar %s (%s)"
 
 #: src/shell/donotdisturb.js:216
 msgid "Done"
-msgstr "Pronto"
+msgstr "Tamam"
 
 #. TRANSLATORS: Time duration in hours (eg. 2 hours)
 #: src/shell/donotdisturb.js:263
 #, javascript-format
 msgid "One hour"
 msgid_plural "%d hours"
-msgstr[0] "Uma hora"
-msgstr[1] "%d horas"
+msgstr[0] "%d saat"
+msgstr[1] "%d saat"
 
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:29
 msgid "Share links with GSConnect, direct to the browser or by SMS."
-msgstr ""
-"Compartilhe links com o GSConnect, diretamente no navegador ou por SMS."
+msgstr "GSConnect ile bağlantıları doğrudan tarayıcıya veya SMS ile paylaşın."
 
 #. TRANSLATORS: WebExtension can't connect to GSConnect
 #: webextension/gettext.js:33
 msgid "Service Unavailable"
-msgstr "Serviço indisponível"
+msgstr "Hizmet Kullanılamıyor"
 
 #. TRANSLATORS: Open URL with the device's browser
 #: webextension/gettext.js:37
 msgid "Open in Browser"
-msgstr "Abrir no navegador"
-
-#~ msgid "Locate %s"
-#~ msgstr "Localizar %s"
-
-#~ msgid "Browse Files"
-#~ msgstr "Explorar arquivos"
-
-#~ msgid "Remote Input"
-#~ msgstr "Entrada remota"
-
-#~ msgid "No plugins enabled"
-#~ msgstr "Nenhum plugin ativado"
-
-#~ msgid "Failed to mount %s"
-#~ msgstr "Não foi possível montar %s"
-
-#~ msgid "KDE Connect implementation with Gnome Shell integration"
-#~ msgstr "Implementação do KDE Connect com integração do GNOME Shell"
-
-#~ msgid "GSConnect Website"
-#~ msgstr "Site do GSConnect"
-
-#~ msgid "Copyright © 2017 Andy Holmes"
-#~ msgstr "Copyright © 2017 Andy Holmes"
-
-#~ msgid "This program comes with absolutely no warranty."
-#~ msgstr "Este programa vem com absolutamente nenhuma garantia."
-
-#~ msgid ""
-#~ "See the <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html"
-#~ "\">GNU General Public License, version 2 or later</a> for details."
-#~ msgstr ""
-#~ "Veja a <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html"
-#~ "\">GNU General Public License, versão 2 ou posterior</a> para detalhes."
-
-#~ msgid "Preferences"
-#~ msgstr "Preferências"
-
-#~ msgid "Extensions"
-#~ msgstr "Extensões"
-
-#~ msgid "Web Browser Integration"
-#~ msgstr "Integração com navegador"
-
-#~ msgid ""
-#~ "Requires <a href=\"%s\">Chrome Extension</a> or <a href=\"%s\">Firefox "
-#~ "Add-On</a>"
-#~ msgstr ""
-#~ "Requer <a href=\"%s\">extensão do Chrome</a> ou <a href=\"%s"
-#~ "\">complemento do Firefox</a>"
-
-#~ msgid "Nautilus extensions changed"
-#~ msgstr "Extensões do Nautilus foram alteradas"
-
-#~ msgid "Restart Nautilus to apply changes"
-#~ msgstr "Reinicie o Nautilus para as alterações terem efeito"
-
-#~ msgid "Restart"
-#~ msgstr "Reiniciar"
-
-#~ msgid ""
-#~ "%s Fingerprint:\n"
-#~ "%s\n"
-#~ "\n"
-#~ "Local Fingerprint:\n"
-#~ "%s"
-#~ msgstr ""
-#~ "%s Impressão digital:\n"
-#~ "%s\n"
-#~ "\n"
-#~ "Impressão digital local:\n"
-#~ "%s"
-
-#~ msgid "Apply"
-#~ msgstr "Aplicar"
-
-#~ msgid "Send and receive battery statistics"
-#~ msgstr "Enviar e receber estatísticas da bateria"
-
-#~ msgid "Low Battery Warning"
-#~ msgstr "Aviso de bateria fraca"
-
-#~ msgid "%s's battery level is %d%%"
-#~ msgstr "O nível da bateria do %s é %d%%"
-
-#~ msgid "Sync the clipboard between devices"
-#~ msgstr "Sincronizar as áreas de transferências entre dispositivos"
-
-#~ msgid "Failed to get Gdk.Display"
-#~ msgstr "Não foi possível obter Gdk.Display"
-
-#~ msgid "Failed to get Clipboard"
-#~ msgstr "Não foi possível obter área de transferência"
-
-#~ msgid "Find a device by making it ring"
-#~ msgstr "Encontrar um dispositivo tocando um alarme"
-
-#~ msgid "Screen Lock"
-#~ msgstr "Bloquear tela"
-
-#~ msgid "Lock and unlock devices"
-#~ msgstr "Bloquear e desbloquear dispositivos"
-
-#~ msgid "Control the mouse and keyboard remotely"
-#~ msgstr "Controlar o mouse e o teclado remotamente"
-
-#~ msgid "Can't run in Wayland session"
-#~ msgstr "Não pode executar em sessão Wayland"
-
-#~ msgid "Failed to initialize Atspi"
-#~ msgstr "Não foi possível inicializar Atspi"
-
-#~ msgid "Cannot load Caribou virtual keyboard for Unicode support"
-#~ msgstr ""
-#~ "Não é possível carregar teclado virtual Caribou para suporte a Unicode"
-
-#~ msgid "Control MPRIS2 enabled media players"
-#~ msgstr "Controlar reprodutores de mídia com suporte a MPRIS2"
-
-#~ msgid "Sync notifications between devices"
-#~ msgstr "Sincronizar notificações entre dispositivos"
-
-#~ msgid "Missed call"
-#~ msgstr "Chamada perdida"
-
-#~ msgid "Missed call from %s on %s"
-#~ msgstr "Chamada perdida de %s no %s"
-
-#~ msgid "Send and receive pings"
-#~ msgstr "Enviar e receber pings"
-
-#~ msgid "Execute local commands remotely"
-#~ msgstr "Executar comandos locais remotamente"
-
-#~ msgid "Mount and browse device filesystems"
-#~ msgstr "Montar e explorar sistemas de arquivos do dispositivo"
-
-#~ msgid "SSHFS not installed"
-#~ msgstr "SSHFS não está instalado"
-
-#~ msgid "Send and receive files and URLs"
-#~ msgstr "Enviar e receber arquivos e URLs"
-
-#~ msgid "Transfer Cancelled"
-#~ msgstr "Transferência cancelada"
-
-#~ msgid "Cancelled transfer of \"%s\" from %s"
-#~ msgstr "Transferência cancelada de \"%s\" de %s"
-
-#~ msgid "Cancelled transfer of \"%s\" to %s"
-#~ msgstr "Transferência cancelada de \"%s\" para %s"
-
-#~ msgid "Use a subdirectory named <b>%s</b>"
-#~ msgstr "Usar um subdiretório chamado <b>%s</b>"
-
-#~ msgid "Call notification and SMS messaging"
-#~ msgstr "Notificação de chamada e conversas SMS"
-
-#~ msgid "Incoming call from %s on %s"
-#~ msgstr "Recebendo chamada de %s no %s"
-
-#~ msgid "Call In Progress"
-#~ msgstr "Chamada em andamento"
-
-#~ msgid "Call in progress with %s on %s"
-#~ msgstr "Chamada em andamento com %s no %s"
-
-#~ msgid "Unknown Number"
-#~ msgstr "Número desconhecido"
-
-#~ msgid "In Progress Calls"
-#~ msgstr "Chamadas em andamento"
-
-#~ msgid "The <b>Media Player Control</b> plugin must be enabled"
-#~ msgstr "O plugin <b>Controle multimídia</b> precisa ser ativado"
-
-#~ msgid ""
-#~ "Ensure that devices are on the same local network with ports 1716 to 1764 "
-#~ "open for TCP and UDP connections."
-#~ msgstr ""
-#~ "Certifique-se que os dispositivos estão na mesma rede local com as portas "
-#~ "1716 a 1764 abertas para conexões TCP e UDP."
-
-#~ msgid ""
-#~ "To connect an Android device, install the KDE Connect Android app from "
-#~ "the <a href=\"%s\">Google Play Store</a> or <a href=\"%s\">F-Droid</a>."
-#~ msgstr ""
-#~ "Para conectar um dispositivo Android, instale o app KDE Connect da <a "
-#~ "href=\"%s\">Google Play Store</a> ou <a href=\"%s\">F-Droid</a>."
-
-#~ msgid ""
-#~ "Please see the <a href=\"%s\">Wiki</a> for more help or <a href=\"%s"
-#~ "\">open an issue</a> on Github to report a problem."
-#~ msgstr ""
-#~ "Por favor, veja a <a href=\"%s\">Wiki</a> para mais ajuda ou <a href=\"%s"
-#~ "\">abra um chamado</a> no GitHub para reportar um problema."
-
-#~ msgid "Error: %s"
-#~ msgstr "Erro: %s"
-
-#~ msgid "Connecting Devices"
-#~ msgstr "Conectando dispositivos"
-
-#~ msgid "Reconnect <b>%s</b>"
-#~ msgstr "Reconectar <b>%s</b>"
-
-#~ msgid "Unpair <b>%s</b>"
-#~ msgstr "Esquecer <b>%s</b>"
-
-#~ msgid "Pair <b>%s</b>"
-#~ msgstr "Parear <b>%s</b>"
-
-#~ msgid ""
-#~ "<b>%s Fingerprint:</b>\n"
-#~ "%s\n"
-#~ "\n"
-#~ "<b>Local Fingerprint:</b>\n"
-#~ "%s"
-#~ msgstr ""
-#~ "<b>%s Impressão digital:</b>\n"
-#~ "%s\n"
-#~ "\n"
-#~ "<b>Impressão digital local:</b>\n"
-#~ "%s"
-
-#~ msgid "Unknown"
-#~ msgstr "Desconhecido"
-
-#~ msgid "Keyboard Shortcut Unavailable"
-#~ msgstr "Atalhos de teclado indisponíveis"
-
-#~ msgid ""
-#~ "The requested keyboard shortcut is already in use and can't be overridden."
-#~ msgstr ""
-#~ "O atalho de teclado escolhido já está em uso e não pode ser sobrescrito."
-
-#~ msgid "Configure <b>%s</b>"
-#~ msgstr "Configurar <b>%s</b>"
-
-#~ msgid "Send to %d"
-#~ msgstr "Enviar para %d"
-
-#~ msgid "Add and remove people"
-#~ msgstr "Adicionar e remover pessoas"
-
-#~ msgid "<b>%s</b> is disconnected"
-#~ msgstr "<b>%s</b> está desconectado"
-
-#~ msgid "And one other person"
-#~ msgid_plural "And %d other people"
-#~ msgstr[0] "E uma outra pessoa"
-#~ msgstr[1] "E %d outras pessoas"
-
-#~ msgid "SMS Conversation with %s"
-#~ msgstr "Conversa SMS com %s"
-
-#~ msgid "New SMS Conversation"
-#~ msgstr "Nova conversa SMS"
-
-#~ msgid "Enable debug features and logging"
-#~ msgstr "Ativar funções de depuração e registro"
-
-#~ msgid "Show Indicators"
-#~ msgstr "Exibir indicadores"
-
-#~ msgid "Display devices in the panel instead of the User Menu"
-#~ msgstr "Mostrar dispositivos no painel ao invés do menu"
-
-#~ msgid "Display devices even if offline"
-#~ msgstr "Mostrar dispositivos mesmo se desconectados"
-
-#~ msgid "Display devices even if unpaired"
-#~ msgstr "Mostrar dispositivos mesmo se esquecidos"
-
-#~ msgid "Display an icon with percentage in the Device Menu"
-#~ msgstr "Mostrar um ícone com porcentagem no menu de dispositivos"
-
-#~ msgid "Send files from the file browser context menu"
-#~ msgstr "Enviar arquivos do menu de contexto do explorador"
-
-#~ msgid "Public Name"
-#~ msgstr "Nome público"
-
-#~ msgid "The name visible to other devices"
-#~ msgstr "O nome visível para outros dispositivos"
-
-#~ msgid "Receive Statistics"
-#~ msgstr "Receber estatísticas"
-
-#~ msgid "Send Statistics"
-#~ msgstr "Enviar estatísticas"
-
-#~ msgid "Receive Content"
-#~ msgstr "Receber conteúdo"
-
-#~ msgid "Send Content"
-#~ msgstr "Enviar conteúdo"
-
-#~ msgid "Automatically Mount"
-#~ msgstr "Montar automaticamente"
-
-#~ msgid "Download Directory"
-#~ msgstr "Baixar diretório"
-
-#~ msgid "Use Subdirectory"
-#~ msgstr "Usar subdiretório"
+msgstr "Tarayıcıda Aç"
