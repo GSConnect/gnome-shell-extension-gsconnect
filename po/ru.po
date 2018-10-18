@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-16 22:39+0300\n"
+"POT-Creation-Date: 2018-10-18 09:00-0700\n"
 "PO-Revision-Date: 2018-10-17 00:33+0300\n"
 "Last-Translator: losted\n"
 "Language-Team: \n"
@@ -317,6 +317,10 @@ msgstr "GSConnect"
 msgid "Send To Mobile Device"
 msgstr "Отправить на устройство"
 
+#: src/service/daemon.js:393
+msgid "A complete KDE Connect implementation for Gnome"
+msgstr ""
+
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
 #: src/service/daemon.js:402
 msgid "translator-credits"
@@ -510,9 +514,19 @@ msgstr "%s запросил поиск устройства"
 msgid "Found"
 msgstr "Найден"
 
-#: src/service/plugins/mousepad.js:13
+#: src/service/plugins/mousepad.js:14
 msgid "Mousepad"
 msgstr "Тачпад"
+
+#: src/service/plugins/mousepad.js:28 src/service/plugins/mousepad.js:537
+#, fuzzy
+msgid "Keyboard"
+msgstr "Мышь и клавиатура"
+
+#: src/service/plugins/mousepad.js:554
+#, fuzzy
+msgid "Keyboard not ready"
+msgstr "Комбинации клавиш"
 
 #: src/service/plugins/mpris.js:10
 msgid "MPRIS"

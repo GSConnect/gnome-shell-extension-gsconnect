@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-17 19:29+0300\n"
+"POT-Creation-Date: 2018-10-18 09:00-0700\n"
 "PO-Revision-Date: 2018-10-17 19:32+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -316,6 +316,11 @@ msgstr "GSConnect"
 msgid "Send To Mobile Device"
 msgstr "Saada mobiilseadmesse"
 
+#: src/service/daemon.js:393
+#, fuzzy
+msgid "A complete KDE Connect implementation for Gnome"
+msgstr "KDE Connect teostus GNOME Shelli integratsiooniga"
+
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
 #: src/service/daemon.js:402
 msgid "translator-credits"
@@ -346,7 +351,8 @@ msgid "Discovery Disabled"
 msgstr "Avastamine keelatud"
 
 #: src/service/daemon.js:582
-msgid "Discovery has been disabled due to the number of devices on this network."
+msgid ""
+"Discovery has been disabled due to the number of devices on this network."
 msgstr "Avastamine on keelatud selles võrgus olevate seadmete arvu tõttu."
 
 #: src/service/daemon.js:584 src/service/daemon.js:594
@@ -508,9 +514,19 @@ msgstr "%s palus seda seadet leida"
 msgid "Found"
 msgstr "Leitud"
 
-#: src/service/plugins/mousepad.js:13
+#: src/service/plugins/mousepad.js:14
 msgid "Mousepad"
 msgstr "Hiirepadi"
+
+#: src/service/plugins/mousepad.js:28 src/service/plugins/mousepad.js:537
+#, fuzzy
+msgid "Keyboard"
+msgstr "Hiir ja klaviatuur"
+
+#: src/service/plugins/mousepad.js:554
+#, fuzzy
+msgid "Keyboard not ready"
+msgstr "Klaviatuuriotseteed"
 
 #: src/service/plugins/mpris.js:10
 msgid "MPRIS"
@@ -771,7 +787,8 @@ msgstr "Sisesta <b>%s</b> muutmiseks uus otsetee"
 #. TRANSLATORS: Keys for cancelling (␛) or resetting (␈) a shortcut
 #: src/service/ui/keybindings.js:83
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr "Vajuta tühistamiseks Esc või klaviatuuriotsetee lähtestamiseks Tagasilüke."
+msgstr ""
+"Vajuta tühistamiseks Esc või klaviatuuriotsetee lähtestamiseks Tagasilüke."
 
 #. TRANSLATORS: When a keyboard shortcut is unavailable
 #. Example: [Ctrl]+[S] is already being used
@@ -929,9 +946,6 @@ msgstr "Ava brauseris"
 #~ msgid "Failed to mount %s"
 #~ msgstr "%s haakimine ebaõnnestus"
 
-#~ msgid "KDE Connect implementation with Gnome Shell integration"
-#~ msgstr "KDE Connect teostus GNOME Shelli integratsiooniga"
-
 #~ msgid "GSConnect Website"
 #~ msgstr "GSConnecti veebisait"
 
@@ -941,8 +955,13 @@ msgstr "Ava brauseris"
 #~ msgid "This program comes with absolutely no warranty."
 #~ msgstr "See programm ei paku mingit garantiid."
 
-#~ msgid "See the <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html\">GNU General Public License, version 2 or later</a> for details."
-#~ msgstr "Lisateabe saamiseks vaata litsentsi <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html\">GNU General Public License, versioon 2 või hilisem</a>."
+#~ msgid ""
+#~ "See the <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html"
+#~ "\">GNU General Public License, version 2 or later</a> for details."
+#~ msgstr ""
+#~ "Lisateabe saamiseks vaata litsentsi <a href=\"https://www.gnu.org/"
+#~ "licenses/old-licenses/gpl-2.0.html\">GNU General Public License, versioon "
+#~ "2 või hilisem</a>."
 
 #~ msgid "Preferences"
 #~ msgstr "Eelistused"
@@ -953,8 +972,12 @@ msgstr "Ava brauseris"
 #~ msgid "Web Browser Integration"
 #~ msgstr "Veebibrauseri integratsioon"
 
-#~ msgid "Requires <a href=\"%s\">Chrome Extension</a> or <a href=\"%s\">Firefox Add-On</a>"
-#~ msgstr "Nõuab <a href=\"%s\">Chrome’i</a> või <a href=\"%s\">Firefox’i</a> laiendust"
+#~ msgid ""
+#~ "Requires <a href=\"%s\">Chrome Extension</a> or <a href=\"%s\">Firefox "
+#~ "Add-On</a>"
+#~ msgstr ""
+#~ "Nõuab <a href=\"%s\">Chrome’i</a> või <a href=\"%s\">Firefox’i</a> "
+#~ "laiendust"
 
 #~ msgid "Nautilus extensions changed"
 #~ msgstr "Nautiluse laiendused muudetud"
@@ -1018,7 +1041,9 @@ msgstr "Ava brauseris"
 #~ msgstr "Atspi käivitamine ebaõnnestus"
 
 #~ msgid "Cannot load Caribou virtual keyboard for Unicode support"
-#~ msgstr "Caribou virtuaalse klaviatuuri laadimine Unicode’i toe saamiseks ebaõnnestus"
+#~ msgstr ""
+#~ "Caribou virtuaalse klaviatuuri laadimine Unicode’i toe saamiseks "
+#~ "ebaõnnestus"
 
 #~ msgid "Control MPRIS2 enabled media players"
 #~ msgstr "Juhi MPRIS2-toega meediamängijaid"
@@ -1080,14 +1105,26 @@ msgstr "Ava brauseris"
 #~ msgid "The <b>Media Player Control</b> plugin must be enabled"
 #~ msgstr "Plugin <b>Meediamängija juhtimine</b> peab olema lubatud"
 
-#~ msgid "Ensure that devices are on the same local network with ports 1716 to 1764 open for TCP and UDP connections."
-#~ msgstr "Veendu, et seadmed on samas kohalikus võrgus ning pordid 1716 ja 1764 on avatud TCP- ja UDP-ühenduste jaoks."
+#~ msgid ""
+#~ "Ensure that devices are on the same local network with ports 1716 to 1764 "
+#~ "open for TCP and UDP connections."
+#~ msgstr ""
+#~ "Veendu, et seadmed on samas kohalikus võrgus ning pordid 1716 ja 1764 on "
+#~ "avatud TCP- ja UDP-ühenduste jaoks."
 
-#~ msgid "To connect an Android device, install the KDE Connect Android app from the <a href=\"%s\">Google Play Store</a> or <a href=\"%s\">F-Droid</a>."
-#~ msgstr "Android-seadme ühendamiseks paigalda KDE Connect Androidi rakendus <a href=\"%s\">Google Play poest</a> või <a href=\"%s\">F-Droidist</a>."
+#~ msgid ""
+#~ "To connect an Android device, install the KDE Connect Android app from "
+#~ "the <a href=\"%s\">Google Play Store</a> or <a href=\"%s\">F-Droid</a>."
+#~ msgstr ""
+#~ "Android-seadme ühendamiseks paigalda KDE Connect Androidi rakendus <a "
+#~ "href=\"%s\">Google Play poest</a> või <a href=\"%s\">F-Droidist</a>."
 
-#~ msgid "Please see the <a href=\"%s\">Wiki</a> for more help or <a href=\"%s\">open an issue</a> on Github to report a problem."
-#~ msgstr "Rohkema abi saamiseks palun loe <a href=\"%s\">vikit</a> või <a href=\"%s\">teata probleemist</a> GitHubi vahendusel."
+#~ msgid ""
+#~ "Please see the <a href=\"%s\">Wiki</a> for more help or <a href=\"%s"
+#~ "\">open an issue</a> on Github to report a problem."
+#~ msgstr ""
+#~ "Rohkema abi saamiseks palun loe <a href=\"%s\">vikit</a> või <a href=\"%s"
+#~ "\">teata probleemist</a> GitHubi vahendusel."
 
 #~ msgid "Error: %s"
 #~ msgstr "Viga: %s"
@@ -1123,8 +1160,11 @@ msgstr "Ava brauseris"
 #~ msgid "Keyboard Shortcut Unavailable"
 #~ msgstr "Klaviatuuri kiirklahv pole saadaval"
 
-#~ msgid "The requested keyboard shortcut is already in use and can't be overridden."
-#~ msgstr "Taotletud klaviatuuri kiirklahv on juba kasutusel ja seda ei saa üle kirjutada."
+#~ msgid ""
+#~ "The requested keyboard shortcut is already in use and can't be overridden."
+#~ msgstr ""
+#~ "Taotletud klaviatuuri kiirklahv on juba kasutusel ja seda ei saa üle "
+#~ "kirjutada."
 
 #~ msgid "Configure <b>%s</b>"
 #~ msgstr "Seadista <b>%s</b>"
