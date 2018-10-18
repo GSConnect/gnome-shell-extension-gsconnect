@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-18 09:16-0700\n"
+"POT-Creation-Date: 2018-10-18 11:12-0700\n"
 "PO-Revision-Date: 2018-10-16 18:55+0200\n"
 "Last-Translator: Слободан Терзић <slobodan.terzic@zoho.eu>\n"
 "Language-Team: \n"
@@ -14,15 +14,15 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: data/conversation-window.ui:15 src/service/ui/messaging.js:476
+#: data/conversation-window.ui:14 src/service/ui/messaging.js:482
 msgid "Conversations"
 msgstr "Разговори"
 
-#: data/conversation-window.ui:132 data/conversation-window.ui:136
+#: data/conversation-window.ui:131 data/conversation-window.ui:135
 msgid "Type a message"
 msgstr "Унесите поруку"
 
-#: data/conversation-window.ui:211 src/shell/device.js:578
+#: data/conversation-window.ui:210 src/shell/device.js:578
 msgid "Device is disconnected"
 msgstr "Уређај није повезан"
 
@@ -305,7 +305,7 @@ msgstr "Подешавање"
 # Leaving the name in original form for About dialog.
 #. TRANSLATORS: Extension name
 #: src/extension.js:146 src/extension.js:211 src/service/daemon.js:95
-#: src/service/daemon.js:400 webextension/gettext.js:27
+#: src/service/daemon.js:399 webextension/gettext.js:27
 msgid "GSConnect"
 msgstr "GSConnect"
 
@@ -314,94 +314,94 @@ msgstr "GSConnect"
 msgid "Send To Mobile Device"
 msgstr "Пошаљи на мобилни уређај"
 
-#: src/service/daemon.js:393
+#: src/service/daemon.js:392
 #, fuzzy
 msgid "A complete KDE Connect implementation for GNOME"
 msgstr "Имплементација КДЕ Конекта уграђена у Гномову шкољку"
 
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
-#: src/service/daemon.js:402
+#: src/service/daemon.js:401
 msgid "translator-credits"
 msgstr "Слободан Терзић (githzerai06@gmail.com)"
 
-#: src/service/daemon.js:424
+#: src/service/daemon.js:423
 msgid "Report"
 msgstr "Пријави"
 
-#: src/service/daemon.js:552
+#: src/service/daemon.js:551
 msgid "Authentication Failure"
 msgstr "Грешка аутентификацје"
 
-#: src/service/daemon.js:561
+#: src/service/daemon.js:560
 msgid "Network Error"
 msgstr "Грешка мреже"
 
-#: src/service/daemon.js:562 src/service/daemon.js:572
+#: src/service/daemon.js:561 src/service/daemon.js:571
 msgid "Click for help troubleshooting"
 msgstr "Кликните за помоћ у отклањању"
 
-#: src/service/daemon.js:571
+#: src/service/daemon.js:570
 msgid "PulseAudio Error"
 msgstr "Грешка Пулсаудија"
 
-#: src/service/daemon.js:581
+#: src/service/daemon.js:580
 msgid "Discovery Disabled"
 msgstr "Откривање је онемогућено"
 
-#: src/service/daemon.js:582
+#: src/service/daemon.js:581
 msgid ""
 "Discovery has been disabled due to the number of devices on this network."
 msgstr "Откривање је онемогућено услед броја уређаја у овој мрежи."
 
-#: src/service/daemon.js:584 src/service/daemon.js:594
+#: src/service/daemon.js:583 src/service/daemon.js:593
 msgid "Click to open preferences"
 msgstr "Кликните да отворите поставке"
 
-#: src/service/daemon.js:593
+#: src/service/daemon.js:592
 msgid "Additional Software Required"
 msgstr "Неопходан је додатан софтвер"
 
-#: src/service/daemon.js:602
+#: src/service/daemon.js:601
 #, javascript-format
 msgid "%s Plugin Failed To Load"
 msgstr "Неуспело учитавање пркључка %s"
 
-#: src/service/daemon.js:603 src/service/daemon.js:620
-#: src/service/daemon.js:632
+#: src/service/daemon.js:602 src/service/daemon.js:619
+#: src/service/daemon.js:631
 msgid "Click for more information"
 msgstr "Кликните за више детаља"
 
-#: src/service/daemon.js:618
+#: src/service/daemon.js:617
 msgid "Remote Filesystem Error"
 msgstr "Грешка удаљеног система фајлова"
 
-#: src/service/daemon.js:619
+#: src/service/daemon.js:618
 #, javascript-format
 msgid "%s is using an incompatible SSH library"
 msgstr "%s користи несагласну ССХ библиотеку"
 
-#: src/service/daemon.js:630
+#: src/service/daemon.js:629
 msgid "Wayland Not Supported"
 msgstr "Вејланд није подржан"
 
-#: src/service/daemon.js:631
+#: src/service/daemon.js:630
 msgid "Remote input not supported on Wayland"
 msgstr "Унос на даљину није подржан под Вејландом"
 
 # Leaving the name in original form for About dialog.
 #. Create an urgent notification
-#: src/service/daemon.js:655
+#: src/service/daemon.js:654
 #, javascript-format
 msgid "GSConnect: %s"
 msgstr "GSConnect: %s"
 
 #. TRANSLATORS: Share URL by SMS
-#: src/service/daemon.js:801 src/service/plugins/sms.js:49
+#: src/service/daemon.js:800 src/service/plugins/sms.js:49
 #: webextension/gettext.js:39
 msgid "Send SMS"
 msgstr "Пошаљи СМС"
 
-#: src/service/daemon.js:805
+#: src/service/daemon.js:804
 msgid "Dial Number"
 msgstr "Бирај број"
 
@@ -599,8 +599,8 @@ msgstr "Дели фајл"
 msgid "Share Text"
 msgstr "Дели текст"
 
-#: src/service/plugins/share.js:42 src/service/ui/messaging.js:847
-#: src/service/ui/messaging.js:855
+#: src/service/plugins/share.js:42 src/service/ui/messaging.js:853
+#: src/service/ui/messaging.js:861
 msgid "Share Link"
 msgstr "Подели везу"
 
@@ -618,7 +618,7 @@ msgstr "Примам „%s“ од %s"
 #: src/service/plugins/share.js:138 src/service/plugins/share.js:289
 #: src/service/plugins/share.js:407 src/service/ui/keybindings.js:44
 #: src/service/ui/service.js:121 src/service/ui/service.js:300
-#: src/service/ui/settings.js:847 src/shell/donotdisturb.js:215
+#: src/service/ui/settings.js:859 src/shell/donotdisturb.js:215
 msgid "Cancel"
 msgstr "Откажи"
 
@@ -808,27 +808,27 @@ msgstr "Изаберите уређај"
 msgid "Select"
 msgstr "Изаберите"
 
-#: src/service/ui/settings.js:402
+#: src/service/ui/settings.js:414
 msgid "Panel"
 msgstr "Панел"
 
-#: src/service/ui/settings.js:402
+#: src/service/ui/settings.js:414
 msgid "User Menu"
 msgstr "Кориснички мени"
 
-#: src/service/ui/settings.js:848
+#: src/service/ui/settings.js:860
 msgid "Open"
 msgstr "Отвори"
 
-#: src/service/ui/settings.js:912 src/service/ui/settings.js:925
+#: src/service/ui/settings.js:924 src/service/ui/settings.js:937
 msgid "On"
 msgstr "Укључен"
 
-#: src/service/ui/settings.js:912 src/service/ui/settings.js:925
+#: src/service/ui/settings.js:924 src/service/ui/settings.js:937
 msgid "Off"
 msgstr "Искључен"
 
-#: src/service/ui/settings.js:1046 src/service/ui/settings.js:1112
+#: src/service/ui/settings.js:1058 src/service/ui/settings.js:1124
 msgid "Disabled"
 msgstr "Онемогућен"
 
@@ -850,7 +850,7 @@ msgstr "%d минута"
 msgid "Yesterday・%s"
 msgstr "Јуче・%s"
 
-#: src/service/ui/messaging.js:864
+#: src/service/ui/messaging.js:870
 msgid "New Message"
 msgstr "Нова порука"
 
