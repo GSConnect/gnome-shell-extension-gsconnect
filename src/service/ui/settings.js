@@ -270,6 +270,10 @@ var Window = GObject.registerClass({
         this._onDevicesChanged();
     }
 
+    vfunc_delete_event(event) {
+        return this.hide_on_delete();
+    }
+
     _headerFunc(row, before) {
         if ([3, 4].includes(row.get_index())) {
             row.set_header(new Gtk.Separator({ visible: true }));

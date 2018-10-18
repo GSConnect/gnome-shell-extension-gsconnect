@@ -360,7 +360,6 @@ const Service = GObject.registerClass({
 
         if (!this._window) {
             this._window = new Settings.Window({ application: this });
-            this._window.connect('delete-event', (win) => win.hide_on_delete());
         }
 
         // Open to a specific page

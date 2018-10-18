@@ -319,7 +319,6 @@ var ConversationWindow = GObject.registerClass({
             this.add_action(sync_messages);
         }
 
-
         // Conversations
         this.conversation_list.set_sort_func(this._sortConversations);
         this.message_list.set_header_func(this._headerMessages);
@@ -353,6 +352,13 @@ var ConversationWindow = GObject.registerClass({
         // Set the default view
         this._ready = true;
         (this.address) ? this._showMessages() : this._showPrevious();
+    vfunc_delete_event(event) {
+        this.disconnect_template();
+
+        this.contact_list.disconnect(this._selectedNumbersChangedId);
+        this.contact_list._destroy();
+
+        return false;
     }
 
     get address() {
@@ -443,15 +449,6 @@ var ConversationWindow = GObject.registerClass({
 
     set thread_id(id) {
         this._thread_id = id || 0;
-    }
-
-    _onDeleteEvent(window, event) {
-        this.disconnect_template();
-
-        this.contact_list.disconnect(this._selectedNumbersChangedId);
-        this.contact_list._destroy();
-
-        return false;
     }
 
     /**
