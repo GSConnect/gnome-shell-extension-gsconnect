@@ -142,24 +142,24 @@ var Plugin = GObject.registerClass({
             'share-control',
             Gio.SettingsBindFlags.GET
         );
-        
+
         this._state = false;
         this._stateId = 0;
     }
-    
+
     connected() {
         super.connected();
         this.sendState();
     }
-    
+
     disconnected() {
         super.disconnected();
-        
+
         this._state = false;
         this._stateId = 0;
         this.notify('state');
     }
-    
+
     get state() {
         return (this._state);
     }
@@ -171,7 +171,6 @@ var Plugin = GObject.registerClass({
                     this._handleInput(packet.body);
                 }
                 break;
-                
             case 'kdeconnect.mousepad.keyboardstate':
                 this._handleState(packet);
                 break;
@@ -233,7 +232,7 @@ var Plugin = GObject.registerClass({
                         this.pressSpecialKey(input.specialKey);
                     }
                 }
-                
+
                 this.sendEcho(input);
                 break;
 
@@ -357,7 +356,7 @@ var Plugin = GObject.registerClass({
             logError(e, this.device.name);
         }
     }
-    
+
     /**
      * Send an echo/ACK of @input, if requested
      *
@@ -367,14 +366,14 @@ var Plugin = GObject.registerClass({
         if (input.sendAck) {
             delete input.sendAck;
             input.isAck = true;
-            
+
             this.device.sendPacket({
                 type: 'kdeconnect.mousepad.echo',
                 body: input
             });
         }
     }
-    
+
     _handleState(packet) {
         // HACK: ensure we don't get packets out of order
         if (packet.id > this._stateId) {
@@ -383,7 +382,7 @@ var Plugin = GObject.registerClass({
             this.notify('state');
         }
     }
-    
+
     /**
      * Send the local keyboard state
      *
