@@ -84,7 +84,7 @@ If that's not convenient, discussion can happen in the comments to your
 [Pull Request][pr] or you can open a [New Issue][issue] for more public
 discussion and mark the Pull Request as a fix for it.
 
-[design]: https://wiki.gnome.org/Projects/GNOMEShell/Design/Principles
+[design]: https://wiki.gnome.org/Projects/GnomeShell/Design/Principles
 [hig]: https://developer.gnome.org/hig/stable/
 [translating]: https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Translating
 [packaging]: https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Packaging
