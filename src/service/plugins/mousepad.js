@@ -5,6 +5,7 @@ const Gdk = imports.gi.Gdk;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
+const Gtk = imports.gi.Gtk;
 
 const PluginsBase = imports.service.plugins.base;
 
@@ -12,9 +13,16 @@ const PluginsBase = imports.service.plugins.base;
 var Metadata = {
     label: _('Mousepad'),
     id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.Mousepad',
-    incomingCapabilities: ['kdeconnect.mousepad.request'],
-    outgoingCapabilities: [],
-    actions: {}
+    incomingCapabilities: [
+        'kdeconnect.mousepad.request',
+        'kdeconnect.mousepad.keyboardstate'
+    ],
+    outgoingCapabilities: [
+        'kdeconnect.mousepad.request',
+        'kdeconnect.mousepad.keyboardstate'
+    ],
+    actions: {
+    }
 };
 
 
@@ -28,6 +36,13 @@ var Metadata = {
 var Plugin = GObject.registerClass({
     GTypeName: 'GSConnectMousepadPlugin',
     Properties: {
+        'state': GObject.ParamSpec.boolean(
+            'state',
+            'State',
+            'Remote keyboard state',
+            GObject.ParamFlags.READABLE,
+            false
+        ),
         'share-control': GObject.ParamSpec.boolean(
             'share-control',
             'Share Control',
@@ -86,11 +101,39 @@ var Plugin = GObject.registerClass({
             'share-control',
             Gio.SettingsBindFlags.GET
         );
+        
+        this._state = false;
+        this._stateId = 0;
+    }
+    
+    connected() {
+        super.connected();
+        this.sendState(true);
+    }
+    
+    disconnected() {
+        super.disconnected();
+        
+        this._state = false;
+        this._stateId = 0;
+        this.notify('state');
+    }
+    
+    get state() {
+        return (this._state);
     }
 
     handlePacket(packet) {
-        if (packet.type === 'kdeconnect.mousepad.request' && this.share_control) {
-            this._handleInput(packet.body);
+        switch (packet.type) {
+            case 'kdeconnect.mousepad.request':
+                if (this.share_control) {
+                    this._handleInput(packet.body);
+                }
+                break;
+                
+            case 'kdeconnect.mousepad.keyboardstate':
+                this._handleState(packet);
+                break;
         }
     }
 
@@ -128,7 +171,6 @@ var Plugin = GObject.registerClass({
                     if (input.hasOwnProperty('super') && input.super) {
                         mask |= Gdk.ModifierType.MOD4_MASK;
                     }
-
 
                     // Transform key to keysym
                     let keysym;
@@ -271,6 +313,24 @@ var Plugin = GObject.registerClass({
         } catch (e) {
             logError(e, this.device.name);
         }
+    }
+    
+    _handleState(packet) {
+        // HACK: ensure we don't get packets out of order
+        if (packet.id > this._stateId) {
+            this._state = packet.body.state;
+            this._stateId = packet.id;
+            this.notify('state');
+        }
+    }
+    
+    sendState(state=true) {
+        this.device.sendPacket({
+            type: 'kdeconnect.mousepad.keyboardstate',
+            body: {
+                state: state
+            }
+        });
     }
 });
 
