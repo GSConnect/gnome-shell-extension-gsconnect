@@ -28,6 +28,46 @@ var Metadata = {
 
 
 /**
+ * A map of "KDE Connect" keyvals to Gdk
+ */
+const KeyMap = new Map([
+    [0, 0], // Invalid: pressSpecialKey throws error
+    [1, Gdk.KEY_BackSpace],
+    [2, Gdk.KEY_Tab],
+    [3, Gdk.KEY_Linefeed],
+    [4, Gdk.KEY_Left],
+    [5, Gdk.KEY_Up],
+    [6, Gdk.KEY_Right],
+    [7, Gdk.KEY_Down],
+    [8, Gdk.KEY_Page_Up],
+    [9, Gdk.KEY_Page_Down],
+    [10, Gdk.KEY_Home],
+    [11, Gdk.KEY_End],
+    [12, Gdk.KEY_Return],
+    [13, Gdk.KEY_Delete],
+    [14, Gdk.KEY_Escape],
+    [15, Gdk.KEY_Sys_Req],
+    [16, Gdk.KEY_Scroll_Lock],
+    [17, 0],
+    [18, 0],
+    [19, 0],
+    [20, 0],
+    [21, Gdk.KEY_F1],
+    [22, Gdk.KEY_F2],
+    [23, Gdk.KEY_F3],
+    [24, Gdk.KEY_F4],
+    [25, Gdk.KEY_F5],
+    [26, Gdk.KEY_F6],
+    [27, Gdk.KEY_F7],
+    [28, Gdk.KEY_F8],
+    [29, Gdk.KEY_F9],
+    [30, Gdk.KEY_F10],
+    [31, Gdk.KEY_F11],
+    [32, Gdk.KEY_F12]
+]);
+
+
+/**
  * Mousepad Plugin
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/mousepad
  *
@@ -109,7 +149,7 @@ var Plugin = GObject.registerClass({
     
     connected() {
         super.connected();
-        this.sendState(true);
+        this.sendState();
     }
     
     disconnected() {
@@ -344,50 +384,81 @@ var Plugin = GObject.registerClass({
         }
     }
     
-    sendState(state=true) {
+    /**
+     * Send the local keyboard state
+     *
+     * @param {boolean} state - Whether we're ready to accept input
+     */
+    sendState() {
         this.device.sendPacket({
             type: 'kdeconnect.mousepad.keyboardstate',
             body: {
-                state: state
+                state: this.share_control
             }
         });
     }
 });
 
 
-var KeyMap = new Map([
-    [0, 0], // Invalid: pressSpecialKey throws error
-    [1, Gdk.KEY_BackSpace],
-    [2, Gdk.KEY_Tab],
-    [3, Gdk.KEY_Linefeed],
-    [4, Gdk.KEY_Left],
-    [5, Gdk.KEY_Up],
-    [6, Gdk.KEY_Right],
-    [7, Gdk.KEY_Down],
-    [8, Gdk.KEY_Page_Up],
-    [9, Gdk.KEY_Page_Down],
-    [10, Gdk.KEY_Home],
-    [11, Gdk.KEY_End],
-    [12, Gdk.KEY_Return],
-    [13, Gdk.KEY_Delete],
-    [14, Gdk.KEY_Escape],
-    [15, Gdk.KEY_Sys_Req],
-    [16, Gdk.KEY_Scroll_Lock],
-    [17, 0],
-    [18, 0],
-    [19, 0],
-    [20, 0],
-    [21, Gdk.KEY_F1],
-    [22, Gdk.KEY_F2],
-    [23, Gdk.KEY_F3],
-    [24, Gdk.KEY_F4],
-    [25, Gdk.KEY_F5],
-    [26, Gdk.KEY_F6],
-    [27, Gdk.KEY_F7],
-    [28, Gdk.KEY_F8],
-    [29, Gdk.KEY_F9],
-    [30, Gdk.KEY_F10],
-    [31, Gdk.KEY_F11],
-    [32, Gdk.KEY_F12],
+/**
+ * A map of Gdk to "KDE Connect" keyvals
+ */
+const ReverseKeyMap = new Map([
+    [Gdk.KEY_BackSpace, 1],
+    [Gdk.KEY_Tab, 2],
+    [Gdk.KEY_Linefeed, 3],
+    [Gdk.KEY_Left, 4],
+    [Gdk.KEY_Up, 5],
+    [Gdk.KEY_Right, 6],
+    [Gdk.KEY_Down, 7],
+    [Gdk.KEY_Page_Up, 8],
+    [Gdk.KEY_Page_Down, 9],
+    [Gdk.KEY_Home, 10],
+    [Gdk.KEY_End, 11],
+    [Gdk.KEY_Return, 12],
+    [Gdk.KEY_Delete, 13],
+    [Gdk.KEY_Escape, 14],
+    [Gdk.KEY_Sys_Req, 15],
+    [Gdk.KEY_Scroll_Lock, 16],
+    [Gdk.KEY_F1, 21],
+    [Gdk.KEY_F2, 22],
+    [Gdk.KEY_F3, 23],
+    [Gdk.KEY_F4, 24],
+    [Gdk.KEY_F5, 25],
+    [Gdk.KEY_F6, 26],
+    [Gdk.KEY_F7, 27],
+    [Gdk.KEY_F8, 28],
+    [Gdk.KEY_F9, 29],
+    [Gdk.KEY_F10, 30],
+    [Gdk.KEY_F11, 31],
+    [Gdk.KEY_F12, 32]
 ]);
+
+
+/**
+ * A list of keyvals we consider modifiers
+ */
+const MOD_KEYS = [
+    Gdk.KEY_Alt_L,
+    Gdk.KEY_Alt_R,
+    Gdk.KEY_Caps_Lock,
+    Gdk.KEY_Control_L,
+    Gdk.KEY_Control_R,
+    Gdk.KEY_Meta_L,
+    Gdk.KEY_Meta_R,
+    Gdk.KEY_Num_Lock,
+    Gdk.KEY_Shift_L,
+    Gdk.KEY_Shift_R,
+    Gdk.KEY_Super_L,
+    Gdk.KEY_Super_R
+];
+
+
+/**
+ * Some convenience functions for checking keyvals for modifiers
+ */
+const isAlt = (key) => [Gdk.KEY_Alt_L, Gdk.KEY_Alt_R].includes(key);
+const isCtrl = (key) => [Gdk.KEY_Control_L, Gdk.KEY_Control_R].includes(key);
+const isShift = (key) => [Gdk.KEY_Shift_L, Gdk.KEY_Shift_R].includes(key);
+const isSuper = (key) => [Gdk.KEY_Super_L, Gdk.KEY_Super_R].includes(key);
 
