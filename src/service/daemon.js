@@ -390,7 +390,7 @@ const Service = GObject.registerClass({
                     'Andy Holmes <andrew.g.r.holmes@gmail.com>',
                     'Bertrand Lacoste <getzze@gmail.com>'
                 ],
-                comments: _('A complete KDE Connect implementation for Gnome'),
+                comments: _('A complete KDE Connect implementation for GNOME'),
                 logo: GdkPixbuf.Pixbuf.new_from_resource_at_scale(
                     gsconnect.app_path + '/icons/' + gsconnect.app_id + '.svg',
                     128,

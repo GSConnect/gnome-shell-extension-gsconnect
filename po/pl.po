@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-18 09:00-0700\n"
+"POT-Creation-Date: 2018-10-18 09:16-0700\n"
 "PO-Revision-Date: 2018-10-16 16:50+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
@@ -319,7 +319,7 @@ msgid "Send To Mobile Device"
 msgstr "Wyślij na urządzenie mobilne"
 
 #: src/service/daemon.js:393
-msgid "A complete KDE Connect implementation for Gnome"
+msgid "A complete KDE Connect implementation for GNOME"
 msgstr ""
 
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'

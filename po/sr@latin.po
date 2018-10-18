@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-18 09:00-0700\n"
+"POT-Creation-Date: 2018-10-18 09:16-0700\n"
 "PO-Revision-Date: 2018-10-16 18:55+0200\n"
 "Last-Translator: Slobodan Terzić <slobodan.terzic@zoho.eu>\n"
 "Language-Team: \n"
@@ -316,7 +316,7 @@ msgstr "Pošalji na mobilni uređaj"
 
 #: src/service/daemon.js:393
 #, fuzzy
-msgid "A complete KDE Connect implementation for Gnome"
+msgid "A complete KDE Connect implementation for GNOME"
 msgstr "Implementacija KDE Konekta ugrađena u Gnomovu školjku"
 
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
