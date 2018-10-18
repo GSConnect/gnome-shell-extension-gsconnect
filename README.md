@@ -1,5 +1,5 @@
 [GSConnect][ego] is a complete implementation of [KDE Connect][kdeconnect] for
-Gnome Shell with Nautilus, [Chrome][chrome] and [Firefox][firefox] integration.
+GNOME Shell with Nautilus, [Chrome][chrome] and [Firefox][firefox] integration.
 
 Please see the **[Wiki][wiki]** for more information.
 

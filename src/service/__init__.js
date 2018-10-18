@@ -1,5 +1,6 @@
 'use strict';
 
+const Gdk = imports.gi.Gdk;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const Gtk = imports.gi.Gtk;
@@ -524,5 +525,41 @@ Gtk.Widget.prototype.connect_template = function() {
 Gtk.Widget.prototype.disconnect_template = function() {
     Gtk.Widget.set_connect_func.call(this, function(){});
     this.$templateHandlers.map(([obj, id]) => obj.disconnect(id));
+};
+
+
+/**
+ * Convenience functions for saving/restoring window geometry
+ */
+Gtk.Window.prototype.restore_geometry = function() {
+    let size = this.settings.get_value('window-size').deep_unpack();
+    if (size.length === 2) {
+        this.set_default_size(...size);
+    }
+
+    let position = this.settings.get_value('window-position').deep_unpack();
+    if (position.length === 2) {
+        this.move(...position);
+    }
+
+    if (this.settings.get_boolean('window-maximized'))
+        this.maximize();
+};
+
+Gtk.Window.prototype.save_geometry = function() {
+    let state = this.get_window().get_state();
+
+    let maximized = (state & Gdk.WindowState.MAXIMIZED);
+    this.settings.set_boolean('window-maximized', maximized);
+
+    if (maximized || (state & Gdk.WindowState.FULLSCREEN))
+        return;
+
+    // GLib.Variant.new() can handle arrays just fine
+    let size = this.get_size();
+    this.settings.set_value('window-size', new GLib.Variant('(ii)', size));
+
+    let position = this.get_position();
+    this.settings.set_value('window-position', new GLib.Variant('(ii)', position));
 };
 

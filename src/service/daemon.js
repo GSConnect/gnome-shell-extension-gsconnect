@@ -360,7 +360,6 @@ const Service = GObject.registerClass({
 
         if (!this._window) {
             this._window = new Settings.Window({ application: this });
-            this._window.connect('delete-event', (win) => win.hide_on_delete());
         }
 
         // Open to a specific page
@@ -390,7 +389,7 @@ const Service = GObject.registerClass({
                     'Andy Holmes <andrew.g.r.holmes@gmail.com>',
                     'Bertrand Lacoste <getzze@gmail.com>'
                 ],
-                comments: gsconnect.metadata.description,
+                comments: _('A complete KDE Connect implementation for GNOME'),
                 logo: GdkPixbuf.Pixbuf.new_from_resource_at_scale(
                     gsconnect.app_path + '/icons/' + gsconnect.app_id + '.svg',
                     128,
@@ -448,11 +447,11 @@ const Service = GObject.registerClass({
         // Ensure debugging is enabled
         gsconnect.settings.set_boolean('debug', true);
 
-        // Launch a terminal with tabs for GJS and Gnome Shell
+        // Launch a terminal with tabs for GJS and GNOME Shell
         GLib.spawn_command_line_async(
             'gnome-terminal ' +
             `--tab --title "GJS" --command "journalctl -f -o cat /usr/bin/gjs" ` +
-            '--tab --title "Gnome Shell" --command "journalctl -f -o cat /usr/bin/gnome-shell"'
+            '--tab --title "GNOME Shell" --command "journalctl -f -o cat /usr/bin/gnome-shell"'
         );
     }
 

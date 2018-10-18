@@ -94,7 +94,7 @@ if (gsconnect.is_local) {
 /**
  * Init Gettext
  *
- * If we aren't inside the Gnome Shell process we'll set gettext functions on
+ * If we aren't inside the GNOME Shell process we'll set gettext functions on
  * the global object, otherwise we'll set them on the global 'gsconnect' object
  */
 imports.gettext.bindtextdomain(gsconnect.app_id, gsconnect.localedir);
