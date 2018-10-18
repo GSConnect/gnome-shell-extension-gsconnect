@@ -18,6 +18,7 @@ var Metadata = {
         'kdeconnect.mousepad.keyboardstate'
     ],
     outgoingCapabilities: [
+        'kdeconnect.mousepad.echo',
         'kdeconnect.mousepad.request',
         'kdeconnect.mousepad.keyboardstate'
     ],
@@ -192,6 +193,8 @@ var Plugin = GObject.registerClass({
                         this.pressSpecialKey(input.specialKey);
                     }
                 }
+                
+                this.sendEcho(input);
                 break;
 
             case input.hasOwnProperty('singleclick'):
@@ -312,6 +315,23 @@ var Plugin = GObject.registerClass({
             }
         } catch (e) {
             logError(e, this.device.name);
+        }
+    }
+    
+    /**
+     * Send an echo/ACK of @input, if requested
+     *
+     * @param {object} input - 'body' of a 'kdeconnect.mousepad.request' packet
+     */
+    sendEcho(input) {
+        if (input.sendAck) {
+            delete input.sendAck;
+            input.isAck = true;
+            
+            this.device.sendPacket({
+                type: 'kdeconnect.mousepad.echo',
+                body: input
+            });
         }
     }
     
