@@ -244,6 +244,11 @@ var Window = GObject.registerClass({
 
         super._init(params);
 
+        this.settings = new Gio.Settings({
+            settings_schema: gsconnect.gschema.lookup('org.gnome.Shell.Extensions.GSConnect.Preferences', true),
+            path: '/org/gnome/shell/extensions/gsconnect/preferences/'
+        });
+
         // Service HeaderBar
         gsconnect.settings.bind(
             'public-name',
@@ -268,9 +273,12 @@ var Window = GObject.registerClass({
             this._onDevicesChanged.bind(this)
         );
         this._onDevicesChanged();
+
+        this.restore_geometry();
     }
 
     vfunc_delete_event(event) {
+        this.save_geometry();
         return this.hide_on_delete();
     }
 

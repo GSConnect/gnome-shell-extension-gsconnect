@@ -304,6 +304,11 @@ var ConversationWindow = GObject.registerClass({
         this.connect_template();
         super._init(params);
 
+        this.settings = new Gio.Settings({
+            settings_schema: gsconnect.gschema.lookup('org.gnome.Shell.Extensions.GSConnect.Messaging', true),
+            path: '/org/gnome/shell/extensions/gsconnect/messaging/'
+        });
+
         this.insert_action_group('device', this.device);
 
         // Convenience actions for syncing Contacts/SMS from the menu
@@ -352,8 +357,12 @@ var ConversationWindow = GObject.registerClass({
         // Set the default view
         this._ready = true;
         (this.address) ? this._showMessages() : this._showPrevious();
+        this.restore_geometry();
+    }
+
     vfunc_delete_event(event) {
         this.disconnect_template();
+        this.save_geometry();
 
         this.contact_list.disconnect(this._selectedNumbersChangedId);
         this.contact_list._destroy();
