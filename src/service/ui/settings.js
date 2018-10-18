@@ -665,7 +665,7 @@ var Device = GObject.registerClass({
         this.actions.add_action(settings.create_action('ringing-volume'));
         this.actions.add_action(settings.create_action('ringing-pause'));
         this.ringing_volume.set_menu_model(this._menus.get_object('ringing-volume'));
-        
+
         this.actions.add_action(settings.create_action('talking-volume'));
         this.actions.add_action(settings.create_action('talking-pause'));
         this.actions.add_action(settings.create_action('talking-microphone'));
@@ -950,7 +950,7 @@ var Device = GObject.registerClass({
         let appInfos = [];
         let ignoreId = 'org.gnome.Shell.Extensions.GSConnect.desktop';
 
-        // Query Gnome's notification settings
+        // Query GNOME's notification settings
         for (let appSettings of Object.values(this.service.notification.applications)) {
             let appId = appSettings.get_string('application-id');
 

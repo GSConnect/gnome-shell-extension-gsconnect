@@ -93,7 +93,7 @@ class Stream {
  * A subclass of Gvc.MixerControl with convenience functions for controlling the
  * default input/output volumes.
  *
- * The Mixer class uses Gnome Shell's Gvc library to control the system volume
+ * The Mixer class uses GNOME Shell's Gvc library to control the system volume
  * and offers a few convenience functions.
  */
 var Mixer = GObject.registerClass({

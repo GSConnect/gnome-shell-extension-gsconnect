@@ -448,11 +448,11 @@ const Service = GObject.registerClass({
         // Ensure debugging is enabled
         gsconnect.settings.set_boolean('debug', true);
 
-        // Launch a terminal with tabs for GJS and Gnome Shell
+        // Launch a terminal with tabs for GJS and GNOME Shell
         GLib.spawn_command_line_async(
             'gnome-terminal ' +
             `--tab --title "GJS" --command "journalctl -f -o cat /usr/bin/gjs" ` +
-            '--tab --title "Gnome Shell" --command "journalctl -f -o cat /usr/bin/gnome-shell"'
+            '--tab --title "GNOME Shell" --command "journalctl -f -o cat /usr/bin/gnome-shell"'
         );
     }
 

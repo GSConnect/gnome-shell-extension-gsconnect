@@ -351,7 +351,7 @@ msgstr "Siųsti į mobilųjį įrenginį"
 #: src/service/daemon.js:393
 #, fuzzy
 msgid "A complete KDE Connect implementation for GNOME"
-msgstr "KDE Connect įgyvendinimas naudojant Gnome apvalkalo integraciją"
+msgstr "KDE Connect įgyvendinimas naudojant GNOME apvalkalo integraciją"
 
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
 #: src/service/daemon.js:402

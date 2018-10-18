@@ -350,7 +350,7 @@ msgstr "Envoyer à l'appareil mobile"
 #: src/service/daemon.js:393
 #, fuzzy
 msgid "A complete KDE Connect implementation for GNOME"
-msgstr "Implémentation de KDE Connect avec intégration de Gnome Shell"
+msgstr "Implémentation de KDE Connect avec intégration de GNOME Shell"
 
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
 #: src/service/daemon.js:402

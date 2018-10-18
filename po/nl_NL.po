@@ -319,7 +319,7 @@ msgstr "Versturen naar mobiel apparaat"
 #: src/service/daemon.js:393
 #, fuzzy
 msgid "A complete KDE Connect implementation for GNOME"
-msgstr "KDE Connect-implementatie met Gnome Shell-integratie"
+msgstr "KDE Connect-implementatie met GNOME Shell-integratie"
 
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
 #: src/service/daemon.js:402

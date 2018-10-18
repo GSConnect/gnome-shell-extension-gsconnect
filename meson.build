@@ -18,7 +18,7 @@ else
   gschemadir = join_paths(datadir, 'glib-2.0', 'schemas')
 endif
 
-# Gnome Shell LIBDIR
+# GNOME Shell LIBDIR
 if get_option('gnome_shell_libdir') != ''
   gnome_shell_libdir = get_option('gnome_shell_libdir')
 else

@@ -18,7 +18,7 @@ var ResponseType = {
 
 
 /**
- * A simplified version of the shortcut editor from Gnome Control Center
+ * A simplified version of the shortcut editor from GNOME Control Center
  */
 var ShortcutChooserDialog = GObject.registerClass({
     GTypeName: 'ShortcutChooserDialog'
@@ -255,7 +255,7 @@ var ShortcutChooserDialog = GObject.registerClass({
 
 
 /**
- * Check the availability of an accelerator using Gnome Shell's DBus interface.
+ * Check the availability of an accelerator using GNOME Shell's DBus interface.
  *
  * @param {string} - An accelerator
  * @param {number} - Flags

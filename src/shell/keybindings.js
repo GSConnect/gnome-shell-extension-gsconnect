@@ -7,7 +7,7 @@ const Shell = imports.gi.Shell;
 
 /**
  * Keybindings.Manager is a simple convenience class for managing keyboard
- * shortcuts in Gnome Shell. You bind a shortcut using add(), which on success
+ * shortcuts in GNOME Shell. You bind a shortcut using add(), which on success
  * will return a non-zero action id that can later be used with remove() to
  * unbind the shortcut.
  *

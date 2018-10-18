@@ -186,7 +186,7 @@ var ConversationMessage = GObject.registerClass({
 
     /**
      * Return a string with URLs couched in <a> tags, parseable by Pango and
-     * using the same RegExp as Gnome Shell.
+     * using the same RegExp as GNOME Shell.
      *
      * @param {string} text - The string to be modified
      * @return {string} - the modified text

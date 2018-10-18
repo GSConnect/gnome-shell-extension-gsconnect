@@ -124,7 +124,7 @@ var Plugin = GObject.registerClass({
      */
     _handleRequest(packet) {
         // A request for our notifications. This isn't implemented and would be
-        // pretty hard to without communicating with Gnome Shell.
+        // pretty hard to without communicating with GNOME Shell.
         if (packet.body.hasOwnProperty('request')) {
             return;
 

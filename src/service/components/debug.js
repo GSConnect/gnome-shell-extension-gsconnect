@@ -346,7 +346,7 @@ var Window = GObject.registerClass({
             'gnome-terminal ' +
             //`--tab --title "GJS" --command "journalctl _PID=${getPID()} -f -o cat" ` +
             `--tab --title "GJS" --command "journalctl -f -o cat /usr/bin/gjs" ` +
-            '--tab --title "Gnome Shell" --command "journalctl -f -o cat /usr/bin/gnome-shell"'
+            '--tab --title "GNOME Shell" --command "journalctl -f -o cat /usr/bin/gnome-shell"'
         );
     }
 

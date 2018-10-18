@@ -8,12 +8,12 @@ option(
   description: 'Run meson/post-install.sh'
 )
 
-# Gnome Shell LIBDIR
+# GNOME Shell LIBDIR
 option(
   'gnome_shell_libdir',
   type: 'string',
   value: '',
-  description: 'LIBDIR for Gnome Shell'
+  description: 'LIBDIR for GNOME Shell'
 )
 
 # GSettings schema directory
