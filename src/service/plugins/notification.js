@@ -73,13 +73,6 @@ var Plugin = GObject.registerClass({
         super._init(device, 'notification');
 
         this._sms = {};
-
-        this.settings.bind(
-            'send-notifications',
-            this.device.lookup_action('sendNotification'),
-            'enabled',
-            Gio.SettingsBindFlags.GET
-        );
     }
 
     handlePacket(packet) {
@@ -302,6 +295,11 @@ var Plugin = GObject.registerClass({
      */
     async sendNotification(notif) {
         try {
+            // Sending notifications is forbidden
+            if (!this.settings.get_boolean('send-notifications')) {
+                return;
+            }
+
             debug(`(${notif.appName}) ${notif.title}: ${notif.text}`);
 
             // TODO: revisit application notification settings
