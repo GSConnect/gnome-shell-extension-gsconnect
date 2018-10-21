@@ -5,15 +5,6 @@
     <key name="show-indicators" type="b">
       <default>false</default>
     </key>
-    <key name="show-offline" type="b">
-      <default>true</default>
-    </key>
-    <key name="show-unpaired" type="b">
-      <default>true</default>
-    </key>
-    <key name="show-battery" type="b">
-      <default>false</default>
-    </key>
 
     <!-- Service Settings -->
     <key name="public-name" type="s">

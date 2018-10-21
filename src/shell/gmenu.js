@@ -1,5 +1,7 @@
 'use strict';
 
+const Atk = imports.gi.Atk;
+const Clutter = imports.gi.Clutter;
 const Gio = imports.gi.Gio;
 const GObject = imports.gi.GObject;
 const St = imports.gi.St;
@@ -62,91 +64,270 @@ function getItemInfo(model, index) {
  */
 var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
 
-    _init(menu_model, action_group) {
+    _init(params) {
         super._init();
+        Object.assign(this, params);
 
-        this.action_group = action_group;
-        this.menu_model = menu_model;
+        // Main Actor
+        this.actor = new St.BoxLayout({
+            clip_to_allocation: true,
+            vertical: false,
+            x_expand: true
+        });
+        this.actor._delegate = this;
+        this.actor.add_style_class_name('gsconnect-list-box');
 
-        // Setup the menu
-        this._onItemsChanged(menu_model, 0, 0, menu_model.get_n_items());
-        this.actor.connect('notify::mapped', this._sync.bind(this));
-    }
+        // Item Box
+        this.box.x_expand = true;
+        this.box.clip_to_allocation = true;
+        this.actor.add_child(this.box);
 
-    _sync() {
-        if (!this.actor.mapped) {
-            return;
-        }
+        // Submenu Container
+        this.sub = new St.BoxLayout({
+            clip_to_allocation: true,
+            style_class: 'popup-sub-menu',
+            vertical: false,
+            visible: false,
+            x_expand: true
+        });
+        this.actor.add_child(this.sub);
 
-        this._onItemsChanged(this.menu_model, 0, 0, this.menu_model.get_n_items());
+        // HACK: set the submenu visibility after transition
+        this.actor.connect('transition-stopped', this._onTransitionStopped);
+
+        // Refresh the menu when mapped
+        let _mappedId = this.actor.connect('notify::mapped', (actor) => {
+            actor.mapped ? this._onItemsChanged() : undefined;
+        });
+        this.actor.connect('destroy', (actor) => actor.disconnect(_mappedId));
+
+        // Watch the model for changes
+        let _menuId = this.menu_model.connect(
+            'items-changed',
+            this._onItemsChanged.bind(this)
+        );
+        this.connect('destroy', () => this.menu_model.disconnect(_menuId));
+
+        this._onItemsChanged();
     }
 
     _addGMenuItem(info) {
-        let item = new PopupMenu.PopupMenuItem(info.label);
         let action_name = info.action.split('.')[1];
         let action_target = info.target;
 
+        // FIXME: Use an image menu item if there's an icon
+        let item = new PopupMenu.PopupMenuItem(info.label);
+
         item.actor.visible = this.action_group.get_action_enabled(action_name);
 
-        // Replace the usual emblem with the GMenuItem's icon
-        if (info.hasOwnProperty('icon')) {
-            let icon = new St.Icon({
-                gicon: info.icon,
-                style_class: 'popup-menu-icon'
-            });
-
-            item.actor.replace_child(item.actor.get_child_at_index(0), icon);
-            item.actor.get_child_at_index(0).style = 'padding-left: 0.5em';
-        }
+        this.addMenuItem(item);
 
         // Connect the menu item to it's GAction
-        item.connect('activate', (item) => {
-            this.action_group.activate_action(action_name, action_target);
+        item.disconnect(item._activateId);
+
+        item._activateId = item.connect('activate', (item, event) => {
+            this.emit('activate', item);
+
+            if (item.submenu) {
+                this.submenu = item.submenu;
+            } else {
+                this.action_group.activate_action(action_name, action_target);
+                this.itemActivated();
+            }
         });
 
-        this.addMenuItem(item);
+        return item;
     }
 
     _addGMenuSection(model) {
-        let section = new ListBox(model, this.action_group);
+        let section = new ListBox({
+            menu_model: model,
+            action_group: this.action_group
+        });
         this.addMenuItem(section);
     }
 
-    _onItemsChanged(model, position, removed, added) {
-        this.removeAll();
+    _addGMenuSubmenu(model, title='') {
+        let submenu = new ListBox({
+            menu_model: model,
+            action_group: this.action_group,
+            submenu_for: title,
+            _parent: this
+        });
 
-        let len = model.get_n_items();
+        // Set the submenu as hidden
+        submenu.actor.visible = false;
+
+        this.sub.add_child(submenu.actor);
+
+        return submenu;
+    }
+
+    _onItemsChanged(model, position, removed, added) {
+        // Clear the menu
+        this.box.get_children().map(child => child.destroy());
+        this.sub.get_children().map(child => child.destroy());
+
+        let len = this.menu_model.get_n_items();
 
         for (let i = 0; i < len; i++) {
-            let info = getItemInfo(model, i);
+            let info = getItemInfo(this.menu_model, i);
+            let item;
 
             // A regular item
             if (info.hasOwnProperty('label')) {
-                this._addGMenuItem(info);
-            // Our menus only have sections
-            } else {
-                this._addGMenuSection(info.links[0].value);
+                item = this._addGMenuItem(info);
+            }
 
-                // len is length starting at 1
-                if (i + 1 < len) {
-                    this.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
+            for (let link of info.links) {
+                // Submenu
+                if (link.name === 'submenu') {
+                    item.submenu = this._addGMenuSubmenu(link.value, info.label);
+
+                // Section
+                } else if (link.name === 'section') {
+                    this._addGMenuSection(link.value);
+
+                    // len is length starting at 1
+                    if (i + 1 < len) {
+                        this.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
+                    }
                 }
             }
         }
+
+        if (this.submenu_for) {
+            let prev = new PopupMenu.PopupMenuItem(this.submenu_for);
+            this.addMenuItem(prev, 0);
+
+            prev.label.style = 'font-weight: bold;';
+
+            // Replace the ornament with an arrow
+            prev._ornamentLabel.destroy();
+            prev._ornamentLabel = new St.Icon({
+                icon_name: 'pan-start-symbolic',
+                style_class: 'popup-menu-icon',
+                accessible_role: Atk.Role.ARROW,
+                y_align: Clutter.ActorAlign.CENTER
+            });
+            prev.actor.insert_child_at_index(prev._ornamentLabel, 0);
+
+            // Adjust the signal
+            prev.disconnect(prev._activateId);
+
+            prev._activateId = prev.connect('activate', (item, event) => {
+                this.emit('activate', item);
+                this._parent.submenu = null;
+                this._parent.sub.get_children().map(menu => menu.visible = false);
+            });
+        }
+    }
+
+    _onTransitionStopped(actor, name, is_finished) {
+        let menu = actor._delegate;
+        actor.visible = menu.revealed;
+
+        menu.box.visible = !(menu.submenu);
+        menu.sub.visible = (menu.submenu);
+
+        if (!menu.submenu) {
+            menu.sub.get_children().map(child => child.visible = false);
+        }
+    }
+
+    get revealed() {
+        return this._revealed || false;
+    }
+
+    set revealed(bool) {
+        if (bool === this.revealed) {
+            return;
+        }
+
+        // Setup the animation
+        this.actor.save_easing_state();
+        this.actor.set_easing_mode(Clutter.AnimationMode.EASE_IN_OUT_CUBIC);
+        this.actor.set_easing_duration(250);
+
+        // Expand or shrink the menu
+        this.actor.set_height(bool ? -1 : 0);
+        bool ? this.actor.show() : null;
+
+        // Reset the animation and emit ::open-state-changed
+        this.actor.restore_easing_state();
+        bool ? this.open() : this.close();
+
+        //
+        this._revealed = bool;
+    }
+
+    get submenu() {
+        if (this._submenu === undefined) {
+            this._submenu = null;
+        }
+
+        return this._submenu;
+    }
+
+    set submenu(submenu) {
+        let alloc = this.actor.get_allocation_box();
+        let width = alloc.x2 - alloc.x1;
+
+        // Setup the animation
+        this.box.save_easing_state();
+        this.box.set_easing_mode(Clutter.AnimationMode.EASE_IN_OUT_CUBIC);
+        this.box.set_easing_duration(250);
+
+        this.sub.save_easing_state();
+        this.sub.set_easing_mode(Clutter.AnimationMode.EASE_IN_OUT_CUBIC);
+        this.sub.set_easing_duration(250);
+
+        if (submenu === null) {
+            this.box.set_width(width);
+            this.box.show();
+
+            this.sub.set_width(0);
+        } else {
+            submenu.actor.show();
+
+            this.sub.set_width(width);
+            this.sub.show();
+
+            this.box.set_width(0);
+        }
+
+        // Reset the animation
+        this.sub.restore_easing_state();
+        this.box.restore_easing_state();
+
+        //
+        this._submenu = submenu;
+    }
+
+    close() {
+        this.emit('open-state-changed', false);
+        this._submenu = null;
+        this.sub.width = 0;
+        this.sub.visible = false;
+        this.sub.get_children().map(menu => menu.visible = false);
+    }
+
+    open() {
+        this.emit('open-state-changed', true);
     }
 }
 
 
 /**
- * A St.Button subclass for icon representations of GMenu items
+ * A St.Button subclass for iconic GMenu items
  */
-var Button = GObject.registerClass({
-    GTypeName: 'GSConnectShellGMenuButton'
+var IconButton = GObject.registerClass({
+    GTypeName: 'GSConnectShellIconButton'
 }, class Button extends St.Button {
 
     _init(params) {
         super._init({
-            style_class: 'system-menu-action gsconnect-device-action',
+            style_class: 'system-menu-action gsconnect-icon-button',
             can_focus: true
         });
         Object.assign(this, params);
@@ -175,33 +356,59 @@ var Button = GObject.registerClass({
         for (let link of params.info.links) {
             if (link.name === 'submenu') {
                 this.toggle_mode = true;
-                this.submenu = new ListBox(link.value, this.action_group);
+                this.submenu = new ListBox({
+                    menu_model: link.value,
+                    action_group: this.action_group
+                });
+                this.submenu.actor.height = 0;
+                this.submenu.actor.visible = false;
                 this.submenu.actor.style_class = 'popup-sub-menu';
-                this.bind_property('checked', this.submenu.actor, 'visible', 2);
                 this.connect('notify::checked', this._onChecked);
-                this.connect('destroy', (button) => button.submenu.actor.destroy());
             }
         }
+
+        this.connect('clicked', this._onClicked);
     }
 
     _onChecked(button) {
         if (button.checked) {
             button.add_style_pseudo_class('active');
+            button.submenu.revealed = true;
         } else {
             button.remove_style_pseudo_class('active');
+            button.submenu.revealed = false;
+        }
+    }
+
+    _onClicked(button) {
+        let box = button.get_parent();
+
+        if (button.toggle_mode) {
+            for (let child of box.get_children()) {
+                child.checked = (child === button) ? child.checked : false;
+            }
+        } else {
+            box._delegate._getTopMenu().close();
+
+            button.action_group.activate_action(
+                button.action_name,
+                button.action_target
+            );
         }
     }
 });
 
 
-// FIXME: this needs a flowbox layout
-var FlowBox = GObject.registerClass({
-    GTypeName: 'GSConnectShellGMenuFlowBox',
-}, class FlowBox extends St.BoxLayout {
+var IconBox = class ListBox extends PopupMenu.PopupMenuSection {
+
     _init(params) {
         super._init();
         Object.assign(this, params);
 
+        this.box.add_style_class_name('gsconnect-icon-box');
+        this.box.vertical = false;
+
+        // Track menu items so we can use ::items-changed
         this._menu_items = new Map();
 
         // GMenu
@@ -224,32 +431,22 @@ var FlowBox = GObject.registerClass({
             this._onActionChanged.bind(this)
         );
 
-        this.connect('destroy', (box) => {
-            box.menu_model.disconnect(_itemsChangedId);
-            box.action_group.disconnect(_actionAddedId);
-            box.action_group.disconnect(_actionEnabledChangedId);
-            box.action_group.disconnect(_actionRemovedId);
+        this.connect('destroy', (iconbox) => {
+            this.menu_model.disconnect(_itemsChangedId);
+            this.action_group.disconnect(_actionAddedId);
+            this.action_group.disconnect(_actionEnabledChangedId);
+            this.action_group.disconnect(_actionRemovedId);
         });
-        this.connect('notify::mapped', this._onMapped);
+        this.box.connect('notify::mapped', this._onMapped);
+    }
 
+    _setParent(parent) {
+        super._setParent(parent);
         this._onItemsChanged(this.menu_model, 0, 0, this.menu_model.get_n_items());
     }
 
-    _onActionActivated(button) {
-        let box = button.get_parent();
-
-        if (button.toggle_mode) {
-            for (let child of box.get_children()) {
-                child.checked = (child === button) ? child.checked : false;
-            }
-        } else {
-            box.root_menu._getTopMenu().close();
-
-            button.action_group.activate_action(
-                button.action_name,
-                button.action_target
-            );
-        }
+    isEmpty() {
+        return (this.box.get_children().length === 0);
     }
 
     _onActionChanged(group, name, enabled) {
@@ -261,46 +458,48 @@ var FlowBox = GObject.registerClass({
     }
 
     _onItemsChanged(model, position, removed, added) {
+        // Remove items
         while (removed > 0) {
-            let button = this.get_child_at_index(position);
-            this._menu_items.delete(button.action_name);
+            let button = this.box.get_child_at_index(position);
+            (button.submenu) ? button.submenu.destroy() : null;
             button.destroy();
+
+            this._menu_items.delete(button.action_name);
             removed--;
         }
 
+        // Add items
         for (let i = 0; i < added; i++) {
             let index = position + i;
-            let button = new Button({
+
+            // Create an iconic button
+            let button = new IconButton({
                 action_group: this.action_group,
-                info: getItemInfo(model, index),
-                root_menu: this.root_menu
+                info: getItemInfo(model, index)
             });
 
-            let _clickedId = button.connect('clicked', this._onActionActivated);
-            button.connect('destroy', () => button.disconnect(_clickedId));
+            // Set the visibility based on the enabled state
+            button.visible = this.action_group.get_action_enabled(
+                button.action_name
+            );
 
-            if (button.action_name) {
-                button.visible = this.action_group.get_action_enabled(
-                    button.action_name
-                );
-            }
-
+            // If it has a submenu, add it as a sibling
             if (button.submenu) {
-                this.root_menu.addMenuItem(button.submenu);
+                this._parent.addMenuItem(button.submenu);
             }
 
+            // Track the item
             this._menu_items.set(button.action_name, button);
 
-            this.insert_child_at_index(button, index);
+            // Insert it in the box at the defined position
+            this.box.insert_child_at_index(button, index);
         }
     }
 
     _onMapped(actor) {
         if (!actor.mapped) {
-            for (let button of actor.get_children()) {
-                button.checked = false;
-            }
+            actor.get_children().map(button => button.checked = false);
         }
     }
-});
+}
 

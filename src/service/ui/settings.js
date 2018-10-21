@@ -232,7 +232,8 @@ var Window = GObject.registerClass({
         'prev-button', 'device-menu', 'service-menu',
         // Sidebar
         'stack', 'switcher', 'sidebar',
-        'shell-list', 'display-mode',
+        'appearance-list', 'display-mode',
+        'service-list',
         // Software
         'software-list', 'sshfs', 'sound', 'folks', 'nautilus',
         'help'
@@ -393,11 +394,7 @@ var Window = GObject.registerClass({
      * UI Setup and template connecting
      */
     _serviceSettings() {
-        this.add_action(gsconnect.settings.create_action('show-offline'));
-        this.add_action(gsconnect.settings.create_action('show-unpaired'));
-        this.add_action(gsconnect.settings.create_action('show-battery'));
-
-        this.shell_list.set_header_func(section_separators);
+        this.service_list.set_header_func(section_separators);
         this.software_list.set_header_func(section_separators);
 
         this._setDisplayMode();
