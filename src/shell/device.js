@@ -45,7 +45,9 @@ var Battery = GObject.registerClass({
         this.add_child(this.label);
 
         // Battery Icon
-        this.icon = new St.Icon();
+        this.icon = new St.Icon({
+            fallback_icon_name: 'battery-missing-symbolic'
+        });
         this.add_child(this.icon);
 
         // Battery Estimate
@@ -156,7 +158,7 @@ var Battery = GObject.registerClass({
     _sync() {
         this.visible = (this.battery && this.device.Connected && this.device.Paired);
 
-        if (this.visible && this.battery.IconName) {
+        if (this.visible) {
             this.icon.icon_name = this.battery.IconName;
             this.label.text = (this.battery.Level > -1) ? `${this.battery.Level}%` : '';
             this.tooltip.text = this.battery_label;
