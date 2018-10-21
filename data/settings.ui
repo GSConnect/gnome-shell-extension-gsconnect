@@ -967,7 +967,7 @@
                               <object class="GtkImage">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="icon_name">focus-top-bar-symbolic</property>
+                                <property name="icon_name">preferences-system-symbolic</property>
                               </object>
                               <packing>
                                 <property name="expand">False</property>

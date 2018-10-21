@@ -265,7 +265,10 @@ var Window = GObject.registerClass({
         this.switcher.select_row(this.switcher.get_row_at_index(0));
 
         // Init UI Elements
-        this._serviceSettings();
+        this.service_list.set_header_func(section_separators);
+        this.software_list.set_header_func(section_separators);
+        this._setDisplayMode();
+
         this._softwareSettings();
 
         // Setup devices
@@ -284,7 +287,7 @@ var Window = GObject.registerClass({
     }
 
     _headerFunc(row, before) {
-        if ([3, 4].includes(row.get_index())) {
+        if ([2, 3].includes(row.get_index())) {
             row.set_header(new Gtk.Separator({ visible: true }));
         }
     }
@@ -388,16 +391,6 @@ var Window = GObject.registerClass({
 
             this.sidebar.visible_child_name = name;
         }
-    }
-
-    /**
-     * UI Setup and template connecting
-     */
-    _serviceSettings() {
-        this.service_list.set_header_func(section_separators);
-        this.software_list.set_header_func(section_separators);
-
-        this._setDisplayMode();
     }
 
     _setDisplayMode(box, row) {
