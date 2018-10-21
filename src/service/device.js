@@ -332,22 +332,15 @@ var Device = GObject.registerClass({
         let lastConnection = this.settings.get_string('last-connection');
 
         // If a channel is currently open...
-        if (this._channel !== null) {
-            // Bail if it's the same type as requested
-		    if (this.connection_type === lastConnection) {
-			    debug(`${this.name}: ${lastConnection} connection already active`);
-			    return;
-			}
+        if (this._channel !== null && this.connection_type === lastConnection) {
+		    debug(`${this.name}: ${lastConnection} connection already active`);
+		    return;
 
-		    // Otherwise disconnect it first
-		    // TODO: let the channel service do it and just reload plugins
-		    this._channel.close();
-		}
-
-		debug(`${this.name}: requesting ${lastConnection} connection`);
-
-		if (lastConnection === 'bluetooth') {
+		//
+		} else if (lastConnection === 'bluetooth') {
 		    this.service.broadcast(this.settings.get_string('bluetooth-path'));
+
+		//
 		} else {
 		    let tcpAddress = Gio.InetSocketAddress.new_from_string(
                 this.settings.get_string('tcp-host'),
