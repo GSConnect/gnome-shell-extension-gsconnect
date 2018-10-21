@@ -159,7 +159,7 @@ var Battery = GObject.registerClass({
         this.visible = (this.battery && this.device.Connected && this.device.Paired);
 
         if (this.visible) {
-            this.icon.icon_name = this.battery.IconName;
+            this.icon.icon_name = this.battery.IconName || null;
             this.label.text = (this.battery.Level > -1) ? `${this.battery.Level}%` : '';
             this.tooltip.text = this.battery_label;
         }
