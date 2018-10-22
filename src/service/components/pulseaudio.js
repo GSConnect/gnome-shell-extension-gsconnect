@@ -26,11 +26,11 @@ try {
  */
 Object.defineProperty(Gvc.MixerStream.prototype, 'display_name', {
     get: function() {
-        if (this.get_ports() !== null) {
+        try {
             return `${this.get_port().human_port} (${this.description})`;
+        } catch (e) {
+            return this.description;
         }
-
-        return this.description;
     }
 });
 
