@@ -27,15 +27,13 @@ var Battery = GObject.registerClass({
     GTypeName: 'GSConnectShellDeviceBattery'
 }, class Battery extends St.BoxLayout {
 
-    _init(object, device) {
+    _init(params) {
         super._init({
             reactive: true,
             style_class: 'gsconnect-device-battery',
             track_hover: true
         });
-
-        this.object = object;
-        this.device = device;
+        Object.assign(this, params);
 
         // Percent Label
         this.label = new St.Label({
@@ -184,7 +182,10 @@ var TextMenu = class Menu extends PopupMenu.PopupMenuSection {
         this._title.label.clutter_text.ellipsize = 0;
 
         // Title -> Battery
-        this._battery = new Battery(this.object, this.device);
+        this._battery = new Battery({
+            object: this.object,
+            device: this.device
+        });
         this._title.actor.add_child(this._battery);
 
         // Actions
@@ -223,7 +224,10 @@ var IconMenu = class Menu extends PopupMenu.PopupMenuSection {
         this._title.label.clutter_text.ellipsize = 0;
 
         // Title -> Battery
-        this._battery = new Battery(this.object, this.device);
+        this._battery = new Battery({
+            object: this.object,
+            device: this.device
+        });
         this._title.actor.add_child(this._battery);
 
         // Actions
