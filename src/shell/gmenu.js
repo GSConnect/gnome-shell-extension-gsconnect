@@ -182,13 +182,9 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
             for (let link of info.links) {
                 // Submenu
                 if (link.name === 'submenu') {
-                    let arrow = new St.Label({
-                        text: '\u25B8',
-                        style_class: 'popup-menu-ornament',
-                        x_align: Clutter.ActorAlign.END,
-                        x_expand: true,
-                        y_align: Clutter.ActorAlign.CENTER
-                    });
+                    let arrow = PopupMenu.arrowIcon(St.Side.RIGHT);
+                    arrow.x_align = Clutter.ActorAlign.END;
+                    arrow.x_expand = true;
                     item.actor.add_child(arrow);
                     item.submenu = this._addGMenuSubmenu(link.value, info.label);
 
