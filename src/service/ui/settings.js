@@ -235,7 +235,7 @@ var Window = GObject.registerClass({
         'appearance-list', 'display-mode',
         'service-list',
         // Software
-        'software-list', 'sshfs', 'sound', 'folks', 'nautilus',
+        'software-list', 'caribou', 'sshfs', 'sound', 'folks', 'nautilus',
         'help'
     ]
 }, class Window extends Gtk.ApplicationWindow {
@@ -297,7 +297,7 @@ var Window = GObject.registerClass({
      */
     _softwareSettings() {
         // Required Software
-        for (let name of ['sshfs', 'sound', 'folks', 'nautilus']) {
+        for (let name of ['caribou', 'sshfs', 'sound', 'folks', 'nautilus']) {
             // Inject a button for each package group
             let button = new PackageKit.DependencyButton({
                 halign: Gtk.Align.END,
