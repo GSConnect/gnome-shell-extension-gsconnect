@@ -182,6 +182,14 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
             for (let link of info.links) {
                 // Submenu
                 if (link.name === 'submenu') {
+                    let arrow = new St.Label({
+                        text: '\u25B8',
+                        style_class: 'popup-menu-ornament',
+                        x_align: Clutter.ActorAlign.END,
+                        x_expand: true,
+                        y_align: Clutter.ActorAlign.CENTER
+                    });
+                    item.actor.add_child(arrow);
                     item.submenu = this._addGMenuSubmenu(link.value, info.label);
 
                 // Section
@@ -200,17 +208,9 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
             let prev = new PopupMenu.PopupMenuItem(this.submenu_for);
             this.addMenuItem(prev, 0);
 
+            // Make the title bold and replace the ornament with an arrow
             prev.label.style = 'font-weight: bold;';
-
-            // Replace the ornament with an arrow
-            prev._ornamentLabel.destroy();
-            prev._ornamentLabel = new St.Icon({
-                icon_name: 'pan-start-symbolic',
-                style_class: 'popup-menu-icon',
-                accessible_role: Atk.Role.ARROW,
-                y_align: Clutter.ActorAlign.CENTER
-            });
-            prev.actor.insert_child_at_index(prev._ornamentLabel, 0);
+            prev._ornamentLabel.text = '\u25C2';
 
             // Adjust the signal
             prev.disconnect(prev._activateId);
