@@ -196,9 +196,9 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
                     device
                 );
                 this._item._battery.opacity = 128;
-                this._item.actor.insert_child_above(
+                this._item.actor.insert_child_below(
                     this._item._battery,
-                    this._item.label
+                    this._item._triangleBin
                 );
             }
         } else {
