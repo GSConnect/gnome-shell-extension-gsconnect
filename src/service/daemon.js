@@ -776,6 +776,8 @@ const Service = GObject.registerClass({
                 this.bluetooth.destroy();
             }
         }
+
+        GLib.timeout_add_seconds(300, 5, this.reconnect.bind(this));
     }
 
     vfunc_dbus_register(connection, object_path) {

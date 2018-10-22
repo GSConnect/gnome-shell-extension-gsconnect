@@ -275,10 +275,9 @@ var ChannelService = GObject.registerClass({
         try {
             // Remember manual addresses so we know to accept connections
             if (address instanceof Gio.InetSocketAddress) {
-                debug(`Identify to ${address.address.to_string()}`);
                 this.allowed.add(address.address.to_string());
             } else {
-                debug('Identify to network');
+                debug('Broadcasting to LAN');
                 address = this._udp_address;
             }
 
