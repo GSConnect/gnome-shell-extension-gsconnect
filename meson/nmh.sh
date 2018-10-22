@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # Use DESTDIR if defined
 if [ -n "${DESTDIR}" ]; then
