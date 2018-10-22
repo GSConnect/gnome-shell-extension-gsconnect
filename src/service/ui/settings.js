@@ -296,16 +296,15 @@ var Window = GObject.registerClass({
      * Software dependency installation with PackageKit
      */
     _softwareSettings() {
-        // Required Software
-        for (let name of ['caribou', 'sshfs', 'sound', 'folks', 'nautilus']) {
-            // Inject a button for each package group
+        // Inject a button for each dependency row
+        for (let row of this.software_list.get_children()) {
             let button = new PackageKit.DependencyButton({
                 halign: Gtk.Align.END,
                 valign: Gtk.Align.CENTER,
-                names: name,
+                names: row.get_name(),
                 visible: true
             });
-            this[name].get_child().attach(button, 1, 0, 1, 1);
+            row.get_child().attach(button, 1, 0, 1, 1);
         }
 
         this.software_list.set_header_func(section_separators);
