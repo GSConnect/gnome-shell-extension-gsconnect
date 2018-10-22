@@ -233,9 +233,7 @@ var Window = GObject.registerClass({
         // Sidebar
         'stack', 'switcher', 'sidebar',
         'appearance-list', 'display-mode',
-        'service-list',
-        // Software
-        'software-list', 'caribou', 'sshfs', 'sound', 'folks', 'nautilus',
+        'service-list', 'software-list',
         'help'
     ]
 }, class Window extends Gtk.ApplicationWindow {
@@ -265,9 +263,15 @@ var Window = GObject.registerClass({
         this.switcher.select_row(this.switcher.get_row_at_index(0));
 
         // Init UI Elements
+        this.add_action(gsconnect.settings.create_action('show-indicators'));
+        this._displayModeChangedId = gsconnect.settings.connect(
+            'changed::show-indicators',
+            this._onDisplayModeChanged.bind(this)
+        );
+        this._onDisplayModeChanged()
+
         this.service_list.set_header_func(section_separators);
         this.software_list.set_header_func(section_separators);
-        this._setDisplayMode();
 
         this._softwareSettings();
 
@@ -284,6 +288,11 @@ var Window = GObject.registerClass({
     vfunc_delete_event(event) {
         this.save_geometry();
         return this.hide_on_delete();
+    }
+
+    _onDisplayModeChanged(settings) {
+        let state = gsconnect.settings.get_boolean('show-indicators');
+        this.display_mode.label = state ? _('Panel') : _('User Menu');
     }
 
     _headerFunc(row, before) {
@@ -392,17 +401,6 @@ var Window = GObject.registerClass({
         }
     }
 
-    _setDisplayMode(box, row) {
-        let state = gsconnect.settings.get_boolean('show-indicators');
-
-        if (row) {
-            state = !state;
-            gsconnect.settings.set_boolean('show-indicators', state);
-        }
-
-        this.display_mode.label = state ? _('Panel') : _('User Menu');
-    }
-
     _onDevicesChanged() {
         try {
             for (let id of this.application.devices) {
@@ -436,12 +434,14 @@ var Window = GObject.registerClass({
     addDevice(id) {
         let device = this.application._devices.get(id);
 
-        // Create a new device widget
+        // Create a new device settings widget
         let panel = new Device(device);
 
-        // Add device to switcher, and panel stack
+        // Add the device settings to the content stack
         this.stack.add_titled(panel, id, device.name);
+        // Add the device sidebar to the sidebar stack
         this.sidebar.add_named(panel.switcher, id);
+        // Add a device row to the main sidebar
         this.switcher.add(panel.row);
     }
 });
