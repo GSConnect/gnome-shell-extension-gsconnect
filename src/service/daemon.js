@@ -199,6 +199,19 @@ const Service = GObject.registerClass({
     }
 
     /**
+     * Try to reconnect to each paired device that has disconnected
+     */
+    reconnect() {
+        for (let device of this._devices.values()) {
+            if (device.paired && !device.connected) {
+                device.activate();
+            }
+        }
+
+        return GLib.SOURCE_CONTINUE;
+    }
+
+    /**
      * Return a device for @packet, creating it and adding it to the list of
      * of known devices if it doesn't exist.
      *
@@ -235,7 +248,7 @@ const Service = GObject.registerClass({
         return device;
     }
 
-    async _pruneDevices() {
+    _pruneDevices() {
         // Don't prune devices while the settings window is open; this also
         // prevents devices from being pruned while being deleted.
         if (this._window && this._window.visible) {
