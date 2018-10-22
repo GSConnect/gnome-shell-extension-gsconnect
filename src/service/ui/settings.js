@@ -461,8 +461,7 @@ var Device = GObject.registerClass({
         'command-toolbar', 'command-add', 'command-remove', 'command-edit',
         'command-editor', 'command-name', 'command-line',
         // Notifications
-        'notification', 'notification-page',
-        'share-notifications', 'notification-apps',
+        'notification', 'notification-apps',
         // Telephony
         'telephony',
         'ringing-list', 'ringing-volume', 'talking-list', 'talking-volume',
@@ -659,6 +658,9 @@ var Device = GObject.registerClass({
 
         settings = this._getSettings('mpris');
         this.actions.add_action(settings.create_action('share-players'));
+
+        settings = this._getSettings('notification');
+        this.actions.add_action(settings.create_action('send-notifications'));
 
         settings = this._getSettings('systemvolume');
         this.actions.add_action(settings.create_action('share-sinks'));
@@ -877,13 +879,6 @@ var Device = GObject.registerClass({
      */
     _notificationSettings() {
         let settings = this._getSettings('notification');
-
-        settings.bind(
-            'send-notifications',
-            this.share_notifications,
-            'active',
-            Gio.SettingsBindFlags.DEFAULT
-        );
 
         settings.bind(
             'send-notifications',

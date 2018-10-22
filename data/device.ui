@@ -572,7 +572,7 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="hexpand">True</property>
-                            <property name="activatable">False</property>
+                            <property name="action_name">settings.send-notifications</property>
                             <property name="selectable">False</property>
                             <child>
                               <object class="GtkGrid">
@@ -601,10 +601,11 @@
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkSwitch" id="share-notifications">
+                                  <object class="GtkSwitch">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="valign">center</property>
+                                    <property name="action_name">settings.send-notifications</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">1</property>
