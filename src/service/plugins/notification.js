@@ -445,10 +445,6 @@ var Plugin = GObject.registerClass({
             } else if (packet.body.id.includes('MissedCall')) {
                 title = packet.body.title;
                 body = packet.body.text;
-                action = {
-                    name: 'replySms',
-                    parameter: new GLib.Variant('s', packet.body.text)
-                };
                 icon = icon || new Gio.ThemedIcon({ name: 'call-missed-symbolic' });
 
             // Ignore 'appName' if it's the same as 'title'
