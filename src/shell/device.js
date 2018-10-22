@@ -165,7 +165,10 @@ var Battery = GObject.registerClass({
 });
 
 
-var TextMenu = class Menu extends PopupMenu.PopupMenuSection {
+/**
+ * A PopupMenu used as an information and control center for a device
+ */
+var Menu = class Menu extends PopupMenu.PopupMenuSection {
 
     _init(params) {
         super._init();
@@ -189,10 +192,18 @@ var TextMenu = class Menu extends PopupMenu.PopupMenuSection {
         this._title.actor.add_child(this._battery);
 
         // Actions
-        this._actions = new GMenu.ListBox({
-            action_group: this.device.action_group,
-            menu_model: this.device.menu_model
-        });
+        if (this.menu_type === 'icon') {
+            this._actions = new GMenu.IconBox({
+                action_group: this.device.action_group,
+                menu_model: this.device.menu_model
+            });
+        } else if (this.menu_type === 'list') {
+            this._actions = new GMenu.ListBox({
+                action_group: this.device.action_group,
+                menu_model: this.device.menu_model
+            });
+        }
+
         this.addMenuItem(this._actions);
 
         this.device.settings.bind('name', this._title.label, 'text', 4);
@@ -200,44 +211,6 @@ var TextMenu = class Menu extends PopupMenu.PopupMenuSection {
 
     isEmpty() {
         return false;
-    }
-}
-
-
-/**
- * A PopupMenu used as an information and control center for a device
- */
-var IconMenu = class Menu extends PopupMenu.PopupMenuSection {
-
-    _init(params) {
-        super._init();
-        Object.assign(this, params);
-
-        this.actor.add_style_class_name('gsconnect-device-iconmenu');
-
-        // Title
-        this._title = new PopupMenu.PopupSeparatorMenuItem(this.device.Name);
-        this.addMenuItem(this._title);
-
-        // Title -> Name
-        this._title.label.style_class = 'gsconnect-device-name';
-        this._title.label.clutter_text.ellipsize = 0;
-
-        // Title -> Battery
-        this._battery = new Battery({
-            object: this.object,
-            device: this.device
-        });
-        this._title.actor.add_child(this._battery);
-
-        // Actions
-        this._actions = new GMenu.IconBox({
-            action_group: this.device.action_group,
-            menu_model: this.device.menu_model
-        });
-        this.addMenuItem(this._actions);
-
-        this.device.settings.bind('name', this._title.label, 'text', 4);
     }
 }
 
@@ -259,9 +232,10 @@ var Indicator = class Indicator extends PanelMenu.Button {
         this.actor.add_actor(this.icon);
 
         // Menu
-        let menu = new IconMenu({
+        let menu = new Menu({
             object: this.object,
-            device: this.device
+            device: this.device,
+            menu_type: 'icon'
         });
         this.menu.addMenuItem(menu);
 

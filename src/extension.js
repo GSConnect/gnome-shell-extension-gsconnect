@@ -179,10 +179,9 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
 
             // Hide the menu title and move it to the submenu item
             this._menus[device.g_object_path]._title.actor.visible = false;
-            this._item.icon.icon_name = `${device.IconName}-symbolic`;
             this._item.label.text = device.Name;
 
-            // Destroy any old battery
+            // Destroy any other device's battery
             if (this._item._battery &&
                 this._item._battery.device !== device) {
                 this._item._battery.destroy();
@@ -190,20 +189,16 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
             }
 
             // Add the battery to the submenu item
-            if (!this._item._battery) {
-                this._item._battery = new Device.Battery({
-                    object: this.manager.get_object(device.g_object_path),
-                    device: device,
-                    opacity: 128
-                });
-                this._item.actor.insert_child_below(
-                    this._item._battery,
-                    this._item._triangleBin
-                );
-            }
+            this._item._battery = new Device.Battery({
+                object: this.manager.get_object(device.g_object_path),
+                device: device,
+                opacity: 128
+            });
+            this._item.actor.insert_child_below(
+                this._item._battery,
+                this._item._triangleBin
+            );
         } else {
-            this._item.icon.icon_name = `${gsconnect.app_id}-symbolic`;
-
             if (this.connected.length > 1) {
                 this._item.label.text = _('%d Connected').format(this.connected.length);
             } else {
@@ -211,7 +206,9 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
             }
 
             // Show menu titles
-            Object.values(this._menus).map(menu => menu._title.actor.visible = menu.device.Connected);
+            Object.values(this._menus).map(menu => {
+                menu._title.actor.visible = menu.device.Connected;
+            });
 
             // Destroy any battery in the submenu item
             if (this._item._battery) {
@@ -328,9 +325,10 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         Main.panel.addToStatusArea(iface.g_object_path, indicator);
 
         // Device Menu
-        let menu = new Device.TextMenu({
+        let menu = new Device.Menu({
             object: object,
-            device: iface
+            device: iface,
+            menu_type: 'list'
         });
         this._menus[iface.g_object_path] = menu;
         this.deviceSection.addMenuItem(menu);
