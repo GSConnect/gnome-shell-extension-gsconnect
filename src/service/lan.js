@@ -208,14 +208,10 @@ var ChannelService = GObject.registerClass({
                 case (device !== undefined):
                     break;
 
-                // Or the service is discoverable...
+                // Or the service is discoverable or host is allowed...
                 case this.service.discoverable:
-                    device = await this.service._ensureDevice(packet);
-                    break;
-
-                // Or the host is explicitly allowed...
                 case this.allowed.has(host):
-                    device = await this.service._ensureDevice(packet);
+                    device = this.service._ensureDevice(packet);
                     break;
 
                 // ...otherwise bail
