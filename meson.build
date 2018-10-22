@@ -45,7 +45,18 @@ run_target(
         'DATADIR=' + datadir,
         'LOCALEDIR=' + localedir,
         'GSCHEMADIR=' + gschemadir,
-        'INSTALL=false',
+        'meson/mkzip.sh'
+    ]
+)
+run_target(
+    'make-sfx',
+    command: [
+        find_program('env'),
+        'UUID=' + extuuid,
+        'DATADIR=' + datadir,
+        'LOCALEDIR=' + localedir,
+        'GSCHEMADIR=' + gschemadir,
+        'SFX=true',
         'meson/mkzip.sh'
     ]
 )
@@ -58,6 +69,19 @@ run_target(
         'LOCALEDIR=' + localedir,
         'GSCHEMADIR=' + gschemadir,
         'INSTALL=true',
+        'meson/mkzip.sh'
+    ]
+)
+run_target(
+    'install-sfx',
+    command: [
+        find_program('env'),
+        'UUID=' + extuuid,
+        'DATADIR=' + datadir,
+        'LOCALEDIR=' + localedir,
+        'GSCHEMADIR=' + gschemadir,
+        'INSTALL=true',
+        'SFX=true',
         'meson/mkzip.sh'
     ]
 )
