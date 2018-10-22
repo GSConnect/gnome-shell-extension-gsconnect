@@ -3,7 +3,6 @@
 ZIP_DESTDIR="${MESON_BUILD_ROOT}/_zip"
 ZIP_DIR="${MESON_BUILD_ROOT}/${UUID}"
 ZIP_FILE="${MESON_BUILD_ROOT}/${UUID}.zip"
-
 SFX_FILE="${MESON_BUILD_ROOT}/${UUID}.sfx"
 
 GSCHEMA_DIR="${ZIP_DESTDIR}/${GSCHEMADIR}"
@@ -38,6 +37,8 @@ fi
 # COMPRESS
 cd ${ZIP_DIR}
 zip -qr ${ZIP_FILE} .
+cd ${MESON_BUILD_ROOT}
+rm -rf _zip
 
 echo
 echo "Extension saved to ${ZIP_FILE}"
