@@ -1261,7 +1261,7 @@ var Device = GObject.registerClass({
             this.settings.set_strv('disabled-plugins', disabled);
 
             if (this.hasOwnProperty(name)) {
-                this[name].visible = disabled.includes(name);
+                this[name].visible = !disabled.includes(name);
             }
         } catch (e) {
             logError(e);
