@@ -53,8 +53,10 @@ const PackageGroup = {
     // Feature:     Files Integration
     // Requires:    `Nautilus-3.0.typelib`, `libnautilus-python.so`
     'nautilus': [
-        // Fedora, Gentoo
-        'nautilus-python', 'nautilus-extensions', 'python2-gobject',
+        // Fedora
+        'python2-nautilus', 'nautilus-extensions', 'python2-gobject',
+        // Gentoo
+        'nautilus-python', 'pygobject',
         // Arch, Debian/Ubuntu, openSUSE
         'python-nautilus', 'gir1.2-nautilus-3.0'
     ],
@@ -356,4 +358,3 @@ var DependencyButton = GObject.registerClass({
         }
     }
 });
-
