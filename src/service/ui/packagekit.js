@@ -265,8 +265,6 @@ var DependencyButton = GObject.registerClass({
     }
 
     _done(icon_name=null) {
-        this._button.get_style_context().remove_class('suggested-action');
-
         this._button.visible = false;
         this._spinner.visible = false;
 
@@ -276,8 +274,6 @@ var DependencyButton = GObject.registerClass({
     }
 
     _warning(e) {
-        this._button.get_style_context().remove_class('suggested-action');
-
         this._result.visible = false;
         this._spinner.visible = false;
 
@@ -294,7 +290,6 @@ var DependencyButton = GObject.registerClass({
 
         this._button.visible = true;
         this._button.image.icon_name = 'folder-download-symbolic';
-        this._button.get_style_context().add_class('suggested-action');
         this.tooltip_markup = this._packages.map(pkg => {
             return `<b>${pkg.get_name()}</b> - ${pkg.get_summary()}`
         }).join('\n');
