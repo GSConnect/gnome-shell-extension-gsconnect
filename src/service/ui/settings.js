@@ -93,6 +93,7 @@ var DeviceRow = GObject.registerClass({
             halign: Gtk.Align.END,
             visible: true
         });
+        go_next.get_style_context().add_class('dim-label');
         grid.attach(go_next, 2, 0, 1, 1);
 
         this.connect('notify::connected', () => this.notify('symbolic-icon'));
