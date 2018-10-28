@@ -24,6 +24,27 @@ const Keybindings = imports.shell.keybindings;
 const Notification = imports.shell.notification;
 
 
+gsconnect.proxyProperties = function (iface) {
+    let info = gsconnect.dbusinfo.lookup_interface(iface.g_interface_name);
+
+    for (let property of info.properties) {
+        // Properties already defined for this proxy
+        if (iface.hasOwnProperty(property.name)) return;
+
+        Object.defineProperty(iface, property.name, {
+            get: () => {
+                try {
+                    return iface.get_cached_property(property.name).deep_unpack();
+                } catch (e) {
+                    return null;
+                }
+            },
+            enumerable: true
+        });
+    }
+}
+
+
 /**
  * A System Indicator used as the hub for spawning device indicators and
  * indicating that the extension is active when there are none.
@@ -39,11 +60,6 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         this._menus = {};
 
         this.keybindingManager = new Keybindings.Manager();
-
-        this._gsettingsId = gsconnect.settings.connect(
-            'changed::show-indicators',
-            this._sync.bind(this)
-        );
 
         // Service Actions
         this.service = Gio.DBusActionGroup.get(
@@ -90,12 +106,20 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
             () => this.service.activate_action('preferences', null)
         );
 
+        // Watch for UI prefs
+        this._gsettingsId = gsconnect.settings.connect(
+            'changed::show-indicators',
+            this._sync.bind(this)
+        );
+
         // Async setup
         this._init_async();
     }
 
-    get connected() {
-        return Array.from(this.devices).filter(device => device.Connected);
+    get available() {
+        return Array.from(this.devices).filter(device => {
+            return (device.Connected && device.Paired);
+        });
     }
 
     get devices() {
@@ -177,46 +201,51 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
     }
 
     _sync() {
-        // Hide the indicator in Panel mode or if no devices are connected
+        // Hide status indicator if in Panel mode or no devices are available
         let panelMode = gsconnect.settings.get_boolean('show-indicators');
-        this._indicator.visible = (!panelMode && this.connected.length);
+        this._indicator.visible = (!panelMode && this.available.length);
+
+        // Show device indicators in Panel mode if available
+        for (let device of this._devices.values()) {
+            let indicator = Main.panel.statusArea[device.g_object_path].actor;
+            indicator.visible = panelMode && this.available.includes(device);
+        }
 
         // One connected device in User Menu mode
-        if (this.connected.length === 1 && !panelMode) {
-            let device = this.connected[0];
+        if (!panelMode && this.available.length === 1) {
+            let device = this.available[0];
 
             // Hide the menu title and move it to the submenu item
             this._menus[device.g_object_path]._title.actor.visible = false;
             this._item.label.text = device.Name;
 
             // Destroy any other device's battery
-            if (this._item._battery &&
-                this._item._battery.device !== device) {
+            if (this._item._battery && this._item._battery.device !== device) {
                 this._item._battery.destroy();
                 this._item._battery = null;
             }
 
             // Add the battery to the submenu item
-            this._item._battery = new Device.Battery({
-                object: this.manager.get_object(device.g_object_path),
-                device: device,
-                opacity: 128
-            });
-            this._item.actor.insert_child_below(
-                this._item._battery,
-                this._item._triangleBin
-            );
+            if (!this._item._battery) {
+                this._item._battery = new Device.Battery({
+                    object: this.manager.get_object(device.g_object_path),
+                    device: device,
+                    opacity: 128
+                });
+                this._item.actor.insert_child_below(
+                    this._item._battery,
+                    this._item._triangleBin
+                );
+            }
         } else {
-            if (this.connected.length > 1) {
-                this._item.label.text = _('%d Connected').format(this.connected.length);
+            if (this.available.length > 1) {
+                this._item.label.text = _('%d Connected').format(this.available.length);
             } else {
                 this._item.label.text = _('Mobile Devices');
             }
 
             // Show menu titles
-            Object.values(this._menus).map(menu => {
-                menu._title.actor.visible = menu.device.Connected;
-            });
+            Object.values(this._menus).map(menu => menu._title.actor.show());
 
             // Destroy any battery in the submenu item
             if (this._item._battery) {
@@ -271,35 +300,15 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         }
     }
 
-    _proxyGetter(name) {
-        let value = null;
-
-        try {
-            value = this.get_cached_property(name).deep_unpack();
-        } catch (e) {
-        } finally {
-            return value;
-        }
-    }
-
     _onInterfaceAdded(manager, object, iface) {
-        // Setup properties
-        let info = gsconnect.dbusinfo.lookup_interface(iface.g_interface_name);
+        gsconnect.proxyProperties(iface);
 
-        for (let property of info.properties) {
-            Object.defineProperty(iface, property.name, {
-                get: this._proxyGetter.bind(iface, property.name),
-                enumerable: true
-            });
-        }
-
-        // If it's not a device we're done
+        // We only handle devices here
         if (iface.g_interface_name !== 'org.gnome.Shell.Extensions.GSConnect.Device') {
             return;
         }
 
         debug(`GSConnect: Adding ${iface.Name}`);
-
         this.devices.add(iface);
 
         // GActions

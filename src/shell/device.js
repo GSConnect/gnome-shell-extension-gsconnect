@@ -65,21 +65,14 @@ var Battery = GObject.registerClass({
             this._onInterfaceRemoved.bind(this)
         );
 
-        // Device Connected/Paired
-        this._deviceId = this.device.connect(
-            'g-properties-changed',
-            this._sync.bind(this)
-        );
+        this.connect('notify::mapped', (actor) => {
+            if (actor.mapped) actor._sync();
+        });
 
         // Battery proxy
-        this.battery = this.object.get_interface(BATTERY_INTERFACE);
+        let iface = this.object.get_interface(BATTERY_INTERFACE);
+        if (iface) this._onInterfaceAdded(null, iface);
 
-        if (this.battery) {
-            this._batteryId = this.battery.connect(
-                'g-properties-changed',
-                this._sync.bind(this)
-            );
-        }
         this._sync();
 
         // Cleanup
@@ -126,7 +119,6 @@ var Battery = GObject.registerClass({
     }
 
     _onDestroy(actor) {
-        actor.device.disconnect(actor._deviceId);
         actor.object.disconnect(actor._interfaceAddedId);
         actor.object.disconnect(actor._interfaceRemovedId);
 
@@ -136,14 +128,17 @@ var Battery = GObject.registerClass({
     }
 
     _onInterfaceAdded(object, iface) {
-        if (iface.g_interface_name === BATTERY_INTERFACE) {
-            this.battery = iface;
-            this._batteryId = this.battery.connect(
-                'g-properties-changed',
-                this._sync.bind(this)
-            );
-            this._sync();
-        }
+        if (iface.g_interface_name !== BATTERY_INTERFACE) return;
+
+        this.battery = iface;
+        gsconnect.proxyProperties(iface);
+
+        this._batteryId = this.battery.connect(
+            'g-properties-changed',
+            this._sync.bind(this)
+        );
+
+        this._sync();
     }
 
     _onInterfaceRemoved(object, iface) {
@@ -154,10 +149,10 @@ var Battery = GObject.registerClass({
     }
 
     _sync() {
-        this.visible = (this.battery && this.device.Connected && this.device.Paired);
+        this.visible = (this.battery);
 
         if (this.visible) {
-            this.icon.icon_name = this.battery.IconName || null;
+            this.icon.icon_name = this.battery.IconName;
             this.label.text = (this.battery.Level > -1) ? `${this.battery.Level}%` : '';
             this.tooltip.text = this.battery_label;
         }
@@ -238,33 +233,6 @@ var Indicator = class Indicator extends PanelMenu.Button {
             menu_type: 'icon'
         });
         this.menu.addMenuItem(menu);
-
-        // Watch GSettings & Device Connected/Paired
-        let _gsettingsId = gsconnect.settings.connect(
-            'changed::show-indicators',
-            this._sync.bind(this)
-        );
-        let _deviceId = this.device.connect(
-            'g-properties-changed',
-            this._sync.bind(this)
-        );
-
-        this.connect('destroy', () => {
-            this.device.disconnect(_deviceId);
-            gsconnect.settings.disconnect(_gsettingsId);
-        });
-
-        this._sync();
-    }
-
-    _sync() {
-        debug(`${this.device.Name} indicator`);
-
-        if (!gsconnect.settings.get_boolean('show-indicators')) {
-            this.actor.visible = false;
-        } else {
-            this.actor.visible = (this.device.Paired && this.device.Connected);
-        }
     }
 }
 
