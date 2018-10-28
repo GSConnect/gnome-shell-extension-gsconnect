@@ -288,9 +288,6 @@ var DependencyButton = GObject.registerClass({
     }
 
     async _reset() {
-        let available = [];
-        let installable = [];
-
         try {
             this._state = true;
             this._button.visible = false;
