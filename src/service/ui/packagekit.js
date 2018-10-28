@@ -188,37 +188,13 @@ var DependencyButton = GObject.registerClass({
      * Return a list of packages from @names that are available
      *
      * @param {Array of string} names - The names of the packages to find
+     * @param {string} filter - A semicolon-separated filter list to apply
      * @return {Array of PackageKit.Package} - The packages found
      */
-    _getAvailable(names) {
+    _query(names, filter="") {
         return new Promise((resolve, reject) => {
             this.client.resolve_async(
-                PackageKit.filter_bitfield_from_string('arch'),
-                names,
-                null,
-                () => {},
-                (client, res) => {
-                    try {
-                        res = client.generic_finish(res);
-                        resolve(res.get_package_array());
-                    } catch (e) {
-                        reject(e);
-                    }
-                }
-            );
-        });
-    }
-
-    /**
-     * Return a list of packages from @names that are installable
-     *
-     * @param {string} name - The name of the package to find
-     * @return {Array of PackageKit.Package} - The packages found
-     */
-    _getInstallable(names) {
-        return new Promise((resolve, reject) => {
-            this.client.resolve_async(
-                PackageKit.filter_bitfield_from_string('arch;~installed'),
+                PackageKit.filter_bitfield_from_string(filter),
                 names,
                 null,
                 () => {},
@@ -328,7 +304,7 @@ var DependencyButton = GObject.registerClass({
             }
 
             // Reduce the possible packages to the names of those available
-            available = await this._getAvailable(this.names);
+            available = await this._query(this.names, 'arch;newest');
             available = available.map(pkg => pkg.get_name());
 
             // No available packages
@@ -338,7 +314,7 @@ var DependencyButton = GObject.registerClass({
             }
 
             // Reduce the available packages to those that are uninstalled
-            installable = await this._getInstallable(available);
+            installable = await this._query(available, 'arch;newest;~installed');
 
             // All available packages are installed
             if (installable.length === 0) {
