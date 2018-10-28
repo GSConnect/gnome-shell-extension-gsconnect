@@ -209,6 +209,10 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         for (let device of this._devices.values()) {
             let indicator = Main.panel.statusArea[device.g_object_path].actor;
             indicator.visible = panelMode && this.available.includes(device);
+
+            let menu = this._menus[device.g_object_path];
+            menu.actor.visible = !panelMode && this.available.includes(device);
+            menu._title.actor.visible = menu.actor.visible;
         }
 
         // One connected device in User Menu mode
@@ -243,9 +247,6 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
             } else {
                 this._item.label.text = _('Mobile Devices');
             }
-
-            // Show menu titles
-            Object.values(this._menus).map(menu => menu._title.actor.show());
 
             // Destroy any battery in the submenu item
             if (this._item._battery) {
