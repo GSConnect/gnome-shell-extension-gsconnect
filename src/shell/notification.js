@@ -239,8 +239,10 @@ function patchGSConnectNotificationSource() {
 
         // Connect to existing notifications
         for (let [id, notification] of Object.entries(source._notifications)) {
-            notification.connect('destroy', (notification, reason) => {
+
+            let _id = notification.connect('destroy', (notification, reason) => {
                 source._closeGSConnectNotification(id, reason);
+                notification.disconnect(_id);
             });
         }
     }
@@ -290,7 +292,7 @@ function patchGtkNotificationSources() {
         if (this._notifications[notificationId])
             this._notifications[notificationId].destroy();
 
-        let notification = new GtkNotificationDaemonNotification(this, notificationParams);
+        let notification = new NotificationDaemon.GtkNotificationDaemonNotification(this, notificationParams);
         notification.connect('destroy', () => {
             this._withdrawGSConnectNotification(notification, reason);
             delete this._notifications[notificationId];
