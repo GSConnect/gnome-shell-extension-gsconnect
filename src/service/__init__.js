@@ -531,15 +531,15 @@ Gtk.Widget.prototype.disconnect_template = function() {
 /**
  * Convenience functions for saving/restoring window geometry
  */
-Gtk.Window.prototype.restore_geometry = function() {
-    let size = this.settings.get_value('window-size').deep_unpack();
-    if (size.length === 2) {
-        this.set_default_size(...size);
-    }
+const _mutter = new Gio.Settings({ schema_id: 'org.gnome.mutter' });
 
-    let position = this.settings.get_value('window-position').deep_unpack();
-    if (position.length === 2) {
-        this.move(...position);
+Gtk.Window.prototype.restore_geometry = function() {
+    let [width, height] = this.settings.get_value('window-size').deep_unpack();
+    this.set_default_size(width, height);
+
+    if (!_mutter.get_boolean('center-new-windows')) {
+        let [x, y] = this.settings.get_value('window-position').deep_unpack();
+        this.move(x, y);
     }
 
     if (this.settings.get_boolean('window-maximized'))
