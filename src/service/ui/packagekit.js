@@ -188,37 +188,13 @@ var DependencyButton = GObject.registerClass({
      * Return a list of packages from @names that are available
      *
      * @param {Array of string} names - The names of the packages to find
+     * @param {string} filter - A semicolon-separated filter list to apply
      * @return {Array of PackageKit.Package} - The packages found
      */
-    _getAvailable(names) {
+    _query(names, filter="") {
         return new Promise((resolve, reject) => {
             this.client.resolve_async(
-                PackageKit.filter_bitfield_from_string('arch'),
-                names,
-                null,
-                () => {},
-                (client, res) => {
-                    try {
-                        res = client.generic_finish(res);
-                        resolve(res.get_package_array());
-                    } catch (e) {
-                        reject(e);
-                    }
-                }
-            );
-        });
-    }
-
-    /**
-     * Return a list of packages from @names that are installable
-     *
-     * @param {string} name - The name of the package to find
-     * @return {Array of PackageKit.Package} - The packages found
-     */
-    _getInstallable(names) {
-        return new Promise((resolve, reject) => {
-            this.client.resolve_async(
-                PackageKit.filter_bitfield_from_string('arch;~installed'),
+                PackageKit.filter_bitfield_from_string(filter),
                 names,
                 null,
                 () => {},
@@ -265,8 +241,6 @@ var DependencyButton = GObject.registerClass({
     }
 
     _done(icon_name=null) {
-        this._button.get_style_context().remove_class('suggested-action');
-
         this._button.visible = false;
         this._spinner.visible = false;
 
@@ -276,8 +250,6 @@ var DependencyButton = GObject.registerClass({
     }
 
     _warning(e) {
-        this._button.get_style_context().remove_class('suggested-action');
-
         this._result.visible = false;
         this._spinner.visible = false;
 
@@ -294,7 +266,6 @@ var DependencyButton = GObject.registerClass({
 
         this._button.visible = true;
         this._button.image.icon_name = 'folder-download-symbolic';
-        this._button.get_style_context().add_class('suggested-action');
         this.tooltip_markup = this._packages.map(pkg => {
             return `<b>${pkg.get_name()}</b> - ${pkg.get_summary()}`
         }).join('\n');
@@ -332,9 +303,11 @@ var DependencyButton = GObject.registerClass({
                 return;
             }
 
-            // Reduce the possible packages to the names of those available
-            available = await this._getAvailable(this.names);
-            available = available.map(pkg => pkg.get_name());
+            // Filter the package names into what's available and what's installed
+            let available = await this._query(this.names, 'arch;newest');
+            let installed = await this._query(available.map(pkg => pkg.get_name()),
+                                              'arch;newest;installed');
+            installed = installed.map(pkg => pkg.get_name());
 
             // No available packages
             if (available.length === 0) {
@@ -342,8 +315,8 @@ var DependencyButton = GObject.registerClass({
                 return;
             }
 
-            // Reduce the available packages to those that are uninstalled
-            installable = await this._getInstallable(available);
+            // If any available names are not installed, we can install them on demand
+            let installable = available.filter(pkg => !installed.includes(pkg.get_name()));
 
             // All available packages are installed
             if (installable.length === 0) {
