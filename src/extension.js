@@ -40,6 +40,11 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
 
         this.keybindingManager = new Keybindings.Manager();
 
+        this._gsettingsId = gsconnect.settings.connect(
+            'changed::show-indicators',
+            this._sync.bind(this)
+        );
+
         // Service Actions
         this.service = Gio.DBusActionGroup.get(
             Gio.DBus.session,
@@ -62,7 +67,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
 
         AggregateMenu.menu.addMenuItem(this.menu, 4);
 
-        // Devices Section
+        // Service Menu -> Devices Section
         this.deviceSection = new PopupMenu.PopupMenuSection();
         this.deviceSection.actor.add_style_class_name('gsconnect-device-section');
         gsconnect.settings.bind(
@@ -73,14 +78,13 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         );
         this._item.menu.addMenuItem(this.deviceSection);
 
-        // Section separator
-        let separator = new PopupMenu.PopupSeparatorMenuItem();
-        this._item.menu.addMenuItem(separator);
+        // Service Menu -> Separator
+        this._item.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
 
-        // "Do Not Disturb" Item
+        // Service Menu -> "Do Not Disturb"
         this._item.menu.addMenuItem(new DoNotDisturb.MenuItem());
 
-        // "Mobile Settings" Item
+        // Service Menu -> "Mobile Settings"
         this._item.menu.addAction(
             _('Mobile Settings'),
             () => this.service.activate_action('preferences', null)
@@ -126,35 +130,37 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
                 }
             }
 
-            this._propertiesId = this.manager.connect(
-                'interface-proxy-properties-changed',
-                this._onInterfacePropertiesChanged.bind(this)
-            );
-
-            this._gsettingsId = gsconnect.settings.connect(
-                'changed::show-indicators',
-                this._sync.bind(this)
-            );
-
             // Watch for new and removed
+            this._nameOwnerId = this.manager.connect(
+                'notify::name-owner',
+                this._onNameOwnerChanged.bind(this)
+            );
+
             this._interfaceAddedId = this.manager.connect(
                 'interface-added',
                 this._onInterfaceAdded.bind(this)
             );
+
             this._objectRemovedId = this.manager.connect(
                 'object-removed',
                 this._onObjectRemoved.bind(this)
             );
-            this._nameOwnerId = this.manager.connect(
-                'notify::name-owner',
-                this._onNameOwnerChanged.bind(this)
+
+            this._interfaceProxyPropertiesChangedId = this.manager.connect(
+                'interface-proxy-properties-changed',
+                this._onInterfacePropertiesChanged.bind(this)
             );
 
             await this._activate();
         } catch (e) {
             debug(e);
             Gio.DBusError.strip_remote_error(e);
-            Main.notifyError(_('GSConnect'), e.message);
+
+            // Don't notify of cancellation errors during startup
+            // https://gitlab.gnome.org/GNOME/gnome-shell/issues/177
+            if (!e.code || e.code !== Gio.IOErrorEnum.CANCELLED) {
+                Main.notifyError(_('GSConnect'), e.message);
+            }
         }
     }
 
@@ -163,7 +169,9 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
             return;
         }
 
-        if (changed.deep_unpack().hasOwnProperty('Connected')) {
+        changed = changed.deep_unpack();
+
+        if (changed.hasOwnProperty('Connected') || changed.hasOwnProperty('Paired')) {
             this._sync();
         }
     }
@@ -421,8 +429,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
 
         // Unhook from any ObjectManager events
         if (this.manager) {
-            this.manager.disconnect(this._propertiesId);
-            this.manager.disconnect(this._gsettingsId);
+            this.manager.disconnect(this._interfaceProxyPropertiesChangedId);
             this.manager.disconnect(this._interfaceAddedId);
             this.manager.disconnect(this._objectRemovedId);
             this.manager.disconnect(this._nameOwnerId);
