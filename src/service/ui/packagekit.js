@@ -303,9 +303,11 @@ var DependencyButton = GObject.registerClass({
                 return;
             }
 
-            // Reduce the possible packages to the names of those available
-            available = await this._query(this.names, 'arch;newest');
-            available = available.map(pkg => pkg.get_name());
+            // Filter the package names into what's available and what's installed
+            let available = await this._query(this.names, 'arch;newest');
+            let installed = await this._query(available.map(pkg => pkg.get_name()),
+                                              'arch;newest;installed');
+            installed = installed.map(pkg => pkg.get_name());
 
             // No available packages
             if (available.length === 0) {
@@ -313,8 +315,8 @@ var DependencyButton = GObject.registerClass({
                 return;
             }
 
-            // Reduce the available packages to those that are uninstalled
-            installable = await this._query(available, 'arch;newest;~installed');
+            // If any available names are not installed, we can install them on demand
+            let installable = available.filter(pkg => !installed.includes(pkg.get_name()));
 
             // All available packages are installed
             if (installable.length === 0) {
