@@ -1,20 +1,37 @@
 'use strict';
 
 const Gio = imports.gi.Gio;
+const GLib = imports.gi.GLib;
+
+var GSound;
+var _gsoundContext;
+var _BACKEND = false;
 
 
-// GSound.Context singleton
-try {
-    var GSound = imports.gi.GSound;
-    var _gsoundContext = new GSound.Context();
-    _gsoundContext.init(null);
+/**
+ * Return the backend to be used for playing sound effects
+ *
+ * @return {string|boolean} - 'gsound', 'libcanberra' or %false
+ */
+function get_backend() {
+    if (_BACKEND) {
+        return _BACKEND;
+    }
 
-// Try falling back to libcanberra
-} catch (e) {
-    var _gsoundContext = undefined;
+    // GSound.Context singleton
+    try {
+        GSound = imports.gi.GSound;
+        _gsoundContext = new GSound.Context();
+        _gsoundContext.init(null);
+        _BACKEND = 'gsound';
 
-    if (!hasCommand('canberra-gtk-play')) {
-        throw new Error();
+    // Try falling back to libcanberra
+    } catch (e) {
+        if (GLib.find_program_in_path('canberra-gtk-play') !== null) {
+            _BACKEND = 'libcanberra';
+        }
+    } finally {
+        return _BACKEND;
     }
 }
 
@@ -28,27 +45,32 @@ try {
  * See also https://freedesktop.org/wiki/Specifications/sound-theme-spec/
  */
 function play_theme_sound(name) {
-    let result = false;
+    switch (get_backend()) {
+        case 'gsound':
+            _gsoundContext.play_simple({ 'event.id' : name }, null);
+            return true;
 
-    if (_gsoundContext) {
-        _gsoundContext.play_simple({ 'event.id' : name }, null);
-        return true;
-    } else if (hasCommand('canberra-gtk-play')) {
-        let proc = new Gio.Subprocess({
-            argv: ['canberra-gtk-play', '-i', name],
-            flags: Gio.SubprocessFlags.NONE
-        });
-        proc.init(null);
+        case 'libcanberra':
+            let proc = new Gio.Subprocess({
+                argv: ['canberra-gtk-play', '-i', name],
+                flags: Gio.SubprocessFlags.NONE
+            });
+            proc.init(null);
 
-        proc.wait_check_async(null, (proc, res) => {
-            try {
-                result = proc.wait_check_finish(res);
-            } catch (e) {
-            }
-        });
+            proc.wait_check_async(null, (proc, res) => {
+                try {
+                    result = proc.wait_check_finish(res);
+                } catch (e) {
+                }
+            });
+            return true;
+
+        default:
+            let error = new Error();
+            error.name = 'DependencyError';
+            Gio.Application.get_default().notify_error(error);
+            return false;
     }
-
-    return result;
 }
 
 window.play_theme_sound = play_theme_sound;
@@ -63,34 +85,47 @@ window.play_theme_sound = play_theme_sound;
  * @return {Boolean} - %false if playback unavailable
  */
 function loop_theme_sound(name, cancellable) {
-    if (_gsoundContext) {
-        _gsoundContext.play_full(
-            { 'event.id' : name },
-            cancellable,
-            (source, res) => {
+    switch (get_backend()) {
+        case 'gsound':
+            _gsoundContext.play_full(
+                { 'event.id' : name },
+                cancellable,
+                (source, res) => {
+                    try {
+                        source.play_full_finish(res);
+                        loop_theme_sound(name, cancellable);
+                    } catch (e) {
+                    }
+                }
+            );
+            return true;
+
+        case 'libcanberra':
+            let proc = new Gio.Subprocess({
+                argv: ['canberra-gtk-play', '-i', name],
+                flags: Gio.SubprocessFlags.NONE
+            });
+            proc.init(null);
+
+            proc.wait_check_async(cancellable, (proc, res) => {
                 try {
-                    source.play_full_finish(res);
+                    proc.wait_check_finish(res);
                     loop_theme_sound(name, cancellable);
                 } catch (e) {
                 }
-            }
-        );
-    } else if (hasCommand('canberra-gtk-play')) {
-        let proc = new Gio.Subprocess({
-            argv: ['canberra-gtk-play', '-i', name],
-            flags: Gio.SubprocessFlags.NONE
-        });
-        proc.init(null);
+            });
+            return true;
 
-        proc.wait_check_async(cancellable, (proc, res) => {
-            try {
-                proc.wait_check_finish(res);
-                loop_theme_sound(name, cancellable);
-            } catch (e) {
+        default:
+            if (cancellable) {
+                cancellable.cancel();
             }
-        });
-    } else {
-        return false;
+
+            let error = new Error();
+            error.name = 'DependencyError';
+            Gio.Application.get_default().notify_error(error);
+
+            return false;
     }
 }
 

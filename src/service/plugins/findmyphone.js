@@ -58,14 +58,6 @@ var Plugin = GObject.registerClass({
                 return;
             }
 
-            // Check for this every time to avoid possibly endless ringing
-            if (typeof loop_theme_sound !== 'function') {
-                let error = new Error();
-                error.name = 'DependencyError';
-                this.service.notify_error(error);
-                return;
-            }
-
             this._cancellable = new Gio.Cancellable();
             loop_theme_sound('phone-incoming-call', this._cancellable);
 
