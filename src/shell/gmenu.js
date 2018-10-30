@@ -131,8 +131,8 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
         let menu = actor.get_parent()._delegate;
 
         if (menu.submenu && event.get_key_symbol() == Clutter.KEY_Left) {
+            menu.submenu.submenu_for.setActive(true);
             menu.submenu = null;
-            menu.firstMenuItem.setActive(true);
             return Clutter.EVENT_STOP;
         }
 
@@ -144,7 +144,7 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
 
         if (item.submenu && event.get_key_symbol() == Clutter.KEY_Right) {
             this.submenu = item.submenu;
-            item.setActive(false);
+            item.submenu.firstMenuItem.setActive(true);
         }
 
         return Clutter.EVENT_PROPAGATE;
