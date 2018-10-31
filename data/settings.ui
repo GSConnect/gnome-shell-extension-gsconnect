@@ -5,7 +5,7 @@
   <template class="GSConnectSettingsWindow" parent="GtkApplicationWindow">
     <property name="can_focus">False</property>
     <property name="default_width">640</property>
-    <property name="default_height">440</property>
+    <property name="default_height">580</property>
     <child type="titlebar">
       <object class="GtkHeaderBar" id="headerbar">
         <property name="visible">True</property>
@@ -845,7 +845,7 @@
                           </object>
                           <packing>
                             <property name="left_attach">0</property>
-                            <property name="top_attach">2</property>
+                            <property name="top_attach">3</property>
                           </packing>
                         </child>
                         <child>
@@ -873,66 +873,7 @@
                           </object>
                           <packing>
                             <property name="left_attach">1</property>
-                            <property name="top_attach">2</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkGrid">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="column_spacing">12</property>
-                            <child>
-                              <object class="GtkLinkButton">
-                                <property name="label" translatable="yes">Android</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">True</property>
-                                <property name="halign">start</property>
-                                <property name="relief">none</property>
-                                <property name="uri">https://play.google.com/store/apps/details?id=org.kde.kdeconnect_tp</property>
-                              </object>
-                              <packing>
-                                <property name="left_attach">1</property>
-                                <property name="top_attach">0</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkLinkButton">
-                                <property name="label" translatable="yes">Sailfish OS</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">True</property>
-                                <property name="halign">start</property>
-                                <property name="relief">none</property>
-                                <property name="uri">https://openrepos.net/content/piggz/kde-connect</property>
-                              </object>
-                              <packing>
-                                <property name="left_attach">2</property>
-                                <property name="top_attach">0</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkLabel">
-                                <property name="height_request">32</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="halign">start</property>
-                                <property name="valign">center</property>
-                                <property name="label" translatable="yes">KDE Connect</property>
-                                <attributes>
-                                  <attribute name="weight" value="bold"/>
-                                </attributes>
-                              </object>
-                              <packing>
-                                <property name="left_attach">0</property>
-                                <property name="top_attach">0</property>
-                              </packing>
-                            </child>
-                          </object>
-                          <packing>
-                            <property name="left_attach">0</property>
                             <property name="top_attach">3</property>
-                            <property name="width">2</property>
                           </packing>
                         </child>
                         <child>
@@ -949,6 +890,60 @@
                           <packing>
                             <property name="left_attach">1</property>
                             <property name="top_attach">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="halign">start</property>
+                            <property name="valign">center</property>
+                            <property name="margin_bottom">8</property>
+                            <property name="hexpand">True</property>
+                            <property name="label" translatable="yes">Browser Add-Ons</property>
+                            <attributes>
+                              <attribute name="weight" value="bold"/>
+                            </attributes>
+                          </object>
+                          <packing>
+                            <property name="left_attach">0</property>
+                            <property name="top_attach">2</property>
+                            <property name="width">2</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="halign">start</property>
+                            <property name="valign">center</property>
+                            <property name="margin_bottom">8</property>
+                            <property name="label" translatable="yes">KDE Connect</property>
+                            <attributes>
+                              <attribute name="weight" value="bold"/>
+                            </attributes>
+                          </object>
+                          <packing>
+                            <property name="left_attach">0</property>
+                            <property name="top_attach">4</property>
+                            <property name="width">2</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="halign">start</property>
+                            <property name="valign">baseline</property>
+                            <property name="margin_bottom">8</property>
+                            <property name="label" translatable="no">Android (&lt;a href="https://play.google.com/store/apps/details?id=org.kde.kdeconnect_tp"&gt;Play Store&lt;/a&gt; / &lt;a href="https://f-droid.org/packages/org.kde.kdeconnect_tp/"&gt;F-Droid&lt;/a&gt;), &lt;a href="https://openrepos.net/content/piggz/kde-connect"&gt;Sailfish OS&lt;/a&gt;</property>
+                            <property name="use_markup">True</property>
+                            <property name="track_visited_links">False</property>
+                          </object>
+                          <packing>
+                            <property name="left_attach">0</property>
+                            <property name="top_attach">5</property>
+                            <property name="width">2</property>
                           </packing>
                         </child>
                       </object>
