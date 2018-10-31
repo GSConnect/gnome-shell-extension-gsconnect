@@ -114,7 +114,6 @@
         "_C": false,
         "_N": false,
         "ngettext": false,
-        "play_theme_sound": false,
         "loop_theme_sound": false
     },
     "parserOptions": {
