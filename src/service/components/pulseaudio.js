@@ -98,7 +98,7 @@ var Mixer = GObject.registerClass({
     GTypeName: 'GSConnectAudioMixer'
 }, class Mixer extends Gvc.MixerControl {
     _init(params) {
-        super._init({ name: 'GSConnect' });
+        super._init({name: 'GSConnect'});
 
         this.open();
 

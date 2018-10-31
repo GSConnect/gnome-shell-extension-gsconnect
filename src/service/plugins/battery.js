@@ -203,7 +203,7 @@ var Plugin = GObject.registerClass({
             title: _('%s: Battery is low').format(this.device.name),
             // TRANSLATORS: eg. 15% remaining
             body: _('%d%% remaining').format(this.level),
-            icon: new Gio.ThemedIcon({ name: 'battery-caution-symbolic' }),
+            icon: new Gio.ThemedIcon({name: 'battery-caution-symbolic'}),
             buttons: buttons
         });
 
@@ -249,7 +249,7 @@ var Plugin = GObject.registerClass({
         this.device.sendPacket({
             id: 0,
             type: 'kdeconnect.battery.request',
-            body: { request: true }
+            body: {request: true}
         });
     }
 
@@ -294,7 +294,7 @@ var Plugin = GObject.registerClass({
             );
 
             this._sendState();
-        } catch(e) {
+        } catch (e) {
             logError(e, this.device.name);
             this._unmonitorState();
         }
@@ -312,7 +312,7 @@ var Plugin = GObject.registerClass({
      * See also: https://android.googlesource.com/platform/frameworks/base/+/master/core/java/android/os/BatteryStats.java#1036
      */
     _updateEstimate() {
-        let new_time = Math.floor(Date.now()/1000);
+        let new_time = Math.floor(Date.now() / 1000);
         let new_level = this.level;
 
         // Read the state; rate has a default, time and level default to current
@@ -327,7 +327,7 @@ var Plugin = GObject.registerClass({
         // Derive rate from time/level diffs (rate = seconds/percent)
         let ldiff = this.charging ? new_level - level : level - new_level;
         let tdiff = new_time - time;
-        let new_rate = tdiff/ldiff;
+        let new_rate = tdiff / ldiff;
 
         // Update the rate if it seems valid. Use a weighted average in favour
         // of the new rate to account for possible missed level changes

@@ -56,7 +56,7 @@ var Manager = class Manager {
         if (action !== Meta.KeyBindingAction.NONE) {
             let name = Meta.external_binding_name_for_action(action);
             Main.wm.allowKeybinding(name, Shell.ActionMode.ALL);
-            this._keybindings.set(action, { name: name, callback: callback });
+            this._keybindings.set(action, {name: name, callback: callback});
         } else {
             logError(new Error(`Failed to add keybinding: '${accelerator}'`));
         }
@@ -96,5 +96,5 @@ var Manager = class Manager {
         global.display.disconnect(this._acceleratorActivatedId);
         this.removeAll();
     }
-}
+};
 

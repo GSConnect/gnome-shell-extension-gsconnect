@@ -15,7 +15,7 @@ const GObject = imports.gi.GObject;
  */
 var Packet = class Packet {
 
-    constructor(data=null) {
+    constructor(data = null) {
         this.id = 0;
         this.type = undefined;
         this.body = {};
@@ -347,7 +347,7 @@ var Channel = class Channel {
             this._connection = await this._initSocket(connection);
             this._connection = await this._receiveIdent(this._connection);
             this._connection = await this._clientEncryption(this._connection);
-        } catch(e) {
+        } catch (e) {
             this.close();
             return Promise.reject(e);
         }
@@ -457,7 +457,7 @@ var Channel = class Channel {
             this.close();
         }
     }
-}
+};
 
 
 /**
@@ -557,5 +557,5 @@ var Transfer = class Transfer extends Channel {
             return result;
         }
     }
-}
+};
 

@@ -13,9 +13,9 @@ const PackageKit = imports.service.ui.packagekit;
 
 function section_separators(row, before) {
     if (before) {
-        row.set_header(new Gtk.Separator({ visible: true }));
+        row.set_header(new Gtk.Separator({visible: true}));
     }
-};
+}
 
 
 /**
@@ -106,14 +106,14 @@ var DeviceRow = GObject.registerClass({
         let name = `${this.device.icon_name}-symbolic`;
 
         if (!this.paired) {
-            let rgba = new Gdk.RGBA({ red: 0.95, green: 0, blue: 0, alpha: 0.9 });
+            let rgba = new Gdk.RGBA({red: 0.95, green: 0, blue: 0, alpha: 0.9});
             let info = Gtk.IconTheme.get_default().lookup_icon(name, 16, 0);
             return info.load_symbolic(rgba, null, null, null)[0];
         }
 
         this.get_child().get_child_at(0, 0).opacity = this.connected ? 1 : 0.5;
 
-        return new Gio.ThemedIcon({ name: name });
+        return new Gio.ThemedIcon({name: name});
     }
 });
 
@@ -269,7 +269,7 @@ var Window = GObject.registerClass({
             'changed::show-indicators',
             this._onDisplayModeChanged.bind(this)
         );
-        this._onDisplayModeChanged()
+        this._onDisplayModeChanged();
 
         this.service_list.set_header_func(section_separators);
         this.software_list.set_header_func(section_separators);
@@ -298,7 +298,7 @@ var Window = GObject.registerClass({
 
     _headerFunc(row, before) {
         if ([2, 3].includes(row.get_index())) {
-            row.set_header(new Gtk.Separator({ visible: true }));
+            row.set_header(new Gtk.Separator({visible: true}));
         }
     }
 
@@ -370,7 +370,7 @@ var Window = GObject.registerClass({
     /**
      * Context Switcher
      */
-    _setDeviceMenu(panel=null) {
+    _setDeviceMenu(panel = null) {
         this.device_menu.insert_action_group('device', null);
         this.device_menu.insert_action_group('settings', null);
         this.device_menu.set_menu_model(null);
@@ -511,7 +511,7 @@ var Device = GObject.registerClass({
         // Separate plugins and other settings
         this.switcher.set_header_func((row, before) => {
             if (row.get_name() === 'shortcuts') {
-                row.set_header(new Gtk.Separator({ visible: true }));
+                row.set_header(new Gtk.Separator({visible: true}));
             }
         });
 
@@ -579,7 +579,7 @@ var Device = GObject.registerClass({
     }
 
     _onBluetoothHostChanged() {
-        let action = this.actions.lookup_action(`connect-bluetooth`);
+        let action = this.actions.lookup_action('connect-bluetooth');
         let hasBluetooth = (this.settings.get_string('bluetooth-host').length);
         action.enabled = (hasBluetooth && !this.device.connected);
     }
@@ -590,7 +590,7 @@ var Device = GObject.registerClass({
     }
 
     _onTcpHostChanged() {
-        let action = this.actions.lookup_action(`connect-tcp`);
+        let action = this.actions.lookup_action('connect-tcp');
         let hasLan = (this.settings.get_string('tcp-host').length);
         action.enabled = (hasLan && !this.device.connected);
     }
@@ -680,17 +680,17 @@ var Device = GObject.registerClass({
         status_bluetooth.connect('activate', this._onActivateBluetooth.bind(this));
         this.actions.add_action(status_bluetooth);
 
-        let status_lan = new Gio.SimpleAction({ name: 'connect-tcp' });
+        let status_lan = new Gio.SimpleAction({name: 'connect-tcp'});
         status_lan.connect('activate', this._onActivateLan.bind(this));
         this.actions.add_action(status_lan);
 
         // Pair Actions
-        let status_pair = new Gio.SimpleAction({ name: 'pair' });
+        let status_pair = new Gio.SimpleAction({name: 'pair'});
         status_pair.connect('activate', this.device.pair.bind(this.device));
         this.settings.bind('paired', status_pair, 'enabled', 16);
         this.actions.add_action(status_pair);
 
-        let status_unpair = new Gio.SimpleAction({ name: 'unpair' });
+        let status_unpair = new Gio.SimpleAction({name: 'unpair'});
         status_unpair.connect('activate', this.device.unpair.bind(this.device));
         this.settings.bind('paired', status_unpair, 'enabled', 0);
         this.actions.add_action(status_unpair);
@@ -780,7 +780,7 @@ var Device = GObject.registerClass({
     // The [+] button in the toolbar
     _onAddCommand(button) {
         let uuid = GLib.uuid_string_random();
-        this._commands[uuid] = { name: '', command: '' };
+        this._commands[uuid] = {name: '', command: ''};
 
         let row = this._insertCommand(uuid);
         this.command_list.select_row(row);
@@ -847,7 +847,7 @@ var Device = GObject.registerClass({
         let filter = new Gtk.FileFilter();
         filter.add_mime_type('application/x-executable');
 
-        let dialog = new Gtk.FileChooserDialog({ filter: filter });
+        let dialog = new Gtk.FileChooserDialog({filter: filter});
         dialog.add_button(_('Cancel'), Gtk.ResponseType.CANCEL);
         dialog.add_button(_('Open'), Gtk.ResponseType.OK);
 
@@ -1051,7 +1051,7 @@ var Device = GObject.registerClass({
         }
 
         let row = new SectionRow({
-            icon: new Gio.ThemedIcon({ name: icon_name }),
+            icon: new Gio.ThemedIcon({name: icon_name}),
             title: label,
             widget: widget,
             activatable: true
@@ -1240,7 +1240,7 @@ var Device = GObject.registerClass({
         this.plugin_list.foreach(row => {
             let checkbutton = row.get_child();
             checkbutton.disconnect(checkbutton._togglePluginId);
-            row.destroy()
+            row.destroy();
         });
 
         for (let name of this.settings.get_strv('supported-plugins')) {

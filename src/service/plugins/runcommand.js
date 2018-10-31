@@ -150,11 +150,7 @@ var Plugin = GObject.registerClass({
             let item = new Gio.MenuItem();
             item.set_label(info.name);
             item.set_icon(
-                new Gio.ThemedIcon({ names: [
-                    info.name.toLowerCase(),
-                    'application-x-executable-symbolic'
-                    ]
-                })
+                new Gio.ThemedIcon({name: 'application-x-executable-symbolic'})
             );
             item.set_detailed_action(`device.executeCommand::${uuid}`);
             submenu.append_item(item);
@@ -168,7 +164,7 @@ var Plugin = GObject.registerClass({
             new GLib.Variant('s', 'action-disabled')
         );
         item.set_icon(
-            new Gio.ThemedIcon({ name: 'system-run-symbolic' })
+            new Gio.ThemedIcon({name: 'system-run-symbolic'})
         );
         item.set_label(_('Commands'));
         item.set_submenu(submenu);
@@ -190,7 +186,7 @@ var Plugin = GObject.registerClass({
         this.device.sendPacket({
             id: 0,
             type: 'kdeconnect.runcommand.request',
-            body: { key: key }
+            body: {key: key}
         });
     }
 
@@ -201,7 +197,7 @@ var Plugin = GObject.registerClass({
         this.device.sendPacket({
             id: 0,
             type: 'kdeconnect.runcommand.request',
-            body: { requestCommandList: true }
+            body: {requestCommandList: true}
         });
     }
 
@@ -214,7 +210,7 @@ var Plugin = GObject.registerClass({
         this.device.sendPacket({
             id: 0,
             type: 'kdeconnect.runcommand',
-            body: { commandList: commands }
+            body: {commandList: commands}
         });
     }
 });

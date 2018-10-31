@@ -72,7 +72,7 @@ const _urlRegexp = new RegExp(
  * @return {String} - A timestamp similar to what Android Messages uses
  */
 function getTime(time) {
-    time = GLib.DateTime.new_from_unix_local(time/1000);
+    time = GLib.DateTime.new_from_unix_local(time / 1000);
     let now = GLib.DateTime.new_now_local();
     let diff = now.difference(time);
 
@@ -85,7 +85,7 @@ function getTime(time) {
         // Under an hour
         case (diff < GLib.TIME_SPAN_HOUR):
             // TRANSLATORS: Time duration in minutes (eg. 15 minutes)
-            return _('%d minutes').format(diff/GLib.TIME_SPAN_MINUTE);
+            return _('%d minutes').format(diff / GLib.TIME_SPAN_MINUTE);
 
         // Yesterday, but less than 24 hours ago
         case (diff < GLib.TIME_SPAN_DAY && (now.get_day_of_month() !== time.get_day_of_month())):
@@ -107,7 +107,7 @@ function getTime(time) {
 
 
 function getShortTime(time) {
-    time = GLib.DateTime.new_from_unix_local(time/1000);
+    time = GLib.DateTime.new_from_unix_local(time / 1000);
     let diff = GLib.DateTime.new_now_local().difference(time);
 
     switch (true) {
@@ -117,7 +117,7 @@ function getShortTime(time) {
 
         case (diff < GLib.TIME_SPAN_HOUR):
             // TRANSLATORS: Time duration in minutes (eg. 15 minutes)
-            return _('%d minutes').format(diff/GLib.TIME_SPAN_MINUTE);
+            return _('%d minutes').format(diff / GLib.TIME_SPAN_MINUTE);
 
         case (diff < (GLib.TIME_SPAN_DAY * 7)):
             return time.format('%a');
@@ -133,7 +133,7 @@ function getShortTime(time) {
  */
 String.prototype.toPango = function() {
     return this.replace(/&(?!amp;)/g, '&amp;');
-}
+};
 
 
 /**
@@ -208,7 +208,7 @@ var ConversationSummary = GObject.registerClass({
     GTypeName: 'GSConnectConversationSummary'
 }, class ConversationSummary extends Gtk.ListBoxRow {
     _init(contact, message) {
-        super._init({ visible: true });
+        super._init({visible: true});
 
         this.contact = contact;
         this.message = message;
@@ -250,10 +250,10 @@ var ConversationSummary = GObject.registerClass({
             xalign: 0,
             visible: true
         });
-//        time.connect('map', (widget) => {
-//            widget.label = '<small>' + getShortTime(this.message.date) + '</small>';
-//            return false;
-//        });
+        //time.connect('map', (widget) => {
+        //    widget.label = '<small>' + getShortTime(this.message.date) + '</small>';
+        //    return false;
+        //});
         time.get_style_context().add_class('dim-label');
         grid.attach(time, 2, 0, 1, 1);
 
@@ -313,13 +313,13 @@ var ConversationWindow = GObject.registerClass({
 
         // Convenience actions for syncing Contacts/SMS from the menu
         if (this.device.get_outgoing_supported('contacts.response_vcards')) {
-            let sync_contacts = new Gio.SimpleAction({ name: 'sync-contacts' });
+            let sync_contacts = new Gio.SimpleAction({name: 'sync-contacts'});
             sync_contacts.connect('activate', () => this.device.lookup_plugin('contacts').connected());
             this.add_action(sync_contacts);
         }
 
         if (this.device.get_outgoing_supported('sms.messages')) {
-            let sync_messages = new Gio.SimpleAction({ name: 'sync-messages' });
+            let sync_messages = new Gio.SimpleAction({name: 'sync-messages'});
             sync_messages.connect('activate', () => this.device.lookup_plugin('sms').connected());
             this.add_action(sync_messages);
         }
@@ -533,7 +533,7 @@ var ConversationWindow = GObject.registerClass({
                     });
 
                     this.conversation_list.add(
-                        new ConversationSummary(contact, thread[thread.length-1])
+                        new ConversationSummary(contact, thread[thread.length - 1])
                     );
                 } catch (e) {
                     logError(e);
@@ -560,7 +560,7 @@ var ConversationWindow = GObject.registerClass({
     _populateMessages() {
         this.message_list.foreach(row => row.destroy());
 
-        this.__first = null
+        this.__first = null;
         this.__last = null;
         this.__pos = 0;
         this.__messages = [];
@@ -593,7 +593,7 @@ var ConversationWindow = GObject.registerClass({
 
     _headerMessages(row, before) {
         // ...check if the last message was more than an hour ago
-        if (before && (row.date - before.date) > GLib.TIME_SPAN_HOUR/1000) {
+        if (before && (row.date - before.date) > GLib.TIME_SPAN_HOUR / 1000) {
             let header = new Gtk.Label({
                 label: '<small>' + getTime(row.date) + '</small>',
                 halign: Gtk.Align.CENTER,
@@ -702,7 +702,7 @@ var ConversationWindow = GObject.registerClass({
             halign: layout.halign,
             // Avatar width (32px) + layout spacing (6px) + 6px
             margin_right: (row.type === MessageType.IN) ? 44 : 0,
-            margin_left: (row.type === MessageType.IN) ? 0: 44
+            margin_left: (row.type === MessageType.IN) ? 0 : 44
         });
         layout.add(row.messages);
 
@@ -721,7 +721,7 @@ var ConversationWindow = GObject.registerClass({
         if (!this.__first) {
             this.__first = this._createSeries(message);
             this.__last = this.__first;
-            this.message_id = message._id
+            this.message_id = message._id;
             this.message_list.add(this.__first);
         }
 
@@ -748,7 +748,7 @@ var ConversationWindow = GObject.registerClass({
             if (this.message_id !== message._id) {
                 this.__last.messages.pack_start(widget, false, false, 0);
                 this.__last.date = message.date;
-                this.message_id = message._id
+                this.message_id = message._id;
             } else {
                 let messages = this.__last.messages.get_children();
                 messages[messages.length - 1].opacity = 1.0;
@@ -866,7 +866,7 @@ var ConversationChooser = GObject.registerClass({
         this.set_titlebar(headerbar);
 
         let newButton = new Gtk.Button({
-            image: new Gtk.Image({ icon_name: 'list-add-symbolic' }),
+            image: new Gtk.Image({icon_name: 'list-add-symbolic'}),
             tooltip_text: _('New Message'),
             always_show_image: true
         });
@@ -887,12 +887,8 @@ var ConversationChooser = GObject.registerClass({
         });
         this.add(scrolledWindow);
 
-        this.list = new Gtk.ListBox({ activate_on_single_click: false });
+        this.list = new Gtk.ListBox({activate_on_single_click: false});
         this.list.connect('row-activated', (list, row) => this._select(row.window_));
-        this.list.connect('selected-rows-changed', () => {
-            // TODO: not a button anymore
-            sendButton.sensitive = (this.list.get_selected_rows().length);
-        });
         scrolledWindow.add(this.list);
 
         // Filter Setup

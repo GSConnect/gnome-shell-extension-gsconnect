@@ -30,7 +30,7 @@ function get_datadir() {
     return Gio.File.new_for_path(m[1]).get_parent().get_parent().get_path();
 }
 
-window.gsconnect = { extdatadir: get_datadir() };
+window.gsconnect = {extdatadir: get_datadir()};
 imports.searchPath.unshift(gsconnect.extdatadir);
 imports._gsconnect;
 
@@ -113,7 +113,7 @@ const Service = GObject.registerClass({
     }
 
     get devices() {
-        return Array.from(this._devices.keys())
+        return Array.from(this._devices.keys());
     }
 
     get fingerprint() {
@@ -178,7 +178,7 @@ const Service = GObject.registerClass({
      *
      * @param {string|Gio.InetSocketAddress} - TCP address, bluez path or %null
      */
-    broadcast(address=null) {
+    broadcast(address = null) {
         try {
             switch (true) {
                 case (address instanceof Gio.InetSocketAddress):
@@ -280,7 +280,7 @@ const Service = GObject.registerClass({
         if (device) {
             // Stash the settings path before unpairing and removing
             let settings_path = device.settings.path;
-            device.sendPacket({ type: 'kdeconnect.pair', pair: 'false' });
+            device.sendPacket({type: 'kdeconnect.pair', pair: 'false'});
 
             //
             device.destroy();
@@ -366,13 +366,13 @@ const Service = GObject.registerClass({
         (new ServiceUI.DeviceConnectDialog()).show_all();
     }
 
-    _preferencesAction(page=null, parameter=null) {
+    _preferencesAction(page = null, parameter = null) {
         if (parameter instanceof GLib.Variant) {
             page = parameter.unpack();
         }
 
         if (!this._window) {
-            this._window = new Settings.Window({ application: this });
+            this._window = new Settings.Window({application: this});
         }
 
         // Open to a specific page
@@ -464,7 +464,7 @@ const Service = GObject.registerClass({
         // Launch a terminal with tabs for GJS and GNOME Shell
         GLib.spawn_command_line_async(
             'gnome-terminal ' +
-            `--tab --title "GJS" --command "journalctl -f -o cat /usr/bin/gjs" ` +
+            '--tab --title "GJS" --command "journalctl -f -o cat /usr/bin/gjs" ' +
             '--tab --title "GNOME Shell" --command "journalctl -f -o cat /usr/bin/gnome-shell"'
         );
     }
@@ -477,7 +477,7 @@ const Service = GObject.registerClass({
         this._github(`wiki/${parameter.unpack()}`);
     }
 
-    _github(path=[]) {
+    _github(path = []) {
         let uri = [_GITHUB].concat(path.split('/')).join('/');
 
         Gio.AppInfo.launch_default_for_uri_async(uri, null, null, (src, res) => {
@@ -516,7 +516,7 @@ const Service = GObject.registerClass({
      * @param {String|Number} id - Gtk (string) or libnotify id (uint32)
      * @param {String|null} application - Application Id if Gtk or null
      */
-    remove_notification(id, application=null) {
+    remove_notification(id, application = null) {
         let name, path, method, variant;
 
         if (application !== null) {
@@ -565,7 +565,7 @@ const Service = GObject.registerClass({
                     title = _('Authentication Failure');
                     let time = GLib.DateTime.new_now_local().format('%F %R');
                     body = `"${error.deviceName}"@${error.deviceHost} (${time})`;
-                    icon = new Gio.ThemedIcon({ name: 'dialog-error' });
+                    icon = new Gio.ThemedIcon({name: 'dialog-error'});
                     break;
 
                 case 'LanError':
@@ -573,7 +573,7 @@ const Service = GObject.registerClass({
                     id = error.name;
                     title = _('Network Error');
                     body = error.message + '\n\n' + _('Click for help troubleshooting');
-                    icon = new Gio.ThemedIcon({ name: 'network-error' });
+                    icon = new Gio.ThemedIcon({name: 'network-error'});
                     notif.set_default_action(
                         `app.wiki('Help#${error.name}')`
                     );
@@ -583,7 +583,7 @@ const Service = GObject.registerClass({
                     id = error.name;
                     title = _('PulseAudio Error');
                     body = _('Click for help troubleshooting');
-                    icon = new Gio.ThemedIcon({ name: 'dialog-error' });
+                    icon = new Gio.ThemedIcon({name: 'dialog-error'});
                     notif.set_default_action(
                         `app.wiki('Help#${error.name}')`
                     );
@@ -595,7 +595,7 @@ const Service = GObject.registerClass({
                     body = _('Discovery has been disabled due to the number of devices on this network.') +
                            '\n\n' +
                            _('Click to open preferences');
-                    icon = new Gio.ThemedIcon({ name: 'dialog-warning' });
+                    icon = new Gio.ThemedIcon({name: 'dialog-warning'});
                     notif.set_default_action('app.preference::service');
                     notif.set_priority(Gio.NotificationPriority.NORMAL);
                     break;
@@ -605,7 +605,7 @@ const Service = GObject.registerClass({
                     id = 'dependency-error';
                     title = _('Additional Software Required');
                     body = _('Click to open preferences');
-                    icon = new Gio.ThemedIcon({ name: 'system-software-install-symbolic' });
+                    icon = new Gio.ThemedIcon({name: 'system-software-install-symbolic'});
                     notif.set_default_action('app.preference::other');
                     notif.set_priority(Gio.NotificationPriority.HIGH);
                     break;
@@ -614,7 +614,7 @@ const Service = GObject.registerClass({
                     id = `${error.plugin}-error`;
                     title = _('%s Plugin Failed To Load').format(error.label);
                     body = error.message + '\n\n' + _('Click for more information');
-                    icon = new Gio.ThemedIcon({ name: 'dialog-error' });
+                    icon = new Gio.ThemedIcon({name: 'dialog-error'});
 
                     error = new GLib.Variant('a{ss}', {
                         name: error.name,
@@ -631,7 +631,7 @@ const Service = GObject.registerClass({
                     title = _('Remote Filesystem Error');
                     body = _('%s is using an incompatible SSH library').format(error.deviceName) + '\n\n' +
                            _('Click for more information');
-                    icon = new Gio.ThemedIcon({ name: 'dialog-error' });
+                    icon = new Gio.ThemedIcon({name: 'dialog-error'});
                     notif.set_default_action(
                         `app.wiki('Help#${error.name}')`
                     );
@@ -643,7 +643,7 @@ const Service = GObject.registerClass({
                     title = _('Wayland Not Supported');
                     body = _('Remote input not supported on Wayland') + '\n\n' +
                            _('Click for more information');
-                    icon = new Gio.ThemedIcon({ name: 'preferences-desktop-display-symbolic' });
+                    icon = new Gio.ThemedIcon({name: 'preferences-desktop-display-symbolic'});
                     notif.set_default_action(
                         `app.wiki('Help#${error.name}')`
                     );
@@ -654,7 +654,7 @@ const Service = GObject.registerClass({
                     id = `${Date.now()}`;
                     title = error.name;
                     body = error.message.trim();
-                    icon = new Gio.ThemedIcon({ name: 'dialog-error' });
+                    icon = new Gio.ThemedIcon({name: 'dialog-error'});
                     error = new GLib.Variant('a{ss}', {
                         name: error.name,
                         message: error.message,
@@ -755,7 +755,7 @@ const Service = GObject.registerClass({
         let cached = gsconnect.settings.get_strv('devices');
         debug(`Loading ${cached.length} device(s) from cache`);
         cached.map(id => {
-            let device = new Device.Device({ body: { deviceId: id } });
+            let device = new Device.Device({body: {deviceId: id}});
             this._devices.set(device.id, device);
             device.loadPlugins();
         });

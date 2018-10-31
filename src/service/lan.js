@@ -92,7 +92,7 @@ var ChannelService = GObject.registerClass({
 
     async _onIncomingChannel(listener, connection) {
         try {
-            let channel = new Core.Channel({ type: 'tcp' });
+            let channel = new Core.Channel({type: 'tcp'});
             let host = connection.get_remote_address().address.to_string();
 
             debug(host, 'remote address');
@@ -229,7 +229,7 @@ var ChannelService = GObject.registerClass({
             }
 
             // Create a new channel
-            let channel = new Core.Channel({ type: 'tcp' });
+            let channel = new Core.Channel({type: 'tcp'});
             channel.identity = packet;
 
             let connection = await new Promise((resolve, reject) => {
@@ -271,7 +271,7 @@ var ChannelService = GObject.registerClass({
      *
      * @param {string} [address] - An optional target IPv4 or IPv6 address
      */
-    broadcast(address=null) {
+    broadcast(address = null) {
         try {
             // Remember manual addresses so we know to accept connections
             if (address instanceof Gio.InetSocketAddress) {
@@ -400,7 +400,7 @@ var Transfer = class Transfer extends Core.Transfer {
             // Notify the device we're ready
             packet.body.payloadHash = this.checksum;
             packet.payloadSize = this.size;
-            packet.payloadTransferInfo = { port: port };
+            packet.payloadTransferInfo = {port: port};
             this.device.sendPacket(packet);
 
             // Accept the connection and configure the channel
@@ -419,5 +419,5 @@ var Transfer = class Transfer extends Core.Transfer {
             return result;
         }
     }
-}
+};
 

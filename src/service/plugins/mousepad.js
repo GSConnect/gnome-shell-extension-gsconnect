@@ -191,10 +191,9 @@ var Plugin = GObject.registerClass({
         }
     }
 
-    /**
-     * Local Methods
-     */
     _handleInput(input) {
+        // These are ordered, as much as possible, to create the shortest code
+        // path for high-frequency, low-latency events (eg. mouse movement)
         switch (true) {
             case input.hasOwnProperty('scroll'):
                 if (input.dy < 0) {
@@ -304,7 +303,7 @@ var Plugin = GObject.registerClass({
             let [screen, x, y] = this._pointer.get_position();
             let monitor = this._display.get_monitor_at_point(x, y);
             let scale = monitor.get_scale_factor();
-            Atspi.generate_mouse_event(scale * dx, scale * dy, `rel`);
+            Atspi.generate_mouse_event(scale * dx, scale * dy, 'rel');
         } catch (e) {
             logError(e, this.device.name);
         }
@@ -545,13 +544,13 @@ var KeyboardInputDialog = GObject.registerClass({
         this.infobar = new Gtk.Revealer();
         content.add(this.infobar);
 
-        let bar = new Gtk.InfoBar({ message_type: Gtk.MessageType.WARNING });
+        let bar = new Gtk.InfoBar({message_type: Gtk.MessageType.WARNING});
         this.infobar.add(bar);
 
-        let infoicon = new Gtk.Image({ icon_name: 'dialog-warning-symbolic' });
+        let infoicon = new Gtk.Image({icon_name: 'dialog-warning-symbolic'});
         bar.get_content_area().add(infoicon);
 
-        let infolabel = new Gtk.Label({ label: _('Keyboard not ready') });
+        let infolabel = new Gtk.Label({label: _('Keyboard not ready')});
         bar.get_content_area().add(infolabel);
 
         // Content

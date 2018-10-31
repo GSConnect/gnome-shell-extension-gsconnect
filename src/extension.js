@@ -42,7 +42,7 @@ gsconnect.proxyProperties = function (iface) {
             enumerable: true
         });
     }
-}
+};
 
 
 /**

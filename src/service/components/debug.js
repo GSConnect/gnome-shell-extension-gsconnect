@@ -9,9 +9,9 @@ const System = imports.system;
 
 function getPID() {
     return Gio.DBus.session.call_sync(
-        "org.freedesktop.DBus",
-        "/org/freedesktop/DBus",
-        "org.freedesktop.DBus",
+        'org.freedesktop.DBus',
+        '/org/freedesktop/DBus',
+        'org.freedesktop.DBus',
         'GetConnectionUnixProcessID',
         new GLib.Variant('(s)', ['org.gnome.Shell.Extensions.GSConnect']),
         null,
@@ -345,7 +345,7 @@ var Window = GObject.registerClass({
         GLib.spawn_command_line_async(
             'gnome-terminal ' +
             //`--tab --title "GJS" --command "journalctl _PID=${getPID()} -f -o cat" ` +
-            `--tab --title "GJS" --command "journalctl -f -o cat /usr/bin/gjs" ` +
+            '--tab --title "GJS" --command "journalctl -f -o cat /usr/bin/gjs" ' +
             '--tab --title "GNOME Shell" --command "journalctl -f -o cat /usr/bin/gnome-shell"'
         );
     }
@@ -354,7 +354,7 @@ var Window = GObject.registerClass({
      * System methods
      */
     breakpoint() {
-        log(`Debug: System.breakpoint()`)
+        log('Debug: System.breakpoint()');
         System.breakpoint();
     }
 
@@ -372,12 +372,12 @@ var Window = GObject.registerClass({
 
         path = `${path}.${i}`;
 
-        log(`Debug: System.dumpHeap('${path}')`)
+        log(`Debug: System.dumpHeap('${path}')`);
         System.dumpHeap(path);
     }
 
     gc() {
-        log(`Debug: System.gc()`)
+        log('Debug: System.gc()');
         System.gc();
     }
 });

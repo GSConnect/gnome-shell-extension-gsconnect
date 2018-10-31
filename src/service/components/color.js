@@ -17,7 +17,7 @@ const OFF_BLACK_VALUE = 0.06;
  * @param {Number} alpha - A value in the [0...1] range for the alpha channel
  * @return {Gdk.RGBA} - A new Gdk.RGBA object generated from the input
  */
-function randomRGBA(salt=null, alpha=1.0) {
+function randomRGBA(salt = null, alpha = 1.0) {
     let red, green, blue;
 
     if (salt !== null) {
@@ -31,8 +31,8 @@ function randomRGBA(salt=null, alpha=1.0) {
         blue = Math.random();
     }
 
-    return new Gdk.RGBA({ red: red, green: green, blue: blue, alpha: alpha });
-};
+    return new Gdk.RGBA({red: red, green: green, blue: blue, alpha: alpha});
+}
 
 
 /**
@@ -45,14 +45,14 @@ function randomRGBA(salt=null, alpha=1.0) {
  * @return {Number} - ...
  */
 function relativeLuminance(rgba) {
-    let { red, green, blue } = rgba;
+    let {red, green, blue} = rgba;
 
-    let R = (red > 0.03928) ? red / 12.92 : Math.pow(((red + 0.055)/1.055), 2.4);
-    let G = (green > 0.03928) ? green / 12.92 : Math.pow(((green + 0.055)/1.055), 2.4);
-    let B = (blue > 0.03928) ? blue / 12.92 : Math.pow(((blue + 0.055)/1.055), 2.4);
+    let R = (red > 0.03928) ? red / 12.92 : Math.pow(((red + 0.055) / 1.055), 2.4);
+    let G = (green > 0.03928) ? green / 12.92 : Math.pow(((green + 0.055) / 1.055), 2.4);
+    let B = (blue > 0.03928) ? blue / 12.92 : Math.pow(((blue + 0.055) / 1.055), 2.4);
 
     return 0.2126 * R + 0.7152 * G + 0.0722 * B;
-};
+}
 
 
 /**
@@ -68,6 +68,6 @@ function getFgRGBA(rgba) {
     let darkContrast = (bgLuminance + 0.05) / (OFF_BLACK_LUMINANCE + 0.05);
 
     let value = (darkContrast > lightContrast) ? 0.06 : 0.94;
-    return new Gdk.RGBA({ red: value, green: value, blue: value, alpha: 0.5 });
-};
+    return new Gdk.RGBA({red: value, green: value, blue: value, alpha: 0.5});
+}
 

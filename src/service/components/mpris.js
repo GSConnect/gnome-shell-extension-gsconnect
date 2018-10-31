@@ -27,7 +27,7 @@ var PlayerProxy = DBus.makeInterfaceProxy(
 
 var Manager = GObject.registerClass({
     GTypeName: 'GSConnectMPRISManager',
-    Implements: [ Gio.DBusInterface ],
+    Implements: [Gio.DBusInterface],
     Properties: {
         'identities': GObject.param_spec_variant(
             'identities',
@@ -51,11 +51,11 @@ var Manager = GObject.registerClass({
     Signals: {
         'player-changed': {
             flags: GObject.SignalFlags.RUN_FIRST,
-            param_types: [ GObject.TYPE_OBJECT ]
+            param_types: [GObject.TYPE_OBJECT]
         },
         'player-seeked': {
             flags: GObject.SignalFlags.RUN_FIRST,
-            param_types: [ GObject.TYPE_OBJECT ]
+            param_types: [GObject.TYPE_OBJECT]
         }
     }
 }, class Manager extends Gio.DBusProxy {

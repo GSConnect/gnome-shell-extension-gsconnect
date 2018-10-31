@@ -17,7 +17,7 @@ function get_datadir() {
     return Gio.File.new_for_path(m[1]).get_parent().get_parent().get_path();
 }
 
-window.gsconnect = { extdatadir: get_datadir() };
+window.gsconnect = {extdatadir: get_datadir()};
 imports.searchPath.unshift(gsconnect.extdatadir);
 imports._gsconnect;
 const DBus = imports.service.components.dbus;
@@ -57,12 +57,12 @@ var NativeMessagingHost = GObject.registerClass({
 
         // IO Channels
         this.stdin = new Gio.DataInputStream({
-            base_stream: new Gio.UnixInputStream({ fd: 0 }),
+            base_stream: new Gio.UnixInputStream({fd: 0}),
             byte_order: Gio.DataStreamByteOrder.HOST_ENDIAN
         });
 
         this.stdout = new Gio.DataOutputStream({
-            base_stream: new Gio.UnixOutputStream({ fd: 1 }),
+            base_stream: new Gio.UnixOutputStream({fd: 1}),
             byte_order: Gio.DataStreamByteOrder.HOST_ENDIAN
         });
 
@@ -81,7 +81,7 @@ var NativeMessagingHost = GObject.registerClass({
             this._init_async.bind(this)
         );
 
-        this.send({ type: 'connected', data: true });
+        this.send({type: 'connected', data: true});
     }
 
     _init_async(obj, res) {
@@ -180,7 +180,7 @@ var NativeMessagingHost = GObject.registerClass({
     sendDeviceList() {
         // Inform the WebExtension we're disconnected from the service
         if (this.manager && this.manager.name_owner === null) {
-            this.send({ type: 'connected', data: false });
+            this.send({type: 'connected', data: false});
             return;
         }
 
@@ -201,7 +201,7 @@ var NativeMessagingHost = GObject.registerClass({
             }
         }
 
-        this.send({ type: 'devices', data: devices });
+        this.send({type: 'devices', data: devices});
     }
 
     _onInterfaceAdded(manager, object, iface) {

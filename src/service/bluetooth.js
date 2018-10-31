@@ -101,7 +101,7 @@ function makeSdpRecord(uuid) {
         '@UUID_ANDROID@',
         uuid.replace(/\-/gi, '')
     );
-};
+}
 
 
 /**
@@ -109,7 +109,7 @@ function makeSdpRecord(uuid) {
  */
 var ChannelService = GObject.registerClass({
     GTypeName: 'GSConnectBluetoothChannelService',
-    Implements: [ Gio.DBusObjectManager ],
+    Implements: [Gio.DBusObjectManager],
     Properties: {
         'devices': GObject.param_spec_variant(
             'devices',
@@ -315,7 +315,7 @@ var ChannelService = GObject.registerClass({
             // Create a Gio.SocketConnection from the file-descriptor
             let socket = Gio.Socket.new_from_fd(fd);
             let connection = socket.connection_factory_create_connection();
-            let channel = new Core.Channel({ type: 'bluetooth' });
+            let channel = new Core.Channel({type: 'bluetooth'});
 
             // FIXME: We can't differentiate between incoming or outgoing
             //        connections and GLib.IOConditon.OUT always seems to be set
@@ -480,7 +480,7 @@ var Transfer = class Transfer extends Core.Transfer {
             // Notify the device we're ready
             packet.body.payloadHash = this.checksum;
             packet.payloadSize = this.size;
-            packet.payloadTransferInfo = { uuid: uuid };
+            packet.payloadTransferInfo = {uuid: this.uuid};
             this.device.sendPacket(packet);
 
             // Return the uuid for payloadTransferInfo
@@ -502,7 +502,7 @@ var Transfer = class Transfer extends Core.Transfer {
             // Create a Gio.SocketConnection from the file-descriptor
             let socket = Gio.Socket.new_from_fd(fd);
             this._connection = socket.connection_factory_create_connection();
-            let channel = new Core.Channel({ type: 'bluetooth' });
+            let channel = new Core.Channel({type: 'bluetooth'});
 
             // Accept the connection and configure the channel
             this._connection = await connection;
@@ -534,7 +534,7 @@ var Transfer = class Transfer extends Core.Transfer {
             this._connection = await this._serverEncryption(this._connection);
             this.output_stream = this._connection.get_output_stream();
             this.emit('connected');
-        } catch(e) {
+        } catch (e) {
             log('Error uploading: ' + e.message);
             debug(e);
             this.close();
@@ -565,5 +565,5 @@ var Transfer = class Transfer extends Core.Transfer {
 
         this.close();
     }
-}
+};
 

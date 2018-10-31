@@ -24,7 +24,8 @@
             "error",
             4,
             {
-                "MemberExpression": "off"
+                "MemberExpression": "off",
+                "SwitchCase": 1
             }
         ],
         "key-spacing": [
@@ -57,9 +58,12 @@
                 "allow": ["!!"]
             }
         ],
-        "nonblock-statement-body-position": [
+        "no-unused-vars": [
             "error",
-            "below"
+            {
+                "args": "none",
+                "vars": "local"
+            }
         ],
         "object-curly-newline": [
             "error",
@@ -68,7 +72,7 @@
             }
         ],
         "object-curly-spacing": "error",
-        "prefer-template": "error",
+        "prefer-template": "off",
         "quotes": [
             "error",
             "single",

@@ -50,7 +50,7 @@ class RepliableNotificationBanner extends MessageTray.NotificationBanner {
 
         this._responseEntry.set_text('');
 
-        let { deviceId, requestReplyId, source } = this.notification;
+        let {deviceId, requestReplyId, source} = this.notification;
 
         source._createApp((app, error) => {
             // Bail on error in case we can try again
@@ -266,7 +266,7 @@ const _ensureAppSource = function(appId) {
     }
 
     return source;
-}
+};
 
 
 function patchGtkNotificationDaemon() {
@@ -305,7 +305,7 @@ function patchGtkNotificationSources() {
             this.pushNotification(notification);
 
         this._notificationPending = false;
-    }
+    };
 
     let _createGSConnectApp = function(callback) {
         return new NotificationDaemon.FdoApplicationProxy(
@@ -314,7 +314,7 @@ function patchGtkNotificationSources() {
             '/org/gnome/Shell/Extensions/GSConnect',
             callback
         );
-    }
+    };
 
     let _withdrawGSConnectNotification = function(id, notification, reason) {
         if (reason !== MessageTray.NotificationDestroyedReason.DISMISSED) {
@@ -350,7 +350,7 @@ function patchGtkNotificationSources() {
                 NotificationDaemon.getPlatformData()
             );
         });
-    }
+    };
 
     NotificationDaemon.GtkNotificationDaemonAppSource.prototype.addNotification = addNotification;
     NotificationDaemon.GtkNotificationDaemonAppSource.prototype._createGSConnectApp = _createGSConnectApp;

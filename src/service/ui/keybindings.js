@@ -12,7 +12,7 @@ const Gtk = imports.gi.Gtk;
  */
 var ResponseType = {
     CANCEL: Gtk.ResponseType.CANCEL,
-    SET:   Gtk.ResponseType.APPLY,
+    SET: Gtk.ResponseType.APPLY,
     UNSET: 2
 };
 
@@ -261,7 +261,7 @@ var ShortcutChooserDialog = GObject.registerClass({
  * @param {number} - Flags
  * @param {boolean} - %true if available, %false on error or unavailable
  */
-async function check_accelerator(accelerator, flags=0) {
+async function check_accelerator(accelerator, flags = 0) {
     let action;
     let result = false;
 
@@ -328,7 +328,7 @@ async function check_accelerator(accelerator, flags=0) {
  * @param {string} accelerator - An accelerator as taken by Gtk.ShortcutLabel
  * @return {string} - An accelerator or %null if it should be unset.
  */
-async function get_accelerator(summary, accelerator=null) {
+async function get_accelerator(summary, accelerator = null) {
     let dialog;
 
     try {

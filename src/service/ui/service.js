@@ -39,7 +39,7 @@ var BluetoothComboBox = GObject.registerClass({
         this.set_id_column(2);
 
         // Type Icon
-        let iconCell = new Gtk.CellRendererPixbuf({ xpad: 6 });
+        let iconCell = new Gtk.CellRendererPixbuf({xpad: 6});
         this.pack_start(iconCell, false);
         this.add_attribute(iconCell, 'pixbuf', 0);
 
@@ -308,7 +308,7 @@ var DeviceChooserDialog = GObject.registerClass({
         });
         this.get_content_area().add(scrolledWindow);
 
-        this.list = new Gtk.ListBox({ activate_on_single_click: false });
+        this.list = new Gtk.ListBox({activate_on_single_click: false});
         this.list.connect('row-activated', (list, row) => {
             this.response(Gtk.ResponseType.OK);
         });

@@ -4,7 +4,7 @@ const Clutter = imports.gi.Clutter;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const Pango = imports.gi.Pango;
-const St = imports.gi.St
+const St = imports.gi.St;
 
 const Main = imports.ui.main;
 const Tweener = imports.ui.tweener;
@@ -25,7 +25,7 @@ var Tooltip = class Tooltip {
         // Properties
         Object.defineProperties(this, {
             'custom': {
-                get: () => { return this._custom || false; },
+                get: () => this._custom || false,
                 set: (actor) => {
                     this._custom = actor;
                     this._markup = null;
@@ -34,7 +34,7 @@ var Tooltip = class Tooltip {
                 }
             },
             'markup': {
-                get: () => { return this._markup || false; },
+                get: () => this._markup || false,
                 set: (value) => {
                     this._markup = value;
                     this._text = null;
@@ -42,7 +42,7 @@ var Tooltip = class Tooltip {
                 }
             },
             'text': {
-                get: () => { return this._text || false; },
+                get: () => this._text || false,
                 set: (value) => {
                     this._markup = null;
                     this._text = value;
@@ -50,7 +50,7 @@ var Tooltip = class Tooltip {
                 }
             },
             'icon_name': {
-                get: () => { return this._gicon.name; },
+                get: () => this._gicon.name,
                 set: (icon_name) => {
                     if (!icon_name) {
                         this.gicon = null;
@@ -62,24 +62,20 @@ var Tooltip = class Tooltip {
                 }
             },
             'gicon': {
-                get: () => { return this._gicon || false; },
+                get: () => this._gicon || false,
                 set: (gicon) => {
                     this._gicon = gicon;
                     this._update();
                 }
             },
             'x_offset': {
-                get: () => {
-                    return (this._x_offset === undefined) ? 0 : this._x_offset;
-                },
+                get: () => (this._x_offset === undefined) ? 0 : this._x_offset,
                 set: (offset) => {
                     this._x_offset = (Number.isInteger(offset)) ? offset : 0;
                 }
             },
             'y_offset': {
-                get: () => {
-                    return (this._y_offset === undefined) ? 0 : this._y_offset;
-                },
+                get: () => (this._y_offset === undefined) ? 0 : this._y_offset,
                 set: (offset) => {
                     this._y_offset = (Number.isInteger(offset)) ? offset : 0;
                 }
@@ -98,7 +94,9 @@ var Tooltip = class Tooltip {
         this._showing = false;
 
         // TODO: oddly fuzzy on menu items, sometimes
-        if (this._parent.actor) { this._parent = this._parent.actor; }
+        if (this._parent.actor) {
+            this._parent = this._parent.actor;
+        }
 
         this._hoverId = this._parent.connect(
             'notify::hover',
@@ -134,7 +132,7 @@ var Tooltip = class Tooltip {
             if (this.custom) {
                 this.bin.child = this.custom;
             } else {
-                this.bin.child = new St.BoxLayout({ vertical: false });
+                this.bin.child = new St.BoxLayout({vertical: false});
 
                 if (this.gicon) {
                     this.bin.child.icon = new St.Icon({
@@ -145,7 +143,7 @@ var Tooltip = class Tooltip {
                     this.bin.child.add_child(this.bin.child.icon);
                 }
 
-                this.label = new St.Label({ text: this.markup || this.text });
+                this.label = new St.Label({text: this.markup || this.text});
                 this.label.clutter_text.line_wrap = true;
                 this.label.clutter_text.line_wrap_mode = Pango.WrapMode.WORD;
                 this.label.clutter_text.ellipsize = Pango.EllipsizeMode.NONE;
@@ -158,10 +156,12 @@ var Tooltip = class Tooltip {
         } else if (this.custom) {
             this.bin.child = this.custom;
         } else {
-            if (this.bin.child.icon) { this.bin.child.icon.destroy(); }
+            if (this.bin.child.icon) {
+                this.bin.child.icon.destroy();
+            }
 
             if (this.gicon) {
-                this.bin.child.icon = new St.Icon({ gicon: this.gicon });
+                this.bin.child.icon = new St.Icon({gicon: this.gicon});
                 this.bin.child.insert_child_at_index(this.bin.child.icon, 0);
             }
 
@@ -171,7 +171,7 @@ var Tooltip = class Tooltip {
 
         // Position tooltip
         let [x, y] = this._parent.get_transformed_position();
-        x = (x + (this._parent.width/2)) - Math.round(this.bin.width/2);
+        x = (x + (this._parent.width / 2)) - Math.round(this.bin.width / 2);
 
         x += this.x_offset;
         y += this.y_offset;
@@ -283,5 +283,5 @@ var Tooltip = class Tooltip {
             this._hoverTimeoutId = 0;
         }
     }
-}
+};
 

@@ -48,7 +48,7 @@ function loop_theme_sound(name, cancellable) {
     switch (get_backend()) {
         case 'gsound':
             _gsoundContext.play_full(
-                { 'event.id' : name },
+                {'event.id': name},
                 cancellable,
                 (source, res) => {
                     try {

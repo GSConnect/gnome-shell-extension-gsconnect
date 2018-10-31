@@ -117,7 +117,7 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
 
         // We use this instead of close() to avoid touching finalized objects
         } else {
-            this.box.show()
+            this.box.show();
             this.box.set_width(-1);
 
             this._submenu = null;
@@ -312,7 +312,7 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
         //
         this._submenu = submenu;
     }
-}
+};
 
 
 /**
@@ -346,7 +346,7 @@ var IconButton = GObject.registerClass({
         }
 
         if (params.info.hasOwnProperty('icon')) {
-            this.child = new St.Icon({ gicon: params.info.icon });
+            this.child = new St.Icon({gicon: params.info.icon});
         }
 
         // Submenu
@@ -573,5 +573,5 @@ var IconBox = class IconBox extends PopupMenu.PopupMenuSection {
         super._setParent(parent);
         this._onItemsChanged(this.menu_model, 0, 0, this.menu_model.get_n_items());
     }
-}
+};
 

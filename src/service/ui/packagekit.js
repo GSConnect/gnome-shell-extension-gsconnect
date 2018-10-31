@@ -191,7 +191,7 @@ var DependencyButton = GObject.registerClass({
      * @param {string} filter - A semicolon-separated filter list to apply
      * @return {Array of PackageKit.Package} - The packages found
      */
-    _query(names, filter="") {
+    _query(names, filter = '') {
         return new Promise((resolve, reject) => {
             this.client.resolve_async(
                 PackageKit.filter_bitfield_from_string(filter),
@@ -240,7 +240,7 @@ var DependencyButton = GObject.registerClass({
         });
     }
 
-    _done(icon_name=null) {
+    _done(icon_name = null) {
         this._button.visible = false;
         this._spinner.visible = false;
 
@@ -267,7 +267,7 @@ var DependencyButton = GObject.registerClass({
         this._button.visible = true;
         this._button.image.icon_name = 'folder-download-symbolic';
         this.tooltip_markup = this._packages.map(pkg => {
-            return `<b>${pkg.get_name()}</b> - ${pkg.get_summary()}`
+            return `<b>${pkg.get_name()}</b> - ${pkg.get_summary()}`;
         }).join('\n');
 
         this._state = 'ready';
@@ -302,8 +302,10 @@ var DependencyButton = GObject.registerClass({
 
             // Filter the package names into what's available and what's installed
             let available = await this._query(this.names, 'arch;newest');
-            let installed = await this._query(available.map(pkg => pkg.get_name()),
-                                              'arch;newest;installed');
+            let installed = await this._query(
+                available.map(pkg => pkg.get_name()),
+                'arch;newest;installed'
+            );
             installed = installed.map(pkg => pkg.get_name());
 
             // No available packages

@@ -30,19 +30,19 @@ String.prototype.toCamelCase = function(string) {
 String.prototype.toHyphenCase = function(string) {
     string = string || this;
 
-	return string.replace(/(?:[A-Z])/g, (ltr, offset) => {
+    return string.replace(/(?:[A-Z])/g, (ltr, offset) => {
         return (offset > 0) ? '-' + ltr.toLowerCase() : ltr.toLowerCase();
-	}).replace(/[\s_]+/g, '');
+    }).replace(/[\s_]+/g, '');
 };
 
 
 String.prototype.toUnderscoreCase = function(string) {
     string = string || this;
 
-	return string.replace(/(?:^\w|[A-Z]|_|\b\w)/g, (ltr, offset) => {
+    return string.replace(/(?:^\w|[A-Z]|_|\b\w)/g, (ltr, offset) => {
 	    if (ltr === '_') return '';
         return (offset > 0) ? '_' + ltr.toLowerCase() : ltr.toLowerCase();
-	}).replace(/[\s-]+/g, '');
+    }).replace(/[\s-]+/g, '');
 };
 
 
@@ -113,7 +113,7 @@ function vtype_to_gtype(types) {
     }
 
     if (!vtype_to_gtype._cache.hasOwnProperty(types)) {
-        let gtypes = []
+        let gtypes = [];
 
         for (let i = 0; i < types.length; i++) {
             switch (types[i]) {
@@ -161,7 +161,7 @@ function vtype_to_gtype(types) {
     }
 
     return vtype_to_gtype._cache[types];
-};
+}
 
 
 /**
@@ -267,7 +267,7 @@ var Interface = GObject.registerClass({
             invocation.return_value(retval);
 
         // Without a response, the client will wait for timeout
-        } catch(e) {
+        } catch (e) {
             invocation.return_dbus_error(
                 'org.gnome.gjs.JSError.ValueError',
                 'Service implementation returned an incorrect value type'
@@ -498,7 +498,7 @@ function proxyMethods(iface, info) {
  * @param {Gio.Cancellable} cancellable - A cancellable or %null
  * @return {Gio.DBusProxy} - The initted proxy object
  */
-Gio.DBusProxy.prototype.init_promise = function(cancellable=null) {
+Gio.DBusProxy.prototype.init_promise = function(cancellable = null) {
     return new Promise((resolve, reject) => {
         this.init_async(GLib.PRIORITY_DEFAULT, cancellable, (source_object, res) => {
             try {
@@ -509,7 +509,7 @@ Gio.DBusProxy.prototype.init_promise = function(cancellable=null) {
             }
         });
     });
-}
+};
 
 
 /**
@@ -543,7 +543,7 @@ function makeInterfaceProxy(info) {
     };
 
     for (let i = 0; i < info.properties.length; i++) {
-        let property = info.properties[i]
+        let property = info.properties[i];
         let flags = 0;
 
         if (property.flags & Gio.DBusPropertyInfoFlags.READABLE) {
@@ -616,7 +616,7 @@ function makeInterfaceProxy(info) {
     // Register and store the proxy class
     makeInterfaceProxy._cache[info.name] = GObject.registerClass({
         GTypeName: 'PROXY_' + info.name.split('.').join(''),
-        Implements: [ Gio.DBusInterface ],
+        Implements: [Gio.DBusInterface],
         Properties: properties_,
         Signals: signals_
     }, class InterfaceProxy extends Gio.DBusProxy {

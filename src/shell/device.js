@@ -1,13 +1,8 @@
 'use strict';
 
-const Cairo = imports.cairo;
-
 const Clutter = imports.gi.Clutter;
-const Gdk = imports.gi.Gdk;
 const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
-const Gtk = imports.gi.Gtk;
 const St = imports.gi.St;
 
 const PanelMenu = imports.ui.panelMenu;
@@ -84,7 +79,7 @@ var Battery = GObject.registerClass({
             return null;
         }
 
-        let { Charging, Level, Time } = this.battery;
+        let {Charging, Level, Time} = this.battery;
 
         if (Level === 100) {
             // TRANSLATORS: When the battery level is 100%
@@ -207,7 +202,7 @@ var Menu = class Menu extends PopupMenu.PopupMenuSection {
     isEmpty() {
         return false;
     }
-}
+};
 
 
 /** An indicator representing a Device in the Status Area */
@@ -234,5 +229,5 @@ var Indicator = class Indicator extends PanelMenu.Button {
         });
         this.menu.addMenuItem(menu);
     }
-}
+};
 

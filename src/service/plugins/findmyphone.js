@@ -87,7 +87,7 @@ var Plugin = GObject.registerClass({
         }
 
         if (this._dialog !== null) {
-            this._dialog.destroy()
+            this._dialog.destroy();
             this._dialog = null;
         }
     }
