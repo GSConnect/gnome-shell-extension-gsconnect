@@ -96,23 +96,14 @@ var Plugin = GObject.registerClass({
             if (packet.body.hasOwnProperty('action')) {
                 switch (packet.body.action) {
                     case 'PlayPause':
-                        player.PlayPause();
-                        break;
                     case 'Play':
-                        player.Play();
-                        break;
                     case 'Pause':
-                        player.Pause();
-                        break;
                     case 'Next':
-                        player.Next();
-                        break;
                     case 'Previous':
-                        player.Previous();
-                        break;
                     case 'Stop':
-                        player.Stop();
+                        player[packet.body.action]();
                         break;
+
                     default:
                         logError(new Error(`unknown action: ${packet.body.action}`));
                 }

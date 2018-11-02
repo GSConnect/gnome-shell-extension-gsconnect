@@ -277,9 +277,9 @@ var Listener = class Listener {
             appName = appInfo.get_name();
         } catch (e) {
             // Silence errors
-        } finally {
-            return appName;
         }
+
+        return appName;
     }
 
     /**
@@ -426,7 +426,6 @@ var Listener = class Listener {
 
             // Try to get an icon for the notification
             if (!notification.hasOwnProperty('icon')) {
-                let icon = appInfo.get_icon();
                 notification.icon = appInfo.get_icon() || undefined;
             }
 

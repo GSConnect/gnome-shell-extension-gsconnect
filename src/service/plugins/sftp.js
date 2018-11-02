@@ -38,8 +38,6 @@ var Metadata = {
  * SFTP Plugin
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/sftp
  * https://github.com/KDE/kdeconnect-android/tree/master/src/org/kde/kdeconnect/Plugins/SftpPlugin
- *
- * TODO: reimplement automount?
  */
 var Plugin = GObject.registerClass({
     Name: 'GSConnectSFTPPlugin'
@@ -64,7 +62,7 @@ var Plugin = GObject.registerClass({
         super.connected();
 
         // Disable mounting and notify if `sshfs` is not available
-        if (!hasCommand(gsconnect.metadata.bin.sshfs)) {
+        if (!GLib.find_program_in_path(gsconnect.metadata.bin.sshfs)) {
             this.device.lookup_action('mount').enabled = false;
             this.device.lookup_action('unmount').enabled = false;
 
@@ -401,7 +399,7 @@ var Plugin = GObject.registerClass({
     _umount() {
         let argv = ['umount', this._mountpoint];
 
-        if (hasCommand(gsconnect.metadata.bin.fusermount)) {
+        if (GLib.find_program_in_path(gsconnect.metadata.bin.fusermount)) {
             argv = [gsconnect.metadata.bin.fusermount, '-uz', this._mountpoint];
         }
 

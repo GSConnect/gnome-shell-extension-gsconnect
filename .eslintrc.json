@@ -111,6 +111,7 @@
         "printerr": false,
         "window": false,
 
+        "global": false,
         "gsconnect": false,
         "debug": false,
         "logWarning": false,
@@ -124,4 +125,3 @@
         "ecmaVersion": 2017
     }
 }
-

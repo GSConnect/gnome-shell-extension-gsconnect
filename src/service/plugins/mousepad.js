@@ -208,7 +208,7 @@ var Plugin = GObject.registerClass({
                 break;
 
             case (input.hasOwnProperty('key') || input.hasOwnProperty('specialKey')):
-                if (this._vkbd ) {
+                if (this._vkbd) {
                     // Set Gdk.ModifierType
                     let mask = 0;
 
@@ -278,7 +278,7 @@ var Plugin = GObject.registerClass({
 
     clickPointer(button) {
         try {
-            let [screen, x, y] = this._pointer.get_position();
+            let [, x, y] = this._pointer.get_position();
             let monitor = this._display.get_monitor_at_point(x, y);
             let scale = monitor.get_scale_factor();
             Atspi.generate_mouse_event(scale * x, scale * y, `b${button}c`);
@@ -289,7 +289,7 @@ var Plugin = GObject.registerClass({
 
     doubleclickPointer(button) {
         try {
-            let [screen, x, y] = this._pointer.get_position();
+            let [, x, y] = this._pointer.get_position();
             let monitor = this._display.get_monitor_at_point(x, y);
             let scale = monitor.get_scale_factor();
             Atspi.generate_mouse_event(scale * x, scale * y, `b${button}d`);
@@ -300,7 +300,7 @@ var Plugin = GObject.registerClass({
 
     movePointer(dx, dy) {
         try {
-            let [screen, x, y] = this._pointer.get_position();
+            let [, x, y] = this._pointer.get_position();
             let monitor = this._display.get_monitor_at_point(x, y);
             let scale = monitor.get_scale_factor();
             Atspi.generate_mouse_event(scale * dx, scale * dy, 'rel');
@@ -311,7 +311,7 @@ var Plugin = GObject.registerClass({
 
     pressPointer(button) {
         try {
-            let [screen, x, y] = this._pointer.get_position();
+            let [, x, y] = this._pointer.get_position();
             let monitor = this._display.get_monitor_at_point(x, y);
             let scale = monitor.get_scale_factor();
             Atspi.generate_mouse_event(scale * x, scale * y, `b${button}p`);
@@ -322,7 +322,7 @@ var Plugin = GObject.registerClass({
 
     releasePointer(button) {
         try {
-            let [screen, x, y] = this._pointer.get_position();
+            let [, x, y] = this._pointer.get_position();
             let monitor = this._display.get_monitor_at_point(x, y);
             let scale = monitor.get_scale_factor();
             Atspi.generate_mouse_event(scale * x, scale * y, `b${button}r`);

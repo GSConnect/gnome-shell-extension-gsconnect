@@ -313,7 +313,7 @@ var Store = GObject.registerClass({
 
                 proc.communicate_utf8_async(null, null, (proc, res) => {
                     try {
-                        let [ok, stdout, stderr] = proc.communicate_utf8_finish(res);
+                        let [, stdout, stderr] = proc.communicate_utf8_finish(res);
 
                         if (stderr.length > 0) {
                             throw new Error(stderr);

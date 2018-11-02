@@ -859,9 +859,9 @@ var ConversationChooser = GObject.registerClass({
         // HeaderBar
         let headerbar = new Gtk.HeaderBar({
             title: _('Share Link'),
-            subtitle: url,
+            subtitle: this.message,
             show_close_button: true,
-            tooltip_text: url
+            tooltip_text: this.message
         });
         this.set_titlebar(headerbar);
 
@@ -872,7 +872,7 @@ var ConversationChooser = GObject.registerClass({
         });
         newButton.connect('clicked', () => {
             let window = new ConversationWindow(this.device);
-            window.setMessage(url);
+            window.setMessage(this.message);
             this.destroy();
             window.present();
         });

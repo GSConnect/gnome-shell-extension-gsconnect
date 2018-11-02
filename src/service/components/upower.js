@@ -28,8 +28,6 @@ var Battery = GObject.registerClass({
                 case 'state':
                 case 'warning-level':
                     this.emit('changed');
-                default:
-                    return;
             }
         } catch (e) {
         }

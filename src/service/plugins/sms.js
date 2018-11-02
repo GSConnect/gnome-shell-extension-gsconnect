@@ -107,11 +107,11 @@ var _numberRegex = new RegExp(
 class URI {
     constructor(uri) {
         _smsRegex.lastIndex = 0;
-        let [full, recipients, query] = _smsRegex.exec(uri);
+        let [, recipients, query] = _smsRegex.exec(uri);
 
         this.recipients = recipients.split(',').map(recipient => {
             _numberRegex.lastIndex = 0;
-            let [full, number, params] = _numberRegex.exec(recipient);
+            let [, number, params] = _numberRegex.exec(recipient);
 
             if (params) {
                 for (let param of params.substr(1).split(';')) {
@@ -416,11 +416,6 @@ var Plugin = GObject.registerClass({
                 device: this.device,
                 address: contact.numbers[0].value
             });
-
-            // Log the message if SMS history is not supported
-            if (!this.device.get_outgoing_supported('sms.messages')) {
-                window.receiveMessage(message);
-            }
         }
 
         window.present();

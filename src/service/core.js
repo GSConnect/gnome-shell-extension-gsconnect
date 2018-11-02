@@ -527,7 +527,7 @@ var Transfer = class Transfer extends Channel {
      * @return {Boolean} - %true on success, %false on failure.
      */
     async _transfer() {
-        let result;
+        let result = false;
 
         try {
             result = await new Promise((resolve, reject) => {
@@ -551,11 +551,11 @@ var Transfer = class Transfer extends Channel {
             });
         } catch (e) {
             logError(e, this.device.name);
-            result = false;
         } finally {
             this.close();
-            return result;
         }
+
+        return result;
     }
 };
 

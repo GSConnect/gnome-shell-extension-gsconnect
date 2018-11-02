@@ -434,7 +434,7 @@ const Service = GObject.registerClass({
                 buttons: Gtk.ButtonsType.CLOSE,
                 message_type: Gtk.MessageType.ERROR,
             });
-            let issues = dialog.add_button(_('Report'), 1);
+            dialog.add_button(_('Report'), 1);
             dialog.set_keep_above(true);
 
             let [message, stack] = dialog.get_message_area().get_children();
@@ -533,13 +533,15 @@ const Service = GObject.registerClass({
 
         Gio.DBus.session.call(
             name, path, name, method, variant, null,
-            Gio.DBusCallFlags.NONE, -1, null, (connection, res) => {
-            try {
-                connection.call_finish(res);
-            } catch (e) {
-                logError(e);
+            Gio.DBusCallFlags.NONE, -1, null,
+            (connection, res) => {
+                try {
+                    connection.call_finish(res);
+                } catch (e) {
+                    logError(e);
+                }
             }
-        });
+        );
     }
 
     /**
@@ -554,7 +556,7 @@ const Service = GObject.registerClass({
             logError(error);
 
             // Create an new notification
-            let id, title, body, icon, action;
+            let id, title, body, icon, time;
             let notif = new Gio.Notification();
             notif.set_priority(Gio.NotificationPriority.URGENT);
 
@@ -563,7 +565,7 @@ const Service = GObject.registerClass({
                 case 'AuthenticationError':
                     id = `${Date.now()}`;
                     title = _('Authentication Failure');
-                    let time = GLib.DateTime.new_now_local().format('%F %R');
+                    time = GLib.DateTime.new_now_local().format('%F %R');
                     body = `"${error.deviceName}"@${error.deviceHost} (${time})`;
                     icon = new Gio.ThemedIcon({name: 'dialog-error'});
                     break;

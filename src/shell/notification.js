@@ -293,7 +293,7 @@ function patchGtkNotificationSources() {
             this._notifications[notificationId].destroy();
 
         let notification = new NotificationDaemon.GtkNotificationDaemonNotification(this, notificationParams);
-        notification.connect('destroy', () => {
+        notification.connect('destroy', (notification, reason) => {
             this._withdrawGSConnectNotification(notification, reason);
             delete this._notifications[notificationId];
         });

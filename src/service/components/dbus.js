@@ -40,7 +40,7 @@ String.prototype.toUnderscoreCase = function(string) {
     string = string || this;
 
     return string.replace(/(?:^\w|[A-Z]|_|\b\w)/g, (ltr, offset) => {
-	    if (ltr === '_') return '';
+        if (ltr === '_') return '';
         return (offset > 0) ? '_' + ltr.toLowerCase() : ltr.toLowerCase();
     }).replace(/[\s-]+/g, '');
 };
@@ -54,6 +54,8 @@ String.prototype.toUnderscoreCase = function(string) {
  *               their native JavaScript equivalents.
  */
 function full_unpack(obj) {
+    let unpacked;
+
     switch (true) {
         case (obj === null):
             return obj;
@@ -68,7 +70,7 @@ function full_unpack(obj) {
             return obj.map(e => full_unpack(e));
 
         case (typeof obj === 'object'):
-            let unpacked = {};
+            unpacked = {};
 
             for (let [key, value] of Object.entries(obj)) {
                 // Try to detect and deserialize GIcons
@@ -345,7 +347,7 @@ var Interface = GObject.registerClass({
                     new GLib.Variant(
                         propertyInfo.signature,
                         // Adjust for GJS's '-'/'_' conversion
-                        this._exportee[paramSpec.name.replace(/[\-]+/g, '_')]
+                        this._exportee[paramSpec.name.replace(/-/gi, '_')]
                     )
                 );
             }
@@ -396,12 +398,11 @@ function _proxyGetter(name) {
         }
     } catch (e) {
         logError(e);
+    }
 
     // Fallback to cached property...
-    } finally {
-        variant = variant ? variant : this.get_cached_property(name);
-        return variant ? full_unpack(variant) : null;
-    }
+    variant = variant ? variant : this.get_cached_property(name);
+    return variant ? full_unpack(variant) : null;
 }
 
 

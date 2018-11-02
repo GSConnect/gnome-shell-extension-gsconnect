@@ -407,7 +407,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
 
             // Apply the keybindings
             for (let [action, accelerator] of Object.entries(keybindings)) {
-                let [ok, name, parameter] = Gio.Action.parse_detailed_name(action);
+                let [, name, parameter] = Gio.Action.parse_detailed_name(action);
 
                 let actionId = this.keybindingManager.add(
                     accelerator,

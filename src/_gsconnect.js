@@ -165,7 +165,7 @@ var _debugFunc = function(msg, prefix = null) {
         // Grab the second line of a stack trace
         let regex = /(?:(?:[^<.]+<\.)?([^@]+))?@(.+):(\d+):\d+/g;
         let trace = ((msg.stack) ? msg : new Error()).stack.split('\n')[1];
-        let [m, func, file, line] = regex.exec(trace);
+        let [, func, file, line] = regex.exec(trace);
         file = GLib.path_get_basename(file);
 
         // There's a better way...

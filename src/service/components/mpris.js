@@ -11,7 +11,7 @@ const DBus = imports.service.components.dbus;
  * org.mpris.MediaPlayer2 Proxy
  * https://specifications.freedesktop.org/mpris-spec/latest/Media_Player.html
  */
-var MediaPlayer2Proxy = DBus.makeInterfaceProxy(
+const MediaPlayer2Proxy = DBus.makeInterfaceProxy(
     gsconnect.dbusinfo.lookup_interface('org.mpris.MediaPlayer2')
 );
 
@@ -20,7 +20,7 @@ var MediaPlayer2Proxy = DBus.makeInterfaceProxy(
  * org.mpris.MediaPlayer2.Player Proxy
  * https://specifications.freedesktop.org/mpris-spec/latest/Player_Interface.html
  */
-var PlayerProxy = DBus.makeInterfaceProxy(
+const PlayerProxy = DBus.makeInterfaceProxy(
     gsconnect.dbusinfo.lookup_interface('org.mpris.MediaPlayer2.Player')
 );
 
@@ -121,7 +121,7 @@ var Manager = GObject.registerClass({
                 if (name.startsWith('org.mpris.MediaPlayer2')) {
                     if (new_owner.length) {
                         this._addPlayer(name);
-                    } else {
+                    } else if (old_owner.length) {
                         this._removePlayer(name);
                     }
                 }
@@ -225,7 +225,7 @@ var Manager = GObject.registerClass({
      * A convenience function for restarting all players paused with pauseAll().
      */
     unpauseAll() {
-        for (let [identity, player] of this.paused.entries()) {
+        for (let player of this.paused.values()) {
             if (player.PlaybackStatus === 'Paused' && player.CanPlay) {
                 player.Play();
             }
