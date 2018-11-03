@@ -45,6 +45,8 @@ var Battery = GObject.registerClass({
     get threshold() {
         if (!this.charging && this.warning_level >= UPower.DeviceLevel.LOW) {
             return 1;
+        } else {
+            return 0;
         }
     }
 });
