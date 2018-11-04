@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-03 21:57-0700\n"
+"POT-Creation-Date: 2018-11-04 12:18-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -286,7 +286,7 @@ msgid "Refresh"
 msgstr ""
 
 #. Service Menu
-#: src/extension.js:79 src/extension.js:248
+#: src/extension.js:79 src/extension.js:249
 msgid "Mobile Devices"
 msgstr ""
 
@@ -295,15 +295,18 @@ msgid "Mobile Settings"
 msgstr ""
 
 #. TRANSLATORS: Extension name
-#: src/extension.js:186 src/extension.js:300 src/service/daemon.js:95
+#: src/extension.js:186 src/extension.js:301 src/service/daemon.js:95
 #: src/service/daemon.js:413 webextension/gettext.js:27
 msgid "GSConnect"
 msgstr ""
 
-#: src/extension.js:246
+#. TRANSLATORS: %d is the number of devices connected
+#: src/extension.js:247
 #, javascript-format
 msgid "%d Connected"
-msgstr ""
+msgid_plural "%d Connected"
+msgstr[0] ""
+msgstr[1] ""
 
 #. TRANSLATORS: Top-level context menu item for GSConnect
 #: src/nautilus-gsconnect.py:112 webextension/gettext.js:31
@@ -828,8 +831,10 @@ msgstr ""
 #: src/service/ui/messaging.js:88 src/service/ui/messaging.js:120
 #: src/shell/donotdisturb.js:266
 #, javascript-format
-msgid "%d minutes"
-msgstr ""
+msgid "%d minute"
+msgid_plural "%d minutes"
+msgstr[0] ""
+msgstr[1] ""
 
 #. TRANSLATORS: Yesterday, but less than 24 hours (eg. Yesterday · 11:29 PM)
 #: src/service/ui/messaging.js:93
