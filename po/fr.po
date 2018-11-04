@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-11-04 15:02+0100\n"
-"PO-Revision-Date: 2018-11-04 15:24+0100\n"
+"PO-Revision-Date: 2018-11-04 15:31+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -317,7 +317,7 @@ msgstr "Une implémentation compète de KDE Connect pour GNOME"
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
 #: src/service/daemon.js:415
 msgid "translator-credits"
-msgstr "Mickaël Coiraton"
+msgstr "Mickaël Coiraton <mickael.coiraton@gmail.com>"
 
 #: src/service/daemon.js:437
 msgid "Report"
