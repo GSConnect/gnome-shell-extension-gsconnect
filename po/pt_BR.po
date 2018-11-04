@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-10-18 11:12-0700\n"
-"PO-Revision-Date: 2018-10-17 18:14-0300\n"
+"PO-Revision-Date: 2018-11-04 05:47-0200\n"
 "Last-Translator: Ricardo Silva Veloso <ricvelozo@gmail.com>\n"
 "Language-Team: \n"
 "Language: pt_BR\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 2.1.1\n"
+"X-Generator: Poedit 2.2\n"
 
 #: data/conversation-window.ui:14 src/service/ui/messaging.js:482
 msgid "Conversations"
@@ -317,9 +317,8 @@ msgid "Send To Mobile Device"
 msgstr "Enviar para dispositivo móvel"
 
 #: src/service/daemon.js:392
-#, fuzzy
 msgid "A complete KDE Connect implementation for GNOME"
-msgstr "Implementação do KDE Connect com integração do GNOME Shell"
+msgstr "Uma implementação completa do KDE Connect para o GNOME"
 
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
 #: src/service/daemon.js:401
@@ -351,10 +350,8 @@ msgid "Discovery Disabled"
 msgstr "Descoberta desativada"
 
 #: src/service/daemon.js:581
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
-msgstr ""
-"A descoberta foi desativada devido ao número de dispositivos nesta rede."
+msgid "Discovery has been disabled due to the number of devices on this network."
+msgstr "A descoberta foi desativada devido ao número de dispositivos nesta rede."
 
 #: src/service/daemon.js:583 src/service/daemon.js:593
 msgid "Click to open preferences"
@@ -520,14 +517,12 @@ msgid "Mousepad"
 msgstr "Mousepad"
 
 #: src/service/plugins/mousepad.js:28 src/service/plugins/mousepad.js:537
-#, fuzzy
 msgid "Keyboard"
-msgstr "Mouse & teclado"
+msgstr "Teclado"
 
 #: src/service/plugins/mousepad.js:554
-#, fuzzy
 msgid "Keyboard not ready"
-msgstr "Atalhos de teclado"
+msgstr "O teclado não está pronto"
 
 #: src/service/plugins/mpris.js:10
 msgid "MPRIS"
@@ -788,8 +783,7 @@ msgstr "Digite um novo atalho para mudar <b>%s</b>"
 #. TRANSLATORS: Keys for cancelling (␛) or resetting (␈) a shortcut
 #: src/service/ui/keybindings.js:83
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr ""
-"Pressione Esc para cancelar ou Backspace para redefinir o atalho de teclado."
+msgstr "Pressione Esc para cancelar ou Backspace para redefinir o atalho de teclado."
 
 #. TRANSLATORS: When a keyboard shortcut is unavailable
 #. Example: [Ctrl]+[S] is already being used
@@ -920,8 +914,7 @@ msgstr[1] "%d horas"
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:29
 msgid "Share links with GSConnect, direct to the browser or by SMS."
-msgstr ""
-"Compartilhe links com o GSConnect, diretamente no navegador ou por SMS."
+msgstr "Compartilhe links com o GSConnect, diretamente no navegador ou por SMS."
 
 #. TRANSLATORS: WebExtension can't connect to GSConnect
 #: webextension/gettext.js:33
@@ -957,12 +950,8 @@ msgstr "Abrir no navegador"
 #~ msgid "This program comes with absolutely no warranty."
 #~ msgstr "Este programa vem com absolutamente nenhuma garantia."
 
-#~ msgid ""
-#~ "See the <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html"
-#~ "\">GNU General Public License, version 2 or later</a> for details."
-#~ msgstr ""
-#~ "Veja a <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html"
-#~ "\">GNU General Public License, versão 2 ou posterior</a> para detalhes."
+#~ msgid "See the <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html\">GNU General Public License, version 2 or later</a> for details."
+#~ msgstr "Veja a <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html\">GNU General Public License, versão 2 ou posterior</a> para detalhes."
 
 #~ msgid "Preferences"
 #~ msgstr "Preferências"
@@ -973,12 +962,8 @@ msgstr "Abrir no navegador"
 #~ msgid "Web Browser Integration"
 #~ msgstr "Integração com navegador"
 
-#~ msgid ""
-#~ "Requires <a href=\"%s\">Chrome Extension</a> or <a href=\"%s\">Firefox "
-#~ "Add-On</a>"
-#~ msgstr ""
-#~ "Requer <a href=\"%s\">extensão do Chrome</a> ou <a href=\"%s"
-#~ "\">complemento do Firefox</a>"
+#~ msgid "Requires <a href=\"%s\">Chrome Extension</a> or <a href=\"%s\">Firefox Add-On</a>"
+#~ msgstr "Requer <a href=\"%s\">extensão do Chrome</a> ou <a href=\"%s\">complemento do Firefox</a>"
 
 #~ msgid "Nautilus extensions changed"
 #~ msgstr "Extensões do Nautilus foram alteradas"
@@ -1042,8 +1027,7 @@ msgstr "Abrir no navegador"
 #~ msgstr "Não foi possível inicializar Atspi"
 
 #~ msgid "Cannot load Caribou virtual keyboard for Unicode support"
-#~ msgstr ""
-#~ "Não é possível carregar teclado virtual Caribou para suporte a Unicode"
+#~ msgstr "Não é possível carregar teclado virtual Caribou para suporte a Unicode"
 
 #~ msgid "Control MPRIS2 enabled media players"
 #~ msgstr "Controlar reprodutores de mídia com suporte a MPRIS2"
@@ -1105,26 +1089,14 @@ msgstr "Abrir no navegador"
 #~ msgid "The <b>Media Player Control</b> plugin must be enabled"
 #~ msgstr "O plugin <b>Controle multimídia</b> precisa ser ativado"
 
-#~ msgid ""
-#~ "Ensure that devices are on the same local network with ports 1716 to 1764 "
-#~ "open for TCP and UDP connections."
-#~ msgstr ""
-#~ "Certifique-se que os dispositivos estão na mesma rede local com as portas "
-#~ "1716 a 1764 abertas para conexões TCP e UDP."
+#~ msgid "Ensure that devices are on the same local network with ports 1716 to 1764 open for TCP and UDP connections."
+#~ msgstr "Certifique-se que os dispositivos estão na mesma rede local com as portas 1716 a 1764 abertas para conexões TCP e UDP."
 
-#~ msgid ""
-#~ "To connect an Android device, install the KDE Connect Android app from "
-#~ "the <a href=\"%s\">Google Play Store</a> or <a href=\"%s\">F-Droid</a>."
-#~ msgstr ""
-#~ "Para conectar um dispositivo Android, instale o app KDE Connect da <a "
-#~ "href=\"%s\">Google Play Store</a> ou <a href=\"%s\">F-Droid</a>."
+#~ msgid "To connect an Android device, install the KDE Connect Android app from the <a href=\"%s\">Google Play Store</a> or <a href=\"%s\">F-Droid</a>."
+#~ msgstr "Para conectar um dispositivo Android, instale o app KDE Connect da <a href=\"%s\">Google Play Store</a> ou <a href=\"%s\">F-Droid</a>."
 
-#~ msgid ""
-#~ "Please see the <a href=\"%s\">Wiki</a> for more help or <a href=\"%s"
-#~ "\">open an issue</a> on Github to report a problem."
-#~ msgstr ""
-#~ "Por favor, veja a <a href=\"%s\">Wiki</a> para mais ajuda ou <a href=\"%s"
-#~ "\">abra um chamado</a> no GitHub para reportar um problema."
+#~ msgid "Please see the <a href=\"%s\">Wiki</a> for more help or <a href=\"%s\">open an issue</a> on Github to report a problem."
+#~ msgstr "Por favor, veja a <a href=\"%s\">Wiki</a> para mais ajuda ou <a href=\"%s\">abra um chamado</a> no GitHub para reportar um problema."
 
 #~ msgid "Error: %s"
 #~ msgstr "Erro: %s"
@@ -1160,10 +1132,8 @@ msgstr "Abrir no navegador"
 #~ msgid "Keyboard Shortcut Unavailable"
 #~ msgstr "Atalhos de teclado indisponíveis"
 
-#~ msgid ""
-#~ "The requested keyboard shortcut is already in use and can't be overridden."
-#~ msgstr ""
-#~ "O atalho de teclado escolhido já está em uso e não pode ser sobrescrito."
+#~ msgid "The requested keyboard shortcut is already in use and can't be overridden."
+#~ msgstr "O atalho de teclado escolhido já está em uso e não pode ser sobrescrito."
 
 #~ msgid "Configure <b>%s</b>"
 #~ msgstr "Configurar <b>%s</b>"
