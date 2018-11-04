@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-28 17:22-0700\n"
+"POT-Creation-Date: 2018-11-03 21:57-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -55,7 +55,7 @@ msgid "Sharing"
 msgstr ""
 
 #: data/device.ui:337 data/device.ui:534 data/device.ui:1449
-#: src/service/plugins/runcommand.js:18 src/service/plugins/runcommand.js:173
+#: src/service/plugins/runcommand.js:18 src/service/plugins/runcommand.js:169
 msgid "Commands"
 msgstr ""
 
@@ -160,7 +160,7 @@ msgstr ""
 msgid "Sync Messages"
 msgstr ""
 
-#: data/menus.ui:23 data/settings.ui:940
+#: data/menus.ui:23 data/settings.ui:881
 msgid "Help"
 msgstr ""
 
@@ -180,11 +180,11 @@ msgstr ""
 msgid "Connect LAN"
 msgstr ""
 
-#: data/menus.ui:53 src/service/device.js:427
+#: data/menus.ui:53 src/service/device.js:425
 msgid "Pair"
 msgstr ""
 
-#: data/menus.ui:59 src/service/device.js:435
+#: data/menus.ui:59 src/service/device.js:433
 msgid "Unpair"
 msgstr ""
 
@@ -234,7 +234,7 @@ msgstr ""
 msgid "Restart Service"
 msgstr ""
 
-#: data/settings.ui:581 data/settings.ui:1020 src/service/device.js:419
+#: data/settings.ui:581 data/settings.ui:1015 src/service/device.js:417
 msgid "Settings"
 msgstr ""
 
@@ -262,12 +262,8 @@ msgstr ""
 msgid "Additional Features"
 msgstr ""
 
-#: data/settings.ui:886
-msgid "Android"
-msgstr ""
-
-#: data/settings.ui:901
-msgid "Sailfish OS"
+#: data/settings.ui:903
+msgid "Browser Add-Ons"
 msgstr ""
 
 #: data/settings.ui:921
@@ -275,17 +271,17 @@ msgid "KDE Connect"
 msgstr ""
 
 #. TRANSLATORS: A phone number type
-#: data/settings.ui:961 data/settings.ui:1063 src/service/ui/contacts.js:57
+#: data/settings.ui:956 data/settings.ui:1058 src/service/ui/contacts.js:57
 #: src/service/ui/contacts.js:78
 msgid "Other"
 msgstr ""
 
 #. TRANSLATORS: No devices are known or available
-#: data/settings.ui:1111 webextension/gettext.js:35
+#: data/settings.ui:1106 webextension/gettext.js:35
 msgid "No Device Found"
 msgstr ""
 
-#: data/settings.ui:1147
+#: data/settings.ui:1142
 msgid "Refresh"
 msgstr ""
 
@@ -327,79 +323,79 @@ msgstr ""
 msgid "Report"
 msgstr ""
 
-#: src/service/daemon.js:565
+#: src/service/daemon.js:567
 msgid "Authentication Failure"
 msgstr ""
 
-#: src/service/daemon.js:574
+#: src/service/daemon.js:576
 msgid "Network Error"
 msgstr ""
 
-#: src/service/daemon.js:575 src/service/daemon.js:585
+#: src/service/daemon.js:577 src/service/daemon.js:587
 msgid "Click for help troubleshooting"
 msgstr ""
 
-#: src/service/daemon.js:584
+#: src/service/daemon.js:586
 msgid "PulseAudio Error"
 msgstr ""
 
-#: src/service/daemon.js:594
+#: src/service/daemon.js:596
 msgid "Discovery Disabled"
 msgstr ""
 
-#: src/service/daemon.js:595
+#: src/service/daemon.js:597
 msgid ""
 "Discovery has been disabled due to the number of devices on this network."
 msgstr ""
 
-#: src/service/daemon.js:597 src/service/daemon.js:607
+#: src/service/daemon.js:599 src/service/daemon.js:609
 msgid "Click to open preferences"
 msgstr ""
 
-#: src/service/daemon.js:606
+#: src/service/daemon.js:608
 msgid "Additional Software Required"
 msgstr ""
 
-#: src/service/daemon.js:615
+#: src/service/daemon.js:617
 #, javascript-format
 msgid "%s Plugin Failed To Load"
 msgstr ""
 
-#: src/service/daemon.js:616 src/service/daemon.js:633
-#: src/service/daemon.js:645
+#: src/service/daemon.js:618 src/service/daemon.js:635
+#: src/service/daemon.js:647
 msgid "Click for more information"
 msgstr ""
 
-#: src/service/daemon.js:631
+#: src/service/daemon.js:633
 msgid "Remote Filesystem Error"
 msgstr ""
 
-#: src/service/daemon.js:632
+#: src/service/daemon.js:634
 #, javascript-format
 msgid "%s is using an incompatible SSH library"
 msgstr ""
 
-#: src/service/daemon.js:643
+#: src/service/daemon.js:645
 msgid "Wayland Not Supported"
 msgstr ""
 
-#: src/service/daemon.js:644
+#: src/service/daemon.js:646
 msgid "Remote input not supported on Wayland"
 msgstr ""
 
 #. Create an urgent notification
-#: src/service/daemon.js:668
+#: src/service/daemon.js:670
 #, javascript-format
 msgid "GSConnect: %s"
 msgstr ""
 
 #. TRANSLATORS: Share URL by SMS
-#: src/service/daemon.js:816 src/service/plugins/sms.js:49
+#: src/service/daemon.js:818 src/service/plugins/sms.js:49
 #: webextension/gettext.js:39
 msgid "Send SMS"
 msgstr ""
 
-#: src/service/daemon.js:820
+#: src/service/daemon.js:822
 msgid "Dial Number"
 msgstr ""
 
@@ -440,21 +436,21 @@ msgstr ""
 msgid "Desktop"
 msgstr ""
 
-#: src/service/device.js:411
+#: src/service/device.js:409
 msgid "Reconnect"
 msgstr ""
 
 #. TRANSLATORS: eg. Pair Request from Google Pixel
-#: src/service/device.js:610
+#: src/service/device.js:606
 #, javascript-format
 msgid "Pair Request from %s"
 msgstr ""
 
-#: src/service/device.js:617
+#: src/service/device.js:613
 msgid "Reject"
 msgstr ""
 
-#: src/service/device.js:622
+#: src/service/device.js:618
 msgid "Accept"
 msgstr ""
 
@@ -494,16 +490,16 @@ msgstr ""
 msgid "Find My Phone"
 msgstr ""
 
-#: src/service/plugins/findmyphone.js:73
+#: src/service/plugins/findmyphone.js:65
 msgid "Locate Device"
 msgstr ""
 
-#: src/service/plugins/findmyphone.js:74
+#: src/service/plugins/findmyphone.js:66
 #, javascript-format
 msgid "%s asked to locate this device"
 msgstr ""
 
-#: src/service/plugins/findmyphone.js:82
+#: src/service/plugins/findmyphone.js:74
 msgid "Found"
 msgstr ""
 
@@ -511,11 +507,11 @@ msgstr ""
 msgid "Mousepad"
 msgstr ""
 
-#: src/service/plugins/mousepad.js:28 src/service/plugins/mousepad.js:537
+#: src/service/plugins/mousepad.js:28 src/service/plugins/mousepad.js:536
 msgid "Keyboard"
 msgstr ""
 
-#: src/service/plugins/mousepad.js:554
+#: src/service/plugins/mousepad.js:553
 msgid "Keyboard not ready"
 msgstr ""
 
@@ -567,15 +563,15 @@ msgstr ""
 msgid "Unmount"
 msgstr ""
 
-#: src/service/plugins/sftp.js:172
+#: src/service/plugins/sftp.js:170
 msgid "All files"
 msgstr ""
 
-#: src/service/plugins/sftp.js:173
+#: src/service/plugins/sftp.js:171
 msgid "Camera pictures"
 msgstr ""
 
-#: src/service/plugins/sftp.js:344
+#: src/service/plugins/sftp.js:342
 msgid "Files"
 msgstr ""
 
@@ -846,27 +842,27 @@ msgid "New Message"
 msgstr ""
 
 #. TRANSLATORS: When the battery level is 100%
-#: src/shell/device.js:91
+#: src/shell/device.js:86
 msgid "Fully Charged"
 msgstr ""
 
 #. TRANSLATORS: When no time estimate for the battery is available
 #. EXAMPLE: 42% (Estimating…)
-#: src/shell/device.js:95
+#: src/shell/device.js:90
 #, javascript-format
 msgid "%d%% (Estimating…)"
 msgstr ""
 
 #. TRANSLATORS: Estimated time until battery is charged
 #. EXAMPLE: 42% (1:15 Until Full)
-#: src/shell/device.js:105
+#: src/shell/device.js:100
 #, javascript-format
 msgid "%d%% (%d∶%02d Until Full)"
 msgstr ""
 
 #. TRANSLATORS: Estimated time until battery is empty
 #. EXAMPLE: 42% (12:15 Remaining)
-#: src/shell/device.js:113
+#: src/shell/device.js:108
 #, javascript-format
 msgid "%d%% (%d∶%02d Remaining)"
 msgstr ""
