@@ -26,13 +26,11 @@ try {
  */
 Object.defineProperty(Gvc.MixerStream.prototype, 'display_name', {
     get: function() {
-        let port = this.get_port();
-
-        if (port !== null) {
-            return `${port.human_port} (${this.description})`;
+        try {
+            return `${this.get_port().human_port} (${this.description})`;
+        } catch (e) {
+            return this.description;
         }
-
-        return this.description;
     }
 });
 
@@ -93,14 +91,14 @@ class Stream {
  * A subclass of Gvc.MixerControl with convenience functions for controlling the
  * default input/output volumes.
  *
- * The Mixer class uses Gnome Shell's Gvc library to control the system volume
+ * The Mixer class uses GNOME Shell's Gvc library to control the system volume
  * and offers a few convenience functions.
  */
 var Mixer = GObject.registerClass({
     GTypeName: 'GSConnectAudioMixer'
 }, class Mixer extends Gvc.MixerControl {
     _init(params) {
-        super._init({ name: 'GSConnect' });
+        super._init({name: 'GSConnect'});
 
         this.open();
 

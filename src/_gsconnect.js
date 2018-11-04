@@ -28,7 +28,7 @@ gsconnect.metadata = (() => {
     }
 
     return JSON.parse(data);
-})()
+})();
 
 
 /**
@@ -94,7 +94,7 @@ if (gsconnect.is_local) {
 /**
  * Init Gettext
  *
- * If we aren't inside the Gnome Shell process we'll set gettext functions on
+ * If we aren't inside the GNOME Shell process we'll set gettext functions on
  * the global object, otherwise we'll set them on the global 'gsconnect' object
  */
 imports.gettext.bindtextdomain(gsconnect.app_id, gsconnect.localedir);
@@ -160,12 +160,12 @@ gsconnect.dbusinfo.nodes.forEach(info => info.cache_build());
  * @param {string} msg - the debugging message
  * @param {string} [prefix] - An optional prefix for the message
  */
-var _debugFunc = function(msg, prefix=null) {
+var _debugFunc = function(msg, prefix = null) {
     try {
         // Grab the second line of a stack trace
         let regex = /(?:(?:[^<.]+<\.)?([^@]+))?@(.+):(\d+):\d+/g;
         let trace = ((msg.stack) ? msg : new Error()).stack.split('\n')[1];
-        let [m, func, file, line] = regex.exec(trace);
+        let [, func, file, line] = regex.exec(trace);
         file = GLib.path_get_basename(file);
 
         // There's a better way...
@@ -214,14 +214,14 @@ gsconnect.settings.connect('changed::debug', () => {
  * @param {Error|string} message - A string or Error to log
  * @param {string} [prefix] - An optional prefix for the warning
  */
-window.logWarning = function(message, prefix=null) {
+window.logWarning = function(message, prefix = null) {
     message = message.hasOwnProperty('message') ? message.message : message;
     message = (prefix) ? `${prefix}: ${message}` : message;
 
     GLib.log_structured(
         'gsconnect',
         GLib.LogLevelFlags.LEVEL_WARNING,
-        { MESSAGE: `WARNING: ${message}` }
+        {MESSAGE: `WARNING: ${message}`}
     );
 };
 
@@ -303,7 +303,7 @@ gsconnect.installService = function() {
         GLib.unlink(GLib.build_filenamev([desktopDir, desktopFile]));
         GLib.unlink(nautScript);
 
-        for (let [dir, obj] of manifests) {
+        for (let dir of Object.keys(manifests)) {
             GLib.unlink(GLib.build_filenamev([dir, manifestFile]));
         }
     }

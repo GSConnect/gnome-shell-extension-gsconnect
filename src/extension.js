@@ -24,6 +24,27 @@ const Keybindings = imports.shell.keybindings;
 const Notification = imports.shell.notification;
 
 
+gsconnect.proxyProperties = function (iface) {
+    let info = gsconnect.dbusinfo.lookup_interface(iface.g_interface_name);
+
+    for (let property of info.properties) {
+        // Properties already defined for this proxy
+        if (iface.hasOwnProperty(property.name)) return;
+
+        Object.defineProperty(iface, property.name, {
+            get: () => {
+                try {
+                    return iface.get_cached_property(property.name).deep_unpack();
+                } catch (e) {
+                    return null;
+                }
+            },
+            enumerable: true
+        });
+    }
+};
+
+
 /**
  * A System Indicator used as the hub for spawning device indicators and
  * indicating that the extension is active when there are none.
@@ -50,47 +71,55 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         // Service Indicator
         this._indicator = this._addIndicator();
         this._indicator.icon_name = 'org.gnome.Shell.Extensions.GSConnect-symbolic';
-        this._indicator.opacity = 128;
+
         AggregateMenu._indicators.insert_child_at_index(this.indicators, 0);
         AggregateMenu._gsconnect = this;
 
         // Service Menu
-        this.extensionMenu = new PopupMenu.PopupSubMenuMenuItem(
-            _('Mobile Devices'),
-            true
-        );
-        this.extensionMenu.icon.icon_name = this._indicator.icon_name;
-        this.menu.addMenuItem(this.extensionMenu);
+        this._item = new PopupMenu.PopupSubMenuMenuItem(_('Mobile Devices'), true);
+        this._item.icon.icon_name = 'org.gnome.Shell.Extensions.GSConnect-symbolic';
+        this._item.label.clutter_text.x_expand = true;
+        this.menu.addMenuItem(this._item);
+
         AggregateMenu.menu.addMenuItem(this.menu, 4);
 
-        // Devices Section
-        this.devicesSection = new PopupMenu.PopupMenuSection();
+        // Service Menu -> Devices Section
+        this.deviceSection = new PopupMenu.PopupMenuSection();
+        this.deviceSection.actor.add_style_class_name('gsconnect-device-section');
         gsconnect.settings.bind(
             'show-indicators',
-            this.devicesSection.actor,
+            this.deviceSection.actor,
             'visible',
             Gio.SettingsBindFlags.INVERT_BOOLEAN
         );
-        this.extensionMenu.menu.addMenuItem(this.devicesSection);
+        this._item.menu.addMenuItem(this.deviceSection);
 
-        // "Do Not Disturb" Item
-        this.extensionMenu.menu.addMenuItem(new DoNotDisturb.MenuItem());
+        // Service Menu -> Separator
+        this._item.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
 
-        // "Mobile Settings" Item
-        this.extensionMenu.menu.addAction(
+        // Service Menu -> "Do Not Disturb"
+        this._item.menu.addMenuItem(new DoNotDisturb.MenuItem());
+
+        // Service Menu -> "Mobile Settings"
+        this._item.menu.addAction(
             _('Mobile Settings'),
             () => this.service.activate_action('preferences', null)
         );
 
-        // Menu Visibility
-        this._gsettingsId = gsconnect.settings.connect('changed', () => {
-            for (let dbusPath in this._menus) {
-                this._sync(this._menus[dbusPath]);
-            }
-        });
+        // Watch for UI prefs
+        this._gsettingsId = gsconnect.settings.connect(
+            'changed::show-indicators',
+            this._sync.bind(this)
+        );
 
         // Async setup
         this._init_async();
+    }
+
+    get available() {
+        return Array.from(this.devices).filter(device => {
+            return (device.Connected && device.Paired);
+        });
     }
 
     get devices() {
@@ -126,54 +155,114 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
             }
 
             // Watch for new and removed
+            this._nameOwnerId = this.manager.connect(
+                'notify::name-owner',
+                this._onNameOwnerChanged.bind(this)
+            );
+
             this._interfaceAddedId = this.manager.connect(
                 'interface-added',
                 this._onInterfaceAdded.bind(this)
             );
+
             this._objectRemovedId = this.manager.connect(
                 'object-removed',
                 this._onObjectRemoved.bind(this)
             );
-            this._nameOwnerId = this.manager.connect(
-                'notify::name-owner',
-                this._onNameOwnerChanged.bind(this)
+
+            this._interfaceProxyPropertiesChangedId = this.manager.connect(
+                'interface-proxy-properties-changed',
+                this._onInterfacePropertiesChanged.bind(this)
             );
 
             await this._activate();
         } catch (e) {
             debug(e);
             Gio.DBusError.strip_remote_error(e);
-            Main.notifyError(_('GSConnect'), e.message);
+
+            // Don't notify of cancellation errors during startup
+            // https://gitlab.gnome.org/GNOME/gnome-shell/issues/177
+            if (!e.code || e.code !== Gio.IOErrorEnum.CANCELLED) {
+                Main.notifyError(_('GSConnect'), e.message);
+            }
         }
     }
 
-    _sync(menu) {
-        let { Connected, Paired } = menu.device;
-
-        if (!Paired && !gsconnect.settings.get_boolean('show-unpaired')) {
-            menu.actor.visible = false;
-        } else if (!Connected && !gsconnect.settings.get_boolean('show-offline')) {
-            menu.actor.visible = false;
-        } else {
-            menu.actor.visible = true;
+    _onInterfacePropertiesChanged(manager, object, iface, changed, invalidated) {
+        if (iface.g_interface_name !== 'org.gnome.Shell.Extensions.GSConnect.Device') {
+            return;
         }
 
-        // Dim the indicator if no devices are connected
-        if (Object.values(this._menus).some(menu => menu.device.Connected)) {
-            this._indicator.opacity = 255;
+        changed = changed.deep_unpack();
+
+        if (changed.hasOwnProperty('Connected') || changed.hasOwnProperty('Paired')) {
+            this._sync();
+        }
+    }
+
+    _sync() {
+        // Hide status indicator if in Panel mode or no devices are available
+        let panelMode = gsconnect.settings.get_boolean('show-indicators');
+        this._indicator.visible = (!panelMode && this.available.length);
+
+        // Show device indicators in Panel mode if available
+        for (let device of this._devices.values()) {
+            let indicator = Main.panel.statusArea[device.g_object_path].actor;
+            indicator.visible = panelMode && this.available.includes(device);
+
+            let menu = this._menus[device.g_object_path];
+            menu.actor.visible = !panelMode && this.available.includes(device);
+            menu._title.actor.visible = menu.actor.visible;
+        }
+
+        // One connected device in User Menu mode
+        if (!panelMode && this.available.length === 1) {
+            let device = this.available[0];
+
+            // Hide the menu title and move it to the submenu item
+            this._menus[device.g_object_path]._title.actor.visible = false;
+            this._item.label.text = device.Name;
+
+            // Destroy any other device's battery
+            if (this._item._battery && this._item._battery.device !== device) {
+                this._item._battery.destroy();
+                this._item._battery = null;
+            }
+
+            // Add the battery to the submenu item
+            if (!this._item._battery) {
+                this._item._battery = new Device.Battery({
+                    object: this.manager.get_object(device.g_object_path),
+                    device: device,
+                    opacity: 128
+                });
+                this._item.actor.insert_child_below(
+                    this._item._battery,
+                    this._item._triangleBin
+                );
+            }
         } else {
-            this._indicator.opacity = 128;
+            if (this.available.length > 1) {
+                this._item.label.text = _('%d Connected').format(this.available.length);
+            } else {
+                this._item.label.text = _('Mobile Devices');
+            }
+
+            // Destroy any battery in the submenu item
+            if (this._item._battery) {
+                this._item._battery.destroy();
+                this._item._battery = null;
+            }
         }
     }
 
     _activate() {
         if (this._activating) {
-            return;
+            return Promise.resolve(true);
         }
 
         this._activating = true;
 
-        // Wait for a result before continuing
         return new Promise((resolve, reject) => {
             Gio.DBus.session.call(
                 'org.freedesktop.DBus',
@@ -212,35 +301,15 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         }
     }
 
-    _proxyGetter(name) {
-        let value = null;
-
-        try {
-            value = this.get_cached_property(name).deep_unpack();
-        } catch (e) {
-        } finally {
-            return value;
-        }
-    }
-
     _onInterfaceAdded(manager, object, iface) {
-        // Setup properties
-        let info = gsconnect.dbusinfo.lookup_interface(iface.g_interface_name);
+        gsconnect.proxyProperties(iface);
 
-        for (let property of info.properties) {
-            Object.defineProperty(iface, property.name, {
-                get: this._proxyGetter.bind(iface, property.name),
-                enumerable: true
-            });
-        }
-
-        // If it's not a device we're done
+        // We only handle devices here
         if (iface.g_interface_name !== 'org.gnome.Shell.Extensions.GSConnect.Device') {
             return;
         }
 
         debug(`GSConnect: Adding ${iface.Name}`);
-
         this.devices.add(iface);
 
         // GActions
@@ -267,13 +336,20 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         });
 
         // Device Indicator
-        let indicator = new Device.Indicator(object, iface);
+        let indicator = new Device.Indicator({
+            object: object,
+            device: iface
+        });
         Main.panel.addToStatusArea(iface.g_object_path, indicator);
 
         // Device Menu
-        let menu = new Device.Menu(object, iface);
+        let menu = new Device.Menu({
+            object: object,
+            device: iface,
+            menu_type: 'list'
+        });
         this._menus[iface.g_object_path] = menu;
-        this.devicesSection.addMenuItem(menu);
+        this.deviceSection.addMenuItem(menu);
 
         // Keyboard Shortcuts
         iface._keybindingsChangedId = iface.settings.connect(
@@ -282,24 +358,16 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         );
         this._onKeybindingsChanged(iface);
 
-        // Properties
-        iface._propertiesId = iface.connect(
-            'g-properties-changed',
-            this._sync.bind(this, menu)
-        );
-        this._sync(menu);
-
         // Try activating the device
         iface.action_group.activate_action('activate', null);
+
+        this._sync();
     }
 
     _onObjectRemoved(manager, object) {
         let iface = object.get_interface('org.gnome.Shell.Extensions.GSConnect.Device');
 
         debug(`GSConnect: Removing ${iface.Name}`);
-
-        // Disconnect properties
-        iface.disconnect(iface._propertiesId);
 
         // Release keybindings
         iface.settings.disconnect(iface._keybindingsChangedId);
@@ -313,6 +381,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         delete this._menus[iface.g_object_path];
 
         this.devices.delete(iface);
+        this._sync();
     }
 
     async _onKeybindingsChanged(iface) {
@@ -338,7 +407,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
 
             // Apply the keybindings
             for (let [action, accelerator] of Object.entries(keybindings)) {
-                let [ok, name, parameter] = Gio.Action.parse_detailed_name(action);
+                let [, name, parameter] = Gio.Action.parse_detailed_name(action);
 
                 let actionId = this.keybindingManager.add(
                     accelerator,
@@ -360,8 +429,8 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
             indicator.menu.toggle();
         } else {
             Main.panel._toggleMenu(AggregateMenu);
-            this.extensionMenu.menu.toggle();
-            this.extensionMenu.actor.grab_key_focus();
+            this._item.menu.toggle();
+            this._item.actor.grab_key_focus();
         }
     }
 
@@ -370,6 +439,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
 
         // Unhook from any ObjectManager events
         if (this.manager) {
+            this.manager.disconnect(this._interfaceProxyPropertiesChangedId);
             this.manager.disconnect(this._interfaceAddedId);
             this.manager.disconnect(this._objectRemovedId);
             this.manager.disconnect(this._nameOwnerId);
@@ -389,7 +459,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         // Destroy the UI
         delete AggregateMenu._gsconnect;
         this.indicators.destroy();
-        this.extensionMenu.destroy();
+        this._item.destroy();
         this.menu.destroy();
     }
 }

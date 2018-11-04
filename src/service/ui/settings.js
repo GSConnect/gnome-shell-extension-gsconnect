@@ -13,9 +13,9 @@ const PackageKit = imports.service.ui.packagekit;
 
 function section_separators(row, before) {
     if (before) {
-        row.set_header(new Gtk.Separator({ visible: true }));
+        row.set_header(new Gtk.Separator({visible: true}));
     }
-};
+}
 
 
 /**
@@ -93,6 +93,7 @@ var DeviceRow = GObject.registerClass({
             halign: Gtk.Align.END,
             visible: true
         });
+        go_next.get_style_context().add_class('dim-label');
         grid.attach(go_next, 2, 0, 1, 1);
 
         this.connect('notify::connected', () => this.notify('symbolic-icon'));
@@ -105,14 +106,14 @@ var DeviceRow = GObject.registerClass({
         let name = `${this.device.icon_name}-symbolic`;
 
         if (!this.paired) {
-            let rgba = new Gdk.RGBA({ red: 0.95, green: 0, blue: 0, alpha: 0.9 });
+            let rgba = new Gdk.RGBA({red: 0.95, green: 0, blue: 0, alpha: 0.9});
             let info = Gtk.IconTheme.get_default().lookup_icon(name, 16, 0);
             return info.load_symbolic(rgba, null, null, null)[0];
         }
 
         this.get_child().get_child_at(0, 0).opacity = this.connected ? 1 : 0.5;
 
-        return new Gio.ThemedIcon({ name: name });
+        return new Gio.ThemedIcon({name: name});
     }
 });
 
@@ -232,9 +233,8 @@ var Window = GObject.registerClass({
         'prev-button', 'device-menu', 'service-menu',
         // Sidebar
         'stack', 'switcher', 'sidebar',
-        'shell-list', 'display-mode',
-        // Software
-        'software-list', 'sshfs', 'sound', 'folks', 'nautilus',
+        'appearance-list', 'display-mode',
+        'service-list', 'software-list',
         'help'
     ]
 }, class Window extends Gtk.ApplicationWindow {
@@ -243,6 +243,11 @@ var Window = GObject.registerClass({
         this.connect_template();
 
         super._init(params);
+
+        this.settings = new Gio.Settings({
+            settings_schema: gsconnect.gschema.lookup('org.gnome.Shell.Extensions.GSConnect.Preferences', true),
+            path: '/org/gnome/shell/extensions/gsconnect/preferences/'
+        });
 
         // Service HeaderBar
         gsconnect.settings.bind(
@@ -259,7 +264,16 @@ var Window = GObject.registerClass({
         this.switcher.select_row(this.switcher.get_row_at_index(0));
 
         // Init UI Elements
-        this._serviceSettings();
+        this.add_action(gsconnect.settings.create_action('show-indicators'));
+        this._displayModeChangedId = gsconnect.settings.connect(
+            'changed::show-indicators',
+            this._onDisplayModeChanged.bind(this)
+        );
+        this._onDisplayModeChanged();
+
+        this.service_list.set_header_func(section_separators);
+        this.software_list.set_header_func(section_separators);
+
         this._softwareSettings();
 
         // Setup devices
@@ -268,11 +282,23 @@ var Window = GObject.registerClass({
             this._onDevicesChanged.bind(this)
         );
         this._onDevicesChanged();
+
+        this.restore_geometry();
+    }
+
+    vfunc_delete_event(event) {
+        this.save_geometry();
+        return this.hide_on_delete();
+    }
+
+    _onDisplayModeChanged(settings) {
+        let state = gsconnect.settings.get_boolean('show-indicators');
+        this.display_mode.label = state ? _('Panel') : _('User Menu');
     }
 
     _headerFunc(row, before) {
-        if ([3, 4].includes(row.get_index())) {
-            row.set_header(new Gtk.Separator({ visible: true }));
+        if ([2, 3].includes(row.get_index())) {
+            row.set_header(new Gtk.Separator({visible: true}));
         }
     }
 
@@ -280,16 +306,15 @@ var Window = GObject.registerClass({
      * Software dependency installation with PackageKit
      */
     _softwareSettings() {
-        // Required Software
-        for (let name of ['sshfs', 'sound', 'folks', 'nautilus']) {
-            // Inject a button for each package group
+        // Inject a button for each dependency row
+        for (let row of this.software_list.get_children()) {
             let button = new PackageKit.DependencyButton({
                 halign: Gtk.Align.END,
                 valign: Gtk.Align.CENTER,
-                names: name,
+                names: row.get_name(),
                 visible: true
             });
-            this[name].get_child().attach(button, 1, 0, 1, 1);
+            row.get_child().attach(button, 1, 0, 1, 1);
         }
 
         this.software_list.set_header_func(section_separators);
@@ -345,7 +370,7 @@ var Window = GObject.registerClass({
     /**
      * Context Switcher
      */
-    _setDeviceMenu(panel=null) {
+    _setDeviceMenu(panel = null) {
         this.device_menu.insert_action_group('device', null);
         this.device_menu.insert_action_group('settings', null);
         this.device_menu.set_menu_model(null);
@@ -375,31 +400,6 @@ var Window = GObject.registerClass({
 
             this.sidebar.visible_child_name = name;
         }
-    }
-
-    /**
-     * UI Setup and template connecting
-     */
-    _serviceSettings() {
-        this.add_action(gsconnect.settings.create_action('show-offline'));
-        this.add_action(gsconnect.settings.create_action('show-unpaired'));
-        this.add_action(gsconnect.settings.create_action('show-battery'));
-
-        this.shell_list.set_header_func(section_separators);
-        this.software_list.set_header_func(section_separators);
-
-        this._setDisplayMode();
-    }
-
-    _setDisplayMode(box, row) {
-        let state = gsconnect.settings.get_boolean('show-indicators');
-
-        if (row) {
-            state = !state;
-            gsconnect.settings.set_boolean('show-indicators', state);
-        }
-
-        this.display_mode.label = state ? _('Panel') : _('User Menu');
     }
 
     _onDevicesChanged() {
@@ -435,12 +435,14 @@ var Window = GObject.registerClass({
     addDevice(id) {
         let device = this.application._devices.get(id);
 
-        // Create a new device widget
+        // Create a new device settings widget
         let panel = new Device(device);
 
-        // Add device to switcher, and panel stack
+        // Add the device settings to the content stack
         this.stack.add_titled(panel, id, device.name);
+        // Add the device sidebar to the sidebar stack
         this.sidebar.add_named(panel.switcher, id);
+        // Add a device row to the main sidebar
         this.switcher.add(panel.row);
     }
 });
@@ -459,8 +461,7 @@ var Device = GObject.registerClass({
         'command-toolbar', 'command-add', 'command-remove', 'command-edit',
         'command-editor', 'command-name', 'command-line',
         // Notifications
-        'notification', 'notification-page',
-        'share-notifications', 'notification-apps',
+        'notification', 'notification-apps',
         // Telephony
         'telephony',
         'ringing-list', 'ringing-volume', 'talking-list', 'talking-volume',
@@ -510,7 +511,7 @@ var Device = GObject.registerClass({
         // Separate plugins and other settings
         this.switcher.set_header_func((row, before) => {
             if (row.get_name() === 'shortcuts') {
-                row.set_header(new Gtk.Separator({ visible: true }));
+                row.set_header(new Gtk.Separator({visible: true}));
             }
         });
 
@@ -578,7 +579,7 @@ var Device = GObject.registerClass({
     }
 
     _onBluetoothHostChanged() {
-        let action = this.actions.lookup_action(`connect-bluetooth`);
+        let action = this.actions.lookup_action('connect-bluetooth');
         let hasBluetooth = (this.settings.get_string('bluetooth-host').length);
         action.enabled = (hasBluetooth && !this.device.connected);
     }
@@ -589,7 +590,7 @@ var Device = GObject.registerClass({
     }
 
     _onTcpHostChanged() {
-        let action = this.actions.lookup_action(`connect-tcp`);
+        let action = this.actions.lookup_action('connect-tcp');
         let hasLan = (this.settings.get_string('tcp-host').length);
         action.enabled = (hasLan && !this.device.connected);
     }
@@ -658,6 +659,9 @@ var Device = GObject.registerClass({
         settings = this._getSettings('mpris');
         this.actions.add_action(settings.create_action('share-players'));
 
+        settings = this._getSettings('notification');
+        this.actions.add_action(settings.create_action('send-notifications'));
+
         settings = this._getSettings('systemvolume');
         this.actions.add_action(settings.create_action('share-sinks'));
 
@@ -665,7 +669,7 @@ var Device = GObject.registerClass({
         this.actions.add_action(settings.create_action('ringing-volume'));
         this.actions.add_action(settings.create_action('ringing-pause'));
         this.ringing_volume.set_menu_model(this._menus.get_object('ringing-volume'));
-        
+
         this.actions.add_action(settings.create_action('talking-volume'));
         this.actions.add_action(settings.create_action('talking-pause'));
         this.actions.add_action(settings.create_action('talking-microphone'));
@@ -676,17 +680,17 @@ var Device = GObject.registerClass({
         status_bluetooth.connect('activate', this._onActivateBluetooth.bind(this));
         this.actions.add_action(status_bluetooth);
 
-        let status_lan = new Gio.SimpleAction({ name: 'connect-tcp' });
+        let status_lan = new Gio.SimpleAction({name: 'connect-tcp'});
         status_lan.connect('activate', this._onActivateLan.bind(this));
         this.actions.add_action(status_lan);
 
         // Pair Actions
-        let status_pair = new Gio.SimpleAction({ name: 'pair' });
+        let status_pair = new Gio.SimpleAction({name: 'pair'});
         status_pair.connect('activate', this.device.pair.bind(this.device));
         this.settings.bind('paired', status_pair, 'enabled', 16);
         this.actions.add_action(status_pair);
 
-        let status_unpair = new Gio.SimpleAction({ name: 'unpair' });
+        let status_unpair = new Gio.SimpleAction({name: 'unpair'});
         status_unpair.connect('activate', this.device.unpair.bind(this.device));
         this.settings.bind('paired', status_unpair, 'enabled', 0);
         this.actions.add_action(status_unpair);
@@ -776,7 +780,7 @@ var Device = GObject.registerClass({
     // The [+] button in the toolbar
     _onAddCommand(button) {
         let uuid = GLib.uuid_string_random();
-        this._commands[uuid] = { name: '', command: '' };
+        this._commands[uuid] = {name: '', command: ''};
 
         let row = this._insertCommand(uuid);
         this.command_list.select_row(row);
@@ -843,7 +847,7 @@ var Device = GObject.registerClass({
         let filter = new Gtk.FileFilter();
         filter.add_mime_type('application/x-executable');
 
-        let dialog = new Gtk.FileChooserDialog({ filter: filter });
+        let dialog = new Gtk.FileChooserDialog({filter: filter});
         dialog.add_button(_('Cancel'), Gtk.ResponseType.CANCEL);
         dialog.add_button(_('Open'), Gtk.ResponseType.OK);
 
@@ -875,13 +879,6 @@ var Device = GObject.registerClass({
      */
     _notificationSettings() {
         let settings = this._getSettings('notification');
-
-        settings.bind(
-            'send-notifications',
-            this.share_notifications,
-            'active',
-            Gio.SettingsBindFlags.DEFAULT
-        );
 
         settings.bind(
             'send-notifications',
@@ -950,7 +947,7 @@ var Device = GObject.registerClass({
         let appInfos = [];
         let ignoreId = 'org.gnome.Shell.Extensions.GSConnect.desktop';
 
-        // Query Gnome's notification settings
+        // Query GNOME's notification settings
         for (let appSettings of Object.values(this.service.notification.applications)) {
             let appId = appSettings.get_string('application-id');
 
@@ -1054,7 +1051,7 @@ var Device = GObject.registerClass({
         }
 
         let row = new SectionRow({
-            icon: new Gio.ThemedIcon({ name: icon_name }),
+            icon: new Gio.ThemedIcon({name: icon_name}),
             title: label,
             widget: widget,
             activatable: true
@@ -1243,7 +1240,7 @@ var Device = GObject.registerClass({
         this.plugin_list.foreach(row => {
             let checkbutton = row.get_child();
             checkbutton.disconnect(checkbutton._togglePluginId);
-            row.destroy()
+            row.destroy();
         });
 
         for (let name of this.settings.get_strv('supported-plugins')) {
@@ -1265,7 +1262,7 @@ var Device = GObject.registerClass({
             this.settings.set_strv('disabled-plugins', disabled);
 
             if (this.hasOwnProperty(name)) {
-                this[name].visible = disabled.includes(name);
+                this[name].visible = !disabled.includes(name);
             }
         } catch (e) {
             logError(e);

@@ -1,4 +1,4 @@
-<interface>
+<interface domain="org.gnome.Shell.Extensions.GSConnect">
   <menu id="app-menu">
     <section>
       <item>

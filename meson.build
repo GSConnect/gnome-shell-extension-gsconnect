@@ -1,4 +1,4 @@
-project('gsconnect', 'c', version: '13', meson_version: '>= 0.45.0')
+project('gsconnect', 'c', version: '15', meson_version: '>= 0.45.0')
 
 gnome = import('gnome')
 
@@ -18,7 +18,7 @@ else
   gschemadir = join_paths(datadir, 'glib-2.0', 'schemas')
 endif
 
-# Gnome Shell LIBDIR
+# GNOME Shell LIBDIR
 if get_option('gnome_shell_libdir') != ''
   gnome_shell_libdir = get_option('gnome_shell_libdir')
 else
@@ -45,7 +45,18 @@ run_target(
         'DATADIR=' + datadir,
         'LOCALEDIR=' + localedir,
         'GSCHEMADIR=' + gschemadir,
-        'INSTALL=false',
+        'meson/mkzip.sh'
+    ]
+)
+run_target(
+    'make-sfx',
+    command: [
+        find_program('env'),
+        'UUID=' + extuuid,
+        'DATADIR=' + datadir,
+        'LOCALEDIR=' + localedir,
+        'GSCHEMADIR=' + gschemadir,
+        'SFX=true',
         'meson/mkzip.sh'
     ]
 )
@@ -58,6 +69,19 @@ run_target(
         'LOCALEDIR=' + localedir,
         'GSCHEMADIR=' + gschemadir,
         'INSTALL=true',
+        'meson/mkzip.sh'
+    ]
+)
+run_target(
+    'install-sfx',
+    command: [
+        find_program('env'),
+        'UUID=' + extuuid,
+        'DATADIR=' + datadir,
+        'LOCALEDIR=' + localedir,
+        'GSCHEMADIR=' + gschemadir,
+        'INSTALL=true',
+        'SFX=true',
         'meson/mkzip.sh'
     ]
 )

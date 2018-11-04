@@ -31,14 +31,14 @@ let _nodeInfo = Gio.DBusNodeInfo.new_for_xml(`
     </method>
   </interface>
 </node>
-`)
+`);
 
 
 const FDO_IFACE = _nodeInfo.lookup_interface('org.freedesktop.Notifications');
-const FDO_MATCH = "interface='org.freedesktop.Notifications',member='Notify',type='method_call'"
+const FDO_MATCH = "interface='org.freedesktop.Notifications',member='Notify',type='method_call'";
 
 const GTK_IFACE = _nodeInfo.lookup_interface('org.gtk.Notifications');
-const GTK_MATCH = "interface='org.gtk.Notifications',member='AddNotification',type='method_call'"
+const GTK_MATCH = "interface='org.gtk.Notifications',member='AddNotification',type='method_call'";
 
 
 /**
@@ -122,7 +122,7 @@ var Listener = class Listener {
         });
     }
 
-    _getConnection(type=Gio.BusType.SESSION) {
+    _getConnection(type = Gio.BusType.SESSION) {
         return new Promise((resolve, reject) => {
             Gio.bus_get(type, null, (connection, res) => {
                 try {
@@ -277,9 +277,9 @@ var Listener = class Listener {
             appName = appInfo.get_name();
         } catch (e) {
             // Silence errors
-        } finally {
-            return appName;
         }
+
+        return appName;
     }
 
     /**
@@ -426,7 +426,6 @@ var Listener = class Listener {
 
             // Try to get an icon for the notification
             if (!notification.hasOwnProperty('icon')) {
-                let icon = appInfo.get_icon();
                 notification.icon = appInfo.get_icon() || undefined;
             }
 

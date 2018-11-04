@@ -1,57 +1,39 @@
 'use strict';
 
 const Gio = imports.gi.Gio;
+const GLib = imports.gi.GLib;
 
-
-// GSound.Context singleton
-try {
-    var GSound = imports.gi.GSound;
-    var _gsoundContext = new GSound.Context();
-    _gsoundContext.init(null);
-
-// Try falling back to libcanberra
-} catch (e) {
-    var _gsoundContext = undefined;
-
-    if (!hasCommand('canberra-gtk-play')) {
-        throw new Error();
-    }
-}
+var GSound;
+var _gsoundContext;
+var _BACKEND = false;
 
 
 /**
- * Play a themed sound
+ * Return the backend to be used for playing sound effects
  *
- * @param {String} name - The name of a themed sound, from the current theme
- * @return {Boolean} - %true on success or %false if playback unavailable
- *
- * See also https://freedesktop.org/wiki/Specifications/sound-theme-spec/
+ * @return {string|boolean} - 'gsound', 'libcanberra' or %false
  */
-function play_theme_sound(name) {
-    let result = false;
-
-    if (_gsoundContext) {
-        _gsoundContext.play_simple({ 'event.id' : name }, null);
-        return true;
-    } else if (hasCommand('canberra-gtk-play')) {
-        let proc = new Gio.Subprocess({
-            argv: ['canberra-gtk-play', '-i', name],
-            flags: Gio.SubprocessFlags.NONE
-        });
-        proc.init(null);
-
-        proc.wait_check_async(null, (proc, res) => {
-            try {
-                result = proc.wait_check_finish(res);
-            } catch (e) {
-            }
-        });
+function get_backend() {
+    if (_BACKEND) {
+        return _BACKEND;
     }
 
-    return result;
-}
+    // GSound.Context singleton
+    try {
+        GSound = imports.gi.GSound;
+        _gsoundContext = new GSound.Context();
+        _gsoundContext.init(null);
+        _BACKEND = 'gsound';
 
-window.play_theme_sound = play_theme_sound;
+    // Try falling back to libcanberra
+    } catch (e) {
+        if (GLib.find_program_in_path('canberra-gtk-play') !== null) {
+            _BACKEND = 'libcanberra';
+        }
+    }
+
+    return _BACKEND;
+}
 
 
 /**
@@ -63,34 +45,49 @@ window.play_theme_sound = play_theme_sound;
  * @return {Boolean} - %false if playback unavailable
  */
 function loop_theme_sound(name, cancellable) {
-    if (_gsoundContext) {
-        _gsoundContext.play_full(
-            { 'event.id' : name },
-            cancellable,
-            (source, res) => {
+    let error, proc;
+
+    switch (get_backend()) {
+        case 'gsound':
+            _gsoundContext.play_full(
+                {'event.id': name},
+                cancellable,
+                (source, res) => {
+                    try {
+                        source.play_full_finish(res);
+                        loop_theme_sound(name, cancellable);
+                    } catch (e) {
+                    }
+                }
+            );
+            return true;
+
+        case 'libcanberra':
+            proc = new Gio.Subprocess({
+                argv: ['canberra-gtk-play', '-i', name],
+                flags: Gio.SubprocessFlags.NONE
+            });
+            proc.init(null);
+
+            proc.wait_check_async(cancellable, (proc, res) => {
                 try {
-                    source.play_full_finish(res);
+                    proc.wait_check_finish(res);
                     loop_theme_sound(name, cancellable);
                 } catch (e) {
                 }
-            }
-        );
-    } else if (hasCommand('canberra-gtk-play')) {
-        let proc = new Gio.Subprocess({
-            argv: ['canberra-gtk-play', '-i', name],
-            flags: Gio.SubprocessFlags.NONE
-        });
-        proc.init(null);
+            });
+            return true;
 
-        proc.wait_check_async(cancellable, (proc, res) => {
-            try {
-                proc.wait_check_finish(res);
-                loop_theme_sound(name, cancellable);
-            } catch (e) {
+        default:
+            if (cancellable) {
+                cancellable.cancel();
             }
-        });
-    } else {
-        return false;
+
+            error = new Error();
+            error.name = 'DependencyError';
+            Gio.Application.get_default().notify_error(error);
+
+            return false;
     }
 }
 

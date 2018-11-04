@@ -1,28 +1,15 @@
 'use strict';
 
+const Gdk = imports.gi.Gdk;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const Gtk = imports.gi.Gtk;
 
 /**
  * Globals, overrides and polyfills are kept here so we don't mangle or collide
- * with the prototypes of other processes (eg. gnome-shell). This means only
- *
+ * with the prototypes of other processes (eg. gnome-shell).
  */
 debug('loading service/__init__.js');
-
-
-/**
- * Check if a command is in the PATH
- * @param {string} name - the name of the command
- */
-window.hasCommand = function(cmd) {
-    try {
-        return (GLib.find_program_in_path(cmd) !== null);
-    } catch (e) {
-        return false;
-    }
-};
 
 
 /**
@@ -32,7 +19,7 @@ window.hasCommand = function(cmd) {
  * @param {boolean} sync - Default is %false, if %true load synchronously
  * @return {object} - The parsed object
  */
-JSON.load = function (file, sync=false) {
+JSON.load = function (file, sync = false) {
     if (typeof file === 'string') {
         file = Gio.File.new_for_path(file);
     }
@@ -72,7 +59,7 @@ JSON.load = function (file, sync=false) {
  * @param {object} obj - The object to write to disk
  * @param {boolean} sync - Default is %false, if %true load synchronously
  */
-JSON.dump = function (obj, file, sync=false) {
+JSON.dump = function (obj, file, sync = false) {
     if (typeof file === 'string') {
         file = Gio.File.new_for_path(file);
     }
@@ -146,7 +133,7 @@ Gio.File.rm_rf = function(file) {
     } catch (e) {
         // Silence errors
     }
-}
+};
 
 
 /**
@@ -210,12 +197,12 @@ Object.defineProperties(Gio.Menu.prototype, {
      * @return {Number} - The index of the added item
      */
     'add_action': {
-        value: function(action, index=-1) {
+        value: function(action, index = -1) {
             let [label, icon_name] = action.get_state().deep_unpack();
 
             let item = new Gio.MenuItem();
             item.set_label(label);
-            item.set_icon(new Gio.ThemedIcon({ name: icon_name }));
+            item.set_icon(new Gio.ThemedIcon({name: icon_name}));
             item.set_attribute_value(
                 'hidden-when',
                 new GLib.Variant('s', 'action-disabled')
@@ -307,7 +294,7 @@ Gio.TlsCertificate.new_for_paths = function (cert_path, key_path) {
     }
 
     return Gio.TlsCertificate.new_from_files(cert_path, key_path);
-}
+};
 
 Object.defineProperties(Gio.TlsCertificate.prototype, {
     /**
@@ -326,7 +313,7 @@ Object.defineProperties(Gio.TlsCertificate.prototype, {
                 proc.init(null);
 
                 let stdout = proc.communicate_utf8(this.certificate_pem, null)[1];
-                this.__fingerprint = /[a-zA-Z0-9\:]{59}/.exec(stdout)[0];
+                this.__fingerprint = /[a-zA-Z0-9:]{59}/.exec(stdout)[0];
 
                 proc.wait_check(null);
             }
@@ -349,7 +336,7 @@ Object.defineProperties(Gio.TlsCertificate.prototype, {
                 proc.init(null);
 
                 let stdout = proc.communicate_utf8(this.certificate_pem, null)[1];
-                this.__common_name = /[a-zA-Z0-9\-]{36}/.exec(stdout)[0];
+                this.__common_name = /[a-zA-Z0-9-]{36}/.exec(stdout)[0];
 
                 proc.wait_check(null);
             }
@@ -391,10 +378,10 @@ Object.defineProperties(Gio.TlsCertificate.prototype, {
  */
 if (typeof GLib.uuid_string_random !== 'function') {
     GLib.uuid_string_random = function() {
-        return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, (salt) => {
+        return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, (salt) => {
             return (salt ^ Math.random() * 16 >> salt / 4).toString(16);
         });
-    }
+    };
 }
 
 
@@ -404,6 +391,7 @@ if (typeof GLib.uuid_string_random !== 'function') {
  * @param {*} [obj] - May be a GLib.Variant, Array, standard Object or literal.
  */
 function _full_pack(obj) {
+    let packed;
     let type = typeof obj;
 
     switch (true) {
@@ -435,7 +423,7 @@ function _full_pack(obj) {
             return obj.serialize();
 
         case (type === 'object'):
-            let packed = {};
+            packed = {};
 
             for (let [key, val] of Object.entries(obj)) {
                 if (val !== undefined) {
@@ -463,6 +451,7 @@ GLib.Variant.full_pack = _full_pack;
  */
 function _full_unpack(obj) {
     obj = (obj === undefined) ? this : obj;
+    let unpacked;
 
     switch (true) {
         case (obj === null):
@@ -478,7 +467,7 @@ function _full_unpack(obj) {
             return obj.map(e => _full_unpack(e));
 
         case (typeof obj === 'object'):
-            let unpacked = {};
+            unpacked = {};
 
             for (let [key, value] of Object.entries(obj)) {
                 // Try to detect and deserialize GIcons
@@ -522,7 +511,43 @@ Gtk.Widget.prototype.connect_template = function() {
  * A convenience function for disconnecting Gtk template callbacks
  */
 Gtk.Widget.prototype.disconnect_template = function() {
-    Gtk.Widget.set_connect_func.call(this, function(){});
+    Gtk.Widget.set_connect_func.call(this, function() {});
     this.$templateHandlers.map(([obj, id]) => obj.disconnect(id));
+};
+
+
+/**
+ * Convenience functions for saving/restoring window geometry
+ */
+const _mutter = new Gio.Settings({schema_id: 'org.gnome.mutter'});
+
+Gtk.Window.prototype.restore_geometry = function() {
+    let [width, height] = this.settings.get_value('window-size').deep_unpack();
+    this.set_default_size(width, height);
+
+    if (!_mutter.get_boolean('center-new-windows')) {
+        let [x, y] = this.settings.get_value('window-position').deep_unpack();
+        this.move(x, y);
+    }
+
+    if (this.settings.get_boolean('window-maximized'))
+        this.maximize();
+};
+
+Gtk.Window.prototype.save_geometry = function() {
+    let state = this.get_window().get_state();
+
+    let maximized = (state & Gdk.WindowState.MAXIMIZED);
+    this.settings.set_boolean('window-maximized', maximized);
+
+    if (maximized || (state & Gdk.WindowState.FULLSCREEN))
+        return;
+
+    // GLib.Variant.new() can handle arrays just fine
+    let size = this.get_size();
+    this.settings.set_value('window-size', new GLib.Variant('(ii)', size));
+
+    let position = this.get_position();
+    this.settings.set_value('window-position', new GLib.Variant('(ii)', position));
 };
 

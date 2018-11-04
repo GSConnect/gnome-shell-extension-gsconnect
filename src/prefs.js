@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
@@ -11,7 +11,7 @@ function get_datadir() {
 }
 
 // Local Imports
-window.gsconnect = { extdatadir: get_datadir() };
+window.gsconnect = {extdatadir: get_datadir()};
 imports.searchPath.unshift(gsconnect.extdatadir);
 imports._gsconnect;
 

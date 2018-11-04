@@ -92,17 +92,17 @@ var Plugin = GObject.registerClass({
      * @return {string} - The decoded string
      */
     decode_quoted_printable(input) {
-		return input
-			// https://tools.ietf.org/html/rfc2045#section-6.7, rule 3
-			.replace(/[\t\x20]$/gm, '')
-			// Remove hard line breaks preceded by `=`
-			.replace(/=(?:\r\n?|\n|$)/g, '')
-			// https://tools.ietf.org/html/rfc2045#section-6.7, note 1.
-			.replace(/=([a-fA-F0-9]{2})/g, ($0, $1) => {
-				let codePoint = parseInt($1, 16);
-				return String.fromCharCode(codePoint);
-			});
-	}
+        return input
+            // https://tools.ietf.org/html/rfc2045#section-6.7, rule 3
+            .replace(/[\t\x20]$/gm, '')
+            // Remove hard line breaks preceded by `=`
+            .replace(/=(?:\r\n?|\n|$)/g, '')
+            // https://tools.ietf.org/html/rfc2045#section-6.7, note 1.
+            .replace(/=([a-fA-F0-9]{2})/g, ($0, $1) => {
+                let codePoint = parseInt($1, 16);
+                return String.fromCharCode(codePoint);
+            });
+    }
 
     /**
      * Decode a string encoded as "UTF-8" and return a regular string
@@ -110,9 +110,9 @@ var Plugin = GObject.registerClass({
      * @param {string} input - The UTF-8 string
      * @return {string} - The decoded string
      */
-	decode_utf8(input) {
-	    return decodeURIComponent(escape(input));
-	}
+    decode_utf8(input) {
+        return decodeURIComponent(escape(input));
+    }
 
     /**
      * Parse a VCard v2.1 and return a dictionary of data
@@ -121,7 +121,7 @@ var Plugin = GObject.registerClass({
      *
      * @param {string} vcard_data - The raw VCard data
      */
-	parseVCard(vcard_data) {
+    parseVCard(vcard_data) {
         //
         let vcard = {};
 
@@ -174,13 +174,13 @@ var Plugin = GObject.registerClass({
                 if (key === 'fn') {
                     vcard[key] = value[0];
                 } else {
-                    vcard[key].push({ meta: meta, value: value });
+                    vcard[key].push({meta: meta, value: value});
                 }
             }
         });
 
         return vcard;
-	}
+    }
 
     async parseContact(uid, vcard_data) {
         try {

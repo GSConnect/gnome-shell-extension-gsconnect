@@ -76,29 +76,29 @@ var Metadata = {
  */
 let _smsParam = "[\\w.!~*'()-]+=(?:[\\w.!~*'()-]|%[0-9A-F]{2})*";
 let _telParam = ";[a-zA-Z0-9-]+=(?:[\\w\\[\\]/:&+$.!~*'()-]|%[0-9A-F]{2})+";
-let _lenientDigits = "[+]?(?:[0-9A-F*#().-]| (?! )|%20(?!%20))+";
-let _lenientNumber = _lenientDigits + "(?:" + _telParam + ")*";
+let _lenientDigits = '[+]?(?:[0-9A-F*#().-]| (?! )|%20(?!%20))+';
+let _lenientNumber = _lenientDigits + '(?:' + _telParam + ')*';
 
 var _smsRegex = new RegExp(
-    "^" +
-    "sms:" +                                // scheme
-    "(?:[/]{2,3})?" +                       // Gio.File returns ":///"
-    "(" +                                   // one or more...
+    '^' +
+    'sms:' +                                // scheme
+    '(?:[/]{2,3})?' +                       // Gio.File returns ":///"
+    '(' +                                   // one or more...
         _lenientNumber +                    // phone numbers
-        "(?:," + _lenientNumber + ")*" +    // separated by commas
-    ")" +
-    "(?:\\?(" +                             // followed by optional...
+        '(?:,' + _lenientNumber + ')*' +    // separated by commas
+    ')' +
+    '(?:\\?(' +                             // followed by optional...
         _smsParam +                         // parameters...
-        "(?:&" + _smsParam + ")*" +         // separated by "&" (unescaped)
-    "))?" +
-    "$", "g");                              // fragments (#foo) not allowed
+        '(?:&' + _smsParam + ')*' +         // separated by "&" (unescaped)
+    '))?' +
+    '$', 'g');                              // fragments (#foo) not allowed
 
 
 var _numberRegex = new RegExp(
-    "^" +
-    "(" + _lenientDigits + ")" +            // phone number digits
-    "((?:" + _telParam + ")*)" +            // followed by optional parameters
-    "$", "g");
+    '^' +
+    '(' + _lenientDigits + ')' +            // phone number digits
+    '((?:' + _telParam + ')*)' +            // followed by optional parameters
+    '$', 'g');
 
 
 /**
@@ -107,11 +107,11 @@ var _numberRegex = new RegExp(
 class URI {
     constructor(uri) {
         _smsRegex.lastIndex = 0;
-        let [full, recipients, query] = _smsRegex.exec(uri);
+        let [, recipients, query] = _smsRegex.exec(uri);
 
         this.recipients = recipients.split(',').map(recipient => {
             _numberRegex.lastIndex = 0;
-            let [full, number, params] = _numberRegex.exec(recipient);
+            let [, number, params] = _numberRegex.exec(recipient);
 
             if (params) {
                 for (let param of params.substr(1).split(';')) {
@@ -416,11 +416,6 @@ var Plugin = GObject.registerClass({
                 device: this.device,
                 address: contact.numbers[0].value
             });
-
-            // Log the message if SMS history is not supported
-            if (!this.device.get_outgoing_supported('sms.messages')) {
-                window.receiveMessage(message);
-            }
         }
 
         window.present();

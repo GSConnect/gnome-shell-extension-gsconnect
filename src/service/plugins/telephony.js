@@ -77,7 +77,7 @@ var Plugin = GObject.registerClass({
                     break;
 
                 case 'sms':
-                    this._handleMessage(packet);
+                    this._handleMessage(contact, packet);
                     break;
             }
         } catch (e) {
@@ -155,7 +155,7 @@ var Plugin = GObject.registerClass({
     _handleCall(packet) {
         let body;
         let buttons = [];
-        let icon = new Gio.ThemedIcon({ name: 'call-start-symbolic' });
+        let icon = new Gio.ThemedIcon({name: 'call-start-symbolic'});
         let priority = Gio.NotificationPriority.NORMAL;
         let sender = packet.body.contactName || packet.body.phoneNumber;
 
@@ -196,7 +196,8 @@ var Plugin = GObject.registerClass({
         });
     }
 
-    _handleMessage(packet) {
+    _handleMessage(contact, packet) {
+        // Bail on missing phoneNumber
         if (!packet.body.phoneNumber) {
             return;
         }
@@ -239,7 +240,7 @@ var Plugin = GObject.registerClass({
             this.device.sendPacket({
                 id: 0,
                 type: 'kdeconnect.telephony.request',
-                body: { action: 'mute' }
+                body: {action: 'mute'}
             });
         }
 

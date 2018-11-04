@@ -27,7 +27,7 @@
     },
     "popupMenuDisconnected": {
         "message": "Hizmet Kullanılamıyor",
-        "description": "Popup Menu label when disconnected from the Gnome Shell extension"
+        "description": "Popup Menu label when disconnected from the GNOME Shell extension"
     },
     "popupMenuNoDevices": {
         "message": "Aygıt Bulunamadı",
@@ -38,7 +38,7 @@
         "description": "Context Menu label for opening a link in the device's web browser"
     },
     "smsMessage": {
-        "message": "Sms Gönder",
+        "message": "SMS Gönder",
         "description": "Context Menu label for sharing a link in an SMS message"
     }
 }

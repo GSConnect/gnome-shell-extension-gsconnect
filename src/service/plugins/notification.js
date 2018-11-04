@@ -57,7 +57,7 @@ var Metadata = {
 };
 
 
-var ID_REGEX = /^(fdo|gtk)\|([^\|]+)\|(.*)$/;
+var ID_REGEX = /^(fdo|gtk)\|([^|]+)\|(.*)$/;
 
 
 /**
@@ -73,13 +73,6 @@ var Plugin = GObject.registerClass({
         super._init(device, 'notification');
 
         this._sms = {};
-
-        this.settings.bind(
-            'send-notifications',
-            this.device.lookup_action('sendNotification'),
-            'enabled',
-            Gio.SettingsBindFlags.GET
-        );
     }
 
     handlePacket(packet) {
@@ -90,6 +83,7 @@ var Plugin = GObject.registerClass({
             case 'kdeconnect.notification.request':
                 return this._handleRequest(packet);
 
+            // We don't support *incoming* replies (yet)
             case 'kdeconnect.notification.reply':
                 logWarning('Not implemented', packet.type);
                 return;
@@ -114,6 +108,9 @@ var Plugin = GObject.registerClass({
             this.device.hideNotification(packet.body.id);
 
         // A remote notification (that hasn't been marked silent)
+        // TODO: when repetitive 'silent' notifications are received, such as
+        // incoming file transfers, the icon transfers pile up quickly and are
+        // left to time-out when they should be closed/rejected.
         } else if (!packet.body.hasOwnProperty('silent')) {
             this.receiveNotification(packet);
         }
@@ -124,7 +121,7 @@ var Plugin = GObject.registerClass({
      */
     _handleRequest(packet) {
         // A request for our notifications. This isn't implemented and would be
-        // pretty hard to without communicating with Gnome Shell.
+        // pretty hard to without communicating with GNOME Shell.
         if (packet.body.hasOwnProperty('request')) {
             return;
 
@@ -137,7 +134,7 @@ var Plugin = GObject.registerClass({
         // form "type|application-id|notification-id" so we can close it with
         // the appropriate service.
         } else if (packet.body.hasOwnProperty('cancel')) {
-            let [m, type, application, id] = ID_REGEX.exec(packet.body.cancel);
+            let [, type, application, id] = ID_REGEX.exec(packet.body.cancel);
 
             switch (type) {
                 case 'fdo':
@@ -159,33 +156,27 @@ var Plugin = GObject.registerClass({
      */
     async _uploadIcon(packet, icon) {
         try {
-            // TODO: Currently we skip icons for bluetooth connections
-            if (this.device.connection_type === 'bluetooth') {
-                return this.device.sendPacket(packet);
-            }
-
             // Normalize icon-name strings into GIcons
             if (typeof icon === 'string') {
-                icon = new Gio.ThemedIcon({ name: icon });
+                icon = new Gio.ThemedIcon({name: icon});
             }
 
             switch (true) {
+                // TODO: Currently we skip icons for bluetooth connections
+                case (this.device.connection_type === 'bluetooth'):
+                    return this.device.sendPacket(packet);
+
                 // GBytesIcon
                 case (icon instanceof Gio.BytesIcon):
-                    let bytes = icon.get_bytes();
-                    return this._uploadBytesIcon(packet, bytes);
-                    break;
+                    return this._uploadBytesIcon(packet, icon.get_bytes());
 
                 // GFileIcon
                 case (icon instanceof Gio.FileIcon):
-                    let file = icon.get_file();
-                    return this._uploadFileIcon(packet, file);
-                    break;
+                    return this._uploadFileIcon(packet, icon.get_file());
 
                 // GThemedIcon
                 case (icon instanceof Gio.ThemedIcon):
                     return this._uploadThemedIcon(packet, icon);
-                    break;
 
                 default:
                     return this.device.sendPacket(packet);
@@ -302,6 +293,11 @@ var Plugin = GObject.registerClass({
      */
     async sendNotification(notif) {
         try {
+            // Sending notifications is forbidden
+            if (!this.settings.get_boolean('send-notifications')) {
+                return;
+            }
+
             debug(`(${notif.appName}) ${notif.title}: ${notif.text}`);
 
             // TODO: revisit application notification settings
@@ -365,7 +361,7 @@ var Plugin = GObject.registerClass({
 
             // Check if we've already downloaded this icon
             if (file.query_exists(null)) {
-                return new Gio.FileIcon({ file: file });
+                return new Gio.FileIcon({file: file});
             }
 
             // Open the file
@@ -391,7 +387,7 @@ var Plugin = GObject.registerClass({
 
             // Return the icon if successful, delete on failure
             if (success) {
-                return new Gio.FileIcon({ file: file });
+                return new Gio.FileIcon({file: file});
             }
 
             await new Promise((resolve, reject) => {
@@ -439,7 +435,7 @@ var Plugin = GObject.registerClass({
                     name: 'replySms',
                     parameter: new GLib.Variant('s', packet.body.title)
                 };
-                icon = icon || new Gio.ThemedIcon({ name: 'sms-symbolic' });
+                icon = icon || new Gio.ThemedIcon({name: 'sms-symbolic'});
 
                 this._sms[packet.body.ticker] = packet.body.id;
 
@@ -447,11 +443,7 @@ var Plugin = GObject.registerClass({
             } else if (packet.body.id.includes('MissedCall')) {
                 title = packet.body.title;
                 body = packet.body.text;
-                action = {
-                    name: 'replySms',
-                    parameter: new GLib.Variant('s', packet.body.text)
-                };
-                icon = icon || new Gio.ThemedIcon({ name: 'call-missed-symbolic' });
+                icon = icon || new Gio.ThemedIcon({name: 'call-missed-symbolic'});
 
             // Ignore 'appName' if it's the same as 'title'
             } else if (packet.body.appName === packet.body.title) {
@@ -459,7 +451,7 @@ var Plugin = GObject.registerClass({
             }
 
             // If we still don't have an icon use the device icon
-            icon = icon || new Gio.ThemedIcon({ name: this.device.icon_name });
+            icon = icon || new Gio.ThemedIcon({name: this.device.icon_name});
 
             // Show the notification
             this.device.showNotification({
@@ -481,7 +473,7 @@ var Plugin = GObject.registerClass({
      * @param {string} id - The local notification id
      */
     withdrawNotification(id) {
-        debug(id)
+        debug(id);
 
         this.device.sendPacket({
             type: 'kdeconnect.notification',
@@ -499,7 +491,7 @@ var Plugin = GObject.registerClass({
      * @param {string} id - The remote notification id
      */
     closeNotification(id) {
-        debug(id)
+        debug(id);
 
         let tickerId = this._sms[id];
 
@@ -510,7 +502,7 @@ var Plugin = GObject.registerClass({
 
         this.device.sendPacket({
             type: 'kdeconnect.notification.request',
-            body: { cancel: id }
+            body: {cancel: id}
         });
     }
 
@@ -538,7 +530,7 @@ var Plugin = GObject.registerClass({
     requestNotifications() {
         this.device.sendPacket({
             type: 'kdeconnect.notification.request',
-            body: { request: true }
+            body: {request: true}
         });
     }
 });
