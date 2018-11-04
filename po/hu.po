@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-19 06:39-0700\n"
-"PO-Revision-Date: 2018-10-18 22:14+0200\n"
+"POT-Creation-Date: 2018-11-04 18:33+0100\n"
+"PO-Revision-Date: 2018-11-04 18:33+0100\n"
 "Last-Translator: Báthory Péter <bathory86p@gmail.com>\n"
 "Language-Team: \n"
 "Language: hu\n"
@@ -26,125 +26,125 @@ msgstr "Beszélgetés"
 msgid "Type a message"
 msgstr "Írja be az üzenetet"
 
-#: data/conversation-window.ui:210 src/shell/device.js:578
+#: data/conversation-window.ui:210
 msgid "Device is disconnected"
 msgstr "Az eszköz nincs csatlakoztatva"
 
-#: data/device.ui:67 src/service/plugins/battery.js:12
+#: data/device.ui:68 src/service/plugins/battery.js:12
 msgid "Battery"
 msgstr "Akkumulátor"
 
-#: data/device.ui:115
+#: data/device.ui:116
 msgid "Clipboard Sync"
 msgstr "Vágólap szinkronizálás"
 
-#: data/device.ui:171
+#: data/device.ui:172
 msgid "Media Players"
 msgstr "Médialejátszók"
 
-#: data/device.ui:219
+#: data/device.ui:220
 msgid "Mouse & Keyboard"
 msgstr "Egér és billentyűzet"
 
-#: data/device.ui:267
+#: data/device.ui:268
 msgid "Volume Control"
 msgstr "Hangerőszabályzó"
 
-#: data/device.ui:307 data/device.ui:1404
+#: data/device.ui:308 data/device.ui:1406
 msgid "Sharing"
 msgstr "Megosztás"
 
-#: data/device.ui:336 data/device.ui:533 data/device.ui:1447
-#: src/service/plugins/runcommand.js:18 src/service/plugins/runcommand.js:173
+#: data/device.ui:337 data/device.ui:534 data/device.ui:1449
+#: src/service/plugins/runcommand.js:18 src/service/plugins/runcommand.js:169
 msgid "Commands"
 msgstr "Parancsok"
 
-#: data/device.ui:384
+#: data/device.ui:385
 msgid "Name"
 msgstr "Név"
 
-#: data/device.ui:400 data/device.ui:401
+#: data/device.ui:401 data/device.ui:402
 msgid "Choose an executable"
 msgstr "Válassz egy programot"
 
-#: data/device.ui:402
+#: data/device.ui:403
 msgid "Command Line"
 msgstr "Parancssor"
 
-#: data/device.ui:596
+#: data/device.ui:597
 msgid "Share Notifications"
 msgstr "Értesítések megosztása"
 
-#: data/device.ui:634
+#: data/device.ui:636
 msgid "Applications"
 msgstr "Alkalmazások"
 
-#: data/device.ui:673 data/device.ui:1490
+#: data/device.ui:675 data/device.ui:1492
 #: src/service/plugins/notification.js:12
 msgid "Notifications"
 msgstr "Értesítések"
 
-#: data/device.ui:703
+#: data/device.ui:705
 msgid "Incoming Calls"
 msgstr "Bejövő hívások"
 
-#: data/device.ui:753 data/device.ui:898
+#: data/device.ui:755 data/device.ui:900
 msgid "Volume"
 msgstr "Hangerő"
 
-#: data/device.ui:811 data/device.ui:956
+#: data/device.ui:813 data/device.ui:958
 msgid "Pause Media"
 msgstr "Média szüneteltetése"
 
-#: data/device.ui:850
+#: data/device.ui:852
 msgid "Ongoing Calls"
 msgstr "Kimenő hívások"
 
-#: data/device.ui:1005
+#: data/device.ui:1007
 msgid "Mute Microphone"
 msgstr "Mikrofon némítása"
 
-#: data/device.ui:1045 data/device.ui:1533 src/service/plugins/telephony.js:12
+#: data/device.ui:1047 data/device.ui:1535 src/service/plugins/telephony.js:12
 msgid "Telephony"
 msgstr "Telefonálás"
 
-#: data/device.ui:1080
+#: data/device.ui:1082
 msgid "Action Shortcuts"
 msgstr "Művelet gyorsbillentyűk"
 
-#: data/device.ui:1092 data/device.ui:1155
+#: data/device.ui:1094 data/device.ui:1157
 msgid "Reset All…"
 msgstr "Összes visszaállítása…"
 
-#: data/device.ui:1143
+#: data/device.ui:1145
 msgid "Command Shortcuts"
 msgstr "Parancs gyorsbillentyűk"
 
-#: data/device.ui:1201
+#: data/device.ui:1203
 msgid "Shortcuts"
 msgstr "Gyorsbillentyűk"
 
-#: data/device.ui:1232
+#: data/device.ui:1234
 msgid "Plugins"
 msgstr "Bővítmények"
 
-#: data/device.ui:1293
+#: data/device.ui:1295
 msgid "Delete"
 msgstr "Törlés"
 
-#: data/device.ui:1318
+#: data/device.ui:1320
 msgid "Delete this device"
 msgstr "Eszköz törlése"
 
-#: data/device.ui:1333
+#: data/device.ui:1335
 msgid "Unpair and remove all settings and files"
 msgstr "Párosítás megszüntetése és az összes beállítás és fájl törlése"
 
-#: data/device.ui:1363 data/device.ui:1619
+#: data/device.ui:1365 data/device.ui:1621
 msgid "Advanced"
 msgstr "Haladó"
 
-#: data/device.ui:1576
+#: data/device.ui:1578
 msgid "Keyboard Shortcuts"
 msgstr "Gyorsbillentyűk"
 
@@ -160,7 +160,7 @@ msgstr "Névjegyek szinkronizálása"
 msgid "Sync Messages"
 msgstr "Üzenetek szinkronizálása"
 
-#: data/menus.ui:23 data/settings.ui:1087
+#: data/menus.ui:23 data/settings.ui:881
 msgid "Help"
 msgstr "Súgó"
 
@@ -180,11 +180,11 @@ msgstr "Bluetooth csatlakozás"
 msgid "Connect LAN"
 msgstr "LAN kapcsolat"
 
-#: data/menus.ui:53 src/service/device.js:434 src/shell/device.js:374
+#: data/menus.ui:53 src/service/device.js:425
 msgid "Pair"
 msgstr "Párosítás"
 
-#: data/menus.ui:59 src/service/device.js:442
+#: data/menus.ui:59 src/service/device.js:433
 msgid "Unpair"
 msgstr "Párosítás megszűntetése"
 
@@ -222,187 +222,180 @@ msgstr "Megjelenítés"
 msgid "Display Mode"
 msgstr "Megjelenítési mód"
 
-#: data/settings.ui:435
-msgid "Show Offline Devices"
-msgstr "Offline eszközök megjelenítése"
-
-#: data/settings.ui:486
-msgid "Show Unpaired Devices"
-msgstr "Párosítatlan eszközök megjelenítése"
-
-#: data/settings.ui:537
-msgid "Show Battery Icon"
-msgstr "Akkumulátor ikon megjelenítése"
-
-#: data/settings.ui:578 data/settings.ui:1167
-msgid "Shell"
-msgstr "Shell"
-
-#: data/settings.ui:639
-msgid "Discoverable"
-msgstr "Felderíthető"
-
-#: data/settings.ui:711
-msgid "Restart Service"
-msgstr "Szolgáltatás újraindítása"
-
-#: data/settings.ui:764 data/settings.ui:1210
+#: data/settings.ui:425
 msgid "Service"
 msgstr "Szolgáltatás"
 
-#: data/settings.ui:823
+#: data/settings.ui:475
+msgid "Discoverable"
+msgstr "Felderíthető"
+
+#: data/settings.ui:528
+msgid "Restart Service"
+msgstr "Szolgáltatás újraindítása"
+
+#: data/settings.ui:581 data/settings.ui:1015 src/service/device.js:417
+msgid "Settings"
+msgstr "Beállítások"
+
+#: data/settings.ui:639
 msgid "Remote Filesystems"
 msgstr "Távoli fájlrendszerek"
 
-#: data/settings.ui:859
+#: data/settings.ui:675
 msgid "Sound Effects"
 msgstr "Hanghatások"
 
-#: data/settings.ui:896
+#: data/settings.ui:712
+msgid "Extended Keyboard Support"
+msgstr "Kibővített billentyűzet támogatás"
+
+#: data/settings.ui:749
 msgid "Desktop Contacts"
 msgstr "Asztali névjegyek"
 
-#: data/settings.ui:933
+#: data/settings.ui:786
 msgid "Files Integration"
 msgstr "Fájlkezelő integráció"
 
-#: data/settings.ui:960
+#: data/settings.ui:813
 msgid "Additional Features"
 msgstr "További funkciók"
 
-#: data/settings.ui:1033
-msgid "Android"
-msgstr "Android"
+#: data/settings.ui:903
+msgid "Browser Add-Ons"
+msgstr "Böngésző bővítmények"
 
-#: data/settings.ui:1048
-msgid "Sailfish OS"
-msgstr "Sailfish OS"
-
-#: data/settings.ui:1068
+#: data/settings.ui:921
 msgid "KDE Connect"
 msgstr "KDE Connect"
 
 #. TRANSLATORS: A phone number type
-#: data/settings.ui:1108 data/settings.ui:1253 src/service/ui/contacts.js:57
+#: data/settings.ui:956 data/settings.ui:1058 src/service/ui/contacts.js:57
 #: src/service/ui/contacts.js:78
 msgid "Other"
 msgstr "Egyéb"
 
 #. TRANSLATORS: No devices are known or available
-#: data/settings.ui:1301 webextension/gettext.js:35
+#: data/settings.ui:1106 webextension/gettext.js:35
 msgid "No Device Found"
 msgstr "Nem található eszköz"
 
-#: data/settings.ui:1337
+#: data/settings.ui:1142
 msgid "Refresh"
 msgstr "Frissítés"
 
-#: src/extension.js:59
+#. Service Menu
+#: src/extension.js:79 src/extension.js:248
 msgid "Mobile Devices"
 msgstr "Mobil eszközök"
 
-#: src/extension.js:81
+#: src/extension.js:105
 msgid "Mobile Settings"
 msgstr "Mobil beállítások"
 
 #. TRANSLATORS: Extension name
-#: src/extension.js:146 src/extension.js:211 src/service/daemon.js:95
-#: src/service/daemon.js:399 webextension/gettext.js:27
+#: src/extension.js:186 src/extension.js:300 src/service/daemon.js:95
+#: src/service/daemon.js:413 webextension/gettext.js:27
 msgid "GSConnect"
 msgstr "GSConnect"
+
+#: src/extension.js:246
+#, javascript-format
+msgid "%d Connected"
+msgstr "%d csatlakoztatva"
 
 #. TRANSLATORS: Top-level context menu item for GSConnect
 #: src/nautilus-gsconnect.py:112 webextension/gettext.js:31
 msgid "Send To Mobile Device"
 msgstr "Küldés mobil eszközre"
 
-#: src/service/daemon.js:392
-#, fuzzy
+#: src/service/daemon.js:406
 msgid "A complete KDE Connect implementation for GNOME"
-msgstr "KDE Connect implementáció GNOME Shell integrációval"
+msgstr "Teljes KDE Connect implementáció GNOME-hoz"
 
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
-#: src/service/daemon.js:401
+#: src/service/daemon.js:415
 msgid "translator-credits"
 msgstr "Báthory Péter <bathory86p@gmail.com>"
 
-#: src/service/daemon.js:423
+#: src/service/daemon.js:437
 msgid "Report"
 msgstr "Jelentés"
 
-#: src/service/daemon.js:551
+#: src/service/daemon.js:567
 msgid "Authentication Failure"
 msgstr "Hitelesítési hiba"
 
-#: src/service/daemon.js:560
+#: src/service/daemon.js:576
 msgid "Network Error"
 msgstr "Hálózati hiba"
 
-#: src/service/daemon.js:561 src/service/daemon.js:571
+#: src/service/daemon.js:577 src/service/daemon.js:587
 msgid "Click for help troubleshooting"
 msgstr "Kattintson ide, hogy segítséget kapj a hibaelhárításhoz"
 
-#: src/service/daemon.js:570
+#: src/service/daemon.js:586
 msgid "PulseAudio Error"
 msgstr "PulseAudio hiba"
 
-#: src/service/daemon.js:580
+#: src/service/daemon.js:596
 msgid "Discovery Disabled"
 msgstr "Felderítés letiltva"
 
-#: src/service/daemon.js:581
+#: src/service/daemon.js:597
 msgid ""
 "Discovery has been disabled due to the number of devices on this network."
 msgstr "A felderítés le lett tiltva a hálózaton lévő eszközök száma miatt."
 
-#: src/service/daemon.js:583 src/service/daemon.js:593
+#: src/service/daemon.js:599 src/service/daemon.js:609
 msgid "Click to open preferences"
 msgstr "Kattintson ide a beállítások megnyitásához"
 
-#: src/service/daemon.js:592
+#: src/service/daemon.js:608
 msgid "Additional Software Required"
 msgstr "További szoftverre van szükség"
 
-#: src/service/daemon.js:601
+#: src/service/daemon.js:617
 #, javascript-format
 msgid "%s Plugin Failed To Load"
 msgstr "%s bővítményt nem sikerült betölteni"
 
-#: src/service/daemon.js:602 src/service/daemon.js:619
-#: src/service/daemon.js:631
+#: src/service/daemon.js:618 src/service/daemon.js:635
+#: src/service/daemon.js:647
 msgid "Click for more information"
 msgstr "További információért kattintson ide"
 
-#: src/service/daemon.js:617
+#: src/service/daemon.js:633
 msgid "Remote Filesystem Error"
 msgstr "Távoli fájlrendszer hiba"
 
-#: src/service/daemon.js:618
+#: src/service/daemon.js:634
 #, javascript-format
 msgid "%s is using an incompatible SSH library"
 msgstr "%s egy inkompatibilis SSH könyvtárat használ"
 
-#: src/service/daemon.js:629
+#: src/service/daemon.js:645
 msgid "Wayland Not Supported"
 msgstr "Wayland nem támogatott"
 
-#: src/service/daemon.js:630
+#: src/service/daemon.js:646
 msgid "Remote input not supported on Wayland"
 msgstr "A távoli bevitel nem támogatott Wayland alatt"
 
 #. Create an urgent notification
-#: src/service/daemon.js:654
+#: src/service/daemon.js:670
 #, javascript-format
 msgid "GSConnect: %s"
 msgstr "GSConnect: %s"
 
 #. TRANSLATORS: Share URL by SMS
-#: src/service/daemon.js:800 src/service/plugins/sms.js:49
+#: src/service/daemon.js:818 src/service/plugins/sms.js:49
 #: webextension/gettext.js:39
 msgid "Send SMS"
 msgstr "SMS küldése"
 
-#: src/service/daemon.js:804
+#: src/service/daemon.js:822
 msgid "Dial Number"
 msgstr "Telefonszám hívása"
 
@@ -443,40 +436,36 @@ msgstr "Táblagép"
 msgid "Desktop"
 msgstr "Asztali gép"
 
-#: src/service/device.js:418 src/shell/device.js:364
+#: src/service/device.js:409
 msgid "Reconnect"
 msgstr "Újracsatlakozás"
 
-#: src/service/device.js:426 src/shell/device.js:416
-msgid "Settings"
-msgstr "Beállítások"
-
 #. TRANSLATORS: eg. Pair Request from Google Pixel
-#: src/service/device.js:617
+#: src/service/device.js:606
 #, javascript-format
 msgid "Pair Request from %s"
 msgstr "Párosítási kérelem innen: %s"
 
-#: src/service/device.js:624
+#: src/service/device.js:613
 msgid "Reject"
 msgstr "Elutasítás"
 
-#: src/service/device.js:629
+#: src/service/device.js:618
 msgid "Accept"
 msgstr "Elfogadás"
 
-#: src/service/plugins/battery.js:188 src/service/plugins/findmyphone.js:18
+#: src/service/plugins/battery.js:194 src/service/plugins/findmyphone.js:18
 msgid "Locate"
 msgstr "Keresés"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is low
-#: src/service/plugins/battery.js:197
+#: src/service/plugins/battery.js:203
 #, javascript-format
 msgid "%s: Battery is low"
 msgstr "%s: alacsony töltöttség"
 
 #. TRANSLATORS: eg. 15% remaining
-#: src/service/plugins/battery.js:199
+#: src/service/plugins/battery.js:205
 #, javascript-format
 msgid "%d%% remaining"
 msgstr "%d%% van hátra"
@@ -501,16 +490,16 @@ msgstr "Névjegyek"
 msgid "Find My Phone"
 msgstr "Keresd meg a telefonom"
 
-#: src/service/plugins/findmyphone.js:73
+#: src/service/plugins/findmyphone.js:65
 msgid "Locate Device"
 msgstr "Eszköz keresése"
 
-#: src/service/plugins/findmyphone.js:74
+#: src/service/plugins/findmyphone.js:66
 #, javascript-format
 msgid "%s asked to locate this device"
 msgstr "%s kérte ennek az eszköznek a megkeresését"
 
-#: src/service/plugins/findmyphone.js:82
+#: src/service/plugins/findmyphone.js:74
 msgid "Found"
 msgstr "Megtalálva"
 
@@ -518,15 +507,13 @@ msgstr "Megtalálva"
 msgid "Mousepad"
 msgstr "Egérpad"
 
-#: src/service/plugins/mousepad.js:28 src/service/plugins/mousepad.js:537
-#, fuzzy
+#: src/service/plugins/mousepad.js:28 src/service/plugins/mousepad.js:536
 msgid "Keyboard"
-msgstr "Gyorsbillentyűk"
+msgstr "Billentyűzet"
 
-#: src/service/plugins/mousepad.js:554
-#, fuzzy
+#: src/service/plugins/mousepad.js:553
 msgid "Keyboard not ready"
-msgstr "Gyorsbillentyűk"
+msgstr "A billentyűzet nem áll készen"
 
 #: src/service/plugins/mpris.js:10
 msgid "MPRIS"
@@ -576,15 +563,15 @@ msgstr "Csatolás"
 msgid "Unmount"
 msgstr "Leválasztás"
 
-#: src/service/plugins/sftp.js:172
+#: src/service/plugins/sftp.js:170
 msgid "All files"
 msgstr "Összes fájl"
 
-#: src/service/plugins/sftp.js:173
+#: src/service/plugins/sftp.js:171
 msgid "Camera pictures"
 msgstr "Kamera fényképek"
 
-#: src/service/plugins/sftp.js:344
+#: src/service/plugins/sftp.js:342
 msgid "Files"
 msgstr "Fájlok"
 
@@ -619,7 +606,7 @@ msgstr "„%s” fogadása innen: %s"
 #: src/service/plugins/share.js:138 src/service/plugins/share.js:289
 #: src/service/plugins/share.js:407 src/service/ui/keybindings.js:44
 #: src/service/ui/service.js:121 src/service/ui/service.js:300
-#: src/service/ui/settings.js:859 src/shell/donotdisturb.js:215
+#: src/service/ui/settings.js:851 src/shell/donotdisturb.js:215
 msgid "Cancel"
 msgstr "Mégse"
 
@@ -787,7 +774,9 @@ msgstr "<b>%s</b> megváltoztatásához adj meg egy új gyorsbillentyűt"
 #. TRANSLATORS: Keys for cancelling (␛) or resetting (␈) a shortcut
 #: src/service/ui/keybindings.js:83
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr "A megszakításhoz nyomj Esc gombot, vagy Backspace-t a gyorsbillentyű visszaállításához."
+msgstr ""
+"A megszakításhoz nyomj Esc gombot, vagy Backspace-t a gyorsbillentyű "
+"visszaállításához."
 
 #. TRANSLATORS: When a keyboard shortcut is unavailable
 #. Example: [Ctrl]+[S] is already being used
@@ -808,27 +797,27 @@ msgstr "Eszköz kiválasztása"
 msgid "Select"
 msgstr "Kiválasztás"
 
-#: src/service/ui/settings.js:414
+#: src/service/ui/settings.js:296
 msgid "Panel"
 msgstr "Panel"
 
-#: src/service/ui/settings.js:414
+#: src/service/ui/settings.js:296
 msgid "User Menu"
 msgstr "Felhasználói menü"
 
-#: src/service/ui/settings.js:860
+#: src/service/ui/settings.js:852
 msgid "Open"
 msgstr "Megnyitás"
 
-#: src/service/ui/settings.js:924 src/service/ui/settings.js:937
+#: src/service/ui/settings.js:909 src/service/ui/settings.js:922
 msgid "On"
 msgstr "Be"
 
-#: src/service/ui/settings.js:924 src/service/ui/settings.js:937
+#: src/service/ui/settings.js:909 src/service/ui/settings.js:922
 msgid "Off"
 msgstr "Ki"
 
-#: src/service/ui/settings.js:1058 src/service/ui/settings.js:1124
+#: src/service/ui/settings.js:1043 src/service/ui/settings.js:1109
 msgid "Disabled"
 msgstr "Letiltva"
 
@@ -855,34 +844,30 @@ msgid "New Message"
 msgstr "Új üzenet"
 
 #. TRANSLATORS: When the battery level is 100%
-#: src/shell/device.js:305
+#: src/shell/device.js:86
 msgid "Fully Charged"
 msgstr "Teljesen feltöltve"
 
 #. TRANSLATORS: When no time estimate for the battery is available
 #. EXAMPLE: 42% (Estimating…)
-#: src/shell/device.js:309
+#: src/shell/device.js:90
 #, javascript-format
 msgid "%d%% (Estimating…)"
 msgstr "%d%% (becslés…)"
 
 #. TRANSLATORS: Estimated time until battery is charged
 #. EXAMPLE: 42% (1:15 Until Full)
-#: src/shell/device.js:319
+#: src/shell/device.js:100
 #, javascript-format
 msgid "%d%% (%d∶%02d Until Full)"
 msgstr "%d%% (%d∶%02d a feltöltésig)"
 
 #. TRANSLATORS: Estimated time until battery is empty
 #. EXAMPLE: 42% (12:15 Remaining)
-#: src/shell/device.js:327
+#: src/shell/device.js:108
 #, javascript-format
 msgid "%d%% (%d∶%02d Remaining)"
 msgstr "%d%% (%d∶%02d van hátra)"
-
-#: src/shell/device.js:580
-msgid "Device is unpaired"
-msgstr "Az eszköz nincs párosítva"
 
 #: src/shell/donotdisturb.js:150 src/shell/donotdisturb.js:289
 msgid "Do Not Disturb"
@@ -918,7 +903,8 @@ msgstr[1] "%d óra"
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:29
 msgid "Share links with GSConnect, direct to the browser or by SMS."
-msgstr "Hivatkozások megosztása GSConnecttel, közvetlenül a böngészőből vagy SMS-ben."
+msgstr ""
+"Hivatkozások megosztása GSConnecttel, közvetlenül a böngészőből vagy SMS-ben."
 
 #. TRANSLATORS: WebExtension can't connect to GSConnect
 #: webextension/gettext.js:33
@@ -929,6 +915,27 @@ msgstr "A szolgáltatás nem érhető el"
 #: webextension/gettext.js:37
 msgid "Open in Browser"
 msgstr "Megnyitás böngészőben"
+
+#~ msgid "Show Offline Devices"
+#~ msgstr "Offline eszközök megjelenítése"
+
+#~ msgid "Show Unpaired Devices"
+#~ msgstr "Párosítatlan eszközök megjelenítése"
+
+#~ msgid "Show Battery Icon"
+#~ msgstr "Akkumulátor ikon megjelenítése"
+
+#~ msgid "Shell"
+#~ msgstr "Shell"
+
+#~ msgid "Android"
+#~ msgstr "Android"
+
+#~ msgid "Sailfish OS"
+#~ msgstr "Sailfish OS"
+
+#~ msgid "Device is unpaired"
+#~ msgstr "Az eszköz nincs párosítva"
 
 #~ msgid "Locate %s"
 #~ msgstr "%s keresése"
@@ -954,8 +961,12 @@ msgstr "Megnyitás böngészőben"
 #~ msgid "This program comes with absolutely no warranty."
 #~ msgstr "A programra semmilyen garanciát nem vállalunk."
 
-#~ msgid "See the <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html\">GNU General Public License, version 2 or later</a> for details."
-#~ msgstr "Részletekért lásd a <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html\">GNU General Public License 2-es, vagy újabb verziót</a>."
+#~ msgid ""
+#~ "See the <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html"
+#~ "\">GNU General Public License, version 2 or later</a> for details."
+#~ msgstr ""
+#~ "Részletekért lásd a <a href=\"https://www.gnu.org/licenses/old-licenses/"
+#~ "gpl-2.0.html\">GNU General Public License 2-es, vagy újabb verziót</a>."
 
 #~ msgid "Preferences"
 #~ msgstr "Beállítások"
@@ -966,8 +977,12 @@ msgstr "Megnyitás böngészőben"
 #~ msgid "Web Browser Integration"
 #~ msgstr "Webböngésző integráció"
 
-#~ msgid "Requires <a href=\"%s\">Chrome Extension</a> or <a href=\"%s\">Firefox Add-On</a>"
-#~ msgstr "<a href=\"%s\">Chrome bővítmény</a> vagy <a href=\"%s\">Firefox kiegészítő</a> telepítése szükséges"
+#~ msgid ""
+#~ "Requires <a href=\"%s\">Chrome Extension</a> or <a href=\"%s\">Firefox "
+#~ "Add-On</a>"
+#~ msgstr ""
+#~ "<a href=\"%s\">Chrome bővítmény</a> vagy <a href=\"%s\">Firefox "
+#~ "kiegészítő</a> telepítése szükséges"
 
 #~ msgid "Nautilus extensions changed"
 #~ msgstr "A Nautilus bővítmény módosult"
@@ -1031,7 +1046,9 @@ msgstr "Megnyitás böngészőben"
 #~ msgstr "Atspi-t nem sikerült inicializálni"
 
 #~ msgid "Cannot load Caribou virtual keyboard for Unicode support"
-#~ msgstr "Nem sikerült betölteni a Caribou virtuális billentyűzetet a Unicode támogatáshoz"
+#~ msgstr ""
+#~ "Nem sikerült betölteni a Caribou virtuális billentyűzetet a Unicode "
+#~ "támogatáshoz"
 
 #~ msgid "Control MPRIS2 enabled media players"
 #~ msgstr "MPRIS2-képes médialejátszók vezérlése"
@@ -1093,14 +1110,28 @@ msgstr "Megnyitás böngészőben"
 #~ msgid "The <b>Media Player Control</b> plugin must be enabled"
 #~ msgstr "A <b>Médialejátszó vezérlőnek</b> engedélyezve kell lenni"
 
-#~ msgid "Ensure that devices are on the same local network with ports 1716 to 1764 open for TCP and UDP connections."
-#~ msgstr "Győződjön meg arról, hogy az eszközök ugyanahhoz a helyi hálózathoz csatlakoznak és a hálózaton engedélyezett TCP és UDP kapcsolat a 1716-1764 porttartományban."
+#~ msgid ""
+#~ "Ensure that devices are on the same local network with ports 1716 to 1764 "
+#~ "open for TCP and UDP connections."
+#~ msgstr ""
+#~ "Győződjön meg arról, hogy az eszközök ugyanahhoz a helyi hálózathoz "
+#~ "csatlakoznak és a hálózaton engedélyezett TCP és UDP kapcsolat a "
+#~ "1716-1764 porttartományban."
 
-#~ msgid "To connect an Android device, install the KDE Connect Android app from the <a href=\"%s\">Google Play Store</a> or <a href=\"%s\">F-Droid</a>."
-#~ msgstr "Android eszköz csatlakoztatásához telepítse a KDE Connect Android alkalmazást a <a href=\"%s\">Google Play Áruházból</a> vagy <a href=\"%s\">F-Droid-ról</a>."
+#~ msgid ""
+#~ "To connect an Android device, install the KDE Connect Android app from "
+#~ "the <a href=\"%s\">Google Play Store</a> or <a href=\"%s\">F-Droid</a>."
+#~ msgstr ""
+#~ "Android eszköz csatlakoztatásához telepítse a KDE Connect Android "
+#~ "alkalmazást a <a href=\"%s\">Google Play Áruházból</a> vagy <a href=\"%s"
+#~ "\">F-Droid-ról</a>."
 
-#~ msgid "Please see the <a href=\"%s\">Wiki</a> for more help or <a href=\"%s\">open an issue</a> on Github to report a problem."
-#~ msgstr "További segítséget a <a href=\"%s\">Wikiben</a> talál; hiba bejelentéséhez <a href=\"%s\">nyisson egy issue-t</a> Githubon."
+#~ msgid ""
+#~ "Please see the <a href=\"%s\">Wiki</a> for more help or <a href=\"%s"
+#~ "\">open an issue</a> on Github to report a problem."
+#~ msgstr ""
+#~ "További segítséget a <a href=\"%s\">Wikiben</a> talál; hiba "
+#~ "bejelentéséhez <a href=\"%s\">nyisson egy issue-t</a> Githubon."
 
 #~ msgid "Error: %s"
 #~ msgstr "Hiba: %s"
@@ -1136,7 +1167,8 @@ msgstr "Megnyitás böngészőben"
 #~ msgid "Keyboard Shortcut Unavailable"
 #~ msgstr "Gyorsbillentyű nem érhető el"
 
-#~ msgid "The requested keyboard shortcut is already in use and can't be overridden."
+#~ msgid ""
+#~ "The requested keyboard shortcut is already in use and can't be overridden."
 #~ msgstr "A kért gyorsbillentyű már használatban van és nem lehet felülírni."
 
 #~ msgid "Configure <b>%s</b>"
