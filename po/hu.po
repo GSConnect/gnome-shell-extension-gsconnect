@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-04 18:33+0100\n"
-"PO-Revision-Date: 2018-11-04 18:33+0100\n"
+"POT-Creation-Date: 2018-11-05 21:40+0100\n"
+"PO-Revision-Date: 2018-11-05 21:44+0100\n"
 "Last-Translator: Báthory Péter <bathory86p@gmail.com>\n"
 "Language-Team: \n"
 "Language: hu\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.0.6\n"
+"X-Generator: Poedit 2.1.1\n"
 
 #: data/conversation-window.ui:14 src/service/ui/messaging.js:482
 msgid "Conversations"
@@ -286,7 +286,7 @@ msgid "Refresh"
 msgstr "Frissítés"
 
 #. Service Menu
-#: src/extension.js:79 src/extension.js:248
+#: src/extension.js:79 src/extension.js:249
 msgid "Mobile Devices"
 msgstr "Mobil eszközök"
 
@@ -295,15 +295,18 @@ msgid "Mobile Settings"
 msgstr "Mobil beállítások"
 
 #. TRANSLATORS: Extension name
-#: src/extension.js:186 src/extension.js:300 src/service/daemon.js:95
+#: src/extension.js:186 src/extension.js:301 src/service/daemon.js:95
 #: src/service/daemon.js:413 webextension/gettext.js:27
 msgid "GSConnect"
 msgstr "GSConnect"
 
-#: src/extension.js:246
+#. TRANSLATORS: %d is the number of devices connected
+#: src/extension.js:247
 #, javascript-format
 msgid "%d Connected"
-msgstr "%d csatlakoztatva"
+msgid_plural "%d Connected"
+msgstr[0] "Egy eszköz csatlakoztatva"
+msgstr[1] "%d eszköz csatlakoztatva"
 
 #. TRANSLATORS: Top-level context menu item for GSConnect
 #: src/nautilus-gsconnect.py:112 webextension/gettext.js:31
@@ -830,8 +833,10 @@ msgstr "Épp most"
 #: src/service/ui/messaging.js:88 src/service/ui/messaging.js:120
 #: src/shell/donotdisturb.js:266
 #, javascript-format
-msgid "%d minutes"
-msgstr "%d perc"
+msgid "%d minute"
+msgid_plural "%d minutes"
+msgstr[0] "%d perc"
+msgstr[1] "%d perc"
 
 #. TRANSLATORS: Yesterday, but less than 24 hours (eg. Yesterday · 11:29 PM)
 #: src/service/ui/messaging.js:93
