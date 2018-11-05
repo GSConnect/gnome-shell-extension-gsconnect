@@ -243,7 +243,8 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
             }
         } else {
             if (this.available.length > 1) {
-                this._item.label.text = _('%d Connected').format(this.available.length);
+                //TRANSLATORS: %d is the number of devices connected
+                this._item.label.text = gsconnect.ngettext('%d Connected', '%d Connected', this.available.length).format(this.available.length);
             } else {
                 this._item.label.text = _('Mobile Devices');
             }
@@ -503,4 +504,3 @@ function disable() {
     serviceIndicator = null;
     Notification.unpatchGtkNotificationSources();
 }
-

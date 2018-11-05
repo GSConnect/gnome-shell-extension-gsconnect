@@ -85,7 +85,7 @@ function getTime(time) {
         // Under an hour
         case (diff < GLib.TIME_SPAN_HOUR):
             // TRANSLATORS: Time duration in minutes (eg. 15 minutes)
-            return _('%d minutes').format(diff / GLib.TIME_SPAN_MINUTE);
+            return ngettext('%d minute', '%d minutes', (diff / GLib.TIME_SPAN_MINUTE)).format(diff / GLib.TIME_SPAN_MINUTE);
 
         // Yesterday, but less than 24 hours ago
         case (diff < GLib.TIME_SPAN_DAY && (now.get_day_of_month() !== time.get_day_of_month())):
@@ -117,7 +117,7 @@ function getShortTime(time) {
 
         case (diff < GLib.TIME_SPAN_HOUR):
             // TRANSLATORS: Time duration in minutes (eg. 15 minutes)
-            return _('%d minutes').format(diff / GLib.TIME_SPAN_MINUTE);
+            return ngettext('%d minute', '%d minutes', (diff / GLib.TIME_SPAN_MINUTE)).format(diff / GLib.TIME_SPAN_MINUTE);
 
         case (diff < (GLib.TIME_SPAN_DAY * 7)):
             return time.format('%a');
@@ -936,4 +936,3 @@ var ConversationChooser = GObject.registerClass({
         }
     }
 });
-
