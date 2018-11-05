@@ -36,7 +36,7 @@ var RadioButton = GObject.registerClass({
 
         this.button = new St.Button({
             style_class: 'pager-button',
-            child: new St.Icon({ icon_name: 'radio-symbolic', icon_size: 16 })
+            child: new St.Icon({icon_name: 'radio-symbolic', icon_size: 16})
         });
         this.add_child(this.button);
 
@@ -104,7 +104,7 @@ var RadioButton = GObject.registerClass({
 
     set text(text) {
         if (typeof text === 'string') {
-            this.widget = new St.Label({ text: text });
+            this.widget = new St.Label({text: text});
         }
     }
 
@@ -114,7 +114,7 @@ var RadioButton = GObject.registerClass({
 
     set widget (widget) {
         if (widget instanceof Clutter.Actor) {
-            widget.y_align = Clutter.ActorAlign.CENTER
+            widget.y_align = Clutter.ActorAlign.CENTER;
             this.replace_child(this.widget, widget);
         }
     }
@@ -124,7 +124,7 @@ var RadioButton = GObject.registerClass({
 var Dialog = class Dialog extends ModalDialog.ModalDialog {
 
     _init() {
-        super._init({ styleClass: 'gsconnect-dnd-dialog' });
+        super._init({styleClass: 'gsconnect-dnd-dialog'});
 
         this.contentLayout.style_class = 'nm-dialog-content';
 
@@ -142,7 +142,7 @@ var Dialog = class Dialog extends ModalDialog.ModalDialog {
         });
         headerBox.add(icon);
 
-        let titleBox = new St.BoxLayout({ vertical: true });
+        let titleBox = new St.BoxLayout({vertical: true});
         headerBox.add(titleBox);
 
         let header = new St.Label({
@@ -165,7 +165,7 @@ var Dialog = class Dialog extends ModalDialog.ModalDialog {
         this.contentLayout.add(radioList);
 
         // 1 hour in seconds
-        this._time = 1*60*60;
+        this._time = 1 * 60 * 60;
 
         this._radioIndefinite = new RadioButton({
             text: _('Until you turn off Do Not Disturb')
@@ -191,14 +191,14 @@ var Dialog = class Dialog extends ModalDialog.ModalDialog {
 
         this._timerRemove = new St.Button({
             style_class: 'pager-button',
-            child: new St.Icon({ icon_name: 'list-remove-symbolic' })
+            child: new St.Icon({icon_name: 'list-remove-symbolic'})
         });
         this._timerRemove.connect('clicked', this._removeTime.bind(this));
         timer.add_child(this._timerRemove);
 
         this._timerAdd = new St.Button({
             style_class: 'pager-button',
-            child: new St.Icon({ icon_name: 'list-add-symbolic' })
+            child: new St.Icon({icon_name: 'list-add-symbolic'})
         });
         this._timerAdd.connect('clicked', this._addTime.bind(this));
         timer.add_child(this._timerAdd);
@@ -212,8 +212,8 @@ var Dialog = class Dialog extends ModalDialog.ModalDialog {
 
         // Dialog Buttons
         this.setButtons([
-            { label: _('Cancel'), action: this._cancel.bind(this), default: true },
-            { label: _('Done'), action: this._done.bind(this) }
+            {label: _('Cancel'), action: this._cancel.bind(this), default: true},
+            {label: _('Done'), action: this._done.bind(this)}
         ]);
     }
 
@@ -237,39 +237,39 @@ var Dialog = class Dialog extends ModalDialog.ModalDialog {
     }
 
     _addTime() {
-        if (this._time < 60*60) {
-            this._time += 15*60;
+        if (this._time < 60 * 60) {
+            this._time += 15 * 60;
         } else {
-            this._time += 60*60;
+            this._time += 60 * 60;
         }
 
         this._setTimeLabel();
     }
 
     _removeTime() {
-        if (this._time <= 60*60) {
-            this._time -= 15*60;
+        if (this._time <= 60 * 60) {
+            this._time -= 15 * 60;
         } else {
-            this._time -= 60*60;
+            this._time -= 60 * 60;
         }
 
         this._setTimeLabel();
     }
 
     _getDurationLabel() {
-        if (this._time >= 60*60) {
+        if (this._time >= 60 * 60) {
             let hours = this._time / 3600;
             // TRANSLATORS: Time duration in hours (eg. 2 hours)
             return gsconnect.ngettext('One hour', '%d hours', hours).format(hours);
         } else {
             // TRANSLATORS: Time duration in minutes (eg. 15 minutes)
-            return _('%d minutes').format(this._time / 60);
+            return gsconnect.ngettext('%d minute', '%d minutes', (this._time / 60)).format(this._time / 60);
         }
     }
 
     _setTimeLabel() {
-        this._timerRemove.reactive = (this._time > 15*60);
-        this._timerAdd.reactive = (this._time < 12*60*60);
+        this._timerRemove.reactive = (this._time > 15 * 60);
+        this._timerAdd.reactive = (this._time < 12 * 60 * 60);
 
         let now = GLib.DateTime.new_now_local();
 
@@ -280,7 +280,7 @@ var Dialog = class Dialog extends ModalDialog.ModalDialog {
             this._getDurationLabel()
         );
     }
-}
+};
 
 
 var MenuItem = class MenuItem extends PopupMenu.PopupSwitchMenuItem {
@@ -306,5 +306,4 @@ var MenuItem = class MenuItem extends PopupMenu.PopupSwitchMenuItem {
             item._getTopMenu().close(true);
         });
     }
-}
-
+};

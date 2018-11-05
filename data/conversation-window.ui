@@ -7,7 +7,6 @@
     <property name="default_width">300</property>
     <property name="default_height">300</property>
     <property name="urgency_hint">True</property>
-    <signal name="delete-event" handler="_onDeleteEvent" swapped="no"/>
     <child type="titlebar">
       <object class="GtkHeaderBar" id="headerbar">
         <property name="visible">True</property>

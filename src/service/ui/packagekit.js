@@ -17,14 +17,25 @@ try {
  * package names for each particular distro to meet a feature's dependencies.
  */
 const PackageGroup = {
-    // Feature:     Contacts Integration
+    // Feature:     Extended Keyboard Support
+    // Requires:    `Caribou-1.0.typelib`
+    'caribou': [
+        // Arch, Fedora, Gentoo
+        'caribou',
+        // Debian
+        'gir1.2-caribou-1.0',
+        // openSUSE
+        'typelib-1_0-Caribou-1_0'
+    ],
+
+    // Feature:     Desktop Contacts
     // Requires:    `libgobject-2.0.so.0`, `libfolks-eds.so.25`, `Folks-0.6.typelib`
     'folks': [
         // Arch, Fedora, Gentoo
         'folks',
         // Debian
         'libglib2.0-dev', 'gir1.2-folks-0.6', 'libfolks-eds25',
-        // TODO: confirm openSUSE
+        // openSUSE
         'typelib-1_0-FolksEds-0_6'
     ],
 
@@ -35,15 +46,17 @@ const PackageGroup = {
         'gsound',
         // Debian/Ubuntu
         'gir1.2-gsound-1.0',
-        // TODO: confirm openSUSE
-        'typelib-1_0-GSound'
+        // openSUSE
+        'typelib-1_0-GSound-1_0'
     ],
 
     // Feature:     Files Integration
     // Requires:    `Nautilus-3.0.typelib`, `libnautilus-python.so`
     'nautilus': [
-        // Fedora, Gentoo
-        'nautilus-python', 'nautilus-extensions', 'python2-gobject',
+        // Fedora
+        'python2-nautilus', 'nautilus-extensions', 'python2-gobject',
+        // Gentoo
+        'nautilus-python', 'pygobject',
         // Arch, Debian/Ubuntu, openSUSE
         'python-nautilus', 'gir1.2-nautilus-3.0'
     ],
@@ -57,9 +70,6 @@ const PackageGroup = {
         'sshfs'
     ]
 };
-
-
-const HELP_URI = 'https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Installation#dependencies';
 
 
 var DependencyButton = GObject.registerClass({
@@ -171,55 +181,20 @@ var DependencyButton = GObject.registerClass({
     }
 
     _onClicked(button, event) {
-        switch (this._state) {
-            case 'ready':
-                this._install();
-                break;
-
-            case 'help':
-                Gtk.show_uri_on_window(this.get_toplevel(), HELP_URI, 0);
-                break;
-
-            default:
-                this._reset();
-        }
+        (this._state === 'ready') ? this._install() : this._reset();
     }
 
     /**
      * Return a list of packages from @names that are available
      *
      * @param {Array of string} names - The names of the packages to find
+     * @param {string} filter - A semicolon-separated filter list to apply
      * @return {Array of PackageKit.Package} - The packages found
      */
-    _getAvailable(names) {
+    _query(names, filter = '') {
         return new Promise((resolve, reject) => {
             this.client.resolve_async(
-                PackageKit.filter_bitfield_from_string('arch'),
-                names,
-                null,
-                () => {},
-                (client, res) => {
-                    try {
-                        res = client.generic_finish(res);
-                        resolve(res.get_package_array());
-                    } catch (e) {
-                        reject(e);
-                    }
-                }
-            );
-        });
-    }
-
-    /**
-     * Return a list of packages from @names that are installable
-     *
-     * @param {string} name - The name of the package to find
-     * @return {Array of PackageKit.Package} - The packages found
-     */
-    _getInstallable(names) {
-        return new Promise((resolve, reject) => {
-            this.client.resolve_async(
-                PackageKit.filter_bitfield_from_string('arch;~installed'),
+                PackageKit.filter_bitfield_from_string(filter),
                 names,
                 null,
                 () => {},
@@ -265,42 +240,24 @@ var DependencyButton = GObject.registerClass({
         });
     }
 
-    _done() {
-        this._button.get_style_context().remove_class('suggested-action');
-
+    _done(icon_name = null) {
         this._button.visible = false;
         this._spinner.visible = false;
 
         this._result.visible = true;
+        this._result.icon_name = icon_name;
         this.tooltip_text = null;
-
-        this._state = 'done';
     }
 
-    _error(error) {
-        this._button.get_style_context().remove_class('suggested-action');
-
+    _warning(e) {
         this._result.visible = false;
         this._spinner.visible = false;
 
         this._button.visible = true;
-        this._button.image.icon_name = 'dialog-error-symbolic';
-        this.tooltip_text = error.message;
+        this._button.image.icon_name = 'dialog-warning-symbolic';
+        this.tooltip_text = e.message;
 
-        this._state = 'error';
-    }
-
-    _help() {
-        this._button.get_style_context().remove_class('suggested-action');
-
-        this._result.visible = false;
-        this._spinner.visible = false;
-
-        this._button.visible = true;
-        this._button.image.icon_name = 'help-browser-symbolic';
-        this.tooltip_text = HELP_URI;
-
-        this._state = 'help';
+        this._state = 'warning';
     }
 
     _ready() {
@@ -309,10 +266,9 @@ var DependencyButton = GObject.registerClass({
 
         this._button.visible = true;
         this._button.image.icon_name = 'folder-download-symbolic';
-        this._button.get_style_context().add_class('suggested-action');
         this.tooltip_markup = this._packages.map(pkg => {
-            return `<b>${pkg.get_name()}</b> - ${pkg.get_summary()}`
-        }).join(',\n');
+            return `<b>${pkg.get_name()}</b> - ${pkg.get_summary()}`;
+        }).join('\n');
 
         this._state = 'ready';
     }
@@ -327,50 +283,50 @@ var DependencyButton = GObject.registerClass({
             await this._installPackages(ids);
             await this._reset();
         } catch (e) {
-            this._error(e);
+            this._warning(e);
         }
     }
 
     async _reset() {
-        let available = [];
-        let installable = [];
-
         try {
             this._state = true;
             this._button.visible = false;
             this._result.visible = false;
             this._spinner.visible = true;
 
-            // PackageKit is not available; show help
+            // PackageKit is not available
             if (!this.client) {
-                this._help();
+                this._done('dialog-question-symbolic');
                 return;
             }
 
-            // Reduce the possible packages to those that are available
-            available = await this._getAvailable(this.names);
-            available = available.map(pkg => pkg.get_name());
+            // Filter the package names into what's available and what's installed
+            let available = await this._query(this.names, 'arch;newest');
+            let installed = await this._query(
+                available.map(pkg => pkg.get_name()),
+                'arch;newest;installed'
+            );
+            installed = installed.map(pkg => pkg.get_name());
 
-            // None found; show help
+            // No available packages
             if (available.length === 0) {
-                this._help();
+                this._done('dialog-question-symbolic');
                 return;
             }
 
-            // Reduce the available packages to those that are uninstalled
-            installable = await this._getInstallable(available);
+            // If any available names are not installed, we can install them on demand
+            let installable = available.filter(pkg => !installed.includes(pkg.get_name()));
 
-            // All available packages are installed; show done
+            // All available packages are installed
             if (installable.length === 0) {
-                this._done();
+                this._done('object-select-symbolic');
                 return;
             }
 
             this._packages = installable;
             this._ready();
         } catch (e) {
-            this._error(e);
+            this._warning(e);
         }
     }
 });
-

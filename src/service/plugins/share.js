@@ -139,7 +139,7 @@ var Plugin = GObject.registerClass({
                     action: 'cancelTransfer',
                     parameter: new GLib.Variant('s', transfer.uuid)
                 }],
-                icon: new Gio.ThemedIcon({ name: 'document-save-symbolic' })
+                icon: new Gio.ThemedIcon({name: 'document-save-symbolic'})
             });
 
             // Start transfer
@@ -184,7 +184,7 @@ var Plugin = GObject.registerClass({
                 title: title,
                 body: body,
                 buttons: buttons,
-                icon: new Gio.ThemedIcon({ name: iconName })
+                icon: new Gio.ThemedIcon({name: iconName})
             });
         } catch (e) {
             logError(e, this.device.name);
@@ -290,13 +290,13 @@ var Plugin = GObject.registerClass({
                     action: 'cancelTransfer',
                     parameter: new GLib.Variant('s', transfer.uuid)
                 }],
-                icon: new Gio.ThemedIcon({ name: 'document-send-symbolic' })
+                icon: new Gio.ThemedIcon({name: 'document-send-symbolic'})
             });
 
             success = await transfer.upload({
                 id: 0,
                 type: 'kdeconnect.share.request',
-                body: { filename: file.get_basename() }
+                body: {filename: file.get_basename()}
             });
 
             if (success) {
@@ -322,7 +322,7 @@ var Plugin = GObject.registerClass({
                 id: transfer.uuid,
                 title: title,
                 body: body,
-                icon: new Gio.ThemedIcon({ name: iconName })
+                icon: new Gio.ThemedIcon({name: iconName})
             });
         } catch (e) {
             logWarning(e, this.device.name);
@@ -338,7 +338,7 @@ var Plugin = GObject.registerClass({
         this.device.sendPacket({
             id: 0,
             type: 'kdeconnect.share.request',
-            body: { text: text }
+            body: {text: text}
         });
     }
 
@@ -367,7 +367,7 @@ var Plugin = GObject.registerClass({
         this.device.sendPacket({
             id: 0,
             type: 'kdeconnect.share.request',
-            body: { url: uri }
+            body: {url: uri}
         });
     }
 });

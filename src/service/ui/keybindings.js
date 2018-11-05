@@ -12,13 +12,13 @@ const Gtk = imports.gi.Gtk;
  */
 var ResponseType = {
     CANCEL: Gtk.ResponseType.CANCEL,
-    SET:   Gtk.ResponseType.APPLY,
+    SET: Gtk.ResponseType.APPLY,
     UNSET: 2
 };
 
 
 /**
- * A simplified version of the shortcut editor from Gnome Control Center
+ * A simplified version of the shortcut editor from GNOME Control Center
  */
 var ShortcutChooserDialog = GObject.registerClass({
     GTypeName: 'ShortcutChooserDialog'
@@ -255,13 +255,13 @@ var ShortcutChooserDialog = GObject.registerClass({
 
 
 /**
- * Check the availability of an accelerator using Gnome Shell's DBus interface.
+ * Check the availability of an accelerator using GNOME Shell's DBus interface.
  *
  * @param {string} - An accelerator
  * @param {number} - Flags
  * @param {boolean} - %true if available, %false on error or unavailable
  */
-async function check_accelerator(accelerator, flags=0) {
+async function check_accelerator(accelerator, flags = 0) {
     let action;
     let result = false;
 
@@ -313,10 +313,10 @@ async function check_accelerator(accelerator, flags=0) {
                 );
             });
         }
-    } catch (e) {
-        result = false;
-    } finally {
+
         return result;
+    } catch (e) {
+        return false;
     }
 }
 
@@ -328,7 +328,7 @@ async function check_accelerator(accelerator, flags=0) {
  * @param {string} accelerator - An accelerator as taken by Gtk.ShortcutLabel
  * @return {string} - An accelerator or %null if it should be unset.
  */
-async function get_accelerator(summary, accelerator=null) {
+async function get_accelerator(summary, accelerator = null) {
     let dialog;
 
     try {
@@ -360,9 +360,10 @@ async function get_accelerator(summary, accelerator=null) {
 
             dialog.run();
         });
+
+        return accelerator;
     } catch (e) {
         logError(e);
-    } finally {
         return accelerator;
     }
 }

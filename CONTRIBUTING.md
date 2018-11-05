@@ -5,9 +5,9 @@ only find it useful, but that you think there's something that could be done to
 make it more useful, or useful to more people.
 
 The goal is to create an implementation of KDE Connect that integrates with the
-Gnome desktop more than is appropriate for the original implementation, not just
-duplicating its functionality. The [Gnome Shell Design Principles][design] and
-[Gnome Human Interface Guidelines][hig] are followed whenever appropriate.
+GNOME desktop more than is appropriate for the original implementation, not just
+duplicating its functionality. The [GNOME Shell Design Principles][design] and
+[GNOME Human Interface Guidelines][hig] are followed whenever appropriate.
 
 ## Code of Conduct
 
@@ -24,7 +24,7 @@ and it will be reviewed.
 
 * Code SHOULD be written in [GJS][gjs] if at all possible
 
-  Almost all of the Gnome API is available through introspection, however in the
+  Almost all of the GNOME API is available through introspection, however in the
   few cases it is not Python is acceptable.
   
 * Code MUST NOT be written in a pre-compiled language
@@ -32,7 +32,7 @@ and it will be reviewed.
   The extension is distributed as-is to users via the GNOME Shell Extensions
   website and must not include architecture dependant code or binaries.
   
-* Code MUST run anywhere Gnome Shell runs
+* Code MUST run anywhere GNOME Shell runs
 
   It is acceptable and sometimes necessary to use resources that may be specific
   to Linux, but fallbacks must be available for other systems like BSD. Virtual

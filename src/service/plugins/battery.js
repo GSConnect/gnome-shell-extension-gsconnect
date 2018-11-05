@@ -69,6 +69,12 @@ var Plugin = GObject.registerClass({
         });
         this.device._dbus_object.add_interface(this._dbus);
 
+        // Ensure properties are ready for DBus
+        this.notify('charging');
+        this.notify('level');
+        this.notify('icon-name');
+        this.notify('time');
+
         // Setup Cache; defaults are 90 minute charge, 1 day discharge
         this._chargeState = [54, 0, -1];
         this._dischargeState = [864, 0, -1];
@@ -197,7 +203,7 @@ var Plugin = GObject.registerClass({
             title: _('%s: Battery is low').format(this.device.name),
             // TRANSLATORS: eg. 15% remaining
             body: _('%d%% remaining').format(this.level),
-            icon: new Gio.ThemedIcon({ name: 'battery-caution-symbolic' }),
+            icon: new Gio.ThemedIcon({name: 'battery-caution-symbolic'}),
             buttons: buttons
         });
 
@@ -243,7 +249,7 @@ var Plugin = GObject.registerClass({
         this.device.sendPacket({
             id: 0,
             type: 'kdeconnect.battery.request',
-            body: { request: true }
+            body: {request: true}
         });
     }
 
@@ -271,13 +277,10 @@ var Plugin = GObject.registerClass({
     _monitorState() {
         try {
             switch (true) {
-                // The component failed to load
+                // upower failed, already monitoring, no battery or no support
                 case (!this.service.upower):
-                // Already monitoring
                 case (this._upowerId > 0):
-                // Not a battery capable device
                 case (this.service.type !== 'laptop'):
-                // Device doesn't support receiving battery statistics
                 case (!this.device.get_incoming_supported('battery')):
                     return;
             }
@@ -288,7 +291,7 @@ var Plugin = GObject.registerClass({
             );
 
             this._sendState();
-        } catch(e) {
+        } catch (e) {
             logError(e, this.device.name);
             this._unmonitorState();
         }
@@ -306,7 +309,7 @@ var Plugin = GObject.registerClass({
      * See also: https://android.googlesource.com/platform/frameworks/base/+/master/core/java/android/os/BatteryStats.java#1036
      */
     _updateEstimate() {
-        let new_time = Math.floor(Date.now()/1000);
+        let new_time = Math.floor(Date.now() / 1000);
         let new_level = this.level;
 
         // Read the state; rate has a default, time and level default to current
@@ -321,7 +324,7 @@ var Plugin = GObject.registerClass({
         // Derive rate from time/level diffs (rate = seconds/percent)
         let ldiff = this.charging ? new_level - level : level - new_level;
         let tdiff = new_time - time;
-        let new_rate = tdiff/ldiff;
+        let new_rate = tdiff / ldiff;
 
         // Update the rate if it seems valid. Use a weighted average in favour
         // of the new rate to account for possible missed level changes
@@ -347,7 +350,8 @@ var Plugin = GObject.registerClass({
     }
 
     _estimateTime() {
-        let [rate, time, level] = this.charging ? this._chargeState : this._dischargeState;
+        // elision (rate, time, level)
+        let [rate,, level] = this.charging ? this._chargeState : this._dischargeState;
         level = (level > -1) ? level : this.level;
 
         if (!Number.isFinite(rate) || rate < 1) {

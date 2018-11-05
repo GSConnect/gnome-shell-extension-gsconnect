@@ -27,7 +27,7 @@
     },
     "popupMenuDisconnected": {
         "message": "Hizmet Kullanılamıyor",
-        "description": "Popup Menu label when disconnected from the Gnome Shell extension"
+        "description": "Popup Menu label when disconnected from the GNOME Shell extension"
     },
     "popupMenuNoDevices": {
         "message": "Aygıt Bulunamadı",

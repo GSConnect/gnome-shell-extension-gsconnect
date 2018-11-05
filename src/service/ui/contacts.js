@@ -16,7 +16,7 @@ const Color = imports.service.components.color;
  *
  * @param {string} path - A local file path
  */
-function getPixbuf(path, size=null) {
+function getPixbuf(path, size = null) {
     let data, loader;
 
     // Catch missing avatar files
@@ -54,7 +54,7 @@ function getPixbuf(path, size=null) {
  * @param {string} type - An RFC2426 phone number type
  */
 function localizeNumberType(type) {
-    if (!type) { return _('Other'); }
+    if (!type) return _('Other');
 
     switch (true) {
         case type.includes('fax'):
@@ -109,9 +109,9 @@ var Avatar = GObject.registerClass({
             this.bg_color = Color.randomRGBA(this.tooltip_text);
 
             let info = Gtk.IconTheme.get_default().lookup_icon(
-               'avatar-default',
-               24,
-               Gtk.IconLookupFlags.FORCE_SYMBOLIC
+                'avatar-default',
+                24,
+                Gtk.IconLookupFlags.FORCE_SYMBOLIC
             );
 
             this._pixbuf = info.load_symbolic(
@@ -131,7 +131,7 @@ var Avatar = GObject.registerClass({
         }
 
         // Clip to a circle
-        cr.arc(16, 16, 16, 0, 2*Math.PI);
+        cr.arc(16, 16, 16, 0, 2 * Math.PI);
         cr.clipPreserve();
 
         // Fill the background if we don't have an avatar
@@ -279,7 +279,7 @@ var ContactChooser = GObject.registerClass({
                 this._temporary = this.add_contact({
                     // TRANSLATORS: A phone number (eg. "Send to 555-5555")
                     name: _('Send to %s').format(this.entry.text),
-                    numbers: [{ type: 'manual', value: this.entry.text }]
+                    numbers: [{type: 'manual', value: this.entry.text}]
                 });
                 this._temporary.__manual = true;
 
@@ -314,7 +314,7 @@ var ContactChooser = GObject.registerClass({
             return true;
         // Show contact but hide numbers based on substring of number
         } else if (queryNumber.length) {
-            let matched = false
+            let matched = false;
 
             for (let num of row.numbers) {
                 let number = num.number.replace(/\D/g, '');
@@ -448,7 +448,7 @@ var ContactChooser = GObject.registerClass({
         grid.add(value);
 
         // Type
-        let type = new Gtk.Label({ label: localizeNumberType(number.type) });
+        let type = new Gtk.Label({label: localizeNumberType(number.type)});
         type.get_style_context().add_class('dim-label');
         grid.add(type);
 

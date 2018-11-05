@@ -10,7 +10,7 @@ const TCP_MIN_PORT = 1716;
 const TCP_MAX_PORT = 1764;
 const UDP_PORT = 1716;
 
-const IP_PATTERN = /^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$|^(([a-zA-Z]|[a-zA-Z][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z]|[A-Za-z][A-Za-z0-9\-]*[A-Za-z0-9])$|^\s*((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?\s*$/;
+const IP_PATTERN = /^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$|^(([a-zA-Z]|[a-zA-Z][a-zA-Z0-9-]*[a-zA-Z0-9])\.)*([A-Za-z]|[A-Za-z][A-Za-z0-9-]*[A-Za-z0-9])$|^\s*((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?\s*$/;
 
 
 /**
@@ -92,7 +92,7 @@ var ChannelService = GObject.registerClass({
 
     async _onIncomingChannel(listener, connection) {
         try {
-            let channel = new Core.Channel({ type: 'tcp' });
+            let channel = new Core.Channel({type: 'tcp'});
             let host = connection.get_remote_address().address.to_string();
 
             debug(host, 'remote address');
@@ -109,12 +109,8 @@ var ChannelService = GObject.registerClass({
                 case (device !== undefined):
                     break;
 
-                // The host is allowed (responding to a "direct" broadcast)
+                // A response to a "direct" broadcast, or we're discoverable
                 case this.allowed.has(host):
-                    device = await this.service._ensureDevice(channel.identity);
-                    break;
-
-                // The service is discoverable
                 case this.service.discoverable:
                     device = await this.service._ensureDevice(channel.identity);
                     break;
@@ -208,14 +204,10 @@ var ChannelService = GObject.registerClass({
                 case (device !== undefined):
                     break;
 
-                // Or the service is discoverable...
+                // Or the service is discoverable or host is allowed...
                 case this.service.discoverable:
-                    device = await this.service._ensureDevice(packet);
-                    break;
-
-                // Or the host is explicitly allowed...
                 case this.allowed.has(host):
-                    device = await this.service._ensureDevice(packet);
+                    device = this.service._ensureDevice(packet);
                     break;
 
                 // ...otherwise bail
@@ -233,7 +225,7 @@ var ChannelService = GObject.registerClass({
             }
 
             // Create a new channel
-            let channel = new Core.Channel({ type: 'tcp' });
+            let channel = new Core.Channel({type: 'tcp'});
             channel.identity = packet;
 
             let connection = await new Promise((resolve, reject) => {
@@ -275,14 +267,13 @@ var ChannelService = GObject.registerClass({
      *
      * @param {string} [address] - An optional target IPv4 or IPv6 address
      */
-    broadcast(address=null) {
+    broadcast(address = null) {
         try {
             // Remember manual addresses so we know to accept connections
             if (address instanceof Gio.InetSocketAddress) {
-                debug(`Identify to ${address.address.to_string()}`);
                 this.allowed.add(address.address.to_string());
             } else {
-                debug('Identify to network');
+                debug('Broadcasting to LAN');
                 address = this._udp_address;
             }
 
@@ -321,7 +312,7 @@ var Transfer = class Transfer extends Core.Transfer {
      * @return {Boolean} - %true on success or %false on fail
      */
     async download(port) {
-        let result;
+        let result = false;
 
         try {
             this._connection = await new Promise((resolve, reject) => {
@@ -350,11 +341,11 @@ var Transfer = class Transfer extends Core.Transfer {
             result = await this._transfer();
         } catch (e) {
             logError(e, this.device.name);
-            result = false;
         } finally {
             this.close();
-            return result;
         }
+
+        return result;
     }
 
     /**
@@ -370,25 +361,24 @@ var Transfer = class Transfer extends Core.Transfer {
      */
     async upload(packet) {
         let port = 1739;
-        let result;
+        let result = false;
 
         try {
             // Start listening on the first available port between 1739-1764
             this._listener = new Gio.SocketListener();
 
-            while (true) {
+            while (port <= TCP_MAX_PORT) {
                 try {
                     this._listener.add_inet_port(port, null);
+                    break;
                 } catch (e) {
                     if (port < TCP_MAX_PORT) {
-                        port += 1;
+                        port++;
                         continue;
                     } else {
                         throw e;
                     }
                 }
-
-                break;
             }
 
             // Await the incoming connection
@@ -405,7 +395,7 @@ var Transfer = class Transfer extends Core.Transfer {
             // Notify the device we're ready
             packet.body.payloadHash = this.checksum;
             packet.payloadSize = this.size;
-            packet.payloadTransferInfo = { port: port };
+            packet.payloadTransferInfo = {port: port};
             this.device.sendPacket(packet);
 
             // Accept the connection and configure the channel
@@ -418,11 +408,11 @@ var Transfer = class Transfer extends Core.Transfer {
             result = await this._transfer();
         } catch (e) {
             logError(e, this.device.name);
-            result = false;
         } finally {
             this.close();
-            return result;
         }
+
+        return result;
     }
-}
+};
 

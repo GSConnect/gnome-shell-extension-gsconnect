@@ -27,7 +27,7 @@
     },
     "popupMenuDisconnected": {
         "message": "Teenus pole saadaval",
-        "description": "Popup Menu label when disconnected from the Gnome Shell extension"
+        "description": "Popup Menu label when disconnected from the GNOME Shell extension"
     },
     "popupMenuNoDevices": {
         "message": "Seadet ei leitud",

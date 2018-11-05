@@ -1,89 +1,63 @@
 
 /* Device Menu Hierarchy
 
-.gsconnect-device [ PopupMenu.PopupBaseMenuItem ]
-    StButton.gsconnect-device-button
-        StDrawingArea
-    StBoxLayout.gsconnect-device-box
-        StBoxLayout.gsconnect-device-title
-            StLabel.gsconnect-device-name
-            StWidget.popup-separator-menu-item
-            StBoxLayout.gsconnect-device-battery
-                StLabel
-                StIcon
-        StBoxLayout.gsconnect-device-actions
-            StButton.gsconnect-device-action (inherits from .system-menu-action)
-                StIcon
-        StBoxLayout.gsconnect-device-status
-            StLabel
+User Menu:
+
+.gsconnect-device-section (PopupMenu.PopupMenuSection)
+    PopupMenu.PopupMenuSection
+
+Indicator:
+
+PanelMenu.Button
+    PopupMenu.PopupMenu
+
 */
-
-.gsconnect-device {
-    padding: 0.5em 1em;
-    spacing: 0.5em;
+.gsconnect-device-section {
 }
 
-/**
- * The button with device icon and circular battery level
- *
- * The device icon is sized to 2/3 the StDrawingArea, rounded up to a multiple
- * of 8. All other measurements are also automatic and respect desktop scaling.
- */
-.gsconnect-device-button {
-    border: none;
-    border-radius: 24px;
-    padding: 0px;
-}
-
-.gsconnect-device-button:hover, .gsconnect-device-button:focus {
-    border: none;
-    border-radius: 24px;
-    padding: 0px;
-}
-
-.gsconnect-device-button > StDrawingArea {
-    width: 48px;
-    height: 48px;
-}
-
-.gsconnect-device-box {
-    spacing: 0.25em;
-}
-
-.gsconnect-device-title {
-    spacing: 0.75em;
-}
-
-.gsconnect-device .popup-separator-menu-item {
-    margin-left: 0;
-    margin-right: 0;
-}
-
+/* Title Bar */
 .gsconnect-device-name {
     font-weight: bold;
 }
 
+.gsconnect-device-iconmenu .popup-separator-menu-item,
+.gsconnect-device-textmenu .popup-separator-menu-item {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+/* Battery Widget */
 .gsconnect-device-battery {
     spacing: 3px;
+}
+
+.gsconnect-device-battery StLabel {
+    font-size: 0.75em;
 }
 
 .gsconnect-device-battery StIcon {
     icon-size: 16px;
 }
 
-.gsconnect-device-actions {
+/* Icon Box */
+.gsconnect-icon-box {
+    margin: 0em 2em 0.5em;
     spacing: 6px;
 }
 
-.gsconnect-device-action {
+.gsconnect-icon-button {
     border: none;
     border-radius: 16px;
     padding: 8px;
 }
 
-.gsconnect-device-action:hover, .gsconnect-device-action:focus {
+.gsconnect-icon-button:hover, .gsconnect-icon-button:focus {
     border: none;
     padding: 8px;
+}
+
+/* List Box */
+.gsconnect-list-box {
 }
 
 /* Do Not Disturb Dialog
@@ -130,22 +104,6 @@
 
 .gsconnect-dnd-timer {
     spacing: 0.25em;
-}
-
-/**
- * Account for a patch that landed in gnome-shell-3.28.0 that clobbered all
- * :first-child descendants with margin/padding changes.
- * https://gitlab.gnome.org/GNOME/gnome-shell/commit/fb9db4e171778a63bd85ac6fde15b7acfdede2c2
- */
-.aggregate-menu .popup-sub-menu .gsconnect-device :first-child {
-    padding: 0;
-    margin: 0;
-}
-
-.aggregate-menu .popup-sub-menu .gsconnect-device-action:first-child {
-    border: none;
-    border-radius: 16px;
-    padding: 8px;
 }
 
 /* Tooltip

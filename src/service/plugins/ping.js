@@ -44,7 +44,7 @@ var Plugin = GObject.registerClass({
         let notif = {
             title: this.device.name,
             body: _('Ping'),
-            icon: new Gio.ThemedIcon({ name: `${this.device.icon_name}-symbolic` })
+            icon: new Gio.ThemedIcon({name: `${this.device.icon_name}-symbolic`})
         };
 
         if (packet.body.message) {
@@ -56,7 +56,7 @@ var Plugin = GObject.registerClass({
         this.device.showNotification(notif);
     }
 
-    ping(message='') {
+    ping(message = '') {
         debug(message);
 
         let packet = {

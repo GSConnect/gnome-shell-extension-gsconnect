@@ -102,7 +102,7 @@ var Plugin = GObject.registerClass({
 
             this.device.sendPacket({
                 type: 'kdeconnect.clipboard',
-                body: { content: this._localBuffer }
+                body: {content: this._localBuffer}
             });
         }
     }

@@ -44,6 +44,7 @@
                             <property name="height_request">56</property>
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
+                            <property name="action_name">settings.send-statistics</property>
                             <property name="selectable">False</property>
                             <child>
                               <object class="GtkGrid">
@@ -77,7 +78,7 @@
                                     <property name="can_focus">True</property>
                                     <property name="halign">end</property>
                                     <property name="valign">center</property>
-                                    <property name="action_name">settings.share-statistics</property>
+                                    <property name="action_name">settings.send-statistics</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">1</property>
@@ -572,7 +573,7 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="hexpand">True</property>
-                            <property name="activatable">False</property>
+                            <property name="action_name">settings.send-notifications</property>
                             <property name="selectable">False</property>
                             <child>
                               <object class="GtkGrid">
@@ -601,10 +602,11 @@
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkSwitch" id="share-notifications">
+                                  <object class="GtkSwitch">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="valign">center</property>
+                                    <property name="action_name">settings.send-notifications</property>
                                   </object>
                                   <packing>
                                     <property name="left_attach">1</property>

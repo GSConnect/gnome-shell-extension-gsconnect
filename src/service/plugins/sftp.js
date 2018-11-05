@@ -38,8 +38,6 @@ var Metadata = {
  * SFTP Plugin
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/sftp
  * https://github.com/KDE/kdeconnect-android/tree/master/src/org/kde/kdeconnect/Plugins/SftpPlugin
- *
- * TODO: reimplement automount?
  */
 var Plugin = GObject.registerClass({
     Name: 'GSConnectSFTPPlugin'
@@ -64,7 +62,7 @@ var Plugin = GObject.registerClass({
         super.connected();
 
         // Disable mounting and notify if `sshfs` is not available
-        if (!hasCommand(gsconnect.metadata.bin.sshfs)) {
+        if (!GLib.find_program_in_path(gsconnect.metadata.bin.sshfs)) {
             this.device.lookup_action('mount').enabled = false;
             this.device.lookup_action('unmount').enabled = false;
 
@@ -329,10 +327,10 @@ var Plugin = GObject.registerClass({
         // Icon with check emblem
         // TODO: better?
         let icon = new Gio.EmblemedIcon({
-            gicon: new Gio.ThemedIcon({ name: 'folder-remote-symbolic' })
+            gicon: new Gio.ThemedIcon({name: 'folder-remote-symbolic'})
         });
         let emblem = new Gio.Emblem({
-            icon: new Gio.ThemedIcon({ name: 'emblem-default' })
+            icon: new Gio.ThemedIcon({name: 'emblem-default'})
         });
         icon.add_emblem(emblem);
         item.set_icon(icon);
@@ -349,7 +347,7 @@ var Plugin = GObject.registerClass({
 
     _removeSubmenu() {
         let index = this.device.menu.remove_action('device.mount');
-        let action = this.device.lookup_action('mount')
+        let action = this.device.lookup_action('mount');
 
         if (action !== null) {
             this.device.menu.add_action(action, index);
@@ -363,7 +361,7 @@ var Plugin = GObject.registerClass({
         this.device.sendPacket({
             id: 0,
             type: 'kdeconnect.sftp.request',
-            body: { startBrowsing: true }
+            body: {startBrowsing: true}
         });
     }
 
@@ -401,8 +399,8 @@ var Plugin = GObject.registerClass({
     _umount() {
         let argv = ['umount', this._mountpoint];
 
-        if (hasCommand(gsconnect.metadata.bin.fusermount)) {
-            argv = [gsconnect.metadata.bin.fusermount, '-uz', this._mountpoint]
+        if (GLib.find_program_in_path(gsconnect.metadata.bin.fusermount)) {
+            argv = [gsconnect.metadata.bin.fusermount, '-uz', this._mountpoint];
         }
 
         let proc = new Gio.Subprocess({
