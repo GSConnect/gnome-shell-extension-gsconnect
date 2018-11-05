@@ -24,7 +24,7 @@ var Metadata = {
 
             parameter_type: null,
             incoming: ['kdeconnect.telephony'],
-            outgoing: ['kdeconnect.telephony.request']
+            outgoing: ['kdeconnect.telephony.request_mute']
         }
     }
 };
@@ -45,8 +45,6 @@ var Plugin = GObject.registerClass({
 
     async handlePacket(packet) {
         try {
-            let contact;
-
             // This is the end of a 'ringing' or 'talking' event
             if (packet.body.isCancel) {
                 let sender = packet.body.contactName || packet.body.phoneNumber;
@@ -57,7 +55,7 @@ var Plugin = GObject.registerClass({
 
             // Take the opportunity to store the contact
             if (packet.body.phoneNumber) {
-                contact = this.device.contacts.query({
+                let contact = this.device.contacts.query({
                     name: packet.body.contactName,
                     number: packet.body.phoneNumber,
                     create: true
@@ -70,15 +68,10 @@ var Plugin = GObject.registerClass({
                 }
             }
 
-            switch (packet.body.event) {
-                case 'ringing':
-                case 'talking':
-                    this._handleCall(packet);
-                    break;
-
-                case 'sms':
-                    this._handleMessage(contact, packet);
-                    break;
+            // Only handle 'ringing' or 'talking' events, leave the notification
+            // plugin to handle 'missedCall' and 'sms' since they're repliable
+            if (['ringing', 'talking'].includes(packet.body.event)) {
+                this._handleEvent(packet);
             }
         } catch (e) {
             logError(e);
@@ -152,7 +145,7 @@ var Plugin = GObject.registerClass({
      *
      * @param {object} packet - A telephony packet for this event
      */
-    _handleCall(packet) {
+    _handleEvent(packet) {
         let body;
         let buttons = [];
         let icon = new Gio.ThemedIcon({name: 'call-start-symbolic'});
@@ -196,53 +189,14 @@ var Plugin = GObject.registerClass({
         });
     }
 
-    _handleMessage(contact, packet) {
-        // Bail on missing phoneNumber
-        if (!packet.body.phoneNumber) {
-            return;
-        }
-
-        // Bail if SMS is disabled or the device supports the new packets
-        let sms = this.device.lookup_plugin('sms');
-
-        if (!sms || this.device.get_outgoing_supported('sms.messages')) {
-            return;
-        }
-
-        // Fabricate a message packet from what we know
-        let message = {
-            _id: 0,
-            thread_id: GLib.MAXINT32,
-            address: packet.body.phoneNumber,
-            body: packet.body.messageBody,
-            date: packet.id,
-            event: packet.body.event,
-            read: 0,
-            type: 1
-        };
-
-        sms._handleMessage(contact, message);
-    }
-
     /**
      * Silence an incoming call
      */
     muteCall() {
-        if (this.device.get_incoming_supported('telephony.request_mute')) {
-            this.device.sendPacket({
-                id: 0,
-                type: 'kdeconnect.telephony.request_mute',
-                body: {}
-            });
-
-        // TODO: backwards-compatibility kdeconnect-android <= 1.8.4
-        } else {
-            this.device.sendPacket({
-                id: 0,
-                type: 'kdeconnect.telephony.request',
-                body: {action: 'mute'}
-            });
-        }
+        this.device.sendPacket({
+            type: 'kdeconnect.telephony.request_mute',
+            body: {}
+        });
 
         this._restoreMediaState();
     }

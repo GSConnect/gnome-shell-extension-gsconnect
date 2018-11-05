@@ -8,18 +8,6 @@
     </section>
     <section>
       <item>
-        <attribute name="label" translatable="yes">Sync Contacts</attribute>
-        <attribute name="action">win.sync-contacts</attribute>
-        <attribute name='hidden-when'>action-disabled</attribute>
-      </item>
-      <item>
-        <attribute name="label" translatable="yes">Sync Messages</attribute>
-        <attribute name="action">win.sync-messages</attribute>
-        <attribute name='hidden-when'>action-disabled</attribute>
-      </item>
-    </section>
-    <section>
-      <item>
         <attribute name="label" translatable="yes">Help</attribute>
         <attribute name="action">app.wiki</attribute>
         <attribute name="target">Help</attribute>
