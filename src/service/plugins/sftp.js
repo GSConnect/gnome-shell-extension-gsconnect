@@ -276,17 +276,11 @@ var Plugin = GObject.registerClass({
                 if (msg !== null) {
                     if (msg.includes('ssh_dispatch_run_fatal')) {
                         let e = new Error(msg);
-
-                        if (msg.includes('incorrect signature')) {
-                            e.name = 'SSHSignatureError';
-                            e.deviceName = this.device.name;
-                        }
-
                         this.service.notify_error(e);
                         throw e;
                     }
 
-                    logWarning(msg, `${this.device.name}: ${this.name}`);
+                    logWarning(msg, `${this.device.name}: sshfs`);
                     this._sshfs_check(stream);
                 }
             } catch (e) {
