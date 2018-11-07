@@ -189,7 +189,7 @@ var ChannelService = GObject.registerClass({
             });
 
             this._profileManager = new ProfileManager1Proxy({
-                g_connection: Gio.DBus.system,
+                g_bus_type: Gio.BusType.SYSTEM,
                 g_name: 'org.bluez',
                 g_object_path: '/org/bluez'
             });

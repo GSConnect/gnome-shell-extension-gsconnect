@@ -130,8 +130,8 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         try {
             // Init the ObjectManager
             this.manager = await new Promise((resolve, reject) => {
-                Gio.DBusObjectManagerClient.new(
-                    Gio.DBus.session,
+                Gio.DBusObjectManagerClient.new_for_bus(
+                    Gio.BusType.SESSION,
                     Gio.DBusObjectManagerClientFlags.DO_NOT_AUTO_START,
                     gsconnect.app_id,
                     gsconnect.app_path,
@@ -139,7 +139,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
                     this._cancellable,
                     (manager, res) => {
                         try {
-                            resolve(Gio.DBusObjectManagerClient.new_finish(res));
+                            resolve(Gio.DBusObjectManagerClient.new_for_bus_finish(res));
                         } catch (e) {
                             reject(e);
                         }
