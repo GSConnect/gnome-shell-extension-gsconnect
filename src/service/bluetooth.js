@@ -124,7 +124,7 @@ var ChannelService = GObject.registerClass({
 
     _init() {
         super._init({
-            connection: Gio.DBus.system,
+            bus_type: Gio.BusType.SYSTEM,
             name: 'org.bluez',
             object_path: '/'
         });
