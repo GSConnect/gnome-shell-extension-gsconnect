@@ -126,7 +126,7 @@ msgstr "Raccourcis"
 
 #: data/device.ui:1234
 msgid "Plugins"
-msgstr "Plugins"
+msgstr "Greffons"
 
 #: data/device.ui:1295
 msgid "Delete"
@@ -364,7 +364,7 @@ msgstr "Logiciels supplémentaires requis"
 #: src/service/daemon.js:617
 #, javascript-format
 msgid "%s Plugin Failed To Load"
-msgstr "Échec du chargement du plugin %s"
+msgstr "Échec du chargement du greffon %s"
 
 #: src/service/daemon.js:618 src/service/daemon.js:635
 #: src/service/daemon.js:647
@@ -956,7 +956,7 @@ msgstr "Ouvrir dans le navigateur"
 #~ msgstr "Contrôle distant"
 
 #~ msgid "No plugins enabled"
-#~ msgstr "Aucun plugin activé"
+#~ msgstr "Aucun greffon activé"
 
 #~ msgid "Failed to mount %s"
 #~ msgstr "Échec du montage de %s"
@@ -1114,7 +1114,7 @@ msgstr "Ouvrir dans le navigateur"
 #~ msgstr "Appels en cours"
 
 #~ msgid "The <b>Media Player Control</b> plugin must be enabled"
-#~ msgstr "Le plugin <b>Media Player Control</b> doit être activé"
+#~ msgstr "Le greffon <b>Media Player Control</b> doit être activé"
 
 #~ msgid ""
 #~ "Ensure that devices are on the same local network with ports 1716 to 1764 "
