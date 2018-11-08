@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-07 02:05-0800\n"
+"POT-Creation-Date: 2018-11-08 02:15-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -180,37 +180,41 @@ msgstr ""
 msgid "Connect LAN"
 msgstr ""
 
-#: data/menus.ui:53 src/service/device.js:425
+#: data/menus.ui:53 src/service/ui/settings.js:606
+msgid "Encryption Info"
+msgstr ""
+
+#: data/menus.ui:58 src/service/device.js:425
 msgid "Pair"
 msgstr ""
 
-#: data/menus.ui:59 src/service/device.js:433
+#: data/menus.ui:64 src/service/device.js:433
 msgid "Unpair"
 msgstr ""
 
 #. TRANSLATORS: Send clipboard content to device
-#: data/menus.ui:72
+#: data/menus.ui:77
 msgid "To Device"
 msgstr ""
 
 #. TRANSLATORS: Receive clipboard content from the device
-#: data/menus.ui:78
+#: data/menus.ui:83
 msgid "From Device"
 msgstr ""
 
 #. TRANSLATORS: Don't change the system volume
-#: data/menus.ui:90 data/menus.ui:116
+#: data/menus.ui:95 data/menus.ui:121
 msgid "Nothing"
 msgstr ""
 
 #. TRANSLATORS: Lower the system volume
-#: data/menus.ui:97 data/menus.ui:123
+#: data/menus.ui:102 data/menus.ui:128
 msgid "Lower"
 msgstr ""
 
 #. TRANSLATORS: Mute the system volume
 #. TRANSLATORS: Silence the phone ringer
-#: data/menus.ui:104 data/menus.ui:130 src/service/plugins/telephony.js:175
+#: data/menus.ui:109 data/menus.ui:135 src/service/plugins/telephony.js:175
 msgid "Mute"
 msgstr ""
 
@@ -599,7 +603,7 @@ msgstr ""
 #: src/service/plugins/share.js:138 src/service/plugins/share.js:289
 #: src/service/plugins/share.js:407 src/service/ui/keybindings.js:44
 #: src/service/ui/service.js:121 src/service/ui/service.js:300
-#: src/service/ui/settings.js:851 src/shell/donotdisturb.js:215
+#: src/service/ui/settings.js:867 src/shell/donotdisturb.js:215
 msgid "Cancel"
 msgstr ""
 
@@ -796,19 +800,19 @@ msgstr ""
 msgid "User Menu"
 msgstr ""
 
-#: src/service/ui/settings.js:852
+#: src/service/ui/settings.js:868
 msgid "Open"
 msgstr ""
 
-#: src/service/ui/settings.js:909 src/service/ui/settings.js:922
+#: src/service/ui/settings.js:925 src/service/ui/settings.js:938
 msgid "On"
 msgstr ""
 
-#: src/service/ui/settings.js:909 src/service/ui/settings.js:922
+#: src/service/ui/settings.js:925 src/service/ui/settings.js:938
 msgid "Off"
 msgstr ""
 
-#: src/service/ui/settings.js:1043 src/service/ui/settings.js:1109
+#: src/service/ui/settings.js:1059 src/service/ui/settings.js:1125
 msgid "Disabled"
 msgstr ""
 

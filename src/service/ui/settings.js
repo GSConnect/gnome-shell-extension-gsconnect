@@ -600,6 +600,18 @@ var Device = GObject.registerClass({
         this.device.activate();
     }
 
+    _onEncryptionInfo() {
+        let dialog = new Gtk.MessageDialog({
+            buttons: Gtk.ButtonsType.OK,
+            text: _('Encryption Info'),
+            secondary_text: this.device.encryption_info,
+            modal: true,
+            transient_for: this.get_toplevel()
+        });
+        dialog.connect('response', (dialog) => dialog.destroy());
+        dialog.present();
+    }
+
     _onDeleteDevice(button) {
         let application = Gio.Application.get_default();
         application.deleteDevice(this.device.id);
@@ -685,6 +697,10 @@ var Device = GObject.registerClass({
         this.actions.add_action(status_lan);
 
         // Pair Actions
+        let encryption_info = new Gio.SimpleAction({name: 'encryption-info'});
+        encryption_info.connect('activate', this._onEncryptionInfo.bind(this));
+        this.actions.add_action(encryption_info);
+
         let status_pair = new Gio.SimpleAction({name: 'pair'});
         status_pair.connect('activate', this.device.pair.bind(this.device));
         this.settings.bind('paired', status_pair, 'enabled', 16);

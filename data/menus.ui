@@ -50,6 +50,11 @@
         <attribute name='hidden-when'>action-disabled</attribute>
       </item>
       <item>
+        <attribute name="label" translatable="yes">Encryption Info</attribute>
+        <attribute name="action">settings.encryption-info</attribute>
+        <attribute name='hidden-when'>action-disabled</attribute>
+      </item>
+      <item>
         <attribute name="label" translatable="yes">Pair</attribute>
         <attribute name="action">settings.pair</attribute>
         <attribute name="verb-icon">channel-insecure-symbolic</attribute>
