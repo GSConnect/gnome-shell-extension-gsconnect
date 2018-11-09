@@ -1,198 +1,229 @@
 #!/usr/bin/env gjs
 
-"use strict";
+'use strict';
 
-const ByteArray = imports.byteArray;
-const Lang = imports.lang;
-const System = imports.system;
-
-imports.gi.versions.Gio = "2.0";
-imports.gi.versions.GLib = "2.0";
-imports.gi.versions.GObject = "2.0";
+imports.gi.versions.Gio = '2.0';
+imports.gi.versions.GLib = '2.0';
+imports.gi.versions.GObject = '2.0';
 
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
+const System = imports.system;
 
-// Local Imports
-function getPath() {
-    // Diced from: https://github.com/optimisme/gjs-examples/
-    let m = new RegExp("@(.+):\\d+").exec((new Error()).stack.split("\n")[1]);
+// Find the root datadir of the extension
+function get_datadir() {
+    let m = /@(.+):\d+/.exec((new Error()).stack.split('\n')[1]);
     return Gio.File.new_for_path(m[1]).get_parent().get_parent().get_path();
 }
 
-window.ext = { datadir: getPath() };
-
-imports.searchPath.push(ext.datadir);
-
-const Common = imports.common;
-const Client = imports.client;
+window.gsconnect = {extdatadir: get_datadir()};
+imports.searchPath.unshift(gsconnect.extdatadir);
+imports._gsconnect;
+const DBus = imports.service.components.dbus;
 
 
-function fromInt32 (byteArray) {
-    var value = 0;
-
-    for (var i = byteArray.length - 1; i >= 0; i--) {
-        value = (value * 256) + byteArray[i];
-    }
-
-    return value;
-};
-
-function toInt32 (number) {
-    var byteArray = [0, 0, 0, 0];
-
-    for (var index_ = 0; index_ < byteArray.length; index_++) {
-        var byte = number & 0xff;
-        byteArray [index_] = byte;
-        number = (number - byte) / 256 ;
-    }
-
-    return ByteArray.fromArray(byteArray);
-};
+const DeviceInterface = gsconnect.dbusinfo.lookup_interface(
+    'org.gnome.Shell.Extensions.GSConnect.Device'
+);
 
 
-var NativeMessagingHost = new Lang.Class({
-    Name: "GSConnectNativeMessagingHost",
-    Extends: Gio.Application,
+var NativeMessagingHost = GObject.registerClass({
+    GTypeName: 'GSConnectNativeMessagingHost'
+}, class NativeMessagingHost extends Gio.Application {
 
-    _init: function () {
-        this.parent({
-            application_id: "org.gnome.Shell.Extensions.GSConnect.NativeMessagingHost",
+    _init() {
+        super._init({
+            application_id: 'org.gnome.Shell.Extensions.GSConnect.NativeMessagingHost',
             flags: Gio.ApplicationFlags.NON_UNIQUE
         });
+    }
 
-    },
+    get devices() {
+        if (this._devices === undefined) {
+            this._devices = {};
+        }
 
-    vfunc_activate: function() {
-        this.parent();
+        return Object.values(this._devices);
+    }
+
+    vfunc_activate() {
+        super.vfunc_activate();
+    }
+
+    vfunc_startup() {
+        super.vfunc_startup();
         this.hold();
-    },
 
-    vfunc_startup: function() {
-        this.parent();
-
-        this.daemon = new Client.Daemon();
-
-        this._watchdog = Gio.bus_watch_name(
-            Gio.BusType.SESSION,
-            Client.BUS_NAME,
-            Gio.BusNameWatcherFlags.NONE,
-            Lang.bind(this, this._serviceAppeared),
-            Lang.bind(this, this._serviceVanished)
-        );
-
+        // IO Channels
         this.stdin = new Gio.DataInputStream({
-            base_stream: new Gio.UnixInputStream({ fd: 0 })
+            base_stream: new Gio.UnixInputStream({fd: 0}),
+            byte_order: Gio.DataStreamByteOrder.HOST_ENDIAN
+        });
+
+        this.stdout = new Gio.DataOutputStream({
+            base_stream: new Gio.UnixOutputStream({fd: 1}),
+            byte_order: Gio.DataStreamByteOrder.HOST_ENDIAN
         });
 
         let source = this.stdin.base_stream.create_source(null);
-        source.set_callback(Lang.bind(this, this.receive));
+        source.set_callback(this.receive.bind(this));
         source.attach(null);
 
-        this.stdout = new Gio.DataOutputStream({
-            base_stream: new Gio.UnixOutputStream({ fd: 1 })
-        });
-    },
+        // ObjectManager
+        Gio.DBusObjectManagerClient.new_for_bus(
+            Gio.BusType.SESSION,
+            Gio.DBusObjectManagerClientFlags.DO_NOT_AUTO_START,
+            gsconnect.app_id,
+            gsconnect.app_path,
+            null,
+            null,
+            this._init_async.bind(this)
+        );
 
-    receive: function () {
+        this.send({type: 'connected', data: true});
+    }
+
+    _init_async(obj, res) {
+        try {
+            this.manager = Gio.DBusObjectManagerClient.new_for_bus_finish(res);
+
+            // Add currently managed devices
+            for (let object of this.manager.get_objects()) {
+                for (let iface of object.get_interfaces()) {
+                    this._onInterfaceAdded(this.manager, object, iface);
+                }
+            }
+
+            // Watch for new and removed devices
+            this.manager.connect(
+                'interface-added',
+                this._onInterfaceAdded.bind(this)
+            );
+            this.manager.connect(
+                'interface-removed',
+                this._onInterfaceRemoved.bind(this)
+            );
+
+            // Watch for device property changes
+            this.manager.connect(
+                'interface-proxy-properties-changed',
+                this.sendDeviceList.bind(this)
+            );
+
+            // Watch for service restarts
+            this.manager.connect(
+                'notify::name-owner',
+                this.sendDeviceList.bind(this)
+            );
+        } catch (e) {
+            logError(e);
+            this.quit();
+        }
+    }
+
+    receive() {
         let message;
 
         try {
-            let int32 = this.stdin.read_bytes(4, null).toArray();
+            let length = this.stdin.read_int32(null);
+            message = this.stdin.read_bytes(length, null).toArray();
 
-            if (!int32.length) { this.quit(); }
-
-            let length = fromInt32(int32);
-            message = this.stdin.read_bytes(length, null).toArray().toString();
+            if (message instanceof Uint8Array) {
+                message = imports.byteArray.toString(message);
+            }
 
             message = JSON.parse(message);
         } catch (e) {
-            log("Error receiving message: " + e.message);
-            return;
+            logError(e);
+            this.quit();
         }
 
-        debug("WebExtension: receive: " + JSON.stringify(message));
+        debug(message);
 
-        if (message.type === "devices") {
+        if (message.type === 'devices') {
             this.sendDeviceList();
-        } else if (message.type === "share") {
-            for (let device of this.daemon.devices.values()) {
-                if (device.id === message.data.device) {
-                    device[message.data.action].shareUri(message.data.url);
+        } else if (message.type === 'share') {
+            let actionName;
+            let device = this._devices[message.data.device];
+
+            if (device) {
+                if (message.data.action === 'share') {
+                    actionName = 'shareUri';
+                } else if (message.data.action === 'telephony') {
+                    actionName = 'shareSms';
                 }
+
+                device.actions.activate_action(
+                    actionName,
+                    new GLib.Variant('s', message.data.url)
+                );
             }
         }
 
         return true;
-    },
+    }
 
-    send: function (message) {
+    send(message) {
+        debug(message);
+
         try {
             let data = JSON.stringify(message);
-            debug("WebExtension: send: " + data);
-
-            let length = toInt32(data.length);
-            this.stdout.write(length, null);
+            this.stdout.put_int32(data.length, null);
             this.stdout.put_string(data, null);
         } catch (e) {
-            log("Error sending message: " + e.message);
+            logError(e);
+            this.quit();
         }
-    },
+    }
 
-    sendDeviceList: function () {
+    sendDeviceList() {
+        // Inform the WebExtension we're disconnected from the service
+        if (this.manager && this.manager.name_owner === null) {
+            this.send({type: 'connected', data: false});
+            return;
+        }
+
         let devices = [];
 
-        for (let device of this.daemon.devices.values()) {
-            if (device.connected && device.paired && (device.share || device.telephony)) {
+        for (let device of this.devices) {
+            let share = device.actions.get_action_enabled('shareUri');
+            let telephony = device.actions.get_action_enabled('shareSms');
+
+            if (device.Connected && device.Paired && (share || telephony)) {
                 devices.push({
-                    id: device.id,
-                    name: device.name,
-                    type: device.type,
-                    share: (device.share),
-                    telephony: (device.telephony)
+                    id: device.Id,
+                    name: device.Name,
+                    type: device.Type,
+                    share: share,
+                    telephony: telephony
                 });
             }
         }
 
-        this.send({ type: "devices", data: devices });
-    },
+        this.send({type: 'devices', data: devices});
+    }
 
-    _serviceAppeared: function (conn, name, name_owner) {
-        debug("WebExtension._serviceAppeared()");
+    _onInterfaceAdded(manager, object, iface) {
+        if (iface.g_interface_name === 'org.gnome.Shell.Extensions.GSConnect.Device') {
+            DBus.proxyProperties(iface, DeviceInterface);
 
-        if (!this.daemon) {
-            this.daemon = new Client.Daemon();
-        }
+            iface.actions = Gio.DBusActionGroup.get(
+                iface.g_connection,
+                iface.g_name,
+                iface.g_object_path
+            );
 
-        // Watch device property changes (connected, paired, plugins, etc)
-        for (let device of this.daemon.devices.values()) {
-            device.connect("notify", () => this.sendDeviceList());
-        }
-
-        // Watch for new and removed devices
-        this.daemon.connect("device::added", (daemon, dbusPath) => {
-            let device = this.daemon.devices.get(dbusPath);
-            device.connect("notify", () => this.sendDeviceList());
+            this._devices[iface.Id] = iface;
             this.sendDeviceList();
-        });
-
-        this.daemon.connect("device::removed", () => this.sendDeviceList());
-
-        this.send({ type: "connected", data: true });
-    },
-
-    _serviceVanished: function (conn, name) {
-        debug("WebExtension._serviceVanished()");
-
-        this.send({ type: "connected", data: false });
-
-        if (this.daemon) {
-            this.daemon.destroy();
-            this.daemon = false;
         }
+    }
 
-        this.daemon = new Client.Daemon();
+    _onInterfaceRemoved(manager, object, iface) {
+        if (iface.g_interface_name === 'org.gnome.Shell.Extensions.GSConnect.Device') {
+            delete this._devices[iface.Id];
+            this.sendDeviceList();
+        }
     }
 });
 

@@ -1,176 +1,232 @@
-"use strict";
-
-const Gettext = imports.gettext.domain("org.gnome.Shell.Extensions.GSConnect");
-const _ = Gettext.gettext;
-const Lang = imports.lang;
+'use strict';
 
 const Gio = imports.gi.Gio;
+const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
-
-// Local Imports
-imports.searchPath.push(ext.datadir);
-
-const Common = imports.common;
-const Protocol = imports.service.protocol;
-const PreferencesWidget = imports.widgets.preferences;
 
 
 /**
  * Base class for plugins
  */
-var Plugin = new Lang.Class({
-    Name: "GSConnectPlugin",
-    Extends: GObject.Object,
+var Plugin = GObject.registerClass({
+    GTypeName: 'GSConnectDevicePlugin'
+}, class Plugin extends GObject.Object {
 
-    _init: function (device, name) {
-        this.parent();
+    _init(device, name) {
+        super._init();
 
-        this.device = device;
-        let metadata = imports.service.plugins[name].METADATA;
-
-        // Export DBus
-        this._dbus = Gio.DBusExportedObject.wrapJSObject(
-            ext.dbusinfo.lookup_interface(metadata.uuid),
-            this
-        );
-        this._dbus.export(Gio.DBus.session, device._dbus.get_object_path());
+        this._device = device;
+        this._name = name;
+        this._meta = imports.service.plugins[name].Metadata;
 
         // Init GSettings
-        if (imports.service.plugins[name].SettingsDialog) {
-            this.settings = new Gio.Settings({
-                settings_schema: ext.gschema.lookup(metadata.uuid, -1),
-                path: ext.settings.path + "device/" + device.id + "/plugin/" + name + "/"
-            });
-        }
-    },
+        this.settings = new Gio.Settings({
+            settings_schema: gsconnect.gschema.lookup(this._meta.id, false),
+            path: `${gsconnect.settings.path}device/${device.id}/plugin/${name}/`
+        });
 
-    handlePacket: function (packet) { throw Error("Not implemented"); },
+        // GActions
+        this._gactions = [];
+
+        if (this._meta.actions) {
+            // Register based on device capabilities, which shouldn't change
+            let deviceHandles = this.device.settings.get_strv('incoming-capabilities');
+            let deviceProvides = this.device.settings.get_strv('outgoing-capabilities');
+            let disabled = this.device.settings.get_strv('disabled-actions');
+            let menu = this.device.settings.get_strv('menu-actions');
+
+            for (let name in this._meta.actions) {
+                let meta = this._meta.actions[name];
+
+                if (meta.incoming.every(p => deviceProvides.includes(p)) &&
+                    meta.outgoing.every(p => deviceHandles.includes(p))) {
+                    this._registerAction(name, meta, menu, disabled);
+                }
+            }
+        }
+    }
+
+    get device() {
+        return this._device;
+    }
+
+    get name() {
+        return this._name;
+    }
+
+    get service() {
+        return Gio.Application.get_default();
+    }
+
+    _activateAction(action, parameter) {
+        try {
+            parameter = parameter ? parameter.full_unpack() : null;
+
+            if (Array.isArray(parameter)) {
+                this[action.name].apply(this, parameter);
+            } else if (parameter) {
+                this[action.name].call(this, parameter);
+            } else {
+                this[action.name].call(this);
+            }
+        } catch (e) {
+            debug(e);
+        }
+    }
+
+    _registerAction(name, meta, menu, disabled) {
+        let action = new Gio.SimpleAction({
+            name: name,
+            parameter_type: meta.parameter_type,
+            state: new GLib.Variant('(ss)', [meta.label, meta.icon_name])
+        });
+
+        // Set the enabled state
+        action.set_enabled(this.device.connected && !disabled.includes(action.name));
+
+        // Bind the activation
+        action.connect('activate', this._activateAction.bind(this));
+
+        this.device.add_action(action);
+
+        // Menu
+        let index = menu.indexOf(action.name);
+
+        if (index > -1) {
+            this.device.menu.add_action(action, index);
+        }
+
+        this._gactions.push(action);
+    }
+
+    /**
+     * This is called when a packet is received the plugin is a handler for
+     */
+    handlePacket(packet) {
+        throw new GObject.NotImplementedError();
+    }
+
+    /**
+     * These two methods are optional and called by the device in response to
+     * the connection state changing.
+     */
+    connected() {
+        let disabled = this.device.settings.get_strv('disabled-actions');
+
+        for (let action of this._gactions) {
+            action.set_enabled(!disabled.includes(action.name));
+        }
+    }
+
+    disconnected() {
+        for (let action of this._gactions) {
+            action.set_enabled(false);
+        }
+    }
 
     /**
      * Cache JSON parseable properties on this object for persistence. The
-     * filename ~/.cache/gsconnect/<plugin>/<device-id>.json will be used to
-     * store the properties and values.
+     * filename ~/.cache/gsconnect/<device-id>/<plugin-name>.json will be used
+     * to store the properties and values.
      *
-     * Calling initPersistence() opens a JSON cache file and reads any
-     * existing properties and values onto the current instance. When destroy()
+     * Calling cacheProperties() opens a JSON cache file and reads any stored
+     * properties and values onto the current instance. When destroy()
      * is called the properties are automatically stored in the same file.
      *
-     * @param {array} names - A list of this object's property names to cache
+     * @param {Array} names - A list of this object's property names to cache
      */
-    initPersistence: function (names) {
-        this._cacheDir =  GLib.build_filenamev([ext.cachedir, this.name]);
-        GLib.mkdir_with_parents(this._cacheDir, 448);
-
-        this._cacheFile = Gio.File.new_for_path(
-            GLib.build_filenamev([this._cacheDir, this.device.id + ".json"])
-        );
-
-        this._cacheProperties = {};
-
-        for (let name of names) {
-            if (this.hasOwnProperty(name)) {
-                this._cacheProperties[name] = typeof this[name];
-            }
-        }
-
-        this._readCache();
-    },
-
-    // An overridable function that gets called before the cache is written
-    _filterCache: function (names) {
-        return;
-    },
-
-    _readCache: function () {
+    async cacheProperties(names) {
         try {
-            let cache = JSON.parse(this._cacheFile.load_contents(null)[1]);
+            this.__cache_properties = names;
 
-            for (let name in this._cacheProperties) {
-                if (typeof this[name] === typeof cache[name]) {
-                    this[name] = cache[name];
-                }
-            }
-        } catch (e) {
-            debug("Cache: Error reading %s cache: %s".format(this.name, e.message));
-        }
-    },
+            // Ensure the device's cache directory exists
+            let cachedir = GLib.build_filenamev([
+                gsconnect.cachedir,
+                this.device.id
+            ]);
+            GLib.mkdir_with_parents(cachedir, 448);
 
-    _writeCache: function () {
-        this._filterCache(this._cacheProperties);
-
-        let cache = {};
-
-        for (let name in this._cacheProperties) {
-            cache[name] = this[name];
-        }
-
-        try {
-            this._cacheFile.replace_contents(
-                JSON.stringify(cache),
-                null,
-                false,
-                Gio.FileCreateFlags.REPLACE_DESTINATION,
-                null
+            this.__cache_file = Gio.File.new_for_path(
+                GLib.build_filenamev([cachedir, `${this.name}.json`])
             );
+
+            // Read the cache from disk
+            let cache = await JSON.load(this.__cache_file);
+            Object.assign(this, cache);
         } catch (e) {
-            debug("Cache: Error writing %s cache: %s".format(this._name, e.message));
+            logWarning(e.message, `${this.device.name}: ${this.name}`);
+        } finally {
+            this.cacheLoaded();
         }
-    },
+    }
 
     /**
-     * The destroy function
+     * An overridable function that is invoked when the cache is done loading
      */
-    destroy: function () {
-        if (this._cacheFile) {
-            this._writeCache();
+    cacheLoaded() {}
+
+    /**
+     * Write the plugin's cache to disk
+     */
+    async __cache_write() {
+        try {
+            if (this.__cache_lock) {
+                this.__cache_queue = true;
+                return;
+            }
+
+            this.__cache_lock = true;
+
+            // Build the cache
+            let cache = {};
+
+            for (let name of this.__cache_properties) {
+                cache[name] = this[name];
+            }
+
+            await JSON.dump(cache, this.__cache_file);
+        } catch (e) {
+            logWarning(e.message, `${this.device.name}: ${this.name}`);
+        } finally {
+            this.__cache_lock = false;
+
+            if (this.__cache_queue) {
+                this.__cache_queue = false;
+                this.__cache_write();
+            }
+        }
+    }
+
+    /**
+     * Unregister plugin actions, write the cache (if applicable) and destroy
+     * any dangling signal handlers.
+     */
+    destroy() {
+        this._gactions.map(action => {
+            this.device.menu.remove_action(`device.${action.name}`);
+            this.device.remove_action(action.name);
+        });
+
+        // Write the cache to disk synchronously
+        if (this.__cache_file && !this.__cache_lock) {
+            try {
+                // Build the cache
+                let cache = {};
+
+                for (let name of this.__cache_properties) {
+                    cache[name] = this[name];
+                }
+
+                JSON.dump(cache, this.__cache_file, true);
+            } catch (e) {
+                debug(e);
+            }
         }
 
-        this._dbus.flush();
-        this._dbus.unexport();
-        delete this._dbus;
+        // Try to avoid any cyclic references from signal handlers
         GObject.signal_handlers_destroy(this);
-    }
-});
-
-
-/**
- * Base class for plugin settings dialogs
- */
-var SettingsDialog = new Lang.Class({
-    Name: "GSConnectPluginSettingsDialog",
-    Extends: Gtk.Dialog,
-
-    _init: function (device, name, window) {
-        this.parent({
-            use_header_bar: true,
-            transient_for: window,
-            default_height: 320,
-            default_width: 480
-        });
-
-        this.device = device;
-        let metadata = imports.service.plugins[name].METADATA;
-
-        this.settings = new Gio.Settings({
-            settings_schema: ext.gschema.lookup(metadata.uuid, -1),
-            path: ext.settings.path + "device/" + device.id + "/plugin/" + name + "/"
-        });
-        this.settings.delay();
-
-        let headerBar = this.get_header_bar();
-        headerBar.title = metadata.summary;
-        headerBar.subtitle = metadata.description;
-        headerBar.show_close_button = false;
-
-        this.add_button(_("Apply"), Gtk.ResponseType.APPLY);
-        this.add_button(_("Cancel"), Gtk.ResponseType.CANCEL);
-        this.set_default_response(Gtk.ResponseType.APPLY);
-
-        this.content = new PreferencesWidget.Page();
-        this.content.box.margin_left = 36;
-        this.content.box.margin_right = 36;
-        this.get_content_area().add(this.content);
+        GObject.signal_handlers_destroy(this.settings);
     }
 });
 

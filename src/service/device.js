@@ -1,420 +1,642 @@
-"use strict";
-
-const Gettext = imports.gettext.domain("org.gnome.Shell.Extensions.GSConnect");
-const _ = Gettext.gettext;
-const Lang = imports.lang;
+'use strict';
 
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
-// Local Imports
-imports.searchPath.push(ext.datadir);
+const Core = imports.service.core;
+const DBus = imports.service.components.dbus;
+const Lan = imports.service.lan;
+const Bluetooth = imports.service.bluetooth;
 
-const Common = imports.common;
-const Protocol = imports.service.protocol;
-const DeviceWidget = imports.widgets.device;
+const UUID = 'org.gnome.Shell.Extensions.GSConnect.Device';
+const INTERFACE_INFO = gsconnect.dbusinfo.lookup_interface(UUID);
 
 
-var Device = new Lang.Class({
-    Name: "GSConnectDevice",
-    Extends: GObject.Object,
+/**
+ * An object representing a remote device.
+ *
+ * Device class is subclassed from Gio.SimpleActionGroup so it implements the
+ * GActionGroup and GActionMap interfaces, like Gio.Application.
+ *
+ * TODO...
+ */
+var Device = GObject.registerClass({
+    GTypeName: 'GSConnectDevice',
     Properties: {
-        "connected": GObject.ParamSpec.boolean(
-            "connected",
-            "deviceConnected",
-            "Whether the device is connected",
+        'connected': GObject.ParamSpec.boolean(
+            'connected',
+            'Connected',
+            'Whether the device is connected',
             GObject.ParamFlags.READABLE,
-            false
+            null
         ),
-        "fingerprint": GObject.ParamSpec.string(
-            "fingerprint",
-            "deviceFingerprint",
-            "SHA1 fingerprint for the device certificate",
+        'encryption-info': GObject.ParamSpec.string(
+            'encryption-info',
+            'Encryption Info',
+            'A formatted string with the local and remote fingerprints',
             GObject.ParamFlags.READABLE,
-            ""
+            null
         ),
-        "id": GObject.ParamSpec.string(
-            "id",
-            "deviceId",
-            "The device id/hostname",
+        'icon-name': GObject.ParamSpec.string(
+            'icon-name',
+            'Icon Name',
+            'Icon name representing the device',
             GObject.ParamFlags.READABLE,
-            ""
+            null
         ),
-        "name": GObject.ParamSpec.string(
-            "name",
-            "deviceName",
-            "The device name",
+        'id': GObject.ParamSpec.string(
+            'id',
+            'deviceId',
+            'The device hostname or other unique id',
             GObject.ParamFlags.READABLE,
-            ""
+            ''
         ),
-        "paired": GObject.ParamSpec.boolean(
-            "paired",
-            "devicePaired",
-            "Whether the device is paired",
+        'name': GObject.ParamSpec.string(
+            'name',
+            'deviceName',
+            'The device name',
             GObject.ParamFlags.READABLE,
-            false
+            null
         ),
-        "plugins": GObject.param_spec_variant(
-            "plugins",
-            "PluginsList",
-            "A list of enabled plugins",
-            new GLib.VariantType("as"),
-            new GLib.Variant("as", []),
-            GObject.ParamFlags.READABLE
-        ),
-        "supportedPlugins": GObject.param_spec_variant(
-            "supportedPlugins",
-            "SupportedPluginsList",
-            "A list of supported plugins",
-            new GLib.VariantType("as"),
-            new GLib.Variant("as", []),
-            GObject.ParamFlags.READABLE
-        ),
-        "type": GObject.ParamSpec.string(
-            "type",
-            "deviceType",
-            "The device type",
+        'paired': GObject.ParamSpec.boolean(
+            'paired',
+            'Paired',
+            'Whether the device is paired',
             GObject.ParamFlags.READABLE,
-            ""
+            null
+        ),
+        'type': GObject.ParamSpec.string(
+            'type',
+            'deviceType',
+            'The device type',
+            GObject.ParamFlags.READABLE,
+            null
         )
-    },
+    }
+}, class Device extends Gio.SimpleActionGroup {
 
-    _init: function (params) {
-        this.parent();
+    _init(identity) {
+        super._init();
 
-        this.daemon = Gio.Application.get_default();
         this._channel = null;
         this._connected = false;
 
+        // GLib.Source timeout id's for pairing requests
         this._incomingPairRequest = 0;
         this._outgoingPairRequest = 0;
 
-        // Plugins
+        // Maps of name->Plugin, packet->Plugin, uuid->Transfer
         this._plugins = new Map();
         this._handlers = new Map();
+        this._transfers = new Map();
 
-        // Param parsing
-        let deviceId = params.id || params.packet.body.deviceId;
+        // We at least need the device Id for GSettings and the DBus interface
+        let deviceId = identity.body.deviceId;
 
         // GSettings
         this.settings = new Gio.Settings({
-            settings_schema: ext.gschema.lookup(
-                "org.gnome.Shell.Extensions.GSConnect.Device",
-                true
-            ),
-            path: "/org/gnome/shell/extensions/gsconnect/device/" + deviceId + "/"
+            settings_schema: gsconnect.gschema.lookup(UUID, true),
+            path: `/org/gnome/shell/extensions/gsconnect/device/${deviceId}/`
         });
 
-        if (params.packet) {
-            this._handleIdentity(params.packet);
+        // Watch for plugins changes
+        this._disabledPluginsId = this.settings.connect(
+            'changed::disabled-plugins',
+            this._onDisabledPlugins.bind(this)
+        );
+
+        // TODO: Backwards compatibility <= v12; remove after a few releases
+        if (this.settings.get_string('certificate-pem') !== '') {
+            this.settings.set_boolean('paired', true);
         }
 
-        // Export DBus
-        this._dbus = Gio.DBusExportedObject.wrapJSObject(
-            ext.dbusinfo.lookup_interface(
-                "org.gnome.Shell.Extensions.GSConnect.Device"
-            ),
+        // Parse identity if initialized with a proper packet
+        if (identity.id !== undefined) {
+            this._handleIdentity(identity);
+        }
+
+        // Export an object path for the device
+        this._dbus_object = new Gio.DBusObjectSkeleton({
+            g_object_path: this.object_path
+        });
+        this.service.objectManager.export(this._dbus_object);
+
+        // Export the Device interface
+        this._dbus = new DBus.Interface({
+            g_instance: this,
+            g_interface_info: INTERFACE_INFO
+        });
+        this._dbus_object.add_interface(this._dbus);
+
+        // GActions/GMenu
+        this._registerActions();
+        this._actionsId = Gio.DBus.session.export_action_group(
+            this.object_path,
             this
         );
-        this._dbus.export(
-            Gio.DBus.session,
-            ext.app_path + "/Device/" + deviceId.replace(/\W+/g, "_")
+
+        this.menu = new Gio.Menu();
+        this._menuId = Gio.DBus.session.export_menu_model(
+            this.object_path,
+            this.menu
         );
-
-        // A TCP Connection
-        if (params.channel) {
-            this._channel = params.channel;
-
-            this._channel.connect("connected", (channel) => this._onConnected(channel));
-            this._channel.connect("disconnected", (channel) => this._onDisconnected(channel));
-		    this._channel.connect("received", (channel, packet) => this._onReceived(channel, packet));
-
-            // Verify the certificate since it was TOFU'd by the listener
-            if (!this.verify()) {
-                return;
-            }
-
-		    this._channel.emit("connected");
-        // A UDP Connection
-        } else {
-            this.activate();
-        }
-    },
+    }
 
     /** Device Properties */
-    get connected () { return this._connected; },
-    get fingerprint () {
-        if (this.connected) {
-            return this._channel._peer_cert.fingerprint();
-        } else if (this.paired) {
-            let cert = Gio.TlsCertificate.new_from_pem(
-                this.settings.get_string("certificate-pem"),
-                -1
-            );
-            return cert.fingerprint();
+    get connected () {
+        return this._connected;
+    }
+
+    get connection_type() {
+        if (this._channel !== null) {
+            return this._channel.type;
         }
 
-        return "";
-    },
-    get id () { return this.settings.get_string("id"); },
-    get name () { return this.settings.get_string("name"); },
-    get paired () { return (this.settings.get_string("certificate-pem")); },
-    get plugins () { return Array.from(this._plugins.keys()); },
-    get supportedPlugins () { return this.settings.get_strv("supported-plugins"); },
-    get type () { return this.settings.get_string("type"); },
+        return this.settings.get_string('last-connection');
+    }
 
-    _handleIdentity: function (packet) {
-        this.settings.set_string("id", packet.body.deviceId);
-        this.settings.set_string("name", packet.body.deviceName);
-        this.settings.set_string("type", packet.body.deviceType);
+    get contacts() {
+        let contacts = this.lookup_plugin('contacts');
+        return (contacts) ? contacts._store : this.service.contacts;
+    }
 
-        let plugins = [];
-        let incoming = packet.body.incomingCapabilities;
-        let outgoing = packet.body.outgoingCapabilities;
+    get encryption_info() {
+        let fingerprint = _('Not available');
+
+        if (this.connection_type === 'bluetooth') {
+            // TRANSLATORS: Bluetooth address for remote device
+            return _('Bluetooth device at %s').format(
+                this.settings.get_string('bluetooth-host')
+            );
+        } else if (this.connected) {
+            fingerprint = this._channel.certificate.fingerprint();
+        } else if (this.paired) {
+            fingerprint = Gio.TlsCertificate.new_from_pem(
+                this.settings.get_string('certificate-pem'),
+                -1
+            ).fingerprint();
+        }
+
+        // TRANSLATORS: Label for TLS Certificate fingerprint
+        //
+        // Example:
+        //
+        // Google Pixel Fingerprint:
+        // 00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
+        return _('%s Fingerprint:').format(this.name) + '\n' +
+            fingerprint + '\n\n' +
+            _('%s Fingerprint:').format(this.service.name) + '\n' +
+            this.service.fingerprint;
+    }
+
+    get id() {
+        return this.settings.get_string('id');
+    }
+
+    get name() {
+        return this.settings.get_string('name');
+    }
+
+    get paired() {
+        return this.settings.get_boolean('paired');
+    }
+
+    get supported_plugins() {
+        return this.settings.get_strv('supported-plugins');
+    }
+
+    get allowed_plugins() {
+        let disabled = this.settings.get_strv('disabled-plugins');
+
+        return this.supported_plugins.filter(name => {
+            return !disabled.includes(name);
+        });
+    }
+
+    get icon_name() {
+        switch (this.type) {
+            case 'phone':
+                return 'smartphone';
+            case 'tablet':
+                return 'tablet';
+            default:
+                return 'computer';
+        }
+    }
+
+    get service() {
+        return Gio.Application.get_default();
+    }
+
+    get type() {
+        return this.settings.get_string('type');
+    }
+
+    get display_type() {
+        switch (this.type) {
+            case 'laptop':
+                return _('Laptop');
+            case 'phone':
+                return _('Smartphone');
+            case 'tablet':
+                return _('Tablet');
+            default:
+                return _('Desktop');
+        }
+    }
+
+    get object_path() {
+        return `${gsconnect.app_path}/Device/${this.id.replace(/\W+/g, '_')}`;
+    }
+
+    _handleIdentity(packet) {
+        this.settings.set_string('id', packet.body.deviceId);
+        this.settings.set_string('name', packet.body.deviceName);
+        this.settings.set_string('type', packet.body.deviceType);
+
+        if (packet.body.hasOwnProperty('bluetoothHost')) {
+            this.settings.set_string('bluetooth-host', packet.body.bluetoothHost);
+            this.settings.set_string('bluetooth-path', packet.body.bluetoothPath);
+            this.settings.set_string('last-connection', 'bluetooth');
+        } else if (packet.body.hasOwnProperty('tcpHost')) {
+            this.settings.set_string('tcp-host', packet.body.tcpHost);
+            this.settings.set_uint('tcp-port', packet.body.tcpPort);
+            this.settings.set_string('last-connection', 'tcp');
+        }
+
+        this.settings.set_strv(
+            'incoming-capabilities',
+            packet.body.incomingCapabilities.sort()
+        );
+
+        this.settings.set_strv(
+            'outgoing-capabilities',
+            packet.body.outgoingCapabilities.sort()
+        );
+
+        let supported = [];
 
         for (let name in imports.service.plugins) {
-            if (!imports.service.plugins[name].METADATA) { continue; }
+            let meta = imports.service.plugins[name].Metadata;
 
-            let metadata = imports.service.plugins[name].METADATA;
-            let supported = false;
+            if (!meta) continue;
 
-            if (metadata.incomingPackets.some(v => outgoing.indexOf(v) >= 0)) {
-                plugins.push(name);
-                supported = true;
-            }
-
-            if (supported) { continue; }
-
-            if (metadata.outgoingPackets.some(v => incoming.indexOf(v) >= 0)) {
-                plugins.push(name);
+            // If we can handle packets it sends...
+            if (meta.incomingCapabilities.some(t => packet.body.outgoingCapabilities.includes(t))) {
+                supported.push(name);
+            // ...or we send packets it can handle
+            } else if (meta.outgoingCapabilities.some(t => packet.body.incomingCapabilities.includes(t))) {
+                supported.push(name);
             }
         }
 
-        this.settings.set_strv("supported-plugins", plugins.sort());
+        this.settings.set_strv('supported-plugins', supported.sort());
+    }
 
-        this.settings.set_string("tcp-host", packet.body.tcpHost);
-        this.settings.set_uint("tcp-port", packet.body.tcpPort);
-    },
+    /**
+     * This is invoked by Core.Channel.attach() which also sets this._channel
+     */
+    _setConnected() {
+        debug(`Connected to ${this.name} (${this.id})`);
 
-    activate: function () {
-        debug(this.name + " (" + this.id + ")");
+        this.settings.set_string('last-connection', this._channel.type);
 
-		if (this._channel !== null) {
-			debug(this.name + " (" + this.id + ")" + " already active");
-			return;
-		}
+        this._connected = true;
+        this.notify('connected');
 
-        this._channel = new Protocol.LanChannel(this.daemon, this.id);
+        this._plugins.forEach(async (plugin) => plugin.connected());
+    }
 
-        this._channel.connect("connected", (channel) => this._onConnected(channel));
-        this._channel.connect("disconnected", (channel) => this._onDisconnected(channel));
-		this._channel.connect("received", (channel, packet) => this._onReceived(channel, packet));
+    /**
+     * This is the callback for the Core.Channel's cancellable object
+     */
+    _setDisconnected() {
+        debug(`Disconnected from ${this.name} (${this.id})`);
 
-		let addr = new Gio.InetSocketAddress({
-            address: Gio.InetAddress.new_from_string(
-                this.settings.get_string("tcp-host")
-            ),
-            port: this.settings.get_uint("tcp-port")
-        });
+        this._channel = null;
+        this._connected = false;
+        this.notify('connected');
 
-        this._channel.open(addr);
-    },
+        this._plugins.forEach(async (plugin) => plugin.disconnected());
 
-    update: function (packet, channel=null) {
-        debug(this.name + " (" + this.id + ")");
+        // TODO: not ideal calling back and forth like this
+        this.service._pruneDevices();
+    }
 
-        if (channel) {
-            this._handleIdentity(packet);
+    /**
+     * Request a connection from the device
+     */
+    activate() {
+        let lastConnection = this.settings.get_string('last-connection');
 
-            if (this._channel !== null) {
-                GObject.signal_handlers_destroy(this._channel);
-            }
+        // If the same channel type is currently open bail...
+        if (this._channel !== null && this.connection_type === lastConnection) {
+            debug(`${this.name}: ${lastConnection} connection already active`);
+            return;
 
-            this._channel = channel;
-            this._channel.connect("connected", Lang.bind(this, this._onConnected));
-            this._channel.connect("disconnected", Lang.bind(this, this._onDisconnected));
-            this._channel.connect("received", Lang.bind(this, this._onReceived));
+        } else if (lastConnection === 'bluetooth') {
+            this.service.broadcast(this.settings.get_string('bluetooth-path'));
 
-            // Verify the certificate since it was TOFU'd by the listener
-            if (!this.verify()) {
-                return;
-            }
-
-            if (!this.connected) {
-                this._channel.emit("connected");
-            }
         } else {
-            this._onReceived(this._channel, packet);
+            let tcpAddress = Gio.InetSocketAddress.new_from_string(
+                this.settings.get_string('tcp-host'),
+                this.settings.get_uint('tcp-port')
+            );
+
+            this.service.broadcast(tcpAddress);
         }
-    },
+    }
 
-    verify: function () {
-        debug(this.name + " (" + this.id + ")");
+    /**
+     * Receive a packet from the attached channel and route it to its handler
+     *
+     * @param {Core.Packet} packet - The incoming packet object
+     */
+    receivePacket(packet) {
+        try {
+            let handler = this._handlers.get(packet.type);
 
-        let cert;
+            switch (true) {
+                // We handle pair requests
+                case (packet.type === 'kdeconnect.pair'):
+                    this._handlePair(packet);
+                    break;
 
-        if (this.settings.get_string("certificate-pem")) {
-            cert = Gio.TlsCertificate.new_from_pem(
-                this.settings.get_string("certificate-pem"),
-                -1
+                // The device must think we're paired; inform it we are not
+                case !this.paired:
+                    this.unpair();
+                    break;
+
+                // This is a supported packet
+                case (handler !== undefined):
+                    handler.handlePacket(packet);
+                    break;
+
+                // This is an unsupported packet or disabled plugin
+                default:
+                    throw new Error(`Unsupported packet type (${packet.type})`);
+            }
+        } catch (e) {
+            logWarning(e, this.name);
+        }
+    }
+
+    /**
+     * Send a packet to the device
+     * @param {Object} packet - An object of packet data...
+     * @param {Gio.Stream} payload - A payload stream // TODO
+     */
+    sendPacket(packet, payload = null) {
+        try {
+            if (this.connected && (this.paired || packet.type === 'kdeconnect.pair')) {
+                this._channel.send(packet);
+            }
+        } catch (e) {
+            logError(e, this.name);
+        }
+    }
+
+    /**
+     * Actions
+     */
+    _registerActions() {
+        // Stock device actions
+        let activate = new Gio.SimpleAction({
+            name: 'activate',
+            parameter_type: null,
+            state: new GLib.Variant('(ss)', [_('Reconnect'), 'view-refresh-symbolic']),
+        });
+        activate.connect('activate', this.activate.bind(this));
+        this.add_action(activate);
+
+        let openSettings = new Gio.SimpleAction({
+            name: 'openSettings',
+            parameter_type: null,
+            state: new GLib.Variant('(ss)', [_('Settings'), 'preferences-system-symbolic'])
+        });
+        openSettings.connect('activate', this.openSettings.bind(this));
+        this.add_action(openSettings);
+
+        let acceptPair = new Gio.SimpleAction({
+            name: 'pair',
+            parameter_type: null,
+            state: new GLib.Variant('(ss)', [_('Pair'), 'channel-secure-symbolic'])
+        });
+        acceptPair.connect('activate', this.pair.bind(this));
+        this.add_action(acceptPair);
+
+        let rejectPair = new Gio.SimpleAction({
+            name: 'unpair',
+            parameter_type: null,
+            state: new GLib.Variant('(ss)', [_('Unpair'), 'channel-insecure-symbolic'])
+        });
+        rejectPair.connect('activate', this.unpair.bind(this));
+        this.add_action(rejectPair);
+
+        // Some general utility actions
+        let cancelTransfer = new Gio.SimpleAction({
+            name: 'cancelTransfer',
+            parameter_type: new GLib.VariantType('s')
+        });
+        cancelTransfer.connect('activate', this.cancelTransfer.bind(this));
+        this.add_action(cancelTransfer);
+
+        let openPath = new Gio.SimpleAction({
+            name: 'openPath',
+            parameter_type: new GLib.VariantType('s')
+        });
+        openPath.connect('activate', this.openPath);
+        this.add_action(openPath);
+    }
+
+    openPath(action, parameter) {
+        let path = parameter.unpack();
+        path = path.startsWith('file://') ? path : `file://${path}`;
+
+        Gio.AppInfo.launch_default_for_uri_async(path, null, null, (src, res) => {
+            try {
+                Gio.AppInfo.launch_default_for_uri_finish(res);
+            } catch (e) {
+                logError(e);
+            }
+        });
+    }
+
+    /**
+     * Hide a notification, device analog for GApplication.withdraw_notification()
+     *
+     * @param {string} id - Id for the notification to withdraw
+     */
+    hideNotification(id) {
+        this.service.withdraw_notification(`${this.id}|${id}`);
+    }
+
+    /**
+     * Show a notification, device analog for GApplication.send_notification()
+     */
+    showNotification(params) {
+        params = Object.assign({
+            id: GLib.DateTime.new_now_local().to_unix(),
+            title: this.name,
+            body: '',
+            icon: new Gio.ThemedIcon({name: `${this.icon_name}-symbolic`}),
+            priority: Gio.NotificationPriority.NORMAL,
+            action: null,
+            buttons: []
+        }, params);
+
+        let notif = new Gio.Notification();
+        notif.set_title(params.title);
+        notif.set_body(params.body);
+        notif.set_icon(params.icon);
+        notif.set_priority(params.priority);
+
+        // Default Action
+        if (params.action) {
+            let hasParameter = (params.action.parameter !== null);
+
+            if (!hasParameter) {
+                params.action.parameter = new GLib.Variant('s', '');
+            }
+
+            notif.set_default_action_and_target(
+                'app.deviceAction',
+                new GLib.Variant('(ssbv)', [
+                    this.id,
+                    params.action.name,
+                    hasParameter,
+                    params.action.parameter
+                ])
             );
         }
 
-        if (cert) {
-            log("Authenticating '" + this.name + "'");
+        // Buttons
+        for (let button of params.buttons) {
+            let hasParameter = (button.parameter !== null);
 
-            if (cert.verify(null, this._channel._peer_cert) > 0) {
-                log("Authentication failure: '" + this.name + "'");
-                this._channel.close();
-                return false;
+            if (!hasParameter) {
+                button.parameter = new GLib.Variant('s', '');
             }
-        }
 
-        return true;
-    },
-
-    /** Channel Callbacks */
-    _onConnected: function (channel) {
-        log("Connected to '" + this.name + "'");
-
-        this._loadPlugins().then((values) => {
-            this._connected = true;
-            this.notify("connected", "b");
-            this.notify("plugins", "as");
-        });
-
-        // Ensure fingerprint is available right away
-        this.notify("fingerprint", "s");
-    },
-
-    _onDisconnected: function (channel) {
-        log("Disconnected from '" + this.name + "'");
-
-        if (this._channel !== null) {
-            this._channel = null;
-        }
-
-        this._unloadPlugins().then((values) => {
-            this.notify("plugins", "as");
-            this._connected = false;
-            this.notify("connected", "b");
-        });
-
-        this.daemon._pruneDevices();
-    },
-
-    _onReceived: function (channel, packet) {
-        log("Received from '" + this.name + "'");
-
-        if (packet.type === Protocol.TYPE_IDENTITY) {
-            this._handleIdentity(packet);
-            this.activate();
-        } else if (packet.type === Protocol.TYPE_PAIR) {
-	        this._handlePair(packet);
-	    } else if (this._handlers.has(packet.type)) {
-            this._handlers.get(packet.type).handlePacket(packet);
-        } else {
-            log("Received unsupported packet type: " + packet.toString());
-        }
-    },
-
-    /** Overrides & utilities */
-    send_notification: function (id, notification) {
-        this.daemon.send_notification(this.id + "|" + id, notification);
-    },
-
-    withdraw_notification: function (id) {
-        this.daemon.withdraw_notification(this.id + "|" + id);
-    },
-
-    notify: function (name, format=null) {
-        GObject.Object.prototype.notify.call(this, name);
-
-        if (format && this._dbus) {
-            this._dbus.emit_property_changed(
-                name,
-                new GLib.Variant(format, this[name])
+            notif.add_button_with_target(
+                button.label,
+                'app.deviceAction',
+                new GLib.Variant('(ssbv)', [
+                    this.id,
+                    button.action,
+                    hasParameter,
+                    button.parameter
+                ])
             );
         }
-    },
 
-    /** Pairing Functions */
-    _handlePair: function (packet) {
-        // A pair has been requested
+        this.service.send_notification(`${this.id}|${params.id}`, notif);
+    }
+
+    cancelTransfer(action, parameter) {
+        let uuid = parameter.unpack();
+        let transfer = this._transfers.get(uuid);
+
+        if (transfer !== undefined) {
+            this._transfers.delete(uuid);
+            transfer.cancel();
+        }
+    }
+
+    createTransfer(params) {
+        params.device = this;
+
+        switch (true) {
+            case (this.connection_type === 'tcp'):
+                return new Lan.Transfer(params);
+
+            // For now, return a mock transfer that always appears to fail
+            case (this.connection_type === 'bluetooth'):
+                //return new Bluetooth.Transfer(params);
+                return {
+                    uuid: 'mock-transfer',
+                    download: () => false,
+                    upload: () => false
+                };
+        }
+    }
+
+    /**
+     * Pair request handler
+     *
+     * @param {Core.Packet} packet - A complete kdeconnect.pair packet
+     */
+    _handlePair(packet) {
+        // A pair has been requested/confirmed
         if (packet.body.pair) {
             // The device is accepting our request
             if (this._outgoingPairRequest) {
-                log("Pair accepted by " + this.name);
+                debug(`Pair accepted by ${this.name}`);
+
                 this._setPaired(true);
-                this._loadPlugins().then((values) => {
-                    this.notify("plugins", "as");
-                });
+                this.loadPlugins();
             // The device thinks we're unpaired
             } else if (this.paired) {
-                this.acceptPair();
+                this._setPaired(true);
+                this.pair();
+                this.loadPlugins();
             // The device is requesting pairing
             } else {
-                log("Pair request from " + this.name);
-                this._notifyPair(packet);
+                debug(`Pair request from ${this.name}`);
+                this._notifyPairRequest();
             }
         // Device is requesting unpairing/rejecting our request
         } else {
-            log("Pair rejected by " + this.name);
-            this._unloadPlugins().then((values) => {
-                this.notify("plugins", "as");
-                this._setPaired(false);
-            });
+            debug(`Pair rejected by ${this.name}`);
+
+            this._setPaired(false);
+            this.unloadPlugins();
         }
-    },
+    }
 
-    _notifyPair: function (packet) {
-        let notif = new Gio.Notification();
-        // TRANSLATORS: eg. Pair Request from Google Pixel
-        notif.set_title(_("Pair Request from %s").format(this.name));
-        notif.set_body(
-            // TRANSLATORS: Remote and local TLS Certificate fingerprint
-            // PLEASE KEEP NEWLINE CHARACTERS (\n)
-            //
-            // Example:
-            //
-            // Google Pixel Fingerprint:
-            // 00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
-            //
-            // Local Fingerprint:
-            // 00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
-            _("%s Fingerprint:\n%s\n\nLocal Fingerprint:\n%s").format(
-                this.name,
-                this.fingerprint,
-                this.daemon.fingerprint
-            )
-        );
-        notif.set_icon(new Gio.ThemedIcon({ name: "channel-insecure-symbolic" }));
-        notif.set_priority(Gio.NotificationPriority.URGENT);
-
-        notif.add_button(
-            _("Reject"),
-            "app.pairAction(('" + this._dbus.get_object_path() + "','reject'))"
-        );
-        notif.add_button(
-            _("Accept"),
-            "app.pairAction(('" + this._dbus.get_object_path() + "','accept'))"
-        );
-
-        this.send_notification("pair-request", notif);
+    /**
+     * Notify the user of an incoming pair request and set a 30s timeout
+     */
+    _notifyPairRequest() {
+        this.showNotification({
+            id: 'pair-request',
+            // TRANSLATORS: eg. Pair Request from Google Pixel
+            title: _('Pair Request from %s').format(this.name),
+            body: this.encryption_info,
+            icon: new Gio.ThemedIcon({name: 'channel-insecure-symbolic'}),
+            priority: Gio.NotificationPriority.URGENT,
+            buttons: [
+                {
+                    action: 'unpair',
+                    label: _('Reject'),
+                    parameter: null
+                },
+                {
+                    action: 'pair',
+                    label: _('Accept'),
+                    parameter: null
+                }
+            ]
+        });
 
         // Start a 30s countdown
+        this._resetPairRequest();
+
         this._incomingPairRequest = GLib.timeout_add_seconds(
             GLib.PRIORITY_DEFAULT,
             30,
-            () => this._setPaired(false)
+            this._setPaired.bind(this, false)
         );
-    },
+    }
 
-    _setPaired: function (bool) {
+    /**
+     * Reset pair request timeouts and withdraw any notifications
+     */
+    _resetPairRequest() {
         if (this._incomingPairRequest) {
-            this.withdraw_notification("pair-request");
+            this.hideNotification('pair-request');
             GLib.source_remove(this._incomingPairRequest);
             this._incomingPairRequest = 0;
         }
@@ -423,201 +645,214 @@ var Device = new Lang.Class({
             GLib.source_remove(this._outgoingPairRequest);
             this._outgoingPairRequest = 0;
         }
+    }
 
-        if (bool) {
-            this.settings.set_string(
-                "certificate-pem",
-                this._channel._peer_cert.certificate_pem
-            );
-        } else {
-            this.settings.reset("certificate-pem");
+    /**
+     * Set the internal paired state of the device and emit ::notify
+     *
+     * @param {Boolean} bool - The paired state to set
+     */
+    _setPaired(bool) {
+        this._resetPairRequest();
+
+        // For TCP connections we store or reset the TLS Certificate
+        if (this.connection_type === 'tcp') {
+            if (bool) {
+                this.settings.set_string(
+                    'certificate-pem',
+                    this._channel.certificate.certificate_pem
+                );
+            } else {
+                this.settings.reset('certificate-pem');
+            }
         }
 
-        this.notify("paired", "b");
-    },
+        this.settings.set_boolean('paired', bool);
+        this.notify('paired');
+    }
 
-    pair: function () {
-        debug(this.name + " (" + this.id + ")");
-
-        // The pair button was pressed during an incoming pair request
+    /**
+     * Send or accept an incoming pair request; also exported as a GAction
+     */
+    pair() {
+        // We're accepting an incoming pair request...
         if (this._incomingPairRequest) {
-            this.acceptPair();
+            // so set the paired state to true...
+            this._setPaired(true);
+            // then loop back around to send confirmation...
+            this.pair();
+            // ...before loading plugins
+            this.loadPlugins();
             return;
         }
 
-        // We're initiating an outgoing request
+        // Send a pair packet
+        this.sendPacket({
+            id: 0,
+            type: 'kdeconnect.pair',
+            body: {pair: true}
+        });
+
+        // We're initiating an outgoing pair request
         if (!this.paired) {
+            this._resetPairRequest();
+
             this._outgoingPairRequest = GLib.timeout_add_seconds(
                 GLib.PRIORITY_DEFAULT,
                 30,
-                () => this._setPaired(false)
+                this._setPaired.bind(this, false)
             );
+
+            debug(`Pair request sent to ${this.name}`);
         }
+    }
 
-        // Send a pair packet
-        let packet = new Protocol.Packet({
-            id: 0,
-            type: Protocol.TYPE_PAIR,
-            body: { pair: true }
-        });
-        this._channel.send(packet);
-    },
-
-    unpair: function () {
-        debug(this.name + " (" + this.id + ")");
+    /**
+     * Unpair or reject an incoming pair request; also exported as a GAction
+     */
+    unpair() {
+        debug(`${this.name} (${this.id})`);
 
         // Send the unpair packet only if we're connected
-        if (this._channel !== null) {
-            let packet = new Protocol.Packet({
+        if (this.connected) {
+            this.sendPacket({
                 id: 0,
-                type: Protocol.TYPE_PAIR,
-                body: { pair: false }
+                type: 'kdeconnect.pair',
+                body: {pair: false}
             });
-            this._channel.send(packet);
         }
 
-        this._unloadPlugins().then((values) => {
-            this.notify("plugins", "as");
-            this._setPaired(false);
-        });
-    },
+        this._setPaired(false);
+        this.unloadPlugins();
+    }
 
-    acceptPair: function () {
-        debug(this.name + " (" + this.id + ")");
+    /**
+     * Plugin Functions
+     */
+    get_incoming_supported(type) {
+        let incoming = this.settings.get_strv('incoming-capabilities');
+        return incoming.includes(`kdeconnect.${type}`);
+    }
 
-        this._setPaired(true);
-        this.pair();
-        this._loadPlugins().then((values) => {
-            this.notify("plugins", "as");
-        });
-    },
+    get_outgoing_supported(type) {
+        let outgoing = this.settings.get_strv('outgoing-capabilities');
+        return outgoing.includes(`kdeconnect.${type}`);
+    }
 
-    rejectPair: function () {
-        debug(this.name + " (" + this.id + ")");
+    get_plugin_supported(name) {
+        return this.supported_plugins.includes(name);
+    }
 
-        this.unpair();
-    },
+    get_plugin_allowed(name) {
+        return this.allowed_plugins.includes(name);
+    }
 
-    /** Plugin Functions */
+    lookup_plugin(name) {
+        return this._plugins.get(name) || null;
+    }
 
-    _loadPlugin: function (name) {
-        debug(name + " (" + this.name + ")");
+    _onDisabledPlugins(settings) {
+        let disabled = this.settings.get_strv('disabled-plugins');
+        let supported = this.settings.get_strv('supported-plugins');
+        let allowed = supported.filter(name => !disabled.includes(name));
 
-        return new Promise((resolve, reject) => {
-            if (!this.paired) {
-                reject([name, "Device not paired"]);
-            }
+        disabled.map(name => this.unloadPlugin(name));
+        allowed.map(name => this.loadPlugin(name));
+    }
 
-            // Instantiate the handler
-            let module, plugin;
+    loadPlugin(name) {
+        let handler, plugin;
 
-            try {
-                module = imports.service.plugins[name];
-                plugin = new module.Plugin(this);
-            } catch (e) {
-                reject(e);
-            }
+        try {
+            if (this.paired && !this._plugins.has(name)) {
+                debug(`loading '${name}' plugin`, this.name);
 
-            // Register packet handlers
-            for (let packetType of module.METADATA.incomingPackets) {
-                if (!this._handlers.has(packetType)) {
+                // Instantiate the handler
+                handler = imports.service.plugins[name];
+                plugin = new handler.Plugin(this);
+
+                // Register packet handlers
+                for (let packetType of handler.Metadata.incomingCapabilities) {
                     this._handlers.set(packetType, plugin);
                 }
-            }
 
-            // Register as enabled
-            if (!this._modules.hasOwnProperty(name)) {
-                this._modules[name] = plugin;
-            }
-            if (!this._plugins.has(name)) {
+                // Register plugin
                 this._plugins.set(name, plugin);
+
+                // Run the connected()/disconnected() handler
+                this.connected ? plugin.connected() : plugin.disconnected();
             }
+        } catch (e) {
+            e.name = (e.name === 'Error') ? 'PluginError' : e.name;
+            e.device = this.id;
+            e.plugin = name;
+            e.label = handler.Metadata.label;
 
-            resolve([name, true]);
-        });
-    },
-
-    _loadPlugins: function () {
-        let promises = this.supportedPlugins.map(name => this._loadPlugin(name));
-        return Promise.all(promises.map(p => p.catch(() => undefined)));
-    },
-
-    _unloadPlugin: function (name) {
-        debug(name + " (" + this.name + ")");
-
-        return new Promise((resolve, reject) => {
-            if (!this.paired) {
-                reject([name, false]);
-            }
-
-            // Unregister handlers
-            let handler = imports.service.plugins[name];
-
-            for (let packetType of handler.METADATA.incomingPackets) {
-                this._handlers.delete(packetType);
-            }
-
-            // Register as disabled
-            this._modules[name].destroy();
-            delete this._modules[name];
-            this._plugins.delete(name);
-
-            resolve([name, true]);
-        });
-    },
-
-    _unloadPlugins: function () {
-        let promises = this.plugins.map(name => this._unloadPlugin(name));
-        return Promise.all(promises.map(p => p.catch(() => undefined)));
-    },
-
-    openSettings: function () {
-        if (!this._window) {
-            this._window = new Gtk.ApplicationWindow({
-                application: this.daemon,
-                title: this.name,
-                default_width: 560,
-                default_height: 400,
-                icon_name: this.type
-            });
-
-            this._window.connect("delete-event", () => {
-                delete this._window;
-            });
-
-            this._window.set_titlebar(
-                new Gtk.HeaderBar({
-                    title: this.name,
-                    show_close_button: true,
-                    visible: true
-                })
-            );
-
-            let page = new DeviceWidget.Page(this.daemon, this);
-            page.box.margin_left = 72;
-            page.box.margin_right = 72
-            this._window.add(page);
+            this.service.notify_error(e);
         }
+    }
 
-        this._window.present();
-    },
+    async loadPlugins() {
+        for (let name of this.allowed_plugins) {
+            await this.loadPlugin(name);
+        }
+    }
 
-    destroy: function () {
-        if (this.connected) {
+    unloadPlugin(name) {
+        let handler, plugin;
+
+        try {
+            if (this._plugins.has(name)) {
+                debug(`unloading '${name}' plugin`, this.name);
+
+                // Unregister packet handlers
+                handler = imports.service.plugins[name];
+                plugin = this._plugins.get(name);
+
+                for (let type of handler.Metadata.incomingCapabilities) {
+                    this._handlers.delete(type);
+                }
+
+                // Unregister plugin
+                this._plugins.delete(name);
+                plugin.destroy();
+            }
+        } catch (e) {
+            logError(e, `${this.name}: unloading ${name}`);
+        }
+    }
+
+    async unloadPlugins() {
+        for (let name of this._plugins.keys()) {
+            await this.unloadPlugin(name);
+        }
+    }
+
+    openSettings() {
+        this.service._preferencesAction(this.id);
+    }
+
+    destroy() {
+        //
+        this.settings.disconnect(this._disabledPluginsId);
+
+        // Close the channel if still connected
+        if (this._channel !== null) {
             this._channel.close();
         }
 
-        // TODO: it would be nice not to have to do this here
-        for (let [name, plugin] of this._plugins) {
-            plugin.destroy();
-        }
+        // Synchronously destroy plugins
+        this._plugins.forEach(plugin => plugin.destroy());
 
-        // TODO: this is causing errors to be thrown in _onDisconnected()
-        //       because it gets called before the channel fully closes
+        // Unexport GActions and GMenu
+        Gio.DBus.session.unexport_action_group(this._actionsId);
+        Gio.DBus.session.unexport_menu_model(this._menuId);
+
+        // Unexport the Device interface and object
         this._dbus.flush();
-        this._dbus.unexport();
-        delete this._dbus;
-        GObject.signal_handlers_destroy(this);
+        this._dbus_object.remove_interface(this._dbus);
+        this._dbus_object.flush();
+        this.service.objectManager.unexport(this._dbus_object.g_object_path);
     }
 });
 

@@ -1,302 +1,435 @@
-"use strict";
-
-const Gettext = imports.gettext.domain("org.gnome.Shell.Extensions.GSConnect");
-const _ = Gettext.gettext;
-const Lang = imports.lang;
+'use strict';
 
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
-// Local Imports
-imports.searchPath.push(ext.datadir);
-
-const Common = imports.common;
-const Protocol = imports.service.protocol;
 const PluginsBase = imports.service.plugins.base;
 
 
-var METADATA = {
-    summary: _("Browse Files"),
-    description: _("Mount and browse device filesystems"),
-    uuid: "org.gnome.Shell.Extensions.GSConnect.Plugin.SFTP",
-    incomingPackets: ["kdeconnect.sftp"],
-    outgoingPackets: ["kdeconnect.sftp.request"]
+var Metadata = {
+    label: _('SFTP'),
+    id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.SFTP',
+    incomingCapabilities: ['kdeconnect.sftp'],
+    outgoingCapabilities: ['kdeconnect.sftp.request'],
+    actions: {
+        mount: {
+            label: _('Mount'),
+            icon_name: 'folder-remote-symbolic',
+
+            parameter_type: null,
+            incoming: ['kdeconnect.sftp'],
+            outgoing: ['kdeconnect.sftp.request']
+        },
+        unmount: {
+            label: _('Unmount'),
+            icon_name: 'media-eject-symbolic',
+
+            parameter_type: null,
+            incoming: ['kdeconnect.sftp'],
+            outgoing: ['kdeconnect.sftp.request']
+        }
+    }
 };
 
 
 /**
  * SFTP Plugin
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/sftp
- *
- * TODO: the Android app source that says SSHFS 3.x and causes data corruption
+ * https://github.com/KDE/kdeconnect-android/tree/master/src/org/kde/kdeconnect/Plugins/SftpPlugin
  */
-var Plugin = new Lang.Class({
-    Name: "GSConnectSFTPPlugin",
-    Extends: PluginsBase.Plugin,
-    Properties: {
-        "directories": GObject.param_spec_variant(
-            "directories",
-            "mountedDirectories",
-            "Directories on the mounted device",
-            new GLib.VariantType("a{sv}"),
-            null,
-            GObject.ParamFlags.READABLE
-        ),
-        "mounted": GObject.ParamSpec.boolean(
-            "mounted",
-            "deviceMounted",
-            "Whether the device is mounted",
-            GObject.ParamFlags.READABLE,
-            false
-        )
-    },
+var Plugin = GObject.registerClass({
+    Name: 'GSConnectSFTPPlugin'
+}, class Plugin extends PluginsBase.Plugin {
 
-    _init: function (device) {
-        this.parent(device, "sftp");
+    _init(device) {
+        super._init(device, 'sftp');
 
-        if (!Common.checkCommand("sshfs")) {
-            this.destroy();
-            throw Error(_("SSHFS not installed"));
-        }
-
-        this._mounted = false;
         this._directories = {};
+        this._mounted = false;
+        this._mounting = false;
+        this._port = 0;
+    }
 
-        if (this.settings.get_boolean("automount")) {
+    handlePacket(packet) {
+        if (packet.type === 'kdeconnect.sftp') {
+            this._parseConnectionData(packet);
+        }
+    }
+
+    connected() {
+        super.connected();
+
+        // Disable mounting and notify if `sshfs` is not available
+        if (!GLib.find_program_in_path(gsconnect.metadata.bin.sshfs)) {
+            this.device.lookup_action('mount').enabled = false;
+            this.device.lookup_action('unmount').enabled = false;
+
+            let error = new Error();
+            error.name = 'DependencyError';
+            this.service.notify_error(error);
+
+        // Disable mounting on bluetooth connections
+        } else if (this.device.connection_type === 'bluetooth') {
+            this.device.lookup_action('mount').enabled = false;
+            this.device.lookup_action('unmount').enabled = false;
+
+        // Request a mount so we can delay-connect to the device
+        } else {
+            this._setup();
             this.mount();
         }
-    },
+    }
 
-    get mounted () { return this._mounted },
-    get directories () { return this._directories; },
+    disconnected() {
+        super.disconnected();
+        this.unmount();
+    }
 
-    _prepare: function () {
-        debug("SFTP: _prepare()");
-
-        this._path = ext.runtimedir + "/" + this.device.id;
-        GLib.mkdir_with_parents(this._path, 448);
-
-        let dir = Gio.File.new_for_path(this._path);
-        let info = dir.query_info("unix::uid,unix::gid", 0, null);
-        this._uid = info.get_attribute_uint32("unix::uid").toString();
-        this._gid = info.get_attribute_uint32("unix::gid").toString();
-    },
-
-    handlePacket: function (packet) {
-        debug("SFTP: handlePacket()");
-
+    /**
+     * Ensure the mountpoint exists with the proper permissions and get the
+     * UID and GID from the folder.
+     *
+     * TODO: If #607706 (https://bugzilla.gnome.org/show_bug.cgi?id=607706)
+     *       is fixed in gvfs we can mount under $HOME and show in Nautilus
+     */
+    _setup() {
         try {
-            this._prepare();
+            // Mounting is done under /run/user/$UID/gsconnect/<device-id>
+            this._mountpoint = GLib.build_filenamev([
+                gsconnect.runtimedir,
+                this.device.id
+            ]);
+
+            let dir = Gio.File.new_for_path(this._mountpoint);
+
+            try {
+                dir.make_directory_with_parents(null);
+                dir.set_attribute_uint32('unix::mode', 448, 0, null);
+            } catch (e) {
+            } finally {
+                let info = dir.query_info('unix::uid,unix::gid', 0, null);
+                this._uid = info.get_attribute_uint32('unix::uid');
+                this._gid = info.get_attribute_uint32('unix::gid');
+            }
         } catch (e) {
-            log("SFTP: Error preparing to mount '" + this.device.name + "': " + e);
-            this.unmount();
+            logWarning(e, `${this.device.name}: ${this.name}`);
+            this._umount();
+            return false;
+        }
+
+        return true;
+    }
+
+    _parseConnectionData(packet) {
+        if (this._mounted) {
             return;
         }
 
-        let args = [
-            "sshfs",
-            packet.body.user + "@" + packet.body.ip + ":" + packet.body.path,
-            this._path,
-            "-p", packet.body.port.toString(),
-            // "disable multi-threaded operation"
-            // Fixes file chunks being sent out of order and corrupted
-            "-s",
-            // "foreground operation"
-            "-f",
-            // Do not use ~/.ssh/config
-            "-F", "/dev/null",
-            // Sketchy?
-            "-o", "IdentityFile=" + ext.configdir + "/private.pem",
-            // Don't prompt for new host confirmation (we know the host)
-            "-o", "StrictHostKeyChecking=no",
-            // Prevent storing as a known host
-            "-o", "UserKnownHostsFile=/dev/null",
-            // ssh-dss (DSA) keys are deprecated since openssh-7.0p1
-            // See: https://bugs.kde.org/show_bug.cgi?id=351725
-            "-o", "HostKeyAlgorithms=ssh-dss",
-            "-o", "ServerAliveInterval=30",
-            // "set file owner/group"
-            "-o", "uid=" + this._uid, "-o", "gid=" + this._gid,
-            // "read password from stdin (only for pam_mount!)"
-            "-o", "password_stdin"
-        ];
+        this._ip = this.device.settings.get_string('tcp-host');
+        this._port = packet.body.port;
+        this._root = packet.body.path;
 
-        // [res, pid, in_fd, out_fd, err_fd]
-        try {
-            this._proc = GLib.spawn_async_with_pipes(
-                null,                                   // working dir
-                args,                                   // argv
-                null,                                   // envp
-                GLib.SpawnFlags.SEARCH_PATH,            // enables PATH
-                null                                    // child_setup (func)
-            );
-        } catch (e) {
-            log("SFTP: Error mounting '" + this.device.name + "': " + e);
-            this.unmount();
+        // Setup mount point
+        if (!this._setup()) {
             return;
         }
 
-        // Initialize streams
-        this._stdin = new Gio.DataOutputStream({
-            base_stream: new Gio.UnixOutputStream({ fd: this._proc[2] })
-        });
+        this._user = packet.body.user;
+        this._password = packet.body.password;
 
-        this._stderr = new Gio.DataInputStream({
-            base_stream: new Gio.UnixInputStream({ fd: this._proc[4] })
-        });
+        // If 'multiPaths' is present find the common path prefix
+        if (packet.body.hasOwnProperty('multiPaths')) {
+            let prefix = [];
+            let paths = packet.body.multiPaths.map(path => path.split('/'));
 
-        let source = this._stderr.base_stream.create_source(null);
-        source.set_callback(Lang.bind(this, this._read_stderr));
-        source.attach(null);
-
-        // Send session password
-        this._stdin.put_string(packet.body.password + "\n", null);
-
-        // Set the directories and notify (client.js needs this before mounted)
-        for (let index in packet.body.pathNames) {
-            let name = packet.body.pathNames[index];
-            let path = packet.body.multiPaths[index].replace(packet.body.path, "");
-            path = path.replace(packet.body.path, "");
-
-            this._directories[name] = this._path + path;
-        }
-
-        this.notify("directories");
-        this._dbus.emit_property_changed(
-            "directories",
-            new GLib.Variant("a{ss}", this._directories)
-        );
-
-        // Set "mounted" and notify
-        this._mounted = true;
-
-        this.notify("mounted");
-        this._dbus.emit_property_changed(
-            "mounted",
-            new GLib.Variant("b", this._mounted)
-        );
-    },
-
-    _read_stderr: function () {
-        // unmount() was called with data in the queue
-        if (!this._stderr) { return; }
-
-        this._stderr.read_line_async(GLib.PRIORITY_DEFAULT, null, (source, res) => {
-            let [data, len] = source.read_line_finish(res);
-
-            // TODO: there's no way this covers all the bases
-            if (data === null) {
-                log("SFTP Error: pipe closed");
-                this.unmount();
-            } else {
-                switch (data.toString()) {
-                    case "remote host has disconnected":
-                        debug("Sftp: disconnected");
-                        this.unmount();
-                    case "Timeout waiting for prompt":
-                        this.unmount("Sftp: timeout");
-                    default:
-                        log("Sftp: " + data.toString());
+            // Find the common prefixes
+            for (let dir of paths[0]) {
+                if (paths.every(path => path[0] === dir)) {
+                    prefix.push(dir);
+                    paths = paths.map(path => path.slice(1));
+                } else {
+                    break;
                 }
             }
-        });
-    },
 
-    mount: function () {
-        debug("SFTP: mount()");
+            // Rejoin the prefix and paths
+            this._root = GLib.build_filenamev(prefix);
+            paths = paths.map(path => '/' + GLib.build_filenamev(path));
 
-        let packet = new Protocol.Packet({
-            id: 0,
-            type: "kdeconnect.sftp.request",
-            body: { startBrowsing: true }
-        });
-
-        this.device._channel.send(packet);
-    },
-
-    unmount: function () {
-        debug("SFTP: unmount()");
-
-        try {
-            if (this._proc) {
-               GLib.spawn_command_line_async("kill -9 " + this._proc[1]);
-            }
-        } catch (e) {
-            log("SFTP: Error killing sshfs: " + e);
-        }
-
-        if (this._path) {
-            if (Common.checkCommand("fusermount")) {
-                GLib.spawn_command_line_async("fusermount -uz " + this._path);
-            } else {
-                GLib.spawn_command_line_async("umount " + this._path);
+            // Set the directories
+            for (let i = 0; i < paths.length; i++) {
+                let name = packet.body.pathNames[i];
+                this._directories[name] = this._mountpoint + paths[i];
             }
 
-            delete this._path;
-            delete this._uid;
-            delete this._gid;
+        // If 'multiPaths' is missing use 'path' and assume a Camera folder
+        } else {
+            this._root = packet.body.path;
+            this._directories[_('All files')] = this._mountpoint;
+            this._directories[_('Camera pictures')] =  GLib.build_filenamev([
+                this._mountpoint,
+                'DCIM',
+                'Camera'
+            ]);
         }
 
-        try {
-            if (this._stdin) {
-                this._stdin.close(null);
-            }
-        } catch (e) {
-            log("SFTP: Error closing stdin: " + e);
-        }
-
-        try {
-            if (this._stderr) {
-                this._stderr.close(null);
-            }
-        } catch (e) {
-            log("SFTP: Error closing stderr: " + e);
-        }
-
-        delete this._proc;
-        delete this._stdin;
-        delete this._stderr;
-
-        this._directories = {};
-
-        this._dbus.emit_property_changed(
-            "directories",
-            new GLib.Variant("a{ss}", this._directories)
-        );
-
-        this._mounted = false;
-
-        this._dbus.emit_property_changed(
-            "mounted",
-            new GLib.Variant("b", false)
-        );
-    },
-
-    destroy: function () {
-        this.unmount();
-
-        PluginsBase.Plugin.prototype.destroy.call(this);
+        // Start the mounting process
+        this._mount();
     }
-});
 
+    /**
+     * Start the sshfs process and send the password
+     */
+    _sshfs() {
+        let argv = [
+            gsconnect.metadata.bin.sshfs,
+            `${this._user}@${this._ip}:${this._root}`,
+            this._mountpoint,
+            '-p', this._port.toString(),
+            // 'disable multi-threaded operation'
+            // Fixes file chunks being sent out of order and corrupted
+            '-s',
+            // 'foreground operation'
+            '-f',
+            // Do not use ~/.ssh/config
+            '-F', '/dev/null',
+            // Use the private key from the service certificate
+            '-o', 'IdentityFile=' + gsconnect.configdir + '/private.pem',
+            // Don't prompt for new host confirmation (we know the host)
+            '-o', 'StrictHostKeyChecking=no',
+            // Prevent storing as a known host
+            '-o', 'UserKnownHostsFile=/dev/null',
+            // Match keepalive for kdeconnect connection (30sx3)
+            '-o', 'ServerAliveInterval=30',
+            // Don't immediately connect to server, wait until mountpoint is first accessed.
+            '-o', 'delay_connect',
+            // Automatically reconnect to server if connection is interrupted
+            '-o', 'reconnect',
+            // Set user/group permissions to allow readwrite access
+            '-o', `uid=${this._uid}`, '-o', `gid=${this._gid}`,
+            // 'read password from stdin (only for pam_mount!)'
+            '-o', 'password_stdin'
+        ];
 
-var SettingsDialog = new Lang.Class({
-    Name: "GSConnectSFTPSettingsDialog",
-    Extends: PluginsBase.SettingsDialog,
+        // Execute sshfs
+        this._proc = new Gio.Subprocess({
+            argv: argv,
+            flags: Gio.SubprocessFlags.STDIN_PIPE | Gio.SubprocessFlags.STDERR_PIPE
+        });
+        this._proc.init(null);
 
-    _init: function (device, name, window) {
-        this.parent(device, name, window);
+        // Cleanup when the process exits
+        this._proc.wait_async(null, this._sshfs_finish.bind(this));
 
-        let generalSection = this.content.addSection(
+        // Since we're using '-o reconnect' we watch stderr so we can quit on
+        // errors *we* consider fatal, otherwise the process may dangle
+        let stderr = new Gio.DataInputStream({
+            base_stream: this._proc.get_stderr_pipe()
+        });
+        this._sshfs_check(stderr);
+
+        // Send session password
+        this._proc.get_stdin_pipe().write_all_async(
+            `${this._password}\n`,
+            GLib.PRIORITY_DEFAULT,
             null,
-            null,
-            { margin_bottom: 0, width_request: -1 }
+            (stream, res) => {
+                try {
+                    stream.write_all_finish(res);
+                } catch (e) {
+                    this.unmount();
+                }
+            }
         );
-        generalSection.addGSetting(this.settings, "automount");
+    }
 
-        this.content.show_all();
+    _sshfs_finish(proc, res) {
+        try {
+            proc.wait_finish(res);
+        } catch (e) {
+            debug(e);
+        } finally {
+            this._proc = undefined;
+
+            // Make sure it's actually unmounted
+            this._umount();
+
+            // Reset the directories and 'mounted'
+            this._directories = {};
+            this._mounted = false;
+
+            // Replace the menu item
+            this._removeSubmenu();
+        }
+    }
+
+    /**
+     * Watch stderr output from the sshfs process for fatal errors
+     */
+    _sshfs_check(stream) {
+        stream.read_line_async(GLib.PRIORITY_DEFAULT, null, (stream, res) => {
+            try {
+                let msg = stream.read_line_finish_utf8(res)[0];
+
+                if (msg !== null) {
+                    if (msg.includes('ssh_dispatch_run_fatal')) {
+                        let e = new Error(msg);
+                        this.service.notify_error(e);
+                        throw e;
+                    }
+
+                    logWarning(msg, `${this.device.name}: sshfs`);
+                    this._sshfs_check(stream);
+                }
+            } catch (e) {
+                debug(e);
+                this.unmount();
+            }
+        });
+    }
+
+    /**
+     * Replace the 'Mount' item with a submenu of directories
+     */
+    _addSubmenu() {
+        // Sftp Submenu
+        let submenu = new Gio.Menu();
+
+        // Directories Section
+        let directories = new Gio.Menu();
+
+        for (let [name, path] of Object.entries(this._directories)) {
+            directories.append(name, `device.openPath::${path}`);
+        }
+
+        submenu.append_section(null, directories);
+
+        // Unmount Section/Item
+        let unmount = new Gio.Menu();
+        unmount.add_action(this.device.lookup_action('unmount'));
+        submenu.append_section(null, unmount);
+
+        // Files Item
+        let item = new Gio.MenuItem();
+        item.set_detailed_action('device.mount');
+
+        // Icon with check emblem
+        // TODO: better?
+        let icon = new Gio.EmblemedIcon({
+            gicon: new Gio.ThemedIcon({name: 'folder-remote-symbolic'})
+        });
+        let emblem = new Gio.Emblem({
+            icon: new Gio.ThemedIcon({name: 'emblem-default'})
+        });
+        icon.add_emblem(emblem);
+        item.set_icon(icon);
+
+        item.set_attribute_value(
+            'hidden-when',
+            new GLib.Variant('s', 'action-disabled')
+        );
+        item.set_label(_('Files'));
+        item.set_submenu(submenu);
+
+        this.device.menu.replace_action('device.mount', item);
+    }
+
+    _removeSubmenu() {
+        let index = this.device.menu.remove_action('device.mount');
+        let action = this.device.lookup_action('mount');
+
+        if (action !== null) {
+            this.device.menu.add_action(action, index);
+        }
+    }
+
+    /**
+     * Send a request to mount the remote device
+     */
+    mount() {
+        this.device.sendPacket({
+            id: 0,
+            type: 'kdeconnect.sftp.request',
+            body: {startBrowsing: true}
+        });
+    }
+
+    /**
+     * Run sshfs and replace the
+     */
+    _mount() {
+        try {
+            // If mounting is already in progress, let that fail before retrying
+            if (this._mounting) {
+                return;
+            }
+
+            this._mounting = true;
+
+            // Start sshfs
+            this._sshfs();
+
+            // Add the directories to the menu
+            this._addSubmenu();
+
+            // Set 'mounted'
+            this._mounted = true;
+            this._mounting = false;
+        } catch (e) {
+            this.unmount();
+            logError(e, this.device.name);
+        }
+    }
+
+    /**
+     * On Linux `fusermount` should be available, but BSD uses `umount`
+     * See: https://phabricator.kde.org/D6945
+     */
+    _umount() {
+        let argv = ['umount', this._mountpoint];
+
+        if (GLib.find_program_in_path(gsconnect.metadata.bin.fusermount)) {
+            argv = [gsconnect.metadata.bin.fusermount, '-uz', this._mountpoint];
+        }
+
+        let proc = new Gio.Subprocess({
+            argv: argv,
+            flags: Gio.SubprocessFlags.NONE
+        });
+        proc.init(null);
+
+        proc.wait_check_async(null, (proc, res) => {
+            try {
+                proc.wait_check_finish(res);
+            } catch (e) {
+                // Silence errors
+            } finally {
+                this._mounted = false;
+            }
+        });
+    }
+
+    /**
+     * Remove the menu items, kill sshfs, replace the mount item
+     */
+    unmount() {
+        if (!this._mounted) {
+            return;
+        }
+
+        this._umount();
+
+        if (this._mounted) {
+            this._proc.force_exit();
+        }
+    }
+
+    destroy() {
+        // FIXME: _sshfs_finish() accesses plugin variables after finalization
+        this.unmount();
+        super.destroy();
     }
 });
 

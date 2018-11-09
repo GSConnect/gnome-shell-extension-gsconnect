@@ -1,50 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist gettext-domain="org.gnome.Shell.Extensions.GSConnect">
   <schema id="org.gnome.Shell.Extensions.GSConnect" path="/org/gnome/shell/extensions/gsconnect/">
-    <key name="debug" type="b">
-      <default>false</default>
-      <summary>Debug Mode</summary>
-      <description>Enable debug features and logging</description>
-    </key>
+    <!-- Extension Settings -->
     <key name="show-indicators" type="b">
       <default>false</default>
-      <summary>Show Indicators</summary>
-      <description>Display devices in the panel instead of the User Menu</description>
     </key>
-    <key name="show-offline" type="b">
-      <default>true</default>
-      <summary>Show Offline</summary>
-      <description>Display devices even if offline</description>
-    </key>
-    <key name="show-unpaired" type="b">
-      <default>true</default>
-      <summary>Show Unpaired</summary>
-      <description>Display devices even if unpaired</description>
-    </key>
-    <key name="show-battery" type="b">
-      <default>false</default>
-      <summary>Show Battery Icon</summary>
-      <description>Display an icon with percentage in the Device Menu</description>
+
+    <!-- Service Settings -->
+    <key name="public-name" type="s">
+      <default>"GSConnect"</default>
     </key>
     <key name="devices" type="as">
       <default>[]</default>
     </key>
-    <key name="nautilus-integration" type="b">
-      <default>false</default>
-      <summary>Nautilus Integration</summary>
-      <description>Send files from the file browser context menu</description>
+    <key name="donotdisturb" type="i">
+      <default>0</default>
     </key>
-    <key name="webbrowser-integration" type="b">
+    <key name="debug" type="b">
       <default>false</default>
-      <summary>Web Browser Integration</summary>
-      <description>Share links with devices and contacts from the web browser</description>
     </key>
-    <key name="public-name" type="s">
-      <default>"GSConnect"</default>
-      <summary>Public Name</summary>
-      <description>The name visible to other devices</description>
+    <key name="discoverable" type="b">
+      <default>true</default>
     </key>
   </schema>
+
+  <schema id="org.gnome.Shell.Extensions.GSConnect.Messaging" path="/org/gnome/shell/extensions/gsconnect/messaging/">
+    <key name="window-position" type="(ii)">
+      <default>(0, 0)</default>
+    </key>
+    <key name="window-size" type="(ii)">
+      <default>(300, 300)</default>
+    </key>
+    <key name="window-maximized" type="b">
+      <default>false</default>
+    </key>
+  </schema>
+
+  <schema id="org.gnome.Shell.Extensions.GSConnect.Preferences" path="/org/gnome/shell/extensions/gsconnect/preferences/">
+    <key name="window-position" type="(ii)">
+      <default>(0, 0)</default>
+    </key>
+    <key name="window-size" type="(ii)">
+      <default>(640, 440)</default>
+    </key>
+    <key name="window-maximized" type="b">
+      <default>false</default>
+    </key>
+  </schema>
+
+  <!-- Device Settings -->
   <schema id="org.gnome.Shell.Extensions.GSConnect.Device">
     <key name="certificate-pem" type="s">
       <default>""</default>
@@ -52,16 +56,31 @@
     <key name="id" type="s">
       <default>""</default>
     </key>
-    <key name="keybindings" type="s">
-      <default>"{}"</default>
+    <key name="keybindings" type="a{ss}">
+      <default>{}</default>
+    </key>
+    <key name="menu-actions" type="as">
+      <default>["sms", "ring", "mount", "commands", "share"]</default>
     </key>
     <key name="name" type="s">
       <default>""</default>
     </key>
+    <key name="paired" type="b">
+      <default>false</default>
+    </key>
     <key name="type" type="s">
       <default>"unknown"</default>
     </key>
-    <key name="enabled-plugins" type="as">
+    <key name="incoming-capabilities" type="as">
+      <default>[]</default>
+    </key>
+    <key name="outgoing-capabilities" type="as">
+      <default>[]</default>
+    </key>
+    <key name="disabled-plugins" type="as">
+      <default>[]</default>
+    </key>
+    <key name="disabled-actions" type="as">
       <default>[]</default>
     </key>
     <key name="supported-plugins" type="as">
@@ -73,95 +92,79 @@
     <key name="tcp-port" type="u">
       <default>1716</default>
     </key>
-  </schema>
-  <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Battery">
-    <key name="receive-statistics" type="b">
-      <default>true</default>
-      <summary>Receive Statistics</summary>
-      <description></description>
+    <key name="bluetooth-host" type="s">
+      <default>""</default>
     </key>
+    <key name="bluetooth-path" type="s">
+      <default>""</default>
+    </key>
+    <key name="last-connection" type="s">
+      <default>""</default>
+    </key>
+  </schema>
+
+  <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Battery">
     <key name="send-statistics" type="b">
       <default>false</default>
-      <summary>Send Statistics</summary>
-      <description></description>
     </key>
   </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Clipboard">
     <key name="receive-content" type="b">
-      <default>true</default>
-      <summary>Receive Content</summary>
-      <description></description>
+      <default>false</default>
     </key>
     <key name="send-content" type="b">
+      <default>false</default>
+    </key>
+  </schema>
+  <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Contacts"/>
+  <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.FindMyPhone"/>
+  <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Mousepad">
+    <key name="share-control" type="b">
       <default>true</default>
-      <summary>Send Content</summary>
-      <description></description>
+    </key>
+  </schema>
+  <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.MPRIS">
+    <key name="share-players" type="b">
+      <default>true</default>
     </key>
   </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Notification">
-    <key name="receive-notifications" type="b">
-      <default>true</default>
-      <summary>Receive Notifications</summary>
-      <description></description>
-    </key>
     <key name="send-notifications" type="b">
       <default>true</default>
-      <summary>Send Notifications</summary>
-      <description></description>
     </key>
     <key name="applications" type="s">
-      <default>'{"GSConnect":{"iconName":"phone","enabled":false}}'</default>
+      <default>'{}'</default>
     </key>
   </schema>
+  <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Ping"/>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.RunCommand">
-    <key name="command-list" type="s">
-      <default>"{}"</default>
+    <key name="command-list" type="a{sv}">
+      <default>{}</default>
     </key>
   </schema>
-  <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.SFTP">
-    <key name="automount" type="b">
-      <default>false</default>
-      <summary>Automatically Mount</summary>
-      <description></description>
-    </key>
-  </schema>
-  <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Share">
-    <key name="download-directory" type="s">
-      <default>""</default>
-      <summary>Download Directory</summary>
-      <description></description>
-    </key>
-    <key name="download-subdirectory" type="b">
-      <default>false</default>
-      <summary>Use Subdirectory</summary>
-      <description></description>
+  <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.SFTP"/>
+  <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Share"/>
+  <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.SMS"/>
+  <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.SystemVolume">
+    <key name="share-sinks" type="b">
+      <default>true</default>
     </key>
   </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Telephony">
     <key name="ringing-volume" type="s">
       <default>"lower"</default>
-      <summary>System Volume</summary>
-      <description></description>
     </key>
     <key name="ringing-pause" type="b">
       <default>false</default>
-      <summary>Pause Media</summary>
-      <description></description>
     </key>
     <key name="talking-volume" type="s">
       <default>"mute"</default>
-      <summary>System Volume</summary>
-      <description></description>
     </key>
     <key name="talking-microphone" type="b">
       <default>true</default>
-      <summary>Mute Microphone</summary>
-      <description></description>
     </key>
     <key name="talking-pause" type="b">
       <default>true</default>
-      <summary>Pause Media</summary>
-      <description></description>
     </key>
   </schema>
 </schemalist>

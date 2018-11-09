@@ -1,0 +1,127 @@
+{
+    "env": {
+        "es6": true
+    },
+    "extends": "eslint:recommended",
+    "rules": {
+        "array-bracket-newline": [
+            "error",
+            "consistent"
+        ],
+        "array-bracket-spacing": [
+            "error",
+            "never"
+        ],
+        "brace-style": "error",
+        "comma-spacing": [
+            "error",
+            {
+                "before": false,
+                "after": true
+            }
+        ],
+        "indent": [
+            "error",
+            4,
+            {
+                "MemberExpression": "off",
+                "SwitchCase": 1
+            }
+        ],
+        "key-spacing": [
+            "error",
+            {
+                "beforeColon": false,
+                "afterColon": true
+            }
+        ],
+        "keyword-spacing": [
+            "error",
+            {
+                "before": true,
+                "after": true
+            }
+        ],
+        "linebreak-style": [
+            "error",
+            "unix"
+        ],
+        "no-empty": [
+            "error",
+            {
+                "allowEmptyCatch": true
+            }
+        ],
+        "no-implicit-coercion": [
+            "error",
+            {
+                "allow": ["!!"]
+            }
+        ],
+        "no-unused-vars": [
+            "error",
+            {
+                "args": "none",
+                "vars": "local"
+            }
+        ],
+        "object-curly-newline": [
+            "error",
+            {
+                "consistent": true
+            }
+        ],
+        "object-curly-spacing": "error",
+        "prefer-template": "off",
+        "quotes": [
+            "error",
+            "single",
+            {
+                "avoidEscape": true
+            }
+        ],
+        "semi": [
+            "error",
+            "always"
+        ],
+        "semi-spacing": [
+            "error",
+            {
+                "before": false,
+                "after": true
+            }
+        ],
+        "space-before-blocks": "error",
+        "space-infix-ops": [
+            "error",
+            {
+                "int32Hint": false
+            }
+        ]
+    },
+    "globals": {
+        "ARGV": false,
+        "Debugger": false,
+        "GIRepositoryGType": false,
+        "imports": false,
+        "Intl": false,
+        "log": false,
+        "logError": false,
+        "print": false,
+        "printerr": false,
+        "window": false,
+
+        "global": false,
+        "gsconnect": false,
+        "debug": false,
+        "logWarning": false,
+        "_": false,
+        "_C": false,
+        "_N": false,
+        "ngettext": false,
+        "loop_theme_sound": false
+    },
+    "parserOptions": {
+        "ecmaVersion": 2017
+    }
+}

@@ -1,85 +1,117 @@
 
 /* Device Menu Hierarchy
 
-.gsconnect-device-box [ PopupMenu.PopupBaseMenuItem ]
-    StButton.gsconnect-device-button
-        StDrawingArea
-    StBoxLayout.gsconnect-control-box
-        StBoxLayout.gsconnect-title-bar
-            StLabel.gsconnect-device-name
-            StWidget.gsconnect-title-separator (inherits from .popup-separator-menu-item)
-            StBoxLayout.gsconnect-device-battery
-                StLabel
-                StIcon
-        StBoxLayout.gsconnect-plugin-bar
-            StButton.gsconnect-plugin-button (inherits from .system-menu-action)
-                StIcon
-        StBoxLayout.gsconnect-status-bar
-            StLabel
+User Menu:
+
+.gsconnect-device-section (PopupMenu.PopupMenuSection)
+    PopupMenu.PopupMenuSection
+
+Indicator:
+
+PanelMenu.Button
+    PopupMenu.PopupMenu
+
 */
-
-.gsconnect-device-box {
-    padding: 0.5em 1em;
-    spacing: 0.5em;
+.gsconnect-device-section {
 }
 
-.gsconnect-device-button {
-    border: none;
-    border-radius: 24px;
-    padding: 0px;
-}
-
-.gsconnect-device-button:hover, .gsconnect-device-button:focus {
-    border: none;
-    border-radius: 24px;
-    padding: 0px;
-}
-
-.gsconnect-control-box {
-    spacing: 0.25em;
-}
-
-.gsconnect-title-bar {
-    spacing: 0.75em;
-}
-
+/* Title Bar */
 .gsconnect-device-name {
     font-weight: bold;
 }
 
-.gsconnect-title-separator {
+.gsconnect-device-iconmenu .popup-separator-menu-item,
+.gsconnect-device-textmenu .popup-separator-menu-item {
     margin-left: 0;
     margin-right: 0;
 }
 
+/* Battery Widget */
 .gsconnect-device-battery {
     spacing: 3px;
 }
 
-.gsconnect-plugin-bar {
+.gsconnect-device-battery StLabel {
+    font-size: 0.75em;
+}
+
+.gsconnect-device-battery StIcon {
+    icon-size: 16px;
+}
+
+/* Icon Box */
+.gsconnect-icon-box {
+    margin: 0em 2em 0.5em;
     spacing: 6px;
 }
 
-.gsconnect-plugin-button {
+.gsconnect-icon-button {
     border: none;
     border-radius: 16px;
     padding: 8px;
 }
 
-.gsconnect-plugin-button:hover, .gsconnect-plugin-button:focus {
+.gsconnect-icon-button:hover, .gsconnect-icon-button:focus {
     border: none;
     padding: 8px;
 }
 
-.gsconnect-status-bar {
+/* List Box */
+.gsconnect-list-box {
+}
+
+/* Do Not Disturb Dialog
+
+.gsconnect-dnd-dialog [ModalDialog.ModalDialog]
+    StBoxLayout.nm-dialog-header-hbox
+        StIcon.nm-dialog-header-icon
+        StBoxLayout
+            StLabel.nm-dialog-header
+            StLabel.nm-dialog-subheader
+    StBoxLayout.nm-dialog-content
+        StBoxLayout.gsconnect-radio-list
+            StBoxLayout.gsconnect-radio-button (Until you turn off...)
+                StButton.pager-button
+                    StIcon
+                StLabel
+            StBoxLayout.gsconnect-radio-button (Until 00:00)
+                StButton.pager-button
+                    StIcon
+                StBoxLayout.gsconnect-dnd-timer
+                    StLabel
+                    StButton.pager-button
+                        StIcon
+                    StButton.pager-button
+                        StIcon
+ */
+
+.gsconnect-radio-list {
+    spacing: 0.25em;
+}
+
+.gsconnect-radio-button {
+    spacing: 0.25em;
+}
+
+.gsconnect-radio-button .pager-button {
+    /* fix for arc-theme */
+    color: inherit;
+}
+
+.gsconnect-radio-button StIcon {
+    icon-size: 16px;
+}
+
+.gsconnect-dnd-timer {
+    spacing: 0.25em;
 }
 
 /* Tooltip
 
 StBin.gsconnect-tooltip (inherits from .osd-window)
     StBoxLayout || [ Custom ClutterActor ]
-        StIcon.gsconnect-tooltip-icon
-        StLabel.gsconnect-tooltip-text
+        StIcon
+        StLabel
 */
 .gsconnect-tooltip {
     border-radius: 3px;
@@ -92,15 +124,16 @@ StBin.gsconnect-tooltip (inherits from .osd-window)
     spacing: 6px;
 }
 
-.gsconnect-tooltip-icon {
+.gsconnect-tooltip StIcon {
+    icon-size: 16px;
 }
 
-.gsconnect-tooltip-text {
+.gsconnect-tooltip StLabel {
     font-weight: normal;
     text-align: left;
 }
 
-.gsconnect-tooltip-text:rtl {
+.gsconnect-tooltip StLabel:rtl {
     text-align: right;
 }
 

@@ -1,28 +1,19 @@
-"use strict";
-
-const Gettext = imports.gettext.domain("org.gnome.Shell.Extensions.GSConnect");
-const _ = Gettext.gettext;
-const Lang = imports.lang;
+'use strict';
 
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
-const UPower = imports.gi.UPowerGlib;
 
-// Local Imports
-imports.searchPath.push(ext.datadir);
-
-const Common = imports.common;
-const Protocol = imports.service.protocol;
+const DBus = imports.service.components.dbus;
 const PluginsBase = imports.service.plugins.base;
 
 
-var METADATA = {
-    summary: _("Battery"),
-    description: _("Send and receive battery statistics"),
-    uuid: "org.gnome.Shell.Extensions.GSConnect.Plugin.Battery",
-    incomingPackets: ["kdeconnect.battery", "kdeconnect.battery.request"],
-    outgoingPackets: ["kdeconnect.battery", "kdeconnect.battery.request"]
+var Metadata = {
+    label: _('Battery'),
+    id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.Battery',
+    incomingCapabilities: ['kdeconnect.battery', 'kdeconnect.battery.request'],
+    outgoingCapabilities: ['kdeconnect.battery', 'kdeconnect.battery.request'],
+    actions: {}
 };
 
 
@@ -30,340 +21,358 @@ var METADATA = {
  * Battery Plugin
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/battery
  */
-var Plugin = new Lang.Class({
-    Name: "GSConnectBatteryPlugin",
-    Extends: PluginsBase.Plugin,
+var Plugin = GObject.registerClass({
+    GTypeName: 'GSConnectBatteryPlugin',
     Properties: {
-        "charging": GObject.ParamSpec.boolean(
-            "charging",
-            "isCharging",
-            "Whether the device is charging",
+        'charging': GObject.ParamSpec.boolean(
+            'charging',
+            'isCharging',
+            'Whether the device is charging',
             GObject.ParamFlags.READABLE,
             false
         ),
-        "level": GObject.ParamSpec.int(
-            "level",
-            "currentCharge",
-            "Whether the device is charging",
+        'icon-name': GObject.ParamSpec.string(
+            'icon-name',
+            'IconName',
+            'Icon name representing the battery state',
             GObject.ParamFlags.READABLE,
+            ''
+        ),
+        'level': GObject.ParamSpec.int(
+            'level',
+            'currentCharge',
+            'Whether the device is charging',
+            GObject.ParamFlags.READABLE,
+            -1, 100,
             -1
         ),
-        "time": GObject.ParamSpec.int(
-            "time",
-            "timeRemaining",
-            "Seconds until full or depleted",
+        'time': GObject.ParamSpec.int(
+            'time',
+            'timeRemaining',
+            'Seconds until full or depleted',
             GObject.ParamFlags.READABLE,
-            0
+            -1, GLib.MAXINT32,
+            -1
         )
-    },
+    }
+}, class Plugin extends PluginsBase.Plugin {
 
-    _init: function (device) {
-        this.parent(device, "battery");
+    _init(device) {
+        super._init(device, 'battery');
 
-        this._charging = false;
-        this._level = -1;
-        this._time = 0;
+        // Export DBus
+        this._dbus = new DBus.Interface({
+            g_instance: this,
+            g_interface_info: gsconnect.dbusinfo.lookup_interface(
+                'org.gnome.Shell.Extensions.GSConnect.Battery'
+            )
+        });
+        this.device._dbus_object.add_interface(this._dbus);
 
-        this._chargeStats = [];
-        this._dischargeStats = [];
+        // Ensure properties are ready for DBus
+        this.notify('charging');
+        this.notify('level');
+        this.notify('icon-name');
+        this.notify('time');
+
+        // Setup Cache; defaults are 90 minute charge, 1 day discharge
+        this._chargeState = [54, 0, -1];
+        this._dischargeState = [864, 0, -1];
         this._thresholdLevel = 25;
 
-        this.initPersistence([
-            "_chargeStats",
-            "_dischargeStats",
-            "_thresholdLevel"
+        this.cacheProperties([
+            '_chargeState',
+            '_dischargeState',
+            '_thresholdLevel'
         ]);
 
-        if (this.settings.get_boolean("receive-statistics")) {
-            this.request();
+        // Local Battery (UPower)
+        this._upowerId = 0;
+        this._sendStatisticsId = this.settings.connect(
+            'changed::send-statistics',
+            this._onSendStatisticsChanged.bind(this)
+        );
+        this._onSendStatisticsChanged(this.settings);
+    }
+
+    get charging() {
+        if (this._charging === undefined) {
+            this._charging = false;
         }
 
-        this.settings.connect("changed::receive-statistics", () => {
-            if (this.settings.get_boolean("receive-statistics")) {
-                this._stats = [];
-                this.request();
-            } else {
-                this._charging = false;
-                this.notify("charging");
-                this._dbus.emit_property_changed(
-                    "charging",
-                    new GLib.Variant("b", this._charging)
-                );
+        return this._charging;
+    }
 
-                this._level = -1;
-                this.notify("level");
-                this._dbus.emit_property_changed(
-                    "level",
-                    new GLib.Variant("i", this._level)
-                );
+    get icon_name() {
+        let icon;
 
-                this.notify("time");
-                this._dbus.emit_property_changed(
-                    "time",
-                    new GLib.Variant("i", this.time)
-                );
-            }
-        });
-
-        if (this.settings.get_boolean("send-statistics") && this.device.daemon.type === "laptop") {
-            this._monitor();
+        if (this.level === -1) {
+            return 'battery-missing-symbolic';
+        } else if (this.level === 100) {
+            return 'battery-full-charged-symbolic';
+        } else if (this.level < 3) {
+            icon = 'battery-empty';
+        } else if (this.level < 10) {
+            icon = 'battery-caution';
+        } else if (this.level < 30) {
+            icon = 'battery-low';
+        } else if (this.level < 60) {
+            icon = 'battery-good';
+        } else if (this.level >= 60) {
+            icon = 'battery-full';
         }
 
-        this.settings.connect("changed::send-statistics", () => {
-            if (this.settings.get_boolean("send-statistics") && !this._battery) {
-                this._monitor();
-            } else if (!this.settings.get_boolean("send-statistics") && this._battery) {
-                GObject.signal_handlers_destroy(this._battery);
-                delete this._battery;
-            }
-        });
-    },
+        icon += this.charging ? '-charging-symbolic' : '-symbolic';
+        return icon;
+    }
 
-    _monitor: function () {
-        try {
-            this._battery = new UPower.Device();
-
-            this._battery.set_object_path_sync(
-                "/org/freedesktop/UPower/devices/DisplayDevice",
-                null
-            );
-
-            for (let property of ["percentage", "state", "warning_level"]) {
-                this._battery.connect("notify::" + property, () => {
-                    this.send();
-                });
-            }
-
-            this.send();
-        } catch(e) {
-            debug("Battery: Failed to initialize UPower: " + e);
-            GObject.signal_handlers_destroy(this._battery);
-            delete this._battery;
+    get level() {
+        // This is what KDE Connect returns if the remote battery plugin is
+        // disabled or still being loaded
+        if (this._level === undefined) {
+            this._level = -1;
         }
-    },
 
-    get charging() { return this._charging; },
-    get level() { return this._level; },
-    get time() { return this._time; },
+        return this._level;
+    }
 
-    handlePacket: function (packet) {
-        debug("Battery: handlePacket()");
-
-        if (packet.type === "kdeconnect.battery" && this.settings.get_boolean("receive-statistics")) {
-            this.receive(packet);
-        } else if (packet.type === "kdeconnect.battery.request" && this._battery) {
-            this.send();
+    get time() {
+        if (this._time === undefined) {
+            this._time = 0;
         }
-    },
+
+        return this._time;
+    }
+
+    cacheLoaded() {
+        this._estimateTime();
+
+        this.notify('charging');
+        this.notify('level');
+        this.notify('icon-name');
+        this.notify('time');
+
+        this.connected();
+    }
+
+    _onSendStatisticsChanged() {
+        if (this.settings.get_boolean('send-statistics')) {
+            this._monitorState();
+        } else {
+            this._unmonitorState();
+        }
+    }
+
+    handlePacket(packet) {
+        switch (packet.type) {
+            case 'kdeconnect.battery':
+                this._receiveState(packet);
+                break;
+
+            case 'kdeconnect.battery.request':
+                this._sendState();
+                break;
+        }
+    }
+
+    connected() {
+        super.connected();
+
+        this._requestState();
+        this._sendState();
+    }
 
     /**
-     * Receive a remote battery update and disseminate the statistics
+     * Notify that the remote device considers the battery level low
      */
-    receive: function (packet) {
-        debug("Battery: receive()");
+    _notifyState() {
+        let buttons = [];
 
-        if (packet.body.thresholdEvent > 0) {
-            this.threshold();
+        // Offer the option to locate the device, if available
+        if (this.device.get_action_enabled('ring')) {
+            buttons = [{
+                label: _('Locate'),
+                action: 'ring',
+                parameter: null
+            }];
         }
 
+        this.device.showNotification({
+            id: 'battery|threshold',
+            // TRANSLATORS: eg. Google Pixel: Battery is low
+            title: _('%s: Battery is low').format(this.device.name),
+            // TRANSLATORS: eg. 15% remaining
+            body: _('%d%% remaining').format(this.level),
+            icon: new Gio.ThemedIcon({name: 'battery-caution-symbolic'}),
+            buttons: buttons
+        });
+
+        // Save the threshold level
+        this._thresholdLevel = this.level;
+    }
+
+    /**
+     * Handle a remote battery update.
+     *
+     * @param {kdeconnect.battery} packet - A kdeconnect.battery packet
+     */
+    _receiveState(packet) {
+        // Charging state changed
         if (this._charging !== packet.body.isCharging) {
             this._charging = packet.body.isCharging;
-            this.notify("charging");
-            this._dbus.emit_property_changed(
-                "charging",
-                new GLib.Variant("b", packet.body.isCharging)
-            );
+            this.notify('charging');
         }
 
+        // Level changed
         if (this._level !== packet.body.currentCharge) {
             this._level = packet.body.currentCharge;
-            this.notify("level");
-            this._dbus.emit_property_changed(
-                "level",
-                new GLib.Variant("i", packet.body.currentCharge)
-            );
+            this.notify('level');
 
-            if (this._level > this._thresholdLevel) { // TODO
-                this.device.withdraw_notification("battery|threshold");
+            if (this._level > this._thresholdLevel) {
+                this.device.hideNotification('battery|threshold');
             }
         }
 
-        this.addStat(packet.body.currentCharge, this.charging);
+        // Device considers the level low
+        if (packet.body.thresholdEvent > 0) {
+            this._notifyState();
+        }
 
-        this._time = this.getTime(this.charging);
-        this.notify("time");
-        this._dbus.emit_property_changed(
-            "time",
-            new GLib.Variant("i", this.time)
-        );
-    },
+        this._updateEstimate();
+        this.notify('icon-name');
+    }
 
     /**
-     * Request the remote battery statistics
+     * Request the remote battery's current charge/state
      */
-    request: function () {
-        debug("Battery: request()");
-
-        let packet = new Protocol.Packet({
+    _requestState() {
+        this.device.sendPacket({
             id: 0,
-            type: "kdeconnect.battery.request",
-            body: { request: true }
+            type: 'kdeconnect.battery.request',
+            body: {request: true}
         });
-
-        this.device._channel.send(packet);
-    },
+    }
 
     /**
-     * Report the local battery statistics to the device
+     * Report the local battery's current charge/state
      */
-    send: function () {
-        debug("Battery: send()");
+    _sendState() {
+        if (this._upowerId === 0) {
+            return;
+        }
 
-        if (!this._battery) { return; }
-
-        let packet = new Protocol.Packet({
-            id: 0,
-            type: "kdeconnect.battery",
+        this.device.sendPacket({
+            type: 'kdeconnect.battery',
             body: {
-                currentCharge: this._battery.percentage,
-                isCharging: (this._battery.state !== UPower.DeviceState.DISCHARGING),
-                thresholdEvent: 0
+                currentCharge: this.service.upower.level,
+                isCharging: this.service.upower.charging,
+                thresholdEvent: this.service.upower.threshold
             }
         });
-
-        if (this._battery.percentage === 15) {
-            if (!packet.body.isCharging) {
-                packet.body.thresholdEvent = 1;
-            }
-        }
-
-        this.device._channel.send(packet);
-    },
+    }
 
     /**
-     * Notify about a remote threshold event (low battery level)
+     * UPower monitoring methods
      */
-    threshold: function () {
-        debug("Battery: threshold()");
+    _monitorState() {
+        try {
+            switch (true) {
+                // upower failed, already monitoring, no battery or no support
+                case (!this.service.upower):
+                case (this._upowerId > 0):
+                case (this.service.type !== 'laptop'):
+                case (!this.device.get_incoming_supported('battery')):
+                    return;
+            }
 
-        let notif = new Gio.Notification();
-        // TRANSLATORS: Low Battery Warning
-        notif.set_title(_("Low Battery Warning"));
-        notif.set_body(
-            // TRANSLATORS: eg. Google Pixel's battery level is 15%
-            _("%s's battery level is %d%%").format(this.device.name, this.level)
-        );
-        notif.set_icon(new Gio.ThemedIcon({ name: "battery-caution-symbolic" }));
-
-        if (this.device._plugins.has("findmyphone")) {
-            notif.add_button(
-                _("Locate"),
-                "app.batteryWarning('" + this._dbus.get_object_path() + "')"
+            this._upowerId = this.service.upower.connect(
+                'changed',
+                this._sendState.bind(this)
             );
+
+            this._sendState();
+        } catch (e) {
+            logError(e, this.device.name);
+            this._unmonitorState();
         }
+    }
 
-        this.device.send_notification("battery|threshold", notif);
-
-        this._thresholdLevel = this.level;
-    },
+    _unmonitorState() {
+        if (this._upowerId > 0) {
+            this.service.upower.disconnect(this._upowerId);
+            this._upowerId = 0;
+        }
+    }
 
     /**
-     * Cache methods for battery statistics
-     *
+     * Recalculate the (dis)charge rate and update the estimated time remaining
      * See also: https://android.googlesource.com/platform/frameworks/base/+/master/core/java/android/os/BatteryStats.java#1036
      */
-    addStat: function (level, charging) {
-        // Edge case
-        if (!level) {
-            return;
-        // Reset stats when fully charged
-        } else if (level === 100) {
-            this._chargeStats.length = 0;
-            this._dischargeStats.length = 0;
+    _updateEstimate() {
+        let new_time = Math.floor(Date.now() / 1000);
+        let new_level = this.level;
+
+        // Read the state; rate has a default, time and level default to current
+        let [rate, time, level] = this.charging ? this._chargeState : this._dischargeState;
+        time = (Number.isFinite(time) && time > 0) ? time : new_time;
+        level = (Number.isFinite(level) && level > -1) ? level : new_level;
+
+        if (!Number.isFinite(rate) || rate < 1) {
+            rate = this.charging ? 54 : 864;
         }
 
-        let stats = (charging) ? this._chargeStats : this._dischargeStats;
-        let time = Math.floor(Date.now() / 1000);
+        // Derive rate from time/level diffs (rate = seconds/percent)
+        let ldiff = this.charging ? new_level - level : level - new_level;
+        let tdiff = new_time - time;
+        let new_rate = tdiff / ldiff;
 
-        if (!stats.length) {
-            stats.push({ time: time, level: level });
-        } else if (stats[stats.length - 1].level !== level) {
-            stats.push({ time: time, level: level });
-        }
-    },
-
-    getTime: function (charging) {
-        let tdelta, ldelta;
-        let rate = 0;
-        let time = 0;
-
-        let stats = (charging) ? this._chargeStats : this._dischargeStats;
-
-        for (let i = 0; i + 1 <= stats.length - 1; i++) {
-            tdelta = stats[i + 1].time - stats[i].time;
-
-            if (charging) {
-                ldelta = stats[i + 1].level - stats[i].level;
-            } else {
-                ldelta = stats[i].level - stats[i + 1].level;
-            }
-
-            if (ldelta > 0 && rate > 0) {
-                rate = (rate * 0.4) + ((tdelta/ldelta) * 0.6);
-            } else if (ldelta > 0) {
-                rate = tdelta/ldelta;
-            }
+        // Update the rate if it seems valid. Use a weighted average in favour
+        // of the new rate to account for possible missed level changes
+        if (new_rate && Number.isFinite(new_rate)) {
+            rate = Math.floor((rate * 0.4) + (new_rate * 0.6));
         }
 
-        if (rate && charging) {
-            time = rate * (100 - stats[stats.length - 1].level);
-        } else if (rate && !charging) {
-            time = rate * stats[stats.length - 1].level;
+        // Save the state
+        if (this.charging) {
+            this._chargeState = [rate, new_time, new_level];
+        } else {
+            this._dischargeState = [rate, new_time, new_level];
         }
 
-        return (time === NaN) ? 0 : Math.floor(time);
-    },
-
-    _limit_func: function () {
-        // Limit stats to 3 days
-        let limit = (Date.now() / 1000) - (3*24*60*60);
-
-        return {
-            charging: this._chargeStats.filter(stat => stat.time > limit),
-            discharging: this._dischargeStats.filter(stat => stat.time > limit),
-            threshold: this._thresholdLevel
-        };
-    },
-
-    destroy: function () {
-        if (this._battery) {
-            GObject.signal_handlers_destroy(this._battery);
-            delete this._battery;
+        // Notify of the change
+        if (rate && this.charging) {
+            this._time = Math.floor(rate * (100 - new_level));
+        } else if (rate && !this.charging) {
+            this._time = Math.floor(rate * new_level);
         }
 
-        PluginsBase.Plugin.prototype.destroy.call(this);
+        this.notify('time');
     }
-});
 
+    _estimateTime() {
+        // elision (rate, time, level)
+        let [rate,, level] = this.charging ? this._chargeState : this._dischargeState;
+        level = (level > -1) ? level : this.level;
 
-var SettingsDialog = new Lang.Class({
-    Name: "GSConnectBatterySettingsDialog",
-    Extends: PluginsBase.SettingsDialog,
+        if (!Number.isFinite(rate) || rate < 1) {
+            rate = this.charging ? 864 : 90;
+        }
 
-    _init: function (device, name, window) {
-        this.parent(device, name, window);
+        if (rate && this.charging) {
+            this._time = Math.floor(rate * (100 - level));
+        } else if (rate && !this.charging) {
+            this._time = Math.floor(rate * level);
+        }
 
-        let generalSection = this.content.addSection(
-            null,
-            null,
-            { margin_bottom: 0, width_request: -1 }
-        );
-        generalSection.addGSetting(this.settings, "receive-statistics");
-        let send = generalSection.addGSetting(this.settings, "send-statistics");
+        this.notify('time');
+    }
 
-        send.sensitive = (this.device.daemon.type === "laptop");
+    destroy() {
+        this.settings.disconnect(this._sendStatisticsId);
+        this._unmonitorState();
+        this.device._dbus_object.remove_interface(this._dbus);
 
-        this.content.show_all();
+        super.destroy();
     }
 });
 

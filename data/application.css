@@ -1,46 +1,82 @@
 
-.contact-avatar {
-    border-radius: 16px;
+/**
+ * Chrome/Firefox buttons in Preferences->Other
+ */
+.badge-button {
+    border: 0px;
+    padding: 0px;
+    background: transparent;
 }
 
-.message-bubble {
-    border-radius: 1em;
+/**
+ * Messaging Window - Device Offline overlay
+ */
+.connection-status, .connection-status:hover:active {
+    background: alpha(@theme_bg_color, 0);
+    color: @theme_fg_color;
+    border: 0px;
+    padding: 0px;
 }
 
-.message-bubble *:link { color: inherit; }
-.message-bubble *:visited { color: inherit; }
+.connection-status:hover {
+    background: alpha(@theme_selected_bg_color, 0.25);
+    color: @theme_selected_fg_color;
+    border: 0px;
+    padding: 0px;
+}
 
-.contact-color-outgoing { color: #101010; background-color: #d3d7cf; }
+/**
+ * Incoming Message Bubbles (GtkLabel subclass)
+ */
+.message-in {
+  background: @theme_selected_bg_color;
+  border-radius: 0.25em 1em 1em 0.25em;
+  color: @theme_selected_fg_color;
+  padding: 6px;
+  padding-right: 9px;
+  padding-left: 9px;
+}
 
-.contact-color-butter1 { color: #101010; background-color: #fce94f; }
-.contact-color-butter2 { color: #101010; background-color: #edd400; }
-.contact-color-butter3 { color: #101010; background-color: #c4a000; }
+.message-in:first-child {
+    border-top-left-radius: 1em;
+}
 
-.contact-color-orange1 { color: #101010; background-color: #fcaf3e; }
-.contact-color-orange2 { color: #101010; background-color: #f57900; }
-.contact-color-orange3 { color: #101010; background-color: #ce5c00; }
+.message-in:last-child {
+    border-bottom-left-radius: 1em;
+}
 
-.contact-color-chocolate1 { color: #101010; background-color: #e9b96e; }
-.contact-color-chocolate2 { color: #101010; background-color: #c17d11; }
-.contact-color-chocolate3 { color: #f0f0f0; background-color: #8f5902; }
+/**
+ * Must contrast with .message-in background
+ */
+.message-in *:link {
+  color: @theme_selected_fg_color;
+}
 
-.contact-color-chameleon1 { color: #101010; background-color: #8ae234; }
-.contact-color-chameleon2 { color: #101010; background-color: #73d216; }
-.contact-color-chameleon3 { color: #101010; background-color: #4e9a06; }
 
-.contact-color-skyblue1 { color: #101010; background-color: #729fcf; }
-.contact-color-skyblue2 { color: #f0f0f0; background-color: #3465a4; }
-.contact-color-skyblue3 { color: #f0f0f0; background-color: #204a87; }
+/**
+ * Outgoing Message Bubbles (GtkLabel subclass)
+ */
+.message-out {
+  background: alpha(@theme_selected_bg_color, 0.2);
+  border-right: 3px solid @theme_selected_bg_color;
+  border-radius: 1em 0.25em 0.25em 1em;
+  padding: 6px;
+  padding-right: 6px;
+  padding-left: 9px;
+}
 
-.contact-color-plum1 { color: #101010; background-color: #ad7fa8; }
-.contact-color-plum2 { color: #f0f0f0; background-color: #75507b; }
-.contact-color-plum3 { color: #f0f0f0; background-color: #5c3566; }
+.message-out:first-child {
+    border-top-right-radius: 1em;
+}
 
-.contact-color-scarletred1 { color: #101010; background-color: #ef2929; }
-.contact-color-scarletred2 { color: #f0f0f0; background-color: #cc0000; }
-.contact-color-scarletred3 { color: #f0f0f0; background-color: #a40000; }
+.message-out:last-child {
+    border-bottom-right-radius: 1em;
+}
 
-.contact-color-aluminium1 { color: #101010; background-color: #888a85; }
-.contact-color-aluminium2 { color: #f0f0f0; background-color: #555753; }
-.contact-color-aluminium3 { color: #f0f0f0; background-color: #2e3436; }
+/**
+ * Must contrast with .message-out background
+ */
+.message-out *:link {
+  color: @theme_fg_color;
+}
 

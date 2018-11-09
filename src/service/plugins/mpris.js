@@ -1,102 +1,18 @@
-"use strict";
-
-const Gettext = imports.gettext.domain("org.gnome.Shell.Extensions.GSConnect");
-const _ = Gettext.gettext;
-const Lang = imports.lang;
+'use strict';
 
 const Gio = imports.gi.Gio;
 const GObject = imports.gi.GObject;
 
-// Local Imports
-imports.searchPath.push(ext.datadir);
-
-const Common = imports.common;
-const Protocol = imports.service.protocol;
 const PluginsBase = imports.service.plugins.base;
 
 
-var METADATA = {
-    summary: _("Media Player Control"),
-    description: _("Control MPRIS2 enabled media players"),
-    uuid: "org.gnome.Shell.Extensions.GSConnect.Plugin.MPRIS",
-    incomingPackets: ["kdeconnect.mpris.request"],
-    outgoingPackets: ["kdeconnect.mpris"]
+var Metadata = {
+    label: _('MPRIS'),
+    id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.MPRIS',
+    incomingCapabilities: ['kdeconnect.mpris.request'],
+    outgoingCapabilities: ['kdeconnect.mpris'],
+    actions: {}
 };
-
-
-const DBusProxy = new Gio.DBusProxy.makeProxyWrapper(
-'<node> \
-<interface name="org.freedesktop.DBus"> \
-  <method name="ListNames"> \
-    <arg type="as" direction="out" name="names" /> \
-  </method> \
-  <signal name="NameOwnerChanged"> \
-    <arg type="s" direction="out" name="name" /> \
-    <arg type="s" direction="out" name="oldOwner" /> \
-    <arg type="s" direction="out" name="newOwner" /> \
-  </signal> \
-</interface> \
-</node>');
-
-
-const MPRISProxy = new Gio.DBusProxy.makeProxyWrapper(
-'<node> \
-  <interface name="org.mpris.MediaPlayer2"> \
-      <method name="Raise" /> \
-      <method name="Quit" /> \
-      <property name="CanQuit" type="b" access="read" /> \
-      <property name="Fullscreen" type="b" access="readwrite" /> \
-      <property name="CanRaise" type="b" access="read" /> \
-      <property name="HasTrackList" type="b" access="read"/> \
-      <property name="Identity" type="s" access="read"/> \
-      <property name="DesktopEntry" type="s" access="read"/> \
-      <property name="SupportedUriSchemes" type="as" access="read"/> \
-      <property name="SupportedMimeTypes" type="as" access="read"/> \
-  </interface> \
-</node>');
-
-
-const MPRISPlayerProxy = new Gio.DBusProxy.makeProxyWrapper(
-'<node> \
-  <interface name="org.mpris.MediaPlayer2.Player"> \
-    <method name="Next"/> \
-    <method name="Previous"/> \
-    <method name="Pause"/> \
-    <method name="PlayPause"/> \
-    <method name="Stop"/> \
-    <method name="Play"/> \
-    <method name="Seek"> \
-      <arg direction="in" type="x" name="Offset"/> \
-    </method> \
-    <method name="SetPosition"> \
-      <arg direction="in" type="o" name="TrackId"/> \
-      <arg direction="in" type="x" name="Position"/> \
-    </method> \
-    <method name="OpenUri"> \
-      <arg direction="in" type="s"/> \
-    </method> \
-    <!-- Signals --> \
-    <signal name="Seeked"> \
-      <arg type="x" name="Position"/> \
-    </signal> \
-    <!-- Properties --> \
-    <property access="read" type="s" name="PlaybackStatus"/> \
-    <property access="readwrite" type="s" name="LoopStatus"/> \
-    <property access="readwrite" type="d" name="Rate"/> \
-    <property access="readwrite" type="b" name="Shuffle"/> \
-    <property access="read" type="a{sv}" name="Metadata"/> \
-    <property access="readwrite" type="d" name="Volume"/> \
-    <property access="read" type="x" name="Position"/> \
-    <property access="read" type="d" name="MinimumRate"/> \
-    <property access="read" type="d" name="MaximumRate"/> \
-    <property access="read" type="b" name="CanGoNext"/> \
-    <property access="read" type="b" name="CanGoPrevious"/> \
-    <property access="read" type="b" name="CanPlay"/> \
-    <property access="read" type="b" name="CanPause"/> \
-    <property access="read" type="b" name="CanSeek"/> \
-    <property access="read" type="b" name="CanControl"/> \
-  </interface> \
-</node>');
 
 
 /**
@@ -111,223 +27,274 @@ const MPRISPlayerProxy = new Gio.DBusProxy.makeProxyWrapper(
  * TODO: It's probably possible to mirror a remote MPRIS2 player on local DBus
  *       https://github.com/KDE/kdeconnect-kde/commit/9e0d4874c072646f1018ad413d59d1f43e590777
  */
-var Plugin = new Lang.Class({
-    Name: "GSConnectMPRISPlugin",
-    Extends: PluginsBase.Plugin,
+var Plugin = GObject.registerClass({
+    GTypeName: 'GSConnectMPRISPlugin',
+}, class Plugin extends PluginsBase.Plugin {
 
-    _init: function (device) {
-        this.parent(device, "mpris");
+    _init(device) {
+        super._init(device, 'mpris');
 
         try {
-            this._listener = new DBusProxy(
-                Gio.DBus.session,
-                'org.freedesktop.DBus',
-                '/org/freedesktop/DBus',
-                (proxy, error) => {
-                    if (error === null) {
-                        this._updatePlayers();
-
-                        this._nameOwnerChanged = proxy.connectSignal(
-                            'NameOwnerChanged',
-                            Lang.bind(this, this._onNameOwnerChanged)
-                        );
-                    }
-                }
+            this._notifyPlayersId = this.service.mpris.connect(
+                'notify::players',
+                this._sendPlayerList.bind(this)
             );
 
-            this._players = new Map();
+            this._playerChangedId = this.service.mpris.connect(
+                'player-changed',
+                this._onPlayerChanged.bind(this)
+            );
+
+            this._playerSeekedId = this.service.mpris.connect(
+                'player-seeked',
+                this._onPlayerSeeked.bind(this)
+            );
         } catch (e) {
             this.destroy();
-            throw Error("MPRIS: " + e.message);
+            throw new Error('mpris-error');
         }
-    },
+    }
 
-    _onNameOwnerChanged: function(proxy, sender, [name, oldOwner, newOwner]) {
-        if (name.startsWith("org.mpris.MediaPlayer2")) {
-            this._updatePlayers();
+    handlePacket(packet) {
+        switch (true) {
+            case packet.body.requestPlayerList:
+            case !this.service.mpris.players.has(packet.body.player):
+                this._sendPlayerList();
+                break;
+
+            case packet.body.hasOwnProperty('albumArtUrl'):
+                this._sendAlbumArt(packet);
+                break;
+
+            default:
+                this._handleCommand(packet);
         }
-    },
+    }
 
-    _listPlayers: function () {
-        debug("MPRIS: _listPlayers()");
+    connected() {
+        super.connected();
 
-        let players = [];
+        this._sendPlayerList();
+    }
 
-        for (let name of this._listener.ListNamesSync()[0]) {
-
-            if (name.indexOf("org.mpris.MediaPlayer2") > -1) {
-                players.push(name);
-            }
-        }
-
-        return players;
-    },
-
-    _updatePlayers: function () {
-        debug("MPRIS: _updatePlayers()");
-
-        let players = this._listPlayers();
-
-        // Add new players
-        for (let name of players) {
-            let mpris = MPRISProxy(
-                Gio.DBus.session,
-                name,
-                "/org/mpris/MediaPlayer2"
-            );
-
-            if (!this._players.has(mpris.Identity)) {
-                let player = new MPRISPlayerProxy(
-                    Gio.DBus.session,
-                    name,
-                    "/org/mpris/MediaPlayer2"
-                );
-
-                // TODO: resending everything if anything changes
-                player.connect("g-properties-changed", () => {
-                    let packet = new Protocol.Packet({
-                        id: 0,
-                        type: "kdeconnect.mpris.request",
-                        body: {
-                            player: mpris.Identity,
-                            requestNowPlaying: true,
-                            requestVolume: true
-                        }
-                    });
-
-                    this.handleCommand(packet);
-                });
-
-                this._players.set(mpris.Identity, player);
-            }
+    /**
+     * Handle an incoming player command or information request
+     *
+     * @param {kdeconnect.mpris.request} - A command for a specific player
+     */
+    async _handleCommand(packet) {
+        if (this._updating || !this.settings.get_boolean('share-players')) {
+            return;
         }
 
-        // Remove old players
-        for (let [name, proxy] of this._players.entries()) {
-            if (players.indexOf(proxy.gName) < 0) {
-                GObject.signal_handlers_destroy(proxy);
-                this._players.delete(name);
-            }
-        }
+        try {
+            this._updating = true;
 
-        this.sendPlayerList();
-    },
+            let player = this.service.mpris.players.get(packet.body.player);
 
-    handlePacket: function (packet) {
-        debug("MPRIS: handlePacket()");
+            // Player Actions
+            if (packet.body.hasOwnProperty('action')) {
+                switch (packet.body.action) {
+                    case 'PlayPause':
+                    case 'Play':
+                    case 'Pause':
+                    case 'Next':
+                    case 'Previous':
+                    case 'Stop':
+                        player[packet.body.action]();
+                        break;
 
-        if (packet.body.hasOwnProperty("requestPlayerList")) {
-            this.sendPlayerList();
-        } else if (packet.body.hasOwnProperty("player")) {
-            if (this._players.has(packet.body.player)) {
-                this.handleCommand(packet);
-            } else {
-                this._updatePlayers();
-            }
-        }
-    },
-
-    sendPlayerList: function () {
-        debug("MPRIS: sendPlayerList()");
-
-        let packet = new Protocol.Packet({
-            id: 0,
-            type: "kdeconnect.mpris",
-            body: { playerList: Array.from(this._players.keys()) }
-        });
-
-        this.device._channel.send(packet);
-    },
-
-    handleCommand: function (packet) {
-        debug("MPRIS: handleCommand()");
-
-        let player = this._players.get(packet.body.player);
-
-        // Player Commands
-        if (packet.body.hasOwnProperty("action")) {
-            if (packet.body.action === "PlayPause") { player.PlayPauseSync(); }
-            if (packet.body.action === "Play") { player.PlaySync(); }
-            if (packet.body.action === "Pause") { player.PauseSync(); }
-            if (packet.body.action === "Next") { player.NextSync(); }
-            if (packet.body.action === "Previous") { player.PreviousSync(); }
-            if (packet.body.action === "Stop") { player.StopSync(); }
-        }
-
-        if (packet.body.hasOwnProperty("setVolume")) {
-            player.Volume = packet.body.setVolume / 100;
-        }
-
-        if (packet.body.hasOwnProperty("Seek")) {
-            player.SeekSync(packet.body.Seek);
-        }
-
-        if (packet.body.hasOwnProperty("SetPosition")) {
-            let position = (packet.body.SetPosition * 1000) - player.Position;
-            player.SeekSync(position);
-        }
-
-        let response = new Protocol.Packet({
-            id: 0,
-            type: "kdeconnect.mpris",
-            body: {}
-        });
-
-        // Information Request
-        let hasResponse = false;
-
-        if (packet.body.hasOwnProperty("requestNowPlaying")) {
-            hasResponse = true;
-
-            // Unpack variants
-            let Metadata = {};
-            for (let entry in player.Metadata) {
-                Metadata[entry] = player.Metadata[entry].deep_unpack();
+                    default:
+                        logError(new Error(`unknown action: ${packet.body.action}`));
+                }
             }
 
-            let nowPlaying = Metadata["xesam:title"];
-            if (Metadata.hasOwnProperty("xesam:artist")) {
-                nowPlaying = Metadata["xesam:artist"] + " - " + nowPlaying;
+            // Player Properties
+            if (packet.body.hasOwnProperty('setVolume')) {
+                player.Volume = packet.body.setVolume / 100;
             }
 
-            response.body = {
-                nowPlaying: nowPlaying,
-                pos: Math.round(player.Position / 1000),
-                isPlaying: (player.PlaybackStatus === "Playing"),
-                canPause: (player.CanPause === true),
-                canPlay: (player.CanPlay === true),
-                canGoNext: (player.CanGoNext === true),
-                canGoPrevious: (player.CanGoPrevious === true),
-                canSeek: (player.CanSeek === true)
+            if (packet.body.hasOwnProperty('Seek')) {
+                await player.Seek(packet.body.Seek);
+            }
+
+            if (packet.body.hasOwnProperty('SetPosition')) {
+                let offset = (packet.body.SetPosition * 1000) - player.Position;
+                await player.Seek(offset);
+            }
+
+            // Information Request
+            let hasResponse = false;
+
+            let response = {
+                type: 'kdeconnect.mpris',
+                body: {}
             };
 
-        }
+            if (packet.body.hasOwnProperty('requestNowPlaying')) {
+                hasResponse = true;
 
-        if (packet.body.hasOwnProperty("requestVolume")) {
-            hasResponse = true;
-            response.body.volume = player.Volume * 100;
-        }
+                response.body = {
+                    pos: Math.floor(player.Position / 1000),
+                    isPlaying: (player.PlaybackStatus === 'Playing'),
+                    canPause: player.CanPause,
+                    canPlay: player.CanPlay,
+                    canGoNext: player.CanGoNext,
+                    canGoPrevious: player.CanGoPrevious,
+                    canSeek: player.CanSeek
+                };
 
-        if (hasResponse) {
-            response.body.player = packet.body.player;
-            this.device._channel.send(response);
-        }
-    },
+                Object.assign(response.body, this._getPlayerMetadata(player));
+            }
 
-    destroy: function () {
+            if (packet.body.hasOwnProperty('requestVolume')) {
+                hasResponse = true;
+                response.body.volume = player.Volume * 100;
+            }
+
+            if (hasResponse) {
+                response.body.player = packet.body.player;
+                this.device.sendPacket(response);
+            }
+        } catch (e) {
+            logError(e);
+        } finally {
+            this._updating = false;
+        }
+    }
+
+    /**
+     * Get the track metadata for a player
+     *
+     * @param {Gio.DBusProxy} player - The player to get track info for
+     * @return {Object} - An object of track data in MPRIS packet body format
+     */
+    _getPlayerMetadata(player) {
+        let metadata = {};
+
         try {
-            this._listener.disconnectSignal(this._nameOwnerChanged);
+            if (player.Metadata !== null) {
+                let nowPlaying = player.Metadata['xesam:title'];
+
+                if (player.Metadata.hasOwnProperty('xesam:artist')) {
+                    nowPlaying = `${player.Metadata['xesam:artist']} - ${nowPlaying}`;
+                }
+
+                metadata.nowPlaying = nowPlaying;
+
+                if (player.Metadata.hasOwnProperty('mpris:artUrl')) {
+                    metadata.albumArtUrl = player.Metadata['mpris:artUrl'];
+                }
+
+                if (player.Metadata.hasOwnProperty('mpris:length')) {
+                    metadata.length = Math.floor(player.Metadata['mpris:length'] / 1000);
+                }
+            }
+        } catch (e) {
+            logError(e);
+        }
+
+        return metadata;
+    }
+
+    _onPlayerChanged(mpris, player) {
+        if (!this.settings.get_boolean('share-players')) {
+            return;
+        }
+
+        this._handleCommand({
+            body: {
+                player: player.Identity,
+                requestNowPlaying: true,
+                requestVolume: true
+            }
+        });
+    }
+
+    _onPlayerSeeked(mpris, player) {
+        this.device.sendPacket({
+            type: 'kdeconnect.mpris',
+            body: {
+                player: player.Identity,
+                pos: Math.floor(player.Position / 1000)
+            }
+        });
+    }
+
+    async _sendAlbumArt(packet) {
+        try {
+            // Reject concurrent requests for album art
+            if (this._transferring) {
+                return;
+            }
+
+            let player = this.service.mpris.players.get(packet.body.player);
+
+            if (player.Metadata === null) {
+                return;
+            }
+
+            // Ensure the requested albumArtUrl matches the current mpris:artUrl
+            if (packet.body.albumArtUrl !== player.Metadata['mpris:artUrl']) {
+                return;
+            }
+
+            // Start the transfer process
+            this._transferring = true;
+
+            let file = Gio.File.new_for_uri(packet.body.albumArtUrl);
+
+            let transfer = this.device.createTransfer({
+                input_stream: file.read(null),
+                size: file.query_info('standard::size', 0, null).get_size()
+            });
+
+            await transfer.upload({
+                id: 0,
+                type: 'kdeconnect.mpris',
+                body: {
+                    transferringAlbumArt: true,
+                    player: packet.body.player,
+                    albumArtUrl: packet.body.albumArtUrl
+                }
+            });
+        } catch (e) {
+            logWarning(e, `${this.device.name}: transferring album art`);
+        } finally {
+            this._transferring = false;
+        }
+    }
+
+    /**
+     * Send the list of player identities and indicate whether we support
+     * transferring album art
+     */
+    _sendPlayerList() {
+        let playerList = [];
+
+        if (this.settings.get_boolean('share-players')) {
+            playerList = this.service.mpris.identities;
+        }
+
+        this.device.sendPacket({
+            id: 0,
+            type: 'kdeconnect.mpris',
+            body: {
+                playerList: playerList,
+                supportAlbumArtPayload: (this.device.connection_type === 'tcp')
+            }
+        });
+    }
+
+    destroy() {
+        try {
+            this.service.mpris.disconnect(this._notifyPlayersId);
+            this.service.mpris.disconnect(this._playerChangedId);
+            this.service.mpris.disconnect(this._playerSeekedId);
         } catch (e) {
         }
 
-        for (let proxy of this._players.values()) {
-            try {
-                GObject.signal_handlers_destroy(proxy);
-            } catch (e) {
-            }
-        }
-
-        PluginsBase.Plugin.prototype.destroy.call(this);
+        super.destroy();
     }
 });
 

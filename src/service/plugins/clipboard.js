@@ -1,27 +1,35 @@
-"use strict";
-
-const Gettext = imports.gettext.domain("org.gnome.Shell.Extensions.GSConnect");
-const _ = Gettext.gettext;
-const Lang = imports.lang;
+'use strict';
 
 const Gdk = imports.gi.Gdk;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
-// Local Imports
-imports.searchPath.push(ext.datadir);
-
-const Common = imports.common;
-const Protocol = imports.service.protocol;
 const PluginsBase = imports.service.plugins.base;
 
 
-var METADATA = {
-    summary: _("Clipboard"),
-    description: _("Sync the clipboard between devices"),
-    uuid: "org.gnome.Shell.Extensions.GSConnect.Plugin.Clipboard",
-    incomingPackets: ["kdeconnect.clipboard"],
-    outgoingPackets: ["kdeconnect.clipboard"]
+var Metadata = {
+    label: _('Clipboard'),
+    id: 'org.gnome.Shell.Extensions.GSConnect.Plugin.Clipboard',
+    incomingCapabilities: ['kdeconnect.clipboard'],
+    outgoingCapabilities: ['kdeconnect.clipboard'],
+    actions: {
+        clipboardPush: {
+            label: _('Clipboard Push'),
+            icon_name: 'edit-paste-symbolic',
+
+            parameter_type: null,
+            incoming: [],
+            outgoing: ['kdeconnect.clipboard']
+        },
+        clipboardPull: {
+            label: _('Clipboard Pull'),
+            icon_name: 'edit-copy-symbolic',
+
+            parameter_type: null,
+            incoming: ['kdeconnect.clipboard'],
+            outgoing: []
+        }
+    }
 };
 
 
@@ -29,89 +37,91 @@ var METADATA = {
  * Clipboard Plugin
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/clipboard
  */
-var Plugin = new Lang.Class({
-    Name: "GSConnectClipboardPlugin",
-    Extends: PluginsBase.Plugin,
+var Plugin = GObject.registerClass({
+    GTypeName: 'GSConnectClipboardPlugin',
+}, class Plugin extends PluginsBase.Plugin {
 
-    _init: function (device) {
-        this.parent(device, "clipboard");
+    _init(device) {
+        super._init(device, 'clipboard');
 
-        this._display = Gdk.Display.get_default();
-
-        if (this._display === null) {
+        try {
+            let display = Gdk.Display.get_default();
+            this._clipboard = Gtk.Clipboard.get_default(display);
+        } catch (e) {
             this.destroy();
-            throw Error(_("Failed to get Gdk.Display"));
+            throw e;
         }
 
-        this._clipboard = Gtk.Clipboard.get_default(this._display);
+        // Buffer content to allow selective sync
+        this._localBuffer = '';
+        this._remoteBuffer = '';
 
-        if (this._clipboard === null) {
-            this.destroy();
-            throw Error(_("Failed to get Clipboard"));
+        // Watch local clipboard for changes
+        this._ownerChangeId = this._clipboard.connect(
+            'owner-change',
+            this._onLocalClipboardChanged.bind(this)
+        );
+    }
+
+    handlePacket(packet) {
+        if (packet.body.hasOwnProperty('content')) {
+            this._onRemoteClipboardChanged(packet.body.content);
         }
+    }
 
-        this._clipboard.connect("owner-change", (clipboard, event) => {
-            if (this.settings.get_boolean("send-content")) {
-                this._clipboard.request_text(Lang.bind(this, this.send));
+    /**
+     * Store the updated clipboard content and forward it if enabled
+     */
+    _onLocalClipboardChanged(clipboard, event) {
+        clipboard.request_text((clipboard, text) => {
+            this._localBuffer = text;
+
+            if (this.settings.get_boolean('send-content')) {
+                this.clipboardPush();
             }
         });
-    },
-
-    handlePacket: function (packet) {
-        debug("Clipboard: handlePacket()");
-
-        if (packet.body.content && this.settings.get_boolean("receive-content")) {
-            this.receive(packet.body.content);
-        }
-    },
-
-    receive: function (text) {
-        debug("Clipboard: receive('" + text + "')");
-
-        this._currentContent = text;
-        this._clipboard.set_text(text, -1);
-    },
-
-    send: function (clipboard, text) {
-        debug("Clipboard: send('" + text + "')");
-
-        if (text !== this._currentContent) {
-            this._currentContent = text;
-
-            let packet = new Protocol.Packet({
-                id: 0,
-                type: "kdeconnect.clipboard",
-                body: { content: text }
-            });
-
-            this.device._channel.send(packet);
-        }
-    },
-
-    destroy: function () {
-        GObject.signal_handlers_destroy(this._clipboard);
-
-        PluginsBase.Plugin.prototype.destroy.call(this);
     }
-});
 
+    /**
+     * Store the updated clipboard content and apply it if enabled
+     */
+    _onRemoteClipboardChanged(text) {
+        this._remoteBuffer = text;
 
-var SettingsDialog = new Lang.Class({
-    Name: "GSConnectClipboardSettingsDialog",
-    Extends: PluginsBase.SettingsDialog,
+        if (this.settings.get_boolean('receive-content')) {
+            this.clipboardPull();
+        }
+    }
 
-    _init: function (device, name, window) {
-        this.parent(device, name, window);
+    /**
+     * Copy to the remote clipboard; called by _onLocalClipboardChanged()
+     */
+    clipboardPush() {
+        if (this._remoteBuffer !== this._localBuffer) {
+            this._remoteBuffer = this._localBuffer;
 
-        let generalSection = this.content.addSection(
-            null,
-            null,
-            { margin_bottom: 0, width_request: -1 }
-        );
-        generalSection.addGSetting(this.settings, "receive-content");
-        generalSection.addGSetting(this.settings, "send-content");
+            this.device.sendPacket({
+                type: 'kdeconnect.clipboard',
+                body: {content: this._localBuffer}
+            });
+        }
+    }
 
-        this.content.show_all();
+    /**
+     * Copy from the remote clipboard; called by _onRemoteClipboardChanged()
+     */
+    clipboardPull() {
+        if (this._localBuffer !== this._remoteBuffer) {
+            this._localBuffer = this._remoteBuffer;
+
+            this._clipboard.set_text(this._remoteBuffer, -1);
+        }
+    }
+
+    destroy() {
+        this._clipboard.disconnect(this._ownerChangeId);
+
+        super.destroy();
     }
 });
 
