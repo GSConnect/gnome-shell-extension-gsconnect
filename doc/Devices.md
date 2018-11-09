@@ -1,3 +1,6 @@
+---
+title: Devices
+---
 > ***THIS PAGE IS INCOMPLETE AND/OR OUTDATED***
 
 ### Device Preferences

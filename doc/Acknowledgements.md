@@ -1,4 +1,6 @@
-
+---
+title: Acknowledgments
+---
 
 ### Credits
 

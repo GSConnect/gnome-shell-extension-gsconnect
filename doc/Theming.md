@@ -1,7 +1,10 @@
+---
+title: Theming
+---
 > ***THIS PAGE IS INCOMPLETE AND/OR OUTDATED***
 
 > **Note to Users**
-> 
+>
 > This documentation is meant for Gtk and Gnome Shell themers. If you encounter a bug specific to a Gtk or Gnome Shell theme, you should file a *downstream* bug report with the theme maintainer and direct them to this page.
 
 GSConnect is made of two distinct parts; the Gnome Shell extension and the service daemon. There is custom CSS for some Clutter/St widgets in the Gnome Shell extension (`stylesheet.css`) and Gtk widgets used in the GSConnect service (`application.css`).

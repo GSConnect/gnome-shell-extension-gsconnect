@@ -1,3 +1,6 @@
+---
+title: Installation
+---
 ### Contents
 
 * **[Standard](#standard)**
@@ -24,11 +27,11 @@
 4. **Swipe down to refresh and you should see your device**
 
    ![GSConnect & KDE Connect Android][gsconnect-android]
-   
+
 5. **Tap on <kbd>**GSConnect**</kbd> and then tap <kbd>**REQUEST PAIRING**</kbd>**
 
    <img src="https://raw.githubusercontent.com/andyholmes/gnome-shell-extension-gsconnect/master/extra/kdeconnect-android/device-request-pairing.png" width="300" />
-   
+
 6. **Complete the pairing process by clicking <kbd>**Accept**</kbd> in the notification**
 
    ![Pair Request][pair-notification]
@@ -42,7 +45,7 @@ If you are having trouble connecting a device, please see the **[Help](Help)** p
    The GNOME Extensions website reviews all submissions and often distributes an older version.
 
 2. **Extract the extension**
-    
+
    ```sh
    mkdir -p ~/.local/share/gnome-shell/extensions
    rm -rf ~/.local/share/gnome-shell/extensions/gsconnect@andyholmes.github.io
@@ -71,7 +74,7 @@ meson --prefix /usr --libdir lib/ gnome-shell-extension-gsconnect/ _build
 ninja -C _build install
 ```
 
-Please see the [Packaging](Packaging) page if you are interested in packaging GSConnect for a distribution. 
+Please see the [Packaging](Packaging) page if you are interested in packaging GSConnect for a distribution.
 
 ## Dependencies
 
@@ -80,7 +83,7 @@ Please see the [Packaging](Packaging) page if you are interested in packaging GS
 As of **v13** GSConnect requires `gnome-shell >= 3.28`. Some features require additional software that can be installed using PackageKit, if supported.
 
 * **Remote Filesystems** require [sshfs][sshfs] to be mounted and accessed. This is required by the *SFTP* plugin.
-  
+
   | Distribution  | Required Packages |
   |---------------|-------------------|
   | Arch          | `sshfs`           |
@@ -90,7 +93,7 @@ As of **v13** GSConnect requires `gnome-shell >= 3.28`. Some features require ad
   | openSUSE      | `sshfs`           |
 
 * **Sound Effects** require [libcanberra][libcanberra] and [GSound][gsound] can be used if available. This is required by the *Find My Phone* plugin.
-  
+
   | Distribution  | Required Packages        | Optional Packages            |
   |---------------|--------------------------|------------------------------|
   | Arch          | `libcanberra`            | `gsound`                     |
@@ -110,7 +113,7 @@ As of **v13** GSConnect requires `gnome-shell >= 3.28`. Some features require ad
   | openSUSE      | `typelib-1_0-Caribou-1_0`|
 
 * **Desktop Contacts** requires [Folks][folks] to access desktop contacts (Gnome Online Accounts, Evolution, local address book). This can be used by the *Telephony* and *Notifications* plugins.
-  
+
   | Distribution  | Required Packages                                      |
   |---------------|--------------------------------------------------------|
   | Arch          | `folks`                                                |
@@ -120,7 +123,7 @@ As of **v13** GSConnect requires `gnome-shell >= 3.28`. Some features require ad
   | openSUSE      | `typelib-1_0-FolksEds-0_6`                             |
 
 * **Files Integration** requires [Nautilus Extensions][nautilus] to modify the context menu. This can be used to share files from Nautilus.
-  
+
   | Distribution  | Required Packages                                      |
   |---------------|--------------------------------------------------------|
   | Arch          | `python-nautilus`                                      |

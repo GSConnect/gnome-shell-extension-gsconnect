@@ -1,3 +1,6 @@
+---
+title: Home
+---
 [![Build Status](https://travis-ci.com/andyholmes/gnome-shell-extension-gsconnect.svg?branch=master)](https://travis-ci.com/andyholmes/gnome-shell-extension-gsconnect) [![GitHub issues](https://img.shields.io/github/issues/andyholmes/gnome-shell-extension-gsconnect.svg)](https://github.com/andyholmes/gnome-shell-extension-gsconnect/issues) [![GitHub license](https://img.shields.io/github/license/andyholmes/gnome-shell-extension-gsconnect.svg)](https://github.com/andyholmes/gnome-shell-extension-gsconnect/blob/master/LICENSE) [![matrix](https://img.shields.io/badge/matrix-join%20chat-54b191.svg)](https://matrix.to/#/#gsconnect:matrix.org) [![matrix](https://img.shields.io/badge/irc-join%20chat-54b191.svg)](irc://irc.gimp.org/#gsconnect)
 
 ![Extension Screenshot][screenshot]

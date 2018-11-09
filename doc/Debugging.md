@@ -1,3 +1,6 @@
+---
+title: Debugging
+---
 ***THIS PAGE IS INCOMPLETE***
 
 ### General Debugging

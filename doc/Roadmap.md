@@ -1,3 +1,6 @@
+---
+title: Roadmap
+---
 For discussion and questions, please use the IRC/Matrix channel:
 
 * **Matrix:** https://matrix.to/#/#_gimpnet_#gsconnect:matrix.org

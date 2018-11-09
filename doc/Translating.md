@@ -1,3 +1,6 @@
+---
+title: Translating
+---
 Thank you for considering contributing a translation to this project. I know it takes a lot of time and effort and I try to make it as easy as possible. The WebExtension translations are now handled automatically, so you only need to translate the standard POT file.
 
 Consider subscribing to the [Translation Thread](../issues/1) to be notified of changes and updates. I usually give notice before the next release, and you can ask for more time to get your translation into the next release.

@@ -1,3 +1,6 @@
+---
+title: Contributing
+---
 Thank you for considering contributing to this project. It means that you not
 only find it useful, but that you think there's something that could be done to
 make it more useful, or useful to more people.
@@ -24,31 +27,31 @@ and it will be reviewed.
 
   Almost all of the Gnome API is available through introspection, however in the
   few cases it is not Python is acceptable.
-  
+
 * Code MUST NOT be written in a pre-compiled language
 
   The extension is distributed as-is to users via the GNOME Shell Extensions
   website and must not include architecture dependant code or binaries.
-  
+
 * Code MUST run anywhere Gnome Shell runs
 
   It is acceptable and sometimes necessary to use resources that may be specific
   to Linux, but fallbacks must be available for other systems like BSD. Virtual
   machines may be supported, but not at any expense to real systems.
-  
+
 * Code MUST NOT break compatibility with the KDE Connect project
 
   Under no circumstances may code break protocol compatibility or introduce new
   protocol features. Any protocol related discussion must happen directly with
   the KDE Connect team and changes or additions are subject to their approval.
-  
+
 ### Code Style
 
 JavaScript doesn't follow a formal style guide; the existing code is the guide.
 Prefer ES6 syntax, `if () {` long-form code blocks `}`, camelCase naming,
 _private and __implementation prefixes, 4-space indents and 80 character lines.
 Python can either imitate the same style or use PEP-8.
-  
+
 ### A Note About Template Strings
 
 JavaScript template literals are not handled well by gettext, like in the case
@@ -56,7 +59,7 @@ JavaScript template literals are not handled well by gettext, like in the case
 push, run the meson target for the POT file to confirm it still works:
 
 ```sh
-ninja -C _build/ org.gnome.Shell.Extensions.GSConnect-pot 
+ninja -C _build/ org.gnome.Shell.Extensions.GSConnect-pot
 ninja: Entering directory `_build/'
 [0/1] Running external command org.gnome.Shell.Extensions.GSConnect-pot.
 src/extension.js:396: warning: RegExp literal terminated too early

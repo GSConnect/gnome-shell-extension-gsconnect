@@ -1,3 +1,6 @@
+---
+title: Help
+---
 * [Connecting an Android Device](#connecting-an-android-device)
 * [Other problems](#other-problems)
   * [Remote filesystems open in the wrong application](#remote-filesystems-open-in-the-wrong-application)
@@ -98,7 +101,7 @@ GSConnect requires ports **1716-1764** for **TCP and UDP**. This error means ano
 
 2. **Stop KDE Connect (`kdeconnectd`) if it is running**
 
-   You should also uninstall KDE Connect, since it will start each time you log into your session. 
+   You should also uninstall KDE Connect, since it will start each time you log into your session.
 
     ```sh
     $ killall -9 kdeconnectd
@@ -107,10 +110,10 @@ GSConnect requires ports **1716-1764** for **TCP and UDP**. This error means ano
 3. **Restart GSConnect in the Service Preferences**
 
     ![Restart the service][preferences-service-restart]
-   
+
 
 4. **Open a New Issue**
-   
+
    If you are still getting this error notification, please open a [New Issue][new-issue].
 
 <h3 id="ProxyError">Proxy Error</h3>
@@ -121,7 +124,7 @@ This error means a connection failed to connect or authenticate with the network
 
 GSConnect uses the PulseAudio bindings shipped with Gnome Shell for volume control features. This error means that GSConnect failed to find the required typelib (`Gvc-1.0.typelib`).
 
-If you installed GSConnect from a distribution package, please file a bug with the package maintainer and reference the [Packaging](Packaging) page. 
+If you installed GSConnect from a distribution package, please file a bug with the package maintainer and reference the [Packaging](Packaging) page.
 
 If you installed GSConnect from https://extensions.gnome.org or another user install method, please open a [New Issue][new-issue] including your distribution and output of `locate Gvc-1.0.typelib`.
 
