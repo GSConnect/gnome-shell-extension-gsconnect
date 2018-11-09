@@ -49,7 +49,7 @@ and it will be reviewed.
 
 JavaScript doesn't follow a formal style guide; the existing code is the guide.
 Prefer ES6 syntax, `if () {` long-form code blocks `}`, camelCase naming,
-_private and __implementation prefixes, 4-space indents and 80 character lines.
+`_private` and `__implementation` prefixes, 4-space indents and 80 character lines.
 Python can either imitate the same style or use PEP-8.
 
 ### A Note About Template Strings
@@ -58,8 +58,8 @@ JavaScript template literals are not handled well by gettext, like in the case
 `` `<b>Breaks!</b>` ``. Once you have committed your changes and are about to
 push, run the meson target for the POT file to confirm it still works:
 
-```sh
-ninja -C _build/ org.gnome.Shell.Extensions.GSConnect-pot
+```console
+$ ninja -C _build/ org.gnome.Shell.Extensions.GSConnect-pot
 ninja: Entering directory `_build/'
 [0/1] Running external command org.gnome.Shell.Extensions.GSConnect-pot.
 src/extension.js:396: warning: RegExp literal terminated too early
@@ -87,9 +87,9 @@ discussion and mark the Pull Request as a fix for it.
 
 [design]: https://wiki.gnome.org/Projects/GnomeShell/Design/Principles
 [hig]: https://developer.gnome.org/hig/stable/
-[translating]: https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Translating
-[packaging]: https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Packaging
-[theming]: https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Theming
+[translating]: Translating
+[packaging]: Packaging
+[theming]: Theming
 [issue]: https://github.com/andyholmes/gnome-shell-extension-gsconnect/issues
 [pr]: https://github.com/GNOME/gnome-shell/pulls
 [gjs]: https://gitlab.gnome.org/GNOME/gjs/wikis/home

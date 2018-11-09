@@ -19,7 +19,7 @@ All supported plugins are enabled by default and can be disabled in the **Advanc
 
 Allows you to monitor the battery level and charging state of a remote device, as well as report local power statistics. A low battery notification will be shown if the device requests it, which may have a button allowing you to ring the device.
 
-![Battery plugin as seen in the Device Menu](https://github.com/andyholmes/gnome-shell-extension-gsconnect/blob/master/extra/device-menu-battery.png)
+![Battery plugin as seen in the Device Menu](../extra/device-menu-battery.png)
 
 #### Contacts
 
@@ -59,7 +59,7 @@ Allows you define local commands that can be executed by remote devices and exec
 
 Allows you to mount device filesystems and browse the files. Usually the filesystem will delay connecting until the directory is accessed. It can be mounted using the menu action otherwise.
 
-![Browse Files as seen in the Device Menu](https://github.com/andyholmes/gnome-shell-extension-gsconnect/blob/master/extra/device-menu-browse.png)
+![Browse Files as seen in the Device Menu](../extra/device-menu-browse.png)
 
 There are a number of known issues with SFTP/SSHFS on Android; See the [bugs posted on the KDE Connect bug tracker](https://bugs.kde.org/buglist.cgi?quicksearch=kdeconnect%20sftp) before opening an issue.
 
@@ -67,9 +67,9 @@ There are a number of known issues with SFTP/SSHFS on Android; See the [bugs pos
 
 The Share Plugin allows you send and receive files or links. Received files will be saved in Downloads.
 
-![Share Dialog](https://github.com/andyholmes/gnome-shell-extension-gsconnect/blob/master/extra/share-window.png)
+![Share Dialog](../extra/share-window.png)
 
-![Share as seen in the Device Menu](https://github.com/andyholmes/gnome-shell-extension-gsconnect/blob/master/extra/device-menu-share.png)
+![Share as seen in the Device Menu](/extra/device-menu-share.png)
 
 If you have Nautilus Integration enabled, you can also send files (but not directories) from the file browser context menu.
 
@@ -88,6 +88,6 @@ The extension allows you to assign keyboard shortcuts to device actions.
 * A keyboard shortcut set in Gnome Control Center will override an extension shortcut **without warning**
 * Extension shortcuts are bound to the *global* Gnome Shell area and will override *local* window shortcuts **without warning**
 
-[preferences-device-advanced]: https://github.com/andyholmes/gnome-shell-extension-gsconnect/blob/master/extra/gsconnect/preferences-device-advanced.png
-[preferences-device-menu]: https://github.com/andyholmes/gnome-shell-extension-gsconnect/blob/master/extra/gsconnect/preferences-device-menu.png
-[preferences-device-sharing]: https://github.com/andyholmes/gnome-shell-extension-gsconnect/blob/master/extra/gsconnect/preferences-device-sharing.png
+[preferences-device-advanced]: ../extra/gsconnect/preferences-device-advanced.png
+[preferences-device-menu]: ../extra/gsconnect/preferences-device-menu.png
+[preferences-device-sharing]: ../extra/gsconnect/preferences-device-sharing.png
