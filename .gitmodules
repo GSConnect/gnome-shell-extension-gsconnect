@@ -1,0 +1,3 @@
+[submodule "docs"]
+	path = docs
+	url = https://github.com/andyholmes/gnome-shell-extension-gsconnect.wiki.git
