@@ -36,6 +36,9 @@ var Metadata = {
 };
 
 
+const _ASCII = /[\x00-\x7F]/;
+
+
 /**
  * A map of "KDE Connect" keyvals to Gdk
  */
@@ -80,8 +83,7 @@ const KeyMap = new Map([
  * Mousepad Plugin
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/mousepad
  *
- * TODO: support outgoing mouse/keyboard events
- *       remove Caribou
+ * TODO: support outgoing mouse events?
  */
 var Plugin = GObject.registerClass({
     GTypeName: 'GSConnectMousepadPlugin',
@@ -237,13 +239,24 @@ var Plugin = GObject.registerClass({
                     if (keysym) {
                         this.pressKeySym(keysym, mask);
                     }
-                } else {
-                    // This is sometimes sent in advance of a specialKey packet
+
+                // Passing AT-SPI non-ASCII keyvals will crash Xorg
+                // https://github.com/andyholmes/gnome-shell-extension-gsconnect/issues/323
+                } else if (_ASCII.test(input.key)) {
+                    // \u0000 sometimes sent in advance of a specialKey packet
                     if (input.key && input.key !== '\u0000') {
                         this.pressKey(input.key);
                     } else if (input.specialKey) {
                         this.pressSpecialKey(input.specialKey);
                     }
+
+                // Report the error and bail without sending the echo
+                // TODO: more informative error notification
+                } else {
+                    let error = new Error();
+                    error.name = 'DependencyError';
+                    this.service.notify_error(error);
+                    return;
                 }
 
                 this.sendEcho(input);
