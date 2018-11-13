@@ -182,7 +182,7 @@ msgstr "Se connecter au réseau local"
 
 #: data/menus.ui:53 src/service/ui/settings.js:606
 msgid "Encryption Info"
-msgstr ""
+msgstr "Informations de chiffrement"
 
 #: data/menus.ui:58 src/service/device.js:425
 msgid "Pair"
