@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-05 18:36+0200\n"
+"POT-Creation-Date: 2018-11-12 21:08-0800\n"
 "PO-Revision-Date: 2018-11-05 18:38+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -180,37 +180,41 @@ msgstr "Ühenda Bluetoothiga"
 msgid "Connect LAN"
 msgstr "Ühenda LAN"
 
-#: data/menus.ui:53 src/service/device.js:425
+#: data/menus.ui:53 src/service/ui/settings.js:606
+msgid "Encryption Info"
+msgstr ""
+
+#: data/menus.ui:58 src/service/device.js:425
 msgid "Pair"
 msgstr "Paarita"
 
-#: data/menus.ui:59 src/service/device.js:433
+#: data/menus.ui:64 src/service/device.js:433
 msgid "Unpair"
 msgstr "Eemalda paardumine"
 
 #. TRANSLATORS: Send clipboard content to device
-#: data/menus.ui:72
+#: data/menus.ui:77
 msgid "To Device"
 msgstr "Seadmesse"
 
 #. TRANSLATORS: Receive clipboard content from the device
-#: data/menus.ui:78
+#: data/menus.ui:83
 msgid "From Device"
 msgstr "Seadmest"
 
 #. TRANSLATORS: Don't change the system volume
-#: data/menus.ui:90 data/menus.ui:116
+#: data/menus.ui:95 data/menus.ui:121
 msgid "Nothing"
 msgstr "Puudub"
 
 #. TRANSLATORS: Lower the system volume
-#: data/menus.ui:97 data/menus.ui:123
+#: data/menus.ui:102 data/menus.ui:128
 msgid "Lower"
 msgstr "Vaiksem"
 
 #. TRANSLATORS: Mute the system volume
 #. TRANSLATORS: Silence the phone ringer
-#: data/menus.ui:104 data/menus.ui:130 src/service/plugins/telephony.js:175
+#: data/menus.ui:109 data/menus.ui:135 src/service/plugins/telephony.js:175
 msgid "Mute"
 msgstr "Vaigista"
 
@@ -347,7 +351,8 @@ msgid "Discovery Disabled"
 msgstr "Avastamine keelatud"
 
 #: src/service/daemon.js:597
-msgid "Discovery has been disabled due to the number of devices on this network."
+msgid ""
+"Discovery has been disabled due to the number of devices on this network."
 msgstr "Avastamine on keelatud selles võrgus olevate seadmete arvu tõttu."
 
 #: src/service/daemon.js:599 src/service/daemon.js:609
@@ -364,40 +369,30 @@ msgid "%s Plugin Failed To Load"
 msgstr "%s plugina laadimine ebaõnnestus"
 
 #: src/service/daemon.js:618 src/service/daemon.js:635
-#: src/service/daemon.js:647
 msgid "Click for more information"
 msgstr "Klõpsa rohkema teabe saamiseks"
 
 #: src/service/daemon.js:633
-msgid "Remote Filesystem Error"
-msgstr "Kaugete failisüsteemide viga"
-
-#: src/service/daemon.js:634
-#, javascript-format
-msgid "%s is using an incompatible SSH library"
-msgstr "%s kasutab ühildumatut SSH-teeki"
-
-#: src/service/daemon.js:645
 msgid "Wayland Not Supported"
 msgstr "Wayland pole toetatud"
 
-#: src/service/daemon.js:646
+#: src/service/daemon.js:634
 msgid "Remote input not supported on Wayland"
 msgstr "Kaugsisestus pole Waylandil toetatud"
 
 #. Create an urgent notification
-#: src/service/daemon.js:670
+#: src/service/daemon.js:658
 #, javascript-format
 msgid "GSConnect: %s"
 msgstr "GSConnect: %s"
 
 #. TRANSLATORS: Share URL by SMS
-#: src/service/daemon.js:818 src/service/plugins/sms.js:49
+#: src/service/daemon.js:806 src/service/plugins/sms.js:49
 #: webextension/gettext.js:39
 msgid "Send SMS"
 msgstr "Saada SMS"
 
-#: src/service/daemon.js:822
+#: src/service/daemon.js:810
 msgid "Dial Number"
 msgstr "Helista telefoninumbrile"
 
@@ -509,11 +504,11 @@ msgstr "Leitud"
 msgid "Mousepad"
 msgstr "Hiirepadi"
 
-#: src/service/plugins/mousepad.js:28 src/service/plugins/mousepad.js:536
+#: src/service/plugins/mousepad.js:28 src/service/plugins/mousepad.js:549
 msgid "Keyboard"
 msgstr "Klaviatuur"
 
-#: src/service/plugins/mousepad.js:553
+#: src/service/plugins/mousepad.js:566
 msgid "Keyboard not ready"
 msgstr "Klaviatuur pole valmis"
 
@@ -573,7 +568,7 @@ msgstr "Kõik failid"
 msgid "Camera pictures"
 msgstr "Kaamera pildid"
 
-#: src/service/plugins/sftp.js:342
+#: src/service/plugins/sftp.js:333
 msgid "Files"
 msgstr "Failid"
 
@@ -608,7 +603,7 @@ msgstr "„%s” vastuvõtmine seadmelt %s"
 #: src/service/plugins/share.js:138 src/service/plugins/share.js:289
 #: src/service/plugins/share.js:407 src/service/ui/keybindings.js:44
 #: src/service/ui/service.js:121 src/service/ui/service.js:300
-#: src/service/ui/settings.js:851 src/shell/donotdisturb.js:215
+#: src/service/ui/settings.js:867 src/shell/donotdisturb.js:215
 msgid "Cancel"
 msgstr "Loobu"
 
@@ -776,7 +771,8 @@ msgstr "Sisesta <b>%s</b> muutmiseks uus otsetee"
 #. TRANSLATORS: Keys for cancelling (␛) or resetting (␈) a shortcut
 #: src/service/ui/keybindings.js:83
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr "Vajuta tühistamiseks Esc või klaviatuuriotsetee lähtestamiseks Tagasilüke."
+msgstr ""
+"Vajuta tühistamiseks Esc või klaviatuuriotsetee lähtestamiseks Tagasilüke."
 
 #. TRANSLATORS: When a keyboard shortcut is unavailable
 #. Example: [Ctrl]+[S] is already being used
@@ -805,19 +801,19 @@ msgstr "Paneel"
 msgid "User Menu"
 msgstr "Kasutajamenüü"
 
-#: src/service/ui/settings.js:852
+#: src/service/ui/settings.js:868
 msgid "Open"
 msgstr "Ava"
 
-#: src/service/ui/settings.js:909 src/service/ui/settings.js:922
+#: src/service/ui/settings.js:925 src/service/ui/settings.js:938
 msgid "On"
 msgstr "Sees"
 
-#: src/service/ui/settings.js:909 src/service/ui/settings.js:922
+#: src/service/ui/settings.js:925 src/service/ui/settings.js:938
 msgid "Off"
 msgstr "Väljas"
 
-#: src/service/ui/settings.js:1043 src/service/ui/settings.js:1109
+#: src/service/ui/settings.js:1059 src/service/ui/settings.js:1125
 msgid "Disabled"
 msgstr "Keelatud"
 
@@ -917,6 +913,12 @@ msgstr "Teenus pole saadaval"
 msgid "Open in Browser"
 msgstr "Ava brauseris"
 
+#~ msgid "Remote Filesystem Error"
+#~ msgstr "Kaugete failisüsteemide viga"
+
+#~ msgid "%s is using an incompatible SSH library"
+#~ msgstr "%s kasutab ühildumatut SSH-teeki"
+
 #~ msgid "Show Offline Devices"
 #~ msgstr "Kuva võrguta seadmed"
 
@@ -962,8 +964,13 @@ msgstr "Ava brauseris"
 #~ msgid "This program comes with absolutely no warranty."
 #~ msgstr "See programm ei paku mingit garantiid."
 
-#~ msgid "See the <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html\">GNU General Public License, version 2 or later</a> for details."
-#~ msgstr "Lisateabe saamiseks vaata litsentsi <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html\">GNU General Public License, versioon 2 või hilisem</a>."
+#~ msgid ""
+#~ "See the <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html"
+#~ "\">GNU General Public License, version 2 or later</a> for details."
+#~ msgstr ""
+#~ "Lisateabe saamiseks vaata litsentsi <a href=\"https://www.gnu.org/"
+#~ "licenses/old-licenses/gpl-2.0.html\">GNU General Public License, versioon "
+#~ "2 või hilisem</a>."
 
 #~ msgid "Preferences"
 #~ msgstr "Eelistused"
@@ -974,8 +981,12 @@ msgstr "Ava brauseris"
 #~ msgid "Web Browser Integration"
 #~ msgstr "Veebibrauseri integratsioon"
 
-#~ msgid "Requires <a href=\"%s\">Chrome Extension</a> or <a href=\"%s\">Firefox Add-On</a>"
-#~ msgstr "Nõuab <a href=\"%s\">Chrome’i</a> või <a href=\"%s\">Firefox’i</a> laiendust"
+#~ msgid ""
+#~ "Requires <a href=\"%s\">Chrome Extension</a> or <a href=\"%s\">Firefox "
+#~ "Add-On</a>"
+#~ msgstr ""
+#~ "Nõuab <a href=\"%s\">Chrome’i</a> või <a href=\"%s\">Firefox’i</a> "
+#~ "laiendust"
 
 #~ msgid "Nautilus extensions changed"
 #~ msgstr "Nautiluse laiendused muudetud"
@@ -1039,7 +1050,9 @@ msgstr "Ava brauseris"
 #~ msgstr "Atspi käivitamine ebaõnnestus"
 
 #~ msgid "Cannot load Caribou virtual keyboard for Unicode support"
-#~ msgstr "Caribou virtuaalse klaviatuuri laadimine Unicode’i toe saamiseks ebaõnnestus"
+#~ msgstr ""
+#~ "Caribou virtuaalse klaviatuuri laadimine Unicode’i toe saamiseks "
+#~ "ebaõnnestus"
 
 #~ msgid "Control MPRIS2 enabled media players"
 #~ msgstr "Juhi MPRIS2-toega meediamängijaid"
@@ -1101,14 +1114,26 @@ msgstr "Ava brauseris"
 #~ msgid "The <b>Media Player Control</b> plugin must be enabled"
 #~ msgstr "Plugin <b>Meediamängija juhtimine</b> peab olema lubatud"
 
-#~ msgid "Ensure that devices are on the same local network with ports 1716 to 1764 open for TCP and UDP connections."
-#~ msgstr "Veendu, et seadmed on samas kohalikus võrgus ning pordid 1716 ja 1764 on avatud TCP- ja UDP-ühenduste jaoks."
+#~ msgid ""
+#~ "Ensure that devices are on the same local network with ports 1716 to 1764 "
+#~ "open for TCP and UDP connections."
+#~ msgstr ""
+#~ "Veendu, et seadmed on samas kohalikus võrgus ning pordid 1716 ja 1764 on "
+#~ "avatud TCP- ja UDP-ühenduste jaoks."
 
-#~ msgid "To connect an Android device, install the KDE Connect Android app from the <a href=\"%s\">Google Play Store</a> or <a href=\"%s\">F-Droid</a>."
-#~ msgstr "Android-seadme ühendamiseks paigalda KDE Connect Androidi rakendus <a href=\"%s\">Google Play poest</a> või <a href=\"%s\">F-Droidist</a>."
+#~ msgid ""
+#~ "To connect an Android device, install the KDE Connect Android app from "
+#~ "the <a href=\"%s\">Google Play Store</a> or <a href=\"%s\">F-Droid</a>."
+#~ msgstr ""
+#~ "Android-seadme ühendamiseks paigalda KDE Connect Androidi rakendus <a "
+#~ "href=\"%s\">Google Play poest</a> või <a href=\"%s\">F-Droidist</a>."
 
-#~ msgid "Please see the <a href=\"%s\">Wiki</a> for more help or <a href=\"%s\">open an issue</a> on Github to report a problem."
-#~ msgstr "Rohkema abi saamiseks palun loe <a href=\"%s\">vikit</a> või <a href=\"%s\">teata probleemist</a> GitHubi vahendusel."
+#~ msgid ""
+#~ "Please see the <a href=\"%s\">Wiki</a> for more help or <a href=\"%s"
+#~ "\">open an issue</a> on Github to report a problem."
+#~ msgstr ""
+#~ "Rohkema abi saamiseks palun loe <a href=\"%s\">vikit</a> või <a href=\"%s"
+#~ "\">teata probleemist</a> GitHubi vahendusel."
 
 #~ msgid "Error: %s"
 #~ msgstr "Viga: %s"
@@ -1144,8 +1169,11 @@ msgstr "Ava brauseris"
 #~ msgid "Keyboard Shortcut Unavailable"
 #~ msgstr "Klaviatuuri kiirklahv pole saadaval"
 
-#~ msgid "The requested keyboard shortcut is already in use and can't be overridden."
-#~ msgstr "Taotletud klaviatuuri kiirklahv on juba kasutusel ja seda ei saa üle kirjutada."
+#~ msgid ""
+#~ "The requested keyboard shortcut is already in use and can't be overridden."
+#~ msgstr ""
+#~ "Taotletud klaviatuuri kiirklahv on juba kasutusel ja seda ei saa üle "
+#~ "kirjutada."
 
 #~ msgid "Configure <b>%s</b>"
 #~ msgstr "Seadista <b>%s</b>"

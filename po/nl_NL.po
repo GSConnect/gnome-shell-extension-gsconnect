@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-04 12:18-0500\n"
+"POT-Creation-Date: 2018-11-12 21:08-0800\n"
 "PO-Revision-Date: 2018-11-05 11:46+0100\n"
 "Last-Translator: Heimen Stoffels <vistausss@outlook.com>\n"
 "Language-Team: Dutch <vistausss@outlook.com>\n"
@@ -180,37 +180,41 @@ msgstr "Via Bluetooth verbinden"
 msgid "Connect LAN"
 msgstr "Via LAN verbinden"
 
-#: data/menus.ui:53 src/service/device.js:425
+#: data/menus.ui:53 src/service/ui/settings.js:606
+msgid "Encryption Info"
+msgstr ""
+
+#: data/menus.ui:58 src/service/device.js:425
 msgid "Pair"
 msgstr "Aankoppelen"
 
-#: data/menus.ui:59 src/service/device.js:433
+#: data/menus.ui:64 src/service/device.js:433
 msgid "Unpair"
 msgstr "Ontkoppelen"
 
 #. TRANSLATORS: Send clipboard content to device
-#: data/menus.ui:72
+#: data/menus.ui:77
 msgid "To Device"
 msgstr "Naar apparaat"
 
 #. TRANSLATORS: Receive clipboard content from the device
-#: data/menus.ui:78
+#: data/menus.ui:83
 msgid "From Device"
 msgstr "Van apparaat"
 
 #. TRANSLATORS: Don't change the system volume
-#: data/menus.ui:90 data/menus.ui:116
+#: data/menus.ui:95 data/menus.ui:121
 msgid "Nothing"
 msgstr "Niets"
 
 #. TRANSLATORS: Lower the system volume
-#: data/menus.ui:97 data/menus.ui:123
+#: data/menus.ui:102 data/menus.ui:128
 msgid "Lower"
 msgstr "Verlagen"
 
 #. TRANSLATORS: Mute the system volume
 #. TRANSLATORS: Silence the phone ringer
-#: data/menus.ui:104 data/menus.ui:130 src/service/plugins/telephony.js:175
+#: data/menus.ui:109 data/menus.ui:135 src/service/plugins/telephony.js:175
 msgid "Mute"
 msgstr "Dempen"
 
@@ -366,40 +370,30 @@ msgid "%s Plugin Failed To Load"
 msgstr "Kan plug-in %s niet laden"
 
 #: src/service/daemon.js:618 src/service/daemon.js:635
-#: src/service/daemon.js:647
 msgid "Click for more information"
 msgstr "Klik voor meer informatie"
 
 #: src/service/daemon.js:633
-msgid "Remote Filesystem Error"
-msgstr "Fout op extern bestandssysteem"
-
-#: src/service/daemon.js:634
-#, javascript-format
-msgid "%s is using an incompatible SSH library"
-msgstr "%s gebruikt een incompatibele SSH-bibliotheek"
-
-#: src/service/daemon.js:645
 msgid "Wayland Not Supported"
 msgstr "Geen Wayland-ondersteuning"
 
-#: src/service/daemon.js:646
+#: src/service/daemon.js:634
 msgid "Remote input not supported on Wayland"
 msgstr "Externe invoer wordt niet ondersteund op Wayland"
 
 #. Create an urgent notification
-#: src/service/daemon.js:670
+#: src/service/daemon.js:658
 #, javascript-format
 msgid "GSConnect: %s"
 msgstr "GSConnect: %s"
 
 #. TRANSLATORS: Share URL by SMS
-#: src/service/daemon.js:818 src/service/plugins/sms.js:49
+#: src/service/daemon.js:806 src/service/plugins/sms.js:49
 #: webextension/gettext.js:39
 msgid "Send SMS"
 msgstr "SMS versturen"
 
-#: src/service/daemon.js:822
+#: src/service/daemon.js:810
 msgid "Dial Number"
 msgstr "Nummer bellen"
 
@@ -511,11 +505,11 @@ msgstr "Gevonden"
 msgid "Mousepad"
 msgstr "Touchpad"
 
-#: src/service/plugins/mousepad.js:28 src/service/plugins/mousepad.js:536
+#: src/service/plugins/mousepad.js:28 src/service/plugins/mousepad.js:549
 msgid "Keyboard"
 msgstr "Toetsenbord"
 
-#: src/service/plugins/mousepad.js:553
+#: src/service/plugins/mousepad.js:566
 msgid "Keyboard not ready"
 msgstr "Toetsenbord niet gereed"
 
@@ -575,7 +569,7 @@ msgstr "Alle bestanden"
 msgid "Camera pictures"
 msgstr "Camera-afbeeldingen"
 
-#: src/service/plugins/sftp.js:342
+#: src/service/plugins/sftp.js:333
 msgid "Files"
 msgstr "Bestanden"
 
@@ -610,7 +604,7 @@ msgstr "Bezig met ontvangen van \"%s\" van %s"
 #: src/service/plugins/share.js:138 src/service/plugins/share.js:289
 #: src/service/plugins/share.js:407 src/service/ui/keybindings.js:44
 #: src/service/ui/service.js:121 src/service/ui/service.js:300
-#: src/service/ui/settings.js:851 src/shell/donotdisturb.js:215
+#: src/service/ui/settings.js:867 src/shell/donotdisturb.js:215
 msgid "Cancel"
 msgstr "Annuleren"
 
@@ -809,19 +803,19 @@ msgstr "Paneel"
 msgid "User Menu"
 msgstr "Gebruikersmenu"
 
-#: src/service/ui/settings.js:852
+#: src/service/ui/settings.js:868
 msgid "Open"
 msgstr "Openen"
 
-#: src/service/ui/settings.js:909 src/service/ui/settings.js:922
+#: src/service/ui/settings.js:925 src/service/ui/settings.js:938
 msgid "On"
 msgstr "Aan"
 
-#: src/service/ui/settings.js:909 src/service/ui/settings.js:922
+#: src/service/ui/settings.js:925 src/service/ui/settings.js:938
 msgid "Off"
 msgstr "Uit"
 
-#: src/service/ui/settings.js:1043 src/service/ui/settings.js:1109
+#: src/service/ui/settings.js:1059 src/service/ui/settings.js:1125
 msgid "Disabled"
 msgstr "Uitgeschakeld"
 
@@ -920,6 +914,12 @@ msgstr "Dienst niet beschikbaar"
 #: webextension/gettext.js:37
 msgid "Open in Browser"
 msgstr "Openen in browser"
+
+#~ msgid "Remote Filesystem Error"
+#~ msgstr "Fout op extern bestandssysteem"
+
+#~ msgid "%s is using an incompatible SSH library"
+#~ msgstr "%s gebruikt een incompatibele SSH-bibliotheek"
 
 #~ msgid "Show Offline Devices"
 #~ msgstr "Offline apparaten tonen"

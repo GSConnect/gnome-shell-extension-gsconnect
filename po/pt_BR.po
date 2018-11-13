@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-04 12:18-0500\n"
+"POT-Creation-Date: 2018-11-12 21:08-0800\n"
 "PO-Revision-Date: 2018-11-05 05:38-0200\n"
 "Last-Translator: Ricardo Silva Veloso <ricvelozo@gmail.com>\n"
 "Language-Team: \n"
@@ -180,37 +180,41 @@ msgstr "Conectar Bluetooth"
 msgid "Connect LAN"
 msgstr "Conectar LAN"
 
-#: data/menus.ui:53 src/service/device.js:425
+#: data/menus.ui:53 src/service/ui/settings.js:606
+msgid "Encryption Info"
+msgstr ""
+
+#: data/menus.ui:58 src/service/device.js:425
 msgid "Pair"
 msgstr "Parear"
 
-#: data/menus.ui:59 src/service/device.js:433
+#: data/menus.ui:64 src/service/device.js:433
 msgid "Unpair"
 msgstr "Esquecer"
 
 #. TRANSLATORS: Send clipboard content to device
-#: data/menus.ui:72
+#: data/menus.ui:77
 msgid "To Device"
 msgstr "Para o dispositivo"
 
 #. TRANSLATORS: Receive clipboard content from the device
-#: data/menus.ui:78
+#: data/menus.ui:83
 msgid "From Device"
 msgstr "Do dispositivo"
 
 #. TRANSLATORS: Don't change the system volume
-#: data/menus.ui:90 data/menus.ui:116
+#: data/menus.ui:95 data/menus.ui:121
 msgid "Nothing"
 msgstr "Nada"
 
 #. TRANSLATORS: Lower the system volume
-#: data/menus.ui:97 data/menus.ui:123
+#: data/menus.ui:102 data/menus.ui:128
 msgid "Lower"
 msgstr "Baixo"
 
 #. TRANSLATORS: Mute the system volume
 #. TRANSLATORS: Silence the phone ringer
-#: data/menus.ui:104 data/menus.ui:130 src/service/plugins/telephony.js:175
+#: data/menus.ui:109 data/menus.ui:135 src/service/plugins/telephony.js:175
 msgid "Mute"
 msgstr "Silenciar"
 
@@ -347,8 +351,10 @@ msgid "Discovery Disabled"
 msgstr "Descoberta desativada"
 
 #: src/service/daemon.js:597
-msgid "Discovery has been disabled due to the number of devices on this network."
-msgstr "A descoberta foi desativada devido ao número de dispositivos nesta rede."
+msgid ""
+"Discovery has been disabled due to the number of devices on this network."
+msgstr ""
+"A descoberta foi desativada devido ao número de dispositivos nesta rede."
 
 #: src/service/daemon.js:599 src/service/daemon.js:609
 msgid "Click to open preferences"
@@ -364,40 +370,30 @@ msgid "%s Plugin Failed To Load"
 msgstr "Falha ao carregar o plugin %s"
 
 #: src/service/daemon.js:618 src/service/daemon.js:635
-#: src/service/daemon.js:647
 msgid "Click for more information"
 msgstr "Clique para mais informação"
 
 #: src/service/daemon.js:633
-msgid "Remote Filesystem Error"
-msgstr "Erro no sistema de arquivos remotos"
-
-#: src/service/daemon.js:634
-#, javascript-format
-msgid "%s is using an incompatible SSH library"
-msgstr "%s está usando uma biblioteca SSH incompatível"
-
-#: src/service/daemon.js:645
 msgid "Wayland Not Supported"
 msgstr "Sem suporte a Wayland"
 
-#: src/service/daemon.js:646
+#: src/service/daemon.js:634
 msgid "Remote input not supported on Wayland"
 msgstr "Não há suporte para entrada remota no Wayland"
 
 #. Create an urgent notification
-#: src/service/daemon.js:670
+#: src/service/daemon.js:658
 #, javascript-format
 msgid "GSConnect: %s"
 msgstr "GSConnect: %s"
 
 #. TRANSLATORS: Share URL by SMS
-#: src/service/daemon.js:818 src/service/plugins/sms.js:49
+#: src/service/daemon.js:806 src/service/plugins/sms.js:49
 #: webextension/gettext.js:39
 msgid "Send SMS"
 msgstr "Enviar SMS"
 
-#: src/service/daemon.js:822
+#: src/service/daemon.js:810
 msgid "Dial Number"
 msgstr "Ligar para número"
 
@@ -509,11 +505,11 @@ msgstr "Encontrado"
 msgid "Mousepad"
 msgstr "Mousepad"
 
-#: src/service/plugins/mousepad.js:28 src/service/plugins/mousepad.js:536
+#: src/service/plugins/mousepad.js:28 src/service/plugins/mousepad.js:549
 msgid "Keyboard"
 msgstr "Teclado"
 
-#: src/service/plugins/mousepad.js:553
+#: src/service/plugins/mousepad.js:566
 msgid "Keyboard not ready"
 msgstr "O teclado não está pronto"
 
@@ -573,7 +569,7 @@ msgstr "Todos os arquivos"
 msgid "Camera pictures"
 msgstr "Fotos da câmera"
 
-#: src/service/plugins/sftp.js:342
+#: src/service/plugins/sftp.js:333
 msgid "Files"
 msgstr "Arquivos"
 
@@ -608,7 +604,7 @@ msgstr "Recebendo \"%s\" de %s"
 #: src/service/plugins/share.js:138 src/service/plugins/share.js:289
 #: src/service/plugins/share.js:407 src/service/ui/keybindings.js:44
 #: src/service/ui/service.js:121 src/service/ui/service.js:300
-#: src/service/ui/settings.js:851 src/shell/donotdisturb.js:215
+#: src/service/ui/settings.js:867 src/shell/donotdisturb.js:215
 msgid "Cancel"
 msgstr "Cancelar"
 
@@ -776,7 +772,8 @@ msgstr "Digite um novo atalho para mudar <b>%s</b>"
 #. TRANSLATORS: Keys for cancelling (␛) or resetting (␈) a shortcut
 #: src/service/ui/keybindings.js:83
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr "Pressione Esc para cancelar ou Backspace para redefinir o atalho de teclado."
+msgstr ""
+"Pressione Esc para cancelar ou Backspace para redefinir o atalho de teclado."
 
 #. TRANSLATORS: When a keyboard shortcut is unavailable
 #. Example: [Ctrl]+[S] is already being used
@@ -805,19 +802,19 @@ msgstr "Painel"
 msgid "User Menu"
 msgstr "Menu do usuário"
 
-#: src/service/ui/settings.js:852
+#: src/service/ui/settings.js:868
 msgid "Open"
 msgstr "Abrir"
 
-#: src/service/ui/settings.js:909 src/service/ui/settings.js:922
+#: src/service/ui/settings.js:925 src/service/ui/settings.js:938
 msgid "On"
 msgstr "Ativada"
 
-#: src/service/ui/settings.js:909 src/service/ui/settings.js:922
+#: src/service/ui/settings.js:925 src/service/ui/settings.js:938
 msgid "Off"
 msgstr "Desativada"
 
-#: src/service/ui/settings.js:1043 src/service/ui/settings.js:1109
+#: src/service/ui/settings.js:1059 src/service/ui/settings.js:1125
 msgid "Disabled"
 msgstr "Desativado"
 
@@ -905,7 +902,8 @@ msgstr[1] "%d horas"
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:29
 msgid "Share links with GSConnect, direct to the browser or by SMS."
-msgstr "Compartilhe links com o GSConnect, diretamente no navegador ou por SMS."
+msgstr ""
+"Compartilhe links com o GSConnect, diretamente no navegador ou por SMS."
 
 #. TRANSLATORS: WebExtension can't connect to GSConnect
 #: webextension/gettext.js:33
@@ -916,6 +914,12 @@ msgstr "Serviço indisponível"
 #: webextension/gettext.js:37
 msgid "Open in Browser"
 msgstr "Abrir no navegador"
+
+#~ msgid "Remote Filesystem Error"
+#~ msgstr "Erro no sistema de arquivos remotos"
+
+#~ msgid "%s is using an incompatible SSH library"
+#~ msgstr "%s está usando uma biblioteca SSH incompatível"
 
 #~ msgid "Show Offline Devices"
 #~ msgstr "Mostrar dispositivos desconectados"
@@ -962,8 +966,12 @@ msgstr "Abrir no navegador"
 #~ msgid "This program comes with absolutely no warranty."
 #~ msgstr "Este programa vem com absolutamente nenhuma garantia."
 
-#~ msgid "See the <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html\">GNU General Public License, version 2 or later</a> for details."
-#~ msgstr "Veja a <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html\">GNU General Public License, versão 2 ou posterior</a> para detalhes."
+#~ msgid ""
+#~ "See the <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html"
+#~ "\">GNU General Public License, version 2 or later</a> for details."
+#~ msgstr ""
+#~ "Veja a <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html"
+#~ "\">GNU General Public License, versão 2 ou posterior</a> para detalhes."
 
 #~ msgid "Preferences"
 #~ msgstr "Preferências"
@@ -974,8 +982,12 @@ msgstr "Abrir no navegador"
 #~ msgid "Web Browser Integration"
 #~ msgstr "Integração com navegador"
 
-#~ msgid "Requires <a href=\"%s\">Chrome Extension</a> or <a href=\"%s\">Firefox Add-On</a>"
-#~ msgstr "Requer <a href=\"%s\">extensão do Chrome</a> ou <a href=\"%s\">complemento do Firefox</a>"
+#~ msgid ""
+#~ "Requires <a href=\"%s\">Chrome Extension</a> or <a href=\"%s\">Firefox "
+#~ "Add-On</a>"
+#~ msgstr ""
+#~ "Requer <a href=\"%s\">extensão do Chrome</a> ou <a href=\"%s"
+#~ "\">complemento do Firefox</a>"
 
 #~ msgid "Nautilus extensions changed"
 #~ msgstr "Extensões do Nautilus foram alteradas"
@@ -1039,7 +1051,8 @@ msgstr "Abrir no navegador"
 #~ msgstr "Não foi possível inicializar Atspi"
 
 #~ msgid "Cannot load Caribou virtual keyboard for Unicode support"
-#~ msgstr "Não é possível carregar teclado virtual Caribou para suporte a Unicode"
+#~ msgstr ""
+#~ "Não é possível carregar teclado virtual Caribou para suporte a Unicode"
 
 #~ msgid "Control MPRIS2 enabled media players"
 #~ msgstr "Controlar reprodutores de mídia com suporte a MPRIS2"
@@ -1101,14 +1114,26 @@ msgstr "Abrir no navegador"
 #~ msgid "The <b>Media Player Control</b> plugin must be enabled"
 #~ msgstr "O plugin <b>Controle multimídia</b> precisa ser ativado"
 
-#~ msgid "Ensure that devices are on the same local network with ports 1716 to 1764 open for TCP and UDP connections."
-#~ msgstr "Certifique-se que os dispositivos estão na mesma rede local com as portas 1716 a 1764 abertas para conexões TCP e UDP."
+#~ msgid ""
+#~ "Ensure that devices are on the same local network with ports 1716 to 1764 "
+#~ "open for TCP and UDP connections."
+#~ msgstr ""
+#~ "Certifique-se que os dispositivos estão na mesma rede local com as portas "
+#~ "1716 a 1764 abertas para conexões TCP e UDP."
 
-#~ msgid "To connect an Android device, install the KDE Connect Android app from the <a href=\"%s\">Google Play Store</a> or <a href=\"%s\">F-Droid</a>."
-#~ msgstr "Para conectar um dispositivo Android, instale o app KDE Connect da <a href=\"%s\">Google Play Store</a> ou <a href=\"%s\">F-Droid</a>."
+#~ msgid ""
+#~ "To connect an Android device, install the KDE Connect Android app from "
+#~ "the <a href=\"%s\">Google Play Store</a> or <a href=\"%s\">F-Droid</a>."
+#~ msgstr ""
+#~ "Para conectar um dispositivo Android, instale o app KDE Connect da <a "
+#~ "href=\"%s\">Google Play Store</a> ou <a href=\"%s\">F-Droid</a>."
 
-#~ msgid "Please see the <a href=\"%s\">Wiki</a> for more help or <a href=\"%s\">open an issue</a> on Github to report a problem."
-#~ msgstr "Por favor, veja a <a href=\"%s\">Wiki</a> para mais ajuda ou <a href=\"%s\">abra um chamado</a> no GitHub para reportar um problema."
+#~ msgid ""
+#~ "Please see the <a href=\"%s\">Wiki</a> for more help or <a href=\"%s"
+#~ "\">open an issue</a> on Github to report a problem."
+#~ msgstr ""
+#~ "Por favor, veja a <a href=\"%s\">Wiki</a> para mais ajuda ou <a href=\"%s"
+#~ "\">abra um chamado</a> no GitHub para reportar um problema."
 
 #~ msgid "Error: %s"
 #~ msgstr "Erro: %s"
@@ -1144,8 +1169,10 @@ msgstr "Abrir no navegador"
 #~ msgid "Keyboard Shortcut Unavailable"
 #~ msgstr "Atalhos de teclado indisponíveis"
 
-#~ msgid "The requested keyboard shortcut is already in use and can't be overridden."
-#~ msgstr "O atalho de teclado escolhido já está em uso e não pode ser sobrescrito."
+#~ msgid ""
+#~ "The requested keyboard shortcut is already in use and can't be overridden."
+#~ msgstr ""
+#~ "O atalho de teclado escolhido já está em uso e não pode ser sobrescrito."
 
 #~ msgid "Configure <b>%s</b>"
 #~ msgstr "Configurar <b>%s</b>"

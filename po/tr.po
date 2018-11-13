@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-08 11:12-0700\n"
+"POT-Creation-Date: 2018-11-12 21:08-0800\n"
 "PO-Revision-Date: 2018-11-08 09:55-0700\n"
 "Last-Translator: Serdar Sağlam <teknomobil@yandex.com>, Orhan Engin Okay "
 "<orhanenginokay@hotmail.com>, A. Burak Tektaş <abtektas@gmail.com>\n"
@@ -356,8 +356,7 @@ msgstr "Keşif Devre Dışı"
 #: src/service/daemon.js:597
 msgid ""
 "Discovery has been disabled due to the number of devices on this network."
-msgstr ""
-"Bu ağdaki aygıt sayısı nedeniyle keşif devre dışı bırakıldı."
+msgstr "Bu ağdaki aygıt sayısı nedeniyle keşif devre dışı bırakıldı."
 
 #: src/service/daemon.js:599 src/service/daemon.js:609
 msgid "Click to open preferences"
@@ -508,11 +507,11 @@ msgstr "Bulundu"
 msgid "Mousepad"
 msgstr "Fare Altlığı"
 
-#: src/service/plugins/mousepad.js:28 src/service/plugins/mousepad.js:536
+#: src/service/plugins/mousepad.js:28 src/service/plugins/mousepad.js:549
 msgid "Keyboard"
 msgstr "Klavye"
 
-#: src/service/plugins/mousepad.js:553
+#: src/service/plugins/mousepad.js:566
 msgid "Keyboard not ready"
 msgstr "Klavye hazır değil"
 

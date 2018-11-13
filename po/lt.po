@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-18 11:12-0700\n"
+"POT-Creation-Date: 2018-11-12 21:08-0800\n"
 "PO-Revision-Date: 2018-09-01 00:27+0300\n"
 "Last-Translator: Moo\n"
 "Language-Team: \n"
@@ -29,137 +29,137 @@ msgstr "SMS pokalbis"
 msgid "Type a message"
 msgstr "Rašykite SMS žinutę"
 
-#: data/conversation-window.ui:210 src/shell/device.js:578
+#: data/conversation-window.ui:210
 msgid "Device is disconnected"
 msgstr "Įrenginys yra atsijungęs"
 
-#: data/device.ui:67 src/service/plugins/battery.js:12
+#: data/device.ui:68 src/service/plugins/battery.js:12
 msgid "Battery"
 msgstr "Baterija"
 
-#: data/device.ui:115
+#: data/device.ui:116
 #, fuzzy
 msgid "Clipboard Sync"
 msgstr "Iškarpinė"
 
-#: data/device.ui:171
+#: data/device.ui:172
 #, fuzzy
 msgid "Media Players"
 msgstr "Medijos leistuvės valdymas"
 
-#: data/device.ui:219
+#: data/device.ui:220
 msgid "Mouse & Keyboard"
 msgstr ""
 
-#: data/device.ui:267
+#: data/device.ui:268
 msgid "Volume Control"
 msgstr ""
 
-#: data/device.ui:307 data/device.ui:1404
+#: data/device.ui:308 data/device.ui:1406
 #, fuzzy
 msgid "Sharing"
 msgstr "Bendrinti nuorodą"
 
-#: data/device.ui:336 data/device.ui:533 data/device.ui:1447
-#: src/service/plugins/runcommand.js:18 src/service/plugins/runcommand.js:173
+#: data/device.ui:337 data/device.ui:534 data/device.ui:1449
+#: src/service/plugins/runcommand.js:18 src/service/plugins/runcommand.js:169
 #, fuzzy
 msgid "Commands"
 msgstr "Komanda"
 
-#: data/device.ui:384
+#: data/device.ui:385
 msgid "Name"
 msgstr "Pavadinimas"
 
-#: data/device.ui:400 data/device.ui:401
+#: data/device.ui:401 data/device.ui:402
 msgid "Choose an executable"
 msgstr ""
 
-#: data/device.ui:402
+#: data/device.ui:403
 #, fuzzy
 msgid "Command Line"
 msgstr "Komanda"
 
-#: data/device.ui:596
+#: data/device.ui:597
 #, fuzzy
 msgid "Share Notifications"
 msgstr "Siųsti pranešimus"
 
-#: data/device.ui:634
+#: data/device.ui:636
 msgid "Applications"
 msgstr "Programos"
 
-#: data/device.ui:673 data/device.ui:1490
+#: data/device.ui:675 data/device.ui:1492
 #: src/service/plugins/notification.js:12
 msgid "Notifications"
 msgstr "Pranešimai"
 
-#: data/device.ui:703
+#: data/device.ui:705
 msgid "Incoming Calls"
 msgstr "Gaunami skambučiai"
 
-#: data/device.ui:753 data/device.ui:898
+#: data/device.ui:755 data/device.ui:900
 #, fuzzy
 msgid "Volume"
 msgstr "Sistemos garsis"
 
-#: data/device.ui:811 data/device.ui:956
+#: data/device.ui:813 data/device.ui:958
 msgid "Pause Media"
 msgstr "Pristabdyti mediją"
 
-#: data/device.ui:850
+#: data/device.ui:852
 #, fuzzy
 msgid "Ongoing Calls"
 msgstr "Gaunami skambučiai"
 
-#: data/device.ui:1005
+#: data/device.ui:1007
 msgid "Mute Microphone"
 msgstr "Nutildyti mikrofoną"
 
-#: data/device.ui:1045 data/device.ui:1533 src/service/plugins/telephony.js:12
+#: data/device.ui:1047 data/device.ui:1535 src/service/plugins/telephony.js:12
 msgid "Telephony"
 msgstr "Telefonija"
 
-#: data/device.ui:1080
+#: data/device.ui:1082
 #, fuzzy
 msgid "Action Shortcuts"
 msgstr "Klaviatūros trumpiniai"
 
-#: data/device.ui:1092 data/device.ui:1155
+#: data/device.ui:1094 data/device.ui:1157
 msgid "Reset All…"
 msgstr ""
 
-#: data/device.ui:1143
+#: data/device.ui:1145
 #, fuzzy
 msgid "Command Shortcuts"
 msgstr "Klaviatūros trumpiniai"
 
-#: data/device.ui:1201
+#: data/device.ui:1203
 #, fuzzy
 msgid "Shortcuts"
 msgstr "Klaviatūros trumpiniai"
 
-#: data/device.ui:1232
+#: data/device.ui:1234
 msgid "Plugins"
 msgstr "Įskiepiai"
 
-#: data/device.ui:1293
+#: data/device.ui:1295
 msgid "Delete"
 msgstr ""
 
-#: data/device.ui:1318
+#: data/device.ui:1320
 #, fuzzy
 msgid "Delete this device"
 msgstr "%s paprašė nustatyti šio įrenginio vietą"
 
-#: data/device.ui:1333
+#: data/device.ui:1335
 msgid "Unpair and remove all settings and files"
 msgstr ""
 
-#: data/device.ui:1363 data/device.ui:1619
+#: data/device.ui:1365 data/device.ui:1621
 msgid "Advanced"
 msgstr ""
 
-#: data/device.ui:1576
+#: data/device.ui:1578
 #, fuzzy
 msgid "Keyboard Shortcuts"
 msgstr "Klaviatūros trumpiniai"
@@ -179,7 +179,7 @@ msgstr "Nežinomas adresatas"
 msgid "Sync Messages"
 msgstr "Žinutė"
 
-#: data/menus.ui:23 data/settings.ui:1087
+#: data/menus.ui:23 data/settings.ui:881
 msgid "Help"
 msgstr ""
 
@@ -201,40 +201,44 @@ msgstr ""
 msgid "Connect LAN"
 msgstr "GSConnect"
 
-#: data/menus.ui:53 src/service/device.js:434 src/shell/device.js:374
+#: data/menus.ui:53 src/service/ui/settings.js:606
+msgid "Encryption Info"
+msgstr ""
+
+#: data/menus.ui:58 src/service/device.js:425
 msgid "Pair"
 msgstr ""
 
-#: data/menus.ui:59 src/service/device.js:442
+#: data/menus.ui:64 src/service/device.js:433
 #, fuzzy
 msgid "Unpair"
 msgstr "Rodyti nesuporuotus"
 
 #. TRANSLATORS: Send clipboard content to device
-#: data/menus.ui:72
+#: data/menus.ui:77
 #, fuzzy
 msgid "To Device"
 msgstr "Įrenginiai"
 
 #. TRANSLATORS: Receive clipboard content from the device
-#: data/menus.ui:78
+#: data/menus.ui:83
 #, fuzzy
 msgid "From Device"
 msgstr "Nustatyti įrenginio vietą"
 
 #. TRANSLATORS: Don't change the system volume
-#: data/menus.ui:90 data/menus.ui:116
+#: data/menus.ui:95 data/menus.ui:121
 msgid "Nothing"
 msgstr "Nieko"
 
 #. TRANSLATORS: Lower the system volume
-#: data/menus.ui:97 data/menus.ui:123
+#: data/menus.ui:102 data/menus.ui:128
 msgid "Lower"
 msgstr "Sumažinti"
 
 #. TRANSLATORS: Mute the system volume
 #. TRANSLATORS: Silence the phone ringer
-#: data/menus.ui:104 data/menus.ui:130 src/service/plugins/telephony.js:175
+#: data/menus.ui:109 data/menus.ui:135 src/service/plugins/telephony.js:175
 msgid "Mute"
 msgstr "Nutildyti"
 
@@ -246,195 +250,183 @@ msgstr "Išvaizda"
 msgid "Display Mode"
 msgstr ""
 
-#: data/settings.ui:435
-#, fuzzy
-msgid "Show Offline Devices"
-msgstr "Rodyti atsijungusius"
-
-#: data/settings.ui:486
-#, fuzzy
-msgid "Show Unpaired Devices"
-msgstr "Mobilieji įrenginiai"
-
-#: data/settings.ui:537
-msgid "Show Battery Icon"
-msgstr "Rodyti baterijos piktogramą"
-
-#: data/settings.ui:578 data/settings.ui:1167
-msgid "Shell"
-msgstr ""
-
-#: data/settings.ui:639
-msgid "Discoverable"
-msgstr ""
-
-#: data/settings.ui:711
-#, fuzzy
-msgid "Restart Service"
-msgstr "Įrenginiai"
-
-#: data/settings.ui:764 data/settings.ui:1210
+#: data/settings.ui:425
 #, fuzzy
 msgid "Service"
 msgstr "Įrenginiai"
 
-#: data/settings.ui:823
+#: data/settings.ui:475
+msgid "Discoverable"
+msgstr ""
+
+#: data/settings.ui:528
+#, fuzzy
+msgid "Restart Service"
+msgstr "Įrenginiai"
+
+#: data/settings.ui:581 data/settings.ui:1015 src/service/device.js:417
+#, fuzzy
+msgid "Settings"
+msgstr "Mobiliųjų nustatymai"
+
+#: data/settings.ui:639
 msgid "Remote Filesystems"
 msgstr ""
 
-#: data/settings.ui:859
+#: data/settings.ui:675
 msgid "Sound Effects"
 msgstr ""
 
-#: data/settings.ui:896
+#: data/settings.ui:712
+#, fuzzy
+msgid "Extended Keyboard Support"
+msgstr "Klaviatūros trumpiniai"
+
+#: data/settings.ui:749
 #, fuzzy
 msgid "Desktop Contacts"
 msgstr "Nežinomas adresatas"
 
-#: data/settings.ui:933
+#: data/settings.ui:786
 #, fuzzy
 msgid "Files Integration"
 msgstr "Nautilus integracija"
 
-#: data/settings.ui:960
+#: data/settings.ui:813
 msgid "Additional Features"
 msgstr ""
 
-#: data/settings.ui:1033
-msgid "Android"
+#: data/settings.ui:903
+msgid "Browser Add-Ons"
 msgstr ""
 
-#: data/settings.ui:1048
-msgid "Sailfish OS"
-msgstr ""
-
-#: data/settings.ui:1068
+#: data/settings.ui:921
 #, fuzzy
 msgid "KDE Connect"
 msgstr "GSConnect"
 
 #. TRANSLATORS: A phone number type
-#: data/settings.ui:1108 data/settings.ui:1253 src/service/ui/contacts.js:57
+#: data/settings.ui:956 data/settings.ui:1058 src/service/ui/contacts.js:57
 #: src/service/ui/contacts.js:78
 msgid "Other"
 msgstr "Kita"
 
 #. TRANSLATORS: No devices are known or available
-#: data/settings.ui:1301 webextension/gettext.js:35
+#: data/settings.ui:1106 webextension/gettext.js:35
 #, fuzzy
 msgid "No Device Found"
 msgstr "Įrenginys yra išporuotas"
 
-#: data/settings.ui:1337
+#: data/settings.ui:1142
 msgid "Refresh"
 msgstr "Įkelti iš naujo"
 
-#: src/extension.js:59
+#. Service Menu
+#: src/extension.js:79 src/extension.js:249
 msgid "Mobile Devices"
 msgstr "Mobilieji įrenginiai"
 
-#: src/extension.js:81
+#: src/extension.js:105
 msgid "Mobile Settings"
 msgstr "Mobiliųjų nustatymai"
 
 #. TRANSLATORS: Extension name
-#: src/extension.js:146 src/extension.js:211 src/service/daemon.js:95
-#: src/service/daemon.js:399 webextension/gettext.js:27
+#: src/extension.js:186 src/extension.js:301 src/service/daemon.js:95
+#: src/service/daemon.js:413 webextension/gettext.js:27
 msgid "GSConnect"
 msgstr "GSConnect"
+
+#. TRANSLATORS: %d is the number of devices connected
+#: src/extension.js:247
+#, fuzzy, javascript-format
+msgid "%d Connected"
+msgid_plural "%d Connected"
+msgstr[0] "GSConnect"
+msgstr[1] "GSConnect"
+msgstr[2] "GSConnect"
 
 #. TRANSLATORS: Top-level context menu item for GSConnect
 #: src/nautilus-gsconnect.py:112 webextension/gettext.js:31
 msgid "Send To Mobile Device"
 msgstr "Siųsti į mobilųjį įrenginį"
 
-#: src/service/daemon.js:392
+#: src/service/daemon.js:406
 #, fuzzy
 msgid "A complete KDE Connect implementation for GNOME"
 msgstr "KDE Connect įgyvendinimas naudojant GNOME apvalkalo integraciją"
 
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
-#: src/service/daemon.js:401
+#: src/service/daemon.js:415
 msgid "translator-credits"
 msgstr ""
 
-#: src/service/daemon.js:423
+#: src/service/daemon.js:437
 msgid "Report"
 msgstr ""
 
-#: src/service/daemon.js:551
+#: src/service/daemon.js:567
 msgid "Authentication Failure"
 msgstr ""
 
-#: src/service/daemon.js:560
+#: src/service/daemon.js:576
 msgid "Network Error"
 msgstr ""
 
-#: src/service/daemon.js:561 src/service/daemon.js:571
+#: src/service/daemon.js:577 src/service/daemon.js:587
 msgid "Click for help troubleshooting"
 msgstr ""
 
-#: src/service/daemon.js:570
+#: src/service/daemon.js:586
 msgid "PulseAudio Error"
 msgstr ""
 
-#: src/service/daemon.js:580
+#: src/service/daemon.js:596
 msgid "Discovery Disabled"
 msgstr ""
 
-#: src/service/daemon.js:581
+#: src/service/daemon.js:597
 msgid ""
 "Discovery has been disabled due to the number of devices on this network."
 msgstr ""
 
-#: src/service/daemon.js:583 src/service/daemon.js:593
+#: src/service/daemon.js:599 src/service/daemon.js:609
 msgid "Click to open preferences"
 msgstr ""
 
-#: src/service/daemon.js:592
+#: src/service/daemon.js:608
 msgid "Additional Software Required"
 msgstr ""
 
-#: src/service/daemon.js:601
+#: src/service/daemon.js:617
 #, javascript-format
 msgid "%s Plugin Failed To Load"
 msgstr ""
 
-#: src/service/daemon.js:602 src/service/daemon.js:619
-#: src/service/daemon.js:631
+#: src/service/daemon.js:618 src/service/daemon.js:635
 msgid "Click for more information"
 msgstr ""
 
-#: src/service/daemon.js:617
-msgid "Remote Filesystem Error"
-msgstr ""
-
-#: src/service/daemon.js:618
-#, javascript-format
-msgid "%s is using an incompatible SSH library"
-msgstr ""
-
-#: src/service/daemon.js:629
+#: src/service/daemon.js:633
 msgid "Wayland Not Supported"
 msgstr ""
 
-#: src/service/daemon.js:630
+#: src/service/daemon.js:634
 msgid "Remote input not supported on Wayland"
 msgstr ""
 
 #. Create an urgent notification
-#: src/service/daemon.js:654
+#: src/service/daemon.js:658
 #, fuzzy, javascript-format
 msgid "GSConnect: %s"
 msgstr "GSConnect"
 
 #. TRANSLATORS: Share URL by SMS
-#: src/service/daemon.js:800 src/service/plugins/sms.js:49
+#: src/service/daemon.js:806 src/service/plugins/sms.js:49
 #: webextension/gettext.js:39
 msgid "Send SMS"
 msgstr "Siųsti SMS"
 
-#: src/service/daemon.js:804
+#: src/service/daemon.js:810
 #, fuzzy
 msgid "Dial Number"
 msgstr "Rinkti telefono numerį"
@@ -477,42 +469,37 @@ msgstr "Planšetė"
 msgid "Desktop"
 msgstr "Stalinis kompiuteris"
 
-#: src/service/device.js:418 src/shell/device.js:364
+#: src/service/device.js:409
 #, fuzzy
 msgid "Reconnect"
 msgstr "GSConnect"
 
-#: src/service/device.js:426 src/shell/device.js:416
-#, fuzzy
-msgid "Settings"
-msgstr "Mobiliųjų nustatymai"
-
 #. TRANSLATORS: eg. Pair Request from Google Pixel
-#: src/service/device.js:617
+#: src/service/device.js:606
 #, javascript-format
 msgid "Pair Request from %s"
 msgstr "Suporavimo užklausa nuo %s"
 
-#: src/service/device.js:624
+#: src/service/device.js:613
 msgid "Reject"
 msgstr "Atmesti"
 
-#: src/service/device.js:629
+#: src/service/device.js:618
 msgid "Accept"
 msgstr "Priimti"
 
-#: src/service/plugins/battery.js:188 src/service/plugins/findmyphone.js:18
+#: src/service/plugins/battery.js:194 src/service/plugins/findmyphone.js:18
 msgid "Locate"
 msgstr "Nustatyti vietą"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is low
-#: src/service/plugins/battery.js:197
+#: src/service/plugins/battery.js:203
 #, javascript-format
 msgid "%s: Battery is low"
 msgstr ""
 
 #. TRANSLATORS: eg. 15% remaining
-#: src/service/plugins/battery.js:199
+#: src/service/plugins/battery.js:205
 #, fuzzy, javascript-format
 msgid "%d%% remaining"
 msgstr "%d%% (Liko %d∶%02d)"
@@ -540,16 +527,16 @@ msgstr "Nežinomas adresatas"
 msgid "Find My Phone"
 msgstr ""
 
-#: src/service/plugins/findmyphone.js:73
+#: src/service/plugins/findmyphone.js:65
 msgid "Locate Device"
 msgstr "Nustatyti įrenginio vietą"
 
-#: src/service/plugins/findmyphone.js:74
+#: src/service/plugins/findmyphone.js:66
 #, javascript-format
 msgid "%s asked to locate this device"
 msgstr "%s paprašė nustatyti šio įrenginio vietą"
 
-#: src/service/plugins/findmyphone.js:82
+#: src/service/plugins/findmyphone.js:74
 msgid "Found"
 msgstr "Rastas"
 
@@ -557,12 +544,12 @@ msgstr "Rastas"
 msgid "Mousepad"
 msgstr ""
 
-#: src/service/plugins/mousepad.js:28 src/service/plugins/mousepad.js:537
+#: src/service/plugins/mousepad.js:28 src/service/plugins/mousepad.js:549
 #, fuzzy
 msgid "Keyboard"
 msgstr "Klaviatūros trumpiniai"
 
-#: src/service/plugins/mousepad.js:554
+#: src/service/plugins/mousepad.js:566
 #, fuzzy
 msgid "Keyboard not ready"
 msgstr "Klaviatūros trumpiniai"
@@ -620,15 +607,15 @@ msgstr "Atjungti"
 msgid "Unmount"
 msgstr "Atjungti"
 
-#: src/service/plugins/sftp.js:172
+#: src/service/plugins/sftp.js:170
 msgid "All files"
 msgstr ""
 
-#: src/service/plugins/sftp.js:173
+#: src/service/plugins/sftp.js:171
 msgid "Camera pictures"
 msgstr ""
 
-#: src/service/plugins/sftp.js:344
+#: src/service/plugins/sftp.js:333
 msgid "Files"
 msgstr ""
 
@@ -665,7 +652,7 @@ msgstr "Gaunama \"%s\" iš %s"
 #: src/service/plugins/share.js:138 src/service/plugins/share.js:289
 #: src/service/plugins/share.js:407 src/service/ui/keybindings.js:44
 #: src/service/ui/service.js:121 src/service/ui/service.js:300
-#: src/service/ui/settings.js:859 src/shell/donotdisturb.js:215
+#: src/service/ui/settings.js:867 src/shell/donotdisturb.js:215
 msgid "Cancel"
 msgstr "Atsisakyti"
 
@@ -862,29 +849,29 @@ msgstr "Pasirinkti įrenginį"
 msgid "Select"
 msgstr "Pasirinkti"
 
-#: src/service/ui/settings.js:414
+#: src/service/ui/settings.js:296
 msgid "Panel"
 msgstr ""
 
-#: src/service/ui/settings.js:414
+#: src/service/ui/settings.js:296
 #, fuzzy
 msgid "User Menu"
 msgstr "Atverti meniu"
 
-#: src/service/ui/settings.js:860
+#: src/service/ui/settings.js:868
 #, fuzzy
 msgid "Open"
 msgstr "Atverti failą"
 
-#: src/service/ui/settings.js:924 src/service/ui/settings.js:937
+#: src/service/ui/settings.js:925 src/service/ui/settings.js:938
 msgid "On"
 msgstr ""
 
-#: src/service/ui/settings.js:924 src/service/ui/settings.js:937
+#: src/service/ui/settings.js:925 src/service/ui/settings.js:938
 msgid "Off"
 msgstr ""
 
-#: src/service/ui/settings.js:1058 src/service/ui/settings.js:1124
+#: src/service/ui/settings.js:1059 src/service/ui/settings.js:1125
 msgid "Disabled"
 msgstr ""
 
@@ -897,8 +884,11 @@ msgstr ""
 #: src/service/ui/messaging.js:88 src/service/ui/messaging.js:120
 #: src/shell/donotdisturb.js:266
 #, javascript-format
-msgid "%d minutes"
-msgstr ""
+msgid "%d minute"
+msgid_plural "%d minutes"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
 
 #. TRANSLATORS: Yesterday, but less than 24 hours (eg. Yesterday · 11:29 PM)
 #: src/service/ui/messaging.js:93
@@ -911,34 +901,30 @@ msgid "New Message"
 msgstr "Nauja žinutė"
 
 #. TRANSLATORS: When the battery level is 100%
-#: src/shell/device.js:305
+#: src/shell/device.js:86
 msgid "Fully Charged"
 msgstr "Pilnai įkrauta"
 
 #. TRANSLATORS: When no time estimate for the battery is available
 #. EXAMPLE: 42% (Estimating…)
-#: src/shell/device.js:309
+#: src/shell/device.js:90
 #, javascript-format
 msgid "%d%% (Estimating…)"
 msgstr "%d%% (Apskaičiuojama…)"
 
 #. TRANSLATORS: Estimated time until battery is charged
 #. EXAMPLE: 42% (1:15 Until Full)
-#: src/shell/device.js:319
+#: src/shell/device.js:100
 #, javascript-format
 msgid "%d%% (%d∶%02d Until Full)"
 msgstr "%d%% (%d∶%02d iki pilnos)"
 
 #. TRANSLATORS: Estimated time until battery is empty
 #. EXAMPLE: 42% (12:15 Remaining)
-#: src/shell/device.js:327
+#: src/shell/device.js:108
 #, javascript-format
 msgid "%d%% (%d∶%02d Remaining)"
 msgstr "%d%% (Liko %d∶%02d)"
-
-#: src/shell/device.js:580
-msgid "Device is unpaired"
-msgstr "Įrenginys yra išporuotas"
 
 #: src/shell/donotdisturb.js:150 src/shell/donotdisturb.js:289
 msgid "Do Not Disturb"
@@ -990,6 +976,20 @@ msgstr "Gvc neprieinama"
 #, fuzzy
 msgid "Open in Browser"
 msgstr "Atverti aplanką"
+
+#, fuzzy
+#~ msgid "Show Offline Devices"
+#~ msgstr "Rodyti atsijungusius"
+
+#, fuzzy
+#~ msgid "Show Unpaired Devices"
+#~ msgstr "Mobilieji įrenginiai"
+
+#~ msgid "Show Battery Icon"
+#~ msgstr "Rodyti baterijos piktogramą"
+
+#~ msgid "Device is unpaired"
+#~ msgstr "Įrenginys yra išporuotas"
 
 #~ msgid "Locate %s"
 #~ msgstr "Nustatyti %s vietą"

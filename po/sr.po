@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-03 21:57-0700\n"
+"POT-Creation-Date: 2018-11-12 21:08-0800\n"
 "PO-Revision-Date: 2018-11-04 12:25+0100\n"
 "Last-Translator: Слободан Терзић <slobodan.terzic@zoho.eu>\n"
 "Language-Team: \n"
@@ -176,37 +176,41 @@ msgstr "Повежи Блутутом"
 msgid "Connect LAN"
 msgstr "Повежи се ЛАН-ом"
 
-#: data/menus.ui:53 src/service/device.js:425
+#: data/menus.ui:53 src/service/ui/settings.js:606
+msgid "Encryption Info"
+msgstr ""
+
+#: data/menus.ui:58 src/service/device.js:425
 msgid "Pair"
 msgstr "Упари"
 
-#: data/menus.ui:59 src/service/device.js:433
+#: data/menus.ui:64 src/service/device.js:433
 msgid "Unpair"
 msgstr "Распари"
 
 #. TRANSLATORS: Send clipboard content to device
-#: data/menus.ui:72
+#: data/menus.ui:77
 msgid "To Device"
 msgstr "На уређај"
 
 #. TRANSLATORS: Receive clipboard content from the device
-#: data/menus.ui:78
+#: data/menus.ui:83
 msgid "From Device"
 msgstr "Са уређаја"
 
 #. TRANSLATORS: Don't change the system volume
-#: data/menus.ui:90 data/menus.ui:116
+#: data/menus.ui:95 data/menus.ui:121
 msgid "Nothing"
 msgstr "Ништа"
 
 #. TRANSLATORS: Lower the system volume
-#: data/menus.ui:97 data/menus.ui:123
+#: data/menus.ui:102 data/menus.ui:128
 msgid "Lower"
 msgstr "Утишај"
 
 #. TRANSLATORS: Mute the system volume
 #. TRANSLATORS: Silence the phone ringer
-#: data/menus.ui:104 data/menus.ui:130 src/service/plugins/telephony.js:175
+#: data/menus.ui:109 data/menus.ui:135 src/service/plugins/telephony.js:175
 msgid "Mute"
 msgstr "Утишај"
 
@@ -283,7 +287,7 @@ msgid "Refresh"
 msgstr "Освежи"
 
 #. Service Menu
-#: src/extension.js:79 src/extension.js:248
+#: src/extension.js:79 src/extension.js:249
 msgid "Mobile Devices"
 msgstr "Мобилни уређаји"
 
@@ -293,15 +297,19 @@ msgstr "Подешавање"
 
 # Leaving the name in original form for About dialog.
 #. TRANSLATORS: Extension name
-#: src/extension.js:186 src/extension.js:300 src/service/daemon.js:95
+#: src/extension.js:186 src/extension.js:301 src/service/daemon.js:95
 #: src/service/daemon.js:413 webextension/gettext.js:27
 msgid "GSConnect"
 msgstr "GSConnect"
 
-#: src/extension.js:246
-#, javascript-format
+#. TRANSLATORS: %d is the number of devices connected
+#: src/extension.js:247
+#, fuzzy, javascript-format
 msgid "%d Connected"
-msgstr "%d је повезан"
+msgid_plural "%d Connected"
+msgstr[0] "%d је повезан"
+msgstr[1] "%d је повезан"
+msgstr[2] "%d је повезан"
 
 #. TRANSLATORS: Top-level context menu item for GSConnect
 #: src/nautilus-gsconnect.py:112 webextension/gettext.js:31
@@ -360,41 +368,31 @@ msgid "%s Plugin Failed To Load"
 msgstr "Неуспело учитавање пркључка %s"
 
 #: src/service/daemon.js:618 src/service/daemon.js:635
-#: src/service/daemon.js:647
 msgid "Click for more information"
 msgstr "Кликните за више детаља"
 
 #: src/service/daemon.js:633
-msgid "Remote Filesystem Error"
-msgstr "Грешка удаљеног система фајлова"
-
-#: src/service/daemon.js:634
-#, javascript-format
-msgid "%s is using an incompatible SSH library"
-msgstr "%s користи несагласну ССХ библиотеку"
-
-#: src/service/daemon.js:645
 msgid "Wayland Not Supported"
 msgstr "Вејланд није подржан"
 
-#: src/service/daemon.js:646
+#: src/service/daemon.js:634
 msgid "Remote input not supported on Wayland"
 msgstr "Унос на даљину није подржан под Вејландом"
 
 # Leaving the name in original form for About dialog.
 #. Create an urgent notification
-#: src/service/daemon.js:670
+#: src/service/daemon.js:658
 #, javascript-format
 msgid "GSConnect: %s"
 msgstr "GSConnect: %s"
 
 #. TRANSLATORS: Share URL by SMS
-#: src/service/daemon.js:818 src/service/plugins/sms.js:49
+#: src/service/daemon.js:806 src/service/plugins/sms.js:49
 #: webextension/gettext.js:39
 msgid "Send SMS"
 msgstr "Пошаљи СМС"
 
-#: src/service/daemon.js:822
+#: src/service/daemon.js:810
 msgid "Dial Number"
 msgstr "Бирај број"
 
@@ -506,11 +504,11 @@ msgstr "Нађен"
 msgid "Mousepad"
 msgstr "Подлога за миша"
 
-#: src/service/plugins/mousepad.js:28 src/service/plugins/mousepad.js:536
+#: src/service/plugins/mousepad.js:28 src/service/plugins/mousepad.js:549
 msgid "Keyboard"
 msgstr "Тастатура"
 
-#: src/service/plugins/mousepad.js:553
+#: src/service/plugins/mousepad.js:566
 msgid "Keyboard not ready"
 msgstr "Тастатура није спремна"
 
@@ -570,7 +568,7 @@ msgstr "Сви фајлови"
 msgid "Camera pictures"
 msgstr "Слике са камере"
 
-#: src/service/plugins/sftp.js:342
+#: src/service/plugins/sftp.js:333
 msgid "Files"
 msgstr "Фајлови"
 
@@ -605,7 +603,7 @@ msgstr "Примам „%s“ од %s"
 #: src/service/plugins/share.js:138 src/service/plugins/share.js:289
 #: src/service/plugins/share.js:407 src/service/ui/keybindings.js:44
 #: src/service/ui/service.js:121 src/service/ui/service.js:300
-#: src/service/ui/settings.js:851 src/shell/donotdisturb.js:215
+#: src/service/ui/settings.js:867 src/shell/donotdisturb.js:215
 msgid "Cancel"
 msgstr "Откажи"
 
@@ -803,19 +801,19 @@ msgstr "Панел"
 msgid "User Menu"
 msgstr "Кориснички мени"
 
-#: src/service/ui/settings.js:852
+#: src/service/ui/settings.js:868
 msgid "Open"
 msgstr "Отвори"
 
-#: src/service/ui/settings.js:909 src/service/ui/settings.js:922
+#: src/service/ui/settings.js:925 src/service/ui/settings.js:938
 msgid "On"
 msgstr "Укључен"
 
-#: src/service/ui/settings.js:909 src/service/ui/settings.js:922
+#: src/service/ui/settings.js:925 src/service/ui/settings.js:938
 msgid "Off"
 msgstr "Искључен"
 
-#: src/service/ui/settings.js:1043 src/service/ui/settings.js:1109
+#: src/service/ui/settings.js:1059 src/service/ui/settings.js:1125
 msgid "Disabled"
 msgstr "Онемогућен"
 
@@ -827,9 +825,12 @@ msgstr "Управо сада"
 #. TRANSLATORS: Time duration in minutes (eg. 15 minutes)
 #: src/service/ui/messaging.js:88 src/service/ui/messaging.js:120
 #: src/shell/donotdisturb.js:266
-#, javascript-format
-msgid "%d minutes"
-msgstr "%d минута"
+#, fuzzy, javascript-format
+msgid "%d minute"
+msgid_plural "%d minutes"
+msgstr[0] "%d минута"
+msgstr[1] "%d минута"
+msgstr[2] "%d минута"
 
 #. TRANSLATORS: Yesterday, but less than 24 hours (eg. Yesterday · 11:29 PM)
 #: src/service/ui/messaging.js:93
@@ -913,6 +914,12 @@ msgstr "Сервис није доступан"
 #: webextension/gettext.js:37
 msgid "Open in Browser"
 msgstr "Отвори у прегледачу"
+
+#~ msgid "Remote Filesystem Error"
+#~ msgstr "Грешка удаљеног система фајлова"
+
+#~ msgid "%s is using an incompatible SSH library"
+#~ msgstr "%s користи несагласну ССХ библиотеку"
 
 #~ msgid "Show Offline Devices"
 #~ msgstr "Прикажи уређаје ван везе"
