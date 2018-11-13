@@ -36,7 +36,7 @@ var Metadata = {
 };
 
 
-const _ASCII = /[\x00-\x7F]/;
+const _ASCII = /[\x20-\x7E]/;
 
 
 /**
