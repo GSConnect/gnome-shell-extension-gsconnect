@@ -4,7 +4,6 @@
     <!-- UI -->
     <file compressed="true">application.css</file>
     <file compressed="true" preprocess="xml-stripblanks">conversation.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">conversation-window.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">device.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">messaging.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">settings.ui</file>
