@@ -160,14 +160,6 @@ var ContactChooser = GObject.registerClass({
             'The contacts store',
             GObject.ParamFlags.READWRITE,
             GObject.Object
-        ),
-        'selected': GObject.param_spec_variant(
-            'selected',
-            'selectedContacts',
-            'A list of selected contacts',
-            new GLib.VariantType('as'),
-            null,
-            GObject.ParamFlags.READABLE
         )
     },
     Signals: {
