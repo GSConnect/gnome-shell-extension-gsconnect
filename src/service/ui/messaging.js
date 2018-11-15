@@ -648,9 +648,7 @@ var Window = GObject.registerClass({
         this.contact_list = new Contacts.ContactChooser({
             store: this.device.contacts
         });
-        let grid = this.conversation_stack.get_child_by_name('conversation-new');
-        grid.attach(this.contact_list.entry, 0, 0, 1, 1);
-        grid.attach(this.contact_list, 0, 1, 1, 1);
+        this.conversation_stack.add_named(this.contact_list, 'conversation-new');
 
         this.contact_list.connect(
             'number-selected',

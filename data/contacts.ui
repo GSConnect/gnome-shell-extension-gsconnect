@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.22.1 -->
+<interface domain="org.gnome.Shell.Extensions.GSConnect">
+  <requires lib="gtk+" version="3.20"/>
+  <template class="GSConnectContactChooser" parent="GtkGrid">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <child>
+      <object class="GtkScrolledWindow" id="contact-window">
+        <property name="visible">True</property>
+        <property name="can_focus">True</property>
+        <property name="hexpand">True</property>
+        <property name="vexpand">True</property>
+        <property name="hscrollbar_policy">never</property>
+        <child>
+          <object class="GtkViewport">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <child>
+              <object class="GtkListBox" id="contact-list">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <signal name="row-activated" handler="_onNumberSelected" swapped="no"/>
+                <style>
+                  <class name="contact-list"/>
+                </style>
+              </object>
+            </child>
+          </object>
+        </child>
+        <style>
+          <class name="contact-window"/>
+        </style>
+      </object>
+      <packing>
+        <property name="left_attach">0</property>
+        <property name="top_attach">1</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkEntry" id="contact-entry">
+        <property name="visible">True</property>
+        <property name="can_focus">True</property>
+        <property name="hexpand">True</property>
+        <property name="shadow_type">none</property>
+        <property name="caps_lock_warning">False</property>
+        <property name="primary_icon_name">x-office-address-book-symbolic.symbolic</property>
+        <property name="primary_icon_activatable">False</property>
+        <property name="secondary_icon_activatable">False</property>
+        <property name="secondary_icon_sensitive">False</property>
+        <property name="primary_icon_tooltip_text" translatable="yes">Type a phone number or name</property>
+        <property name="placeholder_text" translatable="yes">Type a phone number or name</property>
+        <property name="input_purpose">phone</property>
+        <signal name="changed" handler="_onEntryChanged" swapped="no"/>
+        <style>
+          <class name="contact-entry"/>
+        </style>
+      </object>
+      <packing>
+        <property name="left_attach">0</property>
+        <property name="top_attach">0</property>
+      </packing>
+    </child>
+  </template>
+</interface>

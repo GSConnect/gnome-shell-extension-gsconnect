@@ -4,17 +4,21 @@
     <!-- UI -->
     <file compressed="true">application.css</file>
     <file compressed="true" preprocess="xml-stripblanks">conversation.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">contacts.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">device.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">messaging.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">settings.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">debug.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">enter-keyboard-shortcut.svg</file>
+
     <!-- DBus Service -->
     <file compressed="true">org.gnome.Shell.Extensions.GSConnect.desktop</file>
     <file compressed="true">org.gnome.Shell.Extensions.GSConnect.service</file>
     <file compressed="true" preprocess="xml-stripblanks">org.gnome.Shell.Extensions.GSConnect.xml</file>
+
     <!-- Bluetooth SDP -->
     <file compressed="true" preprocess="xml-stripblanks">org.gnome.Shell.Extensions.GSConnect.sdp.xml</file>
+
     <!-- WebExtension Manifests -->
     <file compressed="true">org.gnome.shell.extensions.gsconnect.json-chrome</file>
     <file compressed="true">org.gnome.shell.extensions.gsconnect.json-mozilla</file>

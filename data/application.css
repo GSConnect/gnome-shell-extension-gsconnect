@@ -9,14 +9,14 @@
 }
 
 /**
- *
+ * Contact Chooser
  */
 .contact-entry {
   border: 0px;
   padding: 6px;
 }
 
-.contact-list {
+.contact-window {
   border-top: 1px solid @borders;
 }
 
@@ -24,6 +24,17 @@
   padding: 0px;
 }
 
+.contact-placeholder {
+  background: @insensitive_bg_color;
+}
+
+
+/**
+ * Conversation Widget
+ */
+.conversation-list {
+  background: @insensitive_bg_color;
+}
 
 .conversation-new {
   background: @theme_selected_bg_color;

@@ -122,6 +122,9 @@
                             </child>
                           </object>
                         </child>
+                        <style>
+                          <class name="conversation-list"/>
+                        </style>
                       </object>
                     </child>
                   </object>
@@ -139,19 +142,7 @@
                 <property name="hexpand">True</property>
                 <property name="transition_type">crossfade</property>
                 <child>
-                  <object class="GtkGrid">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="name">conversation-new</property>
-                  </packing>
+                  <placeholder/>
                 </child>
               </object>
               <packing>
