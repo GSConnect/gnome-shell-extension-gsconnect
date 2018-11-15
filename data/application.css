@@ -25,7 +25,7 @@
 }
 
 .contact-placeholder {
-  background: @insensitive_bg_color;
+  background: @content_view_bg_color;
 }
 
 
@@ -33,18 +33,7 @@
  * Conversation Widget
  */
 .conversation-list {
-  background: @insensitive_bg_color;
-}
-
-.conversation-new {
-  background: @theme_selected_bg_color;
-  border-radius: 16px;
-  color: @theme_selected_fg_color;
-}
-
-row:selected .conversation-new {
-  background: @theme_selected_fg_color;
-  color: @theme_selected_bg_color;
+  background: @content_view_bg_color;
 }
 
 /**

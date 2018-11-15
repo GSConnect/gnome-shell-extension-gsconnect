@@ -619,13 +619,14 @@ var Window = GObject.registerClass({
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/messaging.ui',
     Children: [
         'headerbar', 'infobar',
-        'conversation-list', 'conversation-new', 'conversation-stack'
+        'conversation-list', 'conversation-stack'
     ]
 }, class Window extends Gtk.ApplicationWindow {
 
     _init(params) {
         this.connect_template();
         super._init(params);
+        this.headerbar.subtitle = this.device.name;
 
         this.settings = new Gio.Settings({
             settings_schema: gsconnect.gschema.lookup('org.gnome.Shell.Extensions.GSConnect.Messaging', true),
@@ -648,7 +649,7 @@ var Window = GObject.registerClass({
         this.contact_list = new Contacts.ContactChooser({
             store: this.device.contacts
         });
-        this.conversation_stack.add_named(this.contact_list, 'conversation-new');
+        this.conversation_stack.add_named(this.contact_list, 'contact-list');
 
         this.contact_list.connect(
             'number-selected',
@@ -657,12 +658,13 @@ var Window = GObject.registerClass({
 
         // Conversations
         this.conversation_list.set_sort_func(this._sortConversations);
-        this.conversation_list.set_header_func(this._headerConversations);
 
         this._onConversationsChanged = this.sms.connect(
             'notify::conversations',
             this._populateConversations.bind(this)
         );
+
+        this._sync();
         this._populateConversations();
     }
 
@@ -748,6 +750,11 @@ var Window = GObject.registerClass({
         this.sms.connected();
     }
 
+    _onNewConversation() {
+        this._sync();
+        this.conversation_stack.set_visible_child_name('contact-list');
+    }
+
     _onNumberSelected(list, number) {
         number = number.toPhoneNumber();
 
@@ -770,11 +777,7 @@ var Window = GObject.registerClass({
      * Conversations
      */
     _populateConversations() {
-        this.conversation_list.foreach(row => {
-            if (row && row.get_name() !== 'conversation-new') {
-                row.destroy();
-            }
-        });
+        this.conversation_list.foreach(row => row.destroy());
 
         for (let thread of Object.values(this.sms.conversations)) {
             let contact = this.device.contacts.query({
@@ -787,34 +790,20 @@ var Window = GObject.registerClass({
         }
     }
 
-    _headerConversations(row, before) {
-        if (before && before.get_name() === 'conversation-new') {
-            row.set_header(new Gtk.Separator({visible: true}));
-        } else {
-            row.set_header(null);
-        }
-    }
-
     _sortConversations(row1, row2) {
-        if (row1.get_name() === 'conversation-new') {
-            return -1;
-        }
-
         return (row1.message.date > row2.message.date) ? -1 : 1;
     }
 
     _onConversationSelected(box, row) {
-        if (!row) return;
+        // Show the conversation for this number (if applicable)
+        if (row) {
+            this.address = row.message.address;
 
-        // Show the contact chooser
-        if (row.get_name() === 'conversation-new') {
+        // Show the placeholder
+        } else {
             this.headerbar.title = _('Messaging');
             this.headerbar.subtitle = this.device.name;
-            this.conversation_stack.visible_child_name = row.get_name();
-
-        // Show the conversation for this number (if applicable)
-        } else {
-            this.address = row.message.address;
+            this.conversation_stack.set_visible_child_name('placeholder');
         }
     }
 });
