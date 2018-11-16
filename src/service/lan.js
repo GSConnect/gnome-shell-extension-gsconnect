@@ -233,7 +233,7 @@ var ChannelService = GObject.registerClass({
                     packet.body.tcpHost,
                     packet.body.tcpPort
                 );
-                let client = new Gio.SocketClient();
+                let client = new Gio.SocketClient({enable_proxy: false});
 
                 client.connect_async(address, null, (client, res) => {
                     try {
@@ -317,7 +317,7 @@ var Transfer = class Transfer extends Core.Transfer {
         try {
             this._connection = await new Promise((resolve, reject) => {
                 // Connect
-                let client = new Gio.SocketClient();
+                let client = new Gio.SocketClient({enable_proxy: false});
 
                 // Use the address from GSettings with @port
                 let address = Gio.InetSocketAddress.new_from_string(
