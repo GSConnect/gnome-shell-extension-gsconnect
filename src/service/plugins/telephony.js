@@ -17,7 +17,6 @@ var Metadata = {
         'kdeconnect.telephony.request_mute'
     ],
     actions: {
-        // Call Actions
         muteCall: {
             label: _('Mute Call'),
             icon_name: 'audio-volume-muted-symbolic',
@@ -150,7 +149,16 @@ var Plugin = GObject.registerClass({
         let buttons = [];
         let icon = new Gio.ThemedIcon({name: 'call-start-symbolic'});
         let priority = Gio.NotificationPriority.NORMAL;
-        let sender = packet.body.contactName || packet.body.phoneNumber;
+
+        // Ensure we have a sender
+        // TRANSLATORS: No name or phone number
+        let sender = _('Unknown Contact');
+
+        if (packet.body.contactName) {
+            sender = packet.body.contactName;
+        } else if (packet.body.phoneNumber) {
+            sender = packet.body.phoneNumber;
+        }
 
         // If there's a photo, use it as the notification icon
         if (packet.body.phoneThumbnail) {
