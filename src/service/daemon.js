@@ -772,7 +772,9 @@ const Service = GObject.registerClass({
     }
 
     vfunc_dbus_register(connection, object_path) {
-        if (!super.vfunc_dbus_register(connection, object_path)) {
+        try {
+            super.vfunc_dbus_register(connection, object_path);
+        } catch (e) {
             return false;
         }
 
