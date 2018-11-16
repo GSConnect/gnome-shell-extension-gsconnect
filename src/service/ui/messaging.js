@@ -10,6 +10,16 @@ const Contacts = imports.service.ui.contacts;
 
 
 /**
+ * SMS Message event type. Currently all events are TEXT_MESSAGE.
+ *
+ * TEXT_MESSAGE: Has a "body" field which contains pure, human-readable text
+ */
+var MessageEvent = {
+    TEXT_MESSAGE: 0x1
+};
+
+
+/**
  * SMS Message status. READ/UNREAD match the 'read' field from the Android App
  * message packet.
  *
