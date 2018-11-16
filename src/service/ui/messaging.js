@@ -284,10 +284,20 @@ const ConversationWidget = GObject.registerClass({
             'The target phone number or other address',
             GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
             ''
+        ),
+        'has-pending': GObject.ParamSpec.boolean(
+            'has-pending',
+            'Has Pending',
+            'Whether there are sent messages pending confirmation',
+            GObject.ParamFlags.READABLE,
+            false
         )
     },
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/conversation.ui',
-    Children: ['message-entry', 'message-list', 'message-window']
+    Children: [
+        'message-entry', 'message-list', 'message-window',
+        'pending', 'pending-box'
+    ]
 }, class ConversationWidget extends Gtk.Grid {
 
     _init(params) {
@@ -301,9 +311,20 @@ const ConversationWidget = GObject.registerClass({
             GObject.BindingFlags.DEFAULT
         );
 
+        // Pending messages
+        this.pending.date = 0;
+        this.bind_property(
+            'has-pending',
+            this.pending,
+            'visible',
+            GObject.BindingFlags.DEFAULT
+        );
+
         this._notifications = [];
 
+        // Message List
         this.message_list.set_header_func(this._headerMessages);
+        this.message_list.set_sort_func(this._sortMessages);
         this._populateMessages();
     }
 
@@ -351,6 +372,10 @@ const ConversationWidget = GObject.registerClass({
         this._contact_id = (contact.id) ? contact.id : null;
     }
 
+    get has_pending() {
+        return (this.pending_box.get_children().length);
+    }
+
     get message_id() {
         if (!this._message_id) {
             this._message_id = 0;
@@ -387,7 +412,11 @@ const ConversationWidget = GObject.registerClass({
      * Messages
      */
     _populateMessages() {
-        this.message_list.foreach(row => row.destroy());
+        this.message_list.foreach(row => {
+            if (row.get_name() !== 'pending') {
+                row.destroy();
+            }
+        });
 
         this.__first = null;
         this.__last = null;
@@ -433,6 +462,28 @@ const ConversationWidget = GObject.registerClass({
         }
     }
 
+    _sortMessages(row1, row2) {
+        if (row1.date > row2.date || row1.get_name() === 'pending') {
+            return 1;
+        }
+
+        return -1;
+    }
+
+    // message-entry::focus-in-event
+    // FIXME: this is not working well
+    _onMessageAcknowledged() {
+        if (this.message_entry.has_focus) {
+            let notification = this.device.lookup_plugin('notification');
+
+            if (notification) {
+                while (this._notifications.length > 0) {
+                    notification.closeNotification(this._notifications.pop());
+                }
+            }
+        }
+    }
+
     // message-list::size-allocate
     _onMessageLogged(listbox, allocation) {
         // Skip if there's no thread defined
@@ -456,6 +507,8 @@ const ConversationWidget = GObject.registerClass({
         } else {
             vadj.set_value(vadj.get_upper() - vadj.get_page_size());
         }
+
+        this._onMessageAcknowledged();
     }
 
     // message-window::edge-reached
@@ -551,9 +604,15 @@ const ConversationWidget = GObject.registerClass({
             }
 
             // ...and append it
-            this.__last.messages.pack_start(widget, false, false, 0);
+            this.__last.messages.add(widget);
             this.__last.date = message.date;
             this.message_id = message._id;
+
+            // Remove the first pending message
+            if (this.has_pending && message.type === MessageType.OUT) {
+                this.pending_box.get_children()[0].destroy();
+                this.notify('has-pending');
+            }
         }
     }
 
@@ -565,27 +624,27 @@ const ConversationWidget = GObject.registerClass({
         entry.secondary_icon_sensitive = (entry.text.length);
     }
 
-    // GtkWidget::focus-in-event
-    // FIXME: this._notifications probably not working...
-    _onEntryFocusInEvent(entry) {
-        let notification = this.device.lookup_plugin('notification');
-
-        if (notification) {
-            while (this._notifications.length > 0) {
-                notification.closeNotification(this._notifications.pop());
-            }
-        }
-    }
-
     /**
      * Send the contents of the message entry to the address
      */
     sendMessage(entry, signal_id, event) {
+        // Don't send empty texts
+        if (!this.message_entry.text) return;
+
         // Send the message
         this.device.activate_action(
             'sendSms',
             new GLib.Variant('(ss)', [this.address, entry.text])
         );
+
+        // Log the message as pending
+        let message = new ConversationMessage({
+            body: entry.text,
+            date: Date.now(),
+            type: MessageType.OUT
+        });
+        this.pending_box.add(message);
+        this.notify('has-pending');
 
         // Clear the entry
         this.message_entry.text = '';
@@ -695,8 +754,6 @@ var Window = GObject.registerClass({
             return;
         }
 
-        this._notifications = [];
-
         // Ensure we have a contact stored and hold a reference to it
         let contact = this.device.contacts.query({
             number: value,
@@ -734,9 +791,9 @@ var Window = GObject.registerClass({
         this.conversation_stack.set_visible_child_name(number);
 
         // There was a pending message waiting for a contact to be chosen
-        if (this._pendingMessage) {
-            conversation.setMessage(this._pendingMessage);
-            this._pendingMesssage = undefined;
+        if (this._pendingShare) {
+            conversation.setMessage(this._pendingShare);
+            this._pendingShare = undefined;
         }
     }
 
@@ -807,6 +864,7 @@ var Window = GObject.registerClass({
         // Show the conversation for this number (if applicable)
         if (row) {
             this.address = row.message.address;
+            this.conversation_stack.visible_child.message_entry.has_focus = true;
 
         // Show the placeholder
         } else {
@@ -894,11 +952,13 @@ var ConversationChooser = GObject.registerClass({
         return this._sms;
     }
 
-    _new(row) {
-        this.sms.window.present();
-        this.sms.window.address = null;
-        this.sms.window._pendingMessage = this.message;
+    _new(button) {
+        let message = this.message;
         this.destroy();
+
+        this.sms.sms();
+        this.sms.window.address = null;
+        this.sms.window._pendingShare = message;
     }
 
     _select(box, row) {

@@ -95,3 +95,10 @@
   color: @theme_fg_color;
 }
 
+/**
+ * Special case for pending messages
+ */
+.message-pending .message-out {
+  opacity: 0.5;
+}
+

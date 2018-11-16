@@ -41,9 +41,10 @@
             <property name="can_focus">True</property>
             <property name="hexpand">True</property>
             <property name="vexpand">True</property>
+            <property name="position">200</property>
+            <property name="position_set">True</property>
             <child>
               <object class="GtkScrolledWindow">
-                <property name="width_request">200</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="hscrollbar_policy">never</property>
@@ -68,7 +69,7 @@
               </object>
               <packing>
                 <property name="resize">False</property>
-                <property name="shrink">True</property>
+                <property name="shrink">False</property>
               </packing>
             </child>
             <child>
@@ -124,7 +125,7 @@
               </object>
               <packing>
                 <property name="resize">True</property>
-                <property name="shrink">True</property>
+                <property name="shrink">False</property>
               </packing>
             </child>
           </object>

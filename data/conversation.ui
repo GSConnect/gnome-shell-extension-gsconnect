@@ -24,6 +24,33 @@
                 <property name="selection_mode">none</property>
                 <property name="activate_on_single_click">False</property>
                 <signal name="size-allocate" handler="_onMessageLogged" swapped="no"/>
+                <child>
+                  <object class="GtkListBoxRow" id="pending">
+                    <property name="can_focus">False</property>
+                    <property name="hexpand">True</property>
+                    <property name="activatable">False</property>
+                    <property name="selectable">False</property>
+                    <child>
+                      <object class="GtkBox" id="pending-box">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="halign">end</property>
+                        <property name="margin_left">50</property>
+                        <property name="margin_right">6</property>
+                        <property name="margin_top">6</property>
+                        <property name="margin_bottom">6</property>
+                        <property name="orientation">vertical</property>
+                        <property name="spacing">3</property>
+                        <child>
+                          <placeholder/>
+                        </child>
+                      </object>
+                    </child>
+                    <style>
+                      <class name="message-pending"/>
+                    </style>
+                  </object>
+                </child>
               </object>
             </child>
           </object>
@@ -52,8 +79,8 @@
         <property name="placeholder_text" translatable="yes">Type a message</property>
         <signal name="activate" handler="sendMessage" swapped="no"/>
         <signal name="changed" handler="_onEntryChanged" swapped="no"/>
-        <signal name="focus-in-event" handler="_onEntryFocusInEvent" swapped="no"/>
         <signal name="icon-release" handler="sendMessage" swapped="no"/>
+        <signal name="notify::has-focus" handler="_onMessageAcknowledged" swapped="no"/>
       </object>
       <packing>
         <property name="left_attach">0</property>

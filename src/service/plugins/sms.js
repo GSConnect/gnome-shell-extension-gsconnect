@@ -248,9 +248,14 @@ var Plugin = GObject.registerClass({
         let conversation = this._hasConversation(message.address);
 
         if (conversation) {
-            // Track the notification so the window can close it when focused
-            // FIXME: ???
-            conversation._notifications.push(`${contact.name}: ${message.body}`);
+            // Track expected ticker of outgoing messages so they can be closed
+            // FIXME: this is not working well
+            if (message.type === MessageType.OUT) {
+                conversation._notifications.push(
+                    `${contact.name}: ${message.body}`
+                );
+            }
+
             conversation.logMessage(message);
         }
     }
