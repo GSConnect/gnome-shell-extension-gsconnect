@@ -198,15 +198,14 @@ const ConversationSummary = GObject.registerClass({
     GTypeName: 'GSConnectConversationSummary'
 }, class ConversationSummary extends Gtk.ListBoxRow {
     _init(contact, message) {
-        super._init({visible: true});
+        super._init();
 
         this.contact = contact;
         this.message = message;
 
         let grid = new Gtk.Grid({
             margin: 6,
-            column_spacing: 6,
-            visible: true
+            column_spacing: 6
         });
         this.add(grid);
 
@@ -227,8 +226,7 @@ const ConversationSummary = GObject.registerClass({
             hexpand: true,
             ellipsize: Pango.EllipsizeMode.END,
             use_markup: true,
-            xalign: 0,
-            visible: true
+            xalign: 0
         });
         grid.attach(name, 1, 0, 1, 1);
 
@@ -237,8 +235,7 @@ const ConversationSummary = GObject.registerClass({
             halign: Gtk.Align.END,
             ellipsize: Pango.EllipsizeMode.END,
             use_markup: true,
-            xalign: 0,
-            visible: true
+            xalign: 0
         });
         //time.connect('map', (widget) => {
         //    widget.label = '<small>' + getShortTime(this.message.date) + '</small>';
@@ -252,10 +249,11 @@ const ConversationSummary = GObject.registerClass({
             halign: Gtk.Align.START,
             ellipsize: Pango.EllipsizeMode.END,
             use_markup: true,
-            xalign: 0,
-            visible: true
+            xalign: 0
         });
         grid.attach(body, 1, 1, 2, 1);
+
+        this.show_all();
     }
 });
 
@@ -682,18 +680,19 @@ var Window = GObject.registerClass({
 
     set address(value) {
         if (!value) {
-            this.conversation_list.select_row(this.conversation_new);
+            this.conversation_list.select_row(null);
+            this.conversation_stack.set_visible_child_name('placeholder');
             return;
         }
 
         this._notifications = [];
 
-        // Ensure we have a contact stored
+        // Ensure we have a contact stored and hold a reference to it
         let contact = this.device.contacts.query({
             number: value,
             create: true
         });
-        this._contact_id = contact.id;
+        this._contact = contact;
 
         this.headerbar.title = contact.name;
         this.headerbar.subtitle = value;
@@ -720,15 +719,15 @@ var Window = GObject.registerClass({
             });
 
             this.conversation_stack.add_named(conversation, number);
-
-            // There was a pending message waiting for a contact to be chosen
-            if (this._pendingMessage) {
-                conversation.setMessage(this._pendingMessage);
-                this._pendingMesssage = undefined;
-            }
         }
 
         this.conversation_stack.set_visible_child_name(number);
+
+        // There was a pending message waiting for a contact to be chosen
+        if (this._pendingMessage) {
+            conversation.setMessage(this._pendingMessage);
+            this._pendingMesssage = undefined;
+        }
     }
 
     get sms() {
@@ -803,7 +802,6 @@ var Window = GObject.registerClass({
         } else {
             this.headerbar.title = _('Messaging');
             this.headerbar.subtitle = this.device.name;
-            this.conversation_stack.set_visible_child_name('placeholder');
         }
     }
 });
