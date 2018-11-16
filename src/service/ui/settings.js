@@ -257,7 +257,9 @@ var Window = GObject.registerClass({
             Gio.SettingsBindFlags.DEFAULT
         );
 
-        this.service_menu.set_menu_model(this.application.app_menu);
+        this.service_menu.set_menu_model(
+            this.application.get_menu_by_id('service-menu')
+        );
 
         // Sidebar
         this.switcher.set_header_func(this._headerFunc);
@@ -491,7 +493,7 @@ var Device = GObject.registerClass({
         this._setupActions();
 
         // Device Menu
-        this.menu = this._menus.get_object('device-settings');
+        this.menu = this._menus.get_object('device-menu');
         this.menu.prepend_section(null, this.device.menu);
 
         // Sidebar Row
