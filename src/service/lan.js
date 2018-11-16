@@ -279,7 +279,9 @@ var ChannelService = GObject.registerClass({
 
             this._udp.send_to(address, `${this.service.identity}`, null);
         } catch (e) {
-            logError(e);
+            // GNetworkMonitor overreacts when the connectivity state changes
+            // and the documentation is a whole page of wishy-washy excuses, so
+            // we just silence any broadcast errors
         }
     }
 
