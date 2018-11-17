@@ -147,13 +147,6 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
                 );
             });
 
-            // Setup currently managed devices
-            for (let object of this.manager.get_objects()) {
-                for (let iface of object.get_interfaces()) {
-                    this._onInterfaceAdded(this.manager, object, iface);
-                }
-            }
-
             // Watch for new and removed
             this._nameOwnerId = this.manager.connect(
                 'notify::name-owner',
@@ -175,7 +168,24 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
                 this._onInterfacePropertiesChanged.bind(this)
             );
 
-            await this._activate();
+            // If the service is inactive, wait 5s and recheck before activating
+            if (this.manager.name_owner === null) {
+                GLib.timeout_add_seconds(0, 5, () => {
+                    if (this.manager.name_owner === null) {
+                        this._activate().catch(debug);
+                    }
+
+                    return false;
+                });
+
+            // Otherwise we need to setup the currently managed devices
+            } else {
+                for (let object of this.manager.get_objects()) {
+                    for (let iface of object.get_interfaces()) {
+                        this._onInterfaceAdded(this.manager, object, iface);
+                    }
+                }
+            }
         } catch (e) {
             debug(e);
             Gio.DBusError.strip_remote_error(e);
