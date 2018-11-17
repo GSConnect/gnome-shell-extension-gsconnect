@@ -30,37 +30,34 @@
   <menu id="device-menu">
     <section>
       <item>
-        <!-- TRANSLATORS: Request a Bluetooth connection from the device -->
-        <attribute name="label" translatable="yes">Connect Bluetooth</attribute>
+        <!-- TRANSLATORS: Change the connection type to Bluetooth -->
+        <attribute name="label" translatable="yes">Switch to Bluetooth</attribute>
         <attribute name="action">settings.connect-bluetooth</attribute>
         <attribute name="verb-icon">bluetooth-symbolic</attribute>
         <attribute name='hidden-when'>action-disabled</attribute>
       </item>
       <item>
-        <!-- TRANSLATORS: Request a TCP/IP connection from the device -->
-        <attribute name="label" translatable="yes">Connect LAN</attribute>
+        <!-- TRANSLATORS: Change the connection type to TCP/IP -->
+        <attribute name="label" translatable="yes">Switch to LAN</attribute>
         <attribute name="action">settings.connect-tcp</attribute>
         <attribute name="verb-icon">network-wireless-symbolic</attribute>
         <attribute name='hidden-when'>action-disabled</attribute>
       </item>
       <item>
-        <!-- TRANSLATORS: View the TLS Certificate information -->
+        <!-- TRANSLATORS: View the TLS Certificate fingerprint -->
         <attribute name="label" translatable="yes">Encryption Info</attribute>
         <attribute name="action">settings.encryption-info</attribute>
-        <attribute name='hidden-when'>action-disabled</attribute>
       </item>
       <item>
         <!-- TRANSLATORS: Send a pair request to the device -->
         <attribute name="label" translatable="yes">Pair</attribute>
         <attribute name="action">settings.pair</attribute>
-        <attribute name="verb-icon">channel-insecure-symbolic</attribute>
         <attribute name='hidden-when'>action-disabled</attribute>
       </item>
       <item>
         <!-- TRANSLATORS: Unpair the device and notify it -->
         <attribute name="label" translatable="yes">Unpair</attribute>
         <attribute name="action">settings.unpair</attribute>
-        <attribute name="verb-icon">channel-secure-symbolic</attribute>
         <attribute name='hidden-when'>action-disabled</attribute>
       </item>
     </section>
@@ -137,5 +134,4 @@
     </section>
   </menu>
 </interface>
-
 

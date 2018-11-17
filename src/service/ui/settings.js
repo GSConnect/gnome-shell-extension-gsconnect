@@ -576,17 +576,19 @@ var Device = GObject.registerClass({
     }
 
     _onConnected(device) {
-        this._onTcpHostChanged(device.settings);
-        this._onBluetoothHostChanged(device.settings);
+        this._onTcpHostChanged();
+        this._onBluetoothHostChanged();
     }
 
     _onBluetoothHostChanged() {
         let action = this.actions.lookup_action('connect-bluetooth');
         let hasBluetooth = (this.settings.get_string('bluetooth-host').length);
-        action.enabled = (hasBluetooth && !this.device.connected);
+        let isLan = (this.settings.get_string('last-connection') === 'tcp');
+
+        action.enabled = (isLan && hasBluetooth);
     }
 
-    _onActivateBluetooth(button) {
+    _onActivateBluetooth() {
         this.settings.set_string('last-connection', 'bluetooth');
         this.device.activate();
     }
@@ -594,10 +596,12 @@ var Device = GObject.registerClass({
     _onTcpHostChanged() {
         let action = this.actions.lookup_action('connect-tcp');
         let hasLan = (this.settings.get_string('tcp-host').length);
-        action.enabled = (hasLan && !this.device.connected);
+        let isBluetooth = (this.settings.get_string('last-connection') === 'bluetooth');
+
+        action.enabled = (isBluetooth && hasLan);
     }
 
-    _onActivateLan(button) {
+    _onActivateLan() {
         this.settings.set_string('last-connection', 'tcp');
         this.device.activate();
     }
