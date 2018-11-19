@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-12 21:08-0800\n"
+"POT-Creation-Date: 2018-11-19 11:14-0800\n"
 "PO-Revision-Date: 2018-11-05 21:44+0100\n"
 "Last-Translator: Báthory Péter <bathory86p@gmail.com>\n"
 "Language-Team: \n"
@@ -18,17 +18,13 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 2.1.1\n"
 
-#: data/conversation-window.ui:14 src/service/ui/messaging.js:482
-msgid "Conversations"
-msgstr "Beszélgetés"
-
-#: data/conversation-window.ui:131 data/conversation-window.ui:135
+#: data/conversation.ui:71 data/conversation.ui:79
 msgid "Type a message"
 msgstr "Írja be az üzenetet"
 
-#: data/conversation-window.ui:210
-msgid "Device is disconnected"
-msgstr "Az eszköz nincs csatlakoztatva"
+#: data/contacts.ui:51 data/contacts.ui:52
+msgid "Type a phone number or name"
+msgstr "Adjon meg egy számot vagy nevet"
 
 #: data/device.ui:68 src/service/plugins/battery.js:12
 msgid "Battery"
@@ -148,75 +144,89 @@ msgstr "Haladó"
 msgid "Keyboard Shortcuts"
 msgstr "Gyorsbillentyűk"
 
-#: data/menus.ui:5 src/service/ui/service.js:115
+#. TRANSLATORS: Open a dialog to connect to an IP or Bluez device
+#: data/menus.ui:7 src/service/ui/service.js:115
 msgid "Connect to…"
 msgstr "Kapcsolódás egy eszközhöz…"
 
-#: data/menus.ui:11
-msgid "Sync Contacts"
-msgstr "Névjegyek szinkronizálása"
-
-#: data/menus.ui:16
-msgid "Sync Messages"
-msgstr "Üzenetek szinkronizálása"
-
-#: data/menus.ui:23 data/settings.ui:881
+#: data/menus.ui:13 data/settings.ui:881
 msgid "Help"
 msgstr "Súgó"
 
-#: data/menus.ui:28
+#. TRANSLATORS: Open the developer's dialog
+#: data/menus.ui:19
 msgid "Debugger"
 msgstr "Hibakereső"
 
-#: data/menus.ui:32
+#: data/menus.ui:23
 msgid "About"
 msgstr "Névjegy"
 
-#: data/menus.ui:41
-msgid "Connect Bluetooth"
+#. TRANSLATORS: Change the connection type to Bluetooth
+#: data/menus.ui:34
+#, fuzzy
+msgid "Switch to Bluetooth"
 msgstr "Bluetooth csatlakozás"
 
-#: data/menus.ui:47
-msgid "Connect LAN"
-msgstr "LAN kapcsolat"
+#. TRANSLATORS: Change the connection type to TCP/IP
+#: data/menus.ui:41
+msgid "Switch to LAN"
+msgstr ""
 
-#: data/menus.ui:53 src/service/ui/settings.js:606
+#. TRANSLATORS: View the TLS Certificate fingerprint
+#: data/menus.ui:48 src/service/ui/settings.js:612
 msgid "Encryption Info"
 msgstr ""
 
-#: data/menus.ui:58 src/service/device.js:425
+#. TRANSLATORS: Send a pair request to the device
+#: data/menus.ui:53 src/service/device.js:425
 msgid "Pair"
 msgstr "Párosítás"
 
-#: data/menus.ui:64 src/service/device.js:433
+#. TRANSLATORS: Unpair the device and notify it
+#: data/menus.ui:59 src/service/device.js:433
 msgid "Unpair"
 msgstr "Párosítás megszűntetése"
 
 #. TRANSLATORS: Send clipboard content to device
-#: data/menus.ui:77
+#: data/menus.ui:71
 msgid "To Device"
 msgstr "Eszközre"
 
 #. TRANSLATORS: Receive clipboard content from the device
-#: data/menus.ui:83
+#: data/menus.ui:77
 msgid "From Device"
 msgstr "Eszközről"
 
 #. TRANSLATORS: Don't change the system volume
-#: data/menus.ui:95 data/menus.ui:121
+#: data/menus.ui:89 data/menus.ui:115
 msgid "Nothing"
 msgstr "Semmi"
 
 #. TRANSLATORS: Lower the system volume
-#: data/menus.ui:102 data/menus.ui:128
+#: data/menus.ui:96 data/menus.ui:122
 msgid "Lower"
 msgstr "Halkítás"
 
 #. TRANSLATORS: Mute the system volume
 #. TRANSLATORS: Silence the phone ringer
-#: data/menus.ui:109 data/menus.ui:135 src/service/plugins/telephony.js:175
+#: data/menus.ui:103 data/menus.ui:129 src/service/plugins/telephony.js:176
 msgid "Mute"
 msgstr "Némítás"
+
+#: data/messaging.ui:12 src/service/plugins/sms.js:25
+#: src/service/ui/messaging.js:871
+msgid "Messaging"
+msgstr "Üzenetküldés"
+
+#: data/messaging.ui:110
+#, fuzzy
+msgid "Select a conversation"
+msgstr "Beszélgetés kezdéséhez adjon hozzá címzetteket"
+
+#: data/messaging.ui:188
+msgid "Device is disconnected"
+msgstr "Az eszköz nincs csatlakoztatva"
 
 #: data/settings.ui:333
 msgid "Appearance"
@@ -274,9 +284,7 @@ msgstr "Böngésző bővítmények"
 msgid "KDE Connect"
 msgstr "KDE Connect"
 
-#. TRANSLATORS: A phone number type
-#: data/settings.ui:956 data/settings.ui:1058 src/service/ui/contacts.js:57
-#: src/service/ui/contacts.js:78
+#: data/settings.ui:956 data/settings.ui:1058
 msgid "Other"
 msgstr "Egyéb"
 
@@ -290,7 +298,7 @@ msgid "Refresh"
 msgstr "Frissítés"
 
 #. Service Menu
-#: src/extension.js:79 src/extension.js:249
+#: src/extension.js:79 src/extension.js:259
 msgid "Mobile Devices"
 msgstr "Mobil eszközök"
 
@@ -299,13 +307,13 @@ msgid "Mobile Settings"
 msgstr "Mobil beállítások"
 
 #. TRANSLATORS: Extension name
-#: src/extension.js:186 src/extension.js:301 src/service/daemon.js:95
+#: src/extension.js:196 src/extension.js:311 src/service/daemon.js:95
 #: src/service/daemon.js:413 webextension/gettext.js:27
 msgid "GSConnect"
 msgstr "GSConnect"
 
 #. TRANSLATORS: %d is the number of devices connected
-#: src/extension.js:247
+#: src/extension.js:257
 #, javascript-format
 msgid "%d Connected"
 msgid_plural "%d Connected"
@@ -387,12 +395,12 @@ msgid "GSConnect: %s"
 msgstr "GSConnect: %s"
 
 #. TRANSLATORS: Share URL by SMS
-#: src/service/daemon.js:806 src/service/plugins/sms.js:49
+#: src/service/daemon.js:808 src/service/plugins/sms.js:49
 #: webextension/gettext.js:39
 msgid "Send SMS"
 msgstr "SMS küldése"
 
-#: src/service/daemon.js:810
+#: src/service/daemon.js:812
 msgid "Dial Number"
 msgstr "Telefonszám hívása"
 
@@ -504,11 +512,11 @@ msgstr "Megtalálva"
 msgid "Mousepad"
 msgstr "Egérpad"
 
-#: src/service/plugins/mousepad.js:28 src/service/plugins/mousepad.js:549
+#: src/service/plugins/mousepad.js:28 src/service/plugins/mousepad.js:578
 msgid "Keyboard"
 msgstr "Billentyűzet"
 
-#: src/service/plugins/mousepad.js:566
+#: src/service/plugins/mousepad.js:595
 msgid "Keyboard not ready"
 msgstr "A billentyűzet nem áll készen"
 
@@ -584,8 +592,8 @@ msgstr "Fájl megosztása"
 msgid "Share Text"
 msgstr "Szöveg megosztása"
 
-#: src/service/plugins/share.js:42 src/service/ui/messaging.js:853
-#: src/service/ui/messaging.js:861
+#: src/service/plugins/share.js:42 src/service/ui/messaging.js:903
+#: src/service/ui/messaging.js:911
 msgid "Share Link"
 msgstr "Hivatkozás megosztása"
 
@@ -603,7 +611,7 @@ msgstr "„%s” fogadása innen: %s"
 #: src/service/plugins/share.js:138 src/service/plugins/share.js:289
 #: src/service/plugins/share.js:407 src/service/ui/keybindings.js:44
 #: src/service/ui/service.js:121 src/service/ui/service.js:300
-#: src/service/ui/settings.js:867 src/shell/donotdisturb.js:215
+#: src/service/ui/settings.js:873 src/shell/donotdisturb.js:215
 msgid "Cancel"
 msgstr "Mégse"
 
@@ -678,10 +686,6 @@ msgstr "Küldés"
 msgid "SMS"
 msgstr "SMS"
 
-#: src/service/plugins/sms.js:25
-msgid "Messaging"
-msgstr "Üzenetküldés"
-
 #: src/service/plugins/sms.js:33
 msgid "New SMS (URI)"
 msgstr "Új SMS (URI)"
@@ -698,55 +702,63 @@ msgstr "SMS megosztása"
 msgid "System Volume"
 msgstr "Rendszerhangerő"
 
-#: src/service/plugins/telephony.js:22
+#: src/service/plugins/telephony.js:21
 msgid "Mute Call"
 msgstr "Hívás némítása"
 
+#. Ensure we have a sender
+#. TRANSLATORS: No name or phone number
+#: src/service/plugins/telephony.js:155 src/service/ui/contacts.js:96
+#: src/service/ui/contacts.js:350
+msgid "Unknown Contact"
+msgstr "Ismeretlen névjegy"
+
 #. TRANSLATORS: The phone is ringing
-#: src/service/plugins/telephony.js:171
+#: src/service/plugins/telephony.js:172
 msgid "Incoming call"
 msgstr "Bejövő hívás"
 
 #. TRANSLATORS: A phone call is active
-#: src/service/plugins/telephony.js:186
+#: src/service/plugins/telephony.js:187
 msgid "Ongoing call"
 msgstr "Kimenő hívás"
 
-#. TRANSLATORS: A phone number type
-#: src/service/ui/contacts.js:62
-msgid "Fax"
-msgstr "Fax"
+#. TRANSLATORS: All other phone number types
+#: src/service/ui/contacts.js:58 src/service/ui/contacts.js:79
+#, fuzzy, javascript-format
+msgid "%s・Other"
+msgstr "Egyéb"
 
-#. TRANSLATORS: A phone number type
-#: src/service/ui/contacts.js:66
-msgid "Work"
+#. TRANSLATORS: A fax number
+#: src/service/ui/contacts.js:63
+#, javascript-format
+msgid "%s・Fax"
+msgstr ""
+
+#. TRANSLATORS: A work phone number
+#: src/service/ui/contacts.js:67
+#, fuzzy, javascript-format
+msgid "%s・Work"
 msgstr "Munkahelyi"
 
-#. TRANSLATORS: A phone number type
-#: src/service/ui/contacts.js:70
-msgid "Mobile"
+#. TRANSLATORS: A mobile or cellular phone number
+#: src/service/ui/contacts.js:71
+#, fuzzy, javascript-format
+msgid "%s・Mobile"
 msgstr "Mobil"
 
-#. TRANSLATORS: A phone number type
-#: src/service/ui/contacts.js:74
-msgid "Home"
+#. TRANSLATORS: A home phone number
+#: src/service/ui/contacts.js:75
+#, fuzzy, javascript-format
+msgid "%s・Home"
 msgstr "Otthoni"
 
-#: src/service/ui/contacts.js:95 src/service/ui/contacts.js:387
-msgid "Unknown Contact"
-msgstr "Ismeretlen névjegy"
-
-#: src/service/ui/contacts.js:194 src/service/ui/contacts.js:195
-msgid "Type a phone number or name"
-msgstr "Adjon meg egy számot vagy nevet"
-
-#: src/service/ui/contacts.js:239
-msgid "Add people to start a conversation"
-msgstr "Beszélgetés kezdéséhez adjon hozzá címzetteket"
+#: src/service/ui/contacts.js:203
+msgid "Select a contact or number"
+msgstr ""
 
 #. TRANSLATORS: A phone number (eg. "Send to 555-5555")
-#. Update UI
-#: src/service/ui/contacts.js:281 src/service/ui/contacts.js:289
+#: src/service/ui/contacts.js:239 src/service/ui/contacts.js:253
 #, javascript-format
 msgid "Send to %s"
 msgstr "Küldés neki: %s"
@@ -794,37 +806,37 @@ msgstr "Eszköz kiválasztása"
 msgid "Select"
 msgstr "Kiválasztás"
 
-#: src/service/ui/settings.js:296
+#: src/service/ui/settings.js:298
 msgid "Panel"
 msgstr "Panel"
 
-#: src/service/ui/settings.js:296
+#: src/service/ui/settings.js:298
 msgid "User Menu"
 msgstr "Felhasználói menü"
 
-#: src/service/ui/settings.js:868
+#: src/service/ui/settings.js:874
 msgid "Open"
 msgstr "Megnyitás"
 
-#: src/service/ui/settings.js:925 src/service/ui/settings.js:938
+#: src/service/ui/settings.js:931 src/service/ui/settings.js:944
 msgid "On"
 msgstr "Be"
 
-#: src/service/ui/settings.js:925 src/service/ui/settings.js:938
+#: src/service/ui/settings.js:931 src/service/ui/settings.js:944
 msgid "Off"
 msgstr "Ki"
 
-#: src/service/ui/settings.js:1059 src/service/ui/settings.js:1125
+#: src/service/ui/settings.js:1065 src/service/ui/settings.js:1131
 msgid "Disabled"
 msgstr "Letiltva"
 
 #. TRANSLATORS: Less than a minute ago
-#: src/service/ui/messaging.js:83 src/service/ui/messaging.js:116
+#: src/service/ui/messaging.js:93 src/service/ui/messaging.js:126
 msgid "Just now"
 msgstr "Épp most"
 
 #. TRANSLATORS: Time duration in minutes (eg. 15 minutes)
-#: src/service/ui/messaging.js:88 src/service/ui/messaging.js:120
+#: src/service/ui/messaging.js:98 src/service/ui/messaging.js:130
 #: src/shell/donotdisturb.js:266
 #, javascript-format
 msgid "%d minute"
@@ -833,12 +845,12 @@ msgstr[0] "%d perc"
 msgstr[1] "%d perc"
 
 #. TRANSLATORS: Yesterday, but less than 24 hours (eg. Yesterday · 11:29 PM)
-#: src/service/ui/messaging.js:93
+#: src/service/ui/messaging.js:103
 #, javascript-format
 msgid "Yesterday・%s"
 msgstr "Tegnap・%s"
 
-#: src/service/ui/messaging.js:870
+#: src/service/ui/messaging.js:920
 msgid "New Message"
 msgstr "Új üzenet"
 
@@ -914,6 +926,21 @@ msgstr "A szolgáltatás nem érhető el"
 #: webextension/gettext.js:37
 msgid "Open in Browser"
 msgstr "Megnyitás böngészőben"
+
+#~ msgid "Conversations"
+#~ msgstr "Beszélgetés"
+
+#~ msgid "Sync Contacts"
+#~ msgstr "Névjegyek szinkronizálása"
+
+#~ msgid "Sync Messages"
+#~ msgstr "Üzenetek szinkronizálása"
+
+#~ msgid "Connect LAN"
+#~ msgstr "LAN kapcsolat"
+
+#~ msgid "Fax"
+#~ msgstr "Fax"
 
 #~ msgid "Remote Filesystem Error"
 #~ msgstr "Távoli fájlrendszer hiba"
