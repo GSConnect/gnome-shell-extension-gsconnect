@@ -402,15 +402,8 @@ var Plugin = GObject.registerClass({
      * @param {string} hint - Could be either a contact name or phone number
      */
     replySms(hint) {
-        debug(hint);
-
-        let contact = this.device.contacts.query({
-            name: hint,
-            number: hint
-        });
-
         this.window.present();
-        this.window.address = contact.numbers[0].value;
+        this.window.address = hint.toPhoneNumber();
     }
 
     /**
