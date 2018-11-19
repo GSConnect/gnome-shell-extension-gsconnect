@@ -160,13 +160,13 @@ var Plugin = GObject.registerClass({
                 if (!vcard[key]) vcard[key] = [];
 
                 // Decode QUOTABLE-PRINTABLE
-                if (meta.ENCODING === 'QUOTED-PRINTABLE') {
+                if (meta.ENCODING && meta.ENCODING === 'QUOTED-PRINTABLE') {
                     delete meta.ENCODING;
                     value = value.map(v => this.decode_quoted_printable(v));
                 }
 
                 // Decode UTF-8
-                if (meta.CHARSET === 'UTF-8') {
+                if (meta.CHARSET && meta.CHARSET === 'UTF-8') {
                     delete meta.CHARSET;
                     value = value.map(v => this.decode_utf8(v));
                 }

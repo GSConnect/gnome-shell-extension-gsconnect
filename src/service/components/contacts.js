@@ -26,13 +26,6 @@ var Store = GObject.registerClass({
             'Used as the cache directory, relative to gsconnect.cachedir',
             GObject.ParamFlags.READWRITE,
             ''
-        ),
-        'provider-icon': GObject.ParamSpec.string(
-            'provider-icon',
-            'ContactsProvider',
-            'The contact provider icon name',
-            GObject.ParamFlags.READWRITE,
-            ''
         )
     }
 }, class Store extends GObject.Object {
@@ -105,19 +98,6 @@ var Store = GObject.registerClass({
 
         GLib.mkdir_with_parents(this.__cache_dir.get_path(), 448);
         this.__cache_file = this.__cache_dir.get_child('contacts.json');
-    }
-
-    get provider_icon() {
-        if (!this._provider_icon) {
-            this._provider_icon = 'call-start-symbolic';
-        }
-
-        return this._provider_icon;
-    }
-
-    set provider_icon(icon_name) {
-        this._provider_icon = icon_name;
-        this.notify('provider-icon');
     }
 
     /**
@@ -280,9 +260,18 @@ var Store = GObject.registerClass({
         }
     }
 
-    clear() {
+    clear(only_temp = false) {
         try {
-            this.__cache_data = {};
+            if (only_temp) {
+                for (let contact of Object.values(this.__cache_data)) {
+                    if (contact.origin === 'gsconnect') {
+                        delete this.__cache_data[contact.id];
+                    }
+                }
+            } else {
+                this.__cache_data = {};
+            }
+
             this.update();
         } catch (e) {
             logError(e);
@@ -329,9 +318,6 @@ var Store = GObject.registerClass({
                     }
                 });
             });
-
-            this._provider_icon = 'x-office-address-book-symbolic.symbolic';
-            this.notify('provider-icon');
 
             this.update(folks);
         } catch (e) {

@@ -1,6 +1,8 @@
-data/conversation-window.ui
+data/conversation.ui
+data/contacts.ui
 data/device.ui
 data/menus.ui
+data/messaging.ui
 data/settings.ui
 src/extension.js
 src/nautilus-gsconnect.py
