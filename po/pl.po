@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-11-19 11:14-0800\n"
-"PO-Revision-Date: 2018-11-05 00:28+0100\n"
+"PO-Revision-Date: 2018-11-20 18:28+0100\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -166,19 +166,18 @@ msgstr "O programie"
 
 #. TRANSLATORS: Change the connection type to Bluetooth
 #: data/menus.ui:34
-#, fuzzy
 msgid "Switch to Bluetooth"
-msgstr "Połącz sieć Bluetooth"
+msgstr "Przełącz na sieć Bluetooth"
 
 #. TRANSLATORS: Change the connection type to TCP/IP
 #: data/menus.ui:41
 msgid "Switch to LAN"
-msgstr ""
+msgstr "Przełącz na sieć LAN"
 
 #. TRANSLATORS: View the TLS Certificate fingerprint
 #: data/menus.ui:48 src/service/ui/settings.js:612
 msgid "Encryption Info"
-msgstr ""
+msgstr "Informacje o szyfrowaniu"
 
 #. TRANSLATORS: Send a pair request to the device
 #: data/menus.ui:53 src/service/device.js:425
@@ -222,9 +221,8 @@ msgid "Messaging"
 msgstr "Wiadomości"
 
 #: data/messaging.ui:110
-#, fuzzy
 msgid "Select a conversation"
-msgstr "Dodanie osób rozpocznie rozmowę"
+msgstr "Wybierz rozmowę"
 
 #: data/messaging.ui:188
 msgid "Device is disconnected"
@@ -731,37 +729,37 @@ msgstr "Trwające połączenie"
 
 #. TRANSLATORS: All other phone number types
 #: src/service/ui/contacts.js:58 src/service/ui/contacts.js:79
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%s・Other"
-msgstr "Inne"
+msgstr "%s・Inne"
 
 #. TRANSLATORS: A fax number
 #: src/service/ui/contacts.js:63
 #, javascript-format
 msgid "%s・Fax"
-msgstr ""
+msgstr "%s・Faks"
 
 #. TRANSLATORS: A work phone number
 #: src/service/ui/contacts.js:67
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%s・Work"
-msgstr "Praca"
+msgstr "%s・Praca"
 
 #. TRANSLATORS: A mobile or cellular phone number
 #: src/service/ui/contacts.js:71
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%s・Mobile"
-msgstr "Komórkowy"
+msgstr "%s・Komórkowy"
 
 #. TRANSLATORS: A home phone number
 #: src/service/ui/contacts.js:75
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%s・Home"
-msgstr "Domowy"
+msgstr "%s・Domowy"
 
 #: src/service/ui/contacts.js:203
 msgid "Select a contact or number"
-msgstr ""
+msgstr "Wybierz kontakt lub numer"
 
 #. TRANSLATORS: A phone number (eg. "Send to 555-5555")
 #: src/service/ui/contacts.js:239 src/service/ui/contacts.js:253
@@ -933,24 +931,3 @@ msgstr "Usługa jest niedostępna"
 #: webextension/gettext.js:37
 msgid "Open in Browser"
 msgstr "Otwórz w przeglądarce"
-
-#~ msgid "Conversations"
-#~ msgstr "Rozmowy"
-
-#~ msgid "Sync Contacts"
-#~ msgstr "Zsynchronizuj kontakty"
-
-#~ msgid "Sync Messages"
-#~ msgstr "Zsynchronizuj wiadomości"
-
-#~ msgid "Connect LAN"
-#~ msgstr "Połącz sieć LAN"
-
-#~ msgid "Fax"
-#~ msgstr "Faks"
-
-#~ msgid "Remote Filesystem Error"
-#~ msgstr "Błąd zdalnego systemu plików"
-
-#~ msgid "%s is using an incompatible SSH library"
-#~ msgstr "%s używa niezgodnej biblioteki SSH"
