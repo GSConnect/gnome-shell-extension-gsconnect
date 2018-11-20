@@ -187,13 +187,10 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
                 }
             }
         } catch (e) {
-            debug(e);
             Gio.DBusError.strip_remote_error(e);
 
-            // Don't notify of cancellation errors during startup
-            // https://gitlab.gnome.org/GNOME/gnome-shell/issues/177
             if (!e.code || e.code !== Gio.IOErrorEnum.CANCELLED) {
-                Main.notifyError(_('GSConnect'), e.message);
+                logError(e, 'GSConnect');
             }
         }
     }
@@ -306,9 +303,11 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
                 this._indicator.visible = true;
             }
         } catch (e) {
-            debug(e);
             Gio.DBusError.strip_remote_error(e);
-            Main.notifyError(_('GSConnect'), e.message);
+
+            if (!e.code || e.code !== Gio.IOErrorEnum.CANCELLED) {
+                logError(e, 'GSConnect');
+            }
         }
     }
 
@@ -430,7 +429,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
                 }
             }
         } catch (e) {
-            logError(e);
+            debug(e);
         }
     }
 
