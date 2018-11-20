@@ -13,6 +13,13 @@ debug('loading service/__init__.js');
 
 
 /**
+ * Check if we're in a Wayland session (mostly for input synthesis)
+ * https://wiki.gnome.org/Accessibility/Wayland#Bugs.2FIssues_We_Must_Address
+ */
+window._WAYLAND = GLib.getenv('XDG_SESSION_TYPE') === 'wayland';
+
+
+/**
  * Convenience function for loading JSON from a file
  *
  * @param {Gio.File|string} file - A Gio.File or path to a JSON file
