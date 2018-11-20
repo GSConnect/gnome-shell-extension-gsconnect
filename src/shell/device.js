@@ -162,7 +162,7 @@ var Menu = class Menu extends PopupMenu.PopupMenuSection {
         super._init();
         Object.assign(this, params);
 
-        this.actor.add_style_class_name('gsconnect-device-textmenu');
+        this.actor.add_style_class_name('gsconnect-device-menu');
 
         // Title
         this._title = new PopupMenu.PopupSeparatorMenuItem(this.device.Name);
@@ -208,13 +208,11 @@ var Indicator = class Indicator extends PanelMenu.Button {
         Object.assign(this, params);
 
         // Device Icon
-        this.icon = new St.Icon({
-            gicon: new Gio.ThemedIcon({
-                name: `${this.device.IconName}-symbolic`
-            }),
-            style_class: 'system-status-icon'
+        let icon = new St.Icon({
+            gicon: new Gio.ThemedIcon({name: this.device.IconName}),
+            style_class: 'system-status-icon gsconnect-device-indicator'
         });
-        this.actor.add_actor(this.icon);
+        this.actor.add_child(icon);
 
         // Menu
         let menu = new Menu({

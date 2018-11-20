@@ -217,6 +217,8 @@ var Device = GObject.registerClass({
 
     get icon_name() {
         switch (this.type) {
+            case 'laptop':
+                return 'laptop';
             case 'phone':
                 return 'smartphone';
             case 'tablet':
