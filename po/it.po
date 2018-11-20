@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-11-19 11:14-0800\n"
-"PO-Revision-Date: 2018-11-05 08:49+0100\n"
+"PO-Revision-Date: 2018-11-20 14:27+0100\n"
 "Last-Translator: Jimmy Scionti <jimmy.scionti@gmail.com>\n"
 "Language-Team: \n"
 "Language: it\n"
@@ -102,7 +102,7 @@ msgstr "Silenzia Microfono"
 
 #: data/device.ui:1047 data/device.ui:1535 src/service/plugins/telephony.js:12
 msgid "Telephony"
-msgstr "Telefono"
+msgstr "Telefonia"
 
 #: data/device.ui:1082
 msgid "Action Shortcuts"
@@ -160,23 +160,22 @@ msgstr "Debug"
 
 #: data/menus.ui:23
 msgid "About"
-msgstr "Info"
+msgstr "Informazioni"
 
 #. TRANSLATORS: Change the connection type to Bluetooth
 #: data/menus.ui:34
-#, fuzzy
 msgid "Switch to Bluetooth"
 msgstr "Collega Bluetooth"
 
 #. TRANSLATORS: Change the connection type to TCP/IP
 #: data/menus.ui:41
 msgid "Switch to LAN"
-msgstr ""
+msgstr "Collega LAN"
 
 #. TRANSLATORS: View the TLS Certificate fingerprint
 #: data/menus.ui:48 src/service/ui/settings.js:612
 msgid "Encryption Info"
-msgstr ""
+msgstr "Informazioni di Criptazione"
 
 #. TRANSLATORS: Send a pair request to the device
 #: data/menus.ui:53 src/service/device.js:425
@@ -220,9 +219,8 @@ msgid "Messaging"
 msgstr "Messaggistica"
 
 #: data/messaging.ui:110
-#, fuzzy
 msgid "Select a conversation"
-msgstr "Aggiungi persone per iniziare una conversazione"
+msgstr "Seleziona una conversazione"
 
 #: data/messaging.ui:188
 msgid "Device is disconnected"
@@ -727,37 +725,37 @@ msgstr "Chiamata in corso"
 
 #. TRANSLATORS: All other phone number types
 #: src/service/ui/contacts.js:58 src/service/ui/contacts.js:79
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%s・Other"
-msgstr "Altro"
+msgstr "%s・Altro"
 
 #. TRANSLATORS: A fax number
 #: src/service/ui/contacts.js:63
 #, javascript-format
 msgid "%s・Fax"
-msgstr ""
+msgstr "%s・Fax"
 
 #. TRANSLATORS: A work phone number
 #: src/service/ui/contacts.js:67
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%s・Work"
-msgstr "Lavoro"
+msgstr "%s・Lavoro"
 
 #. TRANSLATORS: A mobile or cellular phone number
 #: src/service/ui/contacts.js:71
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%s・Mobile"
-msgstr "Mobile"
+msgstr "%s・Mobile"
 
 #. TRANSLATORS: A home phone number
 #: src/service/ui/contacts.js:75
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%s・Home"
-msgstr "Casa"
+msgstr "%s・Casa"
 
 #: src/service/ui/contacts.js:203
 msgid "Select a contact or number"
-msgstr ""
+msgstr "Digita un numero di telefono o un nome"
 
 #. TRANSLATORS: A phone number (eg. "Send to 555-5555")
 #: src/service/ui/contacts.js:239 src/service/ui/contacts.js:253
