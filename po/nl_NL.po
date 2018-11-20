@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-11-19 11:14-0800\n"
-"PO-Revision-Date: 2018-11-05 11:46+0100\n"
+"PO-Revision-Date: 2018-11-20 12:12+0100\n"
 "Last-Translator: Heimen Stoffels <vistausss@outlook.com>\n"
 "Language-Team: Dutch <vistausss@outlook.com>\n"
 "Language: nl_NL\n"
@@ -164,19 +164,18 @@ msgstr "Over"
 
 #. TRANSLATORS: Change the connection type to Bluetooth
 #: data/menus.ui:34
-#, fuzzy
 msgid "Switch to Bluetooth"
-msgstr "Via Bluetooth verbinden"
+msgstr "Overschakelen naar Bluetooth"
 
 #. TRANSLATORS: Change the connection type to TCP/IP
 #: data/menus.ui:41
 msgid "Switch to LAN"
-msgstr ""
+msgstr "Overschakelen naar LAN"
 
 #. TRANSLATORS: View the TLS Certificate fingerprint
 #: data/menus.ui:48 src/service/ui/settings.js:612
 msgid "Encryption Info"
-msgstr ""
+msgstr "Versleutelingsinformatie"
 
 #. TRANSLATORS: Send a pair request to the device
 #: data/menus.ui:53 src/service/device.js:425
@@ -220,9 +219,8 @@ msgid "Messaging"
 msgstr "Berichten"
 
 #: data/messaging.ui:110
-#, fuzzy
 msgid "Select a conversation"
-msgstr "Voeg personen toe om een gesprek te starten"
+msgstr "Kies een gesprek"
 
 #: data/messaging.ui:188
 msgid "Device is disconnected"
@@ -726,37 +724,37 @@ msgstr "Lopende oproep"
 
 #. TRANSLATORS: All other phone number types
 #: src/service/ui/contacts.js:58 src/service/ui/contacts.js:79
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%s・Other"
-msgstr "Overig"
+msgstr "%s・Overig"
 
 #. TRANSLATORS: A fax number
 #: src/service/ui/contacts.js:63
 #, javascript-format
 msgid "%s・Fax"
-msgstr ""
+msgstr "%s・Fax"
 
 #. TRANSLATORS: A work phone number
 #: src/service/ui/contacts.js:67
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%s・Work"
-msgstr "Werk"
+msgstr "%s・Werk"
 
 #. TRANSLATORS: A mobile or cellular phone number
 #: src/service/ui/contacts.js:71
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%s・Mobile"
-msgstr "Mobiel"
+msgstr "%s・Mobiel"
 
 #. TRANSLATORS: A home phone number
 #: src/service/ui/contacts.js:75
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%s・Home"
-msgstr "Thuis"
+msgstr "%s・Thuis"
 
 #: src/service/ui/contacts.js:203
 msgid "Select a contact or number"
-msgstr ""
+msgstr "Kies een contactpersoon of telefoonnummer"
 
 #. TRANSLATORS: A phone number (eg. "Send to 555-5555")
 #: src/service/ui/contacts.js:239 src/service/ui/contacts.js:253
