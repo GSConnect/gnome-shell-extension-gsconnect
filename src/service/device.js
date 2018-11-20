@@ -204,7 +204,12 @@ var Device = GObject.registerClass({
     }
 
     get supported_plugins() {
-        return this.settings.get_strv('supported-plugins');
+        let supported = this.settings.get_strv('supported-plugins');
+
+        // Preempt 'mousepad' plugin on Wayland
+        if (_WAYLAND) supported.splice(supported.indexOf('mousepad'), 1);
+
+        return supported;
     }
 
     get allowed_plugins() {
