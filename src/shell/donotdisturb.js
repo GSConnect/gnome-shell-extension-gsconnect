@@ -263,7 +263,7 @@ var Dialog = class Dialog extends ModalDialog.ModalDialog {
             return gsconnect.ngettext('One hour', '%d hours', hours).format(hours);
         } else {
             // TRANSLATORS: Time duration in minutes (eg. 15 minutes)
-            return _('%d minutes').format(this._time / 60);
+            return gsconnect.ngettext('%d minute', '%d minutes', (this._time / 60)).format(this._time / 60);
         }
     }
 
@@ -307,4 +307,3 @@ var MenuItem = class MenuItem extends PopupMenu.PopupSwitchMenuItem {
         });
     }
 };
-

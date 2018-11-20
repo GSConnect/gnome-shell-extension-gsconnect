@@ -277,13 +277,10 @@ var Plugin = GObject.registerClass({
     _monitorState() {
         try {
             switch (true) {
-                // The component failed to load
+                // upower failed, already monitoring, no battery or no support
                 case (!this.service.upower):
-                // Already monitoring
                 case (this._upowerId > 0):
-                // Not a battery capable device
                 case (this.service.type !== 'laptop'):
-                // Device doesn't support receiving battery statistics
                 case (!this.device.get_incoming_supported('battery')):
                     return;
             }
@@ -353,7 +350,8 @@ var Plugin = GObject.registerClass({
     }
 
     _estimateTime() {
-        let [rate, time, level] = this.charging ? this._chargeState : this._dischargeState;
+        // elision (rate, time, level)
+        let [rate,, level] = this.charging ? this._chargeState : this._dischargeState;
         level = (level > -1) ? level : this.level;
 
         if (!Number.isFinite(rate) || rate < 1) {

@@ -552,11 +552,9 @@ var Device = GObject.registerClass({
             case (this.connection_type === 'tcp'):
                 return new Lan.Transfer(params);
 
-            //case (this.connection_type === 'bluetooth'):
+            // For now, return a mock transfer that always appears to fail
+            case (this.connection_type === 'bluetooth'):
                 //return new Bluetooth.Transfer(params);
-
-            // The default is a mock transfer that always appears to fail
-            default:
                 return {
                     uuid: 'mock-transfer',
                     download: () => false,

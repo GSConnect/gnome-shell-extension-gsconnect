@@ -9,14 +9,14 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-11-19 11:14-0800\n"
 "PO-Revision-Date: 2018-11-20 14:27+0100\n"
+"Last-Translator: Jimmy Scionti <jimmy.scionti@gmail.com>\n"
 "Language-Team: \n"
+"Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 2.0.6\n"
-"Last-Translator: Jimmy Scionti <jimmy.scionti@gmail.com>\n"
-"Language: it\n"
 
 #: data/conversation.ui:71 data/conversation.ui:79
 msgid "Type a message"
@@ -220,7 +220,6 @@ msgstr "Messaggistica"
 
 #: data/messaging.ui:110
 msgid "Select a conversation"
-msgstr "Seleziona una conversazione"
 
 #: data/messaging.ui:188
 msgid "Device is disconnected"
@@ -312,6 +311,7 @@ msgstr "GSConnect"
 
 #. TRANSLATORS: %d is the number of devices connected
 #: src/extension.js:257
+#, javascript-format
 msgid "%d Connected"
 msgid_plural "%d Connected"
 msgstr[0] "%d% Connesso"
@@ -356,8 +356,11 @@ msgid "Discovery Disabled"
 msgstr "Ricerca Disattiva"
 
 #: src/service/daemon.js:597
-msgid "Discovery has been disabled due to the number of devices on this network."
-msgstr "La ricerca è stata disattivata a causa dell'elevato numero di dispositivi nella rete."
+msgid ""
+"Discovery has been disabled due to the number of devices on this network."
+msgstr ""
+"La ricerca è stata disattivata a causa dell'elevato numero di dispositivi "
+"nella rete."
 
 #: src/service/daemon.js:599 src/service/daemon.js:609
 msgid "Click to open preferences"
@@ -908,7 +911,8 @@ msgstr[1] "%d ore"
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:29
 msgid "Share links with GSConnect, direct to the browser or by SMS."
-msgstr "Condividi collegamenti con GSConnect, direttamente nel browser o via SMS."
+msgstr ""
+"Condividi collegamenti con GSConnect, direttamente nel browser o via SMS."
 
 #. TRANSLATORS: WebExtension can't connect to GSConnect
 #: webextension/gettext.js:33
@@ -919,3 +923,24 @@ msgstr "Servizio non disponibile"
 #: webextension/gettext.js:37
 msgid "Open in Browser"
 msgstr "Apri nel Browser"
+
+#~ msgid "Conversations"
+#~ msgstr "Conversazioni"
+
+#~ msgid "Sync Contacts"
+#~ msgstr "Sincronizza Contatti"
+
+#~ msgid "Sync Messages"
+#~ msgstr "Sincronizza Messaggi"
+
+#~ msgid "Connect LAN"
+#~ msgstr "Collega LAN"
+
+#~ msgid "Fax"
+#~ msgstr "Fax"
+
+#~ msgid "Remote Filesystem Error"
+#~ msgstr "Errore Filesystem Remoto"
+
+#~ msgid "%s is using an incompatible SSH library"
+#~ msgstr "%s utilizza una libreria SSH incompatibile"

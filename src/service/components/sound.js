@@ -30,9 +30,9 @@ function get_backend() {
         if (GLib.find_program_in_path('canberra-gtk-play') !== null) {
             _BACKEND = 'libcanberra';
         }
-    } finally {
-        return _BACKEND;
     }
+
+    return _BACKEND;
 }
 
 
@@ -45,6 +45,8 @@ function get_backend() {
  * @return {Boolean} - %false if playback unavailable
  */
 function loop_theme_sound(name, cancellable) {
+    let error, proc;
+
     switch (get_backend()) {
         case 'gsound':
             _gsoundContext.play_full(
@@ -61,7 +63,7 @@ function loop_theme_sound(name, cancellable) {
             return true;
 
         case 'libcanberra':
-            let proc = new Gio.Subprocess({
+            proc = new Gio.Subprocess({
                 argv: ['canberra-gtk-play', '-i', name],
                 flags: Gio.SubprocessFlags.NONE
             });
@@ -81,7 +83,7 @@ function loop_theme_sound(name, cancellable) {
                 cancellable.cancel();
             }
 
-            let error = new Error();
+            error = new Error();
             error.name = 'DependencyError';
             Gio.Application.get_default().notify_error(error);
 

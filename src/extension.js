@@ -130,8 +130,8 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         try {
             // Init the ObjectManager
             this.manager = await new Promise((resolve, reject) => {
-                Gio.DBusObjectManagerClient.new(
-                    Gio.DBus.session,
+                Gio.DBusObjectManagerClient.new_for_bus(
+                    Gio.BusType.SESSION,
                     Gio.DBusObjectManagerClientFlags.DO_NOT_AUTO_START,
                     gsconnect.app_id,
                     gsconnect.app_path,
@@ -139,20 +139,13 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
                     this._cancellable,
                     (manager, res) => {
                         try {
-                            resolve(Gio.DBusObjectManagerClient.new_finish(res));
+                            resolve(Gio.DBusObjectManagerClient.new_for_bus_finish(res));
                         } catch (e) {
                             reject(e);
                         }
                     }
                 );
             });
-
-            // Setup currently managed devices
-            for (let object of this.manager.get_objects()) {
-                for (let iface of object.get_interfaces()) {
-                    this._onInterfaceAdded(this.manager, object, iface);
-                }
-            }
 
             // Watch for new and removed
             this._nameOwnerId = this.manager.connect(
@@ -175,15 +168,29 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
                 this._onInterfacePropertiesChanged.bind(this)
             );
 
-            await this._activate();
+            // If the service is inactive, wait 5s and recheck before activating
+            if (this.manager.name_owner === null) {
+                GLib.timeout_add_seconds(0, 5, () => {
+                    if (this.manager.name_owner === null) {
+                        this._activate().catch(debug);
+                    }
+
+                    return false;
+                });
+
+            // Otherwise we need to setup the currently managed devices
+            } else {
+                for (let object of this.manager.get_objects()) {
+                    for (let iface of object.get_interfaces()) {
+                        this._onInterfaceAdded(this.manager, object, iface);
+                    }
+                }
+            }
         } catch (e) {
-            debug(e);
             Gio.DBusError.strip_remote_error(e);
 
-            // Don't notify of cancellation errors during startup
-            // https://gitlab.gnome.org/GNOME/gnome-shell/issues/177
             if (!e.code || e.code !== Gio.IOErrorEnum.CANCELLED) {
-                Main.notifyError(_('GSConnect'), e.message);
+                logError(e, 'GSConnect');
             }
         }
     }
@@ -243,7 +250,8 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
             }
         } else {
             if (this.available.length > 1) {
-                this._item.label.text = _('%d Connected').format(this.available.length);
+                //TRANSLATORS: %d is the number of devices connected
+                this._item.label.text = gsconnect.ngettext('%d Connected', '%d Connected', this.available.length).format(this.available.length);
             } else {
                 this._item.label.text = _('Mobile Devices');
             }
@@ -295,9 +303,11 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
                 this._indicator.visible = true;
             }
         } catch (e) {
-            debug(e);
             Gio.DBusError.strip_remote_error(e);
-            Main.notifyError(_('GSConnect'), e.message);
+
+            if (!e.code || e.code !== Gio.IOErrorEnum.CANCELLED) {
+                logError(e, 'GSConnect');
+            }
         }
     }
 
@@ -407,7 +417,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
 
             // Apply the keybindings
             for (let [action, accelerator] of Object.entries(keybindings)) {
-                let [ok, name, parameter] = Gio.Action.parse_detailed_name(action);
+                let [, name, parameter] = Gio.Action.parse_detailed_name(action);
 
                 let actionId = this.keybindingManager.add(
                     accelerator,
@@ -419,7 +429,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
                 }
             }
         } catch (e) {
-            logError(e);
+            debug(e);
         }
     }
 
@@ -503,4 +513,3 @@ function disable() {
     serviceIndicator = null;
     Notification.unpatchGtkNotificationSources();
 }
-

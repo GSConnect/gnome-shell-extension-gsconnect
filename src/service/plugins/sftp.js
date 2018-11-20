@@ -38,8 +38,6 @@ var Metadata = {
  * SFTP Plugin
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/sftp
  * https://github.com/KDE/kdeconnect-android/tree/master/src/org/kde/kdeconnect/Plugins/SftpPlugin
- *
- * TODO: reimplement automount?
  */
 var Plugin = GObject.registerClass({
     Name: 'GSConnectSFTPPlugin'
@@ -64,7 +62,7 @@ var Plugin = GObject.registerClass({
         super.connected();
 
         // Disable mounting and notify if `sshfs` is not available
-        if (!hasCommand(gsconnect.metadata.bin.sshfs)) {
+        if (!GLib.find_program_in_path(gsconnect.metadata.bin.sshfs)) {
             this.device.lookup_action('mount').enabled = false;
             this.device.lookup_action('unmount').enabled = false;
 
@@ -203,9 +201,6 @@ var Plugin = GObject.registerClass({
             '-o', 'StrictHostKeyChecking=no',
             // Prevent storing as a known host
             '-o', 'UserKnownHostsFile=/dev/null',
-            // Allow ssh-dss (DSA) keys (deprecated >= openssh-7.0p1)
-            // See: https://bugs.kde.org/show_bug.cgi?id=351725
-            '-o', 'HostKeyAlgorithms=+ssh-dss',
             // Match keepalive for kdeconnect connection (30sx3)
             '-o', 'ServerAliveInterval=30',
             // Don't immediately connect to server, wait until mountpoint is first accessed.
@@ -281,17 +276,11 @@ var Plugin = GObject.registerClass({
                 if (msg !== null) {
                     if (msg.includes('ssh_dispatch_run_fatal')) {
                         let e = new Error(msg);
-
-                        if (msg.includes('incorrect signature')) {
-                            e.name = 'SSHSignatureError';
-                            e.deviceName = this.device.name;
-                        }
-
                         this.service.notify_error(e);
                         throw e;
                     }
 
-                    logWarning(msg, `${this.device.name}: ${this.name}`);
+                    logWarning(msg, `${this.device.name}: sshfs`);
                     this._sshfs_check(stream);
                 }
             } catch (e) {
@@ -401,7 +390,7 @@ var Plugin = GObject.registerClass({
     _umount() {
         let argv = ['umount', this._mountpoint];
 
-        if (hasCommand(gsconnect.metadata.bin.fusermount)) {
+        if (GLib.find_program_in_path(gsconnect.metadata.bin.fusermount)) {
             argv = [gsconnect.metadata.bin.fusermount, '-uz', this._mountpoint];
         }
 

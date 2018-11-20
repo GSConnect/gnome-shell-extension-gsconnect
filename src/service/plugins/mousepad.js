@@ -36,11 +36,13 @@ var Metadata = {
 };
 
 
+const _ASCII = /[\x20-\x7E]/;
+
+
 /**
  * A map of "KDE Connect" keyvals to Gdk
  */
 const KeyMap = new Map([
-    [0, 0], // Invalid: pressSpecialKey throws error
     [1, Gdk.KEY_BackSpace],
     [2, Gdk.KEY_Tab],
     [3, Gdk.KEY_Linefeed],
@@ -80,8 +82,7 @@ const KeyMap = new Map([
  * Mousepad Plugin
  * https://github.com/KDE/kdeconnect-kde/tree/master/plugins/mousepad
  *
- * TODO: support outgoing mouse/keyboard events
- *       remove Caribou
+ * TODO: support outgoing mouse events?
  */
 var Plugin = GObject.registerClass({
     GTypeName: 'GSConnectMousepadPlugin',
@@ -132,7 +133,7 @@ var Plugin = GObject.registerClass({
             this._seat = this._display.get_default_seat();
             this._pointer = this._seat.get_pointer();
         } catch (e) {
-            e.name = 'DisplayError';
+            this.destroy();
             throw e;
         }
 
@@ -208,45 +209,27 @@ var Plugin = GObject.registerClass({
                 break;
 
             case (input.hasOwnProperty('key') || input.hasOwnProperty('specialKey')):
-                if (this._vkbd ) {
-                    // Set Gdk.ModifierType
-                    let mask = 0;
+                // Prefer libcaribou (XTest) if available
+                if (this._vkbd) {
+                    this.pressKeySym(input);
 
-                    if (input.hasOwnProperty('ctrl') && input.ctrl) {
-                        mask |= Gdk.ModifierType.CONTROL_MASK;
-                    }
-                    if (input.hasOwnProperty('shift') && input.shift) {
-                        mask |= Gdk.ModifierType.SHIFT_MASK;
-                    }
-                    if (input.hasOwnProperty('alt') && input.alt) {
-                        mask |= Gdk.ModifierType.MOD1_MASK;
-                    }
-                    if (input.hasOwnProperty('super') && input.super) {
-                        mask |= Gdk.ModifierType.MOD4_MASK;
-                    }
+                // Regular key (printable ASCII)
+                // NOTE: Passing AT-SPI non-ASCII keyvals may crash Xorg
+                // https://github.com/andyholmes/gnome-shell-extension-gsconnect/issues/323
+                } else if (input.key && _ASCII.test(input.key)) {
+                    this.pressKey(input);
 
-                    // Transform key to keysym
-                    let keysym;
+                // Special key (eg. non-printable ASCII)
+                } else if (input.specialKey && KeyMap.has(input.specialKey)) {
+                    this.pressSpecialKey(input);
 
-                    if (input.key && input.key !== '\u0000') {
-                        keysym = Gdk.unicode_to_keyval(input.key.codePointAt(0));
-                    } else if (input.specialKey && KeyMap.has(input.specialKey)) {
-                        keysym = KeyMap.get(input.specialKey);
-                    }
-
-                    if (keysym) {
-                        this.pressKeySym(keysym, mask);
-                    }
+                // Caribou not available or key out of range
+                // TODO: more informative notification
                 } else {
-                    // This is sometimes sent in advance of a specialKey packet
-                    if (input.key && input.key !== '\u0000') {
-                        this.pressKey(input.key);
-                    } else if (input.specialKey) {
-                        this.pressSpecialKey(input.specialKey);
-                    }
+                    let error = new Error();
+                    error.name = 'DependencyError';
+                    this.service.notify_error(error);
                 }
-
-                this.sendEcho(input);
                 break;
 
             case input.hasOwnProperty('singleclick'):
@@ -276,9 +259,12 @@ var Plugin = GObject.registerClass({
         }
     }
 
+    /**
+     * Pointer events
+     */
     clickPointer(button) {
         try {
-            let [screen, x, y] = this._pointer.get_position();
+            let [, x, y] = this._pointer.get_position();
             let monitor = this._display.get_monitor_at_point(x, y);
             let scale = monitor.get_scale_factor();
             Atspi.generate_mouse_event(scale * x, scale * y, `b${button}c`);
@@ -289,7 +275,7 @@ var Plugin = GObject.registerClass({
 
     doubleclickPointer(button) {
         try {
-            let [screen, x, y] = this._pointer.get_position();
+            let [, x, y] = this._pointer.get_position();
             let monitor = this._display.get_monitor_at_point(x, y);
             let scale = monitor.get_scale_factor();
             Atspi.generate_mouse_event(scale * x, scale * y, `b${button}d`);
@@ -300,7 +286,7 @@ var Plugin = GObject.registerClass({
 
     movePointer(dx, dy) {
         try {
-            let [screen, x, y] = this._pointer.get_position();
+            let [, x, y] = this._pointer.get_position();
             let monitor = this._display.get_monitor_at_point(x, y);
             let scale = monitor.get_scale_factor();
             Atspi.generate_mouse_event(scale * dx, scale * dy, 'rel');
@@ -311,7 +297,7 @@ var Plugin = GObject.registerClass({
 
     pressPointer(button) {
         try {
-            let [screen, x, y] = this._pointer.get_position();
+            let [, x, y] = this._pointer.get_position();
             let monitor = this._display.get_monitor_at_point(x, y);
             let scale = monitor.get_scale_factor();
             Atspi.generate_mouse_event(scale * x, scale * y, `b${button}p`);
@@ -322,7 +308,7 @@ var Plugin = GObject.registerClass({
 
     releasePointer(button) {
         try {
-            let [screen, x, y] = this._pointer.get_position();
+            let [, x, y] = this._pointer.get_position();
             let monitor = this._display.get_monitor_at_point(x, y);
             let scale = monitor.get_scale_factor();
             Atspi.generate_mouse_event(scale * x, scale * y, `b${button}r`);
@@ -331,58 +317,98 @@ var Plugin = GObject.registerClass({
         }
     }
 
-    pressKey(key) {
+    /**
+     * Simulate a keypress in the printable ASCII range (x20-x7E)
+     *
+     * @param {object} input - 'body' of a 'kdeconnect.mousepad.request' packet
+     */
+    pressKey(input) {
         try {
-            Atspi.generate_keyboard_event(0, key, Atspi.KeySynthType.STRING);
+            Atspi.generate_keyboard_event(
+                0,
+                input.key,
+                Atspi.KeySynthType.STRING
+            );
+
+            this.sendEcho(input);
         } catch (e) {
             logError(e, this.device.name);
         }
     }
 
-    pressSpecialKey(key) {
+    /**
+     * Simulate a special key from KeyMap (F1, Home, Esc, etc)
+     *
+     * @param {object} input - 'body' of a 'kdeconnect.mousepad.request' packet
+     */
+    pressSpecialKey(input) {
         try {
-            if (!KeyMap.has(key) || key === 0) {
-                throw Error('Unknown/invalid key');
-            }
-
             Atspi.generate_keyboard_event(
-                KeyMap.get(key),
+                KeyMap.get(input.key),
                 null,
                 Atspi.KeySynthType.PRESSRELEASE | Atspi.KeySynthType.SYM
             );
+
+            this.sendEcho(input);
         } catch (e) {
             logError(e, this.device.name);
         }
     }
 
-    pressKeySym(keysym, mask) {
-        debug('Mousepad: pressKeySym(' + keysym + ', ' + mask + ')');
+    pressKeySym(input) {
+        debug('using libcaribou');
 
         try {
-            if (Gdk.keyval_to_unicode(keysym) !== 0) {
-                this._vkbd.mod_lock(mask);
-                this._vkbd.keyval_press(keysym);
-                this._vkbd.keyval_release(keysym);
-                this._vkbd.mod_unlock(mask);
+            // Set Gdk.ModifierType
+            let mask = 0;
+
+            if (input.hasOwnProperty('ctrl') && input.ctrl) {
+                mask |= Gdk.ModifierType.CONTROL_MASK;
+            }
+            if (input.hasOwnProperty('shift') && input.shift) {
+                mask |= Gdk.ModifierType.SHIFT_MASK;
+            }
+            if (input.hasOwnProperty('alt') && input.alt) {
+                mask |= Gdk.ModifierType.MOD1_MASK;
+            }
+            if (input.hasOwnProperty('super') && input.super) {
+                mask |= Gdk.ModifierType.MOD4_MASK;
+            }
+
+            debug(`mask: ${mask}`);
+
+            // Transform key to keysym
+            let keyval;
+
+            // Regular key (Unicode)
+            // NOTE: \u0000 sometimes sent in advance of a specialKey packet
+            if (input.key && input.key !== '\u0000') {
+                keyval = Gdk.unicode_to_keyval(input.key.codePointAt(0));
+
+            // Special key (eg. non-printable ASCII)
+            } else if (input.specialKey && KeyMap.has(input.specialKey)) {
+                keyval = KeyMap.get(input.specialKey);
+
+            // Invalid or unknown key
+            } else {
+                return;
+            }
+
+            debug(`keyval: ${keyval}`);
+
+            // Ensure this a valid keysym
+            if (Gdk.keyval_to_unicode(keyval) !== 0) {
+                if (mask) this._vkbd.mod_lock(mask);
+
+                this._vkbd.keyval_press(keyval);
+                this._vkbd.keyval_release(keyval);
+
+                if (mask) this._vkbd.mod_unlock(mask);
+
+                this.sendEcho(input);
             }
         } catch (e) {
             logError(e, this.device.name);
-        }
-    }
-
-    _handleEcho(input) {
-        if (!this._dialog || !this._dialog.visible) {
-            return;
-        }
-
-        if (input.alt || input.ctrl || input.super) {
-            return;
-        }
-
-        if (input.key) {
-            this._dialog.text.buffer.text += input.key;
-        } else if (KeyMap.get(input.specialKey) === Gdk.KEY_BackSpace) {
-            this._dialog.text.emit('backspace');
         }
     }
 
@@ -400,6 +426,22 @@ var Plugin = GObject.registerClass({
                 type: 'kdeconnect.mousepad.echo',
                 body: input
             });
+        }
+    }
+
+    _handleEcho(input) {
+        if (!this._dialog || !this._dialog.visible) {
+            return;
+        }
+
+        if (input.alt || input.ctrl || input.super) {
+            return;
+        }
+
+        if (input.key) {
+            this._dialog.text.buffer.text += input.key;
+        } else if (KeyMap.get(input.specialKey) === Gdk.KEY_BackSpace) {
+            this._dialog.text.emit('backspace');
         }
     }
 

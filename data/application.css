@@ -3,31 +3,46 @@
  * Chrome/Firefox buttons in Preferences->Other
  */
 .badge-button {
-    border: 0px;
-    padding: 0px;
-    background: transparent;
+  border: 0px;
+  padding: 0px;
+  background: transparent;
 }
 
 /**
- * Messaging Window - Device Offline overlay
+ * Contact Chooser
  */
-.connection-status, .connection-status:hover:active {
-    background: alpha(@theme_bg_color, 0);
-    color: @theme_fg_color;
-    border: 0px;
-    padding: 0px;
+.contact-entry {
+  border: 0px;
+  padding: 6px;
 }
 
-.connection-status:hover {
-    background: alpha(@theme_selected_bg_color, 0.25);
-    color: @theme_selected_fg_color;
-    border: 0px;
-    padding: 0px;
+.contact-window {
+  border-top: 1px solid @borders;
+}
+
+.contact-list row {
+  padding: 0px;
+}
+
+.contact-placeholder {
+  background: @content_view_bg_color;
+}
+
+
+/**
+ * Conversation Widget
+ */
+.conversation-list {
+  background: @content_view_bg_color;
 }
 
 /**
  * Incoming Message Bubbles (GtkLabel subclass)
  */
+.message-window {
+  border-bottom: 1px solid @borders;
+}
+
 .message-in {
   background: @theme_selected_bg_color;
   border-radius: 0.25em 1em 1em 0.25em;
@@ -38,11 +53,11 @@
 }
 
 .message-in:first-child {
-    border-top-left-radius: 1em;
+  border-top-left-radius: 1em;
 }
 
 .message-in:last-child {
-    border-bottom-left-radius: 1em;
+  border-bottom-left-radius: 1em;
 }
 
 /**
@@ -66,11 +81,11 @@
 }
 
 .message-out:first-child {
-    border-top-right-radius: 1em;
+  border-top-right-radius: 1em;
 }
 
 .message-out:last-child {
-    border-bottom-right-radius: 1em;
+  border-bottom-right-radius: 1em;
 }
 
 /**
@@ -78,5 +93,12 @@
  */
 .message-out *:link {
   color: @theme_fg_color;
+}
+
+/**
+ * Special case for pending messages
+ */
+.message-pending .message-out {
+  opacity: 0.5;
 }
 

@@ -413,7 +413,7 @@ const Service = GObject.registerClass({
                 program_name: _('GSConnect'),
                 // TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
                 translator_credits: _('translator-credits'),
-                version: gsconnect.metadata.version,
+                version: gsconnect.metadata.version.toString(),
                 website: gsconnect.metadata.url,
                 license_type: Gtk.License.GPL_2_0
             });
@@ -434,7 +434,7 @@ const Service = GObject.registerClass({
                 buttons: Gtk.ButtonsType.CLOSE,
                 message_type: Gtk.MessageType.ERROR,
             });
-            let issues = dialog.add_button(_('Report'), 1);
+            dialog.add_button(_('Report'), 1);
             dialog.set_keep_above(true);
 
             let [message, stack] = dialog.get_message_area().get_children();
@@ -533,13 +533,15 @@ const Service = GObject.registerClass({
 
         Gio.DBus.session.call(
             name, path, name, method, variant, null,
-            Gio.DBusCallFlags.NONE, -1, null, (connection, res) => {
-            try {
-                connection.call_finish(res);
-            } catch (e) {
-                logError(e);
+            Gio.DBusCallFlags.NONE, -1, null,
+            (connection, res) => {
+                try {
+                    connection.call_finish(res);
+                } catch (e) {
+                    logError(e);
+                }
             }
-        });
+        );
     }
 
     /**
@@ -554,7 +556,7 @@ const Service = GObject.registerClass({
             logError(error);
 
             // Create an new notification
-            let id, title, body, icon, action;
+            let id, title, body, icon, time;
             let notif = new Gio.Notification();
             notif.set_priority(Gio.NotificationPriority.URGENT);
 
@@ -563,7 +565,7 @@ const Service = GObject.registerClass({
                 case 'AuthenticationError':
                     id = `${Date.now()}`;
                     title = _('Authentication Failure');
-                    let time = GLib.DateTime.new_now_local().format('%F %R');
+                    time = GLib.DateTime.new_now_local().format('%F %R');
                     body = `"${error.deviceName}"@${error.deviceHost} (${time})`;
                     icon = new Gio.ThemedIcon({name: 'dialog-error'});
                     break;
@@ -623,18 +625,6 @@ const Service = GObject.registerClass({
                     });
 
                     notif.set_default_action_and_target('app.error', error);
-                    notif.set_priority(Gio.NotificationPriority.HIGH);
-                    break;
-
-                case 'SSHSignatureError':
-                    id = error.name;
-                    title = _('Remote Filesystem Error');
-                    body = _('%s is using an incompatible SSH library').format(error.deviceName) + '\n\n' +
-                           _('Click for more information');
-                    icon = new Gio.ThemedIcon({name: 'dialog-error'});
-                    notif.set_default_action(
-                        `app.wiki('Help#${error.name}')`
-                    );
                     notif.set_priority(Gio.NotificationPriority.HIGH);
                     break;
 
@@ -782,7 +772,9 @@ const Service = GObject.registerClass({
     }
 
     vfunc_dbus_register(connection, object_path) {
-        if (!super.vfunc_dbus_register(connection, object_path)) {
+        try {
+            super.vfunc_dbus_register(connection, object_path);
+        } catch (e) {
             return false;
         }
 

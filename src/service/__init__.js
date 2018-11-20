@@ -7,23 +7,9 @@ const Gtk = imports.gi.Gtk;
 
 /**
  * Globals, overrides and polyfills are kept here so we don't mangle or collide
- * with the prototypes of other processes (eg. gnome-shell). This means only
- *
+ * with the prototypes of other processes (eg. gnome-shell).
  */
 debug('loading service/__init__.js');
-
-
-/**
- * Check if a command is in the PATH
- * @param {string} name - the name of the command
- */
-window.hasCommand = function(cmd) {
-    try {
-        return (GLib.find_program_in_path(cmd) !== null);
-    } catch (e) {
-        return false;
-    }
-};
 
 
 /**
@@ -350,7 +336,7 @@ Object.defineProperties(Gio.TlsCertificate.prototype, {
                 proc.init(null);
 
                 let stdout = proc.communicate_utf8(this.certificate_pem, null)[1];
-                this.__common_name = /[a-zA-Z0-9\-]{36}/.exec(stdout)[0];
+                this.__common_name = /[a-zA-Z0-9-]{36}/.exec(stdout)[0];
 
                 proc.wait_check(null);
             }
@@ -405,6 +391,7 @@ if (typeof GLib.uuid_string_random !== 'function') {
  * @param {*} [obj] - May be a GLib.Variant, Array, standard Object or literal.
  */
 function _full_pack(obj) {
+    let packed;
     let type = typeof obj;
 
     switch (true) {
@@ -436,7 +423,7 @@ function _full_pack(obj) {
             return obj.serialize();
 
         case (type === 'object'):
-            let packed = {};
+            packed = {};
 
             for (let [key, val] of Object.entries(obj)) {
                 if (val !== undefined) {
@@ -464,6 +451,7 @@ GLib.Variant.full_pack = _full_pack;
  */
 function _full_unpack(obj) {
     obj = (obj === undefined) ? this : obj;
+    let unpacked;
 
     switch (true) {
         case (obj === null):
@@ -479,7 +467,7 @@ function _full_unpack(obj) {
             return obj.map(e => _full_unpack(e));
 
         case (typeof obj === 'object'):
-            let unpacked = {};
+            unpacked = {};
 
             for (let [key, value] of Object.entries(obj)) {
                 // Try to detect and deserialize GIcons

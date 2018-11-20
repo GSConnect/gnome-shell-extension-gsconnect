@@ -257,7 +257,9 @@ var Window = GObject.registerClass({
             Gio.SettingsBindFlags.DEFAULT
         );
 
-        this.service_menu.set_menu_model(this.application.app_menu);
+        this.service_menu.set_menu_model(
+            this.application.get_menu_by_id('service-menu')
+        );
 
         // Sidebar
         this.switcher.set_header_func(this._headerFunc);
@@ -491,7 +493,7 @@ var Device = GObject.registerClass({
         this._setupActions();
 
         // Device Menu
-        this.menu = this._menus.get_object('device-settings');
+        this.menu = this._menus.get_object('device-menu');
         this.menu.prepend_section(null, this.device.menu);
 
         // Sidebar Row
@@ -574,17 +576,19 @@ var Device = GObject.registerClass({
     }
 
     _onConnected(device) {
-        this._onTcpHostChanged(device.settings);
-        this._onBluetoothHostChanged(device.settings);
+        this._onTcpHostChanged();
+        this._onBluetoothHostChanged();
     }
 
     _onBluetoothHostChanged() {
         let action = this.actions.lookup_action('connect-bluetooth');
         let hasBluetooth = (this.settings.get_string('bluetooth-host').length);
-        action.enabled = (hasBluetooth && !this.device.connected);
+        let isLan = (this.settings.get_string('last-connection') === 'tcp');
+
+        action.enabled = (isLan && hasBluetooth);
     }
 
-    _onActivateBluetooth(button) {
+    _onActivateBluetooth() {
         this.settings.set_string('last-connection', 'bluetooth');
         this.device.activate();
     }
@@ -592,12 +596,26 @@ var Device = GObject.registerClass({
     _onTcpHostChanged() {
         let action = this.actions.lookup_action('connect-tcp');
         let hasLan = (this.settings.get_string('tcp-host').length);
-        action.enabled = (hasLan && !this.device.connected);
+        let isBluetooth = (this.settings.get_string('last-connection') === 'bluetooth');
+
+        action.enabled = (isBluetooth && hasLan);
     }
 
-    _onActivateLan(button) {
+    _onActivateLan() {
         this.settings.set_string('last-connection', 'tcp');
         this.device.activate();
+    }
+
+    _onEncryptionInfo() {
+        let dialog = new Gtk.MessageDialog({
+            buttons: Gtk.ButtonsType.OK,
+            text: _('Encryption Info'),
+            secondary_text: this.device.encryption_info,
+            modal: true,
+            transient_for: this.get_toplevel()
+        });
+        dialog.connect('response', (dialog) => dialog.destroy());
+        dialog.present();
     }
 
     _onDeleteDevice(button) {
@@ -685,6 +703,10 @@ var Device = GObject.registerClass({
         this.actions.add_action(status_lan);
 
         // Pair Actions
+        let encryption_info = new Gio.SimpleAction({name: 'encryption-info'});
+        encryption_info.connect('activate', this._onEncryptionInfo.bind(this));
+        this.actions.add_action(encryption_info);
+
         let status_pair = new Gio.SimpleAction({name: 'pair'});
         status_pair.connect('activate', this.device.pair.bind(this.device));
         this.settings.bind('paired', status_pair, 'enabled', 16);

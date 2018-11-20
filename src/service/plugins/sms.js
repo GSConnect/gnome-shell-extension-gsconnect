@@ -107,11 +107,11 @@ var _numberRegex = new RegExp(
 class URI {
     constructor(uri) {
         _smsRegex.lastIndex = 0;
-        let [full, recipients, query] = _smsRegex.exec(uri);
+        let [, recipients, query] = _smsRegex.exec(uri);
 
         this.recipients = recipients.split(',').map(recipient => {
             _numberRegex.lastIndex = 0;
-            let [full, number, params] = _numberRegex.exec(recipient);
+            let [, number, params] = _numberRegex.exec(recipient);
 
             if (params) {
                 for (let param of params.substr(1).split(';')) {
@@ -148,6 +148,16 @@ class URI {
         return (this.body) ? uri + '?body=' + escape(this.body) : uri;
     }
 }
+
+
+/**
+ * SMS Message event type. Currently all events are TEXT_MESSAGE.
+ *
+ * TEXT_MESSAGE: Has a "body" field which contains pure, human-readable text
+ */
+var MessageEvent = {
+    TEXT_MESSAGE: 0x1
+};
 
 
 /**
@@ -204,15 +214,21 @@ var Plugin = GObject.registerClass({
         this.cacheProperties(['conversations']);
     }
 
-    handlePacket(packet) {
-        switch (packet.type) {
-            // (Currently) this is always an answer to a request
-            case 'kdeconnect.sms.messages':
-                this._handleMessages(packet);
-                break;
+    get window() {
+        if (this._window === undefined) {
+            this._window = new Messaging.Window({
+                application: this.service,
+                device: this.device
+            });
+        }
 
-            default:
-                logError('Unknown telephony packet', this.device.name);
+        return this._window;
+    }
+
+    handlePacket(packet) {
+        // Currently only one incoming packet type
+        if (packet.type === 'kdeconnect.sms.messages') {
+            this._handleMessages(packet);
         }
     }
 
@@ -226,32 +242,21 @@ var Plugin = GObject.registerClass({
     }
 
     /**
-     * Update the conversations in any open windows for this device.
-     */
-    _updateConversations() {
-        for (let window of this.service.get_windows()) {
-            if (window.device === this.device && window._populateConversations) {
-                window._populateConversations();
-            }
-        }
-    }
-
-    /**
      * Handle a new single message
      */
     _handleMessage(contact, message) {
-        // Check if there's a window open
-        let window = this._hasWindow(message.address);
+        let conversation = this._hasConversation(message.address);
 
-        if (window) {
-            // Track the notification so the window can close it when focused
-            window._notifications.push(`${contact.name}: ${message.body}`);
-
-            if (this.device.get_outgoing_supported('sms.messages')) {
-                window.logMessage(message);
-            } else {
-                window.receiveMessage(message);
+        if (conversation) {
+            // Track expected ticker of outgoing messages so they can be closed
+            // FIXME: this is not working well
+            if (message.type === MessageType.OUT) {
+                conversation._notifications.push(
+                    `${contact.name}: ${message.body}`
+                );
             }
+
+            conversation.logMessage(message);
         }
     }
 
@@ -287,6 +292,9 @@ var Plugin = GObject.registerClass({
             this.conversations[thread_id] = conversation.sort((a, b) => {
                 return (a.date < b.date) ? -1 : 1;
             });
+
+            await this.__cache_write();
+            this.notify('conversations');
         } catch (e) {
             logError(e);
         }
@@ -329,41 +337,36 @@ var Plugin = GObject.registerClass({
                     }
                 });
 
-                // We call this instead of notify::threads so the conversation
-                // windows don't have to deal with the plugin loading/unloading.
-                this._updateConversations();
+                await this.__cache_write();
+                this.notify('conversations');
 
             // Otherwise this is single thread or new message
             } else {
-                this._handleConversation(packet.body.messages);
+                await this._handleConversation(packet.body.messages);
             }
-
-            await this.__cache_write();
-            this.notify('conversations');
         } catch (e) {
             logError(e);
         }
     }
 
     /**
-     * Check if there's an open conversation for a number
+     * Check if there's an active conversation for a number (eg. being viewed)
      *
-     * @param {String} number - A string phone number
-     * @return {Gtk.Window|false} - The window or false if not found
+     * @param {string} number - A string phone number
+     * @return {Messaging.ConversationWidget} - The conversation panel or %false
      */
-    _hasWindow(address) {
-        // Look for an open window with this phone number
-        address = address.toPhoneNumber();
+    _hasConversation(address) {
+        if (this._window) {
+            address = address.toPhoneNumber();
 
-        for (let win of this.service.get_windows()) {
-            if (win.device !== this.device || !win.address) {
-                continue;
-            }
+            for (let page of this.window.conversation_stack.get_children()) {
+                if (!page.address) continue;
 
-            let waddress = win.address.toPhoneNumber();
+                let waddress = page.address.toPhoneNumber();
 
-            if (address.endsWith(waddress) || waddress.endsWith(address)) {
-                return win;
+                if (address.endsWith(waddress) || waddress.endsWith(address)) {
+                    return page;
+                }
             }
         }
 
@@ -399,31 +402,8 @@ var Plugin = GObject.registerClass({
      * @param {string} hint - Could be either a contact name or phone number
      */
     replySms(hint) {
-        debug(hint);
-
-        let contact = this.device.contacts.query({
-            name: hint,
-            number: hint
-        });
-
-        // Check for an extant window
-        let window = this._hasWindow(contact.numbers[0].value);
-
-        // Open a new window if not
-        if (!window) {
-            window = new Messaging.ConversationWindow({
-                application: this.service,
-                device: this.device,
-                address: contact.numbers[0].value
-            });
-
-            // Log the message if SMS history is not supported
-            if (!this.device.get_outgoing_supported('sms.messages')) {
-                window.receiveMessage(message);
-            }
-        }
-
-        window.present();
+        this.window.present();
+        this.window.address = hint.toPhoneNumber();
     }
 
     /**
@@ -451,47 +431,28 @@ var Plugin = GObject.registerClass({
      * @param {string} url - The link to be shared
      */
     shareSms(url) {
-        // Get the current open windows
-        let hasConversations = false;
-
-        for (let window of this.service.get_windows()) {
-            if (window.address && window.device === this.device) {
-                hasConversations = true;
-                break;
-            }
-        }
-
-        let window;
-
-        // Show an intermediate dialog to allow choosing from open conversations
-        if (hasConversations) {
-            window = new Messaging.ConversationChooser({
+        // If there are active conversations, show the chooser dialog
+        if (Object.values(this.conversations).length > 0) {
+            let window = new Messaging.ConversationChooser({
                 application: this.service,
                 device: this.device,
                 message: url
             });
 
-        // Open the list of contacts to start a new conversation
-        } else {
-            window = new Messaging.ConversationWindow({
-                application: this.service,
-                device: this.device
-            });
-            window.setMessage(url);
-        }
+            window.present();
 
-        window.present();
+        // Otherwise show the window and wait for a contact to be chosen
+        } else {
+            this.window.present();
+            this.window._pendingMessage = url;
+        }
     }
 
     /**
-     * Open and present a new SMS window
+     * Open and present the messaging window
      */
     sms() {
-        let window = new Messaging.ConversationWindow({
-            application: this.service,
-            device: this.device
-        });
-        window.present();
+        this.window.present();
     }
 
     /**
@@ -503,30 +464,26 @@ var Plugin = GObject.registerClass({
         try {
             uri = new URI(uri);
 
-            // FIXME: need batch SMS window now
-            for (let recipient of uri.recipients) {
-                // Check for an extant window
-                let window = this._hasWindow(recipient);
+            // TODO: we should now reject multi-recipient URIs
+            this.window.present();
+            this.window.address = uri.recipients[0];
 
-                // None found; open one and add the contact
-                if (!window) {
-                    window = new Messaging.ConversationWindow({
-                        application: this.service,
-                        device: this.device,
-                        address: recipient
-                    });
-                }
-
-                // Set the outgoing message if the uri has a body variable
-                if (uri.body) {
-                    window.setMessage(uri.body);
-                }
-
-                window.present();
+            // Set the outgoing message if the uri has a body variable
+            if (uri.body) {
+                let conversation = this.window.conversation_stack.visible_child;
+                conversation.setMessage(uri.body);
             }
         } catch (e) {
             logError(e, `${this.device.name}: "${uri}"`);
         }
+    }
+
+    destroy() {
+        if (this._window) {
+            this._window.destroy();
+        }
+
+        super.destroy();
     }
 });
 

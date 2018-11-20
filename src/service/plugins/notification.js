@@ -57,7 +57,7 @@ var Metadata = {
 };
 
 
-var ID_REGEX = /^(fdo|gtk)\|([^\|]+)\|(.*)$/;
+var ID_REGEX = /^(fdo|gtk)\|([^|]+)\|(.*)$/;
 
 
 /**
@@ -83,6 +83,7 @@ var Plugin = GObject.registerClass({
             case 'kdeconnect.notification.request':
                 return this._handleRequest(packet);
 
+            // We don't support *incoming* replies (yet)
             case 'kdeconnect.notification.reply':
                 logWarning('Not implemented', packet.type);
                 return;
@@ -107,6 +108,9 @@ var Plugin = GObject.registerClass({
             this.device.hideNotification(packet.body.id);
 
         // A remote notification (that hasn't been marked silent)
+        // TODO: when repetitive 'silent' notifications are received, such as
+        // incoming file transfers, the icon transfers pile up quickly and are
+        // left to time-out when they should be closed/rejected.
         } else if (!packet.body.hasOwnProperty('silent')) {
             this.receiveNotification(packet);
         }
@@ -130,7 +134,7 @@ var Plugin = GObject.registerClass({
         // form "type|application-id|notification-id" so we can close it with
         // the appropriate service.
         } else if (packet.body.hasOwnProperty('cancel')) {
-            let [m, type, application, id] = ID_REGEX.exec(packet.body.cancel);
+            let [, type, application, id] = ID_REGEX.exec(packet.body.cancel);
 
             switch (type) {
                 case 'fdo':
@@ -152,33 +156,27 @@ var Plugin = GObject.registerClass({
      */
     async _uploadIcon(packet, icon) {
         try {
-            // TODO: Currently we skip icons for bluetooth connections
-            if (this.device.connection_type === 'bluetooth') {
-                return this.device.sendPacket(packet);
-            }
-
             // Normalize icon-name strings into GIcons
             if (typeof icon === 'string') {
                 icon = new Gio.ThemedIcon({name: icon});
             }
 
             switch (true) {
+                // TODO: Currently we skip icons for bluetooth connections
+                case (this.device.connection_type === 'bluetooth'):
+                    return this.device.sendPacket(packet);
+
                 // GBytesIcon
                 case (icon instanceof Gio.BytesIcon):
-                    let bytes = icon.get_bytes();
-                    return this._uploadBytesIcon(packet, bytes);
-                    break;
+                    return this._uploadBytesIcon(packet, icon.get_bytes());
 
                 // GFileIcon
                 case (icon instanceof Gio.FileIcon):
-                    let file = icon.get_file();
-                    return this._uploadFileIcon(packet, file);
-                    break;
+                    return this._uploadFileIcon(packet, icon.get_file());
 
                 // GThemedIcon
                 case (icon instanceof Gio.ThemedIcon):
                     return this._uploadThemedIcon(packet, icon);
-                    break;
 
                 default:
                     return this.device.sendPacket(packet);

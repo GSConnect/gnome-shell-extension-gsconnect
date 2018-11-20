@@ -313,10 +313,10 @@ async function check_accelerator(accelerator, flags = 0) {
                 );
             });
         }
-    } catch (e) {
-        result = false;
-    } finally {
+
         return result;
+    } catch (e) {
+        return false;
     }
 }
 
@@ -360,9 +360,10 @@ async function get_accelerator(summary, accelerator = null) {
 
             dialog.run();
         });
+
+        return accelerator;
     } catch (e) {
         logError(e);
-    } finally {
         return accelerator;
     }
 }

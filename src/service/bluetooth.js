@@ -99,7 +99,7 @@ function makeSdpRecord(uuid) {
         uuid
     ).replace(
         '@UUID_ANDROID@',
-        uuid.replace(/\-/gi, '')
+        uuid.replace(/-/gi, '')
     );
 }
 
@@ -124,7 +124,7 @@ var ChannelService = GObject.registerClass({
 
     _init() {
         super._init({
-            connection: Gio.DBus.system,
+            bus_type: Gio.BusType.SYSTEM,
             name: 'org.bluez',
             object_path: '/'
         });
@@ -155,7 +155,7 @@ var ChannelService = GObject.registerClass({
             g_connection: Gio.DBus.system,
             g_instance: this,
             g_interface_info: BluezNode.lookup_interface('org.bluez.Profile1'),
-            g_object_path: gsconnect.app_path + uuid.replace(/\-/gi, '')
+            g_object_path: gsconnect.app_path + uuid.replace(/-/gi, '')
         });
 
         // Register our exported profile path
@@ -189,7 +189,7 @@ var ChannelService = GObject.registerClass({
             });
 
             this._profileManager = new ProfileManager1Proxy({
-                g_connection: Gio.DBus.system,
+                g_bus_type: Gio.BusType.SYSTEM,
                 g_name: 'org.bluez',
                 g_object_path: '/org/bluez'
             });
@@ -287,14 +287,7 @@ var ChannelService = GObject.registerClass({
      */
     async Release() {
         debug('Release');
-
-        try {
-            // TODO
-        } catch (e) {
-            debug(e);
-        } finally {
-            return;
-        }
+        return;
     }
 
     /**
@@ -352,8 +345,6 @@ var ChannelService = GObject.registerClass({
             }
 
             logWarning(e, bdevice.Alias);
-        } finally {
-            return;
         }
     }
 
@@ -438,7 +429,7 @@ var Transfer = class Transfer extends Core.Transfer {
             g_connection: Gio.DBus.system,
             g_instance: this,
             g_interface_info: BluezNode.lookup_interface('org.bluez.Profile1'),
-            g_object_path: gsconnect.app_path + '/' + uuid.replace(/\-/gi, '')
+            g_object_path: gsconnect.app_path + '/' + uuid.replace(/-/gi, '')
         });
 
         let profileOptions = {
@@ -472,7 +463,7 @@ var Transfer = class Transfer extends Core.Transfer {
                 g_connection: Gio.DBus.system,
                 g_instance: this,
                 g_interface_info: BluezNode.lookup_interface('org.bluez.Profile1'),
-                g_object_path: gsconnect.app_path + '/' + this.uuid.replace(/\-/gi, '')
+                g_object_path: gsconnect.app_path + '/' + this.uuid.replace(/-/gi, '')
             });
 
             await this._registerProfile(this.uuid);
@@ -502,10 +493,9 @@ var Transfer = class Transfer extends Core.Transfer {
             // Create a Gio.SocketConnection from the file-descriptor
             let socket = Gio.Socket.new_from_fd(fd);
             this._connection = socket.connection_factory_create_connection();
-            let channel = new Core.Channel({type: 'bluetooth'});
+            //let channel = new Core.Channel({type: 'bluetooth'});
 
             // Accept the connection and configure the channel
-            this._connection = await connection;
             this._connection = await this._initSocket(this._connection);
             this._connection = await this._serverEncryption(this._connection);
             this.output_stream = this._connection.get_output_stream();

@@ -28,8 +28,6 @@ var Battery = GObject.registerClass({
                 case 'state':
                 case 'warning-level':
                     this.emit('changed');
-                default:
-                    return;
             }
         } catch (e) {
         }
@@ -47,6 +45,8 @@ var Battery = GObject.registerClass({
     get threshold() {
         if (!this.charging && this.warning_level >= UPower.DeviceLevel.LOW) {
             return 1;
+        } else {
+            return 0;
         }
     }
 });
