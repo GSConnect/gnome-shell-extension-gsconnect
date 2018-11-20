@@ -310,6 +310,9 @@ var Window = GObject.registerClass({
     _softwareSettings() {
         // Inject a button for each dependency row
         for (let row of this.software_list.get_children()) {
+            // Hide "Extended Keyboard Support" on Wayland
+            if (row.get_name() === 'caribou' && _WAYLAND) row.visible = false;
+
             let button = new PackageKit.DependencyButton({
                 halign: Gtk.Align.END,
                 valign: Gtk.Align.CENTER,
@@ -560,6 +563,15 @@ var Device = GObject.registerClass({
 
     get service() {
         return Gio.Application.get_default();
+    }
+
+    get supported_plugins() {
+        let supported = this.settings.get_strv('supported-plugins');
+
+        // Preempt 'mousepad' plugin on Wayland
+        if (_WAYLAND) supported.splice(supported.indexOf('mousepad'), 1);
+
+        return supported;
     }
 
     _onActionsChanged() {
@@ -1051,13 +1063,8 @@ var Device = GObject.registerClass({
     }
 
     _addActionKeybinding(name, keybindings) {
-        if (!this.device.get_action_enabled(name)) {
-            return;
-        }
-
-        if (this.device.get_action_parameter_type(name) !== null) {
-            return;
-        }
+        if (this.device.get_action_parameter_type(name) !== null) return;
+        if (!this.device.get_action_enabled(name)) return;
 
         let [label, icon_name] = this.device.get_action_state(name).deep_unpack();
 
@@ -1237,7 +1244,7 @@ var Device = GObject.registerClass({
 
     get_plugin_allowed(name) {
         let disabled = this.settings.get_strv('disabled-plugins');
-        let supported = this.settings.get_strv('supported-plugins');
+        let supported = this.supported_plugins;
 
         return supported.filter(name => !disabled.includes(name)).includes(name);
     }
@@ -1265,7 +1272,7 @@ var Device = GObject.registerClass({
             row.destroy();
         });
 
-        for (let name of this.settings.get_strv('supported-plugins')) {
+        for (let name of this.supported_plugins) {
             this._addPlugin(name);
         }
     }
