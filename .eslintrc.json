@@ -115,6 +115,7 @@
         "gsconnect": false,
         "debug": false,
         "logWarning": false,
+        "_WAYLAND": false,
         "_": false,
         "_C": false,
         "_N": false,
