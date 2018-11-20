@@ -75,9 +75,7 @@ var Battery = GObject.registerClass({
     }
 
     get battery_label() {
-        if (!this.battery) {
-            return null;
-        }
+        if (!this.battery) return null;
 
         let {Charging, Level, Time} = this.battery;
 
@@ -175,10 +173,7 @@ var Menu = class Menu extends PopupMenu.PopupMenuSection {
         this._title.label.clutter_text.ellipsize = 0;
 
         // Title -> Battery
-        this._battery = new Battery({
-            object: this.object,
-            device: this.device
-        });
+        this._battery = new Battery({object: this.object});
         this._title.actor.add_child(this._battery);
 
         // Actions

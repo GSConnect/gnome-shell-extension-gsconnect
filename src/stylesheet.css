@@ -39,6 +39,10 @@ PanelMenu.Button
     icon-size: 16px;
 }
 
+.aggregate-menu .gsconnect-device-battery {
+    opacity: 0.5;
+}
+
 /* Icon Box */
 .gsconnect-icon-box {
     margin: 0em 2em 0.5em;
