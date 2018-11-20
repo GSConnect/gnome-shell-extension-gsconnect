@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-11-19 11:14-0800\n"
-"PO-Revision-Date: 2018-11-05 11:47+0100\n"
+"PO-Revision-Date: 2018-11-20 12:14+0100\n"
 "Last-Translator: Heimen Stoffels <vistausss@outlook.com>\n"
 "Language-Team: Dutch <vistausss@outlook.com>\n"
 "Language: nl_BE\n"
@@ -164,19 +164,18 @@ msgstr "Over"
 
 #. TRANSLATORS: Change the connection type to Bluetooth
 #: data/menus.ui:34
-#, fuzzy
 msgid "Switch to Bluetooth"
-msgstr "Verbind via Bluetooth"
+msgstr "Schakel naar Bluetooth"
 
 #. TRANSLATORS: Change the connection type to TCP/IP
 #: data/menus.ui:41
 msgid "Switch to LAN"
-msgstr ""
+msgstr "Schakel naar LAN"
 
 #. TRANSLATORS: View the TLS Certificate fingerprint
 #: data/menus.ui:48 src/service/ui/settings.js:612
 msgid "Encryption Info"
-msgstr ""
+msgstr "Encryptie-info"
 
 #. TRANSLATORS: Send a pair request to the device
 #: data/menus.ui:53 src/service/device.js:425
@@ -220,9 +219,8 @@ msgid "Messaging"
 msgstr "Berichten"
 
 #: data/messaging.ui:110
-#, fuzzy
 msgid "Select a conversation"
-msgstr "Voeg personen toe om een conversatie aan te vatten"
+msgstr "Kies een conversatie"
 
 #: data/messaging.ui:188
 msgid "Device is disconnected"
@@ -359,10 +357,8 @@ msgid "Discovery Disabled"
 msgstr "Herkenning uitgeschakeld"
 
 #: src/service/daemon.js:597
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
-msgstr ""
-"Herkenning is uitgeschakeld vanwege het aantal toestellen op dit netwerk."
+msgid "Discovery has been disabled due to the number of devices on this network."
+msgstr "Herkenning is uitgeschakeld vanwege het aantal toestellen op dit netwerk."
 
 #: src/service/daemon.js:599 src/service/daemon.js:609
 msgid "Click to open preferences"
@@ -726,37 +722,37 @@ msgstr "In gesprek"
 
 #. TRANSLATORS: All other phone number types
 #: src/service/ui/contacts.js:58 src/service/ui/contacts.js:79
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%s・Other"
-msgstr "Ander"
+msgstr "%s・Ander"
 
 #. TRANSLATORS: A fax number
 #: src/service/ui/contacts.js:63
 #, javascript-format
 msgid "%s・Fax"
-msgstr ""
+msgstr "%s・Fax"
 
 #. TRANSLATORS: A work phone number
 #: src/service/ui/contacts.js:67
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%s・Work"
-msgstr "Job"
+msgstr "%s・Job"
 
 #. TRANSLATORS: A mobile or cellular phone number
 #: src/service/ui/contacts.js:71
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%s・Mobile"
-msgstr "GSM"
+msgstr "%s・GSM"
 
 #. TRANSLATORS: A home phone number
 #: src/service/ui/contacts.js:75
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%s・Home"
-msgstr "Thuis"
+msgstr "%s・Thuis"
 
 #: src/service/ui/contacts.js:203
 msgid "Select a contact or number"
-msgstr ""
+msgstr "Kies een contact of nummer"
 
 #. TRANSLATORS: A phone number (eg. "Send to 555-5555")
 #: src/service/ui/contacts.js:239 src/service/ui/contacts.js:253
@@ -784,8 +780,7 @@ msgstr "Voer een nieuwe sneltoets in voor het wijzigen van <b>%s</b>"
 #. TRANSLATORS: Keys for cancelling (␛) or resetting (␈) a shortcut
 #: src/service/ui/keybindings.js:83
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr ""
-"Druk op Esc om te annuleren of op Backspace om de sneltoets terug te zetten."
+msgstr "Druk op Esc om te annuleren of op Backspace om de sneltoets terug te zetten."
 
 #. TRANSLATORS: When a keyboard shortcut is unavailable
 #. Example: [Ctrl]+[S] is already being used
@@ -992,12 +987,8 @@ msgstr "Open in browser"
 #~ msgid "This program comes with absolutely no warranty."
 #~ msgstr "Dit programma kent geen enkele garantie."
 
-#~ msgid ""
-#~ "See the <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html"
-#~ "\">GNU General Public License, version 2 or later</a> for details."
-#~ msgstr ""
-#~ "Lees de <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html"
-#~ "\">GNU General Public License, version 2 of later</a> voor informatie."
+#~ msgid "See the <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html\">GNU General Public License, version 2 or later</a> for details."
+#~ msgstr "Lees de <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html\">GNU General Public License, version 2 of later</a> voor informatie."
 
 #~ msgid "Preferences"
 #~ msgstr "Voorkeuren"
@@ -1008,12 +999,8 @@ msgstr "Open in browser"
 #~ msgid "Web Browser Integration"
 #~ msgstr "Browser-integratie"
 
-#~ msgid ""
-#~ "Requires <a href=\"%s\">Chrome Extension</a> or <a href=\"%s\">Firefox "
-#~ "Add-On</a>"
-#~ msgstr ""
-#~ "<a href=\"%s\">Chrome-extensie</a> of <a href=\"%s\">Firefox add-on</a> "
-#~ "vereist"
+#~ msgid "Requires <a href=\"%s\">Chrome Extension</a> or <a href=\"%s\">Firefox Add-On</a>"
+#~ msgstr "<a href=\"%s\">Chrome-extensie</a> of <a href=\"%s\">Firefox add-on</a> vereist"
 
 #~ msgid "Nautilus extensions changed"
 #~ msgstr "Nautilus-uitbreidingen aangepast"
@@ -1139,27 +1126,14 @@ msgstr "Open in browser"
 #~ msgid "The <b>Media Player Control</b> plugin must be enabled"
 #~ msgstr "De <b>mediaspeler</b>-invoegtoepassing moet zijn ingeschakeld"
 
-#~ msgid ""
-#~ "Ensure that devices are on the same local network with ports 1716 to 1764 "
-#~ "open for TCP and UDP connections."
-#~ msgstr ""
-#~ "Zorg ervoor dat de toestellen zijn geconnecteerd met hetzelfde netwerk "
-#~ "met poorten 1716-1764 geopend voor TCP- en UDP-verbindingen."
+#~ msgid "Ensure that devices are on the same local network with ports 1716 to 1764 open for TCP and UDP connections."
+#~ msgstr "Zorg ervoor dat de toestellen zijn geconnecteerd met hetzelfde netwerk met poorten 1716-1764 geopend voor TCP- en UDP-verbindingen."
 
-#~ msgid ""
-#~ "To connect an Android device, install the KDE Connect Android app from "
-#~ "the <a href=\"%s\">Google Play Store</a> or <a href=\"%s\">F-Droid</a>."
-#~ msgstr ""
-#~ "Om een Android-apparaat te connecteren, installeert u de KDE Connect "
-#~ "Android-app van de <a href=\"%s\">Google Play Store</a> of <a href=\"%s"
-#~ "\">F-Droid</a>."
+#~ msgid "To connect an Android device, install the KDE Connect Android app from the <a href=\"%s\">Google Play Store</a> or <a href=\"%s\">F-Droid</a>."
+#~ msgstr "Om een Android-apparaat te connecteren, installeert u de KDE Connect Android-app van de <a href=\"%s\">Google Play Store</a> of <a href=\"%s\">F-Droid</a>."
 
-#~ msgid ""
-#~ "Please see the <a href=\"%s\">Wiki</a> for more help or <a href=\"%s"
-#~ "\">open an issue</a> on Github to report a problem."
-#~ msgstr ""
-#~ "Lees de <a href=\"%s\">Wiki</a> voor hulp of <a href=\"%s\">open een "
-#~ "issue</a> op GitHub om een probleem te rapporteren."
+#~ msgid "Please see the <a href=\"%s\">Wiki</a> for more help or <a href=\"%s\">open an issue</a> on Github to report a problem."
+#~ msgstr "Lees de <a href=\"%s\">Wiki</a> voor hulp of <a href=\"%s\">open een issue</a> op GitHub om een probleem te rapporteren."
 
 #~ msgid "Error: %s"
 #~ msgstr "Fout: %s"
@@ -1195,10 +1169,8 @@ msgstr "Open in browser"
 #~ msgid "Keyboard Shortcut Unavailable"
 #~ msgstr "Sneltoets onbeschikbaar"
 
-#~ msgid ""
-#~ "The requested keyboard shortcut is already in use and can't be overridden."
-#~ msgstr ""
-#~ "De gevraagde sneltoets is al gebruikt en kan niet worden overschreven."
+#~ msgid "The requested keyboard shortcut is already in use and can't be overridden."
+#~ msgstr "De gevraagde sneltoets is al gebruikt en kan niet worden overschreven."
 
 #~ msgid "Configure <b>%s</b>"
 #~ msgstr "Stel <b>%s</b> in"
