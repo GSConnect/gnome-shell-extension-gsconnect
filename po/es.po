@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-11-19 11:14-0800\n"
-"PO-Revision-Date: 2018-10-11 15:16-0500\n"
+"PO-Revision-Date: 2018-11-19 20:23-0600\n"
 "Last-Translator: Adolfo Jayme Barrientos <fitojb@ubuntu.com>\n"
 "Language-Team: \n"
 "Language: es\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.1.1\n"
+"X-Generator: Poedit 2.2\n"
 
 #: data/conversation.ui:71 data/conversation.ui:79
 msgid "Type a message"
@@ -31,21 +31,20 @@ msgid "Battery"
 msgstr "Batería"
 
 #: data/device.ui:116
-#, fuzzy
 msgid "Clipboard Sync"
-msgstr "Portapapeles"
+msgstr "Sincronización de portapapeles"
 
 #: data/device.ui:172
 msgid "Media Players"
-msgstr ""
+msgstr "Reproductores multimedia"
 
 #: data/device.ui:220
 msgid "Mouse & Keyboard"
-msgstr ""
+msgstr "Ratón y teclado"
 
 #: data/device.ui:268
 msgid "Volume Control"
-msgstr ""
+msgstr "Control de volumen"
 
 #: data/device.ui:308 data/device.ui:1406
 msgid "Sharing"
@@ -69,9 +68,8 @@ msgid "Command Line"
 msgstr "Línea de órdenes"
 
 #: data/device.ui:597
-#, fuzzy
 msgid "Share Notifications"
-msgstr "Enviar notificación"
+msgstr "Notificaciones de compartición"
 
 #: data/device.ui:636
 msgid "Applications"
@@ -87,13 +85,12 @@ msgid "Incoming Calls"
 msgstr "Llamadas entrantes"
 
 #: data/device.ui:755 data/device.ui:900
-#, fuzzy
 msgid "Volume"
-msgstr "Volumen del sistema"
+msgstr "Volumen"
 
 #: data/device.ui:813 data/device.ui:958
 msgid "Pause Media"
-msgstr ""
+msgstr "Pausar multimedia"
 
 #: data/device.ui:852
 msgid "Ongoing Calls"
@@ -101,7 +98,7 @@ msgstr "Llamadas en curso"
 
 #: data/device.ui:1007
 msgid "Mute Microphone"
-msgstr ""
+msgstr "Silenciar micrófono"
 
 #: data/device.ui:1047 data/device.ui:1535 src/service/plugins/telephony.js:12
 msgid "Telephony"
@@ -144,9 +141,8 @@ msgid "Advanced"
 msgstr "Avanzado"
 
 #: data/device.ui:1578
-#, fuzzy
 msgid "Keyboard Shortcuts"
-msgstr "Atajos de órdenes"
+msgstr "Atajos de teclado"
 
 #. TRANSLATORS: Open a dialog to connect to an IP or Bluez device
 #: data/menus.ui:7 src/service/ui/service.js:115
@@ -168,19 +164,18 @@ msgstr "Acerca de"
 
 #. TRANSLATORS: Change the connection type to Bluetooth
 #: data/menus.ui:34
-#, fuzzy
 msgid "Switch to Bluetooth"
-msgstr "Conectar Bluetooth"
+msgstr "Cambiar a Bluetooth"
 
 #. TRANSLATORS: Change the connection type to TCP/IP
 #: data/menus.ui:41
 msgid "Switch to LAN"
-msgstr ""
+msgstr "Cambiar a LAN"
 
 #. TRANSLATORS: View the TLS Certificate fingerprint
 #: data/menus.ui:48 src/service/ui/settings.js:612
 msgid "Encryption Info"
-msgstr ""
+msgstr "Información de cifrado"
 
 #. TRANSLATORS: Send a pair request to the device
 #: data/menus.ui:53 src/service/device.js:425
@@ -224,9 +219,8 @@ msgid "Messaging"
 msgstr "Mensajería"
 
 #: data/messaging.ui:110
-#, fuzzy
 msgid "Select a conversation"
-msgstr "Añada personas para comenzar una conversación"
+msgstr "Seleccione una conversación"
 
 #: data/messaging.ui:188
 msgid "Device is disconnected"
@@ -238,21 +232,19 @@ msgstr "Apariencia"
 
 #: data/settings.ui:383
 msgid "Display Mode"
-msgstr ""
+msgstr "Modo de visualización"
 
 #: data/settings.ui:425
 msgid "Service"
 msgstr "Servicio"
 
 #: data/settings.ui:475
-#, fuzzy
 msgid "Discoverable"
-msgstr "Descubrimiento desactivado"
+msgstr "Reconocible"
 
 #: data/settings.ui:528
-#, fuzzy
 msgid "Restart Service"
-msgstr "Servicio"
+msgstr "Reiniciar servicio"
 
 #: data/settings.ui:581 data/settings.ui:1015 src/service/device.js:417
 msgid "Settings"
@@ -264,21 +256,19 @@ msgstr "Sistemas de archivos remotos"
 
 #: data/settings.ui:675
 msgid "Sound Effects"
-msgstr ""
+msgstr "Efectos sonoros"
 
 #: data/settings.ui:712
-#, fuzzy
 msgid "Extended Keyboard Support"
-msgstr "Atajos de órdenes"
+msgstr "Compatibilidad ampliada con el teclado"
 
 #: data/settings.ui:749
-#, fuzzy
 msgid "Desktop Contacts"
-msgstr "Contactos"
+msgstr "Contactos de escritorio"
 
 #: data/settings.ui:786
 msgid "Files Integration"
-msgstr ""
+msgstr "Integración de archivos"
 
 #: data/settings.ui:813
 msgid "Additional Features"
@@ -286,7 +276,7 @@ msgstr "Funcionalidades adicionales"
 
 #: data/settings.ui:903
 msgid "Browser Add-Ons"
-msgstr ""
+msgstr "Complementos para navegadores"
 
 #: data/settings.ui:921
 msgid "KDE Connect"
@@ -322,11 +312,11 @@ msgstr "GSConnect"
 
 #. TRANSLATORS: %d is the number of devices connected
 #: src/extension.js:257
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%d Connected"
 msgid_plural "%d Connected"
-msgstr[0] "Conectar"
-msgstr[1] "Conectar"
+msgstr[0] "%d conectado"
+msgstr[1] "%d conectados"
 
 #. TRANSLATORS: Top-level context menu item for GSConnect
 #: src/nautilus-gsconnect.py:112 webextension/gettext.js:31
@@ -335,7 +325,7 @@ msgstr "Enviar a dispositivo móvil"
 
 #: src/service/daemon.js:406
 msgid "A complete KDE Connect implementation for GNOME"
-msgstr ""
+msgstr "Una completa implementación de KDE Connect para GNOME"
 
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
 #: src/service/daemon.js:415
@@ -523,14 +513,12 @@ msgid "Mousepad"
 msgstr "Mousepad"
 
 #: src/service/plugins/mousepad.js:28 src/service/plugins/mousepad.js:578
-#, fuzzy
 msgid "Keyboard"
-msgstr "Atajos de órdenes"
+msgstr "Teclado"
 
 #: src/service/plugins/mousepad.js:595
-#, fuzzy
 msgid "Keyboard not ready"
-msgstr "Atajos de órdenes"
+msgstr "El teclado no está preparado"
 
 #: src/service/plugins/mpris.js:10
 msgid "MPRIS"
@@ -545,9 +533,8 @@ msgid "Close Notification"
 msgstr "Cerrar notificación"
 
 #: src/service/plugins/notification.js:41
-#, fuzzy
 msgid "Reply Notification"
-msgstr "Cancelar notificación"
+msgstr "Notificación de respuesta"
 
 #: src/service/plugins/notification.js:49
 msgid "Send Notification"
@@ -738,37 +725,37 @@ msgstr "Llamada en curso"
 
 #. TRANSLATORS: All other phone number types
 #: src/service/ui/contacts.js:58 src/service/ui/contacts.js:79
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%s・Other"
-msgstr "Otro"
+msgstr "%s・Otro"
 
 #. TRANSLATORS: A fax number
 #: src/service/ui/contacts.js:63
 #, javascript-format
 msgid "%s・Fax"
-msgstr ""
+msgstr "%s・Fax"
 
 #. TRANSLATORS: A work phone number
 #: src/service/ui/contacts.js:67
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%s・Work"
-msgstr "Trabajo"
+msgstr "%s・Trabajo"
 
 #. TRANSLATORS: A mobile or cellular phone number
 #: src/service/ui/contacts.js:71
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%s・Mobile"
-msgstr "Móvil"
+msgstr "%s・Móvil"
 
 #. TRANSLATORS: A home phone number
 #: src/service/ui/contacts.js:75
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%s・Home"
-msgstr "Casa"
+msgstr "%s・Residencial"
 
 #: src/service/ui/contacts.js:203
 msgid "Select a contact or number"
-msgstr ""
+msgstr "Seleccione un contacto o un número"
 
 #. TRANSLATORS: A phone number (eg. "Send to 555-5555")
 #: src/service/ui/contacts.js:239 src/service/ui/contacts.js:253
@@ -850,10 +837,10 @@ msgstr "Ahora mismo"
 #. TRANSLATORS: Time duration in minutes (eg. 15 minutes)
 #: src/service/ui/messaging.js:98 src/service/ui/messaging.js:130
 #: src/shell/donotdisturb.js:266
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%d minute"
 msgid_plural "%d minutes"
-msgstr[0] "%d minutos"
+msgstr[0] "%d minuto"
 msgstr[1] "%d minutos"
 
 #. TRANSLATORS: Yesterday, but less than 24 hours (eg. Yesterday · 11:29 PM)
