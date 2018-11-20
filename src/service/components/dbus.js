@@ -624,7 +624,6 @@ function makeInterfaceProxy(info) {
 
         _init(params) {
             super._init(Object.assign({
-                g_connection: Gio.DBus.session,
                 g_interface_info: info,
                 g_interface_name: info.name,
                 no_cache: false

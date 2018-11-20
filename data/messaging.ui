@@ -2,50 +2,32 @@
 <!-- Generated with glade 3.22.1 -->
 <interface domain="org.gnome.Shell.Extensions.GSConnect">
   <requires lib="gtk+" version="3.20"/>
-  <template class="GSConnectConversationWindow" parent="GtkApplicationWindow">
+  <template class="GSConnectMessagingWindow" parent="GtkApplicationWindow">
     <property name="can_focus">False</property>
-    <property name="default_width">300</property>
-    <property name="default_height">300</property>
-    <property name="urgency_hint">True</property>
+    <property name="show_menubar">False</property>
     <child type="titlebar">
       <object class="GtkHeaderBar" id="headerbar">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="title" translatable="yes">Conversations</property>
+        <property name="title" translatable="yes">Messaging</property>
         <property name="show_close_button">True</property>
         <child>
-          <object class="GtkButton" id="conversation-add">
+          <object class="GtkButton">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
+            <property name="has_focus">True</property>
+            <property name="is_focus">True</property>
             <property name="receives_default">True</property>
-            <property name="always_show_image">True</property>
-            <signal name="clicked" handler="_showContacts" swapped="no"/>
+            <signal name="clicked" handler="_onNewConversation" swapped="no"/>
             <child>
               <object class="GtkImage">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="valign">center</property>
                 <property name="icon_name">list-add-symbolic</property>
               </object>
             </child>
           </object>
-        </child>
-        <child>
-          <object class="GtkButton" id="go-previous">
-            <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
-            <property name="always_show_image">True</property>
-            <signal name="clicked" handler="_showPrevious" swapped="no"/>
-            <child>
-              <object class="GtkImage">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="icon_name">go-previous-symbolic</property>
-              </object>
-            </child>
-          </object>
-          <packing>
-            <property name="position">1</property>
-          </packing>
         </child>
       </object>
     </child>
@@ -54,100 +36,96 @@
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <child>
-          <object class="GtkStack" id="stack">
+          <object class="GtkPaned">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
+            <property name="can_focus">True</property>
             <property name="hexpand">True</property>
             <property name="vexpand">True</property>
-            <property name="transition_type">slide-up-down</property>
+            <property name="position">200</property>
+            <property name="position_set">True</property>
             <child>
-              <object class="GtkScrolledWindow" id="conversation-window">
+              <object class="GtkScrolledWindow">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="shadow_type">in</property>
+                <property name="hscrollbar_policy">never</property>
                 <child>
                   <object class="GtkViewport">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="shadow_type">none</property>
                     <child>
                       <object class="GtkListBox" id="conversation-list">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="selection_mode">none</property>
-                        <signal name="row-activated" handler="_onConversationActivated" swapped="no"/>
+                        <property name="vexpand">True</property>
+                        <signal name="row-selected" handler="_onConversationSelected" swapped="no"/>
+                        <style>
+                          <class name="conversation-list"/>
+                        </style>
                       </object>
                     </child>
                   </object>
                 </child>
               </object>
               <packing>
-                <property name="name">conversations</property>
+                <property name="resize">False</property>
+                <property name="shrink">False</property>
               </packing>
             </child>
             <child>
-              <object class="GtkBox">
+              <object class="GtkStack" id="conversation-stack">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="margin_left">6</property>
-                <property name="margin_right">6</property>
-                <property name="margin_top">6</property>
-                <property name="margin_bottom">6</property>
-                <property name="orientation">vertical</property>
-                <property name="spacing">6</property>
+                <property name="hexpand">True</property>
+                <property name="transition_type">crossfade</property>
                 <child>
-                  <object class="GtkScrolledWindow" id="message-window">
+                  <object class="GtkGrid">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="vexpand">True</property>
-                    <property name="hscrollbar_policy">never</property>
-                    <property name="shadow_type">in</property>
-                    <signal name="edge-reached" handler="_onMessageRequested" swapped="no"/>
                     <child>
-                      <object class="GtkViewport">
+                      <object class="GtkImage">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <child>
-                          <object class="GtkListBox" id="message-list">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="selection_mode">none</property>
-                            <property name="activate_on_single_click">False</property>
-                            <signal name="size-allocate" handler="_onMessageLogged" swapped="no"/>
-                          </object>
-                        </child>
+                        <property name="valign">end</property>
+                        <property name="hexpand">True</property>
+                        <property name="vexpand">True</property>
+                        <property name="pixel_size">144</property>
+                        <property name="icon_name">sms-symbolic</property>
+                        <style>
+                          <class name="dim-label"/>
+                        </style>
                       </object>
+                      <packing>
+                        <property name="left_attach">0</property>
+                        <property name="top_attach">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="valign">start</property>
+                        <property name="hexpand">True</property>
+                        <property name="vexpand">True</property>
+                        <property name="label" translatable="yes">Select a conversation</property>
+                        <style>
+                          <class name="dim-label"/>
+                        </style>
+                      </object>
+                      <packing>
+                        <property name="left_attach">0</property>
+                        <property name="top_attach">1</property>
+                      </packing>
                     </child>
                   </object>
                   <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkEntry" id="message-entry">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="tooltip_text" translatable="yes">Type a message</property>
-                    <property name="caps_lock_warning">False</property>
-                    <property name="secondary_icon_name">sms-send</property>
-                    <property name="secondary_icon_sensitive">False</property>
-                    <property name="placeholder_text" translatable="yes">Type a message</property>
-                    <signal name="activate" handler="sendMessage" swapped="no"/>
-                    <signal name="changed" handler="_onEntryChanged" swapped="no"/>
-                    <signal name="icon-release" handler="sendMessage" swapped="no"/>
-                    <signal name="notify::has-focus" handler="_onEntryFocused" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">1</property>
+                    <property name="name">placeholder</property>
                   </packing>
                 </child>
               </object>
               <packing>
-                <property name="name">messages</property>
-                <property name="position">1</property>
+                <property name="resize">True</property>
+                <property name="shrink">False</property>
               </packing>
             </child>
           </object>
@@ -222,6 +200,9 @@
                     <property name="position">0</property>
                   </packing>
                 </child>
+                <child>
+                  <placeholder/>
+                </child>
               </object>
             </child>
             <style>
@@ -237,3 +218,4 @@
     </child>
   </template>
 </interface>
+

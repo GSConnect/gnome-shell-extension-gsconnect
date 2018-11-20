@@ -233,7 +233,7 @@ var ChannelService = GObject.registerClass({
                     packet.body.tcpHost,
                     packet.body.tcpPort
                 );
-                let client = new Gio.SocketClient();
+                let client = new Gio.SocketClient({enable_proxy: false});
 
                 client.connect_async(address, null, (client, res) => {
                     try {
@@ -279,7 +279,9 @@ var ChannelService = GObject.registerClass({
 
             this._udp.send_to(address, `${this.service.identity}`, null);
         } catch (e) {
-            logError(e);
+            // GNetworkMonitor overreacts when the connectivity state changes
+            // and the documentation is a whole page of wishy-washy excuses, so
+            // we just silence any broadcast errors
         }
     }
 
@@ -317,7 +319,7 @@ var Transfer = class Transfer extends Core.Transfer {
         try {
             this._connection = await new Promise((resolve, reject) => {
                 // Connect
-                let client = new Gio.SocketClient();
+                let client = new Gio.SocketClient({enable_proxy: false});
 
                 // Use the address from GSettings with @port
                 let address = Gio.InetSocketAddress.new_from_string(

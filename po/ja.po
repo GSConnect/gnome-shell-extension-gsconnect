@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-18 11:12-0700\n"
+"POT-Creation-Date: 2018-11-19 11:14-0800\n"
 "PO-Revision-Date: 2018-05-24 00:30+0900\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -18,224 +18,234 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Poedit 2.0.6\n"
 
-#: data/conversation-window.ui:14 src/service/ui/messaging.js:482
-#, fuzzy
-msgid "Conversations"
-msgstr "SMS会議"
-
-#: data/conversation-window.ui:131 data/conversation-window.ui:135
+#: data/conversation.ui:71 data/conversation.ui:79
 #, fuzzy
 msgid "Type a message"
 msgstr "SMSメッセージを入力"
 
-#: data/conversation-window.ui:210 src/shell/device.js:578
-msgid "Device is disconnected"
-msgstr "端末は切断"
+#: data/contacts.ui:51 data/contacts.ui:52
+msgid "Type a phone number or name"
+msgstr "電話番号または名前を入力"
 
-#: data/device.ui:67 src/service/plugins/battery.js:12
+#: data/device.ui:68 src/service/plugins/battery.js:12
 msgid "Battery"
 msgstr "電池"
 
-#: data/device.ui:115
+#: data/device.ui:116
 #, fuzzy
 msgid "Clipboard Sync"
 msgstr "クリップボード"
 
-#: data/device.ui:171
+#: data/device.ui:172
 #, fuzzy
 msgid "Media Players"
 msgstr "メディアプレーヤーコントロール"
 
-#: data/device.ui:219
+#: data/device.ui:220
 msgid "Mouse & Keyboard"
 msgstr ""
 
-#: data/device.ui:267
+#: data/device.ui:268
 msgid "Volume Control"
 msgstr ""
 
-#: data/device.ui:307 data/device.ui:1404
+#: data/device.ui:308 data/device.ui:1406
 #, fuzzy
 msgid "Sharing"
 msgstr "リンクを共有"
 
-#: data/device.ui:336 data/device.ui:533 data/device.ui:1447
-#: src/service/plugins/runcommand.js:18 src/service/plugins/runcommand.js:173
+#: data/device.ui:337 data/device.ui:534 data/device.ui:1449
+#: src/service/plugins/runcommand.js:18 src/service/plugins/runcommand.js:169
 #, fuzzy
 msgid "Commands"
 msgstr "コマンド"
 
-#: data/device.ui:384
+#: data/device.ui:385
 msgid "Name"
 msgstr "名前"
 
-#: data/device.ui:400 data/device.ui:401
+#: data/device.ui:401 data/device.ui:402
 msgid "Choose an executable"
 msgstr ""
 
-#: data/device.ui:402
+#: data/device.ui:403
 #, fuzzy
 msgid "Command Line"
 msgstr "コマンド"
 
-#: data/device.ui:596
+#: data/device.ui:597
 #, fuzzy
 msgid "Share Notifications"
 msgstr "通知を送信"
 
-#: data/device.ui:634
+#: data/device.ui:636
 msgid "Applications"
 msgstr "アプリケーション"
 
-#: data/device.ui:673 data/device.ui:1490
+#: data/device.ui:675 data/device.ui:1492
 #: src/service/plugins/notification.js:12
 msgid "Notifications"
 msgstr "通知"
 
-#: data/device.ui:703
+#: data/device.ui:705
 msgid "Incoming Calls"
 msgstr "着信中"
 
-#: data/device.ui:753 data/device.ui:898
+#: data/device.ui:755 data/device.ui:900
 #, fuzzy
 msgid "Volume"
 msgstr "システムの音量"
 
-#: data/device.ui:811 data/device.ui:956
+#: data/device.ui:813 data/device.ui:958
 msgid "Pause Media"
 msgstr "メディアを一時停止"
 
-#: data/device.ui:850
+#: data/device.ui:852
 #, fuzzy
 msgid "Ongoing Calls"
 msgstr "着信中"
 
-#: data/device.ui:1005
+#: data/device.ui:1007
 msgid "Mute Microphone"
 msgstr "マイクをミュート"
 
-#: data/device.ui:1045 data/device.ui:1533 src/service/plugins/telephony.js:12
+#: data/device.ui:1047 data/device.ui:1535 src/service/plugins/telephony.js:12
 msgid "Telephony"
 msgstr "電話"
 
-#: data/device.ui:1080
+#: data/device.ui:1082
 #, fuzzy
 msgid "Action Shortcuts"
 msgstr "キーボードショートカット"
 
-#: data/device.ui:1092 data/device.ui:1155
+#: data/device.ui:1094 data/device.ui:1157
 msgid "Reset All…"
 msgstr ""
 
-#: data/device.ui:1143
+#: data/device.ui:1145
 #, fuzzy
 msgid "Command Shortcuts"
 msgstr "キーボードショートカット"
 
-#: data/device.ui:1201
+#: data/device.ui:1203
 #, fuzzy
 msgid "Shortcuts"
 msgstr "キーボードショートカット"
 
-#: data/device.ui:1232
+#: data/device.ui:1234
 msgid "Plugins"
 msgstr "プラグイン"
 
-#: data/device.ui:1293
+#: data/device.ui:1295
 msgid "Delete"
 msgstr ""
 
-#: data/device.ui:1318
+#: data/device.ui:1320
 #, fuzzy
 msgid "Delete this device"
 msgstr "%sがこの端末を探すよう要求しました"
 
-#: data/device.ui:1333
+#: data/device.ui:1335
 msgid "Unpair and remove all settings and files"
 msgstr ""
 
-#: data/device.ui:1363 data/device.ui:1619
+#: data/device.ui:1365 data/device.ui:1621
 msgid "Advanced"
 msgstr ""
 
-#: data/device.ui:1576
+#: data/device.ui:1578
 #, fuzzy
 msgid "Keyboard Shortcuts"
 msgstr "キーボードショートカット"
 
-#: data/menus.ui:5 src/service/ui/service.js:115
+#. TRANSLATORS: Open a dialog to connect to an IP or Bluez device
+#: data/menus.ui:7 src/service/ui/service.js:115
 #, fuzzy
 msgid "Connect to…"
 msgstr "GSConnect"
 
-#: data/menus.ui:11
-#, fuzzy
-msgid "Sync Contacts"
-msgstr "不明な連絡先"
-
-#: data/menus.ui:16
-#, fuzzy
-msgid "Sync Messages"
-msgstr "メッセージ"
-
-#: data/menus.ui:23 data/settings.ui:1087
+#: data/menus.ui:13 data/settings.ui:881
 msgid "Help"
 msgstr ""
 
-#: data/menus.ui:28
+#. TRANSLATORS: Open the developer's dialog
+#: data/menus.ui:19
 #, fuzzy
 msgid "Debugger"
 msgstr "デバッグモード"
 
-#: data/menus.ui:32
+#: data/menus.ui:23
 msgid "About"
 msgstr "概要"
 
-#: data/menus.ui:41
-msgid "Connect Bluetooth"
+#. TRANSLATORS: Change the connection type to Bluetooth
+#: data/menus.ui:34
+msgid "Switch to Bluetooth"
 msgstr ""
 
-#: data/menus.ui:47
-#, fuzzy
-msgid "Connect LAN"
-msgstr "GSConnect"
+#. TRANSLATORS: Change the connection type to TCP/IP
+#: data/menus.ui:41
+msgid "Switch to LAN"
+msgstr ""
 
-#: data/menus.ui:53 src/service/device.js:434 src/shell/device.js:374
+#. TRANSLATORS: View the TLS Certificate fingerprint
+#: data/menus.ui:48 src/service/ui/settings.js:612
+msgid "Encryption Info"
+msgstr ""
+
+#. TRANSLATORS: Send a pair request to the device
+#: data/menus.ui:53 src/service/device.js:425
 msgid "Pair"
 msgstr ""
 
-#: data/menus.ui:59 src/service/device.js:442
+#. TRANSLATORS: Unpair the device and notify it
+#: data/menus.ui:59 src/service/device.js:433
 #, fuzzy
 msgid "Unpair"
 msgstr "ペア解除した端末を表示"
 
 #. TRANSLATORS: Send clipboard content to device
-#: data/menus.ui:72
+#: data/menus.ui:71
 #, fuzzy
 msgid "To Device"
 msgstr "端末"
 
 #. TRANSLATORS: Receive clipboard content from the device
-#: data/menus.ui:78
+#: data/menus.ui:77
 #, fuzzy
 msgid "From Device"
 msgstr "端末を探す"
 
 #. TRANSLATORS: Don't change the system volume
-#: data/menus.ui:90 data/menus.ui:116
+#: data/menus.ui:89 data/menus.ui:115
 msgid "Nothing"
 msgstr "何もしない"
 
 #. TRANSLATORS: Lower the system volume
-#: data/menus.ui:97 data/menus.ui:123
+#: data/menus.ui:96 data/menus.ui:122
 msgid "Lower"
 msgstr "下げる"
 
 #. TRANSLATORS: Mute the system volume
 #. TRANSLATORS: Silence the phone ringer
-#: data/menus.ui:104 data/menus.ui:130 src/service/plugins/telephony.js:175
+#: data/menus.ui:103 data/menus.ui:129 src/service/plugins/telephony.js:176
 msgid "Mute"
 msgstr "ミュート"
+
+#: data/messaging.ui:12 src/service/plugins/sms.js:25
+#: src/service/ui/messaging.js:871
+#, fuzzy
+msgid "Messaging"
+msgstr "メッセージ"
+
+#: data/messaging.ui:110
+#, fuzzy
+msgid "Select a conversation"
+msgstr "他の人を招待して会議を始める"
+
+#: data/messaging.ui:188
+msgid "Device is disconnected"
+msgstr "端末は切断"
 
 #: data/settings.ui:333
 msgid "Appearance"
@@ -245,195 +255,179 @@ msgstr "外観"
 msgid "Display Mode"
 msgstr ""
 
-#: data/settings.ui:435
-#, fuzzy
-msgid "Show Offline Devices"
-msgstr "オフラインの端末を表示"
-
-#: data/settings.ui:486
-#, fuzzy
-msgid "Show Unpaired Devices"
-msgstr "モバイル端末"
-
-#: data/settings.ui:537
-msgid "Show Battery Icon"
-msgstr "電池アイコンを表示"
-
-#: data/settings.ui:578 data/settings.ui:1167
-msgid "Shell"
-msgstr ""
-
-#: data/settings.ui:639
-msgid "Discoverable"
-msgstr ""
-
-#: data/settings.ui:711
-#, fuzzy
-msgid "Restart Service"
-msgstr "端末"
-
-#: data/settings.ui:764 data/settings.ui:1210
+#: data/settings.ui:425
 #, fuzzy
 msgid "Service"
 msgstr "端末"
 
-#: data/settings.ui:823
+#: data/settings.ui:475
+msgid "Discoverable"
+msgstr ""
+
+#: data/settings.ui:528
+#, fuzzy
+msgid "Restart Service"
+msgstr "端末"
+
+#: data/settings.ui:581 data/settings.ui:1015 src/service/device.js:417
+#, fuzzy
+msgid "Settings"
+msgstr "モバイル設定"
+
+#: data/settings.ui:639
 msgid "Remote Filesystems"
 msgstr ""
 
-#: data/settings.ui:859
+#: data/settings.ui:675
 msgid "Sound Effects"
 msgstr ""
 
-#: data/settings.ui:896
+#: data/settings.ui:712
+#, fuzzy
+msgid "Extended Keyboard Support"
+msgstr "キーボードショートカット"
+
+#: data/settings.ui:749
 #, fuzzy
 msgid "Desktop Contacts"
 msgstr "不明な連絡先"
 
-#: data/settings.ui:933
+#: data/settings.ui:786
 #, fuzzy
 msgid "Files Integration"
 msgstr "Nautilus統合"
 
-#: data/settings.ui:960
+#: data/settings.ui:813
 msgid "Additional Features"
 msgstr ""
 
-#: data/settings.ui:1033
-msgid "Android"
+#: data/settings.ui:903
+msgid "Browser Add-Ons"
 msgstr ""
 
-#: data/settings.ui:1048
-msgid "Sailfish OS"
-msgstr ""
-
-#: data/settings.ui:1068
+#: data/settings.ui:921
 #, fuzzy
 msgid "KDE Connect"
 msgstr "GSConnect"
 
-#. TRANSLATORS: A phone number type
-#: data/settings.ui:1108 data/settings.ui:1253 src/service/ui/contacts.js:57
-#: src/service/ui/contacts.js:78
+#: data/settings.ui:956 data/settings.ui:1058
 msgid "Other"
 msgstr "その他"
 
 #. TRANSLATORS: No devices are known or available
-#: data/settings.ui:1301 webextension/gettext.js:35
+#: data/settings.ui:1106 webextension/gettext.js:35
 #, fuzzy
 msgid "No Device Found"
 msgstr "端末はペア解除"
 
-#: data/settings.ui:1337
+#: data/settings.ui:1142
 msgid "Refresh"
 msgstr "更新"
 
-#: src/extension.js:59
+#. Service Menu
+#: src/extension.js:79 src/extension.js:259
 msgid "Mobile Devices"
 msgstr "モバイル端末"
 
-#: src/extension.js:81
+#: src/extension.js:105
 msgid "Mobile Settings"
 msgstr "モバイル設定"
 
 #. TRANSLATORS: Extension name
-#: src/extension.js:146 src/extension.js:211 src/service/daemon.js:95
-#: src/service/daemon.js:399 webextension/gettext.js:27
+#: src/extension.js:196 src/extension.js:311 src/service/daemon.js:95
+#: src/service/daemon.js:413 webextension/gettext.js:27
 msgid "GSConnect"
 msgstr "GSConnect"
+
+#. TRANSLATORS: %d is the number of devices connected
+#: src/extension.js:257
+#, fuzzy, javascript-format
+msgid "%d Connected"
+msgid_plural "%d Connected"
+msgstr[0] "GSConnect"
 
 #. TRANSLATORS: Top-level context menu item for GSConnect
 #: src/nautilus-gsconnect.py:112 webextension/gettext.js:31
 msgid "Send To Mobile Device"
 msgstr "モバイル端末に送信"
 
-#: src/service/daemon.js:392
+#: src/service/daemon.js:406
 #, fuzzy
 msgid "A complete KDE Connect implementation for GNOME"
 msgstr "GNOME Shellと統合されたKDE Connectの実装"
 
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
-#: src/service/daemon.js:401
+#: src/service/daemon.js:415
 msgid "translator-credits"
 msgstr ""
 
-#: src/service/daemon.js:423
+#: src/service/daemon.js:437
 msgid "Report"
 msgstr ""
 
-#: src/service/daemon.js:551
+#: src/service/daemon.js:567
 msgid "Authentication Failure"
 msgstr ""
 
-#: src/service/daemon.js:560
+#: src/service/daemon.js:576
 msgid "Network Error"
 msgstr ""
 
-#: src/service/daemon.js:561 src/service/daemon.js:571
+#: src/service/daemon.js:577 src/service/daemon.js:587
 msgid "Click for help troubleshooting"
 msgstr ""
 
-#: src/service/daemon.js:570
+#: src/service/daemon.js:586
 msgid "PulseAudio Error"
 msgstr ""
 
-#: src/service/daemon.js:580
+#: src/service/daemon.js:596
 msgid "Discovery Disabled"
 msgstr ""
 
-#: src/service/daemon.js:581
+#: src/service/daemon.js:597
 msgid ""
 "Discovery has been disabled due to the number of devices on this network."
 msgstr ""
 
-#: src/service/daemon.js:583 src/service/daemon.js:593
+#: src/service/daemon.js:599 src/service/daemon.js:609
 msgid "Click to open preferences"
 msgstr ""
 
-#: src/service/daemon.js:592
+#: src/service/daemon.js:608
 msgid "Additional Software Required"
 msgstr ""
 
-#: src/service/daemon.js:601
+#: src/service/daemon.js:617
 #, javascript-format
 msgid "%s Plugin Failed To Load"
 msgstr ""
 
-#: src/service/daemon.js:602 src/service/daemon.js:619
-#: src/service/daemon.js:631
+#: src/service/daemon.js:618 src/service/daemon.js:635
 msgid "Click for more information"
 msgstr ""
 
-#: src/service/daemon.js:617
-msgid "Remote Filesystem Error"
-msgstr ""
-
-#: src/service/daemon.js:618
-#, javascript-format
-msgid "%s is using an incompatible SSH library"
-msgstr ""
-
-#: src/service/daemon.js:629
+#: src/service/daemon.js:633
 msgid "Wayland Not Supported"
 msgstr ""
 
-#: src/service/daemon.js:630
+#: src/service/daemon.js:634
 msgid "Remote input not supported on Wayland"
 msgstr ""
 
 #. Create an urgent notification
-#: src/service/daemon.js:654
+#: src/service/daemon.js:658
 #, fuzzy, javascript-format
 msgid "GSConnect: %s"
 msgstr "GSConnect"
 
 #. TRANSLATORS: Share URL by SMS
-#: src/service/daemon.js:800 src/service/plugins/sms.js:49
+#: src/service/daemon.js:808 src/service/plugins/sms.js:49
 #: webextension/gettext.js:39
 msgid "Send SMS"
 msgstr "SMSを送信"
 
-#: src/service/daemon.js:804
+#: src/service/daemon.js:812
 #, fuzzy
 msgid "Dial Number"
 msgstr "電話番号をダイヤル"
@@ -476,42 +470,37 @@ msgstr "タブレット"
 msgid "Desktop"
 msgstr "デスクトップ"
 
-#: src/service/device.js:418 src/shell/device.js:364
+#: src/service/device.js:409
 #, fuzzy
 msgid "Reconnect"
 msgstr "GSConnect"
 
-#: src/service/device.js:426 src/shell/device.js:416
-#, fuzzy
-msgid "Settings"
-msgstr "モバイル設定"
-
 #. TRANSLATORS: eg. Pair Request from Google Pixel
-#: src/service/device.js:617
+#: src/service/device.js:606
 #, javascript-format
 msgid "Pair Request from %s"
 msgstr "%sからのペアリクエスト"
 
-#: src/service/device.js:624
+#: src/service/device.js:613
 msgid "Reject"
 msgstr "拒否"
 
-#: src/service/device.js:629
+#: src/service/device.js:618
 msgid "Accept"
 msgstr "承認"
 
-#: src/service/plugins/battery.js:188 src/service/plugins/findmyphone.js:18
+#: src/service/plugins/battery.js:194 src/service/plugins/findmyphone.js:18
 msgid "Locate"
 msgstr "探す"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is low
-#: src/service/plugins/battery.js:197
+#: src/service/plugins/battery.js:203
 #, javascript-format
 msgid "%s: Battery is low"
 msgstr ""
 
 #. TRANSLATORS: eg. 15% remaining
-#: src/service/plugins/battery.js:199
+#: src/service/plugins/battery.js:205
 #, fuzzy, javascript-format
 msgid "%d%% remaining"
 msgstr "%d%% (残り %d∶%02d)"
@@ -539,16 +528,16 @@ msgstr "不明な連絡先"
 msgid "Find My Phone"
 msgstr ""
 
-#: src/service/plugins/findmyphone.js:73
+#: src/service/plugins/findmyphone.js:65
 msgid "Locate Device"
 msgstr "端末を探す"
 
-#: src/service/plugins/findmyphone.js:74
+#: src/service/plugins/findmyphone.js:66
 #, javascript-format
 msgid "%s asked to locate this device"
 msgstr "%sがこの端末を探すよう要求しました"
 
-#: src/service/plugins/findmyphone.js:82
+#: src/service/plugins/findmyphone.js:74
 msgid "Found"
 msgstr "発見"
 
@@ -556,12 +545,12 @@ msgstr "発見"
 msgid "Mousepad"
 msgstr ""
 
-#: src/service/plugins/mousepad.js:28 src/service/plugins/mousepad.js:537
+#: src/service/plugins/mousepad.js:28 src/service/plugins/mousepad.js:578
 #, fuzzy
 msgid "Keyboard"
 msgstr "キーボードショートカット"
 
-#: src/service/plugins/mousepad.js:554
+#: src/service/plugins/mousepad.js:595
 #, fuzzy
 msgid "Keyboard not ready"
 msgstr "キーボードショートカット"
@@ -619,15 +608,15 @@ msgstr "アンマウント"
 msgid "Unmount"
 msgstr "アンマウント"
 
-#: src/service/plugins/sftp.js:172
+#: src/service/plugins/sftp.js:170
 msgid "All files"
 msgstr ""
 
-#: src/service/plugins/sftp.js:173
+#: src/service/plugins/sftp.js:171
 msgid "Camera pictures"
 msgstr ""
 
-#: src/service/plugins/sftp.js:344
+#: src/service/plugins/sftp.js:333
 msgid "Files"
 msgstr ""
 
@@ -645,8 +634,8 @@ msgstr "ファイル/URLを共有"
 msgid "Share Text"
 msgstr "共有"
 
-#: src/service/plugins/share.js:42 src/service/ui/messaging.js:853
-#: src/service/ui/messaging.js:861
+#: src/service/plugins/share.js:42 src/service/ui/messaging.js:903
+#: src/service/ui/messaging.js:911
 msgid "Share Link"
 msgstr "リンクを共有"
 
@@ -664,7 +653,7 @@ msgstr "\"%s\"を%sから受信しています"
 #: src/service/plugins/share.js:138 src/service/plugins/share.js:289
 #: src/service/plugins/share.js:407 src/service/ui/keybindings.js:44
 #: src/service/ui/service.js:121 src/service/ui/service.js:300
-#: src/service/ui/settings.js:859 src/shell/donotdisturb.js:215
+#: src/service/ui/settings.js:873 src/shell/donotdisturb.js:215
 msgid "Cancel"
 msgstr "キャンセル"
 
@@ -739,11 +728,6 @@ msgstr "送信"
 msgid "SMS"
 msgstr ""
 
-#: src/service/plugins/sms.js:25
-#, fuzzy
-msgid "Messaging"
-msgstr "メッセージ"
-
 #: src/service/plugins/sms.js:33
 msgid "New SMS (URI)"
 msgstr ""
@@ -761,58 +745,66 @@ msgstr "共有"
 msgid "System Volume"
 msgstr "システムの音量"
 
-#: src/service/plugins/telephony.js:22
+#: src/service/plugins/telephony.js:21
 #, fuzzy
 msgid "Mute Call"
 msgstr "不在着信"
 
+#. Ensure we have a sender
+#. TRANSLATORS: No name or phone number
+#: src/service/plugins/telephony.js:155 src/service/ui/contacts.js:96
+#: src/service/ui/contacts.js:350
+msgid "Unknown Contact"
+msgstr "不明な連絡先"
+
 #. TRANSLATORS: The phone is ringing
-#: src/service/plugins/telephony.js:171
+#: src/service/plugins/telephony.js:172
 #, fuzzy
 msgid "Incoming call"
 msgstr "着信"
 
 #. TRANSLATORS: A phone call is active
-#: src/service/plugins/telephony.js:186
+#: src/service/plugins/telephony.js:187
 #, fuzzy
 msgid "Ongoing call"
 msgstr "着信"
 
-#. TRANSLATORS: A phone number type
-#: src/service/ui/contacts.js:62
-msgid "Fax"
-msgstr "FAX"
+#. TRANSLATORS: All other phone number types
+#: src/service/ui/contacts.js:58 src/service/ui/contacts.js:79
+#, fuzzy, javascript-format
+msgid "%s・Other"
+msgstr "その他"
 
-#. TRANSLATORS: A phone number type
-#: src/service/ui/contacts.js:66
-msgid "Work"
+#. TRANSLATORS: A fax number
+#: src/service/ui/contacts.js:63
+#, javascript-format
+msgid "%s・Fax"
+msgstr ""
+
+#. TRANSLATORS: A work phone number
+#: src/service/ui/contacts.js:67
+#, fuzzy, javascript-format
+msgid "%s・Work"
 msgstr "仕事"
 
-#. TRANSLATORS: A phone number type
-#: src/service/ui/contacts.js:70
-msgid "Mobile"
+#. TRANSLATORS: A mobile or cellular phone number
+#: src/service/ui/contacts.js:71
+#, fuzzy, javascript-format
+msgid "%s・Mobile"
 msgstr "モバイル"
 
-#. TRANSLATORS: A phone number type
-#: src/service/ui/contacts.js:74
-msgid "Home"
+#. TRANSLATORS: A home phone number
+#: src/service/ui/contacts.js:75
+#, fuzzy, javascript-format
+msgid "%s・Home"
 msgstr "家"
 
-#: src/service/ui/contacts.js:95 src/service/ui/contacts.js:387
-msgid "Unknown Contact"
-msgstr "不明な連絡先"
-
-#: src/service/ui/contacts.js:194 src/service/ui/contacts.js:195
-msgid "Type a phone number or name"
-msgstr "電話番号または名前を入力"
-
-#: src/service/ui/contacts.js:239
-msgid "Add people to start a conversation"
-msgstr "他の人を招待して会議を始める"
+#: src/service/ui/contacts.js:203
+msgid "Select a contact or number"
+msgstr ""
 
 #. TRANSLATORS: A phone number (eg. "Send to 555-5555")
-#. Update UI
-#: src/service/ui/contacts.js:281 src/service/ui/contacts.js:289
+#: src/service/ui/contacts.js:239 src/service/ui/contacts.js:253
 #, javascript-format
 msgid "Send to %s"
 msgstr "%sに送信"
@@ -861,83 +853,80 @@ msgstr "端末を選択"
 msgid "Select"
 msgstr "選択"
 
-#: src/service/ui/settings.js:414
+#: src/service/ui/settings.js:298
 msgid "Panel"
 msgstr ""
 
-#: src/service/ui/settings.js:414
+#: src/service/ui/settings.js:298
 #, fuzzy
 msgid "User Menu"
 msgstr "メニューを開く"
 
-#: src/service/ui/settings.js:860
+#: src/service/ui/settings.js:874
 #, fuzzy
 msgid "Open"
 msgstr "ファイルを開く"
 
-#: src/service/ui/settings.js:924 src/service/ui/settings.js:937
+#: src/service/ui/settings.js:931 src/service/ui/settings.js:944
 msgid "On"
 msgstr ""
 
-#: src/service/ui/settings.js:924 src/service/ui/settings.js:937
+#: src/service/ui/settings.js:931 src/service/ui/settings.js:944
 msgid "Off"
 msgstr ""
 
-#: src/service/ui/settings.js:1058 src/service/ui/settings.js:1124
+#: src/service/ui/settings.js:1065 src/service/ui/settings.js:1131
 msgid "Disabled"
 msgstr ""
 
 #. TRANSLATORS: Less than a minute ago
-#: src/service/ui/messaging.js:83 src/service/ui/messaging.js:116
+#: src/service/ui/messaging.js:93 src/service/ui/messaging.js:126
 msgid "Just now"
 msgstr ""
 
 #. TRANSLATORS: Time duration in minutes (eg. 15 minutes)
-#: src/service/ui/messaging.js:88 src/service/ui/messaging.js:120
+#: src/service/ui/messaging.js:98 src/service/ui/messaging.js:130
 #: src/shell/donotdisturb.js:266
 #, javascript-format
-msgid "%d minutes"
-msgstr ""
+msgid "%d minute"
+msgid_plural "%d minutes"
+msgstr[0] ""
 
 #. TRANSLATORS: Yesterday, but less than 24 hours (eg. Yesterday · 11:29 PM)
-#: src/service/ui/messaging.js:93
+#: src/service/ui/messaging.js:103
 #, javascript-format
 msgid "Yesterday・%s"
 msgstr ""
 
-#: src/service/ui/messaging.js:870
+#: src/service/ui/messaging.js:920
 msgid "New Message"
 msgstr "新しいメッセージ"
 
 #. TRANSLATORS: When the battery level is 100%
-#: src/shell/device.js:305
+#: src/shell/device.js:86
 msgid "Fully Charged"
 msgstr "充電完了"
 
 #. TRANSLATORS: When no time estimate for the battery is available
 #. EXAMPLE: 42% (Estimating…)
-#: src/shell/device.js:309
+#: src/shell/device.js:90
 #, javascript-format
 msgid "%d%% (Estimating…)"
 msgstr "%d%% (計測中…)"
 
 #. TRANSLATORS: Estimated time until battery is charged
 #. EXAMPLE: 42% (1:15 Until Full)
-#: src/shell/device.js:319
+#: src/shell/device.js:100
 #, javascript-format
 msgid "%d%% (%d∶%02d Until Full)"
 msgstr "%d%% (フルまで %d∶%02d)"
 
 #. TRANSLATORS: Estimated time until battery is empty
 #. EXAMPLE: 42% (12:15 Remaining)
-#: src/shell/device.js:327
+#: src/shell/device.js:108
 #, javascript-format
 msgid "%d%% (%d∶%02d Remaining)"
 msgstr "%d%% (残り %d∶%02d)"
-
-#: src/shell/device.js:580
-msgid "Device is unpaired"
-msgstr "端末はペア解除"
 
 #: src/shell/donotdisturb.js:150 src/shell/donotdisturb.js:289
 msgid "Do Not Disturb"
@@ -987,6 +976,39 @@ msgstr "Gvcが利用できません"
 #, fuzzy
 msgid "Open in Browser"
 msgstr "フォルダーを開く"
+
+#, fuzzy
+#~ msgid "Conversations"
+#~ msgstr "SMS会議"
+
+#, fuzzy
+#~ msgid "Sync Contacts"
+#~ msgstr "不明な連絡先"
+
+#, fuzzy
+#~ msgid "Sync Messages"
+#~ msgstr "メッセージ"
+
+#, fuzzy
+#~ msgid "Connect LAN"
+#~ msgstr "GSConnect"
+
+#~ msgid "Fax"
+#~ msgstr "FAX"
+
+#, fuzzy
+#~ msgid "Show Offline Devices"
+#~ msgstr "オフラインの端末を表示"
+
+#, fuzzy
+#~ msgid "Show Unpaired Devices"
+#~ msgstr "モバイル端末"
+
+#~ msgid "Show Battery Icon"
+#~ msgstr "電池アイコンを表示"
+
+#~ msgid "Device is unpaired"
+#~ msgstr "端末はペア解除"
 
 #~ msgid "Locate %s"
 #~ msgstr "%sを探す"

@@ -413,7 +413,7 @@ const Service = GObject.registerClass({
                 program_name: _('GSConnect'),
                 // TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
                 translator_credits: _('translator-credits'),
-                version: gsconnect.metadata.version,
+                version: gsconnect.metadata.version.toString(),
                 website: gsconnect.metadata.url,
                 license_type: Gtk.License.GPL_2_0
             });
@@ -628,18 +628,6 @@ const Service = GObject.registerClass({
                     notif.set_priority(Gio.NotificationPriority.HIGH);
                     break;
 
-                case 'SSHSignatureError':
-                    id = error.name;
-                    title = _('Remote Filesystem Error');
-                    body = _('%s is using an incompatible SSH library').format(error.deviceName) + '\n\n' +
-                           _('Click for more information');
-                    icon = new Gio.ThemedIcon({name: 'dialog-error'});
-                    notif.set_default_action(
-                        `app.wiki('Help#${error.name}')`
-                    );
-                    notif.set_priority(Gio.NotificationPriority.HIGH);
-                    break;
-
                 case 'WaylandNotSupported':
                     id = error.name;
                     title = _('Wayland Not Supported');
@@ -784,7 +772,9 @@ const Service = GObject.registerClass({
     }
 
     vfunc_dbus_register(connection, object_path) {
-        if (!super.vfunc_dbus_register(connection, object_path)) {
+        try {
+            super.vfunc_dbus_register(connection, object_path);
+        } catch (e) {
             return false;
         }
 

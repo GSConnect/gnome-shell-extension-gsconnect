@@ -71,8 +71,8 @@ var NativeMessagingHost = GObject.registerClass({
         source.attach(null);
 
         // ObjectManager
-        Gio.DBusObjectManagerClient.new(
-            Gio.DBus.session,
+        Gio.DBusObjectManagerClient.new_for_bus(
+            Gio.BusType.SESSION,
             Gio.DBusObjectManagerClientFlags.DO_NOT_AUTO_START,
             gsconnect.app_id,
             gsconnect.app_path,
@@ -86,7 +86,7 @@ var NativeMessagingHost = GObject.registerClass({
 
     _init_async(obj, res) {
         try {
-            this.manager = Gio.DBusObjectManagerClient.new_finish(res);
+            this.manager = Gio.DBusObjectManagerClient.new_for_bus_finish(res);
 
             // Add currently managed devices
             for (let object of this.manager.get_objects()) {
