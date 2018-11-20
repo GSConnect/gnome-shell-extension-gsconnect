@@ -220,6 +220,7 @@ msgstr "Messaggistica"
 
 #: data/messaging.ui:110
 msgid "Select a conversation"
+msgstr "Aggiungi persone per iniziare una conversazione"
 
 #: data/messaging.ui:188
 msgid "Device is disconnected"
@@ -314,8 +315,8 @@ msgstr "GSConnect"
 #, javascript-format
 msgid "%d Connected"
 msgid_plural "%d Connected"
-msgstr[0] "%d% Connesso"
-msgstr[1] "%d% Connessi"
+msgstr[0] "%d Connesso"
+msgstr[1] "%d Connessi"
 
 #. TRANSLATORS: Top-level context menu item for GSConnect
 #: src/nautilus-gsconnect.py:112 webextension/gettext.js:31
