@@ -647,7 +647,7 @@ msgstr "Začíná přenos"
 #: src/service/plugins/share.js:133
 #, javascript-format
 msgid "Receiving “%s” from %s"
-msgstr "Získávání „%s” z %s"
+msgstr "Získávání „%s“ z %s"
 
 #. Action Buttons
 #: src/service/plugins/share.js:138 src/service/plugins/share.js:289
@@ -665,7 +665,7 @@ msgstr "Přenos byl úspěšný"
 #: src/service/plugins/share.js:151
 #, javascript-format
 msgid "Received “%s” from %s"
-msgstr "Získáno „%s” z %s"
+msgstr "Získáno „%s“ z %s"
 
 #: src/service/plugins/share.js:157
 msgid "Open Folder"
@@ -683,7 +683,7 @@ msgstr "Přenos se nezdařil"
 #: src/service/plugins/share.js:171
 #, fuzzy, javascript-format
 msgid "Failed to receive “%s” from %s"
-msgstr "Nepodařilo se získat „%s” z %s: %s"
+msgstr "Nepodařilo se získat „%s“ z %s: %s"
 
 #: src/service/plugins/share.js:211
 #, javascript-format
@@ -694,19 +694,19 @@ msgstr ""
 #: src/service/plugins/share.js:284
 #, javascript-format
 msgid "Sending “%s” to %s"
-msgstr "Posílání „%s” do %s"
+msgstr "Posílání „%s“ do %s"
 
 #. TRANSLATORS: eg. Sent "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:305
 #, javascript-format
 msgid "Sent “%s” to %s"
-msgstr "Odesláno „%s” do %s"
+msgstr "Odesláno „%s“ do %s"
 
 #. TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:313
 #, fuzzy, javascript-format
 msgid "Failed to send “%s” to %s"
-msgstr "Nepodařilo se poslat „%s” do %s: %s"
+msgstr "Nepodařilo se poslat „%s“ do %s: %s"
 
 #. TRANSLATORS: eg. Send files to Google Pixel
 #: src/service/plugins/share.js:384

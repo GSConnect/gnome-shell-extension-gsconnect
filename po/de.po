@@ -606,7 +606,7 @@ msgstr "Übertragung starten"
 #: src/service/plugins/share.js:133
 #, javascript-format
 msgid "Receiving “%s” from %s"
-msgstr "Empfange „%s” von %s"
+msgstr "Empfange „%s“ von %s"
 
 #. Action Buttons
 #: src/service/plugins/share.js:138 src/service/plugins/share.js:289
@@ -624,7 +624,7 @@ msgstr "Übertragung erfolgreich"
 #: src/service/plugins/share.js:151
 #, javascript-format
 msgid "Received “%s” from %s"
-msgstr "„%s” von %s empfangen"
+msgstr "„%s“ von %s empfangen"
 
 #: src/service/plugins/share.js:157
 msgid "Open Folder"
@@ -642,7 +642,7 @@ msgstr "Übertragung gescheitert"
 #: src/service/plugins/share.js:171
 #, javascript-format
 msgid "Failed to receive “%s” from %s"
-msgstr "Empfang von „%s” von %s gescheitert"
+msgstr "Empfang von „%s“ von %s gescheitert"
 
 #: src/service/plugins/share.js:211
 #, javascript-format
@@ -653,19 +653,19 @@ msgstr "Text geteilt von %s"
 #: src/service/plugins/share.js:284
 #, javascript-format
 msgid "Sending “%s” to %s"
-msgstr "„%s” an %s senden"
+msgstr "„%s“ an %s senden"
 
 #. TRANSLATORS: eg. Sent "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:305
 #, javascript-format
 msgid "Sent “%s” to %s"
-msgstr "„%s” an %s gesendet"
+msgstr "„%s“ an %s gesendet"
 
 #. TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:313
 #, javascript-format
 msgid "Failed to send “%s” to %s"
-msgstr "Senden von „%s” an %s gescheitert"
+msgstr "Senden von „%s“ an %s gescheitert"
 
 #. TRANSLATORS: eg. Send files to Google Pixel
 #: src/service/plugins/share.js:384

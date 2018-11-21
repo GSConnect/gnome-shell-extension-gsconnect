@@ -605,7 +605,7 @@ msgstr "Alustan ülekannet"
 #: src/service/plugins/share.js:133
 #, javascript-format
 msgid "Receiving “%s” from %s"
-msgstr "„%s” vastuvõtmine seadmelt %s"
+msgstr "„%s“vastuvõtmine seadmelt %s"
 
 #. Action Buttons
 #: src/service/plugins/share.js:138 src/service/plugins/share.js:289
@@ -623,7 +623,7 @@ msgstr "Ülekanne edukas"
 #: src/service/plugins/share.js:151
 #, javascript-format
 msgid "Received “%s” from %s"
-msgstr "„%s” vastu võetud seadmelt %s"
+msgstr "„%s“vastu võetud seadmelt %s"
 
 #: src/service/plugins/share.js:157
 msgid "Open Folder"
@@ -641,7 +641,7 @@ msgstr "Ülekanne ebaõnnestus"
 #: src/service/plugins/share.js:171
 #, javascript-format
 msgid "Failed to receive “%s” from %s"
-msgstr "„%s” vastuvõtmine seadmest %s ebaõnnestus"
+msgstr "„%s“vastuvõtmine seadmest %s ebaõnnestus"
 
 #: src/service/plugins/share.js:211
 #, javascript-format
@@ -652,19 +652,19 @@ msgstr "%s poolt jagatud tekst"
 #: src/service/plugins/share.js:284
 #, javascript-format
 msgid "Sending “%s” to %s"
-msgstr "Saadan „%s” seadmesse %s"
+msgstr "Saadan „%s“seadmesse %s"
 
 #. TRANSLATORS: eg. Sent "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:305
 #, javascript-format
 msgid "Sent “%s” to %s"
-msgstr "„%s” saadetud seadmesse %s"
+msgstr "„%s“saadetud seadmesse %s"
 
 #. TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:313
 #, javascript-format
 msgid "Failed to send “%s” to %s"
-msgstr "„%s” saatmine seadmesse %s ebaõnnestus"
+msgstr "„%s“saatmine seadmesse %s ebaõnnestus"
 
 #. TRANSLATORS: eg. Send files to Google Pixel
 #: src/service/plugins/share.js:384

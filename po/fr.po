@@ -607,7 +607,7 @@ msgstr "Début du transfert"
 #: src/service/plugins/share.js:133
 #, javascript-format
 msgid "Receiving “%s” from %s"
-msgstr "Réception de «%s» depuis %s"
+msgstr "Réception de « %s » depuis %s"
 
 #. Action Buttons
 #: src/service/plugins/share.js:138 src/service/plugins/share.js:289
@@ -625,7 +625,7 @@ msgstr "Transfert réussi"
 #: src/service/plugins/share.js:151
 #, javascript-format
 msgid "Received “%s” from %s"
-msgstr "Reçu «%s» depuis %s"
+msgstr "Reçu « %s » depuis %s"
 
 #: src/service/plugins/share.js:157
 msgid "Open Folder"
@@ -643,7 +643,7 @@ msgstr "Échec du transfert"
 #: src/service/plugins/share.js:171
 #, javascript-format
 msgid "Failed to receive “%s” from %s"
-msgstr "Échec de réception de «%s» depuis %s"
+msgstr "Échec de réception de « %s » depuis %s"
 
 #: src/service/plugins/share.js:211
 #, javascript-format
@@ -654,19 +654,19 @@ msgstr "Texte partagé par %s"
 #: src/service/plugins/share.js:284
 #, javascript-format
 msgid "Sending “%s” to %s"
-msgstr "Envoi de «%s» vers %s"
+msgstr "Envoi de « %s » vers %s"
 
 #. TRANSLATORS: eg. Sent "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:305
 #, javascript-format
 msgid "Sent “%s” to %s"
-msgstr "«%s» envoyé vers %s"
+msgstr "« %s » envoyé vers %s"
 
 #. TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:313
 #, javascript-format
 msgid "Failed to send “%s” to %s"
-msgstr "Échec d'envoi de «%s» vers %s"
+msgstr "Échec d'envoi de « %s » vers %s"
 
 #. TRANSLATORS: eg. Send files to Google Pixel
 #: src/service/plugins/share.js:384
@@ -898,8 +898,8 @@ msgstr "Jusqu'à ce que vous désactiviez Ne pas déranger"
 #. EXAMPLE: Until 10:00 (2 hours)
 #: src/shell/donotdisturb.js:184 src/shell/donotdisturb.js:278
 #, javascript-format
-msgid "Until %s (%s)"
-msgstr "Jusqu'à %s (%s)"
+msgid "Until %s (%s)"
+msgstr "Jusqu'à %s (%s)"
 
 #: src/shell/donotdisturb.js:216
 msgid "Done"

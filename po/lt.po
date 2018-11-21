@@ -650,7 +650,7 @@ msgstr "Pradedamas persiuntimas"
 #: src/service/plugins/share.js:133
 #, javascript-format
 msgid "Receiving “%s” from %s"
-msgstr "Gaunama „%s” iš %s"
+msgstr "Gaunama „%s“ iš %s"
 
 #. Action Buttons
 #: src/service/plugins/share.js:138 src/service/plugins/share.js:289
@@ -668,7 +668,7 @@ msgstr "Persiuntimas sėkmingas"
 #: src/service/plugins/share.js:151
 #, javascript-format
 msgid "Received “%s” from %s"
-msgstr "Gautas „%s” iš %s"
+msgstr "Gautas „%s“ iš %s"
 
 #: src/service/plugins/share.js:157
 msgid "Open Folder"
@@ -686,7 +686,7 @@ msgstr "Persiuntimas nepavyko"
 #: src/service/plugins/share.js:171
 #, fuzzy, javascript-format
 msgid "Failed to receive “%s” from %s"
-msgstr "Nepavyko gauti „%s” iš %s: %s"
+msgstr "Nepavyko gauti „%s“ iš %s: %s"
 
 #: src/service/plugins/share.js:211
 #, javascript-format
@@ -697,19 +697,19 @@ msgstr ""
 #: src/service/plugins/share.js:284
 #, javascript-format
 msgid "Sending “%s” to %s"
-msgstr "Siunčiama „%s” į %s"
+msgstr "Siunčiama „%s“ į %s"
 
 #. TRANSLATORS: eg. Sent "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:305
 #, javascript-format
 msgid "Sent “%s” to %s"
-msgstr "Išsiųsta „%s” į %s"
+msgstr "Išsiųsta „%s“ į %s"
 
 #. TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:313
 #, fuzzy, javascript-format
 msgid "Failed to send “%s” to %s"
-msgstr "Nepavyko išsiųsti „%s” į %s: %s"
+msgstr "Nepavyko išsiųsti „%s“ į %s: %s"
 
 #. TRANSLATORS: eg. Send files to Google Pixel
 #: src/service/plugins/share.js:384
