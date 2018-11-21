@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-11-19 11:14-0800\n"
-"PO-Revision-Date: 2018-11-20 12:14+0100\n"
+"PO-Revision-Date: 2018-11-21 19:57+0100\n"
 "Last-Translator: Heimen Stoffels <vistausss@outlook.com>\n"
 "Language-Team: Dutch <vistausss@outlook.com>\n"
 "Language: nl_BE\n"
@@ -602,7 +602,7 @@ msgstr "Overzetten starten"
 #: src/service/plugins/share.js:133
 #, javascript-format
 msgid "Receiving “%s” from %s"
-msgstr "„%s” ontvangen van %s"
+msgstr "“%s” ontvangen van %s"
 
 #. Action Buttons
 #: src/service/plugins/share.js:138 src/service/plugins/share.js:289
@@ -620,7 +620,7 @@ msgstr "Met succes overgezet"
 #: src/service/plugins/share.js:151
 #, javascript-format
 msgid "Received “%s” from %s"
-msgstr "„%s” ontvangen van %s"
+msgstr "“%s” ontvangen van %s"
 
 #: src/service/plugins/share.js:157
 msgid "Open Folder"
@@ -638,7 +638,7 @@ msgstr "Overzetten niet gelukt"
 #: src/service/plugins/share.js:171
 #, javascript-format
 msgid "Failed to receive “%s” from %s"
-msgstr "Kon „%s” niet ontvangen van %s"
+msgstr "Kon “%s” niet ontvangen van %s"
 
 #: src/service/plugins/share.js:211
 #, javascript-format
@@ -649,19 +649,19 @@ msgstr "Tekst, gedeeld door %s"
 #: src/service/plugins/share.js:284
 #, javascript-format
 msgid "Sending “%s” to %s"
-msgstr "„%s” verzenden naar %s"
+msgstr "“%s” verzenden naar %s"
 
 #. TRANSLATORS: eg. Sent "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:305
 #, javascript-format
 msgid "Sent “%s” to %s"
-msgstr "„%s” verzonden naar %s"
+msgstr "“%s” verzonden naar %s"
 
 #. TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:313
 #, javascript-format
 msgid "Failed to send “%s” to %s"
-msgstr "Kon „%s” niet verzenden naar %s"
+msgstr "Kon “%s” niet verzenden naar %s"
 
 #. TRANSLATORS: eg. Send files to Google Pixel
 #: src/service/plugins/share.js:384

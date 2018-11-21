@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-11-19 11:14-0800\n"
-"PO-Revision-Date: 2018-11-20 12:12+0100\n"
+"PO-Revision-Date: 2018-11-21 19:57+0100\n"
 "Last-Translator: Heimen Stoffels <vistausss@outlook.com>\n"
 "Language-Team: Dutch <vistausss@outlook.com>\n"
 "Language: nl_NL\n"
@@ -604,7 +604,7 @@ msgstr "Bezig met starten van overdracht"
 #: src/service/plugins/share.js:133
 #, javascript-format
 msgid "Receiving “%s” from %s"
-msgstr "Bezig met ontvangen van „%s” van %s"
+msgstr "Bezig met ontvangen van “%s” van %s"
 
 #. Action Buttons
 #: src/service/plugins/share.js:138 src/service/plugins/share.js:289
@@ -622,7 +622,7 @@ msgstr "Overdracht voltooid"
 #: src/service/plugins/share.js:151
 #, javascript-format
 msgid "Received “%s” from %s"
-msgstr "„%s” ontvangen van %s"
+msgstr "“%s” ontvangen van %s"
 
 #: src/service/plugins/share.js:157
 msgid "Open Folder"
@@ -640,7 +640,7 @@ msgstr "Overdracht mislukt"
 #: src/service/plugins/share.js:171
 #, javascript-format
 msgid "Failed to receive “%s” from %s"
-msgstr "Ontvangen van „%s” van %s mislukt"
+msgstr "Ontvangen van “%s” van %s mislukt"
 
 #: src/service/plugins/share.js:211
 #, javascript-format
@@ -651,19 +651,19 @@ msgstr "Tekst, gedeeld door %s"
 #: src/service/plugins/share.js:284
 #, javascript-format
 msgid "Sending “%s” to %s"
-msgstr "Bezig met versturen van „%s” naar %s"
+msgstr "Bezig met versturen van “%s” naar %s"
 
 #. TRANSLATORS: eg. Sent "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:305
 #, javascript-format
 msgid "Sent “%s” to %s"
-msgstr "„%s” verstuurd naar %s"
+msgstr "“%s” verstuurd naar %s"
 
 #. TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:313
 #, javascript-format
 msgid "Failed to send “%s” to %s"
-msgstr "Versturen van „%s” naar %s mislukt"
+msgstr "Versturen van “%s” naar %s mislukt"
 
 #. TRANSLATORS: eg. Send files to Google Pixel
 #: src/service/plugins/share.js:384
