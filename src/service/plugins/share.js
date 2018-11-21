@@ -144,7 +144,29 @@ var Plugin = GObject.registerClass({
 
             // Start transfer
             success = await transfer.download(packet.payloadTransferInfo.port);
+            this.device.hideNotification(transfer.uuid);
 
+            // We've been asked to open this directly
+            if (success && packet.body.open) {
+                await new Promise((resolve, reject) => {
+                    Gio.AppInfo.launch_default_for_uri_async(
+                        file.get_uri(),
+                        null,
+                        null,
+                        (src, res) => {
+                            try {
+                                Gio.AppInfo.launch_default_for_uri_finish(res);
+                            } catch (e) {
+                                reject(e);
+                            }
+                        }
+                    );
+                });
+
+                return;
+            }
+
+            // We'll show a notification (success or failure)
             if (success) {
                 title = _('Transfer Successful');
                 // TRANSLATORS: eg. Received 'book.pdf' from Google Pixel
@@ -178,7 +200,6 @@ var Plugin = GObject.registerClass({
                 file.delete(null);
             }
 
-            this.device.hideNotification(transfer.uuid);
             this.device.showNotification({
                 id: transfer.uuid,
                 title: title,
