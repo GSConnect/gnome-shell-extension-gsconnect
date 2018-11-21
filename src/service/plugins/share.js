@@ -130,7 +130,7 @@ var Plugin = GObject.registerClass({
                 id: transfer.uuid,
                 title: _('Starting Transfer'),
                 // TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
-                body: _('Receiving "%s" from %s').format(
+                body: _('Receiving “%s” from %s').format(
                     packet.body.filename,
                     this.device.name
                 ),
@@ -148,7 +148,7 @@ var Plugin = GObject.registerClass({
             if (success) {
                 title = _('Transfer Successful');
                 // TRANSLATORS: eg. Received 'book.pdf' from Google Pixel
-                body = _('Received "%s" from %s').format(
+                body = _('Received “%s” from %s').format(
                     packet.body.filename,
                     this.device.name
                 );
@@ -168,7 +168,7 @@ var Plugin = GObject.registerClass({
             } else {
                 title = _('Transfer Failed');
                 // TRANSLATORS: eg. Failed to receive 'book.pdf' from Google Pixel
-                body = _('Failed to receive "%s" from %s').format(
+                body = _('Failed to receive “%s” from %s').format(
                     packet.body.filename,
                     this.device.name
                 );
@@ -281,7 +281,7 @@ var Plugin = GObject.registerClass({
                 id: transfer.uuid,
                 title: _('Starting Transfer'),
                 // TRANSLATORS: eg. Sending 'book.pdf' to Google Pixel
-                body: _('Sending "%s" to %s').format(
+                body: _('Sending “%s” to %s').format(
                     file.get_basename(),
                     this.device.name
                 ),
@@ -302,7 +302,7 @@ var Plugin = GObject.registerClass({
             if (success) {
                 title = _('Transfer Successful');
                 // TRANSLATORS: eg. Sent "book.pdf" to Google Pixel
-                body = _('Sent "%s" to %s').format(
+                body = _('Sent “%s” to %s').format(
                     file.get_basename(),
                     this.device.name
                 );
@@ -310,7 +310,7 @@ var Plugin = GObject.registerClass({
             } else {
                 title = _('Transfer Failed');
                 // TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel
-                body = _('Failed to send "%s" to %s').format(
+                body = _('Failed to send “%s” to %s').format(
                     file.get_basename(),
                     this.device.name
                 );

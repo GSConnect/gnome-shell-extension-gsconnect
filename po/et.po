@@ -604,7 +604,7 @@ msgstr "Alustan ülekannet"
 #. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:133
 #, javascript-format
-msgid "Receiving \"%s\" from %s"
+msgid "Receiving “%s” from %s"
 msgstr "„%s” vastuvõtmine seadmelt %s"
 
 #. Action Buttons
@@ -622,7 +622,7 @@ msgstr "Ülekanne edukas"
 #. TRANSLATORS: eg. Received 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:151
 #, javascript-format
-msgid "Received \"%s\" from %s"
+msgid "Received “%s” from %s"
 msgstr "„%s” vastu võetud seadmelt %s"
 
 #: src/service/plugins/share.js:157
@@ -640,7 +640,7 @@ msgstr "Ülekanne ebaõnnestus"
 #. TRANSLATORS: eg. Failed to receive 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:171
 #, javascript-format
-msgid "Failed to receive \"%s\" from %s"
+msgid "Failed to receive “%s” from %s"
 msgstr "„%s” vastuvõtmine seadmest %s ebaõnnestus"
 
 #: src/service/plugins/share.js:211
@@ -651,19 +651,19 @@ msgstr "%s poolt jagatud tekst"
 #. TRANSLATORS: eg. Sending 'book.pdf' to Google Pixel
 #: src/service/plugins/share.js:284
 #, javascript-format
-msgid "Sending \"%s\" to %s"
+msgid "Sending “%s” to %s"
 msgstr "Saadan „%s” seadmesse %s"
 
 #. TRANSLATORS: eg. Sent "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:305
 #, javascript-format
-msgid "Sent \"%s\" to %s"
+msgid "Sent “%s” to %s"
 msgstr "„%s” saadetud seadmesse %s"
 
 #. TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:313
 #, javascript-format
-msgid "Failed to send \"%s\" to %s"
+msgid "Failed to send “%s” to %s"
 msgstr "„%s” saatmine seadmesse %s ebaõnnestus"
 
 #. TRANSLATORS: eg. Send files to Google Pixel
@@ -924,351 +924,3 @@ msgstr "Teenus pole saadaval"
 #: webextension/gettext.js:37
 msgid "Open in Browser"
 msgstr "Ava brauseris"
-
-#~ msgid "Conversations"
-#~ msgstr "Vestlused"
-
-#~ msgid "Sync Contacts"
-#~ msgstr "Sünkroniseeri kontaktid"
-
-#~ msgid "Sync Messages"
-#~ msgstr "Sünkroniseeri sõnumid"
-
-#~ msgid "Connect LAN"
-#~ msgstr "Ühenda LAN"
-
-#~ msgid "Fax"
-#~ msgstr "Faks"
-
-#~ msgid "Remote Filesystem Error"
-#~ msgstr "Kaugete failisüsteemide viga"
-
-#~ msgid "%s is using an incompatible SSH library"
-#~ msgstr "%s kasutab ühildumatut SSH-teeki"
-
-#~ msgid "Show Offline Devices"
-#~ msgstr "Kuva võrguta seadmed"
-
-#~ msgid "Show Unpaired Devices"
-#~ msgstr "Kuva paaritamata seadmed"
-
-#~ msgid "Show Battery Icon"
-#~ msgstr "Kuva aku ikooni"
-
-#~ msgid "Shell"
-#~ msgstr "Shell (kest)"
-
-#~ msgid "Android"
-#~ msgstr "Android"
-
-#~ msgid "Sailfish OS"
-#~ msgstr "Sailfish OS"
-
-#~ msgid "Device is unpaired"
-#~ msgstr "Seade on paaritamata"
-
-#~ msgid "Locate %s"
-#~ msgstr "Leia %s"
-
-#~ msgid "Browse Files"
-#~ msgstr "Sirvi faile"
-
-#~ msgid "Remote Input"
-#~ msgstr "Kaugsisestus"
-
-#~ msgid "No plugins enabled"
-#~ msgstr "Pluginad on keelatud"
-
-#~ msgid "Failed to mount %s"
-#~ msgstr "%s haakimine ebaõnnestus"
-
-#~ msgid "GSConnect Website"
-#~ msgstr "GSConnecti veebisait"
-
-#~ msgid "Copyright © 2017 Andy Holmes"
-#~ msgstr "Autoriõigus © 2017 Andy Holmes"
-
-#~ msgid "This program comes with absolutely no warranty."
-#~ msgstr "See programm ei paku mingit garantiid."
-
-#~ msgid ""
-#~ "See the <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html"
-#~ "\">GNU General Public License, version 2 or later</a> for details."
-#~ msgstr ""
-#~ "Lisateabe saamiseks vaata litsentsi <a href=\"https://www.gnu.org/"
-#~ "licenses/old-licenses/gpl-2.0.html\">GNU General Public License, versioon "
-#~ "2 või hilisem</a>."
-
-#~ msgid "Preferences"
-#~ msgstr "Eelistused"
-
-#~ msgid "Extensions"
-#~ msgstr "Laiendused"
-
-#~ msgid "Web Browser Integration"
-#~ msgstr "Veebibrauseri integratsioon"
-
-#~ msgid ""
-#~ "Requires <a href=\"%s\">Chrome Extension</a> or <a href=\"%s\">Firefox "
-#~ "Add-On</a>"
-#~ msgstr ""
-#~ "Nõuab <a href=\"%s\">Chrome’i</a> või <a href=\"%s\">Firefox’i</a> "
-#~ "laiendust"
-
-#~ msgid "Nautilus extensions changed"
-#~ msgstr "Nautiluse laiendused muudetud"
-
-#~ msgid "Restart Nautilus to apply changes"
-#~ msgstr "Muutuste rakendamiseks taaskäivita Nautilus"
-
-#~ msgid "Restart"
-#~ msgstr "Taaskäivita"
-
-#~ msgid ""
-#~ "%s Fingerprint:\n"
-#~ "%s\n"
-#~ "\n"
-#~ "Local Fingerprint:\n"
-#~ "%s"
-#~ msgstr ""
-#~ "%s sõrmejälg:\n"
-#~ "%s\n"
-#~ "\n"
-#~ "Kohalik sõrmejälg:\n"
-#~ "%s"
-
-#~ msgid "Apply"
-#~ msgstr "Rakenda"
-
-#~ msgid "Send and receive battery statistics"
-#~ msgstr "Saada ja võta vastu aku statistikat"
-
-#~ msgid "Low Battery Warning"
-#~ msgstr "Kriitilise aku hoiatus"
-
-#~ msgid "%s's battery level is %d%%"
-#~ msgstr "%s akutase on %d%%"
-
-#~ msgid "Sync the clipboard between devices"
-#~ msgstr "Sünkroniseeri lõikelaud seadmete vahel"
-
-#~ msgid "Failed to get Gdk.Display"
-#~ msgstr "Gdk.Display saamine ebaõnnestus"
-
-#~ msgid "Failed to get Clipboard"
-#~ msgstr "Lõikelaua saamine ebaõnnestus"
-
-#~ msgid "Find a device by making it ring"
-#~ msgstr "Leia seade, pannes see helisema"
-
-#~ msgid "Screen Lock"
-#~ msgstr "Ekraanilukk"
-
-#~ msgid "Lock and unlock devices"
-#~ msgstr "Lukusta ja ava seadmeid"
-
-#~ msgid "Control the mouse and keyboard remotely"
-#~ msgstr "Juhi hiirt ja klaviatuuri kaugelt"
-
-#~ msgid "Can't run in Wayland session"
-#~ msgstr "Ei saa käivitada Wayland’i sessioonis"
-
-#~ msgid "Failed to initialize Atspi"
-#~ msgstr "Atspi käivitamine ebaõnnestus"
-
-#~ msgid "Cannot load Caribou virtual keyboard for Unicode support"
-#~ msgstr ""
-#~ "Caribou virtuaalse klaviatuuri laadimine Unicode’i toe saamiseks "
-#~ "ebaõnnestus"
-
-#~ msgid "Control MPRIS2 enabled media players"
-#~ msgstr "Juhi MPRIS2-toega meediamängijaid"
-
-#~ msgid "Sync notifications between devices"
-#~ msgstr "Sünkroniseeri teateid seadmete vahel"
-
-#~ msgid "Missed call"
-#~ msgstr "Vastamata kõne"
-
-#~ msgid "Missed call from %s on %s"
-#~ msgstr "Vastamata kõne kontaktilt %s seadmes %s"
-
-#~ msgid "Send and receive pings"
-#~ msgstr "Saada ja võta vastu pinge"
-
-#~ msgid "Execute local commands remotely"
-#~ msgstr "Käivita kohalikke käsklusi kaugelt"
-
-#~ msgid "Mount and browse device filesystems"
-#~ msgstr "Haagi ja sirvi seadme failisüsteeme"
-
-#~ msgid "SSHFS not installed"
-#~ msgstr "SSHFS pole paigaldatud"
-
-#~ msgid "Send and receive files and URLs"
-#~ msgstr "Saada ja võta vastu faile ning URLe"
-
-#~ msgid "Transfer Cancelled"
-#~ msgstr "Ülekanne tühistatud"
-
-#~ msgid "Cancelled transfer of \"%s\" from %s"
-#~ msgstr "„%s” ülekanne seadmelt %s tühistati"
-
-#~ msgid "Cancelled transfer of \"%s\" to %s"
-#~ msgstr "„%s” ülekanne seadmesse %s tühistati"
-
-#~ msgid "Use a subdirectory named <b>%s</b>"
-#~ msgstr "Kasuta alamkataloogi nimega <b>%s</b>"
-
-#~ msgid "Call notification and SMS messaging"
-#~ msgstr "Kõneteade ja SMS-sõnumivahetus"
-
-#~ msgid "Incoming call from %s on %s"
-#~ msgstr "Sissetulev kõne kontaktilt %s seadmes %s"
-
-#~ msgid "Call In Progress"
-#~ msgstr "Kõne pooleli"
-
-#~ msgid "Call in progress with %s on %s"
-#~ msgstr "Kõne pooleli kontaktiga %s seadmes %s"
-
-#~ msgid "Unknown Number"
-#~ msgstr "Tundmatu number"
-
-#~ msgid "In Progress Calls"
-#~ msgstr "Pooleliolevad kõned"
-
-#~ msgid "The <b>Media Player Control</b> plugin must be enabled"
-#~ msgstr "Plugin <b>Meediamängija juhtimine</b> peab olema lubatud"
-
-#~ msgid ""
-#~ "Ensure that devices are on the same local network with ports 1716 to 1764 "
-#~ "open for TCP and UDP connections."
-#~ msgstr ""
-#~ "Veendu, et seadmed on samas kohalikus võrgus ning pordid 1716 ja 1764 on "
-#~ "avatud TCP- ja UDP-ühenduste jaoks."
-
-#~ msgid ""
-#~ "To connect an Android device, install the KDE Connect Android app from "
-#~ "the <a href=\"%s\">Google Play Store</a> or <a href=\"%s\">F-Droid</a>."
-#~ msgstr ""
-#~ "Android-seadme ühendamiseks paigalda KDE Connect Androidi rakendus <a "
-#~ "href=\"%s\">Google Play poest</a> või <a href=\"%s\">F-Droidist</a>."
-
-#~ msgid ""
-#~ "Please see the <a href=\"%s\">Wiki</a> for more help or <a href=\"%s"
-#~ "\">open an issue</a> on Github to report a problem."
-#~ msgstr ""
-#~ "Rohkema abi saamiseks palun loe <a href=\"%s\">vikit</a> või <a href=\"%s"
-#~ "\">teata probleemist</a> GitHubi vahendusel."
-
-#~ msgid "Error: %s"
-#~ msgstr "Viga: %s"
-
-#~ msgid "Connecting Devices"
-#~ msgstr "Ühendan seadmeid"
-
-#~ msgid "Reconnect <b>%s</b>"
-#~ msgstr "Taasühenda <b>%s</b>"
-
-#~ msgid "Unpair <b>%s</b>"
-#~ msgstr "Eemalda <b>%s</b> paardumine"
-
-#~ msgid "Pair <b>%s</b>"
-#~ msgstr "Paarita <b>%s</b>"
-
-#~ msgid ""
-#~ "<b>%s Fingerprint:</b>\n"
-#~ "%s\n"
-#~ "\n"
-#~ "<b>Local Fingerprint:</b>\n"
-#~ "%s"
-#~ msgstr ""
-#~ "<b>%s sõrmejälg:</b>\n"
-#~ "%s\n"
-#~ "\n"
-#~ "<b>Kohalik sõrmejälg:</b>\n"
-#~ "%s"
-
-#~ msgid "Unknown"
-#~ msgstr "Tundmatu"
-
-#~ msgid "Keyboard Shortcut Unavailable"
-#~ msgstr "Klaviatuuri kiirklahv pole saadaval"
-
-#~ msgid ""
-#~ "The requested keyboard shortcut is already in use and can't be overridden."
-#~ msgstr ""
-#~ "Taotletud klaviatuuri kiirklahv on juba kasutusel ja seda ei saa üle "
-#~ "kirjutada."
-
-#~ msgid "Configure <b>%s</b>"
-#~ msgstr "Seadista <b>%s</b>"
-
-#~ msgid "Send to %d"
-#~ msgstr "Saada seadmesse %d"
-
-#~ msgid "Add and remove people"
-#~ msgstr "Lisa ja eemalda inimesi"
-
-#~ msgid "<b>%s</b> is disconnected"
-#~ msgstr "<b>%s</b> on lahti ühendatud"
-
-#~ msgid "And one other person"
-#~ msgid_plural "And %d other people"
-#~ msgstr[0] "ja veel üks inimene"
-#~ msgstr[1] "ja veel %d inimest"
-
-#~ msgid "SMS Conversation with %s"
-#~ msgstr "SMS-vestlus kontaktidega %s"
-
-#~ msgid "New SMS Conversation"
-#~ msgstr "Uus SMS-vestlus"
-
-#~ msgid "Enable debug features and logging"
-#~ msgstr "Luba silumisfunktsioonid ja logimine"
-
-#~ msgid "Show Indicators"
-#~ msgstr "Kuva indikaatoreid"
-
-#~ msgid "Display devices in the panel instead of the User Menu"
-#~ msgstr "Kuva seadmeid kasutajamenüü asemel paneelil"
-
-#~ msgid "Display devices even if offline"
-#~ msgstr "Kuva seadmeid ka siis, kui need on võrguta"
-
-#~ msgid "Display devices even if unpaired"
-#~ msgstr "Kuva seadmeid ka siis, kui need on paaritamata"
-
-#~ msgid "Display an icon with percentage in the Device Menu"
-#~ msgstr "Kuva protsentidega ikooni seadme menüüs"
-
-#~ msgid "Send files from the file browser context menu"
-#~ msgstr "Saada faile failisirvija kontekstmenüüst"
-
-#~ msgid "Public Name"
-#~ msgstr "Avalik nimi"
-
-#~ msgid "The name visible to other devices"
-#~ msgstr "Nimi, mida kuvatakse teistele seadmetele"
-
-#~ msgid "Receive Statistics"
-#~ msgstr "Võta statistikat vastu"
-
-#~ msgid "Send Statistics"
-#~ msgstr "Saada statistikat"
-
-#~ msgid "Receive Content"
-#~ msgstr "Võta sisu vastu"
-
-#~ msgid "Send Content"
-#~ msgstr "Saada sisu"
-
-#~ msgid "Automatically Mount"
-#~ msgstr "Haagi automaatselt"
-
-#~ msgid "Download Directory"
-#~ msgstr "Allalaadimiste kataloog"
-
-#~ msgid "Use Subdirectory"
-#~ msgstr "Kasuta alamkataloogi"

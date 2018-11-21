@@ -607,8 +607,8 @@ msgstr "Aktarımı Başlat"
 #. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:133
 #, javascript-format
-msgid "Receiving \"%s\" from %s"
-msgstr "Alınıyor \"%s\" kaynak %s"
+msgid "Receiving “%s” from %s"
+msgstr "Alınıyor “%s” kaynak %s"
 
 #. Action Buttons
 #: src/service/plugins/share.js:138 src/service/plugins/share.js:289
@@ -625,8 +625,8 @@ msgstr "Aktarım Tamamlandı"
 #. TRANSLATORS: eg. Received 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:151
 #, javascript-format
-msgid "Received \"%s\" from %s"
-msgstr "Alınan \"%s\" kaynak %s"
+msgid "Received “%s” from %s"
+msgstr "Alınan “%s” kaynak %s"
 
 #: src/service/plugins/share.js:157
 msgid "Open Folder"
@@ -643,8 +643,8 @@ msgstr "Aktarım Başarısız"
 #. TRANSLATORS: eg. Failed to receive 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:171
 #, javascript-format
-msgid "Failed to receive \"%s\" from %s"
-msgstr "Alım başarısız \"%s\" kaynak %s"
+msgid "Failed to receive “%s” from %s"
+msgstr "Alım başarısız “%s” kaynak %s"
 
 #: src/service/plugins/share.js:211
 #, javascript-format
@@ -654,20 +654,20 @@ msgstr "Paylaşılan Metin %s"
 #. TRANSLATORS: eg. Sending 'book.pdf' to Google Pixel
 #: src/service/plugins/share.js:284
 #, javascript-format
-msgid "Sending \"%s\" to %s"
-msgstr "Gönderiliyor \"%s\" hedef %s"
+msgid "Sending “%s” to %s"
+msgstr "Gönderiliyor “%s” hedef %s"
 
 #. TRANSLATORS: eg. Sent "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:305
 #, javascript-format
-msgid "Sent \"%s\" to %s"
-msgstr "Gönderildi \"%s\" hedef %s"
+msgid "Sent “%s” to %s"
+msgstr "Gönderildi “%s” hedef %s"
 
 #. TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:313
 #, javascript-format
-msgid "Failed to send \"%s\" to %s"
-msgstr "Gönderilemedi \"%s\" hedef %s"
+msgid "Failed to send “%s” to %s"
+msgstr "Gönderilemedi “%s” hedef %s"
 
 #. TRANSLATORS: eg. Send files to Google Pixel
 #: src/service/plugins/share.js:384

@@ -604,8 +604,8 @@ msgstr "Avvia Trasferimento"
 #. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:133
 #, javascript-format
-msgid "Receiving \"%s\" from %s"
-msgstr "Ricezione in corso di \"%s\" da %s"
+msgid "Receiving “%s” from %s"
+msgstr "Ricezione in corso di “%s” da %s"
 
 #. Action Buttons
 #: src/service/plugins/share.js:138 src/service/plugins/share.js:289
@@ -622,8 +622,8 @@ msgstr "Trasferimento Riuscito"
 #. TRANSLATORS: eg. Received 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:151
 #, javascript-format
-msgid "Received \"%s\" from %s"
-msgstr "Ricevuto \"%s\" da %s"
+msgid "Received “%s” from %s"
+msgstr "Ricevuto “%s” da %s"
 
 #: src/service/plugins/share.js:157
 msgid "Open Folder"
@@ -640,8 +640,8 @@ msgstr "Trasferimento Fallito"
 #. TRANSLATORS: eg. Failed to receive 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:171
 #, javascript-format
-msgid "Failed to receive \"%s\" from %s"
-msgstr "Ricezione fallita di \"%s\" da %s"
+msgid "Failed to receive “%s” from %s"
+msgstr "Ricezione fallita di “%s” da %s"
 
 #: src/service/plugins/share.js:211
 #, javascript-format
@@ -651,20 +651,20 @@ msgstr "Testo Condiviso Da %s"
 #. TRANSLATORS: eg. Sending 'book.pdf' to Google Pixel
 #: src/service/plugins/share.js:284
 #, javascript-format
-msgid "Sending \"%s\" to %s"
-msgstr "Invio in corso di \"%s\" a %s"
+msgid "Sending “%s” to %s"
+msgstr "Invio in corso di “%s” a %s"
 
 #. TRANSLATORS: eg. Sent "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:305
 #, javascript-format
-msgid "Sent \"%s\" to %s"
-msgstr "\"%s\" inviato a %s"
+msgid "Sent “%s” to %s"
+msgstr "“%s” inviato a %s"
 
 #. TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:313
 #, javascript-format
-msgid "Failed to send \"%s\" to %s"
-msgstr "Invio fallito di \"%s\" a %s"
+msgid "Failed to send “%s” to %s"
+msgstr "Invio fallito di “%s” a %s"
 
 #. TRANSLATORS: eg. Send files to Google Pixel
 #: src/service/plugins/share.js:384
@@ -924,24 +924,3 @@ msgstr "Servizio non disponibile"
 #: webextension/gettext.js:37
 msgid "Open in Browser"
 msgstr "Apri nel Browser"
-
-#~ msgid "Conversations"
-#~ msgstr "Conversazioni"
-
-#~ msgid "Sync Contacts"
-#~ msgstr "Sincronizza Contatti"
-
-#~ msgid "Sync Messages"
-#~ msgstr "Sincronizza Messaggi"
-
-#~ msgid "Connect LAN"
-#~ msgstr "Collega LAN"
-
-#~ msgid "Fax"
-#~ msgstr "Fax"
-
-#~ msgid "Remote Filesystem Error"
-#~ msgstr "Errore Filesystem Remoto"
-
-#~ msgid "%s is using an incompatible SSH library"
-#~ msgstr "%s utilizza una libreria SSH incompatibile"

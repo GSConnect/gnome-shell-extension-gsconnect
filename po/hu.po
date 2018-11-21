@@ -604,7 +604,7 @@ msgstr "Átvitel megkezdése"
 #. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:133
 #, javascript-format
-msgid "Receiving \"%s\" from %s"
+msgid "Receiving “%s” from %s"
 msgstr "„%s” fogadása innen: %s"
 
 #. Action Buttons
@@ -622,7 +622,7 @@ msgstr "Sikeres átvitel"
 #. TRANSLATORS: eg. Received 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:151
 #, javascript-format
-msgid "Received \"%s\" from %s"
+msgid "Received “%s” from %s"
 msgstr "„%s” fogadva innen: %s"
 
 #: src/service/plugins/share.js:157
@@ -640,7 +640,7 @@ msgstr "Sikertelen átvitel"
 #. TRANSLATORS: eg. Failed to receive 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:171
 #, javascript-format
-msgid "Failed to receive \"%s\" from %s"
+msgid "Failed to receive “%s” from %s"
 msgstr "„%s” fogadása %s eszközről nem sikerült"
 
 #: src/service/plugins/share.js:211
@@ -651,19 +651,19 @@ msgstr "%s által megosztott szöveg"
 #. TRANSLATORS: eg. Sending 'book.pdf' to Google Pixel
 #: src/service/plugins/share.js:284
 #, javascript-format
-msgid "Sending \"%s\" to %s"
+msgid "Sending “%s” to %s"
 msgstr "„%s” küldése ide: %s"
 
 #. TRANSLATORS: eg. Sent "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:305
 #, javascript-format
-msgid "Sent \"%s\" to %s"
+msgid "Sent “%s” to %s"
 msgstr "„%s” elküldve ide: %s"
 
 #. TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:313
 #, javascript-format
-msgid "Failed to send \"%s\" to %s"
+msgid "Failed to send “%s” to %s"
 msgstr "„%s” küldése %s eszközre nem sikerült"
 
 #. TRANSLATORS: eg. Send files to Google Pixel
@@ -926,350 +926,3 @@ msgstr "A szolgáltatás nem érhető el"
 #: webextension/gettext.js:37
 msgid "Open in Browser"
 msgstr "Megnyitás böngészőben"
-
-#~ msgid "Conversations"
-#~ msgstr "Beszélgetés"
-
-#~ msgid "Sync Contacts"
-#~ msgstr "Névjegyek szinkronizálása"
-
-#~ msgid "Sync Messages"
-#~ msgstr "Üzenetek szinkronizálása"
-
-#~ msgid "Connect LAN"
-#~ msgstr "LAN kapcsolat"
-
-#~ msgid "Fax"
-#~ msgstr "Fax"
-
-#~ msgid "Remote Filesystem Error"
-#~ msgstr "Távoli fájlrendszer hiba"
-
-#~ msgid "%s is using an incompatible SSH library"
-#~ msgstr "%s egy inkompatibilis SSH könyvtárat használ"
-
-#~ msgid "Show Offline Devices"
-#~ msgstr "Offline eszközök megjelenítése"
-
-#~ msgid "Show Unpaired Devices"
-#~ msgstr "Párosítatlan eszközök megjelenítése"
-
-#~ msgid "Show Battery Icon"
-#~ msgstr "Akkumulátor ikon megjelenítése"
-
-#~ msgid "Shell"
-#~ msgstr "Shell"
-
-#~ msgid "Android"
-#~ msgstr "Android"
-
-#~ msgid "Sailfish OS"
-#~ msgstr "Sailfish OS"
-
-#~ msgid "Device is unpaired"
-#~ msgstr "Az eszköz nincs párosítva"
-
-#~ msgid "Locate %s"
-#~ msgstr "%s keresése"
-
-#~ msgid "Browse Files"
-#~ msgstr "Fájlrendszer böngészése"
-
-#~ msgid "Remote Input"
-#~ msgstr "Távoli bevitel"
-
-#~ msgid "No plugins enabled"
-#~ msgstr "Nincsenek engedélyezett bővítmények"
-
-#~ msgid "Failed to mount %s"
-#~ msgstr "Nem sikerült csatolni: %s"
-
-#~ msgid "GSConnect Website"
-#~ msgstr "GSConnect weboldal"
-
-#~ msgid "Copyright © 2017 Andy Holmes"
-#~ msgstr "Copyright © 2017 Andy Holmes"
-
-#~ msgid "This program comes with absolutely no warranty."
-#~ msgstr "A programra semmilyen garanciát nem vállalunk."
-
-#~ msgid ""
-#~ "See the <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html"
-#~ "\">GNU General Public License, version 2 or later</a> for details."
-#~ msgstr ""
-#~ "Részletekért lásd a <a href=\"https://www.gnu.org/licenses/old-licenses/"
-#~ "gpl-2.0.html\">GNU General Public License 2-es, vagy újabb verziót</a>."
-
-#~ msgid "Preferences"
-#~ msgstr "Beállítások"
-
-#~ msgid "Extensions"
-#~ msgstr "Bővítmények"
-
-#~ msgid "Web Browser Integration"
-#~ msgstr "Webböngésző integráció"
-
-#~ msgid ""
-#~ "Requires <a href=\"%s\">Chrome Extension</a> or <a href=\"%s\">Firefox "
-#~ "Add-On</a>"
-#~ msgstr ""
-#~ "<a href=\"%s\">Chrome bővítmény</a> vagy <a href=\"%s\">Firefox "
-#~ "kiegészítő</a> telepítése szükséges"
-
-#~ msgid "Nautilus extensions changed"
-#~ msgstr "A Nautilus bővítmény módosult"
-
-#~ msgid "Restart Nautilus to apply changes"
-#~ msgstr "A módosítások alkalmazásához indítsa újra a Nautilust"
-
-#~ msgid "Restart"
-#~ msgstr "Újraindítás"
-
-#~ msgid ""
-#~ "%s Fingerprint:\n"
-#~ "%s\n"
-#~ "\n"
-#~ "Local Fingerprint:\n"
-#~ "%s"
-#~ msgstr ""
-#~ "%s ujjlenyomata:\n"
-#~ "%s\n"
-#~ "\n"
-#~ "helyi ujjlenyomat:\n"
-#~ "%s"
-
-#~ msgid "Apply"
-#~ msgstr "Alkalmaz"
-
-#~ msgid "Send and receive battery statistics"
-#~ msgstr "Akkumulátorstatisztika fogadása és küldése"
-
-#~ msgid "Low Battery Warning"
-#~ msgstr "Alacsony töltöttség figyelmeztetés"
-
-#~ msgid "%s's battery level is %d%%"
-#~ msgstr "%s akkumulátorának töltöttsége %d%%"
-
-#~ msgid "Sync the clipboard between devices"
-#~ msgstr "Vágólap szinkronizálása az eszközök között"
-
-#~ msgid "Failed to get Gdk.Display"
-#~ msgstr "Gdk.Display lekérése nem sikerült"
-
-#~ msgid "Failed to get Clipboard"
-#~ msgstr "Vágólap lekérdezése nem sikerült"
-
-#~ msgid "Find a device by making it ring"
-#~ msgstr "Eszköz keresése a megcsörgetésével"
-
-#~ msgid "Screen Lock"
-#~ msgstr "Képernyőzár"
-
-#~ msgid "Lock and unlock devices"
-#~ msgstr "Képernyő zárolása és feloldása"
-
-#~ msgid "Control the mouse and keyboard remotely"
-#~ msgstr "Egér és billentyűzet vezérlése távolról"
-
-#~ msgid "Can't run in Wayland session"
-#~ msgstr "Nem futtatható Wayland munkameneten"
-
-#~ msgid "Failed to initialize Atspi"
-#~ msgstr "Atspi-t nem sikerült inicializálni"
-
-#~ msgid "Cannot load Caribou virtual keyboard for Unicode support"
-#~ msgstr ""
-#~ "Nem sikerült betölteni a Caribou virtuális billentyűzetet a Unicode "
-#~ "támogatáshoz"
-
-#~ msgid "Control MPRIS2 enabled media players"
-#~ msgstr "MPRIS2-képes médialejátszók vezérlése"
-
-#~ msgid "Sync notifications between devices"
-#~ msgstr "Értesítések szinkronizálása az eszközök között"
-
-#~ msgid "Missed call"
-#~ msgstr "Nem fogadott hívás"
-
-#~ msgid "Missed call from %s on %s"
-#~ msgstr "Nem fogadott hívás tőle: %1s (%s)"
-
-#~ msgid "Send and receive pings"
-#~ msgstr "Pingek küldése és fogadása"
-
-#~ msgid "Execute local commands remotely"
-#~ msgstr "Helyi parancsok futtatása távolról"
-
-#~ msgid "Mount and browse device filesystems"
-#~ msgstr "Az eszköz fájlrendszerének csatolása és böngészése"
-
-#~ msgid "SSHFS not installed"
-#~ msgstr "Az SSHFS nincs telepítve"
-
-#~ msgid "Send and receive files and URLs"
-#~ msgstr "Fájlok és URL-ek küldése és fogadása"
-
-#~ msgid "Transfer Cancelled"
-#~ msgstr "Átvitel megszakítva"
-
-#~ msgid "Cancelled transfer of \"%s\" from %s"
-#~ msgstr "„%s” átvitele %s eszközről meg lett szakítva"
-
-#~ msgid "Cancelled transfer of \"%s\" to %s"
-#~ msgstr "„%s” átvitele %s eszköze meg lett szakítva"
-
-#~ msgid "Use a subdirectory named <b>%s</b>"
-#~ msgstr "Egy <b>%s</b> nevű alkönyvtár használata"
-
-#~ msgid "Call notification and SMS messaging"
-#~ msgstr "Hívás értesítés és SMS küldés"
-
-#~ msgid "Incoming call from %s on %s"
-#~ msgstr "Bejövő hívás tőle: %s (%s)"
-
-#~ msgid "Call In Progress"
-#~ msgstr "Hívás folyamatban"
-
-#~ msgid "Call in progress with %s on %s"
-#~ msgstr "Folyamatban lévő hívás vele: %s (%s)"
-
-#~ msgid "Unknown Number"
-#~ msgstr "Ismeretlen szám"
-
-#~ msgid "In Progress Calls"
-#~ msgstr "Folyamatban lévő hívás"
-
-#~ msgid "The <b>Media Player Control</b> plugin must be enabled"
-#~ msgstr "A <b>Médialejátszó vezérlőnek</b> engedélyezve kell lenni"
-
-#~ msgid ""
-#~ "Ensure that devices are on the same local network with ports 1716 to 1764 "
-#~ "open for TCP and UDP connections."
-#~ msgstr ""
-#~ "Győződjön meg arról, hogy az eszközök ugyanahhoz a helyi hálózathoz "
-#~ "csatlakoznak és a hálózaton engedélyezett TCP és UDP kapcsolat a "
-#~ "1716-1764 porttartományban."
-
-#~ msgid ""
-#~ "To connect an Android device, install the KDE Connect Android app from "
-#~ "the <a href=\"%s\">Google Play Store</a> or <a href=\"%s\">F-Droid</a>."
-#~ msgstr ""
-#~ "Android eszköz csatlakoztatásához telepítse a KDE Connect Android "
-#~ "alkalmazást a <a href=\"%s\">Google Play Áruházból</a> vagy <a href=\"%s"
-#~ "\">F-Droid-ról</a>."
-
-#~ msgid ""
-#~ "Please see the <a href=\"%s\">Wiki</a> for more help or <a href=\"%s"
-#~ "\">open an issue</a> on Github to report a problem."
-#~ msgstr ""
-#~ "További segítséget a <a href=\"%s\">Wikiben</a> talál; hiba "
-#~ "bejelentéséhez <a href=\"%s\">nyisson egy issue-t</a> Githubon."
-
-#~ msgid "Error: %s"
-#~ msgstr "Hiba: %s"
-
-#~ msgid "Connecting Devices"
-#~ msgstr "Eszközök csatlakoztatása"
-
-#~ msgid "Reconnect <b>%s</b>"
-#~ msgstr "<b>%s</b> újracsatlakoztatása"
-
-#~ msgid "Unpair <b>%s</b>"
-#~ msgstr "<b>%s</b> párosításának megszűntetése"
-
-#~ msgid "Pair <b>%s</b>"
-#~ msgstr "<b>%s</b> párosítása"
-
-#~ msgid ""
-#~ "<b>%s Fingerprint:</b>\n"
-#~ "%s\n"
-#~ "\n"
-#~ "<b>Local Fingerprint:</b>\n"
-#~ "%s"
-#~ msgstr ""
-#~ "<b>%s ujjlenyomata:</b>\n"
-#~ "%s\n"
-#~ "\n"
-#~ "<b>helyi ujjlenyomat:</b>\n"
-#~ "%s"
-
-#~ msgid "Unknown"
-#~ msgstr "Ismeretlen"
-
-#~ msgid "Keyboard Shortcut Unavailable"
-#~ msgstr "Gyorsbillentyű nem érhető el"
-
-#~ msgid ""
-#~ "The requested keyboard shortcut is already in use and can't be overridden."
-#~ msgstr "A kért gyorsbillentyű már használatban van és nem lehet felülírni."
-
-#~ msgid "Configure <b>%s</b>"
-#~ msgstr "<b>%s</b> beállítása"
-
-#~ msgid "Send to %d"
-#~ msgstr "Küldés ide: %d"
-
-#~ msgid "Add and remove people"
-#~ msgstr "Címzettek hozzáadása és eltávolítása"
-
-#~ msgid "<b>%s</b> is disconnected"
-#~ msgstr "<b>%s</b> nem csatlakozik"
-
-#~ msgid "And one other person"
-#~ msgid_plural "And %d other people"
-#~ msgstr[0] "És további egy címzett"
-#~ msgstr[1] "És további %d címzett"
-
-#~ msgid "SMS Conversation with %s"
-#~ msgstr "SMS beszélgetés vele: %s"
-
-#~ msgid "New SMS Conversation"
-#~ msgstr "Új SMS beszélgetés"
-
-#~ msgid "Enable debug features and logging"
-#~ msgstr "Hibakeresési lehetőségek és naplózás engedélyezése"
-
-#~ msgid "Show Indicators"
-#~ msgstr "Indikátorok megjelenítése"
-
-#~ msgid "Display devices in the panel instead of the User Menu"
-#~ msgstr "Az eszközöket a panelen jeleníti meg a Felhasználó menü helyett"
-
-#~ msgid "Display devices even if offline"
-#~ msgstr "Mutassa az eszközt akkor is, ha az nem csatlakozik"
-
-#~ msgid "Display devices even if unpaired"
-#~ msgstr "Mutassa a még párosítatlan az eszközöket is"
-
-#~ msgid "Display an icon with percentage in the Device Menu"
-#~ msgstr "Megjelenít egy százalék ikont az Eszköz menüben"
-
-#~ msgid "Send files from the file browser context menu"
-#~ msgstr "Fájlok küldése a fájlkezelő helyi menüjéből"
-
-#~ msgid "Public Name"
-#~ msgstr "Publikus név"
-
-#~ msgid "The name visible to other devices"
-#~ msgstr "A más eszközök számára látható név"
-
-#~ msgid "Receive Statistics"
-#~ msgstr "Statisztika fogadása"
-
-#~ msgid "Send Statistics"
-#~ msgstr "Statisztika küldése"
-
-#~ msgid "Receive Content"
-#~ msgstr "Tartalom fogadása"
-
-#~ msgid "Send Content"
-#~ msgstr "Tartalom küldése"
-
-#~ msgid "Automatically Mount"
-#~ msgstr "Automatikus csatolás"
-
-#~ msgid "Download Directory"
-#~ msgstr "Letöltési könyvtár"
-
-#~ msgid "Use Subdirectory"
-#~ msgstr "Alkönyvtár használata"
