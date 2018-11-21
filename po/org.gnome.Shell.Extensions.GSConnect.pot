@@ -602,7 +602,7 @@ msgstr ""
 #. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:133
 #, javascript-format
-msgid "Receiving \"%s\" from %s"
+msgid "Receiving “%s” from %s"
 msgstr ""
 
 #. Action Buttons
@@ -620,7 +620,7 @@ msgstr ""
 #. TRANSLATORS: eg. Received 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:151
 #, javascript-format
-msgid "Received \"%s\" from %s"
+msgid "Received “%s” from %s"
 msgstr ""
 
 #: src/service/plugins/share.js:157
@@ -638,7 +638,7 @@ msgstr ""
 #. TRANSLATORS: eg. Failed to receive 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:171
 #, javascript-format
-msgid "Failed to receive \"%s\" from %s"
+msgid "Failed to receive “%s” from %s"
 msgstr ""
 
 #: src/service/plugins/share.js:211
@@ -649,19 +649,19 @@ msgstr ""
 #. TRANSLATORS: eg. Sending 'book.pdf' to Google Pixel
 #: src/service/plugins/share.js:284
 #, javascript-format
-msgid "Sending \"%s\" to %s"
+msgid "Sending “%s” to %s"
 msgstr ""
 
 #. TRANSLATORS: eg. Sent "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:305
 #, javascript-format
-msgid "Sent \"%s\" to %s"
+msgid "Sent “%s” to %s"
 msgstr ""
 
 #. TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:313
 #, javascript-format
-msgid "Failed to send \"%s\" to %s"
+msgid "Failed to send “%s” to %s"
 msgstr ""
 
 #. TRANSLATORS: eg. Send files to Google Pixel

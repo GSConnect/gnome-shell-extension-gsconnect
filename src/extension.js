@@ -187,13 +187,10 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
                 }
             }
         } catch (e) {
-            debug(e);
             Gio.DBusError.strip_remote_error(e);
 
-            // Don't notify of cancellation errors during startup
-            // https://gitlab.gnome.org/GNOME/gnome-shell/issues/177
             if (!e.code || e.code !== Gio.IOErrorEnum.CANCELLED) {
-                Main.notifyError(_('GSConnect'), e.message);
+                logError(e, 'GSConnect');
             }
         }
     }
@@ -242,9 +239,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
             // Add the battery to the submenu item
             if (!this._item._battery) {
                 this._item._battery = new Device.Battery({
-                    object: this.manager.get_object(device.g_object_path),
-                    device: device,
-                    opacity: 128
+                    object: this.manager.get_object(device.g_object_path)
                 });
                 this._item.actor.insert_child_below(
                     this._item._battery,
@@ -306,9 +301,11 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
                 this._indicator.visible = true;
             }
         } catch (e) {
-            debug(e);
             Gio.DBusError.strip_remote_error(e);
-            Main.notifyError(_('GSConnect'), e.message);
+
+            if (!e.code || e.code !== Gio.IOErrorEnum.CANCELLED) {
+                logError(e, 'GSConnect');
+            }
         }
     }
 
@@ -430,7 +427,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
                 }
             }
         } catch (e) {
-            logError(e);
+            debug(e);
         }
     }
 

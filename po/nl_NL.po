@@ -603,8 +603,8 @@ msgstr "Bezig met starten van overdracht"
 #. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:133
 #, javascript-format
-msgid "Receiving \"%s\" from %s"
-msgstr "Bezig met ontvangen van \"%s\" van %s"
+msgid "Receiving “%s” from %s"
+msgstr "Bezig met ontvangen van „%s” van %s"
 
 #. Action Buttons
 #: src/service/plugins/share.js:138 src/service/plugins/share.js:289
@@ -621,8 +621,8 @@ msgstr "Overdracht voltooid"
 #. TRANSLATORS: eg. Received 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:151
 #, javascript-format
-msgid "Received \"%s\" from %s"
-msgstr "\"%s\" ontvangen van %s"
+msgid "Received “%s” from %s"
+msgstr "„%s” ontvangen van %s"
 
 #: src/service/plugins/share.js:157
 msgid "Open Folder"
@@ -639,8 +639,8 @@ msgstr "Overdracht mislukt"
 #. TRANSLATORS: eg. Failed to receive 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:171
 #, javascript-format
-msgid "Failed to receive \"%s\" from %s"
-msgstr "Ontvangen van \"%s\" van %s mislukt"
+msgid "Failed to receive “%s” from %s"
+msgstr "Ontvangen van „%s” van %s mislukt"
 
 #: src/service/plugins/share.js:211
 #, javascript-format
@@ -650,20 +650,20 @@ msgstr "Tekst, gedeeld door %s"
 #. TRANSLATORS: eg. Sending 'book.pdf' to Google Pixel
 #: src/service/plugins/share.js:284
 #, javascript-format
-msgid "Sending \"%s\" to %s"
-msgstr "Bezig met versturen van \"%s\" naar %s"
+msgid "Sending “%s” to %s"
+msgstr "Bezig met versturen van „%s” naar %s"
 
 #. TRANSLATORS: eg. Sent "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:305
 #, javascript-format
-msgid "Sent \"%s\" to %s"
-msgstr "\"%s\" verstuurd naar %s"
+msgid "Sent “%s” to %s"
+msgstr "„%s” verstuurd naar %s"
 
 #. TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:313
 #, javascript-format
-msgid "Failed to send \"%s\" to %s"
-msgstr "Versturen van \"%s\" naar %s mislukt"
+msgid "Failed to send “%s” to %s"
+msgstr "Versturen van „%s” naar %s mislukt"
 
 #. TRANSLATORS: eg. Send files to Google Pixel
 #: src/service/plugins/share.js:384
@@ -924,349 +924,3 @@ msgstr "Dienst niet beschikbaar"
 #: webextension/gettext.js:37
 msgid "Open in Browser"
 msgstr "Openen in browser"
-
-#~ msgid "Conversations"
-#~ msgstr "Gesprekken"
-
-#~ msgid "Sync Contacts"
-#~ msgstr "Contactpersonen synchroniseren"
-
-#~ msgid "Sync Messages"
-#~ msgstr "Berichten synchroniseren"
-
-#~ msgid "Connect LAN"
-#~ msgstr "Via LAN verbinden"
-
-#~ msgid "Fax"
-#~ msgstr "Fax"
-
-#~ msgid "Remote Filesystem Error"
-#~ msgstr "Fout op extern bestandssysteem"
-
-#~ msgid "%s is using an incompatible SSH library"
-#~ msgstr "%s gebruikt een incompatibele SSH-bibliotheek"
-
-#~ msgid "Show Offline Devices"
-#~ msgstr "Offline apparaten tonen"
-
-#~ msgid "Show Unpaired Devices"
-#~ msgstr "Niet-aangekoppelde apparaten tonen"
-
-#~ msgid "Show Battery Icon"
-#~ msgstr "Batterijpictogram tonen"
-
-#~ msgid "Shell"
-#~ msgstr "Shell"
-
-#~ msgid "Android"
-#~ msgstr "Android"
-
-#~ msgid "Sailfish OS"
-#~ msgstr "Sailfish OS"
-
-#~ msgid "Device is unpaired"
-#~ msgstr "Apparaat is niet gekoppeld"
-
-#~ msgid "Locate %s"
-#~ msgstr "%s lokaliseren"
-
-#~ msgid "Browse Files"
-#~ msgstr "Bestanden verkennen"
-
-#~ msgid "Remote Input"
-#~ msgstr "Externe invoer"
-
-#~ msgid "No plugins enabled"
-#~ msgstr "Geen plug-ins ingeschakeld"
-
-#~ msgid "Failed to mount %s"
-#~ msgstr "Aankoppelen van %s mislukt"
-
-#~ msgid "GSConnect Website"
-#~ msgstr "GSConnect-website"
-
-#~ msgid "Copyright © 2017 Andy Holmes"
-#~ msgstr "Copyright © 2017 Andy Holmes"
-
-#~ msgid "This program comes with absolutely no warranty."
-#~ msgstr "Deze applicatie wordt geleverd zonder enige vorm van garantie."
-
-#~ msgid ""
-#~ "See the <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html"
-#~ "\">GNU General Public License, version 2 or later</a> for details."
-#~ msgstr ""
-#~ "Bekijk de <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html"
-#~ "\">GNU General Public License, versie 2 of hoger</a> voor meer informatie."
-
-#~ msgid "Preferences"
-#~ msgstr "Voorkeuren"
-
-#~ msgid "Extensions"
-#~ msgstr "Extensies"
-
-#~ msgid "Web Browser Integration"
-#~ msgstr "Webbrowser-integratie"
-
-#~ msgid ""
-#~ "Requires <a href=\"%s\">Chrome Extension</a> or <a href=\"%s\">Firefox "
-#~ "Add-On</a>"
-#~ msgstr ""
-#~ "Vereist de <a href=\"%s\">Chrome-extensie</a> of <a href=\"%s\">Firefox-"
-#~ "add-on</a>"
-
-#~ msgid "Nautilus extensions changed"
-#~ msgstr "Nautilus-extensies zijn gewijzigd"
-
-#~ msgid "Restart Nautilus to apply changes"
-#~ msgstr "Herstart Nautilus om de wijzigingen toe te passen"
-
-#~ msgid "Restart"
-#~ msgstr "Herstarten"
-
-#~ msgid ""
-#~ "%s Fingerprint:\n"
-#~ "%s\n"
-#~ "\n"
-#~ "Local Fingerprint:\n"
-#~ "%s"
-#~ msgstr ""
-#~ "%s Vingerafdruk:\n"
-#~ "%s\n"
-#~ "\n"
-#~ "Lokale vingerafdruk:\n"
-#~ "%s"
-
-#~ msgid "Apply"
-#~ msgstr "Toepassen"
-
-#~ msgid "Send and receive battery statistics"
-#~ msgstr "Batterijstatistieken versturen en ontvangen"
-
-#~ msgid "Low Battery Warning"
-#~ msgstr "Waarschuwing: laag batterijniveau"
-
-#~ msgid "%s's battery level is %d%%"
-#~ msgstr "%s's batterijniveau is %d%%"
-
-#~ msgid "Sync the clipboard between devices"
-#~ msgstr "Klembord synchroniseren tussen apparaten"
-
-#~ msgid "Failed to get Gdk.Display"
-#~ msgstr "Opvragen van Gdk.Display mislukt"
-
-#~ msgid "Failed to get Clipboard"
-#~ msgstr "Opvragen van klembordinhoud mislukt"
-
-#~ msgid "Find a device by making it ring"
-#~ msgstr "Apparaat terugvinden door het geluid te maken"
-
-#~ msgid "Screen Lock"
-#~ msgstr "Schermvergrendeling"
-
-#~ msgid "Lock and unlock devices"
-#~ msgstr "Apparaten ver-/ontgrendelen"
-
-#~ msgid "Control the mouse and keyboard remotely"
-#~ msgstr "Muis en toetsenbord extern besturen"
-
-#~ msgid "Can't run in Wayland session"
-#~ msgstr "Kan niet worden uitgevoerd in Wayland-sessie"
-
-#~ msgid "Failed to initialize Atspi"
-#~ msgstr "Initialiseren van Atspi mislukt"
-
-#~ msgid "Cannot load Caribou virtual keyboard for Unicode support"
-#~ msgstr ""
-#~ "Kan Caribou virtueel toetsenbord voor Unicode-ondersteuning niet laden"
-
-#~ msgid "Control MPRIS2 enabled media players"
-#~ msgstr "Door MPRIS2-aangestuurde mediaspelers beheren"
-
-#~ msgid "Sync notifications between devices"
-#~ msgstr "Meldingen synchroniseren tussen apparaten"
-
-#~ msgid "Missed call"
-#~ msgstr "Gemiste oproep"
-
-#~ msgid "Missed call from %s on %s"
-#~ msgstr "Gemiste oproep van %s op %s"
-
-#~ msgid "Send and receive pings"
-#~ msgstr "Pings versturen en ontvangen"
-
-#~ msgid "Execute local commands remotely"
-#~ msgstr "Lokale opdrachten extern uitvoeren"
-
-#~ msgid "Mount and browse device filesystems"
-#~ msgstr "Apparaatbestandssystemen aankoppelen en verkennen"
-
-#~ msgid "SSHFS not installed"
-#~ msgstr "SSHFS is niet geïnstalleerd"
-
-#~ msgid "Send and receive files and URLs"
-#~ msgstr "Bestanden en URL's delen en ontvangen"
-
-#~ msgid "Transfer Cancelled"
-#~ msgstr "Overdacht geannuleerd"
-
-#~ msgid "Cancelled transfer of \"%s\" from %s"
-#~ msgstr "Overdracht van \"%s\" van %s geannuleerd"
-
-#~ msgid "Cancelled transfer of \"%s\" to %s"
-#~ msgstr "Overdracht van \"%s\" naar %s geannuleerd"
-
-#~ msgid "Use a subdirectory named <b>%s</b>"
-#~ msgstr "Submap gebruiken met de naam <b>%s</b>"
-
-#~ msgid "Call notification and SMS messaging"
-#~ msgstr "Meldingen bij oproepen en SMS'jes"
-
-#~ msgid "Incoming call from %s on %s"
-#~ msgstr "Inkomende oproep van %s op %s"
-
-#~ msgid "Call In Progress"
-#~ msgstr "Bezig met oproep"
-
-#~ msgid "Call in progress with %s on %s"
-#~ msgstr "Bezig met oproep met %s op %s"
-
-#~ msgid "Unknown Number"
-#~ msgstr "Onbekend nummer"
-
-#~ msgid "In Progress Calls"
-#~ msgstr "Tijdens uitvoeren van oproepen"
-
-#~ msgid "The <b>Media Player Control</b> plugin must be enabled"
-#~ msgstr "De <b>Mediaspelerbeheer</b>-plug-in moet worden ingeschakeld"
-
-#~ msgid ""
-#~ "Ensure that devices are on the same local network with ports 1716 to 1764 "
-#~ "open for TCP and UDP connections."
-#~ msgstr ""
-#~ "Zorg ervoor dat de apparaten zich op hetzelfde lokale netwerk bevinden en "
-#~ "dat de poorten 1716-1764 geopend zijn voor TCP- en UDP-verbindingen."
-
-#~ msgid ""
-#~ "To connect an Android device, install the KDE Connect Android app from "
-#~ "the <a href=\"%s\">Google Play Store</a> or <a href=\"%s\">F-Droid</a>."
-#~ msgstr ""
-#~ "Als je Android-apparaat wilt verbinden, installeer dan de KDE Connect "
-#~ "Android-app uit de <a href=\"%s\">Google Play Store</a> of <a href=\"%s"
-#~ "\">F-Droid</a>."
-
-#~ msgid ""
-#~ "Please see the <a href=\"%s\">Wiki</a> for more help or <a href=\"%s"
-#~ "\">open an issue</a> on Github to report a problem."
-#~ msgstr ""
-#~ "Bekijk de <a href=\"%s\">Wiki</a> voor meer informatie of <a href=\"%s"
-#~ "\">open een \"issue\"</a> op GitHub om een probleem te melden."
-
-#~ msgid "Error: %s"
-#~ msgstr "Fout: %s"
-
-#~ msgid "Connecting Devices"
-#~ msgstr "Bezig met verbinden"
-
-#~ msgid "Reconnect <b>%s</b>"
-#~ msgstr "<b>%s> opnieuw verbinden</b>"
-
-#~ msgid "Unpair <b>%s</b>"
-#~ msgstr "<b>%s</b> onkoppelen"
-
-#~ msgid "Pair <b>%s</b>"
-#~ msgstr "<b>%s</b> koppelen"
-
-#~ msgid ""
-#~ "<b>%s Fingerprint:</b>\n"
-#~ "%s\n"
-#~ "\n"
-#~ "<b>Local Fingerprint:</b>\n"
-#~ "%s"
-#~ msgstr ""
-#~ "<b>%s vingerafdruk:</b>\n"
-#~ "%s\n"
-#~ "\n"
-#~ "<b>Lokale vingerafdruk:</b>\n"
-#~ "%s"
-
-#~ msgid "Unknown"
-#~ msgstr "Onbekend"
-
-#~ msgid "Keyboard Shortcut Unavailable"
-#~ msgstr "Sneltoets niet beschikbaar"
-
-#~ msgid ""
-#~ "The requested keyboard shortcut is already in use and can't be overridden."
-#~ msgstr "De sneltoets wordt al gebruikt en kan niet worden overschreven."
-
-#~ msgid "Configure <b>%s</b>"
-#~ msgstr "<b>%s</b> instellen"
-
-#~ msgid "Send to %d"
-#~ msgstr "Versturen naar %d"
-
-#~ msgid "Add and remove people"
-#~ msgstr "Personen toevoegen en verwijderen"
-
-#~ msgid "<b>%s</b> is disconnected"
-#~ msgstr "<b>%s</b> is niet meer verbonden"
-
-#~ msgid "And one other person"
-#~ msgid_plural "And %d other people"
-#~ msgstr[0] "En één ander persoon"
-#~ msgstr[1] "En %d andere personen"
-
-#~ msgid "SMS Conversation with %s"
-#~ msgstr "SMS-gesprek met %s"
-
-#~ msgid "New SMS Conversation"
-#~ msgstr "Nieuw SMS-gesprek"
-
-#~ msgid "Enable debug features and logging"
-#~ msgstr "Foutopsporing en loggen inschakelen"
-
-#~ msgid "Show Indicators"
-#~ msgstr "Indicatoren tonen"
-
-#~ msgid "Display devices in the panel instead of the User Menu"
-#~ msgstr "Apparaten op paneel tonen in plaats van in het gebruikersmenu"
-
-#~ msgid "Display devices even if offline"
-#~ msgstr "Apparaten tonen, zelfs indien offline"
-
-#~ msgid "Display devices even if unpaired"
-#~ msgstr "Apparaten tonen, zelfs indien niet-gekoppeld"
-
-#~ msgid "Display an icon with percentage in the Device Menu"
-#~ msgstr "Pictogram met percentage tonen in het apparaatmenu"
-
-#~ msgid "Send files from the file browser context menu"
-#~ msgstr ""
-#~ "Bestanden versturen via het rechtermuisknopmenu van de bestandsbeheerder"
-
-#~ msgid "Public Name"
-#~ msgstr "Openbare naam"
-
-#~ msgid "The name visible to other devices"
-#~ msgstr "De naam die zichtbaar is voor andere apparaten"
-
-#~ msgid "Receive Statistics"
-#~ msgstr "Ontvangststatistieken"
-
-#~ msgid "Send Statistics"
-#~ msgstr "Verstuurstatistieken"
-
-#~ msgid "Receive Content"
-#~ msgstr "Inhoud ontvangen"
-
-#~ msgid "Send Content"
-#~ msgstr "Inhoud versturen"
-
-#~ msgid "Automatically Mount"
-#~ msgstr "Automatisch aankoppelen"
-
-#~ msgid "Download Directory"
-#~ msgstr "Downloadmap"
-
-#~ msgid "Use Subdirectory"
-#~ msgstr "Submap gebruiken"

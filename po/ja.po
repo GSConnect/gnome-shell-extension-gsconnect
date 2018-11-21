@@ -646,8 +646,8 @@ msgstr "転送開始"
 #. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:133
 #, javascript-format
-msgid "Receiving \"%s\" from %s"
-msgstr "\"%s\"を%sから受信しています"
+msgid "Receiving “%s” from %s"
+msgstr "「%s」を%sから受信しています"
 
 #. Action Buttons
 #: src/service/plugins/share.js:138 src/service/plugins/share.js:289
@@ -664,8 +664,8 @@ msgstr "転送成功"
 #. TRANSLATORS: eg. Received 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:151
 #, javascript-format
-msgid "Received \"%s\" from %s"
-msgstr "\"%s\"を%sから受信しました"
+msgid "Received “%s” from %s"
+msgstr "「%s」を%sから受信しました"
 
 #: src/service/plugins/share.js:157
 msgid "Open Folder"
@@ -682,8 +682,8 @@ msgstr "転送失敗"
 #. TRANSLATORS: eg. Failed to receive 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:171
 #, fuzzy, javascript-format
-msgid "Failed to receive \"%s\" from %s"
-msgstr "\"%s\"を%sから受信失敗: %s"
+msgid "Failed to receive “%s” from %s"
+msgstr "「%s」を%sから受信失敗: %s"
 
 #: src/service/plugins/share.js:211
 #, javascript-format
@@ -693,20 +693,20 @@ msgstr ""
 #. TRANSLATORS: eg. Sending 'book.pdf' to Google Pixel
 #: src/service/plugins/share.js:284
 #, javascript-format
-msgid "Sending \"%s\" to %s"
-msgstr "\"%s\"を%sに送信しています"
+msgid "Sending “%s” to %s"
+msgstr "「%s」を%sに送信しています"
 
 #. TRANSLATORS: eg. Sent "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:305
 #, javascript-format
-msgid "Sent \"%s\" to %s"
-msgstr "\"%s\"を%sに送信しました"
+msgid "Sent “%s” to %s"
+msgstr "「%s」を%sに送信しました"
 
 #. TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:313
 #, fuzzy, javascript-format
-msgid "Failed to send \"%s\" to %s"
-msgstr "\"%s\"を%sに送信失敗: %s"
+msgid "Failed to send “%s” to %s"
+msgstr "「%s」を%sに送信失敗: %s"
 
 #. TRANSLATORS: eg. Send files to Google Pixel
 #: src/service/plugins/share.js:384
@@ -976,337 +976,3 @@ msgstr "Gvcが利用できません"
 #, fuzzy
 msgid "Open in Browser"
 msgstr "フォルダーを開く"
-
-#, fuzzy
-#~ msgid "Conversations"
-#~ msgstr "SMS会議"
-
-#, fuzzy
-#~ msgid "Sync Contacts"
-#~ msgstr "不明な連絡先"
-
-#, fuzzy
-#~ msgid "Sync Messages"
-#~ msgstr "メッセージ"
-
-#, fuzzy
-#~ msgid "Connect LAN"
-#~ msgstr "GSConnect"
-
-#~ msgid "Fax"
-#~ msgstr "FAX"
-
-#, fuzzy
-#~ msgid "Show Offline Devices"
-#~ msgstr "オフラインの端末を表示"
-
-#, fuzzy
-#~ msgid "Show Unpaired Devices"
-#~ msgstr "モバイル端末"
-
-#~ msgid "Show Battery Icon"
-#~ msgstr "電池アイコンを表示"
-
-#~ msgid "Device is unpaired"
-#~ msgstr "端末はペア解除"
-
-#~ msgid "Locate %s"
-#~ msgstr "%sを探す"
-
-#~ msgid "Browse Files"
-#~ msgstr "ファイルを閲覧"
-
-#~ msgid "Remote Input"
-#~ msgstr "リモート入力"
-
-#~ msgid "No plugins enabled"
-#~ msgstr "プラグインは有効化されていません"
-
-#~ msgid "Failed to mount %s"
-#~ msgstr "%sのマウントに失敗しました"
-
-#~ msgid "GSConnect Website"
-#~ msgstr "GSConnectのウェブサイト"
-
-#~ msgid "Copyright © 2017 Andy Holmes"
-#~ msgstr "Copyright © 2017 Andy Holmes"
-
-#~ msgid "This program comes with absolutely no warranty."
-#~ msgstr "This program comes with absolutely no warranty."
-
-#~ msgid ""
-#~ "See the <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html"
-#~ "\">GNU General Public License, version 2 or later</a> for details."
-#~ msgstr ""
-#~ "See the <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html"
-#~ "\">GNU General Public License, version 2 or later</a> for details."
-
-#~ msgid "Preferences"
-#~ msgstr "設定"
-
-#~ msgid "Extensions"
-#~ msgstr "拡張機能"
-
-#~ msgid "Web Browser Integration"
-#~ msgstr "ウェブブラウザ統合"
-
-#~ msgid ""
-#~ "Requires <a href=\"%s\">Chrome Extension</a> or <a href=\"%s\">Firefox "
-#~ "Add-On</a>"
-#~ msgstr ""
-#~ "<a href=\"%s\">Chromeの拡張機能</a>または<a href=\"%s\">Firefoxのアドオン"
-#~ "</a>が必要"
-
-#~ msgid "Nautilus extensions changed"
-#~ msgstr "Nautilus拡張が変更されました"
-
-#~ msgid "Restart Nautilus to apply changes"
-#~ msgstr "Nautilusを再起動して変更を適用します"
-
-#~ msgid "Restart"
-#~ msgstr "再起動"
-
-#~ msgid ""
-#~ "%s Fingerprint:\n"
-#~ "%s\n"
-#~ "\n"
-#~ "Local Fingerprint:\n"
-#~ "%s"
-#~ msgstr ""
-#~ "%sのフィンガープリント:\n"
-#~ "%s\n"
-#~ "\n"
-#~ "ローカルフィンガープリント:\n"
-#~ "%s"
-
-#~ msgid "Apply"
-#~ msgstr "適用"
-
-#~ msgid "Send and receive battery statistics"
-#~ msgstr "電池統計を送受信"
-
-#~ msgid "Low Battery Warning"
-#~ msgstr "電池の残量が少なくなっています"
-
-#~ msgid "%s's battery level is %d%%"
-#~ msgstr "%sの電池残量は%d%%"
-
-#~ msgid "Sync the clipboard between devices"
-#~ msgstr "端末間でクリップボードを共有"
-
-#~ msgid "Failed to get Gdk.Display"
-#~ msgstr "Gdk.Displayの取得に失敗しました"
-
-#~ msgid "Failed to get Clipboard"
-#~ msgstr "クリップボードの取得に失敗しました"
-
-#~ msgid "Find a device by making it ring"
-#~ msgstr "端末を鳴らして探す"
-
-#~ msgid "Screen Lock"
-#~ msgstr "スクリーンロック"
-
-#~ msgid "Lock and unlock devices"
-#~ msgstr "端末をロック・アンロック"
-
-#~ msgid "Control the mouse and keyboard remotely"
-#~ msgstr "マウスとキーボードを遠隔操作"
-
-#~ msgid "Can't run in Wayland session"
-#~ msgstr "Waylandセッションでは動作しません"
-
-#~ msgid "Failed to initialize Atspi"
-#~ msgstr "Atspiの初期化に失敗しました"
-
-#~ msgid "Cannot load Caribou virtual keyboard for Unicode support"
-#~ msgstr ""
-#~ "UnicodeサポートのためのCaribou仮想キーボードのロードが出来ませんでした"
-
-#~ msgid "Control MPRIS2 enabled media players"
-#~ msgstr "MPRIS2対応のメディアプレーヤーをコントロール"
-
-#~ msgid "Sync notifications between devices"
-#~ msgstr "端末間で通知を共有"
-
-#~ msgid "Missed call"
-#~ msgstr "不在着信"
-
-#~ msgid "Missed call from %s on %s"
-#~ msgstr "%sからの%sの不在着信"
-
-#~ msgid "Send and receive pings"
-#~ msgstr "Pingを送受信"
-
-#~ msgid "Execute local commands remotely"
-#~ msgstr "コマンドを遠隔実行"
-
-#~ msgid "Mount and browse device filesystems"
-#~ msgstr "端末のファイルシステムをマウントして閲覧"
-
-#~ msgid "SSHFS not installed"
-#~ msgstr "SSHFSがインストールされていません"
-
-#~ msgid "Send and receive files and URLs"
-#~ msgstr "ファイルやURLを送受信"
-
-#~ msgid "Transfer Cancelled"
-#~ msgstr "転送中断"
-
-#~ msgid "Cancelled transfer of \"%s\" from %s"
-#~ msgstr "\"%s\"を%sから受信中にキャンセルしました"
-
-#~ msgid "Cancelled transfer of \"%s\" to %s"
-#~ msgstr "\"%s\"を%sに送信中にキャンセルしました"
-
-#~ msgid "Use a subdirectory named <b>%s</b>"
-#~ msgstr "<b>%s</b>という名前のサブディレクトリを使用"
-
-#~ msgid "Call notification and SMS messaging"
-#~ msgstr "着信通知とSMSメッセージ"
-
-#~ msgid "Incoming call from %s on %s"
-#~ msgstr "%sからの%sの着信"
-
-#~ msgid "Call In Progress"
-#~ msgstr "通話中"
-
-#~ msgid "Call in progress with %s on %s"
-#~ msgstr "%sからの%sの電話に出ています"
-
-#~ msgid "Unknown Number"
-#~ msgstr "不明な番号"
-
-#~ msgid "In Progress Calls"
-#~ msgstr "通話中"
-
-#~ msgid "The <b>Media Player Control</b> plugin must be enabled"
-#~ msgstr "メディアプレーヤーコントロールプラグインを有効にしてください"
-
-#~ msgid ""
-#~ "Ensure that devices are on the same local network with ports 1716 to 1764 "
-#~ "open for TCP and UDP connections."
-#~ msgstr ""
-#~ "端末が同じネットワークに存在していて、TCP/UDPのポート1716から1764が開放さ"
-#~ "れていることを確認してください。"
-
-#~ msgid ""
-#~ "To connect an Android device, install the KDE Connect Android app from "
-#~ "the <a href=\"%s\">Google Play Store</a> or <a href=\"%s\">F-Droid</a>."
-#~ msgstr ""
-#~ "Android端末を接続するには、<a href=\"%s\">Google Play ストア</a>または<a "
-#~ "href=\"%s\">F-Droid</a>からKDE Connectアプリをインストールしてください。"
-
-#~ msgid ""
-#~ "Please see the <a href=\"%s\">Wiki</a> for more help or <a href=\"%s"
-#~ "\">open an issue</a> on Github to report a problem."
-#~ msgstr ""
-#~ "助けが必要な場合には、<a href=\"%s\">Wiki</a>を見るか、GitHubで<a href="
-#~ "\"%s\">Issueを開いて</a>問題を報告してください。"
-
-#~ msgid "Error: %s"
-#~ msgstr "エラー： %s"
-
-#~ msgid "Connecting Devices"
-#~ msgstr "端末を接続"
-
-#~ msgid "Reconnect <b>%s</b>"
-#~ msgstr "<b>%s</b>を再接続"
-
-#~ msgid "Unpair <b>%s</b>"
-#~ msgstr "<b>%s</b>をペア解除"
-
-#~ msgid "Pair <b>%s</b>"
-#~ msgstr "<b>%s</b>をペアリング"
-
-#~ msgid ""
-#~ "<b>%s Fingerprint:</b>\n"
-#~ "%s\n"
-#~ "\n"
-#~ "<b>Local Fingerprint:</b>\n"
-#~ "%s"
-#~ msgstr ""
-#~ "<b>%sのフィンガープリント：</b>\n"
-#~ "%s\n"
-#~ "\n"
-#~ "<b>ローカルフィンガープリント：</b>\n"
-#~ "%s"
-
-#~ msgid "Unknown"
-#~ msgstr "不明"
-
-#~ msgid "Keyboard Shortcut Unavailable"
-#~ msgstr "キーボードショートカットが利用できません"
-
-#~ msgid ""
-#~ "The requested keyboard shortcut is already in use and can't be overridden."
-#~ msgstr "そのキーボードショートカットは使用済みです。"
-
-#~ msgid "Configure <b>%s</b>"
-#~ msgstr "<b>%s</b>を設定"
-
-#~ msgid "Send to %d"
-#~ msgstr "%dに送信"
-
-#~ msgid "Add and remove people"
-#~ msgstr "他の人を追加・削除"
-
-#~ msgid "<b>%s</b> is disconnected"
-#~ msgstr "<b>%s</b>は切断しました"
-
-#~ msgid "And one other person"
-#~ msgid_plural "And %d other people"
-#~ msgstr[0] "あと%d人"
-
-#~ msgid "SMS Conversation with %s"
-#~ msgstr "%sとのSMS会議"
-
-#~ msgid "New SMS Conversation"
-#~ msgstr "新しいSMS会議"
-
-#~ msgid "Enable debug features and logging"
-#~ msgstr "デバッグ機能とログを有効化"
-
-#~ msgid "Show Indicators"
-#~ msgstr "インジケータを表示"
-
-#~ msgid "Display devices in the panel instead of the User Menu"
-#~ msgstr "ユーザーメニューの代わりにパネルに端末を表示します"
-
-#~ msgid "Display devices even if offline"
-#~ msgstr "オフラインでも端末を表示します"
-
-#~ msgid "Display devices even if unpaired"
-#~ msgstr "ペアされていなくても端末を表示します"
-
-#~ msgid "Display an icon with percentage in the Device Menu"
-#~ msgstr "端末メニューに電池残量とアイコンを表示します"
-
-#~ msgid "Send files from the file browser context menu"
-#~ msgstr "ファイルブラウザのコンテキストメニューからファイルを送信"
-
-#~ msgid "Public Name"
-#~ msgstr "パブリックネーム"
-
-#~ msgid "The name visible to other devices"
-#~ msgstr "他の端末から見れる名前"
-
-#~ msgid "Receive Statistics"
-#~ msgstr "統計を受信"
-
-#~ msgid "Send Statistics"
-#~ msgstr "統計を送信"
-
-#~ msgid "Receive Content"
-#~ msgstr "コンテンツを受信"
-
-#~ msgid "Send Content"
-#~ msgstr "コンテンツを送信"
-
-#~ msgid "Automatically Mount"
-#~ msgstr "自動マウント"
-
-#~ msgid "Download Directory"
-#~ msgstr "ダウンロードディレクトリ"
-
-#~ msgid "Use Subdirectory"
-#~ msgstr "サブディレクトリを使う"

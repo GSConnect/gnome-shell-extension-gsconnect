@@ -107,14 +107,6 @@ var Plugin = GObject.registerClass({
     _init(device) {
         super._init(device, 'mousepad');
 
-        // See: https://wiki.gnome.org/Accessibility/Wayland#Bugs.2FIssues_We_Must_Address
-        if (GLib.getenv('XDG_SESSION_TYPE') === 'wayland') {
-            this.destroy();
-            let e = new Error();
-            e.name = 'WaylandNotSupported';
-            throw e;
-        }
-
         // Atspi.init() return 2 on fail, but still marks itself as inited. We
         // uninit before throwing an error otherwise any future call to init()
         // will appear successful and other calls will cause GSConnect to exit.
@@ -122,10 +114,7 @@ var Plugin = GObject.registerClass({
         if (Atspi.init() === 2) {
             Atspi.exit();
             this.destroy();
-
-            let e = new Error();
-            e.name = 'WaylandNotSupported';
-            throw e;
+            throw new Error('Failed to start AT-SPI');
         }
 
         try {

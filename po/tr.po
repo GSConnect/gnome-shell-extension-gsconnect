@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-11-19 11:14-0800\n"
-"PO-Revision-Date: 2018-11-08 09:55-0700\n"
+"PO-Revision-Date: 2018-11-21 11:42+0300\n"
 "Last-Translator: Serdar Sağlam <teknomobil@yandex.com>, Orhan Engin Okay "
 "<orhanenginokay@hotmail.com>, A. Burak Tektaş <abtektas@gmail.com>\n"
 "Language-Team: Türkçe <teknomobil@yandex.com>, <orhanenginokay@hotmail.com>, "
@@ -172,7 +172,7 @@ msgstr "Bluetooth Bağlantısı"
 #. TRANSLATORS: Change the connection type to TCP/IP
 #: data/menus.ui:41
 msgid "Switch to LAN"
-msgstr ""
+msgstr "LAN a değiştir"
 
 #. TRANSLATORS: View the TLS Certificate fingerprint
 #: data/menus.ui:48 src/service/ui/settings.js:612
@@ -362,8 +362,7 @@ msgid "Discovery Disabled"
 msgstr "Keşif Devre Dışı"
 
 #: src/service/daemon.js:597
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
+msgid "Discovery has been disabled due to the number of devices on this network."
 msgstr "Bu ağdaki aygıt sayısı nedeniyle keşif devre dışı bırakıldı."
 
 #: src/service/daemon.js:599 src/service/daemon.js:609
@@ -607,8 +606,8 @@ msgstr "Aktarımı Başlat"
 #. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:133
 #, javascript-format
-msgid "Receiving \"%s\" from %s"
-msgstr "Alınıyor \"%s\" kaynak %s"
+msgid "Receiving “%s” from %s"
+msgstr "Alınıyor “%s” kaynak %s"
 
 #. Action Buttons
 #: src/service/plugins/share.js:138 src/service/plugins/share.js:289
@@ -625,8 +624,8 @@ msgstr "Aktarım Tamamlandı"
 #. TRANSLATORS: eg. Received 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:151
 #, javascript-format
-msgid "Received \"%s\" from %s"
-msgstr "Alınan \"%s\" kaynak %s"
+msgid "Received “%s” from %s"
+msgstr "Alınan “%s” kaynak %s"
 
 #: src/service/plugins/share.js:157
 msgid "Open Folder"
@@ -643,8 +642,8 @@ msgstr "Aktarım Başarısız"
 #. TRANSLATORS: eg. Failed to receive 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:171
 #, javascript-format
-msgid "Failed to receive \"%s\" from %s"
-msgstr "Alım başarısız \"%s\" kaynak %s"
+msgid "Failed to receive “%s” from %s"
+msgstr "Alım başarısız “%s” kaynak %s"
 
 #: src/service/plugins/share.js:211
 #, javascript-format
@@ -654,20 +653,20 @@ msgstr "Paylaşılan Metin %s"
 #. TRANSLATORS: eg. Sending 'book.pdf' to Google Pixel
 #: src/service/plugins/share.js:284
 #, javascript-format
-msgid "Sending \"%s\" to %s"
-msgstr "Gönderiliyor \"%s\" hedef %s"
+msgid "Sending “%s” to %s"
+msgstr "Gönderiliyor “%s” hedef %s"
 
 #. TRANSLATORS: eg. Sent "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:305
 #, javascript-format
-msgid "Sent \"%s\" to %s"
-msgstr "Gönderildi \"%s\" hedef %s"
+msgid "Sent “%s” to %s"
+msgstr "Gönderildi “%s” hedef %s"
 
 #. TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:313
 #, javascript-format
-msgid "Failed to send \"%s\" to %s"
-msgstr "Gönderilemedi \"%s\" hedef %s"
+msgid "Failed to send “%s” to %s"
+msgstr "Gönderilemedi “%s” hedef %s"
 
 #. TRANSLATORS: eg. Send files to Google Pixel
 #: src/service/plugins/share.js:384
@@ -728,37 +727,37 @@ msgstr "Devam eden çağrı"
 
 #. TRANSLATORS: All other phone number types
 #: src/service/ui/contacts.js:58 src/service/ui/contacts.js:79
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%s・Other"
-msgstr "Diğer"
+msgstr "%s・Diğer"
 
 #. TRANSLATORS: A fax number
 #: src/service/ui/contacts.js:63
 #, javascript-format
 msgid "%s・Fax"
-msgstr ""
+msgstr "%s・Faks"
 
 #. TRANSLATORS: A work phone number
 #: src/service/ui/contacts.js:67
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%s・Work"
-msgstr "İş"
+msgstr "%s・İş"
 
 #. TRANSLATORS: A mobile or cellular phone number
 #: src/service/ui/contacts.js:71
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%s・Mobile"
-msgstr "Mobil"
+msgstr "%s・Mobil"
 
 #. TRANSLATORS: A home phone number
 #: src/service/ui/contacts.js:75
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%s・Home"
-msgstr "Ev"
+msgstr "%s・Ev"
 
 #: src/service/ui/contacts.js:203
 msgid "Select a contact or number"
-msgstr ""
+msgstr "Kişi ya da numara seç"
 
 #. TRANSLATORS: A phone number (eg. "Send to 555-5555")
 #: src/service/ui/contacts.js:239 src/service/ui/contacts.js:253
@@ -786,8 +785,7 @@ msgstr "Değiştirmek için yeni bir kısayol girin <b>%s</b>"
 #. TRANSLATORS: Keys for cancelling (␛) or resetting (␈) a shortcut
 #: src/service/ui/keybindings.js:83
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr ""
-"Klavye kısayolunu sıfırlamak için iptal, geri almak için ESC tuşuna basın."
+msgstr "Klavye kısayolunu sıfırlamak için iptal, geri almak için ESC tuşuna basın."
 
 #. TRANSLATORS: When a keyboard shortcut is unavailable
 #. Example: [Ctrl]+[S] is already being used

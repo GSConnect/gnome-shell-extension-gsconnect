@@ -151,7 +151,7 @@ var Tooltip = class Tooltip {
                 this.bin.child.add_child(this.label);
             }
 
-            Main.layoutManager.uiGroup.add_actor(this.bin);
+            Main.layoutManager.uiGroup.add_child(this.bin);
             Main.layoutManager.uiGroup.set_child_above_sibling(this.bin, null);
         } else if (this.custom) {
             this.bin.child = this.custom;

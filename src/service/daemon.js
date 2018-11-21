@@ -137,6 +137,9 @@ const Service = GObject.registerClass({
             });
 
             for (let name in imports.service.plugins) {
+                // Don't report 'mousepad' support in Wayland sessions
+                if (_WAYLAND && name === 'mousepad') continue;
+
                 let meta = imports.service.plugins[name].Metadata;
 
                 if (!meta) continue;
@@ -625,18 +628,6 @@ const Service = GObject.registerClass({
                     });
 
                     notif.set_default_action_and_target('app.error', error);
-                    notif.set_priority(Gio.NotificationPriority.HIGH);
-                    break;
-
-                case 'WaylandNotSupported':
-                    id = error.name;
-                    title = _('Wayland Not Supported');
-                    body = _('Remote input not supported on Wayland') + '\n\n' +
-                           _('Click for more information');
-                    icon = new Gio.ThemedIcon({name: 'preferences-desktop-display-symbolic'});
-                    notif.set_default_action(
-                        `app.wiki('Help#${error.name}')`
-                    );
                     notif.set_priority(Gio.NotificationPriority.HIGH);
                     break;
 

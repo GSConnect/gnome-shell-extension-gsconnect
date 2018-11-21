@@ -75,9 +75,7 @@ var Battery = GObject.registerClass({
     }
 
     get battery_label() {
-        if (!this.battery) {
-            return null;
-        }
+        if (!this.battery) return null;
 
         let {Charging, Level, Time} = this.battery;
 
@@ -164,7 +162,7 @@ var Menu = class Menu extends PopupMenu.PopupMenuSection {
         super._init();
         Object.assign(this, params);
 
-        this.actor.add_style_class_name('gsconnect-device-textmenu');
+        this.actor.add_style_class_name('gsconnect-device-menu');
 
         // Title
         this._title = new PopupMenu.PopupSeparatorMenuItem(this.device.Name);
@@ -175,10 +173,7 @@ var Menu = class Menu extends PopupMenu.PopupMenuSection {
         this._title.label.clutter_text.ellipsize = 0;
 
         // Title -> Battery
-        this._battery = new Battery({
-            object: this.object,
-            device: this.device
-        });
+        this._battery = new Battery({object: this.object});
         this._title.actor.add_child(this._battery);
 
         // Actions
@@ -213,13 +208,11 @@ var Indicator = class Indicator extends PanelMenu.Button {
         Object.assign(this, params);
 
         // Device Icon
-        this.icon = new St.Icon({
-            gicon: new Gio.ThemedIcon({
-                name: `${this.device.IconName}-symbolic`
-            }),
-            style_class: 'system-status-icon'
+        let icon = new St.Icon({
+            gicon: new Gio.ThemedIcon({name: this.device.IconName}),
+            style_class: 'system-status-icon gsconnect-device-indicator'
         });
-        this.actor.add_actor(this.icon);
+        this.actor.add_child(icon);
 
         // Menu
         let menu = new Menu({

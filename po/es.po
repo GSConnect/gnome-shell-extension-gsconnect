@@ -604,7 +604,7 @@ msgstr "Comenzando la transferencia"
 #. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:133
 #, javascript-format
-msgid "Receiving \"%s\" from %s"
+msgid "Receiving “%s” from %s"
 msgstr "Recibiendo «%s» de %s"
 
 #. Action Buttons
@@ -622,7 +622,7 @@ msgstr "Transferencia exitosa"
 #. TRANSLATORS: eg. Received 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:151
 #, javascript-format
-msgid "Received \"%s\" from %s"
+msgid "Received “%s” from %s"
 msgstr "Se recibió «%s» de %s"
 
 #: src/service/plugins/share.js:157
@@ -640,7 +640,7 @@ msgstr "Transferencia fallida"
 #. TRANSLATORS: eg. Failed to receive 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:171
 #, javascript-format
-msgid "Failed to receive \"%s\" from %s"
+msgid "Failed to receive “%s” from %s"
 msgstr "Falló la recepción de «%s» desde %s"
 
 #: src/service/plugins/share.js:211
@@ -651,19 +651,19 @@ msgstr "Texto compartido por %s"
 #. TRANSLATORS: eg. Sending 'book.pdf' to Google Pixel
 #: src/service/plugins/share.js:284
 #, javascript-format
-msgid "Sending \"%s\" to %s"
+msgid "Sending “%s” to %s"
 msgstr "Enviando «%s» a %s"
 
 #. TRANSLATORS: eg. Sent "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:305
 #, javascript-format
-msgid "Sent \"%s\" to %s"
+msgid "Sent “%s” to %s"
 msgstr "Se envió «%s» a %s"
 
 #. TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:313
 #, javascript-format
-msgid "Failed to send \"%s\" to %s"
+msgid "Failed to send “%s” to %s"
 msgstr "Falló el envío de «%s» a %s"
 
 #. TRANSLATORS: eg. Send files to Google Pixel
@@ -926,44 +926,3 @@ msgstr "Servicio no disponible"
 #: webextension/gettext.js:37
 msgid "Open in Browser"
 msgstr "Abrir en el navegador"
-
-#~ msgid "Conversations"
-#~ msgstr "Conversaciones"
-
-#~ msgid "Sync Contacts"
-#~ msgstr "Sincronizar contactos"
-
-#~ msgid "Sync Messages"
-#~ msgstr "Sincronizar mensajes"
-
-#~ msgid "Connect LAN"
-#~ msgstr "Conectar LAN"
-
-#~ msgid "Fax"
-#~ msgstr "Fax"
-
-#, fuzzy
-#~ msgid "Show Offline Devices"
-#~ msgstr "Dispositivos móviles"
-
-#, fuzzy
-#~ msgid "Show Unpaired Devices"
-#~ msgstr "Dispositivos móviles"
-
-#~ msgid "Shell"
-#~ msgstr "Consola"
-
-#~ msgid "Android"
-#~ msgstr "Android"
-
-#~ msgid "Sailfish OS"
-#~ msgstr "Sailfish OS"
-
-#~ msgid "Remote Filesystem Error"
-#~ msgstr "Error en el sistema de archivos remoto"
-
-#~ msgid "%s is using an incompatible SSH library"
-#~ msgstr "%s utiliza una biblioteca SSH incompatible"
-
-#~ msgid "Device is unpaired"
-#~ msgstr "El dispositivo no está emparejado"

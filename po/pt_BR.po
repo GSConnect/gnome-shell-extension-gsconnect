@@ -605,8 +605,8 @@ msgstr "Iniciando transferência"
 #. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:133
 #, javascript-format
-msgid "Receiving \"%s\" from %s"
-msgstr "Recebendo \"%s\" de %s"
+msgid "Receiving “%s” from %s"
+msgstr "Recebendo “%s” de %s"
 
 #. Action Buttons
 #: src/service/plugins/share.js:138 src/service/plugins/share.js:289
@@ -623,8 +623,8 @@ msgstr "Transferência completa"
 #. TRANSLATORS: eg. Received 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:151
 #, javascript-format
-msgid "Received \"%s\" from %s"
-msgstr "Recebido \"%s\" de %s"
+msgid "Received “%s” from %s"
+msgstr "Recebido “%s” de %s"
 
 #: src/service/plugins/share.js:157
 msgid "Open Folder"
@@ -641,8 +641,8 @@ msgstr "Transferência falhou"
 #. TRANSLATORS: eg. Failed to receive 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:171
 #, javascript-format
-msgid "Failed to receive \"%s\" from %s"
-msgstr "Falha ao receber \"%s\" de %s"
+msgid "Failed to receive “%s” from %s"
+msgstr "Falha ao receber “%s” de %s"
 
 #: src/service/plugins/share.js:211
 #, javascript-format
@@ -652,20 +652,20 @@ msgstr "Texto compartilhado por %s"
 #. TRANSLATORS: eg. Sending 'book.pdf' to Google Pixel
 #: src/service/plugins/share.js:284
 #, javascript-format
-msgid "Sending \"%s\" to %s"
-msgstr "Enviando \"%s\" para %s"
+msgid "Sending “%s” to %s"
+msgstr "Enviando “%s” para %s"
 
 #. TRANSLATORS: eg. Sent "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:305
 #, javascript-format
-msgid "Sent \"%s\" to %s"
-msgstr "Enviado \"%s\" para %s"
+msgid "Sent “%s” to %s"
+msgstr "Enviado “%s” para %s"
 
 #. TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:313
 #, javascript-format
-msgid "Failed to send \"%s\" to %s"
-msgstr "Falha ao enviar \"%s\" para %s"
+msgid "Failed to send “%s” to %s"
+msgstr "Falha ao enviar “%s” para %s"
 
 #. TRANSLATORS: eg. Send files to Google Pixel
 #: src/service/plugins/share.js:384
@@ -926,348 +926,3 @@ msgstr "Serviço indisponível"
 #: webextension/gettext.js:37
 msgid "Open in Browser"
 msgstr "Abrir no navegador"
-
-#~ msgid "Conversations"
-#~ msgstr "Bate-papos"
-
-#~ msgid "Sync Contacts"
-#~ msgstr "Sincronizar contatos"
-
-#~ msgid "Sync Messages"
-#~ msgstr "Sincronizar mensagens"
-
-#~ msgid "Connect LAN"
-#~ msgstr "Conectar LAN"
-
-#~ msgid "Fax"
-#~ msgstr "Fax"
-
-#~ msgid "Remote Filesystem Error"
-#~ msgstr "Erro no sistema de arquivos remotos"
-
-#~ msgid "%s is using an incompatible SSH library"
-#~ msgstr "%s está usando uma biblioteca SSH incompatível"
-
-#~ msgid "Show Offline Devices"
-#~ msgstr "Mostrar dispositivos desconectados"
-
-#~ msgid "Show Unpaired Devices"
-#~ msgstr "Mostrar dispositivos não pareados"
-
-#~ msgid "Show Battery Icon"
-#~ msgstr "Mostrar ícone de bateria"
-
-#~ msgid "Shell"
-#~ msgstr "Shell"
-
-#~ msgid "Android"
-#~ msgstr "Android"
-
-#~ msgid "Sailfish OS"
-#~ msgstr "Sailfish OS"
-
-#~ msgid "Device is unpaired"
-#~ msgstr "Dispositivo não está pareado"
-
-#~ msgid "Locate %s"
-#~ msgstr "Localizar %s"
-
-#~ msgid "Browse Files"
-#~ msgstr "Explorar arquivos"
-
-#~ msgid "Remote Input"
-#~ msgstr "Entrada remota"
-
-#~ msgid "No plugins enabled"
-#~ msgstr "Nenhum plugin ativado"
-
-#~ msgid "Failed to mount %s"
-#~ msgstr "Não foi possível montar %s"
-
-#~ msgid "GSConnect Website"
-#~ msgstr "Site do GSConnect"
-
-#~ msgid "Copyright © 2017 Andy Holmes"
-#~ msgstr "Copyright © 2017 Andy Holmes"
-
-#~ msgid "This program comes with absolutely no warranty."
-#~ msgstr "Este programa vem com absolutamente nenhuma garantia."
-
-#~ msgid ""
-#~ "See the <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html"
-#~ "\">GNU General Public License, version 2 or later</a> for details."
-#~ msgstr ""
-#~ "Veja a <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html"
-#~ "\">GNU General Public License, versão 2 ou posterior</a> para detalhes."
-
-#~ msgid "Preferences"
-#~ msgstr "Preferências"
-
-#~ msgid "Extensions"
-#~ msgstr "Extensões"
-
-#~ msgid "Web Browser Integration"
-#~ msgstr "Integração com navegador"
-
-#~ msgid ""
-#~ "Requires <a href=\"%s\">Chrome Extension</a> or <a href=\"%s\">Firefox "
-#~ "Add-On</a>"
-#~ msgstr ""
-#~ "Requer <a href=\"%s\">extensão do Chrome</a> ou <a href=\"%s"
-#~ "\">complemento do Firefox</a>"
-
-#~ msgid "Nautilus extensions changed"
-#~ msgstr "Extensões do Nautilus foram alteradas"
-
-#~ msgid "Restart Nautilus to apply changes"
-#~ msgstr "Reinicie o Nautilus para as alterações terem efeito"
-
-#~ msgid "Restart"
-#~ msgstr "Reiniciar"
-
-#~ msgid ""
-#~ "%s Fingerprint:\n"
-#~ "%s\n"
-#~ "\n"
-#~ "Local Fingerprint:\n"
-#~ "%s"
-#~ msgstr ""
-#~ "%s Impressão digital:\n"
-#~ "%s\n"
-#~ "\n"
-#~ "Impressão digital local:\n"
-#~ "%s"
-
-#~ msgid "Apply"
-#~ msgstr "Aplicar"
-
-#~ msgid "Send and receive battery statistics"
-#~ msgstr "Enviar e receber estatísticas da bateria"
-
-#~ msgid "Low Battery Warning"
-#~ msgstr "Aviso de bateria fraca"
-
-#~ msgid "%s's battery level is %d%%"
-#~ msgstr "O nível da bateria do %s é %d%%"
-
-#~ msgid "Sync the clipboard between devices"
-#~ msgstr "Sincronizar as áreas de transferências entre dispositivos"
-
-#~ msgid "Failed to get Gdk.Display"
-#~ msgstr "Não foi possível obter Gdk.Display"
-
-#~ msgid "Failed to get Clipboard"
-#~ msgstr "Não foi possível obter área de transferência"
-
-#~ msgid "Find a device by making it ring"
-#~ msgstr "Encontrar um dispositivo tocando um alarme"
-
-#~ msgid "Screen Lock"
-#~ msgstr "Bloquear tela"
-
-#~ msgid "Lock and unlock devices"
-#~ msgstr "Bloquear e desbloquear dispositivos"
-
-#~ msgid "Control the mouse and keyboard remotely"
-#~ msgstr "Controlar o mouse e o teclado remotamente"
-
-#~ msgid "Can't run in Wayland session"
-#~ msgstr "Não pode executar em sessão Wayland"
-
-#~ msgid "Failed to initialize Atspi"
-#~ msgstr "Não foi possível inicializar Atspi"
-
-#~ msgid "Cannot load Caribou virtual keyboard for Unicode support"
-#~ msgstr ""
-#~ "Não é possível carregar teclado virtual Caribou para suporte a Unicode"
-
-#~ msgid "Control MPRIS2 enabled media players"
-#~ msgstr "Controlar reprodutores de mídia com suporte a MPRIS2"
-
-#~ msgid "Sync notifications between devices"
-#~ msgstr "Sincronizar notificações entre dispositivos"
-
-#~ msgid "Missed call"
-#~ msgstr "Chamada perdida"
-
-#~ msgid "Missed call from %s on %s"
-#~ msgstr "Chamada perdida de %s no %s"
-
-#~ msgid "Send and receive pings"
-#~ msgstr "Enviar e receber pings"
-
-#~ msgid "Execute local commands remotely"
-#~ msgstr "Executar comandos locais remotamente"
-
-#~ msgid "Mount and browse device filesystems"
-#~ msgstr "Montar e explorar sistemas de arquivos do dispositivo"
-
-#~ msgid "SSHFS not installed"
-#~ msgstr "SSHFS não está instalado"
-
-#~ msgid "Send and receive files and URLs"
-#~ msgstr "Enviar e receber arquivos e URLs"
-
-#~ msgid "Transfer Cancelled"
-#~ msgstr "Transferência cancelada"
-
-#~ msgid "Cancelled transfer of \"%s\" from %s"
-#~ msgstr "Transferência cancelada de \"%s\" de %s"
-
-#~ msgid "Cancelled transfer of \"%s\" to %s"
-#~ msgstr "Transferência cancelada de \"%s\" para %s"
-
-#~ msgid "Use a subdirectory named <b>%s</b>"
-#~ msgstr "Usar um subdiretório chamado <b>%s</b>"
-
-#~ msgid "Call notification and SMS messaging"
-#~ msgstr "Notificação de chamada e conversas SMS"
-
-#~ msgid "Incoming call from %s on %s"
-#~ msgstr "Recebendo chamada de %s no %s"
-
-#~ msgid "Call In Progress"
-#~ msgstr "Chamada em andamento"
-
-#~ msgid "Call in progress with %s on %s"
-#~ msgstr "Chamada em andamento com %s no %s"
-
-#~ msgid "Unknown Number"
-#~ msgstr "Número desconhecido"
-
-#~ msgid "In Progress Calls"
-#~ msgstr "Chamadas em andamento"
-
-#~ msgid "The <b>Media Player Control</b> plugin must be enabled"
-#~ msgstr "O plugin <b>Controle multimídia</b> precisa ser ativado"
-
-#~ msgid ""
-#~ "Ensure that devices are on the same local network with ports 1716 to 1764 "
-#~ "open for TCP and UDP connections."
-#~ msgstr ""
-#~ "Certifique-se que os dispositivos estão na mesma rede local com as portas "
-#~ "1716 a 1764 abertas para conexões TCP e UDP."
-
-#~ msgid ""
-#~ "To connect an Android device, install the KDE Connect Android app from "
-#~ "the <a href=\"%s\">Google Play Store</a> or <a href=\"%s\">F-Droid</a>."
-#~ msgstr ""
-#~ "Para conectar um dispositivo Android, instale o app KDE Connect da <a "
-#~ "href=\"%s\">Google Play Store</a> ou <a href=\"%s\">F-Droid</a>."
-
-#~ msgid ""
-#~ "Please see the <a href=\"%s\">Wiki</a> for more help or <a href=\"%s"
-#~ "\">open an issue</a> on Github to report a problem."
-#~ msgstr ""
-#~ "Por favor, veja a <a href=\"%s\">Wiki</a> para mais ajuda ou <a href=\"%s"
-#~ "\">abra um chamado</a> no GitHub para reportar um problema."
-
-#~ msgid "Error: %s"
-#~ msgstr "Erro: %s"
-
-#~ msgid "Connecting Devices"
-#~ msgstr "Conectando dispositivos"
-
-#~ msgid "Reconnect <b>%s</b>"
-#~ msgstr "Reconectar <b>%s</b>"
-
-#~ msgid "Unpair <b>%s</b>"
-#~ msgstr "Esquecer <b>%s</b>"
-
-#~ msgid "Pair <b>%s</b>"
-#~ msgstr "Parear <b>%s</b>"
-
-#~ msgid ""
-#~ "<b>%s Fingerprint:</b>\n"
-#~ "%s\n"
-#~ "\n"
-#~ "<b>Local Fingerprint:</b>\n"
-#~ "%s"
-#~ msgstr ""
-#~ "<b>%s Impressão digital:</b>\n"
-#~ "%s\n"
-#~ "\n"
-#~ "<b>Impressão digital local:</b>\n"
-#~ "%s"
-
-#~ msgid "Unknown"
-#~ msgstr "Desconhecido"
-
-#~ msgid "Keyboard Shortcut Unavailable"
-#~ msgstr "Atalhos de teclado indisponíveis"
-
-#~ msgid ""
-#~ "The requested keyboard shortcut is already in use and can't be overridden."
-#~ msgstr ""
-#~ "O atalho de teclado escolhido já está em uso e não pode ser sobrescrito."
-
-#~ msgid "Configure <b>%s</b>"
-#~ msgstr "Configurar <b>%s</b>"
-
-#~ msgid "Send to %d"
-#~ msgstr "Enviar para %d"
-
-#~ msgid "Add and remove people"
-#~ msgstr "Adicionar e remover pessoas"
-
-#~ msgid "<b>%s</b> is disconnected"
-#~ msgstr "<b>%s</b> está desconectado"
-
-#~ msgid "And one other person"
-#~ msgid_plural "And %d other people"
-#~ msgstr[0] "E uma outra pessoa"
-#~ msgstr[1] "E %d outras pessoas"
-
-#~ msgid "SMS Conversation with %s"
-#~ msgstr "Conversa SMS com %s"
-
-#~ msgid "New SMS Conversation"
-#~ msgstr "Nova conversa SMS"
-
-#~ msgid "Enable debug features and logging"
-#~ msgstr "Ativar funções de depuração e registro"
-
-#~ msgid "Show Indicators"
-#~ msgstr "Exibir indicadores"
-
-#~ msgid "Display devices in the panel instead of the User Menu"
-#~ msgstr "Mostrar dispositivos no painel ao invés do menu"
-
-#~ msgid "Display devices even if offline"
-#~ msgstr "Mostrar dispositivos mesmo se desconectados"
-
-#~ msgid "Display devices even if unpaired"
-#~ msgstr "Mostrar dispositivos mesmo se esquecidos"
-
-#~ msgid "Display an icon with percentage in the Device Menu"
-#~ msgstr "Mostrar um ícone com porcentagem no menu de dispositivos"
-
-#~ msgid "Send files from the file browser context menu"
-#~ msgstr "Enviar arquivos do menu de contexto do explorador"
-
-#~ msgid "Public Name"
-#~ msgstr "Nome público"
-
-#~ msgid "The name visible to other devices"
-#~ msgstr "O nome visível para outros dispositivos"
-
-#~ msgid "Receive Statistics"
-#~ msgstr "Receber estatísticas"
-
-#~ msgid "Send Statistics"
-#~ msgstr "Enviar estatísticas"
-
-#~ msgid "Receive Content"
-#~ msgstr "Receber conteúdo"
-
-#~ msgid "Send Content"
-#~ msgstr "Enviar conteúdo"
-
-#~ msgid "Automatically Mount"
-#~ msgstr "Montar automaticamente"
-
-#~ msgid "Download Directory"
-#~ msgstr "Baixar diretório"
-
-#~ msgid "Use Subdirectory"
-#~ msgstr "Usar subdiretório"

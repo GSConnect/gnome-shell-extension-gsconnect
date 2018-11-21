@@ -605,8 +605,8 @@ msgstr "Übertragung starten"
 #. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:133
 #, javascript-format
-msgid "Receiving \"%s\" from %s"
-msgstr "Empfange \"%s\" von %s"
+msgid "Receiving “%s” from %s"
+msgstr "Empfange „%s“ von %s"
 
 #. Action Buttons
 #: src/service/plugins/share.js:138 src/service/plugins/share.js:289
@@ -623,8 +623,8 @@ msgstr "Übertragung erfolgreich"
 #. TRANSLATORS: eg. Received 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:151
 #, javascript-format
-msgid "Received \"%s\" from %s"
-msgstr "\"%s\" von %s empfangen"
+msgid "Received “%s” from %s"
+msgstr "„%s“ von %s empfangen"
 
 #: src/service/plugins/share.js:157
 msgid "Open Folder"
@@ -641,8 +641,8 @@ msgstr "Übertragung gescheitert"
 #. TRANSLATORS: eg. Failed to receive 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:171
 #, javascript-format
-msgid "Failed to receive \"%s\" from %s"
-msgstr "Empfang von \"%s\" von %s gescheitert"
+msgid "Failed to receive “%s” from %s"
+msgstr "Empfang von „%s“ von %s gescheitert"
 
 #: src/service/plugins/share.js:211
 #, javascript-format
@@ -652,20 +652,20 @@ msgstr "Text geteilt von %s"
 #. TRANSLATORS: eg. Sending 'book.pdf' to Google Pixel
 #: src/service/plugins/share.js:284
 #, javascript-format
-msgid "Sending \"%s\" to %s"
-msgstr "\"%s\" an %s senden"
+msgid "Sending “%s” to %s"
+msgstr "„%s“ an %s senden"
 
 #. TRANSLATORS: eg. Sent "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:305
 #, javascript-format
-msgid "Sent \"%s\" to %s"
-msgstr "\"%s\" an %s gesendet"
+msgid "Sent “%s” to %s"
+msgstr "„%s“ an %s gesendet"
 
 #. TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:313
 #, javascript-format
-msgid "Failed to send \"%s\" to %s"
-msgstr "Senden von \"%s\" an %s gescheitert"
+msgid "Failed to send “%s” to %s"
+msgstr "Senden von „%s“ an %s gescheitert"
 
 #. TRANSLATORS: eg. Send files to Google Pixel
 #: src/service/plugins/share.js:384
@@ -926,285 +926,3 @@ msgstr "Service nicht verfügbar"
 #: webextension/gettext.js:37
 msgid "Open in Browser"
 msgstr "Im Browser öffnen"
-
-#~ msgid "Conversations"
-#~ msgstr "Unterhaltungen"
-
-#~ msgid "Sync Contacts"
-#~ msgstr "Kontakte synchronisieren"
-
-#~ msgid "Sync Messages"
-#~ msgstr "Nachrichten synchronisieren"
-
-#~ msgid "Connect LAN"
-#~ msgstr "Verbinde LAN"
-
-#~ msgid "Fax"
-#~ msgstr "Fax"
-
-#~ msgid "Remote Filesystem Error"
-#~ msgstr "Entferntes Dateisystem hat einen Fehler"
-
-#~ msgid "%s is using an incompatible SSH library"
-#~ msgstr "%s benutzt eine inkompatible SSH-Bibliothek"
-
-#, fuzzy
-#~ msgid "Show Offline Devices"
-#~ msgstr "Mobile Geräte"
-
-#, fuzzy
-#~ msgid "Show Unpaired Devices"
-#~ msgstr "Mobile Geräte"
-
-#~ msgid "Show Battery Icon"
-#~ msgstr "Akku Symbol anzeigen"
-
-#~ msgid "Device is unpaired"
-#~ msgstr "Gerät ist nicht gekoppelt"
-
-#~ msgid "Locate %s"
-#~ msgstr "%s finden"
-
-#~ msgid "Browse Files"
-#~ msgstr "Dateien durchsuchen"
-
-#~ msgid "Remote Input"
-#~ msgstr "Remote Eingabe"
-
-#~ msgid "No plugins enabled"
-#~ msgstr "Keine Plugins aktiviert"
-
-#~ msgid "Failed to mount %s"
-#~ msgstr "Einhängen von %s gescheitert"
-
-#~ msgid "GSConnect Website"
-#~ msgstr "GSConnect Website"
-
-#~ msgid "Copyright © 2017 Andy Holmes"
-#~ msgstr "Copyright © 2017 Andy Holmes"
-
-#~ msgid "This program comes with absolutely no warranty."
-#~ msgstr "Dieses Programm enthält keinerlei Garantie."
-
-#~ msgid ""
-#~ "See the <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html"
-#~ "\">GNU General Public License, version 2 or later</a> for details."
-#~ msgstr ""
-#~ "Siehe die <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html"
-#~ "\">GNU General Public License, Version 2 oder älter</a> für Details."
-
-#~ msgid "Preferences"
-#~ msgstr "Einstellungen"
-
-#~ msgid "Extensions"
-#~ msgstr "Erweiterungen"
-
-#~ msgid "Web Browser Integration"
-#~ msgstr "Web Browser Integration"
-
-#~ msgid ""
-#~ "Requires <a href=\"%s\">Chrome Extension</a> or <a href=\"%s\">Firefox "
-#~ "Add-On</a>"
-#~ msgstr ""
-#~ "Benötigt <a href=\"%s\">Chrome Extension</a> oder <a href=\"%s\">Firefox "
-#~ "Add-On</a>"
-
-#~ msgid "Nautilus extensions changed"
-#~ msgstr "Nautilus-Erweiterungen wurden geändert"
-
-#~ msgid "Restart Nautilus to apply changes"
-#~ msgstr "Nautilus neustarten, um Änderungen zu übernehmen"
-
-#~ msgid "Restart"
-#~ msgstr "Neustart"
-
-#~ msgid ""
-#~ "%s Fingerprint:\n"
-#~ "%s\n"
-#~ "\n"
-#~ "Local Fingerprint:\n"
-#~ "%s"
-#~ msgstr ""
-#~ "%s Fingerabdruck:\n"
-#~ "%s\n"
-#~ "\n"
-#~ "Lokaler Fingerabdruck:\n"
-#~ "%s"
-
-#~ msgid "Apply"
-#~ msgstr "Übernehmen"
-
-#~ msgid "Send and receive battery statistics"
-#~ msgstr "Sende und empfange Akku Statistiken"
-
-#~ msgid "Low Battery Warning"
-#~ msgstr "Akkustand niedrig"
-
-#~ msgid "%s's battery level is %d%%"
-#~ msgstr "%s's Akkustand ist bei %d%%"
-
-#~ msgid "Sync the clipboard between devices"
-#~ msgstr "Zwischenablage synchronisieren"
-
-#~ msgid "Find a device by making it ring"
-#~ msgstr "Gerät durch klingeln finden"
-
-#~ msgid "Screen Lock"
-#~ msgstr "Bildschirmsperre"
-
-#~ msgid "Lock and unlock devices"
-#~ msgstr "Sperre und entsperre Gerät"
-
-#~ msgid "Control the mouse and keyboard remotely"
-#~ msgstr "Mouse und Tastatur steuern"
-
-#~ msgid "Can't run in Wayland session"
-#~ msgstr "Läuft nicht unter Wayland"
-
-#~ msgid "Failed to initialize Atspi"
-#~ msgstr "Initialisierung von Atspi gescheitert"
-
-#~ msgid "Control MPRIS2 enabled media players"
-#~ msgstr "MPRIS2-fähige Media Player steuern"
-
-#~ msgid "Sync notifications between devices"
-#~ msgstr "Benachrichtigungen zwischen Geräten synchronisieren"
-
-#~ msgid "Missed call"
-#~ msgstr "Entgangener Anruf"
-
-#~ msgid "Missed call from %s on %s"
-#~ msgstr "Entgangener Anruf von %s auf %s"
-
-#~ msgid "Send and receive pings"
-#~ msgstr "Sende und empfange Pings"
-
-#~ msgid "Execute local commands remotely"
-#~ msgstr "Lokale Befehle via Remote ausführen"
-
-#~ msgid "Mount and browse device filesystems"
-#~ msgstr "Einhängen und durchsuchen von Dateisystemen"
-
-#~ msgid "SSHFS not installed"
-#~ msgstr "SSHFS nicht installiert"
-
-#~ msgid "Send and receive files and URLs"
-#~ msgstr "Senden und empfangen von Dateien und URLs"
-
-#~ msgid "Transfer Cancelled"
-#~ msgstr "Übertragung abgebrochen"
-
-#~ msgid "Cancelled transfer of \"%s\" from %s"
-#~ msgstr "Übertragung von \"%s\" von %s abgebrochen"
-
-#~ msgid "Cancelled transfer of \"%s\" to %s"
-#~ msgstr "Übertragung von \"%s\" an %s abgebrochen"
-
-#~ msgid "Use a subdirectory named <b>%s</b>"
-#~ msgstr "Unterverzeichnis mit Namen <b>%s</b> benutzen"
-
-#~ msgid "Call notification and SMS messaging"
-#~ msgstr "Anrufbenachrichtigung und SMS Nachrichten"
-
-#~ msgid "Incoming call from %s on %s"
-#~ msgstr "Eingehender Anruf von %s auf %s"
-
-#~ msgid "Unknown Number"
-#~ msgstr "Unbekannte Rufnummer"
-
-#~ msgid ""
-#~ "Ensure that devices are on the same local network with ports 1716 to 1764 "
-#~ "open for TCP and UDP connections."
-#~ msgstr ""
-#~ "Stellen Sie sicher, dass sich beide Geräte im selben Netzwerk befinden "
-#~ "und die Ports 1716 bis 1764 für TCP und UDP offen sind."
-
-#~ msgid ""
-#~ "To connect an Android device, install the KDE Connect Android app from "
-#~ "the <a href=\"%s\">Google Play Store</a> or <a href=\"%s\">F-Droid</a>."
-#~ msgstr ""
-#~ "Um ein Android Gerät zu verbinden, installieren Sie die KDE Connect "
-#~ "Android APP aus dem <a href=\"%s\">Google Play Store</a> oder <a href=\"%s"
-#~ "\">F-Droid</a>."
-
-#~ msgid ""
-#~ "Please see the <a href=\"%s\">Wiki</a> for more help or <a href=\"%s"
-#~ "\">open an issue</a> on Github to report a problem."
-#~ msgstr ""
-#~ "Für weitere Hilfe besuchen Sie das <a href=\"%s\">Wiki</a> oder <a href="
-#~ "\"%s\">erstellen einen Report</a> auf Github, um ein Problem zu melden."
-
-#~ msgid "Error: %s"
-#~ msgstr "Fehler: %s"
-
-#~ msgid "Connecting Devices"
-#~ msgstr "Geräte verbinden"
-
-#~ msgid "Unpair <b>%s</b>"
-#~ msgstr "Entkopple <b>%s</b>"
-
-#~ msgid "Pair <b>%s</b>"
-#~ msgstr "Kopple <b>%s</b>"
-
-#~ msgid "Unknown"
-#~ msgstr "Unbekannt"
-
-#~ msgid "True"
-#~ msgstr "Wahr"
-
-#~ msgid "False"
-#~ msgstr "Falsch"
-
-#~ msgid "Keyboard Shortcut Unavailable"
-#~ msgstr "Tastenkürzel nicht verfügbar"
-
-#~ msgid ""
-#~ "The requested keyboard shortcut is already in use and can't be overridden."
-#~ msgstr ""
-#~ "Das angeforderte Tastenkürzel ist bereits in Verwendung und kann nicht "
-#~ "überschrieben werden."
-
-#~ msgid "Send to %d"
-#~ msgstr "An %d senden"
-
-#~ msgid "Add and remove people"
-#~ msgstr "Personen hinzufügen und entfernen"
-
-#~ msgid "<b>%s</b> is disconnected"
-#~ msgstr "<b>%s</b> ist nicht verbunden"
-
-#~ msgid "SMS Conversation with %s"
-#~ msgstr "SMS Unterhaltung mit %s"
-
-#~ msgid "New SMS Conversation"
-#~ msgstr "Neue SMS Unterhaltung"
-
-#~ msgid "Enable debug features and logging"
-#~ msgstr "Entwicklermodus und Protokollierung aktivieren"
-
-#~ msgid "Show Indicators"
-#~ msgstr "Indikatoren anzeigen"
-
-#~ msgid "Public Name"
-#~ msgstr "Öffentlicher Name"
-
-#~ msgid "Receive Statistics"
-#~ msgstr "Statistiken empfangen"
-
-#~ msgid "Send Statistics"
-#~ msgstr "Statistiken senden"
-
-#~ msgid "Receive Content"
-#~ msgstr "Inhalt empfangen"
-
-#~ msgid "Send Content"
-#~ msgstr "Inhalt senden"
-
-#~ msgid "Automatically Mount"
-#~ msgstr "Automatisch einhängen"
-
-#~ msgid "Download Directory"
-#~ msgstr "Verzeichnis herunterladen"
-
-#~ msgid "Use Subdirectory"
-#~ msgstr "Unterverzeichnis benutzen"

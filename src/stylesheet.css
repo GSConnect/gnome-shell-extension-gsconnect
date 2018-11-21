@@ -1,16 +1,14 @@
 
-/* Device Menu Hierarchy
+/* Device Menu
 
-User Menu:
-
-.gsconnect-device-section (PopupMenu.PopupMenuSection)
-    PopupMenu.PopupMenuSection
-
-Indicator:
-
-PanelMenu.Button
-    PopupMenu.PopupMenu
-
+PopupMenu.PopupMenuSection.gsconnect-device-section
+    PopupMenu.PopupMenuSection.gsconnect-device-menu
+        PopupMenu.PopupSeparatorMenuItem
+            StLabel.gsconnect-device-name
+            StBoxLayout.gsconnect-device-battery
+        PopupMenu.PopupMenuSection
+            StBoxLayout.gsconnect-list-box
+            StBoxLayout (Submenu Container)
 */
 .gsconnect-device-section {
 }
@@ -20,8 +18,7 @@ PanelMenu.Button
     font-weight: bold;
 }
 
-.gsconnect-device-iconmenu .popup-separator-menu-item,
-.gsconnect-device-textmenu .popup-separator-menu-item {
+.gsconnect-device-menu .popup-separator-menu-item {
     margin-left: 0;
     margin-right: 0;
 }
@@ -37,6 +34,31 @@ PanelMenu.Button
 
 .gsconnect-device-battery StIcon {
     icon-size: 16px;
+}
+
+.aggregate-menu .gsconnect-device-battery {
+    opacity: 0.5;
+}
+
+/* List Box */
+.gsconnect-list-box {
+}
+
+
+/* Device Panel Indicator
+
+PanelMenu.Button.gsconnect-device-indicator
+    PopupMenu.PopupMenu
+        PopupMenu.PopupMenuSection.gsconnect-device-menu
+            PopupMenu.PopupSeparatorMenuItem
+                StLabel.gsconnect-device-name
+                StBoxLayout.gsconnect-device-battery
+            PopupMenu.PopupMenuSection
+                StBoxLayout.gsconnect-icon-box
+                StBoxLayout (Submenu Container)
+ */
+.gsconnect-device-indicator {
+    -st-icon-style: symbolic;
 }
 
 /* Icon Box */
@@ -56,13 +78,10 @@ PanelMenu.Button
     padding: 8px;
 }
 
-/* List Box */
-.gsconnect-list-box {
-}
 
 /* Do Not Disturb Dialog
 
-.gsconnect-dnd-dialog [ModalDialog.ModalDialog]
+ModalDialog.ModalDialog.gsconnect-dnd-dialog
     StBoxLayout.nm-dialog-header-hbox
         StIcon.nm-dialog-header-icon
         StBoxLayout

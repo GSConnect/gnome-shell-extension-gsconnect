@@ -646,8 +646,8 @@ msgstr "Začíná přenos"
 #. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:133
 #, javascript-format
-msgid "Receiving \"%s\" from %s"
-msgstr "Získávání \"%s\" z %s"
+msgid "Receiving “%s” from %s"
+msgstr "Získávání „%s“ z %s"
 
 #. Action Buttons
 #: src/service/plugins/share.js:138 src/service/plugins/share.js:289
@@ -664,8 +664,8 @@ msgstr "Přenos byl úspěšný"
 #. TRANSLATORS: eg. Received 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:151
 #, javascript-format
-msgid "Received \"%s\" from %s"
-msgstr "Získáno \"%s\" z %s"
+msgid "Received “%s” from %s"
+msgstr "Získáno „%s“ z %s"
 
 #: src/service/plugins/share.js:157
 msgid "Open Folder"
@@ -682,8 +682,8 @@ msgstr "Přenos se nezdařil"
 #. TRANSLATORS: eg. Failed to receive 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:171
 #, fuzzy, javascript-format
-msgid "Failed to receive \"%s\" from %s"
-msgstr "Nepodařilo se získat \"%s\" z %s: %s"
+msgid "Failed to receive “%s” from %s"
+msgstr "Nepodařilo se získat „%s“ z %s: %s"
 
 #: src/service/plugins/share.js:211
 #, javascript-format
@@ -693,20 +693,20 @@ msgstr ""
 #. TRANSLATORS: eg. Sending 'book.pdf' to Google Pixel
 #: src/service/plugins/share.js:284
 #, javascript-format
-msgid "Sending \"%s\" to %s"
-msgstr "Posílání \"%s\" do %s"
+msgid "Sending “%s” to %s"
+msgstr "Posílání „%s“ do %s"
 
 #. TRANSLATORS: eg. Sent "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:305
 #, javascript-format
-msgid "Sent \"%s\" to %s"
-msgstr "Odesláno \"%s\" do %s"
+msgid "Sent “%s” to %s"
+msgstr "Odesláno „%s“ do %s"
 
 #. TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:313
 #, fuzzy, javascript-format
-msgid "Failed to send \"%s\" to %s"
-msgstr "Nepodařilo se poslat \"%s\" do %s: %s"
+msgid "Failed to send “%s” to %s"
+msgstr "Nepodařilo se poslat „%s“ do %s: %s"
 
 #. TRANSLATORS: eg. Send files to Google Pixel
 #: src/service/plugins/share.js:384
@@ -978,333 +978,3 @@ msgstr "Gvc není k dispozici"
 #, fuzzy
 msgid "Open in Browser"
 msgstr "Otevřít složku"
-
-#, fuzzy
-#~ msgid "Conversations"
-#~ msgstr "SMS konverzace"
-
-#, fuzzy
-#~ msgid "Sync Contacts"
-#~ msgstr "Neznámý kontakt"
-
-#, fuzzy
-#~ msgid "Sync Messages"
-#~ msgstr "Vzkaz"
-
-#, fuzzy
-#~ msgid "Connect LAN"
-#~ msgstr "GSConnect"
-
-#~ msgid "Fax"
-#~ msgstr "Fax"
-
-#, fuzzy
-#~ msgid "Show Offline Devices"
-#~ msgstr "Zobrazit offline"
-
-#, fuzzy
-#~ msgid "Show Unpaired Devices"
-#~ msgstr "Mobilní zařízení"
-
-#~ msgid "Show Battery Icon"
-#~ msgstr "Zobrazit ikonu baterie"
-
-#~ msgid "Device is unpaired"
-#~ msgstr "Zařízení je spárováno"
-
-#~ msgid "Locate %s"
-#~ msgstr "Najít %s"
-
-#~ msgid "Browse Files"
-#~ msgstr "Procházet soubory"
-
-#~ msgid "Remote Input"
-#~ msgstr "Vzdálený vstup"
-
-#~ msgid "No plugins enabled"
-#~ msgstr "Žádný zásuvný modul nebyl povolen"
-
-#~ msgid "Failed to mount %s"
-#~ msgstr "Nepodařilo se připojit %s"
-
-#~ msgid "GSConnect Website"
-#~ msgstr "Webová stránka GSConnect"
-
-#~ msgid "Copyright © 2017 Andy Holmes"
-#~ msgstr "Copyright © 2017 Andy Holmes"
-
-#~ msgid "This program comes with absolutely no warranty."
-#~ msgstr "Tento program neposkytuje žádné záruky"
-
-#~ msgid ""
-#~ "See the <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html"
-#~ "\">GNU General Public License, version 2 or later</a> for details."
-#~ msgstr ""
-#~ "Pro podrobnosti navštivte <a href=\"https://www.gnu.org/licenses/old-"
-#~ "licenses/gpl-2.0.html\">GNU General Public License, version 2 or later</"
-#~ "a>."
-
-#~ msgid "Preferences"
-#~ msgstr "Možnosti"
-
-#~ msgid "Extensions"
-#~ msgstr "Zásuvné moduly"
-
-#~ msgid "Web Browser Integration"
-#~ msgstr "Propojení s prohlížečem internetu"
-
-#~ msgid ""
-#~ "Requires <a href=\"%s\">Chrome Extension</a> or <a href=\"%s\">Firefox "
-#~ "Add-On</a>"
-#~ msgstr ""
-#~ "Vyžaduje <a href=\"%s\">rozšíření pro Chrome</a> nebo <a href=\"%s"
-#~ "\">FirefoxOn</a>"
-
-#~ msgid "Nautilus extensions changed"
-#~ msgstr "Změnil se zásuvný modul pro Nautilus"
-
-#~ msgid "Restart Nautilus to apply changes"
-#~ msgstr "Pro aplikování změn restartujte Nautilus"
-
-#~ msgid "Restart"
-#~ msgstr "Restart"
-
-#~ msgid ""
-#~ "%s Fingerprint:\n"
-#~ "%s\n"
-#~ "\n"
-#~ "Local Fingerprint:\n"
-#~ "%s"
-#~ msgstr "Místní otisk prstu"
-
-#~ msgid "Apply"
-#~ msgstr "Použít"
-
-#~ msgid "Send and receive battery statistics"
-#~ msgstr "Poslat a získat statistiku baterie"
-
-#~ msgid "Low Battery Warning"
-#~ msgstr "Upozornění na málo nabitou baterii"
-
-#~ msgid "%s's battery level is %d%%"
-#~ msgstr "%s úroveň nabití baterie je %d%%"
-
-#~ msgid "Sync the clipboard between devices"
-#~ msgstr "Synchronizovat schránku mezi zařízeními"
-
-#~ msgid "Failed to get Gdk.Display"
-#~ msgstr "Nepodařilo se získat Gdk.Display"
-
-#~ msgid "Failed to get Clipboard"
-#~ msgstr "Nepodařilo se získat Schránku"
-
-#~ msgid "Find a device by making it ring"
-#~ msgstr "Najít zařízení prozvoněním"
-
-#~ msgid "Screen Lock"
-#~ msgstr "Zamykání obrazovky"
-
-#~ msgid "Lock and unlock devices"
-#~ msgstr "Zamknout a odemknout zařízení"
-
-#~ msgid "Control the mouse and keyboard remotely"
-#~ msgstr "Ovládat myš a klávesnici vzdáleně"
-
-#~ msgid "Can't run in Wayland session"
-#~ msgstr "Nelze provozovat na Waylandu"
-
-#~ msgid "Failed to initialize Atspi"
-#~ msgstr "Nebylo možné inicializovat Atspi"
-
-#~ msgid "Cannot load Caribou virtual keyboard for Unicode support"
-#~ msgstr "Nelze načíst virtuální klávesnici Caribou pro podporu Unicode"
-
-#~ msgid "Control MPRIS2 enabled media players"
-#~ msgstr "Ovládat multimediální přehrávač podporující technologii MPRIS2"
-
-#~ msgid "Sync notifications between devices"
-#~ msgstr "Synchronizovat upozornění mezi zařízeními"
-
-#~ msgid "Missed call"
-#~ msgstr "Nepřijatý hovor"
-
-#~ msgid "Missed call from %s on %s"
-#~ msgstr "Nepřijatý hovor z %s na %s"
-
-#~ msgid "Send and receive pings"
-#~ msgstr "Poslat a získat ping"
-
-#~ msgid "Execute local commands remotely"
-#~ msgstr "Vykonat místní příkazy vzdáleně"
-
-#~ msgid "Mount and browse device filesystems"
-#~ msgstr "Připojit a procházet souborové systémy zařízení"
-
-#~ msgid "SSHFS not installed"
-#~ msgstr "SSHFS není nainstalován"
-
-#~ msgid "Send and receive files and URLs"
-#~ msgstr "Poslat a získat soubory a URL"
-
-#~ msgid "Transfer Cancelled"
-#~ msgstr "Přenos byl zrušen"
-
-#~ msgid "Cancelled transfer of \"%s\" from %s"
-#~ msgstr "Přerušený přenos \"%s\" z %s"
-
-#~ msgid "Cancelled transfer of \"%s\" to %s"
-#~ msgstr "Přenos z \"%s\" do %s byl zrušen"
-
-#~ msgid "Use a subdirectory named <b>%s</b>"
-#~ msgstr "Použít podsložku nazvanou <b>%s</b>"
-
-#~ msgid "Call notification and SMS messaging"
-#~ msgstr "Upozornění z volání a SMS"
-
-#~ msgid "Incoming call from %s on %s"
-#~ msgstr "Příchozí hovor z %s na %s"
-
-#~ msgid "Call In Progress"
-#~ msgstr "Hovor probíhá"
-
-#~ msgid "Call in progress with %s on %s"
-#~ msgstr "Probíhá hovor s %s na %s"
-
-#~ msgid "Unknown Number"
-#~ msgstr "Neznámé číslo"
-
-#~ msgid "In Progress Calls"
-#~ msgstr "Probíhající volání"
-
-#~ msgid "The <b>Media Player Control</b> plugin must be enabled"
-#~ msgstr ""
-#~ "Zásuvný modul <b>Ovládání multimediálního přehrávače</b> musí být povolen"
-
-#~ msgid ""
-#~ "Ensure that devices are on the same local network with ports 1716 to 1764 "
-#~ "open for TCP and UDP connections."
-#~ msgstr ""
-#~ "Ujistěte se, že zařízení jsou na stejné místní síti s porty 1716 až 1764 "
-#~ "otevřít pro připojení TCP a UDP."
-
-#~ msgid ""
-#~ "To connect an Android device, install the KDE Connect Android app from "
-#~ "the <a href=\"%s\">Google Play Store</a> or <a href=\"%s\">F-Droid</a>."
-#~ msgstr ""
-#~ "Chcete-li připojit zařízení s Androidem, nainstalujte aplikaci KDE "
-#~ "Connect pro Android z <a href=\"%s\">Google Play Store</a> or <a href=\"%s"
-#~ "\">F-Droid</a>."
-
-#~ msgid ""
-#~ "Please see the <a href=\"%s\">Wiki</a> for more help or <a href=\"%s"
-#~ "\">open an issue</a> on Github to report a problem."
-#~ msgstr ""
-#~ "Podívejte se prosím <a href=\"%s\">Wiki</a> for more help or <a href=\"%s"
-#~ "\">open an issue</a> na Github a nahlašte problém"
-
-#~ msgid "Error: %s"
-#~ msgstr "Chyba: %s"
-
-#~ msgid "Connecting Devices"
-#~ msgstr "Připojování zařízení"
-
-#~ msgid "Reconnect <b>%s</b>"
-#~ msgstr "Znovu připojit <b>%s</b>"
-
-#~ msgid "Unpair <b>%s</b>"
-#~ msgstr "Zrušit párování"
-
-#~ msgid "Pair <b>%s</b>"
-#~ msgstr "Párovat <b>%s</b>"
-
-#~ msgid ""
-#~ "<b>%s Fingerprint:</b>\n"
-#~ "%s\n"
-#~ "\n"
-#~ "<b>Local Fingerprint:</b>\n"
-#~ "%s"
-#~ msgstr ""
-#~ "<b>Místní otisk prstu:</b>\n"
-#~ "%s"
-
-#~ msgid "Unknown"
-#~ msgstr "Neznámé"
-
-#~ msgid "Keyboard Shortcut Unavailable"
-#~ msgstr "Klávesové zkratky nejsou k dispozici"
-
-#~ msgid ""
-#~ "The requested keyboard shortcut is already in use and can't be overridden."
-#~ msgstr "Požadovaná klávesová zkratka je již používána a nelze ji přepsat."
-
-#~ msgid "Configure <b>%s</b>"
-#~ msgstr "Nastavit <b>%s</b>"
-
-#~ msgid "Send to %d"
-#~ msgstr "Poslat do %d"
-
-#~ msgid "Add and remove people"
-#~ msgstr "Přidat a odstranit lidi"
-
-#~ msgid "<b>%s</b> is disconnected"
-#~ msgstr "<b>%s</b> je odpojen"
-
-#~ msgid "And one other person"
-#~ msgid_plural "And %d other people"
-#~ msgstr[0] "Přidat další osobu"
-#~ msgstr[1] "Přidat %d další lidi"
-
-#~ msgid "SMS Conversation with %s"
-#~ msgstr "SMS konverzace s %s"
-
-#~ msgid "New SMS Conversation"
-#~ msgstr "Nová SMS konverzace"
-
-#~ msgid "Enable debug features and logging"
-#~ msgstr "Povolit funkce ladění a protokolování"
-
-#~ msgid "Show Indicators"
-#~ msgstr "Zobrazit indikátory"
-
-#~ msgid "Display devices in the panel instead of the User Menu"
-#~ msgstr "Zobrazit zařízení na panelu místo v Menu uživatele"
-
-#~ msgid "Display devices even if offline"
-#~ msgstr "Zobrazit zařízení, i když jsou offline"
-
-#~ msgid "Display devices even if unpaired"
-#~ msgstr "Zobrazit zařízení, i když jsou nespárované"
-
-#~ msgid "Display an icon with percentage in the Device Menu"
-#~ msgstr "Zobrazit ikonu s procenty v nabídce zařízení"
-
-#~ msgid "Send files from the file browser context menu"
-#~ msgstr ""
-#~ "Poslat soubory ze souborového správce prostřednictvím kontextového menu"
-
-#~ msgid "Public Name"
-#~ msgstr "Veřejné jméno"
-
-#~ msgid "The name visible to other devices"
-#~ msgstr "Jméno je viditelné pro ostatní zařízení"
-
-#~ msgid "Receive Statistics"
-#~ msgstr "Získat statistiku"
-
-#~ msgid "Send Statistics"
-#~ msgstr "Poslat statistiku"
-
-#~ msgid "Receive Content"
-#~ msgstr "Získat obsah"
-
-#~ msgid "Send Content"
-#~ msgstr "Poslat obsah"
-
-#~ msgid "Automatically Mount"
-#~ msgstr "Automaticky připojit"
-
-#~ msgid "Download Directory"
-#~ msgstr "Stáhnout složku"
-
-#~ msgid "Use Subdirectory"
-#~ msgstr "Použít podsložku"

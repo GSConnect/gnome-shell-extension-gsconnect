@@ -604,7 +604,7 @@ msgstr "Započinjem prenos"
 #. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:133
 #, javascript-format
-msgid "Receiving \"%s\" from %s"
+msgid "Receiving “%s” from %s"
 msgstr "Primam „%s“ od %s"
 
 #. Action Buttons
@@ -622,7 +622,7 @@ msgstr "Uspešan prenos"
 #. TRANSLATORS: eg. Received 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:151
 #, javascript-format
-msgid "Received \"%s\" from %s"
+msgid "Received “%s” from %s"
 msgstr "Primih „%s“ od %s"
 
 #: src/service/plugins/share.js:157
@@ -640,7 +640,7 @@ msgstr "Prenos nije uspeo"
 #. TRANSLATORS: eg. Failed to receive 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:171
 #, javascript-format
-msgid "Failed to receive \"%s\" from %s"
+msgid "Failed to receive “%s” from %s"
 msgstr "Neuspešan prijem „%s“ od %s"
 
 #: src/service/plugins/share.js:211
@@ -651,19 +651,19 @@ msgstr "Deljeni tekst od %s"
 #. TRANSLATORS: eg. Sending 'book.pdf' to Google Pixel
 #: src/service/plugins/share.js:284
 #, javascript-format
-msgid "Sending \"%s\" to %s"
+msgid "Sending “%s” to %s"
 msgstr "Slanje „%s“ za %s"
 
 #. TRANSLATORS: eg. Sent "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:305
 #, javascript-format
-msgid "Sent \"%s\" to %s"
+msgid "Sent “%s” to %s"
 msgstr "Poslah „%s“ za %s"
 
 #. TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:313
 #, javascript-format
-msgid "Failed to send \"%s\" to %s"
+msgid "Failed to send “%s” to %s"
 msgstr "Neuspelo slanje „%s“ na %s"
 
 #. TRANSLATORS: eg. Send files to Google Pixel
@@ -926,358 +926,3 @@ msgstr "Servis nije dostupan"
 #: webextension/gettext.js:37
 msgid "Open in Browser"
 msgstr "Otvori u pregledaču"
-
-#~ msgid "Conversations"
-#~ msgstr "Razgovori"
-
-#~ msgid "Sync Contacts"
-#~ msgstr "Sinhronizuj kontakte"
-
-#~ msgid "Sync Messages"
-#~ msgstr "Sinhronizuj poruke"
-
-#~ msgid "Connect LAN"
-#~ msgstr "Poveži se LAN-om"
-
-#~ msgid "Fax"
-#~ msgstr "Faks"
-
-#~ msgid "Remote Filesystem Error"
-#~ msgstr "Greška udaljenog sistema fajlova"
-
-#~ msgid "%s is using an incompatible SSH library"
-#~ msgstr "%s koristi nesaglasnu SSH biblioteku"
-
-#~ msgid "Show Offline Devices"
-#~ msgstr "Prikaži uređaje van veze"
-
-#~ msgid "Show Unpaired Devices"
-#~ msgstr "Prikaži neuparene uređaje"
-
-#~ msgid "Show Battery Icon"
-#~ msgstr "Ikona baterije"
-
-#~ msgid "Shell"
-#~ msgstr "Školjka"
-
-#~ msgid "Android"
-#~ msgstr "Android"
-
-#~ msgid "Sailfish OS"
-#~ msgstr "Sejlfiš OS"
-
-#~ msgid "Device is unpaired"
-#~ msgstr "Uređaj nije uparen"
-
-#~ msgid "Locate %s"
-#~ msgstr "Pronađi %s"
-
-#~ msgid "Browse Files"
-#~ msgstr "Pregled fajlova"
-
-#~ msgid "Remote Input"
-#~ msgstr "Daljinski unos"
-
-#~ msgid "No plugins enabled"
-#~ msgstr "Nema omogućenih priključaka"
-
-#~ msgid "Failed to mount %s"
-#~ msgstr "Neuspelo montiranje %s"
-
-#~ msgid "GSConnect Website"
-#~ msgstr "Domaća stranica"
-
-#~ msgid "Copyright © 2017 Andy Holmes"
-#~ msgstr "Copyright © 2017 Andy Holmes"
-
-#~ msgid "This program comes with absolutely no warranty."
-#~ msgstr "Ovaj program ne dostavlja nikakve garancije."
-
-#~ msgid ""
-#~ "See the <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html"
-#~ "\">GNU General Public License, version 2 or later</a> for details."
-#~ msgstr ""
-#~ "Pogledajte <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0."
-#~ "html\">GNUovu opštu javnu licencu, verzije 2 ili noviju</a> za više "
-#~ "detalja."
-
-#~ msgid "Preferences"
-#~ msgstr "Postavke"
-
-#~ msgid "Extensions"
-#~ msgstr "Proširenja"
-
-#~ msgid "Web Browser Integration"
-#~ msgstr "Ugradnja u veb pregledač"
-
-#~ msgid ""
-#~ "Requires <a href=\"%s\">Chrome Extension</a> or <a href=\"%s\">Firefox "
-#~ "Add-On</a>"
-#~ msgstr ""
-#~ "Zahteva <a href=\"%s\">proširenje Hroma</a> ili <a href=\"%s\">dodatak za "
-#~ "Fajerfoks</a>"
-
-#~ msgid "Nautilus extensions changed"
-#~ msgstr "Izmenjena su proširenja Nutilusa"
-
-#~ msgid "Restart Nautilus to apply changes"
-#~ msgstr "Ponovo pokrenite Nautilus da bi primenili izmene"
-
-#~ msgid "Restart"
-#~ msgstr "Ponovo pokreni"
-
-#~ msgid ""
-#~ "%s Fingerprint:\n"
-#~ "%s\n"
-#~ "\n"
-#~ "Local Fingerprint:\n"
-#~ "%s"
-#~ msgstr ""
-#~ "Otisak za %s:\n"
-#~ "%s\n"
-#~ "\n"
-#~ "Lokalni otisak:\n"
-#~ "%s"
-
-#~ msgid "Apply"
-#~ msgstr "Primeni"
-
-#~ msgid "Send and receive battery statistics"
-#~ msgstr "Slanje i prijem stanja baterije"
-
-#~ msgid "Low Battery Warning"
-#~ msgstr "Upozorenje o skoro praznoj bateriji"
-
-#~ msgid "%s's battery level is %d%%"
-#~ msgstr "Nivo baterije za %s je %d%%"
-
-#~ msgid "Sync the clipboard between devices"
-#~ msgstr "Sinhronizacija ostave između uređaja"
-
-#~ msgid "Failed to get Gdk.Display"
-#~ msgstr "Ne mogi da dobavim get Gdk.Display"
-
-#~ msgid "Failed to get Clipboard"
-#~ msgstr "Ne mogu da dobavim ostavu"
-
-#~ msgid "Find a device by making it ring"
-#~ msgstr "Pronalaženje uređaja uljučivanjem zvona"
-
-#~ msgid "Screen Lock"
-#~ msgstr "Zaključavanje ekrana"
-
-#~ msgid "Lock and unlock devices"
-#~ msgstr "Zaključavanje i otključavanje uređaja"
-
-#~ msgid "Control the mouse and keyboard remotely"
-#~ msgstr "Udaljeno upravljanje mišem i tastaturom"
-
-#~ msgid "Can't run in Wayland session"
-#~ msgstr "Ne radi u Vejland sesiji"
-
-#~ msgid "Failed to initialize Atspi"
-#~ msgstr "Neuspela inicijelizacija Atspi"
-
-#~ msgid "Cannot load Caribou virtual keyboard for Unicode support"
-#~ msgstr "Ne mogu da učitam virtuelnu tastaturu Karibu za Unikod podršku"
-
-#~ msgid "Control MPRIS2 enabled media players"
-#~ msgstr "Upravljanje uređajima koji podržavaju MPRIS2"
-
-#~ msgid "Sync notifications between devices"
-#~ msgstr "Sinhronizacija obaveštenja između uređaja"
-
-#~ msgid "Missed call"
-#~ msgstr "Propušten poziv"
-
-#~ msgid "Missed call from %s on %s"
-#~ msgstr "Propušten poziv od %s na %s"
-
-#~ msgid "Send and receive pings"
-#~ msgstr "Slanje i prijem pingova"
-
-#~ msgid "Execute local commands remotely"
-#~ msgstr "Udaljeno izvršavanje lokalnih naredbi"
-
-#~ msgid "Mount and browse device filesystems"
-#~ msgstr "Montiranje i pregled sistema fajlova na uređaju"
-
-#~ msgid "SSHFS not installed"
-#~ msgstr "SSHFS nije instaliran"
-
-#~ msgid "Send and receive files and URLs"
-#~ msgstr "Slanje i prijem falova i URL-ova"
-
-#~ msgid "Transfer Cancelled"
-#~ msgstr "Prenos je otkazan"
-
-#~ msgid "Cancelled transfer of \"%s\" from %s"
-#~ msgstr "Otkazan prenos „%s“ od %s"
-
-#~ msgid "Cancelled transfer of \"%s\" to %s"
-#~ msgstr "Otkazano slanje „%s“ za %s"
-
-#~ msgid "Use a subdirectory named <b>%s</b>"
-#~ msgstr "Koristi podfasciklu nazvanu <b>%s</b>"
-
-#~ msgid "Call notification and SMS messaging"
-#~ msgstr "Obaveštenja o pozivima i SMS porukama"
-
-#~ msgid "Incoming call from %s on %s"
-#~ msgstr "Dolazni poziv od %s na %s"
-
-#~ msgid "Call In Progress"
-#~ msgstr "Poziv u toku"
-
-#~ msgid "Call in progress with %s on %s"
-#~ msgstr "U toku je razgovor sa %s na %s"
-
-#~ msgid "Unknown Number"
-#~ msgstr "Nepoznat broj"
-
-#~ msgid "In Progress Calls"
-#~ msgstr "Tokom tekućih poziva"
-
-#~ msgid "The <b>Media Player Control</b> plugin must be enabled"
-#~ msgstr ""
-#~ "Priključak <b>Upravljanje medijskim plejerima</b> mora biti omogućen"
-
-#~ msgid ""
-#~ "Ensure that devices are on the same local network with ports 1716 to 1764 "
-#~ "open for TCP and UDP connections."
-#~ msgstr ""
-#~ "Postarajte se da su uređaji na istoj lokalnoj mreži i da su portovi od "
-#~ "1716 do 1764 otvoreni za TCP i UDP veze."
-
-#~ msgid ""
-#~ "To connect an Android device, install the KDE Connect Android app from "
-#~ "the <a href=\"%s\">Google Play Store</a> or <a href=\"%s\">F-Droid</a>."
-#~ msgstr ""
-#~ "Da bi se povezali sa Android uređajem, instalirajte KDE Konekt aplikaciju "
-#~ "za Android iz <a href=\"%s\">Gugl Plej prodavnice</a> ili <a href=\"%s"
-#~ "\">F-Droida</a>."
-
-#~ msgid ""
-#~ "Please see the <a href=\"%s\">Wiki</a> for more help or <a href=\"%s"
-#~ "\">open an issue</a> on Github to report a problem."
-#~ msgstr ""
-#~ "Pogledajte <a href=\"%s\">viki</a> za dodatnu pomoć ili <a href=\"%s"
-#~ "\">prijavite problem</a> na Githabu."
-
-#~ msgid "Error: %s"
-#~ msgstr "Greška: %s"
-
-#~ msgid "Connecting Devices"
-#~ msgstr "Povezivanje uređaja"
-
-#~ msgid "Reconnect <b>%s</b>"
-#~ msgstr "Ponovo poveži <b>%s</b>"
-
-#~ msgid "Unpair <b>%s</b>"
-#~ msgstr "Raspari <b>%s</b>"
-
-#~ msgid "Pair <b>%s</b>"
-#~ msgstr "Upari <b>%s</b>"
-
-#~ msgid ""
-#~ "<b>%s Fingerprint:</b>\n"
-#~ "%s\n"
-#~ "\n"
-#~ "<b>Local Fingerprint:</b>\n"
-#~ "%s"
-#~ msgstr ""
-#~ "<b>Otisak za %s:</b>\n"
-#~ "%s\n"
-#~ "\n"
-#~ "<b>Lokalni otisak:</b>\n"
-#~ "%s"
-
-#~ msgid "Unknown"
-#~ msgstr "Nepoznato"
-
-#~ msgid "Keyboard Shortcut Unavailable"
-#~ msgstr "Prečica tastature nije dostupna"
-
-#~ msgid ""
-#~ "The requested keyboard shortcut is already in use and can't be overridden."
-#~ msgstr ""
-#~ "Zahtevana prečica tastature je već u upotrebi i ne može biti ponovo "
-#~ "dodeljena."
-
-#~ msgid "Configure <b>%s</b>"
-#~ msgstr "Podesi <b>%s</b>"
-
-#~ msgid "Send to %d"
-#~ msgstr "Pošalji na %d"
-
-#~ msgid "Add and remove people"
-#~ msgstr "Dodavanje i uklanjanje osoba"
-
-#~ msgid "<b>%s</b> is disconnected"
-#~ msgstr "%s je razvezan"
-
-#~ msgid "And one other person"
-#~ msgid_plural "And %d other people"
-#~ msgstr[0] "I još %d osoba"
-#~ msgstr[1] "I još %d osobe"
-#~ msgstr[2] "I još %d osoba"
-
-#~ msgid "SMS Conversation with %s"
-#~ msgstr "SMS razgovor sa %s"
-
-#~ msgid "New SMS Conversation"
-#~ msgstr "Novi SMS razgovor"
-
-#~ msgid "Enable debug features and logging"
-#~ msgstr "Uključuje ispravljanje grešaka i dnevnik"
-
-#~ msgid "Show Indicators"
-#~ msgstr "Indikatori"
-
-#~ msgid "Display devices in the panel instead of the User Menu"
-#~ msgstr "Prikaz uređaja na panelu umesto u korisničkom meniju"
-
-#~ msgid "Display devices even if offline"
-#~ msgstr "Prikaz uređaja čak i kad su van veze"
-
-#~ msgid "Display devices even if unpaired"
-#~ msgstr "Prikaz uređaja čak i ako nisu upareni"
-
-#~ msgid "Display an icon with percentage in the Device Menu"
-#~ msgstr "Prikaz ikone sa procentom stanja u meniju uređaja"
-
-#~ msgid "Send files from the file browser context menu"
-#~ msgstr "Slanje fajlova iz kontekstong menija upravnika fajlova"
-
-#~ msgid "Public Name"
-#~ msgstr "Javno ime"
-
-#~ msgid "The name visible to other devices"
-#~ msgstr "Ime vidljivo drugim uređajima"
-
-#~ msgid "Receive Statistics"
-#~ msgstr "Prijem statistike"
-
-#~ msgid "Send Statistics"
-#~ msgstr "Slanje statistike"
-
-#~ msgid "Receive Content"
-#~ msgstr "Prijem sadržaja"
-
-#~ msgid "Send Content"
-#~ msgstr "Slanje sadržaja"
-
-#~ msgid "Automatically Mount"
-#~ msgstr "Automatsko montiranje"
-
-#~ msgid "Download Directory"
-#~ msgstr "Prijemna fascikla"
-
-#~ msgid "Use Subdirectory"
-#~ msgstr "Koristi podfasciklu"
-
-#~ msgid "True"
-#~ msgstr "Tačno"
-
-#~ msgid "False"
-#~ msgstr "Netačno"

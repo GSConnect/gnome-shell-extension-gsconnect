@@ -649,8 +649,8 @@ msgstr "Pradedamas persiuntimas"
 #. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:133
 #, javascript-format
-msgid "Receiving \"%s\" from %s"
-msgstr "Gaunama \"%s\" iš %s"
+msgid "Receiving “%s” from %s"
+msgstr "Gaunama „%s“ iš %s"
 
 #. Action Buttons
 #: src/service/plugins/share.js:138 src/service/plugins/share.js:289
@@ -667,8 +667,8 @@ msgstr "Persiuntimas sėkmingas"
 #. TRANSLATORS: eg. Received 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:151
 #, javascript-format
-msgid "Received \"%s\" from %s"
-msgstr "Gautas \"%s\" iš %s"
+msgid "Received “%s” from %s"
+msgstr "Gautas „%s“ iš %s"
 
 #: src/service/plugins/share.js:157
 msgid "Open Folder"
@@ -685,8 +685,8 @@ msgstr "Persiuntimas nepavyko"
 #. TRANSLATORS: eg. Failed to receive 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:171
 #, fuzzy, javascript-format
-msgid "Failed to receive \"%s\" from %s"
-msgstr "Nepavyko gauti \"%s\" iš %s: %s"
+msgid "Failed to receive “%s” from %s"
+msgstr "Nepavyko gauti „%s“ iš %s: %s"
 
 #: src/service/plugins/share.js:211
 #, javascript-format
@@ -696,20 +696,20 @@ msgstr ""
 #. TRANSLATORS: eg. Sending 'book.pdf' to Google Pixel
 #: src/service/plugins/share.js:284
 #, javascript-format
-msgid "Sending \"%s\" to %s"
-msgstr "Siunčiama \"%s\" į %s"
+msgid "Sending “%s” to %s"
+msgstr "Siunčiama „%s“ į %s"
 
 #. TRANSLATORS: eg. Sent "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:305
 #, javascript-format
-msgid "Sent \"%s\" to %s"
-msgstr "Išsiųsta \"%s\" į %s"
+msgid "Sent “%s” to %s"
+msgstr "Išsiųsta „%s“ į %s"
 
 #. TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:313
 #, fuzzy, javascript-format
-msgid "Failed to send \"%s\" to %s"
-msgstr "Nepavyko išsiųsti \"%s\" į %s: %s"
+msgid "Failed to send “%s” to %s"
+msgstr "Nepavyko išsiųsti „%s“ į %s: %s"
 
 #. TRANSLATORS: eg. Send files to Google Pixel
 #: src/service/plugins/share.js:384
@@ -983,345 +983,3 @@ msgstr "Gvc neprieinama"
 #, fuzzy
 msgid "Open in Browser"
 msgstr "Atverti aplanką"
-
-#, fuzzy
-#~ msgid "Conversations"
-#~ msgstr "SMS pokalbis"
-
-#, fuzzy
-#~ msgid "Sync Contacts"
-#~ msgstr "Nežinomas adresatas"
-
-#, fuzzy
-#~ msgid "Sync Messages"
-#~ msgstr "Žinutė"
-
-#, fuzzy
-#~ msgid "Connect LAN"
-#~ msgstr "GSConnect"
-
-#~ msgid "Fax"
-#~ msgstr "Faksas"
-
-#, fuzzy
-#~ msgid "Show Offline Devices"
-#~ msgstr "Rodyti atsijungusius"
-
-#, fuzzy
-#~ msgid "Show Unpaired Devices"
-#~ msgstr "Mobilieji įrenginiai"
-
-#~ msgid "Show Battery Icon"
-#~ msgstr "Rodyti baterijos piktogramą"
-
-#~ msgid "Device is unpaired"
-#~ msgstr "Įrenginys yra išporuotas"
-
-#~ msgid "Locate %s"
-#~ msgstr "Nustatyti %s vietą"
-
-#~ msgid "Browse Files"
-#~ msgstr "Naršyti failus"
-
-#~ msgid "Remote Input"
-#~ msgstr "Nuotolinė įvestis"
-
-#~ msgid "No plugins enabled"
-#~ msgstr "Nėra jokių įjungtų įskiepių"
-
-#~ msgid "Failed to mount %s"
-#~ msgstr "Nepavyko prijungti %s"
-
-#~ msgid "GSConnect Website"
-#~ msgstr "GSConnect internetinė svetainė"
-
-#~ msgid "Copyright © 2017 Andy Holmes"
-#~ msgstr "Autorių teisės © 2017 Andy Holmes"
-
-#~ msgid "This program comes with absolutely no warranty."
-#~ msgstr "Ši programa yra pateikiama absoliučiai be jokios garantijos."
-
-#~ msgid ""
-#~ "See the <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html"
-#~ "\">GNU General Public License, version 2 or later</a> for details."
-#~ msgstr ""
-#~ "Išsamesnei informacijai, žiūrėkite <a href=\"https://www.gnu.org/licenses/"
-#~ "old-licenses/gpl-2.0.html\">GNU Bendrąją Viešąją Licenciją, versiją 2 "
-#~ "arba vėlesnę</a>."
-
-#~ msgid "Preferences"
-#~ msgstr "Nuostatos"
-
-#~ msgid "Extensions"
-#~ msgstr "Plėtiniai"
-
-#~ msgid "Web Browser Integration"
-#~ msgstr "Saityno naršyklės integracija"
-
-#~ msgid ""
-#~ "Requires <a href=\"%s\">Chrome Extension</a> or <a href=\"%s\">Firefox "
-#~ "Add-On</a>"
-#~ msgstr ""
-#~ "Reikalauja <a href=\"%s\">Chrome plėtinio</a> arba <a href=\"%s\">Firefox "
-#~ "priedo</a>"
-
-#~ msgid "Nautilus extensions changed"
-#~ msgstr "Pasikeitė Nautilus plėtiniai"
-
-#~ msgid "Restart Nautilus to apply changes"
-#~ msgstr "Norėdami taikyti pakeitimus, paleiskite Nautilus iš naujo"
-
-#~ msgid "Restart"
-#~ msgstr "Paleisti iš naujo"
-
-#~ msgid ""
-#~ "%s Fingerprint:\n"
-#~ "%s\n"
-#~ "\n"
-#~ "Local Fingerprint:\n"
-#~ "%s"
-#~ msgstr ""
-#~ "%s kontrolinis kodas:\n"
-#~ "%s\n"
-#~ "\n"
-#~ "Vietinis kontrolinis kodas:\n"
-#~ "%s"
-
-#~ msgid "Apply"
-#~ msgstr "Taikyti"
-
-#~ msgid "Send and receive battery statistics"
-#~ msgstr "Siųsti ir gauti baterijos statistiką"
-
-#~ msgid "Low Battery Warning"
-#~ msgstr "Žemos baterijos įkrovos įspėjimas"
-
-#~ msgid "%s's battery level is %d%%"
-#~ msgstr "Įrenginio %s baterijos lygis yra %d%%"
-
-#~ msgid "Sync the clipboard between devices"
-#~ msgstr "Sinchronizuoti iškarpinę tarp įrenginių"
-
-#~ msgid "Failed to get Gdk.Display"
-#~ msgstr "Nepavyko gauti Gdk.Display"
-
-#~ msgid "Failed to get Clipboard"
-#~ msgstr "Nepavyko gauti iškarpinės"
-
-#~ msgid "Find a device by making it ring"
-#~ msgstr "Rasti įrenginį priverčiant jį skambėti"
-
-#~ msgid "Screen Lock"
-#~ msgstr "Ekrano užraktas"
-
-#~ msgid "Lock and unlock devices"
-#~ msgstr "Užrakinti ir atrakinti įrenginius"
-
-#~ msgid "Control the mouse and keyboard remotely"
-#~ msgstr "Valdyti pelę ir klaviatūrą nuotoliniu būdu"
-
-#~ msgid "Can't run in Wayland session"
-#~ msgstr "Nepavyksta paleisti Wayland seanse"
-
-#~ msgid "Failed to initialize Atspi"
-#~ msgstr "Nepavyko inicijuoti Atspi"
-
-#~ msgid "Cannot load Caribou virtual keyboard for Unicode support"
-#~ msgstr ""
-#~ "Nepavyksta įkelti Caribou virtualios klaviatūros, skirtos Unikodo "
-#~ "palaikymui"
-
-#~ msgid "Control MPRIS2 enabled media players"
-#~ msgstr "Valdyti MPRIS2 įgalintas medijos leistuves"
-
-#~ msgid "Sync notifications between devices"
-#~ msgstr "Sinchronizuoti pranešimus tarp įrenginių"
-
-#~ msgid "Missed call"
-#~ msgstr "Neatsakytas skambutis"
-
-#~ msgid "Missed call from %s on %s"
-#~ msgstr "Neatsakytas skambutis nuo %s įrenginyje %s"
-
-#~ msgid "Send and receive pings"
-#~ msgstr "Siųsti ir gauti ryšio patikrinimus"
-
-#~ msgid "Execute local commands remotely"
-#~ msgstr "Vykdyti vietines komandas nuotoliniu būdu"
-
-#~ msgid "Mount and browse device filesystems"
-#~ msgstr "Prijungti ir naršyti įrenginio failų sistemas"
-
-#~ msgid "SSHFS not installed"
-#~ msgstr "SSHFS neįdiegta"
-
-#~ msgid "Send and receive files and URLs"
-#~ msgstr "Siųsti ir gauti failus bei URL"
-
-#~ msgid "Transfer Cancelled"
-#~ msgstr "Persiuntimo atsisakyta"
-
-#~ msgid "Cancelled transfer of \"%s\" from %s"
-#~ msgstr "\"%s\" persiuntimo iš %s atsisakyta"
-
-#~ msgid "Cancelled transfer of \"%s\" to %s"
-#~ msgstr "\"%s\" persiuntimo į %s atsisakyta"
-
-#~ msgid "Use a subdirectory named <b>%s</b>"
-#~ msgstr "Naudoti pakatalogį, pavadinimu <b>%s</b>"
-
-#~ msgid "Call notification and SMS messaging"
-#~ msgstr "Skambučių pranešimai ir SMS susirašinėjimas"
-
-#~ msgid "Incoming call from %s on %s"
-#~ msgstr "Gaunamas skambutis nuo %s, įrenginyje %s"
-
-#~ msgid "Call In Progress"
-#~ msgstr "Einamasis skambutis"
-
-#~ msgid "Call in progress with %s on %s"
-#~ msgstr "Einamasis skambutis su %s, įrenginyje %s"
-
-#~ msgid "Unknown Number"
-#~ msgstr "Nežinomas numeris"
-
-#~ msgid "In Progress Calls"
-#~ msgstr "Einamieji skambučiai"
-
-#~ msgid "The <b>Media Player Control</b> plugin must be enabled"
-#~ msgstr "Privalo būti įjungtas įskiepis <b>Medijos leistuvės valdymas</b>"
-
-#~ msgid ""
-#~ "Ensure that devices are on the same local network with ports 1716 to 1764 "
-#~ "open for TCP and UDP connections."
-#~ msgstr ""
-#~ "Užtikrinkite, kad įrenginiai yra tame pačiame vietiniame tinkle ir TCP "
-#~ "bei UDP ryšiams turi atvertus prievadus nuo 1716 iki 1764."
-
-#~ msgid ""
-#~ "To connect an Android device, install the KDE Connect Android app from "
-#~ "the <a href=\"%s\">Google Play Store</a> or <a href=\"%s\">F-Droid</a>."
-#~ msgstr ""
-#~ "Norėdami prijungti Android įrenginį, įdiekite KDE Connect Android "
-#~ "programėlę iš <a href=\"%s\">Google Play Store</a> arba <a href=\"%s\">F-"
-#~ "Droid</a>."
-
-#~ msgid ""
-#~ "Please see the <a href=\"%s\">Wiki</a> for more help or <a href=\"%s"
-#~ "\">open an issue</a> on Github to report a problem."
-#~ msgstr ""
-#~ "Išsamesnei informacijai, žiūrėkite <a href=\"%s\">Vikį</a> arba <a href="
-#~ "\"%s\">atverkite pranešimą apie klaidą</a>, norėdami Github svetainėje "
-#~ "pranešti apie problemą."
-
-#~ msgid "Error: %s"
-#~ msgstr "Klaida: %s"
-
-#~ msgid "Connecting Devices"
-#~ msgstr "Įrenginių prijungimas"
-
-#~ msgid "Reconnect <b>%s</b>"
-#~ msgstr "Prijungti iš naujo <b>%s</b>"
-
-#~ msgid "Unpair <b>%s</b>"
-#~ msgstr "Išporuoti <b>%s</b>"
-
-#~ msgid "Pair <b>%s</b>"
-#~ msgstr "Suporuoti <b>%s</b>"
-
-#~ msgid ""
-#~ "<b>%s Fingerprint:</b>\n"
-#~ "%s\n"
-#~ "\n"
-#~ "<b>Local Fingerprint:</b>\n"
-#~ "%s"
-#~ msgstr ""
-#~ "<b>%s kontrolinis kodas:</b>\n"
-#~ "%s\n"
-#~ "\n"
-#~ "<b>Vietinis kontrolinis kodas:</b>\n"
-#~ "%s"
-
-#~ msgid "Unknown"
-#~ msgstr "Nežinoma"
-
-#~ msgid "Keyboard Shortcut Unavailable"
-#~ msgstr "Klaviatūros trumpinys neprieinamas"
-
-#~ msgid ""
-#~ "The requested keyboard shortcut is already in use and can't be overridden."
-#~ msgstr ""
-#~ "Užklaustas klaviatūros trumpinys jau yra naudojamas ir negali būti "
-#~ "nustelbtas."
-
-#~ msgid "Configure <b>%s</b>"
-#~ msgstr "Konfigūruoti <b>%s</b>"
-
-#~ msgid "Send to %d"
-#~ msgstr "Siųsti %d"
-
-#~ msgid "Add and remove people"
-#~ msgstr "Pridėti ir šalinti žmones"
-
-#~ msgid "<b>%s</b> is disconnected"
-#~ msgstr "<b>%s</b> yra atjungtas"
-
-#~ msgid "And one other person"
-#~ msgid_plural "And %d other people"
-#~ msgstr[0] "ir dar %d žmogus"
-#~ msgstr[1] "ir dar %d žmonės"
-#~ msgstr[2] "ir dar %d žmonių"
-
-#~ msgid "SMS Conversation with %s"
-#~ msgstr "SMS pokalbis su %s"
-
-#~ msgid "New SMS Conversation"
-#~ msgstr "Naujas SMS pokalbis"
-
-#~ msgid "Enable debug features and logging"
-#~ msgstr "Įjungti derinimo ypatybes ir registravimą"
-
-#~ msgid "Show Indicators"
-#~ msgstr "Rodyti indikatorius"
-
-#~ msgid "Display devices in the panel instead of the User Menu"
-#~ msgstr "Vietoj naudotojų meniu, rodyti įrenginius skydelyje"
-
-#~ msgid "Display devices even if offline"
-#~ msgstr "Rodyti įrenginius net atsijungus"
-
-#~ msgid "Display devices even if unpaired"
-#~ msgstr "Rodyti įrenginius net nesuporavus"
-
-#~ msgid "Display an icon with percentage in the Device Menu"
-#~ msgstr "Įrenginio meniu rodyti piktogramą su procentine reikšme"
-
-#~ msgid "Send files from the file browser context menu"
-#~ msgstr "Siųsti failus iš failų naršyklės kontekstinio meniu"
-
-#~ msgid "Public Name"
-#~ msgstr "Viešasis pavadinimas"
-
-#~ msgid "The name visible to other devices"
-#~ msgstr "Kitiems įrenginiams matomas pavadinimas"
-
-#~ msgid "Receive Statistics"
-#~ msgstr "Gauti statistiką"
-
-#~ msgid "Send Statistics"
-#~ msgstr "Siųsti statistiką"
-
-#~ msgid "Receive Content"
-#~ msgstr "Gauti turinį"
-
-#~ msgid "Send Content"
-#~ msgstr "Siųsti turinį"
-
-#~ msgid "Automatically Mount"
-#~ msgstr "Automatiškai prijungti"
-
-#~ msgid "Download Directory"
-#~ msgstr "Atsiuntimo katalogas"
-
-#~ msgid "Use Subdirectory"
-#~ msgstr "Naudoti pakatalogį"
