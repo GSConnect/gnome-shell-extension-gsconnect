@@ -239,7 +239,8 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
             // Add the battery to the submenu item
             if (!this._item._battery) {
                 this._item._battery = new Device.Battery({
-                    object: this.manager.get_object(device.g_object_path)
+                    object: this.manager.get_object(device.g_object_path),
+                    opacity: 128
                 });
                 this._item.actor.insert_child_below(
                     this._item._battery,

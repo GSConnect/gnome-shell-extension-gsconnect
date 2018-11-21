@@ -36,10 +36,6 @@ PopupMenu.PopupMenuSection.gsconnect-device-section
     icon-size: 16px;
 }
 
-.aggregate-menu .gsconnect-device-battery {
-    opacity: 0.5;
-}
-
 /* List Box */
 .gsconnect-list-box {
 }
