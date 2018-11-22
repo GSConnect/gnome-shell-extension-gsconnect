@@ -27,6 +27,7 @@ try {
 Object.defineProperty(Gvc.MixerStream.prototype, 'display_name', {
     get: function() {
         try {
+            if (!this.get_ports().length) return this.description;
             return `${this.get_port().human_port} (${this.description})`;
         } catch (e) {
             return this.description;
