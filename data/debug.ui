@@ -179,7 +179,7 @@
                     <property name="receives_default">True</property>
                     <property name="tooltip_text" translatable="yes">Debug Terminal</property>
                     <property name="valign">center</property>
-                    <property name="action_name">app.log</property>
+                    <property name="action_name">win.log</property>
                     <child>
                       <object class="GtkImage">
                         <property name="visible">True</property>
@@ -876,3 +876,4 @@
     </child>
   </template>
 </interface>
+

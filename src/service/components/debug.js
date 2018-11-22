@@ -48,6 +48,10 @@ var Window = GObject.registerClass({
             visible: true
         });
 
+        // Log & Debug Mode actions
+        let logAction = new Gio.SimpleAction({name: 'log'});
+        logAction.connect('activate', this._logAction);
+        this.add_action(logAction);
         this.add_action(gsconnect.settings.create_action('debug'));
 
         // Watch for device changes
@@ -342,7 +346,7 @@ var Window = GObject.registerClass({
         this.application.disconnect(this._devicesChangedId);
     }
 
-    debugLog() {
+    _logAction() {
         try {
             GLib.spawn_command_line_async(
                 'gnome-terminal ' +
@@ -356,10 +360,18 @@ var Window = GObject.registerClass({
             let disp = new Gdk.Display;
             let ctx = disp.get_app_launch_context();
 
-            let app = Gio.AppInfo.create_from_commandline('journalctl -f -o cat /usr/bin/gjs', 'GJS', Gio.AppInfoCreateFlags.NEEDS_TERMINAL);
+            let app = Gio.AppInfo.create_from_commandline(
+                'journalctl -f -o cat /usr/bin/gjs',
+                'GJS',
+                Gio.AppInfoCreateFlags.NEEDS_TERMINAL
+            );
             app.launch([], ctx);
 
-            app = Gio.AppInfo.create_from_commandline('journalctl -f -o cat /usr/bin/gnome-shell', 'GNOME Shell', Gio.AppInfoCreateFlags.NEEDS_TERMINAL);
+            app = Gio.AppInfo.create_from_commandline(
+                'journalctl -f -o cat /usr/bin/gnome-shell',
+                'GNOME Shell',
+                Gio.AppInfoCreateFlags.NEEDS_TERMINAL
+            );
             app.launch([], ctx);
         }
     }

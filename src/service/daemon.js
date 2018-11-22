@@ -319,7 +319,6 @@ const Service = GObject.registerClass({
             // Misc service actions
             ['broadcast', this.broadcast.bind(this)],
             ['error', this._errorAction.bind(this), 'a{ss}'],
-            ['log', this._logAction.bind(this)],
             ['debugger', this._debuggerAction.bind(this)],
             ['wiki', this._wikiAction.bind(this), 's'],
             ['quit', () => this.quit()]
@@ -457,31 +456,6 @@ const Service = GObject.registerClass({
             dialog.show();
         } catch (e) {
             logError(e);
-        }
-    }
-
-    _logAction() {
-        // Ensure debugging is enabled
-        gsconnect.settings.set_boolean('debug', true);
-
-        try {
-            // Launch a terminal with tabs for GJS and GNOME Shell
-            GLib.spawn_command_line_async(
-                'gnome-terminal ' +
-                '--tab --title "GJS" --command "journalctl -f -o cat /usr/bin/gjs" ' +
-                '--tab --title "GNOME Shell" --command "journalctl -f -o cat /usr/bin/gnome-shell"'
-            );
-        } catch (e) {
-            // We couldn't launch gnome-terminal, fall back to Gio
-            logError(e);
-            let disp = new Gdk.Display;
-            let ctx = disp.get_app_launch_context();
-
-            let app = Gio.AppInfo.create_from_commandline('journalctl -f -o cat /usr/bin/gjs', 'GJS', Gio.AppInfoCreateFlags.NEEDS_TERMINAL);
-            app.launch([], ctx);
-
-            app = Gio.AppInfo.create_from_commandline('journalctl -f -o cat /usr/bin/gnome-shell', 'GNOME Shell', Gio.AppInfoCreateFlags.NEEDS_TERMINAL);
-            app.launch([], ctx);
         }
     }
 
@@ -873,3 +847,4 @@ const Service = GObject.registerClass({
 });
 
 (new Service()).run([System.programInvocationName].concat(ARGV));
+
