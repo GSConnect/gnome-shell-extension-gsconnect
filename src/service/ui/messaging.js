@@ -312,7 +312,7 @@ const ConversationWidget = GObject.registerClass({
         );
 
         // Pending messages
-        this.pending.date = 0;
+        this.pending.id = GLib.MAXUINT32;
         this.bind_property(
             'has-pending',
             this.pending,
@@ -376,18 +376,6 @@ const ConversationWidget = GObject.registerClass({
         return (this.pending_box.get_children().length);
     }
 
-    get message_id() {
-        if (!this._message_id) {
-            this._message_id = 0;
-        }
-
-        return this._message_id;
-    }
-
-    set message_id(id) {
-        this._message_id = id || 0;
-    }
-
     get sms() {
         if (this._sms === undefined) {
             this._sms = this.device.lookup_plugin('sms');
@@ -448,7 +436,8 @@ const ConversationWidget = GObject.registerClass({
     }
 
     _headerMessages(row, before) {
-        // ...check if the last message was more than an hour ago
+        // Check if the last series was more than an hour ago
+        // TODO: headers between series will require "real" message rows
         if (before && (row.date - before.date) > GLib.TIME_SPAN_HOUR / 1000) {
             let header = new Gtk.Label({
                 label: '<small>' + getTime(row.date) + '</small>',
@@ -463,7 +452,7 @@ const ConversationWidget = GObject.registerClass({
     }
 
     _sortMessages(row1, row2) {
-        if (row1.date > row2.date || row1.get_name() === 'pending') {
+        if (row1.id > row2.id) {
             return 1;
         }
 
@@ -532,6 +521,7 @@ const ConversationWidget = GObject.registerClass({
             hexpand: true
         });
         row.date = message.date;
+        row.id = message._id;
         row.type = message.type;
 
         let layout = new Gtk.Box({
@@ -576,7 +566,6 @@ const ConversationWidget = GObject.registerClass({
         if (!this.__first) {
             this.__first = this._createSeries(message);
             this.__last = this.__first;
-            this.message_id = message._id;
             this.message_list.add(this.__first);
         }
 
@@ -584,7 +573,7 @@ const ConversationWidget = GObject.registerClass({
         let widget = new ConversationMessage(message);
 
         // If this is the earliest message so far...
-        if (message.date <= this.__first.date) {
+        if (message._id <= this.__first.id) {
             // ...and it's in a different direction, create a new series
             if (message.type !== this.__first.type) {
                 this.__first = this._createSeries(message);
@@ -592,11 +581,11 @@ const ConversationWidget = GObject.registerClass({
             }
 
             // ...and prepend it
+            this.__first.id = message._id;
             this.__first.messages.pack_end(widget, false, false, 0);
-            this.__first.date = message.date;
 
         // Or if it's older than the last message...
-        } else if (message.date > this.__last.date) {
+        } else {
             // ...and it's in a different direction, create a new series
             if (message.type !== this.__last.type) {
                 this.__last = this._createSeries(message);
@@ -604,9 +593,8 @@ const ConversationWidget = GObject.registerClass({
             }
 
             // ...and append it
+            this.__last.id = message._id;
             this.__last.messages.add(widget);
-            this.__last.date = message.date;
-            this.message_id = message._id;
 
             // Remove the first pending message
             if (this.has_pending && message.type === MessageType.OUT) {
