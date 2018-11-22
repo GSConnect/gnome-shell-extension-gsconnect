@@ -4,6 +4,7 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
+const Gdk = imports.gi.Gdk;
 const System = imports.system;
 
 
@@ -47,6 +48,10 @@ var Window = GObject.registerClass({
             visible: true
         });
 
+        // Log & Debug Mode actions
+        let logAction = new Gio.SimpleAction({name: 'log'});
+        logAction.connect('activate', this._logAction);
+        this.add_action(logAction);
         this.add_action(gsconnect.settings.create_action('debug'));
 
         // Watch for device changes
@@ -341,13 +346,34 @@ var Window = GObject.registerClass({
         this.application.disconnect(this._devicesChangedId);
     }
 
-    debugLog() {
-        GLib.spawn_command_line_async(
-            'gnome-terminal ' +
-            //`--tab --title "GJS" --command "journalctl _PID=${getPID()} -f -o cat" ` +
-            '--tab --title "GJS" --command "journalctl -f -o cat /usr/bin/gjs" ' +
-            '--tab --title "GNOME Shell" --command "journalctl -f -o cat /usr/bin/gnome-shell"'
-        );
+    _logAction() {
+        try {
+            GLib.spawn_command_line_async(
+                'gnome-terminal ' +
+                //`--tab --title "GJS" --command "journalctl _PID=${getPID()} -f -o cat" ` +
+                '--tab --title "GJS" --command "journalctl -f -o cat /usr/bin/gjs" ' +
+                '--tab --title "GNOME Shell" --command "journalctl -f -o cat /usr/bin/gnome-shell"'
+            );
+        } catch (e) {
+            // We couldn't launch gnome-terminal, fall back to Gio
+            logError(e);
+            let disp = new Gdk.Display;
+            let ctx = disp.get_app_launch_context();
+
+            let app = Gio.AppInfo.create_from_commandline(
+                'journalctl -f -o cat /usr/bin/gjs',
+                'GJS',
+                Gio.AppInfoCreateFlags.NEEDS_TERMINAL
+            );
+            app.launch([], ctx);
+
+            app = Gio.AppInfo.create_from_commandline(
+                'journalctl -f -o cat /usr/bin/gnome-shell',
+                'GNOME Shell',
+                Gio.AppInfoCreateFlags.NEEDS_TERMINAL
+            );
+            app.launch([], ctx);
+        }
     }
 
     /**
@@ -381,4 +407,3 @@ var Window = GObject.registerClass({
         System.gc();
     }
 });
-

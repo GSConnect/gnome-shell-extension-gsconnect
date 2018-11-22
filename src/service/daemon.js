@@ -319,7 +319,6 @@ const Service = GObject.registerClass({
             // Misc service actions
             ['broadcast', this.broadcast.bind(this)],
             ['error', this._errorAction.bind(this), 'a{ss}'],
-            ['log', this._logAction.bind(this)],
             ['debugger', this._debuggerAction.bind(this)],
             ['wiki', this._wikiAction.bind(this), 's'],
             ['quit', () => this.quit()]
@@ -458,18 +457,6 @@ const Service = GObject.registerClass({
         } catch (e) {
             logError(e);
         }
-    }
-
-    _logAction() {
-        // Ensure debugging is enabled
-        gsconnect.settings.set_boolean('debug', true);
-
-        // Launch a terminal with tabs for GJS and GNOME Shell
-        GLib.spawn_command_line_async(
-            'gnome-terminal ' +
-            '--tab --title "GJS" --command "journalctl -f -o cat /usr/bin/gjs" ' +
-            '--tab --title "GNOME Shell" --command "journalctl -f -o cat /usr/bin/gnome-shell"'
-        );
     }
 
     _debuggerAction() {
