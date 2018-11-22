@@ -1,54 +1,66 @@
-var connected = false;
-var currentUrl = null;
-var devices = [];
+/*eslint no-console: ["error", { allow: ["warn", "error"] }] */
+
+'use strict';
 
 
+var CONNECTED = false;
+var DEVICES = [];
+var URL = null;
+
+
+// Suppress errors caused by Mozilla polyfill
+// TODO: not sure if these are relevant anymore
+const _MUTE = [
+    'Could not establish connection. Receiving end does not exist.',
+    'The message port closed before a response was received.'
+];
+
+
+// Simple error logging function
 function logError(error) {
-    // Suppress errors caused by Mozilla polyfill
-    // TODO: Fix these somehow?
-    if (
-        error.message !== 'Could not establish connection. Receiving end does not exist.' &&
-        error.message !== 'The message port closed before a response was received.'
-    ) {
-        console.error(error.message);
+    if (_MUTE.includes(error.message)) return;
+    console.error(error.message);
+}
+
+
+/**
+ * Share a URL, either direct to the browser or by SMS
+ *
+ * @param {string} device - The deviceId
+ * @param {string} action - Currently either 'share' or 'telephony'
+ * @param {string} url - The URL to share
+ */
+async function sendUrl(device, action, url) {
+    try {
+        window.close();
+
+        await browser.runtime.sendMessage({
+            type: 'share',
+            data: {
+                device: device,
+                url: url,
+                action: action
+            }
+        });
+    } catch (e) {
+        logError(e);
     }
 }
 
 
-function sendMessage(message) {
-    browser.runtime.sendMessage(message).then(() => {
-        return true;
-    }).catch(logError);
-}
-
-
-function sendUrl(device, url) {
-    let [id, action] = device.split(':');
-    
-    sendMessage({
-        type: 'share',
-        data: {
-            device: id,
-            url: url,
-            action: action
-        }
-    });
-    window.close();
-}
-
-
-function sendUrlCallback(target, url) {
-    return () => sendUrl(target, url);
-}
-
-
-function addDevice(device) {
+/**
+ * Create and return a device element for the popup menu
+ *
+ * @param {object} device - A JSON object describing a connected device
+ * @return {HTMLElement} - A <div> element with icon, name and actions
+ */
+function getDeviceElement(device) {
     let deviceElement = document.createElement('div');
     deviceElement.className = 'device';
     
     let deviceIcon = document.createElement('img');
     deviceIcon.className = 'device-icon';
-    deviceIcon.src = 'images/' + device.type + '.svg';
+    deviceIcon.src = `images/${device.type}.svg`;
     deviceElement.appendChild(deviceIcon);
     
     let deviceName = document.createElement('span');
@@ -62,7 +74,8 @@ function addDevice(device) {
         shareButton.src = 'images/open-in-browser.svg';
         shareButton.title = browser.i18n.getMessage('shareMessage');
         shareButton.addEventListener(
-            'click', sendUrlCallback(device.id + ':share', currentUrl)
+            'click',
+            () => sendUrl(device.id, 'share', URL)
         );
         deviceElement.appendChild(shareButton);
     }
@@ -73,7 +86,8 @@ function addDevice(device) {
         telephonyButton.src = 'images/message.svg';
         telephonyButton.title = browser.i18n.getMessage('smsMessage');
         telephonyButton.addEventListener(
-            'click', sendUrlCallback(device.id + ':telephony', currentUrl)
+            'click',
+            () => sendUrl(device.id, 'telephony', URL)
         );
         deviceElement.appendChild(telephonyButton);
     }
@@ -82,6 +96,9 @@ function addDevice(device) {
 }
 
 
+/**
+ * Populate the browserAction popup
+ */
 function setPopup() {
     let devNode = document.getElementById('popup');
     
@@ -89,63 +106,82 @@ function setPopup() {
         devNode.removeChild(devNode.lastChild);
     }
     
-    // The native messaging host is disconnected, or we're disconnected from it
-    if (!connected) {
-        let noDevices = document.createElement('span');
-        noDevices.className = 'popup-menu-disconnected';
-        noDevices.textContent = browser.i18n.getMessage('popupMenuDisconnected');
-        devNode.appendChild(noDevices);
-    } else if (devices.length) {
-        for (let device of devices) {
-            devNode.appendChild(addDevice(device));
+    if (CONNECTED && DEVICES.length) {
+        for (let device of DEVICES) {
+            let deviceElement = getDeviceElement(device);
+            devNode.appendChild(deviceElement);
         }
+
+        return;
+    }
+
+    // Disconnected or no devices
+    let message = document.createElement('span');
+    message.className = 'popup-menu-message';
+    devNode.appendChild(message);
+
+    // The native-messaging-host or service is disconnected
+    if (!CONNECTED) {
+        message.textContent = browser.i18n.getMessage('popupMenuDisconnected');
+
+    // There are no devices
     } else {
-        let noDevices = document.createElement('span');
-        noDevices.className = 'popup-menu-no-devices';
-        noDevices.textContent = browser.i18n.getMessage('popupMenuNoDevices');
-        devNode.appendChild(noDevices);
+        message.textContent = browser.i18n.getMessage('popupMenuNoDevices');
     }
 }
 
 
-function onMessage(message, sender) {
-    console.log('onMessage: ' + JSON.stringify(message));
-    
-    if (sender.url.indexOf('/background.html') > -1) {
-        if (message.type === 'connected') {
-            connected = message.data;
-        } else if (message.type === 'devices') {
-            connected = true;
-            devices = message.data;
-        }
+/**
+ * Callback for receiving a message forwarded by background.js
+ *
+ * @param {object] message - A JSON message object
+ * @param {runtime.MessageSender} sender - Tthe sender of the message.
+ */
+async function onPortMessage(message, sender) {
+    try {
+        // console.log(`WebExtension-popup RECV: ${JSON.stringify(message)}`);
         
-        setPopup();
+        if (sender.url.includes('/background.html')) {
+            if (message.type === 'connected') {
+                CONNECTED = message.data;
+            } else if (message.type === 'devices') {
+                CONNECTED = true;
+                DEVICES = message.data;
+            }
+
+            setPopup();
+        }
+    } catch (e) {
+        logError(e);
     }
-    
-    return Promise.resolve();
 }
 
 
-function getCurrentTab(callback) {
-    browser.tabs.query({active: true, currentWindow: true}).then((tabs) => {
+/**
+ * Set the current URL and repopulate the popup, on-demand
+ */
+async function onPopup() {
+    try {
+        let tabs = await browser.tabs.query({
+            active: true,
+            currentWindow: true
+        });
+
         if (tabs.length) {
-            callback(tabs[0]);
+            URL = tabs[0].url;
         }
-    });
+
+        setPopup();
+        await browser.runtime.sendMessage({type: 'devices'});
+    } catch (e) {
+        logError(e);
+    }
 }
 
 
-document.addEventListener('DOMContentLoaded', () => {
-    setPopup();
-    sendMessage({type: 'devices'});
-    
-    getCurrentTab((tab) => {
-        if (tab) {
-            currentUrl = tab.url;
-        }
-    });
-});
-
-
-browser.runtime.onMessage.addListener(onMessage);
+/**
+ * Startup: listen for forwarded messages and populate the popup on-demand
+ */
+browser.runtime.onMessage.addListener(onPortMessage);
+document.addEventListener('DOMContentLoaded', onPopup);
 

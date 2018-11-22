@@ -42,7 +42,7 @@ html, body {
     background-color: rgba(204, 204, 204, 0.75);
 }
 
-.popup-menu-disconnected, .popup-menu-no-devices {
+.popup-menu-message {
     font-style: italic;
     text-align: center;
 }
