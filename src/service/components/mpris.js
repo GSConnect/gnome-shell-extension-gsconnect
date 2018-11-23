@@ -127,7 +127,7 @@ var Manager = GObject.registerClass({
                 }
             }
         } catch (e) {
-            logError(e);
+            debug(e);
         }
     }
 
@@ -185,7 +185,7 @@ var Manager = GObject.registerClass({
                 this.notify('players');
             }
         } catch (e) {
-            logError(e);
+            debug(e);
         }
     }
 
@@ -205,7 +205,7 @@ var Manager = GObject.registerClass({
                 }
             }
         } catch (e) {
-            logError(e);
+            debug(e);
         }
     }
 
