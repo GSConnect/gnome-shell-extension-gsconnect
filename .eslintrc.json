@@ -115,12 +115,14 @@
         "gsconnect": false,
         "debug": false,
         "logWarning": false,
-        "_WAYLAND": false,
         "_": false,
         "_C": false,
         "_N": false,
         "ngettext": false,
-        "loop_theme_sound": false
+
+        "_GSOUND_CONTEXT": false,
+        "_SFX_BACKEND": false,
+        "_WAYLAND": false
     },
     "parserOptions": {
         "ecmaVersion": 2017
