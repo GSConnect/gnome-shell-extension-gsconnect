@@ -233,12 +233,16 @@ var ContactChooser = GObject.registerClass({
 }, class ContactChooser extends Gtk.Grid {
 
     _init(params) {
+        this.connect_template();
         super._init(params);
 
-        this._contactsNotifyId = this.store.connect(
+        this._contactsChangedId = this.store.connect(
             'notify::contacts',
             this._populate.bind(this)
         );
+
+        // Cleanup on ::destroy
+        this.connect('destroy', this._onDestroy);
 
         this._temporary = undefined;
         this.contact_list._entry = this.contact_entry.text;
@@ -283,8 +287,9 @@ var ContactChooser = GObject.registerClass({
         return Array.from(selected);
     }
 
-    _destroy() {
-        this.store.disconnect(this._contactsNotifyId);
+    _onDestroy(chooser) {
+        chooser.store.disconnect(chooser._contactsChangedId);
+        chooser.disconnect_template();
     }
 
     _onEntryChanged(entry) {
