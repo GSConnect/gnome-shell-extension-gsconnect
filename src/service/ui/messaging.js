@@ -311,6 +311,17 @@ const ConversationWidget = GObject.registerClass({
             GObject.BindingFlags.DEFAULT
         );
 
+        // If we're disconnected pending messages might not succeed, but we'll
+        // leave them until reconnect when we'll ask for an update
+        this._connectedId = this.device.connect('notify::connected', (device) => {
+            if (device.connected) {
+                this.pending_box.foreach(msg => msg.destroy());
+            }
+        });
+
+        // Cleanup on ::destroy
+        this.connect('destroy', this._onDestroy);
+
         // Pending messages
         this.pending.id = GLib.MAXUINT32;
         this.bind_property(
@@ -394,6 +405,11 @@ const ConversationWidget = GObject.registerClass({
 
     set thread_id(id) {
         this._thread_id = id || 0;
+    }
+
+    _onDestroy(conversation) {
+        conversation.device.disconnect(conversation._connectedId);
+        conversation.disconnect_template();
     }
 
     /**
@@ -706,7 +722,7 @@ var Window = GObject.registerClass({
         });
         this.conversation_stack.add_named(this.contact_list, 'contact-list');
 
-        this.contact_list.connect(
+        this._numberSelectedId = this.contact_list.connect(
             'number-selected',
             this._onNumberSelected.bind(this)
         );
@@ -714,17 +730,19 @@ var Window = GObject.registerClass({
         // Conversations
         this.conversation_list.set_sort_func(this._sortConversations);
 
-        this._onConversationsChanged = this.sms.connect(
+        this._conversationsChangedId = this.sms.connect(
             'notify::conversations',
             this._populateConversations.bind(this)
         );
+
+        // Cleanup on ::destroy
+        this.connect('destroy', this._onDestroy);
 
         this._sync();
         this._populateConversations();
     }
 
     vfunc_delete_event(event) {
-        this.disconnect_template();
         this.save_geometry();
         this.hide();
 
@@ -802,6 +820,12 @@ var Window = GObject.registerClass({
 
         // SMS history
         this.sms.connected();
+    }
+
+    _onDestroy(window) {
+        window.contact_list.disconnect(window._numberSelectedId);
+        window.sms.disconnect(window._conversationsChangedId);
+        window.disconnect_template();
     }
 
     _onNewConversation() {
