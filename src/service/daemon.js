@@ -460,7 +460,7 @@ const Service = GObject.registerClass({
     }
 
     _debuggerAction() {
-        (new imports.service.components.debug.Window()).present();
+        (new imports.service.ui.debug.Window()).present();
     }
 
     _wikiAction(action, parameter) {
