@@ -452,6 +452,9 @@ const ConversationWidget = GObject.registerClass({
     }
 
     _headerMessages(row, before) {
+        // Skip pending
+        if (row.get_name() === 'pending') return;
+
         // Check if the last series was more than an hour ago
         // TODO: headers between series will require "real" message rows
         if (before && (row.date - before.date) > GLib.TIME_SPAN_HOUR / 1000) {
