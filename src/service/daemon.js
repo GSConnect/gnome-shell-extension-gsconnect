@@ -592,16 +592,6 @@ const Service = GObject.registerClass({
                     notif.set_priority(Gio.NotificationPriority.NORMAL);
                     break;
 
-                // Missing sshfs, libcanberra
-                case 'DependencyError':
-                    id = 'dependency-error';
-                    title = _('Additional Software Required');
-                    body = _('Click to open preferences');
-                    icon = new Gio.ThemedIcon({name: 'system-software-install-symbolic'});
-                    notif.set_default_action('app.preference::other');
-                    notif.set_priority(Gio.NotificationPriority.HIGH);
-                    break;
-
                 case 'PluginError':
                     id = `${error.plugin}-error`;
                     title = _('%s Plugin Failed To Load').format(error.label);

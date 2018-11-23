@@ -61,16 +61,14 @@ var Plugin = GObject.registerClass({
     connected() {
         super.connected();
 
-        // Disable mounting and notify if `sshfs` is not available
+        // Disable mounting and log a warning if `sshfs` is not available
         if (!GLib.find_program_in_path(gsconnect.metadata.bin.sshfs)) {
             this.device.lookup_action('mount').enabled = false;
             this.device.lookup_action('unmount').enabled = false;
 
-            let error = new Error();
-            error.name = 'DependencyError';
-            this.service.notify_error(error);
+            logWarning(new Error('sshfs'), _('Additional Software Required'));
 
-        // Disable mounting on bluetooth connections
+        // Disable for all bluetooth connections
         } else if (this.device.connection_type === 'bluetooth') {
             this.device.lookup_action('mount').enabled = false;
             this.device.lookup_action('unmount').enabled = false;
@@ -168,7 +166,7 @@ var Plugin = GObject.registerClass({
         } else {
             this._root = packet.body.path;
             this._directories[_('All files')] = this._mountpoint;
-            this._directories[_('Camera pictures')] =  GLib.build_filenamev([
+            this._directories[_('Camera pictures')] = GLib.build_filenamev([
                 this._mountpoint,
                 'DCIM',
                 'Camera'

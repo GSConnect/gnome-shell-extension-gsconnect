@@ -126,15 +126,6 @@ var Plugin = GObject.registerClass({
             throw e;
         }
 
-        // Try import Caribou
-        // FIXME: deprecated
-        try {
-            const Caribou = imports.gi.Caribou;
-            this._vkbd = Caribou.DisplayAdapter.get_default();
-        } catch (e) {
-            logWarning(e);
-        }
-
         this.settings.bind(
             'share-control',
             this,
@@ -148,6 +139,17 @@ var Plugin = GObject.registerClass({
 
     connected() {
         super.connected();
+
+        // Recheck for Caribou
+        if (!this._virtual_keyboard) {
+            try {
+                let Caribou = imports.gi.Caribou;
+                this._virtual_keyboard = Caribou.DisplayAdapter.get_default();
+            } catch (e) {
+                this._virtual_keyboard = false;
+            }
+        }
+
         this.sendState();
     }
 
@@ -161,6 +163,10 @@ var Plugin = GObject.registerClass({
 
     get state() {
         return (this._state);
+    }
+
+    get virtual_keyboard() {
+        return this._virtual_keyboard;
     }
 
     handlePacket(packet) {
@@ -199,7 +205,7 @@ var Plugin = GObject.registerClass({
 
             case (input.hasOwnProperty('key') || input.hasOwnProperty('specialKey')):
                 // Prefer libcaribou (XTest) if available
-                if (this._vkbd) {
+                if (this.virtual_keyboard) {
                     this.pressKeySym(input);
 
                 // Regular key (printable ASCII)
@@ -213,11 +219,8 @@ var Plugin = GObject.registerClass({
                     this.pressSpecialKey(input);
 
                 // Caribou not available or key out of range
-                // TODO: more informative notification
                 } else {
-                    let error = new Error();
-                    error.name = 'DependencyError';
-                    this.service.notify_error(error);
+                    logWarning(_('Additional Software Required') + ': libcaribou');
                 }
                 break;
 
@@ -387,12 +390,10 @@ var Plugin = GObject.registerClass({
 
             // Ensure this a valid keysym
             if (Gdk.keyval_to_unicode(keyval) !== 0) {
-                if (mask) this._vkbd.mod_lock(mask);
-
-                this._vkbd.keyval_press(keyval);
-                this._vkbd.keyval_release(keyval);
-
-                if (mask) this._vkbd.mod_unlock(mask);
+                this.virtual_keyboard.mod_lock(mask);
+                this.virtual_keyboard.keyval_press(keyval);
+                this.virtual_keyboard.keyval_release(keyval);
+                this.virtual_keyboard.mod_unlock(mask);
 
                 this.sendEcho(input);
             }
@@ -435,7 +436,7 @@ var Plugin = GObject.registerClass({
     }
 
     _handleState(packet) {
-        // HACK: ensure we don't get packets out of order
+        // FIXME: ensure we don't get packets out of order
         if (packet.id > this._stateId) {
             this._state = packet.body.state;
             this._stateId = packet.id;
