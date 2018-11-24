@@ -773,7 +773,7 @@ msgstr "着信"
 #: src/service/ui/contacts.js:58 src/service/ui/contacts.js:79
 #, fuzzy, javascript-format
 msgid "%s・Other"
-msgstr "その他"
+msgstr "%s・その他"
 
 #. TRANSLATORS: A fax number
 #: src/service/ui/contacts.js:63
@@ -785,19 +785,19 @@ msgstr ""
 #: src/service/ui/contacts.js:67
 #, fuzzy, javascript-format
 msgid "%s・Work"
-msgstr "仕事"
+msgstr "%s・仕事"
 
 #. TRANSLATORS: A mobile or cellular phone number
 #: src/service/ui/contacts.js:71
 #, fuzzy, javascript-format
 msgid "%s・Mobile"
-msgstr "モバイル"
+msgstr "%s・モバイル"
 
 #. TRANSLATORS: A home phone number
 #: src/service/ui/contacts.js:75
 #, fuzzy, javascript-format
 msgid "%s・Home"
-msgstr "家"
+msgstr "%s・家"
 
 #: src/service/ui/contacts.js:203
 msgid "Select a contact or number"

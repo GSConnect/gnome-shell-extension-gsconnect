@@ -728,31 +728,31 @@ msgstr "Chamada em andamento"
 #: src/service/ui/contacts.js:58 src/service/ui/contacts.js:79
 #, fuzzy, javascript-format
 msgid "%s・Other"
-msgstr "Outro"
+msgstr "%s・Outro"
 
 #. TRANSLATORS: A fax number
 #: src/service/ui/contacts.js:63
 #, javascript-format
 msgid "%s・Fax"
-msgstr ""
+msgstr "%s・Fax"
 
 #. TRANSLATORS: A work phone number
 #: src/service/ui/contacts.js:67
 #, fuzzy, javascript-format
 msgid "%s・Work"
-msgstr "Trabalho"
+msgstr "%s・Trabalho"
 
 #. TRANSLATORS: A mobile or cellular phone number
 #: src/service/ui/contacts.js:71
 #, fuzzy, javascript-format
 msgid "%s・Mobile"
-msgstr "Celular"
+msgstr "%s・Celular"
 
 #. TRANSLATORS: A home phone number
 #: src/service/ui/contacts.js:75
 #, fuzzy, javascript-format
 msgid "%s・Home"
-msgstr "Casa"
+msgstr "%s・Casa"
 
 #: src/service/ui/contacts.js:203
 msgid "Select a contact or number"
