@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-19 11:14-0800\n"
+"POT-Creation-Date: 2018-11-21 10:44+0300\n"
 "PO-Revision-Date: 2018-11-04 12:25+0100\n"
 "Last-Translator: Слободан Терзић <slobodan.terzic@zoho.eu>\n"
 "Language-Team: \n"
@@ -170,17 +170,17 @@ msgid "Switch to LAN"
 msgstr ""
 
 #. TRANSLATORS: View the TLS Certificate fingerprint
-#: data/menus.ui:48 src/service/ui/settings.js:612
+#: data/menus.ui:48 src/service/ui/settings.js:624
 msgid "Encryption Info"
 msgstr ""
 
 #. TRANSLATORS: Send a pair request to the device
-#: data/menus.ui:53 src/service/device.js:425
+#: data/menus.ui:53 src/service/device.js:432
 msgid "Pair"
 msgstr "Упари"
 
 #. TRANSLATORS: Unpair the device and notify it
-#: data/menus.ui:59 src/service/device.js:433
+#: data/menus.ui:59 src/service/device.js:440
 msgid "Unpair"
 msgstr "Распари"
 
@@ -244,7 +244,7 @@ msgstr "Откривање је омогућено"
 msgid "Restart Service"
 msgstr "Поново покрени сервис"
 
-#: data/settings.ui:581 data/settings.ui:1015 src/service/device.js:417
+#: data/settings.ui:581 data/settings.ui:1015 src/service/device.js:424
 msgid "Settings"
 msgstr "Подешавање"
 
@@ -295,7 +295,7 @@ msgid "Refresh"
 msgstr "Освежи"
 
 #. Service Menu
-#: src/extension.js:79 src/extension.js:259
+#: src/extension.js:79 src/extension.js:254
 msgid "Mobile Devices"
 msgstr "Мобилни уређаји"
 
@@ -303,15 +303,8 @@ msgstr "Мобилни уређаји"
 msgid "Mobile Settings"
 msgstr "Подешавање"
 
-# Leaving the name in original form for About dialog.
-#. TRANSLATORS: Extension name
-#: src/extension.js:196 src/extension.js:311 src/service/daemon.js:95
-#: src/service/daemon.js:413 webextension/gettext.js:27
-msgid "GSConnect"
-msgstr "GSConnect"
-
 #. TRANSLATORS: %d is the number of devices connected
-#: src/extension.js:257
+#: src/extension.js:252
 #, fuzzy, javascript-format
 msgid "%d Connected"
 msgid_plural "%d Connected"
@@ -324,83 +317,82 @@ msgstr[2] "%d је повезан"
 msgid "Send To Mobile Device"
 msgstr "Пошаљи на мобилни уређај"
 
-#: src/service/daemon.js:406
+# Leaving the name in original form for About dialog.
+#. TRANSLATORS: Extension name
+#: src/service/daemon.js:95 src/service/daemon.js:416
+#: webextension/gettext.js:27
+msgid "GSConnect"
+msgstr "GSConnect"
+
+#: src/service/daemon.js:409
 msgid "A complete KDE Connect implementation for GNOME"
 msgstr "Потпуна имплементација КДЕ Конекта за Гном"
 
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
-#: src/service/daemon.js:415
+#: src/service/daemon.js:418
 msgid "translator-credits"
 msgstr "Слободан Терзић (githzerai06@gmail.com)"
 
-#: src/service/daemon.js:437
+#: src/service/daemon.js:440
 msgid "Report"
 msgstr "Пријави"
 
-#: src/service/daemon.js:567
+#: src/service/daemon.js:570
 msgid "Authentication Failure"
 msgstr "Грешка аутентификацје"
 
-#: src/service/daemon.js:576
+#: src/service/daemon.js:579
 msgid "Network Error"
 msgstr "Грешка мреже"
 
-#: src/service/daemon.js:577 src/service/daemon.js:587
+#: src/service/daemon.js:580 src/service/daemon.js:590
 msgid "Click for help troubleshooting"
 msgstr "Кликните за помоћ у отклањању"
 
-#: src/service/daemon.js:586
+#: src/service/daemon.js:589
 msgid "PulseAudio Error"
 msgstr "Грешка Пулсаудија"
 
-#: src/service/daemon.js:596
+#: src/service/daemon.js:599
 msgid "Discovery Disabled"
 msgstr "Откривање је онемогућено"
 
-#: src/service/daemon.js:597
+#: src/service/daemon.js:600
 msgid ""
 "Discovery has been disabled due to the number of devices on this network."
 msgstr "Откривање је онемогућено услед броја уређаја у овој мрежи."
 
-#: src/service/daemon.js:599 src/service/daemon.js:609
+#: src/service/daemon.js:602 src/service/daemon.js:612
 msgid "Click to open preferences"
 msgstr "Кликните да отворите поставке"
 
-#: src/service/daemon.js:608
+#: src/service/daemon.js:611
 msgid "Additional Software Required"
 msgstr "Неопходан је додатан софтвер"
 
-#: src/service/daemon.js:617
+#: src/service/daemon.js:620
 #, javascript-format
 msgid "%s Plugin Failed To Load"
 msgstr "Неуспело учитавање пркључка %s"
 
-#: src/service/daemon.js:618 src/service/daemon.js:635
+#: src/service/daemon.js:621
 msgid "Click for more information"
 msgstr "Кликните за више детаља"
 
-#: src/service/daemon.js:633
-msgid "Wayland Not Supported"
-msgstr "Вејланд није подржан"
-
-#: src/service/daemon.js:634
-msgid "Remote input not supported on Wayland"
-msgstr "Унос на даљину није подржан под Вејландом"
-
 # Leaving the name in original form for About dialog.
 #. Create an urgent notification
-#: src/service/daemon.js:658
+#: src/service/daemon.js:649
 #, javascript-format
 msgid "GSConnect: %s"
 msgstr "GSConnect: %s"
 
 #. TRANSLATORS: Share URL by SMS
-#: src/service/daemon.js:808 src/service/plugins/sms.js:49
+#: src/service/daemon.js:799 src/service/plugins/sms.js:49
 #: webextension/gettext.js:39
 msgid "Send SMS"
 msgstr "Пошаљи СМС"
 
-#: src/service/daemon.js:812
+#: src/service/daemon.js:803
 msgid "Dial Number"
 msgstr "Бирај број"
 
@@ -425,37 +417,37 @@ msgstr "Блутут уређај на %s"
 msgid "%s Fingerprint:"
 msgstr "Отисак %s:"
 
-#: src/service/device.js:240
+#: src/service/device.js:247
 msgid "Laptop"
 msgstr "Лаптоп"
 
-#: src/service/device.js:242
+#: src/service/device.js:249
 msgid "Smartphone"
 msgstr "Паметни телефон"
 
-#: src/service/device.js:244
+#: src/service/device.js:251
 msgid "Tablet"
 msgstr "Таблет"
 
-#: src/service/device.js:246
+#: src/service/device.js:253
 msgid "Desktop"
 msgstr "Радна површ"
 
-#: src/service/device.js:409
+#: src/service/device.js:416
 msgid "Reconnect"
 msgstr "Поново повежи"
 
 #. TRANSLATORS: eg. Pair Request from Google Pixel
-#: src/service/device.js:606
+#: src/service/device.js:613
 #, javascript-format
 msgid "Pair Request from %s"
 msgstr "Захтев за упаривање од %s"
 
-#: src/service/device.js:613
+#: src/service/device.js:620
 msgid "Reject"
 msgstr "Одбиј"
 
-#: src/service/device.js:618
+#: src/service/device.js:625
 msgid "Accept"
 msgstr "Прихвати"
 
@@ -512,11 +504,11 @@ msgstr "Нађен"
 msgid "Mousepad"
 msgstr "Подлога за миша"
 
-#: src/service/plugins/mousepad.js:28 src/service/plugins/mousepad.js:578
+#: src/service/plugins/mousepad.js:28 src/service/plugins/mousepad.js:567
 msgid "Keyboard"
 msgstr "Тастатура"
 
-#: src/service/plugins/mousepad.js:595
+#: src/service/plugins/mousepad.js:584
 msgid "Keyboard not ready"
 msgstr "Тастатура није спремна"
 
@@ -580,105 +572,111 @@ msgstr "Слике са камере"
 msgid "Files"
 msgstr "Фајлови"
 
-#: src/service/plugins/share.js:12 src/service/plugins/share.js:18
+#: src/service/plugins/share.js:13 src/service/plugins/share.js:19
 msgid "Share"
 msgstr "Дељење"
 
-#: src/service/plugins/share.js:26
+#: src/service/plugins/share.js:27
 msgid "Share File"
 msgstr "Дели фајл"
 
-#: src/service/plugins/share.js:34
+#: src/service/plugins/share.js:35
 msgid "Share Text"
 msgstr "Дели текст"
 
-#: src/service/plugins/share.js:42 src/service/ui/messaging.js:903
+#: src/service/plugins/share.js:43 src/service/ui/messaging.js:903
 #: src/service/ui/messaging.js:911
 msgid "Share Link"
 msgstr "Подели везу"
 
-#: src/service/plugins/share.js:131 src/service/plugins/share.js:282
+#: src/service/plugins/share.js:132 src/service/plugins/share.js:303
 msgid "Starting Transfer"
 msgstr "Започињем пренос"
 
 #. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
-#: src/service/plugins/share.js:133
+#: src/service/plugins/share.js:134
 #, javascript-format
 msgid "Receiving “%s” from %s"
 msgstr "Примам „%s“ од %s"
 
 #. Action Buttons
-#: src/service/plugins/share.js:138 src/service/plugins/share.js:289
-#: src/service/plugins/share.js:407 src/service/ui/keybindings.js:44
+#: src/service/plugins/share.js:139 src/service/plugins/share.js:310
+#: src/service/plugins/share.js:455 src/service/ui/keybindings.js:44
 #: src/service/ui/service.js:121 src/service/ui/service.js:300
-#: src/service/ui/settings.js:873 src/shell/donotdisturb.js:215
+#: src/service/ui/settings.js:885 src/shell/donotdisturb.js:215
 msgid "Cancel"
 msgstr "Откажи"
 
-#: src/service/plugins/share.js:149 src/service/plugins/share.js:303
+#: src/service/plugins/share.js:172 src/service/plugins/share.js:327
 msgid "Transfer Successful"
 msgstr "Успешан пренос"
 
 #. TRANSLATORS: eg. Received 'book.pdf' from Google Pixel
-#: src/service/plugins/share.js:151
+#: src/service/plugins/share.js:174
 #, javascript-format
 msgid "Received “%s” from %s"
 msgstr "Примих „%s“ од %s"
 
-#: src/service/plugins/share.js:157
+#: src/service/plugins/share.js:180
 msgid "Open Folder"
 msgstr "Отвори фасциклу"
 
-#: src/service/plugins/share.js:162
+#: src/service/plugins/share.js:185
 msgid "Open File"
 msgstr "Отвори фајл"
 
-#: src/service/plugins/share.js:169 src/service/plugins/share.js:311
+#: src/service/plugins/share.js:192 src/service/plugins/share.js:335
 msgid "Transfer Failed"
 msgstr "Пренос није успео"
 
 #. TRANSLATORS: eg. Failed to receive 'book.pdf' from Google Pixel
-#: src/service/plugins/share.js:171
+#: src/service/plugins/share.js:194
 #, javascript-format
 msgid "Failed to receive “%s” from %s"
 msgstr "Неуспешан пријем „%s“ од %s"
 
-#: src/service/plugins/share.js:211
+#: src/service/plugins/share.js:233
 #, javascript-format
 msgid "Text Shared By %s"
 msgstr "Дељени текст од %s"
 
 #. TRANSLATORS: eg. Sending 'book.pdf' to Google Pixel
-#: src/service/plugins/share.js:284
+#: src/service/plugins/share.js:305
 #, javascript-format
 msgid "Sending “%s” to %s"
 msgstr "Слање „%s“ за %s"
 
 #. TRANSLATORS: eg. Sent "book.pdf" to Google Pixel
-#: src/service/plugins/share.js:305
+#: src/service/plugins/share.js:329
 #, javascript-format
 msgid "Sent “%s” to %s"
 msgstr "Послах „%s“ за %s"
 
 #. TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel
-#: src/service/plugins/share.js:313
+#: src/service/plugins/share.js:337
 #, javascript-format
 msgid "Failed to send “%s” to %s"
 msgstr "Неуспело слање „%s“ на %s"
 
 #. TRANSLATORS: eg. Send files to Google Pixel
-#: src/service/plugins/share.js:384
+#: src/service/plugins/share.js:408
 #, javascript-format
 msgid "Send files to %s"
 msgstr "Пошаљи фајлове на %s"
 
+#. TRANSLATORS: Mark the file to be opened once completed
+#: src/service/plugins/share.js:412
+#, fuzzy
+msgid "Open when done"
+msgstr "Отвори у прегледачу"
+
 #. TRANSLATORS: eg. Send a link to Google Pixel
-#: src/service/plugins/share.js:402
+#: src/service/plugins/share.js:450
 #, javascript-format
 msgid "Send a link to %s"
 msgstr "Пошаљи везе на %s"
 
-#: src/service/plugins/share.js:408
+#: src/service/plugins/share.js:456
 msgid "Send"
 msgstr "Пошаљи"
 
@@ -813,19 +811,19 @@ msgstr "Панел"
 msgid "User Menu"
 msgstr "Кориснички мени"
 
-#: src/service/ui/settings.js:874
+#: src/service/ui/settings.js:886
 msgid "Open"
 msgstr "Отвори"
 
-#: src/service/ui/settings.js:931 src/service/ui/settings.js:944
+#: src/service/ui/settings.js:943 src/service/ui/settings.js:956
 msgid "On"
 msgstr "Укључен"
 
-#: src/service/ui/settings.js:931 src/service/ui/settings.js:944
+#: src/service/ui/settings.js:943 src/service/ui/settings.js:956
 msgid "Off"
 msgstr "Искључен"
 
-#: src/service/ui/settings.js:1065 src/service/ui/settings.js:1131
+#: src/service/ui/settings.js:1072 src/service/ui/settings.js:1138
 msgid "Disabled"
 msgstr "Онемогућен"
 
@@ -855,27 +853,27 @@ msgid "New Message"
 msgstr "Нова порука"
 
 #. TRANSLATORS: When the battery level is 100%
-#: src/shell/device.js:86
+#: src/shell/device.js:84
 msgid "Fully Charged"
 msgstr "Потпуно пуна"
 
 #. TRANSLATORS: When no time estimate for the battery is available
 #. EXAMPLE: 42% (Estimating…)
-#: src/shell/device.js:90
+#: src/shell/device.js:88
 #, javascript-format
 msgid "%d%% (Estimating…)"
 msgstr "%d%% (Процењујем…)"
 
 #. TRANSLATORS: Estimated time until battery is charged
 #. EXAMPLE: 42% (1:15 Until Full)
-#: src/shell/device.js:100
+#: src/shell/device.js:98
 #, javascript-format
 msgid "%d%% (%d∶%02d Until Full)"
 msgstr "%d%% (%d∶%02d до пуне)"
 
 #. TRANSLATORS: Estimated time until battery is empty
 #. EXAMPLE: 42% (12:15 Remaining)
-#: src/shell/device.js:108
+#: src/shell/device.js:106
 #, javascript-format
 msgid "%d%% (%d∶%02d Remaining)"
 msgstr "%d%% (%d∶%02d преостаје)"
@@ -926,3 +924,9 @@ msgstr "Сервис није доступан"
 #: webextension/gettext.js:37
 msgid "Open in Browser"
 msgstr "Отвори у прегледачу"
+
+#~ msgid "Wayland Not Supported"
+#~ msgstr "Вејланд није подржан"
+
+#~ msgid "Remote input not supported on Wayland"
+#~ msgstr "Унос на даљину није подржан под Вејландом"

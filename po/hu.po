@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-19 11:14-0800\n"
+"POT-Creation-Date: 2018-11-21 10:44+0300\n"
 "PO-Revision-Date: 2018-11-05 21:44+0100\n"
 "Last-Translator: Báthory Péter <bathory86p@gmail.com>\n"
 "Language-Team: \n"
@@ -174,17 +174,17 @@ msgid "Switch to LAN"
 msgstr ""
 
 #. TRANSLATORS: View the TLS Certificate fingerprint
-#: data/menus.ui:48 src/service/ui/settings.js:612
+#: data/menus.ui:48 src/service/ui/settings.js:624
 msgid "Encryption Info"
 msgstr ""
 
 #. TRANSLATORS: Send a pair request to the device
-#: data/menus.ui:53 src/service/device.js:425
+#: data/menus.ui:53 src/service/device.js:432
 msgid "Pair"
 msgstr "Párosítás"
 
 #. TRANSLATORS: Unpair the device and notify it
-#: data/menus.ui:59 src/service/device.js:433
+#: data/menus.ui:59 src/service/device.js:440
 msgid "Unpair"
 msgstr "Párosítás megszűntetése"
 
@@ -248,7 +248,7 @@ msgstr "Felderíthető"
 msgid "Restart Service"
 msgstr "Szolgáltatás újraindítása"
 
-#: data/settings.ui:581 data/settings.ui:1015 src/service/device.js:417
+#: data/settings.ui:581 data/settings.ui:1015 src/service/device.js:424
 msgid "Settings"
 msgstr "Beállítások"
 
@@ -298,7 +298,7 @@ msgid "Refresh"
 msgstr "Frissítés"
 
 #. Service Menu
-#: src/extension.js:79 src/extension.js:259
+#: src/extension.js:79 src/extension.js:254
 msgid "Mobile Devices"
 msgstr "Mobil eszközök"
 
@@ -306,14 +306,8 @@ msgstr "Mobil eszközök"
 msgid "Mobile Settings"
 msgstr "Mobil beállítások"
 
-#. TRANSLATORS: Extension name
-#: src/extension.js:196 src/extension.js:311 src/service/daemon.js:95
-#: src/service/daemon.js:413 webextension/gettext.js:27
-msgid "GSConnect"
-msgstr "GSConnect"
-
 #. TRANSLATORS: %d is the number of devices connected
-#: src/extension.js:257
+#: src/extension.js:252
 #, javascript-format
 msgid "%d Connected"
 msgid_plural "%d Connected"
@@ -325,82 +319,80 @@ msgstr[1] "%d eszköz csatlakoztatva"
 msgid "Send To Mobile Device"
 msgstr "Küldés mobil eszközre"
 
-#: src/service/daemon.js:406
+#. TRANSLATORS: Extension name
+#: src/service/daemon.js:95 src/service/daemon.js:416
+#: webextension/gettext.js:27
+msgid "GSConnect"
+msgstr "GSConnect"
+
+#: src/service/daemon.js:409
 msgid "A complete KDE Connect implementation for GNOME"
 msgstr "Teljes KDE Connect implementáció GNOME-hoz"
 
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
-#: src/service/daemon.js:415
+#: src/service/daemon.js:418
 msgid "translator-credits"
 msgstr "Báthory Péter <bathory86p@gmail.com>"
 
-#: src/service/daemon.js:437
+#: src/service/daemon.js:440
 msgid "Report"
 msgstr "Jelentés"
 
-#: src/service/daemon.js:567
+#: src/service/daemon.js:570
 msgid "Authentication Failure"
 msgstr "Hitelesítési hiba"
 
-#: src/service/daemon.js:576
+#: src/service/daemon.js:579
 msgid "Network Error"
 msgstr "Hálózati hiba"
 
-#: src/service/daemon.js:577 src/service/daemon.js:587
+#: src/service/daemon.js:580 src/service/daemon.js:590
 msgid "Click for help troubleshooting"
 msgstr "Kattintson ide, hogy segítséget kapj a hibaelhárításhoz"
 
-#: src/service/daemon.js:586
+#: src/service/daemon.js:589
 msgid "PulseAudio Error"
 msgstr "PulseAudio hiba"
 
-#: src/service/daemon.js:596
+#: src/service/daemon.js:599
 msgid "Discovery Disabled"
 msgstr "Felderítés letiltva"
 
-#: src/service/daemon.js:597
+#: src/service/daemon.js:600
 msgid ""
 "Discovery has been disabled due to the number of devices on this network."
 msgstr "A felderítés le lett tiltva a hálózaton lévő eszközök száma miatt."
 
-#: src/service/daemon.js:599 src/service/daemon.js:609
+#: src/service/daemon.js:602 src/service/daemon.js:612
 msgid "Click to open preferences"
 msgstr "Kattintson ide a beállítások megnyitásához"
 
-#: src/service/daemon.js:608
+#: src/service/daemon.js:611
 msgid "Additional Software Required"
 msgstr "További szoftverre van szükség"
 
-#: src/service/daemon.js:617
+#: src/service/daemon.js:620
 #, javascript-format
 msgid "%s Plugin Failed To Load"
 msgstr "%s bővítményt nem sikerült betölteni"
 
-#: src/service/daemon.js:618 src/service/daemon.js:635
+#: src/service/daemon.js:621
 msgid "Click for more information"
 msgstr "További információért kattintson ide"
 
-#: src/service/daemon.js:633
-msgid "Wayland Not Supported"
-msgstr "Wayland nem támogatott"
-
-#: src/service/daemon.js:634
-msgid "Remote input not supported on Wayland"
-msgstr "A távoli bevitel nem támogatott Wayland alatt"
-
 #. Create an urgent notification
-#: src/service/daemon.js:658
+#: src/service/daemon.js:649
 #, javascript-format
 msgid "GSConnect: %s"
 msgstr "GSConnect: %s"
 
 #. TRANSLATORS: Share URL by SMS
-#: src/service/daemon.js:808 src/service/plugins/sms.js:49
+#: src/service/daemon.js:799 src/service/plugins/sms.js:49
 #: webextension/gettext.js:39
 msgid "Send SMS"
 msgstr "SMS küldése"
 
-#: src/service/daemon.js:812
+#: src/service/daemon.js:803
 msgid "Dial Number"
 msgstr "Telefonszám hívása"
 
@@ -425,37 +417,37 @@ msgstr "Bluetooth eszköz itt: %s"
 msgid "%s Fingerprint:"
 msgstr "%s ujjlenyomat:"
 
-#: src/service/device.js:240
+#: src/service/device.js:247
 msgid "Laptop"
 msgstr "Laptop"
 
-#: src/service/device.js:242
+#: src/service/device.js:249
 msgid "Smartphone"
 msgstr "Okostelefon"
 
-#: src/service/device.js:244
+#: src/service/device.js:251
 msgid "Tablet"
 msgstr "Táblagép"
 
-#: src/service/device.js:246
+#: src/service/device.js:253
 msgid "Desktop"
 msgstr "Asztali gép"
 
-#: src/service/device.js:409
+#: src/service/device.js:416
 msgid "Reconnect"
 msgstr "Újracsatlakozás"
 
 #. TRANSLATORS: eg. Pair Request from Google Pixel
-#: src/service/device.js:606
+#: src/service/device.js:613
 #, javascript-format
 msgid "Pair Request from %s"
 msgstr "Párosítási kérelem innen: %s"
 
-#: src/service/device.js:613
+#: src/service/device.js:620
 msgid "Reject"
 msgstr "Elutasítás"
 
-#: src/service/device.js:618
+#: src/service/device.js:625
 msgid "Accept"
 msgstr "Elfogadás"
 
@@ -512,11 +504,11 @@ msgstr "Megtalálva"
 msgid "Mousepad"
 msgstr "Egérpad"
 
-#: src/service/plugins/mousepad.js:28 src/service/plugins/mousepad.js:578
+#: src/service/plugins/mousepad.js:28 src/service/plugins/mousepad.js:567
 msgid "Keyboard"
 msgstr "Billentyűzet"
 
-#: src/service/plugins/mousepad.js:595
+#: src/service/plugins/mousepad.js:584
 msgid "Keyboard not ready"
 msgstr "A billentyűzet nem áll készen"
 
@@ -580,105 +572,111 @@ msgstr "Kamera fényképek"
 msgid "Files"
 msgstr "Fájlok"
 
-#: src/service/plugins/share.js:12 src/service/plugins/share.js:18
+#: src/service/plugins/share.js:13 src/service/plugins/share.js:19
 msgid "Share"
 msgstr "Megosztás"
 
-#: src/service/plugins/share.js:26
+#: src/service/plugins/share.js:27
 msgid "Share File"
 msgstr "Fájl megosztása"
 
-#: src/service/plugins/share.js:34
+#: src/service/plugins/share.js:35
 msgid "Share Text"
 msgstr "Szöveg megosztása"
 
-#: src/service/plugins/share.js:42 src/service/ui/messaging.js:903
+#: src/service/plugins/share.js:43 src/service/ui/messaging.js:903
 #: src/service/ui/messaging.js:911
 msgid "Share Link"
 msgstr "Hivatkozás megosztása"
 
-#: src/service/plugins/share.js:131 src/service/plugins/share.js:282
+#: src/service/plugins/share.js:132 src/service/plugins/share.js:303
 msgid "Starting Transfer"
 msgstr "Átvitel megkezdése"
 
 #. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
-#: src/service/plugins/share.js:133
+#: src/service/plugins/share.js:134
 #, javascript-format
 msgid "Receiving “%s” from %s"
 msgstr "„%s” fogadása innen: %s"
 
 #. Action Buttons
-#: src/service/plugins/share.js:138 src/service/plugins/share.js:289
-#: src/service/plugins/share.js:407 src/service/ui/keybindings.js:44
+#: src/service/plugins/share.js:139 src/service/plugins/share.js:310
+#: src/service/plugins/share.js:455 src/service/ui/keybindings.js:44
 #: src/service/ui/service.js:121 src/service/ui/service.js:300
-#: src/service/ui/settings.js:873 src/shell/donotdisturb.js:215
+#: src/service/ui/settings.js:885 src/shell/donotdisturb.js:215
 msgid "Cancel"
 msgstr "Mégse"
 
-#: src/service/plugins/share.js:149 src/service/plugins/share.js:303
+#: src/service/plugins/share.js:172 src/service/plugins/share.js:327
 msgid "Transfer Successful"
 msgstr "Sikeres átvitel"
 
 #. TRANSLATORS: eg. Received 'book.pdf' from Google Pixel
-#: src/service/plugins/share.js:151
+#: src/service/plugins/share.js:174
 #, javascript-format
 msgid "Received “%s” from %s"
 msgstr "„%s” fogadva innen: %s"
 
-#: src/service/plugins/share.js:157
+#: src/service/plugins/share.js:180
 msgid "Open Folder"
 msgstr "Könyvtár megnyitása"
 
-#: src/service/plugins/share.js:162
+#: src/service/plugins/share.js:185
 msgid "Open File"
 msgstr "Fájl megnyitása"
 
-#: src/service/plugins/share.js:169 src/service/plugins/share.js:311
+#: src/service/plugins/share.js:192 src/service/plugins/share.js:335
 msgid "Transfer Failed"
 msgstr "Sikertelen átvitel"
 
 #. TRANSLATORS: eg. Failed to receive 'book.pdf' from Google Pixel
-#: src/service/plugins/share.js:171
+#: src/service/plugins/share.js:194
 #, javascript-format
 msgid "Failed to receive “%s” from %s"
 msgstr "„%s” fogadása %s eszközről nem sikerült"
 
-#: src/service/plugins/share.js:211
+#: src/service/plugins/share.js:233
 #, javascript-format
 msgid "Text Shared By %s"
 msgstr "%s által megosztott szöveg"
 
 #. TRANSLATORS: eg. Sending 'book.pdf' to Google Pixel
-#: src/service/plugins/share.js:284
+#: src/service/plugins/share.js:305
 #, javascript-format
 msgid "Sending “%s” to %s"
 msgstr "„%s” küldése ide: %s"
 
 #. TRANSLATORS: eg. Sent "book.pdf" to Google Pixel
-#: src/service/plugins/share.js:305
+#: src/service/plugins/share.js:329
 #, javascript-format
 msgid "Sent “%s” to %s"
 msgstr "„%s” elküldve ide: %s"
 
 #. TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel
-#: src/service/plugins/share.js:313
+#: src/service/plugins/share.js:337
 #, javascript-format
 msgid "Failed to send “%s” to %s"
 msgstr "„%s” küldése %s eszközre nem sikerült"
 
 #. TRANSLATORS: eg. Send files to Google Pixel
-#: src/service/plugins/share.js:384
+#: src/service/plugins/share.js:408
 #, javascript-format
 msgid "Send files to %s"
 msgstr "Fájlok küldése ide: %s"
 
+#. TRANSLATORS: Mark the file to be opened once completed
+#: src/service/plugins/share.js:412
+#, fuzzy
+msgid "Open when done"
+msgstr "Megnyitás böngészőben"
+
 #. TRANSLATORS: eg. Send a link to Google Pixel
-#: src/service/plugins/share.js:402
+#: src/service/plugins/share.js:450
 #, javascript-format
 msgid "Send a link to %s"
 msgstr "Hivatkozás küldése ide: %s"
 
-#: src/service/plugins/share.js:408
+#: src/service/plugins/share.js:456
 msgid "Send"
 msgstr "Küldés"
 
@@ -814,19 +812,19 @@ msgstr "Panel"
 msgid "User Menu"
 msgstr "Felhasználói menü"
 
-#: src/service/ui/settings.js:874
+#: src/service/ui/settings.js:886
 msgid "Open"
 msgstr "Megnyitás"
 
-#: src/service/ui/settings.js:931 src/service/ui/settings.js:944
+#: src/service/ui/settings.js:943 src/service/ui/settings.js:956
 msgid "On"
 msgstr "Be"
 
-#: src/service/ui/settings.js:931 src/service/ui/settings.js:944
+#: src/service/ui/settings.js:943 src/service/ui/settings.js:956
 msgid "Off"
 msgstr "Ki"
 
-#: src/service/ui/settings.js:1065 src/service/ui/settings.js:1131
+#: src/service/ui/settings.js:1072 src/service/ui/settings.js:1138
 msgid "Disabled"
 msgstr "Letiltva"
 
@@ -855,27 +853,27 @@ msgid "New Message"
 msgstr "Új üzenet"
 
 #. TRANSLATORS: When the battery level is 100%
-#: src/shell/device.js:86
+#: src/shell/device.js:84
 msgid "Fully Charged"
 msgstr "Teljesen feltöltve"
 
 #. TRANSLATORS: When no time estimate for the battery is available
 #. EXAMPLE: 42% (Estimating…)
-#: src/shell/device.js:90
+#: src/shell/device.js:88
 #, javascript-format
 msgid "%d%% (Estimating…)"
 msgstr "%d%% (becslés…)"
 
 #. TRANSLATORS: Estimated time until battery is charged
 #. EXAMPLE: 42% (1:15 Until Full)
-#: src/shell/device.js:100
+#: src/shell/device.js:98
 #, javascript-format
 msgid "%d%% (%d∶%02d Until Full)"
 msgstr "%d%% (%d∶%02d a feltöltésig)"
 
 #. TRANSLATORS: Estimated time until battery is empty
 #. EXAMPLE: 42% (12:15 Remaining)
-#: src/shell/device.js:108
+#: src/shell/device.js:106
 #, javascript-format
 msgid "%d%% (%d∶%02d Remaining)"
 msgstr "%d%% (%d∶%02d van hátra)"
@@ -926,3 +924,9 @@ msgstr "A szolgáltatás nem érhető el"
 #: webextension/gettext.js:37
 msgid "Open in Browser"
 msgstr "Megnyitás böngészőben"
+
+#~ msgid "Wayland Not Supported"
+#~ msgstr "Wayland nem támogatott"
+
+#~ msgid "Remote input not supported on Wayland"
+#~ msgstr "A távoli bevitel nem támogatott Wayland alatt"

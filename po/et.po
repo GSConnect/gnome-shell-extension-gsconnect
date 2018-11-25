@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-19 11:14-0800\n"
+"POT-Creation-Date: 2018-11-21 10:44+0300\n"
 "PO-Revision-Date: 2018-11-05 18:38+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -174,17 +174,17 @@ msgid "Switch to LAN"
 msgstr ""
 
 #. TRANSLATORS: View the TLS Certificate fingerprint
-#: data/menus.ui:48 src/service/ui/settings.js:612
+#: data/menus.ui:48 src/service/ui/settings.js:624
 msgid "Encryption Info"
 msgstr ""
 
 #. TRANSLATORS: Send a pair request to the device
-#: data/menus.ui:53 src/service/device.js:425
+#: data/menus.ui:53 src/service/device.js:432
 msgid "Pair"
 msgstr "Paarita"
 
 #. TRANSLATORS: Unpair the device and notify it
-#: data/menus.ui:59 src/service/device.js:433
+#: data/menus.ui:59 src/service/device.js:440
 msgid "Unpair"
 msgstr "Eemalda paardumine"
 
@@ -248,7 +248,7 @@ msgstr "Avastamine"
 msgid "Restart Service"
 msgstr "Taaskäivita teenus"
 
-#: data/settings.ui:581 data/settings.ui:1015 src/service/device.js:417
+#: data/settings.ui:581 data/settings.ui:1015 src/service/device.js:424
 msgid "Settings"
 msgstr "Seaded"
 
@@ -298,7 +298,7 @@ msgid "Refresh"
 msgstr "Värskenda"
 
 #. Service Menu
-#: src/extension.js:79 src/extension.js:259
+#: src/extension.js:79 src/extension.js:254
 msgid "Mobile Devices"
 msgstr "Mobiilseadmed"
 
@@ -306,14 +306,8 @@ msgstr "Mobiilseadmed"
 msgid "Mobile Settings"
 msgstr "Mobiiliseaded"
 
-#. TRANSLATORS: Extension name
-#: src/extension.js:196 src/extension.js:311 src/service/daemon.js:95
-#: src/service/daemon.js:413 webextension/gettext.js:27
-msgid "GSConnect"
-msgstr "GSConnect"
-
 #. TRANSLATORS: %d is the number of devices connected
-#: src/extension.js:257
+#: src/extension.js:252
 #, javascript-format
 msgid "%d Connected"
 msgid_plural "%d Connected"
@@ -325,82 +319,80 @@ msgstr[1] "%d ühendatud"
 msgid "Send To Mobile Device"
 msgstr "Saada mobiilseadmesse"
 
-#: src/service/daemon.js:406
+#. TRANSLATORS: Extension name
+#: src/service/daemon.js:95 src/service/daemon.js:416
+#: webextension/gettext.js:27
+msgid "GSConnect"
+msgstr "GSConnect"
+
+#: src/service/daemon.js:409
 msgid "A complete KDE Connect implementation for GNOME"
 msgstr "Täielik KDE Connect'i teostus GNOMEle"
 
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
-#: src/service/daemon.js:415
+#: src/service/daemon.js:418
 msgid "translator-credits"
 msgstr "Madis O, 2018."
 
-#: src/service/daemon.js:437
+#: src/service/daemon.js:440
 msgid "Report"
 msgstr "Teata"
 
-#: src/service/daemon.js:567
+#: src/service/daemon.js:570
 msgid "Authentication Failure"
 msgstr "Autentimise viga"
 
-#: src/service/daemon.js:576
+#: src/service/daemon.js:579
 msgid "Network Error"
 msgstr "Võrguviga"
 
-#: src/service/daemon.js:577 src/service/daemon.js:587
+#: src/service/daemon.js:580 src/service/daemon.js:590
 msgid "Click for help troubleshooting"
 msgstr "Klõpsa, et saada veaotsingul abi"
 
-#: src/service/daemon.js:586
+#: src/service/daemon.js:589
 msgid "PulseAudio Error"
 msgstr "PulseAudio viga"
 
-#: src/service/daemon.js:596
+#: src/service/daemon.js:599
 msgid "Discovery Disabled"
 msgstr "Avastamine keelatud"
 
-#: src/service/daemon.js:597
+#: src/service/daemon.js:600
 msgid ""
 "Discovery has been disabled due to the number of devices on this network."
 msgstr "Avastamine on keelatud selles võrgus olevate seadmete arvu tõttu."
 
-#: src/service/daemon.js:599 src/service/daemon.js:609
+#: src/service/daemon.js:602 src/service/daemon.js:612
 msgid "Click to open preferences"
 msgstr "Klõpsa eelistuste avamiseks"
 
-#: src/service/daemon.js:608
+#: src/service/daemon.js:611
 msgid "Additional Software Required"
 msgstr "Lisatarkvara on nõutud"
 
-#: src/service/daemon.js:617
+#: src/service/daemon.js:620
 #, javascript-format
 msgid "%s Plugin Failed To Load"
 msgstr "%s plugina laadimine ebaõnnestus"
 
-#: src/service/daemon.js:618 src/service/daemon.js:635
+#: src/service/daemon.js:621
 msgid "Click for more information"
 msgstr "Klõpsa rohkema teabe saamiseks"
 
-#: src/service/daemon.js:633
-msgid "Wayland Not Supported"
-msgstr "Wayland pole toetatud"
-
-#: src/service/daemon.js:634
-msgid "Remote input not supported on Wayland"
-msgstr "Kaugsisestus pole Waylandil toetatud"
-
 #. Create an urgent notification
-#: src/service/daemon.js:658
+#: src/service/daemon.js:649
 #, javascript-format
 msgid "GSConnect: %s"
 msgstr "GSConnect: %s"
 
 #. TRANSLATORS: Share URL by SMS
-#: src/service/daemon.js:808 src/service/plugins/sms.js:49
+#: src/service/daemon.js:799 src/service/plugins/sms.js:49
 #: webextension/gettext.js:39
 msgid "Send SMS"
 msgstr "Saada SMS"
 
-#: src/service/daemon.js:812
+#: src/service/daemon.js:803
 msgid "Dial Number"
 msgstr "Helista telefoninumbrile"
 
@@ -425,37 +417,37 @@ msgstr "Bluetooth-seade aadressil %s"
 msgid "%s Fingerprint:"
 msgstr "%s sõrmejälg:"
 
-#: src/service/device.js:240
+#: src/service/device.js:247
 msgid "Laptop"
 msgstr "Sülearvuti"
 
-#: src/service/device.js:242
+#: src/service/device.js:249
 msgid "Smartphone"
 msgstr "Nutitelefon"
 
-#: src/service/device.js:244
+#: src/service/device.js:251
 msgid "Tablet"
 msgstr "Tahvelarvuti"
 
-#: src/service/device.js:246
+#: src/service/device.js:253
 msgid "Desktop"
 msgstr "Lauaarvuti"
 
-#: src/service/device.js:409
+#: src/service/device.js:416
 msgid "Reconnect"
 msgstr "Taasühenda"
 
 #. TRANSLATORS: eg. Pair Request from Google Pixel
-#: src/service/device.js:606
+#: src/service/device.js:613
 #, javascript-format
 msgid "Pair Request from %s"
 msgstr "Paaritamistaotlus seadmelt %s"
 
-#: src/service/device.js:613
+#: src/service/device.js:620
 msgid "Reject"
 msgstr "Keeldu"
 
-#: src/service/device.js:618
+#: src/service/device.js:625
 msgid "Accept"
 msgstr "Nõustu"
 
@@ -512,11 +504,11 @@ msgstr "Leitud"
 msgid "Mousepad"
 msgstr "Hiirepadi"
 
-#: src/service/plugins/mousepad.js:28 src/service/plugins/mousepad.js:578
+#: src/service/plugins/mousepad.js:28 src/service/plugins/mousepad.js:567
 msgid "Keyboard"
 msgstr "Klaviatuur"
 
-#: src/service/plugins/mousepad.js:595
+#: src/service/plugins/mousepad.js:584
 msgid "Keyboard not ready"
 msgstr "Klaviatuur pole valmis"
 
@@ -580,105 +572,111 @@ msgstr "Kaamera pildid"
 msgid "Files"
 msgstr "Failid"
 
-#: src/service/plugins/share.js:12 src/service/plugins/share.js:18
+#: src/service/plugins/share.js:13 src/service/plugins/share.js:19
 msgid "Share"
 msgstr "Jaga"
 
-#: src/service/plugins/share.js:26
+#: src/service/plugins/share.js:27
 msgid "Share File"
 msgstr "Jaga faili"
 
-#: src/service/plugins/share.js:34
+#: src/service/plugins/share.js:35
 msgid "Share Text"
 msgstr "Jaga teksti"
 
-#: src/service/plugins/share.js:42 src/service/ui/messaging.js:903
+#: src/service/plugins/share.js:43 src/service/ui/messaging.js:903
 #: src/service/ui/messaging.js:911
 msgid "Share Link"
 msgstr "Jaga linki"
 
-#: src/service/plugins/share.js:131 src/service/plugins/share.js:282
+#: src/service/plugins/share.js:132 src/service/plugins/share.js:303
 msgid "Starting Transfer"
 msgstr "Alustan ülekannet"
 
 #. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
-#: src/service/plugins/share.js:133
+#: src/service/plugins/share.js:134
 #, javascript-format
 msgid "Receiving “%s” from %s"
 msgstr "„%s” vastuvõtmine seadmelt %s"
 
 #. Action Buttons
-#: src/service/plugins/share.js:138 src/service/plugins/share.js:289
-#: src/service/plugins/share.js:407 src/service/ui/keybindings.js:44
+#: src/service/plugins/share.js:139 src/service/plugins/share.js:310
+#: src/service/plugins/share.js:455 src/service/ui/keybindings.js:44
 #: src/service/ui/service.js:121 src/service/ui/service.js:300
-#: src/service/ui/settings.js:873 src/shell/donotdisturb.js:215
+#: src/service/ui/settings.js:885 src/shell/donotdisturb.js:215
 msgid "Cancel"
 msgstr "Loobu"
 
-#: src/service/plugins/share.js:149 src/service/plugins/share.js:303
+#: src/service/plugins/share.js:172 src/service/plugins/share.js:327
 msgid "Transfer Successful"
 msgstr "Ülekanne edukas"
 
 #. TRANSLATORS: eg. Received 'book.pdf' from Google Pixel
-#: src/service/plugins/share.js:151
+#: src/service/plugins/share.js:174
 #, javascript-format
 msgid "Received “%s” from %s"
 msgstr "„%s” vastu võetud seadmelt %s"
 
-#: src/service/plugins/share.js:157
+#: src/service/plugins/share.js:180
 msgid "Open Folder"
 msgstr "Ava kataloog"
 
-#: src/service/plugins/share.js:162
+#: src/service/plugins/share.js:185
 msgid "Open File"
 msgstr "Ava fail"
 
-#: src/service/plugins/share.js:169 src/service/plugins/share.js:311
+#: src/service/plugins/share.js:192 src/service/plugins/share.js:335
 msgid "Transfer Failed"
 msgstr "Ülekanne ebaõnnestus"
 
 #. TRANSLATORS: eg. Failed to receive 'book.pdf' from Google Pixel
-#: src/service/plugins/share.js:171
+#: src/service/plugins/share.js:194
 #, javascript-format
 msgid "Failed to receive “%s” from %s"
 msgstr "„%s” vastuvõtmine seadmest %s ebaõnnestus"
 
-#: src/service/plugins/share.js:211
+#: src/service/plugins/share.js:233
 #, javascript-format
 msgid "Text Shared By %s"
 msgstr "%s poolt jagatud tekst"
 
 #. TRANSLATORS: eg. Sending 'book.pdf' to Google Pixel
-#: src/service/plugins/share.js:284
+#: src/service/plugins/share.js:305
 #, javascript-format
 msgid "Sending “%s” to %s"
 msgstr "Saadan „%s” seadmesse %s"
 
 #. TRANSLATORS: eg. Sent "book.pdf" to Google Pixel
-#: src/service/plugins/share.js:305
+#: src/service/plugins/share.js:329
 #, javascript-format
 msgid "Sent “%s” to %s"
 msgstr "„%s” saadetud seadmesse %s"
 
 #. TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel
-#: src/service/plugins/share.js:313
+#: src/service/plugins/share.js:337
 #, javascript-format
 msgid "Failed to send “%s” to %s"
 msgstr "„%s” saatmine seadmesse %s ebaõnnestus"
 
 #. TRANSLATORS: eg. Send files to Google Pixel
-#: src/service/plugins/share.js:384
+#: src/service/plugins/share.js:408
 #, javascript-format
 msgid "Send files to %s"
 msgstr "Saada faile seadmesse %s"
 
+#. TRANSLATORS: Mark the file to be opened once completed
+#: src/service/plugins/share.js:412
+#, fuzzy
+msgid "Open when done"
+msgstr "Ava brauseris"
+
 #. TRANSLATORS: eg. Send a link to Google Pixel
-#: src/service/plugins/share.js:402
+#: src/service/plugins/share.js:450
 #, javascript-format
 msgid "Send a link to %s"
 msgstr "Saada link seadmesse %s"
 
-#: src/service/plugins/share.js:408
+#: src/service/plugins/share.js:456
 msgid "Send"
 msgstr "Saada"
 
@@ -813,19 +811,19 @@ msgstr "Paneel"
 msgid "User Menu"
 msgstr "Kasutajamenüü"
 
-#: src/service/ui/settings.js:874
+#: src/service/ui/settings.js:886
 msgid "Open"
 msgstr "Ava"
 
-#: src/service/ui/settings.js:931 src/service/ui/settings.js:944
+#: src/service/ui/settings.js:943 src/service/ui/settings.js:956
 msgid "On"
 msgstr "Sees"
 
-#: src/service/ui/settings.js:931 src/service/ui/settings.js:944
+#: src/service/ui/settings.js:943 src/service/ui/settings.js:956
 msgid "Off"
 msgstr "Väljas"
 
-#: src/service/ui/settings.js:1065 src/service/ui/settings.js:1131
+#: src/service/ui/settings.js:1072 src/service/ui/settings.js:1138
 msgid "Disabled"
 msgstr "Keelatud"
 
@@ -854,27 +852,27 @@ msgid "New Message"
 msgstr "Uus sõnum"
 
 #. TRANSLATORS: When the battery level is 100%
-#: src/shell/device.js:86
+#: src/shell/device.js:84
 msgid "Fully Charged"
 msgstr "Täielikult laetud"
 
 #. TRANSLATORS: When no time estimate for the battery is available
 #. EXAMPLE: 42% (Estimating…)
-#: src/shell/device.js:90
+#: src/shell/device.js:88
 #, javascript-format
 msgid "%d%% (Estimating…)"
 msgstr "%d%% (hindamine…)"
 
 #. TRANSLATORS: Estimated time until battery is charged
 #. EXAMPLE: 42% (1:15 Until Full)
-#: src/shell/device.js:100
+#: src/shell/device.js:98
 #, javascript-format
 msgid "%d%% (%d∶%02d Until Full)"
 msgstr "%d%% (täitumiseni %d∶%02d)"
 
 #. TRANSLATORS: Estimated time until battery is empty
 #. EXAMPLE: 42% (12:15 Remaining)
-#: src/shell/device.js:108
+#: src/shell/device.js:106
 #, javascript-format
 msgid "%d%% (%d∶%02d Remaining)"
 msgstr "%d%% (jäänud %d∶%02d)"
@@ -924,3 +922,9 @@ msgstr "Teenus pole saadaval"
 #: webextension/gettext.js:37
 msgid "Open in Browser"
 msgstr "Ava brauseris"
+
+#~ msgid "Wayland Not Supported"
+#~ msgstr "Wayland pole toetatud"
+
+#~ msgid "Remote input not supported on Wayland"
+#~ msgstr "Kaugsisestus pole Waylandil toetatud"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-19 11:14-0800\n"
+"POT-Creation-Date: 2018-11-21 10:44+0300\n"
 "PO-Revision-Date: 2018-11-19 20:23-0600\n"
 "Last-Translator: Adolfo Jayme Barrientos <fitojb@ubuntu.com>\n"
 "Language-Team: \n"
@@ -173,17 +173,17 @@ msgid "Switch to LAN"
 msgstr "Cambiar a LAN"
 
 #. TRANSLATORS: View the TLS Certificate fingerprint
-#: data/menus.ui:48 src/service/ui/settings.js:612
+#: data/menus.ui:48 src/service/ui/settings.js:624
 msgid "Encryption Info"
 msgstr "Información de cifrado"
 
 #. TRANSLATORS: Send a pair request to the device
-#: data/menus.ui:53 src/service/device.js:425
+#: data/menus.ui:53 src/service/device.js:432
 msgid "Pair"
 msgstr "Emparejar"
 
 #. TRANSLATORS: Unpair the device and notify it
-#: data/menus.ui:59 src/service/device.js:433
+#: data/menus.ui:59 src/service/device.js:440
 msgid "Unpair"
 msgstr "Desemparejar"
 
@@ -246,7 +246,7 @@ msgstr "Reconocible"
 msgid "Restart Service"
 msgstr "Reiniciar servicio"
 
-#: data/settings.ui:581 data/settings.ui:1015 src/service/device.js:417
+#: data/settings.ui:581 data/settings.ui:1015 src/service/device.js:424
 msgid "Settings"
 msgstr "Configuración"
 
@@ -296,7 +296,7 @@ msgid "Refresh"
 msgstr "Actualizar"
 
 #. Service Menu
-#: src/extension.js:79 src/extension.js:259
+#: src/extension.js:79 src/extension.js:254
 msgid "Mobile Devices"
 msgstr "Dispositivos móviles"
 
@@ -304,14 +304,8 @@ msgstr "Dispositivos móviles"
 msgid "Mobile Settings"
 msgstr "Configuración de móviles"
 
-#. TRANSLATORS: Extension name
-#: src/extension.js:196 src/extension.js:311 src/service/daemon.js:95
-#: src/service/daemon.js:413 webextension/gettext.js:27
-msgid "GSConnect"
-msgstr "GSConnect"
-
 #. TRANSLATORS: %d is the number of devices connected
-#: src/extension.js:257
+#: src/extension.js:252
 #, javascript-format
 msgid "%d Connected"
 msgid_plural "%d Connected"
@@ -323,84 +317,82 @@ msgstr[1] "%d conectados"
 msgid "Send To Mobile Device"
 msgstr "Enviar a dispositivo móvil"
 
-#: src/service/daemon.js:406
+#. TRANSLATORS: Extension name
+#: src/service/daemon.js:95 src/service/daemon.js:416
+#: webextension/gettext.js:27
+msgid "GSConnect"
+msgstr "GSConnect"
+
+#: src/service/daemon.js:409
 msgid "A complete KDE Connect implementation for GNOME"
 msgstr "Una completa implementación de KDE Connect para GNOME"
 
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
-#: src/service/daemon.js:415
+#: src/service/daemon.js:418
 msgid "translator-credits"
 msgstr "Adolfo Jayme Barrientos <fitojb@ubuntu.com>, 2018"
 
-#: src/service/daemon.js:437
+#: src/service/daemon.js:440
 msgid "Report"
 msgstr "Informe"
 
-#: src/service/daemon.js:567
+#: src/service/daemon.js:570
 msgid "Authentication Failure"
 msgstr "Fallo de autenticación"
 
-#: src/service/daemon.js:576
+#: src/service/daemon.js:579
 msgid "Network Error"
 msgstr "Error de red"
 
-#: src/service/daemon.js:577 src/service/daemon.js:587
+#: src/service/daemon.js:580 src/service/daemon.js:590
 msgid "Click for help troubleshooting"
 msgstr "Pulse para obtener información de solución de problemas"
 
-#: src/service/daemon.js:586
+#: src/service/daemon.js:589
 msgid "PulseAudio Error"
 msgstr "Error de PulseAudio"
 
-#: src/service/daemon.js:596
+#: src/service/daemon.js:599
 msgid "Discovery Disabled"
 msgstr "Descubrimiento desactivado"
 
-#: src/service/daemon.js:597
+#: src/service/daemon.js:600
 msgid ""
 "Discovery has been disabled due to the number of devices on this network."
 msgstr ""
 "Se desactivó el descubrimiento debido al número de dispositivos presentes en "
 "esta red."
 
-#: src/service/daemon.js:599 src/service/daemon.js:609
+#: src/service/daemon.js:602 src/service/daemon.js:612
 msgid "Click to open preferences"
 msgstr "Pulse para abrir las preferencias"
 
-#: src/service/daemon.js:608
+#: src/service/daemon.js:611
 msgid "Additional Software Required"
 msgstr "Se necesita software adicional"
 
-#: src/service/daemon.js:617
+#: src/service/daemon.js:620
 #, javascript-format
 msgid "%s Plugin Failed To Load"
 msgstr "Falló la carga del complemento %s"
 
-#: src/service/daemon.js:618 src/service/daemon.js:635
+#: src/service/daemon.js:621
 msgid "Click for more information"
 msgstr "Pulse para más información"
 
-#: src/service/daemon.js:633
-msgid "Wayland Not Supported"
-msgstr "No se admite Wayland"
-
-#: src/service/daemon.js:634
-msgid "Remote input not supported on Wayland"
-msgstr "En Wayland no se permite la entrada remota"
-
 #. Create an urgent notification
-#: src/service/daemon.js:658
+#: src/service/daemon.js:649
 #, javascript-format
 msgid "GSConnect: %s"
 msgstr "GSConnect: %s"
 
 #. TRANSLATORS: Share URL by SMS
-#: src/service/daemon.js:808 src/service/plugins/sms.js:49
+#: src/service/daemon.js:799 src/service/plugins/sms.js:49
 #: webextension/gettext.js:39
 msgid "Send SMS"
 msgstr "Enviar SMS"
 
-#: src/service/daemon.js:812
+#: src/service/daemon.js:803
 msgid "Dial Number"
 msgstr "Marcar número"
 
@@ -425,37 +417,37 @@ msgstr "Dispositivo Bluetooth en %s"
 msgid "%s Fingerprint:"
 msgstr "Huella digital de %s:"
 
-#: src/service/device.js:240
+#: src/service/device.js:247
 msgid "Laptop"
 msgstr "Equipo portátil"
 
-#: src/service/device.js:242
+#: src/service/device.js:249
 msgid "Smartphone"
 msgstr "Teléfono inteligente"
 
-#: src/service/device.js:244
+#: src/service/device.js:251
 msgid "Tablet"
 msgstr "Tableta"
 
-#: src/service/device.js:246
+#: src/service/device.js:253
 msgid "Desktop"
 msgstr "Equipo de escritorio"
 
-#: src/service/device.js:409
+#: src/service/device.js:416
 msgid "Reconnect"
 msgstr "Volver a conectar"
 
 #. TRANSLATORS: eg. Pair Request from Google Pixel
-#: src/service/device.js:606
+#: src/service/device.js:613
 #, javascript-format
 msgid "Pair Request from %s"
 msgstr "Solicitud de emparejamiento de %s"
 
-#: src/service/device.js:613
+#: src/service/device.js:620
 msgid "Reject"
 msgstr "Rechazar"
 
-#: src/service/device.js:618
+#: src/service/device.js:625
 msgid "Accept"
 msgstr "Aceptar"
 
@@ -512,11 +504,11 @@ msgstr "Encontrado"
 msgid "Mousepad"
 msgstr "Mousepad"
 
-#: src/service/plugins/mousepad.js:28 src/service/plugins/mousepad.js:578
+#: src/service/plugins/mousepad.js:28 src/service/plugins/mousepad.js:567
 msgid "Keyboard"
 msgstr "Teclado"
 
-#: src/service/plugins/mousepad.js:595
+#: src/service/plugins/mousepad.js:584
 msgid "Keyboard not ready"
 msgstr "El teclado no está preparado"
 
@@ -580,105 +572,111 @@ msgstr "Fotografías de la cámara"
 msgid "Files"
 msgstr "Archivos"
 
-#: src/service/plugins/share.js:12 src/service/plugins/share.js:18
+#: src/service/plugins/share.js:13 src/service/plugins/share.js:19
 msgid "Share"
 msgstr "Compartir"
 
-#: src/service/plugins/share.js:26
+#: src/service/plugins/share.js:27
 msgid "Share File"
 msgstr "Compartir archivo"
 
-#: src/service/plugins/share.js:34
+#: src/service/plugins/share.js:35
 msgid "Share Text"
 msgstr "Compartir texto"
 
-#: src/service/plugins/share.js:42 src/service/ui/messaging.js:903
+#: src/service/plugins/share.js:43 src/service/ui/messaging.js:903
 #: src/service/ui/messaging.js:911
 msgid "Share Link"
 msgstr "Compartir enlace"
 
-#: src/service/plugins/share.js:131 src/service/plugins/share.js:282
+#: src/service/plugins/share.js:132 src/service/plugins/share.js:303
 msgid "Starting Transfer"
 msgstr "Comenzando la transferencia"
 
 #. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
-#: src/service/plugins/share.js:133
+#: src/service/plugins/share.js:134
 #, javascript-format
 msgid "Receiving “%s” from %s"
 msgstr "Recibiendo «%s» de %s"
 
 #. Action Buttons
-#: src/service/plugins/share.js:138 src/service/plugins/share.js:289
-#: src/service/plugins/share.js:407 src/service/ui/keybindings.js:44
+#: src/service/plugins/share.js:139 src/service/plugins/share.js:310
+#: src/service/plugins/share.js:455 src/service/ui/keybindings.js:44
 #: src/service/ui/service.js:121 src/service/ui/service.js:300
-#: src/service/ui/settings.js:873 src/shell/donotdisturb.js:215
+#: src/service/ui/settings.js:885 src/shell/donotdisturb.js:215
 msgid "Cancel"
 msgstr "Cancelar"
 
-#: src/service/plugins/share.js:149 src/service/plugins/share.js:303
+#: src/service/plugins/share.js:172 src/service/plugins/share.js:327
 msgid "Transfer Successful"
 msgstr "Transferencia exitosa"
 
 #. TRANSLATORS: eg. Received 'book.pdf' from Google Pixel
-#: src/service/plugins/share.js:151
+#: src/service/plugins/share.js:174
 #, javascript-format
 msgid "Received “%s” from %s"
 msgstr "Se recibió «%s» de %s"
 
-#: src/service/plugins/share.js:157
+#: src/service/plugins/share.js:180
 msgid "Open Folder"
 msgstr "Abrir carpeta"
 
-#: src/service/plugins/share.js:162
+#: src/service/plugins/share.js:185
 msgid "Open File"
 msgstr "Abrir archivo"
 
-#: src/service/plugins/share.js:169 src/service/plugins/share.js:311
+#: src/service/plugins/share.js:192 src/service/plugins/share.js:335
 msgid "Transfer Failed"
 msgstr "Transferencia fallida"
 
 #. TRANSLATORS: eg. Failed to receive 'book.pdf' from Google Pixel
-#: src/service/plugins/share.js:171
+#: src/service/plugins/share.js:194
 #, javascript-format
 msgid "Failed to receive “%s” from %s"
 msgstr "Falló la recepción de «%s» desde %s"
 
-#: src/service/plugins/share.js:211
+#: src/service/plugins/share.js:233
 #, javascript-format
 msgid "Text Shared By %s"
 msgstr "Texto compartido por %s"
 
 #. TRANSLATORS: eg. Sending 'book.pdf' to Google Pixel
-#: src/service/plugins/share.js:284
+#: src/service/plugins/share.js:305
 #, javascript-format
 msgid "Sending “%s” to %s"
 msgstr "Enviando «%s» a %s"
 
 #. TRANSLATORS: eg. Sent "book.pdf" to Google Pixel
-#: src/service/plugins/share.js:305
+#: src/service/plugins/share.js:329
 #, javascript-format
 msgid "Sent “%s” to %s"
 msgstr "Se envió «%s» a %s"
 
 #. TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel
-#: src/service/plugins/share.js:313
+#: src/service/plugins/share.js:337
 #, javascript-format
 msgid "Failed to send “%s” to %s"
 msgstr "Falló el envío de «%s» a %s"
 
 #. TRANSLATORS: eg. Send files to Google Pixel
-#: src/service/plugins/share.js:384
+#: src/service/plugins/share.js:408
 #, javascript-format
 msgid "Send files to %s"
 msgstr "Enviar archivos a %s"
 
+#. TRANSLATORS: Mark the file to be opened once completed
+#: src/service/plugins/share.js:412
+#, fuzzy
+msgid "Open when done"
+msgstr "Abrir en el navegador"
+
 #. TRANSLATORS: eg. Send a link to Google Pixel
-#: src/service/plugins/share.js:402
+#: src/service/plugins/share.js:450
 #, javascript-format
 msgid "Send a link to %s"
 msgstr "Enviar un enlace a %s"
 
-#: src/service/plugins/share.js:408
+#: src/service/plugins/share.js:456
 msgid "Send"
 msgstr "Enviar"
 
@@ -813,19 +811,19 @@ msgstr "Panel"
 msgid "User Menu"
 msgstr "Menú de usuario"
 
-#: src/service/ui/settings.js:874
+#: src/service/ui/settings.js:886
 msgid "Open"
 msgstr "Abrir"
 
-#: src/service/ui/settings.js:931 src/service/ui/settings.js:944
+#: src/service/ui/settings.js:943 src/service/ui/settings.js:956
 msgid "On"
 msgstr "Activado"
 
-#: src/service/ui/settings.js:931 src/service/ui/settings.js:944
+#: src/service/ui/settings.js:943 src/service/ui/settings.js:956
 msgid "Off"
 msgstr "Desactivado"
 
-#: src/service/ui/settings.js:1065 src/service/ui/settings.js:1131
+#: src/service/ui/settings.js:1072 src/service/ui/settings.js:1138
 msgid "Disabled"
 msgstr "Desactivar"
 
@@ -854,27 +852,27 @@ msgid "New Message"
 msgstr "Mensaje nuevo"
 
 #. TRANSLATORS: When the battery level is 100%
-#: src/shell/device.js:86
+#: src/shell/device.js:84
 msgid "Fully Charged"
 msgstr "Cargada completamente"
 
 #. TRANSLATORS: When no time estimate for the battery is available
 #. EXAMPLE: 42% (Estimating…)
-#: src/shell/device.js:90
+#: src/shell/device.js:88
 #, javascript-format
 msgid "%d%% (Estimating…)"
 msgstr "%d %% (estimando…)"
 
 #. TRANSLATORS: Estimated time until battery is charged
 #. EXAMPLE: 42% (1:15 Until Full)
-#: src/shell/device.js:100
+#: src/shell/device.js:98
 #, javascript-format
 msgid "%d%% (%d∶%02d Until Full)"
 msgstr "%d %% (%d∶%02d hasta completarse)"
 
 #. TRANSLATORS: Estimated time until battery is empty
 #. EXAMPLE: 42% (12:15 Remaining)
-#: src/shell/device.js:108
+#: src/shell/device.js:106
 #, javascript-format
 msgid "%d%% (%d∶%02d Remaining)"
 msgstr "%d %% (quedan %d∶%02d)"
@@ -926,3 +924,9 @@ msgstr "Servicio no disponible"
 #: webextension/gettext.js:37
 msgid "Open in Browser"
 msgstr "Abrir en el navegador"
+
+#~ msgid "Wayland Not Supported"
+#~ msgstr "No se admite Wayland"
+
+#~ msgid "Remote input not supported on Wayland"
+#~ msgstr "En Wayland no se permite la entrada remota"
