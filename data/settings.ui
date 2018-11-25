@@ -649,41 +649,6 @@
                                   </object>
                                 </child>
                                 <child>
-                                  <object class="GtkListBoxRow" id="sound">
-                                    <property name="height_request">56</property>
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">True</property>
-                                    <property name="activatable">False</property>
-                                    <property name="selectable">False</property>
-                                    <child>
-                                      <object class="GtkGrid">
-                                        <property name="visible">True</property>
-                                        <property name="can_focus">False</property>
-                                        <property name="margin_left">12</property>
-                                        <property name="margin_right">12</property>
-                                        <property name="margin_top">8</property>
-                                        <property name="margin_bottom">8</property>
-                                        <property name="column_spacing">12</property>
-                                        <child>
-                                          <object class="GtkLabel">
-                                            <property name="visible">True</property>
-                                            <property name="can_focus">False</property>
-                                            <property name="halign">start</property>
-                                            <property name="valign">center</property>
-                                            <property name="hexpand">True</property>
-                                            <property name="vexpand">True</property>
-                                            <property name="label" translatable="yes">Sound Effects</property>
-                                          </object>
-                                          <packing>
-                                            <property name="left_attach">0</property>
-                                            <property name="top_attach">0</property>
-                                          </packing>
-                                        </child>
-                                      </object>
-                                    </child>
-                                  </object>
-                                </child>
-                                <child>
                                   <object class="GtkListBoxRow" id="caribou">
                                     <property name="height_request">56</property>
                                     <property name="visible">True</property>
@@ -936,7 +901,7 @@
                             <property name="halign">start</property>
                             <property name="valign">baseline</property>
                             <property name="margin_bottom">8</property>
-                            <property name="label" translatable="no">Android (&lt;a href="https://play.google.com/store/apps/details?id=org.kde.kdeconnect_tp"&gt;Play Store&lt;/a&gt; / &lt;a href="https://f-droid.org/packages/org.kde.kdeconnect_tp/"&gt;F-Droid&lt;/a&gt;), &lt;a href="https://openrepos.net/content/piggz/kde-connect"&gt;Sailfish OS&lt;/a&gt;</property>
+                            <property name="label">Android (&lt;a href="https://play.google.com/store/apps/details?id=org.kde.kdeconnect_tp"&gt;Play Store&lt;/a&gt; / &lt;a href="https://f-droid.org/packages/org.kde.kdeconnect_tp/"&gt;F-Droid&lt;/a&gt;), &lt;a href="https://openrepos.net/content/piggz/kde-connect"&gt;Sailfish OS&lt;/a&gt;</property>
                             <property name="use_markup">True</property>
                             <property name="track_visited_links">False</property>
                           </object>

@@ -39,17 +39,6 @@ const PackageGroup = {
         'typelib-1_0-FolksEds-0_6'
     ],
 
-    // Feature:     Sound Effects
-    // Requires:    `GSound-1.0.typelib`
-    'sound': [
-        // Arch, Fedora, Gentoo
-        'gsound',
-        // Debian/Ubuntu
-        'gir1.2-gsound-1.0',
-        // openSUSE
-        'typelib-1_0-GSound-1_0'
-    ],
-
     // Feature:     Files Integration
     // Requires:    `Nautilus-3.0.typelib`, `libnautilus-python.so`
     'nautilus': [

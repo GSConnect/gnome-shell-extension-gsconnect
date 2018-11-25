@@ -117,6 +117,15 @@ function get_backend() {
 
 
 /**
+ * Used to ensure 'audible-bell' is enabled for fallback
+ */
+const WM_SETTINGS = new Gio.Settings({
+    schema_id: 'org.gnome.desktop.wm.preferences',
+    path: '/org/gnome/desktop/wm/preferences/'
+});
+
+
+/**
  * A custom GtkMessageDialog for alerting of incoming requests
  */
 const Dialog = GObject.registerClass({
@@ -144,10 +153,14 @@ const Dialog = GObject.registerClass({
             this._stream.muted = false;
         }
 
-        // Start the alarm
+        // Ensure audible-bell is enabled for fallback
+        this._previousBell = WM_SETTINGS.get_boolean('audible-bell');
+        WM_SETTINGS.set_boolean('audible-bell', true);
+
+        // Show the dialog and start the alarm
+        this.show_all();
         this._cancellable = new Gio.Cancellable();
         this.bell();
-        this.show_all();
     }
 
     vfunc_response(response_id) {
@@ -159,6 +172,9 @@ const Dialog = GObject.registerClass({
             this._stream.volume = this._previousVolume;
             this._stream.muted = this._previousMuted;
         }
+
+        // Restore the audible-bell
+        WM_SETTINGS.set_boolean('audible-bell', this._previousBell);
 
         this.destroy();
     }
@@ -209,10 +225,8 @@ const Dialog = GObject.registerClass({
     }
 
     /**
-     * A fallback for playing an alert using gtk_widget_error_bell() when
-     * neither GSound or libcanberra are available.
-     *
-     * TODO: ensure system volume is sufficient?
+     * A fallback for playing an alert using gdk_display_bell() when neither
+     * GSound nor canberra-gtk-play are available.
      */
     _fallback() {
         let count = 0;
