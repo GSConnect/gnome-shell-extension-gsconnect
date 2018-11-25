@@ -49,6 +49,12 @@ var Store = GObject.registerClass({
             this.connect('notify::contacts', this.__cache_write.bind(this));
 
             if (this.context === null) {
+                // Create a re-usable launcher for folks.py
+                this._launcher = new Gio.SubprocessLauncher({
+                    flags: Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDERR_PIPE
+                });
+                this._launcher.setenv('FOLKS_BACKENDS_DISABLED', 'telepathy', true);
+
                 this._loadFolks();
             }
         }
@@ -290,13 +296,7 @@ var Store = GObject.registerClass({
     async _loadFolks() {
         try {
             let folks = await new Promise((resolve, reject) => {
-                let launcher = new Gio.SubprocessLauncher({
-                    flags: Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDERR_PIPE
-                });
-
-                launcher.setenv('FOLKS_BACKENDS_DISABLED', 'telepathy', true);
-
-                let proc = launcher.spawnv([
+                let proc = this._launcher.spawnv([
                     gsconnect.extdatadir + '/service/components/folks.py'
                 ]);
 

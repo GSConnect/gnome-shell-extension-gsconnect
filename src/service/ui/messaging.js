@@ -819,9 +819,13 @@ var Window = GObject.registerClass({
 
     _sync() {
         // Contacts
-        if (this.device.get_outgoing_supported('contacts.response_vcards')) {
+        let contacts = this.device.lookup_plugin('contacts');
+
+        if (contacts) {
             this.device.contacts.clear(true);
-            this.device.lookup_plugin('contacts').connected();
+            contacts.connected();
+        } else {
+            this.device.contacts._loadFolks();
         }
 
         // SMS history

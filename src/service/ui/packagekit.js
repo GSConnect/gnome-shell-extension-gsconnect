@@ -28,17 +28,6 @@ const PackageGroup = {
         'typelib-1_0-Caribou-1_0'
     ],
 
-    // Feature:     Desktop Contacts
-    // Requires:    `libgobject-2.0.so.0`, `libfolks-eds.so.25`, `Folks-0.6.typelib`
-    'folks': [
-        // Arch, Fedora, Gentoo
-        'folks',
-        // Debian
-        'libglib2.0-dev', 'gir1.2-folks-0.6', 'libfolks-eds25',
-        // openSUSE
-        'typelib-1_0-FolksEds-0_6'
-    ],
-
     // Feature:     Files Integration
     // Requires:    `Nautilus-3.0.typelib`, `libnautilus-python.so`
     'nautilus': [
