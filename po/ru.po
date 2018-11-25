@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-19 11:14-0800\n"
-"PO-Revision-Date: 2018-10-17 00:33+0300\n"
+"POT-Creation-Date: 2018-11-21 10:44+0300\n"
+"PO-Revision-Date: 2018-11-21 12:22+0300\n"
 "Last-Translator: losted\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Poedit 2.1.1\n"
+"X-Generator: Poedit 2.2\n"
 
 #: data/conversation.ui:71 data/conversation.ui:79
 msgid "Type a message"
@@ -165,27 +165,26 @@ msgstr "О Расширении"
 
 #. TRANSLATORS: Change the connection type to Bluetooth
 #: data/menus.ui:34
-#, fuzzy
 msgid "Switch to Bluetooth"
-msgstr "Подключить Bluetooth"
+msgstr "Переключиться на Bluetooth"
 
 #. TRANSLATORS: Change the connection type to TCP/IP
 #: data/menus.ui:41
 msgid "Switch to LAN"
-msgstr ""
+msgstr "Переключиться на LAN"
 
 #. TRANSLATORS: View the TLS Certificate fingerprint
-#: data/menus.ui:48 src/service/ui/settings.js:612
+#: data/menus.ui:48 src/service/ui/settings.js:624
 msgid "Encryption Info"
-msgstr ""
+msgstr "Информация о шифровании"
 
 #. TRANSLATORS: Send a pair request to the device
-#: data/menus.ui:53 src/service/device.js:425
+#: data/menus.ui:53 src/service/device.js:432
 msgid "Pair"
 msgstr "Сопряжение"
 
 #. TRANSLATORS: Unpair the device and notify it
-#: data/menus.ui:59 src/service/device.js:433
+#: data/menus.ui:59 src/service/device.js:440
 msgid "Unpair"
 msgstr "Забыть"
 
@@ -221,9 +220,8 @@ msgid "Messaging"
 msgstr "Сообщение"
 
 #: data/messaging.ui:110
-#, fuzzy
 msgid "Select a conversation"
-msgstr "Добавьте людей чтобы начать диалог"
+msgstr "Выберите диалог"
 
 #: data/messaging.ui:188
 msgid "Device is disconnected"
@@ -249,7 +247,7 @@ msgstr "Обнаруживаемый"
 msgid "Restart Service"
 msgstr "Перезапустить сервис"
 
-#: data/settings.ui:581 data/settings.ui:1015 src/service/device.js:417
+#: data/settings.ui:581 data/settings.ui:1015 src/service/device.js:424
 msgid "Settings"
 msgstr "Настройки"
 
@@ -262,9 +260,8 @@ msgid "Sound Effects"
 msgstr "Звуковые эффекты"
 
 #: data/settings.ui:712
-#, fuzzy
 msgid "Extended Keyboard Support"
-msgstr "Комбинации клавиш"
+msgstr "Расширенная поддержка клавиатуры"
 
 #: data/settings.ui:749
 msgid "Desktop Contacts"
@@ -280,7 +277,7 @@ msgstr "Дополнительные возможности"
 
 #: data/settings.ui:903
 msgid "Browser Add-Ons"
-msgstr ""
+msgstr "Расширения браузера"
 
 #: data/settings.ui:921
 msgid "KDE Connect"
@@ -300,7 +297,7 @@ msgid "Refresh"
 msgstr "Обновить"
 
 #. Service Menu
-#: src/extension.js:79 src/extension.js:259
+#: src/extension.js:79 src/extension.js:254
 msgid "Mobile Devices"
 msgstr "Устройства"
 
@@ -308,102 +305,94 @@ msgstr "Устройства"
 msgid "Mobile Settings"
 msgstr "Настройки"
 
-#. TRANSLATORS: Extension name
-#: src/extension.js:196 src/extension.js:311 src/service/daemon.js:95
-#: src/service/daemon.js:413 webextension/gettext.js:27
-msgid "GSConnect"
-msgstr "GSConnect"
-
 #. TRANSLATORS: %d is the number of devices connected
-#: src/extension.js:257
-#, fuzzy, javascript-format
+#: src/extension.js:252
+#, javascript-format
 msgid "%d Connected"
 msgid_plural "%d Connected"
-msgstr[0] "Подключиться"
-msgstr[1] "Подключиться"
-msgstr[2] "Подключиться"
+msgstr[0] "%d Подключен"
+msgstr[1] "%d Подключено"
+msgstr[2] "%d Подключено"
 
 #. TRANSLATORS: Top-level context menu item for GSConnect
 #: src/nautilus-gsconnect.py:112 webextension/gettext.js:31
 msgid "Send To Mobile Device"
 msgstr "Отправить на устройство"
 
-#: src/service/daemon.js:406
+#. TRANSLATORS: Extension name
+#: src/service/daemon.js:95 src/service/daemon.js:416
+#: webextension/gettext.js:27
+msgid "GSConnect"
+msgstr "GSConnect"
+
+#: src/service/daemon.js:409
 msgid "A complete KDE Connect implementation for GNOME"
 msgstr ""
 
 #. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
-#: src/service/daemon.js:415
+#: src/service/daemon.js:418
 msgid "translator-credits"
 msgstr "'Losted' <losted@wants.dicksinhisan.us>"
 
-#: src/service/daemon.js:437
+#: src/service/daemon.js:440
 msgid "Report"
 msgstr "Отзыв"
 
-#: src/service/daemon.js:567
+#: src/service/daemon.js:570
 msgid "Authentication Failure"
 msgstr "Ошибка аутентификации"
 
-#: src/service/daemon.js:576
+#: src/service/daemon.js:579
 msgid "Network Error"
 msgstr "Ошибка сети"
 
-#: src/service/daemon.js:577 src/service/daemon.js:587
+#: src/service/daemon.js:580 src/service/daemon.js:590
 msgid "Click for help troubleshooting"
 msgstr "Нажмите для решения проблем"
 
-#: src/service/daemon.js:586
+#: src/service/daemon.js:589
 msgid "PulseAudio Error"
 msgstr "Ошибка Pulseaudio"
 
-#: src/service/daemon.js:596
+#: src/service/daemon.js:599
 msgid "Discovery Disabled"
 msgstr "Обнаружение выключено"
 
-#: src/service/daemon.js:597
+#: src/service/daemon.js:600
 msgid ""
 "Discovery has been disabled due to the number of devices on this network."
 msgstr "Обнаружение было выключено из-за количества устройств в этой сети."
 
-#: src/service/daemon.js:599 src/service/daemon.js:609
+#: src/service/daemon.js:602 src/service/daemon.js:612
 msgid "Click to open preferences"
 msgstr "Нажмите для открытия настроек"
 
-#: src/service/daemon.js:608
+#: src/service/daemon.js:611
 msgid "Additional Software Required"
 msgstr "Необходимо дополнительное ПО"
 
-#: src/service/daemon.js:617
+#: src/service/daemon.js:620
 #, javascript-format
 msgid "%s Plugin Failed To Load"
 msgstr "Ошибка загрузки плагина %s"
 
-#: src/service/daemon.js:618 src/service/daemon.js:635
+#: src/service/daemon.js:621
 msgid "Click for more information"
 msgstr "Нажмите для получения информации"
 
-#: src/service/daemon.js:633
-msgid "Wayland Not Supported"
-msgstr "Wayland не поддерживается"
-
-#: src/service/daemon.js:634
-msgid "Remote input not supported on Wayland"
-msgstr "Удаленный ввод не поддерживается на Wayland"
-
 #. Create an urgent notification
-#: src/service/daemon.js:658
+#: src/service/daemon.js:649
 #, javascript-format
 msgid "GSConnect: %s"
 msgstr "GSConnect: %s"
 
 #. TRANSLATORS: Share URL by SMS
-#: src/service/daemon.js:808 src/service/plugins/sms.js:49
+#: src/service/daemon.js:799 src/service/plugins/sms.js:49
 #: webextension/gettext.js:39
 msgid "Send SMS"
 msgstr "Отправить СМС"
 
-#: src/service/daemon.js:812
+#: src/service/daemon.js:803
 msgid "Dial Number"
 msgstr "Вызвать номер"
 
@@ -428,37 +417,37 @@ msgstr "Bluetooth устройство на %s"
 msgid "%s Fingerprint:"
 msgstr "Отпечаток %s:"
 
-#: src/service/device.js:240
+#: src/service/device.js:247
 msgid "Laptop"
 msgstr "Ноутбук"
 
-#: src/service/device.js:242
+#: src/service/device.js:249
 msgid "Smartphone"
 msgstr "Смартфон"
 
-#: src/service/device.js:244
+#: src/service/device.js:251
 msgid "Tablet"
 msgstr "Планшет"
 
-#: src/service/device.js:246
+#: src/service/device.js:253
 msgid "Desktop"
 msgstr "Компьютер"
 
-#: src/service/device.js:409
+#: src/service/device.js:416
 msgid "Reconnect"
 msgstr "Переподключиться"
 
 #. TRANSLATORS: eg. Pair Request from Google Pixel
-#: src/service/device.js:606
+#: src/service/device.js:613
 #, javascript-format
 msgid "Pair Request from %s"
 msgstr "Запрос сопряжения от %s"
 
-#: src/service/device.js:613
+#: src/service/device.js:620
 msgid "Reject"
 msgstr "Отклонить"
 
-#: src/service/device.js:618
+#: src/service/device.js:625
 msgid "Accept"
 msgstr "Принять"
 
@@ -515,15 +504,13 @@ msgstr "Найден"
 msgid "Mousepad"
 msgstr "Тачпад"
 
-#: src/service/plugins/mousepad.js:28 src/service/plugins/mousepad.js:578
-#, fuzzy
+#: src/service/plugins/mousepad.js:28 src/service/plugins/mousepad.js:567
 msgid "Keyboard"
-msgstr "Мышь и клавиатура"
+msgstr "Клавиатура"
 
-#: src/service/plugins/mousepad.js:595
-#, fuzzy
+#: src/service/plugins/mousepad.js:584
 msgid "Keyboard not ready"
-msgstr "Комбинации клавиш"
+msgstr "Клавиатура не готова"
 
 #: src/service/plugins/mpris.js:10
 msgid "MPRIS"
@@ -585,105 +572,110 @@ msgstr "Фотографии"
 msgid "Files"
 msgstr "Файлы"
 
-#: src/service/plugins/share.js:12 src/service/plugins/share.js:18
+#: src/service/plugins/share.js:13 src/service/plugins/share.js:19
 msgid "Share"
 msgstr "Поделиться"
 
-#: src/service/plugins/share.js:26
+#: src/service/plugins/share.js:27
 msgid "Share File"
 msgstr "Поделиться файлом"
 
-#: src/service/plugins/share.js:34
+#: src/service/plugins/share.js:35
 msgid "Share Text"
 msgstr "Поделиться текстом"
 
-#: src/service/plugins/share.js:42 src/service/ui/messaging.js:903
+#: src/service/plugins/share.js:43 src/service/ui/messaging.js:903
 #: src/service/ui/messaging.js:911
 msgid "Share Link"
 msgstr "Поделиться ссылкой"
 
-#: src/service/plugins/share.js:131 src/service/plugins/share.js:282
+#: src/service/plugins/share.js:132 src/service/plugins/share.js:303
 msgid "Starting Transfer"
 msgstr "Начало передачи"
 
 #. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
-#: src/service/plugins/share.js:133
+#: src/service/plugins/share.js:134
 #, javascript-format
 msgid "Receiving “%s” from %s"
 msgstr "Получение «%s» от %s"
 
 #. Action Buttons
-#: src/service/plugins/share.js:138 src/service/plugins/share.js:289
-#: src/service/plugins/share.js:407 src/service/ui/keybindings.js:44
+#: src/service/plugins/share.js:139 src/service/plugins/share.js:310
+#: src/service/plugins/share.js:455 src/service/ui/keybindings.js:44
 #: src/service/ui/service.js:121 src/service/ui/service.js:300
-#: src/service/ui/settings.js:873 src/shell/donotdisturb.js:215
+#: src/service/ui/settings.js:885 src/shell/donotdisturb.js:215
 msgid "Cancel"
 msgstr "Отмена"
 
-#: src/service/plugins/share.js:149 src/service/plugins/share.js:303
+#: src/service/plugins/share.js:172 src/service/plugins/share.js:327
 msgid "Transfer Successful"
 msgstr "Передача завершена"
 
 #. TRANSLATORS: eg. Received 'book.pdf' from Google Pixel
-#: src/service/plugins/share.js:151
+#: src/service/plugins/share.js:174
 #, javascript-format
 msgid "Received “%s” from %s"
 msgstr "Получен «%s» от %s"
 
-#: src/service/plugins/share.js:157
+#: src/service/plugins/share.js:180
 msgid "Open Folder"
 msgstr "Открыть папку"
 
-#: src/service/plugins/share.js:162
+#: src/service/plugins/share.js:185
 msgid "Open File"
 msgstr "Открыть файл"
 
-#: src/service/plugins/share.js:169 src/service/plugins/share.js:311
+#: src/service/plugins/share.js:192 src/service/plugins/share.js:335
 msgid "Transfer Failed"
 msgstr "Передача не удалась"
 
 #. TRANSLATORS: eg. Failed to receive 'book.pdf' from Google Pixel
-#: src/service/plugins/share.js:171
+#: src/service/plugins/share.js:194
 #, javascript-format
 msgid "Failed to receive “%s” from %s"
 msgstr "Не удалось получить«%s» от %s"
 
-#: src/service/plugins/share.js:211
+#: src/service/plugins/share.js:233
 #, javascript-format
 msgid "Text Shared By %s"
-msgstr ""
+msgstr "Текст получен с %s"
 
 #. TRANSLATORS: eg. Sending 'book.pdf' to Google Pixel
-#: src/service/plugins/share.js:284
+#: src/service/plugins/share.js:305
 #, javascript-format
 msgid "Sending “%s” to %s"
 msgstr "Отправка «%s» на %s"
 
 #. TRANSLATORS: eg. Sent "book.pdf" to Google Pixel
-#: src/service/plugins/share.js:305
+#: src/service/plugins/share.js:329
 #, javascript-format
 msgid "Sent “%s” to %s"
 msgstr "Отправлено «%s» на %s"
 
 #. TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel
-#: src/service/plugins/share.js:313
+#: src/service/plugins/share.js:337
 #, javascript-format
 msgid "Failed to send “%s” to %s"
 msgstr "Не удалось отправить «%s» на %s"
 
 #. TRANSLATORS: eg. Send files to Google Pixel
-#: src/service/plugins/share.js:384
+#: src/service/plugins/share.js:408
 #, javascript-format
 msgid "Send files to %s"
 msgstr "Отправить файлы на %s"
 
+#. TRANSLATORS: Mark the file to be opened once completed
+#: src/service/plugins/share.js:412
+msgid "Open when done"
+msgstr "Открыть при завершении"
+
 #. TRANSLATORS: eg. Send a link to Google Pixel
-#: src/service/plugins/share.js:402
+#: src/service/plugins/share.js:450
 #, javascript-format
 msgid "Send a link to %s"
 msgstr "Отправить ссылку на %s"
 
-#: src/service/plugins/share.js:408
+#: src/service/plugins/share.js:456
 msgid "Send"
 msgstr "Отправить"
 
@@ -730,37 +722,37 @@ msgstr "Исходящий звонок"
 
 #. TRANSLATORS: All other phone number types
 #: src/service/ui/contacts.js:58 src/service/ui/contacts.js:79
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%s・Other"
-msgstr "%s・Другое"
+msgstr "%s・Другой"
 
 #. TRANSLATORS: A fax number
 #: src/service/ui/contacts.js:63
 #, javascript-format
 msgid "%s・Fax"
-msgstr "%s・Fax"
+msgstr "%s・Факс"
 
 #. TRANSLATORS: A work phone number
 #: src/service/ui/contacts.js:67
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%s・Work"
 msgstr "%s・Рабочий"
 
 #. TRANSLATORS: A mobile or cellular phone number
 #: src/service/ui/contacts.js:71
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%s・Mobile"
 msgstr "%s・Мобильный"
 
 #. TRANSLATORS: A home phone number
 #: src/service/ui/contacts.js:75
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%s・Home"
 msgstr "%s・Домашний"
 
 #: src/service/ui/contacts.js:203
 msgid "Select a contact or number"
-msgstr ""
+msgstr "Выбрать контакт или номер"
 
 #. TRANSLATORS: A phone number (eg. "Send to 555-5555")
 #: src/service/ui/contacts.js:239 src/service/ui/contacts.js:253
@@ -817,19 +809,19 @@ msgstr "Панель"
 msgid "User Menu"
 msgstr "Меню пользователя"
 
-#: src/service/ui/settings.js:874
+#: src/service/ui/settings.js:886
 msgid "Open"
 msgstr "Открыть"
 
-#: src/service/ui/settings.js:931 src/service/ui/settings.js:944
+#: src/service/ui/settings.js:943 src/service/ui/settings.js:956
 msgid "On"
 msgstr "Вкл"
 
-#: src/service/ui/settings.js:931 src/service/ui/settings.js:944
+#: src/service/ui/settings.js:943 src/service/ui/settings.js:956
 msgid "Off"
 msgstr "Выкл"
 
-#: src/service/ui/settings.js:1065 src/service/ui/settings.js:1131
+#: src/service/ui/settings.js:1072 src/service/ui/settings.js:1138
 msgid "Disabled"
 msgstr "Отключено"
 
@@ -841,11 +833,11 @@ msgstr "Только что"
 #. TRANSLATORS: Time duration in minutes (eg. 15 minutes)
 #: src/service/ui/messaging.js:98 src/service/ui/messaging.js:130
 #: src/shell/donotdisturb.js:266
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%d minute"
 msgid_plural "%d minutes"
-msgstr[0] "%d минут"
-msgstr[1] "%d минут"
+msgstr[0] "%d минута"
+msgstr[1] "%d минуты"
 msgstr[2] "%d минут"
 
 #. TRANSLATORS: Yesterday, but less than 24 hours (eg. Yesterday · 11:29 PM)
@@ -859,27 +851,27 @@ msgid "New Message"
 msgstr "Новое сообщение"
 
 #. TRANSLATORS: When the battery level is 100%
-#: src/shell/device.js:86
+#: src/shell/device.js:84
 msgid "Fully Charged"
 msgstr "Полностью заряжено"
 
 #. TRANSLATORS: When no time estimate for the battery is available
 #. EXAMPLE: 42% (Estimating…)
-#: src/shell/device.js:90
+#: src/shell/device.js:88
 #, javascript-format
 msgid "%d%% (Estimating…)"
 msgstr "%d%% (Осталось…)"
 
 #. TRANSLATORS: Estimated time until battery is charged
 #. EXAMPLE: 42% (1:15 Until Full)
-#: src/shell/device.js:100
+#: src/shell/device.js:98
 #, javascript-format
 msgid "%d%% (%d∶%02d Until Full)"
 msgstr "%d%% (%d∶%02d До полного заряда)"
 
 #. TRANSLATORS: Estimated time until battery is empty
 #. EXAMPLE: 42% (12:15 Remaining)
-#: src/shell/device.js:108
+#: src/shell/device.js:106
 #, javascript-format
 msgid "%d%% (%d∶%02d Remaining)"
 msgstr "%d%% (%d∶%02d Осталось)"
