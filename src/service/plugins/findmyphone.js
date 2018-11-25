@@ -127,20 +127,39 @@ const Dialog = GObject.registerClass({
             text: _('Locate Device'),
             secondary_text: _('%s asked to locate this device').format(name),
             urgency_hint: true,
-            window_position: Gtk.WindowPosition.CENTER_ALWAYS,
-            visible: true
+            window_position: Gtk.WindowPosition.CENTER_ALWAYS
         });
 
         this.set_keep_above(true);
         this.add_button(_('Found'), Gtk.ResponseType.DELETE_EVENT);
 
-        //
+        // Ensure the volume is sufficient
+        let mixer = Gio.Application.get_default().pulseaudio;
+
+        if (mixer) {
+            this._stream = mixer.output;
+            this._previousVolume = this._stream.volume;
+            this._previousMuted = this._stream.muted;
+            this._stream.volume = 0.85;
+            this._stream.muted = false;
+        }
+
+        // Start the alarm
         this._cancellable = new Gio.Cancellable();
         this.bell();
+        this.show_all();
     }
 
     vfunc_response(response_id) {
+        // Stop the alarm
         this._cancellable.cancel();
+
+        // Restore the mixer level
+        if (this._stream) {
+            this._stream.volume = this._previousVolume;
+            this._stream.muted = this._previousMuted;
+        }
+
         this.destroy();
     }
 
@@ -179,6 +198,7 @@ const Dialog = GObject.registerClass({
                 break;
 
             default:
+                this._display = Gdk.Display.get_default();
                 this._fallback();
                 GLib.timeout_add(
                     GLib.PRIORITY_DEFAULT,
@@ -200,7 +220,7 @@ const Dialog = GObject.registerClass({
         GLib.timeout_add(GLib.PRIORITY_DEFAULT, 200, () => {
             try {
                 if (count++ < 4 && !this._cancellable.is_cancelled()) {
-                    this.error_bell();
+                    this._display.beep();
                     return GLib.SOURCE_CONTINUE;
                 }
 
