@@ -106,7 +106,7 @@ var ListBox = class ListBox extends PopupMenu.PopupMenuSection {
             'items-changed',
             this._onItemsChanged.bind(this)
         );
-        this.connect('destroy', () => this.menu_model.disconnect(_menuId));
+        this.connect('destroy', (menu) => menu.menu_model.disconnect(_menuId));
 
         this._onItemsChanged();
     }
@@ -391,7 +391,7 @@ var IconButton = GObject.registerClass({
                 button.action_target
             );
 
-        // StButton.checked has already been toggld so we're opening
+        // StButton.checked has already been toggled so we're opening
         } else if (button.checked) {
             button._parent.submenu = button.submenu;
 
