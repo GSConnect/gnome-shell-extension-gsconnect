@@ -8,7 +8,19 @@ const Gtk = imports.gi.Gtk;
 const Pango = imports.gi.Pango;
 
 const Keybindings = imports.service.ui.keybindings;
-const PackageKit = imports.service.ui.packagekit;
+
+
+// Python3 mini-script to check for nautilus-python support
+const NAUTILUS = `
+import ctypes
+import ctypes.util
+
+path = ctypes.util.find_library('libgobject-2.0.so.0')
+ctypes.cdll.LoadLibrary(path)
+
+path = ctypes.util.find_library('libnautilus-python.so')
+ctypes.cdll.LoadLibrary(path)
+`;
 
 
 function section_separators(row, before) {
@@ -235,7 +247,11 @@ var Window = GObject.registerClass({
         'stack', 'switcher', 'sidebar',
         'appearance-list', 'display-mode',
         'service-list', 'software-list',
-        'help'
+        'help',
+        // Dependencies
+        'caribou-help', 'caribou-ok',
+        'nautilus-help', 'nautilus-ok',
+        'sshfs-help', 'sshfs-ok'
     ]
 }, class Window extends Gtk.ApplicationWindow {
 
@@ -276,6 +292,7 @@ var Window = GObject.registerClass({
         this.service_list.set_header_func(section_separators);
         this.software_list.set_header_func(section_separators);
 
+        // Recheck deps
         this._softwareSettings();
 
         // Setup devices
@@ -305,26 +322,72 @@ var Window = GObject.registerClass({
     }
 
     /**
-     * Software dependency installation with PackageKit
+     * Additional Features
      */
     _softwareSettings() {
         // Inject a button for each dependency row
         for (let row of this.software_list.get_children()) {
-            // Hide "Extended Keyboard Support" on Wayland
-            if (row.get_name() === 'caribou' && _WAYLAND) row.visible = false;
+            let name = row.get_name();
 
-            let button = new PackageKit.DependencyButton({
-                halign: Gtk.Align.END,
-                valign: Gtk.Align.CENTER,
-                names: row.get_name(),
-                visible: true
-            });
-            row.get_child().attach(button, 1, 0, 1, 1);
+            // Hide "Extended Keyboard Support" on Wayland
+            if (name === 'caribou' && _WAYLAND) row.visible = false;
+
+            // Set the help link
+            let label = row.get_child().get_child_at(1, 0);
+            label.label = `<a href="https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Installation#${name}">` + _('Help') + '</a>';
         }
 
         this.software_list.set_header_func(section_separators);
     }
 
+    _onVisibleChildName(stack) {
+        if (stack.visible_child_name !== 'other') return;
+
+        for (let name of ['caribou', 'nautilus', 'sshfs']) {
+            this.checkDependency(name);
+        }
+    }
+
+    async checkDependency(name) {
+        let result = false;
+
+        try {
+            // Extended Keyboard Support
+            if (name === 'caribou') {
+                result = (imports.gi.Caribou);
+
+            // Files Integration
+            } else if (name === 'nautilus') {
+                result = await new Promise((resolve, reject) => {
+                    let proc = new Gio.Subprocess({
+                        argv: ['python3', '-c', NAUTILUS]
+                    });
+                    proc.init(null);
+
+                    proc.wait_check_async(null, (proc, res) => {
+                        try {
+                            resolve(proc.wait_check_finish(res));
+                        } catch (e) {
+                            resolve(false);
+                        }
+                    });
+                });
+
+            // Remote Filesystems
+            } else if (name === 'sshfs') {
+                result = GLib.find_program_in_path(gsconnect.metadata.bin.sshfs);
+            }
+        } catch (e) {
+            result = false;
+        } finally {
+            this[`${name}_ok`].visible = result;
+            this[`${name}_help`].visible = !result;
+        }
+    }
+
+    /**
+     * Badges
+     */
     _onLinkButton(button) {
         try {
             Gtk.show_uri_on_window(this, button.tooltip_text, Gdk.CURRENT_TIME);

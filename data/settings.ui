@@ -304,6 +304,7 @@
             <property name="hexpand">True</property>
             <property name="vexpand">True</property>
             <property name="transition_type">crossfade</property>
+            <signal name="notify::visible-child-name" handler="_onVisibleChildName" swapped="no"/>
             <child>
               <object class="GtkScrolledWindow" id="settings-page">
                 <property name="visible">True</property>
@@ -503,7 +504,7 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="hexpand">True</property>
-                                    <property name="activatable">False</property>
+                                    <property name="action_name">app.quit</property>
                                     <property name="selectable">False</property>
                                     <child>
                                       <object class="GtkGrid">
@@ -604,7 +605,7 @@
                           <object class="GtkFrame">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="margin_bottom">16</property>
+                            <property name="margin_bottom">32</property>
                             <property name="label_xalign">0</property>
                             <child>
                               <object class="GtkListBox" id="software-list">
@@ -641,6 +642,35 @@
                                           </object>
                                           <packing>
                                             <property name="left_attach">0</property>
+                                            <property name="top_attach">0</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <object class="GtkImage" id="sshfs-ok">
+                                            <property name="width_request">32</property>
+                                            <property name="height_request">32</property>
+                                            <property name="can_focus">False</property>
+                                            <property name="halign">end</property>
+                                            <property name="valign">center</property>
+                                            <property name="icon_name">object-select-symbolic</property>
+                                          </object>
+                                          <packing>
+                                            <property name="left_attach">2</property>
+                                            <property name="top_attach">0</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <object class="GtkLabel" id="sshfs-help">
+                                            <property name="height_request">32</property>
+                                            <property name="visible">True</property>
+                                            <property name="can_focus">False</property>
+                                            <property name="halign">end</property>
+                                            <property name="valign">center</property>
+                                            <property name="label" translatable="yes">Help</property>
+                                            <property name="use_markup">True</property>
+                                          </object>
+                                          <packing>
+                                            <property name="left_attach">1</property>
                                             <property name="top_attach">0</property>
                                           </packing>
                                         </child>
@@ -681,6 +711,35 @@
                                             <property name="top_attach">0</property>
                                           </packing>
                                         </child>
+                                        <child>
+                                          <object class="GtkImage" id="caribou-ok">
+                                            <property name="width_request">32</property>
+                                            <property name="height_request">32</property>
+                                            <property name="can_focus">False</property>
+                                            <property name="halign">end</property>
+                                            <property name="valign">center</property>
+                                            <property name="icon_name">object-select-symbolic</property>
+                                          </object>
+                                          <packing>
+                                            <property name="left_attach">2</property>
+                                            <property name="top_attach">0</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <object class="GtkLabel" id="caribou-help">
+                                            <property name="height_request">32</property>
+                                            <property name="visible">True</property>
+                                            <property name="can_focus">False</property>
+                                            <property name="halign">end</property>
+                                            <property name="valign">center</property>
+                                            <property name="label" translatable="yes">Help</property>
+                                            <property name="use_markup">True</property>
+                                          </object>
+                                          <packing>
+                                            <property name="left_attach">1</property>
+                                            <property name="top_attach">0</property>
+                                          </packing>
+                                        </child>
                                       </object>
                                     </child>
                                   </object>
@@ -718,6 +777,35 @@
                                             <property name="top_attach">0</property>
                                           </packing>
                                         </child>
+                                        <child>
+                                          <object class="GtkImage" id="nautilus-ok">
+                                            <property name="width_request">32</property>
+                                            <property name="height_request">32</property>
+                                            <property name="can_focus">False</property>
+                                            <property name="halign">end</property>
+                                            <property name="valign">center</property>
+                                            <property name="icon_name">object-select-symbolic</property>
+                                          </object>
+                                          <packing>
+                                            <property name="left_attach">2</property>
+                                            <property name="top_attach">0</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <object class="GtkLabel" id="nautilus-help">
+                                            <property name="height_request">32</property>
+                                            <property name="visible">True</property>
+                                            <property name="can_focus">False</property>
+                                            <property name="halign">end</property>
+                                            <property name="valign">center</property>
+                                            <property name="label" translatable="yes">Help</property>
+                                            <property name="use_markup">True</property>
+                                          </object>
+                                          <packing>
+                                            <property name="left_attach">1</property>
+                                            <property name="top_attach">0</property>
+                                          </packing>
+                                        </child>
                                       </object>
                                     </child>
                                   </object>
@@ -737,6 +825,7 @@
                             <property name="can_focus">False</property>
                             <property name="halign">start</property>
                             <property name="valign">center</property>
+                            <property name="margin_bottom">12</property>
                             <property name="hexpand">True</property>
                             <property name="label" translatable="yes">Additional Features</property>
                             <attributes>
@@ -746,6 +835,7 @@
                           <packing>
                             <property name="left_attach">0</property>
                             <property name="top_attach">0</property>
+                            <property name="width">2</property>
                           </packing>
                         </child>
                         <child>
@@ -756,7 +846,7 @@
                             <property name="tooltip_text">https://addons.mozilla.org/firefox/addon/gsconnect/</property>
                             <property name="halign">start</property>
                             <property name="valign">center</property>
-                            <property name="margin_bottom">16</property>
+                            <property name="margin_bottom">32</property>
                             <signal name="clicked" handler="_onLinkButton" swapped="no"/>
                             <child>
                               <object class="GtkImage">
@@ -784,7 +874,7 @@
                             <property name="tooltip_text">https://chrome.google.com/webstore/detail/gsconnect/jfnifeihccihocjbfcfhicmmgpjicaec</property>
                             <property name="halign">end</property>
                             <property name="valign">center</property>
-                            <property name="margin_bottom">16</property>
+                            <property name="margin_bottom">32</property>
                             <signal name="clicked" handler="_onLinkButton" swapped="no"/>
                             <child>
                               <object class="GtkImage">
@@ -805,28 +895,12 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkLinkButton">
-                            <property name="label" translatable="yes">Help</property>
-                            <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="receives_default">True</property>
-                            <property name="halign">end</property>
-                            <property name="valign">center</property>
-                            <property name="relief">none</property>
-                            <property name="uri">https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Installation#dependencies</property>
-                          </object>
-                          <packing>
-                            <property name="left_attach">1</property>
-                            <property name="top_attach">0</property>
-                          </packing>
-                        </child>
-                        <child>
                           <object class="GtkLabel">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="halign">start</property>
                             <property name="valign">center</property>
-                            <property name="margin_bottom">8</property>
+                            <property name="margin_bottom">12</property>
                             <property name="hexpand">True</property>
                             <property name="label" translatable="yes">Browser Add-Ons</property>
                             <attributes>
@@ -845,7 +919,7 @@
                             <property name="can_focus">False</property>
                             <property name="halign">start</property>
                             <property name="valign">center</property>
-                            <property name="margin_bottom">8</property>
+                            <property name="margin_bottom">12</property>
                             <property name="label" translatable="yes">KDE Connect</property>
                             <attributes>
                               <attribute name="weight" value="bold"/>
@@ -863,7 +937,6 @@
                             <property name="can_focus">False</property>
                             <property name="halign">start</property>
                             <property name="valign">baseline</property>
-                            <property name="margin_bottom">8</property>
                             <property name="label">Android (&lt;a href="https://play.google.com/store/apps/details?id=org.kde.kdeconnect_tp"&gt;Play Store&lt;/a&gt; / &lt;a href="https://f-droid.org/packages/org.kde.kdeconnect_tp/"&gt;F-Droid&lt;/a&gt;), &lt;a href="https://openrepos.net/content/piggz/kde-connect"&gt;Sailfish OS&lt;/a&gt;</property>
                             <property name="use_markup">True</property>
                             <property name="track_visited_links">False</property>
