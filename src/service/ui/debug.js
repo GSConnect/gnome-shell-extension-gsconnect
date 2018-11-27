@@ -34,7 +34,8 @@ var Window = GObject.registerClass({
         'notification-ticker', 'notification-requestreplyid', 'notification-isclearable',
         'telephony-device', 'telephony-event', 'telephony-name', 'telephony-number',
         'telephony-body', 'telephony-duplicate', 'telephony-iscancel', 'telephony-receive',
-        'heap-path', 'heap-save'
+        'heap-path', 'heap-save',
+        'log-save', 'log-type'
     ]
 }, class Window extends Gtk.ApplicationWindow {
 
@@ -346,6 +347,9 @@ var Window = GObject.registerClass({
         this.application.disconnect(this._devicesChangedId);
     }
 
+    /**
+     * Logging
+     */
     _logAction() {
         try {
             GLib.spawn_command_line_async(
@@ -373,6 +377,70 @@ var Window = GObject.registerClass({
                 Gio.AppInfoCreateFlags.NEEDS_TERMINAL
             );
             app.launch([], ctx);
+        }
+    }
+
+    async _onLogSave() {
+        try {
+            let [file, io] = Gio.File.new_tmp('gsconnect.XXXXXX');
+
+            let logFile = await new Promise((resolve, reject) => {
+                file.replace_async(null, false, 2, 0, null, (file, res) => {
+                    try {
+                        resolve(file.replace_finish(res));
+                    } catch (e) {
+                        reject(e);
+                    }
+                });
+            });
+
+            let proc = new Gio.Subprocess({
+                flags: Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDOUT_PIPE,
+                argv: [
+                    'journalctl',
+                    '--no-host',
+                    '--since',
+                    GLib.DateTime.new_now_local().add_minutes(-15).format('%R'),
+                    this.log_type.active_id
+                ]
+            });
+            proc.init(null);
+
+            logFile.splice_async(
+                proc.get_stdout_pipe(),
+                Gio.OutputStreamSpliceFlags.NONE,
+                GLib.PRIORITY_DEFAULT,
+                null,
+                (source, res) => {
+                    try {
+                        source.splice_finish(res);
+                    } catch (e) {
+                        logError(e);
+                    }
+                }
+            );
+
+            await new Promise((resolve, reject) => {
+                proc.wait_check_async(null, (proc, res) => {
+                    try {
+                        resolve(proc.wait_finish(res));
+                    } catch (e) {
+                        resolve(e);
+                    }
+                });
+            });
+
+            await new Promise((resolve, reject) => {
+                Gio.AppInfo.launch_default_for_uri_async(file.get_uri(), null, null, (src, res) => {
+                    try {
+                        Gio.AppInfo.launch_default_for_uri_finish(res);
+                    } catch (e) {
+                        logError(e);
+                    }
+                });
+            });
+        } catch (e) {
+            logError(e);
         }
     }
 
