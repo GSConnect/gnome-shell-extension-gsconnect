@@ -382,7 +382,7 @@ var Window = GObject.registerClass({
 
     async _onLogSave() {
         try {
-            let [file, io] = Gio.File.new_tmp('gsconnect.XXXXXX');
+            let [file, ] = Gio.File.new_tmp('gsconnect.XXXXXX');
 
             let logFile = await new Promise((resolve, reject) => {
                 file.replace_async(null, false, 2, 0, null, (file, res) => {
