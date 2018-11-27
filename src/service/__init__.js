@@ -103,9 +103,12 @@ JSON.dump = function (obj, file, sync = false) {
 
 /**
  * A simple (for now) pre-comparison sanitizer for phone numbers
+ * See: https://github.com/KDE/kdeconnect-kde/blob/master/smsapp/conversationlistmodel.cpp#L200-L210
+ *
+ * @return {string} - Return the string stripped of leading 0, and ' ()-+'
  */
 String.prototype.toPhoneNumber = function() {
-    return this.replace(/\D/g, '').replace(/^[0]?/, '');
+    return this.replace(/^0*|[ -()+]/g, '');
 };
 
 
