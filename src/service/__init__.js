@@ -108,7 +108,7 @@ JSON.dump = function (obj, file, sync = false) {
  * @return {string} - Return the string stripped of leading 0, and ' ()-+'
  */
 String.prototype.toPhoneNumber = function() {
-    return this.replace(/^0*|[ -()+]/g, '');
+    return this.replace(/^0*|[ ()+-]/g, '');
 };
 
 
