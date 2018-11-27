@@ -188,7 +188,7 @@ var Plugin = GObject.registerClass({
 
             let contact = {
                 id: uid,
-                name: vcard.fn,
+                name: vcard.fn || _('Unknown Contact'),
                 numbers: [],
                 origin: 'device',
                 timestamp: parseInt(vcard['x-kdeconnect-timestamp'])
