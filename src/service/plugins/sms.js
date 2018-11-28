@@ -290,7 +290,7 @@ var Plugin = GObject.registerClass({
 
             // Sort and store the conversation
             this.conversations[thread_id] = conversation.sort((a, b) => {
-                return (a.date < b.date) ? -1 : 1;
+                return (a._id < b._id) ? -1 : 1;
             });
 
             await this.__cache_write();
@@ -332,7 +332,7 @@ var Plugin = GObject.registerClass({
                         cache.forEach(message => message.read = MessageStatus.READ);
                     }
 
-                    if (!cache || cache[cache.length - 1].date < message.date) {
+                    if (!cache || cache[cache.length - 1]._id < message._id) {
                         this.requestConversation(message.thread_id);
                     }
                 });
