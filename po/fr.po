@@ -462,7 +462,8 @@ msgid "Accept"
 msgstr "Accepter"
 
 #: src/service/plugins/battery.js:194 src/service/plugins/findmyphone.js:18
-msgid "Locate"
+#, fuzzy
+msgid "Ring"
 msgstr "Localisation"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is low

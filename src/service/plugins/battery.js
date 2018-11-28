@@ -191,7 +191,7 @@ var Plugin = GObject.registerClass({
         // Offer the option to locate the device, if available
         if (this.device.get_action_enabled('ring')) {
             buttons = [{
-                label: _('Locate'),
+                label: _('Ring'),
                 action: 'ring',
                 parameter: null
             }];

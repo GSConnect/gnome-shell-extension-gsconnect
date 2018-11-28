@@ -16,7 +16,7 @@ var Metadata = {
     outgoingCapabilities: ['kdeconnect.findmyphone.request'],
     actions: {
         ring: {
-            label: _('Locate'),
+            label: _('Ring'),
             icon_name: 'find-location-symbolic',
 
             parameter_type: null,
@@ -133,14 +133,17 @@ const Dialog = GObject.registerClass({
 }, class Dialog extends Gtk.MessageDialog {
     _init(name) {
         super._init({
-            text: _('Locate Device'),
-            secondary_text: _('%s asked to locate this device').format(name),
+            buttons: Gtk.ButtonsType.CLOSE,
+            image: new Gtk.Image({
+                icon_name: 'find-location-symbolic',
+                pixel_size: 128
+            }),
             urgency_hint: true,
             window_position: Gtk.WindowPosition.CENTER_ALWAYS
         });
 
         this.set_keep_above(true);
-        this.add_button(_('Found'), Gtk.ResponseType.DELETE_EVENT);
+        this.message_area.destroy();
 
         // Ensure the volume is sufficient
         let mixer = Gio.Application.get_default().pulseaudio;
