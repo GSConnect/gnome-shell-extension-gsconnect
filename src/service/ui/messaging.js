@@ -210,6 +210,7 @@ const ConversationSummary = GObject.registerClass({
     _init(contact, message) {
         super._init();
 
+        // Hold a reference to the contact & message
         this.contact = contact;
         this.message = message;
 
@@ -349,10 +350,7 @@ const ConversationWidget = GObject.registerClass({
         this._notifications = [];
 
         // Ensure we have a contact stored
-        let contact = this.device.contacts.query({
-            number: value,
-            create: true
-        });
+        let contact = this.device.contacts.query({number: value});
         this._contact_id = contact.id;
 
         // See if we have a nicer display number
@@ -380,7 +378,7 @@ const ConversationWidget = GObject.registerClass({
 
     set contact(id) {
         let contact = this.device.contacts.get_item(id);
-        this._contact_id = (contact.id) ? contact.id : null;
+        this._contact_id = (contact) ? contact.id : null;
     }
 
     get has_pending() {
@@ -767,10 +765,7 @@ var Window = GObject.registerClass({
         }
 
         // Ensure we have a contact stored and hold a reference to it
-        let contact = this.device.contacts.query({
-            number: value,
-            create: true
-        });
+        let contact = this.device.contacts.query({number: value});
         this._contact = contact;
 
         this.headerbar.title = contact.name;

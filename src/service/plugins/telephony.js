@@ -56,8 +56,7 @@ var Plugin = GObject.registerClass({
             if (packet.body.phoneNumber) {
                 let contact = this.device.contacts.query({
                     name: packet.body.contactName,
-                    number: packet.body.phoneNumber,
-                    create: true
+                    number: packet.body.phoneNumber
                 });
 
                 if (packet.body.phoneThumbnail) {

@@ -161,60 +161,58 @@ var Store = GObject.registerClass({
      *
      * @param {Object} query - A query object
      * @param {String} [query.name] - The contact's name
-     * @param {String} [query.number] - The contact's number
-     * @param {Boolean} [query.create] - Save the contact if it's new
+     * @param {String} query.number - The contact's number
      */
     query(query) {
+        // sanity check
+        if (!query.number) {
+            throw new Error('query.number is undefined');
+        }
+
+        // First look for an existing contact by number
+        let contacts = Object.values(this.__cache_data);
         let matches = [];
-        let number = (query.number) ? query.number.toPhoneNumber() : null;
+        let qnumber = query.number.toPhoneNumber();
 
-        for (let contact of Object.values(this.__cache_data)) {
-            // Prioritize searching by number
-            if (number) {
-                for (let num of contact.numbers) {
-                    let cnumber = num.value.toPhoneNumber();
+        for (let i = 0; i < contacts.length; i++) {
+            let contact = contacts[i];
 
-                    if (number.endsWith(cnumber) || cnumber.endsWith(number)) {
-                        // Number match & exact name match; must be it
-                        if (query.name && query.name === contact.name) {
-                            return contact;
-                        }
+            for (let num of contact.numbers) {
+                let cnumber = num.value.toPhoneNumber();
 
-                        matches.push(contact);
+                if (qnumber.endsWith(cnumber) || cnumber.endsWith(qnumber)) {
+                    // Number match & exact name match; must be it
+                    if (query.name && query.name === contact.name) {
+                        return contact;
                     }
+
+                    // Hold off on returning; we might find an exact name match
+                    matches.push(contact);
                 }
-
-            // Fallback to searching by exact name match
-            } else if (query.name && query.name === contact.name) {
-                matches.push(contact);
             }
         }
 
-        // Create a new contact
-        if (matches.length === 0) {
-            // Create a unique ID for this contact
-            let id = GLib.uuid_string_random();
-            while (this.__cache_data.hasOwnProperty(id)) {
-                id = GLib.uuid_string_random();
-            }
+        // Return the first match (pretty much what Android does)
+        if (matches.length > 0) return matches[0];
 
-            // Populate a dummy contact
-            matches[0] = {
-                id: id,
-                name: query.name || query.number,
-                numbers: [{value: query.number, type: 'unknown'}],
-                origin: 'gsconnect'
-            };
-
-            // Save if requested
-            if (query.create) {
-                this.__cache_data[id] = matches[0];
-                this.update();
-            }
+        // No match; create a new contact with a unique ID
+        let id = GLib.uuid_string_random();
+        while (this.__cache_data.hasOwnProperty(id)) {
+            id = GLib.uuid_string_random();
         }
 
-        // Only return the first match (pretty much what Android does)
-        return matches[0];
+        // Add the contact to the cache
+        this.__cache_data[id] = {
+            id: id,
+            name: query.name || query.number,
+            numbers: [{value: query.number, type: 'unknown'}],
+            origin: 'gsconnect'
+        };
+
+        this.update();
+
+        // Return the created contact
+        return this.__cache_data[id];
     }
 
     // FIXME: API compatible with GListModel
