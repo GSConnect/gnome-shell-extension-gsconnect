@@ -48,6 +48,13 @@ option(
 )
 
 option(
+  'sshadd_path',
+  type: 'string',
+  value: 'ssh-add',
+  description: 'Path to sshfs binary'
+)
+
+option(
   'sshfs_path',
   type: 'string',
   value: 'sshfs',
