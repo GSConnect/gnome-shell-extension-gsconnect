@@ -193,7 +193,15 @@ var Store = GObject.registerClass({
         }
 
         // Return the first match (pretty much what Android does)
-        if (matches.length > 0) return matches[0];
+        if (matches.length > 0) {
+            // TODO: this is a check to prevent errors later caused by contacts
+            // that may have be populated without names by GSConnect <= v17
+            if (!matches[0].name) {
+                matches[0].name = query.number;
+            }
+
+            return matches[0];
+        }
 
         // No match; create a new contact with a unique ID
         let id = GLib.uuid_string_random();
