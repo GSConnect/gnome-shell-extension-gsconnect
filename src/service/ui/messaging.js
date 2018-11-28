@@ -314,11 +314,10 @@ const ConversationWidget = GObject.registerClass({
 
         // If we're disconnected pending messages might not succeed, but we'll
         // leave them until reconnect when we'll ask for an update
-        this._connectedId = this.device.connect('notify::connected', (device) => {
-            if (device.connected) {
-                this.pending_box.foreach(msg => msg.destroy());
-            }
-        });
+        this._connectedId = this.device.connect(
+            'notify::connected',
+            this._onConnected.bind(this)
+        );
 
         // Cleanup on ::destroy
         this.connect('destroy', this._onDestroy);
@@ -341,7 +340,11 @@ const ConversationWidget = GObject.registerClass({
     }
 
     get address() {
-        return this._address || null;
+        if (this._address === undefined) {
+            this._address = null;
+        }
+
+        return this._address;
     }
 
     set address(value) {
@@ -349,14 +352,10 @@ const ConversationWidget = GObject.registerClass({
         this._displayNumber = value;
         this._notifications = [];
 
-        // Ensure we have a contact stored
-        let contact = this.device.contacts.query({number: value});
-        this._contact_id = contact.id;
-
         // See if we have a nicer display number
         let number = value.toPhoneNumber();
 
-        for (let contactNumber of contact.numbers) {
+        for (let contactNumber of this.contact.numbers) {
             let cnumber = contactNumber.value.toPhoneNumber();
 
             if (number.endsWith(cnumber) || cnumber.endsWith(number)) {
@@ -369,16 +368,12 @@ const ConversationWidget = GObject.registerClass({
     }
 
     get contact() {
-        if (this._contact_id) {
-            return this.device.contacts.get_item(this._contact_id);
+        // Ensure we have a contact and hold a reference to it
+        if (!this._contact) {
+            this._contact = this.device.contacts.query({number: this.address});
         }
 
-        return null;
-    }
-
-    set contact(id) {
-        let contact = this.device.contacts.get_item(id);
-        this._contact_id = (contact) ? contact.id : null;
+        return this._contact;
     }
 
     get has_pending() {
@@ -393,16 +388,10 @@ const ConversationWidget = GObject.registerClass({
         return this._sms;
     }
 
-    get thread_id() {
-        if (!this._thread_id) {
-            this._thread_id = 0;
+    _onConnected(device) {
+        if (device.connected) {
+            this.pending_box.foreach(msg => msg.destroy());
         }
-
-        return this._thread_id;
-    }
-
-    set thread_id(id) {
-        this._thread_id = id || 0;
     }
 
     _onDestroy(conversation) {
@@ -427,18 +416,19 @@ const ConversationWidget = GObject.registerClass({
 
         // Try and find a conversation for this number
         let number = this.address.toPhoneNumber();
+        let thread_id = null;
 
         for (let thread of Object.values(this.sms.conversations)) {
             let tnumber = thread[0].address.toPhoneNumber();
 
             if (number.endsWith(tnumber) || tnumber.endsWith(number)) {
-                this.thread_id = thread[0].thread_id;
+                thread_id = thread[0].thread_id;
                 break;
             }
         }
 
-        if (this.sms.conversations[this.thread_id]) {
-            this.__messages = this.sms.conversations[this.thread_id].slice(0);
+        if (this.sms.conversations[thread_id]) {
+            this.__messages = this.sms.conversations[thread_id].slice(0);
             this._populateBack();
         }
     }
@@ -492,11 +482,6 @@ const ConversationWidget = GObject.registerClass({
 
     // message-list::size-allocate
     _onMessageLogged(listbox, allocation) {
-        // Skip if there's no thread defined
-        if (this.thread_id === 0) {
-            return;
-        }
-
         let vadj = this.message_window.vadjustment;
 
         // Try loading more messages if there's room
@@ -519,7 +504,7 @@ const ConversationWidget = GObject.registerClass({
 
     // message-window::edge-reached
     _onMessageRequested(scrolled_window, pos) {
-        if (pos === Gtk.PositionType.TOP && this.thread_id) {
+        if (pos === Gtk.PositionType.TOP) {
             this.__pos = this.message_window.vadjustment.get_upper();
             this._populateBack();
         }
