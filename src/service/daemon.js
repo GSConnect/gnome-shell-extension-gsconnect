@@ -729,7 +729,7 @@ const Service = GObject.registerClass({
 
         // Bluetooth.ChannelService
         try {
-            this.bluetooth = new Bluetooth.ChannelService();
+            //this.bluetooth = new Bluetooth.ChannelService();
         } catch (e) {
             if (this.bluetooth) {
                 this.bluetooth.destroy();
@@ -827,9 +827,6 @@ const Service = GObject.registerClass({
             this.lan.destroy();
         }
 
-        // FIXME: Really, really bad hack, but sometimes hangs in bluez can
-        // prevent the service from stopping or even hang the desktop.
-        System.exit(0);
         if (this.bluetooth) {
             this.bluetooth.destroy();
         }
