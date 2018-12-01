@@ -93,6 +93,12 @@ class Source extends NotificationDaemon.GtkNotificationDaemonAppSource {
             return;
         }
 
+        // TODO: Sometimes @notification is the object, sometimes it's the id?
+        if (typeof notification === 'string') {
+            notification = this.notifications[notification];
+            if (!notification) return;
+        }
+
         // Avoid sending the request multiple times
         if (notification._remoteClosed) {
             return;
