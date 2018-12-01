@@ -175,7 +175,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
                         this._activate().catch(debug);
                     }
 
-                    return false;
+                    return GLib.SOURCE_REMOVE;
                 });
 
             // Otherwise we need to setup the currently managed devices
@@ -478,7 +478,7 @@ var serviceIndicator = null;
 
 
 function init() {
-    debug('Initializing GSConnect');
+    debug(`Initializing GSConnect v${gsconnect.metadata.version}`);
 
     Gtk.IconTheme.get_default().add_resource_path(gsconnect.app_path + '/icons');
 
@@ -498,7 +498,7 @@ function init() {
 
 
 function enable() {
-    debug('Enabling GSConnect');
+    debug(`Enabling GSConnect v${gsconnect.metadata.version}`);
 
     serviceIndicator = new ServiceIndicator();
     Notification.patchGtkNotificationSources();
@@ -506,7 +506,7 @@ function enable() {
 
 
 function disable() {
-    debug('Disabling GSConnect');
+    debug(`Disabling GSConnect v${gsconnect.metadata.version}`);
 
     serviceIndicator.destroy();
     serviceIndicator = null;
