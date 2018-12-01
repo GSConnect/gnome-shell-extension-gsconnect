@@ -243,15 +243,15 @@ var Window = GObject.registerClass({
         'service-name', 'headerbar-edit', 'headerbar-entry',
         'device-name', 'device-type',
         'prev-button', 'device-menu', 'service-menu',
+
         // Sidebar
         'stack', 'switcher', 'sidebar',
         'appearance-list', 'display-mode',
         'service-list', 'software-list',
         'help',
+
         // Dependencies
-        'caribou-help', 'caribou-ok',
-        'nautilus-help', 'nautilus-ok',
-        'sshfs-help', 'sshfs-ok'
+        'caribou-help', 'caribou-ok', 'nautilus-help', 'nautilus-ok'
     ]
 }, class Window extends Gtk.ApplicationWindow {
 
@@ -343,9 +343,8 @@ var Window = GObject.registerClass({
     _onVisibleChildName(stack) {
         if (stack.visible_child_name !== 'other') return;
 
-        for (let name of ['caribou', 'nautilus', 'sshfs']) {
-            this.checkDependency(name);
-        }
+        this.checkDependency('caribou');
+        this.checkDependency('nautilus');
     }
 
     async checkDependency(name) {
@@ -372,10 +371,6 @@ var Window = GObject.registerClass({
                         }
                     });
                 });
-
-            // Remote Filesystems
-            } else if (name === 'sshfs') {
-                result = GLib.find_program_in_path(gsconnect.metadata.bin.sshfs);
             }
         } catch (e) {
             result = false;
