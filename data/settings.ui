@@ -54,7 +54,7 @@
                     <property name="can_focus">False</property>
                     <property name="halign">center</property>
                     <property name="valign">center</property>
-                    <property name="margin_left">44</property>
+                    <property name="margin_left">48</property>
                     <property name="hexpand">True</property>
                     <property name="vexpand">True</property>
                     <child>
@@ -150,7 +150,9 @@
                 <property name="receives_default">True</property>
                 <property name="halign">center</property>
                 <property name="valign">center</property>
+                <property name="margin_left">48</property>
                 <property name="hexpand">True</property>
+                <property name="input_purpose">name</property>
                 <signal name="activate" handler="_onSetServiceName" swapped="no"/>
                 <signal name="focus-out-event" handler="_onUnfocusServiceName" swapped="no"/>
                 <signal name="key-press-event" handler="_onEscServiceName" swapped="no"/>
@@ -757,7 +759,6 @@
                           <packing>
                             <property name="left_attach">0</property>
                             <property name="top_attach">1</property>
-                            <property name="width">2</property>
                           </packing>
                         </child>
                         <child>
@@ -776,63 +777,6 @@
                           <packing>
                             <property name="left_attach">0</property>
                             <property name="top_attach">0</property>
-                            <property name="width">2</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkButton">
-                            <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="receives_default">True</property>
-                            <property name="tooltip_text">https://addons.mozilla.org/firefox/addon/gsconnect/</property>
-                            <property name="halign">start</property>
-                            <property name="valign">center</property>
-                            <property name="margin_bottom">32</property>
-                            <signal name="clicked" handler="_onLinkButton" swapped="no"/>
-                            <child>
-                              <object class="GtkImage">
-                                <property name="width_request">172</property>
-                                <property name="height_request">60</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="resource">/org/gnome/Shell/Extensions/GSConnect/icons/firefox-badge.png</property>
-                              </object>
-                            </child>
-                            <style>
-                              <class name="badge-button"/>
-                            </style>
-                          </object>
-                          <packing>
-                            <property name="left_attach">0</property>
-                            <property name="top_attach">3</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkButton">
-                            <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="receives_default">True</property>
-                            <property name="tooltip_text">https://chrome.google.com/webstore/detail/gsconnect/jfnifeihccihocjbfcfhicmmgpjicaec</property>
-                            <property name="halign">end</property>
-                            <property name="valign">center</property>
-                            <property name="margin_bottom">32</property>
-                            <signal name="clicked" handler="_onLinkButton" swapped="no"/>
-                            <child>
-                              <object class="GtkImage">
-                                <property name="width_request">206</property>
-                                <property name="height_request">58</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="resource">/org/gnome/Shell/Extensions/GSConnect/icons/chrome-badge.png</property>
-                              </object>
-                            </child>
-                            <style>
-                              <class name="badge-button"/>
-                            </style>
-                          </object>
-                          <packing>
-                            <property name="left_attach">1</property>
-                            <property name="top_attach">3</property>
                           </packing>
                         </child>
                         <child>
@@ -851,7 +795,6 @@
                           <packing>
                             <property name="left_attach">0</property>
                             <property name="top_attach">2</property>
-                            <property name="width">2</property>
                           </packing>
                         </child>
                         <child>
@@ -869,7 +812,6 @@
                           <packing>
                             <property name="left_attach">0</property>
                             <property name="top_attach">4</property>
-                            <property name="width">2</property>
                           </packing>
                         </child>
                         <child>
@@ -885,7 +827,73 @@
                           <packing>
                             <property name="left_attach">0</property>
                             <property name="top_attach">5</property>
-                            <property name="width">2</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkBox">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="halign">start</property>
+                            <property name="margin_bottom">32</property>
+                            <property name="spacing">12</property>
+                            <child>
+                              <object class="GtkButton">
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">True</property>
+                                <property name="tooltip_text">https://addons.mozilla.org/firefox/addon/gsconnect/</property>
+                                <property name="valign">center</property>
+                                <signal name="clicked" handler="_onLinkButton" swapped="no"/>
+                                <child>
+                                  <object class="GtkImage">
+                                    <property name="width_request">172</property>
+                                    <property name="height_request">60</property>
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="resource">/org/gnome/Shell/Extensions/GSConnect/icons/firefox-badge.png</property>
+                                  </object>
+                                </child>
+                                <style>
+                                  <class name="badge-button"/>
+                                </style>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkButton">
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">True</property>
+                                <property name="tooltip_text">https://chrome.google.com/webstore/detail/gsconnect/jfnifeihccihocjbfcfhicmmgpjicaec</property>
+                                <property name="valign">center</property>
+                                <signal name="clicked" handler="_onLinkButton" swapped="no"/>
+                                <child>
+                                  <object class="GtkImage">
+                                    <property name="width_request">206</property>
+                                    <property name="height_request">58</property>
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="resource">/org/gnome/Shell/Extensions/GSConnect/icons/chrome-badge.png</property>
+                                  </object>
+                                </child>
+                                <style>
+                                  <class name="badge-button"/>
+                                </style>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="left_attach">0</property>
+                            <property name="top_attach">3</property>
                           </packing>
                         </child>
                       </object>
