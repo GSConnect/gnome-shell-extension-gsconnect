@@ -32,10 +32,11 @@ var Window = GObject.registerClass({
         'notification-device', 'notification-id', 'notification-time',
         'notification-appname', 'notification-title', 'notification-text',
         'notification-ticker', 'notification-requestreplyid', 'notification-isclearable',
+        'sms-device', 'sms-address', 'sms-body', 'sms-type', 'sms-read', 'sms-id', 'sms-thread-id', 'sms-event-text',
+        'sms-phonenumber', 'sms-messagebody',
         'telephony-device', 'telephony-event', 'telephony-name', 'telephony-number',
         'telephony-body', 'telephony-duplicate', 'telephony-iscancel', 'telephony-receive',
-        'heap-path', 'heap-save',
-        'log-save', 'log-type'
+        'heap-path', 'heap-save'
     ]
 }, class Window extends Gtk.ApplicationWindow {
 
@@ -50,17 +51,22 @@ var Window = GObject.registerClass({
         });
 
         // Log & Debug Mode actions
-        let logAction = new Gio.SimpleAction({name: 'log'});
-        logAction.connect('activate', this._logAction);
-        this.add_action(logAction);
         this.add_action(gsconnect.settings.create_action('debug'));
+
+        let openLog = new Gio.SimpleAction({name: 'open-log'});
+        openLog.connect('activate', this._openLog);
+        this.add_action(openLog);
+
+        let saveLog = new Gio.SimpleAction({name: 'save-log'});
+        saveLog.connect('activate', this._saveLog);
+        this.add_action(saveLog);
 
         // Watch for device changes
         this._devicesChangedId = this.application.connect(
             'notify::devices',
             this._onDevicesChanged.bind(this)
         );
-        this._onDevicesChanged(this.application);
+        this._onDevicesChanged();
 
         // Validate packet entry
         this.packet_body.buffer.connect(
@@ -82,24 +88,35 @@ var Window = GObject.registerClass({
         this.show_all();
     }
 
-    _onDevicesChanged(application) {
+    vfunc_delete_event(event) {
+        this.disconnect_template();
+        this.application.disconnect(this._devicesChangedId);
+    }
+
+    _onDevicesChanged() {
         this.packet_device.remove_all();
         this.notification_device.remove_all();
+        this.sms_device.remove_all();
         this.telephony_device.remove_all();
 
         for (let device of this.application._devices.values()) {
             this.packet_device.append(device.id, device.name);
             this.notification_device.append(device.id, device.name);
+            this.sms_device.append(device.id, device.name);
             this.telephony_device.append(device.id, device.name);
         }
 
         if (this.application.devices.length > 0) {
             this.packet_device.active = 0;
             this.notification_device.active = 0;
+            this.sms_device.active = 0;
             this.telephony_device.active = 0;
         }
     }
 
+    /**
+     * Raw Packet
+     */
     _onPacketDestinationChanged(combobox) {
         this.packet_type.remove_all();
 
@@ -166,7 +183,7 @@ var Window = GObject.registerClass({
                 });
             } else if (this.packet_direction.active_id === 'incoming') {
                 device.sendPacket({
-                    id: 0,
+                    id: Date.now(),
                     type: this.packet_type.active_id,
                     body: body
                 });
@@ -176,6 +193,9 @@ var Window = GObject.registerClass({
         }
     }
 
+    /**
+     * Notification
+     */
     _onNotificationIdChanged(combobox) {
         if (this.notification_id.active_id === '0|com.google.android.apps.messaging|0|com.google.android.apps.messaging:sms:22|10109') {
             this.notification_appname.text = 'Messages';
@@ -243,6 +263,52 @@ var Window = GObject.registerClass({
         }
     }
 
+    /**
+     * SMS
+     */
+    _onSmsReceive(button) {
+        let device = this.application._devices.get(this.sms_device.active_id);
+
+        device.receivePacket({
+            id: Date.now(),
+            type: 'kdeconnect.sms.messages',
+            body: {
+                messages: [
+                    {
+                        address: this.sms_address.text,
+                        body: this.sms_body.text,
+                        date: Date.now(),
+                        type: parseInt(this.sms_type.active_id),
+                        read: parseInt(this.sms_read.active_id),
+                        _id: this.sms_id.value,
+                        thread_id: this.sms_thread_id.value,
+                        // FIXME
+                        event: (this.sms_event_text.active) ? 0x1 : 0
+                    }
+                ]
+            }
+        });
+
+        this.sms_id.value++;
+    }
+
+    _onSmsSend(button) {
+        let device = this.application._devices.get(this.sms_device.active_id);
+
+        device.sendPacket({
+            id: Date.now(),
+            type: 'kdeconnect.sms.request',
+            body: {
+                sendSms: true,
+                phoneNumber: this.sms_phonenumber.text,
+                messageBody: this.sms_messagebody.text
+            }
+        });
+    }
+
+    /**
+     * Telephony
+     */
     _onTelephonyEventChanged(combobox) {
         this.telephony_duplicate.sensitive = ['missedCall', 'sms'].includes(combobox.active_id);
     }
@@ -342,45 +408,25 @@ var Window = GObject.registerClass({
         }
     }
 
-    _onDestroy() {
-        this.disconnect_template();
-        this.application.disconnect(this._devicesChangedId);
-    }
-
     /**
      * Logging
      */
-    _logAction() {
+    _openLog() {
         try {
-            GLib.spawn_command_line_async(
-                'gnome-terminal ' +
-                //`--tab --title "GJS" --command "journalctl _PID=${getPID()} -f -o cat" ` +
-                '--tab --title "GJS" --command "journalctl -f -o cat /usr/bin/gjs" ' +
-                '--tab --title "GNOME Shell" --command "journalctl -f -o cat /usr/bin/gnome-shell"'
-            );
+            let display = Gdk.Display.get_default();
+            let ctx = display.get_app_launch_context();
+
+            Gio.AppInfo.create_from_commandline(
+                'journalctl -f -o cat /usr/bin/gjs /usr/bin/gnome-shell',
+                'GSConnect',
+                Gio.AppInfoCreateFlags.NEEDS_TERMINAL
+            ).launch([], ctx);
         } catch (e) {
-            // We couldn't launch gnome-terminal, fall back to Gio
             logError(e);
-            let disp = new Gdk.Display;
-            let ctx = disp.get_app_launch_context();
-
-            let app = Gio.AppInfo.create_from_commandline(
-                'journalctl -f -o cat /usr/bin/gjs',
-                'GJS',
-                Gio.AppInfoCreateFlags.NEEDS_TERMINAL
-            );
-            app.launch([], ctx);
-
-            app = Gio.AppInfo.create_from_commandline(
-                'journalctl -f -o cat /usr/bin/gnome-shell',
-                'GNOME Shell',
-                Gio.AppInfoCreateFlags.NEEDS_TERMINAL
-            );
-            app.launch([], ctx);
         }
     }
 
-    async _onLogSave() {
+    async _saveLog() {
         try {
             let file = Gio.File.new_tmp('gsconnect.XXXXXX')[0];
 
@@ -401,7 +447,8 @@ var Window = GObject.registerClass({
                     '--no-host',
                     '--since',
                     GLib.DateTime.new_now_local().add_minutes(-15).format('%R'),
-                    this.log_type.active_id
+                    '/usr/bin/gjs',
+                    '/usr/bin/gnome-shell'
                 ]
             });
             proc.init(null);
@@ -425,7 +472,7 @@ var Window = GObject.registerClass({
                     try {
                         resolve(proc.wait_finish(res));
                     } catch (e) {
-                        resolve(e);
+                        reject(e);
                     }
                 });
             });
