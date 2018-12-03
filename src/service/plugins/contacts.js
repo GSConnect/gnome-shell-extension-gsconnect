@@ -138,24 +138,22 @@ var Plugin = GObject.registerClass({
             let c1 = 0;
             let seqlen = 0;
 
-            input += '';
-
             while (i < input.length) {
                 c1 = input.charCodeAt(i) & 0xFF;
                 seqlen = 0;
 
                 if (c1 <= 0xBF) {
-                  c1 = (c1 & 0x7F);
-                  seqlen = 1
+                    c1 = (c1 & 0x7F);
+                    seqlen = 1;
                 } else if (c1 <= 0xDF) {
-                  c1 = (c1 & 0x1F);
-                  seqlen = 2;
+                    c1 = (c1 & 0x1F);
+                    seqlen = 2;
                 } else if (c1 <= 0xEF) {
-                  c1 = (c1 & 0x0F);
-                  seqlen = 3;
+                    c1 = (c1 & 0x0F);
+                    seqlen = 3;
                 } else {
-                  c1 = (c1 & 0x07);
-                  seqlen = 4;
+                    c1 = (c1 & 0x07);
+                    seqlen = 4;
                 }
 
                 for (let ai = 1; ai < seqlen; ++ai) {
@@ -170,7 +168,7 @@ var Plugin = GObject.registerClass({
                     output.push(String.fromCharCode(c1));
                 }
 
-                i += seqlen
+                i += seqlen;
             }
 
             return output.join('');
