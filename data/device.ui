@@ -431,6 +431,7 @@
                       <object class="GtkToolItem">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="halign">center</property>
                         <child>
                           <object class="GtkBox">
                             <property name="visible">True</property>
@@ -440,6 +441,7 @@
                             <child>
                               <object class="GtkButton" id="command-add">
                                 <property name="visible">True</property>
+                                <property name="sensitive">False</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
                                 <signal name="clicked" handler="_onAddCommand" swapped="no"/>
@@ -451,6 +453,9 @@
                                     <property name="icon_size">2</property>
                                   </object>
                                 </child>
+                                <style>
+                                  <class name="circular"/>
+                                </style>
                               </object>
                               <packing>
                                 <property name="expand">False</property>
@@ -473,6 +478,10 @@
                                     <property name="icon_size">2</property>
                                   </object>
                                 </child>
+                                <style>
+                                  <class name="circular"/>
+                                  <class name="destructive-action"/>
+                                </style>
                               </object>
                               <packing>
                                 <property name="expand">False</property>
