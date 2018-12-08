@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-11-19 11:14-0800\n"
-"PO-Revision-Date: 2018-11-05 19:14+0100\n"
+"PO-Revision-Date: 2018-12-08 11:23+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 2.0.6\n"
+"X-Generator: Poedit 2.2\n"
 
 #: data/conversation.ui:71 data/conversation.ui:79
 msgid "Type a message"
@@ -44,7 +44,7 @@ msgstr "Souris et clavier"
 
 #: data/device.ui:268
 msgid "Volume Control"
-msgstr "Contrôle du volume"
+msgstr "Gestion du volume"
 
 #: data/device.ui:308 data/device.ui:1406
 msgid "Sharing"
@@ -171,7 +171,7 @@ msgstr "Se connecter en Bluetooth"
 #. TRANSLATORS: Change the connection type to TCP/IP
 #: data/menus.ui:41
 msgid "Switch to LAN"
-msgstr ""
+msgstr "Se connecter au réseau local"
 
 #. TRANSLATORS: View the TLS Certificate fingerprint
 #: data/menus.ui:48 src/service/ui/settings.js:612
@@ -462,9 +462,8 @@ msgid "Accept"
 msgstr "Accepter"
 
 #: src/service/plugins/battery.js:194 src/service/plugins/findmyphone.js:18
-#, fuzzy
 msgid "Ring"
-msgstr "Localisation"
+msgstr "Faire sonner"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is low
 #: src/service/plugins/battery.js:203
@@ -758,7 +757,7 @@ msgstr "%s・Maison"
 
 #: src/service/ui/contacts.js:203
 msgid "Select a contact or number"
-msgstr ""
+msgstr "Sélectionner un contact ou un numéro"
 
 #. TRANSLATORS: A phone number (eg. "Send to 555-5555")
 #: src/service/ui/contacts.js:239 src/service/ui/contacts.js:253
