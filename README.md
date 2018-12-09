@@ -16,7 +16,7 @@ With GSConnect, you can :
 - Use your phone as a remote control for your desktop
 - Run commands on your PC.
 
-To install this gnome extension, follow the **[Installation Instructions][install]** in the Wiki.
+To install this Gnome extension, follow the **[Installation Instructions][install]** in the Wiki.
 
 Please see the **[Wiki][wiki]** for more information and **[Help][help]**.
 
