@@ -1,10 +1,7 @@
 [GSConnect][ego] is a complete implementation of [KDE Connect][kdeconnect] for
 GNOME Shell with Nautilus, [Chrome][chrome] and [Firefox][firefox] integration.
 
-![Extension Screenshot][screenshot]
-
-
-With GSConnect, you can :
+With GSConnect, you can 
 - Receive your phone notifications on your desktop computer and reply to messages
 - Check your phones battery level from the desktop
 - Share your clipboard accross your devices
@@ -29,5 +26,3 @@ Please see the **[Wiki][wiki]** for more information and **[Help][help]**.
 [wiki]: https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/
 [help]: https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Help
 [install]: https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Installation#standard
-
-[screenshot]: https://raw.githubusercontent.com/andyholmes/gnome-shell-extension-gsconnect/master/extra/screenshot.png
