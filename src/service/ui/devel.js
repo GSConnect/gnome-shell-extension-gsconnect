@@ -24,8 +24,8 @@ function getPID() {
 
 
 var Window = GObject.registerClass({
-    GTypeName: 'GSConnectDebugWindow',
-    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/debug.ui',
+    GTypeName: 'GSConnectDevelWindow',
+    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/devel.ui',
     Children: [
         'headerbar', 'stack', 'switcher',
         'packet-device', 'packet-direction', 'packet-type', 'packet-body', 'packet-button',
@@ -33,7 +33,7 @@ var Window = GObject.registerClass({
         'notification-appname', 'notification-title', 'notification-text',
         'notification-ticker', 'notification-requestreplyid', 'notification-isclearable',
         'sms-device', 'sms-address', 'sms-body', 'sms-type', 'sms-read', 'sms-id', 'sms-thread-id', 'sms-event-text',
-        'sms-phonenumber', 'sms-messagebody',
+        'sms-phonenumber', 'sms-messagebody', 'sms-uri',
         'telephony-device', 'telephony-event', 'telephony-name', 'telephony-number',
         'telephony-body', 'telephony-duplicate', 'telephony-iscancel', 'telephony-receive',
         'heap-path', 'heap-save'
@@ -45,8 +45,6 @@ var Window = GObject.registerClass({
 
         super._init({
             application: Gio.Application.get_default(),
-            default_width: 480,
-            default_height: 320,
             visible: true
         });
 
@@ -56,10 +54,6 @@ var Window = GObject.registerClass({
         let openLog = new Gio.SimpleAction({name: 'open-log'});
         openLog.connect('activate', this._openLog);
         this.add_action(openLog);
-
-        let saveLog = new Gio.SimpleAction({name: 'save-log'});
-        saveLog.connect('activate', this._saveLog);
-        this.add_action(saveLog);
 
         // Watch for device changes
         this._devicesChangedId = this.application.connect(
@@ -111,6 +105,16 @@ var Window = GObject.registerClass({
             this.notification_device.active = 0;
             this.sms_device.active = 0;
             this.telephony_device.active = 0;
+        }
+    }
+
+    /**
+     * Toggling Bluetooth for testing purposes
+     */
+    _onBluetoothEnabled(widget) {
+        if (widget.active) {
+            this.application.bluetooth = new imports.service.bluetooth.ChannelService();
+            widget.sensitive = false;
         }
     }
 
@@ -306,6 +310,40 @@ var Window = GObject.registerClass({
         });
     }
 
+    _onSyncContacts(button) {
+        let device = this.application._devices.get(this.sms_device.active_id);
+        device.lookup_plugin('contacts').connected();
+    }
+
+    _onDeleteContacts(button) {
+        let device = this.application._devices.get(this.sms_device.active_id);
+        device.lookup_plugin('contacts')._store.clear();
+    }
+
+    _onSyncSMS(button) {
+        let device = this.application._devices.get(this.sms_device.active_id);
+        device.lookup_plugin('sms').connected();
+    }
+
+    _onDeleteSMS(button) {
+        let device = this.application._devices.get(this.sms_device.active_id);
+        device.lookup_plugin('sms').conversations = {};
+        device.lookup_plugin('sms').__cache_write();
+    }
+
+    _onOpenURI(entry) {
+        if (this.sms_uri.text) {
+            log(this.sms_uri.text);
+            Gio.AppInfo.launch_default_for_uri_async(this.sms_uri.text, null, null, (src, res) => {
+                try {
+                    Gio.AppInfo.launch_default_for_uri_finish(res);
+                } catch (e) {
+                    logError(e);
+                }
+            });
+        }
+    }
+
     /**
      * Telephony
      */
@@ -421,71 +459,6 @@ var Window = GObject.registerClass({
                 'GSConnect',
                 Gio.AppInfoCreateFlags.NEEDS_TERMINAL
             ).launch([], ctx);
-        } catch (e) {
-            logError(e);
-        }
-    }
-
-    async _saveLog() {
-        try {
-            let file = Gio.File.new_tmp('gsconnect.XXXXXX')[0];
-
-            let logFile = await new Promise((resolve, reject) => {
-                file.replace_async(null, false, 2, 0, null, (file, res) => {
-                    try {
-                        resolve(file.replace_finish(res));
-                    } catch (e) {
-                        reject(e);
-                    }
-                });
-            });
-
-            let proc = new Gio.Subprocess({
-                flags: Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDOUT_PIPE,
-                argv: [
-                    'journalctl',
-                    '--no-host',
-                    '--since',
-                    GLib.DateTime.new_now_local().add_minutes(-15).format('%R'),
-                    '/usr/bin/gjs',
-                    '/usr/bin/gnome-shell'
-                ]
-            });
-            proc.init(null);
-
-            logFile.splice_async(
-                proc.get_stdout_pipe(),
-                Gio.OutputStreamSpliceFlags.NONE,
-                GLib.PRIORITY_DEFAULT,
-                null,
-                (source, res) => {
-                    try {
-                        source.splice_finish(res);
-                    } catch (e) {
-                        logError(e);
-                    }
-                }
-            );
-
-            await new Promise((resolve, reject) => {
-                proc.wait_check_async(null, (proc, res) => {
-                    try {
-                        resolve(proc.wait_finish(res));
-                    } catch (e) {
-                        reject(e);
-                    }
-                });
-            });
-
-            await new Promise((resolve, reject) => {
-                Gio.AppInfo.launch_default_for_uri_async(file.get_uri(), null, null, (src, res) => {
-                    try {
-                        Gio.AppInfo.launch_default_for_uri_finish(res);
-                    } catch (e) {
-                        logError(e);
-                    }
-                });
-            });
         } catch (e) {
             logError(e);
         }

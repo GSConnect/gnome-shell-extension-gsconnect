@@ -100,12 +100,9 @@ const Service = GObject.registerClass({
     // Properties
     get certificate() {
         if (this._certificate === undefined) {
-            let certPath = gsconnect.configdir + '/certificate.pem';
-            let keyPath = gsconnect.configdir + '/private.pem';
-
             this._certificate = Gio.TlsCertificate.new_for_paths(
-                certPath,
-                keyPath
+                GLib.build_filenamev([gsconnect.configdir, 'certificate.pem']),
+                GLib.build_filenamev([gsconnect.configdir, 'private.pem'])
             );
         }
 
@@ -192,6 +189,11 @@ const Service = GObject.registerClass({
                     this.bluetooth.broadcast(address);
                     break;
 
+                // If not discoverable we'll only broadcast to paired devices
+                case !this.discoverable:
+                    this.reconnect();
+                    break;
+
                 // We only do true "broadcasts" for LAN
                 default:
                     this.lan.broadcast();
@@ -206,8 +208,17 @@ const Service = GObject.registerClass({
      */
     reconnect() {
         for (let device of this._devices.values()) {
-            if (device.paired && !device.connected) {
-                device.activate();
+            if (!device.connected) {
+                if (device.paired) {
+                    device.activate();
+
+                // Prune the device if the settings window is not open
+                } else if (this._window && this._window.visible) {
+                    device.destroy();
+                    this._devices.delete(id);
+                    gsconnect.settings.set_strv('devices', this.devices);
+                    this.notify('devices');
+                }
             }
         }
 
@@ -229,9 +240,13 @@ const Service = GObject.registerClass({
 
             // TODO: Remove when all clients support bluetooth-like discovery
             //
-            // If this is the third device to connect, disable discovery to
-            // avoid choking on networks with a large amount of devices
-            if (this._devices.size === 2 && this.discoverable) {
+            // If this is the third unpaired device to connect, we disable
+            // discovery to avoid choking on networks with many devices
+            let unpaired = Array.from(this._devices.values()).filter(dev => {
+                return !dev.paired;
+            });
+
+            if (unpaired.length === 2 && this.discoverable) {
                 this.activate_action('discoverable', null);
 
                 let error = new Error();
@@ -249,24 +264,6 @@ const Service = GObject.registerClass({
         }
 
         return device;
-    }
-
-    _pruneDevices() {
-        // Don't prune devices while the settings window is open; this also
-        // prevents devices from being pruned while being deleted.
-        if (this._window && this._window.visible) {
-            return;
-        }
-
-        for (let [id, device] of this._devices.entries()) {
-            if (!device.connected && !device.paired) {
-                device.destroy();
-                this._devices.delete(id);
-                gsconnect.settings.set_strv('devices', this.devices);
-            }
-        }
-
-        this.notify('devices');
     }
 
     /**
@@ -311,16 +308,14 @@ const Service = GObject.registerClass({
             ['deviceAction', this._deviceAction.bind(this), '(ssbv)'],
 
             // App Menu
-            ['connect', this._connectAction.bind(this)],
-            ['preference', this._preferencesAction.bind(this), 's'],
             ['preferences', this._preferencesAction.bind(this)],
             ['about', this._aboutAction.bind(this)],
 
             // Misc service actions
             ['broadcast', this.broadcast.bind(this)],
-            ['error', this._errorAction.bind(this), 'a{ss}'],
-            ['debugger', this._debuggerAction.bind(this)],
-            ['wiki', this._wikiAction.bind(this), 's'],
+            ['error', this._error.bind(this), 'a{ss}'],
+            ['devel', this._devel.bind(this)],
+            ['wiki', this._wiki.bind(this), 's'],
             ['quit', () => this.quit()]
         ];
 
@@ -364,10 +359,6 @@ const Service = GObject.registerClass({
         }
     }
 
-    _connectAction() {
-        (new ServiceUI.DeviceConnectDialog()).show_all();
-    }
-
     _preferencesAction(page = null, parameter = null) {
         if (parameter instanceof GLib.Variant) {
             page = parameter.unpack();
@@ -378,13 +369,9 @@ const Service = GObject.registerClass({
         }
 
         // Open to a specific page
-        if (page) {
-            this._window.switcher.foreach(row => {
-                if (row.get_name() === page) {
-                    this._window.switcher.select_row(row);
-                    return;
-                }
-            });
+        if (typeof page === 'string' && this._window.stack.get_child_by_name(page)) {
+            this._window._onDeviceSelected(page);
+
         // Open the main page
         } else {
             this._window._onPrevious();
@@ -427,7 +414,11 @@ const Service = GObject.registerClass({
         this._about.present();
     }
 
-    _errorAction(action, parameter) {
+    _devel() {
+        (new imports.service.ui.devel.Window()).present();
+    }
+
+    _error(action, parameter) {
         try {
             let error = parameter.deep_unpack();
             let dialog = new Gtk.MessageDialog({
@@ -459,11 +450,7 @@ const Service = GObject.registerClass({
         }
     }
 
-    _debuggerAction() {
-        (new imports.service.ui.debug.Window()).present();
-    }
-
-    _wikiAction(action, parameter) {
+    _wiki(action, parameter) {
         this._github(`wiki/${parameter.unpack()}`);
     }
 
@@ -576,9 +563,7 @@ const Service = GObject.registerClass({
                     title = _('PulseAudio Error');
                     body = _('Click for help troubleshooting');
                     icon = new Gio.ThemedIcon({name: 'dialog-error'});
-                    notif.set_default_action(
-                        `app.wiki('Help#${error.name}')`
-                    );
+                    notif.set_default_action(`app.wiki('Help#${error.name}')`);
                     break;
 
                 case 'DiscoveryWarning':
@@ -588,7 +573,7 @@ const Service = GObject.registerClass({
                            '\n\n' +
                            _('Click to open preferences');
                     icon = new Gio.ThemedIcon({name: 'dialog-warning'});
-                    notif.set_default_action('app.preference::service');
+                    notif.set_default_action('app.preferences');
                     notif.set_priority(Gio.NotificationPriority.NORMAL);
                     break;
 
@@ -679,6 +664,11 @@ const Service = GObject.registerClass({
             provider,
             Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
         );
+
+        // Ensure out handlers are registered
+        let appInfo = Gio.DesktopAppInfo.new(`${gsconnect.app_id}.desktop`);
+        appInfo.add_supports_type('x-scheme-handler/sms');
+        appInfo.add_supports_type('x-scheme-handler/tel');
 
         // Properties
         gsconnect.settings.bind(
@@ -772,37 +762,54 @@ const Service = GObject.registerClass({
             let action, parameter, title;
 
             try {
-                if (file.get_uri_scheme() === 'sms') {
-                    title = _('Send SMS');
-                    action = 'uriSms';
-                    parameter = new GLib.Variant('s', file.get_uri());
-                } else if (file.get_uri_scheme() === 'tel') {
-                    title = _('Dial Number');
-                    action = 'shareUri';
-                    parameter = new GLib.Variant('s', file.get_uri());
-                } else {
-                    return;
+                switch (file.get_uri_scheme()) {
+                    case 'sms':
+                        title = _('Send SMS');
+                        action = 'uriSms';
+                        parameter = new GLib.Variant('s', file.get_uri());
+                        break;
+
+                    case 'tel':
+                        title = _('Dial Number');
+                        action = 'shareUri';
+                        parameter = new GLib.Variant('s', file.get_uri());
+                        break;
+
+                    case 'file':
+                        title = _('Share File');
+                        action = 'shareFile';
+                        parameter = new GLib.Variant('(sb)', file.get_uri(), false);
+                        break;
+
+                    default:
+                        logWarning(`Unsupported URI: ${file.get_uri()}`);
+                        return;
                 }
 
+                // Find supporting devices
                 for (let device of this._devices.values()) {
                     if (device.get_action_enabled(action)) {
                         devices.push(device);
                     }
                 }
 
-                if (devices.length === 1) {
-                    devices[0].activate_action(action, parameter);
-                } else if (devices.length > 1) {
-                    let win = new ServiceUI.DeviceChooserDialog({
-                        title: title,
-                        devices: devices
-                    });
+                //
+                switch (devices.length) {
+                    case 0:
+                        logWarning(`Unsupported action: ${action}`);
+                        break;
 
-                    if (win.run() === Gtk.ResponseType.OK) {
-                        win.get_device().activate_action(action, parameter);
-                    }
+                    case 1:
+                        devices[0].activate_action(action, parameter);
+                        break;
 
-                    win.destroy();
+                    default:
+                        let win = new ServiceUI.DeviceChooserDialog({
+                            title: title,
+                            devices: devices,
+                            action: action,
+                            parameter: parameter
+                        });
                 }
             } catch (e) {
                 logError(e, `GSConnect: Opening ${file.get_uri()}:`);

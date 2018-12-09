@@ -2,7 +2,21 @@
 <!-- Generated with glade 3.22.1 -->
 <interface domain="org.gnome.Shell.Extensions.GSConnect">
   <requires lib="gtk+" version="3.20"/>
-  <template class="GSConnectDebugWindow" parent="GtkApplicationWindow">
+  <object class="GtkAdjustment" id="sms-id-adjustment">
+    <property name="lower">1</property>
+    <property name="upper">2147483647</property>
+    <property name="value">1</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">1</property>
+  </object>
+  <object class="GtkAdjustment" id="sms-thread-id-adjustment">
+    <property name="lower">1</property>
+    <property name="upper">2147483647</property>
+    <property name="value">2147483647</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">1</property>
+  </object>
+  <template class="GSConnectDevelWindow" parent="GtkApplicationWindow">
     <property name="can_focus">False</property>
     <child type="titlebar">
       <object class="GtkHeaderBar" id="headerbar">
@@ -41,12 +55,13 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
+                <property name="margin_left">12</property>
                 <property name="hexpand">True</property>
                 <property name="label" translatable="yes">Garbage Collector:</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">4</property>
+                <property name="top_attach">5</property>
               </packing>
             </child>
             <child>
@@ -62,7 +77,7 @@
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">4</property>
+                <property name="top_attach">5</property>
               </packing>
             </child>
             <child>
@@ -70,12 +85,13 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
+                <property name="margin_left">12</property>
                 <property name="hexpand">True</property>
                 <property name="label" translatable="yes">Breakpoint:</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">6</property>
+                <property name="top_attach">7</property>
               </packing>
             </child>
             <child>
@@ -91,7 +107,7 @@
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">6</property>
+                <property name="top_attach">7</property>
               </packing>
             </child>
             <child>
@@ -99,12 +115,13 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
+                <property name="margin_left">12</property>
                 <property name="hexpand">True</property>
                 <property name="label" translatable="yes">Dump Heap:</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">5</property>
+                <property name="top_attach">6</property>
               </packing>
             </child>
             <child>
@@ -148,7 +165,7 @@
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">5</property>
+                <property name="top_attach">6</property>
               </packing>
             </child>
             <child>
@@ -199,7 +216,7 @@
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">1</property>
+                <property name="top_attach">0</property>
               </packing>
             </child>
             <child>
@@ -208,11 +225,11 @@
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
                 <property name="hexpand">True</property>
-                <property name="label" translatable="yes">Debug Messages:</property>
+                <property name="label" translatable="yes">Debug Logging:</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">1</property>
+                <property name="top_attach">0</property>
               </packing>
             </child>
             <child>
@@ -220,7 +237,52 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
-                <property name="margin_top">32</property>
+                <property name="margin_left">12</property>
+                <property name="hexpand">True</property>
+                <property name="label" translatable="yes">Bluetooth Connections:</property>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkSwitch">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="halign">end</property>
+                <property name="valign">start</property>
+                <signal name="notify::active" handler="_onBluetoothEnabled" swapped="no"/>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="halign">start</property>
+                <property name="margin_top">12</property>
+                <property name="margin_bottom">12</property>
+                <property name="label" translatable="yes">Experimental</property>
+                <attributes>
+                  <attribute name="weight" value="bold"/>
+                </attributes>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">2</property>
+                <property name="width">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="halign">start</property>
+                <property name="margin_top">12</property>
                 <property name="margin_bottom">12</property>
                 <property name="label" translatable="yes">JavaScript Engine</property>
                 <attributes>
@@ -229,24 +291,7 @@
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">3</property>
-                <property name="width">2</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="halign">start</property>
-                <property name="margin_bottom">12</property>
-                <property name="label" translatable="yes">GSConnect</property>
-                <attributes>
-                  <attribute name="weight" value="bold"/>
-                </attributes>
-              </object>
-              <packing>
-                <property name="left_attach">0</property>
-                <property name="top_attach">0</property>
+                <property name="top_attach">4</property>
                 <property name="width">2</property>
               </packing>
             </child>
@@ -256,55 +301,24 @@
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
                 <property name="hexpand">True</property>
-                <property name="label" translatable="yes">Generate Log (15min):</property>
+                <property name="label" translatable="yes">Restart Service:</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">2</property>
+                <property name="top_attach">1</property>
               </packing>
             </child>
             <child>
               <object class="GtkButton">
+                <property name="label" translatable="yes">Restart</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="halign">end</property>
-                <property name="action_name">win.save-log</property>
-                <child>
-                  <object class="GtkBox">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="spacing">6</property>
-                    <child>
-                      <object class="GtkImage">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="icon_name">document-save-symbolic</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkLabel">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">View</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
-                  </object>
-                </child>
+                <property name="action_name">app.quit</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
-                <property name="top_attach">2</property>
+                <property name="top_attach">1</property>
               </packing>
             </child>
           </object>
@@ -362,13 +376,11 @@
             </child>
             <child>
               <object class="GtkButton" id="packet-button">
-                <property name="label">gtk-execute</property>
+                <property name="label">Inject</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="halign">end</property>
-                <property name="use_stock">True</property>
-                <property name="always_show_image">True</property>
                 <signal name="clicked" handler="_onPacketExecute" swapped="no"/>
               </object>
               <packing>
@@ -900,8 +912,8 @@
                         <property name="hexpand">True</property>
                         <property name="active_id">0</property>
                         <items>
-                          <item id="0" translatable="yes">Unread</item>
-                          <item id="1" translatable="yes">Read</item>
+                          <item id="0" translatable="yes">Unread (0)</item>
+                          <item id="1" translatable="yes">Read (1)</item>
                         </items>
                       </object>
                       <packing>
@@ -916,8 +928,8 @@
                         <property name="hexpand">True</property>
                         <property name="active_id">1</property>
                         <items>
-                          <item id="1" translatable="yes">Incoming</item>
-                          <item id="0" translatable="yes">Outgoing</item>
+                          <item id="1" translatable="yes">Incoming (1)</item>
+                          <item id="2" translatable="yes">Outgoing (2)</item>
                         </items>
                       </object>
                       <packing>
@@ -1126,6 +1138,187 @@
                   </object>
                   <packing>
                     <property name="position">1</property>
+                    <property name="tab_fill">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkGrid">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="margin_left">18</property>
+                    <property name="margin_right">18</property>
+                    <property name="margin_top">18</property>
+                    <property name="margin_bottom">18</property>
+                    <property name="row_spacing">6</property>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="halign">start</property>
+                        <property name="hexpand">True</property>
+                        <property name="label" translatable="yes">Contacts:</property>
+                      </object>
+                      <packing>
+                        <property name="left_attach">0</property>
+                        <property name="top_attach">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="halign">start</property>
+                        <property name="hexpand">True</property>
+                        <property name="label" translatable="yes">SMS History:</property>
+                      </object>
+                      <packing>
+                        <property name="left_attach">0</property>
+                        <property name="top_attach">1</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkButtonBox">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="spacing">6</property>
+                        <property name="homogeneous">True</property>
+                        <property name="layout_style">start</property>
+                        <child>
+                          <object class="GtkButton">
+                            <property name="label" translatable="yes">Sync</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="receives_default">True</property>
+                            <signal name="clicked" handler="_onSyncSMS" swapped="no"/>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkButton">
+                            <property name="label" translatable="yes">Delete</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="receives_default">True</property>
+                            <signal name="clicked" handler="_onDeleteSMS" swapped="no"/>
+                            <style>
+                              <class name="destructive-action"/>
+                            </style>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="left_attach">1</property>
+                        <property name="top_attach">1</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkButtonBox">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="spacing">6</property>
+                        <property name="homogeneous">True</property>
+                        <property name="layout_style">start</property>
+                        <child>
+                          <object class="GtkButton">
+                            <property name="label" translatable="yes">Sync</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="receives_default">True</property>
+                            <signal name="clicked" handler="_onSyncContacts" swapped="no"/>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkButton">
+                            <property name="label" translatable="yes">Delete</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="receives_default">True</property>
+                            <signal name="clicked" handler="_onDeleteContacts" swapped="no"/>
+                            <style>
+                              <class name="destructive-action"/>
+                            </style>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="left_attach">1</property>
+                        <property name="top_attach">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkSeparator">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="margin_top">6</property>
+                        <property name="margin_bottom">6</property>
+                      </object>
+                      <packing>
+                        <property name="left_attach">0</property>
+                        <property name="top_attach">2</property>
+                        <property name="width">2</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkEntry" id="sms-uri">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="text" translatable="yes">sms:555-555-5555</property>
+                        <property name="secondary_icon_name">sms-symbolic</property>
+                        <property name="secondary_icon_tooltip_text" translatable="yes">Open URI</property>
+                        <property name="input_purpose">url</property>
+                        <signal name="activate" handler="_onOpenURI" swapped="no"/>
+                        <signal name="icon-release" handler="_onOpenURI" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="left_attach">1</property>
+                        <property name="top_attach">3</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="halign">start</property>
+                        <property name="hexpand">True</property>
+                        <property name="label" translatable="yes">SMS URI:</property>
+                      </object>
+                      <packing>
+                        <property name="left_attach">0</property>
+                        <property name="top_attach">3</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
+                <child type="tab">
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Miscellaneous</property>
+                  </object>
+                  <packing>
+                    <property name="position">2</property>
                     <property name="tab_fill">False</property>
                   </packing>
                 </child>
@@ -1389,18 +1582,4 @@
       </object>
     </child>
   </template>
-  <object class="GtkAdjustment" id="sms-id-adjustment">
-    <property name="lower">1</property>
-    <property name="upper">2147483647</property>
-    <property name="value">1</property>
-    <property name="step_increment">1</property>
-    <property name="page_increment">1</property>
-  </object>
-  <object class="GtkAdjustment" id="sms-thread-id-adjustment">
-    <property name="lower">1</property>
-    <property name="upper">2147483647</property>
-    <property name="value">2147483647</property>
-    <property name="step_increment">1</property>
-    <property name="page_increment">1</property>
-  </object>
 </interface>
