@@ -351,15 +351,15 @@ var ChannelService = GObject.registerClass({
     /**
      * This method gets called when a profile gets disconnected.
      *
-	 * The file descriptor is no longer owned by the service daemon and the
-	 * profile implementation needs to take care of cleaning up all
-	 * connections.
-	 *
-	 * If multiple file descriptors are indicated via NewConnection, it is
-	 * expected that all of them are disconnected before returning from this
-	 * method call.
-	 *
-	 * @param {string} object_path - DBus object path
+     * The file descriptor is no longer owned by the service daemon and the
+     * profile implementation needs to take care of cleaning up all
+     * connections.
+     *
+     * If multiple file descriptors are indicated via NewConnection, it is
+     * expected that all of them are disconnected before returning from this
+     * method call.
+     *
+     * @param {string} object_path - DBus object path
      * @return {undefined} - void return value
      */
     async RequestDisconnection(object_path) {
@@ -391,10 +391,6 @@ var ChannelService = GObject.registerClass({
     }
 
     destroy() {
-        // FIXME: Really, really bad hack, but sometimes hangs in bluez can
-        // prevent the service from stopping or even hang the desktop.
-        imports.system.exit(0);
-
         for (let device of this._devices.values()) {
             if (device._channel !== null) {
                 device._channel.close();

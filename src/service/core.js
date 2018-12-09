@@ -550,7 +550,7 @@ var Transfer = class Transfer extends Channel {
                 );
             });
         } catch (e) {
-            logError(e, this.device.name);
+            debug(e, this.device.name);
         } finally {
             this.close();
         }

@@ -447,7 +447,7 @@ var Plugin = GObject.registerClass({
 
             // Fallback to Gio
             } else {
-                logWarning('sshfs not found: falling back to GMount');
+                debug('sshfs not found: falling back to GMount');
                 await this._sftp_mount();
             }
 

@@ -17,9 +17,14 @@ var DeviceChooserDialog = GObject.registerClass({
             use_header_bar: true,
             application: Gio.Application.get_default(),
             default_width: 300,
-            default_height: 200
+            default_height: 200,
+            visible: true
         });
         this.set_keep_above(true);
+
+        //
+        this._action = params.action;
+        this._parameter = params.parameter;
 
         // HeaderBar
         let headerBar = this.get_header_bar();
@@ -33,57 +38,88 @@ var DeviceChooserDialog = GObject.registerClass({
         this.set_default_response(Gtk.ResponseType.OK);
 
         // Device List
+        let contentArea = this.get_content_area();
+        contentArea.border_width = 0;
+
         let scrolledWindow = new Gtk.ScrolledWindow({
+            border_width: 0,
             hexpand: true,
             vexpand: true,
-            hscrollbar_policy: Gtk.PolicyType.NEVER
+            hscrollbar_policy: Gtk.PolicyType.NEVER,
+            visible: true
         });
-        this.get_content_area().add(scrolledWindow);
+        contentArea.add(scrolledWindow);
 
-        this.list = new Gtk.ListBox({activate_on_single_click: false});
-        this.list.connect('row-activated', (list, row) => {
-            this.response(Gtk.ResponseType.OK);
-        });
-        this.list.connect('selected-rows-changed', (list) => {
-            selectButton.sensitive = (list.get_selected_rows().length);
+        this.list = new Gtk.ListBox({
+            activate_on_single_click: false,
+            visible: true
         });
         scrolledWindow.add(this.list);
 
+        this.list.connect(
+            'row-activated',
+            this._onDeviceActivated.bind(this)
+        );
+
+        this.list.connect(
+            'selected-rows-changed',
+            this._onDeviceSelected.bind(this)
+        );
+
         this._populate(params.devices);
-        scrolledWindow.show_all();
     }
 
-    /**
-     * Return the selected device
-     */
-    get_device() {
-        return this.list.get_selected_row().device;
+    vfunc_response(response_id) {
+        if (response_id === Gtk.ResponseType.OK) {
+            try {
+                let device = this.list.get_selected_row().device;
+                device.activate_action(this._action, this._parameter);
+            } catch (e) {
+                logError(e);
+            }
+        }
+
+        this.destroy();
+    }
+
+    _onDeviceActivated(box, row) {
+        this.response(Gtk.ResponseType.OK);
+    }
+
+    _onDeviceSelected(box) {
+        this.set_response_sensitive(
+            Gtk.ResponseType.OK,
+            (box.get_selected_row())
+        );
     }
 
     _populate(devices) {
         for (let device of devices) {
-            let row = new Gtk.ListBoxRow();
-            row.device = device;
+            let row = new Gtk.ListBoxRow({visible: true});
             this.list.add(row);
+            row.device = device;
 
-            let box = new Gtk.Box({
+            let grid = new Gtk.Grid({
+                column_spacing: 6,
                 margin: 6,
-                spacing: 6
+                visible: true
             });
-            row.add(box);
+            row.add(grid);
 
             let icon = new Gtk.Image({
                 icon_name: device.icon_name,
-                pixel_size: 32
+                pixel_size: 32,
+                visible: true
             });
-            box.add(icon);
+            grid.attach(icon, 0, 0, 1, 1);
 
             let name = new Gtk.Label({
                 label: device.name,
                 halign: Gtk.Align.START,
-                hexpand: true
+                hexpand: true,
+                visible: true
             });
-            box.add(name);
+            grid.attach(name, 1, 0, 1, 1);
         }
     }
 });

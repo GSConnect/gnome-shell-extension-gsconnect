@@ -327,9 +327,6 @@ var Device = GObject.registerClass({
         this.notify('connected');
 
         this._plugins.forEach(async (plugin) => plugin.disconnected());
-
-        // TODO: not ideal calling back and forth like this
-        this.service._pruneDevices();
     }
 
     /**
