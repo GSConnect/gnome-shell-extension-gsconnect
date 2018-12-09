@@ -5,7 +5,7 @@
       <item>
         <!-- TRANSLATORS: Open a dialog to connect to an IP or Bluez device -->
         <attribute name="label" translatable="yes">Connect to…</attribute>
-        <attribute name="action">app.connect</attribute>
+        <attribute name="action">win.connect</attribute>
       </item>
     </section>
     <section>

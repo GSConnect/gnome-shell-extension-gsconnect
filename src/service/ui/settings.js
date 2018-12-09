@@ -1,6 +1,7 @@
 'use strict';
 
 const Gdk = imports.gi.Gdk;
+const GdkPixbuf = imports.gi.GdkPixbuf;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
@@ -234,6 +235,159 @@ var SectionRow = GObject.registerClass({
 });
 
 
+/**
+ * "Connect to..." Dialog
+ */
+var ConnectDialog = GObject.registerClass({
+    GTypeName: 'GSConnectConnectDialog',
+    Properties: {
+        'has-devices': GObject.ParamSpec.boolean(
+            'has-devices',
+            'Has Devices',
+            'Whether any KDE Connect enabled bluetooth devices are present',
+            GObject.ParamFlags.READABLE,
+            false
+        )
+    },
+    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/connect.ui',
+    Children: [
+        'cancel-button', 'connect-button',
+        'lan-radio', 'lan-grid', 'lan-ip', 'lan-port',
+        'bluez-radio', 'bluez-grid', 'bluez-device', 'bluez-devices'
+    ]
+}, class ConnectDialog extends Gtk.Dialog {
+
+    _init(parent = null) {
+        super._init({
+            application: Gio.Application.get_default(),
+            modal: (parent),
+            transient_for: parent,
+            use_header_bar: true
+        });
+
+        // Bluez Device ComboBox
+        let iconCell = new Gtk.CellRendererPixbuf({xpad: 6});
+        this.bluez_device.pack_start(iconCell, false);
+        this.bluez_device.add_attribute(iconCell, 'pixbuf', 0);
+
+        let nameCell = new Gtk.CellRendererText();
+        this.bluez_device.pack_start(nameCell, true);
+        this.bluez_device.add_attribute(nameCell, 'text', 1);
+
+        if (this.application.bluetooth) {
+            this._devicesId = this.application.bluetooth.connect(
+                'notify::devices',
+                this.populate.bind(this)
+            );
+            this.populate();
+        }
+
+        // Connection type selection
+        this.lan_radio.bind_property(
+            'active',
+            this.lan_grid,
+            'sensitive',
+            GObject.BindingFlags.SYNC_CREATE
+        );
+
+        this.bluez_radio.bind_property(
+            'active',
+            this.bluez_grid,
+            'sensitive',
+            GObject.BindingFlags.SYNC_CREATE
+        );
+
+        // Hide Bluez and selection if there are no supported bluetooth devices
+        this.bind_property(
+            'has-devices',
+            this.bluez_radio,
+            'visible',
+            GObject.BindingFlags.SYNC_CREATE
+        );
+
+        this.bind_property(
+            'has-devices',
+            this.bluez_grid,
+            'visible',
+            GObject.BindingFlags.SYNC_CREATE
+        );
+
+        this.bind_property(
+            'has-devices',
+            this.lan_radio,
+            'visible',
+            GObject.BindingFlags.SYNC_CREATE
+        );
+    }
+
+    vfunc_response(response_id) {
+        if (response_id === Gtk.ResponseType.OK) {
+            try {
+                let address;
+
+                // Bluetooth device selected
+                if (this.bluez_device.visible && this.bluez_radio.active) {
+                    address = this.bluez_device.active_id;
+
+                // Lan host/port entered
+                } else if (this.lan_ip.text) {
+                    address = Gio.InetSocketAddress.new_from_string(
+                        this.lan_ip.text,
+                        this.lan_port.value
+                    );
+                } else {
+                    return false;
+                }
+
+                this.application.broadcast(address);
+            } catch (e) {
+                logError(e);
+            }
+        }
+
+        if (this._deviceId) {
+            this.application.bluetooth.disconnect(this._devicesId);
+        }
+
+        this.destroy();
+        return false;
+    }
+
+    get has_devices() {
+        if (!this.application.bluetooth) {
+            return false;
+        }
+
+        return this.application.bluetooth.devices.length > 0;
+    }
+
+    populate() {
+        this.bluez_devices.clear();
+        let theme = Gtk.IconTheme.get_default();
+
+        if (this.has_devices) {
+            for (let device of this.application.bluetooth.devices) {
+                let pixbuf = theme.load_icon(
+                    device.Icon,
+                    16,
+                    Gtk.IconLookupFlags.FORCE_SIZE
+                );
+
+                this.bluez_devices.set(
+                    this.bluez_devices.append(),
+                    [0, 1, 2],
+                    [pixbuf, `${device.Alias} (${device.Adapter})`, device.g_object_path]
+                );
+            }
+
+            this.bluez_device.active_id = this.application.bluetooth.devices[0].g_object_path;
+        }
+
+        this.notify('has-devices');
+    }
+});
+
+
 var Window = GObject.registerClass({
     GTypeName: 'GSConnectSettingsWindow',
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/settings.ui',
@@ -292,8 +446,6 @@ var Window = GObject.registerClass({
         this.service_list.set_header_func(section_separators);
         this.software_list.set_header_func(section_separators);
 
-        // Recheck deps
-        this._softwareSettings();
 
         // Setup devices
         this._devicesChangedId = gsconnect.settings.connect(
@@ -322,22 +474,10 @@ var Window = GObject.registerClass({
     }
 
     /**
-     * Additional Features
+     * Connect to..." Dialog
      */
-    _softwareSettings() {
-        // Inject a button for each dependency row
-        for (let row of this.software_list.get_children()) {
-            let name = row.get_name();
-
-            // Hide "Extended Keyboard Support" on Wayland
-            if (name === 'caribou' && _WAYLAND) row.visible = false;
-
-            // Set the help link
-            let label = row.get_child().get_child_at(1, 0);
-            label.label = `<a href="https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Installation#${name}">` + _('Help') + '</a>';
-        }
-
-        this.software_list.set_header_func(section_separators);
+    _connectDialog() {
+        new ConnectDialog(Gio.Application.get_default()._window);
     }
 
     _onVisibleChildName(stack) {
