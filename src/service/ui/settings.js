@@ -795,6 +795,11 @@ var Device = GObject.registerClass({
         this.sharing_list.foreach(row => {
             let name = row.get_name();
             row.visible = this.device.get_outgoing_supported(`${name}.request`);
+
+            // Extra check for battery reporting
+            if (name === 'battery') {
+                row.visible = row.visible && this.service.type === 'laptop';
+            }
         });
 
         // Separators & Sorting
