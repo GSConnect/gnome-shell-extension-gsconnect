@@ -4,17 +4,17 @@ GNOME Shell with Nautilus, [Chrome][chrome] and [Firefox][firefox] integration.
 ![Extension Screenshot][screenshot]
 
 
-With GSConnect and an Android device running the [KDE Connect][kdeconnect] app, you can :
-- Receive Android device notifications on your PC and reply to messages
-- Check your mobile device's battery level from the computer
-- Share your clipboard across your devices
+With GSConnect, you can :
+- Receive your phone notifications on your desktop computer and reply to messages
+- Check your phones battery level from the desktop
+- Share your clipboard accross your devices
 - Share files and links between devices
-- Ring your mobile device to help finding it
-- Browse your Android device's file system from Gnome Shell
-- Adjust the computer's audio volume from your mobile device
-- Remote-control media playback (in any compatible Linux media player) using your phone or tablet
-- Use your Android device as a mouse and keyboard for your computer
-- Run commands on your PC with a tap of your mobile screen
+- Ring your phone to help finding it
+- Browse your phone file system from the desktop
+- Control the desktop's volume from the phone
+- Control media playing on your desktop from your phone
+- Use your phone as a remote control for your desktop
+- Run commands on your PC.
 
 To install this Gnome extension, follow the **[Installation Instructions][install]** in the Wiki.
 
