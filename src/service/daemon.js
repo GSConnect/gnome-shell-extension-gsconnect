@@ -745,15 +745,6 @@ const Service = GObject.registerClass({
         return true;
     }
 
-    vfunc_dbus_unregister(connection, object_path) {
-        // Must be done before g_name_owner === null
-        for (let device of this._devices.values()) {
-            device.destroy();
-        }
-
-        super.vfunc_dbus_unregister(connection, object_path);
-    }
-
     vfunc_open(files, hint) {
         super.vfunc_open(files, hint);
 
@@ -820,22 +811,25 @@ const Service = GObject.registerClass({
     vfunc_shutdown() {
         super.vfunc_shutdown();
 
-        this._devices.forEach(device => device.destroy());
-
-        if (this.mpris) {
-            this.mpris.destroy();
-        }
-
-        if (this.notification) {
-            this.notification.destroy();
-        }
-
+        // Destroy the channel providers first to avoid any further connections
         if (this.lan) {
             this.lan.destroy();
         }
 
         if (this.bluetooth) {
             this.bluetooth.destroy();
+        }
+
+        // This must be done before ::dbus-unregister is emitted
+        this._devices.forEach(device => device.destroy());
+
+        // Destroy the remaining components last
+        if (this.mpris) {
+            this.mpris.destroy();
+        }
+
+        if (this.notification) {
+            this.notification.destroy();
         }
     }
 });
