@@ -11,19 +11,6 @@ const Pango = imports.gi.Pango;
 const Keybindings = imports.service.ui.keybindings;
 
 
-// Python3 mini-script to check for nautilus-python support
-const NAUTILUS = `
-import ctypes
-import ctypes.util
-
-path = ctypes.util.find_library('libgobject-2.0.so.0')
-ctypes.cdll.LoadLibrary(path)
-
-path = ctypes.util.find_library('libnautilus-python.so')
-ctypes.cdll.LoadLibrary(path)
-`;
-
-
 function section_separators(row, before) {
     if (before) {
         row.set_header(new Gtk.Separator({visible: true}));
@@ -404,8 +391,6 @@ var Window = GObject.registerClass({
         'service-list', 'software-list',
         'help',
 
-        // Dependencies
-        'caribou-help', 'caribou-ok', 'nautilus-help', 'nautilus-ok'
     ]
 }, class Window extends Gtk.ApplicationWindow {
 
@@ -478,46 +463,6 @@ var Window = GObject.registerClass({
      */
     _connectDialog() {
         new ConnectDialog(Gio.Application.get_default()._window);
-    }
-
-    _onVisibleChildName(stack) {
-        if (stack.visible_child_name !== 'other') return;
-
-        this.checkDependency('caribou');
-        this.checkDependency('nautilus');
-    }
-
-    async checkDependency(name) {
-        let result = false;
-
-        try {
-            // Extended Keyboard Support
-            if (name === 'caribou') {
-                result = (imports.gi.Caribou);
-
-            // Files Integration
-            } else if (name === 'nautilus') {
-                result = await new Promise((resolve, reject) => {
-                    let proc = new Gio.Subprocess({
-                        argv: ['python3', '-c', NAUTILUS]
-                    });
-                    proc.init(null);
-
-                    proc.wait_check_async(null, (proc, res) => {
-                        try {
-                            resolve(proc.wait_check_finish(res));
-                        } catch (e) {
-                            resolve(false);
-                        }
-                    });
-                });
-            }
-        } catch (e) {
-            result = false;
-        } finally {
-            this[`${name}_ok`].visible = result;
-            this[`${name}_help`].visible = !result;
-        }
     }
 
     /**
@@ -737,13 +682,11 @@ var Device = GObject.registerClass({
             'changed::bluetooth-host',
             this._onBluetoothHostChanged.bind(this)
         );
-        this._onBluetoothHostChanged(this.settings);
 
         this._tcpHostChangedId = this.settings.connect(
             'changed::tcp-host',
             this._onTcpHostChanged.bind(this)
         );
-        this._onTcpHostChanged(this.settings);
 
         this._connectedId = this.device.connect(
             'notify::connected',
