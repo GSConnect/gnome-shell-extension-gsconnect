@@ -118,6 +118,9 @@
                         <property name="top_attach">1</property>
                       </packing>
                     </child>
+                    <style>
+                      <class name="conversation-placeholder"/>
+                    </style>
                   </object>
                   <packing>
                     <property name="name">placeholder</property>
@@ -201,9 +204,6 @@
                     <property name="position">0</property>
                   </packing>
                 </child>
-                <child>
-                  <placeholder/>
-                </child>
               </object>
             </child>
             <style>
@@ -229,7 +229,7 @@
         <property name="hexpand">True</property>
         <property name="vexpand">True</property>
         <property name="pixel_size">96</property>
-        <property name="icon_name">action-unavailable-symbolic</property>
+        <property name="icon_name">view-list-symbolic</property>
         <style>
           <class name="dim-label"/>
         </style>
@@ -249,13 +249,16 @@
         <property name="hexpand">True</property>
         <property name="vexpand">True</property>
         <property name="relief">none</property>
-        <property name="uri">https://github.com/andyholmes/gnome-shell-extension-gsconnect/issues/320</property>
+        <property name="uri">https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Help#sms-messages-dont-sync</property>
       </object>
       <packing>
         <property name="left_attach">0</property>
         <property name="top_attach">1</property>
       </packing>
     </child>
+    <style>
+      <class name="conversation-list-placeholder"/>
+    </style>
   </object>
 </interface>
 

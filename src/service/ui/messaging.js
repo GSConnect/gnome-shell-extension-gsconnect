@@ -433,9 +433,45 @@ const ConversationWidget = GObject.registerClass({
         }
     }
 
+    /**
+     * Populate messages in reverse, in chunks of series
+     */
     _populateBack() {
-        for (let i = 0; i < 5 && this.__messages.length; i++) {
-            this.logMessage(this.__messages.pop());
+        // Keep track of direction and date
+        let date, direction;
+
+        while (this.__messages.length > 0) {
+            let message = this.__messages[this.__messages.length - 1];
+            date = date || message.date;
+            direction = direction || message.type;
+
+            // Break if we're definitely at the end of series
+            if (message.type !== direction) break;
+
+            // Start a new series if this is the first
+            if (!this.__first) {
+                this.__first = this._createSeries(message);
+                this.__last = this.__first;
+                this.message_list.prepend(this.__first);
+
+            // ...or there's more than an hour difference
+            } else if (date - message.date > GLib.TIME_SPAN_HOUR / 1000) {
+                this.__first = this._createSeries(message);
+                this.message_list.prepend(this.__first);
+
+            // ...or it's in a different direction
+            } else if (message.type !== this.__first.type) {
+                this.__first = this._createSeries(message);
+                this.message_list.prepend(this.__first);
+            }
+
+            // Create a message, set the message id and prepend it
+            let widget = new ConversationMessage(this.__messages.pop());
+            this.__first.id = message._id;
+            this.__first.messages.pack_end(widget, false, false, 0);
+
+            // update the date tracker
+            date = message.date;
         }
     }
 
@@ -444,13 +480,9 @@ const ConversationWidget = GObject.registerClass({
         if (row.get_name() === 'pending') return;
 
         // Check if the last series was more than an hour ago
-        // TODO: headers between series will require "real" message rows
         if (before && (row.date - before.date) > GLib.TIME_SPAN_HOUR / 1000) {
             let header = new Gtk.Label({
-                label: '<small>' + getTime(row.date) + '</small>',
-                halign: Gtk.Align.CENTER,
-                hexpand: true,
-                use_markup: true,
+                label: getTime(row.date),
                 visible: true
             });
             header.get_style_context().add_class('dim-label');
@@ -564,45 +596,40 @@ const ConversationWidget = GObject.registerClass({
      * @param {Object} message - A sms message object
      */
     logMessage(message) {
+        // Ensure it's older than the last message (or the first)
+        // TODO: with a lot of work we could probably handle this...
+        if (this.__last && this.__last.id > message._id) {
+            logWarning('SMS message out of order', this.device.name);
+            return;
+        }
+
         // Start a new series if this is the first
         if (!this.__first) {
             this.__first = this._createSeries(message);
             this.__last = this.__first;
             this.message_list.add(this.__first);
+
+        // ...or there's more than an hour difference
+        } else if (message.date - this.__last.date > GLib.TIME_SPAN_HOUR / 1000) {
+            this.__last = this._createSeries(message);
+            this.message_list.add(this.__last);
+
+        // ...or it's in a different direction
+        } else if (message.type !== this.__last.type) {
+            this.__last = this._createSeries(message);
+            this.message_list.add(this.__last);
         }
 
-        // Log the message and set the thread date
+        // Create a message, set the message id/date and append it
         let widget = new ConversationMessage(message);
+        this.__last.id = message._id;
+        this.__last.date = message.date;
+        this.__last.messages.pack_start(widget, false, false, 0);
 
-        // If this is the earliest message so far...
-        if (message._id <= this.__first.id) {
-            // ...and it's in a different direction, create a new series
-            if (message.type !== this.__first.type) {
-                this.__first = this._createSeries(message);
-                this.message_list.prepend(this.__first);
-            }
-
-            // ...and prepend it
-            this.__first.id = message._id;
-            this.__first.messages.pack_end(widget, false, false, 0);
-
-        // Or if it's older than the last message...
-        } else {
-            // ...and it's in a different direction, create a new series
-            if (message.type !== this.__last.type) {
-                this.__last = this._createSeries(message);
-                this.message_list.add(this.__last);
-            }
-
-            // ...and append it
-            this.__last.id = message._id;
-            this.__last.messages.add(widget);
-
-            // Remove the first pending message
-            if (this.has_pending && message.type === MessageType.OUT) {
-                this.pending_box.get_children()[0].destroy();
-                this.notify('has-pending');
-            }
+        // Remove the first pending message
+        if (this.has_pending && message.type === MessageType.OUT) {
+            this.pending_box.get_children()[0].destroy();
+            this.notify('has-pending');
         }
     }
 

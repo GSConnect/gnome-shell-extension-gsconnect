@@ -9,6 +9,21 @@
 }
 
 /**
+ * Messaging Placeholders
+ */
+.contact-placeholder,
+.conversation-list {
+  background: @content_view_bg_color;
+}
+
+.contact-placeholder > label,
+.conversation-placeholder > label,
+.conversation-list-placeholder > label {
+  font-size: 1.125em;
+  font-weight: bold;
+}
+
+/**
  * Contact Chooser
  */
 .contact-entry {
@@ -24,25 +39,25 @@
   padding: 0px;
 }
 
-.contact-placeholder {
-  background: @content_view_bg_color;
-}
-
 
 /**
- * Conversation Widget
- */
-.conversation-list {
-  background: @content_view_bg_color;
-}
-
-/**
- * Incoming Message Bubbles (GtkLabel subclass)
+ * Message List (GtkScrolledWindow)
  */
 .message-window {
   border-bottom: 1px solid @borders;
 }
 
+/**
+ * Date/Time header for messages
+ */
+.message-list > label {
+  font-size: small;
+  margin-bottom: 1em;
+}
+
+/**
+ * Incoming Message Bubbles (GtkLabel subclass)
+ */
 .message-in {
   background: @theme_selected_bg_color;
   border-radius: 0.25em 1em 1em 0.25em;
