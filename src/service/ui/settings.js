@@ -1167,7 +1167,6 @@ var DevicePreferences = GObject.registerClass({
     }
 
     // The 'folder' icon in the command editor GtkEntry
-    // TODO: non-blocking dialog
     _onBrowseCommand(entry, icon_pos, event) {
         let filter = new Gtk.FileFilter();
         filter.add_mime_type('application/x-executable');
@@ -1176,11 +1175,15 @@ var DevicePreferences = GObject.registerClass({
         dialog.add_button(_('Cancel'), Gtk.ResponseType.CANCEL);
         dialog.add_button(_('Open'), Gtk.ResponseType.OK);
 
-        if (dialog.run() === Gtk.ResponseType.OK) {
-            this.command_line.text = dialog.get_filename();
-        }
+        dialog.connect('response', (dialog, response_id) => {
+            if (response_id === Gtk.ResponseType.OK) {
+                this.command_line.text = dialog.get_filename();
+            }
 
-        dialog.destroy();
+            dialog.destroy();
+        });
+
+        dialog.show_all();
     }
 
     async _populateCommands() {
