@@ -476,12 +476,11 @@ var Window = GObject.registerClass({
         'service-headerbar', 'service-menu', 'service-edit', 'service-entry',
         'prev-button',
 
-        // Device List
-        'device-list', 'device-list-spinner', 'device-list-placeholder',
-        'device-help',
+        // TODO: Info label
+        'info-label',
 
-        // Sidebar
-        'info-label'
+        // Device List
+        'device-list', 'device-list-spinner', 'device-list-placeholder'
     ]
 }, class SettingsWindow extends Gtk.ApplicationWindow {
 
@@ -527,9 +526,6 @@ var Window = GObject.registerClass({
         this.info_label.label = _('Transferred files are placed in the <a href="%s">Downloads</a> folder.').format(
             'file://' + download_dir
         );
-
-        // Help link
-        this.device_help.label = `<a href="${this.device_help.tooltip_text}" title="${this.device_help.tooltip_text}">` + _('Help') + '</a>';
 
         //
         let displayMode = new Gio.PropertyAction({

@@ -242,24 +242,6 @@
                                 <property name="top_attach">0</property>
                               </packing>
                             </child>
-                            <child>
-                              <object class="GtkLabel" id="device-help">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="tooltip_text" translatable="yes">https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Help#connecting-an-android-device</property>
-                                <property name="halign">end</property>
-                                <property name="margin_right">6</property>
-                                <property name="hexpand">True</property>
-                                <property name="label">&lt;a href ="."&gt;Help&lt;/a&gt;</property>
-                                <property name="use_markup">True</property>
-                                <property name="wrap">True</property>
-                                <property name="track_visited_links">False</property>
-                              </object>
-                              <packing>
-                                <property name="left_attach">2</property>
-                                <property name="top_attach">0</property>
-                              </packing>
-                            </child>
                           </object>
                           <packing>
                             <property name="expand">False</property>
