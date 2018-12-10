@@ -11,111 +11,101 @@ const Pango = imports.gi.Pango;
 const Keybindings = imports.service.ui.keybindings;
 
 
+// Header for support logs
+const LOG_HEADER = new GLib.Bytes(`
+GSConnect Version: ${gsconnect.metadata.version}
+GSConnect Install: ${(gsconnect.is_local) ? 'user' : 'system'}
+GJS: ${imports.system.version}
+XDG_SESSION_TYPE: ${GLib.getenv('XDG_SESSION_TYPE')}
+GDMSESSION: ${GLib.getenv('GDMSESSION')}
+--------------------------------------------------------------------------------
+`);
+
+
+/**
+ * Generate a support log
+ */
+async function generateSupportLog(time) {
+    try {
+        let file = Gio.File.new_tmp('gsconnect.XXXXXX')[0];
+
+        let logFile = await new Promise((resolve, reject) => {
+            file.replace_async(null, false, 2, 0, null, (file, res) => {
+                try {
+                    resolve(file.replace_finish(res));
+                } catch (e) {
+                    reject(e);
+                }
+            });
+        });
+
+        await new Promise((resolve, reject) => {
+            logFile.write_bytes_async(LOG_HEADER, 0, null, (file, res) => {
+                try {
+                    resolve(file.write_bytes_finish(res));
+                } catch (e) {
+                    reject(e);
+                }
+            });
+        });
+
+        let proc = new Gio.Subprocess({
+            flags: Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDOUT_PIPE,
+            argv: [
+                'journalctl',
+                '--no-host',
+                '--since',
+                time,
+                '/usr/bin/gjs',
+                '/usr/bin/gnome-shell'
+            ]
+        });
+        proc.init(null);
+
+        logFile.splice_async(
+            proc.get_stdout_pipe(),
+            Gio.OutputStreamSpliceFlags.CLOSE_TARGET,
+            GLib.PRIORITY_DEFAULT,
+            null,
+            (source, res) => {
+                try {
+                    source.splice_finish(res);
+                } catch (e) {
+                    logError(e);
+                }
+            }
+        );
+
+        await new Promise((resolve, reject) => {
+            proc.wait_check_async(null, (proc, res) => {
+                try {
+                    resolve(proc.wait_finish(res));
+                } catch (e) {
+                    reject(e);
+                }
+            });
+        });
+
+        await new Promise((resolve, reject) => {
+            Gio.AppInfo.launch_default_for_uri_async(file.get_uri(), null, null, (src, res) => {
+                try {
+                    Gio.AppInfo.launch_default_for_uri_finish(res);
+                } catch (e) {
+                    logError(e);
+                }
+            });
+        });
+    } catch (e) {
+        logError(e);
+    }
+}
+
+
 function section_separators(row, before) {
     if (before) {
         row.set_header(new Gtk.Separator({visible: true}));
     }
 }
-
-
-/**
- * A row for a stack sidebar
- */
-var DeviceRow = GObject.registerClass({
-    GTypeName: 'GSConnectSettingsDeviceRow',
-    Properties: {
-        'connected': GObject.ParamSpec.boolean(
-            'connected',
-            'deviceConnected',
-            'Whether the device is connected',
-            GObject.ParamFlags.READWRITE,
-            false
-        ),
-        'paired': GObject.ParamSpec.boolean(
-            'paired',
-            'devicePaired',
-            'Whether the device is paired',
-            GObject.ParamFlags.READWRITE,
-            false
-        ),
-        'symbolic-icon': GObject.ParamSpec.object(
-            'symbolic-icon',
-            'Symbolic Icon',
-            'Icon representing the device type and state',
-            GObject.ParamFlags.READWRITE,
-            Gio.Icon
-        )
-    }
-}, class GSConnectSettingsDeviceRow extends Gtk.ListBoxRow {
-
-    _init(device) {
-        super._init({
-            selectable: true,
-            visible: true
-        });
-
-        this.set_name(device.id);
-        this.device = device;
-        this.type = 'device';
-
-        let grid = new Gtk.Grid({
-            orientation: Gtk.Orientation.HORIZONTAL,
-            column_spacing: 12,
-            margin_left: 8,
-            margin_right: 8,
-            margin_bottom: 12,
-            margin_top: 12,
-            visible: true
-        });
-        this.add(grid);
-
-        let icon = new Gtk.Image({
-            pixel_size: 16,
-            visible: true
-        });
-        this.bind_property('symbolic-icon', icon, 'gicon', 2);
-        grid.attach(icon, 0, 0, 1, 1);
-
-        let title = new Gtk.Label({
-            halign: Gtk.Align.START,
-            hexpand: true,
-            valign: Gtk.Align.CENTER,
-            vexpand: true,
-            visible: true
-        });
-        device.settings.bind('name', title, 'label', 0);
-        grid.attach(title, 1, 0, 1, 1);
-
-        // A '>' image for rows that are like submenus
-        let go_next = new Gtk.Image({
-            icon_name: 'go-next-symbolic',
-            pixel_size: 16,
-            halign: Gtk.Align.END,
-            visible: true
-        });
-        go_next.get_style_context().add_class('dim-label');
-        grid.attach(go_next, 2, 0, 1, 1);
-
-        this.connect('notify::connected', () => this.notify('symbolic-icon'));
-        device.bind_property('connected', this, 'connected', 2);
-        this.connect('notify::paired', () => this.notify('symbolic-icon'));
-        device.bind_property('paired', this, 'paired', 2);
-    }
-
-    get symbolic_icon() {
-        let name = `${this.device.icon_name}-symbolic`;
-
-        if (!this.paired) {
-            let rgba = new Gdk.RGBA({red: 0.95, green: 0, blue: 0, alpha: 0.9});
-            let info = Gtk.IconTheme.get_default().lookup_icon(name, 16, 0);
-            return info.load_symbolic(rgba, null, null, null)[0];
-        }
-
-        this.get_child().get_child_at(0, 0).opacity = this.connected ? 1 : 0.5;
-
-        return new Gio.ThemedIcon({name: name});
-    }
-});
 
 
 /**
@@ -127,9 +117,8 @@ var SectionRow = GObject.registerClass({
 
     _init(params) {
         super._init({
-            activatable: false,
-            selectable: false,
             height_request: 56,
+            selectable: false,
             visible: true
         });
 
@@ -214,6 +203,7 @@ var SectionRow = GObject.registerClass({
     set widget(widget) {
         if (this._widget && this._widget instanceof Gtk.Widget) {
             this._widget.destroy();
+            this._widget = null;
         }
 
         this._widget = widget;
@@ -375,24 +365,125 @@ var ConnectDialog = GObject.registerClass({
 });
 
 
+/**
+ * A Device Row
+ */
+const DeviceRow = GObject.registerClass({
+    GTypeName: 'GSConnectDeviceRow',
+    Properties: {
+        'connected': GObject.ParamSpec.boolean(
+            'connected',
+            'deviceConnected',
+            'Whether the device is connected',
+            GObject.ParamFlags.READWRITE,
+            false
+        ),
+        'paired': GObject.ParamSpec.boolean(
+            'paired',
+            'devicePaired',
+            'Whether the device is paired',
+            GObject.ParamFlags.READWRITE,
+            false
+        ),
+        'status': GObject.ParamSpec.string(
+            'status',
+            'Device Status',
+            'The status of the device',
+            GObject.ParamFlags.READWRITE,
+            null
+        )
+    }
+}, class GSConnectDeviceRow extends Gtk.ListBoxRow {
+
+    _init(device) {
+        super._init({
+            height_request: 52,
+            selectable: false
+        });
+
+        this.set_name(device.id);
+        this.device = device;
+
+        let grid = new Gtk.Grid({
+            column_spacing: 12,
+            margin_left: 20, // 20
+            margin_right: 20,
+            margin_bottom: 8, // 16
+            margin_top: 8
+        });
+        this.add(grid);
+
+        let icon = new Gtk.Image({
+            gicon: new Gio.ThemedIcon({name: `${this.device.icon_name}-symbolic`}),
+            icon_size: Gtk.IconSize.BUTTON
+        });
+        grid.attach(icon, 0, 0, 1, 1);
+
+        let title = new Gtk.Label({
+            halign: Gtk.Align.START,
+            hexpand: true,
+            valign: Gtk.Align.CENTER,
+            vexpand: true
+        });
+        device.settings.bind('name', title, 'label', 0);
+        grid.attach(title, 1, 0, 1, 1);
+
+        let status = new Gtk.Label({
+            halign: Gtk.Align.END,
+            hexpand: true,
+            valign: Gtk.Align.CENTER,
+            vexpand: true
+        });
+        this.bind_property('status', status, 'label', 2);
+        grid.attach(status, 2, 0, 1, 1);
+
+        this.connect('notify::connected', () => this.notify('status'));
+        device.bind_property('connected', this, 'connected', 2);
+        this.connect('notify::paired', () => this.notify('status'));
+        device.bind_property('paired', this, 'paired', 2);
+
+        this.show_all();
+    }
+
+    get status() {
+        if (!this.paired) {
+            return _('Unpaired');
+        } else if (!this.connected) {
+            return _('Disconnected');
+        }
+
+        return _('Connected');
+    }
+});
+
+
 var Window = GObject.registerClass({
     GTypeName: 'GSConnectSettingsWindow',
+    Properties: {
+        'display-mode': GObject.ParamSpec.string(
+            'display-mode',
+            'Display Mode',
+            'Display devices in either the Panel or User Menu',
+            GObject.ParamFlags.READWRITE,
+            null
+        )
+    },
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/settings.ui',
     Children: [
         // HeaderBar
-        'headerbar', 'headerbar-stack',
-        'service-name', 'headerbar-edit', 'headerbar-entry',
-        'device-name', 'device-type',
-        'prev-button', 'device-menu', 'service-menu',
+        'headerbar', 'infobar', 'stack',
+        'device-headerbar', 'device-menu',
+        'service-headerbar', 'service-menu', 'service-edit', 'service-entry',
+        'prev-button',
+
+        // Device List
+        'device-list', 'device-list-spinner', 'device-list-placeholder',
+        'device-help',
 
         // Sidebar
-        'stack', 'switcher', 'sidebar',
-        'appearance-list', 'display-mode',
-        'service-list', 'software-list',
-        'help',
-
+        'info-label'
     ]
-}, class Window extends Gtk.ApplicationWindow {
+}, class SettingsWindow extends Gtk.ApplicationWindow {
 
     _init(params) {
         this.connect_template();
@@ -400,37 +491,72 @@ var Window = GObject.registerClass({
         super._init(params);
 
         this.settings = new Gio.Settings({
-            settings_schema: gsconnect.gschema.lookup('org.gnome.Shell.Extensions.GSConnect.Preferences', true),
+            settings_schema: gsconnect.gschema.lookup(
+                'org.gnome.Shell.Extensions.GSConnect.Preferences',
+                true
+            ),
             path: '/org/gnome/shell/extensions/gsconnect/preferences/'
         });
 
-        // Service HeaderBar
         gsconnect.settings.bind(
-            'public-name',
-            this.service_name,
-            'label',
-            Gio.SettingsBindFlags.DEFAULT
+            'discoverable',
+            this.infobar,
+            'reveal-child',
+            Gio.SettingsBindFlags.INVERT_BOOLEAN
         );
 
+        // Service Name
+        gsconnect.settings.bind(
+            'public-name',
+            this.service_headerbar,
+            'title',
+            Gio.SettingsBindFlags.DEFAULT
+        );
+        this.service_entry.text = this.service_headerbar.title;
+
+        // Downloads link
+        let download_dir = GLib.get_user_special_dir(
+            GLib.UserDirectory.DIRECTORY_DOWNLOAD
+        );
+
+        // Account for some corner cases with a fallback
+        if (!download_dir || download_dir === GLib.get_home_dir()) {
+            download_dir = GLib.build_filenamev([GLib.get_home_dir(), 'Downloads']);
+        }
+
+        this.info_label.label = _('Transferred files are placed in the <a href="%s">Downloads</a> folder.').format(
+            'file://' + download_dir
+        );
+
+        // Help link
+        this.device_help.label = `<a href="${this.device_help.tooltip_text}" title="${this.device_help.tooltip_text}">` + _('Help') + '</a>';
+
+        //
+        let displayMode = new Gio.PropertyAction({
+            name: 'display-mode',
+            property_name: 'display-mode',
+            object: this
+        });
+        this.add_action(displayMode);
+
+        // "Connect to..." Dialog
+        let connectDialog = new Gio.SimpleAction({name: 'connect'});
+        connectDialog.connect('activate', this._connectDialog);
+        this.add_action(connectDialog);
+
+        // "Generate Support Log" GAction
+        let generateSupportLog = new Gio.SimpleAction({name: 'support-log'});
+        generateSupportLog.connect('activate', this._generateSupportLog);
+        this.add_action(generateSupportLog);
+
+        // App Menu (in-window only)
         this.service_menu.set_menu_model(
             this.application.get_menu_by_id('service-menu')
         );
 
-        // Sidebar
-        this.switcher.set_header_func(this._headerFunc);
-        this.switcher.select_row(this.switcher.get_row_at_index(0));
-
-        // Init UI Elements
-        this.add_action(gsconnect.settings.create_action('show-indicators'));
-        this._displayModeChangedId = gsconnect.settings.connect(
-            'changed::show-indicators',
-            this._onDisplayModeChanged.bind(this)
-        );
-        this._onDisplayModeChanged();
-
-        this.service_list.set_header_func(section_separators);
-        this.software_list.set_header_func(section_separators);
-
+        // Device List
+        this.device_list.set_header_func(section_separators);
+        this.device_list.set_placeholder(this.device_list_placeholder);
 
         // Setup devices
         this._devicesChangedId = gsconnect.settings.connect(
@@ -439,7 +565,32 @@ var Window = GObject.registerClass({
         );
         this._onDevicesChanged();
 
+        // If there are no devices, it's safe to auto-broadcast
+        GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, 5, () => {
+            if (this.application.devices.length < 1 && this.stack.visible_child_name === 'service') {
+                this.application.broadcast();
+                this.device_list_spinner.active = true;
+            } else {
+                this.device_list_spinner.active = false;
+            }
+
+            return GLib.SOURCE_CONTINUE;
+        });
+
+        // Restore window size/maximized/position
         this.restore_geometry();
+    }
+
+    get display_mode() {
+        if (gsconnect.settings.get_boolean('show-indicators')) {
+            return 'panel';
+        } else {
+            return 'user-menu';
+        }
+    }
+
+    set display_mode(mode) {
+        gsconnect.settings.set_boolean('show-indicators', (mode === 'panel'));
     }
 
     vfunc_delete_event(event) {
@@ -447,22 +598,41 @@ var Window = GObject.registerClass({
         return this.hide_on_delete();
     }
 
-    _onDisplayModeChanged(settings) {
-        let state = gsconnect.settings.get_boolean('show-indicators');
-        this.display_mode.label = state ? _('Panel') : _('User Menu');
-    }
-
-    _headerFunc(row, before) {
-        if ([2, 3].includes(row.get_index())) {
-            row.set_header(new Gtk.Separator({visible: true}));
-        }
-    }
-
     /**
      * Connect to..." Dialog
      */
     _connectDialog() {
         new ConnectDialog(Gio.Application.get_default()._window);
+    }
+
+    /**
+     * "Generate Support Log" GAction
+     */
+    _generateSupportLog() {
+        let dialog = new Gtk.MessageDialog({
+            text: _('Debug Logging Enabled'),
+            secondary_text: _('Reproduce the problem and press “Done” to review the log.')
+        });
+        dialog.set_keep_above(true);
+        dialog.add_button(_('Cancel'), Gtk.ResponseType.CANCEL);
+        dialog.add_button(_('Done'), Gtk.ResponseType.OK);
+
+        // Enable debug logging and mark the current time
+        gsconnect.settings.set_boolean('debug', true);
+        let now = GLib.DateTime.new_now_local().format('%R');
+
+        dialog.connect('response', (dialog, response_id) => {
+            // Disable debug logging and destroy the dialog
+            gsconnect.settings.set_boolean('debug', false);
+            dialog.destroy();
+
+            // Only generate a log if instructed
+            if (response_id === Gtk.ResponseType.OK) {
+                generateSupportLog(now);
+            }
+        });
+
+        dialog.show_all();
     }
 
     /**
@@ -480,39 +650,26 @@ var Window = GObject.registerClass({
      * HeaderBar Callbacks
      */
     _onPrevious(button, event) {
-        this.headerbar_stack.visible_child_name = 'headerbar-service';
-
-        // Select the general page
-        this.sidebar.visible_child_name = 'switcher';
-        this.switcher.get_row_at_index(0).activate();
-
-        // Reset the device menu
+        this.headerbar.visible_child_name = 'service';
+        this.stack.visible_child_name = 'service';
         this._setDeviceMenu();
     }
 
     _onEditServiceName(button, event) {
-        this.headerbar_entry.text = gsconnect.settings.get_string('public-name');
-        this.headerbar_stack.visible_child_name = 'headerbar-entry';
-    }
-
-    _onEscServiceName(entry, event) {
-        if (event.get_event_type() === Gdk.EventType.KEY_PRESS &&
-            event.get_keyval()[1] === Gdk.KEY_Escape) {
-            this.headerbar_stack.visible_child_name = 'headerbar-service';
-        }
-
-        return false;
+        this.service_entry.text = this.service_headerbar.title;
     }
 
     _onUnfocusServiceName(entry, event) {
-        this.headerbar_stack.visible_child_name = 'headerbar-service';
-
+        this.service_edit.active = false;
         return false;
     }
 
     _onSetServiceName(button, event) {
-        this.service_name.label = this.headerbar_entry.text;
-        this.headerbar_stack.visible_child_name = 'headerbar-service';
+        if (this.service_entry.text.length) {
+            this.service_headerbar.title = this.service_entry.text;
+        }
+
+        this.service_edit.active = false;
     }
 
     /**
@@ -530,24 +687,18 @@ var Window = GObject.registerClass({
         }
     }
 
-    _onSwitcherRowSelected(box, row) {
-        row = row || this.switcher.get_row_at_index(0);
-        let name = row.get_name();
+    _onDeviceSelected(box, row) {
+        let name = (typeof box === 'string') ? box : row.get_name();
 
+        // Transition the panel
+        let panel = this.stack.get_child_by_name(name);
+        this._setDeviceMenu(panel);
         this.stack.visible_child_name = name;
 
-        if (this.sidebar.get_child_by_name(name)) {
-            let panel = this.stack.visible_child;
-            let device = this.stack.visible_child.device;
-            this._setDeviceMenu(panel);
-
-            // Transition the headerbar & sidebar
-            this.device_name.label = device.name;
-            this.device_type.label = device.display_type;
-            this.headerbar_stack.visible_child_name = 'headerbar-device';
-
-            this.sidebar.visible_child_name = name;
-        }
+        // Transition the headerbar
+        this.device_headerbar.title = panel.device.name;
+        this.device_headerbar.subtitle = panel.device.display_type;
+        this.headerbar.visible_child_name = 'device';
     }
 
     _onDevicesChanged() {
@@ -575,32 +726,24 @@ var Window = GObject.registerClass({
             });
         } catch (e) {
             logError(e);
-        } finally {
-            this.help.visible = !this.application.devices.length;
         }
     }
 
     addDevice(id) {
         let device = this.application._devices.get(id);
 
-        // Create a new device settings widget
-        let panel = new Device(device);
-
         // Add the device settings to the content stack
-        this.stack.add_titled(panel, id, device.name);
-        // Add the device sidebar to the sidebar stack
-        this.sidebar.add_named(panel.switcher, id);
-        // Add a device row to the main sidebar
-        this.switcher.add(panel.row);
+        this.stack.add_titled(new DevicePreferences(device), id, device.name);
+        this.device_list.add(new DeviceRow(device));
     }
 });
 
 
-var Device = GObject.registerClass({
-    GTypeName: 'GSConnectSettingsDevice',
+var DevicePreferences = GObject.registerClass({
+    GTypeName: 'GSConnectDevicePreferences',
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/device.ui',
     Children: [
-        'switcher',
+        'sidebar', 'stack', 'infobar',
         // Sharing
         'sharing-list',
         'clipboard', 'clipboard-sync', 'mousepad', 'mpris', 'systemvolume',
@@ -619,7 +762,7 @@ var Device = GObject.registerClass({
         // Advanced
         'plugin-list', 'danger-list'
     ]
-}, class Device extends Gtk.Stack {
+}, class DevicePreferences extends Gtk.Grid {
 
     _init(device) {
         this.connect_template();
@@ -636,14 +779,19 @@ var Device = GObject.registerClass({
             path: '/org/gnome/shell/extensions/gsconnect/device/' + this.device.id + '/'
         });
 
+        // Infobar
+        this.settings.bind(
+            'paired',
+            this.infobar,
+            'reveal-child',
+            Gio.SettingsBindFlags.GET | Gio.SettingsBindFlags.INVERT_BOOLEAN
+        );
+
         this._setupActions();
 
         // Device Menu
         this.menu = this._menus.get_object('device-menu');
         this.menu.prepend_section(null, this.device.menu);
-
-        // Sidebar Row
-        this.row = new DeviceRow(this.device);
 
         this.insert_action_group('device', this.device);
 
@@ -657,7 +805,7 @@ var Device = GObject.registerClass({
         this._advancedSettings();
 
         // Separate plugins and other settings
-        this.switcher.set_header_func((row, before) => {
+        this.sidebar.set_header_func((row, before) => {
             if (row.get_name() === 'shortcuts') {
                 row.set_header(new Gtk.Separator({visible: true}));
             }
@@ -720,7 +868,7 @@ var Device = GObject.registerClass({
     }
 
     _onSwitcherRowSelected(box, row) {
-        this.set_visible_child_name(row.get_name());
+        this.stack.set_visible_child_name(row.get_name());
     }
 
     _onToggleRowActivated(box, row) {
@@ -778,9 +926,6 @@ var Device = GObject.registerClass({
 
     _destroy() {
         this.disconnect_template();
-
-        this.switcher.destroy();
-        this.row.destroy();
 
         this.device.disconnect(this._actionAddedId);
         this.device.disconnect(this._actionRemovedId);
@@ -1106,8 +1251,7 @@ var Device = GObject.registerClass({
                     valign: Gtk.Align.CENTER,
                     vexpand: true,
                     visible: true
-                }),
-                activatable: true
+                })
             });
 
             this.notification_apps.add(row);
@@ -1228,8 +1372,7 @@ var Device = GObject.registerClass({
         let row = new SectionRow({
             icon: new Gio.ThemedIcon({name: icon_name}),
             title: label,
-            widget: widget,
-            activatable: true
+            widget: widget
         });
         row.height_request = 48;
         row._icon.pixel_size = 16;
@@ -1294,8 +1437,7 @@ var Device = GObject.registerClass({
         let row = new SectionRow({
             title: command.name,
             subtitle: command.command,
-            widget: widget,
-            activatable: true
+            widget: widget
         });
         row.action = action;
         this.shortcuts_commands_list.add(row);
