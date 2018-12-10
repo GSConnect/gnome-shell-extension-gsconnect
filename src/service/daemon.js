@@ -207,7 +207,7 @@ const Service = GObject.registerClass({
      * Try to reconnect to each paired device that has disconnected
      */
     reconnect() {
-        for (let device of this._devices.values()) {
+        for (let [id, device] of this._devices.entries()) {
             if (!device.connected) {
                 if (device.paired) {
                     device.activate();
@@ -804,7 +804,7 @@ const Service = GObject.registerClass({
                         break;
 
                     default:
-                        let win = new ServiceUI.DeviceChooserDialog({
+                        new ServiceUI.DeviceChooserDialog({
                             title: title,
                             devices: devices,
                             action: action,
