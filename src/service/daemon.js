@@ -422,12 +422,12 @@ const Service = GObject.registerClass({
         try {
             let error = parameter.deep_unpack();
             let dialog = new Gtk.MessageDialog({
-                text: error.message.trim(),
-                secondary_text: error.stack.trim(),
+                text: error.message,
+                secondary_text: error.stack,
                 buttons: Gtk.ButtonsType.CLOSE,
                 message_type: Gtk.MessageType.ERROR,
             });
-            dialog.add_button(_('Report'), 1);
+            dialog.add_button(_('Report'), Gtk.ReponseType.OK);
             dialog.set_keep_above(true);
 
             let [message, stack] = dialog.get_message_area().get_children();
@@ -435,8 +435,8 @@ const Service = GObject.registerClass({
             message.selectable = true;
             stack.selectable = true;
 
-            dialog.connect('response', (dialog, id) => {
-                if (id === 1) {
+            dialog.connect('response', (dialog, response_id) => {
+                if (response_id === Gtk.ReponseType.OK) {
                     let query = encodeURIComponent(dialog.text).replace('%20', '+');
                     this._github(`issues?q=is%3Aissue+"${query}"`);
                 } else {
@@ -553,9 +553,7 @@ const Service = GObject.registerClass({
                     title = _('Network Error');
                     body = error.message + '\n\n' + _('Click for help troubleshooting');
                     icon = new Gio.ThemedIcon({name: 'network-error'});
-                    notif.set_default_action(
-                        `app.wiki('Help#${error.name}')`
-                    );
+                    notif.set_default_action(`app.wiki('Help#${error.name}')`);
                     break;
 
                 case 'GvcError':
@@ -569,9 +567,7 @@ const Service = GObject.registerClass({
                 case 'DiscoveryWarning':
                     id = 'discovery-warning';
                     title = _('Discovery Disabled');
-                    body = _('Discovery has been disabled due to the number of devices on this network.') +
-                           '\n\n' +
-                           _('Click to open preferences');
+                    body = _('Discovery has been disabled due to the number of devices on this network.');
                     icon = new Gio.ThemedIcon({name: 'dialog-warning'});
                     notif.set_default_action('app.preferences');
                     notif.set_priority(Gio.NotificationPriority.NORMAL);
@@ -584,9 +580,9 @@ const Service = GObject.registerClass({
                     icon = new Gio.ThemedIcon({name: 'dialog-error'});
 
                     error = new GLib.Variant('a{ss}', {
-                        name: error.name,
-                        message: error.message,
-                        stack: error.stack
+                        name: error.name.trim(),
+                        message: error.message.trim(),
+                        stack: error.stack.trim()
                     });
 
                     notif.set_default_action_and_target('app.error', error);
