@@ -455,7 +455,7 @@ var Window = GObject.registerClass({
             let ctx = display.get_app_launch_context();
 
             Gio.AppInfo.create_from_commandline(
-                'journalctl -f -o cat /usr/bin/gjs /usr/bin/gnome-shell',
+                'journalctl -f -o cat GLIB_DOMAIN=GSConnect',
                 'GSConnect',
                 Gio.AppInfoCreateFlags.NEEDS_TERMINAL
             ).launch([], ctx);
