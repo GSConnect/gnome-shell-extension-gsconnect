@@ -274,7 +274,7 @@ var ContactChooser = GObject.registerClass({
         chooser.disconnect_template();
     }
 
-    _onEntryChanged(entry) {
+    _onSearchChanged(entry) {
         this.contact_list._entry = entry.text;
 
         // If the entry contains string with 2 or more digits...

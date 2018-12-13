@@ -848,6 +848,7 @@ var Window = GObject.registerClass({
     _onNewConversation() {
         this._sync();
         this.conversation_stack.set_visible_child_name('contact-list');
+        this.contact_list.contact_entry.has_focus = true;
     }
 
     _onNumberSelected(list, number) {

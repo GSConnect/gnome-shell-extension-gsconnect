@@ -38,11 +38,6 @@
 /**
  * GSConnectContactChooser
  */
-.contact-entry {
-  border: 0px;
-  padding: 6px;
-}
-
 .contact-window {
   border-top: 1px solid @borders;
 }
