@@ -51,14 +51,7 @@ async function generateSupportLog(time) {
 
         let proc = new Gio.Subprocess({
             flags: Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDOUT_PIPE,
-            argv: [
-                'journalctl',
-                '--no-host',
-                '--since',
-                time,
-                '/usr/bin/gjs',
-                '/usr/bin/gnome-shell'
-            ]
+            argv: ['journalctl', '--no-host', '--since', time]
         });
         proc.init(null);
 
@@ -89,9 +82,9 @@ async function generateSupportLog(time) {
         await new Promise((resolve, reject) => {
             Gio.AppInfo.launch_default_for_uri_async(file.get_uri(), null, null, (src, res) => {
                 try {
-                    Gio.AppInfo.launch_default_for_uri_finish(res);
+                    resolve(Gio.AppInfo.launch_default_for_uri_finish(res));
                 } catch (e) {
-                    logError(e);
+                    reject(e);
                 }
             });
         });
