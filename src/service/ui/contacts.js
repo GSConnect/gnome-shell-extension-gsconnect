@@ -229,7 +229,12 @@ var ContactChooser = GObject.registerClass({
         }
     },
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/contacts.ui',
-    Children: ['contact-entry', 'contact-list', 'contact-window']
+    Children: [
+        'contact-entry',
+        'contact-list',
+        'contact-placeholder',
+        'contact-window'
+    ]
 }, class ContactChooser extends Gtk.Grid {
 
     _init(params) {
@@ -250,30 +255,7 @@ var ContactChooser = GObject.registerClass({
         this.contact_list.set_sort_func(this._sort);
 
         // Placeholder
-        let box = new Gtk.Box({orientation: Gtk.Orientation.VERTICAL});
-        box.get_style_context().add_class('contact-placeholder');
-        this.contact_list.set_placeholder(box);
-
-        let image = new Gtk.Image({
-            icon_name: 'avatar-default-symbolic',
-            pixel_size: 144,
-            valign: Gtk.Align.END,
-            vexpand: true
-        });
-        image.get_style_context().add_class('dim-label');
-        box.add(image);
-
-        let label = new Gtk.Label({
-            label: _('Select a contact or number'),
-            justify: Gtk.Justification.CENTER,
-            use_markup: true,
-            valign: Gtk.Align.START,
-            vexpand: true,
-            wrap: true
-        });
-        label.get_style_context().add_class('dim-label');
-        box.add(label);
-        box.show_all();
+        this.contact_list.set_placeholder(this.contact_placeholder);
 
         // Populate and setup
         this._populate();

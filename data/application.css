@@ -1,6 +1,6 @@
 
 /**
- * Chrome/Firefox buttons in Preferences->Other
+ * Chrome/Firefox buttons in Settings Window
  */
 .badge-button {
   border: 0px;
@@ -8,23 +8,35 @@
   background: transparent;
 }
 
+
 /**
- * Messaging Placeholders
+ * Placeholders
  */
-.contact-placeholder,
-.conversation-list {
+.placeholder {
   background: @content_view_bg_color;
+  margin-bottom: 30px;
 }
 
-.contact-placeholder > label,
-.conversation-placeholder > label,
-.conversation-list-placeholder > label {
-  font-size: 1.125em;
-  font-weight: bold;
+.placeholder-image {
+  margin-bottom: 16px;
+  opacity: 0.5;
 }
+
+.placeholder-title {
+  font-size: larger;
+  font-weight: bold;
+  margin-bottom: 3px;
+  opacity: 0.5;
+}
+
+.placeholder-description {
+  font-size: smaller;
+  opacity: 0.5;
+}
+
 
 /**
- * Contact Chooser
+ * GSConnectContactChooser
  */
 .contact-entry {
   border: 0px;
@@ -41,19 +53,24 @@
 
 
 /**
- * Message List (GtkScrolledWindow)
+ * GSConnectConversationWidget
  */
 .message-window {
   border-bottom: 1px solid @borders;
 }
 
 /**
- * Date/Time header for messages
+ * GSConnectMessagingWindow
  */
 .message-list > label {
   font-size: small;
   margin-bottom: 1em;
 }
+
+.conversation-list {
+  background: @content_view_bg_color;
+}
+
 
 /**
  * Incoming Message Bubbles (GtkLabel subclass)
