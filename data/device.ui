@@ -62,7 +62,7 @@
                                     <property name="vexpand">True</property>
                                     <property name="column_spacing">12</property>
                                     <child>
-                                      <object class="GtkLabel">
+                                      <object class="GtkLabel" id="share-battery-label">
                                         <property name="visible">True</property>
                                         <property name="can_focus">False</property>
                                         <property name="halign">start</property>
@@ -70,6 +70,15 @@
                                         <property name="hexpand">True</property>
                                         <property name="vexpand">True</property>
                                         <property name="label" translatable="yes">Battery</property>
+                                        <accessibility>
+                                          <relation type="label-for" target="battery"/>
+                                          <relation type="label-for" target="share-battery"/>
+                                        </accessibility>
+                                        <child internal-child="accessible">
+                                          <object class="AtkObject" id="share-battery-label-atkobject">
+                                            <property name="AtkObject::accessible-role">label</property>
+                                          </object>
+                                        </child>
                                       </object>
                                       <packing>
                                         <property name="left_attach">0</property>
@@ -83,12 +92,28 @@
                                         <property name="halign">end</property>
                                         <property name="valign">center</property>
                                         <property name="action_name">settings.send-statistics</property>
+                                        <accessibility>
+                                          <relation type="labelled-by" target="share-battery-label"/>
+                                        </accessibility>
+                                        <child internal-child="accessible">
+                                          <object class="AtkObject" id="share-battery-atkobject">
+                                            <property name="AtkObject::accessible-role">toggle-button</property>
+                                          </object>
+                                        </child>
                                       </object>
                                       <packing>
                                         <property name="left_attach">1</property>
                                         <property name="top_attach">0</property>
                                       </packing>
                                     </child>
+                                  </object>
+                                </child>
+                                <accessibility>
+                                  <relation type="labelled-by" target="share-battery-label"/>
+                                </accessibility>
+                                <child internal-child="accessible">
+                                  <object class="AtkObject" id="battery-atkobject">
+                                    <property name="AtkObject::accessible-role">list-item</property>
                                   </object>
                                 </child>
                               </object>
@@ -110,7 +135,7 @@
                                     <property name="vexpand">True</property>
                                     <property name="column_spacing">12</property>
                                     <child>
-                                      <object class="GtkLabel">
+                                      <object class="GtkLabel" id="clipboard-sync-label">
                                         <property name="visible">True</property>
                                         <property name="can_focus">False</property>
                                         <property name="halign">start</property>
@@ -118,6 +143,15 @@
                                         <property name="hexpand">True</property>
                                         <property name="vexpand">True</property>
                                         <property name="label" translatable="yes">Clipboard Sync</property>
+                                        <accessibility>
+                                          <relation type="label-for" target="clipboard"/>
+                                          <relation type="label-for" target="clipboard-sync"/>
+                                        </accessibility>
+                                        <child internal-child="accessible">
+                                          <object class="AtkObject" id="clipboard-sync-label-atkobject">
+                                            <property name="AtkObject::accessible-role">label</property>
+                                          </object>
+                                        </child>
                                       </object>
                                       <packing>
                                         <property name="left_attach">0</property>
@@ -140,12 +174,28 @@
                                             <property name="icon_name">network-transmit-receive-symbolic</property>
                                           </object>
                                         </child>
+                                        <accessibility>
+                                          <relation type="labelled-by" target="clipboard-sync-label"/>
+                                        </accessibility>
+                                        <child internal-child="accessible">
+                                          <object class="AtkObject" id="clipboard-sync-atkobject">
+                                            <property name="AtkObject::accessible-role">toggle-button</property>
+                                          </object>
+                                        </child>
                                       </object>
                                       <packing>
                                         <property name="left_attach">1</property>
                                         <property name="top_attach">0</property>
                                       </packing>
                                     </child>
+                                  </object>
+                                </child>
+                                <accessibility>
+                                  <relation type="labelled-by" target="clipboard-sync-label"/>
+                                </accessibility>
+                                <child internal-child="accessible">
+                                  <object class="AtkObject" id="clipboard-atkobject">
+                                    <property name="AtkObject::accessible-role">list-item</property>
                                   </object>
                                 </child>
                               </object>
@@ -166,7 +216,7 @@
                                     <property name="vexpand">True</property>
                                     <property name="column_spacing">12</property>
                                     <child>
-                                      <object class="GtkLabel">
+                                      <object class="GtkLabel" id="share-mpris-label">
                                         <property name="visible">True</property>
                                         <property name="can_focus">False</property>
                                         <property name="halign">start</property>
@@ -174,6 +224,15 @@
                                         <property name="hexpand">True</property>
                                         <property name="vexpand">True</property>
                                         <property name="label" translatable="yes">Media Players</property>
+                                        <accessibility>
+                                          <relation type="label-for" target="mpris"/>
+                                          <relation type="label-for" target="share-mpris"/>
+                                        </accessibility>
+                                        <child internal-child="accessible">
+                                          <object class="AtkObject" id="share-mpris-label-atkobject">
+                                            <property name="AtkObject::accessible-role">label</property>
+                                          </object>
+                                        </child>
                                       </object>
                                       <packing>
                                         <property name="left_attach">0</property>
@@ -187,12 +246,28 @@
                                         <property name="halign">end</property>
                                         <property name="valign">center</property>
                                         <property name="action_name">settings.share-players</property>
+                                        <accessibility>
+                                          <relation type="labelled-by" target="share-mpris-label"/>
+                                        </accessibility>
+                                        <child internal-child="accessible">
+                                          <object class="AtkObject" id="share-mpris-atkobject">
+                                            <property name="AtkObject::accessible-role">toggle-button</property>
+                                          </object>
+                                        </child>
                                       </object>
                                       <packing>
                                         <property name="left_attach">1</property>
                                         <property name="top_attach">0</property>
                                       </packing>
                                     </child>
+                                  </object>
+                                </child>
+                                <accessibility>
+                                  <relation type="labelled-by" target="share-mpris-label"/>
+                                </accessibility>
+                                <child internal-child="accessible">
+                                  <object class="AtkObject" id="mpris-atkobject">
+                                    <property name="AtkObject::accessible-role">list-item</property>
                                   </object>
                                 </child>
                               </object>
@@ -214,7 +289,7 @@
                                     <property name="vexpand">True</property>
                                     <property name="column_spacing">12</property>
                                     <child>
-                                      <object class="GtkLabel">
+                                      <object class="GtkLabel" id="share-mousepad-label">
                                         <property name="visible">True</property>
                                         <property name="can_focus">False</property>
                                         <property name="halign">start</property>
@@ -222,6 +297,15 @@
                                         <property name="hexpand">True</property>
                                         <property name="vexpand">True</property>
                                         <property name="label" translatable="yes">Mouse &amp; Keyboard</property>
+                                        <accessibility>
+                                          <relation type="label-for" target="mousepad"/>
+                                          <relation type="label-for" target="share-mousepad"/>
+                                        </accessibility>
+                                        <child internal-child="accessible">
+                                          <object class="AtkObject" id="share-mousepad-label-atkobject">
+                                            <property name="AtkObject::accessible-role">label</property>
+                                          </object>
+                                        </child>
                                       </object>
                                       <packing>
                                         <property name="left_attach">0</property>
@@ -235,12 +319,28 @@
                                         <property name="halign">end</property>
                                         <property name="valign">center</property>
                                         <property name="action_name">settings.share-control</property>
+                                        <accessibility>
+                                          <relation type="labelled-by" target="share-mousepad-label"/>
+                                        </accessibility>
+                                        <child internal-child="accessible">
+                                          <object class="AtkObject" id="share-mousepad-atkobject">
+                                            <property name="AtkObject::accessible-role">toggle-button</property>
+                                          </object>
+                                        </child>
                                       </object>
                                       <packing>
                                         <property name="left_attach">1</property>
                                         <property name="top_attach">0</property>
                                       </packing>
                                     </child>
+                                  </object>
+                                </child>
+                                <accessibility>
+                                  <relation type="labelled-by" target="share-mousepad-label"/>
+                                </accessibility>
+                                <child internal-child="accessible">
+                                  <object class="AtkObject" id="mousepad-atkobject">
+                                    <property name="AtkObject::accessible-role">list-item</property>
                                   </object>
                                 </child>
                               </object>
@@ -262,7 +362,7 @@
                                     <property name="vexpand">True</property>
                                     <property name="column_spacing">12</property>
                                     <child>
-                                      <object class="GtkLabel">
+                                      <object class="GtkLabel" id="share-systemvolume-label">
                                         <property name="visible">True</property>
                                         <property name="can_focus">False</property>
                                         <property name="halign">start</property>
@@ -270,6 +370,15 @@
                                         <property name="hexpand">True</property>
                                         <property name="vexpand">True</property>
                                         <property name="label" translatable="yes">Volume Control</property>
+                                        <accessibility>
+                                          <relation type="label-for" target="systemvolume"/>
+                                          <relation type="label-for" target="share-systemvolume"/>
+                                        </accessibility>
+                                        <child internal-child="accessible">
+                                          <object class="AtkObject" id="share-systemvolume-label-atkobject">
+                                            <property name="AtkObject::accessible-role">label</property>
+                                          </object>
+                                        </child>
                                       </object>
                                       <packing>
                                         <property name="left_attach">0</property>
@@ -283,12 +392,28 @@
                                         <property name="halign">end</property>
                                         <property name="valign">center</property>
                                         <property name="action_name">settings.share-sinks</property>
+                                        <accessibility>
+                                          <relation type="labelled-by" target="share-systemvolume-label"/>
+                                        </accessibility>
+                                        <child internal-child="accessible">
+                                          <object class="AtkObject" id="share-systemvolume-atkobject">
+                                            <property name="AtkObject::accessible-role">toggle-button</property>
+                                          </object>
+                                        </child>
                                       </object>
                                       <packing>
                                         <property name="left_attach">1</property>
                                         <property name="top_attach">0</property>
                                       </packing>
                                     </child>
+                                  </object>
+                                </child>
+                                <accessibility>
+                                  <relation type="labelled-by" target="share-systemvolume-label"/>
+                                </accessibility>
+                                <child internal-child="accessible">
+                                  <object class="AtkObject" id="systemvolume-atkobject">
+                                    <property name="AtkObject::accessible-role">list-item</property>
                                   </object>
                                 </child>
                               </object>
@@ -333,7 +458,7 @@
                     <property name="margin_bottom">32</property>
                     <property name="orientation">vertical</property>
                     <child>
-                      <object class="GtkLabel">
+                      <object class="GtkLabel" id="command-list-label">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="halign">start</property>
@@ -342,6 +467,14 @@
                         <attributes>
                           <attribute name="weight" value="bold"/>
                         </attributes>
+                        <accessibility>
+                          <relation type="label-for" target="command-list"/>
+                        </accessibility>
+                        <child internal-child="accessible">
+                          <object class="AtkObject" id="command-list-label-atkobject">
+                            <property name="AtkObject::accessible-role">label</property>
+                          </object>
+                        </child>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -420,6 +553,16 @@
                                 </child>
                               </object>
                             </child>
+                            <accessibility>
+                              <relation type="controlled-by" target="command-add"/>
+                              <relation type="controlled-by" target="command-remove"/>
+                              <relation type="labelled-by" target="command-list-label"/>
+                            </accessibility>
+                            <child internal-child="accessible">
+                              <object class="AtkObject" id="command-list-atkobject">
+                                <property name="AtkObject::accessible-role">list</property>
+                              </object>
+                            </child>
                           </object>
                         </child>
                       </object>
@@ -448,6 +591,7 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
+                                    <property name="tooltip_text" translatable="yes">Add</property>
                                     <signal name="clicked" handler="_onAddCommand" swapped="no"/>
                                     <child>
                                       <object class="GtkImage">
@@ -455,6 +599,14 @@
                                         <property name="can_focus">False</property>
                                         <property name="icon_name">list-add-symbolic</property>
                                         <property name="icon_size">2</property>
+                                      </object>
+                                    </child>
+                                    <accessibility>
+                                      <relation type="controller-for" target="command-list"/>
+                                    </accessibility>
+                                    <child internal-child="accessible">
+                                      <object class="AtkObject" id="command-add-atkobject">
+                                        <property name="AtkObject::accessible-role">push-button</property>
                                       </object>
                                     </child>
                                   </object>
@@ -470,6 +622,7 @@
                                     <property name="sensitive">False</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
+                                    <property name="tooltip_text" translatable="yes">Remove</property>
                                     <signal name="clicked" handler="_onRemoveCommand" swapped="no"/>
                                     <child>
                                       <object class="GtkImage">
@@ -477,6 +630,14 @@
                                         <property name="can_focus">False</property>
                                         <property name="icon_name">list-remove-symbolic</property>
                                         <property name="icon_size">2</property>
+                                      </object>
+                                    </child>
+                                    <accessibility>
+                                      <relation type="controller-for" target="command-list"/>
+                                    </accessibility>
+                                    <child internal-child="accessible">
+                                      <object class="AtkObject" id="command-remove-atkobject">
+                                        <property name="AtkObject::accessible-role">push-button</property>
                                       </object>
                                     </child>
                                   </object>
@@ -574,7 +735,7 @@
                             <property name="hexpand">True</property>
                             <property name="selection_mode">none</property>
                             <child>
-                              <object class="GtkListBoxRow">
+                              <object class="GtkListBoxRow" id="share-notification-row">
                                 <property name="height_request">56</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
@@ -601,6 +762,10 @@
                                         <property name="hexpand">True</property>
                                         <property name="vexpand">True</property>
                                         <property name="label" translatable="yes">Share Notifications</property>
+                                        <accessibility>
+                                          <relation type="label-for" target="share-notification-row"/>
+                                          <relation type="label-for" target="share-notification"/>
+                                        </accessibility>
                                       </object>
                                       <packing>
                                         <property name="left_attach">0</property>
@@ -608,7 +773,7 @@
                                       </packing>
                                     </child>
                                     <child>
-                                      <object class="GtkSwitch">
+                                      <object class="GtkSwitch" id="share-notification">
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
                                         <property name="valign">center</property>
@@ -633,7 +798,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkLabel">
+                      <object class="GtkLabel" id="notification-apps-label">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="halign">start</property>
@@ -643,6 +808,14 @@
                         <attributes>
                           <attribute name="weight" value="bold"/>
                         </attributes>
+                        <accessibility>
+                          <relation type="label-for" target="notification-apps"/>
+                        </accessibility>
+                        <child internal-child="accessible">
+                          <object class="AtkObject" id="notification-apps-label-atkobject">
+                            <property name="AtkObject::accessible-role">label</property>
+                          </object>
+                        </child>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -662,6 +835,9 @@
                             <property name="hexpand">True</property>
                             <property name="selection_mode">none</property>
                             <signal name="row-activated" handler="_onNotificationRowActivated" swapped="no"/>
+                            <accessibility>
+                              <relation type="labelled-by" target="notification-apps-label"/>
+                            </accessibility>
                           </object>
                         </child>
                       </object>
@@ -703,7 +879,7 @@
                     <property name="margin_bottom">32</property>
                     <property name="orientation">vertical</property>
                     <child>
-                      <object class="GtkLabel">
+                      <object class="GtkLabel" id="ringing-list-label">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="halign">start</property>
@@ -712,6 +888,14 @@
                         <attributes>
                           <attribute name="weight" value="bold"/>
                         </attributes>
+                        <accessibility>
+                          <relation type="label-for" target="ringing-list"/>
+                        </accessibility>
+                        <child internal-child="accessible">
+                          <object class="AtkObject" id="ringing-list-label-atkobject">
+                            <property name="AtkObject::accessible-role">label</property>
+                          </object>
+                        </child>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -733,7 +917,7 @@
                             <property name="selection_mode">none</property>
                             <signal name="row-activated" handler="_onToggleRowActivated" swapped="no"/>
                             <child>
-                              <object class="GtkListBoxRow">
+                              <object class="GtkListBoxRow" id="ringing-volume-row">
                                 <property name="height_request">56</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
@@ -751,7 +935,7 @@
                                     <property name="vexpand">True</property>
                                     <property name="column_spacing">12</property>
                                     <child>
-                                      <object class="GtkLabel">
+                                      <object class="GtkLabel" id="ringing-volume-label">
                                         <property name="visible">True</property>
                                         <property name="can_focus">False</property>
                                         <property name="halign">start</property>
@@ -759,6 +943,15 @@
                                         <property name="hexpand">True</property>
                                         <property name="vexpand">True</property>
                                         <property name="label" translatable="yes">Volume</property>
+                                        <accessibility>
+                                          <relation type="label-for" target="ringing-volume-row"/>
+                                          <relation type="label-for" target="ringing-volume"/>
+                                        </accessibility>
+                                        <child internal-child="accessible">
+                                          <object class="AtkObject" id="ringing-volume-label-atkobject">
+                                            <property name="AtkObject::accessible-role">label</property>
+                                          </object>
+                                        </child>
                                       </object>
                                       <packing>
                                         <property name="left_attach">0</property>
@@ -781,6 +974,14 @@
                                             <property name="icon_name">audio-volume-high-symbolic</property>
                                           </object>
                                         </child>
+                                        <accessibility>
+                                          <relation type="labelled-by" target="ringing-volume-label"/>
+                                        </accessibility>
+                                        <child internal-child="accessible">
+                                          <object class="AtkObject" id="ringing-volume-atkobject">
+                                            <property name="AtkObject::accessible-role">toggle-button</property>
+                                          </object>
+                                        </child>
                                       </object>
                                       <packing>
                                         <property name="left_attach">1</property>
@@ -789,10 +990,18 @@
                                     </child>
                                   </object>
                                 </child>
+                                <accessibility>
+                                  <relation type="labelled-by" target="ringing-volume-label"/>
+                                </accessibility>
+                                <child internal-child="accessible">
+                                  <object class="AtkObject" id="ringing-volume-row-atkobject">
+                                    <property name="AtkObject::accessible-role">list-item</property>
+                                  </object>
+                                </child>
                               </object>
                             </child>
                             <child>
-                              <object class="GtkListBoxRow">
+                              <object class="GtkListBoxRow" id="ringing-pause-row">
                                 <property name="height_request">56</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
@@ -809,7 +1018,7 @@
                                     <property name="vexpand">True</property>
                                     <property name="column_spacing">12</property>
                                     <child>
-                                      <object class="GtkLabel">
+                                      <object class="GtkLabel" id="ringing-pause-label">
                                         <property name="visible">True</property>
                                         <property name="can_focus">False</property>
                                         <property name="halign">start</property>
@@ -817,6 +1026,15 @@
                                         <property name="hexpand">True</property>
                                         <property name="vexpand">True</property>
                                         <property name="label" translatable="yes">Pause Media</property>
+                                        <accessibility>
+                                          <relation type="label-for" target="ringing-pause-row"/>
+                                          <relation type="label-for" target="ringing-pause"/>
+                                        </accessibility>
+                                        <child internal-child="accessible">
+                                          <object class="AtkObject" id="ringing-pause-label-atkobject">
+                                            <property name="AtkObject::accessible-role">label</property>
+                                          </object>
+                                        </child>
                                       </object>
                                       <packing>
                                         <property name="left_attach">0</property>
@@ -824,12 +1042,20 @@
                                       </packing>
                                     </child>
                                     <child>
-                                      <object class="GtkSwitch">
+                                      <object class="GtkSwitch" id="ringing-pause">
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
                                         <property name="valign">center</property>
                                         <property name="vexpand">True</property>
                                         <property name="action_name">settings.ringing-pause</property>
+                                        <accessibility>
+                                          <relation type="labelled-by" target="ringing-pause-label"/>
+                                        </accessibility>
+                                        <child internal-child="accessible">
+                                          <object class="AtkObject" id="ringing-pause-atkobject">
+                                            <property name="AtkObject::accessible-role">toggle-button</property>
+                                          </object>
+                                        </child>
                                       </object>
                                       <packing>
                                         <property name="left_attach">1</property>
@@ -838,6 +1064,22 @@
                                     </child>
                                   </object>
                                 </child>
+                                <accessibility>
+                                  <relation type="labelled-by" target="ringing-pause-label"/>
+                                </accessibility>
+                                <child internal-child="accessible">
+                                  <object class="AtkObject" id="ringing-pause-row-atkobject">
+                                    <property name="AtkObject::accessible-role">list-item</property>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                            <accessibility>
+                              <relation type="labelled-by" target="ringing-list-label"/>
+                            </accessibility>
+                            <child internal-child="accessible">
+                              <object class="AtkObject" id="ringing-list-atkobject">
+                                <property name="AtkObject::accessible-role">list</property>
                               </object>
                             </child>
                           </object>
@@ -850,7 +1092,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkLabel">
+                      <object class="GtkLabel" id="talking-list-label">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="halign">start</property>
@@ -859,6 +1101,14 @@
                         <attributes>
                           <attribute name="weight" value="bold"/>
                         </attributes>
+                        <accessibility>
+                          <relation type="label-for" target="talking-list"/>
+                        </accessibility>
+                        <child internal-child="accessible">
+                          <object class="AtkObject" id="talking-list-label-atkobject">
+                            <property name="AtkObject::accessible-role">label</property>
+                          </object>
+                        </child>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -879,7 +1129,7 @@
                             <property name="selection_mode">none</property>
                             <signal name="row-activated" handler="_onToggleRowActivated" swapped="no"/>
                             <child>
-                              <object class="GtkListBoxRow">
+                              <object class="GtkListBoxRow" id="talking-volume-row">
                                 <property name="height_request">56</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
@@ -896,7 +1146,7 @@
                                     <property name="vexpand">True</property>
                                     <property name="column_spacing">12</property>
                                     <child>
-                                      <object class="GtkLabel">
+                                      <object class="GtkLabel" id="talking-volume-label">
                                         <property name="visible">True</property>
                                         <property name="can_focus">False</property>
                                         <property name="halign">start</property>
@@ -904,6 +1154,15 @@
                                         <property name="hexpand">True</property>
                                         <property name="vexpand">True</property>
                                         <property name="label" translatable="yes">Volume</property>
+                                        <accessibility>
+                                          <relation type="label-for" target="talking-volume-row"/>
+                                          <relation type="label-for" target="talking-volume"/>
+                                        </accessibility>
+                                        <child internal-child="accessible">
+                                          <object class="AtkObject" id="talking-volume-label-atkobject">
+                                            <property name="AtkObject::accessible-role">label</property>
+                                          </object>
+                                        </child>
                                       </object>
                                       <packing>
                                         <property name="left_attach">0</property>
@@ -926,6 +1185,14 @@
                                             <property name="icon_name">audio-volume-high-symbolic</property>
                                           </object>
                                         </child>
+                                        <accessibility>
+                                          <relation type="labelled-by" target="talking-volume-label"/>
+                                        </accessibility>
+                                        <child internal-child="accessible">
+                                          <object class="AtkObject" id="talking-volume-atkobject">
+                                            <property name="AtkObject::accessible-role">toggle-button</property>
+                                          </object>
+                                        </child>
                                       </object>
                                       <packing>
                                         <property name="left_attach">1</property>
@@ -934,10 +1201,18 @@
                                     </child>
                                   </object>
                                 </child>
+                                <accessibility>
+                                  <relation type="labelled-by" target="talking-volume-label"/>
+                                </accessibility>
+                                <child internal-child="accessible">
+                                  <object class="AtkObject" id="talking-volume-row-atkobject">
+                                    <property name="AtkObject::accessible-role">list-item</property>
+                                  </object>
+                                </child>
                               </object>
                             </child>
                             <child>
-                              <object class="GtkListBoxRow">
+                              <object class="GtkListBoxRow" id="talking-pause-row">
                                 <property name="height_request">56</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
@@ -954,7 +1229,7 @@
                                     <property name="vexpand">True</property>
                                     <property name="column_spacing">12</property>
                                     <child>
-                                      <object class="GtkLabel">
+                                      <object class="GtkLabel" id="talking-pause-label">
                                         <property name="visible">True</property>
                                         <property name="can_focus">False</property>
                                         <property name="halign">start</property>
@@ -962,6 +1237,15 @@
                                         <property name="hexpand">True</property>
                                         <property name="vexpand">True</property>
                                         <property name="label" translatable="yes">Pause Media</property>
+                                        <accessibility>
+                                          <relation type="label-for" target="talking-pause-row"/>
+                                          <relation type="label-for" target="talking-pause"/>
+                                        </accessibility>
+                                        <child internal-child="accessible">
+                                          <object class="AtkObject" id="talking-pause-label-atkobject">
+                                            <property name="AtkObject::accessible-role">label</property>
+                                          </object>
+                                        </child>
                                       </object>
                                       <packing>
                                         <property name="left_attach">0</property>
@@ -969,12 +1253,20 @@
                                       </packing>
                                     </child>
                                     <child>
-                                      <object class="GtkSwitch">
+                                      <object class="GtkSwitch" id="talking-pause">
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
                                         <property name="valign">center</property>
                                         <property name="vexpand">True</property>
                                         <property name="action_name">settings.talking-pause</property>
+                                        <accessibility>
+                                          <relation type="labelled-by" target="talking-pause-label"/>
+                                        </accessibility>
+                                        <child internal-child="accessible">
+                                          <object class="AtkObject" id="talking-pause-atkobject">
+                                            <property name="AtkObject::accessible-role">toggle-button</property>
+                                          </object>
+                                        </child>
                                       </object>
                                       <packing>
                                         <property name="left_attach">1</property>
@@ -983,10 +1275,18 @@
                                     </child>
                                   </object>
                                 </child>
+                                <accessibility>
+                                  <relation type="labelled-by" target="talking-pause-label"/>
+                                </accessibility>
+                                <child internal-child="accessible">
+                                  <object class="AtkObject" id="talking-pause-row-atkobject">
+                                    <property name="AtkObject::accessible-role">list-item</property>
+                                  </object>
+                                </child>
                               </object>
                             </child>
                             <child>
-                              <object class="GtkListBoxRow">
+                              <object class="GtkListBoxRow" id="talking-microphone-row">
                                 <property name="height_request">56</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
@@ -1003,7 +1303,7 @@
                                     <property name="vexpand">True</property>
                                     <property name="column_spacing">12</property>
                                     <child>
-                                      <object class="GtkLabel">
+                                      <object class="GtkLabel" id="talking-microphone-label">
                                         <property name="visible">True</property>
                                         <property name="can_focus">False</property>
                                         <property name="halign">start</property>
@@ -1011,6 +1311,15 @@
                                         <property name="hexpand">True</property>
                                         <property name="vexpand">True</property>
                                         <property name="label" translatable="yes">Mute Microphone</property>
+                                        <accessibility>
+                                          <relation type="label-for" target="talking-microphone-row"/>
+                                          <relation type="label-for" target="talking-microphone"/>
+                                        </accessibility>
+                                        <child internal-child="accessible">
+                                          <object class="AtkObject" id="talking-microphone-label-atkobject">
+                                            <property name="AtkObject::accessible-role">label</property>
+                                          </object>
+                                        </child>
                                       </object>
                                       <packing>
                                         <property name="left_attach">0</property>
@@ -1018,12 +1327,20 @@
                                       </packing>
                                     </child>
                                     <child>
-                                      <object class="GtkSwitch">
+                                      <object class="GtkSwitch" id="talking-microphone">
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
                                         <property name="valign">center</property>
                                         <property name="vexpand">True</property>
                                         <property name="action_name">settings.talking-microphone</property>
+                                        <accessibility>
+                                          <relation type="labelled-by" target="talking-microphone-label"/>
+                                        </accessibility>
+                                        <child internal-child="accessible">
+                                          <object class="AtkObject" id="talking-microphone-atkobject">
+                                            <property name="AtkObject::accessible-role">toggle-button</property>
+                                          </object>
+                                        </child>
                                       </object>
                                       <packing>
                                         <property name="left_attach">1</property>
@@ -1032,6 +1349,22 @@
                                     </child>
                                   </object>
                                 </child>
+                                <accessibility>
+                                  <relation type="labelled-by" target="talking-microphone-label"/>
+                                </accessibility>
+                                <child internal-child="accessible">
+                                  <object class="AtkObject" id="talking-microphone-row-atkobject">
+                                    <property name="AtkObject::accessible-role">list-item</property>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                            <accessibility>
+                              <relation type="labelled-by" target="talking-list-label"/>
+                            </accessibility>
+                            <child internal-child="accessible">
+                              <object class="AtkObject" id="talking-list-atkobject">
+                                <property name="AtkObject::accessible-role">list</property>
                               </object>
                             </child>
                           </object>
@@ -1080,7 +1413,7 @@
                         <property name="can_focus">False</property>
                         <property name="margin_bottom">12</property>
                         <child>
-                          <object class="GtkLabel">
+                          <object class="GtkLabel" id="action-shortcuts-label">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="halign">start</property>
@@ -1089,6 +1422,14 @@
                             <attributes>
                               <attribute name="weight" value="bold"/>
                             </attributes>
+                            <accessibility>
+                              <relation type="label-for" target="shortcuts-actions-list"/>
+                            </accessibility>
+                            <child internal-child="accessible">
+                              <object class="AtkObject" id="action-shortcuts-label-atkobject">
+                                <property name="AtkObject::accessible-role">label</property>
+                              </object>
+                            </child>
                           </object>
                           <packing>
                             <property name="left_attach">0</property>
@@ -1127,6 +1468,14 @@
                             <property name="hexpand">True</property>
                             <property name="selection_mode">none</property>
                             <signal name="row-activated" handler="_onShortcutRowActivated" swapped="no"/>
+                            <accessibility>
+                              <relation type="labelled-by" target="action-shortcuts-label"/>
+                            </accessibility>
+                            <child internal-child="accessible">
+                              <object class="AtkObject" id="shortcuts-actions-list-atkobject">
+                                <property name="AtkObject::accessible-role">list</property>
+                              </object>
+                            </child>
                           </object>
                         </child>
                       </object>
@@ -1143,7 +1492,7 @@
                         <property name="margin_top">32</property>
                         <property name="margin_bottom">12</property>
                         <child>
-                          <object class="GtkLabel">
+                          <object class="GtkLabel" id="command-shortcuts-label">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="halign">start</property>
@@ -1152,6 +1501,14 @@
                             <attributes>
                               <attribute name="weight" value="bold"/>
                             </attributes>
+                            <accessibility>
+                              <relation type="label-for" target="shortcuts-commands-list"/>
+                            </accessibility>
+                            <child internal-child="accessible">
+                              <object class="AtkObject" id="command-shortcuts-label-atkobject">
+                                <property name="AtkObject::accessible-role">label</property>
+                              </object>
+                            </child>
                           </object>
                           <packing>
                             <property name="left_attach">0</property>
@@ -1190,6 +1547,14 @@
                             <property name="hexpand">True</property>
                             <property name="selection_mode">none</property>
                             <signal name="row-activated" handler="_onShortcutRowActivated" swapped="no"/>
+                            <accessibility>
+                              <relation type="labelled-by" target="command-shortcuts-label"/>
+                            </accessibility>
+                            <child internal-child="accessible">
+                              <object class="AtkObject" id="shortcuts-commands-list-atkobject">
+                                <property name="AtkObject::accessible-role">list</property>
+                              </object>
+                            </child>
                           </object>
                         </child>
                       </object>
@@ -1231,7 +1596,7 @@
                     <property name="margin_bottom">32</property>
                     <property name="orientation">vertical</property>
                     <child>
-                      <object class="GtkLabel">
+                      <object class="GtkLabel" id="plugins-label">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="halign">start</property>
@@ -1241,6 +1606,14 @@
                         <attributes>
                           <attribute name="weight" value="bold"/>
                         </attributes>
+                        <accessibility>
+                          <relation type="label-for" target="plugin-list"/>
+                        </accessibility>
+                        <child internal-child="accessible">
+                          <object class="AtkObject" id="plugins-label-atkobject">
+                            <property name="AtkObject::accessible-role">label</property>
+                          </object>
+                        </child>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -1260,6 +1633,14 @@
                             <property name="can_focus">False</property>
                             <property name="hexpand">True</property>
                             <property name="selection_mode">none</property>
+                            <accessibility>
+                              <relation type="labelled-by" target="plugins-label"/>
+                            </accessibility>
+                            <child internal-child="accessible">
+                              <object class="AtkObject" id="plugin-list-atkobject">
+                                <property name="AtkObject::accessible-role">list</property>
+                              </object>
+                            </child>
                           </object>
                         </child>
                       </object>
@@ -1280,6 +1661,7 @@
                             <property name="can_focus">False</property>
                             <property name="hexpand">True</property>
                             <property name="selection_mode">none</property>
+                            <property name="activate_on_single_click">False</property>
                             <child>
                               <object class="GtkListBoxRow">
                                 <property name="height_request">56</property>
@@ -1297,7 +1679,7 @@
                                     <property name="margin_bottom">8</property>
                                     <property name="column_spacing">12</property>
                                     <child>
-                                      <object class="GtkButton">
+                                      <object class="GtkButton" id="delete-device">
                                         <property name="label" translatable="yes">Delete</property>
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
@@ -1305,6 +1687,15 @@
                                         <property name="halign">end</property>
                                         <property name="valign">center</property>
                                         <signal name="clicked" handler="_onDeleteDevice" swapped="no"/>
+                                        <accessibility>
+                                          <relation type="labelled-by" target="delete-device-label"/>
+                                          <relation type="described-by" target="delete-device-description"/>
+                                        </accessibility>
+                                        <child internal-child="accessible">
+                                          <object class="AtkObject" id="delete-device-atkobject">
+                                            <property name="AtkObject::accessible-role">push-button</property>
+                                          </object>
+                                        </child>
                                         <style>
                                           <class name="destructive-action"/>
                                         </style>
@@ -1316,7 +1707,7 @@
                                       </packing>
                                     </child>
                                     <child>
-                                      <object class="GtkLabel">
+                                      <object class="GtkLabel" id="delete-device-label">
                                         <property name="visible">True</property>
                                         <property name="can_focus">False</property>
                                         <property name="halign">start</property>
@@ -1324,6 +1715,14 @@
                                         <property name="hexpand">True</property>
                                         <property name="vexpand">True</property>
                                         <property name="label" translatable="yes">Delete this device</property>
+                                        <accessibility>
+                                          <relation type="label-for" target="delete-device"/>
+                                        </accessibility>
+                                        <child internal-child="accessible">
+                                          <object class="AtkObject" id="delete-device-label-atkobject">
+                                            <property name="AtkObject::accessible-role">label</property>
+                                          </object>
+                                        </child>
                                       </object>
                                       <packing>
                                         <property name="left_attach">0</property>
@@ -1331,7 +1730,7 @@
                                       </packing>
                                     </child>
                                     <child>
-                                      <object class="GtkLabel">
+                                      <object class="GtkLabel" id="delete-device-description">
                                         <property name="visible">True</property>
                                         <property name="can_focus">False</property>
                                         <property name="halign">start</property>
@@ -1339,6 +1738,14 @@
                                         <property name="hexpand">True</property>
                                         <property name="vexpand">True</property>
                                         <property name="label" translatable="yes">Unpair and remove all settings and files</property>
+                                        <accessibility>
+                                          <relation type="description-for" target="delete-device"/>
+                                        </accessibility>
+                                        <child internal-child="accessible">
+                                          <object class="AtkObject" id="delete-device-description-atkobject">
+                                            <property name="AtkObject::accessible-role">label</property>
+                                          </object>
+                                        </child>
                                         <style>
                                           <class name="dim-label"/>
                                         </style>
@@ -1350,6 +1757,11 @@
                                     </child>
                                   </object>
                                 </child>
+                              </object>
+                            </child>
+                            <child internal-child="accessible">
+                              <object class="AtkObject" id="danger-list-atkobject">
+                                <property name="AtkObject::accessible-role">list</property>
                               </object>
                             </child>
                           </object>
@@ -1686,6 +2098,11 @@
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="action_name">settings.pair</property>
+                    <child internal-child="accessible">
+                      <object class="AtkObject">
+                        <property name="AtkObject::accessible-role">push-button</property>
+                      </object>
+                    </child>
                   </object>
                   <packing>
                     <property name="expand">True</property>
@@ -1717,6 +2134,11 @@
                         <attributes>
                           <attribute name="weight" value="bold"/>
                         </attributes>
+                        <child internal-child="accessible">
+                          <object class="AtkObject">
+                            <property name="AtkObject::accessible-role">label</property>
+                          </object>
+                        </child>
                       </object>
                       <packing>
                         <property name="left_attach">0</property>
@@ -1729,6 +2151,11 @@
                         <property name="can_focus">False</property>
                         <property name="halign">start</property>
                         <property name="label" translatable="yes">You may configure this device before pairing</property>
+                        <child internal-child="accessible">
+                          <object class="AtkObject">
+                            <property name="AtkObject::accessible-role">label</property>
+                          </object>
+                        </child>
                       </object>
                       <packing>
                         <property name="left_attach">0</property>
@@ -1763,3 +2190,4 @@
     </child>
   </template>
 </interface>
+
