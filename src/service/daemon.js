@@ -87,12 +87,12 @@ const Service = GObject.registerClass({
             flags: Gio.ApplicationFlags.HANDLES_OPEN
         });
 
-        // This is currently required for clipboard to work under Wayland, but
-        // in future will probably just be removed.
+        // FIXME: Breaks Multi-DPI support. Remove once a Wayland protocol is
+        // created or an interface can be exported from gnome-shell process.
         Gdk.set_allowed_backends('x11,*');
 
         GLib.set_prgname(gsconnect.app_id);
-        GLib.set_application_name(_('GSConnect'));
+        GLib.set_application_name('GSConnect');
 
         this.register(null);
     }
@@ -213,7 +213,7 @@ const Service = GObject.registerClass({
                     device.activate();
 
                 // Prune the device if the settings window is not open
-                } else if (this._window && this._window.visible) {
+                } else if (!this._window || !this._window.visible) {
                     device.destroy();
                     this._devices.delete(id);
                     gsconnect.settings.set_strv('devices', this.devices);
