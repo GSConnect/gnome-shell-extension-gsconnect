@@ -342,7 +342,7 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkLabel">
+                          <object class="GtkLabel" id="kdeconnect-label">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="halign">start</property>
@@ -352,6 +352,11 @@
                             <attributes>
                               <attribute name="weight" value="bold"/>
                             </attributes>
+                            <child internal-child="accessible">
+                              <object class="AtkObject" id="kdeconnect-label-atkobject">
+                                <property name="AtkObject::accessible-role">label</property>
+                              </object>
+                            </child>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -360,19 +365,125 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkLabel">
+                          <object class="GtkGrid" id="kdeconnect-applications">
                             <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="halign">start</property>
-                            <property name="valign">baseline</property>
-                            <property name="label">Android (&lt;a href="https://play.google.com/store/apps/details?id=org.kde.kdeconnect_tp"&gt;Play Store&lt;/a&gt; / &lt;a href="https://f-droid.org/packages/org.kde.kdeconnect_tp/"&gt;F-Droid&lt;/a&gt;), &lt;a href="https://openrepos.net/content/piggz/kde-connect"&gt;Sailfish OS&lt;/a&gt;</property>
-                            <property name="use_markup">True</property>
-                            <property name="track_visited_links">False</property>
+                            <property name="can_focus">False</property>
+                            <property name="margin_left">12</property>
+                            <property name="column_spacing">6</property>
+                            <child>
+                              <object class="GtkLabel" id="kdeconnect-android">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="halign">end</property>
+                                <property name="label">Android:</property>
+                                <child internal-child="accessible">
+                                  <object class="AtkObject" id="kdeconnect-android-atkobject">
+                                    <property name="AtkObject::accessible-role">label</property>
+                                  </object>
+                                </child>
+                              </object>
+                              <packing>
+                                <property name="left_attach">0</property>
+                                <property name="top_attach">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLinkButton" id="kdeconnect-playstore">
+                                <property name="label">Play Store</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">True</property>
+                                <property name="halign">start</property>
+                                <property name="relief">none</property>
+                                <property name="uri">https://play.google.com/store/apps/details?id=org.kde.kdeconnect_tp</property>
+                                <accessibility>
+                                  <relation type="labelled-by" target="kdeconnect-android"/>
+                                  <relation type="member-of" target="kdeconnect-applications"/>
+                                </accessibility>
+                                <child internal-child="accessible">
+                                  <object class="AtkObject" id="kdeconnect-playstore-atkobject">
+                                    <property name="AtkObject::accessible-role">link</property>
+                                  </object>
+                                </child>
+                              </object>
+                              <packing>
+                                <property name="left_attach">1</property>
+                                <property name="top_attach">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLinkButton" id="kdeconnect-fdroid">
+                                <property name="label">F-Droid</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">True</property>
+                                <property name="halign">start</property>
+                                <property name="relief">none</property>
+                                <property name="uri">https://f-droid.org/packages/org.kde.kdeconnect_tp/</property>
+                                <accessibility>
+                                  <relation type="labelled-by" target="kdeconnect-android"/>
+                                  <relation type="member-of" target="kdeconnect-applications"/>
+                                </accessibility>
+                                <child internal-child="accessible">
+                                  <object class="AtkObject" id="kdeconnect-fdroid-atkobject">
+                                    <property name="AtkObject::accessible-role">link</property>
+                                  </object>
+                                </child>
+                              </object>
+                              <packing>
+                                <property name="left_attach">2</property>
+                                <property name="top_attach">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLinkButton" id="kdeconnect-openrepos">
+                                <property name="label">OpenRepos</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">True</property>
+                                <property name="halign">start</property>
+                                <property name="relief">none</property>
+                                <property name="uri">https://openrepos.net/content/piggz/kde-connect</property>
+                                <accessibility>
+                                  <relation type="labelled-by" target="kdeconnect-sailfish"/>
+                                  <relation type="member-of" target="kdeconnect-applications"/>
+                                </accessibility>
+                                <child internal-child="accessible">
+                                  <object class="AtkObject" id="kdeconnect-openrepos-atkobject">
+                                    <property name="AtkObject::accessible-role">link</property>
+                                  </object>
+                                </child>
+                              </object>
+                              <packing>
+                                <property name="left_attach">1</property>
+                                <property name="top_attach">1</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="kdeconnect-sailfish">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="halign">end</property>
+                                <property name="label">Sailfish OS:</property>
+                                <child internal-child="accessible">
+                                  <object class="AtkObject" id="kdeconnect-sailfish-atkobject">
+                                    <property name="AtkObject::accessible-role">label</property>
+                                  </object>
+                                </child>
+                              </object>
+                              <packing>
+                                <property name="left_attach">0</property>
+                                <property name="top_attach">1</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <placeholder/>
+                            </child>
                           </object>
                           <packing>
                             <property name="expand">False</property>
                             <property name="fill">True</property>
-                            <property name="position">6</property>
+                            <property name="position">5</property>
                           </packing>
                         </child>
                       </object>
