@@ -146,6 +146,8 @@ var ConversationMessage = GObject.registerClass({
 }, class ConversationMessage extends Gtk.Label {
 
     _init(message) {
+        this.message = message;
+
         super._init({
             label: this._linkify(message.body),
             halign: (message.type === MessageType.IN) ? Gtk.Align.START : Gtk.Align.END,
@@ -163,8 +165,6 @@ var ConversationMessage = GObject.registerClass({
         } else {
             this.get_style_context().add_class('message-out');
         }
-
-        this.message = message;
     }
 
     vfunc_activate_link(uri) {
@@ -194,9 +194,13 @@ var ConversationMessage = GObject.registerClass({
      * @return {string} - the modified text
      */
     _linkify(text) {
-        _urlRegexp.lastIndex = 0;
         text = GLib.markup_escape_text(text, -1);
-        return text.replace(_urlRegexp, '$1<a href="$2">$2</a>');
+
+        _urlRegexp.lastIndex = 0;
+        return text.replace(
+            _urlRegexp,
+            `$1<a href="$2" title="${getTime(this.message.date)}">$2</a>`
+        );
     }
 });
 

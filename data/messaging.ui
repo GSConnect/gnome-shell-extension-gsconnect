@@ -18,6 +18,7 @@
             <property name="has_focus">True</property>
             <property name="is_focus">True</property>
             <property name="receives_default">True</property>
+            <property name="tooltip_text" translatable="yes">New Conversation</property>
             <signal name="clicked" handler="_onNewConversation" swapped="no"/>
             <child>
               <object class="GtkImage">
@@ -27,6 +28,7 @@
                 <property name="icon_name">list-add-symbolic</property>
               </object>
             </child>
+            <accelerator key="n" signal="clicked" modifiers="GDK_CONTROL_MASK"/>
           </object>
         </child>
       </object>
@@ -162,8 +164,6 @@
                 <child internal-child="action_area">
                   <object class="GtkButtonBox">
                     <property name="can_focus">False</property>
-                    <property name="spacing">6</property>
-                    <property name="layout_style">end</property>
                     <child>
                       <placeholder/>
                     </child>
@@ -185,28 +185,19 @@
                     <property name="can_focus">False</property>
                     <property name="spacing">6</property>
                     <child>
-                      <object class="GtkImage">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="icon_name">dialog-warning-symbolic</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                    <child>
                       <object class="GtkLabel">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="halign">start</property>
                         <property name="label" translatable="yes">Device is disconnected</property>
+                        <attributes>
+                          <attribute name="weight" value="bold"/>
+                        </attributes>
                       </object>
                       <packing>
-                        <property name="expand">True</property>
+                        <property name="expand">False</property>
                         <property name="fill">True</property>
-                        <property name="position">1</property>
+                        <property name="position">0</property>
                       </packing>
                     </child>
                   </object>
