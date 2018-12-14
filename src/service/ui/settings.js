@@ -480,7 +480,10 @@ var Window = GObject.registerClass({
     _init(params) {
         this.connect_template();
 
-        super._init(params);
+        super._init({
+            application: Gio.Application.get_default(),
+            title: _('Settings')
+        });
 
         this.settings = new Gio.Settings({
             settings_schema: gsconnect.gschema.lookup(

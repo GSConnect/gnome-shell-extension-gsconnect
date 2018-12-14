@@ -365,7 +365,7 @@ const Service = GObject.registerClass({
         }
 
         if (!this._window) {
-            this._window = new Settings.Window({application: this});
+            this._window = new Settings.Window();
         }
 
         // Open to a specific page
