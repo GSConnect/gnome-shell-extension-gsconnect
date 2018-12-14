@@ -5,6 +5,11 @@ const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 
 
+/**
+ * One-time check for Linux/FreeBSD scoket options
+ */
+var _LINUX_SOCKET_OPTIONS = false;
+
 try {
     // This should throw on FreeBSD
     // https://github.com/freebsd/freebsd/blob/master/sys/netinet/tcp.h#L159
@@ -16,10 +21,10 @@ try {
 
     // Otherwise we can use Linux socket options
     debug('Setting socket options for Linux');
-    var _LINUX_SOCKET_OPTIONS = true;
+    _LINUX_SOCKET_OPTIONS = true;
 } catch (e) {
     debug('Setting socket options for FreeBSD');
-    var _LINUX_SOCKET_OPTIONS = false;
+    _LINUX_SOCKET_OPTIONS = false;
 }
 
 
