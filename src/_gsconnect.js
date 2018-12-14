@@ -154,48 +154,45 @@ gsconnect.dbusinfo.nodes.forEach(info => info.cache_build());
 
 
 /**
- * If 'debug' is enabled in GSettings, Print a message to the log, prepended
- * with the UUID of the extension.
+ * Re-usable logging function
+ */
+function _makeLogFunction(level) {
+    return (message, context = null) => {
+        let caller;
+
+        if (message.stack) {
+            caller = message.stack.split('\n')[0];
+            message = `${message.message}\n${message.stack}`;
+        } else {
+            message = JSON.stringify(message, null, 2);
+            caller = (new Error()).stack.split('\n')[1];
+        }
+
+        // Prepend context
+        message = (context) ? `${context}: ${message}` : message;
+
+        // Cleanup the stack
+        let [, func, file, line] = caller.match(/([^@]*)@([^:]*):([^:]*)/);
+        let script = file.replace(gsconnect.extdatadir, '');
+
+        GLib.log_structured('GSConnect', level, {
+            'MESSAGE': `[${script}:${func}:${line}]: ${message}`,
+            'SYSLOG_IDENTIFIER': 'org.gnome.Shell.Extensions.GSConnect',
+            'CODE_FILE': file,
+            'CODE_FUNC': func,
+            'CODE_LINE': line
+        });
+    };
+}
+
+
+/**
+ * If 'debug' is enabled in GSettings, print a useful message to the log
  *
  * @param {string} msg - the debugging message
  * @param {string} [prefix] - An optional prefix for the message
  */
-var _debugFunc = function(msg, prefix = null) {
-    try {
-        // Grab the second line of a stack trace
-        let regex = /(?:(?:[^<.]+<\.)?([^@]+))?@(.+):(\d+):\d+/g;
-        let trace = ((msg.stack) ? msg : new Error()).stack.split('\n')[1];
-        let [, func, file, line] = regex.exec(trace);
-        file = GLib.path_get_basename(file);
-
-        // There's a better way...
-        let hdr = [file, func, line].filter(k => (k)).join(':');
-
-        // Ensure @msg is a string
-        if (msg.stack) {
-            msg = `${msg.message}\n${msg.stack}`;
-        } else if (typeof msg !== 'string') {
-            msg = JSON.stringify(msg, null, 2);
-        }
-
-        // Append a prefix for context
-        msg = (prefix !== null) ? `${prefix}: ${msg}` : msg;
-
-        GLib.log_structured(
-            'GSConnect',
-            GLib.LogLevelFlags.LEVEL_MESSAGE,
-            {
-                MESSAGE: `DEBUG: [${hdr}]: ${msg}`,
-                SYSLOG_IDENTIFIER: 'org.gnome.Shell.Extensions.GSConnect',
-                CODE_FILE: file,
-                CODE_FUNC: `${func}`,
-                CODE_LINE: `${line}`
-            }
-        );
-    } catch (e) {
-        logError(e);
-    }
-};
+var _debugFunc = _makeLogFunction(GLib.LogLevelFlags.LEVEL_MESSAGE);
 
 window.debug = gsconnect.settings.get_boolean('debug') ? _debugFunc : () => {};
 
