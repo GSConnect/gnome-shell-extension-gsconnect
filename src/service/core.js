@@ -5,6 +5,24 @@ const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 
 
+try {
+    // This should throw on FreeBSD
+    // https://github.com/freebsd/freebsd/blob/master/sys/netinet/tcp.h#L159
+    new Gio.Socket({
+        family: Gio.SocketFamily.IPV4,
+        protocol: Gio.SocketProtocol.TCP,
+        type: Gio.SocketType.STREAM
+    }).get_option(6, 5);
+
+    // Otherwise we can use Linux socket options
+    debug('Setting socket options for Linux');
+    var _LINUX_SOCKET_OPTIONS = true;
+} catch (e) {
+    debug('Setting socket options for FreeBSD');
+    var _LINUX_SOCKET_OPTIONS = false;
+}
+
+
 /**
  * Packet
  *
@@ -112,9 +130,16 @@ var Channel = class Channel {
     _initSocket(connection) {
         if (connection instanceof Gio.TcpConnection) {
             connection.socket.set_keepalive(true);
-            connection.socket.set_option(6, 4, 10); // TCP_KEEPIDLE
-            connection.socket.set_option(6, 5, 5);  // TCP_KEEPINTVL
-            connection.socket.set_option(6, 6, 3);  // TCP_KEEPCNT
+
+            if (_LINUX_SOCKET_OPTIONS) {
+                connection.socket.set_option(6, 4, 10); // TCP_KEEPIDLE
+                connection.socket.set_option(6, 5, 5);  // TCP_KEEPINTVL
+                connection.socket.set_option(6, 6, 3);  // TCP_KEEPCNT
+            } else {
+                connection.socket.set_option(6, 256, 10); // TCP_KEEPIDLE
+                connection.socket.set_option(6, 512, 5);  // TCP_KEEPINTVL
+                connection.socket.set_option(6, 1024, 3); // TCP_KEEPCNT
+            }
         }
 
         return connection;
