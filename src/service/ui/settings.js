@@ -555,16 +555,7 @@ var Window = GObject.registerClass({
         this._onDevicesChanged();
 
         // If there are no devices, it's safe to auto-broadcast
-        GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, 5, () => {
-            if (this.application.devices.length < 1 && this.stack.visible_child_name === 'service') {
-                this.application.broadcast();
-                this.device_list_spinner.active = true;
-            } else {
-                this.device_list_spinner.active = false;
-            }
-
-            return GLib.SOURCE_CONTINUE;
-        });
+        GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, 5, this._refresh.bind(this));
 
         // Restore window size/maximized/position
         this.restore_geometry();
@@ -585,6 +576,17 @@ var Window = GObject.registerClass({
     vfunc_delete_event(event) {
         this.save_geometry();
         return this.hide_on_delete();
+    }
+
+    _refresh() {
+        if (this.application.devices.length < 1 && this.stack.visible_child_name === 'service') {
+            this.application.broadcast();
+            this.device_list_spinner.active = true;
+        } else {
+            this.device_list_spinner.active = false;
+        }
+
+        return GLib.SOURCE_CONTINUE;
     }
 
     /**
