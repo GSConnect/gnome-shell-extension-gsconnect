@@ -103,7 +103,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         // Service Menu -> "Mobile Settings"
         this._item.menu.addAction(
             _('Mobile Settings'),
-            () => this.service.activate_action('preferences', null)
+            () => this.service.activate_action('settings', null)
         );
 
         // Watch for UI prefs

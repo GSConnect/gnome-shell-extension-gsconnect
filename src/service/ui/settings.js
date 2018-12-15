@@ -531,6 +531,11 @@ var Window = GObject.registerClass({
         });
         this.add_action(displayMode);
 
+        // About Dialog
+        let aboutDialog = new Gio.SimpleAction({name: 'about'});
+        aboutDialog.connect('activate', this._aboutDialog.bind(this));
+        this.add_action(aboutDialog);
+
         // "Connect to..." Dialog
         let connectDialog = new Gio.SimpleAction({name: 'connect'});
         connectDialog.connect('activate', this._connectDialog);
@@ -590,6 +595,45 @@ var Window = GObject.registerClass({
         }
 
         return GLib.SOURCE_CONTINUE;
+    }
+
+    /**
+     * About Dialog
+     */
+    _aboutDialog() {
+        if (this._about === undefined) {
+            this._about = new Gtk.AboutDialog({
+                application: Gio.Application.get_default(),
+                authors: [
+                    'Andy Holmes <andrew.g.r.holmes@gmail.com>',
+                    'Bertrand Lacoste <getzze@gmail.com>',
+                    'Frank Dana <ferdnyc@gmail.com>'
+                ],
+                comments: _('A complete KDE Connect implementation for GNOME'),
+                logo: GdkPixbuf.Pixbuf.new_from_resource_at_scale(
+                    gsconnect.app_path + '/icons/' + gsconnect.app_id + '.svg',
+                    128,
+                    128,
+                    true
+                ),
+                program_name: 'GSConnect',
+                // TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
+                translator_credits: _('translator-credits'),
+                version: `${gsconnect.metadata.version}`,
+                website: gsconnect.metadata.url,
+                license_type: Gtk.License.GPL_2_0,
+                modal: true,
+                transient_for: this
+            });
+
+            // Persist
+            this._about.connect(
+                'delete-event',
+                () => this._about.hide_on_delete()
+            );
+        }
+
+        this._about.present();
     }
 
     /**

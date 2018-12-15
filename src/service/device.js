@@ -835,7 +835,7 @@ var Device = GObject.registerClass({
     }
 
     openSettings() {
-        this.service._preferencesAction(this.id);
+        this.service._settings(this.id);
     }
 
     destroy() {

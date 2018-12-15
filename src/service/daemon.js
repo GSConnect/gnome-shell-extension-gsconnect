@@ -307,16 +307,12 @@ const Service = GObject.registerClass({
             // Device
             ['deviceAction', this._deviceAction.bind(this), '(ssbv)'],
 
-            // App Menu
-            ['preferences', this._preferencesAction.bind(this)],
-            ['about', this._aboutAction.bind(this)],
-
-            // Misc service actions
+            // Service actions
             ['broadcast', this.broadcast.bind(this)],
-            ['error', this._error.bind(this), 'a{ss}'],
             ['devel', this._devel.bind(this)],
-            ['wiki', this._wiki.bind(this), 's'],
-            ['quit', () => this.quit()]
+            ['error', this._error.bind(this), 'a{ss}'],
+            ['settings', this._settings.bind(this)],
+            ['wiki', this._wiki.bind(this), 's']
         ];
 
         for (let [name, callback, type] of actions) {
@@ -359,7 +355,7 @@ const Service = GObject.registerClass({
         }
     }
 
-    _preferencesAction(page = null, parameter = null) {
+    _settings(page = null, parameter = null) {
         if (parameter instanceof GLib.Variant) {
             page = parameter.unpack();
         }
@@ -378,40 +374,6 @@ const Service = GObject.registerClass({
         }
 
         this._window.present();
-    }
-
-    _aboutAction() {
-        let modal = (this.get_active_window());
-        let transient_for = this.get_active_window();
-
-        if (this._about === undefined) {
-            this._about = new Gtk.AboutDialog({
-                application: this,
-                authors: [
-                    'Andy Holmes <andrew.g.r.holmes@gmail.com>',
-                    'Bertrand Lacoste <getzze@gmail.com>',
-                    'Frank Dana <ferdnyc@gmail.com>'
-                ],
-                comments: _('A complete KDE Connect implementation for GNOME'),
-                logo: GdkPixbuf.Pixbuf.new_from_resource_at_scale(
-                    gsconnect.app_path + '/icons/' + gsconnect.app_id + '.svg',
-                    128,
-                    128,
-                    true
-                ),
-                program_name: _('GSConnect'),
-                // TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
-                translator_credits: _('translator-credits'),
-                version: gsconnect.metadata.version.toString(),
-                website: gsconnect.metadata.url,
-                license_type: Gtk.License.GPL_2_0
-            });
-            this._about.connect('delete-event', () => this._about.hide_on_delete());
-        }
-
-        this._about.modal = modal;
-        this._about.transient_for = transient_for;
-        this._about.present();
     }
 
     _devel() {

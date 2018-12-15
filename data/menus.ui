@@ -36,7 +36,7 @@
       </item>
       <item>
         <attribute name="label" translatable="yes">About</attribute>
-        <attribute name="action">app.about</attribute>
+        <attribute name="action">win.about</attribute>
       </item>
     </section>
   </menu>
