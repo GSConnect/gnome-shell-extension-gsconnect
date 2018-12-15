@@ -427,7 +427,7 @@ const Service = GObject.registerClass({
                 buttons: Gtk.ButtonsType.CLOSE,
                 message_type: Gtk.MessageType.ERROR,
             });
-            dialog.add_button(_('Report'), Gtk.ReponseType.OK);
+            dialog.add_button(_('Report'), Gtk.ResponseType.OK);
             dialog.set_keep_above(true);
 
             let [message, stack] = dialog.get_message_area().get_children();
@@ -436,7 +436,7 @@ const Service = GObject.registerClass({
             stack.selectable = true;
 
             dialog.connect('response', (dialog, response_id) => {
-                if (response_id === Gtk.ReponseType.OK) {
+                if (response_id === Gtk.ResponseType.OK) {
                     let query = encodeURIComponent(dialog.text).replace('%20', '+');
                     this._github(`issues?q=is%3Aissue+"${query}"`);
                 } else {
