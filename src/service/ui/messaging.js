@@ -650,7 +650,7 @@ const ConversationWidget = GObject.registerClass({
      */
     sendMessage(entry, signal_id, event) {
         // Don't send empty texts
-        if (!this.message_entry.text) return;
+        if (!this.message_entry.text.trim()) return;
 
         // Send the message
         this.device.activate_action(
