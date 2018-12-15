@@ -35,6 +35,8 @@ var Store = GObject.registerClass({
             context: null
         }, params));
 
+        this.__cache_data = {};
+
         // Asynchronous setup
         this._init_async();
     }
