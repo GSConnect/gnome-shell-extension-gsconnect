@@ -89,6 +89,7 @@ const Service = GObject.registerClass({
 
         // FIXME: Breaks Multi-DPI support. Remove once a Wayland protocol is
         // created or an interface can be exported from gnome-shell process.
+        // FIXME: Removing this causes a regression of #307.
         Gdk.set_allowed_backends('x11,*');
 
         GLib.set_prgname(gsconnect.app_id);
@@ -97,7 +98,6 @@ const Service = GObject.registerClass({
         this.register(null);
     }
 
-    // Properties
     get certificate() {
         if (this._certificate === undefined) {
             this._certificate = Gio.TlsCertificate.new_for_paths(
@@ -236,7 +236,7 @@ const Service = GObject.registerClass({
         let device = this._devices.get(packet.body.deviceId);
 
         if (device === undefined) {
-            debug(`GSConnect: Adding ${packet.body.deviceName}`);
+            debug(`Adding ${packet.body.deviceName}`);
 
             // TODO: Remove when all clients support bluetooth-like discovery
             //
@@ -246,7 +246,7 @@ const Service = GObject.registerClass({
                 return !dev.paired;
             });
 
-            if (unpaired.length === 2 && this.discoverable) {
+            if (unpaired.length === 3 && this.discoverable) {
                 this.activate_action('discoverable', null);
 
                 let error = new Error();
@@ -325,6 +325,8 @@ const Service = GObject.registerClass({
         }
 
         this.add_action(gsconnect.settings.create_action('discoverable'));
+
+        this.set_accels_for_action('app.wiki::Help', ['F1']);
     }
 
     /**
@@ -353,27 +355,6 @@ const Service = GObject.registerClass({
                 );
             }
         }
-    }
-
-    _settings(page = null, parameter = null) {
-        if (parameter instanceof GLib.Variant) {
-            page = parameter.unpack();
-        }
-
-        if (!this._window) {
-            this._window = new Settings.Window();
-        }
-
-        // Open to a specific page
-        if (typeof page === 'string' && this._window.stack.get_child_by_name(page)) {
-            this._window._onDeviceSelected(page);
-
-        // Open the main page
-        } else {
-            this._window._onPrevious();
-        }
-
-        this._window.present();
     }
 
     _devel() {
@@ -410,6 +391,27 @@ const Service = GObject.registerClass({
         } catch (e) {
             logError(e);
         }
+    }
+
+    _settings(page = null, parameter = null) {
+        if (parameter instanceof GLib.Variant) {
+            page = parameter.unpack();
+        }
+
+        if (!this._window) {
+            this._window = new Settings.Window();
+        }
+
+        // Open to a specific page
+        if (typeof page === 'string' && this._window.stack.get_child_by_name(page)) {
+            this._window._onDeviceSelected(page);
+
+        // Open the main page
+        } else {
+            this._window._onPrevious();
+        }
+
+        this._window.present();
     }
 
     _wiki(action, parameter) {
@@ -566,7 +568,7 @@ const Service = GObject.registerClass({
             }
 
             // Create an urgent notification
-            notif.set_title(_('GSConnect: %s').format(title));
+            notif.set_title(`GSConnect: ${title}`);
             notif.set_body(body);
             notif.set_icon(icon);
 
