@@ -660,18 +660,72 @@
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <child>
-                              <object class="GtkButton" id="command-edit">
+                              <object class="GtkBox">
                                 <property name="visible">True</property>
-                                <property name="sensitive">False</property>
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">True</property>
-                                <signal name="clicked" handler="_onEditCommand" swapped="no"/>
+                                <property name="can_focus">False</property>
+                                <property name="halign">start</property>
+                                <property name="hexpand">True</property>
                                 <child>
-                                  <object class="GtkImage">
+                                  <object class="GtkButton" id="command-edit">
                                     <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
-                                    <property name="icon_name">document-edit-symbolic</property>
+                                    <property name="sensitive">False</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="receives_default">True</property>
+                                    <property name="tooltip_text" translatable="yes">Edit</property>
+                                    <signal name="clicked" handler="_onEditCommand" swapped="no"/>
+                                    <child>
+                                      <object class="GtkImage">
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">False</property>
+                                        <property name="icon_name">document-edit-symbolic</property>
+                                        <property name="icon_size">2</property>
+                                      </object>
+                                    </child>
+                                    <accessibility>
+                                      <relation type="controller-for" target="command-list"/>
+                                    </accessibility>
+                                    <child internal-child="accessible">
+                                      <object class="AtkObject" id="command-edit-atkobject">
+                                        <property name="AtkObject::accessible-role">push-button</property>
+                                      </object>
+                                    </child>
                                   </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">0</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkButton" id="command-save">
+                                    <property name="visible">True</property>
+                                    <property name="sensitive">False</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="receives_default">True</property>
+                                    <property name="tooltip_text" translatable="yes">Save</property>
+                                    <signal name="clicked" handler="_onSaveCommand" swapped="no"/>
+                                    <child>
+                                      <object class="GtkImage">
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">False</property>
+                                        <property name="icon_name">document-save-symbolic</property>
+                                        <property name="icon_size">2</property>
+                                      </object>
+                                    </child>
+                                    <accessibility>
+                                      <relation type="controller-for" target="command-list"/>
+                                    </accessibility>
+                                    <child internal-child="accessible">
+                                      <object class="AtkObject" id="command-save-atkobject">
+                                        <property name="AtkObject::accessible-role">push-button</property>
+                                      </object>
+                                    </child>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">1</property>
+                                  </packing>
                                 </child>
                               </object>
                             </child>
@@ -2189,5 +2243,17 @@
       </packing>
     </child>
   </template>
+  <object class="GtkImage" id="command-list-placeholder">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="halign">center</property>
+    <property name="valign">center</property>
+    <property name="margin_top">16</property>
+    <property name="pixel_size">32</property>
+    <property name="icon_name">system-run-symbolic</property>
+    <style>
+      <class name="placeholder-image"/>
+    </style>
+  </object>
 </interface>
 

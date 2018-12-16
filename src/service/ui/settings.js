@@ -786,8 +786,8 @@ var DevicePreferences = GObject.registerClass({
         'sharing-list',
         'clipboard', 'clipboard-sync', 'mousepad', 'mpris', 'systemvolume',
         // RunCommand
-        'runcommand', 'command-list',
-        'command-toolbar', 'command-add', 'command-remove', 'command-edit',
+        'runcommand', 'command-list', 'command-list-placeholder',
+        'command-toolbar', 'command-add', 'command-remove', 'command-edit', 'command-save',
         'command-editor', 'command-name', 'command-line',
         // Notifications
         'notification', 'notification-apps',
@@ -1090,22 +1090,27 @@ var DevicePreferences = GObject.registerClass({
             GObject.BindingFlags.INVERT_BOOLEAN
         );
 
+        // Bind the edit/save button sensitivity to the editor visibility
+        this.command_editor.bind_property(
+            'visible',
+            this.command_edit,
+            'sensitive',
+            GObject.BindingFlags.INVERT_BOOLEAN
+        );
+
+        this.command_editor.bind_property(
+            'visible',
+            this.command_save,
+            'sensitive',
+            GObject.BindingFlags.DEFAULT
+        );
+
         // Local Command List
         let settings = this._getSettings('runcommand');
         this._commands = settings.get_value('command-list').full_unpack();
         this._commands = (typeof this._commands === 'string') ? {} : this._commands;
 
-        let placeholder = new Gtk.Image({
-            icon_name: 'system-run-symbolic',
-            hexpand: true,
-            halign: Gtk.Align.CENTER,
-            margin: 12,
-            pixel_size: 32,
-            visible: true
-        });
-        placeholder.get_style_context().add_class('dim-label');
-
-        this.command_list.set_placeholder(placeholder);
+        this.command_list.set_placeholder(this.command_list_placeholder);
         this.command_list.set_sort_func(this._commandSortFunc);
         this.command_list.set_header_func(section_separators);
 
@@ -1163,45 +1168,44 @@ var DevicePreferences = GObject.registerClass({
         this._populateCommands();
     }
 
-    // The 'edit'/'save' icon in the toolbar
+    // 'Edit' icon in the toolbar
     _onEditCommand(button) {
         let row = this.command_list.get_selected_row();
         let uuid = row.get_name();
 
-        // The editor is open so we're being asked to save
-        if (this.command_editor.visible) {
-            if (this.command_name.text && this.command_line.text) {
-                this._commands[uuid] = {
-                    name: this.command_name.text,
-                    command: this.command_line.text
-                };
-            } else {
-                delete this._commands[uuid];
-            }
+        this.command_editor.uuid = uuid;
+        this.command_name.text = this._commands[uuid].name;
+        this.command_line.text = this._commands[uuid].command;
 
-            this._getSettings('runcommand').set_value(
-                'command-list',
-                GLib.Variant.full_pack(this._commands)
-            );
+        row.visible = false;
+        this.command_editor.visible = true;
+        this.command_name.has_focus = true;
 
-            this._populateCommands();
+        this.command_list.foreach(child => {
+            child.sensitive = (child === this.command_editor);
+        });
+    }
 
-        // The editor is closed so we're being asked to edit
+    // 'Save' icon in the toolbar
+    _onSaveCommand(button) {
+        let row = this.command_list.get_selected_row();
+        let uuid = row.get_name();
+
+        if (this.command_name.text && this.command_line.text) {
+            this._commands[uuid] = {
+                name: this.command_name.text,
+                command: this.command_line.text
+            };
         } else {
-            this.command_editor.uuid = uuid;
-            this.command_name.text = this._commands[uuid].name;
-            this.command_line.text = this._commands[uuid].command;
-
-            this.command_edit.get_child().icon_name = 'document-save-symbolic';
-
-            row.visible = false;
-            this.command_editor.visible = true;
-            this.command_name.has_focus = true;
-
-            this.command_list.foreach(child => {
-                child.sensitive = (child === this.command_editor);
-            });
+            delete this._commands[uuid];
         }
+
+        this._getSettings('runcommand').set_value(
+            'command-list',
+            GLib.Variant.full_pack(this._commands)
+        );
+
+        this._populateCommands();
     }
 
     // The 'folder' icon in the command editor GtkEntry
@@ -1228,7 +1232,6 @@ var DevicePreferences = GObject.registerClass({
         delete this.command_editor.uuid;
         this.command_name.text = '';
         this.command_line.text = '';
-        this.command_edit.get_child().icon_name = 'document-edit-symbolic';
         this.command_editor.visible = false;
 
         this.command_list.foreach(row => {
