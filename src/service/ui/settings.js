@@ -563,6 +563,7 @@ var Window = GObject.registerClass({
         this._onDevicesChanged();
 
         // If there are no devices, it's safe to auto-broadcast
+        this._refresh();
         GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, 5, this._refresh.bind(this));
 
         // Restore window size/maximized/position
