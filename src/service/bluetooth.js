@@ -139,7 +139,7 @@ var ChannelService = GObject.registerClass({
     // A list of device proxies supporting the KDE Connect Service UUID
     get devices() {
         let devices = Array.from(this._devices.values());
-        return  devices.filter(device => device.UUIDs.includes(SERVICE_UUID));
+        return devices.filter(device => device.UUIDs.includes(SERVICE_UUID));
     }
 
     get service() {
@@ -351,15 +351,15 @@ var ChannelService = GObject.registerClass({
     /**
      * This method gets called when a profile gets disconnected.
      *
-	 * The file descriptor is no longer owned by the service daemon and the
-	 * profile implementation needs to take care of cleaning up all
-	 * connections.
-	 *
-	 * If multiple file descriptors are indicated via NewConnection, it is
-	 * expected that all of them are disconnected before returning from this
-	 * method call.
-	 *
-	 * @param {string} object_path - DBus object path
+     * The file descriptor is no longer owned by the service daemon and the
+     * profile implementation needs to take care of cleaning up all
+     * connections.
+     *
+     * If multiple file descriptors are indicated via NewConnection, it is
+     * expected that all of them are disconnected before returning from this
+     * method call.
+     *
+     * @param {string} object_path - DBus object path
      * @return {undefined} - void return value
      */
     async RequestDisconnection(object_path) {

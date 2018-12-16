@@ -1,32 +1,38 @@
 <interface domain="org.gnome.Shell.Extensions.GSConnect">
-  <menu id="app-menu">
+  <!-- Service Menu in the Settings Window -->
+  <menu id="service-menu">
     <section>
       <item>
+        <!-- TRANSLATORS: Open a dialog to connect to an IP or Bluez device -->
         <attribute name="label" translatable="yes">Connect to…</attribute>
-        <attribute name="action">app.connect</attribute>
+        <attribute name="action">win.connect</attribute>
+      </item>
+    </section>
+    <section>
+      <attribute name="label" translatable="yes">Display Mode</attribute>
+      <item>
+        <!-- TRANSLATORS: Show device indicators in the top bar -->
+        <attribute name="label" translatable="yes">Panel</attribute>
+        <attribute name="action">win.display-mode</attribute>
+        <attribute name="target">panel</attribute>
+      </item>
+      <item>
+        <!-- TRANSLATORS: Show devices in the user menu like Bluetooth -->
+        <attribute name="label" translatable="yes">User Menu</attribute>
+        <attribute name="action">win.display-mode</attribute>
+        <attribute name="target">user-menu</attribute>
       </item>
     </section>
     <section>
       <item>
-        <attribute name="label" translatable="yes">Sync Contacts</attribute>
-        <attribute name="action">win.sync-contacts</attribute>
-        <attribute name='hidden-when'>action-disabled</attribute>
+        <!-- TRANSLATORS: Generate a support log -->
+        <attribute name="label" translatable="yes">Generate Support Log</attribute>
+        <attribute name="action">win.support-log</attribute>
       </item>
-      <item>
-        <attribute name="label" translatable="yes">Sync Messages</attribute>
-        <attribute name="action">win.sync-messages</attribute>
-        <attribute name='hidden-when'>action-disabled</attribute>
-      </item>
-    </section>
-    <section>
       <item>
         <attribute name="label" translatable="yes">Help</attribute>
         <attribute name="action">app.wiki</attribute>
         <attribute name="target">Help</attribute>
-      </item>
-      <item>
-        <attribute name="label" translatable="yes">Debugger</attribute>
-        <attribute name="action">app.debugger</attribute>
       </item>
       <item>
         <attribute name="label" translatable="yes">About</attribute>
@@ -35,35 +41,38 @@
     </section>
   </menu>
 
-  <menu id="device-settings">
+  <!-- Device Menu in the Settings Window -->
+  <menu id="device-menu">
     <section>
       <item>
-        <attribute name="label" translatable="yes">Connect Bluetooth</attribute>
+        <!-- TRANSLATORS: Change the connection type to Bluetooth -->
+        <attribute name="label" translatable="yes">Switch to Bluetooth</attribute>
         <attribute name="action">settings.connect-bluetooth</attribute>
         <attribute name="verb-icon">bluetooth-symbolic</attribute>
         <attribute name='hidden-when'>action-disabled</attribute>
       </item>
       <item>
-        <attribute name="label" translatable="yes">Connect LAN</attribute>
+        <!-- TRANSLATORS: Change the connection type to TCP/IP -->
+        <attribute name="label" translatable="yes">Switch to LAN</attribute>
         <attribute name="action">settings.connect-tcp</attribute>
         <attribute name="verb-icon">network-wireless-symbolic</attribute>
         <attribute name='hidden-when'>action-disabled</attribute>
       </item>
       <item>
+        <!-- TRANSLATORS: View the TLS Certificate fingerprint -->
         <attribute name="label" translatable="yes">Encryption Info</attribute>
         <attribute name="action">settings.encryption-info</attribute>
-        <attribute name='hidden-when'>action-disabled</attribute>
       </item>
       <item>
+        <!-- TRANSLATORS: Send a pair request to the device -->
         <attribute name="label" translatable="yes">Pair</attribute>
         <attribute name="action">settings.pair</attribute>
-        <attribute name="verb-icon">channel-insecure-symbolic</attribute>
         <attribute name='hidden-when'>action-disabled</attribute>
       </item>
       <item>
+        <!-- TRANSLATORS: Unpair the device and notify it -->
         <attribute name="label" translatable="yes">Unpair</attribute>
         <attribute name="action">settings.unpair</attribute>
-        <attribute name="verb-icon">channel-secure-symbolic</attribute>
         <attribute name='hidden-when'>action-disabled</attribute>
       </item>
     </section>

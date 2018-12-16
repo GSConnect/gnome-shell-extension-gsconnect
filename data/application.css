@@ -1,29 +1,71 @@
 
 /**
- * Chrome/Firefox buttons in Preferences->Other
+ * Chrome/Firefox buttons in Settings Window
  */
 .badge-button {
-    border: 0px;
-    padding: 0px;
-    background: transparent;
+  border: 0px;
+  padding: 0px;
+  background: transparent;
+}
+
+
+/**
+ * Placeholders
+ */
+.placeholder {
+  background: @content_view_bg_color;
+  margin-bottom: 30px;
+}
+
+.placeholder-image {
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+.placeholder-title {
+  font-size: larger;
+  font-weight: bold;
+  margin-bottom: 3px;
+  opacity: 0.5;
+}
+
+.placeholder-description {
+  font-size: smaller;
+  opacity: 0.5;
+}
+
+
+/**
+ * GSConnectContactChooser
+ */
+.contact-window {
+  border-top: 1px solid @borders;
+}
+
+.contact-list row {
+  padding: 0px;
+}
+
+
+/**
+ * GSConnectConversationWidget
+ */
+.message-window {
+  border-bottom: 1px solid @borders;
 }
 
 /**
- * Messaging Window - Device Offline overlay
+ * GSConnectMessagingWindow
  */
-.connection-status, .connection-status:hover:active {
-    background: alpha(@theme_bg_color, 0);
-    color: @theme_fg_color;
-    border: 0px;
-    padding: 0px;
+.message-list > label {
+  font-size: small;
+  margin-bottom: 1em;
 }
 
-.connection-status:hover {
-    background: alpha(@theme_selected_bg_color, 0.25);
-    color: @theme_selected_fg_color;
-    border: 0px;
-    padding: 0px;
+.conversation-list {
+  background: @content_view_bg_color;
 }
+
 
 /**
  * Incoming Message Bubbles (GtkLabel subclass)
@@ -38,11 +80,11 @@
 }
 
 .message-in:first-child {
-    border-top-left-radius: 1em;
+  border-top-left-radius: 1em;
 }
 
 .message-in:last-child {
-    border-bottom-left-radius: 1em;
+  border-bottom-left-radius: 1em;
 }
 
 /**
@@ -66,11 +108,11 @@
 }
 
 .message-out:first-child {
-    border-top-right-radius: 1em;
+  border-top-right-radius: 1em;
 }
 
 .message-out:last-child {
-    border-bottom-right-radius: 1em;
+  border-bottom-right-radius: 1em;
 }
 
 /**
@@ -78,5 +120,12 @@
  */
 .message-out *:link {
   color: @theme_fg_color;
+}
+
+/**
+ * Special case for pending messages
+ */
+.message-pending .message-out {
+  opacity: 0.5;
 }
 

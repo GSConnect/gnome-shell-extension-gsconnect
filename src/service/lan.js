@@ -10,18 +10,6 @@ const TCP_MIN_PORT = 1716;
 const TCP_MAX_PORT = 1764;
 const UDP_PORT = 1716;
 
-const IP_PATTERN = /^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$|^(([a-zA-Z]|[a-zA-Z][a-zA-Z0-9-]*[a-zA-Z0-9])\.)*([A-Za-z]|[A-Za-z][A-Za-z0-9-]*[A-Za-z0-9])$|^\s*((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?\s*$/;
-
-
-/**
- * A convenience function for validating IP addresses
- *
- * @param {string} address - An IPv4 or IPv6 address (without port number)
- */
-function ip_is_valid(address) {
-    return IP_PATTERN.test(address);
-}
-
 
 /**
  * Lan.ChannelService consists of two parts.
@@ -233,7 +221,7 @@ var ChannelService = GObject.registerClass({
                     packet.body.tcpHost,
                     packet.body.tcpPort
                 );
-                let client = new Gio.SocketClient();
+                let client = new Gio.SocketClient({enable_proxy: false});
 
                 client.connect_async(address, null, (client, res) => {
                     try {
@@ -279,7 +267,9 @@ var ChannelService = GObject.registerClass({
 
             this._udp.send_to(address, `${this.service.identity}`, null);
         } catch (e) {
-            logError(e);
+            // GNetworkMonitor overreacts when the connectivity state changes
+            // and the documentation is a whole page of wishy-washy excuses, so
+            // we just silence any broadcast errors
         }
     }
 
@@ -317,7 +307,7 @@ var Transfer = class Transfer extends Core.Transfer {
         try {
             this._connection = await new Promise((resolve, reject) => {
                 // Connect
-                let client = new Gio.SocketClient();
+                let client = new Gio.SocketClient({enable_proxy: false});
 
                 // Use the address from GSettings with @port
                 let address = Gio.InetSocketAddress.new_from_string(

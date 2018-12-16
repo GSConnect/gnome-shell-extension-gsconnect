@@ -69,12 +69,6 @@ var Plugin = GObject.registerClass({
         });
         this.device._dbus_object.add_interface(this._dbus);
 
-        // Ensure properties are ready for DBus
-        this.notify('charging');
-        this.notify('level');
-        this.notify('icon-name');
-        this.notify('time');
-
         // Setup Cache; defaults are 90 minute charge, 1 day discharge
         this._chargeState = [54, 0, -1];
         this._dischargeState = [864, 0, -1];
@@ -191,7 +185,7 @@ var Plugin = GObject.registerClass({
         // Offer the option to locate the device, if available
         if (this.device.get_action_enabled('ring')) {
             buttons = [{
-                label: _('Locate'),
+                label: _('Ring'),
                 action: 'ring',
                 parameter: null
             }];

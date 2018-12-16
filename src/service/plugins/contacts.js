@@ -62,9 +62,27 @@ var Plugin = GObject.registerClass({
 
     _handleUids(packet) {
         try {
-            // We don't use this
+            // Delete any contacts that were removed on the device
+            let remote_removed = false;
+            let remote_uids = packet.body.uids;
             delete packet.body.uids;
 
+            for (let contact of this._store) {
+                // Skip contacts that were added from a different source
+                if (contact.origin !== 'device') continue;
+
+                if (!remote_uids.includes(contact.id)) {
+                    delete this._store.__cache_data[contact.id];
+                    remote_removed = true;
+                }
+            }
+
+            // If any contacts were deleted, signal an update
+            if (remote_removed) {
+                this._store.update();
+            }
+
+            // Build a list of new or updated contacts
             let uids = [];
 
             for (let [uid, timestamp] of Object.entries(packet.body)) {
@@ -75,6 +93,7 @@ var Plugin = GObject.registerClass({
                 }
             }
 
+            // Send a request for any new or updated contacts
             if (uids.length) {
                 this.requestVCards(uids);
             }
@@ -107,11 +126,64 @@ var Plugin = GObject.registerClass({
     /**
      * Decode a string encoded as "UTF-8" and return a regular string
      *
+     * See: https://github.com/kvz/locutus/blob/master/src/php/xml/utf8_decode.js
+     * 
      * @param {string} input - The UTF-8 string
      * @return {string} - The decoded string
      */
     decode_utf8(input) {
-        return decodeURIComponent(escape(input));
+        try {
+            let output = [];
+            let i = 0;
+            let c1 = 0;
+            let seqlen = 0;
+
+            while (i < input.length) {
+                c1 = input.charCodeAt(i) & 0xFF;
+                seqlen = 0;
+
+                if (c1 <= 0xBF) {
+                    c1 = (c1 & 0x7F);
+                    seqlen = 1;
+                } else if (c1 <= 0xDF) {
+                    c1 = (c1 & 0x1F);
+                    seqlen = 2;
+                } else if (c1 <= 0xEF) {
+                    c1 = (c1 & 0x0F);
+                    seqlen = 3;
+                } else {
+                    c1 = (c1 & 0x07);
+                    seqlen = 4;
+                }
+
+                for (let ai = 1; ai < seqlen; ++ai) {
+                    c1 = ((c1 << 0x06) | (input.charCodeAt(ai + i) & 0x3F));
+                }
+
+                if (seqlen === 4) {
+                    c1 -= 0x10000;
+                    output.push(String.fromCharCode(0xD800 | ((c1 >> 10) & 0x3FF)));
+                    output.push(String.fromCharCode(0xDC00 | (c1 & 0x3FF)));
+                } else {
+                    output.push(String.fromCharCode(c1));
+                }
+
+                i += seqlen;
+            }
+
+            return output.join('');
+
+        // Fallback to old unfaithful
+        } catch (e) {
+            try {
+                return decodeURIComponent(escape(input));
+
+            // Say "chowdah" frenchie!
+            } catch (e) {
+                logWarning(`Failed to decode UTF-8 VCard field "${input}"`);
+                return input;
+            }
+        }
     }
 
     /**
@@ -160,13 +232,13 @@ var Plugin = GObject.registerClass({
                 if (!vcard[key]) vcard[key] = [];
 
                 // Decode QUOTABLE-PRINTABLE
-                if (meta.ENCODING === 'QUOTED-PRINTABLE') {
+                if (meta.ENCODING && meta.ENCODING === 'QUOTED-PRINTABLE') {
                     delete meta.ENCODING;
                     value = value.map(v => this.decode_quoted_printable(v));
                 }
 
                 // Decode UTF-8
-                if (meta.CHARSET === 'UTF-8') {
+                if (meta.CHARSET && meta.CHARSET === 'UTF-8') {
                     delete meta.CHARSET;
                     value = value.map(v => this.decode_utf8(v));
                 }
@@ -188,7 +260,7 @@ var Plugin = GObject.registerClass({
 
             let contact = {
                 id: uid,
-                name: vcard.fn,
+                name: vcard.fn || _('Unknown Contact'),
                 numbers: [],
                 origin: 'device',
                 timestamp: parseInt(vcard['x-kdeconnect-timestamp'])
@@ -197,8 +269,14 @@ var Plugin = GObject.registerClass({
             // Phone Numbers
             if (vcard.tel) {
                 vcard.tel.map(number => {
+                    let type = 'unknown';
+                    
+                    if (number.meta && number.meta.type) {
+                        type = number.meta.type;
+                    }
+                    
                     contact.numbers.push({
-                        type: (number.meta) ? number.meta.type : 'unknown',
+                        type: type,
                         value: number.value[0]
                     });
                 });
@@ -212,7 +290,7 @@ var Plugin = GObject.registerClass({
 
             return contact;
         } catch (e) {
-            debug(e);
+            logWarning(e, `Failed to parse VCard contact "${uid}"`);
             return undefined;
         }
     }

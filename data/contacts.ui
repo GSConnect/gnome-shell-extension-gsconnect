@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.22.1 -->
+<interface domain="org.gnome.Shell.Extensions.GSConnect">
+  <requires lib="gtk+" version="3.20"/>
+  <template class="GSConnectContactChooser" parent="GtkGrid">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <child>
+      <object class="GtkScrolledWindow" id="contact-window">
+        <property name="visible">True</property>
+        <property name="can_focus">True</property>
+        <property name="hexpand">True</property>
+        <property name="vexpand">True</property>
+        <property name="hscrollbar_policy">never</property>
+        <child>
+          <object class="GtkViewport">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <child>
+              <object class="GtkListBox" id="contact-list">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <signal name="row-activated" handler="_onNumberSelected" swapped="no"/>
+                <style>
+                  <class name="contact-list"/>
+                </style>
+              </object>
+            </child>
+          </object>
+        </child>
+        <style>
+          <class name="contact-window"/>
+        </style>
+      </object>
+      <packing>
+        <property name="left_attach">0</property>
+        <property name="top_attach">1</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkSearchEntry" id="contact-entry">
+        <property name="visible">True</property>
+        <property name="can_focus">True</property>
+        <property name="margin_left">6</property>
+        <property name="margin_right">6</property>
+        <property name="margin_top">6</property>
+        <property name="margin_bottom">6</property>
+        <property name="primary_icon_name">x-office-address-book-symbolic</property>
+        <property name="placeholder_text" translatable="yes">Type a phone number or name</property>
+        <property name="input_purpose">phone</property>
+        <signal name="search-changed" handler="_onSearchChanged" swapped="no"/>
+      </object>
+      <packing>
+        <property name="left_attach">0</property>
+        <property name="top_attach">0</property>
+      </packing>
+    </child>
+  </template>
+  <object class="GtkGrid" id="contact-placeholder">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="halign">center</property>
+    <property name="valign">center</property>
+    <child>
+      <object class="GtkImage">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="pixel_size">144</property>
+        <property name="icon_name">avatar-default-symbolic</property>
+        <style>
+          <class name="placeholder-image"/>
+        </style>
+      </object>
+      <packing>
+        <property name="left_attach">0</property>
+        <property name="top_attach">0</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkLabel">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="label" translatable="yes">No contacts</property>
+        <style>
+          <class name="placeholder-title"/>
+        </style>
+      </object>
+      <packing>
+        <property name="left_attach">0</property>
+        <property name="top_attach">1</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkLinkButton">
+        <property name="label" translatable="yes">Help</property>
+        <property name="visible">True</property>
+        <property name="can_focus">True</property>
+        <property name="receives_default">True</property>
+        <property name="relief">none</property>
+        <property name="uri">https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki/Help#contacts-dont-sync</property>
+      </object>
+      <packing>
+        <property name="left_attach">0</property>
+        <property name="top_attach">2</property>
+      </packing>
+    </child>
+    <style>
+      <class name="placeholder"/>
+    </style>
+  </object>
+</interface>

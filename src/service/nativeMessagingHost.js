@@ -80,8 +80,6 @@ var NativeMessagingHost = GObject.registerClass({
             null,
             this._init_async.bind(this)
         );
-
-        this.send({type: 'connected', data: true});
     }
 
     _init_async(obj, res) {
@@ -116,6 +114,8 @@ var NativeMessagingHost = GObject.registerClass({
                 'notify::name-owner',
                 this.sendDeviceList.bind(this)
             );
+
+            this.send({type: 'connected', data: true});
         } catch (e) {
             logError(e);
             this.quit();

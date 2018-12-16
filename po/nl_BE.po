@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-04 12:18-0500\n"
-"PO-Revision-Date: 2018-11-05 11:47+0100\n"
+"POT-Creation-Date: 2018-11-19 11:14-0800\n"
+"PO-Revision-Date: 2018-11-21 19:57+0100\n"
 "Last-Translator: Heimen Stoffels <vistausss@outlook.com>\n"
 "Language-Team: Dutch <vistausss@outlook.com>\n"
 "Language: nl_BE\n"
@@ -18,17 +18,13 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 2.1.1\n"
 
-#: data/conversation-window.ui:14 src/service/ui/messaging.js:482
-msgid "Conversations"
-msgstr "Conversaties"
-
-#: data/conversation-window.ui:131 data/conversation-window.ui:135
+#: data/conversation.ui:71 data/conversation.ui:79
 msgid "Type a message"
 msgstr "Typ een bericht"
 
-#: data/conversation-window.ui:210
-msgid "Device is disconnected"
-msgstr "Toestel is niet geconnecteerd"
+#: data/contacts.ui:51 data/contacts.ui:52
+msgid "Type a phone number or name"
+msgstr "Typ een telefoonnummer of naam"
 
 #: data/device.ui:68 src/service/plugins/battery.js:12
 msgid "Battery"
@@ -148,71 +144,87 @@ msgstr "Geavanceerd"
 msgid "Keyboard Shortcuts"
 msgstr "Sneltoetsen"
 
-#: data/menus.ui:5 src/service/ui/service.js:115
+#. TRANSLATORS: Open a dialog to connect to an IP or Bluez device
+#: data/menus.ui:7 src/service/ui/service.js:115
 msgid "Connect to…"
 msgstr "Verbind met…"
 
-#: data/menus.ui:11
-msgid "Sync Contacts"
-msgstr "Synchroniseer contacten"
-
-#: data/menus.ui:16
-msgid "Sync Messages"
-msgstr "Synchroniseer berichten"
-
-#: data/menus.ui:23 data/settings.ui:881
+#: data/menus.ui:13 data/settings.ui:881
 msgid "Help"
 msgstr "Hulp"
 
-#: data/menus.ui:28
+#. TRANSLATORS: Open the developer's dialog
+#: data/menus.ui:19
 msgid "Debugger"
 msgstr "Foutopsporing"
 
-#: data/menus.ui:32
+#: data/menus.ui:23
 msgid "About"
 msgstr "Over"
 
+#. TRANSLATORS: Change the connection type to Bluetooth
+#: data/menus.ui:34
+msgid "Switch to Bluetooth"
+msgstr "Schakel naar Bluetooth"
+
+#. TRANSLATORS: Change the connection type to TCP/IP
 #: data/menus.ui:41
-msgid "Connect Bluetooth"
-msgstr "Verbind via Bluetooth"
+msgid "Switch to LAN"
+msgstr "Schakel naar LAN"
 
-#: data/menus.ui:47
-msgid "Connect LAN"
-msgstr "Verbind via LAN"
+#. TRANSLATORS: View the TLS Certificate fingerprint
+#: data/menus.ui:48 src/service/ui/settings.js:612
+msgid "Encryption Info"
+msgstr "Encryptie-info"
 
+#. TRANSLATORS: Send a pair request to the device
 #: data/menus.ui:53 src/service/device.js:425
 msgid "Pair"
 msgstr "Koppel aan"
 
+#. TRANSLATORS: Unpair the device and notify it
 #: data/menus.ui:59 src/service/device.js:433
 msgid "Unpair"
 msgstr "Koppel af"
 
 #. TRANSLATORS: Send clipboard content to device
-#: data/menus.ui:72
+#: data/menus.ui:71
 msgid "To Device"
 msgstr "Naar GSM"
 
 #. TRANSLATORS: Receive clipboard content from the device
-#: data/menus.ui:78
+#: data/menus.ui:77
 msgid "From Device"
 msgstr "Van GSM"
 
 #. TRANSLATORS: Don't change the system volume
-#: data/menus.ui:90 data/menus.ui:116
+#: data/menus.ui:89 data/menus.ui:115
 msgid "Nothing"
 msgstr "Niets"
 
 #. TRANSLATORS: Lower the system volume
-#: data/menus.ui:97 data/menus.ui:123
+#: data/menus.ui:96 data/menus.ui:122
 msgid "Lower"
 msgstr "Verlagen"
 
 #. TRANSLATORS: Mute the system volume
 #. TRANSLATORS: Silence the phone ringer
-#: data/menus.ui:104 data/menus.ui:130 src/service/plugins/telephony.js:175
+#: data/menus.ui:103 data/menus.ui:129 src/service/plugins/telephony.js:176
 msgid "Mute"
 msgstr "Toedoen"
+
+#: data/messaging.ui:12 src/service/plugins/sms.js:25
+#: src/service/ui/messaging.js:871
+msgid "Messaging"
+msgstr "Berichten"
+
+#: data/messaging.ui:110
+msgid "Select a conversation"
+msgstr "Kies een conversatie"
+
+#: data/messaging.ui:188
+msgid "Device is disconnected"
+msgstr "Toestel is niet geconnecteerd"
 
 #: data/settings.ui:333
 msgid "Appearance"
@@ -270,9 +282,7 @@ msgstr "Browser-add-ons"
 msgid "KDE Connect"
 msgstr "KDE Connect"
 
-#. TRANSLATORS: A phone number type
-#: data/settings.ui:956 data/settings.ui:1058 src/service/ui/contacts.js:57
-#: src/service/ui/contacts.js:78
+#: data/settings.ui:956 data/settings.ui:1058
 msgid "Other"
 msgstr "Ander"
 
@@ -286,7 +296,7 @@ msgid "Refresh"
 msgstr "Herlaad"
 
 #. Service Menu
-#: src/extension.js:79 src/extension.js:249
+#: src/extension.js:79 src/extension.js:259
 msgid "Mobile Devices"
 msgstr "GSM's"
 
@@ -295,13 +305,13 @@ msgid "Mobile Settings"
 msgstr "GSM-instellingen"
 
 #. TRANSLATORS: Extension name
-#: src/extension.js:186 src/extension.js:301 src/service/daemon.js:95
+#: src/extension.js:196 src/extension.js:311 src/service/daemon.js:95
 #: src/service/daemon.js:413 webextension/gettext.js:27
 msgid "GSConnect"
 msgstr "GSConnect"
 
 #. TRANSLATORS: %d is the number of devices connected
-#: src/extension.js:247
+#: src/extension.js:257
 #, javascript-format
 msgid "%d Connected"
 msgid_plural "%d Connected"
@@ -364,40 +374,30 @@ msgid "%s Plugin Failed To Load"
 msgstr "Kon plug-in %s niet laden"
 
 #: src/service/daemon.js:618 src/service/daemon.js:635
-#: src/service/daemon.js:647
 msgid "Click for more information"
 msgstr "Klik voor meer informatie"
 
 #: src/service/daemon.js:633
-msgid "Remote Filesystem Error"
-msgstr "Fout op extern bestandssysteem"
-
-#: src/service/daemon.js:634
-#, javascript-format
-msgid "%s is using an incompatible SSH library"
-msgstr "%s gebruikt een incompatibele SSH-bibliotheek"
-
-#: src/service/daemon.js:645
 msgid "Wayland Not Supported"
 msgstr "Wayland niet ondersteund"
 
-#: src/service/daemon.js:646
+#: src/service/daemon.js:634
 msgid "Remote input not supported on Wayland"
 msgstr "Externe input wordt niet ondersteund op Wayland"
 
 #. Create an urgent notification
-#: src/service/daemon.js:670
+#: src/service/daemon.js:658
 #, javascript-format
 msgid "GSConnect: %s"
 msgstr "GSConnect: %s"
 
 #. TRANSLATORS: Share URL by SMS
-#: src/service/daemon.js:818 src/service/plugins/sms.js:49
+#: src/service/daemon.js:808 src/service/plugins/sms.js:49
 #: webextension/gettext.js:39
 msgid "Send SMS"
 msgstr "Verzend SMS"
 
-#: src/service/daemon.js:822
+#: src/service/daemon.js:812
 msgid "Dial Number"
 msgstr "Telefoonoproep"
 
@@ -457,7 +457,8 @@ msgid "Accept"
 msgstr "Accepteer"
 
 #: src/service/plugins/battery.js:194 src/service/plugins/findmyphone.js:18
-msgid "Locate"
+#, fuzzy
+msgid "Ring"
 msgstr "Lokaliseer"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is low
@@ -509,11 +510,11 @@ msgstr "Gevonden"
 msgid "Mousepad"
 msgstr "Touchpad"
 
-#: src/service/plugins/mousepad.js:28 src/service/plugins/mousepad.js:536
+#: src/service/plugins/mousepad.js:28 src/service/plugins/mousepad.js:578
 msgid "Keyboard"
 msgstr "Klavier"
 
-#: src/service/plugins/mousepad.js:553
+#: src/service/plugins/mousepad.js:595
 msgid "Keyboard not ready"
 msgstr "Klavier niet gereed"
 
@@ -573,7 +574,7 @@ msgstr "Alle bestanden"
 msgid "Camera pictures"
 msgstr "Camera-afbeeldingen"
 
-#: src/service/plugins/sftp.js:342
+#: src/service/plugins/sftp.js:333
 msgid "Files"
 msgstr "Bestanden"
 
@@ -589,8 +590,8 @@ msgstr "Deel bestand"
 msgid "Share Text"
 msgstr "Deel tekst"
 
-#: src/service/plugins/share.js:42 src/service/ui/messaging.js:853
-#: src/service/ui/messaging.js:861
+#: src/service/plugins/share.js:42 src/service/ui/messaging.js:903
+#: src/service/ui/messaging.js:911
 msgid "Share Link"
 msgstr "Deel link"
 
@@ -601,14 +602,14 @@ msgstr "Overzetten starten"
 #. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:133
 #, javascript-format
-msgid "Receiving \"%s\" from %s"
-msgstr "\"%s\" ontvangen van %s"
+msgid "Receiving “%s” from %s"
+msgstr "“%s” ontvangen van %s"
 
 #. Action Buttons
 #: src/service/plugins/share.js:138 src/service/plugins/share.js:289
 #: src/service/plugins/share.js:407 src/service/ui/keybindings.js:44
 #: src/service/ui/service.js:121 src/service/ui/service.js:300
-#: src/service/ui/settings.js:851 src/shell/donotdisturb.js:215
+#: src/service/ui/settings.js:873 src/shell/donotdisturb.js:215
 msgid "Cancel"
 msgstr "Annuleer"
 
@@ -619,8 +620,8 @@ msgstr "Met succes overgezet"
 #. TRANSLATORS: eg. Received 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:151
 #, javascript-format
-msgid "Received \"%s\" from %s"
-msgstr "\"%s\" ontvangen van %s"
+msgid "Received “%s” from %s"
+msgstr "“%s” ontvangen van %s"
 
 #: src/service/plugins/share.js:157
 msgid "Open Folder"
@@ -637,8 +638,8 @@ msgstr "Overzetten niet gelukt"
 #. TRANSLATORS: eg. Failed to receive 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:171
 #, javascript-format
-msgid "Failed to receive \"%s\" from %s"
-msgstr "Kon \"%s\" niet ontvangen van %s"
+msgid "Failed to receive “%s” from %s"
+msgstr "Kon “%s” niet ontvangen van %s"
 
 #: src/service/plugins/share.js:211
 #, javascript-format
@@ -648,20 +649,20 @@ msgstr "Tekst, gedeeld door %s"
 #. TRANSLATORS: eg. Sending 'book.pdf' to Google Pixel
 #: src/service/plugins/share.js:284
 #, javascript-format
-msgid "Sending \"%s\" to %s"
-msgstr "\"%s\" verzenden naar %s"
+msgid "Sending “%s” to %s"
+msgstr "“%s” verzenden naar %s"
 
 #. TRANSLATORS: eg. Sent "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:305
 #, javascript-format
-msgid "Sent \"%s\" to %s"
-msgstr "\"%s\" verzonden naar %s"
+msgid "Sent “%s” to %s"
+msgstr "“%s” verzonden naar %s"
 
 #. TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:313
 #, javascript-format
-msgid "Failed to send \"%s\" to %s"
-msgstr "Kon \"%s\" niet verzenden naar %s"
+msgid "Failed to send “%s” to %s"
+msgstr "Kon “%s” niet verzenden naar %s"
 
 #. TRANSLATORS: eg. Send files to Google Pixel
 #: src/service/plugins/share.js:384
@@ -683,10 +684,6 @@ msgstr "Verzend"
 msgid "SMS"
 msgstr "SMS"
 
-#: src/service/plugins/sms.js:25
-msgid "Messaging"
-msgstr "Berichten"
-
 #: src/service/plugins/sms.js:33
 msgid "New SMS (URI)"
 msgstr "Nieuwe SMS (URI)"
@@ -703,55 +700,63 @@ msgstr "Deel SMS"
 msgid "System Volume"
 msgstr "Systeemvolume"
 
-#: src/service/plugins/telephony.js:22
+#: src/service/plugins/telephony.js:21
 msgid "Mute Call"
 msgstr "Demp oproep"
 
+#. Ensure we have a sender
+#. TRANSLATORS: No name or phone number
+#: src/service/plugins/telephony.js:155 src/service/ui/contacts.js:96
+#: src/service/ui/contacts.js:350
+msgid "Unknown Contact"
+msgstr "Onbekend contact"
+
 #. TRANSLATORS: The phone is ringing
-#: src/service/plugins/telephony.js:171
+#: src/service/plugins/telephony.js:172
 msgid "Incoming call"
 msgstr "Inkomende oproep"
 
 #. TRANSLATORS: A phone call is active
-#: src/service/plugins/telephony.js:186
+#: src/service/plugins/telephony.js:187
 msgid "Ongoing call"
 msgstr "In gesprek"
 
-#. TRANSLATORS: A phone number type
-#: src/service/ui/contacts.js:62
-msgid "Fax"
-msgstr "Fax"
+#. TRANSLATORS: All other phone number types
+#: src/service/ui/contacts.js:58 src/service/ui/contacts.js:79
+#, javascript-format
+msgid "%s・Other"
+msgstr "%s・Ander"
 
-#. TRANSLATORS: A phone number type
-#: src/service/ui/contacts.js:66
-msgid "Work"
-msgstr "Job"
+#. TRANSLATORS: A fax number
+#: src/service/ui/contacts.js:63
+#, javascript-format
+msgid "%s・Fax"
+msgstr "%s・Fax"
 
-#. TRANSLATORS: A phone number type
-#: src/service/ui/contacts.js:70
-msgid "Mobile"
-msgstr "GSM"
+#. TRANSLATORS: A work phone number
+#: src/service/ui/contacts.js:67
+#, javascript-format
+msgid "%s・Work"
+msgstr "%s・Job"
 
-#. TRANSLATORS: A phone number type
-#: src/service/ui/contacts.js:74
-msgid "Home"
-msgstr "Thuis"
+#. TRANSLATORS: A mobile or cellular phone number
+#: src/service/ui/contacts.js:71
+#, javascript-format
+msgid "%s・Mobile"
+msgstr "%s・GSM"
 
-#: src/service/ui/contacts.js:95 src/service/ui/contacts.js:387
-msgid "Unknown Contact"
-msgstr "Onbekend contact"
+#. TRANSLATORS: A home phone number
+#: src/service/ui/contacts.js:75
+#, javascript-format
+msgid "%s・Home"
+msgstr "%s・Thuis"
 
-#: src/service/ui/contacts.js:194 src/service/ui/contacts.js:195
-msgid "Type a phone number or name"
-msgstr "Typ een telefoonnummer of naam"
-
-#: src/service/ui/contacts.js:239
-msgid "Add people to start a conversation"
-msgstr "Voeg personen toe om een conversatie aan te vatten"
+#: src/service/ui/contacts.js:203
+msgid "Select a contact or number"
+msgstr "Kies een contact of nummer"
 
 #. TRANSLATORS: A phone number (eg. "Send to 555-5555")
-#. Update UI
-#: src/service/ui/contacts.js:281 src/service/ui/contacts.js:289
+#: src/service/ui/contacts.js:239 src/service/ui/contacts.js:253
 #, javascript-format
 msgid "Send to %s"
 msgstr "Verzend naar %s"
@@ -797,37 +802,37 @@ msgstr "Kies een GSM"
 msgid "Select"
 msgstr "Kies"
 
-#: src/service/ui/settings.js:296
+#: src/service/ui/settings.js:298
 msgid "Panel"
 msgstr "Paneel"
 
-#: src/service/ui/settings.js:296
+#: src/service/ui/settings.js:298
 msgid "User Menu"
 msgstr "Gebruikersmenu"
 
-#: src/service/ui/settings.js:852
+#: src/service/ui/settings.js:874
 msgid "Open"
 msgstr "Open"
 
-#: src/service/ui/settings.js:909 src/service/ui/settings.js:922
+#: src/service/ui/settings.js:931 src/service/ui/settings.js:944
 msgid "On"
 msgstr "Aan"
 
-#: src/service/ui/settings.js:909 src/service/ui/settings.js:922
+#: src/service/ui/settings.js:931 src/service/ui/settings.js:944
 msgid "Off"
 msgstr "Uit"
 
-#: src/service/ui/settings.js:1043 src/service/ui/settings.js:1109
+#: src/service/ui/settings.js:1065 src/service/ui/settings.js:1131
 msgid "Disabled"
 msgstr "Uitgeschakeld"
 
 #. TRANSLATORS: Less than a minute ago
-#: src/service/ui/messaging.js:83 src/service/ui/messaging.js:116
+#: src/service/ui/messaging.js:93 src/service/ui/messaging.js:126
 msgid "Just now"
 msgstr "Zopas"
 
 #. TRANSLATORS: Time duration in minutes (eg. 15 minutes)
-#: src/service/ui/messaging.js:88 src/service/ui/messaging.js:120
+#: src/service/ui/messaging.js:98 src/service/ui/messaging.js:130
 #: src/shell/donotdisturb.js:266
 #, javascript-format
 msgid "%d minute"
@@ -836,12 +841,12 @@ msgstr[0] "%d minuut"
 msgstr[1] "%d minuten"
 
 #. TRANSLATORS: Yesterday, but less than 24 hours (eg. Yesterday · 11:29 PM)
-#: src/service/ui/messaging.js:93
+#: src/service/ui/messaging.js:103
 #, javascript-format
 msgid "Yesterday・%s"
 msgstr "Gisteren - %s"
 
-#: src/service/ui/messaging.js:870
+#: src/service/ui/messaging.js:920
 msgid "New Message"
 msgstr "Nieuw bericht"
 
@@ -916,304 +921,3 @@ msgstr "Dienst onbeschikbaar"
 #: webextension/gettext.js:37
 msgid "Open in Browser"
 msgstr "Open in browser"
-
-#~ msgid "Show Offline Devices"
-#~ msgstr "Toon offline toestellen"
-
-#~ msgid "Show Unpaired Devices"
-#~ msgstr "Toon onaangekoppelde toestellen"
-
-#~ msgid "Show Battery Icon"
-#~ msgstr "Toon accu-icoon"
-
-#~ msgid "Shell"
-#~ msgstr "Shell"
-
-#~ msgid "Android"
-#~ msgstr "Android"
-
-#~ msgid "Sailfish OS"
-#~ msgstr "Sailfish OS"
-
-#~ msgid "Device is unpaired"
-#~ msgstr "Toestel is niet gekoppeld"
-
-#~ msgid "Locate %s"
-#~ msgstr "Lokaliseer %s"
-
-#~ msgid "Browse Files"
-#~ msgstr "Blader door uw bestanden"
-
-#~ msgid "Remote Input"
-#~ msgstr "Externe invoer"
-
-#~ msgid "No plugins enabled"
-#~ msgstr "Geen ingeschakelde invoegtoepassingen"
-
-#~ msgid "Failed to mount %s"
-#~ msgstr "Kon %s niet aankoppelen"
-
-#~ msgid "GSConnect Website"
-#~ msgstr "GSConnect-website"
-
-#~ msgid "Copyright © 2017 Andy Holmes"
-#~ msgstr "Copyright © 2017 Andy Holmes"
-
-#~ msgid "This program comes with absolutely no warranty."
-#~ msgstr "Dit programma kent geen enkele garantie."
-
-#~ msgid "See the <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html\">GNU General Public License, version 2 or later</a> for details."
-#~ msgstr "Lees de <a href=\"https://www.gnu.org/licenses/old-licenses/gpl-2.0.html\">GNU General Public License, version 2 of later</a> voor informatie."
-
-#~ msgid "Preferences"
-#~ msgstr "Voorkeuren"
-
-#~ msgid "Extensions"
-#~ msgstr "Uitbreidingen"
-
-#~ msgid "Web Browser Integration"
-#~ msgstr "Browser-integratie"
-
-#~ msgid "Requires <a href=\"%s\">Chrome Extension</a> or <a href=\"%s\">Firefox Add-On</a>"
-#~ msgstr "<a href=\"%s\">Chrome-extensie</a> of <a href=\"%s\">Firefox add-on</a> vereist"
-
-#~ msgid "Nautilus extensions changed"
-#~ msgstr "Nautilus-uitbreidingen aangepast"
-
-#~ msgid "Restart Nautilus to apply changes"
-#~ msgstr "Herstart Nautilus om de aanpassingen te verwerken"
-
-#~ msgid "Restart"
-#~ msgstr "Herstart"
-
-#~ msgid ""
-#~ "%s Fingerprint:\n"
-#~ "%s\n"
-#~ "\n"
-#~ "Local Fingerprint:\n"
-#~ "%s"
-#~ msgstr ""
-#~ "%s Vingerafdruk:\n"
-#~ "%s\n"
-#~ "\n"
-#~ "Lokale vingerafdruk:\n"
-#~ "%s"
-
-#~ msgid "Apply"
-#~ msgstr "Pas toe"
-
-#~ msgid "Send and receive battery statistics"
-#~ msgstr "Ontvang en verzend accustatistieken"
-
-#~ msgid "Low Battery Warning"
-#~ msgstr "Verwittiging bij laag accuniveau"
-
-#~ msgid "%s's battery level is %d%%"
-#~ msgstr "Accuniveau van %s is %d%%"
-
-#~ msgid "Sync the clipboard between devices"
-#~ msgstr "Synchroniseer klembord tussen GSM's"
-
-#~ msgid "Failed to get Gdk.Display"
-#~ msgstr "Kon Gdk.Display niet opvragen"
-
-#~ msgid "Failed to get Clipboard"
-#~ msgstr "Kon klembord niet opvragen"
-
-#~ msgid "Find a device by making it ring"
-#~ msgstr "Zoek een GSM door deze te doen rinkelen"
-
-#~ msgid "Screen Lock"
-#~ msgstr "Schermvergrendeling"
-
-#~ msgid "Lock and unlock devices"
-#~ msgstr "Vergrendel en ontgrendel toestellen"
-
-#~ msgid "Control the mouse and keyboard remotely"
-#~ msgstr "Bedien muis en keyboard van op afstand"
-
-#~ msgid "Can't run in Wayland session"
-#~ msgstr "Kan niet starten in Wayland-sessie"
-
-#~ msgid "Failed to initialize Atspi"
-#~ msgstr "Kon Atspi niet initialiseren"
-
-#~ msgid "Cannot load Caribou virtual keyboard for Unicode support"
-#~ msgstr "Kon Caribou virtueel keyboard niet laden voor Unicode-ondersteuning"
-
-#~ msgid "Control MPRIS2 enabled media players"
-#~ msgstr "Bedien van MPRIS2 voorziene mediaspelers"
-
-#~ msgid "Sync notifications between devices"
-#~ msgstr "Synchroniseer notificaties tussen toestellen"
-
-#~ msgid "Missed call"
-#~ msgstr "Gemiste oproep"
-
-#~ msgid "Missed call from %s on %s"
-#~ msgstr "Gemiste oproep van %s op %s"
-
-#~ msgid "Send and receive pings"
-#~ msgstr "Verzend en ontvang pings"
-
-#~ msgid "Execute local commands remotely"
-#~ msgstr "Voer lokale commando's uit van op afstand"
-
-#~ msgid "Mount and browse device filesystems"
-#~ msgstr "Koppel en blader door bestandssystemen van uw GSM"
-
-#~ msgid "SSHFS not installed"
-#~ msgstr "SSHFS niet geïnstalleerd"
-
-#~ msgid "Send and receive files and URLs"
-#~ msgstr "Deel en ontvang bestanden en URL's"
-
-#~ msgid "Transfer Cancelled"
-#~ msgstr "Overzetten geannuleerd"
-
-#~ msgid "Cancelled transfer of \"%s\" from %s"
-#~ msgstr "Overzetten van \"%s\" van %s geannuleerd"
-
-#~ msgid "Cancelled transfer of \"%s\" to %s"
-#~ msgstr "Overzetten van \"%s\" naar %s geannuleerd"
-
-#~ msgid "Use a subdirectory named <b>%s</b>"
-#~ msgstr "Gebruik een subfolder genaamd <b>%s</b>"
-
-#~ msgid "Call notification and SMS messaging"
-#~ msgstr "Notificatie bij oproep en SMS"
-
-#~ msgid "Incoming call from %s on %s"
-#~ msgstr "Inkomende oproep van %s op %s"
-
-#~ msgid "Call In Progress"
-#~ msgstr "Aan het telefoneren"
-
-#~ msgid "Call in progress with %s on %s"
-#~ msgstr "Aan het telefoneren met %s op %s"
-
-#~ msgid "Unknown Number"
-#~ msgstr "Onbekend nummer"
-
-#~ msgid "In Progress Calls"
-#~ msgstr "Tijdens telefoneren"
-
-#~ msgid "The <b>Media Player Control</b> plugin must be enabled"
-#~ msgstr "De <b>mediaspeler</b>-invoegtoepassing moet zijn ingeschakeld"
-
-#~ msgid "Ensure that devices are on the same local network with ports 1716 to 1764 open for TCP and UDP connections."
-#~ msgstr "Zorg ervoor dat de toestellen zijn geconnecteerd met hetzelfde netwerk met poorten 1716-1764 geopend voor TCP- en UDP-verbindingen."
-
-#~ msgid "To connect an Android device, install the KDE Connect Android app from the <a href=\"%s\">Google Play Store</a> or <a href=\"%s\">F-Droid</a>."
-#~ msgstr "Om een Android-apparaat te connecteren, installeert u de KDE Connect Android-app van de <a href=\"%s\">Google Play Store</a> of <a href=\"%s\">F-Droid</a>."
-
-#~ msgid "Please see the <a href=\"%s\">Wiki</a> for more help or <a href=\"%s\">open an issue</a> on Github to report a problem."
-#~ msgstr "Lees de <a href=\"%s\">Wiki</a> voor hulp of <a href=\"%s\">open een issue</a> op GitHub om een probleem te rapporteren."
-
-#~ msgid "Error: %s"
-#~ msgstr "Fout: %s"
-
-#~ msgid "Connecting Devices"
-#~ msgstr "Connecteren met toestellen"
-
-#~ msgid "Reconnect <b>%s</b>"
-#~ msgstr "Herconnecteer met <b>%s</b>"
-
-#~ msgid "Unpair <b>%s</b>"
-#~ msgstr "Koppel <b>%s</b> af"
-
-#~ msgid "Pair <b>%s</b>"
-#~ msgstr "Koppel <b>%s</b>"
-
-#~ msgid ""
-#~ "<b>%s Fingerprint:</b>\n"
-#~ "%s\n"
-#~ "\n"
-#~ "<b>Local Fingerprint:</b>\n"
-#~ "%s"
-#~ msgstr ""
-#~ "<b>%s Vingerafdruk:</b>\n"
-#~ "%s\n"
-#~ "\n"
-#~ "<b>Lokale vingerafdruk:</b>\n"
-#~ "%s"
-
-#~ msgid "Unknown"
-#~ msgstr "Onbekend"
-
-#~ msgid "Keyboard Shortcut Unavailable"
-#~ msgstr "Sneltoets onbeschikbaar"
-
-#~ msgid "The requested keyboard shortcut is already in use and can't be overridden."
-#~ msgstr "De gevraagde sneltoets is al gebruikt en kan niet worden overschreven."
-
-#~ msgid "Configure <b>%s</b>"
-#~ msgstr "Stel <b>%s</b> in"
-
-#~ msgid "Send to %d"
-#~ msgstr "Verzend naar %d"
-
-#~ msgid "Add and remove people"
-#~ msgstr "Personen toevoegen en verwijderen"
-
-#~ msgid "<b>%s</b> is disconnected"
-#~ msgstr "<b>%s</b> is niet geconnecteerd"
-
-#~ msgid "And one other person"
-#~ msgid_plural "And %d other people"
-#~ msgstr[0] "En één andere persoon"
-#~ msgstr[1] "En %d andere personen"
-
-#~ msgid "SMS Conversation with %s"
-#~ msgstr "SMS-conversatie met %s"
-
-#~ msgid "New SMS Conversation"
-#~ msgstr "Nieuwe SMS-conversatie"
-
-#~ msgid "Enable debug features and logging"
-#~ msgstr "Schakel foutopsporing en loggen in"
-
-#~ msgid "Show Indicators"
-#~ msgstr "Toon indicatoren"
-
-#~ msgid "Display devices in the panel instead of the User Menu"
-#~ msgstr "Toon toestellen op het paneel in plaats van het gebruikersmenu"
-
-#~ msgid "Display devices even if offline"
-#~ msgstr "Toon toestellen, ook als u offline bent"
-
-#~ msgid "Display devices even if unpaired"
-#~ msgstr "Toon toestellen, zelfs als ze niet gekoppeld zijn"
-
-#~ msgid "Display an icon with percentage in the Device Menu"
-#~ msgstr "Toon een accu-icoon met percentage in het toestelmenu"
-
-#~ msgid "Send files from the file browser context menu"
-#~ msgstr "Verzend bestanden via het contextmenu van de bestandsbeheerder"
-
-#~ msgid "Public Name"
-#~ msgstr "Publieke naam"
-
-#~ msgid "The name visible to other devices"
-#~ msgstr "De naam zoals getoond aan andere toestellen"
-
-#~ msgid "Receive Statistics"
-#~ msgstr "Ontvangststatistieken"
-
-#~ msgid "Send Statistics"
-#~ msgstr "Verzendstatistieken"
-
-#~ msgid "Receive Content"
-#~ msgstr "Ontvang content"
-
-#~ msgid "Send Content"
-#~ msgstr "Verzend content"
-
-#~ msgid "Automatically Mount"
-#~ msgstr "Koppel automatisch aan"
-
-#~ msgid "Download Directory"
-#~ msgstr "Downloadfolder"
-
-#~ msgid "Use Subdirectory"
-#~ msgstr "Gebruik subfolder"

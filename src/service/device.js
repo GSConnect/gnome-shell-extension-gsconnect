@@ -204,7 +204,12 @@ var Device = GObject.registerClass({
     }
 
     get supported_plugins() {
-        return this.settings.get_strv('supported-plugins');
+        let supported = this.settings.get_strv('supported-plugins');
+
+        // Preempt 'mousepad' plugin on Wayland
+        if (_WAYLAND) supported.splice(supported.indexOf('mousepad'), 1);
+
+        return supported;
     }
 
     get allowed_plugins() {
@@ -217,6 +222,8 @@ var Device = GObject.registerClass({
 
     get icon_name() {
         switch (this.type) {
+            case 'laptop':
+                return 'laptop';
             case 'phone':
                 return 'smartphone';
             case 'tablet':
@@ -320,9 +327,6 @@ var Device = GObject.registerClass({
         this.notify('connected');
 
         this._plugins.forEach(async (plugin) => plugin.disconnected());
-
-        // TODO: not ideal calling back and forth like this
-        this.service._pruneDevices();
     }
 
     /**
@@ -453,7 +457,9 @@ var Device = GObject.registerClass({
 
     openPath(action, parameter) {
         let path = parameter.unpack();
-        path = path.startsWith('file://') ? path : `file://${path}`;
+
+        // Normalize paths to URIs, assuming local file
+        path = path.includes('://') ? path : `file://${path}`;
 
         Gio.AppInfo.launch_default_for_uri_async(path, null, null, (src, res) => {
             try {

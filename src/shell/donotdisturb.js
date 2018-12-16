@@ -260,7 +260,7 @@ var Dialog = class Dialog extends ModalDialog.ModalDialog {
         if (this._time >= 60 * 60) {
             let hours = this._time / 3600;
             // TRANSLATORS: Time duration in hours (eg. 2 hours)
-            return gsconnect.ngettext('One hour', '%d hours', hours).format(hours);
+            return gsconnect.ngettext('%d hour', '%d hours', hours).format(hours);
         } else {
             // TRANSLATORS: Time duration in minutes (eg. 15 minutes)
             return gsconnect.ngettext('%d minute', '%d minutes', (this._time / 60)).format(this._time / 60);

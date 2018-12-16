@@ -4,7 +4,7 @@
         "description": "The extension name"
     },
     "extensionDescription": {
-        "message": "GSConnect ile bağlantıları doğrudan tarayıcıya veya SMS ile paylaşın.",
+        "message": "GSConnect ile bağlantıları doğrudan tarayıcı veya SMS ile paylaşın.",
         "description": "The extension description"
     },
     "contextMenuMultipleDevices": {
@@ -26,7 +26,7 @@
         }
     },
     "popupMenuDisconnected": {
-        "message": "Hizmet Kullanılamıyor",
+        "message": "Servis Kullanılamıyor",
         "description": "Popup Menu label when disconnected from the GNOME Shell extension"
     },
     "popupMenuNoDevices": {

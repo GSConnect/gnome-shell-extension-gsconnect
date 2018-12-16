@@ -13,6 +13,13 @@ debug('loading service/__init__.js');
 
 
 /**
+ * Check if we're in a Wayland session (mostly for input synthesis)
+ * https://wiki.gnome.org/Accessibility/Wayland#Bugs.2FIssues_We_Must_Address
+ */
+window._WAYLAND = GLib.getenv('XDG_SESSION_TYPE') === 'wayland';
+
+
+/**
  * Convenience function for loading JSON from a file
  *
  * @param {Gio.File|string} file - A Gio.File or path to a JSON file
@@ -96,9 +103,12 @@ JSON.dump = function (obj, file, sync = false) {
 
 /**
  * A simple (for now) pre-comparison sanitizer for phone numbers
+ * See: https://github.com/KDE/kdeconnect-kde/blob/master/smsapp/conversationlistmodel.cpp#L200-L210
+ *
+ * @return {string} - Return the string stripped of leading 0, and ' ()-+'
  */
 String.prototype.toPhoneNumber = function() {
-    return this.replace(/\D/g, '').replace(/^[0]?/, '');
+    return this.replace(/^0*|[ ()+-]/g, '');
 };
 
 
@@ -267,8 +277,11 @@ Object.defineProperties(Gio.Menu.prototype, {
  * Creates a GTlsCertificate from the PEM-encoded data in @cert_path and
  * @key_path. If either are missing a new pair will be generated.
  *
+ * Additionally, the private key will be added using ssh-add to allow sftp
+ * connections using Gio.
+ *
  * @param {string} cert_path - Absolute path to a x509 certificate in PEM format
- * @param {string} key_path = Absolute path to a private key in PEM format
+ * @param {string} key_path - Absolute path to a private key in PEM format
  *
  * See :https://github.com/KDE/kdeconnect-kde/blob/master/core/kdeconnectconfig.cpp#L119
  */
@@ -276,13 +289,14 @@ Gio.TlsCertificate.new_for_paths = function (cert_path, key_path) {
     let cert_exists = GLib.file_test(cert_path, GLib.FileTest.EXISTS);
     let key_exists = GLib.file_test(key_path, GLib.FileTest.EXISTS);
 
+    // Create a new certificate and private key if necessary
     if (!cert_exists || !key_exists) {
         let proc = new Gio.Subprocess({
             argv: [
                 gsconnect.metadata.bin.openssl, 'req',
                 '-new', '-x509', '-sha256',
                 '-out', cert_path,
-                '-newkey', 'rsa:2048', '-nodes',
+                '-newkey', 'rsa:4096', '-nodes',
                 '-keyout', key_path,
                 '-days', '3650',
                 '-subj', '/O=andyholmes.github.io/OU=GSConnect/CN=' + GLib.uuid_string_random()
@@ -292,6 +306,14 @@ Gio.TlsCertificate.new_for_paths = function (cert_path, key_path) {
         proc.init(null);
         proc.wait_check(null);
     }
+
+    // Ensure the private key is in the keyring
+    let ssh_add = new Gio.Subprocess({
+        argv: [gsconnect.metadata.bin.ssh_add, key_path],
+        flags: Gio.SubprocessFlags.STDOUT_SILENCE | Gio.SubprocessFlags.STDERR_SILENCE
+    });
+    ssh_add.init(null);
+    ssh_add.wait_check(null);
 
     return Gio.TlsCertificate.new_from_files(cert_path, key_path);
 };

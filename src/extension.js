@@ -147,13 +147,6 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
                 );
             });
 
-            // Setup currently managed devices
-            for (let object of this.manager.get_objects()) {
-                for (let iface of object.get_interfaces()) {
-                    this._onInterfaceAdded(this.manager, object, iface);
-                }
-            }
-
             // Watch for new and removed
             this._nameOwnerId = this.manager.connect(
                 'notify::name-owner',
@@ -175,15 +168,29 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
                 this._onInterfacePropertiesChanged.bind(this)
             );
 
-            await this._activate();
+            // If the service is inactive, wait 5s and recheck before activating
+            if (this.manager.name_owner === null) {
+                GLib.timeout_add_seconds(0, 5, () => {
+                    if (this.manager.name_owner === null) {
+                        this._activate().catch(debug);
+                    }
+
+                    return GLib.SOURCE_REMOVE;
+                });
+
+            // Otherwise we need to setup the currently managed devices
+            } else {
+                for (let object of this.manager.get_objects()) {
+                    for (let iface of object.get_interfaces()) {
+                        this._onInterfaceAdded(this.manager, object, iface);
+                    }
+                }
+            }
         } catch (e) {
-            debug(e);
             Gio.DBusError.strip_remote_error(e);
 
-            // Don't notify of cancellation errors during startup
-            // https://gitlab.gnome.org/GNOME/gnome-shell/issues/177
             if (!e.code || e.code !== Gio.IOErrorEnum.CANCELLED) {
-                Main.notifyError(_('GSConnect'), e.message);
+                logError(e, 'GSConnect');
             }
         }
     }
@@ -233,7 +240,6 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
             if (!this._item._battery) {
                 this._item._battery = new Device.Battery({
                     object: this.manager.get_object(device.g_object_path),
-                    device: device,
                     opacity: 128
                 });
                 this._item.actor.insert_child_below(
@@ -296,9 +302,11 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
                 this._indicator.visible = true;
             }
         } catch (e) {
-            debug(e);
             Gio.DBusError.strip_remote_error(e);
-            Main.notifyError(_('GSConnect'), e.message);
+
+            if (!e.code || e.code !== Gio.IOErrorEnum.CANCELLED) {
+                logError(e, 'GSConnect');
+            }
         }
     }
 
@@ -420,7 +428,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
                 }
             }
         } catch (e) {
-            logError(e);
+            debug(e);
         }
     }
 
@@ -470,7 +478,7 @@ var serviceIndicator = null;
 
 
 function init() {
-    debug('Initializing GSConnect');
+    debug(`Initializing GSConnect v${gsconnect.metadata.version}`);
 
     Gtk.IconTheme.get_default().add_resource_path(gsconnect.app_path + '/icons');
 
@@ -490,7 +498,7 @@ function init() {
 
 
 function enable() {
-    debug('Enabling GSConnect');
+    debug(`Enabling GSConnect v${gsconnect.metadata.version}`);
 
     serviceIndicator = new ServiceIndicator();
     Notification.patchGtkNotificationSources();
@@ -498,7 +506,7 @@ function enable() {
 
 
 function disable() {
-    debug('Disabling GSConnect');
+    debug(`Disabling GSConnect v${gsconnect.metadata.version}`);
 
     serviceIndicator.destroy();
     serviceIndicator = null;
