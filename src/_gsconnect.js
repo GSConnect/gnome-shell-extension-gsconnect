@@ -216,7 +216,7 @@ window.logWarning = function(message, prefix = null) {
     message = (prefix) ? `${prefix}: ${message}` : message;
 
     GLib.log_structured(
-        'gsconnect',
+        'GSConnect',
         GLib.LogLevelFlags.LEVEL_WARNING,
         {MESSAGE: `WARNING: ${message}`}
     );
