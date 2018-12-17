@@ -709,7 +709,6 @@ const Service = GObject.registerClass({
         super.vfunc_open(files, hint);
 
         for (let file of files) {
-            let devices = [];
             let action, parameter, title;
 
             try {
@@ -737,31 +736,12 @@ const Service = GObject.registerClass({
                         return;
                 }
 
-                // Find supporting devices
-                for (let device of this._devices.values()) {
-                    if (device.get_action_enabled(action)) {
-                        devices.push(device);
-                    }
-                }
-
-                //
-                switch (devices.length) {
-                    case 0:
-                        logWarning(`Unsupported action: ${action}`);
-                        break;
-
-                    case 1:
-                        devices[0].activate_action(action, parameter);
-                        break;
-
-                    default:
-                        new ServiceUI.DeviceChooserDialog({
-                            title: title,
-                            devices: devices,
-                            action: action,
-                            parameter: parameter
-                        });
-                }
+                // Show chooser dialog
+                new ServiceUI.DeviceChooserDialog({
+                    title: title,
+                    action: action,
+                    parameter: parameter
+                });
             } catch (e) {
                 logError(e, `GSConnect: Opening ${file.get_uri()}:`);
             }

@@ -66,7 +66,7 @@ var DeviceChooserDialog = GObject.registerClass({
             this._onDeviceSelected.bind(this)
         );
 
-        this._populate(params.devices);
+        this._populate();
     }
 
     vfunc_response(response_id) {
@@ -93,7 +93,14 @@ var DeviceChooserDialog = GObject.registerClass({
         );
     }
 
-    _populate(devices) {
+    _populate() {
+        let devices = [];
+        for (let device of this.application._devices.values()) {
+            if (device.get_action_enabled(this._action)) {
+                devices.push(device);
+            }
+        }
+
         for (let device of devices) {
             let row = new Gtk.ListBoxRow({visible: true});
             this.list.add(row);
