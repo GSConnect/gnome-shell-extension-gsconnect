@@ -19,6 +19,7 @@
             <property name="is_focus">True</property>
             <property name="receives_default">True</property>
             <property name="tooltip_text" translatable="yes">New Conversation</property>
+            <property name="valign">center</property>
             <signal name="clicked" handler="_onNewConversation" swapped="no"/>
             <child>
               <object class="GtkImage">

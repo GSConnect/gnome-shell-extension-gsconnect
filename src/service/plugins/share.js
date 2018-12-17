@@ -446,6 +446,7 @@ var FileChooserDialog = GObject.registerClass({
                 icon_name: 'web-browser-symbolic',
                 pixel_size: 16
             }),
+            valign: Gtk.Align.CENTER,
             // TRANSLATORS: eg. Send a link to Google Pixel
             tooltip_text: _('Send a link to %s').format(device.name),
             visible: true

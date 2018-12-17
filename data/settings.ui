@@ -52,6 +52,7 @@
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="tooltip_text" translatable="yes">Refresh</property>
+                <property name="valign">center</property>
                 <property name="action_name">app.broadcast</property>
                 <child>
                   <object class="GtkImage">
@@ -69,6 +70,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
+                <property name="valign">center</property>
                 <child>
                   <object class="GtkImage">
                     <property name="visible">True</property>
@@ -89,6 +91,7 @@
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="halign">start</property>
+                <property name="valign">center</property>
                 <property name="hexpand">True</property>
                 <property name="popover">service-popover</property>
                 <child>
@@ -124,6 +127,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
+                <property name="valign">center</property>
                 <signal name="clicked" handler="_onPrevious" swapped="no"/>
                 <child>
                   <object class="GtkImage">
@@ -141,6 +145,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
+                <property name="valign">center</property>
                 <child>
                   <object class="GtkImage">
                     <property name="visible">True</property>
@@ -519,7 +524,7 @@
                           <object class="GtkButton">
                             <property name="label" translatable="yes">Enable</property>
                             <property name="visible">True</property>
-                            <property name="can_focus">False</property>
+                            <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
                             <property name="action_name">app.discoverable</property>
                           </object>
