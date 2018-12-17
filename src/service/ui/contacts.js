@@ -249,7 +249,6 @@ var ContactChooser = GObject.registerClass({
         // Cleanup on ::destroy
         this.connect('destroy', this._onDestroy);
 
-        this._temporary = undefined;
         this.contact_list._entry = this.contact_entry.text;
         this.contact_list.set_filter_func(this._filter);
         this.contact_list.set_sort_func(this._sort);
@@ -276,54 +275,56 @@ var ContactChooser = GObject.registerClass({
 
     _onSearchChanged(entry) {
         this.contact_list._entry = entry.text;
+        let dynamic = this.contact_list.get_row_at_index(0);
 
         // If the entry contains string with 2 or more digits...
         if (entry.text.replace(/\D/g, '').length >= 2) {
-            // ...ensure we have a temporary contact for it
-            if (this._temporary === undefined) {
-                this._temporary = this.add_contact({
+            // ...ensure we have a dynamic contact for it
+            if (!dynamic.__tmp) {
+                dynamic = this.add_contact({
                     // TRANSLATORS: A phone number (eg. "Send to 555-5555")
-                    name: _('Send to %s').format(this.contact_entry.text),
-                    numbers: [{type: 'unknown', value: this.contact_entry.text}]
+                    name: _('Send to %s').format(entry.text),
+                    numbers: [{type: 'unknown', value: entry.text}]
                 });
-                this._temporary.__manual = true;
+                dynamic.__tmp = true;
 
             // ...or if we already do, then update it
             } else {
                 // Update contact object
-                this._temporary.contact.name = this.contact_entry.text;
-                this._temporary.contact.numbers[0].value = this.contact_entry.text;
+                dynamic.contact.name = entry.text;
+                dynamic.contact.numbers[0].value = entry.text;
 
                 // Update UI
-                let grid = this._temporary.get_child();
+                let grid = dynamic.get_child();
                 let nameLabel = grid.get_child_at(1, 0);
-                nameLabel.label = _('Send to %s').format(this.contact_entry.text);
+                nameLabel.label = _('Send to %s').format(entry.text);
                 let numLabel = grid.get_child_at(1, 1);
-                numLabel.label = getNumberLabel(this._temporary.contact.numbers[0]);
+                numLabel.label = getNumberLabel(dynamic.contact.numbers[0]);
             }
 
-        // ...otherwise remove any temporary contact that's been created
-        } else if (this._temporary) {
-            this._temporary.destroy();
-            this._temporary = undefined;
+        // ...otherwise remove any dynamic contact that's been created
+        } else if (dynamic.__tmp) {
+            dynamic.destroy();
         }
 
         this.contact_list.invalidate_filter();
         this.contact_list.invalidate_sort();
     }
 
-    _onNumberSelected(list, row) {
+    _onNumberSelected(box, row) {
+        // Reset the contact list
         this.contact_entry.text = '';
         this.contact_list.select_row(null);
         this.contact_window.vadjustment.value = 0;
 
+        // Emit the number
         let address = row.number.value;
         this.emit('number-selected', address);
     }
 
     _filter(row) {
         // Dynamic contact always shown
-        if (row.__manual) return true;
+        if (row.__tmp) return true;
 
         let query = row.get_parent()._entry;
         let queryName = query.toLocaleLowerCase();
@@ -346,9 +347,9 @@ var ContactChooser = GObject.registerClass({
     }
 
     _sort(row1, row2) {
-        if (row1.__manual) {
+        if (row1.__tmp) {
             return -1;
-        } else if (row2.__manual) {
+        } else if (row2.__tmp) {
             return 1;
         }
 
