@@ -403,7 +403,8 @@ var Plugin = GObject.registerClass({
      */
     replySms(hint) {
         this.window.present();
-        this.window.address = hint.toPhoneNumber();
+        // FIXME: causes problems now that non-numeric addresses are allowed
+        //this.window.address = hint.toPhoneNumber();
     }
 
     /**
