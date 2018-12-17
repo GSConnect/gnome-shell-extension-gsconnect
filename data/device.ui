@@ -47,7 +47,7 @@
                               <object class="GtkListBoxRow" id="battery">
                                 <property name="height_request">56</property>
                                 <property name="visible">True</property>
-                                <property name="can_focus">False</property>
+                                <property name="can_focus">True</property>
                                 <property name="action_name">settings.send-statistics</property>
                                 <property name="selectable">False</property>
                                 <child>
@@ -121,7 +121,8 @@
                             <child>
                               <object class="GtkListBoxRow" id="clipboard">
                                 <property name="height_request">56</property>
-                                <property name="can_focus">False</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
                                 <property name="selectable">False</property>
                                 <child>
                                   <object class="GtkGrid">
@@ -203,7 +204,8 @@
                             <child>
                               <object class="GtkListBoxRow" id="mpris">
                                 <property name="height_request">56</property>
-                                <property name="can_focus">False</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
                                 <property name="selectable">False</property>
                                 <child>
                                   <object class="GtkGrid">
@@ -275,7 +277,8 @@
                             <child>
                               <object class="GtkListBoxRow" id="mousepad">
                                 <property name="height_request">56</property>
-                                <property name="can_focus">False</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
                                 <property name="selectable">False</property>
                                 <child>
                                   <object class="GtkGrid">
@@ -348,7 +351,8 @@
                             <child>
                               <object class="GtkListBoxRow" id="systemvolume">
                                 <property name="height_request">56</property>
-                                <property name="can_focus">False</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
                                 <property name="selectable">False</property>
                                 <child>
                                   <object class="GtkGrid">
