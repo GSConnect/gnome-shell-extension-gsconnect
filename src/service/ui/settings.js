@@ -749,19 +749,22 @@ var Window = GObject.registerClass({
                 }
             }
 
-            this.stack.foreach(child => {
-                if (child.row) {
-                    let id = child.row.get_name();
+            this.stack.foreach(panel => {
+                let id = panel.get_name();
 
-                    if (!this.application.devices.includes(id)) {
-                        if (this.stack.visible_child_name === id) {
-                            this._onPrevious();
-                        }
-
-                        let panel = this.stack.get_child_by_name(id);
-                        panel._destroy();
-                        panel.destroy();
+                if (id !== 'service' && !this.application.devices.includes(id)) {
+                    if (this.stack.visible_child === panel) {
+                        this._onPrevious();
                     }
+
+                    panel._destroy();
+                    panel.destroy();
+                }
+            });
+
+            this.device_list.foreach(row => {
+                if (!this.application.devices.includes(row.get_name())) {
+                    row.destroy();
                 }
             });
         } catch (e) {
@@ -810,6 +813,9 @@ var DevicePreferences = GObject.registerClass({
         super._init();
 
         this.device = device;
+        this.set_name(device.id);
+
+        // Menus
         this._menus = Gtk.Builder.new_from_resource(gsconnect.app_path + '/gtk/menus.ui');
         this._menus.translation_domain = 'org.gnome.Shell.Extensions.GSConnect';
 
