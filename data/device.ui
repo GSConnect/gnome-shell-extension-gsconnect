@@ -48,7 +48,6 @@
                                 <property name="height_request">56</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
-                                <property name="action_name">settings.send-statistics</property>
                                 <property name="selectable">False</property>
                                 <child>
                                   <object class="GtkGrid">
@@ -74,11 +73,6 @@
                                           <relation type="label-for" target="battery"/>
                                           <relation type="label-for" target="share-battery"/>
                                         </accessibility>
-                                        <child internal-child="accessible">
-                                          <object class="AtkObject" id="share-battery-label-atkobject">
-                                            <property name="AtkObject::accessible-role">label</property>
-                                          </object>
-                                        </child>
                                       </object>
                                       <packing>
                                         <property name="left_attach">0</property>
@@ -95,11 +89,6 @@
                                         <accessibility>
                                           <relation type="labelled-by" target="share-battery-label"/>
                                         </accessibility>
-                                        <child internal-child="accessible">
-                                          <object class="AtkObject" id="share-battery-atkobject">
-                                            <property name="AtkObject::accessible-role">toggle-button</property>
-                                          </object>
-                                        </child>
                                       </object>
                                       <packing>
                                         <property name="left_attach">1</property>
@@ -111,11 +100,6 @@
                                 <accessibility>
                                   <relation type="labelled-by" target="share-battery-label"/>
                                 </accessibility>
-                                <child internal-child="accessible">
-                                  <object class="AtkObject" id="battery-atkobject">
-                                    <property name="AtkObject::accessible-role">list-item</property>
-                                  </object>
-                                </child>
                               </object>
                             </child>
                             <child>
@@ -148,11 +132,6 @@
                                           <relation type="label-for" target="clipboard"/>
                                           <relation type="label-for" target="clipboard-sync"/>
                                         </accessibility>
-                                        <child internal-child="accessible">
-                                          <object class="AtkObject" id="clipboard-sync-label-atkobject">
-                                            <property name="AtkObject::accessible-role">label</property>
-                                          </object>
-                                        </child>
                                       </object>
                                       <packing>
                                         <property name="left_attach">0</property>
@@ -178,11 +157,6 @@
                                         <accessibility>
                                           <relation type="labelled-by" target="clipboard-sync-label"/>
                                         </accessibility>
-                                        <child internal-child="accessible">
-                                          <object class="AtkObject" id="clipboard-sync-atkobject">
-                                            <property name="AtkObject::accessible-role">toggle-button</property>
-                                          </object>
-                                        </child>
                                       </object>
                                       <packing>
                                         <property name="left_attach">1</property>
@@ -194,11 +168,6 @@
                                 <accessibility>
                                   <relation type="labelled-by" target="clipboard-sync-label"/>
                                 </accessibility>
-                                <child internal-child="accessible">
-                                  <object class="AtkObject" id="clipboard-atkobject">
-                                    <property name="AtkObject::accessible-role">list-item</property>
-                                  </object>
-                                </child>
                               </object>
                             </child>
                             <child>
@@ -230,11 +199,6 @@
                                           <relation type="label-for" target="mpris"/>
                                           <relation type="label-for" target="share-mpris"/>
                                         </accessibility>
-                                        <child internal-child="accessible">
-                                          <object class="AtkObject" id="share-mpris-label-atkobject">
-                                            <property name="AtkObject::accessible-role">label</property>
-                                          </object>
-                                        </child>
                                       </object>
                                       <packing>
                                         <property name="left_attach">0</property>
@@ -251,11 +215,6 @@
                                         <accessibility>
                                           <relation type="labelled-by" target="share-mpris-label"/>
                                         </accessibility>
-                                        <child internal-child="accessible">
-                                          <object class="AtkObject" id="share-mpris-atkobject">
-                                            <property name="AtkObject::accessible-role">toggle-button</property>
-                                          </object>
-                                        </child>
                                       </object>
                                       <packing>
                                         <property name="left_attach">1</property>
@@ -267,11 +226,6 @@
                                 <accessibility>
                                   <relation type="labelled-by" target="share-mpris-label"/>
                                 </accessibility>
-                                <child internal-child="accessible">
-                                  <object class="AtkObject" id="mpris-atkobject">
-                                    <property name="AtkObject::accessible-role">list-item</property>
-                                  </object>
-                                </child>
                               </object>
                             </child>
                             <child>
@@ -304,11 +258,6 @@
                                           <relation type="label-for" target="mousepad"/>
                                           <relation type="label-for" target="share-mousepad"/>
                                         </accessibility>
-                                        <child internal-child="accessible">
-                                          <object class="AtkObject" id="share-mousepad-label-atkobject">
-                                            <property name="AtkObject::accessible-role">label</property>
-                                          </object>
-                                        </child>
                                       </object>
                                       <packing>
                                         <property name="left_attach">0</property>
@@ -325,11 +274,6 @@
                                         <accessibility>
                                           <relation type="labelled-by" target="share-mousepad-label"/>
                                         </accessibility>
-                                        <child internal-child="accessible">
-                                          <object class="AtkObject" id="share-mousepad-atkobject">
-                                            <property name="AtkObject::accessible-role">toggle-button</property>
-                                          </object>
-                                        </child>
                                       </object>
                                       <packing>
                                         <property name="left_attach">1</property>
@@ -341,11 +285,6 @@
                                 <accessibility>
                                   <relation type="labelled-by" target="share-mousepad-label"/>
                                 </accessibility>
-                                <child internal-child="accessible">
-                                  <object class="AtkObject" id="mousepad-atkobject">
-                                    <property name="AtkObject::accessible-role">list-item</property>
-                                  </object>
-                                </child>
                               </object>
                             </child>
                             <child>
@@ -378,11 +317,6 @@
                                           <relation type="label-for" target="systemvolume"/>
                                           <relation type="label-for" target="share-systemvolume"/>
                                         </accessibility>
-                                        <child internal-child="accessible">
-                                          <object class="AtkObject" id="share-systemvolume-label-atkobject">
-                                            <property name="AtkObject::accessible-role">label</property>
-                                          </object>
-                                        </child>
                                       </object>
                                       <packing>
                                         <property name="left_attach">0</property>
@@ -399,11 +333,6 @@
                                         <accessibility>
                                           <relation type="labelled-by" target="share-systemvolume-label"/>
                                         </accessibility>
-                                        <child internal-child="accessible">
-                                          <object class="AtkObject" id="share-systemvolume-atkobject">
-                                            <property name="AtkObject::accessible-role">toggle-button</property>
-                                          </object>
-                                        </child>
                                       </object>
                                       <packing>
                                         <property name="left_attach">1</property>
@@ -415,11 +344,6 @@
                                 <accessibility>
                                   <relation type="labelled-by" target="share-systemvolume-label"/>
                                 </accessibility>
-                                <child internal-child="accessible">
-                                  <object class="AtkObject" id="systemvolume-atkobject">
-                                    <property name="AtkObject::accessible-role">list-item</property>
-                                  </object>
-                                </child>
                               </object>
                             </child>
                           </object>
@@ -474,11 +398,6 @@
                         <accessibility>
                           <relation type="label-for" target="command-list"/>
                         </accessibility>
-                        <child internal-child="accessible">
-                          <object class="AtkObject" id="command-list-label-atkobject">
-                            <property name="AtkObject::accessible-role">label</property>
-                          </object>
-                        </child>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -556,6 +475,9 @@
                                     </child>
                                   </object>
                                 </child>
+                                <accessibility>
+                                  <relation type="controlled-by" target="command-save"/>
+                                </accessibility>
                               </object>
                             </child>
                             <accessibility>
@@ -563,11 +485,6 @@
                               <relation type="controlled-by" target="command-remove"/>
                               <relation type="labelled-by" target="command-list-label"/>
                             </accessibility>
-                            <child internal-child="accessible">
-                              <object class="AtkObject" id="command-list-atkobject">
-                                <property name="AtkObject::accessible-role">list</property>
-                              </object>
-                            </child>
                           </object>
                         </child>
                       </object>
@@ -611,7 +528,7 @@
                                     </accessibility>
                                     <child internal-child="accessible">
                                       <object class="AtkObject" id="command-add-atkobject">
-                                        <property name="AtkObject::accessible-role">push-button</property>
+                                        <property name="AtkObject::accessible-name" translatable="yes">Add</property>
                                       </object>
                                     </child>
                                   </object>
@@ -641,7 +558,7 @@
                                     </accessibility>
                                     <child internal-child="accessible">
                                       <object class="AtkObject" id="command-remove-atkobject">
-                                        <property name="AtkObject::accessible-role">push-button</property>
+                                        <property name="AtkObject::accessible-name" translatable="yes">Remove</property>
                                       </object>
                                     </child>
                                   </object>
@@ -684,12 +601,9 @@
                                         <property name="icon_size">2</property>
                                       </object>
                                     </child>
-                                    <accessibility>
-                                      <relation type="controller-for" target="command-list"/>
-                                    </accessibility>
                                     <child internal-child="accessible">
                                       <object class="AtkObject" id="command-edit-atkobject">
-                                        <property name="AtkObject::accessible-role">push-button</property>
+                                        <property name="AtkObject::accessible-name" translatable="yes">Edit</property>
                                       </object>
                                     </child>
                                   </object>
@@ -714,12 +628,9 @@
                                         <property name="icon_size">2</property>
                                       </object>
                                     </child>
-                                    <accessibility>
-                                      <relation type="controller-for" target="command-list"/>
-                                    </accessibility>
                                     <child internal-child="accessible">
                                       <object class="AtkObject" id="command-save-atkobject">
-                                        <property name="AtkObject::accessible-role">push-button</property>
+                                        <property name="AtkObject::accessible-name" translatable="yes">Save</property>
                                       </object>
                                     </child>
                                   </object>
@@ -810,7 +721,7 @@
                                     <property name="vexpand">True</property>
                                     <property name="column_spacing">12</property>
                                     <child>
-                                      <object class="GtkLabel">
+                                      <object class="GtkLabel" id="share-notification-label">
                                         <property name="visible">True</property>
                                         <property name="can_focus">False</property>
                                         <property name="halign">start</property>
@@ -834,6 +745,10 @@
                                         <property name="can_focus">True</property>
                                         <property name="valign">center</property>
                                         <property name="action_name">settings.send-notifications</property>
+                                        <accessibility>
+                                          <relation type="controlled-by" target="share-notification-row"/>
+                                          <relation type="labelled-by" target="share-notification-label"/>
+                                        </accessibility>
                                       </object>
                                       <packing>
                                         <property name="left_attach">1</property>
@@ -842,6 +757,10 @@
                                     </child>
                                   </object>
                                 </child>
+                                <accessibility>
+                                  <relation type="controller-for" target="share-notification"/>
+                                  <relation type="labelled-by" target="share-notification-label"/>
+                                </accessibility>
                               </object>
                             </child>
                           </object>
@@ -867,11 +786,6 @@
                         <accessibility>
                           <relation type="label-for" target="notification-apps"/>
                         </accessibility>
-                        <child internal-child="accessible">
-                          <object class="AtkObject" id="notification-apps-label-atkobject">
-                            <property name="AtkObject::accessible-role">label</property>
-                          </object>
-                        </child>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -947,11 +861,6 @@
                         <accessibility>
                           <relation type="label-for" target="ringing-list"/>
                         </accessibility>
-                        <child internal-child="accessible">
-                          <object class="AtkObject" id="ringing-list-label-atkobject">
-                            <property name="AtkObject::accessible-role">label</property>
-                          </object>
-                        </child>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -1003,11 +912,6 @@
                                           <relation type="label-for" target="ringing-volume-row"/>
                                           <relation type="label-for" target="ringing-volume"/>
                                         </accessibility>
-                                        <child internal-child="accessible">
-                                          <object class="AtkObject" id="ringing-volume-label-atkobject">
-                                            <property name="AtkObject::accessible-role">label</property>
-                                          </object>
-                                        </child>
                                       </object>
                                       <packing>
                                         <property name="left_attach">0</property>
@@ -1031,13 +935,9 @@
                                           </object>
                                         </child>
                                         <accessibility>
+                                          <relation type="controlled-by" target="ringing-volume-row"/>
                                           <relation type="labelled-by" target="ringing-volume-label"/>
                                         </accessibility>
-                                        <child internal-child="accessible">
-                                          <object class="AtkObject" id="ringing-volume-atkobject">
-                                            <property name="AtkObject::accessible-role">toggle-button</property>
-                                          </object>
-                                        </child>
                                       </object>
                                       <packing>
                                         <property name="left_attach">1</property>
@@ -1047,13 +947,9 @@
                                   </object>
                                 </child>
                                 <accessibility>
+                                  <relation type="controller-for" target="ringing-volume"/>
                                   <relation type="labelled-by" target="ringing-volume-label"/>
                                 </accessibility>
-                                <child internal-child="accessible">
-                                  <object class="AtkObject" id="ringing-volume-row-atkobject">
-                                    <property name="AtkObject::accessible-role">list-item</property>
-                                  </object>
-                                </child>
                               </object>
                             </child>
                             <child>
@@ -1086,11 +982,6 @@
                                           <relation type="label-for" target="ringing-pause-row"/>
                                           <relation type="label-for" target="ringing-pause"/>
                                         </accessibility>
-                                        <child internal-child="accessible">
-                                          <object class="AtkObject" id="ringing-pause-label-atkobject">
-                                            <property name="AtkObject::accessible-role">label</property>
-                                          </object>
-                                        </child>
                                       </object>
                                       <packing>
                                         <property name="left_attach">0</property>
@@ -1105,13 +996,9 @@
                                         <property name="vexpand">True</property>
                                         <property name="action_name">settings.ringing-pause</property>
                                         <accessibility>
+                                          <relation type="controlled-by" target="ringing-pause-row"/>
                                           <relation type="labelled-by" target="ringing-pause-label"/>
                                         </accessibility>
-                                        <child internal-child="accessible">
-                                          <object class="AtkObject" id="ringing-pause-atkobject">
-                                            <property name="AtkObject::accessible-role">toggle-button</property>
-                                          </object>
-                                        </child>
                                       </object>
                                       <packing>
                                         <property name="left_attach">1</property>
@@ -1121,23 +1008,14 @@
                                   </object>
                                 </child>
                                 <accessibility>
+                                  <relation type="controller-for" target="ringing-pause"/>
                                   <relation type="labelled-by" target="ringing-pause-label"/>
                                 </accessibility>
-                                <child internal-child="accessible">
-                                  <object class="AtkObject" id="ringing-pause-row-atkobject">
-                                    <property name="AtkObject::accessible-role">list-item</property>
-                                  </object>
-                                </child>
                               </object>
                             </child>
                             <accessibility>
                               <relation type="labelled-by" target="ringing-list-label"/>
                             </accessibility>
-                            <child internal-child="accessible">
-                              <object class="AtkObject" id="ringing-list-atkobject">
-                                <property name="AtkObject::accessible-role">list</property>
-                              </object>
-                            </child>
                           </object>
                         </child>
                       </object>
@@ -1160,11 +1038,6 @@
                         <accessibility>
                           <relation type="label-for" target="talking-list"/>
                         </accessibility>
-                        <child internal-child="accessible">
-                          <object class="AtkObject" id="talking-list-label-atkobject">
-                            <property name="AtkObject::accessible-role">label</property>
-                          </object>
-                        </child>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -1214,11 +1087,6 @@
                                           <relation type="label-for" target="talking-volume-row"/>
                                           <relation type="label-for" target="talking-volume"/>
                                         </accessibility>
-                                        <child internal-child="accessible">
-                                          <object class="AtkObject" id="talking-volume-label-atkobject">
-                                            <property name="AtkObject::accessible-role">label</property>
-                                          </object>
-                                        </child>
                                       </object>
                                       <packing>
                                         <property name="left_attach">0</property>
@@ -1242,13 +1110,9 @@
                                           </object>
                                         </child>
                                         <accessibility>
+                                          <relation type="controlled-by" target="talking-volume-row"/>
                                           <relation type="labelled-by" target="talking-volume-label"/>
                                         </accessibility>
-                                        <child internal-child="accessible">
-                                          <object class="AtkObject" id="talking-volume-atkobject">
-                                            <property name="AtkObject::accessible-role">toggle-button</property>
-                                          </object>
-                                        </child>
                                       </object>
                                       <packing>
                                         <property name="left_attach">1</property>
@@ -1258,13 +1122,9 @@
                                   </object>
                                 </child>
                                 <accessibility>
+                                  <relation type="controller-for" target="talking-volume"/>
                                   <relation type="labelled-by" target="talking-volume-label"/>
                                 </accessibility>
-                                <child internal-child="accessible">
-                                  <object class="AtkObject" id="talking-volume-row-atkobject">
-                                    <property name="AtkObject::accessible-role">list-item</property>
-                                  </object>
-                                </child>
                               </object>
                             </child>
                             <child>
@@ -1297,11 +1157,6 @@
                                           <relation type="label-for" target="talking-pause-row"/>
                                           <relation type="label-for" target="talking-pause"/>
                                         </accessibility>
-                                        <child internal-child="accessible">
-                                          <object class="AtkObject" id="talking-pause-label-atkobject">
-                                            <property name="AtkObject::accessible-role">label</property>
-                                          </object>
-                                        </child>
                                       </object>
                                       <packing>
                                         <property name="left_attach">0</property>
@@ -1316,13 +1171,9 @@
                                         <property name="vexpand">True</property>
                                         <property name="action_name">settings.talking-pause</property>
                                         <accessibility>
+                                          <relation type="controlled-by" target="ringing-pause-row"/>
                                           <relation type="labelled-by" target="talking-pause-label"/>
                                         </accessibility>
-                                        <child internal-child="accessible">
-                                          <object class="AtkObject" id="talking-pause-atkobject">
-                                            <property name="AtkObject::accessible-role">toggle-button</property>
-                                          </object>
-                                        </child>
                                       </object>
                                       <packing>
                                         <property name="left_attach">1</property>
@@ -1332,13 +1183,9 @@
                                   </object>
                                 </child>
                                 <accessibility>
+                                  <relation type="controller-for" target="talking-pause"/>
                                   <relation type="labelled-by" target="talking-pause-label"/>
                                 </accessibility>
-                                <child internal-child="accessible">
-                                  <object class="AtkObject" id="talking-pause-row-atkobject">
-                                    <property name="AtkObject::accessible-role">list-item</property>
-                                  </object>
-                                </child>
                               </object>
                             </child>
                             <child>
@@ -1371,11 +1218,6 @@
                                           <relation type="label-for" target="talking-microphone-row"/>
                                           <relation type="label-for" target="talking-microphone"/>
                                         </accessibility>
-                                        <child internal-child="accessible">
-                                          <object class="AtkObject" id="talking-microphone-label-atkobject">
-                                            <property name="AtkObject::accessible-role">label</property>
-                                          </object>
-                                        </child>
                                       </object>
                                       <packing>
                                         <property name="left_attach">0</property>
@@ -1390,13 +1232,9 @@
                                         <property name="vexpand">True</property>
                                         <property name="action_name">settings.talking-microphone</property>
                                         <accessibility>
+                                          <relation type="controlled-by" target="talking-microphone-row"/>
                                           <relation type="labelled-by" target="talking-microphone-label"/>
                                         </accessibility>
-                                        <child internal-child="accessible">
-                                          <object class="AtkObject" id="talking-microphone-atkobject">
-                                            <property name="AtkObject::accessible-role">toggle-button</property>
-                                          </object>
-                                        </child>
                                       </object>
                                       <packing>
                                         <property name="left_attach">1</property>
@@ -1406,23 +1244,14 @@
                                   </object>
                                 </child>
                                 <accessibility>
+                                  <relation type="controller-for" target="talking-microphone"/>
                                   <relation type="labelled-by" target="talking-microphone-label"/>
                                 </accessibility>
-                                <child internal-child="accessible">
-                                  <object class="AtkObject" id="talking-microphone-row-atkobject">
-                                    <property name="AtkObject::accessible-role">list-item</property>
-                                  </object>
-                                </child>
                               </object>
                             </child>
                             <accessibility>
                               <relation type="labelled-by" target="talking-list-label"/>
                             </accessibility>
-                            <child internal-child="accessible">
-                              <object class="AtkObject" id="talking-list-atkobject">
-                                <property name="AtkObject::accessible-role">list</property>
-                              </object>
-                            </child>
                           </object>
                         </child>
                       </object>
@@ -1481,11 +1310,6 @@
                             <accessibility>
                               <relation type="label-for" target="shortcuts-actions-list"/>
                             </accessibility>
-                            <child internal-child="accessible">
-                              <object class="AtkObject" id="action-shortcuts-label-atkobject">
-                                <property name="AtkObject::accessible-role">label</property>
-                              </object>
-                            </child>
                           </object>
                           <packing>
                             <property name="left_attach">0</property>
@@ -1527,11 +1351,6 @@
                             <accessibility>
                               <relation type="labelled-by" target="action-shortcuts-label"/>
                             </accessibility>
-                            <child internal-child="accessible">
-                              <object class="AtkObject" id="shortcuts-actions-list-atkobject">
-                                <property name="AtkObject::accessible-role">list</property>
-                              </object>
-                            </child>
                           </object>
                         </child>
                       </object>
@@ -1560,11 +1379,6 @@
                             <accessibility>
                               <relation type="label-for" target="shortcuts-commands-list"/>
                             </accessibility>
-                            <child internal-child="accessible">
-                              <object class="AtkObject" id="command-shortcuts-label-atkobject">
-                                <property name="AtkObject::accessible-role">label</property>
-                              </object>
-                            </child>
                           </object>
                           <packing>
                             <property name="left_attach">0</property>
@@ -1606,11 +1420,6 @@
                             <accessibility>
                               <relation type="labelled-by" target="command-shortcuts-label"/>
                             </accessibility>
-                            <child internal-child="accessible">
-                              <object class="AtkObject" id="shortcuts-commands-list-atkobject">
-                                <property name="AtkObject::accessible-role">list</property>
-                              </object>
-                            </child>
                           </object>
                         </child>
                       </object>
@@ -1665,11 +1474,6 @@
                         <accessibility>
                           <relation type="label-for" target="plugin-list"/>
                         </accessibility>
-                        <child internal-child="accessible">
-                          <object class="AtkObject" id="plugins-label-atkobject">
-                            <property name="AtkObject::accessible-role">label</property>
-                          </object>
-                        </child>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -1692,11 +1496,6 @@
                             <accessibility>
                               <relation type="labelled-by" target="plugins-label"/>
                             </accessibility>
-                            <child internal-child="accessible">
-                              <object class="AtkObject" id="plugin-list-atkobject">
-                                <property name="AtkObject::accessible-role">list</property>
-                              </object>
-                            </child>
                           </object>
                         </child>
                       </object>
@@ -1747,11 +1546,6 @@
                                           <relation type="labelled-by" target="delete-device-label"/>
                                           <relation type="described-by" target="delete-device-description"/>
                                         </accessibility>
-                                        <child internal-child="accessible">
-                                          <object class="AtkObject" id="delete-device-atkobject">
-                                            <property name="AtkObject::accessible-role">push-button</property>
-                                          </object>
-                                        </child>
                                         <style>
                                           <class name="destructive-action"/>
                                         </style>
@@ -1774,11 +1568,6 @@
                                         <accessibility>
                                           <relation type="label-for" target="delete-device"/>
                                         </accessibility>
-                                        <child internal-child="accessible">
-                                          <object class="AtkObject" id="delete-device-label-atkobject">
-                                            <property name="AtkObject::accessible-role">label</property>
-                                          </object>
-                                        </child>
                                       </object>
                                       <packing>
                                         <property name="left_attach">0</property>
@@ -1797,11 +1586,6 @@
                                         <accessibility>
                                           <relation type="description-for" target="delete-device"/>
                                         </accessibility>
-                                        <child internal-child="accessible">
-                                          <object class="AtkObject" id="delete-device-description-atkobject">
-                                            <property name="AtkObject::accessible-role">label</property>
-                                          </object>
-                                        </child>
                                         <style>
                                           <class name="dim-label"/>
                                         </style>
@@ -1813,11 +1597,6 @@
                                     </child>
                                   </object>
                                 </child>
-                              </object>
-                            </child>
-                            <child internal-child="accessible">
-                              <object class="AtkObject" id="danger-list-atkobject">
-                                <property name="AtkObject::accessible-role">list</property>
                               </object>
                             </child>
                           </object>
@@ -1841,6 +1620,9 @@
             <property name="position">5</property>
           </packing>
         </child>
+        <accessibility>
+          <relation type="controlled-by" target="sidebar"/>
+        </accessibility>
       </object>
       <packing>
         <property name="left_attach">2</property>
@@ -1894,6 +1676,9 @@
                 </child>
               </object>
             </child>
+            <accessibility>
+              <relation type="controller-for" target="sharing-page"/>
+            </accessibility>
           </object>
         </child>
         <child>
@@ -1937,6 +1722,9 @@
                 </child>
               </object>
             </child>
+            <accessibility>
+              <relation type="controller-for" target="runcommand-page"/>
+            </accessibility>
           </object>
         </child>
         <child>
@@ -1980,6 +1768,9 @@
                 </child>
               </object>
             </child>
+            <accessibility>
+              <relation type="controller-for" target="notification-page"/>
+            </accessibility>
           </object>
         </child>
         <child>
@@ -2023,6 +1814,9 @@
                 </child>
               </object>
             </child>
+            <accessibility>
+              <relation type="controller-for" target="telephony-page"/>
+            </accessibility>
           </object>
         </child>
         <child>
@@ -2066,6 +1860,9 @@
                 </child>
               </object>
             </child>
+            <accessibility>
+              <relation type="controller-for" target="shortcuts-page"/>
+            </accessibility>
           </object>
         </child>
         <child>
@@ -2109,8 +1906,14 @@
                 </child>
               </object>
             </child>
+            <accessibility>
+              <relation type="controller-for" target="advanced-page"/>
+            </accessibility>
           </object>
         </child>
+        <accessibility>
+          <relation type="controller-for" target="stack"/>
+        </accessibility>
       </object>
       <packing>
         <property name="left_attach">0</property>
@@ -2154,11 +1957,6 @@
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="action_name">settings.pair</property>
-                    <child internal-child="accessible">
-                      <object class="AtkObject">
-                        <property name="AtkObject::accessible-role">push-button</property>
-                      </object>
-                    </child>
                   </object>
                   <packing>
                     <property name="expand">True</property>
@@ -2190,11 +1988,6 @@
                         <attributes>
                           <attribute name="weight" value="bold"/>
                         </attributes>
-                        <child internal-child="accessible">
-                          <object class="AtkObject">
-                            <property name="AtkObject::accessible-role">label</property>
-                          </object>
-                        </child>
                       </object>
                       <packing>
                         <property name="left_attach">0</property>
@@ -2207,11 +2000,6 @@
                         <property name="can_focus">False</property>
                         <property name="halign">start</property>
                         <property name="label" translatable="yes">You may configure this device before pairing</property>
-                        <child internal-child="accessible">
-                          <object class="AtkObject">
-                            <property name="AtkObject::accessible-role">label</property>
-                          </object>
-                        </child>
                       </object>
                       <packing>
                         <property name="left_attach">0</property>
