@@ -497,6 +497,7 @@
                             <property name="can_focus">False</property>
                             <property name="hexpand">True</property>
                             <property name="activate_on_single_click">False</property>
+                            <signal name="row-activated" handler="_onEditCommand" swapped="no"/>
                             <signal name="selected-rows-changed" handler="_onCommandSelected" swapped="no"/>
                             <child>
                               <object class="GtkListBoxRow" id="command-editor">
@@ -525,7 +526,7 @@
                                         <property name="valign">center</property>
                                         <property name="hexpand">True</property>
                                         <property name="placeholder_text" translatable="yes">Name</property>
-                                        <signal name="activate" handler="_onEditCommand" swapped="no"/>
+                                        <signal name="activate" handler="_onSaveCommand" swapped="no"/>
                                       </object>
                                       <packing>
                                         <property name="left_attach">0</property>
@@ -544,7 +545,7 @@
                                         <property name="secondary_icon_tooltip_text" translatable="yes">Choose an executable</property>
                                         <property name="secondary_icon_tooltip_markup" translatable="yes">Choose an executable</property>
                                         <property name="placeholder_text" translatable="yes">Command Line</property>
-                                        <signal name="activate" handler="_onEditCommand" swapped="no"/>
+                                        <signal name="activate" handler="_onSaveCommand" swapped="no"/>
                                         <signal name="icon-release" handler="_onBrowseCommand" swapped="no"/>
                                       </object>
                                       <packing>
@@ -623,7 +624,6 @@
                                 <child>
                                   <object class="GtkButton" id="command-remove">
                                     <property name="visible">True</property>
-                                    <property name="sensitive">False</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
                                     <property name="tooltip_text" translatable="yes">Remove</property>
@@ -672,7 +672,6 @@
                                 <child>
                                   <object class="GtkButton" id="command-edit">
                                     <property name="visible">True</property>
-                                    <property name="sensitive">False</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
                                     <property name="tooltip_text" translatable="yes">Edit</property>
@@ -703,7 +702,6 @@
                                 <child>
                                   <object class="GtkButton" id="command-save">
                                     <property name="visible">True</property>
-                                    <property name="sensitive">False</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
                                     <property name="tooltip_text" translatable="yes">Save</property>
