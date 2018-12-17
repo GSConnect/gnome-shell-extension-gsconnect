@@ -19,6 +19,7 @@
     <property name="page_increment">1</property>
   </object>
   <template class="GSConnectConnectDialog" parent="GtkDialog">
+    <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">Connect to…</property>
     <property name="type_hint">dialog</property>
@@ -58,10 +59,9 @@
             <property name="column_spacing">12</property>
             <child>
               <object class="GtkRadioButton" id="lan-radio">
-                <property name="visible">False</property>
                 <property name="can_focus">True</property>
-                <property name="no_show_all">True</property>
                 <property name="receives_default">False</property>
+                <property name="no_show_all">True</property>
                 <property name="valign">start</property>
                 <property name="active">True</property>
                 <property name="draw_indicator">True</property>
@@ -81,6 +81,7 @@
                   <object class="GtkEntry" id="lan-ip">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
+                    <property name="hexpand">True</property>
                     <property name="activates_default">True</property>
                     <property name="placeholder_text">0.0.0.0</property>
                   </object>
@@ -130,7 +131,6 @@
             </child>
             <child>
               <object class="GtkGrid" id="bluez-grid">
-                <property name="visible">False</property>
                 <property name="can_focus">False</property>
                 <property name="no_show_all">True</property>
                 <property name="row_spacing">6</property>
@@ -154,6 +154,7 @@
                   <object class="GtkComboBox" id="bluez-device">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="hexpand">True</property>
                     <property name="model">bluez-devices</property>
                     <property name="id_column">2</property>
                   </object>
@@ -170,10 +171,9 @@
             </child>
             <child>
               <object class="GtkRadioButton" id="bluez-radio">
-                <property name="visible">False</property>
                 <property name="can_focus">True</property>
-                <property name="no_show_all">True</property>
                 <property name="receives_default">False</property>
+                <property name="no_show_all">True</property>
                 <property name="valign">start</property>
                 <property name="draw_indicator">True</property>
                 <property name="group">lan-radio</property>
@@ -194,5 +194,4 @@
     </child>
   </template>
 </interface>
-
 
