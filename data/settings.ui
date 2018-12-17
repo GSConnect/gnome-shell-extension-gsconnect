@@ -63,6 +63,7 @@
                     <property name="icon_name">view-refresh-symbolic</property>
                   </object>
                 </child>
+                <accelerator key="r" signal="clicked" modifiers="GDK_CONTROL_MASK"/>
               </object>
             </child>
             <child>
