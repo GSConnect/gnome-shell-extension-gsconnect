@@ -728,7 +728,7 @@ const Service = GObject.registerClass({
                     case 'file':
                         title = _('Share File');
                         action = 'shareFile';
-                        parameter = new GLib.Variant('(sb)', file.get_uri(), false);
+                        parameter = new GLib.Variant('(sb)', [file.get_uri(), false]);
                         break;
 
                     default:
