@@ -465,9 +465,8 @@ var Window = GObject.registerClass({
     Children: [
         // HeaderBar
         'headerbar', 'infobar', 'stack',
-        'device-headerbar', 'device-menu',
-        'service-headerbar', 'service-menu', 'service-edit', 'service-entry',
-        'prev-button',
+        'service-menu', 'service-refresh', 'service-edit', 'service-entry',
+        'device-menu', 'prev-button',
 
         // TODO: Info label
         'info-label',
@@ -500,14 +499,9 @@ var Window = GObject.registerClass({
             Gio.SettingsBindFlags.INVERT_BOOLEAN
         );
 
-        // Service Name
-        gsconnect.settings.bind(
-            'public-name',
-            this.service_headerbar,
-            'title',
-            Gio.SettingsBindFlags.DEFAULT
-        );
-        this.service_entry.text = this.service_headerbar.title;
+        // HeaderBar (Service Name)
+        this.headerbar.title = gsconnect.settings.get_string('public-name');
+        this.service_entry.text = this.headerbar.title;
 
         // Downloads link
         let download_dir = GLib.get_user_special_dir(
@@ -675,27 +669,27 @@ var Window = GObject.registerClass({
     }
 
     /**
-     * Badges
-     */
-    _onLinkButton(button) {
-        try {
-            Gtk.show_uri_on_window(this, button.tooltip_text, Gdk.CURRENT_TIME);
-        } catch (e) {
-            logError(e);
-        }
-    }
-
-    /**
      * HeaderBar Callbacks
      */
     _onPrevious(button, event) {
-        this.headerbar.visible_child_name = 'service';
+        // HeaderBar (Service)
+        this.prev_button.visible = false;
+        this.device_menu.visible = false;
+
+        this.service_refresh.visible = true;
+        this.service_edit.visible = true;
+        this.service_menu.visible = true;
+
+        this.headerbar.title = gsconnect.settings.get_string('public-name');
+        this.headerbar.subtitle = null;
+
+        // Panel
         this.stack.visible_child_name = 'service';
         this._setDeviceMenu();
     }
 
     _onEditServiceName(button, event) {
-        this.service_entry.text = this.service_headerbar.title;
+        this.service_entry.text = this.headerbar.title;
     }
 
     _onUnfocusServiceName(entry, event) {
@@ -705,7 +699,8 @@ var Window = GObject.registerClass({
 
     _onSetServiceName(button, event) {
         if (this.service_entry.text.length) {
-            this.service_headerbar.title = this.service_entry.text;
+            this.headerbar.title = this.service_entry.text;
+            gsconnect.settings.set_string('public-name', this.service_entry.text);
         }
 
         this.service_edit.active = false;
@@ -731,13 +726,19 @@ var Window = GObject.registerClass({
 
         // Transition the panel
         let panel = this.stack.get_child_by_name(name);
-        this._setDeviceMenu(panel);
         this.stack.visible_child_name = name;
+        this._setDeviceMenu(this.stack.visible_child);
 
-        // Transition the headerbar
-        this.device_headerbar.title = panel.device.name;
-        this.device_headerbar.subtitle = panel.device.display_type;
-        this.headerbar.visible_child_name = 'device';
+        // HeaderBar (Device)
+        this.service_refresh.visible = false;
+        this.service_edit.visible = false;
+        this.service_menu.visible = false;
+
+        this.prev_button.visible = true;
+        this.device_menu.visible = true;
+
+        this.headerbar.title = panel.device.name;
+        this.headerbar.subtitle = panel.device.display_type;
     }
 
     _onDevicesChanged() {

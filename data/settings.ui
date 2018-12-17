@@ -35,136 +35,142 @@
   <template class="GSConnectSettingsWindow" parent="GtkApplicationWindow">
     <property name="can_focus">False</property>
     <child type="titlebar">
-      <object class="GtkStack" id="headerbar">
+      <object class="GtkHeaderBar" id="headerbar">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="transition_type">crossfade</property>
+        <property name="title">Service Name</property>
+        <property name="has_subtitle">False</property>
+        <property name="show_close_button">True</property>
         <child>
-          <object class="GtkHeaderBar" id="service-headerbar">
+          <object class="GtkButton" id="service-refresh">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="title">Service Name</property>
-            <property name="has_subtitle">False</property>
-            <property name="show_close_button">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="tooltip_text" translatable="yes">Refresh</property>
+            <property name="valign">center</property>
+            <property name="action_name">app.broadcast</property>
             <child>
-              <object class="GtkButton">
+              <object class="GtkImage">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="tooltip_text" translatable="yes">Refresh</property>
+                <property name="can_focus">False</property>
+                <property name="halign">center</property>
                 <property name="valign">center</property>
-                <property name="action_name">app.broadcast</property>
-                <child>
-                  <object class="GtkImage">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="halign">center</property>
-                    <property name="valign">center</property>
-                    <property name="icon_name">view-refresh-symbolic</property>
-                  </object>
-                </child>
-                <accelerator key="r" signal="clicked" modifiers="GDK_CONTROL_MASK"/>
+                <property name="icon_name">view-refresh-symbolic</property>
               </object>
             </child>
-            <child>
-              <object class="GtkMenuButton" id="service-menu">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="valign">center</property>
-                <child>
-                  <object class="GtkImage">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="valign">center</property>
-                    <property name="icon_name">open-menu-symbolic</property>
-                  </object>
-                </child>
+            <child internal-child="accessible">
+              <object class="AtkObject" id="service-refresh-atkobject">
+                <property name="AtkObject::accessible-name" translatable="yes">Refresh</property>
               </object>
-              <packing>
-                <property name="pack_type">end</property>
-                <property name="position">1</property>
-              </packing>
             </child>
+            <accelerator key="r" signal="clicked" modifiers="GDK_CONTROL_MASK"/>
+          </object>
+        </child>
+        <child>
+          <object class="GtkButton" id="prev-button">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="tooltip_text" translatable="yes">Mobile Settings</property>
+            <property name="valign">center</property>
+            <signal name="clicked" handler="_onPrevious" swapped="no"/>
             <child>
-              <object class="GtkMenuButton" id="service-edit">
+              <object class="GtkImage">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="halign">start</property>
+                <property name="can_focus">False</property>
+                <property name="halign">center</property>
                 <property name="valign">center</property>
-                <property name="hexpand">True</property>
-                <property name="popover">service-popover</property>
-                <child>
-                  <object class="GtkImage">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="icon_name">document-edit-symbolic</property>
-                  </object>
-                </child>
-                <style>
-                  <class name="flat"/>
-                </style>
+                <property name="icon_name">go-previous-symbolic</property>
               </object>
-              <packing>
-                <property name="pack_type">end</property>
-                <property name="position">2</property>
-              </packing>
             </child>
+            <accessibility>
+              <relation type="controller-for" target="stack"/>
+            </accessibility>
+            <child internal-child="accessible">
+              <object class="AtkObject" id="prev-button-atkobject">
+                <property name="AtkObject::accessible-name" translatable="yes">Mobile Settings</property>
+              </object>
+            </child>
+            <accelerator key="Escape" signal="clicked"/>
+            <accelerator key="Left" signal="clicked" modifiers="GDK_MOD1_MASK"/>
           </object>
           <packing>
-            <property name="name">service</property>
+            <property name="position">1</property>
           </packing>
         </child>
         <child>
-          <object class="GtkHeaderBar" id="device-headerbar">
+          <object class="GtkMenuButton" id="service-menu">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="title">Device Name</property>
-            <property name="subtitle">Device Type</property>
-            <property name="show_close_button">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="valign">center</property>
             <child>
-              <object class="GtkButton" id="prev-button">
+              <object class="GtkImage">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
+                <property name="can_focus">False</property>
                 <property name="valign">center</property>
-                <signal name="clicked" handler="_onPrevious" swapped="no"/>
-                <child>
-                  <object class="GtkImage">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="halign">center</property>
-                    <property name="valign">center</property>
-                    <property name="icon_name">go-previous-symbolic</property>
-                  </object>
-                </child>
+                <property name="icon_name">open-menu-symbolic</property>
               </object>
-            </child>
-            <child>
-              <object class="GtkMenuButton" id="device-menu">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="valign">center</property>
-                <child>
-                  <object class="GtkImage">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="icon_name">view-more-symbolic</property>
-                  </object>
-                </child>
-              </object>
-              <packing>
-                <property name="pack_type">end</property>
-                <property name="position">1</property>
-              </packing>
             </child>
           </object>
           <packing>
-            <property name="name">device</property>
+            <property name="pack_type">end</property>
             <property name="position">1</property>
           </packing>
+        </child>
+        <child>
+          <object class="GtkMenuButton" id="device-menu">
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="valign">center</property>
+            <child>
+              <object class="GtkImage">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="icon_name">view-more-symbolic</property>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="pack_type">end</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkMenuButton" id="service-edit">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="tooltip_text" translatable="yes">Edit Device Name</property>
+            <property name="halign">start</property>
+            <property name="valign">center</property>
+            <property name="hexpand">True</property>
+            <property name="popover">service-popover</property>
+            <child>
+              <object class="GtkImage">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="icon_name">document-edit-symbolic</property>
+              </object>
+            </child>
+            <child internal-child="accessible">
+              <object class="AtkObject" id="service-edit-atkobject">
+                <property name="AtkObject::accessible-name" translatable="yes">Edit Device Name</property>
+              </object>
+            </child>
+            <style>
+              <class name="flat"/>
+            </style>
+          </object>
+          <packing>
+            <property name="pack_type">end</property>
+            <property name="position">3</property>
+          </packing>
+        </child>
+        <child internal-child="accessible">
+          <object class="AtkObject" id="headerbar-atkobject">
+            <property name="AtkObject::accessible-role">title-bar</property>
+          </object>
         </child>
       </object>
     </child>
@@ -223,7 +229,7 @@
                             <property name="margin_bottom">12</property>
                             <property name="column_spacing">12</property>
                             <child>
-                              <object class="GtkLabel">
+                              <object class="GtkLabel" id="device-list-label">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="halign">start</property>
@@ -231,6 +237,9 @@
                                 <attributes>
                                   <attribute name="weight" value="bold"/>
                                 </attributes>
+                                <accessibility>
+                                  <relation type="label-for" target="device-list"/>
+                                </accessibility>
                               </object>
                               <packing>
                                 <property name="left_attach">0</property>
@@ -268,6 +277,10 @@
                                 <property name="hexpand">True</property>
                                 <property name="selection_mode">none</property>
                                 <signal name="row-activated" handler="_onDeviceSelected" swapped="no"/>
+                                <accessibility>
+                                  <relation type="controller-for" target="stack"/>
+                                  <relation type="labelled-by" target="device-list-label"/>
+                                </accessibility>
                               </object>
                             </child>
                           </object>
@@ -278,28 +291,53 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkBox">
+                          <object class="GtkLabel" id="webextension-label">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="halign">start</property>
+                            <property name="margin_bottom">12</property>
+                            <property name="label" translatable="yes">Browser Add-Ons</property>
+                            <attributes>
+                              <attribute name="weight" value="bold"/>
+                            </attributes>
+                            <accessibility>
+                              <relation type="label-for" target="webextension-list"/>
+                            </accessibility>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">3</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkBox" id="webextension-list">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="margin_bottom">32</property>
                             <property name="spacing">12</property>
                             <property name="homogeneous">True</property>
                             <child>
-                              <object class="GtkButton">
+                              <object class="GtkLinkButton" id="webextension-button-firefox">
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
-                                <property name="tooltip_text">https://addons.mozilla.org/firefox/addon/gsconnect/</property>
                                 <property name="halign">center</property>
                                 <property name="valign">center</property>
-                                <signal name="clicked" handler="_onLinkButton" swapped="no"/>
+                                <property name="uri">https://addons.mozilla.org/firefox/addon/gsconnect/</property>
                                 <child>
-                                  <object class="GtkImage">
+                                  <object class="GtkImage" id="webextension-image-firefox">
                                     <property name="width_request">172</property>
                                     <property name="height_request">60</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="resource">/org/gnome/Shell/Extensions/GSConnect/icons/firefox-badge.png</property>
+                                  </object>
+                                </child>
+                                <child internal-child="accessible">
+                                  <object class="AtkObject" id="webextension-button-firefox-atkobject">
+                                    <property name="AtkObject::accessible-name">Firefox Add-On</property>
+                                    <property name="AtkObject::accessible-role">link</property>
                                   </object>
                                 </child>
                                 <style>
@@ -313,21 +351,26 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkButton">
+                              <object class="GtkLinkButton" id="webextension-button-chrome">
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
-                                <property name="tooltip_text">https://chrome.google.com/webstore/detail/gsconnect/jfnifeihccihocjbfcfhicmmgpjicaec</property>
                                 <property name="halign">center</property>
                                 <property name="valign">center</property>
-                                <signal name="clicked" handler="_onLinkButton" swapped="no"/>
+                                <property name="uri">https://chrome.google.com/webstore/detail/gsconnect/jfnifeihccihocjbfcfhicmmgpjicaec</property>
                                 <child>
-                                  <object class="GtkImage">
+                                  <object class="GtkImage" id="webextension-image-chrome">
                                     <property name="width_request">206</property>
                                     <property name="height_request">58</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="resource">/org/gnome/Shell/Extensions/GSConnect/icons/chrome-badge.png</property>
+                                  </object>
+                                </child>
+                                <child internal-child="accessible">
+                                  <object class="AtkObject" id="webextension-button-chrome-atkobject">
+                                    <property name="AtkObject::accessible-name">Chrome Extension</property>
+                                    <property name="AtkObject::accessible-role">link</property>
                                   </object>
                                 </child>
                                 <style>
@@ -340,11 +383,19 @@
                                 <property name="position">1</property>
                               </packing>
                             </child>
+                            <accessibility>
+                              <relation type="labelled-by" target="webextension-label"/>
+                            </accessibility>
+                            <child internal-child="accessible">
+                              <object class="AtkObject" id="webextension-list-atkobject">
+                                <property name="AtkObject::accessible-role">list</property>
+                              </object>
+                            </child>
                           </object>
                           <packing>
                             <property name="expand">False</property>
                             <property name="fill">True</property>
-                            <property name="position">3</property>
+                            <property name="position">4</property>
                           </packing>
                         </child>
                         <child>
@@ -358,16 +409,14 @@
                             <attributes>
                               <attribute name="weight" value="bold"/>
                             </attributes>
-                            <child internal-child="accessible">
-                              <object class="AtkObject" id="kdeconnect-label-atkobject">
-                                <property name="AtkObject::accessible-role">label</property>
-                              </object>
-                            </child>
+                            <accessibility>
+                              <relation type="label-for" target="kdeconnect-applications"/>
+                            </accessibility>
                           </object>
                           <packing>
                             <property name="expand">False</property>
                             <property name="fill">True</property>
-                            <property name="position">4</property>
+                            <property name="position">5</property>
                           </packing>
                         </child>
                         <child>
@@ -375,6 +424,7 @@
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="margin_left">12</property>
+                            <property name="margin_right">12</property>
                             <property name="column_spacing">6</property>
                             <child>
                               <object class="GtkLabel" id="kdeconnect-android">
@@ -382,11 +432,10 @@
                                 <property name="can_focus">False</property>
                                 <property name="halign">end</property>
                                 <property name="label">Android:</property>
-                                <child internal-child="accessible">
-                                  <object class="AtkObject" id="kdeconnect-android-atkobject">
-                                    <property name="AtkObject::accessible-role">label</property>
-                                  </object>
-                                </child>
+                                <accessibility>
+                                  <relation type="label-for" target="kdeconnect-playstore"/>
+                                  <relation type="label-for" target="kdeconnect-fdroid"/>
+                                </accessibility>
                               </object>
                               <packing>
                                 <property name="left_attach">0</property>
@@ -404,7 +453,6 @@
                                 <property name="uri">https://play.google.com/store/apps/details?id=org.kde.kdeconnect_tp</property>
                                 <accessibility>
                                   <relation type="labelled-by" target="kdeconnect-android"/>
-                                  <relation type="member-of" target="kdeconnect-applications"/>
                                 </accessibility>
                                 <child internal-child="accessible">
                                   <object class="AtkObject" id="kdeconnect-playstore-atkobject">
@@ -428,7 +476,6 @@
                                 <property name="uri">https://f-droid.org/packages/org.kde.kdeconnect_tp/</property>
                                 <accessibility>
                                   <relation type="labelled-by" target="kdeconnect-android"/>
-                                  <relation type="member-of" target="kdeconnect-applications"/>
                                 </accessibility>
                                 <child internal-child="accessible">
                                   <object class="AtkObject" id="kdeconnect-fdroid-atkobject">
@@ -452,7 +499,6 @@
                                 <property name="uri">https://openrepos.net/content/piggz/kde-connect</property>
                                 <accessibility>
                                   <relation type="labelled-by" target="kdeconnect-sailfish"/>
-                                  <relation type="member-of" target="kdeconnect-applications"/>
                                 </accessibility>
                                 <child internal-child="accessible">
                                   <object class="AtkObject" id="kdeconnect-openrepos-atkobject">
@@ -471,11 +517,9 @@
                                 <property name="can_focus">False</property>
                                 <property name="halign">end</property>
                                 <property name="label">Sailfish OS:</property>
-                                <child internal-child="accessible">
-                                  <object class="AtkObject" id="kdeconnect-sailfish-atkobject">
-                                    <property name="AtkObject::accessible-role">label</property>
-                                  </object>
-                                </child>
+                                <accessibility>
+                                  <relation type="label-for" target="kdeconnect-openrepos"/>
+                                </accessibility>
                               </object>
                               <packing>
                                 <property name="left_attach">0</property>
@@ -485,11 +529,19 @@
                             <child>
                               <placeholder/>
                             </child>
+                            <accessibility>
+                              <relation type="labelled-by" target="kdeconnect-label"/>
+                            </accessibility>
+                            <child internal-child="accessible">
+                              <object class="AtkObject" id="kdeconnect-applications-atkobject">
+                                <property name="AtkObject::accessible-role">list</property>
+                              </object>
+                            </child>
                           </object>
                           <packing>
                             <property name="expand">False</property>
                             <property name="fill">True</property>
-                            <property name="position">5</property>
+                            <property name="position">6</property>
                           </packing>
                         </child>
                       </object>
@@ -603,6 +655,15 @@
           <packing>
             <property name="name">service</property>
           </packing>
+        </child>
+        <accessibility>
+          <relation type="controlled-by" target="prev-button"/>
+          <relation type="controlled-by" target="device-list"/>
+        </accessibility>
+        <child internal-child="accessible">
+          <object class="AtkObject" id="stack-atkobject">
+            <property name="AtkObject::accessible-role">layered-pane</property>
+          </object>
         </child>
       </object>
     </child>
