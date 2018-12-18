@@ -260,14 +260,6 @@ var ContactChooser = GObject.registerClass({
         this._populate();
     }
 
-    get selected () {
-        let selected = new Set();
-        this.contact_list.foreach(row => {
-            row.selected.map(number => selected.add(number));
-        });
-        return Array.from(selected);
-    }
-
     _onDestroy(chooser) {
         chooser.store.disconnect(chooser._contactsChangedId);
         chooser.disconnect_template();
@@ -415,17 +407,6 @@ var ContactChooser = GObject.registerClass({
 
         row.show_all();
         return row;
-    }
-
-    /**
-     * Reset the selected contacts and re-populate the list
-     */
-    reset() {
-        this.contact_list.foreach(row => {
-            row.numbers.map(number => {
-                number.selected = false;
-            });
-        });
     }
 });
 
