@@ -785,6 +785,25 @@ var Window = GObject.registerClass({
 });
 
 
+// Build a list of keybindings
+const PLUGIN_SHORTCUTS = {
+    activate: ['view-refresh-symbolic', _('Reconnect')],
+    openSettings: ['preferences-system-symbolic', _('Settings')]
+};
+
+for (let name in imports.service.plugins) {
+    if (name === 'base') continue;
+
+    let meta = imports.service.plugins[name].Metadata;
+
+    for (let [name, action] of Object.entries(meta.actions)) {
+        if (action.parameter_type === null) {
+            PLUGIN_SHORTCUTS[name] = [action.icon_name, action.label];
+        }
+    }
+}
+
+
 var DevicePreferences = GObject.registerClass({
     GTypeName: 'GSConnectDevicePreferences',
     Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/device.ui',
@@ -803,6 +822,7 @@ var DevicePreferences = GObject.registerClass({
         'telephony',
         'ringing-list', 'ringing-volume', 'talking-list', 'talking-volume',
         // Shortcuts
+        'shortcuts-page',
         'shortcuts-actions', 'shortcuts-actions-title', 'shortcuts-actions-list',
         'shortcuts-commands', 'shortcuts-commands-title', 'shortcuts-commands-list',
         // Advanced
@@ -860,20 +880,6 @@ var DevicePreferences = GObject.registerClass({
             }
         });
 
-        // Action Changes
-        this._actionAddedId = this.device.connect(
-            'action-added',
-            this._onActionsChanged.bind(this)
-        );
-        this._actionRemovedId = this.device.connect(
-            'action-removed',
-            this._onActionsChanged.bind(this)
-        );
-        this._actionEnabledId = this.device.connect(
-            'action-enabled-changed',
-            this._onActionsChanged.bind(this)
-        );
-
         // Connected/Paired
         this._bluetoothHostChangedId = this.settings.connect(
             'changed::bluetooth-host',
@@ -910,10 +916,6 @@ var DevicePreferences = GObject.registerClass({
         if (_WAYLAND) supported.splice(supported.indexOf('mousepad'), 1);
 
         return supported;
-    }
-
-    _onActionsChanged() {
-        this._populateActionKeybindings();
     }
 
     _onSwitcherRowSelected(box, row) {
@@ -976,14 +978,16 @@ var DevicePreferences = GObject.registerClass({
     _destroy() {
         this.disconnect_template();
 
+        // Keybindings signals
         this.device.disconnect(this._actionAddedId);
         this.device.disconnect(this._actionRemovedId);
-        this.device.disconnect(this._actionEnabledId);
-        this.device.disconnect(this._connectedId);
+        this.settings.disconnect(this._keybindingsId);
 
+        // Device state signals
+        this.device.disconnect(this._connectedId);
         this.settings.disconnect(this._bluetoothHostChangedId);
         this.settings.disconnect(this._tcpHostChangedId);
-        this.settings.disconnect(this._keybindingsId);
+
         this.settings.disconnect(this._pluginsId);
     }
 
@@ -1383,49 +1387,54 @@ var DevicePreferences = GObject.registerClass({
      * Keyboard Shortcuts
      */
     _keybindingSettings() {
-        this._keybindingsId = this.settings.connect(
-            'changed::keybindings',
-            this._populateKeybindings.bind(this)
-        );
+        // Scroll with keyboard focus
+        let shortcuts_box = this.shortcuts_page.get_child().get_child();
+        shortcuts_box.set_focus_vadjustment(this.shortcuts_page.vadjustment);
 
+        // Filter & Sort
+        this.shortcuts_actions_list.set_filter_func(this._filterPluginKeybindings.bind(this));
         this.shortcuts_actions_list.set_header_func(section_separators);
         this.shortcuts_actions_list.set_sort_func((row1, row2) => {
             return row1.title.localeCompare(row2.title);
         });
 
+        // Init
+        for (let name in PLUGIN_SHORTCUTS) {
+            this._addPluginKeybinding(name);
+        }
+
+        this._setPluginKeybindings();
+
+        // Watch for GAction and Keybinding changes
+        this._actionAddedId = this.device.connect(
+            'action-added',
+            () => this.shortcuts_actions_list.invalidate_filter()
+        );
+        this._actionRemovedId = this.device.connect(
+            'action-removed',
+            () => this.shortcuts_actions_list.invalidate_filter()
+        );
+        this._keybindingsId = this.settings.connect(
+            'changed::keybindings',
+            this._setPluginKeybindings.bind(this)
+        );
+
+        // TODO: probably not used very often, but needs work
         this.shortcuts_commands_list.set_header_func(section_separators);
         this.shortcuts_commands_list.set_sort_func((row1, row2) => {
             return row1.title.localeCompare(row2.title);
         });
-
-        this._populateKeybindings();
-    }
-
-    _populateKeybindings() {
-        if (this.device.list_actions().length === 0) {
-            return;
-        }
-
-        this._populateActionKeybindings();
         this._populateCommandKeybindings();
     }
 
-    _addActionKeybinding(name, keybindings) {
-        if (this.device.get_action_parameter_type(name) !== null) return;
-        if (!this.device.get_action_enabled(name)) return;
-
-        let [label, icon_name] = this.device.get_action_state(name).deep_unpack();
+    _addPluginKeybinding(name) {
+        let [icon_name, label] = PLUGIN_SHORTCUTS[name];
 
         let widget = new Gtk.Label({
             label: _('Disabled'),
             visible: true
         });
         widget.get_style_context().add_class('dim-label');
-
-        if (keybindings[name]) {
-            let accel = Gtk.accelerator_parse(keybindings[name]);
-            widget.label = Gtk.accelerator_get_label(...accel);
-        }
 
         let row = new SectionRow({
             icon: new Gio.ThemedIcon({name: icon_name}),
@@ -1438,14 +1447,11 @@ var DevicePreferences = GObject.registerClass({
         this.shortcuts_actions_list.add(row);
     }
 
-    _populateActionKeybindings() {
-        this.shortcuts_actions_list.foreach(row => {
-            // HACK: temporary mitigator for mysterious GtkListBox leak
-            //row.destroy();
-            row.run_dispose();
-            imports.system.gc();
-        });
+    _filterPluginKeybindings(row) {
+        return (this.device.lookup_action(row.action));
+    }
 
+    _setPluginKeybindings() {
         let keybindings = this.settings.get_value('keybindings').deep_unpack();
 
         // TODO: Backwards compatibility; remove later
@@ -1458,14 +1464,14 @@ var DevicePreferences = GObject.registerClass({
             return;
         }
 
-        // TODO: Device Menu shortcut
-        for (let name of this.device.list_actions().sort()) {
-            try {
-                this._addActionKeybinding(name, keybindings);
-            } catch (e) {
-                logError(e);
+        this.shortcuts_actions_list.foreach(row => {
+            if (keybindings[row.action]) {
+                let accel = Gtk.accelerator_parse(keybindings[row.action]);
+                row.widget.label = Gtk.accelerator_get_label(...accel);
+            } else {
+                row.widget.label = _('Disabled');
             }
-        }
+        });
     }
 
     _onResetActionShortcuts(button) {
