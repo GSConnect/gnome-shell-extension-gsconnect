@@ -369,7 +369,8 @@ var ContactChooser = GObject.registerClass({
     add_contact_number(contact, index) {
         let row = new Gtk.ListBoxRow({
             activatable: true,
-            selectable: true
+            selectable: true,
+            visible: true
         });
         row.contact = contact;
         row.number = contact.numbers[index];
@@ -377,7 +378,8 @@ var ContactChooser = GObject.registerClass({
 
         let grid = new Gtk.Grid({
             margin: 6,
-            column_spacing: 6
+            column_spacing: 6,
+            visible: true
         });
         row.add(grid);
 
@@ -405,7 +407,6 @@ var ContactChooser = GObject.registerClass({
         numLabel.get_style_context().add_class('dim-label');
         grid.attach(numLabel, 1, 1, 1, 1);
 
-        row.show_all();
         return row;
     }
 });
