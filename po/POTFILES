@@ -23,6 +23,7 @@ src/service/plugins/sms.js
 src/service/plugins/systemvolume.js
 src/service/plugins/telephony.js
 src/service/ui/contacts.js
+src/service/ui/device.js
 src/service/ui/keybindings.js
 src/service/ui/service.js
 src/service/ui/settings.js
