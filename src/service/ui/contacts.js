@@ -349,7 +349,12 @@ var ContactChooser = GObject.registerClass({
     }
 
     _populate() {
-        this.contact_list.foreach(row => row.destroy());
+        this.contact_list.foreach(row => {
+            // HACK: temporary mitigator for mysterious GtkListBox leak
+            //row.destroy();
+            row.run_dispose();
+            imports.system.gc();
+        });
 
         for (let contact of this.store) {
             this.add_contact(contact);

@@ -764,7 +764,10 @@ var Window = GObject.registerClass({
 
             this.device_list.foreach(row => {
                 if (!this.application.devices.includes(row.get_name())) {
-                    row.destroy();
+                    // HACK: temporary mitigator for mysterious GtkListBox leak
+                    //row.destroy();
+                    row.run_dispose();
+                    imports.system.gc();
                 }
             });
         } catch (e) {
@@ -1244,7 +1247,10 @@ var DevicePreferences = GObject.registerClass({
 
         this.command_list.foreach(row => {
             if (row !== this.command_editor) {
-                row.destroy();
+                // HACK: temporary mitigator for mysterious GtkListBox leak
+                //row.destroy();
+                row.run_dispose();
+                imports.system.gc();
             }
         });
 
@@ -1433,7 +1439,12 @@ var DevicePreferences = GObject.registerClass({
     }
 
     _populateActionKeybindings() {
-        this.shortcuts_actions_list.foreach(row => row.destroy());
+        this.shortcuts_actions_list.foreach(row => {
+            // HACK: temporary mitigator for mysterious GtkListBox leak
+            //row.destroy();
+            row.run_dispose();
+            imports.system.gc();
+        });
 
         let keybindings = this.settings.get_value('keybindings').deep_unpack();
 
@@ -1496,7 +1507,12 @@ var DevicePreferences = GObject.registerClass({
     }
 
     _populateCommandKeybindings() {
-        this.shortcuts_commands_list.foreach(row => row.destroy());
+        this.shortcuts_commands_list.foreach(row => {
+            // HACK: temporary mitigator for mysterious GtkListBox leak
+            //row.destroy();
+            row.run_dispose();
+            imports.system.gc();
+        });
 
         let keybindings = this.settings.get_value('keybindings').deep_unpack();
 
@@ -1609,7 +1625,11 @@ var DevicePreferences = GObject.registerClass({
         this.plugin_list.foreach(row => {
             let checkbutton = row.get_child();
             checkbutton.disconnect(checkbutton._togglePluginId);
-            row.destroy();
+
+            // HACK: temporary mitigator for mysterious GtkListBox leak
+            //row.destroy();
+            row.run_dispose();
+            imports.system.gc();
         });
 
         for (let name of this.supported_plugins) {

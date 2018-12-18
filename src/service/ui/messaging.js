@@ -407,12 +407,6 @@ const ConversationWidget = GObject.registerClass({
      * Messages
      */
     _populateMessages() {
-        this.message_list.foreach(row => {
-            if (row.get_name() !== 'pending') {
-                row.destroy();
-            }
-        });
-
         this.__first = null;
         this.__last = null;
         this.__pos = 0;
@@ -764,9 +758,7 @@ var Window = GObject.registerClass({
 
     vfunc_delete_event(event) {
         this.save_geometry();
-        this.hide();
-
-        return true;
+        return this.hide_on_delete();
     }
 
     get address() {
@@ -877,7 +869,12 @@ var Window = GObject.registerClass({
      * Conversations
      */
     _populateConversations() {
-        this.conversation_list.foreach(row => row.destroy());
+        this.conversation_list.foreach(row => {
+            // HACK: temporary mitigator for mysterious GtkListBox leak
+            //row.destroy();
+            row.run_dispose();
+            imports.system.gc();
+        });
 
         for (let thread of Object.values(this.sms.conversations)) {
             let contact = this.device.contacts.query({
