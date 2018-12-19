@@ -91,8 +91,8 @@
                 <property name="AtkObject::accessible-name" translatable="yes">Mobile Settings</property>
               </object>
             </child>
-            <accelerator key="Escape" signal="clicked"/>
             <accelerator key="Left" signal="clicked" modifiers="GDK_MOD1_MASK"/>
+            <accelerator key="Escape" signal="clicked"/>
           </object>
           <packing>
             <property name="position">1</property>
@@ -184,7 +184,7 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <child>
-              <object class="GtkScrolledWindow">
+              <object class="GtkScrolledWindow" id="service-window">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="hexpand">True</property>
@@ -196,7 +196,7 @@
                     <property name="can_focus">False</property>
                     <property name="shadow_type">none</property>
                     <child>
-                      <object class="GtkBox">
+                      <object class="GtkBox" id="service-box">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="margin_left">48</property>
