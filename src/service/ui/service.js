@@ -95,6 +95,7 @@ var DeviceChooserDialog = GObject.registerClass({
 
     _populate() {
         let devices = [];
+
         for (let device of this.application._devices.values()) {
             if (device.get_action_enabled(this._action)) {
                 devices.push(device);
