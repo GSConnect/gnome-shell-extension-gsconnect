@@ -55,10 +55,6 @@
                                     <property name="can_focus">False</property>
                                     <property name="margin_left">12</property>
                                     <property name="margin_right">12</property>
-                                    <property name="margin_top">8</property>
-                                    <property name="margin_bottom">8</property>
-                                    <property name="hexpand">True</property>
-                                    <property name="vexpand">True</property>
                                     <property name="column_spacing">12</property>
                                     <child>
                                       <object class="GtkLabel" id="share-battery-label">
@@ -114,10 +110,6 @@
                                     <property name="can_focus">False</property>
                                     <property name="margin_left">12</property>
                                     <property name="margin_right">12</property>
-                                    <property name="margin_top">8</property>
-                                    <property name="margin_bottom">8</property>
-                                    <property name="hexpand">True</property>
-                                    <property name="vexpand">True</property>
                                     <property name="column_spacing">12</property>
                                     <child>
                                       <object class="GtkLabel" id="clipboard-sync-label">
@@ -145,7 +137,6 @@
                                         <property name="receives_default">True</property>
                                         <property name="halign">end</property>
                                         <property name="valign">center</property>
-                                        <property name="vexpand">False</property>
                                         <property name="relief">none</property>
                                         <child>
                                           <object class="GtkImage">
@@ -182,9 +173,6 @@
                                     <property name="can_focus">False</property>
                                     <property name="margin_left">12</property>
                                     <property name="margin_right">12</property>
-                                    <property name="margin_top">8</property>
-                                    <property name="margin_bottom">8</property>
-                                    <property name="vexpand">True</property>
                                     <property name="column_spacing">12</property>
                                     <child>
                                       <object class="GtkLabel" id="share-mpris-label">
@@ -240,10 +228,6 @@
                                     <property name="can_focus">False</property>
                                     <property name="margin_left">12</property>
                                     <property name="margin_right">12</property>
-                                    <property name="margin_top">8</property>
-                                    <property name="margin_bottom">8</property>
-                                    <property name="hexpand">True</property>
-                                    <property name="vexpand">True</property>
                                     <property name="column_spacing">12</property>
                                     <child>
                                       <object class="GtkLabel" id="share-mousepad-label">
@@ -299,10 +283,6 @@
                                     <property name="can_focus">False</property>
                                     <property name="margin_left">12</property>
                                     <property name="margin_right">12</property>
-                                    <property name="margin_top">8</property>
-                                    <property name="margin_bottom">8</property>
-                                    <property name="hexpand">True</property>
-                                    <property name="vexpand">True</property>
                                     <property name="column_spacing">12</property>
                                     <child>
                                       <object class="GtkLabel" id="share-systemvolume-label">
@@ -709,7 +689,6 @@
                                 <property name="height_request">56</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
-                                <property name="hexpand">True</property>
                                 <property name="action_name">settings.send-notifications</property>
                                 <property name="selectable">False</property>
                                 <child>
@@ -718,8 +697,6 @@
                                     <property name="can_focus">False</property>
                                     <property name="margin_left">12</property>
                                     <property name="margin_right">12</property>
-                                    <property name="margin_top">8</property>
-                                    <property name="margin_bottom">8</property>
                                     <property name="hexpand">True</property>
                                     <property name="vexpand">True</property>
                                     <property name="column_spacing">12</property>
@@ -889,7 +866,6 @@
                                 <property name="height_request">56</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
-                                <property name="hexpand">True</property>
                                 <property name="selectable">False</property>
                                 <child>
                                   <object class="GtkGrid">
@@ -897,10 +873,6 @@
                                     <property name="can_focus">False</property>
                                     <property name="margin_left">12</property>
                                     <property name="margin_right">12</property>
-                                    <property name="margin_top">8</property>
-                                    <property name="margin_bottom">8</property>
-                                    <property name="hexpand">True</property>
-                                    <property name="vexpand">True</property>
                                     <property name="column_spacing">12</property>
                                     <child>
                                       <object class="GtkLabel" id="ringing-volume-label">
@@ -928,7 +900,6 @@
                                         <property name="receives_default">True</property>
                                         <property name="halign">end</property>
                                         <property name="valign">center</property>
-                                        <property name="vexpand">True</property>
                                         <property name="relief">none</property>
                                         <child>
                                           <object class="GtkImage">
@@ -967,10 +938,7 @@
                                     <property name="can_focus">False</property>
                                     <property name="margin_left">12</property>
                                     <property name="margin_right">12</property>
-                                    <property name="margin_top">8</property>
-                                    <property name="margin_bottom">8</property>
-                                    <property name="hexpand">True</property>
-                                    <property name="vexpand">True</property>
+                                    <property name="valign">center</property>
                                     <property name="column_spacing">12</property>
                                     <child>
                                       <object class="GtkLabel" id="ringing-pause-label">
@@ -996,7 +964,6 @@
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
                                         <property name="valign">center</property>
-                                        <property name="vexpand">True</property>
                                         <property name="action_name">settings.ringing-pause</property>
                                         <accessibility>
                                           <relation type="controlled-by" target="ringing-pause-row"/>
@@ -1072,10 +1039,6 @@
                                     <property name="can_focus">False</property>
                                     <property name="margin_left">12</property>
                                     <property name="margin_right">12</property>
-                                    <property name="margin_top">8</property>
-                                    <property name="margin_bottom">8</property>
-                                    <property name="hexpand">True</property>
-                                    <property name="vexpand">True</property>
                                     <property name="column_spacing">12</property>
                                     <child>
                                       <object class="GtkLabel" id="talking-volume-label">
@@ -1103,7 +1066,6 @@
                                         <property name="receives_default">True</property>
                                         <property name="halign">end</property>
                                         <property name="valign">center</property>
-                                        <property name="vexpand">True</property>
                                         <property name="relief">none</property>
                                         <child>
                                           <object class="GtkImage">
@@ -1142,10 +1104,6 @@
                                     <property name="can_focus">False</property>
                                     <property name="margin_left">12</property>
                                     <property name="margin_right">12</property>
-                                    <property name="margin_top">8</property>
-                                    <property name="margin_bottom">8</property>
-                                    <property name="hexpand">True</property>
-                                    <property name="vexpand">True</property>
                                     <property name="column_spacing">12</property>
                                     <child>
                                       <object class="GtkLabel" id="talking-pause-label">
@@ -1171,7 +1129,6 @@
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
                                         <property name="valign">center</property>
-                                        <property name="vexpand">True</property>
                                         <property name="action_name">settings.talking-pause</property>
                                         <accessibility>
                                           <relation type="controlled-by" target="ringing-pause-row"/>
@@ -1203,10 +1160,6 @@
                                     <property name="can_focus">False</property>
                                     <property name="margin_left">12</property>
                                     <property name="margin_right">12</property>
-                                    <property name="margin_top">8</property>
-                                    <property name="margin_bottom">8</property>
-                                    <property name="hexpand">True</property>
-                                    <property name="vexpand">True</property>
                                     <property name="column_spacing">12</property>
                                     <child>
                                       <object class="GtkLabel" id="talking-microphone-label">
@@ -1232,7 +1185,6 @@
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
                                         <property name="valign">center</property>
-                                        <property name="vexpand">True</property>
                                         <property name="action_name">settings.talking-microphone</property>
                                         <accessibility>
                                           <relation type="controlled-by" target="talking-microphone-row"/>
@@ -1533,8 +1485,6 @@
                                     <property name="can_focus">False</property>
                                     <property name="margin_left">12</property>
                                     <property name="margin_right">12</property>
-                                    <property name="margin_top">8</property>
-                                    <property name="margin_bottom">8</property>
                                     <property name="column_spacing">12</property>
                                     <child>
                                       <object class="GtkButton" id="delete-device">
@@ -1564,7 +1514,7 @@
                                         <property name="visible">True</property>
                                         <property name="can_focus">False</property>
                                         <property name="halign">start</property>
-                                        <property name="valign">center</property>
+                                        <property name="valign">end</property>
                                         <property name="hexpand">True</property>
                                         <property name="vexpand">True</property>
                                         <property name="label" translatable="yes">Delete this device</property>
@@ -1582,7 +1532,7 @@
                                         <property name="visible">True</property>
                                         <property name="can_focus">False</property>
                                         <property name="halign">start</property>
-                                        <property name="valign">center</property>
+                                        <property name="valign">start</property>
                                         <property name="hexpand">True</property>
                                         <property name="vexpand">True</property>
                                         <property name="label" translatable="yes">Unpair and remove all settings and files</property>
