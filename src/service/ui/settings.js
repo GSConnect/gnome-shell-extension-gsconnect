@@ -47,6 +47,7 @@ async function generateSupportLog(time) {
             });
         });
 
+        // FIXME: BSD???
         let proc = new Gio.Subprocess({
             flags: Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDOUT_PIPE,
             argv: ['journalctl', '--no-host', '--since', time]
@@ -534,12 +535,11 @@ var Window = GObject.registerClass({
      */
     _generateSupportLog() {
         let dialog = new Gtk.MessageDialog({
-            text: _('Debug Logging Enabled'),
-            secondary_text: _('Reproduce the problem and press “Done” to review the log.')
+            text: _('Generate Support Log'),
+            secondary_text: _('Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log.')
         });
-        dialog.set_keep_above(true);
         dialog.add_button(_('Cancel'), Gtk.ResponseType.CANCEL);
-        dialog.add_button(_('Done'), Gtk.ResponseType.OK);
+        dialog.add_button(_('Review Log'), Gtk.ResponseType.OK);
 
         // Enable debug logging and mark the current time
         gsconnect.settings.set_boolean('debug', true);
