@@ -366,7 +366,7 @@ var ContactChooser = GObject.registerClass({
             return this.add_contact_number(contact, 0);
         }
 
-        for (let i = 0; i < contact.numbers.length; i++) {
+        for (let i = 0, len = contact.numbers.length; i < len; i++) {
             this.add_contact_number(contact, i);
         }
     }
