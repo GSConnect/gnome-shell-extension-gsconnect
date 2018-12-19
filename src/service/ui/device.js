@@ -484,6 +484,24 @@ var DevicePreferences = GObject.registerClass({
         Object.keys(this._commands).map(uuid => this._insertCommand(uuid));
     }
 
+    _resetCommandEditor() {
+        // Reset the command editor
+        delete this.command_editor.uuid;
+        this.command_name.text = '';
+        this.command_line.text = '';
+        this.command_editor.visible = false;
+
+        this.command_list.foreach(child => {
+            if (child === this.command_editor) return;
+
+            child.visible = true;
+            child.sensitive = true;
+        });
+
+        this.command_list.invalidate_sort();
+        this.command_list.invalidate_headers();
+    }
+
     _insertCommand(uuid) {
         let row = new SectionRow({
             title: this._commands[uuid].name,
@@ -525,6 +543,7 @@ var DevicePreferences = GObject.registerClass({
         );
 
         row.destroy();
+        this._resetCommandEditor();
     }
 
     // 'Edit' icon in the toolbar
@@ -558,31 +577,17 @@ var DevicePreferences = GObject.registerClass({
 
             row.title = this.command_name.text;
             row.subtitle = this.command_line.text;
+
+            this._getSettings('runcommand').set_value(
+                'command-list',
+                GLib.Variant.full_pack(this._commands)
+            );
         } else {
             delete this._commands[uuid];
             row.destroy();
         }
 
-        this._getSettings('runcommand').set_value(
-            'command-list',
-            GLib.Variant.full_pack(this._commands)
-        );
-
-        // Reset the command editor
-        delete this.command_editor.uuid;
-        this.command_name.text = '';
-        this.command_line.text = '';
-        this.command_editor.visible = false;
-
-        this.command_list.foreach(child => {
-            if (child === this.command_editor) return;
-
-            child.visible = true;
-            child.sensitive = true;
-        });
-
-        this.command_list.invalidate_sort();
-        this.command_list.invalidate_headers();
+        this._resetCommandEditor();
     }
 
     // The 'folder' icon in the command editor GtkEntry
