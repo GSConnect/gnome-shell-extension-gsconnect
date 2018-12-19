@@ -393,16 +393,16 @@ var Window = GObject.registerClass({
         // Scroll with keyboard focus
         this.service_box.set_focus_vadjustment(this.service_window.vadjustment);
 
-        // Downloads link
+        // Downloads link; Account for some corner cases with a fallback
         let download_dir = GLib.get_user_special_dir(
             GLib.UserDirectory.DIRECTORY_DOWNLOAD
         );
 
-        // Account for some corner cases with a fallback
         if (!download_dir || download_dir === GLib.get_home_dir()) {
             download_dir = GLib.build_filenamev([GLib.get_home_dir(), 'Downloads']);
         }
 
+        // TODO: Copied from GNOME Control Center; may change
         this.info_label.label = _('Transferred files are placed in the <a href="%s">Downloads</a> folder.').format(
             'file://' + download_dir
         );
