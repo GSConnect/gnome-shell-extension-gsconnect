@@ -387,6 +387,8 @@ var Channel = class Channel {
      * Close all streams associated with this channel, silencing any errors
      */
     close() {
+        debug(`${this.constructor.name}:${this.type}${(this.uuid) ? '(Transfer)' : ''}`);
+
         // Cancel any queued operations
         this.cancellable.cancel();
 
@@ -395,7 +397,7 @@ var Channel = class Channel {
             try {
                 stream.close(null);
             } catch (e) {
-                debug(e.message);
+                // Silence errors
             }
         });
 
@@ -403,7 +405,7 @@ var Channel = class Channel {
             try {
                 this._listener.close();
             } catch (e) {
-                debug(e.message);
+                // Silence errors
             }
         }
     }
