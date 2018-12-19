@@ -22,13 +22,9 @@ const UDP_PORT = 1716;
  * from the UDP packet itself. We respond to incoming packets by opening a TCP
  * connection and broadcast outgoing packets to 255.255.255.255.
  */
-var ChannelService = GObject.registerClass({
-    GTypeName: 'GSConnectLanChannelService'
-}, class ChannelService extends GObject.Object {
+var ChannelService = class ChannelService {
 
-    _init() {
-        super._init();
-
+    constructor() {
         this._initUdpListener();
         this._initTcpListener();
 
@@ -79,18 +75,20 @@ var ChannelService = GObject.registerClass({
     }
 
     async _onIncomingChannel(listener, connection) {
-        try {
-            let channel = new Core.Channel({type: 'tcp'});
-            let host = connection.get_remote_address().address.to_string();
+        let channel, host, device;
 
-            debug(host, 'remote address');
+        try {
+            channel = new Core.Channel({type: 'tcp'});
+            host = connection.get_remote_address().address.to_string();
+
+            debug(`Accepting connection from ${host}`);
 
             // Accept the connection
             await channel.accept(connection);
             channel.identity.body.tcpHost = host;
             channel.identity.body.tcpPort = '1716';
 
-            let device = this.service._devices.get(channel.identity.body.deviceId);
+            device = this.service._devices.get(channel.identity.body.deviceId);
 
             switch (true) {
                 // An existing device
@@ -283,7 +281,7 @@ var ChannelService = GObject.registerClass({
         this._udp_stream.close(null);
         this._udp.close();
     }
-});
+}
 
 
 /**
