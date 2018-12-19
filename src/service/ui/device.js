@@ -598,6 +598,7 @@ var DevicePreferences = GObject.registerClass({
         let dialog = new Gtk.FileChooserDialog({filter: filter});
         dialog.add_button(_('Cancel'), Gtk.ResponseType.CANCEL);
         dialog.add_button(_('Open'), Gtk.ResponseType.OK);
+        dialog.set_default_response(Gtk.ResponseType.OK);
 
         dialog.connect('response', (dialog, response_id) => {
             if (response_id === Gtk.ResponseType.OK) {
