@@ -574,7 +574,15 @@ var DevicePreferences = GObject.registerClass({
         this.command_line.text = '';
         this.command_editor.visible = false;
 
-        this.command_list.foreach(child => child.sensitive = true);
+        this.command_list.foreach(child => {
+            if (child === this.command_editor) return;
+
+            child.visible = true;
+            child.sensitive = true
+        });
+
+        this.command_list.invalidate_sort();
+        this.command_list.invalidate_headers();
     }
 
     // The 'folder' icon in the command editor GtkEntry
@@ -640,7 +648,7 @@ var DevicePreferences = GObject.registerClass({
 
         for (let name in applications) {
             let row = new SectionRow({
-                icon: Gio.Icon.new_for_string(applications[name].iconName),
+                icon: new Gio.ThemedIcon({name: applications[name].iconName}),
                 title: name,
                 height_request: 48,
                 widget: new Gtk.Switch({

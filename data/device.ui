@@ -541,6 +541,7 @@
                                 <child>
                                   <object class="GtkButton" id="command-remove">
                                     <property name="visible">True</property>
+                                    <property name="sensitive">False</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
                                     <property name="tooltip_text" translatable="yes">Remove</property>
@@ -589,6 +590,7 @@
                                 <child>
                                   <object class="GtkButton" id="command-edit">
                                     <property name="visible">True</property>
+                                    <property name="sensitive">False</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
                                     <property name="tooltip_text" translatable="yes">Edit</property>
@@ -616,6 +618,7 @@
                                 <child>
                                   <object class="GtkButton" id="command-save">
                                     <property name="visible">True</property>
+                                    <property name="sensitive">False</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
                                     <property name="tooltip_text" translatable="yes">Save</property>
