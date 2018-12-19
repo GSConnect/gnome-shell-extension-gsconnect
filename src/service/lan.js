@@ -281,7 +281,7 @@ var ChannelService = class ChannelService {
         this._udp_stream.close(null);
         this._udp.close();
     }
-}
+};
 
 
 /**
