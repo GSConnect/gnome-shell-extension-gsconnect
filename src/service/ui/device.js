@@ -578,7 +578,7 @@ var DevicePreferences = GObject.registerClass({
             if (child === this.command_editor) return;
 
             child.visible = true;
-            child.sensitive = true
+            child.sensitive = true;
         });
 
         this.command_list.invalidate_sort();
@@ -639,7 +639,7 @@ var DevicePreferences = GObject.registerClass({
         }
 
         applications[row.title].enabled = !applications[row.title].enabled;
-        row.widget.active = applications[row.title].enabled;
+        row.widget.label = applications[row.title].enabled ? _('On') : _('Off');
         settings.set_string('applications', JSON.stringify(applications));
     }
 
@@ -651,8 +651,10 @@ var DevicePreferences = GObject.registerClass({
                 icon: new Gio.ThemedIcon({name: applications[name].iconName}),
                 title: name,
                 height_request: 48,
-                widget: new Gtk.Switch({
-                    active: applications[name].enabled,
+                widget: new Gtk.Label({
+                    label: applications[name].enabled ? _('On') : _('Off'),
+                    margin_start: 12,
+                    margin_end: 12,
                     halign: Gtk.Align.END,
                     valign: Gtk.Align.CENTER,
                     vexpand: true,
