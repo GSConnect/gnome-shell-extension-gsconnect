@@ -314,9 +314,10 @@
                           <object class="GtkBox" id="webextension-list">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
+                            <property name="margin_left">12</property>
+                            <property name="margin_right">12</property>
                             <property name="margin_bottom">32</property>
-                            <property name="spacing">12</property>
-                            <property name="homogeneous">True</property>
+                            <property name="spacing">24</property>
                             <child>
                               <object class="GtkLinkButton" id="webextension-button-firefox">
                                 <property name="visible">True</property>
