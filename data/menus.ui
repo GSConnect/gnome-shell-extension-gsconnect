@@ -5,23 +5,38 @@
       <item>
         <!-- TRANSLATORS: Open a dialog to connect to an IP or Bluez device -->
         <attribute name="label" translatable="yes">Connect to…</attribute>
-        <attribute name="action">app.connect</attribute>
+        <attribute name="action">win.connect</attribute>
       </item>
     </section>
     <section>
+      <attribute name="label" translatable="yes">Display Mode</attribute>
+      <item>
+        <!-- TRANSLATORS: Show device indicators in the top bar -->
+        <attribute name="label" translatable="yes">Panel</attribute>
+        <attribute name="action">win.display-mode</attribute>
+        <attribute name="target">panel</attribute>
+      </item>
+      <item>
+        <!-- TRANSLATORS: Show devices in the user menu like Bluetooth -->
+        <attribute name="label" translatable="yes">User Menu</attribute>
+        <attribute name="action">win.display-mode</attribute>
+        <attribute name="target">user-menu</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <!-- TRANSLATORS: Generate a support log -->
+        <attribute name="label" translatable="yes">Generate Support Log</attribute>
+        <attribute name="action">win.support-log</attribute>
+      </item>
       <item>
         <attribute name="label" translatable="yes">Help</attribute>
         <attribute name="action">app.wiki</attribute>
         <attribute name="target">Help</attribute>
       </item>
       <item>
-        <!-- TRANSLATORS: Open the developer's dialog -->
-        <attribute name="label" translatable="yes">Debugger</attribute>
-        <attribute name="action">app.debugger</attribute>
-      </item>
-      <item>
         <attribute name="label" translatable="yes">About</attribute>
-        <attribute name="action">app.about</attribute>
+        <attribute name="action">win.about</attribute>
       </item>
     </section>
   </menu>

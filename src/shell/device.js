@@ -60,14 +60,12 @@ var Battery = GObject.registerClass({
             this._onInterfaceRemoved.bind(this)
         );
 
-        this.connect('notify::mapped', (actor) => {
-            if (actor.mapped) actor._sync();
-        });
-
         // Battery proxy
         let iface = this.object.get_interface(BATTERY_INTERFACE);
         if (iface) this._onInterfaceAdded(null, iface);
 
+        // Refresh when mapped
+        this._mappedId = this.connect('notify::mapped', this._sync.bind(this));
         this._sync();
 
         // Cleanup
@@ -114,6 +112,7 @@ var Battery = GObject.registerClass({
     _onDestroy(actor) {
         actor.object.disconnect(actor._interfaceAddedId);
         actor.object.disconnect(actor._interfaceRemovedId);
+        actor.disconnect(actor._mappedId);
 
         if (actor._batteryId && actor.battery) {
             actor.battery.disconnect(actor._batteryId);
@@ -144,7 +143,7 @@ var Battery = GObject.registerClass({
     _sync() {
         this.visible = (this.battery);
 
-        if (this.visible) {
+        if (this.visible && this.mapped) {
             this.icon.icon_name = this.battery.IconName;
             this.label.text = (this.battery.Level > -1) ? `${this.battery.Level}%` : '';
             this.tooltip.text = this.battery_label;
@@ -171,6 +170,11 @@ var Menu = class Menu extends PopupMenu.PopupMenuSection {
         // Title -> Name
         this._title.label.style_class = 'gsconnect-device-name';
         this._title.label.clutter_text.ellipsize = 0;
+        this._nameId = this.device.settings.connect(
+            'changed::name',
+            this._onNameChanged.bind(this)
+        );
+        this.actor.connect('destroy', this._onDestroy);
 
         // Title -> Battery
         this._battery = new Battery({object: this.object});
@@ -190,8 +194,14 @@ var Menu = class Menu extends PopupMenu.PopupMenuSection {
         }
 
         this.addMenuItem(this._actions);
+    }
 
-        this.device.settings.bind('name', this._title.label, 'text', 4);
+    _onDestroy(actor) {
+        actor._delegate.device.settings.disconnect(actor._delegate._nameId);
+    }
+
+    _onNameChanged(settings) {
+        this._title.label.text = settings.get_string('name');
     }
 
     isEmpty() {

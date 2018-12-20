@@ -327,9 +327,6 @@ var Device = GObject.registerClass({
         this.notify('connected');
 
         this._plugins.forEach(async (plugin) => plugin.disconnected());
-
-        // TODO: not ideal calling back and forth like this
-        this.service._pruneDevices();
     }
 
     /**
@@ -460,7 +457,9 @@ var Device = GObject.registerClass({
 
     openPath(action, parameter) {
         let path = parameter.unpack();
-        path = path.startsWith('file://') ? path : `file://${path}`;
+
+        // Normalize paths to URIs, assuming local file
+        path = path.includes('://') ? path : `file://${path}`;
 
         Gio.AppInfo.launch_default_for_uri_async(path, null, null, (src, res) => {
             try {
@@ -836,7 +835,7 @@ var Device = GObject.registerClass({
     }
 
     openSettings() {
-        this.service._preferencesAction(this.id);
+        this.service._settings(this.id);
     }
 
     destroy() {

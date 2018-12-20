@@ -1,6 +1,6 @@
 
 /**
- * Chrome/Firefox buttons in Preferences->Other
+ * Chrome/Firefox buttons in Settings Window
  */
 .badge-button {
   border: 0px;
@@ -8,14 +8,36 @@
   background: transparent;
 }
 
+
 /**
- * Contact Chooser
+ * Placeholders
  */
-.contact-entry {
-  border: 0px;
-  padding: 6px;
+.placeholder {
+  background: @content_view_bg_color;
+  margin-bottom: 30px;
 }
 
+.placeholder-image {
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+.placeholder-title {
+  font-size: larger;
+  font-weight: bold;
+  margin-bottom: 3px;
+  opacity: 0.5;
+}
+
+.placeholder-description {
+  font-size: smaller;
+  opacity: 0.5;
+}
+
+
+/**
+ * GSConnectContactChooser
+ */
 .contact-window {
   border-top: 1px solid @borders;
 }
@@ -24,25 +46,30 @@
   padding: 0px;
 }
 
-.contact-placeholder {
-  background: @content_view_bg_color;
-}
-
 
 /**
- * Conversation Widget
- */
-.conversation-list {
-  background: @content_view_bg_color;
-}
-
-/**
- * Incoming Message Bubbles (GtkLabel subclass)
+ * GSConnectConversationWidget
  */
 .message-window {
   border-bottom: 1px solid @borders;
 }
 
+/**
+ * GSConnectMessagingWindow
+ */
+.message-list > label {
+  font-size: small;
+  margin-bottom: 1em;
+}
+
+.conversation-list {
+  background: @content_view_bg_color;
+}
+
+
+/**
+ * Incoming Message Bubbles (GtkLabel subclass)
+ */
 .message-in {
   background: @theme_selected_bg_color;
   border-radius: 0.25em 1em 1em 0.25em;
@@ -50,6 +77,11 @@
   padding: 6px;
   padding-right: 9px;
   padding-left: 9px;
+}
+
+.message-in selection {
+  background-color: @theme_selected_fg_color;
+  color: @theme_selected_bg_color;
 }
 
 .message-in:first-child {
@@ -75,10 +107,18 @@
   background: alpha(@theme_selected_bg_color, 0.2);
   border-right: 3px solid @theme_selected_bg_color;
   border-radius: 1em 0.25em 0.25em 1em;
+  caret-color: currentColor;
+  -gtk-secondary-caret-color: currentColor;
   padding: 6px;
   padding-right: 6px;
   padding-left: 9px;
 }
+
+.message-out selection {
+  background-color: @theme_selected_bg_color;
+  color: @theme_selected_fg_color;
+}
+
 
 .message-out:first-child {
   border-top-right-radius: 1em;

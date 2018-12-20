@@ -21,6 +21,7 @@
               <object class="GtkListBox" id="message-list">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="valign">end</property>
                 <property name="selection_mode">none</property>
                 <property name="activate_on_single_click">False</property>
                 <signal name="size-allocate" handler="_onMessageLogged" swapped="no"/>
@@ -51,12 +52,16 @@
                     </style>
                   </object>
                 </child>
+                <style>
+                  <class name="message-list"/>
+                </style>
               </object>
             </child>
           </object>
         </child>
         <style>
           <class name="message-window"/>
+          <class name="view"/>
         </style>
       </object>
       <packing>
@@ -76,7 +81,9 @@
         <property name="caps_lock_warning">False</property>
         <property name="secondary_icon_name">sms-send</property>
         <property name="secondary_icon_sensitive">False</property>
+        <property name="secondary_icon_tooltip_text" translatable="yes">Send Message</property>
         <property name="placeholder_text" translatable="yes">Type a message</property>
+        <property name="enable_emoji_completion">True</property>
         <signal name="activate" handler="sendMessage" swapped="no"/>
         <signal name="changed" handler="_onEntryChanged" swapped="no"/>
         <signal name="icon-release" handler="sendMessage" swapped="no"/>

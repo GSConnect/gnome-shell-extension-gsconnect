@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-11-19 11:14-0800\n"
-"PO-Revision-Date: 2018-11-05 05:38-0200\n"
+"PO-Revision-Date: 2018-11-24 21:11-0200\n"
 "Last-Translator: Ricardo Silva Veloso <ricvelozo@gmail.com>\n"
 "Language-Team: \n"
 "Language: pt_BR\n"
@@ -164,19 +164,18 @@ msgstr "Sobre"
 
 #. TRANSLATORS: Change the connection type to Bluetooth
 #: data/menus.ui:34
-#, fuzzy
 msgid "Switch to Bluetooth"
-msgstr "Conectar Bluetooth"
+msgstr "Mudar para Bluetooth"
 
 #. TRANSLATORS: Change the connection type to TCP/IP
 #: data/menus.ui:41
 msgid "Switch to LAN"
-msgstr ""
+msgstr "Mudar para LAN"
 
 #. TRANSLATORS: View the TLS Certificate fingerprint
 #: data/menus.ui:48 src/service/ui/settings.js:612
 msgid "Encryption Info"
-msgstr ""
+msgstr "Informação de criptografia"
 
 #. TRANSLATORS: Send a pair request to the device
 #: data/menus.ui:53 src/service/device.js:425
@@ -220,9 +219,8 @@ msgid "Messaging"
 msgstr "Mensagens"
 
 #: data/messaging.ui:110
-#, fuzzy
 msgid "Select a conversation"
-msgstr "Adicionar pessoas para iniciar uma conversa"
+msgstr "Selecione uma conversa"
 
 #: data/messaging.ui:188
 msgid "Device is disconnected"
@@ -359,10 +357,8 @@ msgid "Discovery Disabled"
 msgstr "Descoberta desativada"
 
 #: src/service/daemon.js:597
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
-msgstr ""
-"A descoberta foi desativada devido ao número de dispositivos nesta rede."
+msgid "Discovery has been disabled due to the number of devices on this network."
+msgstr "A descoberta foi desativada devido ao número de dispositivos nesta rede."
 
 #: src/service/daemon.js:599 src/service/daemon.js:609
 msgid "Click to open preferences"
@@ -461,7 +457,8 @@ msgid "Accept"
 msgstr "Aceitar"
 
 #: src/service/plugins/battery.js:194 src/service/plugins/findmyphone.js:18
-msgid "Locate"
+#, fuzzy
+msgid "Ring"
 msgstr "Localizar"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is low
@@ -726,37 +723,37 @@ msgstr "Chamada em andamento"
 
 #. TRANSLATORS: All other phone number types
 #: src/service/ui/contacts.js:58 src/service/ui/contacts.js:79
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%s・Other"
-msgstr "Outro"
+msgstr "%s・Outro"
 
 #. TRANSLATORS: A fax number
 #: src/service/ui/contacts.js:63
 #, javascript-format
 msgid "%s・Fax"
-msgstr ""
+msgstr "%s・Fax"
 
 #. TRANSLATORS: A work phone number
 #: src/service/ui/contacts.js:67
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%s・Work"
-msgstr "Trabalho"
+msgstr "%s・Trabalho"
 
 #. TRANSLATORS: A mobile or cellular phone number
 #: src/service/ui/contacts.js:71
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%s・Mobile"
-msgstr "Celular"
+msgstr "%s・Celular"
 
 #. TRANSLATORS: A home phone number
 #: src/service/ui/contacts.js:75
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "%s・Home"
-msgstr "Casa"
+msgstr "%s・Casa"
 
 #: src/service/ui/contacts.js:203
 msgid "Select a contact or number"
-msgstr ""
+msgstr "Selecione um contato ou número"
 
 #. TRANSLATORS: A phone number (eg. "Send to 555-5555")
 #: src/service/ui/contacts.js:239 src/service/ui/contacts.js:253
@@ -784,8 +781,7 @@ msgstr "Digite um novo atalho para mudar <b>%s</b>"
 #. TRANSLATORS: Keys for cancelling (␛) or resetting (␈) a shortcut
 #: src/service/ui/keybindings.js:83
 msgid "Press Esc to cancel or Backspace to reset the keyboard shortcut."
-msgstr ""
-"Pressione Esc para cancelar ou Backspace para redefinir o atalho de teclado."
+msgstr "Pressione Esc para cancelar ou Backspace para redefinir o atalho de teclado."
 
 #. TRANSLATORS: When a keyboard shortcut is unavailable
 #. Example: [Ctrl]+[S] is already being used
@@ -914,8 +910,7 @@ msgstr[1] "%d horas"
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:29
 msgid "Share links with GSConnect, direct to the browser or by SMS."
-msgstr ""
-"Compartilhe links com o GSConnect, diretamente no navegador ou por SMS."
+msgstr "Compartilhe links com o GSConnect, diretamente no navegador ou por SMS."
 
 #. TRANSLATORS: WebExtension can't connect to GSConnect
 #: webextension/gettext.js:33

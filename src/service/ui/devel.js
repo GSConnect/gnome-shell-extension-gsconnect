@@ -4,6 +4,7 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
+const Gdk = imports.gi.Gdk;
 const System = imports.system;
 
 
@@ -23,14 +24,16 @@ function getPID() {
 
 
 var Window = GObject.registerClass({
-    GTypeName: 'GSConnectDebugWindow',
-    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/debug.ui',
+    GTypeName: 'GSConnectDevelWindow',
+    Template: 'resource:///org/gnome/Shell/Extensions/GSConnect/devel.ui',
     Children: [
         'headerbar', 'stack', 'switcher',
         'packet-device', 'packet-direction', 'packet-type', 'packet-body', 'packet-button',
         'notification-device', 'notification-id', 'notification-time',
         'notification-appname', 'notification-title', 'notification-text',
         'notification-ticker', 'notification-requestreplyid', 'notification-isclearable',
+        'sms-device', 'sms-address', 'sms-body', 'sms-type', 'sms-read', 'sms-id', 'sms-thread-id', 'sms-event-text',
+        'sms-phonenumber', 'sms-messagebody', 'sms-uri',
         'telephony-device', 'telephony-event', 'telephony-name', 'telephony-number',
         'telephony-body', 'telephony-duplicate', 'telephony-iscancel', 'telephony-receive',
         'heap-path', 'heap-save'
@@ -42,19 +45,22 @@ var Window = GObject.registerClass({
 
         super._init({
             application: Gio.Application.get_default(),
-            default_width: 480,
-            default_height: 320,
             visible: true
         });
 
+        // Log & Debug Mode actions
         this.add_action(gsconnect.settings.create_action('debug'));
+
+        let openLog = new Gio.SimpleAction({name: 'open-log'});
+        openLog.connect('activate', this._openLog);
+        this.add_action(openLog);
 
         // Watch for device changes
         this._devicesChangedId = this.application.connect(
             'notify::devices',
             this._onDevicesChanged.bind(this)
         );
-        this._onDevicesChanged(this.application);
+        this._onDevicesChanged();
 
         // Validate packet entry
         this.packet_body.buffer.connect(
@@ -76,24 +82,45 @@ var Window = GObject.registerClass({
         this.show_all();
     }
 
-    _onDevicesChanged(application) {
+    vfunc_delete_event(event) {
+        this.disconnect_template();
+        this.application.disconnect(this._devicesChangedId);
+    }
+
+    _onDevicesChanged() {
         this.packet_device.remove_all();
         this.notification_device.remove_all();
+        this.sms_device.remove_all();
         this.telephony_device.remove_all();
 
         for (let device of this.application._devices.values()) {
             this.packet_device.append(device.id, device.name);
             this.notification_device.append(device.id, device.name);
+            this.sms_device.append(device.id, device.name);
             this.telephony_device.append(device.id, device.name);
         }
 
         if (this.application.devices.length > 0) {
             this.packet_device.active = 0;
             this.notification_device.active = 0;
+            this.sms_device.active = 0;
             this.telephony_device.active = 0;
         }
     }
 
+    /**
+     * Toggling Bluetooth for testing purposes
+     */
+    _onBluetoothEnabled(widget) {
+        if (widget.active) {
+            this.application.bluetooth = new imports.service.bluetooth.ChannelService();
+            widget.sensitive = false;
+        }
+    }
+
+    /**
+     * Raw Packet
+     */
     _onPacketDestinationChanged(combobox) {
         this.packet_type.remove_all();
 
@@ -160,7 +187,7 @@ var Window = GObject.registerClass({
                 });
             } else if (this.packet_direction.active_id === 'incoming') {
                 device.sendPacket({
-                    id: 0,
+                    id: Date.now(),
                     type: this.packet_type.active_id,
                     body: body
                 });
@@ -170,6 +197,9 @@ var Window = GObject.registerClass({
         }
     }
 
+    /**
+     * Notification
+     */
     _onNotificationIdChanged(combobox) {
         if (this.notification_id.active_id === '0|com.google.android.apps.messaging|0|com.google.android.apps.messaging:sms:22|10109') {
             this.notification_appname.text = 'Messages';
@@ -237,6 +267,86 @@ var Window = GObject.registerClass({
         }
     }
 
+    /**
+     * SMS
+     */
+    _onSmsReceive(button) {
+        let device = this.application._devices.get(this.sms_device.active_id);
+
+        device.receivePacket({
+            id: Date.now(),
+            type: 'kdeconnect.sms.messages',
+            body: {
+                messages: [
+                    {
+                        address: this.sms_address.text,
+                        body: this.sms_body.text,
+                        date: Date.now(),
+                        type: parseInt(this.sms_type.active_id),
+                        read: parseInt(this.sms_read.active_id),
+                        _id: this.sms_id.value,
+                        thread_id: this.sms_thread_id.value,
+                        // FIXME
+                        event: (this.sms_event_text.active) ? 0x1 : 0
+                    }
+                ]
+            }
+        });
+
+        this.sms_id.value++;
+    }
+
+    _onSmsSend(button) {
+        let device = this.application._devices.get(this.sms_device.active_id);
+
+        device.sendPacket({
+            id: Date.now(),
+            type: 'kdeconnect.sms.request',
+            body: {
+                sendSms: true,
+                phoneNumber: this.sms_phonenumber.text,
+                messageBody: this.sms_messagebody.text
+            }
+        });
+    }
+
+    _onSyncContacts(button) {
+        let device = this.application._devices.get(this.sms_device.active_id);
+        device.lookup_plugin('contacts').connected();
+    }
+
+    _onDeleteContacts(button) {
+        let device = this.application._devices.get(this.sms_device.active_id);
+        device.lookup_plugin('contacts')._store.clear();
+    }
+
+    _onSyncSMS(button) {
+        let device = this.application._devices.get(this.sms_device.active_id);
+        device.lookup_plugin('sms').connected();
+    }
+
+    _onDeleteSMS(button) {
+        let device = this.application._devices.get(this.sms_device.active_id);
+        device.lookup_plugin('sms').conversations = {};
+        device.lookup_plugin('sms').__cache_write();
+    }
+
+    _onOpenURI(entry) {
+        if (this.sms_uri.text) {
+            log(this.sms_uri.text);
+            Gio.AppInfo.launch_default_for_uri_async(this.sms_uri.text, null, null, (src, res) => {
+                try {
+                    Gio.AppInfo.launch_default_for_uri_finish(res);
+                } catch (e) {
+                    logError(e);
+                }
+            });
+        }
+    }
+
+    /**
+     * Telephony
+     */
     _onTelephonyEventChanged(combobox) {
         this.telephony_duplicate.sensitive = ['missedCall', 'sms'].includes(combobox.active_id);
     }
@@ -336,18 +446,22 @@ var Window = GObject.registerClass({
         }
     }
 
-    _onDestroy() {
-        this.disconnect_template();
-        this.application.disconnect(this._devicesChangedId);
-    }
+    /**
+     * Logging
+     */
+    _openLog() {
+        try {
+            let display = Gdk.Display.get_default();
+            let ctx = display.get_app_launch_context();
 
-    debugLog() {
-        GLib.spawn_command_line_async(
-            'gnome-terminal ' +
-            //`--tab --title "GJS" --command "journalctl _PID=${getPID()} -f -o cat" ` +
-            '--tab --title "GJS" --command "journalctl -f -o cat /usr/bin/gjs" ' +
-            '--tab --title "GNOME Shell" --command "journalctl -f -o cat /usr/bin/gnome-shell"'
-        );
+            Gio.AppInfo.create_from_commandline(
+                'journalctl -f -o cat GLIB_DOMAIN=GSConnect',
+                'GSConnect',
+                Gio.AppInfoCreateFlags.NEEDS_TERMINAL
+            ).launch([], ctx);
+        } catch (e) {
+            logError(e);
+        }
     }
 
     /**
@@ -381,4 +495,3 @@ var Window = GObject.registerClass({
         System.gc();
     }
 });
-

@@ -4,11 +4,11 @@
         "description": "The extension name"
     },
     "extensionDescription": {
-        "message": "GSConnect ile bağlantıları doğrudan tarayıcı veya SMS ile paylaşın.",
+        "message": "Teile Links über GSConnect, direkt an den Browser oder per SMS.",
         "description": "The extension description"
     },
     "contextMenuMultipleDevices": {
-        "message": "Mobil Cihaza Gönder",
+        "message": "An Mobilgerät senden",
         "description": "Top-level Context Menu label when multiple devices are available"
     },
     "contextMenuSinglePlugin": {
@@ -26,19 +26,19 @@
         }
     },
     "popupMenuDisconnected": {
-        "message": "Servis Kullanılamıyor",
+        "message": "Service nicht verfügbar",
         "description": "Popup Menu label when disconnected from the GNOME Shell extension"
     },
     "popupMenuNoDevices": {
-        "message": "Aygıt Bulunamadı",
+        "message": "Kein Gerät gefunden",
         "description": "Popup Menu label when no devices are connected or have supported plugins enabled"
     },
     "shareMessage": {
-        "message": "Tarayıcıda Aç",
+        "message": "Im Browser öffnen",
         "description": "Context Menu label for opening a link in the device's web browser"
     },
     "smsMessage": {
-        "message": "SMS Gönder",
+        "message": "SMS senden",
         "description": "Context Menu label for sharing a link in an SMS message"
     }
 }

@@ -103,7 +103,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         // Service Menu -> "Mobile Settings"
         this._item.menu.addAction(
             _('Mobile Settings'),
-            () => this.service.activate_action('preferences', null)
+            () => this.service.activate_action('settings', null)
         );
 
         // Watch for UI prefs
@@ -175,7 +175,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
                         this._activate().catch(debug);
                     }
 
-                    return false;
+                    return GLib.SOURCE_REMOVE;
                 });
 
             // Otherwise we need to setup the currently managed devices
@@ -239,7 +239,8 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
             // Add the battery to the submenu item
             if (!this._item._battery) {
                 this._item._battery = new Device.Battery({
-                    object: this.manager.get_object(device.g_object_path)
+                    object: this.manager.get_object(device.g_object_path),
+                    opacity: 128
                 });
                 this._item.actor.insert_child_below(
                     this._item._battery,
@@ -477,7 +478,7 @@ var serviceIndicator = null;
 
 
 function init() {
-    debug('Initializing GSConnect');
+    debug(`Initializing GSConnect v${gsconnect.metadata.version}`);
 
     Gtk.IconTheme.get_default().add_resource_path(gsconnect.app_path + '/icons');
 
@@ -497,7 +498,7 @@ function init() {
 
 
 function enable() {
-    debug('Enabling GSConnect');
+    debug(`Enabling GSConnect v${gsconnect.metadata.version}`);
 
     serviceIndicator = new ServiceIndicator();
     Notification.patchGtkNotificationSources();
@@ -505,7 +506,7 @@ function enable() {
 
 
 function disable() {
-    debug('Disabling GSConnect');
+    debug(`Disabling GSConnect v${gsconnect.metadata.version}`);
 
     serviceIndicator.destroy();
     serviceIndicator = null;

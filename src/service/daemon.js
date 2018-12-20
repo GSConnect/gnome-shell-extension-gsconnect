@@ -87,25 +87,22 @@ const Service = GObject.registerClass({
             flags: Gio.ApplicationFlags.HANDLES_OPEN
         });
 
-        // This is currently required for clipboard to work under Wayland, but
-        // in future will probably just be removed.
+        // FIXME: Breaks Multi-DPI support. Remove once a Wayland protocol is
+        // created or an interface can be exported from gnome-shell process.
+        // FIXME: Removing this causes a regression of #307.
         Gdk.set_allowed_backends('x11,*');
 
         GLib.set_prgname(gsconnect.app_id);
-        GLib.set_application_name(_('GSConnect'));
+        GLib.set_application_name('GSConnect');
 
         this.register(null);
     }
 
-    // Properties
     get certificate() {
         if (this._certificate === undefined) {
-            let certPath = gsconnect.configdir + '/certificate.pem';
-            let keyPath = gsconnect.configdir + '/private.pem';
-
             this._certificate = Gio.TlsCertificate.new_for_paths(
-                certPath,
-                keyPath
+                GLib.build_filenamev([gsconnect.configdir, 'certificate.pem']),
+                GLib.build_filenamev([gsconnect.configdir, 'private.pem'])
             );
         }
 
@@ -192,6 +189,11 @@ const Service = GObject.registerClass({
                     this.bluetooth.broadcast(address);
                     break;
 
+                // If not discoverable we'll only broadcast to paired devices
+                case !this.discoverable:
+                    this.reconnect();
+                    break;
+
                 // We only do true "broadcasts" for LAN
                 default:
                     this.lan.broadcast();
@@ -205,9 +207,18 @@ const Service = GObject.registerClass({
      * Try to reconnect to each paired device that has disconnected
      */
     reconnect() {
-        for (let device of this._devices.values()) {
-            if (device.paired && !device.connected) {
-                device.activate();
+        for (let [id, device] of this._devices.entries()) {
+            if (!device.connected) {
+                if (device.paired) {
+                    device.activate();
+
+                // Prune the device if the settings window is not open
+                } else if (!this._window || !this._window.visible) {
+                    device.destroy();
+                    this._devices.delete(id);
+                    gsconnect.settings.set_strv('devices', this.devices);
+                    this.notify('devices');
+                }
             }
         }
 
@@ -225,13 +236,17 @@ const Service = GObject.registerClass({
         let device = this._devices.get(packet.body.deviceId);
 
         if (device === undefined) {
-            debug(`GSConnect: Adding ${packet.body.deviceName}`);
+            debug(`Adding ${packet.body.deviceName}`);
 
             // TODO: Remove when all clients support bluetooth-like discovery
             //
-            // If this is the third device to connect, disable discovery to
-            // avoid choking on networks with a large amount of devices
-            if (this._devices.size === 2 && this.discoverable) {
+            // If this is the third unpaired device to connect, we disable
+            // discovery to avoid choking on networks with many devices
+            let unpaired = Array.from(this._devices.values()).filter(dev => {
+                return !dev.paired;
+            });
+
+            if (unpaired.length === 3 && this.discoverable) {
                 this.activate_action('discoverable', null);
 
                 let error = new Error();
@@ -249,24 +264,6 @@ const Service = GObject.registerClass({
         }
 
         return device;
-    }
-
-    _pruneDevices() {
-        // Don't prune devices while the settings window is open; this also
-        // prevents devices from being pruned while being deleted.
-        if (this._window && this._window.visible) {
-            return;
-        }
-
-        for (let [id, device] of this._devices.entries()) {
-            if (!device.connected && !device.paired) {
-                device.destroy();
-                this._devices.delete(id);
-                gsconnect.settings.set_strv('devices', this.devices);
-            }
-        }
-
-        this.notify('devices');
     }
 
     /**
@@ -310,19 +307,12 @@ const Service = GObject.registerClass({
             // Device
             ['deviceAction', this._deviceAction.bind(this), '(ssbv)'],
 
-            // App Menu
-            ['connect', this._connectAction.bind(this)],
-            ['preference', this._preferencesAction.bind(this), 's'],
-            ['preferences', this._preferencesAction.bind(this)],
-            ['about', this._aboutAction.bind(this)],
-
-            // Misc service actions
+            // Service actions
             ['broadcast', this.broadcast.bind(this)],
-            ['error', this._errorAction.bind(this), 'a{ss}'],
-            ['log', this._logAction.bind(this)],
-            ['debugger', this._debuggerAction.bind(this)],
-            ['wiki', this._wikiAction.bind(this), 's'],
-            ['quit', () => this.quit()]
+            ['devel', this._devel.bind(this)],
+            ['error', this._error.bind(this), 'a{ss}'],
+            ['settings', this._settings.bind(this)],
+            ['wiki', this._wiki.bind(this), 's']
         ];
 
         for (let [name, callback, type] of actions) {
@@ -335,6 +325,8 @@ const Service = GObject.registerClass({
         }
 
         this.add_action(gsconnect.settings.create_action('discoverable'));
+
+        this.set_accels_for_action('app.wiki::Help', ['F1']);
     }
 
     /**
@@ -365,79 +357,20 @@ const Service = GObject.registerClass({
         }
     }
 
-    _connectAction() {
-        (new ServiceUI.DeviceConnectDialog()).show_all();
+    _devel() {
+        (new imports.service.ui.devel.Window()).present();
     }
 
-    _preferencesAction(page = null, parameter = null) {
-        if (parameter instanceof GLib.Variant) {
-            page = parameter.unpack();
-        }
-
-        if (!this._window) {
-            this._window = new Settings.Window({application: this});
-        }
-
-        // Open to a specific page
-        if (page) {
-            this._window.switcher.foreach(row => {
-                if (row.get_name() === page) {
-                    this._window.switcher.select_row(row);
-                    return;
-                }
-            });
-        // Open the main page
-        } else {
-            this._window._onPrevious();
-        }
-
-        this._window.present();
-    }
-
-    _aboutAction() {
-        let modal = (this.get_active_window());
-        let transient_for = this.get_active_window();
-
-        if (this._about === undefined) {
-            this._about = new Gtk.AboutDialog({
-                application: this,
-                authors: [
-                    'Andy Holmes <andrew.g.r.holmes@gmail.com>',
-                    'Bertrand Lacoste <getzze@gmail.com>',
-                    'Frank Dana <ferdnyc@gmail.com>'
-                ],
-                comments: _('A complete KDE Connect implementation for GNOME'),
-                logo: GdkPixbuf.Pixbuf.new_from_resource_at_scale(
-                    gsconnect.app_path + '/icons/' + gsconnect.app_id + '.svg',
-                    128,
-                    128,
-                    true
-                ),
-                program_name: _('GSConnect'),
-                // TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
-                translator_credits: _('translator-credits'),
-                version: gsconnect.metadata.version.toString(),
-                website: gsconnect.metadata.url,
-                license_type: Gtk.License.GPL_2_0
-            });
-            this._about.connect('delete-event', () => this._about.hide_on_delete());
-        }
-
-        this._about.modal = modal;
-        this._about.transient_for = transient_for;
-        this._about.present();
-    }
-
-    _errorAction(action, parameter) {
+    _error(action, parameter) {
         try {
             let error = parameter.deep_unpack();
             let dialog = new Gtk.MessageDialog({
-                text: error.message.trim(),
-                secondary_text: error.stack.trim(),
+                text: error.message,
+                secondary_text: error.stack,
                 buttons: Gtk.ButtonsType.CLOSE,
                 message_type: Gtk.MessageType.ERROR,
             });
-            dialog.add_button(_('Report'), 1);
+            dialog.add_button(_('Report'), Gtk.ResponseType.OK);
             dialog.set_keep_above(true);
 
             let [message, stack] = dialog.get_message_area().get_children();
@@ -445,8 +378,8 @@ const Service = GObject.registerClass({
             message.selectable = true;
             stack.selectable = true;
 
-            dialog.connect('response', (dialog, id) => {
-                if (id === 1) {
+            dialog.connect('response', (dialog, response_id) => {
+                if (response_id === Gtk.ResponseType.OK) {
                     let query = encodeURIComponent(dialog.text).replace('%20', '+');
                     this._github(`issues?q=is%3Aissue+"${query}"`);
                 } else {
@@ -460,23 +393,28 @@ const Service = GObject.registerClass({
         }
     }
 
-    _logAction() {
-        // Ensure debugging is enabled
-        gsconnect.settings.set_boolean('debug', true);
+    _settings(page = null, parameter = null) {
+        if (parameter instanceof GLib.Variant) {
+            page = parameter.unpack();
+        }
 
-        // Launch a terminal with tabs for GJS and GNOME Shell
-        GLib.spawn_command_line_async(
-            'gnome-terminal ' +
-            '--tab --title "GJS" --command "journalctl -f -o cat /usr/bin/gjs" ' +
-            '--tab --title "GNOME Shell" --command "journalctl -f -o cat /usr/bin/gnome-shell"'
-        );
+        if (!this._window) {
+            this._window = new Settings.Window();
+        }
+
+        // Open to a specific page
+        if (typeof page === 'string' && this._window.stack.get_child_by_name(page)) {
+            this._window._onDeviceSelected(page);
+
+        // Open the main page
+        } else {
+            this._window._onPrevious();
+        }
+
+        this._window.present();
     }
 
-    _debuggerAction() {
-        (new imports.service.components.debug.Window()).present();
-    }
-
-    _wikiAction(action, parameter) {
+    _wiki(action, parameter) {
         this._github(`wiki/${parameter.unpack()}`);
     }
 
@@ -579,9 +517,7 @@ const Service = GObject.registerClass({
                     title = _('Network Error');
                     body = error.message + '\n\n' + _('Click for help troubleshooting');
                     icon = new Gio.ThemedIcon({name: 'network-error'});
-                    notif.set_default_action(
-                        `app.wiki('Help#${error.name}')`
-                    );
+                    notif.set_default_action(`app.wiki('Help#${error.name}')`);
                     break;
 
                 case 'GvcError':
@@ -589,30 +525,16 @@ const Service = GObject.registerClass({
                     title = _('PulseAudio Error');
                     body = _('Click for help troubleshooting');
                     icon = new Gio.ThemedIcon({name: 'dialog-error'});
-                    notif.set_default_action(
-                        `app.wiki('Help#${error.name}')`
-                    );
+                    notif.set_default_action(`app.wiki('Help#${error.name}')`);
                     break;
 
                 case 'DiscoveryWarning':
                     id = 'discovery-warning';
                     title = _('Discovery Disabled');
-                    body = _('Discovery has been disabled due to the number of devices on this network.') +
-                           '\n\n' +
-                           _('Click to open preferences');
+                    body = _('Discovery has been disabled due to the number of devices on this network.');
                     icon = new Gio.ThemedIcon({name: 'dialog-warning'});
-                    notif.set_default_action('app.preference::service');
+                    notif.set_default_action('app.preferences');
                     notif.set_priority(Gio.NotificationPriority.NORMAL);
-                    break;
-
-                // Missing sshfs, libcanberra
-                case 'DependencyError':
-                    id = 'dependency-error';
-                    title = _('Additional Software Required');
-                    body = _('Click to open preferences');
-                    icon = new Gio.ThemedIcon({name: 'system-software-install-symbolic'});
-                    notif.set_default_action('app.preference::other');
-                    notif.set_priority(Gio.NotificationPriority.HIGH);
                     break;
 
                 case 'PluginError':
@@ -622,9 +544,9 @@ const Service = GObject.registerClass({
                     icon = new Gio.ThemedIcon({name: 'dialog-error'});
 
                     error = new GLib.Variant('a{ss}', {
-                        name: error.name,
-                        message: error.message,
-                        stack: error.stack
+                        name: error.name.trim(),
+                        message: error.message.trim(),
+                        stack: error.stack.trim()
                     });
 
                     notif.set_default_action_and_target('app.error', error);
@@ -646,7 +568,7 @@ const Service = GObject.registerClass({
             }
 
             // Create an urgent notification
-            notif.set_title(_('GSConnect: %s').format(title));
+            notif.set_title(`GSConnect: ${title}`);
             notif.set_body(body);
             notif.set_icon(icon);
 
@@ -675,9 +597,7 @@ const Service = GObject.registerClass({
     }
 
     vfunc_activate() {
-        // TODO: this causes problems right now because the bluetooth service
-        // clobbers open TCP channels sometimes, and this gets called often
-        //this.broadcast();
+        this.broadcast();
     }
 
     vfunc_startup() {
@@ -702,6 +622,11 @@ const Service = GObject.registerClass({
             provider,
             Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
         );
+
+        // Ensure out handlers are registered
+        let appInfo = Gio.DesktopAppInfo.new(`${gsconnect.app_id}.desktop`);
+        appInfo.add_supports_type('x-scheme-handler/sms');
+        appInfo.add_supports_type('x-scheme-handler/tel');
 
         // Properties
         gsconnect.settings.bind(
@@ -752,7 +677,7 @@ const Service = GObject.registerClass({
 
         // Bluetooth.ChannelService
         try {
-            this.bluetooth = new Bluetooth.ChannelService();
+            //this.bluetooth = new Bluetooth.ChannelService();
         } catch (e) {
             if (this.bluetooth) {
                 this.bluetooth.destroy();
@@ -778,55 +703,43 @@ const Service = GObject.registerClass({
         return true;
     }
 
-    vfunc_dbus_unregister(connection, object_path) {
-        // Must be done before g_name_owner === null
-        for (let device of this._devices.values()) {
-            device.destroy();
-        }
-
-        super.vfunc_dbus_unregister(connection, object_path);
-    }
-
     vfunc_open(files, hint) {
         super.vfunc_open(files, hint);
 
         for (let file of files) {
-            let devices = [];
             let action, parameter, title;
 
             try {
-                if (file.get_uri_scheme() === 'sms') {
-                    title = _('Send SMS');
-                    action = 'uriSms';
-                    parameter = new GLib.Variant('s', file.get_uri());
-                } else if (file.get_uri_scheme() === 'tel') {
-                    title = _('Dial Number');
-                    action = 'shareUri';
-                    parameter = new GLib.Variant('s', file.get_uri());
-                } else {
-                    return;
+                switch (file.get_uri_scheme()) {
+                    case 'sms':
+                        title = _('Send SMS');
+                        action = 'uriSms';
+                        parameter = new GLib.Variant('s', file.get_uri());
+                        break;
+
+                    case 'tel':
+                        title = _('Dial Number');
+                        action = 'shareUri';
+                        parameter = new GLib.Variant('s', file.get_uri());
+                        break;
+
+                    case 'file':
+                        title = _('Share File');
+                        action = 'shareFile';
+                        parameter = new GLib.Variant('(sb)', [file.get_uri(), false]);
+                        break;
+
+                    default:
+                        logWarning(`Unsupported URI: ${file.get_uri()}`);
+                        return;
                 }
 
-                for (let device of this._devices.values()) {
-                    if (device.get_action_enabled(action)) {
-                        devices.push(device);
-                    }
-                }
-
-                if (devices.length === 1) {
-                    devices[0].activate_action(action, parameter);
-                } else if (devices.length > 1) {
-                    let win = new ServiceUI.DeviceChooserDialog({
-                        title: title,
-                        devices: devices
-                    });
-
-                    if (win.run() === Gtk.ResponseType.OK) {
-                        win.get_device().activate_action(action, parameter);
-                    }
-
-                    win.destroy();
-                }
+                // Show chooser dialog
+                new ServiceUI.DeviceChooserDialog({
+                    title: title,
+                    action: action,
+                    parameter: parameter
+                });
             } catch (e) {
                 logError(e, `GSConnect: Opening ${file.get_uri()}:`);
             }
@@ -836,25 +749,25 @@ const Service = GObject.registerClass({
     vfunc_shutdown() {
         super.vfunc_shutdown();
 
+        // Destroy the channel providers first to avoid any further connections
+        if (this.lan) {
+            this.lan.destroy();
+        }
+
+        if (this.bluetooth) {
+            this.bluetooth.destroy();
+        }
+
+        // This must be done before ::dbus-unregister is emitted
         this._devices.forEach(device => device.destroy());
 
+        // Destroy the remaining components last
         if (this.mpris) {
             this.mpris.destroy();
         }
 
         if (this.notification) {
             this.notification.destroy();
-        }
-
-        if (this.lan) {
-            this.lan.destroy();
-        }
-
-        // FIXME: Really, really bad hack, but sometimes hangs in bluez can
-        // prevent the service from stopping or even hang the desktop.
-        System.exit(0);
-        if (this.bluetooth) {
-            this.bluetooth.destroy();
         }
     }
 });

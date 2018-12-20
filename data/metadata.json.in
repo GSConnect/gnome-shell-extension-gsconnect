@@ -12,6 +12,7 @@
     "bin": {
         "fusermount": "@FUSERMOUNT_PATH@",
         "openssl": "@OPENSSL_PATH@",
+        "ssh_add": "@SSHADD_PATH@",
         "sshfs": "@SSHFS_PATH@"
     }
 }

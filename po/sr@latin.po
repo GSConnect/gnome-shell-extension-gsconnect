@@ -460,7 +460,8 @@ msgid "Accept"
 msgstr "Prihvati"
 
 #: src/service/plugins/battery.js:194 src/service/plugins/findmyphone.js:18
-msgid "Locate"
+#, fuzzy
+msgid "Ring"
 msgstr "Lociraj"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is low
@@ -727,31 +728,31 @@ msgstr "Tekući poziv"
 #: src/service/ui/contacts.js:58 src/service/ui/contacts.js:79
 #, fuzzy, javascript-format
 msgid "%s・Other"
-msgstr "Drugo"
+msgstr "%s・Drugo"
 
 #. TRANSLATORS: A fax number
 #: src/service/ui/contacts.js:63
 #, javascript-format
 msgid "%s・Fax"
-msgstr ""
+msgstr "%s・Faks"
 
 #. TRANSLATORS: A work phone number
 #: src/service/ui/contacts.js:67
 #, fuzzy, javascript-format
 msgid "%s・Work"
-msgstr "Posao"
+msgstr "%s・Posao"
 
 #. TRANSLATORS: A mobile or cellular phone number
 #: src/service/ui/contacts.js:71
 #, fuzzy, javascript-format
 msgid "%s・Mobile"
-msgstr "Mobilni"
+msgstr "%s・Mobilni"
 
 #. TRANSLATORS: A home phone number
 #: src/service/ui/contacts.js:75
 #, fuzzy, javascript-format
 msgid "%s・Home"
-msgstr "Kućni"
+msgstr "%s・Kućni"
 
 #: src/service/ui/contacts.js:203
 msgid "Select a contact or number"

@@ -6,6 +6,29 @@ const GObject = imports.gi.GObject;
 
 
 /**
+ * One-time check for Linux/FreeBSD scoket options
+ */
+var _LINUX_SOCKET_OPTIONS = false;
+
+try {
+    // This should throw on FreeBSD
+    // https://github.com/freebsd/freebsd/blob/master/sys/netinet/tcp.h#L159
+    new Gio.Socket({
+        family: Gio.SocketFamily.IPV4,
+        protocol: Gio.SocketProtocol.TCP,
+        type: Gio.SocketType.STREAM
+    }).get_option(6, 5);
+
+    // Otherwise we can use Linux socket options
+    debug('Setting socket options for Linux');
+    _LINUX_SOCKET_OPTIONS = true;
+} catch (e) {
+    debug('Setting socket options for FreeBSD');
+    _LINUX_SOCKET_OPTIONS = false;
+}
+
+
+/**
  * Packet
  *
  * The packet class is a simple Object-derived class. It only exists to offer
@@ -112,9 +135,16 @@ var Channel = class Channel {
     _initSocket(connection) {
         if (connection instanceof Gio.TcpConnection) {
             connection.socket.set_keepalive(true);
-            connection.socket.set_option(6, 4, 10); // TCP_KEEPIDLE
-            connection.socket.set_option(6, 5, 5);  // TCP_KEEPINTVL
-            connection.socket.set_option(6, 6, 3);  // TCP_KEEPCNT
+
+            if (_LINUX_SOCKET_OPTIONS) {
+                connection.socket.set_option(6, 4, 10); // TCP_KEEPIDLE
+                connection.socket.set_option(6, 5, 5);  // TCP_KEEPINTVL
+                connection.socket.set_option(6, 6, 3);  // TCP_KEEPCNT
+            } else {
+                connection.socket.set_option(6, 256, 10); // TCP_KEEPIDLE
+                connection.socket.set_option(6, 512, 5);  // TCP_KEEPINTVL
+                connection.socket.set_option(6, 1024, 3); // TCP_KEEPCNT
+            }
         }
 
         return connection;
@@ -357,6 +387,8 @@ var Channel = class Channel {
      * Close all streams associated with this channel, silencing any errors
      */
     close() {
+        debug(`${this.constructor.name}:${this.type}${(this.uuid) ? '(Transfer)' : ''}`);
+
         // Cancel any queued operations
         this.cancellable.cancel();
 
@@ -365,7 +397,7 @@ var Channel = class Channel {
             try {
                 stream.close(null);
             } catch (e) {
-                debug(e.message);
+                // Silence errors
             }
         });
 
@@ -373,7 +405,7 @@ var Channel = class Channel {
             try {
                 this._listener.close();
             } catch (e) {
-                debug(e.message);
+                // Silence errors
             }
         }
     }
@@ -550,7 +582,7 @@ var Transfer = class Transfer extends Channel {
                 );
             });
         } catch (e) {
-            logError(e, this.device.name);
+            debug(e, this.device.name);
         } finally {
             this.close();
         }

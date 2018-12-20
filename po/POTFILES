@@ -1,5 +1,6 @@
-data/conversation.ui
+data/connect.ui
 data/contacts.ui
+data/conversation.ui
 data/device.ui
 data/menus.ui
 data/messaging.ui
@@ -23,10 +24,11 @@ src/service/plugins/sms.js
 src/service/plugins/systemvolume.js
 src/service/plugins/telephony.js
 src/service/ui/contacts.js
+src/service/ui/device.js
 src/service/ui/keybindings.js
+src/service/ui/messaging.js
 src/service/ui/service.js
 src/service/ui/settings.js
-src/service/ui/messaging.js
 src/shell/device.js
 src/shell/donotdisturb.js
 webextension/gettext.js

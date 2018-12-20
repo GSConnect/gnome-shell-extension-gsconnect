@@ -66,7 +66,10 @@ fi
 
 # INSTALL
 if [ "$INSTALL" = true ]; then
-    INSTALL_DIR="${HOME}/.local/share/gnome-shell/extensions/${UUID}"
+    EXTENSIONS_DIR="${HOME}/.local/share/gnome-shell/extensions"
+    INSTALL_DIR="${EXTENSIONS_DIR}/${UUID}"
+
+    mkdir -p ${EXTENSIONS_DIR}
     rm -rf ${INSTALL_DIR}
     unzip ${ZIP_FILE} -d ${INSTALL_DIR}
 

@@ -428,8 +428,8 @@ var FileChooserDialog = GObject.registerClass({
         );
 
         // Preview Widget
-        this.set_preview_widget(new Gtk.Image());
-        this.set_preview_widget_active(false);
+        this.preview_widget = new Gtk.Image();
+        this.preview_widget_active = false;
         this.connect('update-preview', this._onUpdatePreview);
 
         // URI entry
@@ -446,6 +446,7 @@ var FileChooserDialog = GObject.registerClass({
                 icon_name: 'web-browser-symbolic',
                 pixel_size: 16
             }),
+            valign: Gtk.Align.CENTER,
             // TRANSLATORS: eg. Send a link to Google Pixel
             tooltip_text: _('Send a link to %s').format(device.name),
             visible: true
@@ -467,12 +468,12 @@ var FileChooserDialog = GObject.registerClass({
                 chooser.get_scale_factor() * 128,
                 -1
             );
-            chooser.get_preview_widget().visible = true;
-            chooser.get_preview_widget().pixbuf = pixbuf;
-            chooser.set_preview_widget_active(true);
+            chooser.preview_widget.pixbuf = pixbuf;
+            chooser.preview_widget.visible = true;
+            chooser.preview_widget_active = true;
         } catch (e) {
-            chooser.get_preview_widget().visible = false;
-            chooser.set_preview_widget_active(false);
+            chooser.preview_widget.visible = false;
+            chooser.preview_widget_active = false;
         }
     }
 
@@ -500,10 +501,6 @@ var FileChooserDialog = GObject.registerClass({
         if (this._uriButton.active && this._uriEntry.text.length) {
             this.response(1);
         }
-    }
-
-    vfunc_delete_event(event) {
-        this.response(Gtk.ResponseType.CANCEL);
     }
 
     vfunc_response(response_id) {

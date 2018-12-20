@@ -84,7 +84,7 @@ class GSConnectShareExtension(GObject.GObject, Nautilus.MenuProvider):
         """Send *files* to *device_id*"""
 
         for file in files:
-            variant = GLib.Variant('s', file.get_uri())
+            variant = GLib.Variant('(sb)', (file.get_uri(), False))
             action_group.activate_action('shareFile', variant)
 
     def get_file_items(self, window, files):
