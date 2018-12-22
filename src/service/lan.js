@@ -25,6 +25,8 @@ const UDP_PORT = 1716;
 var ChannelService = class ChannelService {
 
     constructor() {
+        this.allowed = new Set();
+
         this._initUdpListener();
         this._initTcpListener();
 
@@ -34,14 +36,6 @@ var ChannelService = class ChannelService {
             'network-changed',
             this._onNetworkChanged.bind(this)
         );
-    }
-
-    get allowed() {
-        if (this._allowed === undefined) {
-            this._allowed = new Set();
-        }
-
-        return this._allowed;
     }
 
     get service() {
