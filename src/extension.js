@@ -318,7 +318,6 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
             return;
         }
 
-        debug(`GSConnect: Adding ${iface.Name}`);
         this.devices.add(iface);
 
         // GActions
@@ -376,8 +375,6 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
     _onObjectRemoved(manager, object) {
         let iface = object.get_interface('org.gnome.Shell.Extensions.GSConnect.Device');
 
-        debug(`GSConnect: Removing ${iface.Name}`);
-
         // Release keybindings
         iface.settings.disconnect(iface._keybindingsChangedId);
         iface._keybindings.map(id => this.keybindingManager.remove(id));
@@ -428,7 +425,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
                 }
             }
         } catch (e) {
-            debug(e);
+            logError(e);
         }
     }
 
@@ -478,8 +475,6 @@ var serviceIndicator = null;
 
 
 function init() {
-    debug(`Initializing GSConnect v${gsconnect.metadata.version}`);
-
     Gtk.IconTheme.get_default().add_resource_path(gsconnect.app_path + '/icons');
 
     // If installed as a user extension, this will install the Desktop entry,
@@ -498,16 +493,12 @@ function init() {
 
 
 function enable() {
-    debug(`Enabling GSConnect v${gsconnect.metadata.version}`);
-
     serviceIndicator = new ServiceIndicator();
     Notification.patchGtkNotificationSources();
 }
 
 
 function disable() {
-    debug(`Disabling GSConnect v${gsconnect.metadata.version}`);
-
     serviceIndicator.destroy();
     serviceIndicator = null;
     Notification.unpatchGtkNotificationSources();

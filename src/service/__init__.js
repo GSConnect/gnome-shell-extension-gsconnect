@@ -9,7 +9,6 @@ const Gtk = imports.gi.Gtk;
  * Globals, overrides and polyfills are kept here so we don't mangle or collide
  * with the prototypes of other processes (eg. gnome-shell).
  */
-debug('loading service/__init__.js');
 
 
 /**
@@ -17,6 +16,44 @@ debug('loading service/__init__.js');
  * https://wiki.gnome.org/Accessibility/Wayland#Bugs.2FIssues_We_Must_Address
  */
 window._WAYLAND = GLib.getenv('XDG_SESSION_TYPE') === 'wayland';
+
+
+var _debugFunc = function(message, context = null) {
+    let caller;
+
+    if (message.stack) {
+        caller = message.stack.split('\n')[0];
+        message = `${message.message}\n${message.stack}`;
+    } else {
+        message = JSON.stringify(message, null, 2);
+        caller = (new Error()).stack.split('\n')[1];
+    }
+
+    // Prepend context
+    message = (context) ? `${context}: ${message}` : message;
+
+    // Cleanup the stack
+    let [, func, file, line] = caller.match(/([^@]*)@([^:]*):([^:]*)/);
+    let script = file.replace(gsconnect.extdatadir, '');
+
+    GLib.log_structured('GSConnect', GLib.LogLevelFlags.LEVEL_MESSAGE, {
+        'MESSAGE': `[${script}:${func}:${line}]: ${message}`,
+        'SYSLOG_IDENTIFIER': 'org.gnome.Shell.Extensions.GSConnect',
+        'CODE_FILE': file,
+        'CODE_FUNC': func,
+        'CODE_LINE': line
+    });
+};
+
+window.debug = gsconnect.settings.get_boolean('debug') ? _debugFunc : () => {};
+
+gsconnect.settings.connect('changed::debug', () => {
+    if (gsconnect.settings.get_boolean('debug')) {
+        window.debug = _debugFunc;
+    } else {
+        window.debug = function() {};
+    }
+});
 
 
 /**

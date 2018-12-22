@@ -154,58 +154,6 @@ gsconnect.dbusinfo.nodes.forEach(info => info.cache_build());
 
 
 /**
- * Re-usable logging function
- */
-function _makeLogFunction(level) {
-    return (message, context = null) => {
-        let caller;
-
-        if (message.stack) {
-            caller = message.stack.split('\n')[0];
-            message = `${message.message}\n${message.stack}`;
-        } else {
-            message = JSON.stringify(message, null, 2);
-            caller = (new Error()).stack.split('\n')[1];
-        }
-
-        // Prepend context
-        message = (context) ? `${context}: ${message}` : message;
-
-        // Cleanup the stack
-        let [, func, file, line] = caller.match(/([^@]*)@([^:]*):([^:]*)/);
-        let script = file.replace(gsconnect.extdatadir, '');
-
-        GLib.log_structured('GSConnect', level, {
-            'MESSAGE': `[${script}:${func}:${line}]: ${message}`,
-            'SYSLOG_IDENTIFIER': 'org.gnome.Shell.Extensions.GSConnect',
-            'CODE_FILE': file,
-            'CODE_FUNC': func,
-            'CODE_LINE': line
-        });
-    };
-}
-
-
-/**
- * If 'debug' is enabled in GSettings, print a useful message to the log
- *
- * @param {string} msg - the debugging message
- * @param {string} [prefix] - An optional prefix for the message
- */
-var _debugFunc = _makeLogFunction(GLib.LogLevelFlags.LEVEL_MESSAGE);
-
-window.debug = gsconnect.settings.get_boolean('debug') ? _debugFunc : () => {};
-
-gsconnect.settings.connect('changed::debug', () => {
-    if (gsconnect.settings.get_boolean('debug')) {
-        window.debug = _debugFunc;
-    } else {
-        window.debug = function() {};
-    }
-});
-
-
-/**
  * Install desktop files for user installs
  */
 gsconnect.installService = function() {

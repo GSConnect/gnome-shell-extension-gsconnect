@@ -54,11 +54,7 @@ class RepliableNotificationBanner extends MessageTray.NotificationBanner {
 
         source._createApp((app, error) => {
             // Bail on error in case we can try again
-            if (error !== null) {
-                return;
-            }
-
-            debug(`Sending ${text}`);
+            if (error !== null) return;
 
             let target = new GLib.Variant('(ssbv)', [
                 deviceId,
@@ -112,8 +108,6 @@ class Source extends NotificationDaemon.GtkNotificationDaemonAppSource {
                 notification._remoteClosed = false;
                 return;
             }
-
-            debug(`Closing ${notification.remoteId}`);
 
             let target = new GLib.Variant('(ssbv)', [
                 notification.deviceId,
