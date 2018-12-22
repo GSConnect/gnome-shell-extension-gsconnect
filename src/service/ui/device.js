@@ -164,7 +164,7 @@ var DevicePreferences = GObject.registerClass({
         'command-editor', 'command-name', 'command-line',
         // Notifications
         'notification', 'notification-page',
-        'notification-apps',
+        'notification-list', 'notification-apps',
         // Telephony
         'telephony', 'telephony-page',
         'ringing-list', 'ringing-volume', 'talking-list', 'talking-volume',
@@ -264,6 +264,16 @@ var DevicePreferences = GObject.registerClass({
         if (_WAYLAND) supported.splice(supported.indexOf('mousepad'), 1);
 
         return supported;
+    }
+
+    _onKeynavFailed(widget, direction) {
+        if (direction === Gtk.DirectionType.UP && widget.prev) {
+            widget.prev.child_focus(direction);
+        } else if (direction === Gtk.DirectionType.DOWN && widget.next) {
+            widget.next.child_focus(direction);
+        }
+
+        return true;
     }
 
     _onSwitcherRowSelected(box, row) {
@@ -628,6 +638,10 @@ var DevicePreferences = GObject.registerClass({
         let notification_box = this.notification_page.get_child().get_child();
         notification_box.set_focus_vadjustment(this.notification_page.vadjustment);
 
+        // Continue focus chain between lists
+        this.notification_list.next = this.notification_apps;
+        this.notification_apps.prev = this.notification_list;
+
         this.notification_apps.set_sort_func(title_sort);
         this.notification_apps.set_header_func(section_separators);
 
@@ -731,6 +745,10 @@ var DevicePreferences = GObject.registerClass({
      * Telephony Settings
      */
     _telephonySettings() {
+        // Continue focus chain between lists
+        this.ringing_list.next = this.talking_list;
+        this.talking_list.prev = this.ringing_list;
+
         this.ringing_list.set_header_func(section_separators);
         this.talking_list.set_header_func(section_separators);
     }

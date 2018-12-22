@@ -684,6 +684,7 @@
                             <property name="can_focus">False</property>
                             <property name="hexpand">True</property>
                             <property name="selection_mode">none</property>
+                            <signal name="keynav-failed" handler="_onKeynavFailed" swapped="no"/>
                             <child>
                               <object class="GtkListBoxRow" id="share-notification-row">
                                 <property name="height_request">56</property>
@@ -784,6 +785,7 @@
                             <property name="can_focus">False</property>
                             <property name="hexpand">True</property>
                             <property name="selection_mode">none</property>
+                            <signal name="keynav-failed" handler="_onKeynavFailed" swapped="no"/>
                             <signal name="row-activated" handler="_onNotificationRowActivated" swapped="no"/>
                             <accessibility>
                               <relation type="labelled-by" target="notification-apps-label"/>
@@ -860,6 +862,7 @@
                             <property name="can_focus">False</property>
                             <property name="hexpand">True</property>
                             <property name="selection_mode">none</property>
+                            <signal name="keynav-failed" handler="_onKeynavFailed" swapped="no"/>
                             <signal name="row-activated" handler="_onToggleRowActivated" swapped="no"/>
                             <child>
                               <object class="GtkListBoxRow" id="ringing-volume-row">
@@ -936,9 +939,9 @@
                                   <object class="GtkGrid">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
+                                    <property name="valign">center</property>
                                     <property name="margin_left">12</property>
                                     <property name="margin_right">12</property>
-                                    <property name="valign">center</property>
                                     <property name="column_spacing">12</property>
                                     <child>
                                       <object class="GtkLabel" id="ringing-pause-label">
@@ -1026,6 +1029,7 @@
                             <property name="can_focus">False</property>
                             <property name="hexpand">True</property>
                             <property name="selection_mode">none</property>
+                            <signal name="keynav-failed" handler="_onKeynavFailed" swapped="no"/>
                             <signal name="row-activated" handler="_onToggleRowActivated" swapped="no"/>
                             <child>
                               <object class="GtkListBoxRow" id="talking-volume-row">
