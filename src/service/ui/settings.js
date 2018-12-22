@@ -514,10 +514,8 @@ var Window = GObject.registerClass({
             });
 
             // Persist
-            this._about.connect(
-                'delete-event',
-                () => this._about.hide_on_delete()
-            );
+            this._about.connect('response', (dialog) => dialog.hide_on_delete());
+            this._about.connect('delete-event', (dialog) => dialog.hide_on_delete());
         }
 
         this._about.present();
