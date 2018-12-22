@@ -383,7 +383,7 @@ var Device = GObject.registerClass({
                     throw new Error(`Unsupported packet type (${packet.type})`);
             }
         } catch (e) {
-            logWarning(e, this.name);
+            warning(e, this.name);
         }
     }
 

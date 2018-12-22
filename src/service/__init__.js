@@ -20,6 +20,24 @@ window._WAYLAND = GLib.getenv('XDG_SESSION_TYPE') === 'wayland';
 
 
 /**
+ * A simple warning function along the lines of logError()
+ *
+ * @param {Error|string} message - A string or Error to log
+ * @param {string} [prefix] - An optional prefix for the warning
+ */
+window.warning = function(message, prefix = null) {
+    message = message.hasOwnProperty('message') ? message.message : message;
+    message = (prefix) ? `${prefix}: ${message}` : message;
+
+    GLib.log_structured(
+        'GSConnect',
+        GLib.LogLevelFlags.LEVEL_WARNING,
+        {MESSAGE: `WARNING: ${message}`}
+    );
+};
+
+
+/**
  * Convenience function for loading JSON from a file
  *
  * @param {Gio.File|string} file - A Gio.File or path to a JSON file

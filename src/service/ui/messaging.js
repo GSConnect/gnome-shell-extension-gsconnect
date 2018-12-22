@@ -597,7 +597,7 @@ const ConversationWidget = GObject.registerClass({
         // Ensure it's older than the last message (or the first)
         // TODO: with a lot of work we could probably handle this...
         if (this.__last && this.__last.id > message._id) {
-            logWarning('SMS message out of order', this.device.name);
+            warning('SMS message out of order', this.device.name);
             return;
         }
 

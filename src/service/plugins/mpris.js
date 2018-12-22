@@ -259,7 +259,7 @@ var Plugin = GObject.registerClass({
                 }
             });
         } catch (e) {
-            logWarning(e, `${this.device.name}: transferring album art`);
+            warning(e, `${this.device.name}: transferring album art`);
         } finally {
             this._transferring = false;
         }

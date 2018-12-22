@@ -195,7 +195,7 @@ var Plugin = GObject.registerClass({
                         // TODO: special case when the GMount didn't unmount
                         // properly but is still on the same port (code 17).
                         if (e.code && e.code === Gio.IOErrorEnum.ALREADY_MOUNTED) {
-                            logWarning(e, this.device.name);
+                            warning(e, this.device.name);
                             resolve(true);
                         } else {
                             reject(e);
@@ -216,7 +216,7 @@ var Plugin = GObject.registerClass({
 
                 // Or if it's a stale mount we need to cleanup
                 } else if (this._uriRegex.test(uri)) {
-                    logWarning('Removing stale GMount', this.device.name);
+                    warning('Removing stale GMount', this.device.name);
                     await this._sftp_unmount(mount);
                 }
             }
@@ -363,7 +363,7 @@ var Plugin = GObject.registerClass({
                         throw new Error(msg);
                     }
 
-                    logWarning(msg, `${this.device.name}: sshfs`);
+                    warning(msg, `${this.device.name}: sshfs`);
                     this._sshfs_check(stream);
                 }
             } catch (e) {

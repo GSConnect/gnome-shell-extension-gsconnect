@@ -45,7 +45,7 @@ var Store = GObject.registerClass({
         try {
             this.__cache_data = await JSON.load(this.__cache_file);
         } catch (e) {
-            logWarning(e);
+            warning(e);
             this.__cache_data = {};
         } finally {
             this.connect('notify::contacts', this.__cache_write.bind(this));
@@ -72,7 +72,7 @@ var Store = GObject.registerClass({
             this.__cache_lock = true;
             await JSON.dump(this.__cache_data, this.__cache_file);
         } catch (e) {
-            logWarning(e);
+            warning(e);
         } finally {
             this.__cache_lock = false;
 
@@ -329,7 +329,7 @@ var Store = GObject.registerClass({
 
             this.update(folks);
         } catch (e) {
-            logWarning(e);
+            warning(e);
         }
     }
 });

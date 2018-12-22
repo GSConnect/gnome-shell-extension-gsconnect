@@ -206,24 +206,6 @@ gsconnect.settings.connect('changed::debug', () => {
 
 
 /**
- * A simple warning function along the lines of logError()
- *
- * @param {Error|string} message - A string or Error to log
- * @param {string} [prefix] - An optional prefix for the warning
- */
-window.logWarning = function(message, prefix = null) {
-    message = message.hasOwnProperty('message') ? message.message : message;
-    message = (prefix) ? `${prefix}: ${message}` : message;
-
-    GLib.log_structured(
-        'GSConnect',
-        GLib.LogLevelFlags.LEVEL_WARNING,
-        {MESSAGE: `WARNING: ${message}`}
-    );
-};
-
-
-/**
  * Install desktop files for user installs
  */
 gsconnect.installService = function() {

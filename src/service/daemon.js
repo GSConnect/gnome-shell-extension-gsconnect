@@ -730,7 +730,7 @@ const Service = GObject.registerClass({
                         break;
 
                     default:
-                        logWarning(`Unsupported URI: ${file.get_uri()}`);
+                        warning(`Unsupported URI: ${file.get_uri()}`);
                         return;
                 }
 

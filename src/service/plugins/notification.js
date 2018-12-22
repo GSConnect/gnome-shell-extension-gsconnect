@@ -85,11 +85,11 @@ var Plugin = GObject.registerClass({
 
             // We don't support *incoming* replies (yet)
             case 'kdeconnect.notification.reply':
-                logWarning('Not implemented', packet.type);
+                warning('Not implemented', packet.type);
                 return;
 
             default:
-                logWarning('Unknown notification packet', this.device.name);
+                warning('Unknown notification packet', this.device.name);
         }
     }
 
@@ -147,7 +147,7 @@ var Plugin = GObject.registerClass({
                     break;
 
                 default:
-                    logWarning('Unknown notification type', this.device.name);
+                    warning('Unknown notification type', this.device.name);
             }
         }
     }

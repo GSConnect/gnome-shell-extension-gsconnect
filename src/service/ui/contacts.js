@@ -83,7 +83,7 @@ function getPixbuf(path, size = null) {
     try {
         data = GLib.file_get_contents(path)[1];
     } catch (e) {
-        logWarning(e.message, path);
+        warning(e.message, path);
         return undefined;
     }
 
@@ -93,7 +93,7 @@ function getPixbuf(path, size = null) {
         loader.write(data);
         loader.close();
     } catch (e) {
-        logWarning(e, path);
+        warning(e, path);
     }
 
     let pixbuf = loader.get_pixbuf();

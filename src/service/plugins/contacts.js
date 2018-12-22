@@ -180,7 +180,7 @@ var Plugin = GObject.registerClass({
 
             // Say "chowdah" frenchie!
             } catch (e) {
-                logWarning(`Failed to decode UTF-8 VCard field "${input}"`);
+                warning(`Failed to decode UTF-8 VCard field "${input}"`);
                 return input;
             }
         }
@@ -290,7 +290,7 @@ var Plugin = GObject.registerClass({
 
             return contact;
         } catch (e) {
-            logWarning(e, `Failed to parse VCard contact "${uid}"`);
+            warning(e, `Failed to parse VCard contact "${uid}"`);
             return undefined;
         }
     }

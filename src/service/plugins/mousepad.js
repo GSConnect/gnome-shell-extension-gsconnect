@@ -220,7 +220,7 @@ var Plugin = GObject.registerClass({
 
                 // Caribou not available or key out of range
                 } else {
-                    logWarning(_('Additional Software Required') + ': libcaribou');
+                    warning(_('Additional Software Required') + ': libcaribou');
                 }
                 break;
 
@@ -776,7 +776,7 @@ var KeyboardInputDialog = GObject.registerClass({
         );
 
         if (status !== Gdk.GrabStatus.SUCCESS) {
-            logWarning('Grabbing keyboard failed');
+            warning('Grabbing keyboard failed');
             return;
         }
 
