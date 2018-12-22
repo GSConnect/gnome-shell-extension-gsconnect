@@ -18,7 +18,6 @@ imports.gi.versions.Pango = '1.0';
 imports.gi.versions.UPowerGlib = '1.0';
 
 const Gdk = imports.gi.Gdk;
-const GdkPixbuf = imports.gi.GdkPixbuf;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
