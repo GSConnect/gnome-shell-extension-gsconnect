@@ -6,6 +6,7 @@ const GObject = imports.gi.GObject;
 
 const PluginsBase = imports.service.plugins.base;
 const Messaging = imports.service.ui.messaging;
+const TelephonyUI = imports.service.ui.telephony;
 
 
 var Metadata = {
@@ -215,6 +216,10 @@ var Plugin = GObject.registerClass({
     }
 
     get window() {
+        if (this.settings.get_boolean('legacy')) {
+            return new TelephonyUI.Dialog({device: this.device});
+        }
+
         if (this._window === undefined) {
             this._window = new Messaging.Window({
                 application: this.service,
@@ -432,8 +437,14 @@ var Plugin = GObject.registerClass({
      * @param {string} url - The link to be shared
      */
     shareSms(url) {
+        // Legacy Mode
+        if (this.settings.get_boolean('legacy')) {
+            let window = this.window;
+            window.present();
+            window.setMessage(url);
+
         // If there are active conversations, show the chooser dialog
-        if (Object.values(this.conversations).length > 0) {
+        } else if (Object.values(this.conversations).length > 0) {
             let window = new Messaging.ConversationChooser({
                 application: this.service,
                 device: this.device,
@@ -458,6 +469,7 @@ var Plugin = GObject.registerClass({
 
     /**
      * This is the sms: URI scheme handler
+     * TODO: we should now reject multi-recipient URIs
      *
      * @param {string} uri - The URI the handle (sms:|sms://|sms:///)
      */
@@ -465,14 +477,18 @@ var Plugin = GObject.registerClass({
         try {
             uri = new URI(uri);
 
-            // TODO: we should now reject multi-recipient URIs
-            this.window.present();
-            this.window.address = uri.recipients[0];
+            let window = this.window;
+            window.present();
+            window.address = uri.recipients[0];
 
             // Set the outgoing message if the uri has a body variable
             if (uri.body) {
-                let conversation = this.window.conversation_stack.visible_child;
-                conversation.setMessage(uri.body);
+                if (this.settings.get_boolean('legacy')) {
+                    window.setMessage(uri.body);
+                } else {
+                    let conversation = this.window.conversation_stack.visible_child;
+                    conversation.setMessage(uri.body);
+                }
             }
         } catch (e) {
             logError(e, `${this.device.name}: "${uri}"`);

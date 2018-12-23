@@ -6,6 +6,7 @@ const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 
 const PluginsBase = imports.service.plugins.base;
+const TelephonyUI = imports.service.ui.telephony;
 
 
 var Metadata = {
@@ -17,6 +18,14 @@ var Metadata = {
         'kdeconnect.telephony.request_mute'
     ],
     actions: {
+        legacyReply: {
+            label: _('Reply SMS'),
+            icon_name: 'sms-symbolic',
+
+            parameter_type: new GLib.VariantType('a{sv}'),
+            incoming: ['kdeconnect.telephony'],
+            outgoing: ['kdeconnect.sms.request']
+        },
         muteCall: {
             label: _('Mute Call'),
             icon_name: 'audio-volume-muted-symbolic',
@@ -40,6 +49,10 @@ var Plugin = GObject.registerClass({
 
     _init(device) {
         super._init(device, 'telephony');
+    }
+
+    get sms() {
+        return this.device.lookup_plugin('sms');
     }
 
     async handlePacket(packet) {
@@ -70,6 +83,12 @@ var Plugin = GObject.registerClass({
             // plugin to handle 'missedCall' and 'sms' since they're repliable
             if (['ringing', 'talking'].includes(packet.body.event)) {
                 this._handleEvent(packet);
+            }
+
+            // Legacy messaging support
+            if (packet.body.event === 'sms' && this.sms.settings.get_boolean('legacy')) {
+                debug('LEGACY EVENT');
+                this._handleLegacyMessage(packet);
             }
         } catch (e) {
             logError(e);
@@ -194,6 +213,59 @@ var Plugin = GObject.registerClass({
             priority: priority,
             buttons: buttons
         });
+    }
+
+    _handleLegacyMessage(packet) {
+        let action = null;
+        let icon = new Gio.ThemedIcon({name: 'sms-symbolic'});
+
+        // Ensure we have a sender
+        // TRANSLATORS: No name or phone number
+        let sender = _('Unknown Contact');
+
+        if (packet.body.contactName) {
+            sender = packet.body.contactName;
+        } else if (packet.body.phoneNumber) {
+            sender = packet.body.phoneNumber;
+        }
+
+        // If there's a photo, use it as the notification icon
+        if (packet.body.phoneThumbnail) {
+            icon = this._getThumbnailPixbuf(packet.body.phoneThumbnail);
+        }
+
+        // If there's a phone number we can make this repliable
+        if (packet.body.phoneNumber) {
+            action = {
+                name: 'legacyReply',
+                parameter: new GLib.Variant.full_pack(packet)
+            };
+        }
+
+        // Show notification
+        this.device.showNotification({
+            id: `${packet.body.event}|${sender}`,
+            title: sender,
+            body: packet.body.messageBody,
+            icon: icon,
+            priority: Gio.NotificationPriority.NORMAL,
+            action: action
+        });
+    }
+
+    legacyReply(packet) {
+        let window = new TelephonyUI.Dialog({
+            address: packet.body.phoneNumber,
+            device: this.device,
+            message: {
+                date: packet.id,
+                address: packet.body.phoneNumber,
+                body: packet.body.messageBody,
+                sender: packet.body.contactName || _('Unknown Contact'),
+                type: 1
+            }
+        });
+        window.present();
     }
 
     /**

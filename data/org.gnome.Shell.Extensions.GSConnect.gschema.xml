@@ -144,7 +144,11 @@
   </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.SFTP"/>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.Share"/>
-  <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.SMS"/>
+  <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.SMS">
+    <key name="legacy" type="b">
+      <default>false</default>
+    </key>
+  </schema>
   <schema id="org.gnome.Shell.Extensions.GSConnect.Plugin.SystemVolume">
     <key name="share-sinks" type="b">
       <default>true</default>
