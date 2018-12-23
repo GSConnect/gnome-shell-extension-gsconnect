@@ -27,11 +27,13 @@ var ChannelService = class ChannelService {
     constructor() {
         this.allowed = new Set();
 
+        // Start TCP/UDP listeners
         this._initUdpListener();
         this._initTcpListener();
 
         // Monitor network changes
         this._networkMonitor = Gio.NetworkMonitor.get_default();
+        this._networkAvailable = this._networkMonitor.network_available;
         this._networkChangedId = this._networkMonitor.connect(
             'network-changed',
             this._onNetworkChanged.bind(this)
@@ -43,7 +45,8 @@ var ChannelService = class ChannelService {
     }
 
     _onNetworkChanged(monitor, network_available) {
-        if (network_available) {
+        if (this._networkAvailable !== network_available) {
+            this._networkAvailable = network_available;
             this.broadcast();
         }
     }
@@ -249,9 +252,16 @@ var ChannelService = class ChannelService {
      */
     broadcast(address = null) {
         try {
+            if (!this._networkAvailable) {
+                debug('Network unavailable; aborting');
+                return;
+
             // Remember manual addresses so we know to accept connections
-            if (address instanceof Gio.InetSocketAddress) {
+            } else if (address instanceof Gio.InetSocketAddress) {
+                debug(`Identifying to ${address.address.to_string()}`);
                 this.allowed.add(address.address.to_string());
+
+            // Only broadcast to the network if no address is specified
             } else {
                 debug('Broadcasting to LAN');
                 address = this._udp_address;
@@ -259,9 +269,7 @@ var ChannelService = class ChannelService {
 
             this._udp.send_to(address, `${this.service.identity}`, null);
         } catch (e) {
-            // GNetworkMonitor overreacts when the connectivity state changes
-            // and the documentation is a whole page of wishy-washy excuses, so
-            // we just silence any broadcast errors
+            warning(e);
         }
     }
 
