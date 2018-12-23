@@ -18,7 +18,14 @@ const Gtk = imports.gi.Gtk;
 window._WAYLAND = GLib.getenv('XDG_SESSION_TYPE') === 'wayland';
 
 
-var _debugFunc = function(message, context = null) {
+/**
+ * A custom debug function that logs at LEVEL_MESSAGE to avoid the need for env
+ * variables to be set.
+ *
+ * @param {Error|string} message - A string or Error to log
+ * @param {string} [prefix] - An optional prefix for the warning
+ */
+const _debugFunc = function(message, prefix = null) {
     let caller;
 
     if (message.stack) {
@@ -29,8 +36,8 @@ var _debugFunc = function(message, context = null) {
         caller = (new Error()).stack.split('\n')[1];
     }
 
-    // Prepend context
-    message = (context) ? `${context}: ${message}` : message;
+    // Prepend prefix
+    message = (prefix) ? `${prefix}: ${message}` : message;
 
     // Cleanup the stack
     let [, func, file, line] = caller.match(/([^@]*)@([^:]*):([^:]*)/);
@@ -45,14 +52,11 @@ var _debugFunc = function(message, context = null) {
     });
 };
 
+// Swap the function out for a no-op anonymous function for speed
 window.debug = gsconnect.settings.get_boolean('debug') ? _debugFunc : () => {};
 
-gsconnect.settings.connect('changed::debug', () => {
-    if (gsconnect.settings.get_boolean('debug')) {
-        window.debug = _debugFunc;
-    } else {
-        window.debug = function() {};
-    }
+gsconnect.settings.connect('changed::debug', (settings) => {
+    window.debug = settings.get_boolean('debug') ? _debugFunc : () => {};
 });
 
 
