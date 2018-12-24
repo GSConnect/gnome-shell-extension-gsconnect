@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-23 19:55-0800\n"
-"PO-Revision-Date: 2018-12-24 15:05\n"
+"PO-Revision-Date: 2018-12-24 16:33\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Chinese Traditional\n"
 "Language: zh_TW\n"
@@ -28,7 +28,7 @@ msgstr ""
 #: src/service/ui/service.js:37 src/service/ui/settings.js:539
 #: src/shell/donotdisturb.js:215
 msgid "Cancel"
-msgstr ""
+msgstr "取消"
 
 #: data/connect.ui:37
 msgid "Connect"
@@ -44,7 +44,7 @@ msgstr ""
 
 #: data/contacts.ui:49
 msgid "Type a phone number or name"
-msgstr ""
+msgstr "键入电话号码或姓名"
 
 #: data/contacts.ui:83
 msgid "No contacts"
@@ -64,7 +64,7 @@ msgstr ""
 
 #: data/device.ui:67 src/service/plugins/battery.js:12
 msgid "Battery"
-msgstr ""
+msgstr "电池"
 
 #: data/device.ui:122
 msgid "Clipboard Sync"
@@ -93,7 +93,7 @@ msgstr ""
 
 #: data/device.ui:424 data/device.ui:427
 msgid "Name"
-msgstr ""
+msgstr "名称"
 
 #: data/device.ui:440 data/device.ui:446
 msgid "Command Line"
@@ -125,16 +125,16 @@ msgstr ""
 
 #: data/device.ui:763
 msgid "Applications"
-msgstr ""
+msgstr "应用"
 
 #: data/device.ui:809 data/device.ui:1717
 #: src/service/plugins/notification.js:12
 msgid "Notifications"
-msgstr ""
+msgstr "通知"
 
 #: data/device.ui:839
 msgid "Incoming Calls"
-msgstr ""
+msgstr "来电"
 
 #: data/device.ui:888 data/device.ui:1055
 msgid "Volume"
@@ -142,7 +142,7 @@ msgstr ""
 
 #: data/device.ui:954 data/device.ui:1120
 msgid "Pause Media"
-msgstr ""
+msgstr "暂停媒体"
 
 #: data/device.ui:1007
 msgid "Ongoing Calls"
@@ -150,11 +150,11 @@ msgstr ""
 
 #: data/device.ui:1176
 msgid "Mute Microphone"
-msgstr ""
+msgstr "静音麦克风"
 
 #: data/device.ui:1230 data/device.ui:1763 src/service/plugins/telephony.js:13
 msgid "Telephony"
-msgstr ""
+msgstr "电话"
 
 #: data/device.ui:1265
 msgid "Action Shortcuts"
@@ -174,7 +174,7 @@ msgstr ""
 
 #: data/device.ui:1429
 msgid "Plugins"
-msgstr ""
+msgstr "插件"
 
 #: data/device.ui:1495
 msgid "Delete"
@@ -230,7 +230,7 @@ msgstr ""
 
 #: data/menus.ui:38
 msgid "About"
-msgstr ""
+msgstr "关于"
 
 #. TRANSLATORS: Change the connection type to Bluetooth
 #: data/menus.ui:49
@@ -265,7 +265,7 @@ msgstr ""
 #. TRANSLATORS: Don't change the system volume
 #: data/menus.ui:104 data/menus.ui:130
 msgid "Nothing"
-msgstr ""
+msgstr "没有任何东西"
 
 #. TRANSLATORS: Lower the system volume
 #: data/menus.ui:111 data/menus.ui:137
@@ -276,7 +276,7 @@ msgstr ""
 #. TRANSLATORS: Silence the phone ringer
 #: data/menus.ui:118 data/menus.ui:144 src/service/plugins/telephony.js:194
 msgid "Mute"
-msgstr ""
+msgstr "静音"
 
 #: data/messaging.ui:12 src/service/plugins/sms.js:26
 #: src/service/ui/messaging.js:902
@@ -297,7 +297,7 @@ msgstr ""
 
 #: data/messaging.ui:193 data/telephony.ui:52
 msgid "Device is disconnected"
-msgstr ""
+msgstr "设备已断开"
 
 #: data/messaging.ui:264
 msgid "No Conversations"
@@ -309,11 +309,11 @@ msgstr ""
 
 #: data/settings.ui:49 data/settings.ui:63
 msgid "Refresh"
-msgstr ""
+msgstr "刷新"
 
 #: data/settings.ui:74 data/settings.ui:91 src/extension.js:105
 msgid "Mobile Settings"
-msgstr ""
+msgstr "手机设置"
 
 #: data/settings.ui:144 data/settings.ui:158
 msgid "Edit Device Name"
@@ -347,16 +347,16 @@ msgstr ""
 #: data/telephony.ui:9 src/service/daemon.js:714 src/service/plugins/sms.js:50
 #: webextension/gettext.js:39
 msgid "Send SMS"
-msgstr ""
+msgstr "发送短信"
 
 #: data/telephony.ui:21 src/service/plugins/share.js:457
 msgid "Send"
-msgstr ""
+msgstr "发送"
 
 #. Service Menu
 #: src/extension.js:79 src/extension.js:255
 msgid "Mobile Devices"
-msgstr ""
+msgstr "手机设备"
 
 #. TRANSLATORS: %d is the number of devices connected
 #: src/extension.js:253
@@ -368,7 +368,7 @@ msgstr[0] ""
 #. TRANSLATORS: Top-level context menu item for GSConnect
 #: src/nautilus-gsconnect.py:112 webextension/gettext.js:31
 msgid "Send To Mobile Device"
-msgstr ""
+msgstr "发送到手机"
 
 #: src/service/daemon.js:372
 msgid "Report"
@@ -434,19 +434,19 @@ msgstr ""
 
 #: src/service/device.js:247
 msgid "Laptop"
-msgstr ""
+msgstr "笔记本电脑"
 
 #: src/service/device.js:249
 msgid "Smartphone"
-msgstr ""
+msgstr "智能手机"
 
 #: src/service/device.js:251
 msgid "Tablet"
-msgstr ""
+msgstr "平板"
 
 #: src/service/device.js:253
 msgid "Desktop"
-msgstr ""
+msgstr "桌面"
 
 #: src/service/device.js:413 src/service/ui/device.js:15
 msgid "Reconnect"
@@ -461,15 +461,15 @@ msgstr ""
 #: src/service/device.js:612
 #, javascript-format
 msgid "Pair Request from %s"
-msgstr ""
+msgstr "%s 的配对请求"
 
 #: src/service/device.js:619
 msgid "Reject"
-msgstr ""
+msgstr "拒绝"
 
 #: src/service/device.js:624
 msgid "Accept"
-msgstr ""
+msgstr "接受"
 
 #: src/service/plugins/battery.js:188 src/service/plugins/findmyphone.js:19
 msgid "Ring"
@@ -489,7 +489,7 @@ msgstr ""
 
 #: src/service/plugins/clipboard.js:11
 msgid "Clipboard"
-msgstr ""
+msgstr "剪贴板"
 
 #: src/service/plugins/clipboard.js:17
 msgid "Clipboard Push"
@@ -509,7 +509,7 @@ msgstr ""
 #: src/service/plugins/telephony.js:224 src/service/plugins/telephony.js:264
 #: src/service/ui/contacts.js:156 src/service/ui/contacts.js:397
 msgid "Unknown Contact"
-msgstr ""
+msgstr "未知联系人"
 
 #: src/service/plugins/findmyphone.js:13
 msgid "Find My Phone"
@@ -565,7 +565,7 @@ msgstr ""
 
 #: src/service/plugins/runcommand.js:12
 msgid "Run Commands"
-msgstr ""
+msgstr "运行命令"
 
 #: src/service/plugins/sftp.js:12
 msgid "SFTP"
@@ -577,7 +577,7 @@ msgstr ""
 
 #: src/service/plugins/sftp.js:26
 msgid "Unmount"
-msgstr ""
+msgstr "卸载"
 
 #: src/service/plugins/sftp.js:159
 msgid "All files"
@@ -593,7 +593,7 @@ msgstr ""
 
 #: src/service/plugins/share.js:13 src/service/plugins/share.js:19
 msgid "Share"
-msgstr ""
+msgstr "共享"
 
 #: src/service/plugins/share.js:35
 msgid "Share Text"
@@ -602,39 +602,39 @@ msgstr ""
 #: src/service/plugins/share.js:43 src/service/ui/messaging.js:954
 #: src/service/ui/messaging.js:962
 msgid "Share Link"
-msgstr ""
+msgstr "共享链接"
 
 #: src/service/plugins/share.js:132 src/service/plugins/share.js:303
 msgid "Starting Transfer"
-msgstr ""
+msgstr "开始传输"
 
 #. TRANSLATORS: eg. Receiving 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:134
 #, javascript-format
 msgid "Receiving “%s” from %s"
-msgstr ""
+msgstr "正在从%s接收 「%s」 ..."
 
 #: src/service/plugins/share.js:172 src/service/plugins/share.js:327
 msgid "Transfer Successful"
-msgstr ""
+msgstr "传输成功"
 
 #. TRANSLATORS: eg. Received 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:174
 #, javascript-format
 msgid "Received “%s” from %s"
-msgstr ""
+msgstr "从 %s接收到「%s」 ."
 
 #: src/service/plugins/share.js:180
 msgid "Open Folder"
-msgstr ""
+msgstr "打开文件夹"
 
 #: src/service/plugins/share.js:185
 msgid "Open File"
-msgstr ""
+msgstr "打开文件"
 
 #: src/service/plugins/share.js:192 src/service/plugins/share.js:335
 msgid "Transfer Failed"
-msgstr ""
+msgstr "传输失败"
 
 #. TRANSLATORS: eg. Failed to receive 'book.pdf' from Google Pixel
 #: src/service/plugins/share.js:194
@@ -651,13 +651,13 @@ msgstr ""
 #: src/service/plugins/share.js:305
 #, javascript-format
 msgid "Sending “%s” to %s"
-msgstr ""
+msgstr "正在将「%s」发送到%s"
 
 #. TRANSLATORS: eg. Sent "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:329
 #, javascript-format
 msgid "Sent “%s” to %s"
-msgstr ""
+msgstr "「%s」已发送到%s"
 
 #. TRANSLATORS: eg. Failed to send "book.pdf" to Google Pixel
 #: src/service/plugins/share.js:337
@@ -669,7 +669,7 @@ msgstr ""
 #: src/service/plugins/share.js:408
 #, javascript-format
 msgid "Send files to %s"
-msgstr ""
+msgstr "将文件发送到%s"
 
 #. TRANSLATORS: Mark the file to be opened once completed
 #: src/service/plugins/share.js:412
@@ -680,7 +680,7 @@ msgstr ""
 #: src/service/plugins/share.js:451
 #, javascript-format
 msgid "Send a link to %s"
-msgstr ""
+msgstr "发送一个链接到%s"
 
 #: src/service/plugins/sms.js:13
 msgid "SMS"
@@ -700,7 +700,7 @@ msgstr ""
 
 #: src/service/plugins/systemvolume.js:11
 msgid "System Volume"
-msgstr ""
+msgstr "系统音量"
 
 #: src/service/plugins/telephony.js:30
 msgid "Mute Call"
@@ -726,7 +726,7 @@ msgstr ""
 #: src/service/ui/contacts.js:123
 #, javascript-format
 msgid "%s・Fax"
-msgstr ""
+msgstr "%s・传真"
 
 #. TRANSLATORS: A work phone number
 #: src/service/ui/contacts.js:127
@@ -750,7 +750,7 @@ msgstr ""
 #: src/service/ui/contacts.js:278 src/service/ui/contacts.js:292
 #, javascript-format
 msgid "Send to %s"
-msgstr ""
+msgstr "发送到%s"
 
 #: src/service/ui/device.js:610
 msgid "Open"
@@ -819,11 +819,11 @@ msgstr ""
 
 #: src/service/ui/service.js:31
 msgid "Select a Device"
-msgstr ""
+msgstr "选择一个设备"
 
 #: src/service/ui/service.js:35
 msgid "Select"
-msgstr ""
+msgstr "选择"
 
 #: src/service/ui/settings.js:331
 msgid "Unpaired"
@@ -863,14 +863,14 @@ msgstr ""
 #. TRANSLATORS: When the battery level is 100%
 #: src/shell/device.js:82
 msgid "Fully Charged"
-msgstr ""
+msgstr "充满"
 
 #. TRANSLATORS: When no time estimate for the battery is available
 #. EXAMPLE: 42% (Estimating…)
 #: src/shell/device.js:86
 #, javascript-format
 msgid "%d%% (Estimating…)"
-msgstr ""
+msgstr "%d%% (估计中Estimating…)"
 
 #. TRANSLATORS: Estimated time until battery is charged
 #. EXAMPLE: 42% (1:15 Until Full)
@@ -884,7 +884,7 @@ msgstr ""
 #: src/shell/device.js:104
 #, javascript-format
 msgid "%d%% (%d∶%02d Remaining)"
-msgstr ""
+msgstr "%d%% (%d∶%02d 剩余)"
 
 #: src/shell/donotdisturb.js:150 src/shell/donotdisturb.js:289
 msgid "Do Not Disturb"
