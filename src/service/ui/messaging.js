@@ -968,7 +968,7 @@ var ConversationChooser = GObject.registerClass({
 
         let newButton = new Gtk.Button({
             image: new Gtk.Image({icon_name: 'list-add-symbolic'}),
-            tooltip_text: _('New Message'),
+            tooltip_text: _('New Conversation'),
             always_show_image: true
         });
         newButton.connect('clicked', this._new.bind(this));
