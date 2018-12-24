@@ -1,4 +1,4 @@
-project('gsconnect', 'c', version: '18', meson_version: '>= 0.45.0')
+project('gsconnect', 'c', version: '19', meson_version: '>= 0.45.0')
 
 gnome = import('gnome')
 
@@ -206,4 +206,3 @@ if get_option('post_install')
       join_paths(meson.source_root(), 'meson/post-install.sh')
     )
 endif
-
