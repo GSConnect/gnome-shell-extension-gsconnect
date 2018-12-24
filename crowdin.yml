@@ -3,10 +3,11 @@ files:
   - source: /po/org.gnome.Shell.Extensions.GSConnect.pot
     translation: /po/%two_letters_code%.po
     languages_mapping:
-      two_letters_code:
+      locale_with_underscore:
         sr-CS: sr@latin
+        fr: fr
+        de: de
+      two_letters_code:
         pt-BR: pt_BR
         nl: nl_NL
         nl-BE: nl_BE
-        fr: fr
-        de: de
