@@ -169,8 +169,6 @@ var Dialog = GObject.registerClass({
     }
 
     _onStateChanged() {
-        let state = (false
-        );
         switch (false) {
             case this.device.connected:
             case (this.message_entry.buffer.text.trim() !== ''):
