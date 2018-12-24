@@ -456,7 +456,7 @@ var Plugin = GObject.registerClass({
         // Otherwise show the window and wait for a contact to be chosen
         } else {
             this.window.present();
-            this.window._pendingMessage = url;
+            this.window.setMessage(url, true);
         }
     }
 
@@ -483,12 +483,7 @@ var Plugin = GObject.registerClass({
 
             // Set the outgoing message if the uri has a body variable
             if (uri.body) {
-                if (this.settings.get_boolean('legacy')) {
-                    window.setMessage(uri.body);
-                } else {
-                    let conversation = this.window.conversation_stack.visible_child;
-                    conversation.setMessage(uri.body);
-                }
+                window.setMessage(uri.body);
             }
         } catch (e) {
             logError(e, `${this.device.name}: "${uri}"`);

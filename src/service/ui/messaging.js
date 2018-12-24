@@ -808,7 +808,7 @@ var Window = GObject.registerClass({
         // There was a pending message waiting for a contact to be chosen
         if (this._pendingShare) {
             conversation.setMessage(this._pendingShare);
-            this._pendingShare = undefined;
+            this._pendingShare = null;
         }
     }
 
@@ -903,6 +903,26 @@ var Window = GObject.registerClass({
             this.headerbar.subtitle = this.device.name;
         }
     }
+
+    /**
+     * Set the contents of the message entry. If @pending is %false set the
+     * message of the currently selected conversation, otherwise mark the
+     * message to be set for the next selected conversation.
+     *
+     * @param {String} text - The message to place in the entry
+     * @param {boolean} pending - Wait for a conversation to be selected
+     */
+    setMessage(message, pending = false) {
+        try {
+            if (pending) {
+                this._pendingShare = message;
+            } else {
+                this.conversation_stack.visible_child.setMessage(message);
+            }
+        } catch (e) {
+            warning(e);
+        }
+    }
 });
 
 
@@ -995,9 +1015,8 @@ var ConversationChooser = GObject.registerClass({
     _select(box, row) {
         this.sms.sms();
         this.sms.window.address = row.message.address;
+        this.sms.window.setMessage(this.message);
 
-        let conversation = this.sms._hasConversation(row.message.address);
-        conversation.setMessage(this.message);
         this.destroy();
     }
 });
