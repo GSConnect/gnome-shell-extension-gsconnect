@@ -396,8 +396,8 @@ msgstr "Націсніце для дапамогі ў выпраўленні н�
 msgid "PulseAudio Error"
 msgstr "Памылка PulseAudio"
 
-msgid "Discovery has been disabled due to the number of devices on this network."
 #: src/service/daemon.js:533
+msgid "Discovery has been disabled due to the number of devices on this network."
 msgstr "Знаходжанне было адключана праз колькасць прылад у гэтай сетцы."
 
 #: src/service/daemon.js:541
