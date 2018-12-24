@@ -159,7 +159,7 @@ var Dialog = GObject.registerClass({
     vfunc_response(response_id) {
         if (response_id === Gtk.ResponseType.OK) {
             // Refuse to send empty or whitespace only texts
-            if (!this.entry.buffer.text.trim()) return;
+            if (!this.message_entry.buffer.text.trim()) return;
 
             this.sms.sendMessage(
                 this.address,
