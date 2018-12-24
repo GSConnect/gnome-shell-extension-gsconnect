@@ -26,6 +26,7 @@ var ChannelService = class ChannelService {
 
     constructor() {
         this.allowed = new Set();
+        this.connecting = new Map();
 
         // Start TCP/UDP listeners
         this._initUdpListener();
@@ -78,7 +79,16 @@ var ChannelService = class ChannelService {
             channel = new Core.Channel({type: 'tcp'});
             host = connection.get_remote_address().address.to_string();
 
+            // Cancel any connection still resolving with this host
+            if (this.connecting.has(host)) {
+                debug(`Cancelling current connection with ${host}`);
+                this.connecting.get(host).close();
+                this.connecting.delete(host);
+            }
+
+            // Track this connection to avoid a race condition
             debug(`Accepting connection from ${host}`);
+            this.connecting.set(host, channel);
 
             // Accept the connection
             await channel.accept(connection);
@@ -107,6 +117,8 @@ var ChannelService = class ChannelService {
             channel.attach(device);
         } catch (e) {
             debug(e);
+        } finally {
+            this.connecting.delete(host);
         }
     }
 
