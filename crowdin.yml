@@ -1,3 +1,4 @@
+project_identifier: org.gnome.Shell.Extensions.GSConnect
 files:
   - source: /po/org.gnome.Shell.Extensions.GSConnect.pot
     translation: /po/%two_letters_code%.po
