@@ -37,16 +37,7 @@ var Dialog = GObject.registerClass({
 
         this.set_response_sensitive(Gtk.ResponseType.OK, false);
 
-        this.address = params.address || null;
-
-        this.device.bind_property(
-            'connected',
-            this.message_entry,
-            'sensitive',
-            GObject.BindingFlags.DEFAULT
-        );
-
-        // Device Status
+        // Info bar
         this.device.bind_property(
             'connected',
             this.infobar,
@@ -54,37 +45,68 @@ var Dialog = GObject.registerClass({
             GObject.BindingFlags.INVERT_BOOLEAN
         );
 
-        if (params.message) {
-            this.message = params.message;
-            let message = new Messaging.ConversationMessage(this.message);
-            this.message_box.add(message);
-        }
+        // Message Entry/Send Button
+        this.device.bind_property(
+            'connected',
+            this.message_entry,
+            'sensitive',
+            GObject.BindingFlags.DEFAULT
+        );
 
-        // Message Entry
+        this._connectedId = this.device.connect(
+            'notify::connected',
+            this._onStateChanged.bind(this)
+        );
+
         this._entryChangedId = this.message_entry.buffer.connect(
             'changed',
             this._onStateChanged.bind(this)
         );
 
-        // Contacts
-        this.contact_list = new Contacts.ContactChooser({
-            store: this.device.contacts
-        });
-        this.stack.add_named(this.contact_list, 'contact-list');
-        this.stack.child_set_property(this.contact_list, 'position', 0);
+        // Set the message if given
+        if (params.message) {
+            this.message = params.message;
+            let message = new Messaging.ConversationMessage(this.message);
+            message.margin_bottom = 12;
+            this.message_box.add(message);
+        }
 
-        this._numberSelectedId = this.contact_list.connect(
-            'number-selected',
-            this._onNumberSelected.bind(this)
-        );
+        // Set the address if given
+        if (params.address) {
+            this.address = params.address;
+
+        // Otherwise load the contact list
+        } else {
+            this.contact_list = new Contacts.ContactChooser({
+                store: this.device.contacts
+            });
+            this.stack.add_named(this.contact_list, 'contact-list');
+            this.stack.child_set_property(this.contact_list, 'position', 0);
+
+            this._numberSelectedId = this.contact_list.connect(
+                'number-selected',
+                this._onNumberSelected.bind(this)
+            );
+
+            this.stack.visible_child_name = 'contact-list';
+        }
 
         // Cleanup on ::destroy
         this.connect('destroy', this._onDestroy);
+    }
 
-        //
-        if (!this.address) {
-            this.stack.visible_child_name = 'contact-list';
+    vfunc_response(response_id) {
+        if (response_id === Gtk.ResponseType.OK) {
+            // Refuse to send empty or whitespace only texts
+            if (!this.message_entry.buffer.text.trim()) return;
+
+            this.sms.sendMessage(
+                this.address,
+                this.message_entry.buffer.text
+            );
         }
+
+        this.destroy();
     }
 
     get address() {
@@ -96,18 +118,14 @@ var Dialog = GObject.registerClass({
 
         this._address = value;
 
-        // Ensure we have a contact stored and hold a reference to it
-        let contact = this.device.contacts.query({number: value});
-        this._contact = contact;
-
         let headerbar = this.get_titlebar();
-        headerbar.title = contact.name;
+        headerbar.title = this.contact.name;
         headerbar.subtitle = value;
 
         // See if we have a nicer display number
         let number = value.toPhoneNumber();
 
-        for (let contactNumber of contact.numbers) {
+        for (let contactNumber of this.contact.numbers) {
             let cnumber = contactNumber.value.toPhoneNumber();
 
             if (number.endsWith(cnumber) || cnumber.endsWith(number)) {
@@ -138,8 +156,11 @@ var Dialog = GObject.registerClass({
     }
 
     _onDestroy(window) {
+        if (window._numberSelectedId) {
+            window.contact_list.disconnect(window._numberSelectedId);
+        }
+
         window.message_entry.buffer.disconnect(window._entryChangedId);
-        window.contact_list.disconnect(window._numberSelectedId);
         window.disconnect_template();
     }
 
@@ -148,26 +169,18 @@ var Dialog = GObject.registerClass({
     }
 
     _onStateChanged() {
-        let state = (
-            this.message_entry.buffer.text &&
-            this.stack.visible_child_name === 'message'
+        let state = (false
         );
+        switch (false) {
+            case this.device.connected:
+            case (this.message_entry.buffer.text.trim() !== ''):
+            case (this.stack.visible_child_name === 'message'):
+                this.set_response_sensitive(Gtk.ResponseType.OK, false);
+                break;
 
-        this.set_response_sensitive(Gtk.ResponseType.OK, state);
-    }
-
-    vfunc_response(response_id) {
-        if (response_id === Gtk.ResponseType.OK) {
-            // Refuse to send empty or whitespace only texts
-            if (!this.message_entry.buffer.text.trim()) return;
-
-            this.sms.sendMessage(
-                this.address,
-                this.message_entry.buffer.text
-            );
+            default:
+                this.set_response_sensitive(Gtk.ResponseType.OK, true);
         }
-
-        this.destroy();
     }
 
     /**
