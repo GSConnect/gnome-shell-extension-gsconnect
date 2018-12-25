@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-24 17:01-0800\n"
-"PO-Revision-Date: 2018-12-25 01:12\n"
+"PO-Revision-Date: 2018-12-25 09:24\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Russian\n"
 "Language: ru\n"
@@ -359,10 +359,10 @@ msgstr "Устройства"
 #, javascript-format
 msgid "%d Connected"
 msgid_plural "%d Connected"
-msgstr[0] "%d Подключен"
-msgstr[1] "%d Подключено"
-msgstr[2] "%d Подключено"
-msgstr[3] ""
+msgstr[0] "%d подключен"
+msgstr[1] "%d подключено"
+msgstr[2] "%d подключено"
+msgstr[3] "%d подключено"
 
 #. TRANSLATORS: Top-level context menu item for GSConnect
 #: src/nautilus-gsconnect.py:112 webextension/gettext.js:31
@@ -811,7 +811,7 @@ msgid_plural "%d minutes"
 msgstr[0] "%d минута"
 msgstr[1] "%d минуты"
 msgstr[2] "%d минут"
-msgstr[3] ""
+msgstr[3] "%d минуты"
 
 #. TRANSLATORS: Yesterday, but less than 24 hours (eg. Yesterday · 11:29 PM)
 #: src/service/ui/messaging.js:103
@@ -916,10 +916,10 @@ msgstr "Готово"
 #, javascript-format
 msgid "%d hour"
 msgid_plural "%d hours"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "%d час"
+msgstr[1] "%d часа"
+msgstr[2] "%d часов"
+msgstr[3] "%d часа"
 
 #. TRANSLATORS: Extension name
 #: webextension/gettext.js:27
