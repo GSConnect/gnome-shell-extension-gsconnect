@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-23 19:55-0800\n"
-"PO-Revision-Date: 2018-12-25 00:35\n"
+"PO-Revision-Date: 2018-12-25 00:52\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Belarusian\n"
 "Language: be\n"
@@ -32,15 +32,15 @@ msgstr "Скасаваць"
 
 #: data/connect.ui:37
 msgid "Connect"
-msgstr ""
+msgstr "Злучэнне"
 
 #: data/connect.ui:98
 msgid "IP Address"
-msgstr ""
+msgstr "IP-адрас"
 
 #: data/connect.ui:142
 msgid "Bluetooth Device"
-msgstr ""
+msgstr "Bluetooth прылада"
 
 #: data/contacts.ui:49
 msgid "Type a phone number or name"
@@ -329,7 +329,7 @@ msgstr "Пашырэнні для браўзера"
 
 #: data/settings.ui:409
 msgid "KDE Connect"
-msgstr ""
+msgstr "KDE Connect"
 
 #: data/settings.ui:579
 msgid "Enable"
@@ -536,7 +536,7 @@ msgstr "Клавіятура не гатова"
 
 #: src/service/plugins/mpris.js:10
 msgid "MPRIS"
-msgstr ""
+msgstr "MPRIS"
 
 #: src/service/plugins/notification.js:25
 msgid "Cancel Notification"
@@ -572,7 +572,7 @@ msgstr "Запусціць каманды"
 
 #: src/service/plugins/sftp.js:12
 msgid "SFTP"
-msgstr ""
+msgstr "SFTP"
 
 #: src/service/plugins/sftp.js:18
 msgid "Mount"
@@ -687,7 +687,7 @@ msgstr "Адправіць спасылку ў %s"
 
 #: src/service/plugins/sms.js:13
 msgid "SMS"
-msgstr ""
+msgstr "SMS"
 
 #: src/service/plugins/sms.js:34
 msgid "New SMS (URI)"
@@ -864,7 +864,7 @@ msgstr ""
 
 #: src/service/ui/settings.js:540
 msgid "Review Log"
-msgstr ""
+msgstr "Праверыць журнал"
 
 #. TRANSLATORS: When the battery level is 100%
 #: src/shell/device.js:82
@@ -928,7 +928,7 @@ msgstr[3] ""
 #. TRANSLATORS: Extension name
 #: webextension/gettext.js:27
 msgid "GSConnect"
-msgstr ""
+msgstr "GSConnect"
 
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:29
