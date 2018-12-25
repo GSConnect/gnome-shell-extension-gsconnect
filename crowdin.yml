@@ -4,7 +4,6 @@ files:
     translation: /po/%locale%.po
     languages_mapping:
       locale:
-        sr@latin: sr@latin
         sr-CS: sr@latin
         fr: fr
         de: de
@@ -24,4 +23,4 @@ files:
         sk: sk
         sr: sr
         tr: tr
-        zh-TW: zh
+        zh-CN: zh_CN
