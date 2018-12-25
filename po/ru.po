@@ -1,400 +1,418 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the org.gnome.Shell.Extensions.GSConnect package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
 msgid ""
 msgstr ""
-"Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
+"Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-21 10:44+0300\n"
-"PO-Revision-Date: 2018-11-21 12:22+0300\n"
-"Last-Translator: losted\n"
-"Language-Team: \n"
+"POT-Creation-Date: 2018-12-23 19:55-0800\n"
+"PO-Revision-Date: 2018-12-25 00:35\n"
+"Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
+"Language-Team: Russian\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Poedit 2.2\n"
+"Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
+"X-Generator: crowdin.com\n"
+"X-Crowdin-Project: gsconnect\n"
+"X-Crowdin-Language: ru\n"
+"X-Crowdin-File: /master/po/org.gnome.Shell.Extensions.GSConnect.pot\n"
 
-#: data/conversation.ui:71 data/conversation.ui:79
-msgid "Type a message"
-msgstr "Набрать сообщение"
+#. TRANSLATORS: Open a dialog to connect to an IP or Bluez device
+#: data/connect.ui:24 data/menus.ui:7
+msgid "Connect to…"
+msgstr "Подключиться к..."
 
-#: data/contacts.ui:51 data/contacts.ui:52
+#. Action Buttons
+#: data/connect.ui:30 data/telephony.ui:14 src/service/plugins/share.js:139
+#: src/service/plugins/share.js:310 src/service/plugins/share.js:456
+#: src/service/ui/device.js:609 src/service/ui/keybindings.js:44
+#: src/service/ui/service.js:37 src/service/ui/settings.js:539
+#: src/shell/donotdisturb.js:215
+msgid "Cancel"
+msgstr "Отмена"
+
+#: data/connect.ui:37
+msgid "Connect"
+msgstr "Подключиться"
+
+#: data/connect.ui:98
+msgid "IP Address"
+msgstr ""
+
+#: data/connect.ui:142
+msgid "Bluetooth Device"
+msgstr ""
+
+#: data/contacts.ui:49
 msgid "Type a phone number or name"
 msgstr "Наберите номер или имя"
 
-#: data/device.ui:68 src/service/plugins/battery.js:12
+#: data/contacts.ui:83
+msgid "No contacts"
+msgstr ""
+
+#: data/contacts.ui:95 data/menus.ui:33 data/messaging.ui:247
+msgid "Help"
+msgstr "Помощь"
+
+#: data/conversation.ui:76 data/conversation.ui:85
+msgid "Type a message"
+msgstr "Набрать сообщение"
+
+#: data/conversation.ui:84
+msgid "Send Message"
+msgstr ""
+
+#: data/device.ui:67 src/service/plugins/battery.js:12
 msgid "Battery"
 msgstr "Батарея"
 
-#: data/device.ui:116
+#: data/device.ui:122
 msgid "Clipboard Sync"
 msgstr "Синхронизация буфера обмена"
 
-#: data/device.ui:172
+#: data/device.ui:185
 msgid "Media Players"
 msgstr "Проигрыватели"
 
-#: data/device.ui:220
+#: data/device.ui:240
 msgid "Mouse & Keyboard"
 msgstr "Мышь и клавиатура"
 
-#: data/device.ui:268
+#: data/device.ui:295
 msgid "Volume Control"
 msgstr "Управление громкостью"
 
-#: data/device.ui:308 data/device.ui:1406
+#: data/device.ui:345 data/device.ui:1625
 msgid "Sharing"
 msgstr "Общий доступ и обмен"
 
-#: data/device.ui:337 data/device.ui:534 data/device.ui:1449
+#: data/device.ui:374 data/device.ui:651 data/device.ui:1671
 #: src/service/plugins/runcommand.js:18 src/service/plugins/runcommand.js:169
 msgid "Commands"
 msgstr "Команды"
 
-#: data/device.ui:385
+#: data/device.ui:424 data/device.ui:427
 msgid "Name"
 msgstr "Имя"
 
-#: data/device.ui:401 data/device.ui:402
-msgid "Choose an executable"
-msgstr "Выберите исполняемый файл"
-
-#: data/device.ui:403
+#: data/device.ui:440 data/device.ui:446
 msgid "Command Line"
 msgstr "Командная строка"
 
-#: data/device.ui:597
+#: data/device.ui:444 data/device.ui:445
+msgid "Choose an executable"
+msgstr "Выберите исполняемый файл"
+
+#: data/device.ui:496 data/device.ui:511
+msgid "Add"
+msgstr ""
+
+#: data/device.ui:527 data/device.ui:542
+msgid "Remove"
+msgstr ""
+
+#: data/device.ui:576 data/device.ui:588
+msgid "Edit"
+msgstr ""
+
+#: data/device.ui:604 data/device.ui:616
+msgid "Save"
+msgstr ""
+
+#: data/device.ui:712
 msgid "Share Notifications"
 msgstr "Отправлять уведомления"
 
-#: data/device.ui:636
+#: data/device.ui:763
 msgid "Applications"
 msgstr "Приложения"
 
-#: data/device.ui:675 data/device.ui:1492
+#: data/device.ui:809 data/device.ui:1717
 #: src/service/plugins/notification.js:12
 msgid "Notifications"
 msgstr "Уведомления"
 
-#: data/device.ui:705
+#: data/device.ui:839
 msgid "Incoming Calls"
 msgstr "При входящем вызове"
 
-#: data/device.ui:755 data/device.ui:900
+#: data/device.ui:888 data/device.ui:1055
 msgid "Volume"
 msgstr "Громкость"
 
-#: data/device.ui:813 data/device.ui:958
+#: data/device.ui:954 data/device.ui:1120
 msgid "Pause Media"
 msgstr "Приостановить плеер"
 
-#: data/device.ui:852
+#: data/device.ui:1007
 msgid "Ongoing Calls"
 msgstr "При исходящем вызове"
 
-#: data/device.ui:1007
+#: data/device.ui:1176
 msgid "Mute Microphone"
 msgstr "Выключить микрофон"
 
-#: data/device.ui:1047 data/device.ui:1535 src/service/plugins/telephony.js:12
+#: data/device.ui:1230 data/device.ui:1763 src/service/plugins/telephony.js:13
 msgid "Telephony"
 msgstr "Телефония"
 
-#: data/device.ui:1082
+#: data/device.ui:1265
 msgid "Action Shortcuts"
 msgstr "Комбинации клавиш"
 
-#: data/device.ui:1094 data/device.ui:1157
+#: data/device.ui:1280 data/device.ui:1349
 msgid "Reset All…"
 msgstr "Сбросить все..."
 
-#: data/device.ui:1145
+#: data/device.ui:1334
 msgid "Command Shortcuts"
 msgstr "Комбинации клавиш"
 
-#: data/device.ui:1203
+#: data/device.ui:1398
 msgid "Shortcuts"
 msgstr "Комбинации клавиш"
 
-#: data/device.ui:1234
+#: data/device.ui:1429
 msgid "Plugins"
 msgstr "Плагины"
 
-#: data/device.ui:1295
+#: data/device.ui:1495
 msgid "Delete"
 msgstr "Удалить"
 
-#: data/device.ui:1320
+#: data/device.ui:1524
 msgid "Delete this device"
 msgstr "Удалить устройство"
 
-#: data/device.ui:1335
+#: data/device.ui:1542
 msgid "Unpair and remove all settings and files"
 msgstr "Забыть и удалить все настройки и файлы"
 
-#: data/device.ui:1365 data/device.ui:1621
+#: data/device.ui:1575 data/device.ui:1855
 msgid "Advanced"
 msgstr "Дополнительные"
 
-#: data/device.ui:1578
+#: data/device.ui:1809
 msgid "Keyboard Shortcuts"
 msgstr "Комбинации клавиш"
 
-#. TRANSLATORS: Open a dialog to connect to an IP or Bluez device
-#: data/menus.ui:7 src/service/ui/service.js:115
-msgid "Connect to…"
-msgstr "Подключиться к..."
+#. TRANSLATORS: Send a pair request to the device
+#: data/device.ui:1912 data/menus.ui:68 src/service/device.js:429
+msgid "Pair"
+msgstr "Сопряжение"
 
-#: data/menus.ui:13 data/settings.ui:881
-msgid "Help"
-msgstr "Помощь"
+#: data/device.ui:1944
+msgid "Device is unpaired"
+msgstr ""
 
-#. TRANSLATORS: Open the developer's dialog
-#: data/menus.ui:19
-msgid "Debugger"
-msgstr "Отладчик"
+#: data/device.ui:1959
+msgid "You may configure this device before pairing"
+msgstr ""
 
-#: data/menus.ui:23
+#: data/menus.ui:12
+msgid "Display Mode"
+msgstr "Режим отображения"
+
+#. TRANSLATORS: Show device indicators in the top bar
+#: data/menus.ui:15
+msgid "Panel"
+msgstr "Панель"
+
+#. TRANSLATORS: Show devices in the user menu like Bluetooth
+#: data/menus.ui:21
+msgid "User Menu"
+msgstr "Меню пользователя"
+
+#. TRANSLATORS: Generate a support log
+#: data/menus.ui:29 src/service/ui/settings.js:536
+msgid "Generate Support Log"
+msgstr ""
+
+#: data/menus.ui:38
 msgid "About"
 msgstr "О Расширении"
 
 #. TRANSLATORS: Change the connection type to Bluetooth
-#: data/menus.ui:34
+#: data/menus.ui:49
 msgid "Switch to Bluetooth"
 msgstr "Переключиться на Bluetooth"
 
 #. TRANSLATORS: Change the connection type to TCP/IP
-#: data/menus.ui:41
+#: data/menus.ui:56
 msgid "Switch to LAN"
 msgstr "Переключиться на LAN"
 
 #. TRANSLATORS: View the TLS Certificate fingerprint
-#: data/menus.ui:48 src/service/ui/settings.js:624
+#: data/menus.ui:63 src/service/ui/device.js:322
 msgid "Encryption Info"
 msgstr "Информация о шифровании"
 
-#. TRANSLATORS: Send a pair request to the device
-#: data/menus.ui:53 src/service/device.js:432
-msgid "Pair"
-msgstr "Сопряжение"
-
 #. TRANSLATORS: Unpair the device and notify it
-#: data/menus.ui:59 src/service/device.js:440
+#: data/menus.ui:74 src/service/device.js:437
 msgid "Unpair"
 msgstr "Забыть"
 
 #. TRANSLATORS: Send clipboard content to device
-#: data/menus.ui:71
+#: data/menus.ui:86
 msgid "To Device"
 msgstr "На устройство"
 
 #. TRANSLATORS: Receive clipboard content from the device
-#: data/menus.ui:77
+#: data/menus.ui:92
 msgid "From Device"
 msgstr "С устройства"
 
 #. TRANSLATORS: Don't change the system volume
-#: data/menus.ui:89 data/menus.ui:115
+#: data/menus.ui:104 data/menus.ui:130
 msgid "Nothing"
 msgstr "Ничего"
 
 #. TRANSLATORS: Lower the system volume
-#: data/menus.ui:96 data/menus.ui:122
+#: data/menus.ui:111 data/menus.ui:137
 msgid "Lower"
 msgstr "Тише"
 
 #. TRANSLATORS: Mute the system volume
 #. TRANSLATORS: Silence the phone ringer
-#: data/menus.ui:103 data/menus.ui:129 src/service/plugins/telephony.js:176
+#: data/menus.ui:118 data/menus.ui:144 src/service/plugins/telephony.js:194
 msgid "Mute"
 msgstr "Выключить"
 
-#: data/messaging.ui:12 src/service/plugins/sms.js:25
-#: src/service/ui/messaging.js:871
+#: data/messaging.ui:12 src/service/plugins/sms.js:26
+#: src/service/ui/messaging.js:902
 msgid "Messaging"
 msgstr "Сообщение"
 
-#: data/messaging.ui:110
-msgid "Select a conversation"
-msgstr "Выберите диалог"
+#: data/messaging.ui:21 src/service/ui/messaging.js:971
+msgid "New Conversation"
+msgstr ""
 
-#: data/messaging.ui:188
+#: data/messaging.ui:110
+msgid "No conversation selected"
+msgstr ""
+
+#: data/messaging.ui:126
+msgid "Select or start a conversation"
+msgstr ""
+
+#: data/messaging.ui:193 data/telephony.ui:52
 msgid "Device is disconnected"
 msgstr "Устройство отключено"
 
-#: data/settings.ui:333
-msgid "Appearance"
-msgstr "Внешний вид"
+#: data/messaging.ui:264
+msgid "No Conversations"
+msgstr ""
 
-#: data/settings.ui:383
-msgid "Display Mode"
-msgstr "Режим отображения"
+#: data/settings.ui:10
+msgid "Searching for devices…"
+msgstr ""
 
-#: data/settings.ui:425
-msgid "Service"
-msgstr "Сервис"
-
-#: data/settings.ui:475
-msgid "Discoverable"
-msgstr "Обнаруживаемый"
-
-#: data/settings.ui:528
-msgid "Restart Service"
-msgstr "Перезапустить сервис"
-
-#: data/settings.ui:581 data/settings.ui:1015 src/service/device.js:424
-msgid "Settings"
-msgstr "Настройки"
-
-#: data/settings.ui:639
-msgid "Remote Filesystems"
-msgstr "Удаленные ФС"
-
-#: data/settings.ui:675
-msgid "Sound Effects"
-msgstr "Звуковые эффекты"
-
-#: data/settings.ui:712
-msgid "Extended Keyboard Support"
-msgstr "Расширенная поддержка клавиатуры"
-
-#: data/settings.ui:749
-msgid "Desktop Contacts"
-msgstr "Контакты"
-
-#: data/settings.ui:786
-msgid "Files Integration"
-msgstr "Интеграция с Nautilus"
-
-#: data/settings.ui:813
-msgid "Additional Features"
-msgstr "Дополнительные возможности"
-
-#: data/settings.ui:903
-msgid "Browser Add-Ons"
-msgstr "Расширения браузера"
-
-#: data/settings.ui:921
-msgid "KDE Connect"
-msgstr "KDE Connect"
-
-#: data/settings.ui:956 data/settings.ui:1058
-msgid "Other"
-msgstr "Другое"
-
-#. TRANSLATORS: No devices are known or available
-#: data/settings.ui:1106 webextension/gettext.js:35
-msgid "No Device Found"
-msgstr "Устройства не найдены"
-
-#: data/settings.ui:1142
+#: data/settings.ui:49 data/settings.ui:63
 msgid "Refresh"
 msgstr "Обновить"
 
-#. Service Menu
-#: src/extension.js:79 src/extension.js:254
-msgid "Mobile Devices"
-msgstr "Устройства"
-
-#: src/extension.js:105
+#: data/settings.ui:74 data/settings.ui:91 src/extension.js:105
 msgid "Mobile Settings"
 msgstr "Настройки"
 
+#: data/settings.ui:144 data/settings.ui:158
+msgid "Edit Device Name"
+msgstr ""
+
+#: data/settings.ui:236
+msgid "Devices"
+msgstr ""
+
+#: data/settings.ui:299
+msgid "Browser Add-Ons"
+msgstr "Расширения браузера"
+
+#: data/settings.ui:409
+msgid "KDE Connect"
+msgstr ""
+
+#: data/settings.ui:579
+msgid "Enable"
+msgstr ""
+
+#: data/settings.ui:611
+msgid "This device is invisible to unpaired devices"
+msgstr ""
+
+#: data/settings.ui:623 src/service/daemon.js:532
+msgid "Discovery Disabled"
+msgstr "Обнаружение выключено"
+
+#. TRANSLATORS: Share URL by SMS
+#: data/telephony.ui:9 src/service/daemon.js:714 src/service/plugins/sms.js:50
+#: webextension/gettext.js:39
+msgid "Send SMS"
+msgstr "Отправить СМС"
+
+#: data/telephony.ui:21 src/service/plugins/share.js:457
+msgid "Send"
+msgstr "Отправить"
+
+#. Service Menu
+#: src/extension.js:79 src/extension.js:255
+msgid "Mobile Devices"
+msgstr "Устройства"
+
 #. TRANSLATORS: %d is the number of devices connected
-#: src/extension.js:252
+#: src/extension.js:253
 #, javascript-format
 msgid "%d Connected"
 msgid_plural "%d Connected"
 msgstr[0] "%d Подключен"
 msgstr[1] "%d Подключено"
 msgstr[2] "%d Подключено"
+msgstr[3] ""
 
 #. TRANSLATORS: Top-level context menu item for GSConnect
 #: src/nautilus-gsconnect.py:112 webextension/gettext.js:31
 msgid "Send To Mobile Device"
 msgstr "Отправить на устройство"
 
-#. TRANSLATORS: Extension name
-#: src/service/daemon.js:95 src/service/daemon.js:416
-#: webextension/gettext.js:27
-msgid "GSConnect"
-msgstr "GSConnect"
-
-#: src/service/daemon.js:409
-msgid "A complete KDE Connect implementation for GNOME"
-msgstr ""
-
-#. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
-#: src/service/daemon.js:418
-msgid "translator-credits"
-msgstr "'Losted' <losted@wants.dicksinhisan.us>"
-
-#: src/service/daemon.js:440
+#: src/service/daemon.js:372
 msgid "Report"
 msgstr "Отзыв"
 
-#: src/service/daemon.js:570
+#: src/service/daemon.js:507
 msgid "Authentication Failure"
 msgstr "Ошибка аутентификации"
 
-#: src/service/daemon.js:579
+#: src/service/daemon.js:516
 msgid "Network Error"
 msgstr "Ошибка сети"
 
-#: src/service/daemon.js:580 src/service/daemon.js:590
+#: src/service/daemon.js:517 src/service/daemon.js:525
 msgid "Click for help troubleshooting"
 msgstr "Нажмите для решения проблем"
 
-#: src/service/daemon.js:589
+#: src/service/daemon.js:524
 msgid "PulseAudio Error"
 msgstr "Ошибка Pulseaudio"
 
-#: src/service/daemon.js:599
-msgid "Discovery Disabled"
-msgstr "Обнаружение выключено"
-
-#: src/service/daemon.js:600
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
+#: src/service/daemon.js:533
+msgid "Discovery has been disabled due to the number of devices on this network."
 msgstr "Обнаружение было выключено из-за количества устройств в этой сети."
 
-#: src/service/daemon.js:602 src/service/daemon.js:612
-msgid "Click to open preferences"
-msgstr "Нажмите для открытия настроек"
-
-#: src/service/daemon.js:611
-msgid "Additional Software Required"
-msgstr "Необходимо дополнительное ПО"
-
-#: src/service/daemon.js:620
+#: src/service/daemon.js:541
 #, javascript-format
 msgid "%s Plugin Failed To Load"
 msgstr "Ошибка загрузки плагина %s"
 
-#: src/service/daemon.js:621
+#: src/service/daemon.js:542
 msgid "Click for more information"
 msgstr "Нажмите для получения информации"
 
-#. Create an urgent notification
-#: src/service/daemon.js:649
-#, javascript-format
-msgid "GSConnect: %s"
-msgstr "GSConnect: %s"
-
-#. TRANSLATORS: Share URL by SMS
-#: src/service/daemon.js:799 src/service/plugins/sms.js:49
-#: webextension/gettext.js:39
-msgid "Send SMS"
-msgstr "Отправить СМС"
-
-#: src/service/daemon.js:803
+#: src/service/daemon.js:720
 msgid "Dial Number"
 msgstr "Вызвать номер"
+
+#: src/service/daemon.js:726 src/service/plugins/share.js:27
+msgid "Share File"
+msgstr "Поделиться файлом"
 
 #: src/service/device.js:166
 msgid "Not available"
@@ -433,37 +451,41 @@ msgstr "Планшет"
 msgid "Desktop"
 msgstr "Компьютер"
 
-#: src/service/device.js:416
+#: src/service/device.js:413 src/service/ui/device.js:15
 msgid "Reconnect"
 msgstr "Переподключиться"
 
+#: src/service/device.js:421 src/service/ui/device.js:16
+#: src/service/ui/settings.js:371
+msgid "Settings"
+msgstr "Настройки"
+
 #. TRANSLATORS: eg. Pair Request from Google Pixel
-#: src/service/device.js:613
+#: src/service/device.js:612
 #, javascript-format
 msgid "Pair Request from %s"
 msgstr "Запрос сопряжения от %s"
 
-#: src/service/device.js:620
+#: src/service/device.js:619
 msgid "Reject"
 msgstr "Отклонить"
 
-#: src/service/device.js:625
+#: src/service/device.js:624
 msgid "Accept"
 msgstr "Принять"
 
-#: src/service/plugins/battery.js:194 src/service/plugins/findmyphone.js:18
-#, fuzzy
+#: src/service/plugins/battery.js:188 src/service/plugins/findmyphone.js:19
 msgid "Ring"
-msgstr "Найти"
+msgstr ""
 
 #. TRANSLATORS: eg. Google Pixel: Battery is low
-#: src/service/plugins/battery.js:203
+#: src/service/plugins/battery.js:197
 #, javascript-format
 msgid "%s: Battery is low"
 msgstr "%s: Аккумулятор разряжен"
 
 #. TRANSLATORS: eg. 15% remaining
-#: src/service/plugins/battery.js:205
+#: src/service/plugins/battery.js:199
 #, javascript-format
 msgid "%d%% remaining"
 msgstr "%d%% осталось"
@@ -484,38 +506,37 @@ msgstr "Запросить Буфер обмена"
 msgid "Contacts"
 msgstr "Контакты"
 
-#: src/service/plugins/findmyphone.js:12
+#. Ensure we have a sender
+#. TRANSLATORS: No name or phone number
+#: src/service/plugins/contacts.js:263 src/service/plugins/telephony.js:173
+#: src/service/plugins/telephony.js:224 src/service/plugins/telephony.js:264
+#: src/service/ui/contacts.js:156 src/service/ui/contacts.js:397
+msgid "Unknown Contact"
+msgstr "Неизвестный контакт"
+
+#: src/service/plugins/findmyphone.js:13
 msgid "Find My Phone"
 msgstr "Найти мой смартфон"
-
-#: src/service/plugins/findmyphone.js:65
-msgid "Locate Device"
-msgstr "Найти устройство"
-
-#: src/service/plugins/findmyphone.js:66
-#, javascript-format
-msgid "%s asked to locate this device"
-msgstr "%s запросил поиск устройства"
-
-#: src/service/plugins/findmyphone.js:74
-msgid "Found"
-msgstr "Найден"
 
 #: src/service/plugins/mousepad.js:14
 msgid "Mousepad"
 msgstr "Тачпад"
 
-#: src/service/plugins/mousepad.js:28 src/service/plugins/mousepad.js:567
+#: src/service/plugins/mousepad.js:28 src/service/plugins/mousepad.js:568
 msgid "Keyboard"
 msgstr "Клавиатура"
 
-#: src/service/plugins/mousepad.js:584
+#: src/service/plugins/mousepad.js:223
+msgid "Additional Software Required"
+msgstr "Необходимо дополнительное ПО"
+
+#: src/service/plugins/mousepad.js:585
 msgid "Keyboard not ready"
 msgstr "Клавиатура не готова"
 
 #: src/service/plugins/mpris.js:10
 msgid "MPRIS"
-msgstr "MPRIS"
+msgstr ""
 
 #: src/service/plugins/notification.js:25
 msgid "Cancel Notification"
@@ -551,7 +572,7 @@ msgstr "Отправить Команду"
 
 #: src/service/plugins/sftp.js:12
 msgid "SFTP"
-msgstr "SFTP"
+msgstr ""
 
 #: src/service/plugins/sftp.js:18
 msgid "Mount"
@@ -561,15 +582,15 @@ msgstr "Примонтировать"
 msgid "Unmount"
 msgstr "Размонтировать"
 
-#: src/service/plugins/sftp.js:170
+#: src/service/plugins/sftp.js:159
 msgid "All files"
 msgstr "Все файлы"
 
-#: src/service/plugins/sftp.js:171
+#: src/service/plugins/sftp.js:160
 msgid "Camera pictures"
 msgstr "Фотографии"
 
-#: src/service/plugins/sftp.js:333
+#: src/service/plugins/sftp.js:416
 msgid "Files"
 msgstr "Файлы"
 
@@ -577,16 +598,12 @@ msgstr "Файлы"
 msgid "Share"
 msgstr "Поделиться"
 
-#: src/service/plugins/share.js:27
-msgid "Share File"
-msgstr "Поделиться файлом"
-
 #: src/service/plugins/share.js:35
 msgid "Share Text"
 msgstr "Поделиться текстом"
 
-#: src/service/plugins/share.js:43 src/service/ui/messaging.js:903
-#: src/service/ui/messaging.js:911
+#: src/service/plugins/share.js:43 src/service/ui/messaging.js:954
+#: src/service/ui/messaging.js:962
 msgid "Share Link"
 msgstr "Поделиться ссылкой"
 
@@ -599,14 +616,6 @@ msgstr "Начало передачи"
 #, javascript-format
 msgid "Receiving “%s” from %s"
 msgstr "Получение «%s» от %s"
-
-#. Action Buttons
-#: src/service/plugins/share.js:139 src/service/plugins/share.js:310
-#: src/service/plugins/share.js:455 src/service/ui/keybindings.js:44
-#: src/service/ui/service.js:121 src/service/ui/service.js:300
-#: src/service/ui/settings.js:885 src/shell/donotdisturb.js:215
-msgid "Cancel"
-msgstr "Отмена"
 
 #: src/service/plugins/share.js:172 src/service/plugins/share.js:327
 msgid "Transfer Successful"
@@ -671,28 +680,24 @@ msgid "Open when done"
 msgstr "Открыть при завершении"
 
 #. TRANSLATORS: eg. Send a link to Google Pixel
-#: src/service/plugins/share.js:450
+#: src/service/plugins/share.js:451
 #, javascript-format
 msgid "Send a link to %s"
 msgstr "Отправить ссылку на %s"
 
-#: src/service/plugins/share.js:456
-msgid "Send"
-msgstr "Отправить"
-
-#: src/service/plugins/sms.js:12
+#: src/service/plugins/sms.js:13
 msgid "SMS"
-msgstr "SMS"
+msgstr ""
 
-#: src/service/plugins/sms.js:33
+#: src/service/plugins/sms.js:34
 msgid "New SMS (URI)"
 msgstr "Новое сообщение (URI)"
 
-#: src/service/plugins/sms.js:41
+#: src/service/plugins/sms.js:42 src/service/plugins/telephony.js:22
 msgid "Reply SMS"
 msgstr "Ответить на SMS"
 
-#: src/service/plugins/sms.js:57
+#: src/service/plugins/sms.js:58
 msgid "Share SMS"
 msgstr "Отправить SMS"
 
@@ -700,66 +705,72 @@ msgstr "Отправить SMS"
 msgid "System Volume"
 msgstr "Громкость"
 
-#: src/service/plugins/telephony.js:21
+#: src/service/plugins/telephony.js:30
 msgid "Mute Call"
 msgstr "Отключить звонок"
 
-#. Ensure we have a sender
-#. TRANSLATORS: No name or phone number
-#: src/service/plugins/telephony.js:155 src/service/ui/contacts.js:96
-#: src/service/ui/contacts.js:350
-msgid "Unknown Contact"
-msgstr "Неизвестный контакт"
-
 #. TRANSLATORS: The phone is ringing
-#: src/service/plugins/telephony.js:172
+#: src/service/plugins/telephony.js:190
 msgid "Incoming call"
 msgstr "Входящий звонок"
 
 #. TRANSLATORS: A phone call is active
-#: src/service/plugins/telephony.js:187
+#: src/service/plugins/telephony.js:205
 msgid "Ongoing call"
 msgstr "Исходящий звонок"
 
 #. TRANSLATORS: All other phone number types
-#: src/service/ui/contacts.js:58 src/service/ui/contacts.js:79
+#: src/service/ui/contacts.js:118 src/service/ui/contacts.js:139
 #, javascript-format
 msgid "%s・Other"
 msgstr "%s・Другой"
 
 #. TRANSLATORS: A fax number
-#: src/service/ui/contacts.js:63
+#: src/service/ui/contacts.js:123
 #, javascript-format
 msgid "%s・Fax"
 msgstr "%s・Факс"
 
 #. TRANSLATORS: A work phone number
-#: src/service/ui/contacts.js:67
+#: src/service/ui/contacts.js:127
 #, javascript-format
 msgid "%s・Work"
 msgstr "%s・Рабочий"
 
 #. TRANSLATORS: A mobile or cellular phone number
-#: src/service/ui/contacts.js:71
+#: src/service/ui/contacts.js:131
 #, javascript-format
 msgid "%s・Mobile"
 msgstr "%s・Мобильный"
 
 #. TRANSLATORS: A home phone number
-#: src/service/ui/contacts.js:75
+#: src/service/ui/contacts.js:135
 #, javascript-format
 msgid "%s・Home"
 msgstr "%s・Домашний"
 
-#: src/service/ui/contacts.js:203
-msgid "Select a contact or number"
-msgstr "Выбрать контакт или номер"
-
 #. TRANSLATORS: A phone number (eg. "Send to 555-5555")
-#: src/service/ui/contacts.js:239 src/service/ui/contacts.js:253
+#: src/service/ui/contacts.js:278 src/service/ui/contacts.js:292
 #, javascript-format
 msgid "Send to %s"
 msgstr "Отправить на %s"
+
+#: src/service/ui/device.js:610
+msgid "Open"
+msgstr "Открыть"
+
+#: src/service/ui/device.js:662 src/service/ui/device.js:675
+msgid "On"
+msgstr "Вкл"
+
+#: src/service/ui/device.js:662 src/service/ui/device.js:675
+msgid "Off"
+msgstr "Выкл"
+
+#: src/service/ui/device.js:800 src/service/ui/device.js:838
+#: src/service/ui/device.js:862
+msgid "Disabled"
+msgstr "Отключено"
 
 #. TRANSLATORS: Title of keyboard shortcut dialog
 #: src/service/ui/keybindings.js:33
@@ -790,42 +801,6 @@ msgstr "Нажмите Esc для отмены или Backspace чтобы сб�
 msgid "%s is already being used"
 msgstr "%s уже используется"
 
-#: src/service/ui/service.js:122
-msgid "Connect"
-msgstr "Подключиться"
-
-#: src/service/ui/service.js:294
-msgid "Select a Device"
-msgstr "Выберите устройство"
-
-#: src/service/ui/service.js:298
-msgid "Select"
-msgstr "Выбор"
-
-#: src/service/ui/settings.js:298
-msgid "Panel"
-msgstr "Панель"
-
-#: src/service/ui/settings.js:298
-msgid "User Menu"
-msgstr "Меню пользователя"
-
-#: src/service/ui/settings.js:886
-msgid "Open"
-msgstr "Открыть"
-
-#: src/service/ui/settings.js:943 src/service/ui/settings.js:956
-msgid "On"
-msgstr "Вкл"
-
-#: src/service/ui/settings.js:943 src/service/ui/settings.js:956
-msgid "Off"
-msgstr "Выкл"
-
-#: src/service/ui/settings.js:1072 src/service/ui/settings.js:1138
-msgid "Disabled"
-msgstr "Отключено"
-
 #. TRANSLATORS: Less than a minute ago
 #: src/service/ui/messaging.js:93 src/service/ui/messaging.js:126
 msgid "Just now"
@@ -840,6 +815,7 @@ msgid_plural "%d minutes"
 msgstr[0] "%d минута"
 msgstr[1] "%d минуты"
 msgstr[2] "%d минут"
+msgstr[3] ""
 
 #. TRANSLATORS: Yesterday, but less than 24 hours (eg. Yesterday · 11:29 PM)
 #: src/service/ui/messaging.js:103
@@ -847,32 +823,71 @@ msgstr[2] "%d минут"
 msgid "Yesterday・%s"
 msgstr "Вчера・%s"
 
-#: src/service/ui/messaging.js:920
-msgid "New Message"
-msgstr "Новое сообщение"
+#: src/service/ui/service.js:31
+msgid "Select a Device"
+msgstr "Выберите устройство"
+
+#: src/service/ui/service.js:35
+msgid "Select"
+msgstr "Выбор"
+
+#: src/service/ui/settings.js:331
+msgid "Unpaired"
+msgstr ""
+
+#: src/service/ui/settings.js:333
+msgid "Disconnected"
+msgstr ""
+
+#: src/service/ui/settings.js:336
+msgid "Connected"
+msgstr ""
+
+#. TODO: Copied from GNOME Control Center; may change
+#: src/service/ui/settings.js:406
+#, javascript-format
+msgid "Transferred files are placed in the <a href=\"%s\">Downloads</a> folder."
+msgstr ""
+
+#: src/service/ui/settings.js:499
+msgid "A complete KDE Connect implementation for GNOME"
+msgstr ""
+
+#. TRANSLATORS: eg. 'Translator Name <your.email@domain.com>'
+#: src/service/ui/settings.js:508
+msgid "translator-credits"
+msgstr "'Losted' <losted@wants.dicksinhisan.us>"
+
+#: src/service/ui/settings.js:537
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
+msgstr ""
+
+#: src/service/ui/settings.js:540
+msgid "Review Log"
+msgstr ""
 
 #. TRANSLATORS: When the battery level is 100%
-#: src/shell/device.js:84
+#: src/shell/device.js:82
 msgid "Fully Charged"
 msgstr "Полностью заряжено"
 
 #. TRANSLATORS: When no time estimate for the battery is available
 #. EXAMPLE: 42% (Estimating…)
-#: src/shell/device.js:88
+#: src/shell/device.js:86
 #, javascript-format
 msgid "%d%% (Estimating…)"
 msgstr "%d%% (Осталось…)"
 
 #. TRANSLATORS: Estimated time until battery is charged
 #. EXAMPLE: 42% (1:15 Until Full)
-#: src/shell/device.js:98
+#: src/shell/device.js:96
 #, javascript-format
 msgid "%d%% (%d∶%02d Until Full)"
 msgstr "%d%% (%d∶%02d До полного заряда)"
 
 #. TRANSLATORS: Estimated time until battery is empty
 #. EXAMPLE: 42% (12:15 Remaining)
-#: src/shell/device.js:106
+#: src/shell/device.js:104
 #, javascript-format
 msgid "%d%% (%d∶%02d Remaining)"
 msgstr "%d%% (%d∶%02d Осталось)"
@@ -903,11 +918,17 @@ msgstr "Готово"
 #. TRANSLATORS: Time duration in hours (eg. 2 hours)
 #: src/shell/donotdisturb.js:263
 #, javascript-format
-msgid "One hour"
+msgid "%d hour"
 msgid_plural "%d hours"
-msgstr[0] "%d час"
-msgstr[1] "%d часа"
-msgstr[2] "%d часов"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+
+#. TRANSLATORS: Extension name
+#: webextension/gettext.js:27
+msgid "GSConnect"
+msgstr ""
 
 #. TRANSLATORS: Chrome/Firefox WebExtension description
 #: webextension/gettext.js:29
@@ -919,7 +940,13 @@ msgstr "Отправлять ссылки в веб браузер или по S
 msgid "Service Unavailable"
 msgstr "Сервис недоступен"
 
+#. TRANSLATORS: No devices are known or available
+#: webextension/gettext.js:35
+msgid "No Device Found"
+msgstr "Устройства не найдены"
+
 #. TRANSLATORS: Open URL with the device's browser
 #: webextension/gettext.js:37
 msgid "Open in Browser"
 msgstr "Открыть в браузере"
+
