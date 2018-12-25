@@ -623,9 +623,13 @@ const Service = GObject.registerClass({
         );
 
         // Ensure out handlers are registered
-        let appInfo = Gio.DesktopAppInfo.new(`${gsconnect.app_id}.desktop`);
-        appInfo.add_supports_type('x-scheme-handler/sms');
-        appInfo.add_supports_type('x-scheme-handler/tel');
+        try {
+            let appInfo = Gio.DesktopAppInfo.new(`${gsconnect.app_id}.desktop`);
+            appInfo.add_supports_type('x-scheme-handler/sms');
+            appInfo.add_supports_type('x-scheme-handler/tel');
+        } catch (e) {
+            warning(e);
+        }
 
         // Properties
         gsconnect.settings.bind(
