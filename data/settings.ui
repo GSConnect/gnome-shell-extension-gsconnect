@@ -91,8 +91,8 @@
                 <property name="AtkObject::accessible-name" translatable="yes">Mobile Settings</property>
               </object>
             </child>
-            <accelerator key="Left" signal="clicked" modifiers="GDK_MOD1_MASK"/>
             <accelerator key="Escape" signal="clicked"/>
+            <accelerator key="Left" signal="clicked" modifiers="GDK_MOD1_MASK"/>
           </object>
           <packing>
             <property name="position">1</property>
@@ -406,7 +406,7 @@
                             <property name="halign">start</property>
                             <property name="valign">center</property>
                             <property name="margin_bottom">12</property>
-                            <property name="label" translatable="yes">KDE Connect</property>
+                            <property name="label">KDE Connect</property>
                             <attributes>
                               <attribute name="weight" value="bold"/>
                             </attributes>
