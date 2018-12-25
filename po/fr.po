@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-12-23 19:55-0800\n"
-"PO-Revision-Date: 2018-12-25 00:35\n"
+"POT-Creation-Date: 2018-12-24 17:01-0800\n"
+"PO-Revision-Date: 2018-12-25 01:13\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: French\n"
 "Language: fr\n"
@@ -326,10 +326,6 @@ msgstr ""
 #: data/settings.ui:299
 msgid "Browser Add-Ons"
 msgstr "Extensions du navigateur"
-
-#: data/settings.ui:409
-msgid "KDE Connect"
-msgstr ""
 
 #: data/settings.ui:579
 msgid "Enable"
