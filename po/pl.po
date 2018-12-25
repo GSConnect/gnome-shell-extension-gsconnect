@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-24 17:01-0800\n"
-"PO-Revision-Date: 2018-12-25 01:13\n"
+"PO-Revision-Date: 2018-12-25 09:24\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Polish\n"
 "Language: pl\n"
@@ -362,7 +362,7 @@ msgid_plural "%d Connected"
 msgstr[0] "%d połączone urządzenie"
 msgstr[1] "%d połączone urządzenia"
 msgstr[2] "%d połączonych urządzeń"
-msgstr[3] ""
+msgstr[3] "%d podłączonych urządzeń"
 
 #. TRANSLATORS: Top-level context menu item for GSConnect
 #: src/nautilus-gsconnect.py:112 webextension/gettext.js:31
