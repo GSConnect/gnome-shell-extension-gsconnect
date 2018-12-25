@@ -1,21 +1,20 @@
-# Chinese translations for org.gnome.Shell.Extensions.GSConnect package.
-# Copyright (C) 2018 THE org.gnome.Shell.Extensions.GSConnect'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the org.gnome.Shell.Extensions.GSConnect package.
-# Automatically generated, 2018.
-#
 msgid ""
 msgstr ""
-"Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
+"Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-12-24 09:24-0800\n"
-"PO-Revision-Date: 2018-12-24 09:24-0800\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
-"Language: zh_CN\n"
+"POT-Creation-Date: 2018-12-23 19:55-0800\n"
+"PO-Revision-Date: 2018-12-25 00:35\n"
+"Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
+"Language-Team: Chinese Simplified\n"
+"Language: zh\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: crowdin.com\n"
+"X-Crowdin-Project: gsconnect\n"
+"X-Crowdin-Language: zh-CN\n"
+"X-Crowdin-File: /master/po/org.gnome.Shell.Extensions.GSConnect.pot\n"
 
 #. TRANSLATORS: Open a dialog to connect to an IP or Bluez device
 #: data/connect.ui:24 data/menus.ui:7
@@ -365,7 +364,6 @@ msgstr ""
 msgid "%d Connected"
 msgid_plural "%d Connected"
 msgstr[0] ""
-msgstr[1] ""
 
 #. TRANSLATORS: Top-level context menu item for GSConnect
 #: src/nautilus-gsconnect.py:112 webextension/gettext.js:31
@@ -393,8 +391,7 @@ msgid "PulseAudio Error"
 msgstr ""
 
 #: src/service/daemon.js:533
-msgid ""
-"Discovery has been disabled due to the number of devices on this network."
+msgid "Discovery has been disabled due to the number of devices on this network."
 msgstr ""
 
 #: src/service/daemon.js:541
@@ -813,7 +810,6 @@ msgstr ""
 msgid "%d minute"
 msgid_plural "%d minutes"
 msgstr[0] ""
-msgstr[1] ""
 
 #. TRANSLATORS: Yesterday, but less than 24 hours (eg. Yesterday · 11:29 PM)
 #: src/service/ui/messaging.js:103
@@ -844,8 +840,7 @@ msgstr ""
 #. TODO: Copied from GNOME Control Center; may change
 #: src/service/ui/settings.js:406
 #, javascript-format
-msgid ""
-"Transferred files are placed in the <a href=\"%s\">Downloads</a> folder."
+msgid "Transferred files are placed in the <a href=\"%s\">Downloads</a> folder."
 msgstr ""
 
 #: src/service/ui/settings.js:499
@@ -858,9 +853,7 @@ msgid "translator-credits"
 msgstr ""
 
 #: src/service/ui/settings.js:537
-msgid ""
-"Debug messages are being logged. Take any steps necessary to reproduce a "
-"problem then review the log."
+msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
 msgstr ""
 
 #: src/service/ui/settings.js:540
@@ -922,7 +915,6 @@ msgstr ""
 msgid "%d hour"
 msgid_plural "%d hours"
 msgstr[0] ""
-msgstr[1] ""
 
 #. TRANSLATORS: Extension name
 #: webextension/gettext.js:27
@@ -948,3 +940,4 @@ msgstr ""
 #: webextension/gettext.js:37
 msgid "Open in Browser"
 msgstr ""
+
