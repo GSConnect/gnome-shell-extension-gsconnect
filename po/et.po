@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-24 17:01-0800\n"
-"PO-Revision-Date: 2018-12-26 17:02\n"
+"PO-Revision-Date: 2018-12-26 17:13\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Estonian\n"
 "Language: et\n"
@@ -207,7 +207,7 @@ msgstr "Seade on paaritamata"
 
 #: data/device.ui:1959
 msgid "You may configure this device before pairing"
-msgstr ""
+msgstr "Sa võid seda seadet enne paaritamist seadistada"
 
 #: data/menus.ui:12
 msgid "Display Mode"
@@ -226,7 +226,7 @@ msgstr "Kasutajamenüü"
 #. TRANSLATORS: Generate a support log
 #: data/menus.ui:29 src/service/ui/settings.js:536
 msgid "Generate Support Log"
-msgstr ""
+msgstr "Genereeri tugiteenusele logi"
 
 #: data/menus.ui:38
 msgid "About"
@@ -333,7 +333,7 @@ msgstr "Luba"
 
 #: data/settings.ui:611
 msgid "This device is invisible to unpaired devices"
-msgstr ""
+msgstr "See seade on paardumata seadmetele nähtamatu"
 
 #: data/settings.ui:623 src/service/daemon.js:532
 msgid "Discovery Disabled"
@@ -671,7 +671,7 @@ msgstr "Saada faile seadmesse %s"
 #. TRANSLATORS: Mark the file to be opened once completed
 #: src/service/plugins/share.js:412
 msgid "Open when done"
-msgstr ""
+msgstr "Ava, kui valmis"
 
 #. TRANSLATORS: eg. Send a link to Google Pixel
 #: src/service/plugins/share.js:451
@@ -717,7 +717,7 @@ msgstr "Väljuv kõne"
 #: src/service/ui/contacts.js:118 src/service/ui/contacts.js:139
 #, javascript-format
 msgid "%s・Other"
-msgstr ""
+msgstr "%s・Muu"
 
 #. TRANSLATORS: A fax number
 #: src/service/ui/contacts.js:123
@@ -729,19 +729,19 @@ msgstr "%s・Faks"
 #: src/service/ui/contacts.js:127
 #, javascript-format
 msgid "%s・Work"
-msgstr ""
+msgstr "%s・Töö"
 
 #. TRANSLATORS: A mobile or cellular phone number
 #: src/service/ui/contacts.js:131
 #, javascript-format
 msgid "%s・Mobile"
-msgstr ""
+msgstr "%s・Mobiil"
 
 #. TRANSLATORS: A home phone number
 #: src/service/ui/contacts.js:135
 #, javascript-format
 msgid "%s・Home"
-msgstr ""
+msgstr "%s・Kodu"
 
 #. TRANSLATORS: A phone number (eg. "Send to 555-5555")
 #: src/service/ui/contacts.js:278 src/service/ui/contacts.js:292
@@ -839,7 +839,7 @@ msgstr "Ühendatud"
 #: src/service/ui/settings.js:406
 #, javascript-format
 msgid "Transferred files are placed in the <a href=\"%s\">Downloads</a> folder."
-msgstr ""
+msgstr "Edastatud failid asetatakse <a href=\"%s\">Allalaadimiste</a> kausta."
 
 #: src/service/ui/settings.js:499
 msgid "A complete KDE Connect implementation for GNOME"
@@ -852,11 +852,11 @@ msgstr "Madis O, 2018."
 
 #: src/service/ui/settings.js:537
 msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
-msgstr ""
+msgstr "Silumissõnumid logitakse. Teosta mistahes vajalikud sammud probleemi taasloomiseks, seejärel vaata logi üle."
 
 #: src/service/ui/settings.js:540
 msgid "Review Log"
-msgstr ""
+msgstr "Vaata logi üle"
 
 #. TRANSLATORS: When the battery level is 100%
 #: src/shell/device.js:82
@@ -912,8 +912,8 @@ msgstr "Valmis"
 #, javascript-format
 msgid "%d hour"
 msgid_plural "%d hours"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d tund"
+msgstr[1] "%d tundi"
 
 #. TRANSLATORS: Extension name
 #: webextension/gettext.js:27
