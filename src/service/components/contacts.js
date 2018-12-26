@@ -45,7 +45,7 @@ var Store = GObject.registerClass({
         try {
             this.__cache_data = await JSON.load(this.__cache_file);
         } catch (e) {
-            warning(e);
+            debug(e);
             this.__cache_data = {};
         } finally {
             this.connect('notify::contacts', this.__cache_write.bind(this));
