@@ -213,6 +213,7 @@ var Plugin = GObject.registerClass({
                 // Check if this is our mount
                 if (this._uri === uri) {
                     this._mount = mount;
+                    this._mount.connect('unmounted', this.unmount.bind(this));
 
                 // Or if it's a stale mount we need to cleanup
                 } else if (this._uriRegex.test(uri)) {
