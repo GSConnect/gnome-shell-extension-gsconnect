@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-24 17:01-0800\n"
-"PO-Revision-Date: 2018-12-26 16:56\n"
+"PO-Revision-Date: 2018-12-26 17:02\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Estonian\n"
 "Language: et\n"
@@ -203,7 +203,7 @@ msgstr "Paarita"
 
 #: data/device.ui:1944
 msgid "Device is unpaired"
-msgstr ""
+msgstr "Seade on paaritamata"
 
 #: data/device.ui:1959
 msgid "You may configure this device before pairing"
@@ -235,17 +235,17 @@ msgstr "Teave"
 #. TRANSLATORS: Change the connection type to Bluetooth
 #: data/menus.ui:49
 msgid "Switch to Bluetooth"
-msgstr ""
+msgstr "Lülitu Bluetoothile"
 
 #. TRANSLATORS: Change the connection type to TCP/IP
 #: data/menus.ui:56
 msgid "Switch to LAN"
-msgstr ""
+msgstr "Lülitu LANile"
 
 #. TRANSLATORS: View the TLS Certificate fingerprint
 #: data/menus.ui:63 src/service/ui/device.js:322
 msgid "Encryption Info"
-msgstr ""
+msgstr "Krüpteeringu teave"
 
 #. TRANSLATORS: Unpair the device and notify it
 #: data/menus.ui:74 src/service/device.js:437
@@ -285,15 +285,15 @@ msgstr "Sõnumside"
 
 #: data/messaging.ui:21 src/service/ui/messaging.js:971
 msgid "New Conversation"
-msgstr ""
+msgstr "Uus vestlus"
 
 #: data/messaging.ui:110
 msgid "No conversation selected"
-msgstr ""
+msgstr "Ühtegi vestlust pole valitud"
 
 #: data/messaging.ui:126
 msgid "Select or start a conversation"
-msgstr ""
+msgstr "Vali või alusta vestlus"
 
 #: data/messaging.ui:193 data/telephony.ui:52
 msgid "Device is disconnected"
@@ -301,11 +301,11 @@ msgstr "Seade on lahti ühendatud"
 
 #: data/messaging.ui:264
 msgid "No Conversations"
-msgstr ""
+msgstr "Vestlused puuduvad"
 
 #: data/settings.ui:10
 msgid "Searching for devices…"
-msgstr ""
+msgstr "Seadmete otsimine…"
 
 #: data/settings.ui:49 data/settings.ui:63
 msgid "Refresh"
@@ -317,11 +317,11 @@ msgstr "Mobiiliseaded"
 
 #: data/settings.ui:144 data/settings.ui:158
 msgid "Edit Device Name"
-msgstr ""
+msgstr "Muuda seadme nime"
 
 #: data/settings.ui:236
 msgid "Devices"
-msgstr ""
+msgstr "Seadmed"
 
 #: data/settings.ui:299
 msgid "Browser Add-Ons"
@@ -329,7 +329,7 @@ msgstr "Brauserilaiendused"
 
 #: data/settings.ui:579
 msgid "Enable"
-msgstr ""
+msgstr "Luba"
 
 #: data/settings.ui:611
 msgid "This device is invisible to unpaired devices"
@@ -470,7 +470,7 @@ msgstr "Nõustu"
 
 #: src/service/plugins/battery.js:188 src/service/plugins/findmyphone.js:19
 msgid "Ring"
-msgstr ""
+msgstr "Helise"
 
 #. TRANSLATORS: eg. Google Pixel: Battery is low
 #: src/service/plugins/battery.js:197
@@ -825,15 +825,15 @@ msgstr "Vali"
 
 #: src/service/ui/settings.js:331
 msgid "Unpaired"
-msgstr ""
+msgstr "Paaritamata"
 
 #: src/service/ui/settings.js:333
 msgid "Disconnected"
-msgstr ""
+msgstr "Ühendus katkestatud"
 
 #: src/service/ui/settings.js:336
 msgid "Connected"
-msgstr ""
+msgstr "Ühendatud"
 
 #. TODO: Copied from GNOME Control Center; may change
 #: src/service/ui/settings.js:406
