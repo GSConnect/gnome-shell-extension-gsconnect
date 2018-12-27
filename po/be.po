@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-24 17:01-0800\n"
-"PO-Revision-Date: 2018-12-26 16:56\n"
+"PO-Revision-Date: 2018-12-27 14:03\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Belarusian\n"
 "Language: be\n"
@@ -68,11 +68,11 @@ msgstr "Акумулятар"
 
 #: data/device.ui:122
 msgid "Clipboard Sync"
-msgstr "Сінхр. буферу абмену"
+msgstr "Сінхранізацыя буферу абмену"
 
 #: data/device.ui:185
 msgid "Media Players"
-msgstr "Медыя плэеры"
+msgstr "Медыяплэеры"
 
 #: data/device.ui:240
 msgid "Mouse & Keyboard"
@@ -158,7 +158,7 @@ msgstr "Тэлефанія"
 
 #: data/device.ui:1265
 msgid "Action Shortcuts"
-msgstr "Спалуч. клавіш дзеянняў"
+msgstr "Спалучэнні клавіш для дзеянняў"
 
 #: data/device.ui:1280 data/device.ui:1349
 msgid "Reset All…"
@@ -166,7 +166,7 @@ msgstr "Скінуць усе…"
 
 #: data/device.ui:1334
 msgid "Command Shortcuts"
-msgstr "Камандныя спалуч. клавіш"
+msgstr "Камандныя спалучэнні клавіш"
 
 #: data/device.ui:1398
 msgid "Shortcuts"

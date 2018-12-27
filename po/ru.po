@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-24 17:01-0800\n"
-"PO-Revision-Date: 2018-12-26 19:43\n"
+"PO-Revision-Date: 2018-12-27 06:02\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Russian\n"
 "Language: ru\n"
@@ -36,7 +36,7 @@ msgstr "Подключиться"
 
 #: data/connect.ui:98
 msgid "IP Address"
-msgstr ""
+msgstr "IP адрес"
 
 #: data/connect.ui:142
 msgid "Bluetooth Device"
@@ -60,7 +60,7 @@ msgstr "Набрать сообщение"
 
 #: data/conversation.ui:84
 msgid "Send Message"
-msgstr ""
+msgstr "Отправить сообщение"
 
 #: data/device.ui:67 src/service/plugins/battery.js:12
 msgid "Battery"
@@ -105,7 +105,7 @@ msgstr "Выберите исполняемый файл"
 
 #: data/device.ui:496 data/device.ui:511
 msgid "Add"
-msgstr ""
+msgstr "Добавить"
 
 #: data/device.ui:527 data/device.ui:542
 msgid "Remove"
@@ -117,7 +117,7 @@ msgstr ""
 
 #: data/device.ui:604 data/device.ui:616
 msgid "Save"
-msgstr ""
+msgstr "Сохранить"
 
 #: data/device.ui:712
 msgid "Share Notifications"
