@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-12-24 17:01-0800\n"
-"PO-Revision-Date: 2018-12-26 17:13\n"
+"POT-Creation-Date: 2018-12-27 14:07-0800\n"
+"PO-Revision-Date: 2018-12-27 22:13\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Estonian\n"
 "Language: et\n"
@@ -54,7 +54,7 @@ msgstr "Kontakte pole"
 msgid "Help"
 msgstr "Abi"
 
-#: data/conversation.ui:76 data/conversation.ui:85
+#: data/conversation.ui:76 data/conversation.ui:85 src/shell/notification.js:51
 msgid "Type a message"
 msgstr "Kirjuta sõnum"
 
@@ -128,7 +128,7 @@ msgid "Applications"
 msgstr "Rakendused"
 
 #: data/device.ui:809 data/device.ui:1717
-#: src/service/plugins/notification.js:12
+#: src/service/plugins/notification.js:13
 msgid "Notifications"
 msgstr "Teated"
 
@@ -279,11 +279,11 @@ msgid "Mute"
 msgstr "Vaigista"
 
 #: data/messaging.ui:12 src/service/plugins/sms.js:26
-#: src/service/ui/messaging.js:902
+#: src/service/ui/messaging.js:857
 msgid "Messaging"
 msgstr "Sõnumside"
 
-#: data/messaging.ui:21 src/service/ui/messaging.js:971
+#: data/messaging.ui:21 src/service/ui/messaging.js:926
 msgid "New Conversation"
 msgstr "Uus vestlus"
 
@@ -340,7 +340,7 @@ msgid "Discovery Disabled"
 msgstr "Avastamine keelatud"
 
 #. TRANSLATORS: Share URL by SMS
-#: data/telephony.ui:9 src/service/daemon.js:714 src/service/plugins/sms.js:50
+#: data/telephony.ui:9 src/service/daemon.js:718 src/service/plugins/sms.js:50
 #: webextension/gettext.js:39
 msgid "Send SMS"
 msgstr "Saada SMS"
@@ -400,11 +400,11 @@ msgstr "%s plugina laadimine ebaõnnestus"
 msgid "Click for more information"
 msgstr "Klõpsa rohkema teabe saamiseks"
 
-#: src/service/daemon.js:720
+#: src/service/daemon.js:724
 msgid "Dial Number"
 msgstr "Helista telefoninumbrile"
 
-#: src/service/daemon.js:726 src/service/plugins/share.js:27
+#: src/service/daemon.js:730 src/service/plugins/share.js:27
 msgid "Share File"
 msgstr "Jaga faili"
 
@@ -516,7 +516,7 @@ msgstr "Leia mu telefon"
 msgid "Mousepad"
 msgstr "Hiirepadi"
 
-#: src/service/plugins/mousepad.js:28 src/service/plugins/mousepad.js:568
+#: src/service/plugins/mousepad.js:28 src/service/plugins/mousepad.js:569
 msgid "Keyboard"
 msgstr "Klaviatuur"
 
@@ -524,7 +524,7 @@ msgstr "Klaviatuur"
 msgid "Additional Software Required"
 msgstr "Lisatarkvara on nõutud"
 
-#: src/service/plugins/mousepad.js:585
+#: src/service/plugins/mousepad.js:586
 msgid "Keyboard not ready"
 msgstr "Klaviatuur pole valmis"
 
@@ -532,19 +532,19 @@ msgstr "Klaviatuur pole valmis"
 msgid "MPRIS"
 msgstr "MPRIS"
 
-#: src/service/plugins/notification.js:25
+#: src/service/plugins/notification.js:26
 msgid "Cancel Notification"
 msgstr "Tühista teade"
 
-#: src/service/plugins/notification.js:33
+#: src/service/plugins/notification.js:34
 msgid "Close Notification"
 msgstr "Sulge teade"
 
-#: src/service/plugins/notification.js:41
+#: src/service/plugins/notification.js:42
 msgid "Reply Notification"
 msgstr "Vasta teatele"
 
-#: src/service/plugins/notification.js:49
+#: src/service/plugins/notification.js:50
 msgid "Send Notification"
 msgstr "Saada teade"
 
@@ -584,7 +584,7 @@ msgstr "Kõik failid"
 msgid "Camera pictures"
 msgstr "Kaamera pildid"
 
-#: src/service/plugins/sftp.js:416
+#: src/service/plugins/sftp.js:417
 msgid "Files"
 msgstr "Failid"
 
@@ -596,8 +596,8 @@ msgstr "Jaga"
 msgid "Share Text"
 msgstr "Jaga teksti"
 
-#: src/service/plugins/share.js:43 src/service/ui/messaging.js:954
-#: src/service/ui/messaging.js:962
+#: src/service/plugins/share.js:43 src/service/ui/messaging.js:909
+#: src/service/ui/messaging.js:917
 msgid "Share Link"
 msgstr "Jaga linki"
 
@@ -796,12 +796,12 @@ msgid "%s is already being used"
 msgstr "%s on juba kasutusel"
 
 #. TRANSLATORS: Less than a minute ago
-#: src/service/ui/messaging.js:93 src/service/ui/messaging.js:126
+#: src/service/ui/messaging.js:65 src/service/ui/messaging.js:98
 msgid "Just now"
 msgstr "Praegu"
 
 #. TRANSLATORS: Time duration in minutes (eg. 15 minutes)
-#: src/service/ui/messaging.js:98 src/service/ui/messaging.js:130
+#: src/service/ui/messaging.js:70 src/service/ui/messaging.js:102
 #: src/shell/donotdisturb.js:266
 #, javascript-format
 msgid "%d minute"
@@ -810,7 +810,7 @@ msgstr[0] "%d minut"
 msgstr[1] "%d minutit"
 
 #. TRANSLATORS: Yesterday, but less than 24 hours (eg. Yesterday · 11:29 PM)
-#: src/service/ui/messaging.js:103
+#: src/service/ui/messaging.js:75
 #, javascript-format
 msgid "Yesterday・%s"
 msgstr "Eile・%s"
@@ -835,7 +835,7 @@ msgstr "Ühendus katkestatud"
 msgid "Connected"
 msgstr "Ühendatud"
 
-#. TODO: Copied from GNOME Control Center; may change
+#. TRANSLATORS: Description of where directly shared files are stored.
 #: src/service/ui/settings.js:406
 #, javascript-format
 msgid "Transferred files are placed in the <a href=\"%s\">Downloads</a> folder."
@@ -914,6 +914,10 @@ msgid "%d hour"
 msgid_plural "%d hours"
 msgstr[0] "%d tund"
 msgstr[1] "%d tundi"
+
+#: src/shell/notification.js:42
+msgid "Reply"
+msgstr ""
 
 #. TRANSLATORS: Extension name
 #: webextension/gettext.js:27
