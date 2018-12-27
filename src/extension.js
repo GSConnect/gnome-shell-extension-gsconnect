@@ -64,8 +64,8 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
         // Service Actions
         this.service = Gio.DBusActionGroup.get(
             Gio.DBus.session,
-            gsconnect.app_id,
-            gsconnect.app_path
+            'org.gnome.Shell.Extensions.GSConnect',
+            '/org/gnome/Shell/Extensions/GSConnect'
         );
 
         // Service Indicator
@@ -133,8 +133,8 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
                 Gio.DBusObjectManagerClient.new_for_bus(
                     Gio.BusType.SESSION,
                     Gio.DBusObjectManagerClientFlags.DO_NOT_AUTO_START,
-                    gsconnect.app_id,
-                    gsconnect.app_path,
+                    'org.gnome.Shell.Extensions.GSConnect',
+                    '/org/gnome/Shell/Extensions/GSConnect',
                     null,
                     this._cancellable,
                     (manager, res) => {
@@ -276,7 +276,7 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
                 '/org/freedesktop/DBus',
                 'org.freedesktop.DBus',
                 'StartServiceByName',
-                new GLib.Variant('(su)', [gsconnect.app_id, 0]),
+                new GLib.Variant('(su)', ['org.gnome.Shell.Extensions.GSConnect', 0]),
                 null,
                 Gio.DBusCallFlags.NONE,
                 -1,
@@ -475,7 +475,7 @@ var serviceIndicator = null;
 
 
 function init() {
-    Gtk.IconTheme.get_default().add_resource_path(gsconnect.app_path + '/icons');
+    Gtk.IconTheme.get_default().add_resource_path('/org/gnome/Shell/Extensions/GSConnect/icons');
 
     // If installed as a user extension, this will install the Desktop entry,
     // DBus and systemd service files necessary for DBus activation and
