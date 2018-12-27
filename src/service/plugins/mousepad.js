@@ -383,6 +383,7 @@ var Plugin = GObject.registerClass({
 
             // Invalid or unknown key
             } else {
+                warning(`invalid or unknown key "${input.key || input.specialKey}"`);
                 return;
             }
 
