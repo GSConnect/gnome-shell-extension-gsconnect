@@ -6,6 +6,7 @@ const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
 const PluginsBase = imports.service.plugins.base;
+const NotificationUI = imports.service.ui.notification;
 
 
 var Metadata = {
@@ -41,7 +42,7 @@ var Metadata = {
             label: _('Reply Notification'),
             icon_name: 'preferences-system-notifications-symbolic',
 
-            parameter_type: new GLib.VariantType('(ss)'),
+            parameter_type: new GLib.VariantType('(ssa{ss})'),
             incoming: ['kdeconnect.notification'],
             outgoing: ['kdeconnect.notification.reply']
         },
@@ -426,6 +427,18 @@ var Plugin = GObject.registerClass({
             // Check if this is a repliable notification
             if (packet.body.requestReplyId) {
                 id = `${packet.body.id}|${packet.body.requestReplyId}`;
+                action = {
+                    name: 'replyNotification',
+                    parameter: new GLib.Variant('(ssa{ss})', [
+                        packet.body.requestReplyId,
+                        '',
+                        {
+                            appName: packet.body.appName,
+                            title: packet.body.title,
+                            text: packet.body.text
+                        }
+                    ])
+                };
             }
 
             // Special case for SMS notifications
@@ -537,17 +550,27 @@ var Plugin = GObject.registerClass({
      *
      * @param {string} uuid - The requestReplyId for the repliable notification
      * @param {string} message - The message to reply with
+     * @param {object} notification - The original notification
      */
-    replyNotification(uuid, message) {
+    replyNotification(uuid, message, notification) {
         debug([uuid, message]);
 
-        this.device.sendPacket({
-            type: 'kdeconnect.notification.reply',
-            body: {
-                requestReplyId: uuid,
-                message: message
-            }
-        });
+        // If the message has no content, we're being asked to open the dialog
+        if (message.length === 0) {
+            new NotificationUI.Dialog({
+                device: this.device,
+                uuid: uuid,
+                notification: notification
+            });
+        } else {
+            this.device.sendPacket({
+                type: 'kdeconnect.notification.reply',
+                body: {
+                    requestReplyId: uuid,
+                    message: message
+                }
+            });
+        }
     }
 
     /**
