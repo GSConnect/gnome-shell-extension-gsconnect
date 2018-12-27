@@ -519,6 +519,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="hexpand">True</property>
+                <property name="text" translatable="yes">Notifying Application</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -530,6 +531,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="hexpand">True</property>
+                <property name="text" translatable="yes">Notification Title</property>
                 <signal name="changed" handler="_onNotificationTickerChanged" swapped="no"/>
               </object>
               <packing>
@@ -565,6 +567,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="hexpand">True</property>
+                <property name="text" translatable="yes">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 😎 https://www.gnome.org/ 😾 Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. https://tinyurl.com/y8mcz22r?foo=bar&amp;baz=qux</property>
                 <signal name="changed" handler="_onNotificationTickerChanged" swapped="no"/>
               </object>
               <packing>
@@ -676,6 +679,7 @@
                 <property name="can_focus">True</property>
                 <property name="hexpand">True</property>
                 <property name="editable">False</property>
+                <property name="text" translatable="yes">Notification Title: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 😎 https://www.gnome.org/ 😾 Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. https://tinyurl.com/y8mcz22r?foo=bar&amp;baz=qux</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
