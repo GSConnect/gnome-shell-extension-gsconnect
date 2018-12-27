@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: org.gnome.Shell.Extensions.GSConnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-12-24 17:01-0800\n"
+"POT-Creation-Date: 2018-12-27 14:07-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -56,7 +56,7 @@ msgstr ""
 msgid "Help"
 msgstr ""
 
-#: data/conversation.ui:76 data/conversation.ui:85
+#: data/conversation.ui:76 data/conversation.ui:85 src/shell/notification.js:51
 msgid "Type a message"
 msgstr ""
 
@@ -130,7 +130,7 @@ msgid "Applications"
 msgstr ""
 
 #: data/device.ui:809 data/device.ui:1717
-#: src/service/plugins/notification.js:12
+#: src/service/plugins/notification.js:13
 msgid "Notifications"
 msgstr ""
 
@@ -281,11 +281,11 @@ msgid "Mute"
 msgstr ""
 
 #: data/messaging.ui:12 src/service/plugins/sms.js:26
-#: src/service/ui/messaging.js:902
+#: src/service/ui/messaging.js:857
 msgid "Messaging"
 msgstr ""
 
-#: data/messaging.ui:21 src/service/ui/messaging.js:971
+#: data/messaging.ui:21 src/service/ui/messaging.js:926
 msgid "New Conversation"
 msgstr ""
 
@@ -342,7 +342,7 @@ msgid "Discovery Disabled"
 msgstr ""
 
 #. TRANSLATORS: Share URL by SMS
-#: data/telephony.ui:9 src/service/daemon.js:714 src/service/plugins/sms.js:50
+#: data/telephony.ui:9 src/service/daemon.js:718 src/service/plugins/sms.js:50
 #: webextension/gettext.js:39
 msgid "Send SMS"
 msgstr ""
@@ -403,11 +403,11 @@ msgstr ""
 msgid "Click for more information"
 msgstr ""
 
-#: src/service/daemon.js:720
+#: src/service/daemon.js:724
 msgid "Dial Number"
 msgstr ""
 
-#: src/service/daemon.js:726 src/service/plugins/share.js:27
+#: src/service/daemon.js:730 src/service/plugins/share.js:27
 msgid "Share File"
 msgstr ""
 
@@ -519,7 +519,7 @@ msgstr ""
 msgid "Mousepad"
 msgstr ""
 
-#: src/service/plugins/mousepad.js:28 src/service/plugins/mousepad.js:568
+#: src/service/plugins/mousepad.js:28 src/service/plugins/mousepad.js:569
 msgid "Keyboard"
 msgstr ""
 
@@ -527,7 +527,7 @@ msgstr ""
 msgid "Additional Software Required"
 msgstr ""
 
-#: src/service/plugins/mousepad.js:585
+#: src/service/plugins/mousepad.js:586
 msgid "Keyboard not ready"
 msgstr ""
 
@@ -535,19 +535,19 @@ msgstr ""
 msgid "MPRIS"
 msgstr ""
 
-#: src/service/plugins/notification.js:25
+#: src/service/plugins/notification.js:26
 msgid "Cancel Notification"
 msgstr ""
 
-#: src/service/plugins/notification.js:33
+#: src/service/plugins/notification.js:34
 msgid "Close Notification"
 msgstr ""
 
-#: src/service/plugins/notification.js:41
+#: src/service/plugins/notification.js:42
 msgid "Reply Notification"
 msgstr ""
 
-#: src/service/plugins/notification.js:49
+#: src/service/plugins/notification.js:50
 msgid "Send Notification"
 msgstr ""
 
@@ -587,7 +587,7 @@ msgstr ""
 msgid "Camera pictures"
 msgstr ""
 
-#: src/service/plugins/sftp.js:416
+#: src/service/plugins/sftp.js:417
 msgid "Files"
 msgstr ""
 
@@ -599,8 +599,8 @@ msgstr ""
 msgid "Share Text"
 msgstr ""
 
-#: src/service/plugins/share.js:43 src/service/ui/messaging.js:954
-#: src/service/ui/messaging.js:962
+#: src/service/plugins/share.js:43 src/service/ui/messaging.js:909
+#: src/service/ui/messaging.js:917
 msgid "Share Link"
 msgstr ""
 
@@ -799,12 +799,12 @@ msgid "%s is already being used"
 msgstr ""
 
 #. TRANSLATORS: Less than a minute ago
-#: src/service/ui/messaging.js:93 src/service/ui/messaging.js:126
+#: src/service/ui/messaging.js:65 src/service/ui/messaging.js:98
 msgid "Just now"
 msgstr ""
 
 #. TRANSLATORS: Time duration in minutes (eg. 15 minutes)
-#: src/service/ui/messaging.js:98 src/service/ui/messaging.js:130
+#: src/service/ui/messaging.js:70 src/service/ui/messaging.js:102
 #: src/shell/donotdisturb.js:266
 #, javascript-format
 msgid "%d minute"
@@ -813,7 +813,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. TRANSLATORS: Yesterday, but less than 24 hours (eg. Yesterday · 11:29 PM)
-#: src/service/ui/messaging.js:103
+#: src/service/ui/messaging.js:75
 #, javascript-format
 msgid "Yesterday・%s"
 msgstr ""
@@ -838,7 +838,7 @@ msgstr ""
 msgid "Connected"
 msgstr ""
 
-#. TODO: Copied from GNOME Control Center; may change
+#. TRANSLATORS: Description of where directly shared files are stored.
 #: src/service/ui/settings.js:406
 #, javascript-format
 msgid ""
@@ -920,6 +920,10 @@ msgid "%d hour"
 msgid_plural "%d hours"
 msgstr[0] ""
 msgstr[1] ""
+
+#: src/shell/notification.js:42
+msgid "Reply"
+msgstr ""
 
 #. TRANSLATORS: Extension name
 #: webextension/gettext.js:27
