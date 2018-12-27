@@ -47,34 +47,6 @@ var MessageType = {
 };
 
 
-// http://daringfireball.net/2010/07/improved_regex_for_matching_urls
-const _balancedParens = '\\((?:[^\\s()<>]+|(?:\\(?:[^\\s()<>]+\\)))*\\)';
-const _leadingJunk = '[\\s`(\\[{\'\\"<\u00AB\u201C\u2018]';
-const _notTrailingJunk = '[^\\s`!()\\[\\]{};:\'\\".,<>?\u00AB\u00BB\u201C\u201D\u2018\u2019]';
-
-const _urlRegexp = new RegExp(
-    '(^|' + _leadingJunk + ')' +
-    '(' +
-        '(?:' +
-            '(?:http|https|ftp)://' +             // scheme://
-            '|' +
-            'www\\d{0,3}[.]' +                    // www.
-            '|' +
-            '[a-z0-9.\\-]+[.][a-z]{2,4}/' +       // foo.xx/
-        ')' +
-        '(?:' +                                   // one or more:
-            '[^\\s()<>]+' +                       // run of non-space non-()
-            '|' +                                 // or
-            _balancedParens +                     // balanced parens
-        ')+' +
-        '(?:' +                                   // end with:
-            _balancedParens +                     // balanced parens
-            '|' +                                 // or
-            _notTrailingJunk +                    // last non-junk char
-        ')' +
-    ')', 'gi');
-
-
 /**
  * Return a human-readable timestamp.
  *
@@ -149,7 +121,7 @@ var ConversationMessage = GObject.registerClass({
         this.message = message;
 
         super._init({
-            label: this._linkify(message.body),
+            label: message.body.linkify(message.date),
             halign: (message.type === MessageType.IN) ? Gtk.Align.START : Gtk.Align.END,
             selectable: true,
             tooltip_text: getTime(message.date),
@@ -184,23 +156,6 @@ var ConversationMessage = GObject.registerClass({
         }
 
         return false;
-    }
-
-    /**
-     * Return a string with URLs couched in <a> tags, parseable by Pango and
-     * using the same RegExp as GNOME Shell.
-     *
-     * @param {string} text - The string to be modified
-     * @return {string} - the modified text
-     */
-    _linkify(text) {
-        text = GLib.markup_escape_text(text, -1);
-
-        _urlRegexp.lastIndex = 0;
-        return text.replace(
-            _urlRegexp,
-            `$1<a href="$2" title="${getTime(this.message.date)}">$2</a>`
-        );
     }
 });
 
