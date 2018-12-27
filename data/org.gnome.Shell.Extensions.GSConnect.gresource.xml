@@ -9,6 +9,7 @@
     <file compressed="true" preprocess="xml-stripblanks">devel.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">device.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">messaging.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">notification.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">settings.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">telephony.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">enter-keyboard-shortcut.svg</file>
