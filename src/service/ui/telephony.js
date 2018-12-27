@@ -160,6 +160,7 @@ var Dialog = GObject.registerClass({
             window.contact_list.disconnect(window._numberSelectedId);
         }
 
+        window.device.disconnect(window._connectedId);
         window.message_entry.buffer.disconnect(window._entryChangedId);
         window.disconnect_template();
     }
