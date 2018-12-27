@@ -4,6 +4,7 @@ data/conversation.ui
 data/device.ui
 data/menus.ui
 data/messaging.ui
+data/notification.ui
 data/settings.ui
 data/telephony.ui
 src/extension.js
