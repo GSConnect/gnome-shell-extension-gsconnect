@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-12-27 14:07-0800\n"
-"PO-Revision-Date: 2018-12-27 22:33\n"
+"POT-Creation-Date: 2018-12-27 15:44-0800\n"
+"PO-Revision-Date: 2018-12-27 23:52\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Italian\n"
 "Language: it\n"
@@ -22,11 +22,11 @@ msgid "Connect to…"
 msgstr "Connetti a…"
 
 #. Action Buttons
-#: data/connect.ui:30 data/telephony.ui:14 src/service/plugins/share.js:139
-#: src/service/plugins/share.js:310 src/service/plugins/share.js:456
-#: src/service/ui/device.js:609 src/service/ui/keybindings.js:44
-#: src/service/ui/service.js:37 src/service/ui/settings.js:539
-#: src/shell/donotdisturb.js:215
+#: data/connect.ui:30 data/notification.ui:14 data/telephony.ui:14
+#: src/service/plugins/share.js:139 src/service/plugins/share.js:310
+#: src/service/plugins/share.js:456 src/service/ui/device.js:609
+#: src/service/ui/keybindings.js:44 src/service/ui/service.js:37
+#: src/service/ui/settings.js:539 src/shell/donotdisturb.js:215
 msgid "Cancel"
 msgstr "Annulla"
 
@@ -295,13 +295,18 @@ msgstr "Nessuna conversazione selezionata"
 msgid "Select or start a conversation"
 msgstr "Seleziona o inizia una conversazione"
 
-#: data/messaging.ui:193 data/telephony.ui:52
+#: data/messaging.ui:193 data/notification.ui:52 data/telephony.ui:52
 msgid "Device is disconnected"
 msgstr "Il dispositivo è disconnesso"
 
 #: data/messaging.ui:264
 msgid "No Conversations"
 msgstr "Nessuna Conversazione"
+
+#: data/notification.ui:21 data/telephony.ui:21
+#: src/service/plugins/share.js:457
+msgid "Send"
+msgstr "Invia"
 
 #: data/settings.ui:10
 msgid "Searching for devices…"
@@ -344,10 +349,6 @@ msgstr "Ricerca Disattiva"
 #: webextension/gettext.js:39
 msgid "Send SMS"
 msgstr "Invia SMS"
-
-#: data/telephony.ui:21 src/service/plugins/share.js:457
-msgid "Send"
-msgstr "Invia"
 
 #. Service Menu
 #: src/extension.js:79 src/extension.js:255
