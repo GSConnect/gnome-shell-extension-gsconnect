@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-27 15:44-0800\n"
-"PO-Revision-Date: 2018-12-27 23:52\n"
+"PO-Revision-Date: 2018-12-28 14:32\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Italian\n"
 "Language: it\n"
@@ -162,7 +162,7 @@ msgstr "Scorciatoie Azioni"
 
 #: data/device.ui:1280 data/device.ui:1349
 msgid "Reset All…"
-msgstr "Ripristina Tutto…"
+msgstr "Ripristina tutte…"
 
 #: data/device.ui:1334
 msgid "Command Shortcuts"
