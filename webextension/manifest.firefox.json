@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "__MSG_extensionName__",
   "description": "__MSG_extensionDescription__",
-  "version": "4",
+  "version": "5",
   "homepage_url": "https://github.com/andyholmes/gnome-shell-extension-gsconnect/wiki",
   "default_locale": "en",
   "browser_action": {
