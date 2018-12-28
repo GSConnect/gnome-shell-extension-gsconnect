@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-27 15:44-0800\n"
-"PO-Revision-Date: 2018-12-27 23:52\n"
+"PO-Revision-Date: 2018-12-28 07:42\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Estonian\n"
 "Language: et\n"
@@ -918,7 +918,7 @@ msgstr[1] "%d tundi"
 
 #: src/shell/notification.js:42
 msgid "Reply"
-msgstr ""
+msgstr "Vasta"
 
 #. TRANSLATORS: Extension name
 #: webextension/gettext.js:27
