@@ -977,7 +977,7 @@ msgstr "Bendrinti nuorodas iš saityno naršyklės su įrenginiais ir adresatais
 #: webextension/gettext.js:33
 #, fuzzy
 msgid "Service Unavailable"
-msgstr "Gvc neprieinama"
+msgstr "Paslauga neprieinama"
 
 #. TRANSLATORS: Open URL with the device's browser
 #: webextension/gettext.js:37

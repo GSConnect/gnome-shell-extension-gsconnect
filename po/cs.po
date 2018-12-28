@@ -972,7 +972,7 @@ msgstr "Sdílet odkazy se zařízeními a kontakty z webového prohlížeče"
 #: webextension/gettext.js:33
 #, fuzzy
 msgid "Service Unavailable"
-msgstr "Gvc není k dispozici"
+msgstr "Služba nedostupná"
 
 #. TRANSLATORS: Open URL with the device's browser
 #: webextension/gettext.js:37

@@ -4,11 +4,11 @@
         "description": "The extension name"
     },
     "extensionDescription": {
-        "message": "Condividi collegamenti con GSConnect, direttamente nel browser o via SMS.",
+        "message": "Bendrinti nuorodas iš saityno naršyklės su įrenginiais ir adresatais",
         "description": "The extension description"
     },
     "contextMenuMultipleDevices": {
-        "message": "Invia al Dispositivo Mobile",
+        "message": "Siųsti į mobilųjį įrenginį",
         "description": "Top-level Context Menu label when multiple devices are available"
     },
     "contextMenuSinglePlugin": {
@@ -26,19 +26,19 @@
         }
     },
     "popupMenuDisconnected": {
-        "message": "Servizio non disponibile",
+        "message": "Paslauga neprieinama",
         "description": "Popup Menu label when disconnected from the GNOME Shell extension"
     },
     "popupMenuNoDevices": {
-        "message": "Dispositivo non trovato",
+        "message": "Įrenginys yra išporuotas",
         "description": "Popup Menu label when no devices are connected or have supported plugins enabled"
     },
     "shareMessage": {
-        "message": "Apri nel Browser",
+        "message": "Atverti aplanką",
         "description": "Context Menu label for opening a link in the device's web browser"
     },
     "smsMessage": {
-        "message": "Invia SMS",
+        "message": "Siųsti SMS",
         "description": "Context Menu label for sharing a link in an SMS message"
     }
 }
