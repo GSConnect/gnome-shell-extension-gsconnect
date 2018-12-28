@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-12-24 17:01-0800\n"
-"PO-Revision-Date: 2018-12-27 14:03\n"
+"POT-Creation-Date: 2018-12-27 15:44-0800\n"
+"PO-Revision-Date: 2018-12-27 23:52\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: Belarusian\n"
 "Language: be\n"
@@ -22,11 +22,11 @@ msgid "Connect to…"
 msgstr "Падлучыцца да…"
 
 #. Action Buttons
-#: data/connect.ui:30 data/telephony.ui:14 src/service/plugins/share.js:139
-#: src/service/plugins/share.js:310 src/service/plugins/share.js:456
-#: src/service/ui/device.js:609 src/service/ui/keybindings.js:44
-#: src/service/ui/service.js:37 src/service/ui/settings.js:539
-#: src/shell/donotdisturb.js:215
+#: data/connect.ui:30 data/notification.ui:14 data/telephony.ui:14
+#: src/service/plugins/share.js:139 src/service/plugins/share.js:310
+#: src/service/plugins/share.js:456 src/service/ui/device.js:609
+#: src/service/ui/keybindings.js:44 src/service/ui/service.js:37
+#: src/service/ui/settings.js:539 src/shell/donotdisturb.js:215
 msgid "Cancel"
 msgstr "Скасаваць"
 
@@ -54,7 +54,7 @@ msgstr "Няма кантактаў"
 msgid "Help"
 msgstr "Даведка"
 
-#: data/conversation.ui:76 data/conversation.ui:85
+#: data/conversation.ui:76 data/conversation.ui:85 src/shell/notification.js:51
 msgid "Type a message"
 msgstr "Напісаць паведамлене"
 
@@ -128,7 +128,7 @@ msgid "Applications"
 msgstr "Праграмы"
 
 #: data/device.ui:809 data/device.ui:1717
-#: src/service/plugins/notification.js:12
+#: src/service/plugins/notification.js:13
 msgid "Notifications"
 msgstr "Апавяшчэнні"
 
@@ -279,11 +279,11 @@ msgid "Mute"
 msgstr "Выключыць гук"
 
 #: data/messaging.ui:12 src/service/plugins/sms.js:26
-#: src/service/ui/messaging.js:902
+#: src/service/ui/messaging.js:857
 msgid "Messaging"
 msgstr "Паведамленні"
 
-#: data/messaging.ui:21 src/service/ui/messaging.js:971
+#: data/messaging.ui:21 src/service/ui/messaging.js:926
 msgid "New Conversation"
 msgstr "Новая размова"
 
@@ -295,13 +295,18 @@ msgstr "Не выбрана размова"
 msgid "Select or start a conversation"
 msgstr "Выберыце або пачніце размову"
 
-#: data/messaging.ui:193 data/telephony.ui:52
+#: data/messaging.ui:193 data/notification.ui:52 data/telephony.ui:52
 msgid "Device is disconnected"
 msgstr "Прылада адлучана"
 
 #: data/messaging.ui:264
 msgid "No Conversations"
 msgstr "Няма размоў"
+
+#: data/notification.ui:21 data/telephony.ui:21
+#: src/service/plugins/share.js:457
+msgid "Send"
+msgstr "Адправіць"
 
 #: data/settings.ui:10
 msgid "Searching for devices…"
@@ -340,14 +345,10 @@ msgid "Discovery Disabled"
 msgstr "Знаходжанне адключана"
 
 #. TRANSLATORS: Share URL by SMS
-#: data/telephony.ui:9 src/service/daemon.js:714 src/service/plugins/sms.js:50
+#: data/telephony.ui:9 src/service/daemon.js:718 src/service/plugins/sms.js:50
 #: webextension/gettext.js:39
 msgid "Send SMS"
 msgstr "Адправіць SMS"
-
-#: data/telephony.ui:21 src/service/plugins/share.js:457
-msgid "Send"
-msgstr "Адправіць"
 
 #. Service Menu
 #: src/extension.js:79 src/extension.js:255
@@ -402,11 +403,11 @@ msgstr "%s убудова не загрузілася"
 msgid "Click for more information"
 msgstr "Націсніце для большай інфармацыі"
 
-#: src/service/daemon.js:720
+#: src/service/daemon.js:724
 msgid "Dial Number"
 msgstr "Набраць нумар"
 
-#: src/service/daemon.js:726 src/service/plugins/share.js:27
+#: src/service/daemon.js:730 src/service/plugins/share.js:27
 msgid "Share File"
 msgstr "Абагуліць файл"
 
@@ -518,7 +519,7 @@ msgstr "Адшукаць мой тэлефон"
 msgid "Mousepad"
 msgstr "Тачпад"
 
-#: src/service/plugins/mousepad.js:28 src/service/plugins/mousepad.js:568
+#: src/service/plugins/mousepad.js:28 src/service/plugins/mousepad.js:569
 msgid "Keyboard"
 msgstr "Клавіятура"
 
@@ -526,7 +527,7 @@ msgstr "Клавіятура"
 msgid "Additional Software Required"
 msgstr "Патрабуецца дадатковае ПЗ"
 
-#: src/service/plugins/mousepad.js:585
+#: src/service/plugins/mousepad.js:586
 msgid "Keyboard not ready"
 msgstr "Клавіятура не гатова"
 
@@ -534,19 +535,19 @@ msgstr "Клавіятура не гатова"
 msgid "MPRIS"
 msgstr "MPRIS"
 
-#: src/service/plugins/notification.js:25
+#: src/service/plugins/notification.js:26
 msgid "Cancel Notification"
 msgstr "Скасаваць апавяшчэнне"
 
-#: src/service/plugins/notification.js:33
+#: src/service/plugins/notification.js:34
 msgid "Close Notification"
 msgstr "Закрыць апавяшчэнне"
 
-#: src/service/plugins/notification.js:41
+#: src/service/plugins/notification.js:42
 msgid "Reply Notification"
 msgstr "Адказаць на апавяшчэнне"
 
-#: src/service/plugins/notification.js:49
+#: src/service/plugins/notification.js:50
 msgid "Send Notification"
 msgstr "Адправіць апавяшчэнне"
 
@@ -586,7 +587,7 @@ msgstr "Усе файлы"
 msgid "Camera pictures"
 msgstr "Фатаграфіі камеры"
 
-#: src/service/plugins/sftp.js:416
+#: src/service/plugins/sftp.js:417
 msgid "Files"
 msgstr "Файлы"
 
@@ -598,8 +599,8 @@ msgstr "Абагуліць"
 msgid "Share Text"
 msgstr "Абагуліць тэкст"
 
-#: src/service/plugins/share.js:43 src/service/ui/messaging.js:954
-#: src/service/ui/messaging.js:962
+#: src/service/plugins/share.js:43 src/service/ui/messaging.js:909
+#: src/service/ui/messaging.js:917
 msgid "Share Link"
 msgstr "Абагуліць спасылку"
 
@@ -798,12 +799,12 @@ msgid "%s is already being used"
 msgstr "%s ужо выкарыстоўваецца"
 
 #. TRANSLATORS: Less than a minute ago
-#: src/service/ui/messaging.js:93 src/service/ui/messaging.js:126
+#: src/service/ui/messaging.js:65 src/service/ui/messaging.js:98
 msgid "Just now"
 msgstr "Толькі што"
 
 #. TRANSLATORS: Time duration in minutes (eg. 15 minutes)
-#: src/service/ui/messaging.js:98 src/service/ui/messaging.js:130
+#: src/service/ui/messaging.js:70 src/service/ui/messaging.js:102
 #: src/shell/donotdisturb.js:266
 #, javascript-format
 msgid "%d minute"
@@ -814,7 +815,7 @@ msgstr[2] "%d хвілін"
 msgstr[3] ""
 
 #. TRANSLATORS: Yesterday, but less than 24 hours (eg. Yesterday · 11:29 PM)
-#: src/service/ui/messaging.js:103
+#: src/service/ui/messaging.js:75
 #, javascript-format
 msgid "Yesterday・%s"
 msgstr "Учора・%s"
@@ -839,7 +840,7 @@ msgstr "Адлучана"
 msgid "Connected"
 msgstr "Падлучана"
 
-#. TODO: Copied from GNOME Control Center; may change
+#. TRANSLATORS: Description of where directly shared files are stored.
 #: src/service/ui/settings.js:406
 #, javascript-format
 msgid "Transferred files are placed in the <a href=\"%s\">Downloads</a> folder."
@@ -920,6 +921,10 @@ msgstr[0] "%d гадзіна"
 msgstr[1] "%d гадзіны"
 msgstr[2] "%d гадзін"
 msgstr[3] ""
+
+#: src/shell/notification.js:42
+msgid "Reply"
+msgstr "Адказаць"
 
 #. TRANSLATORS: Extension name
 #: webextension/gettext.js:27
