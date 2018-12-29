@@ -889,7 +889,7 @@ var Window = GObject.registerClass({
         });
 
         // Add new summaries
-        for (let [id, message] of threads.entries()) {
+        for (let message of threads.values()) {
             let contact = this.device.contacts.query({
                 number: message.address
             });
