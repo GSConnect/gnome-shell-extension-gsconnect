@@ -101,6 +101,10 @@ function getShortTime(time) {
             // TRANSLATORS: Time duration in minutes (eg. 15 minutes)
             return ngettext('%d minute', '%d minutes', (diff / GLib.TIME_SPAN_MINUTE)).format(diff / GLib.TIME_SPAN_MINUTE);
 
+        // Less than a day ago
+        case (diff < GLib.TIME_SPAN_DAY):
+            return time.format('%l:%M %p');
+
         case (diff < (GLib.TIME_SPAN_DAY * 7)):
             return time.format('%a');
 
@@ -200,10 +204,6 @@ const ConversationSummary = GObject.registerClass({
             xalign: 0,
             visible: true
         });
-        //this._time.connect('map', (widget) => {
-        //    widget.label = '<small>' + getShortTime(this.message.date) + '</small>';
-        //    return false;
-        //});
         this._time.get_style_context().add_class('dim-label');
         grid.attach(this._time, 2, 0, 1, 1);
 
@@ -254,6 +254,11 @@ const ConversationSummary = GObject.registerClass({
 
         // Time
         let timeLabel = '<small>' + getShortTime(message.date) + '</small>';
+        this._time.label = timeLabel;
+    }
+
+    update() {
+        let timeLabel = '<small>' + getShortTime(this.message.date) + '</small>';
         this._time.label = timeLabel;
     }
 });
@@ -732,6 +737,12 @@ var Window = GObject.registerClass({
             this._onConversationsChanged.bind(this)
         );
 
+        this._timestampConversationsId = GLib.timeout_add_seconds(
+            GLib.PRIORITY_DEFAULT_IDLE,
+            60,
+            this._timestampConversations.bind(this)
+        );
+
         // Conversations Placeholder
         this.conversation_list.set_placeholder(this.conversation_list_placeholder);
 
@@ -822,6 +833,7 @@ var Window = GObject.registerClass({
     }
 
     _onDestroy(window) {
+        GLib.source_remove(window._timestampConversationsId);
         window.contact_list.disconnect(window._numberSelectedId);
         window.sms.disconnect(window._conversationsChangedId);
         window.disconnect_template();
@@ -888,10 +900,6 @@ var Window = GObject.registerClass({
         }
     }
 
-    _sortConversations(row1, row2) {
-        return (row1.message.date > row2.message.date) ? -1 : 1;
-    }
-
     _onConversationSelected(box, row) {
         // Show the conversation for this number (if applicable)
         if (row) {
@@ -903,6 +911,18 @@ var Window = GObject.registerClass({
             this.headerbar.title = _('Messaging');
             this.headerbar.subtitle = this.device.name;
         }
+    }
+
+    _sortConversations(row1, row2) {
+        return (row1.message.date > row2.message.date) ? -1 : 1;
+    }
+
+    _timestampConversations() {
+        if (this.visible) {
+            this.conversation_list.foreach(summary => summary.update());
+        }
+
+        return GLib.SOURCE_CONTINUE;
     }
 
     /**
