@@ -167,63 +167,94 @@ const ConversationSummary = GObject.registerClass({
     GTypeName: 'GSConnectConversationSummary'
 }, class ConversationSummary extends Gtk.ListBoxRow {
     _init(contact, message) {
-        super._init();
+        super._init({visible: true});
 
-        // Hold a reference to the contact & message
-        this.contact = contact;
-        this.message = message;
-
+        // Row layout
         let grid = new Gtk.Grid({
             margin: 6,
-            column_spacing: 6
+            column_spacing: 6,
+            visible: true
         });
         this.add(grid);
 
-        let nameLabel = contact.name;
-        let bodyLabel = message.body.split(/\r|\n/)[0];
-        bodyLabel = '<small>' + GLib.markup_escape_text(bodyLabel, -1) + '</small>';
+        // Contact Avatar
+        this._avatar = new Contacts.Avatar(contact);
+        grid.attach(this._avatar, 0, 0, 1, 3);
 
-        if (message.read === MessageStatus.UNREAD) {
-            nameLabel = '<b>' + nameLabel + '</b>';
-            bodyLabel = '<b>' + bodyLabel + '</b>';
-        }
-
-        grid.attach(new Contacts.Avatar(contact), 0, 0, 1, 3);
-
-        let name = new Gtk.Label({
-            label: nameLabel,
+        // Contact Name
+        this._name = new Gtk.Label({
             halign: Gtk.Align.START,
             hexpand: true,
             ellipsize: Pango.EllipsizeMode.END,
             use_markup: true,
-            xalign: 0
+            xalign: 0,
+            visible: true
         });
-        grid.attach(name, 1, 0, 1, 1);
+        grid.attach(this._name, 1, 0, 1, 1);
 
-        let time = new Gtk.Label({
-            label: '<small>' + getShortTime(message.date) + '</small>',
+        // Message Time
+        this._time = new Gtk.Label({
             halign: Gtk.Align.END,
             ellipsize: Pango.EllipsizeMode.END,
             use_markup: true,
-            xalign: 0
+            xalign: 0,
+            visible: true
         });
-        //time.connect('map', (widget) => {
+        //this._time.connect('map', (widget) => {
         //    widget.label = '<small>' + getShortTime(this.message.date) + '</small>';
         //    return false;
         //});
-        time.get_style_context().add_class('dim-label');
-        grid.attach(time, 2, 0, 1, 1);
+        this._time.get_style_context().add_class('dim-label');
+        grid.attach(this._time, 2, 0, 1, 1);
 
-        let body = new Gtk.Label({
-            label: bodyLabel,
+        // Message Body
+        this._body = new Gtk.Label({
             halign: Gtk.Align.START,
             ellipsize: Pango.EllipsizeMode.END,
             use_markup: true,
-            xalign: 0
+            xalign: 0,
+            visible: true
         });
-        grid.attach(body, 1, 1, 2, 1);
+        grid.attach(this._body, 1, 1, 2, 1);
 
-        this.show_all();
+        this.contact = contact;
+        this.message = message;
+    }
+
+    get id() {
+        return this._message.thread_id;
+    }
+
+    get message() {
+        return this._message;
+    }
+
+    set message(message) {
+        this._message = message;
+
+        // Contact Name & Message body
+        let nameLabel = this.contact.name;
+        let bodyLabel = message.body.split(/\r|\n/)[0];
+        bodyLabel = GLib.markup_escape_text(bodyLabel, -1);
+
+        // Ignore the 'read' flag if it's an outgoing message
+        if (message.type === MessageType.OUT) {
+            // TRANSLATORS: An outgoing message body in a conversation summary
+            bodyLabel = _('You: %s').format(bodyLabel);
+
+        // Otherwise make it bold if it's unread
+        } else if (message.read === MessageStatus.UNREAD) {
+            nameLabel = '<b>' + nameLabel + '</b>';
+            bodyLabel = '<b>' + bodyLabel + '</b>';
+        }
+
+        // Set the labels, body always smaller
+        this._name.label = nameLabel;
+        this._body.label = '<small>' + bodyLabel + '</small>';
+
+        // Time
+        let timeLabel = '<small>' + getShortTime(message.date) + '</small>';
+        this._time.label = timeLabel;
     }
 });
 
@@ -698,7 +729,7 @@ var Window = GObject.registerClass({
 
         this._conversationsChangedId = this.sms.connect(
             'notify::conversations',
-            this._populateConversations.bind(this)
+            this._onConversationsChanged.bind(this)
         );
 
         // Conversations Placeholder
@@ -708,7 +739,7 @@ var Window = GObject.registerClass({
         this.connect('destroy', this._onDestroy);
 
         this._sync();
-        this._populateConversations();
+        this._onConversationsChanged();
     }
 
     vfunc_delete_event(event) {
@@ -823,21 +854,36 @@ var Window = GObject.registerClass({
     /**
      * Conversations
      */
-    _populateConversations() {
-        this.conversation_list.foreach(row => {
-            // HACK: temporary mitigator for mysterious GtkListBox leak
-            //row.destroy();
-            row.run_dispose();
-            imports.system.gc();
+    _onConversationsChanged() {
+        let threads = new Map();
+
+        for (let [id, thread] of Object.entries(this.sms.conversations)) {
+            threads.set(id, thread[thread.length - 1]);
+        }
+
+        // Update existing summaries and destroy old ones
+        this.conversation_list.foreach(summary => {
+            // If it's an existing conversation, update it
+            if (threads.hasOwnProperty(summary.id)) {
+                summary.message = threads[summary.id];
+                threads.delete(summary.id);
+
+            // Otherwise destroy it
+            } else {
+                // HACK: temporary mitigator for mysterious GtkListBox leak
+                summary.run_dispose();
+                imports.system.gc();
+            }
         });
 
-        for (let thread of Object.values(this.sms.conversations)) {
+        // Add new summaries
+        for (let [id, message] of threads.entries()) {
             let contact = this.device.contacts.query({
-                number: thread[0].address
+                number: message.address
             });
 
             this.conversation_list.add(
-                new ConversationSummary(contact, thread[thread.length - 1])
+                new ConversationSummary(contact, message)
             );
         }
     }
