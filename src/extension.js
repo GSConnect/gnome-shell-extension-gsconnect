@@ -402,15 +402,6 @@ class ServiceIndicator extends PanelMenu.SystemIndicator {
             // Get the keybindings
             let keybindings = iface.settings.get_value('keybindings').deep_unpack();
 
-            // TODO: Backwards compatible check for keybindings <= v12
-            if (typeof keybindings === 'string') {
-                iface.settings.set_value(
-                    'keybindings',
-                    new GLib.Variant('a{ss}', {})
-                );
-                return;
-            }
-
             // Apply the keybindings
             for (let [action, accelerator] of Object.entries(keybindings)) {
                 let [, name, parameter] = Gio.Action.parse_detailed_name(action);

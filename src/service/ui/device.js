@@ -811,16 +811,6 @@ var DevicePreferences = GObject.registerClass({
     _setPluginKeybindings() {
         let keybindings = this.settings.get_value('keybindings').deep_unpack();
 
-        // TODO: Backwards compatibility; remove later
-        if (typeof keybindings === 'string') {
-            this.settings.set_value(
-                'keybindings',
-                new GLib.Variant('a{ss}', {})
-            );
-            // A ::changed signal should be emitted so we'll return
-            return;
-        }
-
         this.shortcuts_actions_list.foreach(row => {
             if (keybindings[row.action]) {
                 let accel = Gtk.accelerator_parse(keybindings[row.action]);

@@ -107,11 +107,6 @@ var Device = GObject.registerClass({
             this._onDisabledPlugins.bind(this)
         );
 
-        // TODO: Backwards compatibility <= v12; remove after a few releases
-        if (this.settings.get_string('certificate-pem') !== '') {
-            this.settings.set_boolean('paired', true);
-        }
-
         // Parse identity if initialized with a proper packet
         if (identity.id !== undefined) {
             this._handleIdentity(identity);
