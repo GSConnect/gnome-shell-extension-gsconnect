@@ -97,22 +97,13 @@ const SectionRow = GObject.registerClass({
         Object.assign(this, params);
     }
 
-    get icon() {
-        return this._icon.gicon;
-    }
-
-    set icon(gicon) {
-        this._icon.visible = (gicon);
-        this._icon.gicon = gicon;
-    }
-
     get icon_name() {
-        return this._icon.icon_name;
+        return this._icon.gicon.names[0];
     }
 
-    set icon_name(text) {
-        this._icon.visible = (text);
-        this._icon.icon_name = text;
+    set icon_name(icon_name) {
+        this._icon.visible = (icon_name);
+        this._icon.gicon = new Gio.ThemedIcon({name: icon_name});
     }
 
     get title() {
@@ -668,7 +659,7 @@ var DevicePreferences = GObject.registerClass({
 
         for (let name in applications) {
             let row = new SectionRow({
-                icon: new Gio.ThemedIcon({name: applications[name].iconName}),
+                icon_name: applications[name].iconName,
                 title: name,
                 height_request: 48,
                 widget: new Gtk.Label({
@@ -803,7 +794,7 @@ var DevicePreferences = GObject.registerClass({
         widget.get_style_context().add_class('dim-label');
 
         let row = new SectionRow({
-            icon: new Gio.ThemedIcon({name: icon_name}),
+            icon_name: icon_name,
             title: label,
             widget: widget
         });
