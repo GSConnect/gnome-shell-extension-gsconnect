@@ -216,7 +216,7 @@ var Plugin = GObject.registerClass({
     }
 
     get window() {
-        if (this.settings.get_boolean('legacy')) {
+        if (this.settings.get_boolean('legacy-sms')) {
             return new TelephonyUI.Dialog({device: this.device});
         }
 
@@ -438,7 +438,7 @@ var Plugin = GObject.registerClass({
      */
     shareSms(url) {
         // Legacy Mode
-        if (this.settings.get_boolean('legacy')) {
+        if (this.settings.get_boolean('legacy-sms')) {
             let window = this.window;
             window.present();
             window.setMessage(url);

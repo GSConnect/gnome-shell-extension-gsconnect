@@ -86,8 +86,8 @@ var Plugin = GObject.registerClass({
             }
 
             // Legacy messaging support
-            if (packet.body.event === 'sms' && this.sms.settings.get_boolean('legacy')) {
-                debug('LEGACY EVENT');
+            if (packet.body.event === 'sms' &&
+                this.sms.settings.get_boolean('legacy-sms')) {
                 this._handleLegacyMessage(packet);
             }
         } catch (e) {
