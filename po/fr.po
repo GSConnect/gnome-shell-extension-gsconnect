@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gsconnect\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-12-29 16:44-0800\n"
-"PO-Revision-Date: 2018-12-30 06:52\n"
+"PO-Revision-Date: 2018-12-30 07:02\n"
 "Last-Translator: andyholmes <andrew.g.r.holmes@gmail.com>\n"
 "Language-Team: French\n"
 "Language: fr\n"
@@ -113,11 +113,11 @@ msgstr "Supprimer"
 
 #: data/device.ui:576 data/device.ui:588
 msgid "Edit"
-msgstr ""
+msgstr "Modifier"
 
 #: data/device.ui:604 data/device.ui:616
 msgid "Save"
-msgstr ""
+msgstr "Enregistrer"
 
 #: data/device.ui:712
 msgid "Share Notifications"
@@ -125,12 +125,12 @@ msgstr "Synchroniser les notifications"
 
 #: data/device.ui:763
 msgid "Applications"
-msgstr ""
+msgstr "Applications"
 
 #: data/device.ui:809 data/device.ui:1820
 #: src/service/plugins/notification.js:13
 msgid "Notifications"
-msgstr ""
+msgstr "Notifications"
 
 #: data/device.ui:839
 msgid "Incoming Calls"
@@ -182,7 +182,7 @@ msgstr "Expérimental"
 
 #: data/device.ui:1524
 msgid "Legacy SMS Support"
-msgstr ""
+msgstr "Ancienne gestion des SMS"
 
 #: data/device.ui:1598
 msgid "Delete"
@@ -211,11 +211,11 @@ msgstr "Associer"
 
 #: data/device.ui:2047
 msgid "Device is unpaired"
-msgstr ""
+msgstr "L'appareil n'est pas pairé"
 
 #: data/device.ui:2062
 msgid "You may configure this device before pairing"
-msgstr ""
+msgstr "Vous pouvez configurer cet appareil avant le pairage"
 
 #: data/menus.ui:12
 msgid "Display Mode"
@@ -234,7 +234,7 @@ msgstr "Menu utilisateur"
 #. TRANSLATORS: Generate a support log
 #: data/menus.ui:29 src/service/ui/settings.js:536
 msgid "Generate Support Log"
-msgstr ""
+msgstr "Générer des logs pour le support"
 
 #: data/menus.ui:38
 msgid "About"
@@ -297,11 +297,11 @@ msgstr "Nouvelle conversation"
 
 #: data/messaging.ui:110
 msgid "No conversation selected"
-msgstr ""
+msgstr "Aucune conversation sélectionnée"
 
 #: data/messaging.ui:126
 msgid "Select or start a conversation"
-msgstr ""
+msgstr "Choisir ou commencer une discussion"
 
 #: data/messaging.ui:193 data/notification.ui:52 data/telephony.ui:52
 msgid "Device is disconnected"
@@ -309,7 +309,7 @@ msgstr "L'appareil est déconnecté"
 
 #: data/messaging.ui:264
 msgid "No Conversations"
-msgstr ""
+msgstr "Aucune discussion"
 
 #: data/notification.ui:21 data/telephony.ui:21
 #: src/service/plugins/share.js:457
@@ -318,7 +318,7 @@ msgstr "Envoyer"
 
 #: data/settings.ui:10
 msgid "Searching for devices…"
-msgstr ""
+msgstr "Recherche d'appareils…"
 
 #: data/settings.ui:49 data/settings.ui:63
 msgid "Refresh"
@@ -330,7 +330,7 @@ msgstr "Paramètres"
 
 #: data/settings.ui:144 data/settings.ui:158
 msgid "Edit Device Name"
-msgstr ""
+msgstr "Modifier le nom de l'appareil"
 
 #: data/settings.ui:236
 msgid "Devices"
@@ -346,7 +346,7 @@ msgstr "Activer"
 
 #: data/settings.ui:611
 msgid "This device is invisible to unpaired devices"
-msgstr ""
+msgstr "Cet appareil est invisible par les appareils non pairés"
 
 #: data/settings.ui:623 src/service/daemon.js:532
 msgid "Discovery Disabled"
@@ -444,7 +444,7 @@ msgstr "Ordinateur portable"
 
 #: src/service/device.js:244
 msgid "Smartphone"
-msgstr ""
+msgstr "Smartphone"
 
 #: src/service/device.js:246
 msgid "Tablet"
@@ -539,7 +539,7 @@ msgstr "Le clavier n'est pas prêt"
 
 #: src/service/plugins/mpris.js:10
 msgid "MPRIS"
-msgstr ""
+msgstr "MPRIS"
 
 #: src/service/plugins/notification.js:26
 msgid "Cancel Notification"
@@ -560,7 +560,7 @@ msgstr "Envoyer la notification"
 #: src/service/plugins/ping.js:11 src/service/plugins/ping.js:17
 #: src/service/plugins/ping.js:46
 msgid "Ping"
-msgstr ""
+msgstr "Ping"
 
 #. TRANSLATORS: An optional message accompanying a ping, rarely if ever used
 #. eg. Ping: A message sent with ping
@@ -575,7 +575,7 @@ msgstr "Exécuter des commandes"
 
 #: src/service/plugins/sftp.js:12
 msgid "SFTP"
-msgstr ""
+msgstr "SFTP"
 
 #: src/service/plugins/sftp.js:18
 msgid "Mount"
@@ -680,7 +680,7 @@ msgstr "Envoyer des fichiers vers %s"
 #. TRANSLATORS: Mark the file to be opened once completed
 #: src/service/plugins/share.js:412
 msgid "Open when done"
-msgstr ""
+msgstr "Ouvrir une fois fini"
 
 #. TRANSLATORS: eg. Send a link to Google Pixel
 #: src/service/plugins/share.js:451
@@ -690,7 +690,7 @@ msgstr "Envoyer un lien vers %s"
 
 #: src/service/plugins/sms.js:13
 msgid "SMS"
-msgstr ""
+msgstr "SMS"
 
 #: src/service/plugins/sms.js:34
 msgid "New SMS (URI)"
@@ -732,7 +732,7 @@ msgstr "%s・Autre"
 #: src/service/ui/contacts.js:123
 #, javascript-format
 msgid "%s・Fax"
-msgstr ""
+msgstr "%s・Fax"
 
 #. TRANSLATORS: A work phone number
 #: src/service/ui/contacts.js:127
@@ -815,7 +815,7 @@ msgstr "À l'instant"
 #, javascript-format
 msgid "%d minute"
 msgid_plural "%d minutes"
-msgstr[0] "%d minute"
+msgstr[0] "%d minute(s)"
 msgstr[1] ""
 
 #. TRANSLATORS: Yesterday, but less than 24 hours (eg. Yesterday · 11:29 PM)
@@ -828,7 +828,7 @@ msgstr "Hier・%s"
 #: src/service/ui/messaging.js:243
 #, javascript-format
 msgid "You: %s"
-msgstr ""
+msgstr "Vous: %s"
 
 #: src/service/ui/service.js:31
 msgid "Select a Device"
@@ -854,7 +854,7 @@ msgstr "Connecté"
 #: src/service/ui/settings.js:406
 #, javascript-format
 msgid "Transferred files are placed in the <a href=\"%s\">Downloads</a> folder."
-msgstr ""
+msgstr "Les fichiers téléchargés sont enregistrés dans le dossier <a href=\"%s\">Downloads</a> ."
 
 #: src/service/ui/settings.js:499
 msgid "A complete KDE Connect implementation for GNOME"
@@ -867,7 +867,7 @@ msgstr "Mickaël Coiraton <mickael.coiraton@gmail.com>"
 
 #: src/service/ui/settings.js:537
 msgid "Debug messages are being logged. Take any steps necessary to reproduce a problem then review the log."
-msgstr ""
+msgstr "Les messages de dépannage sont enregistrés. Faites le nécessaire pour reproduire le problème puis vérifiez le fichier de log."
 
 #: src/service/ui/settings.js:540
 msgid "Review Log"
