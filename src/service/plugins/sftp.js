@@ -143,6 +143,9 @@ var Plugin = GObject.registerClass({
 
                 // HACK: Test an SFTP mount for this IP in the 1716-1764 range
                 this._uriRegex = new RegExp(`sftp://(${this.ip}):(171[6-9]|17[2-5][0-9]|176[0-4])`);
+
+                // Ensure the private key is in the keyring
+                await this._sftp_add_identity();
             }
 
             // If 'multiPaths' is present setup a local URI for each
@@ -192,12 +195,16 @@ var Plugin = GObject.registerClass({
                     try {
                         resolve(file.mount_enclosing_volume_finish(res));
                     } catch (e) {
-                        // TODO: special case when the GMount didn't unmount
-                        // properly but is still on the same port (code 17).
+                        // Special case when the GMount didn't unmount properly
+                        // but is still on the same port and can be reused.
                         if (e.code && e.code === Gio.IOErrorEnum.ALREADY_MOUNTED) {
                             warning(e, this.device.name);
                             resolve(true);
+
+                        // There's a good chance this is a host key verification
+                        // error; regardless we'll remove the key for security.
                         } else {
+                            this._sftp_remove_host(this._port);
                             reject(e);
                         }
                     }
@@ -240,6 +247,68 @@ var Plugin = GObject.registerClass({
                 }
             });
         });
+    }
+
+    /**
+     * Add GSConnect's private key identity to the authentication agent so our
+     * identity can be verified by Android during private key authentication.
+     */
+    _sftp_add_identity() {
+        // Path the the stored private key
+        let key_path = GLib.build_filenamev([
+            gsconnect.configdir,
+            'private.pem'
+        ]);
+
+        let ssh_add = new Gio.Subprocess({
+            argv: [gsconnect.metadata.bin.ssh_add, key_path],
+            flags: Gio.SubprocessFlags.STDOUT_SILENCE | Gio.SubprocessFlags.STDERR_SILENCE
+        });
+        ssh_add.init(null);
+
+        return new Promise((resolve, reject) => {
+            ssh_add.wait_check_async(null, (proc, res) => {
+                try {
+                    resolve(proc.wait_check_finish(res));
+                } catch (e) {
+                    reject(e);
+                }
+            });
+        });
+    }
+
+    /**
+     * Remove old host keys from ~/.ssh/known_hosts for this host from the range
+     * used by KDE Connect (1739-1764).
+     *
+     * @param {number} port - The port to remove the host key for
+     */
+    async _sftp_remove_host(port = 1739) {
+        try {
+            let ssh_keygen = new Gio.Subprocess({
+                argv: [
+                    gsconnect.metadata.bin.ssh_keygen,
+                    '-R',
+                    `[${this.ip}]:${port}`
+                ],
+                flags: Gio.SubprocessFlags.STDOUT_SILENCE | Gio.SubprocessFlags.STDERR_SILENCE
+            });
+            ssh_keygen.init(null);
+
+            await new Promise((resolve, reject) => {
+                ssh_keygen.wait_check_async(null, (proc, res) => {
+                    try {
+                        resolve(proc.wait_check_finish(res));
+                    } catch (e) {
+                        reject(e);
+                    }
+                });
+            });
+
+            debug(`removed host key for [${this.ip}]:${port}`);
+        } catch (e) {
+            warning(e, this.device.name);
+        }
     }
 
     /**

@@ -421,14 +421,6 @@ Gio.TlsCertificate.new_for_paths = function (cert_path, key_path) {
         proc.wait_check(null);
     }
 
-    // Ensure the private key is in the keyring
-    let ssh_add = new Gio.Subprocess({
-        argv: [gsconnect.metadata.bin.ssh_add, key_path],
-        flags: Gio.SubprocessFlags.STDOUT_SILENCE | Gio.SubprocessFlags.STDERR_SILENCE
-    });
-    ssh_add.init(null);
-    ssh_add.wait_check(null);
-
     return Gio.TlsCertificate.new_from_files(cert_path, key_path);
 };
 

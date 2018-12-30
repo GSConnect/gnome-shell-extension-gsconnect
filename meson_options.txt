@@ -51,7 +51,14 @@ option(
   'sshadd_path',
   type: 'string',
   value: 'ssh-add',
-  description: 'Path to sshfs binary'
+  description: 'Path to ssh-add binary'
+)
+
+option(
+  'sshkeygen_path',
+  type: 'string',
+  value: 'ssh-keygen',
+  description: 'Path to ssh-keygen binary'
 )
 
 option(
