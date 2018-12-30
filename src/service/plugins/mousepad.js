@@ -204,19 +204,26 @@ var Plugin = GObject.registerClass({
                 break;
 
             case (input.hasOwnProperty('key') || input.hasOwnProperty('specialKey')):
-                // Prefer libcaribou (XTest) if available
-                if (this.virtual_keyboard) {
-                    this.pressKeySym(input);
+                // We need to decide if we have modifiers to deal with
+                let mask = 0;
 
-                // Regular key (printable ASCII)
+                if (input.alt) mask |= Gdk.ModifierType.MOD1_MASK;
+                if (input.ctrl) mask |= Gdk.ModifierType.CONTROL_MASK;
+                if (input.shift) mask |= Gdk.ModifierType.SHIFT_MASK;
+                if (input.super) mask |= Gdk.ModifierType.MOD4_MASK;
+
+                // Special key without modifiers (eg. non-printable ASCII)
+                if (input.specialKey && KeyMap.has(input.specialKey) && !mask) {
+                    this.pressSpecialKey(input);
+
+                // Regular key without modifiers (printable ASCII)
                 // NOTE: Passing AT-SPI non-ASCII keyvals may crash Xorg
-                // https://github.com/andyholmes/gnome-shell-extension-gsconnect/issues/323
-                } else if (input.key && _ASCII.test(input.key)) {
+                } else if (input.key && _ASCII.test(input.key) && !mask) {
                     this.pressKey(input);
 
-                // Special key (eg. non-printable ASCII)
-                } else if (input.specialKey && KeyMap.has(input.specialKey)) {
-                    this.pressSpecialKey(input);
+                // Caribou/XTest is required; modifiers and/or unicode
+                } else if (this.virtual_keyboard) {
+                    this.pressKeySym(input, mask);
 
                 // Caribou not available or key out of range
                 } else {
@@ -316,6 +323,8 @@ var Plugin = GObject.registerClass({
      */
     pressKey(input) {
         try {
+            debug(`key: ${input.key}`);
+
             Atspi.generate_keyboard_event(
                 0,
                 input.key,
@@ -335,8 +344,10 @@ var Plugin = GObject.registerClass({
      */
     pressSpecialKey(input) {
         try {
+            debug(`specialKey: ${KeyMap.get(input.specialKey)}`);
+
             Atspi.generate_keyboard_event(
-                KeyMap.get(input.key),
+                KeyMap.get(input.specialKey),
                 null,
                 Atspi.KeySynthType.PRESSRELEASE | Atspi.KeySynthType.SYM
             );
@@ -347,29 +358,17 @@ var Plugin = GObject.registerClass({
         }
     }
 
-    pressKeySym(input) {
-        debug('using libcaribou');
-
+    /**
+     * Simulate a key press using libcaribou
+     *
+     * @param {object} input - 'body' of a 'kdeconnect.mousepad.request' packet
+     * @param {number} mask - Modifier mask for keypress
+     */
+    pressKeySym(input, mask) {
         try {
-            // Set Gdk.ModifierType
-            let mask = 0;
+            debug('simulating keypress with libcaribou');
 
-            if (input.hasOwnProperty('ctrl') && input.ctrl) {
-                mask |= Gdk.ModifierType.CONTROL_MASK;
-            }
-            if (input.hasOwnProperty('shift') && input.shift) {
-                mask |= Gdk.ModifierType.SHIFT_MASK;
-            }
-            if (input.hasOwnProperty('alt') && input.alt) {
-                mask |= Gdk.ModifierType.MOD1_MASK;
-            }
-            if (input.hasOwnProperty('super') && input.super) {
-                mask |= Gdk.ModifierType.MOD4_MASK;
-            }
-
-            debug(`mask: ${mask}`);
-
-            // Transform key to keysym
+            // Transform key to keyval
             let keyval;
 
             // Regular key (Unicode)
@@ -387,9 +386,9 @@ var Plugin = GObject.registerClass({
                 return;
             }
 
-            debug(`keyval: ${keyval}`);
+            debug(`keyval: ${keyval}, mask: ${mask}`);
 
-            // Ensure this a valid keysym
+            // Ensure this a valid keyval
             if (Gdk.keyval_to_unicode(keyval) !== 0) {
                 this.virtual_keyboard.mod_lock(mask);
                 this.virtual_keyboard.keyval_press(keyval);
@@ -760,9 +759,7 @@ var KeyboardInputDialog = GObject.registerClass({
     }
 
     _grab() {
-        if (!this.visible || this._device) {
-            return;
-        }
+        if (!this.visible || this._device) return;
 
         debug('acquiring grab');
 
